@@ -20,6 +20,10 @@ strategies
 
   ior(a, b) = (a; try(b)) <+ b
 
+  or(a, b) = if a then try(test(b)) else test(b) end
+
+  and(a, b) = if a then test(b) else test(b); fail end
+
   eq = ?(x, x)
 
  /**
