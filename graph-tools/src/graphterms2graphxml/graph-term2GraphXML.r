@@ -19,7 +19,7 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
  02111-1307, USA.
 
- $Id: graph-term2GraphXML.r,v 1.1 2001/06/07 12:35:24 mdejonge Exp $
+ $Id: graph-term2GraphXML.r,v 1.2 2001/08/09 12:22:27 mdejonge Exp $
 *)
 
 module graph-term2GraphXML
@@ -33,8 +33,8 @@ strategies
 
   graph-term2graphXML
     = \graph(nodes(ns),edges(es)) -> GraphXML([],[graph([],<conc>(ns',es'))])
-       where <map(\'id(n)          -> node([name(<enquote>n)])\)> ns => ns';
-             <map(\['id(s),'id(t)] -> edge([source(<enquote>s),target(<enquote>t)])\)> es => es'
+       where <map(\'id(n)          -> node1([name(<enquote>n)])\)> ns => ns';
+             <map(\['id(s),'id(t)] -> edge1([source(<enquote>s),target(<enquote>t)])\)> es => es'
       \
 
   enquote
