@@ -112,7 +112,7 @@ xtc-conf.h :
 	echo "#define XTC_REPOSITORY() ATmakeString(\"$(REPOSITORY)\")" > $@
 
 install-data-local:
-        $(XTC)/bin/xtc -r $(REPOSITORY) register -l $(prefix) -V $(VERSION) -t $PACKAGE ; \
+	$(XTC)/bin/xtc -r $(REPOSITORY) register -l $(prefix) -V $(VERSION) -t $(PACKAGE) ; \
 	for file in fordummy $(pkgdata_DATA) ; do \
 	 	 	 	  if [ "$$file" = "fordummy" ]; then continue; fi; \
           $(XTC)/bin/xtc -r $(REPOSITORY) register -l $(pkgdatadir) -V $(VERSION) \
