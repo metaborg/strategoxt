@@ -2,7 +2,7 @@
 
 ./reconf
 ./configure --prefix=`pwd` \
-	--with-aterm=/home/visser/res/sandbox/aterm \
+	--with-aterm=`pwd`/../aterm \
 	--with-cgen=`pwd`/../cgen \
 	--with-gpp=`pwd`/../gpp-boot \
 	--with-ssl=`pwd`/../ssl \

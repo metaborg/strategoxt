@@ -63,12 +63,12 @@ CLEANFILES = $(bin_PROGRAMS)
 BUILT_SOURCES = stratego.grm.tab.c stratego.grm.tab.h stratego.yy.c
 
 parse_stratego_SOURCES 	= \
-  	parse-stratego.c stratego.grm \
+	parse-stratego.c stratego.grm \
 	stratego.lx options.h options.c util.h  \
 	$(BUILT_SOURCES)
 
 parse_mod_SOURCES = \
-  	parse-mod.c stratego.grm stratego.lx \
+	parse-mod.c stratego.grm stratego.lx \
 	options.h options.c util.h $(BUILT_SOURCES)
 
 %.grm.tab.c: %.grm
@@ -78,3 +78,15 @@ parse_mod_SOURCES = \
 	flex $<
 	mv lex.yy.c $@
 
+# Generate srcipts
+%: %.src Makefile.am
+	sed 's#__GPP__#$(GPP)#g;\
+             s#__CGEN__#$(CGEN)#g;\
+	     s#__prefix__#$(prefix)#g;\
+             s#__ATERM__#$(ATERM)#g;\
+             s#__VERSION__#$(VERSION)#g;\
+             s#__STRATEGORTS__#$(STRATEGORTS)#g;\
+             s#__STRATEGOLIB__#$(STRATEGOLIB)#g;\
+             s#__MAKE__#$(MAKE)#g' < $< > $@
+	chmod +x $@                 
+      

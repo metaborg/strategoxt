@@ -2485,16 +2485,16 @@ ATerm create_dep_file_1 (ATerm t, ATerm i_44 (ATerm))
                     _fail(x_30);
                   else
                     m_30 = x_30;
-                  t = (ATerm) ATmakeAppl(sym_Cons_2, not_null(v_30), (ATerm) ATmakeAppl(sym_Cons_2, (ATerm)ATmakeAppl(ATmakeSymbol(":", 0, ATtrue)), not_null(i_30)));
+                  t = (ATerm) ATmakeAppl(sym_Cons_2, (ATerm)ATmakeAppl(ATmakeSymbol(" :", 0, ATtrue)), not_null(i_30));
                   {
                     ATerm e_2 (ATerm t)
                     {
-                      t = (ATerm) ATmakeAppl(ATmakeSymbol(" ", 0, ATtrue));
+                      t = (ATerm) ATmakeAppl(ATmakeSymbol(" \\\n	", 0, ATtrue));
                       return(t);
                     }
                     t = separate_by_1(t, e_2);
                     y_30 = t;
-                    t = (ATerm) ATmakeAppl(sym_TCons_2, not_null(m_30), (ATerm) ATmakeAppl(sym_TCons_2, not_null(y_30), (ATerm) ATmakeAppl(sym_TNil_0)));
+                    t = (ATerm) ATmakeAppl(sym_TCons_2, not_null(m_30), (ATerm) ATmakeAppl(sym_TCons_2, (ATerm)ATmakeAppl(sym_Cons_2, not_null(v_30), not_null(y_30)), (ATerm) ATmakeAppl(sym_TNil_0)));
                     t = printnl_0(t);
                   }
                 }
