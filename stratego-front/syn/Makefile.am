@@ -92,3 +92,12 @@ StrategoStratego.def : \
 Stratego-Amb.def : \
   Stratego.def \
   Stratego-Amb.sdf
+
+%.nf1 : %.def
+	sdf2table -n -i $< -o $@ -m Stratego-Sugar-in-Stratego
+
+%.nf2 : %.nf1
+	implodePT -i $< -o $@
+
+%.nf3 : %.nf2
+	pp-sdf -i $< -o $@

@@ -31,6 +31,10 @@ exports
     Var "[" Term "where" Strategy "]" "(" Id ")" -> Term {cons("Con4")}
 
 
+  context-free priorities
+    Term "#" "(" Term ")" 	 -> PreTerm {cons("Explode")}
+  > PreTerm "{" {Term ","}* "}"	 -> Term {cons("AnnoList")}
+  > Var "@" Term 		 -> Term {cons("As")}
 
 %%AnnoList(t, t*) -> Anno(t, <fold> t*)
 %%NoAnnoList(t) -> Anno(t, Wld)

@@ -12,9 +12,11 @@ exports
 
   sorts Term PreTerm
   context-free syntax
-    "_" 			 -> Term {cons("Wld")}
-    Var 			 -> Term 
-    Var "@" Term 		 -> Term {cons("As")}
+    Var 			 -> PreTerm 
+    Var 			 -> Term {prefer}
+
+    "_" 			 -> PreTerm {cons("Wld")}
+    "_" 			 -> Term {cons("Wld"),prefer}
 
     Int 			 -> PreTerm {cons("Int")}
     Real 			 -> PreTerm {cons("Real")}
@@ -24,9 +26,10 @@ exports
     String "(" {Term ","}* ")" 	 -> PreTerm {cons("OpQ")}
     Term "#" "(" Term ")" 	 -> PreTerm {cons("Explode")}
 
-    PreTerm "{^" Term "}"	 -> Term {cons("Anno")}
+    PreTerm "{^" PreTerm "}"	 -> Term {cons("Anno")}
+
+    Var "@" Term 		 -> Term {cons("As")}
 
   context-free priorities
     Term "#" "(" Term ")" 	 -> PreTerm {cons("Explode")}
-  > PreTerm "{" {Term ","}* "}"	 -> Term {cons("Anno")}
   > Var "@" Term 		 -> Term {cons("As")}
