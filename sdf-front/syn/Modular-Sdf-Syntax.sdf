@@ -1,0 +1,25 @@
+module Modular-Sdf-Syntax
+imports Kernel-Sdf-Syntax Renaming-Sdf-Syntax
+exports
+  sorts ModuleId ModuleName Import Imports
+        Section Sections Module Definition ImpSection
+  lexical syntax
+    [A-Za-z0-9\_\-]+        -> ModuleWord
+    ModuleWord              -> ModuleId
+    "/" ModuleId            -> ModuleId
+    ModuleWord "/" ModuleId -> ModuleId
+  context-free syntax
+    Module*                                  -> Definition	
+    "module" ModuleName ImpSection* Section* -> Module		{cons("Module")}
+    "exports" Grammar            -> Section			{cons("Exports")}
+    "hiddens" Grammar            -> Section			{cons("Hiddens")}
+    Section*                     -> Sections
+    ModuleId                     -> ModuleName		
+    ModuleId "[" Symbols "]"     -> ModuleName                  {cons("RenamedModuleName")}
+    "id" "(" ModuleName ")"      -> Attribute			{cons("Id")}
+    "imports" Imports            -> ImpSection			{cons("Imports")}
+    ImpSection                   -> Grammar
+    Import*                      -> Imports
+    ModuleName                   -> Import
+    ModuleName Renamings         -> Import
+    "(" Import ")"               -> Import {bracket}

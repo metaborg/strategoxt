@@ -1,0 +1,24 @@
+module ATerms
+imports Literals IntCon RealCon
+exports
+  sorts ATerms ATermList ACon AFun ATerm Ann
+  context-free syntax
+    ATerm                     -> ATerms
+    ATerm "," ATerms          -> ATerms
+    "[" "]"                   -> ATermList
+    "[" ATerms "]"            -> ATermList
+    IntCon                    -> ACon
+    RealCon                   -> ACon
+    Literal                   -> AFun
+    ACon                      -> ATerm
+    ATermList                 -> ATerm
+    AFun                      -> ATerm
+    AFun "(" ATerms ")"       -> ATerm
+    "{" ATerms "}"            -> Ann
+    ACon                 Ann  -> ATerm
+    ATermList            Ann  -> ATerm
+    AFun                 Ann  -> ATerm
+    AFun "(" ATerms ")"  Ann  -> ATerm
+
+
+

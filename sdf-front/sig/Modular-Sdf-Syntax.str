@@ -1,0 +1,10 @@
+module Modular-Sdf-Syntax
+imports Kernel-Sdf-Syntax Renaming-Sdf-Syntax
+signature
+  constructors
+    Module            : ModuleName * List(ImpSection) * List(Section) -> Module
+    Exports           : Grammar -> Section
+    Hiddens           : Grammar -> Section
+    RenamedModuleName : ModuleId * Symbols -> ModuleName
+    Id                : ModuleName -> Attribute
+    Imports           : Imports -> ImpSection

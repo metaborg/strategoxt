@@ -1,0 +1,10 @@
+module Label-Sdf-Syntax
+imports Kernel-Sdf-Syntax Literals-Sdf-Syntax ATerms
+
+exports
+  context-free syntax
+  
+    Literal ":" Symbol   -> Symbol    {cons("label")}
+    "cons" "(" ATerm ")" -> Attribute {cons("cons")}
+    "constructor"        -> Attribute {cons("constructor")}
+    "memo"               -> Attribute {cons("memo")}

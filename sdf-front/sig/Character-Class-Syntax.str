@@ -1,0 +1,12 @@
+module Character-Class-Syntax
+imports Character-Syntax
+signature
+  constructors
+    range            : Character * Character -> CharRange
+    conc-ranges      : CharRanges * CharRanges -> CharRanges
+    no-charranges    : OptCharRanges
+    simple-charclass : OptCharRanges -> CharClass
+    not-charclass    : CharClass -> CharClass
+    diff-charclass   : CharClass * CharClass -> CharClass
+    and-charclass    : CharClass * CharClass -> CharClass
+    or-charclass     : CharClass * CharClass -> CharClass

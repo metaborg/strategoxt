@@ -1,0 +1,12 @@
+module Restrictions-Sdf-Syntax
+imports CC-Sdf-Syntax
+signature
+  constructors
+    lookahead-seq      : CharClass * Lookaheads -> Lookahead
+    lookaheads-alt     : Lookaheads * Lookaheads -> Lookaheads
+    lookaheads-list    : List(Lookahead) -> Lookaheads
+    follow-restriction : Symbols * Lookaheads -> Restriction
+    restrictions       : Restrictions -> Grammar
+    reject             : Attribute
+    prefer             : Attribute
+    avoid              : Attribute

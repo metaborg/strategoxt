@@ -1,0 +1,28 @@
+module Character-Class-Syntax
+imports Character-Syntax
+
+exports
+  context-free syntax
+    Character                 -> CharRange  
+    Character "-" Character   -> CharRange   {cons("range")}
+
+    CharRange                 -> CharRanges
+    CharRanges CharRanges     -> CharRanges  {cons("conc-ranges"), right, memo}
+    "(" CharRanges ")"        -> CharRanges  {bracket}
+    
+                              -> OptCharRanges {cons("no-charranges")}
+    CharRanges                -> OptCharRanges
+    
+    "[" OptCharRanges "]"     -> CharClass {cons("simple-charclass")}          
+    "~" CharClass             -> CharClass {cons("not-charclass")}
+    CharClass "/" CharClass   -> CharClass {cons("diff-charclass"), left, memo}
+    CharClass "/\\" CharClass -> CharClass {cons("and-charclass"),  left, memo}   
+    CharClass "\\/" CharClass -> CharClass {cons("or-charclass"),   left}   
+   "(" CharClass ")"          -> CharClass {bracket}
+   
+  context-free priorities
+  
+      "~" CharClass             -> CharClass
+    > CharClass "/" CharClass   -> CharClass
+    > CharClass "/\\" CharClass -> CharClass
+    > CharClass "\\/" CharClass -> CharClass

@@ -1,0 +1,13 @@
+module Literals
+imports Layout
+exports
+  sorts Literal
+  lexical syntax
+    "\\" ~ []                  -> EscChar
+    "\\" [01] [0-7] [0-7]      -> EscChar
+    ~ [\0-\31\"\\] \/ [\t\n]   -> L-Char
+    EscChar                    -> L-Char
+    "\"" L-Char* "\""          -> Literal
+
+
+

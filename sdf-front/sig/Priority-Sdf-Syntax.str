@@ -1,0 +1,17 @@
+module Priority-Sdf-Syntax
+imports Kernel-Sdf-Syntax
+signature
+  constructors
+    left           : Associativity
+    right          : Associativity
+    non-assoc      : Associativity
+    assoc          : Associativity
+    bracket        : Attribute
+    atr            : Associativity -> Attribute
+    simple-group   : Production -> Group
+    prods-group    : Productions -> Group
+    assoc-group    : Associativity * Productions -> Group
+    priority-chain : List(Group) -> Priority
+    priority-assoc : Group * Associativity * Group -> Priority
+    priority-list  : List(Priority) -> Priorities
+    priorities     : Priorities -> Grammar

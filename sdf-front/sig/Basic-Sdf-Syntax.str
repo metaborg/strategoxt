@@ -1,0 +1,12 @@
+module Basic-Sdf-Syntax
+imports Kernel-Sdf-Syntax
+signature
+  constructors
+    lexical-syntax      : Productions -> Grammar
+    context-free-syntax : Productions -> Grammar
+    variables           : Productions -> Grammar
+    lexical-variables   : Productions -> Grammar
+    cf                  : Symbol -> Symbol
+    lex                 : Symbol -> Symbol
+    varsym              : Symbol -> Symbol
+    layout              : Symbol

@@ -1,0 +1,25 @@
+module Regular-Sdf-Syntax
+imports Kernel-Sdf-Syntax IntCon
+exports
+  context-free syntax
+    "(" ")"                          -> Symbol			{cons("empty")}
+    "(" Symbol Symbol+ ")"           -> Symbol			{cons("seq")}
+    Symbol "?"                       -> Symbol			{cons("opt")}
+    Symbol "+"                       -> Symbol			{cons("iter")}
+    Symbol "*"                       -> Symbol			{cons("iter-star")}
+    "{" Symbol Symbol "}" "+"        -> Symbol			{cons("iter-sep")}
+    "{" Symbol Symbol "}" "*"        -> Symbol			{cons("iter-star-sep")}
+    Symbol  NatCon "+"               -> Symbol			{cons("iter-n")}
+    "{" Symbol Symbol "}" NatCon "+" -> Symbol			{cons("iter-sep-n")}
+    "Set" "[" Symbol "]"             -> Symbol			{cons("set")}
+    Symbol "#" Symbol                -> Symbol 			{right,cons("pair")}
+    "(" Symbols "=>" Symbol ")"      -> Symbol			{cons("func")}
+    Symbol "|" Symbol                -> Symbol 			{right,cons("alt")}
+    "<<" Symbols ">>"                -> Symbol			{cons("perm")}
+  context-free priorities
+    {Symbol "?"               -> Symbol
+    Symbol "*"                -> Symbol
+    Symbol "+"                -> Symbol
+    Symbol NatCon "+"         -> Symbol} >
+    Symbol "#" Symbol         -> Symbol  >
+    Symbol "|" Symbol         -> Symbol

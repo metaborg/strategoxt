@@ -1,0 +1,13 @@
+module Kernel-Sdf-Syntax
+imports Symbols Grammar-Syntax
+
+exports
+
+  sorts Attribute Attributes Production Productions
+  
+  context-free syntax
+    "{" {Attribute ","}* "}"       -> Attributes  {cons("attrs")}
+                                   -> Attributes  {cons("no-attrs")}
+    Symbols "->" Symbol Attributes -> Production  {cons("prod")}
+    Production*                    -> Productions
+    "syntax" Productions           -> Grammar     {cons("syntax")}

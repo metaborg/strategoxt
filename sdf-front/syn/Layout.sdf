@@ -1,0 +1,12 @@
+module Layout
+exports
+  lexical syntax
+    [\ \t\n]           -> LAYOUT
+    "%%" ~[\n]* [\n]   -> LAYOUT
+    "%" ~[\n\%]+ "%"   -> LAYOUT
+    "default-"         -> TagId
+  context-free syntax
+                       -> TagId
+
+
+

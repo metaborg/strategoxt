@@ -1,0 +1,8 @@
+module Label-Sdf-Syntax
+imports Kernel-Sdf-Syntax Literals-Sdf-Syntax ATerms
+signature
+  constructors
+    label       : Literal * Symbol -> Symbol
+    cons        : ATerm -> Attribute
+    constructor : Attribute
+    memo        : Attribute
