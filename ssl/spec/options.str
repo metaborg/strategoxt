@@ -252,40 +252,44 @@ strategies
    * @obsolete use io-wrap.
    */
   iowrap(strat) = 
-    iowrap((id, strat), fail)
+    obsolete(!"iowrap/1: use io-wrap/1")
+  ; iowrap((id, strat), fail)
 
   /**
    * @obsolete use io-wrap.
    */
   iowrapO(strat, extra-options) =
     obsolete(!"iowrapO/2: use io-wrap/2")
-    ; iowrap(strat, extra-options)
+  ; iowrap(strat, extra-options)
 
   /**
    * @obsolete use io-wrap.
    */
   iowrap(strat, extra-options) = 
-    iowrap(strat, extra-options, system-usage)
+    obsolete(!"iowrapO/2: use io-wrap/2")
+  ; iowrap(strat, extra-options, system-usage)
 
   /**
    * @obsolete use io-wrap.
    */
   iowrap(strat, extra-options, usage) =
-    iowrap(strat, extra-options, usage, 
+    obsolete(!"iowrap/4: use io-wrap/4")
+  ; iowrap(strat, extra-options, usage, 
 	   if-verbose2(where(<printnl>(stderr, [<get-config> "program"]))))
 
   /**
    * @obsolete use io-wrap.
    */
   iowrapO(strat, extra-options, usage) =
-    iowrap(strat, extra-options, usage)
+    obsolete(!"iowrap/3: use io-wrap/4")
+  ; iowrap(strat, extra-options, usage)
 
   /**
    * @obsolete use io-wrap.
    */
   iowrap(strat, extra-options, usage, announce) =
-//    obsolete(!"iowrap: use io-wrap")
-    option-wrap(extra-options <+ io-options, usage, announce, 
+    obsolete(!"iowrap: use io-wrap")
+  ; option-wrap(extra-options <+ io-options, usage, announce, 
       input-file;
       apply-strategy(strat);
       output-file
@@ -295,15 +299,15 @@ strategies
    * @obsolete use input-wrap.
    */
   iowrapNoOutput(strat, extra-options) = 
-//    obsolete(!"iowrapNoOutput/2: use input-wrap")
-    iowrapNoOutput(strat, extra-options, default-usage)
+    obsolete(!"iowrapNoOutput/2: use input-wrap")
+  ; iowrapNoOutput(strat, extra-options, default-usage)
 
   /**
    * @obsolete use input-wrap.
    */
   iowrapNoOutput(strat, extra-options, usage) =
-//    obsolete(!"iowrapNoOutput/3: use input-wrap")
-    option-wrap(extra-options <+ io-options, usage, id, 
+    obsolete(!"iowrapNoOutput/3: use input-wrap")
+  ; option-wrap(extra-options <+ io-options, usage, id, 
         input-file
       ; apply-strategy(strat)
       )
