@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: termid.r,v 1.3 2001/10/08 15:40:51 mdejonge Exp $
+% $Id: termid.r,v 1.4 2001/10/09 13:59:23 mdejonge Exp $
 
 gmake
 
@@ -55,6 +55,10 @@ To check that the id of a term t equals "sdf-2.1", the following can be used:
 To accept any term id use the following:
  <termid-check>(id)>t   
 
+To set the identifier of a term us the strategy "termid":
+
+<termid(!"\"sdf-2.2\"")>t
+
 \begin{code}
 
 module termid
@@ -69,7 +73,7 @@ io-idwrap('id, strat) =
    io-idwrap('id, (id, strat), fail, default-usage)
 
 io-idwrap('id, strat, extra-options) =
-   io-idwrap('id, strat, extra, default-usage)
+   io-idwrap('id, strat, extra-options, default-usage)
 
 io-idwrap('id, strat, extra-options, usage) =
    iowrap( 
@@ -95,5 +99,6 @@ termid-check('id): t -> trm
      <error>["Warning: input term has incorrect grammar identifier." ]
    ))
 
+termid('id) : t -> <mkterm>(<'id>(), [t] )
 
 \end{code}
