@@ -1,0 +1,95 @@
+\literate[dependency-resolver]
+
+ Autobundle -- Tool suite for automated source tree composition
+
+ Author: Merijn de Jonge (M.de.Jonge@tue.nl)
+
+ $Id: bundlegen.str 5017 2004-01-27 11:53:48Z merijn $
+
+\begin{code}
+module dependency-resolver
+imports Autobundle
+
+strategies
+
+// map a list of package idendentifiers (pkg-id) to corresponding packages
+// (pkg) and replace all package dependencies (pkg-dep) by fixed package
+// identifiers (pkg-id) and indicate when the package is required (i.e., at
+// runtime or at buildtime).
+dependency-resolver = 
+   ?(tops, pkgs, required);
+   !required;
+   pkgids-to-pkgs(!pkgs) => deps;
+   Pkg-graph-props => (tops', unresolved);
+
+   !(required, tops);
+   subst-pkgids; map(!RunTime(<id>)) => root';
+
+   !(root', deps, unresolved)
+
+
+// map a list of package idendentifiers (pkg-id) to corresponding packages
+// (pkg) and replace all package dependencies (pkg-dep) by fixed package
+// identifiers (pkg-id)
+pkgids-to-pkgs(pkg-list) : pkg-ids -> pkgs
+where
+   // Use filter, because not all packages may exist
+   filter({ deps: \
+      pkg -> pkg(pkgid,deps)
+      where
+         (?RunTime(pkgid)+?BuildTime(pkgid));
+         pkg-list;
+         fetch-elem(?pkg(pkgid,deps))
+   \ }) => pkgs';
+
+   !(pkg-ids, pkgs');
+   subst-pkgids;
+
+   // Filter out double dependencies of a package
+   map(pkg(id,uniq)) => pkg-graph' => pkgs
+
+subst-pkgids: (pkgs, pkg-graph) -> pkg-graph'
+where
+   // Substitute pkgids for all package references: Obtain a list of
+   // mappings (name, pkgid), from package names to package identifiers
+   (map(\ RunTime(pkg-id(n,v)) -> (n,pkg-id(n,v)) \ 
+        +
+        \ BuildTime(pkg-id(n,v)) -> (n,pkg-id(n,v)) \ 
+        ), id);
+
+   // Substitute all package names corresponding to package dependencies by
+   // package identifiers
+   substitute( \pkg-dep(n,v) -> n \ ) => pkg-graph'
+
+Pkg-graph-props: pkgs -> (tops, unresolved)
+where
+   where(map( ?pkg(<id>,_) ) => pkgids);
+   where(map( ?pkg(_,<id>) ); concat => references );
+   <diff(PkgPkgrefEq)>(references, pkgids) => unresolved;
+   <diff(PkgPkgrefEq);map(!RunTime(<id>))>(pkgids, references) => tops
+   
+PkgPkgrefEq =
+     ?(BuildTime(p),p)
+   + ?(RunTime(p),p)
+   + ?(p,BuildTime(p))
+   + ?(p,RunTime(p))
+   
+
+\end{code}
+% Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.
+
