@@ -2,7 +2,6 @@ include $(srcdir)/../templates/make_rules
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-bin_PROGRAMS     = graph-term2GraphXML
 libexec_PROGRAMS = graph-term2GraphXML
 LDADD           += $(SSL_LIBS)
 

@@ -5,7 +5,6 @@ include $(wildcard *.dep)
 
 SUBDIRS      	 = data
 
-bin_PROGRAMS 	 = GraphXML2dot
 libexec_PROGRAMS = GraphXML2dot
 LDADD           += $(SSL_LIBS)
 
