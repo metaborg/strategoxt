@@ -5,6 +5,7 @@ include $(wildcard *.dep)
 SUBDIRS = data
 
 bin_PROGRAMS     = asfix-yield
+LDADD           += $(SSL_LIBS)
 
 TESTS          = asfix_yield1_check asfix_yield2_check
 CLEANFILES     = asfix_yield1_check asfix_yield2_check $(wildcard *.dep) asfix-yield

@@ -34,11 +34,11 @@ static void init_module_constant_terms (void)
   term_m_0 = (ATerm) ATmakeAppl(ATmakeSymbol("abox2text", 0, ATtrue));
 }
 #include <srts/init-stratego-application.h>
-ATerm xtc_transform_1_0 (ATerm l_107 (ATerm), ATerm t);
+ATerm xtc_transform_1_0 (ATerm r_107 (ATerm), ATerm t);
 ATerm xtc_find_0_0 (ATerm t);
 ATerm build_pp_tables_0_0 (ATerm t);
-ATerm xtc_transform_2_0 (ATerm m_107 (ATerm), ATerm n_107 (ATerm), ATerm t);
-ATerm xtc_io_wrap_1_0 (ATerm x_106 (ATerm), ATerm t);
+ATerm xtc_transform_2_0 (ATerm s_107 (ATerm), ATerm t_107 (ATerm), ATerm t);
+ATerm xtc_io_wrap_1_0 (ATerm y_106 (ATerm), ATerm t);
 static ATerm a_0 (ATerm t);
 static ATerm d_0 (ATerm t);
 static ATerm e_0 (ATerm t);

@@ -113,7 +113,7 @@ static void init_module_constant_terms (void)
 }
 #include <srts/init-stratego-application.h>
 ATerm get_config_0_0 (ATerm t);
-ATerm xtc_transform_2_0 (ATerm m_107 (ATerm), ATerm n_107 (ATerm), ATerm t);
+ATerm xtc_transform_2_0 (ATerm s_107 (ATerm), ATerm t_107 (ATerm), ATerm t);
 ATerm concat_0_0 (ATerm t);
 ATerm pass_sglri_args_0_0 (ATerm t);
 ATerm fatal_error_0_0 (ATerm t);
@@ -139,7 +139,7 @@ static ATerm z_0 (ATerm t);
 static ATerm a_1 (ATerm t);
 static ATerm b_1 (ATerm t);
 ATerm sglri_options_0_0 (ATerm t);
-ATerm xtc_io_wrap_2_0 (ATerm y_106 (ATerm), ATerm z_106 (ATerm), ATerm t);
+ATerm xtc_io_wrap_2_0 (ATerm z_106 (ATerm), ATerm a_107 (ATerm), ATerm t);
 ATerm main_0_0 (ATerm t);
 ATerm main_0 (ATerm t)
 {

@@ -1,9 +1,9 @@
 module asfix-yield
-imports lib AsFix
+imports liblib AsFix
 strategies
 
   main =
-      parse-options( io-options )
+      parse-options(io-options, asfix-yield-usage, system-about)
     ; where(
         option-defined(?Output(outfile))
       ; <open-file>(outfile, "w") <+ !stdout => outfile
@@ -12,12 +12,12 @@ strategies
     ; (id, asfix-yield(!outfile))
     ; <exit> 0
 
-  short-description(p) =  
-    !["Usage: ", <p>(), " [options]"]
-
-  long-description(p)  = 
-    !["The asfix-yield utility unparses an asfix tree to flat text.\n",
-      "It reads from standard input and writes to standard output.\n"]
+  asfix-yield-usage =
+    default-system-usage(
+      !["Usage: asfix-yield [options]"]
+    , !["The asfix-yield utility unparses an asfix tree to flat text.\n",
+        "It reads from standard input and writes to standard output.\n"]
+    )
 
   asfix-yield(outfile) = 
     if is-asfix2 then
@@ -34,10 +34,10 @@ strategies
      <+ split(
           outfile, \x -> [x] \); printascii
         , is-leaf
-        , skip2
+        , asfix-skip2
         )
 
-  skip2(x) = 
+  asfix-skip2(x) = 
       appl(id, list(x))
     + amb([x|id])
     + parsetree(x,id)
