@@ -24,11 +24,13 @@ fixeddist : dist
 
 install-exec-hook: \
   $(prefix)/bin/sdf2table.sglrpatch \
-  $(prefix)/bin/parse-sdf2.sglrpatch
+  $(prefix)/bin/parse-sdf2.sglrpatch 
 
 %.sglrpatch :
 	if test -f $*; then \
-	  sed 's^$(BUILD_SGLR)^$(prefix)^' $* > $*.tmp && \
-	  mv $*.tmp $* && \
+	  sed 's^$(BUILD_SGLR)^$(prefix)^' $* > $*.tmp1 && \
+	  sed 's^$(BUILD_PT_SUPPORT)^$(prefix)^' $*.tmp1 > $*.tmp2 && \
+	  rm $*.tmp1 && \
+	  mv $*.tmp2 $* && \
 	  chmod a+x $* ; \
 	fi
