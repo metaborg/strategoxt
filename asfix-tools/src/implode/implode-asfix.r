@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: implode-asfix.r,v 1.1 2001/05/30 15:19:02 mdejonge Exp $
+% $Id: implode-asfix.r,v 1.2 2001/06/08 09:43:07 mdejonge Exp $
 
 
 	This module defines a transformation from AsFix terms produced
@@ -63,7 +63,7 @@ signature
 strategies
 
     implode-asfix = 
-      iowrapO(implode, 
+      iowrap(implode, 
                 Option( "--lex",    !FlatLex ) 
               + Option( "--layout", !RemoveLayout )
               + Option( "--lit",    !RemoveLit ) 
