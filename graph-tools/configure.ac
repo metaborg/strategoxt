@@ -23,13 +23,12 @@ AC_CONFIG_FILES([
 
   src/Makefile 
 	
-  src/templates/Makefile src/templates/data/Makefile
+  src/templates/Makefile 
   src/graphxml/Makefile src/graphxml/data/Makefile
-  src/graphterms/data/Makefile src/graphxml-analysis/Makefile
+  src/graphxml-analysis/Makefile
   src/graphxml-analysis/data/Makefile src/graphxml2dot/Makefile
   src/graphxml2dot/data/Makefile
   src/graphterms2graphxml/Makefile
-  src/graphterms2graphxml/data/Makefile
   src/graphterms/Makefile
 ])
 AC_OUTPUT
