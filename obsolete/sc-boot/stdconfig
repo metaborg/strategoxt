@@ -1,11 +1,18 @@
 #! /bin/sh
 
 ./reconf
-./configure --prefix=`pwd` \
-	--with-aterm=`pwd`/../aterm \
-	--with-cgen=`pwd`/../cgen \
-	--with-gpp=`pwd`/../gpp-boot \
-	--with-ssl=`pwd`/../ssl \
-	--with-srts=`pwd`/../srts 
+./configure --prefix=/home/xt/xt \
+	--with-aterm=/home/xt/ATerm \
+	--with-cgen=/home/xt/xt \
+	--with-gpp=/home/xt/xt \
+	--with-ssl=/home/xt/xt \
+	--with-srts=/home/xt/xt
+
+#--prefix=`pwd` \
+#	--with-aterm=`pwd`/../aterm \
+#	--with-cgen=`pwd`/../cgen \
+#	--with-gpp=`pwd`/../gpp-boot \
+#	--with-ssl=`pwd`/../ssl \
+#	--with-srts=`pwd`/../srts 
 
 #	--with-cpl=/home/visser/res/sandbox/cpl \

@@ -35,8 +35,6 @@ LDADD		= -lstratego-lib.opt \
 		  -lATerm-gcc \
 		  -lm
 
-EXTRA_DIST = ac2c.src sc.src 
-
 bin_PROGRAMS = \
 	canonicalize \
 	compile-match \
@@ -55,11 +53,16 @@ bin_PROGRAMS = \
 	s2c \
 	Stratego-Canonical-Format \
 	Stratego-Normal-Format \
-	Stratego-Optimized-Format
-
-#	fusion \
+	Stratego-Optimized-Format \
+	fusion
 
 bin_SCRIPTS = sc ac2c
+
+EXTRA_DIST = ac2c.src sc.src pack-stratego.config.src sc.config.src sc-manual.txt conf.h.src conf.h
+
+pkgdatadir = $(datadir)/sc
+
+pkgdata_DATA = sc.config sc-manual.txt pack-stratego.config conf.h
 
 CLEANFILES = $(bin_PROGRAMS)
 
@@ -81,15 +84,19 @@ parse_mod_SOURCES = \
 	flex $<
 	mv lex.yy.c $@
 
-# Generate srcipts
+# Generate scripts
 %: %.src Makefile
 	sed 's#__GPP__#$(GPP)#g;\
              s#__CGEN__#$(CGEN)#g;\
 	     s#__prefix__#$(prefix)#g;\
-             s#__ATERM__#$(ATERM)#g;\
+	     s#__datadir__#$(datadir)#g;\
+	     s#__pkgdatadir__#$(pkgdatadir)#g;\
              s#__VERSION__#$(VERSION)#g;\
+	     s#__PACKAGE__#$(PACKAGE)#g;\
+             s#__ATERM__#$(ATERM)#g;\
              s#__STRATEGORTS__#$(STRATEGORTS)#g;\
              s#__STRATEGOLIB__#$(STRATEGOLIB)#g;\
              s#__MAKE__#$(MAKE)#g' < $< > $@
-	chmod +x $@                 
-      
+	chmod +x $@
+
+

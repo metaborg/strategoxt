@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# Copyright (C) 1998-2001 Eelco Visser <visser@acm.org>
+# Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
 # 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,23 +23,25 @@ VERSION=__VERSION__
 STRATEGORTS=__STRATEGORTS__
 STRATEGOLIB=__STRATEGOLIB__
 STRATEGOOPT=__STRATEGOOPT__
+STRATEGOFRONT=__STRATEGOFRONT__
   
-${prefix}/bin/proto-sc \
-    -CI "-O2" \
-    -CL "-O2" \
-    $* \
-    -e ${prefix}/bin \
-    -I ${STRATEGOLIB}/share/ssl \
-    \
-    -CI "-I${STRATEGOLIB}/include" \
-    -CL "-L${STRATEGOLIB}/lib -lstratego-lib.opt" \
-    \
-    -CI "-I${STRATEGORTS}/include" \
-    -CL "-L${STRATEGORTS}/lib -lstratego.opt" \
-    \
-    -CI "-I${ATERM}/include" \
-    -CL "-L${ATERM}/lib -lATerm-gcc" \
-    \
-    -CL "-lm" \
-    @version ${VERSION}
+${prefix}/bin/proto-sc $* 
+
+#    -CI "-O2" \
+#    -CL "-O2" \
+#    -e ${prefix}/bin \
+#    -I ${STRATEGOLIB}/share/ssl \
+#    -I ${STRATEGOFRONT}/share/stratego-front \
+#    \
+#    -CI "-I${STRATEGOLIB}/include" \
+#    -CL "-L${STRATEGOLIB}/lib -lstratego-lib.opt" \
+#    \
+#    -CI "-I${STRATEGORTS}/include" \
+#    -CL "-L${STRATEGORTS}/lib -lstratego.opt" \
+#    \
+#    -CI "-I${ATERM}/include" \
+#    -CL "-L${ATERM}/lib -lATerm-gcc" \
+#    \
+#    -CL "-lm" \
+#    @version ${VERSION}
 

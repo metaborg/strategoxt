@@ -36,6 +36,7 @@ lcid		{lcstart}{idchars}*
 ucid		{ucstart}{idchars}*
 primeid		[']{lcid}|{ucid}
 ID		{lcid}|{ucid}
+lid		({lcid}|{ucid})"*"
 ws		[\t\ ]*
 num		[\-]?[0-9]+
 real		[\-]?[0-9]+[.][0-9]+
@@ -177,6 +178,7 @@ endliterate	{backslash}"endliterate"
 
 		/* Identifiers, strings and numbers */
 
+<INITIAL>{lid} 		(*lvalp).term = ATmakeString(yytext); return LID;
 <INITIAL>{lcid} 	(*lvalp).term = ATmakeString(yytext); return LCID;
 <INITIAL>{ucid} 	(*lvalp).term = ATmakeString(yytext); return UCID;
 <INITIAL>{primeid} 	(*lvalp).term = ATmakeString(yytext+1); return UCID;
