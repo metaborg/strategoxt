@@ -170,7 +170,7 @@ int parse()
 %%
  
 start 	: MODULE id decls 	       	{parse_tree = ATmake("Specification([<list>])", $3);}
-	| STRATEGO SCRIPT commands	{parse_tree = (ATerm)$3}
+	| STRATEGO SCRIPT commands	{parse_tree = (ATerm)$3;}
         | LT strategy GT term 		{parse_tree = App2("App", $2, $4);}
 	| strategy			{parse_tree = App1("Strategy",$1);}
 	;
@@ -213,6 +213,7 @@ sdecl	: SORTS idlist			{$$ = App1("Sorts", (ATerm) $2);}
 
 idlist  :                   		{$$ = ATmakeList0();}
         | idlist id optkind             {$$ = ATappend($1, App2("Sort", $2, $3));}
+        ;
 
 optkind : 				{$$ = (ATerm) ATempty;}
 	| LPAREN termlist RPAREN 	{$$ = (ATerm) $2;}
@@ -284,8 +285,8 @@ term 	: id optcont		      	{if(ATisEmpty($2))
 
 
 	| term EXPLODE LPAREN term RPAREN 
-					{$$ = App2("Explode", $1, $4)}
-        | term LCURLY termlist RCURLY	{$$ = App2("Anno", $1, list_to_consnil_op($3))}
+					{$$ = App2("Explode", $1, $4);}
+        | term LCURLY termlist RCURLY	{$$ = App2("Anno", $1, list_to_consnil_op($3));}
         ;
 
 tail    : 				{$$ = ATmake("Op(\"Nil\",[])");}
@@ -299,6 +300,7 @@ optcont :				{$$ = ATmakeList0();}
 
 trav    : 				{$$ = ATmake("SVar(\"oncetd\")"); }
 	| LPAREN id RPAREN 		{$$ = App1("SVar", $2);}
+        ;
 
 opttermlist
 	: 				{$$ = ATmakeList0();}
@@ -348,7 +350,7 @@ strategy
 							   (ATerm)$4);}
 
 	| strategy EXPLODE LPAREN strategy RPAREN 
-					{$$ = App2("ExplodeCong", $1, $4)}
+					{$$ = App2("ExplodeCong", $1, $4);}
 
 
 	| MATCHe term 			{$$ = App1("Match", $2);}
@@ -464,6 +466,7 @@ varlist : 				{$$ = ATmakeList0();}
 
 typedid : id				{$$ = App1("DefaultVarDec", $1);}
 	| id COLON type			{$$ = App2("VarDec", $1, $3);}
+        ;
 
 purevarlist : 				{$$ = ATmakeList0();}
 	| id				{$$ = ATmakeList1($1);}

@@ -21,3 +21,8 @@ bootinstall: $(BOOTSOURCES)
     		-I${ATERM}/include \
     		-L${ATERM}/lib -lATerm-dbg \
 		-lm
+%.rtree: %.cr
+	$(STRATEGOFRONT)/bin/parse-cmod -i $< -o $@ $(SCINCLUDES) --verbose 5
+
+#%.rtree: %.r
+#        $(STRATEGOBOOT)/bin/parse-mod -i $< -o $@

@@ -3,6 +3,7 @@
 ./reconf
 ./configure --prefix=`pwd`/.. \
 	--with-aterm=/home/xt/ATerm \
+	--with-rpmdir=/home/visser/rpm
 
 #	--with-cpl=/home/xt/CPL
 

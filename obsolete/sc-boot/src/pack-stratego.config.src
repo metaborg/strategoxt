@@ -1,8 +1,9 @@
 [
 
 ("prefix", 	Path("__prefix__")),
+("libexec", 	Path("__libexec__")),
 
-("parse-mod", 	Prefix(Var("prefix"), Path("/bin/parse-mod"))),
+("parse-mod", 	Prefix(Var("libexec"), Path("/parse-mod"))),
 
 (Ext("r"), 	Var("parse-mod")),
 (Ext("rtree"),  None)

@@ -1,4 +1,4 @@
 #! /bin/sh
 
 ./reconf
-./configure --prefix=`pwd`/..
+./configure --prefix=`pwd`/.. --with-rpmdir=/home/visser/rpm

@@ -17,7 +17,7 @@
 
 EXTRA_DIST = $(wildcard *.r) ac2c.src
 
-bin_SCRIPTS = s2c canonicalize ac2c
+libexec_SCRIPTS = s2c canonicalize ac2c
 
 CLEANFILES = $(bin_SCRIPTS) *.dep $(TESTS)
 

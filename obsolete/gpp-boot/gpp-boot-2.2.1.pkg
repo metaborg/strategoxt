@@ -8,10 +8,8 @@ identification
 
 
    keywords=transformation, programming language, gpp, pretty-printer, stratego
-interface
+configuration interface
 
 requires
-  aterm 1.6.6 with gcc
-  ssl	0.7
-  srts	0.7
-
+  aterm 1.6.7 with gcc=on
+  ssl	__SSL_VERSION__

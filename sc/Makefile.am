@@ -17,4 +17,25 @@
 
 SUBDIRS = spec
 
-EXTRA_DIST = README.in $(wilcard *.pkg) stdconfig reconf
+EXTRA_DIST = README.in $(wilcard *.pkg) stdconfig reconf sc.spec Makefile.rpm
+
+RPMRELEASE = 1
+
+
+CONFIGURE = ./configure \
+		--prefix=/usr \
+		--with-aterm=$(ATERM) \
+		--with-cgen=$(CGEN) \
+		--with-gpp=$(GPP) \
+		--with-ssl=$(STRATEGOLIB) \
+		--with-srts=$(STRATEGORTS) \
+		--with-boot=$(STRATEGOBOOT) \
+		--with-sc-boot=$(SCBOOT) \
+		--with-rpmdir=$(RPMDIR) 
+
+SUBST = s+__SRTS_VERSION__+$(VERSION)+g;\
+        s+__ATERM_VERSION__+1.6.6+g;\
+        s+__GPP_VERSION__+2.2.1+g;\
+	s+__ATERM__+$(ATERM)+g;
+
+include Makefile.rpm

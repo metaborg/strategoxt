@@ -21,7 +21,9 @@ SCFLAGS = -I $(top_srcdir)/spec/sig \
 
 SUBDIRS = data
 
-bin_SCRIPTS = si primitives stratego
+bin_SCRIPTS = si
+
+libexec_SCRIPTS = primitives stratego
 
 CLEANFILES = si primitives eval-lib-primitives.tree
 

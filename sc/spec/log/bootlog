@@ -1632,3 +1632,21 @@ Bootstrapping: finished [Thu Jun 20 13:42:53 CEST 2002]
 
 Bootinstall [Thu Jun 20 13:42:58 CEST 2002]
 Bootinstall finished [Thu Jun 20 13:43:01 CEST 2002]
+
+Bootstrapping version 0.8.1 [Mon Sep  9 12:07:55 CEST 2002 - Linux node11794.a2000.nl i686]
+Bootstrapping: phase 1 started [Mon Sep  9 12:07:55 CEST 2002]
+
+Bootstrapping version 0.8.1 [Mon Sep  9 13:33:54 CEST 2002 - Linux node11794.a2000.nl i686]
+Bootstrapping: phase 1 started [Mon Sep  9 13:33:54 CEST 2002]
+Bootstrapping: phase 2 started [Mon Sep  9 13:48:15 CEST 2002]
+Bootstrapping: phase 3 started [Mon Sep  9 14:02:18 CEST 2002]
+Bootstrapping: finished [Mon Sep  9 14:16:21 CEST 2002]
+
+Bootstrapping version 0.8.1 [Mon Sep  9 19:01:11 CEST 2002 - Linux node11794.a2000.nl i686]
+Bootstrapping: phase 1 started [Mon Sep  9 19:01:11 CEST 2002]
+Bootstrapping: phase 2 started [Mon Sep  9 19:15:01 CEST 2002]
+Bootstrapping: phase 3 started [Mon Sep  9 19:28:51 CEST 2002]
+Bootstrapping: finished [Mon Sep  9 19:42:41 CEST 2002]
+
+Bootinstall [Mon Sep  9 23:28:42 CEST 2002]
+Bootinstall finished [Mon Sep  9 23:28:43 CEST 2002]

@@ -20,7 +20,7 @@ SCFLAGS	= -I $(srcdir)/../sig \
 	  -I $(srcdir)/../opt \
 	 --main $@
 
-bin_SCRIPTS = rename-vars
+libexec_SCRIPTS = rename-vars
 
 CLEANFILES = *.dep $(bin_SCRIPTS)
 

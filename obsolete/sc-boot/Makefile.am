@@ -2,7 +2,7 @@ SUBDIRS = src
 
 pkgdata_DATA = conf.h
 
-EXTRA_DIST = conf.h.src README.in reconf $(wildcard *.pkg) stdconfig
+EXTRA_DIST = conf.h.src README.in reconf stdconfig
 
 # Generate scripts
 %: %.src Makefile
@@ -17,4 +17,22 @@ EXTRA_DIST = conf.h.src README.in reconf $(wildcard *.pkg) stdconfig
              s#__STRATEGOLIB__#$(STRATEGOLIB)#g;\
              s#__MAKE__#$(MAKE)#g' < $< > $@
 	chmod +x $@
+
+RPMRELEASE = 1
+
+CONFIGURE = ./configure \
+		--prefix=$(RPMPREFIX) \
+		--with-aterm=$(ATERM) \
+		--with-cgen=$(CGEN) \
+		--with-gpp=$(GPP) \
+		--with-ssl=$(STRATEGOLIB) \
+		--with-srts=$(STRATEGORTS) \
+		--with-rpmdir=$(RPMDIR)
+
+SUBST = s+__SRTS_VERSION__+$(VERSION)+g;\
+        s+__GPP_VERSION__+2.2.1+g;\
+        s+__ATERM_VERSION__+1.6.6+g;\
+	s+__ATERM__+$(ATERM)+g;
+
+include Makefile.rpm
 

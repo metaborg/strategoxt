@@ -2,10 +2,10 @@
 
 ./reconf
 ./configure \
-    --prefix=/home/visser/res/XT \
+    --prefix=/home/xt/xt \
     --with-aterm=/home/xt/ATerm \
     --with-sc-boot=`pwd`/../sc-boot \
-    --with-gb-stratego=/home/visser/res/XT/share/gb/stratego.0.7
+    --with-rpmdir=/home/visser/rpm
 
 exit 0
 

@@ -22,11 +22,11 @@ OPTFLAGS = -O4
 SCFLAGS = -I $(srcdir)/../sig \
 	  --C-include "\"conf.h\"" -CI "-I.."
 
-bin_PROGRAMS = parse-stratego parse-mod 
+libexec_PROGRAMS = parse-stratego parse-mod
 
-bin_SCRIPTS = pack-stratego
+libexec_SCRIPTS = pack-stratego
 
-pkgdatadir = $(prefix)/pack-stratego-plugin
+#pkgdatadir = $(prefix)/pack-stratego-plugin
 pkgdata_DATA = pack-stratego.config
 
 CLEANFILES = pack-stratego pack-stratego.c pack-stratego.dep
@@ -59,7 +59,8 @@ check2: pack-stratego
 	./pack-stratego -I $(STRATEGOLIB)/share/ssl -I $(srcdir)/../sig -i syntax-test -o syntax-test.trm
 
 %: %.src
-	sed 's#__prefix__#$(prefix)#g' < $< > $@
+	sed 's#__prefix__#$(prefix)#g;\
+             s#__libexec__#$(libexecdir)#g' < $< > $@
 
 include $(srcdir)/../make-rules
 include $(wildcard *.dep)

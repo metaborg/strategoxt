@@ -31,6 +31,7 @@ strategies
         where <strename> [[ f(as) = s ]] => [[ f(as') = s' ]]
     )
 
+
   inline-rules = 
     rec x(try(
 	Choice(x, x)

@@ -268,19 +268,19 @@ static const short yyrhs[] = {    35,
 static const short yyrline[] = { 0,
    172,   173,   174,   175,   178,   179,   180,   183,   184,   185,
    186,   189,   190,   191,   194,   195,   198,   199,   200,   201,
-   202,   205,   206,   207,   210,   211,   214,   215,   217,   218,
-   221,   222,   225,   226,   229,   230,   233,   236,   237,   238,
-   242,   243,   246,   247,   252,   257,   264,   266,   268,   270,
-   271,   272,   273,   274,   275,   276,   277,   280,   286,   288,
-   291,   292,   295,   296,   300,   301,   304,   305,   308,   309,
-   310,   313,   314,   315,   320,   321,   325,   326,   330,   333,
-   337,   338,   344,   346,   350,   354,   355,   357,   358,   360,
-   362,   363,   365,   366,   367,   369,   370,   372,   373,   374,
-   376,   378,   380,   382,   384,   385,   387,   388,   390,   393,
-   394,   396,   398,   399,   400,   401,   402,   406,   411,   413,
-   414,   416,   418,   421,   428,   429,   433,   434,   438,   439,
-   440,   446,   447,   448,   452,   456,   457,   460,   461,   462,
-   465,   466,   468,   469,   470,   473,   474,   477,   479
+   202,   205,   206,   207,   210,   211,   214,   215,   218,   219,
+   222,   223,   226,   227,   230,   231,   234,   237,   238,   239,
+   243,   244,   247,   248,   253,   258,   265,   267,   269,   271,
+   272,   273,   274,   275,   276,   277,   278,   281,   287,   289,
+   292,   293,   296,   297,   301,   302,   306,   307,   310,   311,
+   312,   315,   316,   317,   322,   323,   327,   328,   332,   335,
+   339,   340,   346,   348,   352,   356,   357,   359,   360,   362,
+   364,   365,   367,   368,   369,   371,   372,   374,   375,   376,
+   378,   380,   382,   384,   386,   387,   389,   390,   392,   395,
+   396,   398,   400,   401,   402,   403,   404,   408,   413,   415,
+   416,   418,   420,   423,   430,   431,   435,   436,   440,   441,
+   442,   448,   449,   450,   454,   458,   459,   462,   463,   464,
+   467,   468,   471,   472,   473,   476,   477,   480,   482
 };
 #endif
 
@@ -1198,7 +1198,7 @@ case 1:
     break;}
 case 2:
 #line 173 "stratego.grm"
-{parse_tree = (ATerm)yyvsp[0].list;
+{parse_tree = (ATerm)yyvsp[0].list;;
     break;}
 case 3:
 #line 174 "stratego.grm"
@@ -1305,75 +1305,75 @@ case 28:
 {yyval.list = ATappend(yyvsp[-2].list, App2("Sort", yyvsp[-1].term, yyvsp[0].term));;
     break;}
 case 29:
-#line 217 "stratego.grm"
+#line 218 "stratego.grm"
 {yyval.term = (ATerm) ATempty;;
     break;}
 case 30:
-#line 218 "stratego.grm"
+#line 219 "stratego.grm"
 {yyval.term = (ATerm) yyvsp[-1].list;;
     break;}
 case 31:
-#line 221 "stratego.grm"
+#line 222 "stratego.grm"
 {yyval.list = ATmakeList1(yyvsp[0].term);;
     break;}
 case 32:
-#line 222 "stratego.grm"
+#line 223 "stratego.grm"
 {yyval.list = ATappend(yyvsp[-1].list, yyvsp[0].term);;
     break;}
 case 33:
-#line 225 "stratego.grm"
+#line 226 "stratego.grm"
 {yyval.term = ATmake("Type");;
     break;}
 case 34:
-#line 226 "stratego.grm"
+#line 227 "stratego.grm"
 {yyval.term = ATmake("TypeList");;
     break;}
 case 35:
-#line 229 "stratego.grm"
+#line 230 "stratego.grm"
 {yyval.list = ATmakeList0();;
     break;}
 case 36:
-#line 230 "stratego.grm"
+#line 231 "stratego.grm"
 {yyval.list = ATappend(yyvsp[-1].list, yyvsp[0].term);;
     break;}
 case 37:
-#line 233 "stratego.grm"
+#line 234 "stratego.grm"
 {yyval.term = App2("OpDecl", yyvsp[-2].term, yyvsp[0].term);;
     break;}
 case 38:
-#line 236 "stratego.grm"
+#line 237 "stratego.grm"
 {yyval.term = App2("FunType", (ATerm) yyvsp[-2].list, yyvsp[0].term);;
     break;}
 case 39:
-#line 237 "stratego.grm"
+#line 238 "stratego.grm"
 {yyval.term = App1("ConstType", yyvsp[0].term);;
     break;}
 case 40:
-#line 238 "stratego.grm"
+#line 239 "stratego.grm"
 {yyval.term = yyvsp[-1].term;;
     break;}
 case 41:
-#line 242 "stratego.grm"
+#line 243 "stratego.grm"
 {yyval.list = ATappend(yyvsp[-2].list, yyvsp[0].term);;
     break;}
 case 42:
-#line 243 "stratego.grm"
+#line 244 "stratego.grm"
 {yyval.list = ATmakeList1(yyvsp[0].term);;
     break;}
 case 43:
-#line 246 "stratego.grm"
-{yyval.term = yyvsp[0].term;;
-    break;}
-case 44:
 #line 247 "stratego.grm"
 {yyval.term = yyvsp[0].term;;
     break;}
+case 44:
+#line 248 "stratego.grm"
+{yyval.term = yyvsp[0].term;;
+    break;}
 case 45:
-#line 252 "stratego.grm"
+#line 253 "stratego.grm"
 {yyval.term = yyvsp[0].term;;
     break;}
 case 46:
-#line 257 "stratego.grm"
+#line 258 "stratego.grm"
 {if(ATisEmpty(yyvsp[0].list)) 
 					   yyval.term = App1("Var", yyvsp[-1].term);
 					 else
@@ -1382,426 +1382,426 @@ case 46:
 						      ATgetFirst(ATgetNext(yyvsp[0].list)));;
     break;}
 case 47:
-#line 264 "stratego.grm"
+#line 265 "stratego.grm"
 {yyval.term = App1("Var",  App1("ListVar", yyvsp[0].term));;
     break;}
 case 48:
-#line 266 "stratego.grm"
+#line 267 "stratego.grm"
 {yyval.term = ATmake("Wld");;
     break;}
 case 49:
-#line 268 "stratego.grm"
+#line 269 "stratego.grm"
 {yyval.term = App1("BuildDefault", yyvsp[0].term);;
     break;}
 case 50:
-#line 270 "stratego.grm"
+#line 271 "stratego.grm"
 {yyval.term = App1("Int", (ATerm) ATmakeInt(yyvsp[0].num));;
     break;}
 case 51:
-#line 271 "stratego.grm"
+#line 272 "stratego.grm"
 {yyval.term = App1("Real", (ATerm) ATmakeReal(yyvsp[0].real));;
     break;}
 case 52:
-#line 272 "stratego.grm"
+#line 273 "stratego.grm"
 {yyval.term = App1("Str", yyvsp[0].term);;
     break;}
 case 53:
-#line 273 "stratego.grm"
+#line 274 "stratego.grm"
 {yyval.term = App2("Op", yyvsp[-1].term, (ATerm) yyvsp[0].list);;
     break;}
 case 54:
-#line 274 "stratego.grm"
+#line 275 "stratego.grm"
 {yyval.term = App2("As", App1("Var", yyvsp[-2].term), yyvsp[0].term);;
     break;}
 case 55:
-#line 275 "stratego.grm"
+#line 276 "stratego.grm"
 {yyval.term = App2("App", yyvsp[-2].term, yyvsp[0].term);;
     break;}
 case 56:
-#line 276 "stratego.grm"
+#line 277 "stratego.grm"
 {yyval.term = App1("RootApp", yyvsp[-1].term);;
     break;}
 case 57:
-#line 277 "stratego.grm"
+#line 278 "stratego.grm"
 {yyval.term = list_to_consnil_op_tl(yyvsp[-2].list, yyvsp[-1].term);;
     break;}
 case 58:
-#line 280 "stratego.grm"
+#line 281 "stratego.grm"
 {if(ATgetLength(yyvsp[-1].list) == 1)
     					   yyval.term = ATgetFirst(yyvsp[-1].list);
   				 	 else
 					   yyval.term = App2("Op", ATmakeString(""), (ATerm) yyvsp[-1].list);;
     break;}
 case 59:
-#line 287 "stratego.grm"
-{yyval.term = App2("Explode", yyvsp[-4].term, yyvsp[-1].term);
+#line 288 "stratego.grm"
+{yyval.term = App2("Explode", yyvsp[-4].term, yyvsp[-1].term);;
     break;}
 case 60:
-#line 288 "stratego.grm"
-{yyval.term = App2("Anno", yyvsp[-3].term, list_to_consnil_op(yyvsp[-1].list));
+#line 289 "stratego.grm"
+{yyval.term = App2("Anno", yyvsp[-3].term, list_to_consnil_op(yyvsp[-1].list));;
     break;}
 case 61:
-#line 291 "stratego.grm"
+#line 292 "stratego.grm"
 {yyval.term = ATmake("Op(\"Nil\",[])");;
     break;}
 case 62:
-#line 292 "stratego.grm"
+#line 293 "stratego.grm"
 {yyval.term = yyvsp[0].term;;
     break;}
 case 63:
-#line 295 "stratego.grm"
+#line 296 "stratego.grm"
 {yyval.list = ATmakeList0();;
     break;}
 case 64:
-#line 297 "stratego.grm"
+#line 298 "stratego.grm"
 {yyval.list = ATmakeList2(yyvsp[-3].term, App2("Call", yyvsp[0].term, (ATerm) ATmakeList0()));;
     break;}
 case 65:
-#line 300 "stratego.grm"
+#line 301 "stratego.grm"
 {yyval.term = ATmake("SVar(\"oncetd\")"); ;
     break;}
 case 66:
-#line 301 "stratego.grm"
+#line 302 "stratego.grm"
 {yyval.term = App1("SVar", yyvsp[-1].term);;
     break;}
 case 67:
-#line 304 "stratego.grm"
+#line 306 "stratego.grm"
 {yyval.list = ATmakeList0();;
     break;}
 case 68:
-#line 305 "stratego.grm"
+#line 307 "stratego.grm"
 {yyval.list = yyvsp[-1].list;;
     break;}
 case 69:
-#line 308 "stratego.grm"
+#line 310 "stratego.grm"
 {yyval.list = ATmakeList1(yyvsp[0].term);;
     break;}
 case 70:
-#line 309 "stratego.grm"
+#line 311 "stratego.grm"
 {yyval.list = ATinsert(yyvsp[0].list, yyvsp[-2].term);;
     break;}
 case 71:
-#line 310 "stratego.grm"
+#line 312 "stratego.grm"
 {yyval.list = ATmakeList0();;
     break;}
 case 72:
-#line 313 "stratego.grm"
+#line 315 "stratego.grm"
 {yyval.list = ATmakeList1(yyvsp[0].term);;
     break;}
 case 73:
-#line 314 "stratego.grm"
+#line 316 "stratego.grm"
 {yyval.list = ATinsert(yyvsp[0].list, yyvsp[-2].term);;
     break;}
 case 74:
-#line 315 "stratego.grm"
+#line 317 "stratego.grm"
 {yyval.list = ATmakeList0();;
     break;}
 case 75:
-#line 320 "stratego.grm"
+#line 322 "stratego.grm"
 {yyval.list = ATmakeList0();;
     break;}
 case 76:
-#line 321 "stratego.grm"
+#line 323 "stratego.grm"
 {yyval.list = ATappend(yyvsp[-1].list, yyvsp[0].term);;
     break;}
 case 77:
-#line 325 "stratego.grm"
-{yyval.term = App3("RDef", yyvsp[-3].term, (ATerm) yyvsp[-2].list, (ATerm) yyvsp[0].term);;
-    break;}
-case 78:
 #line 327 "stratego.grm"
 {yyval.term = App3("RDef", yyvsp[-3].term, (ATerm) yyvsp[-2].list, (ATerm) yyvsp[0].term);;
     break;}
+case 78:
+#line 329 "stratego.grm"
+{yyval.term = App3("RDef", yyvsp[-3].term, (ATerm) yyvsp[-2].list, (ATerm) yyvsp[0].term);;
+    break;}
 case 79:
-#line 330 "stratego.grm"
+#line 332 "stratego.grm"
 {yyval.term = App3("Rule", yyvsp[-3].term, yyvsp[-1].term, yyvsp[0].term);	;
     break;}
 case 80:
-#line 334 "stratego.grm"
+#line 336 "stratego.grm"
 {yyval.term = App3("StratRule", yyvsp[-3].term, yyvsp[-1].term, yyvsp[0].term);	;
     break;}
 case 81:
-#line 337 "stratego.grm"
+#line 339 "stratego.grm"
 {yyval.term = ATmake("Id");;
     break;}
 case 82:
-#line 338 "stratego.grm"
+#line 340 "stratego.grm"
 {yyval.term = yyvsp[0].term;;
     break;}
 case 83:
-#line 344 "stratego.grm"
+#line 346 "stratego.grm"
 {yyval.term = App2("Call", App1("SVar", yyvsp[-1].term), (ATerm) yyvsp[0].list);;
     break;}
 case 84:
-#line 347 "stratego.grm"
+#line 349 "stratego.grm"
 {yyval.term = App2("Call", App1("SVar", App2("Mod", yyvsp[-3].term, yyvsp[-1].term)), 
 							   (ATerm)yyvsp[0].list);;
     break;}
 case 85:
-#line 351 "stratego.grm"
-{yyval.term = App2("ExplodeCong", yyvsp[-4].term, yyvsp[-1].term);
+#line 353 "stratego.grm"
+{yyval.term = App2("ExplodeCong", yyvsp[-4].term, yyvsp[-1].term);;
     break;}
 case 86:
-#line 354 "stratego.grm"
+#line 356 "stratego.grm"
 {yyval.term = App1("Match", yyvsp[0].term);;
     break;}
 case 87:
-#line 355 "stratego.grm"
+#line 357 "stratego.grm"
 {yyval.term = App1("Build", yyvsp[0].term);;
     break;}
 case 88:
-#line 357 "stratego.grm"
+#line 359 "stratego.grm"
 {yyval.term = App2("Prim", yyvsp[-1].term, (ATerm) ATempty);;
     break;}
 case 89:
-#line 358 "stratego.grm"
+#line 360 "stratego.grm"
 {yyval.term = App2("Prim", yyvsp[-3].term, (ATerm) yyvsp[-1].list);;
     break;}
 case 90:
-#line 360 "stratego.grm"
+#line 362 "stratego.grm"
 {yyval.term = App1("LRule", yyvsp[-1].term);;
     break;}
 case 91:
-#line 362 "stratego.grm"
+#line 364 "stratego.grm"
 {yyval.term = App2("BA", yyvsp[-2].term, yyvsp[0].term);;
     break;}
 case 92:
-#line 363 "stratego.grm"
+#line 365 "stratego.grm"
 {yyval.term = App2("AM", yyvsp[-2].term, yyvsp[0].term);;
     break;}
 case 93:
-#line 365 "stratego.grm"
+#line 367 "stratego.grm"
 {yyval.term = ATmake("Fail");;
     break;}
 case 94:
-#line 366 "stratego.grm"
+#line 368 "stratego.grm"
 {yyval.term = ATmake("Id");;
     break;}
 case 95:
-#line 367 "stratego.grm"
+#line 369 "stratego.grm"
 {yyval.term = App2("Path", (ATerm) ATmakeInt(yyvsp[-1].num), yyvsp[0].term); ;
     break;}
 case 96:
-#line 369 "stratego.grm"
+#line 371 "stratego.grm"
 {yyval.term = App1("DynamicRules", (ATerm) yyvsp[-1].list);;
     break;}
 case 97:
-#line 370 "stratego.grm"
+#line 372 "stratego.grm"
 {yyval.term = App1("OverrideDynamicRules", (ATerm) yyvsp[-1].list);;
     break;}
 case 98:
-#line 372 "stratego.grm"
+#line 374 "stratego.grm"
 {yyval.term = App1("Not", yyvsp[-1].term);;
     break;}
 case 99:
-#line 373 "stratego.grm"
+#line 375 "stratego.grm"
 {yyval.term = App1("Where", yyvsp[-1].term);;
     break;}
 case 100:
-#line 374 "stratego.grm"
+#line 376 "stratego.grm"
 {yyval.term = App1("Test", yyvsp[-1].term);;
     break;}
 case 101:
-#line 377 "stratego.grm"
+#line 379 "stratego.grm"
 {yyval.term = App2("Scope", (ATerm) yyvsp[-3].list, yyvsp[-1].term);;
     break;}
 case 102:
-#line 379 "stratego.grm"
+#line 381 "stratego.grm"
 {yyval.term = App2("DynRuleScope", (ATerm) yyvsp[-3].list, yyvsp[-1].term);;
     break;}
 case 103:
-#line 380 "stratego.grm"
+#line 382 "stratego.grm"
 {yyval.term = App1("ScopeDefault", yyvsp[-1].term);;
     break;}
 case 104:
-#line 382 "stratego.grm"
+#line 384 "stratego.grm"
 {yyval.term = App2("Seq", yyvsp[-2].term, yyvsp[0].term);;
     break;}
 case 105:
-#line 384 "stratego.grm"
+#line 386 "stratego.grm"
 {yyval.term = App2("Choice", yyvsp[-2].term, yyvsp[0].term);;
     break;}
 case 106:
-#line 385 "stratego.grm"
+#line 387 "stratego.grm"
 {yyval.term = App2("GChoice", yyvsp[-2].term, yyvsp[0].term);;
     break;}
 case 107:
-#line 387 "stratego.grm"
+#line 389 "stratego.grm"
 {yyval.term = App2("LChoice", yyvsp[-2].term, yyvsp[0].term);;
     break;}
 case 108:
-#line 388 "stratego.grm"
+#line 390 "stratego.grm"
 {yyval.term = App2("LGChoice", yyvsp[-2].term, yyvsp[0].term);;
     break;}
 case 109:
-#line 391 "stratego.grm"
+#line 393 "stratego.grm"
 {yyval.term = App3("GuardedLChoice", yyvsp[-4].term, yyvsp[-2].term, yyvsp[0].term);;
     break;}
 case 110:
-#line 393 "stratego.grm"
+#line 395 "stratego.grm"
 {yyval.term = App2("LChoice", yyvsp[0].term, yyvsp[-2].term);;
     break;}
 case 111:
-#line 394 "stratego.grm"
+#line 396 "stratego.grm"
 {yyval.term = App2("LGChoice", yyvsp[0].term, yyvsp[-2].term);;
     break;}
 case 112:
-#line 396 "stratego.grm"
+#line 398 "stratego.grm"
 {yyval.term = App1("Bagof", yyvsp[-1].term);;
     break;}
 case 113:
-#line 398 "stratego.grm"
+#line 400 "stratego.grm"
 {yyval.term = App2("Rec", yyvsp[-3].term, yyvsp[-1].term);;
     break;}
 case 114:
-#line 399 "stratego.grm"
+#line 401 "stratego.grm"
 {yyval.term = App1("Some", yyvsp[-1].term);;
     break;}
 case 115:
-#line 400 "stratego.grm"
+#line 402 "stratego.grm"
 {yyval.term = App1("One", yyvsp[-1].term);;
     break;}
 case 116:
-#line 401 "stratego.grm"
+#line 403 "stratego.grm"
 {yyval.term = App1("All", yyvsp[-1].term);;
     break;}
 case 117:
-#line 402 "stratego.grm"
+#line 404 "stratego.grm"
 {yyval.term = App1("Thread", yyvsp[-1].term);;
     break;}
 case 118:
-#line 406 "stratego.grm"
+#line 408 "stratego.grm"
 {if(ATgetLength(yyvsp[-1].list) == 1)
     					   yyval.term = ATgetFirst(yyvsp[-1].list);
   				 	 else
 					   yyval.term = App2("Call", App1("SVar", ATmakeString("")), (ATerm) yyvsp[-1].list);;
     break;}
 case 119:
-#line 412 "stratego.grm"
+#line 414 "stratego.grm"
 {yyval.term = list_cong(yyvsp[-2].list, yyvsp[-1].term);;
     break;}
 case 120:
-#line 413 "stratego.grm"
+#line 415 "stratego.grm"
 {yyval.term = App1("Match", App1("Str", yyvsp[0].term));;
     break;}
 case 121:
-#line 414 "stratego.grm"
+#line 416 "stratego.grm"
 {yyval.term = App1("Match", 
 					      App1("Int", (ATerm) ATmakeInt(yyvsp[0].num)));;
     break;}
 case 122:
-#line 416 "stratego.grm"
+#line 418 "stratego.grm"
 {yyval.term = App1("Match", 
 					      App1("Real", (ATerm) ATmakeReal(yyvsp[0].real)));;
     break;}
 case 123:
-#line 418 "stratego.grm"
+#line 420 "stratego.grm"
 {yyval.term = App2("Let", (ATerm) yyvsp[-2].list, yyvsp[0].term);;
     break;}
 case 124:
-#line 422 "stratego.grm"
+#line 424 "stratego.grm"
 {yyval.term = App2("Call", 
 						  App1("SVar", ATmakeString("Anno_Cong__")), 
 					          (ATerm) ATmakeList2(yyvsp[-3].term, yyvsp[-1].term));;
     break;}
 case 125:
-#line 428 "stratego.grm"
+#line 430 "stratego.grm"
 {yyval.term = ATmake("Call(SVar(\"Nil\"),[])");;
     break;}
 case 126:
-#line 429 "stratego.grm"
+#line 431 "stratego.grm"
 {yyval.term = yyvsp[0].term;;
     break;}
 case 127:
-#line 433 "stratego.grm"
+#line 435 "stratego.grm"
 {yyval.list = ATmakeList0();;
     break;}
 case 128:
-#line 434 "stratego.grm"
+#line 436 "stratego.grm"
 {yyval.list = yyvsp[-1].list;;
     break;}
 case 129:
-#line 438 "stratego.grm"
+#line 440 "stratego.grm"
 {yyval.list = ATmakeList0();;
     break;}
 case 130:
-#line 439 "stratego.grm"
+#line 441 "stratego.grm"
 {yyval.list = ATmakeList1(yyvsp[0].term);;
     break;}
 case 131:
-#line 440 "stratego.grm"
+#line 442 "stratego.grm"
 {yyval.list = ATinsert(yyvsp[0].list, yyvsp[-2].term);;
     break;}
 case 132:
-#line 446 "stratego.grm"
+#line 448 "stratego.grm"
 {yyval.list = ATmakeList0();;
     break;}
 case 133:
-#line 447 "stratego.grm"
+#line 449 "stratego.grm"
 {yyval.list = ATappend(yyvsp[-1].list, yyvsp[0].term);;
     break;}
 case 134:
-#line 448 "stratego.grm"
+#line 450 "stratego.grm"
 {yyval.list = ATappend(yyvsp[-1].list, yyvsp[0].term);;
     break;}
 case 135:
-#line 452 "stratego.grm"
+#line 454 "stratego.grm"
 {yyval.term = App3("SDef", yyvsp[-3].term, (ATerm) yyvsp[-2].list, yyvsp[0].term);;
     break;}
 case 136:
-#line 456 "stratego.grm"
+#line 458 "stratego.grm"
 {yyval.list = ATmakeList0();;
     break;}
 case 137:
-#line 457 "stratego.grm"
+#line 459 "stratego.grm"
 {yyval.list = yyvsp[-1].list;;
     break;}
 case 138:
-#line 460 "stratego.grm"
+#line 462 "stratego.grm"
 {yyval.list = ATmakeList0();;
     break;}
 case 139:
-#line 461 "stratego.grm"
+#line 463 "stratego.grm"
 {yyval.list = ATmakeList1(yyvsp[0].term);;
     break;}
 case 140:
-#line 462 "stratego.grm"
+#line 464 "stratego.grm"
 {yyval.list = ATinsert(yyvsp[0].list, yyvsp[-2].term);;
     break;}
 case 141:
-#line 465 "stratego.grm"
+#line 467 "stratego.grm"
 {yyval.term = App1("DefaultVarDec", yyvsp[0].term);;
     break;}
 case 142:
-#line 466 "stratego.grm"
+#line 468 "stratego.grm"
 {yyval.term = App2("VarDec", yyvsp[-2].term, yyvsp[0].term);;
     break;}
 case 143:
-#line 468 "stratego.grm"
+#line 471 "stratego.grm"
 {yyval.list = ATmakeList0();;
     break;}
 case 144:
-#line 469 "stratego.grm"
+#line 472 "stratego.grm"
 {yyval.list = ATmakeList1(yyvsp[0].term);;
     break;}
 case 145:
-#line 470 "stratego.grm"
+#line 473 "stratego.grm"
 {yyval.list = ATinsert(yyvsp[0].list, yyvsp[-2].term);;
     break;}
 case 146:
-#line 473 "stratego.grm"
+#line 476 "stratego.grm"
 {yyval.list = ATmakeList0();;
     break;}
 case 147:
-#line 474 "stratego.grm"
+#line 477 "stratego.grm"
 {yyval.list = ATinsert(yyvsp[0].list, yyvsp[-1].term);;
     break;}
 case 148:
-#line 478 "stratego.grm"
+#line 481 "stratego.grm"
 {yyval.term = App3("Overlay", yyvsp[-5].term, (ATerm) yyvsp[-3].list, yyvsp[0].term);;
     break;}
 case 149:
-#line 479 "stratego.grm"
+#line 482 "stratego.grm"
 {yyval.term = App3("Overlay", yyvsp[-2].term, (ATerm) ATmakeList0(), yyvsp[0].term);;
     break;}
 }
@@ -2026,4 +2026,4 @@ yyerrhandle:
     }
   return 1;
 }
-#line 484 "stratego.grm"
+#line 487 "stratego.grm"

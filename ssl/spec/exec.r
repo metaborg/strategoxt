@@ -167,7 +167,7 @@ strategies // non-primitives
   call-tmp(comm, args, cont) = 
     ?filein
     ; temp-file(\ (fileout, _) -> <
-        <call>(<comm>, ["-i", filein, "-o", fileout | <args> ])
+        <if-verbose5(debug); call>(<comm>, ["-i", filein, "-o", fileout | <args> ])
         ; !fileout
         ; cont
       >\ )

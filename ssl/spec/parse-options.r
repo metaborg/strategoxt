@@ -50,7 +50,7 @@ info as additional third argument.
 
 \begin{code}
 module parse-options
-imports lib
+imports lib config 
 signature
   sorts Option
   constructors

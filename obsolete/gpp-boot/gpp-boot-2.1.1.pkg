@@ -1,7 +1,7 @@
 package 
 identification
    name=gpp-boot
-   version=2.1.1
+   version=__VERSION__
    location=http://www.cwi.nl/~mdejonge/pkgs
    info=http://www.program-transformation.org/xt
    description='Boot strapped version of Generic Pretty-Printer'
@@ -11,7 +11,7 @@ identification
 interface
 
 requires
-  aterm 1.6.3 with gcc
-  ssl	0.6.3
-  srts	0.6.3
+  aterm __ATERM_VERSION__ with gcc
+  ssl	__SSL_VERSION__
+  srts	__SRTS_VERSION__
 

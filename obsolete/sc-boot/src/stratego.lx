@@ -209,7 +209,10 @@ static void eat_comment()
    {
       /* get a character */
       c = input();
-      
+
+      if(c == EOF)
+        yyerror("unclosed comment at end of file");
+		
       /* if it equals '*" and the next character equals ')' then
        * the end of the comment is reached.
        */
@@ -232,6 +235,9 @@ static void eat_c_comment()
       /* get a character */
       c = input();
       
+      if(c == EOF)
+        yyerror("unclosed comment at end of file");
+
       /* if it equals '*" and the next character equals '/' then
        * the end of the comment is reached.
        */

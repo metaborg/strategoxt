@@ -40,14 +40,25 @@ check clean install uninstall:
 
 package-dist:
 	$(MAKE) dist
-	cd srts; $(MAKE) dist
-	cd ssl; $(MAKE) dist
-	cd cgen; $(MAKE) dist
-	cd gpp-boot; $(MAKE) dist
-	cd sc-boot; $(MAKE) dist
-	cd sc; $(MAKE) dist
-	cd stratego-front; $(MAKE) dist
-	cd stratego-connect; $(MAKE) dist
+	cd srts; ./reconf; $(MAKE) dist
+	cd ssl; ./reconf; $(MAKE) dist
+	cd cgen; ./reconf; $(MAKE) dist
+	cd gpp-boot; ./reconf; $(MAKE) dist
+	cd sc-boot; ./reconf; $(MAKE) dist
+	cd sc; ./reconf; $(MAKE) dist
+	cd stratego-front; ./reconf; $(MAKE) dist
+	cd stratego-connect; ./reconf; $(MAKE) dist
+
+make-%:
+	cd srts; $(MAKE) $*
+	cd ssl; $(MAKE) $*
+	cd cgen; $(MAKE) $*
+	cd gpp-boot; $(MAKE) $*
+	cd sc-boot; $(MAKE) $*
+	cd sc; $(MAKE) $*
+	cd stratego-front; $(MAKE) $*
+
+#	cd stratego-connect; $(MAKE) $*
 
 config:
 	cd srts; stdconfig
@@ -57,17 +68,18 @@ config:
 	cd sc-boot; stdconfig
 	cd sc; stdconfig
 	cd stratego-front; stdconfig
-	cd stratego-connect; stdconfig
 
-install-NEWS:
-	cp -f NEWS srts
-	cp -f NEWS ssl
-	cp -f NEWS cgen
-	cp -f NEWS gpp-boot
-	cp -f NEWS sc-boot
-	cp -f NEWS sc
-	cp -f NEWS stratego-front
-	cp -f NEWS stratego-connect
+#	cd stratego-connect; stdconfig
+
+install-%: %
+	cp -f $< srts
+	cp -f $< ssl
+	cp -f $< cgen
+	cp -f $< gpp-boot
+	cp -f $< sc-boot
+	cp -f $< sc
+	cp -f $< stratego-front
+	cp -f $< stratego-connect
 
 WWWSTRATEGO=sunshine.cs.uu.nl:/users/www/research/projects/stratego/ftp
 

@@ -45,7 +45,28 @@ AC_ARG_WITH(srts,
 )
 AC_SUBST(STRATEGORTS)
 
-AC_REVISION($Id: configure.in,v 1.17 2002/06/18 12:27:41 stratego Exp $)
+AC_ARG_WITH(rpmprefix,
+  [  --with-rpmprefix        Specify location of installation prefix for rpm: /usr],
+  RPMPREFIX=$withval,
+  RPMPREFIX="/usr"
+)
+AC_SUBST(RPMPREFIX)
+
+AC_ARG_WITH(rpmdir, 
+  [  --with-rpmdir           Specify location of rpm directory: /usr/src/redhat/], 
+  RPMDIR=$withval, 
+  RPMDIR="/usr/src/redhat/"
+)
+AC_SUBST(RPMDIR)
+
+AC_ARG_WITH(rpmtmp, 
+  [  --with-rpmtmp           Specify location of rpm temporary directory: /tmp], 
+  RPMTMP=$withval, 
+  RPMTMP="/tmp"
+)
+AC_SUBST(RPMTMP)
+
+AC_REVISION($Id: configure.in,v 1.18 2002/09/17 22:17:17 stratego Exp $)
 
 AC_PROG_CC
 AC_PROG_RANLIB

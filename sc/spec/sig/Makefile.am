@@ -17,7 +17,7 @@
 
 SCFLAGS = -I ../match
 
-bin_SCRIPTS = \
+libexec_SCRIPTS = \
   Stratego-Normal-Format Stratego-Canonical-Format Stratego-Optimized-Format 
 
 CLEANFILES = $(bin_SCRIPTS) *.dep

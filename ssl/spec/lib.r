@@ -17,6 +17,7 @@ imports
  (* traversal *)
 
 	simple-traversal
+	simple-list-traversal
 	fixpoint-traversal
 	env-traversal
 

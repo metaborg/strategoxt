@@ -2,8 +2,9 @@
 
 ./reconf
 ./configure --prefix=/home/xt/xt \
-	--with-aterm=`pwd`/../aterm \
+	--with-aterm=/home/xt/xt \
 	--with-gpp=/home/xt/xt \
-	--with-stratego=`pwd`/../sc-boot \
-	--with-stratego-rts=`pwd`/../srts
-
+	--with-stratego=/home/xt/xt \
+	--with-srts=/home/xt/xt \
+	--with-rpmdir=/home/visser/rpm
+ 

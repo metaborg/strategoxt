@@ -6,7 +6,8 @@
 	--with-cgen=/home/xt/xt \
 	--with-gpp=/home/xt/xt \
 	--with-ssl=/home/xt/xt \
-	--with-srts=/home/xt/xt
+	--with-srts=/home/xt/xt \
+	--with-rpmdir=/home/visser/rpm
 
 #--prefix=`pwd` \
 #	--with-aterm=`pwd`/../aterm \

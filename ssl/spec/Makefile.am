@@ -31,10 +31,13 @@ EXTRA_DIST = $(wildcard *.r) $(pkgdata_DATA)
 
 CLEANFILES = $(TESTS) $(bin_SCRIPTS) $(parsed)
 
-SC = $(STRATEGO)/bin/sc
+SC = $(STRATEGO)/bin/sc 
+#--verbose 2
 
-%.rtree: %.r $(STRATEGO)/bin/parse-mod
+%.rtree: %.r 
 	$(STRATEGO)/bin/parse-mod -i $< -o $@
+
+#$(STRATEGO)/bin/parse-mod
 
 % : %.r
 	$(SC) $(SCFLAGS) -i $*

@@ -21,15 +21,15 @@ SCFLAGS	= -I $(srcdir)/../sig \
 	  --main $@ \
 	  --C-include "\"conf.h\"" -CI "-I.."
 
-bin_SCRIPTS = proto-sc sc
+bin_SCRIPTS = sc
 
 pkgdata_DATA = sc.config sc-manual.txt
 
-CLEANFILES = proto-sc proto-sc.c *.dep sc.config
+CLEANFILES = sc sc.c *.dep sc.config
 
-EXTRA_DIST = $(wildcard *.r) $(wildcard *.c) sc.src sc.config.src sc-manual.txt
+EXTRA_DIST = $(wildcard *.r) $(wildcard *.c) sc.config.src sc-manual.txt
 
-BOOTSOURCES = proto-sc.c sc.src sc.config.src
+BOOTSOURCES = sc.c sc.config.src
 
 include $(srcdir)/../make-rules
 include $(wildcard *.dep)
@@ -37,6 +37,7 @@ include $(wildcard *.dep)
 # Generate srcipts
 %: %.src Makefile
 	sed 's#__prefix__#$(prefix)#g;\
+             s#__libexec__#$(libexecdir)#g;\
              s#__ATERM__#$(ATERM)#g;\
              s#__CGEN__#$(CGEN)#g;\
              s#__GPP__#$(GPP)#g;\

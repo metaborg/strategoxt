@@ -176,6 +176,7 @@ static ATermList _map_some(ATermList ts, ATerm f(ATerm), int transformed)
       ts = ATinsert(ts, t);
       return ts;
     }
+  return ts;
 }
        
 ATerm _some(ATerm t, ATerm f(ATerm)) 

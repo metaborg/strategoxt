@@ -1,3 +1,18 @@
+2002-09-17  Eelco Visser  <visser@acm.org>
+
+	* spec/syn/pack-stratego.config.src: added pointer to libexec
+
+	* spec/syn/options.c: Added --verbose option
+
+	* spec/syn/Makefile.am: Installing programs in libexec instead of bin
+
+	* spec/syn/pack-stratego.r: Added tracing for certain verbosity levels.
+
+2002-07-24  Eelco Visser  <visser@acm.org>
+
+	* spec/test1/test35.r: Test showing incompleteness of the
+	constructor checking scheme.
+
 2002-07-14  Eelco Visser  <visser@acm.org>
 
 	* spec/syn/stratego.lx: Detect end of file while scanning comments.

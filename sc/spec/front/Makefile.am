@@ -23,7 +23,7 @@ SCFLAGS = -I $(srcdir)/../sig \
 	  -I $(srcdir)/../opt \
 	  --main $@
 
-bin_SCRIPTS = frontend extract extract-all rename-defs inline 
+libexec_SCRIPTS = frontend extract extract-all rename-defs inline 
 
 CLEANFILES = *.dep \
 	frontend frontend.c \

@@ -1,4 +1,4 @@
-\literate[simple-traversal]
+\literate[simple-list-traversal]
 
 	\begin{abstract}
 

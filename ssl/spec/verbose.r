@@ -1,14 +1,11 @@
 \literate[verbose]
-
-	\begin{abstract}
-
-	\end{abstract}
-
-
 \begin{code}
 module verbose
 imports config
 strategies
+
+  set-verbosity = 
+    <set-config> ("--verbose", <id>)
 
   verbosity = 
     <get-config> "--verbose" <+ !0

@@ -35,7 +35,7 @@ LDADD		= -lstratego-lib.opt \
 		  -lATerm-gcc \
 		  -lm
 
-bin_PROGRAMS = \
+libexec_PROGRAMS = \
 	canonicalize \
 	compile-match \
 	extract \
@@ -47,7 +47,6 @@ bin_PROGRAMS = \
 	pack-stratego \
 	parse-mod \
 	parse-stratego \
-	proto-sc \
 	rename-defs \
 	rename-vars \
 	s2c \
@@ -55,6 +54,9 @@ bin_PROGRAMS = \
 	Stratego-Normal-Format \
 	Stratego-Optimized-Format \
 	fusion
+
+bin_PROGRAMS = \
+	proto-sc
 
 bin_SCRIPTS = sc ac2c
 
@@ -93,11 +95,13 @@ parse_mod_SOURCES = \
 	sed 's#__GPP__#$(GPP)#g;\
              s#__CGEN__#$(CGEN)#g;\
 	     s#__prefix__#$(prefix)#g;\
+	     s#__libexec__#$(libexecdir)#g;\
 	     s#__datadir__#$(datadir)#g;\
 	     s#__pkgdatadir__#$(pkgdatadir)#g;\
              s#__VERSION__#$(VERSION)#g;\
 	     s#__PACKAGE__#$(PACKAGE)#g;\
              s#__ATERM__#$(ATERM)#g;\
+             s#__STRATEGOFRONT__#$(STRATEGOFRONT)#g;\
              s#__STRATEGORTS__#$(STRATEGORTS)#g;\
              s#__STRATEGOLIB__#$(STRATEGOLIB)#g;\
              s#__MAKE__#$(MAKE)#g' < $< > $@

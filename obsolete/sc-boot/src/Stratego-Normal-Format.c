@@ -692,7 +692,7 @@ ATerm Undefined_1 (ATerm, ATerm h_48 (ATerm));
 ATerm fetch_1 (ATerm, ATerm b_75 (ATerm));
 ATerm option_defined_1 (ATerm, ATerm v_62 (ATerm));
 ATerm Help_0 (ATerm);
-ATerm try_1 (ATerm, ATerm z_81 (ATerm));
+ATerm try_1 (ATerm, ATerm c_82 (ATerm));
 ATerm table_get_0 (ATerm);
 ATerm table_push_0 (ATerm);
 ATerm register_usage_1 (ATerm, ATerm b_62 (ATerm));
@@ -5463,13 +5463,13 @@ ATerm Help_0 (ATerm t)
     }
   return(t);
 }
-ATerm try_1 (ATerm t, ATerm z_81 (ATerm))
+ATerm try_1 (ATerm t, ATerm c_82 (ATerm))
 {
   ATerm p_11 = t;
   int q_11 = stack_ptr;
   if((PushChoice() == 0))
     {
-      t = z_81(t);
+      t = c_82(t);
       LocalPopChoice(q_11);
     }
   else

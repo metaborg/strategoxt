@@ -22,7 +22,7 @@ SCFLAGS	= -I $(srcdir)/../sig \
 	  -I $(srcdir)/../lib \
 	  -I $(srcdir)/../front
 
-bin_SCRIPTS = optimize1 optimize2 compile-match 
+libexec_SCRIPTS = optimize1 optimize2 compile-match 
 
 CLEANFILES = compile-match compile-match.c *.dep \
 	optimize1 optimize1.c optimize2 optimize2.c \

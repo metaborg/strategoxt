@@ -22,17 +22,29 @@ signature
   constructors
     Include: File -> Include
     Prefix : String -> Option
+    Ignore : Option
 
 strategies
 
   pack-module-options =
-    parse-options( io-options 
-                 + ArgOption("-I"  , \x -> Include(x)\ )
-                 + Option   ("-nodep",     !NoDependency )
-                 + ArgOption("-dep", \x -> Dependency(x)\ )
-                 + ArgOption("--prefix", \x -> Prefix(x)
-					  where rules(Prefix : () -> x) \ )
-                 )
+    parse-options( io-options + pack-options )
+
+  pack-options =
+    ArgOption("-I" + "--Include",        
+	where(<extend-config>("-I", ["-I", <id>])); !Include(<id>),
+	!"-I d|--Include d   Include modules from directory d")
+
+  + Option("-nodep", 
+	where(<set-config> ("-nodep", "")); !NoDependency,
+	!"-nodep")
+
+  + ArgOption("-dep",
+	where(<set-config> ("-dep", <id>)); \x -> Dependency(x)\,
+	!"-dep f             write dependency to file f")
+
+  + ArgOption("--prefix", 
+	where(<set-config> ("--prefix", <id>)); \x -> Prefix(x) where rules(Prefix : () -> x) \,
+	!"--prefix")
 
   pack-modules(pack : term * (term -> term) -> term)
     = pack-modules(pack, fail)

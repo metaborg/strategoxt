@@ -47,7 +47,7 @@ strategies
     ? mod
     ; get-config-keys(?Ext(<id>))
     ; fetch-elem(!(<id>, mod); get-module-ext(mkpath))
-    <+ <fatal-error> ["module ", <id>, " not found"]
+    <+ <fatal-error> ["*** module ", <id>, " not found"]
 
   get-module-ext(mkpath) =
     ?(ext, <id>)
@@ -72,7 +72,10 @@ strategies
   parse-file(mkpath) : 
     (filein, fileout, tool) -> trm
     where <not(eq)> (None, tool)
-        ; <call>(tool, [ "-i", filein, "-o", fileout | <!["-silent"]; if-verbose2(![])> ])
+	; if-verbose2(<debug(!"parsing: ")> filein)
+        ; <if-verbose4(debug); call>
+		(tool, [ "-i", filein, "-o", fileout, "--verbose", <verbosity; int-to-string>,
+		       | <conc>(<get-config> "-I", <!["-silent"]; if-verbose2(![])>) ])
 	; <ReadFromFile> fileout => trm
 
   parse-file(mkpath) : 

@@ -145,6 +145,8 @@ ATerm SSL_print(ATerm file, ATerm str)
   if(outfile == NULL) 
     _fail(file);
   //str = consnil_to_list(str);
+  if(ATgetType(str) != AT_LIST)
+    _fail(str);
   while(!ATisEmpty((ATermList)str))
     {
       if(ATisString(ATgetFirst((ATermList)str)))

@@ -47,6 +47,11 @@ void process_options(int argc, char *argv[])
     {
       if(streq(argv[i], "-silent")) 
 	silent = ATtrue;
+      else if(streq(argv[i], "--verbose"))
+	{
+	  i++;
+	  silent = ATtrue;
+	}
       else if(streq(argv[i], "-i"))
 	{
 	  if(i == argc - 1)
