@@ -1,3 +1,6 @@
+2001-09-18 Joost.Visser@cwi.nl
+   * All `unglued' tools are now also installed in libexec.
+	
 2001-08-29 Merijn de Jonge <mdejonge@cwi.nl> 
    * graphxml2dot/GraphXML2dot.r: bug fix in generated DOT output
 
