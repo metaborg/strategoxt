@@ -10,7 +10,7 @@ STRINCLUDES   = -I $(top_srcdir)/sig \
                 -I $(top_srcdir)/syn \
                 -I $(SDF_FRONT)/share/sdf-front \
                 -I $(SDF_FRONT)/share/sdf/sdf-front
-LDADD = $(SSL_LIBS)
+LDADD += $(SSL_LIBS)
 
 
 EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta)

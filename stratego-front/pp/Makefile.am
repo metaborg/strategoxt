@@ -2,7 +2,7 @@ include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
 bin_PROGRAMS 	= astratego2text
-LDADD = $(SSL_LIBS)
+LDADD += $(SSL_LIBS)
 
 CLEANFILES 	=  $(wildcard *.dep)
 

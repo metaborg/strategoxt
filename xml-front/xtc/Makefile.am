@@ -19,5 +19,5 @@ STRINCLUDES  = -I $(XTC)/share/xtc \
                -I $(top_srcdir)/sig/xml-info \
                -I $(top_srcdir)/lib
 
-LDADD = $(SSL_LIBS)
+LDADD += $(SSL_LIBS)
 

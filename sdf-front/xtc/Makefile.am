@@ -6,7 +6,7 @@ pkgdata_DATA   = sdf-xtc-tools.rtree sdf-options.rtree
 
 SCFLAGS        = --main io-$*
 STRINCLUDES    = -I $(XTC)/share/xtc
-LDADD          = $(SSL_LIBS)
+LDADD         += $(SSL_LIBS)
 
 EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) $(wildcard *.rtree) 
 CLEANFILES     = $(wildcard *.dep)
