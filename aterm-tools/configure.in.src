@@ -17,7 +17,7 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 dnl 02111-1307, USA.
 
-dnl $Id: configure.in.src,v 1.6 2001/05/31 14:26:28 mdejonge Exp $
+dnl $Id: configure.in.src,v 1.7 2001/06/01 08:55:31 mdejonge Exp $
 
 AC_INIT(configure.in)
 AM_INIT_AUTOMAKE(__PACKAGE__,__VERSION__)
@@ -33,7 +33,7 @@ AC_ARG_WITH(stratego,
    STRATEGO='$prefix')
 AC_SUBST(STRATEGO)
 
-AC_REVISION($Id: configure.in.src,v 1.6 2001/05/31 14:26:28 mdejonge Exp $)
+AC_REVISION($Id: configure.in.src,v 1.7 2001/06/01 08:55:31 mdejonge Exp $)
 
 AC_PROG_CC
 AC_PROG_INSTALL
@@ -51,7 +51,7 @@ AC_OUTPUT(
 	VERSION 
 
 	src/Makefile 
-	stc/templates/Makefile
+	src/templates/Makefile
 	
         __MAKEFILES__
 
