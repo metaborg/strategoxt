@@ -18,9 +18,9 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: make_rules.stratego,v 1.1 2001/06/05 09:11:45 mdejonge Exp $
+# $Id: make_rules.stratego,v 1.2 2001/06/05 12:17:32 mdejonge Exp $
 
-SC = sc
+SC = PATH=$(STRATEGO)/bin:$${PATH} sc
 
 EXTRA_DIST   += $(STRATEGO_PRG:%=%.r)
 
