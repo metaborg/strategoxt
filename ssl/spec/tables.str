@@ -225,6 +225,33 @@ strategies
       ; not([])
     )
 
+
+  hashtable-union-symm-wempty(|emptyElt) = ?(tbl1, tbl2);
+    where(
+
+      <hashtable-keys> tbl1
+      ; filter({key, val1, val2, val3: 
+          ?key
+          ; <hashtable-get(|key)> tbl1 => val1
+	  ; <hashtable-get(|key) <+ !emptyElt> tbl2 => val2
+          ; <union>(val1, val2) => val3
+          ; <hashtable-put(|key, val3)> tbl1
+          ; <hashtable-put(|key, val3)> tbl2
+          ; <not(?val1)> val3
+        }) => changes1
+
+      ; <hashtable-keys> tbl2
+      ; filter({key, val1, val2, val3: 
+          ?key
+	  ; <not(hashtable-get(|key))> tbl1
+          ; <hashtable-put(|key, <hashtable-get(|key)> tbl2)> tbl1
+        }) => changes2
+
+      ; (<not([])> changes1 <+ <not([])> changes2)
+
+    )
+
+
   /**
    * Checks whether two hashtables have equal contents.
    * This strategy uses the basic `eq` to compare the elements.

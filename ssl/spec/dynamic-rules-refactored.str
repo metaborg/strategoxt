@@ -138,7 +138,9 @@ strategies // high-level API with implicit rule set
   dr-add-rule(|name, label, key, value) =
     where(
       dr-get-rule-set(|name)
+      ; debug(!"dr-add-rule1: ")
       ; dr-add-to-rule-set(|label, key, value)
+      ; debug(!"dr-add-rule2: ")
       ; dr-set-rule-set(|name)
     )
 
@@ -159,13 +161,13 @@ strategies // high-level API with implicit rule set
     <dr-intersect-rule-sets-symm>(<id>, <dr-get-rule-set(|name)>)
     ; dr-set-rule-set(|name)
 
-//  dr-extend-with(|name) =
-//    <dr-extend-rule-set>(<dr-get-rule-set(|name)>, <id>)
-//    ; dr-set-rule-set(|name)  
+  dr-union-with(|name) =
+    <dr-union-rule-sets>(<dr-get-rule-set(|name)>, <id>)
+    ; dr-set-rule-set(|name)
 
-//  dr-replace-by(|name) =
-//    <dr-replace-rule-set>(<dr-get-rule-set(|name)>, <id>)
-//    ; dr-set-rule-set(|name)
+  dr-union-symm(|name) =
+    <dr-union-rule-sets-symm>(<id>, <dr-get-rule-set(|name)>)
+    ; dr-set-rule-set(|name)
 
   dr-print-rule-set(|name) =
     where(
@@ -309,6 +311,7 @@ strategies // setting a rule
         let set2(|labels, tbl2, key, value) =
               set1(|labels, tbl2, key, value)
               <+ <hashtable-get(|key)> tbl2 => value
+                 ; <hashtable-remove(|(labels, key))> tbl1
               <+ <hashtable-put(|(labels, key), value)> tbl1
          in <dr-set-in-rule-set(set2 | label, key, value)> rs
         end
@@ -439,43 +442,24 @@ strategies // intersection
             ; !(rulename, <dr-start-change-set>)
             ; dr-start-change-set(|rulename)})> rulenames => rs1
     )
-    //; debug(!"before first branch: ")
-    //; dr-print-rule-sets(|rulenames)
+    // ; debug(!"before first branch: ")
+    // ; dr-print-rule-sets(|rulenames)
     ; s1
-    //; debug(!"after first branch: ")
-    //; dr-print-rule-sets(|rulenames)
+    // ; debug(!"after first branch: ")
+    // ; dr-print-rule-sets(|rulenames)
     ; where(
         <map({(?rulename,dr-switch-rule-set(|rulename))})> rs1 => rs2
       )
     ; s2
-    //; debug(!"after second branch: ")
-    //; dr-print-rule-sets(|rulenames)
+    // ; debug(!"after second branch: ")
+    // ; dr-print-rule-sets(|rulenames)
     ; where(
         <map({?(rulename, <id>)
-	      ; dr-intersect-with(|rulename)
+	      ; try(dr-intersect-with(|rulename))
               ; dr-commit-change-set(|rulename)})> rs2
       )
-    //; debug(!"after intersect: ")
-    //; dr-print-rule-sets(|rulenames)
-
-  // for one rule
-
-  dr-fork-and-intersect-one(s1, s2 | rulename) = 
-    where(
-      dr-get-rule-set(|rulename)
-      ; dr-start-change-set  => rs1
-      ; dr-start-change-set(|rulename)
-    )
-    ; s1
-    ; where(
-        <dr-switch-rule-set(|rulename)> rs1 => rs2
-      )
-    ; s2
-    ; where(
-        <dr-intersect-with(|rulename)> rs2
-        ; dr-commit-change-set(|rulename)
-      )
-  
+    // ; debug(!"after intersection: ")
+    // ; dr-print-rule-sets(|rulenames)
 
   /**
    * n-way split in data-flow (case)
@@ -574,6 +558,76 @@ strategies // union
     ?([RuleScope(labels2, tbl2) | rs2], [ChangeSet(tbl1) | rs1])
     ; error
 
+
+  dr-union-rule-sets-symm =
+    eq < fail
+    + (dr-union-rule-sets-symm1  
+       <+ dr-union-rule-sets-symm2)
+
+  dr-union-rule-sets-symm1 :
+    ([RuleScope(labels1, tbl1) | rs1], rs@[RuleScope(labels2, tbl2) | rs2]) -> rs
+    where ior(<hashtable-union-symm-wempty(|[])> (tbl1, tbl2)
+  	     ,<dr-union-rule-sets> (rs1, rs2))
+
+  dr-union-rule-sets-symm2 :
+    ([ChangeSet(tbl1) | rs1], rs@[ChangeSet(tbl2) | rs2]) -> rs
+    where ior(<hashtable-union-symm-wempty(|[])> (tbl1, tbl2)
+  	     ,<dr-union-rule-sets> (rs1, rs2))
+
+
+  dr-fork-and-union(s1, s2 | rulenames) = 
+    where(
+      <map({?rulename
+	    ; dr-get-rule-set(|rulename)
+            ; !(rulename, <dr-start-change-set>)
+            ; dr-start-change-set(|rulename)})> rulenames => rs1
+    )
+    // ; debug(!"before first branch: ")
+    // ; dr-print-rule-sets(|rulenames)
+    ; s1
+    // ; debug(!"after first branch: ")
+    // ; dr-print-rule-sets(|rulenames)
+    ; where(
+        <map({(?rulename,dr-switch-rule-set(|rulename))})> rs1 => rs2
+      )
+    ; s2
+    // ; debug(!"after second branch: ")
+    // ; dr-print-rule-sets(|rulenames)
+    ; where(
+        <map({?(rulename, <id>)
+	      ; try(dr-union-with(|rulename))
+              ; dr-commit-change-set(|rulename)})> rs2
+      )
+    // ; debug(!"after union: ")
+    // ; dr-print-rule-sets(|rulenames)
+
+
+  dr-fix-and-union(s | rulenames) =
+    where(
+      <map({?rulename
+	    ; dr-get-rule-set(|rulename)
+            ; !(rulename, <dr-start-change-set>)
+            ; dr-start-change-set(|rulename)})> rulenames => rs
+    ); 
+    repeat(
+      where(
+        //  debug(!"before iteration: ")
+        // ; dr-print-rule-sets(|rulenames);
+	s 
+        // ; debug(!"after iteration: ")
+        // ; dr-print-rule-sets(|rulenames)
+        ; if <filter({?(rulename,<id>); dr-union-symm(|rulename)})> rs
+	     ; [] 
+          then ?e; fail // no changes in any of the rules
+          else id       // some rule changed; continue
+          end
+        // ; debug(!"after union: ")
+        // ; dr-print-rule-sets(|rulenames)
+      )
+    )
+    ; where(<map(dr-commit-change-set(|<id>))> rulenames)
+    ; !e
+
 strategies // rule-set equality
 
   dr-eq-rule-sets =
@@ -585,6 +639,8 @@ strategies // rule-set equality
       ; <hashtable-eq> (tbl1, tbl2)
    in where(zip(rseq))
   end
+
+
 
 strategies // debugging
 
