@@ -1,0 +1,62 @@
+/**
+ * Signature for error language used by CWI packages.
+ * 
+ * Example:
+ *
+ *   summary(
+ *     "sglr"
+ *   , "illegal"
+ *   , [ error(
+ *         "Parse error"
+ *       , [ localized(
+ *             "character '3' unexpected"
+ *           , area-in-file(
+ *               "illegal"
+ *             , area(1, 10, 1, 10, 10, 0)
+ *             )
+ *           )
+ *         ]
+ *       )
+ *     ]
+ *   )
+ *
+ * @author  Martin Bravenboer <martin@cs.uu.nl>
+ */
+module error-support
+
+signature
+  constructors
+
+    /**
+     * String 1: producer
+     * String 2: id
+     */
+    summary : String * String * List(Error) -> Summary
+
+  constructors
+    info    : String * List(Subject) -> Error
+    warning : String * List(Subject) -> Error
+    error   : String * List(Subject) -> Error
+    fatal   : String * List(Subject) -> Error
+
+  constructors
+    /**
+     * String: description
+     */
+    subject   : String -> Subject
+    localized : String * Location -> Subject
+
+  constructors
+    file         : String -> Location
+    area-in-file : String * Area -> Location
+
+    /**
+     * begin-line
+     * begin-column
+     * end-line
+     * end-column
+     * offset
+     * length
+     */
+    area : Int * Int * Int * Int * Int * Int -> Area
+
