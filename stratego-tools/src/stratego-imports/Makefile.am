@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/06/07 13:25:08 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2001/06/07 15:11:48 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -38,7 +38,7 @@ TESTS        = stratego_imports1_check \
                stratego_imports2_check \
                stratego_imports3_check
 
-EXTRA_DIST  += get-modules.r imports-stratego-check
+EXTRA_DIST  += get-modules.r
 
 CLEANFILES  += stratego_imports1_check \
                stratego_imports2_check \
