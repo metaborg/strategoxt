@@ -16,6 +16,8 @@ bin_PROGRAMS 	= strc
 noinst_PROGRAMS = strc-pre
 pkgdata_DATA 	= strc-manual.txt
 
+nodist_strc_SOURCES = strc.c
+
 CLEANFILES 	= $(wildcard *.dep)
 BOOTCLEANFILES 	= strc.c
 

@@ -1,8 +1,8 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-bin_PROGRAMS     = pack-stratego
 libexec_PROGRAMS = pack-stratego
+nodist_pack_stratego_SOURCES = pack-stratego.c
 
 STRINCLUDES  = -I $(STRATEGO_FRONT)/share/stratego-front -I $(srcdir)/../sig
 SCFLAGS      = --main $* $(XTCFLAGS)

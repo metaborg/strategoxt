@@ -6,6 +6,9 @@ EXTRA_DIST 	 = $(wildcard *.str) $(wildcard *.meta)
 libexec_PROGRAMS = s2c 
 check_PROGRAMS 	 = C-simplify-test 
 
+nodist_s2c_SOURCES = s2c.c
+nodist_C_simplify_test_SOURCES = C-simplify-test.c
+
 BOOTCLEANFILES 	 = s2c.c C-simplify-test.c
 
 CLEANFILES 	 = $(wildcard *.dep) $(TESTS)
