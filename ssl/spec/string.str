@@ -152,6 +152,7 @@ strategies
       Escape-double-quote
     + Escape-backslash
     + Escape-linefeed
+    + Escape-carriage-return
 
   Escape-double-quote    : ['"'  | cs ] -> ['\', '"'  | cs ]
   Escape-single-quote    : ['\'' | cs ] -> ['\', '\'' | cs ]
@@ -167,6 +168,7 @@ strategies
     + UnEscape-backslash
     + UnEscape-linefeed
     + UnEscape-tab
+    + UnEscape-carriage-return
 
   UnEscape-double-quote    : ['\', '"'  | cs ] -> ['"'  | cs ]
   UnEscape-single-quote    : ['\', '\'' | cs ] -> ['\'' | cs ]
