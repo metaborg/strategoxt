@@ -19,17 +19,17 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: gbquery.sh.src,v 1.4 2001/06/12 07:45:16 mdejonge Exp $
+# $Id: gbquery.sh.src,v 1.5 2001/06/12 07:46:17 mdejonge Exp $
 
 # gbquery: obtain information from the Grammar Base
 #
 # usage
 #  gbquery -h
-#  gbquery -d  -l lang -v version  Returns grammar definition lang
-#  gbquery -pt -l lang -v version  Returns parse table for lang
-#  gbquery -pp -l lang -v version  Returns pretty-print table for lang
-#  gbquery -i  -l lang -v version  Display information for lang
-#  gbquery [-L]                    Displays a list of available grammars.
+#  gbquery -d  -l lang [-v version]  Returns grammar definition lang
+#  gbquery -pt -l lang [-v version]  Returns parse table for lang
+#  gbquery -pp -l lang [-v version]  Returns pretty-print table for lang
+#  gbquery -i  -l lang [-v version]  Display information for lang
+#  gbquery [-L]                      Displays a list of available grammars.
 
 
 GB=__GB__
@@ -45,11 +45,11 @@ gbquery: obtain information from the Grammar Base
 
 usage
   gbquery -h
-  gbquery -d  -l lang -v version  Returns grammar definition lang
-  gbquery -pt -l lang -v version  Returns parse table for lang
-  gbquery -pp -l lang -v version  Returns pretty-print table for lang
-  gbquery -i  -l lang -v version  Display information for lang
-  gbquery [-L]                    Displays a list of available grammars.
+  gbquery -d  -l lang [-v version]  Returns grammar definition lang
+  gbquery -pt -l lang [-v version]  Returns parse table for lang
+  gbquery -pp -l lang [-v version]  Returns pretty-print table for lang
+  gbquery -i  -l lang [-v version]  Display information for lang
+  gbquery [-L]                      Displays a list of available grammars.
 ENDCAT
 }
 
