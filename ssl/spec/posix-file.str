@@ -190,10 +190,21 @@ strategies
    * mkstemp :: String -> String * Int
    */
   mkstemp =
-      <conc-strings> (<id>, "XXXXXX") => template
+    <conc-strings> (<id>, "XXXXXX") => template
     ; prim("SSL_mkstemp", template)
     <+ <perror; fail> "SSL/mkstemp"
-    
+ 
+  /**
+   * Creates a unique temporary directory
+   *
+   * returns a fd if succesful, fails on error
+   * mkdtemp :: String -> String
+   */
+  mkdtemp =
+    <conc-strings> (<id>, "XXXXXX") => template
+    ; prim("SSL_mkdtemp", template)
+    <+ <perror; fail> "SSL/mkdtemp"
+       
   /**
    * Closing a file
    *

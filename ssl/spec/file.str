@@ -275,6 +275,15 @@ strategies
       <conc-strings> (<temp-dir>, "/StrategoXT")
     ; mkstemp
 
+  /**
+   * Safe, mkdtemp based, creation of temporary directory
+   * 
+   * :: _ -> String
+   */
+  new-temp-dir =
+      <conc-strings> (<temp-dir>, "/StrategoXT")
+    ; mkdtemp
+
 /**
  * find files in paths
  */
