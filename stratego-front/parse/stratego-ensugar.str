@@ -1,5 +1,5 @@
 module stratego-ensugar
-imports stratego options string simple-traversal parenthesize
+imports stratego-ext options string simple-traversal parenthesize
 
 /**
  * This is a preliminary  implementation of the ensugaring
