@@ -167,6 +167,28 @@
      H hs=1 [KW["then"] _2]
      H hs=1 [KW["else"] _3] KW["end"]
    ],
+   SwitchChoiceNoOtherwise -- V[V is=2 vs=0 [
+     H hs=1 [KW["switch"] _1]
+     _2
+   ] KW["end"]
+   ],
+   SwitchChoiceNoOtherwise.2:iter-star -- V is=2 vs=0 [
+     H hs=1[KW["case"] _1 KW[":"]]
+     _2
+   ],
+   SwitchChoice -- V[V is=2 vs=0 [
+     H hs=1 [KW["switch"] _1]
+     _2
+     V is=2 vs=0 [
+       H hs=1[KW["otherwise"] KW[":"]]
+       _2
+     ]
+   ] KW["end"]
+   ],
+   SwitchChoice.2:iter-star -- V is=2 vs=0 [
+     H hs=1[KW["case"] _1 KW[":"]]
+     _2
+   ],
 
    Rec -- H[KW["rec"] _1 KW["("] _2 KW[")"]],
    Not -- H hs=0 [KW["not"] KW["("] _1 KW[")"]],

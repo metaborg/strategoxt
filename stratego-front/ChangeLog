@@ -1,3 +1,51 @@
+2004-04-28  Arthur van Dam  <adam@cs.uu.nl>
+
+	* syn/Stratego-Strategies.sdf: Introduced the switch-case(-otherwise)
+	construct.
+
+	Syntax:
+	  switch s0
+	    case s1 : s1'
+	    case s2 : s2'
+	    // ...
+	    otherwise : s' // otherwise branch is optional
+	  end
+
+	Semantics:
+	s0 will be applied to the current term from right before the switch.
+	Its result will be the input term for each case-condition strategy si.
+	The body strategies of the case branches, si', will be applied to the
+	current term from right before the switch.
+	The case branches will be applied in their normal order until a case
+	condition succeeds. If a body strategy of a selected case branch
+	fails, no backtracking to other (next) branches occurs, the entire
+	switch then fails. Other branches will only be selected if all
+	previous case-condition strategies failed.
+	The optional default branch can only occur at the end and directly
+	applies its body strategy s'. 
+
+	* parse/stratego-desugar.str: Desugaring of switch construct.
+
+	Desugaring of the above example:
+	    ?t
+	  ; s0 => t0
+	  ; (where(<s1> t0)
+	     < <s1'> t
+	     + (where(<s2> t0)
+	        < <s2'> t
+	        +
+	           // ...
+	           + <s'> t // or fail if no otherwise branch
+	          )
+	       )
+	    )
+
+	Note that no unbinding occurs on backtracking (STR-9), so do not use
+	the same variables for matching in multiple branches.
+
+	* test/switch-semantics-test.str: Tests various properties of switch
+	blocks.
+
 2004-04-14  Eelco Visser  <visser@cs.uu.nl>
 
 	* sig/Stratego-MetaTransition.str: meta-transition markers in

@@ -4,13 +4,13 @@ include Makefile.parse-unit
 SDFINCLUDES     = -I $(STRATEGO_FRONT)/share/sdf/stratego-front
 SCFLAGS         = --keep 10
 PGEN_FLAGS      = -m $*
-check_PROGRAMS 	= prop1
+check_PROGRAMS 	= prop1 switch-semantics-test
 check_DATA      = PropStratego.tbl 
 
 TESTSUITES        = strategies.testsuite dynrules.testsuite
 PARSE_UNIT_PTABLE = $(top_srcdir)/syn/StrategoForTesting.tbl
 
-TESTS = prop1
+TESTS = prop1 switch-semantics-test
 
 installcheck-local: $(TESTSUITES:.testsuite=.runtestsuite)
 check: check1 check1-asfix check2 check3 check4
