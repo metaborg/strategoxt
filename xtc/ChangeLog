@@ -1,3 +1,7 @@
+2003-01-18  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/xtc-query.str: do an xtc-import when performing a query
+
 2003-01-12  Eelco Visser  <visser@cs.uu.nl>
 
 	* xtc-call and xtc-get incorporated in xtc as "xtc call"

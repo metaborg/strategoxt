@@ -10,10 +10,11 @@ strategies
   repository-query =
     <get-config> "-R"
     ; xtc-location
-    ; <print>(stdout, ["XTC_REPOSITORY=", <id>])
+    ; <print>(stdout, ["XTC_REPOSITORY=", <id>, "\n"])
 
   all-query =
     <get-config> "-a"
+    ; xtc-import
     ; <table-getlist> XTC
     ; map(try((Tool(id),id); list-tool))
 
@@ -25,11 +26,12 @@ strategies
 
   tool-query =
     <get-config> "-t"
+    ; xtc-import
     ; map({tool: ?tool;
            (if-verbose3(debug(!"Retrieving tool: "))
             ; <table-get> (XTC, Tool(tool)) => entries
             ; <version-query <+ list-tool> (Tool(tool), entries)
-            <+ <print>(stdout, [tool, " : no registration"]))})
+            <+ <print>(stdout, [tool, " : no registration", "\n"]))})
 
   version-query =
     where(<get-config> "-V" => version)

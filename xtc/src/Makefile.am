@@ -14,7 +14,9 @@ BOOTCLEANFILES	= xtc.c cp-file.c
 
 check_PROGRAMS  = test1 test2 test3
 
-check :
+check: check1 check2
+
+check1 :
 	./xtc -r TEST_REPOSITORY register -t test1 -t test2 -t test3 \
 		-V $(VERSION) -l `pwd` --verbose 10
 	echo "A" > test1.inp
@@ -23,3 +25,6 @@ check :
 	$(ATERM)/bin/baffle -wt -i test1.bo -o test1.out
 	diff test1.exp test1.out
 
+check2 :
+	./xtc -r TEST_REPOSITORY2 import $(REPOSITORY)
+	./xtc -r TEST_REPOSITORY2 query -t sglr
