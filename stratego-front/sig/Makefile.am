@@ -1,7 +1,7 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-signatures =                   \
+autogensignatures =            \
   Stratego-Amb.str             \
   Stratego-Modules.str         \
   Stratego.str                 \
@@ -20,12 +20,15 @@ signatures =                   \
   Stratego-Core-Layout.str     \
   Stratego-Core-Modules.str    \
   Stratego-Core-Signatures.str \
-  Stratego-Core-Strategies.str \
-  \
+  Stratego-Core-Strategies.str
+
+staticsignatures =             \
   Stratego-MetaTransition.str
 
+signatures = $(autogensignatures) $(staticsignatures)
+
 CLEANFILES	= $(wildcard *.atree)
-BOOTCLEANFILES	= $(signatures) $(wildcard *.rtree) Stratego.def Stratego-Amb.def
+BOOTCLEANFILES	= $(autogensignatures) $(wildcard *.rtree) Stratego.def Stratego-Amb.def
 
 pkgdata_DATA    = $(signatures:.str=.rtree)
 EXTRA_DIST      = $(wildcard *.str) $(wildcard *.rtree) $(pkgdata_DATA) Stratego.def
@@ -42,4 +45,4 @@ Stratego-Amb.def:
 	rm -f Stratego-Amb.def
 	ln -s ../syn/Stratego-Amb.def .
 
-$(signatures) : Stratego.def Stratego-Core.def Stratego-Amb.def
+$(autogensignatures) : Stratego.def Stratego-Core.def Stratego-Amb.def
