@@ -8,7 +8,9 @@ imports
   Bracket-Symbol
   Sdf2
   AsFix
-  sdf-xtc-tools
+  sdf/tool/xtc
+  sdf/production/utils
+  sdf/production/attributes
 
 strategies
 
@@ -38,33 +40,12 @@ strategies
     ;   say(!"[ppgen | warning] No constructor defined for production" )
     ; debug(!"[ppgen | warning]   ")
 
-  ignore-prod =
-    ?prod([sort(_)], sort(_), attrs([]))
-
-  ignore-prod =
-      ?prod(_, _, attrs(attrs))
-    ; where(<contains-bracket> attrs)
-
-  ignore-prod =
-      ?prod(_, _, attrs(attrs))
-    ; where(<contains-reject> attrs)
-    
-
-  /**
-   * From a prod-fun we make a ordinary prod and call generate-pp-entries recursively.
-   */
-  generate-pp-entries =
-      ?prod-fun(fun, syms, sym, attrs)
-    ; !prod( <concat> [[lit(fun), lit("(")], syms, [lit(")")]], sym, attrs )
-    ; generate-pp-entries
-
 strategies
 
-  /**
-   * Ignore a reject production that injects A into A.
-   */
   ignore-prod =
-    ?prod(_, _, attrs(attrs)); where(<contains-reject> attrs)
+      is-inject-prod
+    + is-bracket-prod
+    + is-reject-prod
 
   /**
    * Ignore a bracket production that injects A into A.
@@ -75,6 +56,16 @@ strategies
         <contains-bracket> attrs
       ; <not(get-cnstr-name)> attrs
       )
+
+strategies    
+
+  /**
+   * From a prod-fun we make a ordinary prod and call generate-pp-entries recursively.
+   */
+  generate-pp-entries =
+      ?prod-fun(fun, syms, sym, attrs)
+    ; !prod( <concat> [[lit(fun), lit("(")], syms, [lit(")")]], sym, attrs )
+    ; generate-pp-entries
 
 strategies
 
@@ -289,30 +280,3 @@ signature
       iter-sep-n: Iter * Sep -> Symbol
       iter-n:     Iter       -> Symbol
 
-
-/**
- * @todo  Copied from stratego-regular. Should be in separate lib.
- */
-strategies
-
-   /**
-   * @type  List(Attribute) ->? _
-   */
-  contains-bracket =
-    fetch(?bracket())
-
-  /**
-   * @type  List(Attribute) ->? _
-   */
-  contains-reject =
-    fetch(?reject())
-
-  /**
-   * @type  List(Attribute) -> String
-   */
-  get-cnstr-name =
-    fetch-elem(
-      ?term(appl(uqlit("cons"), [fun(qlit(<un-double-quote>))]))
-    + ?term(cons(<id>))
-    + ?cons(<id>)
-    )

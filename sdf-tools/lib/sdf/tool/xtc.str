@@ -13,11 +13,11 @@ strategies
 strategies
 
   xtc-parse-sdf2 =
-      xtc-sglri-temp(|"Sdf2.baf")
+      xtc-sglri(|"Sdf2.baf")
     ; xtc-transform(!"sdf-desugar", pass-verbose)
 
   xtc-parse-sdf2(|sort) =
-      xtc-sglri-temp(|"Sdf2.baf", sort)
+      xtc-sglri(|"Sdf2.baf", sort)
     ; xtc-transform(!"sdf-desugar", pass-verbose)
 
 strategies    
@@ -39,14 +39,3 @@ strategies
       xtc-transform(!"sdf2table", !["-n", "-m", main | <pass-v-verbose>])
     ; xtc-transform(!"implodePT", pass-v-verbose)
     ; xtc-transform(!"sdf-desugar", pass-verbose)
-
-/**
- * @todo  Remove if xtc-sglri is in the baseline.
- */
-strategies
-
-  xtc-sglri-temp(|tbl) =
-    xtc-transform(!"sglri", !["-p", <xtc-find> tbl | <pass-verbose> ()])
-
-  xtc-sglri-temp(|tbl, sort) =
-    xtc-transform(!"sglri", !["-p", <xtc-find> tbl, "--start", sort | <pass-verbose> ()])

@@ -9,7 +9,10 @@ STRINCLUDES = -I $(top_srcdir)/trans \
               -I $(top_srcdir)/sig/pp-table \
               -I $(top_srcdir)/xtc-tools \
               -I $(SDF_FRONT)/share/sdf-front \
-              -I $(XTC)/share/xtc
+              -I $(XTC)/share/xtc \
+              -I $(top_srcdir)/../sdf-tools/lib
+
+# todo: baseline issue. Remove this dirty import
 
 EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta)
 CLEANFILES     = $(wildcard *.dep)

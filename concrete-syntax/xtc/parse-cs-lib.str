@@ -64,9 +64,9 @@ strategies
 
   pcs-parse-ast =
     if <MetaData> "TopSort" then
-      xtc-sglri-temp(|<MetaData> "ParseTable", <MetaData> "TopSort")
+      xtc-sglri(|<MetaData> "ParseTable", <MetaData> "TopSort")
     else
-      xtc-sglri-temp(|<MetaData> "ParseTable")
+      xtc-sglri(|<MetaData> "ParseTable")
     end
     ; if-keep1(copy-to(<add-extension> (<get-config> "input-file", "ast")))
 
@@ -150,20 +150,6 @@ strategies // obtain pretty-print table
     ; if-verbose6(debug(!"using pp table: "))
 
 strategies // parsing
-
-  /**
-   * @todo Remove if xtc-sglri is in the baseline.
-   */
-  xtc-sglri-temp(|tbl) =
-    xtc-sglr-asfix2(|tbl)
-    ; xtc-implode-asfix
-
-  /**
-   * @todo Remove if xtc-sglri is in the baseline.
-   */
-  xtc-sglri-temp(|tbl, sort) =
-    xtc-sglr-asfix2(|tbl, sort)
-    ; xtc-implode-asfix
 
   xtc-sglr-asfix2(|tbl) =
     xtc-transform(!"sglr", !["-2", "-p", <file-exists <+ xtc-find> tbl | <pass-v-verbose> ])

@@ -60,16 +60,13 @@ strategies
 
   read-parse-testsuite =
     if not(is-abstract-input) then
-      xtc-sglri-temp(|"parse-testsuite.tbl", "TestSuite")
+      xtc-sglri(|"parse-testsuite.tbl", "TestSuite")
     end
     ; read-from
     ; try(upgrade-oldskool-testsuite)
     ; parse-testsuite(id, id, map(try(add-description)))
     ; parse-testsuite(id, id, map(ensure-test-input-in-file))
     ; parse-testsuite(id, id, map(ensure-test-output-not-in-file))
-
-  xtc-sglri-temp(|tbl, sort) =
-    xtc-transform(!"sglri", !["-p", <xtc-find> tbl, "--start", sort | <pass-verbose> ()])
 
 rules
 
