@@ -1,3 +1,8 @@
+2002-12-11  Eelco Visser  <visser@cs.uu.nl>
+
+	* Implemented sdf-to-sig in Stratego using XTC. Note that writing
+	text to stdout is not supported yet with XTC.
+
 2002-10-02  Merijn de Jonge <mdejonge@cwi.nl>
    * Commented out sdf-to-sig glue script and the package dependencies it
      introduces, because they yield bootstrap problems

@@ -4,21 +4,24 @@ include $(wildcard *.dep)
 
 SUBDIRS		 = data
 
-bin_SCRIPTS	 = sdf-to-sig
-bin_PROGRAMS 	 = sdf2sig
+bin_PROGRAMS	 = sdf-to-sig sdf2sig
 libexec_PROGRAMS = sdf2sig
+pkgdata_DATA	 = dummy.pp dummy.pp.af
+
+sdf-to-sig.o	 : xtc-conf.h
+sdf2sig.o	 : xtc-conf.h
 
 BOOTCLEANFILES 	 = sdf2sig.c
 CLEANFILES       = sdf2sig1_check sdf2sig2_check $(wildcard *.dep) 
 
-EXTRA_DIST 	 = sdf-to-sig.src $(wildcard *.str)
+EXTRA_DIST 	 = $(wildcard *.str)
 
 TESTS        	 = sdf2sig1_check sdf2sig2_check
 
 SCFLAGS    	 = -I ${srcdir}/../stratego \
                    -I ${srcdir}/../sdf2stratego \
 	           -I $(ASFIX_TOOLS)/share/asfix-tools \
-	           --main $*
+	           --main $* $(XTCFLAGS)
 
 sdf2sig1_check_prog     = sdf2sig
 sdf2sig1_check_input    = data/prop.sdf.af

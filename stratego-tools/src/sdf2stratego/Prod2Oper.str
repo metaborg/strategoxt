@@ -109,7 +109,7 @@ signature
 
 strategies
 
-  sym2term = innermost(Sym2Term <+ Propagate-dummy);not(?dummy())
+  sym2term = innermost(Sym2Term <+ Propagate-dummy); not(?dummy())
 
 
 (*
