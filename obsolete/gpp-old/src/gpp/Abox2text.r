@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Abox2text.r,v 1.1 2001/06/05 09:11:46 mdejonge Exp $
+% $Id: Abox2text.r,v 1.2 2001/06/08 08:28:30 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
@@ -73,10 +73,10 @@ usage =
 
 abox2text = 
    split(id,!0);
-   Abox2text
+   Abox-2-text
 
 (*
-Abox2text =
+Abox-2-text =
    ?(H(sopt, xs), xpos)
    ; <Hspace>sopt => hs
    ; <string-length>hs => hsl
@@ -84,32 +84,32 @@ Abox2text =
    ; rec x(([],id)
         <+ {s, xpos2: 
             \ ([b], xpos1) -> ([s], xpos2)
-              where <Abox2text>(b, xpos1) => (s, xpos2) \ }
+              where <Abox-2-text>(b, xpos1) => (s, xpos2) \ }
         <+ {s, ss, xpos2,xpos3 : 
             \ ([b|bs], xpos1) -> ([s|ss], xpos3)
-             where <Abox2text>(b, xpos1) => (s, xpos2);
+             where <Abox-2-text>(b, xpos1) => (s, xpos2);
                    <x>(bs, <add>(hsl, xpos2)) => (ss, xpos3) \ } 
         )
    ; (separate-by(!hs), id)
 *)
 
-  Abox2text =
+  Abox-2-text =
    ?(H(sopt, xs), xpos) 
    ; <Hspace> sopt => hs
    ; <string-length> hs => hsl
    ; !Pair(<filter(not([] + H([],[])))> xs, xpos)
    ; thread-map({s, xpos': 
                  \ Pair(b, xpos) -> Pair(s, <add>(hsl, xpos'))
-                   where <Abox2text> (b, xpos) => (s, xpos')\ })
+                   where <Abox-2-text> (b, xpos) => (s, xpos')\ })
    ; ?Pair(zs, xpos2)
    ; !(<separate-by(!hs)> zs, xpos2)
    ; try((not([]), \ xpos -> <subt> (xpos, hsl)\ ))
 
-  //Abox2text =
+  //Abox-2-text =
   //   ?HV(_, xs );
   //   <separate-by(!" ")>xs
 
-  Abox2text =
+  Abox-2-text =
     ?(V(sopt, xs ), xpos)
   ; <Vspace>sopt => vs
   ; <Ispace>sopt => is
@@ -118,36 +118,36 @@ Abox2text =
   ; !xs
   ; filter(not([]));
     ( [];!([], xpos)
-    + [\ x -> <Abox2text>(x, xpos) \ 
-       | map( \ x -> <Abox2text>(x, <add>(xpos, isl)) \ )]
+    + [\ x -> <Abox-2-text>(x, xpos) \ 
+       | map( \ x -> <Abox-2-text>(x, <add>(xpos, isl)) \ )]
       ; at-last( [?(_,xpos')] )
       ; map(Fst)
       ; separate-by(!vsep)
       ; split(id, !xpos')
     )
 
-  Abox2text =
+  Abox-2-text =
     \ (S(s), xpos) -> (s, <add>(xpos, <string-length>s)) \
 
-  Abox2text =
-    \ (FBOX(_,b), xpos) -> <Abox2text>(b, xpos) \
+  Abox-2-text =
+    \ (FBOX(_,b), xpos) -> <Abox-2-text>(b, xpos) \
 
-  Abox2text =
-    \ (HV(sopt, bs), xpos) -> <Abox2text> (H(sopt, bs), xpos) \
+  Abox-2-text =
+    \ (HV(sopt, bs), xpos) -> <Abox-2-text> (H(sopt, bs), xpos) \
 
-  Abox2text =
-    \ (R(sopt, bs), xpos) -> <Abox2text> (H(sopt, bs), xpos) \
+  Abox-2-text =
+    \ (R(sopt, bs), xpos) -> <Abox-2-text> (H(sopt, bs), xpos) \
 
-  Abox2text =
-    \ (A(_,sopt, bs), xpos) -> <Abox2text> (V(sopt, bs), xpos) \
+  Abox-2-text =
+    \ (A(_,sopt, bs), xpos) -> <Abox-2-text> (V(sopt, bs), xpos) \
       
-  Abox2text =
-    \ (ALT( a1, a2), xpos) -> <Abox2text> (a1, xpos) \
+  Abox-2-text =
+    \ (ALT( a1, a2), xpos) -> <Abox-2-text> (a1, xpos) \
 
-  Abox2text =
-    \ ([x], xpos) -> <Abox2text> (x, xpos) \
+  Abox-2-text =
+    \ ([x], xpos) -> <Abox-2-text> (x, xpos) \
 
-  Abox2text =
+  Abox-2-text =
     \ ([], xpos) -> ("", xpos) \
 
 strategies

@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Abox2html.r,v 1.1 2001/06/05 09:11:46 mdejonge Exp $
+% $Id: Abox2html.r,v 1.2 2001/06/08 08:28:29 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
@@ -61,7 +61,7 @@ abox2html =
    // First perform some normalizations
    normalize;
    // Then translate abstract box to abstract html....
-   topdown( try(Abox2html) ) => s;
+   topdown( try(Abox-2-html) ) => s;
    !TABLE( [], [TR([],[TD([],s)])]);
 
    // ... hten translate abstract html to plain text
@@ -75,12 +75,12 @@ rules
 // asbstract html
 
 // Box strings
-Abox2html:
+Abox-2-html:
    S(s) -> <html-string>s
 
 
 // Box comments
-Abox2html:
+Abox-2-html:
    C([], bs) -> s
    where
      <map(\ S(x) -> <make-html-comment>x \)>bs => bs';
@@ -89,7 +89,7 @@ Abox2html:
 // Box fonts
 // Box dynamic fonts are translated to special HTML classes.
 // Static Box font are discarded in the HTML transformation.
-Abox2html:
+Abox-2-html:
    FBOX(FO, b) -> s
    where
       !FO;
@@ -106,14 +106,14 @@ Abox2html:
       ) => s
 
 //  Box H operator
-Abox2html:
+Abox-2-html:
    H(so, b ) -> s
    where
       <Hspace> so => hs;
       <sep-by(!hs)>b => s
 
 // Box V operator
-Abox2html:
+Abox-2-html:
    V(so, b ) -> [TDTD, TABLE([],s)]
    where
       <Vspace>so => vs;
@@ -123,7 +123,7 @@ Abox2html:
       separate-by(!vs) => s
 
 // Box HV operator
-Abox2html:
+Abox-2-html:
    HV(so, b ) -> s
    where
       <Hspace>so => hs;
@@ -135,7 +135,7 @@ Abox2html:
       ) => s
 
 // Box A operator
-Abox2html:
+Abox-2-html:
    A(aos, so, b ) -> TD'(TD([], [TABLE([],[s])]))
    where
       <construct-rows>b => bs;
@@ -144,23 +144,23 @@ Abox2html:
       separate-by( !vs ) => s
 
 // Box ALT operator
-Abox2html:
+Abox-2-html:
    ALT( b1, b2 ) -> b1
 
 // Box L operator
-Abox2html:
+Abox-2-html:
    L( b1, b2 ) -> HR
 
 // Box L operator
-Abox2html:
+Abox-2-html:
    LNAT( i, b ) -> HR
 
 // Box LBL operator
-Abox2html:
+Abox-2-html:
    LBL( url, text ) -> [ANCHOR( url ), text]
 
 // Box REF operator
-Abox2html:
+Abox-2-html:
    REF( url, text ) -> HREF( url, text )
    
 toa(aoptions) : 

@@ -1,3 +1,6 @@
+2001-06-08 Merijn de Jonge <mdejonge@cwi.nl> 
+   * bugfix: --main switch interfered with implementation strategies.
+
 2001-06-07 Merijn de Jonge <mdejonge@cwi.nl> 
    * src/gpp/gpp.Makefile.am.src: Fixed some PATH problems
    * src/gpp/tohtml-sdf.sh.src moved to sdf-tools package
