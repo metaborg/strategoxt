@@ -2,8 +2,8 @@ module Stratego-Strategies
 signature
   constructors
     SDefNoArgs : Id * Strategy -> StrategyDef
-    SDefS      : Id * List(Typedid) * Strategy -> StrategyDef
-    SDef       : Id * List(Typedid) * List(Typedid) * Strategy -> StrategyDef
+    SDef       : Id * List(Typedid) * Strategy -> StrategyDef
+    SDefT      : Id * List(Typedid) * List(Typedid) * Strategy -> StrategyDef
 signature
   constructors
     DefaultVarDec : Id -> Typedid
@@ -16,7 +16,7 @@ signature
     SVar           : Id -> SVar
     Let            : List(Def) * Strategy -> Strategy
     Call           : SVar * List(Strategy) -> Strategy
-    Call           : SVar * List(Strategy) * List(Term) -> Strategy
+    CallT          : SVar * List(Strategy) * List(Term) -> Strategy
     Match          : Term -> Strategy
     Build          : Term -> Strategy
     ScopeDefault   : Strategy -> Strategy
@@ -33,7 +33,7 @@ signature
     Bagof          : Strategy -> Strategy
     PrimNoArgs     : String -> Strategy
     Prim           : String * List(Term) -> Strategy
-    Prim           : String * List(Strategy) * List(Term) -> Strategy
+    PrimT          : String * List(Strategy) * List(Term) -> Strategy
     Path           : Int * Strategy -> Strategy
     Some           : Strategy -> Strategy
     One            : Strategy -> Strategy

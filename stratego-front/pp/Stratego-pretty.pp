@@ -71,12 +71,22 @@
    Con3 -- KW["["] _1 KW["where"] _2 KW["]"],
    Con4 -- KW["["] _1 KW["where"] _2 KW["]"] KW["("] _3 KW[")"],
    
-   RDefNoArgs -- V is=2[H[_1 KW[":"]] _2],
-   RDef -- V is=2[H[ H hs=0[_1 KW["("] H[_2] KW[")"]] KW[":"]] _3],
-   RDef.2:iter-star-sep -- H hs=0[_1 KW[","]],
+   RDefNoArgs 	 		    -- V is=2[H[_1 KW[":"]] _2],
+   RDef 			    -- V is=2[H[ H hs=0[_1 KW["("] H[_2] KW[")"]] KW[":"]] _3],
+   RDef.2:iter-star-sep 	    -- H hs=0[_1 KW[","]],
+
+   RDefT                            -- V is=2[H[ H hs=0[_1 KW["("] H[_2 KW["|"] _3] KW[")"]] KW[":"]] _4],
+   RDefT.2:iter-star-sep            -- H hs=0[_1 KW[","]],
+   RDefT.3:iter-star-sep            -- H hs=0[_1 KW[","]],
+   
    SRDefNoArgs -- _1 KW["::"] _2,
    SRDef -- _1 KW["("] _2 KW[")"] KW["::"] _3,
    SRDef.2:iter-star-sep -- _1 KW[","],
+
+   SRDefT                           -- _1 KW["("] _2 KW["|"] _3 KW[")"] KW["::"] _4,
+   SRDefT.2:iter-star-sep           -- _1 KW[","],
+   SRDefT.3:iter-star-sep           -- _1 KW[","],
+
    RuleNoCond -- V[H[_1 KW["->"]] _2],
    Rule -- V[H[_1 KW["->"]] _2 H[KW["where"] _3]],
    StratRuleNoCond -- _1 KW["-->"] _2,
@@ -89,10 +99,17 @@
    Let.1:iter-star -- _1,
    Let.1:iter-star.1:alt -- _1 _2,
    
-   CallNoArgs -- _1,
-   Call -- H hs=0[_1 KW["("] H[_2] KW[")"]],
-   Call.2:iter-star-sep -- H hs=0[_1 KW[","]],
+   Cong			    	    -- H hs=0[_1 KW["("] H[_2] KW[")"]],
+
+   CallNoArgs 			    -- _1,
+   Call 			    -- H hs=0[_1 KW["("] H[_2] KW[")"]],
+   Call.2:iter-star-sep 	    -- H hs=0[_1 KW[","]],
    
+   CallT                            --  H hs=0[_1 KW["("] H[_2 KW["|"] _3] KW[")"]],
+   CallT.2:iter-star-sep            --  H hs=0[_1 KW[","]],
+   CallT.3:iter-star-sep            --  H hs=0[_1 KW[","]],
+
+
    Match -- H hs=0[KW["?"] _1],
    Build -- H hs=0[KW["!"] _1],
    
@@ -122,9 +139,15 @@
    Where -- H hs=0 [KW["where"] KW["("] _1 KW[")"]],
    Test -- H hs=0 [KW["test"] KW["("] _1 KW[")"]],
    Bagof -- H hs=0 [KW["bagof"] KW["("] _1 KW[")"]],
+
    PrimNoArgs -- H hs=0 [KW["prim"] KW["("] _1 KW[")"]],
    Prim -- H hs=0 [KW["prim"] KW["("] _1 KW[","] _2 KW[")"]],
    Prim.2:iter-star-sep -- _1 KW[","],
+
+   PrimT                            -- H hs=0 [KW["prim"] KW["("] _1 H[KW[","] _2 KW["|"] _3] KW[")"]],
+   PrimT.2:iter-star-sep            -- H hs=0 [_1 KW[","]],
+   PrimT.3:iter-star-sep            -- H hs=0 [_1 KW[","]],
+
    Path -- _1 _2,
    Some -- H hs=0 [KW["some"] KW["("] _1 KW[")"]],
    One -- H hs=0 [KW["one"] KW["("] _1 KW[")"]],
@@ -157,6 +180,11 @@
    SDefNoArgs -- V is=2[H[ _1 KW["="]] _2 ],
    SDef -- V is=2[H[ H hs=0[_1 KW["("] H[_2] KW[")"]] KW["="]] _3],
    SDef.2:iter-star-sep -- H hs=0[_1 KW[","]],
+
+   SDefT                            
+	-- V is=2[H[ H hs=0[_1 KW["("] H[_2]] KW["|"] H hs=0[H[_3] KW[")"]] KW["="]] _4],
+   SDefT.2:iter-star-sep            -- H hs=0[_1 KW[","]],
+   SDefT.3:iter-star-sep            -- H hs=0[_1 KW[","]],
 
    DefaultVarDec -- _1,
    VarDec -- H[_1 KW[":"] _2],

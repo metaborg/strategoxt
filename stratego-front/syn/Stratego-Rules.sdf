@@ -9,13 +9,13 @@ exports
     Id ":" Rule 				-> RuleDef {cons("RDefNoArgs")}
     Id "(" {Typedid ","}* ")" ":" Rule 		-> RuleDef {cons("RDef")}
     Id "(" {Typedid ","}* 
-       "|" {Typedid ","}* ")" ":" Rule 		-> RuleDef {cons("RDef")}
+       "|" {Typedid ","}* ")" ":" Rule 		-> RuleDef {cons("RDefT")}
 
   context-free syntax
     Id "::" StratRule 				-> RuleDef {cons("SRDefNoArgs")}
     Id "(" {Typedid ","}* ")" "::" StratRule 	-> RuleDef {cons("SRDef")}
     Id "(" {Typedid ","}* 
-       "|" {Typedid ","}*")" "::" StratRule 	-> RuleDef {cons("SRDef")}
+       "|" {Typedid ","}*")" "::" StratRule 	-> RuleDef {cons("SRDefT")}
 
   context-free syntax
     Term "->" Term 		    		-> Rule {cons("RuleNoCond")}

@@ -22,8 +22,10 @@ rules
 //    RDef(f, xs, r) 	-> RDef(f, xs, [], r)
   Desugar :
     SRDefNoArgs(f, r) 	-> SRDef(f, [], r)
+  Desugar :
+    SRDef(f, xs, r) 	-> RDef(f, xs, r)
 //  Desugar :
-//    SRDef(f, xs, r) 	-> SRDef(f, xs, [], r)
+//    SRDefT(f, xs, ys, r) -> RDefT(f, xs, ys, r)
 
   Desugar :
     SDefNoArgs(f, s) 	-> SDef(f, [], s)

@@ -1,3 +1,10 @@
+2003-07-13  Eelco Visser  <visser@cs.uu.nl>
+
+	* parse/meta-explode.str: WithAnno is considered a special constructor
+	(like ToTerm) that should be used to annotate a term in concrete
+	syntax. Anno was used for this purpose, but that was a bug, because
+	of the clash with the Anno constructor in Stratego itself.
+
 2003-07-11  Eelco Visser  <visser@cs.uu.nl>
 
 	* syn/Stratego-Strategies.sdf: Syntax for quoted constructors.

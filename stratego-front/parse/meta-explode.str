@@ -34,7 +34,9 @@ strategies
 
   TrmFromApp  =	?FromApp(<!RootApp(<MetaExplode>)>)
 
-  TrmAnno     =	Anno(trm-explode, MetaExplode)
+  //TrmAnno     =	Anno(trm-explode, MetaExplode)
+
+  TrmAnno     : WithAnno(t1, t2) -> Anno(<trm-explode> t1, <MetaExplode> t2)
 
   TrmNil      :	[] -> Op("Nil", [])
 

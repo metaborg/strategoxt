@@ -3,9 +3,9 @@ exports
 
   context-free syntax
     Id  		      "=" Strategy -> StrategyDef {cons("SDefNoArgs")}
-    Id "(" {Typedid ","}* ")" "=" Strategy -> StrategyDef {cons("SDefS")}
+    Id "(" {Typedid ","}* ")" "=" Strategy -> StrategyDef {cons("SDef")}
     Id "(" {Typedid ","}* 
-       "|" {Typedid ","}* ")" "=" Strategy -> StrategyDef {cons("SDef")}
+       "|" {Typedid ","}* ")" "=" Strategy -> StrategyDef {cons("SDefT")}
 
   context-free syntax
     Id 				  	  -> Typedid {cons("DefaultVarDec")}
@@ -23,7 +23,7 @@ exports
     "let" Def* "in" Strategy 		  -> Strategy {cons("Let")}
     SVar "(" {Strategy ","}* ")" 	  -> Strategy {cons("Call")}
     SVar "(" {Strategy ","}* 
-         "|" {Term ","}* ")" 	          -> Strategy {cons("Call")}
+         "|" {Term ","}* ")" 	          -> Strategy {cons("CallT")}
 
 
     %% Match and build
@@ -60,7 +60,7 @@ exports
     "prim" "(" String ")" 		  -> Strategy {cons("PrimNoArgs")}
     "prim" "(" String "," {Term ","}* ")" -> Strategy {cons("Prim")}
     "prim" "(" String "," {Strategy ","}* 
-                      "|" {Term ","}*")"  -> Strategy {cons("Prim")}
+                      "|" {Term ","}*")"  -> Strategy {cons("PrimT")}
 
     %% Traversal
 
