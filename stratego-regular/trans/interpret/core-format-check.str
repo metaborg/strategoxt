@@ -64,7 +64,9 @@ strategies
     ; if <one-consnil(id)> t then
         <fprintnl> (<stderr-stream>, ["    inferred types of subterms: "])
       ; <all-consnil(
-          <fprintnl> (<stderr-stream>, ["    typed ", <write-to-string>, " as ", <retrieve-types; iset-elements; types-to-string>])
+          where(
+            <fprintnl> (<stderr-stream>, ["    typed ", <write-to-string>, " as ", <retrieve-types; iset-elements; types-to-string>])
+          )
         )> t
       else id end
     ; <exit> 1
