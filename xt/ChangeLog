@@ -1,3 +1,7 @@
+2000-12-14 Merijn de Jonge <mdejonge@cwi.nl>
+        * XT now bundles version 1.32 of gpp (watch out, this breaks
+          spec/ast2abox!)
+
 2000-12-12 Merijn de Jonge <mdejonge@cwi.nl>
         * New version of collect.sh
 
