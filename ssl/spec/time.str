@@ -43,7 +43,7 @@ signature
   
 strategies
 
-  /*   time  returns the time since the Epoch (00:00:00 UTC, Jan­
+  /*   time  returns the time since the Epoch (00:00:00 UTC, JanÂ­
        uary 1, 1970), measured in seconds. */
   time = 
     prim("SSL_time")
@@ -65,8 +65,8 @@ strategies
     ?EpochTime(t); prim("SSL_epoch2localtime", t); prim-tuple-to-ComponentTime
 
   // :: EpochTime -> ComponentTime
-  epoch2utc =
-    ?EpochTime(t); prim("SSL_epoch2utc", t); prim-tuple-to-ComponentTime
+  epoch2UTC =
+    ?EpochTime(t); prim("SSL_epoch2UTC", t); prim-tuple-to-ComponentTime
 
   // :: ComponentTime -> DayTime
   just-day-time =
