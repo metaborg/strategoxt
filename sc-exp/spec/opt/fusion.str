@@ -56,7 +56,7 @@ strategies
     where(
       new => x
       ; (<InlineStrat> Strategy|[ try_1_0(x(|)|) ]|
-         <+ if-verbose2(say(!"no definition of try_1: ")); fail)
+         <+ if-verbose2(say(!"no definition of try_1_0: ")); fail)
       ; (?|[ x(|) <+ id ]|
          <+ if-verbose1(debug(!"try is not try: ")); fail)
       ; if-verbose2(say(!"try is try "))
@@ -78,7 +78,7 @@ strategies
     where(
       new => x
       ; (<InlineStrat> Strategy|[ bottomup_1_0(x(|)|) ]|
-         <+ if-verbose2(say(!"no definition of bottomup_1: ")); fail)
+         <+ if-verbose2(say(!"no definition of bottomup_1_0: ")); fail)
    // ; ?|[ rec y(all(y(|)); x(|)) ]|
       ; (?|[ all(bottomup_1_0(x(|)|)); x(|) ]|
          <+ if-verbose1(debug(!"bottomup is not bottomup: ")); fail)

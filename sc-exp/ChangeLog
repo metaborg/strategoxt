@@ -1,10 +1,19 @@
 2003-07-15  Eelco Visser  <visser@cs.uu.nl>
 
-	Compilation of strategy operators with term arguments and primitives
-	with strategy arguments. This has the effect that we can now mix 
-	call by name (pass a strategy) and call by value (pass a term). The
-	extension is motivated by the need for call by value for optimizing
-	Stratego programs. 
+	* Bootstrapped the new compiler succesfully. There is still a
+	problem however with the extension. Strategy definitions that
+	explicitly declare the type of arguments, which is necessary
+	for passing higher-order strategies, produce ill typed C code.
+	This is not a problem for compilation, however. The actual
+	calls do match. The main problem is that it causes annoying
+	warnings. This should be repaired, but ultimately requires
+	a change in source code.
+ 
+	* Compilation of strategy operators with term arguments and
+	primitives with strategy arguments. This has the effect that we
+	can now mix call by name (pass a strategy) and call by value (pass
+	a term). The extension is motivated by the need for call by value
+	for optimizing Stratego programs.
 
 	The extension has quite some impact on the compiler. The abstract
 	syntax was extended with SDefT/4, RDefT/4, CallT/3, PrimT/3, which
