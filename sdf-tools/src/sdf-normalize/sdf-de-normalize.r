@@ -63,7 +63,10 @@ strategies
     = range(num2char,num2char)
 
   ranges2simple-cc
-    = foldr(!no-charranges,\(r,rs)->conc-ranges(r,rs)\)
+    = ( foldr1(\[r]->r\,\(r,rs)->conc-ranges(rs,r)\)
+     <+ \[] -> no-charranges\
+      )
+    //; foldr(!no-charranges,\(r,rs)->conc-ranges(r,rs)\)
     ; \rs -> simple-charclass(rs)\
 
   // Digits, upper- and lowercase letters are turned into ShortChars

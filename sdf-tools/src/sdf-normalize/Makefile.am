@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.3 2001/06/06 09:05:00 mdejonge Exp $
+# $Id: Makefile.am,v 1.4 2001/08/16 21:21:35 jvisser Exp $
 
 include $(srcdir)/../templates/make_rules
 include $(srcdir)/../templates/make_rules.stratego
@@ -32,6 +32,8 @@ STRATEGO_PRG = norm-lit de-norm-lit \
                unfold-literal
 
 bin_SCRIPTS  = $(STRATEGO_PRG)
+
+pkgdata_DATA = sdf-de-normalize.r
 
 TESTS        = sdf_normalize_check \
 	       sdf_denormalize_check
