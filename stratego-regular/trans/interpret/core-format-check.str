@@ -90,7 +90,7 @@ strategies
       )
 
   is-typed =
-    where(get-types; iset-elements => [_ | _])
+    where(get-types => [_ | _])
 
 /**
  * Define type rules for the productions of an RTG.
@@ -296,7 +296,7 @@ strategies
 
  format-check-report(|starts) =
     where(
-     (get-types; iset-elements <+ ![]) => types
+     (get-types <+ ![]) => types
     ; if !types => [] then
         !1 // already reported <fatal-error> ["error: term cannot be typed."]
       else
@@ -318,7 +318,6 @@ strategies
     ?term
     ; where(
         get-types
-      ; iset-elements
       ; switch id
           case ?[] :
             !["  Cannot type ", term]
