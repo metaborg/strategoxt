@@ -87,6 +87,20 @@ strategies
   init = 
     at-last(Tl)
 
+  /**
+   * Splits a list into a tuple of its init list and last element.
+   *
+   * Example:
+   *   <split-last> [1, 2, 3, 4] => ([1, 2, 3], 4)
+   *   <split-last> [1]          => ([], 1)
+   *
+   * @since  0.9.4
+   * @type   List(a) -> (List(a), a)
+   */
+  split-last =
+      at-last(?[x]; ![])
+    ; !(<id>, x)
+
   copy = 
     for(\ (n,t) -> (n,t,[]) \
        ,\ (0,t,ts) -> ts \
@@ -136,4 +150,3 @@ strategies
    */
   flatten-list =
     foldr(![], (is-list, id) < conc-two-lists + MkCons, is-list < flatten-list + id)
-

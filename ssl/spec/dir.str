@@ -2,6 +2,7 @@
  * Strategies for exploring directories.
  */
 module dir
+imports posix-error
 
 strategies
 
@@ -38,9 +39,19 @@ strategies
   *
   * If newpath exists but the operation fails for some reason rename  guarantees 
   * to leave an instance of newpath in place.
+  *
+  * From 0.9.4 this implementation copies the file if the primitive rename 
+  * fails because of an XDEV error.
   */
   rename-file =
-    ?(oldname, newname); prim("SSL_rename", oldname, newname)
+      ?(oldname, newname)
+    ; (  prim("SSL_rename", oldname, newname)
+      <+ ( get-last-error => ErrorXDEV()
+         < <copy-file> (oldname, newname)
+           ; <remove-file> oldname
+         + fail
+         )
+      )
 
  /**
   * copy-file copies a file using memory mapped I/O.
@@ -57,11 +68,11 @@ strategies
   link-file =
     ?(old, new); prim("SSL_link", old, new)
 
-  // remove-file removes 
-
+  /**
+   * Removes a file from a directory.
+   */
   remove-file =
     ?name; prim("SSL_remove", name)
-    
 
  /**
   * The  getenv() function searches the environment list for a
@@ -81,4 +92,3 @@ strategies
   setenv = 
     ?(name, value, overwrite)
     ; where(prim("SSL_setenv", name, value, overwrite))
-

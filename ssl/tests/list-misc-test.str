@@ -11,7 +11,8 @@ strategies
 	test1;
 	copy-test;
 	number-test;
-  flatten-test
+  flatten-test;
+  init-last-test
     )
 
   test1 =
@@ -38,6 +39,28 @@ strategies
 	, !["a", "b", "c", "d"]
 	, ![("a",0),("b",1),("c",2),("d",3)]
 	)
+
+  init-last-test = 
+      apply-test(!"init"
+      , init
+      , ![1, 2, 3, 4]
+      , ![1, 2, 3]
+      )
+    ; apply-test(!"empty init"
+      , init
+      , ![1]
+      , ![]
+      )
+    ; apply-test(!"split-last"
+      , split-last
+      , ![1, 2, 3, 4]
+      , !([1, 2, 3], 4)
+      )
+    ; apply-test(!"split-last"
+      , split-last
+      , ![1]
+      , !([], 1)
+      )
 
   flatten-test =
       apply-test(!"flatten-test 1", flatten-list

@@ -1,0 +1,37 @@
+/**
+ * Error handling for system strategies.
+ *
+ * @since   0.9.4
+ * @author  Martin Bravenboer <mbravenb@cs.uu.nl>
+ */
+module posix-error
+
+signature
+  constructors
+    ErrorNumber : Int -> Error
+
+strategies
+
+  /**
+   * @type  _ -> Error
+   */
+  get-last-error =
+    !ErrorNumber(<get-errno>)
+
+  /**
+   * @see   man errno
+   * @type  _ -> Int
+   */
+  get-errno =
+    prim("SSL_get_errno")
+
+overlays
+
+  ErrorXDEV() = ErrorNumber(<EXDEV> ())
+
+  /**
+   * @type  _ -> Int
+   */
+strategies
+
+  EXDEV = prim("SSL_EXDEV")
