@@ -159,25 +159,25 @@ exports
               "+" Strategy 		  -> Strategy {cons("GuardedLChoice"),right}
     }
 
-  context-free priorities
-    {right:
-       Strategy ";"  Strategy -> Strategy {cons("Seq"), right}
-      "if" Strategy "then" Strategy "else" Strategy -> Strategy
-    }
+  %% context-free priorities
+  %%  {right:
+  %%     Strategy ";"  Strategy -> Strategy {cons("Seq"), right}
+  %%    "if" Strategy "then" Strategy "else" Strategy -> Strategy
+  %%  }
 
-  context-free priorities
-    {right:
-       Strategy "+"  Strategy -> Strategy
-       Strategy "<+" Strategy -> Strategy
-       Strategy "+>" Strategy -> Strategy
-       Strategy "<" StrategyMid "+" Strategy -> Strategy
-      "if" Strategy "then" Strategy "else" Strategy -> Strategy
-    }
+  %% context-free priorities
+  %%  {right:
+  %%     Strategy "+"  Strategy -> Strategy
+  %%     Strategy "<+" Strategy -> Strategy
+  %%     Strategy "+>" Strategy -> Strategy
+  %%     Strategy "<" StrategyMid "+" Strategy -> Strategy
+  %%    "if" Strategy "then" Strategy "else" Strategy -> Strategy
+  %%  }
 
-  context-free priorities
+  %% context-free priorities
 
   context-free syntax
-    "if" Strategy "then" Strategy "else" Strategy -> Strategy {cons("CondChoice")}
+    "if" Strategy "then" Strategy "else" Strategy "end" -> Strategy {cons("CondChoice")}
 
 module Stratego-Overlays
 exports

@@ -11,33 +11,37 @@ test Choice and sequence priority
   "s; s + s; s" -> Choice(Seq(_,_), Seq(_,_))
 
 test If then else 
-  "if s then s else s" -> CondChoice(_, _, _)
+  "if s then s else s end" -> CondChoice(_, _, _)
 
 test If then else in seq
-  "s; if s then s else s" -> Seq(_, CondChoice(_, _, _))
+  "s; if s then s else s end" -> Seq(_, CondChoice(_, _, _))
 
 test Seq in then branche of if then else
   "if s
      then s; s
-     else s"
+     else s
+   end"
   -> CondChoice(_, Seq(_, _), _)
 
 test Seq in else branche of if then else
   "if s
      then s
-     else s; s"
+     else s; s
+   end"
     -> CondChoice(_, _, Seq(_, _))
 
 test Seq of s and seq in else branche of if then else
   "s; if s
         then s
-        else s; s"
+        else s; s
+      end"
     -> Seq(_, CondChoice(_, _, Seq(_, _)))
 
 test Seq of s and choice in else branche of if then else
   "s; if s
         then s
-        else (s + s)"
+        else (s + s)
+      end"
     -> Seq(_, CondChoice(_, _, Choice(_, _)))
 
 test If then else in else branche of if then else
@@ -45,7 +49,9 @@ test If then else in else branche of if then else
      then s
      else if s
             then s
-            else s"
+            else s
+          end
+   end"
     -> CondChoice(_, _, CondChoice(_, _, _))
 
 test If then else in then branche of if then else
@@ -53,7 +59,9 @@ test If then else in then branche of if then else
      then if s
             then s
             else s
-     else s"
+          end
+     else s
+   end"
     -> CondChoice(_, CondChoice(_, _, _), _)
 
 test If then else in else branche of if then else
@@ -61,7 +69,9 @@ test If then else in else branche of if then else
      then s
      else if s
             then s
-            else s; s"
+            else s; s
+          end
+   end"
     -> CondChoice(_, _, CondChoice(_, _, Seq(_, _)))
 
 test If then else in else branche of if then else
@@ -69,7 +79,7 @@ test If then else in else branche of if then else
      then s
      else s; if s
                then s
-               else s; s"
+               else s; s
+             end
+   end"
     -> CondChoice(_, _, Seq(_, CondChoice(_, _, Seq(_, _))))
-
-

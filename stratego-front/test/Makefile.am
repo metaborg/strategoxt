@@ -12,7 +12,7 @@ PARSE_UNIT_PTABLE = $(top_srcdir)/syn/StrategoForTesting.tbl
 
 TESTS = prop1
 
-# installcheck-local: $(TESTSUITES:.testsuite=.runtestsuite)
+installcheck-local: $(TESTSUITES:.testsuite=.runtestsuite)
 check: check1 check1-asfix check2 check3 check4
 
 check1 : Prop.str
