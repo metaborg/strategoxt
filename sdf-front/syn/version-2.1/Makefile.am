@@ -1,7 +1,7 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-TBLS_DEFS = Sdf2-Syntax.def Sdf2-Syntax.tbl Stratego-Sdf2.def Stratego-Sdf2.tbl
+TBLS_DEFS = Sdf2-Syntax.def Sdf2-Syntax.tbl Stratego-Sdf2-Syntax.def Stratego-Sdf2-Syntax.tbl
 
 sdfdata_DATA   = $(TBLS_DEFS) $(wildcard *.sdf) 
 EXTRA_DIST     = $(sdfdata_DATA)
@@ -35,6 +35,6 @@ Sdf2-Syntax.def : \
   Sorts-Sdf-Syntax.sdf \
   Symbols.sdf 
 
-Stratego-Sdf2.def : \
-  Stratego-Sdf2.sdf \
+Stratego-Sdf2-Syntax.def : \
+  Stratego-Sdf2-Syntax.sdf \
   Sdf2-Syntax.def

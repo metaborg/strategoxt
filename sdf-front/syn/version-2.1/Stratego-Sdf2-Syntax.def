@@ -912,7 +912,7 @@ exports
     Symbol "|" Symbol  -> Symbol >
     Literal ":" Symbol -> Symbol
 
-module Stratego-Sdf2
+module Stratego-Sdf2-Syntax
 imports Sdf2-Syntax StrategoRenamed
 
 %% The definition of Sdf2 in Stratego tries to stay as close to the ASF+SDF 
