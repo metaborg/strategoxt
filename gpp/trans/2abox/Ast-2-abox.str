@@ -28,12 +28,16 @@ strategies
   trm2abox =
        trm2abox-string
     <+ trm2abox-int
+    <+ trm2abox-real
     <+ trm2abox-list
     <+ trm2abox-appl
     <+ <fatal-error> ["** ERROR: cannot rewrite to box: ", <id>]
 
   trm2abox-string =
       is-string; !S(<id>)
+
+  trm2abox-real =
+      is-real ; !S(<real-to-string>)
 
   trm2abox-int =
       is-int; !S(<int-to-string>)
