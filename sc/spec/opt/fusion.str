@@ -67,7 +67,7 @@ strategies
       new => x
       ; (<InlineStrat> Strategy|[ innermost_1_0(x(|)|) ]|
          <+ if-verbose2(say(!"no definition of innermost_1_0: ")); fail)
-      ; (?|[ bottomup_1_0(try_1_0(x(|); innermost_1_0(x(|)|))) ]|
+      ; (?|[ bottomup_1_0(try_1_0(x(|); innermost_1_0(x(|)|)|)|) ]|
          <+ {z: ?|[ bottomup_1_0(rec z(try_1_0(x(|); bottomup_1_0(z(|)|)|))|) ]|}
          <+ {z: ?|[ bottomup_1_0(rec z(x(|); bottomup_1_0(z(|)|) <+ id)|)  ]|}
          <+ if-verbose1(debug(!"innermost is not innermost: ")); fail)

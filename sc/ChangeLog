@@ -1,3 +1,10 @@
+2003-08-04  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/opt/fusion.str: Use new syntax for calls f(s|) even if no term
+	arguments are present; should use user-definable desugaring. Innermost
+	fusion wasn't working because of this; may make a difference now that
+	it is.
+
 2003-08-01  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/opt/lift-definitions.str: lift definitions without
