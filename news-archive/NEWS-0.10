@@ -228,9 +228,9 @@ releases of the Stratego compiler will have this flag switched on by default.
 
 ---------++ If then else and switch operators
 
-StrategoXT 0.10 introduces a if-then-else and switch operators. Both
+StrategoXT 0.10 introduces if-then-else and switch operators. Both
 operators are defined in terms of the guarded left-choice. Thus, they
-are just a more wordy syntax that can be clearer in some case.
+are just a more wordy syntax, which can be clearer in some case.
 
 The if operator is translated into Stratego-Core by the following
 rewrite rule:
@@ -239,11 +239,10 @@ rewrite rule:
   |[ if s1 then s2 else s3 end ]| -> |[ where(s1) < s2 + s3 ]|
 </verbatim>
 
-Note that the application of s1 does not change the subject term. s2
-and s3 are applied to the subject term of the if-then-else operator.
-
-The translation of the switch statement is somewhat more complex. It
-is best introduced with an example.
+Note that the application of s1 does not change the subject
+term. Therefore s2 and s3 are applied to the subject term of the
+if-then-else operator. The translation of the switch statement is
+somewhat more complex. It is best introduced by an example.
 
 The following code fragment from pack-sdf:
 <verbatim>
@@ -287,68 +286,55 @@ keywords. Therefore they are still allowed as identifiers.
 
 In StrategoXT 0.10 the Stratego Regular package has been added to the
 packages of StrategoXT. Stratego Regular is a package of tools for
-working with tree languages, defined by a tree grammar. An abstract
-syntax for a language with context-free syntax is a regular tree
-language. Therefore it can be defined by a by a _regular_ tree
-grammar.
-
-Stratego Regular contains two languages for defining regular tree
-grammars: Regular Tree Grammar (RTG) and Regular Hedge Grammar
-(RHG). RHG is only relevant to XML related tools , which are
+working with tree languages, which are defined by a tree
+grammar. Stratego Regular contains two languages for defining regular
+tree grammars: Regular Tree Grammar (RTG) and Regular Hedge Grammar
+(RHG). RHG is only relevant to XML related tools, which are
 implemented in the XML Tools package. Currently RTG is the only
 relevant tree grammar language for StrategoXT applications.
 
-The RTG language is of course accompanied by several tools:
+The RTG language is of course accompanied by several tools, a few of
+them are introduced here.
 
   * =sdf2rtg= generates an RTG from an SDF syntax definition. If
     =sdf2rtg= cannot transform a concrete syntax production into
-    abstract syntax, then it will complain. This might be caused by a
-    mistake in your syntax defintion (missing =cons= attribute for
-    example), or it might be a limitation of =sdf2rtg=, of which we of
-    course like to know about!
+    abstract syntax, then it will complain. This might then be caused
+    by a mistake in your syntax definition (a missing =cons= attribute
+    for example), or it might be a limitation of =sdf2rtg=, which we
+    would like to know about!
 
   * =rtg2sig= generates a Stratego Signature from an RTG. This is a
-    rather straightforward translation. The tool tries to improve the
+    rather straightforward translation, since signatures are closely
+    related to regular tree grammars. The tool tries to improve the
     generated signature by using the parameterized sorts of Stratego
     (=List= and =Option=).
 
-  * =format=check= verifies if an ATerm is an element of tree language
-    defined by an RTG. This tool can thus be used to check whether
-    your tools behave well, i.e. produce valid programs, or
-    not. Unfortunately, the error reporting of this tool is currently
-    very poor. This issue will be resolved for the next release of
-    StrategoXT, although it is still unclear which errors should be
-    reported to user.
-
-  * =rtg2typematch= generates a Strateg module with strategies for
-    testing if a constructor has a certain type, for example if it is
-    an expression, statement, or declaration. The generated strategies
-    are based on the constructor names and should therefore be applied
-    with care.
-
-Stratego Regular contains some more tools related to AsFix and format
-checking, but these tools have to be developed a little bit more
-before they can be used in practice.
+  * =format=check= checks if a term is an element of the tree language
+    defined by an RTG. Hence, format-check can be used to check if
+    your tools behave well, i.e. produce terms in the correct
+    format. Unfortunately, the error reporting of format-check is
+    currently very poor. This issue will be resolved for the next
+    release of StrategoXT, although it is still unclear which errors
+    should be reported to user.
 
 ---------+++ Important: Stratego Signature Generation
 
 Stratego Signature generation from an SDF syntax definition is in
 StrategoXT 0.10 based on Stratego Regular. The old =sdf-to-sig= has
 been removed because it was based on an old version of
-SDF. =Makefile.xt= declares two new rules, one for creating an RTG
-from an SDF definition, and one to generate a signature from an RTG.
+SDF. =Makefile.xt= defines two new rules, one for generating an RTG
+from an SDF definition, and one for generating a signature from an
+RTG.
 
-Existing packages that generate signatures must be
-updated because the new tools generate only one file containing the
-full signature. Fortunately, these changes are usually limited to
-=Makefile.am=.
+Existing packages that generate signatures must be updated because the
+new tools generate only one file containing the full
+signature. Fortunately, these changes are usually limited to
+=Makefile.am=. Two changes are needed in a typical =Makefile.am= that
+generates a signature:
 
-Two changes are needed in a typical =Makefile.am= that generates a
-signature.
-
-   * Declare that only the _Language_.str module must be
-   generated. This means that you can just remove all other modules
-   that used to be generated.
+   * Declare that only the =Language.str= module must be
+     generated. This means that you can just remove all other modules
+     that used to be generated.
 
    * Declare the main module of the SDF syntax definition in a
      variable SDF2RTG_FLAGS. If the main module has the same name as
@@ -362,7 +348,7 @@ the new Stratego Signature generation tools.
 
   (Martin Bravenboer)
 
----------++ Updated of XT
+---------++ Update of XT
 
 For StrategoXT 0.10 we have updated many XT tools that are part of
 StrategoXT. Unfortunately, many SDF Tools, but even the Stratego
@@ -393,7 +379,7 @@ stratego-dev mailing list.
   (Martin Bravenboer and Valentin David)
 
 AsFix Tools has been cleanup as well. The definition of AsFix in this
-package was not very clear and the package used to contain signatues
+package was not very clear and the package used to contain signatures
 for SDF modules, which have now been removed in StrategoXT 0.10. The
 SDF signatures of the most recent SDF2 are part of the SDF Front
 package. The signature for =asfix= has been replaced by a new
@@ -441,10 +427,9 @@ has access to a G5, then it would be great to hear some experiences.
 
 Shishir Ramam contributed Vim syntax files for Stratego and SDF. These
 files are available in the stratego-util package, which is part of
-StrategoXT.
-
-Arthur van Dam has implemented SDF and Stratego syntax highlighting
-patterns for NEdit. These are available in stratego-util as well.
+StrategoXT. Arthur van Dam has implemented SDF and Stratego syntax
+highlighting patterns for NEdit. These are available in stratego-util
+as well.
 
   (Arthur van Dam and Shishir Ramam)
 
@@ -472,17 +457,17 @@ detailed instructions on how to install the distributions:
 
 ---------++ Bugs and Known Problems
 
-Not all bugs and known problems for StrategXT have been solved in this
-release, otherwise this would release 1.0 ;). See our issue tracking
-systems for reports about (open) bugs:
+Not all bugs and known problems for StrategoXT have been solved in
+this release, otherwise this would release 1.0 ;). See our issue
+tracking systems for reports about (open) bugs:
 
    * https://catamaran.labs.cs.uu.nl/jira/
 
 For an overview of features planned for future releases:
 
-   * [[TODO][StrategoXT roadmap]]
-   * ReleasePlan: http://www.stratego-language.org/Stratego/ReleasePlan
-   * Todo: http://www.stratego-language.org/Stratego/ToDo
+   * [[https://catamaran.labs.cs.uu.nl/jira/secure/BrowseProject.jspa?id=10000&report=roadmap][StrategoXT roadmap]]
+   * [[http://www.stratego-language.org/Stratego/ReleasePlan][Release plan]]
+   * [[http://www.stratego-language.org/Stratego/ToDo][To do]]
 
 Please report any problems with installation or bugs in the
 implementation to our issue tracking system. Please check the existing
@@ -492,10 +477,10 @@ issues to see if a report about the problem was already submitted.
 
 Developments, beta tests, and bug fixes were carried out by
 
-  * Martin Bravenboer
-  * Arthur van Dam
-  * Valentin David
-  * Shishir Ramam
-  * Rob Vermaas
-  * Eelco Visser
+   * Martin Bravenboer
+   * Arthur van Dam
+   * Valentin David
+   * Shishir Ramam
+   * Rob Vermaas
+   * Eelco Visser
 
