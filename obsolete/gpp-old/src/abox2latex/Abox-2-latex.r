@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Abox-2-latex.r,v 1.2 2002/05/08 07:54:31 mdejonge Exp $
+% $Id: Abox-2-latex.r,v 1.3 2002/05/19 14:07:50 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
@@ -67,33 +67,33 @@ usage =
 
 abox2latex(width) = 
    ?abox;
-   !BOXENV( [<width>()], <topdown( try( Abox-2-latex ) )>abox );
+   !BOXENV( [<width>()], <topdown( try( Abox2latex ) )>abox );
    latex2text
 
 abox2latex = 
    ?abox;
-   !BOXENV( [], <topdown( try( Abox-2-latex ) )>abox );
+   !BOXENV( [], <topdown( try( Abox2latex ) )>abox );
    latex2text
 
 rules
-Abox-2-latex :
+Abox2latex :
    S(s) -> <latex-string>s
 
-Abox-2-latex :
+Abox2latex :
    C( [], s ) -> CBOX( s' )
    where
       <map( \ S(x) -> <make-latex-comment>x \ )>s => s'
 
-Abox-2-latex:
+Abox2latex:
    FBOX(FO, b) -> BOXFONT( FO, b )
    where
    !FO;
    (KW + VAR + NUM + MATH)
 
-Abox-2-latex:
+Abox2latex:
    FBOX(F([]), b) -> b
 
-Abox-2-latex:
+Abox2latex:
    FBOX(F([foption|xs]), b) -> BOXFONT( FO, FBOX(F(xs), b))
    where
    !foption;
@@ -109,20 +109,20 @@ Abox-2-latex:
       FFID( CL, ?i ); !BOXCOLOR(i) => FO
    )
 
-Abox-2-latex:
+Abox2latex:
    H(so, b ) -> HBOX(hs, b' )
    where
       <Hspace>so => hs;
       <toh>b => b'
 
-Abox-2-latex:
+Abox2latex:
    V(so, b ) -> VBOX( vs,  is, b' )
    where
       <Vspace>so => vs;
       <Ispace>so => is;
       <filter(not([]));separate-by(!"\n\n")>b => b'
 
-Abox-2-latex:
+Abox2latex:
    HV(so, b ) -> HVBOX( hs, vs, is, b' )
    where
       <Hspace>so => hs;
@@ -130,7 +130,7 @@ Abox-2-latex:
       <Ispace>so => is;
       <filter(not([]));separate-by(!"\\ ")>b => b'
 
-Abox-2-latex:
+Abox2latex:
    A(aos, so, b ) -> ABOX( tdef, bs' )
    where
       <construct-rows>b => bs;
@@ -139,10 +139,10 @@ Abox-2-latex:
       <table-def>aos    => tdef;
       <map(MkRows); separate-by(!row-end)>bs => bs'
 
-Abox-2-latex:
+Abox2latex:
    ALT( b1, b2 ) -> ALTBOX( b1, b2 )
 
-Abox-2-latex:
+Abox2latex:
    L( f, b ) -> LBOX( f', b )
    where
       (  // Sequence of exactly f copies of b
@@ -157,10 +157,10 @@ Abox-2-latex:
          !f => f'
       )
 
-Abox-2-latex:
+Abox2latex:
    LBL( s, b ) -> LBLBOX( s, b)
 
-Abox-2-latex:
+Abox2latex:
    REF( s, b ) -> REFBOX( s, b )
    
 strategies
