@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Asfix2abox.r,v 1.1 2001/06/05 09:11:46 mdejonge Exp $
+% $Id: Asfix2abox.r,v 1.2 2001/06/08 09:44:17 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 % Changes: Eelco Visser <visser@acm.org> 19/5/20001
@@ -28,7 +28,7 @@
 \begin{code}
 module Asfix2abox
 imports
-   lib make pp-tables-io asfix misc instantiate Literal-lib gpp_options
+   lib make pp-tables-io asfix misc instantiate Literal-lib
    layout prodcons
 
 signature
@@ -39,7 +39,7 @@ signature
 strategies
 
    Asfix2abox = 
-     iowrapO(asfix2abox
+     iowrap(asfix2abox
 	    ,Option( "-v", !Verbose())
              + ArgOption( "-p", \x -> PP-Table(x)\  )
 	    ,usage')

@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Ast2abox.r,v 1.1 2001/06/05 09:11:46 mdejonge Exp $
+% $Id: Ast2abox.r,v 1.2 2001/06/08 09:44:17 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
@@ -27,14 +27,14 @@
 module Ast2abox
 
 imports
-   pp-tables-io instantiate lib misc gpp_options asfix
+   pp-tables-io instantiate lib misc asfix
 
 signature
    constructors
       PP-Table : String -> Option
       
 strategies
-   Ast2abox = iowrapO( ast2abox, 
+   Ast2abox = iowrap( ast2abox, 
                    Option( "-v", !Verbose()) +
                    ArgOption( "-p", \x -> PP-Table(x)\  ), usage'  )
 

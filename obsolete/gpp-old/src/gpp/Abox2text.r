@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Abox2text.r,v 1.2 2001/06/08 08:28:30 mdejonge Exp $
+% $Id: Abox2text.r,v 1.3 2001/06/08 09:44:16 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
@@ -42,13 +42,7 @@ imports pp-tables lib Literal-lib
 
 strategies
 
-Abox2text = parse-options(  ArgOption("-i",       \x -> Input(x) \ )
-                     + ArgOption("--input",  \x -> Input(x) \ )
-                     + ArgOption("-o",       \x -> Output(x)\ )
-                     + ArgOption("--output", \x -> Output(x)\ )
-                     + Option("--help",      !Help())
-                     + Option("-h",          !Help())
-                     + Option("-?",          !Help())) => options;
+Abox2text = parse-options(  io-options )  => options;
        (
           need-help( usage )
        <+

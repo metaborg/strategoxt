@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: pp-tables-io.r,v 1.1 2001/06/05 09:11:48 mdejonge Exp $
+% $Id: pp-tables-io.r,v 1.2 2001/06/08 09:44:18 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
@@ -28,7 +28,7 @@
 module pp-tables-io
 
 imports
-   lib pp-tables Literal-lib gpp_options
+   lib pp-tables Literal-lib
 
 strategies
 

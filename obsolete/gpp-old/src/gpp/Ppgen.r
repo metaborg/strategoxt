@@ -19,16 +19,16 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Ppgen.r,v 1.1 2001/06/05 09:11:46 mdejonge Exp $
+% $Id: Ppgen.r,v 1.2 2001/06/08 09:44:17 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
 \begin{code}
 module Ppgen
-imports make pp-tables-io asfix lib gpp_options misc
+imports make pp-tables-io asfix lib misc
 
 strategies
-Ppgen = iowrapO( (id, ppgenerate),
+Ppgen = iowrap( (id, ppgenerate),
                 Option( "-v", !Verbose()),
                 usage' )
 
