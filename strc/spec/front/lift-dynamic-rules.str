@@ -140,6 +140,10 @@ that are declared in context using the dynamic rule ContextVar */
 strategies
 
   dummify =
+    // a hack to deal with list variables in lists in dr lhss
+    topdown(try(
+      \ Op("Cons", [Var(ListVar(x)), Op("Nil", [])]) -> Var(ListVar(x)) \
+    ));
     alltd(
         \Term|[ x ]|     -> |[ Nil() ]| where not(Var(ContextVar + ListVar(ContextVar)))\
      <+ \Term|[ _ ]|     -> |[ Nil() ]|\
