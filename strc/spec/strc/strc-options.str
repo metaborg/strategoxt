@@ -152,6 +152,10 @@ strategies
         !"--no-maybe-unbound-warnings"
     )
 
+  + Option("--asfix",
+       where(<set-config>("--asfix",())); !(),
+       !"--asfix            Concrete syntax parts are not imploded")
+
   pass-maybe-unbound-warnings =
     <get-config> "--maybe-unbound-warnings" => 1
     ; !["--maybe-unbound-warnings"]

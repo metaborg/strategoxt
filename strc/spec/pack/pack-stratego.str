@@ -43,6 +43,9 @@ strategies
 	where(<set-config> ("--slack", ())); !(),
 	!"--slack              Continue when module is not found")
 
+    + Option("--asfix",
+        where(<set-config> ("--asfix", "")); !(),
+        !"--asfix              Do not implode the concrete syntax parts")
 
   create-dep-file :
     files -> FILE(depfile)
@@ -88,7 +91,8 @@ strategies
   parse-module =
     (not("rtree"), ?name); Snd
     ; (xtc-transform(!"parse-stratego", 
-		     <concat>[<pass-verbose>, <pass-keep>, <get-config> "-I"])
+		     <concat>[<get-config < !["--asfix"] + ![]> "--asfix",
+                              <pass-verbose>, <pass-keep>, <get-config> "-I"])
        ; read-from
       <+ <fatal-error> ["parse error in ", name])
 
