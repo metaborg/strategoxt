@@ -1,11 +1,12 @@
 module pp-box
-imports liblib strategoxt-xtc-tools
+imports liblib strategoxt-xtc-tools parse-box
 
 strategies
 
   io-pp-box =
     xtc-io-wrap(
-      xtc-transform(!"ast2abox", !["-p", <xtc-find> "Box.pp.af"])
+      xtc-io-transform(box-ensugar)
+    ; xtc-transform(!"ast2abox", !["-p", <xtc-find> "Box.pp.af"])
     ; xtc-abox-format
     ; xtc-abox2text
     )

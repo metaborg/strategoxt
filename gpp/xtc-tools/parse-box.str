@@ -1,5 +1,5 @@
 module parse-box
-imports liblib strategoxt-xtc-tools
+imports liblib strategoxt-xtc-tools Box
 
 strategies
   
@@ -7,5 +7,19 @@ strategies
     xtc-io-wrap(
       xtc-sglr(!"Box.tbl")
     ; xtc-implode-asfix
+    ; xtc-io-transform(box-desugar)
     )
 
+  box-desugar =
+    topdown(
+      try(
+        S(un-double-quote)
+      )
+    )
+
+  box-ensugar =
+    topdown(
+      try(
+        S(double-quote)
+      )
+    )
