@@ -44,7 +44,8 @@ PATH=$WORKINGDIR/pre-pkgs/bootstrap/bin:$PATH
 export PATH
 echo "** INFO -- AutoXT is `which autoxt`"
 echo "** INFO -- aclocal is `which aclocal`"
-echo "** INFO -- autoheader is `which automake`"
+echo "** INFO -- libtoolize is `which libtoolize`"
+echo "** INFO -- autoheader is `which autoheader`"
 echo "** INFO -- automake is `which automake`"
 echo "** INFO -- autoconf is `which autoconf`"
 
