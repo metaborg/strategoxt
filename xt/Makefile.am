@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.11 2000/04/12 20:20:14 mdejonge Exp $
+# $Id: Makefile.am,v 1.12 2000/04/12 21:25:32 mdejonge Exp $
 
 DIST_SUBDIRS = dummy aterm asfix asc-support sglr pgen stratego gpp gb gt
 EXTRA_DIST   = SOFTWARE README
@@ -28,14 +28,9 @@ EXTRA_DIST   = SOFTWARE README
 SUBDIRS=dummy
 
 
-all install:
-	PATH=$(bindir):$${PATH}; export PATH ;\
-	ulimit -s 20000 ;\
-	for subdir in $(DIST_SUBDIRS); do \
-	   ( cd $$subdir && $(MAKE) install ) \
-	done
+all: install
 
-check clean uninstall:
+check clean install install-strip uninstall:
 	PATH=$(bindir):$${PATH}; export PATH ;\
 	ulimit -s 20000 ;\
 	for subdir in $(DIST_SUBDIRS); do \
