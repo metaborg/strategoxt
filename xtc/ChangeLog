@@ -1,0 +1,6 @@
+2002-12-03  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/xtc.str: Strategies for calling tools that are registered in
+	an XTC repository. Initializing the repository is done transparantly
+	when first retrieving a tool path.
+

@@ -1,0 +1,68 @@
+module xtc-proc
+imports xtc-rep
+
+signature
+  constructors
+    FILE : String -> File
+    DIR  : String -> File
+    TEMP : XtcKey
+
+strategies
+
+  rename-to(name) :
+    FILE(oldname) -> FILE(newname)
+    where name => newname
+        ; <rename-file>(oldname, newname)
+
+  read-from :
+    FILE(name) -> t
+    where <ReadFromFile> name => t
+
+  write-to :
+    t -> FILE(name)
+    where xtc-new-file => name
+        ; <WriteToTextFile> name => t
+
+  xtc-new-file =
+    new-file => f
+    ; where(<table-push>(XTC, TEMP, f))
+
+  xtc-remove-temporaries =
+    where(
+      <table-get>(XTC, TEMP) => fs
+      ; map(remove-file)
+    )
+
+  // Executing an external process
+  // a -> String :: List(String) -> List(String)
+  xtc-command(tool) = 
+    where(tool; xtc-find-warning => loc)
+    ; where(<call> (loc, <id>))
+
+  // Transparent transformation of terms and files by external processes
+
+  xtc-transform(tool) =
+    xtc-transform(tool, ![])
+
+  xtc-transform(tool, args) =
+    xtc-transform-file(tool, args)
+    <+ xtc-transform-term(tool, args)
+  
+  // Transforming a file
+
+  xtc-transform-file(tool, args) :
+    FILE(f) -> FILE(g)
+    where debug; <xtc-new-file> f => g; debug
+        ; <xtc-command(tool)> ["-i", f, "-o", g | <args>]
+
+  xtc-transform-file(tool, args) :
+    stdin -> FILE(g)
+    where xtc-new-file => g
+        ; <xtc-command(tool)> ["-o", g | <args>]
+
+  // Transforming a term
+
+  xtc-transform-term(tool, args) = 
+    write-to
+    ; xtc-transform-file(tool, args)
+    ; read-from
