@@ -1,13 +1,12 @@
 AC_PREREQ([2.58])
-AC_INIT([strc-core],[0.13],[stratego-bugs@cs.uu.nl])
+AC_INIT([strc-core],[0.14],[stratego-bugs@cs.uu.nl])
 AC_CONFIG_AUX_DIR([../config])
 AM_INIT_AUTOMAKE
 
 XT_SVN_REVISION
 # comment to make this a stable release
 XT_PRE_RELEASE
-
-USE_XT_PACKAGES
+XT_USE_XT_PACKAGES
 
 EXE=""
 AC_ARG_WITH(exe,    

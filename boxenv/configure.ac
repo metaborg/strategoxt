@@ -1,9 +1,9 @@
 AC_PREREQ([2.58])
-AC_INIT([boxenv],[0.13],[stratego-bugs@cs.uu.nl])
+AC_INIT([boxenv],[0.14],[stratego-bugs@cs.uu.nl])
 AC_CONFIG_AUX_DIR([../config])
 AM_INIT_AUTOMAKE
 
-USE_XT_PACKAGES
+XT_USE_XT_PACKAGES
 
 AC_ARG_WITH(latex, 
   AC_HELP_STRING([--with-latex=FILE], [use LaTeX at FILE @<:@search@:>@]),

@@ -3,7 +3,7 @@ AC_INIT([gpp],[2.12],[stratego-bugs@cs.uu.nl])
 AC_CONFIG_AUX_DIR([../config])
 AM_INIT_AUTOMAKE
 
-USE_XT_PACKAGES
+XT_USE_XT_PACKAGES
 
 AC_PROG_CC
 AC_PROG_INSTALL
