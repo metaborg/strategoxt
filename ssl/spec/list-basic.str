@@ -126,6 +126,8 @@ strategies
    * The element to which s was applied *is* part of the result as the second
    * element in the triple: (before, split, after)
    *
+   * split-fetch-keep fails if s cannot be applied to any of the elements.
+   *
    * @type s  a ->? _
    * @type    [a] -> [a] * a * [a]
    */
