@@ -4,7 +4,7 @@ exports
   sorts Iter Iter-sep Iter-star Iter-star-sep
         Nesting-iter-sep1 Nesting-iter-sep2 Nesting-iter-star-sep
         Empty-iter-star-sep Alt1a Alt1b Alt2a Alt2b Alt3a Alt3b Alt4a
-	Seq SeqOpt1 SeqOpt2 SeqOpt3
+	Seq SeqOpt1 SeqOpt2 SeqOpt3 Var1 Var2
 
   lexical syntax
     [\ \t\n] -> LAYOUT
@@ -40,6 +40,16 @@ exports
 
     (A | B)      -> Alt4a {cons("Alt4a")}
 
+
   lexical syntax
     "aap" | "noot" -> Alt3a {cons("Alt3a")}
     "aap" | "noot" -> Alt3b {cons("Alt3b")}
+
+
+  lexical syntax
+    [A-Za-z]+	-> Identifier
+  context-free restrictions
+    Identifier -/- [A-Za-z]
+  context-free syntax
+    Identifier	-> Var1 {cons("Var1")}
+    Identifier	-> Var2 {cons("Var2")}

@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: implode-asfix.r,v 1.3 2001/08/02 13:04:34 jvisser Exp $
+% $Id: implode-asfix.r,v 1.4 2001/10/01 17:43:19 jvisser Exp $
 
 
 	This module defines a transformation from AsFix terms produced
@@ -350,7 +350,7 @@ strategies
 
   injection = prod([sort(id) + cf(sort(id))]
                   ,injective-alt
-                  ,id)
+                  ,not(oncetd(cons(id))))
 
   injective-alt = 
     rec x(sort(id) + cf(x) + alt(x,x))

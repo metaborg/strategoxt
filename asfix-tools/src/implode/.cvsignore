@@ -1,0 +1,6 @@
+Makefile.in
+Makefile
+implode-asfix
+*.dep
+*.c
+implode-asfix-test

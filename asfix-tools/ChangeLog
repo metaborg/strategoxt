@@ -1,3 +1,7 @@
+2001-10-01 Joost.Visser@cwi.nl
+   * implode-asfix: Removed bug in --inj switch where injections with
+     a constructor attribute were eliminated.
+	
 2001-10-01 Merijn de Jonge <mdejonge@cwi.nl> 
    * io-idwrap: added strategy which performs simple type checking of input
      terms.
