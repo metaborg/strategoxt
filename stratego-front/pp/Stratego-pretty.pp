@@ -211,6 +211,7 @@
    UndefineDynRule        -- V is=2 [H hs=1 [_1 KW[":-"]] _2],
    SetDynRule             -- V is=2 [H hs=1 [_1 KW[":"] ] _2],
    AddDynRule             -- V is=2 [H hs=1 [_1 KW[":+"]] _2],
+   SetDynRuleMatch        -- V is=2 [H hs=1 [_1 KW[":"] ] _2],
 
    LabeledDynRuleId  -- H hs=0 [_1 "." _2],
    AddLabelDynRuleId -- H hs=0 [_1 "+" _2],

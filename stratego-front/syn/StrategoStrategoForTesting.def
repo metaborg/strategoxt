@@ -391,6 +391,7 @@ exports
     DynRuleId ":-"  Term        -> DynRuleDef {cons("UndefineDynRule")}
     DynRuleId ":"   Rule        -> DynRuleDef {cons("SetDynRule")}
     DynRuleId ":+"  Rule        -> DynRuleDef {cons("AddDynRule")}
+    DynRuleId ":"   Term        -> DynRuleDef {cons("SetDynRuleMatch")}
 
     RuleDec "." Term            -> DynRuleId {cons("LabeledDynRuleId")}
     RuleDec "+" Term            -> DynRuleId {cons("AddLabelDynRuleId")}

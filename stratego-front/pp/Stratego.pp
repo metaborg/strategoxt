@@ -90,6 +90,7 @@
    UndefineDynRule                        -- _1 KW[":-"] _2,
    SetDynRule                             -- _1 KW[":"] _2,
    AddDynRule                             -- _1 KW[":+"] _2,
+   SetDynRuleMatch                        -- _1 KW[":"] _2,
    LabeledDynRuleId                       -- _1 KW["."] _2,
    AddLabelDynRuleId                      -- _1 KW["+"] _2,
    DynRuleId                              -- _1,

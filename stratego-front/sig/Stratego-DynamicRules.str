@@ -9,6 +9,7 @@ signature
     UndefineDynRule       : DynRuleId * Term -> DynRuleDef
     SetDynRule            : DynRuleId * Rule -> DynRuleDef
     AddDynRule            : DynRuleId * Rule -> DynRuleDef
+    SetDynRuleMatch       : DynRuleId * Term -> DynRuleDef
     LabeledDynRuleId      : RuleDec * Term -> DynRuleId
     AddLabelDynRuleId     : RuleDec * Term -> DynRuleId
     DynRuleId             : RuleDec -> DynRuleId
