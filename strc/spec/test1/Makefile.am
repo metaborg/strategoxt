@@ -16,7 +16,7 @@
 
 ##################################################################
 
-SINCLUDES = -I $(SSL)/share/ssl
+SINCLUDES = -I $(SSL)/share/ssl -I $(SRTS)/share/srts
 
 TESTFILES = $(wildcard test*.r)
 TESTBINS = $(subst .r,.bin,$(TESTFILES))
@@ -54,7 +54,7 @@ EXTRA_DIST = $(wildcard *.r) make-rules io-test*.in bar.c
 
 test50OBJECTS = bar.o
 
-test51LDADD = -L$(SSL)/lib/ssl -l liblib
+test51LDADD = -L$(SRTS)/lib/srts -l liblib
 
 bar.o: bar.c
 
