@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.6 2002/03/19 12:38:59 eelco Exp $
+# $Id: Makefile.am,v 1.7 2002/10/02 09:26:15 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -48,7 +48,6 @@ CLEANFILES  += stratego_imports1_check \
 # Additional flags for the Stratego compiler
 SCFLAGS     += -I $(srcdir)/../stratego \
                -I $(ASFIX_TOOLS)/share/asfix-tools \
-               -I $(SDF_TOOLS)/share/sdf-tools \
                -I $(GRAPH_TOOLS)/share/graph-tools
 
 stratego_imports1_check_prog     = stratego-imports
