@@ -72,9 +72,9 @@ strategies
   Bind10 = dynrule-targs(declared-vars)
 
   dynrule-lhs(s) =
-    ?UndefineDynRule(_, <id>)
-  + ?SetDynRule(_, Rule(<id>, _, _))
-  + ?AddDynRule(_, Rule(<id>, _, _))
+    ?UndefineDynRule(_, <s>)
+  + ?SetDynRule(_, Rule(<s>, _, _))
+  + ?AddDynRule(_, Rule(<s>, _, _))
 
   dynrule-sargs(s) =
     ?UndefineDynRule(DynRuleId(RDecT(_,<id>,_)), _)

@@ -4,7 +4,8 @@ imports Stratego
 strategies
 
   upgrade-old-dr-constructs =
-    topdown(
+    try(oncetd(?|[ override rules(rd1*) ]| + ?|[ extend override rules(rd1*) ]|); rules(DROverrideLabelsNeeded: _ -> ()))
+  ; topdown(
       if ?|[ rules(drd*) ]|
         then UpgradeGenDynRules
         else if ?|[ extend rules(rd*) ]|
@@ -22,9 +23,11 @@ strategies
 
 rules
 
+/* For normal rule blocks, at least try and make sure that undefining rules
+are converted. */
   UpgradeGenDynRules :
    |[ rules(drd*) ]| -> |[ rules(drd'*) ]|
-   where <map(try(UpgradeUndefine))> drd* => drd'*
+   where <map(try(UpgradeUndefine); check-override-label)> drd* => drd'*
 
   UpgradeUndefine :
     rd@DynRuleDef|[ f(as1|as2) : t1 -> Undefined() where s ]| -> DynRuleDef|[ f(as1|as2) :- t1 ]|
@@ -32,9 +35,12 @@ rules
           <+      say(!"[normalize-spec | warning] rule undefining doesn't allow a condition strategy anymore")
              ; <debug(!"[normalize-spec | warning] Your condition has been removed from the original dynamic rule: ")> rd
 
+
+/* For extend rule blocks, just convert all ruledefs within it into
+AddDynRule's. */
   UpgradeExtendDynamicRules :
    |[ extend rules(rd*) ]| -> |[ rules(drd*) ]|
-   where <map(RDefToDRDef-extend)> rd* => drd*
+   where <map(RDefToDRDef-extend; check-override-label)> rd* => drd*
 
   RDefToDRDef-extend :
     |[ f(as1|as2) : t1 -> t2 where s ]| -> DynRuleDef|[ f(as1|as2) :+ t1 -> t2 where s ]|
@@ -46,10 +52,46 @@ rules
           <+      say(!"[normalize-spec | warning] rule undefining doesn't allow a condition strategy anymore")
              ; <debug(!"[normalize-spec | warning] Your condition has been removed from the original dynamic rule: ")> rd
 
-  UpgradeOverrideDynamicRules =
-    say(!"[normalize-spec | fatal error] `override rules' not yet supported in conversion to new style.")
-  ; <exit> 1
 
-  UpgradeExtendOverrideDynamicRules =
-    say(!"[normalize-spec | fatal error] `extend override rules' not yet supported in conversion to new style.")
-  ; <exit> 1
+/* For (extend) overriding rule blocks just treat them as a extend/normal
+rule blocks, but add the dummified LHS as the label for each DynRuleDef. */
+  UpgradeOverrideDynamicRules :
+   |[ override rules(rd*) ]| -> |[ rules(drd*) ]|
+   where <map(RDefToDRDef; try(UpgradeUndefine); UseOverrideLabel)> rd* => drd*
+
+  UpgradeExtendOverrideDynamicRules :
+   |[ extend override rules(rd*) ]| -> |[ rules(drd*) ]|
+   where <map(RDefToDRDef-extend; UseOverrideLabel)> rd* => drd*
+
+  RDefToDRDef :
+    |[ f(as1|as2) : t1 -> t2 where s ]| -> DynRuleDef|[ f(as1|as2) : t1 -> t2 where s ]|
+
+
+/* If there's been any occurence of `(extend-)override rules' in the program,
+add the dummified LHS as additional label to the scope upon each dynruledef. */
+  check-override-label =
+    if DROverrideLabelsNeeded
+      then GenOverrideLabel
+      else id
+    end
+
+  GenOverrideLabel :
+    drd -> drd'
+      where <DRDef-LHS(dummify)> drd => label
+          ; <DRDef-AddLabel(|label)> drd => drd'
+
+  UseOverrideLabel :
+    drd -> drd'
+      where <DRDef-LHS(dummify)> drd => label
+          ; <DRDef-Labeled(|label)> drd => drd'
+
+  DRDef-LHS(s) =
+    ?UndefineDynRule(_, <s>)
+  + ?SetDynRule(_, Rule(<s>, _, _))
+  + ?AddDynRule(_, Rule(<s>, _, _))
+
+  DRDef-Labeled(|label) =
+    oncetd(\ DynRuleId(rdc) -> LabeledDynRuleId(rdc, label) \)
+
+  DRDef-AddLabel(|label) =
+    oncetd(\ DynRuleId(rdc) -> AddLabelDynRuleId(rdc, label) \)

@@ -1,3 +1,55 @@
+2004-04-18   Arthur van Dam  <adam@cs.uu.nl>
+
+	* front/dr-old-to-new.str now generates new-style dynamic rules
+	that emulate the legacy `override rules' by using the dummified LHS
+	as an auto-generated scope-label.
+	(Only occurs when program indeed contains `override')
+
+2004-04-18   Arthur van Dam  <adam@cs.uu.nl>
+
+	* front/lift-dynamic-rules.str: Supports for the new scope-labeling
+	syntax, e.g. `rules(A+x)' and `rules (A+x : t1 -> t2 where s)'.
+
+	Efficient labeling of scopes `{| Rule.lbl, ... : s |}':
+	Collect any labels for the head scope-id (uniquely) in one step.
+	Only one real scope is thus created for each scope-id/rulename.
+
+2004-04-16   Arthur van Dam  <adam@cs.uu.nl>
+
+	* front/lift-dynamic-rules.str: Memoize both the generated
+	caller-rules (Rule and bagof-Rule), and the lifted actual rule
+	(aux-Rule) as well.
+
+2004-04-14   Arthur van Dam  <adam@cs.uu.nl>
+
+	* front/lift-dynamic-rules.str: New lifter handles all new
+	DR-constructs, using one general parameterizable splitter.
+
+	NOTE: Due to a problem with listvars, dynamic rules with list-vars
+	in their LHS will compile fine, but fail when applied.
+
+2004-04-10   Arthur van Dam  <adam@cs.uu.nl>
+	* front/dr-old-to-new.str: Converts legacy constructs like
+	`extend rules' and ` .. -> Undefined' to new DR-constructs.
+
+2004-04-10   Martin Bravenboer  <martin@cs.uu.nl>
+
+	* front/dr-new-to-old.str: Converts dynamic rules that are parsed
+	into the new abstract syntax, into old-style constructs.
+	Legacy constructors `DynamicRules' and `DynRuleScope' are available
+	as in-file signatures.
+
+	* front/lift-dynamic-rules.str: Some concrete syntax rewritten to
+	abstract syntax.
+
+2004-04-09   Arthur van Dam  <adam@cs.uu.nl>
+
+	* strc and normalize-spec accept a --dr (old|new) commandline
+	option. If left out, old-style dynamic rules are used.
+
+	* 'old' dynamic-rules-lifter is in `lift-dynamic-rules-old.str'.
+	`lift-dynamic-rules.str' contains new-style lifter.
+
 2004-04-07   Arthur van Dam  <adam@cs.uu.nl>
 
 	* spec/strc/strc.str: strc now saves all its intermediate files

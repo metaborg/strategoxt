@@ -118,6 +118,39 @@ that are declared in context using the dynamic rule ContextVar */
       <SplitDynamicRule(!|[ dr-undefine-rule(|~str:f, t, ~<Fst>) ]|)> DynRuleDef|[ f(as1|as2) : t1 -> () where id ]|
 
 
+/**
+ * Split a dynamic rule into an call to assert which records a mapping
+ * from the left-hand side of the rule instantiated with the bindings to
+ * context variables to the set of bindings to the context variales not
+ * occurring in the left-hand side.
+ * 
+ * Notes:
+ *  - the stamp identifies the rule that introduced the binding, in order
+ *    to distinguish between dynamic rules with the same left-hand side
+ *    but different right-hand sides
+ *  - non-context variables are replaced with 'Dummy()' in the term that
+ *    is used as key in the table (dummify)
+ *  - if all variables in the lhs are context-variables, the lookup in the
+ *    table can simply use a pointer to the term matched on the lhs (efficient!)
+ * 
+ * Bug! Current translation scheme does not take extended match patterns
+ * into account. No contexts and term projects should be used in a
+ * dynamic rule.
+ */
+strategies
+
+  dummify =
+    alltd(
+        \Term|[ x ]|     -> |[ Nil() ]| where not(Var(ContextVar + ListVar(ContextVar)))\
+     <+ \Term|[ _ ]|     -> |[ Nil() ]|\
+     <+ \Term|[ <s> ]|   -> |[ Keys( ~term*:<tvars; map(!Var(<id>))> s ) ]|\
+     <+ \Term|[ <s> t ]| -> |[ Keys( ~term*:<tvars; map(!Var(<id>))> (s,t) ) ]|\
+     <+ ?Con(_,_,_); <fatal-error> ["context in left-hand side of dynamic rule"]
+    )
+
+
+rules
+
   SplitDynamicRule(saveclsr):
     drd@DynRuleDef|[ f(as1|as2) : t1 -> t2 where s ]| ->
     (|[ where(~<saveclsr> (t1', |[ (~str:stamp, t*) ]| )) ]|,
