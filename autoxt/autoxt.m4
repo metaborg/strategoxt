@@ -11,9 +11,7 @@ AC_DEFUN(USE_XT_PACKAGES,
 ############ XT ###########################################################
 
 AC_ARG_WITH(xt, 
-  [
-  --with-xt=DIR                Use XT [[prefix]]]
-, 
+  AC_HELP_STRING([--with-xt=XT], [use XT at XT @<:@PREFIX@:>@]), 
   XT="$withval", 
   XT="$prefix"
 )
@@ -22,8 +20,7 @@ AC_SUBST(XT)
 ############ ATerm Library ################################################
 
 AC_ARG_WITH(aterm, 
-  [  --with-aterm=DIR            Use ATerm Library [[XT]]]
-, 
+  AC_HELP_STRING([--with-aterm=DIR], [use ATerm Library at DIR @<:@XT@:>@]), 
   ATERM="$withval", 
   ATERM="$XT"
 )
@@ -32,22 +29,21 @@ AC_SUBST(ATERM)
 ############ SDF ##########################################################
 
 AC_ARG_WITH(sdf, 
-  [  --with-sdf=DIR              Use SDF [[XT]]], 
+  AC_HELP_STRING([--with-sdf=SDF], [use SDF at SDF @<:@XT@:>@]), 
   SDF="$withval", 
   SDF="$XT"
 )
 AC_SUBST(SDF)
 
 AC_ARG_WITH(sglr, 
-  [  --with-sglr=DIR             Use SGLR [[SDF]]], 
+  AC_HELP_STRING([--with-sglr=DIR], [use SGLR at DIR @<:@SDF@:>@]), 
   SGLR="$withval", 
   SGLR="$SDF"
 )
 AC_SUBST(SGLR)
 
 AC_ARG_WITH(pgen, 
-  [  --with-pgen=DIR             Use PGEN [[SDF]]]
-, 
+  AC_HELP_STRING([--with-pgen=DIR], [use PGEN at DIR @<:@SDF@:>@]), 
   PGEN="$withval", 
   PGEN="$SDF"
 )
@@ -56,108 +52,105 @@ AC_SUBST(PGEN)
 ############ StrategoXT ##################################################
 
 AC_ARG_WITH(stratego-xt, 
-  [  --with-stratego-xt=DIR      Use StrategoXT [[XT]]], 
-   STRATEGOXT="$withval", 
-   STRATEGOXT="$XT"
+  AC_HELP_STRING([--with-stratego-xt=STRATEGOXT], [use StrategoXT at STRATEGOXT @<:@XT@:>@]), 
+  STRATEGOXT="$withval", 
+  STRATEGOXT="$XT"
 )
 AC_SUBST(STRATEGOXT)
 
 AC_ARG_WITH(srts, 
-  [  --with-srts=DIR             Use Stratego Run-Time System [[STRATEGOXT]]]
-, 
-   SRTS="$withval", 
-   SRTS="$STRATEGOXT"
+  AC_HELP_STRING([--with-strs=DIR], [use Stratego Run-Time System at DIR @<:@STRATEGOXT@:>@]), 
+  SRTS="$withval", 
+  SRTS="$STRATEGOXT"
 )
 AC_SUBST(SRTS)
 
 AC_ARG_WITH(xtc, 
-  [  --with-xtc=DIR              Use XTC (XT Composition) [[prefix]]], 
+  AC_HELP_STRING([--with-xtc=DIR], [use XTC (XT Composition) at DIR @<:@STRATEGOXT@:>@]),
   XTC="$withval", 
   XTC="$STRATEGOXT"
 )
 AC_SUBST(XTC)
 
 AC_ARG_WITH(repository, 
-  [  --with-repository=DIR       XTC repository [[$pkgdatadir/XTC]]]
-, 
+  AC_HELP_STRING([--with-repository=FILE], [use XTC repository at FILE @<:@pkgdatadir/XTC@:>@]),
   REPOSITORY="$withval", 
-  REPOSITORY="$prefix/share/$PACKAGE/XTC"
+  REPOSITORY="$datadir/$PACKAGE/XTC"
 )
 AC_SUBST(REPOSITORY)
 
 AC_ARG_WITH(sc, 
-  [  --with-sc=DIR               Use Stratego Compiler [[STRATEGOXT]]], 
-   SC="$withval", 
-   SC="$STRATEGOXT"
+  AC_HELP_STRING([--with-sc=DIR], [use Stratego Compiler at DIR @<:@STRATEGOXT@:>@]),
+  SC="$withval", 
+  SC="$STRATEGOXT"
 )
 AC_SUBST(SC)
 
 AC_ARG_WITH(ssl, 
-  [  --with-ssl=DIR              Use Stratego Standard Library [[STRATEGOXT]]], 
-   SSL="$withval", 
-   SSL="$STRATEGOXT"
+  AC_HELP_STRING([--with-ssl=DIR], [use Stratego Standard Library at DIR @<:@STRATEGOXT@:>@]),
+  SSL="$withval", 
+  SSL="$STRATEGOXT"
 )
 AC_SUBST(SSL)
 
 AC_ARG_WITH(gpp,
-  [  --with-gpp=DIR              Use GPP [[STRATEGOXT]]],
+  AC_HELP_STRING([--with-gpp=DIR], [use GPP at DIR @<:@STRATEGOXT@:>@]),
   GPP="$withval",
   GPP="$STRATEGOXT"
 )
 AC_SUBST(GPP)
 
 AC_ARG_WITH(cgen,
-  [  --with-cgen=DIR             Use CGEN [[STRATEGOXT]]],
+  AC_HELP_STRING([--with-cgen=DIR], [use CGEN at DIR @<:@STRATEGOXT@:>@]),
   CGEN="$withval",
   CGEN="$STRATEGOXT"
 )
 AC_SUBST(CGEN)
 
 AC_ARG_WITH(stratego-front,
-  [  --with-stratego-front=DIR   Use Stratego Front [[STRATEGOXT]]]
-,
+  AC_HELP_STRING([--with-stratego-front=DIR], [use Stratego Front at DIR @<:@STRATEGOXT@:>@]),
   STRATEGO_FRONT="$withval",
   STRATEGO_FRONT="$STRATEGOXT"
 )
 AC_SUBST(STRATEGO_FRONT)
 
 AC_ARG_WITH(asfix-tools,
-  [  --with-asfix-tools=DIR      Use AsFix Tools [[STRATEGOXT]]],
+  AC_HELP_STRING([--with-asfix-tools=DIR], [use AsFix Tools at DIR @<:@STRATEGOXT@:>@]),
   ASFIX_TOOLS="$withval",
   ASFIX_TOOLS="$STRATEGOXT"
 )
 AC_SUBST(ASFIX_TOOLS)
 
 AC_ARG_WITH(aterm-tools,
-  [  --with-aterm-tools=DIR      Use Aterm Tools [[STRATEGOXT]]],
+  AC_HELP_STRING([--with-aterm-tools=DIR], [use Aterm Tools at DIR @<:@STRATEGOXT@:>@]),
   ATERM_TOOLS="$withval",
   ATERM_TOOLS="$STRATEGOXT"
 )
 AC_SUBST(ATERM_TOOLS)
 
 AC_ARG_WITH(graph-tools,
-  [  --with-graph-tools=DIR      Use Graph Tools [[STRATEGOXT]]],
+  AC_HELP_STRING([--with-graph-tools=DIR], [use Graph Tools at DIR @<:@STRATEGOXT@:>@]),
   GRAPH_TOOLS="$withval",
   GRAPH_TOOLS="$STRATEGOXT"
 )
 AC_SUBST(GRAPH_TOOLS)
 
 AC_ARG_WITH(sdf-tools,
-  [  --with-sdf-tools=DIR        Use SDF Tools [[STRATEGOXT]]],
+  AC_HELP_STRING([--with-sdf-tools=DIR], [use SDF Tools at DIR @<:@STRATEGOXT@:>@]),
   SDF_TOOLS="$withval",
   SDF_TOOLS="$STRATEGOXT"
 )
 AC_SUBST(SDF_TOOLS)
 
 AC_ARG_WITH(stratego-tools,
-  [  --with-stratego-tools=DIR   Use Stratego Tools [[STRATEGOXT]]],
+  AC_HELP_STRING([--with-stratego-tools=DIR], [use Stratego Tools at DIR @<:@STRATEGOXT@:>@]),
   STRATEGO_TOOLS="$withval",
   STRATEGO_TOOLS="$STRATEGOXT"
 )
 AC_SUBST(STRATEGO_TOOLS)
 
 AC_ARG_WITH(dot-tools,
-  [  --with-dot-tools=DIR        Use dot tools [[STRATEGOXT]]],
+  AC_HELP_STRING([--with-dot-tools=DIR], [use Dot Tools at DIR @<:@STRATEGOXT@:>@]),
   DOT_TOOLS="$withval",
   DOT_TOOLS="$STRATEGOXT"
 )
