@@ -244,13 +244,25 @@ strategies
 
   add-main =
     try(where(<get-config> "-m" => m; if-verbose2(debug(!"main strategy is: ")))
-        ; if-not-lib(xtc-io-transform(AddMain(!m))))
+        ; if-not-lib(xtc-io-transform(try(AddMain(|m)))))
     ; save-as3(!".with-main")
 
-  AddMain(m) : 
+  AddMain(|main) : 
     Specification(sects) -> 
-    Specification([Strategies([SDef("main", [], Call(SVar(<m>()), []))])
-                  | sects])
+    Specification([ Strategies([SDef("main", [], Call(SVar(main), []))]) 
+                  | sects ])
+      where
+        <not("main")>main
+      ; <try(check-other-main)>sects
+
+  check-other-main =
+    fetch-elem( Strategies(fetch-elem(is-main)) + Rules(fetch-elem(is-main)) )
+  ; say(!"Adding main strategy even though one is already present!")
+
+  is-main =
+    ?SDef("main", [], _)
+  + ?RDef("main", [], _)
+ 
 strategies 
 
   get-infile :
