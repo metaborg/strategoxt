@@ -1,3 +1,6 @@
+2001-08-09 Merijn de Jonge <mdejonge@cwi.nl> 
+   * src/stratego-imports: adapted for fixed graphxml signature
+
 2001-06-07 Merijn de Jonge <mdejonge@cwi.nl> 
    * src/stratego-imports component added
 
