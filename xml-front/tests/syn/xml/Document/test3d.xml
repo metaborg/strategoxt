@@ -1,0 +1,20 @@
+<bla>
+  <foo>
+    <xhtml:html xmlns:xhtml="http://www.w3.org/1999/xhtml">
+      <xhtml:body>
+        <h1>Hello world</h1>
+
+        <a xhtml:href="http://www.mbravenboer.org">Visit my website</a>
+
+        <foo xmlns="">
+          <bla></bla>
+        </foo>
+
+        <xhtml:h1>Hello world</xhtml:h1>
+      </xhtml:body>
+    </xhtml:html>
+  </foo>
+
+  <boeh>
+  </boeh>
+</bla>

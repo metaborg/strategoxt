@@ -1,0 +1,13 @@
+module dtd2sig
+imports xtc-lib xml-xtc-tools stratego-xt-xtc-tools
+
+strategies
+  
+  io-dtd2sig =
+    xtc-io-wrap(
+      xtc-parse-dtd
+    ; xtc-adtd2artg
+    ; xtc-artg2asig
+    ; xtc-pp-astratego
+    )
+

@@ -1,0 +1,18 @@
+module auto-xml-tools
+imports xtc-lib
+
+strategies
+
+  main-auto-xml-tools =
+      install-xml-tools-makefile
+    ; install-xml-tools-m4
+    ; <exit> 0
+
+  install-xml-tools-makefile =
+      <xtc-find-file> "Makefile.xml-tools"
+    ; copy-to(!"Makefile.xml-tools")
+
+  install-xml-tools-m4 =
+      <xtc-find-file> "xml-tools.m4"
+    ; copy-to(!"xml-tools.m4")
+

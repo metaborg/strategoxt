@@ -1,0 +1,11 @@
+module dtd2rtg
+imports xtc-lib xml-xtc-tools regular-xtc-tools
+
+strategies
+  
+  io-dtd2rtg =
+    xtc-io-wrap(
+      xtc-parse-dtd
+    ; xtc-adtd2artg
+    ; xtc-pp-rtg
+    )

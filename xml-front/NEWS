@@ -1,0 +1,35 @@
+--------------------------------------------------------------------------
+xml tools for StrategoXT
+--------------------------------------------------------------------------
+
+2002-12-21
+
+  * xml language pack is now called xml tools. This might fit better
+    in StrategoXT in the future.
+
+2002-12-13
+
+  * There is now also a pp-xml tool. This tool applied xml2not-xml
+    followed by pp-not-xml.
+
+  * On request of Rob Vermaas I've added a pp-table for not-xml.
+    The result will be less attractive then the result of the 
+    Stratego-Box pretty printer, but it works. Layout doesn't matter
+    a lot for languages like XML after all: you shouldn't read it
+    too often.
+
+2002-12-09
+
+  * The 'pp-not-xml' tool pretty prints an non-xml term to text. This
+    is a hand-crafted pretty printer. It is written with the
+    Stratego-Box approach.
+
+2002-12-08
+
+  * First public release of the xml language pack! Please read the
+    README for more information on the tools in the xml-lang-pack.
+
+2002-12-02
+
+	* Creation of package. This is a collection of earlier work that
+    hasn't been offered in packages.

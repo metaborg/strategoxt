@@ -1,0 +1,5 @@
+module xml
+imports xml-lexical xml-document
+
+exports
+  sorts Document Content Attribute

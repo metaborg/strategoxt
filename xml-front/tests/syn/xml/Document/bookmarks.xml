@@ -1,0 +1,117 @@
+<?xml version="1.0"?>
+
+<?xml-stylesheet type="text/xsl" href="bookmarks.xsl"?>
+
+<root>
+  <category name="Vakken">
+    <link name="Programmeren en Correctheid"   url="file:///home/martin/uu/st/pc/vak.html"/>
+    <link name="Software Engineering"          url="file:///home/martin/uu/st/swe/vak.html"/>
+    <link name="Software Engineering schedule" url="file:///home/martin/uu/st/swe/CourseSchedule.html"/>
+  </category>
+
+  <category name="Documentatie">
+
+    <category name="XML">        
+      <link name="XSLT Reference"  url="file:///home/martin/documentation/languages/xml/standards/xsl/xslt/zvon-reference/Output/index.html"/>
+      <link name="XHTML Reference" url="file:///home/martin/documentation/languages/xml/standards/xhtml/zvon-reference/Output/index.html"/>
+      <link name="CSS2 Reference"  url="file:///home/martin/documentation/languages/xml/standards/css2/zvon-reference/Output/index.html"/>
+
+      <category name="Standards">        
+        <link name="XML"  url="file:///home/martin/documentation/languages/xml/standards/REC-xml-20001006.html"/>
+        <link name="XHTML 2.0 working draft" url="file:///home/martin/documentation/languages/xml/standards/xhtml/xhtml2/xhtml2-20020805/Overview.html"/>
+        <link name="SOAP 1.1"  url="file:///home/martin/documentation/languages/xml/standards/soap/SOAP_1.1.html"/>
+      </category>        
+
+      <category name="Schema talen">
+        <category name="RELAX NG">
+          <link name="Specification" url="file:/home/martin/download/development/xml/relax-ng/specification.html"/>
+          <link name="Tutorial"      url="file:/home/martin/download/development/xml/relax-ng/tutorial.html"/>
+        </category>
+      </category>
+    </category>
+
+	  <category name="Java">        
+	    <category name="API docs">        
+        <link name="SDK 1.4.0 RC"             url="file:///usr/java/j2sdk1.4.0/docs/api/index.html"/>
+        <link name="Java Generic Collections" url="file:///home/martin/tools/jsr-14-public-draft/collections-javadoc/index.html"/>
+        <link name="Java Servlets"            url="file:///home/martin/tools/jakarta-tomcat-4.0.1/webapps/tomcat-docs/servletapi/index.html"/>
+        <link name="JDOM"                     url="file:///home/martin/tools/jdom/current/docs/api/index.html"/>
+      </category>
+
+      <link name="Ant"               url="file:///usr/java/ant/current/docs/index.html"/>
+      <link name="Jasmin User Guide" url="file:///usr/local/java/jasmin-1.06/doc/guide.html"/>
+    </category>
+
+    <category name="Packages">
+      <link name="Bash Scripting" url="file:///usr/share/doc/howto/en/html/Adv-Bash-Scr-HOWTO/index.html"/>
+      <link name="Python" url="file:///home/martin/documentation/languages/python/index.html"/>
+      <link name="PostgreSQL"     url="file:///usr/share/doc/packages/postgresql/index.html"/>
+    </category>
+  </category>
+
+  <category name="XT">
+    <link name="Stratego Language"      url="http://www.stratego-language.org"/>
+    <link name="Program Transformation" url="http://www.program-transformation.org"/>
+    <link name="ATerm Library"          url="http://www.cwi.nl/projects/MetaEnv/aterm/"/>
+  </category>
+
+  <category name="Java improvements">
+    <link name="Eliminating the Object/Primitive Distinction" url="http://cdsmith.twu.net/professional/java/pontifications/primitives.html"/>
+    <link name="Nice"         url="http://nice.sourceforge.net"/>
+    <link name="Java Peeves"  url="http://radio.weblogs.com/0100190/stories/2002/07/16/javaPeeves.html"/>
+  </category>
+
+  <category name="nieuws">
+
+	  <category name="webgoeroe">
+      <link name="nieuws" url="http://www.webgoeroe.net/pagina/headlines/1"/>
+      <link name="forum"  url="http://www.webgoeroe.net/forum.php"/>
+	  </category>
+
+	  <category name="java">
+      <link name="javahova"     url="http://forum.javahova.net/misc.php?action=active"/>
+      <link name="javalobby"    url="http://www.javalobby.org"/>
+      <link name="jsurfer"      url="http://www.jsurfer.org"/>
+      <link name="javaworld"    url="http://www.javaworld.com"/>
+      <link name="cafe au lait" url="http://www.cafeaulait.org/"/>
+	  </category>
+
+    <category name="xml">
+      <link name="cafe con leche" url="http://cafeconleche.org"/>
+	  </category>
+
+	  <category name=".net">
+      <link name=".net wire"      url="http://www.dotnetwire.com"/>
+	  </category>
+
+	  <category name="developer sections">
+      <link name="BEA" url="http://dev2dev.bea.com/index.jsp"/>
+      <link name="oracle xml center" url="http://otn.oracle.com/tech/xml/content.html"/>
+
+      <category name="IBM">
+        <link name="java"        url="http://www-106.ibm.com/developerworks/java/"/>
+        <link name="java-nieuws" url="http://www-105.ibm.com/developerworks/news.nsf/dw/java-current-bydate?OpenDocument&amp;Count=500&amp;loc=j"/>
+        <link name="xml"         url="http://www-106.ibm.com/developerworks/java/"/>
+        <link name="xml-nieuws"  url="http://www-105.ibm.com/developerworks/news.nsf/dw/xml-current-bydate?OpenDocument&amp;Count=500"/>
+      </category>
+
+	    <category name="Sun">
+        <link name="java.sun.com"     url="http://java.sun.com"/>
+        <link name="early-access downloads" url="http://developer.java.sun.com/developer/earlyAccess/"/>
+        <link name="generics forum"   url="http://forum.java.sun.com/forum.jsp?forum=316"/>
+        <link name="swing connection" url="http://java.sun.com/products/jfc/tsc/"/>
+	    </category>
+	  </category>
+
+    <category name="weblogs">
+      <link name="Sam Ruby"               url="http://radio.weblogs.com/0101679/"/>
+      <link name="Lambda the Ultimate"    url="http://lambda.weblogs.com"/>
+      <link name="Workbench"              url="http://www.pycs.net/workbench/"/>
+      <link name="Patrick Logan's"        url="http://radio.weblogs.com/0100812/"/>
+      <link name="Hack the Planet"        url="http://wmf.editthispage.com"/>
+      <link name="The Desktop Fishbowl"   url="http://radio.weblogs.com/0100190/"/>
+      <link name="Peter Drayton"          url="http://www.razorsoft.net/weblog/"/>
+      <link name="Sam Gentile"            url="http://radio.weblogs.com/0105852"/>
+    </category>
+  </category>
+</root>

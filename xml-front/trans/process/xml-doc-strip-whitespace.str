@@ -1,0 +1,16 @@
+/**
+ * @author  Martin Bravenboer <mbravenb@cs.uu.nl>
+ */
+module xml-doc-strip-whitespace
+imports options simple-traversal xml-doc xml-whitespace
+
+strategies
+
+  main-xml-doc-strip-whitespace =
+    io-wrap(
+      topdown(
+        is-list; one(Text(id))
+      < xml-filter-whitespace
+      + id
+      )
+    )

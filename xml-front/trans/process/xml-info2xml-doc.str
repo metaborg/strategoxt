@@ -1,0 +1,74 @@
+module xml-info2xml-doc
+
+imports xml-doc xml-info xml-info-typematch xml-text-tools
+imports dynamic-rules options simple-traversal string
+imports concrete-syntax
+
+strategies
+
+  main-xml-info2xml-doc =
+      iowrap( xml-info2xml-doc )
+
+  xml-info2xml-doc =
+      xml-bottomup(
+        xml-apply(rewrite-Document, rewrite-Content, rewrite-Content, rewrite-Attribute)
+      )
+    ; concat-content
+
+  xml-bottomup(s) =
+      ( Document(xml-bottomup(s))
+      + Element(id, map(xml-bottomup(s)), map(xml-bottomup(s)))
+      + Text(id)
+      + Attribute(id, id)
+      )
+    ; s
+
+  xml-apply(d, e, c, a) =
+      is-Document  ; d
+    + is-Element   ; e
+   <+ is-Content   ; c
+    + is-Attribute ; a
+
+strategies // for rewriting not-xml to xml constructors
+
+  // :: xml:Document -> not-xml:Document
+  rewrite-Document:
+    Document(e) ->
+      %>
+        <?xml version="1.0"?>
+        <% !e %>
+      <%
+
+  // :: xml:Content -> not-xml:Content
+  rewrite-Content =
+    rewrite-EmptyElement <+ rewrite-OtherElement
+
+        rewrite-EmptyElement :
+          Element(Name(ns, lname), atts, []) -> %>< ~n:lname <@ !nsattr @> <@ !atts :: * @> /><%
+            where <to-namespace-attr> ns => nsattr
+        
+        rewrite-OtherElement:
+          Element(Name(ns, lname), atts, children) -> %>< ~n:lname <@ !nsattr @> <@ !atts :: * @> ><% !children :: content* %></ ~n:lname ><%
+            where <to-namespace-attr> ns => nsattr
+
+  rewrite-Content :
+    Text(s) -> Text([Literal(<xml-escape> s)])
+      where <is-string> s
+  // TODO: should use entity nodes here
+        
+  // :: xml:Attribute -> not-xml:Attribute
+  rewrite-Attribute:
+    Attribute(Name(None(), lname), value) -> @> ~n:lname = "<% <string2xml-attr-value> value %>" <@
+
+  // MUSTDO: attribute requires namespace prefix. Collect namespaces and create prefixes.
+  rewrite-Attribute:
+    Attribute(Name(Some(_), lname), value) -> Attribute(Name(None(), lname), value)
+      where <debug> "Warning: attributes with namespace prefix are currently not supported by xml2not-xml.\nThe namespace will be ignored"
+
+strategies // for namespaces
+
+  to-namespace-attr:
+    Some(ns) -> @> xmlns="<% <string2xml-attr-value> ns %>" <@
+
+  to-namespace-attr:
+    None() -> @> xmlns="" <@

@@ -1,0 +1,117 @@
+module apply-tests
+imports sunit xtc-lib match-test1 xtc-debug build-test1
+
+strategies
+
+  main-apply-tests =
+    xtc-temp-files(
+      test-suite(!"xml-info in Stratego",
+        match-checks
+      )
+    )
+
+  match-checks =
+      title-text-check(|"match-test.xhtml")
+    ; title-text-check(|"match-test2.xhtml")
+    ; title-text-check(|"match-test3.xhtml")
+    ; body-projection(|"match-test.xhtml")
+    ; body-projection(|"match-test2.xhtml")
+    ; body-projection(|"match-test3.xhtml")
+    ; title-test(|"Hello world")
+    ; title-test(|"Whatever")
+    ; attribute-check
+    ; list-tests
+
+strategies
+
+  attribute-check =
+      apply-test(!"Create a link"
+      , create-link
+      , !"http://www.stratego-language.org"
+      , !Element(
+          Name(Some("http://www.w3.org/1999/xhtml"),"a")
+        , [ Attribute(Name(None(), "href"), "http://www.stratego-language.org")]
+        , [ Text("mooie link") ]
+        )
+      )
+    ; apply-test(!"Attribute 1"
+      , build-attribute-1
+      , !"foo"
+      , !build-attribute-1("foo")
+      )
+    ; apply-test(!"Attribute 2"
+      , build-attribute-2
+      , !"foo"
+      , !build-attribute-2("foo")
+      )
+    ; apply-test(!"Attribute 3"
+      , build-attribute-3
+      , !"foo"
+      , !build-attribute-3("foo")
+      )
+    ; apply-test(!"Attribute 4"
+      , build-attribute-4
+      , !"foo"
+      , !build-attribute-4("foo")
+      )
+    ; apply-test(!"Single element term wrap"
+      , build-ul-single
+      , build-li-single
+      , !ul-single(li-single)
+      )
+
+  title-text-check(|input) =
+    apply-test(<conc-strings> ("XHTML title match ", input)
+    , parse-xml-info; title-text
+    , !FILE(input)
+    , !Text("Title of XHTML document")
+    )
+
+  body-projection(|input) =
+    apply-test(<conc-strings> ("body projection ", input)
+    , parse-xml-info; body-projection
+    , !FILE(input)
+    , Element(Name(Some("http://www.w3.org/1999/xhtml"),"body"),[],[])
+    )
+
+  title-test(|title) =
+    apply-test(<conc-strings> ("Title test ", title)
+    , build-title; wrap-title; title-text
+    , !title
+    , !Text(title)
+    )
+
+  list-tests =
+      apply-test(!"List test "
+      , build-html; title-text
+      , !()
+      , !Text("This is a title")
+      )
+    ; apply-test(!"List 3"
+      , build-list3
+      , !()
+      , !Document(ul([li(1), li(2), li(3)]))
+      )
+    ; apply-test(!"List 3'"
+      , build-list3'
+      , !()
+      , !Document(ul([li(2), li(3), li(4)]))
+      )
+    ; apply-test(!"List 4"
+      , build-list4
+      , !()
+      , !Document(ul([li(1), li(2), li(3), li(4)]))
+      )
+    ; apply-test(!"List 5"
+      , build-list5
+      , !()
+      , !Document(ul([li(1), li(2), li(3), li(2), li(3), li(4)]))
+      )
+
+strategies
+  
+  parse-xml-info = 
+      xtc-transform(!"parse-xml-doc", pass-verbose)
+    ; xtc-transform(!"xml-doc-strip-whitespace", pass-verbose)
+    ; xtc-transform(!"xml-doc2xml-info")
+    ; read-from

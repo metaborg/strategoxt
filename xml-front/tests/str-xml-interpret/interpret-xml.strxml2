@@ -1,0 +1,131 @@
+module interpret-xml
+imports Exp-choice
+
+strategies
+
+  exp0-xml =
+    !%><Times>
+        <Int>5</Int>
+        <Int>6</Int>
+       </Times><%
+
+  exp0-aterm =
+    !Times(Int(5), Int(6))
+
+strategies
+
+  exp1-xml =
+    !%><Call>
+         <Var>f</Var>
+         <Int>3</Int>
+         <Int>4</Int>
+       </Call><%
+
+  exp1-aterm =
+   !Call(
+      Var("f")
+    , [Int(3), Int(4)]
+    )
+
+strategies
+
+  exp2-xml =
+    !%><Times>
+        <Call>
+          <Var>f</Var>
+          <Int>3</Int>
+          <Int>4</Int>
+          <Int>5</Int>
+        </Call>
+        <Int>6</Int>
+      </Times><%
+
+  exp2-aterm =
+    !Times(
+       Call(Var("f"), [Int(3), Int(4), Int(5)])
+     , Int(6)
+     )
+
+strategies
+
+  exp3-xml =
+    !%><Times>
+        <% !Int(5) %>
+        <Int>6</Int>
+      </Times><%
+
+  exp3-aterm = exp0-aterm
+
+strategies
+
+  exp4-xml =
+    !%><Times>
+         <% !Int(5) %>
+         <% !Int(6) %>
+       </Times><%
+
+  exp4-aterm = exp0-aterm
+
+
+/*
+
+  exp3-aterm =
+    !Times(
+       Call(Var("f"), [Int(3), Int(4), Int(5)])
+     , Int(6)
+     )
+
+  */
+
+  /*
+  exp3-xml =
+    !%>
+      <Times>
+        <Call>
+          <Var>f</Var>
+          <Int>3</Int>
+          <Int>4</Int>
+          <% !Int(5) %>
+        </Call>
+        <Int>6</Int>
+      </Times>
+    <%
+
+  exp3-aterm =
+    exp2-aterm
+
+  strategies
+
+  exp3-xml =
+    !%>
+      <Times>
+        <Call>
+          <Var>f</Var>
+          <Int>3</Int>
+          <% !Int(4) %>
+          <% !Int(5) %>
+        </Call>
+        <Int>6</Int>
+      </Times>
+    <%
+
+  exp3-aterm =
+    exp2-aterm
+
+  strategies
+
+  exp4-xml =
+    !%>
+      <Times>
+        <Call>
+          <Var>f</Var>
+          <Int>3</Int>
+          <% ![Int(4), Int(5)] :: content* %>
+        </Call>
+        <Int>6</Int>
+      </Times>
+    <%
+
+  exp4-aterm =
+    exp2-aterm
+  */

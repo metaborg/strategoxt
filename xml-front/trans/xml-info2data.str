@@ -1,0 +1,29 @@
+module xml-info2data
+imports xml-info options simple-traversal string
+
+strategies
+
+  main-xml-info2data =
+    iowrap( xml-info2data )
+
+  xml-info2data =
+      ?Document(<id>)
+    ; topdown-wannos( try(Implode) )
+
+rules
+
+  Implode:
+    Element(Name(_, s), [atts*], children) -> s#(children){atts*}
+
+  Implode:
+    Text(s) -> s
+
+  Implode:
+    Attribute(Name(_, s), value) -> (s, value)
+    
+strategies
+
+  topdown-wannos(s) =
+    rec x(
+      topdown(s; id{map(x)} )
+    )

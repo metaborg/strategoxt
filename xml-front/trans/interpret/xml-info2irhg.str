@@ -1,0 +1,112 @@
+/**
+ * @author  Martin Bravenboer
+ */
+module xml-info2irhg
+imports options regexp-match irhg xml-info logging rhg-util regular-options
+
+strategies
+
+  main-xml-info2irhg =
+    io-wrap(rhg-option, xml-info2irhg(|<read-rhg-nf-config>))
+
+  rhg-option =
+    rhg-nf-option(|"Interpret against rhg-nf in file")
+
+strategies
+
+  /**
+   * Interpret the document against the specified rhg.
+   *
+   * @type Document -> IRHG
+   */
+  xml-info2irhg(|rhg : RHG) =
+    <start-interpret> (<id>, rhg)
+
+  /**
+   * Interpret the document against the specified rhg.
+   *
+   * @type  Document * RHG -> IRHG
+   */
+  start-interpret :
+    (Document(e), rhg@RHG(Start(nts), _)) -> inst
+      where <map(!Sym(<id>))> nts => start-regexps
+          ; <interpret-one(iNonTerm(|rhg))> ([e], start-regexps) => inst
+
+  interpret-one(s) :
+    (c, regexps) -> <getfirst(<regexp-match-all(s)> (<id>, c))> regexps
+
+/**
+ * Interprets a non-terminal (which is in a sym regexp) against xm-info Content
+ *
+ * @type  NonTerm * Content -> RegLangNode
+ */
+strategies
+
+  iNonTerm(|rhg) :
+    (String(), Text(s)) -> String(s)
+
+  iNonTerm(|rhg) :
+    String() -> String("")
+
+  iNonTerm(|rhg) :
+    (Int(), Text(s)) -> Int(<string-to-int> s)
+
+  iNonTerm(|rhg) :
+    (nt, e@Element(n@Name(ns, t), atts, content)) -> Appl(nt, Term(<create-consname> n), idefault, labelled)
+      where <get-ProdRuleRHS-rhss> (rhg, nt, Term(<create-termname> n))
+          ; getfirst(\ rhs -> <rhs-match(|rhg, rhs)> (content, atts)\) => (idefault, labelled)
+
+  /**
+   * Handles injections.
+   */
+  iNonTerm(|rhg) :
+    (nt, content) -> result
+      where <get-ProdRuleRHS-refs> (rhg, nt)
+          ; getfirst(\ Ref(ntref) -> <iNonTerm(|rhg)> (ntref, content) \) => result
+
+  /**
+   * @type List(Element) * List(Attribute) -> RegExpInstance(RegLangNode) * List(abelledContent)
+   */
+  rhs-match(|rhg, rhs) :
+    (content, atts) -> (idefault, labelled)
+      where !rhs => RHS(_, Content(regexp), lcontent)
+          ; < zip
+            ; map(match-attribute(|rhg))
+            > (atts, lcontent) => labelled
+          ; <match-content(|rhg)> (regexp, content) => idefault
+    // TODO: only works for fixed order
+
+strategies
+
+  /**
+   * @type  RegExp(NonTerm) * List(Content) -> RegExpInstance(RegLangNode)
+   */
+  match-content(|rhg) =
+    ?(regexp, content)
+    ; ( <regexp-match-all(iNonTerm(|rhg))> (regexp, content)
+        <+ <log(|Warning(), "Couldn't match", <id>)> (regexp, content); fail)
+
+  /**
+   * @type Attribute * Labelled -> LabelledContent
+   */
+  match-attribute(|rhg) =
+     ?(Attribute(_, value), Labelled(name, Content(regexp)))
+    ; <match-content(|rhg)> (regexp, [Text(value)])
+    ; !LContent(name, <id>)
+
+/**
+ * @type  Name -> String
+ */
+strategies
+
+  create-termname :
+    Name(None(), t) -> t
+
+  create-termname :
+    Name(Some(ns), t) -> <concat-strings> ["{", ns,"}", t]
+
+  create-consname :
+    Name(None(), t) -> t
+
+  create-consname :
+    Name(Some(ns), t) -> <concat-strings> ["\"{", ns,"}", t, "\""]

@@ -1,0 +1,31 @@
+module dtd
+imports dtd-entity dtd-content dtd-attribute
+imports xml-comments xml-pi
+
+exports
+  sorts ExternalDTD
+
+  context-free syntax
+    
+    ExternalDTDDecl* -> ExternalDTD {cons("ExternalDTD")}
+
+    MarkupDecl -> ExternalDTDDecl
+    PERef      -> ExternalDTDDecl
+
+    ElementDecl  -> MarkupDecl
+    AttListDecl  -> MarkupDecl
+    EntityDecl   -> MarkupDecl
+    Comment      -> MarkupDecl  {cons("Comment")}
+    NotationDecl -> MarkupDecl
+    PI           -> MarkupDecl
+
+    GEDecl -> EntityDecl
+    PEDecl -> EntityDecl 
+
+  lexical syntax
+    [\ \t\n] -> LAYOUT
+
+  context-free restrictions
+    LAYOUT? -/- [\ \t\n]
+
+

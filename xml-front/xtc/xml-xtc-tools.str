@@ -1,0 +1,139 @@
+/**
+ * xtc abstractions for invoking tools of xml-tools.
+ *
+ * @author  Martin Bravenboer
+ */
+module xml-xtc-tools
+imports stratego-xt-xtc-tools xtc-lib verbose process
+
+strategies
+
+  /**
+   * Parses an XML document to an xml-doc term.
+   */
+  xtc-parse-xml-doc =
+      xtc-sglr(!"xml.tbl", !"Document")
+    ; xtc-implode-asfix
+
+  /**
+   * Parses an XML document to an xml-info term.
+   */
+  xtc-parse-xml-info =
+      xtc-parse-xml-doc
+    ; xtc-transform(!"xml-doc-strip-whitespace", pass-verbose)
+    ; xtc-xml-doc2xml-info
+
+strategies
+/*
+  xtc-wf-xml-doc =
+    xtc-core-wf-checker(|<xtc-find> "xml-doc.rhg-nf")
+
+  xtc-wf-xml-info =
+    xtc-core-wf-checker(|<xtc-find> "xml-info.rhg-nf")
+*/
+
+strategies
+
+  /**
+   * Converts an xml-doc term to an xml-info term.
+   */
+  xtc-xml-doc2xml-info =
+    xtc-transform(!"xml-doc2xml-info", pass-verbose)
+
+  /**
+   * Converts an xml-info term to an xml-doc term.
+   */
+  xtc-xml-info2xml-doc =
+    xtc-transform(!"xml-info2xml-doc", pass-verbose)
+
+strategies // schemas
+
+  /**
+   * Parses a DTD to a structured DTDinst term.
+   *
+   * @todo use xtc-ng
+   */
+  xtc-parse-dtdinst =
+    ?FILE(s)
+    ; where(
+        <xtc-find> "netx.jar" => netx
+      ; <xtc-find> "dtdinst.jnlp" => jnlp
+      ; !["-jar", netx, "-headless", "-basedir", "/tmp", "-jnlp", jnlp, "-arg", s] => args
+      ; <new-temp-file> () => (out, fdout)
+      )
+    ; <exec-newp> (<xtc-find> "java", (None(), Some(fdout), None()), args)
+    ; !FILE(out)
+
+  xtc-parse-dtd =
+      xtc-parse-dtdinst
+    ; xtc-xml-interpret(|"dtdinst.rhg-nf")
+   
+  xtc-adtd2arhg = 
+    xtc-transform(!"adtd2arhg", pass-verbose)
+     // TODO
+
+strategies // interpretation
+
+  xtc-xml-interpret(|rhg) =
+    xtc-xml-interpret-arhg(|rhg)
+
+  xtc-xml-interpret-arhg(|rhg) =
+    xtc-transform(!"xml-interpret", !["--rhg-nf", <!rhg; xtc-find> () | <pass-verbose> ()])
+
+  xtc-xml-info2irhg(|rhg) = 
+    xtc-transform(!"xml-info2irhg", !["--rhg-nf", rhg | <pass-verbose> ()])
+
+  xtc-as-xml(rhg, s) = 
+      xtc-data2xml
+    ; xtc-pp-xml-doc
+    ; s
+    ; xtc-xml-interpret(|<rhg>)
+
+strategies // aterms to xml
+
+  xtc-data2xml-doc =
+    xtc-transform(!"data2xml-doc", pass-verbose)
+
+  xtc-pp-xml-info =
+      xtc-xml-info2xml-doc
+    ; xtc-pp-xml-doc
+
+  xtc-pp-xml-doc =
+      xtc-transform(!"xml-doc2abox", pass-verbose)
+    ; xtc-abox2text
+
+strategies
+
+  xtc-core-xslt-meta-explode =
+    xtc-transform(!"core-xslt-meta-explode", pass-verbose)
+
+strategies
+
+  /**
+   * Execute program in a new process with list of string args, 
+   * with the specified exec strategy.
+   *
+   * Optionally you can define file descriptors to use for stdin, stdout,
+   * stderr.
+   *
+   * @type  String * (Option(FileDescr) * Option(FileDescr) * Option(FileDescr)) * List(String) -> ()
+   */
+  exec-newp =
+    ?(prog, (opt-fdin, opt-fdout, opt-fderr), args)
+    ; fork-and-wait(
+        <option(<dup2> (<id>, <STDIN_FILENO> ))> opt-fdin
+      ; <option(<dup2> (<id>, <STDOUT_FILENO>))> opt-fdout
+      ; <option(<dup2> (<id>, <STDERR_FILENO>))> opt-fderr
+      ; <execvp> (prog, args)
+      ; <exit> -1
+      )
+    ; !()
+
+  /**
+   * @type  String * FileDescr
+   */
+  xtc-new-temp-file =
+    new-temp-file => (f, _)
+  ; where(
+      <assert(!TempFiles)> (f, ())
+    )

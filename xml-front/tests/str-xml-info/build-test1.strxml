@@ -1,0 +1,184 @@
+module build-test1
+  xmlns="http://www.w3.org/1999/xhtml"
+
+imports options xml-info
+strategies
+
+  main-build-test1 =
+    output-wrap(
+      build-a-tiny-doc
+    )
+
+  build-tiny-doc =
+     !%>
+        <?xml version="1.0"?>
+
+        <html>
+          <head>
+            <title>This is a title</title>
+          </head>
+          <body>
+          </body>
+        </html>
+      <%
+
+
+  build-title =
+    !%><title> <% id :: cdata %> </title><%
+
+  wrap-title =
+     !%>
+        <?xml version="1.0"?>
+
+        <html>
+          <head>
+            <% id %>
+          </head>
+          <body>
+          </body>
+        </html>
+      <%
+
+  build-html =
+    !%>
+      <?xml version="1.0"?>
+
+      <html>
+        <% build-html-content :: content* %>
+      </html>
+    <%
+
+  build-html-content =
+    !%>
+      <head>
+        <title>This is a title</title>
+      </head>
+      <body/>
+    <%
+
+strategies
+
+  build-list3 =
+    !%>
+      <?xml version="1.0"?>
+
+      <ul>
+        <li>1</li>
+        <% build-list-items :: content* %>
+      </ul>
+    <%
+
+  build-list3' =
+    !%>
+      <?xml version="1.0"?>
+
+      <ul>
+        <% build-list-items :: content* %>
+        <li>4</li>
+      </ul>
+    <%
+
+  build-list4 =
+    !%>
+      <?xml version="1.0"?>
+
+      <ul>
+        <li>1</li>
+        <% build-list-items :: content* %>
+        <li>4</li>
+      </ul>
+    <%
+
+  build-list5 =
+    !%>
+      <?xml version="1.0"?>
+
+      <ul>
+        <li>1</li>
+        <% build-list-items :: content* %>
+        <% build-list-items :: content* %>
+        <li>4</li>
+      </ul>
+    <%
+
+  build-list-items =
+    !%>
+      <li>2</li>
+      <li>3</li>
+    <%
+
+  build-ul-single =
+    !%><ul><% id %></ul><%
+
+  build-li-single =
+    !%><li>4</li><%
+
+  build-attribute-1 =
+    !%><form action="<% id %>"/><%
+
+  build-attribute-2 =
+    !%><form action="<% id %>"><% id :: cdata %></form><%
+
+  build-attribute-3 =
+    !%><form name="programs" action="<% id %>"><% id :: cdata %></form><%
+
+  build-attribute-4 =
+    !%><form name="programs" action="<% id %>" method="get"><% id :: cdata %></form><%
+
+overlays
+
+  ul-single(e) =
+    Element(
+        Name(Some("http://www.w3.org/1999/xhtml"), "ul")
+      , [ ]
+      , [ e ]
+      )
+
+  li-single =
+    Element(
+        Name(Some("http://www.w3.org/1999/xhtml"), "li")
+      , [ ]
+      , [ Text("4") ]
+      )
+
+  build-attribute-1(s) =
+    Element(
+        Name(Some("http://www.w3.org/1999/xhtml"), "form")
+      , [ Attribute(Name(None(), "action"), s) ]
+      , [ ]
+      )
+
+  build-attribute-2(s) =
+    Element(
+        Name(Some("http://www.w3.org/1999/xhtml"), "form")
+      , [ Attribute(Name(None(), "action"), s) ]
+      , [ Text(s)]
+    )
+
+  build-attribute-3(s) =
+    Element(
+        Name(Some("http://www.w3.org/1999/xhtml"), "form")
+      , [ Attribute(Name(None(), "name"), "programs"), Attribute(Name(None(), "action"), s)]
+      , [ Text(s)]
+    )
+
+  build-attribute-4(s) =
+    Element(
+        Name(Some("http://www.w3.org/1999/xhtml"), "form")
+      , [ Attribute(Name(None(), "name"), "programs"), Attribute(Name(None(), "action"), s), Attribute(Name(None(), "method"), "get")]
+      , [ Text(s)]
+    )
+
+  li(nr) =
+    Element(
+        Name(Some("http://www.w3.org/1999/xhtml"),"li")
+      , [ ]
+      , [ Text(<int-to-string> nr) ]
+      )
+
+  ul(items) =
+    Element(
+        Name(Some("http://www.w3.org/1999/xhtml"),"ul")
+      , [ ]
+      , items
+      )

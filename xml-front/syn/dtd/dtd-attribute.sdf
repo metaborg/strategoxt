@@ -1,0 +1,37 @@
+module dtd-attribute
+imports xml-attribute xml-names
+
+exports
+  context-free syntax
+
+    "<!ATTLIST" QName AttDef* ">" -> AttListDecl {cons("AttListDecl")}
+    QName AttType DefaultDecl -> AttDef {cons("AttDef")}
+
+    StringType      -> AttType
+    TokenizedType   -> AttType
+    EnumeratedType  -> AttType
+
+    "CDATA"    -> StringType    {cons("StringType")}
+    "ID"       -> TokenizedType {cons("ID")}
+    "IDREF"    -> TokenizedType {cons("IDREF")}
+    "IDREFS"   -> TokenizedType {cons("IDREFS")}
+    "ENTITY"   -> TokenizedType {cons("ENTITY")}
+    "ENTITIES" -> TokenizedType {cons("ENTITIES")}
+    "NMTOKEN"  -> TokenizedType {cons("NMTOKEN")}
+    "NMTOKENS" -> TokenizedType {cons("NMTOKENS")}
+
+    "NOTATION" "(" {NCName  "|"}+ ")" -> EnumeratedType {cons("NotationType")}
+               "(" {NmToken "|"}+ ")" -> EnumeratedType {cons("EnumerationType")}
+
+    "#REQUIRED" -> DefaultDecl {cons("Required")}
+    "#IMPLIED"  -> DefaultDecl {cons("Implied")}
+
+    "#FIXED" AttValue -> DefaultDecl {cons("Fixed")}
+             AttValue -> DefaultDecl {cons("Fixed")}
+
+  lexical syntax
+    [A-Za-z0-9\.\-\_\:]+ -> NmToken
+
+  lexical restrictions
+    NmToken -/- [A-Za-z0-9\.\-\_\:]
+

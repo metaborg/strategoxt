@@ -1,0 +1,151 @@
+module xml-doc2xml-info
+
+imports xml-doc xml-info xml-text-tools logging
+imports dynamic-rules options simple-traversal string
+
+strategies
+
+  main-xml-doc2xml-info =
+      iowrap( xml-doc2xml-info )
+
+  /**
+   * @type  xml:Document -> xml-info:Document
+   */
+  xml-doc2xml-info =
+      rewrite-Document
+    ; topdown(
+        try(
+          rewrite-Element
+        + rewrite-Attribute
+        + rewrite-Text
+        )
+      )
+    ; xml-apply-namespaces
+
+strategies // for rewriting xml to xml-info constructors
+
+  rewrite-Document:
+    Document(_, e, _) -> Document(e)
+
+  rewrite-Element = 
+        ?Element(s, _, _, s)
+      < rewrite-well-formed-Element
+      +   ?Element(s, _, _, e)
+        ; <fatal-err(|"Start tag doesn't match end tag: ")> (s, e)
+
+  /**
+   * @implementation-note  is-list is used to handle Conc elements in concrete syntax.
+   */
+  rewrite-well-formed-Element:
+    Element(QName(q, lname), atts, children, QName(q, lname)) -> Element(Name(q, lname), atts, <try(is-list; filter(is-xml-content))> children)
+
+  rewrite-Element:
+    EmptyElement(QName(q, lname), atts) -> Element(Name(q, lname), atts, [])
+
+  rewrite-Attribute:
+    Attribute(QName(q, lname), value) -> Attribute(Name(q, lname), <xml-attr-value2string> value)
+
+  rewrite-Text =
+      ?Text(_)
+    ; xml-unescape
+    ; !Text(<chardata2string>)
+
+  is-xml-content =
+    ?Element(_, _, _, _) + ?Text(_) + ?EmptyElement(_, _)
+
+strategies // for applying namespaces
+
+  xml-apply-namespaces =
+      rules( DefaultNamespace:  ()   -> None()
+                ResolvePrefix: "xml" -> "http://www.w3.org/XML/1998/namespace"
+      )
+    ; Document(xml-apply-namespaces-element)
+
+  /**
+   * @type  xml:Element -> xml:Element
+   */
+  xml-apply-namespaces-element =
+    rec x (
+      xml-apply-namespaces-element(element-map(x))
+    )
+
+  /**
+   * @type  xml:Element -> xml:Element
+   */
+  xml-apply-namespaces-element(x) =
+    {| ResolvePrefix, DefaultNamespace :
+        Element(
+          id
+        , collect-namespace-decls; remove-namespace-attrs
+        , id
+        )
+      ; Element(
+          apply-namespace
+        , map(Attribute(try(apply-prefix-namespace), id))
+        , x
+        )
+    |}
+  
+  /**
+   * @type  List(Content) -> List(Content)
+   */
+  element-map(s : Element -> Content) =
+    map(?Element(_, _, _) < s + id)
+
+  collect-namespace-decls =
+      where(
+        try(
+            getfirst(is-default-namespace-attribute)
+          ; Attribute(id, remember-default-namespace)
+        )
+      )
+    ; where(
+        filter(is-namespace-decl-attribute)
+      ; map({ prefix, value :
+          ?Attribute(Name(Some(Prefix("xmlns")), prefix), value)
+        ; <log(|Debug(), "Found namespace declaration")> (prefix, value)
+        ; rules(ResolvePrefix: prefix -> value)
+        })
+    )
+    
+
+  remember-default-namespace =
+      (?"" < !None() + !Some(<id>))
+    ; ?ns
+    ; log(|Debug(), "Default namespace declaration")
+    ; rules( DefaultNamespace: () -> ns)
+
+  /**
+   * @type Name -> Name
+   */
+  apply-namespace =
+      apply-default-namespace
+    + apply-prefix-namespace
+
+  apply-default-namespace:
+    Name(None(), lname) -> Name(<DefaultNamespace> (), lname)
+
+  apply-prefix-namespace:
+    Name(Some(Prefix(prefix)), lname) -> Name(Some(value), lname)
+      where < ResolvePrefix
+              <+ fatal-err(|"Cannot resolve the namespace of prefix")
+            > prefix => value
+
+  /**
+   * @type  List(Attribute) -> List(Attribute)
+   */
+  remove-namespace-attrs =
+    filter(not(is-namespace-attribute))
+      
+  /**
+   * @type Attribute ->? Attribute
+   */
+  is-namespace-attribute =
+        is-namespace-decl-attribute
+      + is-default-namespace-attribute
+
+  is-namespace-decl-attribute =
+    ?Attribute(Name(Some(Prefix("xmlns")), _), _)
+
+  is-default-namespace-attribute =
+    ?Attribute(Name(None(), "xmlns"), _)

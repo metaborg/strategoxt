@@ -1,0 +1,35 @@
+module pp-xml-info
+imports xtc-lib
+
+strategies
+
+  main-pp-xml-info =
+    xtc-io-wrap(
+      xtc-transform(!"xml-info2xml-doc")
+    ; xtc-transform(!"pp-xml-doc")
+    )
+
+/*
+Usage:
+  pp-not-xml [-h] [-i file] [-o file]
+
+Options:
+  -h         Displays usage information.
+  -i file    Specifies the XML concrete syntax tree to pretty-print.
+  -o file    Specifies the file name of the resulting text term.
+
+Description:
+   pp-not-xml pretty-prints an XML concrete syntax tree
+   in ATerm format to text.
+
+Copying:
+   Copyright (C) 2001-2002 Martin Bravenboer <martin@mbravenboer.org>
+
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2, or (at your option)
+   any later version.
+ENDCAT
+}
+
+*/

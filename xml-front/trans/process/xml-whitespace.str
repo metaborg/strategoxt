@@ -1,0 +1,55 @@
+/**
+ * @author  Martin Bravenboer <mbravenb@cs.uu.nl>
+ */
+module xml-whitespace
+imports xml-doc string
+
+strategies
+
+  /**
+   * Removes all Literal parts in Text content that consist completely of whitespace characters.
+   *
+   * @type  List(Content) -> List(Content)
+   */
+  xml-filter-whitespace =
+      map( ?Text(_); Text(xml-filter-whitespace-parts) <+ id)
+    ; filter(not(?Text([])))
+    ; <foldl( 
+         \ (Text(ps1), [Text(ps2) | tl]) -> [Text(<conc> (ps2, ps1)) | tl] \
+      <+ \ (c, tl) -> [c | tl] \
+      )> (<id>, [])
+    ; reverse
+
+  /**
+   * @type  List(Content) -> List(Content)
+   */
+  xml-filter-whitespace-parts =
+    filter(not(is-xml-whitespace))
+
+strategies
+
+  /**
+   * @type  CharDataPart ->? CharDataPart
+   */
+  is-xml-whitespace =
+    Literal(all-string(is-xml-whitespace-char))
+
+  /**
+   * Succeeds if the current char is an xml whitespace character
+   *
+   * @type  Char ->? Char
+   */
+  is-xml-whitespace-char = ?' '
+  is-xml-whitespace-char = ?'\t'
+  is-xml-whitespace-char = ?'\r'
+  is-xml-whitespace-char = ?'\n'
+
+strategies
+
+  /**
+   * Apply s to all characters of the current String.
+   *
+   * @type  String -> String
+   */
+  all-string(s) =
+    string-as-chars(all(s))

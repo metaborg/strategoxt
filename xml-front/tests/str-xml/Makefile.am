@@ -1,0 +1,13 @@
+include $(top_srcdir)/Makefile.xt
+include $(wildcard *.dep)
+
+check_PROGRAMS = str-xml-tests
+TESTS          = $(check_PROGRAMS)
+
+SCFLAGS       = --main main-$*
+STRINCLUDES   = -I $(top_srcdir)/sig/xml \
+                -I $(top_srcdir)/syn/xml
+
+EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta)
+CLEANFILES     = $(wildcard *.dep)
+BOOTCLEANFILES = $(wildcard *.c)

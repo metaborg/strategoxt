@@ -1,0 +1,38 @@
+Summary: xml-tools
+Name: @PACKAGE_TARNAME@
+Version: @PACKAGE_VERSION@
+Release: @SVN_REVISION@
+License: LGPL
+Group: Development/Languages/Stratego
+URL: http://www.stratego-language.org
+Source: @PACKAGE_TARNAME@-%{version}.tar.gz
+BuildRoot: %{_tmppath}/%{name}-%{version}-buildroot
+Requires: aterm >= 2.1
+Requires: sdf2-bundle >= 2.0.1
+Requires: strategoxt >= 0.10
+Provides: %{name} = %{version}
+
+%description
+
+%prep
+%setup -q
+
+%build
+CFLAGS="-D__NO_CTYPE" ./configure --prefix=%{_prefix} --with-strategoxt=%{_prefix} --with-aterm=%{_prefix} --with-sdf=%{_prefix}
+make
+
+%install
+rm -rf $RPM_BUILD_ROOT
+make DESTDIR=$RPM_BUILD_ROOT install
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%files
+%defattr(-,root,root,-)
+%{_bindir}
+%{_libexecdir}
+%{_datadir}
+%doc
+
+%changelog

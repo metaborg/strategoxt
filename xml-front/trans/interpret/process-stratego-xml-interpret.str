@@ -1,0 +1,48 @@
+/**
+ * Interprets concrete xml-info syntax fragments against a specified rtg.
+ *
+ * @author  Martin Bravenboer <mbravenb@cs.uu.nl>
+ */
+module process-stratego-xml-interpret
+imports regular-options
+        xml-info2irhg
+        implode-irhg
+        stratego-meta-markers
+
+strategies
+
+  main-process-stratego-xml-interpret =
+    io-wrap(parse-stratego-xml-options,
+      interpret-xml-info-fragments(|<read-rhg-nf-config>)
+    )
+
+  parse-stratego-xml-options =
+    rhg-nf-option(|"Interpret xml fragments against rhg-nf in file")
+
+strategies
+
+  interpret-xml-info-fragments(|rhg) =
+    alltd(
+      all-quotation(
+        <iNonTerm(|rhg)> (Nonterm("Exp"), <id>)
+      ; !ISym(<id>)
+      ; try-implode-iregexp(try-implode-node)
+      )
+    )
+
+/**
+ * Extensions to interpreter.
+ */
+strategies
+
+  iNonTerm(|rhg) :
+    (_, t) -> t
+      where <is-anti-quotation> t
+
+/**
+ * Extensions to implode-irhg
+ */
+strategies
+
+  implode-node =
+    is-anti-quotation

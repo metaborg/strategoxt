@@ -1,0 +1,7 @@
+regular hedge grammar
+  start Dummy
+  productions
+    Dummy -> br (/)
+    Dummy -> a  (<string>)
+    Dummy -> a  (<string>) .href (<string>)
+    Dummy -> a  (<string>) .href (<string>) .title (<string>)

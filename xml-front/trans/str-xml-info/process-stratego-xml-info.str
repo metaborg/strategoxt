@@ -1,0 +1,94 @@
+module process-stratego-xml-info
+imports xml-doc2xml-info Stratego stratego-meta-markers
+
+strategies
+
+  main-process-stratego-xml-info =
+    io-wrap(stratego-xml2xml-info)
+
+strategies
+
+  /**
+   * Rewrites xml in concrete syntax fragments to xml-info
+   *
+   * @type  StrategoModule -> StrategoModule
+   */
+  stratego-xml2xml-info =
+      xml-fragments2xml-info
+    ; stratego-xml-apply-namespaces
+
+  xml-fragments2xml-info =
+    rec x(
+      alltd(
+        all-quotation(xml-fragment2xml-info)
+      + Module(id, map(rewrite-Attribute), x)
+      )
+    )
+    
+  /**
+   * Rewrites xml in a concrete syntax fragment to xml-info.
+   * This implementation accepts: Document, Content, and Attribute as quotation.
+   *
+   * @type  XML construct -> XML info construct
+   */
+  xml-fragment2xml-info =
+      (  ?Document(_, _, _) < rewrite-Document + id )
+    ; topdownS(
+        try(
+          rewrite-Element
+        + rewrite-Attribute
+        + rewrite-Text
+        + rewrite-Conc
+        )
+      , is-anti-quotation-helper
+      )
+
+  is-anti-quotation-helper(s) = 
+    is-anti-quotation
+    ; xml-fragments2xml-info
+
+  rewrite-Conc :
+    Conc(l1, l2) -> FromApp(BA(CallNoArgs(SVar("conc")), Tuple([ToTerm(l1), ToTerm(l2)])))
+
+  /**
+   * Applies namespace declarations in Stratego+XML
+   *
+   * @type  StrategoModule -> StrategoModule
+   */
+  stratego-xml-apply-namespaces =
+    rules( DefaultNamespace:  ()   -> None()
+              ResolvePrefix: "xml" -> "http://www.w3.org/XML/1998/namespace"
+    )
+    ; rec x (
+      {| ResolvePrefix, DefaultNamespace :
+          ?Element(_, _, _)
+        < xml-apply-namespaces-element(x)
+        + try(remove-stratego-xmlns-decl)
+          ; all(x)
+      |}
+      )
+
+  /**
+   * Rewrites namespace declarations in Stratego to the usual Stratego constructs and creates
+   * dynamic rules that can be applied in xml-info fragments.
+   */
+  remove-stratego-xmlns-decl :
+    Module(name, xmlatts, decls) -> Module(name, decls)
+      where <collect-namespace-decls> xmlatts
+
+strategies
+
+  is-xml-content =
+    is-anti-quotation
+
+  /**
+   * Allow anti-quotation in an attribute value. Handled
+   * by adding an xml-attr-value2string identity rule for
+   * anti-quotation.
+   */
+  xml-attr-value2string =
+    where(is-anti-quotation); id
+
+signature
+  constructors
+    Module : StrategoModuleName * XmlAttributes * List(StrategDecl) -> StrategoModule

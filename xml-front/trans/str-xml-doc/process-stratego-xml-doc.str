@@ -1,0 +1,21 @@
+module process-stratego-xml-doc
+imports options simple-traversal xml-whitespace
+
+strategies
+
+  main-process-stratego-xml-doc =
+    io-wrap(
+      bottomup(
+        try(
+          is-list; one(Text(id)); xml-filter-whitespace
+        + is-list; one(Literal(id)); xml-filter-whitespace-parts
+        + \ Conc([], []) -> [] \
+       <+ \ Conc([], x)  -> x \
+       <+ \ Conc(x, [])  -> x \
+        )
+      )
+    )
+
+signature
+  constructors
+    Conc: List(a) * List(a) -> List(a)

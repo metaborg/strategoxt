@@ -1,0 +1,46 @@
+module dtd-content
+imports dtd-entity xml-names xml-external
+
+exports
+  context-free syntax
+
+    "<!ELEMENT" QName ContentSpec ">" -> ElementDecl {cons("ElementDecl")}
+
+    "EMPTY"  -> ContentSpec {cons("Empty")}
+    "ANY"    -> ContentSpec {cons("Any")}
+
+    "(" "#PCDATA"              ")"   -> ContentSpec {cons("CharData")}
+    "(" "#PCDATA" {QName "|"}* ")*"  -> ContentSpec {cons("Mixed")}
+    "(" Content                ")"   -> ContentSpec {cons("Children")}
+
+    QName -> Content {cons("ElementRef")}
+
+    Content "?" -> Content {cons("Optional")  }
+    Content "*" -> Content {cons("ZeroOrMore")}
+    Content "+" -> Content {cons("OneOrMore") }
+
+    Content "|" Content -> Content {left, cons("Choice")}
+    Content "," Content -> Content {left, cons("Seq")   }
+
+    "(" Content ")" -> Content {bracket}
+
+    PERef -> QName
+    PERef -> ContentSpec
+    PERef -> Content
+
+    "<!NOTATION" NCName NotationVal ">" -> NotationDecl {cons("NotationDecl")}
+    PublicID   -> NotationVal
+    ExternalID -> NotationVal
+  
+  context-free priorities
+    {
+      Content "?" -> Content
+      Content "*" -> Content
+      Content "+" -> Content
+    }
+  > {non-assoc:
+      Content "," Content -> Content
+      Content "|" Content -> Content
+    }
+
+

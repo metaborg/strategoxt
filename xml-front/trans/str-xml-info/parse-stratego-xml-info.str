@@ -1,0 +1,10 @@
+module parse-stratego-xml-info
+imports xtc-lib stratego-xt-xtc-tools
+
+strategies
+
+  main-parse-stratego-xml-info =
+    xtc-io-wrap(
+      xtc-sglr(!"Stratego-xml-info.tbl")
+    ; xtc-implode-asfix
+    )

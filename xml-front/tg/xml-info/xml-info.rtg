@@ -1,0 +1,20 @@
+regular tree grammar
+  start Document
+
+  productions
+    Document  -> Document (Element)
+
+    Element   -> Element (Name, AttributeList, ContentList)
+
+    AttributeList -> <cons> (Attribute, AttributeList) | <nil> ()
+    ContentList   -> <cons> (Content,   ContentList)   | <nil> ()
+
+    Content   -> Element
+    Content   -> Text (<string>)
+
+    Attribute -> Attribute (Name, <string>)
+    
+    Name      -> Name (NamespaceOpt, <string>)
+
+    NamespaceOpt -> <some> (Namespace) | <none> ()
+    Namespace -> Namespace (<string>)

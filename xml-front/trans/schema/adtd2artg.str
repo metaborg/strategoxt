@@ -1,0 +1,79 @@
+module adtd2artg
+imports regtg dtd options
+
+/**
+ * Translates a DTD in ATerm format into a regular tree grammar.
+ * tree-grammar is used in the sig2 tools of stratego-tools.
+ *
+ * Author: Martin Bravenboer <martin@mbravenboer.org>
+ */
+strategies
+
+  io-adtd2artg =
+    iowrap(dtd2rtg)
+
+strategies
+
+  // :: ExternalDTD -> RegTG
+  dtd2rtg :
+    ExternalDTD(decls) -> regtg(start(starts), prodrules(prods))
+      where <filter(?ElementDecl(_, _))> decls => elem-decls
+          ; <map(ElementDecl-to-NonTerm )> elem-decls => starts
+          ; <map(ElementDecl-to-ProdRule)> elem-decls => prods
+
+  // :: ElementDecl -> NonTerm
+  ElementDecl-to-NonTerm =
+    ?ElementDecl(<QName-to-NonTerm>, _)
+
+  // TODO: use attributes
+  // :: ElementDecl -> ProdRule
+  ElementDecl-to-ProdRule :
+    ElementDecl(qname, content-spec) -> prodrule(nt, [rhs(t, content, [])])
+      where <QName-to-NonTerm> qname => nt
+          ; <QName-to-Term   > qname => t
+          ; <ContentSpec-to-ContentModel> content-spec => content
+
+  // :: ContentSpec -> ContentModel
+  ContentSpec-to-ContentModel :
+    Empty() -> content(empty())
+
+  ContentSpec-to-ContentModel :
+    Any() -> ()
+      where <fatal-error> ["** ERROR: ANY content is not yet supported by rtg"]
+
+  ContentSpec-to-ContentModel :
+    Mixed(_) -> ()
+      where <fatal-error> ["** ERROR: Mixed content is not yet supported by rtg"]
+
+  ContentSpec-to-ContentModel :
+    CharData() -> content(sym(string()))
+
+  ContentSpec-to-ContentModel :
+    Children(c) -> content(<Content-to-RegExp> c)
+
+  // :: Content -> RegExp(NonTerm)
+  Content-to-RegExp:
+    Optional(c) -> opt(<Content-to-RegExp> c)
+
+  Content-to-RegExp:
+    ZeroOrMore(c) -> star(<Content-to-RegExp> c)
+
+  Content-to-RegExp:
+    OneOrMore(c) -> plus(<Content-to-RegExp> c)
+
+  Content-to-RegExp:
+    Choice(c1, c2) -> choice(<Content-to-RegExp> c1, <Content-to-RegExp> c2)
+
+  Content-to-RegExp:
+    Seq(c1, c2) -> seq(<Content-to-RegExp> c1, <Content-to-RegExp> c2)
+
+  Content-to-RegExp:
+    ElementRef(qname) -> sym(<QName-to-NonTerm> qname)
+
+  // :: QName -> NonTerm
+  QName-to-NonTerm :
+    QName(None(), n) -> nonterm(n)
+
+  // :: QName -> Term
+  QName-to-Term :
+    QName(None(), n) -> term(n)

@@ -1,0 +1,65 @@
+testsuite XML Attributes
+topsort Attribute
+
+test
+  [href="blaat"] ->
+        Attribute(QName(None(), "href")
+        , DoubleQuoted([Literal("blaat")]))
+
+test Simple attribute with whitespace
+  [href="blaat foo"] ->
+        Attribute(QName(None(), "href")
+        , DoubleQuoted([Literal("blaat foo")]))
+
+test Simple attribute with whitespace
+  [href=" blaat foo "] ->
+        Attribute(QName(None(), "href")
+        , DoubleQuoted([Literal(" blaat foo ")]))
+
+test Simple attribute with whitespace
+  [href="   blaat   "] ->
+        Attribute(QName(None(), "href")
+        , DoubleQuoted([Literal("   blaat   ")]))
+
+test Attribute with just whitespace
+  [href="  "]  ->
+        Attribute(QName(None(), "href")
+        , DoubleQuoted([Literal("  ")]))
+
+test Empty attribute
+  [href=""] ->
+        Attribute(QName(None(), "href")
+        , DoubleQuoted([]))
+
+test Illegal double quote in attribute
+  [href="foo" foo"] fails
+
+test Simple attribute with entity
+  [href="foo&gt;bar"]  ->
+        Attribute(QName(None(), "href")
+        , DoubleQuoted([Literal("foo"), EntityRef("gt"), Literal("bar")]))
+
+test Simple attribute with just an entity
+  [href="&gt;"] ->
+        Attribute(QName(None(), "href")
+        , DoubleQuoted([EntityRef("gt")]))
+
+test Simple attribute with just an entity and whitespace
+  [href="  &gt;"]  ->
+        Attribute(QName(None(), "href")
+        , DoubleQuoted([Literal("  "), EntityRef("gt")]))
+
+test Simple attribute with just an entity and whitespace
+  [href="&gt;  "]  ->
+        Attribute(QName(None(), "href")
+        , DoubleQuoted([EntityRef("gt"), Literal("  ")]))
+
+test Simple attribute with just an entity and whitespace
+  [href="  &gt;  "]  ->
+        Attribute(QName(None(), "href")
+        , DoubleQuoted([Literal("  "), EntityRef("gt"), Literal("  ")]))
+
+test Simple attribute with entity
+  [href="foo &gt; bar"]  ->
+        Attribute(QName(None(), "href")
+        , DoubleQuoted([Literal("foo "), EntityRef("gt"), Literal(" bar")]))

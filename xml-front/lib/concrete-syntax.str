@@ -1,0 +1,12 @@
+module concrete-syntax
+imports simple-traversal
+
+signature
+  constructors
+    Conc : List(a) * List(a) -> List(a)
+
+strategies 
+
+  concat-content = 
+    bottomup( try( \ Conc(l1, l2) -> <conc> (l1, l2) \ ))
+

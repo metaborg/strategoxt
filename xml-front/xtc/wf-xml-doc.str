@@ -1,0 +1,7 @@
+module wf-xml-doc
+imports xtc-lib regular-xtc-tools xml-xtc-tools
+
+strategies
+
+  main-wf-xml-doc =
+    xtc-io-wrap(xtc-wf-xml-doc)

@@ -1,0 +1,92 @@
+<SOAP-ENV:Envelope xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" xmlns:xsd="http://www.w3.org/1999/XMLSchema" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xmlns:a2="http://schemas.microsoft.com/urt/NS/System.Runtime.Remoting" xmlns:a1="http://schemas.microsoft.com/urt/NS/System" xmlns:i7="http://Schemas.microsoft.com/urt/NSAssem/JJM.GDOS.Groupware.Domain.IGroupwareCenter/Groupware.Domain">
+	<SOAP-ENV:Header>
+		<__CallContext href="#ref-3" root="1"/>
+
+		<a1:LogicalCallContext id="ref-3">
+			<__RemotingData href="#ref-4"/>
+			<__SecurityData href="#ref-5"/>
+		</a1:LogicalCallContext>
+
+		<a2:CallContextRemotingData id="ref-4">
+			<_logicalCallID id="ref-6">c9f3a9e8-82eb-4ec6-b116-d8c76f7c6199_3</_logicalCallID>
+		</a2:CallContextRemotingData>
+
+		<a1:CallContextSecurityData id="ref-5">
+		</a1:CallContextSecurityData>
+	</SOAP-ENV:Header>
+
+	<SOAP-ENV:Body>
+		<i7:LoginResponse id="ref-1">
+			<__return href="#ref-8"/>
+		</i7:LoginResponse>
+
+		<a2:ObjRef id="ref-8">
+			<uri id="ref-9">Groupware.Server.exe/7b8411bc-2fe0-4bb3-be00-38b1c61f196e_2.rem</uri>
+			<typeInfo href="#ref-10"/>
+			<envoyInfo href="#ref-11"/>
+			<channelInfo href="#ref-12"/>
+			<objrefFlags>1</objrefFlags>
+		</a2:ObjRef>
+
+		<a2:TypeInfo id="ref-10">
+			<serverType id="ref-13">Groupware.Server, Ver=0.0.0.0, Loc=&#34;&#34;!JJM.GDOS.Groupware.Domain.Impl.GroupwareHome</serverType>
+			<serverHierarchy href="#ref-14"/>
+			<interfacesImplemented href="#ref-15"/>
+		</a2:TypeInfo>
+
+		<a2:EnvoyInfo id="ref-11">
+			<envoySinks href="#ref-16"/>
+		</a2:EnvoyInfo>
+
+		<a2:ChannelInfo id="ref-12">
+			<channelData href="#ref-17"/>
+			<channelNames href="#ref-18"/>
+		</a2:ChannelInfo>
+
+		<SOAP-ENC:Array id="ref-14" SOAP-ENC:arrayType="xsd:string[3]">
+			<item id="ref-19">Groupware.Server, Ver=0.0.0.0, Loc=&#34;&#34;!JJM.GDOS.Groupware.Domain.Impl.GroupwareHome</item>
+			<item id="ref-20">mscorlib, Ver=1.0.2204.21, Loc=&#34;&#34;, SN=03689116d3a4ae33!System.MarshalByRefObject</item>
+			<item id="ref-21">mscorlib, Ver=1.0.2204.21, Loc=&#34;&#34;, SN=03689116d3a4ae33!System.Object</item>
+		</SOAP-ENC:Array>
+
+		<SOAP-ENC:Array id="ref-15" SOAP-ENC:arrayType="xsd:string[1]">
+			<item id="ref-22">Groupware.Domain, Ver=0.0.0.0, Loc=&#34;&#34;, SN=null!JJM.GDOS.Groupware.Domain.IGroupwareHome</item>
+		</SOAP-ENC:Array>
+
+		<a2:EnvoyTerminatorSink id="ref-16">
+		</a2:EnvoyTerminatorSink>
+
+		<SOAP-ENC:Array id="ref-17" SOAP-ENC:arrayType="xsd:ur-type[2]">
+			<item href="#ref-23"/>
+			<item href="#ref-24"/>
+		</SOAP-ENC:Array>
+
+		<SOAP-ENC:Array id="ref-18" SOAP-ENC:arrayType="xsd:string[2]">
+			<item id="ref-25">XCTX</item>
+			<item id="ref-26">HTTP</item>
+		</SOAP-ENC:Array>
+
+		<a2:CrossContextChannel_0x24_CrossContextData id="ref-23">
+			<_contextID>1297480</_contextID>
+			<_processGuid>
+				<_a>2072252860</_a>
+				<_b>12256</_b>
+				<_c>19379</_c>
+				<_d>190</_d>
+				<_e>0</_e>
+				<_f>56</_f>
+				<_g>177</_g>
+				<_h>198</_h>
+				<_i>31</_i>
+				<_j>25</_j>
+				<_k>110</_k>
+			</_processGuid>
+		</a2:CrossContextChannel_0x24_CrossContextData>
+
+		<SOAP-ENC:Array id="ref-24" SOAP-ENC:arrayType="xsd:string[2]">
+			<item id="ref-27">127.0.0.1:8085/</item>
+			<item id="ref-28">HTTP://__Error: HTTPChannel not a listener!</item>
+		</SOAP-ENC:Array>
+	</SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+

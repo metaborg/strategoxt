@@ -1,0 +1,27 @@
+module dtd
+
+module ExternalDTD
+exports
+  sorts ExternalDTD
+
+  syntax
+    S? {MarkupDecl | PEReference S}* S? -> ExternalDTD {cons("external-dtd")}
+
+    TextDecl? ExtSubsetDecl* -> ExtSubset {cons("ExtSubset")}
+    MarkupDecl -> ExtSubsetDecl {cons("MarkupDecl")}
+    ConditionalSect -> ExtSubsetDecl {cons("ConditionalSect")}
+    PEReference -> ExtSubsetDecl {cons("PEReference1")}
+    S -> ExtSubsetDecl {cons("S")}
+
+    IncludeSect -> ConditionalSect {cons("IncludeSect")}
+    IgnoreSect -> ConditionalSect {cons("IgnoreSect")}
+    "<![" S? "INCLUDE" S? "[" ExtSubsetDecl "]]>" -> IncludeSect {cons("INCLUDE")}
+    "<![" S? "IGNORE" S? "[" IgnoreSectContents* "]]>" -> IgnoreSect {cons("IGNORE")}
+    Ignore ( "<![" IgnoreSectContents "]]>" Ignore )* -> IgnoreSectContents {cons("Ignore-IgnoreSectContents-Ignore-s")}
+    CData -> Ignore {cons("CData1")}
+    CData "<![" CData -> Ignore {reject}
+
+
+    TextDecl? Content -> ExtParsedEnt {cons("TextDecl-opt-Content")}
+    TextDecl? ExtSubsetDecl -> ExtPE {cons("TextDecl-opt-ExtSubsetDecl")}
+

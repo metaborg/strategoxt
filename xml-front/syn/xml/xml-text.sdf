@@ -1,0 +1,54 @@
+module xml-text
+exports
+
+  lexical syntax
+    [\ \t\n\13] -> WhiteSpaceChar
+
+  syntax
+
+    CharDataPart+ -> CharData {cons("Text")}
+
+    FooCharDataText -> CharDataPart {cons("Literal")}
+    <Ref-CF> -> CharDataPart
+    "<![CDATA[" <CData-LEX> "]]>" -> CharDataPart {cons("CDATASection")}
+
+    <CharDataText-LEX> -> FooCharDataText
+
+  lexical syntax
+
+    ~[\<\&]+ -> CharDataText
+
+  lexical restrictions
+
+    CharDataText -/- ~[\<\&]
+
+  syntax
+
+    "&#"  <NatConst-LEX> ";" -> <DecCharRef-CF> {cons("DecCharRef")}
+    "&#x" <HexConst-LEX> ";" -> <HexCharRef-CF> {cons("HexCharRef")}
+    "&"   <NCName-LEX>   ";" -> <EntityRef-CF>  {cons("EntityRef")}
+
+  context-free syntax
+
+    DecCharRef -> CharRef
+    HexCharRef -> CharRef
+    CharRef    -> Ref
+    EntityRef  -> Ref
+
+  lexical syntax
+
+    [0-9]+       -> NatConst
+    [0-9a-fA-F]+ -> HexConst
+
+  lexical syntax
+
+    (~[\]] | CloseBracket | TwoCloseBrackets )* -> CData
+
+    "]"  -> CloseBracket
+    "]]" -> TwoCloseBrackets
+
+  lexical restrictions
+
+    CloseBracket     -/- [\]]
+    TwoCloseBrackets -/- [\>]
+    CharDataToken    -/- ~[\<\&\]\ \t\n\13]

@@ -1,0 +1,62 @@
+module data2xml-doc
+
+imports xml-doc xml-info2xml-doc
+imports options simple-traversal string
+
+strategies
+
+  main-data2xml-doc =
+    io-wrap( data2xml )
+
+  data2xml =
+      bottomup(
+        try(
+            \ None() -> [] \
+         <+ ?Some(<id>)
+         <+ ( Explode-String
+           <+ Explode-Int
+           <+ Explode-List
+           <+ Explode-Tuple
+           <+ Explode-Appl
+            )
+        )
+      )
+    ; !%>
+        <?xml version="1.0"?>
+
+        <% id %>
+      <%
+
+strategies
+
+  Explode-Appl =
+    Explode-EmptyAppl <+ Explode-NotEmptyAppl
+
+  Explode-EmptyAppl :
+    s#([]){atts*} -> %>< ~n:s <@ <map(Explode-Attr)> atts* :: * @> /><%
+
+  Explode-NotEmptyAppl :
+    s#(children){atts*} ->
+      %>< ~n:s <@ !atts2 :: * @> ><% <flatten-list> children :: * %></ ~n:s ><%
+      where <map(Explode-Attr)> atts* => atts2
+
+  Explode-String :
+    s -> %><% !s2 :: cdata %><%
+      where <is-string; xml-escape> s => s2
+
+  Explode-Attr :
+    (s, v) -> @> ~n:s="<% <string2xml-attr-value> v %>" <@
+
+strategies // this construction can never occur in aterms resulting from xml2data
+
+  Explode-List :
+    xs -> %><% !xs :: * %><% :: *
+      where <is-list> xs
+
+  Explode-Tuple :
+    "" # (xs) -> %><% !xs :: * %><% :: *
+
+  Explode-Int :
+    i ->  %><% !s :: cdata %><%
+      where <is-int> i
+          ; <int-to-string> i => s

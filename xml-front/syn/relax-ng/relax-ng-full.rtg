@@ -1,0 +1,48 @@
+pattern ->
+    element (pattern+) .name (QName)
+  | element (nameClass, pattern+)
+
+pattern ->
+    attribute (pattern?) .name (QName)
+  | attribute (nameClass, pattern?)
+  | group (pattern+)
+  | interleave (pattern+)
+  | choice (pattern+)
+  | optional (pattern+)
+  | zeroOrMore (pattern+)
+  | oneOrMore (pattern+)
+  | list (pattern+)
+  | mixed (pattern+)
+  | empty (E)
+  | text (E)
+  | ref (E) .name (NCName)
+  | parentRef (E) .name (NCName)
+
+| <value [type="NCName"]> string </value>
+| <data type="NCName"> param* [exceptPattern] </data>
+| <notAllowed/>
+| <externalRef href="anyURI"/>
+| <grammar> grammarContent* </grammar>
+
+param -> param (String) .name (NCName)
+exceptPattern -> except (pattern+)
+
+grammarContent -> start | define
+grammarContent -> div (grammarContent*)
+grammarContent -> include (includeContent*) .href (anyURI)
+
+includeContent -> start | define
+includeContent -> div (includeContent*)
+
+define  -> define (pattern+) .name (NCName) .combine? (method)
+
+method -> choice (E)
+method -> interleave (E)
+
+nameClass -> name (QName)
+nameClass -> choice (nameClass+)
+nameClass -> anyName (exceptNameClass?)
+           |  nsName (exceptNameClass?)
+
+exceptNameClass -> except (nameClass+)
+

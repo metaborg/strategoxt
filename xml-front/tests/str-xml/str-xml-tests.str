@@ -1,0 +1,191 @@
+module str-xml-tests
+imports sunit xml-doc
+
+strategies
+
+  main-str-xml-tests =
+    test-suite(!"xml in stratego",
+      congr-tests
+    ; build-tests
+    )
+
+strategies
+
+  congr-tests =
+     apply-test(!"Identity strategy",
+      id
+     , !%><test1>foo</test1><%
+     , !%><test1>foo</test1><%
+     )
+
+   ; apply-test(!"Identity congruence 1",
+      Element(
+        QName(None(), "test2"), [], [Text([Literal("foo")])], QName(None(), "test2")
+      )
+    , !%><test2>foo</test2><%
+    , !%><test2>foo</test2><%
+    ) 
+
+  ; apply-test(!"Identity congruence 2",
+       %><test3>foo</test3><%
+    , !%><test3>foo</test3><%
+    , !%><test3>foo</test3><%
+    ) 
+
+  ; apply-test(!"Identity congruence 3",
+       %><test><% id %></test><%
+    , !%><test>foo</test><%
+    , !%><test>foo</test><%
+    )
+
+  ; apply-and-fail(!"Identity congruence, whitespace is relevant 1",
+       %><test> <% id %> </test><%
+    , !%><test>foo</test><%
+    )
+
+  ; apply-and-fail(!"Identity congruence, whitespace is relevant 2",
+       %> <test>foo</test> <%
+    , !%><test>foo</test><%
+    )
+
+  ; apply-and-fail(!"Identity congruence, whitespace is relevant 3",
+       %> <test><% id %></test> <%
+    , !%><test>foo</test><%
+    )
+
+  ; apply-test(!"Simple congruence 1",
+       %><test><% <conc-strings> (<id>, "bar") :: cdata %></test><%
+    , !%><test>foo</test><%
+    , !%><test>foobar</test><%
+    )
+
+  ; apply-test(!"Simple congruence 2",
+       %><test><% !%><bar/><% %></test><%
+    , !%><test><foo/></test><%
+    , !%><test><bar/></test><%
+    )
+
+strategies
+
+  build-tests =
+
+  /**
+   * Character content
+   */
+    apply-test(!"Build character content 1", id
+    , !%>fred<%
+    , !Text([Literal("fred")])
+    )
+  ;
+    apply-test(!"Build character content 2", id
+    , !%><% !"fred" :: cdata %><%
+    , !Text([Literal("fred")])
+    )
+  ;
+    apply-test(!"Test obsolete cdata anti quotation", id
+    , !%>~cdata:"fred"<%
+    , !Text([Literal("~cdata:\"fred\"")])
+    )
+  ;
+    apply-test(!"Build character content 3", id
+    , !%><% !"fred" :: cdata %><%
+    , !Text([Literal("fred")])
+    )
+  ;
+    apply-test(!"Build character content 4", id
+    , !%>fred <%
+    , !Text([Literal("fred ")])
+    )
+  ;
+    apply-test(!"Build character content 4", id
+    , !%> fred<%
+    , !Text([Literal(" fred")])
+    )
+  ;
+    apply-test(!"Build character content 4", id
+    , !%> fred <%
+    , !Text([Literal(" fred ")])
+    )
+  ;
+  
+  /**
+   * Attributes
+   */
+    apply-test(!"Build attribute 1", id
+    , !@> a="foo" <@
+    , !Attribute(QName(None(), "a"), DoubleQuoted([Literal("foo")]))
+    )
+  ;
+    apply-test(!"Build attribute 2", id
+    , !@> a="foo " <@
+    , !Attribute(QName(None(), "a"), DoubleQuoted([Literal("foo ")]))
+    )
+  ;
+    apply-test(!"Build attribute 3", id
+    , !@> a="<"foo"" <@
+    , !Attribute(QName(None(), "a"), DoubleQuoted([Literal("foo")]))
+    )
+  ;
+    apply-test(!"Build attribute 4", id
+    , !@> a=" <"foo"" <@
+    , !Attribute(QName(None(), "a"), DoubleQuoted([Literal(" "), Literal("foo")]))
+    )
+  ;
+    apply-test(!"Build attribute 5", id
+    , !@> a="<"foo"<"bar"" <@
+    , !Attribute(QName(None(), "a"), DoubleQuoted([Literal("foo"), Literal("bar")]))
+    )
+  ;
+    apply-test(!"Build attribute 6", id
+    ,   !"foo" => foo
+      ; !"bar" => bar
+      ; !@> a="<foo<bar" <@
+    , !Attribute(QName(None(), "a"), DoubleQuoted([Literal("foo"), Literal("bar")]))
+    )
+  ;
+    apply-test(!"Build attribute 7", id
+    ,   !"foo" => foo
+      ; !"bar" => bar
+      ; !@> a="<foo&gt;<bar" <@
+    , !Attribute(QName(None(), "a"), DoubleQuoted([Literal("foo"), EntityRef("gt"), Literal("bar")]))
+    )
+  ;
+    apply-test(!"Build attribute 8", id
+    , !@> a="<% !"foo" %>" <@
+    , !Attribute(QName(None(), "a"), DoubleQuoted([Literal("foo")]))
+    )
+  ;
+    apply-test(!"Build attribute 9", id
+    , !@> a="<% !"foo" %><% !"bar" %>" <@
+    , !Attribute(QName(None(), "a"), DoubleQuoted([Literal("foo"), Literal("bar")]))
+    )
+  ;
+    apply-test(!"Build attribute 10", id
+    , !@> a="<% !"foo" %> <% !"fred" %>" <@
+    , !Attribute(QName(None(), "a"), DoubleQuoted([Literal("foo"), Literal(" "), Literal("fred")]))
+    )
+
+    /**
+     * Documents
+     */
+  ;
+    apply-test(!"Build a tiny document", id
+    , !%>
+        <?xml version="1.0"?>
+        <html/>
+      <%
+    , !Document(
+        Prologue(Some(XMLDecl(VersionDecl(Version("1.0")),None,None)),[], None())
+      , EmptyElement(QName(None,"html"),[])
+      , Epilogue([])
+      )
+    )
+
+    /**
+     * Content anti quotation
+     */
+  ;
+    apply-test(!"", id
+    , !%><foo>~*[]</foo><%
+    , !Element(QName(None(), "foo"), [], [Text([Literal("~*[]")])], QName(None(), "foo"))
+    )

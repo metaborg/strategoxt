@@ -1,0 +1,40 @@
+module match-test1
+  xmlns="http://www.w3.org/1999/xhtml"
+
+imports options xml-info
+strategies
+
+  main-match-test1 =
+    iowrap(title-text)
+
+  title-text = 
+     ?%>
+        <?xml version="1.0"?>
+
+        <html>
+          <head>
+            <title>
+              <% id %>
+            </title>
+          </head>
+          <body>
+          </body>
+        </html>
+      <%
+
+  body-projection = 
+     ?%>
+        <?xml version="1.0"?>
+
+        <html>
+          <head>
+            <title>
+              <%= _ %>
+            </title>
+          </head>
+          <% id %>
+        </html>
+      <%
+
+  create-link = 
+    !%><a href=<% id %>>mooie link</a><%

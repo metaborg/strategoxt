@@ -1,0 +1,9 @@
+regular hedge grammar
+  start Exp
+  productions
+    Id  -> <string>
+    Exp -> Mul  (Exp Exp)
+         | Div  (Exp Exp)
+         | Plus (Exp Exp)
+         | Min  (Exp Exp)
+         | Var  (Id)

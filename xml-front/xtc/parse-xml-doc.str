@@ -1,0 +1,7 @@
+module parse-xml-doc
+imports xtc-lib xml-xtc-tools
+
+strategies
+  
+  main-parse-xml-doc =
+    xtc-io-wrap(xtc-parse-xml-doc)

@@ -1,0 +1,22 @@
+module xtc-java
+imports xtc-lib
+
+strategies
+  
+  // :: String * List(String) * List(String) * a -> b
+  xtc-java-transform :
+    (class, args, cp-entries, term) -> <xtc-transform(!"java", !["-cp", <path-string> cp-entries, class | args])> term
+
+  // :: String * List(String) * List(String) * a -> b
+  xtc-java-app-transform:
+    (class, args, cp-entries, term) -> <xtc-java-transform> ("org.mbravenboer.application.Launcher", [class | args], cp-entries, term)
+
+  // :: String * List(String) * a -> b
+  xtc-java-app-transform:
+    (class, cp-entries, term) -> <xtc-java-transform> ("org.mbravenboer.application.Launcher", [class], cp-entries, term)
+
+  // List(String) -> String
+  path-string =
+      <separate-by> (":", <id>)
+    ; concat-strings
+

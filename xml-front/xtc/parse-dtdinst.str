@@ -1,0 +1,7 @@
+module parse-dtdinst
+imports xtc-lib xml-xtc-tools
+
+strategies
+  
+  main-parse-dtdinst =
+    xtc-io-wrap(xtc-parse-dtdinst)

@@ -1,0 +1,46 @@
+module core-xml-meta-explode
+imports data2xml-doc
+
+strategies
+
+  main-core-xml-meta-explode = 
+    io-wrap(xml-meta-explode)
+
+  xml-meta-explode =
+    alltd(
+      ?ToXML(<trm-explode>)
+    )
+
+strategies
+
+  trm-explode =
+      \ None() -> [] \
+    <+ ?Some(<trm-explode>)
+    <+ ( TrmMetaVar
+      <+ TrmLMetaVar
+      <+ TrmStr
+      <+ TrmFromTerm
+      // <+ TrmConc  TODO
+      <+ TrmList
+      <+ TrmOp
+       )
+
+  TrmFromTerm = ?FromXML(<xml-meta-explode>)
+
+  TrmStr  = Explode-String
+  TrmList = is-list; all(trm-explode); Explode-List
+  TrmOp   = all(trm-explode); Explode-Appl
+
+strategies
+
+  TrmMetaVar  = fail
+  TrmLMetaVar = fail
+
+signature
+  constructors
+
+    ToXML       : a -> Content   // quotation
+    FromXML     : Content -> a   // antiquotation
+
+    meta-var     : String -> a
+    meta-listvar : String -> a

@@ -1,0 +1,7 @@
+module parse-dtd
+imports xtc-lib xml-xtc-tools
+
+strategies
+  
+  main-parse-dtd =
+    xtc-io-wrap(xtc-parse-dtd)

@@ -1,0 +1,34 @@
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN" "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+
+<refentry lang="en">
+  <refnamediv>
+    <refname>pp-xml-doc</refname>
+    <refpurpose>pretty print an xml-doc term to XML</refpurpose>
+  </refnamediv>
+
+  <refsynopsisdiv>
+    <cmdsynopsis>
+      <command>pp-xml-doc</command>
+      <arg>-i <replaceable>file</replaceable></arg>
+      <arg>-o <replaceable>file</replaceable></arg>
+    </cmdsynopsis>
+  </refsynopsisdiv>
+
+  <refsect1>
+    <title>Description</title>
+
+    <para>
+      pp-xml-doc pretty prints an xml-doc term to XML.
+    </para>
+  </refsect1>
+
+  <refsect1>
+    <title>Reporting Bugs</title>
+
+    <para>
+      Please report bugs to <email>stratego-bugs@cs.uu.nl</email>
+    </para>
+  </refsect1>
+
+  <include href="lgpl-copyright.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+</refentry>

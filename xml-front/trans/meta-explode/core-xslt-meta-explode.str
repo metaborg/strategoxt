@@ -1,0 +1,25 @@
+module core-xslt-meta-explode
+imports core-xml-meta-explode
+
+strategies
+
+  main-core-xslt-meta-explode = 
+    io-wrap(xml-meta-explode)
+
+rules
+
+  /**
+   * @todo  remove quotes when desugaring has improved
+   */
+  TrmMetaVar :
+    meta-var(x) -> %><value-of select="$<%= x %>" xmlns="<%= xsl %>" /><%
+
+  TrmLMetaVar :
+    meta-listvar(x) ->  <TrmMetaVar> meta-var(x)
+
+overlays
+
+  /**
+   * @todo  remove quotes when desugaring has improved
+   */
+  xsl = "http://www.w3.org/1999/XSL/Transform"
