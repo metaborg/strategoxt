@@ -220,9 +220,9 @@ ATerm pass_includes_0_0 (ATerm t);
 ATerm xtc_io_1_0 (ATerm l_108 (ATerm), ATerm t);
 ATerm io_options_0_0 (ATerm t);
 ATerm set_config_0_0 (ATerm t);
-ATerm ArgOption_3_0 (ATerm j_3 (ATerm), ATerm k_3 (ATerm), ATerm l_3 (ATerm), ATerm t);
+ATerm ArgOption_3_0 (ATerm k_3 (ATerm), ATerm l_3 (ATerm), ATerm m_3 (ATerm), ATerm t);
 ATerm extend_config_0_0 (ATerm t);
-ATerm Option_3_0 (ATerm g_3 (ATerm), ATerm h_3 (ATerm), ATerm i_3 (ATerm), ATerm t);
+ATerm Option_3_0 (ATerm h_3 (ATerm), ATerm i_3 (ATerm), ATerm j_3 (ATerm), ATerm t);
 static ATerm b_0 (ATerm t);
 static ATerm c_0 (ATerm t);
 static ATerm d_0 (ATerm t);
@@ -515,7 +515,7 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                                                                   {
                                                                                                     ATerm e_3 = ATgetArgument(t, 0);
                                                                                                     ATerm f_3 = ATgetArgument(t, 1);
-                                                                                                    ATerm m_3 = ATgetArgument(t, 2);
+                                                                                                    ATerm g_3 = ATgetArgument(t, 2);
                                                                                                   }
                                                                                                 else
                                                                                                   _fail(t);

@@ -72,9 +72,9 @@ ATerm implode_string_0_0 (ATerm t);
 ATerm concat_0_0 (ATerm t);
 ATerm yield_0_0 (ATerm t);
 ATerm Hd_0_0 (ATerm t);
-static ATerm p_0 (ATerm c_4, ATerm t);
-ATerm map_1_0 (ATerm r_89 (ATerm), ATerm t);
-ATerm bu_collect_1_0 (ATerm g_95 (ATerm), ATerm t);
+static ATerm p_0 (ATerm z_3, ATerm t);
+ATerm map_1_0 (ATerm q_89 (ATerm), ATerm t);
+ATerm bu_collect_1_0 (ATerm f_95 (ATerm), ATerm t);
 static ATerm b_0 (ATerm t);
 static ATerm c_0 (ATerm t);
 ATerm visamb_0_0 (ATerm t);
@@ -111,12 +111,12 @@ static ATerm a_0 (ATerm t)
 }
 ATerm Lexical_0_0 (ATerm t)
 {
-  ATerm r_2 = NULL,s_2 = NULL,t_2 = NULL;
-  r_2 = t;
+  ATerm s_2 = NULL,t_2 = NULL,u_2 = NULL;
+  s_2 = t;
   if(match_cons(t, sym_appl_2))
     {
-      s_2 = ATgetArgument(t, 0);
-      t_2 = ATgetArgument(t, 1);
+      t_2 = ATgetArgument(t, 0);
+      u_2 = ATgetArgument(t, 1);
     }
   else
     _fail(t);
@@ -126,9 +126,9 @@ ATerm Lexical_0_0 (ATerm t)
     if((PushChoice() == 0))
       {
         ATerm f_0 = NULL,h_0 = NULL,q_0 = NULL,r_0 = NULL,u_0 = NULL,v_0 = NULL,w_0 = NULL,x_0 = NULL,y_0 = NULL,z_0 = NULL,c_1 = NULL,j_0 = NULL,g_0 = NULL,e_0 = NULL;
-        t = SSLgetAnnotations(r_2);
+        t = SSLgetAnnotations(s_2);
         h_0 = t;
-        t = s_2;
+        t = t_2;
         if(match_cons(t, sym_prod_3))
           {
             r_0 = ATgetArgument(t, 0);
@@ -137,7 +137,7 @@ ATerm Lexical_0_0 (ATerm t)
           }
         else
           _fail(t);
-        t = SSLgetAnnotations(s_2);
+        t = SSLgetAnnotations(t_2);
         q_0 = t;
         t = r_0;
         t = Cons_2_0(a_0, Nil_0_0, t);
@@ -159,7 +159,7 @@ ATerm Lexical_0_0 (ATerm t)
         g_0 = t;
         t = SSLsetAnnotations(g_0, q_0);
         x_0 = t;
-        t = (ATerm) ATmakeAppl(sym_appl_2, x_0, t_2);
+        t = (ATerm) ATmakeAppl(sym_appl_2, x_0, u_2);
         j_0 = t;
         t = SSLsetAnnotations(j_0, h_0);
         t = yield_0_0(t);
@@ -171,28 +171,28 @@ ATerm Lexical_0_0 (ATerm t)
       {
         t = k_0;
         {
-          ATerm x_1 = NULL,e_2 = NULL,f_2 = NULL,o_2 = NULL,p_2 = NULL,u_2 = NULL,v_2 = NULL,w_2 = NULL,b_3 = NULL,n_0 = NULL,m_0 = NULL,l_0 = NULL;
-          t = SSLgetAnnotations(r_2);
+          ATerm x_1 = NULL,e_2 = NULL,f_2 = NULL,n_2 = NULL,p_2 = NULL,q_2 = NULL,v_2 = NULL,w_2 = NULL,b_3 = NULL,n_0 = NULL,m_0 = NULL,l_0 = NULL;
+          t = SSLgetAnnotations(s_2);
           x_1 = t;
-          t = s_2;
+          t = t_2;
           if(match_cons(t, sym_prod_3))
             {
               f_2 = ATgetArgument(t, 0);
-              o_2 = ATgetArgument(t, 1);
+              n_2 = ATgetArgument(t, 1);
               p_2 = ATgetArgument(t, 2);
             }
           else
             _fail(t);
-          t = SSLgetAnnotations(s_2);
+          t = SSLgetAnnotations(t_2);
           e_2 = t;
-          t = o_2;
+          t = n_2;
           if(match_cons(t, sym_lit_1))
             {
               w_2 = ATgetArgument(t, 0);
             }
           else
             _fail(t);
-          t = SSLgetAnnotations(o_2);
+          t = SSLgetAnnotations(n_2);
           v_2 = t;
           t = (ATerm) ATmakeAppl(sym_lit_1, w_2);
           l_0 = t;
@@ -201,8 +201,8 @@ ATerm Lexical_0_0 (ATerm t)
           t = (ATerm) ATmakeAppl(sym_prod_3, f_2, b_3, p_2);
           m_0 = t;
           t = SSLsetAnnotations(m_0, e_2);
-          u_2 = t;
-          t = (ATerm) ATmakeAppl(sym_appl_2, u_2, t_2);
+          q_2 = t;
+          t = (ATerm) ATmakeAppl(sym_appl_2, q_2, u_2);
           n_0 = t;
           t = SSLsetAnnotations(n_0, x_1);
           t = (ATerm) ATempty;
@@ -228,14 +228,14 @@ ATerm abbrev_term_0_0 (ATerm t)
         {
           t = b_1;
           {
-            ATerm j_3 = NULL,o_3 = NULL,p_3 = NULL;
+            ATerm k_3 = NULL,o_3 = NULL,p_3 = NULL;
             if(match_cons(t, sym_amb_1))
               {
-                j_3 = ATgetArgument(t, 0);
+                k_3 = ATgetArgument(t, 0);
               }
             else
               _fail(t);
-            t = j_3;
+            t = k_3;
             if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
               {
                 o_3 = ATgetFirst((ATermList) t);
@@ -252,7 +252,7 @@ ATerm abbrev_term_0_0 (ATerm t)
     {
       t = t_0;
       {
-        ATerm h_3 = NULL,l_3 = NULL,z_3 = NULL;
+        ATerm h_3 = NULL,l_3 = NULL,w_3 = NULL;
         h_3 = t;
         if(match_cons(t, sym_appl_2))
           {
@@ -260,7 +260,7 @@ ATerm abbrev_term_0_0 (ATerm t)
             if(match_cons(e_1, sym_prod_3))
               {
                 ATerm k_1 = ATgetArgument(e_1, 0);
-                z_3 = ATgetArgument(e_1, 1);
+                w_3 = ATgetArgument(e_1, 1);
                 {
                   ATerm l_1 = ATgetArgument(e_1, 2);
                 }
@@ -300,7 +300,7 @@ ATerm abbrev_term_0_0 (ATerm t)
             }
         }
         l_3 = t;
-        t = (ATerm) ATmakeAppl(sym_N_2, z_3, l_3);
+        t = (ATerm) ATmakeAppl(sym_N_2, w_3, l_3);
       }
     }
   return(t);
@@ -358,14 +358,14 @@ ATerm yield_0_0 (ATerm t)
   t = implode_string_0_0(t);
   return(t);
 }
-static ATerm p_0 (ATerm c_4, ATerm t)
+static ATerm p_0 (ATerm z_3, ATerm t)
 {
   ATerm w_5 = NULL,x_5 = NULL;
-  t = c_4;
+  t = z_3;
   t = Hd_0_0(t);
   t = yield_0_0(t);
   w_5 = t;
-  t = c_4;
+  t = z_3;
   t = map_1_0(abbrev_term_0_0, t);
   x_5 = t;
   t = (ATerm) ATmakeAppl(sym_amb_abbr_2, w_5, x_5);
@@ -404,7 +404,7 @@ static ATerm c_0 (ATerm t)
 }
 ATerm visamb_0_0 (ATerm t)
 {
-  ATerm z_5 = NULL,a_6 = NULL,b_6 = NULL,c_6 = NULL,d_6 = NULL,e_6 = NULL,j_6 = NULL,k_6 = NULL,l_6 = NULL,m_6 = NULL,n_6 = NULL,o_1 = NULL,n_1 = NULL;
+  ATerm z_5 = NULL,a_6 = NULL,b_6 = NULL,g_6 = NULL,h_6 = NULL,i_6 = NULL,j_6 = NULL,k_6 = NULL,l_6 = NULL,m_6 = NULL,n_6 = NULL,o_1 = NULL,n_1 = NULL;
   n_6 = t;
   if(match_cons(t, sym_parsetree_2))
     {
@@ -414,13 +414,13 @@ ATerm visamb_0_0 (ATerm t)
   else
     _fail(t);
   t = SSLgetAnnotations(n_6);
-  e_6 = t;
+  i_6 = t;
   t = j_6;
   t = bu_collect_1_0(b_0, t);
   l_6 = t;
   t = (ATerm) ATmakeAppl(sym_parsetree_2, l_6, k_6);
   n_1 = t;
-  t = SSLsetAnnotations(n_1, e_6);
+  t = SSLsetAnnotations(n_1, i_6);
   m_6 = t;
   if(match_cons(t, sym_parsetree_2))
     {
@@ -433,11 +433,11 @@ ATerm visamb_0_0 (ATerm t)
   z_5 = t;
   t = a_6;
   t = map_1_0(c_0, t);
-  c_6 = t;
+  g_6 = t;
   t = b_6;
   t = int_to_string_0_0(t);
-  d_6 = t;
-  t = (ATerm) ATmakeAppl(sym_parsetree_2, c_6, d_6);
+  h_6 = t;
+  t = (ATerm) ATmakeAppl(sym_parsetree_2, g_6, h_6);
   o_1 = t;
   t = SSLsetAnnotations(o_1, z_5);
   return(t);

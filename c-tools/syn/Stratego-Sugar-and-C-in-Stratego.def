@@ -229,7 +229,7 @@ exports
     LId				-> ID
 
   context-free syntax
-    "_" Term 			 -> PreTerm {cons("BuildDefault")}
+    "_" PreTerm 		 -> PreTerm {cons("BuildDefaultPT")}
     "_" Term 			 -> Term {cons("BuildDefault"),prefer}
 
     Char 			 -> PreTerm {cons("Char")}
@@ -251,7 +251,6 @@ exports
     Var "[" Term "]" "(" Id ")" 		 -> Term {cons("Con")}
     Var "[" Term "where" Strategy "]"  		 -> Term {cons("Con3")}
     Var "[" Term "where" Strategy "]" "(" Id ")" -> Term {cons("Con4")}
-
 
   context-free priorities
     Term "#" "(" Term ")" 	 -> PreTerm {cons("Explode")}
@@ -482,7 +481,7 @@ module Stratego-Core-Identifiers
 exports
   sorts ModName
   lexical syntax
-    [a-zA-Z\'\.\-\_] [a-zA-Z0-9\'\.\-\_]* -> ModName
+    [a-zA-Z\.\-\_] [a-zA-Z0-9\'\.\-\_]* -> ModName
   lexical restrictions
     ModName -/- [a-zA-Z0-9\'\.\-\_]
   lexical syntax
@@ -494,8 +493,8 @@ exports
 
   sorts Id LId LCID UCID
   lexical syntax
-    [a-zA-Z\'\_] [a-zA-Z0-9\'\-\_]*     -> Id
-    [a-zA-Z\'\_] [a-zA-Z0-9\'\-\_]* "*" -> LId
+    [a-zA-Z\_] [a-zA-Z0-9\'\-\_]*     -> Id
+    [a-zA-Z\_] [a-zA-Z0-9\'\-\_]* "*" -> LId
 
     [a-z] [a-zA-Z0-9\'\-\_]*  -> LCID
     [A-Z] [a-zA-Z0-9\'\-\_]*  -> UCID
@@ -650,6 +649,13 @@ exports
 %%                 "|[" DynRuleDef   "]|" -> StrategoTerm {cons("ToTerm")}
     "DynRuleDef" "|[" DynRuleDef   "]|" -> StrategoTerm {cons("ToTerm")}
 
+    Strategy "~{" StrategoTerm "}" -> Strategy {cons("WithAnno")}
+    Term     "~{" StrategoTerm "}" -> Strategy {cons("WithAnno")}
+
+  context-free priorities
+    Strategy "~{" StrategoTerm "}" -> Strategy {cons("WithAnno")}
+  > StrategyAngle Term 		   -> Strategy {cons("BA")}
+
   context-free syntax
 
     %% From Term
@@ -729,6 +735,13 @@ exports
     "srt" [xyz] [0-9\']*  -> UCID         {prefer}
 
     "M"   [0-9\']*        -> ModName {prefer}
+
+    "def" [0-9\']*        -> Def
+    "def" [0-9\']* "*"    -> Def*
+    "sdecl" [0-9\']*      -> Sdecl
+    "sdecl" [0-9\']* "*"  -> Sdecl*
+    "ol" [0-9\']*         -> Overlay
+    "ol" [0-9\']* "*"     -> Overlay*
 
   variables
     "sc" [0-9\']*         -> DynRuleScopeId        {prefer}
@@ -1050,6 +1063,7 @@ exports
     String "(" {Term ","}* ")" 	 -> Term {cons("OpQ")}
     Term "#" "(" Term ")" 	 -> Term {cons("Explode")}
     Term "{" {Term ","}* "}"	 -> Term {cons("Anno")}
+    Term "{" {Term ","}* "|" Term "}" -> Term {cons("AnnoTail")}
 
     "<" Strategy ">" Term 	 -> Term {cons("App")}
     StrategyAngle		 -> Term {cons("RootApp")}

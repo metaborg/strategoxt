@@ -265,21 +265,21 @@ static void init_module_constant_terms (void)
   term_g_4 = (ATerm) ATmakeAppl(ATmakeSymbol("unflattened into left linear binary trees.", 0, ATtrue));
 }
 #include <srts/init-stratego-application.h>
-static ATerm u_1 (ATerm r_9, ATerm s_9, ATerm t_9, ATerm t);
+static ATerm u_1 (ATerm o_9, ATerm p_9, ATerm q_9, ATerm t);
 ATerm unflatten_lexical_0_0 (ATerm t);
 ATerm try_1_0 (ATerm y_103 (ATerm), ATerm t);
 ATerm is_int_0_0 (ATerm t);
 ATerm MkLayoutCharacter_0_0 (ATerm t);
 ATerm MkLayoutConsList_0_0 (ATerm t);
-static ATerm v_1 (ATerm h_9, ATerm t);
-ATerm MkCfConsList_1_0 (ATerm z_16 (ATerm), ATerm t);
+static ATerm v_1 (ATerm e_9, ATerm t);
+ATerm MkCfConsList_1_0 (ATerm w_16 (ATerm), ATerm t);
 ATerm Cons_2_0 (ATerm g_76 (ATerm), ATerm h_76 (ATerm), ATerm t);
-ATerm MkCfConsList_2_0 (ATerm b_17 (ATerm), ATerm c_17 (ATerm), ATerm t);
-ATerm MkLexConsList_1_0 (ATerm e_17 (ATerm), ATerm t);
+ATerm MkCfConsList_2_0 (ATerm y_16 (ATerm), ATerm z_16 (ATerm), ATerm t);
+ATerm MkLexConsList_1_0 (ATerm b_17 (ATerm), ATerm t);
 ATerm unflatten_list_0_0 (ATerm t);
-ATerm map_1_0 (ATerm r_89 (ATerm), ATerm t);
+ATerm map_1_0 (ATerm q_89 (ATerm), ATerm t);
 ATerm explode_string_0_0 (ATerm t);
-ATerm list_some_1_0 (ATerm w_89 (ATerm), ATerm t);
+ATerm list_some_1_0 (ATerm v_89 (ATerm), ATerm t);
 static ATerm l_0 (ATerm t);
 static ATerm n_0 (ATerm t);
 static ATerm w_1 (ATerm c_0, ATerm e_0, ATerm t);
@@ -301,9 +301,9 @@ ATerm main_0 (ATerm t)
   t = main_0_0(t);
   return(t);
 }
-static ATerm u_1 (ATerm r_9, ATerm s_9, ATerm t_9, ATerm t)
+static ATerm u_1 (ATerm o_9, ATerm p_9, ATerm q_9, ATerm t)
 {
-  t = (ATerm) ATmakeAppl(sym_appl_2, (ATerm)ATmakeAppl(sym_prod_3, (ATerm)ATinsert(ATempty, (ATerm) ATmakeAppl(sym_lex_1, r_9)), (ATerm)ATmakeAppl(sym_cf_1, r_9), term_y_0), (ATerm) ATmakeAppl(sym_appl_2, (ATerm)ATmakeAppl(sym_prod_3, (ATerm)ATinsert(ATempty, (ATerm) ATmakeAppl(sym_lex_1, (ATerm) ATmakeAppl(sym_iter_star_1, (ATerm) ATmakeAppl(sym_char_class_1, (ATerm) ATinsert(ATempty, term_b_1))))), (ATerm)ATmakeAppl(sym_lex_1, r_9), term_y_0), (ATerm) ATinsert(ATempty, (ATerm) ATmakeAppl(sym_appl_2, (ATerm)ATmakeAppl(sym_prod_3, s_9, (ATerm)ATmakeAppl(sym_lex_1, (ATerm) ATmakeAppl(sym_iter_star_1, (ATerm) ATmakeAppl(sym_char_class_1, (ATerm) ATinsert(ATempty, term_b_1)))), term_y_0), t_9))));
+  t = (ATerm) ATmakeAppl(sym_appl_2, (ATerm)ATmakeAppl(sym_prod_3, (ATerm)ATinsert(ATempty, (ATerm) ATmakeAppl(sym_lex_1, o_9)), (ATerm)ATmakeAppl(sym_cf_1, o_9), term_y_0), (ATerm) ATmakeAppl(sym_appl_2, (ATerm)ATmakeAppl(sym_prod_3, (ATerm)ATinsert(ATempty, (ATerm) ATmakeAppl(sym_lex_1, (ATerm) ATmakeAppl(sym_iter_star_1, (ATerm) ATmakeAppl(sym_char_class_1, (ATerm) ATinsert(ATempty, term_b_1))))), (ATerm)ATmakeAppl(sym_lex_1, o_9), term_y_0), (ATerm) ATinsert(ATempty, (ATerm) ATmakeAppl(sym_appl_2, (ATerm)ATmakeAppl(sym_prod_3, p_9, (ATerm)ATmakeAppl(sym_lex_1, (ATerm) ATmakeAppl(sym_iter_star_1, (ATerm) ATmakeAppl(sym_char_class_1, (ATerm) ATinsert(ATempty, term_b_1)))), term_y_0), q_9))));
   return(t);
 }
 ATerm unflatten_lexical_0_0 (ATerm t)
@@ -577,16 +577,16 @@ ATerm MkLayoutConsList_0_0 (ATerm t)
     }
   return(t);
 }
-static ATerm v_1 (ATerm h_9, ATerm t)
+static ATerm v_1 (ATerm e_9, ATerm t)
 {
   ATerm s_1 = NULL;
-  t = h_9;
+  t = e_9;
   t = MkLayoutConsList_0_0(t);
   s_1 = t;
   t = (ATerm) ATmakeAppl(sym_appl_2, (ATerm)ATmakeAppl(sym_prod_3, (ATerm)ATinsert(ATempty, term_r_2), term_a_4, term_y_0), (ATerm) ATinsert(ATempty, s_1));
   return(t);
 }
-ATerm MkCfConsList_1_0 (ATerm z_16 (ATerm), ATerm t)
+ATerm MkCfConsList_1_0 (ATerm w_16 (ATerm), ATerm t)
 {
   ATerm a_2 = NULL;
   static ATerm d_3 (ATerm t);
@@ -624,19 +624,19 @@ ATerm MkCfConsList_1_0 (ATerm z_16 (ATerm), ATerm t)
         else
           _fail(t);
         t = term_b_4;
-        t = z_16(t);
+        t = w_16(t);
         y_2 = t;
         t = term_b_4;
-        t = z_16(t);
+        t = w_16(t);
         z_2 = t;
         t = term_b_4;
-        t = z_16(t);
+        t = w_16(t);
         a_3 = t;
         t = term_b_4;
-        t = z_16(t);
+        t = w_16(t);
         b_3 = t;
         t = term_b_4;
-        t = z_16(t);
+        t = w_16(t);
         c_3 = t;
         t = (ATerm) ATinsert(CheckATermList(n_2), (ATerm) ATmakeAppl(sym_appl_2, (ATerm)ATmakeAppl(sym_prod_3, (ATerm)ATinsert(ATinsert(ATinsert(ATempty, (ATerm) ATmakeAppl(sym_cf_1, (ATerm) ATmakeAppl(sym_iter_1, z_2))), term_a_4), (ATerm) ATmakeAppl(sym_cf_1, (ATerm) ATmakeAppl(sym_iter_1, y_2))), (ATerm)ATmakeAppl(sym_cf_1, (ATerm) ATmakeAppl(sym_iter_1, a_3)), (ATerm) ATmakeAppl(sym_attrs_1, (ATerm) ATinsert(ATempty, term_o_3))), (ATerm) ATinsert(ATinsert(ATinsert(ATempty, (ATerm) ATmakeAppl(sym_appl_2, (ATerm)ATmakeAppl(sym_prod_3, (ATerm)ATinsert(ATempty, (ATerm) ATmakeAppl(sym_cf_1, b_3)), (ATerm)ATmakeAppl(sym_cf_1, (ATerm) ATmakeAppl(sym_iter_1, c_3)), term_y_0), (ATerm) ATinsert(ATempty, m_2))), k_2), i_2)));
         t = d_3(t);
@@ -652,10 +652,10 @@ ATerm MkCfConsList_1_0 (ATerm z_16 (ATerm), ATerm t)
     else
       a_2 = t;
     t = term_b_4;
-    t = z_16(t);
+    t = w_16(t);
     b_2 = t;
     t = term_b_4;
-    t = z_16(t);
+    t = w_16(t);
     c_2 = t;
     t = (ATerm) ATmakeAppl(sym_appl_2, (ATerm)ATmakeAppl(sym_prod_3, (ATerm)ATinsert(ATempty, (ATerm) ATmakeAppl(sym_cf_1, b_2)), (ATerm)ATmakeAppl(sym_cf_1, (ATerm) ATmakeAppl(sym_iter_1, c_2)), term_y_0), (ATerm) ATinsert(ATempty, a_2));
     return(t);
@@ -664,7 +664,7 @@ ATerm MkCfConsList_1_0 (ATerm z_16 (ATerm), ATerm t)
   t = d_3(t);
   return(t);
 }
-ATerm MkCfConsList_2_0 (ATerm b_17 (ATerm), ATerm c_17 (ATerm), ATerm t)
+ATerm MkCfConsList_2_0 (ATerm y_16 (ATerm), ATerm z_16 (ATerm), ATerm t)
 {
   ATerm k_3 = NULL;
   static ATerm y_4 (ATerm t);
@@ -718,34 +718,34 @@ ATerm MkCfConsList_2_0 (ATerm b_17 (ATerm), ATerm c_17 (ATerm), ATerm t)
         else
           _fail(t);
         t = term_b_4;
-        t = b_17(t);
+        t = y_16(t);
         o_4 = t;
         t = term_b_4;
-        t = c_17(t);
+        t = z_16(t);
         p_4 = t;
         t = term_b_4;
-        t = c_17(t);
+        t = z_16(t);
         q_4 = t;
         t = term_b_4;
-        t = b_17(t);
+        t = y_16(t);
         r_4 = t;
         t = term_b_4;
-        t = c_17(t);
+        t = z_16(t);
         s_4 = t;
         t = term_b_4;
-        t = b_17(t);
+        t = y_16(t);
         t_4 = t;
         t = term_b_4;
-        t = c_17(t);
+        t = z_16(t);
         u_4 = t;
         t = term_b_4;
-        t = b_17(t);
+        t = y_16(t);
         v_4 = t;
         t = term_b_4;
-        t = b_17(t);
+        t = y_16(t);
         w_4 = t;
         t = term_b_4;
-        t = c_17(t);
+        t = z_16(t);
         x_4 = t;
         t = (ATerm) ATinsert(CheckATermList(z_3), (ATerm) ATmakeAppl(sym_appl_2, (ATerm)ATmakeAppl(sym_prod_3, (ATerm)ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATempty, (ATerm) ATmakeAppl(sym_cf_1, (ATerm) ATmakeAppl(sym_iter_sep_2, r_4, s_4))), term_a_4), q_4), term_a_4), (ATerm) ATmakeAppl(sym_cf_1, (ATerm) ATmakeAppl(sym_iter_sep_2, o_4, p_4))), (ATerm)ATmakeAppl(sym_cf_1, (ATerm) ATmakeAppl(sym_iter_sep_2, t_4, u_4)), (ATerm) ATmakeAppl(sym_attrs_1, (ATerm) ATinsert(ATempty, term_o_3))), (ATerm) ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATempty, (ATerm) ATmakeAppl(sym_appl_2, (ATerm)ATmakeAppl(sym_prod_3, (ATerm)ATinsert(ATempty, (ATerm) ATmakeAppl(sym_cf_1, v_4)), (ATerm)ATmakeAppl(sym_cf_1, (ATerm) ATmakeAppl(sym_iter_sep_2, w_4, x_4)), term_y_0), (ATerm) ATinsert(ATempty, y_3))), w_3), u_3), s_3), q_3)));
         t = y_4(t);
@@ -761,13 +761,13 @@ ATerm MkCfConsList_2_0 (ATerm b_17 (ATerm), ATerm c_17 (ATerm), ATerm t)
     else
       k_3 = t;
     t = term_b_4;
-    t = b_17(t);
+    t = y_16(t);
     l_3 = t;
     t = term_b_4;
-    t = b_17(t);
+    t = y_16(t);
     m_3 = t;
     t = term_b_4;
-    t = c_17(t);
+    t = z_16(t);
     n_3 = t;
     t = (ATerm) ATmakeAppl(sym_appl_2, (ATerm)ATmakeAppl(sym_prod_3, (ATerm)ATinsert(ATempty, (ATerm) ATmakeAppl(sym_cf_1, l_3)), (ATerm)ATmakeAppl(sym_cf_1, (ATerm) ATmakeAppl(sym_iter_sep_2, m_3, n_3)), term_y_0), (ATerm) ATinsert(ATempty, k_3));
     return(t);
@@ -776,7 +776,7 @@ ATerm MkCfConsList_2_0 (ATerm b_17 (ATerm), ATerm c_17 (ATerm), ATerm t)
   t = y_4(t);
   return(t);
 }
-ATerm MkLexConsList_1_0 (ATerm e_17 (ATerm), ATerm t)
+ATerm MkLexConsList_1_0 (ATerm b_17 (ATerm), ATerm t)
 {
   static ATerm x_5 (ATerm t);
   static ATerm x_5 (ATerm t)
@@ -794,10 +794,10 @@ ATerm MkLexConsList_1_0 (ATerm e_17 (ATerm), ATerm t)
       {
         ATerm k_5 = NULL,l_5 = NULL;
         t = term_b_4;
-        t = e_17(t);
+        t = b_17(t);
         k_5 = t;
         t = term_b_4;
-        t = e_17(t);
+        t = b_17(t);
         l_5 = t;
         t = (ATerm) ATmakeAppl(sym_appl_2, (ATerm)ATmakeAppl(sym_prod_3, (ATerm)ATinsert(ATempty, (ATerm) ATmakeAppl(sym_lex_1, k_5)), (ATerm)ATmakeAppl(sym_lex_1, (ATerm) ATmakeAppl(sym_iter_1, l_5)), term_y_0), (ATerm) ATinsert(ATempty, c_5));
       }
@@ -812,25 +812,25 @@ ATerm MkLexConsList_1_0 (ATerm e_17 (ATerm), ATerm t)
         else
           _fail(t);
         t = term_b_4;
-        t = e_17(t);
+        t = b_17(t);
         q_5 = t;
         t = term_b_4;
-        t = e_17(t);
+        t = b_17(t);
         r_5 = t;
         t = term_b_4;
-        t = e_17(t);
+        t = b_17(t);
         s_5 = t;
         t = term_b_4;
-        t = e_17(t);
+        t = b_17(t);
         t_5 = t;
         t = term_b_4;
-        t = e_17(t);
+        t = b_17(t);
         u_5 = t;
         t = term_b_4;
-        t = e_17(t);
+        t = b_17(t);
         v_5 = t;
         t = term_b_4;
-        t = e_17(t);
+        t = b_17(t);
         w_5 = t;
         t = (ATerm) ATinsert(CheckATermList(f_5), (ATerm) ATmakeAppl(sym_appl_2, (ATerm)ATmakeAppl(sym_prod_3, (ATerm)ATinsert(ATinsert(ATempty, (ATerm) ATmakeAppl(sym_lex_1, (ATerm) ATmakeAppl(sym_iter_1, r_5))), (ATerm) ATmakeAppl(sym_lex_1, (ATerm) ATmakeAppl(sym_iter_1, q_5))), (ATerm)ATmakeAppl(sym_lex_1, (ATerm) ATmakeAppl(sym_iter_1, s_5)), (ATerm) ATmakeAppl(sym_attrs_1, (ATerm) ATinsert(ATempty, term_o_3))), (ATerm) ATinsert(ATinsert(ATempty, (ATerm) ATmakeAppl(sym_appl_2, (ATerm)ATmakeAppl(sym_prod_3, (ATerm)ATinsert(ATempty, (ATerm) ATmakeAppl(sym_lex_1, v_5)), (ATerm)ATmakeAppl(sym_lex_1, (ATerm) ATmakeAppl(sym_iter_1, w_5)), term_y_0), (ATerm) ATinsert(ATempty, e_5))), (ATerm) ATmakeAppl(sym_appl_2, (ATerm)ATmakeAppl(sym_prod_3, (ATerm)ATinsert(ATempty, (ATerm) ATmakeAppl(sym_lex_1, t_5)), (ATerm)ATmakeAppl(sym_lex_1, (ATerm) ATmakeAppl(sym_iter_1, u_5)), term_y_0), (ATerm) ATinsert(ATempty, c_5)))));
         t = x_5(t);
@@ -983,11 +983,11 @@ ATerm unflatten_list_0_0 (ATerm t)
                           g_6 = ATgetFirst((ATermList) t);
                           h_6 = (ATerm) ATgetNext((ATermList) t);
                           {
-                            ATerm u_7 = NULL;
+                            ATerm z_8 = NULL;
                             t = (ATerm) ATmakeAppl(sym_appl_2, (ATerm)ATmakeAppl(sym_list_1, (ATerm) ATmakeAppl(sym_cf_1, (ATerm) ATmakeAppl(sym_iter_1, m_6))), (ATerm) ATinsert(CheckATermList(h_6), g_6));
                             t = unflatten_list_0_0(t);
-                            u_7 = t;
-                            t = (ATerm) ATmakeAppl(sym_appl_2, (ATerm)ATmakeAppl(sym_prod_3, (ATerm)ATinsert(ATempty, (ATerm) ATmakeAppl(sym_cf_1, (ATerm) ATmakeAppl(sym_iter_1, m_6))), (ATerm)ATmakeAppl(sym_cf_1, (ATerm) ATmakeAppl(sym_iter_star_1, m_6)), term_y_0), (ATerm) ATinsert(ATempty, u_7));
+                            z_8 = t;
+                            t = (ATerm) ATmakeAppl(sym_appl_2, (ATerm)ATmakeAppl(sym_prod_3, (ATerm)ATinsert(ATempty, (ATerm) ATmakeAppl(sym_cf_1, (ATerm) ATmakeAppl(sym_iter_1, m_6))), (ATerm)ATmakeAppl(sym_cf_1, (ATerm) ATmakeAppl(sym_iter_star_1, m_6)), term_y_0), (ATerm) ATinsert(ATempty, z_8));
                           }
                         }
                       else
@@ -1005,19 +1005,19 @@ ATerm unflatten_list_0_0 (ATerm t)
 }
 static ATerm l_0 (ATerm t)
 {
-  ATerm c_9 = NULL,n_9 = NULL,o_9 = NULL;
+  ATerm r_9 = NULL,s_9 = NULL,t_9 = NULL;
   if(match_cons(t, sym_lit_1))
     {
-      o_9 = ATgetArgument(t, 0);
+      t_9 = ATgetArgument(t, 0);
     }
   else
     _fail(t);
-  t = o_9;
+  t = t_9;
   t = explode_string_0_0(t);
-  n_9 = t;
+  s_9 = t;
   t = map_1_0(n_0, t);
-  c_9 = t;
-  t = (ATerm) ATmakeAppl(sym_appl_2, (ATerm)ATmakeAppl(sym_prod_3, c_9, (ATerm)ATmakeAppl(sym_lit_1, o_9), term_y_0), n_9);
+  r_9 = t;
+  t = (ATerm) ATmakeAppl(sym_appl_2, (ATerm)ATmakeAppl(sym_prod_3, r_9, (ATerm)ATmakeAppl(sym_lit_1, t_9), term_y_0), s_9);
   return(t);
 }
 static ATerm n_0 (ATerm t)
@@ -1029,11 +1029,11 @@ static ATerm n_0 (ATerm t)
 }
 static ATerm w_1 (ATerm c_0, ATerm e_0, ATerm t)
 {
-  ATerm l_8 = NULL;
+  ATerm l_9 = NULL;
   t = e_0;
   t = list_some_1_0(l_0, t);
-  l_8 = t;
-  t = (ATerm) ATmakeAppl(sym_appl_2, c_0, l_8);
+  l_9 = t;
+  t = (ATerm) ATmakeAppl(sym_appl_2, c_0, l_9);
   return(t);
 }
 static ATerm p_0 (ATerm t)

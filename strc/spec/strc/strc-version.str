@@ -1,4 +1,4 @@
 module strc-version
 overlays
 
-  strc-version-number = "0.11"
+  strc-version-number = "0.12pre"

@@ -105,7 +105,7 @@
    AM                                        -- _1 KW["=>"] _2,
    ListVar                                   -- _1,
    Var                                       -- _1,
-   BuildDefault                              -- KW["_"] _1,
+   BuildDefaultPT                            -- KW["_"] _1,
    BuildDefault                              -- KW["_"] _1,
    Char                                      -- _1,
    AnnoList                                  -- _1 KW["{"] _2 KW["}"],

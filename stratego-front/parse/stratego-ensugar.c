@@ -576,8 +576,8 @@ ATerm implode_cons_0_0 (ATerm t)
 }
 ATerm Ensugar_0_0 (ATerm t)
 {
-  ATerm a_8 = NULL,c_8 = NULL,d_8 = NULL,e_8 = NULL,g_8 = NULL,h_8 = NULL;
-  e_8 = t;
+  ATerm a_8 = NULL,d_8 = NULL,e_8 = NULL,f_8 = NULL,g_8 = NULL,h_8 = NULL;
+  f_8 = t;
   if(match_cons(t, sym_Op_2))
     {
       g_8 = ATgetArgument(t, 0);
@@ -598,14 +598,14 @@ ATerm Ensugar_0_0 (ATerm t)
           if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
             {
               ATerm y_1 = ATgetFirst((ATermList) t);
-              c_8 = (ATerm) ATgetNext((ATermList) t);
+              d_8 = (ATerm) ATgetNext((ATermList) t);
             }
           else
             _fail(t);
-          t = c_8;
+          t = d_8;
           if(((ATgetType(t) != AT_LIST) || !(ATisEmpty(t))))
             _fail(t);
-          t = e_8;
+          t = f_8;
           t = implode_cons_0_0(t);
           t = split_last_0_0(t);
           if(match_cons(t, sym__2))
@@ -670,8 +670,8 @@ ATerm Ensugar_0_0 (ATerm t)
             {
               g_8 = ATgetArgument(t, 0);
               h_8 = ATgetArgument(t, 1);
-              d_8 = ATgetArgument(t, 2);
-              t = d_8;
+              e_8 = ATgetArgument(t, 2);
+              t = e_8;
               if(!(match_cons(t, sym_Id_0)))
                 _fail(t);
               t = (ATerm) ATmakeAppl(sym_StratRuleNoCond_2, g_8, h_8);
@@ -682,8 +682,8 @@ ATerm Ensugar_0_0 (ATerm t)
                 {
                   g_8 = ATgetArgument(t, 0);
                   h_8 = ATgetArgument(t, 1);
-                  d_8 = ATgetArgument(t, 2);
-                  t = d_8;
+                  e_8 = ATgetArgument(t, 2);
+                  t = e_8;
                   if(!(match_cons(t, sym_Id_0)))
                     _fail(t);
                   t = (ATerm) ATmakeAppl(sym_RuleNoCond_2, g_8, h_8);
@@ -694,7 +694,7 @@ ATerm Ensugar_0_0 (ATerm t)
                     {
                       g_8 = ATgetArgument(t, 0);
                       h_8 = ATgetArgument(t, 1);
-                      d_8 = ATgetArgument(t, 2);
+                      e_8 = ATgetArgument(t, 2);
                       {
                         ATerm a_10 = NULL;
                         t = g_8;
@@ -714,7 +714,7 @@ ATerm Ensugar_0_0 (ATerm t)
                         t = g_8;
                         t = double_quote_0_0(t);
                         a_10 = t;
-                        t = (ATerm) ATmakeAppl(sym_PrimT_3, a_10, h_8, d_8);
+                        t = (ATerm) ATmakeAppl(sym_PrimT_3, a_10, h_8, e_8);
                       }
                     }
                   else

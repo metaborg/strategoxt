@@ -34,10 +34,7 @@ signature
     DocTypeDecl      : QName * ExternalID -> DocTypeDecl
     DocTypePrologue  : DocTypeDecl * List(Misc) -> DocTypePrologue
     Version          : VersionNum -> VersionValue
-    Version          : VersionNum -> VersionValue
     Encoding         : EncodingName -> EncodingValue
-    Encoding         : EncodingName -> EncodingValue
-    Standalone       : YesNo -> StandaloneValue
     Standalone       : YesNo -> StandaloneValue
     EncodingDecl     : EncodingValue -> EncodingDecl
     VersionDecl      : VersionValue -> VersionInfo

@@ -566,7 +566,7 @@ static ATerm n_4 (ATerm t);
 static ATerm o_4 (ATerm t);
 ATerm implode_0_0 (ATerm t);
 ATerm set_config_0_0 (ATerm t);
-ATerm Option_3_0 (ATerm g_3 (ATerm), ATerm h_3 (ATerm), ATerm i_3 (ATerm), ATerm t);
+ATerm Option_3_0 (ATerm h_3 (ATerm), ATerm i_3 (ATerm), ATerm j_3 (ATerm), ATerm t);
 static ATerm q_4 (ATerm t);
 static ATerm r_4 (ATerm t);
 static ATerm s_4 (ATerm t);
@@ -1895,11 +1895,11 @@ ATerm ReplCons_1_0 (ATerm a_23 (ATerm), ATerm t)
                     {
                       t = r_10;
                       {
-                        ATerm j_2 = NULL,j_3 = NULL,k_3 = NULL,l_3 = NULL,m_3 = NULL,n_3 = NULL,o_3 = NULL,p_3 = NULL;
+                        ATerm j_2 = NULL,g_3 = NULL,k_3 = NULL,l_3 = NULL,m_3 = NULL,n_3 = NULL,o_3 = NULL,p_3 = NULL;
                         t = z_10;
                         if(match_cons(t, sym_prod_3))
                           {
-                            j_3 = ATgetArgument(t, 0);
+                            g_3 = ATgetArgument(t, 0);
                             n_3 = ATgetArgument(t, 1);
                             {
                               ATerm w_10 = ATgetArgument(t, 2);
@@ -1907,7 +1907,7 @@ ATerm ReplCons_1_0 (ATerm a_23 (ATerm), ATerm t)
                           }
                         else
                           _fail(t);
-                        t = j_3;
+                        t = g_3;
                         if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
                           {
                             k_3 = ATgetFirst((ATermList) t);

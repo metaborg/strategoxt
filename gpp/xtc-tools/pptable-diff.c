@@ -79,7 +79,7 @@ ATerm term_q_3;
 ATerm term_p_3;
 ATerm term_o_3;
 ATerm term_n_3;
-ATerm term_m_3;
+ATerm term_g_3;
 ATerm term_f_3;
 ATerm term_e_3;
 ATerm term_d_3;
@@ -154,8 +154,8 @@ static void init_module_constant_terms (void)
   term_e_3 = (ATerm) ATmakeAppl(ATmakeSymbol("\"old\" is updated by adding pretty-print\n", 0, ATtrue));
   ATprotect(&(term_f_3));
   term_f_3 = (ATerm) ATmakeAppl(ATmakeSymbol("rules that are in \"new\" but not in\n", 0, ATtrue));
-  ATprotect(&(term_m_3));
-  term_m_3 = (ATerm) ATmakeAppl(ATmakeSymbol("\"old\".\n\n", 0, ATtrue));
+  ATprotect(&(term_g_3));
+  term_g_3 = (ATerm) ATmakeAppl(ATmakeSymbol("\"old\".\n\n", 0, ATtrue));
   ATprotect(&(term_n_3));
   term_n_3 = (ATerm) ATmakeAppl(ATmakeSymbol("If the \"--prune\" switch is specified, the table\n", 0, ATtrue));
   ATprotect(&(term_o_3));
@@ -217,8 +217,8 @@ static ATerm y_0 (ATerm t);
 ATerm pp_table_diff_usage_0_0 (ATerm t);
 ATerm io_options_0_0 (ATerm t);
 ATerm set_config_0_0 (ATerm t);
-ATerm ArgOption_3_0 (ATerm j_3 (ATerm), ATerm k_3 (ATerm), ATerm l_3 (ATerm), ATerm t);
-ATerm Option_3_0 (ATerm g_3 (ATerm), ATerm h_3 (ATerm), ATerm i_3 (ATerm), ATerm t);
+ATerm ArgOption_3_0 (ATerm k_3 (ATerm), ATerm l_3 (ATerm), ATerm m_3 (ATerm), ATerm t);
+ATerm Option_3_0 (ATerm h_3 (ATerm), ATerm i_3 (ATerm), ATerm j_3 (ATerm), ATerm t);
 static ATerm z_0 (ATerm t);
 static ATerm a_1 (ATerm t);
 static ATerm c_1 (ATerm t);
@@ -523,7 +523,7 @@ static ATerm u_0 (ATerm t)
 }
 static ATerm y_0 (ATerm t)
 {
-  t = (ATerm) ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATempty, term_p_3), term_o_3), term_n_3), term_m_3), term_f_3), term_e_3), term_d_3), term_c_3), term_b_3), term_a_3), term_z_2), term_y_2);
+  t = (ATerm) ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATempty, term_p_3), term_o_3), term_n_3), term_g_3), term_f_3), term_e_3), term_d_3), term_c_3), term_b_3), term_a_3), term_z_2), term_y_2);
   return(t);
 }
 ATerm pp_table_diff_usage_0_0 (ATerm t)

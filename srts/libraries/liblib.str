@@ -318,11 +318,11 @@ specification
 
     external range( | )
 
-    external range( | q_3 : ATerm())
+    external range( | r_3 : ATerm())
 
     external range-next(b_116 : ATerm() -> ATerm() | )
 
-    external range(p_3 : ATerm() -> ATerm() | )
+    external range(q_3 : ATerm() -> ATerm() | )
 
     external is-interval( | )
 
@@ -592,15 +592,15 @@ specification
 
     external UndefinedOption( | )
 
-    external Arg2Option(m_3 : ATerm() -> ATerm() , n_3 : ATerm() -> ATerm() , o_3 : ATerm() -> ATerm() | )
+    external Arg2Option(n_3 : ATerm() -> ATerm() , o_3 : ATerm() -> ATerm() , p_3 : ATerm() -> ATerm() | )
 
     external Arg2Option(h_112 : ATerm() -> ATerm() , i_112 : ATerm() -> ATerm() | )
 
     external ArgOption(f_112 : ATerm() -> ATerm() , g_112 : ATerm() -> ATerm() | )
 
-    external ArgOption(j_3 : ATerm() -> ATerm() , k_3 : ATerm() -> ATerm() , l_3 : ATerm() -> ATerm() | )
+    external ArgOption(k_3 : ATerm() -> ATerm() , l_3 : ATerm() -> ATerm() , m_3 : ATerm() -> ATerm() | )
 
-    external Option(g_3 : ATerm() -> ATerm() , h_3 : ATerm() -> ATerm() , i_3 : ATerm() -> ATerm() | )
+    external Option(h_3 : ATerm() -> ATerm() , i_3 : ATerm() -> ATerm() , j_3 : ATerm() -> ATerm() | )
 
     external Option(r_111 : ATerm() -> ATerm() , s_111 : ATerm() -> ATerm() | )
 
@@ -766,9 +766,9 @@ specification
 
     external read-from( | )
 
-    external copy-to(f_3 : ATerm() -> ATerm() | )
+    external copy-to(g_3 : ATerm() -> ATerm() | )
 
-    external rename-to(e_3 : ATerm() -> ATerm() | )
+    external rename-to(f_3 : ATerm() -> ATerm() | )
 
     external xtc-generate(c_108 : ATerm() -> ATerm() , d_108 : ATerm() -> ATerm() | )
 
@@ -780,7 +780,7 @@ specification
 
     external xtc-transform-term(x_107 : ATerm() -> ATerm() , y_107 : ATerm() -> ATerm() | )
 
-    external xtc-transform-file(c_3 : ATerm() -> ATerm() , d_3 : ATerm() -> ATerm() | )
+    external xtc-transform-file(d_3 : ATerm() -> ATerm() , e_3 : ATerm() -> ATerm() | )
 
     external xtc-transform-file(s_107 : ATerm() -> ATerm() | )
 
@@ -1136,30 +1136,6 @@ specification
 
     external table-push( | )
 
-    external destroy-table( | )
-
-    external create-table( | )
-
-    external diff-set( | )
-
-    external union-set( | )
-
-    external pop-get( | )
-
-    external push-set( | )
-
-    external display-push( | )
-
-    external display-pop( | )
-
-    external display-replace( | )
-
-    external display-lookup( | )
-
-    external create-display( | )
-
-    external destroy-display( | )
-
     external pass-verbose( | )
 
     external verbosity( | )
@@ -1222,7 +1198,7 @@ specification
 
     external if(e_104 : ATerm() -> ATerm() , f_104 : ATerm() -> ATerm() | )
 
-    external maybe(a_3 : ATerm() -> ATerm() , b_3 : ATerm() -> ATerm() | )
+    external maybe(b_3 : ATerm() -> ATerm() , c_3 : ATerm() -> ATerm() | )
 
     external maybe(z_103 : ATerm() -> ATerm() | )
 
@@ -1370,15 +1346,15 @@ specification
 
     external dr-new-change-set( | )
 
-    external dr-lookup-rule-pointer(y_2 : ATerm() -> ATerm() | z_2 : ATerm())
+    external dr-lookup-rule-pointer(z_2 : ATerm() -> ATerm() | a_3 : ATerm())
 
     external dr-lookup-rule-pointer( | d_43 : ATerm())
 
-    external dr-lookup-rule(w_2 : ATerm() -> ATerm() | x_2 : ATerm())
+    external dr-lookup-rule(x_2 : ATerm() -> ATerm() | y_2 : ATerm())
 
     external dr-lookup-rule( | u_42 : ATerm())
 
-    external dr-set-in-rule-set(s_2 : ATerm() * Hashtable() * ATerm() * ATerm() * ATerm() -> ATerm() | t_2 : ATerm() , u_2 : ATerm() , v_2 : ATerm())
+    external dr-set-in-rule-set(t_2 : ATerm() * Hashtable() * ATerm() * ATerm() * ATerm() -> ATerm() | u_2 : ATerm() , v_2 : ATerm() , w_2 : ATerm())
 
     external dr-set-fail( | x_41 : ATerm() , y_41 : ATerm() , z_41 : ATerm() , a_42 : ATerm())
 
@@ -1386,7 +1362,7 @@ specification
 
     external dr-set-in-rule-set( | s_41 : ATerm() , t_41 : ATerm())
 
-    external dr-add-to-rule-set(o_2 : ATerm() * Hashtable() * ATerm() * ATerm() * ATerm() -> ATerm() | p_2 : ATerm() , q_2 : ATerm() , r_2 : ATerm())
+    external dr-add-to-rule-set(p_2 : ATerm() * Hashtable() * ATerm() * ATerm() * ATerm() -> ATerm() | q_2 : ATerm() , r_2 : ATerm() , s_2 : ATerm())
 
     external dr-add-fail( | u_40 : ATerm() , v_40 : ATerm() , w_40 : ATerm() , x_40 : ATerm())
 
@@ -1712,7 +1688,7 @@ specification
 
     external UnCify1(v_99 : ATerm() -> ATerm() | )
 
-    external Cify(n_2 : ATerm() -> ATerm() | )
+    external Cify(o_2 : ATerm() -> ATerm() | )
 
     external double-quote( | )
 

@@ -8,13 +8,6 @@ signature
                           : String -> EOLString
                           : String -> Sort
     string                : String -> Input
-    string                : String -> Input
-    string                : String -> Input
-    string                : String -> Input
-    string                : String -> Input
-    string                : String -> Input
-    string                : String -> Input
-    string                : String -> Input
     file                  : PathName -> Input
     success               : Result
     failure               : Result
@@ -24,7 +17,6 @@ signature
     topsort               : Sort -> TopSort
     parse-testsuite       : Name * TopSort * List(Test) -> TestSuite
     annotation            : List(ATerm) -> Ann
-    fun                   : AFun -> ATerm
     wildcard              : ATerm
     annotated-placeholder : ATerm * Ann -> ATerm
     annotated-appl        : AFun * List(ATerm) * Ann -> ATerm

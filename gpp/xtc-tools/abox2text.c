@@ -95,7 +95,7 @@ static ATerm b_0 (ATerm t);
 ATerm abox2text_0_0 (ATerm t);
 ATerm xtc_io_1_0 (ATerm l_108 (ATerm), ATerm t);
 ATerm set_config_0_0 (ATerm t);
-ATerm ArgOption_3_0 (ATerm j_3 (ATerm), ATerm k_3 (ATerm), ATerm l_3 (ATerm), ATerm t);
+ATerm ArgOption_3_0 (ATerm k_3 (ATerm), ATerm l_3 (ATerm), ATerm m_3 (ATerm), ATerm t);
 ATerm general_options_0_0 (ATerm t);
 ATerm output_option_0_0 (ATerm t);
 ATerm input_option_0_0 (ATerm t);

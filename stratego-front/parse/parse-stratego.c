@@ -267,15 +267,15 @@ ATerm read_from_0_0 (ATerm t);
 ATerm if_not_silent_1_0 (ATerm j_110 (ATerm), ATerm t);
 ATerm concat_0_0 (ATerm t);
 ATerm guarantee_extension_1_0 (ATerm l_107 (ATerm), ATerm t);
-ATerm copy_to_1_0 (ATerm f_3 (ATerm), ATerm t);
+ATerm copy_to_1_0 (ATerm g_3 (ATerm), ATerm t);
 ATerm if_keep1_1_0 (ATerm w_106 (ATerm), ATerm t);
 ATerm conc_0_0 (ATerm t);
 ATerm if_verbose3_1_0 (ATerm f_105 (ATerm), ATerm t);
 ATerm is_string_0_0 (ATerm t);
 static ATerm c_0 (ATerm t);
 ATerm pass_sort_0_0 (ATerm t);
-ATerm rename_to_1_0 (ATerm e_3 (ATerm), ATerm t);
-ATerm map_1_0 (ATerm r_89 (ATerm), ATerm t);
+ATerm rename_to_1_0 (ATerm f_3 (ATerm), ATerm t);
+ATerm map_1_0 (ATerm q_89 (ATerm), ATerm t);
 static ATerm d_0 (ATerm t);
 static ATerm e_0 (ATerm t);
 static ATerm g_0 (ATerm t);
@@ -289,7 +289,7 @@ static ATerm n_0 (ATerm t);
 ATerm get_syntax_definition_0_0 (ATerm t);
 ATerm say_1_0 (ATerm m_84 (ATerm), ATerm t);
 ATerm find_in_path_0_0 (ATerm t);
-ATerm find_in_includes_1_0 (ATerm k_20 (ATerm), ATerm t);
+ATerm find_in_includes_1_0 (ATerm o_20 (ATerm), ATerm t);
 static ATerm q_0 (ATerm t);
 static ATerm r_0 (ATerm t);
 static ATerm u_0 (ATerm t);
@@ -302,7 +302,7 @@ static ATerm j_1 (ATerm t);
 ATerm get_parse_table_0_0 (ATerm t);
 ATerm if_verbose2_1_0 (ATerm e_105 (ATerm), ATerm t);
 ATerm error_0_0 (ATerm t);
-ATerm fetch_elem_1_0 (ATerm d_90 (ATerm), ATerm t);
+ATerm fetch_elem_1_0 (ATerm c_90 (ATerm), ATerm t);
 static ATerm k_1 (ATerm t);
 static ATerm m_1 (ATerm t);
 static ATerm o_1 (ATerm t);
@@ -322,7 +322,7 @@ ATerm basename_0_0 (ATerm t);
 ATerm FILE_1_0 (ATerm i_81 (ATerm), ATerm t);
 ATerm debug_1_0 (ATerm y_84 (ATerm), ATerm t);
 ATerm if_verbose6_1_0 (ATerm i_105 (ATerm), ATerm t);
-static ATerm m_3 (ATerm t);
+static ATerm e_3 (ATerm t);
 static ATerm n_3 (ATerm t);
 static ATerm p_3 (ATerm t);
 static ATerm r_3 (ATerm t);
@@ -336,8 +336,8 @@ ATerm parse_module_0_0 (ATerm t);
 ATerm extend_config_0_0 (ATerm t);
 ATerm xtc_find_path_0_0 (ATerm t);
 ATerm set_config_0_0 (ATerm t);
-ATerm ArgOption_3_0 (ATerm j_3 (ATerm), ATerm k_3 (ATerm), ATerm l_3 (ATerm), ATerm t);
-ATerm Option_3_0 (ATerm g_3 (ATerm), ATerm h_3 (ATerm), ATerm i_3 (ATerm), ATerm t);
+ATerm ArgOption_3_0 (ATerm k_3 (ATerm), ATerm l_3 (ATerm), ATerm m_3 (ATerm), ATerm t);
+ATerm Option_3_0 (ATerm h_3 (ATerm), ATerm i_3 (ATerm), ATerm j_3 (ATerm), ATerm t);
 static ATerm b_4 (ATerm t);
 static ATerm c_4 (ATerm t);
 static ATerm d_4 (ATerm t);
@@ -567,13 +567,13 @@ ATerm get_syntax_definition_0_0 (ATerm t)
   }
   return(t);
 }
-ATerm find_in_includes_1_0 (ATerm k_20 (ATerm), ATerm t)
+ATerm find_in_includes_1_0 (ATerm o_20 (ATerm), ATerm t)
 {
   ATerm n_1 = NULL,p_1 = NULL;
   static ATerm p_0 (ATerm t);
   static ATerm p_0 (ATerm t)
   {
-    t = debug_1_0(k_20, t);
+    t = debug_1_0(o_20, t);
     return(t);
   }
   p_1 = t;
@@ -871,7 +871,7 @@ ATerm get_syntax_0_0 (ATerm t)
   t = if_verbose2_1_0(t_2, t);
   return(t);
 }
-static ATerm m_3 (ATerm t)
+static ATerm e_3 (ATerm t)
 {
   t = debug_1_0(n_3, t);
   return(t);
@@ -968,7 +968,7 @@ static ATerm a_4 (ATerm t)
 ATerm parse_module_0_0 (ATerm t)
 {
   ATerm e_2 = NULL,f_2 = NULL,g_2 = NULL,h_2 = NULL,i_2 = NULL;
-  t = if_verbose6_1_0(m_3, t);
+  t = if_verbose6_1_0(e_3, t);
   i_2 = t;
   {
     static ATerm o_3 (ATerm t);

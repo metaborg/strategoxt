@@ -559,8 +559,8 @@ static void init_module_constant_terms (void)
   term_w_32 = (ATerm) ATmakeAppl(ATmakeSymbol("-b               Write binary output", 0, ATtrue));
 }
 #include <srts/init-stratego-application.h>
-ATerm bottomup_1_0 (ATerm p_125 (ATerm), ATerm t);
-ATerm oncetd_1_0 (ATerm s_126 (ATerm), ATerm t);
+ATerm bottomup_1_0 (ATerm t_125 (ATerm), ATerm t);
+ATerm oncetd_1_0 (ATerm w_126 (ATerm), ATerm t);
 static ATerm s_0 (ATerm c_0, ATerm t);
 ATerm conc_0_0 (ATerm t);
 static ATerm q_0 (ATerm t);
@@ -581,9 +581,9 @@ static ATerm i_1 (ATerm t);
 static ATerm j_1 (ATerm t);
 static ATerm k_1 (ATerm t);
 static ATerm l_1 (ATerm t);
-static ATerm f_11 (ATerm x_29, ATerm y_29, ATerm z_29, ATerm t);
-ATerm genzip_4_0 (ATerm e_130 (ATerm), ATerm f_130 (ATerm), ATerm g_130 (ATerm), ATerm h_130 (ATerm), ATerm t);
-ATerm at_end_1_0 (ATerm g_147 (ATerm), ATerm t);
+static ATerm f_11 (ATerm y_29, ATerm z_29, ATerm a_30, ATerm t);
+ATerm genzip_4_0 (ATerm i_130 (ATerm), ATerm j_130 (ATerm), ATerm k_130 (ATerm), ATerm l_130 (ATerm), ATerm t);
+ATerm at_end_1_0 (ATerm k_147 (ATerm), ATerm t);
 ATerm concat_0_0 (ATerm t);
 ATerm new_0_0 (ATerm t);
 static ATerm g_55 (ATerm x_54, ATerm t);
@@ -603,20 +603,20 @@ static ATerm a_2 (ATerm t);
 static ATerm b_2 (ATerm t);
 static ATerm c_2 (ATerm t);
 ATerm LiftPrimArgs_0_0 (ATerm t);
-ATerm topdown_1_0 (ATerm o_125 (ATerm), ATerm t);
-ATerm map_1_0 (ATerm p_146 (ATerm), ATerm t);
-static ATerm j_11 (ATerm y_46, ATerm z_46, ATerm t);
-static ATerm k_11 (ATerm e_52, ATerm f_52, ATerm t);
-static ATerm m_11 (ATerm a_140 (ATerm), ATerm b_471, ATerm k_52, ATerm t);
-static ATerm l_11 (ATerm a_52, ATerm b_52, ATerm t);
+ATerm topdown_1_0 (ATerm s_125 (ATerm), ATerm t);
+ATerm map_1_0 (ATerm t_146 (ATerm), ATerm t);
+static ATerm j_11 (ATerm z_46, ATerm a_47, ATerm t);
+static ATerm k_11 (ATerm f_52, ATerm g_52, ATerm t);
+static ATerm m_11 (ATerm f_140 (ATerm), ATerm u_470, ATerm l_52, ATerm t);
+static ATerm l_11 (ATerm b_52, ATerm c_52, ATerm t);
 static ATerm e_2 (ATerm t);
 static ATerm f_2 (ATerm t);
-ATerm output_1_0 (ATerm d_156 (ATerm), ATerm t);
+ATerm output_1_0 (ATerm h_156 (ATerm), ATerm t);
 static ATerm f_60 (ATerm z_59, ATerm t);
 ATerm fclose_0_0 (ATerm t);
-static ATerm n_11 (ATerm g_52, ATerm t);
-static ATerm o_11 (ATerm z_44, ATerm a_45, ATerm t);
-static ATerm p_11 (ATerm a_47, ATerm b_47, ATerm t);
+static ATerm n_11 (ATerm h_52, ATerm t);
+static ATerm o_11 (ATerm c_45, ATerm d_45, ATerm t);
+static ATerm p_11 (ATerm b_47, ATerm c_47, ATerm t);
 ATerm stdin_stream_0_0 (ATerm t);
 ATerm stdout_stream_0_0 (ATerm t);
 ATerm stderr_stream_0_0 (ATerm t);
@@ -625,14 +625,14 @@ static ATerm b_62 (ATerm d_61, ATerm e_61, ATerm f_61, ATerm t);
 static ATerm c_62 (ATerm n_61, ATerm o_61, ATerm p_61, ATerm t);
 static ATerm q_11 (ATerm t);
 ATerm ReadFromFile_0_0 (ATerm t);
-ATerm input_1_0 (ATerm e_156 (ATerm), ATerm t);
+ATerm input_1_0 (ATerm i_156 (ATerm), ATerm t);
 ATerm default_system_about_0_0 (ATerm t);
 ATerm echo_0_0 (ATerm t);
 ATerm reverse_acc_2_0 (ATerm m_0 (ATerm), ATerm o_0 (ATerm), ATerm t);
 static ATerm h_2 (ATerm t);
 static ATerm g_3 (ATerm t);
 static ATerm h_3 (ATerm t);
-ATerm default_system_usage_2_0 (ATerm c_158 (ATerm), ATerm d_158 (ATerm), ATerm t);
+ATerm default_system_usage_2_0 (ATerm g_158 (ATerm), ATerm h_158 (ATerm), ATerm t);
 static ATerm i_3 (ATerm t);
 ATerm default_system_usage_0_0 (ATerm t);
 static ATerm j_3 (ATerm t);
@@ -649,13 +649,13 @@ static ATerm q_4 (ATerm t);
 static ATerm r_4 (ATerm t);
 static ATerm s_4 (ATerm t);
 ATerm verbose_option_0_0 (ATerm t);
-static ATerm z_11 (ATerm u_50, ATerm v_50, ATerm t);
+static ATerm z_11 (ATerm v_50, ATerm w_50, ATerm t);
 ATerm Option_3_0 (ATerm d_0 (ATerm), ATerm f_0 (ATerm), ATerm g_0 (ATerm), ATerm t);
 static ATerm t_4 (ATerm t);
 static ATerm u_4 (ATerm t);
 static ATerm w_4 (ATerm t);
 ATerm output_option_0_0 (ATerm t);
-static ATerm x_11 (ATerm c_56, ATerm d_56, ATerm b_56, ATerm t);
+static ATerm x_11 (ATerm d_56, ATerm e_56, ATerm c_56, ATerm t);
 ATerm ArgOption_3_0 (ATerm h_0 (ATerm), ATerm j_0 (ATerm), ATerm l_0 (ATerm), ATerm t);
 static ATerm x_4 (ATerm t);
 static ATerm a_5 (ATerm t);
@@ -663,28 +663,28 @@ static ATerm b_5 (ATerm t);
 ATerm input_option_0_0 (ATerm t);
 ATerm report_failure_0_0 (ATerm t);
 ATerm whoami_0_0 (ATerm t);
-static ATerm r_11 (ATerm k_53, ATerm l_53, ATerm t);
-ATerm foldr_2_0 (ATerm x_148 (ATerm), ATerm y_148 (ATerm), ATerm t);
+static ATerm r_11 (ATerm l_53, ATerm m_53, ATerm t);
+ATerm foldr_2_0 (ATerm b_149 (ATerm), ATerm c_149 (ATerm), ATerm t);
 ATerm times_0_0 (ATerm t);
 static ATerm c_5 (ATerm t);
 static ATerm d_5 (ATerm t);
 ATerm run_time_0_0 (ATerm t);
 ATerm geq_0_0 (ATerm t);
-ATerm if_verbose1_1_0 (ATerm v_137 (ATerm), ATerm t);
+ATerm if_verbose1_1_0 (ATerm a_138 (ATerm), ATerm t);
 static ATerm e_5 (ATerm t);
 ATerm report_run_time_0_0 (ATerm t);
 ATerm report_success_0_0 (ATerm t);
-static ATerm a_12 (ATerm n_60, ATerm o_60, ATerm p_60, ATerm t);
-ATerm lookup_table_0_1 (ATerm o_57, ATerm t);
-ATerm new_hashtable_0_2 (ATerm v_60, ATerm w_60, ATerm t);
+static ATerm a_12 (ATerm o_60, ATerm p_60, ATerm q_60, ATerm t);
+ATerm lookup_table_0_1 (ATerm p_57, ATerm t);
+ATerm new_hashtable_0_2 (ATerm w_60, ATerm x_60, ATerm t);
 ATerm table_create_0_0 (ATerm t);
-static ATerm t_11 (ATerm s_60, ATerm t_60, ATerm t);
-static ATerm u_11 (ATerm x_60, ATerm t);
+static ATerm t_11 (ATerm t_60, ATerm u_60, ATerm t);
+static ATerm u_11 (ATerm y_60, ATerm t);
 ATerm table_hashtable_0_0 (ATerm t);
 ATerm table_destroy_0_0 (ATerm t);
-ATerm fetch_1_0 (ATerm z_146 (ATerm), ATerm t);
-static ATerm b_12 (ATerm q_60, ATerm r_60, ATerm t);
-static ATerm w_11 (ATerm v_57, ATerm w_57, ATerm t);
+ATerm fetch_1_0 (ATerm d_147 (ATerm), ATerm t);
+static ATerm b_12 (ATerm r_60, ATerm s_60, ATerm t);
+static ATerm w_11 (ATerm w_57, ATerm x_57, ATerm t);
 static ATerm f_5 (ATerm t);
 static ATerm g_5 (ATerm t);
 static ATerm h_5 (ATerm t);
@@ -692,14 +692,14 @@ static ATerm i_5 (ATerm t);
 static ATerm j_5 (ATerm t);
 static ATerm k_5 (ATerm t);
 ATerm system_about_switch_0_0 (ATerm t);
-ATerm Cons_2_0 (ATerm x_108 (ATerm), ATerm y_108 (ATerm), ATerm t);
-ATerm parse_options_p__1_0 (ATerm x_157 (ATerm), ATerm t);
+ATerm Cons_2_0 (ATerm b_109 (ATerm), ATerm c_109 (ATerm), ATerm t);
+ATerm parse_options_p__1_0 (ATerm b_158 (ATerm), ATerm t);
 static ATerm o_5 (ATerm t);
 static ATerm v_5 (ATerm t);
 static ATerm w_5 (ATerm t);
 static ATerm x_5 (ATerm t);
-ATerm parse_options_3_0 (ATerm u_157 (ATerm), ATerm v_157 (ATerm), ATerm w_157 (ATerm), ATerm t);
-ATerm option_wrap_5_0 (ATerm x_155 (ATerm), ATerm y_155 (ATerm), ATerm z_155 (ATerm), ATerm a_156 (ATerm), ATerm b_156 (ATerm), ATerm t);
+ATerm parse_options_3_0 (ATerm y_157 (ATerm), ATerm z_157 (ATerm), ATerm a_158 (ATerm), ATerm t);
+ATerm option_wrap_5_0 (ATerm b_156 (ATerm), ATerm c_156 (ATerm), ATerm d_156 (ATerm), ATerm e_156 (ATerm), ATerm f_156 (ATerm), ATerm t);
 static ATerm z_5 (ATerm t);
 static ATerm a_6 (ATerm t);
 static ATerm b_6 (ATerm t);
@@ -716,19 +716,19 @@ ATerm main_0 (ATerm t)
   t = main_0_0(t);
   return(t);
 }
-ATerm bottomup_1_0 (ATerm p_125 (ATerm), ATerm t)
+ATerm bottomup_1_0 (ATerm t_125 (ATerm), ATerm t)
 {
   static ATerm a_0 (ATerm t);
   static ATerm a_0 (ATerm t)
   {
-    t = bottomup_1_0(p_125, t);
+    t = bottomup_1_0(t_125, t);
     return(t);
   }
   t = SRTS_all(a_0, t);
-  t = p_125(t);
+  t = t_125(t);
   return(t);
 }
-ATerm oncetd_1_0 (ATerm s_126 (ATerm), ATerm t)
+ATerm oncetd_1_0 (ATerm w_126 (ATerm), ATerm t)
 {
   static ATerm t_0 (ATerm t);
   static ATerm t_0 (ATerm t)
@@ -737,7 +737,7 @@ ATerm oncetd_1_0 (ATerm s_126 (ATerm), ATerm t)
     int l_6 = stack_ptr;
     if((PushChoice() == 0))
       {
-        t = s_126(t);
+        t = w_126(t);
         LocalPopChoice(l_6);
       }
     else
@@ -5472,7 +5472,7 @@ static ATerm k_1 (ATerm t)
 }
 static ATerm l_1 (ATerm t)
 {
-  ATerm h_53 = NULL,i_53 = NULL,j_53 = NULL,m_53 = NULL;
+  ATerm h_53 = NULL,i_53 = NULL,j_53 = NULL,k_53 = NULL;
   if(match_cons(t, sym__2))
     {
       ATerm f_25 = ATgetArgument(t, 0);
@@ -5488,7 +5488,7 @@ static ATerm l_1 (ATerm t)
         if(match_cons(h_25, sym__2))
           {
             j_53 = ATgetArgument(h_25, 0);
-            m_53 = ATgetArgument(h_25, 1);
+            k_53 = ATgetArgument(h_25, 1);
           }
         else
           _fail(t);
@@ -5496,15 +5496,15 @@ static ATerm l_1 (ATerm t)
     }
   else
     _fail(t);
-  t = (ATerm) ATmakeAppl(sym__2, (ATerm)ATinsert(CheckATermList(j_53), h_53), (ATerm) ATinsert(CheckATermList(m_53), i_53));
+  t = (ATerm) ATmakeAppl(sym__2, (ATerm)ATinsert(CheckATermList(j_53), h_53), (ATerm) ATinsert(CheckATermList(k_53), i_53));
   return(t);
 }
-static ATerm f_11 (ATerm x_29, ATerm y_29, ATerm z_29, ATerm t)
+static ATerm f_11 (ATerm y_29, ATerm z_29, ATerm a_30, ATerm t)
 {
   ATerm n_52 = NULL,o_52 = NULL,p_52 = NULL,q_52 = NULL,r_52 = NULL,s_52 = NULL,t_52 = NULL,u_52 = NULL,v_52 = NULL,s_5 = NULL;
-  t = z_29;
+  t = a_30;
   t = fetch_1_0(f_1, t);
-  t = z_29;
+  t = a_30;
   t = genzip_4_0(g_1, h_1, i_1, LiftPrimArg_0_0, t);
   v_52 = t;
   if(match_cons(t, sym__2))
@@ -5541,10 +5541,10 @@ static ATerm f_11 (ATerm x_29, ATerm y_29, ATerm z_29, ATerm t)
     }
   else
     _fail(t);
-  t = (ATerm) ATmakeAppl(sym_Scope_2, n_52, (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Seqs_1, o_52), (ATerm) ATmakeAppl(sym_CallT_3, x_29, y_29, p_52)));
+  t = (ATerm) ATmakeAppl(sym_Scope_2, n_52, (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Seqs_1, o_52), (ATerm) ATmakeAppl(sym_CallT_3, y_29, z_29, p_52)));
   return(t);
 }
-ATerm genzip_4_0 (ATerm e_130 (ATerm), ATerm f_130 (ATerm), ATerm g_130 (ATerm), ATerm h_130 (ATerm), ATerm t)
+ATerm genzip_4_0 (ATerm i_130 (ATerm), ATerm j_130 (ATerm), ATerm k_130 (ATerm), ATerm l_130 (ATerm), ATerm t)
 {
   static ATerm u_53 (ATerm t);
   static ATerm u_53 (ATerm t)
@@ -5553,7 +5553,7 @@ ATerm genzip_4_0 (ATerm e_130 (ATerm), ATerm f_130 (ATerm), ATerm g_130 (ATerm),
     int k_25 = stack_ptr;
     if((PushChoice() == 0))
       {
-        t = e_130(t);
+        t = i_130(t);
         LocalPopChoice(k_25);
       }
     else
@@ -5561,7 +5561,7 @@ ATerm genzip_4_0 (ATerm e_130 (ATerm), ATerm f_130 (ATerm), ATerm g_130 (ATerm),
         t = j_25;
         {
           ATerm o_53 = NULL,p_53 = NULL,q_53 = NULL,r_53 = NULL,s_53 = NULL,t_53 = NULL,i_7 = NULL;
-          t = f_130(t);
+          t = j_130(t);
           t_53 = t;
           if(match_cons(t, sym__2))
             {
@@ -5573,7 +5573,7 @@ ATerm genzip_4_0 (ATerm e_130 (ATerm), ATerm f_130 (ATerm), ATerm g_130 (ATerm),
           t = SSLgetAnnotations(t_53);
           o_53 = t;
           t = p_53;
-          t = h_130(t);
+          t = l_130(t);
           r_53 = t;
           t = q_53;
           t = u_53(t);
@@ -5581,7 +5581,7 @@ ATerm genzip_4_0 (ATerm e_130 (ATerm), ATerm f_130 (ATerm), ATerm g_130 (ATerm),
           t = (ATerm) ATmakeAppl(sym__2, r_53, s_53);
           i_7 = t;
           t = SSLsetAnnotations(i_7, o_53);
-          t = g_130(t);
+          t = k_130(t);
         }
       }
     return(t);
@@ -5589,7 +5589,7 @@ ATerm genzip_4_0 (ATerm e_130 (ATerm), ATerm f_130 (ATerm), ATerm g_130 (ATerm),
   t = u_53(t);
   return(t);
 }
-ATerm at_end_1_0 (ATerm g_147 (ATerm), ATerm t)
+ATerm at_end_1_0 (ATerm k_147 (ATerm), ATerm t)
 {
   static ATerm l_54 (ATerm t);
   static ATerm l_54 (ATerm t)
@@ -5617,7 +5617,7 @@ ATerm at_end_1_0 (ATerm g_147 (ATerm), ATerm t)
         if(((ATgetType(t) != AT_LIST) || !(ATisEmpty(t))))
           _fail(t);
         t = k_54;
-        t = g_147(t);
+        t = k_147(t);
       }
     return(t);
   }
@@ -5626,7 +5626,7 @@ ATerm at_end_1_0 (ATerm g_147 (ATerm), ATerm t)
 }
 ATerm concat_0_0 (ATerm t)
 {
-  ATerm o_54 = NULL,p_54 = NULL,r_54 = NULL;
+  ATerm o_54 = NULL,p_54 = NULL,q_54 = NULL;
   o_54 = t;
   if(((ATgetType(t) == AT_LIST) && ATisEmpty(t)))
     {
@@ -5637,17 +5637,17 @@ ATerm concat_0_0 (ATerm t)
       static ATerm m_1 (ATerm t);
       static ATerm m_1 (ATerm t)
       {
-        t = not_null(r_54);
+        t = not_null(q_54);
         t = concat_0_0(t);
         return(t);
       }
       if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
         {
           p_54 = ATgetFirst((ATermList) t);
-          if(((r_54 != NULL) && (r_54 != (ATerm) ATgetNext((ATermList) t))))
+          if(((q_54 != NULL) && (q_54 != (ATerm) ATgetNext((ATermList) t))))
             _fail((ATerm) ATgetNext((ATermList) t));
           else
-            r_54 = (ATerm) ATgetNext((ATermList) t);
+            q_54 = (ATerm) ATgetNext((ATermList) t);
         }
       else
         _fail(t);
@@ -6079,19 +6079,19 @@ ATerm LiftPrimArgs_0_0 (ATerm t)
     }
   return(t);
 }
-ATerm topdown_1_0 (ATerm o_125 (ATerm), ATerm t)
+ATerm topdown_1_0 (ATerm s_125 (ATerm), ATerm t)
 {
   static ATerm d_2 (ATerm t);
   static ATerm d_2 (ATerm t)
   {
-    t = topdown_1_0(o_125, t);
+    t = topdown_1_0(s_125, t);
     return(t);
   }
-  t = o_125(t);
+  t = s_125(t);
   t = SRTS_all(d_2, t);
   return(t);
 }
-ATerm map_1_0 (ATerm p_146 (ATerm), ATerm t)
+ATerm map_1_0 (ATerm t_146 (ATerm), ATerm t)
 {
   static ATerm z_58 (ATerm t);
   static ATerm z_58 (ATerm t)
@@ -6115,7 +6115,7 @@ ATerm map_1_0 (ATerm p_146 (ATerm), ATerm t)
         t = SSLgetAnnotations(w_58);
         v_4 = t;
         t = x_58;
-        t = p_146(t);
+        t = t_146(t);
         y_4 = t;
         t = y_58;
         t = z_58(t);
@@ -6129,38 +6129,38 @@ ATerm map_1_0 (ATerm p_146 (ATerm), ATerm t)
   t = z_58(t);
   return(t);
 }
-static ATerm j_11 (ATerm y_46, ATerm z_46, ATerm t)
+static ATerm j_11 (ATerm z_46, ATerm a_47, ATerm t)
 {
   ATerm b_59 = NULL;
-  t = SSL_fputc(y_46, z_46);
+  t = SSL_fputc(z_46, a_47);
   b_59 = t;
   t = (ATerm) ATmakeAppl(sym_Stream_1, b_59);
   return(t);
 }
-static ATerm k_11 (ATerm e_52, ATerm f_52, ATerm t)
+static ATerm k_11 (ATerm f_52, ATerm g_52, ATerm t)
 {
   ATerm c_59 = NULL;
-  t = SSL_write_term_to_stream_text(e_52, f_52);
+  t = SSL_write_term_to_stream_text(f_52, g_52);
   c_59 = t;
   t = (ATerm) ATmakeAppl(sym_Stream_1, c_59);
   return(t);
 }
-static ATerm m_11 (ATerm a_140 (ATerm), ATerm b_471, ATerm k_52, ATerm t)
+static ATerm m_11 (ATerm f_140 (ATerm), ATerm u_470, ATerm l_52, ATerm t)
 {
   ATerm d_59 = NULL;
-  t = (ATerm) ATmakeAppl(sym__2, b_471, term_j_26);
+  t = (ATerm) ATmakeAppl(sym__2, u_470, term_j_26);
   t = q_11(t);
   d_59 = t;
-  t = (ATerm) ATmakeAppl(sym__2, d_59, k_52);
-  t = a_140(t);
+  t = (ATerm) ATmakeAppl(sym__2, d_59, l_52);
+  t = f_140(t);
   t = fclose_0_0(t);
-  t = k_52;
+  t = l_52;
   return(t);
 }
-static ATerm l_11 (ATerm a_52, ATerm b_52, ATerm t)
+static ATerm l_11 (ATerm b_52, ATerm c_52, ATerm t)
 {
   ATerm e_59 = NULL;
-  t = SSL_write_term_to_stream_baf(a_52, b_52);
+  t = SSL_write_term_to_stream_baf(b_52, c_52);
   e_59 = t;
   t = (ATerm) ATmakeAppl(sym_Stream_1, e_59);
   return(t);
@@ -6215,10 +6215,10 @@ static ATerm f_2 (ATerm t)
   t = j_11(o_59, p_59, t);
   return(t);
 }
-ATerm output_1_0 (ATerm d_156 (ATerm), ATerm t)
+ATerm output_1_0 (ATerm h_156 (ATerm), ATerm t)
 {
   ATerm f_59 = NULL,g_59 = NULL;
-  t = d_156(t);
+  t = h_156(t);
   g_59 = t;
   {
     ATerm n_26 = t;
@@ -6313,20 +6313,20 @@ ATerm fclose_0_0 (ATerm t)
     }
   return(t);
 }
-static ATerm n_11 (ATerm g_52, ATerm t)
+static ATerm n_11 (ATerm h_52, ATerm t)
 {
-  t = SSL_read_term_from_stream(g_52);
+  t = SSL_read_term_from_stream(h_52);
   return(t);
 }
-static ATerm o_11 (ATerm z_44, ATerm a_45, ATerm t)
+static ATerm o_11 (ATerm c_45, ATerm d_45, ATerm t)
 {
-  t = SSL_strcat(z_44, a_45);
+  t = SSL_strcat(c_45, d_45);
   return(t);
 }
-static ATerm p_11 (ATerm a_47, ATerm b_47, ATerm t)
+static ATerm p_11 (ATerm b_47, ATerm c_47, ATerm t)
 {
   ATerm g_60 = NULL;
-  t = SSL_fopen(a_47, b_47);
+  t = SSL_fopen(b_47, c_47);
   g_60 = t;
   t = (ATerm) ATmakeAppl(sym_Stream_1, g_60);
   return(t);
@@ -6531,7 +6531,7 @@ ATerm ReadFromFile_0_0 (ATerm t)
   t = e_62;
   return(t);
 }
-ATerm input_1_0 (ATerm e_156 (ATerm), ATerm t)
+ATerm input_1_0 (ATerm i_156 (ATerm), ATerm t)
 {
   ATerm q_27 = t;
   int r_27 = stack_ptr;
@@ -6552,7 +6552,7 @@ ATerm input_1_0 (ATerm e_156 (ATerm), ATerm t)
       t = term_v_27;
     }
   t = ReadFromFile_0_0(t);
-  t = e_156(t);
+  t = i_156(t);
   return(t);
 }
 ATerm default_system_about_0_0 (ATerm t)
@@ -6676,7 +6676,7 @@ static ATerm h_3 (ATerm t)
   t = echo_0_0(t);
   return(t);
 }
-ATerm default_system_usage_2_0 (ATerm c_158 (ATerm), ATerm d_158 (ATerm), ATerm t)
+ATerm default_system_usage_2_0 (ATerm g_158 (ATerm), ATerm h_158 (ATerm), ATerm t)
 {
   ATerm k_63 = NULL,l_63 = NULL;
   ATerm f_28 = t;
@@ -6702,7 +6702,7 @@ ATerm default_system_usage_2_0 (ATerm c_158 (ATerm), ATerm d_158 (ATerm), ATerm 
     int j_28 = stack_ptr;
     if((PushChoice() == 0))
       {
-        t = c_158(t);
+        t = g_158(t);
         t = echo_0_0(t);
         LocalPopChoice(j_28);
       }
@@ -6727,7 +6727,7 @@ ATerm default_system_usage_2_0 (ATerm c_158 (ATerm), ATerm d_158 (ATerm), ATerm 
     if((PushChoice() == 0))
       {
         ATerm v_63 = NULL;
-        t = d_158(t);
+        t = h_158(t);
         v_63 = t;
         t = (ATerm) ATinsert(CheckATermList(v_63), term_q_28);
         t = echo_0_0(t);
@@ -6933,12 +6933,12 @@ ATerm verbose_option_0_0 (ATerm t)
     }
   return(t);
 }
-static ATerm z_11 (ATerm u_50, ATerm v_50, ATerm t)
+static ATerm z_11 (ATerm v_50, ATerm w_50, ATerm t)
 {
   ATerm s_64 = NULL,t_64 = NULL;
   t = term_p_26;
   s_64 = t;
-  t = (ATerm) ATmakeAppl(sym__3, term_p_26, u_50, v_50);
+  t = (ATerm) ATmakeAppl(sym__3, term_p_26, v_50, w_50);
   t = lookup_table_0_1(s_64, t);
   if(match_cons(t, sym_Hashtable_1))
     {
@@ -6946,8 +6946,8 @@ static ATerm z_11 (ATerm u_50, ATerm v_50, ATerm t)
     }
   else
     _fail(t);
-  t = a_12(u_50, v_50, t_64, t);
-  t = (ATerm) ATmakeAppl(sym__3, term_p_26, u_50, v_50);
+  t = a_12(v_50, w_50, t_64, t);
+  t = (ATerm) ATmakeAppl(sym__3, term_p_26, v_50, w_50);
   return(t);
 }
 ATerm Option_3_0 (ATerm d_0 (ATerm), ATerm f_0 (ATerm), ATerm g_0 (ATerm), ATerm t)
@@ -7023,11 +7023,11 @@ ATerm output_option_0_0 (ATerm t)
   t = ArgOption_3_0(t_4, u_4, w_4, t);
   return(t);
 }
-static ATerm x_11 (ATerm c_56, ATerm d_56, ATerm b_56, ATerm t)
+static ATerm x_11 (ATerm d_56, ATerm e_56, ATerm c_56, ATerm t)
 {
   ATerm k_65 = NULL,l_65 = NULL,m_65 = NULL,n_65 = NULL,o_65 = NULL;
   k_65 = t;
-  t = (ATerm) ATmakeAppl(sym__2, c_56, d_56);
+  t = (ATerm) ATmakeAppl(sym__2, d_56, e_56);
   {
     ATerm m_29 = t;
     int n_29 = stack_ptr;
@@ -7040,8 +7040,8 @@ static ATerm x_11 (ATerm c_56, ATerm d_56, ATerm b_56, ATerm t)
           }
         else
           _fail(t);
-        t = (ATerm) ATmakeAppl(sym__2, c_56, d_56);
-        t = w_11(c_56, d_56, t);
+        t = (ATerm) ATmakeAppl(sym__2, d_56, e_56);
+        t = w_11(d_56, e_56, t);
         LocalPopChoice(n_29);
       }
     else
@@ -7051,10 +7051,10 @@ static ATerm x_11 (ATerm c_56, ATerm d_56, ATerm b_56, ATerm t)
       }
   }
   l_65 = t;
-  t = (ATerm) ATmakeAppl(sym__3, c_56, d_56, (ATerm) ATinsert(CheckATermList(l_65), b_56));
-  t = lookup_table_0_1(c_56, t);
+  t = (ATerm) ATmakeAppl(sym__3, d_56, e_56, (ATerm) ATinsert(CheckATermList(l_65), c_56));
+  t = lookup_table_0_1(d_56, t);
   o_65 = t;
-  t = (ATerm) ATinsert(CheckATermList(l_65), b_56);
+  t = (ATerm) ATinsert(CheckATermList(l_65), c_56);
   m_65 = t;
   t = o_65;
   if(match_cons(t, sym_Hashtable_1))
@@ -7063,7 +7063,7 @@ static ATerm x_11 (ATerm c_56, ATerm d_56, ATerm b_56, ATerm t)
     }
   else
     _fail(t);
-  t = a_12(d_56, m_65, n_65, t);
+  t = a_12(e_56, m_65, n_65, t);
   t = k_65;
   return(t);
 }
@@ -7176,30 +7176,30 @@ ATerm whoami_0_0 (ATerm t)
   t = w_11(o_66, p_66, t);
   return(t);
 }
-static ATerm r_11 (ATerm k_53, ATerm l_53, ATerm t)
+static ATerm r_11 (ATerm l_53, ATerm m_53, ATerm t)
 {
   ATerm u_29 = t;
   int v_29 = stack_ptr;
   if((PushChoice() == 0))
     {
-      t = SSL_addi(k_53, l_53);
+      t = SSL_addi(l_53, m_53);
       LocalPopChoice(v_29);
     }
   else
     {
       t = u_29;
-      t = SSL_addr(k_53, l_53);
+      t = SSL_addr(l_53, m_53);
     }
   return(t);
 }
-ATerm foldr_2_0 (ATerm x_148 (ATerm), ATerm y_148 (ATerm), ATerm t)
+ATerm foldr_2_0 (ATerm b_149 (ATerm), ATerm c_149 (ATerm), ATerm t)
 {
   ATerm r_66 = NULL,s_66 = NULL,t_66 = NULL;
   r_66 = t;
   if(((ATgetType(t) == AT_LIST) && ATisEmpty(t)))
     {
       t = r_66;
-      t = x_148(t);
+      t = b_149(t);
     }
   else
     {
@@ -7212,10 +7212,10 @@ ATerm foldr_2_0 (ATerm x_148 (ATerm), ATerm y_148 (ATerm), ATerm t)
       else
         _fail(t);
       t = t_66;
-      t = foldr_2_0(x_148, y_148, t);
+      t = foldr_2_0(b_149, c_149, t);
       w_66 = t;
       t = (ATerm) ATmakeAppl(sym__2, s_66, w_66);
-      t = y_148(t);
+      t = c_149(t);
     }
   return(t);
 }
@@ -7273,7 +7273,7 @@ ATerm geq_0_0 (ATerm t)
   else
     _fail(t);
   {
-    ATerm a_30 = t;
+    ATerm x_29 = t;
     int b_30 = stack_ptr;
     if((PushChoice() == 0))
       {
@@ -7287,7 +7287,7 @@ ATerm geq_0_0 (ATerm t)
       }
     else
       {
-        t = a_30;
+        t = x_29;
         t = (ATerm) ATmakeAppl(sym__2, l_67, m_67);
         {
           ATerm c_30 = t;
@@ -7308,7 +7308,7 @@ ATerm geq_0_0 (ATerm t)
   }
   return(t);
 }
-ATerm if_verbose1_1_0 (ATerm v_137 (ATerm), ATerm t)
+ATerm if_verbose1_1_0 (ATerm a_138 (ATerm), ATerm t)
 {
   ATerm q_67 = NULL;
   q_67 = t;
@@ -7328,7 +7328,7 @@ ATerm if_verbose1_1_0 (ATerm v_137 (ATerm), ATerm t)
         t = (ATerm) ATmakeAppl(sym__2, s_67, term_t_29);
         t = geq_0_0(t);
         t = q_67;
-        t = v_137(t);
+        t = a_138(t);
         LocalPopChoice(f_30);
       }
     else
@@ -7369,15 +7369,15 @@ ATerm report_success_0_0 (ATerm t)
   t = SSL_exit(b_68);
   return(t);
 }
-static ATerm a_12 (ATerm n_60, ATerm o_60, ATerm p_60, ATerm t)
+static ATerm a_12 (ATerm o_60, ATerm p_60, ATerm q_60, ATerm t)
 {
   ATerm c_68 = NULL;
-  t = SSL_hashtable_put(p_60, n_60, o_60);
+  t = SSL_hashtable_put(q_60, o_60, p_60);
   c_68 = t;
   t = (ATerm) ATmakeAppl(sym_Hashtable_1, c_68);
   return(t);
 }
-ATerm lookup_table_0_1 (ATerm o_57, ATerm t)
+ATerm lookup_table_0_1 (ATerm p_57, ATerm t)
 {
   ATerm l_68 = NULL;
   t = table_hashtable_0_0(t);
@@ -7395,7 +7395,7 @@ ATerm lookup_table_0_1 (ATerm o_57, ATerm t)
           }
         else
           _fail(t);
-        t = b_12(o_57, f_6, t);
+        t = b_12(p_57, f_6, t);
         LocalPopChoice(l_30);
       }
     else
@@ -7403,7 +7403,7 @@ ATerm lookup_table_0_1 (ATerm o_57, ATerm t)
         t = k_30;
         {
           ATerm k_6 = NULL;
-          t = o_57;
+          t = p_57;
           t = table_create_0_0(t);
           t = l_68;
           if(match_cons(t, sym_Hashtable_1))
@@ -7412,16 +7412,16 @@ ATerm lookup_table_0_1 (ATerm o_57, ATerm t)
             }
           else
             _fail(t);
-          t = b_12(o_57, k_6, t);
+          t = b_12(p_57, k_6, t);
         }
       }
   }
   return(t);
 }
-ATerm new_hashtable_0_2 (ATerm v_60, ATerm w_60, ATerm t)
+ATerm new_hashtable_0_2 (ATerm w_60, ATerm x_60, ATerm t)
 {
   ATerm o_68 = NULL;
-  t = SSL_hashtable_create(v_60, w_60);
+  t = SSL_hashtable_create(w_60, x_60);
   o_68 = t;
   t = (ATerm) ATmakeAppl(sym_Hashtable_1, o_68);
   return(t);
@@ -7449,18 +7449,18 @@ ATerm table_create_0_0 (ATerm t)
   t = p_68;
   return(t);
 }
-static ATerm t_11 (ATerm s_60, ATerm t_60, ATerm t)
+static ATerm t_11 (ATerm t_60, ATerm u_60, ATerm t)
 {
   ATerm v_68 = NULL;
-  t = SSL_hashtable_remove(t_60, s_60);
+  t = SSL_hashtable_remove(u_60, t_60);
   v_68 = t;
   t = (ATerm) ATmakeAppl(sym_Hashtable_1, v_68);
   return(t);
 }
-static ATerm u_11 (ATerm x_60, ATerm t)
+static ATerm u_11 (ATerm y_60, ATerm t)
 {
   ATerm w_68 = NULL;
-  t = SSL_hashtable_destroy(x_60);
+  t = SSL_hashtable_destroy(y_60);
   w_68 = t;
   t = (ATerm) ATmakeAppl(sym_Hashtable_1, w_68);
   return(t);
@@ -7498,7 +7498,7 @@ ATerm table_destroy_0_0 (ATerm t)
   t = y_68;
   return(t);
 }
-ATerm fetch_1_0 (ATerm z_146 (ATerm), ATerm t)
+ATerm fetch_1_0 (ATerm d_147 (ATerm), ATerm t)
 {
   static ATerm y_69 (ATerm t);
   static ATerm y_69 (ATerm t)
@@ -7521,7 +7521,7 @@ ATerm fetch_1_0 (ATerm z_146 (ATerm), ATerm t)
           t = SSLgetAnnotations(v_69);
           p_6 = t;
           t = w_69;
-          t = z_146(t);
+          t = d_147(t);
           s_6 = t;
           t = (ATerm) ATinsert(CheckATermList(x_69), s_6);
           x_9 = t;
@@ -7549,22 +7549,22 @@ ATerm fetch_1_0 (ATerm z_146 (ATerm), ATerm t)
   t = y_69(t);
   return(t);
 }
-static ATerm b_12 (ATerm q_60, ATerm r_60, ATerm t)
+static ATerm b_12 (ATerm r_60, ATerm s_60, ATerm t)
 {
-  t = SSL_hashtable_get(r_60, q_60);
+  t = SSL_hashtable_get(s_60, r_60);
   return(t);
 }
-static ATerm w_11 (ATerm v_57, ATerm w_57, ATerm t)
+static ATerm w_11 (ATerm w_57, ATerm x_57, ATerm t)
 {
   ATerm b_70 = NULL;
-  t = lookup_table_0_1(v_57, t);
+  t = lookup_table_0_1(w_57, t);
   if(match_cons(t, sym_Hashtable_1))
     {
       b_70 = ATgetArgument(t, 0);
     }
   else
     _fail(t);
-  t = b_12(w_57, b_70, t);
+  t = b_12(x_57, b_70, t);
   return(t);
 }
 static ATerm f_5 (ATerm t)
@@ -7634,7 +7634,7 @@ ATerm system_about_switch_0_0 (ATerm t)
     }
   return(t);
 }
-ATerm Cons_2_0 (ATerm x_108 (ATerm), ATerm y_108 (ATerm), ATerm t)
+ATerm Cons_2_0 (ATerm b_109 (ATerm), ATerm c_109 (ATerm), ATerm t)
 {
   ATerm j_70 = NULL,k_70 = NULL,l_70 = NULL,m_70 = NULL,n_70 = NULL,o_70 = NULL,k_14 = NULL;
   o_70 = t;
@@ -7648,17 +7648,17 @@ ATerm Cons_2_0 (ATerm x_108 (ATerm), ATerm y_108 (ATerm), ATerm t)
   t = SSLgetAnnotations(o_70);
   j_70 = t;
   t = k_70;
-  t = x_108(t);
+  t = b_109(t);
   m_70 = t;
   t = l_70;
-  t = y_108(t);
+  t = c_109(t);
   n_70 = t;
   t = (ATerm) ATinsert(CheckATermList(n_70), m_70);
   k_14 = t;
   t = SSLsetAnnotations(k_14, j_70);
   return(t);
 }
-ATerm parse_options_p__1_0 (ATerm x_157 (ATerm), ATerm t)
+ATerm parse_options_p__1_0 (ATerm b_158 (ATerm), ATerm t)
 {
   ATerm t_70 = NULL,u_70 = NULL,v_70 = NULL,w_70 = NULL,y_70 = NULL,z_70 = NULL,m_14 = NULL;
   t_70 = t;
@@ -7668,7 +7668,7 @@ ATerm parse_options_p__1_0 (ATerm x_157 (ATerm), ATerm t)
     if((PushChoice() == 0))
       {
         t = term_c_31;
-        t = x_157(t);
+        t = b_158(t);
         LocalPopChoice(b_31);
       }
     else
@@ -7713,7 +7713,7 @@ ATerm parse_options_p__1_0 (ATerm x_157 (ATerm), ATerm t)
           else
             {
               t = g_31;
-              t = x_157(t);
+              t = b_158(t);
               t = Cons_2_0(_id, j_71, t);
             }
           LocalPopChoice(f_31);
@@ -7789,7 +7789,7 @@ static ATerm x_5 (ATerm t)
     _fail(t);
   return(t);
 }
-ATerm parse_options_3_0 (ATerm u_157 (ATerm), ATerm v_157 (ATerm), ATerm w_157 (ATerm), ATerm t)
+ATerm parse_options_3_0 (ATerm y_157 (ATerm), ATerm z_157 (ATerm), ATerm a_158 (ATerm), ATerm t)
 {
   ATerm o_71 = NULL,p_71 = NULL,q_71 = NULL,r_71 = NULL,s_71 = NULL,t_71 = NULL,u_71 = NULL,v_71 = NULL;
   q_71 = t;
@@ -7819,7 +7819,7 @@ ATerm parse_options_3_0 (ATerm u_157 (ATerm), ATerm v_157 (ATerm), ATerm w_157 (
       int q_31 = stack_ptr;
       if((PushChoice() == 0))
         {
-          t = u_157(t);
+          t = y_157(t);
           LocalPopChoice(q_31);
         }
       else
@@ -7879,7 +7879,7 @@ ATerm parse_options_3_0 (ATerm u_157 (ATerm), ATerm v_157 (ATerm), ATerm w_157 (
                   }
               }
               t = k_72;
-              t = v_157(t);
+              t = z_157(t);
               t = term_x_28;
               p_7 = t;
               t = SSL_exit(p_7);
@@ -7897,7 +7897,7 @@ ATerm parse_options_3_0 (ATerm u_157 (ATerm), ATerm v_157 (ATerm), ATerm w_157 (
                 t = term_d_32;
                 t = w_11(d_8, e_8, t);
                 t = k_72;
-                t = w_157(t);
+                t = a_158(t);
                 t = term_x_28;
                 y_7 = t;
                 t = SSL_exit(y_7);
@@ -7945,7 +7945,7 @@ ATerm parse_options_3_0 (ATerm u_157 (ATerm), ATerm v_157 (ATerm), ATerm w_157 (
               n_72 = t;
               t = SSL_printnl(m_72, n_72);
               t = (ATerm) ATmakeAppl(sym__2, term_r_29, (ATerm) ATinsert(ATinsert(ATempty, not_null(o_71)), term_g_32));
-              t = v_157(t);
+              t = z_157(t);
               t = term_t_29;
               l_72 = t;
               t = SSL_exit(l_72);
@@ -7964,10 +7964,10 @@ ATerm parse_options_3_0 (ATerm u_157 (ATerm), ATerm v_157 (ATerm), ATerm w_157 (
   t = p_71;
   return(t);
 }
-ATerm option_wrap_5_0 (ATerm x_155 (ATerm), ATerm y_155 (ATerm), ATerm z_155 (ATerm), ATerm a_156 (ATerm), ATerm b_156 (ATerm), ATerm t)
+ATerm option_wrap_5_0 (ATerm b_156 (ATerm), ATerm c_156 (ATerm), ATerm d_156 (ATerm), ATerm e_156 (ATerm), ATerm f_156 (ATerm), ATerm t)
 {
   ATerm v_72 = NULL,w_72 = NULL,x_72 = NULL,y_72 = NULL,z_72 = NULL;
-  t = parse_options_3_0(x_155, y_155, z_155, t);
+  t = parse_options_3_0(b_156, c_156, d_156, t);
   v_72 = t;
   t = term_h_32;
   t = table_create_0_0(t);
@@ -7987,13 +7987,13 @@ ATerm option_wrap_5_0 (ATerm x_155 (ATerm), ATerm y_155 (ATerm), ATerm z_155 (AT
     _fail(t);
   t = a_12(x_72, v_72, y_72, t);
   t = v_72;
-  t = a_156(t);
+  t = e_156(t);
   {
     ATerm j_32 = t;
     int k_32 = stack_ptr;
     if((PushChoice() == 0))
       {
-        t = b_156(t);
+        t = f_156(t);
         t = report_success_0_0(t);
         LocalPopChoice(k_32);
       }

@@ -124,7 +124,7 @@ static ATerm d_0 (ATerm t);
 static ATerm j_0 (ATerm t);
 ATerm parse_and_implode_0_0 (ATerm t);
 ATerm set_config_0_0 (ATerm t);
-ATerm ArgOption_3_0 (ATerm j_3 (ATerm), ATerm k_3 (ATerm), ATerm l_3 (ATerm), ATerm t);
+ATerm ArgOption_3_0 (ATerm k_3 (ATerm), ATerm l_3 (ATerm), ATerm m_3 (ATerm), ATerm t);
 ATerm extend_config_0_0 (ATerm t);
 static ATerm l_0 (ATerm t);
 static ATerm n_0 (ATerm t);

@@ -6,11 +6,12 @@
 module tables
 imports list
 
-/**
- * Hashtable representations
- */
 signature
   constructors
+
+    /**
+     * Represents a reference to a hashtable.
+     */
     Hashtable : ImplDep -> Hashtable
 
 /**
@@ -82,28 +83,28 @@ strategies
 strategies
 
   /**
-   * pushes value on top of the stack for key.
+   * Pushes value on top of the stack for key.
    * Current term is the hashtable and remains untouched.
    */
   hashtable-push(|key, value) =
     hashtable-put(|key, [value | <hashtable-get(|key) <+ ![]>])
 
   /**
-   * pushes values on top of the stack for key.
+   * Pushes values on top of the stack for key.
    * Current term is the hashtable and remains untouched.
    */
   hashtable-pushlist(|key, value) =
     hashtable-put(|key, <conc>(value, <hashtable-get(|key) <+ ![]>))
 
   /**
-   * pushes union of values and already present values 
+   * Pushes union of values and already present values 
    * Current term is the hashtable and remains untouched.
    */
   hashtable-pushunion(|key, value) =
     hashtable-put(|key, <union>(value, <hashtable-get(|key) <+ ![]>))
 
   /**
-   * pops off the top element of the stack for key.
+   * Pops off the top element of the stack for key.
    * Current term is the hashtable and remains untouched.
    */
   hashtable-pop(|key) =
@@ -247,7 +248,6 @@ strategies
   /**
    * Merge hashtables creating a new one.
    */
-
   hashtable-merge-func(iterate1, iterate2, remove, merge, default, lookup1, lookup2) : 
     (tbl1, tbl2) -> tbl3
     where <hashtable-copy> tbl1 => tbl3
@@ -264,7 +264,6 @@ strategies // intersection merges
    * This is a 'pure' intersection: only keys that appear in both tables
    * remain in the input table, rest is removed.
    */
-
   hashtable-intersect(|tbl2) =
     ?tbl1
     ; !(tbl1, tbl2)
@@ -287,7 +286,6 @@ strategies // intersection merges
    * the two listvalues for each key.
    * Places a dummy value if key does not exist in one of the tables.
    */
-
   hashtable-intersect-wempty(|tbl2, emptyElt) =
     ?tbl1
     ; !(tbl1, tbl2)
@@ -557,7 +555,14 @@ strategies
   table-append = ?(table, key, val);
     where(<set> (table, key, <union> (<get <+ ![]> (table, key), val)))
 
+  /**
+   * Alias of table-put.
+   */
   set = table-put
+
+  /**
+   * Alias of table-get.
+   */
   get = table-get
 
 
@@ -575,38 +580,3 @@ Concrete syntax:
   |[ tbl . key ++= val  ]|	-> |[ <table-append>(tbl, key, val) ]|
 
 */
-
-
-
-/**
- * This strategy should no longer be used.
- */
-
-strategies
-
-  destroy-display = obsolete(!"destroy-display; use table-destroy"); 
-		    table-destroy  
-  create-display  = obsolete(!"create-display; use table-create");  
-		    table-create
-  display-lookup  = obsolete(!"display-lookup; use table-lookup");  
-		    table-lookup
-  display-replace = obsolete(!"display-replace; use table-replace"); 
-		    table-replace
-  display-pop     = obsolete(!"display-pop; use table-pop");     
-		    table-pop
-  display-push    = obsolete(!"display-push; use table-push");    
-		    table-push
-  push-set	  = obsolete(!"push-set; use table-push");        
-		    table-push
-  pop-get	  = obsolete(!"pop-get; use table-pop-get");         
-		    table-pop-get
-  union-set       = obsolete(!"union-set; use table-union");       
-		    table-union
-  diff-set        = obsolete(!"diff-set; use table-diff");        
-		    table-diff
-  create-table 	  = obsolete(!"create-table: use table-create"); 
-		    table-create
-  destroy-table   = obsolete(!"destroy-table: use table-destroy"); 
-		    table-destroy
-
-
