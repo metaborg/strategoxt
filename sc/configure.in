@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2001 Eelco Visser <visser@acm.org>
+# Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
 # 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 # 02111-1307, USA.
 
 AC_INIT(spec/front/inlining.r)
-AM_INIT_AUTOMAKE(sc,0.6.3)
+AM_INIT_AUTOMAKE(sc,0.6.4)
 
 AC_ARG_WITH(cgen,    
   [  --with-cgen      Specify location of CGEN library, default: \$prefix], 
@@ -74,7 +74,7 @@ AC_ARG_WITH(srts,
 )
 AC_SUBST(STRATEGORTS)
 
-AC_REVISION($Id: configure.in,v 1.12 2001/11/21 23:53:48 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.13 2002/01/03 21:19:20 stratego Exp $)
 
 AC_PROG_CC
 AC_PROG_RANLIB

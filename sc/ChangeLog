@@ -1,3 +1,16 @@
+2002-01-03  Eelco Visser  <visser@acm.org>
+
+	* spec/front/desugar.r: The condition of a rule should be wrapped
+	in a Where. In normal rules that perform a build it can be left
+	out, but in `strategy rules' (:: -->) that might do a congruence,
+	this is essential. Bug report by Hedzer Westra.
+
+	* spec/test1/test22.r: Test for :: --> rules (Hedzer Westra)
+
+2001-12-18  Eelco Visser  <visser@acm.org>
+
+	* spec/syn/stratego.lx: Removed obsolete keywords << and >>
+
 2001-12-17  Eelco Visser  <visser@acm.org>
 
 	* spec/front/needed-defs.r: Improved efficiency of needed

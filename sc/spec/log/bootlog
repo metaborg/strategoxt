@@ -611,3 +611,12 @@ Bootstrapping: finished [Mon Dec 17 17:41:54 CET 2001]
 
 Bootinstall [Mon Dec 17 20:46:54 CET 2001]
 Bootinstall finished [Mon Dec 17 20:46:55 CET 2001]
+
+Bootstrapping version 0.6.3 [Thu Jan  3 18:47:16 CET 2002 - Linux node11794.a2000.nl i686]
+Bootstrapping: phase 1 started [Thu Jan  3 18:47:16 CET 2002]
+Bootstrapping: phase 2 started [Thu Jan  3 18:52:43 CET 2002]
+Bootstrapping: phase 3 started [Thu Jan  3 18:57:53 CET 2002]
+Bootstrapping: finished [Thu Jan  3 19:03:02 CET 2002]
+
+Bootinstall [Thu Jan  3 21:09:59 CET 2002]
+Bootinstall finished [Thu Jan  3 21:10:01 CET 2002]

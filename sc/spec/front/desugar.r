@@ -137,10 +137,10 @@ strategies
 
 rules
 
-  RtoS : SRule(Rule(l, r, s)) -> Seqs([Match(l), s, Build(r)])
+  RtoS : SRule(Rule(l, r, s)) -> Seqs([Match(l), Where(s), Build(r)])
          where <pureterm> l ; <buildterm> r
 
-  RtoS : SRule(StratRule(l, r, s)) -> Seqs([l, s, r])
+  RtoS : SRule(StratRule(l, r, s)) -> Seqs([l, Where(s), r])
 \end{code} 
 
 \paragraph{Contexts}
