@@ -2,10 +2,14 @@ include $(top_srcdir)/Makefile.xt
 include Makefile.parse-unit
 
 SDFINCLUDES     = -I $(STRATEGO_FRONT)/share/sdf/stratego-front
-SCFLAGS         = --keep 10
 PGEN_FLAGS      = -m $*
+
 check_PROGRAMS 	= prop1 switch-semantics-test
 check_DATA      = PropStratego.tbl 
+
+nodist_switch_semantics_test_SOURCES = switch-semantics-test.c
+switch_semantics_test_LDADD = $(SSL_LIBS)
+nodist_prop1_SOURCES = prop1.c
 
 TESTSUITES        = strategies.testsuite dynrules.testsuite comments.testsuite
 PARSE_UNIT_PTABLE = $(top_srcdir)/syn/StrategoForTesting.tbl

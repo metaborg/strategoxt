@@ -1,5 +1,5 @@
 module switch-semantics-test
-imports list tuple integers reals sunit
+imports liblib
 strategies
 
   main =
