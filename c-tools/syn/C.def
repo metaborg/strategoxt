@@ -198,6 +198,10 @@ exports
   context-free syntax
     CondExp -> ConstantExp
 
+  lexical restrictions
+    "+" -/- [\+]
+    "-" -/- [\-]
+
 module C-Types
 exports
   context-free syntax

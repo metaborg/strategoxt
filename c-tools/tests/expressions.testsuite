@@ -51,7 +51,7 @@ TestSuite(
     , String("x = var.method()"), Assign(Id("x"),AssignEq, FunCall(Field(Id("var"),Id("method")),[]))
     )
   , Test(Descr("Simple literal")
-    , String("\"Literal\""), StringLit("\"Literal\"")
+    , String("\"Literal\""), StringLit(["\"Literal\""])
     )
   ])
 )

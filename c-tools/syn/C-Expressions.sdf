@@ -117,3 +117,7 @@ exports
 
   context-free syntax
     CondExp -> ConstantExp
+
+  lexical restrictions
+    "+" -/- [\+]
+    "-" -/- [\-]
