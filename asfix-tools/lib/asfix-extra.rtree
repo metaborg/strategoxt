@@ -1,1 +1,1 @@
-Specification([Signature([Constructors([OpDecl("flatlex",FunType([ConstType(Sort("Sort",[])),ConstType(Sort("String",[]))],ConstType(Sort("AsFixTerm",[]))))])])])
+Specification([Signature([Constructors([OpDecl("flatlex",FunType([ConstType(Sort("Sort",[])),ConstType(Sort("String",[]))],ConstType(Sort("AsFixTerm",[])))),OpDecl("seq",FunType([ConstType(Sort("List",[Sort("Symbol",[])]))],ConstType(Sort("Symbol",[]))))])])])
