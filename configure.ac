@@ -34,7 +34,7 @@ PKGS="autoxt srts xtc stratego-front asfix-tools \
    strc gpp c-tools ssl stratego-lib concrete-syntax xml-front \
    aterm-front sdf-front dot-tools sdf-tools \
    stratego-regular xtar \
-   stratego-tools boxenv stratego-util"
+   boxenv"
 
 if test "x$CORE_ENABLED" = "xyes"
 then
@@ -271,23 +271,8 @@ AB_CONFIG_PKG(xtar,
    --with-repository=${REPOSITORY}
 )
 
-AB_CONFIG_PKG(stratego-tools,
-   --with-aterm=${ATERM}
-   --with-sglr=${SGLR}
-   --with-pgen=${PGEN}
-   --with-asf-library=${ASF_LIBRARY}
-   --with-strategoxt=${STRATEGOXT}
-   --with-srts=${BUILD_SRTS}
-   --with-xtc=${INSTALL_XTC}
-   --with-repository=${REPOSITORY}
-)
-
 AB_CONFIG_PKG(boxenv,
    --with-xtc=${INSTALL_XTC}
    --with-repository=${REPOSITORY}
 )
 
-AB_CONFIG_PKG(stratego-util,
-   --with-xtc=${INSTALL_XTC}
-   --with-repository=${REPOSITORY}
-)
