@@ -102,7 +102,7 @@ strategies
  */
 strategies
 
-  dummify =
+  dummify-old =
     alltd(
         \Term|[ x ]|     -> |[ Nil() ]| where not(Var(ContextVar + ListVar(ContextVar)))\
      <+ \Term|[ _ ]|     -> |[ Nil() ]|\
@@ -120,7 +120,7 @@ strategies
       <not(eq)>(t2, |[ Undefined() ]|)
 
       ; new => x
-      ; <dummify> t1 => t1'
+      ; <dummify-old> t1 => t1'
       ; try(?t1; !Var(x)) => t1''
 
       ; <tvars; map(!Var(<id>))> t1' => keys
@@ -136,7 +136,7 @@ strategies
                 where where(<rewrite(!~str:f)> t1'' => Undefined()); s; fail ]|)
     where 
        new => x
-       ; <dummify> t1 => t1'
+       ; <dummify-old> t1 => t1'
        ; try(?t1; !Var(x)) => t1''
 
 
@@ -165,7 +165,7 @@ strategies
       ; <map((?DefaultVarDec(<id>) + ?VarDec(<id>,_)); !Var(<id>))> as2 => t1*
 
       ; new => x
-      ; <dummify> t1 => t1'
+      ; <dummify-old> t1 => t1'
       ; try(?t1; !Var(x)) => t1''
 
       ; <tvars; map(!Var(<id>))> t1' => keys
@@ -181,5 +181,5 @@ strategies
                 where where(<extend-rewrite(!~str:f)> t1'' => []); s; fail ]| ])
     where 
        new => x
-       ; <dummify> t1 => t1'
+       ; <dummify-old> t1 => t1'
        ; try(?t1; !Var(x)) => t1''

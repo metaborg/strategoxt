@@ -132,68 +132,80 @@ static void init_module_constructors (void)
   sym__18 = ATmakeSymbol("", 18, ATfalse);
   ATprotectSymbol(sym__18);
 }
+static ATerm term_g_2;
+static ATerm term_f_2;
+static ATerm term_e_2;
+static ATerm term_d_2;
+static ATerm term_c_2;
+static ATerm term_b_2;
+static ATerm term_a_2;
+static ATerm term_z_1;
 static ATerm term_w_1;
 static ATerm term_v_1;
 static ATerm term_u_1;
 static ATerm term_t_1;
-static ATerm term_q_1;
+static ATerm term_s_1;
 static ATerm term_p_1;
 static ATerm term_o_1;
-static ATerm term_n_1;
-static ATerm term_m_1;
-static ATerm term_j_1;
-static ATerm term_i_1;
-static ATerm term_f_1;
-static ATerm term_e_1;
+static ATerm term_l_1;
+static ATerm term_k_1;
 static void init_module_constant_terms (void)
 {
-  ATprotect(&(term_e_1));
-  term_e_1 = (ATerm) ATmakeAppl(ATmakeSymbol("--start", 0, ATtrue));
-  ATprotect(&(term_f_1));
-  term_f_1 = (ATerm) ATmakeAppl(ATmakeSymbol("-s", 0, ATtrue));
-  ATprotect(&(term_i_1));
-  term_i_1 = (ATerm) ATmakeAppl(ATmakeSymbol("--sglr", 0, ATtrue));
-  ATprotect(&(term_j_1));
-  term_j_1 = (ATerm) ATmakeAppl(ATmakeSymbol("-2", 0, ATtrue));
-  ATprotect(&(term_m_1));
-  term_m_1 = (ATerm) ATmakeAppl(ATmakeSymbol("-p", 0, ATtrue));
-  ATprotect(&(term_n_1));
-  term_n_1 = (ATerm) ATmakeAppl(ATmakeSymbol("** ERROR: no parse table specified", 0, ATtrue));
+  ATprotect(&(term_k_1));
+  term_k_1 = (ATerm) ATmakeAppl(ATmakeSymbol("--start", 0, ATtrue));
+  ATprotect(&(term_l_1));
+  term_l_1 = (ATerm) ATmakeAppl(ATmakeSymbol("-s", 0, ATtrue));
   ATprotect(&(term_o_1));
-  term_o_1 = (ATerm) ATmakeAppl(ATmakeSymbol("sglr", 0, ATtrue));
+  term_o_1 = (ATerm) ATmakeAppl(ATmakeSymbol("--sglr", 0, ATtrue));
   ATprotect(&(term_p_1));
-  term_p_1 = (ATerm) ATmakeAppl(ATmakeSymbol("implode-asfix", 0, ATtrue));
-  ATprotect(&(term_q_1));
-  term_q_1 = (ATerm) ATmakeAppl(ATmakeSymbol("--impl", 0, ATtrue));
+  term_p_1 = (ATerm) ATmakeAppl(ATmakeSymbol("-2", 0, ATtrue));
+  ATprotect(&(term_s_1));
+  term_s_1 = (ATerm) ATmakeAppl(ATmakeSymbol("-p", 0, ATtrue));
   ATprotect(&(term_t_1));
-  term_t_1 = (ATerm) ATmakeAppl(ATmakeSymbol("-p f             Use parse table |f| (required)", 0, ATtrue));
+  term_t_1 = (ATerm) ATmakeAppl(ATmakeSymbol("** ERROR: no parse table specified", 0, ATtrue));
   ATprotect(&(term_u_1));
-  term_u_1 = (ATerm) ATmakeAppl(ATmakeSymbol("--sglr opt       Pass option to sglr", 0, ATtrue));
+  term_u_1 = (ATerm) ATmakeAppl(ATmakeSymbol("sglr", 0, ATtrue));
   ATprotect(&(term_v_1));
-  term_v_1 = (ATerm) ATmakeAppl(ATmakeSymbol("--impl opt       Pass option to implode asfix", 0, ATtrue));
+  term_v_1 = (ATerm) ATmakeAppl(ATmakeSymbol("implode-asfix", 0, ATtrue));
   ATprotect(&(term_w_1));
-  term_w_1 = (ATerm) ATmakeAppl(ATmakeSymbol("--start symbol   Define start symbol", 0, ATtrue));
+  term_w_1 = (ATerm) ATmakeAppl(ATmakeSymbol("--impl", 0, ATtrue));
+  ATprotect(&(term_z_1));
+  term_z_1 = (ATerm) ATmakeAppl(ATmakeSymbol("-p <file.tbl>           Use parse table <file.tbl> (required)", 0, ATtrue));
+  ATprotect(&(term_a_2));
+  term_a_2 = (ATerm) ATmakeAppl(ATmakeSymbol("--start <symbol>        Start parsing with <symbol>", 0, ATtrue));
+  ATprotect(&(term_b_2));
+  term_b_2 = (ATerm) ATmakeAppl(ATmakeSymbol("-fi", 0, ATtrue));
+  ATprotect(&(term_c_2));
+  term_c_2 = (ATerm) ATmakeAppl(ATmakeSymbol("-fe", 0, ATtrue));
+  ATprotect(&(term_d_2));
+  term_d_2 = (ATerm) ATmakeAppl(ATmakeSymbol("--no-heuristic-filters  Don't use hearistic disambiguation filters (encouraged)", 0, ATtrue));
+  ATprotect(&(term_e_2));
+  term_e_2 = (ATerm) ATmakeAppl(ATmakeSymbol("", 0, ATtrue));
+  ATprotect(&(term_f_2));
+  term_f_2 = (ATerm) ATmakeAppl(ATmakeSymbol("--sglr <opt>            Pass <opt> to sglr", 0, ATtrue));
+  ATprotect(&(term_g_2));
+  term_g_2 = (ATerm) ATmakeAppl(ATmakeSymbol("--impl <opt>            Pass <opt> to implode-asfix", 0, ATtrue));
 }
 #include <srts/init-stratego-application.h>
 ATerm get_config_0_0 (ATerm t);
-ATerm xtc_transform_2_0 (ATerm j_6 (ATerm), ATerm k_6 (ATerm), ATerm t);
+ATerm xtc_transform_2_0 (ATerm l_6 (ATerm), ATerm m_6 (ATerm), ATerm t);
 ATerm concat_0_0 (ATerm t);
 ATerm pass_sglri_args_0_0 (ATerm t);
 ATerm fatal_error_0_0 (ATerm t);
 ATerm get_parse_table_0_0 (ATerm t);
 static ATerm b_0 (ATerm t);
-ATerm sglr_2_0 (ATerm h_0 (ATerm), ATerm i_0 (ATerm), ATerm t);
-static ATerm d_0 (ATerm t);
-static ATerm g_0 (ATerm t);
+ATerm sglr_2_0 (ATerm i_0 (ATerm), ATerm k_0 (ATerm), ATerm t);
+static ATerm e_0 (ATerm t);
+static ATerm h_0 (ATerm t);
 ATerm parse_and_implode_0_0 (ATerm t);
-ATerm set_config_0_0 (ATerm t);
-ATerm ArgOption_3_0 (ATerm c_4 (ATerm), ATerm d_4 (ATerm), ATerm e_4 (ATerm), ATerm t);
+ATerm Option_3_0 (ATerm b_4 (ATerm), ATerm c_4 (ATerm), ATerm d_4 (ATerm), ATerm t);
 ATerm extend_config_0_0 (ATerm t);
+ATerm ArgOption_3_0 (ATerm e_4 (ATerm), ATerm f_4 (ATerm), ATerm g_4 (ATerm), ATerm t);
+ATerm set_config_0_0 (ATerm t);
 static ATerm l_0 (ATerm t);
-static ATerm n_0 (ATerm t);
 static ATerm o_0 (ATerm t);
-static ATerm p_0 (ATerm t);
-static ATerm u_0 (ATerm t);
+static ATerm q_0 (ATerm t);
+static ATerm s_0 (ATerm t);
 static ATerm v_0 (ATerm t);
 static ATerm w_0 (ATerm t);
 static ATerm x_0 (ATerm t);
@@ -201,8 +213,14 @@ static ATerm y_0 (ATerm t);
 static ATerm z_0 (ATerm t);
 static ATerm a_1 (ATerm t);
 static ATerm b_1 (ATerm t);
+static ATerm c_1 (ATerm t);
+static ATerm d_1 (ATerm t);
+static ATerm e_1 (ATerm t);
+static ATerm f_1 (ATerm t);
+static ATerm g_1 (ATerm t);
+static ATerm h_1 (ATerm t);
 ATerm sglri_options_0_0 (ATerm t);
-ATerm xtc_io_wrap_2_0 (ATerm q_5 (ATerm), ATerm r_5 (ATerm), ATerm t);
+ATerm xtc_io_wrap_2_0 (ATerm s_5 (ATerm), ATerm t_5 (ATerm), ATerm t);
 ATerm main_0_0 (ATerm t);
 ATerm main_0 (ATerm t)
 {
@@ -212,104 +230,104 @@ ATerm main_0 (ATerm t)
 }
 ATerm pass_sglri_args_0_0 (ATerm t)
 {
-  ATerm a_0 = NULL,e_0 = NULL;
-  ATerm c_1 = t;
-  int d_1 = stack_ptr;
+  ATerm a_0 = NULL,d_0 = NULL;
+  ATerm i_1 = t;
+  int j_1 = stack_ptr;
   if((PushChoice() == 0))
     {
       ATerm f_0 = NULL;
-      t = term_e_1;
+      t = term_k_1;
       t = get_config_0_0(t);
       f_0 = t;
-      t = (ATerm) ATinsert(ATinsert(ATempty, f_0), term_f_1);
-      LocalPopChoice(d_1);
+      t = (ATerm) ATinsert(ATinsert(ATempty, f_0), term_l_1);
+      LocalPopChoice(j_1);
     }
   else
     {
-      t = c_1;
+      t = i_1;
       t = (ATerm) ATempty;
     }
   a_0 = t;
   {
-    ATerm g_1 = t;
-    int h_1 = stack_ptr;
+    ATerm m_1 = t;
+    int n_1 = stack_ptr;
     if((PushChoice() == 0))
       {
-        t = term_i_1;
+        t = term_o_1;
         t = get_config_0_0(t);
-        LocalPopChoice(h_1);
+        LocalPopChoice(n_1);
       }
     else
       {
-        t = g_1;
+        t = m_1;
         t = (ATerm) ATempty;
       }
   }
-  e_0 = t;
-  t = (ATerm) ATinsert(ATinsert(ATinsert(ATempty, e_0), a_0), (ATerm) ATinsert(ATempty, term_j_1));
+  d_0 = t;
+  t = (ATerm) ATinsert(ATinsert(ATinsert(ATempty, d_0), a_0), (ATerm) ATinsert(ATempty, term_p_1));
   t = concat_0_0(t);
   return(t);
 }
 ATerm get_parse_table_0_0 (ATerm t)
 {
-  ATerm k_1 = t;
-  int l_1 = stack_ptr;
+  ATerm q_1 = t;
+  int r_1 = stack_ptr;
   if((PushChoice() == 0))
     {
-      t = term_m_1;
+      t = term_s_1;
       t = get_config_0_0(t);
-      LocalPopChoice(l_1);
+      LocalPopChoice(r_1);
     }
   else
     {
-      t = k_1;
-      t = (ATerm) ATinsert(ATempty, term_n_1);
+      t = q_1;
+      t = (ATerm) ATinsert(ATempty, term_t_1);
       t = fatal_error_0_0(t);
     }
   return(t);
 }
 static ATerm b_0 (ATerm t)
 {
-  t = term_o_1;
+  t = term_u_1;
   return(t);
 }
-ATerm sglr_2_0 (ATerm h_0 (ATerm), ATerm i_0 (ATerm), ATerm t)
+ATerm sglr_2_0 (ATerm i_0 (ATerm), ATerm k_0 (ATerm), ATerm t)
 {
   static ATerm c_0 (ATerm t);
   static ATerm c_0 (ATerm t)
   {
-    ATerm j_0 = NULL,k_0 = NULL,m_0 = NULL;
+    ATerm g_0 = NULL,j_0 = NULL,m_0 = NULL;
     m_0 = t;
-    t = h_0(t);
-    j_0 = t;
-    t = m_0;
     t = i_0(t);
-    k_0 = t;
-    t = (ATerm) ATinsert(ATinsert(CheckATermList(k_0), j_0), term_m_1);
+    g_0 = t;
+    t = m_0;
+    t = k_0(t);
+    j_0 = t;
+    t = (ATerm) ATinsert(ATinsert(CheckATermList(j_0), g_0), term_s_1);
     return(t);
   }
   t = xtc_transform_2_0(b_0, c_0, t);
   return(t);
 }
-static ATerm d_0 (ATerm t)
+static ATerm e_0 (ATerm t)
 {
-  t = term_p_1;
+  t = term_v_1;
   return(t);
 }
-static ATerm g_0 (ATerm t)
+static ATerm h_0 (ATerm t)
 {
-  t = term_q_1;
+  t = term_w_1;
   {
-    ATerm r_1 = t;
-    int s_1 = stack_ptr;
+    ATerm x_1 = t;
+    int y_1 = stack_ptr;
     if((PushChoice() == 0))
       {
         t = get_config_0_0(t);
-        LocalPopChoice(s_1);
+        LocalPopChoice(y_1);
       }
     else
       {
-        t = r_1;
+        t = x_1;
         t = (ATerm) ATempty;
       }
   }
@@ -318,7 +336,7 @@ static ATerm g_0 (ATerm t)
 ATerm parse_and_implode_0_0 (ATerm t)
 {
   t = sglr_2_0(get_parse_table_0_0, pass_sglri_args_0_0, t);
-  t = xtc_transform_2_0(d_0, g_0, t);
+  t = xtc_transform_2_0(e_0, h_0, t);
   return(t);
 }
 static ATerm l_0 (ATerm t)
@@ -327,115 +345,184 @@ static ATerm l_0 (ATerm t)
     _fail(t);
   return(t);
 }
-static ATerm n_0 (ATerm t)
-{
-  ATerm q_0 = NULL;
-  q_0 = t;
-  t = (ATerm) ATmakeAppl(sym__2, term_m_1, q_0);
-  t = set_config_0_0(t);
-  t = q_0;
-  return(t);
-}
 static ATerm o_0 (ATerm t)
 {
-  t = term_t_1;
+  ATerm n_0 = NULL;
+  n_0 = t;
+  t = (ATerm) ATmakeAppl(sym__2, term_s_1, n_0);
+  t = set_config_0_0(t);
+  t = n_0;
   return(t);
 }
-static ATerm p_0 (ATerm t)
+static ATerm q_0 (ATerm t)
 {
-  if((ATgetSymbol((ATermAppl) t) != ATmakeSymbol("--sglr", 0, ATtrue)))
-    _fail(t);
+  t = term_z_1;
   return(t);
 }
-static ATerm u_0 (ATerm t)
-{
-  ATerm r_0 = NULL;
-  r_0 = t;
-  t = (ATerm) ATmakeAppl(sym__2, term_i_1, (ATerm) ATinsert(ATempty, r_0));
-  t = extend_config_0_0(t);
-  t = r_0;
-  return(t);
-}
-static ATerm v_0 (ATerm t)
-{
-  t = term_u_1;
-  return(t);
-}
-static ATerm w_0 (ATerm t)
-{
-  if((ATgetSymbol((ATermAppl) t) != ATmakeSymbol("--impl", 0, ATtrue)))
-    _fail(t);
-  return(t);
-}
-static ATerm x_0 (ATerm t)
-{
-  ATerm s_0 = NULL;
-  s_0 = t;
-  t = (ATerm) ATmakeAppl(sym__2, term_q_1, (ATerm) ATinsert(ATempty, s_0));
-  t = extend_config_0_0(t);
-  t = s_0;
-  return(t);
-}
-static ATerm y_0 (ATerm t)
-{
-  t = term_v_1;
-  return(t);
-}
-static ATerm z_0 (ATerm t)
+static ATerm s_0 (ATerm t)
 {
   if((ATgetSymbol((ATermAppl) t) != ATmakeSymbol("--start", 0, ATtrue)))
     _fail(t);
   return(t);
 }
+static ATerm v_0 (ATerm t)
+{
+  ATerm p_0 = NULL;
+  p_0 = t;
+  t = (ATerm) ATmakeAppl(sym__2, term_k_1, p_0);
+  t = set_config_0_0(t);
+  t = p_0;
+  return(t);
+}
+static ATerm w_0 (ATerm t)
+{
+  t = term_a_2;
+  return(t);
+}
+static ATerm x_0 (ATerm t)
+{
+  if((ATgetSymbol((ATermAppl) t) != ATmakeSymbol("--no-heuristic-filters", 0, ATtrue)))
+    _fail(t);
+  return(t);
+}
+static ATerm y_0 (ATerm t)
+{
+  ATerm r_0 = NULL;
+  r_0 = t;
+  t = (ATerm) ATmakeAppl(sym__2, term_o_1, (ATerm) ATinsert(ATinsert(ATempty, term_c_2), term_b_2));
+  t = extend_config_0_0(t);
+  t = r_0;
+  return(t);
+}
+static ATerm z_0 (ATerm t)
+{
+  t = term_d_2;
+  return(t);
+}
 static ATerm a_1 (ATerm t)
 {
-  ATerm t_0 = NULL;
-  t_0 = t;
-  t = (ATerm) ATmakeAppl(sym__2, term_e_1, t_0);
-  t = set_config_0_0(t);
-  t = t_0;
+  t = term_e_2;
   return(t);
 }
 static ATerm b_1 (ATerm t)
 {
-  t = term_w_1;
+  if((ATgetSymbol((ATermAppl) t) != ATmakeSymbol("--sglr", 0, ATtrue)))
+    _fail(t);
+  return(t);
+}
+static ATerm c_1 (ATerm t)
+{
+  ATerm t_0 = NULL;
+  t_0 = t;
+  t = (ATerm) ATmakeAppl(sym__2, term_o_1, (ATerm) ATinsert(ATempty, t_0));
+  t = extend_config_0_0(t);
+  t = t_0;
+  return(t);
+}
+static ATerm d_1 (ATerm t)
+{
+  t = term_f_2;
+  return(t);
+}
+static ATerm e_1 (ATerm t)
+{
+  if((ATgetSymbol((ATermAppl) t) != ATmakeSymbol("--impl", 0, ATtrue)))
+    _fail(t);
+  return(t);
+}
+static ATerm f_1 (ATerm t)
+{
+  ATerm u_0 = NULL;
+  u_0 = t;
+  t = (ATerm) ATmakeAppl(sym__2, term_w_1, (ATerm) ATinsert(ATempty, u_0));
+  t = extend_config_0_0(t);
+  t = u_0;
+  return(t);
+}
+static ATerm g_1 (ATerm t)
+{
+  t = term_g_2;
+  return(t);
+}
+static ATerm h_1 (ATerm t)
+{
+  t = term_e_2;
   return(t);
 }
 ATerm sglri_options_0_0 (ATerm t)
 {
-  ATerm x_1 = t;
-  int y_1 = stack_ptr;
+  ATerm h_2 = t;
+  int i_2 = stack_ptr;
   if((PushChoice() == 0))
     {
-      t = ArgOption_3_0(l_0, n_0, o_0, t);
-      LocalPopChoice(y_1);
+      t = ArgOption_3_0(l_0, o_0, q_0, t);
+      LocalPopChoice(i_2);
     }
   else
     {
-      t = x_1;
+      t = h_2;
       {
-        ATerm z_1 = t;
-        int a_2 = stack_ptr;
+        ATerm j_2 = t;
+        int k_2 = stack_ptr;
         if((PushChoice() == 0))
           {
-            t = ArgOption_3_0(p_0, u_0, v_0, t);
-            LocalPopChoice(a_2);
+            t = ArgOption_3_0(s_0, v_0, w_0, t);
+            LocalPopChoice(k_2);
           }
         else
           {
-            t = z_1;
+            t = j_2;
             {
-              ATerm b_2 = t;
-              int c_2 = stack_ptr;
+              ATerm l_2 = t;
+              int m_2 = stack_ptr;
               if((PushChoice() == 0))
                 {
-                  t = ArgOption_3_0(w_0, x_0, y_0, t);
-                  LocalPopChoice(c_2);
+                  t = Option_3_0(x_0, y_0, z_0, t);
+                  LocalPopChoice(m_2);
                 }
               else
                 {
-                  t = b_2;
-                  t = ArgOption_3_0(z_0, a_1, b_1, t);
+                  t = l_2;
+                  {
+                    ATerm n_2 = t;
+                    int o_2 = stack_ptr;
+                    if((PushChoice() == 0))
+                      {
+                        t = Option_3_0(_fail, _fail, a_1, t);
+                        LocalPopChoice(o_2);
+                      }
+                    else
+                      {
+                        t = n_2;
+                        {
+                          ATerm p_2 = t;
+                          int q_2 = stack_ptr;
+                          if((PushChoice() == 0))
+                            {
+                              t = ArgOption_3_0(b_1, c_1, d_1, t);
+                              LocalPopChoice(q_2);
+                            }
+                          else
+                            {
+                              t = p_2;
+                              {
+                                ATerm r_2 = t;
+                                int s_2 = stack_ptr;
+                                if((PushChoice() == 0))
+                                  {
+                                    t = ArgOption_3_0(e_1, f_1, g_1, t);
+                                    LocalPopChoice(s_2);
+                                  }
+                                else
+                                  {
+                                    t = r_2;
+                                    t = Option_3_0(_fail, _fail, h_1, t);
+                                  }
+                              }
+                            }
+                        }
+                      }
+                  }
                 }
             }
           }

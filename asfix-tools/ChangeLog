@@ -1,3 +1,8 @@
+2004-11-27  Martin Bravenboer <martin@cs.uu.nl>
+
+	* src/implode/sglri.str: added the --no-heuristic-filters option
+	to disable the heuristic filters of sglr.
+
 2004-09-02  Martin Bravenboer <martin@cs.uu.nl>
 
 	* src/anno/asfix-anno-comments.str: a new asfix to asfix tool that

@@ -1,3 +1,8 @@
+2004-11-27  Martin Bravenboer <martin@cs.uu.nl>
+
+	* trans/sdf2rtg/core-sdf-grammar2rtg.str: nice names for character
+	classes.
+	
 2004-08-29  Martin Bravenboer <martin@cs.uu.nl>
 
 	* syn/rg-layout.sdf: added comments to RTG.

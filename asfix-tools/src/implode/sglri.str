@@ -9,16 +9,30 @@ strategies
   sglri-options =
       ArgOption("-p",
         where(<set-config> ("-p", <id>)),
-        !"-p f             Use parse table |f| (required)")
-    + ArgOption("--sglr", 
-        where(<extend-config> ("--sglr", [<id>])),
-        !"--sglr opt       Pass option to sglr")
-    + ArgOption("--impl", 
-        where(<extend-config> ("--impl", [<id>])),
-        !"--impl opt       Pass option to implode asfix")
+        !"-p <file.tbl>           Use parse table <file.tbl> (required)")
     + ArgOption("--start", 
         where(<set-config> ("--start", <id>)),
-        !"--start symbol   Define start symbol")
+        !"--start <symbol>        Start parsing with <symbol>")
+    + sglr-filter-options
+
+    + Option(fail, fail, !"")
+
+    + ArgOption("--sglr", 
+        where(<extend-config> ("--sglr", [<id>])),
+        !"--sglr <opt>            Pass <opt> to sglr")
+    + ArgOption("--impl", 
+        where(<extend-config> ("--impl", [<id>])),
+        !"--impl <opt>            Pass <opt> to implode-asfix")
+
+    + Option(fail, fail, !"")
+
+  sglr-filter-options =
+      Option("--no-heuristic-filters"
+      , where(<extend-config> ("--sglr", ["-fi", "-fe"]))
+      , !"--no-heuristic-filters  Don't use hearistic disambiguation filters (encouraged)"
+    )
+
+
   (*
   short-description(p) = 
     !["Usage: ", <p>(), " [options]"]

@@ -9,7 +9,8 @@ strategies
         Constructors(![
           OpDecl("DR_KILL", 
 	         FunType([ConstType(Sort("ATerm", []))], ConstType(Sort("ATerm", []))))
-          | <id>])
+        , OpDecl("DR_DUMMY", ConstType(Sort("ATerm", [])))
+          | <id>]) 
       , id
       , Strategies(define-rule-scope; lift-dynamic-rules-from-spec)
       ])
@@ -305,12 +306,16 @@ strategies
     ));
     alltd(DummifyTerm)
 
+  /**
+   * The dummy must be a list, since it might be used as the tail
+   * of Cons.
+   */
   DummifyTerm :
-    Term|[ x ]| -> |[ Nil() ]| 
+    Term|[ x ]| -> |[ [DR_DUMMY()] ]| 
     where not(Var(ContextVar + ListVar(ContextVar)))
 
   DummifyTerm :
-    Term|[ _ ]| -> |[ Nil() ]|
+    Term|[ _ ]| -> |[ [DR_DUMMY()] ]|
 
   DummifyTerm :
     Term|[ <s> ]| -> |[ Keys( ~term*:<tvars; map(!Var(<id>))> s ) ]|

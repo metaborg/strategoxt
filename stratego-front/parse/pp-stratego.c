@@ -275,26 +275,26 @@ static void init_module_constant_terms (void)
 }
 #include <srts/init-stratego-application.h>
 ATerm pass_verbose_0_0 (ATerm t);
-ATerm xtc_transform_2_0 (ATerm j_6 (ATerm), ATerm k_6 (ATerm), ATerm t);
+ATerm xtc_transform_2_0 (ATerm l_6 (ATerm), ATerm m_6 (ATerm), ATerm t);
 ATerm xtc_find_0_0 (ATerm t);
 ATerm get_config_0_0 (ATerm t);
-ATerm try_1_0 (ATerm k_92 (ATerm), ATerm t);
-ATerm bottomup_1_0 (ATerm i_94 (ATerm), ATerm t);
-ATerm topdown_1_0 (ATerm h_94 (ATerm), ATerm t);
+ATerm try_1_0 (ATerm o_92 (ATerm), ATerm t);
+ATerm bottomup_1_0 (ATerm m_94 (ATerm), ATerm t);
+ATerm topdown_1_0 (ATerm l_94 (ATerm), ATerm t);
 ATerm StrategoParenthesize_0_0 (ATerm t);
-ATerm innermost_1_0 (ATerm n_98 (ATerm), ATerm t);
-ATerm xtc_io_transform_1_0 (ATerm a_5 (ATerm), ATerm t);
-ATerm xtc_transform_1_0 (ATerm i_6 (ATerm), ATerm t);
+ATerm innermost_1_0 (ATerm r_98 (ATerm), ATerm t);
+ATerm xtc_io_transform_1_0 (ATerm c_5 (ATerm), ATerm t);
+ATerm xtc_transform_1_0 (ATerm k_6 (ATerm), ATerm t);
 ATerm conc_0_0 (ATerm t);
-ATerm foldr_3_0 (ATerm r_107 (ATerm), ATerm s_107 (ATerm), ATerm t_107 (ATerm), ATerm t);
+ATerm foldr_3_0 (ATerm v_107 (ATerm), ATerm w_107 (ATerm), ATerm x_107 (ATerm), ATerm t);
 static ATerm a_0 (ATerm t);
 ATerm pass_includes_0_0 (ATerm t);
-ATerm xtc_io_1_0 (ATerm m_5 (ATerm), ATerm t);
+ATerm xtc_io_1_0 (ATerm o_5 (ATerm), ATerm t);
 ATerm io_options_0_0 (ATerm t);
 ATerm set_config_0_0 (ATerm t);
-ATerm ArgOption_3_0 (ATerm c_4 (ATerm), ATerm d_4 (ATerm), ATerm e_4 (ATerm), ATerm t);
+ATerm ArgOption_3_0 (ATerm e_4 (ATerm), ATerm f_4 (ATerm), ATerm g_4 (ATerm), ATerm t);
 ATerm extend_config_0_0 (ATerm t);
-ATerm Option_3_0 (ATerm z_3 (ATerm), ATerm a_4 (ATerm), ATerm b_4 (ATerm), ATerm t);
+ATerm Option_3_0 (ATerm b_4 (ATerm), ATerm c_4 (ATerm), ATerm d_4 (ATerm), ATerm t);
 static ATerm b_0 (ATerm t);
 static ATerm c_0 (ATerm t);
 static ATerm d_0 (ATerm t);
@@ -308,7 +308,7 @@ static ATerm k_0 (ATerm t);
 static ATerm l_0 (ATerm t);
 static ATerm m_0 (ATerm t);
 ATerm pp_stratego_options_0_0 (ATerm t);
-ATerm option_wrap_2_0 (ATerm n_120 (ATerm), ATerm o_120 (ATerm), ATerm t);
+ATerm option_wrap_2_0 (ATerm v_120 (ATerm), ATerm w_120 (ATerm), ATerm t);
 static ATerm n_0 (ATerm t);
 static ATerm o_0 (ATerm t);
 static ATerm p_0 (ATerm t);
@@ -705,8 +705,8 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
             t = b_1;
             t = f_24;
             {
-              ATerm f_4 = t;
-              int g_4 = stack_ptr;
+              ATerm z_3 = t;
+              int a_4 = stack_ptr;
               if((PushChoice() == 0))
                 {
                   if(match_cons(t, sym_Build_1))
@@ -715,12 +715,12 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                     }
                   else
                     _fail(t);
-                  LocalPopChoice(g_4);
+                  LocalPopChoice(a_4);
                   t = f_24;
                 }
               else
                 {
-                  t = f_4;
+                  t = z_3;
                   {
                     ATerm i_4 = t;
                     int j_4 = stack_ptr;
@@ -800,7 +800,7 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                 if(match_cons(t, sym_RChoice_2))
                                                   {
                                                     ATerm z_4 = ATgetArgument(t, 0);
-                                                    ATerm b_5 = ATgetArgument(t, 1);
+                                                    ATerm a_5 = ATgetArgument(t, 1);
                                                   }
                                                 else
                                                   _fail(t);
@@ -811,7 +811,7 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                               {
                                                 t = x_4;
                                                 {
-                                                  ATerm c_5 = t;
+                                                  ATerm b_5 = t;
                                                   int d_5 = stack_ptr;
                                                   if((PushChoice() == 0))
                                                     {
@@ -827,7 +827,7 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                     }
                                                   else
                                                     {
-                                                      t = c_5;
+                                                      t = b_5;
                                                       {
                                                         ATerm g_5 = t;
                                                         int h_5 = stack_ptr;
@@ -853,8 +853,8 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                                 {
                                                                   if(match_cons(t, sym_RGChoice_2))
                                                                     {
-                                                                      ATerm n_5 = ATgetArgument(t, 0);
-                                                                      ATerm o_5 = ATgetArgument(t, 1);
+                                                                      ATerm m_5 = ATgetArgument(t, 0);
+                                                                      ATerm n_5 = ATgetArgument(t, 1);
                                                                     }
                                                                   else
                                                                     _fail(t);
@@ -940,17 +940,17 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                                                           t = c_6;
                                                                                           {
                                                                                             ATerm h_6 = t;
-                                                                                            int l_6 = stack_ptr;
+                                                                                            int i_6 = stack_ptr;
                                                                                             if((PushChoice() == 0))
                                                                                               {
                                                                                                 if(match_cons(t, sym_AM_2))
                                                                                                   {
-                                                                                                    ATerm m_6 = ATgetArgument(t, 0);
+                                                                                                    ATerm j_6 = ATgetArgument(t, 0);
                                                                                                     ATerm n_6 = ATgetArgument(t, 1);
                                                                                                   }
                                                                                                 else
                                                                                                   _fail(t);
-                                                                                                LocalPopChoice(l_6);
+                                                                                                LocalPopChoice(i_6);
                                                                                                 t = f_24;
                                                                                               }
                                                                                             else

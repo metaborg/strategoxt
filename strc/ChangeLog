@@ -1,5 +1,17 @@
 2004-11-26  Martin Bravenboer <martin@cs.uu.nl>
 
+	* spec/front/lift-dynamic-rules.str: changed the dummy used in
+	dynamic rule keys from [] to DR_DUMMY. This conflicts with dynamic
+	rules that contain []. Note, that these rules now also have a
+	different key. If you want them to have the same key, then for
+	example move the [] pattern to the where condition.
+
+	* spec/front/lift-dynamic-rules-old.str: use your own dummify. The
+	dummifies in the old and new lifter where overloaded, leading to
+	conflicts.
+
+2004-11-26  Martin Bravenboer <martin@cs.uu.nl>
+
 	* spec/c/s2c.str: fixed STR-201, STR-205 and STR-25 by making some
 	checks more precise. The match and build translation strategies
 	checked for the string "Cons" and "Nil", where they should

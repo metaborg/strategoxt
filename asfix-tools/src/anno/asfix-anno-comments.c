@@ -178,28 +178,28 @@ static void init_module_constant_terms (void)
   term_y_2 = (ATerm) ATmakeAppl(ATmakeSymbol("--sort name      Specify a comment sort. Multiple --sort options are allowed [Comment]", 0, ATtrue));
 }
 #include <srts/init-stratego-application.h>
-ATerm oncetd_1_0 (ATerm l_95 (ATerm), ATerm t);
+ATerm oncetd_1_0 (ATerm p_95 (ATerm), ATerm t);
 ATerm implode_string_0_0 (ATerm t);
 ATerm concat_0_0 (ATerm t);
-ATerm map_1_0 (ATerm s_100 (ATerm), ATerm t);
+ATerm map_1_0 (ATerm w_100 (ATerm), ATerm t);
 ATerm yield_0_0 (ATerm t);
-ATerm fetch_1_0 (ATerm a_101 (ATerm), ATerm t);
+ATerm fetch_1_0 (ATerm e_101 (ATerm), ATerm t);
 ATerm get_comment_sorts_0_0 (ATerm t);
 ATerm fetch_comment_0_0 (ATerm t);
 static ATerm g_0 (ATerm t);
-static ATerm s_0 (ATerm k_0, ATerm m_3, ATerm n_3, ATerm n_0, ATerm t);
+static ATerm s_0 (ATerm k_0, ATerm w_4, ATerm x_4, ATerm n_0, ATerm t);
 ATerm AnnoComment_0_0 (ATerm t);
-ATerm try_1_0 (ATerm k_92 (ATerm), ATerm t);
+ATerm try_1_0 (ATerm o_92 (ATerm), ATerm t);
 ATerm Nil_0_0 (ATerm t);
-ATerm Cons_2_0 (ATerm s_80 (ATerm), ATerm t_80 (ATerm), ATerm t);
+ATerm Cons_2_0 (ATerm w_80 (ATerm), ATerm x_80 (ATerm), ATerm t);
 ATerm is_list_0_0 (ATerm t);
-ATerm all_consnil_1_0 (ATerm j_8 (ATerm), ATerm t);
-ATerm topdown_consnil_1_0 (ATerm h_8 (ATerm), ATerm t);
+ATerm all_consnil_1_0 (ATerm q_8 (ATerm), ATerm t);
+ATerm topdown_consnil_1_0 (ATerm o_8 (ATerm), ATerm t);
 ATerm set_config_0_0 (ATerm t);
 ATerm get_config_0_0 (ATerm t);
 ATerm extend_config_0_0 (ATerm t);
-ATerm ArgOption_3_0 (ATerm c_4 (ATerm), ATerm d_4 (ATerm), ATerm e_4 (ATerm), ATerm t);
-ATerm io_wrap_2_0 (ATerm c_121 (ATerm), ATerm d_121 (ATerm), ATerm t);
+ATerm ArgOption_3_0 (ATerm e_4 (ATerm), ATerm f_4 (ATerm), ATerm g_4 (ATerm), ATerm t);
+ATerm io_wrap_2_0 (ATerm k_121 (ATerm), ATerm l_121 (ATerm), ATerm t);
 static ATerm i_0 (ATerm t);
 static ATerm j_0 (ATerm t);
 static ATerm l_0 (ATerm t);
@@ -354,10 +354,10 @@ static ATerm g_0 (ATerm t)
     _fail(t);
   return(t);
 }
-static ATerm s_0 (ATerm k_0, ATerm m_3, ATerm n_3, ATerm n_0, ATerm t)
+static ATerm s_0 (ATerm k_0, ATerm w_4, ATerm x_4, ATerm n_0, ATerm t)
 {
   ATerm u_1 = NULL,v_1 = NULL,w_1 = NULL,x_1 = NULL;
-  t = m_3;
+  t = w_4;
   t = fetch_comment_0_0(t);
   if(match_cons(t, sym__2))
     {
@@ -366,7 +366,7 @@ static ATerm s_0 (ATerm k_0, ATerm m_3, ATerm n_3, ATerm n_0, ATerm t)
     }
   else
     _fail(t);
-  t = n_3;
+  t = x_4;
   {
     static ATerm c_0 (ATerm t);
     static ATerm c_0 (ATerm t)
@@ -489,7 +489,7 @@ ATerm AnnoComment_0_0 (ATerm t)
   t = s_0(b_2, c_2, d_2, e_2, t);
   return(t);
 }
-ATerm all_consnil_1_0 (ATerm j_8 (ATerm), ATerm t)
+ATerm all_consnil_1_0 (ATerm q_8 (ATerm), ATerm t)
 {
   ATerm r_2 = t;
   int s_2 = stack_ptr;
@@ -505,8 +505,8 @@ ATerm all_consnil_1_0 (ATerm j_8 (ATerm), ATerm t)
         int u_2 = stack_ptr;
         if((PushChoice() == 0))
           {
-            t = Cons_2_0(j_8, _id, t);
-            t = Cons_2_0(_id, j_8, t);
+            t = Cons_2_0(q_8, _id, t);
+            t = Cons_2_0(_id, q_8, t);
             LocalPopChoice(u_2);
           }
         else
@@ -519,16 +519,16 @@ ATerm all_consnil_1_0 (ATerm j_8 (ATerm), ATerm t)
   else
     {
       t = r_2;
-      t = SRTS_all(j_8, t);
+      t = SRTS_all(q_8, t);
     }
   return(t);
 }
-ATerm topdown_consnil_1_0 (ATerm h_8 (ATerm), ATerm t)
+ATerm topdown_consnil_1_0 (ATerm o_8 (ATerm), ATerm t)
 {
   static ATerm k_2 (ATerm t);
   static ATerm k_2 (ATerm t)
   {
-    t = h_8(t);
+    t = o_8(t);
     t = all_consnil_1_0(k_2, t);
     return(t);
   }

@@ -186,27 +186,27 @@ static void init_module_constant_terms (void)
 #include <srts/init-stratego-application.h>
 ATerm exit_0_0 (ATerm t);
 ATerm fatal_error_0_0 (ATerm t);
-ATerm Cons_2_0 (ATerm s_80 (ATerm), ATerm t_80 (ATerm), ATerm t);
-ATerm list_1_0 (ATerm w_100 (ATerm), ATerm t);
-ATerm asfix_skip2_1_0 (ATerm t_7 (ATerm), ATerm t);
+ATerm Cons_2_0 (ATerm w_80 (ATerm), ATerm x_80 (ATerm), ATerm t);
+ATerm list_1_0 (ATerm a_101 (ATerm), ATerm t);
+ATerm asfix_skip2_1_0 (ATerm a_8 (ATerm), ATerm t);
 ATerm is_leaf_0_0 (ATerm t);
 ATerm printascii_0_0 (ATerm t);
-ATerm split_2_0 (ATerm i_109 (ATerm), ATerm j_109 (ATerm), ATerm t);
+ATerm split_2_0 (ATerm m_109 (ATerm), ATerm n_109 (ATerm), ATerm t);
 ATerm print_0_0 (ATerm t);
 ATerm is_string_0_0 (ATerm t);
-ATerm leaves_3_0 (ATerm k_96 (ATerm), ATerm l_96 (ATerm), ATerm m_96 (ATerm (ATerm), ATerm), ATerm t);
+ATerm leaves_3_0 (ATerm o_96 (ATerm), ATerm p_96 (ATerm), ATerm q_96 (ATerm (ATerm), ATerm), ATerm t);
 static ATerm b_0 (ATerm t);
 static ATerm c_0 (ATerm t);
-ATerm asfix_yield2_1_0 (ATerm s_7 (ATerm), ATerm t);
-ATerm asfix_yield_1_0 (ATerm r_7 (ATerm), ATerm t);
-ATerm _2_0 (ATerm x_80 (ATerm), ATerm y_80 (ATerm), ATerm t);
+ATerm asfix_yield2_1_0 (ATerm z_7 (ATerm), ATerm t);
+ATerm asfix_yield_1_0 (ATerm y_7 (ATerm), ATerm t);
+ATerm _2_0 (ATerm b_81 (ATerm), ATerm c_81 (ATerm), ATerm t);
 ATerm input_file_0_0 (ATerm t);
 ATerm open_file_0_0 (ATerm t);
-ATerm option_defined_1_0 (ATerm p_121 (ATerm), ATerm t);
+ATerm option_defined_1_0 (ATerm x_121 (ATerm), ATerm t);
 ATerm system_about_0_0 (ATerm t);
-ATerm default_system_usage_2_0 (ATerm y_122 (ATerm), ATerm z_122 (ATerm), ATerm t);
+ATerm default_system_usage_2_0 (ATerm g_123 (ATerm), ATerm h_123 (ATerm), ATerm t);
 ATerm io_options_0_0 (ATerm t);
-ATerm parse_options_3_0 (ATerm q_122 (ATerm), ATerm r_122 (ATerm), ATerm s_122 (ATerm), ATerm t);
+ATerm parse_options_3_0 (ATerm y_122 (ATerm), ATerm z_122 (ATerm), ATerm a_123 (ATerm), ATerm t);
 static ATerm f_0 (ATerm t);
 static ATerm h_0 (ATerm t);
 static ATerm j_0 (ATerm t);
@@ -217,7 +217,7 @@ ATerm main_0 (ATerm t)
   t = main_0_0(t);
   return(t);
 }
-ATerm asfix_skip2_1_0 (ATerm t_7 (ATerm), ATerm t)
+ATerm asfix_skip2_1_0 (ATerm a_8 (ATerm), ATerm t)
 {
   ATerm b_2 = NULL,c_2 = NULL,d_2 = NULL;
   b_2 = t;
@@ -230,7 +230,7 @@ ATerm asfix_skip2_1_0 (ATerm t_7 (ATerm), ATerm t)
         t = SSLgetAnnotations(b_2);
         e_0 = t;
         t = d_2;
-        t = list_1_0(t_7, t);
+        t = list_1_0(a_8, t);
         i_0 = t;
         t = (ATerm) ATmakeAppl(sym_appl_2, c_2, i_0);
         d_0 = t;
@@ -247,7 +247,7 @@ ATerm asfix_skip2_1_0 (ATerm t_7 (ATerm), ATerm t)
             t = SSLgetAnnotations(b_2);
             r_0 = t;
             t = c_2;
-            t = Cons_2_0(t_7, _id, t);
+            t = Cons_2_0(a_8, _id, t);
             t_0 = t;
             t = (ATerm) ATmakeAppl(sym_amb_1, t_0);
             g_0 = t;
@@ -267,7 +267,7 @@ ATerm asfix_skip2_1_0 (ATerm t_7 (ATerm), ATerm t)
           t = SSLgetAnnotations(b_2);
           r_1 = t;
           t = c_2;
-          t = t_7(t);
+          t = a_8(t);
           j_2 = t;
           t = (ATerm) ATmakeAppl(sym_parsetree_2, j_2, d_2);
           l_0 = t;
@@ -290,7 +290,7 @@ static ATerm c_0 (ATerm t)
   t = (ATerm) ATinsert(ATempty, i_2);
   return(t);
 }
-ATerm asfix_yield2_1_0 (ATerm s_7 (ATerm), ATerm t)
+ATerm asfix_yield2_1_0 (ATerm z_7 (ATerm), ATerm t)
 {
   static ATerm a_0 (ATerm t);
   static ATerm a_0 (ATerm t)
@@ -300,14 +300,14 @@ ATerm asfix_yield2_1_0 (ATerm s_7 (ATerm), ATerm t)
     if((PushChoice() == 0))
       {
         t = is_string_0_0(t);
-        t = split_2_0(s_7, b_0, t);
+        t = split_2_0(z_7, b_0, t);
         t = print_0_0(t);
         LocalPopChoice(p_0);
       }
     else
       {
         t = o_0;
-        t = split_2_0(s_7, c_0, t);
+        t = split_2_0(z_7, c_0, t);
         t = printascii_0_0(t);
       }
     return(t);
@@ -315,7 +315,7 @@ ATerm asfix_yield2_1_0 (ATerm s_7 (ATerm), ATerm t)
   t = leaves_3_0(a_0, is_leaf_0_0, asfix_skip2_1_0, t);
   return(t);
 }
-ATerm asfix_yield_1_0 (ATerm r_7 (ATerm), ATerm t)
+ATerm asfix_yield_1_0 (ATerm y_7 (ATerm), ATerm t)
 {
   ATerm q_0 = t;
   int s_0 = stack_ptr;
@@ -354,7 +354,7 @@ ATerm asfix_yield_1_0 (ATerm r_7 (ATerm), ATerm t)
         }
       t = m_2;
       LocalPopChoice(s_0);
-      t = asfix_yield2_1_0(r_7, t);
+      t = asfix_yield2_1_0(y_7, t);
     }
   else
     {

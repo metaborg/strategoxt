@@ -158,14 +158,14 @@ static void init_module_constant_terms (void)
 }
 #include <srts/init-stratego-application.h>
 ATerm pass_verbose_0_0 (ATerm t);
-ATerm xtc_transform_2_0 (ATerm j_6 (ATerm), ATerm k_6 (ATerm), ATerm t);
-ATerm if_verbose3_1_0 (ATerm x_117 (ATerm), ATerm t);
+ATerm xtc_transform_2_0 (ATerm l_6 (ATerm), ATerm m_6 (ATerm), ATerm t);
+ATerm if_verbose3_1_0 (ATerm f_118 (ATerm), ATerm t);
 static ATerm a_0 (ATerm t);
 ATerm pass_v_verbose_0_0 (ATerm t);
 ATerm xtc_find_0_0 (ATerm t);
 static ATerm d_0 (ATerm t);
-ATerm xtc_sglr_1_0 (ATerm e_0 (ATerm), ATerm t);
-ATerm xtc_io_wrap_1_0 (ATerm p_5 (ATerm), ATerm t);
+ATerm xtc_sglr_1_0 (ATerm f_0 (ATerm), ATerm t);
+ATerm xtc_io_wrap_1_0 (ATerm r_5 (ATerm), ATerm t);
 static ATerm g_0 (ATerm t);
 static ATerm h_0 (ATerm t);
 static ATerm i_0 (ATerm t);
@@ -192,14 +192,14 @@ static ATerm d_0 (ATerm t)
   t = term_l_0;
   return(t);
 }
-ATerm xtc_sglr_1_0 (ATerm e_0 (ATerm), ATerm t)
+ATerm xtc_sglr_1_0 (ATerm f_0 (ATerm), ATerm t)
 {
-  static ATerm f_0 (ATerm t);
-  static ATerm f_0 (ATerm t)
+  static ATerm e_0 (ATerm t);
+  static ATerm e_0 (ATerm t)
   {
     ATerm b_0 = NULL,c_0 = NULL;
     t = term_m_0;
-    t = e_0(t);
+    t = f_0(t);
     t = xtc_find_0_0(t);
     b_0 = t;
     t = term_m_0;
@@ -208,7 +208,7 @@ ATerm xtc_sglr_1_0 (ATerm e_0 (ATerm), ATerm t)
     t = (ATerm) ATinsert(ATinsert(ATinsert(CheckATermList(c_0), b_0), term_o_0), term_n_0);
     return(t);
   }
-  t = xtc_transform_2_0(d_0, f_0, t);
+  t = xtc_transform_2_0(d_0, e_0, t);
   return(t);
 }
 static ATerm g_0 (ATerm t)

@@ -474,18 +474,19 @@ strategies
     ; newname
     <+ debug(!"warning: cannot generate a nice name for symbol ")
        ; say(!"  please report this bug at ")
-       ; say(!"    - https://catamaran.labs.cs.uu.nl/jira/secure/BrowseProject.jspa?id=10000")
-       ; say(!"    - or stratego-bugs@cs.uu.nl")
+       ; say(!"    - https://catamaran.labs.cs.uu.nl/jira/browse/STR")
        ; say(!"    - or martin@cs.uu.nl")
      ; new
      ; debug(!"  resolution: falling back to the ugly name ")
-
 
   Symbol2String :
     cf(sym) -> <Symbol2String> sym
 
   Symbol2String :
     lex(sym) -> <Symbol2String> sym
+
+  Symbol2String :
+    char-class(_) -> "CharClass"
 
   Symbol2String :
     iter(sym) -> <conc-strings> ("ListPlusOf", <Symbol2String> sym)

@@ -187,30 +187,30 @@ static void init_module_constant_terms (void)
 ATerm conc_0_0 (ATerm t);
 ATerm pass_verbose_0_0 (ATerm t);
 ATerm pass_width_0_0 (ATerm t);
-ATerm xtc_transform_2_0 (ATerm j_6 (ATerm), ATerm k_6 (ATerm), ATerm t);
-ATerm debug_1_0 (ATerm i_100 (ATerm), ATerm t);
-ATerm if_verbose5_1_0 (ATerm z_117 (ATerm), ATerm t);
+ATerm xtc_transform_2_0 (ATerm l_6 (ATerm), ATerm m_6 (ATerm), ATerm t);
+ATerm debug_1_0 (ATerm m_100 (ATerm), ATerm t);
+ATerm if_verbose5_1_0 (ATerm h_118 (ATerm), ATerm t);
 ATerm concat_0_0 (ATerm t);
-ATerm if_verbose2_1_0 (ATerm w_117 (ATerm), ATerm t);
-ATerm xtc_transform_1_0 (ATerm i_6 (ATerm), ATerm t);
+ATerm if_verbose2_1_0 (ATerm e_118 (ATerm), ATerm t);
+ATerm xtc_transform_1_0 (ATerm k_6 (ATerm), ATerm t);
 ATerm Fst_0_0 (ATerm t);
 ATerm geq_0_0 (ATerm t);
 ATerm modification_time_0_0 (ATerm t);
-ATerm _2_0 (ATerm x_80 (ATerm), ATerm y_80 (ATerm), ATerm t);
+ATerm _2_0 (ATerm b_81 (ATerm), ATerm c_81 (ATerm), ATerm t);
 ATerm file_exists_0_0 (ATerm t);
 ATerm add_extension_0_0 (ATerm t);
 static ATerm a_0 (ATerm t);
-static ATerm e_0 (ATerm t);
+static ATerm f_0 (ATerm t);
 ATerm lookup_pp_af_0_0 (ATerm t);
 ATerm fatal_error_0_0 (ATerm t);
-ATerm has_extension_1_0 (ATerm x_111 (ATerm), ATerm t);
+ATerm has_extension_1_0 (ATerm f_112 (ATerm), ATerm t);
 static ATerm g_0 (ATerm t);
 static ATerm i_0 (ATerm t);
 static ATerm j_0 (ATerm t);
 static ATerm k_0 (ATerm t);
 static ATerm l_0 (ATerm t);
 ATerm ensure_pp_table_parsed_0_0 (ATerm t);
-ATerm map_1_0 (ATerm s_100 (ATerm), ATerm t);
+ATerm map_1_0 (ATerm w_100 (ATerm), ATerm t);
 ATerm get_config_0_0 (ATerm t);
 ATerm get_config_p_0_0 (ATerm t);
 static ATerm m_0 (ATerm t);
@@ -222,7 +222,7 @@ static ATerm t_0 (ATerm t);
 static ATerm v_0 (ATerm t);
 ATerm ast2text_0_0 (ATerm t);
 ATerm extend_config_0_0 (ATerm t);
-ATerm ArgOption_3_0 (ATerm c_4 (ATerm), ATerm d_4 (ATerm), ATerm e_4 (ATerm), ATerm t);
+ATerm ArgOption_3_0 (ATerm e_4 (ATerm), ATerm f_4 (ATerm), ATerm g_4 (ATerm), ATerm t);
 ATerm set_config_0_0 (ATerm t);
 ATerm general_options_0_0 (ATerm t);
 ATerm output_option_0_0 (ATerm t);
@@ -231,7 +231,7 @@ static ATerm x_0 (ATerm t);
 static ATerm y_0 (ATerm t);
 static ATerm z_0 (ATerm t);
 ATerm abox2text_options_0_0 (ATerm t);
-ATerm xtc_io_wrap_2_0 (ATerm q_5 (ATerm), ATerm r_5 (ATerm), ATerm t);
+ATerm xtc_io_wrap_2_0 (ATerm s_5 (ATerm), ATerm t_5 (ATerm), ATerm t);
 static ATerm c_1 (ATerm t);
 static ATerm d_1 (ATerm t);
 static ATerm e_1 (ATerm t);
@@ -267,26 +267,26 @@ ATerm pass_width_0_0 (ATerm t)
 }
 static ATerm a_0 (ATerm t)
 {
-  t = debug_1_0(e_0, t);
+  t = debug_1_0(f_0, t);
   return(t);
 }
-static ATerm e_0 (ATerm t)
+static ATerm f_0 (ATerm t)
 {
   t = term_j_1;
   return(t);
 }
 ATerm lookup_pp_af_0_0 (ATerm t)
 {
-  ATerm d_0 = NULL,f_0 = NULL;
-  f_0 = t;
-  t = (ATerm) ATmakeAppl(sym__2, f_0, term_k_1);
+  ATerm d_0 = NULL,e_0 = NULL;
+  e_0 = t;
+  t = (ATerm) ATmakeAppl(sym__2, e_0, term_k_1);
   t = add_extension_0_0(t);
   t = file_exists_0_0(t);
   d_0 = t;
-  t = (ATerm) ATmakeAppl(sym__2, d_0, f_0);
+  t = (ATerm) ATmakeAppl(sym__2, d_0, e_0);
   t = _2_0(modification_time_0_0, modification_time_0_0, t);
   t = geq_0_0(t);
-  t = (ATerm) ATmakeAppl(sym__2, d_0, f_0);
+  t = (ATerm) ATmakeAppl(sym__2, d_0, e_0);
   t = Fst_0_0(t);
   t = if_verbose2_1_0(a_0, t);
   return(t);
