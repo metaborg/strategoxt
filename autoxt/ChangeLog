@@ -1,3 +1,8 @@
+2003-01-04  Eelco Visser  <visser@cs.uu.nl>
+
+	* Makefile.xt (install-data-local): import repositories declared with the
+	XTC_IMPORT variable and ensure that the directory for the repository exists.
+
 2003-01-02  Eelco Visser  <visser@cs.uu.nl>
 
 	* Makefile.xt (bootclean-recursive): make rules supporting recursive
