@@ -7,5 +7,5 @@ PGEN_FLAGS     = -m $*
 SDFINCLUDES    = -I $(ASF_LIBRARY)/share/asf-library/library
 
 sdfdata_DATA   = $(TBLS_DEFS)
-EXTRA_DIST     = $(sdfdata_DATA)
+EXTRA_DIST     = ATerms.sdf ATerms.def
 BOOTCLEANFILES = $(TBLS_DEFS)
