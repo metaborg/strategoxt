@@ -26,151 +26,151 @@ SCLibs = -L$(SRTS)/lib/srts -lstratego-lib -lstratego \
 
 # FRONT-END ###########################################################
 
-%.tree : %.str ../pack/pack-stratego$(EXE) 
+%.tree : %.str #../pack/pack-stratego$(EXE) 
 	../pack/pack-stratego $(SINCLUDES) -i $< -o $@ 
 
-#%.tree : %.r ../pack/pack-stratego$(EXE)
+#%.tree : %.r #../pack/pack-stratego$(EXE)
 #	../pack/pack-stratego $(SINCLUDES) -i $< -o $@ --verbose 0
 
-%.tree : %.rtree ../pack/pack-stratego$(EXE) 
+%.tree : %.rtree # ../pack/pack-stratego$(EXE) 
 	../pack/pack-stratego $(SINCLUDES) -i $< -o $@ 
 
-%.f0 : %.tree ../front/repair-types$(EXE)
+%.f0 : %.tree # ../front/repair-types$(EXE)
 	../front/repair-types -i $< -o $@
 
-#%.s1 : %.s0 ../front/frontend$(EXE)
+#%.s1 : %.s0 # ../front/frontend$(EXE)
 #	../front/frontend -i $< -o $@ -b --verbose 3
 
-%.f1 : %.f0 ../front/pre-desugar$(EXE)
+%.f1 : %.f0 # ../front/pre-desugar$(EXE)
 	../front/pre-desugar -i $< -o $@ -b 
 
-%.f2 : %.f1 ../front/normalize-spec$(EXE)
+%.f2 : %.f1 # ../front/normalize-spec$(EXE)
 	../front/normalize-spec -i $< -o $@ -b 
 
-%.f4 : %.f2 ../front/use-def$(EXE)
+%.f4 : %.f2 # ../front/use-def$(EXE)
 	../front/use-def -i $< -o $@ -b 
 
-%.f5 : %.f4 ../front/check-constructors$(EXE)
+%.f5 : %.f4 # ../front/check-constructors$(EXE)
 	../front/check-constructors -i $< -o $@ -b 
 
-%.f6 : %.f5 ../front/spec-to-sdefs$(EXE)
+%.f6 : %.f5 # ../front/spec-to-sdefs$(EXE)
 	../front/spec-to-sdefs -i $< -o $@ -b 
 
-%.f7 : %.f6 ../lib/rename-vars$(EXE)
+%.f7 : %.f6 # ../lib/rename-vars$(EXE)
 	../lib/rename-vars -i $< -o $@ -b 
 
-%.f8 : %.f7 ../front/desugar$(EXE)
+%.f8 : %.f7 # ../front/desugar$(EXE)
 	../front/desugar -i $< -o $@ -b 
 
-%.f9 : %.f8 ../front/extract$(EXE)
+%.f9 : %.f8 # ../front/extract$(EXE)
 	../front/extract -i $< -o $@ -b
 
-%.f10 : %.f9 ../front/stratego-warnings$(EXE)
+%.f10 : %.f9 # ../front/stratego-warnings$(EXE)
 	../front/stratego-warnings -i $< -o $@ -b -W all
 
-%.s2.check: %.f10 ../sig/Stratego-Normal-Format$(EXE)
+%.s2.check: %.f10 # ../sig/Stratego-Normal-Format$(EXE)
 	../sig/Stratego-Normal-Format -i $< -o $@ -b
 
-%.s3 : %.f10 %.s2.check ../front/rename-defs$(EXE)
+%.s3 : %.f10 %.s2.check # ../front/rename-defs$(EXE)
 	../front/rename-defs -i $< -o $@ -b
 
 # OPTIMIZE ###########################################################
 
 ## Simplification
 
-%.s4 : %.s3 ../opt/simplify1$(EXE)
+%.s4 : %.s3 # ../opt/simplify1$(EXE)
 	../opt/simplify1 -i $< -o $@ -b
 
 ## Innermost fusion
 
-%.s5: %.s4 ../opt/fusion$(EXE)
+%.s5: %.s4 # ../opt/fusion$(EXE)
 	../opt/fusion  -i $< -o $@ -b --verbose 2
 
 # Inlining
 
-%.s5.opt1 : %.s5 ../opt/worker-wrapper$(EXE)
+%.s5.opt1 : %.s5 # ../opt/worker-wrapper$(EXE)
 	../opt/worker-wrapper -i $< -o $@ -b
 
-%.s6 : %.s5.opt1 ../opt/inline$(EXE)
+%.s6 : %.s5.opt1 # ../opt/inline$(EXE)
 	../opt/inline -i $< -o $@ -b
 
-%.s7 : %.s6 ../opt/dead-def-elim$(EXE)
+%.s7 : %.s6 # ../opt/dead-def-elim$(EXE)
 	../opt/dead-def-elim -i $< -o $@ -b
 
 ## First Optimization
 
-%.s7.opt1 : %.s7 ../opt/simplify1$(EXE)
+%.s7.opt1 : %.s7 # ../opt/simplify1$(EXE)
 	../opt/simplify1 -i $< -o $@ -b
 
-%.s7.opt2 : %.s7.opt1 ../opt/define-congruences$(EXE)
+%.s7.opt2 : %.s7.opt1 # ../opt/define-congruences$(EXE)
 	../opt/define-congruences -i $< -o $@ -b
 
-%.s7.opt3 : %.s7.opt2 ../opt/const-prop$(EXE)
+%.s7.opt3 : %.s7.opt2 # ../opt/const-prop$(EXE)
 	../opt/const-prop -i $< -o $@ -b
 
-%.s7.opt4 : %.s7.opt3 ../opt/bound-unbound-vars$(EXE)
+%.s7.opt4 : %.s7.opt3 # ../opt/bound-unbound-vars$(EXE)
 	../opt/bound-unbound-vars -i $< -o $@ -b
 
-%.s7.opt5 : %.s7.opt4 ../opt/dead-var-elim$(EXE)
+%.s7.opt5 : %.s7.opt4 # ../opt/dead-var-elim$(EXE)
 	../opt/dead-var-elim -i $< -o $@ -b
 
-%.s7.opt : %.s7.opt5 ../opt/simplify3$(EXE)
+%.s7.opt : %.s7.opt5 # ../opt/simplify3$(EXE)
 	../opt/simplify3 -i $< -o $@ -b
 
 ## Pattern match compilation
 
-%.s8 : %.s7.opt ../match/compile-match$(EXE)
+%.s8 : %.s7.opt # ../match/compile-match$(EXE)
 	../match/compile-match -i $< -o $@ -b
 
-%.s9 : %.s8 ../match/desugar-case$(EXE)
+%.s9 : %.s8 # ../match/desugar-case$(EXE)
 	../match/desugar-case -i $< -o $@ -b
 
 # Inlining
 
-%.s10 : %.s9 ../opt/inline$(EXE)
+%.s10 : %.s9 # ../opt/inline$(EXE)
 	../opt/inline -i $< -o $@ -b
 
-%.s11 : %.s10 ../opt/dead-def-elim$(EXE)
+%.s11 : %.s10 # ../opt/dead-def-elim$(EXE)
 	../opt/dead-def-elim -i $< -o $@ -b
 
 ## Second optimization
 
-%.s11.opt1 : %.s11 ../opt/simplify1$(EXE)
+%.s11.opt1 : %.s11 # ../opt/simplify1$(EXE)
 	../opt/simplify2 -i $< -o $@ -b
 
-%.s11.opt2 : %.s11.opt1 ../opt/const-prop$(EXE)
+%.s11.opt2 : %.s11.opt1 # ../opt/const-prop$(EXE)
 	../opt/const-prop -i $< -o $@ -b
 
-%.s11.opt3 : %.s11.opt2 ../opt/bound-unbound-vars$(EXE)
+%.s11.opt3 : %.s11.opt2 # ../opt/bound-unbound-vars$(EXE)
 	../opt/bound-unbound-vars -i $< -o $@ -b
 
-%.s11.opt4 : %.s11.opt3 ../opt/dead-var-elim$(EXE)
+%.s11.opt4 : %.s11.opt3 # ../opt/dead-var-elim$(EXE)
 	../opt/dead-var-elim -i $< -o $@ -b
 
-%.s11.opt : %.s11.opt4 ../opt/simplify3$(EXE)
+%.s11.opt : %.s11.opt4 # ../opt/simplify3$(EXE)
 	../opt/simplify3 -i $< -o $@ -b
 
-%.s11.check: %.s11.opt ../sig/Stratego-Optimized-Format$(EXE)
+%.s11.check: %.s11.opt # ../sig/Stratego-Optimized-Format$(EXE)
 	../sig/Stratego-Optimized-Format -i $< -o $@ -b
 
 # BACK-END ###########################################################
 
-%.s12 : %.s11.opt %.s11.check ../opt/canonicalize$(EXE)
+%.s12 : %.s11.opt %.s11.check # ../opt/canonicalize$(EXE)
 	../opt/canonicalize -i $< -o $@ -b
 
-%.s12.lift : %.s12 ../opt/lift-definitions$(EXE)
+%.s12.lift : %.s12 # ../opt/lift-definitions$(EXE)
 	../opt/lift-definitions -i $< -o $@ -b
 
-%.s12.opt : %.s12.lift ../opt/simplify2$(EXE)
+%.s12.opt : %.s12.lift # ../opt/simplify2$(EXE)
 	../opt/simplify1 -i $< -o $@ -b
 
-%.s13 : %.s12.opt ../opt/bound-unbound-vars$(EXE)
+%.s13 : %.s12.opt # ../opt/bound-unbound-vars$(EXE)
 	../opt/bound-unbound-vars -i $< -o $@ -b
 
-%.s13.check : %.s13 ../sig/Stratego-Canonical-Format$(EXE)
+%.s13.check : %.s13 # ../sig/Stratego-Canonical-Format$(EXE)
 	../sig/Stratego-Canonical-Format -i $< -o $@ -b
 
-%.ac : %.s13 %.s13.check ../c/s2c$(EXE)
+%.ac : %.s13 %.s13.check # ../c/s2c$(EXE)
 	../c/s2c -i $< -o $@  $(CINCLUDES) -b
 
 %.c.abox : %.ac $(C_TOOLS)/share/c-tools/C-pretty.pp
@@ -181,27 +181,6 @@ SCLibs = -L$(SRTS)/lib/srts -lstratego-lib -lstratego \
 
 %.c : %.c.abox 
 	$(GPP)/bin/abox2text -i $< -o $@
-
-# C COMPILATION #####################################################
-
-
-%.o: %.c
-	$(CC) $(DEFS) $(CINCL) -g -c $< -O4
-
-%.bla : %.c
-	echo $* : `basename $@ .bla`OBJECTS : $($*OBJECTS)
-
-%.bin : %.o $($*OBJECTS)
-	-$(MAKE) $< $($*OBJECTS)
-	$(LINK) $*.o $($*OBJECTS) $($*LDADD) $(SCLibs)
-
-# RUNNING ###########################################################
-
-%.run : %.bin
-	./$< 
-
-%.io-run : %.bin
-	./$< -i $*.in -o $*.out 
 
 # PARSING C PROGRAMS ###############################################
 

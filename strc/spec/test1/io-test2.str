@@ -4,4 +4,5 @@ imports lib
 strategies
 
   main = 
-    iowrap(id)
+    <conc>(<id>, ["-i", "io-test10.in", "-o", "io-test10.out"])
+    ; io-wrap(id)

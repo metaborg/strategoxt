@@ -1,4 +1,4 @@
-module test10  
+module io-test10  
 imports lib
 signature
   constructors
@@ -17,4 +17,5 @@ strategies
     innermost(A + B)
 
   main = 
-    iowrap(eval)
+    <conc>(<id>, ["-i", "io-test10.in", "-o", "io-test10.out"])
+    ; io-wrap(eval)
