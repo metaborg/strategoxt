@@ -21,7 +21,8 @@ MkEdges( parent, x) :
      <x>(new-name, f, args)            => edges
 
 NewNodeName :
-   f -> <concat-strings>[<new>(),  f]
+   f -> <concat-strings>[<new>(),  <explode-string;map( try(\10
+->32\));implode-string>f]
 
 
 NodeName :
@@ -35,14 +36,14 @@ NodeName :
 BuildNode :
    (nm, lbl) -> node([name(nm')],[label([], lbl')])
    where
-     <NodeName;double-quote>nm  => nm';
-     <NodeName;double-quote>lbl => lbl'
+     <NodeName;escape;double-quote>nm  => nm';
+     <NodeName;escape;double-quote>lbl => lbl'
 
 BuildEdge :
    (s, t) -> edge1([source(s'), target(t')])
    where
-     <NodeName;double-quote>s => s';
-     <NodeName;double-quote>t => t'
+     <NodeName;escape;double-quote>s => s';
+     <NodeName;escape;double-quote>t => t'
 strategies
 TreeViz =
    rec x ({name, label, args, node, edges:

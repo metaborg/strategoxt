@@ -1,3 +1,6 @@
+2001-08-09 Merijn de Jonge <mdejonge@cwi.nl> 
+   * src/treeviz: bug fix (node names and node labels should be quoted)
+
 2001-08-08 Merijn de Jonge <mdejonge@cwi.nl> 
    * src/treeviz: Fixed and improved treeviz tool
 
