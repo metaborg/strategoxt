@@ -16,17 +16,22 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 #
-# $Id: Makefile.am,v 1.2 2000/03/27 15:52:41 mdejonge Exp $
+# $Id: Makefile.am,v 1.3 2000/03/28 22:14:14 mdejonge Exp $
 
-DIST_SUBDIRS = aterm asc-support sglr pgen stratego gb gt #gpp
+DIST_SUBDIRS = dummy aterm asc-support sglr pgen stratego gb gt #gpp
 EXTRA_DIST   = SOFTWARE
 
 # We need at least one subdir to be defined such that automake will generate
 # the code for traversing subdirectories
-SUBDIRS=aterm
+SUBDIRS=dummy
 
 
-all:
+all install:
 	for subdir in $(DIST_SUBDIRS); do \
 	   ( cd $$subdir && $(MAKE) install ) \
+	done
+
+check clean:
+	for subdir in $(DIST_SUBDIRS); do \
+	   ( cd $$subdir && $(MAKE) $@ ) \
 	done
