@@ -25,14 +25,14 @@ AC_ARG_WITH(aterm,
 )
 AC_SUBST(ATERM)
 
-AC_ARG_WITH(stratego-rts, 
-  [  --with-stratego-rts  Specify location of Stratego run-time system, default: \$prefix], 
+AC_ARG_WITH(srts, 
+  [  --with-srts  Specify location of Stratego run-time system, default: \$prefix], 
   STRATEGORTS=$withval, 
   STRATEGORTS="$prefix"
 )
 AC_SUBST(STRATEGORTS)
 
-AC_REVISION($Id: configure.in,v 1.9 2001/11/15 13:00:44 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.10 2001/11/15 13:07:48 stratego Exp $)
 
 AC_PROG_CC
 AC_PROG_RANLIB

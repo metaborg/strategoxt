@@ -1,5 +1,7 @@
 2001-11-15  Merijn de Jonge  <mdejonge@cwi.nl>
 	* Removed unused AC_ARG_WITH calls from configure.in
+	* Renamed --with-stratego-rts switch to --with-srts to standardise
+	  names of configuration switches amongst different packages.
 
 2001-10-06  Eelco Visser  <visser@acm.org>
 
