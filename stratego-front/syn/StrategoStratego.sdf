@@ -53,6 +53,9 @@ exports
     "~*"        StrategoTerm -> {Strategy ","}*  {cons("FromTerm")}
     "~strat*:"  StrategoTerm -> {Strategy ","}*  {cons("FromTerm")}
 
+    "~sortvar:" StrategoTerm -> LCID {cons("FromTerm")}
+    "~sortid:"  StrategoTerm -> UCID {cons("FromTerm")}
+
     "~id:"    StrategoTerm -> Id        {cons("FromTerm")}
     "~int:"   StrategoTerm -> Int       {cons("FromTerm")}
     "~str:"   StrategoTerm -> String    {cons("FromTerm")}
