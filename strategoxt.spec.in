@@ -1,7 +1,7 @@
 Summary: The StrategoXT tools for constructing program transformation systems
 Name: @PACKAGE_TARNAME@
 Version: @PACKAGE_VERSION@
-Release: 3
+Release: 1
 License: LGPL
 Group: Development/Languages/Stratego
 URL: http://www.stratego-language.org
@@ -18,7 +18,7 @@ Provides:  %{name} = %{version}
 
 %build
 CFLAGS="-D__NO_CTYPE" ./configure --prefix=%{_prefix} --with-aterm=%{_prefix} --with-sdf=%{_prefix}
-make DESTDIR=$RPM_BUILD_ROOT 
+make
 
 %install
 rm -rf $RPM_BUILD_ROOT

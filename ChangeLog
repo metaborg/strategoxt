@@ -1,5 +1,11 @@
 2003-06-18  Martin Bravenboer  <martin@mbravenboer.org>
 
+  * strategoxt.spec.in: do not make with DESTDIR
+
+  * strategoxt.spec.in: changed release to 1
+
+2003-06-18  Martin Bravenboer  <martin@mbravenboer.org>
+
   * Makefile.am: Install a local xtc. This xtc 
     installation will be used at install time to create 
     a repository.
