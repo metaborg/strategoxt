@@ -1,12 +1,22 @@
 module stratego-xt-xtc-tools
 imports xtc-lib
 
+/**
+ * asfix
+ */
 strategies
 
   xtc-implode-asfix =
     xtc-transform(!"implode-asfix", pass-verbose)
 
-  /* box */
+  xtc-asfix-yield =
+    xtc-transform(!"asfix-yield", pass-verbose)
+
+
+/**
+ * gpp/box
+ */
+strategies
 
   xtc-abox-format =
     xtc-transform(!"abox-format", pass-verbose)
@@ -28,8 +38,10 @@ strategies
   xtc-parse-pp-table =
     xtc-transform(!"parse-pp-table")
 
-  /* sdf */
-
+/**
+ * sdf
+ */
+strategies
   xtc-parse-sdf =
       xtc-sglr(!"sdf.cons.tbl")
     ; xtc-implode-asfix
@@ -57,7 +69,10 @@ strategies
   xtc-sglr(tbl, sort) =
     xtc-transform(!"sglr", !["-2A", "-p", <tbl; xtc-find> (), "-s", <sort> () | <pass-v-verbose> ()])
 
-  /* stratego */
+/**
+ * stratego
+ */
+strategies
 
   xtc-pp-astratego =
       xtc-stratego-ensugar
