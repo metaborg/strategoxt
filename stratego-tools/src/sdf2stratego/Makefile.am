@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/06/06 15:45:39 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2001/06/06 16:04:22 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -45,10 +45,9 @@ CLEANFILES  += sdf2stratego_check
 
 
 # Additional flags for the Stratego compiler
-SCFLAGS = \
-	-I ${srcdir}/../stratego \
-	-I $(ASFIXTOOLS)/share/asfix-tools \
-	--main $@
+SCFLAGS     += -I ${srcdir}/../stratego \
+	       -I $(ASFIXTOOLS)/share/asfix-tools \
+	       --main $@
 
 sdf2stratego_check_prog     = sdf2stratego
 sdf2stratego_check_input    = data/prop.sdf.af

@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/06/06 15:45:45 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2001/06/06 16:04:10 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -34,4 +34,4 @@ STRATEGO_PRG = rsdf2sdf
 bin_SCRIPTS  = $(STRATEGO_PRG)
 
 # Additional flags for the Stratego compiler
-SCFLAGS = --main $@
+SCFLAGS     += --main $@
