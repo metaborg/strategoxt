@@ -4,8 +4,9 @@ include_HEADERS = \
   zip.h
 
 
-AM_CPPFLAGS = -I$(srcdir)/../src -I$(ATERM)/include
-AM_LDFLAGS  = -avoid-version -lz
+AM_CPPFLAGS = -I$(SRTS)/include -I$(ATERM)/include
+AM_LDFLAGS  = -avoid-version 
+AM_LDADD    = -lz
 
 pkglib_LTLIBRARIES = \
   libxtar-lib.la
