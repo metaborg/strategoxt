@@ -3,8 +3,6 @@ AM_INIT_AUTOMAKE
 
 USE_XT_PACKAGES
 
-AC_REVISION($Id: configure.in,v 1.5 2003/01/25 23:13:32 stratego Exp $)
-
 AC_PROG_CC
 AC_PROG_INSTALL
 
@@ -16,11 +14,12 @@ AC_SUBST(TOOLS)
 AC_SUBST(RELEASED)
 AC_SUBST(UNRELEASED)
 
-AC_OUTPUT( 
-	Makefile 
-	VERSION 
-	src/Makefile 
-	src/templates/Makefile src/templates/data/Makefile
+AC_CONFIG_FILES([
+  Makefile 
+  VERSION
+  sig/Makefile 
+  src/Makefile 
+  src/templates/Makefile src/templates/data/Makefile
   src/asfix/Makefile src/asfix/data/Makefile
   src/implode/Makefile src/implode/data/Makefile
   src/asfix-yield/Makefile src/asfix-yield/data/Makefile
@@ -29,4 +28,5 @@ AC_OUTPUT(
   src/explode-asfix2me/Makefile
   src/explode-asfix2me/data/Makefile
   xtc/Makefile
-)
+])
+AC_OUTPUT
