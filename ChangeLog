@@ -1,3 +1,8 @@
+2003-06-17  Martin Bravenboer  <martin@mbravenboer.org>
+
+  * Makefile.am: build in prefix order
+  * Makefile.am: using all-local instead of overriding all.
+
 2003-06-13  Martin Bravenboer  <martin@mbravenboer.org>
 
   * bootstrap: more portable shell-scripting

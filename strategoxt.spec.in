@@ -7,8 +7,8 @@ Group: Development/Languages/Stratego
 URL: http://www.stratego-language.org
 Source: @PACKAGE_TARNAME@-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-buildroot
-Requires: aterm = 1.6.7
-Requires: sdf2 = 1.5
+Requires: aterm = 2.0
+Requires: sdf2-bundle = 1.6
 Provides:  %{name} = %{version}
 
 %description
