@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Abox-2-text.r,v 1.3 2002/05/19 14:07:54 mdejonge Exp $
+% $Id: Abox-2-text.r,v 1.4 2002/08/01 15:24:26 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
@@ -111,7 +111,7 @@ Abox2text =
   ; <string-length>is => isl
   ; <concat-strings>[vs, is, <copy-char>(xpos, 32)] => vsep
   ; !xs
-  ; filter(not([]));
+  ; filter(not([] + id#([id,[]+[[]]])));
     ( [];!([], xpos)
     + [\ x -> <Abox2text>(x, xpos) \ 
        | map( \ x -> <Abox2text>(x, <add>(xpos, isl)) \ )]
