@@ -14,7 +14,7 @@ News about Stratego releases
 
 ------------------------------------------------------------------------------
 
-Version 0.9beta8 - released December 30, 2002
+Version 0.9beta8 - released January 1, 2003
 
 DOWNLOAD AND INSTALLATION
 
@@ -23,7 +23,7 @@ for installation
 
   * http://www.stratego-language.org/Stratego/StrategoRelease09
 
-SUMMARY OF CHANGES
+SUMMARY OF CHANGES with respect to 0.9beta7
 
   * Bugfix: dynamic rules with overlapping left-hand sides 
   * XTC -- polishing
@@ -66,10 +66,39 @@ DETAILS
   mechanism for configuration files. Any resources a component needs
   should be obtained through an XTC repository.
 
+* SDF Tools
+  
+  Parse-unit is a tool for unit testing SDF definitions. Contribution
+  by Martin Bravenboer.
+
 * Bug fixes and refactorings
 
   While fixing bugs and adding functionality, the compiler components
   are gradually refactored to use more modern Stratego techniques.
+
+* SSL / exec
+	
+  - fork-and-wait fails if the child returns with a non-zero exit
+    status.
+
+  - call definined in terms of fork and execvp in Stratego; previous
+    implementation was complex C implementation. 
+
+  - call(init-child) is like call, but applies init-child in the
+    child process before the execvp
+		
+  - redirect-stdout-to-file and redirect-stdin-from-file do as their
+    name suggest. They can be used with call(...) to redirect input
+    and/or output of the child process. Using this files can be copied
+    using the cat program as follows:
+	
+	  cat :
+	    (filein, fileout) -> fileout
+	    where <call(<redirect-stdin-from-file> filein;
+		        <redirect-stdout-to-file> fileout)> ("cat", [])
+
+    Typical use of all this is to coerce programs that only read or
+    write using stdio into using file io.
 
 ------------------------------------------------------------------------------
 

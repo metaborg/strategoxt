@@ -20,3 +20,6 @@
 
 /* Version number of package */
 #undef VERSION
+
+/* Location of the XTC repository */
+#undef XTC_REPOSITORY()

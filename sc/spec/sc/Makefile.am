@@ -5,13 +5,8 @@ SCFLAGS		= -I $(srcdir)/../sig		      \
 	  	  -I $(srcdir)/../match		      \
 	  	  -I $(srcdir)/../lib		      \
 		  -I $(SSL)/share/ssl		\
-	\
-	-CI "-I$(SRTS)/include" -CI "-I$(ATERM)/include" \
--CL "-L$(SRTS)/lib" -CL "-L$(ATERM)/lib" \
--CL "-lstratego.opt" -CL "-lstratego-lib.opt" -CL "-lATerm-gcc" -CL "-lm"\
-	\
 		  $(XTCFLAGS)			\
-	  	  --main $*			      
+	  	  --main $*	
 
 bin_PROGRAMS 	= sc
 pkgdata_DATA 	= sc-manual.txt
@@ -21,8 +16,8 @@ sc.o		: xtc-conf.h
 CLEANFILES 	= $(wildcard *.dep)
 BOOTCLEANFILES 	= sc.c sc.1
 
-EXTRA_DIST 	= $(wildcard *.str) version.str.in sc.config.src sc-manual.txt $(man_MANS)
-INCLUDES  	+= -I ..
+EXTRA_DIST 	= $(wildcard *.str) sc-version.str.in \
+		  sc.config.src sc-manual.txt $(man_MANS)
 
 man_MANS 	= sc.1
 

@@ -1,14 +1,17 @@
 include $(top_srcdir)/Makefile.xt
 
-pkgdata_DATA = C.rtree AbstractDeclarators.rtree Expressions.rtree  \
-Preprocessor.rtree Constants.rtree Identifiers.rtree Program.rtree  \
-Keywords.rtree Statements.rtree Declarators.rtree C-Lexical.rtree   \
-StructsAndUnions.rtree Enumerators.rtree ParameterDeclarators.rtree \
-Types.rtree
+pkgdata_DATA 	= C.rtree AbstractDeclarators.rtree Expressions.rtree  \
+		  Preprocessor.rtree Constants.rtree Identifiers.rtree \
+		  Program.rtree Keywords.rtree Statements.rtree	       \
+		  Declarators.rtree C-Lexical.rtree		       \
+		  StructsAndUnions.rtree Enumerators.rtree	       \
+		  ParameterDeclarators.rtree Types.rtree
 
-EXTRA_DIST = $(pkgdata_DATA) $(wildcard *.str)      
+EXTRA_DIST 	= $(pkgdata_DATA) $(wildcard *.str) C.def
+
+BOOTCLEANFILES 	= C.def
 
 C.def: 
-	cp ../syn/C.def .
+	rm -f C.def
+	ln -s ../syn/C.def .
 
-BOOTCLEANFILES = C.def
