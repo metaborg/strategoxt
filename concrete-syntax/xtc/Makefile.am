@@ -11,6 +11,5 @@ SCFLAGS      = --main io-$*
 STRINCLUDES  = -I $(XTC)/share/xtc \
                -I $(top_srcdir)/sig
 
-XTC_IMPORT = $(STRATEGOXT)/share/StrategoXT/XTC
 
 
