@@ -42,7 +42,8 @@ LDADD		= -lstratego-lib.opt \
 #		  -lATerm-prof \
 #		  -lm
 
-libexec_PROGRAMS = Asfix2abox Ast2abox Ppgen Abox2html Abox2latex Abox2text
+libexec_PROGRAMS = Asfix-2-abox Ast-2-abox Pp-gen Abox-2-html Abox-2-latex \
+                   Abox-2-text
 bin_PROGRAMS = abox-format
 bin_SCRIPTS = ast2abox asfix2abox ppgen abox2html abox2latex abox2text 
 

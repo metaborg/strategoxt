@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: abox2text.sh.src,v 1.5 2002/03/07 23:52:18 stratego Exp $
+# $Id: abox2text.sh.src,v 1.6 2002/05/16 09:45:14 stratego Exp $
 
 # usage:
 #   abox2text [-h] [-i abox] [-o text] [-w width]
@@ -31,7 +31,7 @@
 
 PREFIX=__PREFIX__
 
-ABOX2TEXT=${PREFIX}/libexec/Abox2text
+ABOX2TEXT=${PREFIX}/libexec/Abox-2-text
 
 OUTPUT="cat"
 

@@ -1,14 +1,16 @@
 ------------------------------------------------------------------------------------
 
-Stratego Compiler (Bootstrapped C sources)
+GPP -- Generic Pretty-Printer (Bootstrapped C sources)
 
 Version @VERSION@
 
+Merijn de Jonge <mdejonge@cwi.nl>
 Eelco Visser <visser@acm.org>
 
 ------------------------------------------------------------------------------------
 
-# Copyright (C) 2001 Eelco Visser <visser@acm.org>
+# Copyright (C) 2002 Eelco Visser <visser@acm.org>
+#                    Merijn de Jonge <mdejonge@cwi.nl>
 # 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

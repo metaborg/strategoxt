@@ -1,0 +1,17 @@
+package 
+identification
+   name=gpp-boot
+   version=2.2.1
+   location=http://www.cwi.nl/~mdejonge/pkgs
+   info=http://www.program-transformation.org/xt
+   description='Boot strapped version of Generic Pretty-Printer'
+
+
+   keywords=transformation, programming language, gpp, pretty-printer, stratego
+interface
+
+requires
+  aterm 1.6.6 with gcc
+  ssl	0.7
+  srts	0.7
+

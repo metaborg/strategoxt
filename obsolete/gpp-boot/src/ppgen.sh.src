@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: ppgen.sh.src,v 1.5 2002/03/07 23:52:18 stratego Exp $
+# $Id: ppgen.sh.src,v 1.6 2002/05/16 09:45:14 stratego Exp $
 
 # usage:
 #   ppgen [-A] [-a] [-h] [-i grammar] [-o file] [-S] [-v]
@@ -89,7 +89,7 @@ case $INPUT_TYPE in
 esac
    
 cmd="$cmd \
-     | ${PREFIX}/libexec/Ppgen ${SILENT} \
+     | ${PREFIX}/libexec/Pp-gen ${SILENT} \
      | ast2abox ${VERBOSE} -p ${pkgdatadir}/pp-tables.pp \
      | ${PREFIX}/bin/abox2text"
 

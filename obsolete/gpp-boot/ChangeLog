@@ -1,3 +1,7 @@
+2002-05-16 Merijn de Jonge <mdeonge@cwi.nl>
+	* New version 2.2.1
+	* Created new boot-strapped code
+
 2002-03-14  Eelco Visser  <visser@acm.org>
 
 	* Release 0.7 (fix2)

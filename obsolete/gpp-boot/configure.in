@@ -1,4 +1,5 @@
 # Copyright (C) 2001-2002 Eelco Visser <visser@acm.org>
+#                         Merijn de Jonge <mdejonge@cwi.nl>
 # 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +17,7 @@
 # 02111-1307, USA.
 
 AC_INIT(src/abox-format.c)
-AM_INIT_AUTOMAKE(gpp-boot,2.1.1.8beta1)
+AM_INIT_AUTOMAKE(gpp-boot,2.2.1)
 
 AC_ARG_WITH(aterm, 
   [  --with-aterm          Specify location of ATerm library, default: \$prefix], 
@@ -39,7 +40,7 @@ AC_ARG_WITH(srts,
 )
 AC_SUBST(STRATEGORTS)
 
-AC_REVISION($Id: configure.in,v 1.14 2002/03/17 21:30:31 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.15 2002/05/16 09:45:13 stratego Exp $)
 
 AC_PROG_CC
 AC_PROG_RANLIB
