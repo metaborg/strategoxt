@@ -84,7 +84,7 @@ strategies
 
   xtc-sglr-strict(|tbl, args) =
     ?input
-    ; xtc-transform-always(id, report-parse-error-summary(|input)
+    ; xtc-transform-always(id, report-sglri-error-summary(|input)
       | "sglr", ["-p", tbl | args ])
 
   xtc-transform-always(c, f| tool, args) =

@@ -6,22 +6,35 @@ imports error-support
 strategies
 
   /**
-   * Reports a parse error summary to the stderr.
+   * Reports an sglri error summary to the stderr.
    *
    * Always fails.   
    *
    * @type  summary -> _
    */
-  report-parse-error-summary(|input) =
+  report-sglri-error-summary(|input) =
     finally(
       where(
         read-from
-      ; ?summary(_, file, [error(_, [localized(descr, area-in-file(_, area))])])
-      ; <report-area(|file, descr, area)> input
+      ; ?summary(_, file, [error(err, [localized(descr, <id>)])])
+      ; switch id
+          case ?area-in-file(_, area) : <report-area(|file, descr, area)> input
+	  case ?file(error-file) : <report-file(|err,descr)>input
+        end
       )
       <+ read-from ; debug(!"Parse error cannot be presented. Please report bug.")
     , fail)
 
+  /**
+   * Presents file error message at stderr.
+   */
+  report-file(|err,descr) =
+     if !err => "Parse Table error" then
+       <fprintnl> ( <stderr-stream> (), [<get-config>"-p", ": ", err, ", ", descr])
+     else
+       fail
+     end
+  
   /**
    * Presents the 'area' in the input file at stderr.
    *
