@@ -1,0 +1,6 @@
+[ 
+  ("STRATEGO_FRONT",  Path("__prefix__")),
+  (Ext("str"), Prefix(Var("STRATEGO_FRONT"), Path("/bin/parse-stratego"))),
+  (Ext("r"),   Prefix(Var("STRATEGO_FRONT"), Path("/bin/parse-stratego"))),
+  (Ext("cr"),  Prefix(Var("STRATEGO_FRONT"), Path("/bin/parse-stratego")))
+]
