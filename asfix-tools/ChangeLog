@@ -1,3 +1,6 @@
+2001-06-06 Merijn de Jonge <mdejonge@cwi.nl> 
+   * src/implode/Makefile.am: implode-asfix.r gets also installed
+
 2001-05-31 Merijn de Jonge <mdejonge@cwi.nl> 
    * Moved Char-lib.r from sdf-tools package to src/asfix
    * Added src/asfix/prodcons.r and src/asfix/verbalize.r
