@@ -1,4 +1,5 @@
 2001-11-15  Merijn de Jonge  <mdejonge@cwi.nl>
+	* term.c: mkterm fix: quoting is now correct.
 	* Removed unused AC_ARG_WITH calls from configure.in
 	* Renamed --with-stratego-rts switch to --with-srts to standardise
 	  names of configuration switches amongst different packages.

@@ -25,12 +25,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 ATerm SSL_mkterm(ATerm c, ATerm ts0)
 { 
   char *f;
+  
   ATermList ts;
+  ATermAppl t;
   if(ATisString(c))
     { 
-      f = t_string(c);
+      t = (ATermAppl)ATparse(t_string(c));
+      f = t_string(t);
       ts = (ATermList) consnil_to_list_shallow(ts0);
-      return((ATerm) ATmakeApplList(ATmakeSymbol(f, ATgetLength(ts), ATfalse), ts));
+      c =((ATerm) ATmakeApplList(ATmakeSymbol(f, ATgetLength(ts), ATisQuoted(ATgetAFun(t))), ts));
+       
+      return c;
     }
   else if(ATgetType(c) == AT_REAL)
     return(c);
@@ -43,7 +48,7 @@ ATerm SSL_mkterm(ATerm c, ATerm ts0)
 
 ATerm SSL_explode_term(ATerm t)
 {
-  // ATfprintf(stderr, "SSL_explode_term(%t)\n", t);
+//  ATfprintf(stderr, "SSL_explode_term(%t)\n", t);
   switch(ATgetType(t)) {
   case AT_APPL :
     {
@@ -55,6 +60,8 @@ ATerm SSL_explode_term(ATerm t)
         t1 = ATmakeStringQ(ATgetName(sym));
       else
         t1 = ATmakeString(ATgetName(sym));
+//  ATfprintf(stderr, "exploded _term(%t)\n", t1);
+  
       t = App2("TCons", t1,
                   App2("TCons",
                        (ATerm)
