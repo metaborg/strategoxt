@@ -4,8 +4,8 @@ imports liblib strategoxt-xtc-tools pp-aterm-options
 strategies
 
   io-pp-aterm =
-    xtc-io-wrap(max-term-size-option,
-      xtc-transform(!"PpTerm", <conc> (<pass-verbose>, <pass-max-term-size>))
+    xtc-io-wrap(max-term-size-option+max-depth-option,
+      xtc-transform(!"PpTerm", <concat>[<pass-verbose>, <pass-max-term-size>, <pass-max-depth>])
     ; xtc-abox-format
     ; xtc-abox2text
     )

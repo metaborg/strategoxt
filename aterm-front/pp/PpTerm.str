@@ -4,8 +4,11 @@ imports liblib ugly-print pp-aterm-options
 strategies
 
   io-PpTerm =
-    io-wrap(max-term-size-option,
-      ugly-print
+    io-wrap(max-term-size-option+max-depth-option,
+      if <get-config>"--max-depth" => depth then
+        at-depth(!depth, !"...")
+      end
+    ; ugly-print
     ; concat-content
     )
     

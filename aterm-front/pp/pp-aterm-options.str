@@ -1,6 +1,16 @@
 module pp-aterm-options
 strategies
 
+
+  max-depth-option =
+     ArgOption("--max-depth"
+    , where(string-to-int; set-max-depth-config) ,!
+"--max-depth int
+                    Set the maximum depth of ATerm"
+    )
+
+ 
+
   max-term-size-option =
     ArgOption("--max-term-size"
     , where(string-to-int; set-max-term-size-config) ,!
@@ -17,3 +27,12 @@ strategies
 
   pass-max-term-size =
     !["--max-term-size", <get-max-term-size-config; int-to-string>]
+
+  get-max-depth-config =
+    <get-config> "--max-depth"
+
+  set-max-depth-config =
+    <set-config> ("--max-depth", <id>)
+
+  pass-max-depth =
+    !["--max-depth", <get-max-depth-config; int-to-string>] <+ ![]
