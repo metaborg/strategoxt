@@ -1,4 +1,4 @@
-StrategoXT 0.10 -- released May 09, 2004
+StrategoXT 0.10 -- released May 10, 2004
 
 ---------++ Summary of Changes
 
@@ -15,6 +15,7 @@ StrategoXT 0.10 -- released May 09, 2004
       * Support for Mac OS X
 
    * Miscellaneous
+
       * Many bug fixes and minor improvements
       * Issue tracking is paying off
 
@@ -37,150 +38,142 @@ of dynamic rules. In StrategoXT 0.10 this functionality has been lifted
 to the language level by allowing intersection and union operations on
 sets of rules.
 
-Second, many applications need to define more than one possible rewrite
-rules that can all be applied, possibly all at once to retrieve a list
-of possible rewrites. A first implementation of this idea was already
-available in StrategoXT 0.9.4 (extend rules).
+Second, many applications need to define more than one possible
+rewrite rules that can all be applied, possibly all at once to
+retrieve a list of possible rewrites. A first implementation of this
+idea was already available in StrategoXT 0.9.4 (extend rules).
 
 Third, the 'override rules' facility for defining dynamic in rules in
 outer scopes proved to be insufficient. To this end we have added
-labeled scopes. Rules can be tied to specifically labeled scopes. Labeled
-scopes are based on an idea raised by Ganesh Sittampalam in a discussion
-at the Stratego User Days 2004.
+labeled scopes. Rules can be tied to specifically labeled
+scopes. Labeled scopes are based on an idea raised by Ganesh
+Sittampalam in a discussion at the Stratego User Days 2004.
 
 ---------+++ New Syntax and Semantics
 
-The new abstract syntax is introduced by comparing to the old syntax and
-and semantics, and is presented in BNF below. Some basic entities are:
-<verbatim>
+The new abstract syntax is introduced by comparing to the old syntax
+and and semantics, and is presented in BNF below. Some basic entities
+are:
+
   s     strategy,
   f     rule/strategy identifier, e.g. 'EvalBinOp', or 'innermost',
   dsig  definition signature, identifier with optional strategy and term
         arguments: f(sd*|vd*).
-</verbatim>
 
-Generation of new rules always occurred within =override/extend rules(..)=
-constructs. Now, just one =rules(..)= construct is available. The dynamic
-rule definitions within determine the semantics.
+Generation of new rules always occurred within =override/extend
+rules(..)= constructs. Now, just one =rules(..)= construct is
+available. The dynamic rule definitions within determine the
+semantics.
 
-<verbatim>
   s ::= rules(drd*)                       rule definition block
-</verbatim>
 
 ---------++++ Labeling of Scopes
 
-To prevent rules from being undefined too early at the end of the current
-scope, the =override rules(..)= could be used in the past. Rules were tied
-to some outer scope, instead of the current innermost.
+To prevent rules from being undefined too early at the end of the
+current scope, the =override rules(..)= could be used in the
+past. Rules were tied to some outer scope, instead of the current
+innermost.
 
 The new dynamic rules still support the same scoping syntax, but now
-*optional* labels maybe attached. These labels are term-patterns, and thus
-result in runtime scope-labeling.
+*optional* labels maybe attached. These labels are term-patterns, and
+thus result in runtime scope-labeling.
 
-<verbatim>
   s ::= {| f1(.p1)?, ... fn(.pn)? : s |}  dynamic rule scope
-</verbatim>
 
-Within a =rules(..)= block, the current scope may be assigned additional
-labels.
-<verbatim>
+Within a =rules(..)= block, the current scope may be assigned
+additional labels.
+
   drd ::= f+p                             label current scope
-</verbatim>
 
 ---------++++ Dynamic Rule Definitions
 
 Besides the mandatory rule name, dynamic rule definitions now may also
 contain a label, specifying in which scope this rule should be placed.
 No label naturally means generation within the current inner scope.
-<verbatim>
+
   drsig ::= sig                           relative to current scope
             sig.p                         relative to labeled scope
             sig+p                         relative to current scope, but add a
                                           label to current scope simultaneously
 
   drd ::= drsig : p1 -> p2 (where s)?     dynamic rule definition
-</verbatim>
 
-Instead of =extend rules= blocks, now the rule definitions specify themselves
-whether 'extend-behavior' is intended:
-<verbatim>
+Instead of =extend rules= blocks, now the rule definitions specify
+themselves whether 'extend-behavior' is intended:
+
   drd ::= drsig :+ p1 -> p2 (where s)?    dynamic rule extension
-</verbatim>
 
 Undefining rules no longer uses the =Undefined= keyword, again it's the
 rule definition itself.
-<verbatim>
+
   drd ::= drsig :- p                      dynamic rule undefining
-</verbatim>
 
-A new form of dynamic rule is the dynamic identity rule, that -when applied-
-tries to match against the left-hand side and leaves the current term
-untouched.
-<verbatim>
+A new form of dynamic rule is the dynamic identity rule, that -when
+applied- tries to match against the left-hand side and leaves the
+current term untouched.
+
   drd ::= drsig : p                       dynamic identity rule definition
-</verbatim>
 
-Within a nested scope-structure, multiple scopes may have identical labels.
-When (un-)defining dynamic rules in a labeled scope, the innermost scope with
-that label is selected.
+Within a nested scope-structure, multiple scopes may have identical
+labels.  When (un-)defining dynamic rules in a labeled scope, the
+innermost scope with that label is selected.
 
 ---------++++ Dynamic Rule Calling
 
-Dynamic rules are basically just runtime generated rewriting rules, so for a
-definition: =UsedInExp :+ |[ x ]| -> |[ e ]|= the basic call is:
-<verbatim>
+Dynamic rules are basically just runtime generated rewriting rules, so
+for a definition: =UsedInExp :+ |[ x ]| -> |[ e ]|= the basic call is:
+
   <UsedInExp> |[ y ]| => |[ e' ]|         // Normal rewriting
-</verbatim>
-It tries to rewrite with the most recently generated instance of =UsedInExp=,
-and repeatedly tries older instances until rewriting succeeds or no more
-instances exist in the same generation scope (i.e. no inheritance from higher
-scopes than the one of latest generation).
-Note that the semantics of this simple rewriting has changed: in the old model,
-no older instances were available for rewriting if the youngest instance failed)
+
+It tries to rewrite with the most recently generated instance of
+=UsedInExp=, and repeatedly tries older instances until rewriting
+succeeds or no more instances exist in the same generation scope
+(i.e. no inheritance from higher scopes than the one of latest
+generation).  Note that the semantics of this simple rewriting has
+changed: in the old model, no older instances were available for
+rewriting if the youngest instance failed)
 
 Two special rules are automatically available for each dynamic rule:
 the =bagof-= and =once-= rule.
-<verbatim>
-  <bagof-UsedInExp> |[ y ]| => |[ e* ]|   // Multiple rewritings
-</verbatim>
-=bagof-RuleName= applies all available instances of =RuleName= (from one scope)
-and returns a list of succeeded result terms.
 
-<verbatim>
+  <bagof-UsedInExp> |[ y ]| => |[ e* ]|   // Multiple rewritings
+
+=bagof-RuleName= applies all available instances of =RuleName= (from
+one scope) and returns a list of succeeded result terms.
+
   <once-UsedInExp> |[ y ]| => |[ e' ]|    // Rewriting once
-</verbatim>
-=once-RuleName= rewrites just like =RuleName= would do, but upon successful
-rewriting that rule instance is removed. A generated rule thus is used for
-rewriting only once.
+
+=once-RuleName= rewrites just like =RuleName= would do, but upon
+successful rewriting that rule instance is removed. A generated rule
+thus is used for rewriting only once.
 
 ---------++++ Branching and Meeting Rule Sets
 
-When performing control-flow optimizations, rule sets had to be explicitly
-saved, intersected and restored. The new model now provides some variants for
-this at the language level (with generic functionality available in the API).
+When performing control-flow optimizations, rule sets had to be
+explicitly saved, intersected and restored. The new model now provides
+some variants for this at the language level (with generic
+functionality available in the API).
 
-The best-known branch-meet operation is the intersection of rule sets after
-constant propagation through the then- and else-branch of an if-then-else.
-The general syntax allows two strategies to be performed, followed by an
-automatic intersection of one or more named rule sets:
-<verbatim>
-  s1 / f1, ..., fn \ s2                   dynamic rule intersection
-</verbatim>
-Example: =If(id,s,id)/PropConst\If(id,id,s)=
+The best-known branch-meet operation is the intersection of rule sets
+after constant propagation through the then- and else-branch of an
+if-then-else.  The general syntax allows two strategies to be
+performed, followed by an automatic intersection of one or more named
+rule sets: <verbatim> s1 / f1, ..., fn \ s2 dynamic rule intersection
+</verbatim> Example: =If(id,s,id)/PropConst\If(id,id,s)=
 
 The same is possible for union, instead of intersection:
-<verbatim>
+
   s1 \ f1, ..., fn / s2                   dynamic rule union
-</verbatim>
+
 
 Control structures that involve repetition (e.g. for-loops) often need
 repeated traversal until a fixed point in the rule set is reached.
 Two fixpoint traversals are available that meet the dynamic rule set with
 the one from the previous iteration until the rule set is free of changes.
-<verbatim>
+
   / f1, ..., fn \* s2                     dynamic rule fixpoint intersection
   \ f1, ..., fn /* s2                     dynamic rule fixpoint union
-</verbatim>
+
 Example: =/PropConst\* While(s,s)=
 
 ---------++++ Dynamic Rules API
@@ -188,10 +181,10 @@ Example: =/PropConst\* While(s,s)=
 For in-depth specification of the underlying dynamic rules implementation,
 please refer to the =dynamic-rules-refactored= module in the SSL.
 At least the debug strategies are useful for end-users:
-<verbatim>
+
   dr-debug-rule-set(|name)                // Output dynamic rule set on stderr
   dr-debug-rule-set(|name, msg)           // Id. preceded by user's message
-</verbatim>
+
 
 ---------++++ Compatibility and Compiler Flags
 
@@ -203,26 +196,28 @@ implementation. That is, if they do not rely on weird semantics in the
 old dynamic rule implementation and do not manipulate the internal
 representation of dynamic rules.
 
-Parsing of stratego source always uses the new syntax, but for backward
-compatibility *all* old constructs are still available.
-That is: =extend/override rules(..)= and =Rule: t -> Undefined=.
-When the new dynamic rule implementation is selected (=--dr new=), the old
-semantics are emulated for both constructs. All other old dynamic rules
-constructs still fit within the new implementation.
-Note however, that semantics for simple rule application within the new
-dynamic rules implementation has changed (see 'Dynamic Rule Calling' above).
+Parsing of stratego source always uses the new syntax, but for
+backward compatibility *all* old constructs are still available.  That
+is: =extend/override rules(..)= and =Rule: t -> Undefined=.  When the
+new dynamic rule implementation is selected (=--dr new=), the old
+semantics are emulated for both constructs. All other old dynamic
+rules constructs still fit within the new implementation.  Note
+however, that semantics for simple rule application within the new
+dynamic rules implementation has changed (see 'Dynamic Rule Calling'
+above).
 
-The other way around: the new syntax for dynamic rules is supported as much
-as possible by the old dynamic rule implementation.
-Dynamic rule extension (e.g. =Rule :+ t1 -> t2=), and dynamic rule undefining
-(e.g. =Rule :- t=) are translated to their old equivalents.
-When the input program contains scope-labels or identity rules, the compiler
-warns and exits with an error.
-But realize: when using new constructs in your program, there's no need to use
-the old compiler implementation.
+The other way around: the new syntax for dynamic rules is supported as
+much as possible by the old dynamic rule implementation.  Dynamic rule
+extension (e.g. =Rule :+ t1 -> t2=), and dynamic rule undefining
+(e.g. =Rule :- t=) are translated to their old equivalents.  When the
+input program contains scope-labels or identity rules, the compiler
+warns and exits with an error.  But realize: when using new constructs
+in your program, there's no need to use the old compiler
+implementation.
 
 We advice to test compiling your programs with =--dr new= since future
-releases of the Stratego compiler will have this flag switched on by default.
+releases of the Stratego compiler will have this flag switched on by
+default.
 
   (Arthur van Dam, Eelco Visser, Karina Olmos and Martin Bravenboer)
 
@@ -235,9 +230,7 @@ are just a more wordy syntax, which can be clearer in some case.
 The if operator is translated into Stratego-Core by the following
 rewrite rule:
 
-<verbatim>
   |[ if s1 then s2 else s3 end ]| -> |[ where(s1) < s2 + s3 ]|
-</verbatim>
 
 Note that the application of s1 does not change the subject
 term. Therefore s2 and s3 are applied to the subject term of the
@@ -245,17 +238,15 @@ if-then-else operator. The translation of the switch statement is
 somewhat more complex. It is best introduced by an example.
 
 The following code fragment from pack-sdf:
-<verbatim>
+
   (  where(of-config => "txt")   < xtc-asfix-yield
   +  where(of-config => "ast")   < xtc-implode-asfix
   +  where(of-config => "asfix")
      <+ <fatal-error> ["pack-sdf: ", <id>, " is not a valid output format."]
   )
-</verbatim>
 
 translates into the following code if the switch operator is used:
 
-<verbatim>
   switch of-config
     case "txt"   : xtc-asfix-yield
     case "ast"   : xtc-implode-asfix
@@ -263,7 +254,6 @@ translates into the following code if the switch operator is used:
     otherwise    :
       <fatal-error> ["pack-sdf: ", <id>, " is not a valid output format."]
   end
-</verbatim>
 
 The case conditions (="txt"=, ="ast"= and ="asfix"=) are not
 restricted to term patterns: arbitrary strategies are allowed. They
@@ -296,26 +286,26 @@ relevant tree grammar language for StrategoXT applications.
 The RTG language is of course accompanied by several tools, a few of
 them are introduced here.
 
-  * =sdf2rtg= generates an RTG from an SDF syntax definition. If
-    =sdf2rtg= cannot transform a concrete syntax production into
-    abstract syntax, then it will complain. This might then be caused
-    by a mistake in your syntax definition (a missing =cons= attribute
-    for example), or it might be a limitation of =sdf2rtg=, which we
-    would like to know about!
+   * =sdf2rtg= generates an RTG from an SDF syntax definition. If
+     =sdf2rtg= cannot transform a concrete syntax production into
+     abstract syntax, then it will complain. This might then be caused
+     by a mistake in your syntax definition (a missing =cons= attribute
+     for example), or it might be a limitation of =sdf2rtg=, which we
+     would like to know about!
 
-  * =rtg2sig= generates a Stratego Signature from an RTG. This is a
-    rather straightforward translation, since signatures are closely
-    related to regular tree grammars. The tool tries to improve the
-    generated signature by using the parameterized sorts of Stratego
-    (=List= and =Option=).
+   * =rtg2sig= generates a Stratego Signature from an RTG. This is a
+     rather straightforward translation, since signatures are closely
+     related to regular tree grammars. The tool tries to improve the
+     generated signature by using the parameterized sorts of Stratego
+     (=List= and =Option=).
 
-  * =format-check= checks if a term is an element of the tree language
-    defined by an RTG. Hence, format-check can be used to check if
-    your tools behave well, i.e. produce terms in the correct
-    format. Unfortunately, the error reporting of format-check is
-    currently very poor. This issue will be resolved for the next
-    release of StrategoXT, although it is still unclear which errors
-    should be reported to user.
+   * =format-check= checks if a term is an element of the tree language
+     defined by an RTG. Hence, format-check can be used to check if
+     your tools behave well, i.e. produce terms in the correct
+     format. Unfortunately, the error reporting of format-check is
+     currently very poor. This issue will be resolved for the next
+     release of StrategoXT, although it is still unclear which errors
+     should be reported to user.
 
 ---------+++ Important: Stratego Signature Generation
 
@@ -337,7 +327,7 @@ generates a signature:
      that used to be generated.
 
    * Declare the main module of the SDF syntax definition in a
-     variable SDF2RTG_FLAGS. If the main module has the same name as
+     variable =SDF2RTG_FLAGS=. If the main module has the same name as
      the .def file, which is usually the case, then the value should
      be =-m $*=. The main module defaults to =Main=, which is also the
      default main module of =sdf2table=.
@@ -445,8 +435,11 @@ annoyance is welcome! Feedback of users is very important in adding
 the finishing touch to our tools.
 
 Some pointers to overviews of issues:
-   * [[StrategoRelease010Issues][list of all issues closed in StrategoXT 0.10]]
-   * [[TODO][StrategoXT roadmap]]
+   * List of all issues closed in StrategoXT 0.10:
+     http://www.stratego-language.org/Stratego/StrategoRelease010Issues
+
+   * StrategoXT roadmap
+     https://catamaran.labs.cs.uu.nl/jira/secure/BrowseProject.jspa?id=10000&report=roadmap
 
 ---------++ Download and Installation
 
@@ -465,9 +458,8 @@ tracking systems for reports about (open) bugs:
 
 For an overview of features planned for future releases:
 
-   * [[https://catamaran.labs.cs.uu.nl/jira/secure/BrowseProject.jspa?id=10000&report=roadmap][StrategoXT roadmap]]
-   * [[http://www.stratego-language.org/Stratego/ReleasePlan][Release plan]]
-   * [[http://www.stratego-language.org/Stratego/ToDo][To do]]
+   * Release plan: http://www.stratego-language.org/Stratego/ReleasePlan
+   * To do: http://www.stratego-language.org/Stratego/ToDo
 
 Please report any problems with installation or bugs in the
 implementation to our issue tracking system. Please check the existing
@@ -483,4 +475,3 @@ Developments, beta tests, and bug fixes were carried out by
    * Shishir Ramam
    * Rob Vermaas
    * Eelco Visser
-
