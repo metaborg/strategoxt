@@ -1,3 +1,8 @@
+2002-12-11  Eelco Visser  <visser@cs.uu.nl>
+
+	* pp/: Removing stratego.pp from CVS repository
+	* sig/: Adding generated signature to CVS repository for bootstrapping
+
 2002-12-09  Eelco Visser  <visser@cs.uu.nl>
 
 	* using autoxt

@@ -1,0 +1,2 @@
+module Stratego
+imports Stratego-Layout Stratego-Identifiers Stratego-Constants Stratego-Modules Stratego-Script Stratego-Signatures Stratego-Terms Stratego-Rules Stratego-Overlays Stratego-Strategies

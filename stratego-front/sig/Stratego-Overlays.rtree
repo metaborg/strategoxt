@@ -1,0 +1,1 @@
+Specification([Signature([Constructors([OpDecl("OverlayNoArgs",FunType([ConstType(Var("Id")),ConstType(Var("Term"))],ConstType(Var("Overlay")))),OpDecl("Overlay",FunType([ConstType(Var("Id")),ConstType(Op("List",[Var("Id")])),ConstType(Var("Term"))],ConstType(Var("Overlay"))))])])])
