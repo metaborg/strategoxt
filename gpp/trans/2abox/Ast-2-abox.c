@@ -828,10 +828,7 @@ ATerm p_6 (ATerm z_15, ATerm a_16, ATerm y_15, ATerm t)
       ATerm o_10 = ATgetArgument(t, 0);
       if((ATgetSymbol((ATermAppl) o_10) != ATmakeSymbol("", 0, ATtrue)))
         _fail(t);
-      if(((z_3 != NULL) && (z_3 != ATgetArgument(t, 1))))
-        _fail(ATgetArgument(t, 1));
-      else
-        z_3 = ATgetArgument(t, 1);
+      z_3 = ATgetArgument(t, 1);
     }
   else
     _fail(t);
@@ -928,21 +925,12 @@ ATerm instantiate_sep_list_1_0 (ATerm g_94 (ATerm), ATerm t)
           return(t);
         }
         t = bottomup_1_0(q_0, t);
-        if(((l_5 != NULL) && (l_5 != t)))
-          _fail(t);
-        else
-          l_5 = t;
+        l_5 = t;
         t = b_5;
         t = z_5(t);
-        if(((i_5 != NULL) && (i_5 != t)))
-          _fail(t);
-        else
-          i_5 = t;
+        i_5 = t;
         t = (ATerm) ATinsert(CheckATermList(i_5), l_5);
-        if(((b_1 != NULL) && (b_1 != t)))
-          _fail(t);
-        else
-          b_1 = t;
+        b_1 = t;
         t = SSLsetAnnotations(b_1, h_5);
       }
       return(t);
@@ -1174,14 +1162,8 @@ ATerm s_6 (ATerm q_15, ATerm s_15, ATerm p_15, ATerm t)
       }
       if(match_cons(t, sym__2))
         {
-          if(((m_8 != NULL) && (m_8 != ATgetArgument(t, 0))))
-            _fail(ATgetArgument(t, 0));
-          else
-            m_8 = ATgetArgument(t, 0);
-          if(((n_8 != NULL) && (n_8 != ATgetArgument(t, 1))))
-            _fail(ATgetArgument(t, 1));
-          else
-            n_8 = ATgetArgument(t, 1);
+          m_8 = ATgetArgument(t, 0);
+          n_8 = ATgetArgument(t, 1);
         }
       else
         _fail(t);
@@ -1189,10 +1171,7 @@ ATerm s_6 (ATerm q_15, ATerm s_15, ATerm p_15, ATerm t)
       return(t);
     }
     t = nzip_1_0(w_0, t);
-    if(((k_8 != NULL) && (k_8 != t)))
-      _fail(t);
-    else
-      k_8 = t;
+    k_8 = t;
     {
       ATerm o_11 = t;
       int r_11 = stack_ptr;
@@ -1331,28 +1310,13 @@ ATerm symbol2abox5_0_0 (ATerm t)
       }
     return(t);
   }
-  if(((k_10 != NULL) && (k_10 != t)))
-    _fail(t);
-  else
-    k_10 = t;
+  k_10 = t;
   if(match_cons(t, sym__4))
     {
-      if(((l_10 != NULL) && (l_10 != ATgetArgument(t, 0))))
-        _fail(ATgetArgument(t, 0));
-      else
-        l_10 = ATgetArgument(t, 0);
-      if(((m_10 != NULL) && (m_10 != ATgetArgument(t, 1))))
-        _fail(ATgetArgument(t, 1));
-      else
-        m_10 = ATgetArgument(t, 1);
-      if(((n_10 != NULL) && (n_10 != ATgetArgument(t, 2))))
-        _fail(ATgetArgument(t, 2));
-      else
-        n_10 = ATgetArgument(t, 2);
-      if(((q_10 != NULL) && (q_10 != ATgetArgument(t, 3))))
-        _fail(ATgetArgument(t, 3));
-      else
-        q_10 = ATgetArgument(t, 3);
+      l_10 = ATgetArgument(t, 0);
+      m_10 = ATgetArgument(t, 1);
+      n_10 = ATgetArgument(t, 2);
+      q_10 = ATgetArgument(t, 3);
     }
   else
     _fail(t);
@@ -1426,10 +1390,7 @@ ATerm u_6 (ATerm w_14, ATerm x_14, ATerm z_14, ATerm y_14, ATerm t)
     return(t);
   }
   t = term_l_11;
-  if(((e_11 != NULL) && (e_11 != t)))
-    _fail(t);
-  else
-    e_11 = t;
+  e_11 = t;
   t = (ATerm) ATmakeAppl(sym__3, term_l_11, x_14, y_14);
   t = b_7(e_11, x_14, y_14, t);
   if(((d_11 != NULL) && (d_11 != t)))
@@ -1484,10 +1445,7 @@ ATerm v_6 (ATerm r_14, ATerm s_14, ATerm v_14, ATerm u_14, ATerm t_14, ATerm t)
     k_11 = t;
   t = (ATerm) ATmakeAppl(sym__2, u_14, v_14);
   t = index_0_0(t);
-  if(((j_11 != NULL) && (j_11 != t)))
-    _fail(t);
-  else
-    j_11 = t;
+  j_11 = t;
   t = (ATerm) ATinsert(ATempty, j_11);
   t = bottomup_1_0(n_1, t);
   return(t);
@@ -2001,21 +1959,12 @@ ATerm trm2abox_appl_0_0 (ATerm t)
       }
     return(t);
   }
-  if(((z_18 != NULL) && (z_18 != t)))
-    _fail(t);
-  else
-    z_18 = t;
+  z_18 = t;
   t = SSL_explode_term(z_18);
   if(match_cons(t, sym__2))
     {
-      if(((v_18 != NULL) && (v_18 != ATgetArgument(t, 0))))
-        _fail(ATgetArgument(t, 0));
-      else
-        v_18 = ATgetArgument(t, 0);
-      if(((u_18 != NULL) && (u_18 != ATgetArgument(t, 1))))
-        _fail(ATgetArgument(t, 1));
-      else
-        u_18 = ATgetArgument(t, 1);
+      v_18 = ATgetArgument(t, 0);
+      u_18 = ATgetArgument(t, 1);
     }
   else
     _fail(t);
@@ -2038,10 +1987,7 @@ ATerm trm2abox_appl_0_0 (ATerm t)
     if(match_cons(t, sym__2))
       {
         ATerm i_16 = ATgetArgument(t, 0);
-        if(((x_18 != NULL) && (x_18 != ATgetArgument(t, 1))))
-          _fail(ATgetArgument(t, 1));
-        else
-          x_18 = ATgetArgument(t, 1);
+        x_18 = ATgetArgument(t, 1);
       }
     else
       _fail(t);
@@ -3857,10 +3803,7 @@ ATerm concat_0_0 (ATerm t)
       }
       if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
         {
-          if(((n_40 != NULL) && (n_40 != ATgetFirst((ATermList) t))))
-            _fail(ATgetFirst((ATermList) t));
-          else
-            n_40 = ATgetFirst((ATermList) t);
+          n_40 = ATgetFirst((ATermList) t);
           if(((p_40 != NULL) && (p_40 != (ATerm) ATgetNext((ATermList) t))))
             _fail((ATerm) ATgetNext((ATermList) t));
           else
@@ -5161,15 +5104,9 @@ ATerm parse_options_p__1_0 (ATerm j_90 (ATerm), ATerm t)
         return(t);
       }
       t = y_54(t);
-      if(((n_54 != NULL) && (n_54 != t)))
-        _fail(t);
-      else
-        n_54 = t;
+      n_54 = t;
       t = (ATerm) ATinsert(CheckATermList(n_54), (ATerm) ATmakeAppl(sym_Program_1, k_54));
-      if(((h_13 != NULL) && (h_13 != t)))
-        _fail(t);
-      else
-        h_13 = t;
+      h_13 = t;
       t = SSLsetAnnotations(h_13, j_54);
     }
   }
@@ -5355,23 +5292,14 @@ ATerm parse_options_1_0 (ATerm i_90 (ATerm), ATerm t)
                 }
                 t = fetch_1_0(n_9, t);
                 t = term_e_17;
-                if(((v_55 != NULL) && (v_55 != t)))
-                  _fail(t);
-                else
-                  v_55 = t;
+                v_55 = t;
                 t = (ATerm) ATinsert(ATinsert(ATempty, not_null(d_55)), term_w_29);
-                if(((w_55 != NULL) && (w_55 != t)))
-                  _fail(t);
-                else
-                  w_55 = t;
+                w_55 = t;
                 t = SSL_printnl(v_55, w_55);
                 t = (ATerm) ATmakeAppl(sym__2, term_e_17, (ATerm) ATinsert(ATinsert(ATempty, not_null(d_55)), term_w_29));
                 t = default_system_usage_0_0(t);
                 t = term_l_11;
-                if(((u_55 != NULL) && (u_55 != t)))
-                  _fail(t);
-                else
-                  u_55 = t;
+                u_55 = t;
                 t = SSL_exit(u_55);
                 ;
                 LocalPopChoice(u_29);
@@ -5382,15 +5310,9 @@ ATerm parse_options_1_0 (ATerm i_90 (ATerm), ATerm t)
               }
           }
         }
-      if(((e_55 != NULL) && (e_55 != t)))
-        _fail(t);
-      else
-        e_55 = t;
+      e_55 = t;
       t = term_i_26;
-      if(((g_55 != NULL) && (g_55 != t)))
-        _fail(t);
-      else
-        g_55 = t;
+      g_55 = t;
       t = SSL_table_destroy(g_55);
       t = e_55;
     }
