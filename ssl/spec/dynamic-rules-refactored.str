@@ -106,6 +106,10 @@ strategies // high-level API with implicit rule set
     dr-get-rule-set(|name)
     ; dr-lookup-rule(|key)
 
+  dr-lookup-rule-pointer(|name, key) = 
+    dr-get-rule-set(|name)
+    ; dr-lookup-rule-pointer(|key)
+
   dr-set-rule(|name, key, value) =
     where(
       dr-get-rule-set(|name)
