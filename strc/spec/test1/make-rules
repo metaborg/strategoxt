@@ -27,7 +27,7 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 # FRONT-END ###########################################################
 
 %.tree : %.r ../pack/pack-stratego$(EXE)
-	../pack/pack-stratego $(SINCLUDES) -i $< -o $@ 
+	../pack/pack-stratego $(SINCLUDES) -i $< -o $@ --verbose 0
 
 %.tree : %.str ../pack/pack-stratego$(EXE) 
 	../pack/pack-stratego $(SINCLUDES) -i $< -o $@ 

@@ -1511,7 +1511,7 @@ ATerm pass_maybe_unbound_warnings_0_0 (ATerm);
 ATerm if_keep3_1_0 (ATerm z_96 (ATerm), ATerm);
 ATerm c_12 (ATerm t_73 (ATerm), ATerm x_18, ATerm);
 ATerm d_12 (ATerm m_42, ATerm n_42, ATerm);
-ATerm e_12 (ATerm l_94 (ATerm), ATerm t_444, ATerm u_42, ATerm);
+ATerm e_12 (ATerm l_94 (ATerm), ATerm e_445, ATerm u_42, ATerm);
 ATerm h_12 (ATerm s_92 (ATerm), ATerm q_37, ATerm o_37, ATerm);
 ATerm p_33 (ATerm b_33, ATerm);
 ATerm u_33 (ATerm e_33, ATerm f_33, ATerm g_33, ATerm);
@@ -5162,10 +5162,10 @@ ATerm d_12 (ATerm m_42, ATerm n_42, ATerm t)
   t = (ATerm) ATmakeAppl(sym_Stream_1, j_32);
   return(t);
 }
-ATerm e_12 (ATerm l_94 (ATerm), ATerm t_444, ATerm u_42, ATerm t)
+ATerm e_12 (ATerm l_94 (ATerm), ATerm e_445, ATerm u_42, ATerm t)
 {
   ATerm k_32 = NULL;
-  t = (ATerm) ATmakeAppl(sym__2, t_444, term_c_49);
+  t = (ATerm) ATmakeAppl(sym__2, e_445, term_c_49);
   t = y_12(t);
   k_32 = t;
   t = (ATerm) ATmakeAppl(sym__2, k_32, u_42);
