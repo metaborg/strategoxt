@@ -18,12 +18,12 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: dev-pkg-list,v 1.24 2001/01/09 13:37:17 jvisser Exp $
+# $Id: dev-pkg-list,v 1.25 2001/01/11 13:39:24 jvisser Exp $
 
 # This file lists name, version, and location of all components 
 # of an XT distribution.
 
-aterm,1.4.6,http://www.cwi.nl/projects/MetaEnv/aterm/
+aterm,1.4.6pl1,http://www.cwi.nl/projects/MetaEnv/aterm/
 asfix,0.2.2,http://www.cwi.nl/projects/MetaEnv/asfix/
 asc-support,0.4,http://www.cwi.nl/projects/MetaEnv/asc-runtime/
 pgen,0.6,http://www.cwi.nl/projects/MetaEnv/pgen/
