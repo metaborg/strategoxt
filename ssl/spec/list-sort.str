@@ -2,7 +2,7 @@
 \begin{code}
 module list-sort
 imports list-basic
-rules
+strategies
 
   SortL(s) : 
     [x, y | l] -> [y, x | l]
@@ -16,23 +16,36 @@ rules
     [x | l] -> [z | l']
     where <at-suffix(\ [y | ys] -> ys where <s> (x, y) => z\ )> l => l'
 
-strategies
+  sort-list(s) =  
+    try(rec x((s <+ [id | x]); try(x)))
 
-  sort-list(s) = try(rec x((s <+ [id | x]); try(x)))
+  isort-list(s) = 
+    try(rec x(([id | x] <+ s); try(x)))
 
-  isort-list(s) = try(rec x(([id | x] <+ s); try(x)))
+  jsort-list(s) = 
+    try(rec x([id | x] <+ s; try(x)))
 
-  jsort-list(s) = try(rec x([id | x] <+ s; try(x)))
+  Uniq = 
+    \ [x|xs] -> [x|l] where <filter(not(?x))> xs => l \
 
-  Uniq = \ [x|xs] -> [x|l] where <filter(not(?x))> xs => l \
-
-  uniq = listtd(try(Uniq))
+  uniq = 
+    listtd(try(Uniq))
 
   //uniq = 
   //  let Uniq = \ [x|xs] -> [x|l] where <filter(not(?x))> xs => l \
   //   in listtd(try(Uniq))
+
+  // <qsort(lt)>[..] sorteert lijst van integers
+  qsort(swap) : 
+    [] -> []
+
+  qsort(swap) : 
+    [x|xs] -> <concat>[<qsort(swap)> a, [x], <qsort(swap)> b]
+    where <filter(where(<swap>(<id>,x)))> xs => a
+        ; <filter(where(<not(swap)>(<id>,x)))> xs => b
+
 \end{code}
-% Copyright (C) 1998-2001 Eelco Visser <visser@acm.org>
+% Copyright (C) 1998-2003 Eelco Visser <visser@acm.org>
 % 
 % This program is free software; you can redistribute it and/or modify
 % it under the terms of the GNU General Public License as published by
