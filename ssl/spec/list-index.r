@@ -1,42 +1,100 @@
 \literate[list-index]
+
+	\begin{abstract}
+
+  Every element of a list is associated with in an integer index.
+  The first element of a list has index 1.
+
+	\end{abstract}
+
 \begin{code}
 module list-index
 imports list-cons simple-traversal
+
+\end{code}
+
+  Index: Get the n-th element of a list 
+
+\begin{code}
 strategies
 
-// Index: Get the n-th element of a list 
+  // :: Int * List(a) -> a
+  index =
+    repeat(Ind2) ; Ind1
 
-  index = repeat(Ind2) ; Ind1
+      Ind1   : (1, [x | xs]) -> x
+      Ind2   : (n, [x | xs]) -> (<subt> (n, 1), xs) where <geq> (n, 2)
 
-  Ind1   : (1, [x | xs]) -> x
-  Ind2   : (n, [x | xs]) -> (<subt> (n, 1), xs) where <geq> (n, 2)
+\end{code}
 
-// Get-index: get index of element in list 
+  Get-index: get index of element in list 
 
-  get_index = Gind0 ; rec x(Gind1 <+ Gind2 ; x)
-  get-index = Gind0 ; rec x(Gind1 <+ Gind2 ; x)
+\begin{code}
+strategies
+
+  // :: a * List(a) -> Int
+  get-index =
+    Gind0 ; rec x(Gind1 <+ Gind2 ; x)
+
+      Gind0  : (x, ys) -> (1, x, ys)
+      Gind1  : (n, x, [x | xs]) -> n
+      Gind2  : (n, y, [x | xs]) -> (<add> (n, 1), y, xs)
+
+  get_index = 
+    obsolete(!"get_index/0; use get-index/0");
+    get-index
 
   get-index0(s) = at-suffix([s | id]; ![]); length
 
-  Gind0  : (x, ys) -> (1, x, ys)
-  Gind1  : (n, x, [x | xs]) -> n
-  Gind2  : (n, y, [x | xs]) -> (<add> (n, 1), y, xs)
+\end{code}
 
-// Set-index: change element in list
+	Set-index: change element in list
 
-  Sind0    : (i, x, ys) -> (0, i, x, ys)
-  Sind1    : (i, i, x, [y | ys]) -> [x | ys]
-  Sind2(r) : (n, i, x, [y | ys]) -> [y | <r>(<add> (n, 1), i, x, ys)]
+\begin{code}
+strategies
 
-  set-index = Sind0; rec x(Sind1 <+ Sind2(x))
+  // :: Int * a * List(a) -> List(a)
+  set-index =
+    Sind0; rec x(Sind1 <+ Sind2(x))
 
-// Insert: insert element in list
+      Sind0    : (i, x, ys) -> (0, i, x, ys)
+      Sind1    : (i, i, x, [y | ys]) -> [x | ys]
+      Sind2(r) : (n, i, x, [y | ys]) -> [y | <r>(<add> (n, 1), i, x, ys)]
 
-  insert = Ins0; rec x(Ins1 <+ Ins2(x))
+\end{code}
 
-  Ins0:    (i, x, ys) -> (0, i, x, ys)
-  Ins1:    (i, i, x, xs) -> [x | xs]
-  Ins2(r): (n, i, x, [y | ys]) -> [y | <r>(<add> (n, 1), i, x, ys)]
+	Insert: insert element in list
+
+\begin{code}
+strategies
+
+  // :: Int * a * List(a) -> List(a)
+  insert =
+    Ins0; rec x(Ins1 <+ Ins2(x))
+
+        Ins0:    (i, x, ys) -> (0, i, x, ys)
+        Ins1:    (i, i, x, xs) -> [x | xs]
+        Ins2(r): (n, i, x, [y | ys]) -> [y | <r>(<add> (n, 1), i, x, ys)]
+
+\end{code}
+
+	Map with index: apply strategies that require some knowledge
+  of the index of an element to the elements of the list.
+
+\begin{code}
+
+  // Int * a -> b :: List(a) -> List(b)
+  map-with-index(s) = 
+      !(1, <id>)
+    ; rec x(
+        \ (_, [])       -> [] \
+      + \ (i, [e | es]) -> [<s> (i, e) | <x> (<inc> i, es)] \
+      )
+
+  // :: List(a) -> List(Int * a)
+  add-indices = 
+    map-with-index(id)
+
 \end{code}
 
 % Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
