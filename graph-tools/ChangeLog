@@ -1,6 +1,5 @@
 2001-11-25 Merijn de Jonge <mdejonge@cwi.nl>
-   * Added gpp to list of required packages
-   * dot/dot.pp.af: removed from CVS repository because it is generated
+   * dot/dot.pp.af: added grammar identifier
    * renamed acinclude.m4 to program-check.m4
    * added new version of program-check.m4
 

@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.4 2001/11/25 22:55:46 mdejonge Exp $
+# $Id: Makefile.am,v 1.5 2001/11/26 08:42:27 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -29,12 +29,7 @@ include $(STRATEGO_PRG:%=%.dep)
 # define any subdir here
 SUBDIRS      = data
 
-EXTRA_DIST   = Dot.r dot.pp
-
-CLEANFILES  += dot.pp.af
+EXTRA_DIST   = Dot.r dot.pp dot.pp.af
 
 pkgdata_DATA = Dot.r dot.pp dot.pp.af
 
-# rule to generate imploded pretty-print tables
-%.pp.af : %.pp
-	$(MAKE) -f $(GPP)/share/gpp/gpp.Makefile $@
