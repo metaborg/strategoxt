@@ -1,4 +1,4 @@
-# XT -- Program Transformation Tools
+# GT -- Grammar Tools
 # Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
 #                    Eelco Visser <visser@acm.org>
 #                    Joost Visser <jvisser@cwi.nl>
@@ -18,21 +18,23 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.17 2000/07/25 11:52:52 mdejonge Exp $
+# $Id: Makefile.am,v 1.1 2000/07/25 11:52:54 mdejonge Exp $
 
-DIST_SUBDIRS = pre-checks aterm asfix asc-support sglr pgen \
-               stratego gpp gt gb  integration-tests
-EXTRA_DIST   = SOFTWARE README
+# Optional tests to run
+TESTS        = parsesdf-yield-check \
+ 	       parsesdf-implode-sdf2text-check
 
-# We need at least one subdir to be defined such that automake will generate
-# the code for traversing subdirectories
-SUBDIRS=pre-checks
 
-all: install
+# List all files that should be distributed here
+EXTRA_DIST   = parsesdf-yield-check.src \
+	       parsesdf-implode-sdf2text-check.src
 
-check clean install install-strip uninstall:
-	PATH=$(bindir):$${PATH}; export PATH ;\
-	ulimit -s 20000 ;\
-	for subdir in $(DIST_SUBDIRS); do \
-	   ( cd $$subdir && $(MAKE) $@ ) || exit 1 ;\
-	done
+# What should be cleaned
+CLEANFILES   = parsesdf-yield-check \
+	       parsesdf-implode-sdf2text-check
+
+# Generate test-tools
+%-check: %-check.src Makefile.am
+	sed 's#__XT__#../prefix/#g;\
+	     s#__MAKE__#$(MAKE)#g' < $< > $@
+	chmod +x $@

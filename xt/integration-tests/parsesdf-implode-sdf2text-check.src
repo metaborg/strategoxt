@@ -1,4 +1,5 @@
-# XT -- Program Transformation Tools
+#! /bin/sh
+# GT -- Grammar Tools
 # Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
 #                    Eelco Visser <visser@acm.org>
 #                    Joost Visser <jvisser@cwi.nl>
@@ -18,21 +19,40 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.17 2000/07/25 11:52:52 mdejonge Exp $
+# $Id: parsesdf-implode-sdf2text-check.src,v 1.1 2000/07/25 11:52:55 mdejonge Exp $
+#
 
-DIST_SUBDIRS = pre-checks aterm asfix asc-support sglr pgen \
-               stratego gpp gt gb  integration-tests
-EXTRA_DIST   = SOFTWARE README
+# Exit immediately if a command exits with a non-zero status.
+set -e
 
-# We need at least one subdir to be defined such that automake will generate
-# the code for traversing subdirectories
-SUBDIRS=pre-checks
+# Test parsing, imploding and pretty-printing grammars.
 
-all: install
+XT=__XT__
 
-check clean install install-strip uninstall:
-	PATH=$(bindir):$${PATH}; export PATH ;\
-	ulimit -s 20000 ;\
-	for subdir in $(DIST_SUBDIRS); do \
-	   ( cd $$subdir && $(MAKE) $@ ) || exit 1 ;\
-	done
+PATH=${XT}/bin:${PATH}
+export PATH
+
+GRAMMARS=${XT}/share/gb
+
+Sdf=${GRAMMARS}/Sdf.cons
+Pico=${GRAMMARS}/Pico
+ATerms=${GRAMMARS}/ATerms
+Grammars="${Pico} ${ATerms} ${Sdf}"
+
+#sdf2text=../spec/sdf-pp/sdf2text
+pp=ast2box
+box2text=box2text
+pptable=${GRAMMARS}/Sdf.pp
+sglr=sglr
+\
+implode_asfix=implode-asfix
+
+for Grammar in ${Grammars}
+do
+    echo "Testing grammar \"${Grammar}\"." >&2
+    ${sglr} -p ${Sdf}.tbl -i ${Grammar}.sdf \
+      | ${implode_asfix} \
+      | ${pp} -a ${pptable} \
+      | ${box2text} -q -a \
+      | ${sglr} -p ${Sdf}.tbl > /dev/null
+done
