@@ -116,7 +116,7 @@ bootclean-recursive :
 #
 
 .sdf.def : 
-	$(SDF_FRONT)/bin/pack-sdf $(SDFINCLUDES) -i $< -o $@
+	$(SDF_FRONT)/bin/pack-sdf $(SDFINCLUDES) -i $< -o $@ --dep $*.dep
 
 .def.tbl :
 	$(PGEN)/bin/sdf2table $(PGEN_FLAGS) -i $< -o $@ 
