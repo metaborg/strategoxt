@@ -19,12 +19,13 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: gbquery.sh.src,v 1.1 2001/06/08 16:09:06 mdejonge Exp $
+# $Id: gbquery.sh.src,v 1.2 2001/06/12 07:42:08 mdejonge Exp $
 
 # gbquery: obtain information from the Grammar Base
 #
 # usage
 #  gbquery -h
+#  gbquery -d  -l lang -v version  Returns grammar definition lang
 #  gbquery -pt -l lang -v version  Returns parse table for lang
 #  gbquery -pp -l lang -v version  Returns pretty-print table for lang
 #  gbquery -i  -l lang -v version  Display information for lang
@@ -44,6 +45,7 @@ gbquery: obtain information from the Grammar Base
 
 usage
   gbquery -h
+  gbquery -d  -l lang -v version  Returns grammar definition lang
   gbquery -pt -l lang -v version  Returns parse table for lang
   gbquery -pp -l lang -v version  Returns pretty-print table for lang
   gbquery -i  -l lang -v version  Display information for lang
@@ -110,11 +112,18 @@ get_parse_table () {
    echo $table
 }
 
+# Return the location of the grammar definition by first locating the parse
+# table and then substituting .def for .tbl
+
+get_grammar_def () {
+   parse_table=`get_parse_table` || exit 1
+   echo "basename ${parse_table .tbl".def
+}
+
 # Find pretty-print table for the langauge. Due to our naming scheme, the language
 # as specified with the -l' option has to be interpreted case insensitive.
 # If no specific version was specified using the -v' option we take to most
 # recent one.
-
 get_pp_table () {
    # 1) find the directory where the grammar is located.
    grammar_dir=`grammar_dir "${LANGUAGE}" "${LANGUAGE_VERSION}"`|| exit 1
@@ -160,6 +169,7 @@ list_grammars () {
 for arg in $*
 do
    case $1 in
+      -d  ) FUNCTION=="get-grammar-def"; shift ;;
       -pt ) FUNCTION="get-parse-table"; shift ;;
       -pp ) FUNCTION="get-pp-table"; shift ;;
       -i  ) FUNCTION="get-info"; shift ;;
@@ -172,6 +182,7 @@ do
 done
 
 case ${FUNCTION} in
+   get-grammar-def ) get_grammar_def ;;
    get-parse-table ) get_parse_table ;;
    get-pp-table )    get_pp_table ;;
    get-info )        get_info ;;

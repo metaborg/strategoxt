@@ -1,3 +1,7 @@
+2001-06-12 Merijn de Jonge <mdejonge@cwi.nl>
+        * src/gbquery: added -d switch to retrieve the location of a grammar
+          definition file
+
 2001-06-08 Merijn de Jonge <mdejonge@cwi.nl>
         * src/sdf-doc: glue tools from sdf-tools package added
         * src/visamb: glue tools from asfix-tools package added
