@@ -1,8 +1,6 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-export LD_LIBRARY_PATH := $(SRTS)/lib/srts:${LD_LIBRARY_PATH}
-
 pkgtestsdatadir  = $(pkgdatadir)/tests
 pkgtestsdata_DATA= $(wildcard *.str)
 
@@ -61,7 +59,6 @@ CLEANFILES     	= $(wildcard *.dep)
 BOOTCLEANFILES 	= $(wildcard *.c)
 
 SCFLAGS	       	= --verbose 1
-
 STRINCLUDES    	= -I $(top_srcdir)/spec -I $(SRTS)/share/srts
 
 annotations_test_LDADD      = $(SSL_LIBS)
@@ -69,7 +66,7 @@ annotation_props_test_LDADD = $(SSL_LIBS)
 char_test_LDADD             = $(SSL_LIBS)
 dir_test_LDADD              = $(SSL_LIBS)
 env_traversal_test_LDADD    = $(SSL_LIBS)
-list_sort_test_LDADD        = $(SSL_LIBS))
+list_sort_test_LDADD        = $(SSL_LIBS)
 
 nodist_annotation_props_test_SOURCES = annotation-props-test.c 
 nodist_annotations_test_SOURCES = annotations-test.c 
