@@ -1,0 +1,28 @@
+module parse-unit-testsuite
+
+signature
+  constructors
+    TestSuite:  Name * Sort * Tests -> ParseTestSuite
+
+    Name:       String -> Name
+    Sort:       String -> Sort
+    File:       String -> File
+
+    Tests:      List(Test) -> Tests
+    Test:       Descr * Input * Result -> Test
+
+    Descr:      String -> Name
+
+    Success:    Result
+    Failure:    Result
+
+    String:     String -> Input
+    File:       File   -> Input
+
+    TestResults: List(TestResult) -> TestResults
+
+    Success:    TestResult
+    Failure:    TestResult
+
+    ParseResult: Result * a -> ParseResult(a)
+

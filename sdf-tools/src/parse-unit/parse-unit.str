@@ -1,0 +1,149 @@
+module parse-unit
+imports xtc-lib io list-filter string list-cons options config
+imports parse-unit-testsuite
+
+strategies
+
+  io-parse-unit =
+    xtc-io-wrap(parse-unit-options, parse-unit)
+
+  parse-unit-options =
+       io-options
+    <+ parse-table-option
+
+  parse-table-option =
+    ArgOption("-p"
+    , where(<set-config> ("--parse-table", <id>))
+    , !"-p FILE   Use parse table FILE (required)"
+    )
+
+  get-parse-table =
+    <get-config> "--parse-table" <+ <fatal-error> ["** ERROR: no parse table specified"]
+
+  abs-test-file =
+    <conc-strings> (<get-config; get-path> "-i", <id>)
+
+strategies
+
+  parse-unit = 
+    xtc-io-transform(
+      echo-start
+    ; ?TestSuite(Name(name), Sort(sort), Tests(<id>))
+    ; map-with-index(execute-test(!sort, get-parse-table))
+    ; !TestResults(<id>)
+    ; where(<echo-results> (name, <id>))
+    )
+
+  execute-test(sort, table) = 
+      ?(i, <id>); ?t
+    ; ?Test(Descr(n), input, expected)
+    ; <parse> (<sort>, <table>, input)
+    ; ?result
+    ; <create-test-result> (<id>, expected)
+    ; where(<echo-report> (i, t, result, <id>))
+
+strategies
+
+  echo-start =
+    if-verbose1(
+      where(
+        ?TestSuite(Name(name), _, Tests(tests))
+      ; <echo> "-----------------------------------------------------------------------"
+      ; <concat-strings; echo> ["executing testsuite ", name, " with ", <length; int-to-string> tests, " tests"]
+      ; <echo> "-----------------------------------------------------------------------"
+      )
+    )
+
+  echo-results =
+    if-verbose1(
+      where(	
+        ?(name, TestResults(results))
+      ; <echo> "-----------------------------------------------------------------------"
+      ; <conc-strings; echo> ("results testsuite ", name)
+      ; <conc-strings; echo> ("successes : ", <count-in-string(?Success())> results)
+      ; <conc-strings; echo> ("failures  : ", <count-in-string(?Failure())> results)
+      ; <echo> "-----------------------------------------------------------------------"
+      )
+    )
+
+  echo-report =
+    if-verbose1(
+      ?(i, Test(Descr(n), _, expected), result, <id>)
+    ; where(
+        try(
+          ?Success()
+        ; <concat-strings; echo> ["* OK   : test ", <int-to-string> i, " (", n, ")"]
+        )
+      )
+    ; where(
+        try(
+          ?Failure()
+        ; <concat-strings; echo> ["* ERROR: test ", <int-to-string> i, " (", n, ")"]
+        ; <debug(!"** Result:   ")> result
+        ; <debug(!"** Expected: ")> expected
+        )
+      )
+    )
+
+strategies
+
+  create-test-result:
+    (ParseResult(Failure(), _), Failure()) -> Success()
+
+  create-test-result:
+    (ParseResult(Failure(), _), expected) -> Failure()
+      where !expected; not(?Failure())
+
+  create-test-result:
+    (ParseResult(Success(), _), Success()) -> Success()
+
+  create-test-result:
+    (ParseResult(Success(), result), expected) -> Success()
+      where !expected; not(?Success())
+          ; !(result, expected); eq
+
+  create-test-result:
+    (ParseResult(Success(), result), expected) -> Failure()
+      where !expected; not(?Success())
+          ; !(result, expected); not(eq)
+
+strategies
+
+  count-in-string(s) = 
+    filter(s); length; int-to-string
+
+  parse = 
+      ?(sort, table, input)
+    ; <parse-helper> (["-2tA", "-p", table, "-s", sort], input)
+
+  parse-helper = 
+      ?(options, String(s))
+    ; <print-to-tmp-file> s
+    ; ?file
+    ; finally(
+        <parse-sglr> (options, File(<id>))
+      , <rm-files> [file]
+      )
+
+  parse-helper :
+    (opts, File(s)) -> <parse-sglr> (opts, File(<abs-test-file> s))
+    
+  parse-sglr =
+      ?(options, File(file))
+    ; !FILE(file)
+    ; xtc-transform(!"sglr", !options)
+    ; (   xtc-transform(!"implode-asfix")
+        ; !ParseResult(Success(), <read-from>)
+      <+  !ParseResult(Failure(), <read-from>)
+      )
+    <+ !ParseResult(Failure(), None())
+  
+  print-to-tmp-file =
+      where(
+        new-file => result-file
+      ; <open-file> (result-file, "w") => stream
+      )
+    ; <print> (stream, [<id>])
+    ; <close-file> result-file
+    ; !result-file
+
