@@ -1,5 +1,6 @@
-2001-10-08 Merijn de Jonge <mdejonge@cwi.nl> 
+ 2001-10-08 Merijn de Jonge <mdejonge@cwi.nl> 
    * renamed io-idwrap to termid
+   * termid: bug fix in checking function symbols
 
 2001-10-01 Joost.Visser@cwi.nl
    * implode-asfix: Removed bug in --inj switch where injections with

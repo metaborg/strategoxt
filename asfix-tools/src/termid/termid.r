@@ -19,7 +19,9 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: termid.r,v 1.1 2001/10/08 12:59:56 mdejonge Exp $
+% $Id: termid.r,v 1.2 2001/10/08 15:08:58 mdejonge Exp $
+
+gmake
 
 The strategy io-idwrap applies a strategy to the outermost function symbol
 of an input term. The outermost function symbol then type-checking of input
@@ -32,12 +34,12 @@ is displayed. In case the --strict option was specified, the program
 terminates with exit code 1.
 
 examples:
- io-id-wrap( ?"sdf-2.2")
+ io-id-wrap( "\"sdf-2.2\"")
 
  Verify that the input term was produced from version 2.2 of the grammar SDF.
 
 
- op-id-wrap( ?sdf-2.1 + ?sdf-2.2 )
+ io-id-wrap( \""sdf-2.1\"" + "\"sdf-2.2\"" )
  
  Version 2.1 and 2.2 of SDF are accepted.
 
@@ -48,7 +50,7 @@ symbol of as term to test validness of a term.
 examples:
    
 To check that the id of a term t equals "sdf-2.1", the following can be used:  
- <termid-check(?"sdf-2.2")>t
+ <termid-check("\"sdf-2.2\"")>t
 
 To accept any term id use the following:
  <termid-check>(id)>t   
