@@ -9,13 +9,11 @@ libexec_PROGRAMS = sdf-imports
 
 BOOTCLEANFILES	 = sdf-imports.c
 CLEANFILES	 = $(wildcard *.dep)
+EXTRA_DIST   	 = $(wildcard *.str) $(wildcard *.meta) 
 
-sdf-imports.o	 : xtc-conf.h
-
-EXTRA_DIST   	 =  $(wildcard *.str) $(wildcard *.meta) 
-
-SCFLAGS     	 = -I $(srcdir)/../lib \
-                   -I $(ASFIX_TOOLS)/share/asfix-tools \
-                   -I $(GRAPH_TOOLS)/share/graph-tools \
-		   $(XTCFLAGS)
+STRINCLUDES = \
+  -I $(srcdir)/../lib \
+  -I $(ASFIX_TOOLS)/share/asfix-tools \
+  -I $(GRAPH_TOOLS)/share/graph-tools \
+  -I $(XTC)/share/xtc 
 
