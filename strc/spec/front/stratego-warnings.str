@@ -86,9 +86,10 @@ debug-with-incorrect-string =
    sdef-with-property({arg, msg:
    \   CallT(SVar("debug"),[arg],[]) -> DebugWarning(msg) 
        where
-       !arg;
+         <Match(Str(?msg))>arg
+/*       !arg;
        not(Build(Str(id)));
-       oncetd(Str(?msg))
+       oncetd(Str(?msg))*/
    \ }))
 
 // Create warning string for obsolete warning
