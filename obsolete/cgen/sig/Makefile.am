@@ -10,4 +10,5 @@ EXTRA_DIST = $(pkgdata_DATA) $(wildcard *.str)
 
 C.def: 
 	ln -s ../syn/C.def .
-
+	touch $(wildcard *.str)
+	touch $(wildcard *.rtree)
