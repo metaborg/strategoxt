@@ -1,4 +1,5 @@
-.PRECIOUS: %.c %.tree %.s1 %.s2 %.s3 %.s4 %.s5 %.s6 %.s7 %.s8 %.s9 %.ac %.c.abox %.bin
+.PRECIOUS: %.c %.tree %.ac %.c.abox %.bin \
+	   %.s1 %.s2 %.s3 %.s4 %.s5 %.s6 %.s7 %.s8 %.s9 %.s10 %.s11 %.s12 %.s13 
 
 CINCLUDES = \
 	--C-include "<srts/stratego.h>" \
@@ -48,17 +49,39 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 %.s7 : %.s6 ../opt/dead-def-elim$(EXE)
 	../opt/dead-def-elim -i $< -o $@ -b
 
-%.s8 : %.s7 ../match/compile-match$(EXE)
+
+%.s7.opt1 : %.s7 ../match/optimize2$(EXE)
+	../match/optimize2 -i $< -o $@ -b
+
+%.s7.opt2 : %.s7.opt1 ../opt/const-prop$(EXE)
+	../opt/const-prop -i $< -o $@ -b
+
+%.s7.opt3 : %.s7.opt2 ../opt/dead-var-elim$(EXE)
+	../opt/dead-var-elim -i $< -o $@ -b
+
+%.s7.opt : %.s7.opt3 ../match/optimize2$(EXE)
+	../match/optimize2 -i $< -o $@ -b
+
+
+
+%.s8 : %.s7.opt ../match/compile-match$(EXE)
 	../match/compile-match -i $< -o $@ -b
 
 %.s9 : %.s8 ../match/desugar-case$(EXE)
 	../match/desugar-case -i $< -o $@ -b
+
 
 %.s10 : %.s9 ../match/optimize2$(EXE)
 	../match/optimize2 -i $< -o $@ -b
 
 %.s11 : %.s10 ../opt/const-prop$(EXE)
 	../opt/const-prop -i $< -o $@ -b
+
+%.s11.dve : %.s11 ../opt/dead-var-elim$(EXE)
+	../opt/dead-var-elim -i $< -o $@ -b
+
+%.s11.opt : %.s11.dve ../match/optimize2$(EXE)
+	../match/optimize2 -i $< -o $@ -b
 
 # PRETTY-PRINTING ####################################################
 
@@ -73,7 +96,7 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 
 # BACK-END ###########################################################
 
-%.s12 : %.s10 ../c/canonicalize$(EXE)
+%.s12 : %.s11.opt ../c/canonicalize$(EXE)
 	../c/canonicalize -i $< -o $@ -b
 
 %.s13 : %.s12 ../c/canonicalize$(EXE)

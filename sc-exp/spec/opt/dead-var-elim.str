@@ -1,0 +1,81 @@
+
+/*************************************************************
+ * NOTE
+ * 
+ * Implementation not complete: choices are not taken into account and
+ * already bound variables used in a match are discarded.
+ *
+ **************************************************************/
+
+module dead-var-elim
+imports stratlib lib
+strategies
+ 
+  dead-var-elim-io =
+    iowrap(
+      Specification([Signature(id),Strategies(map(dead-var-elim))])
+    )
+
+  dead-var-elim = rec dve(
+    elim-scope(dve)
+    <+ elim-sdef(dve)
+    <+ MarkBuild
+    <+ PrimT(id, map(dve), map(mark-build-term))
+    <+ CallT(id, map(dve), map(mark-build-term))
+    <+ Seq(id, dve); Seq(dve, id) 
+    <+ EliminateFromMatch
+    <+ all(dve)
+  )
+
+  elim-sdef(x) =
+    ?SDefT(_,_,_,_)
+    ; {| ElimVar :
+           SDefT(id, id, map(where(?VarDec(<id>,_); DeclareAlive)), x)
+      |}
+
+  elim-scope(x) =
+    ?Scope(_,_)
+    ; {| ElimVar :
+           Scope(map(DeclareDead), x)
+           ; EliminateFromScope
+      |}
+
+  DeclareDead =
+    ?x; rules(ElimVar : Var(x) -> Wld)
+
+  EliminateFromScope =
+    Scope(filter(not(ElimVar)), id)
+
+  DeclareAlive =
+    ?x; rules(ElimVar : Var(x) -> Undefined)
+
+  mark-build-term =
+    alltd({?Var(x); override rules(ElimVar : Var(x) -> Undefined)})
+
+  MarkBuild =
+    Build(mark-build-term)
+
+  EliminateFromMatch =
+    Match(alltd(ElimVar))
+
+ 
+strategies // Dynamic rule manipulation
+
+  save-ElimVar =
+    <table-getlist> "ElimVar"
+
+  clean-ElimVar =
+    where(<table-destroy> "ElimVar";
+          <table-putlist>("ElimVar", []))
+
+  restore-ElimVar = ?tbl;
+    where(<table-destroy> "ElimVar";
+          <table-putlist>("ElimVar", tbl))
+
+  isect-ElimVar =
+     map(try(?(Scopes,_)
+        <+ {?(key, [Defined(_)|_]);
+            (where(<table-get> ("ElimVar", key) => [Defined(_)|_])
+             <+ !(key, [Undefined]))
+           }))
+    ; restore-ElimVar

@@ -1,12 +1,21 @@
 2003-07-18  Eelco Visser  <visser@cs.uu.nl>
 
+	* spec/opt/const-prop.str: Constant propagation for term variables
+	replaces variables with terms to which they are matched. 
+	
+	* spec/opt/dead-var-elim.str: Remove term variables that are not 
+	used in builds. Works by replacing occurrence of dead variables in
+	a match by a wildcard and removing variables from scopes. A subsequent
+	run of optimize2 eliminates matches only consisting of a wildcard (?_)
+	and dead builds, i.e., builds that occur prior to another build and
+	will thus not be used. 
+
+	The implementation is not yet complete: choices are not taken into
+	account and already bound variables used in a match are discarded.
+
 	* spec/front/needed-constructors.str: After extracting needed
 	definitions keep only constructor declarations for constructors
 	actually used.	
-
-	* spec/opt/const-prop.str: Constant propagation for term variables
-	replaces variables with terms to which they are matched. Should
-	be extended with dead variable elimination.
 	
 2003-07-17  Eelco Visser  <visser@cs.uu.nl>
 

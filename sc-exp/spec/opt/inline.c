@@ -1182,7 +1182,7 @@ ATerm iowrap_4_0 (ATerm k_133 (ATerm), ATerm l_133 (ATerm), ATerm m_133 (ATerm),
 ATerm iowrap_3_0 (ATerm e_133 (ATerm), ATerm f_133 (ATerm), ATerm g_133 (ATerm), ATerm);
 ATerm iowrap_2_0 (ATerm c_133 (ATerm), ATerm d_133 (ATerm), ATerm);
 ATerm iowrap_1_0 (ATerm z_132 (ATerm), ATerm);
-ATerm inline_0_0 (ATerm);
+ATerm inline_io_0_0 (ATerm);
 ATerm main_0_0 (ATerm);
 ATerm main_0 (ATerm t)
 {
@@ -18280,13 +18280,13 @@ ATerm iowrap_1_0 (ATerm z_132 (ATerm), ATerm t)
   t = iowrap_2_0(o_7, _fail, t);
   return(t);
 }
-ATerm inline_0_0 (ATerm t)
+ATerm inline_io_0_0 (ATerm t)
 {
   t = iowrap_1_0(inline_strategies_0_0, t);
   return(t);
 }
 ATerm main_0_0 (ATerm t)
 {
-  t = inline_0_0(t);
+  t = inline_io_0_0(t);
   return(t);
 }

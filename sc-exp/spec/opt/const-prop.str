@@ -1,0 +1,134 @@
+module const-prop
+imports Stratego lib stratlib unification
+strategies
+
+  const-prop-io =
+    iowrap(Specification([Signature(id),Strategies(map(const-prop))]))
+
+  const-prop =
+    {| CurrentTerm, Binding: cp |}
+
+  cp = 
+    prop-match
+    <+ prop-build
+    <+ prop-scope(cp)
+    <+ prop-call(cp)
+    <+ prop-seq(cp)
+    <+ prop-choice(cp)
+    <+ prop-lchoice(cp)
+    <+ prop-guardedlchoice(cp)
+    <+ prop-let(cp)
+    <+ prop-sdef(cp)
+    <+ all(cp)
+
+  prop-seq(cp) =
+    Seq(cp, cp)
+
+  prop-call(cp) =
+    ?CallT(_, _, _)
+    ; CallT(id, cp, alltd(debug(!"binding? "); Binding; debug(!"binding! ")))
+    ; UndefCurrentTerm
+
+  UndefCurrentTerm =
+    rules(CurrentTerm : _ -> Undefined)
+
+  prop-call(cp) =
+    ?PrimT(_, _, _)
+    ; PrimT(id, cp, alltd(debug(!"binding? "); Binding; debug(!"binding! ")))
+    ; rules(CurrentTerm : _ -> Undefined)
+
+  prop-scope(cp) =
+    ?Scope(xs, _)
+    ; {| Binding :
+	   where(<map({?x; rules(Binding : Var(x) -> Undefined)})> xs)
+           ; Scope(id, cp)
+      |}
+    
+  prop-sdef(cp) =
+    ?SDefT(f, _, xs, _)
+    ; {| Binding :
+	   where(<map({?VarDec(x,_); rules(Binding : Var(x) -> Undefined)})> xs)
+           ; SDefT(id, id, id, cp)
+      |}
+
+  prop-let(cp) =
+    ?Let(_,_)
+    ; where(save-Binding => bnd0)
+    ; Let(map(where(UndefCurrentTerm; <restore-Binding> bnd0); cp)
+         , where(UndefCurrentTerm; <restore-Binding> bnd0); cp)
+    
+  prop-build =
+    ?Build(_)
+    ; debug(!"prop-build: ")
+    ; Build(alltd(debug(!"binding? "); Binding; debug(!"binding! ")))
+    ; debug(!"prop-build: ")
+    ; ?Build(t)
+    ; rules(
+        CurrentTerm : _ -> t
+      )
+    ; debug(!"prop-build: ")
+
+  prop-match =
+    ?Match(t)
+    ; debug(!"prop-match: ")
+    ; (where(CurrentTerm => ct; debug(!"CurrentTerm: "))
+       ; (where(
+             <debug(!"match? "); prop-pattern-match; debug(!"match! ")> [(t, ct)]
+	     ; map({?(Var(x), t); debug(!"binding: "); rules(Binding : Var(x) -> t)}))
+         <+ where(<debug(!"no match with current term: ")> ("strat: ", <id>, "current: ", ct))
+            ; !Fail)
+      <+ rules(CurrentTerm : _ -> t)
+      )
+     ; debug(!"prop-match: ")
+
+  prop-pattern-match = 
+    for(\ pairs -> (pairs, []) \
+       ,\ ([], sbs) -> sbs \
+       ,(UfIdem, id) <+ MatchVar(Var(id)) + (UfDecompose, id) + TermIsVar(Var(id)))
+
+  TermIsVar(isvar) :
+    ([(x,y) | ps], sbs) -> (ps, [(y, x) | sbs])
+    where <not(isvar)> x; <isvar> x
+        ; <not(fetch({z: ?(y,z); <not(eq)> (x, z)}))> sbs
+
+  prop-choice(uv) =
+    Choice(id, id)
+    ; prop-abstract-choice(Choice(uv,id),Choice(id, uv))
+
+  prop-lchoice(uv) =
+    LChoice(id, id)
+    ; prop-abstract-choice(LChoice(uv,id),LChoice(id, uv))
+
+  prop-guardedlchoice(uv) =
+    GuardedLChoice(id, id, id)
+    ; prop-abstract-choice(GuardedLChoice(uv,id,id);GuardedLChoice(id,uv,id)
+	           ,GuardedLChoice(id,id,uv))
+
+  prop-abstract-choice(left, right) =
+    where(save-Binding => bnd0)
+    ; left
+    ; where(save-Binding => bndL; <restore-Binding> bnd0)
+    ; right
+    ; where(<isect-Binding> bndL)
+
+
+strategies // Dynamic rule manipulation
+
+  save-Binding =
+    <table-getlist> "Binding"
+
+  clean-Binding =
+    where(<table-destroy> "Binding";
+          <table-putlist>("Binding", []))
+
+  restore-Binding = ?tbl;
+    where(<table-destroy> "Binding";
+          <table-putlist>("Binding", tbl))
+
+  isect-Binding =
+     map(try(?(Scopes,_)
+        <+ {?(key, [Defined(_)|_]);
+            (where(<table-get> ("Binding", key) => [Defined(_)|_])
+             <+ !(key, [Undefined]))
+           }))
+    ; restore-Binding

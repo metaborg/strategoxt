@@ -2,9 +2,10 @@ module dead-def-elim
 imports Stratego stratlib lib pack-graph
 strategies
 
-  dead-def-elim = iowrap(Specification([id,Strategies(dde)]))
+  dead-def-elim-io = 
+    iowrap(Specification([id,Strategies(dead-def-elim)]))
 
-  dde =
+  dead-def-elim =
     !(["main_0_0"], <map(RegisterDefinition)>, [])
     ; graph-nodes-roots(Definition, svars, \ (_,x,d) -> [x|d] \ )
 
