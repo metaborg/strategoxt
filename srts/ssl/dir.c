@@ -219,21 +219,29 @@ ATerm SSL_copy(ATerm oldname, ATerm newname)
   else if(!t_is_string(oldname))
     _fail(oldname);
   else if((fdin = open(ATgetName(ATgetSymbol(oldname)), O_RDONLY)) < 0 )
-    {
+  {
+      perror("SSL_copy");
       ATfprintf(stderr, "SSL_copy: cannot open inputfile %t\n", oldname);
       _fail(oldname); 
-    }
+  }
 
   if(ATmatch(newname, "stdout"))
+  {
     fdout = STDOUT_FILENO;
+  }
   else if(ATmatch(newname, "stderr"))
+  {
     fdout =  STDERR_FILENO;
+  }
   else if(!t_is_string(newname))
+  {
     _fail(newname);
+  }
   else if((fdout = open(ATgetName(ATgetSymbol(newname)), 
 			O_RDWR | O_CREAT | O_TRUNC, 
 			S_IRUSR | S_IWUSR)) < 0 )
     {
+      perror("SSL_copy");
       ATfprintf(stderr, "SSL_copy: cannot create output file %t\n", newname);
       _fail(newname);
     }
@@ -241,13 +249,13 @@ ATerm SSL_copy(ATerm oldname, ATerm newname)
   while( (n = read(fdin, buf, SSL_COPY_BUFSIZE)) > 0 )
     if(write(fdout, buf, n) != n)
       { 
-	ATfprintf(stderr, "SSL_copy: write error\n");
+        perror("SSL_copy: write error");
 	_fail(newname);
       }
 
   if(n < 0)
     {
-      ATfprintf(stderr, "SSL_copy: read error\n");
+      perror("SSL_copy: read error");
       _fail(oldname);
     }
       
