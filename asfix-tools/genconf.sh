@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: genconf.sh,v 1.3 2001/06/05 14:39:17 mdejonge Exp $
+# $Id: genconf.sh,v 1.4 2001/10/08 12:59:55 mdejonge Exp $
 
 # Author: Merijn de Jonge (mdejonge@cwi.nl)
 #
@@ -101,7 +101,6 @@ trap "rm -fr $tmpMakefile" 0 1 2 3 4 5 6 7 8 9 10
    echo '	@echo $($(NAME))'
  
 ) > ${tmpMakeFile}
-
 
 released="`make -f ${tmpMakeFile} NAME=released`"
 unreleased="`make -f ${tmpMakeFile} NAME=unreleased`"

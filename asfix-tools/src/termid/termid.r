@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: io-idwrap.r,v 1.2 2001/10/01 16:46:57 mdejonge Exp $
+% $Id: termid.r,v 1.1 2001/10/08 12:59:56 mdejonge Exp $
 
 The strategy io-idwrap applies a strategy to the outermost function symbol
 of an input term. The outermost function symbol then type-checking of input
@@ -42,9 +42,20 @@ examples:
  Version 2.1 and 2.2 of SDF are accepted.
 
 
+The strategy termid-check applies a strategy to the outermost fucntion
+symbol of as term to test validness of a term.
+
+examples:
+   
+To check that the id of a term t equals "sdf-2.1", the following can be used:  
+ <termid-check(?"sdf-2.2")>t
+
+To accept any term id use the following:
+ <termid-check>(id)>t   
+
 \begin{code}
 
-module io-idwrap
+module termid
 imports options
 
 signature
@@ -60,18 +71,18 @@ io-idwrap('id, strat, extra-options) =
 
 io-idwrap('id, strat, extra-options, usage) =
    iowrap( 
-      idcheck('id); strat, 
+      termid-check('id); strat, 
       extra-options + Option("--strict", !Strict()),
       usage
    )
 
 
 rules 
-idcheck('id): (options, t ) -> (options, trm )
+termid-check('id): (options, t ) -> (options, trm )
    where
-      <idcheck('id)>t => trm
+      <termid-check('id)>t => trm
 
-idcheck('id): t -> trm
+termid-check('id): t -> trm
    where
    try(
    not(?i#([trm]);<'id>i);
