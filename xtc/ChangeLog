@@ -1,3 +1,8 @@
+2002-12-22  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/xtc-proc.str: xtc-transform -- no backtracking when
+	transform-file fails.
+
 2002-12-21  Eelco Visser  <visser@cs.uu.nl>
 
 	* src/xtc-proc.str: xtc-temp-files: ensure that intermediate files
