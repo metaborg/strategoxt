@@ -5,4 +5,4 @@ pkgdata_DATA 	= README
 ACLOCAL_AMFLAGS = -I . -I ../config
 
 bootclean :
-	cd libraries; $(MAKE) bootclean
+
