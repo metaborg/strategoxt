@@ -6,57 +6,58 @@ strategies
   main = 
     test-suite(!"posix-file-test",
       fileno-tests
+    ; aterm-io-tests
+    ; char-output-tests 
     ; strcat-tests
     ; strlen-tests
     ; new-concat-strings-tests
     )
 
   fileno-tests =
-    apply-test(!"fileno on stdin  -- 1", fileno, stdin-stream, !0)
-  ; apply-test(!"fileno on stdin  -- 2", fileno, stdin-stream, STDIN_FILENO)
-  ; apply-test(!"fileno on stdout -- 1", fileno, stdout-stream, !1)
-  ; apply-test(!"fileno on stdout -- 2", fileno, stdout-stream, STDOUT_FILENO)
-  ; apply-test(!"fileno on stderr -- 1", fileno, stderr-stream, !2)
-  ; apply-test(!"fileno on stderr -- 2", fileno, stderr-stream, STDERR_FILENO)
+      apply-test(!"fileno on stdin  -- 1", fileno, stdin-stream, !0)
+    ; apply-test(!"fileno on stdin  -- 2", fileno, stdin-stream, STDIN_FILENO)
+    ; apply-test(!"fileno on stdout -- 1", fileno, stdout-stream, !1)
+    ; apply-test(!"fileno on stdout -- 2", fileno, stdout-stream, STDOUT_FILENO)
+    ; apply-test(!"fileno on stderr -- 1", fileno, stderr-stream, !2)
+    ; apply-test(!"fileno on stderr -- 2", fileno, stderr-stream, STDERR_FILENO)
 
-  ; where(new-temp-file => (tmp-name, tmp-fd))
+    ; where(new-temp-file => (tmp-name, tmp-fd))
 
-  ; apply-test(!"fileno on temp file"
-    ,   <fdopen> (tmp-fd, "w")
-      ; ?stream
-      ; <fileno> stream
-      ; where(<fclose> stream)
-    , !tmp-fd
-    )
+    ; apply-test(!"fileno on temp file"
+      ,   <fdopen> (tmp-fd, "w")
+        ; ?stream
+        ; <fileno> stream
+        ; where(<fclose> stream)
+      ,   !tmp-fd
+      )
 
-  ; where(<remove-file> tmp-name)
+    ; where(<remove-file> tmp-name)
 
-/*
-  main = 
-    test-bla-out
-  ; test-bla-in
-  ; test-stdout
-  ; test-suite(!"POSIX functions",
+  aterm-io-tests = 
+      apply-test(!"ATerm IO -- 1", write-read-term, !"Bla Bla Bla", !"Bla Bla Bla")
+    ; apply-test(!"ATerm IO -- 2", write-read-term, !(), !())
+    ; apply-test(!"ATerm IO -- 3", write-read-term, !1, !1)
+    ; apply-test(!"ATerm IO -- 4", write-read-term, !None(), !None())
 
-    )
-  ; <exit> 0
+      write-read-term =
+        ?t
+       ; <fopen> ("test.aterm", "w")
+       ; <write-to-stream> (<id>, t)
+       ; fclose
+       ; <fopen> ("test.aterm", "r")
+       ; where(read-from-stream => t)
+       ; fclose
+       ; <remove-file> "test.aterm"
+       ; !t
 
-  test-bla-out =
-      <fopen> ("bla.txt", "w")
-    ; <write-to-stream> (<id>, "Bla Bla Bla")
-    ; new-fclose
-
-  test-stdout =
-      stdout-stream
-    ; <write-to-stream> (<id>, "This is stdout (1)")
-    ; <fputs> ("This is stdout (2)\n", <id>)
-    ; <puts> "This is stdout (3)"
-
-  test-bla-in =
-      <fopen> ("bla.txt", "r")
-    ; where(read-from-stream => "Bla Bla Bla")
-    ; new-fclose
-*/
+  char-output-tests =
+      apply-test(!"stdout char output test -- 1",
+        <write-to-stream> (<id>, "This is stdout (1)")
+      ; <fputs> ("This is stdout (2)\n", <id>)
+      ; <puts> "This is stdout (3)"
+      , stdout-stream
+      , stdout-stream
+      )
 
   strcat-tests =
       apply-test(!"strcat-1", strcat, !("",  ""), !"")
