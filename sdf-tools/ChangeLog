@@ -1,3 +1,6 @@
+2001-09-20 Merijn de Jonge <mdejonge@cwi.nl>
+   * sdf-tools package requires stratego 0.6.1
+
 2001-09-18 Joost.Visser@cwi.nl
    * All `unglued' tools are now installed also in libexec.
 	
