@@ -39,8 +39,21 @@ rules
   NZip2  : (n, [y|ys]) -> ((n, y), (<add> (n, 1), ys))
   NZip3  : (x, xs) -> [x| xs]
 
-  cart(s) : (xs, ys) -> 
-            <map(\x -> <map(\y -> <s>(x, y)\ )> ys\ ); foldr(![], union)> xs
+  // cart(s): Create the cartesian product of two lists, i.e., combine
+  // each element of the first list which each element from the second
+  // list. The strategy s is used to combine the pairs of elements
+  // <s>(x,y).
+
+  cart(s) : 
+    (xs, ys) -> 
+    <foldr(![], conc, \ x -> <map(\y -> <s>(x, y)\ )> ys\ )> xs
+
+  // join(s): create the cartesian product of two lists and select only
+  // those combined elements <s>(x, y) that succeed
+
+  join(s) : 
+    (xs, ys) -> 
+    <foldr(![], union, \x -> <filter(\y -> <s>(x, y)\ )> ys\ )> xs
 
   Skip(s) : ([x|xs], ys) -> (x, (xs, ys))
 
