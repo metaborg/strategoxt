@@ -25,7 +25,7 @@ check_DATA = aterms.tree aterms.def
 CLEANFILES = aterms.tree aterms.def
 
 aterms.tree : aterms.def
-	sglr -2 -t -p $(SDF_FRONT)/share/sdf/sdf-front/Sdf2.tbl -i $< -o $@
+	$(SGLR)/bin/sglr -2 -t -p $(SDF_FRONT)/share/sdf/sdf-front/Sdf2.tbl -i $< -o $@
 
 aterms.def : $(ATERM_FRONT)/share/sdf/aterm-front/ATerms.def
 	cp $< $@
