@@ -1,105 +1,231 @@
 StrategoXT 0.9.4 -- under construction
 
 
-Concrete-Syntax
----------------
-Generic program for parsing programs with embedded concrete
-syntax. The program is parameterized with meta-data indicating
-components for various aspects such as parsing, exploding,
-desugaring, and pretty-printing. The meta data can be specified in
-a .meta file specific for a program to be parsed, or it can be
-associated with an extension and registered in an XTC repository.
+---------++ Summary of Changes
 
-For example, the following is the contents of pl.meta, the
-meta-data for Prolog programs with embedded syntax. The assumption
-(in this example) is that syntax embeddings use a standard
-(ToTerm) convention for indicating the boundary between meta- and
-object-syntax.
+   * External definitions for separate compilation
+   * Parsing programs with concrete syntax
+   * Improvements in the run-time system
+
+---------++ Separate Compilation
+
+The Stratego compiler is a whole program compiler. This entails that
+all imported modules are included into a single program, which is then
+compiled. The advantage is that the compiler has complete knowledge of
+all definitions in the program. The disadvantage is that compilation
+of library modules is repeated for each program, which makes
+compilation slow. To improve on this situation this release introduces
+an extension of Stratego with external definitions, which enables
+separate compilation. The separate compilation scheme is not per
+module; rather a module and all modules that it imports can be made
+available as a library. It is up to the programmer to determine the
+boundary between library and application. The feature is available
+in this release, but is still experimental. 
+
+----+++ External Definitions
+
+External definitions are definitions of the form 'external f(as1|as2)'
+or 'external f(as1|as2) = s' and indicate a strategy that is
+implemented externally. It can be compiled with the normal calling
+convention for strategies and will be renamed in the same way to f_n_m
+with n the number of strategy parameters and m the number of term
+parameters. The second form allows the specification of a strategy
+body for the definition. This can be used by the compiler to inline
+some applications of the strategy operator, but no implementation is
+generated for such definitions. External definitions cannot be
+extended.
+
+External definitions generalize 'prim'itive strategies and can be used
+to implement separate compilation. That is, to implement an external
+definition f(as1|as2), the program should be linked with an object
+file which provides a function f_n_m with n = |as1| and m =
+|as2|. Such an object file can be produced from a program written
+directly in C, or can be generated from a Stratego program.
+
+----+++ Library Generation
+
+The Stratego Compiler strc can be used now to generate a library from
+a module file.str with the command
+
+<verbatim>
+  strc -i mod.str -c -o libmod.c --library 
+</verbatim>
+
+This produces three files:
+
+   * libmod.c
+   * libmod.str
+   * libmod.rtree
+	
+The first is the C implementation of the closure of mod.str.  It
+provides C functions for all user-defined strategies, and static C
+functions for strategies generated at compile-time.  The last two are
+the concrete syntax and abstract syntax files for a Stratego module
+with *external* definitions for all strategies defined in mod.str and
+imported modules. It is now possible to import libmod in another
+Stratego program, instead of mod. Note that libmod.str is produced
+mainly for documentation, libmod.rtree should be used to import. This
+is done automatically by the compiler as long as the file is present.
+
+Note that no modules from the 'library' should be imported in the
+program via another path. This will lead to doubly defined strategies;
+it is not allowed to extend external definitions.
+
+The C program libmod.c can be compiled to an object file libmod.o and
+to a library liblibmod.a. This should be done in a makefile; strc does
+not deal with C compilation of libraries. Also strc does not *find*
+imported object libraries; these should be declared explicitly to the
+C compiler (for instance using the LDADD flag in a makefile). Static
+linking of the libraries thus produced may actually lead to *larger*
+executables since no unused-function-removal is performed on the
+library (for obvious reasons). Shared libraries are the solution here
+to save diskspace. This can be achieved by proper use of libtool in
+the buildenvironment; again strc does not provide support for this.
+
+(Remark: the C compilation facility in strc is mainly intended for use
+by novices; any serious application of strc should be embedded in a
+proper build environment where C compilation is better left to that
+environment.)
+
+The current version of strc does not produce implementations of
+definitions for inlining in the importing program. This is catered for
+in the implementation, though. Some more experience is needed with
+this feature before making it available.
+
+Currently, no *overlays* are exported to the library module.
+
+(Eelco Visser)
+
+
+---------++ Other Language Extensions / Changes
+
+---------+++ Injections
+
+An injection is a constructor declaration without constructor
+name. This can be useful for introducing shorter sort names.
+For example,
+
+<verbatim>
+  signature
+    constructors
+      FunDec : Id * FunArgs * Type * Exp -> Dec
+             : String -> Id
+             : List(FunArg) -> FunArgs
+</verbatim>
+
+Injections are accepted syntactically, but since no typechecking is
+done (yet), they make no difference for compilation at the
+moment. However, the quality of (generated) signatures becomes much
+better by this feature.
+
+(Martin Bravenboer)
+
+---------++ Concrete-Syntax
+
+---------+++ Parsing Programs with Concrete-Syntax
+
+Stratego supports definition of rewrite rules and strategies with
+concrete syntax of the object language. This feature is also useful
+for other languages. In the paper 'Retrofitting the AutoBayes Program
+Synthesis System with Concrete Syntax' it is shown how concrete syntax
+can be added to Prolog. (Implementation in prolog-tools package.)
+
+Concrete-syntax is a new package in the StrategoXT bundle. Its purpose
+is to provide generic utilities for handling programs with concrete
+syntax for *arbitrary meta-languages*. So far it provides just the
+program parse-cs, which is an implementation of the generic
+architecture for parsing with concrete syntax outlined in the GPCE'02
+paper 'Meta-Programming with Concrete Object Syntax'.
+
+The program is parameterized with meta-data indicating components for
+various aspects such as parsing, exploding, desugaring, and
+pretty-printing. The meta data can be specified in a .meta file
+specific for a program to be parsed, or it can be associated with an
+extension and registered in an XTC repository.
+
+For example, the following is the content of pl.meta, the meta-data
+for Prolog programs with embedded syntax. The assumption (in this
+example) is that syntax embeddings use a standard (ToTerm) convention
+for indicating the boundary between meta- and object-syntax.
 
   Meta([
-    Syntax(Prolog),
-    ParseTable(Prolog.tbl),
-    Explode(prolog-explode),
-    PrettyPrintTable(Prolog-pretty.pp.af)
+    Syntax("Prolog"),
+    ParseTable("Prolog.tbl"),
+    Explode("prolog-explode"),
+    PrettyPrintTable("Prolog-pretty.pp.af")
   ])
 
-This information can be overridden in a file specific .meta file
-with the same extension. For example, the following indicates an
-embedding of ABIR in Prolog and a specific desugaring tool for
-this format:
+This information can be overridden in a file specific .meta file with
+the same extension. For example, the following indicates an embedding
+of ABIR in Prolog and a specific desugaring tool for this format:
 
   Meta([
-    Syntax(PrologABIR),
-    PostExplodeDesugar(abir-in-prolog-implode)
+    Syntax("PrologABIR"),
+    PostExplodeDesugar("abir-in-prolog-implode")
   ])
 
 It overrides the syntax component, and adds a desugaring component.
 
-In order to define such meta-data for a whole class of programs,
-it can be defined in a meta file associated with a new
-extension. For example, the following is the contents plabir.meta,
-which defines all meta-data for preprocessing Prolog with embedded
-ABIR in files with extension .plabir.
+In order to define such meta-data for a whole class of programs, it
+can be defined in a meta file associated with a new extension. For
+example, the following is the contents plabir.meta, which defines all
+meta-data for preprocessing Prolog with embedded ABIR in files with
+extension .plabir.
 
   Meta([
-    Syntax(PrologABIR),
-    Explode(prolog-explode),
-    PostExplodeDesugar(abir-in-prolog-implode),
-    PrettyPrintTable(Prolog-pretty.pp.af)
+    Syntax("PrologABIR"),
+    Explode("prolog-explode"),
+    PostExplodeDesugar("abir-in-prolog-implode"),
+    PrettyPrintTable("Prolog-pretty.pp.af")
   ])
 
+(Eelco Visser)
 
-matchapp bug
+---------+++ Transforming AsFix 
 
-* src/stratego.c (_all, _one): Changed one-step traversal
-functions such that a new term is only built if there was an
-actual change to at least one of the sub-terms, thus avoiding
-unnecessary term construction. Idea: Eelco Dolstra.
-A one off test on one program suggests that it makes no difference
-at all. But we should wait for results with more programs.
+Parse trees produced by sglr are in the AsFix format which contains
+all details concerning layout and the structure of lexical syntax.
+For some applications it is useful to apply transformations to this
+AsFix format, rather than the imploded abstract syntax.  While generic
+AsFix transformations can be written quite compactly using abstract
+syntax (constructors app, prod, sort, etc), transformations which are
+specific for the object language become gruesome. The --asfix switch
+of the implode-asfix algorithm now indicates that AsFix trees which
+occur within the concrete syntax quotes should not be imploded. Thus,
+it becomes possible to write transformations on AsFix using concrete
+syntax. (Valentin David)
 
-* Improved setjmp() choice operator implementation.  Instead of
-  allocating a gigantic fixed-length array of jmp_buf buffers in the
-  data segment, we now dynamically allocate the array on the heap.
-  The array starts at size 1 and is doubled on demand, for O(1)
-  amortised time complexity.
+---------++ Run-Time System
 
-  This should fix the problems with very large statically allocated
-  data observed on some platforms (cygwin, SuSE 8.1).  The new
-  implementation should also be slightly more efficient due to
-  inlining. (Eelco Dolstra)
+---------+++ Don't Reconstruct Identical Term on Traversal
 
-Martin:
-  * spec/front/check-constructors.str: added GenerateCheckRule
-    for injections. Injections should now be
-    supported by Stratego.
+Changed one-step traversal functions such that a new term is only
+built if there was an actual change to at least one of the sub-terms,
+thus avoiding unnecessary term construction. (Based on an idea by
+Eelco Dolstra.)  A one off test on one program suggests that it makes
+no difference at all. But we should wait for results with more
+programs.
 
+(Eelco Visser)
 
-Valentin:
-The following changes were prompted by Automake that now does check that the
-names of macros being defined are properly quoted.  While I was at it, I have
-update a couple of stylistic issues:
-- properly quote where expected
-- don't shell-quote where not needed
-- use the weak versioning conventions (#serial)
+---------+++ Jumpbuffer
 
-This is the resulting autoxt.m4, still valid for both Autoconf 2.1x and 2.5x,
-thanks!
+Improved setjmp() choice operator implementation.  Instead of
+allocating a gigantic fixed-length array of jmp_buf buffers in the
+data segment, we now dynamically allocate the array on the heap.  The
+array starts at size 1 and is doubled on demand, for O(1) amortised
+time complexity.
 
-Add the support of --asfix option. Valentin
+This should fix the problems with very large statically allocated data
+observed on some platforms (cygwin, SuSE 8.1).  The new implementation
+should also be slightly more efficient due to inlining. 
 
-Merijn:
- * pptable-diff: also differences due to change production rules are
-   reported. These cal also be patches, without loosing the originals ones.
+(Eelco Dolstra)
 
-* xtc: added pp-dot pretty-print tool
- * Added pptable-diff tool, which reports about differences between
-   pretty-print tables, and which can patch an old pretty-print tableby
-   inserting newer pretty-print rules and removing obsolete ones
+---------++ Stratego Standard Library
 
+-------+++ Posix Error Codes
 
-
-Martin:
 spec/posix-error.str: new module
 
   * spec/dir.str: extended rename-file to copy files
@@ -109,7 +235,30 @@ spec/posix-error.str: new module
 
   * spec/list-misc.str: added split-last.
 
-Martin:
+Added execv.  Note that the implementation in the runtime does not add
+the program to the list of argument. execvp does this, which is
+horrible. I think this should be changed in the runtime part of execvp
+and the invocations to execvp should be adapated.
+
+Added chdir to change the current working directory. Note that chdir
+implements the error reporting in the SSL itself now we have a perror
+in the SSL. If you really want no warning, then you can use the plain
+primitive.
+
+This kind of error-reporting is very easy to implement in
+Stratego:
+
+<verbatim>
+  ?pathname; prim("SSL_chdir", pathname) => 0
+  <+ < conc-strings
+       ; perror
+       ; fail
+     > ("SSL/chdir: Cannot change current working directory to ", <id>)
+<verbatim>
+
+This will for example output the following message if the pathname
+does not exist:
+
   * ssl/exec.[ch]: added:
     - ATerm SSL_get_errno(void);
     - ATerm SSL_set_errno(ATerm code);
@@ -120,54 +269,86 @@ Martin:
   * spec/integers.str: added set-random-seed, get-random-max,
     and next-random to generate random numbers.
 
-  * parse/meta-explode.str: added explosion
-    of int terms to trm-explode.
-  * parse/stratego-ensugar.str: implemented ensugaring of
-    Cons/Nil to List and ListTail.
 
-Eelco Visser:
-bug in Stratego compiler
-Variables in a match expression are
-abstracted over; even the variables that are term arguments. As a
-result these variables are passed twice to the worker. Fix by
-diffing term arguments from the list of variables passed on to
-the worker.
+(Martin Bravenboer)
 
-Rob:
-  pack-stratego
-    * added --slack flag to pack-stratego. using this will let pack-stratego con
-tinue even if a module isn't found, producing only a warning.
+-----------------------++ Utilities
 
+-------+++ Pretty-Printing: Difference of Pretty-Print Tables
 
+The pretty-print tables generated by ppgen have to be edited manually
+to achieve 'pretty' formatting of trees. However, when the syntax
+definition is updated, the edited pretty-print table should be updated
+as well. The new tool pptable-diff computes the differences between
+two pretty-print tables and prunes and patches an old table to bring
+it up to date with a new table. Thus, the pretty-print rules for the
+parts of the language that were not changed are reused.
 
+(Merijn de Jonge)
 
-DOWNLOAD AND INSTALLATION
+-------+++ Pack-stratego
 
-  The release page contains the source distributions, binary RPMs, and
-  detailed instructions on how to install the distributions:
+Added --slack flag to pack-stratego. Using this will let pack-stratego
+continue even if a module isn't found, producing only a warning.
 
-  *  http://www.stratego-language.org/Stratego/StrategoRelease094
+(RobVermaas)
 
-BUGS / KNOWN PROBLEMS
+-----------------------++ Configuration
 
-  All the bugs and known problems for StrategXT distributions have
-  been solved in this release.
+The package name 'strategoxt' is now also reflected in the location
+of the XTC repository, which is in <prefix>/share/strategoxt/XTC.
 
-  For a more detailed overview of problems and missing features please
-  visit:
+(Eelco Visser)
 
-  * ReleasePlan: http://www.stratego-language.org/Stratego/ReleasePlan
-  * Todo: http://www.stratego-language.org/Stratego/ToDo
+The following changes were prompted by Automake that now does check
+that the names of macros being defined are properly quoted.  While I
+was at it, I have updated a couple of stylistic issues:
 
-  Please report any problems with installation or bugs in the
-  implementation to the stratego-bugs@cs.uu.nl mailing list. Please
-  check the archive of the list to see if a report about the problem 
-  was already submitted.
+   * properly quote where expected
+   * don't shell-quote where not needed
+   * use the weak versioning conventions (#serial)
 
-CONTRIBUTIONS
+This is the resulting autoxt.m4, still valid for both Autoconf 2.1x
+and 2.5x, thanks! 
 
-  * Beta tests carried out by:
-    Martin Bravenboer, Rob Vermaaas, Arthur van Dam
+(Valentin David)
 
-  * Major developments were carried out by:
-    Eelco Visser, Martin Bravenboer, Rob Vermaas
+-----------------------++ Download and Installation
+
+The release page contains the source distributions, binary RPMs, and
+detailed instructions on how to install the distributions:
+
+   * http://www.stratego-language.org/Stratego/StrategoRelease094
+
+-----------------------++ Bugs and Known Problems
+
+NOT all the bugs and known problems for StrategXT distributions have
+been solved in this release. See the stratego-bugs list for reports
+about (open) bugs:
+
+   * https://mail.cs.uu.nl/pipermail/stratego-bugs/
+
+For a more detailed overview of problems and missing features please
+visit:
+
+   * ReleasePlan: http://www.stratego-language.org/Stratego/ReleasePlan
+   * Todo: http://www.stratego-language.org/Stratego/ToDo
+
+Please report any problems with installation or bugs in the
+implementation to the stratego-bugs@cs.uu.nl mailing list. Please
+check the archive of the list to see if a report about the problem was
+already submitted.
+
+-----------------------++ Contributions
+
+Developments, beta tests, and bug fixes were carried out by
+
+  * Martin Bravenboer
+  * Arthur van Dam
+  * Valentin David
+  * Eelco Dolstra
+  * Armijn Hemel
+  * Rob Vermaas
+  * Eelco Visser
+
+Special thanks to the students of the Program Transformation course.
