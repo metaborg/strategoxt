@@ -1,0 +1,1241 @@
+2004-09-26  Eelco Visser  <visser@cs.uu.nl>
+
+	* stratego-lib is a redesign of the former ssl
+
+------------------------------------------------------------------------------
+
+2004-08-29  Martin Bravenboer <martin@cs.uu.nl>
+
+	* spec/string.str: added a string-tokenize variant using a term
+	argument for the list of token separators.
+	
+2004-08-26  Martin Bravenboer <martin@cs.uu.nl>
+
+	* spec/list-basic.str: removed conc-two-lists and conc-more-lists.
+	
+	* spec/list-basic.str: added some documation comments.
+
+2004-08-26  Martin Bravenboer <martin@cs.uu.nl>
+
+	* spec/list-basic.str: solved a long-time frustration: added a
+	variant of separate-by that uses a term argument for the
+	separator. I always forget that the separator should be the first
+	element in the past to the old-style separate-by.
+	
+2004-08-12  Arthur van Dam  <adam@cs.uu.nl>
+
+	* spec/string.str : newname - now trims any trailing digits up to
+	the rightmost '_'. This allows for feeding previously generated
+	new names as prefix into another call to newname:
+	    <newname> "a"        // produces "a_0"
+	  ; <newname> "b"        // produces "b_0"
+	  ; newname              // produces "b_1"
+	  ; <newname> "b_2"      // produces "b_3"
+	  ; <newname> "b_1729"   // produces "b_4"
+	  ; <newname> "b_a"      // produces "b_a_0"
+	  ; <newname> "a_"       // produces "a_2"
+	  ; <newname> "a_1"      // produces "a_3"
+	Note that the previous term argument `countergroup' has been
+	discarded, as has been the strategy `newname-shared'
+
+2004-07-10  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/tables.str : Refactored the definition of merge operations
+	on pairs of hashtables. There is now a single (78 LOC!) rule that
+	defines many different scenarios for merging two hashtables. This
+	hashtable-merge rule takes as arguments a number of switches for
+	choosing the desired scenario.  For example, the following merge
+	strategy is defined in terms of hashtable-merge:
+
+	  hashtable-intersect-wempty(|tbl2, emptyElt) =
+	    ?tbl1
+	    ; !(tbl1, tbl2)
+	    ; hashtable-merge(
+		symmetric-no, 
+		iterate1-yes, 
+		iterate2-yes, 
+		remove-no,	
+		isect, 
+		!emptyElt, 
+		\ key -> <hashtable-get(|key)> tbl1 \,
+		\ key -> <hashtable-get(|key)> tbl2 \
+	    )
+
+	The -yes, -no strategies are synonyms for id and fail and serve
+	to remind us of the choices made in the instantiation. When
+	good use is made of compile-time inlining and evaluation (constant
+	folding), the generic algorithm should be reduced to a fairly
+	decent specialized algorithm.
+	
+	* spec/dynamic-rules-refactored.str : Fixed bug in definition of
+	dr-fork-and-union; now relevant entries that do not occur in a
+	changeset, but are defined in the corresponding scope, are also
+	retrieved when computing the union. Also generalized the merging
+	of rule sets and the corresponding fork- and fix-
+	operations. Instantiation for a specific merge operation is now a
+	matter of a few lines.
+
+2004-07-07  Martin Bravenboer <martin@cs.uu.nl>
+
+	* spec/options.str: fix in the 'usage' invoked by iowrap. Also
+	added an obsolete message to iowrap. This should stop the
+	confusion about what to use, especially in combination with the
+	stratego-warnings tool.
+
+2004-07-04  Martin Bravenboer <martin@cs.uu.nl>
+
+	* spec/options.str: io-wrap now has a variant that takes an
+	explicit usage and about argument. These strategies are used if
+	the users requests for help or information about the program. The
+	changes are backwards compatible.
+
+2004-06-15  Arthur van Dam <adam@cs.uu.nl>
+
+	* spec/sets.str:
+	4 binary set operations, all operating on one input set 'set1':
+	  iset-union(|set2)
+	  iset-isect(|set2)
+	  iset-subset(|set2)
+	  iset-eq(|set2)
+
+	* spec/dynamic-rules-refactored.str:
+	  - Scope-identifier used as part of key in ChangeSets now is the
+	    hashtable pointer of that scope (instead of scope label list).
+	  - ChangeSets now also store new scope labels (if new ones are
+	    added). For what it's worth.
+	  - Both RuleScopes and ChangeSet now use IndexedSets for
+	    maintaining scope labels, instead of a list.
+
+2004-06-14  Martin Bravenboer <martin@cs.uu.nl>
+
+	* spec/sets.str: new module providing an interface to ATerm's
+	IndexedSets (stateful sets). Main strategies: new-iset,
+	iset-add(|elem), iset-contains(|elem), iset-remove(|elem),
+	iset-elements(|elem), iset-clear(|elem). For examples, see the
+	sets-test module in the SSL tests directory.
+
+2004-06-09  Valentin David  <valentin@lrde.epita.fr>
+
+	* spec/file.str (remove-extension): Do not use string-tokenize any
+	more to not loose multiple dots.
+
+2004-05-30  Arthur van Dam <adam@cs.uu.nl>
+
+	* spec/string.str: `newname' and `newname-shared' strategies that
+	generate unique strings with user-defined prefix. The increasing
+	counter that is used as postfix can be shared among various
+	`newname' calls that use the same countergroup.
+	Note the change at 2004-08-12!
+
+	newname -- use current term as prefix and groupname (i.e. each
+	prefix has its own numbering starting at 0)
+	newname-shared -- use current term as prefix and use a global
+	counter (groupname = "")
+	newname(|groupname) -- use current term as prefix and number within
+	specified groupname.
+
+	Note that uniqueness-checking occurs over any grouping or scoping,
+	no previously used string (within one program run) will ever be
+	returned by newname.
+
+2004-04-28  Martin Bravenboer <martin@cs.uu.nl>
+
+	* spec/placeholder.str: new SSL module that adds library support
+	for ATerm placeholders to Stratego. 
+
+	get-placeholder -- Returns the placeholder of an ATerm placeholder.
+	make-placeholder -- Creates a placeholder.
+	is-placeholder -- Checks if the current term is a placeholder.
+
+	* test/placeholder-test.str: testsuite for placeholders.
+	
+2004-04-13  Arthur van Dam <adam@cs.uu.nl>
+
+	* dynamic-rules-refactored.str: moved from experimental into SSL.
+
+	* dynamic-rules-(lowlevel|highlevel)-test.str: two testsuites for
+	testing both low- and highlevel API (needs some more tests).
+
+	* dynamic-rules.str: imports the dynamic-rules-refactored by
+	default, no name-clashes between old and new dr-strategies of course.
+
+2004-03-22  Martin Bravenboer <martin@cs.uu.nl>
+
+	* collect.str: improved the documentation of the collect
+	strategies.
+
+	* collect.str: added collect-all and collect-om with three
+	arguments: s, union and skip. The skip strategy can be used to
+	reduce the current term to skip parts of it. It is not higher
+	order, but a simple term to term strategy.
+	
+2004-04-06  Eelco Visser <visser@cs.uu.nl>
+
+	* tables.str: hashtable-intersect and hashtable-union
+	- change the argument table
+	- fail if no changes are made
+	- assume that values are lists
+
+	- hashtable-pushlist
+	- hashtable-pushunion
+
+2004-04-04  Arthur van Dam <adam@cs.uu.nl>
+
+	* tables.str :
+	All primitive calls to the legacy table functions are now replaced
+	by (non-primitive) hashtable-* calls. Behaviour is of course still
+	the same.
+
+	- table-hashtable() makes the legacy table-table available as a
+	Hashtable.
+
+2004-04-02  Arthur van Dam <adam@cs.uu.nl>
+
+	* tables.str: Added bulk operations
+	- hashtable-putlist(|kv*)
+	- hashtable-getlist
+	- hashtable-copy
+
+2004-04-01  Arthur van Dam <adam@cs.uu.nl>
+
+	* tables.str: Added stack-operations for stacks stored in hashtables.
+	- hashtable-push(|key, value)
+	- hashtable-pop(|key)
+	- hashtable-peek(|key)
+	- hashtable-peekpop(|key)
+
+2004-03-22  Martin Bravenboer <martin@cs.uu.nl>
+
+	* ssl/table.str: 
+	- new-hashtable =
+	- new-hashtable(|initial_size, max_load)
+	- hashtable-destroy
+	- hashtable-put(|key, value)
+	- hashtable-get(|key)
+	- hashtable-remove(|key)
+	- hashtable-keys
+
+	Hashtable strategies that operate on an Hashtable representation
+	in an ATerm. These strategies require you to pass this
+	representation around in Stratego, not the name of a
+	hashtable. The internal structure of this representation should
+	not be used in any way and is subject to change (compare to Stream
+	as ATerm).
+
+2004-03-07  Arthur van Dam <adam@cs.uu.nl>
+
+	* ssl/list-set.str: Introduced a general subset checker.
+	End user strategies include: `set-eq`, `subset`, `subseteq`, all
+	parameterizable with a user-defined compare/eq strategy.
+
+2004-02-22  Merijn de Jonge <mdejonge@cs.uu.nl>
+
+	* Makefile.am: added autoxt.m4 to EXTRA_DIST
+	* Makefile.am: added line: ACLOCAL_AMFLAGS = -I . such that autoreconf
+	can find autoxt.m4
+
+2004-02-12  Martin Bravenboer <martin@cs.uu.nl>
+
+	* ssl/term-io.str: added write-to-string. This strategies takes an
+	ATerm and returns the ATerm in a String.
+
+2004-02-12  Martin Bravenboer <martin@cs.uu.nl>
+
+	* ssl/term-io.str: add read-from-string. This strategies takes a
+	String and returns the ATerm in this String.
+
+	* ssl/term-io.str: removed print-stack since it is completely
+	obsolete.
+
+2004-01-20  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/scoped-finite-map.str: Table manipulation operations for
+	implementation of 'extend rules' and 'extend override rules'.
+	Instead of maintaining a single list of values for a key, there is
+	a list of values for each scope.
+
+2003-12-24  Martin Bravenboer <martin@cs.uu.nl>
+
+	* spec/posix-file.str: added chdir to change the current working
+	directory. Note that chdir implements the error reporting in the
+	SSL itself now we have a perror in the SSL. If you really want no
+	warning, then you can use the plain primitive.
+
+	This kind of error-reporting is very easy to implement in
+	Stratego:
+
+	?pathname; prim("SSL_chdir", pathname) => 0
+	<+ < conc-strings
+	   ; perror
+	   ; fail
+	   > ("SSL/chdir: Cannot change current working directory to ", <id>)
+
+	This will for example output the following message if the pathname
+	does not exist:
+	
+        SSL/chdir: Cannot change current working directory to /tddmp: No
+	such file or directory
+
+	* tests/posix-file-test.str: tests for chdir
+
+	* Adding new primitives is quite complex now we have separation
+	compilation with SSL libraries in the SRTS ...
+
+2003-12-21  Martin Bravenboer <martin@cs.uu.nl>
+
+	* spec/posix-process.str: added execv.
+
+	Note that the implementation in the runtime does not add the
+	program to the list of argument. execvp does this, which is
+	horrible. I think this should be changed in the runtime part of
+	execvp and the invocations to execvp should be adapated.
+	
+2003-12-19  Eelco Visser  <visser@cs.uu.nl>
+
+	* Improvements for separate compilation
+	  - added more modules to lib; since liblib should be
+	    the default module to be imported in programs, there
+	    should be not need to import other modules that partly
+	    overlap. Added annotation-props, sunit. Also added
+	    constructor declarations for tuples to library instead
+	    of in compiler. 
+	  - (In the future it might be interesting to split the
+	     library into smaller parts.)
+	  - uncify reverses the cification of function names 
+
+	* liblib is a library derived from lib.str. The compiler generates
+	liblib.c from which an object library is produced, liblib.str,
+	a Stratego module with external definitions for all the definitions
+	in lib, and liblib.rtree. Instead of importing lib or some sub-modules
+	in a program, one should now (when desired) import liblib. In addition
+	it is then necessary to link against the object library. When using
+	Makefile.xt this can be done as follows (for a program file.str):
+
+	   file_LDADD = -lliblib $(STRATEGORUNLIBS)
+
+2003-12-09  Martin Bravenboer <martin@cs.uu.nl>
+
+	* spec/posix-file.str: added getcwd
+
+	* spec/file.str: added abspath, is-abspath, is-relpath,
+	base-filename.
+
+	* spec/file-tests.str: tests for these strategies.
+	
+2003-12-09  Martin Bravenboer <martin@cs.uu.nl>
+
+	* spec/file.str: added pathname manipulations, removed them from
+	string.str
+
+	* spec/file.str: corrected documentation of basename strategy
+
+	* spec/file-test.str: same for tests
+	
+2003-12-04  Martin Bravenboer <martin@cs.uu.nl>
+
+	* spec/posix-error.str: added perror and strerror.
+	
+	* spec/posix-error-test.str: testsuite for strategies in
+	posix-error.
+
+2003-12-01  Martin Bravenboer <martin@cs.uu.nl>
+
+	* spec/parenthesize.str: fixed problem with unary operators. Added
+	a Disambiguate(paren) rule for these cases.
+
+	* tests/parenthesize-test.str: started a testsuite for parenthesize.
+
+2003-11-16  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/string.str: get-extension from filename
+
+2003-09-23  Merijn de Jonge <m.de.jonge@cwi.nl>
+
+	* spec/tables.str: added more informative argument names to
+	strategy "table-rename"
+
+2003-09-19  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+	* spec/list-set.str: added nub as an alias of make-set.
+
+2003-09-17  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+	* spec/posix-error.str: new module
+
+	* spec/dir.str: extended rename-file to copy files if rename fails
+	because of an XDEV error. Thanks to Arthur van Dam for reporting
+	this problem.
+
+	* spec/list-misc.str: added split-last.
+
+2003-09-16  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+	* spec/integers.str: added set-random-seed, get-random-max, and
+	next-random to generate random numbers.
+
+2003-08-17  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/list-misc.str: mapconcat(s) is shortcut for (map(s);
+	concat)
+
+2003-08-15  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+	* spec/string.str: added unescape-chars(s) to allow the
+	specification of UnEscape rules to apply.
+
+	* spec/string.str: added unquote(s1, s2) to allow different start
+	and end 'quotes'. Typical examples: [ ] or ( ).
+
+	* Some xDoc comments.
+
+2003-08-14  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+	* spec/parenthesize.str: fixed typo in gen-right. GenLeftAssoc
+	should be GenRightAssoc.
+
+	* Moved parenthesize-test.str to tests directory.
+
+2003-08-12  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/scoped-finite-map.str: At the end of a rule scope, remove
+	the entry for the lhs if there are no more rules in scope. These
+	entries used to clutter the tables representing dynamic rules;
+	possibly causing overhead for manipulation of dynamic rules in
+	data-flow optimizations.
+
+2003-08-12  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+  * spec/process.str: defined call/(0,0) in terms of call(1,0)
+
+  * spec/process.str: call/(1, 0): <exit> -1 if execvp returns
+
+2003-08-07  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+  * collect-om(s) and collect-set(s) are now defined
+    in terms of collect-om(s, op).
+
+  * collect-om(s, op): collect outermost terms using
+    a user specified union strategy.
+
+  * xDoc comments
+
+2003-08-07  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+  * Moved strlen en strcat from posix-file to string.
+  * Defined string-length in terms of strlen.
+  * Defined conc-strings in terms of strcat.
+
+  * new-concat-strings is now concat-strings.
+
+  * Added some xDoc comments.
+
+2003-08-01  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+  * spec/list-misc: split-at is an alias of split-fetch.
+    Reported by Arthur van Dam
+
+  * spec/list-basic: xDoc for split-fetch.
+
+2003-07-29  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/list-basic.str: reverse-map(s) applies s to elements in
+	reverse order; useful for data-flow optimizations.
+
+2003-07-29  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+	* spec/int-list.str: added range strategy, inspired by
+    Python's range function. The range strategy produces
+    lists of ints given a range, step or step strategy.
+
+  * spec/simple-traversal.str: corrected the order of 
+    higher order strategy arguments.
+
+2003-07-15  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/list-basic.str: definitions of map1 and listbu1 require that
+	at least one application succeeds.
+
+2003-06-10  Martin Bravenboer <martin@mbravenboer.org>
+
+  * spec/parse-options.str: --about and --version are now
+    standard switches in parse-options.
+
+  * spec/options.str: version-option in is now defined 
+    as fail. It will show an obsolete message when directly 
+    used.
+
+2003-06-09  Martin Bravenboer <martin@mbravenboer.org>
+
+  * spec/posix-signal.str: prefixed signal overlays with
+    SIG. Reported by Karina.
+
+  * test/posix-process-test.str: unit testing of 
+    posix-process primitives.
+
+2003-05-28  Martin Bravenboer <martin@mbravenboer.org>
+
+  * spec/char-io.str: added read-text-file.
+
+  * spec/list-misc.str: documented fold strategies
+
+  * spec/parse-options.str: allow overriding of 
+    system-usage strategy.
+
+2003-03-28  Martin Bravenboer <martin@mbravenboer.org>
+
+  * spec/char-io.str: added read-text-from-stream, 
+    currently based on fgetc.
+
+2003-03-28  Martin Bravenboer <martin@mbravenboer.org>
+
+  * spec/term-io.str: defined ReadFromFile, WriteToTextFile
+    and WriteToBinaryFile in terms of new POSIX
+    strategies. Behaviour should be exactly the same
+    as the native implementations.
+
+2003-03-27  Martin Bravenboer <martin@mbravenboer.org>
+
+  * spec/term-io.str: added fprint: print implemented
+    in Stratego.
+
+2003-03-27  Martin Bravenboer <martin@mbravenboer.org>
+
+  * spec/posix-file.str: added fputc and more tests for
+    the posix-file module.
+
+2003-03-25  Martin Bravenboer <martin@mbravenboer.org>
+
+  * spec/file.str: added POSIX compatible dirname and
+    some more file property checks.
+
+2003-03-25  Martin Bravenboer <martin@mbravenboer.org>
+
+  * spec/file.str: added can-read-file and can-write-file.
+
+  * spec/posix-file.str: added access.
+
+  * spec/file.str: started moving abstractions to file.
+    Same will happen for process, aterm-io and char-io.
+
+2003-03-24  Martin Bravenboer <martin@mbravenboer.org>
+
+  * spec/io.str: defined ReadFromFile, WriteToTextFile
+    and WriteToBinaryFile in terms of new POSIX
+    strategies. Behaviour should be exactly the same
+    as the native implementations.
+
+  * spec/posix-file.str: added fgetc
+
+  * spec/io.str: deprecated getchar
+
+2003-03-24  Martin Bravenboer <martin@mbravenboer.org>
+
+  * spec/posix-file.str: split write-to-stream 
+    in baf/taf/text. Note the failing test with taf.
+
+2003-03-24  Martin Bravenboer <martin@mbravenboer.org>
+
+  * spec/posix-file.str: new stream representation
+
+  * spec/posix-file.str: added fopen, strlen, strcat,
+    stdin-stream, stdout-stream, open-stream and
+    rewritten all code to new stream representation.
+
+2003-03-21  Martin Bravenboer <martin@mbravenboer.org>
+
+  * spec/posix-file.str: added fileno
+
+2003-03-21  Martin Bravenboer <martin@mbravenboer.org>
+
+  * spec/posix-file.str: added P_tmpdir and temp-dir
+  * spec/posix-file.str: added mkstemp for creating
+    temporary files
+
+2003-03-20  Martin Bravenboer <martin@mbravenboer.org>
+
+  * spec/posix-process.str: added kill
+
+2003-03-20  Martin Bravenboer <martin@mbravenboer.org>
+
+  * spec/posix-signal.str: definition of 
+    POSIX signals.
+  
+  * spec/posix-process.str: collected POSIX process 
+    operations, mostly from exec.str. Improved
+    documentation and grouping of strategies.
+    
+  * spec/posix-file.str: collected POSIX file 
+    operations from exec.str and io.str
+    
+  * spec/posix-process.str: fork-and-wait: show
+    warning if child process terminated because
+    of a signal (useful for segmentation faults)
+
+  * spec/pipe.str: moved WaitStatus operations
+    to posix-process.str
+    
+2003-03-19  Martin Bravenboer <martin@mbravenboer.org>
+
+  * spec/list-set.str: moved the collect strategies to
+    a new module "collect". TODO: better naming of
+    collection strategies
+    
+  * spec/list-set.str: moved term operations like crush
+    to term.str module
+    
+  * spec/io.str: introduced debug-depth for debugging
+    with big ATerms.
+    
+2003-02-26  Martin Bravenboer <martin@mbravenboer.org>
+
+  * spec/abox.str: removed, use Box signature of GPP.
+  * spec/abox-ext.str: moved to GPP.
+
+2003-02-26  Martin Bravenboer <martin@mbravenboer.org>
+
+  * spec/ugly-print.str: moved to aterm-tools
+
+2003-02-26  Martin Bravenboer <martin@mbravenboer.org>
+
+  * spec/cgi.str: moved to stratego-net
+	* spec/cgi-utils.str: moved to stratego-net
+
+2003-02-26  Martin Bravenboer <martin@mbravenboer.org>
+
+  * spec/client-test.str: removed
+	* spec/communication.str: removed
+	* spec/connect-test.str: removed  
+	* spec/connect.str: removed
+	* spec/server-test.str: removed
+  
+  * Removed socket modules. Might go into stratego-net 
+    in the future
+
+2003-02-16  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/list-sort.str: quick sort by Rob Vermaas
+
+2003-01-28  Martin Bravenboer <martin@mbravenboer.org>
+
+  * spec/io.str: introduced fflush to fflush
+    open files or stdout/stderr.
+
+2003-01-26  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/fixpoint-traversal.str: Removed spurious rec from definition
+	of innermost.
+
+2003-01-25  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/simple-traversal.str: Turned top-level local recursion into
+	recursive definition
+
+	* spec/list-set-test.str: test for collect with skip
+
+2003-01-11  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/parenthesize.str: place parentheses based
+	on priority and associativity information
+
+2003-01-09  Martin Bravenboer <martin@mbravenboer.org>
+
+  * spec/list-misc.str: introduced flatten-list. flatten-list
+    completely flattens a list. See list-misc-test for  
+    examples.
+
+2003-01-07  Martin Bravenboer <martin@mbravenboer.org>
+
+  * spec/conditional.str:
+
+  - Introduced maybe/1. Maybe will apply specified strategy
+    s. If s suceeds it will produce a Some with the result of
+    s. Otherwise the result will be None. This is a bridge
+    from the fail approach of Stratego to the Maybe approach
+    of Haskell.
+
+  - Introduced maybe/2. If the current term is Some(a) s1 will 
+    be applied to a. Otherwise s2 will be applied to the
+    empty tuple.
+    
+2003-01-04  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/iteration.str: don't define repeat/1 in terms of repeat/2
+
+	* spec/list-basic.str: <for-each-pair(s)>(xs, ys) produces
+	the list of pairs <s>(x,y) for each pair of x from xs and
+	y from ys.
+
+2002-12-31  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/exec.str: 
+
+	- fork-and-wait fails if the child returns with a non-zero exit
+	status.
+
+	- call definined in terms of fork and execvp in Stratego; previous
+	implementation was complex C implementation. 
+
+	- call(init-child) is like call, but applies init-child in the
+	child process before the execvp
+		
+	- redirect-stdout-to-file and redirect-stdin-from-file do as their
+	name suggest. They can be used with call(...) to redirect input
+	and/or output of the child process. Using this files can be copied
+	using the cat program as follows:
+	
+	  cat :
+	    (filein, fileout) -> fileout
+	    where <call(<redirect-stdin-from-file> filein;
+		        <redirect-stdout-to-file> fileout)> ("cat", [])
+
+	Typical use of all this is to coerce programs that only read or
+	write using stdio into using file io.
+
+2002-12-30  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/string.str: get-filename removes path
+
+	* spec/list-basic.str: at-suffix-rev looks for suffix starting at
+	end of list
+
+2002-12-18  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/verbose.str: pass-verbose to pass verbose option to children
+
+	* spec/pack-modules.str: Refactored using new (config-style) option handling.
+
+	* spec/file.str: find-file(ext) is new; refactored other definitions
+
+	* spec/sunit.str, spec/pipe.str: unbound variable fixes
+
+	* spec/sunit.str: Adapted to comply with more strict checks
+	for unbound variables in frontend.
+
+2002-12-17  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/: cosmetics
+
+2002-12-16  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/string.str: Removed calls to debug in unescape-chars
+
+	* spec/parse-options.str: Writing usage information to stdout instead
+	of stderr. (Then we can use help2man to generate man files.)
+
+	* spec/dir.str: Including C function SSL_copy for verbatim copying
+	of files.
+
+	* spec/options.str: option-wrap is an abstraction for option handling
+	that does determine the io behaviour, as does io-wrap. This is
+	useful in combination with the XTC abstractions.
+
+2002-12-15  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/Makefile.am: Installing module sources in ${pkgdatadir}/doc
+
+	* spec/tables.str: table-append appends the new value list at the
+	end of the list of entries
+
+2002-12-13  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/simple-traversal.str: renamed oncetd/2 to oncetd-stop/2 in
+	order to avoid problems in the compilation of the Stratego
+	front-end where oncetd is passed by name.
+
+	* spec/io.str: fix of open-file by Martin Bravenboer
+
+2002-12-09  Eelco Visser  <visser@cs.uu.nl>
+
+	* Migrated modules to .str extension
+
+2002-12-07  Eelco Visser  <visser@cs.uu.nl>
+
+	* ssl/spec/options.r: --keep option indicates that intermediate
+	files should not be removed.
+
+	* ssl/spec/dir.r: rename-file, link-file, remove-file
+
+2002-12-02  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/options.r: --keep option indicates to what extend intermediate
+	results should be kept
+
+2002-12-01  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/Makefile.am: simplified makefile
+
+	* spec/exec.r: typo
+
+2002-11-22  Eelco Visser  <visser@acm.org>
+
+	* spec/exec.r: Adding missing import (verbose.r)
+
+2002-11-19  Eelco Visser  <visser@acm.org>
+
+	* Moved src/ subdirectory to the srts package.
+
+2002-11-17  Eelco Visser  <visser@acm.org>
+
+	* spec/integers.r: Repaired bug in definition of gtS and friends
+	(reported by Karina Olmos)
+
+2002-09-20  Eelco Visser  <visser@acm.org>
+
+	* spec/cgi-utils.r: Utilities for CGI programming
+
+	* spec/cgi.r: Support for CGI programming
+
+	* configure.in: Added --enable-develop configuration flag to 
+	enable remaking .rtree files in spec/ after they have changed.
+	This is not needed when in distribution mode in which case the
+	files should just be installed.
+
+2002-09-18  Eelco Visser  <visser@acm.org>
+
+	* spec/list-misc.r: number(s) numbers the elements of a list
+
+2002-09-07  Eelco Visser  <visser@acm.org>
+
+	* spec/pack-modules.r: Changed failure message into "Packing
+	modules failed"
+
+2002-06-20  Eelco Visser  <visser@acm.org>
+
+	* Primitives and strategies for process control 
+
+2002-06-11  Eelco Visser  <visser@acm.org>
+
+	* spec/dir.r, src/dir.c, src/dir.h: getenv and setenv can
+	be used to retrieve and set environment variables.
+
+	* spec/verbose.r, spec/exec.r, spec/config.r, spec/exec.r,
+	spec/options.r, spec/pack-modules.r, spec/parse-options.r,
+	spec/parse-options-test.r, spec/time.r: Strategies to support
+	integer verbosity levels; declared using command line option
+	--verbose, or config entry "--verbose".
+
+2002-06-09  Eelco Visser  <visser@acm.org>
+
+	* spec/*.rtree: Add parsed modules to CVS repository to enable
+	bootstrapping.
+
+	* src/dir.h, src/dir.c: directory manipulations
+
+	* src/*.c: Added missing casts
+
+	* src/stratego-lib.h: added annotations and dir
+	
+	* src/annotations.c: No annotations = empty list of annotations
+
+	* spec/io-text.r: removed
+
+	* spec/parse-options.r, spec/parse-options-test.r: testing
+	parse-options
+
+	* spec/dir.r, spec/dir-test.r: <readdir> d gives list of filenames
+	of directory d
+
+	* spec/config.r: Maintenance, import, and export of configuration
+	information such as locations of executables and data files.
+
+	* spec/share-misc.r: removed
+
+	* spec/simple-list-traversal.r, spec/env-list-traversal.r: generic
+	traversals in which lists are traversed by visiting head and tail,
+	instead of visiting all elements (behaviour of all). Contributed by
+	Otto Skrove Bagge.
+	
+	* spec/breadth-first.r: removed, was not correct
+
+	* spec/annotation-props-test.r, spec/annotation-props.r:
+	Operations to manipulate annotation lists composed of key value
+	pairs. By Martin Bravenboer.
+
+	* src/time.c, src/ssl-time.h, spec/time.r, spec/time-test.r,
+	src/time.c, src/ssl-time.h: support for time measurements extended
+	with primitives calling the system calls clock and time. Module
+	time defines a number of useful abstractions over this. In
+	particular, <run-time> returns the seconds of total run-time so
+	far, including the run-time of any child processes.  The operator
+	profile(msg, s) measures the time used to apply s and then prints
+	user and system time, including children time.
+
+	* spec/getopt.r, spec/io-test.r, spec/template-test.r,
+	spec/substitution.r: copyright notice
+
+	* spec/sunit.r, spec/string.r: layout
+
+	* spec/simple-traversal.r: directly recursive definition of
+	bottomup.
+
+	* spec/simple-traversal-test.r: testing behaviour of traversals
+	using counter.
+
+	* spec/options.r: Use set-config to store option values in
+	configuration table, Use <run-time> instead of dtime to measure
+	time in iowrap.
+
+	* spec/list-zip.r, spec/list-zip-test.r: definitions of cart for
+	cartesian product of two lists and join for the join of two lists.
+
+	* spec/list-misc.r: definition of split-at
+
+	* spec/list-basic.r, spec/list-basic-test.r: definition of
+	split-init-last, use term wrap syntax
+
+2002-06-08  Eelco Visser  <visser@acm.org>
+
+	* spec/io.r: layout
+
+	* spec/integers.r: addS, subtS, etc. define operations on 
+	integer strings. new-counter, reset-counter, etc. manipulate
+	a named counter using dynamic rules.
+
+	* spec/fixpoint-traversal.r: innermost-tagged uses annotations
+	to tag terms that are in normal form.
+
+	* spec/annotations-test.r: Extensive test of annotation
+	functionality.  Written by Martin Bravenboer. Adapted to use list
+	matching by EV.
+
+	* spec/Makefile.am: Installing .rtree files (parsed modules)
+	instead of .r files (sources); saves time when compiling and
+	ensures syntactic correctness of library modules. First step
+	towards separte compilation.
+
+	* spec/Annotations.r: removed, was not used.
+
+2002-05-24  Eelco Visser  <visser@acm.org>
+
+	* src/dir.c: Implementation of SSL_ReadDir, which returns the list
+	with all entries of the directory given as argument (via its
+	name).
+
+	* src/dir.h: Directory access
+
+	* spec/dir-test.r: Test readdir
+
+	* src/stratego-lib.h: include header from dir.h
+
+2002-05-18  Eelco Visser  <visser@acm.org>
+
+	* spec/exec.r: Commented several definitions with description + type.
+
+2002-05-12  Eelco Visser  <visser@acm.org>
+
+	* spec/sunit.r: Removed forced exit from test-suite; just fail if
+	there are failures. This makes it possible to combine several
+	test-suites.
+
+	* spec/annotations.r: Call the SSL wrappers to access annotations
+	instead of directly calling the AT variants: no annotations is
+	equivalent to the empty list of annotations. Has-annotation tests
+	whether the result of get-annotations is not the empty list.
+
+2002-05-10  Eelco Visser  <visser@acm.org>
+
+	* spec/fixpoint-traversal.r: innermost-tagged(s) uses annotations
+	to tag terms in normal form to avoid renormalization
+
+	* spec/list-zip.r: Definition of join(s) for creating and
+	filtering the cartesian product of two lists.
+
+	* spec/list-zip-test.r: Tests for zip and zipPad. Problem posed by
+	Karl Trygve Kalleberg
+
+2002-04-10  Eelco Visser  <visser@acm.org>
+
+	* spec/ugly-print.r: Extension of ugly printing strategies for
+	terms with annotations. (Martin Bravenboer)
+
+	* spec/annotations-test.r: Extended test-suite for annotations
+	(Martin Bravenboer)
+
+	* spec/annotations.r: Additional operators for annotations:
+	has-annotation, if-annotation, preserve-annotation
+	(Martin Bravenboer)
+
+	* spec/annotation-props-test.r: Test suite for the module.
+	
+	* spec/annotation-props.r: Library for manipulating annotations 
+	represented as a list of key-property pairs.
+	(by Martin Bravenboer)
+
+2002-03-29  Eelco Visser  <visser@acm.org>
+
+	* spec/getopt.r: My getopt implementation used one-element tuples
+	(to separate options without arguments from options with
+	arguments), so it won't work with Stratego 0.7 (where (e) = e). --
+	Otto Skrove Bagge
+
+2002-03-14  Eelco Visser  <visser@acm.org>
+
+	* Release 0.7 (fix2)
+
+2002-03-12  Eelco Visser  <visser@acm.org>
+
+	* spec/tables.r: Added table-copy and table-rename
+
+	* spec/annotations.r: Added has-annos and strip-annos
+
+	* src/tables.c (SSL_table_rename): rename table1 to table2
+
+2002-03-10  Eelco Visser  <visser@acm.org>
+
+	* Release 0.7
+
+2002-03-08  Eelco Visser  <visser@acm.org>
+
+	* Release 0.7beta3
+
+	* spec/client-test.r: disabled connect tests; not tests in the
+	sense of sunit; should be refactored.
+
+	* spec/annotations-test.r: fixed results
+
+2002-03-07  Eelco Visser  <visser@acm.org>
+
+	* spec/server-test.r, spec/connect.r, spec/accept-test.r:
+	disabled connect tests; not tests in the sense of sunit;
+	should be refactored.
+
+2002-02-23  Eelco Visser  <visser@acm.org>
+
+	* src/connect.ch, spec/connect.r, spec/accept-test.r,
+	connect-test.r, client-test.r, server-test.r: Primitives for
+	interprocess communication contributed by Hedzer Westra
+
+2002-02-19  Eelco Visser  <visser@acm.org>
+
+	* spec/getopt.r: I've written an option parser for Stratego.  I'm
+	using it in CodeBoost now, without problems, but I haven't tested
+	it extensively, so there may still be issues.  Source is attached
+	to this email, with documentation.
+
+	It handles most of the standard GNU / Unix option syntax: short
+	options ("-a", "-b"), multiple short options in one word ("-ab"),
+	short options with arguments ("-a foo", "-bbar"), long options
+	("--long", "--long=arg", "--long arg"), options with optional
+	arguments ("-f", "-ffoo", "--file", "--file=foo", etc.), and
+	options that can be given mulitiple times.  A nicely formatted
+	help text is created automatically.  Options are (by default)
+	collected into a table, and can be retrieved at any time.
+	Non-option arguments are collected and returned.
+
+	I've only tested this with Stratego 0.6.4, so tweaking may be
+	necessary to make it work on 0.7. -- Otto Bagge
+
+2002-02-12  Eelco Visser  <visser@acm.org>
+
+	* spec/annotations.r: get-, set-, and rm-annotations are the SSL
+	names of the corresponding ATerm annotation manipulation
+	functions.
+
+2002-01-27  Eelco Visser  <visser@acm.org>
+
+	* spec/list-basic.r: bug in definition of reverse-acc
+
+2002-01-26  Eelco Visser  <visser@acm.org>
+
+	* spec/list-basic.r: reverse(s) applies s to the elements of the
+	list that is reversed (Suggested by Otto Skrove Bagge)
+
+2002-01-22  Eelco Visser  <visser@acm.org>
+
+	* src/io.c: Removed obsolete (commented out) code for consnil
+	conversions. Including stratego header file as <srts/stratego.h> 
+	
+	* spec/simple-traversal.r: Strategy bottomup-para(s) implements
+	paramorphism, which applies s at pair of orignal term and 
+	term in which the subterms have been transformed.
+
+	* spec/rename-test.r: Made tests insensitive to constant caching.
+	Don't use generated names in check; match instead.
+
+	* spec/parse-options.r: Cons/Nil -> [_|_]/[]
+
+	* spec/integers.r: Operator log2 takes the base 2
+	logarithm. Constructor Infinite represents infinity, operators
+	add-inf and lt-inf are aware of Infinite.
+
+	* spec/list-set.r: postorder-collect(s) selects all subterms for
+	which s succeeds and returns them in post-order.
+
+2002-01-10  Eelco Visser  <visser@acm.org>
+
+	* Release 0.7beta
+	
+	* src/io.c, src/string.c, src/tables.c: Removed conversions
+	between native and Cons/Nil lists.
+
+	* spec/options-test.r: TCons -> (.,.) 
+
+	* spec/list-zip.r: Moved tuple operations to tuple.r
+
+	* spec/list-misc.r: Moved tuple operations to tuple.r
+
+	* spec/list-filter.r: Refactored definition of partition using
+	term wrap and match project. Problem with old definition was that
+	it constructed an intermediate list with a pair as tail. This
+	fails after the introduction of native lists.
+
+	* spec/list-basic.r: layout + refactored reverse
+
+2002-01-04  Eelco Visser  <visser@acm.org>
+	
+	* spec/tuple-test.r: Tests for operations on tuples
+
+	* spec/exec-test.r: Refactored to be independent of additional
+	files.
+
+	* spec/tuple-cons.r: Commented declaration of TNil and TCons;
+	should no longer be used for the representation of tuples.
+
+	* spec/list-zip.r: Moved tuple related operations to tuple.r
+
+	* spec/tuple.r: Redefined rules and strategies to use new
+	representation of tuples. Generic tuple access defined in terms of
+	explode/implode and list operations; expensive! Added TupleToList
+	and ListToTuple.
+
+	* src/term.c (SSL_explode_term, SSL_mkterm): Refactored for fixed
+	length tuples
+
+	* spec/pack.r: refactored (introduction of fixed length tuples)
+
+2002-01-03  Eelco Visser  <visser@acm.org>
+
+	* Release 0.6.4
+	
+2001-12-18  Eelco Visser  <visser@acm.org>
+
+	* spec/memo.r: Refactored definition of memoization strategy
+	using dynamic rules.
+
+	* spec/fixpoint-traversal.r: Added definition of innermost-memo
+
+2001-12-17  Eelco Visser  <visser@acm.org>
+
+	* spec/scoped-finite-map.r: Refactored definition of scope using
+	restore-always
+
+	* spec/options.r: Refactored definitions using term wrap syntax.
+
+	* spec/io.r: Refactored definitions of debug and such using
+	term wrap syntax.
+
+	* spec/conditional.r: restore and restore-always catch failure
+	of a strategy and perform a restoring action before failing
+	again (after an idea from Martin Bravenboer)
+
+2001-11-26  Eelco Visser  <visser@acm.org>
+
+	* Release 0.6.3
+
+2001-11-22  Eelco Visser  <visser@acm.org>
+
+	* spec/list-index.r: insert strategy inserts an element at an
+	index position in the list (shifting the rest) (Otto Skrove Bagge)
+
+2001-11-21  Eelco Visser  <visser@acm.org>
+
+	* ssl/spec/list-set.r: collect-all and collect-om. Reformulated
+	several collect strategies to use build-split pattern ![<s>].
+
+	* spec/list-set-test.r: tests for collect-all and collect-om
+
+	* spec/string-test.r: tests for string sorting
+
+2001-11-15  Merijn de Jonge  <mdejonge@cwi.nl>
+	* updated dependencies in ssl-0.6.3.pkg
+	* term.c: mkterm fix: quoting is now correct.
+	* Removed unused AC_ARG_WITH calls from configure.in
+	* Renamed --with-stratego-rts switch to --with-srts to standardise
+	  names of configuration switches amongst different packages.
+
+2001-10-06  Eelco Visser  <visser@acm.org>
+
+	* spec/string.r (string-gt): use strcasecmp instead of strcmp so
+	no distinction between upper and lower case is made.
+
+	*  Release 0.6.2
+
+	* src/term.c (SSL_explode_term): Fix of the bug in the previou fix
+	(Merijn de Jonge)
+
+2001-10-05  Eelco Visser  <visser@acm.org>
+
+	* spec/parse-options.r, spec/options.r, spec/option-demo.r:
+	Extension of options that prints usage information. (Merijn de
+	Jonge)
+
+	* src/term.c (SSL_explode_term): Repair string handling (Merijn de Jonge)
+
+2001-09-28  Eelco Visser  <visser@acm.org>
+
+	* spec/free-variables.r: Replaced collect-kids with crush/3
+	* Numerous small refactorings
+	* Additional tests
+
+2001-09-22  Eelco Visser  <visser@acm.org>
+
+	* Release 0.6.1
+
+2001-09-17  Eelco Visser  <visser@acm.org>
+
+	* src/io.c (SSL_ReadFromFile): Reintroduced accidentically deleted in_term
+
+2001-09-16  Eelco Visser  <visser@acm.org>
+
+	* src/string.c (SSL_is_string): Casting ATmakeInt to ATerm
+
+	* src/Makefile.am: Using -O2 to compile C sources
+
+	* src/io.c: Removed unused variables. Cast ATmakeInts to ATerms.
+
+	* spec/pack-graph.r: Added yet another version of the packing
+	algorithm; this needs to be refactored.
+
+	* spec/simple-traversal.r: oncetd-stop: stop argument called
+	without strategy argument; apparently this strategy was never
+	used by anyone.
+
+	* spec/reals.r: atan2 takes two arguments
+
+2001-09-15  Eelco Visser  <visser@acm.org>
+
+	* spec/exec.r: Renamed pipe'/3 into pipe/3
+
+2001-09-09  Eelco Visser  <visser@acm.org>
+
+	* spec/pack-modules.r: changed use of open-file
+
+	* spec/simple-traversal.r: Added type annotations for higher-order
+	arguments.
+
+2001-09-07  Eelco Visser  <visser@acm.org>
+
+	* spec/io.r: open-file used to open a file for writing; it has
+	been changed to pass a mode explicitly using a string.  Call
+	<open-file> (file, mode), where mode is "w" or "r".
+
+	* spec/io.r: <getchar> file reads next character from file
+
+	* spec/io.r: <readline> file reads next line from file
+
+2001-08-27  Eelco Visser  <visser@acm.org>
+
+	* spec/pack-modules.r: Separate lines in dependency file with a
+	newline to prevent make from choking on too long lines
+	(hopefully).
+
+2001-08-22  Eelco Visser  <visser@acm.org>
+
+	* spec/io.r: typo in name of primitive print
+
+	* Library for Stratego 0.6
+
+2001-09-17  Eelco Visser  <visser@acm.org>
+
+	* Stratego Standard Library separated from the compiler to enable
+	stand-alone distributions
