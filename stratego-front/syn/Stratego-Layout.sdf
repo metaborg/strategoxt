@@ -2,7 +2,7 @@ module Stratego-Layout
 exports
 
   lexical syntax
-    [\t\ \n] 		-> Ws
+    [\t\ \n\13]		-> Ws
     "//" ~[\n]* [\n] 	-> ShortCom
     "/*" CommChar* "*/" -> LongCom
     "(*" CommChar* "*)" -> LongCom
@@ -31,4 +31,4 @@ exports
     VeryLongCom -> LAYOUT
     Ws 		-> LAYOUT
   context-free restrictions
-    LAYOUT? -/- [\ \t\n]
+    LAYOUT? -/- [\ \t\n\13]

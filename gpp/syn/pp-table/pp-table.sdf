@@ -44,9 +44,9 @@ exports
     NatCon ":" UQLiteral -> Selector {cons("selector")}
 
   lexical syntax
-    ~[\ \t\n\.]+      -> ConsName
+    ~[\ \t\n\13\.]+      -> ConsName
     "\"" ~[\"]+ "\""  -> ConsName
 
   context-free restrictions
-    ConsName -/- ~[\ \t\n\.]
+    ConsName -/- ~[\ \t\n\13\.]
 

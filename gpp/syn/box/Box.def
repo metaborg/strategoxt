@@ -10,10 +10,10 @@ exports
    lexical syntax
     "%%" ~[\n]* "\n" -> LAYOUT
 
-    [\ \t\n] -> LAYOUT
+    [\ \t\n\13] -> LAYOUT
 
   context-free restrictions
-    LAYOUT? -/- [\ \t\n]
+    LAYOUT? -/- [\ \t\n\13]
 
 module Box-Lists
    exports

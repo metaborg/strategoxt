@@ -23,10 +23,10 @@ exports
    lexical syntax
     "%%" ~[\n]* "\n" -> LAYOUT
 
-    [\ \t\n] -> LAYOUT
+    [\ \t\n\13] -> LAYOUT
 
   context-free restrictions
-    LAYOUT? -/- [\ \t\n]
+    LAYOUT? -/- [\ \t\n\13]
 
 module Box-Lists
    exports
@@ -317,8 +317,8 @@ exports
     NatCon ":" UQLiteral -> Selector {cons("selector")}
 
   lexical syntax
-    ~[\ \t\n\.]+      -> ConsName
+    ~[\ \t\n\13\.]+      -> ConsName
     "\"" ~[\"]+ "\""  -> ConsName
 
   context-free restrictions
-    ConsName -/- ~[\ \t\n\.]
+    ConsName -/- ~[\ \t\n\13\.]
