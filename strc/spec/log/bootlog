@@ -1769,3 +1769,9 @@ Bootstrapping: finished [Fri Dec 19 15:58:25 Local time zone must be set--see zi
 
 Bootstrapping version 0.9.4 [Fri Dec 19 22:37:01 Local time zone must be set--see zic manual page 2003 - Linux localhost.localdomain i686]
 Bootstrapping: phase 1 started [Fri Dec 19 22:37:01 Local time zone must be set--see zic manual page 2003]
+
+Bootstrapping version 0.9.4 [Sat Jan 10 08:42:52 Local time zone must be set--see zic manual page 2004 - Linux localhost.localdomain i686]
+Bootstrapping: phase 1 started [Sat Jan 10 08:42:52 Local time zone must be set--see zic manual page 2004]
+Bootstrapping: phase 2 started [Sat Jan 10 08:59:33 Local time zone must be set--see zic manual page 2004]
+Bootstrapping: phase 3 started [Sat Jan 10 09:16:34 Local time zone must be set--see zic manual page 2004]
+Bootstrapping: finished [Sat Jan 10 09:36:59 Local time zone must be set--see zic manual page 2004]
