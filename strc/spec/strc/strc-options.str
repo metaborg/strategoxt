@@ -129,12 +129,6 @@ strategies
       , !"--cpl              Use the Nancy Choice Point Library"
       )
 
-  set-choice-point-lib = 
-    ?lib
-    ; <get-config> "-CL"
-    ; map(try( \ "-lstratego-choice" -> lib \ ))
-    ; <set-config> ("-CL", <id>)
-
 //  + Option("--trace-all",  
 //	where(<set-config>("--trace-all",())); !(),
 //	!"--trace-all        Instrument all definitions to print tracing information" )
@@ -177,6 +171,12 @@ strategies
   + Option("--asfix",
        where(<set-config>("--asfix",())); !(),
        !"--asfix            Concrete syntax parts are not imploded")
+
+  set-choice-point-lib = 
+    ?lib
+    ; <get-config> "-CL"
+    ; map(try( \ "-lstratego-choice" -> lib \ ))
+    ; <set-config> ("-CL", <id>)
 
   pass-dr = !["--dr", <get-config> "--dr"]
 
