@@ -26,15 +26,25 @@ strategies
 
 strategies
 
+  /**
+   * Meta variable
+   */
   CheerUp =
     appl(prod([varsym(id)], id, id), map(try(FancyVar)))
 
+  /**
+   * Quotation to concrete object syntax
+   */
   CheerUp =
-    where(
-      ?appl(prod(_, _, attrs(<id>)), _)
-    ; fetch(term(cons(is-Quote)))
-    )
+      check-cons-of-appl(is-Quote)
     ; appl(id, map(try(FancyQuote)))
+
+  /**
+   * Dynamic Rule Scope
+   */
+  CheerUp =
+      check-cons-of-appl(?"DynRuleScope")
+    ; appl(id, map(try(FancyDynRuleScope)))
 
 rules
 
@@ -43,11 +53,15 @@ rules
 
   FancyQuote :
     lit("|[") -> lit("\\lquote{|[}")
-    // lit("|\\!\\![")
 
   FancyQuote :
     lit("]|") -> lit("\\rquote{]|}")
-    // lit("]\\!\\!|")
+
+  FancyDynRuleScope :
+    lit("{|") -> lit("\\ldrscope{}")
+
+  FancyDynRuleScope :
+    lit("|}") -> lit("\\rdrscope{}")
 
 strategies
 
@@ -60,3 +74,10 @@ strategies
       "FromTerm"
     + "FromApp"
     + "FromStrategy"
+
+  check-cons-of-appl(cons-check) = 
+    where(
+      ?appl(prod(_, _, attrs(<id>)), _)
+    ; fetch-elem(?term(cons(<id>)))
+    ; cons-check
+    )
