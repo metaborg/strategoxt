@@ -1,0 +1,7 @@
+module test07
+imports libstrategolib
+
+strategies
+
+  main =
+    <add> (1, 2)

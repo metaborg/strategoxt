@@ -1,5 +1,10 @@
 2005-02-25  Martin Bravenboer <martin@cs.uu.nl>
 
+	* spec/strc/test-strc/test07.str.sh: added a test for the new
+	-Xlinker argument.
+	
+2005-02-25  Martin Bravenboer <martin@cs.uu.nl>
+
 	* configure.ac: AC_DEFINE STRC_SYSTEM_LDFLAGS to handle system
 	specific linking problems. Added this to solve the -bind_at_load
 	problem in at Mac OS X when using the stand-alone strc.
