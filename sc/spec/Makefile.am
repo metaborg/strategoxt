@@ -22,6 +22,9 @@ pkgdata_DATA = conf.h
 SUBDIRS = \
   . syn c front lib match opt sc sig test1 test2 testlib testspec log
 
+BOOTSUBDIRS = \
+    syn c front lib match opt sc sig
+
 DIST_SUBDIRS = si sdf test3 $(SUBDIRS)
 
 BOOTSOURCES = conf.h.src
@@ -73,7 +76,7 @@ bootinstall :
 	@echo "" >> log/bootlog
 	@echo "Bootinstall [`date`]" >> log/bootlog
 	cp -f $(BOOTSOURCES) $(SCBOOT)/src
-	list='$(SUBDIRS)'; for subdir in $$list; do \
+	list='$(BOOTSUBDIRS)'; for subdir in $$list; do \
 	   (cd $$subdir ; $(MAKE) $@ ;) \
 	done
 	@echo "Bootinstall finished [`date`]" >> log/bootlog

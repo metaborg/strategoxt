@@ -16,7 +16,7 @@
 # 02111-1307, USA.
 
 AC_INIT(src/frontend.c)
-AM_INIT_AUTOMAKE(sc-boot,0.8alpha3)
+AM_INIT_AUTOMAKE(sc-boot,0.8beta1)
 
 AC_ARG_WITH(aterm, 
   [  --with-aterm          Specify location of ATerm library, default: \$prefix], 
@@ -53,7 +53,7 @@ AC_ARG_WITH(srts,
 )
 AC_SUBST(STRATEGORTS)
 
-AC_REVISION($Id: configure.in,v 1.16 2002/06/09 17:02:00 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.17 2002/06/11 12:13:32 stratego Exp $)
 
 AC_PROG_CC
 AC_PROG_RANLIB

@@ -45,6 +45,7 @@ package-dist:
 	cd gpp-boot; $(MAKE) dist
 	cd sc-boot; $(MAKE) dist
 	cd sc; $(MAKE) dist
+	cd stratego-front; $(MAKE) dist
 
 config:
 	cd srts; stdconfig
@@ -84,3 +85,6 @@ upload-sc:
 
 upload-ssl:
 	scp ssl/ssl-*.tar.gz $(WWWSTRATEGO)
+
+upload-stratego-front:
+	scp stratego-front/stratego-front-*.tar.gz $(WWWSTRATEGO)
