@@ -5,13 +5,14 @@
  * @since   0.9.5
  */
 module gen-renamed-sdf-module
-imports Sdf2-Syntax options xtc-lib sdf-xtc-tools collect
+imports Sdf2-Syntax options xtc-lib sdf-xtc-tools collect sdf-options
 
 strategies
 
   main-gen-renamed-sdf-module =
     xtc-io-wrap(renaming-options,
-      xtc-parse-sdf2-definition
+      xtc-sdf2-normalize(|<get-sdf-main-module>)
+    ; xtc-parse-sdf2(|"Grammar")
     ; xtc-io-transform(
         collect-sorts
       ; map(rename-sort)
@@ -26,7 +27,11 @@ strategies
 strategies
 
   collect-sorts =
-   collect(\ p |[ A* -> S $ ]| -> A |[ S ]| \ )
+   collect(
+     \ p |[ A* -> S       $ ]| -> A |[ S ]| \
+   + \ p |[ A* -> <S-CF>  $ ]| -> A |[ S ]| \
+   + \ p |[ A* -> <S-LEX> $ ]| -> A |[ S ]| \
+   )
 
   rename-sort :
     A |[ S1 ]| -> ro |[ S1 => S2 ]|
@@ -37,7 +42,7 @@ strategies
       module M2
       imports M1 [ ro* ]
     ]|
-    where <get-config'> SdfImportModuleFlag() => M1
+    where get-sdf-main-module => M1
         ; <get-config'> SdfResultModuleFlag() => M2
 
   apply-renaming-scheme :
@@ -56,7 +61,7 @@ strategies
 strategies
 
   renaming-options =
-    sdf-import-module-option
+    sdf-main-module-option
   + sdf-result-module-option
   + renaming-scheme-option
 

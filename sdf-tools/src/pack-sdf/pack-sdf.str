@@ -29,9 +29,6 @@ strategies
       )
     )
 
-  xtc-asfix-yield =
-    xtc-transform(!"asfix-yield", pass-verbose)
-
 strategies
 
   of-config = 

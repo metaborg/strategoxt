@@ -1,3 +1,17 @@
+2004-02-13  Martin Bravenboer  <martin@cs.uu.nl>
+
+	* trans/gen-renamed-sdf-module.str: a simple collect over the AST
+	of an SDF definition is not really correct: the definition might
+	contain modules with renamings and aliases.
+
+	The generator now invokes the sdf normalizer in pgen before
+	collecting the sorts. This is very expensive (especially because
+	the resulting AsFix is yielded to a string followed by a parse),
+	but this is n0t really a problem for such a generator. The result
+	is that the generator can now handle all sdf constructs. You can
+	for example rename a module that is itself a renamer as well. How
+	useful.
+
 2004-02-12  Martin Bravenboer  <martin@cs.uu.nl>
 
 	* trans/gen-renamed-sdf-module.str: tool to generate a RenamedLang
