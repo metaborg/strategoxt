@@ -6,4 +6,4 @@ EXTRA_DIST        = $(wilcard *.pkg) stdconfig bootstrap Makefile.xt autoxt.m4
 
 ACLOCAL_AMFLAGS   = -I .
 
-XTC_IMPORT = $(prefix)/share/StrategoXT/XTC
+# XTC_IMPORT = $(prefix)/share/StrategoXT/XTC
