@@ -1,5 +1,6 @@
 2001-06-12 Merijn de Jonge <mdejonge@cwi.nl>
    * src/visamb/Makefile.am: added data to SUBDIRS variable
+   * src/visamb/data/Makefile.am: fixed some dependencies
 
 2001-06-11 Merijn de Jonge <mdejonge@cwi.nl>
    * src/visamb component added (moved integration stuff to xt package)
