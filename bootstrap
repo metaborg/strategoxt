@@ -37,7 +37,8 @@ $BOOTSTRAP_MAKE
 $BOOTSTRAP_MAKE install
 
 cd $WORKINGDIR
-export PATH=$WORKINGDIR/pre-pkgs/bootstrap/bin:$PATH
+PATH=$WORKINGDIR/pre-pkgs/bootstrap/bin:$PATH
+export PATH
 echo "** INFO -- AutoXT is: `which autoxt`"
 # end of autoxt install
 
