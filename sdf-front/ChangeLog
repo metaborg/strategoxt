@@ -1,5 +1,14 @@
 2004-03-27  Martin Bravenboer  <martin@cs.uu.nl>
 
+	* parse/sdf-desugar.str: implode aterm attributes.
+
+	* parse/sdf-ensugar.str: explode aterm attributes.
+
+	* xtc/*: parse-sdf modules now apply sdf-desugar and
+	sdf-ensugar. This should not break existing tools. I hope.
+	
+2004-03-27  Martin Bravenboer  <martin@cs.uu.nl>
+
 	* parse/unpack-sdf.str: moved from sdf-tools to sdf-front.
 	- now uses the new sdf syntax definition
 	- create the parents of a directory as well (mkdir -p)

@@ -1,5 +1,5 @@
 module sdf-ensugar
-imports Sdf2-Syntax options simple-traversal
+imports Sdf2 options simple-traversal explode-aterm
 
 /**
  * sdf-ensugar implements the following ensugarings:
@@ -23,7 +23,7 @@ strategies
 strategies
  
   EnsugarOnce =
-    cons(double-quote)
+    term(explode-aterm)
 
   EnsugarOnce =
     lit(double-quote)

@@ -1,5 +1,5 @@
 module sdf-desugar
-imports Sdf2-Syntax options simple-traversal
+imports Sdf2 options simple-traversal implode-aterm
 
 /**
  * sdf-desugar implements the following desugarings:
@@ -21,9 +21,9 @@ strategies
     no-attrs() -> attrs([])
 
 rules
- 
-  DesugarOnce =
-    cons(un-double-quote)
 
   DesugarOnce =
-    lit(un-double-quote)
+    term(implode-aterm)
+
+  EnsugarOnce =
+    lit(double-quote)
