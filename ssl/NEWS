@@ -4,16 +4,16 @@ News about Stratego releases
 
 ------------------------------------------------------------------------------
 
-Version 0.6.3
+Version 0.6.4
 
- released: November 26, 2001
+ released: 
 
 SUMMARY OF CHANGES
 
  (with respect to release 0.6)
 
- * BuildSplit syntax generalizes split
- * MatchProject syntax generalizes projection
+ * Term wrap syntax generalizes split
+ * Term project syntax generalizes projection
  * New library strategies
  * Tracing of evaluation
  * CGEN package adapted to grammar identifiers
@@ -27,7 +27,8 @@ CONTRIBUTIONS
  * Bug reports by Otto Skrove Bagge, Robert Feldt (configuration),
    Merijn de Jonge (strings & #), Hedzer Westra
  * Bug repairs by Merijn de Jonge (strings & #)
- * Library contributions by Otto Skrove Bagge (insert)
+ * Library contributions by Otto Skrove Bagge (insert), 
+   Martin Bravenboer
  * CVS support by Henk van Lingen
  * Web hosting by Henk Penning
 
@@ -35,11 +36,11 @@ LANGUAGE
 
  * Term patterns can contain strategy applications <s>. 
 
- * Build-Split patterns simplify wrapping some complex constructor pattern
+ * Term wrap patterns simplify wrapping some complex constructor pattern
    around a term. For instance, split(f,g) can now be written as
    !(<f>,<g>), and this generalizes to arbitrary build patterns.
 
- * Match-Project patterns simplify projection of sub-terms. A strategy
+ * Term project patterns simplify projection of sub-terms. A strategy
    application <s> inside a match pattern selects the corresponding sub-term
    and applies s to it. For example, instead of writing 
    \ Typed(Var(x),_) -> x \ it is now possible to write ?Typed(Var(<id>),_)
@@ -49,6 +50,16 @@ LANGUAGE
    result.
 
 COMPILER
+
+ * Improved efficiency of needed
+   definition extraction by using dynamic rules instead of a list of
+   definitions to look up definitions in. The effect of this change
+   is that the order of evaluation of definitions for the same label
+   is reversed.  This is fine since the order of evaluation of
+   rules/definitions with the same name is undefined, but it might
+   break some specifications. It might be a good idea to change the
+   evaluation order with every distribution in order to force
+   programmers to use left choice when the order is relevant.
 
  * Added compile time option to generate code to trace strategies
    - --trace-all: trace all strategies
@@ -71,6 +82,8 @@ COMPILER
 
  * CGEN now supports GB grammar identifiers
 
+ * Repaired bug in compilation of :: --> rules (Hedzer Westra)
+
 LIBRARY
 
  * Repair of term explosion for strings (Merijn de Jonge). Quoted
@@ -78,13 +91,17 @@ LIBRARY
    Not yet supported in signatures.
  * Type annotations added to strategy operators with higher-order
    arguments.
- * Numerous small refactorings.
+ * Numerous small refactorings, including
+    - memo in terms of dynamic rules
  * Some new tests
  * New
     - occurrences(s): all occurrence for which s succeeds
     - om-occurrences(s): outermost occurrences only
     - collect-all(s): collect all occurrences
     - collect-om(s): collect outermost occurrences only
+    - innermost-memo(s): memoization of intermediate results
+    - restore(s,r): always perform restoration r after doing s,
+      even when s fails
  * Obsolete: 
     - collect-kids/1 -> crush/3
 

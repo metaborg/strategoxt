@@ -1,4 +1,9 @@
+2001-11-26  Eelco Visser  <visser@acm.org>
+
+	* Release 0.6.3
+
 2001-11-15  Merijn de Jonge <mdejonge@cwi.nl>
+	
 	* Added grammar identifier to C.pp.af
 	* Removed unused AC_ARG_WITH calls from configure.in
 	* Removed unused dependencies from cgen-0.1.pkg

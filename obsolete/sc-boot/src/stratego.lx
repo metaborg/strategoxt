@@ -161,8 +161,6 @@ endliterate	{backslash}"endliterate"
 <INITIAL>"]"		return RBRACK;
 <INITIAL>"<"		return LT;
 <INITIAL>">"		return GT;
-<INITIAL>"<<"		return LL;
-<INITIAL>">>"		return GG;
 <INITIAL>"-->"		return LONGARROW;
 <INITIAL>"->"		return ARROW;
 <INITIAL>"=>"		return DOUBLEARROW;

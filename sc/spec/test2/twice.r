@@ -1,5 +1,5 @@
 module twice
-imports lib
+imports lib memo
 signature
   constructors
     A : Term

@@ -22,6 +22,10 @@ strategies
   memo-init  = obsolete(!"memo-init; use memo-scope")
   memo-purge = obsolete(!"memo-purge; use memo-scope")
 
+  memo(lab, s) =
+    obsolete(!"memo/2; use memo/1");
+    memo(s)
+
 \end{code}
 
 \paragraph{Usage}
@@ -34,7 +38,7 @@ the result of \verb|<s> t| is computed and stored in the table.
 
 \end{itemize}
 
-% Copyright (C) 1999-2001 Eelco Visser <visser@acm.org>
+% Copyright (C) 1999-2002 Eelco Visser <visser@acm.org>
 % 
 % This program is free software; you can redistribute it and/or modify
 % it under the terms of the GNU General Public License as published by
