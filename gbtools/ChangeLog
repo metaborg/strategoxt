@@ -2,6 +2,8 @@
    * Greatly improved grammar build rules. Individual grammar distributions are
      now ready to use (i.e., no tool support is needed when configured with
      --without-gbtools).
+   * scripts/gbtrans/sh.src: Added script to transform the old grammar base
+     to the new package-based format
 
 2002-06-04  Merijn de Jonge <mdejonge@cwi.nl>
    * Repaired generation of package definition file
