@@ -53,6 +53,39 @@ ATerm SSL_readdir(ATerm t)
   return (ATerm) entries;
 }
 
+ATerm SSL_rename(ATerm oldname, ATerm newname)
+{
+  if(!t_is_string(oldname) || !t_is_string(newname))
+    _fail(oldname);
+
+  if(rename(ATgetName(ATgetSymbol(oldname)),ATgetName(ATgetSymbol(newname))) != 0)
+    _fail(oldname);
+ 
+  return newname;
+}
+
+ATerm SSL_link(ATerm existingpath, ATerm newpath)
+{
+  if(!t_is_string(existingpath) || !t_is_string(newpath))
+    _fail(existingpath);
+
+  if(link(ATgetName(ATgetSymbol(existingpath)), ATgetName(ATgetSymbol(newpath))) != 0)
+    _fail(existingpath);
+
+  return newpath;
+}
+
+ATerm SSL_remove(ATerm pathname)
+{
+  if(!t_is_string(pathname))
+    _fail(pathname);
+
+  if(remove(ATgetName(ATgetSymbol(pathname))) != 0)
+    _fail(pathname);
+
+  return (ATerm) ATempty;
+}
+
 /*
 ATerm SSL_stat(ATerm file)
 {

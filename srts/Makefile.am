@@ -17,9 +17,9 @@
 
 SUBDIRS = src ssl
 
-EXTRA_DIST = reconf mprotect.m4 Makefile.rpm
+EXTRA_DIST = reconf mprotect.m4 Makefile.rpm Makefile.stratego.in
 
-pkgdata_DATA = Makefile.srts
+pkgdata_DATA = Makefile.srts Makefile.stratego.in
 
 RPMRELEASE=1
 

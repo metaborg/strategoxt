@@ -7,7 +7,13 @@ noinst_HEADERS = \
 	debug.h mprotect.h
 
 stratego-config.h : $(top_srcdir)/config.h
-	cp $< $@
+	echo "#ifndef SRTS_STRATEGO_CONFIG_H"  > $@
+	echo "#define SRTS_STRATEGO_CONFIG_H" >> $@
+	echo "" 			      >> $@
+	grep -v PACKAGE $< \
+	   | grep -v VERSION 		      >> $@
+	echo "#endif" 			      >> $@
+	echo "" 			      >> $@
 
 if USECPL
 

@@ -1,3 +1,12 @@
+2002-12-07  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/dir.[ch]: rename, remove, and linking of file primitives
+
+2002-12-01  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/srts/Makefile.am (stratego-config.h): Prevent reinclusion of
+	header file stratego-config.h
+
 2002-11-24  Eelco Visser  <visser@acm.org>
 
 	* Makefile.srts.in: instructions for compiling and linking C files
