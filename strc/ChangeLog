@@ -1,3 +1,7 @@
+2003-09-05  Rob Vermaas   <rob@strategoxt.org>
+	* spec/pack/pack-stratego.str: Don't fail if module
+	file cannot be found, when using --slack flag.
+
 2003-08-28  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/strc/strc-options.str,spec/strc/strc.str,
