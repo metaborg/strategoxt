@@ -1,3 +1,7 @@
+2000-11-25 Merijn de Jonge <mdejonge@cwi.nl>
+        * New version of collect.sh installed which reports in the file
+          SOFTWARE when an XT bundle is constructed.
+
 2000-11-24 Merijn de Jonge <mdejonge@cwi.nl>
         * New version of collect.sh installed
 
