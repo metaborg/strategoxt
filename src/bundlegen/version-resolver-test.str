@@ -4,7 +4,7 @@
 
  Author: Merijn de Jonge (M.de.Jonge@tue.nl)
 
- $Id: autobundle-sig.r,v 1.4 2002/05/27 21:51:17 mdejonge Exp $
+ $Id$
 
 \begin{code}
 module version-resolver-test
@@ -36,16 +36,16 @@ test-a =
    apply-test( !"unreachable constraint",
    resolve-version-constraints,
     ![
-    pkg(pkg-id("root","0"),[pkg-dep("a",GTE("1")),pkg-dep("d",GTE("1"))]),
-    pkg(pkg-id("a", "1"), [pkg-dep("b",GTE("1")), pkg-dep("c", GTE("1"))]),
+    pkg(pkg-id("root","0"),[BuildTime(pkg-dep("a",GTE("1"))),BuildTime(pkg-dep("d",GTE("1")))]),
+    pkg(pkg-id("a", "1"), [BuildTime(pkg-dep("b",GTE("1"))), BuildTime(pkg-dep("c", GTE("1")))]),
     pkg(pkg-id("b", "1"), []),
-    pkg(pkg-id("c", "1"), [pkg-dep("b",GTE("2"))]),
-    pkg(pkg-id("b", "2"), [pkg-dep("e",GTE("1"))]),
+    pkg(pkg-id("c", "1"), [BuildTime(pkg-dep("b",GTE("2")))]),
+    pkg(pkg-id("b", "2"), [BuildTime(pkg-dep("e",GTE("1")))]),
     pkg(pkg-id("e", "1"), []),
-    pkg(pkg-id("d", "1"), [pkg-dep("c",GTE("2"))]),
-    pkg(pkg-id("c", "2"), [pkg-dep("b",GTE("1"))])
+    pkg(pkg-id("d", "1"), [BuildTime(pkg-dep("c",GTE("2")))]),
+    pkg(pkg-id("c", "2"), [BuildTime(pkg-dep("b",GTE("1")))])
     ],
-    ![pkg-id("b","1"),pkg-id("c","2"),pkg-id("d","1"),pkg-id("a","1")]
+    ![BuildTime(pkg-id("b","1")),BuildTime(pkg-id("c","2")),BuildTime(pkg-id("d","1")),BuildTime(pkg-id("a","1"))]
 )
 
 // Case b
@@ -57,18 +57,18 @@ test-b =
    apply-test( !"version-down-upgrade",
    resolve-version-constraints,
     ![
-    pkg(pkg-id("root","0"),[pkg-dep("a",GTE("1")),pkg-dep("d",GTE("1")),pkg-dep("f",GTE("1"))]),
-    pkg(pkg-id("a", "1"), [pkg-dep("b",GTE("1")), pkg-dep("c", GTE("1"))]),
+    pkg(pkg-id("root","0"),[BuildTime(pkg-dep("a",GTE("1"))),BuildTime(pkg-dep("d",GTE("1"))),BuildTime(pkg-dep("f",GTE("1")))]),
+    pkg(pkg-id("a", "1"), [BuildTime(pkg-dep("b",GTE("1"))), BuildTime(pkg-dep("c", GTE("1")))]),
     pkg(pkg-id("b", "1"), []),
-    pkg(pkg-id("c", "1"), [pkg-dep("b",GTE("2"))]),
-    pkg(pkg-id("b", "2"), [pkg-dep("e",GTE("1"))]),
+    pkg(pkg-id("c", "1"), [BuildTime(pkg-dep("b",GTE("2")))]),
+    pkg(pkg-id("b", "2"), [BuildTime(pkg-dep("e",GTE("1")))]),
     pkg(pkg-id("e", "1"), []),
-    pkg(pkg-id("d", "1"), [pkg-dep("c",GTE("2"))]),
-    pkg(pkg-id("c", "2"), [pkg-dep("b",GTE("1"))]),
-    pkg(pkg-id("f", "1"), [pkg-dep("c",GTE("3"))]),
-    pkg(pkg-id("c", "3"), [pkg-dep("b",GTE("2"))])
+    pkg(pkg-id("d", "1"), [BuildTime(pkg-dep("c",GTE("2")))]),
+    pkg(pkg-id("c", "2"), [BuildTime(pkg-dep("b",GTE("1")))]),
+    pkg(pkg-id("f", "1"), [BuildTime(pkg-dep("c",GTE("3")))]),
+    pkg(pkg-id("c", "3"), [BuildTime(pkg-dep("b",GTE("2")))])
     ],
-    ![pkg-id("e","1"),pkg-id("c","3"),pkg-id("b","2"),pkg-id("f","1"),pkg-id("d","1"),pkg-id("a","1")]
+    ![BuildTime(pkg-id("e","1")),BuildTime(pkg-id("c","3")),BuildTime(pkg-id("b","2")),BuildTime(pkg-id("f","1")),BuildTime(pkg-id("d","1")),BuildTime(pkg-id("a","1"))]
 )
 
 // Case c
@@ -80,15 +80,15 @@ test-c =
    apply-test( !"multi-level comparison",
    resolve-version-constraints,
     ![
-    pkg(pkg-id("root","0"),[pkg-dep("a",GTE("1")),pkg-dep("f",GTE("1"))]),
-    pkg(pkg-id("a","1"),[pkg-dep("b",GTE("1")),pkg-dep("c",GTE("1"))]),
-    pkg(pkg-id("b","1"),[pkg-dep("f",GTE("2"))]),
-    pkg(pkg-id("c","1"),[pkg-dep("b",GTE("2")),pkg-dep("f",GTE("1"))]),
+    pkg(pkg-id("root","0"),[BuildTime(pkg-dep("a",GTE("1"))),BuildTime(pkg-dep("f",GTE("1")))]),
+    pkg(pkg-id("a","1"),[BuildTime(pkg-dep("b",GTE("1"))),BuildTime(pkg-dep("c",GTE("1")))]),
+    pkg(pkg-id("b","1"),[BuildTime(pkg-dep("f",GTE("2")))]),
+    pkg(pkg-id("c","1"),[BuildTime(pkg-dep("b",GTE("2"))),BuildTime(pkg-dep("f",GTE("1")))]),
     pkg(pkg-id("b","2"),[]),
     pkg(pkg-id("f","1"),[]),
     pkg(pkg-id("f","2"),[])
    ],
-   ![pkg-id("c","1"),pkg-id("b","2"),pkg-id("f","1"),pkg-id("a","1")]
+   ![BuildTime(pkg-id("c","1")),BuildTime(pkg-id("b","2")),BuildTime(pkg-id("f","1")),BuildTime(pkg-id("a","1"))]
    )
 
 // Case d
@@ -99,16 +99,16 @@ test-d =
    apply-test( !"multi-level unreachable constraint",
    resolve-version-constraints,
     ![
-     pkg(pkg-id("root","0"),[pkg-dep("a",GTE("1")),pkg-dep("d",GTE("1"))]),
-     pkg(pkg-id("a","1"),[pkg-dep("b",GTE("1")),pkg-dep("c",GTE("1"))]),
+     pkg(pkg-id("root","0"),[BuildTime(pkg-dep("a",GTE("1"))),BuildTime(pkg-dep("d",GTE("1")))]),
+     pkg(pkg-id("a","1"),[BuildTime(pkg-dep("b",GTE("1"))),BuildTime(pkg-dep("c",GTE("1")))]),
      pkg(pkg-id("b","1"),[]),
-     pkg(pkg-id("c","1"),[pkg-dep("b",GTE("2"))]),
+     pkg(pkg-id("c","1"),[BuildTime(pkg-dep("b",GTE("2")))]),
      pkg(pkg-id("b","2"),[]),
-     pkg(pkg-id("d","1"),[pkg-dep("e",GTE("1"))]),
-     pkg(pkg-id("e","1"),[pkg-dep("c",GTE("2"))]),
+     pkg(pkg-id("d","1"),[BuildTime(pkg-dep("e",GTE("1")))]),
+     pkg(pkg-id("e","1"),[BuildTime(pkg-dep("c",GTE("2")))]),
      pkg(pkg-id("c","2"),[])
      ],
-    ![pkg-id("b","1"),pkg-id("e","1"),pkg-id("c","2"),pkg-id("d","1"),pkg-id("a","1")]
+    ![BuildTime(pkg-id("b","1")),BuildTime(pkg-id("e","1")),BuildTime(pkg-id("c","2")),BuildTime(pkg-id("d","1")),BuildTime(pkg-id("a","1"))]
     )
 
 // Case e
@@ -120,12 +120,12 @@ test-e =
    apply-test( !"circular dependencies",
    resolve-version-constraints,
     ![
-     pkg(pkg-id("root","0"),[pkg-dep("a",GTE("1"))]),
-     pkg(pkg-id("a","1"),[pkg-dep("b",GTE("1"))]),
-     pkg(pkg-id("b","1"),[pkg-dep("c",GTE("1"))]),
-     pkg(pkg-id("c","1"),[pkg-dep("a",GTE("1"))])
+     pkg(pkg-id("root","0"),[BuildTime(pkg-dep("a",GTE("1")))]),
+     pkg(pkg-id("a","1"),[BuildTime(pkg-dep("b",GTE("1")))]),
+     pkg(pkg-id("b","1"),[BuildTime(pkg-dep("c",GTE("1")))]),
+     pkg(pkg-id("c","1"),[BuildTime(pkg-dep("a",GTE("1")))])
      ],
-    ![pkg-id("b","1"),pkg-id("c","1"),pkg-id("a","1")]
+    ![BuildTime(pkg-id("b","1")),BuildTime(pkg-id("c","1")),BuildTime(pkg-id("a","1"))]
     )
 
 // Case e2
@@ -137,12 +137,12 @@ test-e2 =
    apply-test( !"circular dependencies2",
    resolve-version-constraints,
     ![
-     pkg(pkg-id("root","0"),[pkg-dep("a",GTE("1"))]),
-     pkg(pkg-id("a","1"),[pkg-dep("b",GTE("2"))]),
-     pkg(pkg-id("b","2"),[pkg-dep("c",GTE("1"))]),
-     pkg(pkg-id("c","1"),[pkg-dep("b",GTE("1"))])
+     pkg(pkg-id("root","0"),[BuildTime(pkg-dep("a",GTE("1")))]),
+     pkg(pkg-id("a","1"),[BuildTime(pkg-dep("b",GTE("2")))]),
+     pkg(pkg-id("b","2"),[BuildTime(pkg-dep("c",GTE("1")))]),
+     pkg(pkg-id("c","1"),[BuildTime(pkg-dep("b",GTE("1")))])
      ],
-    ![pkg-id("c","1"),pkg-id("b","2"),pkg-id("a","1")]
+    ![BuildTime(pkg-id("c","1")),BuildTime(pkg-id("b","2")),BuildTime(pkg-id("a","1"))]
     )
 
 // Case e3
@@ -154,14 +154,14 @@ test-e3 =
    apply-test( !"circular dependencies3",
    resolve-version-constraints,
     ![
-     pkg(pkg-id("root","0"),[pkg-dep("a",GTE("1"))]),
-     pkg(pkg-id("a","1"),[pkg-dep("b",GTE("2"))]),
-     pkg(pkg-id("b","2"),[pkg-dep("c",GTE("1")),pkg-dep("d",GTE("1"))]),
-     pkg(pkg-id("c","1"),[pkg-dep("b",GTE("1"))]),
-     pkg(pkg-id("d","1"),[pkg-dep("b",GTE("2"))]),
+     pkg(pkg-id("root","0"),[BuildTime(pkg-dep("a",GTE("1")))]),
+     pkg(pkg-id("a","1"),[BuildTime(pkg-dep("b",GTE("2")))]),
+     pkg(pkg-id("b","2"),[BuildTime(pkg-dep("c",GTE("1"))),BuildTime(pkg-dep("d",GTE("1")))]),
+     pkg(pkg-id("c","1"),[BuildTime(pkg-dep("b",GTE("1")))]),
+     pkg(pkg-id("d","1"),[BuildTime(pkg-dep("b",GTE("2")))]),
      pkg(pkg-id("b","1"),[])
      ],
-    ![pkg-id("d","1"),pkg-id("c","1"),pkg-id("b","2"),pkg-id("a","1")]
+    ![BuildTime(pkg-id("d","1")),BuildTime(pkg-id("c","1")),BuildTime(pkg-id("b","2")),BuildTime(pkg-id("a","1"))]
     )
 
 // Case f
@@ -173,12 +173,12 @@ test-f =
    apply-test( !"unresolved dependencies",
    resolve-version-constraints,
     ![
-     pkg(pkg-id("root","0"),[pkg-dep("a",GTE("1"))]),
-     pkg(pkg-id("a","1"),[pkg-dep("b",GTE("1"))]),
-     pkg(pkg-id("b","1"),[pkg-dep("c",GTE("1"))]),
-     pkg(pkg-id("c","1"),[pkg-dep("d",GTE("1"))])
+     pkg(pkg-id("root","0"),[BuildTime(pkg-dep("a",GTE("1")))]),
+     pkg(pkg-id("a","1"),[BuildTime(pkg-dep("b",GTE("1")))]),
+     pkg(pkg-id("b","1"),[BuildTime(pkg-dep("c",GTE("1")))]),
+     pkg(pkg-id("c","1"),[BuildTime(pkg-dep("d",GTE("1")))])
      ],
-    ![pkg-id("c","1"),pkg-id("b","1"),pkg-id("d","1"),pkg-id("a","1")]
+    ![BuildTime(pkg-id("c","1")),BuildTime(pkg-id("b","1")),BuildTime(pkg-id("d","1")),BuildTime(pkg-id("a","1"))]
     )
 
 // Case g
@@ -188,10 +188,10 @@ test-g =
    apply-test( !"unresolved1",
    resolve-version-constraints,
     ![
-     pkg(pkg-id("root","0"),[pkg-dep("a",GTE("1"))]),
-     pkg(pkg-id("a","1"),[pkg-dep("b",GTE("1")),pkg-dep("b",GTE("2"))])
+     pkg(pkg-id("root","0"),[BuildTime(pkg-dep("a",GTE("1")))]),
+     pkg(pkg-id("a","1"),[BuildTime(pkg-dep("b",GTE("1"))),BuildTime(pkg-dep("b",GTE("2")))])
      ],
-    ![pkg-id("b","2"),pkg-id("a","1")]
+    ![BuildTime(pkg-id("b","2")),BuildTime(pkg-id("a","1"))]
     )
 
 // Case h
@@ -201,11 +201,11 @@ test-h =
    apply-test( !"unresolved1",
    resolve-version-constraints,
     ![
-     pkg(pkg-id("root","0"),[pkg-dep("a",GTE("1"))]),
-     pkg(pkg-id("a","1"),[pkg-dep("b",GTE("1")),pkg-dep("b",GTE("2"))]),
+     pkg(pkg-id("root","0"),[BuildTime(pkg-dep("a",GTE("1")))]),
+     pkg(pkg-id("a","1"),[BuildTime(pkg-dep("b",GTE("1"))),BuildTime(pkg-dep("b",GTE("2")))]),
      pkg(pkg-id("b","1"),[])
      ],
-    ![pkg-id("b","2"),pkg-id("a","1")]
+    ![BuildTime(pkg-id("b","2")),BuildTime(pkg-id("a","1"))]
     )
 
 \end{code}

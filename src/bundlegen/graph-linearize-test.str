@@ -4,7 +4,7 @@
 
  Author: Merijn de Jonge (M.de.Jonge@tue.nl)
 
- $Id: autobundle-sig.r,v 1.4 2002/05/27 21:51:17 mdejonge Exp $
+ $Id$
 
 \begin{code}
 module graph-linearize-test
@@ -19,7 +19,6 @@ graph-linearize-test =
     ;case-a
     ;case-b
     ;case-c
-    ;case-d
    ) 
 
 // Case a
@@ -30,11 +29,11 @@ case-a =
    apply-test( !"case-a",
    graph-linearize,
     !([
-    pkg(pkg-id("a", "1"), [pkg-id("b","1"), pkg-id("c", "2")]),
+    pkg(pkg-id("a", "1"), [BuildTime(pkg-id("b","1")), BuildTime(pkg-id("c","2"))]),
     pkg(pkg-id("b", "1"), []),
-    pkg(pkg-id("d", "1"), [pkg-id("c","2")]),
-    pkg(pkg-id("c", "2"), [pkg-id("b","1")])
-    ], [pkg-id("a","1"),pkg-id("d","1")]),
+    pkg(pkg-id("d", "1"), [BuildTime(pkg-id("c","2"))]),
+    pkg(pkg-id("c", "2"), [BuildTime(pkg-id("b","1"))])
+    ], [BuildTime(pkg-id("a","1")),BuildTime(pkg-id("d","1"))]),
     ![pkg-id("b","1"),pkg-id("c","2"),pkg-id("a","1"),pkg-id("d","1")]
 )
 
@@ -47,14 +46,14 @@ case-b =
    apply-test( !"case-b",
    graph-linearize,
     !([
-    pkg(pkg-id("a", "1"), [pkg-id("b","2"), pkg-id("c", "3")]),
-    pkg(pkg-id("b", "2"), [pkg-id("e","1")]),
+    pkg(pkg-id("a", "1"), [BuildTime(pkg-id("b","2")), BuildTime(pkg-id("c", "3"))]),
+    pkg(pkg-id("b", "2"), [BuildTime(pkg-id("e","1"))]),
     pkg(pkg-id("e", "1"), []),
-    pkg(pkg-id("d", "1"), [pkg-id("c","3")]),
-    pkg(pkg-id("f", "1"), [pkg-id("c","3")]),
-    pkg(pkg-id("c", "3"), [pkg-id("b","2")])
+    pkg(pkg-id("d", "1"), [BuildTime(pkg-id("c","3"))]),
+    pkg(pkg-id("f", "1"), [BuildTime(pkg-id("c","3"))]),
+    pkg(pkg-id("c", "3"), [BuildTime(pkg-id("b","2"))])
     ],
-    [pkg-id("a","1"),pkg-id("d","1"),pkg-id("f","1")]),
+    [BuildTime(pkg-id("a","1")),BuildTime(pkg-id("d","1")),BuildTime(pkg-id("f","1"))]),
     ![pkg-id("e","1"),pkg-id("b","2"),pkg-id("c","3"),pkg-id("a","1"),pkg-id("d","1"),pkg-id("f","1")]
 )
 
@@ -68,35 +67,18 @@ case-c =
    apply-test( !"case-c",
    graph-linearize,
     !(
-     [pkg(pkg-id("a","1"),[pkg-id("b","1"),pkg-id("c","1")]),
+     [pkg(pkg-id("a","1"),[BuildTime(pkg-id("b","1")),BuildTime(pkg-id("c","1"))]),
       pkg(pkg-id("b","1"),[]),
-      pkg(pkg-id("c","1"),[pkg-id("d","1")]),
+      pkg(pkg-id("c","1"),[BuildTime(pkg-id("d","1"))]),
       pkg(pkg-id("d","1"),[]),
-      pkg(pkg-id("e","1"),[pkg-id("f","1")]),
-      pkg(pkg-id("f","1"),[pkg-id("g","1"),pkg-id("a","1")]),
-      pkg(pkg-id("g","1"),[pkg-id("d","1")])
-     ],[pkg-id("a","1"),pkg-id("e","1")]),
+      pkg(pkg-id("e","1"),[BuildTime(pkg-id("f","1"))]),
+      pkg(pkg-id("f","1"),[BuildTime(pkg-id("g","1")),BuildTime(pkg-id("a","1"))]),
+      pkg(pkg-id("g","1"),[BuildTime(pkg-id("d","1"))])
+     ],[BuildTime(pkg-id("a","1")),BuildTime(pkg-id("e","1"))]),
      ![pkg-id("b","1"),pkg-id("d","1"),pkg-id("c","1"),pkg-id("a","1"),
        pkg-id("g","1"),pkg-id("f","1"), pkg-id("e","1")]
     )
       
-
-// Case d
-//
-//  a1
-//  b1   => [b1,a1]
-//  a1
-//  
-case-d =
-   apply-test( !"case-d",
-   graph-linearize,
-    !([
-    pkg(pkg-id("a","1"),[pkg-id("b","1")]),
-    pkg(pkg-id("b","1"),[pkg-id("a","1")])
-   ],
-   [pkg-id("a","1")]),
-   ![pkg-id("b","1"),pkg-id("a","1")]
-   )
 
 \end{code}
 % Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>

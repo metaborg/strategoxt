@@ -116,7 +116,8 @@ where
       // Create a list of unresolved package names separated by ", "
       map( \ RunTime(pkg-id(n,_)) -> n \ 
            +
-           \ BuildTime(pkg-id(n,_)) -> n \ ); separate-by(!", ") => unresolved-names;
+           \ BuildTime(pkg-id(n,_)) -> n \ );
+      uniq; separate-by(!", ") => unresolved-names;
 
       // Construct the message text by concatenation
       ![the-msg, 

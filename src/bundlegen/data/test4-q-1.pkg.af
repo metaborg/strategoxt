@@ -1,1 +1,1 @@
-"autobundle-0"(PackageDef(Identification(Name("test4-q"),Version("1"),Location(Some("a")),Info(Some("b")),Description(Some("'a'")),Keywords([])),InterfaceOld([]),Requires([ReqPackage("test4-a","1",[])]),None))
+"autobundle-0"(PackageDef(Identification(Name("test4-q"),Version("1"),Location(Some("a")),Info(Some("b")),Description(Some("'a'")),Keywords([])),InterfaceOld([]),[Requires([ReqPackage("test4-a","1",[])])],None))

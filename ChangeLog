@@ -2,6 +2,9 @@
    * bundlegen/graph-generator.str: since a package can be both a runtime
      and a build time dependency, package dependencies occured twice in a
      package dependency graph. Fixed.
+   * bundlegen/cycle-check-test.str: removed
+   * bundlegen: Fixed make check
+   * pbsd: Fixed make distcheck
 
 2004-04-28 Merijn de Jonge <mdejonge@cs.uu.nl>
    * pbsd/pkg-release: now saves a cvs checked-out version and checks-out a

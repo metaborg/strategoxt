@@ -1,1 +1,1 @@
-"autobundle-0"(PackageDef(Identification(Name("pkgb"),Version("0.1"),Location(Some("http://www.somewhere")),Info(Some("http://www.somewhere")),Description(Some("'demo package'")),Keywords([])),InterfaceOld([]),Requires([ReqPackage("pkga","0.1",[])]),Some(Configuration([]))))
+"autobundle-0"(PackageDef(Identification(Name("pkgb"),Version("0.1"),Location(Some("http://www.somewhere")),Info(Some("http://www.somewhere")),Description(Some("'demo package'")),Keywords([])),InterfaceOld([]),[Requires([ReqPackage("pkga","0.1",[])])],Some(Configuration([]))))

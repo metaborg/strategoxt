@@ -28,13 +28,15 @@ where
    // Create special nodes for unresolved packages
    <map(\ BuildTime(n) -> unresolved-node(<pkgid-to-string>n) \ 
         +
-        \ RunTime(n) -> unresolved-node(<pkgid-to-string>n ) \ )>unresolved 
+        \   RunTime(n) -> unresolved-node(<pkgid-to-string>n ) \ )>unresolved 
+   ;uniq
       => unresolved-nodes;
 
    // Create special nodes for top nodes
    <map(\ BuildTime(n) -> top-node(<pkgid-to-string>n) \ 
         +
-        \ RunTime(n) -> top-node(<pkgid-to-string>n) \ )>tops
+        \   RunTime(n) -> top-node(<pkgid-to-string>n) \ )>tops
+   ;uniq
       => top-nodes;
 
    // Create GraphXML graph

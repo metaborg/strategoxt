@@ -31,7 +31,7 @@ CLEANFILES     = $(wildcard *.dep)
 CLEANFILES    += pkg_switch1_check \
                  pkg_switch2_check \
                  pkg_switch3_check \
-                 pkg-edit.sh
+                 pkg-edit.sh pkg-release.sh pkg-revert.sh
 
 BOOTCLEANFILES = $(wildcard *.c)
 

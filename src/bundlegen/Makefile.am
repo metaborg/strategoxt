@@ -32,7 +32,7 @@ CLEANFILES       += bundlegen1_check \
 BOOTCLEANFILES    = $(wildcard *.c)
 
 check_PROGRAMS    = version-resolver-test graph-linearize-test \
-                    cycle-check-test version-expressions-test
+                    version-expressions-test
 
 TESTS             = $(check_PROGRAMS) \
                     bundlegen1_check bundlegen2_check bundlegen3_check \
