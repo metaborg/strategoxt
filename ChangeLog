@@ -1,4 +1,6 @@
-2003-06-18  Martin Bravenboer  <martin@mbravenboer.org>
+2003-06-12  Martin Bravenboer  <martin@mbravenboer.org>
+
+  * Makefile.am: distribute the svn-co-revision file.
 
   * strategoxt.spec.in: using SVN_REVISION for the
     release of an RPM.
