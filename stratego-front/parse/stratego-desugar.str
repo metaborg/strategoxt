@@ -70,7 +70,7 @@ rules
     AnnoCong(s1, StrategyCurly(s2)) -> Call(SVar("Anno_Cong__"), [s1, s2])
 
   Desugar :
-    TupleCong -> Call(SVar(""), [])
+    EmptyTupleCong() -> Call(SVar(""), [])
 
   Desugar :
     TupleCong([x]) -> x

@@ -48,7 +48,7 @@
    RealCong                         -- _1,
    AnnoCong                         -- _1 _2,
    StrategyCurly                    -- KW["{"] _1 KW["}"],
-   TupleCong                        -- KW["("] KW[")"],
+   EmptyTupleCong                   -- KW["("] KW[")"],
    TupleCong                        -- KW["("] _1 KW[","] _2 KW[")"],
    TupleCong.2:iter-sep             -- _1 KW[","],
    ModCongNoArgs                    -- _1,

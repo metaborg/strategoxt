@@ -1,3 +1,10 @@
+2003-05-12  Martin Bravenboer <martin@mbravenboer.org>
+
+  * syn/Stratego-Strategies.sdf,
+    parse/stratego-desugar.sdf,  
+    pp/Stratego-pretty.pp: Changed TupleCong to EmptyTupleCong
+    Reported by Rob Vermass.
+
 2003-03-17  Martin Bravenboer <martin@mbravenboer.org>
 
   * pp/Stratego-pretty.pp: Fixed Con, reported by Rob Vermaas.

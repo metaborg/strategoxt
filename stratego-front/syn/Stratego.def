@@ -81,7 +81,7 @@ exports
     Strategy StrategyCurly		  -> Strategy {cons("AnnoCong")}
     "{" Strategy "}"		  	  -> StrategyCurly {cons("StrategyCurly")}
 
-    "("  ")" 		  		  -> Strategy {cons("TupleCong")}
+    "("  ")" 		  		  -> Strategy {cons("EmptyTupleCong")}
     "(" Strategy  ")" 		          -> Strategy {bracket}
     "(" Strategy "," {Strategy ","}+ ")"  -> Strategy {cons("TupleCong")}
 

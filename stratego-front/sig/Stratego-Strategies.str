@@ -44,7 +44,7 @@ signature
     RealCong       : Real -> Strategy
     AnnoCong       : Strategy * StrategyCurly -> Strategy
     StrategyCurly  : Strategy -> StrategyCurly
-    TupleCong      : Strategy
+    EmptyTupleCong : Strategy
     TupleCong      : Strategy * List(Strategy) -> Strategy
     ModCongNoArgs  : Mod -> Strategy
     ModCong        : Mod * List(Strategy) -> Strategy
