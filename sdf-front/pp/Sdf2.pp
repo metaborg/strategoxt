@@ -156,10 +156,12 @@
       
    char-class -- _1,
 
+   short -- _1,
+
    sort -- _1,
 
-   Sorts -- 
-          H [ KW["sorts"] HV[_1]],
+   Sorts -- H [ KW["sorts"] HV[_1]],
+   sorts -- H [ KW["sorts"] HV[_1]],
           
    lit -- _1,
    
@@ -217,8 +219,11 @@
    range -- _1 KW["-"] _2,
 
    conc-ranges -- _1 _2,
+   conc -- _1 _2,
 
    no-charranges --,
+
+   present -- _1,
 
    simple-charclass -- 
       H hs=0[KW["["] _1 KW["]"]],
@@ -239,7 +244,12 @@
       KW["("] _1 KW[")"],
 
    unparameterized -- _1,
-   qlit -- _1,
+
+   fun   -- _1,
+   qlit  -- _1,
    uqlit -- _1,
-   term -- _1
+   term  -- _1,
+
+   appl  -- H hs=0 [_1 KW["("] _2 KW[")"]],
+   appl.2:iter-star-sep -- H hs=0[_1 KW[","]]
 ]
