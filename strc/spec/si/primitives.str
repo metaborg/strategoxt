@@ -1,52 +1,44 @@
-(*
-  
-  for each primitive p defined by a definition of the form
-
-     p' = prim(p)
-
-  generate an evaluation rule
-
-     EvalPrim : App(Prim(p), t) -> <p'> t
-
-  there is one default rule
-
-     EvalPrimFail : App(Prim(p), t) -> Fail
-
-*)
-
+/**
+ * For each primitive invocation in the input
+ * generate an evaluation rule
+ * 
+ *  EvalPrim : App(Prim(f, ts), t) -> <prim(f, ts ...)> t
+ *
+ * @author Martin Bravenboer <martin@cs.uu.nl>
+ *         Eelco Visser <visser@cs.uu.nl>
+ */
 module primitives
 imports lib Stratego 
 
 strategies
 
   main = 
-    iowrap(
-      get-primitives; 
-      \ rdefs -> Specification([Rules(rdefs)]) \
+    io-wrap(
+      get-primitives
+    ; \ rdefs -> |[
+          module eval-lib-primitives
+          rules
+            ~*rdefs
+      ]| \
     )
 
   get-primitives =
-    collect(EvalPrimitive)
+    collect-all(EvalPrimitive)
 
 rules
 
-/*
   EvalPrimitive :
-    SDef(name,[],Seq(Match(Op("", xs)), Prim(p, xs)) ->
-    RDef("EvalPrim", [], 
-         Rule(Op("App", [Op("Prim", [Str(p), ]), Var("t")]),
-              App(Call(SVar(name),[]), Var("t")),
-              Id))
-    where <map(Var(id))> xs
-*/
+    |[ prim(str, t0*) ]|
+      ->
+    |[ EvalPrim :
+         App(Prim(str, [t1*]), to) -> <prim(str, t2*)> to
+    ]|
+      where <map(new-stratego-var)> t0* => t1*
+          ; <map(apply-eval-term )> t1* => t2*
 
-  EvalPrimitive :
-    Prim(p, ts) ->
-    RDef("EvalPrim", [], 
-         Rule(Op("App", [Op("Prim", [Str(p), ys]), Var("t")]),
-              App(Prim(p, zs), Var("t")),
-              Id))
-    where <map(!Var(<new>))> ts => xs
-        ; <foldr(!Op("Nil",[]), !Op("Cons", [<Fst>,<Snd>]))> xs => ys
-        ; <map(!App(Call(SVar("EvalTerm"),[]), <id>))> xs => zs
+  new-stratego-var =
+      new => x
+    ; !Term |[ x ]|
 
+  apply-eval-term :
+   Term |[ t ]| -> Term |[ <EvalTerm> t ]|

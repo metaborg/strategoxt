@@ -1,4 +1,3 @@
-
 module stratego-eval
 imports Stratego-Amb unification eval-lib-primitives
 
