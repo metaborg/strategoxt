@@ -90,6 +90,8 @@ exports
     [t][0-9\']*   "*"     -> {Term ","}*     {prefer}
     "ts"[0-9\']*          -> {Term ","}*     {prefer}  
 
+    "str"[0-9\']*         -> String {prefer}
+
     [s][0-9\']*           -> Strategy {prefer}
     "ss"[0-9\']*          -> {Strategy ","}* {prefer}
     "s"[0-9\']*   "*"     -> {Strategy ","}* {prefer}
