@@ -9,7 +9,7 @@ include $(top_srcdir)/Makefile.xt
 SUBDIRS	= . src
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 
-EXTRA_DIST = ADDING-TOOLS VERSION \
+EXTRA_DIST = VERSION \
              package.conf bootstrap $(PACKAGE)-$(VERSION).pkg \
 	     Makefile.xt autoxt.m4
 
