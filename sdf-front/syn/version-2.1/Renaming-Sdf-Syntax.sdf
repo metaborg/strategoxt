@@ -6,7 +6,7 @@ exports
 
   context-free syntax
     "[" Renaming* "]" -> Renamings {cons("renamings")}
-    Symbol "=>" Symbol -> Renaming {cons("symbol")}
+    Symbol "=>" Symbol -> Renaming {cons("renaming")}
     Production "=>" Production -> Renaming {cons("production")}
 
 

@@ -70,7 +70,18 @@
 
    RenamedModuleName --
       H hs=0 [ _1 KW["["] H[_2] KW["]"]],
-      
+
+   RenamedModule --
+      H hs=1 [ _1 _2 ],
+
+   renamings --
+      H hs=1 [ KW["["] _1 KW["]"]],
+
+   renaming --
+      H hs=1 [ _1 KW["=>"] _2],
+
+   renaming.1:iter-star -- _1,
+     
    Id --
       KW["id"] H hs=0["(" _1 ")"],
       

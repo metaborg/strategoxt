@@ -781,7 +781,7 @@ exports
 
   context-free syntax
     "[" Renaming* "]" -> Renamings {cons("renamings")}
-    Symbol "=>" Symbol -> Renaming {cons("symbol")}
+    Symbol "=>" Symbol -> Renaming {cons("renaming")}
     Production "=>" Production -> Renaming {cons("production")}
 
 module Modular-Sdf-Syntax
@@ -807,7 +807,7 @@ exports
     ImpSection                   -> Grammar
     Import*                      -> Imports
     ModuleName                   -> Import
-    ModuleName Renamings         -> Import
+    ModuleName Renamings         -> Import                      {cons("RenamedModule")}
     "(" Import ")"               -> Import {bracket}
 
 module Basic-Sdf-Syntax
@@ -978,7 +978,7 @@ exports
 
   variables %% section 7.4.1
 
-    "S" [0-9\']* -> Sort
+    "S" [0-9\']* -> Sort {prefer}
 
   variables %% section
 

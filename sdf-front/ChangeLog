@@ -1,5 +1,12 @@
 2004-02-12  Martin Bravenboer  <martin@cs.uu.nl>
 
+	* syn/version-2.1/Module-Sdf-Syntax.sdf: missing constructor for
+	the renamed import module.
+
+	* pp/Sdf2.pp: many missing pretty print rules for renamed modules.
+
+2004-02-12  Martin Bravenboer  <martin@cs.uu.nl>
+
 	* syn/*: added the pgen 2.0 syntax definition for SDF as the first
 	step into upgrading to the most recent sdf version. sdf-front now
 	contains two versions of SDF2. The old one is still called

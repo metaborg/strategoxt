@@ -8,3 +8,4 @@ signature
     RenamedModuleName : ModuleId * Symbols -> ModuleName
     Id                : ModuleName -> Attribute
     Imports           : Imports -> ImpSection
+    RenamedModule     : ModuleName * Renamings -> Import

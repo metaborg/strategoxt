@@ -3,5 +3,5 @@ imports Kernel-Sdf-Syntax
 signature
   constructors
     renamings  : List(Renaming) -> Renamings
-    symbol     : Symbol * Symbol -> Renaming
+    renaming   : Symbol * Symbol -> Renaming
     production : Production * Production -> Renaming

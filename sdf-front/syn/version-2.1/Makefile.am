@@ -35,6 +35,6 @@ Sdf2-Syntax.def : \
   Sorts-Sdf-Syntax.sdf \
   Symbols.sdf 
 
-Stratego-Sdf2 : \
+Stratego-Sdf2.def : \
   Stratego-Sdf2.sdf \
   Sdf2-Syntax.def
