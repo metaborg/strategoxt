@@ -75,7 +75,9 @@ ATerm SSL_newname(ATerm prefix)
   int newname_counter;
   char* prefix_string;
   char* prefix_base;
-  ATerm lastvalue;
+  char* last_delim;
+  ATerm count_key;
+  ATerm last_value;
 
   if(SSL_newname_table == NULL)
     SSL_newname_table = ATtableCreate(15, 80);
@@ -83,7 +85,6 @@ ATerm SSL_newname(ATerm prefix)
   prefix_string = ATgetName(ATgetSymbol(prefix));
 
   /* Now try to trim off a trailing counter part, if applicable */
-  char *last_delim;
   last_delim = strrchr(prefix_string, '_');
 
   if (last_delim != NULL) {
@@ -106,11 +107,11 @@ ATerm SSL_newname(ATerm prefix)
     prefix_base = prefix_string;
   }
   /* The proper base prefix is now known for looking up counter. */
-  ATerm count_key = (ATerm) ATmakeString(prefix_base);
-  lastvalue = ATtableGet(SSL_newname_table, count_key);
+  count_key = (ATerm) ATmakeString(prefix_base);
+  last_value = ATtableGet(SSL_newname_table, count_key);
 
-  if(lastvalue != NULL) {
-    newname_counter = ATgetInt((ATermInt)lastvalue);
+  if(last_value != NULL) {
+    newname_counter = ATgetInt((ATermInt)last_value);
   } else {
     newname_counter = -1;
   }
