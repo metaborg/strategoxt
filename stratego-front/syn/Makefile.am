@@ -1,7 +1,7 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-noinst_DATA     = StrategoForTesting.tbl
+noinst_DATA     = StrategoForTesting.tbl StrategoStrategoForTesting.tbl
 sdfdata_DATA 	= Stratego.def StrategoStratego.def Stratego-Amb.def \
 	          Stratego.tbl StrategoStratego.tbl \
 		  Stratego-Core.def Stratego-Core.tbl \
@@ -14,9 +14,11 @@ BOOTCLEANFILES	= $(wildcard *.def)
 EXTRA_DIST 	= Stratego.def StrategoStratego.def Stratego-Core.def \
 		  Stratego.tbl StrategoStratego.tbl Stratego-Core.tbl \
                   StrategoForTesting.tbl StrategoForTesting.def \
+                  StrategoStrategoForTesting.tbl StrategoStrategoForTesting.def \
 		  $(wildcard *.def) $(wildcard *.sdf) 
 
 StrategoForTesting.def : Stratego.def StrategoForTesting.sdf Stratego-DynamicRules.sdf
+StrategoStrategoForTesting.def : StrategoStratego.def StrategoStrategoForTesting.sdf Stratego-DynamicRules.sdf
 
 Stratego.def 	: Stratego.sdf Stratego-Signatures.sdf	       \
 		  Stratego-Modules.sdf Stratego-Strategies.sdf \

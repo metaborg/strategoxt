@@ -81,6 +81,8 @@
    ExtendDynamicRules.1:iter-star         -- _1,
    ExtendOverrideDynamicRules             -- KW["extend"] KW["override"] KW["rules"] KW["("] _1 KW[")"],
    ExtendOverrideDynamicRules.1:iter-star -- _1,
+   DynRuleScope                           -- KW["{|"] _1 KW[":"] _2 KW["|}"], 	 
+   DynRuleScope.1:iter-star-sep           -- _1 KW[","], 	 
    CallNoArgs                             -- _1,
    LRule                                  -- KW["\\"] _1 KW["\\"],
    SRule                                  -- KW["("] _1 KW[")"],

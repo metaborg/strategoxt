@@ -60,6 +60,7 @@ signature
     OverrideDynamicRules       : List(RuleDef) -> Strategy
     ExtendDynamicRules         : List(RuleDef) -> Strategy
     ExtendOverrideDynamicRules : List(RuleDef) -> Strategy
+    DynRuleScope               : List(Id) * Strategy -> Strategy
 signature
   constructors
     CallNoArgs : SVar -> Strategy
