@@ -37,6 +37,8 @@ USA
 
 #define ATisReal(t) (ATgetType(t) == AT_REAL)
 #define ATisInt(t)  (ATgetType(t) == AT_INT)
+#define ATisBlob(t) (ATgetType(t) == AT_BLOB)
+#define ATisList(t) (ATgetType(t) == AT_LIST)
 
 #define AT_getInt(t)    (ATisInt(t) ? (((ATermInt)t)->value) : (int)_fail(t))
 #define AT_getString(t) (AT_isString(t) ? (ATgetName(ATgetSymbol(t))) : (char*)_fail(t))
@@ -76,3 +78,4 @@ ATerm App7(char *name, ATerm arg1, ATerm arg2, ATerm arg3, ATerm arg4, ATerm arg
 ATerm AppN(char *name, ATermList args);
 
 #endif
+

@@ -23,6 +23,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
 
 #include <unistd.h>
 
+// TODO: split exec.h in io, posix-file and posix-process.h
+
 ATerm SSL_exit(ATerm t);
 ATerm SSL_call(ATerm prog, ATerm args);
 ATerm SSL_call_noisy(ATerm prog, ATerm args);
@@ -38,14 +40,31 @@ ATerm SSL_kill(ATerm pid, ATerm sig);
 
 ATerm SSL_open(ATerm pathname);
 ATerm SSL_creat(ATerm pathname);
+ATerm SSL_mkstemp(ATerm template);
 ATerm SSL_close(ATerm fd);
 ATerm SSL_dup(ATerm oldfd);
+ATerm SSL_fileno(ATerm stream);
+
 ATerm SSL_fdopen(ATerm fd, ATerm mode);
+ATerm SSL_fopen(ATerm pathname, ATerm mode);
 ATerm SSL_fclose(ATerm stream);
 
-ATerm SSL_mkstemp(ATerm template);
+ATerm SSL_fputs(ATerm str, ATerm stream);
+ATerm SSL_puts(ATerm str);
+ATerm SSL_fflush(ATerm stream);
+
+ATerm SSL_write_term_to_stream(ATerm stream, ATerm term);
+ATerm SSL_read_term_from_stream(ATerm stream);
+
+ATerm SSL_strlen(ATerm str);
+ATerm SSL_strcat(ATerm str1, ATerm str2);
+ATerm SSL_concat_strings(ATerm strings);
 
 #define SSL_P_tmpdir() ((ATerm)ATmakeString(P_tmpdir))
+
+ATerm SSL_stdin_stream(void);
+ATerm SSL_stdout_stream(void);
+ATerm SSL_stderr_stream(void);
 
 #define SSL_STDIN_FILENO() ((ATerm)ATmakeInt(STDIN_FILENO))
 #define SSL_STDOUT_FILENO() ((ATerm)ATmakeInt(STDOUT_FILENO))

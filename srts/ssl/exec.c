@@ -30,6 +30,100 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
 #include <fcntl.h>
 #include <sys/wait.h>
 
+/*************************************************************************
+ * Stream conversion
+ */
+
+FILE* stream_from_term_strict(ATerm term);
+FILE* stream_from_term_transitional(ATerm term);
+
+/**
+ * Returns a FILE* for a given ATerm
+ *
+ * It handles all possible representations of streams in Stratego.
+ */
+FILE* stream_from_term(ATerm stream) {
+  if(ATisBlob(stream)) {
+    return stream_from_term_strict(stream);
+  } else {
+    ATfprintf(stderr, "** Warning -- using deprecated stream representation: %t .\n", stream);
+    return stream_from_term_transitional(stream);
+  }
+}
+
+/**
+ * Tool for debugging the stream conversion procedures.
+ * Not portable because it assumes that a FILE* takes 4 bytes.
+ */
+show_stream(FILE* stream) {
+  char* p = (char*) &stream;
+  printf("Stream pointer: %i %i %i %i \n", p[0], p[1], p[2], p[3]);
+}
+
+/**
+ * Converts the only real FILE* representation in an ATerm
+ * to a FILE*. Doesn't try to be clever or helpful with handling
+ * other representations.
+ */
+FILE* stream_from_term_strict(ATerm term) {
+  FILE* result;
+
+  if(ATisBlob(term)) {
+    ATermBlob blob = (ATermBlob) term;
+
+    if(ATgetBlobSize(blob) != sizeof(FILE*)) {
+      _fail(term);
+    } else {
+      result = (FILE*) ATgetBlobData(blob);
+    }
+  } else {
+    _fail(term);
+  }
+
+  return result;
+}
+
+/**
+ * Converts a FILE* the a representation in an ATerm.
+ */
+ATerm stream_to_term(FILE* stream) {
+  FILE **onheap = (FILE**) malloc(sizeof(FILE*));
+  // TODO: free allocated space with Blob destructor?
+
+  if(onheap == NULL) {
+    printf("** ERROR -- SSL/posix-file/stream_to_term: couldn't allocate memory");
+    _fail(App0("")); 
+  }
+
+  *onheap = stream;
+  return (ATerm) ATmakeBlob(sizeof(FILE*), *onheap);
+}
+
+/**
+ * Old FILE* representations
+ */
+FILE* stream_from_term_transitional(ATerm stream) {
+  FILE* result = NULL;
+
+         if(ATmatch(stream, "stdout")) { // stdout
+    result = stdout;
+  } else if(ATmatch(stream, "stderr")) { // stderr
+    result = stderr;
+  } else if(ATmatch(stream, "stdin")) { // stdin
+    result = stdin;
+  } else if(ATisInt(stream)) { // file pointer
+    result = (FILE*) AT_getInt(stream);
+  } else { // not a stream
+    _fail(stream);
+  }
+
+  return result;
+}
+
+/**************************************************************************
+ * POSIX process procedures
+ */
+
 ATerm SSL_exit(ATerm t)
 {
   if(ATisInt(t))
@@ -103,6 +197,11 @@ ATerm SSL_waitpid(ATerm pid)
 	      (ATerm)ATmakeInt(WIFSTOPPED(status)  ? WSTOPSIG(status) : -1));  
 }
 
+
+/*****************************************************************************
+ * POSIX file system procedures
+ */
+
 ATerm SSL_pipe(void)
 {
   int fd[2], res;
@@ -126,9 +225,12 @@ ATerm SSL_pipe(void)
     //_fail((ATerm)ATempty);
     //break;
   }
-  return (ATerm)ATempty;
+  return (ATerm) ATempty;
 }
 
+/**
+ * creat
+ */
 ATerm SSL_creat(ATerm pathname)
 {
   int fd;
@@ -141,6 +243,9 @@ ATerm SSL_creat(ATerm pathname)
   return (ATerm)ATmakeInt(fd);
 }
 
+/**
+ * open
+ */
 ATerm SSL_open(ATerm pathname)
 {
   int fd;
@@ -150,6 +255,17 @@ ATerm SSL_open(ATerm pathname)
       ATfprintf(stderr, "opening %s failed: %d\n", AT_getString(pathname), fd);
       _fail(pathname);
     }
+  return (ATerm)ATmakeInt(fd);
+}
+
+/**
+ * dup
+ */
+ATerm SSL_dup(ATerm oldfd) {
+  int fd;
+  ATfprintf(stderr, "SSL_dup(%t)\n", oldfd);
+  fd = dup(AT_getInt(oldfd));
+  if(fd == -1) _fail(oldfd);
   return (ATerm)ATmakeInt(fd);
 }
 
@@ -168,34 +284,216 @@ ATerm SSL_mkstemp(ATerm template) {
   return (ATerm) App2("", (ATerm) ATmakeString(str), (ATerm) ATmakeInt(fd));
 }
 
-ATerm SSL_close(ATerm fd)
-{
-  //ATfprintf(stderr, "SSL_close(%t)\n", fd);
+/**
+ * close
+ */
+ATerm SSL_close(ATerm fd) {
   if(close(AT_getInt(fd)) != 0) 
     _fail(fd);
   return (ATerm)ATmakeInt(0);
 }
 
-ATerm SSL_fdopen(ATerm fd, ATerm mode)
-{
-  ATfprintf(stderr, "SSL_fdopen(%t, %t)\n", fd, mode);
-  return (ATerm) ATmakeInt((int)fdopen(AT_getInt(fd), AT_getString(mode)));
+/**
+ * fdopen
+ */
+ATerm SSL_fdopen(ATerm fd, ATerm mode) {
+  FILE* result = fdopen(AT_getInt(fd), AT_getString(mode));
+
+  if(result == NULL) {
+    _fail(fd);
+  }
+
+  return stream_to_term(result);
 }
 
 
-ATerm SSL_fclose(ATerm stream)
-{
-  ATfprintf(stderr, "SSL_fclose(%t)\n", stream);
-  return (ATerm) ATmakeInt((int)fclose((FILE*)AT_getInt(stream)));
+/**
+ * fopen
+ */
+ATerm SSL_fopen(ATerm pathname, ATerm mode) {
+  FILE* result = fopen(AT_getString(pathname), AT_getString(mode));
+
+  if(result == NULL) {
+    _fail(pathname);
+  }
+
+  return stream_to_term(result);
 }
 
-ATerm SSL_dup(ATerm oldfd)
-{
-  int fd;
-  ATfprintf(stderr, "SSL_dup(%t)\n", oldfd);
-  fd = dup(AT_getInt(oldfd));
-  if(fd == -1) _fail(oldfd);
-  return (ATerm)ATmakeInt(fd);
+/**
+ * fclose
+ */
+ATerm SSL_fclose(ATerm stream_term) {
+  FILE* stream = stream_from_term(stream_term);
+  int result = fclose(stream);
+
+  if(result != 0) {
+    _fail(stream_term);
+  }
+
+  return (ATerm) ATempty;
+}
+
+/**
+ * fileno
+ */
+ATerm SSL_fileno(ATerm term) {
+  FILE* stream = stream_from_term(term);
+  int fd = fileno(stream);
+
+  if(fd == -1) {
+    _fail(term);
+  }
+
+  return (ATerm) ATmakeInt(fd);
+}
+
+/**
+ * Standard streams
+ */
+ATerm SSL_stdin_stream() {
+  return stream_to_term(stdin);
+}
+
+ATerm SSL_stdout_stream() {
+  return stream_to_term(stdout);
+}
+
+ATerm SSL_stderr_stream() {
+  return stream_to_term(stderr);
+}
+
+/**
+ * fflush
+ */
+ATerm SSL_fflush(ATerm stream_term) {
+  FILE* stream = stream_from_term(stream_term);
+
+  if(fflush(stream) != 0) {
+    _fail(stream_term);    
+  }
+
+  return(stream_term);
+}
+
+/**
+ * fputs
+ */
+ATerm SSL_fputs(ATerm str_term, ATerm stream_term) {
+  FILE* stream = stream_from_term(stream_term);
+  char* str = AT_getString(str_term);
+
+  int result = fputs(str, stream);
+  if(result == EOF) {
+    _fail(stream_term);
+  }
+
+  return stream_term;
+}
+
+/**
+ * puts
+ */
+ATerm SSL_puts(ATerm str_term) {
+  char* str = AT_getString(str_term);
+
+  int result = puts(str);
+  if(result == EOF) {
+    _fail(str_term);
+  }
+
+  return stream_to_term(stdout);
+}
+
+/**
+ * ATerm IO on streams
+ */
+ATerm SSL_write_term_to_stream(ATerm stream_term, ATerm term) {
+  FILE* stream = stream_from_term(stream_term);
+
+  ATwriteToTextFile(term, stream);
+  fprintf(stream, "\n");
+
+  return stream_term;
+}
+
+ATerm SSL_read_term_from_stream(ATerm stream_term) {
+  FILE* stream = stream_from_term(stream_term);
+  ATerm result = ATreadFromFile(stream);
+
+  if(result == NULL) {
+    ATfprintf(stderr, "not a valid term\n");
+    _fail(stream_term);
+  }
+
+  return result;
+}
+
+/**
+ * String operations
+ */
+ATerm SSL_strlen(ATerm str_term) {
+  char* str = AT_getString(str_term);
+  return (ATerm) ATmakeInt(strlen(str));
+}
+
+ATerm SSL_strcat(ATerm str_term1, ATerm str_term2) {
+  char* str1 = AT_getString(str_term1);
+  char* str2 = AT_getString(str_term2);
+  ATerm result_term;
+
+  char* result = (char*) malloc(strlen(str1) + strlen(str2) + 2);
+  strcpy(result, str1);
+  strcat(result, str2);
+
+  result_term = ATmakeString(result);
+  free(result);
+  return result_term;
+}
+
+ATerm SSL_concat_strings(ATerm strings) {
+  int result_length = 2;
+  int list_length;
+  ATermList tail;
+  char* result;
+  char* current;
+  ATerm term_result;
+
+  if(!ATisList(strings)) {
+    _fail(strings);
+  }
+
+  tail = (ATermList) strings;
+  while(tail != ATempty) {
+    ATerm head = ATgetFirst(tail);
+
+    if(!ATisString(head)) {
+      _fail(strings);
+    }
+
+    result_length += strlen(AT_getString(head));
+    tail = ATgetNext(tail);
+  }
+
+  result = (char*) malloc(result_length + 1);
+  assert( result != NULL );
+  current = result;
+
+  tail = (ATermList) strings;
+  while(tail != ATempty) {
+    char* str = AT_getString(ATgetFirst(tail));
+    int length = strlen(str);
+
+    memcpy(current, str, length);
+    current = current + length;
+    tail = ATgetNext(tail);
+  }
+
+  current[0] = '\0'; // in case strings length == 0
+
+  term_result = ATmakeString(result);
+  free(result);
+  return term_result;
 }
 
 /* Call
@@ -393,3 +691,4 @@ ATerm SSL_pipe_term_to_child(ATerm t, ATerm prog, ATerm args0)
   }
   return((ATerm) ATempty);
 }
+

@@ -1,3 +1,14 @@
+2003-03-24  Martin Bravenboer <martin@mbravenboer.org>
+
+  * ssl/exec.[ch]: new stream representation in blob.
+
+  * ssl/exec.[ch]: new primitives: fopen, stdin_stream,
+    stdout_stream, stderr_stream, write_term_to_stream,
+    read_term_from_stream, fputs, puts, strlen, strcat,
+    concat_strings
+
+  * ssl/io.[ch]: moved fileno and fflush to exec.[ch]
+
 2003-03-21  Martin Bravenboer <martin@mbravenboer.org>
 
   * ssl/io.c: added stream_from_term
