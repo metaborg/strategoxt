@@ -1,18 +1,37 @@
 module ATerms
-imports Literals IntCon RealCon
+imports list-cons option
 signature
   constructors
-    not-empty             : List(ATerm) -> ATermList
-    int                   : IntCon -> ACon
-    real                  : RealCon -> ACon
-    constant              : ACon -> ATerm
-    list                  : ATermList -> ATerm
-    fun                   : AFun -> ATerm
-    appl                  : AFun * List(ATerm) -> ATerm
-    placeholder           : ATerm -> ATerm
-    annotation            : List(ATerm) -> Ann
-    annotated-constant    : ACon * Ann -> ATerm
-    annotated-list        : ATermList * Ann -> ATerm
-    annotated-fun         : AFun * Ann -> ATerm
-    annotated-appl        : AFun * List(ATerm) * Ann -> ATerm
+                          : a_0 -> b_0
+    Nil                   : b_0
+    Conc                  : b_0 * b_0 -> b_0
+    Conc                  : b_0 * a_0 -> a_0
+    Conc                  : a_0 * b_0 -> a_0
+    Conc                  : a_0 * a_0 -> a_0
+    Cons                  : ATerm * b_0 -> a_0
+    annotation            : a_0 -> Ann
     annotated-placeholder : ATerm * Ann -> ATerm
+    annotated-appl        : AFun * a_0 * Ann -> ATerm
+    annotated-fun         : AFun * Ann -> ATerm
+    annotated-list        : ATermList * Ann -> ATerm
+    annotated-constant    : ACon * Ann -> ATerm
+    placeholder           : ATerm -> ATerm
+    appl                  : AFun * a_0 -> ATerm
+    fun                   : AFun -> ATerm
+    list                  : ATermList -> ATerm
+    constant              : ACon -> ATerm
+                          : Literal -> AFun
+    real                  : RealCon -> ACon
+    int                   : IntCon -> ACon
+    not-empty             : b_0 -> ATermList
+    real-con              : IntCon * NatCon * OptExp -> RealCon
+    absent                : OptExp
+    present               : IntCon -> OptExp
+    negative              : NatCon -> IntCon
+    positive              : NatCon -> IntCon
+    natural               : NatCon -> IntCon
+                          : String -> NatCon
+    uqlit                 : UQLiteral -> Literal
+    qlit                  : QLiteral -> Literal
+                          : String -> UQLiteral
+                          : String -> QLiteral
