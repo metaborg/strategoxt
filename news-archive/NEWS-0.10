@@ -309,7 +309,7 @@ them are introduced here.
     generated signature by using the parameterized sorts of Stratego
     (=List= and =Option=).
 
-  * =format=check= checks if a term is an element of the tree language
+  * =format-check= checks if a term is an element of the tree language
     defined by an RTG. Hence, format-check can be used to check if
     your tools behave well, i.e. produce terms in the correct
     format. Unfortunately, the error reporting of format-check is
@@ -427,7 +427,7 @@ has access to a G5, then it would be great to hear some experiences.
 
 Shishir Ramam contributed Vim syntax files for Stratego and SDF. These
 files are available in the stratego-util package, which is part of
-StrategoXT. Arthur van Dam has implemented SDF and Stratego syntax
+StrategoXT. Arthur van Dam has extended the SDF and Stratego syntax
 highlighting patterns for NEdit. These are available in stratego-util
 as well.
 
