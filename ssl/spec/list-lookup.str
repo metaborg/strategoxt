@@ -1,51 +1,47 @@
-\literate[list-lookup]
-
-	\begin{abstract}
-
-	\end{abstract}
-
-% Copyright (C) 1998-2001 Eelco Visser <visser@acm.org>
-% 
-% This program is free software; you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation; either version 2, or (at your option)
-% any later version.
-% 
-% This program is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-% 
-% You should have received a copy of the GNU General Public License
-% along with this program; if not, write to the Free Software
-% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-% 02111-1307, USA.
-
-	Lookup: find value associated to key 
-
-	Find first element of a list to which a strategy s applies 
-
-	An alternative formulation of lookup is the following. The
-	advantage over lookup is that it does not construct
-	intermediate pairs.
-
-\begin{code}
+/**
+ * lookup elements in a list.
+ */
 module list-lookup
 imports list-basic
+
+strategies
+
+  /**
+   * Lookup first value associated to a key in a list of key-value pairs.
+   *
+   * Example:
+   *   <lookup> (2, [(1, "a"), (2, "b"), (3, "c")]) => "b"
+   *
+   * @type  k * [k * v] -> v
+   */  
+  lookup = rec x(Look1 <+ Look2 ; x)
+
+  /**
+   * Find first element of a list to which s applies.
+   * The result is the application of s to this element.
+   *
+   * @type s    a  -> b
+   * @type     [a] -> b
+   */
+  getfirst(s) = rec x(Hd; s <+ Tl; x)
+
+  /**
+   * lookup' is equivalent to lookup.
+   * The advantage over lookup is that it does not construct
+   * intermediate pairs.
+   *
+   * @type  k * [k * v] -> v
+   */
+  lookup' = {x, xs: ?(x, xs) ; <getfirst({y: ?(x, y); !y})> xs}
+
+  lookup(keyeq) = rec x((Look1'(keyeq) <+ Look2; x))
+
+/**
+ * Private helpers
+ */
 rules
 
   Look1 : (x, [(x, y)|_]) -> y
   Look2 : (x, [_|xs]) -> (x, xs)
 
   Look1'(keyeq) : (x, [y|_]) -> y where <keyeq> (x, y)
-
-strategies
-
-   lookup = rec x(Look1 <+ Look2 ; x)
-
-   getfirst(s) = rec x(Hd; s <+ Tl; x)
-
-   lookup' = {x, xs: ?(x, xs) ; <getfirst({y: ?(x, y); !y})> xs}
-
-   lookup(keyeq) = rec x((Look1'(keyeq) <+ Look2; x))
-\end{code}
