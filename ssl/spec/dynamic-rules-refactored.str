@@ -12,8 +12,14 @@ signature
     RuleScope : List(String) * HashTable -> RuleScope
     ChangeSet : HashTable -> RuleScope
 
-strategies // currently active rule set 
+/**
+ * Currently active rule set 
+ */
+strategies
 
+  /**
+   * @type  _ -> List(RuleScope)
+   */
   dr-get-rule-set(|name) =
     <table-get> ("_rules", name) 
     <+ dr-new-rule-set
