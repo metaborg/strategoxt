@@ -8,7 +8,7 @@ sdfdata_DATA   = $(TBLS) $(DEFS) $(wildcard *.sdf)
 pkgdata_DATA   = pp-table.pp pp-table.pp.af
 
 EXTRA_DIST     = $(DEFS) $(wildcard *.sdf)
-BOOTCLEANFILES = $(TBLS)
+CLEANFILES     = $(TBLS)
 BOOTCLEANFILES = $(DEFS) pp-table.pp.af
 
 SDFINCLUDES    = -I $(top_srcdir)/syn/box
