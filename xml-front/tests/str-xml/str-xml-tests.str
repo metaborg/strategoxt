@@ -1,5 +1,5 @@
 module str-xml-tests
-imports sunit xml-doc
+imports liblib xml-doc
 
 strategies
 

@@ -1,7 +1,7 @@
 module match-test1
   xmlns="http://www.w3.org/1999/xhtml"
 
-imports options xml-info
+imports xml-info
 strategies
 
   main-match-test1 =

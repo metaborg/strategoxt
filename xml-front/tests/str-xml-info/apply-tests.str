@@ -1,5 +1,5 @@
 module apply-tests
-imports sunit xtc-lib match-test1 xtc-debug build-test1
+imports liblib match-test1 xtc-debug build-test1
 
 strategies
 

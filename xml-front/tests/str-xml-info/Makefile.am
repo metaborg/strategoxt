@@ -10,6 +10,7 @@ SCFLAGS        = --main main-$*
 STRINCLUDES    = -I $(XML_FRONT)/share/xml-front \
                  -I $(XTC)/share/xtc \
                  -I $(STRATEGO_REGULAR)/share/stratego-regular
+LDADD         += $(SSL_LIBS)
 
 EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) $(wildcard *.strxml) $(wildcard *.xhtml)
 CLEANFILES     = $(wildcard *.dep) $(wildcard *.rtree)
