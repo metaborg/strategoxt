@@ -9,4 +9,4 @@ LDADD         += $(SSL_LIBS)
 
 EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) $(wildcard *.rtree) 
 CLEANFILES     = $(wildcard *.dep)
-BOOTCLEANFILES = $(wildcard *.c) $(wildcard *.rtree) 
+BOOTCLEANFILES = $(wildcard *.c) $(wildcard *.rtree)
