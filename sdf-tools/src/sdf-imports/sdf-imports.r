@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: sdf-imports.r,v 1.1 2001/06/07 12:18:48 mdejonge Exp $
+% $Id: sdf-imports.r,v 1.2 2001/09/02 17:30:49 mdejonge Exp $
 
 \begin{code}
 module imports-sdf
@@ -33,7 +33,7 @@ constructors
 
 strategies
 
-  main = get-modules(imports-sdf, !"sdf")
+  main = get-modules(imports-sdf, !"sdf"); <exit>0
 
   imports-sdf(mkpt, ext) =
 	\ root -> (root, ["." | <mkpt>()], []) \;
