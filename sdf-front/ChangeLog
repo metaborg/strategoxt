@@ -1,3 +1,9 @@
+2004-05-30  Martin Bravenboer  <martin@cs.uu.nl>
+
+	* syn/Makefile.am: removed the SDF syntax definition modules from
+	our Subversion repository and distribution. It is now directly
+	obtained from the ASF Library.
+	
 2004-05-28  Martin Bravenboer  <martin@cs.uu.nl>
 
 	* parse/pack-sdf.str: pack-sdf now supports the "-Idef Foo.def"

@@ -986,8 +986,10 @@ exports
     <NumChar -CF>       -/- [0-9]
     <ModuleName -CF>    -/- [A-Za-z0-9\_\-]
 
-module embeddings/stratego/Stratego-Sdf2
+module Stratego-Sdf2
 imports languages/sdf2/syntax/Sdf2 StrategoRenamed
+hiddens
+  context-free start-symbols StrategoModule
 
 %% The definition of Sdf2 in Stratego tries to stay as close to the ASF+SDF 
 %% specification of SDF2 in "Syntax Definition for Language Prototyping" by 
@@ -1113,9 +1115,4 @@ exports
 
     "is" [0-9\']*     -> ImpSection
     "is" [0-9\']* "*" -> ImpSection*
-    
 
-module Stratego-Sdf2
-imports embeddings/stratego/Stratego-Sdf2
-hiddens
-  context-free start-symbols StrategoModule

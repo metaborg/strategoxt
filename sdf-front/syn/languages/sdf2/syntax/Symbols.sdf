@@ -1,9 +1,0 @@
-module languages/sdf2/syntax/Symbols
-imports basic/Comments
-
-exports
-  sorts Symbol Symbols
-  context-free syntax
-    "(" Symbol ")"       -> Symbol {bracket}
-    list:Symbol*         -> Symbols
-
