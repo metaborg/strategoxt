@@ -48,10 +48,12 @@ signature
 strategies
 
    io-Asfix-2-abox = 
-     iowrap(asfix2abox,
+     io-wrap(Asfix-2-abox-options, asfix2abox)
+
+   Asfix-2-abox-options =
              Option( "-V", !Verbose(),           !"-V               verbose execution." )
         +    Option( "-c", !Conservative(),      !"-c               Conservative pretty-printing (only format where needed).")
-        + ArgOption( "-p", \x -> PP-Table(x)\ ,  !"-p <table>       Use pretty-print entries from <table>" ))
+        + ArgOption( "-p", \x -> PP-Table(x)\ ,  !"-p <table>       Use pretty-print entries from <table>" )
 
    asfix2abox = 
       ?(options, term);
