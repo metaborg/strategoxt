@@ -1,3 +1,12 @@
+2004-09-25  Martin Bravenboer  <martin@cs.uu.nl>
+
+	* analyse/parse-unit/parse-unit.str: parse-unit now parses the
+	testsuite, so it accepts testsuites concrete syntax. No more
+	parse-parse-testsuite! It will fall back to abstract syntax, so
+	this change should not break anything. The --abstract-input option
+	can be used to declare that you are passing a testsuite in
+	abstract syntax.
+
 2004-08-08  Martin Bravenboer  <martin@cs.uu.nl>
 
 	* analyse/parse-unit/parse-unit.str: added the

@@ -1,21 +1,29 @@
 module parse-unit
-imports liblib aterm-eq
-imports oldskool-parse-testsuite parse-testsuite test-results testsuite-upgrade
+imports
+  liblib
+  strategoxt-xtc-tools
+  aterm-eq
+  oldskool-parse-testsuite
+  parse-testsuite
+  test-results
+  testsuite-upgrade
 
 strategies
 
   main-parse-unit =
     xtc-io-wrap(parse-unit-options, parse-unit)
 
+strategies
+
   parse-unit-options =
-       io-options
-    <+ parse-table-option
+       parse-table-option
+    <+ abstract-input-option
     <+ sglr-filter-options
 
   parse-table-option =
     ArgOption("-p"
     , where(<set-config> ("--parse-table", <id>))
-    , !"-p FILE   Use parse table FILE (required)"
+    , !"-p <file>         Use parse table <file> (required)"
     )
 
   sglr-filter-options =
@@ -23,6 +31,15 @@ strategies
     , where(<extend-config> ("--sglr-options", ["-fi", "-fe"]))
     , !"--no-heuristic-filters  Don't use hearistic disambiguation filters (encouraged)"
     )
+
+  abstract-input-option =
+    Option("--abstract-input"
+    , where(<set-config> ("--abstract-input", ()))
+    , !"--abstract-input  Testsuite is in abstract syntax."
+    )
+
+  is-abstract-input =
+    <get-config> "--abstract-input"
 
   get-extra-sglr-options =
     <get-config> "--sglr-options" <+ ![]
@@ -37,12 +54,16 @@ strategies
        get-config; get-path
     <+ <conc-strings> (<getcwd>, "/")
 
-
 strategies
 
   parse-unit = 
-    xtc-io-transform(
-      try(upgrade-oldskool-testsuite)
+    if not(is-abstract-input) then
+      xtc-sglr(!"parse-testsuite.tbl", !"TestSuite")
+      ; xtc-implode-asfix
+      <+ debug(!"warning: could not parse the testsuite. I'm assuming that it is in abstract syntax, but it there might actually be a syntactical error in your testsuite. Use the --abstract-input option for declare that you are providing an abstract syntax testsuite.")
+    else id end
+    ; read-from
+    ; try(upgrade-oldskool-testsuite)
     ; parse-testsuite(id, id, map(try(add-description)))
     ; echo-start
     ; ?parse-testsuite(name(name), topsort(sort), <id>)
@@ -50,7 +71,7 @@ strategies
     ; !TestResults(<id>)
     ; where(<echo-results> (name, <id>))
     ; parse-unit-exit-on-failure
-    )
+    ; write-to
 
   add-description :
     parse-test(string(s), output) -> parse-test(description(s), string(s), output)
