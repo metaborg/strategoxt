@@ -18,7 +18,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 02111-1307, USA.
 
 */
-
+#include <aterm1.h>
 #include <srts/stratego.h>
 #include <stdlib.h>
 
@@ -28,6 +28,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 #include <stdio.h>
 #include <sys/time.h>
 #include <sys/resource.h>
+#include <time.h>
+#include <sys/times.h>
 
 struct rusage rusage;
 
@@ -52,4 +54,42 @@ ATerm SSL_dtime(void)
   double dt;
   dt = dtime();
   return((ATerm)ATmakeReal(dt));
+}
+
+ATerm SSL_ClockToSeconds(ATerm t)
+{
+  return (ATerm) ATmakeReal((double) ATgetInt((ATermInt)t) / CLOCKS_PER_SEC); 
+}
+
+ATerm SSL_clock(void)
+{
+  return (ATerm) ATmakeInt(clock());
+}
+
+ATerm SSL_times(void)
+{
+  struct tms ts;
+
+  times(&ts);
+
+  return (ATerm) ATmakeAppl(ATmakeSymbol("", 4, ATfalse), 
+			    (ATerm)ATmakeInt(ts.tms_utime), 
+			    (ATerm)ATmakeInt(ts.tms_stime), 
+			    (ATerm)ATmakeInt(ts.tms_cutime), 
+			    (ATerm)ATmakeInt(ts.tms_cstime));
+}
+
+ATerm SSL_TicksToSeconds(ATerm t)
+{
+  long tps = sysconf(_SC_CLK_TCK);
+  long ticks;
+
+  if(!ATisInt(t))
+      _fail(t);
+
+  ticks = ATgetInt((ATermInt) t);
+
+  //ATfprintf(stderr, "tps = %d, ticks = %d, secs = %f\n", tps, ticks, (double)ticks / (double)tps);
+
+  return (ATerm) ATmakeReal((double)ticks / (double)tps);
 }
