@@ -43,7 +43,7 @@ AC_SUBST(REPOSITORY)
 ### SDF ###############################
 
 AC_ARG_WITH(sdf, 
-  [  --with-sdf=DIR             Specify location of SDF], 
+  [  --with-sdf=DIR             Specify location of SDF2], 
   SDF="$withval", 
   SDF="$prefix"
 )

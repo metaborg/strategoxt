@@ -17,7 +17,7 @@
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 #
 #
-# $Id: Makefile.am,v 1.3 2002/11/15 00:05:59 stratego Exp $
+# $Id: Makefile.am,v 1.4 2003/03/21 15:52:23 stratego Exp $
 
 include ../templates/make_rules
 
@@ -28,7 +28,7 @@ EXTRA_DIST = $(SRCS) boxenv.ins boxenv.doc
 
 CLEANFILES = $(data_DATA) *.log  *~
 
-data_DATA=boxenv.sty
+pkgdata_DATA=boxenv.sty
 
 boxenv.sty: $(SRCS)
 	TEXINPUTS=$$TEXINPUTS:$(srcdir) latex boxenv.ins > /dev/null
