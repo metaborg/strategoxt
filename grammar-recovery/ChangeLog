@@ -1,3 +1,6 @@
+2001-11-24 Merijn de Jonge <mdejonge@cwi.nl>
+   * package.conf: added required package sdf-tools
+
 2001-11-22 Merijn de Jonge <mdejonge@cwi.nl>
    * configuration of grammar-recovery package adapted to make use of
      AC_PACKAGE_REQUIRE macro in configure.in
