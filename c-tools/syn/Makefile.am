@@ -9,7 +9,6 @@ pkgdata_DATA = $(TBLS) $(DEFS) $(wildcard *.sdf)
 CLEANFILES   = $(TBLS) $(DEFS)
 EXTRA_DIST   = $(TBLS) $(DEFS) $(wildcard *.sdf)
 
-# MUSTDO: This import should work when c-tools is part of StrategoXT ...
-SDFINCLUDES  = -I $(STRATEGO_FRONT)/share/stratego-front
+SDFINCLUDES  = -I $(STRATEGO_FRONT)/share/sdf/stratego-front
 PGEN_FLAGS   = -m $*
 

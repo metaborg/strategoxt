@@ -1,4 +1,4 @@
 SUBDIRS=syn sig pp xtc-tools
 DIST_SUBDIRS=$(SUBDIRS)
-EXTRA_DIST = bootstrap
+EXTRA_DIST = bootstrap Makefile.xt
 
