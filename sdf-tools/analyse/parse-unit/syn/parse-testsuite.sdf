@@ -1,10 +1,15 @@
+%%%
+ %% Syntax definition of parse-unit testsuites
+ %%
+ %% @author Martin Bravenboer <martin@cs.uu.nl>
+ %%%
 module parse-testsuite
 imports languages/aterm/syntax/ATerms
 hiddens
   context-free start-symbols TestSuite
 
 exports
-  sorts TestSuite Test Result 
+  sorts TestSuite TopSort Test Input Result 
   context-free syntax
     "testsuite" Name TopSort Test+ -> TestSuite {cons("parse-testsuite")}
     "topsort" Sort -> TopSort {cons("topsort")}
@@ -30,6 +35,7 @@ exports
   context-free syntax
     fun:AFun "(" ")" -> ATerm {cons("fun")}
 
+  sorts 
   syntax
     "\""       <InputChars1-LEX> "\""       -> <Input-CF> {cons("string")}
     "\"\""     <InputChars2-LEX> "\"\""     -> <Input-CF> {cons("string")}
@@ -41,16 +47,38 @@ exports
     "[[["  <InputChars23-LEX> "]]]"  -> <Input-CF> {cons("string")}
     "[[[[" <InputChars24-LEX> "]]]]" -> <Input-CF> {cons("string")}
 
+  sorts Name Description
   context-free syntax
     EOLString -> Name {cons("name")}
     EOLString -> Description {cons("description")}
 
+  sorts Sort EOLString
   lexical syntax
     [A-Z]                          -> Sort
     [A-Z][A-Za-z0-9\-]*[A-Za-z0-9] -> Sort
 
     ~[\n]+ -> EOLString
 
+  sorts
+    InputChars1
+    InputChars2
+    InputChars3
+    InputChars4
+
+    DQuote1
+    DQuote2
+    DQuote3
+
+    InputChars21
+    InputChars22
+    InputChars23
+    InputChars24
+
+    Bracket1
+    Bracket2
+    Bracket3
+
+  lexical syntax
     ~[\"]* -> InputChars1
     (~[\"]  | DQuote1)*                      -> InputChars2
     (~[\"]  | DQuote1 | DQuote2)*            -> InputChars3
@@ -67,8 +95,10 @@ exports
 
     "["   -> Bracket1
     "[["  -> Bracket2
-    "[[[" -> Barcket3
+    "[[[" -> Bracket3
 
+  sorts PathName
+  lexical syntax
     [A-Za-z0-9\-\_\.\\\/]+ -> PathName
 
   lexical restrictions
@@ -90,6 +120,7 @@ exports
     "[["   -/- [\[]
     "[[["  -/- [\[]
 
+  sorts ShortCom LongCom CommChar Asterisk Eof
   lexical syntax
     "//" ~[\n]* ([\n] | Eof) -> ShortCom
     "/*" CommChar* "*/"      -> LongCom
