@@ -18,8 +18,7 @@ TESTS 		 = matrix-test
 
 EXTRA_DIST 	 = $(wildcard *.str)
 
-BOOTSOURCES 	 = compile-match.c optimize1.c optimize2.c
-BOOTCLEANFILES 	 = compile-match.c optimize1.c optimize2.c
+BOOTCLEANFILES 	 = compile-match.c optimize1.c optimize2.c matrix-test.c
 
 
 compile-match.c: compile-match.str

@@ -15,4 +15,4 @@ EXTRA_DIST 	 = $(wildcard *.str)
 
 TESTS 	 	 = stratlib-test
 
-BOOTCLEANFILES 	 = rename-vars.c
+BOOTCLEANFILES 	 = rename-vars.c stratlib-test.c

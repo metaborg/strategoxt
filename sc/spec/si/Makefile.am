@@ -17,14 +17,16 @@ CLEANFILES 	 = $(wildcard *.dep)
 EXTRA_DIST 	 = $(wildcard *.str) eval-lib-primitives.rtree
 TESTS 		 = stratego-eval-test
 
-#$(top_builddir)/spec/si/primitives
+si.c		 : eval-lib-primitives.rtree
+
+#primitives
 eval-lib-primitives.rtree: 
-	$(top_builddir)/spec/syn/pack-stratego -I $(STRATEGOLIB)/share/ssl -i lib \
-		-dep eval-lib-primitives.rtree \
-	| ./primitives > $@
+	$(MAKE) primitives
+	$(top_builddir)/spec/syn/pack-stratego -I $(SSL)/share/ssl -i lib -o lib.packed
+	./primitives -i lib.packed -o $@
 
 BOOTSOURCES = si.c primitives.c stratego.in stratego
 
-BOOTCLEANFILES = eval-lib-primitives.rtree si.c primitives.c stratego
+BOOTCLEANFILES = eval-lib-primitives.rtree si.c primitives.c stratego stratego-eval-test.c
 
 

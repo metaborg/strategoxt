@@ -1,3 +1,9 @@
+2003-01-12  Eelco Visser  <visser@cs.uu.nl>
+
+	* remove obsolete files
+
+	* spec/front/use-def.str: Fixed bug in isect-Bound
+
 2003-01-04  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/front/lift-dynamic-rules.str: use the empty list in

@@ -1,37 +1,10 @@
-# Copyright (C) 1998-2001 Eelco Visser <visser@acm.org>
-# 
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2, or (at your option)
-# any later version.
-# 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-# 02111-1307, USA.
+include $(top_srcdir)/Makefile.xt 
 
-EXTRA_DIST = make_rules.in make-rules conf.h.src Makefile.common
+SUBDIRS = syn sig c front lib match opt sc si test1 test2 testlib testspec log
 
-pkgdata_DATA = conf.h
+DIST_SUBDIRS = test3 $(SUBDIRS)
 
-CLEANFILES = conf.h
-
-conf.h: Makefile
-
-SUBDIRS = \
-  . syn sig c front lib match opt sc si test1 test2 testlib testspec log
-
-BOOTSUBDIRS = \
-    syn c front lib match opt sc sig
-
-DIST_SUBDIRS = si sdf test3 $(SUBDIRS)
-
-BOOTSOURCES = conf.h.src
+BOOTCLEAN_SUBDIRS = syn sig c front lib match opt sc si
 
 bootstep :
 	$(MAKE) bootclean
@@ -77,36 +50,3 @@ bootstrap :
 	@echo "BOOTSTRAPPING SUCCEEDED"
 	@echo
 	@echo "Bootstrapping: finished [`date`]" >> log/bootlog
-
-bootinstall :
-	@echo "" >> log/bootlog
-	@echo "Bootinstall [`date`]" >> log/bootlog
-	cp -f $(BOOTSOURCES) $(SCBOOT)/src
-	list='$(BOOTSUBDIRS)'; for subdir in $$list; do \
-	   (cd $$subdir ; $(MAKE) $@ ;) \
-	done
-	@echo "Bootinstall finished [`date`]" >> log/bootlog
-
-bootclean :
-	@echo "Bootclean [`date`]" >> log/bootlog
-	list='$(BOOTSUBDIRS)'; for subdir in $$list; do \
-	   (cd $$subdir ; $(MAKE) $@ ;) \
-	done
-	@echo "Bootclean finished [`date`]" >> log/bootlog
-
-# Generate scripts
-%: %.src Makefile
-	sed 's#__GPP__#$(GPP)#g;\
-             s#__CGEN__#$(CGEN)#g;\
-	     s#__prefix__#$(prefix)#g;\
-	     s#__libexecdir__#$(libexecdir)#g;\
-	     s#__datadir__#$(datadir)#g;\
-	     s#__pkgdatadir__#$(pkgdatadir)#g;\
-             s#__VERSION__#$(VERSION)#g;\
-	     s#__PACKAGE__#$(PACKAGE)#g;\
-             s#__ATERM__#$(ATERM)#g;\
-             s#__STRATEGORTS__#$(STRATEGORTS)#g;\
-             s#__STRATEGOFRONT__#$(STRATEGOFRONT)#g;\
-             s#__STRATEGOLIB__#$(STRATEGOLIB)#g;\
-             s#__MAKE__#$(MAKE)#g' < $< > $@
-	chmod +x $@

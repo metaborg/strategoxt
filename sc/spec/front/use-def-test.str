@@ -23,7 +23,7 @@ strategies
 	, Strategies(defs-use-def)
 	, !|[ strategies 
                 P() = ?F(p, q); !F(p,H(q,q'))
-	        Q() = (?F(p, q) + ?G(p)); !H(p,q) 
+	        Q() = (?F(p, q) + ?G(p)); !H(p,q)
 	        R() = ?F(p, q); !F(p,H(q))
            ]|
 	)
@@ -91,9 +91,9 @@ strategies
 	, def-use-def
 	, !|[ P() = (?F(p,q) < !H(p) + ?G(p)); !H(p,q) ]|
 	);
-    apply-and-fail(!"test7b"
+    apply-and-fail(!"test7c"
 	, def-use-def
-	, !|[ P() = ?F(p,q) < !H(p) + ?G(p); !H(p,q) ]|
+	, !|[ P() = ?F(p,q) < !H(p) + (?G(p); !H(p,q)) ]|
 	)
 
   test8 = 

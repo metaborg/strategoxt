@@ -150,12 +150,12 @@ strategies
   sc-version =
     where(<printnl>(stdout, 
 	  ["SC ", <get-config> "VERSION", "\n\n",
-	   "Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>\n",
+	   "Copyright (C) 1998-2003 Eelco Visser <visser@acm.org>\n",
 	   "\n",
-	   "This program is free software; you can redistribute it and/or modify\n",
-	   "it under the terms of the GNU General Public License as published by\n",
-	   "the Free Software Foundation; either version 2, or (at your option)\n",
-	   "any later version.\n"]))
+	   "This library is free software; you can redistribute it and/or\n",
+	   "modify it under the terms of the GNU Lesser General Public\n",
+	   "License as published by the Free Software Foundation; either\n",
+	   "version 2 of the License, or (at your option) any later version.\n"]))
 
   sc-announce =
     if-verbose2(sc-version)

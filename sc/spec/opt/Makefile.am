@@ -16,6 +16,6 @@ TESTS 		 = build-match-laws-test
 
 CLEANFILES 	 = $(wildcard *.dep)
 
-BOOTCLEANFILES 	 = fusion.c
+BOOTCLEANFILES 	 = fusion.c build-match-laws-test.c
 
 EXTRA_DIST 	 = $(wildcard *.str) $(wildcard *.meta)

@@ -17,21 +17,20 @@
 
 .PRECIOUS: %.ac %.c
 
-TESTS = $(subst .rtree,.bin,$(wildcard *-test.rtree))
+TESTS 		= $(subst .rtree,.bin,$(wildcard *-test.rtree))
 
-EXTRA_DIST = $(wildcard *.rtree) testlib.dummy
+EXTRA_DIST 	= $(wildcard *.rtree) testlib.dummy
 
-SINCLUDES = -I $(SSL)/share/ssl
+SINCLUDES 	= -I $(SSL)/share/ssl
 
-CLEANFILES = $(TESTS) *.o *.c *.ac *.s? *.s?.check *.trm *.tree *.tree? *.dep *.c.abox *.r testlib.dummy
+CLEANFILES 	= $(TESTS) *.o *.c *.ac *.s? *.s?.check *.trm \
+		  *.tree *.tree? *.dep *.c.abox *.r testlib.dummy
 
-pkgdata_DATA = testlib.dummy
+pkgdata_DATA 	= testlib.dummy
 
 testlib.dummy :
 	-cp $(SSL)/share/ssl/*.rtree .
 	touch $@
-
-bootinstall:
 
 include $(srcdir)/../test1/make-rules
 include $(wildcard *.dep)

@@ -10,11 +10,12 @@ BOOTCLEANFILES 	 = s2c.c canonicalize.c C-simplify-test.c
 
 CLEANFILES 	 = $(wildcard *.dep) $(TESTS)
 
-SCFLAGS 	 = --main $* -I ../sig			    \
-	  	   -I $(CGEN)/share/cgen		    \
-	  	   -I ../match				    \
-	  	   -CI -g				    \
-	  	   -CL -g				    
+SCFLAGS 	 = --main $*
+
+STRINCLUDES	 = -I $(C_TOOLS)/share/sdf/c-tools \
+		   -I $(C_TOOLS)/share/c-tools \
+		   -I ../sig \
+	  	   -I ../match				  
 
 TESTS = C-simplify-test 
 #canonicalize-test
