@@ -1,9 +1,0 @@
-rm -f config.cache aclocal.m4 acconfig.h
-autoxt
-aclocal -I .
-autoconf
-#acconfig
-#autoheader
-automake -a
-
-touch pp/C.def pp/*.pp pp/*.pp.af sig/C.def sig/*.str sig/*.rtree

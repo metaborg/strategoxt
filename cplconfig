@@ -1,3 +1,0 @@
-./reconf
-./configure --prefix=`pwd` --with-aterm=/home/xt/ATerm --with-cpl=/home/xt/CPL
-

@@ -1,6 +1,0 @@
-Choice(Seq(Match(Int(3)),Build(Int(4))),
-Choice(Seq(Match(Str("abc")),Build(Int(6))),
-       Scope(["x_9"],
-             Seq(Match(Op("F",[Var("x_9"),Op("G",[Op("B",[]),Var("x_9")])])),
-                 Build(Op("B",[])))))
-)

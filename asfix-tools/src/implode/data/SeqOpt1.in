@@ -1,1 +1,0 @@
-parsetree(appl(prod([cf(opt(layout)),cf(sort("SeqOpt1")),cf(opt(layout))],sort("<START>"),no-attrs),[appl(prod([],cf(opt(layout)),no-attrs),[]),appl(prod([cf(opt(seq([sort("A"),sort("A"),sort("A")])))],cf(sort("SeqOpt1")),attrs([term(cons("SeqOpt1"))])),[appl(prod([],cf(opt(seq([sort("A"),sort("A"),sort("A")]))),no-attrs),[])]),appl(prod([],cf(opt(layout)),no-attrs),[])]),0)

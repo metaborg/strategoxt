@@ -1,9 +1,0 @@
-module Prop
-signature
-  constructors
-    Var   : Id -> Prop          
-    True  : Prop                
-    False : Prop                
-    Not   : Prop -> Prop        
-    And   : Prop * Prop -> Prop 
-    Or    : Prop * Prop -> Prop 

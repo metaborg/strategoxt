@@ -1,1 +1,0 @@
-Specification([Imports(["IntCon"]),Signature([Constructors([OpDecl("e",FunType([ConstType(Var("IntCon"))],ConstType(Var("OptExp")))),OpDecl("OptExp-empty",ConstType(Var("OptExp"))),OpDecl("IntCon-NatCon-OptExp",FunType([ConstType(Var("IntCon")),ConstType(Var("NatCon")),ConstType(Var("OptExp"))],ConstType(Var("RealCon"))))])])])

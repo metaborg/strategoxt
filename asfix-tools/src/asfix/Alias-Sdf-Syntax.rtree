@@ -1,1 +1,0 @@
-Specification([Imports(["Kernel-Sdf-Syntax"]),Signature([Constructors([OpDecl("aliases",FunType([ConstType(Var("Aliases"))],ConstType(Var("Grammar")))),OpDecl("alias",FunType([ConstType(Var("Symbol")),ConstType(Var("Symbol"))],ConstType(Var("Alias")))),OpDecl("Alias-s",FunType([ConstType(Op("List",[Var("Alias")]))],ConstType(Var("Aliases"))))])])])

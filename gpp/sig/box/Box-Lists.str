@@ -1,3 +1,0 @@
-module Box-Lists
-imports Box-Base
-signature

@@ -1,9 +1,0 @@
-%% Generated module which adds productions to insert grammar identification
-%% information into parse trees.
-module GB-Main
-imports
-  Stratego
-exports
-  syntax
-    <START>                     -> SURROGATE-START {cons("\"stratego-0.7\"")}
-    SURROGATE-START [\256]      -> <Start> {prefer}

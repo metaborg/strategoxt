@@ -1,9 +1,0 @@
-2002-12-12  Eelco Visser  <visser@cs.uu.nl>
-
-	* syn/Dot-pretty.pp: added box operators for getting parsable layout of
-	generated dot files
-
-2002-12-10  Eelco Visser  <visser@cs.uu.nl>
-
-	* Package with support for generating and transforming dot files.
-

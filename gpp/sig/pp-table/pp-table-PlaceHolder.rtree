@@ -1,1 +1,0 @@
-Specification([Imports(["Box"]),Signature([Constructors([OpDecl("Arg",FunType([ConstType(Var("NatCon"))],ConstType(Var("BOX")))),OpDecl("Arg2",FunType([ConstType(Var("NatCon")),ConstType(Var("NatCon"))],ConstType(Var("BOX"))))])])])

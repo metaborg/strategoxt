@@ -1,6 +1,0 @@
-module pp-table-PlaceHolder
-imports Box
-signature
-  constructors
-    Arg : NatCon -> BOX
-    Arg2 : NatCon * NatCon -> BOX

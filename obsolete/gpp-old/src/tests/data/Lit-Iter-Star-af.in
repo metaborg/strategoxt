@@ -1,1 +1,0 @@
-lit-iter-star(Conc(appl(prod([lit("aap")],cf(iter(lit("aap"))),no-attrs),[lit("aap")]),appl(prod([lit("aap")],cf(iter(lit("aap"))),no-attrs),[lit("aap")])))

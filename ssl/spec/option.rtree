@@ -1,1 +1,0 @@
-Specification([Signature([Sorts([Sort("Option",[Var("a")])]),Constructors([OpDecl("None",ConstType(Op("Option",[Var("a")]))),OpDecl("Some",FunType([ConstType(Var("a"))],ConstType(Op("Option",[Var("a")]))))])]),Strategies([SDef("option",[DefaultVarDec("s")],Choice(Call(SVar("None"),[]),Call(SVar("Some"),[Call(SVar("s"),[])])))])])

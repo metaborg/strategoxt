@@ -1,3 +1,0 @@
-ATerm main(void)
-{
-}

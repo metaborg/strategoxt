@@ -1,8 +1,0 @@
-module LinePragmas
-imports Preprocessor-Lexical
-exports
-  lexical syntax
-    "#" WS Constant ("\"" WS FileName WS "\"")? WS [\n]	-> ControlLine
-
-  context-free syntax
-    ControlLine 				-> ExternalDefinition

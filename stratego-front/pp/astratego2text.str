@@ -1,9 +1,0 @@
-module astratego2text
-imports xtc-lib
-strategies
-
-  astratego2text =
-    xtc-iowrap(
-      xtc-transform(!"ast2abox", !["-p", <xtc-find> "Stratego-pretty.pp"])
-      ; xtc-transform(!"abox2text")
-    )

@@ -1,1 +1,0 @@
-Specification([Imports(["annotations","lib"]),Strategies([SDef("main",[],Call(SVar("iowrap"),[Call(SVar("catch-annos"),[Build(Op("Cons",[Str("position"),Op("Nil",[])]))])]))])])

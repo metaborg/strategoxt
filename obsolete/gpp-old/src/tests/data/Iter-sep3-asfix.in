@@ -1,1 +1,0 @@
-appl(prod([cf(opt(layout)),cf(sort("Iter-sep3")),cf(opt(layout))],sort("<START>"),no-attrs),[layout([]),appl(prod([cf(iter-sep(iter(sort("A")),iter(sort("B"))))],cf(sort("Iter-sep3")),attrs([term(cons("iter-sep3"))])),[[["a"],layout([" "]),["A"],layout([" "]),["b"]]]),layout(["\n"])])

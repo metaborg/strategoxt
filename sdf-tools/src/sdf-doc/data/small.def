@@ -1,7 +1,0 @@
-definition
-
-module Main
-exports
-  context-free syntax
-    A B C -> A
-    D -> B

@@ -1,9 +1,0 @@
-module cp-file
-imports xtc-lib lib
-strategies
-
-  cp-file =
-    option-wrap(io-options, 
-      <copy-file>(<<get-config> "-i" <+ !stdin>, 
-		  <<get-config> "-o" <+ !stdout>)
-    )

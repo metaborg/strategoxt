@@ -1,6 +1,0 @@
-* Improve description and keywords in the package description
-* Improve README
-* the visamb component needs refactoring because it contains a lot of
-  scripting which not belong here.
-* asfix/Char-lib.r overlaps with char.r from the Stratego library, it can
-  probably be removed.

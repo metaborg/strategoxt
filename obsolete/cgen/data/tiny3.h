@@ -1,2 +1,0 @@
-
-ATermInt ATmakeInt(int value);

@@ -1,4 +1,0 @@
-data/syntax-test.def : \
-	data/syntax-test3.sdf \
-	data/syntax-test2.sdf \
-	././data/syntax-test.sdf

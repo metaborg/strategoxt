@@ -1,2 +1,0 @@
-Scope(["e_2","f_2","g_2","h_2","i_2"],Let(SDef([DontInline],"k_2",[],Build(Op("C",[]))),Let(SDef([DontInline],"l_2",[],Seq(Assign(Var("f_2"),Var("i_2")),Build(Op("B",[])))),Seq(Assign(Var("e_2")),Case("z_1",Var("e_2"),[Alt(Fun("F",2),[Var("f_2"),Var("g_2")],Case("a_2",Var("g_2"),[Alt(Fun("H",0),[],Case("b_2",Var("f_2"),[Alt(Fun("A",0),[],Call(SVar("k_2"),[]))],Fail)),Alt(Fun("G",2),[Var("h_2"),Var("i_2")],Case("c_2",Var("h_2"),[Alt(Fun("B",0),[],Case("d_2",Var("f_2"),[],Call(SVar("l_2"),[])))],Fail))],Fail))],Fail)))))
-

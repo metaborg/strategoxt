@@ -1,6 +1,0 @@
-AC_INIT([autoxt],[0.9],[stratego-bugs@cs.uu.nl])
-AM_INIT_AUTOMAKE
-
-AC_OUTPUT(
-  Makefile
-)

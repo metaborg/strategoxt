@@ -1,9 +1,0 @@
-
-* sdf2table -i name.def -o name.tbl -m Mod
-
-  Generate a parse table name.tbl for syntax definition name.def with
-  main module Mod.
-
-* ppgen -i 
-
-

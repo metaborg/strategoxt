@@ -1,6 +1,0 @@
-module Stratego-Overlays
-exports
-  %%sorts Overlay
-  context-free syntax
-    Identifier ("(" {Identifier ","}* ")")?
-      "=" Term -> Overlay {cons("Overlay")}
