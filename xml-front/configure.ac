@@ -1,6 +1,5 @@
-AC_PREREQ(2.57)
 AC_INIT([xml-front],[0.11pre],[stratego-bugs@cs.uu.nl])
-AM_INIT_AUTOMAKE([1.7.2 -Wall -Wno-portability])
+AM_INIT_AUTOMAKE
 
 test "x$prefix" = xNONE && prefix=$ac_default_prefix
 USE_XT_PACKAGES
