@@ -78,7 +78,7 @@ strategies
              collect( \ Edge(x, y) -> edge1([source(<quote>y), 
                                       target(<quote>x)]) \ ) ); 
       ?(nodes, edges); 
-      <mkterm>("\"graphxml_1_1.0\"", [GraphXML( [], [graph([], <conc>(nodes, edges))])])
+      <mkterm>("\"graphxml_1_1-0\"", [GraphXML( [], [graph([], <conc>(nodes, edges))])])
    <+
       filter( \Node(x) -> x\ ) 
    );

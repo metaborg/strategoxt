@@ -1,4 +1,5 @@
 2001-11-25 Merijn de Jonge <mdejonge@cwi.nl>
+   * sdf-imports/get-modules.r: fixed incorrect grammar identifier
    * renamed acinclude.m4 to program-check.m4
    * added new version of program-check.m4
 
