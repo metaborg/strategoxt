@@ -5,8 +5,6 @@ include $(wildcard *.dep)
 SUBDIRS = data
 
 bin_PROGRAMS     = asfix-yield
-libexec_SCRIPTS  = asource
-libexec_PROGRAMS = asfix-yield
 
 TESTS          = asfix_yield1_check asfix_yield2_check
 CLEANFILES     = asfix_yield1_check asfix_yield2_check $(wildcard *.dep) asfix-yield
