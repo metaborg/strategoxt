@@ -131,7 +131,8 @@ ATerm SSL_mkdtemp(ATerm template) {
  */
 ATerm SSL_mkdir(ATerm pathname, ATerm mode)
 {
-  int result = mkdir(AT_getString(pathname), permissions_from_term(mode));
+  //int result = mkdir(AT_getString(pathname), permissions_from_term(mode));
+  int result = mkdir(AT_getString(pathname), 0700);
   return (ATerm) ATmakeInt(result);
 }
 
