@@ -1,0 +1,52 @@
+/**
+ * Reporting syntax errors in commands to the user.
+ */
+module sglri-error-reporting
+imports error-support
+strategies
+
+  /**
+   * Reports a parse error summary to the stderr.
+   *
+   * Always fails.   
+   *
+   * @type  summary -> _
+   */
+  report-parse-error-summary(|input) =
+    finally(
+      where(
+        read-from
+      ; ?summary(_, _, [error(_, [localized(descr, area-in-file(_, area))])])
+      ; <fprintnl> (<stderr-stream> (), [descr])
+      ; <report-area(|area)> input
+      )
+      <+ read-from ; debug(!"Parse error cannot be presented. Please report bug.")
+    , fail)
+
+  /**
+   * Presents the 'area' in the input file at stderr.
+   *
+   * @type  FILE -> _
+   */
+  report-area(|area) =
+    let y-pos =
+          !area
+          ; ?area(begin-line, begin-column, begin-line, end-column, _, _)
+          ; !begin-line
+
+        x-pos =
+          !area
+          ; ?area(begin-line, begin-column, begin-line, end-column, _, _)
+          ; <dec> begin-column => c
+          ; if <lt> (c, 0) then !0 else id end
+
+     in ?FILE(<read-text-file>)
+      ; get-lines
+      ; add-indices
+      ; where(y-pos => y)
+      ; fetch-elem(?(y, _))
+
+      ; where(<fprintnl> (<stderr-stream> (), [<Snd>]))
+      ; <conc-strings> (<copy-char> (<x-pos> (), ' '), "^")
+      ; where(<fprintnl> (<stderr-stream> (), [<id>]))
+    end

@@ -1,5 +1,5 @@
 module sglri
-imports liblib
+imports liblib sglri-error-reporting
 
 strategies
 
@@ -33,17 +33,8 @@ strategies
     )
 
 
-  (*
-  short-description(p) = 
-    !["Usage: ", <p>(), " [options]"]
- 
-  long-description(p)  = 
-    !["The sglri tool parses a text file according to the parse table provided with\n",
-      "the -p option and implodes the resulting concrete (asfix) tree to an abstract\n",
-      "syntax tree.\n"] *)
-
   parse-and-implode =
-      sglr(get-parse-table, pass-sglri-args)
+      xtc-sglr-strict(|<get-parse-table>, <pass-sglri-args>)
     ; implode-asfix(<get-config <+ ![]> "--impl")
 
   pass-sglri-args = 
@@ -61,3 +52,19 @@ strategies
       
   implode-asfix(args) = 
     xtc-transform(!"implode-asfix", args)
+
+  xtc-sglr-strict(|tbl, args) =
+    ?input
+    ; xtc-transform-always(id, report-parse-error-summary(|input)
+      | "sglr", ["-p", tbl | args ])
+
+  xtc-transform-always(c, f|tool, args) =
+    ?FILE(f)
+    ; where(<xtc-new-file> f => g)
+    ; <conc> (args, ["-i", f, "-o", g])
+    ; if xtc-command-silent(|tool) then <c> FILE(g) else <f> FILE(g) end
+
+  xtc-command-silent(|tool) =
+    where(<xtc-find-warning> tool => loc)
+    ; where(<call(|None(), None(), Some(<open> "/dev/null"))> (loc, <id>))
+
