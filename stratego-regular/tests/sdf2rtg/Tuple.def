@@ -1,0 +1,26 @@
+definition
+module Tuple
+imports Identifier Layout
+exports
+  sorts Exp
+  context-free syntax
+    "switch" Exp ("case" Exp ":" Exp)* "end" -> Exp  {cons("Switch")}
+    "foo" Exp ("bar" Exp ":" Exp) "end" -> Exp  {cons("Fred")}
+
+    Id -> Exp {cons("Var")}
+
+module Identifier
+exports
+  lexical syntax
+    [a-zA-Z\_] [a-zA-Z0-9\_]* -> Id
+  
+  lexical restrictions
+    Id -/- [a-zA-Z0-9\_]
+
+module Layout
+exports
+  lexical syntax
+    [\ \t\n] -> LAYOUT
+
+  context-free restrictions
+    LAYOUT? -/- [\ \t\n]
