@@ -86,6 +86,31 @@ strategies
 
 strategies
 
+  /**
+   * prints the terms to a stream. If a term is a string it is printed 
+   * without quotes, otherwise it is printed as a term.
+   *
+   * :: Stream * [a] -> Stream
+   */
+  fprint =
+      ?(stream, <id>)
+    ; map(
+        where(
+          is-string
+        < <fputs> (<id>, stream)
+        + <write-in-text-to-stream> (stream, <id>)
+        )
+      )
+    ; !stream
+
+  /**
+   * fprint, followed by a newline
+   *
+   * :: Stream * [a] -> Stream
+   */
+  fprintnl =
+    fprint; <fputc> ('\n', <id>)
+
   /* 
     \verb|<print> (file, [t1,...,tn])| prints the terms \verb|ti|
     to file. If \verb|ti| is a string it is printed without quotes,
@@ -111,9 +136,6 @@ strategies
 
   printnl = 
     ?(name, strs); where(prim("SSL_printnl", name, strs))
-
-  // <printascii> (file, [i1, ..., in])
-  // Prints integers ij as characters to file (using ASCII encoding).
 
   /*
     The primitive \verb|print-stack| prints the top n elements of

@@ -1,4 +1,9 @@
-2003-03-25  Martin Bravenboer <martin@mbravenboer.org>
+2003-03-27  Martin Bravenboer <martin@mbravenboer.org>
+
+  * spec/term-io.str: added fprint: print implemented
+    in Stratego.
+
+2003-03-27  Martin Bravenboer <martin@mbravenboer.org>
 
   * spec/posix-file.str: added fputc and more tests for
     the posix-file module.
