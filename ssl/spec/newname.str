@@ -1,0 +1,19 @@
+module newname
+imports tables string
+
+strategies
+
+  inc-name-counter(|name) =
+    lookup-table(|"_newnamecounters")
+  ; where((hashtable-get(|name) <+ !-1); inc => newcounter)
+  ; hashtable-put(|name, newcounter)
+  ; !newcounter
+
+  newname(|prefix) = newname(|prefix,prefix)
+
+  newname-shared(|prefix) = newname(|prefix,"")
+
+  newname(|prefix, countergroup) =
+    inc-name-counter(|countergroup)
+  ; int-to-string
+  ; <strcat> (prefix, <id>)
