@@ -196,6 +196,7 @@
    FunDef.2:bracket-symbol.1:alt.2:seq             -- _1 _2,
    FunDef.2:bracket-symbol.1:alt.2:seq.2:iter-star -- _1,
    NoTypeSpecifier                                 -- ,
+   OldFunDefDecl				   -- V[_1 _2],
    IdDecl                                          -- H[_1 _2 _3],
    IdDecl.3:opt                                    -- _1,
    FunDecl                                         -- H[_1 KW["("] _2 KW[")"] _3],

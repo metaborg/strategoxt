@@ -19,5 +19,5 @@ exports
      -> NoTypeSpecifier {cons("NoTypeSpecifier")}
 
     IdDeclarator                   -> FunDefDecl
-    OldFunDeclarator Declaration*  -> FunDefDecl
+%%    OldFunDeclarator Declaration*  -> FunDefDecl {cons("OldFunDefDecl")}
 

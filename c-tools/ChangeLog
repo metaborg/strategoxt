@@ -1,4 +1,11 @@
+2003-12-19  Eelco Visser  <visser@cs.uu.nl>
 
+	* Commented production for OldFunDefDecl
+	
+	* Added quotations in syn/Stratego-C.sdf
+	
+	* Changed list antiquotation declarations to produce + lists
+	instead of *
 
 2003-03-12  Martin Bravenboer <martin@mbravenboer.org>
 
