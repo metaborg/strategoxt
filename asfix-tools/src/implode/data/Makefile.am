@@ -23,7 +23,7 @@
 TEST_SET = Iter Iter-sep Iter-star Iter-star-sep Nesting-iter-sep1 \
            Nesting-iter-sep2 Nesting-iter-star-sep Empty-iter-star-sep \
 	   Alt1a Alt1b Alt2a Alt2b Alt3a Alt3b Alt4a SeqOpt1 SeqOpt2 SeqOpt3 \
-	   Seq Var1 Var2 Or
+	   Seq Var1 Var2 Or Concrete Anno
 
 Iter_flags= --lex --layout --pt --list --appl --inj
 Iter_sep_flags= --lex --layout --pt --list --appl --inj
@@ -40,6 +40,9 @@ Alt4a_flags= --lex --layout --lit --alt --appl --inj --list --seq --pt
 
 Var1_flags= --lex --layout --lit --alt --appl --inj --list --seq --pt
 Var2_flags=
+
+Concrete_flags= --concrete
+Anno_flags= --concrete
 
 EXTRA_DIST = tests.def \
 	     $(TEST_SET:%=%.trm) $(TEST_SET:%=%.in) \

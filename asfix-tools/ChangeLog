@@ -1,3 +1,15 @@
+2003-09-29  Valentin David  <valentin@lrde.epita.fr>
+
+	* src/implode/implode-asfix.str: skip concrete syntax parts with
+	--concrete option.
+
+	* src/implode/data/Anno.trm, src/implode/data/Anno.out,
+	* src/implode/data/Concrete.trm, src/implode/data/Concrete.out:
+	New.
+
+	* src/implode/data/tests.def,
+	* src/implode/data/Makefile.am: Update.
+
 2003-06-12  Martin Bravenboer  <martin@mbravenboer.org>
 
   * src/asfix-yield/Makefile.am: do not links asource

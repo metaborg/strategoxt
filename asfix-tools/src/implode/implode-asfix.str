@@ -47,6 +47,11 @@ signature
       RemovePT     : Option
       RemoveSeq    : Option
       FlatAlt      : Option
+      Concrete     : Option
+
+      ToTerm       : Term -> Term
+      ToStrategy   : Term -> Term
+      ToBuild      : Term -> Term
 
       layout : String -> Layout
 \end{code}
@@ -105,6 +110,10 @@ strategies
 	!RemovePT,     
 	!"--pt             Remove the outer 'pt' function symbol from the parse tree" )
 
+  + Option( "--concrete",
+        !Concrete,
+        !"--concrete       Skip concrete syntax parts for Stratego parsing")
+
   short-description(p) = 
     !["Usage: ", <p>(), " [options]"]
  
@@ -125,7 +134,9 @@ strategies
        try((option-defined(ReplaceAppl),  replace-appl));
        try((option-defined(RemoveSeq),    remove-seq));
        try((option-defined(RemovePT),     remove-pt));
-       try(?term; (id, implodeAsfix))
+       try(?term; (option-defined(Concrete), id)
+                   < (id,implodeAsfix(id))
+                   + (id,implodeAsfix(fail)))
 
   // 0) Replace applications by application of sort symbol
 
@@ -171,11 +182,36 @@ strategies
     ))
   ; conc-to-cons
 
+  annotation(impl, skip) =
+    appl(prod(id, id, attrs(oncetd(cons("WithAnno")))), ?l)
+    ; !l
+    ; filter(not(is-layout); not(appl(prod(id, oncetd(lex(id)), id), id)))
+    ; ?[x|xs] 
+    ; !"WithAnno"#([<skip> x| <impl> xs])
+
+  skip-concrete(impl) =
+    appl(prod(id, cf(sort("StrategoTerm")),
+      attrs(one(term(cons(?cons))))),
+      oncetd(appl(prod(id,cf(oncetd(sort(id))),id),id); ?ap))
+    ; !cons
+    ; (("ToTerm"; !ToTerm(ap))
+        <+ ("ToStrategy"; !ToStrategy(ap))
+        <+ ("ToBuild"; !ToBuild(ap)))
+    ; rec skip(
+      alltd((appl(prod(one(varsym(id)), id, id), id); impl)
+        <+ (appl(prod(id, id, attrs(oncetd(cons("FromTerm"
+                                              + "FromApp")))), id); impl)
+        <+ annotation(impl, skip)))
+
   // Apply all previous filters together
-  implodeAsfix = 
+  implodeAsfix = implodeAsfix(fail)
+
+  implodeAsfix(concrete) =
     PT
   ; rec impl(
        implode-lexical
+    <+ (where(concrete)
+        ; skip-concrete(impl))
     <+ appl(id, filter(not(is-layout)))
        ; (OptList; impl 
           <+ ReplCons(impl) 

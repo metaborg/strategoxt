@@ -5,6 +5,7 @@ exports
         Nesting-iter-sep1 Nesting-iter-sep2 Nesting-iter-star-sep
         Empty-iter-star-sep Alt1a Alt1b Alt2a Alt2b Alt3a Alt3b Alt4a
 	Seq SeqOpt1 SeqOpt2 SeqOpt3 Var1 Var2 Or
+	Exp StrategoTerm Concrete Anno
 
   lexical syntax
     [\ \t\n] -> LAYOUT
@@ -55,3 +56,20 @@ exports
   context-free syntax
     Identifier	-> Var1 {cons("Var1")}
     Identifier	-> Var2 {cons("Var2")}
+
+  variables
+    "x" -> A
+    "y" -> B
+
+  context-free syntax
+    A                      -> Exp
+    B                      -> Exp
+    Exp "or" Exp           -> Exp {cons("Or")}
+    "<?" Exp "?>"          -> StrategoTerm {cons("ToTerm")}
+    "<!" Exp "!>"          -> StrategoTerm {cons("ToBuild")}
+    "<" Exp ">"            -> StrategoTerm {cons("ToStrategy")}
+    "?>" StrategoTerm "<?" -> Exp {cons("FromTerm")}
+    "!>" StrategoTerm "<!" -> Exp {cons("FromApp")}
+    StrategoTerm           -> Concrete {cons("Concrete")}
+    Exp "{" (StrategoTerm)* "}" -> Exp {cons("WithAnno")}
+    StrategoTerm           -> Anno {cons("Anno")}
