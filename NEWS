@@ -112,9 +112,9 @@ BUGS / KNOWN PROBLEMS
   * Todo: http://www.stratego-language.org/Stratego/ToDo
 
   Please report any problems with installation or bugs in the
-  implementation to the stratego-bugs mailing list. Please check the
-  archive of the list to see if a report about the problem was already
-  submitted.
+  implementation to the stratego-bugs@cs.uu.nl mailing list. Please
+  check the archive of the list to see if a report about the problem 
+  was already submitted.
 
 CONTRIBUTIONS
 
@@ -122,7 +122,7 @@ CONTRIBUTIONS
     Jozer Kruger, Valentin David.
 
   * The major developments were carried out by:
-    Martin Bravenboer, Rob Vermaas, Armijn Hemel, Eelco Visser.
+    Martin Bravenboer, Rob Vermaas, Armijn Hemel, Merijn de Jonge.
 
 ------------------------------------------------------------------------------
 
