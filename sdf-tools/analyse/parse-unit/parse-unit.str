@@ -46,14 +46,14 @@ strategies
     ; sglr-asfix2(|sort, <get-parse-table> ())
     ; if not(is-single-test-output-asfix2) then
         xtc-implode-asfix
-      else id end
+      end
 
   read-parse-testsuite =
     if not(is-abstract-input) then
       xtc-sglr(!"parse-testsuite.tbl", !"TestSuite")
       ; xtc-implode-asfix
       <+ trying-abstract-syntax-warning
-    else id end
+    end
     ; read-from
     ; try(upgrade-oldskool-testsuite)
     ; parse-testsuite(id, id, map(try(add-description)))
