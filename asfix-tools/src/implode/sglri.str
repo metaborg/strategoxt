@@ -4,7 +4,10 @@ imports liblib sglri-error-reporting
 strategies
 
   sglri =
-    xtc-io-wrap(sglri-options, parse-and-implode)
+    xtc-io-wrap(sglri-options,
+      parse-and-implode
+      <+ <xtc-exit> 1
+    )
 
   sglri-options =
       ArgOption("-p",

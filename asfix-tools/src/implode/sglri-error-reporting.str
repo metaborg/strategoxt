@@ -16,9 +16,8 @@ strategies
     finally(
       where(
         read-from
-      ; ?summary(_, _, [error(_, [localized(descr, area-in-file(_, area))])])
-      ; <fprintnl> (<stderr-stream> (), [descr])
-      ; <report-area(|area)> input
+      ; ?summary(_, file, [error(_, [localized(descr, area-in-file(_, area))])])
+      ; <report-area(|file, descr, area)> input
       )
       <+ read-from ; debug(!"Parse error cannot be presented. Please report bug.")
     , fail)
@@ -28,15 +27,17 @@ strategies
    *
    * @type  FILE -> _
    */
-  report-area(|area) =
+  report-area(|file, descr, area) =
     let y-pos =
           !area
-          ; ?area(begin-line, begin-column, begin-line, end-column, _, _)
+          ; ?area(begin-line, begin-column, _, end-column, _, _)
           ; !begin-line
+          ; dec 
+          ; if <lt> (<id>, 0) then !0 else id end
 
         x-pos =
           !area
-          ; ?area(begin-line, begin-column, begin-line, end-column, _, _)
+          ; ?area(begin-line, begin-column, _, end-column, _, _)
           ; <dec> begin-column => c
           ; if <lt> (c, 0) then !0 else id end
 
@@ -44,9 +45,24 @@ strategies
       ; get-lines
       ; add-indices
       ; where(y-pos => y)
-      ; fetch-elem(?(y, _))
 
-      ; where(<fprintnl> (<stderr-stream> (), [<Snd>]))
+      ; where(<fprintnl> (<stderr-stream> (), [file, ": ",  descr, " at line ", <int-to-string> begin-line, ", column ", <int-to-string> begin-column]))
+
+      ; at-suffix(?[(y, _) | _]; ?context)
+
+      /**
+       * If there are 2 or more elements, drop the rest.
+       */
+      ; !context
+      ; if !context => [s1, s2 | _ ] then
+          ![s1, s2]
+        end
+
+      ; where(map(<fprintnl> (<stderr-stream> (), [<Snd>])))
+
+      /**
+       * Indicate the position in the file
+       */
       ; <conc-strings> (<copy-char> (<x-pos> (), ' '), "^")
       ; where(<fprintnl> (<stderr-stream> (), [<id>]))
     end

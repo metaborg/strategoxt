@@ -1,5 +1,13 @@
 2005-01-12  Martin Bravenboer <martin@cs.uu.nl>
 
+	* src/implode/sglri.str: don't report rewriting failed if parsing
+	failed.
+
+	* src/implode/sglri-error-reporting.str: even more fancy error
+	report: file, line, column, 2-line quote from file.
+	
+2005-01-12  Martin Bravenboer <martin@cs.uu.nl>
+
 	* src/implode/sglri.str: dead code elimination and cleanup.
 
 	* src/implode/sglri.str: fixed spelling of --no-heuristic-filters
