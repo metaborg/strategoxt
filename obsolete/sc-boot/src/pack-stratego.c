@@ -5060,7 +5060,7 @@ ATerm readdir_0 (ATerm t)
 {
   ATerm h_45 = NULL;
   h_45 = t;
-  t = SSL_ReadDir(not_null(h_45));
+  t = SSL_readdir(not_null(h_45));
   return(t);
 }
 ATerm find_plugins_2 (ATerm t, ATerm m_61 (ATerm), ATerm n_61 (ATerm))
