@@ -1,3 +1,7 @@
+2001-11-02 Merijn de Jonge <mdejonge@cwi.nl> 
+   * lib/makefile.am: replaced xt-paths.r.src by xt-paths.r in definition
+     of CLEANFILES variable
+
 2001-10-09 Merijn de Jonge <mdejonge@cwi.nl> 
     * added uses of termid strategy
     * all transformation tools now add grammar identifier to generated output
