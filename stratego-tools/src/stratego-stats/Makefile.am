@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2002/06/05 21:06:39 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2002/06/07 15:00:24 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -27,7 +27,7 @@ include $(STRATEGO_PRG:%=%.dep)
 SUBDIRS		= data
 
 # Which Stratego programs to build
-STRATEGO_PRG = strip-comments
+STRATEGO_PRG = strip-comments conc-modules add-main
 
 # What scipts to build
 bin_SCRIPTS	= $(STRATEGO_PRG)
