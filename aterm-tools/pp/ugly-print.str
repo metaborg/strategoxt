@@ -65,23 +65,6 @@ rules // tuples and list
   UP-List(s) =
     pp-generic-list(s, !|[ "[]" ]|, !|[ "[" ]|, !|[ "]" ]|)
     
-/*  
-      where(<gt> (<term-size>, 10))
-    < UP-List-worstcase(s)
-    + UP-List-nicecase(s)
-    
-  UP-List(s) :
-    [] -> |[ "[]" ]|
-    
-  UP-List-nicecase(s) :
-    [x | xs] -> |[ H hs=0 ["[" ~<s> x ~*tail "]"] ]|
-      where <map(! |[ H hs=1 [ "," ~<s> ] ]| )> xs => tail
-
-  UP-List-worstcase(s) :
-    [x | xs] -> |[ V vs=0 [ H hs=1 ["[" ~<s> x] ~*tail "]"] ]|
-      where <map(! |[ H hs=1 [ "," ~<s> ] ]| )> xs => tail
-*/
-
 strategies
       
   pp-generic-list(s, empty, before, after) =
