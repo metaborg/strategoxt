@@ -1,8 +1,0 @@
-module InstantiateLayout
-imports Stratego-Layout
-exports
-  lexical syntax
-    Whitespace -> LAYOUT
-    Comment    -> LAYOUT
-  context-free restrictions
-    LAYOUT? -/- [\ \t\n] | [\(].[\*]

@@ -1,6 +1,0 @@
-module vars
-imports stratlib liblib
-strategies
-
-  main = io-wrap(vars(Add1, fail))
-

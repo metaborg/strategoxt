@@ -1,7 +1,0 @@
-module test02
-imports liblib
-
-strategies
-
-  main =
-    <add> (1, 2)

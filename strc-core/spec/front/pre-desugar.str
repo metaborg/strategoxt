@@ -1,6 +1,0 @@
-module pre-desugar
-imports stratego-desugar
-strategies
-
-  pre-desugar-io =
-    io-wrap(pre-desugar)

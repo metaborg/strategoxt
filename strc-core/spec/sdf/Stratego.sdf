@@ -1,3 +1,0 @@
-module Stratego
-imports Stratego-Syntax %%InstantiateLayout
-
