@@ -2,6 +2,9 @@
 
 rm -f config.cache config.log acconfig.h aclocal.m4
 
-aclocal -I . || exit -1
-autoconf -f --warnings=all --warnings=no-cross || exit -1
-automake -a || exit -1
+autoxt || exit 1
+auto-stratego-shell || exit 1
+auto-xml-tools || exit 1
+aclocal -I . || exit 1
+autoconf -f --warnings=all --warnings=no-cross || exit 1
+automake -a || exit 1
