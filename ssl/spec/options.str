@@ -106,37 +106,51 @@ strategies
 strategies
 
   io-options =
-	  ArgOption("-i" + "--input", 
-		where(<set-config> ("-i",<id>)); !Input(<id>),
-		!"-i f|--input f   Read input from f")
+      input-option
+    + aterm-output-option
+    + verbose-option
 
-	+ ArgOption("-o" + "--output",  
-		where(<set-config> ("-o",<id>)); !Output(<id>),      
-		!"-o f|--output f  Write output to f" )
+    + ArgOption("-k" + "--keep"
+      , where(<set-config> ("--keep", <string-to-int>))
+      , !"--keep i | -k i  Keep intermediates (default 0)"
+      )
+    + Option("-v"+"--version"
+      , where(<set-config> ("-v",())); !Version()
+      , !"-v|--version     Display prgram's version"
+      )
 
-	+ Option("-S"+"--silent",       
-		where(<set-config> ("--verbose",0)); !Verbose(0),          
-		!"-S|--silent      Silent execution (same as --verbose 0)")
+  input-option =
+    ArgOption("-i" + "--input"
+    , where(<set-config> ("-i",<id>)); !Input(<id>)
+    , !"-i f|--input f   Read input from f"
+    )
 
-	+ ArgOption("--verbose",         
-		where(<set-config> ("--verbose",<string-to-int>)); !Verbose(<id>),         
-		!"--verbose i      Verbosity level i (default 1)")
+  output-option =
+    ArgOption("-o" + "--output"
+    , where(<set-config> ("-o",<id>)); !Output(<id>)
+    , !"-o f|--output f  Write output to f" 
+    )
 
-	+ ArgOption("-k" + "--keep",         
-		where(<set-config> ("--keep", <string-to-int>)),         
-		!"--keep i | -k i  Keep intermediates (default 0)")
+  aterm-output-option =
+      output-option
+    + Option("-b"
+      , where(<set-config> ("-b",())); !Binary()
+      , !"-b               Write binary output"
+      )
 
-	+ Option("-v"+"--version",    
-		where(<set-config> ("-v",())); !Version(),         
-		!"-v|--version     Display prgram's version")
-
-	+ Option("-b",                
-		where(<set-config> ("-b",())); !Binary(),          
-		!"-b               Write binary output")
-
-	+ Option("-s",                
-		where(<set-config> ("-s",())); !Statistics(),
-		!"-s               Turn on statisctics")
+  verbose-option =
+      Option("-S"+"--silent"
+      , where(<set-config> ("--verbose",0)); !Verbose(0)
+      , !"-S|--silent      Silent execution (same as --verbose 0)"
+      )
+    + ArgOption("--verbose"
+      , where(<set-config> ("--verbose",<string-to-int>)); !Verbose(<id>)
+      , !"--verbose i      Verbosity level i (default 1)"
+      )
+    + Option("-s"
+      , where(<set-config> ("-s",())); !Statistics()
+      , !"-s               Turn on statisctics"
+      )
 
   usage' = 
     obsolete(!"usage': use default-usage")
