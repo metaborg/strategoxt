@@ -13,5 +13,8 @@ PARSE_UNIT_PTABLE = $(sdfdatadir)/C.tbl
 
 installcheck-local: $(TESTSUITES:.testsuite=.runtestsuite)
 
-%.runtestsuite : %.testsuite
+%.runtestsuite : %.atestsuite
 	$(SDF_TOOLS)/bin/parse-unit -i $< -p $(PARSE_UNIT_PTABLE) --verbose 1 -o /dev/null
+
+%.atestsuite : %.testsuite
+	$(SDF_TOOLS)/bin/parse-parse-testsuite  -i $< -o $@

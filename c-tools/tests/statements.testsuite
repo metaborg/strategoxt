@@ -1,8 +1,5 @@
-TestSuite(
-  Name("C Statements")
-, Sort("Stm")
-, Tests(
-  [ Test(Descr("simple assignment"), String("x = 1;"), Success())
+testsuite C Statements
+topsort Stm
 
-  ])
-)
+test simple assignment
+  "x = 1;" succeeds

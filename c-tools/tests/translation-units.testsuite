@@ -1,7 +1,5 @@
-TestSuite(
-  Name("C TranslationUnits")
-, Sort("TranslationUnit")
-, Tests(
-  [ Test(Descr("Stratego fragment"),      File("translation-units/Stratego1.c"), Success())
-  ])
-)
+testsuite C TranslationUnits
+topsort TranslationUnit
+
+test Stratego fragment
+  file translation-units/Stratego1.c succeeds

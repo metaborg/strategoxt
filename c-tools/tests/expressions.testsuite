@@ -1,57 +1,54 @@
-TestSuite(
-  Name("C Expressions")
-, Sort("AssignExp")
-, Tests(
-  [ Test(Descr("null literal")
-    , String("NULL"), Id("NULL")
-    )
-  , Test(Descr("simple int literal")
-    , String("5"), IntConst("5")
-    )
-  , Test(Descr("simple addition")
-    , String("2 + 3"), Add(IntConst("2"),IntConst("3"))
-    )
-  , Test(Descr("always take longest match for --")
-    , String("1--2"), Failure()
-    )
-  , Test(Descr("simple pre increment")
-    , String("++2"), PreIncr(IntConst("2"))
-    )
-  , Test(Descr("addition is left associative")
-    , String("1 + 2 + 3"), Add(Add(IntConst("1"), IntConst("2")), IntConst("3"))
-    )
-  , Test(Descr("multiplication has higher priority than addition")
-    , String("1 + 2 * 3"), Add(IntConst("1"), Mul(IntConst("2"), IntConst("3")))
-    )
-  , Test(Descr("relational operators have higher priority than equational ones")
-    , String("1 < 2 == 3 < 4"), Equal(Lt(IntConst("1"), IntConst("2")), Lt(IntConst("3"), IntConst("4")))
-    )
-  , Test(Descr("simple name")
-    , String("x") , Id("x")
-    )
-  , Test(Descr("simple comparison 1")
-    , String("2 == 3"), Equal(IntConst("2"),IntConst("3"))
-    )
-  , Test(Descr("simple comparison 2")
-    , String("0 == PushChoice()"), Equal(IntConst("0"), FunCall(Id("PushChoice"),[]))
-    )
-  , Test(Descr("simple comparison 3")
-    , String("PushChoice() == 0"), Equal(FunCall(Id("PushChoice"),[]),IntConst("0"))
-    )
-  , Test(Descr("post increment has higher priority than pre increment")
-    , String("++ 1 ++") , PreIncr(PostIncr(IntConst("1")))
-    )
-  , Test(Descr("simple assignment")
-    , String("x = 1"), Assign(Id("x"),AssignEq, IntConst("1"))
-    )
-  , Test(Descr("Field access on expression")
-    , String("blaat().field"), Field(FunCall(Id("blaat"),[]),Id("field"))
-    )
-  , Test(Descr("Method invocation has higher priority than assignment")
-    , String("x = var.method()"), Assign(Id("x"),AssignEq, FunCall(Field(Id("var"),Id("method")),[]))
-    )
-  , Test(Descr("Simple literal")
-    , String("\"Literal\""), StringLit(["\"Literal\""])
-    )
-  ])
-)
+testsuite C Expressions
+topsort AssignExp
+
+test null literal
+  "NULL" -> Id("NULL")
+
+test "simple int literal
+  "5" -> IntConst("5")
+
+test simple addition"
+  "2 + 3" -> Add(IntConst("2"),IntConst("3"))
+
+test always take longest match for --
+  "1--2" fails
+
+test simple pre increment
+  "++2" -> PreIncr(IntConst("2"))
+
+test addition is left associative
+  "1 + 2 + 3" -> Add(Add(_, _), _)
+
+test multiplication has higher priority than addition
+  "1 + 2 * 3" -> Add(_, Mul(_, _))
+
+test relational operators have higher priority than equational ones
+  "1 < 2 == 3 < 4" -> Equal(Lt(_, _), Lt(_, _))
+
+test simple name
+  "x" -> Id("x")
+
+test simple comparison 1
+  "2 == 3" -> Equal(IntConst("2"),IntConst("3"))
+
+test simple comparison 2
+  "0 == PushChoice()" -> Equal(IntConst("0"), FunCall(Id("PushChoice"),[]))
+
+test simple comparison 3
+  "PushChoice() == 0" -> Equal(FunCall(Id("PushChoice"),[]),IntConst("0"))
+
+test post increment has higher priority than pre increment
+  "++ 1 ++" -> PreIncr(PostIncr(IntConst("1")))
+
+test simple assignment
+  "x = 1" -> Assign(Id("x"),AssignEq, IntConst("1"))
+
+test Field access on expression
+  "blaat().field" -> Field(FunCall(Id("blaat"),[]),Id("field"))
+
+test Method invocation has higher priority than assignment")
+  "x = var.method()" -> 
+    Assign(Id("x"),AssignEq, FunCall(Field(Id("var"),Id("method")),[]))
+
+test Simple literal
+  ["Literal"] -> StringLit(["\"Literal\""])
