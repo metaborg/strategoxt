@@ -29,7 +29,11 @@ strategies
 // Gen2 = ?FooGen(x,z); hide rules(A1 : Foo(x, y))
 
   debug-rules() =
-    where( <table-getlist> "_rules"; map((id, map(RuleScope(id, hashtable-getlist)))); debug(!"All rules: "))
+    where( 
+      <table-getlist> "_rules"
+      ; map((id, map(RuleScope(id, hashtable-getlist))))
+      ; debug(!"All rules: ")
+   )
 
   Strategy1 =
     dr-scope([try(Gen1 + Hide1 + A1) | Strategy1] <+ [] | "A1")
