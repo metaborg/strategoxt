@@ -1,4 +1,4 @@
-module lib-parse-pp-table-args
+module lib-pp-table-args
 imports verbose dir xtc-proc stratego-xt-xtc-tools
 
 strategies
@@ -50,4 +50,3 @@ strategies // to parse a pretty-print table in pp-table syntax to aterms
       )
     ; ?FILE(<id>)
     ; if-verbose2(debug(!"** INFO: Using temporary file for parsed print-table: "))
-
