@@ -25,23 +25,4 @@ EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta)
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c) 
 
-parse_box_LDADD = $(SSL_LIBS)
-pp_box_LDADD = $(SSL_LIBS)
-
-parse_pp_table_LDADD = $(SSL_LIBS)
-pp_pp_table_LDADD = $(SSL_LIBS)
-
-ppgen_LDADD = $(SSL_LIBS)
-
-ast2abox_LDADD = $(SSL_LIBS)
-
-ast2text_LDADD = $(SSL_LIBS)
-asfix2abox_LDADD = $(SSL_LIBS)
-abox2text_LDADD = $(SSL_LIBS)
-abox2html_LDADD = $(SSL_LIBS)
-abox2latex_LDADD = $(SSL_LIBS)
-
-#  pptable_diff_LDADD = $(SSL_LIBS)
-
-gen_css_boxstyle_LDADD = $(SSL_LIBS)
-gen_latex_boxstyle_LDADD =$(SSL_LIBS)
+LDADD += $(SSL_LIBS)
