@@ -1,3 +1,24 @@
+2004-02-12  Martin Bravenboer  <martin@cs.uu.nl>
+
+	* trans/gen-renamed-sdf-module.str: tool to generate a RenamedLang
+	module, which renames all sorts in an SDF syntax definition to
+	more unique names. Such a module is typically used in syntax
+	definitions for concrete syntax. Such modules are boring to write,
+	so they should be generated.
+
+	The tool accept a --scheme flag. The value of this flag must be an
+	ATerm list, with Var(_)s and ATerm Strings. This scheme is used to
+	generate the renamed sort names.
+
+	--prefix Name is sugar for --scheme [Name, Var("Sort")]
+
+	Example:
+	gen-renamed-sdf-module -i Java.def \
+	    --name Java-Prefixed --import Java \
+	    --scheme "[\"Java\", Var(\"Sort\")]"
+
+	Yes, yes, the scheme option is ridiculous ;) .
+
 2004-02-04  Martin Bravenboer  <martin@cs.uu.nl>
 
 	* src/parse-unit/parse-unit.str: parse unit now fails with exit
