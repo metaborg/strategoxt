@@ -12,8 +12,8 @@ install-buildtime-pre-pkgs :
 	cp -rf srts pre-pkgs/build/ &&\
 	cd pre-pkgs/build/srts &&\
 	./configure --prefix=@abs_top_srcdir@/pre-pkgs/build --with-aterm=$(ATERM) &&\
-	make &&\
-	make install
+	$(MAKE) &&\
+	$(MAKE) install
 
 rpm : dist
 	$(RPMBUILD) -ta $(PACKAGE_TARNAME)-$(VERSION).tar.gz
