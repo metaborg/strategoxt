@@ -37,6 +37,19 @@ rules
         ; <map1(try(MkConstType))> as2 => as2'
 */
 
+  desugar-DefaultVarDec =
+    topdown(try(DesugarDefaultVarDec))
+
+  DesugarDefaultVarDec :
+    SDefT(f, s1, t1, s) -> SDefT(f, s2, t2, s)
+    where <map(try(MkFunType))> s1 => s2
+        ; <map(try(MkConstType))> t1 => t2
+
+  DesugarDefaultVarDec :
+    ExtSDef(f, s1, t1) -> ExtSDef(f, s2, t2)
+    where <map(try(MkFunType))> s1 => s2
+        ; <map(try(MkConstType))> t1 => t2
+
   MkFunType :
     DefaultVarDec(x)-> VarDec(x, DefaultStrat)
 
@@ -328,7 +341,9 @@ strategies
 
   DesugarListMatching =
     topdown(try(ListVarScope + desugarRule); 
-            repeat((MkFunType + MkConstType + HL + ListMatch + ListBuild) <+ SingleListVar))
+            repeat((HL + ListMatch + ListBuild) <+ SingleListVar))
+
+   // MkFunType + MkConstType + 
 
   desugar = 
     topdown(try(desugarRule); 

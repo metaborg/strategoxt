@@ -16,6 +16,7 @@ strategies
       ; RulesToSdefs
       ; AddCongruenceDefinitions
       ; DesugarListMatching
+      ; desugar-DefaultVarDec
     )
 
 \end{code}

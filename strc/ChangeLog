@@ -1,7 +1,16 @@
+2004-03-22   Martin Bravenboer  <martin@cs.uu.nl>
+
+	* spec/front/spec-to-sdefs.str: more controlled application of
+	desugaring of DefaultVarDec to the default type for strategy and
+	term arguments. C compiler will not complain any more about
+	incorrect arguments :) .
+	
 2004-02-22   Merijn de Jonge  <mdejonge@cs.uu.nl>
-   * Makefile.am: added autoxt.m4 to EXTRA_DIST
-   * Makefile.am: added line: ACLOCAL_AMFLAGS = -I . such that autoreconf
-     can find autoxt.m4
+
+	* Makefile.am: added autoxt.m4 to EXTRA_DIST
+
+	* Makefile.am: added line: ACLOCAL_AMFLAGS = -I . such that
+	autoreconf can find autoxt.m4
 
 2004-01-20  Eelco Visser  <visser@cs.uu.nl>
 
