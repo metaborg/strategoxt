@@ -8,4 +8,4 @@ term_size_LDADD = $(SSL_LIBS)
 CLEANFILES     = atermdiff.c.dep term-size.c.dep
 BOOTCLEANFILES = atermdiff.c term-size.c
 
-EXTRA_DIST = aterm-diff.str term-size.str
+EXTRA_DIST = atermdiff.str term-size.str
