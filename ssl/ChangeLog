@@ -1,4 +1,12 @@
+2005-01-06  Martin Bravenboer <martin@cs.uu.nl>
+
+	* spec/list-basic.str: split-last and split-init-last are
+	identical. Defined split-last as an alias of split-init-last.
+
+	* spec/list-misc.str: added some xDoc comments.
+	
 2004-12-10  Merijn de Jonge <mdejonge@cs.uu.nl>
+	
 	* spec/pipe.str: bug fixes. 
 	  - stdin-from-pipe and stdout-to-pipe didn't work correctly when
 	  Pipe argument was stdin (0) or stdout (1). Since stdin and stdout

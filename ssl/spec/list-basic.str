@@ -200,10 +200,18 @@ strategies
   at-last(s) = 
     rec x([id]; s <+ [id | x])
 
- /**
-  * @inc split-init-last-test
-  */
-  split-init-last = 
+  /**
+   * Splits a list into a tuple of its init list and last element.
+   *
+   * Example:
+   *   <split-init-last> [1, 2, 3, 4] => ([1, 2, 3], 4)
+   *   <split-init-last> [1]          => ([], 1)
+   *
+   * @since  0.9.4
+   * @type   List(a) -> (List(a), a)
+   * @inc    split-init-last
+   */
+ split-init-last = 
     at-last(?[x]; ![]); !(<id>, x)
 
   at-init(s1, s2) =

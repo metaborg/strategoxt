@@ -101,30 +101,32 @@ strategies
   mapconcat(s) =
     foldr([], conc, s)
 
+  /**
+   * Returns the last element of a list.
+   *
+   * Fails if applied to the empty list.
+   */
   last = 
     rec x(Last <+ Tl; x)
 
  /**
+  * Returns a list of all elements of a list, except the last.
+  * 
+  * Fails if applied to the empty list.
+  *
   * @inc init
   * @inc empty init
+  *
+  * @type List(a) -> List(a)
   */
   init = 
     at-last(Tl)
 
   /**
-   * Splits a list into a tuple of its init list and last element.
-   *
-   * Example:
-   *   <split-last> [1, 2, 3, 4] => ([1, 2, 3], 4)
-   *   <split-last> [1]          => ([], 1)
-   *
-   * @since  0.9.4
-   * @type   List(a) -> (List(a), a)
-   * @inc    split-last
-   */
+   * Alias of split-init-last.
+   */ 
   split-last =
-      at-last(?[x]; ![])
-    ; !(<id>, x)
+    split-init-last
 
  /**
   * @inc copy-test
@@ -204,6 +206,7 @@ strategies
   trim(s) = ltrim(s); rtrim(s)
 
 strategies
+
   /** 
    * flatten-list completely flattens a list.
    * See list-misc-test for examples.
