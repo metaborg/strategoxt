@@ -18,9 +18,10 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/05/31 14:20:52 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2001/09/03 06:30:30 mdejonge Exp $
 
-EXTRA_DIST   = test1.sdf.af test1.sdf.wf.ok
+EXTRA_DIST   = test1.sdf test1.sdf.af test1.sdf.wf.ok test1.sdf.wf.short.ok \
+               test2.sdf test2.sdf.af test2.sdf.wf.ok
 
 
 
