@@ -1,1 +1,0 @@
-Specification([Imports(["sunit","template"]),Strategies([SDef("main",[],Call(SVar("test-suite"),[Build(Str("template-test")),Call(SVar("test1"),[])])),SDef("test1",[],Call(SVar("apply-test"),[Build(Str("test1")),Id,Build(Op("",[])),Build(Op("",[]))]))])])

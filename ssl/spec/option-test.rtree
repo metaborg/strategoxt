@@ -1,1 +1,0 @@
-Specification([Imports(["option","sunit"]),Strategies([SDef("main",[],Call(SVar("test-suite"),[Build(Str("option-test")),Id]))])])

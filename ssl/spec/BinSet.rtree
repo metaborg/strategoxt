@@ -1,1 +1,0 @@
-Specification([Imports(["lib","bin-tree-set"]),Strategies([SDef("main",[],Call(SVar("stdio"),[Seq(Call(SVar(""),[Call(SVar("mkbinset"),[]),Call(SVar("mkbinset"),[])]),Seq(Call(SVar("debug"),[]),Call(SVar("merge"),[])))]))])])
