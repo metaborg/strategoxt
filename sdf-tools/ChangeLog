@@ -1,5 +1,17 @@
 2004-09-25  Martin Bravenboer  <martin@cs.uu.nl>
 
+	* analyse/parse-unit/parse-unit.str: parse-unit now has an option
+	to parse a single test and write the the result to the output. In
+	this mode ambiguities are accepted, which is useful for debugging.
+
+	The option for the 'single test mode' is --single <nr> where <nr>
+	is the number in the testsuite (printed when the testsuite is
+	executed).
+
+	The --asfix2 flag can be used to produce asfix2 instead of an AST.
+
+2004-09-25  Martin Bravenboer  <martin@cs.uu.nl>
+
 	* analyse/parse-unit/parse-unit.str: parse-unit now parses the
 	testsuite, so it accepts testsuites concrete syntax. No more
 	parse-parse-testsuite! It will fall back to abstract syntax, so
