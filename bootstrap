@@ -23,18 +23,33 @@
 # not to the last mtime in the repository.
 
 SRCROOT=`dirname $0`
+
+echo "SRCROOT"
+echo $SRCROOT
+
 MTIME=`date +%Y%m%d%H%M.%S`
-BOOTSTRAPPED_FILES=`find $SRCROOT -name "*.rtree" -o -name "*.c" -o -name "*.pp.af" -o -name "*.pp" -o -name "*.tbl" -o -name "*.def"`
+
+echo "MTIME"
+echo $MTIME
+
+BOOTSTRAPPED_FILES=`find $SRCROOT -name "*.rtree" -o -name "*.c" -o -name "*.pp.af" -o -name "*.pp
+" -o -name "*.tbl" -o -name "*.def"`
 touch -t $MTIME $BOOTSTRAPPED_FILES
+
+echo "BOOTSTRAPPED_FILES"
+echo $BOOTSTRAPPED_FILES
+
+# Make some scripts executable, because we checkout with wget in the daily build system.
 
 CHECKSCRIPTS=`find $SRCROOT -name "*check"`
 chmod u+x $CHECKSCRIPTS
 
+echo "CHECKSCRIPTS"
+echo $CHECKSCRIPTS
+
 rm -f mkinstalldirs missing install-sh
 
 PKGS="autoxt srts xtc sdf-import sc ssl gpp c-tools stratego-front aterm-tools asfix-tools dot-tools graph-tools sdf-tools stratego-tools xt boxenv"
-
-#gbtools stratego-connect grammar-recovery 
 
 for dir in $PKGS
 do 
