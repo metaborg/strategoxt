@@ -14,7 +14,7 @@ strategies
     {| Context, Bound : 
        where(tvars; DefineUnbound)
        ; sdef-ud <+ rdef-ud <+ overlay-ud 
-    |}
+    |} 
 
   sdef-ud =
     ?|[ f(as) = s ]|
@@ -141,8 +141,8 @@ strategies
 
   isect-Bound = 
      map(try(?(Scopes,_)
-        <+ {?(key, [Defined(_,value)|_]); 
-            (where(<table-get> ("Bound", key) => [Defined(_,value)|_])
+        <+ {?(key, [Defined(_)|_]); 
+            (where(<table-get> ("Bound", key) => [Defined(_)|_])
              <+ !(key, [Undefined]))
            }))
     ; restore-Bound

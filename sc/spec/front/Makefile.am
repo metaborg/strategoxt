@@ -15,7 +15,8 @@ check_PROGRAMS	 = use-def-test lift-dynamic-rules-test
 
 CLEANFILES 	 = $(wildcard *.dep) $(wildcard *.tmp)
 
-BOOTCLEANFILES   = extract-all.c extract.c frontend.c inline.c rename-defs.c
+BOOTCLEANFILES   = extract-all.c extract.c frontend.c inline.c rename-defs.c \
+		   use-def-test.c lift-dynamic-rules-test.c
 
 TESTS 		 = use-def-test lift-dynamic-rules-test
 #needed-defs-test 
