@@ -16,6 +16,9 @@ strategies
     + ArgOption("--impl", 
         where(<extend-config> ("--impl", [<id>])),
         !"--impl opt       Pass option to implode asfix")
+    + ArgOption("--start", 
+        where(<set-config> ("--start", <id>)),
+        !"--start symbol   Define start symbol")
 
   short-description(p) = 
     !["Usage: ", <p>(), " [options]"]
@@ -26,8 +29,13 @@ strategies
       "syntax tree.\n"]
 
   parse-and-implode =
-      sglr(get-parse-table, !["-2" | <get-config <+ ![]> "--sglr"])
+      sglr(get-parse-table, pass-sglri-args)
     ; implode-asfix(<get-config <+ ![]> "--impl")
+
+  pass-sglri-args = 
+    ( !["-s", <get-config>"--start"] <+ ![] ) => start
+  ; ( <get-config>"--sglr" <+ ![] )           => sglr
+  ; <concat>[ ["-2"], start, sglr]
 
   get-parse-table =
     <get-config> "-p" <+ <fatal-error> ["** ERROR: no parse table specified"]
