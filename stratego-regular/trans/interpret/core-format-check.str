@@ -84,9 +84,14 @@ strategies
     is-string
     ; ?s
     ; where(
-        <get-types> "" => set
+        <get-types> "" => types
       ; <get-config> "typetable"
-      ; hashtable-put(|s, set)
+      ; hashtable-put(|s, types)
+      ; <map({type:
+          ?type
+        ; <get-config> "typeset"
+        ; iset-add(|(s, type))
+        })> types
       )
 
   is-typed =
@@ -188,7 +193,7 @@ strategies
     ?ProdRule(a, [Appl(TupleTerm(_), as)])
     ; where(<map(?Ref(<id>))> as => arg-types)
     ; rules(
-        UserTypeExploded :+ t@("", args) -> t
+        UserType :+ t@""#(args) -> t
           where <not(has-type(|a))> t
               ; <list-has-type(|arg-types)> args
               ; <set-type(|a)> t
