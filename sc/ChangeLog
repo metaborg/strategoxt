@@ -1,3 +1,9 @@
+2002-03-13  Eelco Visser  <visser@acm.org>
+
+	* spec/c/C-simplify.r: Disabled certain simplification rules that
+	removed { } around single statement branch of a conditional
+	statement. (Bug report by Martin Bravenboer)
+
 2002-03-10  Eelco Visser  <visser@acm.org>
 
 	* Release 0.7

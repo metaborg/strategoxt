@@ -23,14 +23,14 @@ rules
   Csimplify :
     IfElse(e, Compound([],[]), s) -> If(Negation(e), s)
 
-  Csimplify :
+  Csimplify' : // not valid if s2 is a macro
     IfElse(e, s1, Compound([],[s2])) -> IfElse(e, s1, s2)
     where <Stat(id)> s2
 
-  Csimplify :
+  Csimplify' : // not valid if s1 is a macro
     IfElse(e, Compound([],[s1]), s2) -> IfElse(e, s1, s2)
     where <Stat(id)> s1
 
-  Csimplify :
+  Csimplify' : // not valid if s is a macro
     If(e, Compound([],[s])) -> If(e, s)
     where <Stat(id)> s
