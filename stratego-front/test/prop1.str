@@ -1,0 +1,26 @@
+module prop1
+imports Prop
+rules
+
+  DN : |[ ~ ~ p ]| -> |[ p ]|
+
+  DAOL : |[ p /\ (q \/ r) ]| -> |[ (p /\ q) \/ (p /\ r) ]|
+
+strategies
+
+  Bla = 
+    |> 
+       P /\ 
+
+       <| all( |>
+
+           E /\ <| id |> 
+
+       <| ) |>  
+
+       /\ Q
+    <|
+
+  main =
+    <Bla> |[ A{| "A" |} /\ (B \/ C /\ D) ]|
+    

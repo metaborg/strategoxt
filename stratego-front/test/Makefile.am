@@ -2,11 +2,19 @@ include $(top_srcdir)/Makefile.xt
 
 SDFINCLUDES = -I $(STRATEGO_FRONT)/share/sdf/stratego-front
 
+PGEN_FLAGS      = -m $*
+
+check_PROGRAMS = prop1
+
+check_DATA = PropStratego.tbl 
+
+TESTS = prop1
+
 check: check1 check2 check3 check4
 
 check1 : Prop.str
 	$(MAKE) clean
-	$(srcdir)/../parse/parse-stratego -i prop.str -o prop.rtree --verbose 10
+	$(srcdir)/../parse/parse-stratego -i prop1.str -o prop.rtree --verbose 10
 
 check2 : Prop.str
 	$(MAKE) clean

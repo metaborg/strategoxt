@@ -1,7 +1,10 @@
 module PropStratego
-imports Prop Stratego [ Term => StrategoTerm ]
+imports Prop StrategoRenamed
 exports
   context-free syntax
-    "[[" Prop "]]" -> StrategoTerm {cons("ToTerm")}
+    "|[" Prop "]|"                     -> StrategoTerm     {cons("ToTerm")}
+    "|>" Prop "<|"                     -> StrategoStrategy {cons("ToBuild")}
+    "<|" StrategoStrategy "|>"         -> Prop 		   {cons("FromApp")}
+    Prop "{|" {StrategoTerm ","}* "|}" -> Prop 		   {cons("Anno")}
   variables
     [pqr][0-9]* -> Prop

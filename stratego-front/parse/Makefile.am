@@ -14,3 +14,4 @@ BOOTCLEANFILES  = meta-explode.c stratego-desugar.c parse-stratego.c \
 EXTRA_DIST 	= $(wildcard *.str) $(wildcard *.meta) \
 		  $(wildcard *.rtree) $(wildcard *.src) \
 		  $(wildcard *.c)  $(wildcard *.h.in)
+

@@ -1,7 +1,10 @@
 module Prop
 exports
   sorts Prop
+  lexical syntax
+    [A-Z]+ -> Id
   context-free syntax
+    Id 			-> Prop {cons("Var")}
     "true"  		-> Prop {cons("True")}
     "false" 		-> Prop {cons("False")}
     "~" Prop		-> Prop {cons("Not")}
