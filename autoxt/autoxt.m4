@@ -210,7 +210,7 @@ AC_ARG_WITH([stratego-regular],
   AC_HELP_STRING([--with-stratego-regular=DIR],
                  [use StrategoRegular at DIR @<:@STRATEGOXT@:>@]), 
   [STRATEGO_REGULAR=$withval], 
-  [STRATEGO_REGULAR=$STRATEGOxt]
+  [STRATEGO_REGULAR=$STRATEGOXT]
 )
 AC_SUBST([STRATEGO_REGULAR])
 
