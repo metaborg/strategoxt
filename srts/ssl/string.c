@@ -70,12 +70,13 @@ ATerm SSL_newname(ATerm prefix, ATerm groupname)
 {
   int newname_counter;
   char* prefix_string;
+  ATerm groupvalue;
 
   if(SSL_newname_table == NULL)
     SSL_newname_table = ATtableCreate(15, 80);
 
   prefix_string = ATgetName(ATgetSymbol(prefix));
-  ATerm groupvalue = ATtableGet(SSL_newname_table, groupname);
+  groupvalue = ATtableGet(SSL_newname_table, groupname);
 
   if(groupvalue != NULL) {
     newname_counter = ATgetInt((ATermInt)groupvalue);
