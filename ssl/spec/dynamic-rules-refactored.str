@@ -439,7 +439,7 @@ strategies // extending a rule
                  ; \ values -> <hashtable-put(|(scpid, key), [value | values])> tbl1 \
          in if <iset-contains(|label)> labelset
             then <fetch-elem(?RuleScope(_,tbl@Hashtable(hptr)))> rs
-                 ; set2(|hptr, tbl, key, value)
+                 ; add2(|hptr, tbl, key, value)
             else <dr-add-to-rule-set(add2 | label, key, value)> rs
             end
         end
