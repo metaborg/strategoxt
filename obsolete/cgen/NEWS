@@ -4,9 +4,9 @@ News about Stratego releases
 
 ------------------------------------------------------------------------------
 
-Version 0.7beta2
+Version 0.7beta3
 
- released: January 29, 2002
+ released: 
 
 SUMMARY OF CHANGES
 
@@ -18,11 +18,12 @@ SUMMARY OF CHANGES
  * Bagof returns list of all possible results for ++ and <++
  * Guarded left choice s1 < s2 + s3 commits after s1 succeeds
  * Constant term caching in the compiler
+ * Support for term annotations
  * Many new library strategies
 
 DEPENDENCIES
 
- * aterm-1.6.5: aterm library with support for tuples
+ * aterm-1.6.6: aterm library with support for tuples
  
  * cpl-stratego-0.4: choice point library from INRIA (Nancy) with
    some modifications
@@ -39,7 +40,9 @@ MORE INFORMATION
 CONTRIBUTIONS
 
  * Bug reports by Martin Bravenboer (<++), Dick Kieburtz
-   (configuration)
+   (configuration), Otto Skrove Bagge (mapping reverse)
+
+ * Bug fixes: Eelco Dolstra & Eelco Visser (Sun/ATmap bug)
 
 LANGUAGE
 
@@ -69,6 +72,10 @@ LANGUAGE
    itself, i.e., (t) == t. A lot of confusion arose because of <s>(t) not
    being equal to <s>t.
 
+ * Term annotations can be used to attach information to a term without
+   affecting its structure, i.e., arities or names of constructors. Syntax:
+   t1 { t2 } denotes the annotation of term t1 with term t2.
+
 COMPILER
 
  * The translation to C has been adapted to support native lists.
@@ -80,6 +87,9 @@ COMPILER
    This means that terms that are constant _at compile time_ are
    constructed once at program startup and cached in global variables
    for later use.
+
+ * Compiler quits after finding a parse error instead of struggling
+   on for a while.
 
 RUN TIME SYSTEM
 
@@ -98,6 +108,10 @@ RUN TIME SYSTEM
 
  * Include files are now installed in $prefix/include/srts to avoid 
    file name clashes with other packages.
+
+ * There was a bug in the definition of ATmap in aterm-extension.c, which
+   caused the new implementation of the generic traversal operators
+   to malbehave on lists. (ED + EV)
 
 LIBRARY
 

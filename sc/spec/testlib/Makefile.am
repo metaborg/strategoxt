@@ -17,7 +17,7 @@
 
 .PRECIOUS: %.ac %.c
 
-TESTS = $(subst .r,.bin,$(wildcard *-test.r)) 
+TESTS = $(subst .r,.bin,$(wildcard *-test.r))
 
 SINCLUDES = -I $(STRATEGOLIB)/share/ssl
 
