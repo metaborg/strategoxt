@@ -10,12 +10,32 @@ imports list-set sunit
 
 strategies 
 
-  main = 
+ main = 
     test-suite(!"list-set-test",
-	test1;  
-	test2;  
-	test3;  
-	test4;  
+	test1a;
+	test1b;  
+	test1c;
+	test1d;
+	test1e;
+
+	test2a;
+	test2b;  
+	test2c;
+	test2d;
+	test2e;
+
+	test3a;
+	test3b;  
+	test3c;
+	test3d;
+	test3e;
+
+	test4a;
+	test4b;  
+	test4c;
+	test4d;
+	test4e;
+  
 	test5;
 	test6;
 	test7;
@@ -24,37 +44,156 @@ strategies
 	test10
      )
 
-  test1 = 
-    apply-test(!"test1"
+/**
+ * union
+ */ 
+  test1a = 
+    apply-test(!"test1a"
 	, union
 	, !(["a","b"],["c","d"])
 	, !["a","b","c","d"]
 	)
 
-  test2 =
-    apply-test(!"test2"
+  test1b =
+    apply-test(!"test1b"
 	, union
 	, !(["a","b"],["b","d"])
 	, !["a","b","d"]
 	)
 
-  test3 = 
-    apply-test(!"test3"
-	, diff
-	, !(["a","b"],["c","d"])
+  test1c = 
+    apply-test(!"test1c"
+	, union
+	, !([],["c","d"])
+	, !["c","d"]
+	)
+
+  test1d =
+    apply-test(!"test1d"
+	, union
+	, !(["a","b"],[])
 	, !["a","b"]
 	)
 
-  test4 =
-    apply-test(!"test4a"
-	, diff
-	, !(["a","b"],["b","d"])
-	, !["a"]
-	);
-    apply-test(!"test4b"
+  test1e =
+    apply-test(!"test1e"
+	, union
+	, !([],[])
+	, ![]
+	)
+
+/**
+ * isect
+ */ 
+  test2a = 
+    apply-test(!"test2a"
+	, isect
+	, !(["a","b"],["c","d"])
+	, ![]
+	)
+
+  test2b =
+    apply-test(!"test2b"
 	, isect
 	, !(["a","b"],["b","d"])
 	, !["b"]
+	)
+
+  test2c = 
+    apply-test(!"test2c"
+	, isect
+	, !([],["c","d"])
+	, ![]
+	)
+
+  test2d =
+    apply-test(!"test2d"
+	, isect
+	, !(["a","b"],[])
+	, ![]
+	)
+
+  test2e =
+    apply-test(!"test2e"
+	, isect
+	, !([],[])
+	, ![]
+	)
+
+/**
+ * diff
+ */ 
+  test3a = 
+    apply-test(!"test3a"
+	, diff
+	, !(["a","b"],["c","d"])
+	, !["a", "b"]
+	)
+
+  test3b =
+    apply-test(!"test3b"
+	, diff
+	, !(["a","b"],["b","d"])
+	, !["a"]
+	)
+
+  test3c = 
+    apply-test(!"test3c"
+	, diff
+	, !([],["c","d"])
+	, ![]
+	)
+
+  test3d =
+    apply-test(!"test3d"
+	, diff
+	, !(["a","b"],[])
+	, !["a", "b"]
+	)
+
+  test3e =
+    apply-test(!"test3e"
+	, diff
+	, !([],[])
+	, ![]
+	)
+
+/**
+ * sym-diff
+ */ 
+  test4a = 
+    apply-test(!"test4a"
+	, sym-diff
+	, !(["a","b"],["c","d"])
+	, !["a","b", "c","d"]
+	)
+
+  test4b =
+    apply-test(!"test4b"
+	, sym-diff
+	, !(["a","b"],["b","d"])
+	, !["a", "d"]
+	)
+
+  test4c = 
+    apply-test(!"test4c"
+	, sym-diff
+	, !([],["c","d"])
+	, !["c", "d"]
+	)
+
+  test4d =
+    apply-test(!"test4d"
+	, sym-diff
+	, !(["a","b"],[])
+	, !["a", "b"]
+	)
+
+  test4e =
+    apply-test(!"test4e"
+	, sym-diff
+	, !([],[])
+	, ![]
 	)
 
 signature
