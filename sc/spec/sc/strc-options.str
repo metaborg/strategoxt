@@ -19,7 +19,7 @@ strategies
   init-sc-config = 
   where(
     <set-config>("VERSION", strc-version-number)
-    ; <set-config>("--verbose", 1)
+    ; <set-config>("--verbose", 2)
     ; <set-config>("--keep", 0)
     ; <set-config>("-O", 5)
     ; <set-config>("-I", ["-I", <xtc-find-path> "lib.rtree",
