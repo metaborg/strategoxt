@@ -1,4 +1,0 @@
-#! /bin/sh
-
-./sdf-rmlabel -i data/rm-label.asfix -o data/rm-label.asfix.out
-diff data/rm-label.asfix.out data/rm-label.asfix.correct >/dev/null

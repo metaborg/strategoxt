@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/05/31 14:20:50 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2001/06/01 14:12:58 mdejonge Exp $
 
 include $(srcdir)/../templates/make_rules
 include $(srcdir)/../templates/make_rules.stratego
@@ -30,8 +30,16 @@ STRATEGO_PRG = sdf2asdf
 
 bin_SCRIPTS  = $(STRATEGO_PRG)
 
-TESTS        = sdf2asdf-check
+TESTS        = sdf2asdf_check
 
-EXTRA_DIST  += Sdf2ASdf.r sdf2asdf-check
+EXTRA_DIST  += Sdf2ASdf.r
+
+CLEANFILES  += sdf2asdf_check
 
 SCFLAGS     += -I $(srcdir)/../lib -I $(ASFIXTOOLS)/share/asfix-tools
+
+sdf2asdf_check_prog    = sdf2asdf
+sdf2asdf_check_input   = data/test.def.af
+sdf2asdf_check_output  = data/test.def.af.out
+sdf2asdf_check_correct = data/test.def.af.out.correct
+

@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/05/31 14:20:52 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2001/06/01 14:12:36 mdejonge Exp $
 
 include $(srcdir)/../templates/make_rules
 include $(srcdir)/../templates/make_rules.stratego
@@ -40,7 +40,7 @@ CLEANFILES     += sglr-stats.tbl sdf-bench benchmark.tbl
 pkgdata_DATA    = sglr-stats.tbl benchmark.tbl
 
 sdf-bench: sdf-bench.src Makefile
-	sed 's#__PREFIX__#$(prefix)#g' < sdf-bench.src > sdf-bench
+	sed 's#__PREFIX__#$(prefix)#g' < ${srcdir}/sdf-bench.src > sdf-bench
 
 %.tbl: %.sdf
 	PATH=$(PGEN)/bin:$(PATH) sdf2table -i $< -o $@

@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/05/31 14:20:50 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2001/06/01 14:12:38 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -36,10 +36,13 @@ STRATEGO_PRG = sdf-bracket
 bin_SCRIPTS  = $(STRATEGO_PRG)
 
 # Optional tests to run
-TESTS        = sdf-bracket-check
+TESTS        = sdf_bracket_check
 
-# List all files that should be distributed here
-EXTRA_DIST  += sdf-bracket-check
-
+CLEANFILES  += sdf_bracket_check
 # Additional flags for the Stratego compiler
 SCFLAGS     += -I $(ASFIXTOOLS)/share/asfix-tools --main $@ 
+
+sdf_bracket_check_prog    = sdf-bracket
+sdf_bracket_check_input   = data/sdf-bracket.sdf.af
+sdf_bracket_check_output  = data/sdf-bracket.sdf.af.out
+sdf_bracket_check_correct = data/sdf-bracket.sdf.af.correct

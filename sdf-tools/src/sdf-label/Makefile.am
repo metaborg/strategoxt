@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/05/31 14:20:52 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2001/06/01 14:12:45 mdejonge Exp $
 
 include $(srcdir)/../templates/make_rules
 include $(srcdir)/../templates/make_rules.stratego
@@ -28,17 +28,22 @@ STRATEGO_PRG = sdf-label sdf-rmlabel
 
 bin_SCRIPTS  = $(STRATEGO_PRG)
 
-EXTRA_DIST  += sdf-rmlabel-check.sh.src \
-	       sdf-label-check.sh.src 
+TESTS        = sdf_rmlabel_check sdf_label_check
 
-#               add-labels.sh.src rm-labels.sh.src 
-
-TESTS        = sdf-rmlabel-check sdf-label-check
-
-CLEANFILES  += sdf-rmlabel-check sdf-label-check
+CLEANFILES  += sdf_rmlabel_check sdf_label_check
 
 SCFLAGS     += -I $(ASFIXTOOLS)/share/asfix-tools \
                -I $(srcdir)/../lib --main $@
+
+sdf_label_check_prog    = sdf-label
+sdf_label_check_input   = data/add-label.sdf.af
+sdf_label_check_output  = data/add-label.sdf.af.out
+sdf_label_check_correct = data/add-label.sdf.af.correct
+
+sdf_rmlabel_check_prog    = sdf-rmlabel
+sdf_rmlabel_check_input   = data/rm-label.asfix
+sdf_rmlabel_check_output  = data/rm-label.asfix.out
+sdf_rmlabel_check_correct = data/rm-label.asfix.correct
 
 % : %.sh.src Makefile
 	@sed 's@__BINDIR__@$(bindir)@g;\

@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/05/31 14:20:51 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2001/06/01 14:12:43 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -36,7 +36,7 @@ STRATEGO_PRG = sdf-doc graph-term2GraphXML GraphXML2dot sdf2sg
 bin_SCRIPTS  = $(STRATEGO_PRG)
 
 # Optional tests to run
-TESTS        = sdf-doc-check sdf2gxml2dot-check
+#TESTS        = sdf-doc-check sdf2gxml2dot-check
 
 # List all files that should be distributed here
 EXTRA_DIST  += Dot.r GraphXML.r \

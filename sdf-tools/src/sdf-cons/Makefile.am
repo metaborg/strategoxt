@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/05/31 14:20:51 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2001/06/01 14:12:40 mdejonge Exp $
 
 include $(srcdir)/../templates/make_rules
 include $(srcdir)/../templates/make_rules.stratego
@@ -28,11 +28,23 @@ STRATEGO_PRG = sdf-cons rm-cons
 
 bin_SCRIPTS  = $(STRATEGO_PRG)
 
-EXTRA_DIST  += KNOWN-BUGS sdf-cons-check \
-               sdf-cons-injections-check
+EXTRA_DIST  += KNOWN-BUGS 
 
-TESTS        = sdf-cons-check sdf-cons-injections-check 
+TESTS        = sdf_cons_check sdf_cons_injections_check 
 
 SCFLAGS     += -I $(srcdir)/../lib \
                -I $(ASFIXTOOLS)/share/asfix-tools --main $@
+
+CLEANFILES  += sdf_cons_check sdf_cons_injections_check
+
+sdf_cons_check_prog    = sdf-cons
+sdf_cons_check_input   = data/test1.sdf.af
+sdf_cons_check_output  = data/test1.cons.sdf.af
+sdf_cons_check_correct = data/test1.cons.sdf.af.correct
+
+sdf_cons_injections_check_prog     = sdf-cons
+sdf_cons_injections_check_switches = --injections
+sdf_cons_injections_check_input    = data/sdf-cons-injections.sdf.af
+sdf_cons_injections_check_output   = data/sdf-cons-injections.cons.sdf.af
+sdf_cons_injections_check_correct  = data/sdf-cons-injections.cons.sdf.af.correct
 

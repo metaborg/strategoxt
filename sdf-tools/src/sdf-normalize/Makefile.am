@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/05/31 14:20:52 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2001/06/01 14:12:48 mdejonge Exp $
 
 include $(srcdir)/../templates/make_rules
 include $(srcdir)/../templates/make_rules.stratego
@@ -33,13 +33,30 @@ STRATEGO_PRG = norm-lit de-norm-lit \
 
 bin_SCRIPTS  = $(STRATEGO_PRG)
 
-TESTS        = sdf-normalize-check \
-               asfix2sdf-de-normalize-check
+TESTS        = sdf_normalize_check \
+	       sdf_denormalize_check \
+               asfix2sdf_check
 
-EXTRA_DIST  += sdf-normalize-check \
-               asfix2sdf-de-normalize-check
+
+CLEAN_FILES += sdf_normalize_check sdf_denormalize_check asfix2sdf_check
 
 SCFLAGS     += -I $(srcdir)/../lib \
 	       -I $(srcdir)/../sdf-bracket \
                -I $(ASFIXTOOLS)/share/asfix-tools \
 	       --main $@
+
+sdf_normalize_check_prog    = sdf-normalize
+sdf_normalize_check_input   = data/Test1.def.af
+sdf_normalize_check_output  = data/Test1.def.af.out
+sdf_normalize_check_correct = data/Test1.def.af.out.correct
+
+sdf_denormalize_check_prog    = sdf-de-normalize
+sdf_denormalize_check_input   = data/test1.pico.norm.af.correct
+sdf_denormalize_check_output  = data/test1.pico.def.af
+sdf_denormalize_check_correct = data/test1.pico.def.af.correct
+
+asfix2sdf_check_prog       = asfix2sdf
+asfix2sdf_check_input      = data/test1.pico.asfix
+asfix2sdf_check_output     = data/test1.pico.norm.af.out
+asfix2sdf_check_correct    = data/test1.pico.norm.af.correct
+
