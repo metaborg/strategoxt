@@ -1,5 +1,5 @@
 module scope-laws
-imports stratego list-set
+imports Stratego list-set
 
 rules
 

@@ -1,6 +1,6 @@
 \begin{code}
 module rename-defs
-imports strategy stratlib lib dynamic-rules
+imports Stratego stratlib lib dynamic-rules
 strategies
 
   rename-defs =

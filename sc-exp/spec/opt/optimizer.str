@@ -1,5 +1,5 @@
 module optimizer
-imports stratego stratego-laws lib
+imports Stratego stratego-laws lib
 
 strategies
 

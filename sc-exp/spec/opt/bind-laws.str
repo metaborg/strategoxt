@@ -1,5 +1,5 @@
 module bind-laws
-imports stratego automaton
+imports Stratego automaton
 strategies
 rules
 

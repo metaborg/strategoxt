@@ -1,5 +1,5 @@
 module lift-dynamic-rules
-imports stratego lib desugar
+imports Stratego lib desugar
 strategies
 
   LiftDynamicRules =

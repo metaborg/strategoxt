@@ -1,5 +1,5 @@
 module matrix
-imports stratego automaton
+imports Stratego automaton
 signature
   (* subsorts Matrix < Strat *)
   constructors

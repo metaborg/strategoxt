@@ -1,5 +1,5 @@
 module check-constructors
-imports sugar dynamic-rules
+imports Stratego dynamic-rules
 
 strategies
 

@@ -2,7 +2,7 @@
 
 \begin{code}
 module Stratego-Normal-Format
-imports stratego lib
+imports Stratego-Amb lib
 strategies
 
   main = iowrap(stratego-specification)

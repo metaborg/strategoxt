@@ -19,7 +19,7 @@
 
 \begin{code}
 module inlining
-imports strategy stratlib lib stratego-laws rename-defs
+imports Stratego-Amb stratlib lib stratego-laws rename-defs
 \end{code}
 
   \paragraph{Inlining with Definition Environment}

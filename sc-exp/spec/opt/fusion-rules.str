@@ -1,5 +1,5 @@
 module fusion-rules
-imports stratego
+imports Stratego
 
 rules
 

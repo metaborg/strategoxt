@@ -1,5 +1,5 @@
 module match-to-matrix
-imports stratego matrix desugar stratego-laws
+imports Stratego matrix desugar stratego-laws
 
 strategies
 

@@ -1,5 +1,5 @@
 module idfail-laws
-imports stratego
+imports Stratego
 strategies
 
   ElimId = I1 + I2 + I3 + I4 + I7 + I8 + I9 + I10 + I12 + I16

@@ -5,13 +5,10 @@ SCFLAGS		= -I $(srcdir)/../sig		      \
 	  	  -I $(srcdir)/../match		      \
 	  	  -I $(srcdir)/../lib		      \
 		  -I $(SSL)/share/ssl		\
-		  $(XTCFLAGS)			\
 	  	  --main $*	
 
 bin_PROGRAMS 	= sc
 pkgdata_DATA 	= sc-manual.txt
-
-sc.o		: xtc-conf.h
 
 CLEANFILES 	= $(wildcard *.dep)
 BOOTCLEANFILES 	= sc.c

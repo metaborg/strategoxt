@@ -1,5 +1,5 @@
 module use-def
-imports sugar list-set stratlib
+imports Stratego list-set stratlib
 strategies
 
   spec-use-def = 

@@ -3,14 +3,14 @@ include $(wildcard *.dep)
 
 SUBDIRS 	 = data
 
-SCFLAGS 	 = -I $(srcdir)/../sig \
+SCFLAGS 	 = -I $(STRATEGO_FRONT)/share/stratego-front \
 	   	   -I $(srcdir)/../match \
 	  	   -I $(srcdir)/../lib \
 	  	   -I $(srcdir)/../opt \
 	  	   --main $* \
 	  	   --keep 1 --verbose 1 
 
-libexec_PROGRAMS = frontend extract extract-all rename-defs inline 
+libexec_PROGRAMS = frontend extract extract-all rename-defs inline stratego-warnings
 check_PROGRAMS	 = use-def-test lift-dynamic-rules-test
 
 CLEANFILES 	 = $(wildcard *.dep) $(wildcard *.tmp)

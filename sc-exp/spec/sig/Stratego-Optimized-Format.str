@@ -2,7 +2,7 @@
 
 \begin{code}
 module Stratego-Optimized-Format
-imports stratego automaton lib
+imports Stratego-Amb automaton lib
 strategies
 
   main = iowrap(stratego-specification)

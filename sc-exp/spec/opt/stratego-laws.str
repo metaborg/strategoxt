@@ -4,7 +4,7 @@
 
 \begin{code}
 module stratego-laws
-imports stratego desugar list scope-laws bind-laws idfail-laws
+imports Stratego desugar list scope-laws bind-laws idfail-laws
         congruence-laws build-match-laws
 strategies
 

@@ -15,7 +15,7 @@
 *)
 
 module primitives
-imports lib stratego 
+imports lib Stratego 
 
 strategies
 

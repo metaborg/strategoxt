@@ -1,7 +1,7 @@
 // Linearizing match operations 
 
 module linearize
-imports stratego
+imports Stratego
 
 strategies
 

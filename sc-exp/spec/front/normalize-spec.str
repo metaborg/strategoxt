@@ -1,5 +1,5 @@
 module normalize-spec
-imports stratego lib desugar lift-dynamic-rules
+imports Stratego lib desugar lift-dynamic-rules
 
 /* The first phase of the front-end is the normalization of
 specifications. A specification consists of a list of basic

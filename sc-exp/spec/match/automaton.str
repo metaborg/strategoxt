@@ -1,5 +1,5 @@
 module automaton
-imports stratego
+imports Stratego
 
 signature
   constructors

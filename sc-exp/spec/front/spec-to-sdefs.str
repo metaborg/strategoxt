@@ -6,7 +6,7 @@
 
 \begin{code}
 module spec-to-sdefs
-imports strategy sugar stratlib list-sort
+imports Stratego stratlib list-sort
 \end{code}
 
 \paragraph{Congruences from Signature}

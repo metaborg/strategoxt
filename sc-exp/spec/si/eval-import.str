@@ -1,5 +1,5 @@
 module eval-import
-imports lib stratego
+imports lib Stratego
 strategies
 
   eval-import = 
