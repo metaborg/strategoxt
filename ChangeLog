@@ -1,5 +1,17 @@
 2003-06-12  Martin Bravenboer  <martin@mbravenboer.org>
 
+  * StrategoXT.spec.in: PACKAGE_NAME should be PACKAGE_TARNAME
+    (SuSE problem).
+
+  * sc/Makefile.am, srts/Makefile.am, autoxt/Makefile.am, 
+    xtc/Makefile.am: do not distribute .spec files of 
+    subpackages (SuSE problem).
+
+  * strategoxt.spec.in: renamed from StrategoXT.spec.in. Difference
+    between package tarname and package name causes problems.
+
+2003-06-12  Martin Bravenboer  <martin@mbravenboer.org>
+
   * bootstrap: don't make check scripts executable. wget
     is no longer used by the buildfarm to checkout the
     sources.

@@ -42,7 +42,7 @@ PKGS="autoxt srts xtc sdf-import sc ssl gpp c-tools stratego-front aterm-tools a
 for dir in $PKGS
 do 
   echo
-  echo "reconfiguring in $dir"
+  echo "bootstrapping in $dir"
   echo
   (cd $dir; ./bootstrap)
 done
