@@ -30,6 +30,7 @@ AC_CONFIG_FILES([
   src/stratego-stats/Makefile
   src/stratego-stats/data/Makefile
 
+  trans/Makefile
   trans/latex/Makefile
 ])
 AC_OUTPUT
