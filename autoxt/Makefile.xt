@@ -143,28 +143,37 @@ xtc-conf.h :
 	echo "#define XTC_REPOSITORY() ATmakeString(\"$(REPOSITORY)\")" > $@
 
 install-data-local:
-	$(XTC)/bin/xtc -r $(REPOSITORY) register -l $(prefix) -V $(VERSION) -t $(PACKAGE)
+	$(mkinstalldirs) `dirname $(REPOSITORY)`
+	@$(XTC)/bin/xtc -r $(REPOSITORY) register -l $(prefix) -V $(VERSION) -t $(PACKAGE); \
+	for file in fordummy $(XTC_IMPORT) ; do \
+	 	 	 	  if [ "$$file" = "fordummy" ]; then continue; fi; \
+	  $(XTC)/bin/xtc -r $(REPOSITORY) import $$file ; \
+	  echo $(XTC)/bin/xtc -r $(REPOSITORY) import $$file ; \
+        done ; \
 	for file in fordummy $(pkgdata_DATA) ; do \
 	 	 	 	  if [ "$$file" = "fordummy" ]; then continue; fi; \
           $(XTC)/bin/xtc -r $(REPOSITORY) register -l $(pkgdatadir) -V $(VERSION) \
 		-t $$file ; \
-        done
+        done ; \
 	for file in fordummy $(sdfdata_DATA) ; do \
 	 	 	 	  if [ "$$file" = "fordummy" ]; then continue; fi; \
           $(XTC)/bin/xtc -r $(REPOSITORY) register -l $(sdfdatadir) -V $(VERSION) \
 		-t $$file ; \
-        done
+        done; \
+	echo "Data registered in repository $(REPOSITORY): $(pkgdata_DATA) $(sdfdata_DATA)"
 
 install-exec-local:
-	for file in fordummy $(bin_PROGRAMS) $(bin_SCRIPTS) ; do \
+	$(mkinstalldirs) `dirname $(REPOSITORY)`
+	@for file in fordummy $(bin_PROGRAMS) $(bin_SCRIPTS) ; do \
 	 	      if [ "$$file" = "fordummy" ]; then continue; fi; \
           $(XTC)/bin/xtc -r $(REPOSITORY) register -l $(bindir) -V $(VERSION) \
 		-t $$file ; \
-        done
+        done ; \
 	for file in fordummy $(libexec_PROGRAMS) $(libexec_SCRIPTS) ; do \
 	 	      if [ "$$file" = "fordummy" ]; then continue; fi; \
           $(XTC)/bin/xtc -r $(REPOSITORY) register -l $(libexecdir) -V $(VERSION) \
 		-t $$file ; \
-        done
+        done; \
+	echo "Tools registered in repository $(REPOSITORY): $(bin_PROGRAMS) $(bin_SCRIPTS) $(libexec_PROGRAMS) $(libexec_SCRIPTS)"
 
 ###########################################################
