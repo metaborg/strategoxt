@@ -1,7 +1,3 @@
-module parse-cs
-imports lib xtc-lib stratego-xt-xtc-tools
-strategies
-
 /**
  * Parsing with concrete object syntax
  * 
@@ -37,6 +33,10 @@ strategies
  * Not all components need to be specified. The only one required is the
  * syntax. 
  */
+
+module parse-cs
+imports lib xtc-lib stratego-xt-xtc-tools
+strategies
 
 strategies // options
 
