@@ -52,8 +52,8 @@ BOOTCLEANFILES = $(wildcard *.c)
 
 SCFLAGS	       = --verbose 1
 
-LDFLAGS	       = -L$(SSL)/lib/ssl
-#LDADD	       = -l liblib
+STRINCLUDES    = -I $(top_srcdir)/spec -I $(SRTS)/share/srts
+LDFLAGS	       = -L$(SRTS)/lib/srts
 
 annotations_test_LDADD 		= -lliblib $(STRATEGORUNLIBS)
 annotation_props_test_LDADD 	= -lliblib $(STRATEGORUNLIBS)
