@@ -52,6 +52,9 @@ ATerm SSL_fdopen(ATerm fd, ATerm mode);
 ATerm SSL_fopen(ATerm pathname, ATerm mode);
 ATerm SSL_fclose(ATerm stream);
 
+FILE* stream_from_term(ATerm stream);
+ATerm stream_to_term(FILE* stream);
+
 ATerm SSL_fputs(ATerm str, ATerm stream);
 ATerm SSL_puts(ATerm str);
 ATerm SSL_fflush(ATerm stream);
