@@ -1,3 +1,11 @@
+2004-02-01  Martin Bravenboer  <martin@cs.uu.nl>
+
+	* src/parse-unit/parse-unit.str: binary output for sglr and
+	implode-asfix is *much* faster. It also solves a problem in the
+	aterm library with reading text files: ATreadFromFile returns a
+	segmentation fault after reading about 500 files. Binary aterms
+	don't have this problem for some reason.
+
 2003-12-05  Martin Bravenboer  <martin@cs.uu.nl>
 
 	* src/pack-sdf/pack-sdf.str: support multiple output formts using

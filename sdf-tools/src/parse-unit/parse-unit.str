@@ -114,7 +114,7 @@ strategies
 
   parse = 
       ?(sort, table, input)
-    ; <parse-helper> (["-2tA", "-p", table, "-s", sort], input)
+    ; <parse-helper> (["-2A", "-p", table, "-s", sort], input)
 
   parse-helper = 
       ?(options, String(s))
@@ -132,7 +132,7 @@ strategies
       ?(options, File(file))
     ; !FILE(file)
     ; xtc-transform(!"sglr", !options)
-    ; (   xtc-transform(!"implode-asfix")
+    ; (   xtc-transform(!"implode-asfix", !["-b"])
         ; !ParseResult(Success(), <read-from>)
       <+  !ParseResult(Failure(), <read-from>)
       )
