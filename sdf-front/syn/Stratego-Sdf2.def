@@ -892,6 +892,8 @@ imports Sdf2-Syntax StrategoRenamed
 exports
   context-free syntax
 
+    "|[" Section  "]|"   -> StrategoTerm {cons("ToTerm")}
+
     "|[" Grammar  "]|"   -> StrategoTerm {cons("ToTerm")}
     "|[" Attributes "]|" -> StrategoTerm {cons("ToTerm")}
 
@@ -908,6 +910,10 @@ exports
     [ABC][0-9\']*      -> Symbol
     [ABC][0-9\']* "*"  -> Symbol*
     [ABC][0-9\']* "+"  -> Symbol+
+
+  variables %% section 7.2
+
+    "G" [0-9\']* -> Grammar
 
   variables %% section 7.3.1
 
