@@ -1,0 +1,13 @@
+GraphXML([],
+[graph([],[
+edge( [source("\"../../../configure.in\""), target("\"Makefile.in\"")])
+,edge( [source("\"../../configure.in\""), target("\"Makefile.in\"")])
+,edge( [source("\"../make_rules\""), target("\"Makefile.in\"")])
+,edge( [source("\"Makefile.am\""), target("\"Makefile.in\"")])
+,edge( [source("\"Makefile\""), target("\"depviz\"")])
+,edge( [source("\"depviz.sh.src\""), target("\"depviz\"")])
+,edge( [source("\"../../../config.status\""), target("\"Makefile\"")])
+,edge( [source("\"../../config.status\""), target("\"Makefile\"")])
+,edge( [source("\"Makefile.in\""), target("\"Makefile\"")])
+])
+])

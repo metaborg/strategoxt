@@ -1,0 +1,47 @@
+# Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
+#                    Eelco Visser <visser@acm.org>
+#                    Joost Visser <jvisser@cwi.nl>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+include package.conf
+
+SUBDIRS	= src
+
+EXTRA_DIST = ADDING-TOOLS VERSION configure.in.src genconf.sh \
+             package.conf reconf $(PACKAGE)-$(VERSION).pkg
+
+# Generation of a package defintion file from the package.conf file. This
+# file in combination with autobundle enables integration of the package
+# source tree with other software packages. See the online package base
+# (www.program-transformation.org/package-base) for more information and
+# available packages.
+$(PACKAGE)-$(VERSION).pkg: package.conf
+	@( \
+	   echo "package" ;\
+	   echo "identification" ;\
+	   echo "  name=$(name)" ;\
+	   echo "  version=$(version)" ;\
+	   echo "  location=$(location)" ;\
+	   echo "  info=$(info)" ;\
+	   echo "  description='$(description)'" ;\
+	   echo "  keywords=$(keywords)" ;\
+	   echo "" ;\
+           echo "interface" ;\
+           echo $(patsubst %",%\n", $(interface)) | sed 's/"//g;s/^ */  /g' ;\
+           echo "requires" ;\
+           echo $(patsubst %",%\n", $(requires)) | sed 's/"//g;s/^ */  /g' ;\
+       ) > $@

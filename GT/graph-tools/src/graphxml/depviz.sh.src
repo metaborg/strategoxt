@@ -1,0 +1,69 @@
+#! /bin/sh
+#
+# GT -- Grammar Tools
+# Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
+#                    Eelco Visser <visser@acm.org>
+#                    Joost Visser <jvisser@cwi.nl>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+# $Id: depviz.sh.src,v 1.1.1.1 2001/06/05 12:34:28 mdejonge Exp $
+
+# Makefile dependency visualisator
+#
+# usage:
+#    depviz.sh <make flags>
+#
+# This tool executes "visualizer -nd <make flags>" and generates a
+# dependency graph in GraphXML format on standard output.
+
+MAKE=__MAKE__
+
+MAKEFLAGS="$*"
+
+make_dep () {
+${MAKE} -nd ${MAKEFILAGS} 2>/dev/null > /tmp/depviz.$$
+
+   (
+      egrep 'No need to' /tmp/depviz.$$ \
+      | sed 's#[^`]*`#,node([name("\\\"#' \
+      | sed "s#\'.#\\\\\"\")])#"
+
+      egrep 'Prerequisite|Dependency' /tmp/depviz.$$ \
+      | sort -u \
+      | sed 's#[^`]*`#,edge( [source("\\\"#' \
+      | sed "s#\' is [^\`]*\`#\\\\\"\"), target(\"\\\\\"#"\
+      | sed "s#'.#\\\\\"\")])#"
+
+   ) | dd skip=1 bs=1 2>/dev/null
+
+  rm -f /tmp/depviz.$$
+}
+
+
+
+make_gxml_term () {
+cat <<ENDCAT
+GraphXML([],
+[graph([],[
+`cat`
+])
+])
+ENDCAT
+}
+
+make_dep \
+   | make_gxml_term 
