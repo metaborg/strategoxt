@@ -310,27 +310,48 @@ rules
 
 strategies 
 
-  // :: String -> String
+  /**
+   * @type  String -> String
+   */
   lower-case = string-as-chars(lower-case-chars)
   upper-case = string-as-chars(upper-case-chars)
 
-  // :: List(Char) -> List(Char)
+  /**
+   * @type  List(Char) -> List(Char)
+   */
   lower-case-chars = map(to-lower)
   upper-case-chars = map(to-upper)
 
 strategies
 
+  /**
+   * @obsolete  use to-lower
+   */
   lc = obsolete(!"lc/0; use to-lower/0");
     to-lower
 
+  /**
+   * @obsolete  use to-upper
+   */
   uc = obsolete(!"uc/0; use to-upper/0");
     to-upper
 
 strategies
 
+  /**
+   * Strip directory and extension from filename.
+   *
+   * @type   String -> String
+   */
   basename =
     basename(id)
 
+  /**
+   * Strip directory and extension from filename.
+   *
+   * @param  checks the extension
+   * @type   String -> String
+   */
   basename(ext) =
     explode-string;
     try(rec x([id|x] <+ ['/' | id] <+ ['.' | ext]; ![]));
