@@ -20,4 +20,4 @@ asfix_yield1_check_correct = data/tiny.sil
 asfix_yield2_check_prog    = asfix-yield
 asfix_yield2_check_input   = data/aterms.tree
 asfix_yield2_check_output  = data/aterms.txt
-asfix_yield2_check_correct = data/aterms.sdf
+asfix_yield2_check_correct = data/aterms.def
