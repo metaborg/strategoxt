@@ -1,67 +1,55 @@
+\begin{code}
 module meta-explode
 imports lib Stratego
-signature
-  constructors
-    ToTerm       : a -> Term
-    FromTerm     : Term -> a
-
-    ToStrategy   : a -> Strategy
-    FromStrategy : Strategy -> a
-
-    meta-var     : String -> a
-    meta-listvar : String -> a
-    Cong         : String * List(Strategy) -> Strategy
-
-    Conc	 : Term * Term -> Term
-    Ins		 : Term -> Term
-
 strategies
 
-  meta-explode =
+  meta-explode = 
     iowrap(MetaExplode)
 
   MetaExplode =
     alltd(?ToTerm(<trm-explode>) + ?ToStrategy(<str-explode>))
 
   trm-explode =
-    TrmMetaVar <+ TrmLMetaVar <+ TrmStr <+ TrmFromTerm <+ TrmFromStr <+ TrmAnno 
-    <+ TrmConc <+ TrmNil <+ TrmCons <+ TrmOp
+    TrmMetaVar <+ TrmLMetaVar <+ TrmStr <+ TrmFromTerm 
+    <+ TrmFromStr <+ TrmAnno <+ TrmConc 
+    <+ TrmNil <+ TrmCons <+ TrmOp
 
-  TrmOp : 
-    op#(ts) -> Op(op, <map(trm-explode)> ts)
+  TrmOp       :	op#(ts) -> Op(op, <map(trm-explode)> ts)
 
-  TrmMetaVar : 
-    meta-var(x) -> Var(x) 
-  LstMetaVar : 
-    meta-listvar(x) -> Var(ListVar(x))
-  TrmLMetaVar : 
-    meta-listvar(x) -> Op("Cons", [Var(ListVar(x)), Op("Nil", [])])
-  TrmStr = 
-    is-string; !Str(<id>)
-  TrmFromTerm = 
-    ?FromTerm(<MetaExplode>)
-  TrmFromStr = 
-    ?FromStrategy(<MetaExplode>)
-  TrmAnno = 
-    Anno(trm-explode, MetaExplode)
-  TrmNil : 
-    [] -> Op("Nil", [])
-  TrmCons : 
-    [x | xs] -> Op("Cons",[<trm-explode>x, <trm-explode> xs])
-  TrmConc : 
-    Conc(ts1,ts2) -> 
-    <try(![<LstMetaVar>])
-     ; foldr(!<TrmLMetaVar <+ trm-explode> ts2, 
-             !Op("Cons", [<Fst>, <Snd>]), 
-             trm-explode)> ts1
-
+  TrmMetaVar  :	meta-var(x) -> Var(x) 
+  LstMetaVar  :	meta-listvar(x) -> Var(ListVar(x))
+  TrmLMetaVar :	meta-listvar(x) -> 
+		Op("Cons", [Var(ListVar(x)), Op("Nil", [])])
+  TrmStr      =	is-string; !Str(<id>)
+  TrmFromTerm = ?FromTerm(<MetaExplode>)
+  TrmFromStr  =	?FromStrategy(<MetaExplode>)
+  TrmAnno     =	Anno(trm-explode, MetaExplode)
+  TrmNil      :	[] -> Op("Nil", [])
+  TrmCons     :	[x | xs] -> 
+		Op("Cons",[<trm-explode>x, <trm-explode> xs])
+  TrmConc     :	Conc(ts1,ts2) -> 
+		<try(![<LstMetaVar>])
+		 ; foldr(!<TrmLMetaVar <+ trm-explode> ts2, 
+			 !Op("Cons", [<Fst>, <Snd>]), 
+			 trm-explode)> ts1
   str-explode =
-    \ meta-var(x) -> Call(SVar(x),[]) \
-    //<+ is-string; !StrCong(<id>)
-    <+ TrmFromTerm
-    <+ TrmFromStr
-    <+ \ [] -> Cong("Nil", []) \
-    <+ \ [t | ts] -> Cong("Cons", [<str-explode>t , <str-explode>ts]) \
-    <+ \ op#(ts) -> Cong(op, <map(str-explode)> ts) \
-
-
+    \meta-var(x) -> Call(SVar(x),[])\
+    <+ TrmFromTerm <+ TrmFromStr
+    <+ \[] -> Cong("Nil", [])\
+    <+ \[t | ts] -> Cong("Cons", [<str-explode>t,<str-explode>ts])\
+    <+ \op#(ts) -> Cong(op, <map(str-explode)> ts)\
+\end{code}
+\endinput
+\begin{code}
+signature
+  constructors
+    ToTerm       : a -> Term
+    FromTerm     : Term -> a
+    ToStrategy   : a -> Strategy
+    FromStrategy : Strategy -> a
+    meta-var     : String -> a
+    meta-listvar : String -> a
+    Cong         : String * List(Strategy) -> Strategy
+    Conc	 : Term * Term -> Term
+    Ins		 : Term -> Term
+\end{code}

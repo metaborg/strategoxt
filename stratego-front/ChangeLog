@@ -1,3 +1,7 @@
+2002-12-30  Eelco Visser  <visser@cs.uu.nl>
+
+	* syn/meta-explode.str: presentation for use in book
+
 2002-12-22  Eelco Visser  <visser@cs.uu.nl>
 
 	* syn/StrategoStratego.sdf: ~term*:

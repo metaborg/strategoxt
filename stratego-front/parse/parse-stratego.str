@@ -2,8 +2,8 @@ module parse-stratego
 imports xtc-lib lib
 signature
   constructors
-    Meta    : List(MetaProperty) -> MetaData
-    Syntax  : String -> MetaProperty
+    Meta   : List(MetaProperty) -> MetaData
+    Syntax : String -> MetaProperty
 
 strategies
 
@@ -19,7 +19,7 @@ strategies
 
   parse-stratego =
     xtc-iowrap(parse-stratego-options, 
-      where(<extend-config> ("-I", ["./", <xtc-find; get-path> "StrategoRenamed.sdf"]))
+      where(<extend-config> ("-I", ["./", <xtc-find-path> "StrategoRenamed.sdf"]))
       ; parse-module
     )
 
@@ -28,7 +28,7 @@ strategies
 
   parse-module =
     if-verbose6(debug(!"parse-module: "))
-    ; where(FILE(basename => base); get-syntax; get-parse-table => tbl)
+    ; where(FILE(basename => base); get-syntax; get-parse-table => FILE(tbl))
     ; xtc-transform(!"sglr", !["-2", "-p", tbl | <![]; if-verbose3(!["-v"])>])
     ; xtc-transform(!"implode-asfix",    pass-verbose)
     ; if-keep1(copy-to(<guarantee-extension(!"atree")> base))
@@ -59,22 +59,24 @@ strategies
   get-parse-table =
     if-verbose6(debug(!"get-parse-table: "))
     ; ?syntax
-    ; where(guarantee-extension(!"tbl") => tbl)
-    ; (<find-in-includes(!"using parse table: ")> tbl
-       <+ if-verbose2(say(!"creating parse table"))
-          ; <get-syntax-definition> syntax
-          ; xtc-transform(!"sdf2table", !["-m", syntax])
-	  ; copy-to(!tbl)
+    ; guarantee-extension(!"tbl") => tbl
+    ; (find-in-includes(!"using parse table: ")
+      ; !FILE(<id>)
+     <+ if-verbose2(say(!"creating parse table"))
+      ; <get-syntax-definition> syntax
+      ; xtc-transform(!"sdf2table", !["-m", syntax])
+      ; rename-to(!tbl)
       )
     ; if-verbose6(debug(!"using parse table: "))
 
   get-syntax-definition =
     if-verbose6(debug(!"get-syntax-definition: "))
     ; where(guarantee-extension(!"def") => def)
-    ; (<find-in-includes(!"using syntax definition: ")> def
-        <+ if-verbose2(say(!"creating syntax definition"))
-           ; !FILE(<guarantee-extension(!"sdf")>)
-	   ; xtc-transform(!"pack-sdf", <get-config; map(!["-I", <id>]); concat> "-I")
-	   ; xtc-transform(!"asfix-yield")
-	   ; rename-to(!def)
-        )
+    ; ( <find-in-includes(!"using syntax definition: ")> def
+      ; !FILE(<id>)
+     <+ if-verbose2(say(!"creating syntax definition"))
+      ; !FILE(<guarantee-extension(!"sdf")>)
+      ; xtc-transform(!"pack-sdf", <get-config; map(!["-I", <id>]); concat> "-I")
+      ; xtc-transform(!"asfix-yield")
+      ; rename-to(!def)
+      )
