@@ -19,9 +19,9 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: reconf,v 1.1 2001/10/26 16:31:56 stratego Exp $
+# $Id: reconf,v 1.2 2002/06/09 20:45:23 stratego Exp $
 
-for dir in srts sc sc-boot ssl cgen gpp-boot
+for dir in srts ssl cgen sc-boot gpp-boot stratego-front sc
 do 
   (cd $dir; ./reconf)
 done

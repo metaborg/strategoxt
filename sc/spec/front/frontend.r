@@ -9,7 +9,7 @@ imports normalize-spec
 
 strategies
  
-  frontend = debug; iowrap(frontend-transformation)
+  frontend = iowrap(frontend-transformation)
 
   frontend-transformation = 
 //  where(run-time; debug(!"  frontend initialization: "));

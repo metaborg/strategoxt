@@ -22,14 +22,14 @@ PKGS="srts ssl cgen sc-boot gpp-boot stratego-front sc"
 AC_SUBST(PKGS)
 
 AC_ARG_WITH(aterm, 
-  [  --with-aterm          Location of external aterm package. [$prefix]], 
+  [  --with-aterm                Location of external aterm package. [$prefix]], 
   ATERM=$withval, 
   ATERM="$prefix"
 )
 AC_SUBST(ATERM)
 
 AC_ARG_WITH(cpl, 
-  [  --with-cpl            Use the choice point library], 
+  [  --with-cpl                  Use the choice point library], 
   CPL=$withval usecpl=true, 
   usecpl=false
 )
@@ -37,7 +37,7 @@ AC_SUBST(CPL)
 AM_CONDITIONAL(USECPL, test x$usecpl = xtrue)
 
 AC_ARG_WITH(sdf, 
-  [  --with-sdf=DIR             Specify location of SDF, [\$prefix]], 
+  [  --with-sdf=DIR              Specify location of SDF, [\$prefix]], 
   SDF="$withval", 
   SDF="$prefix"
 )
@@ -72,7 +72,7 @@ AC_ARG_WITH(sdf-tools,
 AC_SUBST(SDF_TOOLS)
 
 AC_ARG_WITH(exe,    
-  [  --with-exe              Extension of executables], 
+  [  --with-exe                  Extension of executables], 
   EXE=".exe", 
   EXE=""
 )
@@ -133,7 +133,7 @@ AB_CONFIG_PKG(stratego-front,
    --with-stratego-tools=${STRATEGO_TOOLS}
    --with-sdf-tools=${SDF_TOOLS}
    --with-gpp=${GPP}
-   --with-cgen=${CGEN}         
+   --with-cgen=${CGEN}
 )
 AB_CONFIG_PKG(sc,
    --with-aterm=${ATERM}

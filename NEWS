@@ -13,10 +13,8 @@ SUMMARY OF CHANGES
    - a pretty-printer for Stratego
    - a signature for Stratego abstract syntax
    - stratego-desugar: removes simple syntactic abstractions
-
- * MetaStratego
-   - specification of transformations on Stratego programs using concrete
-     syntax
+   - MetaStratego: specification of transformations on Stratego programs 
+     using concrete syntax
 
  * The implementation of annotations has been completed
 
@@ -34,7 +32,7 @@ SUMMARY OF CHANGES
  * Changes and deletions to overcome problems with case insensitiveness on
    windows and macos; Stratego should now install on Windows+cygwin
 
- * stratego-connect: package extending Stratego with interprocess
+ * stratego-connect: a package extending Stratego with interprocess
    communication
 
 MORE INFORMATION
@@ -80,10 +78,6 @@ STRATEGO FRONT (CONCRETE SYNTAX)
    Strategies" paper.
 
 	http://www.stratego-language.org/ftp/lambdapp-0.1.tar.gz
-
-ANNOTATIONS
-
- * the implementation of annotations has been completed
 
 STRATEGO COMPILER (SC, SC-BOOT)
 
