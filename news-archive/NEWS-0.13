@@ -16,17 +16,17 @@ tools and strategoxt-utils.
 ---------+++ Compilation of Pattern-Matching in Dynamic Rules
 
 Pattern matching in dynamic rules is implemented by replacing
-non-context variables in the left-hand side of the rule by dummy
-terms. This term used to be the empty lists, which caused some
-problems when if a the left-hand side itself already contains an empty
-list. The dynamic rule dummy is now a =DR_DUMMY=, which solves these
-issues.
+non-context (that is, rule application specific) variables in the
+left-hand side of the rule by dummy terms. This dummy term used to be
+the empty list, which caused some problems if the pattern already
+contains empty lists. The dynamic rule dummy term is now =DR_DUMMY()=,
+which solves these issues.
 
 Note that two rules that have the same left-hand side pattern, except
 for an empty list in the first and a non-context variable in the
 second, now also have a different key. If you want them to have the
-same key, then you can for example move the =[]= pattern to the where
-condition.
+same key, then you can for example move the =[]= pattern to the
+=where= condition of the dynamic rule.
 
     (Martin Bravenboer)
 
@@ -36,22 +36,24 @@ In program that use separate compilation, redefinition of external
 strategies was not always detected in the previous release. If a
 redefined strategy was only invoked from the code that was separately
 compiled, then the redefinition was not noticed by the compiler. This
-has now been fixed.
+has now been fixed. This fix might break existing code that use
+separate compilation, but it only breaks code if something was already
+wrong.
 
     (Martin Bravenboer)
 
----------+++ Improved Reporting of Ambiguities
+---------+++ Disable SGLR Heuristic Filters from Meta File
 
 By default, SGLR applies some heuristic filters for removing
-ambiguities in parse trees. These heuristic filters are discouraged,
-since these disambiguations are not defined in a syntax
-definition. These filters can now be disabled per Stratego module by
-including the term =HeuristicFilters(Off)= in the .meta file for that
-module. This is especially useful if you are using a lot of concrete
-syntax and if you are implementing an object language embedding in
-Stratego. Disabling the heuristic filters makes ambiguities and
-non-ambiguities less surprising. See the next subsection for an
-example.
+ambiguities in parse trees. Using these heuristic filters are
+discouraged, since these disambiguations are not explicitly defined in
+a syntax definition. The heuristic filters can now be disabled per
+Stratego module by including the term =HeuristicFilters(Off)= in the
+=.meta= file for that module. This is particularly useful if you are
+using a lot of concrete object syntax or if you are implementing an
+object language embedding in Stratego. Disabling the heuristic filters
+makes ambiguities and non-ambiguities in this mixture of languages
+less surprising. See the next subsection for an example.
 
     (Martin Bravenboer)
 
@@ -74,7 +76,7 @@ strategies
     !|[ Foo ]|
 </verbatim>
 
-and its meta file:
+and its =.meta= file:
 <verbatim>
 Meta([
   Syntax("StrategoStratego")
@@ -93,68 +95,73 @@ error: ambiguity in the definition of main. Alternatives:
     - Op("ConstType",[Op("SortNoArgs",[Str("Foo")])])
 </verbatim>
 
-This report uses abstract syntax for Stratego, which might be improved
-to concrete syntax in the future, although this should be combined
-with abstract syntax and/or types, since it would otherwise defeat the
-purpose of the report.
+This list shows that =|[ Foo ]|= can be a strategy call, a term
+variable, or a type. The ambiguity report uses abstract syntax for
+Stratego, which might be improved to concrete syntax or a better
+explanation in the future. The problem with a report in concrete
+syntax is that the syntax for these case is usually identical, so it
+should be combined with abstract syntax and/or syntactical types
+(e.g. this fragment can be a strategy, term, or type).
 
     (Martin Bravenboer)
 
 ---------+++ Cons and Nil: Special Constructor Names
 
 =Cons/2= (=Cons= with two argument terms) and =Nil/0= are reserved
-constructor names in Stratego, used for lists. The compiler handled
-these constructors names somewhat sloppy, resulting in compilation
-errors for programs that use =Cons= and =Nil= constructor names with a
-differnt arity. This has now been fixed, hence only =Cons/2= and
-=Nil/0= are reserved constructor names from now.
+constructor names in Stratego, used for the representation of
+lists. The compiler handled these constructors names somewhat sloppy
+in previous releases, resulting in compilation errors for programs
+that use =Cons= and =Nil= constructor names with a different
+arity. This has now been fixed, hence only =Cons/2= and =Nil/0= are
+reserved constructor names from now.
 
     (Martin Bravenboer)
 
 ---------++ Stratego Library
 
-----------+++ Separate compilation
+----------+++ Changes in Separate compilation
 
 In the previous version of StrategoXT, the separately compiled
-=liblib= library imported the SSL as well as the XTC library. This
-library has now been split into =libstrategolib= (the SSL) and
-=libxtclib= (XTC). The module =liblib= is still available and imports
-the libraries above, in order to avoid having to patch zillions of
-Stratego modules.
+=liblib= library imported the SSL as well as the XTC library. The
+=liblib= library has now been split into =libstrategolib= (the SSL)
+and =libxtclib= (XTC). The module =liblib= is still available and
+imports the libraries above. Thus, no existing Stratego programs
+should be affected.
 
     (Eelco Visser)
 
 ---------+++ Obsolete Strategy: iowrap
 
-The strategy =iowrap= is now obsolete. Several releases ago it was
+The strategy =iowrap= is obsolete. Several releases ago it was
 replaced by =io-wrap=, which is easier to use, thanks to the storage
-of command-line option values in the global =config= table. Users that
-still use =iowrap= will now get a warning.
+of command-line option values in the global =config= table. Developers
+that still use =iowrap= will now get a warning. Please update your
+code, since obsolete strategies might be removed in the future.
 
     (Rob Vermaas)
 
----------+++ New Module for Logging
+---------+++ New Module: Logging
 
 A small library for logging has been added to the Stratego Standard
 Library (it used to be part of the =stratego-regular= package). The
 =log= strategy in the =logging= module combines several features:
 
-   * The =log= strategy does not change the current term and is
-     therefore easy to insert in your code. Optionally, it takes a
-     term argument that will be logged as well. Thus, you easily log a
-     different term then the current term.
+   * The =log= strategy does not change the current term. Thus, it is
+     easy to insert anywhere in your code. Optionally, it takes a
+     term argument that will be logged as well. Thus, you can easily
+     log a different term then the current term.
 
    * The =log= strategies print to the stream specified by the
-     =log-stream= entry in the =config= table, or by defaylt to
+     =log-stream= entry in the =config= table, or by default to
      =stderr=. This makes logging to different files easier from
      within a Stratego program.
 
-   * The =log= strategies take a severity argument, which is used to
-     determine whether the message should logged at all, based on the
-     verbosity level specified on the command-line.
+   * The =log= strategies take a =severity= argument, which is used to
+     determine whether the message should be logged at all, based on
+     the verbosity level specified on the command-line.
 
    * The log message will include the name of the program that
-     produced the message and the severity of the message.
+     produced the message, and the severity of the message.
 
     (Niels Janssen and Martin Bravenboer)
 
@@ -172,13 +179,14 @@ functions of processes and IO.
 
 ---------+++ Bug Fixes: Pipe module
 
-=stdin-from-pipe= and =stdout-to-pipe= didn't work correctly when the
-Pipe ]rgument was =stdin= (0) or =stdout= (1). Since =stdin= and
-=stdout= were explicitly closed, the connection with the pipe was
-lost. Using =dup2= instead of =dup= solves the problem because there
-is no need to close file descriptiors. =write-term-to-text-pipe= uses
-=WriteToTextFile= but the =outfile= argument is a stream. Replacing
-=WriteToTextFile= by =fprint= solved the problem.
+The strategies =stdin-from-pipe= and =stdout-to-pipe= didn't work
+correctly when the pipe argument was =stdin= (0) or =stdout=
+(1). Since =stdin= and =stdout= were explicitly closed, the connection
+with the pipe was lost. Using =dup2= instead of =dup= solves the
+problem because there is no need to close file
+descriptors. =write-term-to-text-pipe= uses =WriteToTextFile= but the
+=outfile= argument is a stream. Replacing =WriteToTextFile= by
+=fprint= solved the problem.
 
     (Merijn de Jonge)
 
@@ -191,17 +199,17 @@ separate package, =strategoxt-utils=. This package consists of the
 ex-StrategoXT packages =aterm-tools=, =dot-tools=, =graph-tools=,
 =stratego-util= and =stratego-tools=. Obviously, the installation of
 this package is optional and most users will only need if you want to
-visualize ATerms with the Dot language and =Graphviz=.
+visualize ATerms with the Dot language and Graphviz.
 
 More concrete, the following tools are part of strategoxt-utils:
 =GraphXML2dot=, =pp-dot=, =sdf-wf=, =term-to-dot=, =tohtml-sdf=,
 =graph-term2GraphXML=, =GraphXML-analysis=, =pp-stratego-latex-alltt=,
 =sdf-doc=, =sdf-wf=, =tohtml=, =GraphXML2dot=, =ismap2usemap=,
-=sdf2sg=, =sdf-imports=, =term-to-adot=.
+=sdf2sg=, =sdf-imports=, and =term-to-adot=. The Emacs mode for
+Stratego is now part of StrategoXT Utils.
 
-Furthermore, the Emacs mode for Stratego is now part of StrategoXT
-Utils. In the future, release more utils might be moved to this
-package.
+In future releases, more non-essential utils might be moved to the
+strategoxt-utils package.
 
     (Rob Vermaas)
 
@@ -209,18 +217,18 @@ package.
 
 All the Autoconf macros of AutoXT now use the =XT_= prefix. Using such
 a prefix is adviced by the Autoconf guidelines and makes it easier to
-detect errors (i.e. missing macro definitions). =USE_XT_PACKAGES= has
+detect errors (e.g. missing macro definitions). =USE_XT_PACKAGES= has
 now been replaced by =XT_USE_XT_PACKAGES=. The old macro is still
-available as =autoupdate= alias. You can run =autoupdate= to upgrade
-your =configure.ac= files. =DETECT_SVN_REVISION= is now defined as an
-autoupdate alias as well (Use =XT_SVN_REVISION=).
+available as an =autoupdate= alias. You can run =autoupdate= to
+upgrade your =configure.ac= files. =DETECT_SVN_REVISION= is now
+defined as an autoupdate alias as well (Use =XT_SVN_REVISION=).
 
     (Akim Demaille and Martin Bravenboer)
 
 ---------+++ AC_CONFIG_AUX_DIR
 
 The subpackages of StrategoXT now share a single directory for
-auxiliary files use by autoconf, automake and libtool (such as
+auxiliary files used by autoconf, automake and libtool (such as
 =ltmain.sh=, =config.guess=). The =configure.ac= files in StrategoXT
 define an =AC_CONFIG_AUX_DIR= to achieve this.
 
@@ -230,18 +238,15 @@ define an =AC_CONFIG_AUX_DIR= to achieve this.
 
 ---------+++ sglri
 
-Sglri, which combines =sglr= and =implode-asfix= into a single tool,
-now supports error reporting with a quote of the code from the input
+The program =sglri=, which combines =sglr= and =implode-asfix=, now
+supports error reporting with a quote of the code from the input
 source file.
 
 For example, consider this module:
 <verbatim>
 module foo
 strategies
-
-  main =
-   Foo
-
+  main = Foo
   Foo =
    1 -> 2
 </verbatim>
@@ -252,50 +257,55 @@ martin@logistico:~/tmp> sglri -p Stratego.tbl -i foo.str
 character '>' unexpected
    1 -> 2
       ^
-sglri: rewriting failed
 </verbatim>
 
+************************ TODO ****************************************
 Unfortunately, the Stratego compiler will not yet report syntax errors
 in this way, since =parse-stratego= does not use =sglri= at the
 moment.
+************************ TODO ****************************************
 
 Another new feature of =sglri= is an option to disable the heuristic
 filters of =sglr= by passing =--no-heuristic-filters=. You don't have
 to know all the details of heuristic filters to use this
-option. Disabling heuristic filters is stronlgy encouraged.
+option. Disabling heuristic filters is strongly encouraged.
 
     (Rob Vermaas and Martin Bravenboer)
 
 ---------+++ aterm2xml and xml2aterm
 
-The --explicit and the --very-explicit mode of these ATerm and XML
+The =--explicit= and =--very-explicit= mode of these ATerm and XML
 interoperability tools now use the XML namespace =http://aterm.org=
-for the XML elements that represent ATerm structures and types, such
-as list, tuple, int, string, anno etc. In the explicit mode, this
-avoids conflicts with 'real' ATerms of the same name. The tools use
-the namespace prefix 'at'.
+for XML elements that represent ATerm structures and types, such as
+=list=, =tuple=, =int=, =string=, =anno= etc. In the explicit mode,
+this avoids conflicts with 'real' ATerms of the same name. The tools
+use the namespace prefix 'at'.
 
-Furtermore, all modes now preserve all ATerm annotations by
-representing them as nested "anno" elements in the XML namespace
+Furthermore, all modes now preserve all ATerm annotations by
+representing them as nested =anno= elements in the XML namespace
 =http://aterm.org=.
 
-The xml2aterm tool nog longer needs an explicity argument, since it is
-no longer ambiguous whether the XML input is implicit, explicit or
+The =xml2aterm= tool nog longer needs an explicity argument, since it
+is no longer ambiguous whether the XML input is implicit, explicit or
 very explicit.
 
     (Martin Bravenboer)
 
 ---------+++ pp-aterm
 
-   * --max-depth flag for pp-aterm
+The =pp-aterm= tool, which is used for printing an ATerm in a more
+clear and structured layout, now accepts an =--max-depth= flag. This
+is useful if you are only interesting in the outer structure of an
+ATerm and the ATerm is very large.
 
     (Rob Vermaas)
 
 ---------+++ sdf2rtg
 
-The =sdf2rtg= tool, which is used to produce RTGs (and indireclty
+The =sdf2rtg= tool, which is used to produce RTGs (and indirectly
 Stratego Signatures) from SDF syntax definitions, now reports errors
-in concrete syntax and gives some hints on solutions of the problem
+in concrete syntax and gives some hints about possible solutions of
+the problem.
 
 Example:
 <verbatim>
@@ -314,9 +324,9 @@ exports
 
 <verbatim>
 martin@logistico:~/tmp> sdf2rtg -i Foo.def
-[error | core-sdf-grammar2rtg] No constructor name specified in production:
-[error | core-sdf-grammar2rtg]   <Exp-CF> <LAYOUT?-CF> "+" <LAYOUT?-CF> <Exp-CF> -> <Exp-CF>
-[error | core-sdf-grammar2rtg] Resolution: please add a cons attribute to this production.
+No constructor name specified in production:
+   <Exp-CF> <LAYOUT?-CF> "+" <LAYOUT?-CF> <Exp-CF> -> <Exp-CF>
+Resolution: please add a cons attribute to this production.
 </verbatim>
 
     (Martin Bravenboer)
