@@ -25,6 +25,7 @@ strategies
         do-full-testsuite
       end
     ; <xtc-exit> 0
+    <+ <xtc-exit> 1
 
   do-full-testsuite =
     echo-start
@@ -53,9 +54,7 @@ strategies
 
   read-parse-testsuite =
     if not(is-abstract-input) then
-      xtc-sglr(!"parse-testsuite.tbl", !"TestSuite")
-      ; xtc-implode-asfix
-      <+ trying-abstract-syntax-warning
+      xtc-sglri(|"parse-testsuite.tbl", "TestSuite")
     end
     ; read-from
     ; try(upgrade-oldskool-testsuite)
@@ -63,13 +62,8 @@ strategies
     ; parse-testsuite(id, id, map(ensure-test-input-in-file))
     ; parse-testsuite(id, id, map(ensure-test-output-in-pattern))
 
-  trying-abstract-syntax-warning =
-    debug(<concat-strings>
-      [ "warning: could not parse the testsuite. I'm assuming that it "
-      , "is in abstract syntax, but it there might actually be a syntactical "
-      , "error in your testsuite. Use the --abstract-input option for declare "
-      , "that you are providing an abstract syntax testsuite."
-      ])
+  xtc-sglri(|tbl, sort) =
+    xtc-transform(!"sglri", !["-p", <xtc-find> tbl, "--start", sort | <pass-verbose> ()])
 
 rules
 

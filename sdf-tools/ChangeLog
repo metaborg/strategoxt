@@ -1,3 +1,17 @@
+2005-02-12  Martin Bravenboer  <martin@cs.uu.nl>
+
+	* analyse/parse-unit/parse-unit.str: fallback to abstract input is
+	no longer supported. Use --abstract-input to disable parsing of
+	the testsuite by parse-unit.
+
+	* analyse/parse-unit/parse-unit.str: using sglri for parsing
+	testsuites. This is a major improvement of the error reporting of
+	syntactical errors in testsuites.
+	
+	* analyse/parse-unit/Makefile.am: parse-parse-testsuite is now a
+	libexec programs. There is no reason to provide this tool to an
+	ordinary user by default.
+	
 2005-01-22  Martin Bravenboer  <martin@cs.uu.nl>
 
 	* analyse/parse-unit/parse-unit.str: set the default verbosity to

@@ -4,7 +4,9 @@ include $(wildcard *.dep)
 SUBDIRS = syn sig
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 
-bin_PROGRAMS   = parse-unit parse-parse-testsuite
+bin_PROGRAMS     = parse-unit
+libexec_PROGRAMS = parse-parse-testsuite
+
 SCFLAGS        = --main main-$* 
 STRINCLUDES    = -I $(XTC)/share/xtc \
                  -I $(ATERM_FRONT)/share/aterm-front \
