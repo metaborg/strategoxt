@@ -196,7 +196,7 @@ strategies
     <get-config> "program"
 
 /**
-* @warning obsolete, new option handling uses config table.
+* @obsolete new option handling uses config table.
 */ 
 signature
 
@@ -218,40 +218,40 @@ strategies
    * Handles options, reads term from input file, transform, write result 
    * to output file
    *
-   * @warning obsolete: use io-wrap.
+   * @obsolete use io-wrap.
    */
   iowrap(strat) = 
     iowrap((id, strat), fail)
 
   /**
-   * @warning obsolete: use io-wrap.
+   * @obsolete use io-wrap.
    */
   iowrapO(strat, extra-options) =
     obsolete(!"iowrapO/2: use iowrap/2");
     iowrap(strat, extra-options)
 
   /**
-   * @warning obsolete: use io-wrap.
+   * @obsolete use io-wrap.
    */
   iowrap(strat, extra-options) = 
     iowrap(strat, extra-options, default-usage)
 
   /**
-   * @warning obsolete: use io-wrap.
+   * @obsolete use io-wrap.
    */
   iowrap(strat, extra-options, usage) = 
     iowrap(strat, extra-options, usage, 
 	   if-verbose2(where(<printnl>(stderr, [<get-config> "program"]))))
 
   /**
-   * @warning obsolete: use io-wrap.
+   * @obsolete use io-wrap.
    */
   iowrapO(strat, extra-options, usage) =
     obsolete(!"iowrapO/3: use iowrap/3");
     iowrap(strat, extra-options, usage)
 
   /**
-   * @warning obsolete: use io-wrap.
+   * @obsolete use io-wrap.
    */
   iowrap(strat, extra-options, usage, announce) =
     option-wrap(extra-options <+ io-options, usage, announce, 
@@ -261,13 +261,13 @@ strategies
     )
 
   /**
-   * @warning deprecated: use input-wrap.
+   * @obsolete use input-wrap.
    */
   iowrapNoOutput(strat, extra-options) = 
     iowrapNoOutput(strat, extra-options, default-usage)
 
   /**
-   * @warning obsolete: use input-wrap.
+   * @obsolete use input-wrap.
    */
   iowrapNoOutput(strat, extra-options, usage) =
     option-wrap(extra-options <+ io-options, usage, id, 
@@ -278,7 +278,7 @@ strategies
 strategies
 
   /**
-   * @warning  obsolete: use config for this purpose.
+   * @obsolete use config for this purpose.
    */
   store-options = ?options;
     where( 
@@ -287,32 +287,32 @@ strategies
     )
 
   /**
-   * @warning  obsolete: use config for this purpose.
+   * @obsolete use config for this purpose.
    */
   get-options =
     <table-get>("option-table", "options")
 
   /**
-   * @warning  obsolete: use config for this purpose.
+   * @obsolete use config for this purpose.
    */
   has-option(s) =
     test(<s; check-option>())
 
   /**
-   * @warning  obsolete: use config for this purpose.
+   * @obsolete use config for this purpose.
    */
   option-value(s,default) =
     get-options; fetch-elem(s) <+ default
 
   /**
-   * @warning  obsolete: use config for this purpose.
+   * @obsolete use config for this purpose.
    */
   check-option: option -> ()
     where get-options => ops
         ; <is-subterm>(option,ops)
 
   /**
-   * @warning  obsolete: use default-usage.
+   * @obsolete use default-usage.
    */
   usage' = 
     obsolete(!"usage': use default-usage")
@@ -320,14 +320,14 @@ strategies
 strategies
 
   /**
-   * @warning  obsolete: use input(s).
+   * @obsolete use input(s).
    */
   input-file' =
 	obsolete(!"input-file'; use input-file");
 	input-file
 
   /**
-   * @warning  obsolete: use input(s).
+   * @obsolete use input(s).
    */
   input-file =
 	 where((option-defined(?Input(infile)) <+ !stdin => infile));
@@ -340,14 +340,14 @@ strategies
 	 \(options, trm) -> ([Runtime(runtime) | options], trm)\
 
   /**
-   * @warning  obsolete: use output(s).
+   * @obsolete use output(s).
    */
   output-file' =
 	obsolete(!"output-file'; use output-file");
 	output-file
 
   /**
-   * @warning  obsolete: use output(s).
+   * @obsolete use output(s).
    */
   output-file =
 	 where((option-defined(?Output(outfile)) <+ !stdout => outfile, id)); 
