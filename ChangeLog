@@ -1,4 +1,12 @@
-2003-06-12  Martin Bravenboer  <martin@mbravenboer.org>
+2003-06-13  Martin Bravenboer  <martin@mbravenboer.org>
+
+  * bootstrap: more portable shell-scripting
+
+  * Makefile.am: install the srts only once. Repeated
+    installation causes recompilation of c sources.
+    TODO: reinstall after a clean
+
+2003-06-13  Martin Bravenboer  <martin@mbravenboer.org>
 
   * Makefile.am: install srts in pre-pkgs/build before
     doing make install.
