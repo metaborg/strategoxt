@@ -20,7 +20,7 @@ BOOTCLEANFILES = $(wildcard *.c)
 	$(XML_FRONT)/libexec/parse-stratego-xml-info -i $< | \
 	$(XML_FRONT)/libexec/process-stratego-xml-doc | \
 	$(XML_FRONT)/libexec/process-stratego-xml-info | \
-	$(STRATEGO_FRONT)/bin/meta-explode | \
-	$(STRATEGO_FRONT)/bin/stratego-desugar -o $@
+	$(STRATEGO_FRONT)/libexec/meta-explode | \
+	$(STRATEGO_FRONT)/libexec/stratego-desugar -o $@
 
 nodist_apply_tests_SOURCES = apply-tests.c
