@@ -68,17 +68,12 @@ strategies
    * definition by unifying the list of formal strategy parameters.
    */
 
-  joindefs = JoinDefs1 <+ JoinDefsExt <+ JoinDefs2
+  joindefs = JoinDefs1 <+ JoinDefs2 <+ JoinDefsExt
 
 rules
 
   JoinDefs1 : 
     [sdef] -> sdef
-
-  JoinDefsExt =
-    fetch(?ExtSDef(f,_,_) + ?ExtSDefInl(f,_,_,_))
-    ; <debug(!"overloading external definition: ")> f
-    ; giving-up
 
   JoinDefs2 : 
     defs @ [SDefT(f, xs1, xs2, s) | _] -> SDefT(f, ys1, ys2, <choices> ss)
@@ -90,6 +85,17 @@ rules
                  <tsubs> (<map(\ VarDec(z2,_) -> z2 \ )> zs2, ys2', 
 		   <ssubs> (<map(\ VarDec(z1,_) -> z1 \ )> zs1, ys1', s)
                  ) \ )> defs => ss
+
+  JoinDefsExt =
+    where(map(?ExtSDef(f, <length => i>, <length => j>) 
+	    + ?ExtSDefInl(f, <length => i>, <length => j>, s)))
+    ; (fetch-elem(?ExtSDefInl(_,_,_,_)) <+ Hd)
+
+  JoinDefsExt =
+    fetch(?ExtSDef(f,_,_) + ?ExtSDefInl(f,_,_,_))
+    ; fetch(?SDefT(f,_,_,_))
+    ; <debug(!"redefining external definition: ")> f
+    ; giving-up
 
   choices = 
     foldr(!Fail, !Choice(<Fst>,<Snd>))
