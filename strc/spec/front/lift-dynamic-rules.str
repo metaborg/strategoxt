@@ -112,8 +112,15 @@ that are declared in context using the dynamic rule ContextVar */
     ; <tvars; filter(test(ListVar(ContextVar) <+ ContextVar); !Var(<id>))> (t2, s) => vals1
     ; <diff> (vals1, keys) => t*
 
-    ; if id // here comes the memoization
-        then // aux-Rule has not been lifted yet
+    ; !(f, (<length> as1, <length> as2)) => rsig
+    
+    ; <dr-rename-vars> drd => stdrule
+    ; if <DRAuxRuleGenerated> stdrule => stamp
+        then // An equivalent aux-Rule has already been lifted, do nothing now.
+          ![] => callees
+        ; ![] => callers
+        ; <debug(!"aux-Rule already generated: ")> (stamp, stdrule)
+        else // aux-Rule has not been lifted yet
 
           <conc-strings>("aux-", f) => f'  // has to be the same such that + of aux-f works
         ; new => stamp
@@ -131,6 +138,7 @@ that are declared in context using the dynamic rule ContextVar */
         ; ![ |[ f'(as1|as2') : (~str:stamp, t*) -> t2 
                   where <s> t0 ]|
            ] => callees
+        ; rules(DRAuxRuleGenerated : stdrule -> stamp)
 
         // Check whether Rule and bagof-Rule still need to be generated
         ; !(f, (<length> as1, <length> as2)) => rsig
@@ -159,42 +167,34 @@ that are declared in context using the dynamic rule ContextVar */
             ; rules(DRCallersGenerated : (rsig, t1') -> ())
             ; <debug(!"freshly generating the DR callers: ")> (rsig, t1')
           end
-
-        else
-          ![] => callees
-        ; ![] => callers
       end
 
 
-
-
-
-/*
-  ;where(<debug(!"just testing: "); strename; debug(!"just the result: ")> |[ rules( RuleA(st1,st2|tr1) :+ Foo(qr, pr) -> Bar(pr,0) where <leq> (qr,pr) ) ]|)
-      ;where(try(<debug(!"about to rename: ");
-                 strename//dr-rename-vars
-                 ; debug(!"just renamed: ")> drd))
-*/
 
 strategies
   dr-rename-vars =
   {| DRRenameVar:
     where(<reset-counter> "DRVarNumber")
-  ; rec x(debug(!"input rec x: "); RenameVarTerm(debug(!"DRRenameVar input: "); DRRenameVar; debug(!"DRRenameVar output: ") <+ debug(!"NewNumberedVar input: "); NewNumberedVar); debug(!"RenameVarTerm output: ") <+ all(x))
+  ; rec x(RenameVarTerm(DRRenameVar <+ NewNumberedVar, x) <+ all(x))
   |}
 
-  RenameVarTerm(s) =
+  RenameVarTerm(s, x) =
     Var(ListVar(s; <strcat> (<id>, "*")))
  <+ Var(s)
   + SVar(s)
   + VarDec(s, id)
   + DefaultVarDec(s)
+  + Rec(s,x)
+  + SDefNoArgs(s,x)
+  + SDef(s,x,x)
+  + SDefT(s,x,x,x)
+  + Scope(map(s), x)
 
 rules
   NewNumberedVar :
     x -> y
     where <next-counter> "DRVarNumber" => n
-        ; <strcat> ("drvar_", <int-to-string> n) => y
+        ; <strcat> ("v", <int-to-string> n) => y
         ; rules(DRRenameVar: x -> y)
 
 \end{code}
