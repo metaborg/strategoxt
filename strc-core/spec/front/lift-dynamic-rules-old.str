@@ -1,5 +1,5 @@
 module lift-dynamic-rules-old
-imports liblib Stratego-Sugar desugar-hl dr-new-to-old
+imports liblib Stratego-Sugar desugar-hl dr-new-to-old stratlib
 strategies
 
   LiftDynamicRules-old =

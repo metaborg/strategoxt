@@ -42,7 +42,7 @@ strategies
                   + ?DynRuleScopeId(x))> sc* => (sc1*, sc2*)
        ; <collect(?LabeledDynRuleScopeId(x,<id>))
           ; map(!|[ rules(x + ~<id>) ]|)
-          ; !Seqs(<id>)> sc1* => s1
+          ; seqs> sc1* => s1
 
   DefDynRuleScope :
     |[ {| x.t, sc* : s |} ]| -> |[ dr-scope(s1; {| sc2* : s |} | ~str:x) ]|
@@ -51,7 +51,7 @@ strategies
                   + ?DynRuleScopeId(x))> sc* => (sc1*, sc2*)
        ; <collect(?LabeledDynRuleScopeId(x,<id>))
           ; ![t|<id>]; map(!|[ rules(x + ~<id>) ]|)
-          ; !Seqs(<id>)> sc1* => s1
+          ; seqs> sc1* => s1
 
 
 strategies

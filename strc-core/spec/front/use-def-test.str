@@ -155,7 +155,7 @@ strategies
   test12 = 
     apply-test(!"test12a"
 	, not(def-use-def)
-	, !RDefT("test4", [], [], [[ Foo(?p) --> Foo(!p) where id ]])
+	, !RDefT("test4", [], [], |[ Foo(?p) --> Foo(!p) where id ]|)
 	) 
 
   test13 = 
