@@ -9,6 +9,7 @@ strategies
     test-suite(!"list-basic-test",
       map-test;
       split-fetch-test;
+      split-fetch-keep-test;
       upto-test1;
       upto-test2;
       fetch-test;
@@ -38,6 +39,24 @@ strategies
 	,![1,2,3,4,5,6,7]
 	,!([1,2,3],[5,6,7])
 	)
+
+  split-fetch-keep-test =
+    apply-test(!"split-fetch-keep-test-1"
+      , split-fetch-keep(?0)
+      , ![3, 5, 0, 1, 2, 3, 4, 5]
+      , !([3, 5], 0, [1, 2, 3, 4, 5]))
+  ; apply-test(!"split-fetch-keep-test-2"
+      , split-fetch-keep(?0)
+      , ![0, 3, 5, 0, 1, 2, 3, 4, 5]
+      , !([], 0, [3, 5, 0, 1, 2, 3, 4, 5]))
+  ; apply-test(!"split-fetch-keep-test-3"
+      , split-fetch-keep(?0)
+      , ![3, 5, 0]
+      , !([3, 5], 0, []))
+  ; apply-and-fail(!"split-fetch-keep-test-4"
+      , split-fetch-keep(?0)
+      , ![1, 2, 3, 4, 5])
+  
 
   upto-test1 =
     apply-test(!"upto-test1"

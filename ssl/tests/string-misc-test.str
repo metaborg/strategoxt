@@ -8,54 +8,70 @@ strategies
 
   main =
     test-suite(!"String Misc test suite",
-      test-all-lines-1
-    ; test-all-lines-2
-    ; test-indent-text-1
-    ; test-trim-trailing-1
-    ; test-get-all-lines-1
-
-    ; test-split-fetch-leave-1
+      test-all-lines
+    ; test-string-tokenize
+    ; test-indent-text
+    ; test-trim-trailing
+    ; test-get-all-lines
 
     ; test-shuffle-1
     ; test-shuffle-word-mids-1
     ; test-shuffle-word-mids-2
     )
     
-  test-all-lines-1 =
+  test-all-lines =
      apply-test(!"test-all-lines-1"
         , all-lines(<conc-strings> (<id>, "EOL"))
         , !"the first line\nSecond line, third will be empty\n\nThis is the fourth, a final empty should not follow\n"
         , !"the first lineEOL\nSecond line, third will be emptyEOL\nEOL\nThis is the fourth, a final empty should not followEOL\n")
-
-  test-all-lines-2 =
-     apply-test(!"test-all-lines-2"
+   ; apply-test(!"test-all-lines-2"
         , all-lines(<conc-strings> (<id>, "EOL"))
         , !"\nAfter first empty line: Second line, third will be empty\n\nThis is the fourth, a final empty should not follow"
         , !"EOL\nAfter first empty line: Second line, third will be emptyEOL\nEOL\nThis is the fourth, a final empty should not followEOL")
 
-  test-indent-text-1 =
+  test-string-tokenize =
+     apply-test(!"test-string-tokenize-keep-empty-1"
+        , string-tokenize-keep-empty(|['\n'])
+        , !"the first line\nSecond line, third will be empty\n\nThis is the fourth, a final empty will follow\n"
+        , !["the first line", "Second line, third will be empty", "", "This is the fourth, a final empty will follow", ""])
+   ; apply-test(!"test-string-tokenize-keep-empty-2"
+        , string-tokenize-keep-empty(|['\n'])
+        , !""
+        , ![""])
+   ; apply-test(!"test-string-tokenize-keep-empty-3"
+        , string-tokenize-keep-empty(|['\n'])
+        , !"\n\n"
+        , !["","",""])
+   ; apply-test(!"test-string-tokenize-keep-all-1"
+        , string-tokenize-keep-all(|['\n'])
+        , !"the first line\nSecond line, third will be empty and tokenized\n\nThis is the fourth, a final empty will follow\n"
+        , !["the first line", "\n","Second line, third will be empty and tokenized", "\n", "", "\n", "This is the fourth, a final empty will follow", "\n", ""])
+   ; apply-test(!"test-string-tokenize-keep-all-2"
+        , string-tokenize-keep-all(|['\n'])
+        , !""
+        , ![""])
+   ; apply-test(!"test-string-tokenize-keep-all-3"
+        , string-tokenize-keep-all(|['\n'])
+        , !"\n\n"
+        , !["","\n","","\n",""])
+
+  test-indent-text =
      apply-test(!"test-indent-text-1"
         , indent-text(|4)
         , !"the first line\nSecond line, third will be empty\n\nThis is the fourth, a final empty should not follow\n"
         , !"    the first line\n    Second line, third will be empty\n    \n    This is the fourth, a final empty should not follow\n")
 
-  test-trim-trailing-1 =
+  test-trim-trailing =
      apply-test(!"test-trim-trailing-1"
-        , trim-trailing-whitespace
+        , all-lines(trim-trailing-whitespace)
         , !"the first line    \nSecond line, third will be empty\n \nThis is the fourth, a final empty should not follow\n   "
         , !"the first line\nSecond line, third will be empty\n\nThis is the fourth, a final empty should not follow\n")
 
-  test-get-all-lines-1 =
+  test-get-all-lines =
      apply-test(!"test-get-all-lines-1"
         , get-lines
         , !"the first line\nSecond line, third will be empty\n\nThis is the fourth, a final empty will follow\n"
         , !["the first line","Second line, third will be empty","","This is the fourth, a final empty will follow",""])
-
-  test-split-fetch-leave-1 =
-     apply-test(!"test-split-fetch-leave-1"
-        , explode-string; split-fetch-leave(where(<elem> (<id>, ['.',',']))); all(implode-string)
-        , !"fubar, etcetera"
-        , !("fubar",","," etcetera"))
 
   test-shuffle-1 =
      testing(!"test-shuffle-1"

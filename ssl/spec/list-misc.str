@@ -144,6 +144,7 @@ strategies
   drop-until(s) = 
     at-suffix(([] + [s|id]);?xs); !xs
 
+
   /**
    * @warning  alias of split-fetch/1
    */
@@ -154,6 +155,35 @@ strategies
     where(isn => n)
     ; nzip0(id); drop-until(?(n,_)); map(Snd)
 
+strategies
+  /**
+   * Trim elements from start and/or end of a list
+   *
+   * Removes the biggest sublist from the start and/or end of a list,
+   * for which all elements satisfy the strategy s.
+   *
+   * @type  List(a) -> List(a)
+   * @param should succeed for all elements that have to be trimmed.
+   * @since 0.9.5
+   * @inc   trim-test
+   */
+
+  rtrim(s) =
+    ![()|<id>] // Add dummy element, or at-suffix-rev will fail at empty lists
+  ; at-suffix-rev(
+      where( not(?[])     // This only succeeds if we're not at list-end
+           ; not([s|id])) // and s fails at the head of the current suffix
+    ; ![<Hd>]) // s failed, no further trimming.
+  ; Tl // Strip off dummy head element.
+
+  /**
+   * Note that ltrim is actually an alias for drop-while
+   */
+  ltrim(s) = drop-while(s)
+
+  trim(s) = ltrim(s); rtrim(s)
+
+strategies
   /** 
    * flatten-list completely flattens a list.
    * See list-misc-test for examples.
@@ -165,3 +195,4 @@ strategies
    */
   flatten-list =
     foldr(![], (is-list, id) < conc-two-lists + MkCons, is-list < flatten-list + id)
+

@@ -11,7 +11,8 @@ strategies
 	flatten-test;
 	init-last-test;
 	take-test;
-	drop-test
+	drop-test;
+  trim-test
     )
 
   test1 =
@@ -100,3 +101,41 @@ strategies
 	, !["a","b","c","d","e"]
 	, !["d","e"]
     )
+
+  trim-test =
+      apply-test(!"ltrim-test 1", ltrim(?0)
+      , ![0, 0, 0, 1, 2, 3, 0]
+      , ![1, 2, 3, 0]
+      )
+    ; apply-test(!"ltrim-test 2", ltrim(?0)
+      , ![1, 2, 3, 0]
+      , ![1, 2, 3, 0]
+      )
+    ; apply-test(!"ltrim-test 3", ltrim(?0)
+      , ![]
+      , ![]
+      )
+    ; apply-test(!"rtrim-test 1", rtrim(?0)
+      , ![0, 1, 2, 3, 0]
+      , ![0, 1, 2, 3]
+      )
+    ; apply-test(!"rtrim-test 2", rtrim(?0)
+      , ![1, 2, 3]
+      , ![1, 2, 3]
+      )
+    ; apply-test(!"rtrim-test 3", rtrim(?0)
+      , ![]
+      , ![]
+      )
+    ; apply-test(!"trim-test 1", trim(?0)
+      , ![0, 1, 2, 3, 0]
+      , ![1, 2, 3]
+      )
+    ; apply-test(!"trim-test 2", trim(?0)
+      , ![1, 2, 3]
+      , ![1, 2, 3]
+      )
+    ; apply-test(!"trim-test 3", trim(?0)
+      , ![]
+      , ![]
+      )

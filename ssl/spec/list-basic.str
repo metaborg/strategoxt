@@ -118,6 +118,19 @@ strategies
   split-fetch(s) =
     at-suffix([s|id];[id|?tl];![]); !(<id>, tl)
 
+  /**
+   * splits a list in two at the point where s succeeds, keeping the
+   * 'split-element'.
+   *
+   * The element to which s was applied *is* part of the result as the second
+   * element in the triple: (before, split, after)
+   *
+   * @type s  a ->? _
+   * @type    [a] -> [a] * a * [a]
+   */
+  split-fetch-keep(s) =
+    at-suffix([s|id];[?el|?tl];![]); !(<id>, el, tl)
+
  /**
   * Apply a strategy to the tail of a list.
   */
