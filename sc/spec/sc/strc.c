@@ -1006,7 +1006,7 @@ void init_constant_terms (void)
   term_f_70 = (ATerm) ATmakeAppl(ATmakeSymbol(" secs)", 0, ATtrue));
 }
 ATerm foldr_2_0 (ATerm i_99 (ATerm), ATerm j_99 (ATerm), ATerm);
-ATerm p_0 (ATerm);
+ATerm o_0 (ATerm);
 ATerm t_0 (ATerm);
 ATerm run_time_0_0 (ATerm);
 ATerm if_verbose2_1_0 (ATerm h_107 (ATerm), ATerm);
@@ -1284,7 +1284,7 @@ ATerm c_19 (ATerm);
 ATerm xtc_exit_0_0 (ATerm);
 ATerm d_19 (ATerm);
 ATerm xtc_io_exit_0_0 (ATerm);
-ATerm copy_to_1_0 (ATerm o_0 (ATerm), ATerm);
+ATerm copy_to_1_0 (ATerm p_0 (ATerm), ATerm);
 ATerm g_19 (ATerm);
 ATerm output_ast_0_0 (ATerm);
 ATerm pass_keep_0_0 (ATerm);
@@ -1437,7 +1437,7 @@ ATerm sc_options_0_0 (ATerm);
 ATerm long_description_1_0 (ATerm i_0 (ATerm), ATerm);
 ATerm map_1_0 (ATerm g_93 (ATerm), ATerm);
 ATerm reverse_acc_2_0 (ATerm g_0 (ATerm), ATerm h_0 (ATerm), ATerm);
-ATerm short_description_1_0 (ATerm f_0 (ATerm), ATerm);
+ATerm short_description_1_0 (ATerm e_0 (ATerm), ATerm);
 ATerm Program_1_0 (ATerm l_77 (ATerm), ATerm);
 ATerm q_29 (ATerm);
 ATerm r_29 (ATerm);
@@ -1454,7 +1454,7 @@ ATerm f_30 (ATerm);
 ATerm h_30 (ATerm);
 ATerm system_about_switch_0_0 (ATerm);
 ATerm table_push_0_0 (ATerm);
-ATerm Option_3_0 (ATerm a_0 (ATerm), ATerm b_0 (ATerm), ATerm d_0 (ATerm), ATerm);
+ATerm Option_3_0 (ATerm a_0 (ATerm), ATerm c_0 (ATerm), ATerm d_0 (ATerm), ATerm);
 ATerm n_30 (ATerm);
 ATerm parse_options_p__1_0 (ATerm z_111 (ATerm), ATerm);
 ATerm t_30 (ATerm);
@@ -1521,7 +1521,7 @@ ATerm foldr_2_0 (ATerm i_99 (ATerm), ATerm j_99 (ATerm), ATerm t)
     }
   return(t);
 }
-ATerm p_0 (ATerm t)
+ATerm o_0 (ATerm t)
 {
   t = term_w_31;
   return(t);
@@ -1555,19 +1555,19 @@ ATerm t_0 (ATerm t)
 }
 ATerm run_time_0_0 (ATerm t)
 {
-  ATerm c_1 = NULL,c_0 = NULL,e_0 = NULL;
+  ATerm c_1 = NULL,b_0 = NULL,f_0 = NULL;
   t = times_0_0(t);
-  c_0 = t;
-  t = SSL_explode_term(c_0);
+  b_0 = t;
+  t = SSL_explode_term(b_0);
   if(match_cons(t, sym__2))
     {
       ATerm d_32 = ATgetArgument(t, 0);
-      e_0 = ATgetArgument(t, 1);
+      f_0 = ATgetArgument(t, 1);
     }
   else
     _fail(t);
-  t = e_0;
-  t = foldr_2_0(p_0, t_0, t);
+  t = f_0;
+  t = foldr_2_0(o_0, t_0, t);
   c_1 = t;
   t = SSL_TicksToSeconds(c_1);
   return(t);
@@ -5628,7 +5628,7 @@ ATerm xtc_io_exit_0_0 (ATerm t)
   t = xtc_exit_0_0(t);
   return(t);
 }
-ATerm copy_to_1_0 (ATerm o_0 (ATerm), ATerm t)
+ATerm copy_to_1_0 (ATerm p_0 (ATerm), ATerm t)
 {
   ATerm q_16 = NULL,r_16 = NULL;
   q_16 = t;
@@ -5645,7 +5645,7 @@ ATerm copy_to_1_0 (ATerm o_0 (ATerm), ATerm t)
       {
         ATerm w_35 = NULL;
         t = q_16;
-        t = o_0(t);
+        t = p_0(t);
         w_35 = t;
         {
           ATerm j_54 = t;
@@ -5679,7 +5679,7 @@ ATerm copy_to_1_0 (ATerm o_0 (ATerm), ATerm t)
             {
               ATerm m_36 = NULL;
               t = q_16;
-              t = o_0(t);
+              t = p_0(t);
               m_36 = t;
               {
                 ATerm n_54 = t;
@@ -5739,7 +5739,7 @@ ATerm copy_to_1_0 (ATerm o_0 (ATerm), ATerm t)
             {
               t = l_54;
               t = q_16;
-              t = o_0(t);
+              t = p_0(t);
               if((r_16 != t))
                 {
                   _fail(t);
@@ -9145,11 +9145,11 @@ ATerm reverse_acc_2_0 (ATerm g_0 (ATerm), ATerm h_0 (ATerm), ATerm t)
     }
   return(t);
 }
-ATerm short_description_1_0 (ATerm f_0 (ATerm), ATerm t)
+ATerm short_description_1_0 (ATerm e_0 (ATerm), ATerm t)
 {
   ATerm x_29 = NULL;
   t = term_f_53;
-  t = f_0(t);
+  t = e_0(t);
   x_29 = t;
   t = (ATerm) ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATempty, term_l_66), x_29), term_k_66), term_z_65), term_j_66), term_z_65), term_i_66), term_h_66), term_z_65), term_g_66);
   return(t);
@@ -9478,7 +9478,7 @@ ATerm table_push_0_0 (ATerm t)
   }
   return(t);
 }
-ATerm Option_3_0 (ATerm a_0 (ATerm), ATerm b_0 (ATerm), ATerm d_0 (ATerm), ATerm t)
+ATerm Option_3_0 (ATerm a_0 (ATerm), ATerm c_0 (ATerm), ATerm d_0 (ATerm), ATerm t)
 {
   ATerm x_31 = NULL,y_31 = NULL;
   if(match_string(t, "register-usage-info"))
@@ -9504,7 +9504,7 @@ ATerm Option_3_0 (ATerm a_0 (ATerm), ATerm b_0 (ATerm), ATerm d_0 (ATerm), ATerm
       t = x_31;
       t = a_0(t);
       t = term_f_53;
-      t = b_0(t);
+      t = c_0(t);
       c_32 = t;
       t = (ATerm) ATinsert(CheckATermList(y_31), c_32);
     }

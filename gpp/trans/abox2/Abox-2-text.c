@@ -949,7 +949,7 @@ ATerm rel_string_length_0_0 (ATerm t)
     }
   else
     _fail(t);
-  t = (ATerm) ATmakeAppl(sym__2, term_y_15, c_20);
+  t = (ATerm) ATmakeAppl(sym__2, (ATerm)ATinsert(ATempty, term_y_15), c_20);
   t = string_tokenize_0_0(t);
   {
     ATerm i_16 = t;

@@ -484,7 +484,7 @@ ATerm s_4 (ATerm);
 ATerm w_4 (ATerm);
 ATerm x_4 (ATerm);
 ATerm verbose_option_0_0 (ATerm);
-ATerm Option_3_0 (ATerm a_0 (ATerm), ATerm b_0 (ATerm), ATerm d_0 (ATerm), ATerm);
+ATerm Option_3_0 (ATerm a_0 (ATerm), ATerm c_0 (ATerm), ATerm d_0 (ATerm), ATerm);
 ATerm a_5 (ATerm);
 ATerm c_5 (ATerm);
 ATerm d_5 (ATerm);
@@ -510,7 +510,7 @@ ATerm report_success_0_0 (ATerm);
 ATerm k_5 (ATerm);
 ATerm need_help_1_0 (ATerm w_104 (ATerm), ATerm);
 ATerm map_1_0 (ATerm g_88 (ATerm), ATerm);
-ATerm reverse_acc_2_0 (ATerm f_0 (ATerm), ATerm g_0 (ATerm), ATerm);
+ATerm reverse_acc_2_0 (ATerm e_0 (ATerm), ATerm g_0 (ATerm), ATerm);
 ATerm Program_1_0 (ATerm n_80 (ATerm), ATerm);
 ATerm m_5 (ATerm);
 ATerm o_5 (ATerm);
@@ -555,14 +555,14 @@ ATerm main_0 (ATerm t)
 }
 ATerm default_usage_0_0 (ATerm t)
 {
-  ATerm e_0 = NULL,l_0 = NULL;
-  e_0 = t;
+  ATerm f_0 = NULL,l_0 = NULL;
+  f_0 = t;
   t = term_k_7;
   t = whoami_0_0(t);
   l_0 = t;
   t = SSL_printnl((ATerm)ATmakeAppl(sym_stderr_0), (ATerm) ATinsert(ATinsert(ATinsert(ATempty, (ATerm) ATmakeAppl(ATmakeSymbol(" [-S] [-i file] [-o file] [-b] [-s] [--help|-h|-?]", 0, ATtrue))), l_0), (ATerm) ATmakeAppl(ATmakeSymbol("usage : ", 0, ATtrue))));
   t = SSL_exit((ATerm) ATmakeInt(1));
-  t = e_0;
+  t = f_0;
   return(t);
 }
 ATerm ConstType_1_0 (ATerm k_68 (ATerm), ATerm t)
@@ -912,10 +912,10 @@ ATerm term_expression_0_0 (ATerm t)
                                               {
                                                 t = g_8;
                                                 {
-                                                  ATerm c_0 = NULL;
-                                                  c_0 = t;
-                                                  t = SSL_printnl((ATerm)ATmakeAppl(sym_stderr_0), (ATerm) ATinsert(ATinsert(ATempty, c_0), (ATerm) ATmakeAppl(ATmakeSymbol("not a term-expression: ", 0, ATtrue))));
-                                                  t = c_0;
+                                                  ATerm b_0 = NULL;
+                                                  b_0 = t;
+                                                  t = SSL_printnl((ATerm)ATmakeAppl(sym_stderr_0), (ATerm) ATinsert(ATinsert(ATempty, b_0), (ATerm) ATmakeAppl(ATmakeSymbol("not a term-expression: ", 0, ATtrue))));
+                                                  t = b_0;
                                                 }
                                               }
                                           }
@@ -3016,7 +3016,7 @@ ATerm verbose_option_0_0 (ATerm t)
     }
   return(t);
 }
-ATerm Option_3_0 (ATerm a_0 (ATerm), ATerm b_0 (ATerm), ATerm d_0 (ATerm), ATerm t)
+ATerm Option_3_0 (ATerm a_0 (ATerm), ATerm c_0 (ATerm), ATerm d_0 (ATerm), ATerm t)
 {
   ATerm x_31 = NULL,y_31 = NULL;
   if(match_string(t, "register-usage-info"))
@@ -3042,7 +3042,7 @@ ATerm Option_3_0 (ATerm a_0 (ATerm), ATerm b_0 (ATerm), ATerm d_0 (ATerm), ATerm
       t = x_31;
       t = a_0(t);
       t = term_k_7;
-      t = b_0(t);
+      t = c_0(t);
       c_32 = t;
       t = (ATerm) ATinsert(CheckATermList(y_31), c_32);
     }
@@ -3523,7 +3523,7 @@ ATerm map_1_0 (ATerm g_88 (ATerm), ATerm t)
   t = l_34(t);
   return(t);
 }
-ATerm reverse_acc_2_0 (ATerm f_0 (ATerm), ATerm g_0 (ATerm), ATerm t)
+ATerm reverse_acc_2_0 (ATerm e_0 (ATerm), ATerm g_0 (ATerm), ATerm t)
 {
   ATerm n_34 = NULL,o_34 = NULL;
   if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
@@ -3536,7 +3536,7 @@ ATerm reverse_acc_2_0 (ATerm f_0 (ATerm), ATerm g_0 (ATerm), ATerm t)
         t = g_0(t);
         s_34 = t;
         t = n_34;
-        t = f_0(t);
+        t = e_0(t);
         t_34 = t;
         t = o_34;
         {
@@ -3545,7 +3545,7 @@ ATerm reverse_acc_2_0 (ATerm f_0 (ATerm), ATerm g_0 (ATerm), ATerm t)
             t = (ATerm) ATinsert(CheckATermList(s_34), t_34);
             return(t);
           }
-          t = reverse_acc_2_0(f_0, l_5, t);
+          t = reverse_acc_2_0(e_0, l_5, t);
         }
       }
     }

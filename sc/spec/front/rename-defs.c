@@ -263,9 +263,9 @@ void init_constant_terms (void)
   ATprotect(&(term_r_8));
   term_r_8 = (ATerm) ATmakeAppl(sym_Undefined_0);
   ATprotect(&(term_s_8));
-  term_s_8 = (ATerm) ATmakeAppl(ATmakeSymbol("l_0", 0, ATtrue));
+  term_s_8 = (ATerm) ATmakeAppl(ATmakeSymbol("m_0", 0, ATtrue));
   ATprotect(&(term_v_8));
-  term_v_8 = (ATerm) ATmakeAppl(ATmakeSymbol("c_0", 0, ATtrue));
+  term_v_8 = (ATerm) ATmakeAppl(ATmakeSymbol("b_0", 0, ATtrue));
   ATprotect(&(term_y_8));
   term_y_8 = (ATerm) ATmakeAppl(ATmakeSymbol("g_0", 0, ATtrue));
   ATprotect(&(term_b_9));
@@ -351,7 +351,7 @@ ATerm assert_1_0 (ATerm v_115 (ATerm), ATerm);
 ATerm HoArg_0_0 (ATerm);
 ATerm c_1 (ATerm);
 ATerm concat_strings_0_0 (ATerm);
-ATerm Cify_1_0 (ATerm m_0 (ATerm), ATerm);
+ATerm Cify_1_0 (ATerm l_0 (ATerm), ATerm);
 ATerm escape_1_0 (ATerm v_103 (ATerm (ATerm), ATerm), ATerm);
 ATerm foldr_3_0 (ATerm u_98 (ATerm), ATerm v_98 (ATerm), ATerm w_98 (ATerm), ATerm);
 ATerm e_1 (ATerm);
@@ -419,7 +419,7 @@ ATerm f_3 (ATerm);
 ATerm g_3 (ATerm);
 ATerm h_3 (ATerm);
 ATerm verbose_option_0_0 (ATerm);
-ATerm Option_3_0 (ATerm a_0 (ATerm), ATerm b_0 (ATerm), ATerm d_0 (ATerm), ATerm);
+ATerm Option_3_0 (ATerm a_0 (ATerm), ATerm c_0 (ATerm), ATerm d_0 (ATerm), ATerm);
 ATerm i_3 (ATerm);
 ATerm j_3 (ATerm);
 ATerm k_3 (ATerm);
@@ -516,7 +516,7 @@ ATerm g_1 (ATerm w_0, ATerm t)
   if(match_cons(t, sym_Defined_2))
     {
       ATerm r_5 = ATgetArgument(t, 0);
-      if((ATgetSymbol((ATermAppl) r_5) != ATmakeSymbol("c_0", 0, ATtrue)))
+      if((ATgetSymbol((ATermAppl) r_5) != ATmakeSymbol("b_0", 0, ATtrue)))
         _fail(t);
       y_0 = ATgetArgument(t, 1);
     }
@@ -898,7 +898,7 @@ ATerm HoArg_0_0 (ATerm t)
               if(match_cons(t, sym_Defined_2))
                 {
                   ATerm k_7 = ATgetArgument(t, 0);
-                  if((ATgetSymbol((ATermAppl) k_7) != ATmakeSymbol("l_0", 0, ATtrue)))
+                  if((ATgetSymbol((ATermAppl) k_7) != ATmakeSymbol("m_0", 0, ATtrue)))
                     _fail(t);
                   q_5 = ATgetArgument(t, 1);
                 }
@@ -985,7 +985,7 @@ ATerm concat_strings_0_0 (ATerm t)
   t = SSL_implode_string(c_6);
   return(t);
 }
-ATerm Cify_1_0 (ATerm m_0 (ATerm), ATerm t)
+ATerm Cify_1_0 (ATerm l_0 (ATerm), ATerm t)
 {
   ATerm p_6 = NULL,q_6 = NULL;
   if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
@@ -1000,7 +1000,7 @@ ATerm Cify_1_0 (ATerm m_0 (ATerm), ATerm t)
     {
       ATerm t_6 = NULL;
       t = q_6;
-      t = m_0(t);
+      t = l_0(t);
       t_6 = t;
       t = (ATerm) ATinsert(ATinsert(CheckATermList(t_6), term_u_7), term_u_7);
     }
@@ -1010,7 +1010,7 @@ ATerm Cify_1_0 (ATerm m_0 (ATerm), ATerm t)
         {
           ATerm x_6 = NULL;
           t = q_6;
-          t = m_0(t);
+          t = l_0(t);
           x_6 = t;
           t = (ATerm) ATinsert(CheckATermList(x_6), term_u_7);
         }
@@ -1020,7 +1020,7 @@ ATerm Cify_1_0 (ATerm m_0 (ATerm), ATerm t)
           if(((ATgetType(t) != AT_INT) || (ATgetInt((ATermInt) t) != 39)))
             _fail(t);
           t = q_6;
-          t = m_0(t);
+          t = l_0(t);
           b_7 = t;
           t = (ATerm) ATinsert(ATinsert(ATinsert(CheckATermList(b_7), term_u_7), term_v_7), term_u_7);
         }
@@ -2355,7 +2355,7 @@ ATerm verbose_option_0_0 (ATerm t)
     }
   return(t);
 }
-ATerm Option_3_0 (ATerm a_0 (ATerm), ATerm b_0 (ATerm), ATerm d_0 (ATerm), ATerm t)
+ATerm Option_3_0 (ATerm a_0 (ATerm), ATerm c_0 (ATerm), ATerm d_0 (ATerm), ATerm t)
 {
   ATerm t_15 = NULL,u_15 = NULL;
   if(match_string(t, "register-usage-info"))
@@ -2381,7 +2381,7 @@ ATerm Option_3_0 (ATerm a_0 (ATerm), ATerm b_0 (ATerm), ATerm d_0 (ATerm), ATerm
       t = t_15;
       t = a_0(t);
       t = term_o_5;
-      t = b_0(t);
+      t = c_0(t);
       y_15 = t;
       t = (ATerm) ATinsert(CheckATermList(u_15), y_15);
     }

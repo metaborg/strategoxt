@@ -264,7 +264,7 @@ void init_constant_terms (void)
   ATprotect(&(term_g_11));
   term_g_11 = (ATerm) ATmakeAppl(sym_Scopes_0);
   ATprotect(&(term_n_11));
-  term_n_11 = (ATerm) ATmakeAppl(ATmakeSymbol("c_0", 0, ATtrue));
+  term_n_11 = (ATerm) ATmakeAppl(ATmakeSymbol("b_0", 0, ATtrue));
   ATprotect(&(term_o_11));
   term_o_11 = (ATerm) ATmakeAppl(sym_Defined_1, term_n_11);
   ATprotect(&(term_d_13));
@@ -445,7 +445,7 @@ ATerm h_4 (ATerm);
 ATerm i_4 (ATerm);
 ATerm j_4 (ATerm);
 ATerm verbose_option_0_0 (ATerm);
-ATerm Option_3_0 (ATerm a_0 (ATerm), ATerm b_0 (ATerm), ATerm d_0 (ATerm), ATerm);
+ATerm Option_3_0 (ATerm a_0 (ATerm), ATerm c_0 (ATerm), ATerm d_0 (ATerm), ATerm);
 ATerm l_4 (ATerm);
 ATerm m_4 (ATerm);
 ATerm o_4 (ATerm);
@@ -1347,7 +1347,7 @@ ATerm ElimVar_0_0 (ATerm t)
                       if(match_cons(t, sym_Defined_1))
                         {
                           ATerm e_10 = ATgetArgument(t, 0);
-                          if((ATgetSymbol((ATermAppl) e_10) != ATmakeSymbol("c_0", 0, ATtrue)))
+                          if((ATgetSymbol((ATermAppl) e_10) != ATmakeSymbol("b_0", 0, ATtrue)))
                             _fail(t);
                         }
                       else
@@ -2879,7 +2879,7 @@ ATerm verbose_option_0_0 (ATerm t)
     }
   return(t);
 }
-ATerm Option_3_0 (ATerm a_0 (ATerm), ATerm b_0 (ATerm), ATerm d_0 (ATerm), ATerm t)
+ATerm Option_3_0 (ATerm a_0 (ATerm), ATerm c_0 (ATerm), ATerm d_0 (ATerm), ATerm t)
 {
   ATerm l_22 = NULL,m_22 = NULL;
   if(match_string(t, "register-usage-info"))
@@ -2905,7 +2905,7 @@ ATerm Option_3_0 (ATerm a_0 (ATerm), ATerm b_0 (ATerm), ATerm d_0 (ATerm), ATerm
       t = l_22;
       t = a_0(t);
       t = term_x_6;
-      t = b_0(t);
+      t = c_0(t);
       q_22 = t;
       t = (ATerm) ATinsert(CheckATermList(m_22), q_22);
     }
