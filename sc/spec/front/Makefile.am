@@ -25,8 +25,6 @@ SCFLAGS = -I $(srcdir)/../sig \
 
 libexec_PROGRAMS = frontend extract extract-all rename-defs inline 
 
-frontend_SOURCES = frontend.str
-
 CLEANFILES = *.dep 
 
 MOSTLYCLEANFILES = extract-all.c  extract.c  frontend.c  inline.c  rename-defs.c

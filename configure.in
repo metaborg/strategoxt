@@ -16,7 +16,7 @@
 # 02111-1307, USA.
 
 AC_INIT(Makefile.in)
-AM_INIT_AUTOMAKE(StrategoXT,0.9beta4)
+AM_INIT_AUTOMAKE(StrategoXT,0.9beta5)
 
 #AC_CONFIG_AUX_DIR([config])
 
@@ -164,8 +164,8 @@ AB_CONFIG_PKG(graph-tools,
 )
 AB_CONFIG_PKG(gpp,
    --with-asfix-tools=${prefix}
-   --with-sglr=${prefix}
-   --with-pgen=${prefix}
+   --with-sglr=${SGLR}
+   --with-pgen=${PGEN}
    --with-graphviz=${prefix}
    --with-graph-tools=${prefix}
    --with-stratego=${prefix}
@@ -173,8 +173,8 @@ AB_CONFIG_PKG(gpp,
 )
 AB_CONFIG_PKG(sdf-tools,
    --with-stratego=${prefix}
-   --with-sglr=${prefix}
-   --with-pgen=${prefix}
+   --with-sglr=${SGLR}
+   --with-pgen=${PGEN}
    --with-asfix-tools=${prefix}
    --with-graph-tools=${prefix}
    --with-gpp=${prefix}

@@ -641,7 +641,7 @@ void init_constant_terms (void)
   ATprotect(&(term_h_18));
   term_h_18 = (ATerm) ATmakeAppl(sym_Var_1, term_g_18);
   ATprotect(&(term_s_18));
-  term_s_18 = (ATerm) ATmakeAppl(ATmakeSymbol("e_0", 0, ATtrue));
+  term_s_18 = (ATerm) ATmakeAppl(ATmakeSymbol("g_0", 0, ATtrue));
   ATprotect(&(term_u_18));
   term_u_18 = (ATerm) ATmakeAppl(sym__0);
   ATprotect(&(term_z_18));
@@ -649,7 +649,7 @@ void init_constant_terms (void)
   ATprotect(&(term_m_19));
   term_m_19 = (ATerm) ATmakeAppl(sym_Scopes_0);
   ATprotect(&(term_a_20));
-  term_a_20 = (ATerm) ATmakeAppl(ATmakeSymbol("f_0", 0, ATtrue));
+  term_a_20 = (ATerm) ATmakeAppl(ATmakeSymbol("h_0", 0, ATtrue));
   ATprotect(&(term_g_20));
   term_g_20 = (ATerm) ATmakeAppl(ATmakeSymbol("definition", 0, ATtrue));
   ATprotect(&(term_h_20));
@@ -657,9 +657,9 @@ void init_constant_terms (void)
   ATprotect(&(term_e_21));
   term_e_21 = (ATerm) ATmakeInt(0);
   ATprotect(&(term_h_21));
-  term_h_21 = (ATerm) ATmakeAppl(ATmakeSymbol("d_0", 0, ATtrue));
+  term_h_21 = (ATerm) ATmakeAppl(ATmakeSymbol("b_0", 0, ATtrue));
   ATprotect(&(term_k_21));
-  term_k_21 = (ATerm) ATmakeAppl(ATmakeSymbol("c_0", 0, ATtrue));
+  term_k_21 = (ATerm) ATmakeAppl(ATmakeSymbol("a_0", 0, ATtrue));
   ATprotect(&(term_m_21));
   term_m_21 = (ATerm) ATmakeAppl(sym_ConstType_1, term_h_18);
   ATprotect(&(term_q_21));
@@ -1069,7 +1069,7 @@ ATerm try_1 (ATerm, ATerm j_107 (ATerm));
 ATerm table_get_0 (ATerm);
 ATerm table_push_0 (ATerm);
 ATerm register_usage_1 (ATerm, ATerm u_85 (ATerm));
-ATerm Option_3 (ATerm, ATerm a_0 (ATerm), ATerm b_0 (ATerm), ATerm k_0 (ATerm));
+ATerm Option_3 (ATerm, ATerm c_0 (ATerm), ATerm d_0 (ATerm), ATerm k_0 (ATerm));
 ATerm system_usage_switch_0 (ATerm);
 ATerm UndefinedOption_0 (ATerm);
 ATerm Cons_2 (ATerm, ATerm x_79 (ATerm), ATerm y_79 (ATerm));
@@ -1166,7 +1166,7 @@ ATerm Expl_0 (ATerm t)
                 {
                   t = not_null(e_10);
                   {
-                    ATerm g_0 (ATerm t)
+                    ATerm e_0 (ATerm t)
                     {
                       ATerm v_10 = NULL,w_10 = NULL,x_10 = NULL;
                       v_10 = t;
@@ -1195,7 +1195,7 @@ ATerm Expl_0 (ATerm t)
                         }
                       return(t);
                     }
-                    t = oncetd_1(t, g_0);
+                    t = oncetd_1(t, e_0);
                     {
                       y_10 = t;
                       if(((t_10 != NULL) && (t_10 != y_10)))
@@ -1240,7 +1240,7 @@ ATerm Expl_0 (ATerm t)
                           {
                             t = not_null(e_10);
                             {
-                              ATerm h_0 (ATerm t)
+                              ATerm f_0 (ATerm t)
                               {
                                 ATerm h_11 = NULL,i_11 = NULL,j_11 = NULL;
                                 h_11 = t;
@@ -1269,7 +1269,7 @@ ATerm Expl_0 (ATerm t)
                                   }
                                 return(t);
                               }
-                              t = oncetd_1(t, h_0);
+                              t = oncetd_1(t, f_0);
                               {
                                 k_11 = t;
                                 if(((e_11 != NULL) && (e_11 != k_11)))
@@ -4486,7 +4486,7 @@ ATerm TupleDeclarations_0 (ATerm t)
           z_60 = ATgetArgument(y_60, 0);
           a_61 = ATgetArgument(y_60, 1);
           w_60 :
-          if(match_string(z_60, "e_0"))
+          if(match_string(z_60, "g_0"))
             {
               if(((x_60 != NULL) && (x_60 != a_61)))
                 _fail(a_61);
@@ -4543,7 +4543,7 @@ ATerm CheckConsError_0 (ATerm t)
                 l_62 = ATgetArgument(j_62, 1);
                 m_62 = ATgetArgument(j_62, 2);
                 w_61 :
-                if(match_string(k_62, "f_0"))
+                if(match_string(k_62, "h_0"))
                   {
                     ATerm n_62 = NULL;
                     if(((i_62 != NULL) && (i_62 != l_62)))
@@ -4967,7 +4967,7 @@ ATerm CheckCons_0 (ATerm t)
                             o_70 = ATgetArgument(n_70, 0);
                             p_70 = ATgetArgument(n_70, 1);
                             v_69 :
-                            if(match_string(o_70, "d_0"))
+                            if(match_string(o_70, "b_0"))
                               {
                                 if(((d_70 != NULL) && (d_70 != p_70)))
                                   _fail(p_70);
@@ -5023,7 +5023,7 @@ ATerm CheckCons_0 (ATerm t)
                               x_70 = ATgetArgument(w_70, 0);
                               y_70 = ATgetArgument(w_70, 1);
                               a_70 :
-                              if(match_string(x_70, "c_0"))
+                              if(match_string(x_70, "a_0"))
                                 {
                                   if(((d_70 != NULL) && (d_70 != y_70)))
                                     _fail(y_70);
@@ -13912,7 +13912,7 @@ ATerm register_usage_1 (ATerm t, ATerm u_85 (ATerm))
   }
   return(t);
 }
-ATerm Option_3 (ATerm t, ATerm a_0 (ATerm), ATerm b_0 (ATerm), ATerm k_0 (ATerm))
+ATerm Option_3 (ATerm t, ATerm c_0 (ATerm), ATerm d_0 (ATerm), ATerm k_0 (ATerm))
 {
   ATerm p_165 = NULL,q_165 = NULL,r_165 = NULL;
   p_165 = t;
@@ -13933,14 +13933,14 @@ ATerm Option_3 (ATerm t, ATerm a_0 (ATerm), ATerm b_0 (ATerm), ATerm k_0 (ATerm)
             w_34 = t;
             {
               t = not_null(q_165);
-              t = a_0(t);
+              t = c_0(t);
             }
             t = w_34;
             {
               ATerm v_165 = NULL;
               t = term_u_18;
               {
-                t = b_0(t);
+                t = d_0(t);
                 {
                   v_165 = t;
                   if(((u_165 != NULL) && (u_165 != v_165)))

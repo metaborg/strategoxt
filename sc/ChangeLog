@@ -1,3 +1,8 @@
+2002-11-21  Eelco Visser  <visser@acm.org>
+
+	* spec/front/Makefile.am: first compile, then link (include flags where not
+	given to linker)
+
 2002-11-19  Eelco Visser  <visser@acm.org>
 
 	* spec/*/*.r : renamed extension .r to .str for automake support
