@@ -37,10 +37,13 @@ strategies
       ; if-not-lib(add-main)
       ; repair-types
       ; pre-desugar
+      ; save-as5(!".pre-desugar")
       ; normalize-spec
+      ; save-as5(!".normalize-spec")
       ; use-def
       ; check-constructors
       ; spec-to-sdefs
+      ; save-as5(!".spec-to-sdefs")
       ; rename-vars
       ; desugar
       ; output-frontend
@@ -204,7 +207,7 @@ strategies
       copy-to(get-outfile(ext) => file1)
       ; xtc-transform(!"pp-stratego", !["--abstract" | <pass-verbose> ] )
       ; copy-to(<conc-strings> (file1, ".txt") => file2)
-      ; say(!["abstract syntax in", file1, " concrete syntax in ", file2])
+      ; say(<concat-strings> ["abstract syntax in ", file1, ", concrete syntax in ", file2])
     )
 
   save-as1(ext) = if-keep1(save-as(ext))
