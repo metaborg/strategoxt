@@ -10,7 +10,7 @@
 
 \begin{code}
 module list-set
-imports list-basic term
+imports list-basic list-misc term
 
 rules
  

@@ -1,7 +1,7 @@
 \literate[list-misc]
 \begin{code}
 module list-misc
-imports list-cons list-basic
+imports list-cons list-basic integers
 strategies
 
   member = (?x, fetch(?x))
