@@ -77,60 +77,37 @@
    exports --  V is=2 [KW["exports"] V vs=1[_1]],
    hiddens --  V is=2 [KW["hiddens"] V vs=1[_1]],
 
-   RenamedModuleName --
-      H hs=0 [ _1 KW["["] H[_2] KW["]"]],
+   RenamedModuleName -- H hs=0 [ _1 KW["["] H[_2] KW["]"]],
+   RenamedModule  -- V vs=0 is=2 [ _1 _2 ],
+   renamed-module -- V vs=0 is=2 [ _1 _2 ],
 
-   RenamedModule --
-      V vs=0 is=2 [ _1 _2 ],
-
-   renamings --
-      H hs=1 [KW["["] V vs=0 [A(l,l,l) [_1]] KW["]"]],
-
+   renamings -- H hs=1 [KW["["] V vs=0 [A(l,l,l) [_1]] KW["]"]],
    renamings.1:iter-star -- _1,
 
-   renaming --
-      R [ _1 "=>" _2],
+   renaming --  R [ _1 "=>" _2],
+   symbol   --  R [ _1 "=>" _2],  
     
-   Id --
-      KW["id"] H hs=0["(" _1 ")"],
+   Id -- KW["id"] H hs=0["(" _1 ")"],
       
-   Imports -- 
-      H[ KW["imports"] HV[_1]],
+   Imports -- H[ KW["imports"] HV[_1]],
+   imports -- H[ KW["imports"] HV[_1]],
+
+   empty -- H hs=0 [KW["("] KW[")"]],
       
-   empty -- 
-      H hs=0 [KW["("] KW[")"]],
-      
-   seq -- 
-      "(" _1 _2 ")",
-      
+   seq -- "(" _1 _2 ")",
    seq.2:iter -- _1,
    
-   opt -- 
-      H hs=0 [H[_1] KW["?"]],
+   opt           -- H hs=0 [H[_1] KW["?"]],
+   iter          -- H hs=0 [H[_1] KW["+"]],
+   iter-star     -- H hs=0 [H[_1] KW["*"]],
 
-   iter -- 
-      H hs=0[ H[_1] KW["+"]],
-      
-   iter-star --
-      H hs=0[ H[_1] KW["*"]],
-
-   iter-sep -- 
-      H hs=0["{" H [_1 _2] "}" KW["+"]],
-      
-   iter-star-sep -- 
-      H hs=0["{" H[_1 _2] "}" KW["*"]],
-      
-   iter-n -- 
-      H hs=0["{" _1 "}" _2 KW["+"]],
-      
-   iter-sep-n -- 
-          H hs=0 ["{" H[_1_2] "}" _3 KW["+"]],
+   iter-sep      -- H hs=0 ["{" H [_1 _2] "}" KW["+"]],
+   iter-star-sep -- H hs=0 ["{" H[_1 _2]  "}" KW["*"]],
+   iter-n        -- H hs=0 ["{" _1        "}" _2 KW["+"]],
+   iter-sep-n    -- H hs=0 ["{" H[_1_2]   "}" _3 KW["+"]],
           
-   set -- 
-      KW["Set"] H hs=0["[" _1 "]"],
-      
-   pair -- 
-      _1 KW["#"] _2,
+   set -- KW["Set"] H hs=0["[" _1 "]"],
+   pair -- _1 KW["#"] _2,
       
    func -- 
       "(" _1 KW["=>"] _2 ")",
