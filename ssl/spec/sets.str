@@ -104,32 +104,52 @@ strategies
   iset-elements =
     ?IndexedSet(set); prim("SSL_indexedSet_elements", set)
 
-  /**
-   *
-   */
-  iset-union =
-    ?(set1, set2)
-  ; where(<iset-elements; map({elem: ?elem; <iset-add(|elem)> set1 })> set2)
-  ; !set1
 
-  iset-isect =
-    ?(set1, set2)
-  ; where(<iset-elements> set1
+  /**
+   * Unites a set with another.
+   *
+   * @param  set2  IndexedSet
+   * @type IndexedSet -> IndexedSet
+   */
+  iset-union(|set2) =
+    ?set1
+  ; where(<iset-elements; map({ elem: ?elem; <iset-add(|elem)> set1 })> set2)
+
+  /**
+   * Intersects a set with another.
+   *
+   * @param  set2  IndexedSet
+   * @type IndexedSet -> IndexedSet
+   */
+  iset-isect(|set2) =
+    ?set1
+  ; where(iset-elements
           ; map({ elem:
                   ?elem
                 ; (<iset-contains(|elem)> set2
                    <+ <iset-remove(|elem)> set1)
                 }))
-  ; !set1
 
-  iset-subset =
-    ?(set1, set2)
-  ; where(<iset-elements; map({elem: ?elem; <iset-contains(|elem)> set1 })> set2)
+  /**
+   * Checks whether one set is a subset of another.
+   *
+   * @param  set2  IndexedSet
+   * @type IndexedSet -> IndexedSet
+   */
+  iset-subset(|set2) =
+    ?set1
+  ; where(<iset-elements; map({ elem: ?elem; <iset-contains(|elem)> set1 })> set2)
 
-  iset-eq =
-    ?(set1, set2)
-  ; where(<iset-subset> (set1, set2))
-  ; where(<iset-subset> (set2, set1))
+  /**
+   * Checks whether a set has equal contents as another.
+   *
+   * @param  set2  IndexedSet
+   * @type IndexedSet -> IndexedSet
+   */
+  iset-eq(|set2) =
+    ?set1
+  ; where(iset-subset(|set2))
+  ; where(<iset-subset(|set1)> set2)
 
 /**
  * Low-level set strategies (having knowledge of an index)

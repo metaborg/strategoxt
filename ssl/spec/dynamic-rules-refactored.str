@@ -269,8 +269,8 @@ strategies // change sets
     where <dr-destroy-change-set> cs
 
   dr-commit-labels(|labelset) =
-    [ ChangeSet(<iset-union> (<id>, labelset), id)
-      + RuleScope(<iset-union> (<id>, labelset), id)
+    [ ChangeSet(iset-union(|labelset), id)
+      + RuleScope(iset-union(|labelset), id)
     | id]
 
   dr-apply-change(|tbl) :
@@ -706,10 +706,10 @@ strategies // rule-set equality
   dr-eq-rule-sets =
   let rseq =
         ?(RuleScope(lbl1, tbl1), RuleScope(lbl2, tbl2))
-      ; <iset-eq> (lbl1, lbl2)
+      ; <iset-eq(|lbl2)> lbl1
       ; <hashtable-eq> (tbl1, tbl2)
     +   ?(ChangeSet(lbl1, tbl1), ChangeSet(lbl2, tbl2))
-      ; <iset-eq> (lbl1, lbl2)
+      ; <iset-eq(|lbl2)> lbl1
       ; <hashtable-eq> (tbl1, tbl2)
    in where(zip(rseq))
   end
@@ -745,6 +745,7 @@ strategies // debugging
     ?RuleScope(labelset, tbl)
   ; where(
       debug
+    ; <iset-elements; debug(!"labels: ")> labelset
     ; <hashtable-keys> tbl
 	  ; map(where(<printnl>(stderr, ["  ", <id>, " -> " ]))
           ; where(\ key -> <hashtable-get(|key)> tbl \
@@ -757,9 +758,12 @@ strategies // debugging
     ?ChangeSet(labelset, tbl)
   ; where(
       debug
+    ; <iset-elements; debug(!"labels: ")> labelset
     ; <hashtable-keys> tbl
     ; map(where(<printnl>(stderr, ["  ", <id>, " -> "]))
           ; where(\ key -> <hashtable-get(|key)> tbl \
-                  ; <printnl>(stderr, ["    ", <id>]))
+//                  ; <printnl>(stderr, ["    ", <id>]))
+                  ; map(<printnl>(stderr, ["    ", <id>]))
+                 )
          )
     )
