@@ -16,6 +16,7 @@ bootstep :
 bootcheck :
 	cd test1 	&& $(MAKE) clean && $(MAKE) check
 	cd test2 	&& $(MAKE) clean && $(MAKE) check
+	cd testneg 	&& $(MAKE) clean && $(MAKE) check
 
 #	cd testlib 	&& $(MAKE) clean && $(MAKE) check
 #	cd testspec 	&& $(MAKE) clean && $(MAKE) check
