@@ -95,8 +95,6 @@ exports
 %%    Strategy "#" "(" Strategy ")" 	  -> Strategy {cons("ExplodeCong")}
     Strategy "#" StrategyParen	  	  -> Strategy {cons("ExplodeCong")}
 
-
-
   %% Syntactic sugar sugar
 
   context-free syntax

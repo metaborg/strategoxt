@@ -33,8 +33,9 @@ exports
     "~" StrategoTerm      		-> Strategy {cons("FromTerm")}
     "~str:" StrategoTerm      		-> String {cons("FromTerm")}
     "~" StrategoTerm      		-> {ID ","}+ {cons("FromTerm")}
+    "~term*:" StrategoTerm      	-> {Term ","}+ {cons("FromTerm")}
 
-  context-free syntax
+  context-free syntax 
 
     %% Hacks
 
@@ -66,7 +67,7 @@ exports
     "as"[0-9\']*  		-> {Typedid ","}+ {prefer} 
 
     "tp"[0-9\']*		-> Type	
-    "tp"[0-9\']*	"*"	-> Type	{Type "*"}+	
+    "tp"[0-9\']*	"*"	-> {Type "*"}+	
 
   lexical syntax
     "xs"[0-9\']*       		-> Id  {reject}
