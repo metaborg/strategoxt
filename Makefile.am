@@ -141,5 +141,12 @@ SUBST = s+__SRTS_VERSION__+$(VERSION)+g;\
 
 CLEANFILES = 
 
+source-tree.txt : 
+	tree -d | grep -v CVS \
+		| grep -v autom4te-2.53.cache \
+		| grep -v data \
+		| grep -v config \
+		> $@
+
 #include Makefile.rpm
 
