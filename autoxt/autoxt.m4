@@ -24,7 +24,7 @@ AC_DEFUN([XT_DARWIN],
   xt_darwin="no"
   case $host_os in
     darwin*)
-      xt_darwin = "yes"
+      xt_darwin="yes"
       ;;
   esac
   AC_MSG_RESULT([$xt_darwin])
