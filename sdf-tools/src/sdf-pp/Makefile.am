@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.2 2001/10/02 12:31:23 daybuild Exp $
+# $Id: Makefile.am,v 1.3 2002/03/16 15:15:31 eelco Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -28,8 +28,8 @@ SUBDIRS      = data
 # What scipts to build
 bin_SCRIPTS  = tohtml-sdf sdf2text
 
-# Tests to run
-# TESTS        = program-check
+#Tests to run
+TESTS        = sdf2text-check
 
 # List all extra files that should be distributed here
 EXTRA_DIST   = tohtml-sdf.sh.src sdf2text.sh.src

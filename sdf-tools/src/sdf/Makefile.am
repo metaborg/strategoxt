@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.9 2001/11/22 13:34:21 mdejonge Exp $
+# $Id: Makefile.am,v 1.10 2002/03/16 15:15:31 eelco Exp $
 
 # define any subdir here
 SUBDIRS      = data
@@ -38,3 +38,4 @@ sdf.cons.tbl : sdf.cons.def
 
 %.pp.af : %.pp
 	$(MAKE) -f $(GPP)/share/gpp/gpp.Makefile $@
+

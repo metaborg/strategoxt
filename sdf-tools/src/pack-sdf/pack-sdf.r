@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 // 02111-1307, USA.
 
-(* $Id: pack-sdf.r,v 1.4 2002/03/14 22:50:06 eelco Exp $
+(* $Id: pack-sdf.r,v 1.5 2002/03/16 15:15:30 eelco Exp $
 
 	Pack-sdf creates an SDF definition file containing all modules
 	imported from the given top module.
@@ -32,65 +32,13 @@ module pack-sdf
 imports lib Sdf-ParseTree-Syntax Kernel-Sdf-Syntax
 	asfix-abstractions sglr pack-modules gt-paths
 
-signature
-constructors
-'id: Arg -> ID
-overlays 
-
-// Module -> <START>
-Module_START(w1, t, w2) =
-   appl(prod([sort("<START>")],sort("SURROGATE-START"),attrs([cons("\"sdf-2.1\""),'id("GB-Main")])),[
-   appl(prod([cf(opt(layout)),cf(sort("Module")),cf(opt(layout))],sort("<START>"),no-attrs)
-   ,[w1,t,w2])])
-
-// SDF -> <START>
-SDF_START(w1, t, w2) =
-   appl(prod([sort("<START>")],sort("SURROGATE-START"),attrs([cons("\"sdf-2.1\""),'id("GB-Main")])),[
-   appl(prod([cf(opt(layout)),cf(sort("SDF")),cf(opt(layout))],sort("<START>"),no-attrs)
-   ,[w1,t,w2])])
-
-//   -> M*
-EmptyModuleIterStar =
-   appl(
-   prod([],cf(iter-star(sort("Module"))),no-attrs),[])
-
-// M+ -> M*
-NonEmptyModuleIterStar(m) = 
-   appl(
-prod([cf(iter(sort("Module")))],cf(iter-star(sort("Module"))),no-attrs),[m])
-
-// M+ M+ -> M+ {left}
-MM-iter(m1, w, m2) =
-appl(prod([cf(iter(sort("Module"))),cf(opt(layout)),cf(iter(sort("Module")))],cf(iter(sort("Module"))),attrs([atr("left")])),[
-m1, w, m2])
-
-// M -> M+
-M-iter( m ) = 
-appl(prod([cf(sort("Module"))],cf(iter(sort("Module"))),no-attrs),[m])
-
-//  Module* -> Definition
-Module-s-overlay ( g_6 ) = appl ( prod ( [ cf ( iter-star ( sort ( "Module" ) ) ) ] , cf ( sort ( "Definition" ) ) , attrs ( [ 'id ( "Modular-Sdf-Syntax" ) ] ) ) , [ g_6 ] )
-
-// definition Definition -> SDF
-Definition-overlay(b_1,c_1) = 
-appl(prod([lit("definition"),cf(opt(layout())),cf(sort("Definition"))],cf(sort("SDF")),attrs([cons("Definition"),'id("Sdf2-Syntax")])),[appl(prod([
-
-char-class([100]),
-char-class([101]),
-char-class([102]),
-char-class([105]),
-char-class([110]),
-char-class([105]),
-char-class([116]),
-char-class([105]),
-char-class([111]),
-char-class([110])],lit("definition"),no-attrs()),[100,101,102,105,110,105,116,105,111,110]),b_1,c_1])
 
 strategies
 
 // Parsing SDF files and chasing imports
 
-  main = pack-modules(pack-sdf)
+  main = 
+    pack-modules(pack-sdf)
 
   pack-sdf(mkpt) =
     \ root -> (root, ["." | <mkpt>()], []) \;
@@ -138,10 +86,13 @@ get-module-name =
 
 
 ConcatModules =
-   rec x({w1, w2, m, m1, m2, xs:
-      []; !(NoCfLayout, EmptyModuleIterStar, NoCfLayout)
-   <+
-      ?[Module_START(w1, m, w2)];
+   rec x(
+   {w1, w2, m, m1, m2, xs:
+      []; 
+      !(NoCfLayout, EmptyModuleIterStar, NoCfLayout)
+   <+ 
+      [id];
+      ?[Module_START(w1, m, w2)]; 
       !(NoCfLayout, M-iter(m), NoCfLayout)
    <+
       ?[m1,m2|xs];
@@ -160,3 +111,56 @@ concat-modules =
             <concat-layout>[w2, OptNewLine, OptNewLine, w3], 
             m2), w4)
 
+signature
+constructors
+'id: Arg -> ID
+overlays 
+
+// Module -> <START>
+Module_START(w1, t, w2) =
+   appl(prod([sort("<START>")],sort("SURROGATE-START"),attrs([term(cons("\"sdf-2.1\""))])),[
+   appl(prod([cf(opt(layout)),cf(sort("Module")),cf(opt(layout))],sort("<START>"),no-attrs)
+   ,[w1,t,w2])])
+
+// SDF -> <START>
+SDF_START(w1, t, w2) =
+   appl(prod([sort("<START>")],sort("SURROGATE-START"),attrs([term(cons("\"sdf-2.1\""))])),[
+   appl(prod([cf(opt(layout)),cf(sort("SDF")),cf(opt(layout))],sort("<START>"),no-attrs)
+   ,[w1,t,w2])])
+
+//   -> M*
+EmptyModuleIterStar =
+   appl(
+   prod([],cf(iter-star(sort("Module"))),no-attrs),[])
+
+// M+ -> M*
+NonEmptyModuleIterStar(m) = 
+   appl(
+prod([cf(iter(sort("Module")))],cf(iter-star(sort("Module"))),no-attrs),[m])
+
+// M+ M+ -> M+ {left}
+MM-iter(m1, w, m2) =
+appl(prod([cf(iter(sort("Module"))),cf(opt(layout)),cf(iter(sort("Module")))],cf(iter(sort("Module"))),attrs([atr("left")])),[
+m1, w, m2])
+
+// M -> M+
+M-iter( m ) = 
+appl(prod([cf(sort("Module"))],cf(iter(sort("Module"))),no-attrs),[m])
+
+//  Module* -> Definition
+Module-s-overlay ( g_6 ) = appl ( prod ( [ cf ( iter-star ( sort ( "Module" ) ) ) ] , cf ( sort ( "Definition" ) ) , no-attrs  ) , [ g_6 ] )
+
+// definition Definition -> SDF
+Definition-overlay(b_1,c_1) = 
+appl(prod([lit("definition"),cf(opt(layout())),cf(sort("Definition"))],cf(sort("SDF")),attrs([term(cons("Definition")),'id("Sdf2-Syntax")])),[appl(prod([
+
+char-class([100]),
+char-class([101]),
+char-class([102]),
+char-class([105]),
+char-class([110]),
+char-class([105]),
+char-class([116]),
+char-class([105]),
+char-class([111]),
+char-class([110])],lit("definition"),no-attrs()),[100,101,102,105,110,105,116,105,111,110]),b_1,c_1])
