@@ -18,6 +18,7 @@ appendreport() {
 }
 
 testgenfail() {
+  echo "===================================================================="
   mod=check-parenthesize-$def
   ${SDF2PARENTHESIZE} -i $def.def -o $mod.str -m $main --lang $def --omod $mod
   if test $? -eq 0; then
@@ -30,6 +31,7 @@ testgenfail() {
 }
 
 testcompilesuccess() {
+  echo "===================================================================="
   mod=check-parenthesize-$def
   ${SDF2PARENTHESIZE} -i $def.def -o $mod.str -m $main --lang $def --omod $mod
   if test $? -eq 1; then
@@ -52,7 +54,7 @@ testcompilesuccess() {
 def=Exp    main=Exp    testcompilesuccess
 def=ExpAmb main=ExpAmb testcompilesuccess
 def=Exp    main=Foo    testgenfail
-def=ExpAmb main=Foo    testgensuccess
+def=ExpAmb main=Foo    testgenfail
 
 echo "===================================================================="
 echo "                       sdf2parenthesize checks                      "

@@ -18,8 +18,9 @@ strategies
   io-sdf2parenthesize =
     xtc-io-wrap(parenthesize-options,
       xtc-transform(!"sdf2ast-conflicts", <conc> (<pass-verbose>, <pass-sdf-main-module>))
-    ; xtc-io-transform(core-sdf2parenthesize)
+    ; xtc-io-transform(core-sdf2parenthesize <+ log(|Error(), "rewriting failed. Please submit a bug report."); fail)
     ; xtc-transform(!"pp-stratego", !["--abstract" | <pass-verbose>])
+    <+ <xtc-exit> 1
     )
 
 strategies
@@ -92,9 +93,22 @@ strategies
  * Produce a module
  */
 strategies
+
+  innermost-module :
+    [] ->
+      |[ module M1
+         imports liblib
+         strategies
+
+           f =
+             io-wrap(id)
+      ]|
+    where
+        module-name => M1
+      ; <conc-strings> ("io-", M1) => f
   
   innermost-module :
-    rs ->
+    rs@[_ | _] ->
       |[ module M1
          imports liblib M2
          strategies
