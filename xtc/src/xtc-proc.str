@@ -49,11 +49,13 @@ strategies
     t -> FILE(name)
     where xtc-new-file => name
         ; <WriteToBinaryFile> (name, t)
+        ; <close-file> name
 
   write-to-text :
     t -> FILE(name)
     where xtc-new-file => name
         ; <WriteToTextFile> (name, t)
+        ; <close-file> name
 
   xtc-find-file = !FILE(<xtc-find>)
 
@@ -94,16 +96,19 @@ strategies
       ; copy-to(<get-config> "-o" <+ !stdout)
     )
 
-  xtc-iowrap(s) =
-    option-wrap(io-options, xtc-io(s))
+  // XTC-INPUT : 'read' input file, transform
+  xtc-input(s) =
+    xtc-temp-files(
+        (!FILE(<get-config> "-i") <+ !stdin)
+      ; s
+    )
 
-  xtc-iowrap(extra-options, s) =
-    option-wrap(extra-options <+ io-options, xtc-io(s))
+  // io-wrap for xtc tools: 'read' -i option, transform, and 'write' to -o option
+  xtc-io-wrap(s)             = xtc-io-wrap(fail, s)
+  xtc-io-wrap(extra-opts, s) = option-wrap(extra-opts <+ io-options, xtc-io(s))
 
-  // iowrap for xtc tools: 'read' -i option, transform, and 'write' to -o option
-
-  xtc-io-wrap(s) =
-    option-wrap(io-options, xtc-io(s))
+  xtc-iowrap(s)              = xtc-io-wrap(s)
+  xtc-iowrap(extra-opts, s)  = xtc-io-wrap(extra-opts, s)
 
   // XTC-COMMAND
   // Executing an external process
