@@ -4,7 +4,7 @@
  * @author  Martin Bravenboer <martin@cs.uu.nl>
  */
 module core-sdf-grammar2rtg
-imports rtg Sdf2 logging sdf-extra liblib
+imports rtg Sdf2 logging sdf-extra liblib sdf-xtc-tools
 
 strategies
 
@@ -25,7 +25,8 @@ strategies
     ; map(grammar2prodrules <+ log(|Error(), "Rewriting syntax section failed"); fail)
     ; concat
     ; if ?[] then
-        log(|Error(), "No production rules in RTG. Did you specify the right main module?"); fail
+        log(|Error(), "No production rules in RTG. Did you specify the right main module?")
+        ; <xtc-exit> 1
       else
         ?prods
       end
@@ -36,8 +37,8 @@ strategies
      */
   ; collect-om(is-start-prod)
   ; if ?[] then
-      log(|Error(), "No start productions found.")
-    ; fail
+      log(|Error(), "No start productions found. Did you specify any start-symbols in the syntax definition?")
+      ; <xtc-exit> 1
     else
       map(start-prod2tree; ?Ref(<id>) <+ err(!"Rewriting production to nonterm failed"); fail)
     ; !RTG(Start(<id>), ProdRules(prods))
@@ -174,7 +175,11 @@ strategies
       where <sym2nonterm> sym => A
           ; <syms2trees> syms => t*
           ; ( <get-cnstr-name> attrs => y
-            <+ log(|Error(), "No constructor name specified in production", p); fail)
+            <+ log-prod(|Error(), "No constructor name specified in production:", p)
+               ;    log(|Error(), "Resolution: please add a cons attribute to this production.")
+               ; if-verbose1(log(|Error(), "Production in abstract syntax: ", p))
+               ; <xtc-exit> 1
+            )
 
 /**
  * Injections
@@ -472,12 +477,12 @@ strategies
   sdf-symbol-to-string =
     Symbol2String
     ; newname
-    <+ debug(!"warning: cannot generate a nice name for symbol ")
-       ; say(!"  please report this bug at ")
-       ; say(!"    - https://catamaran.labs.cs.uu.nl/jira/browse/STR")
-       ; say(!"    - or martin@cs.uu.nl")
+    <+ log-sym(|Warning(), "Cannot generate a nice name for symbol", <id>)
+     ;     log(|Warning(), "  Please report this bug at ")
+     ;     log(|Warning(), "    - https://catamaran.labs.cs.uu.nl/jira/browse/STR")
+     ;     log(|Warning(), "    - or martin@cs.uu.nl")
      ; new
-     ; debug(!"  resolution: falling back to the ugly name ")
+     ;     log(|Warning(), "  Resolution: falling back to the ugly name ", <id>)
 
   Symbol2String :
     cf(sym) -> <Symbol2String> sym
@@ -529,6 +534,24 @@ strategies
 
   Symbol2String :
     alt(sym1, sym2) -> <concat-strings> [<Symbol2String> sym1, "_", <Symbol2String> sym2]
+
+strategies
+
+  log-sym(|severity, msg, sym) =
+    log-prod(|severity, msg, sym)
+
+  log-prod(|severity, msg, prod) =
+    where(
+      xtc-temp-files(
+        !prod
+      ; write-to
+      ; xtc-pp-sdf2
+      ; ?FILE(<read-text-file; trim-chars('\n' + '\r' + ' ' + '\t'); string-as-chars(filter(not('\n' + '\r')))>)
+      ; ?prodtxt
+      )
+    ; log(|severity, msg)
+    ; log(|severity, <conc-strings> ("  ", prodtxt))
+    )
 
 (*
   Sym2Strings = rec x(

@@ -18,6 +18,7 @@ strategies
     ; xtc-transform(!"sdf-desugar", pass-verbose)
     ; xtc-transform(!"core-sdf-grammar2rtg", pass-verbose)
     ; xtc-pp-rtg
+    <+ <xtc-exit> 1
 
   sdf2rtg-usage =
     <tool-doc> sdf2rtg-tool-doc
