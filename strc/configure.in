@@ -44,8 +44,4 @@ AC_OUTPUT([
 	spec/test3/Makefile 
 	spec/testlib/Makefile 
 	spec/testspec/Makefile 
-
-	spec/si/Makefile 
-	spec/si/stratego 
-	spec/si/data/Makefile
 ])

@@ -4,7 +4,7 @@ SUBDIRS = sig pack c front lib match opt strc si test1 test2 log
 
 DIST_SUBDIRS = testlib test3 testspec $(SUBDIRS)
 
-BOOTCLEAN_SUBDIRS = sig c front lib match opt strc pack si
+BOOTCLEAN_SUBDIRS = sig c front lib match opt strc pack
 
 bootstep :
 	$(MAKE) bootclean
