@@ -1,3 +1,7 @@
+2002-05-27  Merijn de Jonge <mdejonge@cwi.nl>
+   * package.conf: changed to dependency to graphviz-1.8.6 which finally
+     builds properly.
+
 2002-05-19  Merijn de Jonge <mdejonge@cwi.nl>
    * abox2latex: Fixed replace-quotes. It didn't work correctly due to the
      changed traversing of lists as of stratego 0.7
