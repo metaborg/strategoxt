@@ -11,7 +11,7 @@ STRINCLUDES      = -I $(top_srcdir)/sig \
                    -I $(top_srcdir)/xtc \
                    -I $(ATERM_FRONT)/share/aterm-front
 
-EXTRA_DIST       = $(wildcard *.str) $(wildcard *.meta)
+EXTRA_DIST       = $(wildcard *.str) $(wildcard *.meta) $(pkgdata_DATA)
 CLEANFILES       = $(wildcard *.dep)
 BOOTCLEANFILES   = $(wildcard *.c)
 
