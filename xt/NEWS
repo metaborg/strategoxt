@@ -18,7 +18,13 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: NEWS,v 1.10 2000/11/11 16:12:02 mdejonge Exp $
+# $Id: NEWS,v 1.11 2000/11/30 21:54:06 mdejonge Exp $
+
+Version 0.5
+  released: December 1, 2000
+        * Updated pkg-list and dev-pkg-list to bundle the most recent
+          versions of XT's sub-component's. See the file SOFTWARE for the
+          complete list of packages bundled by XT and their version numbers.
 
 Version 0.4
   released: November 12, 2000
