@@ -12,7 +12,7 @@ pre-pkgs/build/srts.dummy :
 	mkdir -p pre-pkgs/build &&\
 	cp -rfp srts pre-pkgs/build/ &&\
 	cd pre-pkgs/build/srts &&\
-	./configure --prefix=@abs_top_srcdir@/pre-pkgs/build --with-aterm=$(ATERM) --with-cpl=$(CPL) --with-statego-xt=$(STRATEGOXT) &&\
+	./configure --prefix=@abs_top_srcdir@/pre-pkgs/build --with-aterm=$(ATERM) --with-cpl=$(CPL) --with-statego-xt=$(STRATEGOXT)  &&\
 	$(MAKE) &&\
 	$(MAKE) install &&\
 	touch @abs_top_srcdir@/pre-pkgs/build/srts.dummy
