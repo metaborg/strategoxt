@@ -3,6 +3,8 @@
  */
 module lib
 imports 
+ 
+	dynamic-rules
 
  // sequential control 
 
