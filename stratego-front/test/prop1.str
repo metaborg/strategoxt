@@ -1,5 +1,5 @@
 module prop1
-imports Prop
+imports Prop list-cons tuple-cons
 rules
 
   DN : |[ ~ ~ p ]| -> |[ p ]|
