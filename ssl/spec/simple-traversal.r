@@ -13,7 +13,7 @@
 
 \begin{code}
 module simple-traversal
-imports conditional
+imports conditional term-properties
 strategies
 \end{code} 
 
@@ -191,8 +191,6 @@ strategies
   leaves(s, is-leaf) =
     rec x((is-leaf; s) <+ all(x))
 
-  is-leaf = 
-    all(fail)
 \end{code}
 
 	\paragraph{Many}

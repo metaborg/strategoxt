@@ -4,17 +4,18 @@ strategies
 
   // subterm and superterms
 
+  is-subterm =
+    ?(x, y); where(<oncetd(?x)> y)
+
+  is-proper-subterm =
+    ?(x, y); not(eq); is-subterm
+
   is-superterm =
     ?(x, y); where(<oncetd(?y)> x)
 
   is-proper-superterm =
     ?(x, y); not(eq); is-superterm
 
-  is-subterm =
-    ?(x, y); where(<oncetd(?x)> y)
-
-  is-proper-subterm =
-    ?(x, y); not(eq); is-subterm
 
   is-proper-subterm-set =
     ?([y|_], xs); where(<fetch(not(?y); oncetd(?y))> xs)
@@ -22,7 +23,15 @@ strategies
   is-proper-superterm-set =
     ?([x|_], ys); where(<fetch(<is-proper-superterm>(x,<id>))> ys)
 
+  // leafs and non-leafs
 
+  is-leaf = 
+    all(fail)
+
+  is-inner-node =
+    one(id)
+
+\end{code}
 % Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
 % 
 % This program is free software; you can redistribute it and/or modify
