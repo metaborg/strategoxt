@@ -1,5 +1,7 @@
 2000-04-12    <visser@loempia.cs.uu.nl>
 
+	* www/: Made the content bar prettier and added a counter.
+
 	* collect.sh: Added support for checking out development packages
  	such that one can work on one of the packages in XT and commit
  	changes via cvs. (It might be necessary to clean this up. I did it
