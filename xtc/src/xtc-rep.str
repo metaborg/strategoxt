@@ -1,5 +1,6 @@
 module xtc-rep
-imports exec tables config
+imports exec tables config file
+
 signature
   sorts XtcKey
   constructors
@@ -24,12 +25,19 @@ strategies
     ; not(<table-get>(XTC, Imported(rep)))
     ; where(<table-put>(XTC, Repository, [rep]))
     ; if-verbose4(debug(!"Reading repository: "))
-    ; (file-exists ; ReadFromFile <+ ![])
+    ; read-repository-file
     ; if-verbose6(say(!"Repository read: "))
     ; <table-putlist(table-append)>(XTC, <id>)
     ; if-verbose6(say(!"Repository stored in table: "))
     ; <table-put>(XTC, Imported(rep), [])
     ; if-verbose4(say(!"Repository read: "))
+
+  read-repository-file = 
+    can-read-file
+    < ReadFromFile
+    + (not(file-exists); debug(!"** WARNING: Repository doesn't exist: ")
+                      <+ debug(!"** WARNING: No read permission for repository: "))
+      ; ![]
 
   xtc-import = 
     where(
@@ -50,7 +58,7 @@ strategies
 
   xtc-store =
     if-verbose1(say(!"  Saving repository "))
-    ; <WriteToTextFile> (<get-config> "-r", <table-getlist> XTC)
-
-
-
+    ; <get-config> "-r"
+    ; can-write-file
+      < <WriteToTextFile> (<id>, <table-getlist> XTC)
+      + debug(!"** WARNING: No write permission for repository: "); fail
