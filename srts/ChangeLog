@@ -1,3 +1,8 @@
+2001-08-27  Eelco Visser  <visser@acm.org>
+
+	* src/stratego.c: Save variables before PushChoice and restore
+	them after failure.
+
 2001-08-22  Eelco Visser  <visser@acm.org>
 
 	* Run-time system for Stratego 0.6
