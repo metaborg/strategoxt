@@ -4,28 +4,33 @@ imports options xtc-lib
 strategies
 
   io-abox2latex =
-    option-wrap(abox2latex-options, xtc-io(abox2latex))
+    option-wrap(abox2latex-options + io-options, xtc-io(abox2latex))
 
   abox2latex-options =
-        input-option
-    +  output-option
-    + general-options
-    + ArgOption("-t"
-      , where(<extend-config> ("--latex-tables", [<id>]))
-      , !"-t file   Table containing box to latex macro mappings"
-      )
-    + ArgOption("-w", <set-config> ("--width",  <id>))
+      Option(
+         "--alltt",
+         <set-config>("output", "--alltt"),
+         !"--alltt          Produce verbatim-like output with alltt environment")
+    + Option(
+         "--boxenv",
+         <set-config>("output", "--boxenv"),
+         !"--boxenv         Produce fully formatted LaTeX output (default)")
+    + ArgOption(
+         "-t" + "--latex-table",
+         <set-config> ("--latex-table", <id>),
+         !"-t|--latex-table f  Use LaTeX abbreviaitions from file f")
+    + ArgOption(
+         "-w"+ "--width",
+         <set-config> ("--width", <id>),
+         !"-w|--width w        Use page width w")
 
   abox2latex =
-xtc-io-transform-text(
-    ![ <create-header> "Test"
-      , <xtc-transform(!"Abox-2-latex",
-        create-abox2latex-args)>
-      ])
+     xtc-transform(!"Abox-2-latex", create-abox2latex-args)
 
   create-abox2latex-args =
       !["-t", <create-table-file> () | <pass-verbose> ()]
     ; try(!["-w", <<get-config> "--width"> | <id>])
+    ; try(![<get-config>"output" | <id>])
 
   create-table-file =
       (<get-config> "--latex-tables" <+ ![])
@@ -42,40 +47,13 @@ xtc-io-transform-text(
     ; write-to 
     ; ?FILE(<id>)
 
-  create-header = 
-    !["% \n",
-      "% This file is generated automatically on `date +%c` by \n",
-      "% \n",
-      "%    abox2latex (C) 2001 Merijn de Jonge (mdejonge@cwi.nl) \n",
-      "% \n",
-      "% Tokens from the BOX term are formatted using the LaTeX macros  \n",
-      "% defined in the table(s):  \n",
-      <tables2text>(),
-      "% \n",
-      "% To use this file add: \n",
-      "%    \\usepackage{boxenv} to your documents preamble \n",
-      "% and  \n",
-      "%    \\input{<this_file>}  \n",
-      "% to your LaTeX document. \n",
-      "% \n",
-      "% If you don't have boxenv.sty already, generate it with:: \n",
-      "%    gen-latex-boxstyle -o boxenv.sty \n",
-      "% \n"
-    ]; concat-strings
-
-
-// Create list of abbreviation tables
-tables2text =
-      (<get-config> "--latex-tables" <+ ![]);
-      map( !["%   ", <id>, "\n"]; concat-strings );
-      concat-strings
-      
-
 /*
 usage:
-  abox2latex [-h] [-i abox] [-o latex] [-t table ...] [-w width]
+  abox2latex [--alltt] [--boxenv] [-h] [-i abox] [-o latex] [-t table ...] [-w width]
 
 where
+  --alltt     Produces LaTeX alltt environment
+  --boxenv    Produces fully formatted boxenv environment (default)
   -h          Displays usage information.
   -i abox     Specifies the BOX term to transform.
   -o latex    Specifies the file name of the resulting LaTeX term.

@@ -24,18 +24,16 @@ imports options list-index string integers
 strategies
 
   io-Abox-2-text =
-    option-wrap(abox2text-options, 
+    option-wrap(Abox-2-text-options + io-options, 
       xtc-io(
           read-from
-        ; <try-abox2text> (<id>, 0)
-        ; Fst
+        ; <try-abox2text;Fst> (<id>, 0)
         ; <topdown-print-to> (<id>, "\n")
         )
       )
 
-  abox2text-options =
-      io-options
-    + ArgOption("-w" + "--width"
+  Abox-2-text-options =
+      ArgOption("-w" + "--width"
       , where(<set-config> ("--width", <string-to-int>))
       , !"-w int | --width int       Specifies max width of output."
       )
@@ -46,7 +44,7 @@ strategies
 strategies
 
   try-abox2text = 
-    abox2text <+ <fatal-error> ["** ERROR: invalid box: ", <id>]
+    abox2text(try-abox2text) <+ <fatal-error> ["** ERROR: invalid box: ", <id>]
 
   // REMARK
   // This encoding of HV boxes is exponential; not so bad for formatting
@@ -54,13 +52,13 @@ strategies
 
   // HV
   // :: Box * Int -> Strs * Int
-  abox2text :
+  abox2text(s) :
     (HV(sopt, bs), xpos) -> result
       where <hs-text> sopt => hs
           ; <vs-text> sopt => vs
           ; <string-length> hs => hsl
           ; <add> (xpos, <is-length> sopt) => left-xpos
-          ; < foldl(hv-add-to-hbox(!hsl) <+ hv-in-new-vbox(!hsl, !left-xpos))
+          ; < foldl(hv-add-to-hbox(s,!hsl) <+ hv-in-new-vbox(s,!hsl, !left-xpos))
             ; reverse; map((reverse, id))
             ; map((<separate-by> (hs, <id>), id))
             ; <format-vbox> (sopt, <id>, xpos)
@@ -70,52 +68,52 @@ strategies
         // TODO: substract last hspace from xpos
 
         // :: BOX * [Int * [String]] -> [Int * [String]]
-        hv-add-to-hbox(hsl) :
+        hv-add-to-hbox(s,hsl) :
           (box, [(strs, xpos) | vbs ]) -> [([ str | strs ], <add> (new-xpos, <hsl> ())) | vbs]
-            where <try-abox2text> (box, xpos) => (str, new-xpos)
+            where <s> (box, xpos) => (str, new-xpos)
                 ; <leq> (new-xpos, <get-width> ())
         
-        hv-in-new-vbox(hsl, left-xpos) :
+        hv-in-new-vbox(s,hsl, left-xpos) :
           (box, vbs) -> [([str], <add> (new-xpos, <hsl> ())) | vbs]
-            where <try-abox2text> (box, <left-xpos> ()) => (str, new-xpos)
+            where <s> (box, <left-xpos> ()) => (str, new-xpos)
        
   // H
-  abox2text :
+  abox2text(s) :
     (H(sopt, bs), xpos) -> result
       where <hs-text> sopt => hs
           ; <string-length> hs => hsl
           ; <filter(is-real-hbox)> bs => real-boxes
           ; < !(<id>, xpos)
-            ; thread-map(try-abox2text; (id, <add> (hsl, <id>)))
+            ; thread-map(s; (id, <add> (hsl, <id>)))
             ; (<separate-by> (hs, <id>), id)
             ; try((not([]), <subt> (<id>, hsl)))
             > real-boxes => result
 
   // V
-  abox2text :
+  abox2text(s) :
     (V(sopt, bs), xpos) -> result
       where <add> (xpos, <is-length> sopt) => left-xpos
           ; <filter(is-real-vbox)> bs => real-boxes
           ; < ?[] < !([], xpos)
-                  +   <do-vbox-children> (xpos, left-xpos, <id>)
+                  +   <do-vbox-children(s)> (xpos, left-xpos, <id>)
                     ; <format-vbox> (sopt, <id>, xpos)
             > real-boxes => result
 
       // :: Int * Int * [BOX] -> [Strings * Int]
-      do-vbox-children:
-        (xpos, left-xpos, boxes) -> <[<try-abox2text> (<id>, xpos) | map(<try-abox2text> (<id>, left-xpos))]> boxes
+      do-vbox-children(s):
+        (xpos, left-xpos, boxes) -> <[<s> (<id>, xpos) | map(<s> (<id>, left-xpos))]> boxes
 
   // A
   
   // The first two rules are to handle empty alignment operators, i.e., A
   // boxses with [] or [[]] as third argument.
   // Without subboxes ([] as third argument)
-  abox2text :
+  abox2text(s) :
     (A(AOPTIONS(aopt), sopt, []), xpos) -> ([], xpos)
   // Without subboxes ([[]] as third argument)
-  abox2text :
+  abox2text(s) :
     (A(AOPTIONS(aopt), sopt, [[]]), xpos) -> ([], xpos)
-  abox2text :
+  abox2text(s) :
     (A(AOPTIONS(aopt), sopt, bs), xpos) -> result
       where < construct-rows
             ; map(?R(_, <id>))
@@ -124,14 +122,14 @@ strategies
             ; reverse; add-indices; reverse
             > bs => columns
           ; <zip> (aopt, columns) => column-tuples
-          ; <foldl(do-A-column)> (column-tuples, (xpos, [])) => (last-xpos, str-columns)
+          ; <foldl(do-A-column(s))> (column-tuples, (xpos, [])) => (last-xpos, str-columns)
           ; <reverse; matrix-transpose> str-columns => str-rows
           ; <format-vbox> (sopt, <map(!(<id>, last-xpos))> str-rows, xpos) => result
 
       // :: (A-OPTION * (Int * [BOX])) * (Int * [[Strs]]) -> Int * [[Strs]]
-      do-A-column :
+      do-A-column(s) :
         ((aopt, (index, bs)), (xpos, columns)) -> (<add> (<string-length> hs, max-xpos), [ new-column | columns ])
-          where < map(<try-abox2text> (<id>, xpos))
+          where < map(<s> (<id>, xpos))
                 ; unzip
                 ; (map(try(flatten-list; concat-strings)), list-max)
                 > bs => (strings, max-xpos)
@@ -190,30 +188,31 @@ strategies
     <fatal-error> ["** ERROR: All children of an A box must be R boxes: ", <id>]
 
   // R, not as child of an A
-  abox2text :
-    (R(sopt, bs), xpos) -> <try-abox2text> (HV(sopt, bs), xpos)
+  abox2text(s) :
+    (R(sopt, bs), xpos) -> <s> (HV(sopt, bs), xpos)
 
   // S
-  abox2text :
+  abox2text(s) :
     (S(s), xpos) -> (s, <add> (xpos, <rel-string-length> (s, xpos)))
 
-  abox2text :
+  abox2text(s) :
     (C(_,[S(s)]), xpos) -> (s, xpos)
 
-  abox2text :
-    (FBOX(_,b), xpos) -> <try-abox2text> (b, xpos)
 
-  abox2text :
-    (R(sopt, bs), xpos) -> <try-abox2text> (HV(sopt, bs), xpos)
+  abox2text(s) :
+    (FBOX(_,b), xpos) -> <s> (b, xpos)
+
+  abox2text(s) :
+    (R(sopt, bs), xpos) -> <s> (HV(sopt, bs), xpos)
       
-  abox2text :
-    (ALT(a1, a2), xpos) -> <<leq> (xpos2, <get-width>) < !r1 + <try-abox2text> (a2, xpos)>
-      where <try-abox2text> (a1, xpos) => r1@(s, xpos2)
+  abox2text(s) :
+    (ALT(a1, a2), xpos) -> <<leq> (xpos2, <get-width>) < !r1 + <s> (a2, xpos)>
+      where <s> (a1, xpos) => r1@(s, xpos2)
          
-  abox2text :
-    ([b], xpos) -> <try-abox2text> (b, xpos)
+  abox2text(s) :
+    ([b], xpos) -> <s> (b, xpos)
 
-  abox2text :
+  abox2text(s) :
     ([], xpos) -> ("", xpos)
 
 strategies

@@ -1,5 +1,5 @@
 module Abox-2-latex
-imports Box Box-util Abox-2-latex-lib lib plain-text xtc-proc
+imports Box Box-util Abox-2-latex-lib lib plain-text xtc-proc Abox-2-text
 
 /**
  * GT -- Grammar Tools
@@ -11,12 +11,40 @@ imports Box Box-util Abox-2-latex-lib lib plain-text xtc-proc
  */
 strategies
 
-  io-Abox-2-latex = iowrap( abox2latex, Abox2latex-options)
+  io-Abox-2-latex = 
+     option-wrap( Abox-2-latex-options + io-options, 
+      xtc-io(
+         load-latex-table
+         ; read-from
+         ; (
+            where(<get-config>"output"; "alltt" )
+            <    // Produced alltt environment
+                 <try-abox2alltt;Fst> (<id>, 0)
+               ; <latex2text>ALLTT(<id>)
+            +    // Produce boxenv environment
+                 topdown(try(Abox2latex))
+               ; <latex2text> BOXENV(<BOXENV-args>, <id>)
+           )
+         ; <topdown-print-to>([<create-header>(),<id>], "\n")
+     ) )
 
-  Abox2latex-options =
-      io-options 
-    + ArgOption("-t", <set-config> ("--latex-table", <id>), !"--latex-table f  Use LaTeX abbreviaitions from file f")
-    + ArgOption("-w", <set-config> ("--width",       <id>), !"--width w        Use page width w")
+  Abox-2-latex-options =
+      Option( 
+         "--alltt",
+         <set-config>("output", "alltt"),
+         !"--alltt          Produce verbatim-like output with alltt environment")
+    + Option( 
+         "--boxenv",
+         <set-config>("output", "boxenv"),
+         !"--boxenv         Produce fully formatted LaTeX output (default)")
+    + ArgOption(
+         "-t" + "--latex-table", 
+         <set-config> ("--latex-table", <id>), 
+         !"-t|--latex-table f  Use LaTeX abbreviaitions from file f")
+    + ArgOption(
+         "-w"+ "--width", 
+         <set-config> ("--width", <id>), 
+         !"-w|--width w        Use page width w")
 
   load-latex-table = where(
       <table-create> "latex-abbrevs"
@@ -31,10 +59,17 @@ strategies
                     ; <latex2text> BOXENV(<BOXENV-args>, <id>);
                       collect-set(is-string); concat-strings)
 
+  try-abox2alltt = 
+        abox2alltt(try-abox2alltt) 
+     <+
+        abox2text(try-abox2alltt)
+     <+
+        <fatal-error> ["** ERROR: invalid box: ", <id>]
+
+
   BOXENV-args =
     <get-config> "--width"; ![<id>] <+ ![]
 
-rules
   Abox2latex :
     S(s) -> <latex-string>s
 
@@ -111,7 +146,6 @@ Abox2latex:
 Abox2latex:
    REF( s, b ) -> REFBOX( s, b )
    
-strategies
 // This is a simplified implementation. The originalused a space as
 // separator between horzontal boxes whenever the rightmost or left most box
 // contains comments. 
@@ -177,3 +211,58 @@ LatexComment =
    try(at-suffix([37,37|?xs];!xs));
    implode-string
 
+// Stuff for generating LaTeX alltt environment
+  abox2alltt(s):
+    (FBOX(fo, b), xpos) -> (BOXFONT(fo, b'), xpos')
+      where 
+         <KW() + VAR() + NUM() + MATH()> fo
+         ; <s>(b,xpos) => (b',xpos')
+
+  abox2alltt(s):
+    (FBOX(F([]), b), xpos) -> <s>(b, xpos)
+
+  abox2alltt(s):
+    (FBOX(F([foption|xs]), b), xpos) -> (BOXFONT(fo, b'), xpos')
+    where 
+     <   FFID(FM(), ?fo)
+           <+ FFID(SE(), ?fo)
+           <+ FFID(SH(), ?fo)
+           <+ FFID(SZ(), ?fo)
+           <+ FFID(CL(), ?i ); !BOXCOLOR(i) => fo
+          > foption;
+          <s>(FBOX(F(xs), b), xpos) => (b', xpos')
+          
+  // S
+  abox2alltt(s) :
+     (S(s), xpos) -> (<alltt-string>s, <add> (xpos, <rel-string-length> (s, xpos)))
+
+  alltt-string =
+        latex-abbrev
+     <+ string-as-chars(escape-special-characters)
+
+  create-header =
+    !["% \n",
+      "% This file is generated automatically by \n",
+      "% \n",
+      "%    abox2latex (C) 2001-2004 Merijn de Jonge (mdejonge@cs.uu.nl) \n",
+      "% \n",
+      "% Tokens from the BOX term are formatted using the LaTeX macros  \n",
+      "% defined in the table(s):  \n",
+      <tables2text>(),
+      "% \n",
+      "% To use this file add: \n",
+      "%    \\usepackage{boxenv} to your documents preamble \n",
+      "% and  \n",
+      "%    \\input{<this_file>}  \n",
+      "% to your LaTeX document. \n",
+      "% \n",
+      "% If you don't have boxenv.sty already, generate it with:: \n",
+      "%    gen-latex-boxstyle -o boxenv.sty \n",
+      "% \n"
+    ]; concat-strings
+
+// Create list of abbreviation tables
+tables2text =
+      (<get-config> "--latex-tables" <+ ![]);
+      map( !["%   ", <id>, "\n"]; concat-strings );
+      concat-strings

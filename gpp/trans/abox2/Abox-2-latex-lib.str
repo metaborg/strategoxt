@@ -30,6 +30,7 @@ imports lib misc
 
 signature
   constructors
+    ALLTT    : Boxes                            -> ALLTT
     BOXENV   : Width    * Boxes                 -> BOXENV
     HBOX     : HS       * Boxes                 -> Hbox
     VBOX     : VS       * IS    * Boxes         -> Vbox
@@ -54,7 +55,8 @@ strategies
       bottomup(try(Latex2text ) )
 
   Latex2text =
-        ?BOXENV( [], boxes );         !["\\begin{boxenv}%\n", boxes , "%\n\\end{boxenv}\n"]
+        ?ALLTT(boxes);                !["\\begin{alltt}\n", boxes, "\n\\end{alltt}\n"]
+     <+ ?BOXENV( [], boxes );         !["\\begin{boxenv}%\n", boxes , "%\n\\end{boxenv}\n"]
      <+ ?BOXENV( [width], boxes );    !["\\begin{boxenv}{", width, "}%\n", boxes , "%\n\\end{boxenv}\n"]
      <+ ?HBOX( hs, boxes );           !["\\begin{HBOX}{", hs, "}%\n", boxes, "%\n\\end{HBOX}%\n"]
      <+ ?VBOX( vs, is, boxes );       !["\\begin{VBOX}{", vs, "}{", is, "}%\n", boxes, "%\n\\end{VBOX}%\n"]
@@ -98,30 +100,35 @@ strategies
      <+ ?EOR();                       !"\\cr"
      <+ ?CSEP();                      !"&"
 
-  latex-string =
-      <table-get> ("latex-abbrevs", <id>)
-   <+   string-as-chars(
-          listtd( try( replace-quotes ) )
-        ; map(try(
-              \32 -> <explode-string>"\\boxspace{}" \ (* space *)
-           +  \35 -> <explode-string>"\\#" \ (* # *)
-           +  \36 -> <explode-string>"\\$" \ (* $ *)
-           +  \37 -> <explode-string>"\\%" \ (* % *)
-           +  \38 -> <explode-string>"\\&" \ (* & *)
-           +  \45 -> <explode-string>"\\mbox{-}" \ (* - *)
-           +  \60 -> <explode-string>"\\ensuremath{<}" \ (* < *)
-           +  \62 -> <explode-string>"\\ensuremath{>}" \ (* > *)
-           +  \92 -> <explode-string>"\\ensuremath{\\backslash}" \ (* \ *)
-           +  \94 -> <explode-string>"\\^{}" \ (* ^ *)
-           +  \95 -> <explode-string>"\\_" \ (* _ *)
-           + \123 -> <explode-string>"\\{" \ (* { *)
-           + \124 -> <explode-string>"\\ensuremath{\\vert}" \ (* | *)
-           + \125 -> <explode-string>"\\}" \ (* } *)
-           + \126 -> <explode-string>"\\~{}" \ (* ~ *)
-          ))
-        ; flat-list
-        )
+  latex-string = 
+        latex-abbrev 
+     <+ string-as-chars(escape-special-characters;latex-quotes)
 
+  latex-abbrev = <table-get> ("latex-abbrevs", <id>)
+
+  escape-special-characters =
+   map(try(
+            \32 -> <explode-string>"\\boxspace{}" \ (* space *)
+         +  \35 -> <explode-string>"\\#" \ (* # *)
+         +  \36 -> <explode-string>"\\$" \ (* $ *)
+         +  \37 -> <explode-string>"\\%" \ (* % *)
+         +  \38 -> <explode-string>"\\&" \ (* & *)
+         +  \45 -> <explode-string>"\\mbox{-}" \ (* - *)
+         +  \60 -> <explode-string>"\\ensuremath{<}" \ (* < *)
+         +  \62 -> <explode-string>"\\ensuremath{>}" \ (* > *)
+         +  \92 -> <explode-string>"\\ensuremath{\\backslash}" \ (* \ *)
+         +  \94 -> <explode-string>"\\^{}" \ (* ^ *)
+         +  \95 -> <explode-string>"\\_" \ (* _ *)
+         + \123 -> <explode-string>"\\{" \ (* { *)
+         + \124 -> <explode-string>"\\ensuremath{\\vert}" \ (* | *)
+         + \125 -> <explode-string>"\\}" \ (* } *)
+         + \126 -> <explode-string>"\\~{}" \ (* ~ *)
+        ))
+   ; flat-list
+
+  latex-quotes =
+     listtd( try( replace-quotes ) )
+            
   // replaces "abcd\"efg\"hij" to "abcd``efg''hij"
   replace-quotes:
     ['"' | xs ] -> ['`', '`' | <at-suffix( \ ['"'| xs'] -> ['\'', '\'' | xs'] \ ) > xs]

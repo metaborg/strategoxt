@@ -1,3 +1,8 @@
+  * New feature added to box2latex: The --alltt flag instructs box2latex to
+    produce a latex alltt environment. Together with the layout preserving
+    feature of asfix2abox (i.e., the '-c' switch), this supports layout
+    preserving pretty-printing in LaTeX
+
 Version 0.9 (versioning scheme of StrategoXT)
   * GPP is now called box-tools and is part of StrategoXT.
   * All tools are implemented in Stratego, shell-scripts

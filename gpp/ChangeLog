@@ -1,3 +1,10 @@
+2004-06-04   Merijn de Jonge  <mdejonge@cs.uu.nl>
+  * New feature added to box2latex: The --alltt flag instructs box2latex to
+    produce a latex alltt environment. Together with the layout preserving
+    feature of asfix2abox (i.e., the '-c' switch), this supports layout
+    preserving pretty-printing in LaTeX
+  * Some refactorings to box formatters and consumers
+
 2004-06-03   Merijn de Jonge  <mdejonge@cs.uu.nl>
 	* trans2abox/sdf-2-pp-lib.str: get-cnstr-name failed to retrieve
 	constructor name from asfix terms.
