@@ -51,7 +51,7 @@ strategies
 
   read-from :
     FILE(name) -> t
-    where <ReadFromFile> name => t
+    where <file-exists; ReadFromFile> name => t
 
   read-from :
     stdin -> t

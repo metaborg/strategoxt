@@ -1,3 +1,8 @@
+2003-01-02  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/xtc-proc.str: read-from : Check that file exists before 
+	reading term from it; otherwise fail.
+
 2003-01-01  Eelco Visser  <visser@cs.uu.nl>
 
 	* src/xtc-proc.str: 
