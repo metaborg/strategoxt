@@ -7,7 +7,7 @@ strategies
      : where(<new-A(|"a")> "a")
      ; where(<Assign> ("a", ("b", "c")))
      ; <A> ("b", "c")
-     ; where(<kill-A> "b")
+     ; where(<undefine-A> "b")
      ; !(<id>, <try(A)> ("b", "c"))
      |} => ("a",("b","c"))
 	
