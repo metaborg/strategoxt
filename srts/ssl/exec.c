@@ -408,12 +408,22 @@ ATerm SSL_puts(ATerm str_term) {
 /**
  * ATerm IO on streams
  */
-ATerm SSL_write_term_to_stream(ATerm stream_term, ATerm term) {
+ATerm SSL_write_term_to_stream_baf(ATerm stream_term, ATerm term) {
   FILE* stream = stream_from_term(stream_term);
+	ATwriteToBinaryFile(term, stream);
+  return stream_term;
+}
 
+ATerm SSL_write_term_to_stream_taf(ATerm stream_term, ATerm term) {
+  FILE* stream = stream_from_term(stream_term);
+	ATwriteToSharedTextFile(term, stream);
+  return stream_term;
+}
+
+ATerm SSL_write_term_to_stream_text(ATerm stream_term, ATerm term) {
+  FILE* stream = stream_from_term(stream_term);
   ATwriteToTextFile(term, stream);
   fprintf(stream, "\n");
-
   return stream_term;
 }
 
@@ -691,4 +701,3 @@ ATerm SSL_pipe_term_to_child(ATerm t, ATerm prog, ATerm args0)
   }
   return((ATerm) ATempty);
 }
-

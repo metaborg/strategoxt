@@ -53,7 +53,10 @@ ATerm SSL_fputs(ATerm str, ATerm stream);
 ATerm SSL_puts(ATerm str);
 ATerm SSL_fflush(ATerm stream);
 
-ATerm SSL_write_term_to_stream(ATerm stream, ATerm term);
+ATerm SSL_write_term_to_stream_baf(ATerm stream, ATerm term);
+ATerm SSL_write_term_to_stream_text(ATerm stream, ATerm term);
+ATerm SSL_write_term_to_stream_taf(ATerm stream, ATerm term);
+
 ATerm SSL_read_term_from_stream(ATerm stream);
 
 ATerm SSL_strlen(ATerm str);
@@ -69,4 +72,3 @@ ATerm SSL_stderr_stream(void);
 #define SSL_STDIN_FILENO() ((ATerm)ATmakeInt(STDIN_FILENO))
 #define SSL_STDOUT_FILENO() ((ATerm)ATmakeInt(STDOUT_FILENO))
 #define SSL_STDERR_FILENO() ((ATerm)ATmakeInt(STDERR_FILENO))
-

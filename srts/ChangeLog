@@ -1,5 +1,10 @@
 2003-03-24  Martin Bravenboer <martin@mbravenboer.org>
 
+  * ssl/exec.[ch]: split write_to_stream 
+    in baf/taf/text.
+
+2003-03-24  Martin Bravenboer <martin@mbravenboer.org>
+
   * ssl/exec.[ch]: new stream representation in blob.
 
   * ssl/exec.[ch]: new primitives: fopen, stdin_stream,
