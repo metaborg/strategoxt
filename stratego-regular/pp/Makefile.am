@@ -7,7 +7,7 @@ pptables    = rhg.pp.af rhg.pp
 pptables_af = rtg.pp.af rhg.pp.af
 
 pkgdata_DATA   = $(pptables_af) regexp-parenthesize.rtree
-EXTRA_DIST     = $(pptables) $(pptables_af) $(wildcard *.str) $(wildcard *.meta)
+EXTRA_DIST     = $(pptables) $(pkgdata_DATA) $(wildcard *.str) $(wildcard *.meta)
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(pptables_af) $(wildcard *.c) $(wildcard *.rtree)
 
