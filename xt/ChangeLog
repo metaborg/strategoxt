@@ -13,6 +13,7 @@
  	developer directories.
 
 2000-04-12    <mdejonge@cwi.nl>
+        * uninstall target added to top-level Makefile
         * XT now also includes the asfix distribution because it no longer
           belongs to the aterm library.
         * NEWS file updated
