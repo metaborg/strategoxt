@@ -1,7 +1,7 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-LD_LIBRARY_PATH=$(SRTS)/lib/srts
+export LD_LIBRARY_PATH := $(SRTS)/lib/srts:${LD_LIBRARY_PATH}
 
 check_PROGRAMS = \
   annotation-props-test \
