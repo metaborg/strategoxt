@@ -24,8 +24,10 @@ strategies
     topdown(repeat(DefDynRuleScope))
 
   DefDynRuleScope :
-    |[ {| : s |} ]| -> s
+    |[ {| : s |} ]| -> |[ s ]|
 
+  DefDynRuleScope :
+    |[ {| ~t : s |} ]| -> |[ dr-scopes(s | t) ]|
 
   /**
    * Collect any labels for the head scope-id (uniquely) in one step.
@@ -168,8 +170,6 @@ strategies
     ]|
     where new => x; new => x1; new => x2
 	; new => y0; new => y1; new => y2; new => z
-	; <try(create-new-strategy)> f
-	; <try(create-kill-strategy)> f
 
     // new-f : locally undefine all rules that depend on x
 
@@ -187,7 +187,9 @@ strategies
 		; rules( f(|).scope :- DR_KILL(dep) )
 	      )
            ]| => newdef
+        ; !|[ dr-new(|scope, dep) = ?~str:f; <f2(|scope)> dep ]| => newgendef
 	; rules( LiftedRules :+ () -> newdef )
+	; rules( LiftedRules :+ () -> newgendef )
         ; rules( NewStrategy : f )
       )
 
@@ -234,7 +236,9 @@ strategies
 	           })
 	       )
 	    ]| => killdef
+        ; !|[ dr-kill(|dep) = ?~str:f; <f3(|)> dep ]| => killgendef
 	; rules( LiftedRules :+ () -> killdef )
+	; rules( LiftedRules :+ () -> killgendef )
         ; rules( KillStrategy : f )
      )
 
@@ -416,6 +420,8 @@ rules
       end
       ; <conc> (callees, callers)
       ; map({?x; rules( LiftedRules :+ () -> x )})
+      ; <try(create-new-strategy)> f
+      ; <try(create-kill-strategy)> f
 
 strategies
 
