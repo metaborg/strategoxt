@@ -50,11 +50,9 @@ AC_DEFUN([XT_ARG_WITH],
 AC_SUBST([$2])
 ])
 
-
-
-# USE_XT_PACKAGES
+# XT_USE_XT_PACKAGES
 # ---------------
-AC_DEFUN([USE_XT_PACKAGES],
+AC_DEFUN([XT_USE_XT_PACKAGES],
 [
   AC_REQUIRE([XT_SETUP])
 
@@ -107,10 +105,9 @@ AC_DEFUN([USE_XT_PACKAGES],
   AC_DEFINE([XTC_REPOSITORY()],
             [ATmakeString("@REPOSITORY@")],
             [Location of the XTC repository.])
-])# USE_XT_PACKAGES
+])
 
-
-
+AU_DEFUN([USE_XT_PACKAGES], [XT_USE_XT_PACKAGES])
 
 ############ SVN REVISION ########################################################
 
@@ -135,10 +132,7 @@ AC_SUBST([SVN_REVISION])
 
 ])
 
-AC_DEFUN([DETECT_SVN_REVISION],
-[
-  XT_SVN_REVISION
-])
+AU_DEFUN([DETECT_SVN_REVISION], [XT_SVN_REVISION])
 
 ############ Extended version numbers #############################################
 AC_DEFUN([XT_PRE_RELEASE],

@@ -1,9 +1,18 @@
-2004-12-07   Merijn de Jonge  <mdejonge@cs.uu.nl>
-	* Makefile.xt: register bin_SCRIPTS in BUILD_REPOSITORY from @abs_srcdir@
-	  when builddir neq srcdir and bin_SCRIPT is not generated. This
-	  ensures that BUILD_REPOSITORY will contain correct tot
-	  non-generated build scripts.
+2004-12-25   Martin Bravenboer  <martin@cs.uu.nl>
 
+	* autoxt.m4: USE_XT_PACKAGES is obsolete and should be replaced by
+	in your configure.ac files by XT_USE_XT_PACKAGES. Thanks to Akim
+	for suggesting to use autoupdate macros.
+
+	* autoxt.m4: DETECT_SVN_REVISION was already obsolete, but now
+	also used an autoupdate macro.
+
+2004-12-07   Merijn de Jonge  <mdejonge@cs.uu.nl>
+
+	* Makefile.xt: register bin_SCRIPTS in BUILD_REPOSITORY from
+	@abs_srcdir@ when builddir neq srcdir and bin_SCRIPT is not
+	generated. This ensures that BUILD_REPOSITORY will contain correct
+	tot non-generated build scripts.
 
 2004-09-25   Martin Bravenboer  <martin@cs.uu.nl>
 
