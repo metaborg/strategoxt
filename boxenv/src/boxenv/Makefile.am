@@ -13,5 +13,8 @@ CLEANFILES     = boxenv.log
 BOOTCLEANFILES = boxenv.sty
 
 boxenv.sty: $(SRCS)
-	TEXINPUTS=$$TEXINPUTS:$(srcdir) $(latex) boxenv.ins > /dev/null
-
+	@if test -z "$(latex)"; then \
+	  echo "sorry, boxenv.sty was not build because latex is not present" > boxenv.sty; \
+	else \
+	  TEXINPUTS=$$TEXINPUTS:$(srcdir) $(latex) boxenv.ins > /dev/null; \
+	fi
