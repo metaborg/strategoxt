@@ -135,8 +135,6 @@ strategies
 
 strategies
 
-strategies
-
   // :: List(a) * -> List(a)
   conc =
     conc-two-lists <+ conc-more-lists
