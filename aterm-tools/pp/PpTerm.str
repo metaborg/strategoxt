@@ -3,4 +3,20 @@ imports options ugly-print
 
 strategies
 
-  io-PpTerm = io-wrap(ugly-print)
+  io-PpTerm =
+    io-wrap(
+      ugly-print
+    ; concat-content
+    )
+    
+signature
+  constructors
+    Conc : List(a) * List(a) -> List(a)
+
+strategies 
+
+  concat-content = 
+    bottomup( try( \ Conc(l1, l2) -> <conc> (l1, l2) \ ))
+    
+  
+  

@@ -9,6 +9,8 @@ CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c)
 
 SCFLAGS     = --main io-$*
-STRINCLUDES = -I $(XTC)/share/xtc
+STRINCLUDES = -I $(XTC)/share/xtc \
+              -I $(GPP)/share/sdf/gpp \
+              -I $(GPP)/share/gpp
 
        

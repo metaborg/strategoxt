@@ -1,7 +1,5 @@
-\literate[ugly-print]
-\begin{code}
 module ugly-print
-imports abox-ext annotations
+imports Box annotations
 
 strategies
 
@@ -12,52 +10,82 @@ strategies
      UP-Int 
 	<+ UP-Str
 	<+ UP-Lst(ugly-print) 
+  <+ UP-EmptyTuple
+  <+ UP-Tuple(ugly-print)
 	<+ UP-Cnst	
 	<+ UP-App(ugly-print)
 
   ugly-print-with-anno =
-    !V0( [ <ugly-print-without-anno>
-         , H1( [ S("   {")
-               , <get-annotations; ugly-print>
-               , S("}")
-               ])
-         ])
+    ! |[
+        V vs=0 [ ~<ugly-print-without-anno>
+          H hs=1 ["{" ~<get-annotations; ugly-print> "}"]
+        ]
+      ]|
 
 rules
 
+  UP-EmptyTuple : 
+    ""#([]) -> |[ "()" ]|
+    
+  UP-Tuple(s) : 
+    ""#([x | xs]) ->
+      |[  V vs=0 [
+            H hs=1 ["(" ~<s> x]
+            ~*children
+            ")"
+          ]
+      ]|
+      where <map(! |[ H hs=1 [ "," ~<s> ] ]| )> xs => children
+
   UP-Cnst : 
-    f#([]) -> S(f)
+    f#([]) -> |[ ~lit:f ]|
 
   UP-App(s) : 
-    f#(xs) -> H0([S(f), Parens(V0(<map(s); post-commas> xs))])
-
+    f#([x | xs]) ->
+      |[  V vs=0 [
+            H hs=0 [ ~lit:f "(" ]
+            H hs=1 [" " ~<s> x]
+            ~*children
+            ")"
+          ]
+      ]|
+      where <map(! |[ H hs=1 [ "," ~<s> ] ]| )> xs => children
+   
   UP-Str :
-    x -> <Quote> S(x) where <is-string> x
+    x -> |[ H hs=0 ["\"" ~lit:x "\""] ]|
+      where <is-string> x
 
   UP-Int :
-    x -> S(<int-to-string> x) where <is-int> x
+    x -> |[ NUM [ ~lit:s ] ]|
+      where <is-int> x
+          ; <int-to-string> x => s
 
   UP-Lst(s) :
-    [] -> S("[]")
+    [] -> |[ "[]" ]|
 
   UP-Lst(s) :
-    l @ [x | xs] -> H0([S("["), V0(<map(s); post-commas> l), S("]")])
+    [x | xs] -> |[ V vs=0 [ H hs=1 ["[" ~<s> x] ~*tail "]"] ]|
+      where <map(! |[ H hs=1 [ "," ~<s> ] ]| )> xs => tail
+   
+  box-sepby-comma =
+    <separate-by> (|[ "," ]|, <id>)
 
-\end{code}
 
-% Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
-% 
-% This program is free software; you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation; either version 2, or (at your option)
-% any later version.
-% 
-% This program is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-% 
-% You should have received a copy of the GNU General Public License
-% along with this program; if not, write to the Free Software
-% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-% 02111-1307, USA.
+/**
+ * Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
+ */
