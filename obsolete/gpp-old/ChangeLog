@@ -1,3 +1,6 @@
+2001-12-18 Merijn de Jonge <mdejonge@cwi.nl>
+   * gpp implementation splitted up in sub directories
+
 2001-12-05 Merijn de Jonge <mdejonge@cwi.nl>
    * Updated graphviz package requirement
 
