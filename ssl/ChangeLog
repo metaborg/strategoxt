@@ -1,3 +1,10 @@
+2004-07-07  Martin Bravenboer <martin@cs.uu.nl>
+
+	* spec/options.str: fix in the 'usage' invoked by iowrap. Also
+	added an obsolete message to iowrap. This should stop the
+	confusion about what to use, especially in combination with the
+	stratego-warnings tool.
+
 2004-07-04  Martin Bravenboer <martin@cs.uu.nl>
 
 	* spec/options.str: io-wrap now has a variant that takes an
