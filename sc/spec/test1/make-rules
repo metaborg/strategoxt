@@ -65,8 +65,8 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 %.ac : %.s8 %.s8.check ../c/s2c$(EXE)
 	../c/s2c -i $< -o $@  $(CINCLUDES)  -b
 
-%.c.abox : %.ac $(CGEN)/share/cgen/C-pretty.pp
-	time $(GPP)/bin/ast2abox -p $(CGEN)/share/cgen/C-pretty.pp -i $< -o $@
+%.c.abox : %.ac $(C_TOOLS)/share/c-tools/C-pretty.pp
+	time $(GPP)/bin/ast2abox -p $(C_TOOLS)/share/c-tools/C-pretty.pp -i $< -o $@
 
 %.c.abox.check : %.c.abox
 	abox-format -i $< 
@@ -93,7 +93,7 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 # PARSING C PROGRAMS ###############################################
 
 %.af: %.c
-	sglr -p $(CGEN)/share/cgen/c.tbl -i $< -o $@ 
+	sglr -p $(C_TOOLS)/share/cgen/c.tbl -i $< -o $@ 
 
 %.trm: %.af
 	implode-asfix -i $< -o $@
