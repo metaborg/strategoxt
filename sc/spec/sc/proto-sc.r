@@ -224,29 +224,27 @@ strategies
   extract-all(d)     = pipe(<pref(d)> "/extract-all",   !".sdefs")
 
   rename-defs(d)     = pipe(<pref(d)> "/rename-defs",   !".s3")
-  canonicalize(d)    = pipe(<pref(d)> "/canonicalize",  !".s4")
 
-  inline(d)          = pipe(<pref(d)> "/inline",        !".s")
-  optimizer(d)       = pipe(<pref(d)> "/optimizer",     !".so1")
-  matching-tree(d)   = pipe(<pref(d)> "/matching-tree", !".so2")
+  inline(d)          = pipe(<pref(d)> "/inline",        !".s4")
+  optimize1(d)       = pipe(<pref(d)> "/optimize1",     !".s5")
+  compile-match(d)   = pipe(<pref(d)> "/compile-match", !".s6")
+  optimize2(d)       = pipe(<pref(d)> "/optimize2",     !".s7")
 
+  canonicalize(d)    = pipe(<pref(d)> "/canonicalize",  !".s8")
+  s2c(d)             = pipe(<pref(d)> "/s2c",		!".ac")
 
-  optimize1(d)       = pipe(<pref(d)> "/optimize1",     !".so1")
+  optimizer(d)       = pipe(<pref(d)> "/optimizer",     !".s6")
+  matching-tree(d)   = pipe(<pref(d)> "/matching-tree", !".s7")
 
   fusion(d)          = pipe(<pref(d)> "/fusion",        !".so2")
-
-  compile-match(d)   = pipe(<pref(d)> "/compile-match", !".so3")
-  optimize2(d)       = pipe(<pref(d)> "/optimize2",     !".so4")
-
   backend(d)         = pipe(<pref(d)> "/backend",       !".i1")
 
-  new-backend(d)     = pipe(<pref(d)> "/newbackend",   !".i1")
+  new-backend(d)     = pipe(<pref(d)> "/newbackend",    !".i1")
 
   postprocess(d)     = pipe(<pref(d)> "/postprocess",   !".i")
 
   pp-instructions(d) = pipe(<pref(d)> "/pp-instructions", !".c")
 
-  s2c(d)             = pipe(<pref(d)> "/s2c", !".ac")
   pp-c(d)	     = where(dtime);
 		       pipe(<pref(d)> "/ac2c", !".c");
 		       where(dtime => t; <printnl> (stderr, [<pref(d)> "/ac2c", " (", t, ")"]))
@@ -295,7 +293,7 @@ strategies
   remove-intermediates =
     ?(base, _);
     where(<rzip(conc-strings); rm-files>
-            (base, [".tree", ".tree1", ".s", ".s1", ".s2", 
-		    ".so1", ".so2", ".so3", ".so4", 
-                    ".i1", ".i", ".o"]))
+            (base, [".tree", ".tree1", ".s1", ".s2", 
+		    ".s3", ".s4", ".s5", ".s6", ".s7", ".s8", 
+		    ".ac", ".ac.abox", ".o"]))
 \end{code}

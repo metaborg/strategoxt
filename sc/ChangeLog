@@ -1,3 +1,7 @@
+2001-08-23  Eelco Visser  <visser@acm.org>
+
+	* spec/sc/proto-sc.r: Removing intermediate files
+
 2001-08-22  Eelco Visser  <visser@acm.org>
 
 	* Correction of paths to library
