@@ -55,6 +55,7 @@ strategies
     if-verbose6(debug(!"parse-module: "))
 
     ; ?file
+    ; where( ?FILE(filename) )
     ; where( FILE(basename => base) )
     ; where( get-meta => meta )
     ; where( <get-syntax ; get-parse-table> meta => FILE(tbl) )
@@ -68,7 +69,7 @@ strategies
          ]
        ; if-verbose6(debug(!"sglr arguments: "))
        )
- 
+
     ; xtc-transform(!"implode-asfix",
         !["-b" | <concat>
            [ <pass-verbose>

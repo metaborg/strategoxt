@@ -26,6 +26,7 @@ exports
     UCID -/- [a-zA-Z0-9\'\-\_]
 
   lexical syntax
+    "_"                 -> Id {reject}
     "all" 		-> Id {reject}
     "constructors" 	-> Id {reject}
     "fail" 		-> Id {reject}

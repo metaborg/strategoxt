@@ -1,5 +1,12 @@
 2004-10-16  Martin Bravenboer <martin@cs.uu.nl>
 
+	* syn/Stratego-Identifiers.sdf: disabling the heurstic filters
+	revealed a problem in the Stratego syntax definition: _ can be an
+	indentifier as well as a wildcard. I've added a reject of "_" to
+	Id.
+	
+2004-10-16  Martin Bravenboer <martin@cs.uu.nl>
+
 	* parse/parse-stratego.str: refactoring, documentation, etc.
 
 	* parse/parse-stratego.str: use binary output for meta-explode and
