@@ -3,7 +3,7 @@ imports liblib AsFix
 
 strategies
 
-  main-asfix-anno-comments = 
+ main-asfix-anno-comments = 
     io-wrap(comment-sort-option,
       init-comment-sorts
       ; topdown-consnil(try(AnnoComment))
@@ -18,18 +18,18 @@ strategies
       ->
     [ a1, a2' | as ]
     where
-      <fetch-comment> args => comment
+      <fetch-comment> args => (comment,sort)
       ; <try(oncetd({p:
-          has-cons; ?p{a*}; !p{(Comment(), comment) | a*}
+          has-cons; ?p{a*}; !p{(Comment(sort), comment) | a*}
          }))> a2 => a2'
 
   fetch-comment =
     where(get-comment-sorts => sortnames)
     ; oncetd({sortname:
       ?appl(prod(_, lex(sort(sortname)), _), _)
-      ; where(<fetch(?sortname)> sortnames)
+      ; where(<fetch(?sortname)> sortnames => sort)
       ; yield
-      ; ?s
+      ; !(<id>,sortname) => s
       })
     ; !s
 
@@ -63,7 +63,7 @@ strategies
 
 signature
    constructors
-     Comment : AnnoKey
+     Comment : String -> AnnoKey
 
 strategies
   
