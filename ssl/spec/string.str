@@ -13,39 +13,26 @@ strategies // primitives
   new = prim("SSL_new")
 
   /**
-   * Generates a unique new string with user-defined prefix.
+   * Generates a unique new string with user-defined prefix
+   * the form 's_d', where c is a string and d is a positive integer.
    * The produced string is *always* unique across a program run.
    *
    * The prefix comes in front of an increasing number, which is
-   * separate for each prefix.
+   * separately maintained and started at 0 for each prefix.
+   * Any trailing digits up to the rightmost '_' are trimmed from the
+   * prefix (allows feeding a previous newname result into newname again.)
    *
-   * @see newname-basic-tests
+   * Examples (results are shown in comment)
+   *    <newname> "a"        // produces "a_0"
+   *  ; <newname> "b"        // produces "b_0"
+   *  ; newname              // produces "b_1"
+   *  ; <newname> "b_2"      // produces "b_3"
+   *  ; <newname> "b_1729"   // produces "b_4"
+   *  ; <newname> "b_a"      // produces "b_a_0"
+   *  ; <newname> "a_"       // produces "a_2"
+   *  ; <newname> "a_1"      // produces "a_3"
    */
-  newname = ?prefix; newname(|prefix)
-
-  /**
-   * Generates a unique new string with user-defined prefix.
-   * The produced string is *always* unique across a program run.
-   *
-   * The prefix comes in front of a globally increasing number, which is
-   * shared among all other newname-shared calls.
-   *
-   * @see newname-shared-tests
-   */
-  newname-shared = newname(|"")
-
-  /**
-   * Generates a unique new string with user-defined prefix.
-   * The produced string is *always* unique across a program run.
-   *
-   * The prefix comes in front of an increasing number, which is
-   * shared among all other newname-calls within the specified countergroup.
-   *
-   * @see newname-grouped-tests
-   */
-  newname(|countergroup) =
-    ?prefix; prim("SSL_newname", prefix, countergroup)
-
+  newname = ?prefix; prim("SSL_newname", prefix)
 
   /**
    * Checks whether input term is a string.

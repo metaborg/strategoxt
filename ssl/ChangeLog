@@ -1,3 +1,19 @@
+2004-08-12  Arthur van Dam  <adam@cs.uu.nl>
+
+	* spec/string.str : newname - now trims any trailing digits up to
+	the rightmost '_'. This allows for feeding previously generated
+	new names as prefix into another call to newname:
+	    <newname> "a"        // produces "a_0"
+	  ; <newname> "b"        // produces "b_0"
+	  ; newname              // produces "b_1"
+	  ; <newname> "b_2"      // produces "b_3"
+	  ; <newname> "b_1729"   // produces "b_4"
+	  ; <newname> "b_a"      // produces "b_a_0"
+	  ; <newname> "a_"       // produces "a_2"
+	  ; <newname> "a_1"      // produces "a_3"
+	Note that the previous term argument `countergroup' has been
+	discarded, as has been the strategy `newname-shared'
+
 2004-07-10  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/tables.str : Refactored the definition of merge operations
@@ -85,6 +101,7 @@
 	generate unique strings with user-defined prefix. The increasing
 	counter that is used as postfix can be shared among various
 	`newname' calls that use the same countergroup.
+	Note the change at 2004-08-12!
 
 	newname -- use current term as prefix and groupname (i.e. each
 	prefix has its own numbering starting at 0)
