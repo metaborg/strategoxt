@@ -14,20 +14,20 @@ Version @VERSION@
 
 Copyright (c) 1998-2003 Eelco Visser <visser@acm.org>
 
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2, or (at your option)
-any later version.
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2 of the License, or (at your option) any later version.
 
-This program is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-General Public License for more details.
+Lesser General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+02111-1307 USA
 
 ----------------------------------------------------------------------
 
@@ -99,6 +99,7 @@ syntax definitions.
 
 STRUCTURE OF THE DISTRIBUTION
 
+.
 |-- asfix-tools
 |   `-- src
 |       |-- asfix
@@ -113,32 +114,40 @@ STRUCTURE OF THE DISTRIBUTION
 |       |-- atermdiff
 |       |-- templates
 |       |-- treeviz
+|       |   `-- old
 |       `-- utils
 |-- autoxt
+|-- box-tools
+|   |-- pp
+|   |-- sig
+|   |   |-- box
+|   |   `-- pp-table
+|   |-- syn
+|   |   |-- box
+|   |   `-- pp-table
+|   |-- trans
+|   |   |-- 2abox
+|   |   `-- abox2
+|   `-- xtc-tools
 |-- boxenv
 |   `-- src
 |       |-- boxenv
 |       `-- templates
-|-- cgen
+|-- c-tools
 |   |-- pp
 |   |-- sig
-|   `-- syn
+|   |-- syn
+|   `-- xtc-tools
 |-- dot-tools
 |   `-- syn
 |-- emacs
-|-- gpp
+|-- grammar-recovery
 |   `-- src
-|       |-- abox-format
-|       |-- abox2html
-|       |-- abox2latex
-|       |-- abox2text
-|       |-- asfix2abox
-|       |-- ast2abox
-|       |-- lib
-|       |-- ppgen
+|       |-- asfix2sdf
+|       |-- dtd2sdf
+|       |-- happy2yacc
 |       |-- templates
-|       |-- tests
-|       `-- tohtml
+|       `-- yacc2sdf
 |-- graph-tools
 |   `-- src
 |       |-- dot
@@ -148,6 +157,7 @@ STRUCTURE OF THE DISTRIBUTION
 |       |-- graphxml-analysis
 |       |-- graphxml2dot
 |       `-- templates
+|-- refcard
 |-- sc
 |   `-- spec
 |       |-- c
@@ -172,6 +182,7 @@ STRUCTURE OF THE DISTRIBUTION
 |       |-- fdl2sdf
 |       |-- lib
 |       |-- pack-sdf
+|       |-- parse-unit
 |       |-- sdf
 |       |-- sdf-bench
 |       |-- sdf-bracket
@@ -191,7 +202,7 @@ STRUCTURE OF THE DISTRIBUTION
 |   |   `-- srts
 |   `-- ssl
 |-- ssl
-|   `-- spec
+|   |-- spec
 |-- stratego-front
 |   |-- parse
 |   |-- pp
@@ -203,12 +214,18 @@ STRUCTURE OF THE DISTRIBUTION
 |       |-- rsdf2sdf
 |       |-- sdf2sig
 |       |-- sdf2stratego
+|       |-- sig2
 |       |-- stratego
 |       |-- stratego-imports
+|       |-- stratego-pp
 |       |-- stratego-stats
 |       `-- templates
 |-- xt
+|   |-- ac-macros
+|   |-- doc
+|   |-- dummy
 |   |-- integration-tests
+|   |-- pre-checks
 |   |-- src
 |   |   |-- gbquery
 |   |   |-- lib
@@ -218,8 +235,10 @@ STRUCTURE OF THE DISTRIBUTION
 |   |   |-- templates
 |   |   `-- visamb
 |   `-- www
+|       `-- xt-download
 `-- xtc
-    `-- src
+    |-- src
+    `-- tools
 
 ----------------------------------------------------------------------
 
@@ -241,19 +260,6 @@ version, or ignore the tag to get the latest developments (at your own
 risk).
 
 cvs -d :pserver:anonymous@cvs.cs.uu.nl:/data/cvs-rep checkout StrategoXT
-
-----------------------------------------------------------------------
-License
-
-StrategoXT is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2, or (at your option)
-any later version.
-
-This program is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-General Public License for more details.
 
 ----------------------------------------------------------------------
 Bugs
@@ -284,8 +290,8 @@ packages
 Developers who need to rebuild Makefiles and the configure scripts
 will need
 
-  * automake 1.5
-  * autoconf 2.53
+  * automake >= 1.6.3 
+  * autoconf >= 2.53
 
 In addition the autoxt package that is part of the StrategoXT
 distribution should be installed prior to autobootstrapping such that
@@ -297,74 +303,70 @@ Installation
 The following sequence of commands takes care of installing the aterm,
 sdf2, and StrategoXT packages. 
 
-	DIR=`pwd`
+   DIR=`pwd`
 
-	tar zxf aterm-1.6.7.tar.gz
-	ln -s aterm-1.6.7 aterm
-	cd aterm 
-	./configure --prefix=$DIR --with-all  
-	make
-	make install
-	cd ..
+   tar zxf aterm-1.6.7.tar.gz
+   cd aterm-1.6.7
+   ./configure --prefix=$DIR --with-all  
+   make
+   make install
+   cd ..
 
-	tar zxf sdf2-1.5.tar.gz
-	ln -s sdf2-1.5 sdf2
-	cd sdf2
-	./configure --prefix=$DIR --with-aterm=$DIR
-	make
-	make install
-	cd ..
+   tar zxf sdf2-1.5.tar.gz
+   cd sdf2-1.5
+   ./configure --prefix=$DIR --with-aterm=$DIR
+   make
+   make install
+   cd ..
 
-	tar zxf StrategoXT-0.9beta7.tar.gz
-	ln -s StrategoXT-0.9beta7 StrategoXT
-	cd StrategoXT
-	./configure --prefix=$DIR --with-aterm=$DIR --with-sdf=$DIR
-	make
-	cd ..
+   tar zxf StrategoXT-0.9beta9.tar.gz
+   cd StrategoXT-0.9beta9
+   ./configure --prefix=$DIR --with-aterm=$DIR --with-sdf=$DIR
+   make
+   cd ..
 
 Optionally you can install the choice point library prior to installation of StrategoXT:
 
-	tar zxf cpl-stratego-0.4.tar.gz
-	ln -s cpl-stratego-0.4 cpl-stratego
-	cd cpl-stratego
-	./configure --prefix=$DIR 
-	make
-	make install
-	cd ..
+   tar zxf cpl-stratego-0.4.tar.gz
+   cd cpl-stratego-0.4
+   ./configure --prefix=$DIR 
+   make
+   make install
+   cd ..
 
 To use the choice point library configure StrategoXT as follows:
 
-	./configure --prefix=$DIR --with-aterm=$DIR --with-sdf=$DIR --with-cpl=$DIR 
-
+   ./configure --prefix=$DIR --with-aterm=$DIR --with-sdf=$DIR --with-cpl=$DIR 
 
 ----------------------------------------------------------------------
 Packages
 
 The StrategoXT distribution consists of the following packages
 
-	* autoxt -- autoconf/make support for packages using XT
+    * autoxt -- autoconf/make support for packages using XT
 
-	* srts -- Stratego run-time system
+    * srts -- Stratego run-time system
 
-	* xtc -- Transformation tool composition (component model)
-	* sdf-import -- XTC registration of SDF tools
+    * xtc -- Transformation tool composition (component model)
+    * sdf-import -- XTC registration of SDF tools
 
-	* stratego-front -- Stratego syntax and support for concrete object syntax
-	* sc -- Stratego compiler
-	* gpp -- Generic pretty-printing
-	* cgen -- Support for the generation of C code
+    * stratego-front -- Stratego syntax and support for concrete object syntax
+    * sc -- Stratego compiler
+    * box-tools -- Pretty-printing tools based on box (gpp) replacement
+    * cgen -- Support for the generation of C code
+    * c-tools -- Improved support for the generation of C code
 
-	* ssl -- Stratego Standard Library
+    * ssl -- Stratego Standard Library
 
-	* aterm-tools -- Generic term operations
-	* asfix-tools -- Operations on concrete syntax trees
-	* sdf-tools -- Transformations on syntax definitions
-	* stratego-tools -- Generation of Stratego code
-	* dot-tools -- Support for processing Dot graph representations
-	* graph-tools 
+    * aterm-tools -- Generic term operations
+    * asfix-tools -- Operations on concrete syntax trees
+    * sdf-tools -- Transformations on syntax definitions
+    * stratego-tools -- Generation of Stratego code
+    * dot-tools -- Support for processing Dot graph representations
+    * graph-tools
 
-	* boxenv -- LaTeX run-time system for Box
+    * boxenv -- LaTeX run-time system for Box
 
-	* xt -- some tool compositions
+    * xt -- some tool compositions
 
 ----------------------------------------------------------------------

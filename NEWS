@@ -78,6 +78,45 @@ SUMMARY OF CHANGES
 
 ------------------------------------------------------------------------------
 
+Version 0.9beta10 - released January 12, 2003
+
+DOWNLOAD AND INSTALLATION
+
+The download page contains the source distribution and instructions
+for installation
+
+  * http://www.stratego-language.org/Stratego/StrategoRelease09
+
+CHANGES with respect to 0.9beta9
+
+  * SSL : parenthesize is a generic strategy for placing parentheses
+    based on priority information. flatten-list completely flattens a list.
+
+  * SRTS : intall header files for SSL primitives in
+    PREFIX/include/srts instead of PREFIX/include/ssl to avoid conflicts
+    with OpenSSL
+
+  * XTC : 'xtc call prog' to call program prog relative to XTC repository,
+    and 'xtc get file' to find location of file in XTC repository.
+
+  * SC : started using concrete C syntax in s2c
+
+  * AUTOXT/Makefile.xt : Register repository declared with XTC_IMPORT in
+    a makefile
+
+  * Use CFLAGS="-D__NO_CTYPE" in RPM build to allow portability to
+    suse (hopefully)
+
+DOCUMENTATION
+
+  * Reference Card 
+
+    See http://www.stratego-language.org/Stratego/ReferenceCard for a
+    data-flow diagram explaining the relation between many of the StrategoXT
+    tools
+
+------------------------------------------------------------------------------
+
 Version 0.9beta9 - released January 5, 2003
 
 DOWNLOAD AND INSTALLATION
