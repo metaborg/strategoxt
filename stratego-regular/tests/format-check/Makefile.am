@@ -5,6 +5,7 @@ check_PROGRAMS = format-check-tests
 SCFLAGS        = --main main-$*
 STRINCLUDES    = -I $(XTC)/share/xtc \
                  -I $(top_srcdir)/lib
+LDADD         += $(SSL_LIBS)
 
 TESTS          = $(check_PROGRAMS)
 EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) $(wildcard *.rtg)

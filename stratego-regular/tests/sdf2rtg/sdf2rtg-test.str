@@ -1,5 +1,5 @@
 module sdf2rtg-test
-imports sunit xtc-lib xtc-debug
+imports liblib xtc-debug
 
 strategies 
 

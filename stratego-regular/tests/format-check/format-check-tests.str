@@ -1,5 +1,5 @@
 module format-check-tests
-imports sunit xtc-lib
+imports liblib
 
 strategies 
 

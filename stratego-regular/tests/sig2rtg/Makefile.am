@@ -5,6 +5,7 @@ check_PROGRAMS = sig2rtg-test
 SCFLAGS        = --main main-$*
 STRINCLUDES    = -I $(top_srcdir)/lib \
                  -I $(XTC)/share/xtc
+LDADD         += $(SSL_LIBS)
 
 TESTS          = $(check_PROGRAMS)
 EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta)

@@ -1,6 +1,4 @@
 module xtc-debug
-imports xtc-lib
-
 strategies
   
   xtc-debug-text =
@@ -20,8 +18,10 @@ strategies
       ; xtc-debug-text(s)
       )
 
+  /*
   read-text-file =
     ?file
     ; <fopen> (file,"r") => stream
     ; read-text-from-stream
     ; where(<fclose> stream)
+  */

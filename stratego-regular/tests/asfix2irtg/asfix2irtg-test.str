@@ -2,7 +2,7 @@
  * @author  Martin Bravenboer <martin@cs.uu.nl>
  */
 module asfix2irtg-test
-imports sunit xtc-lib xtc-debug irtg
+imports liblib xtc-debug irtg
 
 strategies 
 

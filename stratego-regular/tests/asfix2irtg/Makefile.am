@@ -8,6 +8,7 @@ SCFLAGS        = --main main-$*
 STRINCLUDES    = -I $(top_srcdir)/sig \
                  -I $(top_srcdir)/lib \
                  -I $(XTC)/share/xtc
+LDADD += $(SSL_LIBS)
 
 TESTS          = $(check_PROGRAMS)
 EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) $(wildcard *.sdf)  $(wildcard *.def)

@@ -9,6 +9,7 @@ STRINCLUDES    = -I $(top_srcdir)/trans/sdf2rtg \
                  -I $(top_srcdir)/lib \
                  -I $(SDF_FRONT)/share/sdf-front \
                  -I $(XTC)/share/xtc
+LDADD         += $(SSL_LIBS)
 
 SDFINCLUDES    = -I $(top_srcdir)/syn \
                  -I $(STRATEGO_FRONT)/share/sdf/stratego-front \
