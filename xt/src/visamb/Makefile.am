@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.4 2001/11/22 08:33:11 mdejonge Exp $
+# $Id: Makefile.am,v 1.5 2001/11/25 22:54:53 mdejonge Exp $
 
 include $(srcdir)/../templates/make_rules 
 include $(srcdir)/../templates/make_rules.stratego
@@ -31,7 +31,7 @@ bin_SCRIPTS  = $(STRATEGO_PRG)
 pkgdata_DATA = visamb.pp visamb.pp.af
 
 TESTS        = visamb1_check visamb2_check
-CLEANFILES  += visamb1_check visamb2_check
+CLEANFILES  += visamb1_check visamb2_check visamb.pp.af
 
 EXTRA_DIST  += visamb.pp
 

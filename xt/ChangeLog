@@ -1,4 +1,5 @@
 2001-11-25 Merijn de Jonge <mdejonge@cwi.nl>
+   * visamb/Makefile.am: added visamb.pp.af to CLEANFILES
    * renamed acinclude.m4 to program-check.m4
    * added new version of program-check.m4
    * add stratego-0.6.2 to list of required packages
