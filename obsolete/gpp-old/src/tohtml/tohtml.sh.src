@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: tohtml.sh.src,v 1.5 2001/06/08 08:36:55 mdejonge Exp $
+# $Id: tohtml.sh.src,v 1.6 2001/08/28 17:27:27 mdejonge Exp $
 
 #
 #
@@ -47,13 +47,14 @@ BINDIR=__BINDIR__
 DATADIR=__DATADIR__
 LIBEXEC=__LIBEXEC__
 GRAPHTOOLS=__GRAPHTOOLS__
+SGLR=__SGLR__
 
 GRAPHVIZ=__GRAPHVIZ__
 MAKE=__MAKE__
 VERSION=__VERSION__
 
 # Extend PATH to include bin directories of additional tools
-PATH=${GRAPHTOOLS}/bin:${GRAPHVIZ}/bin:${BINDIR}:${PATH}
+PATH=${BINDIR}:${GRAPHTOOLS}/bin:${GRAPHVIZ}/bin:${SGLR}/bin:${PATH}
 export PATH
 
 # Programs

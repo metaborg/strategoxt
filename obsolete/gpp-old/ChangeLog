@@ -2,6 +2,8 @@
    * src/gpp/make.r: bug fix: pp generator also incorrectly brackets in sdf
      productions
    * src/tohtml/ismap2usemap: fixed
+   * src/tohtml/tohtml.sh.src: bug fix: Path was not extended with sglr
+     location
 
 2001-08-22  Eelco Visser  <visser@acm.org>
    * src/gpp/Ppgen.r: Added imports of Label-Sdf-Syntax and
