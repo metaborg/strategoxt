@@ -85,6 +85,9 @@ PKGS=                   # Empty package list
 # system, but save them in a specific  directoy (e.g., ${_pkg}-cvs)
 save_vcs () {
    _pkg=$1
+   if [ ! -d ${_pkg} ]; then
+      return
+   fi
    fullname=`cd ${_pkg}; basename \`/bin/pwd\``
    if [ -d ./${_pkg}/CVS ]; then
       echo "A copy of the CVS checked out version of"\

@@ -1,5 +1,6 @@
 2004-05-04 Merijn de Jonge <mdejonge@cs.uu.nl>
    * Released 0.10
+   * Bug fix in collect.sh
    * Updated NEWS file
    * Updated email address
    * Updated AUTHORS, src/autobundle/AUTHORS.templ
