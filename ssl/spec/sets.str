@@ -79,6 +79,14 @@ strategies
     ?set; iset-add(id|elem); !set
 
   /**
+   * Ensures that all elems in the specified list are in the set.
+   *
+   * @type IndexedSet -> IndexedSet
+   */
+  iset-addlist(|lst) =
+    ?set; <map({ elem: ?elem; <iset-add(|elem)> set })> lst; !set
+
+  /**
    * Fails if elem is not in the set.
    *
    * @type  IndexedSet -> IndexedSet

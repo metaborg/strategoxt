@@ -27,6 +27,9 @@ strategies
   hashtable-destroy =
     ?Hashtable(tbl); prim("SSL_hashtable_destroy", tbl); !Hashtable(<id>)
 
+  hashtable-clear =
+    ?Hashtable(tbl); prim("SSL_hashtable_reset", tbl); !Hashtable(<id>)
+
 /**
  * Hashtable operations
  */

@@ -46,6 +46,7 @@ strategies
   mod = ?(x,y); prim("SSL_mod",x,y)
 
   gt	= ?(x,y); test(prim("SSL_gti",x,y) <+ prim("SSL_gtr",x,y))
+
   gti	= ?(x,y); test(prim("SSL_gti",x,y))
   gtr	= ?(x,y); test(prim("SSL_gtr",x,y))
 
