@@ -62,6 +62,10 @@ strategies
   genzip(a, b, c, s) = 
     rec x(a + b; (s, x); c)
 
+  // :: [a] * [b] -> [a * b]
+  zip  = zip(id)
+
+  // a * b -> c :: [a] * [b] -> [c]
   zip(s)  = 
     genzip(Zip1,   Zip2,   Zip3,   s)
   zip'(s) = 
@@ -75,8 +79,9 @@ strategies
     genzip((?([],_) + ?(_,[])); ?(tla, tlb); ![], Zip2, Zip3, s);
     \ pairs -> (tla, tlb, pairs) \
 
-  unzip = 
-    genzip(UnZip1, UnZip3, UnZip2, id)
+  // :: [a * b] -> [a] * [b]
+  unzip = unzip(id)
+
   unzip(s) = 
     genzip(UnZip1, UnZip3, UnZip2, s)
 
