@@ -1,4 +1,5 @@
 2001-06-08 Merijn de Jonge <mdejonge@cwi.nl> 
+   * src/graphterms2graphxml/Makefile.am: removed garbage from Makefile.am
    * src/dot: dot.pp and dot.pp.af are also installed in share/graph-tools
 
 2001-06-07 Merijn de Jonge <mdejonge@cwi.nl> 

@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/06/07 12:35:23 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2001/06/08 11:31:46 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -34,11 +34,6 @@ STRATEGO_PRG = graph-term2GraphXML
 
 # What scipts to build
 bin_SCRIPTS  = $(STRATEGO_PRG)
-
-# Optional tests to run
-TESTS        = graphxml2dot_check
-
-CLEANFILES  += graphxml2dot_check
 
 # Additional flags for the Stratego compiler
 SCFLAGS     += -I $(srcdir)/../graphxml \
