@@ -137,6 +137,10 @@ strategies // high-level API with implicit rule set
     dr-get-rule-set(|name)
     ; dr-lookup-rule(|key)
 
+  dr-lookup-all-rules(|name, key) = 
+    dr-get-rule-set(|name)
+    ; dr-lookup-all-rules(|key)
+
   dr-lookup-rule-pointer(|name, key) = 
     dr-get-rule-set(|name)
     ; dr-lookup-rule-pointer(|key)
@@ -341,6 +345,24 @@ strategies // looking up
     ?[ChangeSet(_, tbl) | rs]
     ; let look2 = look1 <+ \ key' -> <hashtable-get(|key'); !(<id>, key', tbl)> tbl \
        in <dr-lookup-rule-pointer(look2 | key)> rs
+      end
+
+  /**
+   * Fetch all definitions for key.
+   */
+
+  dr-lookup-all-rules(|key) =
+    dr-lookup-all-rules(fail | key)
+
+  dr-lookup-all-rules(look | key) =
+    ?[RuleScope(_, tbl@Hashtable(hptr)) | rs]
+    ; <conc>(<<look>(hptr, key) <+ <hashtable-get(|key)> tbl <+ ![]>
+            ,<dr-lookup-all-rules(look | key) <+ ![]> rs)
+
+  dr-lookup-all-rules(look1 | key) =
+    ?[ChangeSet(_, tbl) | rs]
+    ; let look2 = look1 <+ \ key' -> <hashtable-get(|key')> tbl \
+       in <dr-lookup-all-rules(look2 | key)> rs
       end
 
 strategies // setting a rule
