@@ -26,6 +26,7 @@ ATerm SSL_file_exists(ATerm t);
 ATerm SSL_open_file(ATerm name, ATerm mode);
 ATerm SSL_append_file(ATerm name);
 ATerm SSL_close_file(ATerm name);
+ATerm SSL_fflush(ATerm name);
 ATerm SSL_print(ATerm file, ATerm str);
 ATerm SSL_printnl(ATerm file, ATerm str);
 ATerm SSL_printascii(ATerm file, ATerm str);

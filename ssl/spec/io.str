@@ -56,6 +56,8 @@ strategies
   append-file = 
     ?name; prim("SSL_open_file", name, "a")
 
+  fflush =
+    ?name; prim("SSL_fflush", name)
 
 \end{code}
 

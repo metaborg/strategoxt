@@ -138,6 +138,35 @@ ATerm SSL_close_file(ATerm name)
   return(name);
 }
 
+ATerm SSL_fflush(ATerm name) {
+  FILE *file = NULL;
+
+  if(SSL_file_table == NULL)
+    SSL_file_table_init();
+  
+  if(ATmatch(name, "stdout"))
+    file = stdout;
+  else if(ATmatch(name, "stderr"))
+    file = stderr;
+  else if(ATmatch(name, "stdin"))
+    file = stdin;
+  else  {
+    file = _SSL_file_table_lookup(name);
+
+    if(file == NULL) {
+      _fail(name);
+    }
+  }
+
+  
+
+  if(fflush(file) != 0) {
+    _fail(name);    
+  }
+
+  return(name);
+}
+
 ATerm SSL_print(ATerm file, ATerm str)
 {  
   FILE *outfile;

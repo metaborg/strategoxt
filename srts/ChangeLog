@@ -1,3 +1,7 @@
+2003-01-28  Martin Bravenboer <martin@mbravenboer.org>
+
+  * ssl/io.[ch]: SSL_fflush
+
 2003-01-18  Eelco Visser  <visser@cs.uu.nl>
 
 	* ssl/dir.h (SSL_fdcopy): prototype

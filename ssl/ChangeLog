@@ -1,3 +1,8 @@
+2003-01-28  Martin Bravenboer <martin@mbravenboer.org>
+
+  * spec/io.str: introduced fflush to fflush
+    open files or stdout/stderr.
+
 2003-01-26  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/fixpoint-traversal.str: Removed spurious rec from definition
