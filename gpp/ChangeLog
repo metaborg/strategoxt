@@ -1,3 +1,9 @@
+2003-02-27   Martin Bravenboer  <martin@mbravenboer.org>
+
+  * sig/box/abox-ext.str: Added from SSL. Consider to use
+    Stratego-Box however: you don't need abstractions
+    if you are using concrete syntax for Box.
+
 2003-02-18   Martin Bravenboer  <martin@mbravenboer.org>
 
   * trans/abox/Box-util.str: Fixed pretty printing of an empty
