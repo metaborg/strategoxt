@@ -23,8 +23,8 @@ testset: $(TESTSET_IN) $(TESTSET_CORRECT)
 
 %.sh : Makefile
 	( \
-	   echo "../explode-asfix2me < $*.in > $*.out" ;\
-	   echo "diff $*.out $*.correct" ;\
+	   echo "../explode-asfix2me < $(srcdir)/$*.in > $*.out" ;\
+	   echo "diff $*.out $(srcdir)/$*.correct" ;\
 	) > $@ \
 	&& chmod +x $@
 	
