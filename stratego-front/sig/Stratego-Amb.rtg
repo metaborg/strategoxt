@@ -189,6 +189,7 @@ regular tree grammar
     Term                          -> As(Var,Term)
     Term                          -> RootApp(StrategyAngle)
     Term                          -> App(Strategy,Term)
+    Term                          -> AnnoTail(Term,ListStarOfTerm_0,Term)
     Term                          -> Anno(Term,ListStarOfTerm_0)
     Term                          -> Explode(Term,Term)
     Term                          -> OpQ(String,ListStarOfTerm_0)

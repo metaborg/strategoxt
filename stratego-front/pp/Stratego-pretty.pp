@@ -74,7 +74,10 @@
    RootApp -- H hs=0[KW["<"] _1 KW[">"]],
    
    Anno -- _1 KW["{"] _2 KW["}"],
+   AnnoTail -- _1 KW["{"] _2 KW["|"] _3 KW["}"],
+   AnnoTail.2:iter-star-sep -- _1 KW[","],
    AnnoCong -- _1 _2,
+
    StrategyCurly -- KW["{"] _1 KW["}"],
 
    Con  -- H hs=0 [_1 KW["["] _2 KW["]"] KW["("] _3 KW[")"]],

@@ -154,6 +154,8 @@
    Explode                                   -- _1 KW["#"] KW["("] _2 KW[")"],
    Anno                                      -- _1 KW["{"] _2 KW["}"],
    Anno.2:iter-star-sep                      -- _1 KW[","],
+   AnnoTail                                  -- _1 KW["{"] _2 KW["|"] _3 KW["}"],
+   AnnoTail.2:iter-star-sep                  -- _1 KW[","],
    App                                       -- KW["<"] _1 KW[">"] _2,
    RootApp                                   -- _1,
    As                                        -- _1 KW["@"] _2,

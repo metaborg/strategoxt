@@ -248,6 +248,9 @@ rules
   Desugar :
     Anno(t, ts) -> Anno(t, <foldr(!Op("Nil",[]), !Op("Cons",[<Fst>,<Snd>]))> ts)
 
+  Desugar :
+    AnnoTail(t, ts, tail) -> Anno(t, <foldr(!tail, !Op("Cons", [<Fst>, <Snd>]))> ts)
+
 strategies
 
   DesugarOnce =

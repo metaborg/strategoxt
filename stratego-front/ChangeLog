@@ -1,3 +1,11 @@
+2004-09-02  Martin Bravenboer <martin@cs.uu.nl>
+
+	* syn/Stratego-Terms.sdf: added the AnnoTail construct, which
+	allows you to compose annotations in a way similar to lists: 
+	t{a, b, c | tail}.
+
+	* parse/stratego-desugar.str: desugaring of AnnoTail.
+
 2004-07-27  Martin Bravenboer <martin@cs.uu.nl>
 
 	* parse/stratego-desugar.str: improved desugaring of StratRules

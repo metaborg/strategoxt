@@ -39,6 +39,7 @@ signature
     As                         : Var * Term -> Term
     RootApp                    : StrategyAngle -> Term
     App                        : Strategy * Term -> Term
+    AnnoTail                   : Term * List(Term) * Term -> Term
     Anno                       : Term * List(Term) -> Term
     Explode                    : Term * Term -> Term
     OpQ                        : String * List(Term) -> Term

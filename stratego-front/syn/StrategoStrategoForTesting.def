@@ -517,6 +517,7 @@ exports
     String "(" {Term ","}* ")" 	 -> Term {cons("OpQ")}
     Term "#" "(" Term ")" 	 -> Term {cons("Explode")}
     Term "{" {Term ","}* "}"	 -> Term {cons("Anno")}
+    Term "{" {Term ","}* "|" Term "}" -> Term {cons("AnnoTail")}
 
     "<" Strategy ">" Term 	 -> Term {cons("App")}
     StrategyAngle		 -> Term {cons("RootApp")}
