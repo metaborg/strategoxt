@@ -1,4 +1,8 @@
-2002-01-18 Merijn de Jonge <mdejonge@cwi.nl> Jurgen Vinju <jurgenv@cwi.nl>
+2002-02-10 Merijn de Jonge <mdejonge@cwi.nl>
+   * added testset for explode-asfix2me
+   * renamed restore-asfix2 to explode-asfix2me
+
+2002-02-8 Merijn de Jonge <mdejonge@cwi.nl> Jurgen Vinju <jurgenv@cwi.nl>
    * added restore-asfix2 tool to convert (imploded) AsFix2ME back to asfix2
 
 2002-01-18 Merijn de Jonge <mdejonge@cwi.nl>
