@@ -73,7 +73,7 @@ strategies
   print-to :
     strings -> FILE(name)
       where xtc-new-file => name
-          ; <open-file> name
+          ; <open-file> (name, "w")
           ; <print> (name, strings)
           ; <close-file> name
 
