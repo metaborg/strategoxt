@@ -48,6 +48,7 @@ strategies
           ?p
         ; (  listinj2prodrule
           <+ seq2prodrule
+          <+ alt2prodrule
           <+ prodfun2prodrule
           <+ var2prodrule
           <+ opt2prodrule
@@ -201,6 +202,17 @@ rules
           ; <length; int-to-string> t* => i
 
 /**
+ * Alternatives
+ */
+rules
+
+  alt2prodrule :
+    prod(syms, nt, _) -> rtg |[ x -> t ]|
+      where <is-alt-symbol> nt
+          ; <get-nonterm-of> nt => x
+          ; <syms2trees> syms => [t]
+
+/**
  * Iteration
  */
 rules
@@ -330,6 +342,10 @@ rules
   is-seq-symbol =
       cf(is-seq-symbol)
     + seq(id, is-list)
+
+  is-alt-symbol = 
+      cf(is-alt-symbol)
+    + alt(id, id)
      
   is-list-symbol = 
       cf(is-list-symbol)
@@ -341,6 +357,7 @@ rules
   is-nonterm-generator = 
       is-list-symbol
     + is-seq-symbol
+    + is-alt-symbol
     + cf(is-nonterm-generator)
     + opt(id)
     + varsym(id)
