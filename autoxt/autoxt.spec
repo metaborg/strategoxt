@@ -1,6 +1,6 @@
 Summary: Automake support for the StrategoXT tools
 Name: autoxt
-Version: 0.9beta10
+Version: 0.9.1
 Release: 1
 License: LGPL
 Group: Development
@@ -35,5 +35,4 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Sun Jan  5 2003 Eelco Visser <visser@cs.uu.nl> 
 - Initial build.
-
 

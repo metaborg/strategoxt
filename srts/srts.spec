@@ -1,6 +1,6 @@
 Summary: The Stratego Run-Time System
 Name: srts
-Version: 0.9beta10
+Version: 0.9.1
 Release: 1
 License: LGPL
 Group: Libraries/
@@ -37,5 +37,4 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Sun Jan  5 2003 Eelco Visser <visser@cs.uu.nl> 
 - Initial build.
-
 

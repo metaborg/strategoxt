@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-AC_INIT([xtc],[0.9],[stratego-bugs@cs.uu.nl])
+AC_INIT([xtc],[0.9.1],[stratego-bugs@cs.uu.nl])
 AM_INIT_AUTOMAKE
 
 USE_XT_PACKAGES
@@ -29,4 +29,3 @@ AC_CONFIG_FILES([
   tools/Makefile
 ])
 AC_OUTPUT
-
