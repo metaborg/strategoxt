@@ -1,7 +1,6 @@
 include $(top_srcdir)/Makefile.xt
 
 strategolib = \
-	$(wildcard *.str) \
 	$(wildcard collection/*.str) \
 	$(wildcard collection/hash-table/*.str) \
 	$(wildcard collection/list/*.str) \
@@ -21,14 +20,16 @@ strategolib = \
 
 pkgdocdatadir  = $(pkgdatadir)/doc
 
+pkgdata_DATA = $(subst .str,.rtree,$(wildcard *.str))
+
 nobase_pkgdata_DATA = $(strategolib:.str=.rtree)
 nobase_pkgdocdata_DATA = $(strategolib)
 
 #pkgdata_DATA   = $(subst .str,.rtree,$(wildcard *.str))
 #pkgdocdata_DATA= $(wildcard *.str)
 
-EXTRA_DIST     = $(strategolib) $(nobase_pkgdata_DATA)
-BOOTCLEANFILES = $(nobase_pkgdata_DATA)
+EXTRA_DIST     = $(strategolib) $(pkgdata_DATA) $(nobase_pkgdata_DATA)
+BOOTCLEANFILES = $(pkgdata_DATA) $(nobase_pkgdata_DATA)
 
 #include $(wildcard *.dep)
 
