@@ -43,8 +43,21 @@ strategies
     ; <get-config> "-l" => loc
     ; if-verbose2(debug(!"    Location: "))
     ; !tools
+    ; xtc-register(|tools, version, loc)
+
+  /**
+   * @param  tools    String or List(String)
+   * @param  version  String
+   * @param  loc      Directory of tools
+   */
+  xtc-register(|tools, version, loc) = 
+    where(
+      xtc-load
+    ; !tools
+    ; (is-list <+ ![<id>])
     ; map(<table-union>(XTC, Tool(<id>), 
 	    [(version, <concat-strings>[loc,"/",<id>])]))
+    )
 
   register-import =
     <get-config> "import" => imports
