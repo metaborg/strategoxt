@@ -111,7 +111,7 @@ overlays // sugar for usage, summary, description
   OptionUsage() =
     HSection("Options:", [
       DefList(
-        < table-get
+        < table-get 
         ; reverse
         ; map(ensure-help-string)
         ; filter(\ HelpString(f, d) -> Def(f, Paragraph(d)) \)
@@ -136,8 +136,12 @@ strategies
    */
   ensure-help-string :
     s -> HelpString(flags, descr)
-      where <is-string> s
+      where <is-string> s 
           ; <split-before> (s, "  ") => (flags, descr)
+
+  ensure-help-string :
+    "" -> HelpString("", "")
+
 
 overlays
   
