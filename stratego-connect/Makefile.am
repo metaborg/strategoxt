@@ -2,8 +2,7 @@ include $(top_srcdir)/Makefile.xt
 SUBDIRS 	  =  src spec
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 
-
-EXTRA_DIST = README.in reconf $(wildcard *.pkg) stdconfig Makefile.xt
+EXTRA_DIST = README.in bootstrap $(wildcard *.pkg) stdconfig Makefile.xt
 
 RPMRELEASE = 1
 

@@ -1,28 +1,9 @@
-# Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
-# 
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2, or (at your option)
-# any later version.
-# 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-# 02111-1307, USA.
-
 AC_INIT([srts],[0.9beta11],[stratego-bugs@cs.uu.nl])
 AM_INIT_AUTOMAKE
 
 AM_CONFIG_HEADER(config.h)
 
 ACLOCAL="${ACLOCAL} -I ."
-
-USE_XT_PACKAGES
 
 AC_ARG_WITH(aterm, 
   [  --with-aterm          Specify location of aterm library, default: \$prefix], 
@@ -44,7 +25,7 @@ then
 AC_DEFINE(HAVE_CPL, 1, [Are we using the Choice Point Library?])
 fi
 
-AC_REVISION($Id: configure.in,v 1.30 2003/01/17 20:24:38 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.31 2003/01/18 20:55:04 stratego Exp $)
 
 AC_CHECK_FUNCS([getpagesize])
 AC_CHECK_HEADERS([stdlib.h])
@@ -76,7 +57,6 @@ AC_OUTPUT(
 	Makefile.srts
 	README 
 	src/Makefile
-	src/make_rules
 	src/srts/Makefile
 	ssl/Makefile
 )

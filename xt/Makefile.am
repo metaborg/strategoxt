@@ -25,7 +25,7 @@ include package.conf
 SUBDIRS	= integration-tests src www
 
 EXTRA_DIST = ADDING-TOOLS VERSION configure.in.src genconf.sh \
-             package.conf reconf $(PACKAGE)-$(VERSION).pkg program-check.m4 \
+             package.conf bootstrap $(PACKAGE)-$(VERSION).pkg program-check.m4 \
 	     Makefile.xt
 
 # Generation of a package defintion file from the package.conf file. This
