@@ -1,4 +1,7 @@
-2000-07-147 <mdejonge@cwi.nl>
+2000-07-24 <mdejonge@cwi.nl>
+        * Upgraded to new version (0.4.16) of Stratego
+
+2000-07-17 <mdejonge@cwi.nl>
         * Upgraded to use new version (version 1.1) of the aterm library
 
 2000-07-14 <mdejonge@cwi.nl>
