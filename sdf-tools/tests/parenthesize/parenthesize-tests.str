@@ -14,12 +14,18 @@ strategies
   exp-tests =
       exp-test(|"a + e")
     ; exp-test(|"b + (c + d)")
+    ; exp-test(|"b * (c + d)")
+    ; exp-test(|"(b * c) + d", "b * c + d")
+    ; exp-test(|"(b + c) + d", "b + c + d")
 
   /**
-   * @param  s  Expression to test
+   * @param  txt  Expression to test
    */
   exp-test(|txt) =
-    apply-test(!txt, 
+    exp-test(|txt, txt)
+
+  exp-test(|txt1, txt2) =
+    apply-test(!txt1, 
       xtc-temp-files(
         <print-to> [<id>]
       ; xtc-sglr(!"Exp.tbl")
@@ -30,8 +36,8 @@ strategies
       ; ?FILE(<read-text-file>)
       ; trim-whitespace
       )
-    , !txt
-    , !txt
+    , !txt1
+    , !txt2
     )
 
   register-test-data =
