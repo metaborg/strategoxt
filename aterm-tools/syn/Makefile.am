@@ -10,6 +10,6 @@ BOOTCLEANFILES = $(TBLS_DEFS)
 PGEN_FLAGS     = -m $*
 
 ATerm.def : \
-  ATerm.sdf \
   ATerm-Layout.sdf \
-  ATerm-Literals.sdf
+  ATerm-Literals.sdf \
+  ATerm.sdf

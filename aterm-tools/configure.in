@@ -19,6 +19,7 @@ AC_CONFIG_FILES([
 	VERSION
   
   syn/Makefile
+  sig/Makefile
 	
 	src/Makefile 
 	src/templates/Makefile 

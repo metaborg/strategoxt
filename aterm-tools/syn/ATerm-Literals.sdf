@@ -1,4 +1,4 @@
-module ATerm-Literal
+module ATerm-Literals
 imports ATerm-Layout
 
 exports
@@ -34,6 +34,5 @@ exports
 
     Int "." NatInt Exponent? -> Real {cons("Real")}
     "e" IntCon -> Exponent {cons("Exp")}
-
 
 
