@@ -22,7 +22,7 @@ strategies
 strategies    
     
   xtc-pp-sdf2 =
-      xtc-ast2abox(!["Sdf2-pgen2.0.pp.af"])
+      xtc-ast2abox(!["Sdf2-pgen2.0.pp.af", "Sdf2.pp.af"])
     ; xtc-abox2text
 
 strategies
