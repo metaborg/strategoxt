@@ -27,8 +27,10 @@ strategies
     , "--very-explicit  Use explicit XML elements for applications, strings, lists, integers, and tuples"
     )
 
+strategies
+
   very-explicit-data2xml =
-    data2xml(
+    explicit-data2xml(
       rec x(
          ExplicitExplode-String
       <+ ExplicitExplode-Int
@@ -39,7 +41,7 @@ strategies
     )
 
   explicit-data2xml =
-    data2xml(
+    explicit-data2xml(
          ExplicitExplode-String
       <+ ExplicitExplode-Int
       <+ ExplicitExplode-List
@@ -67,7 +69,14 @@ strategies
          <+ s
         )
       )
-    ; bottomup(try( \ Conc(l1, l2) -> <conc> (l1, l2) \ ))
+    ; data2xml-finish
+
+  explicit-data2xml(s) =
+    bottomup(try(s))
+    ; data2xml-finish
+
+  data2xml-finish =
+    bottomup(try( \ Conc(l1, l2) -> <conc> (l1, l2) \ ))
     ; !%>
         <?xml version="1.0"?>
 

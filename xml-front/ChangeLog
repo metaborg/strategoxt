@@ -1,5 +1,13 @@
 2004-09-25  Martin Bravenboer <martin@cs.uu.nl>
 
+	* tests/xml-aterm-tests.str: aterm2xml | xml2aterm roundtrip
+	testsuite.
+
+	* trans/data2xml.str: in explicit mode, Some and None should be
+	explictly represented in XML.
+	
+2004-09-25  Martin Bravenboer <martin@cs.uu.nl>
+
 	* xtc/aterm2xml.str: composes data2xml-doc and pp-xml-doc into a
 	single aterm to xml tool. This tool uses the --explicit mode of
 	data2xml-doc.

@@ -1,0 +1,46 @@
+module xml-aterm-tests
+imports liblib
+
+strategies
+
+  main-xml-aterm-tests =
+    test-suite(!"xml aterm roundtrip tests",
+      roundtrip-tests
+    )
+
+strategies
+
+  roundtrip-tests =
+    roundtrip-test(|1)
+  ; roundtrip-test(|2)
+  ; roundtrip-test(|"a")
+  ; roundtrip-test(|"ab")
+  ; roundtrip-test(|" ab ")
+  ; roundtrip-test(| [1, 2])
+  ; roundtrip-test(| [1, 2, 3])
+  ; roundtrip-test(| ["1", "2    ", " 3 "])
+  ; roundtrip-test(| Foo(1, 2))
+  ; roundtrip-test(| Foo(3, 4))
+  ; roundtrip-test(| Foo(1, [2, 3]))
+  ; roundtrip-test(| Foo([1, 2], [3, 4]))
+  ; roundtrip-test(| Some(4))
+  ; roundtrip-test(| None())
+
+strategies
+
+  roundtrip-test(|t) =
+    apply-test(!t,
+      xtc-temp-files(
+        write-to
+      ; xtc-transform(!"aterm2xml")
+      ; xtc-transform(!"xml2aterm")
+      ; read-from
+      )
+    , !t
+    , !t
+    )
+
+signature
+  constructors
+    Foo : Foo * Foo -> Foo
+ 
