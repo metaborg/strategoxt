@@ -59,7 +59,7 @@ CLEANFILES     	= $(wildcard *.dep)
 BOOTCLEANFILES 	= $(wildcard *.c)
 
 SCFLAGS	       	= --verbose 1 --dr new
-STRINCLUDES    	= -I $(top_srcdir)/spec -I $(SRTS)/share/srts
+STRINCLUDES    	= -I $(top_srcdir)/ssl-compat -I $(top_srcdir)/spec -I $(SRTS)/share/srts
 
 annotations_test_LDADD      = $(SSL_LIBS)
 annotation_props_test_LDADD = $(SSL_LIBS)

@@ -27,3 +27,5 @@ libstratego_lib_native_opt_la_SOURCES  = $(LIB_SOURCES)
 libstratego_lib_native_dbg_la_CFLAGS  = -g  $(AM_CFLAGS)
 libstratego_lib_native_prof_la_CFLAGS = -pg $(AM_CFLAGS)
 libstratego_lib_native_opt_la_CFLAGS  = -O2 $(AM_CFLAGS)
+
+bootclean:

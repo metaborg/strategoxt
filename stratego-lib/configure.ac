@@ -11,6 +11,7 @@ AC_PROG_LIBTOOL
 
 AC_CONFIG_FILES([
   Makefile
+  ssl-compat/Makefile
   spec/Makefile
   native/Makefile
   native/stratego-lib/Makefile

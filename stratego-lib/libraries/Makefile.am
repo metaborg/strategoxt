@@ -23,6 +23,7 @@ bootclean :
 
 libstrategolib.c : 
 	$(STRC)/bin/strc -c --library --verbose 4 --dr old \
+        -I $(top_srcdir)/ssl-compat \
         -I $(top_srcdir)/spec \
         -i ./strategolib.str -o libstrategolib.rtree && \
         rm libstrategolib.str
