@@ -23,6 +23,9 @@ strategies
   Desugar :
     lit(qlit(s)) -> lit(<un-double-quote> s)
 
+  Desugar :
+    lit(uqlit(s)) -> lit(s)
+
 rules
 
   DesugarOnce =
