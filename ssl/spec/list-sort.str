@@ -39,7 +39,14 @@ strategies
   //  let Uniq = \ [x|xs] -> [x|l] where <filter(not(?x))> xs => l \
   //   in listtd(try(Uniq))
 
-  // <qsort(lt)>[..] sorteert lijst van integers
+  /**
+   * Sort a list using the quick-sort algorithm.
+   *
+   * qsort(lt) sorts a list of integers in ascending order.
+   *
+   * @param  swap  (a, a)  -> _
+   * @type         List(a) -> List(a)
+   */
   qsort(swap) : 
     [] -> []
 
