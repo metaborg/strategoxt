@@ -1,18 +1,30 @@
+2003-02-28  Martin Bravenboer  <martin@cs.uu.nl>
+
+	* src/pack-sdf/pack-sdf.str: refactored the entry point (no
+	asfix/text/ast changes yet)
+
+	* src/pack-sdf/pack-sdf.str: sdf module not found is now a fatal
+	error. Execution is thus terminated if a module is not available
+	in the include path.
+
+	* src/pack-sdf/pack-sdf.str: be silent if there is nothing to say:
+	"including" messages are only shown if verbosity is 1.
+
 2003-05-27  Merijn de Jonge  <M.de.Jonge@tue.nl>
-  * tohtml-sdf: minor modifucation due to change in tohtml tool
 
-2003-02-28  Martin Bravenboer  <martin@mbravenboer.org
+	* tohtml-sdf: minor modifucation due to change in tohtml tool
 
-  * Moved pretty-print table from src/sdf to pp. Renamed
-    to Sdf2.pp
-    
-  * xtc/parse-sdf-module: XTC tool to parse SDF module
-  
-  * syn/*.sdf using constructors (to be refactored)
-  
-  * xtc/pp-sdf.str: XTC tool to pp SDF AST to text
-  
-  * xtc/sdf2text.str: XTC part of sdf2text shell script
+2003-02-28  Martin Bravenboer  <martin@cs.uu.nl>
+
+	* Moved pretty-print table from src/sdf to pp. Renamed to Sdf2.pp
+
+	* xtc/parse-sdf-module: XTC tool to parse SDF module
+
+	* syn/*.sdf using constructors (to be refactored)
+
+	* xtc/pp-sdf.str: XTC tool to pp SDF AST to text
+
+	* xtc/sdf2text.str: XTC part of sdf2text shell script
 
 2003-01-18  Eelco Visser  <visser@cs.uu.nl>
 

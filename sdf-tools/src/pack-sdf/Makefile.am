@@ -2,7 +2,7 @@ include $(srcdir)/../templates/make_rules
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-SUBDIRS      	 = data
+SUBDIRS = data
 
 bin_PROGRAMS 	 = pack-sdf
 libexec_PROGRAMS = pack-sdf
@@ -11,9 +11,10 @@ CLEANFILES 	 = pack_sdf_check $(wildcard *.dep)
 BOOTCLEANFILES 	 = pack-sdf.c 
 EXTRA_DIST  	 = $(wildcard *.str) $(wildcard *.meta) 
 
-SCFLAGS     	 = -I $(srcdir)/../lib -I $(ASFIX_TOOLS)/share/asfix-tools $(XTCFLAGS) 
-
-#		   --main $*
+SCFLAGS      = --main io-$*
+STRINCLUDES  = -I $(top_srcdir)/src/lib \
+               -I $(XTC)/share/xtc \
+               -I $(ASFIX_TOOLS)/share/asfix-tools
 
 pack_sdf_check_prog     = pack-sdf
 pack_sdf_check_switches = -I data -dep data/syntax-test.def -o /dev/null

@@ -1,47 +1,52 @@
-// SDF Tools
-// Copyright (C) 2001-2002
-//                    Merijn de Jonge <mdejonge@cwi.nl>
-//                    Eelco Visser <visser@acm.org>
-//                    Joost Visser <jvisser@cwi.nl>
-//
-// This program is free software; you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 2, or (at your option)
-// any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-// 02111-1307, USA.
-
-(* 	Pack-sdf creates an SDF definition file containing all modules
-	imported from the given top module.
-
-	Pack-sdf is an instantiation of pack-modules implemented with
-	graph-nodes. 	
-*)
-
+/**
+ * pack-sdf creates an SDF definition file containing all modules imported 
+ * from the given top module.
+ *
+ * pack-sdf is an instantiation of pack-modules implemented with graph-nodes. 	
+ *
+ * @authors    Merijn de Jonge <mdejonge@cwi.nl>
+ *             Eelco Visser <visser@acm.org>
+ *             Joost Visser <jvisser@cwi.nl>
+ *             Martin Bravenboer <martin@cs.uu.nl>
+ * @copyright  see end of module
+ */
 module pack-sdf
-imports lib Sdf-ParseTree-Syntax Kernel-Sdf-Syntax
-	asfix-abstractions sglr pack-modules 
-
+imports xtc-proc lib
+imports Sdf-ParseTree-Syntax Kernel-Sdf-Syntax
+imports asfix-abstractions sglr pack-modules 
 
 strategies
 
-// Parsing SDF files and chasing imports
+  io-pack-sdf =
+    xtc-io-wrap(pack-options,
+      pack-sdf(|<include-path>) => (files, spec)
+    ; <maybe-create-depfile> files
+    ; <write-to> spec
+    )
 
-  main = 
-    pack-modules(pack-sdf)
+  /**
+   * Gets the include path from the config.
+   *
+   * The current working directory . is added to this path.
+   */
+  include-path =
+      (<get-config> "-I" <+ ![])
+    ; filter(not("-I"))
+    ; !["." | <id>]
 
-  pack-sdf(mkpt) =
-    !(<id>, ["." | <mkpt>], [])
+  maybe-create-depfile =
+    try(
+      <create-dep-file(depfile-from-config)> ((), <id>)
+    )
+
+  depfile-from-config =
+    <get-config> "-dep"
+
+  pack-sdf(|mkpt) =
+      ?FILE(<id>)
+    ; !(<id>, mkpt, [])
     ; graph-nodes-undef(parse-sdf', get-sdf-imports, \ (n,x,xs) -> [x|xs] \ )
-    ; (id, map(<print>(stderr, ["*** Module ", <id>, " not found\n"])); [])
+    ; (id, map(<fatal-error> ["** ERROR: Module ", <id>, " not found\n"]); [])
     ; Fst
     ; unzip
     ; (id, ConcatModules)
@@ -49,7 +54,7 @@ strategies
   parse-sdf' =
     (guarantee-extension(!"sdf"), id)
     ; (find-in-path <+ (Fst; xtc-find-loc))
-    ; debug(!"  including ")
+    ; if-verbose1(debug(!"  including "))
     ; !(<id>, <parse-sdf> <id>)
 
   get-sdf-imports = 
@@ -65,26 +70,26 @@ strategies
                              "Aliases")), id); ignore, ignore)
     <+ appl(ignore,search)
 
-
 strategies
 
+  /**
+   * Obtain module name from Import construct by removing optional parameters
+   */
+  get-module-name =
+      oncetd(?appl(prod(_,cf(sort("ModuleId")),_),_); yield=>y)
+    ; !y
 
-// Obtain module name from Import construct by removing optional parameters
-get-module-name =
-   oncetd(?appl(prod(_,cf(sort("ModuleId")),_),_);yield=>y);
-   !y
-
-// Composing AsFix; The parser produces an AsFix term for each module. These
-// have to be merged into a list of modules. This entails merging the layout
-// at the end and start of subsequent trees. Note that the prefer longets
-// match of laout is not considered here. This means that the layout nodes may not be
-// equavalent to the layout nodes when parsing the resulting definition file:
-// 
-//   parse( unparse(pack(m))) != pack(m) 
-//
-
-
-ConcatModules =
+  /**
+   * Composing AsFix; The parser produces an AsFix term for each module. These
+   * have to be merged into a list of modules. This entails merging the layout
+   * at the end and start of subsequent trees. Note that the prefer longets
+   * match of laout is not considered here. This means that the layout nodes may not be
+   * equavalent to the layout nodes when parsing the resulting definition file:
+   *  
+   * parse( unparse(pack(m))) != pack(m) 
+   *
+   */
+  ConcatModules =
    rec x(
    {w1, w2, m, m1, m2, xs:
       []; 
@@ -103,63 +108,98 @@ ConcatModules =
          Module-s-overlay(NonEmptyModuleIterStar(modules))),w2),0)
 
 
-concat-modules =
-   ?( (w1, m1, w2), (w3, m2, w4) );
-   !(w1, MM-iter( 
+  concat-modules =
+    ?( (w1, m1, w2), (w3, m2, w4) );
+    !(w1, MM-iter( 
             m1, 
             <concat-layout>[w2, OptNewLine, OptNewLine, w3], 
             m2), w4)
 
 signature
-constructors
-'id: Arg -> ID
+  constructors
+    'id: Arg -> ID
+
 overlays 
 
-// Module -> <START>
-Module_START(w1, t, w2) =
-   appl(prod([sort("<START>")],sort("SURROGATE-START"),attrs([term(cons("\"sdf-2.1\""))])),[
-   appl(prod([cf(opt(layout)),cf(sort("Module")),cf(opt(layout))],sort("<START>"),no-attrs)
-   ,[w1,t,w2])])
+  /**
+   * Module -> <START>
+   */
+  Module_START(w1, t, w2) =
+    appl(prod([sort("<START>")],sort("SURROGATE-START"),attrs([term(cons("\"sdf-2.1\""))])),[
+     appl(prod([cf(opt(layout)),cf(sort("Module")),cf(opt(layout))],sort("<START>"),no-attrs)
+     ,[w1,t,w2])])
 
-// SDF -> <START>
-SDF_START(w1, t, w2) =
-   appl(prod([sort("<START>")],sort("SURROGATE-START"),attrs([term(cons("\"sdf-2.1\""))])),[
-   appl(prod([cf(opt(layout)),cf(sort("SDF")),cf(opt(layout))],sort("<START>"),no-attrs)
-   ,[w1,t,w2])])
+  /**
+   * SDF -> <START>
+   */
+  SDF_START(w1, t, w2) =
+     appl(prod([sort("<START>")],sort("SURROGATE-START"),attrs([term(cons("\"sdf-2.1\""))])),[
+     appl(prod([cf(opt(layout)),cf(sort("SDF")),cf(opt(layout))],sort("<START>"),no-attrs)
+     ,[w1,t,w2])])
 
-//   -> M*
-EmptyModuleIterStar =
-   appl(
-   prod([],cf(iter-star(sort("Module"))),no-attrs),[])
+  /**
+   *   -> M*
+   */
+  EmptyModuleIterStar =
+    appl(prod([],cf(iter-star(sort("Module"))),no-attrs),[])
 
-// M+ -> M*
-NonEmptyModuleIterStar(m) = 
-   appl(
-prod([cf(iter(sort("Module")))],cf(iter-star(sort("Module"))),no-attrs),[m])
+  /**
+   * M+ -> M*
+   */
+  NonEmptyModuleIterStar(m) = 
+    appl(prod([cf(iter(sort("Module")))],cf(iter-star(sort("Module"))),no-attrs),[m])
 
-// M+ M+ -> M+ {left}
-MM-iter(m1, w, m2) =
-appl(prod([cf(iter(sort("Module"))),cf(opt(layout)),cf(iter(sort("Module")))],cf(iter(sort("Module"))),attrs([atr("left")])),[
-m1, w, m2])
+  /**
+   * M+ M+ -> M+ {left}
+   */
+  MM-iter(m1, w, m2) =
+    appl(prod([cf(iter(sort("Module"))),cf(opt(layout)),cf(iter(sort("Module")))],
+     cf(iter(sort("Module"))),attrs([atr("left")])),[m1, w, m2])
 
-// M -> M+
-M-iter( m ) = 
-appl(prod([cf(sort("Module"))],cf(iter(sort("Module"))),no-attrs),[m])
+  /**
+   * M -> M+
+   */
+  M-iter( m ) = 
+    appl(prod([cf(sort("Module"))],cf(iter(sort("Module"))),no-attrs),[m])
 
-//  Module* -> Definition
-Module-s-overlay ( g_6 ) = appl ( prod ( [ cf ( iter-star ( sort ( "Module" ) ) ) ] , cf ( sort ( "Definition" ) ) , no-attrs  ) , [ g_6 ] )
+  /**
+   *  Module* -> Definition
+   */
+  Module-s-overlay ( g_6 ) =
+    appl ( prod ( [ cf ( iter-star ( sort ( "Module" ) ) ) ] , cf ( sort ( "Definition" ) ) , no-attrs  ) , [ g_6 ] )
 
-// definition Definition -> SDF
-Definition-overlay(b_1,c_1) = 
-appl(prod([lit("definition"),cf(opt(layout())),cf(sort("Definition"))],cf(sort("SDF")),attrs([term(cons("Definition")),'id("Sdf2-Syntax")])),[appl(prod([
+  /**
+   * definition Definition -> SDF
+   */
+  Definition-overlay(b_1,c_1) = 
+  appl(prod([lit("definition"),cf(opt(layout())),cf(sort("Definition"))],cf(sort("SDF")),
+         attrs([term(cons("Definition")),'id("Sdf2-Syntax")])),[appl(prod([
+    char-class([100]),
+    char-class([101]),
+    char-class([102]),
+    char-class([105]),
+    char-class([110]),
+    char-class([105]),
+    char-class([116]),
+    char-class([105]),
+    char-class([111]),
+    char-class([110])],lit("definition"),no-attrs()),[100,101,102,105,110,105,116,105,111,110]),b_1,c_1])
 
-char-class([100]),
-char-class([101]),
-char-class([102]),
-char-class([105]),
-char-class([110]),
-char-class([105]),
-char-class([116]),
-char-class([105]),
-char-class([111]),
-char-class([110])],lit("definition"),no-attrs()),[100,101,102,105,110,105,116,105,111,110]),b_1,c_1])
+/**
+ * Copyright (C) 2001-2003  Eelco Visser <visser@acm.org>
+ *                    
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
+ */
