@@ -1,3 +1,6 @@
+2002-06-18  Merijn de Jonge <mdejonge@cwi.nl>
+   * ppgen/data/ppgencheck1.in: added missing grammar identifier
+
 2002-06-14  Merijn de Jonge <mdejonge@cwi.nl>
    * Updated NEWS file
 
