@@ -71,3 +71,27 @@ strategies
     ; signal-to-descr
     ; <printnl> (stderr, ["** WARNING -- process signaled: ", <id>])
     ))
+
+  /**
+   * Execute program in a new process with list of string args, 
+   * with the specified exec strategy.
+   *
+   * Optionally you can define file descriptors to use for stdin, stdout,
+   * stderr.
+   *
+   * @param  opt-fdin   Option(FileDescr)
+   * @param  opt-fdout  Option(FileDescr)
+   * @param  opt-fderr  Option(FileDescr)
+   *
+   * @type  (String, List(String)) -> ()
+   */
+  call(|opt-fdin, opt-fdout, opt-fderr) =
+      ?(prog, args)
+      ; fork-and-wait(
+          <option(<dup2> (<id>, <STDIN_FILENO> ))> opt-fdin
+        ; <option(<dup2> (<id>, <STDOUT_FILENO>))> opt-fdout
+        ; <option(<dup2> (<id>, <STDERR_FILENO>))> opt-fderr
+        ; <execvp> (prog, args)
+        ; <exit> 1
+        )
+      ; !()
