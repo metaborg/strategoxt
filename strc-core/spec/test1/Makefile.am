@@ -1,4 +1,4 @@
-SINCLUDES 	= -I ssl -I $(SRTS)/share/srts
+SINCLUDES 	= -I stratego-lib -I $(SRTS)/share/srts
 AM_LDFLAGS	= -L$(SRTS)/lib/srts -L$(ATERM)/lib 
 
 check_PROGRAMS 	= test01 test02 test03 test04 test05		    \

@@ -4,7 +4,7 @@ SINCLUDES	 = -I $(STRATEGO_FRONT)/share/stratego-front \
 	  	   -I $(srcdir)/../match		     \
 	  	   -I $(srcdir)/../opt			     \
 	  	   -I $(srcdir)/../lib			     \
-		   -I $(SSL)/share/ssl
+		   -I $(STRATEGO_LIB)/share/stratego-lib
 
 AM_LDFLAGS	= -L$(SRTS)/lib/srts -L$(ATERM)/lib 
 

@@ -6,7 +6,6 @@ include $(wildcard *.dep)
 SCFLAGS = --main $@ 
 
 SINCLUDES = \
-	-I $(SSL)/share/ssl \
 	-I $(srcdir)/../sig \
 	-I $(srcdir)/../match \
 	-I $(srcdir)/../opt \

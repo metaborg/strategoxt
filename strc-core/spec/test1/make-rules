@@ -16,12 +16,12 @@ SCLibs = -L$(SRTS)/lib/srts -lstratego-lib -lstratego-choice -lstratego \
 
 # MAKE COPY OF SSL ####################################################
 	 
-ssl : 
-	mkdir ssl
-	cp -r $(SSL)/share/ssl/doc/*.str ssl
+stratego-lib : 
+	mkdir stratego-lib
+	cp -r $(STRATEGO_LIB)/share/stratego-lib/doc/*.str stratego-lib
 
 pre-parse :
-	$(MAKE) $(subst .str,.rtree,$(wildcard ssl/*.str))
+	$(MAKE) $(subst .str,.rtree,$(wildcard stratego-lib/*.str))
 
 %.rtree : %.str
 	$(STRATEGO_FRONT)/bin/parse-stratego -i $< -o $@ \

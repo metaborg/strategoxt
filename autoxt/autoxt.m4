@@ -101,7 +101,6 @@ AC_DEFUN([XT_USE_XT_PACKAGES],
   XT_ARG_WITH2([repository],      [datadir/$PACKAGE/XTC], [FILE], [XTC Repository])
   XT_ARG_WITH2([build-repository],[BUILD_XTC],            [FILE], [Build-time XTC Repository])
   XT_ARG_WITH2([strc],            [STRATEGOXT],           [DIR],  [Stratego Compiler])
-  XT_ARG_WITH2([ssl],             [STRATEGOXT],           [DIR],  [Stratego Standard Library])
   XT_ARG_WITH2([stratego-lib],    [STRATEGOXT],           [DIR],  [Stratego Library])
   XT_ARG_WITH2([gpp],             [STRATEGOXT],           [DIR],  [GPP])
   XT_ARG_WITH2([c-tools],         [STRATEGOXT],           [DIR],  [C Tools])
