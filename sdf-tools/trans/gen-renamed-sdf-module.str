@@ -9,7 +9,7 @@ imports Sdf2 options xtc-lib sdf-xtc-tools collect sdf-options
 
 strategies
 
-  main-gen-renamed-sdf-module =
+  io-gen-renamed-sdf-module =
     xtc-io-wrap(renaming-options,
       xtc-transform(!"sdf2table", !["-n", "-m", <get-sdf-main-module> | <pass-v-verbose>])
     ; xtc-transform(!"implodePT")

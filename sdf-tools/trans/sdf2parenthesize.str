@@ -14,10 +14,10 @@ strategies
       xtc-transform(!"sdf2table", !["-n", "-m", <get-sdf-main-module> | <pass-v-verbose>])
     ; xtc-transform(!"implodePT")
     ; xtc-io-transform(
-      
+        innermost-module
 
       )
-    ; xtc-pp-stratego
+    ; xtc-transform(!"pp-stratego", !["--abstract" | <pass-verbose>])
     )
 
 /**
@@ -27,7 +27,7 @@ strategies
   
   innermost-module :
     rs ->
-      |[ module foo
+      |[ module M
          imports options Expression
          strategies
 
@@ -41,6 +41,7 @@ strategies
            foo-Bracket :
              Div(e1, Mul(e2, e3)) -> Div(e1, Bracket(Mul(e2, e3)))
       ]|
+    where ModuleName => M
 
 /**
  * Options
@@ -50,12 +51,20 @@ strategies
   parenthesize-options =
     sdf-main-module-option
   + stratego-module-option
+  + language-option
 
   stratego-module-option =
-    ArgOption("--name"
-    , where(<set-config> (StrategoModuleFlag(), <id>))
-    , <concat-strings>   ["--name mod       ", "Name of the resulting Stratego (required)"]
+    ArgOption("--omod"
+    , ?s; rules(ModuleName : _ -> s)
+    , <concat-strings>   ["--omod mod       ", "Name of the resulting Stratego module (required)"]
     )
+
+  language-option =
+    ArgOption("--lang"
+    , ?s; rules(LanguageName : _ -> s)
+    , <concat-strings>   ["--lang name      ", "Name of the language (required)"]
+    )
+
 
 signature
   constructors

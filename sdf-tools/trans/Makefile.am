@@ -1,9 +1,9 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-bin_PROGRAMS = gen-renamed-sdf-module sdf-spread-cons
+bin_PROGRAMS = gen-renamed-sdf-module sdf-spread-cons sdf2parenthesize
 
-SCFLAGS       = --main main-$* --dr new
+SCFLAGS       = --main io-$* --dr new
 STRINCLUDES   = -I $(XTC)/share/xtc \
                 -I $(SDF_FRONT)/share/sdf-front \
                 -I $(SDF_FRONT)/share/sdf/sdf-front
