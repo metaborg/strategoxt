@@ -311,19 +311,35 @@ ATerm SSL_open(ATerm pathname)
       ATfprintf(stderr, "opening %s failed: %d\n", AT_getString(pathname), fd);
       _fail(pathname);
     }
-  return (ATerm)ATmakeInt(fd);
+  return (ATerm) ATmakeInt(fd);
 }
 
 /**
  * dup
  */
 ATerm SSL_dup(ATerm oldfd) {
-  int fd;
-  ATfprintf(stderr, "SSL_dup(%t)\n", oldfd);
-  fd = dup(AT_getInt(oldfd));
-  if(fd == -1) _fail(oldfd);
-  return (ATerm)ATmakeInt(fd);
+  int fd = dup(AT_getInt(oldfd));
+  
+  if(fd == -1) {
+    _fail(oldfd);
+  }
+
+  return (ATerm) ATmakeInt(fd);
 }
+
+/**
+ * dup2
+ */
+ATerm SSL_dup2(ATerm fromfd, ATerm tofd) {
+  int fd = dup2(AT_getInt(fromfd), AT_getInt(tofd));
+  
+  if(fd == -1) {
+    _fail(fromfd);
+  }
+
+  return (ATerm) ATmakeInt(fd);
+}
+
 
 /**
  * mkstemp

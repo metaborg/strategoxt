@@ -44,6 +44,7 @@ ATerm SSL_creat(ATerm pathname);
 ATerm SSL_mkstemp(ATerm template);
 ATerm SSL_close(ATerm fd);
 ATerm SSL_dup(ATerm oldfd);
+ATerm SSL_dup2(ATerm fromfd, ATerm tofd);
 ATerm SSL_fileno(ATerm stream);
 
 ATerm SSL_fdopen(ATerm fd, ATerm mode);
