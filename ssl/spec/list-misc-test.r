@@ -33,7 +33,7 @@ strategies
 
   number-test = 
     apply-test(!"number-test"
-	, number(\ (x, i) -> ((x,i),i) \ )
+	, number(id)
 	, !["a", "b", "c", "d"]
 	, ![("a",0),("b",1),("c",2),("d",3)]
 	)
