@@ -1,0 +1,48 @@
+StrategoXT 0.12 -- released August ..., 2004
+
+---------++ Summary of Changes
+
+   * Format Checking
+
+---------++ Format Checking
+
+...
+
+---------++ Item 2
+
+---------++ Detailed List of Issues
+
+The full list of issues closed in this release is available at:
+
+   * http://www.stratego-language.org/Stratego/StrategoRelease012Issues
+
+---------++ Download and Installation
+
+The release page contains the source distributions, binary RPMs, and
+detailed instructions on how to install the distributions:
+
+   * http://www.stratego-language.org/Stratego/StrategoRelease012
+
+---------++ Bugs and Known Problems
+
+See our issue tracking systems for reports about (open) bugs:
+
+   * https://catamaran.labs.cs.uu.nl/jira/
+
+For an overview of features planned for future releases:
+
+   * Release plan: http://www.stratego-language.org/Stratego/ReleasePlan
+   * To do: http://www.stratego-language.org/Stratego/ToDo
+
+Please report any problems with installation or bugs in the
+implementation to our issue tracking system. Please check the existing
+issues to see if a report about the problem was already submitted.
+
+---------++ Contributions
+
+Developments, beta tests, and bug fixes were carried out by
+
+   * Martin Bravenboer
+   * Arthur van Dam
+   * Rob Vermaas
+   * Eelco Visser
