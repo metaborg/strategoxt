@@ -55,7 +55,10 @@ pre-parse :
 	$(STRATEGO_REGULAR)/bin/format-check --fast -b --rtg-nf $(STRATEGO_FRONT)/share/stratego-front/Stratego-Sugar-3.rtg-nf -i $< -o $@  
 
 %.Stratego-Sugar-4 : %
-	$(STRATEGO_REGULAR)/bin/format-check --fast -b --rtg-nf $(STRATEGO_FRONT)/share/stratego-front/Stratego-Sugar-3.rtg-nf -i $< -o $@  
+	$(STRATEGO_REGULAR)/bin/format-check -b --rtg-nf $(STRATEGO_FRONT)/share/stratego-front/Stratego-Sugar-4.rtg-nf -i $< -o $@  
+
+%.Stratego-Sugar-5 : %
+	$(STRATEGO_REGULAR)/bin/format-check --fast -b --rtg-nf $(STRATEGO_FRONT)/share/stratego-front/Stratego-Sugar-5.rtg-nf -i $< -o $@  
 
 %.Stratego-Sugar-Cong : %
 	$(STRATEGO_REGULAR)/bin/format-check --fast -b --rtg-nf $(STRATEGO_FRONT)/share/stratego-front/Stratego-Sugar-Cong.rtg-nf -i $< -o $@  
@@ -97,7 +100,7 @@ pre-parse :
 # FRONT-END ###########################################################
 
 %.tree : %.str 
-	../pack/pack-stratego $(SINCLUDES) -i $< -o $@ --desugaring off
+	../pack/pack-stratego $(SINCLUDES) -i $< -o $@ --desugaring off --verbose 4
 
 %.tree : %.rtree 
 	../pack/pack-stratego $(SINCLUDES) -i $< -o $@ 
@@ -144,7 +147,7 @@ pre-parse :
 %.f11 : %.f10 %.f10.Stratego-Sugar-3
 	../front/rules-to-sdefs -i $< -o $@ -b 
 
-%.f12 : %.f11 %.f11.Stratego-Sugar-4
+%.f12 : %.f11 %.f11.Stratego-Sugar-3
 	../front/desugar-list-matching -i $< -o $@ -b 
 
 %.f13 : %.f12 %.f12.Stratego-Sugar-4
@@ -159,20 +162,20 @@ pre-parse :
 %.f16 : %.f15 %.f15.Stratego-Sugar-4
 	../front/desugar -i $< -o $@ -b 
 
-%.f17 : %.f16 %.f16.Stratego-Sugar-4
+%.f17 : %.f16 %.f16.Stratego-Sugar-5
 	../front/extract -i $< -o $@ -b
 
-%.f18 : %.f17 %.f17.Stratego-Sugar-4
+%.f18 : %.f17 %.f17.Stratego-Sugar-5
 	../front/stratego-warnings -i $< -o $@ -b -W all
 
-%.f19 : %.f18 %.f18.Stratego-Sugar-4
+%.f19 : %.f18 %.f18.Stratego-Sugar-5
 	../front/rename-defs -i $< -o $@ -b
 
 # OPTIMIZE ###########################################################
 
 ## Simplification
 
-%.s1 : %.f19 %.f19.Stratego-Sugar-4
+%.s1 : %.f19 %.f19.Stratego-Sugar-5
 	../opt/simplify1 -i $< -o $@ -b
 
 %.s2 : %.s1 %.s1.Stratego-Core-Cong

@@ -8,7 +8,7 @@ SCFLAGS		= -I $(STRATEGO_FRONT)/share/stratego-front \
 	  	  -I $(srcdir)/../lib			    \
 	  	  -I $(srcdir)/../front			    \
 		  -I $(SSL)/share/ssl			    \
-	  	  --main $*	
+	  	  --main $*	--verbose 4
 
 LDADD           += $(SSL_LIBS)
 

@@ -24,6 +24,7 @@ strategies
     alltd(
       ListVarAsTail 
       + ListVarInBuild
+      + SingleListVar
       + App(dlm, dlm-in-build(dlm))
       + RootApp(dlm)
     )
@@ -31,6 +32,7 @@ strategies
   dlm-in-match(dlm) =
     alltd(
       ListVarAsTail 
+      + SingleListVar
       + App(dlm, dlm-in-match(dlm))
       + RootApp(dlm)
     )
@@ -54,9 +56,9 @@ rules
     + ?PreTerm|[ Nil() ]|
 
   ListVarAsTail : 
-    PreTerm|[ Cons(lid, t) ]| -> PreTerm|[ lid ]|
+    PreTerm|[ Cons(lid, t){^pt} ]| -> PreTerm|[ lid{^pt} ]|
     where <is-nil> t
 
   ListVarInBuild : 
-    PreTerm|[ Cons(lid, t) ]| -> PreTerm|[ <conc>(lid, t) ]|
+    PreTerm|[ Cons(lid, t){^pt} ]| -> PreTerm|[ <conc>(lid, t){^pt} ]|
     where <not(is-nil)> t

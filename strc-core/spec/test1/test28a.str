@@ -24,3 +24,6 @@ strategies
     ; try( \ Var(s){ts*} -> Var(s){Foo(ts*)} \ )
     ; debug(!"b: ")
     ; ?Var("a"){Foo([Int,Float])}
+    ; {a* : ?a* }
+    ; ?[a, b*]
+    ; ![b*,a,b*]
