@@ -1,27 +1,26 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
+treegrammars =					 \
+  Stratego.rtg					 \
+  Stratego-Amb.rtg				 \
+  Stratego-Core.rtg				 \
+  Stratego-Sugar.rtg				 \
+  Stratego-Sugar-Cong.rtg			 \
+  Stratego-Sugar-HL.rtg				 \
+  Stratego-Core-Cong.rtg			 \
+  Stratego-Sugar-1.rtg				 \
+  Stratego-Sugar-2.rtg				 \
+  Stratego-Sugar-3.rtg				 \
+  Stratego-Sugar-4.rtg				
+
+rtg_nfs = $(subst .rtg,.rtg-nf,$(treegrammars))
+sigs = $(subst .rtg,.str,$(treegrammars))
+
 autogensignatures =				\
-  Stratego.rtg					\
-  Stratego-Amb.rtg				\
-  Stratego-Core.rtg				\
-  Stratego-Sugar.rtg				\
-  Stratego.str					\
-  Stratego-Amb.str				\
-  Stratego-Core.str				\
-  Stratego-Sugar.str				\
-  Stratego-Sugar-Cong.rtg			\
-  Stratego-Sugar-Cong.str			\
-  Stratego-Sugar-HL.rtg				\
-  Stratego-Sugar-HL.str				\
-  Stratego-Core-Cong.rtg			\
-  Stratego-Core-Cong.str			\
-  Stratego-Sugar-1.rtg				\
-  Stratego-Sugar-1.str				\
-  Stratego-Sugar-2.rtg				\
-  Stratego-Sugar-2.str				\
-  Stratego-Sugar-3.rtg				\
-  Stratego-Sugar-3.str
+  $(treegrammars)				\
+  $(rtg_nfs)					\
+  $(sigs)
 
 staticsignatures =				\
   Stratego-MetaTransition.str			\
