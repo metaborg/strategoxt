@@ -641,6 +641,18 @@ ATerm SSL_read_term_from_stream(ATerm stream_term) {
   return result;
 }
 
+ATerm SSL_read_term_from_string(ATerm str_term) {
+  char* str = AT_getString(str_term);
+  ATerm result = ATreadFromString(str);
+
+  if(result == NULL) {
+    ATfprintf(stderr, "not a valid term\n");
+    _fail(str_term);
+  }
+
+  return result;
+}
+
 /**
  * String operations
  */
