@@ -116,7 +116,7 @@ upload-stratego-front:
 
 bootclean :
 	@for dir in $(PKGS); do \
-	   cd $$dir ; $(MAKE) bootclean ; \
+	   (cd $$dir && $(MAKE) bootclean) ; \
 	done
 
 RPMRELEASE = 1
