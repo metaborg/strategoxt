@@ -23,4 +23,3 @@ nobase_pkgdata_DATA = $(strategolib:.str=.rtree)
 
 EXTRA_DIST     = $(strategolib) $(nobase_pkgdata_DATA)
 BOOTCLEANFILES = $(nobase_pkgdata_DATA)
-
