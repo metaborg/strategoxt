@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.3 2001/06/07 14:45:53 mdejonge Exp $
+# $Id: Makefile.am,v 1.4 2001/06/07 15:09:53 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -38,9 +38,6 @@ bin_SCRIPTS  = $(STRATEGO_PRG) asource
 # Optional tests to run
 TESTS        = asfix_yield1_check \
                asfix_yield2_check
-
-# List all files that should be distributed here
-EXTRA_DIST  += aterms.sdf aterms.tree tiny.sil tiny.tree
 
 # What should be cleaned
 CLEANFILES   += asource \

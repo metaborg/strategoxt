@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.3 2001/06/07 14:16:23 mdejonge Exp $
+# $Id: Makefile.am,v 1.4 2001/06/07 15:14:20 mdejonge Exp $
 
 include $(srcdir)/../templates/make_rules
 include $(srcdir)/../templates/make_rules.stratego
@@ -31,11 +31,9 @@ bin_SCRIPTS  = $(STRATEGO_PRG)
 
 TESTS        = pack_sdf_check
 
-EXTRA_DIST  += syntax-test.sdf syntax-test2.sdf syntax-test3.sdf \
-	       syntax-test.def.dep.correct
-
 CLEAN_FILES += pack_sdf_check
-SCFLAGS      = -I $(srcdir)/../lib -I $(ASFIXTOOLS)/share/asfix-tools
+
+SCFLAGS     += -I $(srcdir)/../lib -I $(ASFIXTOOLS)/share/asfix-tools
 
 pack_sdf_check_prog     = pack-sdf
 pack_sdf_check_switches = -I data -dep data/syntax-test.def -o /dev/null
