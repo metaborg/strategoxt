@@ -1,0 +1,24 @@
+/**
+ * Adds some attributes to SDF productions to keep track of there purpose.
+ *
+ * @author  Martin Bravenboer <martin@cs.uu.nl>
+ */
+module core-sdf-mark-prods
+imports options Sdf2 verbose sdf-extra
+
+strategies
+
+  main-core-sdf-mark-prods =
+    io-wrap(sdf-mark-prods)
+
+strategies
+
+  sdf-mark-prods =
+    topdown(
+      try(
+        mark-prod-fun
+      )
+    )
+
+  mark-prod-fun =
+    prod-fun(id, id, id, attrs(![term(prod-fun()) | <id>]))

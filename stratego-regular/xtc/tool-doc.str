@@ -1,0 +1,277 @@
+/**
+ * Offers facilities to show tool --help and --about information in a nice layout.
+ *
+ * The core tool-doc constructs are presentation oriented.
+ * You can use the overlays in this module to abstract from the presentation.
+ *
+ * Author : Martin Bravenboer
+ */
+module tool-doc
+imports xtc-proc char-io
+
+strategies
+
+  /**
+   * Outputs formatted tool-doc to standard output.
+   *
+   * Type : [DocSection] -> [DocSection]
+   */
+  tool-doc =
+    where(
+      xtc-temp-files(
+       write-to
+      ; xtc-transform(!"tool-doc2abox")
+      ; xtc-abox2text(!80)
+      ; where(FILE(read-text-file; echo))
+      )
+    )
+
+/**
+ * Defines the core tool-doc language.
+ *
+ * Usually you don't want to use these constructs: the overlays
+ * in this module offer a more domain specific view on this language.
+ */
+signature 
+  constructors
+
+    HSection  : String * List(DocSection) -> DocSection
+    Paragraph : String -> DocSection
+    Line      : String -> DocSection
+
+    ItemList  : List(DocSection) -> DocSection
+    DefList   : List(Def)        -> DocSection
+    Def       : String * DocSection -> Def
+
+  constructors
+
+    HelpString  : String * String -> HelpString
+    HelpString  : List(String) * String -> HelpString
+
+strategies
+
+  /**
+   * Returns the package name as defined by Autoconf.
+   *
+   * Type : _ -> String
+   */
+  package-name      = prim("PACKAGE_NAME_TERM")
+
+  /**
+   * Returns the package version as defined by Autoconf.
+   *
+   * Type : _ -> String
+   */
+  package-version   = prim("PACKAGE_VERSION_TERM")
+
+  /**
+   * Returns the email address to send bug reports to as defined by Autoconf.
+   *
+   * Type : _ -> String
+   */
+  package-bugreport = prim("PACKAGE_BUGREPORT_TERM")
+
+overlays // sugar for usage, summary, description
+
+  /**
+   * Creates a single line of text, prefixed by "Usage: ".
+   *
+   * Type of s : String
+   */
+  Usage(s) =
+    Line(<conc-strings> ("Usage: ", s))
+
+  /**
+   * Creates a paragraph with the heading "Summary".
+   *
+   * Type of p : String
+   * Result    : DocSection
+   */
+  Summary(p) =
+    HSection("Summary:", [Paragraph(p)])
+
+  /**
+   * Creates a section of paragraphs with the heading "Description".
+   *
+   * Type of ps : [String]
+   * Result     : DocSection
+   */
+  Description(ps) =
+    HSection("Description:", <map(!Paragraph(<id>))> ps)
+
+  /**
+   * Creates a definition list of the available options and their description.
+   *
+   * The available options are taken from the "usage-table", "usage" key.
+   * The value of this key is set by parse-options in the standard library.
+   * The value of the key must be a list of strings. These strings are
+   * converted to HelpStrings using the ensure-help-string strategy.
+   *
+   * Result     : DocSection
+   */
+  OptionUsage() =
+    HSection("Options:", [
+      DefList(
+        < table-get
+        ; reverse
+        ; map(ensure-help-string)
+        ; filter(\ HelpString(f, d) -> Def(f, Paragraph(d)) \)
+        > ("usage-table", "usage")
+      )
+    ])
+
+strategies
+
+  /**
+   * Checks whether the current term is HelpString
+   *
+   * Type : HelpString -> HelpString
+   */
+  ensure-help-string =
+    HelpString(is-string + is-list, is-string)
+
+  /**
+   * Converts a string to a HelpString by splitting it at the first two spaces.
+   *
+   * Type : String -> HelpString
+   */
+  ensure-help-string :
+    s -> HelpString(flags, descr)
+      where <is-string> s
+          ; <split-before> (s, "  ") => (flags, descr)
+
+overlays
+  
+  /**
+   * Creates a list of authors with the heading "Authors".
+   *
+   * Type of ps : [Paragraph]
+   */
+  Authors(ps) =
+    HSection("Authors:", [ItemList(ps)])
+
+  /**
+   * Creates a author section with the heading "Author".
+   *
+   * Type of p : Paragraph
+   */
+  Author(p) =
+    HSection("Author:", [ItemList([p])])
+
+  /**
+   * Creates a paragraph of the given name and e-mail adress.
+   *
+   * Type of name : String
+   * Type of mail : String
+   */
+  Person(name, mail) =
+    Paragraph(<concat-strings> [name, " <", mail, ">"])
+
+  WebHome(s) =
+    HSection("Website:", [Line(s)])
+
+  /**
+   * Creates a bug reporting section using the information provided by Autoconf.
+   */
+  AutoReportBugs() =
+    ReportBugs(<package-bugreport> ())
+
+  ReportBugs(s) =
+    Paragraph(<concat-strings> ["Please report bugs to ", s])
+
+  /**
+   * Creates a program section using the information provided by Autoconf.
+   */
+  AutoProgram() =
+    Program(<get-config> "program", <package-name> (), <package-version> ())
+
+  /**
+   * Creates a section with the name of the program, the package and the version.
+   *
+   * Type of name    : String
+   * Type of package : String
+   * Type of version : String
+   */
+  Program(name, package, version) =
+    HSection(name, [
+      DefList([
+        Def("Package", Paragraph(package))
+      , Def("Version", Paragraph(version))
+      ])
+    ])
+
+overlays
+
+  Config(items) =
+    HSection("Configuration:", [DefList(items)])
+
+  DefaultXTCRepository() =
+    ConfigItem("Default XTC Repository", <prim("XTC_REPOSITORY")> ())
+
+  CurrentXTCRepository() =
+    ConfigItem("Current XTC Repository", <xtc-location> ())
+
+  UsingCPL() =
+    ConfigItem("Using CPL", <cpl-loaded < !"Yes" + !"No"> ())
+
+  ConfigItem(k, v) =
+    Def(k, Line(v))
+
+overlays
+
+  /**
+   * Creates a section of paragraphs with the license heading.
+   *
+   * Type of ps : [String]
+   * Result     : DocSection
+   */
+  License(ps) =
+    HSection("License:", <map(!Paragraph(<id>))> ps)
+
+  /**
+   * Creates a GPL license.
+   *
+   * Type of year   : String
+   * Type of author : String
+   * Result         : DocSection
+   */
+  GNU_GPL(year, author) =
+    License(
+      [ <concat-strings> ["Copyright (C) ", year, " ", author]
+      , "This program is free software; you can redistribute it and/or
+        modify it under the terms of the GNU General Public License as published by the 
+        Free Software Foundation; either version 2 of the License, or (at your option) 
+        any later version."
+      , "This program is distributed in the hope that it will be useful, but 
+        WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+        FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more 
+        details."
+      , "You should have received a copy of the GNU General Public License 
+        along with this program; if not, write to the Free Software Foundation, 
+        Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA"
+      ]
+    )
+
+  /**
+   * Creates a LGPL license.
+   *
+   * Type of year   : String
+   * Type of author : String
+   * Result         : DocSection
+   */
+  GNU_LGPL(year, author) =
+    License(
+      [ <concat-strings> ["Copyright (C) ", year, " ", author]
+      , "This library is free software; you can redistribute it and/or modify 
+         it under the terms of the GNU Lesser General Public License as published by the 
+         Free Software Foundation; either version 2 of the License, or (at your option) 
+         any later version."
+      , "This library is distributed in the hope that it will be useful, but 
+         WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+         FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License 
+         for more details."
+      , "You should have received a copy of the GNU Lesser General Public 
+         License along with this library; if not, write to the Free Software Foundation, 
+         Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA"
+      ]
+    )

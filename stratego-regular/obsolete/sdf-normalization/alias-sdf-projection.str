@@ -1,0 +1,25 @@
+module alias-sdf-projection
+imports Sdf2 collect
+
+strategies
+
+  /**
+   * Gives the grammar without Alias declarations.
+   *
+   * @type  Grammar -> Grammar
+   * @spec  not Al function in section 9.2.2.
+   */
+  without-aliases =
+    all-leaves-Grammar(
+      try(\ |[ aliases al* ]| -> |[ (/) ]| \)
+    )
+
+  /**
+   * Gives all alias declarations of a grammar.
+   *
+   * @type  Grammar -> List(Alias)
+   * @spec  Al function in section 9.2.2.
+   */
+  just-aliases =
+      collect-om(\ |[ aliases al* ]| -> al* \, conc)
+    ; concat

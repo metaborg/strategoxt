@@ -1,0 +1,58 @@
+/**  
+ * Rewrites an instance of a regular hedge grammar (irhg) to 
+ * an instance of a regular tree grammar (irtg).
+ *
+ * @author  Martin Bravenboer
+ */
+module irhg2irtg
+imports irhg irtg options rtg-util logging
+
+strategies
+
+  main-irhg2irtg =
+    io-wrap(irhg2irtg)
+
+strategies
+
+  irhg2irtg =
+    rewrite-one
+
+  rewrite-one = 
+       ?ISym(<rewrite-one>)
+     + Rewrite-1; traversal
+    <+ !Tuple(<rewrite-seq>) 
+
+  rewrite-seq =
+       \ ISeq(s1, s2) -> <conc> (<rewrite-seq> s1, <rewrite-seq> s2) \
+     + \ IEmpty() -> [] \
+     + is-list; map(rewrite-one)
+    <+ ![<rewrite-one>]
+   <+ log(|Error(), "Cannot rewrite to IRTG list of trees")
+
+  traversal =
+      Annotated(rewrite-one, map(rewrite-one))
+    + Anno(id, rewrite-one)
+    + Prod(id, Appl(id, rewrite-seq))
+    + Appl(id, rewrite-seq)
+    + List(rewrite-seq)
+    + Tuple(rewrite-seq)
+    + Opt(Some(rewrite-one))
+    + Opt(None())
+    + ?Int(_)
+    + ?String(_)
+   <+ log(|Error(), "Not an IRTG construct")
+
+rules
+
+  Rewrite-1 : Appl(nt, t, chs, [x | xs]) -> Annotated(Appl(nt, t, chs, []), [x | xs])
+  Rewrite-1 : Appl(nt, t, chs, []) -> Prod(nt, Appl(t, chs))
+  Rewrite-1 : LContent(l, i) -> Anno(Term(l), i)
+
+  Rewrite-1 : IStar(i*) -> List(i*)
+  Rewrite-1 : IPlus(i*) -> List(i*)
+
+  Rewrite-1 : IOpt(None()) -> Opt(None())
+  Rewrite-1 : IOpt(Some(i)) -> Opt(Some(i))
+
+  Rewrite-1 : String(s) -> String(s)
+  Rewrite-1 : Int(x) -> Int(x)

@@ -1,0 +1,18 @@
+module kernel-sdf-renaming
+imports Sdf2 renaming-sdf-projection
+
+strategies
+
+  /**
+   * @type  Production -> Production
+   */
+  rename-production(|ros : List(Renaming)) :
+    p |[ A* -> B $ ]| -> |[ A1* -> B1 $ ]|
+      where <    rename-symbol(|ros) > B  => B1
+          ; <map(rename-symbol(|ros))> A* => A1*
+
+  /**
+   * @type  Symbol -> Symbol
+   */
+  rename-symbol(|ros : List(Renaming)) =
+    try(lookup-symbol(|ros))

@@ -1,0 +1,58 @@
+module char-match-test
+imports regexp-match sunit logging
+
+strategies 
+
+  main =
+    option-wrap(general-options,
+      test-suite(!"char regexp match", char-match-tests)
+    )
+
+  char-match-tests = 
+      apply-test(!"a",    string-regexp-match, !(regexp-a(),    "a"))
+    ; apply-test(!"aa",   string-regexp-match, !(regexp-aa(),   "aa"))
+    ; apply-test(!"aaa",  string-regexp-match, !(regexp-aaa(),  "aaaaaa"))
+
+    ; apply-test(!"aaab 1",     string-regexp-match, !(regexp-aaab(), "aaaaab"))
+    ; apply-and-fail(!"aaab 2", string-regexp-match, !(regexp-aaab(), "aaaaa"))
+
+    ; apply-test(!"aaabbb 1",   string-regexp-match, !(regexp-aaabbb(), "aaaaabbbbb"))
+    ; apply-test(!"aaabbb 2",   string-regexp-match, !(regexp-aaabbb(), "aaaaa"))
+
+    ; apply-test(!"a-aaa 1",  string-regexp-match, !(regexp-a-aaa(), "aa"))
+    ; apply-test(!"a-aaa 2",  string-regexp-match, !(regexp-a-aaa(), "aaa"))
+    ; apply-test(!"a-aaa 3",  string-regexp-match, !(regexp-a-aaa(), "aaaaa"))
+
+    ; apply-and-fail(!"a-aaa 4", string-regexp-match, !(regexp-a-aaa(), ""))
+    ; apply-and-fail(!"a-aaa 5", string-regexp-match, !(regexp-a-aaa(), "ab"))
+
+    ; apply-test(!"a-aaa-opt 1",  string-regexp-match, !(regexp-a-aaa-opt(), "aa"))
+    ; apply-test(!"a-aaa-opt 2",  string-regexp-match, !(regexp-a-aaa-opt(), "aaa"))
+    ; apply-test(!"a-aaa-opt 3",  string-regexp-match, !(regexp-a-aaa-opt(), "aaaaa"))
+    ; apply-test(!"a-aaa-opt 4",  string-regexp-match, !(regexp-a-aaa-opt(), ""))
+
+//    ; test-match-implode(|"<a (b c)# d> abcd", (regexp-a-bc-d(), "abcd"), ['a',  ('b', 'c'), 'd'])
+//    ; test-match-implode(|"<(a b c)# d> abcd", (regexp-abc-d(), "abcd"), [('a', 'b', 'c'), 'd'])
+//    ; test-match-implode(|"<(a b)# (c d)#> abcd", (regexp-ab-cd(), "abcd"), [('a', 'b'), ('c', 'd')])
+//    ; test-match-implode(|"<a (b c)+ d> abcbcbcd", (regexp-a-bcp-d(), "abcbcbcd"), ['a', [('b', 'c'), ('b', 'c'), ('b', 'c')], 'd'])
+
+//  test-match-implode(|name, input, output) =
+//    apply-test(!name, match-implode, !input, !output)
+
+//  match-implode =
+//    string-regexp-match; implode-to-list(try-implode-iregexp(id))
+
+  string-regexp-match =
+    (id, explode-string)
+    ; regexp-match-all(eq; Fst)
+ 
+overlays
+
+  regexp-a    = Sym('a')
+  regexp-aa   = Seq(Sym('a'), Sym('a'))
+  regexp-aaa  = Star(Sym('a'))
+  regexp-aaab = Seq(Star(Sym('a')), Sym('b'))
+  regexp-aaabbb = Seq(Star(Sym('a')), Star(Sym('b')))
+
+  regexp-a-aaa     = Seq(Sym('a'), Plus(Sym('a')))
+  regexp-a-aaa-opt = Opt(regexp-a-aaa())

@@ -1,0 +1,12 @@
+module format-check
+imports aterm2irtg
+
+strategies
+
+  main-format-check = 
+    xtc-io-wrap(aterm2irtg-option, 
+      xtc-ensure-file
+    ; where(
+        xtc-transform(!"core-aterm2irtg", !["--rtg-nf", <input-to-rtg-nf> | <pass-verbose> ()])
+      )
+    )

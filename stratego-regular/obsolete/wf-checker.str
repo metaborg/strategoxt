@@ -1,0 +1,50 @@
+module wf-checker
+imports xtc-lib regular-xtc-tools tool-doc logging regular-options
+
+strategies
+  
+  main-wf-checker =
+    xtc-io-wrap(wf-checker-options, 
+      xtc-core-wf-checker(|<input-to-arhg>)
+    )
+
+strategies
+
+  wf-checker-options =
+         rhg-option(|"format check against rhg in file")
+    + rhg-nf-option(|"format check against normalzied rhg in file")
+
+  input-to-arhg =
+      (   get-rhg-nf-config
+       <+ get-rhg-config; xtc-rhg-front-end
+       <+ fatal-err(|"no rhg specified. Use the --rhg or --rhg-nf option to specify a rhg.")
+      )
+    ; ?FILE(<id>)
+
+strategies
+
+  override-system-usage =
+    <tool-doc> wf-checker-tool-doc
+
+  override-system-about = 
+    <tool-doc> wf-checker-tool-about
+
+overlays
+
+  wf-checker-tool-doc =
+    [ Usage("wf-checker [--rhg-nf file | --rhg file] [OPTIONS]")
+    , Summary("check whether the input is a well-formed instance of a rhg")
+    , OptionUsage()
+    , AutoReportBugs()
+    ]
+
+  wf-checker-tool-about =
+    [ AutoProgram()
+    , Author(Person("Martin Bravenboer", "mbravenb@cs.uu.nl"))
+    , GNU_LGPL("2002-2003", "Eelco Visser <visser@cs.uu.nl>")
+    , Config([
+        DefaultXTCRepository()
+      , CurrentXTCRepository()
+      , UsingCPL()
+      ])
+    ]

@@ -1,0 +1,9 @@
+/**
+ * Normalization of regular expressions in SDF productions.
+ * 
+ * This hasn't been implemented yet because it is not required for sdf2rtg.
+ *
+ * @author  Martin Bravenboer <mbravenb@cs.uu.nl>
+ */
+module regular-sdf-normalization
+imports Sdf2

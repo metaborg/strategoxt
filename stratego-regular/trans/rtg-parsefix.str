@@ -1,0 +1,12 @@
+/**
+ * Removes quotes and escapes in strings of quoted (non) terminals.
+ *
+ * @author Martin Bravenboer
+ */
+module rtg-parsefix
+imports rhg-parsefix
+
+strategies
+
+  main-rtg-parsefix =
+    io-wrap(tg-parsefix)

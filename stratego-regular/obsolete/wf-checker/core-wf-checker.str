@@ -1,0 +1,28 @@
+/**
+ * Checks whether an ATerm is an instance of an RHG in abstract syntax.
+ *
+ * @author  Martin Bravenboer <mbravenb@cs.uu.nl>
+ */
+module core-wf-checker
+imports options rhg irhg wf-check logging regular-options
+
+strategies
+
+  main-core-wf-checker =
+    io-wrap(core-wf-checker-options,
+      core-wf-checker
+    )
+
+strategies
+
+  core-wf-checker-options =
+    rhg-nf-option(|"Check against normalized rhg in file")
+
+strategies
+
+  /**
+   * @type  a -> IRHG
+   */  
+  core-wf-checker =
+    start-wf-check(|<read-rhg-nf-config> ())
+

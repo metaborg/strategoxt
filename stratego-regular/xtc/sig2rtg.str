@@ -1,0 +1,12 @@
+module sig2rtg
+imports xtc-lib sig2-lib regular-xtc-tools
+
+strategies
+  
+  main-sig2rtg =
+    xtc-io-wrap(sig2-options, 
+      pre-process-input
+    ; xtc-transform(!"core-sig-apply-param-sorts")
+    ; xtc-transform(!"core-sig2rtg")
+    ; xtc-pp-rtg
+    )

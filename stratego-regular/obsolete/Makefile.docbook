@@ -1,0 +1,17 @@
+if have_docbook
+
+%.xml-included : %.xml
+	SGML_CATALOG_FILES=$(DOCBOOK_CAT) $(XMLLINT) --catalogs --xinclude --output $@ $<
+
+%.docbook-valid : %.xml-included
+	SGML_CATALOG_FILES=$(DOCBOOK_CAT) $(XMLLINT) --catalogs --postvalid --output $@ --valid $<
+
+%.1 : $(MAN_BOOK).docbook-valid
+	SGML_CATALOG_FILES=$(DOCBOOK_CAT) $(XSLTPROC) --catalogs --output $@ $(DOCBOOK2MAN_XSL) $<
+
+else
+
+%.1:
+	touch $@
+
+endif

@@ -1,0 +1,148 @@
+/**
+ * @author  Martin Bravenboer <mbravenb@cs.uu.nl>
+ */
+module modular-sdf-normalization
+imports Sdf2 sdf-util sdf-traversal grammar-sdf-normalization logging
+
+strategies  
+
+  /**
+   * @spec  implements function "m"
+   */
+  sdf-module-normalization(|formodule : String) =
+      log(|Debug(), "normalizing the order of sections")
+    ; sdf-normalize-order-sections
+    // ; sdf-keep-as(|".modular-sdf-1")
+
+    ; log(|Debug(), "normalizing the order of grammars")
+    ; sdf-normalize-order-grammars
+    // ; sdf-keep-as(|".modular-sdf-2")
+
+    ; log(|Debug(), "normalizing modularization")
+    ; sdf-normalize-modularization(|formodule)
+
+strategies
+
+  /**
+   * Sorts the sections of a module.
+   *
+   * In the following order:
+   *   1. exports
+   *   2. hiddens
+   *
+   * @type  SDFDefinition -> SDFDefinition
+   */
+  sdf-normalize-order-sections =
+    alltd-Module(normalize-order-sections)
+
+  /**
+   * @type  Module -> Module
+   */
+  normalize-order-sections =
+      ?|[ module M is1* s1* ]|
+    ; normalize-import-section
+    ; 'module(id, id, normalize-order-sections)
+    ; ?|[ module M is* s* ]|
+    ; where(!is* => [] <+ <import-sections-error> M)
+
+  import-sections-error =
+      log(|Error(), "top level import sections should have been removed", <id>)
+    ; fail
+
+  /**
+   * @type  List(Section) -> List(Section)
+   */
+  normalize-order-sections =
+      partition({G: ?|[ exports G ]| })
+    ; ( map( \ |[ exports G ]| -> G \), map( \ |[ hiddens G ]| -> G \))
+    ; (grammar-list-to-tree, grammar-list-to-tree)
+    ; ( \ G -> |[ exports G ]| \, \ G -> |[ hiddens G ]| \ )
+    ; (   \ (|[ exports (/) ]|, |[ hiddens (/) ]| ) -> []   \
+      <+  \ (s1               , |[ hiddens (/) ]| ) -> [s1] \
+      <+  \ (|[ exports (/) ]|, s1                ) -> [s1] \
+      <+  \ (s1               , s2                ) -> [s1, s2] \
+      )
+
+  /**
+   * Normalizes imports at the start of a module into exports sections
+   *
+   * @type  Module -> Module
+   */
+  normalize-import-section :
+    |[ module M is1* s1* ]| -> |[ module M is2* s2* ]|
+      where <map(\ is |[ is ]|  -> s |[ exports is ]| \)> is1* => imports
+          ; <conc> (imports, s1*) => s2*
+          ; ![] => is2*
+
+strategies
+
+  /**
+   * Normalizes a definition to a grammar given the name of the main module.
+   * The current implementation doesn't accept renamings.
+   *
+   * @todo  handle cycles (keep list of imported modules)
+   * @todo  apply renamings 
+   * @todo  handle multiple imports  (keep list of imported modules)
+   * @todo  merge and sort the grammars?
+   *
+   * @type  Definition -> Grammar
+   */
+  sdf-normalize-modularization(|formodule : String) =
+      <normalize-modularization> (formodule, <id>, [])
+    ; Fst
+
+  /**
+   * Normalizes a module if it hasn't been imported yet.
+   *
+   * Returns the empty grammar if this module has already been imported,
+   * otherwise invokes force-normalize-modularization.
+   *
+   * @type  String * SDFDefinition * List(String) -> Grammar * List(String)
+   */
+  normalize-modularization =
+    ?(name, def, imported)
+    ; ( <elem> (name, imported)
+      < !(G |[ (/) ]|, imported)
+      + force-normalize-modularization
+      )
+
+  /**
+   * @type  String * SDF Definition * List(String) -> Grammar * List(String)
+   */
+  force-normalize-modularization =
+    ?(name, def, imported)
+    ; log(|Debug(), "started normalizing module", name)
+    ; ( <sdf-lookup-module> (name, def)
+      <  normalize-order-sections
+        ; \ |[ module M is* s* ]| -> s* \
+        ; fetch-elem(\ s |[ exports G ]| -> G \)
+        ; <sdf-explode-imports> (<id>, def, [name | imported])
+        ; (normalize-order-grammar, id)
+        ; log(|Debug(), "finished normalizing module", name)
+      + log(|Error(), "sdf module not found", name); fail
+      )
+
+  /**
+   *
+   * @type  Grammar * SDF Definition * List(String) -> Grammar * List(String)
+   */
+  sdf-explode-imports =
+      ?(<id>, def, imported)
+    ; bottomup-Grammar(
+        \ G |[ imports i* ]| -> <map(<sdf-explode-import> (<id>, def, imported))> i* \
+          ; unzip
+          ; (grammar-list-to-tree, concat)
+        <+ \ conc-grammars((g1, imports1), (g2, imports2)) -> (conc-grammars(g1, g2), <conc> (imports1, imports2)) \
+        <+ !(<id>, [])
+      )
+
+  /**
+   * @type  String * SDF Definition -> Grammar * List(String)
+   */
+  sdf-explode-import :
+    (import, def, imported) -> <normalize-modularization> (import, def, imported)
+      where <?i |[ Mid ]| <+ import-module-error> import
+
+  import-module-error =
+      log(|Error(), "import is not a simple module name", <id>)
+    ; fail

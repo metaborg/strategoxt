@@ -1,0 +1,25 @@
+module regexp[Symbol]
+
+exports
+  sorts RegExp
+
+  context-free syntax
+    "/"        -> RegExp {cons("Empty")}
+    Symbol     -> RegExp {cons("Sym")}
+    RegExp "*" -> RegExp {cons("Star")}
+    RegExp "+" -> RegExp {cons("Plus")}
+    RegExp "?" -> RegExp {cons("Opt")}
+
+    RegExp "|" RegExp -> RegExp {cons("Choice"), right}
+    RegExp RegExp     -> RegExp {cons("Seq"), right}
+
+    "(" RegExp ")" -> RegExp {bracket}
+
+  context-free priorities
+    {left:
+      RegExp "*" -> RegExp
+      RegExp "+" -> RegExp
+      RegExp "?" -> RegExp
+    }
+  > RegExp     RegExp -> RegExp
+  > RegExp "|" RegExp -> RegExp

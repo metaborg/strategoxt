@@ -1,0 +1,39 @@
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN" "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+
+<refentry lang="en">
+  <refnamediv>
+    <refname>sdf2rtg</refname>
+    <refpurpose>create an abstract syntax in rtg from a concrete syntax in sdf2</refpurpose>
+  </refnamediv>
+
+  <refsynopsisdiv>
+    <cmdsynopsis>
+      <command>sdf2rtg</command>
+      <arg>-i <replaceable>file</replaceable></arg>
+      <arg>-o <replaceable>file</replaceable></arg>
+      <arg>--main <replaceable>module</replaceable></arg>
+    </cmdsynopsis>
+  </refsynopsisdiv>
+
+  <refsect1>
+    <title>Description</title>
+
+    <para>
+      For the given concrete syntax definition in the syntax definition formalism <glossterm>sdf2</glossterm>, 
+      the command <command>sdf2rtg</command> generates
+      an abstract syntax definition in the rtg (regular tree grammar) language.
+      This rtg defines the set of abstract syntax trees that will result from 
+      parsing text in the concrete syntax specified by the sdf2 definition.
+    </para>
+  </refsect1>
+
+  <refsect1>
+    <title>Reporting Bugs</title>
+
+    <para>
+      Please report bugs to <email>stratego-bugs@cs.uu.nl</email>
+    </para>
+  </refsect1>
+
+  <include href="lgpl-copyright.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+</refentry>

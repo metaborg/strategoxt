@@ -1,0 +1,22 @@
+definition
+  module FunProgram
+  exports
+    sorts Var Fun Term FunDef Program
+
+    aliases
+      {Term ","}* -> Terms
+      {Var ","}*  -> Vars
+
+    lexical syntax
+      [\ \t\n]     -> LAYOUT
+      "%%" ~[\n]*  -> LAYOUT
+      [A-Z][a-z]*  -> Var
+      [A-Z][a-z]*  -> Fun
+
+    context-free syntax
+      Var               -> Term {cons("Var")}
+      Fun "(" Terms ")" -> Term {cons("App")}
+  
+      "function" Fun "(" Vars ")" "is" Term -> FunDef  {cons("FunDef")}
+      "program" FunDef*                     -> Program {cons("Program")}
+  

@@ -1,0 +1,33 @@
+definition
+module Main
+  exports
+  sorts Exp
+  lexical syntax
+    [A-Za-z][A-Za-z0-9]* -> Id
+    [0-9]+               -> IntConst
+    [\r\n\t\ ]           -> LAYOUT
+
+  context-free syntax
+    Id          -> Exp {cons("Var")}
+    IntConst    -> Exp {cons("Int")}
+
+    Exp "+" Exp -> Exp {left, cons("Plus")}
+    Exp "-" Exp -> Exp {left, cons("Min")}
+    Exp "*" Exp -> Exp {left, cons("Mul")}
+    Exp "/" Exp -> Exp {left, cons("Div")}
+
+    Exp "." Id  "(" {Exp ","}* ")" -> Exp {cons("Call")}
+    "if" Exp "then" Exp "else" Exp -> Exp {cons("If")}
+
+
+  context-free priorities
+      Exp "." Id  "(" {Exp ","}* ")" -> Exp
+    > {left:
+        Exp "/" Exp -> Exp
+        Exp "*" Exp -> Exp }
+    > {left:
+        Exp "+" Exp -> Exp
+        Exp "-" Exp -> Exp }
+
+  context-free restrictions
+    LAYOUT? -/- [\r\n\t\ ]

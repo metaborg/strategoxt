@@ -1,0 +1,14 @@
+/**
+ * Groups all productions by non-terminal. There will only
+ * be one prodrule for every non-terminal after applying 
+ * rtg-group.
+ *
+ * @author Martin Bravenboer <martin@cs.uu.nl>
+ */
+module rtg-group
+imports options rtg-util
+
+strategies
+
+  main-rtg-group =
+    io-wrap(group-productions)

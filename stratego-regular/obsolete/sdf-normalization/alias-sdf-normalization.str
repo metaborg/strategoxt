@@ -1,0 +1,39 @@
+module alias-sdf-normalization
+imports Sdf2
+        alias-sdf-projection
+        kernel-sdf-renaming
+
+strategies
+
+  /**
+   * Replaces all alias symbols by their definition.
+   *
+   * Aliases are replaced by applying a renaming
+   * derived from the alias declarations to the non-alias 
+   * parts of the grammar.
+   *
+   * @type Grammar -> Grammar
+   * @spec Implements "a" function of section 9.2.3
+   */
+  sdf-alias-normalization =
+      where(
+        just-aliases
+      ; ?al*
+      ; map(alias-to-renaming)
+      ; ?ro*
+      )
+    ; without-aliases
+    ; topdown(try(rename-symbol(|ro*))) /* @todo: make this traversal more specific */
+    ; ?G
+    ; !|[ aliases al* G ]|
+
+rules
+
+  /**
+   * Builds a renaming from an alias. 
+   *
+   * @type  Alias -> Renaming
+   * @spec  Implements "rn" function of section 9.2.3
+   */  
+  alias-to-renaming :
+    al |[ A -> B ]| -> ro |[ B => A ]|

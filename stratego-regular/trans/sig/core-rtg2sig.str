@@ -1,0 +1,47 @@
+/**
+ * Generates a Stratego signature from an RTG.
+ *
+ * @author  Martin Bravenboer <martin@cs.uu.nl>
+ */
+module core-rtg2sig 
+imports Stratego rtg options rtg-util module-option logging stratego-rtg
+
+strategies
+
+  main-core-rtg2sig =
+    io-wrap(module-option,
+      ungroup-productions
+    ; rtg2sig
+    )
+
+strategies
+
+  /**
+   * @type  RTG -> StrategoModule
+   */ 
+  rtg2sig :
+    RTG(Start(starts), ProdRules(prods)) -> 
+      |[
+        module ~<get-module-name>
+        imports list-cons option
+
+        signature
+          constructors
+            ~*constrs
+      ]|
+        where <map(prodrule-to-constr)> prods => constrs
+
+/**
+ * @todo  Create at least some constructors for labelled content models
+ * @todo  Anonymous term applications
+ */
+strategies
+
+  /**
+   * @type  ProdRule -> Opdecl
+   */
+  prodrule-to-constr =
+       empty-prodrule-to-constr
+    <+ not-empty-prodrule-to-constr
+    <+ ref-prodrule-to-constr
+    <+ log(|Error(), "Cannot rewrite production", <id>); fail

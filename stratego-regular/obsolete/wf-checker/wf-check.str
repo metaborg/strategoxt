@@ -1,0 +1,146 @@
+/**
+ * Checks whether an ATerm is an instance of an rhg in abstract syntax.
+ *
+ * @author  Martin Bravenboer <mbravenb@cs.uu.nl>
+ */
+module core-wf-checker
+imports list rhg irhg logging regexp-util
+
+strategies
+
+  /**
+   * @type  a -> IRHG
+   */
+  start-wf-check(|rhg : RHG) :
+    term -> irhg-irhg(<wf-check-one(|rhg)> (term, start-regexps))
+      where !rhg => rhg-rhg(rhg-start(nts), _)
+          ; <map(!sym(<id>))> nts => start-regexps
+
+  /**
+   * Returns the first interpretation of the term against
+   *
+   * @type  a * List(RegExp(NonTerm)) -> RegLangNode
+   */
+  wf-check-one(|rhg : RHG) :
+    (term, regexps) -> <getfirst(<try-wf-check(|rhg)> (term, <id>))> regexps
+
+  try-wf-check(|rhg : RHG) =
+      wf-check(|rhg)
+    <+ log(|Warning(), "Not an instance of the regexp: ", <Snd>)
+     ; log(|Warning(), "Term: ", <Fst>)
+     ; fail
+
+/**
+ * Symbols
+ */
+rules
+
+  /**
+   * Check an int symbol.
+   *
+   * @type  a * RegExp(NonTerm) -> RegLangNode
+   */
+  wf-check(|rhg : RHG) :
+    (term, sym(int())) -> int(term)
+      where <is-int> term
+
+  /**
+   * Check a string symbol.
+   */
+  wf-check(|rhg : RHG) :
+    (term, sym(string())) -> string(term)
+      where <is-string> term
+
+  /**
+   * Injection
+   *
+   * @todo   remove injections in normalization step
+   */
+  wf-check(|rhg : RHG) :
+    (term, sym(nt)) -> <getfirst(\ rhg-ref(ntref) -> <wf-check(|rhg)> (term, sym(ntref)) \)> refs
+      where <get-ProdRuleRHS-refs> (rhg, nt) => refs
+
+  /**
+   * Check a constructor application.
+   *
+   * @todo   Constructor application
+   */
+  wf-check(|rhg : RHG) :
+    (t#(content){anno*}, sym(nt)) -> irhg-appl(nt, term(t), idefault, labelled)
+      where <not(?""); not(is-double-quoted)> t
+          ; <get-ProdRuleRHS-rhss> (rhg, nt, term(t))
+          ; getfirst(<rhs-check(|rhg)> ((content, anno*), <id>)) => (idefault, labelled)
+
+
+    rhs-check(|rhg : RHG) :
+      ((content, annos), rhg-rhs(_, rhg-content(r), lcontent)) -> (idefault, [])
+        where <regexp-seq-to-list> r => rs
+            ; <zip; map(try-wf-check(|rhg))> (content, rs) => idefault
+
+/**
+ * Repetition
+ */
+rules
+
+  /**
+   * Check a star regexp: ATerm list.
+   */
+  wf-check(|rhg : RHG) :
+    (term, star(regexp)) -> istar(<map(<try-wf-check(|rhg)> (<id>, regexp))> term)
+      where <is-list> term
+
+  /**
+   * Check a plus regexp: ATerm list.
+   */
+  wf-check(|rhg : RHG) :
+    (term, plus(regexp)) -> iplus(<map(<try-wf-check(|rhg)> (<id>, regexp))> term)
+      where <is-list> term
+          ; <gt> (<length> term, 0)
+
+strategies
+
+  /**
+   * Check an opt regexp: Some(_).
+   */
+  wf-check(|rhg : RHG) :
+    (Some(term), opt(regexp)) -> iopt(Some(<try-wf-check(|rhg)> (term, regexp)))
+  
+  /**
+   * Check an opt regexp: None().
+   */
+  wf-check(|rhg : RHG) :
+    (None(), opt(regexp)) -> iopt(None())
+
+strategies
+
+  /**
+   * Check an choice regexp.
+   */
+  wf-check(|rhg : RHG) :
+    (term, choice(r1, r2)) -> result
+      where (<wf-check(|rhg)> (term, r1) + <wf-check(|rhg)> (term, r2)) => result
+
+strategies
+
+  /**
+   * @todo  implement wf-checking of schemas with annotations
+   */
+  anno-check = id
+
+strategies
+
+  /**
+   * @type  RHG * NonTerm * Term -> ProdRuleRHS
+   */
+  get-ProdRuleRHS-rhss =
+    ?(rhg-rhg(_, rhg-prodrules(<id>)), nt, t)
+    ; getfirst(?rhg-prodrule(nt, <id>))
+    ; filter(?rhg-rhs(t, _, _))
+
+  /**
+   * @type  RHG * NonTerm -> ProdRuleRHS
+   */
+  get-ProdRuleRHS-refs =
+    ?(rhg-rhg(_, rhg-prodrules(<id>)), nt)
+    ; getfirst(?rhg-prodrule(nt, <id>))
+    ; filter(?rhg-ref(_))

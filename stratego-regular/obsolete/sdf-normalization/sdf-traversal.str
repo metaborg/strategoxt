@@ -1,0 +1,53 @@
+/**
+ * Simple traversals specific for sdf.
+ *
+ * Of course these specific traversals are not necessary because
+ * we can use the generic traversals, but they give insight
+ * into the structure of an SDF definition, so we use them for now.
+ *
+ * @author  Martin Bravenboer <mbravenb@cs.uu.nl>
+ */
+module sdf-traversal
+imports Sdf2
+
+strategies
+
+  bottomup-Grammar(s) =
+    rec x(all-Grammar(x); s)
+
+  all-Grammar(s) =
+      'sorts(id)
+    + imp-section(id)
+    + syntax(id)
+    + aliases(id)
+    + restrictions(id)
+    + lexical-syntax(id)       + context-free-syntax(id)
+    + lexical-variables(id)    + variables(id)
+    + lexical-priorities(id)   + context-free-priorities(id)
+    + lexical-restrictions(id) + context-free-restrictions(id)
+    + empty-grammar()
+    + conc-grammars(s, s)
+
+  all-leaves-Grammar(s) =
+    rec x(
+      ?conc-grammars(_, _)
+    < conc-grammars(x, x)
+    + s
+    )
+
+  some-Grammar(s) =
+       conc-grammars(s,  s)
+    <+ conc-grammars(s,  id)
+    <+ conc-grammars(id, s)
+
+  alltd-Module(s) =
+    definition(map(s))
+
+  alltd-Section(s) =
+    alltd-Module('module(id, id, map(s)))
+
+  alltd-Grammar(s) =
+    alltd-Section(
+      exports(s)
+    + hiddens(s)
+    )

@@ -1,0 +1,175 @@
+/**
+ * Sorts grammars in a section.
+ *
+ * Order:
+ *   1. imports
+ *   2. sorts
+ *   3. syntax
+ *   4. priorities
+ *   5. restrictions
+ *
+ * @author  Martin Bravenboer <martin@cs.uu.nl>
+ */
+module grammar-sdf-normalization
+imports Sdf2
+
+strategies
+
+  /**
+   * @type Definition -> Definition
+   */
+  sdf-normalize-order-grammars =
+      alltd-Section(section-normalize-order-grammars)
+
+  /**
+   * @type Section -> Section
+   */
+  section-normalize-order-grammars :
+    |[ hiddens G1 ]| -> |[ hiddens G2 ]|
+      where <normalize-order-grammar> G1 => G2
+
+  section-normalize-order-grammars :
+    |[ exports G1 ]| -> |[ exports G2 ]|
+      where <normalize-order-grammar> G1 => G2
+
+  /**
+   * @type Grammar -> Grammar
+   */
+  normalize-order-grammar =
+      grammar-tree-to-list
+    ; map(ensure-grammar)
+    ; normalize-order-grammars
+    ; grammar-list-to-tree
+
+  /**
+   * @type List(Grammar) -> List(Grammar)
+   */
+  normalize-order-grammars =
+    qsort(grammar-swap)
+  ; merge-grammars
+
+
+  /**
+   * Grammar swap.
+   *
+   * @spec  implements the <> operation in section 7.3.3
+   * @type  Grammar * Grammar ->? _ 
+   */
+  grammar-swap =
+      (grammar-order, grammar-order)
+    ; lt    
+
+/**
+ * @type Grammar -> Int
+ */
+rules
+
+  grammar-order : G |[ imports i* ]| -> 0
+  grammar-order :   |[ sorts A*   ]| -> 1
+  grammar-order :   |[ aliases al* ]| -> 2
+  
+  grammar-order :   |[ syntax p*  ]| -> 3
+  grammar-order :   |[ lexical syntax p*  ]| -> 4
+  grammar-order :   |[ context-free syntax p* ]| -> 5
+  
+  grammar-order :   |[ lexical variables p*  ]| -> 6
+  grammar-order :   |[ variables p* ]| -> 7
+  
+  grammar-order :   |[ priorities pr* ]| -> 8
+  grammar-order :   |[ lexical priorities pr* ]| -> 9
+  grammar-order :   |[ context-free priorities pr* ]| -> 10
+  
+  grammar-order :   |[ restrictions restr* ]| -> 11
+  grammar-order :   |[ lexical restrictions restr* ]| -> 12
+  grammar-order :   |[ context-free restrictions restr* ]| -> 13
+
+  
+strategies
+
+  /**
+   *  @type List(Grammar) -> List(Grammar)
+   */
+  merge-grammars =
+    foldr1(id
+    , {next, last, tail:
+        ?(next, [last | tail])
+      ; ( <merge-grammar> (next, last)
+        < ![<id> | tail]
+        + ![next, last | tail]
+        )
+    })
+
+  merge-grammars : []  -> []
+  merge-grammars : [g] -> [g]
+
+/**
+ * Merges syntax, lexical syntax and context-free syntax.
+ *
+ * @type Grammar * Grammar -> Grammar
+ */
+rules
+    
+  merge-grammar :
+    ( |[ syntax p1* ]|, |[ syntax p2* ]| ) -> |[ syntax p3* ]|
+      where <merge-prods> (p1*, p2*) => p3*
+
+  merge-grammar :
+    ( |[ lexical syntax p1* ]|, |[ lexical syntax p2* ]| ) -> |[ lexical syntax p3* ]|
+      where <merge-prods> (p1*, p2*) => p3*
+
+  merge-grammar :
+    ( |[ context-free syntax p1* ]|, |[ context-free syntax p2* ]| ) -> |[ context-free syntax p3* ]|
+      where <merge-prods> (p1*, p2*) => p3*
+
+/**
+ * Merges priorities, lexical priorities and context-free priorities.
+ * 
+ * @type Grammar * Grammar -> Grammar
+ */
+rules
+
+  merge-grammar :
+    ( |[ priorities pr1* ]|, |[ priorities pr2* ]| ) -> |[ priorities pr* ]|
+      where <conc> (pr1*, pr2*) => pr*
+
+  merge-grammar :
+    ( |[ lexical priorities pr1* ]|, |[ lexical priorities pr2* ]| ) -> |[ lexical priorities pr* ]|
+      where <conc> (pr1*, pr2*) => pr*
+
+  merge-grammar :
+    ( |[ context-free priorities pr1* ]|, |[ context-free priorities pr2* ]| ) -> |[ context-free priorities pr* ]|
+      where <conc> (pr1*, pr2*) => pr*
+
+/**
+ * Merges aliases.
+ *
+ * @type Grammar * Grammar -> Grammar
+ */
+rules
+
+  merge-grammar :
+    ( |[ aliases al1* ]|, |[ aliases al2* ]| ) -> |[ aliases al* ]|
+      where <conc> (al1*, al2*) => al*
+
+/**
+ * Merges variables and lexical variables.
+ * 
+ * @type Grammar * Grammar -> Grammar
+ */
+rules
+
+  merge-grammar :
+    ( |[ lexical variables p1* ]|, |[ lexical variables p2* ]| ) -> |[ lexical variables p3* ]|
+      where <merge-prods> (p1*, p2*) => p3*
+
+  merge-grammar :
+    ( |[ variables p1* ]|, |[ variables p2* ]| ) -> |[ variables p3* ]|
+      where <merge-prods> (p1*, p2*) => p3*
+
+
+strategies
+
+  /**
+   * @type  List(Production) * List(Production) -> List(Production)
+   */
+  merge-prods = union(prod-similar)

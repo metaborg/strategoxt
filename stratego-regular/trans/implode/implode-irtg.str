@@ -1,0 +1,57 @@
+module implode-irtg
+imports rtg-util options logging
+
+strategies
+
+  main-implode-irtg =
+    io-wrap(implode-irtg)
+
+  implode-irtg = 
+    bottomup-irtg(
+       Ignore
+    <+ Implode
+    <+ log(|Error(), "Cannot implode irtg tree", <id>); fail
+    )
+
+rules
+
+  Implode : Annotated(ch, anno*) -> ch{anno*}
+
+  Implode : Anno(t, v) -> (t#([]), v)
+
+  Implode : Prod(nt, c) -> c
+
+/**
+ * Terminal applications
+ */
+rules
+
+  Implode : Appl(t, cs) -> t#(cs)
+
+  Implode : Appl(ConsTerm(), [c, cs]) -> [c | cs]
+
+  Implode : Appl(NilTerm(), []) -> []
+
+  Implode : Conc(cs1, cs2) -> <conc> (cs1, cs2)
+
+  Implode : Term(s) -> s
+
+/**
+ * Built-in non-terminals
+ */
+rules
+
+  Implode : Opt(ch) -> ch
+
+  Implode : List(xs) -> xs
+
+  Implode : Tuple(chs) -> ""#(chs)
+
+  Implode : Int(x) -> x
+
+  Implode : String(s) -> s
+
+strategies
+
+  Ignore = ?Nonterm(_)
+

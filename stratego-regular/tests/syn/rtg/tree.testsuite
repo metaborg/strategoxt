@@ -1,0 +1,18 @@
+testsuite RTG Trees
+topsort AnnoTreeFN
+
+test Primitive string
+  "<string>" -> Ref(String())
+
+test Simple application
+  "Plus(Exp, Exp)" ->
+    Appl(
+      Term(Plain("Plus"))
+    , [ Ref(Nonterm(Plain("Exp")))
+      , Ref(Nonterm(Plain("Exp")))
+      ]
+    )
+
+test Quoted non terminal reference
+  "[Exp]" ->
+    Ref(Nonterm(Quoted([Chars("Exp")])))

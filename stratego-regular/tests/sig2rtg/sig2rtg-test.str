@@ -1,0 +1,19 @@
+module sig2rtg-test
+imports sunit xtc-lib xtc-debug
+
+strategies 
+
+  main-sig2rtg-test = 
+    xtc-temp-files(
+      test-suite(!"Stratego Signature to RTG",
+        full-applications
+      )
+    )
+
+  full-applications =
+      full-application-test(|"Exp1.str")
+    ; full-application-test(|"Exp2.str")
+    ; full-application-test(|"Repository.str")
+
+  full-application-test(|sig) =
+    apply-and-check(!sig, xtc-transform(!"sig2rtg"), !FILE(sig), xtc-debug-text)

@@ -1,0 +1,103 @@
+module format-check-tests
+imports sunit xtc-lib
+
+strategies 
+
+  main-format-check-tests = 
+    xtc-temp-files(
+      test-suite(!"format-check",
+        expression-tests(simple-inj)
+      ; expression-tests(quoted-exp)
+      ; string-star
+      ; string-plus
+      ; string-even
+      ; string-opt
+      ; tuple-stuff
+      )
+    )
+
+  expression-tests(s) = 
+      apply-test(!"Simple injection 1", s, !"Bla")
+    ; apply-test(!"Simple injection 2", s, !3)
+    ; apply-test(!"Simple production ", s, !IntConst(3))
+    ; apply-test(!"Simple plus expression 1", s, !Plus(IntConst(2), IntConst(4)))
+    ; apply-test(!"Simple plus expression 2", s, !Plus(IntConst(2), Var("a")))
+
+    ; apply-and-fail(!"Incorrect IntConst", s, !IntConst("2"))
+    ; apply-and-fail(!"Incorrect Var", s, !Var(2))
+    ; apply-and-fail(!"Incorrect plus expression 1", s, !Plus(2, Var("a")))
+    ; apply-and-fail(!"Incorrect plus expression 2", s, !Plus(IntConst("2"), Var("a")))
+
+  tuple-stuff =
+      apply-test(!"Tuple1, not head or last", tuple-stuff, !Tuple1(1, (2, 3), 4))
+    ; apply-test(!"Tuple2, head", tuple-stuff, !Tuple2((1, 2), 3))
+
+    ; apply-and-fail(!"Incorrect Tuple1", tuple-stuff, !Tuple1(1, 2, 4))
+    ; apply-and-fail(!"Incorrect Tuple1", tuple-stuff, !Tuple1(1, 2, 3, 4))
+    ; apply-and-fail(!"Incorrect Tuple2", tuple-stuff, !Tuple2(1, (2, 3)))
+
+    ; apply-test(!"Tuple3, last", tuple-stuff, !Tuple3(1, 2, (3, 4)))
+    ; apply-test(!"Tuple3, last", tuple-stuff, !Tuple3(1, 2, (3, 4, 5)))
+
+    ; apply-and-fail(!"Incorrect Tuple3", tuple-stuff, !Tuple3(1, 2, (3, 4, 5, 6)))
+    ; apply-and-fail(!"Incorrect Tuple3", tuple-stuff, !Tuple3(1, 2, 3, 5))
+
+   string-star =
+      apply-test(!"Empty list", StringStar, ![])
+    ; apply-test(!"List with some elements", StringStar, !["Hello", "World"])
+    ; apply-and-fail(!"List with element of illegal type", StringStar, ![1])
+    ; apply-and-fail(!"List with element of illegal type", StringStar, !["Hello", 1, "World"])
+
+   string-plus =
+      apply-and-fail(!"Empty list", StringPlus, ![])
+    ; apply-test(!"List with some elements", StringPlus, !["Hello"])
+    ; apply-test(!"List with some elements", StringPlus, !["Hello", "World"])
+    ; apply-and-fail(!"List with element of illegal type", StringPlus, ![1])
+    ; apply-and-fail(!"List with element of illegal type", StringPlus, !["Hello", 1, "World"])
+
+   string-even =
+          apply-test(!"Empty list", StringEven, ![])
+    ; apply-and-fail(!"List with some elements", StringEven, !["Hello"])
+    ;     apply-test(!"List with some elements", StringEven, !["Hello", "World"])
+    ; apply-and-fail(!"List with element of illegal type", StringEven, ![1, 1])
+    ; apply-and-fail(!"List with element of illegal type", StringEven, !["Hello", 1, "World"])
+
+   string-opt =
+      apply-test(!"Some String", StringOpt, !Some("String"))
+    ; apply-test(!"No String", StringOpt, !None())
+    ; apply-and-fail(!"Plain string", StringOpt, !"foo")
+    ; apply-and-fail(!"Some no-string", StringOpt, !Some(1))
+
+  simple-inj =
+      write-to; xtc-transform(!"format-check", !["--rtg", "SimpleInj.rtg"]); read-from
+
+  tuple-stuff =
+      write-to; xtc-transform(!"format-check", !["--rtg", "TupleStuff.rtg"]); read-from
+
+  quoted-exp =
+      write-to; xtc-transform(!"format-check", !["--rtg", "QuotedExp.rtg"]); read-from
+
+  StringStar =
+      write-to; xtc-transform(!"format-check", !["--rtg", "StringStar.rtg"]); read-from
+
+  StringPlus =
+      write-to; xtc-transform(!"format-check", !["--rtg", "StringPlus.rtg"]); read-from
+
+  StringEven =
+      write-to; xtc-transform(!"format-check", !["--rtg", "StringEven.rtg"]); read-from
+
+  StringOpt =
+      write-to; xtc-transform(!"format-check", !["--rtg", "StringOpt.rtg"]); read-from
+  
+signature
+  constructors
+    Var      : Id -> Var
+    IntConst : IntConst -> Exp
+    Plus     : Exp * Exp -> Exp
+    Call     : Var * List(Exp) -> Exp
+
+    Tuple1   : Int * Tuple * Int -> Tuple
+    Tuple1   : Int * Int * Int * Int -> Tuple
+    Tuple2   : Tuple * Int -> Tuple
+    Tuple3   : Int * Int * Tuple -> Tuple
+    Tuple3   : Int * Int * Int * Int -> Tuple

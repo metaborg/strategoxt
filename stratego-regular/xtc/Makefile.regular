@@ -1,0 +1,43 @@
+SUFFIXES += .artg .rtg .rtg-nf .arhg .rhg .rhg-nf -typematch.str
+
+# rtg-nf -> str
+.rtg-nf.str :
+	$(STRATEGO_REGULAR)/libexec/core-rtg2sig --module $* -i $< | $(STRATEGO_FRONT)/bin/pp-stratego --abstract -o $@
+
+# rhg -> arhg
+.rtg.artg :
+	$(STRATEGO_REGULAR)/bin/parse-rtg -i $*.rtg -o $@
+
+# rhg -> arhg
+.rhg.arhg :
+	$(STRATEGO_REGULAR)/bin/parse-rhg -i $*.rhg -o $@
+
+# arhg -> rhg-nf
+.arhg.rhg-nf :
+	$(STRATEGO_REGULAR)/libexec/rhg-reduce -i $< | \
+	$(STRATEGO_REGULAR)/libexec/rhg-group -o $@
+
+# rtg -> rtg-nf
+.rtg.rtg-nf :
+	$(STRATEGO_REGULAR)/bin/parse-rtg -i $< | \
+	$(STRATEGO_REGULAR)/libexec/rtg-reduce | \
+	$(STRATEGO_REGULAR)/libexec/rtg-group -o $@
+
+# sdf def -> rtg-nf
+.def.rtg-nf :
+	$(STRATEGO_REGULAR)/bin/sdf2rtg $(SDF2RTG_FLAGS) -i $< | \
+	$(STRATEGO_REGULAR)/bin/parse-rtg | \
+	$(STRATEGO_REGULAR)/libexec/rtg-reduce | \
+	$(STRATEGO_REGULAR)/libexec/rtg-group -o $@
+
+# rtg-nf -> typematch
+.rtg-nf-typematch.str :
+	$(STRATEGO_REGULAR)/bin/rtg2typematch -i $*.rtg-nf -o $@
+
+# sig -> arhg
+# .str.arhg :
+#	$(STRATEGO_REGULAR)/bin/sig2rtg -i $*.str -o $@
+
+# rtg to rtree
+# .rtg.rtree :
+#	$(STRATEGO_REGULAR)/bin/rtg2sig -i $*.rtg --module $* | $(STRATEGO_FRONT)/bin/parse-stratego -o $@

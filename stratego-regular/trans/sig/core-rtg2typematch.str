@@ -1,0 +1,73 @@
+/**
+ * Generates type matching strategies in Stratego from an RTG.
+ *
+ * @author  Martin Bravenboer <martin@cs.uu.nl>
+ */
+module core-rtg2typematch
+imports options Stratego rtg module-option stratego-rtg
+
+strategies
+
+  main-core-rtg2typematch =
+    io-wrap(module-option, rtg2typematch(|<get-module-name>))
+
+  rtg2typematch(|modname) :
+    RTG(Start(nts), ProdRules(prods)) ->
+      |[
+        module ~modname
+  
+        strategies
+          ~*defs
+      ]|
+        where <map(prodrule-to-sdef)> prods => defs
+
+  /**
+   * @type  ProdRule -> SDef
+   */
+  prodrule-to-sdef :
+    ProdRule(nt, trees) -> Def |[ ~id:isnt = ~body ]|
+      where <get-typematch-id> nt => isnt
+          ; <alts-to-strat> trees => body
+
+strategies
+
+  /**
+   * @todo  smells like a simple fold.
+   * @type  ProdRuleRHS -> Strategy
+   */
+  alts-to-strat :
+    [tree] -> <create-call> tree
+
+  alts-to-strat :
+    [tree | t@[_ | _]] -> Strat |[ ~s1 + ~s2 ]|
+      where <create-call> tree => s1
+          ; <alts-to-strat> t => s2
+
+  /**
+   * @todo  improve case of ano applications
+   * @type  AnnoTreeFN -> Strategy
+   */
+  create-call:
+    Appl(term, trees) -> Strat |[ ? ~id:t ( ~term*:any ) ]|
+      where <map(! Term |[ _ ]| )> trees => any
+          ; <term-to-strid> term => t
+
+  /**
+   * @type AnnoTreeFN -> Strategy
+   */
+  create-call:
+    Ref(nt) -> Strat |[ ~id:isnt ]|
+      where <get-typematch-id> nt => isnt
+
+strategies
+  /**
+   * @type  NonTerm -> String
+   */
+  get-typematch-id :
+    String() -> "is-string"
+
+  get-typematch-id :
+    Int() -> "is-int"
+
+  get-typematch-id :
+    Nonterm(s) -> <conc-strings> ("is-", s)

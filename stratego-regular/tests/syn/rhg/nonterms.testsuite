@@ -1,0 +1,38 @@
+testsuite RHG Non-Terminals
+topsort NonTerm
+
+test Primitive string
+  "<string>" -> String()
+
+test "String non terminal"
+  "String" -> Nonterm(Plain("String"))
+
+test Quoted non terminal 1
+  "[Bla]" -> Nonterm(Quoted([Chars("Bla")]))
+
+test Quoted non terminal 2
+  "[Bl[a]" -> Nonterm(Quoted([Chars("Bl[a")]))
+
+test Quoted non terminal 3
+  "[Bl]a]" fails
+
+test Quoted non terminal 4
+  "[Bla" fails
+
+test Quoted non terminal 5
+  "[Bla]a" fails
+
+test Quoted non terminal 6
+  "[Bl\\a]" -> Nonterm(Quoted([Chars("Bl"), EscapeSeq(92),Chars("a")]))
+
+test Quoted non terminal 7
+  "[Bl\\\\a]" -> Nonterm(Quoted([Chars("Bl"), EscapeSeq(92), EscapeSeq(92), Chars("a")]))
+
+test Quoted non terminal 8
+  "[Bla\]]" -> Nonterm(Quoted([Chars("Bla"), EscapeSeq(93)]))
+
+test Quoted namespace construct
+  "[{http://www.w3.org/1999/xhtml}br]" -> Nonterm(Quoted([Chars("{http://www.w3.org/1999/xhtml}br")]))
+
+test Not quoted namespace construct
+  "{http://www.w3.org/1999/xhtml}br" fails

@@ -1,0 +1,17 @@
+module auto-docbook
+imports xtc-lib
+
+strategies
+
+  main-auto-docbook =
+      install-docbook-m4
+    ; install-docbook-makefile
+    ; <exit> 0
+
+  install-docbook-m4 = 
+      <xtc-find-file> "docbook.m4"
+    ; copy-to(!"docbook.m4")
+
+  install-docbook-makefile =
+      <xtc-find-file> "Makefile.docbook"
+    ; copy-to(!"Makefile.docbook")

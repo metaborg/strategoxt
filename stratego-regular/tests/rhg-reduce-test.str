@@ -1,0 +1,64 @@
+module rhg-reduce-test
+imports sunit xtc-lib rhg-reduce regular-xtc-tools
+
+strategies 
+
+  main-rhg-reduce-test = 
+    xtc-temp-files(
+      test-suite(!"rhg reduce",
+        productive-tests
+      ; reachable-tests
+      ; reduce-tests
+      )
+    )
+
+  productive-tests =
+      apply-test(!"All productive 1", rhg2productive, !FILE("prod-1.rhg"), !["Exp", "Var"])
+    ; apply-test(!"All productive 2", rhg2productive, !FILE("prod-9.rhg"), !["Exp", "Var"])
+    ; apply-test(!"All productive 3", rhg2productive, !FILE("prod-2.rhg"), !["Exp", "Var"])
+    ; apply-test(!"All productive 4", rhg2productive, !FILE("prod-4.rhg"), !["Exp", "Var"])
+    ; apply-test(!"Not all productive 1", rhg2productive, !FILE("prod-3.rhg"), !["Var"])
+    ; apply-test(!"None productive 1", rhg2productive, !FILE("prod-5.rhg"), ![])
+
+  reachable-tests =
+      apply-test(!"All reachable 1", rhg2reachable, !FILE("prod-1.rhg"), !["Exp", "Var"])
+    ; apply-test(!"All reachable 1", rhg2reachable, !FILE("prod-9.rhg"), !["Exp", "Var"])
+    ; apply-test(!"All reachable 2", rhg2reachable, !FILE("prod-2.rhg"), !["Bla", "Exp", "Var"])
+    ; apply-test(!"All reachable 3", rhg2reachable, !FILE("prod-3.rhg"), !["Bla", "Exp", "Foo", "Var"])
+    ; apply-test(!"All reachable 4", rhg2reachable, !FILE("prod-4.rhg"), !["Bla", "Exp", "Var"])
+    ; apply-test(!"All reachable 5", rhg2reachable, !FILE("prod-5.rhg"), !["Bla", "Exp", "Foo", "Var"])
+    ; apply-test(!"Not reachable 1", rhg2reachable, !FILE("prod-6.rhg"), !["Foo", "Var"])
+    ; apply-test(!"Not reachable 2", rhg2reachable, !FILE("prod-7.rhg"), !["Var"])
+    ; apply-test(!"Not reachable 3", rhg2reachable, !FILE("prod-8.rhg"), !["Foo"])
+
+  reduce-tests =
+      apply-test(!"No nonsense productions", do-rhg-reduce, !FILE("prod-1.rhg"))
+    ; apply-test(!"No nonsense productions", do-rhg-reduce, !FILE("prod-9.rhg"))
+    ; apply-test(!"Remove some", do-rhg-reduce, !FILE("prod-2.rhg"))
+    ; apply-test(!"Remove some", do-rhg-reduce, !FILE("prod-3.rhg"))
+    ; apply-test(!"Remove some", do-rhg-reduce, !FILE("prod-4.rhg"))
+    ; apply-and-fail(!"Remove all, illegal", do-rhg-reduce, !FILE("prod-5.rhg"))
+    ; apply-and-fail(!"Remove all, illegal", do-rhg-reduce, !FILE("prod-6.rhg"))
+    ; apply-test(!"Remove some", do-rhg-reduce, !FILE("prod-7.rhg"))
+    ; apply-and-fail(!"Remove all, illegal", do-rhg-reduce, !FILE("prod-8.rhg"))
+
+  rhg2productive =
+      xtc-parse-rhg
+    ; read-from
+    ; productive-nonterms
+    ; all(?Nonterm(<id>))
+    ; string-sort
+
+  rhg2reachable =
+      xtc-parse-rhg
+    ; read-from
+    ; reachable-nonterms
+    ; all(?Nonterm(<id>))
+    ; string-sort
+
+  do-rhg-reduce =
+      xtc-parse-rhg
+    ; xtc-rhg-reduce
+
+  xtc-rhg-reduce =
+      xtc-transform(!"rhg-reduce", pass-verbose)

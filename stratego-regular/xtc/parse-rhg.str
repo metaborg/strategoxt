@@ -1,0 +1,7 @@
+module parse-rhg
+imports xtc-lib regular-xtc-tools
+
+strategies
+  
+  main-parse-rhg =
+    xtc-io-wrap(xtc-parse-rhg)

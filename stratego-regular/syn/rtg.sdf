@@ -1,0 +1,22 @@
+module rtg
+imports rg-term rg-nonterm rg-identifier rg-layout
+        regexp [NonTerm][ RegExp => RegExpNonTerm ]
+exports
+  sorts RTG Start ProdRules
+  context-free syntax
+    "regular" "tree" "grammar" Start ProdRules -> RTG {cons("RTG")}
+    "start" NonTerm+ -> Start {cons("Start")}
+    "productions" ProdRule+ -> ProdRules {cons("ProdRules")}
+
+  sorts ProdRule AnnoTreeFN TreeFN Labelled
+  context-free syntax
+    NonTerm "->" {AnnoTreeFN "|"}+ -> ProdRule {cons("ProdRule")}
+
+    TreeFN -> AnnoTreeFN
+    TreeFN Labelled+ -> AnnoTreeFN {cons("Annotated")}
+
+    Term "(" {AnnoTreeFN ","}* ")" -> TreeFN {cons("Appl")}
+         "(" {AnnoTreeFN ","}* ")" -> TreeFN {cons("Tuple")}
+    NonTerm -> TreeFN {cons("Ref")}
+
+    "." Term AnnoTreeFN -> Labelled {cons("Labelled")}

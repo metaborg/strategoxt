@@ -1,0 +1,9 @@
+regular tree grammar
+  start Tuple
+  productions
+    Tuple -> Tuple1 (<int>, (<int>, <int>), <int>)
+
+    Tuple -> Tuple2 ((<int>, <int>), <int>)
+
+    Tuple -> Tuple3 (<int>, <int>, (<int>, <int>))
+    Tuple -> Tuple3 (<int>, <int>, (<int>, <int>, <int>))

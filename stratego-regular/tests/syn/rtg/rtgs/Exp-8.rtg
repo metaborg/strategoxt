@@ -1,0 +1,17 @@
+regular tree grammar
+  start Var Exp
+  productions
+    Var -> Var   (<string>) .type (Type) .copy-of ([Var])
+    Var -> Var   (<string>) .type (Type)
+
+    Exp -> Int   (<int>)
+         | Times (Exp, Exp)
+         | Plus  (Exp, Exp)
+         | Call  (Var, ExpList)
+         | Var
+
+    ExpList -> <cons> (Exp, ExpList)
+             | <nil> ()
+
+    Type -> Int ()
+          | String ()

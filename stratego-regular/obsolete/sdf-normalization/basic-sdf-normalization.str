@@ -1,0 +1,94 @@
+/**
+ * @author Martin Bravenboer <martin@cs.uu.nl>
+ */
+module basic-sdf-normalization
+imports Sdf2
+    
+strategies
+
+  /**
+   * sdf-normalize-lex-cf normalizes sections to syntax section.
+   *
+   *   - lexical syntax
+   *   - context-free syntax
+   *   - lexical variables
+   *   - variables
+   * to syntax sections using the normalization function defined
+   * in section 8.3.2 of [1].
+   *
+   * @todo  normalize lexical and context-free priorities and restriction sections in the obvious way?
+   * @type  Grammar -> Grammar
+   * @spec  implements function "b"
+   */
+    sdf-basic-normalization =
+    // alltd-Grammar(
+      all-leaves-Grammar({p*:
+        (?|[ lexical syntax p* ]|      < normalize-lex-syntax + id)
+      ; (?|[ context-free syntax p* ]| < normalize-cf-syntax  + id)
+      })
+    // )
+
+strategies 
+
+  /**
+   * Normalizes a lexical syntax section to syntax.
+   */
+  normalize-lex-syntax :
+    |[ lexical syntax p1* ]| -> |[ syntax p2* ]|
+      where <map(encode-lex)> p1* => new-prods
+          ; < produced-symbols 
+          ; map( \ A -> |[ <A-LEX> -> <A-CF> {} ]| \)
+            > p1* => lex-cf-in
+          ; <conc> (new-prods, lex-cf-in) => p2*
+
+  /**
+   * @type  Production -> Symbol
+   */
+  produced-symbol :
+    |[ A* -> A $ ]| -> A
+
+  /**
+   * @type List(Production) -> List(Symbol)
+   */
+  produced-symbols =
+      map(produced-symbol)
+    ; make-set
+
+  /**
+   * @type Grammar -> List(Symbol)
+   */
+  produced-symbols =
+      grammar-tree-to-list
+    ; map(
+        ( \ |[      lexical syntax p1* ]| -> p1* \
+        + \ |[ context-free syntax p1* ]| -> p1* \
+        + \ |[              syntax p1* ]| -> p1* \ 
+        <+ ![] )
+      ; produced-symbols
+      )
+    ; unions
+
+  encode-lex =
+    prod(map(!lex(<id>)), !lex(<id>), id)
+
+strategies
+
+  /**
+   * Normalize a context-free syntax section to syntax.
+   */
+  normalize-cf-syntax :
+    |[ context-free syntax p1* ]| -> |[ syntax p2* ]|
+      where <map(encode-cf)> p1* => new-prods
+          ; !|[ <LAYOUT-CF> <LAYOUT-CF> -> <LAYOUT-CF>  {left} 
+                                        -> <LAYOUT?-CF> {}
+                            <LAYOUT-CF> -> <LAYOUT?-CF> {}
+             ]| => layout-prods
+          ; <conc> (new-prods, layout-prods) => p2*
+
+
+  encode-cf =
+      prod(map(cf-sym), cf-sym, id)
+    ; prod(<separate-by> (|[ <LAYOUT?-CF> ]|, <id>), id, id)
+
+  cf-sym =
+    ?|[ L ]| < id + \ A -> |[ <A-CF> ]| \

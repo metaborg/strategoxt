@@ -1,0 +1,47 @@
+/**
+ * @author Martin Bravenboer <martin@cs.uu.nl>
+ */
+module sdf2-normalization
+imports Sdf2 sdf-traversal sdf-util
+imports modular-sdf-normalization
+        grammar-sdf-normalization
+          basic-sdf-normalization
+          alias-sdf-normalization
+
+strategies
+
+  sdf-normalize(|formodule : String) =
+       log(|Debug(), "normalizing modules")
+     ; sdf-module-normalization(|formodule)
+     ; sdf-keep-as(|".modular-sdf")
+
+     ; log(|Debug(), "normalizing lexical and context-free syntax")
+     ; sdf-basic-normalization
+     ; sdf-keep-as(|".basic-sdf")
+
+     ; log(|Debug(), "normalizing aliases")
+     ; sdf-alias-normalization
+     ; sdf-keep-as(|".alias-sdf")
+
+     ; sdf-topsorts
+     ; sdf-regular-normalization
+     ; sdf-priorities-normalization
+     ; sdf-literals-normalization
+     ; sdf-kernel-normalization
+
+strategies
+
+  sdf-regular-normalization =
+    log(|Warning(), "regular normalization is not implemented")
+
+  sdf-priorities-normalization =
+    log(|Warning(), "priorities normalization is not implemented")
+
+  sdf-literals-normalization =
+    log(|Warning(), "literals normalization is not implemented")
+
+  sdf-kernel-normalization =
+    log(|Warning(), "kernel normalization is not implemented")
+
+  sdf-topsorts =
+    log(|Warning(), "topsorts normalization is not implemented")

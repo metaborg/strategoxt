@@ -1,0 +1,16 @@
+module rhg
+imports regexp rg-nonterm
+signature
+  constructors
+    RHG       : Start * ProdRules -> RHG
+    Start     : List(NonTerm) -> Start
+    ProdRules : List(ProdRule) -> ProdRules
+
+    ProdRule  : NonTerm * List(ProdRuleRHS) -> ProdRule
+    RHS       : Term * Content * List(Labelled) -> ProdRuleRHS
+    Ref       : NonTerm -> ProdRuleRHS
+
+    OptLabelled : Term * Content -> Labelled
+    Labelled    : Term * Content -> Labelled
+
+    Content     : RegExp(NonTerm) -> Content

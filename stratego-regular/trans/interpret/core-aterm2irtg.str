@@ -1,0 +1,24 @@
+/**
+ * @author  Martin Bravenboer <martin@cs.uu.nl>
+ */
+module core-aterm2irtg
+imports options aterm2irtg logging regular-options
+
+strategies
+
+  main-core-aterm2irtg =
+    io-wrap(core-aterm2irtg-options,
+      core-aterm2irtg
+    )
+
+strategies
+
+  core-aterm2irtg-options =
+    rtg-nf-option(|"Check against normalized RTG in file")
+
+  /**
+   * @type  a -> IRTG
+   */  
+  core-aterm2irtg =
+    start-interpret(|<read-rtg-nf-config>)
+

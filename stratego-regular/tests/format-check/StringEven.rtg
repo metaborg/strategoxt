@@ -1,0 +1,5 @@
+regular tree grammar
+start StringEven
+productions
+  StringEven -> <cons> (<string>, <cons> (<string>, StringEven))
+  StringEven -> <nil> ()

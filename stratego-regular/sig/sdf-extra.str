@@ -1,0 +1,5 @@
+module sdf-extra
+signature
+  constructors
+    prod-fun : Attribute
+    cons     : ATerm -> Attribute

@@ -1,0 +1,39 @@
+definition
+module Expression
+  imports Identifier Layout
+  exports
+    sorts Exp
+
+    context-free syntax
+      Exp "*" Exp -> Exp {cons("Mul")}
+      Exp "/" Exp -> Exp {cons("Div")}
+      Exp "+" Exp -> Exp {cons("Plus")}
+
+      Exp "-" Exp -> Exp {cons("Min")}
+      Id          -> Exp {cons("Var")}
+
+    context-free priorities
+      {left:
+        Exp "*" Exp -> Exp
+        Exp "/" Exp -> Exp
+      }
+    > {left:
+        Exp "+" Exp -> Exp
+        Exp "-" Exp -> Exp
+      }
+
+module Identifier
+  exports
+    lexical syntax
+      [a-zA-Z\_] [a-zA-Z0-9\_]* -> Id
+  
+    lexical restrictions
+      Id -/- [a-zA-Z0-9\_]
+
+module Layout
+  exports
+    lexical syntax
+      [\ \t\n] -> LAYOUT
+
+    context-free restrictions
+      LAYOUT? -/- [\ \t\n]

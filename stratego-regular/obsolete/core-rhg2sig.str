@@ -1,0 +1,116 @@
+/**
+ * Generates a Stratego signature from an rhg.
+ *
+ * @author  Martin Bravenboer <martin@cs.uu.nl>
+ */
+module core-rhg2sig
+imports Stratego rhg options rhg-util module-option regexp-util
+
+strategies
+
+  main-core-rtg2sig =
+    io-wrap(module-option,
+      ungroup-productions
+    ; rtg2sig
+    )
+
+strategies
+
+  /**
+   * @type  RTG -> StrategoModule
+   */ 
+  rtg2sig :
+    rhg-rhg(rhg-start(starts), rhg-prodrules(prods)) -> 
+      |[
+        module ~<get-module-name>
+        imports list-cons option
+
+        signature
+          constructors
+            ~*constrs
+      ]|
+        where <map(prodrule-to-constr)> prods => constrs
+
+strategies
+
+  /**
+   * @todo  Create at least some constructors for labelled content models
+   * @type  ProdRule -> Opdecl
+   */
+  prodrule-to-constr =
+       empty-prodrule-to-constr
+    <+ not-empty-prodrule-to-constr
+    <+ ref-prodrule-to-constr
+
+  empty-prodrule-to-constr :
+    rhg-prodrule(nt, [rhg-rhs(term(x), rhg-content(empty()), _)]) -> Constr |[ x : srt ]|
+      where <nonterm-to-sort> nt => srt
+
+  not-empty-prodrule-to-constr :
+    rhg-prodrule(nt, [rhg-rhs(term(x), rhg-content(r), _)]) -> Constr |[ x : tp* -> srt ]|
+      where <regexp-seq-to-list> r => r*
+          ; <nonterm-to-sort> nt => srt
+          ; <map(
+               try-regexp-to-sort
+             ; \ srt -> Type |[ srt ]| \
+             )> r* => tp*
+
+  ref-prodrule-to-constr :
+    rhg-prodrule(nt, [rhg-ref(nt1)]) -> Constr |[ : srt1 -> srt ]|
+      where <nonterm-to-sort> nt => srt
+          ; <nonterm-to-sort> nt1 => srt1
+
+/**
+ * regexp to terms
+ *
+ * @type RegExp(NonTerm) -> Sort
+ */
+strategies
+
+  try-regexp-to-sort =
+    regexp-to-sort <+ debug(!"Cannot rewrite regexp to sort"); fail
+    
+  regexp-to-sort =
+    ?sym(<nonterm-to-sort>)
+ 
+  regexp-to-sort:
+    opt(r)  -> Sort |[ Option(srtx) ]|
+      where <try-regexp-to-sort> r => srtx
+
+  regexp-to-sort:
+    plus(r) -> Sort |[ List(srtx) ]|
+      where <try-regexp-to-sort> r => srtx
+
+  regexp-to-sort:
+    star(r) -> Sort |[ List(srtx)   ]|
+      where <try-regexp-to-sort> r => srtx
+
+  /*
+  regexp-to-sort:
+    group(rs) -> Sort |[ ( srt* ) ]|
+      where <map(try-regexp-to-sort)> rs => srt*
+   */
+    
+strategies
+
+  nonterm-to-sort:
+    int() -> Sort |[ Int ]|
+
+  nonterm-to-sort:
+    string() -> Sort |[ String ]|
+
+  nonterm-to-sort:
+    nonterm(srtx) -> Sort |[ srtx ]|
+
+strategies
+
+  /*
+  regexp-to-term =
+    ?seq(_, _); <error> ["Seq not allowed inside content model: ", <id>]
+
+  regexp-to-term =
+    ?empty(); <error> ["Empty not allowed inside content model: ", <id>]
+
+  regexp-to-term =
+    ?choice(_, _); <error> ["Choice not allowed inside content model: ", <id>]
+  */

@@ -1,0 +1,5 @@
+regular tree grammar
+  start Var Exp
+  productions
+    Var -> Var   (<string>)
+    Exp -> 

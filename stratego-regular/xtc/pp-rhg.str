@@ -1,0 +1,7 @@
+module pp-rhg
+imports xtc-lib regular-xtc-tools
+
+strategies
+
+  main-pp-rhg =
+    xtc-io-wrap(xtc-pp-rhg)

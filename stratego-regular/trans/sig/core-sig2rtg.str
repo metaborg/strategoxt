@@ -1,0 +1,29 @@
+/**
+ * Generates an RTG from a Stratego Signature.
+ *
+ * @author  Martin Bravenboer <martin@cs.uu.nl>
+ */
+module core-sig2rtg
+imports Stratego rtg options rtg-util logging stratego-rtg
+
+strategies
+
+  main-core-sig2rtg =
+    io-wrap(sig2rtg)
+
+  sig2rtg =
+    spec-to-constructors
+    ; map(constr-to-prodrule)
+    ; where(map(?ProdRule(<id>, _)) => starts)
+    ; !RTG(Start(starts), ProdRules(<id>))
+
+strategies
+
+  /**
+   * @type  ProdRule -> Opdecl
+   */
+  constr-to-prodrule =
+       empty-constr-to-prodrule
+    <+ not-empty-constr-to-prodrule
+    <+ ref-constr-to-prodrule
+    <+ log(|Error(), "Cannot rewrite constructor to production", <id>); fail

@@ -1,0 +1,88 @@
+/**
+ * @author  Martin Bravenboer <mbravenb@cs.uu.nl>
+ */
+module regexp-match
+
+imports regexp iregexp
+imports tuple conditional iteration io
+
+strategies
+
+  regexp-match-all(s) =
+      regexp-match(s) => (<id>, [])
+
+  regexp-match(s) = 
+    rec x(
+      regexp-match(x, s)
+    )
+
+  /**
+   * This implementation is _very_ adhoc and shouldn't be considerd to be very serious.
+   * Yet it does the job in an amazing way.
+   */
+
+  /**
+   * @type RegExp(a) * List(a) -> RegExpInstance(a) * List(a)
+   */
+  regexp-match(rec, s) :
+    (Empty(), as) -> (IEmpty(), as)
+
+  regexp-match(rec, s) =
+    match-symbol(s) <+ match-empty-symbol(s)
+    // MUSTDO: use backtracking
+
+  match-symbol(s) :
+    (Sym(p), [a | as]) -> (ISym(ip), as)
+      where <s> (p, a) => ip
+
+  match-empty-symbol(s) :
+    (Sym(p), as) -> (ISym(ip), as)
+      where <s> p => ip
+
+  regexp-match(rec, s) =
+      ?(Opt(r), as)
+    ; (   <rec> (r, as); (!IOpt(Some(<id>)), id)
+       <+ !(IOpt(None()), as))
+
+  regexp-match(rec, s) =
+      ?(Choice(r1, r2), as)
+    ; ( <rec> (r1, as) +> <rec> (r2, as))
+  // MUSTDO: use backtracking
+
+  regexp-match(rec, s) :
+    (Star(r), as) -> (IStar(<reverse> final-irs), final-left)
+      where <repeat(
+              !(<rec> (r, <Snd>), <Fst>)
+            ; \ ((ir, left), irs) -> ([ir | irs], left) \
+            )> ([], as) => (final-irs, final-left)
+
+  regexp-match(rec, s) :
+    (Plus(r), as) -> (IPlus(irs), left)
+      where <rec> (Star(r), as) => (IStar(irs), left)
+          ; not(!irs => [])
+
+/**
+ * Match sequences
+ */
+rules
+
+  regexp-match(rec, s) :
+    (Seq(r1, r2), as) -> (ISeq(ir1, ir2), left)
+      where <rec> (r1, as) => (ir1, bs)
+          ; <rec> (r2, bs) => (ir2, left)
+
+//  regexp-match(rec, s) :
+//    (seq(rs@[_, _ | _]), as) -> <rec> (r, as)
+//      where <foldr1(\ (r1, r2) -> seq(r1, r2) \)> rs => r
+
+//  regexp-match(rec, s) :
+//    (seq([r]), as) -> <rec> (r, as)
+
+//  regexp-match(rec, s) :
+//    (seq([]), as) -> (iempty(), as)
+
+
+//  regexp-match(rec, s) :
+//    (group(rs), as) -> (igroup([i]), as1)
+//      where <rec> (seq(rs), as) => (i, as1)
+

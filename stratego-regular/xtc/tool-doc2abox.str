@@ -1,0 +1,138 @@
+module tool-doc2abox
+imports tool-doc Box options string
+
+strategies
+
+  main-tool-doc2abox =
+    io-wrap(docsections-to-box)
+
+strategies
+
+  docsections-to-box :
+    docsections -> box |[ V vs=1 [ ~*bs  ] ]|
+      where <map(try-docsection-to-box)> docsections => bs
+
+  try-docsection-to-box =
+    docsection-to-box <+ debug(!"Not a docsection: "); fail
+
+  docsection-to-box :
+    HSection(s, sections) -> box |[ V is=3 vs=0 [~lit:s V vs=1 [~*bs]] ]|
+      where <map(try-docsection-to-box)> sections => bs
+
+  docsection-to-box :
+    Paragraph(s) -> box |[ HV hs=1 vs=0 [ ~*tokens ] ]|
+      where < <string-tokenize> ([' ', '\n', '\r', '\t'], <id>)
+            ; map( !box |[ ~lit:<id> ]| )
+            > s => tokens
+
+  docsection-to-box :
+    Line(s) -> box |[ ~lit:s ]|
+
+  docsection-to-box :
+    ItemList(sections) -> box |[ V vs=0 [ ~*bs ] ]|
+      where <map(
+               try-docsection-to-box
+             ; !box |[ H hs=1 ["*" ~<id> ] ]|
+             )> sections => bs
+
+  docsection-to-box :
+    DefList(defs) -> box |[ A (l hs=2,l hs=0) [ ~*bs ] ]|
+      where <map(def-to-row)> defs => bs
+
+  def-to-row :
+    Def(k, v) -> box |[ R [ ~lit:k ~b ] ]|
+      where <try-docsection-to-box> v => b
+
+/*
+  help-string-to-box:
+    HelpString(flags, description) -> box |[ R [ H hs=1 [~*bs] ~descr] ]|
+      where <is-list> flags
+          ; < map( !box |[ ~lit:<id> ]| )
+            ; <separate-by> (box |[ "|" ]|, <id>)
+            > flags => bs
+          ; <paragraph-to-box> description => descr
+*/
+
+/*
+strategies
+
+  paragraph-to-box:
+
+strategies // for a description
+
+  docsection-to-box :
+    Usage(string) -> 
+
+  docsection-to-box:
+    Summary(string) -> 
+      where <paragraph-to-box> string => b
+
+  docsection-to-box:
+    Description(ps) -> box |[ V is=3 vs=0 ["Description:" V vs=1 [ ~*bs ]] ]|
+      where <map(paragraph-to-box)> ps => bs
+
+strategies // for option usage
+
+  docsection-to-box:
+    OptionUsage() -> box |[ V is=3 vs=0 ["Options:" A (l hs=2,l hs=0) [ ~*bs ]] ]|
+      where < table-get
+            ; reverse
+            ; map(ensure-help-string)
+            ; filter(help-string-to-box)
+            > ("usage-table", "usage") => bs
+
+
+  help-string-to-box :
+    HelpString(flag, description) -> box |[ R [ H hs=1 [~lit:flag] ~descr ] ]|
+      where <is-string> flag
+          ; <paragraph-to-box> description => descr
+
+  help-string-to-box:
+    HelpString(flags, description) -> box |[ R [ H hs=1 [~*bs] ~descr] ]|
+      where <is-list> flags
+          ; < map( !box |[ ~lit:<id> ]| )
+            ; <separate-by> (box |[ "|" ]|, <id>)
+            > flags => bs
+          ; <paragraph-to-box> description => descr
+
+strategies // for configurations
+
+  docsection-to-box :
+    Config(items) -> box |[ V is=3 vs=0 ["Configuration:" A (l hs=1,l hs=1, l hs=0) [ ~*bs ]] ]|
+      where <filter(config-item-to-box)> items => bs
+
+  config-item-to-box :
+    ConfigItem(key, val) -> box |[ R [ ~lit:key ":" ~lit:val ] ]|
+
+strategies 
+  
+  docsection-to-box :
+    ReportBugs(MailTo(s)) -> <concat-strings; paragraph-to-box> ["Please report bugs to ", s]
+
+  docsection-to-box :
+    License(ps) -> box |[ V is=3 vs=0 ["License:" V vs=1 [ ~*bs ]] ]|
+      where <map(paragraph-to-box)> ps => bs
+
+  docsection-to-box :
+    a@Author(name, mail) -> box |[ V is=3 vs=0 ["Author:" V vs=0 [ ~b ]] ]|
+      where <author-to-box> a => b
+
+  docsection-to-box :
+    Authors(authors) -> box |[ V is=3 vs=0 ["Authors:" V vs=0 [ ~*bs ]] ]|
+      where <map(author-to-box)> authors => bs
+
+  author-to-box :
+    Author(name, mail) -> box |[ H hs=1 ["*" ~lit:name H hs=0 ["<" ~lit:mail ">"]] ]|
+
+  docsection-to-box :
+    WebHome(s) ->  box |[ V is=3 vs=0 ["Website:" ~lit:s ] ]|
+
+  docsection-to-box :
+    Program(name, package, version) ->
+      box |[ V is=3 vs=0 [~lit:name
+        V vs=0 [
+          H hs=1 ["Package:" ~lit:package]
+          H hs=1 ["Version:" ~lit:version]
+        ]
+      ] ]|
+*/

@@ -1,0 +1,27 @@
+module xtc-debug
+imports xtc-lib
+
+strategies
+  
+  xtc-debug-text =
+    xtc-debug-text(?FILE(<id>))
+
+  xtc-debug-text(s) =
+      where(s     ; <align-center> ('-', <quote(!' ')>, 80); debug)
+    ; where(FILE(read-text-file; debug))
+    ; where(!"end"; <align-center> ('-', <quote(!' ')>, 80); debug)
+
+  xtc-debug =
+    xtc-debug(?FILE(<id>))
+
+  xtc-debug(s) =
+      where(
+        xtc-transform(!"pp-aterm")
+      ; xtc-debug-text(s)
+      )
+
+  read-text-file =
+    ?file
+    ; <fopen> (file,"r") => stream
+    ; read-text-from-stream
+    ; where(<fclose> stream)

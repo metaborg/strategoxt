@@ -1,0 +1,103 @@
+/**
+ * @author  Martin Bravenboer <martin@cs.uu.nl>
+ */
+module regular-options
+imports options logging
+
+/**
+ * rhg-nf options
+ */
+strategies
+
+  rhg-nf-option(|descr) =
+    ArgOption("--rhg-nf"
+    , where(<set-config> ("--rhg-nf", <id>))
+    , <conc-strings> ("--rhg-nf file    ", descr)
+    )
+
+  /**
+   * Returns the specified rhg-nf or terminates execution if there was not rhg specified.
+   *
+   * @type  _ -> RHG
+   */
+  read-rhg-nf-config =
+      (<get-config> "--rhg-nf" <+ fatal-err(|"no rhg specified. Use --rhg-nf to specify an rhg."))
+    ; ReadFromFile
+    <+ fatal-err(|<conc-strings> ("cannot read rhg-nf from specified file: ", <id>))
+
+  /**
+   * Returns the specified rhg-nf. Fails if there was not rhg specified.
+   *
+   * @type  _ -> FILE
+   */
+  get-rhg-nf-config =
+    <get-config> "--rhg-nf"; !FILE(<id>)
+
+/**
+ * rtg-nf options
+ */
+strategies
+
+  rtg-nf-option(|descr) =
+    ArgOption("--rtg-nf"
+    , where(<set-config> ("--rtg-nf", <id>))
+    , <conc-strings> ("--rtg-nf file    ", descr)
+    )
+
+  /**
+   * Returns the specified rhg-nf or terminates execution if there was not rhg specified.
+   *
+   * @type  _ -> RHG
+   */
+  read-rtg-nf-config =
+      (<get-config> "--rtg-nf" <+ fatal-err(|"no rtg specified. Use --rtg-nf to specify an rtg."))
+    ; ReadFromFile
+    <+ fatal-err(|<conc-strings> ("cannot read rtg-nf from specified file: ", <id>))
+
+  /**
+   * Returns the specified rtg-nf. Fails if there was not rhg specified.
+   *
+   * @type  _ -> FILE
+   */
+  get-rtg-nf-config =
+    <get-config> "--rtg-nf"; !FILE(<id>)
+
+strategies
+
+  rhg-option(|descr) =
+    ArgOption("--rhg"
+    , where(<set-config> ("--rhg", <id>))
+    , <conc-strings> ("--rhg file    ", descr)
+    )
+
+  /**
+   * Returns the specified rhg. Fails if there was not rhg specified.
+   *
+   * @type  _ -> FILE
+   */
+  get-rhg-config =
+    <get-config> "--rhg"; !FILE(<id>)
+
+strategies
+
+  rtg-option(|descr) =
+    ArgOption("--rtg"
+    , where(<set-config> ("--rtg", <id>))
+    , <conc-strings> ("--rtg file       ", descr)
+    )
+
+  /**
+   * Returns the specified rtg. Fails if there was not rtg specified.
+   *
+   * @type  _ -> FILE
+   */
+  get-rtg-config =
+    <get-config> "--rtg"; !FILE(<id>)
+
+
+/**
+ * Workaround for tools that don't import xtc.
+ */
+signature
+  constructors
+    FILE : String -> FILE

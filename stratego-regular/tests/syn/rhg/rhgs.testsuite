@@ -1,0 +1,26 @@
+testsuite Regular Hedge Grammars
+topsort RHG
+
+test Simple expressions
+  file rhgs/Exp.rhg succeeds
+
+test Simple expressions in choice syntax (1)
+  file rhgs/Exp-2.rhg succeeds
+
+test Simple expressions in choice syntax (2)
+  file rhgs/Exp-4.rhg succeeds
+
+test Empty production rule
+  file rhgs/Exp-3.rhg fails
+
+test Non-terminal reference
+  file rhgs/Exp-5.rhg succeeds
+
+test Labelled content model
+  file rhgs/Exp-6.rhg succeeds
+
+test Optional labelled content model
+  file rhgs/Exp-7.rhg succeeds
+
+test Optional and required labelled content model
+  file rhgs/Exp-8.rhg succeeds

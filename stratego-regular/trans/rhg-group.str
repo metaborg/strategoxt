@@ -1,0 +1,14 @@
+/**
+ * Groups all productions by non-terminal. There will only
+ * be one prodrule for every non-terminal after applying 
+ * rhg-group.
+ *
+ * @author Martin Bravenboer
+ */
+module rhg-group
+imports options rhg-util
+
+strategies
+
+  main-rhg-group =
+    io-wrap(group-productions)

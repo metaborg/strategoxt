@@ -1,0 +1,18 @@
+/**
+ * Rewrites RTG-NF to Typematching strategies
+ *
+ * @author  Martin Bravenboer <martin@cs.uu.nl>
+ */
+module rtg2typematch
+imports xtc-lib regular-xtc-tools module-option
+
+strategies
+  
+  main-rtg2typematch =
+    xtc-io-wrap(module-option,
+      xtc-core-rtg2typematch(|<guess-module-name>)
+    ; xtc-pp-abstract-stratego
+    )
+
+
+    

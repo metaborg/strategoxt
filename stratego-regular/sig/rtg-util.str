@@ -1,0 +1,90 @@
+module rtg-util
+imports irtg rtg option list rhg-util
+
+strategies
+
+  /**
+   * Returns the right hand sides of productions of the specified non terminal.
+   *
+   * @type RTG -> List(ProdRuleRHS)
+   */
+  productions-of(|nt : NonTerm) =
+    ?RTG(_, ProdRules(<id>))
+    ; filter(?ProdRule(nt, <id>))
+    ; concat
+
+  /**
+   * @type RTG -> List(Nonterm)
+   */
+  start-nonterms =
+    ?RTG(Start(<id>), ProdRules(<id>))
+
+strategies
+
+  /**
+   * Rewrites an rtg to one rhs in a prodrule.
+   *
+   * @type RTG -> RTG 
+   */
+  ungroup-productions =
+    RTG(id, ProdRules(ungroup-productions))
+
+  /**
+   * Rewrites an list of prodrules to one rhs in a prodrule.
+   *
+   * @type List(ProdRule) -> List(ProdRule)
+   */
+  ungroup-productions =
+      map(\ ProdRule(nt, rhss) -> <map(!ProdRule(nt, [<id>]))> rhss \)
+    ; concat
+
+strategies
+
+  /**
+   * @type  RTG -> RTG
+   */
+  group-productions =
+    RTG(id, ProdRules(rtg-group-by-nonterm))
+
+  /**
+   * @type  List(ProdRule) -> List(ProdRule)
+   */
+  rtg-group-by-nonterm =
+    group-by(
+      \ ProdRule(nt, _) -> nt \ // key producer
+    , \ ProdRule(_, rhss) -> rhss \ // reducer to vales
+    , \ (nt, rhsss) -> ProdRule(nt, <concat> rhsss) \ // builder
+    )
+
+strategies
+
+  all-irtg(s) =
+      Annotated(s, map(s))
+    + Anno(s, s)
+    + Prod(s, s)
+    + Conc(s, s)
+    + Appl(s, map(s))
+    + List(map(s))
+    + Tuple(map(s))
+    + Opt(Some(s))
+    + Opt(None())
+    + String(id)
+    + Int(id)
+    + Nonterm(id)
+    + Term(id)
+
+  all-irtg-tree(s) =
+      Annotated(s, map(s))
+    + Appl(id, map(s))
+    + Conc(s, s)
+    + Prod(id, s)
+    + Anno(id, s)
+    + List(map(s))
+    + Tuple(map(s))
+    + Opt(Some(s))
+    + Opt(None())
+    + Int(id)
+    + String(id)
+
+  bottomup-irtg(s) =
+    rec x(all-irtg(x); s)

@@ -1,0 +1,10 @@
+module irhg
+imports rhg iregexp 
+signature
+  constructors
+    Appl     : NonTerm * Term * IRegExp(RegLangNode) * List(LabelledContent) -> RegLangNode
+
+    LContent : Id * IRegExp(RegLangNode) -> LabelledContent
+
+    String   : String -> RegLangNode
+    Int      : Int    -> RegLangNode

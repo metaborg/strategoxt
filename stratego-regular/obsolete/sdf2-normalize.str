@@ -1,0 +1,20 @@
+/**
+ * Source to source normalization of a SDF definition.
+ * See core-sdf-normalize on information of the implemented
+ * normalizations.
+ *
+ * @author  Martin Bravenboer <martin@cs.uu.nl>
+ */
+module sdf2-normalize
+imports xtc-lib sdf-options sdf-xtc-tools verbose
+
+strategies
+
+  main-sdf2-normalize =
+    xtc-io-wrap(sdf-main-module-option,
+      xtc-parse-sdf2-definition
+    ; xtc-transform(!"sdf-desugar", pass-verbose)
+    ; xtc-transform(!"core-sdf-normalize", <concat> [<pass-keep> (), <pass-verbose> (), <pass-sdf-main-module> ()])
+    ; xtc-transform(!"sdf-ensugar", pass-verbose)
+    ; xtc-pp-sdf2
+    )

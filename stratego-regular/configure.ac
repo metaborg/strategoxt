@@ -1,0 +1,48 @@
+AC_PREREQ(2.57)
+AC_INIT([stratego-regular],[0.3.0pre],[stratego-bugs@cs.uu.nl])
+AM_INIT_AUTOMAKE([1.7.2 -Wall -Wno-portability])
+
+test "x$prefix" = xNONE && prefix=$ac_default_prefix
+
+USE_XT_PACKAGES
+XT_TERM_DEFINE
+
+DETECT_SVN_REVISION
+
+AC_PROG_CC
+AC_PROG_INSTALL
+
+AC_CONFIG_FILES([
+  Makefile
+  stratego-regular.spec
+
+  syn/Makefile
+  sig/Makefile
+  pp/Makefile
+
+  lib/Makefile
+
+  trans/Makefile
+  trans/implode/Makefile
+  trans/asfix/Makefile
+  trans/sig/Makefile
+  trans/sdf2rtg/Makefile
+  trans/interpret/Makefile
+
+  xtc/Makefile
+
+  tests/Makefile
+
+  tests/syn/Makefile
+  tests/syn/rtg/Makefile
+  tests/syn/rtg/rtgs/Makefile
+  tests/syn/rhg/Makefile
+  tests/syn/rhg/rhgs/Makefile
+
+  tests/match/Makefile
+  tests/sdf2rtg/Makefile
+  tests/sig2rtg/Makefile
+  tests/asfix2irtg/Makefile
+  tests/format-check/Makefile
+])
+AC_OUTPUT

@@ -1,0 +1,5 @@
+regular hedge grammar
+  start Foo
+  productions
+    Var -> Var (<int>)
+    Exp -> Int (Bla)

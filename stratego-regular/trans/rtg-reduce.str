@@ -1,0 +1,77 @@
+/**
+ * Removes non-terminals that are not productive or reachable.
+ *
+ * @see     TATA section 2.1.1
+ * @author  Martin Bravenboer <martin@cs.uu.nl>
+ */
+module rtg-reduce
+imports options collect list rtg rtg-util rhg-reduce logging
+
+strategies
+
+  main-rtg-reduce =
+    io-wrap(rtg-reduce)
+
+  /**
+   * @type RTG -> RTG
+   */
+  rtg-reduce =
+      log(|Debug(), "Ungroup productions")
+    ; ungroup-productions
+
+    ; log(|Debug(), "Determine productive non terminals")
+    ; where(productive-nonterms => productive)
+
+    ; log(|Debug(), "Removing not productive non terminals")
+    ; RTG(
+        Start(filter(where(<elem> (<id>, productive))))
+      , ProdRules(filter(all-nonterms-in(|productive)))
+      )
+
+    ; log(|Debug(), "Determine reachable non terminals")
+    ; where(reachable-nonterms  => reachable)
+
+    ; log(|Debug(), "Removing not reachable non terminals")
+    ; RTG(id, ProdRules(filter(all-nonterms-in(|reachable))))
+
+    ; rtg-check-result
+
+  /**
+   * Exits when the result doesn't contain any productions or start symbols.
+   *
+   * @type RTG -> RTG
+   */
+  rtg-check-result =
+      try(
+        ?RTG(Start([]), ProdRules(_))
+      ; fatal-err(|"No productive start symbols left in rtg")
+      )
+    ; try(
+        ?RTG(Start(_), ProdRules([]))
+      ; fatal-err(|"No productions left in rtg")
+     )
+
+/**
+ * Reachable
+ */
+strategies
+
+  /**
+   * Returns the set of reachable non terminals in the rhg.
+   *
+   * @type RTG -> Set(NonTerm)
+   */
+  reachable-nonterms =
+    ?RTG(Start(starts), ProdRules(prods))
+    ; let
+          reach-0 = !starts // TODO: collect non terminals in Start regexp
+
+          reach-n = {reach: ?reach;
+              <unions> [reach | <filter(\
+                  ProdRule(nt, rhs*) -> <collect-nonterms> rhs*
+                    where <elem> (nt, reach)
+                \)> prods]
+            }
+
+       in reach-0; set-inc-repeat(reach-n)
+      end

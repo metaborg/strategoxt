@@ -1,0 +1,105 @@
+module sdf-util
+imports sdf-traversal
+
+strategies
+
+  /**
+   * Rewrites a tree of grammars to a list of grammars.
+   *
+   * The list just contains the leaves of the original tree,
+   * but not the empty-grammars. 
+   *
+   * @type  Grammar -> List(Grammar)
+   */
+  grammar-tree-to-list =
+    bottomup-Grammar(
+       \ G |[ (/)   ]| -> [] \
+    <+ \ G |[ G1 G2 ]| -> <conc> (G1, G2) \
+    <+ \ G |[ G     ]| -> [ G ] where <ensure-grammar-leaf> G \
+    <+ log(|Error(), "Grammar failed", <id>); fail
+    )
+
+/**
+ * @type  List(Grammar) -> Grammar
+ */
+strategies
+
+  grammar-list-to-tree =
+    foldr1(
+    \ (G1, G2) -> |[ G1 G2 ]| 
+      where <ensure-grammar> G1
+          ; <ensure-grammar> G2 \
+    )
+
+  grammar-list-to-tree : [] -> empty-grammar()
+  grammar-list-to-tree : [g] -> g
+    where <ensure-grammar> g
+
+strategies
+
+  /**
+   * If the current term is not a grammar terminates using fatal-err.
+   */
+  ensure-grammar =
+    is-grammar <+ fatal-err(|"Not a grammar")
+
+  ensure-grammar-leaf =
+    is-grammar-leaf <+ fatal-err(|"Not a grammar leaf")
+
+  is-grammar = is-grammar-leaf
+  is-grammar = ?G |[ G1 G2 ]|
+
+  /**
+   * If the current term is not a grammar terminates using fatal-err.
+   */
+  ensure-grammar-leaf =
+    is-grammar-leaf <+ fatal-err(|"Not a grammar leaf")
+
+  is-grammar-leaf = ?G |[ imports i* ]|
+  is-grammar-leaf = ?G |[ sorts A*   ]|
+  is-grammar-leaf = ?G |[ (/) ]|
+  is-grammar-leaf = ?G |[ aliases al* ]|
+
+  is-grammar-leaf = ?G |[ syntax p*  ]|
+  is-grammar-leaf = ?G |[ context-free syntax p*  ]|
+  is-grammar-leaf = ?G |[ lexical syntax p*  ]|
+
+  is-grammar-leaf = ?G |[ priorities pr* ]|
+  is-grammar-leaf = ?G |[ context-free priorities pr* ]|
+
+  is-grammar-leaf = ?G |[ restrictions restr* ]|
+  is-grammar-leaf = ?G |[ context-free restrictions restr* ]|
+  is-grammar-leaf = ?G |[ lexical restrictions restr* ]|
+
+strategies
+
+  /**
+   * Succeeds if two productions are similar.
+   * Only their attributes are allowed to be different.
+   *
+   * @type  Production * Production -> fail?
+   * @spec  7.2.3 - 12 and 13
+   */
+  prod-similar =
+    ?( |[ A* -> A $1 ]|, |[ A* -> A $2 ]| )
+
+  /**
+   * Join two Attributes declaration into one.
+   *
+   * @type  Attributes * Attributes -> Attributes
+   * @spec  7.3.2 - 6 ... 11
+   */
+  join-attributes :
+    ( |[ { attr1* } ]|, |[ { attr2* } ]| ) -> |[ { attr3* } ]|
+      where <union> (attr1*, attr2*) => attr3*
+
+strategies
+
+  /**
+   * Lookup the specified module in a definition.
+   *
+   * @type  Import * SDF -> Module
+   */
+  sdf-lookup-module :
+    ( i|[ Mid ]|, |[ definition m* ]| ) -> <fetch-elem({is*, s*: ?|[ module Mid is* s* ]|})> m*
+

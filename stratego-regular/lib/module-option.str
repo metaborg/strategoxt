@@ -1,0 +1,24 @@
+module module-option
+imports logging xtc-proc
+
+strategies
+
+  module-option =
+    ArgOption("--module"
+    , where(<set-config> ("--module", <id>))
+    , !"--module n       Generated module has name n"
+    )
+
+  get-module-name =
+    <get-config> "--module"
+    <+ log(|Critical, "No module name specified. Use the --module option to specify a module name. See also --help.")
+       ; <exit> -1
+
+  guess-module-name =
+    <get-config> "--module"
+    <+ <get-config; basename> "-o"
+    <+ ?FILE(<basename; <conc-strings> (<id>, "-typmatch")>)
+    <+ log(|Critical(), "No module name specified. Use the --module option to specify a module name. See also --help.")
+       ; <exit> -1
+
+    

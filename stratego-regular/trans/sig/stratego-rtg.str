@@ -1,0 +1,201 @@
+/**
+ * @author  Martin Bravenboer <martin@cs.uu.nl>
+ */
+module stratego-rtg
+
+/**
+ * Constructors and production rules
+ */
+strategies
+
+  /**
+   * Term application without arguments
+   */
+  empty-prodrule-to-constr :
+    ProdRule(nt, [Appl(term, [])]) -> Constr |[ x : srt ]|
+      where <nonterm-to-sort> nt => srt
+          ; <term-to-strid> term => x
+
+  empty-constr-to-prodrule :
+    Constr |[ x : srt ]| -> ProdRule(nt, [Appl(term, [])])
+      where <sort-to-nonterm> srt => nt
+          ; <strid-to-term> x => term
+
+  /**
+   * Term applications with arguments
+   */
+  not-empty-prodrule-to-constr :
+    ProdRule(nt, [Appl(term, trees)]) -> Constr |[ x : tp* -> srt ]|
+      where <nonterm-to-sort> nt => srt
+          ; <term-to-strid> term => x
+          ; <map(
+               try-tree2sort
+             ; \ srt -> Type |[ srt ]| \
+             )> trees => tp*
+
+  not-empty-constr-to-prodrule :
+    Constr |[ x : tp* -> srt ]| -> ProdRule(nt, [Appl(term, trees)])
+      where <sort-to-nonterm> srt => nt
+          ; <strid-to-term> x => term
+          ; <map(
+               \ Type |[ srt ]| -> srt \
+             ; try-sort2tree
+             )> tp* => trees
+
+  /**
+   * Injection
+   */
+  ref-prodrule-to-constr :
+    ProdRule(nt, [nt1]) -> Constr |[ : srt1 -> srt ]|
+      where <nonterm-to-sort> nt => srt
+          ; <try-tree2sort> nt1 => srt1
+
+  ref-constr-to-prodrule :
+    Constr |[ : srt1 -> srt ]| -> ProdRule(nt, [nt1])
+      where <sort-to-nonterm> srt => nt
+          ; <try-sort2tree> srt1 => nt1
+
+  ref-constr-to-prodrule :
+    Constr |[ : tp* -> srt ]| -> ProdRule(nt, [Tuple(trees)])
+      where <gt> (<length> tp*, 1)
+          ; <sort-to-nonterm> srt => nt
+          ; <map(
+               \ Type |[ srt ]| -> srt \
+             ; try-sort2tree
+             )> tp* => trees
+
+
+/**
+ * Identifiers
+ */
+strategies
+
+  term-to-strid :
+    Term(x) -> x
+
+  strid-to-term =
+    special-strid-to-term 
+    <+ \ x -> Term(x) \
+
+  /**
+   * Cons
+   */
+  term-to-strid :
+    ConsTerm() -> "Cons"
+
+  special-strid-to-term :
+    "Cons" -> ConsTerm()
+
+  /**
+   * Nil
+   */
+  term-to-strid :
+    NilTerm() -> "Nil"
+
+  special-strid-to-term :
+    "Nil" -> NilTerm()
+
+  /**
+   * Conc
+   */
+  term-to-strid :
+    ConcTerm() -> "Conc"
+
+  special-strid-to-term :
+    "Conc" -> ConcTerm()
+
+  /**
+   * Some
+   */
+  term-to-strid :
+    SomeTerm() -> "Some"
+
+  strid-to-term :
+    "Some" -> SomeTerm()
+
+  /**
+   * None
+   */
+  term-to-strid :
+    NoneTerm() -> "None"
+
+  strid-to-term :
+    "None" -> NoneTerm()
+
+
+/**
+ * Trees and terms
+ *
+ * @type  AnnoTreeFN -> Sort
+ */
+strategies
+
+  try-tree2sort =
+    tree2sort <+ 
+      log(|Error(), "Cannot rewrite tree to sort", <id>); fail
+    
+  tree2sort =
+    ?Ref(<nonterm-to-sort>)
+
+  tree2sort:
+    List(t) -> Sort |[ List(srtx) ]|
+      where <try-tree2sort> t => srtx
+
+  try-sort2tree =
+    sort2tree <+ 
+      log(|Error(), "Cannot rewrite sort to tree", <id>); fail
+
+  sort2tree =
+    !Ref(<sort-to-nonterm>)
+
+/**
+ * Sorts and Nonterms
+ */
+strategies
+
+  /**
+   * Int
+   */
+  nonterm-to-sort :
+    Int() -> Sort |[ Int ]|
+
+  special-sort-to-nonterm :
+    Sort |[ Int ]| -> Int()
+
+  /**
+   * String
+   */
+  nonterm-to-sort :
+    String() -> Sort |[ String ]|
+
+  special-sort-to-nonterm : 
+    Sort |[ String ]| -> String()
+
+  /**
+   * User-defined
+   */
+  nonterm-to-sort :
+    Nonterm(srtx) -> Sort |[ srtx ]|
+
+  sort-to-nonterm :
+    Sort |[ srtx ]| -> Nonterm(srtx)
+
+  sort-to-nonterm :
+    Sort |[ x() ]| -> Nonterm(x)
+
+strategies
+
+  /**
+   * @type  Specification -> List(Opdecl)
+   */
+  spec-to-constructors =
+      ?Specification(<id>) // List(Decl)
+    ; filter( ?Signature(<id>)) // List(List(SDecl))
+    ; concat                      // List(SDecl)
+    ; filter(?Constructors(<id>))  // List(List(OpDecl))
+    ; concat    
+
+strategies
+
+  err(s) = log(|Error(), <s> (), <id>)
+  dbg(s) = log(|Debug(), <s> (), <id>)

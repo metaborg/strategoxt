@@ -1,0 +1,18 @@
+module renaming-sdf-projection
+imports Sdf2
+
+strategies
+
+  /**
+   * @type  Symbol -> Symbol
+   */
+  lookup-symbol(|ros : List(Renaming)) :
+    A -> B
+      where <fetch(?ro |[ A => B ]|)> ros
+
+  /**
+   * @type Production -> Production
+   */
+  lookup-symbol(|ros : List(Renaming)) :
+    p1 -> p2
+      where <fetch(?ro |[ p1 => p2 ]|)> ros

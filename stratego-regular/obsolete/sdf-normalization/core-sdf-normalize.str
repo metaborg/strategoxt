@@ -1,0 +1,63 @@
+/**
+ * Normalizes a desugared SDF definition in abstract syntax.
+ *
+ * By specifying switches it can be controlled
+ * what kind of normalizations have to be performed.
+ *
+ * Normalizations implemented:
+ *
+ * Normalizations that should be implemented:
+ *   1) lexical syntax and context-free syntax sections (section 8.3.2 of [1])
+ *   2) renaming (9.1.3)
+ *   3) aliases (9.2.3)
+ *   4) regular expressions (8.2.2)
+ *   5) grammar normalization (7.3.3)
+ *      (operates on "syntax" sections)
+ *   6) literals productions (7.4.3)
+ *   7) sorts section ordering and merging (7.4.1)
+ *
+ * [1] Eelco Visser, Syntax Definition for Language Prototyping
+ *
+ * @author Martin Bravenboer <martin@cs.uu.nl>
+ */
+module core-sdf-normalize
+imports options list-sort list-misc sdf-options sdf2-normalization xtc-lib sdf-xtc-tools
+
+strategies
+
+  main-core-sdf-normalize =
+    io-wrap(sdf-main-module-option,
+      where(<get-sdf-main-module> () => Mid)
+    ; sdf-normalize(| i|[ Mid ]|)
+    )
+
+  sdf-keep-as(|ext) = 
+    if-keep3(
+      where(
+        <WriteToTextFile> (<new-outfile(|<conc-strings> (".as", ext)); ?file1>, <id>)
+      )
+    ; where(
+        xtc-temp-files(
+          write-to
+        ; xtc-transform(!"sdf-ensugar", pass-verbose)
+        ; xtc-pp-sdf2
+        ; copy-to(new-outfile(|<conc-strings> (".cs", ext)); ?file2)
+        )
+      )
+    ; log(|Info, <concat-strings> ["abstract syntax in ", file1, ", concrete syntax in ", file2])
+    )
+
+  new-outfile(|suffix) =
+    (<get-config; get-filename; basename> "-o" <+ !"sdf-normalize")
+    ; <conc-strings> (<id>, suffix)
+
+/*
+  all-normalizations =
+      if-verbose1(say(!"** INFO -- Normalizing lexical and context-free syntax"))
+    ; sdf-normalize-lex-cf
+    ; if-verbose1(say(!"** INFO -- Normalizing the order of sections"))
+    ; sdf-normalize-order-sections
+    ; if-verbose1( say(!"** INFO -- Normalizing the order of grammars"))
+    ; sdf-normalize-order-grammars
+    ; if-verbose1(say(!"** INFO -- Normalizing modules"))
+*/

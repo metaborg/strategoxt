@@ -1,0 +1,26 @@
+testsuite Regular Tree Grammars
+topsort RTG
+
+test Simple expressions
+  file rtgs/Exp.rtg succeeds
+
+test Simple expressions in choice syntax (1)
+  file rtgs/Exp-2.rtg succeeds
+
+test Simple expressions in choice syntax (2)
+  file rtgs/Exp-4.rtg succeeds
+
+test Empty production rule
+  file rtgs/Exp-3.rtg fails
+
+test Non-terminal reference
+  file rtgs/Exp-5.rtg succeeds
+
+test Labelled content model
+  file rtgs/Exp-6.rtg succeeds
+
+test Optional labelled content model
+  file rtgs/Exp-7.rtg succeeds
+
+test Optional and required labelled content model
+  file rtgs/Exp-8.rtg succeeds

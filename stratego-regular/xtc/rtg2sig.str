@@ -1,0 +1,16 @@
+/**
+ * Converts an RTG in concrete syntax to Stratego in concrete syntax.
+ *
+ * @author  Martin Bravenboer <martin@cs.uu.nl>
+ */
+module rtg2sig
+imports xtc-lib regular-xtc-tools stratego-xt-xtc-tools module-option
+
+strategies
+  
+  main-rtg2sig =
+    xtc-io-wrap(module-option,
+      xtc-rtg-front-end
+    ; xtc-core-rtg2sig(|<guess-module-name>)
+    ; xtc-pp-abstract-stratego
+    )

@@ -1,0 +1,27 @@
+/**
+ * Removes quotes and escapes in strings of quoted (non) terminals.
+ *
+ * @author Martin Bravenboer <martin@cs.uu.nl>
+ */
+module rhg-parsefix
+imports options list rhg
+
+strategies
+
+  main-rhg-parsefix =
+    io-wrap(tg-parsefix)
+
+  /**
+   * @type  RHG -> RHG
+   */
+  tg-parsefix =
+    topdown(try(ParseFix))
+
+  ParseFix :
+    Plain(s) -> s
+
+  ParseFix :
+    Quoted(parts) ->
+      < map(?Chars(<id>) + ?EscapeSeq(<<implode-string> [<id>]>))
+      ; concat-strings
+      > parts

@@ -1,0 +1,32 @@
+definition
+module Cycle
+  imports Expression Statement Layout
+
+module Expression
+  imports Identifier Statement
+  exports
+    sorts Exp
+
+    context-free syntax
+      Id  -> Exp {cons("Var")}
+      Stm -> Exp {cons("ExprStm")}
+
+module Statement
+  imports Expression
+  exports
+    sorts Stm
+    context-free syntax
+    Id ":=" Exp -> Stm {cons("Assign")}
+
+module Identifier
+  exports
+    lexical syntax
+      [a-zA-Z\_] [a-zA-Z0-9\_]* -> Id
+
+module Layout
+  exports
+    lexical syntax
+      [\ \t\n] -> LAYOUT
+
+    context-free restrictions
+      LAYOUT? -/- [\ \t\n]

@@ -1,0 +1,485 @@
+2004-04-21  Martin Bravenboer <martin@cs.uu.nl>
+
+	* trans/sig/core-sig-apply-param-sorts: a tool for removing
+	parameterized sorts from a Stratego specification. The tool
+	specializes all the constructors of a parameterized sort to the
+	actual parameters that are used for this sort.
+
+	* trans/sig/core-sig2rtg: resurrected on request of Niels. The
+	rules of rtg2sig and sig2rtg is now defined together in
+	stratego-rtg.str
+
+	* xtc/sig2rtg: resurrected. It now applies
+	core-sig-apply-param-sorts before passing the specification to
+	core-sig2rtg. sig2rtg now uses pack-stratego instead of strc
+	--ast.
+
+	* pp/rtg.pp: fix in the pretty-print of tuples.
+
+2004-03-24  Martin Bravenboer <martin@cs.uu.nl>
+	
+	* Solved bug in bracket ignore strategies
+
+	* Added simple cycle detection in sdf2rtg
+
+	* Ignore injections from syntax sort into context-free syntax
+	sort.
+
+2004-03-24  Martin Bravenboer <martin@cs.uu.nl>
+
+	* The List and Opt non-terminals are now history. Removed from
+	syntax, signatures and tools.
+	
+2004-03-24  Martin Bravenboer <martin@cs.uu.nl>
+
+	* The built-in opt and list non-terminals are no longer used. They
+	have been replaced by several built-in terminals: Cons, Conc, Nil,
+	Some, and None. RTGs generated from SDF definitions are now quite
+	ugly, but very precise. SDF2RTG now generates signatures that
+	specify that a list needs to have at least one element for
+	example. sdf2rtg from now uses the SDF normalizer of PGEN. This
+	means that it supports all the SDF stuff such as renamings,
+	aliases, and so on. I've test support for the more advanced SDF
+	features using the Stratego-Java syntax definition.
+
+2004-03-24  Martin Bravenboer <martin@cs.uu.nl>
+
+	* More fixes for accepting the output of the pgen sdf
+	normalizer.
+	
+2004-03-21  Martin Bravenboer <martin@cs.uu.nl>
+
+	* trans/interpret/*: implemented interpretation of an ATerm
+	against an RTG.
+
+	* xtc/format-check.str: format check an ATerm against an RTG. The
+	old wf-checker is no longer available.
+
+	* xtc/aterm2irtg.str: returns an IRTG given an RTG and an ATerm.
+	
+2004-03-20  Martin Bravenboer <martin@cs.uu.nl>
+
+	* Rewritten core-sdf-grammar2rtg.str to concrete syntax for
+	RTG. Very attractive. I should use concrete syntax for SDF there
+	as well.
+
+	* Added an embedding of RTG in Stratego.
+
+	* All languages (RTG, RHG and regexp) now use CamelCase constructors.
+	
+2004-03-20  Martin Bravenboer <martin@cs.uu.nl>
+
+	* Moving constructors names to CamelCase. IRTG is my first
+	victim. XmlTools is probably broken now.
+
+	* AsFix to IRTG: remove the application of the <START> injection.
+
+	* Setup of testsuite for AsFix to IRTG
+	
+2004-02-18  Martin Bravenboer <martin@cs.uu.nl>
+
+	* trans/sdf2rtg/core-sdf2rtg: added labelled literal as a symbol
+	that is to be ignored.
+
+	* trans/sig/core-rtg2sig: added error reporting for productions
+	that cannot be rewritten to a constructor.
+
+	* trans/sig/core-rtg2sig: added 'complex' injections. For example
+	List(Foo) -> Definition.
+
+	* trans/asfix/asfix2irtg: started implementation of AsFix2 and
+	AsFix2ME to irtg.
+
+2004-02-16  Martin Bravenboer <martin@cs.uu.nl>
+
+	* trans/sdf2rtg/*: rewritten to produce rtg.
+
+	* trans/sig/core-rtg2sig.str: rewritten to accept rtg.
+
+	* xtc/Makefile.regular: changed Makerules to process rtg instead
+	of rhg.
+	
+2004-02-16  Martin Bravenboer <martin@cs.uu.nl>
+
+	* trans/rtg-group.str: group rtg productions for the same
+	non-terminal.
+
+2004-02-16  Martin Bravenboer <martin@cs.uu.nl>
+
+	* trans/rtg-reduce.str: removes not productive and not reachable
+	non-terminals from an rtg.
+
+2004-02-04  Martin Bravenboer <martin@cs.uu.nl>
+
+	* xtc/auto-docbook.str: install docbook.m4 and Makefile.docbook
+
+	* xtc/auto-regular.str: install Makefile.regular
+
+2004-01-01  Martin Bravenboer <martin@cs.uu.nl>
+
+	* trans/irhg2irtg.str: some dirty hacks to force 'list' to be
+	recognized as constructor name.
+
+	RTG has a constructor called 'list' (I know this is stupid). This
+	used to work fine, but for some reason in Stratego/XT 0.9.4 this
+	constructor names leads to non-terminating programs when used as a
+	congruence. Probably something has changed in the way constructors
+	are detected, but I'm not sure about that.
+
+	Of course I must rename this constructor ASAP.
+
+2003-08-28  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+	* trans/rtg-reduce: optimized reachable-nonterms. Using transitive
+	closure for this is horrible. rtg of java caused segmentation
+	faults.
+
+2003-08-27  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+	* trans/sdf2rtg/core-sdf-grammar2rtg.str:
+
+    Applying sdf2rtg to the Java grammar of java-front showed 
+    some problems. Some of these have been fixed:
+
+    - reject productions should be ignored
+
+    - bracket productions are more flexible regarding
+      generating injection productions.
+
+    - empty productions with just a list of literals on the lhs
+
+    Some are however more problematic:
+
+    - injection of a 'not plain symbol' is not easily expressible
+      in rtg. For now this is just not allowed.
+
+      Example: {Expr ","}+ -> ForInit
+
+2003-08-25  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+  * lib/Makefile.am: install logging lib (used by xm-tools).
+
+  * sig/Makefile.am: install rtg-util lib (used by xm-tools).
+
+  * sig/regexp-match.str: rather ad-hoc (desugaring to seq/2) 
+    implementation of seq/1 and temp (incrrect) implementation 
+    of group/1.
+
+2003-08-24  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+  * trans/sig/core-rtg2sig.str: reimplemented rtg2sig
+    using normalized rtg and stratego sorts.
+
+2003-08-21  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+  * trans/sdf-normalization/*.str: implementation
+    of aliases and renaming strategies. sdf2rtg now
+    normalizes aliases before creating a signature.
+
+2003-08-21  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+  * trans/sdf-normalization/sdf2-normalization.str:
+    Fixing the order of applying normalizations to the
+    one specified in Eelco's thesis. Added --keep
+    functionality in ast and cs (comparible to strc)
+    for debugging.
+
+2003-08-20  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+  * lib/logging.str: I need my logging lib!
+
+  * trans/sdf-normalization/sdf2-normalization.str: now
+    I finally get the way sdf2 should be normalized according
+    to Eelco's thesis, I'm rewriting the existing 
+    normalization strategies to this style.
+
+2003-08-19  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+  * trans/sig/core-rtg2typematch.str: reimplemented the
+    generation of typematching strategies. This time
+    using rtg input of course ;) .
+
+  * xtc/rtg2typematch.str: xtc composition applying
+    core-rtg2typematch and pp-stratego --abstract.
+    sig2rtg | rtg2typematch replaces sig2typematch of 
+    stratego-tools.
+
+2003-08-19  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+  * trans/rtg-desugar.str: renamed to rtg-group. Now
+    there are separate rtg-reduce and rtg-normalize tools,
+    the meaning of 'desugar' is unclear. rtg-desugar (well,
+    rtg-group) just groups the productions of a non-terminal.
+    Maybe rtg-desugar should a composition of rtg-reduce,
+    rtg-normalize, and rtg-group.
+
+2003-08-18  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+  * trans/sig2rtg/core-sig2rtg.str: implemented
+    sig2rtg without using the sig2 tools of
+    stratego-tools.
+
+  * xtc/sig2rtg.str: rewritten xtc composition
+    to core-sig2rtg.
+
+  * xtc/regular-xtc-tools.str: xtc-str2astratego,
+    used strc --ast, not sc --ast.
+
+2003-08-18  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+  * trans/rtg-normalize.str: applies regexp-normalize.
+
+  * trans/wf-checker/wf-check.str: implemented supported
+    for normalized rtg.
+
+2003-08-18  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+  * syn/regexp.sdf, pp/regexp.pp: removed "," in seq.
+
+  * syn/regexp.sdf: renamed group constructor to
+    egroup (explicit group).
+
+  * syn/regexp.sdf: added internal group syntax.
+
+2003-08-16  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+  * docbook.m4: Autoconf and Automake support for docbook.
+
+  * Makefile.docbook: Make support for docbook
+
+  * doc/sdf2rtg.xml: refentry for sdf2rtg.
+
+2003-08-16  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+  * Renamed regtg to rtg.
+
+2003-08-15  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+  * syn/regexp.sdf: switched priorities of , and #.
+
+  * tests/wf/TupleStuff.rtg: using explicit grouping syntax.
+    Tests still fail because tools don't support grouping.
+
+2003-08-15  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+  * trans/rtg-reduce.str: reducing rtgs implemented.
+
+2003-08-15  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+  * trans/rtg-parsefix.str: typical quote and
+    escape realted 'desugarings' are now in rtg-parsefix.
+
+  * trans/rtg-reduce.str: working on tool for reducing rtgs
+
+  * tests/rtg-reduce-test.str: testing reducing strategies:
+    are non-terminals productive and reachable?
+
+2003-08-14  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+  * syn/regexp.sdf: introduced an explicit grouping (tuple)
+    operator: regexp # . Tools don't support this yet.
+
+  * pp/rtg-ppfix.str: preprocess AST before pretty printing.
+    Adds bracket constructors using the parenthesize module.
+
+  * xtc/regular-xtc-tools.str: apply rtg-ppfix.
+
+2003-08-14  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+  * pp/regtg.pp: string should be pretty printed as <string>.
+  * pp/regtg.pp: int should be pretty printed as <int>.
+
+  * pp/regtg.pp: print parentheses in regexp. todo: implement
+    a parenthesize strategy.
+
+  * trans/sdf2rtg/core-sdf-grammar2rtg.str: use sdf sorts to 
+    produce start symbols.
+
+  * trans/sdf2rtg/core-sdf-grammar2rtg.str: don't produce
+    sequences for iterations with separators that produce
+    the empty regexp.
+
+  * trans/sdf2rtg/core-sdf-grammar2rtg.str: some not vary
+    attractive fixes to remove empty regexps that are
+    considered to be 'relevant' later. This all has to do
+    with the decision to let seq regexps represent tuples
+    in certain locations. Maybe there should be a more explicit
+    tuple construct.
+
+2003-08-14  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+  * trans/sdf-normalization/*.str: shut up if verbosity is zero.
+
+  * trans/2rtg/Makefile.am: disabled all sig related tools for now.
+
+  * xtc/Makefile.am: disabled all sig related tools for now.
+
+  * trans/sdf2rtg/core-sdf-grammar2rtg.str: fixed empty sdf 
+    productions (like -> TypeAn {cons("NoTp")}).
+
+  * pp/regtg.pp: empty should be pretty printed as / .
+
+2003-08-13  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+  * trans/2rtg: artg2asig.str: disabled for now
+    because of problem with latest StrategoXT
+    sources.
+
+  * trans/sdf-normalization/asdf-normalize: renamed
+    to core-sdf-normalize.
+
+2003-07-18  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+  * xtc/rtg2sig.str: apply rtg-desugar after parsing
+
+2003-06-24  Martin Bravenboer <martin@mbravenboer.org>
+
+  * trans/rtg-desugar.str: unquote and unescape
+    quoted (non)terminals.
+
+  * syn/regtg.sdf: Added quoted terminals and
+    nonterminals (using square brackets).
+
+  * tests/syn/nonterms.testsuite: test syntax for quoted 
+    nonterminals.
+
+  * tests/syn/*.rtg: changed to new primitive syntax
+
+  * syn/regtg.sdf: changed the primitive nonterminals
+    String and Int to <string> and <int>. This syntax is
+    not a valid user defined nonterminal.
+
+2003-06-12  Martin Bravenboer <martin@mbravenboer.org>
+
+  * syn/regexp.sdf: The empty regular expression
+    is now / (was E).
+
+2003-06-12  Martin Bravenboer <martin@mbravenboer.org>
+
+  * syn/regexp.sdf: changed associativity of seq from
+    left to right.
+  
+  * tests/wf/wf-checker-test.str: started testing tuple
+    related stuff.
+
+2003-06-12  Martin Bravenboer <martin@mbravenboer.org>
+
+  * Implemented wf-checker: checks whether an ATerm
+    is an instance of a regular tree grammar.
+
+2003-06-09  Martin Bravenboer <martin@mbravenboer.org>
+
+  * trans/sdf-normalization/modular-sdf-normalization:
+    - normalize imports and include them as grammars
+      (first implementation)
+    - fixed bug in merge-grammars. Included better
+      error-reporting. No tolerant rewriting.
+
+2003-06-09  Martin Bravenboer <martin@mbravenboer.org>
+
+  * trans/sdf-normalization/modular-sdf-normalization:
+    - normalize import sections at start of module to
+      exports sections.
+
+2003-06-09  Martin Bravenboer <martin@mbravenboer.org>
+
+  * trans/sdf-normalization/asdf-normalize:
+    - now returns a grammar (first implementation)
+
+  * trans/sdf2rtg/asdf-grammar-to-artg:
+    - now wants a grammar, not a definition
+
+2003-06-09  Martin Bravenboer <martin@mbravenboer.org>
+
+  * trans/sdf-normalization:
+    - separate directory for sdf normalization
+    - split asdf-normalize module into several modules
+    - asdf-normalize should become some kind of driver
+
+2003-06-08  Martin Bravenboer <martin@mbravenboer.org>
+
+  * xtc/sdf2-normalize.str:
+    - pass verbose to tools
+    - command line --main argument: normalization needs
+      a main module.
+
+  * trans/sdf2rtg/asdf-normalize.str:
+    - command line --main argument: normalization needs
+      a main module.
+      
+2003-06-08  Martin Bravenboer <martin@mbravenboer.org>
+
+  * trans/sdf2rtg/asdf-to-artg.str:
+    - rewrite syntax sections, not context-free syntax
+    - rewrite injections
+    - ignore lexical and layout productions
+    - fail on productions and sections we cannot rewrite
+  * trans/sdf2rtg/asdf-normalize.str:
+    - produce layout productions with attributes
+  * pp/regtg.pp:
+    - pretty print injections (ref)
+  * xtc/sdf2rtg.str:
+    - pass verbose to tools
+    
+
+2003-05-27  Martin Bravenboer <martin@mbravenboer.org>
+
+  * trans/sdf2rtg/asdf-normalize.str:
+    - rewritten many SDF abstract syntax to concrete 
+      object syntax.
+    - renamed some strategies to make the connection
+      to definitions in Eelco's thesis clear. Some
+      of these strategies might become a sdf-lib in the
+      future?
+    - started implementation of ordering and merging of
+      grammars and sections.
+
+2003-05-26  Martin Bravenboer <martin@mbravenboer.org>
+
+  * Started using concrete syntax for SDF2 and rtg in
+    unit-testing sdf2rtg.
+
+  * Started implementation of SDF2 normalizations. This
+    is temporary tool in this package: when it has matured
+    it will move to sdf-tools. Normalization of lexical
+    and context free syntax sections is required for an
+    acceptable sdf2rtg.
+
+2003-04-17  Martin Bravenboer <martin@mbravenboer.org>
+
+  * sig/regexp-match.str: implemented regexp-match
+    for plus
+
+  * trans/implode/implode-irtg.str: implemented implosion
+    of iplus (to list) and iseq (to tuple)
+
+  * tests/match/char-match-test.str: added some more
+    interesting tests.
+
+2003-04-17  Martin Bravenboer <martin@mbravenboer.org>
+
+  * trans/implode.str: implemented implosion of
+    labellel content.
+
+  * sig/iregtg.str: added constructs for instances
+    of labelled content.
+
+2003-04-10  Martin Bravenboer <martin@mbravenboer.org>
+
+  * Added non-terminal references as right hand sides.
+    In rtg-desugar they will be replaced by the 
+    productions of the non-terminal. Cycles are not
+    allowed.
+
+  * Introduced rtg-desugar
+
+2003-04-09  Martin Bravenboer <martin@mbravenboer.org>
+
+  * Added choice syntax for multiple right hand sides
+    in a production. This is not sugar: more production
+    rules for the same non-terminal will be desugared to
+    one production rule with multiple rhss
+
+2003-04-07  Martin Bravenboer <martin@mbravenboer.org>
+
+  * Creation of package, sources taken from xml-tools

@@ -1,0 +1,320 @@
+/**
+ * Converts a normalized SDF grammar in abstract syntax to
+ * a regular hedge grammar in abstract syntax.
+ *
+ * The implementation is an improved version of sdf2sig,
+ * which was written by:
+ *    - Joost Visser (Joost.Visser@cwi.nl)
+ *    - Eelco Visser (visser@acm.org)
+ *
+ * @author  Martin Bravenboer <martin@cs.uu.nl>
+ */
+module core-sdf-grammar2rhg
+imports options rhg Sdf2 verbose logging
+
+strategies
+
+  main-core-sdf-grammar2rhg =
+    io-wrap(
+      maybe-grammar-id
+    ; grammar2rhg
+    ; rhg-normalize
+    )
+
+  /**
+   * If the grammar identifier is used, remove it
+   */
+  maybe-grammar-id =
+    try(?"\"sdf-2.1\""#([<id>]))
+
+strategies
+
+  /**
+   * @type  Grammar -> RHG
+   */
+  grammar2rhg =
+    where(
+      collect(?syntax(_))
+    ; map(grammar2prodrules <+ err(!"Rewriting syntax section failed"); fail)
+    ; concat => prods
+    )
+
+    ; collect(?Sorts(<id>))
+    ; concat
+    ; map(sort2nonterm)
+
+    ; !rhg-rhg(rhg-start(<id>), rhg-prodrules(prods))
+
+
+/**
+ * @type  Grammar -> List(ProdRule)
+ */
+strategies
+
+  grammar2prodrules :
+    syntax(prods) ->
+      < filter(not(ignore-prod))
+      ; map(prod2prodrule <+ err(!"Rewriting production failed"); fail)
+      > prods
+
+  grammar2prodrules =
+    ?context-free-syntax(_)
+    ; fatal-err(|"context-free syntax in input hasn't been normalized to syntax")
+
+  grammar2prodrules =
+    ?lexical-syntax(_)
+    ; fatal-err(|"lexical syntax in input hasn't been normalized to syntax")
+
+strategies
+
+  sort2nonterm :
+    sort(n) -> nonterm(n)
+
+strategies
+
+  /**
+   * Ignore layout productions.
+   *
+   * @type Production ->? _
+   */
+  ignore-prod =
+    ?prod(_, cf(layout()), _)
+
+  ignore-prod =
+    ?prod(_, cf(opt(layout())), _)
+
+  /**
+   * Ignore lexical productions.
+   */
+  ignore-prod =
+    ?prod(_, lex(_), _)
+
+  /**
+   * Ignore a reject production that injects A into A.
+   */
+  ignore-prod =
+    ?prod(_, _, attrs(attrs)); where(<contains-reject> attrs)
+
+  /**
+   * Ignore a bracket production that injects A into A.
+   */
+  ignore-prod =
+    ?prod(syms, cf(sort(s)), attrs(attrs))
+    ; where(
+        <contains-bracket> attrs
+      ; <not(get-cnstr-name)> attrs
+      ; <syms2regexp> syms => sym(nonterm(s))
+      )
+
+strategies
+
+  /**
+   * Rewrites a context-free production with a constructor.
+   *
+   * @type Production -> ProdRule
+   */
+  prod2prodrule :
+    p@prod(syms, cf(sort(s)), attrs(attrs))
+      ->
+    rhg-prodrule(nonterm(s), [rhg-rhs(term(cnstr), rhg-content(regexp), [])])
+      where ( <get-cnstr-name> attrs => cnstr
+            <+ log(|Error(), "No constructor name specified in production", p); fail)
+          ; <syms2regexp> syms => regexp
+
+  /**
+   * Rewrites a plain production with a constructor.
+   *
+   * @type Production -> ProdRule
+   */
+  prod2prodrule :
+    p@prod(syms, sort(s), attrs(attrs))
+      ->
+    rhg-prodrule(nonterm(s), [rhg-rhs(term(cnstr), rhg-content(regexp), [])])
+      where ( <get-cnstr-name> attrs => cnstr
+            <+ log(|Error(), "No constructor name specified in production", p); fail)
+          ; <syms2regexp> syms => regexp
+
+  /**
+   * Rewrites an context-free or lexical injection.
+   *
+   * The lhs must be a simple non-terminal reference.
+   */
+  prod2prodrule :
+    prod([inj], cf(sort(s)), attrs(attrs)) -> rhg-prodrule(nonterm(s), [rhg-ref(nt)])
+      where not(<get-cnstr-name> attrs)
+          ; <sym2regexp> inj => sym(nt)
+
+  /**
+   * Rewrites an injection into a plain symbol.
+   *
+   * The lhs must be a simple non-terminal reference.
+   */
+  prod2prodrule :
+    prod([inj], sort(s), attrs(attrs)) -> rhg-prodrule(nonterm(s), [rhg-ref(nt)])
+      where not(<get-cnstr-name> attrs)
+          ; <sym2regexp> inj => sym(nt)
+
+  /**
+   * Rewrite a bracket production which is not a 'real' injection.
+   */
+  prod2prodrule :
+    prod(syms, cf(sort(s)), attrs(attrs)) -> rhg-prodrule(nonterm(s), [rhg-ref(nt)])
+      where <contains-bracket> attrs
+          ; <not(get-cnstr-name)> attrs
+          ; <syms2regexp> syms => sym(nt)
+
+strategies
+
+  /**
+   * @type List(Symbol) -> RegExp(NonTerm)
+   */
+  syms2regexp :
+    [ sym ] -> <sym2regexp> sym
+
+  syms2regexp :
+    syms ->  <regexps2regexp> regexps
+      where <gt> (<length> syms, 1)
+          ; <map(sym2regexp); filter(not(is-empty))> syms => regexps
+
+  syms2regexp :
+    [] -> empty()
+
+  regexps2regexp =
+        \ [] -> empty() \
+    <+ ?[<id>]
+    <+ foldr1(!seq(<Fst>, <Snd>))
+
+  is-empty = empty()
+  is-empty = opt(empty())
+
+/**
+ * @todo  Remove empty, separate traversal
+ * @type  Symbol -> RegExp(NonTerm)
+ */  
+strategies
+
+  sym2regexp : sort(str)     -> sym(nonterm(str))
+  sym2regexp : cf(sym)       -> <sym2regexp> sym
+  sym2regexp : lex(sym)      -> sym(string())
+
+  sym2regexp : char-class(_) -> sym(string())
+  sym2regexp : lit(_)        -> empty()
+  sym2regexp : layout()      -> empty()
+
+  sym2regexp : label(_,sym)  -> <sym2regexp> sym
+
+  sym2regexp : opt(sym)       -> opt(<sym2regexp> sym)
+
+  sym2regexp : iter(sym)      -> plus(<sym2regexp> sym)
+  sym2regexp : iter-star(sym) -> star(<sym2regexp> sym)
+  sym2regexp : iter-n(sym,_)  -> plus(<sym2regexp> sym)
+
+  sym2regexp : seq(sym, syms) -> seq(<sym2regexp> sym, <syms2regexp> syms)
+
+  /**
+   * @todo one empty -> no seq
+   */
+  sym2regexp =
+    empty-sep2regexp <+ real-sep2regexp
+
+  /**
+   * @todo  handling of complex separators is incorrect.
+   */
+  real-sep2regexp : iter-sep(sym, sep)      -> plus(seq(<sym2regexp> sym, <sym2regexp> sep))
+  real-sep2regexp : iter-star-sep(sym, sep) -> star(seq(<sym2regexp> sym, <sym2regexp> sep))
+  real-sep2regexp : iter-sep-n(sym, sep,_)  -> plus(seq(<sym2regexp> sym, <sym2regexp> sep))
+
+  empty-sep2regexp : iter-sep(sym, sep)      -> plus(<sym2regexp> sym)  where <sym2regexp> sep => empty()
+  empty-sep2regexp : iter-star-sep(sym, sep) -> star(<sym2regexp> sym)  where <sym2regexp> sep => empty()
+  empty-sep2regexp : iter-sep-n(sym, sep,_)  -> plus(<sym2regexp> sym)  where <sym2regexp> sep => empty()
+
+
+
+/*
+prod([
+  cf(
+    opt(
+      seq(
+        lit("(")
+      , [ iter-sep(sort("Policy"), lit(","))
+        ,lit(")") 
+        ]
+      )
+    )
+  )
+     ],
+  cf(sort("PolicyTags")),attrs([cons("PolicyTags")]))
+*/
+
+  /**
+   * @todo one empty -> opt
+   */
+  sym2regexp : alt(s1,s2) -> choice(<sym2regexp> s1, <sym2regexp> s2)
+
+
+  /* @todo  optional list?
+  Sym2Term : 
+    Op("Option",[Op("List",[sym])])	-> Op("List",[sym])
+  */
+
+/*
+
+  Sym2Term : bracket-symbol(sym)	-> sym
+
+  Sym2Term : seq(sym,syms)		-> Var("EmptySeq")
+    where <filter(not(?dummy()))> [sym | syms] => []
+  Sym2Term : seq(sym,syms)		-> sym'
+    where <filter(not(?dummy()))> [sym | syms] => [sym']
+  Sym2Term : seq(sym,syms)		-> Tuple(symsyms)
+    where <filter(not(?dummy()))> [sym | syms] => symsyms
+
+  Sym2Term : pair(dummy(),s2)		-> s2
+  Sym2Term : pair(s1,dummy())		-> s1
+  Sym2Term : pair(s1,s2)		-> Op("Prod",[s1,s2])
+*/
+
+strategies
+
+  /**
+   * @type  List(Attribute) -> String
+   */
+  get-cnstr-name =
+    fetch(?cons(cnstr)); !cnstr
+
+  /**
+   * @type  List(Attribute) ->? _
+   */
+  contains-bracket =
+    one(?bracket())
+
+  /**
+   * @type  List(Attribute) ->? _
+   */
+  contains-reject =
+    one(?reject())
+
+strategies
+
+  err(s) = debug(<concat-strings> ["** ERROR -- ", <s> (), ": "])
+  dbg(s) = debug(<concat-strings> ["** DEBUG -- ", <s> (), ": "])
+
+
+strategies 
+
+  /**
+   * removing the 'empty' regexps.
+   *
+   * @todo  improve
+   */
+  rhg-normalize =
+    innermost(
+        ?seq(empty(), <id>)
+      // + ?seq(<id>, empty()) // todo: this is a problen ....
+      + \ opt( empty()) -> empty() \
+      + \ star(empty()) -> empty() \
+      + \ plus(empty()) -> empty() \
+    )
+
+  rhg-normalize-prodrule =
+    rhg-normalize
+

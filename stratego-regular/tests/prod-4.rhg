@@ -1,0 +1,6 @@
+regular hedge grammar
+  start Var Exp
+  productions
+    Var -> Var   (<string>)
+    Exp -> Int   (<int>)
+    Exp -> Bla   (Bla)

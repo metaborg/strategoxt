@@ -1,0 +1,36 @@
+module sdf2rtg-test
+imports sunit xtc-lib xtc-debug
+
+strategies 
+
+  main-sdf2rtg-test = 
+    xtc-temp-files(
+      test-suite(!"sdf to rtg",
+        full-applications
+//      ; productions
+      )
+    )
+
+  full-applications =
+      apply-and-check(!"Exp1.def", xtc-transform(!"sdf2rtg", !["--main", "Expression"]), !FILE("Exp1.def"), xtc-debug-text)
+    ; apply-and-check(!"Exp2.def", xtc-transform(!"sdf2rtg", !["--main", "Expression"]), !FILE("Exp1.def"), xtc-debug-text)
+    ; apply-and-check(!"Exp3.def", xtc-transform(!"sdf2rtg", !["--main", "Expression"]), !FILE("Exp1.def"), xtc-debug-text)
+    ; apply-and-check(!"Cycle.def", xtc-transform(!"sdf2rtg", !["--main", "Cycle"]), !FILE("Cycle.def"), xtc-debug-text)
+    ; apply-and-check(!"FunProgram.def", xtc-transform(!"sdf2rtg", !["--main", "FunProgram"]), !FILE("FunProgram.def"), xtc-debug-text)
+    ; apply-and-check(!"AsFix.def", xtc-transform(!"sdf2rtg", !["--main", "AsFix"]), !FILE("AsFix.def"), xtc-debug-text)
+
+/** TODO: restore after the introduction of user definable desugarings
+  productions =
+      apply-test(!"Plus production", test-prod2prodrule
+      , !|[ <Exp-CF> LAYOUT? "+" LAYOUT? <Exp-CF> -> <Exp-CF> {cons("Plus")} ]|
+      , !|[ Exp -> Plus (Exp, Exp) ]|
+      )
+*/
+
+strategies
+
+  test-prod2prodrule =
+      prod2prodrule
+    ; rtg-normalize-prodrule
+
+

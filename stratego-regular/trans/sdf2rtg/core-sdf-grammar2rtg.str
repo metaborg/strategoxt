@@ -1,0 +1,410 @@
+/**
+ * Converts a normalized SDF grammar in abstract syntax to an RTG in abstract syntax.
+ *
+ * @author  Martin Bravenboer <martin@cs.uu.nl>
+ */
+module core-sdf-grammar2rtg
+imports options rtg Sdf2 verbose logging sdf-extra
+
+strategies
+
+  main-core-sdf-grammar2rtg =
+    io-wrap(grammar2rtg)
+
+strategies
+
+  /**
+   * @type  Grammar -> RTG
+   */
+  grammar2rtg =
+    where(
+      <table-create> "generated-nonterms"
+    )
+  ; where(
+      collect(?syntax(_))
+    ; map(grammar2prodrules <+ err(!"Rewriting syntax section failed"); fail)
+    ; concat => prods
+    )
+
+      /**
+       * @todo  use start symbols of SDF
+       */
+    ; collect(?'sorts(<id>))
+    ; concat
+    ; map(sort2nonterm)
+
+    ; !RTG(Start(<id>), ProdRules(prods))
+
+
+/**
+ * @type  Grammar -> List(ProdRule)
+ */
+strategies
+
+  grammar2prodrules :
+    syntax(prods) ->
+      < filter(not(ignore-prod))
+      ; map({p:
+          ?p
+        ; (  listinj2prodrule
+          <+ prodfun2prodrule
+          <+ var2prodrule
+          <+ opt2prodrule
+          <+ inj2prodrule
+          <+ prod2prodrule
+          <+ err(!"Rewriting production failed"); fail
+          )
+        ; where(try(<cycle-error> (p, <id>)))
+        })
+      > prods
+
+  grammar2prodrules =
+    ?context-free-syntax(_)
+    ; fatal-err(|"context-free syntax in input hasn't been normalized to syntax")
+
+  grammar2prodrules =
+    ?lexical-syntax(_)
+    ; fatal-err(|"lexical syntax in input hasn't been normalized to syntax")
+
+  cycle-error =
+    ?(p, rtg |[ A -> A ]|)
+    ; log(|Critical(), "production rule resulted in a direct cycle", p)
+    ; <exit> 1
+
+strategies
+
+  sort2nonterm :
+    sort(x) -> rtg nonterm |[ x ]|
+
+strategies
+
+  /**
+   * Ignore layout productions.
+   *
+   * @type Production ->? _
+   */
+  ignore-prod =
+    ?prod(_, cf(layout()), _)
+
+  ignore-prod =
+    ?prod(_, cf(opt(layout())), _)
+
+  /**
+   * Ignore lexical productions.
+   */
+  ignore-prod =
+    ?prod(_, lex(_), _)
+
+  ignore-prod = 
+    ?prod(_,lit(_), _)
+
+  ignore-prod =
+    ?prod([lex(iter-star(char-class(_)))], cf(iter-star(char-class(_))), _)
+
+  ignore-prod =
+    ?prod([lex(_)],  sym, _)
+    ; where(<oncetd(?char-class(_))> sym)
+
+  /*
+  cf(alt(
+       char-class(simple-charclass(present(conc(range(numeric("\\0"),numeric("\\92")),range(numeric("\\94"),numeric("\\255"))))))
+     , alt(sort("CloseBracket"),sort("TwoCloseBrackets"))
+     )
+  )*/
+
+
+  /**
+   * Ignore syntax -> context-free injections
+   */
+  ignore-prod =
+    ?prod([a],  cf(a), _)
+
+  /**
+   * @todo  Use these rules for start sorts?
+   */
+  ignore-prod =
+    ?prod(_, start(), _)
+
+  ignore-prod =
+    ?prod(_, file-start(), _)
+
+  /**
+   * Ignore a reject production that injects A into A.
+   */
+  ignore-prod =
+    ?prod(_, _, attrs(attrs)); where(<contains-reject> attrs)
+
+  /**
+   * Ignore a bracket production that injects A into A.
+   */
+  ignore-prod =
+    ?prod(syms, cf(sort(x)), attrs(attrs))
+    ; where(
+        <contains-bracket> attrs
+      ; <not(get-cnstr-name)> attrs
+      ; <syms2trees> syms => [ rtg |[ x ]| ]
+      )
+
+strategies
+
+  /**
+   * Rewrites a context-free production with a constructor.
+   *
+   * @type Production -> ProdRule
+   */
+  prod2prodrule :
+    p@prod(syms, sym, attrs(attrs)) -> rtg |[ A -> y(t*) ]|
+      where <sym2nonterm> sym => A
+          ; <syms2trees> syms => t*
+          ; ( <get-cnstr-name> attrs => y
+            <+ log(|Error(), "No constructor name specified in production", p); fail)
+
+/**
+ * Injections
+ */
+rules
+
+  /**
+   * Rewrites an context-free or lexical injection.
+   *
+   * The lhs must be a simple non-terminal reference.
+   */
+  inj2prodrule :
+    prod([inj], sym, attrs(attrs)) -> rtg |[ A -> t ]|
+      where not(<get-cnstr-name> attrs)
+          ; <sym2tree> inj => t
+          ; <sym2nonterm> sym => A
+
+  /**
+   * Rewrite a bracket production which is not a 'real' injection.
+   */
+  inj2prodrule :
+    prod(syms, cf(sort(x)), attrs(attrs)) -> rtg |[ x -> A ]|
+      where <contains-bracket> attrs
+          ; <not(get-cnstr-name)> attrs
+          ; <syms2trees> syms => [ rtg |[ A ]| ]
+
+/**
+ * Iteration
+ */
+rules
+
+  /**
+   *  A+ -> A* 
+   */
+  listinj2prodrule :
+    prod([s1@cf(iter(a))], s2@cf(iter-star(a)), _) -> rtg |[ x2 -> x1 ]|
+      where <get-nonterm-of> s1 => x1
+          ; <get-nonterm-of> s2 => x2
+
+  /**
+   * -> A* 
+   * -> {A lit}* 
+   */
+  listinj2prodrule :
+    prod([], sym, _) -> rtg |[ x -> <nil>() ]|
+      where <is-list-symbol> sym
+          ; <get-nonterm-of> sym => x
+
+  /**
+   *  A -> A+
+   */
+  listinj2prodrule :
+    prod([cf(a)], cf(iter(a)), _) -> rtg |[ x1 -> <cons> (t, x2) ]|
+      where <sym2tree> a => t
+          ; <get-nonterm-of> cf(iter(a)) => x1
+          ; <get-nonterm-of> cf(iter-star(a)) => x2
+
+  /**
+   *  A -> A+
+   */
+  listinj2prodrule :
+    prod([a], iter(a), _) -> rtg |[ x1 -> <cons> (t, x2) ]|
+      where <sym2tree> a => t
+          ; <get-nonterm-of> iter(a) => x1
+          ; <get-nonterm-of> iter-star(a) => x2
+
+/**
+ * Iteration with Separator
+ * Currently only separators that do not occur in the AST are supported.
+ */
+rules
+
+  /**
+   * {A lit}* lit  {A lit}+ -> {A lit}+
+   */
+  listinj2prodrule :
+    prod(syms, nt, _) -> rtg |[ x -> <conc> (y, z) ]|
+      where <is-list-symbol> nt
+          ; <get-nonterm-of> nt => x
+          ; <filter(not(is-empty-sym)); map(is-list-symbol; get-nonterm-of)> syms => [y, z]
+
+  /**
+   *  {A lit}+ -> {A lit}* 
+   */
+  listinj2prodrule :
+    prod([s1@cf(iter-sep(a, sep))], s2@cf(iter-star-sep(a, sep)), _) -> rtg |[ x2 -> x1 ]|
+      where <is-empty-sym> sep
+          ; <get-nonterm-of> s1 => x1
+          ; <get-nonterm-of> s2 => x2
+
+  /**
+   *  A -> {A lit}+
+   */
+  listinj2prodrule :
+    prod([cf(a)], nt@cf(iter-sep(a, sep)), _) -> rtg |[ x -> <cons> (t, x2) ]|
+      where <is-empty-sym> sep
+          ; <sym2tree> a => t
+          ; <get-nonterm-of> nt => x
+          ; <get-nonterm-of> cf(iter-star-sep(a, sep)) => x2
+
+/**
+ * Alternative
+ */
+rules
+
+  /**
+   *  A -> A?
+   */
+  opt2prodrule :
+    prod([cf(A)], nt@cf(opt(A)), _) -> rtg |[ x -> <some> (t) ]|
+      where <sym2tree> A => t
+          ; <get-nonterm-of> nt => x
+
+  /**
+   *  -> A?
+   */
+  opt2prodrule :
+    prod([], cf(opt(a)), _) -> rtg |[ x -> <none> () ]|
+      where <get-nonterm-of> cf(opt(a)) => x
+
+/**
+ * Variables
+ */
+rules
+
+  var2prodrule :
+    prod(_, varsym(sym), _) -> rtg |[ x -> meta-var(<string>) ]|
+      where <sym2nonterm> sym => x
+
+
+
+/**
+ * Special, marked, productions.
+ */
+rules
+
+  /**
+   * Rewrite prod-fun. The constructor name of a prod-fun is its symbol, which must be a literal.
+   */
+  prodfun2prodrule :
+    prod([lit(y) | syms], sym, attrs(attrs)) -> rtg |[ A -> y(t*) ]|
+      where <fetch(?term(prod-fun()))> attrs
+          ; <sym2nonterm> sym => A
+          ; <syms2trees> syms => t*
+
+ strategies
+
+  get-nonterm-of =
+   ?key; is-nonterm-generator
+   ; (  <table-get> ("generated-nonterms", key)
+     <+ new; where(<table-put> ("generated-nonterms", key, <id>))
+     )
+
+  is-list-symbol = 
+      cf(is-list-symbol)
+    + iter-star-sep(id, id)
+    + iter-sep(id, id)
+    + iter-star(id)
+    + iter(id)
+
+  is-nonterm-generator = 
+      is-list-symbol
+    + cf(is-nonterm-generator)
+    + opt(id)
+    + varsym(id)
+
+strategies
+
+  /**
+   * @type List(Symbol) -> List(AnnoTreeFN)
+   */
+  syms2trees =
+      filter(not(is-empty-sym))
+    ; map(sym2tree)
+
+  /**
+   * @type  Symbol -> Symbol
+   */
+  is-empty-sym = ?lit(_)
+  is-empty-sym = ?layout()
+  is-empty-sym = opt(is-empty-sym)
+  is-empty-sym = cf(is-empty-sym)
+  is-empty-sym = lex(is-empty-sym)
+  is-empty-sym = label(id, is-empty-sym)
+
+/**
+ * @type  Symbol -> AnnoTreeFN
+ */  
+strategies
+
+  sym2tree :
+    sym -> rtg |[ A ]|
+      where <sym2nonterm> sym => A
+
+  sym2tree:
+    cf(sym) -> <sym2tree> sym
+
+  sym2tree:
+    lex(sym) -> rtg |[ <string> ]|
+
+  sym2tree:
+    char-class(_) -> rtg |[ <int> ]|
+
+  sym2tree:
+    label(_,sym) -> <sym2tree> sym
+
+  sym2tree :
+    seq(sym, syms) -> rtg |[ ( t, t* ) ]|
+      where <sym2tree> sym => t
+          ; <syms2trees> syms => t*
+  sym2tree:
+    sym -> rtg |[ x ]|
+      where <get-nonterm-of> sym => x
+
+rules
+
+  sym2nonterm:
+    sort(x) -> rtg nonterm |[ x ]|
+
+  sym2nonterm :
+    sym -> rtg nonterm |[ x ]|
+      where <get-nonterm-of> sym => x
+
+  sym2nonterm:
+    cf(sort(x)) -> rtg nonterm |[ x ]|
+
+strategies
+
+  /**
+   * @type  List(Attribute) -> String
+   */
+  get-cnstr-name =
+    fetch-elem(?term(cons(<id>)))
+
+  /**
+   * @type  List(Attribute) ->? _
+   */
+  contains-bracket =
+    fetch(?bracket())
+
+  /**
+   * @type  List(Attribute) ->? _
+   */
+  contains-reject =
+    one(?reject())
+
+strategies
+
+  err(s) = log(|Error(), <s> (), <id>)
+  dbg(s) = log(|Debug(), <s> (), <id>)

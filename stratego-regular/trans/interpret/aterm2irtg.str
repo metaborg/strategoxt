@@ -1,0 +1,100 @@
+/**
+ * Checks whether an ATerm is an instance of an RTG
+ *
+ * @author  Martin Bravenboer <martin@cs.uu.nl>
+ */
+module aterm2irtg
+imports rtg rtg-util irtg logging 
+strategies
+
+  start-interpret(|rtg) =
+    <rec x(try-interpret(x|rtg))> (<id>, rtg)
+
+  try-interpret(x|rtg) =
+    Interpret(x|rtg)
+    <+ log(|Warning(), "Not an instance of the tree: ", <Snd>)
+     ; log(|Warning(), "Term: ", <Fst>)
+     ; fail
+
+  interpret-one(x|rtg) :
+    (t, a*) -> <getfirst(<x> (t, <id>))> a*
+
+rules
+
+  /**
+   * RTG
+   */
+  Interpret(x|rtg) :
+    (t, RTG(Start(starts), _)) -> <interpret-one(x|rtg)> (t, a*)
+      where <map(!Ref(<id>))> starts => a*
+
+  /**
+   * Int
+   */
+  Interpret(x|rtg) :
+    (t, Ref(Int())) -> Int(t)
+      where <is-int> t
+
+  /**
+   * String
+   */
+  Interpret(x|rtg) :
+    (t, Ref(String())) -> String(t)
+      where <is-string> t
+
+  /**
+   * User-defined Nonterm
+   */
+  Interpret(x|rtg) :
+    (t, Ref(a@Nonterm(_))) -> <interpret-one(x|rtg)> (t, prodrules)
+      where < ?RTG(_, ProdRules(<id>))
+            ; filter(?ProdRule(a, _))
+            > rtg => prodrules
+
+  /**
+   * Term application
+   */
+  Interpret(x|rtg) :
+    (f#(ts), Appl(Term(f), a*)) -> Appl(Term(f), <zip(x)> (ts, a*))
+
+  /**
+   * Tuple
+   */
+  Interpret(x|rtg) :
+    (""#(ts), Tuple(a*)) -> Tuple(<zip(x)> (ts, a*))
+
+  /**
+   * Cons term application
+   */
+  Interpret(x|rtg) :
+    ([t | ts], Appl(ConsTerm(), [a, b])) -> Appl(ConsTerm(), [<x> (t, a), <x> (ts, b)])
+
+  /**
+   * Nil term application
+   */
+  Interpret(x|rtg) :
+    ([], Appl(NilTerm(), [])) -> Appl(NilTerm(), [])
+
+  /**
+   * Some term application
+   */
+  Interpret(x|rtg) :
+    (Some(t), Appl(SomeTerm(), [a])) -> Appl(SomeTerm(), [<x> (t, a)])
+
+  /**
+   * None term application
+   */
+  Interpret(x|rtg) :
+    (None(), Appl(NoneTerm(), [])) -> Appl(NoneTerm(), [])
+
+  /**
+   * Production rule
+   */
+  Interpret(x|rtg) :
+    (t, ProdRule(nt, a*)) -> Prod(nt, <interpret-one(x|rtg)> (t, a*))
+
+/*
+  TODO
+    Annotated : TreeFN * List(Labelled) -> AnnoTreeFN
+    Labelled  : Id * AnnoTreeFN         -> Labelled
+*/
