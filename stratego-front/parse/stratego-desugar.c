@@ -103,6 +103,7 @@ Symbol sym_StratRule_3;
 Symbol sym_StratRuleNoCond_2;
 Symbol sym_Rule_3;
 Symbol sym_RuleNoCond_2;
+Symbol sym_SRDefT_4;
 Symbol sym_SRDef_3;
 Symbol sym_SRDefNoArgs_2;
 Symbol sym_RDef_3;
@@ -311,6 +312,8 @@ static void init_module_constructors (void)
   ATprotectSymbol(sym_Rule_3);
   sym_RuleNoCond_2 = ATmakeSymbol("RuleNoCond", 2, ATfalse);
   ATprotectSymbol(sym_RuleNoCond_2);
+  sym_SRDefT_4 = ATmakeSymbol("SRDefT", 4, ATfalse);
+  ATprotectSymbol(sym_SRDefT_4);
   sym_SRDef_3 = ATmakeSymbol("SRDef", 3, ATfalse);
   ATprotectSymbol(sym_SRDef_3);
   sym_SRDefNoArgs_2 = ATmakeSymbol("SRDefNoArgs", 2, ATfalse);
@@ -324,101 +327,101 @@ static void init_module_constructors (void)
   sym_Cons_2 = ATmakeSymbol("Cons", 2, ATfalse);
   ATprotectSymbol(sym_Cons_2);
 }
-ATerm term_m_4;
-ATerm term_k_4;
-ATerm term_i_4;
+ATerm term_l_4;
+ATerm term_j_4;
 ATerm term_h_4;
 ATerm term_g_4;
-ATerm term_a_4;
+ATerm term_f_4;
 ATerm term_z_3;
 ATerm term_y_3;
-ATerm term_n_3;
-ATerm term_l_3;
+ATerm term_x_3;
+ATerm term_m_3;
 ATerm term_k_3;
 ATerm term_j_3;
-ATerm term_h_3;
+ATerm term_i_3;
 ATerm term_g_3;
-ATerm term_e_3;
+ATerm term_f_3;
 ATerm term_d_3;
-ATerm term_b_3;
-ATerm term_q_2;
+ATerm term_c_3;
+ATerm term_a_3;
 ATerm term_p_2;
 ATerm term_o_2;
 ATerm term_n_2;
 ATerm term_m_2;
-ATerm term_j_2;
+ATerm term_l_2;
 ATerm term_i_2;
 ATerm term_h_2;
 ATerm term_g_2;
 ATerm term_f_2;
-ATerm term_d_2;
-ATerm term_b_2;
+ATerm term_e_2;
+ATerm term_c_2;
 ATerm term_a_2;
 ATerm term_z_1;
+ATerm term_y_1;
 static void init_module_constant_terms (void)
 {
+  ATprotect(&(term_y_1));
+  term_y_1 = (ATerm) ATmakeAppl(ATmakeSymbol("Nil", 0, ATtrue));
   ATprotect(&(term_z_1));
-  term_z_1 = (ATerm) ATmakeAppl(ATmakeSymbol("Nil", 0, ATtrue));
+  term_z_1 = (ATerm) ATmakeAppl(sym_Op_2, term_y_1, (ATerm) ATempty);
   ATprotect(&(term_a_2));
-  term_a_2 = (ATerm) ATmakeAppl(sym_Op_2, term_z_1, (ATerm) ATempty);
-  ATprotect(&(term_b_2));
-  term_b_2 = (ATerm) ATmakeAppl(ATmakeSymbol("Cons", 0, ATtrue));
-  ATprotect(&(term_d_2));
-  term_d_2 = (ATerm) ATmakeAppl(ATmakeSymbol("", 0, ATtrue));
+  term_a_2 = (ATerm) ATmakeAppl(ATmakeSymbol("Cons", 0, ATtrue));
+  ATprotect(&(term_c_2));
+  term_c_2 = (ATerm) ATmakeAppl(ATmakeSymbol("", 0, ATtrue));
+  ATprotect(&(term_e_2));
+  term_e_2 = (ATerm) ATmakeAppl(sym_SVar_1, term_c_2);
   ATprotect(&(term_f_2));
-  term_f_2 = (ATerm) ATmakeAppl(sym_SVar_1, term_d_2);
+  term_f_2 = (ATerm) ATmakeAppl(sym_Sort_2, term_y_1, (ATerm) ATempty);
   ATprotect(&(term_g_2));
-  term_g_2 = (ATerm) ATmakeAppl(sym_Sort_2, term_z_1, (ATerm) ATempty);
+  term_g_2 = (ATerm) ATmakeAppl(sym_SVar_1, term_a_2);
   ATprotect(&(term_h_2));
-  term_h_2 = (ATerm) ATmakeAppl(sym_SVar_1, term_b_2);
+  term_h_2 = (ATerm) ATmakeAppl(sym_SVar_1, term_y_1);
   ATprotect(&(term_i_2));
-  term_i_2 = (ATerm) ATmakeAppl(sym_SVar_1, term_z_1);
-  ATprotect(&(term_j_2));
-  term_j_2 = (ATerm) ATmakeAppl(sym_Call_2, term_i_2, (ATerm) ATempty);
+  term_i_2 = (ATerm) ATmakeAppl(sym_Call_2, term_h_2, (ATerm) ATempty);
+  ATprotect(&(term_l_2));
+  term_l_2 = (ATerm) ATmakeInt(32);
   ATprotect(&(term_m_2));
-  term_m_2 = (ATerm) ATmakeInt(32);
+  term_m_2 = (ATerm) ATmakeInt(13);
   ATprotect(&(term_n_2));
-  term_n_2 = (ATerm) ATmakeInt(13);
+  term_n_2 = (ATerm) ATmakeInt(9);
   ATprotect(&(term_o_2));
-  term_o_2 = (ATerm) ATmakeInt(9);
+  term_o_2 = (ATerm) ATmakeInt(10);
   ATprotect(&(term_p_2));
-  term_p_2 = (ATerm) ATmakeInt(10);
-  ATprotect(&(term_q_2));
-  term_q_2 = (ATerm) ATmakeInt(39);
-  ATprotect(&(term_b_3));
-  term_b_3 = (ATerm) ATmakeAppl(ATmakeSymbol("dr-fork-and-union", 0, ATtrue));
+  term_p_2 = (ATerm) ATmakeInt(39);
+  ATprotect(&(term_a_3));
+  term_a_3 = (ATerm) ATmakeAppl(ATmakeSymbol("dr-fork-and-union", 0, ATtrue));
+  ATprotect(&(term_c_3));
+  term_c_3 = (ATerm) ATmakeAppl(sym_SVar_1, term_a_3);
   ATprotect(&(term_d_3));
-  term_d_3 = (ATerm) ATmakeAppl(sym_SVar_1, term_b_3);
-  ATprotect(&(term_e_3));
-  term_e_3 = (ATerm) ATmakeAppl(ATmakeSymbol("dr-fix-and-union", 0, ATtrue));
+  term_d_3 = (ATerm) ATmakeAppl(ATmakeSymbol("dr-fix-and-union", 0, ATtrue));
+  ATprotect(&(term_f_3));
+  term_f_3 = (ATerm) ATmakeAppl(sym_SVar_1, term_d_3);
   ATprotect(&(term_g_3));
-  term_g_3 = (ATerm) ATmakeAppl(sym_SVar_1, term_e_3);
-  ATprotect(&(term_h_3));
-  term_h_3 = (ATerm) ATmakeAppl(ATmakeSymbol("dr-fork-and-intersect", 0, ATtrue));
+  term_g_3 = (ATerm) ATmakeAppl(ATmakeSymbol("dr-fork-and-intersect", 0, ATtrue));
+  ATprotect(&(term_i_3));
+  term_i_3 = (ATerm) ATmakeAppl(sym_SVar_1, term_g_3);
   ATprotect(&(term_j_3));
-  term_j_3 = (ATerm) ATmakeAppl(sym_SVar_1, term_h_3);
+  term_j_3 = (ATerm) ATmakeAppl(ATmakeSymbol("dr-fix-and-intersect", 0, ATtrue));
   ATprotect(&(term_k_3));
-  term_k_3 = (ATerm) ATmakeAppl(ATmakeSymbol("dr-fix-and-intersect", 0, ATtrue));
-  ATprotect(&(term_l_3));
-  term_l_3 = (ATerm) ATmakeAppl(sym_SVar_1, term_k_3);
-  ATprotect(&(term_n_3));
-  term_n_3 = (ATerm) ATmakeAppl(ATmakeSymbol("Tuple", 0, ATtrue));
+  term_k_3 = (ATerm) ATmakeAppl(sym_SVar_1, term_j_3);
+  ATprotect(&(term_m_3));
+  term_m_3 = (ATerm) ATmakeAppl(ATmakeSymbol("Tuple", 0, ATtrue));
+  ATprotect(&(term_x_3));
+  term_x_3 = (ATerm) ATmakeAppl(ATmakeSymbol("oncetd", 0, ATtrue));
   ATprotect(&(term_y_3));
-  term_y_3 = (ATerm) ATmakeAppl(ATmakeSymbol("oncetd", 0, ATtrue));
+  term_y_3 = (ATerm) ATmakeAppl(sym_SVar_1, term_x_3);
   ATprotect(&(term_z_3));
-  term_z_3 = (ATerm) ATmakeAppl(sym_SVar_1, term_y_3);
-  ATprotect(&(term_a_4));
-  term_a_4 = (ATerm) ATmakeAppl(sym_Call_2, term_z_3, (ATerm) ATempty);
+  term_z_3 = (ATerm) ATmakeAppl(sym_Call_2, term_y_3, (ATerm) ATempty);
+  ATprotect(&(term_f_4));
+  term_f_4 = (ATerm) ATmakeAppl(sym_Call_2, term_e_2, (ATerm) ATempty);
   ATprotect(&(term_g_4));
-  term_g_4 = (ATerm) ATmakeAppl(sym_Call_2, term_f_2, (ATerm) ATempty);
+  term_g_4 = (ATerm) ATmakeAppl(ATmakeSymbol("Anno_Cong__", 0, ATtrue));
   ATprotect(&(term_h_4));
-  term_h_4 = (ATerm) ATmakeAppl(ATmakeSymbol("Anno_Cong__", 0, ATtrue));
-  ATprotect(&(term_i_4));
-  term_i_4 = (ATerm) ATmakeAppl(sym_SVar_1, term_h_4);
-  ATprotect(&(term_k_4));
-  term_k_4 = (ATerm) ATmakeAppl(sym_Id_0);
-  ATprotect(&(term_m_4));
-  term_m_4 = (ATerm) ATmakeAppl(sym_Fail_0);
+  term_h_4 = (ATerm) ATmakeAppl(sym_SVar_1, term_g_4);
+  ATprotect(&(term_j_4));
+  term_j_4 = (ATerm) ATmakeAppl(sym_Id_0);
+  ATprotect(&(term_l_4));
+  term_l_4 = (ATerm) ATmakeAppl(sym_Fail_0);
 }
 #include <srts/init-stratego-application.h>
 ATerm implode_string_0_0 (ATerm t);
@@ -443,8 +446,8 @@ ATerm mk_rulenames_0_0 (ATerm t);
 ATerm explode_string_0_0 (ATerm t);
 ATerm Nil_0_0 (ATerm t);
 ATerm Cons_2_0 (ATerm g_76 (ATerm), ATerm h_76 (ATerm), ATerm t);
-static ATerm c_16 (ATerm w_6, ATerm x_6, ATerm t);
-static ATerm d_16 (ATerm a_7, ATerm b_7, ATerm t);
+static ATerm r_16 (ATerm v_6, ATerm w_6, ATerm t);
+static ATerm s_16 (ATerm a_7, ATerm b_7, ATerm t);
 static ATerm j_0 (ATerm t);
 static ATerm k_0 (ATerm t);
 static ATerm m_0 (ATerm t);
@@ -454,17 +457,17 @@ static ATerm u_0 (ATerm t);
 static ATerm v_0 (ATerm t);
 static ATerm x_0 (ATerm t);
 static ATerm z_0 (ATerm t);
-static ATerm b_1 (ATerm t);
+static ATerm a_1 (ATerm t);
+static ATerm c_1 (ATerm t);
 static ATerm d_1 (ATerm t);
 static ATerm e_1 (ATerm t);
-static ATerm f_1 (ATerm t);
 ATerm Desugar_0_0 (ATerm t);
 ATerm repeat_1_0 (ATerm y_87 (ATerm), ATerm t);
 ATerm topdown_1_0 (ATerm d_85 (ATerm), ATerm t);
 ATerm io_wrap_1_0 (ATerm y_110 (ATerm), ATerm t);
+static ATerm h_1 (ATerm t);
 static ATerm i_1 (ATerm t);
 static ATerm j_1 (ATerm t);
-static ATerm k_1 (ATerm t);
 ATerm stratego_desugar_0_0 (ATerm t);
 ATerm main_0_0 (ATerm t);
 ATerm main_0 (ATerm t)
@@ -475,93 +478,93 @@ ATerm main_0 (ATerm t)
 }
 static ATerm a_0 (ATerm t)
 {
-  ATerm c_4 = NULL;
+  ATerm b_4 = NULL;
   t = explode_string_0_0(t);
   if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
     {
-      ATerm l_1 = ATgetFirst((ATermList) t);
-      if(((ATgetType(l_1) != AT_INT) || (ATgetInt((ATermInt) l_1) != 39)))
+      ATerm k_1 = ATgetFirst((ATermList) t);
+      if(((ATgetType(k_1) != AT_INT) || (ATgetInt((ATermInt) k_1) != 39)))
         _fail(t);
-      c_4 = (ATerm) ATgetNext((ATermList) t);
+      b_4 = (ATerm) ATgetNext((ATermList) t);
     }
   else
     _fail(t);
-  t = c_4;
+  t = b_4;
   t = implode_string_0_0(t);
   return(t);
 }
 ATerm DesugarOnce_0_0 (ATerm t)
 {
-  ATerm m_1 = t;
-  int n_1 = stack_ptr;
+  ATerm l_1 = t;
+  int m_1 = stack_ptr;
   if((PushChoice() == 0))
     {
-      ATerm w_2 = NULL,z_2 = NULL,c_3 = NULL,f_3 = NULL;
-      z_2 = t;
+      ATerm v_2 = NULL,y_2 = NULL,b_3 = NULL,e_3 = NULL;
+      y_2 = t;
       if(match_cons(t, sym_Str_1))
         {
-          c_3 = ATgetArgument(t, 0);
+          b_3 = ATgetArgument(t, 0);
           {
-            ATerm i_3 = NULL;
-            t = c_3;
+            ATerm h_3 = NULL;
+            t = b_3;
             t = un_double_quote_0_0(t);
             t = unescape_0_0(t);
-            i_3 = t;
-            t = (ATerm) ATmakeAppl(sym_Str_1, i_3);
+            h_3 = t;
+            t = (ATerm) ATmakeAppl(sym_Str_1, h_3);
           }
         }
       else
         {
           if(match_cons(t, sym_Real_1))
             {
-              c_3 = ATgetArgument(t, 0);
+              b_3 = ATgetArgument(t, 0);
               {
-                ATerm m_3 = NULL;
-                t = c_3;
+                ATerm l_3 = NULL;
+                t = b_3;
                 t = string_to_real_0_0(t);
-                m_3 = t;
-                t = (ATerm) ATmakeAppl(sym_Real_1, m_3);
+                l_3 = t;
+                t = (ATerm) ATmakeAppl(sym_Real_1, l_3);
               }
             }
           else
             {
               if(match_cons(t, sym_Int_1))
                 {
-                  c_3 = ATgetArgument(t, 0);
+                  b_3 = ATgetArgument(t, 0);
                   {
-                    ATerm p_3 = NULL;
-                    t = c_3;
+                    ATerm o_3 = NULL;
+                    t = b_3;
                     t = string_to_int_0_0(t);
-                    p_3 = t;
-                    t = (ATerm) ATmakeAppl(sym_Int_1, p_3);
+                    o_3 = t;
+                    t = (ATerm) ATmakeAppl(sym_Int_1, o_3);
                   }
                 }
               else
                 {
                   if(match_cons(t, sym_Con_3))
                     {
-                      c_3 = ATgetArgument(t, 0);
-                      f_3 = ATgetArgument(t, 1);
-                      w_2 = ATgetArgument(t, 2);
-                      t = w_2;
+                      b_3 = ATgetArgument(t, 0);
+                      e_3 = ATgetArgument(t, 1);
+                      v_2 = ATgetArgument(t, 2);
+                      t = v_2;
                       t = is_string_0_0(t);
-                      t = (ATerm) ATmakeAppl(sym_Con_3, c_3, f_3, (ATerm) ATmakeAppl(sym_Call_2, (ATerm)ATmakeAppl(sym_SVar_1, w_2), (ATerm) ATempty));
+                      t = (ATerm) ATmakeAppl(sym_Con_3, b_3, e_3, (ATerm) ATmakeAppl(sym_Call_2, (ATerm)ATmakeAppl(sym_SVar_1, v_2), (ATerm) ATempty));
                     }
                   else
                     {
                       if(match_cons(t, sym_DefaultVarDec_1))
                         {
-                          c_3 = ATgetArgument(t, 0);
+                          b_3 = ATgetArgument(t, 0);
                           {
                             ATerm c_0 = NULL,f_0 = NULL,h_0 = NULL,d_0 = NULL;
-                            t = SSLgetAnnotations(z_2);
+                            t = SSLgetAnnotations(y_2);
                             c_0 = t;
-                            t = c_3;
+                            t = b_3;
                             t = explode_string_0_0(t);
                             if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
                               {
-                                ATerm o_1 = ATgetFirst((ATermList) t);
-                                if(((ATgetType(o_1) != AT_INT) || (ATgetInt((ATermInt) o_1) != 39)))
+                                ATerm n_1 = ATgetFirst((ATermList) t);
+                                if(((ATgetType(n_1) != AT_INT) || (ATgetInt((ATermInt) n_1) != 39)))
                                   _fail(t);
                                 f_0 = (ATerm) ATgetNext((ATermList) t);
                               }
@@ -579,28 +582,28 @@ ATerm DesugarOnce_0_0 (ATerm t)
                         {
                           if(match_cons(t, sym_RDef_3))
                             {
-                              c_3 = ATgetArgument(t, 0);
-                              f_3 = ATgetArgument(t, 1);
-                              w_2 = ATgetArgument(t, 2);
+                              b_3 = ATgetArgument(t, 0);
+                              e_3 = ATgetArgument(t, 1);
+                              v_2 = ATgetArgument(t, 2);
                               {
-                                ATerm y_0 = NULL,v_1 = NULL,x_1 = NULL,g_0 = NULL;
-                                t = SSLgetAnnotations(z_2);
+                                ATerm y_0 = NULL,u_1 = NULL,w_1 = NULL,g_0 = NULL;
+                                t = SSLgetAnnotations(y_2);
                                 y_0 = t;
-                                t = c_3;
+                                t = b_3;
                                 t = explode_string_0_0(t);
                                 if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
                                   {
-                                    ATerm p_1 = ATgetFirst((ATermList) t);
-                                    if(((ATgetType(p_1) != AT_INT) || (ATgetInt((ATermInt) p_1) != 39)))
+                                    ATerm o_1 = ATgetFirst((ATermList) t);
+                                    if(((ATgetType(o_1) != AT_INT) || (ATgetInt((ATermInt) o_1) != 39)))
                                       _fail(t);
-                                    v_1 = (ATerm) ATgetNext((ATermList) t);
+                                    u_1 = (ATerm) ATgetNext((ATermList) t);
                                   }
                                 else
                                   _fail(t);
-                                t = v_1;
+                                t = u_1;
                                 t = implode_string_0_0(t);
-                                x_1 = t;
-                                t = (ATerm) ATmakeAppl(sym_RDef_3, x_1, f_3, w_2);
+                                w_1 = t;
+                                t = (ATerm) ATmakeAppl(sym_RDef_3, w_1, e_3, v_2);
                                 g_0 = t;
                                 t = SSLsetAnnotations(g_0, y_0);
                               }
@@ -609,61 +612,61 @@ ATerm DesugarOnce_0_0 (ATerm t)
                             {
                               if(match_cons(t, sym_SDef_3))
                                 {
-                                  c_3 = ATgetArgument(t, 0);
-                                  f_3 = ATgetArgument(t, 1);
-                                  w_2 = ATgetArgument(t, 2);
+                                  b_3 = ATgetArgument(t, 0);
+                                  e_3 = ATgetArgument(t, 1);
+                                  v_2 = ATgetArgument(t, 2);
                                   {
-                                    ATerm r_2 = NULL,y_2 = NULL,a_3 = NULL,l_0 = NULL;
-                                    t = SSLgetAnnotations(z_2);
-                                    r_2 = t;
-                                    t = c_3;
+                                    ATerm q_2 = NULL,x_2 = NULL,z_2 = NULL,l_0 = NULL;
+                                    t = SSLgetAnnotations(y_2);
+                                    q_2 = t;
+                                    t = b_3;
                                     t = explode_string_0_0(t);
                                     if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
                                       {
-                                        ATerm q_1 = ATgetFirst((ATermList) t);
-                                        if(((ATgetType(q_1) != AT_INT) || (ATgetInt((ATermInt) q_1) != 39)))
+                                        ATerm p_1 = ATgetFirst((ATermList) t);
+                                        if(((ATgetType(p_1) != AT_INT) || (ATgetInt((ATermInt) p_1) != 39)))
                                           _fail(t);
-                                        y_2 = (ATerm) ATgetNext((ATermList) t);
+                                        x_2 = (ATerm) ATgetNext((ATermList) t);
                                       }
                                     else
                                       _fail(t);
-                                    t = y_2;
+                                    t = x_2;
                                     t = implode_string_0_0(t);
-                                    a_3 = t;
-                                    t = (ATerm) ATmakeAppl(sym_SDef_3, a_3, f_3, w_2);
+                                    z_2 = t;
+                                    t = (ATerm) ATmakeAppl(sym_SDef_3, z_2, e_3, v_2);
                                     l_0 = t;
-                                    t = SSLsetAnnotations(l_0, r_2);
+                                    t = SSLsetAnnotations(l_0, q_2);
                                   }
                                 }
                               else
                                 {
-                                  ATerm s_3 = NULL,w_3 = NULL,x_3 = NULL,o_0 = NULL;
+                                  ATerm r_3 = NULL,v_3 = NULL,w_3 = NULL,o_0 = NULL;
                                   if(match_cons(t, sym_VarDec_2))
                                     {
-                                      c_3 = ATgetArgument(t, 0);
-                                      f_3 = ATgetArgument(t, 1);
+                                      b_3 = ATgetArgument(t, 0);
+                                      e_3 = ATgetArgument(t, 1);
                                     }
                                   else
                                     _fail(t);
-                                  t = SSLgetAnnotations(z_2);
-                                  s_3 = t;
-                                  t = c_3;
+                                  t = SSLgetAnnotations(y_2);
+                                  r_3 = t;
+                                  t = b_3;
                                   t = explode_string_0_0(t);
                                   if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
                                     {
-                                      ATerm r_1 = ATgetFirst((ATermList) t);
-                                      if(((ATgetType(r_1) != AT_INT) || (ATgetInt((ATermInt) r_1) != 39)))
+                                      ATerm q_1 = ATgetFirst((ATermList) t);
+                                      if(((ATgetType(q_1) != AT_INT) || (ATgetInt((ATermInt) q_1) != 39)))
                                         _fail(t);
-                                      w_3 = (ATerm) ATgetNext((ATermList) t);
+                                      v_3 = (ATerm) ATgetNext((ATermList) t);
                                     }
                                   else
                                     _fail(t);
-                                  t = w_3;
+                                  t = v_3;
                                   t = implode_string_0_0(t);
-                                  x_3 = t;
-                                  t = (ATerm) ATmakeAppl(sym_VarDec_2, x_3, f_3);
+                                  w_3 = t;
+                                  t = (ATerm) ATmakeAppl(sym_VarDec_2, w_3, e_3);
                                   o_0 = t;
-                                  t = SSLsetAnnotations(o_0, s_3);
+                                  t = SSLsetAnnotations(o_0, r_3);
                                 }
                             }
                         }
@@ -671,109 +674,109 @@ ATerm DesugarOnce_0_0 (ATerm t)
                 }
             }
         }
-      LocalPopChoice(n_1);
+      LocalPopChoice(m_1);
     }
   else
     {
-      t = m_1;
+      t = l_1;
       {
-        ATerm s_1 = t;
-        int t_1 = stack_ptr;
+        ATerm r_1 = t;
+        int s_1 = stack_ptr;
         if((PushChoice() == 0))
           {
             t = Var_1_0(a_0, t);
-            LocalPopChoice(t_1);
+            LocalPopChoice(s_1);
           }
         else
           {
-            t = s_1;
+            t = r_1;
             {
-              ATerm n_5 = NULL,o_5 = NULL,p_5 = NULL;
-              n_5 = t;
+              ATerm m_5 = NULL,n_5 = NULL,o_5 = NULL;
+              m_5 = t;
               if(match_cons(t, sym_SVar_1))
                 {
-                  o_5 = ATgetArgument(t, 0);
+                  n_5 = ATgetArgument(t, 0);
                   {
-                    ATerm j_4 = NULL,n_4 = NULL,p_4 = NULL,q_0 = NULL;
-                    t = SSLgetAnnotations(n_5);
-                    j_4 = t;
-                    t = o_5;
+                    ATerm i_4 = NULL,m_4 = NULL,o_4 = NULL,q_0 = NULL;
+                    t = SSLgetAnnotations(m_5);
+                    i_4 = t;
+                    t = n_5;
                     t = explode_string_0_0(t);
                     if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
                       {
-                        ATerm u_1 = ATgetFirst((ATermList) t);
-                        if(((ATgetType(u_1) != AT_INT) || (ATgetInt((ATermInt) u_1) != 39)))
+                        ATerm t_1 = ATgetFirst((ATermList) t);
+                        if(((ATgetType(t_1) != AT_INT) || (ATgetInt((ATermInt) t_1) != 39)))
                           _fail(t);
-                        n_4 = (ATerm) ATgetNext((ATermList) t);
+                        m_4 = (ATerm) ATgetNext((ATermList) t);
                       }
                     else
                       _fail(t);
-                    t = n_4;
+                    t = m_4;
                     t = implode_string_0_0(t);
-                    p_4 = t;
-                    t = (ATerm) ATmakeAppl(sym_SVar_1, p_4);
+                    o_4 = t;
+                    t = (ATerm) ATmakeAppl(sym_SVar_1, o_4);
                     q_0 = t;
-                    t = SSLsetAnnotations(q_0, j_4);
+                    t = SSLsetAnnotations(q_0, i_4);
                   }
                 }
               else
                 {
                   if(match_cons(t, sym_OpDecl_2))
                     {
-                      o_5 = ATgetArgument(t, 0);
-                      p_5 = ATgetArgument(t, 1);
+                      n_5 = ATgetArgument(t, 0);
+                      o_5 = ATgetArgument(t, 1);
                       {
-                        ATerm e_6 = NULL,h_6 = NULL,i_6 = NULL,r_0 = NULL;
-                        t = SSLgetAnnotations(n_5);
-                        e_6 = t;
-                        t = o_5;
+                        ATerm d_6 = NULL,g_6 = NULL,h_6 = NULL,r_0 = NULL;
+                        t = SSLgetAnnotations(m_5);
+                        d_6 = t;
+                        t = n_5;
                         t = explode_string_0_0(t);
                         if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
                           {
-                            ATerm w_1 = ATgetFirst((ATermList) t);
-                            if(((ATgetType(w_1) != AT_INT) || (ATgetInt((ATermInt) w_1) != 39)))
+                            ATerm v_1 = ATgetFirst((ATermList) t);
+                            if(((ATgetType(v_1) != AT_INT) || (ATgetInt((ATermInt) v_1) != 39)))
                               _fail(t);
-                            h_6 = (ATerm) ATgetNext((ATermList) t);
+                            g_6 = (ATerm) ATgetNext((ATermList) t);
                           }
                         else
                           _fail(t);
-                        t = h_6;
+                        t = g_6;
                         t = implode_string_0_0(t);
-                        i_6 = t;
-                        t = (ATerm) ATmakeAppl(sym_OpDecl_2, i_6, p_5);
+                        h_6 = t;
+                        t = (ATerm) ATmakeAppl(sym_OpDecl_2, h_6, o_5);
                         r_0 = t;
-                        t = SSLsetAnnotations(r_0, e_6);
+                        t = SSLsetAnnotations(r_0, d_6);
                       }
                     }
                   else
                     {
-                      ATerm m_8 = NULL,y_10 = NULL,z_10 = NULL,s_0 = NULL;
+                      ATerm z_6 = NULL,w_10 = NULL,x_10 = NULL,s_0 = NULL;
                       if(match_cons(t, sym_Op_2))
                         {
-                          o_5 = ATgetArgument(t, 0);
-                          p_5 = ATgetArgument(t, 1);
+                          n_5 = ATgetArgument(t, 0);
+                          o_5 = ATgetArgument(t, 1);
                         }
                       else
                         _fail(t);
-                      t = SSLgetAnnotations(n_5);
-                      m_8 = t;
-                      t = o_5;
+                      t = SSLgetAnnotations(m_5);
+                      z_6 = t;
+                      t = n_5;
                       t = explode_string_0_0(t);
                       if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
                         {
-                          ATerm y_1 = ATgetFirst((ATermList) t);
-                          if(((ATgetType(y_1) != AT_INT) || (ATgetInt((ATermInt) y_1) != 39)))
+                          ATerm x_1 = ATgetFirst((ATermList) t);
+                          if(((ATgetType(x_1) != AT_INT) || (ATgetInt((ATermInt) x_1) != 39)))
                             _fail(t);
-                          y_10 = (ATerm) ATgetNext((ATermList) t);
+                          w_10 = (ATerm) ATgetNext((ATermList) t);
                         }
                       else
                         _fail(t);
-                      t = y_10;
+                      t = w_10;
                       t = implode_string_0_0(t);
-                      z_10 = t;
-                      t = (ATerm) ATmakeAppl(sym_Op_2, z_10, p_5);
+                      x_10 = t;
+                      t = (ATerm) ATmakeAppl(sym_Op_2, x_10, o_5);
                       s_0 = t;
-                      t = SSLsetAnnotations(s_0, m_8);
+                      t = SSLsetAnnotations(s_0, z_6);
                     }
                 }
             }
@@ -784,26 +787,26 @@ ATerm DesugarOnce_0_0 (ATerm t)
 }
 static ATerm b_0 (ATerm t)
 {
-  t = term_a_2;
+  t = term_z_1;
   return(t);
 }
 static ATerm e_0 (ATerm t)
 {
-  ATerm y_5 = NULL,z_5 = NULL,a_6 = NULL;
-  a_6 = t;
-  t = Fst_0_0(t);
+  ATerm w_5 = NULL,x_5 = NULL,y_5 = NULL;
   y_5 = t;
-  t = a_6;
+  t = Fst_0_0(t);
+  w_5 = t;
+  t = y_5;
   t = Snd_0_0(t);
-  z_5 = t;
-  t = (ATerm) ATmakeAppl(sym_Op_2, term_b_2, (ATerm) ATinsert(ATinsert(ATempty, z_5), y_5));
+  x_5 = t;
+  t = (ATerm) ATmakeAppl(sym_Op_2, term_a_2, (ATerm) ATinsert(ATinsert(ATempty, x_5), w_5));
   return(t);
 }
 static ATerm i_0 (ATerm t)
 {
-  ATerm b_6 = NULL;
-  b_6 = t;
-  t = (ATerm) ATmakeAppl(sym_Str_1, b_6);
+  ATerm z_5 = NULL;
+  z_5 = t;
+  t = (ATerm) ATmakeAppl(sym_Str_1, z_5);
   return(t);
 }
 ATerm mk_rulenames_0_0 (ATerm t)
@@ -811,11 +814,11 @@ ATerm mk_rulenames_0_0 (ATerm t)
   t = foldr_3_0(b_0, e_0, i_0, t);
   return(t);
 }
-static ATerm c_16 (ATerm w_6, ATerm x_6, ATerm t)
+static ATerm r_16 (ATerm v_6, ATerm w_6, ATerm t)
 {
-  t = w_6;
+  t = v_6;
   {
-    ATerm c_2 = t;
+    ATerm b_2 = t;
     if((PushChoice() == 0))
       {
         t = Cons_2_0(_id, Nil_0_0, t);
@@ -824,17 +827,17 @@ static ATerm c_16 (ATerm w_6, ATerm x_6, ATerm t)
       }
     else
       {
-        t = c_2;
+        t = b_2;
       }
   }
-  t = (ATerm) ATmakeAppl(sym_Op_2, term_d_2, w_6);
+  t = (ATerm) ATmakeAppl(sym_Op_2, term_c_2, v_6);
   return(t);
 }
-static ATerm d_16 (ATerm a_7, ATerm b_7, ATerm t)
+static ATerm s_16 (ATerm a_7, ATerm b_7, ATerm t)
 {
   t = a_7;
   {
-    ATerm e_2 = t;
+    ATerm d_2 = t;
     if((PushChoice() == 0))
       {
         t = Cons_2_0(_id, Nil_0_0, t);
@@ -843,94 +846,76 @@ static ATerm d_16 (ATerm a_7, ATerm b_7, ATerm t)
       }
     else
       {
-        t = e_2;
+        t = d_2;
       }
   }
-  t = (ATerm) ATmakeAppl(sym_Call_2, term_f_2, a_7);
+  t = (ATerm) ATmakeAppl(sym_Call_2, term_e_2, a_7);
   return(t);
 }
 static ATerm j_0 (ATerm t)
 {
-  t = term_a_2;
+  t = term_z_1;
   return(t);
 }
 static ATerm k_0 (ATerm t)
 {
-  ATerm s_7 = NULL,t_7 = NULL,u_7 = NULL;
-  u_7 = t;
+  ATerm v_7 = NULL,w_7 = NULL,x_7 = NULL;
+  x_7 = t;
   t = Fst_0_0(t);
-  s_7 = t;
-  t = u_7;
+  v_7 = t;
+  t = x_7;
   t = Snd_0_0(t);
-  t_7 = t;
-  t = (ATerm) ATmakeAppl(sym_Op_2, term_b_2, (ATerm) ATinsert(ATinsert(ATempty, t_7), s_7));
+  w_7 = t;
+  t = (ATerm) ATmakeAppl(sym_Op_2, term_a_2, (ATerm) ATinsert(ATinsert(ATempty, w_7), v_7));
   return(t);
 }
 static ATerm m_0 (ATerm t)
 {
-  t = term_g_2;
+  t = term_f_2;
   return(t);
 }
 static ATerm n_0 (ATerm t)
 {
-  ATerm o_8 = NULL,p_8 = NULL,q_8 = NULL;
-  q_8 = t;
+  ATerm q_8 = NULL,r_8 = NULL,s_8 = NULL;
+  s_8 = t;
   t = Fst_0_0(t);
-  o_8 = t;
-  t = q_8;
+  q_8 = t;
+  t = s_8;
   t = Snd_0_0(t);
-  p_8 = t;
-  t = (ATerm) ATmakeAppl(sym_Sort_2, term_b_2, (ATerm) ATinsert(ATinsert(ATempty, p_8), o_8));
+  r_8 = t;
+  t = (ATerm) ATmakeAppl(sym_Sort_2, term_a_2, (ATerm) ATinsert(ATinsert(ATempty, r_8), q_8));
   return(t);
 }
 static ATerm t_0 (ATerm t)
 {
-  ATerm t_8 = NULL,u_8 = NULL,v_8 = NULL;
-  v_8 = t;
+  ATerm w_8 = NULL,x_8 = NULL,y_8 = NULL;
+  y_8 = t;
   t = Fst_0_0(t);
-  t_8 = t;
-  t = v_8;
+  w_8 = t;
+  t = y_8;
   t = Snd_0_0(t);
-  u_8 = t;
-  t = (ATerm) ATmakeAppl(sym_Sort_2, term_b_2, (ATerm) ATinsert(ATinsert(ATempty, u_8), t_8));
+  x_8 = t;
+  t = (ATerm) ATmakeAppl(sym_Sort_2, term_a_2, (ATerm) ATinsert(ATinsert(ATempty, x_8), w_8));
   return(t);
 }
 static ATerm u_0 (ATerm t)
 {
-  t = term_g_2;
+  t = term_f_2;
   return(t);
 }
 static ATerm v_0 (ATerm t)
 {
-  ATerm x_8 = NULL,y_8 = NULL,z_8 = NULL;
-  z_8 = t;
+  ATerm a_9 = NULL,b_9 = NULL,c_9 = NULL;
+  c_9 = t;
   t = Fst_0_0(t);
-  x_8 = t;
-  t = z_8;
+  a_9 = t;
+  t = c_9;
   t = Snd_0_0(t);
-  y_8 = t;
-  t = (ATerm) ATmakeAppl(sym_Sort_2, term_b_2, (ATerm) ATinsert(ATinsert(ATempty, y_8), x_8));
+  b_9 = t;
+  t = (ATerm) ATmakeAppl(sym_Sort_2, term_a_2, (ATerm) ATinsert(ATinsert(ATempty, b_9), a_9));
   return(t);
 }
 static ATerm x_0 (ATerm t)
-{
-  ATerm k_9 = NULL,l_9 = NULL;
-  if(match_cons(t, sym__2))
-    {
-      k_9 = ATgetArgument(t, 0);
-      l_9 = ATgetArgument(t, 1);
-    }
-  else
-    _fail(t);
-  t = (ATerm) ATmakeAppl(sym_Op_2, term_b_2, (ATerm) ATinsert(ATinsert(ATempty, l_9), k_9));
-  return(t);
-}
-static ATerm z_0 (ATerm t)
-{
-  t = term_a_2;
-  return(t);
-}
-static ATerm b_1 (ATerm t)
 {
   ATerm n_9 = NULL,o_9 = NULL;
   if(match_cons(t, sym__2))
@@ -940,28 +925,28 @@ static ATerm b_1 (ATerm t)
     }
   else
     _fail(t);
-  t = (ATerm) ATmakeAppl(sym_Op_2, term_b_2, (ATerm) ATinsert(ATinsert(ATempty, o_9), n_9));
+  t = (ATerm) ATmakeAppl(sym_Op_2, term_a_2, (ATerm) ATinsert(ATinsert(ATempty, o_9), n_9));
   return(t);
 }
-static ATerm d_1 (ATerm t)
+static ATerm z_0 (ATerm t)
 {
-  ATerm z_9 = NULL,a_10 = NULL;
+  t = term_z_1;
+  return(t);
+}
+static ATerm a_1 (ATerm t)
+{
+  ATerm q_9 = NULL,r_9 = NULL;
   if(match_cons(t, sym__2))
     {
-      z_9 = ATgetArgument(t, 0);
-      a_10 = ATgetArgument(t, 1);
+      q_9 = ATgetArgument(t, 0);
+      r_9 = ATgetArgument(t, 1);
     }
   else
     _fail(t);
-  t = (ATerm) ATmakeAppl(sym_Call_2, term_h_2, (ATerm) ATinsert(ATinsert(ATempty, a_10), z_9));
+  t = (ATerm) ATmakeAppl(sym_Op_2, term_a_2, (ATerm) ATinsert(ATinsert(ATempty, r_9), q_9));
   return(t);
 }
-static ATerm e_1 (ATerm t)
-{
-  t = term_j_2;
-  return(t);
-}
-static ATerm f_1 (ATerm t)
+static ATerm c_1 (ATerm t)
 {
   ATerm c_10 = NULL,d_10 = NULL;
   if(match_cons(t, sym__2))
@@ -971,104 +956,122 @@ static ATerm f_1 (ATerm t)
     }
   else
     _fail(t);
-  t = (ATerm) ATmakeAppl(sym_Call_2, term_h_2, (ATerm) ATinsert(ATinsert(ATempty, d_10), c_10));
+  t = (ATerm) ATmakeAppl(sym_Call_2, term_g_2, (ATerm) ATinsert(ATinsert(ATempty, d_10), c_10));
+  return(t);
+}
+static ATerm d_1 (ATerm t)
+{
+  t = term_i_2;
+  return(t);
+}
+static ATerm e_1 (ATerm t)
+{
+  ATerm f_10 = NULL,g_10 = NULL;
+  if(match_cons(t, sym__2))
+    {
+      f_10 = ATgetArgument(t, 0);
+      g_10 = ATgetArgument(t, 1);
+    }
+  else
+    _fail(t);
+  t = (ATerm) ATmakeAppl(sym_Call_2, term_g_2, (ATerm) ATinsert(ATinsert(ATempty, g_10), f_10));
   return(t);
 }
 ATerm Desugar_0_0 (ATerm t)
 {
-  ATerm e_7 = NULL,f_7 = NULL,g_7 = NULL,h_7 = NULL,i_7 = NULL,j_7 = NULL,k_7 = NULL,l_7 = NULL,m_7 = NULL,n_7 = NULL,o_7 = NULL;
-  m_7 = t;
+  ATerm e_7 = NULL,f_7 = NULL,g_7 = NULL,h_7 = NULL,i_7 = NULL,j_7 = NULL,k_7 = NULL,l_7 = NULL,m_7 = NULL,n_7 = NULL,o_7 = NULL,p_7 = NULL,q_7 = NULL,r_7 = NULL;
+  p_7 = t;
   if(match_cons(t, sym_Anno_2))
     {
-      n_7 = ATgetArgument(t, 0);
-      o_7 = ATgetArgument(t, 1);
+      q_7 = ATgetArgument(t, 0);
+      r_7 = ATgetArgument(t, 1);
       {
-        ATerm r_7 = NULL;
-        t = o_7;
+        ATerm u_7 = NULL;
+        t = r_7;
         t = foldr_2_0(j_0, k_0, t);
-        r_7 = t;
-        t = (ATerm) ATmakeAppl(sym_Anno_2, n_7, r_7);
+        u_7 = t;
+        t = (ATerm) ATmakeAppl(sym_Anno_2, q_7, u_7);
       }
     }
   else
     {
       if(match_cons(t, sym_SortNoArgs_1))
         {
-          n_7 = ATgetArgument(t, 0);
-          t = (ATerm) ATmakeAppl(sym_Sort_2, n_7, (ATerm) ATempty);
+          q_7 = ATgetArgument(t, 0);
+          t = (ATerm) ATmakeAppl(sym_Sort_2, q_7, (ATerm) ATempty);
         }
       else
         {
           if(match_cons(t, sym_Char_1))
             {
-              n_7 = ATgetArgument(t, 0);
+              q_7 = ATgetArgument(t, 0);
               {
-                ATerm h_11 = NULL;
-                t = n_7;
+                ATerm f_11 = NULL;
+                t = q_7;
                 {
-                  ATerm k_2 = t;
-                  int l_2 = stack_ptr;
+                  ATerm j_2 = t;
+                  int k_2 = stack_ptr;
                   if((PushChoice() == 0))
                     {
                       if(match_string(t, "'\\ '"))
                         {
-                          t = term_m_2;
+                          t = term_l_2;
                         }
                       else
                         {
                           if(match_string(t, "'\\r'"))
                             {
-                              t = term_n_2;
+                              t = term_m_2;
                             }
                           else
                             {
                               if(match_string(t, "'\\t'"))
                                 {
-                                  t = term_o_2;
+                                  t = term_n_2;
                                 }
                               else
                                 {
                                   if(match_string(t, "'\\n'"))
                                     {
-                                      t = term_p_2;
+                                      t = term_o_2;
                                     }
                                   else
                                     {
                                       if((ATgetSymbol((ATermAppl) t) != ATmakeSymbol("'\\''", 0, ATtrue)))
                                         _fail(t);
-                                      t = term_q_2;
+                                      t = term_p_2;
                                     }
                                 }
                             }
                         }
-                      LocalPopChoice(l_2);
+                      LocalPopChoice(k_2);
                     }
                   else
                     {
-                      t = k_2;
+                      t = j_2;
                       {
-                        ATerm j_11 = NULL;
+                        ATerm h_11 = NULL;
                         t = explode_string_0_0(t);
                         if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
                           {
-                            ATerm s_2 = ATgetFirst((ATermList) t);
-                            if(((ATgetType(s_2) != AT_INT) || (ATgetInt((ATermInt) s_2) != 39)))
+                            ATerm r_2 = ATgetFirst((ATermList) t);
+                            if(((ATgetType(r_2) != AT_INT) || (ATgetInt((ATermInt) r_2) != 39)))
                               _fail(t);
                             {
-                              ATerm t_2 = (ATerm) ATgetNext((ATermList) t);
-                              if(((ATgetType(t_2) == AT_LIST) && !(ATisEmpty(t_2))))
+                              ATerm s_2 = (ATerm) ATgetNext((ATermList) t);
+                              if(((ATgetType(s_2) == AT_LIST) && !(ATisEmpty(s_2))))
                                 {
-                                  j_11 = ATgetFirst((ATermList) t_2);
+                                  h_11 = ATgetFirst((ATermList) s_2);
                                   {
-                                    ATerm u_2 = (ATerm) ATgetNext((ATermList) t_2);
-                                    if(((ATgetType(u_2) == AT_LIST) && !(ATisEmpty(u_2))))
+                                    ATerm t_2 = (ATerm) ATgetNext((ATermList) s_2);
+                                    if(((ATgetType(t_2) == AT_LIST) && !(ATisEmpty(t_2))))
                                       {
-                                        ATerm v_2 = ATgetFirst((ATermList) u_2);
-                                        if(((ATgetType(v_2) != AT_INT) || (ATgetInt((ATermInt) v_2) != 39)))
+                                        ATerm u_2 = ATgetFirst((ATermList) t_2);
+                                        if(((ATgetType(u_2) != AT_INT) || (ATgetInt((ATermInt) u_2) != 39)))
                                           _fail(t);
                                         {
-                                          ATerm x_2 = (ATerm) ATgetNext((ATermList) u_2);
-                                          if(((ATgetType(x_2) != AT_LIST) || !(ATisEmpty(x_2))))
+                                          ATerm w_2 = (ATerm) ATgetNext((ATermList) t_2);
+                                          if(((ATgetType(w_2) != AT_LIST) || !(ATisEmpty(w_2))))
                                             _fail(t);
                                         }
                                       }
@@ -1082,99 +1085,99 @@ ATerm Desugar_0_0 (ATerm t)
                           }
                         else
                           _fail(t);
-                        t = j_11;
+                        t = h_11;
                       }
                     }
                 }
-                h_11 = t;
-                t = (ATerm) ATmakeAppl(sym_Int_1, h_11);
+                f_11 = t;
+                t = (ATerm) ATmakeAppl(sym_Int_1, f_11);
               }
             }
           else
             {
               if(match_cons(t, sym_DynRuleUnion_3))
                 {
-                  n_7 = ATgetArgument(t, 0);
-                  o_7 = ATgetArgument(t, 1);
-                  i_7 = ATgetArgument(t, 2);
+                  q_7 = ATgetArgument(t, 0);
+                  r_7 = ATgetArgument(t, 1);
+                  l_7 = ATgetArgument(t, 2);
                   {
-                    ATerm a_8 = NULL;
-                    t = o_7;
+                    ATerm d_8 = NULL;
+                    t = r_7;
                     t = mk_rulenames_0_0(t);
-                    a_8 = t;
-                    t = (ATerm) ATmakeAppl(sym_CallT_3, term_d_3, (ATerm)ATinsert(ATinsert(ATempty, i_7), n_7), (ATerm) ATinsert(ATempty, a_8));
+                    d_8 = t;
+                    t = (ATerm) ATmakeAppl(sym_CallT_3, term_c_3, (ATerm)ATinsert(ATinsert(ATempty, l_7), q_7), (ATerm) ATinsert(ATempty, d_8));
                   }
                 }
               else
                 {
                   if(match_cons(t, sym_DynRuleUnionFix_2))
                     {
-                      n_7 = ATgetArgument(t, 0);
-                      o_7 = ATgetArgument(t, 1);
+                      q_7 = ATgetArgument(t, 0);
+                      r_7 = ATgetArgument(t, 1);
                       {
-                        ATerm d_8 = NULL;
-                        t = n_7;
+                        ATerm g_8 = NULL;
+                        t = q_7;
                         t = mk_rulenames_0_0(t);
-                        d_8 = t;
-                        t = (ATerm) ATmakeAppl(sym_CallT_3, term_g_3, (ATerm)ATinsert(ATempty, o_7), (ATerm) ATinsert(ATempty, d_8));
+                        g_8 = t;
+                        t = (ATerm) ATmakeAppl(sym_CallT_3, term_f_3, (ATerm)ATinsert(ATempty, r_7), (ATerm) ATinsert(ATempty, g_8));
                       }
                     }
                   else
                     {
                       if(match_cons(t, sym_DynRuleIntersect_3))
                         {
-                          n_7 = ATgetArgument(t, 0);
-                          o_7 = ATgetArgument(t, 1);
-                          i_7 = ATgetArgument(t, 2);
+                          q_7 = ATgetArgument(t, 0);
+                          r_7 = ATgetArgument(t, 1);
+                          l_7 = ATgetArgument(t, 2);
                           {
-                            ATerm h_8 = NULL;
-                            t = o_7;
+                            ATerm k_8 = NULL;
+                            t = r_7;
                             t = mk_rulenames_0_0(t);
-                            h_8 = t;
-                            t = (ATerm) ATmakeAppl(sym_CallT_3, term_j_3, (ATerm)ATinsert(ATinsert(ATempty, i_7), n_7), (ATerm) ATinsert(ATempty, h_8));
+                            k_8 = t;
+                            t = (ATerm) ATmakeAppl(sym_CallT_3, term_i_3, (ATerm)ATinsert(ATinsert(ATempty, l_7), q_7), (ATerm) ATinsert(ATempty, k_8));
                           }
                         }
                       else
                         {
                           if(match_cons(t, sym_DynRuleIntersectFix_2))
                             {
-                              n_7 = ATgetArgument(t, 0);
-                              o_7 = ATgetArgument(t, 1);
+                              q_7 = ATgetArgument(t, 0);
+                              r_7 = ATgetArgument(t, 1);
                               {
-                                ATerm k_8 = NULL;
-                                t = n_7;
+                                ATerm n_8 = NULL;
+                                t = q_7;
                                 t = mk_rulenames_0_0(t);
-                                k_8 = t;
-                                t = (ATerm) ATmakeAppl(sym_CallT_3, term_l_3, (ATerm)ATinsert(ATempty, o_7), (ATerm) ATinsert(ATempty, k_8));
+                                n_8 = t;
+                                t = (ATerm) ATmakeAppl(sym_CallT_3, term_k_3, (ATerm)ATinsert(ATempty, r_7), (ATerm) ATinsert(ATempty, n_8));
                               }
                             }
                           else
                             {
                               if(match_cons(t, sym_SortTuple_1))
                                 {
-                                  n_7 = ATgetArgument(t, 0);
+                                  q_7 = ATgetArgument(t, 0);
                                   {
-                                    ATerm n_8 = NULL;
-                                    t = n_7;
+                                    ATerm p_8 = NULL;
+                                    t = q_7;
                                     t = foldr_2_0(m_0, n_0, t);
-                                    n_8 = t;
-                                    t = (ATerm) ATmakeAppl(sym_Sort_2, term_n_3, (ATerm) ATinsert(ATempty, n_8));
+                                    p_8 = t;
+                                    t = (ATerm) ATmakeAppl(sym_Sort_2, term_m_3, (ATerm) ATinsert(ATempty, p_8));
                                   }
                                 }
                               else
                                 {
                                   if(match_cons(t, sym_SortListTl_2))
                                     {
-                                      n_7 = ATgetArgument(t, 0);
-                                      o_7 = ATgetArgument(t, 1);
+                                      q_7 = ATgetArgument(t, 0);
+                                      r_7 = ATgetArgument(t, 1);
                                       {
                                         static ATerm p_0 (ATerm t);
                                         static ATerm p_0 (ATerm t)
                                         {
-                                          t = o_7;
+                                          t = r_7;
                                           return(t);
                                         }
-                                        t = n_7;
+                                        t = q_7;
                                         t = foldr_2_0(p_0, t_0, t);
                                       }
                                     }
@@ -1182,74 +1185,74 @@ ATerm Desugar_0_0 (ATerm t)
                                     {
                                       if(match_cons(t, sym_SortList_1))
                                         {
-                                          n_7 = ATgetArgument(t, 0);
-                                          t = n_7;
+                                          q_7 = ATgetArgument(t, 0);
+                                          t = q_7;
                                           t = foldr_2_0(u_0, v_0, t);
                                         }
                                       else
                                         {
-                                          ATerm o_3 = t;
-                                          int q_3 = stack_ptr;
+                                          ATerm n_3 = t;
+                                          int p_3 = stack_ptr;
                                           if((PushChoice() == 0))
                                             {
                                               if(match_cons(t, sym_Con4_4))
                                                 {
-                                                  n_7 = ATgetArgument(t, 0);
+                                                  q_7 = ATgetArgument(t, 0);
                                                   {
-                                                    ATerm r_3 = ATgetArgument(t, 1);
+                                                    ATerm q_3 = ATgetArgument(t, 1);
                                                   }
-                                                  i_7 = ATgetArgument(t, 2);
-                                                  e_7 = ATgetArgument(t, 3);
+                                                  l_7 = ATgetArgument(t, 2);
+                                                  h_7 = ATgetArgument(t, 3);
                                                 }
                                               else
                                                 _fail(t);
-                                              LocalPopChoice(q_3);
-                                              t = (ATerm) ATmakeAppl(sym_Con_3, n_7, i_7, (ATerm) ATmakeAppl(sym_Call_2, (ATerm)ATmakeAppl(sym_SVar_1, e_7), (ATerm) ATempty));
+                                              LocalPopChoice(p_3);
+                                              t = (ATerm) ATmakeAppl(sym_Con_3, q_7, l_7, (ATerm) ATmakeAppl(sym_Call_2, (ATerm)ATmakeAppl(sym_SVar_1, h_7), (ATerm) ATempty));
                                             }
                                           else
                                             {
-                                              t = o_3;
+                                              t = n_3;
                                               {
-                                                ATerm t_3 = t;
-                                                int u_3 = stack_ptr;
+                                                ATerm s_3 = t;
+                                                int t_3 = stack_ptr;
                                                 if((PushChoice() == 0))
                                                   {
                                                     if(match_cons(t, sym_Con3_3))
                                                       {
-                                                        n_7 = ATgetArgument(t, 0);
+                                                        q_7 = ATgetArgument(t, 0);
                                                         {
-                                                          ATerm v_3 = ATgetArgument(t, 1);
+                                                          ATerm u_3 = ATgetArgument(t, 1);
                                                         }
-                                                        i_7 = ATgetArgument(t, 2);
+                                                        l_7 = ATgetArgument(t, 2);
                                                       }
                                                     else
                                                       _fail(t);
-                                                    LocalPopChoice(u_3);
-                                                    t = (ATerm) ATmakeAppl(sym_Con_3, n_7, i_7, term_a_4);
+                                                    LocalPopChoice(t_3);
+                                                    t = (ATerm) ATmakeAppl(sym_Con_3, q_7, l_7, term_z_3);
                                                   }
                                                 else
                                                   {
-                                                    t = t_3;
+                                                    t = s_3;
                                                     if(match_cons(t, sym_Con1_2))
                                                       {
-                                                        n_7 = ATgetArgument(t, 0);
-                                                        o_7 = ATgetArgument(t, 1);
-                                                        t = (ATerm) ATmakeAppl(sym_Con_3, n_7, o_7, term_a_4);
+                                                        q_7 = ATgetArgument(t, 0);
+                                                        r_7 = ATgetArgument(t, 1);
+                                                        t = (ATerm) ATmakeAppl(sym_Con_3, q_7, r_7, term_z_3);
                                                       }
                                                     else
                                                       {
                                                         if(match_cons(t, sym_ListTail_2))
                                                           {
-                                                            n_7 = ATgetArgument(t, 0);
-                                                            o_7 = ATgetArgument(t, 1);
+                                                            q_7 = ATgetArgument(t, 0);
+                                                            r_7 = ATgetArgument(t, 1);
                                                             {
                                                               static ATerm w_0 (ATerm t);
                                                               static ATerm w_0 (ATerm t)
                                                               {
-                                                                t = o_7;
+                                                                t = r_7;
                                                                 return(t);
                                                               }
-                                                              t = n_7;
+                                                              t = q_7;
                                                               t = foldr_2_0(w_0, x_0, t);
                                                             }
                                                           }
@@ -1257,387 +1260,407 @@ ATerm Desugar_0_0 (ATerm t)
                                                           {
                                                             if(match_cons(t, sym_List_1))
                                                               {
-                                                                n_7 = ATgetArgument(t, 0);
-                                                                t = n_7;
-                                                                t = foldr_2_0(z_0, b_1, t);
+                                                                q_7 = ATgetArgument(t, 0);
+                                                                t = q_7;
+                                                                t = foldr_2_0(z_0, a_1, t);
                                                               }
                                                             else
                                                               {
                                                                 if(match_cons(t, sym_Tuple_1))
                                                                   {
-                                                                    n_7 = ATgetArgument(t, 0);
-                                                                    t = n_7;
+                                                                    q_7 = ATgetArgument(t, 0);
+                                                                    t = q_7;
                                                                     if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
                                                                       {
-                                                                        f_7 = ATgetFirst((ATermList) t);
-                                                                        g_7 = (ATerm) ATgetNext((ATermList) t);
-                                                                        t = g_7;
+                                                                        e_7 = ATgetFirst((ATermList) t);
+                                                                        f_7 = (ATerm) ATgetNext((ATermList) t);
+                                                                        t = f_7;
                                                                         if(((ATgetType(t) == AT_LIST) && ATisEmpty(t)))
                                                                           {
-                                                                            ATerm b_4 = t;
-                                                                            int d_4 = stack_ptr;
+                                                                            ATerm a_4 = t;
+                                                                            int c_4 = stack_ptr;
                                                                             if((PushChoice() == 0))
                                                                               {
-                                                                                t = c_16(n_7, m_7, t);
-                                                                                LocalPopChoice(d_4);
+                                                                                t = r_16(q_7, p_7, t);
+                                                                                LocalPopChoice(c_4);
                                                                               }
                                                                             else
                                                                               {
-                                                                                t = b_4;
-                                                                                t = f_7;
+                                                                                t = a_4;
+                                                                                t = e_7;
                                                                               }
                                                                           }
                                                                         else
                                                                           {
-                                                                            t = c_16(n_7, m_7, t);
+                                                                            t = r_16(q_7, p_7, t);
                                                                           }
                                                                       }
                                                                     else
                                                                       {
-                                                                        t = c_16(n_7, m_7, t);
+                                                                        t = r_16(q_7, p_7, t);
                                                                       }
                                                                   }
                                                                 else
                                                                   {
                                                                     if(match_cons(t, sym_CharCong_1))
                                                                       {
-                                                                        n_7 = ATgetArgument(t, 0);
-                                                                        t = (ATerm) ATmakeAppl(sym_Match_1, (ATerm) ATmakeAppl(sym_Char_1, n_7));
+                                                                        q_7 = ATgetArgument(t, 0);
+                                                                        t = (ATerm) ATmakeAppl(sym_Match_1, (ATerm) ATmakeAppl(sym_Char_1, q_7));
                                                                       }
                                                                     else
                                                                       {
                                                                         if(match_cons(t, sym_RealCong_1))
                                                                           {
-                                                                            n_7 = ATgetArgument(t, 0);
-                                                                            t = (ATerm) ATmakeAppl(sym_Match_1, (ATerm) ATmakeAppl(sym_Real_1, n_7));
+                                                                            q_7 = ATgetArgument(t, 0);
+                                                                            t = (ATerm) ATmakeAppl(sym_Match_1, (ATerm) ATmakeAppl(sym_Real_1, q_7));
                                                                           }
                                                                         else
                                                                           {
                                                                             if(match_cons(t, sym_IntCong_1))
                                                                               {
-                                                                                n_7 = ATgetArgument(t, 0);
-                                                                                t = (ATerm) ATmakeAppl(sym_Match_1, (ATerm) ATmakeAppl(sym_Int_1, n_7));
+                                                                                q_7 = ATgetArgument(t, 0);
+                                                                                t = (ATerm) ATmakeAppl(sym_Match_1, (ATerm) ATmakeAppl(sym_Int_1, q_7));
                                                                               }
                                                                             else
                                                                               {
                                                                                 if(match_cons(t, sym_StrCong_1))
                                                                                   {
-                                                                                    n_7 = ATgetArgument(t, 0);
-                                                                                    t = (ATerm) ATmakeAppl(sym_Match_1, (ATerm) ATmakeAppl(sym_Str_1, n_7));
+                                                                                    q_7 = ATgetArgument(t, 0);
+                                                                                    t = (ATerm) ATmakeAppl(sym_Match_1, (ATerm) ATmakeAppl(sym_Str_1, q_7));
                                                                                   }
                                                                                 else
                                                                                   {
                                                                                     if(match_cons(t, sym_ModCongNoArgs_1))
                                                                                       {
-                                                                                        n_7 = ATgetArgument(t, 0);
-                                                                                        t = (ATerm) ATmakeAppl(sym_Call_2, (ATerm)ATmakeAppl(sym_SVar_1, n_7), (ATerm) ATempty);
+                                                                                        q_7 = ATgetArgument(t, 0);
+                                                                                        t = (ATerm) ATmakeAppl(sym_Call_2, (ATerm)ATmakeAppl(sym_SVar_1, q_7), (ATerm) ATempty);
                                                                                       }
                                                                                     else
                                                                                       {
                                                                                         if(match_cons(t, sym_ModCong_2))
                                                                                           {
-                                                                                            n_7 = ATgetArgument(t, 0);
-                                                                                            o_7 = ATgetArgument(t, 1);
-                                                                                            t = (ATerm) ATmakeAppl(sym_Call_2, (ATerm)ATmakeAppl(sym_SVar_1, n_7), o_7);
+                                                                                            q_7 = ATgetArgument(t, 0);
+                                                                                            r_7 = ATgetArgument(t, 1);
+                                                                                            t = (ATerm) ATmakeAppl(sym_Call_2, (ATerm)ATmakeAppl(sym_SVar_1, q_7), r_7);
                                                                                           }
                                                                                         else
                                                                                           {
                                                                                             if(match_cons(t, sym_ListCong_2))
                                                                                               {
-                                                                                                n_7 = ATgetArgument(t, 0);
-                                                                                                o_7 = ATgetArgument(t, 1);
+                                                                                                q_7 = ATgetArgument(t, 0);
+                                                                                                r_7 = ATgetArgument(t, 1);
                                                                                                 {
-                                                                                                  static ATerm c_1 (ATerm t);
-                                                                                                  static ATerm c_1 (ATerm t)
+                                                                                                  static ATerm b_1 (ATerm t);
+                                                                                                  static ATerm b_1 (ATerm t)
                                                                                                   {
-                                                                                                    t = o_7;
+                                                                                                    t = r_7;
                                                                                                     return(t);
                                                                                                   }
-                                                                                                  t = n_7;
-                                                                                                  t = foldr_2_0(c_1, d_1, t);
+                                                                                                  t = q_7;
+                                                                                                  t = foldr_2_0(b_1, c_1, t);
                                                                                                 }
                                                                                               }
                                                                                             else
                                                                                               {
                                                                                                 if(match_cons(t, sym_ListCongNoTail_1))
                                                                                                   {
-                                                                                                    n_7 = ATgetArgument(t, 0);
-                                                                                                    t = n_7;
-                                                                                                    t = foldr_2_0(e_1, f_1, t);
+                                                                                                    q_7 = ATgetArgument(t, 0);
+                                                                                                    t = q_7;
+                                                                                                    t = foldr_2_0(d_1, e_1, t);
                                                                                                   }
                                                                                                 else
                                                                                                   {
                                                                                                     if(match_cons(t, sym_TupleCong_2))
                                                                                                       {
-                                                                                                        n_7 = ATgetArgument(t, 0);
-                                                                                                        o_7 = ATgetArgument(t, 1);
-                                                                                                        t = (ATerm) ATmakeAppl(sym_Call_2, term_f_2, (ATerm) ATinsert(CheckATermList(o_7), n_7));
+                                                                                                        q_7 = ATgetArgument(t, 0);
+                                                                                                        r_7 = ATgetArgument(t, 1);
+                                                                                                        t = (ATerm) ATmakeAppl(sym_Call_2, term_e_2, (ATerm) ATinsert(CheckATermList(r_7), q_7));
                                                                                                       }
                                                                                                     else
                                                                                                       {
                                                                                                         if(match_cons(t, sym_TupleCong_1))
                                                                                                           {
-                                                                                                            n_7 = ATgetArgument(t, 0);
-                                                                                                            t = n_7;
+                                                                                                            q_7 = ATgetArgument(t, 0);
+                                                                                                            t = q_7;
                                                                                                             if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
                                                                                                               {
-                                                                                                                f_7 = ATgetFirst((ATermList) t);
-                                                                                                                g_7 = (ATerm) ATgetNext((ATermList) t);
-                                                                                                                t = g_7;
+                                                                                                                e_7 = ATgetFirst((ATermList) t);
+                                                                                                                f_7 = (ATerm) ATgetNext((ATermList) t);
+                                                                                                                t = f_7;
                                                                                                                 if(((ATgetType(t) == AT_LIST) && ATisEmpty(t)))
                                                                                                                   {
-                                                                                                                    ATerm e_4 = t;
-                                                                                                                    int f_4 = stack_ptr;
+                                                                                                                    ATerm d_4 = t;
+                                                                                                                    int e_4 = stack_ptr;
                                                                                                                     if((PushChoice() == 0))
                                                                                                                       {
-                                                                                                                        t = d_16(n_7, m_7, t);
-                                                                                                                        LocalPopChoice(f_4);
+                                                                                                                        t = s_16(q_7, p_7, t);
+                                                                                                                        LocalPopChoice(e_4);
                                                                                                                       }
                                                                                                                     else
                                                                                                                       {
-                                                                                                                        t = e_4;
-                                                                                                                        t = f_7;
+                                                                                                                        t = d_4;
+                                                                                                                        t = e_7;
                                                                                                                       }
                                                                                                                   }
                                                                                                                 else
                                                                                                                   {
-                                                                                                                    t = d_16(n_7, m_7, t);
+                                                                                                                    t = s_16(q_7, p_7, t);
                                                                                                                   }
                                                                                                               }
                                                                                                             else
                                                                                                               {
-                                                                                                                t = d_16(n_7, m_7, t);
+                                                                                                                t = s_16(q_7, p_7, t);
                                                                                                               }
                                                                                                           }
                                                                                                         else
                                                                                                           {
                                                                                                             if(match_cons(t, sym_EmptyTupleCong_0))
                                                                                                               {
-                                                                                                                t = term_g_4;
+                                                                                                                t = term_f_4;
                                                                                                               }
                                                                                                             else
                                                                                                               {
                                                                                                                 if(match_cons(t, sym_AnnoCong_2))
                                                                                                                   {
-                                                                                                                    n_7 = ATgetArgument(t, 0);
-                                                                                                                    o_7 = ATgetArgument(t, 1);
-                                                                                                                    t = o_7;
+                                                                                                                    q_7 = ATgetArgument(t, 0);
+                                                                                                                    r_7 = ATgetArgument(t, 1);
+                                                                                                                    t = r_7;
                                                                                                                     if(match_cons(t, sym_StrategyCurly_1))
                                                                                                                       {
-                                                                                                                        h_7 = ATgetArgument(t, 0);
+                                                                                                                        g_7 = ATgetArgument(t, 0);
                                                                                                                       }
                                                                                                                     else
                                                                                                                       _fail(t);
-                                                                                                                    t = (ATerm) ATmakeAppl(sym_Call_2, term_i_4, (ATerm) ATinsert(ATinsert(ATempty, h_7), n_7));
+                                                                                                                    t = (ATerm) ATmakeAppl(sym_Call_2, term_h_4, (ATerm) ATinsert(ATinsert(ATempty, g_7), q_7));
                                                                                                                   }
                                                                                                                 else
                                                                                                                   {
                                                                                                                     if(match_cons(t, sym_ParenStrat_1))
                                                                                                                       {
-                                                                                                                        n_7 = ATgetArgument(t, 0);
-                                                                                                                        t = n_7;
+                                                                                                                        q_7 = ATgetArgument(t, 0);
+                                                                                                                        t = q_7;
                                                                                                                       }
                                                                                                                     else
                                                                                                                       {
                                                                                                                         if(match_cons(t, sym_StratRuleNoCond_2))
                                                                                                                           {
-                                                                                                                            n_7 = ATgetArgument(t, 0);
-                                                                                                                            o_7 = ATgetArgument(t, 1);
-                                                                                                                            t = (ATerm) ATmakeAppl(sym_StratRule_3, n_7, o_7, term_k_4);
+                                                                                                                            q_7 = ATgetArgument(t, 0);
+                                                                                                                            r_7 = ATgetArgument(t, 1);
+                                                                                                                            t = (ATerm) ATmakeAppl(sym_StratRule_3, q_7, r_7, term_j_4);
                                                                                                                           }
                                                                                                                         else
                                                                                                                           {
                                                                                                                             if(match_cons(t, sym_RuleNoCond_2))
                                                                                                                               {
-                                                                                                                                n_7 = ATgetArgument(t, 0);
-                                                                                                                                o_7 = ATgetArgument(t, 1);
-                                                                                                                                t = (ATerm) ATmakeAppl(sym_Rule_3, n_7, o_7, term_k_4);
+                                                                                                                                q_7 = ATgetArgument(t, 0);
+                                                                                                                                r_7 = ATgetArgument(t, 1);
+                                                                                                                                t = (ATerm) ATmakeAppl(sym_Rule_3, q_7, r_7, term_j_4);
                                                                                                                               }
                                                                                                                             else
                                                                                                                               {
                                                                                                                                 if(match_cons(t, sym_OverlayNoArgs_2))
                                                                                                                                   {
-                                                                                                                                    n_7 = ATgetArgument(t, 0);
-                                                                                                                                    o_7 = ATgetArgument(t, 1);
-                                                                                                                                    t = (ATerm) ATmakeAppl(sym_Overlay_3, n_7, (ATerm)ATempty, o_7);
+                                                                                                                                    q_7 = ATgetArgument(t, 0);
+                                                                                                                                    r_7 = ATgetArgument(t, 1);
+                                                                                                                                    t = (ATerm) ATmakeAppl(sym_Overlay_3, q_7, (ATerm)ATempty, r_7);
                                                                                                                                   }
                                                                                                                                 else
                                                                                                                                   {
                                                                                                                                     if(match_cons(t, sym_SwitchChoice_3))
                                                                                                                                       {
-                                                                                                                                        n_7 = ATgetArgument(t, 0);
-                                                                                                                                        o_7 = ATgetArgument(t, 1);
-                                                                                                                                        i_7 = ATgetArgument(t, 2);
+                                                                                                                                        q_7 = ATgetArgument(t, 0);
+                                                                                                                                        r_7 = ATgetArgument(t, 1);
+                                                                                                                                        l_7 = ATgetArgument(t, 2);
                                                                                                                                         {
-                                                                                                                                          ATerm t_10 = NULL,u_10 = NULL,v_10 = NULL;
-                                                                                                                                          t = m_7;
+                                                                                                                                          ATerm d_12 = NULL,e_12 = NULL,i_12 = NULL;
+                                                                                                                                          t = p_7;
                                                                                                                                           t = new_0_0(t);
-                                                                                                                                          v_10 = t;
-                                                                                                                                          t = (ATerm) ATmakeAppl(sym_Var_1, v_10);
+                                                                                                                                          i_12 = t;
+                                                                                                                                          t = (ATerm) ATmakeAppl(sym_Var_1, i_12);
                                                                                                                                           t = new_0_0(t);
-                                                                                                                                          u_10 = t;
-                                                                                                                                          t = o_7;
+                                                                                                                                          e_12 = t;
+                                                                                                                                          t = r_7;
                                                                                                                                           {
+                                                                                                                                            static ATerm f_1 (ATerm t);
                                                                                                                                             static ATerm g_1 (ATerm t);
-                                                                                                                                            static ATerm h_1 (ATerm t);
-                                                                                                                                            static ATerm g_1 (ATerm t)
+                                                                                                                                            static ATerm f_1 (ATerm t)
                                                                                                                                             {
-                                                                                                                                              t = i_7;
+                                                                                                                                              t = l_7;
                                                                                                                                               return(t);
                                                                                                                                             }
-                                                                                                                                            static ATerm h_1 (ATerm t)
+                                                                                                                                            static ATerm g_1 (ATerm t)
                                                                                                                                             {
-                                                                                                                                              ATerm w_10 = NULL,y_11 = NULL,z_11 = NULL;
+                                                                                                                                              ATerm j_12 = NULL,k_12 = NULL,w_14 = NULL;
                                                                                                                                               if(match_cons(t, sym__2))
                                                                                                                                                 {
-                                                                                                                                                  ATerm l_4 = ATgetArgument(t, 0);
-                                                                                                                                                  if(match_cons(l_4, sym__2))
+                                                                                                                                                  ATerm k_4 = ATgetArgument(t, 0);
+                                                                                                                                                  if(match_cons(k_4, sym__2))
                                                                                                                                                     {
-                                                                                                                                                      w_10 = ATgetArgument(l_4, 0);
-                                                                                                                                                      y_11 = ATgetArgument(l_4, 1);
+                                                                                                                                                      j_12 = ATgetArgument(k_4, 0);
+                                                                                                                                                      k_12 = ATgetArgument(k_4, 1);
                                                                                                                                                     }
                                                                                                                                                   else
                                                                                                                                                     _fail(t);
-                                                                                                                                                  z_11 = ATgetArgument(t, 1);
+                                                                                                                                                  w_14 = ATgetArgument(t, 1);
                                                                                                                                                 }
                                                                                                                                               else
                                                                                                                                                 _fail(t);
-                                                                                                                                              t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Where_1, (ATerm) ATmakeAppl(sym_BA_2, w_10, (ATerm) ATmakeAppl(sym_Var_1, u_10))), (ATerm)ATmakeAppl(sym_BA_2, y_11, (ATerm) ATmakeAppl(sym_Var_1, v_10)), (ATerm) ATmakeAppl(sym_BA_2, z_11, (ATerm) ATmakeAppl(sym_Var_1, v_10)));
+                                                                                                                                              t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Where_1, (ATerm) ATmakeAppl(sym_BA_2, j_12, (ATerm) ATmakeAppl(sym_Var_1, e_12))), (ATerm)ATmakeAppl(sym_BA_2, k_12, (ATerm) ATmakeAppl(sym_Var_1, i_12)), (ATerm) ATmakeAppl(sym_BA_2, w_14, (ATerm) ATmakeAppl(sym_Var_1, i_12)));
                                                                                                                                               return(t);
                                                                                                                                             }
-                                                                                                                                            t = foldr_2_0(g_1, h_1, t);
+                                                                                                                                            t = foldr_2_0(f_1, g_1, t);
                                                                                                                                           }
-                                                                                                                                          t_10 = t;
-                                                                                                                                          t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Match_1, (ATerm) ATmakeAppl(sym_Var_1, v_10)), (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_AM_2, n_7, (ATerm) ATmakeAppl(sym_Var_1, u_10)), t_10));
+                                                                                                                                          d_12 = t;
+                                                                                                                                          t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Match_1, (ATerm) ATmakeAppl(sym_Var_1, i_12)), (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_AM_2, q_7, (ATerm) ATmakeAppl(sym_Var_1, e_12)), d_12));
                                                                                                                                         }
                                                                                                                                       }
                                                                                                                                     else
                                                                                                                                       {
                                                                                                                                         if(match_cons(t, sym_SwitchChoiceNoOtherwise_2))
                                                                                                                                           {
-                                                                                                                                            n_7 = ATgetArgument(t, 0);
-                                                                                                                                            o_7 = ATgetArgument(t, 1);
-                                                                                                                                            t = (ATerm) ATmakeAppl(sym_SwitchChoice_3, n_7, o_7, term_m_4);
+                                                                                                                                            q_7 = ATgetArgument(t, 0);
+                                                                                                                                            r_7 = ATgetArgument(t, 1);
+                                                                                                                                            t = (ATerm) ATmakeAppl(sym_SwitchChoice_3, q_7, r_7, term_l_4);
                                                                                                                                           }
                                                                                                                                         else
                                                                                                                                           {
                                                                                                                                             if(match_cons(t, sym_CondChoice_3))
                                                                                                                                               {
-                                                                                                                                                n_7 = ATgetArgument(t, 0);
-                                                                                                                                                o_7 = ATgetArgument(t, 1);
-                                                                                                                                                i_7 = ATgetArgument(t, 2);
-                                                                                                                                                t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Where_1, n_7), o_7, i_7);
+                                                                                                                                                q_7 = ATgetArgument(t, 0);
+                                                                                                                                                r_7 = ATgetArgument(t, 1);
+                                                                                                                                                l_7 = ATgetArgument(t, 2);
+                                                                                                                                                t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Where_1, q_7), r_7, l_7);
                                                                                                                                               }
                                                                                                                                             else
                                                                                                                                               {
                                                                                                                                                 if(match_cons(t, sym_RChoice_2))
                                                                                                                                                   {
-                                                                                                                                                    n_7 = ATgetArgument(t, 0);
-                                                                                                                                                    o_7 = ATgetArgument(t, 1);
-                                                                                                                                                    t = (ATerm) ATmakeAppl(sym_LChoice_2, o_7, n_7);
+                                                                                                                                                    q_7 = ATgetArgument(t, 0);
+                                                                                                                                                    r_7 = ATgetArgument(t, 1);
+                                                                                                                                                    t = (ATerm) ATmakeAppl(sym_LChoice_2, r_7, q_7);
                                                                                                                                                   }
                                                                                                                                                 else
                                                                                                                                                   {
                                                                                                                                                     if(match_cons(t, sym_PrimT_3))
                                                                                                                                                       {
-                                                                                                                                                        n_7 = ATgetArgument(t, 0);
-                                                                                                                                                        o_7 = ATgetArgument(t, 1);
-                                                                                                                                                        i_7 = ATgetArgument(t, 2);
+                                                                                                                                                        q_7 = ATgetArgument(t, 0);
+                                                                                                                                                        r_7 = ATgetArgument(t, 1);
+                                                                                                                                                        l_7 = ATgetArgument(t, 2);
                                                                                                                                                         {
-                                                                                                                                                          ATerm i_15 = NULL;
-                                                                                                                                                          t = n_7;
+                                                                                                                                                          ATerm r_15 = NULL;
+                                                                                                                                                          t = q_7;
                                                                                                                                                           t = un_double_quote_0_0(t);
-                                                                                                                                                          i_15 = t;
-                                                                                                                                                          t = (ATerm) ATmakeAppl(sym_PrimT_3, i_15, o_7, i_7);
+                                                                                                                                                          r_15 = t;
+                                                                                                                                                          t = (ATerm) ATmakeAppl(sym_PrimT_3, r_15, r_7, l_7);
                                                                                                                                                         }
                                                                                                                                                       }
                                                                                                                                                     else
                                                                                                                                                       {
                                                                                                                                                         if(match_cons(t, sym_PrimNoArgs_1))
                                                                                                                                                           {
-                                                                                                                                                            n_7 = ATgetArgument(t, 0);
+                                                                                                                                                            q_7 = ATgetArgument(t, 0);
                                                                                                                                                             {
-                                                                                                                                                              ATerm k_15 = NULL;
-                                                                                                                                                              t = n_7;
+                                                                                                                                                              ATerm t_15 = NULL;
+                                                                                                                                                              t = q_7;
                                                                                                                                                               t = un_double_quote_0_0(t);
-                                                                                                                                                              k_15 = t;
-                                                                                                                                                              t = (ATerm) ATmakeAppl(sym_Prim_2, k_15, (ATerm) ATempty);
+                                                                                                                                                              t_15 = t;
+                                                                                                                                                              t = (ATerm) ATmakeAppl(sym_Prim_2, t_15, (ATerm) ATempty);
                                                                                                                                                             }
                                                                                                                                                           }
                                                                                                                                                         else
                                                                                                                                                           {
                                                                                                                                                             if(match_cons(t, sym_CallNoArgs_1))
                                                                                                                                                               {
-                                                                                                                                                                n_7 = ATgetArgument(t, 0);
-                                                                                                                                                                t = (ATerm) ATmakeAppl(sym_Call_2, n_7, (ATerm) ATempty);
+                                                                                                                                                                q_7 = ATgetArgument(t, 0);
+                                                                                                                                                                t = (ATerm) ATmakeAppl(sym_Call_2, q_7, (ATerm) ATempty);
                                                                                                                                                               }
                                                                                                                                                             else
                                                                                                                                                               {
                                                                                                                                                                 if(match_cons(t, sym_SDefNoArgs_2))
                                                                                                                                                                   {
-                                                                                                                                                                    n_7 = ATgetArgument(t, 0);
-                                                                                                                                                                    o_7 = ATgetArgument(t, 1);
-                                                                                                                                                                    t = (ATerm) ATmakeAppl(sym_SDef_3, n_7, (ATerm)ATempty, o_7);
+                                                                                                                                                                    q_7 = ATgetArgument(t, 0);
+                                                                                                                                                                    r_7 = ATgetArgument(t, 1);
+                                                                                                                                                                    t = (ATerm) ATmakeAppl(sym_SDef_3, q_7, (ATerm)ATempty, r_7);
                                                                                                                                                                   }
                                                                                                                                                                 else
                                                                                                                                                                   {
-                                                                                                                                                                    if(match_cons(t, sym_SRDef_3))
+                                                                                                                                                                    if(match_cons(t, sym_SRDefT_4))
                                                                                                                                                                       {
-                                                                                                                                                                        n_7 = ATgetArgument(t, 0);
-                                                                                                                                                                        o_7 = ATgetArgument(t, 1);
-                                                                                                                                                                        i_7 = ATgetArgument(t, 2);
-                                                                                                                                                                        t = i_7;
+                                                                                                                                                                        q_7 = ATgetArgument(t, 0);
+                                                                                                                                                                        r_7 = ATgetArgument(t, 1);
+                                                                                                                                                                        l_7 = ATgetArgument(t, 2);
+                                                                                                                                                                        h_7 = ATgetArgument(t, 3);
+                                                                                                                                                                        t = h_7;
                                                                                                                                                                         if(match_cons(t, sym_StratRule_3))
                                                                                                                                                                           {
-                                                                                                                                                                            j_7 = ATgetArgument(t, 0);
-                                                                                                                                                                            k_7 = ATgetArgument(t, 1);
-                                                                                                                                                                            l_7 = ATgetArgument(t, 2);
+                                                                                                                                                                            i_7 = ATgetArgument(t, 0);
+                                                                                                                                                                            j_7 = ATgetArgument(t, 1);
+                                                                                                                                                                            k_7 = ATgetArgument(t, 2);
                                                                                                                                                                           }
                                                                                                                                                                         else
                                                                                                                                                                           _fail(t);
-                                                                                                                                                                        t = (ATerm) ATmakeAppl(sym_SDefT_4, n_7, o_7, (ATerm)ATempty, (ATerm) ATmakeAppl(sym_Seq_2, j_7, (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Where_1, l_7), k_7)));
+                                                                                                                                                                        t = (ATerm) ATmakeAppl(sym_SDefT_4, q_7, r_7, l_7, (ATerm) ATmakeAppl(sym_Seq_2, i_7, (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Where_1, k_7), j_7)));
                                                                                                                                                                       }
                                                                                                                                                                     else
                                                                                                                                                                       {
-                                                                                                                                                                        if(match_cons(t, sym_SRDefNoArgs_2))
+                                                                                                                                                                        if(match_cons(t, sym_SRDef_3))
                                                                                                                                                                           {
-                                                                                                                                                                            n_7 = ATgetArgument(t, 0);
-                                                                                                                                                                            o_7 = ATgetArgument(t, 1);
-                                                                                                                                                                            t = (ATerm) ATmakeAppl(sym_SRDef_3, n_7, (ATerm)ATempty, o_7);
+                                                                                                                                                                            q_7 = ATgetArgument(t, 0);
+                                                                                                                                                                            r_7 = ATgetArgument(t, 1);
+                                                                                                                                                                            l_7 = ATgetArgument(t, 2);
+                                                                                                                                                                            t = l_7;
+                                                                                                                                                                            if(match_cons(t, sym_StratRule_3))
+                                                                                                                                                                              {
+                                                                                                                                                                                m_7 = ATgetArgument(t, 0);
+                                                                                                                                                                                n_7 = ATgetArgument(t, 1);
+                                                                                                                                                                                o_7 = ATgetArgument(t, 2);
+                                                                                                                                                                              }
+                                                                                                                                                                            else
+                                                                                                                                                                              _fail(t);
+                                                                                                                                                                            t = (ATerm) ATmakeAppl(sym_SDefT_4, q_7, r_7, (ATerm)ATempty, (ATerm) ATmakeAppl(sym_Seq_2, m_7, (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Where_1, o_7), n_7)));
                                                                                                                                                                           }
                                                                                                                                                                         else
                                                                                                                                                                           {
-                                                                                                                                                                            if(match_cons(t, sym_RDec_2))
+                                                                                                                                                                            if(match_cons(t, sym_SRDefNoArgs_2))
                                                                                                                                                                               {
-                                                                                                                                                                                n_7 = ATgetArgument(t, 0);
-                                                                                                                                                                                o_7 = ATgetArgument(t, 1);
-                                                                                                                                                                                t = (ATerm) ATmakeAppl(sym_RDecT_3, n_7, o_7, (ATerm) ATempty);
+                                                                                                                                                                                q_7 = ATgetArgument(t, 0);
+                                                                                                                                                                                r_7 = ATgetArgument(t, 1);
+                                                                                                                                                                                t = (ATerm) ATmakeAppl(sym_SRDef_3, q_7, (ATerm)ATempty, r_7);
                                                                                                                                                                               }
                                                                                                                                                                             else
                                                                                                                                                                               {
-                                                                                                                                                                                if(match_cons(t, sym_RDecNoArgs_1))
+                                                                                                                                                                                if(match_cons(t, sym_RDec_2))
                                                                                                                                                                                   {
-                                                                                                                                                                                    n_7 = ATgetArgument(t, 0);
-                                                                                                                                                                                    t = (ATerm) ATmakeAppl(sym_RDec_2, n_7, (ATerm) ATempty);
+                                                                                                                                                                                    q_7 = ATgetArgument(t, 0);
+                                                                                                                                                                                    r_7 = ATgetArgument(t, 1);
+                                                                                                                                                                                    t = (ATerm) ATmakeAppl(sym_RDecT_3, q_7, r_7, (ATerm) ATempty);
                                                                                                                                                                                   }
                                                                                                                                                                                 else
                                                                                                                                                                                   {
-                                                                                                                                                                                    if(match_cons(t, sym_RDefNoArgs_2))
+                                                                                                                                                                                    if(match_cons(t, sym_RDecNoArgs_1))
                                                                                                                                                                                       {
-                                                                                                                                                                                        n_7 = ATgetArgument(t, 0);
-                                                                                                                                                                                        o_7 = ATgetArgument(t, 1);
-                                                                                                                                                                                        t = (ATerm) ATmakeAppl(sym_RDef_3, n_7, (ATerm)ATempty, o_7);
+                                                                                                                                                                                        q_7 = ATgetArgument(t, 0);
+                                                                                                                                                                                        t = (ATerm) ATmakeAppl(sym_RDec_2, q_7, (ATerm) ATempty);
                                                                                                                                                                                       }
                                                                                                                                                                                     else
                                                                                                                                                                                       {
-                                                                                                                                                                                        if(match_cons(t, sym_Module_2))
+                                                                                                                                                                                        if(match_cons(t, sym_RDefNoArgs_2))
                                                                                                                                                                                           {
-                                                                                                                                                                                            ATerm o_4 = ATgetArgument(t, 0);
-                                                                                                                                                                                            o_7 = ATgetArgument(t, 1);
+                                                                                                                                                                                            q_7 = ATgetArgument(t, 0);
+                                                                                                                                                                                            r_7 = ATgetArgument(t, 1);
+                                                                                                                                                                                            t = (ATerm) ATmakeAppl(sym_RDef_3, q_7, (ATerm)ATempty, r_7);
                                                                                                                                                                                           }
                                                                                                                                                                                         else
-                                                                                                                                                                                          _fail(t);
-                                                                                                                                                                                        t = (ATerm) ATmakeAppl(sym_Specification_1, o_7);
+                                                                                                                                                                                          {
+                                                                                                                                                                                            if(match_cons(t, sym_Module_2))
+                                                                                                                                                                                              {
+                                                                                                                                                                                                ATerm n_4 = ATgetArgument(t, 0);
+                                                                                                                                                                                                r_7 = ATgetArgument(t, 1);
+                                                                                                                                                                                              }
+                                                                                                                                                                                            else
+                                                                                                                                                                                              _fail(t);
+                                                                                                                                                                                            t = (ATerm) ATmakeAppl(sym_Specification_1, r_7);
+                                                                                                                                                                                          }
                                                                                                                                                                                       }
                                                                                                                                                                                   }
                                                                                                                                                                               }
@@ -1686,27 +1709,27 @@ ATerm Desugar_0_0 (ATerm t)
     }
   return(t);
 }
-static ATerm i_1 (ATerm t)
+static ATerm h_1 (ATerm t)
 {
-  t = try_1_0(j_1, t);
-  t = topdown_1_0(k_1, t);
+  t = try_1_0(i_1, t);
+  t = topdown_1_0(j_1, t);
   return(t);
 }
-static ATerm j_1 (ATerm t)
+static ATerm i_1 (ATerm t)
 {
-  ATerm e_16 = NULL,f_16 = NULL;
-  f_16 = t;
-  t = SSL_explode_term(f_16);
+  ATerm t_16 = NULL,u_16 = NULL;
+  u_16 = t;
+  t = SSL_explode_term(u_16);
   if(match_cons(t, sym__2))
     {
-      ATerm q_4 = ATgetArgument(t, 0);
-      ATerm r_4 = ATgetArgument(t, 1);
-      if(((ATgetType(r_4) == AT_LIST) && !(ATisEmpty(r_4))))
+      ATerm p_4 = ATgetArgument(t, 0);
+      ATerm q_4 = ATgetArgument(t, 1);
+      if(((ATgetType(q_4) == AT_LIST) && !(ATisEmpty(q_4))))
         {
-          e_16 = ATgetFirst((ATermList) r_4);
+          t_16 = ATgetFirst((ATermList) q_4);
           {
-            ATerm s_4 = (ATerm) ATgetNext((ATermList) r_4);
-            if(((ATgetType(s_4) != AT_LIST) || !(ATisEmpty(s_4))))
+            ATerm r_4 = (ATerm) ATgetNext((ATermList) q_4);
+            if(((ATgetType(r_4) != AT_LIST) || !(ATisEmpty(r_4))))
               _fail(t);
           }
         }
@@ -1715,10 +1738,10 @@ static ATerm j_1 (ATerm t)
     }
   else
     _fail(t);
-  t = e_16;
+  t = t_16;
   return(t);
 }
-static ATerm k_1 (ATerm t)
+static ATerm j_1 (ATerm t)
 {
   t = repeat_1_0(Desugar_0_0, t);
   t = try_1_0(DesugarOnce_0_0, t);
@@ -1726,7 +1749,7 @@ static ATerm k_1 (ATerm t)
 }
 ATerm stratego_desugar_0_0 (ATerm t)
 {
-  t = io_wrap_1_0(i_1, t);
+  t = io_wrap_1_0(h_1, t);
   return(t);
 }
 ATerm main_0_0 (ATerm t)

@@ -2,3 +2,4 @@ regular tree grammar
   start Strategy
   productions
     Strategy -> Cong(Id, u_0)
+    Id       -> Mod(String, String)

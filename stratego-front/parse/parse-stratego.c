@@ -289,7 +289,7 @@ static ATerm n_0 (ATerm t);
 ATerm get_syntax_definition_0_0 (ATerm t);
 ATerm say_1_0 (ATerm m_84 (ATerm), ATerm t);
 ATerm find_in_path_0_0 (ATerm t);
-ATerm find_in_includes_1_0 (ATerm l_20 (ATerm), ATerm t);
+ATerm find_in_includes_1_0 (ATerm k_20 (ATerm), ATerm t);
 static ATerm q_0 (ATerm t);
 static ATerm r_0 (ATerm t);
 static ATerm u_0 (ATerm t);
@@ -567,13 +567,13 @@ ATerm get_syntax_definition_0_0 (ATerm t)
   }
   return(t);
 }
-ATerm find_in_includes_1_0 (ATerm l_20 (ATerm), ATerm t)
+ATerm find_in_includes_1_0 (ATerm k_20 (ATerm), ATerm t)
 {
   ATerm n_1 = NULL,p_1 = NULL;
   static ATerm p_0 (ATerm t);
   static ATerm p_0 (ATerm t)
   {
-    t = debug_1_0(l_20, t);
+    t = debug_1_0(k_20, t);
     return(t);
   }
   p_1 = t;

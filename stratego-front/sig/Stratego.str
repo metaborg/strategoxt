@@ -3,7 +3,7 @@ module Stratego
 imports list-cons option
 signature
   constructors
-                               : Strategy * Strategy -> y_0
+                               : Strategy * Strategy -> Strategy_Strategy_0
     RDecT                      : Id * List(Typedid) * List(Typedid) -> RuleDec
     RDec                       : Id * List(Typedid) -> RuleDec
     RDecNoArgs                 : Id -> RuleDec
@@ -70,8 +70,8 @@ signature
     GenDynRules                : List(DynRuleDef) -> Strategy
     DynRuleScope               : List(DynRuleScopeId) * Strategy -> Strategy
     AM                         : Strategy * Term -> Strategy
-    SwitchChoice               : Strategy * List(y_0) * Strategy -> Strategy
-    SwitchChoiceNoOtherwise    : Strategy * List(y_0) -> Strategy
+    SwitchChoice               : Strategy * List(Strategy_Strategy_0) * Strategy -> Strategy
+    SwitchChoiceNoOtherwise    : Strategy * List(Strategy_Strategy_0) -> Strategy
     CondChoice                 : Strategy * Strategy * Strategy -> Strategy
     RGChoice                   : Strategy * Strategy -> Strategy
     GChoice                    : Strategy * Strategy -> Strategy

@@ -31,9 +31,9 @@ rules
     SRDef(f, xs, StratRule(s1, s2, s3)) -> 
     SDefT(f, xs, [], Seq(s1, Seq(Where(s3), s2)))
 
-//  Desugar :
-//    SRDefT(f, xs, ys, StratRule(s1, s2, s3)) -> 
-//     SDefT(f, xs, ys, Seq(s1, Seq(Where(s3), s2)))
+  Desugar :
+    SRDefT(f, xs, ys, StratRule(s1, s2, s3)) -> 
+     SDefT(f, xs, ys, Seq(s1, Seq(Where(s3), s2)))
 
   Desugar :
     SDefNoArgs(f, s) 	-> SDef(f, [], s)
