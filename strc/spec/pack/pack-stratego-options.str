@@ -94,8 +94,8 @@ strategies
   create-dep-file =
     ?files
     ; where(
-        <get-config> "-o" => outfile
-      ; <fopen> (<depfile-from-config> (), "w") => stream
+        depfile-from-config => outfile
+      ; <fopen> (<add-extension>(outfile,"dep"), "w") => stream
       )
     ; ![outfile | <separate-by(|" \\\n\t")> [":" | files]]
     ; map(<fputs> (<id>, stream))
