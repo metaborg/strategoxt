@@ -9,7 +9,7 @@ strategies
     [] + [s | filter(s)] <+ ?[_ | <filter(s)> ]
 
   reverse-filter(s) = 
-    [] + [id | filter(s)]; ([s | id] <+ ?[_  | <id>])
+    [] + [id | reverse-filter(s)]; ([s | id] <+ ?[_  | <id>])
 
   filter-gen(pred, cont : (term -> term) * term -> term) =
     rec x([] + (pred; cont(x)) <+ Tl; x)
