@@ -4,6 +4,6 @@ SUBDIRS           = syn sig pp trans lib xtc tests
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 DIST_SUBDIRS      = $(SUBDIRS)
 
-EXTRA_DIST = bootstrap Makefile.xt 
+EXTRA_DIST = bootstrap autoxt.m4 Makefile.xt 
 
 ACLOCAL_AMFLAGS = -I .
