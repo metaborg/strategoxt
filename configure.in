@@ -96,6 +96,7 @@ top_srcdir=`pwd`
 AC_OUTPUT(
 	Makefile 
 	README
+  StrategoXT.spec
 )
 
 ### SUBPACKAGES ########################
