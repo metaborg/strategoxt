@@ -1,3 +1,6 @@
+2001-09-06 Merijn de Jonge <mdejonge@cwi.nl> 
+   * Abox2latex: box fix: latex tables were not generated correctly
+
 2001-09-05 Merijn de Jonge <mdejonge@cwi.nl> 
    * Asfix2abox: bug fix: formatting sequences didn;t work correctly.
 

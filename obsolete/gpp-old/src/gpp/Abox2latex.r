@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Abox2latex.r,v 1.3 2001/06/08 09:44:16 mdejonge Exp $
+% $Id: Abox2latex.r,v 1.4 2001/09/06 09:04:46 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
@@ -230,7 +230,7 @@ table-row =
    <+
       [id,C(id,id)|x]
    <+
-      ?[e1,e2|xs];![e1,CSEP,e2|<x>xs]
+      ?[e1,e2|xs];![e1,CSEP|<x>[e2|xs]]
    })
    
 MkRows =
