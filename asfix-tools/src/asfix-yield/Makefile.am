@@ -10,6 +10,7 @@ LDADD           += $(SSL_LIBS)
 TESTS          = asfix_yield1_check asfix_yield2_check
 CLEANFILES     = asfix_yield1_check asfix_yield2_check $(wildcard *.dep) asfix-yield
 BOOTCLEANFILES = asfix-yield.c
+EXTRA_DIST     = $(wildcard *.str)
 
 SCFLAGS        = -I $(top_srcdir)/sig
 
