@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: gen-html.sh,v 1.2 2000/10/05 07:40:38 mdejonge Exp $
+# $Id: gen-html.sh,v 1.3 2000/10/05 08:38:43 mdejonge Exp $
 
 #
 # This script generates on standard output an XT download page. It consists
@@ -36,7 +36,7 @@
 pkgname=xt
 
 archs=`ls ${pkgname}*.gz|sed 's/\./ /g;s/-/ /g;s/src/aaasrc/' | awk '{print $4}'| sort -u|sed 's/aaasrc/src/'`
-versions=`ls ${pkgname}*.gz|sed 's/\./ /g;s/-/ /g' | awk '{print $2"."$3}' | sort -ur | sed 's/[^0-9.]//g'`
+versions=`ls ${pkgname}*.gz|sed 's/\./ /g;s/-/ /g' | awk '{print $2"."$3}' | sort -ur `
 
 
 cat header.html
@@ -66,9 +66,10 @@ do
          do
             date=`ls -l ${pkg} | awk '{printf "%s %s, %s", $6, $7, $8}'`
             bytes=`ls -l ${pkg} | awk '{printf "%s", $5}'`
-            printf "<a href=\"${pkg}\">${pkg}</a> "
+            typeof=`echo ${pkg} | sed "s/${pkgname}-${version}.${arch}.//"| sed 's/\..*//'` 
+            printf "<a href=\"${pkg}\">${typeof} package</a>&nbsp;"
             printf "<img src=\"info.gif\" 
-                    alt=\"Creation time: ${date}, Size: ${bytes} bytes\"><br>"
+                    alt=\"Platform: ${arch}, Version: ${version}, Creation time: ${date}, Size: ${bytes} bytes\"><br>"
          done
       else
          echo "&nbsp;"
