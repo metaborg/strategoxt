@@ -86,11 +86,27 @@ strategies
         try(
           ?Failure()
         ; <concat-strings; echo> ["* ERROR: test ", <int-to-string> i, " (", n, ")"]
-        ; <try(ParseResult(Success, read-from)); debug(!"** Result:   ")> result
-        ; <debug(!"** Expected: ")> expected
+        ; <echo-parse-result> result
+        ; <echo-expected> expected
         )
       )
     )
+
+  echo-parse-result :
+    ParseResult(Failure(), _) -> <say(!"  - parsing failed")> ()
+
+  echo-parse-result :
+    ParseResult(Success(), file) -> <debug(!"  - succeeded: ")> t
+      where <read-from> file => t
+
+  echo-expected :
+    pattern(p) -> <implode-aterm; debug(!"  - expected:  ")> p
+
+  echo-expected :
+    success() ->  <say(!"  - should succeed")> ()
+
+  echo-expected :
+    failure() ->  <say(!"  - should fail")> ()
 
 strategies
 

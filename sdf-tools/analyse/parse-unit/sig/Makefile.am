@@ -15,5 +15,6 @@ parse-testsuite.def :
 
 $(SIGS) : parse-testsuite.def
 
-explode-aterm.rtree :
-	cp $(ATERM_TOOLS)/share/aterm-tools/explode-aterm.rtree . 
+explode-aterm.rtree : 
+	cp $(ATERM_TOOLS)/share/aterm-tools/explode-aterm.rtree .
+
