@@ -155,6 +155,24 @@ strategies
     prim("SSL_getcwd")
 
   /**
+   * Create directory
+   *
+   * @type String -> Int
+   */
+  mkdir =
+    ?(pathname, mode); prim("SSL_mkdir", pathname, mode) => 0
+    <+ <conc-strings; perror; fail> ("SSL/mkdir: Cannot create directory ", <id>)
+
+  /**
+   * Remove empty directory
+   *
+   * @type String -> Int
+   */
+  rmdir =
+    ?pathname; prim("SSL_rmdir", pathname) => 0
+    <+ <conc-strings; perror; fail> ("SSL/rmdir: Cannot delete directory ", <id>)
+
+  /**
    * Change current working directory.
    *
    * @type String -> String
