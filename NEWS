@@ -14,7 +14,7 @@ News about Stratego releases
 
 ------------------------------------------------------------------------------
 
-StrategoXT 0.9.3 -- under construction
+StrategoXT 0.9.3 -- released September 1, 2003
 
 This release is dedicated to refactoring and improving the Stratego
 compiler.
@@ -90,12 +90,13 @@ Although, a few preliminary tests suggest that the optimizations
 reduce code size and increase performance, more thorough benchmarking
 is needed to establish the precise effects of the optimizations. Also
 further tuning, particularly of the inliner is needed to get better
-results.  One noticeable effect of the optimizations is a slowdown of
-the compiler.  Therefore strc provides several optimization levels. No
+results. Application of all optimizations may slow down
+compilation. Therefore, strc provides several optimization levels. No
 optimizations are performed at -O 0 increasing to all optimizations at
 -O 6. If compile time is more important than run-time of the generated
 code, then -O 1 is the prefferred setting. -O 2 corresponds to the
-optimizations in 0.9.2.
+optimization level of 0.9.2. By default all optimizations are turned
+on.
 
 DOWNLOAD AND INSTALLATION
 
@@ -103,9 +104,6 @@ DOWNLOAD AND INSTALLATION
   detailed instructions on how to install the distributions:
 
   *  http://www.stratego-language.org/Stratego/StrategoRelease093
-
-SUMMARY OF CHANGES
-
 
 BUGS / KNOWN PROBLEMS
 
@@ -125,13 +123,11 @@ BUGS / KNOWN PROBLEMS
 
 CONTRIBUTIONS
 
-  * Bug reports and suggestions for improvements where submitted by:
-
   * Beta tests carried out by:
     Martin Bravenboer, Rob Vermaaas, Arthur van Dam
 
-  * The major developments were carried out by:
-    Martin Bravenboer, Rob Vermaas, Eelco Visser.
+  * Major developments were carried out by:
+    Eelco Visser, Martin Bravenboer, Rob Vermaas
 
 -----------------------------------------------------------------------
 
