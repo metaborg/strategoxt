@@ -90,10 +90,11 @@ rules
 strategies
 
   /**
-   * Logs the specified message as critical and terminates the program with exit code -1.
+   * Logs the specified message as critical and terminates the program
+   * with exit code 1.
    */
   fatal-err(|msg : String) =
-    log(|Critical(), msg, <id>); <exit> -1
+    log(|Critical(), msg, <id>); <exit> 1
 
   /**
    * Logs the specified message as and error.
