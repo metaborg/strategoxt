@@ -1,3 +1,6 @@
+2002-05-08  Merijn de Jonge <mdejonge@cwi.nl>
+   * visamb/vizamb.r: import Vis-amb, not Visamb
+
 2002-03-22  Merijn de Jonge <mdejonge@cwi.nl>
    * gbquery: bug fix. Detection of grammar location was incorrect
    * pp now supports more than one pp table 

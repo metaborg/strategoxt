@@ -1,6 +1,6 @@
 module visamb
 
-imports Visamb xt-paths ppp-wrap
+imports Vis-amb xt-paths ppp-wrap
 
 strategies
   main = 
