@@ -3,6 +3,9 @@ include $(wildcard *.dep)
 
 export LD_LIBRARY_PATH := $(SRTS)/lib/srts:${LD_LIBRARY_PATH}
 
+pkgtestsdatadir  = $(pkgdatadir)/tests
+pkgtestsdata_DATA= $(wildcard *.str)
+
 check_PROGRAMS = \
   annotation-props-test \
   annotations-test \
