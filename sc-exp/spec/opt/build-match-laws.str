@@ -6,6 +6,10 @@ strategies
 
 rules
 
+  WhereSavesCurrentTerm :
+    Where(s) -> Scope([x], Seq(Match(Var(x)), Seq(s, Build(Var(x)))))
+    where new => x
+
   BuildMatch :
     Seq(s1, s2) -> s3
     where <BMF> (s1, s2) => s3
@@ -26,6 +30,10 @@ rules
   NoEffect :
     Seq(Build(t1), Seq(Build(t2), s)) -> 
     Seq(Build(t2), s)
+
+  NoEffect :
+    Seq(Build(t1), Seq(PrimT(f, ss, ts), s)) -> 
+    Seq(PrimT(f, ss, ts), s)
 
   BuildBuild :
     (Build(t1), Build(t2)) -> Build(t2)

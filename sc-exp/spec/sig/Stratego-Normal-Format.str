@@ -38,9 +38,12 @@ strategies
 	+ LChoice(exp, exp)
 	+ GuardedLChoice(exp, exp, exp)
 	+ GChoice(exp, exp)
-	+ LGChoice(exp, exp)
-//	+ Call(SVar(is-string + Mod(is-string,is-string)),list(exp))    
-	+ CallT(SVar(is-string + Mod(is-string,is-string)),list(exp),list(term-expression))    
+	+ LGChoice(exp, exp) 
+
+	+ CallT(SVar(is-string + Mod(is-string,is-string)), 
+		list(exp), 
+		list(term-expression))    
+
 	+ Rec(is-string, exp)
 	+ Path(is-int, exp)
 	+ Cong(is-string, list(exp))
@@ -52,9 +55,14 @@ strategies
 	+ Build(term-expression)
 	+ Scope(list(is-string), exp)
 	+ Where(exp)
-//	+ Prim(is-string,list(term-expression))
 	+ PrimT(is-string,list(exp),list(term-expression))
-	+ Let(list(SDef(is-string,[],exp)),exp)
+
+	+ Let(list(SDefT(is-string,
+		         list(VarDec(is-string, FunType(list(id),id))),
+			 list(VarDec(is-string, ConstType(id))),
+			 exp))
+	     ,exp)
+
 	<+ debug(!"not a strategy-expression: ")
 	)
 

@@ -16,6 +16,9 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 %.tree : %.r ../pack/pack-stratego$(EXE) 
 	../pack/pack-stratego $(SINCLUDES) -i $< -o $@ 
 
+%.tree : %.str ../pack/pack-stratego$(EXE) 
+	../pack/pack-stratego $(SINCLUDES) -i $< -o $@ 
+
 %.tree : %.rtree ../pack/pack-stratego$(EXE) 
 	../pack/pack-stratego $(SINCLUDES) -i $< -o $@ 
 
@@ -54,6 +57,9 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 %.s10 : %.s9 ../match/optimize2$(EXE)
 	../match/optimize2 -i $< -o $@ -b
 
+%.s11 : %.s10 ../opt/const-prop$(EXE)
+	../opt/const-prop -i $< -o $@ -b
+
 # PRETTY-PRINTING ####################################################
 
 %.txt: % $(STRATEGO_FRONT)/bin/pp-stratego
@@ -67,16 +73,16 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 
 # BACK-END ###########################################################
 
-%.s11 : %.s10 ../c/canonicalize$(EXE)
+%.s12 : %.s10 ../c/canonicalize$(EXE)
 	../c/canonicalize -i $< -o $@ -b
 
-%.s12 : %.s11 ../c/canonicalize$(EXE)
+%.s13 : %.s12 ../c/canonicalize$(EXE)
 	../c/bound-unbound-vars -i $< -o $@ -b
 
-%.s12.check : %.s12 ../sig/Stratego-Canonical-Format$(EXE)
+%.s13.check : %.s13 ../sig/Stratego-Canonical-Format$(EXE)
 	../sig/Stratego-Canonical-Format -i $< -o $@ -b
 
-%.ac : %.s12 %.s12.check ../c/s2c$(EXE)
+%.ac : %.s13 %.s13.check ../c/s2c$(EXE)
 	../c/s2c -i $< -o $@  $(CINCLUDES)  -b
 
 %.c.abox : %.ac $(C_TOOLS)/share/c-tools/C-pretty.pp

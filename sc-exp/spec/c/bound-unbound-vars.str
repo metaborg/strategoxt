@@ -31,6 +31,7 @@ strategies
     <+ mark-let
     <+ mark-sdef 
     <+ mark-call
+    <+ mark-prim
     <+ mark-rec
     <+ mark-choice(mark-buv)
     <+ mark-lchoice(mark-buv)
@@ -51,6 +52,13 @@ strategies
     ; where(save-MarkVar => bnd)
     ; CallT(id, id, map(alltd(MarkVar)))
     ; CallT(id, mark-buv, id)
+    ; where(<isect-MarkVar> bnd)
+
+  mark-prim =
+    PrimT(id,id,id)
+    ; where(save-MarkVar => bnd)
+    ; PrimT(id, id, map(alltd(MarkVar)))
+    ; PrimT(id, mark-buv, id)
     ; where(<isect-MarkVar> bnd)
 
   mark-let =

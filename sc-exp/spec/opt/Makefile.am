@@ -6,9 +6,9 @@ SCFLAGS	= -I $(STRATEGO_FRONT)/share/stratego-front \
 	  -I $(srcdir)/../match \
 	  -I $(srcdir)/../lib \
 	  -I $(srcdir)/../front \
-	  --main $* --verbose 4
+	  --main $* --verbose 1
 
-libexec_PROGRAMS = fusion inline dead-def-elim
+libexec_PROGRAMS = fusion inline dead-def-elim const-prop
 check_PROGRAMS 	 = build-match-laws-test
 
 fusion_SOURCES 	 = fusion.c
@@ -17,6 +17,7 @@ TESTS 		 = build-match-laws-test
 
 CLEANFILES 	 = $(wildcard *.dep)
 
-BOOTCLEANFILES 	 = fusion.c build-match-laws-test.c
+BOOTCLEANFILES 	 = fusion.c dead-def-elim.c inline.c const-prop.c \
+		   build-match-laws-test.c  
 
 EXTRA_DIST 	 = $(wildcard *.str) $(wildcard *.meta)
