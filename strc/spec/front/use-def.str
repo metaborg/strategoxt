@@ -28,7 +28,8 @@ strategies
   def-use-def = 
   where(
     {| Context, MarkVar :
-      !Scope(<tvars>, <id>)
+      topdown(try(Var(?ListVar(<id>))))
+      ; !Scope(<tvars>, <id>)
       ; mark-scope
       ; ?Scope(_, <id>)
       ; (sdef-ud <+ rdef-ud <+ overlay-ud)
@@ -126,9 +127,9 @@ strategies
     + some(use-vars)
 
   Unbound = 
-    ?Var(x)
+    (?Var(ListVar(x)) <+ ?Var(x))
     ; <Context; error> ["variable '", x, "' used, but not bound"]
 
   MaybeUnbound = 
-    ?Var(x)
+    (?Var(ListVar(x)) <+ ?Var(x))
     ; <Warning; error> ["variable '", x, "' used, but may not be bound"]

@@ -88,22 +88,6 @@ strategies
     ; ?Build(t)
     ; rules(CurrentTerm : _ -> t)
 
-/*
-  prop-match =
-    Match(alltd(Binding))
-    ; ?Match(t)
-    ; try(//where(<not(oncetd(?Wld + ?As(_,_)))> t)
-        ; (where(CurrentTerm => ct)
-          ; (where(<prop-pattern-match> [(t, ct)]
-	           ; map(try(introduce-binding)))
-             <+ where(if-verbose2(<debug(!"no match with current term: "))> 
-		      ("strat: ", <id>, "current: ", ct))
-                ; !Fail)
-          <+ where(<not(oncetd(?Wld + ?As(_,_)))> t)
-	     ; rules(CurrentTerm : _ -> t)
-         ))
-*/
-
   prop-match =
     Match(alltd(Binding))
     ; ?Match(t)
@@ -111,7 +95,7 @@ strategies
         where(CurrentTerm => ct)
         ; (where(<prop-pattern-match> [(t, ct)]; map(try(introduce-binding)))
            /*; Match(alltd(Binding)) */
-           <+ <debug(!"no match with current term: ")> 
+           <+ <if-verbose3(debug(!"no match with current term: "))> 
 		      ("strat: ", <id>, "current: ", ct)
               ; !Fail)
        <+ where(<not(oncetd(?Wld + ?As(_,_)))> t)

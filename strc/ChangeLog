@@ -1,3 +1,16 @@
+2003-08-24  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/front/use-def.str: remove ListVar(_) wrapper before
+	analysis
+
+	* spec/front/spec-to-sdefs.str: get proper name of list variable
+	before introducing scope.
+
+2003-08-22  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/opt/const-prop.str: Messages about 'no match with
+	current term' only at verbosity level 3.
+
 2003-08-19  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/front/use-def.str: Test boundness of variables in term
