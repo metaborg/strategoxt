@@ -3,6 +3,6 @@ imports Stratego stratego-laws lib
 
 strategies
 
-  main = iowrap(optimizer)
+  main = io-wrap(optimizer)
 
   optimizer = downup(repeat(simplify))

@@ -8,7 +8,7 @@ signature
 strategies
 
   fusion-io = 
-    iowrap(
+    io-wrap(
       declare-inline-rules
       ; ( check-library-definitions
         ; alltd(innermost-fusion)

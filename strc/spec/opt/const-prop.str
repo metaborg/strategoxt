@@ -3,7 +3,7 @@ imports Stratego-Amb lib stratlib unification Stratego-MetaTransition
 strategies
 
   const-prop-io =
-    iowrap(Specification([Signature(id),Strategies(map(const-prop))]))
+    io-wrap(Specification([Signature(id),Strategies(map(const-prop))]))
 
   const-prop =
     {| CurrentTerm, Binding: cp |}

@@ -4,7 +4,7 @@ imports Stratego lib C dynamic-rules stratego-laws
 strategies
 
   canonicalize-io =
-    iowrap(
+    io-wrap(
       downup2(repeat(Canon + LiftPrimArgs + LiftCallArgs),repeat(Canon))
       ; simplify0
     )
