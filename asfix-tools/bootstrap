@@ -13,4 +13,4 @@ automake -a
 rm -f config.cache
 rm -f acconfig.h
 
-touch src/*/*.c
+# touch src/*/*.c
