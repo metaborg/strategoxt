@@ -1,3 +1,9 @@
+2003-01-02  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/stratego-stats/Makefile.am: Removed strat-count from build;
+	does not compile since announce/0 is missing; not clear where
+	from.
+
 2002-12-11  Eelco Visser  <visser@cs.uu.nl>
 
 	* Implemented sdf-to-sig in Stratego using XTC. Note that writing

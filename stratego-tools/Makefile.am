@@ -17,9 +17,11 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
+include Makefile.xt
 include package.conf
 
 SUBDIRS	= . src
+BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 
 EXTRA_DIST = ADDING-TOOLS VERSION configure.in.src genconf.sh \
              package.conf reconf $(PACKAGE)-$(VERSION).pkg program-check.m4 Makefile.xt
@@ -48,3 +50,4 @@ $(PACKAGE)-$(VERSION).pkg: package.conf
 	         | sed 's/^"/  /;s/" "/"  /g' \
 	         | tr '"' '\n' ;\
        ) > $@
+
