@@ -26,7 +26,6 @@ strategies // currently active rule set
     where(dr-get-rule-set(|name) => rs)
     ; dr-set-rule-set(|name)
     ; !rs
-    
 
   // Note: the storing the currently active rule set should
   // be done in a global variable at the C level (probably).
@@ -94,6 +93,14 @@ strategies // high-level API with implicit rule set
       ; dr-label-scope(|label)
       ; dr-set-rule-set(|name)
     )
+
+  dr-ignore-state(s|name) =
+    where(
+      dr-new-ruleset
+      ; dr-switch-rule-set(|name) => rs
+    )
+  ; s
+  ; where(<dr-set-rule-set(|name)> rs)
 
   dr-lookup-rule(|name, key) = 
     dr-get-rule-set(|name)
@@ -188,8 +195,13 @@ strategies // scope
   dr-add-scope = 
     ![<dr-new-scope> | <id>]
 
+  dr-destroy-scope =
+    (?RuleScope(_,<id>) + ?ChangeSet(<id>))
+  ; hashtable-destroy
+
   dr-leave-scope :
     [scope | scopes] -> scopes
+    where <dr-destroy-scope> scope
 
   dr-get-inner-scope :
     [scope | scopes] -> scope
