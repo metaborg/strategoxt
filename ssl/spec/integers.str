@@ -54,8 +54,12 @@ strategies
 
 strategies
 
-  max   = gt; Fst <+ Snd
-  min	= gt; Snd <+ Fst
+  // :: Int -> fail?
+  even = where(<mod> (<id>, 2) => 0)
+
+  // :: Int * Int -> Int
+  max = gt < Fst + Snd
+  min	= gt < Snd + Fst
 
   int   = ?x; prim("SSL_int",x)
 
