@@ -27,6 +27,9 @@ MTIME=`date +%Y%m%d%H%M.%S`
 BOOTSTRAPPED_FILES=`find $SRCROOT -name "*.rtree" -o -name "*.c" -o -name "*.pp.af" -o -name "*.pp" -o -name "*.tbl" -o -name "*.def"`
 touch -t $MTIME $BOOTSTRAPPED_FILES
 
+CHECKSCRIPTS=`find $SRCROOT -name "*check"`
+chmod u+x $CHECKSCRIPTS
+
 rm -f mkinstalldirs missing install-sh
 
 PKGS="autoxt srts xtc sdf-import sc ssl gpp c-tools stratego-front aterm-tools asfix-tools dot-tools graph-tools sdf-tools stratego-tools xt boxenv"
