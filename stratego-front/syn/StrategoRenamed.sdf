@@ -17,6 +17,8 @@ imports
 	Real 		=> StrategoReal
 	String 		=> StrategoString
 	StrChar 	=> StrategoStrChar	
+  Char => StrategoChar
+  CharChar => StrategoCharChar
 	Module 		=> StrategoModule
 	Script 		=> StrategoScript
 	Command 	=> StrategoCommand
