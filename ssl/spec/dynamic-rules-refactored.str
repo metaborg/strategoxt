@@ -1,0 +1,405 @@
+/**
+ * A revised version of the pre-0.9.5 dynamic-rules-tools
+ * Now using the new hash-tables, and implementing scoping
+ * as a 'stack' of hashtables.
+ */
+module dynamic-rules-refactored
+
+imports tables simple-list-traversal
+
+signature
+  constructors
+    RuleScope : List(String) * HashTable -> RuleScope
+    ChangeSet : HashTable -> RuleScope
+
+strategies // currently active rule set 
+
+  dr-get-rule-set(|name) =
+    <table-get> ("_rules", name) 
+    <+ dr-new-rule-set
+       ; dr-set-rule-set(|name)
+
+  dr-set-rule-set(|name) =
+    where(<table-put> ("_rules", name, <id>))
+
+  // Note: the storing the currently active rule set should
+  // be done in a global variable at the C level (probably).
+  // We should abstract from that as much as possible and 
+  // just consider the rule-set as a value that can be 
+  // changed. Manipulating the content should be the same
+  // for any storage solution we use.
+
+  // a question to consider: should operations be relative
+  // to the current rule-set or should we make a set of 
+  // operations that work on a named rule-set and deal
+  // with the pointer change at a higer-level?
+
+  // Well, we can actually have two APIs, one working on
+  // the implicit global rule-set, and the other working
+  // on the explicit representation.
+
+  // whose responsibility is it to initialize the outer scope?
+  // In the definition above an initial hashtable is created
+  // when no rule-set was available yet.
+
+strategies // high-level API with implicit rule set
+ 
+  // Note that the compiler can generate a specifically named
+  // rule for each of the strategies in this API, e.g, 
+  // add-rule-name, lookup-rule-name, etc. Then the compiler
+  // can specialize the applications.
+
+  dr-scope(s | name) = 
+    dr-begin-scope(|name)
+    ; (s < dr-end-scope(|name)
+         + dr-end-scope(|name); fail)
+
+  dr-begin-scope(|name) =
+    where(
+      dr-get-rule-set(|name)
+      ; dr-add-scope
+      ; dr-set-rule-set(|name)
+    )
+
+  dr-end-scope(|name) =
+    where(
+      dr-get-rule-set(|name)
+      ; dr-leave-scope
+      ; dr-set-rule-set(|name)
+    )
+
+  dr-start-change-set(|name) =
+    where(
+      dr-get-rule-set(|name)
+      ; dr-start-change-set
+      ; dr-set-rule-set(|name)
+    )
+
+  dr-commit-change-set(|name) =
+    where(
+      dr-get-rule-set(|name)
+      ; dr-commit-change-set
+      ; dr-set-rule-set(|name)
+    )
+
+  dr-label-scope(|name, label) =
+    where(
+      dr-get-rule-set(|name)
+      ; dr-label-scope(|label)
+      ; dr-set-rule-set(|name)
+    )
+
+  dr-lookup-rule(|name, key) = 
+    dr-get-rule-set(|name)
+    ; dr-lookup-rule(|key)
+
+  dr-set-rule(|name, key, value) =
+    where(
+      dr-get-rule-set(|name)
+      ; dr-set-in-rule-set(|key, [value])
+      ; dr-set-rule-set(|name)
+    )
+
+  dr-set-rule(|name, label, key, value) =
+    where(
+      dr-get-rule-set(|name)
+      ; dr-set-in-rule-set(|label, key, [value])
+      ; dr-set-rule-set(|name)
+    )
+
+  dr-undefine-rule(|name, key) =
+    where(
+      dr-get-rule-set(|name)
+      ; dr-set-in-rule-set(|key, [])
+      ; dr-set-rule-set(|name)
+    )
+
+  dr-undefine-rule(|name, label, key) =
+    where(
+      dr-get-rule-set(|name)
+      ; dr-set-in-rule-set(|label, key, [])
+      ; dr-set-rule-set(|name)
+    )
+
+  dr-add-rule(|name, key, value) =
+    where(
+      dr-get-rule-set(|name)
+      ; dr-add-to-rule-set(|key, value)
+      ; dr-set-rule-set(|name)
+    )
+
+  dr-add-rule(|name, label, key, value) =
+    where(
+      dr-get-rule-set(|name)
+      ; dr-add-to-rule-set(|label, key, value)
+      ; dr-set-rule-set(|name)
+    )
+
+
+  /**
+   * Intersect live rule-set with given rule set
+   *
+   * Question: should the intersection update the live rule set
+   * or create a new one?
+   */
+
+  dr-intersect-with(|name) =
+    <dr-intersect-rule-sets>(<dr-get-rule-set(|name)>, <id>)
+    ; dr-set-rule-set(|name)
+    
+//  dr-extend-with(|name) =
+//    <dr-extend-rule-set>(<dr-get-rule-set(|name)>, <id>)
+//    ; dr-set-rule-set(|name)  
+
+//  dr-replace-by(|name) =
+//    <dr-replace-rule-set>(<dr-get-rule-set(|name)>, <id>)
+//    ; dr-set-rule-set(|name)
+
+// low-level API working directly on rule-set
+
+strategies // debugging
+
+  dr-save-rule-set =
+    alltd(hashtable-getlist)
+
+strategies // scope
+
+  // a rule-set is represented by a list of (label list, hash-table) pairs
+
+  dr-new-scope =
+    !RuleScope([()],<new-hashtable>)
+
+  dr-new-rule-set =
+    ![<dr-new-scope>]
+
+  dr-add-scope = 
+    ![<dr-new-scope> | <id>]
+
+  dr-leave-scope :
+    [scope | scopes] -> scopes
+
+  dr-get-inner-scope :
+    [scope | scopes] -> scope
+
+  dr-label-scope(|label) :
+    [RuleScope(labels, tbl) | scopes] -> [RuleScope([label | labels], tbl) | scopes]
+
+strategies // change sets
+  
+  dr-new-change-set =
+    !ChangeSet(<new-hashtable>)
+
+  dr-start-change-set =
+    ![<dr-new-change-set> | <id>]
+
+  dr-commit-change-set :
+    [ChangeSet(tbl) | rs] -> rs'
+    where <hashtable-keys> tbl
+        ; foldr(!rs, dr-apply-change(|tbl)) => rs'
+
+  dr-apply-change(|tbl) :
+    (key1@([label | _], key), rs) -> <dr-set-in-rule-set(|label, key, <hashtable-get(|key1)> tbl)> rs
+
+
+  // note: labelings of current scope should be stored and committed as well.
+
+strategies // looking up
+
+  /**
+   * Fetch the most recent definition for key
+   */
+
+  dr-lookup-rule(|key) =
+    dr-lookup-rule(fail | key)
+
+  dr-lookup-rule(look | key) =
+    ?[RuleScope(lbls, tbl) | rs]
+    ; (<look>(lbls, key)
+       <+ <hashtable-get(|key)> tbl
+       <+ <dr-lookup-rule(look | key)> rs)
+
+  dr-lookup-rule(look1 | key) =
+    ?[ChangeSet(tbl) | rs]
+    ; let look2 = look1 <+ \ key' -> <hashtable-get(|key')> tbl \
+       in <dr-lookup-rule(look2 | key)> rs
+      end
+
+strategies // setting a rule
+
+  // A rule is always stored as a mapping from key to a list of values.
+  // Setting a rule entails removing previous rules. 
+
+  /**
+   * set a rule in the inner scope 
+   *
+   * The inner scope has label () since all scopes are labeled
+   * this way.
+   */
+
+  dr-set-in-rule-set(|key, value) = 
+    dr-set-in-rule-set(|(), key, value)
+
+  /**
+   * set a rule in the scope with specified label
+   */
+
+  dr-set-in-rule-set(|label, key, value) =
+    dr-set-in-rule-set(dr-set-fail | label, key, value)
+
+  dr-set-fail(|labels, tbl, key, value) =
+    fail
+
+  dr-set-in-rule-set(set : List(ATerm) * HashTable * ATerm * ATerm * ATerm -> ATerm 
+	   | label, key, value) =
+    ?[RuleScope(labels, tbl) | rs]
+    ; where(
+        <member>(label,labels)
+        < (set(|labels, tbl, key, value)
+           <+ where(<hashtable-put(|key, value)> tbl))
+        + <dr-set-in-rule-set(set | label, key, value)> rs
+      )
+
+  dr-set-in-rule-set(set1 : List(ATerm) * HashTable * ATerm * ATerm * ATerm -> ATerm 
+	   | label, key, value) =
+    ?[ChangeSet(tbl1) | rs]
+    ; where(
+        let set2(|labels, tbl2, key, value) =
+              set1(|labels, tbl2, key, value)
+              <+ <hashtable-get(|key)> tbl2 => value
+              <+ <hashtable-put(|(labels, key), value)> tbl1
+         in <dr-set-in-rule-set(set2 | label, key, value)> rs
+        end
+      )
+   
+
+    // what to do if no scope with the label is defined?
+    // currently this fails. This might default to adding to
+    // the inner scope and labeling that inner scope as
+    // well. However, that is quite expensive since
+    // it would entail first going through all scopes to
+    // establish non-existence of a label.
+
+strategies // extending a rule
+
+  // Extending a rule entails adding a value to the list of values 
+  // corresponding to the key. The intended semantics is that all
+  // these values are 
+
+  dr-add-to-rule-set(|key, value) = 
+    dr-add-to-rule-set(|(), key, value)
+
+  /**
+   * add a rule to the scope for label
+   *
+   * @assert: dr-add-to-rule-set(|l, k, v) = set-rule(|l, k, [v | <lookup-rule(|l, k, v) <+ ![]>])
+   */
+
+  dr-add-to-rule-set(|label, key, value) =
+    dr-add-to-rule-set(dr-add-fail | label, key, value)
+
+  dr-add-fail(|labels, tbl, key, value) =
+    fail
+
+  dr-add-to-rule-set(add : List(ATerm) * HashTable * ATerm * ATerm * ATerm -> ATerm 
+	     | label, key, value) =
+    ?[RuleScope(labels, tbl) | rs]
+    ; where(
+        <member>(label, labels)
+        < (add(|labels, tbl, key, value)
+           <+ where(<hashtable-push(|key, value)> tbl))
+        + <dr-add-to-rule-set(add | label, key, value)> rs
+      )
+
+  dr-add-to-rule-set(add1 : List(ATerm) * HashTable * ATerm * ATerm * ATerm -> ATerm 
+	     | label, key, value) =
+    ?[ChangeSet(tbl1) | rs]
+    ; where(
+        let add2(|labels, tbl2, key, value) =
+              add1(|labels, tbl2, key, value)
+              <+ (<hashtable-get(|(labels, key))> tbl1
+                  <+ <hashtable-get(|key)> tbl2
+                  <+ ![])
+	         // check that value not yet member of this set????
+                 ; <hashtable-put(|(labels, key), [value | <id>])> tbl1
+         in <dr-add-to-rule-set(add2 | label, key, value)> rs
+        end
+      )
+
+strategies // intersection
+
+  /**
+   * Intersection of two rule-sets
+   *
+   * assumption: the scope structure is the same
+   * intersection works scope by scope 
+   * note that labels are ignored
+   */
+
+  dr-intersect-rule-sets =
+    eq < fail
+    + (dr-intersect-rule-sets1  
+       <+ dr-intersect-rule-sets2)
+
+  dr-intersect-rule-sets1 :
+    (rs@[RuleScope(labels1, tbl1) | rs1], [RuleScope(labels2, tbl2) | rs2]) -> rs
+    where ior(<hashtable-intersect-wempty(|tbl2, [])> tbl1
+  	     ,<dr-intersect-rule-sets> (rs1, rs2))
+
+  dr-intersect-rule-sets2 :
+    (rs@[ChangeSet(tbl1) | rs1], [ChangeSet(tbl2) | rs2]) -> rs
+    where ior(<hashtable-intersect-wempty(|tbl2, [])> tbl1
+  	     ,<dr-intersect-rule-sets> (rs1, rs2))
+
+     /* Note:
+	First definition of intersection on rule-sets requires that
+	entries have exactly the same value. Interesting point here:
+	in the current data-flow application we have specialized
+	intersections that don't require the rule-tags in the closures
+	to be the same, since we know there that the rules are really
+	the same.  We should achieve this by creating equal rule tags
+	for equivalent rules.
+     */
+
+strategies // union
+
+  /**
+   * Union of two rule-sets
+   *
+   * assumption: the scope structure is the same
+   * union works scope by scope 
+   * 
+   */
+
+  dr-union-rule-sets =
+    eq < fail
+    + (dr-union-rule-sets1
+       <+ dr-union-rule-sets2)
+
+  dr-union-rule-sets1 :
+    (rs@[RuleScope(labels1, tbl1) | rs1], [RuleScope(labels2, tbl2) | rs2]) -> rs
+    where ior(<hashtable-union(|tbl2)> tbl1
+  	     ,<dr-union-rule-sets> (rs1, rs2))
+
+  dr-union-rule-sets2 :
+    (rs@[ChangeSet(tbl1) | rs1], [ChangeSet(tbl2) | rs2]) -> rs
+    where ior(<hashtable-union(|tbl2)> tbl1
+  	     ,<dr-union-rule-sets> (rs1, rs2))
+
+  dr-union-rule-sets3 =
+    ?([ChangeSet(tbl1) | rs1], [RuleScope(labels2, tbl2) | rs2])
+    ; error
+
+  dr-union-rule-sets3 =
+    ?([RuleScope(labels2, tbl2) | rs2], [ChangeSet(tbl1) | rs1])
+    ; error
+
+strategies // rule-set equality
+  dr-eq-rule-sets =
+  let rseq =
+        ?(RuleScope(lbl1, tbl1), RuleScope(lbl2, tbl2))
+      ; <set-eq> (lbl1, lbl2)
+      ; <hashtable-eq> (tbl1, tbl2)
+    +   ?(ChangeSet(tbl1), ChangeSet(tbl2))
+      ; <hashtable-eq> (tbl1, tbl2)
+   in where(zip(rseq))
+  end

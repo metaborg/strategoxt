@@ -13,6 +13,8 @@ check_PROGRAMS = \
   char-test \
   collect-test \
   dir-test \
+  dynamic-rules-lowlevel-test \
+  dynamic-rules-highlevel-test \
   env-traversal-test \
   exec-test \
   file-test \

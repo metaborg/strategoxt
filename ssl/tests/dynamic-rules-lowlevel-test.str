@@ -1,0 +1,312 @@
+module dynamic-rules-lowlevel-test
+imports dynamic-rules-refactored sunit
+signature
+
+strategies
+
+  main = 
+    test-suite(!"dynamic-rules-tested (low-level)",
+      test-dr-set-in-rule-set
+      ; test-dr-add-to-rule-set
+      ; test-change-set
+      ; test-dr-intersect-rule-sets
+    )
+
+  test-dr-set-in-rule-set =
+    say(!"testing low-level dr-set-in-rule-set");
+    apply-and-check(!"test-dr-set-in-rule-set creation"
+	, dr-new-rule-set
+	, !()
+	, ?rs0
+	)
+    ; apply-and-fail(!"test-dr-set-in-rule-set lookup non-existing"
+	, dr-lookup-rule(|"KeyA")
+	, !rs0
+	)
+    ; apply-test(!"test-dr-set-in-rule-set add rule"
+	, dr-set-in-rule-set(|"KeyA", ["value1"])
+	, !rs0
+	, !rs0
+	)
+    ; apply-test(!"test-dr-set-in-rule-set lookup"
+	, dr-lookup-rule(|"KeyA")
+	, !rs0
+	, !["value1"]
+	)
+    ; apply-and-check(!"test-dr-set-in-rule-set label/add scope"
+	, dr-label-scope(|"A")
+	  ; dr-add-scope; dr-label-scope(|"B")
+	  ; dr-add-scope
+	, !rs0
+	, ?rs1
+	)
+    ; apply-test(!"test-dr-set-in-rule-set lookup in higher scope"
+	, dr-lookup-rule(|"KeyA")
+	, !rs1
+	, !["value1"]
+	)
+    ; apply-test(!"test-dr-set-in-rule-set add (labeled) rules"
+	, dr-set-in-rule-set(|"KeyA", ["value4"])
+	  ; dr-set-in-rule-set(|"A", "KeyA", ["value5"])
+	  ; dr-set-in-rule-set(|"B", "KeyA", ["value6"])
+	, !rs1
+	, !rs1
+	)
+    ; apply-test(!"test-dr-set-in-rule-set lookup"
+	, dr-lookup-rule(|"KeyA")
+	, !rs1
+	, !["value4"]
+	)
+    ; apply-test(!"test-dr-set-in-rule-set undefine labeled rule"
+	, dr-set-in-rule-set(|"B", "KeyA", [])
+	, !rs1
+	, !rs1
+	)
+    ; apply-test(!"test-dr-set-in-rule-set lookup higher is empty"
+	, dr-lookup-rule(|"KeyA")
+	, !rs1
+	, !["value4"]
+	)
+    ; apply-test(!"test-dr-set-in-rule-set undefine rule"
+	, dr-set-in-rule-set(|"KeyA", [])
+	, !rs1
+	, !rs1
+	)
+    ; apply-test(!"test-dr-set-in-rule-set lookup empty"
+	, dr-lookup-rule(|"KeyA")
+	, !rs1
+	, ![]
+	)
+    ; apply-and-check(!"test-dr-set-in-rule-set leave scope"
+	, dr-leave-scope; dr-leave-scope
+	, !rs1
+	, ?rs2
+	)
+    ; apply-test(!"test-dr-set-in-rule-set lookup in returned scope"
+	, dr-lookup-rule(|"KeyA")
+	, !rs2
+	, !["value5"]
+	)
+
+
+  test-dr-add-to-rule-set =
+    say(!"testing low-level dr-add-to-rule-set");
+    apply-and-check(!"test-dr-add-to-rule-set creation"
+	, dr-new-rule-set
+	, !()
+	, ?rs0
+	)
+    ; apply-and-fail(!"test-dr-add-to-rule-set lookup non-existing"
+	, dr-lookup-rule(|"KeyA")
+	, !rs0
+	)
+    ; apply-test(!"test-dr-add-to-rule-set extend rule"
+	, dr-add-to-rule-set(|"KeyA", "value1")
+	, !rs0
+	, !rs0
+	)
+    ; apply-test(!"test-dr-add-to-rule-set lookup singleton"
+	, dr-lookup-rule(|"KeyA")
+	, !rs0
+	, !["value1"]
+	)
+    ; apply-and-check(!"test-dr-add-to-rule-set label/add scope"
+	, dr-label-scope(|"A")
+	  ; dr-add-scope; dr-label-scope(|"B")
+	  ; dr-add-scope
+	, !rs0
+	, ?rs1
+	)
+    ; apply-test(!"test-dr-add-to-rule-set lookup in higher scope"
+	, dr-lookup-rule(|"KeyA")
+	, !rs1
+	, !["value1"]
+	)
+    ; apply-test(!"test-dr-add-to-rule-set extend (labeled) rules"
+	, dr-add-to-rule-set(|"KeyA", "value4")
+	  ; dr-add-to-rule-set(|"A", "KeyA", "value5")
+	  ; dr-add-to-rule-set(|"B", "KeyA", "value7")
+	  ; dr-add-to-rule-set(|"B", "KeyB", "value8")
+	  ; dr-add-to-rule-set(|"B", "KeyB", "value9")
+	  ; dr-add-to-rule-set(|"KeyA", "value6")
+	, !rs1
+	, !rs1
+	)
+    ; apply-test(!"test-dr-add-to-rule-set lookup current scope"
+	, dr-lookup-rule(|"KeyA")
+	, !rs1
+	, !["value6","value4"]
+	)
+    ; apply-test(!"test-dr-add-to-rule-set lookup higher scope"
+	, dr-lookup-rule(|"KeyB")
+	, !rs1
+	, !["value9","value8"]
+	)
+    ; apply-test(!"test-dr-add-to-rule-set undefine in higher scope"
+	, dr-set-in-rule-set(|"A", "KeyB", [])
+	, !rs1
+	, !rs1
+	)
+    ; apply-test(!"test-dr-add-to-rule-set lookup higher is empty"
+	, dr-lookup-rule(|"KeyA")
+	, !rs1
+	, !["value6","value4"]
+	)
+    ; apply-test(!"test-dr-add-to-rule-set undefine in current scope"
+	, dr-set-in-rule-set(|"KeyA", [])
+	, !rs1
+	, !rs1
+	)
+    ; apply-test(!"test-dr-add-to-rule-set lookup empty"
+	, dr-lookup-rule(|"KeyA")
+	, !rs1
+	, ![]
+	)
+    ; apply-and-check(!"test-dr-add-to-rule-set leave scope"
+	, dr-leave-scope; dr-leave-scope
+	, !rs1
+	, ?rs2
+	)
+    ; apply-test(!"test-dr-add-to-rule-set lookup in returned scope"
+	, dr-lookup-rule(|"KeyA")
+	, !rs2
+	, !["value5","value1"]
+	)
+
+
+  test-change-set =
+    say(!"testing change-set");
+    apply-and-check(!"test-change-set add rule"
+	, dr-new-rule-set
+	, !()
+	, ?rs0
+	)
+    ; apply-and-fail(!"test-change-set lookup"
+	, dr-lookup-rule(|"KeyA")
+	, !rs0
+	)
+    ; apply-test(!"test-change-set add rules"
+	, dr-set-in-rule-set(|"KeyA", ["value1"])
+	, !rs0
+	, !rs0
+	)
+    ; apply-test(!"test-change-set lookup"
+	, dr-lookup-rule(|"KeyA")
+	, !rs0
+	, !["value1"]
+	)
+    ; apply-and-check(!"test-change-set label/add scope, start change set"
+	, dr-label-scope(|"A")
+	  ; dr-add-scope
+          ; dr-start-change-set
+	, !rs0
+	, ?rs1
+	)
+    ; apply-test(!"test-change-set lookup"
+	, dr-lookup-rule(|"KeyA")
+	, !rs1
+	, !["value1"]
+	)
+    ; apply-test(!"test-change-set add rules"
+	, dr-set-in-rule-set(|"KeyA", ["value4"])
+	  ; dr-set-in-rule-set(|"A", "KeyA", ["value5"])
+	, !rs1
+	, !rs1
+	)
+    ; apply-test(!"test-change-set lookup"
+	, dr-lookup-rule(|"KeyA")
+	, !rs1
+	, !["value4"]
+	)
+    ; where(
+        <dr-save-rule-set> rs1
+	; say(!"rule-set rs1: ")
+        ; map(debug(!"  "))
+      )
+    ; apply-and-check(!"test-change-set commit change set"
+	, dr-commit-change-set
+	, !rs1
+	, ?rs2
+	)
+    ; apply-test(!"test-change-set lookup"
+	, dr-lookup-rule(|"KeyA")
+	, !rs2
+	, !["value4"]
+	)
+    ; apply-and-check(!"test-change-set leave scope"
+	, dr-leave-scope
+	, !rs2
+	, ?rs3
+	)
+    ; apply-test(!"test-change-set lookup"
+	, dr-lookup-rule(|"KeyA")
+	, !rs3
+	, !["value5"]
+	)
+
+  test-dr-intersect-rule-sets =
+    say(!"testing dr-intersect-rule-sets")
+
+  ; where(dr-new-rule-set => rs1)
+  ; where(dr-new-rule-set => rs2)
+  ; where(dr-new-rule-set => rsi12)
+  ; apply-and-check(!"test-dr-intersect-rule-sets empty sets",
+    try(dr-intersect-rule-sets),
+    !(rs1, rs2),
+    <dr-eq-rule-sets> (rs1, rsi12))
+
+	; where(<dr-set-in-rule-set(|"KeyA", ["value2"])> rs2)
+	; where(<dr-set-in-rule-set(|"KeyA", [])> rsi12)
+  ; apply-and-check(!"test-dr-intersect-rule-sets 1st empty set",
+    try(dr-intersect-rule-sets),
+    !(rs1, rs2),
+    <dr-eq-rule-sets> (rs1, rsi12))
+
+	; where(<dr-set-in-rule-set(|"KeyA", ["value1"])> rs1)
+	; where(<dr-set-in-rule-set(|"KeyA", [])> rs2)
+  ; apply-and-check(!"test-dr-intersect-rule-sets 2nd empty set",
+    try(dr-intersect-rule-sets),
+    !(rs1, rs2),
+    <dr-eq-rule-sets> (rs1, rsi12))
+
+	; where(<dr-set-in-rule-set(|"KeyA", ["value1"])> rs1)
+	; where(<dr-set-in-rule-set(|"KeyA", ["value3"])> rs2)
+  ; apply-and-check(!"test-dr-intersect-rule-sets inequal singleton sets",
+    try(dr-intersect-rule-sets),
+    !(rs1, rs2),
+    <dr-eq-rule-sets> (rs1, rsi12))
+
+	; where(<dr-set-in-rule-set(|"KeyA", ["value4"])> rs1)
+	; where(<dr-set-in-rule-set(|"KeyA", ["value4"])> rs2)
+	; where(<dr-set-in-rule-set(|"KeyA", ["value4"])> rsi12)
+  ; apply-and-check(!"test-dr-intersect-rule-sets equal singleton sets",
+    try(dr-intersect-rule-sets),
+    !(rs1, rs2),
+    <dr-eq-rule-sets> (rs1, rsi12))
+
+/*
+	; where(<dr-label-scope(|"A")> rs1 => rs1')
+	; where(<dr-set-in-rule-set(|"KeyA", [])> rsi12)
+  ; apply-and-check(!"test-dr-intersect-rule-sets inequal scopes 1",
+    (debug-rule-set(|"rs1': "), debug-rule-set(|"rs2: ")); try(dr-intersect-rule-sets),
+    !(rs1', rs2),
+    <debug-rule-set(|"rs1': ")> rs1'; <debug-rule-set(|"rsi12: ")> rsi12; <dr-eq-rule-sets> (rs1', rsi12))
+
+	; where(<dr-set-in-rule-set(|"KeyA", ["value4"])> rs1)
+	; where(<dr-add-scope> rs1)
+	; where(<dr-label-scope(|"A")> rs2)
+	; where(<dr-add-scope> rs2)
+	; where(<dr-label-scope(|"A")> rsi12)
+	; where(<dr-add-scope> rsi12)
+  ; apply-and-check(!"test-dr-intersect-rule-sets multiple equal scopes",
+    try(dr-intersect-rule-sets),
+    !(rs1, rs2),
+    <dr-eq-rule-sets> (rs1, rsi12))
+
+*/
+  debug-rule-set(|msg) =
+    where(
+      dr-save-rule-set
+	  ; say(!msg)
+    ; map(debug(!"  "))
+    )

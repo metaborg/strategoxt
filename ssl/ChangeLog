@@ -1,3 +1,13 @@
+2004-04-13  Arthur van Dam <adam@cs.uu.nl>
+
+	* dynamic-rules-refactored.str: moved from experimental into SSL.
+
+	* dynamic-rules-(lowlevel|highlevel)-test.str: two testsuites for
+	testing both low- and highlevel API (needs some more tests).
+
+	* dynamic-rules.str: imports the dynamic-rules-refactored by
+	default, no name-clashes between old and new dr-strategies of course.
+
 2004-03-22  Martin Bravenboer <martin@cs.uu.nl>
 
 	* collect.str: improved the documentation of the collect

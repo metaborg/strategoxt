@@ -2,7 +2,7 @@
  * Constructors needed for dynamic rules. 
  */
 module dynamic-rules
-imports scoped-finite-map
+imports scoped-finite-map dynamic-rules-refactored
 signature
   constructors
     Keys      : Keys

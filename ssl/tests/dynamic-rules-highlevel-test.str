@@ -1,0 +1,214 @@
+module dynamic-rules-highlevel-test
+
+imports dynamic-rules-refactored io sunit
+
+signature
+  constructors
+    Foo    : Int * Int -> FooBar
+    Bar    : Int * Int -> FooBar
+    FooGen : Int * Int -> FooBar
+    FooGen : String * Int * Int -> FooBar
+    FooDef : String * ATerm -> Def
+    FooKill : Int -> FooBar
+    FooKill : String * Int -> FooBar
+
+    Closure : String * a -> Closure
+
+strategies
+
+  main =
+  test-suite(!"dynamic-rules-highlevel-test",
+    test-plain-1
+  ; test-labeled-1
+  ; test-add-1
+  ; test-add-bagof
+  )
+
+// plain dynamic rule
+// Strategy1 = {| A1 : [try(Gen1 + A1) | Strategy1] |}
+// Gen1 = ?FooGen(x,z); rules(A1 : Foo(x, y) -> Bar(y, z))
+// Gen2 = ?FooGen(x,z); hide rules(A1 : Foo(x, y))
+
+  debug-rules() =
+    where( <table-getlist> "_rules"; map((id, map(RuleScope(id, hashtable-getlist)))); debug(!"All rules: "))
+
+  Strategy1 =
+    dr-scope([try(Gen1 + Hide1 + A1) | Strategy1] <+ [] | "A1")
+
+  Strategy1-unscoped =
+    [try(Gen1 + Hide1 + A1) | Strategy1-unscoped] <+ []
+
+  Gen1 = 
+    ?FooGen(x, z)
+    ; dr-set-rule(|"A1", Foo(x, []), Closure("a1", z))
+
+  Hide1 = 
+    ?FooKill(x)
+    ; dr-undefine-rule(|"A1", Foo(x, []))
+
+  A1 : 
+    Foo(x, y) -> Bar(y, z)
+    where dr-lookup-rule(|"A1", Foo(x, [])) => [Closure("a1", z)|_]
+        
+
+  test-plain-1 =
+    apply-test(!"test-plain-1",
+      Strategy1,
+      ![FooGen(1, 3), Foo(1, 2), Foo(2, 2),
+        FooGen(1, 4), Foo(1, 2), FooKill(1), Foo(1, 5),
+        FooGen(1, 6), Foo(1, 7)],
+      ![FooGen(1, 3), Bar(2, 3), Foo(2, 2),
+        FooGen(1, 4), Bar(2, 4), FooKill(1), Foo(1, 5),
+        FooGen(1, 6), Bar(7, 6)]
+    )
+  ; apply-test(!"test-plain-unscoped-1",
+      Strategy1-unscoped,
+      ![FooGen(1, 3), Foo(1, 2), Foo(2, 2), FooGen(1, 4), Foo(1, 2), FooKill(1), Foo(1, 5), FooGen(1, 6), Foo(1, 7)],
+      ![FooGen(1, 3), Bar(2, 3), Foo(2, 2), FooGen(1, 4), Bar(2, 4), FooKill(1), Foo(1, 5), FooGen(1, 6), Bar(7, 6)]
+    )
+
+
+
+// labeled dynamic rule
+// Strategy2 = {| A : try(EnterScope2 + Gen2 + A2); all(Strategy2) |}
+// EnterScope2 = ?FooDef(f, _); where( A2@f )
+// Gen2 = ?FooGen(f,x,z); rules(A2@f : Foo(x, y) -> Bar(y, z))
+
+  Strategy2 = 
+    dr-scope(
+    [try(EnterScope2 + Gen2 + Hide2 + A2) | Strategy2] <+ [] | "A2")
+
+  EnterScope2 = 
+    ?FooDef(f, _)
+    ; dr-label-scope(|"A2", f)
+
+  Gen2 = 
+    ?FooGen(f,x, z)
+    ; dr-set-rule(|"A2", f, Foo(x, []), Closure("b", z))
+
+  Gen2 = 
+    ?FooGen(x, z)
+    ; dr-set-rule(|"A2", Foo(x, []), Closure("b", z))
+
+  Hide2 = 
+    ?FooKill(x)
+    ; dr-undefine-rule(|"A2", Foo(x, []))
+
+  Hide2 = 
+    ?FooKill(f, x)
+    ; dr-undefine-rule(|"A2", f, Foo(x, []))
+
+  A2 : 
+    Foo(x, y) -> Bar(y, z)
+    where dr-lookup-rule(|"A2", Foo(x, [])) => [Closure("b", z)|_]
+  
+      // note that application (lookup) is exactly the same
+
+  test-labeled-1 =
+    apply-test(!"test-labeled-1",
+      Strategy2,
+      ![FooGen(1, 3), Foo(1, 2),
+        FooDef("f",0), Foo(2, 2), Foo(1, 12), FooGen(1, 4), Foo(1, 2),
+        FooDef("g",0), Foo(1, 5), FooGen("g", 1, 6), FooKill("f", 1), Foo(1, 7), FooKill("g", 1), Foo(1, 7)],
+      ![FooGen(1, 3), Bar(2, 3),
+        FooDef("f",0), Foo(2, 2), Bar(12, 3), FooGen(1, 4), Bar(2, 4),
+        FooDef("g",0), Bar(5, 4), FooGen("g", 1, 6), FooKill("f", 1), Bar(7, 6), FooKill("g", 1), Foo(1, 7)]
+    )
+
+// add dynamic rule
+// Strategy3 = {| A3 : try(Gen3 + A3); all(Strategy3) |}
+// Gen3 = ?FooGen(x,z); add rules(A3 : Foo(x, y) -> Bar(y, z) where <lt>(y,z))
+
+  Strategy3 = 
+    dr-scope([ handleFooBar3 | Strategy3] <+ []| "A3")
+
+  Strategy3-bagof =
+    dr-scope([ handleFooBar3-bagof | Strategy3-bagof] <+ []| "A3")
+
+  handleFooBar3 = try(EnterScope3 + Gen3 + A3 + Hide3)
+
+  handleFooBar3-bagof = try(EnterScope3 + Gen3 + bagof-A3 + Hide3)
+
+  EnterScope3 = 
+    ?FooDef(f, _)
+    ; dr-label-scope(|"A3", f)
+
+  Gen3 = 
+    ?FooGen(x, z)
+    ; dr-add-rule(|"A3", Foo(x, []), Closure("c", z))
+
+  Gen3 = 
+    ?FooGen(f, x, z)
+    ; dr-add-rule(|"A3", f, Foo(x, []), Closure("c", z))
+
+  Hide3 = 
+    ?FooKill(x)
+    ; dr-undefine-rule(|"A3", Foo(x, []))
+
+  Hide3 = 
+    ?FooKill(f, x)
+    ; dr-undefine-rule(|"A3", f, Foo(x, []))
+
+  A3-aux(|x,y) : 
+    Closure("c", z) -> Bar(y, z) where <lt>(y, z)
+
+  // note there is such an -aux rule for each A3 dynamic rule.
+
+  // The following is an improvement over the current situation.
+  // There is only *one* lookup in the ruleset.
+
+  A3 : 
+    Foo(x, y) -> <fetch-elem(A3-aux(|x,y))> closures
+    where dr-lookup-rule(|"A3", Foo(x, [])) => closures
+
+  // applying a dynamic rule results in the first applicable rule
+  // this translation should be used for all dynamic rules
+  // a problem is that it incurs the overhead of applying fetch
+  // for rules where we always have but one result
+  // by analysing the actual generation of dynamic rules in a
+  // program the compiler can generate the cheaper implementation
+  // above; although the indirection with the -aux rule is probably
+  // needed anyway to ensure only one lookup in the table
+
+  bagof-A3 : 
+    Foo(x, y) -> <filter(A3-aux(|x,y))> closures
+    where (dr-lookup-rule(|"A3", Foo(x, [])) <+ ![]) => closures
+
+  fold-A3(c | n) : 
+    Foo(x, y) -> <filterfold(c, A3-aux(|x,y) | n)> closures
+    where (dr-lookup-rule(|"A3", Foo(x, [])) <+ ![]) => closures
+
+  filterfold(c, s | n) :
+    [] -> n
+
+  filterfold(c, s | n) :
+    [x | xs] -> <<c>(<s> x, ys) <+ !ys>
+    where <filterfold(c, s| n)> xs => ys
+
+  test-add-1 =
+    apply-test(!"test-add-1",
+      Strategy3,
+      ![FooGen(1, 10), Foo(1, 2), Foo(1, 12),
+        FooDef("f",0), Foo(2, 2), Foo(1, 3), Foo(1, 12), FooGen("f", 1, 20), FooGen("f", 1, 21), Foo(1, 2),
+        FooDef("g",0), Foo(1, 5), Foo(1, 21), FooGen("g", 1, 30), Foo(1, 7), FooGen("g", 1, 28), FooGen("g", 1, 26), Foo(1, 27),
+        FooDef("h",0), FooGen("g", 1, 40), FooGen("g", 1, 50), FooKill("g", 1), Foo(1, 8), FooKill("h", 1), Foo(1, 9)],
+      ![FooGen(1, 10), Bar(2, 10), Foo(1, 12),
+        FooDef("f",0), Foo(2, 2), Bar(3, 10), Foo(1, 12), FooGen("f", 1, 20), FooGen("f", 1, 21), Bar(2, 21),
+        FooDef("g",0), Bar(5, 21), Foo(1, 21), FooGen("g", 1, 30), Bar(7, 30), FooGen("g", 1, 28), FooGen("g", 1, 26), Bar(27, 28),
+        FooDef("h",0), FooGen("g", 1, 40), FooGen("g", 1, 50), FooKill("g", 1), Foo(1, 8), FooKill("h", 1), Foo(1, 9)]
+  )
+
+  test-add-bagof =
+    apply-test(!"test-add-bagof",
+      Strategy3-bagof,
+      ![FooGen(1, 10), Foo(1, 2), Foo(1, 12),
+        FooDef("f",0), Foo(2, 2), Foo(1, 3), Foo(1, 12), FooGen("f", 1, 20), FooGen("f", 1, 21), Foo(1, 2),
+        FooDef("g",0), Foo(1, 5), Foo(1, 21), FooGen("g", 1, 30), Foo(1, 7), FooGen("g", 1, 28), FooGen("g", 1, 26), Foo(1, 27),
+        FooDef("h",0), FooGen("h", 2, 60), FooGen("g", 1, 40), FooGen("g", 1, 50), FooKill("g", 1), Foo(1, 8), FooKill("h", 1), Foo(1, 9),
+        FooDef("i",0), FooGen("i", 1, 70), Foo(2, 3)],
+      ![FooGen(1, 10), [Bar(2, 10)], [],
+        FooDef("f",0), [], [Bar(3, 10)], [], FooGen("f", 1, 20), FooGen("f", 1, 21), [Bar(2, 21), Bar(2, 20)],
+        FooDef("g",0), [Bar(5, 21), Bar(5, 20)], [], FooGen("g", 1, 30), [Bar(7, 30)], FooGen("g", 1, 28), FooGen("g", 1, 26), [Bar(27, 28), Bar(27, 30)],
+        FooDef("h",0), FooGen("h", 2, 60), FooGen("g", 1, 40), FooGen("g", 1, 50), FooKill("g", 1), [], FooKill("h", 1), [],
+        FooDef("i",0), FooGen("i", 1, 70), [Bar(3, 60)]]
+  )
