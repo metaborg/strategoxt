@@ -1,27 +1,255 @@
-StrategoXT 0.12 -- released August ..., 2004
+StrategoXT 0.12 -- released October 04, 2004
 
 ---------++ Summary of Changes
 
-   * format-check: improved performance and error reporting
+Stratego Language
 
-   * pack-sdf: various improvements
+   * New `if then' construct
 
-   * ater2xml and xml2aterm: pragmatic xml support.
+   * Bigger bag of dynamic rule applications
 
-   * parse-unit: minor usability enhancements.
+Stratego Library
 
-   * sdf2parenthesize now fixes more conflicts.
+   * Improved newname for repeated application.
 
-   * Stratego language: new if then construct
+   * New mathematical strategies: abs and gcd.
+
+Tools
+
+   * Various usability improvements in pack-sdf, a tool for collecting
+     SDF modules in a single SDF definition.
+
+   * Improved performance and error-reporting of format-check, a tool
+     for checking the structure of an aterm,
+
+   * New features and various usability enhancements in parse-unit, a
+     tool for unit testing SDF syntax definitions.
+
+   * The parenthesize generator, sdf2parenthesize, now fixes much more
+     conflicts: transitive priorities are now supported.
 
    * Support for comment preserving transformations.
 
+   * New XML tools provide pragmatic interoperability with XML tools.
+
+Deployment
+
+   * Improved Autoconf macros in AutoXT
+
 ---------++ Format Checking
 
-...
+The format-check tool has been reimplemented in order to boost
+performance, and improve error-reporting and visualization. The format
+checker now uses a bottom-up algorithm for format checking. The tool
+infers types in a bottom-up fashion and will complain at the innermost
+term for which no type can be inferred. If this term has subterms,
+then their inferred types will be shown. The performance is even
+better in =--fast= mode, but this might reduce the quality of the
+error reports.
 
----------++ Item 2
+Format-check now supports a =--vis= mode for showing format errors in
+a pretty-printed aterm at the command-line. Format-errors will be
+indicated in red if the terminal supports colors.
 
+Format-check also has a new feature to report the results of type
+inference in an HTML document. This document contains the input term,
+formatted in the same way as pp-aterm. All innermost format errors in
+the aterm are indicated by red boxes. Moving over the aterm with your
+mouse will show the inferred types of the aterms in an information
+box.
+
+More information, examples, and a screenshot are available at the
+Tools Wiki:
+
+   * http://www.program-transformation.org/Tools/FormatCheck
+
+(Contributed by Martin Bravenboer)
+
+---------++ Pack SDF
+
+Several features have been added to pack-sdf to make it more
+user-friendly:
+
+   * pack-sdf now checks if the module name specified in an SDF module
+     file, corresponds to the actual filename. Having different names
+     can lead to very nasty problems.
+
+   * The order of include path entries has been improved to make it
+     more clear. The directory of the main module (specified with -i)
+     is now the first include option. This is not always the current
+     directory, in which case unexpected modules might be imported in
+     previous versions of <nop>StrategoXT. So, pack-sdf -i syn/Foo.sdf will
+     search for module in the syn directory.
+
+   * The input file is no longer searched for in the include
+     path. That is, pack-sdf -i Foo.sdf now always packs ./Foo.sdf,
+     not a module Foo elsewhere in the include path if ./Foo.sdf does
+     not exist.
+
+   * A warning is printed if a specified include directory does not
+     exist.
+
+   * Improved error reporting for missing modules. Usually, the module
+     is not really missing, but the name of this import is
+     incorrect. Hence, it is useful to report the module(s) from where
+     the 'missing' module is imported. Pack SDF now prints a detailed
+     report of all missing modules and the module where these are
+     imported.
+
+   * pack-sdf now reports all missing modules in a single execution.
+
+   * pack-sdf now (again) supports the creation of a dependency file
+     suitable for inclusion in a Makefile. Makefile.xt will instruct
+     pack-sdf to do this, so there is no longer a need to specify
+     dependencies of SDF files.
+
+More information on pack-sdf is available at the Tools Wiki:
+
+   * http://www.program-transformation.org/Tools/PackSdf
+
+(Contributed by Martin Bravenboer)
+
+---------++ Parse Unit
+
+In previous releases of <nop>StrategoXT, parse-unit testsuites had to be
+parsed with a separate tool before passing it to parse-unit. This is
+obviously a bad idea, so parse-unit itself now parses the
+testsuite. It will fall back to abstract syntax, so this change should
+not break existing makefiles. The =--abstract-input= option can be
+used to declare that you are passing a testsuite in abstract syntax.
+
+Parse-unit now has an option to parse a single test and write the
+result to the output. In this mode ambiguities are accepted, which is
+useful for debugging. The option for this 'single test mode' is
+=--single <nr>= where =<nr>= is the number in the testsuite (printed
+when the testsuite is executed). The =--asfix2= flag can be used to
+produce asfix2 instead of an AST.
+
+Parse-unit now accepts a =--no-heuristic-filters= flag to disable the
+heuristic -fi (injection count) and -fe (eagerness) disambiguation
+filters of sglr. Using this flag is highly encouraged.
+
+More information and an example are available at the Tools Wiki:
+
+   * http://www.program-transformation.org/Tools/ParseUnit
+
+(Contributed by Martin Bravenboer)
+
+---------++ Parenthesizer Generation
+
+A major bug in in the generation of rewrite rules for chain priorities
+has been fixed in this release of <nop>StrategoXT. In the previous version,
+the tool assumed that the SDF normalizer generates chain priorities
+for the transitive closure of the priorities that are defined in an
+SDF syntax definition. However, this is not the case and therefore the
+parenthesize generator now applies the transitive closure itself.
+
+Also, the determination of conflicting patterns in an AST has been
+separated from the parenthesize generator in the tool
+=sdf2ast-conflicts=. This tool might be useful for other applications.
+
+More information and an example are available at the Tools Wiki:
+
+   * http://www.program-transformation.org/Tools/SdfToParenthesize
+   * http://www.program-transformation.org/Tools/SdfToAstConflicts
+
+(Contributed Martin Bravenboer)
+
+---------++ Pragmatic XML Support
+
+In <nop>StrategoXT 0.12 some new tools are available that makes
+interoperability with other programs and libraries that are based on
+XML seamless. The tools aterm2xml and xml2aterm support this
+conversion from aterm to XML and vice versa. Since applications have
+different needs, there are three conversion modes available: implicit,
+explicit, and very explicit. The default mode, explicit, support a
+round trip for most common aterms.
+
+More explanation and examples are available at the Tools Wiki:
+
+   * http://www.program-transformation.org/Tools/ATermToXml
+   * http://www.program-transformation.org/Tools/XmlToATerm
+
+(Contributed by Martin Bravenboer)
+
+---------++ Support for Comment Preserving Transformations
+
+asfix-anno-comments is a new asfix to asfix tool that preserves
+comments that were of the input source code by putting them in
+annotations of the AST.
+
+Implode-asfix now supports preservation of annotations in AsFix
+trees. This means that implode-asfix now supports the addPosInfo
+position annotation tool, and the just mentioned comment annotation
+tool.
+
+An example is available at the Tools Wiki:
+
+   * http://www.program-transformation.org/Tools/AsFixAnnoComments
+
+(Contributed by Martin Bravenboer)
+
+---------++ Language Enhancements
+
+In <nop>StrategoXT 0.10 the =bagof-R= strategy was introduced. This
+strategy returns all applications of a dynamic rule. However,
+=bagof-R= only applies the dynamic rules that been defined in the
+innermost (most recent) scope where a rule =R= was defined. So, if
+dynamic rules with name =A= have been defined in several scopes, then
+not all applications are returned, but only the ones of defined in the
+innermost scope.
+
+In this release there is bigger bagof: =all-R=. This strategy applies
+all the defined dynamic rules of name =R=.
+
+(Contributed by Eelco Visser)
+
+In <nop>StrategoXT 0.10 we added the if-then-else construct, which is
+basically just an alternative syntax for the guarded left choice
+(=where(s1) < s2 + s3=). Since we found ourselves writing a lot =if s1
+then s2 else id end=, we have now also added an if-then
+construct. This new strategy =if s1 then s2 end= is equivalent to =if
+s1 then s2 else id end=.
+
+More information is available at:
+
+   * http://www.stratego-language.org/Stratego/IfThen
+   * http://www.stratego-language.org/Stratego/IfThenElse
+
+(Contributed by Martin Bravenboer)
+
+---------++ Improved New Name
+
+The library strategy =newname= (which is used for generating unique
+identifiers) now trims any trailing digits up to the rightmost
+'_'. Hence, repeated application of =newname= will no longer result in
+mutiple numeric postfixes (for example =a_0_0=).
+
+For example:
+<verbatim>
+    <newname> "a"        // produces "a_0"
+  ; <newname> "b"        // produces "b_0"
+  ; <newname> "b_1"      // produces "b_2"
+  ; <newname> "b_1729"   // produces "b_3"
+  ; <newname> "b_a"      // produces "b_a_0"
+</verbatim>
+
+(Contributed Arthur van Dam)
+
+----------++ AutoXT 
+
+The Autconf support of AutoXT has been updated. Autoconf macros of
+=autoxt.m4= now perform more checks. For example, Autoconf now fails
+if there are undefined macros with the XT prefix. Furthermore,
+=autoxt.m4= now defines a macro =XT_ARG_WITH= for concisely adding
+=--with-PACKAGE= arguments to configure scripts in your own packages.
+
+If you are developing packages based on <nop>StrategoXT and AutoXT, then
+you must have Autoconf 2.58 or newer. This does not affect users: the
+installation of a <nop>StrategoXT distribution doesn't require Autoconf.
+
+(Contributed by Akim Demaille)
+	
 ---------++ Detailed List of Issues
 
 The full list of issues closed in this release is available at:
@@ -39,12 +267,7 @@ detailed instructions on how to install the distributions:
 
 See our issue tracking systems for reports about (open) bugs:
 
-   * https://catamaran.labs.cs.uu.nl/jira/
-
-For an overview of features planned for future releases:
-
-   * Release plan: http://www.stratego-language.org/Stratego/ReleasePlan
-   * To do: http://www.stratego-language.org/Stratego/ToDo
+   * https://catamaran.labs.cs.uu.nl/jira/browse/STR
 
 Please report any problems with installation or bugs in the
 implementation to our issue tracking system. Please check the existing
@@ -56,5 +279,6 @@ Developments, beta tests, and bug fixes were carried out by
 
    * Martin Bravenboer
    * Arthur van Dam
-   * Akim
+   * Akim Demaille
+   * Rob Vermaas
    * Eelco Visser
