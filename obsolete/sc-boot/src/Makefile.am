@@ -26,9 +26,9 @@ INCLUDES 	= -I$(STRATEGORTS)/include \
 		  -I$(STRATEGOLIB)/include \
 		  -I$(ATERM)/include
 
-LDFLAGS		= -L$(ATERM)/lib \
-		  -L$(STRATEGORTS)/lib \
-	  	  -L$(STRATEGOLIB)/lib
+LDFLAGS		= -L$(STRATEGORTS)/lib \
+	  	  -L$(STRATEGOLIB)/lib \
+		  -L$(ATERM)/lib
 
 LDADD		= -lstratego-lib.opt \
 		  -lstratego.opt \

@@ -16,7 +16,7 @@
 # 02111-1307, USA.
 
 AC_INIT(src/stratego.c)
-AM_INIT_AUTOMAKE(srts,0.6a)
+AM_INIT_AUTOMAKE(srts,0.6)
 
 dnl Let aclocal use macros in ./config directory
 ACLOCAL="${ACLOCAL} -I ."
@@ -35,7 +35,7 @@ AC_SUBST(ATERM)
 #)
 #AC_SUBST(CPL)
 
-AC_REVISION($Id: configure.in,v 1.4 2001/08/28 21:23:28 visser Exp $)
+AC_REVISION($Id: configure.in,v 1.5 2001/08/29 08:40:41 visser Exp $)
 
 AC_PROG_CC
 AC_PROG_RANLIB
