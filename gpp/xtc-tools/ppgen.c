@@ -727,7 +727,7 @@ static void init_module_constant_terms (void)
   ATprotect(&(term_q_25));
   term_q_25 = (ATerm) ATmakeAppl(ATmakeSymbol("-s", 0, ATtrue));
   ATprotect(&(term_r_25));
-  term_r_25 = (ATerm) ATmakeAppl(ATmakeSymbol("Sdf2.tbl", 0, ATtrue));
+  term_r_25 = (ATerm) ATmakeAppl(ATmakeSymbol("Sdf2.baf", 0, ATtrue));
   ATprotect(&(term_s_25));
   term_s_25 = (ATerm) ATmakeAppl(ATmakeSymbol("implode-asfix", 0, ATtrue));
   ATprotect(&(term_t_25));
