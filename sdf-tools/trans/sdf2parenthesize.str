@@ -11,7 +11,7 @@ imports
   liblib
   strategoxt-xtc-tools
   ast-conflicts
-  sdf-options
+  sdf/tool/options
 
 strategies
 
