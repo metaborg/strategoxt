@@ -24,7 +24,7 @@ strategies
     + FuseScope
     + NoEffect
     + BuildMatch
-    + (Inline <+ InlineDont)
+//    + (Inline <+ InlineDont)
 
   simplify0 = 
     downup(repeat(Simplify))

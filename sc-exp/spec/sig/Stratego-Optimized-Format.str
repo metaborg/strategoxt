@@ -13,7 +13,7 @@ strategies
 
   strategy-definition =
     SDef(is-string, [], strategy-expression)
-    + SDef(list(DontInline), is-string, [], strategy-expression)
+//    + SDef(list(DontInline), is-string, [], strategy-expression)
     <+ debug(!"Not a strategy-definition: ")
 
   strategy-expression =

@@ -14,10 +14,10 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 # FRONT-END ###########################################################
 
 %.tree : %.r ../syn/pack-stratego$(EXE) 
-	../syn/pack-stratego $(SINCLUDES) -i $< -o $@ 
+	$(STRATEGO_FRONT)/bin/pack-stratego $(SINCLUDES) -i $< -o $@ 
 
 %.tree : %.rtree ../syn/pack-stratego$(EXE) 
-	../syn/pack-stratego $(SINCLUDES) -i $< -o $@ 
+	$(STRATEGO_FRONT)/bin/pack-stratego $(SINCLUDES) -i $< -o $@ 
 
 %.s1 : %.tree ../front/frontend$(EXE)
 	../front/frontend -i $< -o $@ -b

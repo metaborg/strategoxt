@@ -86,8 +86,8 @@ rules
   Canon :
     Rec(x, s) -> Let([SDef(x, [], s)], Call(SVar(x),[]))
 
-  Canon :
-    SDef([DontInline],f,xs,s) -> SDef(f,xs,s)
+//  Canon :
+//    SDef([DontInline],f,xs,s) -> SDef(f,xs,s)
 
 
 strategies

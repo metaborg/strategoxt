@@ -14,7 +14,7 @@ SCFLAGS 	 = --main $*
 
 STRINCLUDES	 = -I $(C_TOOLS)/share/sdf/c-tools \
 		   -I $(C_TOOLS)/share/c-tools \
-		   -I ../sig \
+		   -I $(STRATEGO_FRONT)/share/stratego-front \
 	  	   -I ../match				  
 
 TESTS = C-simplify-test 

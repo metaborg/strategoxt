@@ -1,7 +1,7 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-SCFLAGS		 = -I $(top_srcdir)/spec/sig \
+SCFLAGS		 = -I $(STRATEGO_FRONT)/share/stratego-front \
 	  	   -I $(top_srcdir)/spec/front \
 	  	   -I $(top_srcdir)/spec/lib
 

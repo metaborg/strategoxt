@@ -69,6 +69,7 @@ strategies
     ; (fetch-elem(\ dir
 	 -> <fetch-elem(!(<id>, FILE(<concat-strings; file-exists> [dir, "/", mod, ".", <id>])))> exts 
        \ )
+     <+ <fetch-elem(!(<id>, FILE(<concat-strings; xtc-find-loc> [mod, ".", <id>])))> exts
      <+ <fatal-error> ["*** module ", mod, " not found"])
 
   parse-module =
