@@ -176,6 +176,14 @@ AC_ARG_WITH([sdf-tools],
 )
 AC_SUBST([SDF_TOOLS])
 
+AC_ARG_WITH(concrete-syntax, 
+  AC_HELP_STRING([--with-concrete-syntax=DIR], 
+		 [use concrete-syntax at DIR @<:@STRATEGOXT@:>@]),
+  [CONCRETE_SYNTAX=$withval],
+  [CONCRETE_SYNTAX=$STRATEGOXT]
+)
+AC_SUBST(CONCRETE_SYNTAX)
+
 AC_ARG_WITH([stratego-tools],
   AC_HELP_STRING([--with-stratego-tools=DIR],
                  [use Stratego Tools at DIR @<:@STRATEGOXT@:>@]),

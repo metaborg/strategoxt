@@ -1,3 +1,7 @@
+2003-11-16  Eelco Visser  <visser@cs.uu.nl>
+
+	* autoxt.m4: configuration switch for concrete-syntax package
+
 2003-09-30  Akim Demaille  <akim@lrde.epita.fr>
 
 	* autoxt.m4: Set #serial to 2.
