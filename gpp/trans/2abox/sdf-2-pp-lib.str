@@ -1,64 +1,86 @@
-\literate[sdf-2-pp-lib]
-% GT -- Grammar Tools
-% Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
-%                    Eelco Visser <visser@acm.org>
-%                    Joost Visser <jvisser@cwi.nl>
-%
-% This program is free software; you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation; either version 2, or (at your option)
-% any later version.
-%
-% This program is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-%
-% You should have received a copy of the GNU General Public License
-% along with this program; if not, write to the Free Software
-% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-% 02111-1307, USA.
-
-% $Id: sdf-2-pp-lib.str,v 1.1 2003/01/03 07:23:39 stratego Exp $
-
-% Author: Merijn de Jonge (mdjonge@cwi.nl)
-
-\begin{code}
+/**
+ * @author  Merijn de Jonge <mdjonge@cwi.nl>
+ */
 module sdf-2-pp-lib
-
-imports pp-table Bracket-Symbol Sdf2-Syntax
-
-\end{code}
-   Obtain the constructor name of the production, number all non-terminal
-   symbols of the production and generate pretty-print entries for the
-   symbols
-\begin{code}
+imports pp-table Bracket-Symbol Sdf2-Syntax sdf-xtc-tools string-misc
 strategies
 
+  /**
+   * Obtain the constructor name of the production, number all non-terminal
+   * symbols of the production and generate pretty-print entries for the
+   * symbols
+   */
   generate-pp-entries =
-      ?prod(syms, sym, attrs);
-      where( <oncetd(?cons(cons-name))>attrs );
-      <symbols2pp-entries(!cons-name)>syms
-   <+
-   // From a prod-fun we make a ordinary prod and call generate-pp-entries
-   // recursively.
-   (
-     ?prod-fun(fun, syms, sym, attrs);
-      !prod( <concat>[[lit(fun), lit("(")], syms, [lit(")")]], sym, attrs );
-      generate-pp-entries
-   )
-   <+
-     try(
-        not(has-option(!Silent));
-        debug( !"No constructor defined for production: " )
-     );
-     ![]
+    ?prod(syms, sym, attrs)
+  ; ( <?attrs(<id>); get-cnstr-name> attrs => cons-name
+    < <symbols2pp-entries(!cons-name)> syms
+    + ignore-prod
+      < ![]
+      + try(
+          not(has-option(!Silent))
+        ; missing-constructor-warning
+        ); ![]
+    )
 
-number-nonterminals = no-labels; number-node( NonTerminal )
+  is-whitespace = ?'\n' + ?'\r'
 
-NonTerminal = not(lit(id))
+  missing-constructor-warning =
+    xtc-temp-files(
+      write-to
+    ; xtc-transform(!"sdf-ensugar")
+    ; xtc-pp-sdf2
+    ; ?FILE(<read-text-file; trim-whitespace>)
+    )
+    ;   say(!"[ppgen | warning] No constructor defined for production" )
+    ; debug(!"[ppgen | warning]   ")
 
-no-labels = map( try( \ label(a,b) -> b \ ) )
+  ignore-prod =
+    ?prod([sort(_)], sort(_), no-attrs())
+
+  ignore-prod =
+      ?prod(_, _, attrs(attrs))
+    ; where(<contains-bracket> attrs)
+
+  ignore-prod =
+      ?prod(_, _, attrs(attrs))
+    ; where(<contains-reject> attrs)
+    
+
+  /**
+   * From a prod-fun we make a ordinary prod and call generate-pp-entries recursively.
+   */
+  generate-pp-entries =
+      ?prod-fun(fun, syms, sym, attrs)
+    ; !prod( <concat> [[lit(fun), lit("(")], syms, [lit(")")]], sym, attrs )
+    ; generate-pp-entries
+
+strategies
+
+  /**
+   * Ignore a reject production that injects A into A.
+   */
+  ignore-prod =
+    ?prod(_, _, attrs(attrs)); where(<contains-reject> attrs)
+
+  /**
+   * Ignore a bracket production that injects A into A.
+   */
+  ignore-prod =
+    ?prod(syms, cf(sort(x)), attrs(attrs))
+    ; where(
+        <contains-bracket> attrs
+      ; <not(get-cnstr-name)> attrs
+      )
+
+strategies
+
+  number-nonterminals =
+      no-labels
+    ; number-node(NonTerminal)
+
+  NonTerminal = not(lit(id))
+
+  no-labels = map(try( \ label(a,b) -> b \ ))
 
 symbols2pp-entries( constr-name ) =
    number-nonterminals;
@@ -147,37 +169,36 @@ symbol2abox(path) =
    )   
 
 
-flat-alt =
-   rec x ({a,b,s:
+  flat-alt =
+    rec x ({a,b,s:
       ?alt( a, alt(b, s ) );
        ![a|<x>alt(b,s)]
       <+
       ?alt( a, b );
        ![a,b]
-   })
+     })
 
-\end{code}
-   Build a list of arguments. The strategy is used to 'flatten' the
-   arguments of Sdf's sequence symbol, which is defined as a binary function:
-      seq( Symbol, [Symbol+] )
-   The strategy argument-list is a generic strategy which flattens these
-   arguments and returns the list [Symbol | Symbol+].
-\begin{code}
-argument-list = 
+   /**
+    * Build a list of arguments. The strategy is used to 'flatten' the
+    * arguments of Sdf's sequence symbol, which is defined as a binary function
+    *   seq( Symbol, [Symbol+] )
+    * The strategy argument-list is a generic strategy which flattens these
+    * arguments and returns the list [Symbol | Symbol+].
+    */
+  argument-list = 
       map( try( \ e -> [e]
          where
             not(is-list) \ ) ); 
       concat
 
-\end{code} 
-   Replace each element e in a list by the tuple (n, e) when e satisfies s. 
-   The number n denotes that e is the nth matching element in the list. The
-   strategy is used in the generation of BOX templates to enable the
-   replacement of non-terminal symbols in productions by numbered place
-   holders.
-\begin{code}
-
-number-node(s) =
+  /**
+   * Replace each element e in a list by the tuple (n, e) when e satisfies s. 
+   * The number n denotes that e is the nth matching element in the list. The
+   * strategy is used in the generation of BOX templates to enable the
+   * replacement of non-terminal symbols in productions by numbered place
+   * holders.
+   */
+  number-node(s) =
    split( !1, id );
    rec x ( {n, e, e',es, es':
          (id, []); ![]
@@ -191,9 +212,8 @@ number-node(s) =
          
    } )
          
-         
-\end{code}
 
+/*         
    Construct a box template for a list of symbols. All symbols but literals
    are considered to be numbered tuples: (n,s) where n denotes the number
    and s the symbol.  A numbered symbol (n,s) is replaced by the numbered
@@ -207,12 +227,10 @@ number-node(s) =
       L+ I* ==> V[H[L+] I*]
    
    2)
-      (L I+)+ L ==> V[ V is=2[L I+] ... L]
-      (L I*)+ L ==> V[ V is=2[L I*] ... L]
+      (L I+ )+ L ==> V[ V is=2[L I+] ... L]
+      (L I* )+ L ==> V[ V is=2[L I*] ... L]
    
-\begin{code}
-
-
+*/
   make =
    (
       // Recognize pattern 1
@@ -249,9 +267,9 @@ rules
   Make : (i, _ ) -> Arg( i )
 
   // Literals are pretty-printed as keywords
-  Make : lit( s ) -> FBOX( KW, S( s ) )
+  Make : lit(s)  -> FBOX(KW, S(s))
 
-\end{code}
+/*
 For generating pretty-print rules for iter-n and iter-sep-n, we ignore their
 last argument which specifies the number 'n'.
   For example, 
@@ -261,10 +279,32 @@ last argument which specifies the number 'n'.
 
 To that end we need define two additional constructors (iter-sep-n and
 iter-n) without the n-argument'
-\begin{code}
+*/
 signature
    constructors
       iter-sep-n: Iter * Sep -> Symbol
       iter-n:     Iter       -> Symbol
 
-\end{code}
+
+/**
+ * @todo  Copied from stratego-regular. Should be in separate lib.
+ */
+strategies
+
+   /**
+   * @type  List(Attribute) ->? _
+   */
+  contains-bracket =
+    fetch(?bracket())
+
+  /**
+   * @type  List(Attribute) ->? _
+   */
+  contains-reject =
+    fetch(?reject())
+
+  /**
+   * @type  List(Attribute) -> String
+   */
+  get-cnstr-name =
+    fetch-elem(?term(appl(uqlit("cons"), [fun(qlit(<un-double-quote>))])))

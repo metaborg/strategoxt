@@ -7,7 +7,7 @@ SCFLAGS     = --main io-$*
 STRINCLUDES = -I $(top_srcdir)/trans \
               -I $(top_srcdir)/sig/pp-table \
               -I $(top_srcdir)/xtc-tools \
-              -I $(ASFIX_TOOLS)/share/asfix-tools \
+              -I $(SDF_FRONT)/share/sdf-front \
               -I $(XTC)/share/xtc
 
 EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta)

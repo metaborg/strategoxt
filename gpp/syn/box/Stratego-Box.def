@@ -137,11 +137,11 @@ exports
   %% Priorities
 
   context-free priorities
-   {Strategy StrategyCurly		  -> Strategy {cons("AnnoCong")}
-    Strategy "#" StrategyParen	  	  -> Strategy {cons("ExplodeCong")}}
-  >
-    {"!" Term 				  -> Strategy {cons("Build")}
-     "?" Term 				  -> Strategy {cons("Match")}
+    { Strategy StrategyCurly		  -> Strategy {cons("AnnoCong")}
+      Strategy "#" StrategyParen          -> Strategy {cons("ExplodeCong")}
+    }
+  > { "!" Term 				  -> Strategy {cons("Build")}
+      "?" Term 				  -> Strategy {cons("Match")}
     }
   > StrategyAngle Term 		          -> Strategy {cons("BA")}
   > Strategy "=>" Term 		  	  -> Strategy {cons("AM")}
@@ -158,6 +158,26 @@ exports
      Strategy "<" StrategyMid 
               "+" Strategy 		  -> Strategy {cons("GuardedLChoice"),right}
     }
+
+  context-free priorities
+    {right:
+       Strategy ";"  Strategy -> Strategy {cons("Seq"), right}
+      "if" Strategy "then" Strategy "else" Strategy -> Strategy
+    }
+
+  context-free priorities
+    {right:
+       Strategy "+"  Strategy -> Strategy
+       Strategy "<+" Strategy -> Strategy
+       Strategy "+>" Strategy -> Strategy
+       Strategy "<" StrategyMid "+" Strategy -> Strategy
+      "if" Strategy "then" Strategy "else" Strategy -> Strategy
+    }
+
+  context-free priorities
+
+  context-free syntax
+    "if" Strategy "then" Strategy "else" Strategy -> Strategy {cons("CondChoice")}
 
 module Stratego-Overlays
 exports

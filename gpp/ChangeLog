@@ -1,3 +1,19 @@
+2004-04-08  Martin Bravenboer <martin@cs.uu.nl>
+
+	* trans/2abox/sdf-2-pp-table.str: do not produce a warning message
+	for reject, bracket and injection productions. The warning
+	messages is now provided in the syntax of the logging lib, but the
+	logging lib isn't used yet because it is not yet in the SSL. The
+	warning message now pretty-prints the production rule by invoking
+	xtc-pp-sdf2 in sdf-xtc-tools before providing an error
+	message. Example:
+	
+	[ppgen | warning] No constructor defined for production
+	[ppgen | warning]   "if" Nat "then" Term "else" Term -> Term
+
+	* xtc-tools/ppgen.str: use the new SDF syntax (pgen 2.0) by
+	parsing the input with parse-sdf2-definition in sdf-xtc-tools.
+
 2004-03-27  Martin Bravenboer <martin@cs.uu.nl>
 
 	* trans/2abox/pp-table-io2.str: alternative storage of pp entries

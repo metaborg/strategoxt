@@ -1,5 +1,5 @@
 module ppgen
-imports xtc-lib stratego-xt-xtc-tools options
+imports xtc-lib sdf-xtc-tools options
 
 signature
   constructors
@@ -21,7 +21,7 @@ strategies
         xtc-transform(!"pp-pp-table", pass-verbose)
       )
 
-  pre-process-sdf : (PlainText(), f) -> <xtc-parse-sdf> f
+  pre-process-sdf : (PlainText(), f) -> <xtc-parse-sdf2-definition> f
   pre-process-sdf : (ParseTree(), f) -> <xtc-implode-asfix> f
   pre-process-sdf : (AST()      , f) -> f
 
