@@ -69,12 +69,10 @@ FILE* stream_from_term_strict(ATerm term) {
   FILE* result;
 
   if(ATisBlob(term)) {
-    ATermBlob blob = (ATermBlob) term;
-
-    if(ATgetBlobSize(blob) != sizeof(FILE*)) {
+    if(ATgetBlobSize((ATermBlob) term) != sizeof(FILE*)) {
       _fail(term);
     } else {
-      result = (FILE*) ATgetBlobData(blob);
+      result = (FILE*) ATgetBlobData((ATermBlob) term);
     }
   } else {
     _fail(term);
@@ -96,7 +94,7 @@ ATerm stream_to_term(FILE* stream) {
   }
 
   *onheap = stream;
-  return (ATerm) ATmakeBlob(sizeof(FILE*), *onheap);
+  return ATmake("<blob>", sizeof(FILE*), *onheap);
 }
 
 /**
@@ -768,4 +766,3 @@ ATerm SSL_pipe_term_to_child(ATerm t, ATerm prog, ATerm args0)
   }
   return((ATerm) ATempty);
 }
-

@@ -226,28 +226,31 @@ ATerm SSL_ReadFromFile(ATerm filename)
   ATerm in_term;
   FILE *infile;
 
-  if(ATmatch(filename, "stdin"))
+  if(ATmatch(filename, "stdin")) {
     infile = stdin;
-  else if(ATisString(filename))
+  }
+  else if(ATisString(filename)) {
     infile = fopen(t_string(filename), "r");
-  else if(ATisInt(filename))
+  }
+  else if(ATisInt(filename)) {
     infile = (FILE *)AT_getInt(filename);
-  else
+  }
+  else {
     _fail(filename);
+  }
 
-  if(infile == NULL)
+  if(infile == NULL) {
     _fail(filename);
+  }
 
-  if((in_term = ATreadFromFile(infile)) == NULL)
-    {
-      ATfprintf(stderr, "not a valid term\n");
-      _fail(filename);
-    }
+  if((in_term = ATreadFromFile(infile)) == NULL) {
+    ATfprintf(stderr, "** ERROR: %t doesn't contain a valid term\n", filename);
+    _fail(filename);
+  }
 
   fclose(infile);
 
   /* ATfprintf(stderr, "in_term = %t\n", in_term); */
-  
   return(in_term);
 }
 

@@ -416,10 +416,9 @@ int main(int argc, char *argv[])
     //ATfprintf(stderr, "main c\n");
     exit(0);
   } else {
-    ATfprintf(stderr, "rewriting failed\n");
+    ATfprintf(stderr, "%s: rewriting failed\n",  argv[0]);
     exit(1);
   }
 
 }
-
 
