@@ -1,4 +1,4 @@
-StrategoXT 0.12 -- released August ..., 2004
+StrategoXT 0.12 -- released October 04, 2004
 
 ---------++ Summary of Changes
 
@@ -105,7 +105,7 @@ user-friendly:
 
 More information on pack-sdf is available at the Tools Wiki:
 
-   * http://www.program-transformation.org/Tools/PackSDF
+   * http://www.program-transformation.org/Tools/PackSdf
 
 (Contributed by Martin Bravenboer)
 
@@ -128,7 +128,6 @@ produce asfix2 instead of an AST.
 Parse-unit now accepts a =--no-heuristic-filters= flag to disable the
 heuristic -fi (injection count) and -fe (eagerness) disambiguation
 filters of sglr. Using this flag is highly encouraged.
-
 
 More information and an example are available at the Tools Wiki:
 
@@ -179,13 +178,14 @@ asfix-anno-comments is a new asfix to asfix tool that preserves
 comments that were of the input source code by putting them in
 annotations of the AST.
 
-An example is available at the Tools Wiki:
-    * [[Tools.AsFixAnnoComments][asfix-anno-comments]]
-
 Implode-asfix now supports preservation of annotations in AsFix
 trees. This means that implode-asfix now supports the addPosInfo
 position annotation tool, and the just mentioned comment annotation
 tool.
+
+An example is available at the Tools Wiki:
+
+   * http://www.program-transformation.org/Tools/AsFixAnnoComments
 
 (Contributed by Martin Bravenboer)
 
@@ -210,6 +210,11 @@ basically just an alternative syntax for the guarded left choice
 then s2 else id end=, we have now also added an if-then
 construct. This new strategy =if s1 then s2 end= is equivalent to =if
 s1 then s2 else id end=.
+
+More information is available at:
+
+   * http://www.stratego-language.org/Stratego/IfThen
+   * http://www.stratego-language.org/Stratego/IfThenElse
 
 (Contributed by Martin Bravenboer)
 
