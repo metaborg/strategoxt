@@ -1,0 +1,4 @@
+regular tree grammar
+  start Strategy
+  productions
+    Strategy -> Cong(Id, n_0)
