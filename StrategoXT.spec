@@ -5,7 +5,7 @@ Release: 3
 License: LGPL
 Group: Development/Languages/Stratego
 URL: http://www.stratego-language.org
-Source: %{name}-%{version}.tar.gz
+Source: strategoxt-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-buildroot
 Requires: aterm = 1.6.7
 Requires: sdf2 = 1.5
@@ -41,4 +41,3 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Thu Jan  2 2003 Eelco Visser <visser@cs.uu.nl> 0.9beta9-1
 - Initial build.
-
