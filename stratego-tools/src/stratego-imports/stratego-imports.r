@@ -17,7 +17,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: stratego-imports.r,v 1.1 2001/06/07 13:25:10 mdejonge Exp $
+% $Id: stratego-imports.r,v 1.2 2001/09/02 15:50:41 mdejonge Exp $
 
 \begin{code}
 module stratego-stratego
@@ -28,7 +28,7 @@ imports
 
 strategies
 
-  main = get-modules(stratego-imports, !"r")
+  main = get-modules(stratego-imports, !"r"); <exit>0
 
   stratego-imports(mkpt, ext) =
 	\ root -> (root, (), []) \;
