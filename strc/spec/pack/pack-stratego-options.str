@@ -55,10 +55,12 @@ strategies
     ; <set-config> ("-I", <id>)
     )
 
+  report-options =
+    log(|Info(), "include path: ", <get-config> "-I")
 
   include-from-dir-option =
     ArgOption("-I" + "--Include"
-    , where(<extend-config>("-I", [IncludeDir(<ensure-directory>)]))
+    , where(<post-extend-config>("-I", [IncludeDir(<ensure-directory>)]))
     , !"-I|--Include <dir>   Include modules from directory <dir>"
     )
 
