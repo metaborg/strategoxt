@@ -1,3 +1,7 @@
+2002-06-11  Merijn de Jonge <mdejonge@cwi.nl>
+   * lib/gpp.Makefile.src: fixed handling of abbreviation tables passed to
+     abox2latex
+
 2002-06-06  Merijn de Jonge <mdejonge@cwi.nl>
    * Repaired some syntax errors that were not detected by the parser of the
      stratego compiler.

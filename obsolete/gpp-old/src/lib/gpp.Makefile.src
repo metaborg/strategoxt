@@ -15,7 +15,7 @@
 #    along with this program; if not, write to the Free Software
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 #
-# $Id: gpp.Makefile.src,v 1.1 2001/12/18 11:25:30 mdejonge Exp $
+# $Id: gpp.Makefile.src,v 1.2 2002/06/11 21:24:28 mdejonge Exp $
 #
 # GNU make specific generic make rules for the generation of pretty-printed
 # documents.
@@ -90,7 +90,7 @@ PKGDATA       = __PKGDATA__
 # which abbreviations should be used.
 %.tex : %.abox
 	@echo "building $@ from $<."
-	@set $(^) ; shift ;\
+	@set -- $(^:%= -t %) ; shift ; shift ;\
 	$(ABOX2LATEX) -i $< -o $@ $$*
 
 
