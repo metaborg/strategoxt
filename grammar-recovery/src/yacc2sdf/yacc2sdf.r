@@ -14,7 +14,7 @@ signature
       
 strategies
 
-  yacc2sdf = io-idwrap(?"yacc-0", Main)
+  yacc2sdf = io-idwrap(?"yacc-0", (id,Main))
 
   Main = 
     YACC2SDF;
