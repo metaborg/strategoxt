@@ -1,1 +1,1 @@
-Alt2b("a",alt(1,[TCons("a",TCons("A",TNil))]))
+Alt2b("a",alt(1,[("a","A")]))

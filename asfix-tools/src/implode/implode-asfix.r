@@ -215,7 +215,7 @@ strategies
   implode-lexical = 
       ?appl(prod([lex(_)],cf(_),_), _); yield
     + ?appl(prod(_,lit(_),_),_); !lit(<yield>)
-    + ?appl(prod(_,varsym(_),_),_); debug(!"a: "); !meta-var(<yield>); debug(!"b: ")
+    + ?appl(prod(_,varsym(_),_),_); !meta-var(<yield>)
 \end{code}
 
 	\paragraph{Layout}

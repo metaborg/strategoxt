@@ -84,7 +84,7 @@ strategies
     apply-and-show(!"test4"
               ,conc-layout1 + conc-layout2 + conc-layout3
 
-              ,!TCons(appl(prod([cf(layout)],cf(opt(layout)),no-attrs),[appl(prod([lex(layout)],cf(layout),no-attrs),[appl(prod([char-class([10])],lex(layout),no-attrs),[10])])]),TCons(appl(prod([cf(layout)],cf(opt(layout)),no-attrs),[appl(prod([lex(layout)],cf(layout),no-attrs),[appl(prod([char-class([10])],lex(layout),no-attrs),[10])])]),TNil))
+              ,!(appl(prod([cf(layout)],cf(opt(layout)),no-attrs),[appl(prod([lex(layout)],cf(layout),no-attrs),[appl(prod([char-class([10])],lex(layout),no-attrs),[10])])]),appl(prod([cf(layout)],cf(opt(layout)),no-attrs),[appl(prod([lex(layout)],cf(layout),no-attrs),[appl(prod([char-class([10])],lex(layout),no-attrs),[10])])]))
               //,!()
 
               )

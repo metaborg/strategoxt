@@ -1,3 +1,7 @@
+2002-03-14  Eelco Visser  <visser@acm.org>
+
+	* src/implode/data/: Fixed test outcomes
+
 2002-03-13  Eelco Visser  <visser@acm.org>
 
 	* src/implode/implode-asfix.r: Adapting to Stratego 0.7 (replacing
