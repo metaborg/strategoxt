@@ -1,3 +1,8 @@
+2004-02-18  Martin Bravenboer  <martin@cs.uu.nl>
+
+	* src/pack-sdf/pack-sdf.str: now parses sdf modules using the new
+	SDF2 syntax definition of pgen 2.0. 
+
 2004-02-15  Martin Bravenboer  <martin@cs.uu.nl>
 
 	* analyse/parse-unit/*: added [ ] delimiters for test input. This

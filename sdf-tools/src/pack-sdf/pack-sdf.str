@@ -29,6 +29,15 @@ strategies
       )
     )
 
+  parse-sdf-pgen2 :
+    (infile, outfile) -> outfile
+    where <sglr> (<xtc-find> "Sdf2.tbl", infile, outfile) => outfile
+
+  parse-sdf-pgen2 :
+    infile -> tree
+    where <is-string> infile
+        ; <sglr> (<xtc-find> "Sdf2.tbl", infile) => tree
+
 strategies
 
   of-config = 
@@ -80,7 +89,7 @@ strategies
     (guarantee-extension(!"sdf"), id)
     ; (find-in-path <+ (Fst; xtc-find-loc))
     ; if-verbose1(debug(!"  including "))
-    ; !(<id>, <parse-sdf> <id>)
+    ; !(<id>, <parse-sdf-pgen2> <id>)
 
   get-sdf-imports = 
     collect(?appl(prod(_,cf(sort("Import")),_),_); get-module-name, 
@@ -150,17 +159,33 @@ overlays
    * Module -> <START>
    */
   Module_START(w1, t, w2) =
-    appl(prod([sort("<START>")],sort("SURROGATE-START"),attrs([term(cons("\"sdf-2.1\""))])),[
-     appl(prod([cf(opt(layout)),cf(sort("Module")),cf(opt(layout))],sort("<START>"),no-attrs)
-     ,[w1,t,w2])])
+    appl(
+      prod(
+        [ cf(opt(layout()))
+        , cf(sort("Module"))
+        , cf(opt(layout()))
+        ]
+      , sort("<START>")
+      , no-attrs()
+      )
+    , [ w1, t, w2]
+    )
 
   /**
    * SDF -> <START>
    */
   SDF_START(w1, t, w2) =
-     appl(prod([sort("<START>")],sort("SURROGATE-START"),attrs([term(cons("\"sdf-2.1\""))])),[
-     appl(prod([cf(opt(layout)),cf(sort("SDF")),cf(opt(layout))],sort("<START>"),no-attrs)
-     ,[w1,t,w2])])
+    appl(
+      prod(
+        [ cf(opt(layout()))
+        , cf(sort("SDF"))
+        , cf(opt(layout()))
+        ]
+      , sort("<START>")
+      , no-attrs()
+      )
+    , [w1, t, w2]
+    )
 
   /**
    *   -> M*
