@@ -210,7 +210,7 @@ exports
 
   context-free priorities
     {right:
-       Strategy ";"  Strategy -> Strategy
+       Strategy ";"  Strategy -> Strategy {cons("Seq"), right}
       "if" Strategy "then" Strategy "else" Strategy -> Strategy
     }
 
