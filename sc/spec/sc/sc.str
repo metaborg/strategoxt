@@ -104,14 +104,14 @@ strategies
 
   output-ast =
     try(where(<get-config> "--ast")
-       ; copy-to(get-outfile(!".ast"))
-       ; say(!["abstract syntax (after parsing) written to ", <?FILE(<id>)>]))
+       ; copy-to(get-outfile(!".ast") => astfile)
+       ; where(<echo> ["abstract syntax (after parsing) written to ", astfile]))
 
   output-frontend =
     try(where(<get-config> "-F")
        ; (extract-all <+ <fatal-error> ["extracting all definitions failed"])
-       ; copy-to(get-outfile(!".tree"))
-       ; say(!["abstract syntax (after frontend) written to ", <?FILE(<id>)>]))
+       ; copy-to(get-outfile(!".tree") => treefile)
+       ; say(!["abstract syntax (after frontend) written to ", treefile]))
 
   // Adding main strategy
   // What happens if the specification already contains a main strategy? 
@@ -181,7 +181,7 @@ strategies
   // Pretty-printing generated code
 
   ac2abox = 
-    xtc-transform(!"ast2abox", !["-p", <xtc-find> "C.pp"])
+    xtc-transform(!"ast2abox", !["-p", <xtc-find> "C-pretty.pp"])
 
   abox2text = 
     xtc-transform(!"abox2text")

@@ -16,12 +16,6 @@ strategies
     ; sc-announce
     ; if-verbose1(where(<get-config> "-i"; debug(!"compiling ")))
 
-  pass-verbose = 
-    !["--verbose", <subt; int-to-string>(<get-config <+ !1> "--verbose", 1)]
-
-  pass-keep = 
-    !["--keep", <subt; int-to-string>(<get-config <+ !1> "--keep", 1)]
-
   sc-options =
     ArgOption("-i",
 	where(<set-config>("-i", <id>)); !(),
