@@ -19,17 +19,14 @@ CFLAGS	 	= -Wall
 DEBUGFLAGS	= -g
 OPTFLAGS	= -O
 PROFFLAGS	= -pg
-#INCLUDES 	= -I$(top_srcdir)/spec/rts \
-#		  -I$(top_srcdir)/spec/slib/src \
-#		  -I$(ATERM)/include
 
-INCLUDES 	= -I/home/visser/res/stratego/spec/rts \
-		  -I/home/visser/res/stratego/spec/slib/src \
-		  -I/home/xt/xt/include
+INCLUDES 	= -I$(STRATEGORTS)/include \
+		  -I$(STRATEGOLIB)/include \
+		  -I$(ATERM)/include
 
 LDFLAGS		= -L/home/xt/xt/lib 
-LDADD		= /home/visser/res/stratego/spec/rts/libstratego.opt.a \
-		  /home/visser/res/stratego/spec/slib/src/libstratego-lib.opt.a \
+LDADD		= $(STRATEGORTS)/lib/libstratego.opt.a \
+		  $(STRATEGOLIB)/lib/libstratego-lib.opt.a \
 		  -lATerm-gcc -lm
 
 %.dbg.o: %.c

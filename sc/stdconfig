@@ -1,11 +1,11 @@
 #! /bin/sh
 
 ./reconf
-./configure --prefix=`pwd` \
+./configure --prefix=`pwd`/../sc-boot \
 	--with-aterm=/home/visser/res/sandbox/aterm \
 	--with-cgen=`pwd`/../cgen \
-	--with-gpp=/home/xt/xt \
-	--with-boot=`pwd` \
+	--with-gpp=`pwd`/../gpp \
+	--with-boot=`pwd`/../sc-boot \
 	--with-sc-boot=`pwd`/../sc-boot \
 	--with-ssl=`pwd`/../ssl \
 	--with-srts=`pwd`/../srts 

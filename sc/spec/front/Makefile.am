@@ -31,7 +31,8 @@ CLEANFILES = *.dep \
 	extract-all extract-all.c \
 	inline inline.c \
 	needed-defs-test needed-defs-test.c \
-	frontend-test
+	frontend-test \
+	rename-defs rename-defs.c
 
 TESTS = needed-defs-test frontend-test 
 #extract-test

@@ -17,7 +17,7 @@
 
 EXTRA_DIST = $(wilcard *.r)
 
-bin_SCRIPTS = s2c canonicalize
+bin_SCRIPTS = s2c canonicalize ac2c
 
 CLEANFILES = $(bin_SCRIPTS) *.dep
 
@@ -27,7 +27,7 @@ SCFLAGS = --main $@ -I ../sig \
 
 TESTS = C-simplify-test canonicalize-test
 
-BOOTSOURCES = canonicalize.c  s2c.c
+BOOTSOURCES = canonicalize.c s2c.c ac2c.in
 
 include $(srcdir)/../make-rules
 include s2c.dep

@@ -29,10 +29,10 @@ CLEANFILES = pack-stratego pack-stratego.c pack-stratego.dep
 BUILT_SOURCES = stratego.grm.tab.c stratego.grm.tab.h stratego.yy.c
 
 parse_stratego_SOURCES 	= \
-  parse-stratego.c stratego.grm stratego.lx options.h $(BUILT_SOURCES)
+  parse-stratego.c stratego.grm stratego.lx options.h options.c util.h $(BUILT_SOURCES)
 
 parse_mod_SOURCES = \
-  parse-mod.c stratego.grm stratego.lx options.h $(BUILT_SOURCES)
+   parse-mod.c stratego.grm stratego.lx options.h options.c util.h $(BUILT_SOURCES)
 
 EXTRADIST = $(wildcard *.r)
 

@@ -71,14 +71,14 @@ strategies
         where <strename> sdef => SDef(f, xs, s)
             ; <substitute-args> (xs, ss, s) => s'
             ; rules(InlineCall : Call(SVar(f), _) -> Undefined)
-	    ; <debug(!"Inlining: ")> f
+	    //; <debug(!"Inlining: ")> f
 
       InlineCall : 
         Call(SVar(f), []) -> Let([SDef(g, xs, s)],Call(SVar(g),[]))
         where <strename> sdef => SDef(f, xs@[_|_], s)
             ; new => g
             ; rules(InlineCall : Call(SVar(f), _) -> Undefined)
-	    ; <debug(!"Inlining: ")> f
+	    //; <debug(!"Inlining: ")> f
     )
 
   substitute-args = 

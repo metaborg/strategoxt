@@ -20,18 +20,16 @@ SCFLAGS = -I ../match
 bin_SCRIPTS = \
   Stratego-Normal-Format Stratego-Canonical-Format Stratego-Optimized-Format 
 
-CLEANFILES = $(bin_SCRIPTS)
+CLEANFILES = $(bin_SCRIPTS) *.dep
 
 EXTRA_DIST = $(wildcard *.r)
 
 BOOTSOURCES = \
 	Stratego-Normal-Format.c \
 	Stratego-Canonical-Format.c \
-	Stratego-Optimized-Format.c \
-	Abstract-Machine-Format.c
+	Stratego-Optimized-Format.c
 
 include $(srcdir)/../make-rules
 include Stratego-Normal-Format.dep
 include Stratego-Optimized-Format.dep
-include Abstract-Machine-Format.dep
-
+include Stratego-Canonical-Format.dep
