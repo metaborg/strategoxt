@@ -80,18 +80,30 @@ rules
   sym-diff(eq) =
     <union> (<diff(eq)>, <Swap; diff(eq)>)
 
-\end{code}
-
-	Intersection: Concatenation of two lists, only those elements in the
-	first list are added that are also in the second list.
-
-\begin{code}
 strategies
 
-  // :: List(a) * List(a) -> List(a)
+  /**
+   * Take the intersection of two sets.
+   *
+   * Elements are compared using the eq strategy.
+   *
+   * @type [a] * [a] -> [a]
+   */
   isect = isect(eq)
 
-  // a * a -> fail? :: List(a) * List(a) -> List(a)
+
+  /**
+   * Take the intersection of two sets.
+   *
+   * The results of the first list, without the elements
+   * that are not in the second list. If the first list is not
+   * a set (it contains duplicates), the result will contain
+   * contain duplicates. Note that because of this <isect> (l1, l2) is 
+   * not always equal to <isect> (l2, l1).
+   *
+   * @type eq  a * a ->? _ 
+   * @type     [a] * [a] -> [a]
+   */
   isect(eq) : 
     (l1, l2) -> <rec x(
                    [] 
