@@ -16,12 +16,12 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 dnl 02111-1307, USA.
 dnl
-dnl $Id: configure.in,v 1.3 2000/03/28 22:14:14 mdejonge Exp $
+dnl $Id: configure.in,v 1.4 2000/03/29 11:30:14 mdejonge Exp $
 
 AC_INIT(Makefile.in)
 AM_INIT_AUTOMAKE(xt,0.1)
 
-AC_REVISION($Id: configure.in,v 1.3 2000/03/28 22:14:14 mdejonge Exp $)
+AC_REVISION($Id: configure.in,v 1.4 2000/03/29 11:30:14 mdejonge Exp $)
 
 
 AC_OUTPUT(
@@ -30,15 +30,16 @@ AC_OUTPUT(
         dummy/Makefile
 )
 
+dnl Configuration of sub-pacakages
 
 AC_CONFIG_PKG(aterm,       --with-all)
-AC_CONFIG_PKG(asc-support, --with-aterm=${prefix})
-AC_CONFIG_PKG(sglr,        --with-aterm=${prefix})
-AC_CONFIG_PKG(pgen,        --with-aterm=${prefix})
-AC_CONFIG_PKG(stratego,    --with-aterm=${prefix})
+
+AC_CONFIG_PKG(asc-support sglr pgen stratego, --with-aterm=${prefix})
+
 AC_CONFIG_PKG(gb,          --with-aterm=${prefix} \
                            --with-stratego=${prefix} \
                            --with-gt=${prefix})
+
 AC_CONFIG_PKG(gt,          --with-aterm=${prefix} \
                            --with-stratego=${prefix} \
                            --with-gb=${prefix})
