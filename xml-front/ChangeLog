@@ -1,3 +1,7 @@
+2004-05-28  Martin Bravenboer <martin@cs.uu.nl>
+
+	* Moved into StrategoXT
+	
 2004-02-04  Martin Bravenboer <martin@cs.uu.nl>
 
 	* lib/meta-syn.str: xtc files should no longer be closed since

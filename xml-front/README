@@ -1,5 +1,5 @@
 --------------------------------------------------------------------------
-xml tools for StrategoXT
+XML Front for StrategoXT
 --------------------------------------------------------------------------
 
   Copyright (C) 2003 Eelco Visser <visser@acm.org>
@@ -21,11 +21,11 @@ xml tools for StrategoXT
 --------------------------------------------------------------------------
 
 Author:
-  Martin Bravenboer <mbravenb@cs.uu.nl>
+  Martin Bravenboer <martin@cs.uu.nl>
 
 --------------------------------------------------------------------------
 
 Documentation on the installation and application of xml-tools is 
 maintained at the Stratego Wiki:
 
-http://www.stratego-language.org/twiki/bin/view/Stratego/XmlTools
+http://www.stratego-language.org/Stratego/XmlTools
