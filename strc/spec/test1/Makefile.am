@@ -22,7 +22,7 @@ CLEANFILES 	= *.o *.ac *.s[0-9]* *.f* *.ac *.c.abox \
 		  *.tree *.mtree *.rtree *.txt *.s5fused libtest*.c \
 		  *.dep *test*.c *.out
 
-EXTRA_DIST 	= $(wildcard *.r) make-rules io-test*.in bar.c
+EXTRA_DIST 	= $(wildcard *.str) make-rules io-test*.in bar.c
 
 include make-rules
 include $(wildcard *.dep)

@@ -28,7 +28,7 @@ CLEANFILES 	= *.o *.ac *.s[0-9]* *.f* *.ac *.c.abox \
 		  *.tree *.mtree *.rtree *.txt *.s5fused libtest*.c \
 		  *.dep *.c *.out
 
-EXTRA_DIST 	= $(wildcard *.str) make-rules io-test*.in 
+EXTRA_DIST 	= $(wildcard *.str) 
 
 include $(srcdir)/../test1/make-rules
 include $(wildcard *.dep)
