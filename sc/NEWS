@@ -6,7 +6,7 @@ News about Stratego releases
 
 Version 0.6
 
- released: 
+ released: August 29, 2001
 
  Stratego version 0.6 is available from www.stratego-language.org
 
@@ -56,18 +56,13 @@ Version 0.6
 
  CONTRIBUTIONS
 
- * Eelco Dolstra traced the problem of using nested functions on Sun machines
-   to the executability of code on the stack, and pointed out the solution using
-   mprotect.
-
- * Merijn de Jonge tested the new distribution on various machines and
-   provided an extension of the run-time system to call mprotect when 
-   necessary.
+ * Eelco Dolstra pointed out the solution to the problem of using nested
+   functions on Sun machines that have no_exec_user_stack set. Merijn
+   de Jonge implemented an extension of the run-time system to call
+   mprotect. 
 
  * Arne de Bruijn, Merijn de Jonge, and Hedzer Westra contributed various
    strategies to the library.
-
- * The new compiler was implemented by Eelco Visser
 
  LANGUAGE
 
