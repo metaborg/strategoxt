@@ -1,3 +1,12 @@
+2003-12-26  Martin Bravenboer <martin@cs.uu.nl>
+
+	* docbook.m4: check for HTML chunk stylesheet.
+
+	* Makefile.docbook: rule for chunked HTML
+
+	* doc/Makefile.am: generate chunked HTML version of command
+	reference.
+
 2003-12-05  Martin Bravenboer <martin@cs.uu.nl>
 
 	* This year Sinterklaas gives all the dear Stratego/XT users a set
