@@ -7,3 +7,5 @@ aclocal -I .
 
 autoconf
 automake -a
+
+#touch src/boxenv/*.sty

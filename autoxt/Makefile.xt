@@ -13,8 +13,8 @@
 # Variables
 #
 AM_CPPFLAGS	= -I$(SRTS)/include -I$(ATERM)/include
-AM_LDFLAGS	= -L$(SRTS)/lib/srts -L$(ATERM)/lib 
-LDADD 		= -lstratego.opt -lstratego-lib.opt -lATerm-gcc -lm
+#AM_LDFLAGS	= -L$(SRTS)/lib/srts -L$(ATERM)/lib 
+LDADD 		= -L$(SRTS)/lib/srts -lstratego.opt -lstratego-lib.opt -L$(ATERM)/lib -lATerm-gcc -lm
 
 STRATEGORUNLIBS = -lstratego.opt -lstratego-lib.opt -lATerm-gcc -lm
 

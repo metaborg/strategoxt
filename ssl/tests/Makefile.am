@@ -44,18 +44,17 @@ check_PROGRAMS = \
   tuple-test \
   unification-test
 
-TESTS          = $(check_PROGRAMS)
-EXTRA_DIST     = $(wildcard *.str)
+TESTS          	= $(check_PROGRAMS)
+EXTRA_DIST     	= $(wildcard *.str)
 
-CLEANFILES     = $(wildcard *.dep)
-BOOTCLEANFILES = $(wildcard *.c)
+CLEANFILES     	= $(wildcard *.dep)
+BOOTCLEANFILES 	= $(wildcard *.c)
 
-SCFLAGS	       = --verbose 1
+SCFLAGS	       	= --verbose 1
 
-STRINCLUDES    = -I $(top_srcdir)/spec -I $(SRTS)/share/srts
-LDFLAGS	       = -L$(SRTS)/lib/srts
+STRINCLUDES    	= -I $(top_srcdir)/spec -I $(SRTS)/share/srts
+AM_LDFLAGS	= -L$(SRTS)/lib/srts -L$(ATERM)/lib 
 
-STRATEGORUNLIBS  = -lstratego.opt -lstratego-lib.opt -lATerm-gcc -lm
 annotations_test_LDADD 		= -lliblib $(STRATEGORUNLIBS)
 annotation_props_test_LDADD 	= -lliblib $(STRATEGORUNLIBS)
 char_test_LDADD 		= -lliblib $(STRATEGORUNLIBS)
