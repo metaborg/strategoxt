@@ -1,3 +1,8 @@
+2003-09-16  Martin Bravenboer <mbravenb@cs.uu.nl>
+  
+  * spec/integers.str: added set-random-seed, get-random-max,
+    and next-random to generate random numbers.
+
 2003-08-17  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/list-misc.str: mapconcat(s) is shortcut for (map(s);

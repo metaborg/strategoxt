@@ -135,6 +135,28 @@ strategies
 
 strategies
 
+  /**
+   * Sets a seed for the next-random function.
+   *
+   * @see    man srand
+   * @since  0.9.4
+   * @type   Int -> ()
+   */
+  set-random-seed = ?seed; prim("SSL_srand", seed)
+
+  get-random-max = prim("SSL_RAND_MAX")
+
+  /**
+   * Returns a random number.
+   *
+   * @see    man rand
+   * @since  0.9.4
+   * @type   _ -> Int
+   */
+  next-random = prim("SSL_rand")
+
+strategies
+
   addS  = (string-to-int, string-to-int); add; int-to-string
   subtS = (string-to-int, string-to-int); subt; int-to-string
   mulS  = (string-to-int, string-to-int); mul; int-to-string
