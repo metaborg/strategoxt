@@ -6,7 +6,7 @@ TBLS = rtg.tbl Stratego-rtg.tbl
 
 sdfdata_DATA   = $(TBLS) $(DEFS) $(wildcard *.sdf)
 EXTRA_DIST     = $(DEFS) $(wildcard *.sdf)
-CLEANFILES     = $(DEFS)
+CLEANFILES     = $(TBLS) 
 BOOTCLEANFILES = $(DEFS)
 
 SDFINCLUDES    = -I $(STRATEGO_FRONT)/share/sdf/stratego-front
