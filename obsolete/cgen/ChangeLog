@@ -1,3 +1,7 @@
+2001-11-15  Merijn de Jonge <mdejonge@cwi.nl>
+	* Removed unused AC_ARG_WITH calls from configure.in
+	* Removed unused dependencies from cgen-0.1.pkg
+
 2001-08-27  Eelco Visser  <visser@acm.org>
 
 	* Removed ac2c; it is in sc-boot and sc (and should disappear)

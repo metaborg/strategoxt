@@ -12,7 +12,4 @@ identification
 interface
 
 requires
-  aterm 1.6.3
-  ssl	0.6
-  srts	0.6
 

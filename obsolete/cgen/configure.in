@@ -18,37 +18,7 @@
 AC_INIT(sig/C.r)
 AM_INIT_AUTOMAKE(cgen,0.2)
 
-
-AC_ARG_WITH(aterm, 
-  [  --with-aterm          Specify location of ATerm library, default: \$prefix], 
-  ATERM=$withval, 
-  ATERM="$prefix"
-)
-AC_SUBST(ATERM)
-
-AC_ARG_WITH(gpp,   
-  [  --with-gpp            Specify location of GPP, default: \$prefix], 
-  GPP=$withval, 
-  GPP="$prefix"
-)
-AC_SUBST(GPP)
-
-AC_ARG_WITH(ssl,   
-  [  --with-ssl            Specify location of Stratego Library (SSL), default: \$prefix], 
-  STRATEGOLIB=$withval, 
-  STRATEGOLIB="$prefix"
-)
-AC_SUBST(STRATEGOLIB)
-
-AC_ARG_WITH(srts,  
-  [  --with-srts           Specify location of Stratego run-time system (SRTS), default: \$prefix], 
-  STRATEGORTS=$withval, 
-  STRATEGORTS="$prefix"
-)
-AC_SUBST(STRATEGORTS)
-
-
-AC_REVISION($Id: configure.in,v 1.5 2001/09/22 09:35:14 visser Exp $)
+AC_REVISION($Id: configure.in,v 1.6 2001/11/15 13:12:05 stratego Exp $)
 
 AC_PROG_CC
 AC_PROG_RANLIB
