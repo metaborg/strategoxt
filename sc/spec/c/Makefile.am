@@ -10,7 +10,7 @@ BOOTCLEANFILES 	 = s2c.c canonicalize.c C-simplify-test.c
 
 CLEANFILES 	 = $(wildcard *.dep) $(TESTS)
 
-SCFLAGS 	 = --main $*
+SCFLAGS 	 = --main $* --keep 5 --output-optimized --output-canonical
 
 STRINCLUDES	 = -I $(C_TOOLS)/share/sdf/c-tools	     \
 		   -I $(C_TOOLS)/share/c-tools		     \

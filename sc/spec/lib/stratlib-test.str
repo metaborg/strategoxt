@@ -41,11 +41,6 @@ strategies
           ; debug; <debug; different; debug>["F", "G", "X", f, g, x]
 	)
 
-/*
-SDefT("split",[DefaultVarDec("e_0"),DefaultVarDec("f_0")],[],
-      Scope(["d_0"],Seq(Match(Var("d_0")),Build(Tuple([App(CallT(SVar("e_0"),[],[]),Var("d_0")),App(CallT(SVar("f_0"),[],[]),Var("d_0"))])))))
-*/
-
   different =
     [] + where(!(<Hd>, <Tl>); not(member))
          ; where(Tl; different)

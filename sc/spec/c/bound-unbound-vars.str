@@ -1,5 +1,5 @@
 module bound-unbound-vars
-imports Stratego dynamic-rules lib
+imports Stratego dynamic-rules lib verbose
 strategies
 
   bound-unbound-vars =
@@ -12,17 +12,19 @@ strategies
 
   mark-scope =
     ? Scope(xs, _)
+    ; where(!"unbound" => anno)
     ; Scope(id,
         {| MarkVar : 
-           where(!xs; map({?x; rules(MarkVar : Var(x) -> Var(x){"unbound"})}))
+           where(!xs; map({?x; rules(MarkVar : Var(x) -> Var(x){anno})}))
            ; mark-buv
         |})
 
   mark-match :
     Match(t) -> Match(t')
-    where <alltd(
+    where !"bound" => anno
+        ; <alltd(
              MarkVar
-             ; where({?Var(x); rules(MarkVar : Var(x) -> Var(x){"bound"})})
+             ; where({x:?Var(x); override rules(MarkVar : Var(x) -> Var(x){anno})})
            )> t => t'
 
   mark-buv =
@@ -61,7 +63,7 @@ strategies
     ; CallT(id, id, map(alltd(MarkVar)))
     ; CallT(id, mark-buv, id)
     ; where(<isect-MarkVar> bnd)
-
+  
   mark-prim =
     PrimT(id,id,id)
     ; where(save-MarkVar => bnd)
@@ -75,16 +77,18 @@ strategies
         where(save-MarkVar => bnd0)
         ; Let(map(mark-buv; where(<isect-MarkVar> bnd0))
 	     ,    mark-buv; where(<isect-MarkVar> bnd0))
-      )
+      ) 
     ; where(save-MarkVar => bnd1)
     ; Let(map(where(<restore-MarkVar> bnd1); mark-buv)
-         ,    where(<restore-MarkVar> bnd1); mark-buv) 
+         ,    where(<restore-MarkVar> bnd1); mark-buv)
+    ; where(save-MarkVar)
 
   mark-sdef =
     ? SDefT(_, _, as, _)
+    ; where(!"bound" => anno)
     ; SDefT(id, id, id,
         {| MarkVar :
-             where(!as; map({?VarDec(x,_); rules(MarkVar : Var(x) -> Var(x){"bound"})}))
+             where(!as; map({?VarDec(x,_); rules(MarkVar : Var(x) -> Var(x){anno})}))
              ; mark-buv
         |})
 
@@ -129,11 +133,12 @@ strategies // Dynamic rule manipulation
     where(<table-destroy> "MarkVar";
           <table-putlist>("MarkVar", tbl))
 
-  isect-MarkVar =
+  isect-MarkVar = 
+     where(save-MarkVar);
      map(try(?(Scopes,_)
-        <+ {?(key, [Defined(_)|_]);
-            (where(<table-get> ("MarkVar", key) => [Defined(_)|_])
-             <+ !(key, [Undefined]))
+        <+ {key, xs, x : ?(key, [Defined(_,x)|xs]); 
+            (where(<table-get> ("MarkVar", key) => [Defined(_,x)|_])
+             <+ !(key, [Undefined|xs]))
            }))
     ; restore-MarkVar
 

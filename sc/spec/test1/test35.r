@@ -20,6 +20,9 @@ strategies
     (?x, fetch(?x))
     ; debug(!"member: ")
 
+  main =
+    <not(member)> ("a", ["d", "b", "c"])
+
   fetch(s) =
     rec x(debug(!"fetch? "); ([s | id] <+ [id | x]); debug(!"fetch: "))
 
@@ -32,7 +35,7 @@ strategies
   printnl =
     ?(name, strs); where(prim("SSL_printnl", name, strs))
 
-  main =
+  main' =
     <debug; different; debug> ["F","G","X","e_0","f_0","d_0"]
 
   different =

@@ -15,13 +15,13 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 # PRETTY-PRINTING ####################################################
 
 %.txt: % $(STRATEGO_FRONT)/bin/pp-stratego
-	$(STRATEGO_FRONT)/bin/pp-stratego -a -i $< -o $@ --verbose 5
+	$(STRATEGO_FRONT)/bin/pp-stratego -a -i $< -o $@ --verbose 0
 
 %.atxt : %
 	$(ATERM)/bin/baffle -wt -i $< -o $@
 
 %.ttxt : %
-	$(ATERM_TOOLS)/bin/pp-aterm -i $< -o $@ --verbose 5
+	$(ATERM_TOOLS)/bin/pp-aterm -i $< -o $@ --verbose 0
 
 # FRONT-END ###########################################################
 
@@ -38,7 +38,7 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 	../front/repair-types -i $< -o $@
 
 %.s1 : %.s0 ../front/frontend$(EXE)
-	../front/frontend -i $< -o $@ -b --verbose 10
+	../front/frontend -i $< -o $@ -b --verbose 1
 
 %.s2 : %.s1 ../front/extract$(EXE)
 	../front/extract -i $< -o $@ -b
@@ -114,7 +114,7 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 	../opt/const-prop -i $< -o $@ -b
 
 %.s11.opt3 : %.s11.opt2 ../c/bound-unbound-vars$(EXE)
-	../c/bound-unbound-vars -i $< -o $@ -b --verbose 10
+	../c/bound-unbound-vars -i $< -o $@ -b
 
 %.s11.opt4 : %.s11.opt3 ../opt/dead-var-elim$(EXE)
 	../opt/dead-var-elim -i $< -o $@ -b
@@ -124,17 +124,17 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 
 # BACK-END ###########################################################
 
-%.s13 : %.s12 ../c/canonicalize$(EXE)
-	../c/canonicalize -i $< -o $@ -b
-
-%.s12 : %.s11.opt ../c/bound-unbound-vars$(EXE)
-	../c/bound-unbound-vars -i $< -o $@ -b
-
-#%.s12 : %.s11.opt ../c/canonicalize$(EXE)
+#%.s13 : %.s12 ../c/canonicalize$(EXE)
 #	../c/canonicalize -i $< -o $@ -b
 #
-#%.s13 : %.s12 ../c/bound-unbound-vars$(EXE)
+#%.s12 : %.s11.opt ../c/bound-unbound-vars$(EXE)
 #	../c/bound-unbound-vars -i $< -o $@ -b
+
+%.s12 : %.s11.opt ../c/canonicalize$(EXE)
+	../c/canonicalize -i $< -o $@ -b
+
+%.s13 : %.s12 ../c/bound-unbound-vars$(EXE)
+	../c/bound-unbound-vars -i $< -o $@ -b
 
 
 %.s13.check : %.s13 ../sig/Stratego-Canonical-Format$(EXE)

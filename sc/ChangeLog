@@ -1,3 +1,9 @@
+2003-07-30  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/c/bound-unbound-vars.str: Tweaked the MarkVar dynamic
+	rules to get intersection to work. Something strange is going
+	on here, which needs looking into.
+
 2003-07-29  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/opt/dead-var-elim.str: Default case traverses subtree
