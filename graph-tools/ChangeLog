@@ -1,3 +1,6 @@
+2001-06-08 Merijn de Jonge <mdejonge@cwi.nl> 
+   * src/dot: dot.pp and dot.pp.af are also installed in share/graph-tools
+
 2001-06-07 Merijn de Jonge <mdejonge@cwi.nl> 
    * graphterms component added
    * graphterms2graphxml component added

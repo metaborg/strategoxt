@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.2 2001/06/05 12:41:14 mdejonge Exp $
+# $Id: Makefile.am,v 1.3 2001/06/08 08:35:56 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -29,7 +29,7 @@ include $(STRATEGO_PRG:%=%.dep)
 # define any subdir here
 SUBDIRS      = data
 
-EXTRA_DIST   = Dot.r dot.pp
+EXTRA_DIST   = Dot.r dot.pp dot.pp.af
 
-pkgdata_DATA = Dot.r
+pkgdata_DATA = Dot.r dot.pp dot.pp.af
 
