@@ -1,5 +1,5 @@
 module pp-c
-imports xtc-lib stratego-xt-xtc-tools string
+imports liblib strategoxt-xtc-tools
 
 strategies
 
@@ -30,8 +30,7 @@ Description:
    pretty-print-c pretty-prints a C concrete syntax tree in ATerm format.
 
 Copying:
-   Copyright (C) 1998-2002 Eelco Visser      <visser@acm.org>
-   Copyright (C) 2001-2002 Martin Bravenboer <martin@mbravenboer.org>
+   Copyright (C) 1998-2004 Eelco Visser      <visser@acm.org>
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
