@@ -36,6 +36,9 @@
    lexical-priorities -- 
       V is=2 [H[KW["lexical"] KW["priorities"]] _1],
 
+   priorities --
+      V is=2 [KW["priorities"] _1],
+
    context-free-priorities -- 
       V is=2 [H[KW["context-free"] KW["priorities"]] _1],
 
@@ -138,7 +141,6 @@
    chain                         -- _1,
    chain.1:iter-sep              -- H [_1 KW[">"]],
    assoc                         -- HV [_1 _2 _3],
-   priorities                    -- KW["priorities"] _1,
    lifting                       -- KW["`"] _1 KW["`"],
    empty                         -- KW["("] KW[")"],
    seq                           -- KW["("] _1 _2 KW[")"],
