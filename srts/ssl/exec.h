@@ -12,6 +12,8 @@ ATerm SSL_waitpid(ATerm pid);
 ATerm SSL_execvp(ATerm file, ATerm argv);
 ATerm SSL_pipe(void);
 
+ATerm SSL_open(ATerm pathname);
+ATerm SSL_creat(ATerm pathname);
 ATerm SSL_close(ATerm fd);
 ATerm SSL_dup(ATerm oldfd);
 ATerm SSL_fdopen(ATerm fd, ATerm mode);

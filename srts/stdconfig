@@ -1,6 +1,12 @@
 #! /bin/sh
 
 ./bootstrap
+./configure --prefix=/usr/local/build/Boot \
+	--with-aterm=/usr/local/build/ATerm
+
+exit 0
+
+./bootstrap
 ./configure --prefix=/home/xt/XT \
 	--with-aterm=/home/xt/XT \
 	--with-rpmdir=/home/visser/rpm

@@ -23,6 +23,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <sys/wait.h>
 
 ATerm SSL_exit(ATerm t)
@@ -67,9 +69,9 @@ ATerm SSL_execvp(ATerm file, ATerm argv)
 ATerm SSL_waitpid(ATerm pid)
 {
   int status;
-  ATfprintf(stderr, "SSL_waitpid(%t)\n", pid);
-  waitpid(AT_getInt(pid), &status,0);
-  ATfprintf(stderr, "SSL_waitpid(%t) waiting is over\n", pid);
+  //ATfprintf(stderr, "SSL_waitpid(%t)\n", pid);
+  waitpid(AT_getInt(pid), &status, 0);
+  //ATfprintf(stderr, "SSL_waitpid(%t) waiting is over\n", pid);
   return App3("WaitStatus",
 	      (ATerm)ATmakeInt(WIFEXITED(status)   ? WEXITSTATUS(status) : -1),
 	      (ATerm)ATmakeInt(WIFSIGNALED(status) ? WTERMSIG(status) : -1),
@@ -102,9 +104,33 @@ ATerm SSL_pipe(void)
   return (ATerm)ATempty;
 }
 
+ATerm SSL_creat(ATerm pathname)
+{
+  int fd;
+  //ATfprintf(stderr, "SSL_creat(%t)\n", pathname);
+  if((fd = creat(AT_getString(pathname), S_IRWXU)) == -1)
+    {
+      ATfprintf(stderr, "Creating file %s failed (%d)\n", AT_getString(pathname), fd);
+      _fail(pathname);
+    }
+  return (ATerm)ATmakeInt(fd);
+}
+
+ATerm SSL_open(ATerm pathname)
+{
+  int fd;
+  //ATfprintf(stderr, "SSL_open(%t)\n", pathname);
+  if((fd = open(AT_getString(pathname),O_CREAT|O_RDWR, S_IRWXU)) == -1)
+    {
+      ATfprintf(stderr, "opening %s failed: %d\n", AT_getString(pathname), fd);
+      _fail(pathname);
+    }
+  return (ATerm)ATmakeInt(fd);
+}
+
 ATerm SSL_close(ATerm fd)
 {
-  ATfprintf(stderr, "SSL_close(%t)\n", fd);
+  //ATfprintf(stderr, "SSL_close(%t)\n", fd);
   if(close(AT_getInt(fd)) != 0) 
     _fail(fd);
   return (ATerm)ATmakeInt(0);
@@ -312,7 +338,7 @@ ATerm SSL_pipe_term_to_child(ATerm t, ATerm prog, ATerm args0)
 	//  }
     fclose(fileid);
 
-    waitpid(pid, &status,0);
+    waitpid(pid, &status, 0);
     fprintf(stderr, "Return from call (status = %d)\n", WEXITSTATUS(status));
     if(WIFEXITED(status) && WEXITSTATUS(status) == 0)
       return((ATerm) ATempty);
