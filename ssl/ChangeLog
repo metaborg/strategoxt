@@ -1,6 +1,8 @@
 2004-03-07  Arthur van Dam <adam@cs.uu.nl>
 
-	* ssl/list-set.str: set-eq(eq) checks equality of two list sets.
+	* ssl/list-set.str: Introduced a general subset checker.
+	End user strategies include: `set-eq`, `subset`, `subseteq`, all
+	parameterizable with a user-defined compare/eq strategy.
 
 2004-02-22  Merijn de Jonge <mdejonge@cs.uu.nl>
 
