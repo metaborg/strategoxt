@@ -1,3 +1,8 @@
+2003-07-12  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/stratego/Makefile.am: Don't install stratego signatures; are
+	installed by stratego-front.
+
 2003-06-18  Merijn de Jonge  <m.de.jonge@tue.nl>
 	* stratego-stats/conc-modules.str: now reads .str files,
 	  can deal with .rtree files, and now uses parse-stratego rather

@@ -34,6 +34,8 @@ MODS = Stratego-Layout.str Stratego-Rules.str	\
 
 EXTRA_DIST     = $(MODS) README stratego.pp stratego.def \
                  stratego.pp stratego.pp.af stratego.tbl
-pkgdata_DATA   = $(MODS) stratego.pp stratego.pp.af stratego.tbl
+
+#pkgdata_DATA   = $(MODS) stratego.pp stratego.pp.af stratego.tbl
+
 BOOTCLEANFILES = stratego.pp.af stratego.tbl
 
