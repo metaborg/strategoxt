@@ -29,12 +29,18 @@ strategies
 	to all nodes of a term.
 
 \begin{code}
+  //topdown(s) = 
+  //  rec x(s; all(x))
+
   topdown(s) = 
-    rec x(s; all(x))
+    s; all(topdown(s))
+
+//  bottomup(s) = 
+//    rec x(all(x); s)
 
   bottomup(s) = 
-    rec x(all(x); s)
-
+    all(bottomup(s)); s
+ 
   downup(s) = 
     rec x(s; all(x); s)
 
