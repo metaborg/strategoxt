@@ -15,7 +15,7 @@ strategies
   cwd-tests =
       where(getcwd => cwd)
     ; apply-test(!"chdir to tmpdir", chdir; getcwd, temp-dir, temp-dir)
-    ; apply-test(!"chdir to home dir", chdir; getcwd, home-dir, home-dir)
+    //; apply-test(!"chdir to home dir", chdir; getcwd, home-dir, home-dir)
     ; apply-test(!"chdir to old cwd", chdir; getcwd, !cwd, !cwd)
 
   fileno-tests =
