@@ -42,7 +42,6 @@ strategies
 	+ LGChoice(exp, exp)
 	+ CallT(SVar(is-string),list(CallT(SVar(is-string),[],[])),list(Var(is-string)))
 	+ Rec(is-string, exp)
-	+ Path(is-int, exp)
 	+ Cong(is-string, list(exp))
 	+ One(exp)
 	+ Some(exp)

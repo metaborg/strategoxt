@@ -61,7 +61,6 @@ exports
 
     %% Traversal
 
-    Int Strategy 			  -> Strategy {cons("Path")}
     "some" "(" Strategy ")" 		  -> Strategy {cons("Some")}
     "one" "(" Strategy ")" 		  -> Strategy {cons("One")}
     "all" "(" Strategy ")" 		  -> Strategy {cons("All")}

@@ -54,7 +54,6 @@ strategies
 	+ PrimT(is-string,list(exp),list(build-term-expression))
 
 	+ Rec(is-string, exp)
-	+ Path(is-int, exp)
 	+ One(exp)
 	+ Some(exp)
 	+ All(exp)

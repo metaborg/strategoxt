@@ -61,7 +61,6 @@ strategies
 		list(term-expression))    
 
 	+ Rec(is-string, exp)
-	+ Path(is-int, exp)
 	+ Cong(is-string, list(exp))
 	+ One(exp)
 	+ Some(exp)

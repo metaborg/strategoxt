@@ -180,7 +180,6 @@
    PrimT                                              -- H hs=0 [KW["prim"] KW["("] _1 H  [KW[","] _2 KW["|"] _3] KW[")"]],
    PrimT.2:iter-star-sep                              -- H hs=0 [_1 KW[","]],
    PrimT.3:iter-star-sep                              -- H hs=0 [_1 KW[","]],
-   Path                                               -- _1 _2,
    Some                                               -- H hs=0 [KW["some"] KW["("] _1 KW[")"]],
    One                                                -- H hs=0 [KW["one"] KW["("] _1 KW[")"]],
    All                                                -- H hs=0 [KW["all"] KW["("] _1 KW[")"]],

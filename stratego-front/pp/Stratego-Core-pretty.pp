@@ -36,7 +36,6 @@
    Not                       -- KW["not"] KW["("] _1 KW[")"],
    LGChoice                  -- _1 KW["<++"] _2,
    Bagof                     -- KW["bagof"] KW["("] _1 KW[")"],
-   Path                      -- _1 _2,
    Some                      -- KW["some"] KW["("] _1 KW[")"],
    One                       -- KW["one"] KW["("] _1 KW[")"],
    All                       -- KW["all"] KW["("] _1 KW[")"],
