@@ -637,13 +637,17 @@ strategies // extending a rule
 	     | label, key, value) =
     ?[ChangeSet(labelset, rmset, tbl1) | rs]
     ; where(
-        let add2(|scpid, tbl2, key, value) =
+        let add2(|scpid, tbl2, key, value) = 
               add1(|scpid, tbl2, key, value)
-              <+ (<hashtable-get(|(scpid, key))> tbl1
-                  <+ <hashtable-get(|key)> tbl2
-                  <+ ![]) 
-	         // check that value not yet member of this set????
-                 ; \ values -> <hashtable-put(|(scpid, key), [value | values])> tbl1 \
+              <+ {values: 
+                  ![value | <hashtable-get(|(scpid, key))> tbl1] => values
+		  ; if <hashtable-get(|key)> tbl2 => values then
+                      <hashtable-remove(|(scpid, key))> tbl1
+                    else
+                      <hashtable-put(|(scpid, key), values)> tbl1
+                    end }
+               <+ (<hashtable-get(|key)> tbl2 <+ ![])
+                  ; \ values -> <hashtable-put(|(scpid, key), [value | values])> tbl1 \
          in if <iset-contains(|label)> labelset then 
 	       <fetch-elem(?RuleScope(_,tbl@Hashtable(hptr)))> rs
                ; add2(|hptr, tbl, key, value)
@@ -686,11 +690,15 @@ strategies // extending a rule
     ; where(
         let add2(|scpid, tbl2, key, value) =
               add1(|scpid, tbl2, key, value)
-              <+ (<hashtable-get(|(scpid, key))> tbl1
-                  <+ <hashtable-get(|key)> tbl2
-                  <+ ![]) 
-	         // check that value not yet member of this set????
-                 ; \ values -> <hashtable-put(|(scpid, key), [value | values])> tbl1 \
+              <+ {values: 
+                  ![value | <hashtable-get(|(scpid, key))> tbl1] => values
+		  ; if <hashtable-get(|key)> tbl2 => values then
+                      <hashtable-remove(|(scpid, key))> tbl1
+                    else
+                      <hashtable-put(|(scpid, key), values)> tbl1
+                    end }
+               <+ (<hashtable-get(|key)> tbl2 <+ ![])
+                  ; \ values -> <hashtable-put(|(scpid, key), [value | values])> tbl1 \
 
             rm2(|scpid, tbl2, key) =
               rm1(|scpid, tbl2, key)
