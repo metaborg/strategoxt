@@ -36,5 +36,14 @@ IMPORTS="${PREFIX}/bin/sdf-imports"
 PPTABLES="${PREFIX}/share/sdf-tools/sdf.cons.pp"
 PARSETABLE="${PREFIX}/share/sdf-tools/sdf.cons.tbl"
 
+# Function to generate dot graph (as AST) for SDF definition
+spec2adot () {
+   SEARCHPATH=$1
+   MODULE=$2
+   MOD_EXTENSION=$3
+   output=$4
+   $IMPORTS $SEARCHPATH --graphxml -i $MODULE -e $MOD_EXTENSION \
+   | $GXML2DOT -o $output
+}
 
 . ${GPP}/libexec/tohtml

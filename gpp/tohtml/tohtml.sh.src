@@ -316,9 +316,9 @@ ENDCAT
 # Generate page with import graph
 # first create gif image
 
-$IMPORTS $SEARCHPATH --graphxml -i $MODULE -e $MOD_EXTENSION1 -o $tmp.modules || exit 1
-$GXML2DOT -i $tmp.modules \
-   | $AST2ABOX -p ${DOT_PP_TABLE} \
+#$IMPORTS $SEARCHPATH --graphxml -i $MODULE -e $MOD_EXTENSION1 -o $tmp.modules || exit 1
+spec2adot "$SEARCHPATH" "$MODULE" "$MOD_EXTENSION1" "$tmp.modules" 
+$AST2ABOX -p ${DOT_PP_TABLE} -i $tmp.modules \
    | ${ABOX2TEXT} \
    | $DOT -Tgif > ${OUTPUT}/$IGRAPH.gif
 
@@ -333,8 +333,7 @@ cat << ENDCAT
 <center>
 <img src="$IGRAPH.gif" usemap="#map1" border="0">
 <map name="map1">
-`$GXML2DOT -i $tmp.modules |\
-   ${AST2ABOX} -p ${DOT_PP_TABLE} |\
+`${AST2ABOX} -p ${DOT_PP_TABLE} -i $tmp.modules|\
    ${ABOX2TEXT} |\
    $DOT -Tismap |\
    $ISMAP2USEMAP`

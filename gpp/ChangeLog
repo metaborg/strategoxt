@@ -1,3 +1,6 @@
+2003-06-02   Merijn de Jonge  <M.de.Jonge@tue.nl>
+ * slightly generalized tohtml script
+
 2003-05-27   Merijn de Jonge  <M.de.Jonge@tue.nl>
  * readded tohtml tool
 
