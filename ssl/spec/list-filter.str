@@ -3,6 +3,11 @@ imports list
 strategies
 
  /**
+  * Returns the terms that satisfy s.
+  *
+  * @param s  a -> b
+  * @type     List(a) -> List(b)
+  *
   * @inc test1
   */
   filter(s) = 
@@ -14,8 +19,6 @@ strategies
   filter-gen(pred, cont : (term -> term) * term -> term) =
     rec x([] + (pred; cont(x)) <+ Tl; x)
 
-  (* filter(s) = filter-gen([s | id], at-tail) *)
-
   skip1(s) = at-tail(s)
   skip2(s) = at-tail(at-tail(s))
 
@@ -25,9 +28,17 @@ strategies
   filter-options(flag) = 
     filter-gen([flag | id], skip2)
 
-  // partition(s) = split(filter(s), filter(not(s)))
-
  /**
+  * Partitions a list into a tuple of two lists.
+  *
+  * The argument s is applied to all elements of the list. The
+  * results of the succesful applications are returned in the first
+  * list. The terms to which s cannot be applied are returned in the
+  * second list.
+  *
+  * @param s   a -> b
+  * @type      List(a) -> (List(b), List(a)) 
+  *
   * @inc test2
   */
   partition(s) = rec part(
