@@ -1,3 +1,6 @@
+2002-06-14  Merijn de Jonge <mdejonge@cwi.nl>
+   * Updated NEWS file
+
 2002-06-05  Merijn de Jonge <mdejonge@cwi.nl>
    * Added -c switch to pp for conservative pretty-printing. This is only
      supported when formatting parse trees.

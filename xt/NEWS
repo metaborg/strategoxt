@@ -1,4 +1,6 @@
 Version 1.0 released: 2002-06-04
+        * Added -c switch to pp for conservative pretty-printing. This is
+          only supported when formatting parse trees.
 	* pp: added -p switch to specify addition pretty-print tables to use.
 	* gbquery: fixed incorrect detection of grammar location
 

@@ -1,4 +1,6 @@
-Version 2.2 released: 2002-06-08
+Version 2.2 released: 2002-06-14
+	* fixed handling of abbreviation tables passed to abox2latex
+	* fixed pretty-printing of integers in ast2abox
 	* GPP now compiles and runs on Windows using Cygwin
 	* Added support for layout preserving pretty-printing. Use
           asfix2abox with -c switch
