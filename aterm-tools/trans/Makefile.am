@@ -2,7 +2,7 @@ include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
 bin_PROGRAMS   = explode-aterm implode-aterm
-pkgdata_DATA   = explode-aterm.rtree implode-aterm.rtree
+pkgdata_DATA   = explode-aterm.rtree implode-aterm.rtree explode-aterm.str implode-aterm.str
 
 EXTRA_DIST     = $(pkgdata_DATA) $(wildcard *.str) $(wildcard *.meta)
 
