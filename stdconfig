@@ -1,4 +1,4 @@
-./reconf
+./bootstrap
 ./configure --prefix=/home/xt/XT \
 	--with-sdf=/home/xt/XT \
 	--with-aterm=/home/xt/XT \

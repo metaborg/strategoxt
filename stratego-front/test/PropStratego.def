@@ -3,8 +3,10 @@ module Stratego
 exports
   lexical syntax
     [a-zA-Z\'\.\-\_] [a-zA-Z0-9\'\.\-\_]* -> Id
+    [a-zA-Z\'\.\-\_] [a-zA-Z0-9\'\.\-\_]* "*" -> LId
   lexical restrictions
-    Id -/- [a-zA-Z0-9\'\.\-\_]
+    Id -/- [a-zA-Z0-9\'\.\-\_\*]
+    LId -/- [a-zA-Z0-9\'\.\-\_]
   lexical syntax
     "all" 		-> Id {reject}
     "constructors" 	-> Id {reject}
@@ -28,6 +30,8 @@ exports
     "test" 		-> Id {reject}
     "thread" 		-> Id {reject}
     "where" 		-> Id {reject}
+
+    
 
   lexical restrictions
     "all" 		
@@ -152,6 +156,10 @@ exports
 
   context-free syntax
     Id 				-> Var  {cons("Var")}
+    LId 			-> LID  {cons("ListVar")}
+    LID				-> Var  {cons("Var")}
+    Id				-> ID				
+    LId				-> ID
 
   context-free syntax
     "_" 			 -> Term {cons("Wld")}
@@ -222,7 +230,7 @@ exports
     "?" Term 				  -> Strategy {cons("Match")}
     "!" Term 				  -> Strategy {cons("Build")}
     "{" Strategy "}" 			  -> Strategy {cons("ScopeDefault")}
-    "{" {Id ","}* ":" Strategy "}" 	  -> Strategy {cons("Scope")}
+    "{" {ID ","}* ":" Strategy "}" 	  -> Strategy {cons("Scope")}
      StrategyAngle Term 		  -> Strategy {cons("BA")}
      %%"<" Strategy ">" Term 		  -> Strategy {cons("BA")}
      Strategy "=>" Term 		  -> Strategy {cons("AM")}

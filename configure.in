@@ -16,7 +16,7 @@
 # 02111-1307, USA.
 
 AC_INIT(Makefile.in)
-AM_INIT_AUTOMAKE(StrategoXT,0.9beta2)
+AM_INIT_AUTOMAKE(StrategoXT,0.9beta4)
 
 #AC_CONFIG_AUX_DIR([config])
 
@@ -94,7 +94,7 @@ AM_CONFIG_HEADER([config.h])
 
 ### PACKAGES ##########################
 
-PKGS="srts ssl sc-boot gpp-boot cgen aterm-tools asfix-tools graph-tools gpp sdf-tools stratego-tools $FRONTPKG $BOOTPKG xt boxenv"
+PKGS="srts sc-boot gpp-boot cgen ssl aterm-tools asfix-tools graph-tools gpp sdf-tools stratego-tools $FRONTPKG $BOOTPKG xt boxenv"
 
 #gbtools stratego-connect grammar-recovery
 
@@ -120,25 +120,16 @@ AB_CONFIG_PKG(aterm,
 
 if test x$usecpl = xtrue
 then
-
 AB_CONFIG_PKG(srts,
    --with-aterm=${ATERM}
    --with-cpl=${CPL}
 )
-
 else
-
 AB_CONFIG_PKG(srts,
    --with-aterm=${ATERM}
 )
-
 fi
 
-AB_CONFIG_PKG(ssl,
-   --with-aterm=${ATERM}
-   --with-srts=${prefix}
-   --with-stratego=${prefix}
-)
 AB_CONFIG_PKG(cgen,
    --with-aterm=${ATERM}
    --with-ssl=${prefix}
@@ -157,19 +148,20 @@ AB_CONFIG_PKG(gpp-boot,
    --with-pgen=${PGEN}
    --with-asfix-tools=${ASFIX_TOOLS}
 )
-
+AB_CONFIG_PKG(ssl,
+   --with-aterm=${ATERM}
+   --with-srts=${prefix}
+   --with-stratego=${prefix}
+)
 AB_CONFIG_PKG(aterm-tools,
    --with-sc=${prefix} 
 )
-
 AB_CONFIG_PKG(asfix-tools,
    --with-sc-boot=${prefix} 
 )
-
 AB_CONFIG_PKG(graph-tools,
    --with-sc-boot=${prefix} 
 )
-
 AB_CONFIG_PKG(gpp,
    --with-asfix-tools=${prefix}
    --with-sglr=${prefix}
@@ -179,7 +171,6 @@ AB_CONFIG_PKG(gpp,
    --with-stratego=${prefix}
    --with-bundled-packages='${PKGS}'
 )
-
 AB_CONFIG_PKG(sdf-tools,
    --with-stratego=${prefix}
    --with-sglr=${prefix}
@@ -189,7 +180,6 @@ AB_CONFIG_PKG(sdf-tools,
    --with-gpp=${prefix}
    --with-bundled-packages='${PKGS}'
 )
-
 AB_CONFIG_PKG(stratego-tools,
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
@@ -200,7 +190,6 @@ AB_CONFIG_PKG(stratego-tools,
    --with-gpp=${prefix}
    --with-bundled-packages='${PKGS}'
 )
-
 AB_CONFIG_PKG(stratego-front,
    --with-stratego=${prefix} 
    --with-sglr=${SGLR}      
@@ -219,7 +208,6 @@ AB_CONFIG_PKG(sc,
    --with-cgen=${prefix}
    --with-gpp=${prefix}
 )
-
 AB_CONFIG_PKG(xt,
   --with-pgen=${PGEN}           
   --with-sglr=${SGLR}                  
@@ -234,6 +222,5 @@ AB_CONFIG_PKG(xt,
   --with-sdf-tools=${prefix}        
   --with-graphviz=${GRAPHVIZ}
 )
-
 AB_CONFIG_PKG(boxenv,
 )

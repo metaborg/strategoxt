@@ -1,4 +1,5 @@
 (setq auto-mode-alist (cons '("\\.r\\'" . stratego-mode) auto-mode-alist))
+(setq auto-mode-alist (cons '("\\.str\\'" . stratego-mode) auto-mode-alist))
 (setq auto-mode-alist (cons '("\\.cr\\'" . stratego-mode) auto-mode-alist))
 (setq auto-mode-alist (cons '("\\.cltx\\'" . latex-mode) auto-mode-alist))
 (setq auto-mode-alist (cons '("\\.ss\\'" . stratego-mode) auto-mode-alist))

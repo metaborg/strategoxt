@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-EXTRA_DIST = make_rules.in make-rules conf.h.src
+EXTRA_DIST = make_rules.in make-rules conf.h.src Makefile.stratego
 
 pkgdata_DATA = conf.h
 

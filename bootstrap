@@ -19,11 +19,11 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: bootstrap,v 1.2 2002/11/15 00:05:59 stratego Exp $
+# $Id: bootstrap,v 1.3 2002/11/19 22:50:31 stratego Exp $
 
 rm -f mkinstalldirs missing install-sh
 
-PKGS="srts ssl sc-boot boxenv gpp-boot cgen aterm-tools asfix-tools graph-tools gpp sdf-tools stratego-tools stratego-front sc xt boxenv"
+PKGS="srts sc-boot boxenv gpp-boot cgen ssl aterm-tools asfix-tools graph-tools gpp sdf-tools stratego-tools stratego-front sc xt boxenv"
 
 #gbtools stratego-connect grammar-recovery 
 

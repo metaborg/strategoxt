@@ -16,9 +16,9 @@
 # 02111-1307, USA.
 
 AC_INIT(sig/C.r)
-AM_INIT_AUTOMAKE(cgen,0.9beta2)
+AM_INIT_AUTOMAKE(cgen,0.9beta3)
 
-AC_REVISION($Id: configure.in,v 1.20 2002/11/16 15:15:00 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.21 2002/11/19 22:50:31 stratego Exp $)
 
 AC_ARG_WITH(gpp,
   [  --with-gpp             Specify location of gpp, default: \$prefix],

@@ -15,7 +15,7 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 dnl 02111-1307, USA.
 
-dnl $Id: program-check.m4,v 1.1 2001/11/25 18:07:59 mdejonge Exp $
+dnl $Id: program-check.m4,v 1.2 2002/11/19 22:50:32 stratego Exp $
 
 dnl Author Merijn de Jonge (mdejonge@cwi.nl)
 
@@ -82,7 +82,7 @@ dnl
 dnl This would set the variable WISH to the location of the first program
 dnl found or to the program as specified with the --with-wish switch.
 AC_DEFUN(AC_PROGRAM_REQUIRE,
-   [AC_PACKAGE_REQUIRE1([$1],[$2],[$3],,AC_PACKAGE_NOT_FOUND([$1]))])
+   [AC_PACKAGE_REQUIRE2([$1],[$2],[$3],,AC_PACKAGE_NOT_FOUND([$1]))])
 
 dnl AC_PACKAGE_REQUIRE1 
 dnl Implementation for AC_PACKAGE_OPTIONAL, AC_PACKAGE_REQUIRE and 
@@ -107,6 +107,16 @@ AC_DEFUN(AC_PACKAGE_REQUIRE1,
             $4
          fi
       ])
+])
+
+AC_DEFUN(AC_PACKAGE_REQUIRE2,
+[
+   dnl Add configuration switch
+   AC_ARG_WITH($1, [$3],
+      dnl switch was specified
+      translit($1,a-z-,A-Z_)=${withval},
+      translit($1,a-z-,A-Z_)=${prefix}
+   )
 ])
 
 AC_DEFUN(AC_PACKAGE_NOT_FOUND,
