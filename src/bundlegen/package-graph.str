@@ -18,7 +18,6 @@ constructors
    pkg-id: Name * Version -> pkg-id
    pkg-dep: Name * Expr -> pkg-dep
    pkg-graph : list(pkg) -> pkg-graph 
-   pkg-graph : list(pkg) * list(pkg-id) * list(pkg-id) -> pkg-graph 
 
    RunTime   : pkg-dep -> RunTime
    BuildTime : pkg-dep -> BuildTime

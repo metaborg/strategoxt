@@ -45,10 +45,6 @@ Bundlegen =
    !(tops, dont-bundle);
    package-resolver;
    
-   // Add to resulting package graph a virtual root package which has all
-   // specified packages as package dependencies.
-   (id,\ resolved -> [root(<map(\x -> RunTime(x)\)>tops)|resolved] \);
-
    // Resolve package version constraints
    version-resolver;
 
@@ -56,16 +52,11 @@ Bundlegen =
    dependency-resolver;
 
    // Error if there is nothing to bundle.
-   if(pkg-graph([],id,id), <fatal-error>["*** bundle error: No matching packages found."]);
+   if((id,[],id), <fatal-error>["*** bundle error: No matching packages found."]);
 
    // If -g switch was specified, construct a GraphXML graph, otherwise,
    // construct a bundle definition
    if( where(<get-config>"-g"), graph-generator, bundle-generator)
-
-overlays
-
-root(deps) = 
-   pkg(pkg-id("root", "0"), deps)
 
 \end{code}
 % Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>

@@ -18,7 +18,7 @@ strategies
 // graph-generator: pkg-graph -> graphxml
 //
 // Create a GraphXML graph for a package graph
-graph-generator: pkg-graph(pkgs, tops, unresolved) -> graphxml
+graph-generator: (tops, pkgs, unresolved) -> graphxml
 where
    !pkgs;
 

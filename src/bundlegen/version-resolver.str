@@ -24,6 +24,11 @@ strategies
 version-resolver : (tops, pkgs) -> (tops, pkgs, required)
 where
    !pkgs;
+   // Add to the list of requires pkgs a virtual root package which has all
+   // specified packages as run-time package dependencies.
+   \ resolved -> [root(<map(\x -> RunTime(x)\)>tops)|resolved] \ ;
+
+
    // Resolve package version constraints
    resolve-version-constraints => required
 
@@ -95,9 +100,9 @@ resolve-version-constraints =
    map( \ (n,VExpr(v,_,w)) -> (n,v,w) \ ) => version-requirements;
 
    // make a list of packages by resolving package version requirements
-   map( \ (n,e,RunTime) -> RunTime(pkg-id(n,<version-expr-to-version>e)) \
-   +
-   \ (n,e,BuildTime) -> BuildTime(pkg-id(n,<version-expr-to-version>e)) \
+   map( \ (n,e,RunTime)   -> RunTime(pkg-id(n,<version-expr-to-version>e)) \
+        +
+        \ (n,e,BuildTime) -> BuildTime(pkg-id(n,<version-expr-to-version>e)) \
     ) => the-pkgs;
 
    // For each resolved package 'p', extend the list of version requirements with
@@ -140,6 +145,11 @@ version-expr-to-version =
    \ LTE(v) -> v \
    +
    \ EQ(v) -> v \
+
+overlays
+
+root(deps) =
+   pkg(pkg-id("root", "0"), deps)
 
 \end{code}
 % Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>
