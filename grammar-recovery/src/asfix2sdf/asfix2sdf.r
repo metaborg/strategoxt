@@ -3,6 +3,10 @@ imports
   lib Sdf-Syntax
   sdf-de-normalize
 
+signature
+  constructors
+     empty-prod: a
+     'id: a -> a
 strategies
 
   reconstruct-grammar

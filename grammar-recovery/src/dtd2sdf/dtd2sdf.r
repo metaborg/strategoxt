@@ -1,5 +1,5 @@
 module dtd2sdf
-(* $Id: dtd2sdf.r,v 1.1 2001/06/06 09:48:35 mdejonge Exp $ *)
+(* $Id: dtd2sdf.r,v 1.2 2001/09/02 01:55:53 mdejonge Exp $ *)
 (*
 	Conversion of an XML-DTD to an Sdf grammar.
 
@@ -15,6 +15,8 @@ module dtd2sdf
 imports
   lib
   Literal-lib
+  Sdf-Syntax
+  XML
 
 strategies
  

@@ -2,7 +2,14 @@
 
 \begin{code}
 module yacc2sdf
-imports yacc Sdf2-Syntax lib
+imports yacc Sdf2-Syntax lib asfix
+
+signature
+   constructors
+      Token : a * a -> a
+      StartSymbol : a -> a
+      Action: a -> a
+      
 strategies
 
    main = iowrap(Main)

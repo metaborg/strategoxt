@@ -3,7 +3,8 @@ imports yacc lib
 signature
   constructors
     HRule : Symbol * Action * List(Prod([List(Symbol),Action])) -> Rule
-
+    Token : a -> a
+    Token : a * a -> a
 strategies
 
   main = iowrap(Main)

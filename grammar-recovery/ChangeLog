@@ -1,3 +1,6 @@
+2001-09-02 Merijn de Jonge <mdejonge@cwi.nl>
+   * added missing constructors
+
 2001-06-06 Joost.Visser@cwi.nl
    * Added --with-sdf-tools configuration switch.
    * Added -d option to asfix2sdf to enable de-normalization of 
