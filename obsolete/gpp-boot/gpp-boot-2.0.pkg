@@ -13,4 +13,4 @@ interface
 requires
   aterm 1.6.3 with gcc
   ssl	0.6
-
+  srts  0.6
