@@ -3,6 +3,7 @@ imports
   liblib
   regular-xtc-tools
   rtg
+  tool-doc
 
 signature
   constructors
@@ -21,10 +22,16 @@ strategies
 
   main-rtg-script =
     xtc-io-wrap(
-      read-from
-    ; rtg-script-eval 
-    ; xtc-pp-rtg
+      include-option
+    , rtg-script-usage
+    , rtg-script-about
+    , ![]
+    , read-from
+      ; rtg-script-eval 
+      ; xtc-pp-rtg
     )
+
+strategies
 
   rtg-script-eval =
     !(<id>, ())
@@ -34,7 +41,7 @@ rules
 
   eval-command :
     (Read(file), ()) ->
-      <xtc-parse-rtg> FILE(<conc-strings> (file, ".rtg"))
+      <find-in-includes; xtc-parse-rtg> FILE(<conc-strings> (file, ".rtg"))
 
   eval-command :
     (Reduce(), file) ->
@@ -94,3 +101,53 @@ rules
         where <rtg-script-eval> cmds
             ; read-from
             ; ?RTG(Start(start), ProdRules(prod-rules))
+
+strategies
+
+  include-option =
+    ArgOption("-I" + "--Include"
+    , <post-extend-config> ("-I", [<id>])
+    , !HelpString("-I d|--Include d", "Include RTGs from directory d")
+    )
+
+  /**
+   * @type File -> File
+   */
+  find-in-includes =
+    ?FILE(filename)
+    ; <find-in-path> (filename, <get-includes>)
+    ; !FILE(<id>)
+    <+ where(?FILE(<id>); <fatal-error> ["rtg-script: file '", <id>, "' not found"])
+
+  /**
+   * @type _ -> List(String)
+   */
+  pass-includes =
+    <get-config> "-I"
+    ; rec x(
+        [id | x]; !["-I" | <id>] <+ []
+      )
+
+  get-includes =
+    <conc> (<get-config> "-I", ["."]) <+ !["."]
+
+strategies
+
+  rtg-script-usage =
+    <tool-doc>
+    [ Usage("rtg-script -i file [OPTIONS]")
+    , Summary("Produces an RTG by executing an RTG script")
+    , OptionUsage()
+    , AutoReportBugs()
+    ]
+
+  rtg-script-about =
+    <tool-doc>
+    [ AutoProgram()
+    , Author(Person("Martin Bravenboer", "martin@cs.uu.nl"))
+    , GNU_LGPL("2002-2004", "Martin Bravenboer <martin@cs.uu.nl>")
+    , Config([
+        DefaultXTCRepository()
+      , CurrentXTCRepository()
+      ]) 
+    ]
