@@ -25,7 +25,7 @@ strategies
     repeat(oncebu(s))
 
   innermost(s)  = 
-    bottomup(rec x(try(s; innermost(s))))
+    bottomup(try(s; innermost(s)))
 
   innermost-old(s) =
     rec x(all(x); (s; x <+ id))
