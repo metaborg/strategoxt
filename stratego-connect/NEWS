@@ -4,6 +4,190 @@ News about Stratego releases
 
 ------------------------------------------------------------------------------
 
+Version 0.8beta1
+
+ released: June 20, 2002
+
+SUMMARY OF CHANGES
+
+ * Support for concrete syntax is provided in the stratego-front package
+   - this includes the full syntax of Stratego in SDF
+   - a pretty-printer for Stratego
+   - a signature for Stratego abstract syntax
+   - stratego-desugar: removes simple syntactic abstractions
+   - MetaStratego: specification of transformations on Stratego programs 
+     using concrete syntax
+
+ * The implementation of annotations has been completed
+
+ * Syntax for list variables, with implementation of very simple list
+   matching [t*] and [t,t*] (this is still an experimental feature;
+   full support to follow)
+
+ * Innermost fusion: an optimization that specializes applications of innermost
+   to its argument, typically a choice of rules.
+
+ * Use of configuration ATerm files instead of wrapper scripts
+
+ * Better usage information for `sc -h'
+
+ * Changes and deletions to overcome problems with case insensitiveness on
+   windows and macos; Stratego should now install on Windows+cygwin
+
+ * Lower-level primitives for process control such as fork, exec, and pipe.
+   High-level combinations to connect to a child process via a
+   pipe. (experimental feature)
+
+ * stratego-connect: a separate package extending Stratego with interprocess
+   communication
+
+MORE INFORMATION
+
+ * http://www.stratego-language.org/Stratego/StrategoRelease08
+
+CONTRIBUTIONS
+
+ * Martin Bravenboer provided test suite and library modules for
+   annotations
+
+ * Collaboration with Patricia Johann on the reimplementation of 
+   innermost fusion with dynamic rules and concrete syntax
+
+ * Merijn de Jonge worked on porting to Cygwin
+
+ * Eelco Dolstra worked on porting to MacOS
+
+CONFIGURATION
+
+ * To use concrete syntax a number of additional configuration parameters are
+   required. For example, this is how I configure the stratego distribution:
+
+   ./configure --prefix=`pwd` \
+	--with-aterm=/home/xt/XT-1.0 \
+ 	--with-sglr=/home/xt/XT-1.0 \
+ 	--with-pgen=/home/xt/XT-1.0 \
+	--with-asfix-tools=/home/xt/XT-1.0 \
+	--with-stratego-tools=/home/xt/XT-1.0 \
+	--with-sdf-tools=/home/xt/XT-1.0
+
+   See ./configure --help
+
+   This requires an installation of XT-1.0. Future distributions of XT will 
+   integrate the Stratego packages with concrete syntax support. A minimal
+   bundle for Stratego with concrete syntax will also be provided.
+
+   The components in the stratego-front package are not bootstrapped, i.e.,
+   require the Stratego compiler. However, I have included the generated C files
+   in the distribution.
+
+STRATEGO FRONT (CONCRETE SYNTAX)
+
+ * Support for concrete syntax is provided in the stratego-front package, including
+   - Stratego.sdf: the full syntax of Stratego in SDF
+   - astratego2text: a pretty-printer for Stratego
+   - Stratego.r: a signature for Stratego abstract syntax
+   - stratego-desugar: removes simple syntactic abstractions
+   - meta-explode: a transformation that translates embedded abstract syntax
+     into Stratego abstract syntax
+   - MetaStratego: specification of transformations on Stratego programs 
+     using concrete syntax
+
+ * Paper
+   - E. Visser. Meta-programming with concrete object syntax.
+     In D. Batory and C. Consel, editors, Generative Programming and
+     Component Engineering (GPCE'02), Lecture Notes in Computer
+     Science. Springer-Verlag, October 2002. To appear.
+
+   - Describes the use and implementation of concrete syntax in Stratego and
+     extends the approach to arbitrary (meta-)programming languages.
+
+   - http://www.stratego-language.org/Stratego/MetaProgrammingWithConcreteObjectSyntax
+
+ * Example
+   - An example of the use of concrete syntax is provided in the lambdapp package,
+     which contains the specification from the LDTA'02 paper "Building
+     Interpreters with Rewriting Strategies"; a collection of interpreters for 
+     the lambda calculus extended with pattern matching rules, failure, and choice.
+
+   - http://www.stratego-language.org/Stratego/BuildingInterpretersWithRewritingStrategies
+
+   - http://www.stratego-language.org/ftp/lambdapp-0.1.tar.gz
+
+STRATEGO COMPILER (SC, SC-BOOT)
+
+ * Innermost fusion
+   - An optimization that specializes applications of innermost
+     to its argument, typically a choice of rules. This an elaboration
+     of the optimization described in the WRS'01 paper "Fusing Logic and
+     Control".
+
+   - http://www.stratego-language.org/Stratego/FusingLogicAndControl
+
+ * The implementation of annotations has been completed
+
+ * Syntax for list variables, with implementation of very simple list
+   matching [t*] and [t,t*] (this is still an experimental feature;
+   full support to follow)
+
+ * Use of configuration ATerm files instead of wrapper scripts.
+
+ * Better usage information for `sc -h'.
+
+STRATEGO STANDARD LIBRARY (SSL)
+
+ * Installing .rtree files (parsed modules) instead of .r files
+   (sources); saves time when compiling and ensures syntactic
+   correctness of library modules. First step towards separate
+   compilation.
+
+ * time.r: support for time measurements extended with primitives calling
+   the system calls clock and time. Module time defines a number of useful
+   abstractions over this. In particular, <run-time> returns the seconds
+   of total run-time so far, including the run-time of all child processes.
+   The operator profile(msg, s) measures the time used to apply s and then
+   prints user and system time, including children time.
+
+ * annotations.r: List of annotations. Additional operators for
+   annotations: has-annotation, if-annotation, preserve-annotation
+   (Martin Bravenboer) test in annotations-test.r
+
+ * annotations-test.r: Contains an extensive set of unit tests describing
+   the behaviour of annotations.
+
+ * annotation-props.r: key/value pairs
+
+ * config.r: Maintenance, import, and export of configuration
+   information such as locations of executables and data files.
+
+ * options.r: Use set-config to store option values in configuration
+   table. Use <run-time> instead of dtime to measure time in iowrap.
+
+ * dir.r: <readdir> d gives list of filenames of directory d
+
+ * simple-list-traversal.r, spec/env-list-traversal.r: generic
+   traversals in which lists are traversed by visiting head and tail,
+   instead of visiting all elements (behaviour of all). Contributed by
+   Otto Skrove Bagge.
+
+ * fixpoint-traversal.r: innermost-tagged uses annotations to tag
+   terms that are in normal form.
+
+ * exec.r, Lower-level primitives for process control such as
+   fork, exec, and pipe.
+
+ * pipe.r: High-level combinations to connect to a child process via a
+   pipe. (experimental)
+
+STRATEGO-CONNECT
+
+ * This package provides an implementation of interprocess communication for
+   Stratego. This package is experimental and not quite flushed
+   out. There might be portability problems. Therefore, stratego-connect is
+   not yet bundled in the main distribution.  The basic
+   implementation was made by Hedzer Westra.
+
+------------------------------------------------------------------------------
+
 Version 0.7
 
  released: March 13, 2002

@@ -6,7 +6,7 @@ News about Stratego releases
 
 Version 0.8beta1
 
- released: June 11, 2002
+ released: June 20, 2002
 
 SUMMARY OF CHANGES
 
@@ -35,8 +35,10 @@ SUMMARY OF CHANGES
    windows and macos; Stratego should now install on Windows+cygwin
 
  * Lower-level primitives for process control such as fork, exec, and pipe.
+   High-level combinations to connect to a child process via a
+   pipe. (experimental feature)
 
- * stratego-connect: a package extending Stratego with interprocess
+ * stratego-connect: a separate package extending Stratego with interprocess
    communication
 
 MORE INFORMATION
@@ -60,14 +62,19 @@ CONFIGURATION
  * To use concrete syntax a number of additional configuration parameters are
    required. For example, this is how I configure the stratego distribution:
 
-    ./configure --prefix=`pwd` \
- 		--with-sdf=/home/xt/SDF/ \
- 		--with-aterm=/home/xt/ATerm \
-		--with-asfix-tools=/home/xt/xt \ 
-		--with-stratego-tools=/home/xt/xt \
-		--with-sdf-tools=/home/xt/xt 
+   ./configure --prefix=`pwd` \
+	--with-aterm=/home/xt/XT-1.0 \
+ 	--with-sglr=/home/xt/XT-1.0 \
+ 	--with-pgen=/home/xt/XT-1.0 \
+	--with-asfix-tools=/home/xt/XT-1.0 \
+	--with-stratego-tools=/home/xt/XT-1.0 \
+	--with-sdf-tools=/home/xt/XT-1.0
 
    See ./configure --help
+
+   This requires an installation of XT-1.0. Future distributions of XT will 
+   integrate the Stratego packages with concrete syntax support. A minimal
+   bundle for Stratego with concrete syntax will also be provided.
 
    The components in the stratego-front package are not bootstrapped, i.e.,
    require the Stratego compiler. However, I have included the generated C files
@@ -164,6 +171,12 @@ STRATEGO STANDARD LIBRARY (SSL)
 
  * fixpoint-traversal.r: innermost-tagged uses annotations to tag
    terms that are in normal form.
+
+ * exec.r, Lower-level primitives for process control such as
+   fork, exec, and pipe.
+
+ * pipe.r: High-level combinations to connect to a child process via a
+   pipe. (experimental)
 
 STRATEGO-CONNECT
 

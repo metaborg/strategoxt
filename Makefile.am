@@ -39,6 +39,7 @@ check clean install uninstall:
 	done
 
 package-dist:
+	$(MAKE) dist
 	cd srts; $(MAKE) dist
 	cd ssl; $(MAKE) dist
 	cd cgen; $(MAKE) dist
@@ -46,6 +47,7 @@ package-dist:
 	cd sc-boot; $(MAKE) dist
 	cd sc; $(MAKE) dist
 	cd stratego-front; $(MAKE) dist
+	cd stratego-connect; $(MAKE) dist
 
 config:
 	cd srts; stdconfig
@@ -54,6 +56,8 @@ config:
 	cd gpp-boot; stdconfig
 	cd sc-boot; stdconfig
 	cd sc; stdconfig
+	cd stratego-front; stdconfig
+	cd stratego-connect; stdconfig
 
 install-NEWS:
 	cp -f NEWS srts
@@ -62,6 +66,8 @@ install-NEWS:
 	cp -f NEWS gpp-boot
 	cp -f NEWS sc-boot
 	cp -f NEWS sc
+	cp -f NEWS stratego-front
+	cp -f NEWS stratego-connect
 
 WWWSTRATEGO=sunshine.cs.uu.nl:/users/www/research/projects/stratego/ftp
 

@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
+s# Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ AC_SUBST(PGEN)
 AC_ARG_WITH(asfix-tools, 
   [  --with-asfix-tools=DIR      Specify location of asfix-tools], 
   ASFIX_TOOLS="$withval", 
-  ASFIX_TOOLS="$SDF"
+  ASFIX_TOOLS="$prefix"
 )
 AC_SUBST(ASFIX_TOOLS)
 
