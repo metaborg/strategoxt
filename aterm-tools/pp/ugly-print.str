@@ -9,7 +9,7 @@ strategies
   ugly-print-without-anno =
      UP-Int 
 	<+ UP-Str
-	<+ UP-Lst(ugly-print) 
+	<+ UP-List(ugly-print) 
   <+ UP-Tuple(ugly-print)
 	<+ UP-Cnst	
 	<+ UP-App(ugly-print)
@@ -21,35 +21,8 @@ strategies
         ]
       ]|
 
-rules
+rules // string & int
 
-  UP-Tuple(s) : 
-    ""#([]) -> |[ "()" ]|
-    
-  UP-Tuple(s) : 
-    ""#([x | xs]) ->
-      |[  V vs=0 [
-            H hs=1 ["(" ~<s> x]
-            ~*children
-            ")"
-          ]
-      ]|
-      where <map(! |[ H hs=1 [ "," ~<s> ] ]| )> xs => children
-
-  UP-Cnst : 
-    f#([]) -> |[ ~lit:f ]|
-
-  UP-App(s) : 
-    f#([x | xs]) ->
-      |[  V vs=0 [
-            H hs=0 [ ~lit:f "(" ]
-            H hs=1 [" " ~<s> x]
-            ~*children
-            ")"
-          ]
-      ]|
-      where <map(! |[ H hs=1 [ "," ~<s> ] ]| )> xs => children
-   
   UP-Str :
     x -> |[ H hs=0 ["\"" ~lit:x "\""] ]|
       where <is-string> x
@@ -59,12 +32,93 @@ rules
       where <is-int> x
           ; <int-to-string> x => s
 
-  UP-Lst(s) :
-    [] -> |[ "[]" ]|
+rules // constructor applications
 
-  UP-Lst(s) :
+  UP-Cnst : 
+    f#([]) -> |[ ~lit:f ]|
+
+  UP-App(s) =
+      where(<gt> (<term-size>, 8))
+    < UP-App-worstcase(s)
+    + UP-App-nicecase(s)
+  
+  UP-App-nicecase(s):  
+    f#([x | xs]) -> |[ H hs=0 [ ~lit:f "(" ~<s> x ~*children ")"] ]|
+      where <map(! |[ H hs=1 [ "," ~<s> ] ]| )> xs => children
+ 
+  UP-App-worstcase(s):  
+    f#([x | xs]) ->
+      |[  V vs=0 [
+            H hs=0 [ ~lit:f "(" ]
+            H hs=1 [" " ~<s> x]
+            ~*children
+            ")"
+          ]
+      ]|
+      where <map(! |[ H hs=1 [ "," ~<s> ] ]| )> xs => children
+
+rules // tuples and list      
+         
+  UP-Tuple(s) =
+    ?""#(<id>); pp-generic-list(s, !|[ "()" ]|, !|[ "(" ]|, !|[ ")" ]|)
+            
+  UP-List(s) =
+    pp-generic-list(s, !|[ "[]" ]|, !|[ "[" ]|, !|[ "]" ]|)
+    
+/*  
+      where(<gt> (<term-size>, 10))
+    < UP-List-worstcase(s)
+    + UP-List-nicecase(s)
+    
+  UP-List(s) :
+    [] -> |[ "[]" ]|
+    
+  UP-List-nicecase(s) :
+    [x | xs] -> |[ H hs=0 ["[" ~<s> x ~*tail "]"] ]|
+      where <map(! |[ H hs=1 [ "," ~<s> ] ]| )> xs => tail
+
+  UP-List-worstcase(s) :
     [x | xs] -> |[ V vs=0 [ H hs=1 ["[" ~<s> x] ~*tail "]"] ]|
       where <map(! |[ H hs=1 [ "," ~<s> ] ]| )> xs => tail
+*/
+
+strategies
+      
+  pp-generic-list(s, empty, before, after) =
+      where(<gt> (<term-size>, 10))
+    < generic-list-worstcase(s, empty, before, after)
+    + generic-list-nicecase(s, empty, before, after)
+    
+  pp-generic-list(s, empty, before, after) :
+    [] -> <empty> ()
+    
+  generic-list-nicecase(s, empty, before, after) :
+    [x | xs] -> |[
+      H hs=0 [
+        ~<before> ()
+        ~<s> x ~*tail
+        ~<after> () "]"
+      ]
+    ]|
+      where <map(! |[ H hs=1 [ "," ~<s> ] ]| )> xs => tail
+
+  generic-list-worstcase(s, empty, before, after) :
+    [x | xs] -> |[
+      V vs=0 [
+        H hs=1 [
+          ~<before> ()
+          ~<s> x
+        ]
+        ~*tail
+        ~<after> ()
+      ]
+    ]|
+      where <map(! |[ H hs=1 [ "," ~<s> ] ]| )> xs => tail
+
+    
+    
+  
+  
 
 /**
  * Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>

@@ -1,5 +1,11 @@
 2003-02-27  Martin Bravenboer <martin@mbravenboer.org>
 
+  * pp/ugly-print.str: Improved ugly-print: pretty-print
+    big ATerms more clear, pretty-print small ATerms
+    compact.
+    
+2003-02-27  Martin Bravenboer <martin@mbravenboer.org>
+
   * pp/ugly-print.str: Fixed pretty printing of empty
     tuple (wasn't printed at all)
  
