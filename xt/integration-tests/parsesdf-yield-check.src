@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: parsesdf-yield-check.src,v 1.8 2001/06/12 08:13:29 mdejonge Exp $
+# $Id: parsesdf-yield-check.src,v 1.9 2002/03/16 15:13:48 eelco Exp $
 
 # Exit immediately if a command exits with a non-zero status.
 set -e
@@ -35,9 +35,10 @@ Languages="pico aterms sdf"
 
 for lang in ${Languages}
 do
-    grammar=`gbquery -d -l ${lang}` || exit 1
+    grammar=`${XT}/bin/gbquery -d -l ${lang}` || exit 1
     echo "Testing grammar \"${lang}\"." >&2
-    parse -l sdf -v 2.1 -i ${grammar} \
-      | asfix-yield \
-      | parse -l sdf -v 2.1 -o /dev/null || exit 1
+    ${XT}/bin/parse -l sdf -v 2.1 -i ${grammar} \
+      | ${XT}/bin/asfix-yield \
+      | ${XT}/bin/parse -l sdf -v 2.1 -o /dev/null || exit 1
 done
+

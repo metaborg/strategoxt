@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: sdf2gxml2dot-check.sh.src,v 1.1 2001/06/11 11:03:27 mdejonge Exp $
+# $Id: sdf2gxml2dot-check.sh.src,v 1.2 2002/03/16 15:13:48 eelco Exp $
 #
 
 # Exit immediately if a command exits with a non-zero status.
@@ -34,5 +34,6 @@ PATH=${SDFTOOLS}/bin:${GRAPHTOOLS}/bin:${PATH}
 # Test 1:
 sdf2sg -i ./data/incomplete.sdf.af -o ./data/incomplete.sdf.gxml.af
 GraphXML2dot -i ./data/incomplete.sdf.gxml.af -o ./data/incomplete.sdf.sg.dot.af
-diff ./data/incomplete.sdf.sg.dot.af ./data/incomplete.sdf.sg.dot.af.correct
-rm -f ./data/incomplete.sdf.sg.dot.af
+#diff ./data/incomplete.sdf.sg.dot.af ./data/incomplete.sdf.sg.dot.af.correct
+atermdiff -i ./data/incomplete.sdf.sg.dot.af -i2 ./data/incomplete.sdf.sg.dot.af.correct --nopath
+#rm -f ./data/incomplete.sdf.sg.dot.af
