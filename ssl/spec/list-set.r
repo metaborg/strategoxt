@@ -20,22 +20,35 @@ rules
   HdMember'(eq, mklst) : 
      [x | xs] -> xs 
      where mklst; fetch(\y -> <eq> (x, y)\)
+
+  // :: List(a) -> List(a)
+  make-set =
+    foldr(![], union, ![<id>])
+
 \end{code}
 
 	Union: Concatenation of two lists, only those elements in the
 	first list are added that are not already in the second list.
 
 \begin{code}
-rules
-
-  union : 
-    (l1, l2) -> <rec x([]; !l2 <+ HdMember(!l2); x <+ [id | x])> l1
-\end{code}
-
-\begin{code}
 strategies
 
-  unions = foldr(![], union)
+  // :: List(a) * List(a) -> List(a)
+  union = union(eq)
+
+  // a * a -> fail? :: List(a) * List(a) -> List(a)
+  union(eq) : 
+    (l1, l2) -> <rec x(
+                   ([]; !l2)
+                <+ (HdMember'(eq, !l2); x)
+                <+ [id | x]
+                )> l1
+
+  // :: List(List(a)) -> List(a)
+  unions = unions(eq)
+
+  // a * a -> fail? :: List(List(a)) -> List(a)
+  unions(eq) = foldr(![], union(eq))
 
 \end{code}
 
@@ -44,29 +57,47 @@ strategies
 \begin{code}
 rules
 
-  diff : 
-    (l1, l2) -> <rec x([] <+ HdMember(!l2); x <+ [id | x])> l1 
-\end{code}
+  // :: List(a) * List(a) -> List(a)
+  diff = diff(eq) 
 
-\begin{code}
-rules
+  // a * a -> fail? :: List(a) * List(a) -> List(a)
+  diff(eq) :
+    (l1, l2) -> <rec x(
+                   []
+                <+ (HdMember'(eq, !l2); x)
+                <+ [id | x]
+                )> l1
 
   diff'(eq) = 
-    obsolete(!"diff'/1; use diff/1");
-    diff(eq)
+      obsolete(!"diff'/1; use diff/1")
+    ; diff(eq)
 
-  diff(eq) :
-    (l1, l2) -> 
-    <rec x([] <+ HdMember'(eq, !l2); x <+ [id | x])> l1
+  // :: List(a) * List(a) -> List(a)
+  sym-diff = sym-diff(eq)
+
+  // a * a -> fail? :: List(a) * List(a) -> List(a)
+  sym-diff(eq) =
+    <union> (<diff(eq)>, <Swap; diff(eq)>)
+
 \end{code}
 
-	Intersection is defined in terms of difference.
+	Intersection: Concatenation of two lists, only those elements in the
+	first list are added that are also in the second list.
 
 \begin{code}
-rules
+strategies
 
-  isect : 
-    (l1, l2) -> <rec x([] <+ test(HdMember(!l2)); [id | x] <+ Tl; x)> l1 
+  // :: List(a) * List(a) -> List(a)
+  isect = isect(eq)
+
+  // a * a -> fail? :: List(a) * List(a) -> List(a)
+  isect(eq) : 
+    (l1, l2) -> <rec x(
+                   [] 
+                <+ ( where(HdMember'(eq, !l2)); [id | x] )
+                <+ ?[_ | <x>]
+                )> l1
+
 \end{code}
 
 	\paragraph{Collection}
