@@ -45,7 +45,9 @@ strategies
       ; spec-to-sdefs
       ; save-as5(!".spec-to-sdefs")
       ; rename-vars
+      ; save-as5(!".renamed")
       ; desugar
+      ; save-as5(!".desugared")
       ; output-frontend
       ; if-lib(extract-all, extract)
       ; warnings

@@ -10,6 +10,7 @@ strategies
 	tsubstitute-test1;
 	srename-test1;
 	strename-test1
+	; svars-arity-test1
     )
 
   tvars-test1 =
@@ -44,3 +45,24 @@ strategies
   different =
     [] + where(!(<Hd>, <Tl>); not(member))
          ; where(Tl; different)
+
+  svars-arity-test1 =
+    apply-test(!"svars-arity-test1"
+        , svars-arity
+	, 
+!|[ 
+    add-rule(d_59 : ATerm() -> ATerm() | l_14 : ATerm(), m_14 : ATerm(), n_14 : ATerm()) =
+      {o_14, p_14, q_14 :
+       ?[RuleScope(o_14, p_14)|q_14]
+       ; where((!(l_14, o_14)
+                ; member(|)
+               < (d_59(| o_14, p_14, m_14, n_14)
+                  <+ where(!p_14
+                           ; hashtable-put(| m_14, n_14)))
+               + !q_14
+                 ; add-rule(d_59(|) | l_14, m_14, n_14)
+               ))}
+]|
+	, 
+![("member",(0,0)),("hashtable-put",(0,2)),("add-rule",(1,3))]
+	)
