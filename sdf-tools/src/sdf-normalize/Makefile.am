@@ -31,7 +31,7 @@ CLEANFILES  = sdf_normalize_check \
 SCFLAGS     = -I $(srcdir)/../lib \
 	      -I $(srcdir)/../sdf-bracket \
               -I $(ASFIX_TOOLS)/share/asfix-tools \
-	      --main $*
+	      --main $* --keep 5
 
 sdf_normalize_check_prog    = sdf-normalize
 sdf_normalize_check_input   = data/Test1.def.af

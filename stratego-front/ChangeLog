@@ -1,3 +1,7 @@
+2003-07-31  Eelco Visser  <visser@cs.uu.nl>
+
+	* test/PropStratego.sdf: using WithAnno instead of Anno.
+
 2003-07-30  Eelco Visser  <visser@cs.uu.nl>
 
 	* syn/Stratego-Strategies.sdf: delimit let with end to avoid ambiguities

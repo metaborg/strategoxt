@@ -5,6 +5,6 @@ exports
     "|[" Prop "]|"                     -> StrategoTerm     {cons("ToTerm")}
     "|>" Prop "<|"                     -> StrategoStrategy {cons("ToBuild")}
     "<|" StrategoStrategy "|>"         -> Prop 		   {cons("FromApp")}
-    Prop "{|" {StrategoTerm ","}* "|}" -> Prop 		   {cons("Anno")}
+    Prop "{|" {StrategoTerm ","}* "|}" -> Prop 		   {cons("WithAnno")}
   variables
     [pqr][0-9]* -> Prop

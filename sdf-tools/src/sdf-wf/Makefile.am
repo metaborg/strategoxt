@@ -4,8 +4,8 @@ include $(wildcard *.dep)
 
 SUBDIRS      	 = data
 
-#bin_PROGRAMS 	 = sdf-wf
-#libexec_PROGRAMS = sdf-wf
+bin_PROGRAMS 	 = sdf-wf
+libexec_PROGRAMS = sdf-wf
 
 BOOTCLEANFILES 	 = sdf-wf.c
 

@@ -1,10 +1,12 @@
 include $(top_srcdir)/Makefile.xt
 
-SDFINCLUDES = -I $(STRATEGO_FRONT)/share/sdf/stratego-front
+SDFINCLUDES 	= -I $(STRATEGO_FRONT)/share/sdf/stratego-front
+
+SCFLAGS  	= --keep 10
 
 PGEN_FLAGS      = -m $*
 
-check_PROGRAMS = prop1
+check_PROGRAMS 	= prop1
 
 check_DATA = PropStratego.tbl 
 
