@@ -1,6 +1,7 @@
 2001-08-28 Merijn de Jonge <mdejonge@cwi.nl> 
    * src/gpp/make.r: bug fix: pp generator also incorrectly brackets in sdf
      productions
+   * src/tohtml/ismap2usemap: fixed
 
 2001-08-22  Eelco Visser  <visser@acm.org>
    * src/gpp/Ppgen.r: Added imports of Label-Sdf-Syntax and
