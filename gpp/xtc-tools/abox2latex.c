@@ -72,7 +72,8 @@ static void init_module_constructors (void)
   sym_FILE_1 = ATmakeSymbol("FILE", 1, ATfalse);
   ATprotectSymbol(sym_FILE_1);
 }
-ATerm term_p_2;
+ATerm term_q_2;
+ATerm term_h_2;
 ATerm term_g_2;
 ATerm term_f_2;
 ATerm term_e_2;
@@ -98,66 +99,62 @@ ATerm term_l_1;
 ATerm term_k_1;
 ATerm term_j_1;
 ATerm term_i_1;
-ATerm term_h_1;
-ATerm term_g_1;
 static void init_module_constant_terms (void)
 {
-  ATprotect(&(term_g_1));
-  term_g_1 = (ATerm) ATmakeAppl(ATmakeSymbol("--latex-tables", 0, ATtrue));
-  ATprotect(&(term_h_1));
-  term_h_1 = (ATerm) ATmakeAppl(ATmakeSymbol("->", 0, ATtrue));
   ATprotect(&(term_i_1));
-  term_i_1 = (ATerm) ATmakeAppl(ATmakeSymbol("\\ensuremath{\\rightarrow}", 0, ATtrue));
+  term_i_1 = (ATerm) ATmakeAppl(ATmakeSymbol("--latex-tables", 0, ATtrue));
   ATprotect(&(term_j_1));
-  term_j_1 = (ATerm) ATmakeAppl(ATmakeSymbol("\\/", 0, ATtrue));
+  term_j_1 = (ATerm) ATmakeAppl(ATmakeSymbol("->", 0, ATtrue));
   ATprotect(&(term_k_1));
-  term_k_1 = (ATerm) ATmakeAppl(ATmakeSymbol("\\ensuremath{\\vee}", 0, ATtrue));
+  term_k_1 = (ATerm) ATmakeAppl(ATmakeSymbol("\\ensuremath{\\rightarrow}", 0, ATtrue));
   ATprotect(&(term_l_1));
-  term_l_1 = (ATerm) ATmakeAppl(ATmakeSymbol("/\\", 0, ATtrue));
+  term_l_1 = (ATerm) ATmakeAppl(ATmakeSymbol("\\/", 0, ATtrue));
   ATprotect(&(term_m_1));
-  term_m_1 = (ATerm) ATmakeAppl(ATmakeSymbol("\\ensuremath{\\wedge}", 0, ATtrue));
+  term_m_1 = (ATerm) ATmakeAppl(ATmakeSymbol("\\ensuremath{\\vee}", 0, ATtrue));
   ATprotect(&(term_n_1));
-  term_n_1 = (ATerm) ATmakeAppl(ATmakeSymbol("==", 0, ATtrue));
+  term_n_1 = (ATerm) ATmakeAppl(ATmakeSymbol("/\\", 0, ATtrue));
   ATprotect(&(term_o_1));
-  term_o_1 = (ATerm) ATmakeAppl(ATmakeSymbol("\\ensuremath{\\equiv}", 0, ATtrue));
+  term_o_1 = (ATerm) ATmakeAppl(ATmakeSymbol("\\ensuremath{\\wedge}", 0, ATtrue));
   ATprotect(&(term_p_1));
-  term_p_1 = (ATerm) ATmakeAppl(ATmakeSymbol("++", 0, ATtrue));
+  term_p_1 = (ATerm) ATmakeAppl(ATmakeSymbol("==", 0, ATtrue));
   ATprotect(&(term_q_1));
-  term_q_1 = (ATerm) ATmakeAppl(ATmakeSymbol("\\ensuremath{+\\kern-.4em+}", 0, ATtrue));
+  term_q_1 = (ATerm) ATmakeAppl(ATmakeSymbol("\\ensuremath{\\equiv}", 0, ATtrue));
   ATprotect(&(term_r_1));
-  term_r_1 = (ATerm) ATmakeAppl(ATmakeSymbol("context-free syntax", 0, ATtrue));
+  term_r_1 = (ATerm) ATmakeAppl(ATmakeSymbol("++", 0, ATtrue));
   ATprotect(&(term_s_1));
-  term_s_1 = (ATerm) ATmakeAppl(ATmakeSymbol("context-free~syntax", 0, ATtrue));
+  term_s_1 = (ATerm) ATmakeAppl(ATmakeSymbol("\\ensuremath{+\\kern-.4em+}", 0, ATtrue));
   ATprotect(&(term_t_1));
-  term_t_1 = (ATerm) ATmakeAppl(ATmakeSymbol("--width", 0, ATtrue));
+  term_t_1 = (ATerm) ATmakeAppl(ATmakeSymbol("context-free syntax", 0, ATtrue));
   ATprotect(&(term_u_1));
-  term_u_1 = (ATerm) ATmakeAppl(ATmakeSymbol("-w", 0, ATtrue));
+  term_u_1 = (ATerm) ATmakeAppl(ATmakeSymbol("context-free~syntax", 0, ATtrue));
   ATprotect(&(term_v_1));
-  term_v_1 = (ATerm) ATmakeAppl(ATmakeSymbol("output", 0, ATtrue));
+  term_v_1 = (ATerm) ATmakeAppl(ATmakeSymbol("--width", 0, ATtrue));
   ATprotect(&(term_w_1));
-  term_w_1 = (ATerm) ATmakeAppl(sym__0);
+  term_w_1 = (ATerm) ATmakeAppl(ATmakeSymbol("-w", 0, ATtrue));
   ATprotect(&(term_x_1));
-  term_x_1 = (ATerm) ATmakeAppl(ATmakeSymbol("-t", 0, ATtrue));
+  term_x_1 = (ATerm) ATmakeAppl(ATmakeSymbol("output", 0, ATtrue));
   ATprotect(&(term_y_1));
-  term_y_1 = (ATerm) ATmakeAppl(ATmakeSymbol("--alltt", 0, ATtrue));
+  term_y_1 = (ATerm) ATmakeAppl(sym__0);
   ATprotect(&(term_z_1));
-  term_z_1 = (ATerm) ATmakeAppl(sym__2, term_v_1, term_y_1);
+  term_z_1 = (ATerm) ATmakeAppl(ATmakeSymbol("-t", 0, ATtrue));
   ATprotect(&(term_a_2));
-  term_a_2 = (ATerm) ATmakeAppl(ATmakeSymbol("--alltt          Produce verbatim-like output with alltt environment", 0, ATtrue));
+  term_a_2 = (ATerm) ATmakeAppl(ATmakeSymbol("--alltt", 0, ATtrue));
   ATprotect(&(term_b_2));
-  term_b_2 = (ATerm) ATmakeAppl(ATmakeSymbol("--boxenv", 0, ATtrue));
+  term_b_2 = (ATerm) ATmakeAppl(sym__2, term_x_1, term_a_2);
   ATprotect(&(term_c_2));
-  term_c_2 = (ATerm) ATmakeAppl(sym__2, term_v_1, term_b_2);
+  term_c_2 = (ATerm) ATmakeAppl(ATmakeSymbol("--alltt          Produce verbatim-like output with alltt environment", 0, ATtrue));
   ATprotect(&(term_d_2));
-  term_d_2 = (ATerm) ATmakeAppl(ATmakeSymbol("--boxenv         Produce fully formatted LaTeX output (default)", 0, ATtrue));
+  term_d_2 = (ATerm) ATmakeAppl(ATmakeSymbol("--boxenv", 0, ATtrue));
   ATprotect(&(term_e_2));
-  term_e_2 = (ATerm) ATmakeAppl(ATmakeSymbol("--latex-table", 0, ATtrue));
+  term_e_2 = (ATerm) ATmakeAppl(sym__2, term_x_1, term_d_2);
   ATprotect(&(term_f_2));
-  term_f_2 = (ATerm) ATmakeAppl(ATmakeSymbol("-t|--latex-table f  Use LaTeX abbreviaitions from file f", 0, ATtrue));
+  term_f_2 = (ATerm) ATmakeAppl(ATmakeSymbol("--boxenv         Produce fully formatted LaTeX output (default)", 0, ATtrue));
   ATprotect(&(term_g_2));
-  term_g_2 = (ATerm) ATmakeAppl(ATmakeSymbol("-w|--width w        Use page width w", 0, ATtrue));
-  ATprotect(&(term_p_2));
-  term_p_2 = (ATerm) ATmakeAppl(ATmakeSymbol("Abox-2-latex", 0, ATtrue));
+  term_g_2 = (ATerm) ATmakeAppl(ATmakeSymbol("-t|--latex-table f  Use LaTeX abbreviaitions from file f", 0, ATtrue));
+  ATprotect(&(term_h_2));
+  term_h_2 = (ATerm) ATmakeAppl(ATmakeSymbol("-w|--width w        Use page width w", 0, ATtrue));
+  ATprotect(&(term_q_2));
+  term_q_2 = (ATerm) ATmakeAppl(ATmakeSymbol("Abox-2-latex", 0, ATtrue));
 }
 #include <srts/init-stratego-application.h>
 ATerm get_config_0_0 (ATerm t);
@@ -166,7 +163,7 @@ ATerm pass_verbose_0_0 (ATerm t);
 ATerm write_to_0_0 (ATerm t);
 ATerm concat_0_0 (ATerm t);
 ATerm ReadFromFile_0_0 (ATerm t);
-ATerm map_1_0 (ATerm q_89 (ATerm), ATerm t);
+ATerm map_1_0 (ATerm r_89 (ATerm), ATerm t);
 ATerm create_table_file_0_0 (ATerm t);
 static ATerm a_0 (ATerm t);
 static ATerm b_0 (ATerm t);
@@ -175,26 +172,26 @@ ATerm xtc_transform_2_0 (ATerm i_109 (ATerm), ATerm j_109 (ATerm), ATerm t);
 ATerm xtc_io_1_0 (ATerm l_108 (ATerm), ATerm t);
 ATerm io_options_0_0 (ATerm t);
 ATerm set_config_0_0 (ATerm t);
-ATerm ArgOption_3_0 (ATerm k_3 (ATerm), ATerm l_3 (ATerm), ATerm m_3 (ATerm), ATerm t);
-ATerm Option_3_0 (ATerm h_3 (ATerm), ATerm i_3 (ATerm), ATerm j_3 (ATerm), ATerm t);
+ATerm ArgOption_3_0 (ATerm j_3 (ATerm), ATerm k_3 (ATerm), ATerm l_3 (ATerm), ATerm t);
+ATerm Option_3_0 (ATerm g_3 (ATerm), ATerm h_3 (ATerm), ATerm i_3 (ATerm), ATerm t);
 static ATerm d_0 (ATerm t);
 static ATerm f_0 (ATerm t);
 static ATerm h_0 (ATerm t);
 static ATerm i_0 (ATerm t);
 static ATerm k_0 (ATerm t);
-static ATerm p_0 (ATerm t);
-static ATerm q_0 (ATerm t);
-static ATerm v_0 (ATerm t);
-static ATerm w_0 (ATerm t);
-static ATerm x_0 (ATerm t);
-static ATerm y_0 (ATerm t);
+static ATerm l_0 (ATerm t);
+static ATerm m_0 (ATerm t);
+static ATerm r_0 (ATerm t);
+static ATerm s_0 (ATerm t);
 static ATerm z_0 (ATerm t);
-ATerm abox2latex_options_0_0 (ATerm t);
-ATerm option_wrap_2_0 (ATerm k_110 (ATerm), ATerm l_110 (ATerm), ATerm t);
 static ATerm a_1 (ATerm t);
 static ATerm b_1 (ATerm t);
+ATerm abox2latex_options_0_0 (ATerm t);
+ATerm option_wrap_2_0 (ATerm k_110 (ATerm), ATerm l_110 (ATerm), ATerm t);
 static ATerm c_1 (ATerm t);
 static ATerm d_1 (ATerm t);
+static ATerm e_1 (ATerm t);
+static ATerm f_1 (ATerm t);
 ATerm main_0_0 (ATerm t);
 ATerm main_0 (ATerm t)
 {
@@ -205,22 +202,22 @@ ATerm main_0 (ATerm t)
 ATerm create_table_file_0_0 (ATerm t)
 {
   ATerm c_0 = NULL,e_0 = NULL;
-  ATerm e_1 = t;
-  int f_1 = stack_ptr;
+  ATerm g_1 = t;
+  int h_1 = stack_ptr;
   if((PushChoice() == 0))
     {
-      t = term_g_1;
+      t = term_i_1;
       t = get_config_0_0(t);
-      LocalPopChoice(f_1);
+      LocalPopChoice(h_1);
     }
   else
     {
-      t = e_1;
+      t = g_1;
       t = (ATerm) ATempty;
     }
   t = map_1_0(ReadFromFile_0_0, t);
   e_0 = t;
-  t = (ATerm) ATinsert(CheckATermList(e_0), (ATerm) ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATempty, (ATerm) ATinsert(ATinsert(ATempty, term_s_1), term_r_1)), (ATerm) ATinsert(ATinsert(ATempty, term_q_1), term_p_1)), (ATerm) ATinsert(ATinsert(ATempty, term_o_1), term_n_1)), (ATerm) ATinsert(ATinsert(ATempty, term_m_1), term_l_1)), (ATerm) ATinsert(ATinsert(ATempty, term_k_1), term_j_1)), (ATerm) ATinsert(ATinsert(ATempty, term_i_1), term_h_1)));
+  t = (ATerm) ATinsert(CheckATermList(e_0), (ATerm) ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATempty, (ATerm) ATinsert(ATinsert(ATempty, term_u_1), term_t_1)), (ATerm) ATinsert(ATinsert(ATempty, term_s_1), term_r_1)), (ATerm) ATinsert(ATinsert(ATempty, term_q_1), term_p_1)), (ATerm) ATinsert(ATinsert(ATempty, term_o_1), term_n_1)), (ATerm) ATinsert(ATinsert(ATempty, term_m_1), term_l_1)), (ATerm) ATinsert(ATinsert(ATempty, term_k_1), term_j_1)));
   t = concat_0_0(t);
   t = write_to_0_0(t);
   if(match_cons(t, sym_FILE_1))
@@ -234,34 +231,34 @@ ATerm create_table_file_0_0 (ATerm t)
 }
 static ATerm a_0 (ATerm t)
 {
-  ATerm l_0 = NULL,m_0 = NULL;
-  m_0 = t;
-  t = term_t_1;
-  t = get_config_0_0(t);
-  l_0 = t;
-  t = (ATerm) ATinsert(ATinsert(CheckATermList(m_0), l_0), term_u_1);
-  return(t);
-}
-static ATerm b_0 (ATerm t)
-{
   ATerm n_0 = NULL,o_0 = NULL;
   o_0 = t;
   t = term_v_1;
   t = get_config_0_0(t);
   n_0 = t;
-  t = (ATerm) ATinsert(CheckATermList(o_0), n_0);
+  t = (ATerm) ATinsert(ATinsert(CheckATermList(o_0), n_0), term_w_1);
+  return(t);
+}
+static ATerm b_0 (ATerm t)
+{
+  ATerm p_0 = NULL,q_0 = NULL;
+  q_0 = t;
+  t = term_x_1;
+  t = get_config_0_0(t);
+  p_0 = t;
+  t = (ATerm) ATinsert(CheckATermList(q_0), p_0);
   return(t);
 }
 ATerm create_abox2latex_args_0_0 (ATerm t)
 {
   ATerm g_0 = NULL,j_0 = NULL;
-  t = term_w_1;
+  t = term_y_1;
   t = create_table_file_0_0(t);
   g_0 = t;
-  t = term_w_1;
+  t = term_y_1;
   t = pass_verbose_0_0(t);
   j_0 = t;
-  t = (ATerm) ATinsert(ATinsert(CheckATermList(j_0), g_0), term_x_1);
+  t = (ATerm) ATinsert(ATinsert(CheckATermList(j_0), g_0), term_z_1);
   t = try_1_0(a_0, t);
   t = try_1_0(b_0, t);
   return(t);
@@ -274,13 +271,16 @@ static ATerm d_0 (ATerm t)
 }
 static ATerm f_0 (ATerm t)
 {
-  t = term_z_1;
+  ATerm t_0 = NULL;
+  t_0 = t;
+  t = term_b_2;
   t = set_config_0_0(t);
+  t = t_0;
   return(t);
 }
 static ATerm h_0 (ATerm t)
 {
-  t = term_a_2;
+  t = term_c_2;
   return(t);
 }
 static ATerm i_0 (ATerm t)
@@ -291,108 +291,113 @@ static ATerm i_0 (ATerm t)
 }
 static ATerm k_0 (ATerm t)
 {
-  t = term_c_2;
+  ATerm u_0 = NULL;
+  u_0 = t;
+  t = term_e_2;
   t = set_config_0_0(t);
+  t = u_0;
   return(t);
 }
-static ATerm p_0 (ATerm t)
+static ATerm l_0 (ATerm t)
 {
-  t = term_d_2;
+  t = term_f_2;
   return(t);
 }
-static ATerm q_0 (ATerm t)
+static ATerm m_0 (ATerm t)
 {
-  ATerm r_0 = NULL;
-  r_0 = t;
+  ATerm v_0 = NULL;
+  v_0 = t;
   if(match_string(t, "-t"))
     {
-      t = r_0;
+      t = v_0;
     }
   else
     {
       if((ATgetSymbol((ATermAppl) t) != ATmakeSymbol("--latex-table", 0, ATtrue)))
         _fail(t);
-      t = r_0;
+      t = v_0;
     }
   return(t);
 }
-static ATerm v_0 (ATerm t)
+static ATerm r_0 (ATerm t)
 {
-  ATerm s_0 = NULL;
-  s_0 = t;
-  t = (ATerm) ATmakeAppl(sym__2, term_e_2, s_0);
+  ATerm w_0 = NULL;
+  w_0 = t;
+  t = (ATerm) ATmakeAppl(sym__2, term_i_1, (ATerm) ATinsert(ATempty, w_0));
   t = set_config_0_0(t);
+  t = w_0;
   return(t);
 }
-static ATerm w_0 (ATerm t)
+static ATerm s_0 (ATerm t)
 {
-  t = term_f_2;
+  t = term_g_2;
   return(t);
 }
-static ATerm x_0 (ATerm t)
+static ATerm z_0 (ATerm t)
 {
-  ATerm t_0 = NULL;
-  t_0 = t;
+  ATerm x_0 = NULL;
+  x_0 = t;
   if(match_string(t, "-w"))
     {
-      t = t_0;
+      t = x_0;
     }
   else
     {
       if((ATgetSymbol((ATermAppl) t) != ATmakeSymbol("--width", 0, ATtrue)))
         _fail(t);
-      t = t_0;
+      t = x_0;
     }
   return(t);
 }
-static ATerm y_0 (ATerm t)
+static ATerm a_1 (ATerm t)
 {
-  ATerm u_0 = NULL;
-  u_0 = t;
-  t = (ATerm) ATmakeAppl(sym__2, term_t_1, u_0);
+  ATerm y_0 = NULL;
+  y_0 = t;
+  t = (ATerm) ATmakeAppl(sym__2, term_v_1, y_0);
   t = set_config_0_0(t);
+  t = y_0;
   return(t);
 }
-static ATerm z_0 (ATerm t)
+static ATerm b_1 (ATerm t)
 {
-  t = term_g_2;
+  t = term_h_2;
   return(t);
 }
 ATerm abox2latex_options_0_0 (ATerm t)
 {
-  ATerm h_2 = t;
-  int i_2 = stack_ptr;
+  ATerm i_2 = t;
+  int j_2 = stack_ptr;
   if((PushChoice() == 0))
     {
       t = Option_3_0(d_0, f_0, h_0, t);
-      LocalPopChoice(i_2);
+      LocalPopChoice(j_2);
     }
   else
     {
-      t = h_2;
+      t = i_2;
       {
-        ATerm j_2 = t;
-        int k_2 = stack_ptr;
+        ATerm k_2 = t;
+        int l_2 = stack_ptr;
         if((PushChoice() == 0))
           {
-            t = Option_3_0(i_0, k_0, p_0, t);
-            LocalPopChoice(k_2);
+            t = Option_3_0(i_0, k_0, l_0, t);
+            LocalPopChoice(l_2);
           }
         else
           {
-            t = j_2;
+            t = k_2;
             {
-              ATerm l_2 = t;
-              int m_2 = stack_ptr;
+              ATerm m_2 = t;
+              int n_2 = stack_ptr;
               if((PushChoice() == 0))
                 {
-                  t = ArgOption_3_0(q_0, v_0, w_0, t);
-                  LocalPopChoice(m_2);
+                  t = ArgOption_3_0(m_0, r_0, s_0, t);
+                  LocalPopChoice(n_2);
                 }
               else
                 {
-                  t = l_2;
-                  t = ArgOption_3_0(x_0, y_0, z_0, t);
+                  t = m_2;
+                  t = ArgOption_3_0(z_0, a_1, b_1, t);
                 }
             }
           }
@@ -400,39 +405,39 @@ ATerm abox2latex_options_0_0 (ATerm t)
     }
   return(t);
 }
-static ATerm a_1 (ATerm t)
+static ATerm c_1 (ATerm t)
 {
-  ATerm n_2 = t;
-  int o_2 = stack_ptr;
+  ATerm o_2 = t;
+  int p_2 = stack_ptr;
   if((PushChoice() == 0))
     {
       t = abox2latex_options_0_0(t);
-      LocalPopChoice(o_2);
+      LocalPopChoice(p_2);
     }
   else
     {
-      t = n_2;
+      t = o_2;
       t = io_options_0_0(t);
     }
   return(t);
 }
-static ATerm b_1 (ATerm t)
-{
-  t = xtc_io_1_0(c_1, t);
-  return(t);
-}
-static ATerm c_1 (ATerm t)
-{
-  t = xtc_transform_2_0(d_1, create_abox2latex_args_0_0, t);
-  return(t);
-}
 static ATerm d_1 (ATerm t)
 {
-  t = term_p_2;
+  t = xtc_io_1_0(e_1, t);
+  return(t);
+}
+static ATerm e_1 (ATerm t)
+{
+  t = xtc_transform_2_0(f_1, create_abox2latex_args_0_0, t);
+  return(t);
+}
+static ATerm f_1 (ATerm t)
+{
+  t = term_q_2;
   return(t);
 }
 ATerm main_0_0 (ATerm t)
 {
-  t = option_wrap_2_0(a_1, b_1, t);
+  t = option_wrap_2_0(c_1, d_1, t);
   return(t);
 }

@@ -9,19 +9,19 @@ strategies
   abox2latex-options =
       Option(
          "--alltt",
-         <set-config>("output", "--alltt"),
+         where(<set-config>("output", "--alltt")),
          !"--alltt          Produce verbatim-like output with alltt environment")
     + Option(
          "--boxenv",
-         <set-config>("output", "--boxenv"),
+         where(<set-config>("output", "--boxenv")),
          !"--boxenv         Produce fully formatted LaTeX output (default)")
     + ArgOption(
          "-t" + "--latex-table",
-         <set-config> ("--latex-table", <id>),
+         where(<set-config> ("--latex-tables", [<id>])),
          !"-t|--latex-table f  Use LaTeX abbreviaitions from file f")
     + ArgOption(
          "-w"+ "--width",
-         <set-config> ("--width", <id>),
+         where(<set-config> ("--width", <id>)),
          !"-w|--width w        Use page width w")
 
   abox2latex =

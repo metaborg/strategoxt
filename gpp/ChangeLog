@@ -1,3 +1,7 @@
+2004-06-03   Merijn de Jonge  <mdejonge@cs.uu.nl>
+	* Bug fix: abox2latex didn't process the '-t' command line switch
+	correctly.
+
 2004-07-03  Martin Bravenboer <martin@cs.uu.nl>
 
 	* Most tools in GPP now use separate compilation.
