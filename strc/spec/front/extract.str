@@ -7,7 +7,7 @@ imports spec-to-sdefs needed-defs desugar needed-constructors
 strategies
 
   extract-io = 
-    iowrap(
+    io-wrap(
       Specification([id,Strategies(needed-defs)])
       ; needed-constructors
     )

@@ -3,4 +3,4 @@ imports stratego-desugar
 strategies
 
   pre-desugar-io =
-    iowrap(pre-desugar)
+    io-wrap(pre-desugar)
