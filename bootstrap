@@ -1,5 +1,8 @@
 #! /bin/sh
 
+export WANT_AUTOMAKE="1.8"
+export WANT_AUTOCONF="2.59"
+
 WORKINGDIR=`pwd`
 echo "** INFO -- Working directory: $WORKINGDIR"
 
@@ -61,9 +64,6 @@ done
 # apply the autotools
 
 rm -f config.cache config.log acconfig.h aclocal.m4
-
-export WANT_AUTOMAKE="1.8"
-export WANT_AUTOCONF="2.59"
 
 autoxt || exit 1
 aclocal -I . || exit 1
