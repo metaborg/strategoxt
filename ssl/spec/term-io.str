@@ -1,3 +1,6 @@
+/**
+ * Term input and output.
+ */
 module term-io
 imports io list string integers conditional
 
@@ -9,7 +12,8 @@ strategies
   /**
    * <ReadFromFile> file reads the term in file. 
    * The file needs to be in textual or binary ATerm format.
-   * :: File -> a
+   * 
+   * @type File -> a
    */
   ReadFromFile =
       (<open-stream> (<id>, "r") <+ debug(!"** WARNING: Cannot open file: "); fail)
@@ -18,22 +22,25 @@ strategies
     ; !trm
 
   /**
-   * <WriteToBinaryFile> (file, term) writes term to file in BAF format.
-   * :: File * a -> a
+   * <WriteToBinaryFile> (file, term) writes term to file in BAF format.i
+   *
+   * @type File * a -> a
    */
   WriteToBinaryFile = 
     WriteToFile(write-in-baf-to-stream)
 
   /**
    * <WriteToTextFile> (file, term) writes term to file in textual ATerm format.
-   * :: File * a -> a
+   *
+   * @type File * a -> a
    */
   WriteToTextFile = 
     WriteToFile(write-in-text-to-stream; <fputc> ('\n', <id>))
 
   /**
    * <WriteToFile(s)> (file, term) writes term to file with the writer s.
-   * :: (Stream * a -> Stream) * File * a -> a
+   *
+   * @type (Stream * a -> Stream) * File * a -> a
    */
   WriteToFile(writer) =
       ?(<id>, trm)
@@ -50,14 +57,15 @@ strategies
 
 /**
  * ATerm input and output with streams
- * TODO: move to io module.
+ *
+ * @TODO move to io module.
  */
 strategies
 
   /**
-   * Writes an ATerm to a Stream
+   * Writes an ATerm to a Stream.
    *
-   * :: Stream * _ -> Stream
+   * @type Stream * _ -> Stream
    */
   write-to-stream =
     write-in-baf-to-stream
@@ -74,7 +82,7 @@ strategies
   /**
    * Reads an ATerm from a Stream
    *
-   * :: Stream -> _
+   * @type Stream -> _
    */
   read-from-stream =
     ?Stream(stream); prim("SSL_read_term_from_stream", stream)
@@ -82,10 +90,10 @@ strategies
 strategies
 
   /**
-   * prints the terms to a stream. If a term is a string it is printed 
+   * Prints the terms to a stream. If a term is a string it is printed 
    * without quotes, otherwise it is printed as a term.
    *
-   * :: Stream * [a] -> Stream
+   * @type Stream * [a] -> Stream
    */
   fprint =
       ?(stream, <id>)
@@ -99,46 +107,43 @@ strategies
     ; !stream
 
   /**
-   * fprint, followed by a newline
+   * fprint, followed by a newline.
    *
-   * :: Stream * [a] -> Stream
+   * @type Stream * [a] -> Stream
    */
   fprintnl =
     fprint; <fputc> ('\n', <id>)
 
-  /* 
-    \verb|<print> (file, [t1,...,tn])| prints the terms \verb|ti|
-    to file. If \verb|ti| is a string it is printed without quotes,
-    otherwise it is printed as a term. \verb|printnl| has the same
-    behaviour, but also prints a newline after \verb|tn|.
-  
-    Before printing to a file the file should be opened using
-    \verb|<open-file> filename|, which truncates the file, or creates
-    it if it doesn't exist.  To append to a file, open the file
-    with \verb|<append-file> filename|.  The file is created if it
-    doesn't exist.
-  
+ /**
+  * Prints terms to a file. If \verb|ti| is a string it is printed without 
+  * quotes, otherwise it is printed as a term. \verb|printnl| has the same
+  * behaviour, but also prints a newline after \verb|tn|.
+  *
+  * Before printing to a file the file should be opened using
+  * <open-file>filename , which truncates the file, or creates
+  * it if it doesn't exist.  To append to a file, open the file
+  * with <append-file>filename .  The file is created if it
+  * doesn't exist.
+  * 
+  * E.g. <print> (file, [t1,...,tn]) prints terms ti to file. Terms ti 
+  * that are strings are printed without quotes  
   */
-  
-  // <print> (file, [t1,...,tn])
-  // Prints terms ti to file. Terms ti that are strings are printed without quotes
-
   print = 
     ?(name, strs); where(prim("SSL_print", name, strs))
 
-  // <printnl> (file, [t1,...,tn])
-  // Same as print, but prints a newline at the end
-
+ /**
+  * Same as print, but prints a newline at the end. 
+  *
+  * E.g. <printnl> (file, [t1,...,tn])
+  */
   printnl = 
     ?(name, strs); where(prim("SSL_printnl", name, strs))
 
-  /*
-    The primitive \verb|print-stack| prints the top n elements of
-    the stack if applied as \verb|<print-stack>| n or the entire
-    stack if
-    applied to a non-integer term.
+ /**
+  * The primitive print-stack prints the top n elements of
+  * the stack if applied as <print-stack>n or the entire
+  * stack if applied to a non-integer term.
   */
-  
   print-stack = 
     obsolete(!"print-stack; use debug or gdb")
 
@@ -160,6 +165,8 @@ strategies
 
   debug(msg) = 
     where(<printnl> (stderr, [<msg>,<id>]))
+
+strategies
     
   debug-depth = 
     debug-depth(!4, !"")
@@ -173,6 +180,8 @@ strategies
     ; debug(s)
     )
     
+strategies
+
   say(msg) = 
     where(msg; debug)
 
@@ -221,50 +230,31 @@ strategies
     obsolete(!"debug-stdout; use echo");
     echo(msg)
 
-/**
- * The operator \verb|stdio| implements a simple user-interface
- * for transformers. A term is read from standard input,
- * transformed with parameter strategy \verb|s| and then written
- * to standard output. If the transformation failed the text
- * \verb|rewriting failed| is written to standard error.
- * 
- * Prefer io-wrap in the module options.
- */
 strategies
 
+ /**
+  * The operator stdio implements a simple user-interface
+  * for transformers. A term is read from standard input,
+  * transformed with parameter strategy s and then written
+  * to standard output. If the transformation failed the text
+  * 'rewriting failed' is written to standard error.
+  * 
+  * Prefer io-wrap in the module options.
+  */ 
   stdio(s) =
       <ReadFromFile> stdin()
     ; s
     ; <WriteToTextFile> (stdout(), <id>)
     <+ <fatal-error> ["** rewriting failed"]
 
-  /** 
-	 * A variant of this strategy provides a pair of the command-line
-	 * options and the input file to the strategy.
-   */
-
 strategies
 
+ /** 
+  * This variant of the strategy stdio(s) provides a pair of the command-line
+  * options and the input file to the strategy.
+  */
   stdioO(s) =
     <s> (<id>, <ReadFromFile> stdin())
     ; <WriteToTextFile> (stdout(), <id>)
     <+ <fatal-error> ["** rewriting failed"]
 
-/**
- * Copyright (C) 1998-2003 Eelco Visser <visser@acm.org>
- * 
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
- * 02111-1307, USA.
- */

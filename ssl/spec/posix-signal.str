@@ -1,11 +1,10 @@
-module posix-signal
-
 /**
  * Information in this module is taken from the GNU core-utils 
  * manual, process control section.
  *
  *   http://www.gnu.org/manual/coreutils-4.5.4/coreutils.html
  */
+module posix-signal
 
 signature
   constructors
@@ -42,9 +41,10 @@ overlays
     , SIGPOLL(), SIGPROF(), SIGSYS(),  SIGTRAP(), SIGVTALRM(), SIGXCPU(), SIGXFSZ()
     ]
 
-  /**
-   * POSIX
-   */
+/**
+ * POSIX
+ */
+overlays
   SIGHUP  = Signal("HUP",   1, "Hangup")
   SIGINT  = Signal("INT",   2, "Terminal interrupt")
   SIGQUIT = Signal("QUIT",  3, "Terminal quit")
@@ -53,9 +53,10 @@ overlays
   SIGALRM = Signal("ALRM", 14, "Alarm Clock")
   SIGTERM = Signal("TERM", 15, "Termination")
   
-  /**
-   * POSIX 1003.1-2001
-   */
+/**
+ * POSIX 1003.1-2001
+ */
+overlays
   SIGBUS  = Signal("BUS",   7, "Access to an undefined portion of a memory object")
   SIGCHLD = Signal("CHLD", 17, "Child process terminated, stopped, or continued")
   SIGCONT = Signal("CONT", 18, "Continue executing, if stopped") 
@@ -71,9 +72,10 @@ overlays
   SIGUSR1 = Signal("USR1", 10, "User-defined signal 1")
   SIGUSR2 = Signal("USR2", 12, "User-defined signal 2")
   
-  /**
-   * POSIX 1003.1-2001, XSI extension
-   */
+/**
+ * POSIX 1003.1-2001, XSI extension
+ */
+overlays
   SIGPOLL   = Signal("POLL",    29, "Pollable event")
   SIGPROF   = Signal("PROF",    27, "Profiling timer expired")
   SIGSYS    = Signal("SYS",     31, "Bad system call")
@@ -81,3 +83,5 @@ overlays
   SIGVTALRM = Signal("VTALRM",  26, "Virtual timer expired")
   SIGXCPU   = Signal("XCPU",    24, "CPU time limit exceeded")
   SIGXFSZ   = Signal("XFSZ",    25, "File size limit exceeded")
+
+

@@ -1,26 +1,8 @@
-\literate[collect]
-
-	\begin{abstract}
-	\end{abstract}
-
-\begin{code}
-
+/**
+ * Strategies for collecting of subterms.
+ */
 module collect
 imports list-basic list-misc term
-
-\end{code}
-
-	\paragraph{Collection}
-
-	Strategy \verb|collect(s)| produces a collection of all
-	\emph{outermost} subterms for which \verb|s| succeeds.
-
-	Strategy \verb|collect-split(f, g)| reduces terms with
-	\verb|f| and extracts information with \verb|g| resulting in a
-	pair \verb|(t, xs)| of a reduced term and the list of
-	extracted subterms.
-
-\begin{code}
 
 strategies
 
@@ -46,7 +28,10 @@ strategies
   collect-om(s) =
     ![<s>] 
     <+ crush(![],union,collect-om(s))
-
+  
+ /**
+  * Produce a collection of all outermost subterms for which a given strategy succeeds.
+  */
   collect(s) = 
     collect-om(s)
 
@@ -78,6 +63,12 @@ strategies
     rec x((is-string + is-int); splitter
           <+ CollectSplit(x, splitter))
 
+ /**
+  * Strategy \verb|collect-split(f, g)| reduces terms with
+  * \verb|f| and extracts information with \verb|g| resulting in a
+  * pair \verb|(t, xs)| of a reduced term and the list of
+  * extracted subterms.
+  */
   collect-split(f, g) = 
     rec x(CollectSplit(x, !(<try(f)>, <g <+ ![]>)))
     
@@ -115,21 +106,3 @@ strategies // TODO: where should we put this?
    in f(![])
 */
   
-\end{code}
-	
-% Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
-% 
-% This program is free software; you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation; either version 2, or (at your option)
-% any later version.
-% 
-% This program is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-% 
-% You should have received a copy of the GNU General Public License
-% along with this program; if not, write to the Free Software
-% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-% 02111-1307, USA.

@@ -1,12 +1,8 @@
-\literate[time]
-
-	\begin{abstract}
-	The primitive \verb|dtime| returns the CPU time in seconds
-	since the last call to \verb|dtime|. Can be used to time
-	strategies.
-	\end{abstract}
-
-\begin{code}
+/**
+ * The primitive \verb|dtime| returns the CPU time in seconds
+ * since the last call to \verb|dtime|. Can be used to time
+ * strategies.
+ */
 module time
 
 signature
@@ -43,9 +39,10 @@ signature
   
 strategies
 
-  /* time returns the time since the Epoch (00:00:00 UTC, January 1, 1970), measured in seconds.
-   * It is an alias of now-epoch-time.
-   */
+ /**
+  * Strategy time returns the time since the Epoch (00:00:00 UTC, January 1, 1970), 
+  * measured in seconds. It is an alias of now-epoch-time.
+  */
   time = 
     prim("SSL_time")
 
@@ -85,8 +82,16 @@ strategies
       ->
     ComponentTime(Date(y, <index2month> mo, dm), DayTime(h, mi, s) , Dupl(<index2day-of-week> dw, dy))
 
-rules
 
+/**
+ * Translates a day index into the corresponding day constructor. Sunday is the beginning
+ * of the week, starting with day 0.
+ *
+ * E.g. 
+ * <index2day-of-week>0 => Sunday()
+ * <index2day-of-week>6 => Saturday()
+ */
+rules
   // :: Int -> DayOfWeek
   index2day-of-week : 0 -> Sunday()
   index2day-of-week : 1 -> Monday()   
@@ -96,6 +101,15 @@ rules
   index2day-of-week : 5 -> Friday()
   index2day-of-week : 6 -> Saturday()
 
+/**
+ * Translates a day constructor into the corresponding day index. Sunday is the beginning
+ * of the week, starting with day 0.
+ *
+ * E.g.
+ * <day-of-week2index>Sunday()    => 0
+ * <day-of-week2index>Wednesday() => 3
+ */
+rules
   // :: DayOfWeek -> Int
   day-of-week2index : Sunday()    -> 0
   day-of-week2index : Monday()    -> 1
@@ -105,8 +119,15 @@ rules
   day-of-week2index : Friday()    -> 5
   day-of-week2index : Saturday()  -> 6
 
+/**
+ * Translates a month constructor into the corresponding month index. The year
+ * starts with January which has index 0.
+ * 
+ * E.g. 
+ * <month2index>January()   => 0
+ * <month2index>September() => 8
+ */
 rules
-
   // :: Month -> Int
   month2index : January()     ->  0
   month2index : February()    ->  1
@@ -121,6 +142,15 @@ rules
   month2index : November()    -> 10
   month2index : December()    -> 11
 
+/**
+ * Translates a month index into the corresponding month constructor. The year 
+ * starts with January which has index 0.
+ *
+ * E.g.
+ * <index2month>0  => January()
+ * <index2month>10 => November()
+ */
+rules
   // :: Int -> Month
   index2month : 0  -> January() 
   index2month : 1  -> February()
@@ -151,7 +181,6 @@ strategies
   /* The times() function stores the current process times in a quadruple 
      (user time, system time, user time of children, system time of children)
      See man 2 times for more information */
-
   times = 
     prim("SSL_times")
 
@@ -188,7 +217,9 @@ strategies
   self-children-sys-time :
     (a, b, c, d) -> <add>(b, d)
 
-  // total run-time so far
+ /**
+  * Total run-time so far.
+  */
   run-time =
     times; crush(!0, add); ticks-to-seconds
 
@@ -218,21 +249,4 @@ strategies
            , " system ", <self-children-sys-time;  ticks-to-seconds>]
         ; msg
       )
-\end{code}
 
-% Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
-% 
-% This program is free software; you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation; either version 2, or (at your option)
-% any later version.
-% 
-% This program is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-% 
-% You should have received a copy of the GNU General Public License
-% along with this program; if not, write to the Free Software
-% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-% 02111-1307, USA.

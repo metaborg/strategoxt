@@ -1,12 +1,6 @@
-\literate[tuple]
-
-	\begin{abstract}
-
-	Operations on tuples
-
-	\end{abstract}
-
-\begin{code}
+/**
+ * Operations on tuples
+ */
 module tuple
 imports list-cons tuple-cons list-index list-zip
 strategies
@@ -29,22 +23,25 @@ strategies
   Ttl : "" # ([x | xs]) -> "" # (xs)
 
 	
-  // tindex: get the nth element of a tuple
-
+ /**
+  * Get the nth element of a tuple.
+  */
   tindex = 
     (id, ?""#(<id>)); index
 
   is-tuple = 
     ?""#(_)
 
-  // tmap: apply a strategy to each element of a tuple
-
+ /**
+  * Apply a strategy to each element of a tuple.
+  */
   tmap(s) = 
     is-tuple; all(s)
 
-  // Tuple Concat: concatenate the lists in a tuple of lists, where the
-  // concatenation strategy s is a parameter.
-
+ /**
+  * Concatenate the lists in a tuple of lists, where the
+  * concatenation strategy s is a parameter.
+  */
   tconcat(s) = 
     is-tuple; crush(![], s)
 
@@ -71,21 +68,3 @@ strategies
     rec x(![<map(Thd); s> | <map(Ttl); x>] <+ map(()); ![])
   ; !"" #(<id>)
 
-\end{code}
-
-% Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
-% 
-% This program is free software; you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation; either version 2, or (at your option)
-% any later version.
-% 
-% This program is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-% 
-% You should have received a copy of the GNU General Public License
-% along with this program; if not, write to the Free Software
-% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-% 02111-1307, USA.
