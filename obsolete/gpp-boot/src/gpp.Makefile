@@ -15,7 +15,7 @@
 #    along with this program; if not, write to the Free Software
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 #
-# $Id: gpp.Makefile,v 1.15 2002/01/03 21:48:30 stratego Exp $
+# $Id: gpp.Makefile,v 1.16 2002/01/10 21:45:23 stratego Exp $
 #
 # GNU make specific generic make rules for the generation of pretty-printed
 # documents.
@@ -119,5 +119,5 @@ PKGDATA       = /home/visser/res/Stratego/share/gpp-boot
 # rule to generate imploded pretty-print tables
 %.pp.af : %.pp
 	@echo "Building $@"
-	$(SGLR) -p $(PKGDATA)/share/gpp/pp-tables.tbl -i $< \
+	$(SGLR) -p $(PKGDATA)/pp-tables.tbl -i $< \
 	   | $(IMPLODE_ASFIX) -S -o $@ 

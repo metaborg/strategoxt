@@ -1,7 +1,10 @@
 #! /bin/sh
 
 ./reconf
-./configure --prefix=`pwd` \
+./configure --prefix=`pwd`/.. \
+	    --with-aterm=/home/xt/ATerm
+
+exit 0
 	--with-aterm=`pwd`/../aterm \
 	--with-cgen=`pwd`/../cgen \
 	--with-gpp=`pwd`/../gpp \

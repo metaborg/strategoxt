@@ -1,3 +1,9 @@
+2002-01-10  Eelco Visser  <visser@acm.org>
+
+	* Release 2.1.1 - 0.7beta
+
+	* Support for native lists and tuples
+
 2001-11-26  Eelco Visser  <visser@acm.org>
 
 	* Release 2.1.1 (Stratego Release 0.6.3)

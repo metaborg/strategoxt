@@ -16,7 +16,7 @@
 # 02111-1307, USA.
 
 AC_INIT(src/abox-format.c)
-AM_INIT_AUTOMAKE(gpp-boot,2.1.1)
+AM_INIT_AUTOMAKE(gpp-boot,2.1.1.7beta)
 
 AC_ARG_WITH(aterm, 
   [  --with-aterm          Specify location of ATerm library, default: \$prefix], 
@@ -39,7 +39,7 @@ AC_ARG_WITH(srts,
 )
 AC_SUBST(STRATEGORTS)
 
-AC_REVISION($Id: configure.in,v 1.8 2002/01/03 21:48:30 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.9 2002/01/10 21:45:23 stratego Exp $)
 
 AC_PROG_CC
 AC_PROG_RANLIB
