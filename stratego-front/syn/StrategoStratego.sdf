@@ -1,4 +1,4 @@
-\module StrategoStratego
+module StrategoStratego
 imports Stratego StrategoRenamed
 
 exports
