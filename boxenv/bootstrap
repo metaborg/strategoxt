@@ -1,7 +1,7 @@
 rm -f config.cache
 rm -f acconfig.h
 
-./genconf.sh $* package.conf
+#./genconf.sh $* package.conf
 
 rm -f config.cache
 rm -f acconfig.h

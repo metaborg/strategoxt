@@ -1,0 +1,27 @@
+AC_INIT([stratego-tools],[0.9beta8],[stratego-bugs@cs.uu.nl])
+AM_INIT_AUTOMAKE
+
+USE_XT_PACKAGES
+
+AC_PROG_CC
+AC_PROG_INSTALL
+AC_PATH_PROGS(SH, sh)
+AC_PATH_PROG(PERL,perl)
+
+TOOLS="templates stratego sdf2stratego rsdf2sdf sdf2sig stratego-imports stratego-stats sig2 "
+UNRELEASED=""
+RELEASED="templates stratego sdf2stratego rsdf2sdf sdf2sig stratego-imports stratego-stats sig2"
+
+AC_SUBST(TOOLS)
+AC_SUBST(RELEASED)
+AC_SUBST(UNRELEASED)
+
+AC_CONFIG_FILES([
+	Makefile 
+	VERSION 
+	src/Makefile 
+
+                          src/templates/Makefile                  src/templates/data/Makefile                  src/stratego/Makefile                  src/stratego/data/Makefile                  src/sdf2stratego/Makefile                  src/sdf2stratego/data/Makefile                  src/rsdf2sdf/Makefile                  src/rsdf2sdf/data/Makefile                  src/sdf2sig/Makefile                  src/sdf2sig/data/Makefile                  src/stratego-imports/Makefile                  src/stratego-imports/data/Makefile                  src/stratego-stats/Makefile                  src/stratego-stats/data/Makefile                  src/sig2/Makefile                  src/sig2/data/Makefile
+])
+AC_OUTPUT
+

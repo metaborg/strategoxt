@@ -1,7 +1,7 @@
 
 rm -f config.cache acconfig.h config.status
 
-./genconf.sh $* package.conf
+#./genconf.sh $* package.conf
 
 autoxt
 aclocal -I .
