@@ -1213,6 +1213,13 @@ exports
 %%                 "|[" DynRuleDef   "]|" -> StrategoTerm {cons("ToTerm")}
     "DynRuleDef" "|[" DynRuleDef   "]|" -> StrategoTerm {cons("ToTerm")}
 
+    Strategy "~{" StrategoTerm "}" -> Strategy {cons("WithAnno")}
+    Term     "~{" StrategoTerm "}" -> Strategy {cons("WithAnno")}
+
+  context-free priorities
+    Strategy "~{" StrategoTerm "}" -> Strategy {cons("WithAnno")}
+  > StrategyAngle Term 		   -> Strategy {cons("BA")}
+
   context-free syntax
 
     %% From Term

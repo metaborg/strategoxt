@@ -3,6 +3,7 @@
 void init_constructors (void)
 {
 }
+Symbol sym_Comment_2;
 Symbol sym__0;
 Symbol sym__1;
 Symbol sym__2;
@@ -52,6 +53,8 @@ Symbol sym_Nil_0;
 Symbol sym_Cons_2;
 static void init_module_constructors (void)
 {
+  sym_Comment_2 = ATmakeSymbol("Comment", 2, ATfalse);
+  ATprotectSymbol(sym_Comment_2);
   sym__0 = ATmakeSymbol("", 0, ATfalse);
   ATprotectSymbol(sym__0);
   sym__1 = ATmakeSymbol("", 1, ATfalse);
@@ -147,76 +150,74 @@ static void init_module_constructors (void)
   sym_Cons_2 = ATmakeSymbol("Cons", 2, ATfalse);
   ATprotectSymbol(sym_Cons_2);
 }
-ATerm term_a_52;
+ATerm term_d_52;
+ATerm term_c_52;
 ATerm term_z_51;
-ATerm term_w_51;
-ATerm term_v_51;
-ATerm term_u_51;
-ATerm term_t_51;
+ATerm term_y_51;
+ATerm term_x_51;
+ATerm term_m_51;
+ATerm term_l_51;
+ATerm term_k_51;
+ATerm term_j_51;
+ATerm term_i_51;
+ATerm term_h_51;
 ATerm term_g_51;
 ATerm term_f_51;
 ATerm term_e_51;
 ATerm term_d_51;
-ATerm term_c_51;
-ATerm term_b_51;
 ATerm term_a_51;
-ATerm term_z_50;
-ATerm term_y_50;
-ATerm term_x_50;
-ATerm term_u_50;
 static void init_module_constant_terms (void)
 {
-  ATprotect(&(term_u_50));
-  term_u_50 = (ATerm) ATmakeAppl(ATmakeSymbol("-I", 0, ATtrue));
-  ATprotect(&(term_x_50));
-  term_x_50 = (ATerm) ATmakeAppl(ATmakeSymbol("--abstract", 0, ATtrue));
-  ATprotect(&(term_y_50));
-  term_y_50 = (ATerm) ATmakeAppl(sym__0);
-  ATprotect(&(term_z_50));
-  term_z_50 = (ATerm) ATmakeAppl(sym__2, term_x_50, term_y_50);
   ATprotect(&(term_a_51));
-  term_a_51 = (ATerm) ATmakeAppl(ATmakeSymbol("-a | --abstract  source is abstract syntax", 0, ATtrue));
-  ATprotect(&(term_b_51));
-  term_b_51 = (ATerm) ATmakeAppl(ATmakeSymbol("--annotations", 0, ATtrue));
-  ATprotect(&(term_c_51));
-  term_c_51 = (ATerm) ATmakeAppl(sym__2, term_b_51, term_y_50);
+  term_a_51 = (ATerm) ATmakeAppl(ATmakeSymbol("-I", 0, ATtrue));
   ATprotect(&(term_d_51));
-  term_d_51 = (ATerm) ATmakeAppl(ATmakeSymbol("--annotations    print annotations on abstract syntax", 0, ATtrue));
+  term_d_51 = (ATerm) ATmakeAppl(ATmakeSymbol("--abstract", 0, ATtrue));
   ATprotect(&(term_e_51));
-  term_e_51 = (ATerm) ATmakeAppl(ATmakeSymbol("-I p|--Include p   include modules from directory p", 0, ATtrue));
+  term_e_51 = (ATerm) ATmakeAppl(sym__0);
   ATprotect(&(term_f_51));
-  term_f_51 = (ATerm) ATmakeAppl(ATmakeSymbol("-p", 0, ATtrue));
+  term_f_51 = (ATerm) ATmakeAppl(sym__2, term_d_51, term_e_51);
   ATprotect(&(term_g_51));
-  term_g_51 = (ATerm) ATmakeAppl(ATmakeSymbol("-p file   use pptable in file instead of Stratego-pretty.pp", 0, ATtrue));
-  ATprotect(&(term_t_51));
-  term_t_51 = (ATerm) ATmakeAppl(ATmakeSymbol("parse-stratego", 0, ATtrue));
-  ATprotect(&(term_u_51));
-  term_u_51 = (ATerm) ATmakeAppl(ATmakeSymbol("stratego-ensugar", 0, ATtrue));
-  ATprotect(&(term_v_51));
-  term_v_51 = (ATerm) ATmakeAppl(ATmakeSymbol("annos-to-term", 0, ATtrue));
-  ATprotect(&(term_w_51));
-  term_w_51 = (ATerm) ATmakeAppl(ATmakeSymbol("ast2abox", 0, ATtrue));
+  term_g_51 = (ATerm) ATmakeAppl(ATmakeSymbol("-a | --abstract  source is abstract syntax", 0, ATtrue));
+  ATprotect(&(term_h_51));
+  term_h_51 = (ATerm) ATmakeAppl(ATmakeSymbol("--annotations", 0, ATtrue));
+  ATprotect(&(term_i_51));
+  term_i_51 = (ATerm) ATmakeAppl(sym__2, term_h_51, term_e_51);
+  ATprotect(&(term_j_51));
+  term_j_51 = (ATerm) ATmakeAppl(ATmakeSymbol("--annotations    print annotations on abstract syntax", 0, ATtrue));
+  ATprotect(&(term_k_51));
+  term_k_51 = (ATerm) ATmakeAppl(ATmakeSymbol("-I p|--Include p   include modules from directory p", 0, ATtrue));
+  ATprotect(&(term_l_51));
+  term_l_51 = (ATerm) ATmakeAppl(ATmakeSymbol("-p", 0, ATtrue));
+  ATprotect(&(term_m_51));
+  term_m_51 = (ATerm) ATmakeAppl(ATmakeSymbol("-p file   use pptable in file instead of Stratego-pretty.pp", 0, ATtrue));
+  ATprotect(&(term_x_51));
+  term_x_51 = (ATerm) ATmakeAppl(ATmakeSymbol("parse-stratego", 0, ATtrue));
+  ATprotect(&(term_y_51));
+  term_y_51 = (ATerm) ATmakeAppl(ATmakeSymbol("stratego-ensugar", 0, ATtrue));
   ATprotect(&(term_z_51));
-  term_z_51 = (ATerm) ATmakeAppl(ATmakeSymbol("Stratego-pretty.pp", 0, ATtrue));
-  ATprotect(&(term_a_52));
-  term_a_52 = (ATerm) ATmakeAppl(ATmakeSymbol("abox2text", 0, ATtrue));
+  term_z_51 = (ATerm) ATmakeAppl(ATmakeSymbol("ast2abox", 0, ATtrue));
+  ATprotect(&(term_c_52));
+  term_c_52 = (ATerm) ATmakeAppl(ATmakeSymbol("Stratego-pretty.pp", 0, ATtrue));
+  ATprotect(&(term_d_52));
+  term_d_52 = (ATerm) ATmakeAppl(ATmakeSymbol("abox2text", 0, ATtrue));
 }
 #include <srts/init-stratego-application.h>
 ATerm pass_verbose_0_0 (ATerm t);
-ATerm xtc_transform_2_0 (ATerm i_109 (ATerm), ATerm j_109 (ATerm), ATerm t);
+ATerm xtc_transform_2_0 (ATerm k_109 (ATerm), ATerm l_109 (ATerm), ATerm t);
 ATerm xtc_find_0_0 (ATerm t);
 ATerm get_config_0_0 (ATerm t);
-ATerm try_1_0 (ATerm y_103 (ATerm), ATerm t);
-ATerm topdown_1_0 (ATerm d_85 (ATerm), ATerm t);
+ATerm try_1_0 (ATerm a_104 (ATerm), ATerm t);
+ATerm bottomup_1_0 (ATerm g_85 (ATerm), ATerm t);
+ATerm topdown_1_0 (ATerm f_85 (ATerm), ATerm t);
 ATerm StrategoParenthesize_0_0 (ATerm t);
-ATerm innermost_1_0 (ATerm j_113 (ATerm), ATerm t);
-ATerm xtc_io_transform_1_0 (ATerm z_107 (ATerm), ATerm t);
-ATerm xtc_transform_1_0 (ATerm h_109 (ATerm), ATerm t);
+ATerm innermost_1_0 (ATerm l_113 (ATerm), ATerm t);
+ATerm xtc_io_transform_1_0 (ATerm b_108 (ATerm), ATerm t);
+ATerm xtc_transform_1_0 (ATerm j_109 (ATerm), ATerm t);
 ATerm conc_0_0 (ATerm t);
-ATerm foldr_3_0 (ATerm h_97 (ATerm), ATerm i_97 (ATerm), ATerm j_97 (ATerm), ATerm t);
+ATerm foldr_3_0 (ATerm j_97 (ATerm), ATerm k_97 (ATerm), ATerm l_97 (ATerm), ATerm t);
 static ATerm a_0 (ATerm t);
 ATerm pass_includes_0_0 (ATerm t);
-ATerm xtc_io_1_0 (ATerm l_108 (ATerm), ATerm t);
+ATerm xtc_io_1_0 (ATerm n_108 (ATerm), ATerm t);
 ATerm io_options_0_0 (ATerm t);
 ATerm set_config_0_0 (ATerm t);
 ATerm ArgOption_3_0 (ATerm j_3 (ATerm), ATerm k_3 (ATerm), ATerm l_3 (ATerm), ATerm t);
@@ -235,7 +236,7 @@ static ATerm k_0 (ATerm t);
 static ATerm l_0 (ATerm t);
 static ATerm m_0 (ATerm t);
 ATerm pp_stratego_options_0_0 (ATerm t);
-ATerm option_wrap_2_0 (ATerm k_110 (ATerm), ATerm l_110 (ATerm), ATerm t);
+ATerm option_wrap_2_0 (ATerm m_110 (ATerm), ATerm n_110 (ATerm), ATerm t);
 static ATerm n_0 (ATerm t);
 static ATerm o_0 (ATerm t);
 static ATerm p_0 (ATerm t);
@@ -248,6 +249,8 @@ static ATerm v_0 (ATerm t);
 static ATerm w_0 (ATerm t);
 static ATerm x_0 (ATerm t);
 static ATerm y_0 (ATerm t);
+static ATerm z_0 (ATerm t);
+static ATerm a_1 (ATerm t);
 ATerm pp_stratego_0_0 (ATerm t);
 ATerm main_0_0 (ATerm t);
 ATerm main_0 (ATerm t)
@@ -258,297 +261,297 @@ ATerm main_0 (ATerm t)
 }
 ATerm StrategoParenthesize_0_0 (ATerm t)
 {
-  ATerm z_17 = NULL,a_18 = NULL,b_18 = NULL,c_18 = NULL;
-  z_17 = t;
+  ATerm d_18 = NULL,e_18 = NULL,f_18 = NULL,g_18 = NULL;
+  d_18 = t;
   if(match_cons(t, sym_AnnoCong_2))
     {
-      a_18 = ATgetArgument(t, 0);
-      b_18 = ATgetArgument(t, 1);
+      e_18 = ATgetArgument(t, 0);
+      f_18 = ATgetArgument(t, 1);
       {
-        ATerm z_0 = t;
-        int a_1 = stack_ptr;
+        ATerm b_1 = t;
+        int c_1 = stack_ptr;
         if((PushChoice() == 0))
           {
-            t = a_18;
+            t = e_18;
             {
-              ATerm b_1 = t;
-              int c_1 = stack_ptr;
+              ATerm d_1 = t;
+              int e_1 = stack_ptr;
               if((PushChoice() == 0))
                 {
                   if(match_cons(t, sym_Build_1))
                     {
-                      ATerm d_1 = ATgetArgument(t, 0);
+                      ATerm f_1 = ATgetArgument(t, 0);
                     }
                   else
                     _fail(t);
-                  LocalPopChoice(c_1);
-                  t = a_18;
+                  LocalPopChoice(e_1);
+                  t = e_18;
                 }
               else
                 {
-                  t = b_1;
+                  t = d_1;
                   {
-                    ATerm e_1 = t;
-                    int f_1 = stack_ptr;
+                    ATerm g_1 = t;
+                    int h_1 = stack_ptr;
                     if((PushChoice() == 0))
                       {
                         if(match_cons(t, sym_Match_1))
                           {
-                            ATerm g_1 = ATgetArgument(t, 0);
+                            ATerm i_1 = ATgetArgument(t, 0);
                           }
                         else
                           _fail(t);
-                        LocalPopChoice(f_1);
-                        t = a_18;
+                        LocalPopChoice(h_1);
+                        t = e_18;
                       }
                     else
                       {
-                        t = e_1;
+                        t = g_1;
                         {
-                          ATerm h_1 = t;
-                          int i_1 = stack_ptr;
+                          ATerm j_1 = t;
+                          int k_1 = stack_ptr;
                           if((PushChoice() == 0))
                             {
                               if(match_cons(t, sym_BA_2))
                                 {
-                                  ATerm j_1 = ATgetArgument(t, 0);
-                                  ATerm k_1 = ATgetArgument(t, 1);
+                                  ATerm l_1 = ATgetArgument(t, 0);
+                                  ATerm m_1 = ATgetArgument(t, 1);
                                 }
                               else
                                 _fail(t);
-                              LocalPopChoice(i_1);
-                              t = a_18;
+                              LocalPopChoice(k_1);
+                              t = e_18;
                             }
                           else
                             {
-                              t = h_1;
+                              t = j_1;
                               {
-                                ATerm l_1 = t;
-                                int m_1 = stack_ptr;
+                                ATerm n_1 = t;
+                                int o_1 = stack_ptr;
                                 if((PushChoice() == 0))
                                   {
                                     if(match_cons(t, sym_Choice_2))
                                       {
-                                        ATerm n_1 = ATgetArgument(t, 0);
-                                        ATerm o_1 = ATgetArgument(t, 1);
+                                        ATerm p_1 = ATgetArgument(t, 0);
+                                        ATerm q_1 = ATgetArgument(t, 1);
                                       }
                                     else
                                       _fail(t);
-                                    LocalPopChoice(m_1);
-                                    t = a_18;
+                                    LocalPopChoice(o_1);
+                                    t = e_18;
                                   }
                                 else
                                   {
-                                    t = l_1;
+                                    t = n_1;
                                     {
-                                      ATerm p_1 = t;
-                                      int q_1 = stack_ptr;
+                                      ATerm r_1 = t;
+                                      int s_1 = stack_ptr;
                                       if((PushChoice() == 0))
                                         {
                                           if(match_cons(t, sym_LChoice_2))
                                             {
-                                              ATerm r_1 = ATgetArgument(t, 0);
-                                              ATerm s_1 = ATgetArgument(t, 1);
+                                              ATerm t_1 = ATgetArgument(t, 0);
+                                              ATerm u_1 = ATgetArgument(t, 1);
                                             }
                                           else
                                             _fail(t);
-                                          LocalPopChoice(q_1);
-                                          t = a_18;
+                                          LocalPopChoice(s_1);
+                                          t = e_18;
                                         }
                                       else
                                         {
-                                          t = p_1;
+                                          t = r_1;
                                           {
-                                            ATerm t_1 = t;
-                                            int u_1 = stack_ptr;
+                                            ATerm v_1 = t;
+                                            int w_1 = stack_ptr;
                                             if((PushChoice() == 0))
                                               {
                                                 if(match_cons(t, sym_RChoice_2))
                                                   {
-                                                    ATerm v_1 = ATgetArgument(t, 0);
-                                                    ATerm w_1 = ATgetArgument(t, 1);
+                                                    ATerm x_1 = ATgetArgument(t, 0);
+                                                    ATerm y_1 = ATgetArgument(t, 1);
                                                   }
                                                 else
                                                   _fail(t);
-                                                LocalPopChoice(u_1);
-                                                t = a_18;
+                                                LocalPopChoice(w_1);
+                                                t = e_18;
                                               }
                                             else
                                               {
-                                                t = t_1;
+                                                t = v_1;
                                                 {
-                                                  ATerm x_1 = t;
-                                                  int y_1 = stack_ptr;
+                                                  ATerm z_1 = t;
+                                                  int a_2 = stack_ptr;
                                                   if((PushChoice() == 0))
                                                     {
                                                       if(match_cons(t, sym_GChoice_2))
                                                         {
-                                                          ATerm z_1 = ATgetArgument(t, 0);
-                                                          ATerm a_2 = ATgetArgument(t, 1);
+                                                          ATerm b_2 = ATgetArgument(t, 0);
+                                                          ATerm c_2 = ATgetArgument(t, 1);
                                                         }
                                                       else
                                                         _fail(t);
-                                                      LocalPopChoice(y_1);
-                                                      t = a_18;
+                                                      LocalPopChoice(a_2);
+                                                      t = e_18;
                                                     }
                                                   else
                                                     {
-                                                      t = x_1;
+                                                      t = z_1;
                                                       {
-                                                        ATerm b_2 = t;
-                                                        int c_2 = stack_ptr;
+                                                        ATerm d_2 = t;
+                                                        int e_2 = stack_ptr;
                                                         if((PushChoice() == 0))
                                                           {
                                                             if(match_cons(t, sym_LGChoice_2))
                                                               {
-                                                                ATerm d_2 = ATgetArgument(t, 0);
-                                                                ATerm e_2 = ATgetArgument(t, 1);
+                                                                ATerm f_2 = ATgetArgument(t, 0);
+                                                                ATerm g_2 = ATgetArgument(t, 1);
                                                               }
                                                             else
                                                               _fail(t);
-                                                            LocalPopChoice(c_2);
-                                                            t = a_18;
+                                                            LocalPopChoice(e_2);
+                                                            t = e_18;
                                                           }
                                                         else
                                                           {
-                                                            t = b_2;
+                                                            t = d_2;
                                                             {
-                                                              ATerm f_2 = t;
-                                                              int g_2 = stack_ptr;
+                                                              ATerm h_2 = t;
+                                                              int i_2 = stack_ptr;
                                                               if((PushChoice() == 0))
                                                                 {
                                                                   if(match_cons(t, sym_RGChoice_2))
                                                                     {
-                                                                      ATerm h_2 = ATgetArgument(t, 0);
-                                                                      ATerm i_2 = ATgetArgument(t, 1);
+                                                                      ATerm j_2 = ATgetArgument(t, 0);
+                                                                      ATerm k_2 = ATgetArgument(t, 1);
                                                                     }
                                                                   else
                                                                     _fail(t);
-                                                                  LocalPopChoice(g_2);
-                                                                  t = a_18;
+                                                                  LocalPopChoice(i_2);
+                                                                  t = e_18;
                                                                 }
                                                               else
                                                                 {
-                                                                  t = f_2;
+                                                                  t = h_2;
                                                                   {
-                                                                    ATerm j_2 = t;
-                                                                    int k_2 = stack_ptr;
+                                                                    ATerm l_2 = t;
+                                                                    int m_2 = stack_ptr;
                                                                     if((PushChoice() == 0))
                                                                       {
                                                                         if(match_cons(t, sym_GuardedLChoice_3))
                                                                           {
-                                                                            ATerm l_2 = ATgetArgument(t, 0);
-                                                                            ATerm m_2 = ATgetArgument(t, 1);
-                                                                            ATerm n_2 = ATgetArgument(t, 2);
+                                                                            ATerm n_2 = ATgetArgument(t, 0);
+                                                                            ATerm o_2 = ATgetArgument(t, 1);
+                                                                            ATerm p_2 = ATgetArgument(t, 2);
                                                                           }
                                                                         else
                                                                           _fail(t);
-                                                                        LocalPopChoice(k_2);
-                                                                        t = a_18;
+                                                                        LocalPopChoice(m_2);
+                                                                        t = e_18;
                                                                       }
                                                                     else
                                                                       {
-                                                                        t = j_2;
+                                                                        t = l_2;
                                                                         {
-                                                                          ATerm o_2 = t;
-                                                                          int p_2 = stack_ptr;
+                                                                          ATerm q_2 = t;
+                                                                          int r_2 = stack_ptr;
                                                                           if((PushChoice() == 0))
                                                                             {
                                                                               if(match_cons(t, sym_DynRuleIntersectFix_2))
                                                                                 {
-                                                                                  ATerm q_2 = ATgetArgument(t, 0);
-                                                                                  ATerm r_2 = ATgetArgument(t, 1);
+                                                                                  ATerm s_2 = ATgetArgument(t, 0);
+                                                                                  ATerm t_2 = ATgetArgument(t, 1);
                                                                                 }
                                                                               else
                                                                                 _fail(t);
-                                                                              LocalPopChoice(p_2);
-                                                                              t = a_18;
+                                                                              LocalPopChoice(r_2);
+                                                                              t = e_18;
                                                                             }
                                                                           else
                                                                             {
-                                                                              t = o_2;
+                                                                              t = q_2;
                                                                               {
-                                                                                ATerm s_2 = t;
-                                                                                int t_2 = stack_ptr;
+                                                                                ATerm u_2 = t;
+                                                                                int v_2 = stack_ptr;
                                                                                 if((PushChoice() == 0))
                                                                                   {
                                                                                     if(match_cons(t, sym_DynRuleUnionFix_2))
                                                                                       {
-                                                                                        ATerm u_2 = ATgetArgument(t, 0);
-                                                                                        ATerm v_2 = ATgetArgument(t, 1);
+                                                                                        ATerm w_2 = ATgetArgument(t, 0);
+                                                                                        ATerm x_2 = ATgetArgument(t, 1);
                                                                                       }
                                                                                     else
                                                                                       _fail(t);
-                                                                                    LocalPopChoice(t_2);
-                                                                                    t = a_18;
+                                                                                    LocalPopChoice(v_2);
+                                                                                    t = e_18;
                                                                                   }
                                                                                 else
                                                                                   {
-                                                                                    t = s_2;
+                                                                                    t = u_2;
                                                                                     {
-                                                                                      ATerm w_2 = t;
-                                                                                      int x_2 = stack_ptr;
+                                                                                      ATerm y_2 = t;
+                                                                                      int z_2 = stack_ptr;
                                                                                       if((PushChoice() == 0))
                                                                                         {
                                                                                           if(match_cons(t, sym_AM_2))
                                                                                             {
-                                                                                              ATerm y_2 = ATgetArgument(t, 0);
-                                                                                              ATerm z_2 = ATgetArgument(t, 1);
+                                                                                              ATerm a_3 = ATgetArgument(t, 0);
+                                                                                              ATerm b_3 = ATgetArgument(t, 1);
                                                                                             }
                                                                                           else
                                                                                             _fail(t);
-                                                                                          LocalPopChoice(x_2);
-                                                                                          t = a_18;
+                                                                                          LocalPopChoice(z_2);
+                                                                                          t = e_18;
                                                                                         }
                                                                                       else
                                                                                         {
-                                                                                          t = w_2;
+                                                                                          t = y_2;
                                                                                           {
-                                                                                            ATerm a_3 = t;
-                                                                                            int b_3 = stack_ptr;
+                                                                                            ATerm c_3 = t;
+                                                                                            int d_3 = stack_ptr;
                                                                                             if((PushChoice() == 0))
                                                                                               {
                                                                                                 if(match_cons(t, sym_DynRuleIntersect_3))
                                                                                                   {
-                                                                                                    ATerm c_3 = ATgetArgument(t, 0);
-                                                                                                    ATerm d_3 = ATgetArgument(t, 1);
-                                                                                                    ATerm e_3 = ATgetArgument(t, 2);
+                                                                                                    ATerm e_3 = ATgetArgument(t, 0);
+                                                                                                    ATerm f_3 = ATgetArgument(t, 1);
+                                                                                                    ATerm m_3 = ATgetArgument(t, 2);
                                                                                                   }
                                                                                                 else
                                                                                                   _fail(t);
-                                                                                                LocalPopChoice(b_3);
-                                                                                                t = a_18;
+                                                                                                LocalPopChoice(d_3);
+                                                                                                t = e_18;
                                                                                               }
                                                                                             else
                                                                                               {
-                                                                                                t = a_3;
+                                                                                                t = c_3;
                                                                                                 {
-                                                                                                  ATerm f_3 = t;
-                                                                                                  int m_3 = stack_ptr;
+                                                                                                  ATerm n_3 = t;
+                                                                                                  int o_3 = stack_ptr;
                                                                                                   if((PushChoice() == 0))
                                                                                                     {
                                                                                                       if(match_cons(t, sym_DynRuleUnion_3))
                                                                                                         {
-                                                                                                          ATerm n_3 = ATgetArgument(t, 0);
-                                                                                                          ATerm o_3 = ATgetArgument(t, 1);
-                                                                                                          ATerm p_3 = ATgetArgument(t, 2);
+                                                                                                          ATerm p_3 = ATgetArgument(t, 0);
+                                                                                                          ATerm q_3 = ATgetArgument(t, 1);
+                                                                                                          ATerm r_3 = ATgetArgument(t, 2);
                                                                                                         }
                                                                                                       else
                                                                                                         _fail(t);
-                                                                                                      LocalPopChoice(m_3);
-                                                                                                      t = a_18;
+                                                                                                      LocalPopChoice(o_3);
+                                                                                                      t = e_18;
                                                                                                     }
                                                                                                   else
                                                                                                     {
-                                                                                                      t = f_3;
+                                                                                                      t = n_3;
                                                                                                       if(match_cons(t, sym_Seq_2))
                                                                                                         {
-                                                                                                          ATerm q_3 = ATgetArgument(t, 0);
-                                                                                                          ATerm r_3 = ATgetArgument(t, 1);
+                                                                                                          ATerm s_3 = ATgetArgument(t, 0);
+                                                                                                          ATerm t_3 = ATgetArgument(t, 1);
                                                                                                         }
                                                                                                       else
                                                                                                         _fail(t);
-                                                                                                      t = a_18;
+                                                                                                      t = e_18;
                                                                                                     }
                                                                                                 }
                                                                                               }
@@ -579,292 +582,292 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                   }
                 }
             }
-            t = (ATerm) ATmakeAppl(sym_AnnoCong_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, a_18), b_18);
-            LocalPopChoice(a_1);
+            t = (ATerm) ATmakeAppl(sym_AnnoCong_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, e_18), f_18);
+            LocalPopChoice(c_1);
           }
         else
           {
-            t = z_0;
-            t = b_18;
+            t = b_1;
+            t = f_18;
             {
-              ATerm s_3 = t;
-              int t_3 = stack_ptr;
+              ATerm u_3 = t;
+              int v_3 = stack_ptr;
               if((PushChoice() == 0))
                 {
                   if(match_cons(t, sym_Build_1))
                     {
-                      ATerm u_3 = ATgetArgument(t, 0);
+                      ATerm w_3 = ATgetArgument(t, 0);
                     }
                   else
                     _fail(t);
-                  LocalPopChoice(t_3);
-                  t = b_18;
+                  LocalPopChoice(v_3);
+                  t = f_18;
                 }
               else
                 {
-                  t = s_3;
+                  t = u_3;
                   {
-                    ATerm v_3 = t;
-                    int w_3 = stack_ptr;
+                    ATerm x_3 = t;
+                    int y_3 = stack_ptr;
                     if((PushChoice() == 0))
                       {
                         if(match_cons(t, sym_Match_1))
                           {
-                            ATerm x_3 = ATgetArgument(t, 0);
+                            ATerm z_3 = ATgetArgument(t, 0);
                           }
                         else
                           _fail(t);
-                        LocalPopChoice(w_3);
-                        t = b_18;
+                        LocalPopChoice(y_3);
+                        t = f_18;
                       }
                     else
                       {
-                        t = v_3;
+                        t = x_3;
                         {
-                          ATerm y_3 = t;
-                          int z_3 = stack_ptr;
+                          ATerm a_4 = t;
+                          int b_4 = stack_ptr;
                           if((PushChoice() == 0))
                             {
                               if(match_cons(t, sym_BA_2))
                                 {
-                                  ATerm a_4 = ATgetArgument(t, 0);
-                                  ATerm b_4 = ATgetArgument(t, 1);
+                                  ATerm c_4 = ATgetArgument(t, 0);
+                                  ATerm d_4 = ATgetArgument(t, 1);
                                 }
                               else
                                 _fail(t);
-                              LocalPopChoice(z_3);
-                              t = b_18;
+                              LocalPopChoice(b_4);
+                              t = f_18;
                             }
                           else
                             {
-                              t = y_3;
+                              t = a_4;
                               {
-                                ATerm c_4 = t;
-                                int d_4 = stack_ptr;
+                                ATerm e_4 = t;
+                                int f_4 = stack_ptr;
                                 if((PushChoice() == 0))
                                   {
                                     if(match_cons(t, sym_Choice_2))
                                       {
-                                        ATerm e_4 = ATgetArgument(t, 0);
-                                        ATerm f_4 = ATgetArgument(t, 1);
+                                        ATerm g_4 = ATgetArgument(t, 0);
+                                        ATerm h_4 = ATgetArgument(t, 1);
                                       }
                                     else
                                       _fail(t);
-                                    LocalPopChoice(d_4);
-                                    t = b_18;
+                                    LocalPopChoice(f_4);
+                                    t = f_18;
                                   }
                                 else
                                   {
-                                    t = c_4;
+                                    t = e_4;
                                     {
-                                      ATerm g_4 = t;
-                                      int h_4 = stack_ptr;
+                                      ATerm i_4 = t;
+                                      int j_4 = stack_ptr;
                                       if((PushChoice() == 0))
                                         {
                                           if(match_cons(t, sym_LChoice_2))
                                             {
-                                              ATerm i_4 = ATgetArgument(t, 0);
-                                              ATerm j_4 = ATgetArgument(t, 1);
+                                              ATerm k_4 = ATgetArgument(t, 0);
+                                              ATerm l_4 = ATgetArgument(t, 1);
                                             }
                                           else
                                             _fail(t);
-                                          LocalPopChoice(h_4);
-                                          t = b_18;
+                                          LocalPopChoice(j_4);
+                                          t = f_18;
                                         }
                                       else
                                         {
-                                          t = g_4;
+                                          t = i_4;
                                           {
-                                            ATerm k_4 = t;
-                                            int l_4 = stack_ptr;
+                                            ATerm m_4 = t;
+                                            int n_4 = stack_ptr;
                                             if((PushChoice() == 0))
                                               {
                                                 if(match_cons(t, sym_RChoice_2))
                                                   {
-                                                    ATerm m_4 = ATgetArgument(t, 0);
-                                                    ATerm n_4 = ATgetArgument(t, 1);
+                                                    ATerm o_4 = ATgetArgument(t, 0);
+                                                    ATerm p_4 = ATgetArgument(t, 1);
                                                   }
                                                 else
                                                   _fail(t);
-                                                LocalPopChoice(l_4);
-                                                t = b_18;
+                                                LocalPopChoice(n_4);
+                                                t = f_18;
                                               }
                                             else
                                               {
-                                                t = k_4;
+                                                t = m_4;
                                                 {
-                                                  ATerm o_4 = t;
-                                                  int p_4 = stack_ptr;
+                                                  ATerm q_4 = t;
+                                                  int r_4 = stack_ptr;
                                                   if((PushChoice() == 0))
                                                     {
                                                       if(match_cons(t, sym_GChoice_2))
                                                         {
-                                                          ATerm q_4 = ATgetArgument(t, 0);
-                                                          ATerm r_4 = ATgetArgument(t, 1);
+                                                          ATerm s_4 = ATgetArgument(t, 0);
+                                                          ATerm t_4 = ATgetArgument(t, 1);
                                                         }
                                                       else
                                                         _fail(t);
-                                                      LocalPopChoice(p_4);
-                                                      t = b_18;
+                                                      LocalPopChoice(r_4);
+                                                      t = f_18;
                                                     }
                                                   else
                                                     {
-                                                      t = o_4;
+                                                      t = q_4;
                                                       {
-                                                        ATerm s_4 = t;
-                                                        int t_4 = stack_ptr;
+                                                        ATerm u_4 = t;
+                                                        int v_4 = stack_ptr;
                                                         if((PushChoice() == 0))
                                                           {
                                                             if(match_cons(t, sym_LGChoice_2))
                                                               {
-                                                                ATerm u_4 = ATgetArgument(t, 0);
-                                                                ATerm v_4 = ATgetArgument(t, 1);
+                                                                ATerm w_4 = ATgetArgument(t, 0);
+                                                                ATerm x_4 = ATgetArgument(t, 1);
                                                               }
                                                             else
                                                               _fail(t);
-                                                            LocalPopChoice(t_4);
-                                                            t = b_18;
+                                                            LocalPopChoice(v_4);
+                                                            t = f_18;
                                                           }
                                                         else
                                                           {
-                                                            t = s_4;
+                                                            t = u_4;
                                                             {
-                                                              ATerm w_4 = t;
-                                                              int x_4 = stack_ptr;
+                                                              ATerm y_4 = t;
+                                                              int z_4 = stack_ptr;
                                                               if((PushChoice() == 0))
                                                                 {
                                                                   if(match_cons(t, sym_RGChoice_2))
                                                                     {
-                                                                      ATerm y_4 = ATgetArgument(t, 0);
-                                                                      ATerm z_4 = ATgetArgument(t, 1);
+                                                                      ATerm a_5 = ATgetArgument(t, 0);
+                                                                      ATerm b_5 = ATgetArgument(t, 1);
                                                                     }
                                                                   else
                                                                     _fail(t);
-                                                                  LocalPopChoice(x_4);
-                                                                  t = b_18;
+                                                                  LocalPopChoice(z_4);
+                                                                  t = f_18;
                                                                 }
                                                               else
                                                                 {
-                                                                  t = w_4;
+                                                                  t = y_4;
                                                                   {
-                                                                    ATerm a_5 = t;
-                                                                    int b_5 = stack_ptr;
+                                                                    ATerm c_5 = t;
+                                                                    int d_5 = stack_ptr;
                                                                     if((PushChoice() == 0))
                                                                       {
                                                                         if(match_cons(t, sym_GuardedLChoice_3))
                                                                           {
-                                                                            ATerm c_5 = ATgetArgument(t, 0);
-                                                                            ATerm d_5 = ATgetArgument(t, 1);
-                                                                            ATerm e_5 = ATgetArgument(t, 2);
+                                                                            ATerm e_5 = ATgetArgument(t, 0);
+                                                                            ATerm f_5 = ATgetArgument(t, 1);
+                                                                            ATerm g_5 = ATgetArgument(t, 2);
                                                                           }
                                                                         else
                                                                           _fail(t);
-                                                                        LocalPopChoice(b_5);
-                                                                        t = b_18;
+                                                                        LocalPopChoice(d_5);
+                                                                        t = f_18;
                                                                       }
                                                                     else
                                                                       {
-                                                                        t = a_5;
+                                                                        t = c_5;
                                                                         {
-                                                                          ATerm f_5 = t;
-                                                                          int g_5 = stack_ptr;
+                                                                          ATerm h_5 = t;
+                                                                          int i_5 = stack_ptr;
                                                                           if((PushChoice() == 0))
                                                                             {
                                                                               if(match_cons(t, sym_DynRuleIntersectFix_2))
                                                                                 {
-                                                                                  ATerm h_5 = ATgetArgument(t, 0);
-                                                                                  ATerm i_5 = ATgetArgument(t, 1);
+                                                                                  ATerm j_5 = ATgetArgument(t, 0);
+                                                                                  ATerm k_5 = ATgetArgument(t, 1);
                                                                                 }
                                                                               else
                                                                                 _fail(t);
-                                                                              LocalPopChoice(g_5);
-                                                                              t = b_18;
+                                                                              LocalPopChoice(i_5);
+                                                                              t = f_18;
                                                                             }
                                                                           else
                                                                             {
-                                                                              t = f_5;
+                                                                              t = h_5;
                                                                               {
-                                                                                ATerm j_5 = t;
-                                                                                int k_5 = stack_ptr;
+                                                                                ATerm l_5 = t;
+                                                                                int m_5 = stack_ptr;
                                                                                 if((PushChoice() == 0))
                                                                                   {
                                                                                     if(match_cons(t, sym_DynRuleUnionFix_2))
                                                                                       {
-                                                                                        ATerm l_5 = ATgetArgument(t, 0);
-                                                                                        ATerm m_5 = ATgetArgument(t, 1);
+                                                                                        ATerm n_5 = ATgetArgument(t, 0);
+                                                                                        ATerm o_5 = ATgetArgument(t, 1);
                                                                                       }
                                                                                     else
                                                                                       _fail(t);
-                                                                                    LocalPopChoice(k_5);
-                                                                                    t = b_18;
+                                                                                    LocalPopChoice(m_5);
+                                                                                    t = f_18;
                                                                                   }
                                                                                 else
                                                                                   {
-                                                                                    t = j_5;
+                                                                                    t = l_5;
                                                                                     {
-                                                                                      ATerm n_5 = t;
-                                                                                      int o_5 = stack_ptr;
+                                                                                      ATerm p_5 = t;
+                                                                                      int q_5 = stack_ptr;
                                                                                       if((PushChoice() == 0))
                                                                                         {
                                                                                           if(match_cons(t, sym_AM_2))
                                                                                             {
-                                                                                              ATerm p_5 = ATgetArgument(t, 0);
-                                                                                              ATerm q_5 = ATgetArgument(t, 1);
+                                                                                              ATerm r_5 = ATgetArgument(t, 0);
+                                                                                              ATerm s_5 = ATgetArgument(t, 1);
                                                                                             }
                                                                                           else
                                                                                             _fail(t);
-                                                                                          LocalPopChoice(o_5);
-                                                                                          t = b_18;
+                                                                                          LocalPopChoice(q_5);
+                                                                                          t = f_18;
                                                                                         }
                                                                                       else
                                                                                         {
-                                                                                          t = n_5;
+                                                                                          t = p_5;
                                                                                           {
-                                                                                            ATerm r_5 = t;
-                                                                                            int s_5 = stack_ptr;
+                                                                                            ATerm t_5 = t;
+                                                                                            int u_5 = stack_ptr;
                                                                                             if((PushChoice() == 0))
                                                                                               {
                                                                                                 if(match_cons(t, sym_DynRuleIntersect_3))
                                                                                                   {
-                                                                                                    ATerm t_5 = ATgetArgument(t, 0);
-                                                                                                    ATerm u_5 = ATgetArgument(t, 1);
-                                                                                                    ATerm v_5 = ATgetArgument(t, 2);
+                                                                                                    ATerm v_5 = ATgetArgument(t, 0);
+                                                                                                    ATerm w_5 = ATgetArgument(t, 1);
+                                                                                                    ATerm x_5 = ATgetArgument(t, 2);
                                                                                                   }
                                                                                                 else
                                                                                                   _fail(t);
-                                                                                                LocalPopChoice(s_5);
-                                                                                                t = b_18;
+                                                                                                LocalPopChoice(u_5);
+                                                                                                t = f_18;
                                                                                               }
                                                                                             else
                                                                                               {
-                                                                                                t = r_5;
+                                                                                                t = t_5;
                                                                                                 {
-                                                                                                  ATerm w_5 = t;
-                                                                                                  int x_5 = stack_ptr;
+                                                                                                  ATerm y_5 = t;
+                                                                                                  int z_5 = stack_ptr;
                                                                                                   if((PushChoice() == 0))
                                                                                                     {
                                                                                                       if(match_cons(t, sym_DynRuleUnion_3))
                                                                                                         {
-                                                                                                          ATerm y_5 = ATgetArgument(t, 0);
-                                                                                                          ATerm z_5 = ATgetArgument(t, 1);
-                                                                                                          ATerm a_6 = ATgetArgument(t, 2);
+                                                                                                          ATerm a_6 = ATgetArgument(t, 0);
+                                                                                                          ATerm b_6 = ATgetArgument(t, 1);
+                                                                                                          ATerm c_6 = ATgetArgument(t, 2);
                                                                                                         }
                                                                                                       else
                                                                                                         _fail(t);
-                                                                                                      LocalPopChoice(x_5);
-                                                                                                      t = b_18;
+                                                                                                      LocalPopChoice(z_5);
+                                                                                                      t = f_18;
                                                                                                     }
                                                                                                   else
                                                                                                     {
-                                                                                                      t = w_5;
+                                                                                                      t = y_5;
                                                                                                       if(match_cons(t, sym_Seq_2))
                                                                                                         {
-                                                                                                          ATerm b_6 = ATgetArgument(t, 0);
-                                                                                                          ATerm c_6 = ATgetArgument(t, 1);
+                                                                                                          ATerm d_6 = ATgetArgument(t, 0);
+                                                                                                          ATerm e_6 = ATgetArgument(t, 1);
                                                                                                         }
                                                                                                       else
                                                                                                         _fail(t);
-                                                                                                      t = b_18;
+                                                                                                      t = f_18;
                                                                                                     }
                                                                                                 }
                                                                                               }
@@ -895,7 +898,7 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                   }
                 }
             }
-            t = (ATerm) ATmakeAppl(sym_AnnoCong_2, a_18, (ATerm) ATmakeAppl(sym_Parenthetical_1, b_18));
+            t = (ATerm) ATmakeAppl(sym_AnnoCong_2, e_18, (ATerm) ATmakeAppl(sym_Parenthetical_1, f_18));
           }
       }
     }
@@ -903,293 +906,293 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
     {
       if(match_cons(t, sym_ExplodeCong_2))
         {
-          a_18 = ATgetArgument(t, 0);
-          b_18 = ATgetArgument(t, 1);
+          e_18 = ATgetArgument(t, 0);
+          f_18 = ATgetArgument(t, 1);
           {
-            ATerm d_6 = t;
-            int e_6 = stack_ptr;
+            ATerm f_6 = t;
+            int g_6 = stack_ptr;
             if((PushChoice() == 0))
               {
-                t = a_18;
+                t = e_18;
                 {
-                  ATerm f_6 = t;
-                  int g_6 = stack_ptr;
+                  ATerm h_6 = t;
+                  int i_6 = stack_ptr;
                   if((PushChoice() == 0))
                     {
                       if(match_cons(t, sym_Build_1))
                         {
-                          ATerm h_6 = ATgetArgument(t, 0);
+                          ATerm j_6 = ATgetArgument(t, 0);
                         }
                       else
                         _fail(t);
-                      LocalPopChoice(g_6);
-                      t = a_18;
+                      LocalPopChoice(i_6);
+                      t = e_18;
                     }
                   else
                     {
-                      t = f_6;
+                      t = h_6;
                       {
-                        ATerm i_6 = t;
-                        int j_6 = stack_ptr;
+                        ATerm k_6 = t;
+                        int l_6 = stack_ptr;
                         if((PushChoice() == 0))
                           {
                             if(match_cons(t, sym_Match_1))
                               {
-                                ATerm k_6 = ATgetArgument(t, 0);
+                                ATerm m_6 = ATgetArgument(t, 0);
                               }
                             else
                               _fail(t);
-                            LocalPopChoice(j_6);
-                            t = a_18;
+                            LocalPopChoice(l_6);
+                            t = e_18;
                           }
                         else
                           {
-                            t = i_6;
+                            t = k_6;
                             {
-                              ATerm l_6 = t;
-                              int m_6 = stack_ptr;
+                              ATerm n_6 = t;
+                              int o_6 = stack_ptr;
                               if((PushChoice() == 0))
                                 {
                                   if(match_cons(t, sym_BA_2))
                                     {
-                                      ATerm n_6 = ATgetArgument(t, 0);
-                                      ATerm o_6 = ATgetArgument(t, 1);
+                                      ATerm p_6 = ATgetArgument(t, 0);
+                                      ATerm q_6 = ATgetArgument(t, 1);
                                     }
                                   else
                                     _fail(t);
-                                  LocalPopChoice(m_6);
-                                  t = a_18;
+                                  LocalPopChoice(o_6);
+                                  t = e_18;
                                 }
                               else
                                 {
-                                  t = l_6;
+                                  t = n_6;
                                   {
-                                    ATerm p_6 = t;
-                                    int q_6 = stack_ptr;
+                                    ATerm r_6 = t;
+                                    int s_6 = stack_ptr;
                                     if((PushChoice() == 0))
                                       {
                                         if(match_cons(t, sym_Choice_2))
                                           {
-                                            ATerm r_6 = ATgetArgument(t, 0);
-                                            ATerm s_6 = ATgetArgument(t, 1);
+                                            ATerm t_6 = ATgetArgument(t, 0);
+                                            ATerm u_6 = ATgetArgument(t, 1);
                                           }
                                         else
                                           _fail(t);
-                                        LocalPopChoice(q_6);
-                                        t = a_18;
+                                        LocalPopChoice(s_6);
+                                        t = e_18;
                                       }
                                     else
                                       {
-                                        t = p_6;
+                                        t = r_6;
                                         {
-                                          ATerm t_6 = t;
-                                          int u_6 = stack_ptr;
+                                          ATerm v_6 = t;
+                                          int w_6 = stack_ptr;
                                           if((PushChoice() == 0))
                                             {
                                               if(match_cons(t, sym_LChoice_2))
                                                 {
-                                                  ATerm v_6 = ATgetArgument(t, 0);
-                                                  ATerm w_6 = ATgetArgument(t, 1);
+                                                  ATerm x_6 = ATgetArgument(t, 0);
+                                                  ATerm y_6 = ATgetArgument(t, 1);
                                                 }
                                               else
                                                 _fail(t);
-                                              LocalPopChoice(u_6);
-                                              t = a_18;
+                                              LocalPopChoice(w_6);
+                                              t = e_18;
                                             }
                                           else
                                             {
-                                              t = t_6;
+                                              t = v_6;
                                               {
-                                                ATerm x_6 = t;
-                                                int y_6 = stack_ptr;
+                                                ATerm z_6 = t;
+                                                int a_7 = stack_ptr;
                                                 if((PushChoice() == 0))
                                                   {
                                                     if(match_cons(t, sym_RChoice_2))
                                                       {
-                                                        ATerm z_6 = ATgetArgument(t, 0);
-                                                        ATerm a_7 = ATgetArgument(t, 1);
+                                                        ATerm b_7 = ATgetArgument(t, 0);
+                                                        ATerm c_7 = ATgetArgument(t, 1);
                                                       }
                                                     else
                                                       _fail(t);
-                                                    LocalPopChoice(y_6);
-                                                    t = a_18;
+                                                    LocalPopChoice(a_7);
+                                                    t = e_18;
                                                   }
                                                 else
                                                   {
-                                                    t = x_6;
+                                                    t = z_6;
                                                     {
-                                                      ATerm b_7 = t;
-                                                      int c_7 = stack_ptr;
+                                                      ATerm d_7 = t;
+                                                      int e_7 = stack_ptr;
                                                       if((PushChoice() == 0))
                                                         {
                                                           if(match_cons(t, sym_GChoice_2))
                                                             {
-                                                              ATerm d_7 = ATgetArgument(t, 0);
-                                                              ATerm e_7 = ATgetArgument(t, 1);
+                                                              ATerm f_7 = ATgetArgument(t, 0);
+                                                              ATerm g_7 = ATgetArgument(t, 1);
                                                             }
                                                           else
                                                             _fail(t);
-                                                          LocalPopChoice(c_7);
-                                                          t = a_18;
+                                                          LocalPopChoice(e_7);
+                                                          t = e_18;
                                                         }
                                                       else
                                                         {
-                                                          t = b_7;
+                                                          t = d_7;
                                                           {
-                                                            ATerm f_7 = t;
-                                                            int g_7 = stack_ptr;
+                                                            ATerm h_7 = t;
+                                                            int i_7 = stack_ptr;
                                                             if((PushChoice() == 0))
                                                               {
                                                                 if(match_cons(t, sym_LGChoice_2))
                                                                   {
-                                                                    ATerm h_7 = ATgetArgument(t, 0);
-                                                                    ATerm i_7 = ATgetArgument(t, 1);
+                                                                    ATerm j_7 = ATgetArgument(t, 0);
+                                                                    ATerm k_7 = ATgetArgument(t, 1);
                                                                   }
                                                                 else
                                                                   _fail(t);
-                                                                LocalPopChoice(g_7);
-                                                                t = a_18;
+                                                                LocalPopChoice(i_7);
+                                                                t = e_18;
                                                               }
                                                             else
                                                               {
-                                                                t = f_7;
+                                                                t = h_7;
                                                                 {
-                                                                  ATerm j_7 = t;
-                                                                  int k_7 = stack_ptr;
+                                                                  ATerm l_7 = t;
+                                                                  int m_7 = stack_ptr;
                                                                   if((PushChoice() == 0))
                                                                     {
                                                                       if(match_cons(t, sym_RGChoice_2))
                                                                         {
-                                                                          ATerm l_7 = ATgetArgument(t, 0);
-                                                                          ATerm m_7 = ATgetArgument(t, 1);
+                                                                          ATerm n_7 = ATgetArgument(t, 0);
+                                                                          ATerm o_7 = ATgetArgument(t, 1);
                                                                         }
                                                                       else
                                                                         _fail(t);
-                                                                      LocalPopChoice(k_7);
-                                                                      t = a_18;
+                                                                      LocalPopChoice(m_7);
+                                                                      t = e_18;
                                                                     }
                                                                   else
                                                                     {
-                                                                      t = j_7;
+                                                                      t = l_7;
                                                                       {
-                                                                        ATerm n_7 = t;
-                                                                        int o_7 = stack_ptr;
+                                                                        ATerm p_7 = t;
+                                                                        int q_7 = stack_ptr;
                                                                         if((PushChoice() == 0))
                                                                           {
                                                                             if(match_cons(t, sym_GuardedLChoice_3))
                                                                               {
-                                                                                ATerm p_7 = ATgetArgument(t, 0);
-                                                                                ATerm q_7 = ATgetArgument(t, 1);
-                                                                                ATerm r_7 = ATgetArgument(t, 2);
+                                                                                ATerm r_7 = ATgetArgument(t, 0);
+                                                                                ATerm s_7 = ATgetArgument(t, 1);
+                                                                                ATerm t_7 = ATgetArgument(t, 2);
                                                                               }
                                                                             else
                                                                               _fail(t);
-                                                                            LocalPopChoice(o_7);
-                                                                            t = a_18;
+                                                                            LocalPopChoice(q_7);
+                                                                            t = e_18;
                                                                           }
                                                                         else
                                                                           {
-                                                                            t = n_7;
+                                                                            t = p_7;
                                                                             {
-                                                                              ATerm s_7 = t;
-                                                                              int t_7 = stack_ptr;
+                                                                              ATerm u_7 = t;
+                                                                              int v_7 = stack_ptr;
                                                                               if((PushChoice() == 0))
                                                                                 {
                                                                                   if(match_cons(t, sym_DynRuleIntersectFix_2))
                                                                                     {
-                                                                                      ATerm u_7 = ATgetArgument(t, 0);
-                                                                                      ATerm v_7 = ATgetArgument(t, 1);
+                                                                                      ATerm w_7 = ATgetArgument(t, 0);
+                                                                                      ATerm x_7 = ATgetArgument(t, 1);
                                                                                     }
                                                                                   else
                                                                                     _fail(t);
-                                                                                  LocalPopChoice(t_7);
-                                                                                  t = a_18;
+                                                                                  LocalPopChoice(v_7);
+                                                                                  t = e_18;
                                                                                 }
                                                                               else
                                                                                 {
-                                                                                  t = s_7;
+                                                                                  t = u_7;
                                                                                   {
-                                                                                    ATerm w_7 = t;
-                                                                                    int x_7 = stack_ptr;
+                                                                                    ATerm y_7 = t;
+                                                                                    int z_7 = stack_ptr;
                                                                                     if((PushChoice() == 0))
                                                                                       {
                                                                                         if(match_cons(t, sym_DynRuleUnionFix_2))
                                                                                           {
-                                                                                            ATerm y_7 = ATgetArgument(t, 0);
-                                                                                            ATerm z_7 = ATgetArgument(t, 1);
+                                                                                            ATerm a_8 = ATgetArgument(t, 0);
+                                                                                            ATerm b_8 = ATgetArgument(t, 1);
                                                                                           }
                                                                                         else
                                                                                           _fail(t);
-                                                                                        LocalPopChoice(x_7);
-                                                                                        t = a_18;
+                                                                                        LocalPopChoice(z_7);
+                                                                                        t = e_18;
                                                                                       }
                                                                                     else
                                                                                       {
-                                                                                        t = w_7;
+                                                                                        t = y_7;
                                                                                         {
-                                                                                          ATerm a_8 = t;
-                                                                                          int b_8 = stack_ptr;
+                                                                                          ATerm c_8 = t;
+                                                                                          int d_8 = stack_ptr;
                                                                                           if((PushChoice() == 0))
                                                                                             {
                                                                                               if(match_cons(t, sym_AM_2))
                                                                                                 {
-                                                                                                  ATerm c_8 = ATgetArgument(t, 0);
-                                                                                                  ATerm d_8 = ATgetArgument(t, 1);
+                                                                                                  ATerm e_8 = ATgetArgument(t, 0);
+                                                                                                  ATerm f_8 = ATgetArgument(t, 1);
                                                                                                 }
                                                                                               else
                                                                                                 _fail(t);
-                                                                                              LocalPopChoice(b_8);
-                                                                                              t = a_18;
+                                                                                              LocalPopChoice(d_8);
+                                                                                              t = e_18;
                                                                                             }
                                                                                           else
                                                                                             {
-                                                                                              t = a_8;
+                                                                                              t = c_8;
                                                                                               {
-                                                                                                ATerm e_8 = t;
-                                                                                                int f_8 = stack_ptr;
+                                                                                                ATerm g_8 = t;
+                                                                                                int h_8 = stack_ptr;
                                                                                                 if((PushChoice() == 0))
                                                                                                   {
                                                                                                     if(match_cons(t, sym_DynRuleIntersect_3))
                                                                                                       {
-                                                                                                        ATerm g_8 = ATgetArgument(t, 0);
-                                                                                                        ATerm h_8 = ATgetArgument(t, 1);
-                                                                                                        ATerm i_8 = ATgetArgument(t, 2);
+                                                                                                        ATerm i_8 = ATgetArgument(t, 0);
+                                                                                                        ATerm j_8 = ATgetArgument(t, 1);
+                                                                                                        ATerm k_8 = ATgetArgument(t, 2);
                                                                                                       }
                                                                                                     else
                                                                                                       _fail(t);
-                                                                                                    LocalPopChoice(f_8);
-                                                                                                    t = a_18;
+                                                                                                    LocalPopChoice(h_8);
+                                                                                                    t = e_18;
                                                                                                   }
                                                                                                 else
                                                                                                   {
-                                                                                                    t = e_8;
+                                                                                                    t = g_8;
                                                                                                     {
-                                                                                                      ATerm j_8 = t;
-                                                                                                      int k_8 = stack_ptr;
+                                                                                                      ATerm l_8 = t;
+                                                                                                      int m_8 = stack_ptr;
                                                                                                       if((PushChoice() == 0))
                                                                                                         {
                                                                                                           if(match_cons(t, sym_DynRuleUnion_3))
                                                                                                             {
-                                                                                                              ATerm l_8 = ATgetArgument(t, 0);
-                                                                                                              ATerm m_8 = ATgetArgument(t, 1);
-                                                                                                              ATerm n_8 = ATgetArgument(t, 2);
+                                                                                                              ATerm n_8 = ATgetArgument(t, 0);
+                                                                                                              ATerm o_8 = ATgetArgument(t, 1);
+                                                                                                              ATerm p_8 = ATgetArgument(t, 2);
                                                                                                             }
                                                                                                           else
                                                                                                             _fail(t);
-                                                                                                          LocalPopChoice(k_8);
-                                                                                                          t = a_18;
+                                                                                                          LocalPopChoice(m_8);
+                                                                                                          t = e_18;
                                                                                                         }
                                                                                                       else
                                                                                                         {
-                                                                                                          t = j_8;
+                                                                                                          t = l_8;
                                                                                                           if(match_cons(t, sym_Seq_2))
                                                                                                             {
-                                                                                                              ATerm o_8 = ATgetArgument(t, 0);
-                                                                                                              ATerm p_8 = ATgetArgument(t, 1);
+                                                                                                              ATerm q_8 = ATgetArgument(t, 0);
+                                                                                                              ATerm r_8 = ATgetArgument(t, 1);
                                                                                                             }
                                                                                                           else
                                                                                                             _fail(t);
-                                                                                                          t = a_18;
+                                                                                                          t = e_18;
                                                                                                         }
                                                                                                     }
                                                                                                   }
@@ -1220,292 +1223,292 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                       }
                     }
                 }
-                t = (ATerm) ATmakeAppl(sym_ExplodeCong_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, a_18), b_18);
-                LocalPopChoice(e_6);
+                t = (ATerm) ATmakeAppl(sym_ExplodeCong_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, e_18), f_18);
+                LocalPopChoice(g_6);
               }
             else
               {
-                t = d_6;
-                t = b_18;
+                t = f_6;
+                t = f_18;
                 {
-                  ATerm q_8 = t;
-                  int r_8 = stack_ptr;
+                  ATerm s_8 = t;
+                  int t_8 = stack_ptr;
                   if((PushChoice() == 0))
                     {
                       if(match_cons(t, sym_Build_1))
                         {
-                          ATerm s_8 = ATgetArgument(t, 0);
+                          ATerm u_8 = ATgetArgument(t, 0);
                         }
                       else
                         _fail(t);
-                      LocalPopChoice(r_8);
-                      t = b_18;
+                      LocalPopChoice(t_8);
+                      t = f_18;
                     }
                   else
                     {
-                      t = q_8;
+                      t = s_8;
                       {
-                        ATerm t_8 = t;
-                        int u_8 = stack_ptr;
+                        ATerm v_8 = t;
+                        int w_8 = stack_ptr;
                         if((PushChoice() == 0))
                           {
                             if(match_cons(t, sym_Match_1))
                               {
-                                ATerm v_8 = ATgetArgument(t, 0);
+                                ATerm x_8 = ATgetArgument(t, 0);
                               }
                             else
                               _fail(t);
-                            LocalPopChoice(u_8);
-                            t = b_18;
+                            LocalPopChoice(w_8);
+                            t = f_18;
                           }
                         else
                           {
-                            t = t_8;
+                            t = v_8;
                             {
-                              ATerm w_8 = t;
-                              int x_8 = stack_ptr;
+                              ATerm y_8 = t;
+                              int z_8 = stack_ptr;
                               if((PushChoice() == 0))
                                 {
                                   if(match_cons(t, sym_BA_2))
                                     {
-                                      ATerm y_8 = ATgetArgument(t, 0);
-                                      ATerm z_8 = ATgetArgument(t, 1);
+                                      ATerm a_9 = ATgetArgument(t, 0);
+                                      ATerm b_9 = ATgetArgument(t, 1);
                                     }
                                   else
                                     _fail(t);
-                                  LocalPopChoice(x_8);
-                                  t = b_18;
+                                  LocalPopChoice(z_8);
+                                  t = f_18;
                                 }
                               else
                                 {
-                                  t = w_8;
+                                  t = y_8;
                                   {
-                                    ATerm a_9 = t;
-                                    int b_9 = stack_ptr;
+                                    ATerm c_9 = t;
+                                    int d_9 = stack_ptr;
                                     if((PushChoice() == 0))
                                       {
                                         if(match_cons(t, sym_Choice_2))
                                           {
-                                            ATerm c_9 = ATgetArgument(t, 0);
-                                            ATerm d_9 = ATgetArgument(t, 1);
+                                            ATerm e_9 = ATgetArgument(t, 0);
+                                            ATerm f_9 = ATgetArgument(t, 1);
                                           }
                                         else
                                           _fail(t);
-                                        LocalPopChoice(b_9);
-                                        t = b_18;
+                                        LocalPopChoice(d_9);
+                                        t = f_18;
                                       }
                                     else
                                       {
-                                        t = a_9;
+                                        t = c_9;
                                         {
-                                          ATerm e_9 = t;
-                                          int f_9 = stack_ptr;
+                                          ATerm g_9 = t;
+                                          int h_9 = stack_ptr;
                                           if((PushChoice() == 0))
                                             {
                                               if(match_cons(t, sym_LChoice_2))
                                                 {
-                                                  ATerm g_9 = ATgetArgument(t, 0);
-                                                  ATerm h_9 = ATgetArgument(t, 1);
+                                                  ATerm i_9 = ATgetArgument(t, 0);
+                                                  ATerm j_9 = ATgetArgument(t, 1);
                                                 }
                                               else
                                                 _fail(t);
-                                              LocalPopChoice(f_9);
-                                              t = b_18;
+                                              LocalPopChoice(h_9);
+                                              t = f_18;
                                             }
                                           else
                                             {
-                                              t = e_9;
+                                              t = g_9;
                                               {
-                                                ATerm i_9 = t;
-                                                int j_9 = stack_ptr;
+                                                ATerm k_9 = t;
+                                                int l_9 = stack_ptr;
                                                 if((PushChoice() == 0))
                                                   {
                                                     if(match_cons(t, sym_RChoice_2))
                                                       {
-                                                        ATerm k_9 = ATgetArgument(t, 0);
-                                                        ATerm l_9 = ATgetArgument(t, 1);
+                                                        ATerm m_9 = ATgetArgument(t, 0);
+                                                        ATerm n_9 = ATgetArgument(t, 1);
                                                       }
                                                     else
                                                       _fail(t);
-                                                    LocalPopChoice(j_9);
-                                                    t = b_18;
+                                                    LocalPopChoice(l_9);
+                                                    t = f_18;
                                                   }
                                                 else
                                                   {
-                                                    t = i_9;
+                                                    t = k_9;
                                                     {
-                                                      ATerm m_9 = t;
-                                                      int n_9 = stack_ptr;
+                                                      ATerm o_9 = t;
+                                                      int p_9 = stack_ptr;
                                                       if((PushChoice() == 0))
                                                         {
                                                           if(match_cons(t, sym_GChoice_2))
                                                             {
-                                                              ATerm o_9 = ATgetArgument(t, 0);
-                                                              ATerm p_9 = ATgetArgument(t, 1);
+                                                              ATerm q_9 = ATgetArgument(t, 0);
+                                                              ATerm r_9 = ATgetArgument(t, 1);
                                                             }
                                                           else
                                                             _fail(t);
-                                                          LocalPopChoice(n_9);
-                                                          t = b_18;
+                                                          LocalPopChoice(p_9);
+                                                          t = f_18;
                                                         }
                                                       else
                                                         {
-                                                          t = m_9;
+                                                          t = o_9;
                                                           {
-                                                            ATerm q_9 = t;
-                                                            int r_9 = stack_ptr;
+                                                            ATerm s_9 = t;
+                                                            int t_9 = stack_ptr;
                                                             if((PushChoice() == 0))
                                                               {
                                                                 if(match_cons(t, sym_LGChoice_2))
                                                                   {
-                                                                    ATerm s_9 = ATgetArgument(t, 0);
-                                                                    ATerm t_9 = ATgetArgument(t, 1);
+                                                                    ATerm u_9 = ATgetArgument(t, 0);
+                                                                    ATerm v_9 = ATgetArgument(t, 1);
                                                                   }
                                                                 else
                                                                   _fail(t);
-                                                                LocalPopChoice(r_9);
-                                                                t = b_18;
+                                                                LocalPopChoice(t_9);
+                                                                t = f_18;
                                                               }
                                                             else
                                                               {
-                                                                t = q_9;
+                                                                t = s_9;
                                                                 {
-                                                                  ATerm u_9 = t;
-                                                                  int v_9 = stack_ptr;
+                                                                  ATerm w_9 = t;
+                                                                  int x_9 = stack_ptr;
                                                                   if((PushChoice() == 0))
                                                                     {
                                                                       if(match_cons(t, sym_RGChoice_2))
                                                                         {
-                                                                          ATerm w_9 = ATgetArgument(t, 0);
-                                                                          ATerm x_9 = ATgetArgument(t, 1);
+                                                                          ATerm y_9 = ATgetArgument(t, 0);
+                                                                          ATerm z_9 = ATgetArgument(t, 1);
                                                                         }
                                                                       else
                                                                         _fail(t);
-                                                                      LocalPopChoice(v_9);
-                                                                      t = b_18;
+                                                                      LocalPopChoice(x_9);
+                                                                      t = f_18;
                                                                     }
                                                                   else
                                                                     {
-                                                                      t = u_9;
+                                                                      t = w_9;
                                                                       {
-                                                                        ATerm y_9 = t;
-                                                                        int z_9 = stack_ptr;
+                                                                        ATerm a_10 = t;
+                                                                        int b_10 = stack_ptr;
                                                                         if((PushChoice() == 0))
                                                                           {
                                                                             if(match_cons(t, sym_GuardedLChoice_3))
                                                                               {
-                                                                                ATerm a_10 = ATgetArgument(t, 0);
-                                                                                ATerm b_10 = ATgetArgument(t, 1);
-                                                                                ATerm c_10 = ATgetArgument(t, 2);
+                                                                                ATerm c_10 = ATgetArgument(t, 0);
+                                                                                ATerm d_10 = ATgetArgument(t, 1);
+                                                                                ATerm e_10 = ATgetArgument(t, 2);
                                                                               }
                                                                             else
                                                                               _fail(t);
-                                                                            LocalPopChoice(z_9);
-                                                                            t = b_18;
+                                                                            LocalPopChoice(b_10);
+                                                                            t = f_18;
                                                                           }
                                                                         else
                                                                           {
-                                                                            t = y_9;
+                                                                            t = a_10;
                                                                             {
-                                                                              ATerm d_10 = t;
-                                                                              int e_10 = stack_ptr;
+                                                                              ATerm f_10 = t;
+                                                                              int g_10 = stack_ptr;
                                                                               if((PushChoice() == 0))
                                                                                 {
                                                                                   if(match_cons(t, sym_DynRuleIntersectFix_2))
                                                                                     {
-                                                                                      ATerm f_10 = ATgetArgument(t, 0);
-                                                                                      ATerm g_10 = ATgetArgument(t, 1);
+                                                                                      ATerm h_10 = ATgetArgument(t, 0);
+                                                                                      ATerm i_10 = ATgetArgument(t, 1);
                                                                                     }
                                                                                   else
                                                                                     _fail(t);
-                                                                                  LocalPopChoice(e_10);
-                                                                                  t = b_18;
+                                                                                  LocalPopChoice(g_10);
+                                                                                  t = f_18;
                                                                                 }
                                                                               else
                                                                                 {
-                                                                                  t = d_10;
+                                                                                  t = f_10;
                                                                                   {
-                                                                                    ATerm h_10 = t;
-                                                                                    int i_10 = stack_ptr;
+                                                                                    ATerm j_10 = t;
+                                                                                    int k_10 = stack_ptr;
                                                                                     if((PushChoice() == 0))
                                                                                       {
                                                                                         if(match_cons(t, sym_DynRuleUnionFix_2))
                                                                                           {
-                                                                                            ATerm j_10 = ATgetArgument(t, 0);
-                                                                                            ATerm k_10 = ATgetArgument(t, 1);
+                                                                                            ATerm l_10 = ATgetArgument(t, 0);
+                                                                                            ATerm m_10 = ATgetArgument(t, 1);
                                                                                           }
                                                                                         else
                                                                                           _fail(t);
-                                                                                        LocalPopChoice(i_10);
-                                                                                        t = b_18;
+                                                                                        LocalPopChoice(k_10);
+                                                                                        t = f_18;
                                                                                       }
                                                                                     else
                                                                                       {
-                                                                                        t = h_10;
+                                                                                        t = j_10;
                                                                                         {
-                                                                                          ATerm l_10 = t;
-                                                                                          int m_10 = stack_ptr;
+                                                                                          ATerm n_10 = t;
+                                                                                          int o_10 = stack_ptr;
                                                                                           if((PushChoice() == 0))
                                                                                             {
                                                                                               if(match_cons(t, sym_AM_2))
                                                                                                 {
-                                                                                                  ATerm n_10 = ATgetArgument(t, 0);
-                                                                                                  ATerm o_10 = ATgetArgument(t, 1);
+                                                                                                  ATerm p_10 = ATgetArgument(t, 0);
+                                                                                                  ATerm q_10 = ATgetArgument(t, 1);
                                                                                                 }
                                                                                               else
                                                                                                 _fail(t);
-                                                                                              LocalPopChoice(m_10);
-                                                                                              t = b_18;
+                                                                                              LocalPopChoice(o_10);
+                                                                                              t = f_18;
                                                                                             }
                                                                                           else
                                                                                             {
-                                                                                              t = l_10;
+                                                                                              t = n_10;
                                                                                               {
-                                                                                                ATerm p_10 = t;
-                                                                                                int q_10 = stack_ptr;
+                                                                                                ATerm r_10 = t;
+                                                                                                int s_10 = stack_ptr;
                                                                                                 if((PushChoice() == 0))
                                                                                                   {
                                                                                                     if(match_cons(t, sym_DynRuleIntersect_3))
                                                                                                       {
-                                                                                                        ATerm r_10 = ATgetArgument(t, 0);
-                                                                                                        ATerm s_10 = ATgetArgument(t, 1);
-                                                                                                        ATerm t_10 = ATgetArgument(t, 2);
+                                                                                                        ATerm t_10 = ATgetArgument(t, 0);
+                                                                                                        ATerm u_10 = ATgetArgument(t, 1);
+                                                                                                        ATerm v_10 = ATgetArgument(t, 2);
                                                                                                       }
                                                                                                     else
                                                                                                       _fail(t);
-                                                                                                    LocalPopChoice(q_10);
-                                                                                                    t = b_18;
+                                                                                                    LocalPopChoice(s_10);
+                                                                                                    t = f_18;
                                                                                                   }
                                                                                                 else
                                                                                                   {
-                                                                                                    t = p_10;
+                                                                                                    t = r_10;
                                                                                                     {
-                                                                                                      ATerm u_10 = t;
-                                                                                                      int v_10 = stack_ptr;
+                                                                                                      ATerm w_10 = t;
+                                                                                                      int x_10 = stack_ptr;
                                                                                                       if((PushChoice() == 0))
                                                                                                         {
                                                                                                           if(match_cons(t, sym_DynRuleUnion_3))
                                                                                                             {
-                                                                                                              ATerm w_10 = ATgetArgument(t, 0);
-                                                                                                              ATerm x_10 = ATgetArgument(t, 1);
-                                                                                                              ATerm y_10 = ATgetArgument(t, 2);
+                                                                                                              ATerm y_10 = ATgetArgument(t, 0);
+                                                                                                              ATerm z_10 = ATgetArgument(t, 1);
+                                                                                                              ATerm a_11 = ATgetArgument(t, 2);
                                                                                                             }
                                                                                                           else
                                                                                                             _fail(t);
-                                                                                                          LocalPopChoice(v_10);
-                                                                                                          t = b_18;
+                                                                                                          LocalPopChoice(x_10);
+                                                                                                          t = f_18;
                                                                                                         }
                                                                                                       else
                                                                                                         {
-                                                                                                          t = u_10;
+                                                                                                          t = w_10;
                                                                                                           if(match_cons(t, sym_Seq_2))
                                                                                                             {
-                                                                                                              ATerm z_10 = ATgetArgument(t, 0);
-                                                                                                              ATerm a_11 = ATgetArgument(t, 1);
+                                                                                                              ATerm b_11 = ATgetArgument(t, 0);
+                                                                                                              ATerm c_11 = ATgetArgument(t, 1);
                                                                                                             }
                                                                                                           else
                                                                                                             _fail(t);
-                                                                                                          t = b_18;
+                                                                                                          t = f_18;
                                                                                                         }
                                                                                                     }
                                                                                                   }
@@ -1536,7 +1539,7 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                       }
                     }
                 }
-                t = (ATerm) ATmakeAppl(sym_ExplodeCong_2, a_18, (ATerm) ATmakeAppl(sym_Parenthetical_1, b_18));
+                t = (ATerm) ATmakeAppl(sym_ExplodeCong_2, e_18, (ATerm) ATmakeAppl(sym_Parenthetical_1, f_18));
               }
           }
         }
@@ -1544,78 +1547,78 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
         {
           if(match_cons(t, sym_Explode_2))
             {
-              a_18 = ATgetArgument(t, 0);
-              b_18 = ATgetArgument(t, 1);
+              e_18 = ATgetArgument(t, 0);
+              f_18 = ATgetArgument(t, 1);
               {
-                ATerm b_11 = t;
-                int c_11 = stack_ptr;
+                ATerm d_11 = t;
+                int e_11 = stack_ptr;
                 if((PushChoice() == 0))
                   {
-                    t = a_18;
+                    t = e_18;
                     {
-                      ATerm d_11 = t;
-                      int e_11 = stack_ptr;
+                      ATerm f_11 = t;
+                      int g_11 = stack_ptr;
                       if((PushChoice() == 0))
                         {
                           if(match_cons(t, sym_Anno_2))
-                            {
-                              ATerm f_11 = ATgetArgument(t, 0);
-                              ATerm g_11 = ATgetArgument(t, 1);
-                            }
-                          else
-                            _fail(t);
-                          LocalPopChoice(e_11);
-                          t = a_18;
-                        }
-                      else
-                        {
-                          t = d_11;
-                          if(match_cons(t, sym_As_2))
                             {
                               ATerm h_11 = ATgetArgument(t, 0);
                               ATerm i_11 = ATgetArgument(t, 1);
                             }
                           else
                             _fail(t);
-                          t = a_18;
-                        }
-                    }
-                    t = (ATerm) ATmakeAppl(sym_Explode_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, a_18), b_18);
-                    LocalPopChoice(c_11);
-                  }
-                else
-                  {
-                    t = b_11;
-                    t = b_18;
-                    {
-                      ATerm j_11 = t;
-                      int k_11 = stack_ptr;
-                      if((PushChoice() == 0))
-                        {
-                          if(match_cons(t, sym_Anno_2))
-                            {
-                              ATerm l_11 = ATgetArgument(t, 0);
-                              ATerm m_11 = ATgetArgument(t, 1);
-                            }
-                          else
-                            _fail(t);
-                          LocalPopChoice(k_11);
-                          t = b_18;
+                          LocalPopChoice(g_11);
+                          t = e_18;
                         }
                       else
                         {
-                          t = j_11;
+                          t = f_11;
                           if(match_cons(t, sym_As_2))
+                            {
+                              ATerm j_11 = ATgetArgument(t, 0);
+                              ATerm k_11 = ATgetArgument(t, 1);
+                            }
+                          else
+                            _fail(t);
+                          t = e_18;
+                        }
+                    }
+                    t = (ATerm) ATmakeAppl(sym_Explode_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, e_18), f_18);
+                    LocalPopChoice(e_11);
+                  }
+                else
+                  {
+                    t = d_11;
+                    t = f_18;
+                    {
+                      ATerm l_11 = t;
+                      int m_11 = stack_ptr;
+                      if((PushChoice() == 0))
+                        {
+                          if(match_cons(t, sym_Anno_2))
                             {
                               ATerm n_11 = ATgetArgument(t, 0);
                               ATerm o_11 = ATgetArgument(t, 1);
                             }
                           else
                             _fail(t);
-                          t = b_18;
+                          LocalPopChoice(m_11);
+                          t = f_18;
+                        }
+                      else
+                        {
+                          t = l_11;
+                          if(match_cons(t, sym_As_2))
+                            {
+                              ATerm p_11 = ATgetArgument(t, 0);
+                              ATerm q_11 = ATgetArgument(t, 1);
+                            }
+                          else
+                            _fail(t);
+                          t = f_18;
                         }
                     }
-                    t = (ATerm) ATmakeAppl(sym_Explode_2, a_18, (ATerm) ATmakeAppl(sym_Parenthetical_1, b_18));
+                    t = (ATerm) ATmakeAppl(sym_Explode_2, e_18, (ATerm) ATmakeAppl(sym_Parenthetical_1, f_18));
                   }
               }
             }
@@ -1623,253 +1626,253 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
             {
               if(match_cons(t, sym_Build_1))
                 {
-                  a_18 = ATgetArgument(t, 0);
-                  t = a_18;
+                  e_18 = ATgetArgument(t, 0);
+                  t = e_18;
                   {
-                    ATerm p_11 = t;
-                    int q_11 = stack_ptr;
+                    ATerm r_11 = t;
+                    int s_11 = stack_ptr;
                     if((PushChoice() == 0))
                       {
                         if(match_cons(t, sym_BA_2))
                           {
-                            ATerm r_11 = ATgetArgument(t, 0);
-                            ATerm s_11 = ATgetArgument(t, 1);
+                            ATerm t_11 = ATgetArgument(t, 0);
+                            ATerm u_11 = ATgetArgument(t, 1);
                           }
                         else
                           _fail(t);
-                        LocalPopChoice(q_11);
-                        t = a_18;
+                        LocalPopChoice(s_11);
+                        t = e_18;
                       }
                     else
                       {
-                        t = p_11;
+                        t = r_11;
                         {
-                          ATerm t_11 = t;
-                          int u_11 = stack_ptr;
+                          ATerm v_11 = t;
+                          int w_11 = stack_ptr;
                           if((PushChoice() == 0))
                             {
                               if(match_cons(t, sym_Choice_2))
                                 {
-                                  ATerm v_11 = ATgetArgument(t, 0);
-                                  ATerm w_11 = ATgetArgument(t, 1);
+                                  ATerm x_11 = ATgetArgument(t, 0);
+                                  ATerm y_11 = ATgetArgument(t, 1);
                                 }
                               else
                                 _fail(t);
-                              LocalPopChoice(u_11);
-                              t = a_18;
+                              LocalPopChoice(w_11);
+                              t = e_18;
                             }
                           else
                             {
-                              t = t_11;
+                              t = v_11;
                               {
-                                ATerm x_11 = t;
-                                int y_11 = stack_ptr;
+                                ATerm z_11 = t;
+                                int a_12 = stack_ptr;
                                 if((PushChoice() == 0))
                                   {
                                     if(match_cons(t, sym_LChoice_2))
                                       {
-                                        ATerm z_11 = ATgetArgument(t, 0);
-                                        ATerm a_12 = ATgetArgument(t, 1);
+                                        ATerm b_12 = ATgetArgument(t, 0);
+                                        ATerm c_12 = ATgetArgument(t, 1);
                                       }
                                     else
                                       _fail(t);
-                                    LocalPopChoice(y_11);
-                                    t = a_18;
+                                    LocalPopChoice(a_12);
+                                    t = e_18;
                                   }
                                 else
                                   {
-                                    t = x_11;
+                                    t = z_11;
                                     {
-                                      ATerm b_12 = t;
-                                      int c_12 = stack_ptr;
+                                      ATerm d_12 = t;
+                                      int e_12 = stack_ptr;
                                       if((PushChoice() == 0))
                                         {
                                           if(match_cons(t, sym_RChoice_2))
                                             {
-                                              ATerm d_12 = ATgetArgument(t, 0);
-                                              ATerm e_12 = ATgetArgument(t, 1);
+                                              ATerm f_12 = ATgetArgument(t, 0);
+                                              ATerm g_12 = ATgetArgument(t, 1);
                                             }
                                           else
                                             _fail(t);
-                                          LocalPopChoice(c_12);
-                                          t = a_18;
+                                          LocalPopChoice(e_12);
+                                          t = e_18;
                                         }
                                       else
                                         {
-                                          t = b_12;
+                                          t = d_12;
                                           {
-                                            ATerm f_12 = t;
-                                            int g_12 = stack_ptr;
+                                            ATerm h_12 = t;
+                                            int i_12 = stack_ptr;
                                             if((PushChoice() == 0))
                                               {
                                                 if(match_cons(t, sym_GChoice_2))
                                                   {
-                                                    ATerm h_12 = ATgetArgument(t, 0);
-                                                    ATerm i_12 = ATgetArgument(t, 1);
+                                                    ATerm j_12 = ATgetArgument(t, 0);
+                                                    ATerm k_12 = ATgetArgument(t, 1);
                                                   }
                                                 else
                                                   _fail(t);
-                                                LocalPopChoice(g_12);
-                                                t = a_18;
+                                                LocalPopChoice(i_12);
+                                                t = e_18;
                                               }
                                             else
                                               {
-                                                t = f_12;
+                                                t = h_12;
                                                 {
-                                                  ATerm j_12 = t;
-                                                  int k_12 = stack_ptr;
+                                                  ATerm l_12 = t;
+                                                  int m_12 = stack_ptr;
                                                   if((PushChoice() == 0))
                                                     {
                                                       if(match_cons(t, sym_LGChoice_2))
                                                         {
-                                                          ATerm l_12 = ATgetArgument(t, 0);
-                                                          ATerm m_12 = ATgetArgument(t, 1);
+                                                          ATerm n_12 = ATgetArgument(t, 0);
+                                                          ATerm o_12 = ATgetArgument(t, 1);
                                                         }
                                                       else
                                                         _fail(t);
-                                                      LocalPopChoice(k_12);
-                                                      t = a_18;
+                                                      LocalPopChoice(m_12);
+                                                      t = e_18;
                                                     }
                                                   else
                                                     {
-                                                      t = j_12;
+                                                      t = l_12;
                                                       {
-                                                        ATerm n_12 = t;
-                                                        int o_12 = stack_ptr;
+                                                        ATerm p_12 = t;
+                                                        int q_12 = stack_ptr;
                                                         if((PushChoice() == 0))
                                                           {
                                                             if(match_cons(t, sym_RGChoice_2))
                                                               {
-                                                                ATerm p_12 = ATgetArgument(t, 0);
-                                                                ATerm q_12 = ATgetArgument(t, 1);
+                                                                ATerm r_12 = ATgetArgument(t, 0);
+                                                                ATerm s_12 = ATgetArgument(t, 1);
                                                               }
                                                             else
                                                               _fail(t);
-                                                            LocalPopChoice(o_12);
-                                                            t = a_18;
+                                                            LocalPopChoice(q_12);
+                                                            t = e_18;
                                                           }
                                                         else
                                                           {
-                                                            t = n_12;
+                                                            t = p_12;
                                                             {
-                                                              ATerm r_12 = t;
-                                                              int s_12 = stack_ptr;
+                                                              ATerm t_12 = t;
+                                                              int u_12 = stack_ptr;
                                                               if((PushChoice() == 0))
                                                                 {
                                                                   if(match_cons(t, sym_GuardedLChoice_3))
                                                                     {
-                                                                      ATerm t_12 = ATgetArgument(t, 0);
-                                                                      ATerm u_12 = ATgetArgument(t, 1);
-                                                                      ATerm v_12 = ATgetArgument(t, 2);
+                                                                      ATerm v_12 = ATgetArgument(t, 0);
+                                                                      ATerm w_12 = ATgetArgument(t, 1);
+                                                                      ATerm x_12 = ATgetArgument(t, 2);
                                                                     }
                                                                   else
                                                                     _fail(t);
-                                                                  LocalPopChoice(s_12);
-                                                                  t = a_18;
+                                                                  LocalPopChoice(u_12);
+                                                                  t = e_18;
                                                                 }
                                                               else
                                                                 {
-                                                                  t = r_12;
+                                                                  t = t_12;
                                                                   {
-                                                                    ATerm w_12 = t;
-                                                                    int x_12 = stack_ptr;
+                                                                    ATerm y_12 = t;
+                                                                    int z_12 = stack_ptr;
                                                                     if((PushChoice() == 0))
                                                                       {
                                                                         if(match_cons(t, sym_DynRuleIntersectFix_2))
                                                                           {
-                                                                            ATerm y_12 = ATgetArgument(t, 0);
-                                                                            ATerm z_12 = ATgetArgument(t, 1);
+                                                                            ATerm a_13 = ATgetArgument(t, 0);
+                                                                            ATerm b_13 = ATgetArgument(t, 1);
                                                                           }
                                                                         else
                                                                           _fail(t);
-                                                                        LocalPopChoice(x_12);
-                                                                        t = a_18;
+                                                                        LocalPopChoice(z_12);
+                                                                        t = e_18;
                                                                       }
                                                                     else
                                                                       {
-                                                                        t = w_12;
+                                                                        t = y_12;
                                                                         {
-                                                                          ATerm a_13 = t;
-                                                                          int b_13 = stack_ptr;
+                                                                          ATerm c_13 = t;
+                                                                          int d_13 = stack_ptr;
                                                                           if((PushChoice() == 0))
                                                                             {
                                                                               if(match_cons(t, sym_DynRuleUnionFix_2))
                                                                                 {
-                                                                                  ATerm c_13 = ATgetArgument(t, 0);
-                                                                                  ATerm d_13 = ATgetArgument(t, 1);
+                                                                                  ATerm e_13 = ATgetArgument(t, 0);
+                                                                                  ATerm f_13 = ATgetArgument(t, 1);
                                                                                 }
                                                                               else
                                                                                 _fail(t);
-                                                                              LocalPopChoice(b_13);
-                                                                              t = a_18;
+                                                                              LocalPopChoice(d_13);
+                                                                              t = e_18;
                                                                             }
                                                                           else
                                                                             {
-                                                                              t = a_13;
+                                                                              t = c_13;
                                                                               {
-                                                                                ATerm e_13 = t;
-                                                                                int f_13 = stack_ptr;
+                                                                                ATerm g_13 = t;
+                                                                                int h_13 = stack_ptr;
                                                                                 if((PushChoice() == 0))
                                                                                   {
                                                                                     if(match_cons(t, sym_AM_2))
                                                                                       {
-                                                                                        ATerm g_13 = ATgetArgument(t, 0);
-                                                                                        ATerm h_13 = ATgetArgument(t, 1);
+                                                                                        ATerm i_13 = ATgetArgument(t, 0);
+                                                                                        ATerm j_13 = ATgetArgument(t, 1);
                                                                                       }
                                                                                     else
                                                                                       _fail(t);
-                                                                                    LocalPopChoice(f_13);
-                                                                                    t = a_18;
+                                                                                    LocalPopChoice(h_13);
+                                                                                    t = e_18;
                                                                                   }
                                                                                 else
                                                                                   {
-                                                                                    t = e_13;
+                                                                                    t = g_13;
                                                                                     {
-                                                                                      ATerm i_13 = t;
-                                                                                      int j_13 = stack_ptr;
+                                                                                      ATerm k_13 = t;
+                                                                                      int l_13 = stack_ptr;
                                                                                       if((PushChoice() == 0))
                                                                                         {
                                                                                           if(match_cons(t, sym_DynRuleIntersect_3))
                                                                                             {
-                                                                                              ATerm k_13 = ATgetArgument(t, 0);
-                                                                                              ATerm l_13 = ATgetArgument(t, 1);
-                                                                                              ATerm m_13 = ATgetArgument(t, 2);
+                                                                                              ATerm m_13 = ATgetArgument(t, 0);
+                                                                                              ATerm n_13 = ATgetArgument(t, 1);
+                                                                                              ATerm o_13 = ATgetArgument(t, 2);
                                                                                             }
                                                                                           else
                                                                                             _fail(t);
-                                                                                          LocalPopChoice(j_13);
-                                                                                          t = a_18;
+                                                                                          LocalPopChoice(l_13);
+                                                                                          t = e_18;
                                                                                         }
                                                                                       else
                                                                                         {
-                                                                                          t = i_13;
+                                                                                          t = k_13;
                                                                                           {
-                                                                                            ATerm n_13 = t;
-                                                                                            int o_13 = stack_ptr;
+                                                                                            ATerm p_13 = t;
+                                                                                            int q_13 = stack_ptr;
                                                                                             if((PushChoice() == 0))
                                                                                               {
                                                                                                 if(match_cons(t, sym_DynRuleUnion_3))
                                                                                                   {
-                                                                                                    ATerm p_13 = ATgetArgument(t, 0);
-                                                                                                    ATerm q_13 = ATgetArgument(t, 1);
-                                                                                                    ATerm r_13 = ATgetArgument(t, 2);
+                                                                                                    ATerm r_13 = ATgetArgument(t, 0);
+                                                                                                    ATerm s_13 = ATgetArgument(t, 1);
+                                                                                                    ATerm t_13 = ATgetArgument(t, 2);
                                                                                                   }
                                                                                                 else
                                                                                                   _fail(t);
-                                                                                                LocalPopChoice(o_13);
-                                                                                                t = a_18;
+                                                                                                LocalPopChoice(q_13);
+                                                                                                t = e_18;
                                                                                               }
                                                                                             else
                                                                                               {
-                                                                                                t = n_13;
+                                                                                                t = p_13;
                                                                                                 if(match_cons(t, sym_Seq_2))
                                                                                                   {
-                                                                                                    ATerm s_13 = ATgetArgument(t, 0);
-                                                                                                    ATerm t_13 = ATgetArgument(t, 1);
+                                                                                                    ATerm u_13 = ATgetArgument(t, 0);
+                                                                                                    ATerm v_13 = ATgetArgument(t, 1);
                                                                                                   }
                                                                                                 else
                                                                                                   _fail(t);
-                                                                                                t = a_18;
+                                                                                                t = e_18;
                                                                                               }
                                                                                           }
                                                                                         }
@@ -1896,259 +1899,259 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                         }
                       }
                   }
-                  t = (ATerm) ATmakeAppl(sym_Build_1, (ATerm) ATmakeAppl(sym_Parenthetical_1, a_18));
+                  t = (ATerm) ATmakeAppl(sym_Build_1, (ATerm) ATmakeAppl(sym_Parenthetical_1, e_18));
                 }
               else
                 {
                   if(match_cons(t, sym_Match_1))
                     {
-                      a_18 = ATgetArgument(t, 0);
-                      t = a_18;
+                      e_18 = ATgetArgument(t, 0);
+                      t = e_18;
                       {
-                        ATerm u_13 = t;
-                        int v_13 = stack_ptr;
+                        ATerm w_13 = t;
+                        int x_13 = stack_ptr;
                         if((PushChoice() == 0))
                           {
                             if(match_cons(t, sym_BA_2))
                               {
-                                ATerm w_13 = ATgetArgument(t, 0);
-                                ATerm x_13 = ATgetArgument(t, 1);
+                                ATerm y_13 = ATgetArgument(t, 0);
+                                ATerm z_13 = ATgetArgument(t, 1);
                               }
                             else
                               _fail(t);
-                            LocalPopChoice(v_13);
-                            t = a_18;
+                            LocalPopChoice(x_13);
+                            t = e_18;
                           }
                         else
                           {
-                            t = u_13;
+                            t = w_13;
                             {
-                              ATerm y_13 = t;
-                              int z_13 = stack_ptr;
+                              ATerm a_14 = t;
+                              int b_14 = stack_ptr;
                               if((PushChoice() == 0))
                                 {
                                   if(match_cons(t, sym_Choice_2))
                                     {
-                                      ATerm a_14 = ATgetArgument(t, 0);
-                                      ATerm b_14 = ATgetArgument(t, 1);
+                                      ATerm c_14 = ATgetArgument(t, 0);
+                                      ATerm d_14 = ATgetArgument(t, 1);
                                     }
                                   else
                                     _fail(t);
-                                  LocalPopChoice(z_13);
-                                  t = a_18;
+                                  LocalPopChoice(b_14);
+                                  t = e_18;
                                 }
                               else
                                 {
-                                  t = y_13;
+                                  t = a_14;
                                   {
-                                    ATerm c_14 = t;
-                                    int d_14 = stack_ptr;
+                                    ATerm e_14 = t;
+                                    int f_14 = stack_ptr;
                                     if((PushChoice() == 0))
                                       {
                                         if(match_cons(t, sym_LChoice_2))
                                           {
-                                            ATerm e_14 = ATgetArgument(t, 0);
-                                            ATerm f_14 = ATgetArgument(t, 1);
+                                            ATerm g_14 = ATgetArgument(t, 0);
+                                            ATerm h_14 = ATgetArgument(t, 1);
                                           }
                                         else
                                           _fail(t);
-                                        LocalPopChoice(d_14);
-                                        t = a_18;
+                                        LocalPopChoice(f_14);
+                                        t = e_18;
                                       }
                                     else
                                       {
-                                        t = c_14;
+                                        t = e_14;
                                         {
-                                          ATerm g_14 = t;
-                                          int h_14 = stack_ptr;
+                                          ATerm i_14 = t;
+                                          int j_14 = stack_ptr;
                                           if((PushChoice() == 0))
                                             {
                                               if(match_cons(t, sym_RChoice_2))
                                                 {
-                                                  ATerm i_14 = ATgetArgument(t, 0);
-                                                  ATerm j_14 = ATgetArgument(t, 1);
+                                                  ATerm k_14 = ATgetArgument(t, 0);
+                                                  ATerm l_14 = ATgetArgument(t, 1);
                                                 }
                                               else
                                                 _fail(t);
-                                              LocalPopChoice(h_14);
-                                              t = a_18;
+                                              LocalPopChoice(j_14);
+                                              t = e_18;
                                             }
                                           else
                                             {
-                                              t = g_14;
+                                              t = i_14;
                                               {
-                                                ATerm k_14 = t;
-                                                int l_14 = stack_ptr;
+                                                ATerm m_14 = t;
+                                                int n_14 = stack_ptr;
                                                 if((PushChoice() == 0))
                                                   {
                                                     if(match_cons(t, sym_GChoice_2))
                                                       {
-                                                        ATerm m_14 = ATgetArgument(t, 0);
-                                                        ATerm n_14 = ATgetArgument(t, 1);
+                                                        ATerm o_14 = ATgetArgument(t, 0);
+                                                        ATerm p_14 = ATgetArgument(t, 1);
                                                       }
                                                     else
                                                       _fail(t);
-                                                    LocalPopChoice(l_14);
-                                                    t = a_18;
+                                                    LocalPopChoice(n_14);
+                                                    t = e_18;
                                                   }
                                                 else
                                                   {
-                                                    t = k_14;
+                                                    t = m_14;
                                                     {
-                                                      ATerm o_14 = t;
-                                                      int p_14 = stack_ptr;
+                                                      ATerm q_14 = t;
+                                                      int r_14 = stack_ptr;
                                                       if((PushChoice() == 0))
                                                         {
                                                           if(match_cons(t, sym_LGChoice_2))
                                                             {
-                                                              ATerm q_14 = ATgetArgument(t, 0);
-                                                              ATerm r_14 = ATgetArgument(t, 1);
+                                                              ATerm s_14 = ATgetArgument(t, 0);
+                                                              ATerm t_14 = ATgetArgument(t, 1);
                                                             }
                                                           else
                                                             _fail(t);
-                                                          LocalPopChoice(p_14);
-                                                          t = a_18;
+                                                          LocalPopChoice(r_14);
+                                                          t = e_18;
                                                         }
                                                       else
                                                         {
-                                                          t = o_14;
+                                                          t = q_14;
                                                           {
-                                                            ATerm s_14 = t;
-                                                            int t_14 = stack_ptr;
+                                                            ATerm u_14 = t;
+                                                            int v_14 = stack_ptr;
                                                             if((PushChoice() == 0))
                                                               {
                                                                 if(match_cons(t, sym_RGChoice_2))
                                                                   {
-                                                                    ATerm u_14 = ATgetArgument(t, 0);
-                                                                    ATerm v_14 = ATgetArgument(t, 1);
+                                                                    ATerm w_14 = ATgetArgument(t, 0);
+                                                                    ATerm x_14 = ATgetArgument(t, 1);
                                                                   }
                                                                 else
                                                                   _fail(t);
-                                                                LocalPopChoice(t_14);
-                                                                t = a_18;
+                                                                LocalPopChoice(v_14);
+                                                                t = e_18;
                                                               }
                                                             else
                                                               {
-                                                                t = s_14;
+                                                                t = u_14;
                                                                 {
-                                                                  ATerm w_14 = t;
-                                                                  int x_14 = stack_ptr;
+                                                                  ATerm y_14 = t;
+                                                                  int z_14 = stack_ptr;
                                                                   if((PushChoice() == 0))
                                                                     {
                                                                       if(match_cons(t, sym_GuardedLChoice_3))
                                                                         {
-                                                                          ATerm y_14 = ATgetArgument(t, 0);
-                                                                          ATerm z_14 = ATgetArgument(t, 1);
-                                                                          ATerm a_15 = ATgetArgument(t, 2);
+                                                                          ATerm a_15 = ATgetArgument(t, 0);
+                                                                          ATerm b_15 = ATgetArgument(t, 1);
+                                                                          ATerm c_15 = ATgetArgument(t, 2);
                                                                         }
                                                                       else
                                                                         _fail(t);
-                                                                      LocalPopChoice(x_14);
-                                                                      t = a_18;
+                                                                      LocalPopChoice(z_14);
+                                                                      t = e_18;
                                                                     }
                                                                   else
                                                                     {
-                                                                      t = w_14;
+                                                                      t = y_14;
                                                                       {
-                                                                        ATerm b_15 = t;
-                                                                        int c_15 = stack_ptr;
+                                                                        ATerm d_15 = t;
+                                                                        int e_15 = stack_ptr;
                                                                         if((PushChoice() == 0))
                                                                           {
                                                                             if(match_cons(t, sym_DynRuleIntersectFix_2))
                                                                               {
-                                                                                ATerm d_15 = ATgetArgument(t, 0);
-                                                                                ATerm e_15 = ATgetArgument(t, 1);
+                                                                                ATerm f_15 = ATgetArgument(t, 0);
+                                                                                ATerm g_15 = ATgetArgument(t, 1);
                                                                               }
                                                                             else
                                                                               _fail(t);
-                                                                            LocalPopChoice(c_15);
-                                                                            t = a_18;
+                                                                            LocalPopChoice(e_15);
+                                                                            t = e_18;
                                                                           }
                                                                         else
                                                                           {
-                                                                            t = b_15;
+                                                                            t = d_15;
                                                                             {
-                                                                              ATerm f_15 = t;
-                                                                              int g_15 = stack_ptr;
+                                                                              ATerm h_15 = t;
+                                                                              int i_15 = stack_ptr;
                                                                               if((PushChoice() == 0))
                                                                                 {
                                                                                   if(match_cons(t, sym_DynRuleUnionFix_2))
                                                                                     {
-                                                                                      ATerm h_15 = ATgetArgument(t, 0);
-                                                                                      ATerm i_15 = ATgetArgument(t, 1);
+                                                                                      ATerm j_15 = ATgetArgument(t, 0);
+                                                                                      ATerm k_15 = ATgetArgument(t, 1);
                                                                                     }
                                                                                   else
                                                                                     _fail(t);
-                                                                                  LocalPopChoice(g_15);
-                                                                                  t = a_18;
+                                                                                  LocalPopChoice(i_15);
+                                                                                  t = e_18;
                                                                                 }
                                                                               else
                                                                                 {
-                                                                                  t = f_15;
+                                                                                  t = h_15;
                                                                                   {
-                                                                                    ATerm j_15 = t;
-                                                                                    int k_15 = stack_ptr;
+                                                                                    ATerm l_15 = t;
+                                                                                    int m_15 = stack_ptr;
                                                                                     if((PushChoice() == 0))
                                                                                       {
                                                                                         if(match_cons(t, sym_AM_2))
                                                                                           {
-                                                                                            ATerm l_15 = ATgetArgument(t, 0);
-                                                                                            ATerm m_15 = ATgetArgument(t, 1);
+                                                                                            ATerm n_15 = ATgetArgument(t, 0);
+                                                                                            ATerm o_15 = ATgetArgument(t, 1);
                                                                                           }
                                                                                         else
                                                                                           _fail(t);
-                                                                                        LocalPopChoice(k_15);
-                                                                                        t = a_18;
+                                                                                        LocalPopChoice(m_15);
+                                                                                        t = e_18;
                                                                                       }
                                                                                     else
                                                                                       {
-                                                                                        t = j_15;
+                                                                                        t = l_15;
                                                                                         {
-                                                                                          ATerm n_15 = t;
-                                                                                          int o_15 = stack_ptr;
+                                                                                          ATerm p_15 = t;
+                                                                                          int q_15 = stack_ptr;
                                                                                           if((PushChoice() == 0))
                                                                                             {
                                                                                               if(match_cons(t, sym_DynRuleIntersect_3))
                                                                                                 {
-                                                                                                  ATerm p_15 = ATgetArgument(t, 0);
-                                                                                                  ATerm q_15 = ATgetArgument(t, 1);
-                                                                                                  ATerm r_15 = ATgetArgument(t, 2);
+                                                                                                  ATerm r_15 = ATgetArgument(t, 0);
+                                                                                                  ATerm s_15 = ATgetArgument(t, 1);
+                                                                                                  ATerm t_15 = ATgetArgument(t, 2);
                                                                                                 }
                                                                                               else
                                                                                                 _fail(t);
-                                                                                              LocalPopChoice(o_15);
-                                                                                              t = a_18;
+                                                                                              LocalPopChoice(q_15);
+                                                                                              t = e_18;
                                                                                             }
                                                                                           else
                                                                                             {
-                                                                                              t = n_15;
+                                                                                              t = p_15;
                                                                                               {
-                                                                                                ATerm s_15 = t;
-                                                                                                int t_15 = stack_ptr;
+                                                                                                ATerm u_15 = t;
+                                                                                                int v_15 = stack_ptr;
                                                                                                 if((PushChoice() == 0))
                                                                                                   {
                                                                                                     if(match_cons(t, sym_DynRuleUnion_3))
                                                                                                       {
-                                                                                                        ATerm u_15 = ATgetArgument(t, 0);
-                                                                                                        ATerm v_15 = ATgetArgument(t, 1);
-                                                                                                        ATerm w_15 = ATgetArgument(t, 2);
+                                                                                                        ATerm w_15 = ATgetArgument(t, 0);
+                                                                                                        ATerm x_15 = ATgetArgument(t, 1);
+                                                                                                        ATerm y_15 = ATgetArgument(t, 2);
                                                                                                       }
                                                                                                     else
                                                                                                       _fail(t);
-                                                                                                    LocalPopChoice(t_15);
-                                                                                                    t = a_18;
+                                                                                                    LocalPopChoice(v_15);
+                                                                                                    t = e_18;
                                                                                                   }
                                                                                                 else
                                                                                                   {
-                                                                                                    t = s_15;
+                                                                                                    t = u_15;
                                                                                                     if(match_cons(t, sym_Seq_2))
                                                                                                       {
-                                                                                                        ATerm x_15 = ATgetArgument(t, 0);
-                                                                                                        ATerm y_15 = ATgetArgument(t, 1);
+                                                                                                        ATerm z_15 = ATgetArgument(t, 0);
+                                                                                                        ATerm a_16 = ATgetArgument(t, 1);
                                                                                                       }
                                                                                                     else
                                                                                                       _fail(t);
-                                                                                                    t = a_18;
+                                                                                                    t = e_18;
                                                                                                   }
                                                                                               }
                                                                                             }
@@ -2175,247 +2178,247 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                             }
                           }
                       }
-                      t = (ATerm) ATmakeAppl(sym_Match_1, (ATerm) ATmakeAppl(sym_Parenthetical_1, a_18));
+                      t = (ATerm) ATmakeAppl(sym_Match_1, (ATerm) ATmakeAppl(sym_Parenthetical_1, e_18));
                     }
                   else
                     {
                       if(match_cons(t, sym_BA_2))
                         {
-                          a_18 = ATgetArgument(t, 0);
-                          b_18 = ATgetArgument(t, 1);
+                          e_18 = ATgetArgument(t, 0);
+                          f_18 = ATgetArgument(t, 1);
                           {
-                            ATerm z_15 = t;
-                            int a_16 = stack_ptr;
+                            ATerm b_16 = t;
+                            int c_16 = stack_ptr;
                             if((PushChoice() == 0))
                               {
-                                t = a_18;
+                                t = e_18;
                                 {
-                                  ATerm b_16 = t;
-                                  int c_16 = stack_ptr;
+                                  ATerm d_16 = t;
+                                  int e_16 = stack_ptr;
                                   if((PushChoice() == 0))
                                     {
                                       if(match_cons(t, sym_Choice_2))
                                         {
-                                          ATerm d_16 = ATgetArgument(t, 0);
-                                          ATerm e_16 = ATgetArgument(t, 1);
+                                          ATerm f_16 = ATgetArgument(t, 0);
+                                          ATerm g_16 = ATgetArgument(t, 1);
                                         }
                                       else
                                         _fail(t);
-                                      LocalPopChoice(c_16);
-                                      t = a_18;
+                                      LocalPopChoice(e_16);
+                                      t = e_18;
                                     }
                                   else
                                     {
-                                      t = b_16;
+                                      t = d_16;
                                       {
-                                        ATerm f_16 = t;
-                                        int g_16 = stack_ptr;
+                                        ATerm h_16 = t;
+                                        int i_16 = stack_ptr;
                                         if((PushChoice() == 0))
                                           {
                                             if(match_cons(t, sym_LChoice_2))
                                               {
-                                                ATerm h_16 = ATgetArgument(t, 0);
-                                                ATerm i_16 = ATgetArgument(t, 1);
+                                                ATerm j_16 = ATgetArgument(t, 0);
+                                                ATerm k_16 = ATgetArgument(t, 1);
                                               }
                                             else
                                               _fail(t);
-                                            LocalPopChoice(g_16);
-                                            t = a_18;
+                                            LocalPopChoice(i_16);
+                                            t = e_18;
                                           }
                                         else
                                           {
-                                            t = f_16;
+                                            t = h_16;
                                             {
-                                              ATerm j_16 = t;
-                                              int k_16 = stack_ptr;
+                                              ATerm l_16 = t;
+                                              int m_16 = stack_ptr;
                                               if((PushChoice() == 0))
                                                 {
                                                   if(match_cons(t, sym_RChoice_2))
                                                     {
-                                                      ATerm l_16 = ATgetArgument(t, 0);
-                                                      ATerm m_16 = ATgetArgument(t, 1);
+                                                      ATerm n_16 = ATgetArgument(t, 0);
+                                                      ATerm o_16 = ATgetArgument(t, 1);
                                                     }
                                                   else
                                                     _fail(t);
-                                                  LocalPopChoice(k_16);
-                                                  t = a_18;
+                                                  LocalPopChoice(m_16);
+                                                  t = e_18;
                                                 }
                                               else
                                                 {
-                                                  t = j_16;
+                                                  t = l_16;
                                                   {
-                                                    ATerm n_16 = t;
-                                                    int o_16 = stack_ptr;
+                                                    ATerm p_16 = t;
+                                                    int q_16 = stack_ptr;
                                                     if((PushChoice() == 0))
                                                       {
                                                         if(match_cons(t, sym_GChoice_2))
                                                           {
-                                                            ATerm p_16 = ATgetArgument(t, 0);
-                                                            ATerm q_16 = ATgetArgument(t, 1);
+                                                            ATerm r_16 = ATgetArgument(t, 0);
+                                                            ATerm s_16 = ATgetArgument(t, 1);
                                                           }
                                                         else
                                                           _fail(t);
-                                                        LocalPopChoice(o_16);
-                                                        t = a_18;
+                                                        LocalPopChoice(q_16);
+                                                        t = e_18;
                                                       }
                                                     else
                                                       {
-                                                        t = n_16;
+                                                        t = p_16;
                                                         {
-                                                          ATerm r_16 = t;
-                                                          int s_16 = stack_ptr;
+                                                          ATerm t_16 = t;
+                                                          int u_16 = stack_ptr;
                                                           if((PushChoice() == 0))
                                                             {
                                                               if(match_cons(t, sym_LGChoice_2))
                                                                 {
-                                                                  ATerm t_16 = ATgetArgument(t, 0);
-                                                                  ATerm u_16 = ATgetArgument(t, 1);
+                                                                  ATerm v_16 = ATgetArgument(t, 0);
+                                                                  ATerm w_16 = ATgetArgument(t, 1);
                                                                 }
                                                               else
                                                                 _fail(t);
-                                                              LocalPopChoice(s_16);
-                                                              t = a_18;
+                                                              LocalPopChoice(u_16);
+                                                              t = e_18;
                                                             }
                                                           else
                                                             {
-                                                              t = r_16;
+                                                              t = t_16;
                                                               {
-                                                                ATerm v_16 = t;
-                                                                int w_16 = stack_ptr;
+                                                                ATerm x_16 = t;
+                                                                int y_16 = stack_ptr;
                                                                 if((PushChoice() == 0))
                                                                   {
                                                                     if(match_cons(t, sym_RGChoice_2))
                                                                       {
-                                                                        ATerm x_16 = ATgetArgument(t, 0);
-                                                                        ATerm y_16 = ATgetArgument(t, 1);
+                                                                        ATerm z_16 = ATgetArgument(t, 0);
+                                                                        ATerm a_17 = ATgetArgument(t, 1);
                                                                       }
                                                                     else
                                                                       _fail(t);
-                                                                    LocalPopChoice(w_16);
-                                                                    t = a_18;
+                                                                    LocalPopChoice(y_16);
+                                                                    t = e_18;
                                                                   }
                                                                 else
                                                                   {
-                                                                    t = v_16;
+                                                                    t = x_16;
                                                                     {
-                                                                      ATerm z_16 = t;
-                                                                      int a_17 = stack_ptr;
+                                                                      ATerm b_17 = t;
+                                                                      int c_17 = stack_ptr;
                                                                       if((PushChoice() == 0))
                                                                         {
                                                                           if(match_cons(t, sym_GuardedLChoice_3))
                                                                             {
-                                                                              ATerm b_17 = ATgetArgument(t, 0);
-                                                                              ATerm c_17 = ATgetArgument(t, 1);
-                                                                              ATerm d_17 = ATgetArgument(t, 2);
+                                                                              ATerm d_17 = ATgetArgument(t, 0);
+                                                                              ATerm e_17 = ATgetArgument(t, 1);
+                                                                              ATerm f_17 = ATgetArgument(t, 2);
                                                                             }
                                                                           else
                                                                             _fail(t);
-                                                                          LocalPopChoice(a_17);
-                                                                          t = a_18;
+                                                                          LocalPopChoice(c_17);
+                                                                          t = e_18;
                                                                         }
                                                                       else
                                                                         {
-                                                                          t = z_16;
+                                                                          t = b_17;
                                                                           {
-                                                                            ATerm e_17 = t;
-                                                                            int f_17 = stack_ptr;
+                                                                            ATerm g_17 = t;
+                                                                            int h_17 = stack_ptr;
                                                                             if((PushChoice() == 0))
                                                                               {
                                                                                 if(match_cons(t, sym_DynRuleIntersectFix_2))
                                                                                   {
-                                                                                    ATerm g_17 = ATgetArgument(t, 0);
-                                                                                    ATerm h_17 = ATgetArgument(t, 1);
+                                                                                    ATerm i_17 = ATgetArgument(t, 0);
+                                                                                    ATerm j_17 = ATgetArgument(t, 1);
                                                                                   }
                                                                                 else
                                                                                   _fail(t);
-                                                                                LocalPopChoice(f_17);
-                                                                                t = a_18;
+                                                                                LocalPopChoice(h_17);
+                                                                                t = e_18;
                                                                               }
                                                                             else
                                                                               {
-                                                                                t = e_17;
+                                                                                t = g_17;
                                                                                 {
-                                                                                  ATerm i_17 = t;
-                                                                                  int j_17 = stack_ptr;
+                                                                                  ATerm k_17 = t;
+                                                                                  int l_17 = stack_ptr;
                                                                                   if((PushChoice() == 0))
                                                                                     {
                                                                                       if(match_cons(t, sym_DynRuleUnionFix_2))
                                                                                         {
-                                                                                          ATerm k_17 = ATgetArgument(t, 0);
-                                                                                          ATerm l_17 = ATgetArgument(t, 1);
+                                                                                          ATerm m_17 = ATgetArgument(t, 0);
+                                                                                          ATerm n_17 = ATgetArgument(t, 1);
                                                                                         }
                                                                                       else
                                                                                         _fail(t);
-                                                                                      LocalPopChoice(j_17);
-                                                                                      t = a_18;
+                                                                                      LocalPopChoice(l_17);
+                                                                                      t = e_18;
                                                                                     }
                                                                                   else
                                                                                     {
-                                                                                      t = i_17;
+                                                                                      t = k_17;
                                                                                       {
-                                                                                        ATerm m_17 = t;
-                                                                                        int n_17 = stack_ptr;
+                                                                                        ATerm o_17 = t;
+                                                                                        int p_17 = stack_ptr;
                                                                                         if((PushChoice() == 0))
                                                                                           {
                                                                                             if(match_cons(t, sym_AM_2))
                                                                                               {
-                                                                                                ATerm o_17 = ATgetArgument(t, 0);
-                                                                                                ATerm p_17 = ATgetArgument(t, 1);
+                                                                                                ATerm q_17 = ATgetArgument(t, 0);
+                                                                                                ATerm r_17 = ATgetArgument(t, 1);
                                                                                               }
                                                                                             else
                                                                                               _fail(t);
-                                                                                            LocalPopChoice(n_17);
-                                                                                            t = a_18;
+                                                                                            LocalPopChoice(p_17);
+                                                                                            t = e_18;
                                                                                           }
                                                                                         else
                                                                                           {
-                                                                                            t = m_17;
+                                                                                            t = o_17;
                                                                                             {
-                                                                                              ATerm q_17 = t;
-                                                                                              int r_17 = stack_ptr;
+                                                                                              ATerm s_17 = t;
+                                                                                              int t_17 = stack_ptr;
                                                                                               if((PushChoice() == 0))
                                                                                                 {
                                                                                                   if(match_cons(t, sym_DynRuleIntersect_3))
                                                                                                     {
-                                                                                                      ATerm s_17 = ATgetArgument(t, 0);
-                                                                                                      ATerm t_17 = ATgetArgument(t, 1);
-                                                                                                      ATerm u_17 = ATgetArgument(t, 2);
+                                                                                                      ATerm u_17 = ATgetArgument(t, 0);
+                                                                                                      ATerm v_17 = ATgetArgument(t, 1);
+                                                                                                      ATerm w_17 = ATgetArgument(t, 2);
                                                                                                     }
                                                                                                   else
                                                                                                     _fail(t);
-                                                                                                  LocalPopChoice(r_17);
-                                                                                                  t = a_18;
+                                                                                                  LocalPopChoice(t_17);
+                                                                                                  t = e_18;
                                                                                                 }
                                                                                               else
                                                                                                 {
-                                                                                                  t = q_17;
+                                                                                                  t = s_17;
                                                                                                   {
-                                                                                                    ATerm v_17 = t;
-                                                                                                    int w_17 = stack_ptr;
+                                                                                                    ATerm x_17 = t;
+                                                                                                    int y_17 = stack_ptr;
                                                                                                     if((PushChoice() == 0))
                                                                                                       {
                                                                                                         if(match_cons(t, sym_DynRuleUnion_3))
                                                                                                           {
-                                                                                                            ATerm x_17 = ATgetArgument(t, 0);
-                                                                                                            ATerm y_17 = ATgetArgument(t, 1);
-                                                                                                            ATerm d_18 = ATgetArgument(t, 2);
+                                                                                                            ATerm z_17 = ATgetArgument(t, 0);
+                                                                                                            ATerm a_18 = ATgetArgument(t, 1);
+                                                                                                            ATerm b_18 = ATgetArgument(t, 2);
                                                                                                           }
                                                                                                         else
                                                                                                           _fail(t);
-                                                                                                        LocalPopChoice(w_17);
-                                                                                                        t = a_18;
+                                                                                                        LocalPopChoice(y_17);
+                                                                                                        t = e_18;
                                                                                                       }
                                                                                                     else
                                                                                                       {
-                                                                                                        t = v_17;
+                                                                                                        t = x_17;
                                                                                                         if(match_cons(t, sym_Seq_2))
                                                                                                           {
-                                                                                                            ATerm e_18 = ATgetArgument(t, 0);
-                                                                                                            ATerm f_18 = ATgetArgument(t, 1);
+                                                                                                            ATerm c_18 = ATgetArgument(t, 0);
+                                                                                                            ATerm h_18 = ATgetArgument(t, 1);
                                                                                                           }
                                                                                                         else
                                                                                                           _fail(t);
-                                                                                                        t = a_18;
+                                                                                                        t = e_18;
                                                                                                       }
                                                                                                   }
                                                                                                 }
@@ -2440,240 +2443,240 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                       }
                                     }
                                 }
-                                t = (ATerm) ATmakeAppl(sym_BA_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, a_18), b_18);
-                                LocalPopChoice(a_16);
+                                t = (ATerm) ATmakeAppl(sym_BA_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, e_18), f_18);
+                                LocalPopChoice(c_16);
                               }
                             else
                               {
-                                t = z_15;
-                                t = b_18;
+                                t = b_16;
+                                t = f_18;
                                 {
-                                  ATerm g_18 = t;
-                                  int h_18 = stack_ptr;
+                                  ATerm i_18 = t;
+                                  int j_18 = stack_ptr;
                                   if((PushChoice() == 0))
                                     {
                                       if(match_cons(t, sym_Choice_2))
                                         {
-                                          ATerm i_18 = ATgetArgument(t, 0);
-                                          ATerm j_18 = ATgetArgument(t, 1);
+                                          ATerm k_18 = ATgetArgument(t, 0);
+                                          ATerm l_18 = ATgetArgument(t, 1);
                                         }
                                       else
                                         _fail(t);
-                                      LocalPopChoice(h_18);
-                                      t = b_18;
+                                      LocalPopChoice(j_18);
+                                      t = f_18;
                                     }
                                   else
                                     {
-                                      t = g_18;
+                                      t = i_18;
                                       {
-                                        ATerm k_18 = t;
-                                        int l_18 = stack_ptr;
+                                        ATerm m_18 = t;
+                                        int n_18 = stack_ptr;
                                         if((PushChoice() == 0))
                                           {
                                             if(match_cons(t, sym_LChoice_2))
                                               {
-                                                ATerm m_18 = ATgetArgument(t, 0);
-                                                ATerm n_18 = ATgetArgument(t, 1);
+                                                ATerm o_18 = ATgetArgument(t, 0);
+                                                ATerm p_18 = ATgetArgument(t, 1);
                                               }
                                             else
                                               _fail(t);
-                                            LocalPopChoice(l_18);
-                                            t = b_18;
+                                            LocalPopChoice(n_18);
+                                            t = f_18;
                                           }
                                         else
                                           {
-                                            t = k_18;
+                                            t = m_18;
                                             {
-                                              ATerm o_18 = t;
-                                              int p_18 = stack_ptr;
+                                              ATerm q_18 = t;
+                                              int r_18 = stack_ptr;
                                               if((PushChoice() == 0))
                                                 {
                                                   if(match_cons(t, sym_RChoice_2))
                                                     {
-                                                      ATerm q_18 = ATgetArgument(t, 0);
-                                                      ATerm r_18 = ATgetArgument(t, 1);
+                                                      ATerm s_18 = ATgetArgument(t, 0);
+                                                      ATerm t_18 = ATgetArgument(t, 1);
                                                     }
                                                   else
                                                     _fail(t);
-                                                  LocalPopChoice(p_18);
-                                                  t = b_18;
+                                                  LocalPopChoice(r_18);
+                                                  t = f_18;
                                                 }
                                               else
                                                 {
-                                                  t = o_18;
+                                                  t = q_18;
                                                   {
-                                                    ATerm s_18 = t;
-                                                    int t_18 = stack_ptr;
+                                                    ATerm u_18 = t;
+                                                    int v_18 = stack_ptr;
                                                     if((PushChoice() == 0))
                                                       {
                                                         if(match_cons(t, sym_GChoice_2))
                                                           {
-                                                            ATerm u_18 = ATgetArgument(t, 0);
-                                                            ATerm v_18 = ATgetArgument(t, 1);
+                                                            ATerm w_18 = ATgetArgument(t, 0);
+                                                            ATerm x_18 = ATgetArgument(t, 1);
                                                           }
                                                         else
                                                           _fail(t);
-                                                        LocalPopChoice(t_18);
-                                                        t = b_18;
+                                                        LocalPopChoice(v_18);
+                                                        t = f_18;
                                                       }
                                                     else
                                                       {
-                                                        t = s_18;
+                                                        t = u_18;
                                                         {
-                                                          ATerm w_18 = t;
-                                                          int x_18 = stack_ptr;
+                                                          ATerm y_18 = t;
+                                                          int z_18 = stack_ptr;
                                                           if((PushChoice() == 0))
                                                             {
                                                               if(match_cons(t, sym_LGChoice_2))
                                                                 {
-                                                                  ATerm y_18 = ATgetArgument(t, 0);
-                                                                  ATerm z_18 = ATgetArgument(t, 1);
+                                                                  ATerm a_19 = ATgetArgument(t, 0);
+                                                                  ATerm b_19 = ATgetArgument(t, 1);
                                                                 }
                                                               else
                                                                 _fail(t);
-                                                              LocalPopChoice(x_18);
-                                                              t = b_18;
+                                                              LocalPopChoice(z_18);
+                                                              t = f_18;
                                                             }
                                                           else
                                                             {
-                                                              t = w_18;
+                                                              t = y_18;
                                                               {
-                                                                ATerm a_19 = t;
-                                                                int b_19 = stack_ptr;
+                                                                ATerm c_19 = t;
+                                                                int d_19 = stack_ptr;
                                                                 if((PushChoice() == 0))
                                                                   {
                                                                     if(match_cons(t, sym_RGChoice_2))
                                                                       {
-                                                                        ATerm c_19 = ATgetArgument(t, 0);
-                                                                        ATerm d_19 = ATgetArgument(t, 1);
+                                                                        ATerm e_19 = ATgetArgument(t, 0);
+                                                                        ATerm f_19 = ATgetArgument(t, 1);
                                                                       }
                                                                     else
                                                                       _fail(t);
-                                                                    LocalPopChoice(b_19);
-                                                                    t = b_18;
+                                                                    LocalPopChoice(d_19);
+                                                                    t = f_18;
                                                                   }
                                                                 else
                                                                   {
-                                                                    t = a_19;
+                                                                    t = c_19;
                                                                     {
-                                                                      ATerm e_19 = t;
-                                                                      int f_19 = stack_ptr;
+                                                                      ATerm g_19 = t;
+                                                                      int h_19 = stack_ptr;
                                                                       if((PushChoice() == 0))
                                                                         {
                                                                           if(match_cons(t, sym_GuardedLChoice_3))
                                                                             {
-                                                                              ATerm g_19 = ATgetArgument(t, 0);
-                                                                              ATerm h_19 = ATgetArgument(t, 1);
-                                                                              ATerm i_19 = ATgetArgument(t, 2);
+                                                                              ATerm i_19 = ATgetArgument(t, 0);
+                                                                              ATerm j_19 = ATgetArgument(t, 1);
+                                                                              ATerm k_19 = ATgetArgument(t, 2);
                                                                             }
                                                                           else
                                                                             _fail(t);
-                                                                          LocalPopChoice(f_19);
-                                                                          t = b_18;
+                                                                          LocalPopChoice(h_19);
+                                                                          t = f_18;
                                                                         }
                                                                       else
                                                                         {
-                                                                          t = e_19;
+                                                                          t = g_19;
                                                                           {
-                                                                            ATerm j_19 = t;
-                                                                            int k_19 = stack_ptr;
+                                                                            ATerm l_19 = t;
+                                                                            int m_19 = stack_ptr;
                                                                             if((PushChoice() == 0))
                                                                               {
                                                                                 if(match_cons(t, sym_DynRuleIntersectFix_2))
                                                                                   {
-                                                                                    ATerm l_19 = ATgetArgument(t, 0);
-                                                                                    ATerm m_19 = ATgetArgument(t, 1);
+                                                                                    ATerm n_19 = ATgetArgument(t, 0);
+                                                                                    ATerm o_19 = ATgetArgument(t, 1);
                                                                                   }
                                                                                 else
                                                                                   _fail(t);
-                                                                                LocalPopChoice(k_19);
-                                                                                t = b_18;
+                                                                                LocalPopChoice(m_19);
+                                                                                t = f_18;
                                                                               }
                                                                             else
                                                                               {
-                                                                                t = j_19;
+                                                                                t = l_19;
                                                                                 {
-                                                                                  ATerm o_19 = t;
-                                                                                  int p_19 = stack_ptr;
+                                                                                  ATerm p_19 = t;
+                                                                                  int q_19 = stack_ptr;
                                                                                   if((PushChoice() == 0))
                                                                                     {
                                                                                       if(match_cons(t, sym_DynRuleUnionFix_2))
                                                                                         {
-                                                                                          ATerm x_19 = ATgetArgument(t, 0);
-                                                                                          ATerm z_19 = ATgetArgument(t, 1);
+                                                                                          ATerm s_19 = ATgetArgument(t, 0);
+                                                                                          ATerm t_19 = ATgetArgument(t, 1);
                                                                                         }
                                                                                       else
                                                                                         _fail(t);
-                                                                                      LocalPopChoice(p_19);
-                                                                                      t = b_18;
+                                                                                      LocalPopChoice(q_19);
+                                                                                      t = f_18;
                                                                                     }
                                                                                   else
                                                                                     {
-                                                                                      t = o_19;
+                                                                                      t = p_19;
                                                                                       {
-                                                                                        ATerm d_20 = t;
-                                                                                        int e_20 = stack_ptr;
+                                                                                        ATerm b_20 = t;
+                                                                                        int k_20 = stack_ptr;
                                                                                         if((PushChoice() == 0))
                                                                                           {
                                                                                             if(match_cons(t, sym_AM_2))
                                                                                               {
-                                                                                                ATerm f_20 = ATgetArgument(t, 0);
-                                                                                                ATerm g_20 = ATgetArgument(t, 1);
+                                                                                                ATerm l_20 = ATgetArgument(t, 0);
+                                                                                                ATerm m_20 = ATgetArgument(t, 1);
                                                                                               }
                                                                                             else
                                                                                               _fail(t);
-                                                                                            LocalPopChoice(e_20);
-                                                                                            t = b_18;
+                                                                                            LocalPopChoice(k_20);
+                                                                                            t = f_18;
                                                                                           }
                                                                                         else
                                                                                           {
-                                                                                            t = d_20;
+                                                                                            t = b_20;
                                                                                             {
-                                                                                              ATerm h_20 = t;
-                                                                                              int i_20 = stack_ptr;
+                                                                                              ATerm n_20 = t;
+                                                                                              int o_20 = stack_ptr;
                                                                                               if((PushChoice() == 0))
                                                                                                 {
                                                                                                   if(match_cons(t, sym_DynRuleIntersect_3))
                                                                                                     {
-                                                                                                      ATerm j_20 = ATgetArgument(t, 0);
-                                                                                                      ATerm k_20 = ATgetArgument(t, 1);
-                                                                                                      ATerm l_20 = ATgetArgument(t, 2);
+                                                                                                      ATerm p_20 = ATgetArgument(t, 0);
+                                                                                                      ATerm q_20 = ATgetArgument(t, 1);
+                                                                                                      ATerm r_20 = ATgetArgument(t, 2);
                                                                                                     }
                                                                                                   else
                                                                                                     _fail(t);
-                                                                                                  LocalPopChoice(i_20);
-                                                                                                  t = b_18;
+                                                                                                  LocalPopChoice(o_20);
+                                                                                                  t = f_18;
                                                                                                 }
                                                                                               else
                                                                                                 {
-                                                                                                  t = h_20;
+                                                                                                  t = n_20;
                                                                                                   {
-                                                                                                    ATerm m_20 = t;
-                                                                                                    int n_20 = stack_ptr;
+                                                                                                    ATerm s_20 = t;
+                                                                                                    int t_20 = stack_ptr;
                                                                                                     if((PushChoice() == 0))
                                                                                                       {
                                                                                                         if(match_cons(t, sym_DynRuleUnion_3))
                                                                                                           {
-                                                                                                            ATerm o_20 = ATgetArgument(t, 0);
-                                                                                                            ATerm p_20 = ATgetArgument(t, 1);
-                                                                                                            ATerm q_20 = ATgetArgument(t, 2);
+                                                                                                            ATerm u_20 = ATgetArgument(t, 0);
+                                                                                                            ATerm v_20 = ATgetArgument(t, 1);
+                                                                                                            ATerm w_20 = ATgetArgument(t, 2);
                                                                                                           }
                                                                                                         else
                                                                                                           _fail(t);
-                                                                                                        LocalPopChoice(n_20);
-                                                                                                        t = b_18;
+                                                                                                        LocalPopChoice(t_20);
+                                                                                                        t = f_18;
                                                                                                       }
                                                                                                     else
                                                                                                       {
-                                                                                                        t = m_20;
+                                                                                                        t = s_20;
                                                                                                         if(match_cons(t, sym_Seq_2))
                                                                                                           {
-                                                                                                            ATerm r_20 = ATgetArgument(t, 0);
-                                                                                                            ATerm s_20 = ATgetArgument(t, 1);
+                                                                                                            ATerm x_20 = ATgetArgument(t, 0);
+                                                                                                            ATerm y_20 = ATgetArgument(t, 1);
                                                                                                           }
                                                                                                         else
                                                                                                           _fail(t);
-                                                                                                        t = b_18;
+                                                                                                        t = f_18;
                                                                                                       }
                                                                                                   }
                                                                                                 }
@@ -2698,7 +2701,7 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                       }
                                     }
                                 }
-                                t = (ATerm) ATmakeAppl(sym_BA_2, a_18, (ATerm) ATmakeAppl(sym_Parenthetical_1, b_18));
+                                t = (ATerm) ATmakeAppl(sym_BA_2, e_18, (ATerm) ATmakeAppl(sym_Parenthetical_1, f_18));
                               }
                           }
                         }
@@ -2706,36 +2709,36 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                         {
                           if(match_cons(t, sym_Anno_2))
                             {
-                              a_18 = ATgetArgument(t, 0);
-                              b_18 = ATgetArgument(t, 1);
+                              e_18 = ATgetArgument(t, 0);
+                              f_18 = ATgetArgument(t, 1);
                               {
-                                ATerm t_20 = t;
-                                int u_20 = stack_ptr;
+                                ATerm z_20 = t;
+                                int a_21 = stack_ptr;
                                 if((PushChoice() == 0))
                                   {
-                                    t = a_18;
+                                    t = e_18;
                                     if(match_cons(t, sym_As_2))
                                       {
-                                        ATerm v_20 = ATgetArgument(t, 0);
-                                        ATerm w_20 = ATgetArgument(t, 1);
+                                        ATerm b_21 = ATgetArgument(t, 0);
+                                        ATerm c_21 = ATgetArgument(t, 1);
                                       }
                                     else
                                       _fail(t);
-                                    t = (ATerm) ATmakeAppl(sym_Anno_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, a_18), b_18);
-                                    LocalPopChoice(u_20);
+                                    t = (ATerm) ATmakeAppl(sym_Anno_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, e_18), f_18);
+                                    LocalPopChoice(a_21);
                                   }
                                 else
                                   {
-                                    t = t_20;
-                                    t = b_18;
+                                    t = z_20;
+                                    t = f_18;
                                     if(match_cons(t, sym_As_2))
                                       {
-                                        ATerm x_20 = ATgetArgument(t, 0);
-                                        ATerm y_20 = ATgetArgument(t, 1);
+                                        ATerm d_21 = ATgetArgument(t, 0);
+                                        ATerm e_21 = ATgetArgument(t, 1);
                                       }
                                     else
                                       _fail(t);
-                                    t = (ATerm) ATmakeAppl(sym_Anno_2, a_18, (ATerm) ATmakeAppl(sym_Parenthetical_1, b_18));
+                                    t = (ATerm) ATmakeAppl(sym_Anno_2, e_18, (ATerm) ATmakeAppl(sym_Parenthetical_1, f_18));
                                   }
                               }
                             }
@@ -2743,205 +2746,205 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                             {
                               if(match_cons(t, sym_DynRuleIntersectFix_2))
                                 {
-                                  a_18 = ATgetArgument(t, 0);
-                                  b_18 = ATgetArgument(t, 1);
+                                  e_18 = ATgetArgument(t, 0);
+                                  f_18 = ATgetArgument(t, 1);
                                   {
-                                    ATerm z_20 = t;
-                                    int a_21 = stack_ptr;
+                                    ATerm f_21 = t;
+                                    int g_21 = stack_ptr;
                                     if((PushChoice() == 0))
                                       {
-                                        t = a_18;
+                                        t = e_18;
                                         {
-                                          ATerm b_21 = t;
-                                          int c_21 = stack_ptr;
+                                          ATerm h_21 = t;
+                                          int i_21 = stack_ptr;
                                           if((PushChoice() == 0))
                                             {
                                               if(match_cons(t, sym_Choice_2))
                                                 {
-                                                  ATerm d_21 = ATgetArgument(t, 0);
-                                                  ATerm e_21 = ATgetArgument(t, 1);
+                                                  ATerm j_21 = ATgetArgument(t, 0);
+                                                  ATerm k_21 = ATgetArgument(t, 1);
                                                 }
                                               else
                                                 _fail(t);
-                                              LocalPopChoice(c_21);
-                                              t = a_18;
+                                              LocalPopChoice(i_21);
+                                              t = e_18;
                                             }
                                           else
                                             {
-                                              t = b_21;
+                                              t = h_21;
                                               {
-                                                ATerm f_21 = t;
-                                                int g_21 = stack_ptr;
+                                                ATerm l_21 = t;
+                                                int m_21 = stack_ptr;
                                                 if((PushChoice() == 0))
                                                   {
                                                     if(match_cons(t, sym_LChoice_2))
                                                       {
-                                                        ATerm h_21 = ATgetArgument(t, 0);
-                                                        ATerm i_21 = ATgetArgument(t, 1);
+                                                        ATerm n_21 = ATgetArgument(t, 0);
+                                                        ATerm o_21 = ATgetArgument(t, 1);
                                                       }
                                                     else
                                                       _fail(t);
-                                                    LocalPopChoice(g_21);
-                                                    t = a_18;
+                                                    LocalPopChoice(m_21);
+                                                    t = e_18;
                                                   }
                                                 else
                                                   {
-                                                    t = f_21;
+                                                    t = l_21;
                                                     {
-                                                      ATerm j_21 = t;
-                                                      int k_21 = stack_ptr;
+                                                      ATerm p_21 = t;
+                                                      int q_21 = stack_ptr;
                                                       if((PushChoice() == 0))
                                                         {
                                                           if(match_cons(t, sym_RChoice_2))
                                                             {
-                                                              ATerm l_21 = ATgetArgument(t, 0);
-                                                              ATerm m_21 = ATgetArgument(t, 1);
+                                                              ATerm r_21 = ATgetArgument(t, 0);
+                                                              ATerm s_21 = ATgetArgument(t, 1);
                                                             }
                                                           else
                                                             _fail(t);
-                                                          LocalPopChoice(k_21);
-                                                          t = a_18;
+                                                          LocalPopChoice(q_21);
+                                                          t = e_18;
                                                         }
                                                       else
                                                         {
-                                                          t = j_21;
+                                                          t = p_21;
                                                           {
-                                                            ATerm n_21 = t;
-                                                            int o_21 = stack_ptr;
+                                                            ATerm t_21 = t;
+                                                            int u_21 = stack_ptr;
                                                             if((PushChoice() == 0))
                                                               {
                                                                 if(match_cons(t, sym_GChoice_2))
                                                                   {
-                                                                    ATerm p_21 = ATgetArgument(t, 0);
-                                                                    ATerm q_21 = ATgetArgument(t, 1);
+                                                                    ATerm v_21 = ATgetArgument(t, 0);
+                                                                    ATerm w_21 = ATgetArgument(t, 1);
                                                                   }
                                                                 else
                                                                   _fail(t);
-                                                                LocalPopChoice(o_21);
-                                                                t = a_18;
+                                                                LocalPopChoice(u_21);
+                                                                t = e_18;
                                                               }
                                                             else
                                                               {
-                                                                t = n_21;
+                                                                t = t_21;
                                                                 {
-                                                                  ATerm r_21 = t;
-                                                                  int s_21 = stack_ptr;
+                                                                  ATerm x_21 = t;
+                                                                  int y_21 = stack_ptr;
                                                                   if((PushChoice() == 0))
                                                                     {
                                                                       if(match_cons(t, sym_LGChoice_2))
                                                                         {
-                                                                          ATerm t_21 = ATgetArgument(t, 0);
-                                                                          ATerm u_21 = ATgetArgument(t, 1);
+                                                                          ATerm z_21 = ATgetArgument(t, 0);
+                                                                          ATerm a_22 = ATgetArgument(t, 1);
                                                                         }
                                                                       else
                                                                         _fail(t);
-                                                                      LocalPopChoice(s_21);
-                                                                      t = a_18;
+                                                                      LocalPopChoice(y_21);
+                                                                      t = e_18;
                                                                     }
                                                                   else
                                                                     {
-                                                                      t = r_21;
+                                                                      t = x_21;
                                                                       {
-                                                                        ATerm v_21 = t;
-                                                                        int w_21 = stack_ptr;
+                                                                        ATerm b_22 = t;
+                                                                        int c_22 = stack_ptr;
                                                                         if((PushChoice() == 0))
                                                                           {
                                                                             if(match_cons(t, sym_RGChoice_2))
                                                                               {
-                                                                                ATerm x_21 = ATgetArgument(t, 0);
-                                                                                ATerm y_21 = ATgetArgument(t, 1);
+                                                                                ATerm d_22 = ATgetArgument(t, 0);
+                                                                                ATerm e_22 = ATgetArgument(t, 1);
                                                                               }
                                                                             else
                                                                               _fail(t);
-                                                                            LocalPopChoice(w_21);
-                                                                            t = a_18;
+                                                                            LocalPopChoice(c_22);
+                                                                            t = e_18;
                                                                           }
                                                                         else
                                                                           {
-                                                                            t = v_21;
+                                                                            t = b_22;
                                                                             {
-                                                                              ATerm z_21 = t;
-                                                                              int a_22 = stack_ptr;
+                                                                              ATerm f_22 = t;
+                                                                              int g_22 = stack_ptr;
                                                                               if((PushChoice() == 0))
                                                                                 {
                                                                                   if(match_cons(t, sym_GuardedLChoice_3))
                                                                                     {
-                                                                                      ATerm b_22 = ATgetArgument(t, 0);
-                                                                                      ATerm c_22 = ATgetArgument(t, 1);
-                                                                                      ATerm d_22 = ATgetArgument(t, 2);
+                                                                                      ATerm h_22 = ATgetArgument(t, 0);
+                                                                                      ATerm i_22 = ATgetArgument(t, 1);
+                                                                                      ATerm j_22 = ATgetArgument(t, 2);
                                                                                     }
                                                                                   else
                                                                                     _fail(t);
-                                                                                  LocalPopChoice(a_22);
-                                                                                  t = a_18;
+                                                                                  LocalPopChoice(g_22);
+                                                                                  t = e_18;
                                                                                 }
                                                                               else
                                                                                 {
-                                                                                  t = z_21;
+                                                                                  t = f_22;
                                                                                   {
-                                                                                    ATerm e_22 = t;
-                                                                                    int f_22 = stack_ptr;
+                                                                                    ATerm k_22 = t;
+                                                                                    int l_22 = stack_ptr;
                                                                                     if((PushChoice() == 0))
                                                                                       {
                                                                                         if(match_cons(t, sym_AM_2))
                                                                                           {
-                                                                                            ATerm g_22 = ATgetArgument(t, 0);
-                                                                                            ATerm h_22 = ATgetArgument(t, 1);
+                                                                                            ATerm m_22 = ATgetArgument(t, 0);
+                                                                                            ATerm n_22 = ATgetArgument(t, 1);
                                                                                           }
                                                                                         else
                                                                                           _fail(t);
-                                                                                        LocalPopChoice(f_22);
-                                                                                        t = a_18;
+                                                                                        LocalPopChoice(l_22);
+                                                                                        t = e_18;
                                                                                       }
                                                                                     else
                                                                                       {
-                                                                                        t = e_22;
+                                                                                        t = k_22;
                                                                                         {
-                                                                                          ATerm i_22 = t;
-                                                                                          int j_22 = stack_ptr;
+                                                                                          ATerm o_22 = t;
+                                                                                          int p_22 = stack_ptr;
                                                                                           if((PushChoice() == 0))
                                                                                             {
                                                                                               if(match_cons(t, sym_DynRuleIntersect_3))
                                                                                                 {
-                                                                                                  ATerm k_22 = ATgetArgument(t, 0);
-                                                                                                  ATerm l_22 = ATgetArgument(t, 1);
-                                                                                                  ATerm m_22 = ATgetArgument(t, 2);
+                                                                                                  ATerm q_22 = ATgetArgument(t, 0);
+                                                                                                  ATerm r_22 = ATgetArgument(t, 1);
+                                                                                                  ATerm s_22 = ATgetArgument(t, 2);
                                                                                                 }
                                                                                               else
                                                                                                 _fail(t);
-                                                                                              LocalPopChoice(j_22);
-                                                                                              t = a_18;
+                                                                                              LocalPopChoice(p_22);
+                                                                                              t = e_18;
                                                                                             }
                                                                                           else
                                                                                             {
-                                                                                              t = i_22;
+                                                                                              t = o_22;
                                                                                               {
-                                                                                                ATerm n_22 = t;
-                                                                                                int o_22 = stack_ptr;
+                                                                                                ATerm t_22 = t;
+                                                                                                int u_22 = stack_ptr;
                                                                                                 if((PushChoice() == 0))
                                                                                                   {
                                                                                                     if(match_cons(t, sym_DynRuleUnion_3))
                                                                                                       {
-                                                                                                        ATerm p_22 = ATgetArgument(t, 0);
-                                                                                                        ATerm q_22 = ATgetArgument(t, 1);
-                                                                                                        ATerm r_22 = ATgetArgument(t, 2);
+                                                                                                        ATerm v_22 = ATgetArgument(t, 0);
+                                                                                                        ATerm w_22 = ATgetArgument(t, 1);
+                                                                                                        ATerm x_22 = ATgetArgument(t, 2);
                                                                                                       }
                                                                                                     else
                                                                                                       _fail(t);
-                                                                                                    LocalPopChoice(o_22);
-                                                                                                    t = a_18;
+                                                                                                    LocalPopChoice(u_22);
+                                                                                                    t = e_18;
                                                                                                   }
                                                                                                 else
                                                                                                   {
-                                                                                                    t = n_22;
+                                                                                                    t = t_22;
                                                                                                     if(match_cons(t, sym_Seq_2))
                                                                                                       {
-                                                                                                        ATerm s_22 = ATgetArgument(t, 0);
-                                                                                                        ATerm t_22 = ATgetArgument(t, 1);
+                                                                                                        ATerm y_22 = ATgetArgument(t, 0);
+                                                                                                        ATerm z_22 = ATgetArgument(t, 1);
                                                                                                       }
                                                                                                     else
                                                                                                       _fail(t);
-                                                                                                    t = a_18;
+                                                                                                    t = e_18;
                                                                                                   }
                                                                                               }
                                                                                             }
@@ -2962,204 +2965,204 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                               }
                                             }
                                         }
-                                        t = (ATerm) ATmakeAppl(sym_DynRuleIntersectFix_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, a_18), b_18);
-                                        LocalPopChoice(a_21);
+                                        t = (ATerm) ATmakeAppl(sym_DynRuleIntersectFix_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, e_18), f_18);
+                                        LocalPopChoice(g_21);
                                       }
                                     else
                                       {
-                                        t = z_20;
-                                        t = b_18;
+                                        t = f_21;
+                                        t = f_18;
                                         {
-                                          ATerm u_22 = t;
-                                          int v_22 = stack_ptr;
+                                          ATerm a_23 = t;
+                                          int b_23 = stack_ptr;
                                           if((PushChoice() == 0))
                                             {
                                               if(match_cons(t, sym_Choice_2))
                                                 {
-                                                  ATerm w_22 = ATgetArgument(t, 0);
-                                                  ATerm x_22 = ATgetArgument(t, 1);
+                                                  ATerm c_23 = ATgetArgument(t, 0);
+                                                  ATerm d_23 = ATgetArgument(t, 1);
                                                 }
                                               else
                                                 _fail(t);
-                                              LocalPopChoice(v_22);
-                                              t = b_18;
+                                              LocalPopChoice(b_23);
+                                              t = f_18;
                                             }
                                           else
                                             {
-                                              t = u_22;
+                                              t = a_23;
                                               {
-                                                ATerm y_22 = t;
-                                                int z_22 = stack_ptr;
+                                                ATerm e_23 = t;
+                                                int f_23 = stack_ptr;
                                                 if((PushChoice() == 0))
                                                   {
                                                     if(match_cons(t, sym_LChoice_2))
                                                       {
-                                                        ATerm a_23 = ATgetArgument(t, 0);
-                                                        ATerm b_23 = ATgetArgument(t, 1);
+                                                        ATerm g_23 = ATgetArgument(t, 0);
+                                                        ATerm h_23 = ATgetArgument(t, 1);
                                                       }
                                                     else
                                                       _fail(t);
-                                                    LocalPopChoice(z_22);
-                                                    t = b_18;
+                                                    LocalPopChoice(f_23);
+                                                    t = f_18;
                                                   }
                                                 else
                                                   {
-                                                    t = y_22;
+                                                    t = e_23;
                                                     {
-                                                      ATerm c_23 = t;
-                                                      int d_23 = stack_ptr;
+                                                      ATerm i_23 = t;
+                                                      int j_23 = stack_ptr;
                                                       if((PushChoice() == 0))
                                                         {
                                                           if(match_cons(t, sym_RChoice_2))
                                                             {
-                                                              ATerm e_23 = ATgetArgument(t, 0);
-                                                              ATerm f_23 = ATgetArgument(t, 1);
+                                                              ATerm k_23 = ATgetArgument(t, 0);
+                                                              ATerm l_23 = ATgetArgument(t, 1);
                                                             }
                                                           else
                                                             _fail(t);
-                                                          LocalPopChoice(d_23);
-                                                          t = b_18;
+                                                          LocalPopChoice(j_23);
+                                                          t = f_18;
                                                         }
                                                       else
                                                         {
-                                                          t = c_23;
+                                                          t = i_23;
                                                           {
-                                                            ATerm g_23 = t;
-                                                            int h_23 = stack_ptr;
+                                                            ATerm m_23 = t;
+                                                            int n_23 = stack_ptr;
                                                             if((PushChoice() == 0))
                                                               {
                                                                 if(match_cons(t, sym_GChoice_2))
                                                                   {
-                                                                    ATerm i_23 = ATgetArgument(t, 0);
-                                                                    ATerm j_23 = ATgetArgument(t, 1);
+                                                                    ATerm o_23 = ATgetArgument(t, 0);
+                                                                    ATerm p_23 = ATgetArgument(t, 1);
                                                                   }
                                                                 else
                                                                   _fail(t);
-                                                                LocalPopChoice(h_23);
-                                                                t = b_18;
+                                                                LocalPopChoice(n_23);
+                                                                t = f_18;
                                                               }
                                                             else
                                                               {
-                                                                t = g_23;
+                                                                t = m_23;
                                                                 {
-                                                                  ATerm k_23 = t;
-                                                                  int l_23 = stack_ptr;
+                                                                  ATerm q_23 = t;
+                                                                  int r_23 = stack_ptr;
                                                                   if((PushChoice() == 0))
                                                                     {
                                                                       if(match_cons(t, sym_LGChoice_2))
                                                                         {
-                                                                          ATerm m_23 = ATgetArgument(t, 0);
-                                                                          ATerm n_23 = ATgetArgument(t, 1);
+                                                                          ATerm s_23 = ATgetArgument(t, 0);
+                                                                          ATerm t_23 = ATgetArgument(t, 1);
                                                                         }
                                                                       else
                                                                         _fail(t);
-                                                                      LocalPopChoice(l_23);
-                                                                      t = b_18;
+                                                                      LocalPopChoice(r_23);
+                                                                      t = f_18;
                                                                     }
                                                                   else
                                                                     {
-                                                                      t = k_23;
+                                                                      t = q_23;
                                                                       {
-                                                                        ATerm o_23 = t;
-                                                                        int p_23 = stack_ptr;
+                                                                        ATerm u_23 = t;
+                                                                        int v_23 = stack_ptr;
                                                                         if((PushChoice() == 0))
                                                                           {
                                                                             if(match_cons(t, sym_RGChoice_2))
                                                                               {
-                                                                                ATerm q_23 = ATgetArgument(t, 0);
-                                                                                ATerm r_23 = ATgetArgument(t, 1);
+                                                                                ATerm w_23 = ATgetArgument(t, 0);
+                                                                                ATerm x_23 = ATgetArgument(t, 1);
                                                                               }
                                                                             else
                                                                               _fail(t);
-                                                                            LocalPopChoice(p_23);
-                                                                            t = b_18;
+                                                                            LocalPopChoice(v_23);
+                                                                            t = f_18;
                                                                           }
                                                                         else
                                                                           {
-                                                                            t = o_23;
+                                                                            t = u_23;
                                                                             {
-                                                                              ATerm s_23 = t;
-                                                                              int t_23 = stack_ptr;
+                                                                              ATerm y_23 = t;
+                                                                              int z_23 = stack_ptr;
                                                                               if((PushChoice() == 0))
                                                                                 {
                                                                                   if(match_cons(t, sym_GuardedLChoice_3))
                                                                                     {
-                                                                                      ATerm u_23 = ATgetArgument(t, 0);
-                                                                                      ATerm v_23 = ATgetArgument(t, 1);
-                                                                                      ATerm w_23 = ATgetArgument(t, 2);
+                                                                                      ATerm a_24 = ATgetArgument(t, 0);
+                                                                                      ATerm b_24 = ATgetArgument(t, 1);
+                                                                                      ATerm c_24 = ATgetArgument(t, 2);
                                                                                     }
                                                                                   else
                                                                                     _fail(t);
-                                                                                  LocalPopChoice(t_23);
-                                                                                  t = b_18;
+                                                                                  LocalPopChoice(z_23);
+                                                                                  t = f_18;
                                                                                 }
                                                                               else
                                                                                 {
-                                                                                  t = s_23;
+                                                                                  t = y_23;
                                                                                   {
-                                                                                    ATerm x_23 = t;
-                                                                                    int y_23 = stack_ptr;
+                                                                                    ATerm d_24 = t;
+                                                                                    int e_24 = stack_ptr;
                                                                                     if((PushChoice() == 0))
                                                                                       {
                                                                                         if(match_cons(t, sym_AM_2))
                                                                                           {
-                                                                                            ATerm z_23 = ATgetArgument(t, 0);
-                                                                                            ATerm a_24 = ATgetArgument(t, 1);
+                                                                                            ATerm f_24 = ATgetArgument(t, 0);
+                                                                                            ATerm g_24 = ATgetArgument(t, 1);
                                                                                           }
                                                                                         else
                                                                                           _fail(t);
-                                                                                        LocalPopChoice(y_23);
-                                                                                        t = b_18;
+                                                                                        LocalPopChoice(e_24);
+                                                                                        t = f_18;
                                                                                       }
                                                                                     else
                                                                                       {
-                                                                                        t = x_23;
+                                                                                        t = d_24;
                                                                                         {
-                                                                                          ATerm b_24 = t;
-                                                                                          int c_24 = stack_ptr;
+                                                                                          ATerm h_24 = t;
+                                                                                          int i_24 = stack_ptr;
                                                                                           if((PushChoice() == 0))
                                                                                             {
                                                                                               if(match_cons(t, sym_DynRuleIntersect_3))
                                                                                                 {
-                                                                                                  ATerm d_24 = ATgetArgument(t, 0);
-                                                                                                  ATerm e_24 = ATgetArgument(t, 1);
-                                                                                                  ATerm f_24 = ATgetArgument(t, 2);
+                                                                                                  ATerm j_24 = ATgetArgument(t, 0);
+                                                                                                  ATerm k_24 = ATgetArgument(t, 1);
+                                                                                                  ATerm l_24 = ATgetArgument(t, 2);
                                                                                                 }
                                                                                               else
                                                                                                 _fail(t);
-                                                                                              LocalPopChoice(c_24);
-                                                                                              t = b_18;
+                                                                                              LocalPopChoice(i_24);
+                                                                                              t = f_18;
                                                                                             }
                                                                                           else
                                                                                             {
-                                                                                              t = b_24;
+                                                                                              t = h_24;
                                                                                               {
-                                                                                                ATerm g_24 = t;
-                                                                                                int h_24 = stack_ptr;
+                                                                                                ATerm m_24 = t;
+                                                                                                int n_24 = stack_ptr;
                                                                                                 if((PushChoice() == 0))
                                                                                                   {
                                                                                                     if(match_cons(t, sym_DynRuleUnion_3))
                                                                                                       {
-                                                                                                        ATerm i_24 = ATgetArgument(t, 0);
-                                                                                                        ATerm j_24 = ATgetArgument(t, 1);
-                                                                                                        ATerm k_24 = ATgetArgument(t, 2);
+                                                                                                        ATerm o_24 = ATgetArgument(t, 0);
+                                                                                                        ATerm p_24 = ATgetArgument(t, 1);
+                                                                                                        ATerm q_24 = ATgetArgument(t, 2);
                                                                                                       }
                                                                                                     else
                                                                                                       _fail(t);
-                                                                                                    LocalPopChoice(h_24);
-                                                                                                    t = b_18;
+                                                                                                    LocalPopChoice(n_24);
+                                                                                                    t = f_18;
                                                                                                   }
                                                                                                 else
                                                                                                   {
-                                                                                                    t = g_24;
+                                                                                                    t = m_24;
                                                                                                     if(match_cons(t, sym_Seq_2))
                                                                                                       {
-                                                                                                        ATerm l_24 = ATgetArgument(t, 0);
-                                                                                                        ATerm m_24 = ATgetArgument(t, 1);
+                                                                                                        ATerm r_24 = ATgetArgument(t, 0);
+                                                                                                        ATerm s_24 = ATgetArgument(t, 1);
                                                                                                       }
                                                                                                     else
                                                                                                       _fail(t);
-                                                                                                    t = b_18;
+                                                                                                    t = f_18;
                                                                                                   }
                                                                                               }
                                                                                             }
@@ -3180,7 +3183,7 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                               }
                                             }
                                         }
-                                        t = (ATerm) ATmakeAppl(sym_DynRuleIntersectFix_2, a_18, (ATerm) ATmakeAppl(sym_Parenthetical_1, b_18));
+                                        t = (ATerm) ATmakeAppl(sym_DynRuleIntersectFix_2, e_18, (ATerm) ATmakeAppl(sym_Parenthetical_1, f_18));
                                       }
                                   }
                                 }
@@ -3188,205 +3191,205 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                 {
                                   if(match_cons(t, sym_DynRuleUnionFix_2))
                                     {
-                                      a_18 = ATgetArgument(t, 0);
-                                      b_18 = ATgetArgument(t, 1);
+                                      e_18 = ATgetArgument(t, 0);
+                                      f_18 = ATgetArgument(t, 1);
                                       {
-                                        ATerm n_24 = t;
-                                        int o_24 = stack_ptr;
+                                        ATerm t_24 = t;
+                                        int u_24 = stack_ptr;
                                         if((PushChoice() == 0))
                                           {
-                                            t = a_18;
+                                            t = e_18;
                                             {
-                                              ATerm p_24 = t;
-                                              int q_24 = stack_ptr;
+                                              ATerm v_24 = t;
+                                              int w_24 = stack_ptr;
                                               if((PushChoice() == 0))
                                                 {
                                                   if(match_cons(t, sym_Choice_2))
                                                     {
-                                                      ATerm r_24 = ATgetArgument(t, 0);
-                                                      ATerm s_24 = ATgetArgument(t, 1);
+                                                      ATerm x_24 = ATgetArgument(t, 0);
+                                                      ATerm y_24 = ATgetArgument(t, 1);
                                                     }
                                                   else
                                                     _fail(t);
-                                                  LocalPopChoice(q_24);
-                                                  t = a_18;
+                                                  LocalPopChoice(w_24);
+                                                  t = e_18;
                                                 }
                                               else
                                                 {
-                                                  t = p_24;
+                                                  t = v_24;
                                                   {
-                                                    ATerm t_24 = t;
-                                                    int u_24 = stack_ptr;
+                                                    ATerm z_24 = t;
+                                                    int a_25 = stack_ptr;
                                                     if((PushChoice() == 0))
                                                       {
                                                         if(match_cons(t, sym_LChoice_2))
                                                           {
-                                                            ATerm v_24 = ATgetArgument(t, 0);
-                                                            ATerm w_24 = ATgetArgument(t, 1);
+                                                            ATerm b_25 = ATgetArgument(t, 0);
+                                                            ATerm c_25 = ATgetArgument(t, 1);
                                                           }
                                                         else
                                                           _fail(t);
-                                                        LocalPopChoice(u_24);
-                                                        t = a_18;
+                                                        LocalPopChoice(a_25);
+                                                        t = e_18;
                                                       }
                                                     else
                                                       {
-                                                        t = t_24;
+                                                        t = z_24;
                                                         {
-                                                          ATerm x_24 = t;
-                                                          int y_24 = stack_ptr;
+                                                          ATerm d_25 = t;
+                                                          int e_25 = stack_ptr;
                                                           if((PushChoice() == 0))
                                                             {
                                                               if(match_cons(t, sym_RChoice_2))
                                                                 {
-                                                                  ATerm z_24 = ATgetArgument(t, 0);
-                                                                  ATerm a_25 = ATgetArgument(t, 1);
+                                                                  ATerm f_25 = ATgetArgument(t, 0);
+                                                                  ATerm g_25 = ATgetArgument(t, 1);
                                                                 }
                                                               else
                                                                 _fail(t);
-                                                              LocalPopChoice(y_24);
-                                                              t = a_18;
+                                                              LocalPopChoice(e_25);
+                                                              t = e_18;
                                                             }
                                                           else
                                                             {
-                                                              t = x_24;
+                                                              t = d_25;
                                                               {
-                                                                ATerm b_25 = t;
-                                                                int c_25 = stack_ptr;
+                                                                ATerm h_25 = t;
+                                                                int i_25 = stack_ptr;
                                                                 if((PushChoice() == 0))
                                                                   {
                                                                     if(match_cons(t, sym_GChoice_2))
                                                                       {
-                                                                        ATerm d_25 = ATgetArgument(t, 0);
-                                                                        ATerm e_25 = ATgetArgument(t, 1);
+                                                                        ATerm j_25 = ATgetArgument(t, 0);
+                                                                        ATerm k_25 = ATgetArgument(t, 1);
                                                                       }
                                                                     else
                                                                       _fail(t);
-                                                                    LocalPopChoice(c_25);
-                                                                    t = a_18;
+                                                                    LocalPopChoice(i_25);
+                                                                    t = e_18;
                                                                   }
                                                                 else
                                                                   {
-                                                                    t = b_25;
+                                                                    t = h_25;
                                                                     {
-                                                                      ATerm f_25 = t;
-                                                                      int g_25 = stack_ptr;
+                                                                      ATerm l_25 = t;
+                                                                      int m_25 = stack_ptr;
                                                                       if((PushChoice() == 0))
                                                                         {
                                                                           if(match_cons(t, sym_LGChoice_2))
                                                                             {
-                                                                              ATerm h_25 = ATgetArgument(t, 0);
-                                                                              ATerm i_25 = ATgetArgument(t, 1);
+                                                                              ATerm n_25 = ATgetArgument(t, 0);
+                                                                              ATerm o_25 = ATgetArgument(t, 1);
                                                                             }
                                                                           else
                                                                             _fail(t);
-                                                                          LocalPopChoice(g_25);
-                                                                          t = a_18;
+                                                                          LocalPopChoice(m_25);
+                                                                          t = e_18;
                                                                         }
                                                                       else
                                                                         {
-                                                                          t = f_25;
+                                                                          t = l_25;
                                                                           {
-                                                                            ATerm j_25 = t;
-                                                                            int k_25 = stack_ptr;
+                                                                            ATerm p_25 = t;
+                                                                            int q_25 = stack_ptr;
                                                                             if((PushChoice() == 0))
                                                                               {
                                                                                 if(match_cons(t, sym_RGChoice_2))
                                                                                   {
-                                                                                    ATerm l_25 = ATgetArgument(t, 0);
-                                                                                    ATerm m_25 = ATgetArgument(t, 1);
+                                                                                    ATerm r_25 = ATgetArgument(t, 0);
+                                                                                    ATerm s_25 = ATgetArgument(t, 1);
                                                                                   }
                                                                                 else
                                                                                   _fail(t);
-                                                                                LocalPopChoice(k_25);
-                                                                                t = a_18;
+                                                                                LocalPopChoice(q_25);
+                                                                                t = e_18;
                                                                               }
                                                                             else
                                                                               {
-                                                                                t = j_25;
+                                                                                t = p_25;
                                                                                 {
-                                                                                  ATerm n_25 = t;
-                                                                                  int o_25 = stack_ptr;
+                                                                                  ATerm t_25 = t;
+                                                                                  int u_25 = stack_ptr;
                                                                                   if((PushChoice() == 0))
                                                                                     {
                                                                                       if(match_cons(t, sym_GuardedLChoice_3))
                                                                                         {
-                                                                                          ATerm p_25 = ATgetArgument(t, 0);
-                                                                                          ATerm q_25 = ATgetArgument(t, 1);
-                                                                                          ATerm r_25 = ATgetArgument(t, 2);
+                                                                                          ATerm v_25 = ATgetArgument(t, 0);
+                                                                                          ATerm w_25 = ATgetArgument(t, 1);
+                                                                                          ATerm x_25 = ATgetArgument(t, 2);
                                                                                         }
                                                                                       else
                                                                                         _fail(t);
-                                                                                      LocalPopChoice(o_25);
-                                                                                      t = a_18;
+                                                                                      LocalPopChoice(u_25);
+                                                                                      t = e_18;
                                                                                     }
                                                                                   else
                                                                                     {
-                                                                                      t = n_25;
+                                                                                      t = t_25;
                                                                                       {
-                                                                                        ATerm s_25 = t;
-                                                                                        int t_25 = stack_ptr;
+                                                                                        ATerm y_25 = t;
+                                                                                        int z_25 = stack_ptr;
                                                                                         if((PushChoice() == 0))
                                                                                           {
                                                                                             if(match_cons(t, sym_AM_2))
                                                                                               {
-                                                                                                ATerm u_25 = ATgetArgument(t, 0);
-                                                                                                ATerm v_25 = ATgetArgument(t, 1);
+                                                                                                ATerm a_26 = ATgetArgument(t, 0);
+                                                                                                ATerm b_26 = ATgetArgument(t, 1);
                                                                                               }
                                                                                             else
                                                                                               _fail(t);
-                                                                                            LocalPopChoice(t_25);
-                                                                                            t = a_18;
+                                                                                            LocalPopChoice(z_25);
+                                                                                            t = e_18;
                                                                                           }
                                                                                         else
                                                                                           {
-                                                                                            t = s_25;
+                                                                                            t = y_25;
                                                                                             {
-                                                                                              ATerm w_25 = t;
-                                                                                              int x_25 = stack_ptr;
+                                                                                              ATerm c_26 = t;
+                                                                                              int d_26 = stack_ptr;
                                                                                               if((PushChoice() == 0))
                                                                                                 {
                                                                                                   if(match_cons(t, sym_DynRuleIntersect_3))
                                                                                                     {
-                                                                                                      ATerm y_25 = ATgetArgument(t, 0);
-                                                                                                      ATerm z_25 = ATgetArgument(t, 1);
-                                                                                                      ATerm a_26 = ATgetArgument(t, 2);
+                                                                                                      ATerm e_26 = ATgetArgument(t, 0);
+                                                                                                      ATerm f_26 = ATgetArgument(t, 1);
+                                                                                                      ATerm g_26 = ATgetArgument(t, 2);
                                                                                                     }
                                                                                                   else
                                                                                                     _fail(t);
-                                                                                                  LocalPopChoice(x_25);
-                                                                                                  t = a_18;
+                                                                                                  LocalPopChoice(d_26);
+                                                                                                  t = e_18;
                                                                                                 }
                                                                                               else
                                                                                                 {
-                                                                                                  t = w_25;
+                                                                                                  t = c_26;
                                                                                                   {
-                                                                                                    ATerm b_26 = t;
-                                                                                                    int c_26 = stack_ptr;
+                                                                                                    ATerm h_26 = t;
+                                                                                                    int i_26 = stack_ptr;
                                                                                                     if((PushChoice() == 0))
                                                                                                       {
                                                                                                         if(match_cons(t, sym_DynRuleUnion_3))
                                                                                                           {
-                                                                                                            ATerm d_26 = ATgetArgument(t, 0);
-                                                                                                            ATerm e_26 = ATgetArgument(t, 1);
-                                                                                                            ATerm f_26 = ATgetArgument(t, 2);
+                                                                                                            ATerm j_26 = ATgetArgument(t, 0);
+                                                                                                            ATerm k_26 = ATgetArgument(t, 1);
+                                                                                                            ATerm l_26 = ATgetArgument(t, 2);
                                                                                                           }
                                                                                                         else
                                                                                                           _fail(t);
-                                                                                                        LocalPopChoice(c_26);
-                                                                                                        t = a_18;
+                                                                                                        LocalPopChoice(i_26);
+                                                                                                        t = e_18;
                                                                                                       }
                                                                                                     else
                                                                                                       {
-                                                                                                        t = b_26;
+                                                                                                        t = h_26;
                                                                                                         if(match_cons(t, sym_Seq_2))
                                                                                                           {
-                                                                                                            ATerm g_26 = ATgetArgument(t, 0);
-                                                                                                            ATerm h_26 = ATgetArgument(t, 1);
+                                                                                                            ATerm m_26 = ATgetArgument(t, 0);
+                                                                                                            ATerm n_26 = ATgetArgument(t, 1);
                                                                                                           }
                                                                                                         else
                                                                                                           _fail(t);
-                                                                                                        t = a_18;
+                                                                                                        t = e_18;
                                                                                                       }
                                                                                                   }
                                                                                                 }
@@ -3407,204 +3410,204 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                   }
                                                 }
                                             }
-                                            t = (ATerm) ATmakeAppl(sym_DynRuleUnionFix_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, a_18), b_18);
-                                            LocalPopChoice(o_24);
+                                            t = (ATerm) ATmakeAppl(sym_DynRuleUnionFix_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, e_18), f_18);
+                                            LocalPopChoice(u_24);
                                           }
                                         else
                                           {
-                                            t = n_24;
-                                            t = b_18;
+                                            t = t_24;
+                                            t = f_18;
                                             {
-                                              ATerm i_26 = t;
-                                              int j_26 = stack_ptr;
+                                              ATerm o_26 = t;
+                                              int p_26 = stack_ptr;
                                               if((PushChoice() == 0))
                                                 {
                                                   if(match_cons(t, sym_Choice_2))
                                                     {
-                                                      ATerm k_26 = ATgetArgument(t, 0);
-                                                      ATerm l_26 = ATgetArgument(t, 1);
+                                                      ATerm q_26 = ATgetArgument(t, 0);
+                                                      ATerm r_26 = ATgetArgument(t, 1);
                                                     }
                                                   else
                                                     _fail(t);
-                                                  LocalPopChoice(j_26);
-                                                  t = b_18;
+                                                  LocalPopChoice(p_26);
+                                                  t = f_18;
                                                 }
                                               else
                                                 {
-                                                  t = i_26;
+                                                  t = o_26;
                                                   {
-                                                    ATerm m_26 = t;
-                                                    int n_26 = stack_ptr;
+                                                    ATerm s_26 = t;
+                                                    int t_26 = stack_ptr;
                                                     if((PushChoice() == 0))
                                                       {
                                                         if(match_cons(t, sym_LChoice_2))
                                                           {
-                                                            ATerm o_26 = ATgetArgument(t, 0);
-                                                            ATerm p_26 = ATgetArgument(t, 1);
+                                                            ATerm u_26 = ATgetArgument(t, 0);
+                                                            ATerm v_26 = ATgetArgument(t, 1);
                                                           }
                                                         else
                                                           _fail(t);
-                                                        LocalPopChoice(n_26);
-                                                        t = b_18;
+                                                        LocalPopChoice(t_26);
+                                                        t = f_18;
                                                       }
                                                     else
                                                       {
-                                                        t = m_26;
+                                                        t = s_26;
                                                         {
-                                                          ATerm q_26 = t;
-                                                          int r_26 = stack_ptr;
+                                                          ATerm w_26 = t;
+                                                          int x_26 = stack_ptr;
                                                           if((PushChoice() == 0))
                                                             {
                                                               if(match_cons(t, sym_RChoice_2))
                                                                 {
-                                                                  ATerm s_26 = ATgetArgument(t, 0);
-                                                                  ATerm t_26 = ATgetArgument(t, 1);
+                                                                  ATerm y_26 = ATgetArgument(t, 0);
+                                                                  ATerm z_26 = ATgetArgument(t, 1);
                                                                 }
                                                               else
                                                                 _fail(t);
-                                                              LocalPopChoice(r_26);
-                                                              t = b_18;
+                                                              LocalPopChoice(x_26);
+                                                              t = f_18;
                                                             }
                                                           else
                                                             {
-                                                              t = q_26;
+                                                              t = w_26;
                                                               {
-                                                                ATerm u_26 = t;
-                                                                int v_26 = stack_ptr;
+                                                                ATerm a_27 = t;
+                                                                int b_27 = stack_ptr;
                                                                 if((PushChoice() == 0))
                                                                   {
                                                                     if(match_cons(t, sym_GChoice_2))
                                                                       {
-                                                                        ATerm w_26 = ATgetArgument(t, 0);
-                                                                        ATerm x_26 = ATgetArgument(t, 1);
+                                                                        ATerm c_27 = ATgetArgument(t, 0);
+                                                                        ATerm d_27 = ATgetArgument(t, 1);
                                                                       }
                                                                     else
                                                                       _fail(t);
-                                                                    LocalPopChoice(v_26);
-                                                                    t = b_18;
+                                                                    LocalPopChoice(b_27);
+                                                                    t = f_18;
                                                                   }
                                                                 else
                                                                   {
-                                                                    t = u_26;
+                                                                    t = a_27;
                                                                     {
-                                                                      ATerm y_26 = t;
-                                                                      int z_26 = stack_ptr;
+                                                                      ATerm e_27 = t;
+                                                                      int f_27 = stack_ptr;
                                                                       if((PushChoice() == 0))
                                                                         {
                                                                           if(match_cons(t, sym_LGChoice_2))
                                                                             {
-                                                                              ATerm a_27 = ATgetArgument(t, 0);
-                                                                              ATerm b_27 = ATgetArgument(t, 1);
+                                                                              ATerm g_27 = ATgetArgument(t, 0);
+                                                                              ATerm h_27 = ATgetArgument(t, 1);
                                                                             }
                                                                           else
                                                                             _fail(t);
-                                                                          LocalPopChoice(z_26);
-                                                                          t = b_18;
+                                                                          LocalPopChoice(f_27);
+                                                                          t = f_18;
                                                                         }
                                                                       else
                                                                         {
-                                                                          t = y_26;
+                                                                          t = e_27;
                                                                           {
-                                                                            ATerm c_27 = t;
-                                                                            int d_27 = stack_ptr;
+                                                                            ATerm i_27 = t;
+                                                                            int j_27 = stack_ptr;
                                                                             if((PushChoice() == 0))
                                                                               {
                                                                                 if(match_cons(t, sym_RGChoice_2))
                                                                                   {
-                                                                                    ATerm e_27 = ATgetArgument(t, 0);
-                                                                                    ATerm f_27 = ATgetArgument(t, 1);
+                                                                                    ATerm k_27 = ATgetArgument(t, 0);
+                                                                                    ATerm l_27 = ATgetArgument(t, 1);
                                                                                   }
                                                                                 else
                                                                                   _fail(t);
-                                                                                LocalPopChoice(d_27);
-                                                                                t = b_18;
+                                                                                LocalPopChoice(j_27);
+                                                                                t = f_18;
                                                                               }
                                                                             else
                                                                               {
-                                                                                t = c_27;
+                                                                                t = i_27;
                                                                                 {
-                                                                                  ATerm g_27 = t;
-                                                                                  int h_27 = stack_ptr;
+                                                                                  ATerm m_27 = t;
+                                                                                  int n_27 = stack_ptr;
                                                                                   if((PushChoice() == 0))
                                                                                     {
                                                                                       if(match_cons(t, sym_GuardedLChoice_3))
                                                                                         {
-                                                                                          ATerm i_27 = ATgetArgument(t, 0);
-                                                                                          ATerm j_27 = ATgetArgument(t, 1);
-                                                                                          ATerm k_27 = ATgetArgument(t, 2);
+                                                                                          ATerm o_27 = ATgetArgument(t, 0);
+                                                                                          ATerm p_27 = ATgetArgument(t, 1);
+                                                                                          ATerm q_27 = ATgetArgument(t, 2);
                                                                                         }
                                                                                       else
                                                                                         _fail(t);
-                                                                                      LocalPopChoice(h_27);
-                                                                                      t = b_18;
+                                                                                      LocalPopChoice(n_27);
+                                                                                      t = f_18;
                                                                                     }
                                                                                   else
                                                                                     {
-                                                                                      t = g_27;
+                                                                                      t = m_27;
                                                                                       {
-                                                                                        ATerm l_27 = t;
-                                                                                        int m_27 = stack_ptr;
+                                                                                        ATerm r_27 = t;
+                                                                                        int s_27 = stack_ptr;
                                                                                         if((PushChoice() == 0))
                                                                                           {
                                                                                             if(match_cons(t, sym_AM_2))
                                                                                               {
-                                                                                                ATerm n_27 = ATgetArgument(t, 0);
-                                                                                                ATerm o_27 = ATgetArgument(t, 1);
+                                                                                                ATerm t_27 = ATgetArgument(t, 0);
+                                                                                                ATerm u_27 = ATgetArgument(t, 1);
                                                                                               }
                                                                                             else
                                                                                               _fail(t);
-                                                                                            LocalPopChoice(m_27);
-                                                                                            t = b_18;
+                                                                                            LocalPopChoice(s_27);
+                                                                                            t = f_18;
                                                                                           }
                                                                                         else
                                                                                           {
-                                                                                            t = l_27;
+                                                                                            t = r_27;
                                                                                             {
-                                                                                              ATerm p_27 = t;
-                                                                                              int q_27 = stack_ptr;
+                                                                                              ATerm v_27 = t;
+                                                                                              int w_27 = stack_ptr;
                                                                                               if((PushChoice() == 0))
                                                                                                 {
                                                                                                   if(match_cons(t, sym_DynRuleIntersect_3))
                                                                                                     {
-                                                                                                      ATerm r_27 = ATgetArgument(t, 0);
-                                                                                                      ATerm s_27 = ATgetArgument(t, 1);
-                                                                                                      ATerm t_27 = ATgetArgument(t, 2);
+                                                                                                      ATerm x_27 = ATgetArgument(t, 0);
+                                                                                                      ATerm y_27 = ATgetArgument(t, 1);
+                                                                                                      ATerm z_27 = ATgetArgument(t, 2);
                                                                                                     }
                                                                                                   else
                                                                                                     _fail(t);
-                                                                                                  LocalPopChoice(q_27);
-                                                                                                  t = b_18;
+                                                                                                  LocalPopChoice(w_27);
+                                                                                                  t = f_18;
                                                                                                 }
                                                                                               else
                                                                                                 {
-                                                                                                  t = p_27;
+                                                                                                  t = v_27;
                                                                                                   {
-                                                                                                    ATerm u_27 = t;
-                                                                                                    int v_27 = stack_ptr;
+                                                                                                    ATerm a_28 = t;
+                                                                                                    int b_28 = stack_ptr;
                                                                                                     if((PushChoice() == 0))
                                                                                                       {
                                                                                                         if(match_cons(t, sym_DynRuleUnion_3))
                                                                                                           {
-                                                                                                            ATerm w_27 = ATgetArgument(t, 0);
-                                                                                                            ATerm x_27 = ATgetArgument(t, 1);
-                                                                                                            ATerm y_27 = ATgetArgument(t, 2);
+                                                                                                            ATerm c_28 = ATgetArgument(t, 0);
+                                                                                                            ATerm d_28 = ATgetArgument(t, 1);
+                                                                                                            ATerm e_28 = ATgetArgument(t, 2);
                                                                                                           }
                                                                                                         else
                                                                                                           _fail(t);
-                                                                                                        LocalPopChoice(v_27);
-                                                                                                        t = b_18;
+                                                                                                        LocalPopChoice(b_28);
+                                                                                                        t = f_18;
                                                                                                       }
                                                                                                     else
                                                                                                       {
-                                                                                                        t = u_27;
+                                                                                                        t = a_28;
                                                                                                         if(match_cons(t, sym_Seq_2))
                                                                                                           {
-                                                                                                            ATerm z_27 = ATgetArgument(t, 0);
-                                                                                                            ATerm a_28 = ATgetArgument(t, 1);
+                                                                                                            ATerm f_28 = ATgetArgument(t, 0);
+                                                                                                            ATerm g_28 = ATgetArgument(t, 1);
                                                                                                           }
                                                                                                         else
                                                                                                           _fail(t);
-                                                                                                        t = b_18;
+                                                                                                        t = f_18;
                                                                                                       }
                                                                                                   }
                                                                                                 }
@@ -3625,7 +3628,7 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                   }
                                                 }
                                             }
-                                            t = (ATerm) ATmakeAppl(sym_DynRuleUnionFix_2, a_18, (ATerm) ATmakeAppl(sym_Parenthetical_1, b_18));
+                                            t = (ATerm) ATmakeAppl(sym_DynRuleUnionFix_2, e_18, (ATerm) ATmakeAppl(sym_Parenthetical_1, f_18));
                                           }
                                       }
                                     }
@@ -3633,187 +3636,187 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                     {
                                       if(match_cons(t, sym_AM_2))
                                         {
-                                          a_18 = ATgetArgument(t, 0);
-                                          b_18 = ATgetArgument(t, 1);
+                                          e_18 = ATgetArgument(t, 0);
+                                          f_18 = ATgetArgument(t, 1);
                                           {
-                                            ATerm b_28 = t;
-                                            int c_28 = stack_ptr;
+                                            ATerm h_28 = t;
+                                            int i_28 = stack_ptr;
                                             if((PushChoice() == 0))
                                               {
-                                                t = a_18;
+                                                t = e_18;
                                                 {
-                                                  ATerm d_28 = t;
-                                                  int e_28 = stack_ptr;
+                                                  ATerm j_28 = t;
+                                                  int k_28 = stack_ptr;
                                                   if((PushChoice() == 0))
                                                     {
                                                       if(match_cons(t, sym_Choice_2))
                                                         {
-                                                          ATerm f_28 = ATgetArgument(t, 0);
-                                                          ATerm g_28 = ATgetArgument(t, 1);
+                                                          ATerm l_28 = ATgetArgument(t, 0);
+                                                          ATerm m_28 = ATgetArgument(t, 1);
                                                         }
                                                       else
                                                         _fail(t);
-                                                      LocalPopChoice(e_28);
-                                                      t = a_18;
+                                                      LocalPopChoice(k_28);
+                                                      t = e_18;
                                                     }
                                                   else
                                                     {
-                                                      t = d_28;
+                                                      t = j_28;
                                                       {
-                                                        ATerm h_28 = t;
-                                                        int i_28 = stack_ptr;
+                                                        ATerm n_28 = t;
+                                                        int o_28 = stack_ptr;
                                                         if((PushChoice() == 0))
                                                           {
                                                             if(match_cons(t, sym_LChoice_2))
                                                               {
-                                                                ATerm j_28 = ATgetArgument(t, 0);
-                                                                ATerm k_28 = ATgetArgument(t, 1);
+                                                                ATerm p_28 = ATgetArgument(t, 0);
+                                                                ATerm q_28 = ATgetArgument(t, 1);
                                                               }
                                                             else
                                                               _fail(t);
-                                                            LocalPopChoice(i_28);
-                                                            t = a_18;
+                                                            LocalPopChoice(o_28);
+                                                            t = e_18;
                                                           }
                                                         else
                                                           {
-                                                            t = h_28;
+                                                            t = n_28;
                                                             {
-                                                              ATerm l_28 = t;
-                                                              int m_28 = stack_ptr;
+                                                              ATerm r_28 = t;
+                                                              int s_28 = stack_ptr;
                                                               if((PushChoice() == 0))
                                                                 {
                                                                   if(match_cons(t, sym_RChoice_2))
                                                                     {
-                                                                      ATerm n_28 = ATgetArgument(t, 0);
-                                                                      ATerm o_28 = ATgetArgument(t, 1);
+                                                                      ATerm t_28 = ATgetArgument(t, 0);
+                                                                      ATerm u_28 = ATgetArgument(t, 1);
                                                                     }
                                                                   else
                                                                     _fail(t);
-                                                                  LocalPopChoice(m_28);
-                                                                  t = a_18;
+                                                                  LocalPopChoice(s_28);
+                                                                  t = e_18;
                                                                 }
                                                               else
                                                                 {
-                                                                  t = l_28;
+                                                                  t = r_28;
                                                                   {
-                                                                    ATerm p_28 = t;
-                                                                    int q_28 = stack_ptr;
+                                                                    ATerm v_28 = t;
+                                                                    int w_28 = stack_ptr;
                                                                     if((PushChoice() == 0))
                                                                       {
                                                                         if(match_cons(t, sym_GChoice_2))
                                                                           {
-                                                                            ATerm r_28 = ATgetArgument(t, 0);
-                                                                            ATerm s_28 = ATgetArgument(t, 1);
+                                                                            ATerm x_28 = ATgetArgument(t, 0);
+                                                                            ATerm y_28 = ATgetArgument(t, 1);
                                                                           }
                                                                         else
                                                                           _fail(t);
-                                                                        LocalPopChoice(q_28);
-                                                                        t = a_18;
+                                                                        LocalPopChoice(w_28);
+                                                                        t = e_18;
                                                                       }
                                                                     else
                                                                       {
-                                                                        t = p_28;
+                                                                        t = v_28;
                                                                         {
-                                                                          ATerm t_28 = t;
-                                                                          int u_28 = stack_ptr;
+                                                                          ATerm z_28 = t;
+                                                                          int a_29 = stack_ptr;
                                                                           if((PushChoice() == 0))
                                                                             {
                                                                               if(match_cons(t, sym_LGChoice_2))
                                                                                 {
-                                                                                  ATerm v_28 = ATgetArgument(t, 0);
-                                                                                  ATerm w_28 = ATgetArgument(t, 1);
+                                                                                  ATerm b_29 = ATgetArgument(t, 0);
+                                                                                  ATerm c_29 = ATgetArgument(t, 1);
                                                                                 }
                                                                               else
                                                                                 _fail(t);
-                                                                              LocalPopChoice(u_28);
-                                                                              t = a_18;
+                                                                              LocalPopChoice(a_29);
+                                                                              t = e_18;
                                                                             }
                                                                           else
                                                                             {
-                                                                              t = t_28;
+                                                                              t = z_28;
                                                                               {
-                                                                                ATerm x_28 = t;
-                                                                                int y_28 = stack_ptr;
+                                                                                ATerm d_29 = t;
+                                                                                int e_29 = stack_ptr;
                                                                                 if((PushChoice() == 0))
                                                                                   {
                                                                                     if(match_cons(t, sym_RGChoice_2))
                                                                                       {
-                                                                                        ATerm z_28 = ATgetArgument(t, 0);
-                                                                                        ATerm a_29 = ATgetArgument(t, 1);
+                                                                                        ATerm f_29 = ATgetArgument(t, 0);
+                                                                                        ATerm g_29 = ATgetArgument(t, 1);
                                                                                       }
                                                                                     else
                                                                                       _fail(t);
-                                                                                    LocalPopChoice(y_28);
-                                                                                    t = a_18;
+                                                                                    LocalPopChoice(e_29);
+                                                                                    t = e_18;
                                                                                   }
                                                                                 else
                                                                                   {
-                                                                                    t = x_28;
+                                                                                    t = d_29;
                                                                                     {
-                                                                                      ATerm b_29 = t;
-                                                                                      int c_29 = stack_ptr;
+                                                                                      ATerm h_29 = t;
+                                                                                      int i_29 = stack_ptr;
                                                                                       if((PushChoice() == 0))
                                                                                         {
                                                                                           if(match_cons(t, sym_GuardedLChoice_3))
                                                                                             {
-                                                                                              ATerm d_29 = ATgetArgument(t, 0);
-                                                                                              ATerm e_29 = ATgetArgument(t, 1);
-                                                                                              ATerm f_29 = ATgetArgument(t, 2);
+                                                                                              ATerm j_29 = ATgetArgument(t, 0);
+                                                                                              ATerm k_29 = ATgetArgument(t, 1);
+                                                                                              ATerm l_29 = ATgetArgument(t, 2);
                                                                                             }
                                                                                           else
                                                                                             _fail(t);
-                                                                                          LocalPopChoice(c_29);
-                                                                                          t = a_18;
+                                                                                          LocalPopChoice(i_29);
+                                                                                          t = e_18;
                                                                                         }
                                                                                       else
                                                                                         {
-                                                                                          t = b_29;
+                                                                                          t = h_29;
                                                                                           {
-                                                                                            ATerm g_29 = t;
-                                                                                            int h_29 = stack_ptr;
+                                                                                            ATerm m_29 = t;
+                                                                                            int n_29 = stack_ptr;
                                                                                             if((PushChoice() == 0))
                                                                                               {
                                                                                                 if(match_cons(t, sym_DynRuleIntersect_3))
                                                                                                   {
-                                                                                                    ATerm i_29 = ATgetArgument(t, 0);
-                                                                                                    ATerm j_29 = ATgetArgument(t, 1);
-                                                                                                    ATerm k_29 = ATgetArgument(t, 2);
+                                                                                                    ATerm o_29 = ATgetArgument(t, 0);
+                                                                                                    ATerm p_29 = ATgetArgument(t, 1);
+                                                                                                    ATerm q_29 = ATgetArgument(t, 2);
                                                                                                   }
                                                                                                 else
                                                                                                   _fail(t);
-                                                                                                LocalPopChoice(h_29);
-                                                                                                t = a_18;
+                                                                                                LocalPopChoice(n_29);
+                                                                                                t = e_18;
                                                                                               }
                                                                                             else
                                                                                               {
-                                                                                                t = g_29;
+                                                                                                t = m_29;
                                                                                                 {
-                                                                                                  ATerm l_29 = t;
-                                                                                                  int m_29 = stack_ptr;
+                                                                                                  ATerm r_29 = t;
+                                                                                                  int s_29 = stack_ptr;
                                                                                                   if((PushChoice() == 0))
                                                                                                     {
                                                                                                       if(match_cons(t, sym_DynRuleUnion_3))
                                                                                                         {
-                                                                                                          ATerm n_29 = ATgetArgument(t, 0);
-                                                                                                          ATerm o_29 = ATgetArgument(t, 1);
-                                                                                                          ATerm p_29 = ATgetArgument(t, 2);
+                                                                                                          ATerm t_29 = ATgetArgument(t, 0);
+                                                                                                          ATerm u_29 = ATgetArgument(t, 1);
+                                                                                                          ATerm v_29 = ATgetArgument(t, 2);
                                                                                                         }
                                                                                                       else
                                                                                                         _fail(t);
-                                                                                                      LocalPopChoice(m_29);
-                                                                                                      t = a_18;
+                                                                                                      LocalPopChoice(s_29);
+                                                                                                      t = e_18;
                                                                                                     }
                                                                                                   else
                                                                                                     {
-                                                                                                      t = l_29;
+                                                                                                      t = r_29;
                                                                                                       if(match_cons(t, sym_Seq_2))
                                                                                                         {
-                                                                                                          ATerm q_29 = ATgetArgument(t, 0);
-                                                                                                          ATerm r_29 = ATgetArgument(t, 1);
+                                                                                                          ATerm w_29 = ATgetArgument(t, 0);
+                                                                                                          ATerm x_29 = ATgetArgument(t, 1);
                                                                                                         }
                                                                                                       else
                                                                                                         _fail(t);
-                                                                                                      t = a_18;
+                                                                                                      t = e_18;
                                                                                                     }
                                                                                                 }
                                                                                               }
@@ -3832,186 +3835,186 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                       }
                                                     }
                                                 }
-                                                t = (ATerm) ATmakeAppl(sym_AM_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, a_18), b_18);
-                                                LocalPopChoice(c_28);
+                                                t = (ATerm) ATmakeAppl(sym_AM_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, e_18), f_18);
+                                                LocalPopChoice(i_28);
                                               }
                                             else
                                               {
-                                                t = b_28;
-                                                t = b_18;
+                                                t = h_28;
+                                                t = f_18;
                                                 {
-                                                  ATerm s_29 = t;
-                                                  int t_29 = stack_ptr;
+                                                  ATerm y_29 = t;
+                                                  int z_29 = stack_ptr;
                                                   if((PushChoice() == 0))
                                                     {
                                                       if(match_cons(t, sym_Choice_2))
                                                         {
-                                                          ATerm u_29 = ATgetArgument(t, 0);
-                                                          ATerm v_29 = ATgetArgument(t, 1);
+                                                          ATerm a_30 = ATgetArgument(t, 0);
+                                                          ATerm b_30 = ATgetArgument(t, 1);
                                                         }
                                                       else
                                                         _fail(t);
-                                                      LocalPopChoice(t_29);
-                                                      t = b_18;
+                                                      LocalPopChoice(z_29);
+                                                      t = f_18;
                                                     }
                                                   else
                                                     {
-                                                      t = s_29;
+                                                      t = y_29;
                                                       {
-                                                        ATerm w_29 = t;
-                                                        int x_29 = stack_ptr;
+                                                        ATerm c_30 = t;
+                                                        int d_30 = stack_ptr;
                                                         if((PushChoice() == 0))
                                                           {
                                                             if(match_cons(t, sym_LChoice_2))
                                                               {
-                                                                ATerm y_29 = ATgetArgument(t, 0);
-                                                                ATerm z_29 = ATgetArgument(t, 1);
+                                                                ATerm e_30 = ATgetArgument(t, 0);
+                                                                ATerm f_30 = ATgetArgument(t, 1);
                                                               }
                                                             else
                                                               _fail(t);
-                                                            LocalPopChoice(x_29);
-                                                            t = b_18;
+                                                            LocalPopChoice(d_30);
+                                                            t = f_18;
                                                           }
                                                         else
                                                           {
-                                                            t = w_29;
+                                                            t = c_30;
                                                             {
-                                                              ATerm a_30 = t;
-                                                              int b_30 = stack_ptr;
+                                                              ATerm g_30 = t;
+                                                              int h_30 = stack_ptr;
                                                               if((PushChoice() == 0))
                                                                 {
                                                                   if(match_cons(t, sym_RChoice_2))
                                                                     {
-                                                                      ATerm c_30 = ATgetArgument(t, 0);
-                                                                      ATerm d_30 = ATgetArgument(t, 1);
+                                                                      ATerm i_30 = ATgetArgument(t, 0);
+                                                                      ATerm j_30 = ATgetArgument(t, 1);
                                                                     }
                                                                   else
                                                                     _fail(t);
-                                                                  LocalPopChoice(b_30);
-                                                                  t = b_18;
+                                                                  LocalPopChoice(h_30);
+                                                                  t = f_18;
                                                                 }
                                                               else
                                                                 {
-                                                                  t = a_30;
+                                                                  t = g_30;
                                                                   {
-                                                                    ATerm e_30 = t;
-                                                                    int f_30 = stack_ptr;
+                                                                    ATerm k_30 = t;
+                                                                    int l_30 = stack_ptr;
                                                                     if((PushChoice() == 0))
                                                                       {
                                                                         if(match_cons(t, sym_GChoice_2))
                                                                           {
-                                                                            ATerm g_30 = ATgetArgument(t, 0);
-                                                                            ATerm h_30 = ATgetArgument(t, 1);
+                                                                            ATerm m_30 = ATgetArgument(t, 0);
+                                                                            ATerm n_30 = ATgetArgument(t, 1);
                                                                           }
                                                                         else
                                                                           _fail(t);
-                                                                        LocalPopChoice(f_30);
-                                                                        t = b_18;
+                                                                        LocalPopChoice(l_30);
+                                                                        t = f_18;
                                                                       }
                                                                     else
                                                                       {
-                                                                        t = e_30;
+                                                                        t = k_30;
                                                                         {
-                                                                          ATerm i_30 = t;
-                                                                          int j_30 = stack_ptr;
+                                                                          ATerm o_30 = t;
+                                                                          int p_30 = stack_ptr;
                                                                           if((PushChoice() == 0))
                                                                             {
                                                                               if(match_cons(t, sym_LGChoice_2))
                                                                                 {
-                                                                                  ATerm k_30 = ATgetArgument(t, 0);
-                                                                                  ATerm l_30 = ATgetArgument(t, 1);
+                                                                                  ATerm q_30 = ATgetArgument(t, 0);
+                                                                                  ATerm r_30 = ATgetArgument(t, 1);
                                                                                 }
                                                                               else
                                                                                 _fail(t);
-                                                                              LocalPopChoice(j_30);
-                                                                              t = b_18;
+                                                                              LocalPopChoice(p_30);
+                                                                              t = f_18;
                                                                             }
                                                                           else
                                                                             {
-                                                                              t = i_30;
+                                                                              t = o_30;
                                                                               {
-                                                                                ATerm m_30 = t;
-                                                                                int n_30 = stack_ptr;
+                                                                                ATerm s_30 = t;
+                                                                                int t_30 = stack_ptr;
                                                                                 if((PushChoice() == 0))
                                                                                   {
                                                                                     if(match_cons(t, sym_RGChoice_2))
                                                                                       {
-                                                                                        ATerm o_30 = ATgetArgument(t, 0);
-                                                                                        ATerm p_30 = ATgetArgument(t, 1);
+                                                                                        ATerm u_30 = ATgetArgument(t, 0);
+                                                                                        ATerm v_30 = ATgetArgument(t, 1);
                                                                                       }
                                                                                     else
                                                                                       _fail(t);
-                                                                                    LocalPopChoice(n_30);
-                                                                                    t = b_18;
+                                                                                    LocalPopChoice(t_30);
+                                                                                    t = f_18;
                                                                                   }
                                                                                 else
                                                                                   {
-                                                                                    t = m_30;
+                                                                                    t = s_30;
                                                                                     {
-                                                                                      ATerm q_30 = t;
-                                                                                      int r_30 = stack_ptr;
+                                                                                      ATerm w_30 = t;
+                                                                                      int x_30 = stack_ptr;
                                                                                       if((PushChoice() == 0))
                                                                                         {
                                                                                           if(match_cons(t, sym_GuardedLChoice_3))
                                                                                             {
-                                                                                              ATerm s_30 = ATgetArgument(t, 0);
-                                                                                              ATerm t_30 = ATgetArgument(t, 1);
-                                                                                              ATerm u_30 = ATgetArgument(t, 2);
+                                                                                              ATerm y_30 = ATgetArgument(t, 0);
+                                                                                              ATerm z_30 = ATgetArgument(t, 1);
+                                                                                              ATerm a_31 = ATgetArgument(t, 2);
                                                                                             }
                                                                                           else
                                                                                             _fail(t);
-                                                                                          LocalPopChoice(r_30);
-                                                                                          t = b_18;
+                                                                                          LocalPopChoice(x_30);
+                                                                                          t = f_18;
                                                                                         }
                                                                                       else
                                                                                         {
-                                                                                          t = q_30;
+                                                                                          t = w_30;
                                                                                           {
-                                                                                            ATerm v_30 = t;
-                                                                                            int w_30 = stack_ptr;
+                                                                                            ATerm b_31 = t;
+                                                                                            int c_31 = stack_ptr;
                                                                                             if((PushChoice() == 0))
                                                                                               {
                                                                                                 if(match_cons(t, sym_DynRuleIntersect_3))
                                                                                                   {
-                                                                                                    ATerm x_30 = ATgetArgument(t, 0);
-                                                                                                    ATerm y_30 = ATgetArgument(t, 1);
-                                                                                                    ATerm z_30 = ATgetArgument(t, 2);
+                                                                                                    ATerm d_31 = ATgetArgument(t, 0);
+                                                                                                    ATerm e_31 = ATgetArgument(t, 1);
+                                                                                                    ATerm f_31 = ATgetArgument(t, 2);
                                                                                                   }
                                                                                                 else
                                                                                                   _fail(t);
-                                                                                                LocalPopChoice(w_30);
-                                                                                                t = b_18;
+                                                                                                LocalPopChoice(c_31);
+                                                                                                t = f_18;
                                                                                               }
                                                                                             else
                                                                                               {
-                                                                                                t = v_30;
+                                                                                                t = b_31;
                                                                                                 {
-                                                                                                  ATerm a_31 = t;
-                                                                                                  int b_31 = stack_ptr;
+                                                                                                  ATerm g_31 = t;
+                                                                                                  int h_31 = stack_ptr;
                                                                                                   if((PushChoice() == 0))
                                                                                                     {
                                                                                                       if(match_cons(t, sym_DynRuleUnion_3))
                                                                                                         {
-                                                                                                          ATerm c_31 = ATgetArgument(t, 0);
-                                                                                                          ATerm d_31 = ATgetArgument(t, 1);
-                                                                                                          ATerm e_31 = ATgetArgument(t, 2);
+                                                                                                          ATerm i_31 = ATgetArgument(t, 0);
+                                                                                                          ATerm j_31 = ATgetArgument(t, 1);
+                                                                                                          ATerm k_31 = ATgetArgument(t, 2);
                                                                                                         }
                                                                                                       else
                                                                                                         _fail(t);
-                                                                                                      LocalPopChoice(b_31);
-                                                                                                      t = b_18;
+                                                                                                      LocalPopChoice(h_31);
+                                                                                                      t = f_18;
                                                                                                     }
                                                                                                   else
                                                                                                     {
-                                                                                                      t = a_31;
+                                                                                                      t = g_31;
                                                                                                       if(match_cons(t, sym_Seq_2))
                                                                                                         {
-                                                                                                          ATerm f_31 = ATgetArgument(t, 0);
-                                                                                                          ATerm g_31 = ATgetArgument(t, 1);
+                                                                                                          ATerm l_31 = ATgetArgument(t, 0);
+                                                                                                          ATerm m_31 = ATgetArgument(t, 1);
                                                                                                         }
                                                                                                       else
                                                                                                         _fail(t);
-                                                                                                      t = b_18;
+                                                                                                      t = f_18;
                                                                                                     }
                                                                                                 }
                                                                                               }
@@ -4030,7 +4033,7 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                       }
                                                     }
                                                 }
-                                                t = (ATerm) ATmakeAppl(sym_AM_2, a_18, (ATerm) ATmakeAppl(sym_Parenthetical_1, b_18));
+                                                t = (ATerm) ATmakeAppl(sym_AM_2, e_18, (ATerm) ATmakeAppl(sym_Parenthetical_1, f_18));
                                               }
                                           }
                                         }
@@ -4038,188 +4041,188 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                         {
                                           if(match_cons(t, sym_DynRuleIntersect_3))
                                             {
-                                              a_18 = ATgetArgument(t, 0);
-                                              b_18 = ATgetArgument(t, 1);
-                                              c_18 = ATgetArgument(t, 2);
+                                              e_18 = ATgetArgument(t, 0);
+                                              f_18 = ATgetArgument(t, 1);
+                                              g_18 = ATgetArgument(t, 2);
                                               {
-                                                ATerm h_31 = t;
-                                                int i_31 = stack_ptr;
+                                                ATerm n_31 = t;
+                                                int o_31 = stack_ptr;
                                                 if((PushChoice() == 0))
                                                   {
-                                                    t = a_18;
+                                                    t = e_18;
                                                     {
-                                                      ATerm j_31 = t;
-                                                      int k_31 = stack_ptr;
+                                                      ATerm p_31 = t;
+                                                      int q_31 = stack_ptr;
                                                       if((PushChoice() == 0))
                                                         {
                                                           if(match_cons(t, sym_Choice_2))
                                                             {
-                                                              ATerm l_31 = ATgetArgument(t, 0);
-                                                              ATerm m_31 = ATgetArgument(t, 1);
+                                                              ATerm r_31 = ATgetArgument(t, 0);
+                                                              ATerm s_31 = ATgetArgument(t, 1);
                                                             }
                                                           else
                                                             _fail(t);
-                                                          LocalPopChoice(k_31);
-                                                          t = a_18;
+                                                          LocalPopChoice(q_31);
+                                                          t = e_18;
                                                         }
                                                       else
                                                         {
-                                                          t = j_31;
+                                                          t = p_31;
                                                           {
-                                                            ATerm n_31 = t;
-                                                            int o_31 = stack_ptr;
+                                                            ATerm t_31 = t;
+                                                            int u_31 = stack_ptr;
                                                             if((PushChoice() == 0))
                                                               {
                                                                 if(match_cons(t, sym_LChoice_2))
                                                                   {
-                                                                    ATerm p_31 = ATgetArgument(t, 0);
-                                                                    ATerm q_31 = ATgetArgument(t, 1);
+                                                                    ATerm v_31 = ATgetArgument(t, 0);
+                                                                    ATerm w_31 = ATgetArgument(t, 1);
                                                                   }
                                                                 else
                                                                   _fail(t);
-                                                                LocalPopChoice(o_31);
-                                                                t = a_18;
+                                                                LocalPopChoice(u_31);
+                                                                t = e_18;
                                                               }
                                                             else
                                                               {
-                                                                t = n_31;
+                                                                t = t_31;
                                                                 {
-                                                                  ATerm r_31 = t;
-                                                                  int s_31 = stack_ptr;
+                                                                  ATerm x_31 = t;
+                                                                  int y_31 = stack_ptr;
                                                                   if((PushChoice() == 0))
                                                                     {
                                                                       if(match_cons(t, sym_RChoice_2))
                                                                         {
-                                                                          ATerm t_31 = ATgetArgument(t, 0);
-                                                                          ATerm u_31 = ATgetArgument(t, 1);
+                                                                          ATerm z_31 = ATgetArgument(t, 0);
+                                                                          ATerm a_32 = ATgetArgument(t, 1);
                                                                         }
                                                                       else
                                                                         _fail(t);
-                                                                      LocalPopChoice(s_31);
-                                                                      t = a_18;
+                                                                      LocalPopChoice(y_31);
+                                                                      t = e_18;
                                                                     }
                                                                   else
                                                                     {
-                                                                      t = r_31;
+                                                                      t = x_31;
                                                                       {
-                                                                        ATerm v_31 = t;
-                                                                        int w_31 = stack_ptr;
+                                                                        ATerm b_32 = t;
+                                                                        int c_32 = stack_ptr;
                                                                         if((PushChoice() == 0))
                                                                           {
                                                                             if(match_cons(t, sym_GChoice_2))
                                                                               {
-                                                                                ATerm x_31 = ATgetArgument(t, 0);
-                                                                                ATerm y_31 = ATgetArgument(t, 1);
+                                                                                ATerm d_32 = ATgetArgument(t, 0);
+                                                                                ATerm e_32 = ATgetArgument(t, 1);
                                                                               }
                                                                             else
                                                                               _fail(t);
-                                                                            LocalPopChoice(w_31);
-                                                                            t = a_18;
+                                                                            LocalPopChoice(c_32);
+                                                                            t = e_18;
                                                                           }
                                                                         else
                                                                           {
-                                                                            t = v_31;
+                                                                            t = b_32;
                                                                             {
-                                                                              ATerm z_31 = t;
-                                                                              int a_32 = stack_ptr;
+                                                                              ATerm f_32 = t;
+                                                                              int g_32 = stack_ptr;
                                                                               if((PushChoice() == 0))
                                                                                 {
                                                                                   if(match_cons(t, sym_LGChoice_2))
                                                                                     {
-                                                                                      ATerm b_32 = ATgetArgument(t, 0);
-                                                                                      ATerm c_32 = ATgetArgument(t, 1);
+                                                                                      ATerm h_32 = ATgetArgument(t, 0);
+                                                                                      ATerm i_32 = ATgetArgument(t, 1);
                                                                                     }
                                                                                   else
                                                                                     _fail(t);
-                                                                                  LocalPopChoice(a_32);
-                                                                                  t = a_18;
+                                                                                  LocalPopChoice(g_32);
+                                                                                  t = e_18;
                                                                                 }
                                                                               else
                                                                                 {
-                                                                                  t = z_31;
+                                                                                  t = f_32;
                                                                                   {
-                                                                                    ATerm d_32 = t;
-                                                                                    int e_32 = stack_ptr;
+                                                                                    ATerm j_32 = t;
+                                                                                    int k_32 = stack_ptr;
                                                                                     if((PushChoice() == 0))
                                                                                       {
                                                                                         if(match_cons(t, sym_RGChoice_2))
                                                                                           {
-                                                                                            ATerm f_32 = ATgetArgument(t, 0);
-                                                                                            ATerm g_32 = ATgetArgument(t, 1);
+                                                                                            ATerm l_32 = ATgetArgument(t, 0);
+                                                                                            ATerm m_32 = ATgetArgument(t, 1);
                                                                                           }
                                                                                         else
                                                                                           _fail(t);
-                                                                                        LocalPopChoice(e_32);
-                                                                                        t = a_18;
+                                                                                        LocalPopChoice(k_32);
+                                                                                        t = e_18;
                                                                                       }
                                                                                     else
                                                                                       {
-                                                                                        t = d_32;
+                                                                                        t = j_32;
                                                                                         {
-                                                                                          ATerm h_32 = t;
-                                                                                          int i_32 = stack_ptr;
+                                                                                          ATerm n_32 = t;
+                                                                                          int o_32 = stack_ptr;
                                                                                           if((PushChoice() == 0))
                                                                                             {
                                                                                               if(match_cons(t, sym_GuardedLChoice_3))
                                                                                                 {
-                                                                                                  ATerm j_32 = ATgetArgument(t, 0);
-                                                                                                  ATerm k_32 = ATgetArgument(t, 1);
-                                                                                                  ATerm l_32 = ATgetArgument(t, 2);
+                                                                                                  ATerm p_32 = ATgetArgument(t, 0);
+                                                                                                  ATerm q_32 = ATgetArgument(t, 1);
+                                                                                                  ATerm r_32 = ATgetArgument(t, 2);
                                                                                                 }
                                                                                               else
                                                                                                 _fail(t);
-                                                                                              LocalPopChoice(i_32);
-                                                                                              t = a_18;
+                                                                                              LocalPopChoice(o_32);
+                                                                                              t = e_18;
                                                                                             }
                                                                                           else
                                                                                             {
-                                                                                              t = h_32;
+                                                                                              t = n_32;
                                                                                               {
-                                                                                                ATerm m_32 = t;
-                                                                                                int n_32 = stack_ptr;
+                                                                                                ATerm s_32 = t;
+                                                                                                int t_32 = stack_ptr;
                                                                                                 if((PushChoice() == 0))
                                                                                                   {
                                                                                                     if(match_cons(t, sym_DynRuleUnion_3))
                                                                                                       {
-                                                                                                        ATerm o_32 = ATgetArgument(t, 0);
-                                                                                                        ATerm p_32 = ATgetArgument(t, 1);
-                                                                                                        ATerm q_32 = ATgetArgument(t, 2);
+                                                                                                        ATerm u_32 = ATgetArgument(t, 0);
+                                                                                                        ATerm v_32 = ATgetArgument(t, 1);
+                                                                                                        ATerm w_32 = ATgetArgument(t, 2);
                                                                                                       }
                                                                                                     else
                                                                                                       _fail(t);
-                                                                                                    LocalPopChoice(n_32);
-                                                                                                    t = a_18;
+                                                                                                    LocalPopChoice(t_32);
+                                                                                                    t = e_18;
                                                                                                   }
                                                                                                 else
                                                                                                   {
-                                                                                                    t = m_32;
+                                                                                                    t = s_32;
                                                                                                     {
-                                                                                                      ATerm r_32 = t;
-                                                                                                      int s_32 = stack_ptr;
+                                                                                                      ATerm x_32 = t;
+                                                                                                      int y_32 = stack_ptr;
                                                                                                       if((PushChoice() == 0))
                                                                                                         {
                                                                                                           if(match_cons(t, sym_Seq_2))
                                                                                                             {
-                                                                                                              ATerm t_32 = ATgetArgument(t, 0);
-                                                                                                              ATerm u_32 = ATgetArgument(t, 1);
+                                                                                                              ATerm z_32 = ATgetArgument(t, 0);
+                                                                                                              ATerm a_33 = ATgetArgument(t, 1);
                                                                                                             }
                                                                                                           else
                                                                                                             _fail(t);
-                                                                                                          LocalPopChoice(s_32);
-                                                                                                          t = a_18;
+                                                                                                          LocalPopChoice(y_32);
+                                                                                                          t = e_18;
                                                                                                         }
                                                                                                       else
                                                                                                         {
-                                                                                                          t = r_32;
+                                                                                                          t = x_32;
                                                                                                           if(match_cons(t, sym_DynRuleIntersect_3))
                                                                                                             {
-                                                                                                              ATerm v_32 = ATgetArgument(t, 0);
-                                                                                                              ATerm w_32 = ATgetArgument(t, 1);
-                                                                                                              ATerm x_32 = ATgetArgument(t, 2);
+                                                                                                              ATerm b_33 = ATgetArgument(t, 0);
+                                                                                                              ATerm c_33 = ATgetArgument(t, 1);
+                                                                                                              ATerm d_33 = ATgetArgument(t, 2);
                                                                                                             }
                                                                                                           else
                                                                                                             _fail(t);
-                                                                                                          t = a_18;
+                                                                                                          t = e_18;
                                                                                                         }
                                                                                                     }
                                                                                                   }
@@ -4238,191 +4241,191 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                           }
                                                         }
                                                     }
-                                                    t = (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, a_18), b_18, c_18);
-                                                    LocalPopChoice(i_31);
+                                                    t = (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, e_18), f_18, g_18);
+                                                    LocalPopChoice(o_31);
                                                   }
                                                 else
                                                   {
-                                                    t = h_31;
+                                                    t = n_31;
                                                     {
-                                                      ATerm y_32 = t;
-                                                      int z_32 = stack_ptr;
+                                                      ATerm e_33 = t;
+                                                      int f_33 = stack_ptr;
                                                       if((PushChoice() == 0))
                                                         {
-                                                          t = b_18;
+                                                          t = f_18;
                                                           {
-                                                            ATerm a_33 = t;
-                                                            int b_33 = stack_ptr;
+                                                            ATerm g_33 = t;
+                                                            int h_33 = stack_ptr;
                                                             if((PushChoice() == 0))
                                                               {
                                                                 if(match_cons(t, sym_Choice_2))
                                                                   {
-                                                                    ATerm c_33 = ATgetArgument(t, 0);
-                                                                    ATerm d_33 = ATgetArgument(t, 1);
+                                                                    ATerm i_33 = ATgetArgument(t, 0);
+                                                                    ATerm j_33 = ATgetArgument(t, 1);
                                                                   }
                                                                 else
                                                                   _fail(t);
-                                                                LocalPopChoice(b_33);
-                                                                t = b_18;
+                                                                LocalPopChoice(h_33);
+                                                                t = f_18;
                                                               }
                                                             else
                                                               {
-                                                                t = a_33;
+                                                                t = g_33;
                                                                 {
-                                                                  ATerm e_33 = t;
-                                                                  int f_33 = stack_ptr;
+                                                                  ATerm k_33 = t;
+                                                                  int l_33 = stack_ptr;
                                                                   if((PushChoice() == 0))
                                                                     {
                                                                       if(match_cons(t, sym_LChoice_2))
                                                                         {
-                                                                          ATerm g_33 = ATgetArgument(t, 0);
-                                                                          ATerm h_33 = ATgetArgument(t, 1);
+                                                                          ATerm m_33 = ATgetArgument(t, 0);
+                                                                          ATerm n_33 = ATgetArgument(t, 1);
                                                                         }
                                                                       else
                                                                         _fail(t);
-                                                                      LocalPopChoice(f_33);
-                                                                      t = b_18;
+                                                                      LocalPopChoice(l_33);
+                                                                      t = f_18;
                                                                     }
                                                                   else
                                                                     {
-                                                                      t = e_33;
+                                                                      t = k_33;
                                                                       {
-                                                                        ATerm i_33 = t;
-                                                                        int j_33 = stack_ptr;
+                                                                        ATerm o_33 = t;
+                                                                        int p_33 = stack_ptr;
                                                                         if((PushChoice() == 0))
                                                                           {
                                                                             if(match_cons(t, sym_RChoice_2))
                                                                               {
-                                                                                ATerm k_33 = ATgetArgument(t, 0);
-                                                                                ATerm l_33 = ATgetArgument(t, 1);
+                                                                                ATerm q_33 = ATgetArgument(t, 0);
+                                                                                ATerm r_33 = ATgetArgument(t, 1);
                                                                               }
                                                                             else
                                                                               _fail(t);
-                                                                            LocalPopChoice(j_33);
-                                                                            t = b_18;
+                                                                            LocalPopChoice(p_33);
+                                                                            t = f_18;
                                                                           }
                                                                         else
                                                                           {
-                                                                            t = i_33;
+                                                                            t = o_33;
                                                                             {
-                                                                              ATerm m_33 = t;
-                                                                              int n_33 = stack_ptr;
+                                                                              ATerm s_33 = t;
+                                                                              int t_33 = stack_ptr;
                                                                               if((PushChoice() == 0))
                                                                                 {
                                                                                   if(match_cons(t, sym_GChoice_2))
                                                                                     {
-                                                                                      ATerm o_33 = ATgetArgument(t, 0);
-                                                                                      ATerm p_33 = ATgetArgument(t, 1);
+                                                                                      ATerm u_33 = ATgetArgument(t, 0);
+                                                                                      ATerm v_33 = ATgetArgument(t, 1);
                                                                                     }
                                                                                   else
                                                                                     _fail(t);
-                                                                                  LocalPopChoice(n_33);
-                                                                                  t = b_18;
+                                                                                  LocalPopChoice(t_33);
+                                                                                  t = f_18;
                                                                                 }
                                                                               else
                                                                                 {
-                                                                                  t = m_33;
+                                                                                  t = s_33;
                                                                                   {
-                                                                                    ATerm q_33 = t;
-                                                                                    int r_33 = stack_ptr;
+                                                                                    ATerm w_33 = t;
+                                                                                    int x_33 = stack_ptr;
                                                                                     if((PushChoice() == 0))
                                                                                       {
                                                                                         if(match_cons(t, sym_LGChoice_2))
                                                                                           {
-                                                                                            ATerm s_33 = ATgetArgument(t, 0);
-                                                                                            ATerm t_33 = ATgetArgument(t, 1);
+                                                                                            ATerm y_33 = ATgetArgument(t, 0);
+                                                                                            ATerm z_33 = ATgetArgument(t, 1);
                                                                                           }
                                                                                         else
                                                                                           _fail(t);
-                                                                                        LocalPopChoice(r_33);
-                                                                                        t = b_18;
+                                                                                        LocalPopChoice(x_33);
+                                                                                        t = f_18;
                                                                                       }
                                                                                     else
                                                                                       {
-                                                                                        t = q_33;
+                                                                                        t = w_33;
                                                                                         {
-                                                                                          ATerm u_33 = t;
-                                                                                          int v_33 = stack_ptr;
+                                                                                          ATerm a_34 = t;
+                                                                                          int b_34 = stack_ptr;
                                                                                           if((PushChoice() == 0))
                                                                                             {
                                                                                               if(match_cons(t, sym_RGChoice_2))
                                                                                                 {
-                                                                                                  ATerm w_33 = ATgetArgument(t, 0);
-                                                                                                  ATerm x_33 = ATgetArgument(t, 1);
+                                                                                                  ATerm c_34 = ATgetArgument(t, 0);
+                                                                                                  ATerm d_34 = ATgetArgument(t, 1);
                                                                                                 }
                                                                                               else
                                                                                                 _fail(t);
-                                                                                              LocalPopChoice(v_33);
-                                                                                              t = b_18;
+                                                                                              LocalPopChoice(b_34);
+                                                                                              t = f_18;
                                                                                             }
                                                                                           else
                                                                                             {
-                                                                                              t = u_33;
+                                                                                              t = a_34;
                                                                                               {
-                                                                                                ATerm y_33 = t;
-                                                                                                int z_33 = stack_ptr;
+                                                                                                ATerm e_34 = t;
+                                                                                                int f_34 = stack_ptr;
                                                                                                 if((PushChoice() == 0))
                                                                                                   {
                                                                                                     if(match_cons(t, sym_GuardedLChoice_3))
                                                                                                       {
-                                                                                                        ATerm a_34 = ATgetArgument(t, 0);
-                                                                                                        ATerm b_34 = ATgetArgument(t, 1);
-                                                                                                        ATerm c_34 = ATgetArgument(t, 2);
+                                                                                                        ATerm g_34 = ATgetArgument(t, 0);
+                                                                                                        ATerm h_34 = ATgetArgument(t, 1);
+                                                                                                        ATerm i_34 = ATgetArgument(t, 2);
                                                                                                       }
                                                                                                     else
                                                                                                       _fail(t);
-                                                                                                    LocalPopChoice(z_33);
-                                                                                                    t = b_18;
+                                                                                                    LocalPopChoice(f_34);
+                                                                                                    t = f_18;
                                                                                                   }
                                                                                                 else
                                                                                                   {
-                                                                                                    t = y_33;
+                                                                                                    t = e_34;
                                                                                                     {
-                                                                                                      ATerm d_34 = t;
-                                                                                                      int e_34 = stack_ptr;
+                                                                                                      ATerm j_34 = t;
+                                                                                                      int k_34 = stack_ptr;
                                                                                                       if((PushChoice() == 0))
                                                                                                         {
                                                                                                           if(match_cons(t, sym_DynRuleUnion_3))
                                                                                                             {
-                                                                                                              ATerm f_34 = ATgetArgument(t, 0);
-                                                                                                              ATerm g_34 = ATgetArgument(t, 1);
-                                                                                                              ATerm h_34 = ATgetArgument(t, 2);
+                                                                                                              ATerm l_34 = ATgetArgument(t, 0);
+                                                                                                              ATerm m_34 = ATgetArgument(t, 1);
+                                                                                                              ATerm n_34 = ATgetArgument(t, 2);
                                                                                                             }
                                                                                                           else
                                                                                                             _fail(t);
-                                                                                                          LocalPopChoice(e_34);
-                                                                                                          t = b_18;
+                                                                                                          LocalPopChoice(k_34);
+                                                                                                          t = f_18;
                                                                                                         }
                                                                                                       else
                                                                                                         {
-                                                                                                          t = d_34;
+                                                                                                          t = j_34;
                                                                                                           {
-                                                                                                            ATerm i_34 = t;
-                                                                                                            int j_34 = stack_ptr;
+                                                                                                            ATerm o_34 = t;
+                                                                                                            int p_34 = stack_ptr;
                                                                                                             if((PushChoice() == 0))
                                                                                                               {
                                                                                                                 if(match_cons(t, sym_Seq_2))
                                                                                                                   {
-                                                                                                                    ATerm k_34 = ATgetArgument(t, 0);
-                                                                                                                    ATerm l_34 = ATgetArgument(t, 1);
+                                                                                                                    ATerm q_34 = ATgetArgument(t, 0);
+                                                                                                                    ATerm r_34 = ATgetArgument(t, 1);
                                                                                                                   }
                                                                                                                 else
                                                                                                                   _fail(t);
-                                                                                                                LocalPopChoice(j_34);
-                                                                                                                t = b_18;
+                                                                                                                LocalPopChoice(p_34);
+                                                                                                                t = f_18;
                                                                                                               }
                                                                                                             else
                                                                                                               {
-                                                                                                                t = i_34;
+                                                                                                                t = o_34;
                                                                                                                 if(match_cons(t, sym_DynRuleIntersect_3))
                                                                                                                   {
-                                                                                                                    ATerm m_34 = ATgetArgument(t, 0);
-                                                                                                                    ATerm n_34 = ATgetArgument(t, 1);
-                                                                                                                    ATerm o_34 = ATgetArgument(t, 2);
+                                                                                                                    ATerm s_34 = ATgetArgument(t, 0);
+                                                                                                                    ATerm t_34 = ATgetArgument(t, 1);
+                                                                                                                    ATerm u_34 = ATgetArgument(t, 2);
                                                                                                                   }
                                                                                                                 else
                                                                                                                   _fail(t);
-                                                                                                                t = b_18;
+                                                                                                                t = f_18;
                                                                                                               }
                                                                                                           }
                                                                                                         }
@@ -4441,167 +4444,167 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                                 }
                                                               }
                                                           }
-                                                          t = (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, a_18, (ATerm)ATmakeAppl(sym_Parenthetical_1, b_18), c_18);
-                                                          LocalPopChoice(z_32);
+                                                          t = (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, e_18, (ATerm)ATmakeAppl(sym_Parenthetical_1, f_18), g_18);
+                                                          LocalPopChoice(f_33);
                                                         }
                                                       else
                                                         {
-                                                          t = y_32;
-                                                          t = c_18;
+                                                          t = e_33;
+                                                          t = g_18;
                                                           {
-                                                            ATerm p_34 = t;
-                                                            int q_34 = stack_ptr;
+                                                            ATerm v_34 = t;
+                                                            int w_34 = stack_ptr;
                                                             if((PushChoice() == 0))
                                                               {
                                                                 if(match_cons(t, sym_Choice_2))
                                                                   {
-                                                                    ATerm r_34 = ATgetArgument(t, 0);
-                                                                    ATerm s_34 = ATgetArgument(t, 1);
+                                                                    ATerm x_34 = ATgetArgument(t, 0);
+                                                                    ATerm y_34 = ATgetArgument(t, 1);
                                                                   }
                                                                 else
                                                                   _fail(t);
-                                                                LocalPopChoice(q_34);
-                                                                t = c_18;
+                                                                LocalPopChoice(w_34);
+                                                                t = g_18;
                                                               }
                                                             else
                                                               {
-                                                                t = p_34;
+                                                                t = v_34;
                                                                 {
-                                                                  ATerm t_34 = t;
-                                                                  int u_34 = stack_ptr;
+                                                                  ATerm z_34 = t;
+                                                                  int a_35 = stack_ptr;
                                                                   if((PushChoice() == 0))
                                                                     {
                                                                       if(match_cons(t, sym_LChoice_2))
                                                                         {
-                                                                          ATerm v_34 = ATgetArgument(t, 0);
-                                                                          ATerm w_34 = ATgetArgument(t, 1);
+                                                                          ATerm b_35 = ATgetArgument(t, 0);
+                                                                          ATerm c_35 = ATgetArgument(t, 1);
                                                                         }
                                                                       else
                                                                         _fail(t);
-                                                                      LocalPopChoice(u_34);
-                                                                      t = c_18;
+                                                                      LocalPopChoice(a_35);
+                                                                      t = g_18;
                                                                     }
                                                                   else
                                                                     {
-                                                                      t = t_34;
+                                                                      t = z_34;
                                                                       {
-                                                                        ATerm x_34 = t;
-                                                                        int y_34 = stack_ptr;
+                                                                        ATerm d_35 = t;
+                                                                        int e_35 = stack_ptr;
                                                                         if((PushChoice() == 0))
                                                                           {
                                                                             if(match_cons(t, sym_RChoice_2))
                                                                               {
-                                                                                ATerm z_34 = ATgetArgument(t, 0);
-                                                                                ATerm a_35 = ATgetArgument(t, 1);
+                                                                                ATerm f_35 = ATgetArgument(t, 0);
+                                                                                ATerm g_35 = ATgetArgument(t, 1);
                                                                               }
                                                                             else
                                                                               _fail(t);
-                                                                            LocalPopChoice(y_34);
-                                                                            t = c_18;
+                                                                            LocalPopChoice(e_35);
+                                                                            t = g_18;
                                                                           }
                                                                         else
                                                                           {
-                                                                            t = x_34;
+                                                                            t = d_35;
                                                                             {
-                                                                              ATerm b_35 = t;
-                                                                              int c_35 = stack_ptr;
+                                                                              ATerm h_35 = t;
+                                                                              int i_35 = stack_ptr;
                                                                               if((PushChoice() == 0))
                                                                                 {
                                                                                   if(match_cons(t, sym_GChoice_2))
                                                                                     {
-                                                                                      ATerm d_35 = ATgetArgument(t, 0);
-                                                                                      ATerm e_35 = ATgetArgument(t, 1);
+                                                                                      ATerm j_35 = ATgetArgument(t, 0);
+                                                                                      ATerm k_35 = ATgetArgument(t, 1);
                                                                                     }
                                                                                   else
                                                                                     _fail(t);
-                                                                                  LocalPopChoice(c_35);
-                                                                                  t = c_18;
+                                                                                  LocalPopChoice(i_35);
+                                                                                  t = g_18;
                                                                                 }
                                                                               else
                                                                                 {
-                                                                                  t = b_35;
+                                                                                  t = h_35;
                                                                                   {
-                                                                                    ATerm f_35 = t;
-                                                                                    int g_35 = stack_ptr;
+                                                                                    ATerm l_35 = t;
+                                                                                    int m_35 = stack_ptr;
                                                                                     if((PushChoice() == 0))
                                                                                       {
                                                                                         if(match_cons(t, sym_LGChoice_2))
                                                                                           {
-                                                                                            ATerm h_35 = ATgetArgument(t, 0);
-                                                                                            ATerm i_35 = ATgetArgument(t, 1);
+                                                                                            ATerm n_35 = ATgetArgument(t, 0);
+                                                                                            ATerm o_35 = ATgetArgument(t, 1);
                                                                                           }
                                                                                         else
                                                                                           _fail(t);
-                                                                                        LocalPopChoice(g_35);
-                                                                                        t = c_18;
+                                                                                        LocalPopChoice(m_35);
+                                                                                        t = g_18;
                                                                                       }
                                                                                     else
                                                                                       {
-                                                                                        t = f_35;
+                                                                                        t = l_35;
                                                                                         {
-                                                                                          ATerm j_35 = t;
-                                                                                          int k_35 = stack_ptr;
+                                                                                          ATerm p_35 = t;
+                                                                                          int q_35 = stack_ptr;
                                                                                           if((PushChoice() == 0))
                                                                                             {
                                                                                               if(match_cons(t, sym_RGChoice_2))
                                                                                                 {
-                                                                                                  ATerm l_35 = ATgetArgument(t, 0);
-                                                                                                  ATerm m_35 = ATgetArgument(t, 1);
+                                                                                                  ATerm r_35 = ATgetArgument(t, 0);
+                                                                                                  ATerm s_35 = ATgetArgument(t, 1);
                                                                                                 }
                                                                                               else
                                                                                                 _fail(t);
-                                                                                              LocalPopChoice(k_35);
-                                                                                              t = c_18;
+                                                                                              LocalPopChoice(q_35);
+                                                                                              t = g_18;
                                                                                             }
                                                                                           else
                                                                                             {
-                                                                                              t = j_35;
+                                                                                              t = p_35;
                                                                                               {
-                                                                                                ATerm n_35 = t;
-                                                                                                int o_35 = stack_ptr;
+                                                                                                ATerm t_35 = t;
+                                                                                                int u_35 = stack_ptr;
                                                                                                 if((PushChoice() == 0))
                                                                                                   {
                                                                                                     if(match_cons(t, sym_GuardedLChoice_3))
                                                                                                       {
-                                                                                                        ATerm p_35 = ATgetArgument(t, 0);
-                                                                                                        ATerm q_35 = ATgetArgument(t, 1);
-                                                                                                        ATerm r_35 = ATgetArgument(t, 2);
+                                                                                                        ATerm v_35 = ATgetArgument(t, 0);
+                                                                                                        ATerm w_35 = ATgetArgument(t, 1);
+                                                                                                        ATerm x_35 = ATgetArgument(t, 2);
                                                                                                       }
                                                                                                     else
                                                                                                       _fail(t);
-                                                                                                    LocalPopChoice(o_35);
-                                                                                                    t = c_18;
+                                                                                                    LocalPopChoice(u_35);
+                                                                                                    t = g_18;
                                                                                                   }
                                                                                                 else
                                                                                                   {
-                                                                                                    t = n_35;
+                                                                                                    t = t_35;
                                                                                                     {
-                                                                                                      ATerm s_35 = t;
-                                                                                                      int t_35 = stack_ptr;
+                                                                                                      ATerm y_35 = t;
+                                                                                                      int z_35 = stack_ptr;
                                                                                                       if((PushChoice() == 0))
                                                                                                         {
                                                                                                           if(match_cons(t, sym_DynRuleUnion_3))
                                                                                                             {
-                                                                                                              ATerm u_35 = ATgetArgument(t, 0);
-                                                                                                              ATerm v_35 = ATgetArgument(t, 1);
-                                                                                                              ATerm w_35 = ATgetArgument(t, 2);
+                                                                                                              ATerm a_36 = ATgetArgument(t, 0);
+                                                                                                              ATerm b_36 = ATgetArgument(t, 1);
+                                                                                                              ATerm c_36 = ATgetArgument(t, 2);
                                                                                                             }
                                                                                                           else
                                                                                                             _fail(t);
-                                                                                                          LocalPopChoice(t_35);
-                                                                                                          t = c_18;
+                                                                                                          LocalPopChoice(z_35);
+                                                                                                          t = g_18;
                                                                                                         }
                                                                                                       else
                                                                                                         {
-                                                                                                          t = s_35;
+                                                                                                          t = y_35;
                                                                                                           if(match_cons(t, sym_Seq_2))
                                                                                                             {
-                                                                                                              ATerm x_35 = ATgetArgument(t, 0);
-                                                                                                              ATerm y_35 = ATgetArgument(t, 1);
+                                                                                                              ATerm d_36 = ATgetArgument(t, 0);
+                                                                                                              ATerm e_36 = ATgetArgument(t, 1);
                                                                                                             }
                                                                                                           else
                                                                                                             _fail(t);
-                                                                                                          t = c_18;
+                                                                                                          t = g_18;
                                                                                                         }
                                                                                                     }
                                                                                                   }
@@ -4618,7 +4621,7 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                                 }
                                                               }
                                                           }
-                                                          t = (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, a_18, b_18, (ATerm) ATmakeAppl(sym_Parenthetical_1, c_18));
+                                                          t = (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, e_18, f_18, (ATerm) ATmakeAppl(sym_Parenthetical_1, g_18));
                                                         }
                                                     }
                                                   }
@@ -4628,169 +4631,169 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                             {
                                               if(match_cons(t, sym_DynRuleUnion_3))
                                                 {
-                                                  a_18 = ATgetArgument(t, 0);
-                                                  b_18 = ATgetArgument(t, 1);
-                                                  c_18 = ATgetArgument(t, 2);
+                                                  e_18 = ATgetArgument(t, 0);
+                                                  f_18 = ATgetArgument(t, 1);
+                                                  g_18 = ATgetArgument(t, 2);
                                                   {
-                                                    ATerm z_35 = t;
-                                                    int a_36 = stack_ptr;
+                                                    ATerm f_36 = t;
+                                                    int g_36 = stack_ptr;
                                                     if((PushChoice() == 0))
                                                       {
-                                                        t = a_18;
+                                                        t = e_18;
                                                         {
-                                                          ATerm b_36 = t;
-                                                          int c_36 = stack_ptr;
+                                                          ATerm h_36 = t;
+                                                          int i_36 = stack_ptr;
                                                           if((PushChoice() == 0))
                                                             {
                                                               if(match_cons(t, sym_Choice_2))
                                                                 {
-                                                                  ATerm d_36 = ATgetArgument(t, 0);
-                                                                  ATerm e_36 = ATgetArgument(t, 1);
+                                                                  ATerm j_36 = ATgetArgument(t, 0);
+                                                                  ATerm k_36 = ATgetArgument(t, 1);
                                                                 }
                                                               else
                                                                 _fail(t);
-                                                              LocalPopChoice(c_36);
-                                                              t = a_18;
+                                                              LocalPopChoice(i_36);
+                                                              t = e_18;
                                                             }
                                                           else
                                                             {
-                                                              t = b_36;
+                                                              t = h_36;
                                                               {
-                                                                ATerm f_36 = t;
-                                                                int g_36 = stack_ptr;
+                                                                ATerm l_36 = t;
+                                                                int m_36 = stack_ptr;
                                                                 if((PushChoice() == 0))
                                                                   {
                                                                     if(match_cons(t, sym_LChoice_2))
                                                                       {
-                                                                        ATerm h_36 = ATgetArgument(t, 0);
-                                                                        ATerm i_36 = ATgetArgument(t, 1);
+                                                                        ATerm n_36 = ATgetArgument(t, 0);
+                                                                        ATerm o_36 = ATgetArgument(t, 1);
                                                                       }
                                                                     else
                                                                       _fail(t);
-                                                                    LocalPopChoice(g_36);
-                                                                    t = a_18;
+                                                                    LocalPopChoice(m_36);
+                                                                    t = e_18;
                                                                   }
                                                                 else
                                                                   {
-                                                                    t = f_36;
+                                                                    t = l_36;
                                                                     {
-                                                                      ATerm j_36 = t;
-                                                                      int k_36 = stack_ptr;
+                                                                      ATerm p_36 = t;
+                                                                      int q_36 = stack_ptr;
                                                                       if((PushChoice() == 0))
                                                                         {
                                                                           if(match_cons(t, sym_RChoice_2))
                                                                             {
-                                                                              ATerm l_36 = ATgetArgument(t, 0);
-                                                                              ATerm m_36 = ATgetArgument(t, 1);
+                                                                              ATerm r_36 = ATgetArgument(t, 0);
+                                                                              ATerm s_36 = ATgetArgument(t, 1);
                                                                             }
                                                                           else
                                                                             _fail(t);
-                                                                          LocalPopChoice(k_36);
-                                                                          t = a_18;
+                                                                          LocalPopChoice(q_36);
+                                                                          t = e_18;
                                                                         }
                                                                       else
                                                                         {
-                                                                          t = j_36;
+                                                                          t = p_36;
                                                                           {
-                                                                            ATerm n_36 = t;
-                                                                            int o_36 = stack_ptr;
+                                                                            ATerm t_36 = t;
+                                                                            int u_36 = stack_ptr;
                                                                             if((PushChoice() == 0))
                                                                               {
                                                                                 if(match_cons(t, sym_GChoice_2))
                                                                                   {
-                                                                                    ATerm p_36 = ATgetArgument(t, 0);
-                                                                                    ATerm q_36 = ATgetArgument(t, 1);
+                                                                                    ATerm v_36 = ATgetArgument(t, 0);
+                                                                                    ATerm w_36 = ATgetArgument(t, 1);
                                                                                   }
                                                                                 else
                                                                                   _fail(t);
-                                                                                LocalPopChoice(o_36);
-                                                                                t = a_18;
+                                                                                LocalPopChoice(u_36);
+                                                                                t = e_18;
                                                                               }
                                                                             else
                                                                               {
-                                                                                t = n_36;
+                                                                                t = t_36;
                                                                                 {
-                                                                                  ATerm r_36 = t;
-                                                                                  int s_36 = stack_ptr;
+                                                                                  ATerm x_36 = t;
+                                                                                  int y_36 = stack_ptr;
                                                                                   if((PushChoice() == 0))
                                                                                     {
                                                                                       if(match_cons(t, sym_LGChoice_2))
                                                                                         {
-                                                                                          ATerm t_36 = ATgetArgument(t, 0);
-                                                                                          ATerm u_36 = ATgetArgument(t, 1);
+                                                                                          ATerm z_36 = ATgetArgument(t, 0);
+                                                                                          ATerm a_37 = ATgetArgument(t, 1);
                                                                                         }
                                                                                       else
                                                                                         _fail(t);
-                                                                                      LocalPopChoice(s_36);
-                                                                                      t = a_18;
+                                                                                      LocalPopChoice(y_36);
+                                                                                      t = e_18;
                                                                                     }
                                                                                   else
                                                                                     {
-                                                                                      t = r_36;
+                                                                                      t = x_36;
                                                                                       {
-                                                                                        ATerm v_36 = t;
-                                                                                        int w_36 = stack_ptr;
+                                                                                        ATerm b_37 = t;
+                                                                                        int c_37 = stack_ptr;
                                                                                         if((PushChoice() == 0))
                                                                                           {
                                                                                             if(match_cons(t, sym_RGChoice_2))
                                                                                               {
-                                                                                                ATerm x_36 = ATgetArgument(t, 0);
-                                                                                                ATerm y_36 = ATgetArgument(t, 1);
+                                                                                                ATerm d_37 = ATgetArgument(t, 0);
+                                                                                                ATerm e_37 = ATgetArgument(t, 1);
                                                                                               }
                                                                                             else
                                                                                               _fail(t);
-                                                                                            LocalPopChoice(w_36);
-                                                                                            t = a_18;
+                                                                                            LocalPopChoice(c_37);
+                                                                                            t = e_18;
                                                                                           }
                                                                                         else
                                                                                           {
-                                                                                            t = v_36;
+                                                                                            t = b_37;
                                                                                             {
-                                                                                              ATerm z_36 = t;
-                                                                                              int a_37 = stack_ptr;
+                                                                                              ATerm f_37 = t;
+                                                                                              int g_37 = stack_ptr;
                                                                                               if((PushChoice() == 0))
                                                                                                 {
                                                                                                   if(match_cons(t, sym_GuardedLChoice_3))
                                                                                                     {
-                                                                                                      ATerm b_37 = ATgetArgument(t, 0);
-                                                                                                      ATerm c_37 = ATgetArgument(t, 1);
-                                                                                                      ATerm d_37 = ATgetArgument(t, 2);
+                                                                                                      ATerm h_37 = ATgetArgument(t, 0);
+                                                                                                      ATerm i_37 = ATgetArgument(t, 1);
+                                                                                                      ATerm j_37 = ATgetArgument(t, 2);
                                                                                                     }
                                                                                                   else
                                                                                                     _fail(t);
-                                                                                                  LocalPopChoice(a_37);
-                                                                                                  t = a_18;
+                                                                                                  LocalPopChoice(g_37);
+                                                                                                  t = e_18;
                                                                                                 }
                                                                                               else
                                                                                                 {
-                                                                                                  t = z_36;
+                                                                                                  t = f_37;
                                                                                                   {
-                                                                                                    ATerm e_37 = t;
-                                                                                                    int f_37 = stack_ptr;
+                                                                                                    ATerm k_37 = t;
+                                                                                                    int l_37 = stack_ptr;
                                                                                                     if((PushChoice() == 0))
                                                                                                       {
                                                                                                         if(match_cons(t, sym_Seq_2))
                                                                                                           {
-                                                                                                            ATerm g_37 = ATgetArgument(t, 0);
-                                                                                                            ATerm h_37 = ATgetArgument(t, 1);
+                                                                                                            ATerm m_37 = ATgetArgument(t, 0);
+                                                                                                            ATerm n_37 = ATgetArgument(t, 1);
                                                                                                           }
                                                                                                         else
                                                                                                           _fail(t);
-                                                                                                        LocalPopChoice(f_37);
-                                                                                                        t = a_18;
+                                                                                                        LocalPopChoice(l_37);
+                                                                                                        t = e_18;
                                                                                                       }
                                                                                                     else
                                                                                                       {
-                                                                                                        t = e_37;
+                                                                                                        t = k_37;
                                                                                                         if(match_cons(t, sym_DynRuleUnion_3))
                                                                                                           {
-                                                                                                            ATerm i_37 = ATgetArgument(t, 0);
-                                                                                                            ATerm j_37 = ATgetArgument(t, 1);
-                                                                                                            ATerm k_37 = ATgetArgument(t, 2);
+                                                                                                            ATerm o_37 = ATgetArgument(t, 0);
+                                                                                                            ATerm p_37 = ATgetArgument(t, 1);
+                                                                                                            ATerm q_37 = ATgetArgument(t, 2);
                                                                                                           }
                                                                                                         else
                                                                                                           _fail(t);
-                                                                                                        t = a_18;
+                                                                                                        t = e_18;
                                                                                                       }
                                                                                                   }
                                                                                                 }
@@ -4807,172 +4810,172 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                               }
                                                             }
                                                         }
-                                                        t = (ATerm) ATmakeAppl(sym_DynRuleUnion_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, a_18), b_18, c_18);
-                                                        LocalPopChoice(a_36);
+                                                        t = (ATerm) ATmakeAppl(sym_DynRuleUnion_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, e_18), f_18, g_18);
+                                                        LocalPopChoice(g_36);
                                                       }
                                                     else
                                                       {
-                                                        t = z_35;
+                                                        t = f_36;
                                                         {
-                                                          ATerm l_37 = t;
-                                                          int m_37 = stack_ptr;
+                                                          ATerm r_37 = t;
+                                                          int s_37 = stack_ptr;
                                                           if((PushChoice() == 0))
                                                             {
-                                                              t = b_18;
+                                                              t = f_18;
                                                               {
-                                                                ATerm n_37 = t;
-                                                                int o_37 = stack_ptr;
+                                                                ATerm t_37 = t;
+                                                                int u_37 = stack_ptr;
                                                                 if((PushChoice() == 0))
                                                                   {
                                                                     if(match_cons(t, sym_Choice_2))
                                                                       {
-                                                                        ATerm p_37 = ATgetArgument(t, 0);
-                                                                        ATerm q_37 = ATgetArgument(t, 1);
+                                                                        ATerm v_37 = ATgetArgument(t, 0);
+                                                                        ATerm w_37 = ATgetArgument(t, 1);
                                                                       }
                                                                     else
                                                                       _fail(t);
-                                                                    LocalPopChoice(o_37);
-                                                                    t = b_18;
+                                                                    LocalPopChoice(u_37);
+                                                                    t = f_18;
                                                                   }
                                                                 else
                                                                   {
-                                                                    t = n_37;
+                                                                    t = t_37;
                                                                     {
-                                                                      ATerm r_37 = t;
-                                                                      int s_37 = stack_ptr;
+                                                                      ATerm x_37 = t;
+                                                                      int y_37 = stack_ptr;
                                                                       if((PushChoice() == 0))
                                                                         {
                                                                           if(match_cons(t, sym_LChoice_2))
                                                                             {
-                                                                              ATerm t_37 = ATgetArgument(t, 0);
-                                                                              ATerm u_37 = ATgetArgument(t, 1);
+                                                                              ATerm z_37 = ATgetArgument(t, 0);
+                                                                              ATerm a_38 = ATgetArgument(t, 1);
                                                                             }
                                                                           else
                                                                             _fail(t);
-                                                                          LocalPopChoice(s_37);
-                                                                          t = b_18;
+                                                                          LocalPopChoice(y_37);
+                                                                          t = f_18;
                                                                         }
                                                                       else
                                                                         {
-                                                                          t = r_37;
+                                                                          t = x_37;
                                                                           {
-                                                                            ATerm v_37 = t;
-                                                                            int w_37 = stack_ptr;
+                                                                            ATerm b_38 = t;
+                                                                            int c_38 = stack_ptr;
                                                                             if((PushChoice() == 0))
                                                                               {
                                                                                 if(match_cons(t, sym_RChoice_2))
                                                                                   {
-                                                                                    ATerm x_37 = ATgetArgument(t, 0);
-                                                                                    ATerm y_37 = ATgetArgument(t, 1);
+                                                                                    ATerm d_38 = ATgetArgument(t, 0);
+                                                                                    ATerm e_38 = ATgetArgument(t, 1);
                                                                                   }
                                                                                 else
                                                                                   _fail(t);
-                                                                                LocalPopChoice(w_37);
-                                                                                t = b_18;
+                                                                                LocalPopChoice(c_38);
+                                                                                t = f_18;
                                                                               }
                                                                             else
                                                                               {
-                                                                                t = v_37;
+                                                                                t = b_38;
                                                                                 {
-                                                                                  ATerm z_37 = t;
-                                                                                  int a_38 = stack_ptr;
+                                                                                  ATerm f_38 = t;
+                                                                                  int g_38 = stack_ptr;
                                                                                   if((PushChoice() == 0))
                                                                                     {
                                                                                       if(match_cons(t, sym_GChoice_2))
                                                                                         {
-                                                                                          ATerm b_38 = ATgetArgument(t, 0);
-                                                                                          ATerm c_38 = ATgetArgument(t, 1);
+                                                                                          ATerm h_38 = ATgetArgument(t, 0);
+                                                                                          ATerm i_38 = ATgetArgument(t, 1);
                                                                                         }
                                                                                       else
                                                                                         _fail(t);
-                                                                                      LocalPopChoice(a_38);
-                                                                                      t = b_18;
+                                                                                      LocalPopChoice(g_38);
+                                                                                      t = f_18;
                                                                                     }
                                                                                   else
                                                                                     {
-                                                                                      t = z_37;
+                                                                                      t = f_38;
                                                                                       {
-                                                                                        ATerm d_38 = t;
-                                                                                        int e_38 = stack_ptr;
+                                                                                        ATerm j_38 = t;
+                                                                                        int k_38 = stack_ptr;
                                                                                         if((PushChoice() == 0))
                                                                                           {
                                                                                             if(match_cons(t, sym_LGChoice_2))
                                                                                               {
-                                                                                                ATerm f_38 = ATgetArgument(t, 0);
-                                                                                                ATerm g_38 = ATgetArgument(t, 1);
+                                                                                                ATerm l_38 = ATgetArgument(t, 0);
+                                                                                                ATerm m_38 = ATgetArgument(t, 1);
                                                                                               }
                                                                                             else
                                                                                               _fail(t);
-                                                                                            LocalPopChoice(e_38);
-                                                                                            t = b_18;
+                                                                                            LocalPopChoice(k_38);
+                                                                                            t = f_18;
                                                                                           }
                                                                                         else
                                                                                           {
-                                                                                            t = d_38;
+                                                                                            t = j_38;
                                                                                             {
-                                                                                              ATerm h_38 = t;
-                                                                                              int i_38 = stack_ptr;
+                                                                                              ATerm n_38 = t;
+                                                                                              int o_38 = stack_ptr;
                                                                                               if((PushChoice() == 0))
                                                                                                 {
                                                                                                   if(match_cons(t, sym_RGChoice_2))
                                                                                                     {
-                                                                                                      ATerm j_38 = ATgetArgument(t, 0);
-                                                                                                      ATerm k_38 = ATgetArgument(t, 1);
+                                                                                                      ATerm p_38 = ATgetArgument(t, 0);
+                                                                                                      ATerm q_38 = ATgetArgument(t, 1);
                                                                                                     }
                                                                                                   else
                                                                                                     _fail(t);
-                                                                                                  LocalPopChoice(i_38);
-                                                                                                  t = b_18;
+                                                                                                  LocalPopChoice(o_38);
+                                                                                                  t = f_18;
                                                                                                 }
                                                                                               else
                                                                                                 {
-                                                                                                  t = h_38;
+                                                                                                  t = n_38;
                                                                                                   {
-                                                                                                    ATerm l_38 = t;
-                                                                                                    int m_38 = stack_ptr;
+                                                                                                    ATerm r_38 = t;
+                                                                                                    int s_38 = stack_ptr;
                                                                                                     if((PushChoice() == 0))
                                                                                                       {
                                                                                                         if(match_cons(t, sym_GuardedLChoice_3))
                                                                                                           {
-                                                                                                            ATerm n_38 = ATgetArgument(t, 0);
-                                                                                                            ATerm o_38 = ATgetArgument(t, 1);
-                                                                                                            ATerm p_38 = ATgetArgument(t, 2);
+                                                                                                            ATerm t_38 = ATgetArgument(t, 0);
+                                                                                                            ATerm u_38 = ATgetArgument(t, 1);
+                                                                                                            ATerm v_38 = ATgetArgument(t, 2);
                                                                                                           }
                                                                                                         else
                                                                                                           _fail(t);
-                                                                                                        LocalPopChoice(m_38);
-                                                                                                        t = b_18;
+                                                                                                        LocalPopChoice(s_38);
+                                                                                                        t = f_18;
                                                                                                       }
                                                                                                     else
                                                                                                       {
-                                                                                                        t = l_38;
+                                                                                                        t = r_38;
                                                                                                         {
-                                                                                                          ATerm q_38 = t;
-                                                                                                          int r_38 = stack_ptr;
+                                                                                                          ATerm w_38 = t;
+                                                                                                          int x_38 = stack_ptr;
                                                                                                           if((PushChoice() == 0))
                                                                                                             {
                                                                                                               if(match_cons(t, sym_Seq_2))
                                                                                                                 {
-                                                                                                                  ATerm s_38 = ATgetArgument(t, 0);
-                                                                                                                  ATerm t_38 = ATgetArgument(t, 1);
+                                                                                                                  ATerm y_38 = ATgetArgument(t, 0);
+                                                                                                                  ATerm z_38 = ATgetArgument(t, 1);
                                                                                                                 }
                                                                                                               else
                                                                                                                 _fail(t);
-                                                                                                              LocalPopChoice(r_38);
-                                                                                                              t = b_18;
+                                                                                                              LocalPopChoice(x_38);
+                                                                                                              t = f_18;
                                                                                                             }
                                                                                                           else
                                                                                                             {
-                                                                                                              t = q_38;
+                                                                                                              t = w_38;
                                                                                                               if(match_cons(t, sym_DynRuleUnion_3))
                                                                                                                 {
-                                                                                                                  ATerm u_38 = ATgetArgument(t, 0);
-                                                                                                                  ATerm v_38 = ATgetArgument(t, 1);
-                                                                                                                  ATerm w_38 = ATgetArgument(t, 2);
+                                                                                                                  ATerm a_39 = ATgetArgument(t, 0);
+                                                                                                                  ATerm b_39 = ATgetArgument(t, 1);
+                                                                                                                  ATerm c_39 = ATgetArgument(t, 2);
                                                                                                                 }
                                                                                                               else
                                                                                                                 _fail(t);
-                                                                                                              t = b_18;
+                                                                                                              t = f_18;
                                                                                                             }
                                                                                                         }
                                                                                                       }
@@ -4989,148 +4992,148 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                                     }
                                                                   }
                                                               }
-                                                              t = (ATerm) ATmakeAppl(sym_DynRuleUnion_3, a_18, (ATerm)ATmakeAppl(sym_Parenthetical_1, b_18), c_18);
-                                                              LocalPopChoice(m_37);
+                                                              t = (ATerm) ATmakeAppl(sym_DynRuleUnion_3, e_18, (ATerm)ATmakeAppl(sym_Parenthetical_1, f_18), g_18);
+                                                              LocalPopChoice(s_37);
                                                             }
                                                           else
                                                             {
-                                                              t = l_37;
-                                                              t = c_18;
+                                                              t = r_37;
+                                                              t = g_18;
                                                               {
-                                                                ATerm x_38 = t;
-                                                                int y_38 = stack_ptr;
+                                                                ATerm d_39 = t;
+                                                                int e_39 = stack_ptr;
                                                                 if((PushChoice() == 0))
                                                                   {
                                                                     if(match_cons(t, sym_Choice_2))
                                                                       {
-                                                                        ATerm z_38 = ATgetArgument(t, 0);
-                                                                        ATerm a_39 = ATgetArgument(t, 1);
+                                                                        ATerm f_39 = ATgetArgument(t, 0);
+                                                                        ATerm g_39 = ATgetArgument(t, 1);
                                                                       }
                                                                     else
                                                                       _fail(t);
-                                                                    LocalPopChoice(y_38);
-                                                                    t = c_18;
+                                                                    LocalPopChoice(e_39);
+                                                                    t = g_18;
                                                                   }
                                                                 else
                                                                   {
-                                                                    t = x_38;
+                                                                    t = d_39;
                                                                     {
-                                                                      ATerm b_39 = t;
-                                                                      int c_39 = stack_ptr;
+                                                                      ATerm h_39 = t;
+                                                                      int i_39 = stack_ptr;
                                                                       if((PushChoice() == 0))
                                                                         {
                                                                           if(match_cons(t, sym_LChoice_2))
                                                                             {
-                                                                              ATerm d_39 = ATgetArgument(t, 0);
-                                                                              ATerm e_39 = ATgetArgument(t, 1);
+                                                                              ATerm j_39 = ATgetArgument(t, 0);
+                                                                              ATerm k_39 = ATgetArgument(t, 1);
                                                                             }
                                                                           else
                                                                             _fail(t);
-                                                                          LocalPopChoice(c_39);
-                                                                          t = c_18;
+                                                                          LocalPopChoice(i_39);
+                                                                          t = g_18;
                                                                         }
                                                                       else
                                                                         {
-                                                                          t = b_39;
+                                                                          t = h_39;
                                                                           {
-                                                                            ATerm f_39 = t;
-                                                                            int g_39 = stack_ptr;
+                                                                            ATerm l_39 = t;
+                                                                            int m_39 = stack_ptr;
                                                                             if((PushChoice() == 0))
                                                                               {
                                                                                 if(match_cons(t, sym_RChoice_2))
                                                                                   {
-                                                                                    ATerm h_39 = ATgetArgument(t, 0);
-                                                                                    ATerm i_39 = ATgetArgument(t, 1);
+                                                                                    ATerm n_39 = ATgetArgument(t, 0);
+                                                                                    ATerm o_39 = ATgetArgument(t, 1);
                                                                                   }
                                                                                 else
                                                                                   _fail(t);
-                                                                                LocalPopChoice(g_39);
-                                                                                t = c_18;
+                                                                                LocalPopChoice(m_39);
+                                                                                t = g_18;
                                                                               }
                                                                             else
                                                                               {
-                                                                                t = f_39;
+                                                                                t = l_39;
                                                                                 {
-                                                                                  ATerm j_39 = t;
-                                                                                  int k_39 = stack_ptr;
+                                                                                  ATerm p_39 = t;
+                                                                                  int q_39 = stack_ptr;
                                                                                   if((PushChoice() == 0))
                                                                                     {
                                                                                       if(match_cons(t, sym_GChoice_2))
                                                                                         {
-                                                                                          ATerm l_39 = ATgetArgument(t, 0);
-                                                                                          ATerm m_39 = ATgetArgument(t, 1);
+                                                                                          ATerm r_39 = ATgetArgument(t, 0);
+                                                                                          ATerm s_39 = ATgetArgument(t, 1);
                                                                                         }
                                                                                       else
                                                                                         _fail(t);
-                                                                                      LocalPopChoice(k_39);
-                                                                                      t = c_18;
+                                                                                      LocalPopChoice(q_39);
+                                                                                      t = g_18;
                                                                                     }
                                                                                   else
                                                                                     {
-                                                                                      t = j_39;
+                                                                                      t = p_39;
                                                                                       {
-                                                                                        ATerm n_39 = t;
-                                                                                        int o_39 = stack_ptr;
+                                                                                        ATerm t_39 = t;
+                                                                                        int u_39 = stack_ptr;
                                                                                         if((PushChoice() == 0))
                                                                                           {
                                                                                             if(match_cons(t, sym_LGChoice_2))
                                                                                               {
-                                                                                                ATerm p_39 = ATgetArgument(t, 0);
-                                                                                                ATerm q_39 = ATgetArgument(t, 1);
+                                                                                                ATerm v_39 = ATgetArgument(t, 0);
+                                                                                                ATerm w_39 = ATgetArgument(t, 1);
                                                                                               }
                                                                                             else
                                                                                               _fail(t);
-                                                                                            LocalPopChoice(o_39);
-                                                                                            t = c_18;
+                                                                                            LocalPopChoice(u_39);
+                                                                                            t = g_18;
                                                                                           }
                                                                                         else
                                                                                           {
-                                                                                            t = n_39;
+                                                                                            t = t_39;
                                                                                             {
-                                                                                              ATerm r_39 = t;
-                                                                                              int s_39 = stack_ptr;
+                                                                                              ATerm x_39 = t;
+                                                                                              int y_39 = stack_ptr;
                                                                                               if((PushChoice() == 0))
                                                                                                 {
                                                                                                   if(match_cons(t, sym_RGChoice_2))
                                                                                                     {
-                                                                                                      ATerm t_39 = ATgetArgument(t, 0);
-                                                                                                      ATerm u_39 = ATgetArgument(t, 1);
+                                                                                                      ATerm z_39 = ATgetArgument(t, 0);
+                                                                                                      ATerm a_40 = ATgetArgument(t, 1);
                                                                                                     }
                                                                                                   else
                                                                                                     _fail(t);
-                                                                                                  LocalPopChoice(s_39);
-                                                                                                  t = c_18;
+                                                                                                  LocalPopChoice(y_39);
+                                                                                                  t = g_18;
                                                                                                 }
                                                                                               else
                                                                                                 {
-                                                                                                  t = r_39;
+                                                                                                  t = x_39;
                                                                                                   {
-                                                                                                    ATerm v_39 = t;
-                                                                                                    int w_39 = stack_ptr;
+                                                                                                    ATerm b_40 = t;
+                                                                                                    int c_40 = stack_ptr;
                                                                                                     if((PushChoice() == 0))
                                                                                                       {
                                                                                                         if(match_cons(t, sym_GuardedLChoice_3))
                                                                                                           {
-                                                                                                            ATerm x_39 = ATgetArgument(t, 0);
-                                                                                                            ATerm y_39 = ATgetArgument(t, 1);
-                                                                                                            ATerm z_39 = ATgetArgument(t, 2);
+                                                                                                            ATerm d_40 = ATgetArgument(t, 0);
+                                                                                                            ATerm e_40 = ATgetArgument(t, 1);
+                                                                                                            ATerm f_40 = ATgetArgument(t, 2);
                                                                                                           }
                                                                                                         else
                                                                                                           _fail(t);
-                                                                                                        LocalPopChoice(w_39);
-                                                                                                        t = c_18;
+                                                                                                        LocalPopChoice(c_40);
+                                                                                                        t = g_18;
                                                                                                       }
                                                                                                     else
                                                                                                       {
-                                                                                                        t = v_39;
+                                                                                                        t = b_40;
                                                                                                         if(match_cons(t, sym_Seq_2))
                                                                                                           {
-                                                                                                            ATerm a_40 = ATgetArgument(t, 0);
-                                                                                                            ATerm b_40 = ATgetArgument(t, 1);
+                                                                                                            ATerm g_40 = ATgetArgument(t, 0);
+                                                                                                            ATerm h_40 = ATgetArgument(t, 1);
                                                                                                           }
                                                                                                         else
                                                                                                           _fail(t);
-                                                                                                        t = c_18;
+                                                                                                        t = g_18;
                                                                                                       }
                                                                                                   }
                                                                                                 }
@@ -5145,7 +5148,7 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                                     }
                                                                   }
                                                               }
-                                                              t = (ATerm) ATmakeAppl(sym_DynRuleUnion_3, a_18, b_18, (ATerm) ATmakeAppl(sym_Parenthetical_1, c_18));
+                                                              t = (ATerm) ATmakeAppl(sym_DynRuleUnion_3, e_18, f_18, (ATerm) ATmakeAppl(sym_Parenthetical_1, g_18));
                                                             }
                                                         }
                                                       }
@@ -5155,149 +5158,149 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                 {
                                                   if(match_cons(t, sym_Seq_2))
                                                     {
-                                                      a_18 = ATgetArgument(t, 0);
-                                                      b_18 = ATgetArgument(t, 1);
+                                                      e_18 = ATgetArgument(t, 0);
+                                                      f_18 = ATgetArgument(t, 1);
                                                       {
-                                                        ATerm c_40 = t;
-                                                        int d_40 = stack_ptr;
+                                                        ATerm i_40 = t;
+                                                        int j_40 = stack_ptr;
                                                         if((PushChoice() == 0))
                                                           {
-                                                            t = a_18;
+                                                            t = e_18;
                                                             {
-                                                              ATerm e_40 = t;
-                                                              int f_40 = stack_ptr;
+                                                              ATerm k_40 = t;
+                                                              int l_40 = stack_ptr;
                                                               if((PushChoice() == 0))
                                                                 {
                                                                   if(match_cons(t, sym_Choice_2))
                                                                     {
-                                                                      ATerm g_40 = ATgetArgument(t, 0);
-                                                                      ATerm h_40 = ATgetArgument(t, 1);
+                                                                      ATerm m_40 = ATgetArgument(t, 0);
+                                                                      ATerm n_40 = ATgetArgument(t, 1);
                                                                     }
                                                                   else
                                                                     _fail(t);
-                                                                  LocalPopChoice(f_40);
-                                                                  t = a_18;
+                                                                  LocalPopChoice(l_40);
+                                                                  t = e_18;
                                                                 }
                                                               else
                                                                 {
-                                                                  t = e_40;
+                                                                  t = k_40;
                                                                   {
-                                                                    ATerm i_40 = t;
-                                                                    int j_40 = stack_ptr;
+                                                                    ATerm o_40 = t;
+                                                                    int p_40 = stack_ptr;
                                                                     if((PushChoice() == 0))
                                                                       {
                                                                         if(match_cons(t, sym_LChoice_2))
                                                                           {
-                                                                            ATerm k_40 = ATgetArgument(t, 0);
-                                                                            ATerm l_40 = ATgetArgument(t, 1);
+                                                                            ATerm q_40 = ATgetArgument(t, 0);
+                                                                            ATerm r_40 = ATgetArgument(t, 1);
                                                                           }
                                                                         else
                                                                           _fail(t);
-                                                                        LocalPopChoice(j_40);
-                                                                        t = a_18;
+                                                                        LocalPopChoice(p_40);
+                                                                        t = e_18;
                                                                       }
                                                                     else
                                                                       {
-                                                                        t = i_40;
+                                                                        t = o_40;
                                                                         {
-                                                                          ATerm m_40 = t;
-                                                                          int n_40 = stack_ptr;
+                                                                          ATerm s_40 = t;
+                                                                          int t_40 = stack_ptr;
                                                                           if((PushChoice() == 0))
                                                                             {
                                                                               if(match_cons(t, sym_RChoice_2))
                                                                                 {
-                                                                                  ATerm o_40 = ATgetArgument(t, 0);
-                                                                                  ATerm p_40 = ATgetArgument(t, 1);
+                                                                                  ATerm u_40 = ATgetArgument(t, 0);
+                                                                                  ATerm v_40 = ATgetArgument(t, 1);
                                                                                 }
                                                                               else
                                                                                 _fail(t);
-                                                                              LocalPopChoice(n_40);
-                                                                              t = a_18;
+                                                                              LocalPopChoice(t_40);
+                                                                              t = e_18;
                                                                             }
                                                                           else
                                                                             {
-                                                                              t = m_40;
+                                                                              t = s_40;
                                                                               {
-                                                                                ATerm q_40 = t;
-                                                                                int r_40 = stack_ptr;
+                                                                                ATerm w_40 = t;
+                                                                                int x_40 = stack_ptr;
                                                                                 if((PushChoice() == 0))
                                                                                   {
                                                                                     if(match_cons(t, sym_GChoice_2))
                                                                                       {
-                                                                                        ATerm s_40 = ATgetArgument(t, 0);
-                                                                                        ATerm t_40 = ATgetArgument(t, 1);
+                                                                                        ATerm y_40 = ATgetArgument(t, 0);
+                                                                                        ATerm z_40 = ATgetArgument(t, 1);
                                                                                       }
                                                                                     else
                                                                                       _fail(t);
-                                                                                    LocalPopChoice(r_40);
-                                                                                    t = a_18;
+                                                                                    LocalPopChoice(x_40);
+                                                                                    t = e_18;
                                                                                   }
                                                                                 else
                                                                                   {
-                                                                                    t = q_40;
+                                                                                    t = w_40;
                                                                                     {
-                                                                                      ATerm u_40 = t;
-                                                                                      int v_40 = stack_ptr;
+                                                                                      ATerm a_41 = t;
+                                                                                      int b_41 = stack_ptr;
                                                                                       if((PushChoice() == 0))
                                                                                         {
                                                                                           if(match_cons(t, sym_LGChoice_2))
                                                                                             {
-                                                                                              ATerm w_40 = ATgetArgument(t, 0);
-                                                                                              ATerm x_40 = ATgetArgument(t, 1);
+                                                                                              ATerm c_41 = ATgetArgument(t, 0);
+                                                                                              ATerm d_41 = ATgetArgument(t, 1);
                                                                                             }
                                                                                           else
                                                                                             _fail(t);
-                                                                                          LocalPopChoice(v_40);
-                                                                                          t = a_18;
+                                                                                          LocalPopChoice(b_41);
+                                                                                          t = e_18;
                                                                                         }
                                                                                       else
                                                                                         {
-                                                                                          t = u_40;
+                                                                                          t = a_41;
                                                                                           {
-                                                                                            ATerm y_40 = t;
-                                                                                            int z_40 = stack_ptr;
+                                                                                            ATerm e_41 = t;
+                                                                                            int f_41 = stack_ptr;
                                                                                             if((PushChoice() == 0))
                                                                                               {
                                                                                                 if(match_cons(t, sym_RGChoice_2))
                                                                                                   {
-                                                                                                    ATerm a_41 = ATgetArgument(t, 0);
-                                                                                                    ATerm b_41 = ATgetArgument(t, 1);
+                                                                                                    ATerm g_41 = ATgetArgument(t, 0);
+                                                                                                    ATerm h_41 = ATgetArgument(t, 1);
                                                                                                   }
                                                                                                 else
                                                                                                   _fail(t);
-                                                                                                LocalPopChoice(z_40);
-                                                                                                t = a_18;
+                                                                                                LocalPopChoice(f_41);
+                                                                                                t = e_18;
                                                                                               }
                                                                                             else
                                                                                               {
-                                                                                                t = y_40;
+                                                                                                t = e_41;
                                                                                                 {
-                                                                                                  ATerm c_41 = t;
-                                                                                                  int d_41 = stack_ptr;
+                                                                                                  ATerm i_41 = t;
+                                                                                                  int j_41 = stack_ptr;
                                                                                                   if((PushChoice() == 0))
                                                                                                     {
                                                                                                       if(match_cons(t, sym_GuardedLChoice_3))
                                                                                                         {
-                                                                                                          ATerm e_41 = ATgetArgument(t, 0);
-                                                                                                          ATerm f_41 = ATgetArgument(t, 1);
-                                                                                                          ATerm g_41 = ATgetArgument(t, 2);
+                                                                                                          ATerm k_41 = ATgetArgument(t, 0);
+                                                                                                          ATerm l_41 = ATgetArgument(t, 1);
+                                                                                                          ATerm m_41 = ATgetArgument(t, 2);
                                                                                                         }
                                                                                                       else
                                                                                                         _fail(t);
-                                                                                                      LocalPopChoice(d_41);
-                                                                                                      t = a_18;
+                                                                                                      LocalPopChoice(j_41);
+                                                                                                      t = e_18;
                                                                                                     }
                                                                                                   else
                                                                                                     {
-                                                                                                      t = c_41;
+                                                                                                      t = i_41;
                                                                                                       if(match_cons(t, sym_Seq_2))
                                                                                                         {
-                                                                                                          ATerm h_41 = ATgetArgument(t, 0);
-                                                                                                          ATerm i_41 = ATgetArgument(t, 1);
+                                                                                                          ATerm n_41 = ATgetArgument(t, 0);
+                                                                                                          ATerm o_41 = ATgetArgument(t, 1);
                                                                                                         }
                                                                                                       else
                                                                                                         _fail(t);
-                                                                                                      t = a_18;
+                                                                                                      t = e_18;
                                                                                                     }
                                                                                                 }
                                                                                               }
@@ -5312,130 +5315,130 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                                   }
                                                                 }
                                                             }
-                                                            t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, a_18), b_18);
-                                                            LocalPopChoice(d_40);
+                                                            t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, e_18), f_18);
+                                                            LocalPopChoice(j_40);
                                                           }
                                                         else
                                                           {
-                                                            t = c_40;
-                                                            t = b_18;
+                                                            t = i_40;
+                                                            t = f_18;
                                                             {
-                                                              ATerm j_41 = t;
-                                                              int k_41 = stack_ptr;
+                                                              ATerm p_41 = t;
+                                                              int q_41 = stack_ptr;
                                                               if((PushChoice() == 0))
                                                                 {
                                                                   if(match_cons(t, sym_Choice_2))
                                                                     {
-                                                                      ATerm l_41 = ATgetArgument(t, 0);
-                                                                      ATerm m_41 = ATgetArgument(t, 1);
+                                                                      ATerm r_41 = ATgetArgument(t, 0);
+                                                                      ATerm s_41 = ATgetArgument(t, 1);
                                                                     }
                                                                   else
                                                                     _fail(t);
-                                                                  LocalPopChoice(k_41);
-                                                                  t = b_18;
+                                                                  LocalPopChoice(q_41);
+                                                                  t = f_18;
                                                                 }
                                                               else
                                                                 {
-                                                                  t = j_41;
+                                                                  t = p_41;
                                                                   {
-                                                                    ATerm n_41 = t;
-                                                                    int o_41 = stack_ptr;
+                                                                    ATerm t_41 = t;
+                                                                    int u_41 = stack_ptr;
                                                                     if((PushChoice() == 0))
                                                                       {
                                                                         if(match_cons(t, sym_LChoice_2))
                                                                           {
-                                                                            ATerm p_41 = ATgetArgument(t, 0);
-                                                                            ATerm q_41 = ATgetArgument(t, 1);
+                                                                            ATerm v_41 = ATgetArgument(t, 0);
+                                                                            ATerm w_41 = ATgetArgument(t, 1);
                                                                           }
                                                                         else
                                                                           _fail(t);
-                                                                        LocalPopChoice(o_41);
-                                                                        t = b_18;
+                                                                        LocalPopChoice(u_41);
+                                                                        t = f_18;
                                                                       }
                                                                     else
                                                                       {
-                                                                        t = n_41;
+                                                                        t = t_41;
                                                                         {
-                                                                          ATerm r_41 = t;
-                                                                          int s_41 = stack_ptr;
+                                                                          ATerm x_41 = t;
+                                                                          int y_41 = stack_ptr;
                                                                           if((PushChoice() == 0))
                                                                             {
                                                                               if(match_cons(t, sym_RChoice_2))
                                                                                 {
-                                                                                  ATerm t_41 = ATgetArgument(t, 0);
-                                                                                  ATerm u_41 = ATgetArgument(t, 1);
+                                                                                  ATerm z_41 = ATgetArgument(t, 0);
+                                                                                  ATerm a_42 = ATgetArgument(t, 1);
                                                                                 }
                                                                               else
                                                                                 _fail(t);
-                                                                              LocalPopChoice(s_41);
-                                                                              t = b_18;
+                                                                              LocalPopChoice(y_41);
+                                                                              t = f_18;
                                                                             }
                                                                           else
                                                                             {
-                                                                              t = r_41;
+                                                                              t = x_41;
                                                                               {
-                                                                                ATerm v_41 = t;
-                                                                                int w_41 = stack_ptr;
+                                                                                ATerm b_42 = t;
+                                                                                int c_42 = stack_ptr;
                                                                                 if((PushChoice() == 0))
                                                                                   {
                                                                                     if(match_cons(t, sym_GChoice_2))
                                                                                       {
-                                                                                        ATerm x_41 = ATgetArgument(t, 0);
-                                                                                        ATerm y_41 = ATgetArgument(t, 1);
+                                                                                        ATerm d_42 = ATgetArgument(t, 0);
+                                                                                        ATerm e_42 = ATgetArgument(t, 1);
                                                                                       }
                                                                                     else
                                                                                       _fail(t);
-                                                                                    LocalPopChoice(w_41);
-                                                                                    t = b_18;
+                                                                                    LocalPopChoice(c_42);
+                                                                                    t = f_18;
                                                                                   }
                                                                                 else
                                                                                   {
-                                                                                    t = v_41;
+                                                                                    t = b_42;
                                                                                     {
-                                                                                      ATerm z_41 = t;
-                                                                                      int a_42 = stack_ptr;
+                                                                                      ATerm f_42 = t;
+                                                                                      int g_42 = stack_ptr;
                                                                                       if((PushChoice() == 0))
                                                                                         {
                                                                                           if(match_cons(t, sym_LGChoice_2))
                                                                                             {
-                                                                                              ATerm b_42 = ATgetArgument(t, 0);
-                                                                                              ATerm c_42 = ATgetArgument(t, 1);
+                                                                                              ATerm h_42 = ATgetArgument(t, 0);
+                                                                                              ATerm i_42 = ATgetArgument(t, 1);
                                                                                             }
                                                                                           else
                                                                                             _fail(t);
-                                                                                          LocalPopChoice(a_42);
-                                                                                          t = b_18;
+                                                                                          LocalPopChoice(g_42);
+                                                                                          t = f_18;
                                                                                         }
                                                                                       else
                                                                                         {
-                                                                                          t = z_41;
+                                                                                          t = f_42;
                                                                                           {
-                                                                                            ATerm d_42 = t;
-                                                                                            int e_42 = stack_ptr;
+                                                                                            ATerm j_42 = t;
+                                                                                            int k_42 = stack_ptr;
                                                                                             if((PushChoice() == 0))
                                                                                               {
                                                                                                 if(match_cons(t, sym_RGChoice_2))
                                                                                                   {
-                                                                                                    ATerm f_42 = ATgetArgument(t, 0);
-                                                                                                    ATerm g_42 = ATgetArgument(t, 1);
+                                                                                                    ATerm l_42 = ATgetArgument(t, 0);
+                                                                                                    ATerm m_42 = ATgetArgument(t, 1);
                                                                                                   }
                                                                                                 else
                                                                                                   _fail(t);
-                                                                                                LocalPopChoice(e_42);
-                                                                                                t = b_18;
+                                                                                                LocalPopChoice(k_42);
+                                                                                                t = f_18;
                                                                                               }
                                                                                             else
                                                                                               {
-                                                                                                t = d_42;
+                                                                                                t = j_42;
                                                                                                 if(match_cons(t, sym_GuardedLChoice_3))
                                                                                                   {
-                                                                                                    ATerm h_42 = ATgetArgument(t, 0);
-                                                                                                    ATerm i_42 = ATgetArgument(t, 1);
-                                                                                                    ATerm j_42 = ATgetArgument(t, 2);
+                                                                                                    ATerm n_42 = ATgetArgument(t, 0);
+                                                                                                    ATerm o_42 = ATgetArgument(t, 1);
+                                                                                                    ATerm p_42 = ATgetArgument(t, 2);
                                                                                                   }
                                                                                                 else
                                                                                                   _fail(t);
-                                                                                                t = b_18;
+                                                                                                t = f_18;
                                                                                               }
                                                                                           }
                                                                                         }
@@ -5448,7 +5451,7 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                                   }
                                                                 }
                                                             }
-                                                            t = (ATerm) ATmakeAppl(sym_Seq_2, a_18, (ATerm) ATmakeAppl(sym_Parenthetical_1, b_18));
+                                                            t = (ATerm) ATmakeAppl(sym_Seq_2, e_18, (ATerm) ATmakeAppl(sym_Parenthetical_1, f_18));
                                                           }
                                                       }
                                                     }
@@ -5456,126 +5459,126 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                     {
                                                       if(match_cons(t, sym_Choice_2))
                                                         {
-                                                          a_18 = ATgetArgument(t, 0);
-                                                          b_18 = ATgetArgument(t, 1);
-                                                          t = a_18;
+                                                          e_18 = ATgetArgument(t, 0);
+                                                          f_18 = ATgetArgument(t, 1);
+                                                          t = e_18;
                                                           {
-                                                            ATerm k_42 = t;
-                                                            int l_42 = stack_ptr;
+                                                            ATerm q_42 = t;
+                                                            int r_42 = stack_ptr;
                                                             if((PushChoice() == 0))
                                                               {
                                                                 if(match_cons(t, sym_LChoice_2))
                                                                   {
-                                                                    ATerm m_42 = ATgetArgument(t, 0);
-                                                                    ATerm n_42 = ATgetArgument(t, 1);
+                                                                    ATerm s_42 = ATgetArgument(t, 0);
+                                                                    ATerm t_42 = ATgetArgument(t, 1);
                                                                   }
                                                                 else
                                                                   _fail(t);
-                                                                LocalPopChoice(l_42);
-                                                                t = a_18;
+                                                                LocalPopChoice(r_42);
+                                                                t = e_18;
                                                               }
                                                             else
                                                               {
-                                                                t = k_42;
+                                                                t = q_42;
                                                                 {
-                                                                  ATerm o_42 = t;
-                                                                  int p_42 = stack_ptr;
+                                                                  ATerm u_42 = t;
+                                                                  int v_42 = stack_ptr;
                                                                   if((PushChoice() == 0))
                                                                     {
                                                                       if(match_cons(t, sym_RChoice_2))
                                                                         {
-                                                                          ATerm q_42 = ATgetArgument(t, 0);
-                                                                          ATerm r_42 = ATgetArgument(t, 1);
+                                                                          ATerm w_42 = ATgetArgument(t, 0);
+                                                                          ATerm x_42 = ATgetArgument(t, 1);
                                                                         }
                                                                       else
                                                                         _fail(t);
-                                                                      LocalPopChoice(p_42);
-                                                                      t = a_18;
+                                                                      LocalPopChoice(v_42);
+                                                                      t = e_18;
                                                                     }
                                                                   else
                                                                     {
-                                                                      t = o_42;
+                                                                      t = u_42;
                                                                       {
-                                                                        ATerm s_42 = t;
-                                                                        int t_42 = stack_ptr;
+                                                                        ATerm y_42 = t;
+                                                                        int z_42 = stack_ptr;
                                                                         if((PushChoice() == 0))
                                                                           {
                                                                             if(match_cons(t, sym_GChoice_2))
                                                                               {
-                                                                                ATerm u_42 = ATgetArgument(t, 0);
-                                                                                ATerm v_42 = ATgetArgument(t, 1);
+                                                                                ATerm a_43 = ATgetArgument(t, 0);
+                                                                                ATerm b_43 = ATgetArgument(t, 1);
                                                                               }
                                                                             else
                                                                               _fail(t);
-                                                                            LocalPopChoice(t_42);
-                                                                            t = a_18;
+                                                                            LocalPopChoice(z_42);
+                                                                            t = e_18;
                                                                           }
                                                                         else
                                                                           {
-                                                                            t = s_42;
+                                                                            t = y_42;
                                                                             {
-                                                                              ATerm w_42 = t;
-                                                                              int x_42 = stack_ptr;
+                                                                              ATerm c_43 = t;
+                                                                              int d_43 = stack_ptr;
                                                                               if((PushChoice() == 0))
                                                                                 {
                                                                                   if(match_cons(t, sym_LGChoice_2))
                                                                                     {
-                                                                                      ATerm y_42 = ATgetArgument(t, 0);
-                                                                                      ATerm z_42 = ATgetArgument(t, 1);
+                                                                                      ATerm e_43 = ATgetArgument(t, 0);
+                                                                                      ATerm f_43 = ATgetArgument(t, 1);
                                                                                     }
                                                                                   else
                                                                                     _fail(t);
-                                                                                  LocalPopChoice(x_42);
-                                                                                  t = a_18;
+                                                                                  LocalPopChoice(d_43);
+                                                                                  t = e_18;
                                                                                 }
                                                                               else
                                                                                 {
-                                                                                  t = w_42;
+                                                                                  t = c_43;
                                                                                   {
-                                                                                    ATerm a_43 = t;
-                                                                                    int b_43 = stack_ptr;
+                                                                                    ATerm g_43 = t;
+                                                                                    int h_43 = stack_ptr;
                                                                                     if((PushChoice() == 0))
                                                                                       {
                                                                                         if(match_cons(t, sym_RGChoice_2))
                                                                                           {
-                                                                                            ATerm c_43 = ATgetArgument(t, 0);
-                                                                                            ATerm d_43 = ATgetArgument(t, 1);
+                                                                                            ATerm i_43 = ATgetArgument(t, 0);
+                                                                                            ATerm j_43 = ATgetArgument(t, 1);
                                                                                           }
                                                                                         else
                                                                                           _fail(t);
-                                                                                        LocalPopChoice(b_43);
-                                                                                        t = a_18;
+                                                                                        LocalPopChoice(h_43);
+                                                                                        t = e_18;
                                                                                       }
                                                                                     else
                                                                                       {
-                                                                                        t = a_43;
+                                                                                        t = g_43;
                                                                                         {
-                                                                                          ATerm e_43 = t;
-                                                                                          int f_43 = stack_ptr;
+                                                                                          ATerm k_43 = t;
+                                                                                          int l_43 = stack_ptr;
                                                                                           if((PushChoice() == 0))
                                                                                             {
                                                                                               if(match_cons(t, sym_GuardedLChoice_3))
                                                                                                 {
-                                                                                                  ATerm g_43 = ATgetArgument(t, 0);
-                                                                                                  ATerm h_43 = ATgetArgument(t, 1);
-                                                                                                  ATerm i_43 = ATgetArgument(t, 2);
+                                                                                                  ATerm m_43 = ATgetArgument(t, 0);
+                                                                                                  ATerm n_43 = ATgetArgument(t, 1);
+                                                                                                  ATerm o_43 = ATgetArgument(t, 2);
                                                                                                 }
                                                                                               else
                                                                                                 _fail(t);
-                                                                                              LocalPopChoice(f_43);
-                                                                                              t = a_18;
+                                                                                              LocalPopChoice(l_43);
+                                                                                              t = e_18;
                                                                                             }
                                                                                           else
                                                                                             {
-                                                                                              t = e_43;
+                                                                                              t = k_43;
                                                                                               if(match_cons(t, sym_Choice_2))
                                                                                                 {
-                                                                                                  ATerm j_43 = ATgetArgument(t, 0);
-                                                                                                  ATerm k_43 = ATgetArgument(t, 1);
+                                                                                                  ATerm p_43 = ATgetArgument(t, 0);
+                                                                                                  ATerm q_43 = ATgetArgument(t, 1);
                                                                                                 }
                                                                                               else
                                                                                                 _fail(t);
-                                                                                              t = a_18;
+                                                                                              t = e_18;
                                                                                             }
                                                                                         }
                                                                                       }
@@ -5588,132 +5591,132 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                                 }
                                                               }
                                                           }
-                                                          t = (ATerm) ATmakeAppl(sym_Choice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, a_18), b_18);
+                                                          t = (ATerm) ATmakeAppl(sym_Choice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, e_18), f_18);
                                                         }
                                                       else
                                                         {
                                                           if(match_cons(t, sym_LChoice_2))
                                                             {
-                                                              a_18 = ATgetArgument(t, 0);
-                                                              b_18 = ATgetArgument(t, 1);
-                                                              t = a_18;
+                                                              e_18 = ATgetArgument(t, 0);
+                                                              f_18 = ATgetArgument(t, 1);
+                                                              t = e_18;
                                                               {
-                                                                ATerm l_43 = t;
-                                                                int m_43 = stack_ptr;
+                                                                ATerm r_43 = t;
+                                                                int s_43 = stack_ptr;
                                                                 if((PushChoice() == 0))
                                                                   {
                                                                     if(match_cons(t, sym_Choice_2))
                                                                       {
-                                                                        ATerm n_43 = ATgetArgument(t, 0);
-                                                                        ATerm o_43 = ATgetArgument(t, 1);
+                                                                        ATerm t_43 = ATgetArgument(t, 0);
+                                                                        ATerm u_43 = ATgetArgument(t, 1);
                                                                       }
                                                                     else
                                                                       _fail(t);
-                                                                    LocalPopChoice(m_43);
-                                                                    t = a_18;
+                                                                    LocalPopChoice(s_43);
+                                                                    t = e_18;
                                                                   }
                                                                 else
                                                                   {
-                                                                    t = l_43;
+                                                                    t = r_43;
                                                                     {
-                                                                      ATerm p_43 = t;
-                                                                      int q_43 = stack_ptr;
+                                                                      ATerm v_43 = t;
+                                                                      int w_43 = stack_ptr;
                                                                       if((PushChoice() == 0))
                                                                         {
                                                                           if(match_cons(t, sym_RChoice_2))
                                                                             {
-                                                                              ATerm r_43 = ATgetArgument(t, 0);
-                                                                              ATerm s_43 = ATgetArgument(t, 1);
+                                                                              ATerm x_43 = ATgetArgument(t, 0);
+                                                                              ATerm y_43 = ATgetArgument(t, 1);
                                                                             }
                                                                           else
                                                                             _fail(t);
-                                                                          LocalPopChoice(q_43);
-                                                                          t = a_18;
+                                                                          LocalPopChoice(w_43);
+                                                                          t = e_18;
                                                                         }
                                                                       else
                                                                         {
-                                                                          t = p_43;
+                                                                          t = v_43;
                                                                           {
-                                                                            ATerm t_43 = t;
-                                                                            int u_43 = stack_ptr;
+                                                                            ATerm z_43 = t;
+                                                                            int a_44 = stack_ptr;
                                                                             if((PushChoice() == 0))
                                                                               {
                                                                                 if(match_cons(t, sym_GChoice_2))
                                                                                   {
-                                                                                    ATerm v_43 = ATgetArgument(t, 0);
-                                                                                    ATerm w_43 = ATgetArgument(t, 1);
+                                                                                    ATerm b_44 = ATgetArgument(t, 0);
+                                                                                    ATerm c_44 = ATgetArgument(t, 1);
                                                                                   }
                                                                                 else
                                                                                   _fail(t);
-                                                                                LocalPopChoice(u_43);
-                                                                                t = a_18;
+                                                                                LocalPopChoice(a_44);
+                                                                                t = e_18;
                                                                               }
                                                                             else
                                                                               {
-                                                                                t = t_43;
+                                                                                t = z_43;
                                                                                 {
-                                                                                  ATerm x_43 = t;
-                                                                                  int y_43 = stack_ptr;
+                                                                                  ATerm d_44 = t;
+                                                                                  int e_44 = stack_ptr;
                                                                                   if((PushChoice() == 0))
                                                                                     {
                                                                                       if(match_cons(t, sym_LGChoice_2))
                                                                                         {
-                                                                                          ATerm z_43 = ATgetArgument(t, 0);
-                                                                                          ATerm a_44 = ATgetArgument(t, 1);
+                                                                                          ATerm f_44 = ATgetArgument(t, 0);
+                                                                                          ATerm g_44 = ATgetArgument(t, 1);
                                                                                         }
                                                                                       else
                                                                                         _fail(t);
-                                                                                      LocalPopChoice(y_43);
-                                                                                      t = a_18;
+                                                                                      LocalPopChoice(e_44);
+                                                                                      t = e_18;
                                                                                     }
                                                                                   else
                                                                                     {
-                                                                                      t = x_43;
+                                                                                      t = d_44;
                                                                                       {
-                                                                                        ATerm b_44 = t;
-                                                                                        int c_44 = stack_ptr;
+                                                                                        ATerm h_44 = t;
+                                                                                        int i_44 = stack_ptr;
                                                                                         if((PushChoice() == 0))
                                                                                           {
                                                                                             if(match_cons(t, sym_RGChoice_2))
                                                                                               {
-                                                                                                ATerm d_44 = ATgetArgument(t, 0);
-                                                                                                ATerm e_44 = ATgetArgument(t, 1);
+                                                                                                ATerm j_44 = ATgetArgument(t, 0);
+                                                                                                ATerm k_44 = ATgetArgument(t, 1);
                                                                                               }
                                                                                             else
                                                                                               _fail(t);
-                                                                                            LocalPopChoice(c_44);
-                                                                                            t = a_18;
+                                                                                            LocalPopChoice(i_44);
+                                                                                            t = e_18;
                                                                                           }
                                                                                         else
                                                                                           {
-                                                                                            t = b_44;
+                                                                                            t = h_44;
                                                                                             {
-                                                                                              ATerm f_44 = t;
-                                                                                              int g_44 = stack_ptr;
+                                                                                              ATerm l_44 = t;
+                                                                                              int m_44 = stack_ptr;
                                                                                               if((PushChoice() == 0))
                                                                                                 {
                                                                                                   if(match_cons(t, sym_GuardedLChoice_3))
                                                                                                     {
-                                                                                                      ATerm h_44 = ATgetArgument(t, 0);
-                                                                                                      ATerm i_44 = ATgetArgument(t, 1);
-                                                                                                      ATerm j_44 = ATgetArgument(t, 2);
+                                                                                                      ATerm n_44 = ATgetArgument(t, 0);
+                                                                                                      ATerm o_44 = ATgetArgument(t, 1);
+                                                                                                      ATerm p_44 = ATgetArgument(t, 2);
                                                                                                     }
                                                                                                   else
                                                                                                     _fail(t);
-                                                                                                  LocalPopChoice(g_44);
-                                                                                                  t = a_18;
+                                                                                                  LocalPopChoice(m_44);
+                                                                                                  t = e_18;
                                                                                                 }
                                                                                               else
                                                                                                 {
-                                                                                                  t = f_44;
+                                                                                                  t = l_44;
                                                                                                   if(match_cons(t, sym_LChoice_2))
                                                                                                     {
-                                                                                                      ATerm k_44 = ATgetArgument(t, 0);
-                                                                                                      ATerm l_44 = ATgetArgument(t, 1);
+                                                                                                      ATerm q_44 = ATgetArgument(t, 0);
+                                                                                                      ATerm r_44 = ATgetArgument(t, 1);
                                                                                                     }
                                                                                                   else
                                                                                                     _fail(t);
-                                                                                                  t = a_18;
+                                                                                                  t = e_18;
                                                                                                 }
                                                                                             }
                                                                                           }
@@ -5726,132 +5729,132 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                                     }
                                                                   }
                                                               }
-                                                              t = (ATerm) ATmakeAppl(sym_LChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, a_18), b_18);
+                                                              t = (ATerm) ATmakeAppl(sym_LChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, e_18), f_18);
                                                             }
                                                           else
                                                             {
                                                               if(match_cons(t, sym_RChoice_2))
                                                                 {
-                                                                  a_18 = ATgetArgument(t, 0);
-                                                                  b_18 = ATgetArgument(t, 1);
-                                                                  t = a_18;
+                                                                  e_18 = ATgetArgument(t, 0);
+                                                                  f_18 = ATgetArgument(t, 1);
+                                                                  t = e_18;
                                                                   {
-                                                                    ATerm m_44 = t;
-                                                                    int n_44 = stack_ptr;
+                                                                    ATerm s_44 = t;
+                                                                    int t_44 = stack_ptr;
                                                                     if((PushChoice() == 0))
                                                                       {
                                                                         if(match_cons(t, sym_Choice_2))
                                                                           {
-                                                                            ATerm o_44 = ATgetArgument(t, 0);
-                                                                            ATerm p_44 = ATgetArgument(t, 1);
+                                                                            ATerm u_44 = ATgetArgument(t, 0);
+                                                                            ATerm v_44 = ATgetArgument(t, 1);
                                                                           }
                                                                         else
                                                                           _fail(t);
-                                                                        LocalPopChoice(n_44);
-                                                                        t = a_18;
+                                                                        LocalPopChoice(t_44);
+                                                                        t = e_18;
                                                                       }
                                                                     else
                                                                       {
-                                                                        t = m_44;
+                                                                        t = s_44;
                                                                         {
-                                                                          ATerm q_44 = t;
-                                                                          int r_44 = stack_ptr;
+                                                                          ATerm w_44 = t;
+                                                                          int x_44 = stack_ptr;
                                                                           if((PushChoice() == 0))
                                                                             {
                                                                               if(match_cons(t, sym_LChoice_2))
                                                                                 {
-                                                                                  ATerm s_44 = ATgetArgument(t, 0);
-                                                                                  ATerm t_44 = ATgetArgument(t, 1);
+                                                                                  ATerm y_44 = ATgetArgument(t, 0);
+                                                                                  ATerm z_44 = ATgetArgument(t, 1);
                                                                                 }
                                                                               else
                                                                                 _fail(t);
-                                                                              LocalPopChoice(r_44);
-                                                                              t = a_18;
+                                                                              LocalPopChoice(x_44);
+                                                                              t = e_18;
                                                                             }
                                                                           else
                                                                             {
-                                                                              t = q_44;
+                                                                              t = w_44;
                                                                               {
-                                                                                ATerm u_44 = t;
-                                                                                int v_44 = stack_ptr;
+                                                                                ATerm a_45 = t;
+                                                                                int b_45 = stack_ptr;
                                                                                 if((PushChoice() == 0))
                                                                                   {
                                                                                     if(match_cons(t, sym_GChoice_2))
                                                                                       {
-                                                                                        ATerm w_44 = ATgetArgument(t, 0);
-                                                                                        ATerm x_44 = ATgetArgument(t, 1);
+                                                                                        ATerm c_45 = ATgetArgument(t, 0);
+                                                                                        ATerm d_45 = ATgetArgument(t, 1);
                                                                                       }
                                                                                     else
                                                                                       _fail(t);
-                                                                                    LocalPopChoice(v_44);
-                                                                                    t = a_18;
+                                                                                    LocalPopChoice(b_45);
+                                                                                    t = e_18;
                                                                                   }
                                                                                 else
                                                                                   {
-                                                                                    t = u_44;
+                                                                                    t = a_45;
                                                                                     {
-                                                                                      ATerm y_44 = t;
-                                                                                      int z_44 = stack_ptr;
+                                                                                      ATerm e_45 = t;
+                                                                                      int f_45 = stack_ptr;
                                                                                       if((PushChoice() == 0))
                                                                                         {
                                                                                           if(match_cons(t, sym_LGChoice_2))
                                                                                             {
-                                                                                              ATerm a_45 = ATgetArgument(t, 0);
-                                                                                              ATerm b_45 = ATgetArgument(t, 1);
+                                                                                              ATerm g_45 = ATgetArgument(t, 0);
+                                                                                              ATerm h_45 = ATgetArgument(t, 1);
                                                                                             }
                                                                                           else
                                                                                             _fail(t);
-                                                                                          LocalPopChoice(z_44);
-                                                                                          t = a_18;
+                                                                                          LocalPopChoice(f_45);
+                                                                                          t = e_18;
                                                                                         }
                                                                                       else
                                                                                         {
-                                                                                          t = y_44;
+                                                                                          t = e_45;
                                                                                           {
-                                                                                            ATerm c_45 = t;
-                                                                                            int d_45 = stack_ptr;
+                                                                                            ATerm i_45 = t;
+                                                                                            int j_45 = stack_ptr;
                                                                                             if((PushChoice() == 0))
                                                                                               {
                                                                                                 if(match_cons(t, sym_RGChoice_2))
                                                                                                   {
-                                                                                                    ATerm e_45 = ATgetArgument(t, 0);
-                                                                                                    ATerm f_45 = ATgetArgument(t, 1);
+                                                                                                    ATerm k_45 = ATgetArgument(t, 0);
+                                                                                                    ATerm l_45 = ATgetArgument(t, 1);
                                                                                                   }
                                                                                                 else
                                                                                                   _fail(t);
-                                                                                                LocalPopChoice(d_45);
-                                                                                                t = a_18;
+                                                                                                LocalPopChoice(j_45);
+                                                                                                t = e_18;
                                                                                               }
                                                                                             else
                                                                                               {
-                                                                                                t = c_45;
+                                                                                                t = i_45;
                                                                                                 {
-                                                                                                  ATerm g_45 = t;
-                                                                                                  int h_45 = stack_ptr;
+                                                                                                  ATerm m_45 = t;
+                                                                                                  int n_45 = stack_ptr;
                                                                                                   if((PushChoice() == 0))
                                                                                                     {
                                                                                                       if(match_cons(t, sym_GuardedLChoice_3))
                                                                                                         {
-                                                                                                          ATerm i_45 = ATgetArgument(t, 0);
-                                                                                                          ATerm j_45 = ATgetArgument(t, 1);
-                                                                                                          ATerm k_45 = ATgetArgument(t, 2);
+                                                                                                          ATerm o_45 = ATgetArgument(t, 0);
+                                                                                                          ATerm p_45 = ATgetArgument(t, 1);
+                                                                                                          ATerm q_45 = ATgetArgument(t, 2);
                                                                                                         }
                                                                                                       else
                                                                                                         _fail(t);
-                                                                                                      LocalPopChoice(h_45);
-                                                                                                      t = a_18;
+                                                                                                      LocalPopChoice(n_45);
+                                                                                                      t = e_18;
                                                                                                     }
                                                                                                   else
                                                                                                     {
-                                                                                                      t = g_45;
+                                                                                                      t = m_45;
                                                                                                       if(match_cons(t, sym_RChoice_2))
                                                                                                         {
-                                                                                                          ATerm l_45 = ATgetArgument(t, 0);
-                                                                                                          ATerm m_45 = ATgetArgument(t, 1);
+                                                                                                          ATerm r_45 = ATgetArgument(t, 0);
+                                                                                                          ATerm s_45 = ATgetArgument(t, 1);
                                                                                                         }
                                                                                                       else
                                                                                                         _fail(t);
-                                                                                                      t = a_18;
+                                                                                                      t = e_18;
                                                                                                     }
                                                                                                 }
                                                                                               }
@@ -5864,132 +5867,132 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                                         }
                                                                       }
                                                                   }
-                                                                  t = (ATerm) ATmakeAppl(sym_RChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, a_18), b_18);
+                                                                  t = (ATerm) ATmakeAppl(sym_RChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, e_18), f_18);
                                                                 }
                                                               else
                                                                 {
                                                                   if(match_cons(t, sym_GChoice_2))
                                                                     {
-                                                                      a_18 = ATgetArgument(t, 0);
-                                                                      b_18 = ATgetArgument(t, 1);
-                                                                      t = a_18;
+                                                                      e_18 = ATgetArgument(t, 0);
+                                                                      f_18 = ATgetArgument(t, 1);
+                                                                      t = e_18;
                                                                       {
-                                                                        ATerm n_45 = t;
-                                                                        int o_45 = stack_ptr;
+                                                                        ATerm t_45 = t;
+                                                                        int u_45 = stack_ptr;
                                                                         if((PushChoice() == 0))
                                                                           {
                                                                             if(match_cons(t, sym_Choice_2))
                                                                               {
-                                                                                ATerm p_45 = ATgetArgument(t, 0);
-                                                                                ATerm q_45 = ATgetArgument(t, 1);
+                                                                                ATerm v_45 = ATgetArgument(t, 0);
+                                                                                ATerm w_45 = ATgetArgument(t, 1);
                                                                               }
                                                                             else
                                                                               _fail(t);
-                                                                            LocalPopChoice(o_45);
-                                                                            t = a_18;
+                                                                            LocalPopChoice(u_45);
+                                                                            t = e_18;
                                                                           }
                                                                         else
                                                                           {
-                                                                            t = n_45;
+                                                                            t = t_45;
                                                                             {
-                                                                              ATerm r_45 = t;
-                                                                              int s_45 = stack_ptr;
+                                                                              ATerm x_45 = t;
+                                                                              int y_45 = stack_ptr;
                                                                               if((PushChoice() == 0))
                                                                                 {
                                                                                   if(match_cons(t, sym_LChoice_2))
                                                                                     {
-                                                                                      ATerm t_45 = ATgetArgument(t, 0);
-                                                                                      ATerm u_45 = ATgetArgument(t, 1);
+                                                                                      ATerm z_45 = ATgetArgument(t, 0);
+                                                                                      ATerm a_46 = ATgetArgument(t, 1);
                                                                                     }
                                                                                   else
                                                                                     _fail(t);
-                                                                                  LocalPopChoice(s_45);
-                                                                                  t = a_18;
+                                                                                  LocalPopChoice(y_45);
+                                                                                  t = e_18;
                                                                                 }
                                                                               else
                                                                                 {
-                                                                                  t = r_45;
+                                                                                  t = x_45;
                                                                                   {
-                                                                                    ATerm v_45 = t;
-                                                                                    int w_45 = stack_ptr;
+                                                                                    ATerm b_46 = t;
+                                                                                    int c_46 = stack_ptr;
                                                                                     if((PushChoice() == 0))
                                                                                       {
                                                                                         if(match_cons(t, sym_RChoice_2))
                                                                                           {
-                                                                                            ATerm x_45 = ATgetArgument(t, 0);
-                                                                                            ATerm y_45 = ATgetArgument(t, 1);
+                                                                                            ATerm d_46 = ATgetArgument(t, 0);
+                                                                                            ATerm e_46 = ATgetArgument(t, 1);
                                                                                           }
                                                                                         else
                                                                                           _fail(t);
-                                                                                        LocalPopChoice(w_45);
-                                                                                        t = a_18;
+                                                                                        LocalPopChoice(c_46);
+                                                                                        t = e_18;
                                                                                       }
                                                                                     else
                                                                                       {
-                                                                                        t = v_45;
+                                                                                        t = b_46;
                                                                                         {
-                                                                                          ATerm z_45 = t;
-                                                                                          int a_46 = stack_ptr;
+                                                                                          ATerm f_46 = t;
+                                                                                          int g_46 = stack_ptr;
                                                                                           if((PushChoice() == 0))
                                                                                             {
                                                                                               if(match_cons(t, sym_LGChoice_2))
                                                                                                 {
-                                                                                                  ATerm b_46 = ATgetArgument(t, 0);
-                                                                                                  ATerm c_46 = ATgetArgument(t, 1);
+                                                                                                  ATerm h_46 = ATgetArgument(t, 0);
+                                                                                                  ATerm i_46 = ATgetArgument(t, 1);
                                                                                                 }
                                                                                               else
                                                                                                 _fail(t);
-                                                                                              LocalPopChoice(a_46);
-                                                                                              t = a_18;
+                                                                                              LocalPopChoice(g_46);
+                                                                                              t = e_18;
                                                                                             }
                                                                                           else
                                                                                             {
-                                                                                              t = z_45;
+                                                                                              t = f_46;
                                                                                               {
-                                                                                                ATerm d_46 = t;
-                                                                                                int e_46 = stack_ptr;
+                                                                                                ATerm j_46 = t;
+                                                                                                int k_46 = stack_ptr;
                                                                                                 if((PushChoice() == 0))
                                                                                                   {
                                                                                                     if(match_cons(t, sym_RGChoice_2))
                                                                                                       {
-                                                                                                        ATerm f_46 = ATgetArgument(t, 0);
-                                                                                                        ATerm g_46 = ATgetArgument(t, 1);
+                                                                                                        ATerm l_46 = ATgetArgument(t, 0);
+                                                                                                        ATerm m_46 = ATgetArgument(t, 1);
                                                                                                       }
                                                                                                     else
                                                                                                       _fail(t);
-                                                                                                    LocalPopChoice(e_46);
-                                                                                                    t = a_18;
+                                                                                                    LocalPopChoice(k_46);
+                                                                                                    t = e_18;
                                                                                                   }
                                                                                                 else
                                                                                                   {
-                                                                                                    t = d_46;
+                                                                                                    t = j_46;
                                                                                                     {
-                                                                                                      ATerm h_46 = t;
-                                                                                                      int i_46 = stack_ptr;
+                                                                                                      ATerm n_46 = t;
+                                                                                                      int o_46 = stack_ptr;
                                                                                                       if((PushChoice() == 0))
                                                                                                         {
                                                                                                           if(match_cons(t, sym_GuardedLChoice_3))
                                                                                                             {
-                                                                                                              ATerm j_46 = ATgetArgument(t, 0);
-                                                                                                              ATerm k_46 = ATgetArgument(t, 1);
-                                                                                                              ATerm l_46 = ATgetArgument(t, 2);
+                                                                                                              ATerm p_46 = ATgetArgument(t, 0);
+                                                                                                              ATerm q_46 = ATgetArgument(t, 1);
+                                                                                                              ATerm r_46 = ATgetArgument(t, 2);
                                                                                                             }
                                                                                                           else
                                                                                                             _fail(t);
-                                                                                                          LocalPopChoice(i_46);
-                                                                                                          t = a_18;
+                                                                                                          LocalPopChoice(o_46);
+                                                                                                          t = e_18;
                                                                                                         }
                                                                                                       else
                                                                                                         {
-                                                                                                          t = h_46;
+                                                                                                          t = n_46;
                                                                                                           if(match_cons(t, sym_GChoice_2))
                                                                                                             {
-                                                                                                              ATerm m_46 = ATgetArgument(t, 0);
-                                                                                                              ATerm n_46 = ATgetArgument(t, 1);
+                                                                                                              ATerm s_46 = ATgetArgument(t, 0);
+                                                                                                              ATerm t_46 = ATgetArgument(t, 1);
                                                                                                             }
                                                                                                           else
                                                                                                             _fail(t);
-                                                                                                          t = a_18;
+                                                                                                          t = e_18;
                                                                                                         }
                                                                                                     }
                                                                                                   }
@@ -6002,132 +6005,132 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                                             }
                                                                           }
                                                                       }
-                                                                      t = (ATerm) ATmakeAppl(sym_GChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, a_18), b_18);
+                                                                      t = (ATerm) ATmakeAppl(sym_GChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, e_18), f_18);
                                                                     }
                                                                   else
                                                                     {
                                                                       if(match_cons(t, sym_LGChoice_2))
                                                                         {
-                                                                          a_18 = ATgetArgument(t, 0);
-                                                                          b_18 = ATgetArgument(t, 1);
-                                                                          t = a_18;
+                                                                          e_18 = ATgetArgument(t, 0);
+                                                                          f_18 = ATgetArgument(t, 1);
+                                                                          t = e_18;
                                                                           {
-                                                                            ATerm o_46 = t;
-                                                                            int p_46 = stack_ptr;
+                                                                            ATerm u_46 = t;
+                                                                            int v_46 = stack_ptr;
                                                                             if((PushChoice() == 0))
                                                                               {
                                                                                 if(match_cons(t, sym_Choice_2))
                                                                                   {
-                                                                                    ATerm q_46 = ATgetArgument(t, 0);
-                                                                                    ATerm r_46 = ATgetArgument(t, 1);
+                                                                                    ATerm w_46 = ATgetArgument(t, 0);
+                                                                                    ATerm x_46 = ATgetArgument(t, 1);
                                                                                   }
                                                                                 else
                                                                                   _fail(t);
-                                                                                LocalPopChoice(p_46);
-                                                                                t = a_18;
+                                                                                LocalPopChoice(v_46);
+                                                                                t = e_18;
                                                                               }
                                                                             else
                                                                               {
-                                                                                t = o_46;
+                                                                                t = u_46;
                                                                                 {
-                                                                                  ATerm s_46 = t;
-                                                                                  int t_46 = stack_ptr;
+                                                                                  ATerm y_46 = t;
+                                                                                  int z_46 = stack_ptr;
                                                                                   if((PushChoice() == 0))
                                                                                     {
                                                                                       if(match_cons(t, sym_LChoice_2))
                                                                                         {
-                                                                                          ATerm u_46 = ATgetArgument(t, 0);
-                                                                                          ATerm v_46 = ATgetArgument(t, 1);
+                                                                                          ATerm a_47 = ATgetArgument(t, 0);
+                                                                                          ATerm b_47 = ATgetArgument(t, 1);
                                                                                         }
                                                                                       else
                                                                                         _fail(t);
-                                                                                      LocalPopChoice(t_46);
-                                                                                      t = a_18;
+                                                                                      LocalPopChoice(z_46);
+                                                                                      t = e_18;
                                                                                     }
                                                                                   else
                                                                                     {
-                                                                                      t = s_46;
+                                                                                      t = y_46;
                                                                                       {
-                                                                                        ATerm w_46 = t;
-                                                                                        int x_46 = stack_ptr;
+                                                                                        ATerm c_47 = t;
+                                                                                        int d_47 = stack_ptr;
                                                                                         if((PushChoice() == 0))
                                                                                           {
                                                                                             if(match_cons(t, sym_RChoice_2))
                                                                                               {
-                                                                                                ATerm y_46 = ATgetArgument(t, 0);
-                                                                                                ATerm z_46 = ATgetArgument(t, 1);
+                                                                                                ATerm e_47 = ATgetArgument(t, 0);
+                                                                                                ATerm f_47 = ATgetArgument(t, 1);
                                                                                               }
                                                                                             else
                                                                                               _fail(t);
-                                                                                            LocalPopChoice(x_46);
-                                                                                            t = a_18;
+                                                                                            LocalPopChoice(d_47);
+                                                                                            t = e_18;
                                                                                           }
                                                                                         else
                                                                                           {
-                                                                                            t = w_46;
+                                                                                            t = c_47;
                                                                                             {
-                                                                                              ATerm a_47 = t;
-                                                                                              int b_47 = stack_ptr;
+                                                                                              ATerm g_47 = t;
+                                                                                              int h_47 = stack_ptr;
                                                                                               if((PushChoice() == 0))
                                                                                                 {
                                                                                                   if(match_cons(t, sym_GChoice_2))
                                                                                                     {
-                                                                                                      ATerm c_47 = ATgetArgument(t, 0);
-                                                                                                      ATerm d_47 = ATgetArgument(t, 1);
+                                                                                                      ATerm i_47 = ATgetArgument(t, 0);
+                                                                                                      ATerm j_47 = ATgetArgument(t, 1);
                                                                                                     }
                                                                                                   else
                                                                                                     _fail(t);
-                                                                                                  LocalPopChoice(b_47);
-                                                                                                  t = a_18;
+                                                                                                  LocalPopChoice(h_47);
+                                                                                                  t = e_18;
                                                                                                 }
                                                                                               else
                                                                                                 {
-                                                                                                  t = a_47;
+                                                                                                  t = g_47;
                                                                                                   {
-                                                                                                    ATerm e_47 = t;
-                                                                                                    int f_47 = stack_ptr;
+                                                                                                    ATerm k_47 = t;
+                                                                                                    int l_47 = stack_ptr;
                                                                                                     if((PushChoice() == 0))
                                                                                                       {
                                                                                                         if(match_cons(t, sym_RGChoice_2))
                                                                                                           {
-                                                                                                            ATerm g_47 = ATgetArgument(t, 0);
-                                                                                                            ATerm h_47 = ATgetArgument(t, 1);
+                                                                                                            ATerm m_47 = ATgetArgument(t, 0);
+                                                                                                            ATerm n_47 = ATgetArgument(t, 1);
                                                                                                           }
                                                                                                         else
                                                                                                           _fail(t);
-                                                                                                        LocalPopChoice(f_47);
-                                                                                                        t = a_18;
+                                                                                                        LocalPopChoice(l_47);
+                                                                                                        t = e_18;
                                                                                                       }
                                                                                                     else
                                                                                                       {
-                                                                                                        t = e_47;
+                                                                                                        t = k_47;
                                                                                                         {
-                                                                                                          ATerm i_47 = t;
-                                                                                                          int j_47 = stack_ptr;
+                                                                                                          ATerm o_47 = t;
+                                                                                                          int p_47 = stack_ptr;
                                                                                                           if((PushChoice() == 0))
                                                                                                             {
                                                                                                               if(match_cons(t, sym_GuardedLChoice_3))
                                                                                                                 {
-                                                                                                                  ATerm k_47 = ATgetArgument(t, 0);
-                                                                                                                  ATerm l_47 = ATgetArgument(t, 1);
-                                                                                                                  ATerm m_47 = ATgetArgument(t, 2);
+                                                                                                                  ATerm q_47 = ATgetArgument(t, 0);
+                                                                                                                  ATerm r_47 = ATgetArgument(t, 1);
+                                                                                                                  ATerm s_47 = ATgetArgument(t, 2);
                                                                                                                 }
                                                                                                               else
                                                                                                                 _fail(t);
-                                                                                                              LocalPopChoice(j_47);
-                                                                                                              t = a_18;
+                                                                                                              LocalPopChoice(p_47);
+                                                                                                              t = e_18;
                                                                                                             }
                                                                                                           else
                                                                                                             {
-                                                                                                              t = i_47;
+                                                                                                              t = o_47;
                                                                                                               if(match_cons(t, sym_LGChoice_2))
                                                                                                                 {
-                                                                                                                  ATerm n_47 = ATgetArgument(t, 0);
-                                                                                                                  ATerm o_47 = ATgetArgument(t, 1);
+                                                                                                                  ATerm t_47 = ATgetArgument(t, 0);
+                                                                                                                  ATerm u_47 = ATgetArgument(t, 1);
                                                                                                                 }
                                                                                                               else
                                                                                                                 _fail(t);
-                                                                                                              t = a_18;
+                                                                                                              t = e_18;
                                                                                                             }
                                                                                                         }
                                                                                                       }
@@ -6140,132 +6143,132 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                                                 }
                                                                               }
                                                                           }
-                                                                          t = (ATerm) ATmakeAppl(sym_LGChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, a_18), b_18);
+                                                                          t = (ATerm) ATmakeAppl(sym_LGChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, e_18), f_18);
                                                                         }
                                                                       else
                                                                         {
                                                                           if(match_cons(t, sym_RGChoice_2))
                                                                             {
-                                                                              a_18 = ATgetArgument(t, 0);
-                                                                              b_18 = ATgetArgument(t, 1);
-                                                                              t = a_18;
+                                                                              e_18 = ATgetArgument(t, 0);
+                                                                              f_18 = ATgetArgument(t, 1);
+                                                                              t = e_18;
                                                                               {
-                                                                                ATerm p_47 = t;
-                                                                                int q_47 = stack_ptr;
+                                                                                ATerm v_47 = t;
+                                                                                int w_47 = stack_ptr;
                                                                                 if((PushChoice() == 0))
                                                                                   {
                                                                                     if(match_cons(t, sym_Choice_2))
                                                                                       {
-                                                                                        ATerm r_47 = ATgetArgument(t, 0);
-                                                                                        ATerm s_47 = ATgetArgument(t, 1);
+                                                                                        ATerm x_47 = ATgetArgument(t, 0);
+                                                                                        ATerm y_47 = ATgetArgument(t, 1);
                                                                                       }
                                                                                     else
                                                                                       _fail(t);
-                                                                                    LocalPopChoice(q_47);
-                                                                                    t = a_18;
+                                                                                    LocalPopChoice(w_47);
+                                                                                    t = e_18;
                                                                                   }
                                                                                 else
                                                                                   {
-                                                                                    t = p_47;
+                                                                                    t = v_47;
                                                                                     {
-                                                                                      ATerm t_47 = t;
-                                                                                      int u_47 = stack_ptr;
+                                                                                      ATerm z_47 = t;
+                                                                                      int a_48 = stack_ptr;
                                                                                       if((PushChoice() == 0))
                                                                                         {
                                                                                           if(match_cons(t, sym_LChoice_2))
                                                                                             {
-                                                                                              ATerm v_47 = ATgetArgument(t, 0);
-                                                                                              ATerm w_47 = ATgetArgument(t, 1);
+                                                                                              ATerm b_48 = ATgetArgument(t, 0);
+                                                                                              ATerm c_48 = ATgetArgument(t, 1);
                                                                                             }
                                                                                           else
                                                                                             _fail(t);
-                                                                                          LocalPopChoice(u_47);
-                                                                                          t = a_18;
+                                                                                          LocalPopChoice(a_48);
+                                                                                          t = e_18;
                                                                                         }
                                                                                       else
                                                                                         {
-                                                                                          t = t_47;
+                                                                                          t = z_47;
                                                                                           {
-                                                                                            ATerm x_47 = t;
-                                                                                            int y_47 = stack_ptr;
+                                                                                            ATerm d_48 = t;
+                                                                                            int e_48 = stack_ptr;
                                                                                             if((PushChoice() == 0))
                                                                                               {
                                                                                                 if(match_cons(t, sym_RChoice_2))
                                                                                                   {
-                                                                                                    ATerm z_47 = ATgetArgument(t, 0);
-                                                                                                    ATerm a_48 = ATgetArgument(t, 1);
+                                                                                                    ATerm f_48 = ATgetArgument(t, 0);
+                                                                                                    ATerm g_48 = ATgetArgument(t, 1);
                                                                                                   }
                                                                                                 else
                                                                                                   _fail(t);
-                                                                                                LocalPopChoice(y_47);
-                                                                                                t = a_18;
+                                                                                                LocalPopChoice(e_48);
+                                                                                                t = e_18;
                                                                                               }
                                                                                             else
                                                                                               {
-                                                                                                t = x_47;
+                                                                                                t = d_48;
                                                                                                 {
-                                                                                                  ATerm b_48 = t;
-                                                                                                  int c_48 = stack_ptr;
+                                                                                                  ATerm h_48 = t;
+                                                                                                  int i_48 = stack_ptr;
                                                                                                   if((PushChoice() == 0))
                                                                                                     {
                                                                                                       if(match_cons(t, sym_GChoice_2))
                                                                                                         {
-                                                                                                          ATerm d_48 = ATgetArgument(t, 0);
-                                                                                                          ATerm e_48 = ATgetArgument(t, 1);
+                                                                                                          ATerm j_48 = ATgetArgument(t, 0);
+                                                                                                          ATerm k_48 = ATgetArgument(t, 1);
                                                                                                         }
                                                                                                       else
                                                                                                         _fail(t);
-                                                                                                      LocalPopChoice(c_48);
-                                                                                                      t = a_18;
+                                                                                                      LocalPopChoice(i_48);
+                                                                                                      t = e_18;
                                                                                                     }
                                                                                                   else
                                                                                                     {
-                                                                                                      t = b_48;
+                                                                                                      t = h_48;
                                                                                                       {
-                                                                                                        ATerm f_48 = t;
-                                                                                                        int g_48 = stack_ptr;
+                                                                                                        ATerm l_48 = t;
+                                                                                                        int m_48 = stack_ptr;
                                                                                                         if((PushChoice() == 0))
                                                                                                           {
                                                                                                             if(match_cons(t, sym_LGChoice_2))
                                                                                                               {
-                                                                                                                ATerm h_48 = ATgetArgument(t, 0);
-                                                                                                                ATerm i_48 = ATgetArgument(t, 1);
+                                                                                                                ATerm n_48 = ATgetArgument(t, 0);
+                                                                                                                ATerm o_48 = ATgetArgument(t, 1);
                                                                                                               }
                                                                                                             else
                                                                                                               _fail(t);
-                                                                                                            LocalPopChoice(g_48);
-                                                                                                            t = a_18;
+                                                                                                            LocalPopChoice(m_48);
+                                                                                                            t = e_18;
                                                                                                           }
                                                                                                         else
                                                                                                           {
-                                                                                                            t = f_48;
+                                                                                                            t = l_48;
                                                                                                             {
-                                                                                                              ATerm j_48 = t;
-                                                                                                              int k_48 = stack_ptr;
+                                                                                                              ATerm p_48 = t;
+                                                                                                              int q_48 = stack_ptr;
                                                                                                               if((PushChoice() == 0))
                                                                                                                 {
                                                                                                                   if(match_cons(t, sym_GuardedLChoice_3))
                                                                                                                     {
-                                                                                                                      ATerm l_48 = ATgetArgument(t, 0);
-                                                                                                                      ATerm m_48 = ATgetArgument(t, 1);
-                                                                                                                      ATerm n_48 = ATgetArgument(t, 2);
+                                                                                                                      ATerm r_48 = ATgetArgument(t, 0);
+                                                                                                                      ATerm s_48 = ATgetArgument(t, 1);
+                                                                                                                      ATerm t_48 = ATgetArgument(t, 2);
                                                                                                                     }
                                                                                                                   else
                                                                                                                     _fail(t);
-                                                                                                                  LocalPopChoice(k_48);
-                                                                                                                  t = a_18;
+                                                                                                                  LocalPopChoice(q_48);
+                                                                                                                  t = e_18;
                                                                                                                 }
                                                                                                               else
                                                                                                                 {
-                                                                                                                  t = j_48;
+                                                                                                                  t = p_48;
                                                                                                                   if(match_cons(t, sym_RGChoice_2))
                                                                                                                     {
-                                                                                                                      ATerm o_48 = ATgetArgument(t, 0);
-                                                                                                                      ATerm p_48 = ATgetArgument(t, 1);
+                                                                                                                      ATerm u_48 = ATgetArgument(t, 0);
+                                                                                                                      ATerm v_48 = ATgetArgument(t, 1);
                                                                                                                     }
                                                                                                                   else
                                                                                                                     _fail(t);
-                                                                                                                  t = a_18;
+                                                                                                                  t = e_18;
                                                                                                                 }
                                                                                                             }
                                                                                                           }
@@ -6278,141 +6281,141 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                                                     }
                                                                                   }
                                                                               }
-                                                                              t = (ATerm) ATmakeAppl(sym_RGChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, a_18), b_18);
+                                                                              t = (ATerm) ATmakeAppl(sym_RGChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, e_18), f_18);
                                                                             }
                                                                           else
                                                                             {
                                                                               if(match_cons(t, sym_GuardedLChoice_3))
                                                                                 {
-                                                                                  a_18 = ATgetArgument(t, 0);
-                                                                                  b_18 = ATgetArgument(t, 1);
-                                                                                  c_18 = ATgetArgument(t, 2);
+                                                                                  e_18 = ATgetArgument(t, 0);
+                                                                                  f_18 = ATgetArgument(t, 1);
+                                                                                  g_18 = ATgetArgument(t, 2);
                                                                                 }
                                                                               else
                                                                                 _fail(t);
                                                                               {
-                                                                                ATerm q_48 = t;
-                                                                                int r_48 = stack_ptr;
+                                                                                ATerm w_48 = t;
+                                                                                int x_48 = stack_ptr;
                                                                                 if((PushChoice() == 0))
                                                                                   {
-                                                                                    t = a_18;
+                                                                                    t = e_18;
                                                                                     {
-                                                                                      ATerm s_48 = t;
-                                                                                      int t_48 = stack_ptr;
+                                                                                      ATerm y_48 = t;
+                                                                                      int z_48 = stack_ptr;
                                                                                       if((PushChoice() == 0))
                                                                                         {
                                                                                           if(match_cons(t, sym_Choice_2))
                                                                                             {
-                                                                                              ATerm u_48 = ATgetArgument(t, 0);
-                                                                                              ATerm v_48 = ATgetArgument(t, 1);
+                                                                                              ATerm a_49 = ATgetArgument(t, 0);
+                                                                                              ATerm b_49 = ATgetArgument(t, 1);
                                                                                             }
                                                                                           else
                                                                                             _fail(t);
-                                                                                          LocalPopChoice(t_48);
-                                                                                          t = a_18;
+                                                                                          LocalPopChoice(z_48);
+                                                                                          t = e_18;
                                                                                         }
                                                                                       else
                                                                                         {
-                                                                                          t = s_48;
+                                                                                          t = y_48;
                                                                                           {
-                                                                                            ATerm w_48 = t;
-                                                                                            int x_48 = stack_ptr;
+                                                                                            ATerm c_49 = t;
+                                                                                            int d_49 = stack_ptr;
                                                                                             if((PushChoice() == 0))
                                                                                               {
                                                                                                 if(match_cons(t, sym_LChoice_2))
                                                                                                   {
-                                                                                                    ATerm y_48 = ATgetArgument(t, 0);
-                                                                                                    ATerm z_48 = ATgetArgument(t, 1);
+                                                                                                    ATerm e_49 = ATgetArgument(t, 0);
+                                                                                                    ATerm f_49 = ATgetArgument(t, 1);
                                                                                                   }
                                                                                                 else
                                                                                                   _fail(t);
-                                                                                                LocalPopChoice(x_48);
-                                                                                                t = a_18;
+                                                                                                LocalPopChoice(d_49);
+                                                                                                t = e_18;
                                                                                               }
                                                                                             else
                                                                                               {
-                                                                                                t = w_48;
+                                                                                                t = c_49;
                                                                                                 {
-                                                                                                  ATerm a_49 = t;
-                                                                                                  int b_49 = stack_ptr;
+                                                                                                  ATerm g_49 = t;
+                                                                                                  int h_49 = stack_ptr;
                                                                                                   if((PushChoice() == 0))
                                                                                                     {
                                                                                                       if(match_cons(t, sym_RChoice_2))
                                                                                                         {
-                                                                                                          ATerm c_49 = ATgetArgument(t, 0);
-                                                                                                          ATerm d_49 = ATgetArgument(t, 1);
+                                                                                                          ATerm i_49 = ATgetArgument(t, 0);
+                                                                                                          ATerm j_49 = ATgetArgument(t, 1);
                                                                                                         }
                                                                                                       else
                                                                                                         _fail(t);
-                                                                                                      LocalPopChoice(b_49);
-                                                                                                      t = a_18;
+                                                                                                      LocalPopChoice(h_49);
+                                                                                                      t = e_18;
                                                                                                     }
                                                                                                   else
                                                                                                     {
-                                                                                                      t = a_49;
+                                                                                                      t = g_49;
                                                                                                       {
-                                                                                                        ATerm e_49 = t;
-                                                                                                        int f_49 = stack_ptr;
+                                                                                                        ATerm k_49 = t;
+                                                                                                        int l_49 = stack_ptr;
                                                                                                         if((PushChoice() == 0))
                                                                                                           {
                                                                                                             if(match_cons(t, sym_GChoice_2))
                                                                                                               {
-                                                                                                                ATerm g_49 = ATgetArgument(t, 0);
-                                                                                                                ATerm h_49 = ATgetArgument(t, 1);
+                                                                                                                ATerm m_49 = ATgetArgument(t, 0);
+                                                                                                                ATerm n_49 = ATgetArgument(t, 1);
                                                                                                               }
                                                                                                             else
                                                                                                               _fail(t);
-                                                                                                            LocalPopChoice(f_49);
-                                                                                                            t = a_18;
+                                                                                                            LocalPopChoice(l_49);
+                                                                                                            t = e_18;
                                                                                                           }
                                                                                                         else
                                                                                                           {
-                                                                                                            t = e_49;
+                                                                                                            t = k_49;
                                                                                                             {
-                                                                                                              ATerm i_49 = t;
-                                                                                                              int j_49 = stack_ptr;
+                                                                                                              ATerm o_49 = t;
+                                                                                                              int p_49 = stack_ptr;
                                                                                                               if((PushChoice() == 0))
                                                                                                                 {
                                                                                                                   if(match_cons(t, sym_LGChoice_2))
                                                                                                                     {
-                                                                                                                      ATerm k_49 = ATgetArgument(t, 0);
-                                                                                                                      ATerm l_49 = ATgetArgument(t, 1);
+                                                                                                                      ATerm q_49 = ATgetArgument(t, 0);
+                                                                                                                      ATerm r_49 = ATgetArgument(t, 1);
                                                                                                                     }
                                                                                                                   else
                                                                                                                     _fail(t);
-                                                                                                                  LocalPopChoice(j_49);
-                                                                                                                  t = a_18;
+                                                                                                                  LocalPopChoice(p_49);
+                                                                                                                  t = e_18;
                                                                                                                 }
                                                                                                               else
                                                                                                                 {
-                                                                                                                  t = i_49;
+                                                                                                                  t = o_49;
                                                                                                                   {
-                                                                                                                    ATerm m_49 = t;
-                                                                                                                    int n_49 = stack_ptr;
+                                                                                                                    ATerm s_49 = t;
+                                                                                                                    int t_49 = stack_ptr;
                                                                                                                     if((PushChoice() == 0))
                                                                                                                       {
                                                                                                                         if(match_cons(t, sym_RGChoice_2))
                                                                                                                           {
-                                                                                                                            ATerm o_49 = ATgetArgument(t, 0);
-                                                                                                                            ATerm p_49 = ATgetArgument(t, 1);
+                                                                                                                            ATerm u_49 = ATgetArgument(t, 0);
+                                                                                                                            ATerm v_49 = ATgetArgument(t, 1);
                                                                                                                           }
                                                                                                                         else
                                                                                                                           _fail(t);
-                                                                                                                        LocalPopChoice(n_49);
-                                                                                                                        t = a_18;
+                                                                                                                        LocalPopChoice(t_49);
+                                                                                                                        t = e_18;
                                                                                                                       }
                                                                                                                     else
                                                                                                                       {
-                                                                                                                        t = m_49;
+                                                                                                                        t = s_49;
                                                                                                                         if(match_cons(t, sym_GuardedLChoice_3))
                                                                                                                           {
-                                                                                                                            ATerm q_49 = ATgetArgument(t, 0);
-                                                                                                                            ATerm r_49 = ATgetArgument(t, 1);
-                                                                                                                            ATerm s_49 = ATgetArgument(t, 2);
+                                                                                                                            ATerm w_49 = ATgetArgument(t, 0);
+                                                                                                                            ATerm x_49 = ATgetArgument(t, 1);
+                                                                                                                            ATerm y_49 = ATgetArgument(t, 2);
                                                                                                                           }
                                                                                                                         else
                                                                                                                           _fail(t);
-                                                                                                                        t = a_18;
+                                                                                                                        t = e_18;
                                                                                                                       }
                                                                                                                   }
                                                                                                                 }
@@ -6425,130 +6428,130 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                                                           }
                                                                                         }
                                                                                     }
-                                                                                    t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, a_18), b_18, c_18);
-                                                                                    LocalPopChoice(r_48);
+                                                                                    t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, e_18), f_18, g_18);
+                                                                                    LocalPopChoice(x_48);
                                                                                   }
                                                                                 else
                                                                                   {
-                                                                                    t = q_48;
-                                                                                    t = b_18;
+                                                                                    t = w_48;
+                                                                                    t = f_18;
                                                                                     {
-                                                                                      ATerm t_49 = t;
-                                                                                      int u_49 = stack_ptr;
+                                                                                      ATerm z_49 = t;
+                                                                                      int a_50 = stack_ptr;
                                                                                       if((PushChoice() == 0))
                                                                                         {
                                                                                           if(match_cons(t, sym_Choice_2))
                                                                                             {
-                                                                                              ATerm v_49 = ATgetArgument(t, 0);
-                                                                                              ATerm w_49 = ATgetArgument(t, 1);
+                                                                                              ATerm b_50 = ATgetArgument(t, 0);
+                                                                                              ATerm c_50 = ATgetArgument(t, 1);
                                                                                             }
                                                                                           else
                                                                                             _fail(t);
-                                                                                          LocalPopChoice(u_49);
-                                                                                          t = b_18;
+                                                                                          LocalPopChoice(a_50);
+                                                                                          t = f_18;
                                                                                         }
                                                                                       else
                                                                                         {
-                                                                                          t = t_49;
+                                                                                          t = z_49;
                                                                                           {
-                                                                                            ATerm x_49 = t;
-                                                                                            int y_49 = stack_ptr;
+                                                                                            ATerm d_50 = t;
+                                                                                            int e_50 = stack_ptr;
                                                                                             if((PushChoice() == 0))
                                                                                               {
                                                                                                 if(match_cons(t, sym_LChoice_2))
                                                                                                   {
-                                                                                                    ATerm z_49 = ATgetArgument(t, 0);
-                                                                                                    ATerm a_50 = ATgetArgument(t, 1);
+                                                                                                    ATerm f_50 = ATgetArgument(t, 0);
+                                                                                                    ATerm g_50 = ATgetArgument(t, 1);
                                                                                                   }
                                                                                                 else
                                                                                                   _fail(t);
-                                                                                                LocalPopChoice(y_49);
-                                                                                                t = b_18;
+                                                                                                LocalPopChoice(e_50);
+                                                                                                t = f_18;
                                                                                               }
                                                                                             else
                                                                                               {
-                                                                                                t = x_49;
+                                                                                                t = d_50;
                                                                                                 {
-                                                                                                  ATerm b_50 = t;
-                                                                                                  int c_50 = stack_ptr;
+                                                                                                  ATerm h_50 = t;
+                                                                                                  int i_50 = stack_ptr;
                                                                                                   if((PushChoice() == 0))
                                                                                                     {
                                                                                                       if(match_cons(t, sym_RChoice_2))
                                                                                                         {
-                                                                                                          ATerm d_50 = ATgetArgument(t, 0);
-                                                                                                          ATerm e_50 = ATgetArgument(t, 1);
+                                                                                                          ATerm j_50 = ATgetArgument(t, 0);
+                                                                                                          ATerm k_50 = ATgetArgument(t, 1);
                                                                                                         }
                                                                                                       else
                                                                                                         _fail(t);
-                                                                                                      LocalPopChoice(c_50);
-                                                                                                      t = b_18;
+                                                                                                      LocalPopChoice(i_50);
+                                                                                                      t = f_18;
                                                                                                     }
                                                                                                   else
                                                                                                     {
-                                                                                                      t = b_50;
+                                                                                                      t = h_50;
                                                                                                       {
-                                                                                                        ATerm f_50 = t;
-                                                                                                        int g_50 = stack_ptr;
+                                                                                                        ATerm l_50 = t;
+                                                                                                        int m_50 = stack_ptr;
                                                                                                         if((PushChoice() == 0))
                                                                                                           {
                                                                                                             if(match_cons(t, sym_GChoice_2))
                                                                                                               {
-                                                                                                                ATerm h_50 = ATgetArgument(t, 0);
-                                                                                                                ATerm i_50 = ATgetArgument(t, 1);
+                                                                                                                ATerm n_50 = ATgetArgument(t, 0);
+                                                                                                                ATerm o_50 = ATgetArgument(t, 1);
                                                                                                               }
                                                                                                             else
                                                                                                               _fail(t);
-                                                                                                            LocalPopChoice(g_50);
-                                                                                                            t = b_18;
+                                                                                                            LocalPopChoice(m_50);
+                                                                                                            t = f_18;
                                                                                                           }
                                                                                                         else
                                                                                                           {
-                                                                                                            t = f_50;
+                                                                                                            t = l_50;
                                                                                                             {
-                                                                                                              ATerm j_50 = t;
-                                                                                                              int k_50 = stack_ptr;
+                                                                                                              ATerm p_50 = t;
+                                                                                                              int q_50 = stack_ptr;
                                                                                                               if((PushChoice() == 0))
                                                                                                                 {
                                                                                                                   if(match_cons(t, sym_LGChoice_2))
                                                                                                                     {
-                                                                                                                      ATerm l_50 = ATgetArgument(t, 0);
-                                                                                                                      ATerm m_50 = ATgetArgument(t, 1);
+                                                                                                                      ATerm r_50 = ATgetArgument(t, 0);
+                                                                                                                      ATerm s_50 = ATgetArgument(t, 1);
                                                                                                                     }
                                                                                                                   else
                                                                                                                     _fail(t);
-                                                                                                                  LocalPopChoice(k_50);
-                                                                                                                  t = b_18;
+                                                                                                                  LocalPopChoice(q_50);
+                                                                                                                  t = f_18;
                                                                                                                 }
                                                                                                               else
                                                                                                                 {
-                                                                                                                  t = j_50;
+                                                                                                                  t = p_50;
                                                                                                                   {
-                                                                                                                    ATerm n_50 = t;
-                                                                                                                    int o_50 = stack_ptr;
+                                                                                                                    ATerm t_50 = t;
+                                                                                                                    int u_50 = stack_ptr;
                                                                                                                     if((PushChoice() == 0))
                                                                                                                       {
                                                                                                                         if(match_cons(t, sym_RGChoice_2))
                                                                                                                           {
-                                                                                                                            ATerm p_50 = ATgetArgument(t, 0);
-                                                                                                                            ATerm q_50 = ATgetArgument(t, 1);
+                                                                                                                            ATerm v_50 = ATgetArgument(t, 0);
+                                                                                                                            ATerm w_50 = ATgetArgument(t, 1);
                                                                                                                           }
                                                                                                                         else
                                                                                                                           _fail(t);
-                                                                                                                        LocalPopChoice(o_50);
-                                                                                                                        t = b_18;
+                                                                                                                        LocalPopChoice(u_50);
+                                                                                                                        t = f_18;
                                                                                                                       }
                                                                                                                     else
                                                                                                                       {
-                                                                                                                        t = n_50;
+                                                                                                                        t = t_50;
                                                                                                                         if(match_cons(t, sym_GuardedLChoice_3))
                                                                                                                           {
-                                                                                                                            ATerm r_50 = ATgetArgument(t, 0);
-                                                                                                                            ATerm s_50 = ATgetArgument(t, 1);
-                                                                                                                            ATerm t_50 = ATgetArgument(t, 2);
+                                                                                                                            ATerm x_50 = ATgetArgument(t, 0);
+                                                                                                                            ATerm y_50 = ATgetArgument(t, 1);
+                                                                                                                            ATerm z_50 = ATgetArgument(t, 2);
                                                                                                                           }
                                                                                                                         else
                                                                                                                           _fail(t);
-                                                                                                                        t = b_18;
+                                                                                                                        t = f_18;
                                                                                                                       }
                                                                                                                   }
                                                                                                                 }
@@ -6561,7 +6564,7 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                                                           }
                                                                                         }
                                                                                     }
-                                                                                    t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, a_18, (ATerm)ATmakeAppl(sym_Parenthetical_1, b_18), c_18);
+                                                                                    t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, e_18, (ATerm)ATmakeAppl(sym_Parenthetical_1, f_18), g_18);
                                                                                   }
                                                                               }
                                                                             }
@@ -6587,25 +6590,25 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
 }
 static ATerm a_0 (ATerm t)
 {
-  ATerm n_19 = NULL;
-  n_19 = t;
-  t = (ATerm) ATinsert(ATinsert(ATempty, n_19), term_u_50);
+  ATerm r_19 = NULL;
+  r_19 = t;
+  t = (ATerm) ATinsert(ATinsert(ATempty, r_19), term_a_51);
   return(t);
 }
 ATerm pass_includes_0_0 (ATerm t)
 {
-  t = term_u_50;
+  t = term_a_51;
   {
-    ATerm v_50 = t;
-    int w_50 = stack_ptr;
+    ATerm b_51 = t;
+    int c_51 = stack_ptr;
     if((PushChoice() == 0))
       {
         t = get_config_0_0(t);
-        LocalPopChoice(w_50);
+        LocalPopChoice(c_51);
       }
     else
       {
-        t = v_50;
+        t = b_51;
         t = (ATerm) ATempty;
       }
   }
@@ -6614,32 +6617,32 @@ ATerm pass_includes_0_0 (ATerm t)
 }
 static ATerm b_0 (ATerm t)
 {
-  ATerm q_19 = NULL;
-  q_19 = t;
+  ATerm u_19 = NULL;
+  u_19 = t;
   if(match_string(t, "-a"))
     {
-      t = q_19;
+      t = u_19;
     }
   else
     {
       if((ATgetSymbol((ATermAppl) t) != ATmakeSymbol("--abstract", 0, ATtrue)))
         _fail(t);
-      t = q_19;
+      t = u_19;
     }
   return(t);
 }
 static ATerm c_0 (ATerm t)
 {
-  ATerm r_19 = NULL;
-  r_19 = t;
-  t = term_z_50;
+  ATerm v_19 = NULL;
+  v_19 = t;
+  t = term_f_51;
   t = set_config_0_0(t);
-  t = r_19;
+  t = v_19;
   return(t);
 }
 static ATerm d_0 (ATerm t)
 {
-  t = term_a_51;
+  t = term_g_51;
   return(t);
 }
 static ATerm e_0 (ATerm t)
@@ -6650,46 +6653,46 @@ static ATerm e_0 (ATerm t)
 }
 static ATerm f_0 (ATerm t)
 {
-  ATerm s_19 = NULL;
-  s_19 = t;
-  t = term_c_51;
+  ATerm w_19 = NULL;
+  w_19 = t;
+  t = term_i_51;
   t = set_config_0_0(t);
-  t = s_19;
+  t = w_19;
   return(t);
 }
 static ATerm g_0 (ATerm t)
 {
-  t = term_d_51;
+  t = term_j_51;
   return(t);
 }
 static ATerm h_0 (ATerm t)
 {
-  ATerm t_19 = NULL;
-  t_19 = t;
+  ATerm x_19 = NULL;
+  x_19 = t;
   if(match_string(t, "-I"))
     {
-      t = t_19;
+      t = x_19;
     }
   else
     {
       if((ATgetSymbol((ATermAppl) t) != ATmakeSymbol("--Include", 0, ATtrue)))
         _fail(t);
-      t = t_19;
+      t = x_19;
     }
   return(t);
 }
 static ATerm i_0 (ATerm t)
 {
-  ATerm u_19 = NULL;
-  u_19 = t;
-  t = (ATerm) ATmakeAppl(sym__2, term_u_50, (ATerm) ATinsert(ATempty, u_19));
+  ATerm y_19 = NULL;
+  y_19 = t;
+  t = (ATerm) ATmakeAppl(sym__2, term_a_51, (ATerm) ATinsert(ATempty, y_19));
   t = extend_config_0_0(t);
-  t = u_19;
+  t = y_19;
   return(t);
 }
 static ATerm j_0 (ATerm t)
 {
-  t = term_e_51;
+  t = term_k_51;
   return(t);
 }
 static ATerm k_0 (ATerm t)
@@ -6700,52 +6703,52 @@ static ATerm k_0 (ATerm t)
 }
 static ATerm l_0 (ATerm t)
 {
-  ATerm v_19 = NULL;
-  v_19 = t;
-  t = (ATerm) ATmakeAppl(sym__2, term_f_51, v_19);
+  ATerm z_19 = NULL;
+  z_19 = t;
+  t = (ATerm) ATmakeAppl(sym__2, term_l_51, z_19);
   t = set_config_0_0(t);
-  t = v_19;
+  t = z_19;
   return(t);
 }
 static ATerm m_0 (ATerm t)
 {
-  t = term_g_51;
+  t = term_m_51;
   return(t);
 }
 ATerm pp_stratego_options_0_0 (ATerm t)
 {
-  ATerm h_51 = t;
-  int i_51 = stack_ptr;
+  ATerm n_51 = t;
+  int o_51 = stack_ptr;
   if((PushChoice() == 0))
     {
       t = Option_3_0(b_0, c_0, d_0, t);
-      LocalPopChoice(i_51);
+      LocalPopChoice(o_51);
     }
   else
     {
-      t = h_51;
+      t = n_51;
       {
-        ATerm j_51 = t;
-        int k_51 = stack_ptr;
+        ATerm p_51 = t;
+        int q_51 = stack_ptr;
         if((PushChoice() == 0))
           {
             t = Option_3_0(e_0, f_0, g_0, t);
-            LocalPopChoice(k_51);
+            LocalPopChoice(q_51);
           }
         else
           {
-            t = j_51;
+            t = p_51;
             {
-              ATerm l_51 = t;
-              int m_51 = stack_ptr;
+              ATerm r_51 = t;
+              int s_51 = stack_ptr;
               if((PushChoice() == 0))
                 {
                   t = ArgOption_3_0(h_0, i_0, j_0, t);
-                  LocalPopChoice(m_51);
+                  LocalPopChoice(s_51);
                 }
               else
                 {
-                  t = l_51;
+                  t = r_51;
                   t = ArgOption_3_0(k_0, l_0, m_0, t);
                 }
             }
@@ -6756,16 +6759,16 @@ ATerm pp_stratego_options_0_0 (ATerm t)
 }
 static ATerm n_0 (ATerm t)
 {
-  ATerm n_51 = t;
-  int o_51 = stack_ptr;
+  ATerm t_51 = t;
+  int u_51 = stack_ptr;
   if((PushChoice() == 0))
     {
       t = pp_stratego_options_0_0(t);
-      LocalPopChoice(o_51);
+      LocalPopChoice(u_51);
     }
   else
     {
-      t = n_51;
+      t = t_51;
       t = io_options_0_0(t);
     }
   return(t);
@@ -6777,117 +6780,126 @@ static ATerm o_0 (ATerm t)
 }
 static ATerm p_0 (ATerm t)
 {
-  ATerm p_51 = t;
-  int q_51 = stack_ptr;
+  ATerm v_51 = t;
+  int w_51 = stack_ptr;
   if((PushChoice() == 0))
     {
-      ATerm w_19 = NULL;
-      w_19 = t;
-      t = term_x_50;
+      ATerm a_20 = NULL;
+      a_20 = t;
+      t = term_d_51;
       t = get_config_0_0(t);
-      t = w_19;
-      LocalPopChoice(q_51);
+      t = a_20;
+      LocalPopChoice(w_51);
     }
   else
     {
-      t = p_51;
+      t = v_51;
       t = xtc_transform_2_0(q_0, pass_includes_0_0, t);
     }
   t = xtc_transform_1_0(r_0, t);
-  {
-    ATerm r_51 = t;
-    int s_51 = stack_ptr;
-    if((PushChoice() == 0))
-      {
-        ATerm y_19 = NULL;
-        y_19 = t;
-        t = term_b_51;
-        t = get_config_0_0(t);
-        t = y_19;
-        LocalPopChoice(s_51);
-      }
-    else
-      {
-        t = r_51;
-        t = xtc_transform_1_0(s_0, t);
-      }
-  }
-  t = xtc_io_transform_1_0(t_0, t);
-  t = xtc_transform_2_0(w_0, x_0, t);
-  t = xtc_transform_2_0(y_0, pass_verbose_0_0, t);
+  t = xtc_io_transform_1_0(s_0, t);
+  t = xtc_transform_2_0(y_0, z_0, t);
+  t = xtc_transform_2_0(a_1, pass_verbose_0_0, t);
   return(t);
 }
 static ATerm q_0 (ATerm t)
 {
-  t = term_t_51;
+  t = term_x_51;
   return(t);
 }
 static ATerm r_0 (ATerm t)
 {
-  t = term_u_51;
+  t = term_y_51;
   return(t);
 }
 static ATerm s_0 (ATerm t)
 {
-  t = term_v_51;
+  t = innermost_1_0(StrategoParenthesize_0_0, t);
+  t = topdown_1_0(t_0, t);
+  t = try_1_0(v_0, t);
   return(t);
 }
 static ATerm t_0 (ATerm t)
 {
-  t = innermost_1_0(StrategoParenthesize_0_0, t);
-  t = topdown_1_0(u_0, t);
+  t = try_1_0(u_0, t);
   return(t);
 }
 static ATerm u_0 (ATerm t)
 {
-  t = try_1_0(v_0, t);
+  ATerm c_20 = NULL;
+  if(match_cons(t, sym_Parenthetical_1))
+    {
+      c_20 = ATgetArgument(t, 0);
+    }
+  else
+    _fail(t);
+  t = (ATerm) ATmakeAppl(sym_ParenStrat_1, c_20);
   return(t);
 }
 static ATerm v_0 (ATerm t)
 {
-  ATerm a_20 = NULL;
-  if(match_cons(t, sym_Parenthetical_1))
-    {
-      a_20 = ATgetArgument(t, 0);
-    }
-  else
-    _fail(t);
-  t = (ATerm) ATmakeAppl(sym_ParenStrat_1, a_20);
+  ATerm d_20 = NULL;
+  d_20 = t;
+  t = term_h_51;
+  t = get_config_0_0(t);
+  t = d_20;
+  t = bottomup_1_0(w_0, t);
   return(t);
 }
 static ATerm w_0 (ATerm t)
 {
-  t = term_w_51;
+  t = try_1_0(x_0, t);
   return(t);
 }
 static ATerm x_0 (ATerm t)
 {
-  ATerm b_20 = NULL,c_20 = NULL;
-  t = pass_verbose_0_0(t);
-  b_20 = t;
-  t = term_f_51;
-  {
-    ATerm x_51 = t;
-    int y_51 = stack_ptr;
-    if((PushChoice() == 0))
-      {
-        t = get_config_0_0(t);
-        LocalPopChoice(y_51);
-      }
-    else
-      {
-        t = x_51;
-        t = term_z_51;
-      }
-  }
-  t = xtc_find_0_0(t);
-  c_20 = t;
-  t = (ATerm) ATinsert(ATinsert(CheckATermList(b_20), c_20), term_f_51);
+  ATerm e_20 = NULL,f_20 = NULL,g_20 = NULL,h_20 = NULL;
+  h_20 = t;
+  e_20 = t;
+  t = SSLgetAnnotations(h_20);
+  if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
+    {
+      f_20 = ATgetFirst((ATermList) t);
+      g_20 = (ATerm) ATgetNext((ATermList) t);
+    }
+  else
+    _fail(t);
+  t = (ATerm) ATmakeAppl(sym_Comment_2, e_20, (ATerm) ATinsert(CheckATermList(g_20), f_20));
   return(t);
 }
 static ATerm y_0 (ATerm t)
 {
-  t = term_a_52;
+  t = term_z_51;
+  return(t);
+}
+static ATerm z_0 (ATerm t)
+{
+  ATerm i_20 = NULL,j_20 = NULL;
+  t = pass_verbose_0_0(t);
+  i_20 = t;
+  t = term_l_51;
+  {
+    ATerm a_52 = t;
+    int b_52 = stack_ptr;
+    if((PushChoice() == 0))
+      {
+        t = get_config_0_0(t);
+        LocalPopChoice(b_52);
+      }
+    else
+      {
+        t = a_52;
+        t = term_c_52;
+      }
+  }
+  t = xtc_find_0_0(t);
+  j_20 = t;
+  t = (ATerm) ATinsert(ATinsert(CheckATermList(i_20), j_20), term_l_51);
+  return(t);
+}
+static ATerm a_1 (ATerm t)
+{
+  t = term_d_52;
   return(t);
 }
 ATerm pp_stratego_0_0 (ATerm t)

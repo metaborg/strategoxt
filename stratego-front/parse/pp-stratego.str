@@ -8,11 +8,13 @@ strategies
         (where(<get-config> "--abstract")
 	 <+ xtc-transform(!"parse-stratego",pass-includes))
         ; xtc-transform(!"stratego-ensugar")
-	; (where(<get-config> "--annotations")
-           <+ xtc-transform(!"annos-to-term"))
+	//; try(where(<get-config> "--annotations")
+        //      ; xtc-transform(!"annos-to-term"))
         ; xtc-io-transform(
             parenthesize-Stratego
           ; topdown(try(\ Parenthetical(s) -> ParenStrat(s) \ ))
+	  ; try(where(<get-config> "--annotations")
+                ; annos-as-comment)
           )
         ; xtc-transform(!"ast2abox", !["-p", <(get-config <+ !"Stratego-pretty.pp"); xtc-find> "-p" | <pass-verbose>])
         ; xtc-transform(!"abox2text", !<pass-verbose>)
@@ -34,3 +36,15 @@ strategies
 
   pass-includes =
     <get-config<+![]> "-I" ; foldr(id, conc, !["-I", <id>])
+
+signature
+  constructors
+    Comment : a * List(String) -> a
+
+strategies
+
+  annos-as-comment =
+    bottomup(try(anno-as-comment))
+
+  anno-as-comment :
+    x{t,t*} -> Comment(x, [t,t*])

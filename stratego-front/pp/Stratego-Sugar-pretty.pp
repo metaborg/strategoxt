@@ -1,4 +1,9 @@
 [
+   Comment -- H[_1 "/*" _2 "*/"],
+   Comment.2:iter-sep -- H hs=0[_1 KW[","]],
+   Env -- H hs=0["{" H[_1] "}"],
+   Env.1:iter-sep -- H hs=0[_1 ","],
+
    --saved-entry--TupleCong                           -- H hs=0 [KW["("] _1 KW[")"]],
    --saved-entry--SwitchChoice.2:iter-star            -- V is=2 vs=0 [H hs=1 [KW["case"] _1 KW[":"]] _2],
    --saved-entry--SwitchChoice                        -- V  [V is=2 vs=0 [H hs=1 [KW["switch"] _1] _2 V is=2 vs=0 [H hs=1 [KW["otherwise"] KW[":"]] _2]] KW["end"]],
