@@ -1,7 +1,7 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-bin_PROGRAMS = \
+libexec_PROGRAMS = \
   xml-doc-strip-whitespace \
   xml-doc2xml-info \
   xml-info2xml-doc
