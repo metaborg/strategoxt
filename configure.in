@@ -78,7 +78,7 @@ AM_CONFIG_HEADER([config.h])
 
 ### PACKAGES ##########################
 
-PKGS="autoxt srts xtc sdf-import stratego-front asfix-tools sc gpp c-tools ssl sdf-front dot-tools graph-tools sdf-tools aterm-tools stratego-tools boxenv stratego-util"
+PKGS="autoxt srts xtc sdf-import stratego-front asfix-tools strc gpp c-tools ssl sdf-front dot-tools graph-tools sdf-tools aterm-tools stratego-tools boxenv stratego-util"
 AC_SUBST(PKGS)
 
 top_srcdir=`pwd`

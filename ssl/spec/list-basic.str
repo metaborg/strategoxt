@@ -92,7 +92,7 @@ strategies
    * @type   [a] -> a
    */
   fetch-elem(s) = 
-    fetch(s;?x);!x
+    fetch(s; ?x); !x
 
   /**
    * splits a list in two at the point where s succeeds.

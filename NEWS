@@ -16,7 +16,8 @@ News about Stratego releases
 
 StrategoXT 0.9.3 -- under construction
 
-This is a refactoring release. 
+This release is dedicated to refactoring and improving the Stratego
+compiler.
 
 The name of the Stratego compiler was changed to strc. In this release
 sc is still available as a redirection to strc, but will no longer be
@@ -69,25 +70,32 @@ the source.
 
 The Stratego Compiler has been refactored to make use of the official
 signature from stratego-front. The Stratego Optimizer has been
-extended with a bunch of new optimizations, including
+extended with a bunch of new optimizations, and now includes the
+following optimizatoins:
 
-   * Strategy inlining (also of local definitions)
-   * Dead definition elimination
-   * Avoid run time checks on variables
-   * Constant and copy propagation
-   * Dead variable elimination
+   * Stratego simplifier
    * Build match fusion
-   * Lift local definitions to top level
+   * Innermost fusion
+   * Pattern match compilation
+   * Worker wrapper splitting
+   * Strategy inlining
+   * Dead definition elimination
+   * Constant and copy propagation 
+   * Bound unbound variable analysis
+   * Dead variable elimination
+   * Avoid run time checks on variables
+   * Lift definitions to top level
 
 Although, a few preliminary tests suggest that the optimizations
-reduce code size and increase performance, more benchmarking is needed
-to establish the precise effects of the optimizations. Also further
-tuning, particularly of the inliner is needed to get better results.
-One noticeable effect of the optimizations is a slowdown of the
-compiler.  Therefore strc provides several optimization levels. No
+reduce code size and increase performance, more thorough benchmarking
+is needed to establish the precise effects of the optimizations. Also
+further tuning, particularly of the inliner is needed to get better
+results.  One noticeable effect of the optimizations is a slowdown of
+the compiler.  Therefore strc provides several optimization levels. No
 optimizations are performed at -O 0 increasing to all optimizations at
--O 5. If compile time is more important than run-time of the generated
-code, then -O 1 is the prefferred setting.
+-O 6. If compile time is more important than run-time of the generated
+code, then -O 1 is the prefferred setting. -O 2 corresponds to the
+optimizations in 0.9.2.
 
 DOWNLOAD AND INSTALLATION
 
@@ -118,6 +126,9 @@ BUGS / KNOWN PROBLEMS
 CONTRIBUTIONS
 
   * Bug reports and suggestions for improvements where submitted by:
+
+  * Beta tests carried out by:
+    Martin Bravenboer, Rob Vermaaas, Arthur van Dam
 
   * The major developments were carried out by:
     Martin Bravenboer, Rob Vermaas, Eelco Visser.
