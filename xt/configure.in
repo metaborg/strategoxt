@@ -18,12 +18,12 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 dnl 02111-1307, USA.
 
-dnl $Id: configure.in,v 1.29 2000/12/04 13:50:00 jvisser Exp $
+dnl $Id: configure.in,v 1.30 2001/01/07 12:27:01 mdejonge Exp $
 
 AC_INIT(Makefile.in)
 AM_INIT_AUTOMAKE(xt,0.6beta)
 
-AC_REVISION($Id: configure.in,v 1.29 2000/12/04 13:50:00 jvisser Exp $)
+AC_REVISION($Id: configure.in,v 1.30 2001/01/07 12:27:01 mdejonge Exp $)
 
 AC_ARG_WITH(pkginstalldir,
    [  --with-pkginstalldir    Specify location where softwere gets installed 
@@ -70,9 +70,8 @@ AC_CONFIG_PKG(gb,          --with-aterm=${PKG_XT}
                            --with-gt=${PKG_XT})
 
 AC_CONFIG_PKG(gt,          --with-aterm=${PKG_XT}
-                           --with-stratego=${PKG_XT})
-
-AC_CONFIG_PKG(gt,          --with-xt=${PKG_XT})
+                           --with-stratego=${PKG_XT}
+                           --with-gb=${PKG_XT})
 
 AC_CONFIG_PKG(graph-tools,)
 
