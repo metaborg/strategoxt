@@ -224,8 +224,39 @@ strategies
     (rec x([id|x] <+ [47|![]]) <+ ![]);
     implode-string
 
+  // :: String * String -> String
   add-extension : 
     (name, ext) -> <concat-strings> [name, ".", ext]
+
+  // :: String -> String
+  remove-extension =
+      <string-tokenize> (['.'], <id>)
+    ; init
+    ; <separate-by> (".", <id>)
+    ; concat-strings
+
+strategies
+
+  // string-tokenize is like java.util.StringTokenizer. Given a
+  // list of possible delimiters (characters that separate tokens)
+  // it returns a list of tokens for a given string (the second
+  // argument). See string-test for examples.
+
+  // :: List(Char) * String -> List(String)
+  string-tokenize =
+      (id, explode-string)
+    ; ?(ws, <id>)
+    ; list-tokenize(<elem> (<id>, ws))
+    ; map(implode-string)
+
+  // a -> fail? :: List(a) -> List(List(a))
+  list-tokenize(s) =
+      (split-fetch(s) <+ !(<id>, []))
+    ; ( \ (  []     , [])        -> []   \
+      + \ (l@[_ | _], [])        -> [l]  \
+      + \ (  []     , l@[_ | _]) -> <list-tokenize(s)> l \
+      + \ (t@[_ | _], l@[_ | _]) -> [t | <list-tokenize(s)> l] \
+      )
 
 strategies
 
