@@ -54,13 +54,13 @@ strategies
     ?sdef@SDefT(f, _, _, _)
     ; rules(
       InlineCall : 
-        CallT(SVar(f), ss, ts) -> <simplify0> s''
+        CallT(SVar(f), ss, ts) -> <simplify> s''
         where //debug(!"InlineCall: ") ;
 	     <strename> sdef => SDefT(f, xs, ys, s)
             ; <substitute-args> (xs, ss, s) => s'
 	    ; <map(?VarDec(<id>,_))> ys => ys'
 	    ; !Scope(ys', 
-		     Seq(Seqs(<zip(\ (t,y) -> Seq(Build(t),Match(Var(y)))\ )>(ts, ys')), s')) 
+		     Seq(Seqs(<zip(\ (t,y) -> Where(Seq(Build(t),Match(Var(y))))\ )>(ts, ys')), s')) 
               => s''
             ; rules(InlineCall : CallT(SVar(f), _, _) -> Undefined)
 	    //; <debug(!"Inlining: ")> f

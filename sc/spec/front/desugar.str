@@ -85,6 +85,11 @@ rules
     where <fetch(not(Var(id)))> ts
         ; <unzip(LiftPrimArg); (concat, unzip(id))> ts => (xs, (s, ts'))
 
+  LiftCallArgs : 
+    CallT(f, ss, ts) -> Scope(xs, Seq(Seqs(s), CallT(f, ss, ts')))
+    where <fetch(not(Var(id)))> ts
+        ; <unzip(LiftPrimArg); (concat, unzip(id))> ts => (xs, (s, ts'))
+
   LiftPrimArg :
     Var(x) -> ([], (Id, Var(x)))
 
@@ -319,7 +324,7 @@ strategies
 
   desugar = 
     topdown(try(desugarRule); 
-            repeat(LiftPrimArgs + HL + Bapp + Mapp + Expl))
+            repeat(LiftPrimArgs + LiftCallArgs + HL + Bapp + Mapp + Expl))
 
   desugar' = 
     topdown(try(desugarRule); repeat(HL))

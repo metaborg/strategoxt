@@ -1,5 +1,11 @@
 2003-07-31  Eelco Visser  <visser@cs.uu.nl>
 
+	* spec/opt/inlining.str: build-match pair that assigns actual
+	argument to formal argument on inlining should be wrapped in
+	a where to preserve the current term.
+
+	* spec/front/desugar.str: Lift complex term expressions from calls.
+
 	* spec/front/check-constructors.str: cater for longer tuples
 
 	* spec/sc/strc.str: Saving intermediate results in abstract
