@@ -12,6 +12,9 @@ exports
 
         "|[" Module "]|" -> StrategoTerm {cons("ToTerm")}
     "m" "|[" Module "]|" -> StrategoTerm {cons("ToTerm")}
+    "M" "|[" ModuleName "]|" -> StrategoTerm {cons("ToTerm")}
+
+    "i" "|[" Import "]|" -> StrategoTerm {cons("ToTerm")}
 
         "|[" Section  "]|" -> StrategoTerm {cons("ToTerm")}
     "s" "|[" Section  "]|" -> StrategoTerm {cons("ToTerm")}
