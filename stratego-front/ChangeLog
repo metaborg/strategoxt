@@ -3,6 +3,22 @@
 	* sig/Stratego-MetaTransition.str: meta-transition markers in
 	separate module
 
+2004-04-11  Arthur van Dam  <adam@cs.uu.nl>
+
+	* syn/Stratego-DynamicRules.sdf: Small fixes/additions.
+
+	* syn/StrategoStratego.sdf: Concrete syntax for new dynamic rules.
+
+2004-04-11  Martin Bravenboer  <martin@cs.uu.nl>
+
+	* syn/Stratego-DynamicRules.sdf: Syntax for new dynamic rules.
+	It is imported by Stratego.sdf.
+
+	* syn/Stratego-Strategies.sdf: All syntax for old 'legacy' dynamic
+	rules removed, only `extend/override' rules moved to Stratego-
+	DynamicRules.sdf for compatibility purposes, the rest fits within
+	the new syntax.
+
 2004-04-10  Martin Bravenboer <martin@cs.uu.nl>
 
 	* syn/*: generate the renamed SDF modules.
