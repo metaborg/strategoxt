@@ -1,5 +1,9 @@
 2004-02-24  Martin Bravenboer  <martin@cs.uu.nl>
 
+	* src/sdf-normalize/*: removed.
+
+2004-02-24  Martin Bravenboer  <martin@cs.uu.nl>
+
 	* analyse/parse-unit/*: parse-unit now supports wildcards in the
 	specifications of expected results in a testsuite. In error
 	message they appear as "_", which is somewhat poor.

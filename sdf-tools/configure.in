@@ -8,9 +8,9 @@ AC_PROG_INSTALL
 AC_PATH_PROGS(SH, sh)
 AC_PATH_PROG(PERL,perl)
 
-TOOLS="templates lib fdl2sdf sdf sdf2asdf sdf-bench unpack-sdf sdf-cons sdf-label sdf-bracket sdf-normalize sdf-doc sdf-wf sdf-pp sdf-imports sdf2sdf"
+TOOLS="templates lib fdl2sdf sdf sdf2asdf sdf-bench unpack-sdf sdf-cons sdf-label sdf-bracket sdf-doc sdf-wf sdf-pp sdf-imports sdf2sdf"
 UNRELEASED=""
-RELEASED="templates lib fdl2sdf sdf sdf2asdf sdf-bench unpack-sdf sdf-cons sdf-label sdf-bracket sdf-normalize sdf-doc sdf-wf sdf-pp sdf-imports sdf2sdf"
+RELEASED="templates lib fdl2sdf sdf sdf2asdf sdf-bench unpack-sdf sdf-cons sdf-label sdf-bracket sdf-doc sdf-wf sdf-pp sdf-imports sdf2sdf"
 
 AC_SUBST(TOOLS)
 AC_SUBST(RELEASED)
@@ -48,8 +48,6 @@ AC_CONFIG_FILES([
   src/sdf-label/data/Makefile
   src/sdf-bracket/Makefile
   src/sdf-bracket/data/Makefile
-  src/sdf-normalize/Makefile
-  src/sdf-normalize/data/Makefile
   src/sdf-doc/Makefile
   src/sdf-doc/data/Makefile
   src/sdf-wf/Makefile
