@@ -1,3 +1,8 @@
+2001-09-09  Eelco Visser  <visser@acm.org>
+
+	* src/sdf-imports/get-modules.r: provided type annotation for first
+	argument of get-modules.
+
 2001-09-03 Merijn de Jonge <mdejonge@cwi.nl>
    * sdf-wf/data/Makefile.am: Added missing files to EXTRA_DIST variable
    * sdf-normalize/data/Makefile.am: Added missing files to EXTRA_DIST variable
