@@ -19,10 +19,10 @@ check_PROGRAMS 	= test02 test03 test04 test05			    \
 
 TESTS 		= $(check_PROGRAMS)
 
-STRATEGORUNLIBS = -lstratego_opt -lstratego-choice_opt -lstratego-lib_opt -lATerm-gcc -lm
+STRATEGORUNLIBS = -lstratego-runtime-opt -lstratego-runtime-choice-opt -lstratego-lib-native-opt -lATerm-gcc -lm
 LDADD 		= $(STRATEGORUNLIBS)
 test50_LDADD 	= bar.o $(STRATEGORUNLIBS)
-test51_LDADD 	= -L$(SRTS)/lib/srts -llibstrategolib $(STRATEGORUNLIBS)
+test51_LDADD 	= -L$(SSL)/lib/ssl -lstratego-lib $(STRATEGORUNLIBS)
 
 bar.o 		: bar.c
 

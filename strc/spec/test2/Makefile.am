@@ -6,7 +6,7 @@ SINCLUDES	 = -I $(STRATEGO_FRONT)/share/stratego-front \
 	  	   -I $(srcdir)/../lib			     \
 		   -I $(SSL)/share/ssl
 
-AM_LDFLAGS	= -L$(SRTS)/lib/srts -L$(ATERM)/lib 
+AM_LDFLAGS	= -L$(SSL)/lib/ssl -L$(SRTS)/lib/srts -L$(ATERM)/lib 
 
 check_PROGRAMS 	= arity-test as-pattern assignment \
 		  comment-test conditional-innermost congruence-arguments \
@@ -23,7 +23,7 @@ check_PROGRAMS 	= arity-test as-pattern assignment \
 
 TESTS 		= $(check_PROGRAMS)
 
-STRATEGORUNLIBS = -lstratego_opt -lstratego-choice -lstratego-lib_opt -lATerm-gcc -lm
+STRATEGORUNLIBS = -lstratego-runtime-opt -lstratego-runtime-choice-opt -lstratego-lib-native-opt -lATerm-gcc -lm
 LDADD 		= $(STRATEGORUNLIBS)
 
 CLEANFILES 	= *.o *.ac *.s[0-9]* *.f* *.ac *.c.abox \

@@ -15,6 +15,6 @@ $(TESTS): testfail
 
 EXTRA_DIST  = $(TESTS) testfail accept-success.list
 
-test03_LDADD = -L$(SRTS)/lib/srts -llibstrategolib $(STRATEGORUNLIBS)
+test03_LDADD = -L$(SSL)/lib/ssl -lstratego-lib $(STRATEGORUNLIBS)
 
 include $(top_srcdir)/spec/test1/make-rules

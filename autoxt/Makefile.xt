@@ -38,7 +38,7 @@ SSL_LIBS = \
   $(STRATEGORUNLIBS)
 
 LDADD = \
-  -L$(SSL)/lib/ssL \
+  -L$(SSL)/lib/ssl \
   -L$(SRTS)/lib/srts \
   -L$(ATERM)/lib \
   $(STRATEGORUNLIBS)

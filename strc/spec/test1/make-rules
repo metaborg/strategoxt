@@ -9,9 +9,9 @@ CINCLUDES = \
 CINCL = -I$(SRTS)/include \
 	-I$(ATERM)/include $(CHOICEINCLUDES)
 
-AM_CFLAGS = -I$(SRTS)/include -I$(ATERM)/include -I /usr/include
+AM_CFLAGS = -I$(SSL)/include -I$(SRTS)/include -I$(ATERM)/include -I /usr/include
 
-SCLibs = -L$(SRTS)/lib/srts -lstratego-lib -lstratego-choice -lstratego \
+SCLibs = -L$(SSL)/lib/ssl -lstratego-lib-native -L$(SRTS)/lib/srts -lstratego-runtime-choice -lstratego-runtime \
 	 -L$(ATERM)/lib -lATerm-gcc $(CHOICELDFLAGS) \
 	 -lm
 
