@@ -1,3 +1,10 @@
+2004-04-07   Arthur van Dam  <adam@cs.uu.nl>
+
+	* spec/strc/strc.str: strc now saves all its intermediate files
+	(`--keep n') as <basename>.sci<ext> instead of <basename><ext>.
+	The same holds for the concrete (.txt) files.
+	This makes cleanup of intermediate files easier (`rm *.sci.*`).
+
 2004-04-06   Martin Bravenboer  <martin@cs.uu.nl>
 
 	* spec/pack/pack-stratego.str: (STR-43) pack-stratego now starts

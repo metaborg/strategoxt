@@ -206,10 +206,10 @@ strategies
 
   save-as(ext) = 
     where(
-      copy-to(get-outfile(ext) => file1)
+      copy-to(get-outfile(<conc-strings> (".sci", <ext>)) => file1)
       ; xtc-transform(!"pp-stratego", !["--abstract" | <pass-verbose> ] )
       ; copy-to(<conc-strings> (file1, ".txt") => file2)
-      ; say(<concat-strings> ["abstract syntax in ", file1, ", concrete syntax in ", file2])
+      ; say(<concat-strings> ["abstract syntax in `", file1, "', concrete syntax in `", file2, "'"])
     )
 
   save-as1(ext) = if-keep1(save-as(ext))
