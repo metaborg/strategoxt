@@ -7,11 +7,11 @@ strategies
 short-description(p) = !["Usage: ", <p>(), " [options]"]
 long-description(p)  = !["This program outputs a term in abstract GraphXML format."]
 
-main = iowrap( treeviz )
+treeviz = iowrap( Treeviz )
 
 
 rules
-treeviz:
+Treeviz:
    f#(args) -> GraphXML( [], [graph([], edges )] )
    where
      <NodeName;NewNodeName>f  => f';

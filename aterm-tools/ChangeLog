@@ -1,3 +1,7 @@
+2003-06-11  Merijn de Jonge <m.de.jonge@tue.nl>
+  * treeviz/treeviz.str: bug fix. Tool was compiled with incorrect main
+    strategy.
+
 2003-02-27  Martin Bravenboer <martin@mbravenboer.org>
 
   * pp/ugly-print.str: Improved ugly-print: pretty-print
