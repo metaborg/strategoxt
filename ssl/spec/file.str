@@ -95,6 +95,21 @@ strategies
 
 strategies
 
+  read-text-file =
+    ?file
+    ; <fopen> (file,"r") => stream
+    ; rec x(![<fgetc> stream | <x> ()] <+ ![])
+    ; where(<fclose> stream)
+    ; implode-string
+
+  write-text-file =
+    ?(file, string)
+    ; <fopen> (file, "w")
+    ; <fputs> (string, <id>)
+    ; fclose
+
+strategies
+
   find-in-path =
     ?(file, <id>) 
     ; fetch-elem(<concat-strings; file-exists> [<id>,"/",file])

@@ -88,6 +88,12 @@ strategies
   puts =
     ?str; prim("SSL_puts", str); !Stream(<id>)
 
+  /**
+   * Writes a Char to a Stream
+   * :: Char * Stream -> Stream
+   */
+  fputc =
+    ?(c, Stream(stream)); prim("SSL_fputc", c, stream); !Stream(<id>)
 
 /**
  * Character input from stream
@@ -97,6 +103,8 @@ strategies
   /**
    * fgetc() reads the next character from the stream and returns the 
    * ASCII code of the character as an Int. Fails on end of file or error.
+   *
+   * :: Stream -> Char
    */
   fgetc = 
     ?Stream(stream); prim("SSL_fgetc", stream)

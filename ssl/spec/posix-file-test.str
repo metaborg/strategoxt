@@ -77,6 +77,48 @@ strategies
       , stdout-stream
       , stdout-stream
       )
+    ; apply-test(!"write a text file with fputc",
+        <write-text-file-c> ("text-file.tmp", <id>)
+      , !"This is a test file\nIt can be removed."
+      , !()
+      )
+    ; apply-test(!"read a text file with fgetc",
+        read-text-file
+      , !"text-file.tmp"
+      , !"This is a test file\nIt can be removed."
+      )
+    ; apply-test(!"write a text file with fputs",
+        <write-text-file> ("text-file.tmp", <id>)
+      , !"This is a test file\nIt can be removed."
+      , !()
+      )
+    ; apply-test(!"read a text file with fgetc",
+        read-text-file
+      , !"text-file.tmp"
+      , !"This is a test file\nIt can be removed."
+      )
+    ; where(<remove-file> "text-file.tmp")
+
+    read-text-file =
+      ?file
+      ; <fopen> (file,"r") => stream
+      ; rec x(![<fgetc> stream | <x> ()] <+ ![])
+      ; where(<fclose> stream)
+      ; implode-string
+
+    write-text-file =
+      ?(file, string)
+      ; <fopen> (file, "w")
+      ; <fputs> (string, <id>)
+      ; fclose
+
+    write-text-file-c =
+      ?(file, string)
+      ; <fopen> (file, "w") => stream
+      ; <explode-string> string
+      ; map(<fputc> (<id>, stream))
+      ; where(<fclose> stream)
+      ; !()
 
   strcat-tests =
       apply-test(!"strcat-1", strcat, !("",  ""), !"")
