@@ -1210,22 +1210,29 @@ exports
       "type-name" "|["  TypeName "]|" -> StrategoTerm {cons("ToTerm")}
     "c:type-name" "|["  TypeName "]|" -> StrategoTerm {cons("ToTerm")}
 
+                "|[" VarDecl "]|" -> StrategoTerm {cons("ToTerm")}
+      "var-dec" "|[" VarDecl "]|" -> StrategoTerm {cons("ToTerm")}
+    "c:var-dec" "|[" VarDecl "]|" -> StrategoTerm {cons("ToTerm")}
+
+    "~var-dec:" StrategoTerm -> VarDecl {cons("FromTerm")} 
+    "~var-dec*:" StrategoTerm -> {VarDecl ","}* {cons("FromTerm")}
+
     "~id:"      StrategoTerm -> ID           {cons("FromTerm")}
     "~id-decl:" StrategoTerm -> IdDeclarator {cons("FromTerm")}
 
     "~dec:"   StrategoTerm -> Declaration  {cons("FromTerm")}
-    "~dec*:"  StrategoTerm -> Declaration* {cons("FromTerm")}
+    "~dec*:"  StrategoTerm -> Declaration+ {cons("FromTerm")}
 
     "~stm:"  StrategoTerm -> Stm        {cons("FromTerm")}
     "~stm*:" StrategoTerm -> Stm*       {cons("FromTerm")}
 
     "~exp:"  StrategoTerm -> PrimaryExp {cons("FromTerm")}
-    "~exp*:" StrategoTerm -> {AssignExp ","}* {cons("FromTerm")}
+    "~exp*:" StrategoTerm -> {AssignExp ","}+ {cons("FromTerm")}
 
     "~type-name:"  StrategoTerm -> TypeName                {cons("FromTerm")}
 
     "~type-spec:"  StrategoTerm -> TypeSpecifier           {cons("FromTerm")}
-    "~param-dec*:" StrategoTerm -> {ParamDeclaration ","}* {cons("FromTerm")}
+    "~param-dec*:" StrategoTerm -> {ParamDeclaration ","}+ {cons("FromTerm")}
     "~mem-dec*:"   StrategoTerm -> MemberDeclaration+      {cons("FromTerm")}
 
     "~ext-def*:"   StrategoTerm -> ExternalDef+ {cons("FromTerm")}
