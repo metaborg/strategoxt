@@ -1,0 +1,16 @@
+module Stratego-DynamicRules
+exports
+  context-free syntax
+
+    "{|" {DynRuleScopeId ","}* ":" Strategy "|}" -> Strategy {cons("DynRuleScope")}
+
+    "rules" "(" DynRuleDef* ")" -> Strategy {cons("GenDynRules")}
+
+    DynRuleScopeId ":"   Rule -> DynRuleDef {cons("SetDynRule")}
+    DynRuleScopeId ":+"  Rule -> DynRuleDef {cons("AddDynRule")}
+
+    RuleDec "." Term -> DynRuleScopeId {cons("LabeledScope")}
+    RuleDec          -> DynRuleScopeId {cons("CurrentScope")}
+
+    Id                         -> RuleDec {cons("RuleDecNoArgs")}
+    Id "(" {Typedid ","}* ")"  -> RuleDec {cons("RuleDec")}
