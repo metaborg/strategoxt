@@ -47,6 +47,18 @@ strategies
   int-to-string = ?x; prim("SSL_int_to_string",x)
   string-to-int = ?x; prim("SSL_string_to_int",x)
 
+  addS  = (string-to-int, string-to-int); add; int-to-string
+  subtS = (string-to-int, string-to-int); subt; int-to-string
+  mulS  = (string-to-int, string-to-int); mul; int-to-string
+  divS  = (string-to-int, string-to-int); div; int-to-string
+  modS  = (string-to-int, string-to-int); mod; int-to-string
+  gtS   = (string-to-int, string-to-int); gt; int-to-string
+  geqS  = (string-to-int, string-to-int); geq; int-to-string
+  ltS   = (string-to-int, string-to-int); lt; int-to-string
+  leqS  = (string-to-int, string-to-int); leq; int-to-string
+  maxS  = (string-to-int, string-to-int); max; int-to-string
+  minS  = (string-to-int, string-to-int); min; int-to-string
+
   inc = !(<id>, 1); add
 
   log2 = 
@@ -72,6 +84,24 @@ rules
 
   inc: a -> <add>(a,1)
   dec: a -> <subt>(a,1)
+
+imports dynamic-rules
+strategies
+
+  new-counter =
+    new; reset-counter
+
+  reset-counter = ?c;
+    where(<set-counter> (c, 0))
+
+  set-counter = 
+    ?(c,n); rules( Counter : c -> n )
+
+  get-counter =
+    Counter <+ <set-counter> (<id>,0)
+
+  next-counter =
+    ?c; get-counter; inc; where(<set-counter> (c, <id>))
 \end{code}
 
 % Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
