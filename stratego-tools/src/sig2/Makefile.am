@@ -17,6 +17,3 @@ BOOTCLEANFILES   = $(wildcard *.c) tree-grammar-fc.str
 
 fc-tree-grammar.c: tree-grammar-fc.str
 
-tree-grammar-fc.str :
-	$(STRATEGO_TOOLS)/bin/sig2fc -i tree-grammar.str -o tree-grammar-fc.str
-

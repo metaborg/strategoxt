@@ -4,7 +4,7 @@ imports xtc-lib options
 strategies  // very abstract
 
   str-tg-str-wrap(s) =
-    xtc-io-wrap(input-type-option,
+    xtc-io-wrap(sig2-options,
       pre-process-input
     ; astratego2tg
     ; xtc-transform(s, pass-verbose)
@@ -13,7 +13,10 @@ strategies  // very abstract
 
 strategies
 
-  // TODO: Includes
+  sig2-options =
+       input-type-option
+    <+ include-option
+
   input-type-option =
       Option("--ast"
       , where(<set-config> ("--input-type", AST()))
@@ -23,6 +26,15 @@ strategies
       , where(<set-config> ("--mod", Module()))
       ,	!"--mod          Input is Stratego module (.str, .cr, .r or .rtree) (default)."
       )
+
+  include-option =
+    ArgOption("-I" + "--Include"
+    , where(<extend-config>("-I", ["-I", <id>])); !()
+    , !"-I d | --Include d Include modules from directory d"
+    )
+  
+  pass-includes =
+    <get-config> "-I" <+ ![] 
 
   get-input-type =  <get-config> "--input-type"<+ !Module()
 
@@ -59,5 +71,3 @@ strategies
   str2astratego =
     xtc-transform(!"sc", !["--ast" | <concat> [<pass-keep> (), <pass-verbose> (), <pass-includes> ()]])
 
-  pass-includes =
-    ![]
