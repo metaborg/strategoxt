@@ -1,3 +1,6 @@
+2002-06-04  Merijn de Jonge <mdejonge@cwi.nl>
+   * Repaired generation of package definition file
+
 2002-03-06 <Merijn.de.Jonge@cwi.nl>
    * bug fix in package definition generation
    * added make_rules.local to EXTRA_DIST of syntax.Makefile.am.templ

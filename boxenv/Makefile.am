@@ -43,5 +43,8 @@ $(PACKAGE)-$(VERSION).pkg: package.conf
            echo "configuration interface" ;\
            echo $(patsubst %",%\n", $(interface)) | sed 's/"//g;s/^ */  /g' ;\
            echo "requires" ;\
-           echo $(patsubst %",%\n", $(requires)) | sed 's/"//g;s/^ */  /g' ;\
+	   echo '$(requires)' \
+	         | tr -s '[ \t]' ' ' \
+	         | sed 's/^"/  /;s/" "/"  /g' \
+	         | tr '"' '\n' ;\
        ) > $@
