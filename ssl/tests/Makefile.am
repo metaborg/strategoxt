@@ -63,14 +63,13 @@ BOOTCLEANFILES 	= $(wildcard *.c)
 SCFLAGS	       	= --verbose 1
 
 STRINCLUDES    	= -I $(top_srcdir)/spec -I $(SRTS)/share/srts
-AM_LDFLAGS	= -L$(SRTS)/lib/srts -L$(ATERM)/lib 
 
-annotations_test_LDADD 		= -lliblib $(STRATEGORUNLIBS)
-annotation_props_test_LDADD 	= -lliblib $(STRATEGORUNLIBS)
-char_test_LDADD 		= -lliblib $(STRATEGORUNLIBS)
-dir_test_LDADD 			= -lliblib $(STRATEGORUNLIBS)
-env_traversal_test_LDADD 	= -lliblib $(STRATEGORUNLIBS)
-list_sort_test_LDADD 		= -lliblib $(STRATEGORUNLIBS)
+annotations_test_LDADD      = $(SSL_LIBS)
+annotation_props_test_LDADD = $(SSL_LIBS)
+char_test_LDADD             = $(SSL_LIBS)
+dir_test_LDADD              = $(SSL_LIBS)
+env_traversal_test_LDADD    = $(SSL_LIBS)
+list_sort_test_LDADD        = $(SSL_LIBS))
 
 nodist_annotation_props_test_SOURCES = annotation-props-test.c 
 nodist_annotations_test_SOURCES = annotations-test.c 
