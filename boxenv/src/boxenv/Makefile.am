@@ -22,9 +22,10 @@ include $(top_srcdir)/Makefile.xt
 pkgdata_DATA   = boxenv.sty
 
 SRCS           = boxenv.ins boxenv.doc
-EXTRA_DIST     = $(SRCS)
+EXTRA_DIST     = $(SRCS) boxenv.sty
 CLEANFILES     = boxenv.log
 BOOTCLEANFILES = boxenv.sty
 
 boxenv.sty: $(SRCS)
 	TEXINPUTS=$$TEXINPUTS:$(srcdir) $(LATEX)/bin/latex boxenv.ins > /dev/null
+
