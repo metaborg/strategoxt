@@ -140,7 +140,7 @@ dynamic rule. */
             where <extend-rewrite(!~str:f)> t1''
 		; filter(<f'(s1*|t1*)>(x,<id>)) => y ]|,
 
-       |[ f'(as1|as2) : (t1, Defined(~str:stamp, t*)) -> t2 where s ]|
+       |[ f'(as1|as2) : (t1, Defined(~str:stamp, t*)) -> t2 where Fst; s ]|
 
      ])
     where 
