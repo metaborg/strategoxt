@@ -6,14 +6,12 @@ strategies
     option-wrap(pp-stratego-options <+ io-options,
       xtc-io(
         (where(<get-config> "--abstract")
-	 <+ xtc-transform(!"parse-stratego"))
+	 <+ xtc-transform(!"parse-stratego",pass-includes))
         ; xtc-transform(!"stratego-ensugar")
 	; (where(<get-config> "--annotations")
            <+ xtc-transform(!"annos-to-term"))
         ; xtc-transform(!"ast2abox", !["-p", <xtc-find> "Stratego-pretty.pp" | <pass-verbose>])
         ; xtc-transform(!"abox2text", !<pass-verbose>)
-
-//        ; xtc-transform(!"ast2text", !["-p", <xtc-find> "Stratego-pretty.pp" | <pass-verbose>])
       )
     )
 
@@ -23,3 +21,9 @@ strategies
 
   + Option("--annotations", where(<set-config>("--annotations", ())),
               !"--annotations    print annotations on abstract syntax")
+
+  + ArgOption("-I" + "--Include", where(<extend-config>("-I", [<id>])),
+	      !"-I p|--Include p   include modules from directory p") 
+
+  pass-includes =
+    <get-config<+![]> "-I" ; foldr(id, conc, !["-I", <id>])
