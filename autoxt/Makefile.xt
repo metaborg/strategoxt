@@ -30,6 +30,7 @@ STRATEGORUNLIBS = \
 
 SSL_LIBS = \
   -L$(SRTS)/lib/srts \
+  -L$(XTC)/lib/xtc \
   -L$(ATERM)/lib \
   -llibxtclib \
   -llibstrategolib \
