@@ -1,3 +1,9 @@
+Version 0.3 released: 2002-06-03
+	* Added fdl2sdf which transforms a feature description written in
+	  the Feature Description Language (FDL) to SDF.
+	* sdf-bracket: Generalized and improved  bracket insertion algorithm.
+	* Sdf-tools package now runs on Windows using Cygwin
+
 Version 0.2 released: 2001-11-29
 	* Tools adapted for new versions of sglr/pgen.
 	* Added support for grammar identifier checking.

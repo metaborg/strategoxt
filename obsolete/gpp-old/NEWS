@@ -1,3 +1,9 @@
+Version 2.2 released: 2002-06-03
+	* GPP now compiles and runs on Windows using Cygwin
+	* Added support for layout preserving pretty-printing. Use
+          asfix2abox with -c switch
+	* Several bug fixes
+
 Version 2.1 released: 2001-11-29
 	* Fixed error in default.abbrevs.
 	* Added support for generatin bootstrapped-distributions of gpp.

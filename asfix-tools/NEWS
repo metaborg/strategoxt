@@ -1,3 +1,8 @@
+Version 0.3 released: 2002-06-03
+	* changed order of implosion to fix combination of --alt and --lit
+	* added explode-asfix2me tool to explode (imploded) AsFix2ME back to asfix2
+	* Asfix-tools now runs on Windows using Cygwin
+
 Version 0.2 released: 2001-11-29
 	* All tools now display usage information when specifying the -h
           switch.

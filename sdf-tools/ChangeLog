@@ -1,3 +1,6 @@
+2002-05-28  Merijn de Jonge <mdejonge@cwi.nl>
+   * Updated NEWS file
+
 2002-05-08  Merijn de Jonge <mdejonge@cwi.nl>
    * sdf2asdf: renamed Sdf2ASdf.r to Sdf-2-ASdf.r to solve case
      insensitiveness problems on cygwin platform

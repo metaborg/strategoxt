@@ -1,3 +1,6 @@
+Version 0.3 released: 2002-06-03
+	* GraphXML2dot uses "color=black" as default node attribute
+
 Version 0.2 released: 2001-11-29
 	* Added support for grammar identifier checking
 
