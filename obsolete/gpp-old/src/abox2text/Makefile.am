@@ -1,50 +1,19 @@
-# GPP -- Grammar Tools
-# Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2, or (at your option)
-# any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-# 02111-1307, USA.
+include $(top_srcdir)/Makefile.stratego
+include $(libexec_PROGRAMS:%=%.c.dep)
 
-# $Id: Makefile.am,v 1.5 2002/11/15 00:05:59 stratego Exp $
+SUBDIRS      	 = data
 
-# Always include general make rules
-include $(srcdir)/../templates/make_rules
-include $(srcdir)/../templates/make_rules.stratego
-include $(STRATEGO_PRG:%=%.dep)
+SCFLAGS     	 = -I $(srcdir)/../lib \
+		   -I $(ASFIX_TOOLS)/share/asfix-tools \
+		   --main $*
 
-# define any subdir here
-SUBDIRS      = data
+libexec_PROGRAMS = Abox-2-text 
+bin_SCRIPTS 	 = abox2text
 
-# Which Stratego programs to build
-STRATEGO_PRG = Abox-2-text 
+BOOTCLEANFILES 	 = Abox-2-text.c
+CLEANFILES      += abox2text
 
-# What scipts to build
-libexec_SCRIPTS  = $(STRATEGO_PRG)
-bin_SCRIPTS = abox2text
-
-pkgdata_DATA = 
-
-# List all files that should be distributed here
-EXTRA_DIST  += $(wildcard *.r) abox2text.sh.src
-
-BOOTSOURCES  = $(STRATEGO_PRG:%=%.c) $(wildcard *.src)
-
-# What should be cleaned
-CLEANFILES  += abox2text
-
-# Additional flags for the Stratego compiler
-SCFLAGS     += -I $(srcdir)/../lib -I $(ASFIX_TOOLS)/share/asfix-tools --main $@
+EXTRA_DIST  	 = $(wildcard *.str) abox2text.sh.src
 
 % : %.sh.src Makefile
 	sed 's@__PREFIX__@$(prefix)@g;\
@@ -53,3 +22,5 @@ SCFLAGS     += -I $(srcdir)/../lib -I $(ASFIX_TOOLS)/share/asfix-tools --main $@
 	     s@__pkgdatadir__@$(pkgdatadir)@g;' \
 	        < $< > $@ && \
 	     chmod +x $@
+
+

@@ -1,3 +1,13 @@
+2002-11-24  Eelco Visser  <visser@acm.org>
+
+	* Package is now self-bootstrapping. 
+	
+	* Moved .r files to .str
+	
+	* Added bootstrapped .c files to repository.
+	
+	* Import Makefile.stratego from sc package.
+
 2002-10-09  Eelco Visser  <visser@acm.org>
 
 	* src/abox2text/Abox-2-text.r: Notify the user if a box is encountered
