@@ -22,9 +22,11 @@ module sdf2stratego
 imports Sdf2Stratego  termid
 strategies
 
-  sdf2stratego = io-idwrap( InOutId("\"sdf-2.1\"",!"\"stratego-0\""), sdf-to-stratego )
+  sdf2stratego = 
+    io-idwrap( InOutId("\"sdf-2.1\"",!"\"stratego-0\""), sdf-to-stratego )
+
 (*
-  sdf2stratego with pppwarp
+  sdf2stratego with pppwrap
 
   sdf2stratego = 
     pppwrap(!["-l", "sdf", "-v", "2.1"]

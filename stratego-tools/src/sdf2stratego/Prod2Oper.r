@@ -4,6 +4,7 @@ imports
   AsFix2-Syntax
   Stratego-Syntax
   Bracket-Symbol
+  Literal-lib
 
 rules
 
@@ -40,7 +41,7 @@ rules
 rules  
 
   mkType: ([],t)	-> ConstType(t)
-  mkType: (ts,t)	-> FunType(ts,t)
+  mkType: (ts,t)	-> FunType(ts,t) where <not([])> ts
 
   Rename-Keyword: "module" 	-> "Module"
   Rename-Keyword: "exports"	-> "Exports"
@@ -62,11 +63,11 @@ rules
 *)
 
   Sym2Term : seq(sym,syms)		-> Var("EmptySeq")
-    where <filter(not(?dummy()))> Cons(sym,syms) => Nil
+    where <filter(not(?dummy()))> [sym | syms] => []
   Sym2Term : seq(sym,syms)		-> sym'
-    where <filter(not(?dummy()))> Cons(sym,syms) => Cons(sym',Nil)
+    where <filter(not(?dummy()))> [sym | syms] => [sym']
   Sym2Term : seq(sym,syms)		-> Tuple(symsyms)
-    where <filter(not(?dummy()))> Cons(sym,syms) => symsyms
+    where <filter(not(?dummy()))> [sym | syms] => symsyms
 
   Sym2Term : opt(sym)			-> Op("Option",[sym])
   Sym2Term : iter(sym)			-> Op("List",[sym])
@@ -94,11 +95,12 @@ rules
   Sym2Term : label(_,sym)		-> sym
 
   (* Simplification *)
-  Sym2Term : Op("Option",[Op("List",[sym])])	-> Op("List",[sym])
+  Sym2Term : 
+    Op("Option",[Op("List",[sym])])	-> Op("List",[sym])
 
   Propagate-dummy : 
     t					-> dummy()
-    where <not(Nil + Cons(id,id))> t
+    where <not([] + [id | id])> t
         ; <one(?dummy())> t
 
 signature
@@ -135,7 +137,7 @@ strategies
 
   is-Stratego-Identifier
     = test( explode-string
-          ; Cons(isAlpha,map(isAlphaNumHyphen + isPrime + isUnderScore))
+          ; [isAlpha | map(isAlphaNumHyphen + isPrime + isUnderScore)]
           )
 
 (*
@@ -146,51 +148,4 @@ strategies
   Literal2Stratego-Identifier
     = try(de-quote;de-escape)
     ; is-Stratego-Identifier
-
-
-strategies
     
-  de-quote
-    = explode-string
-    ; test(Hd;?34)       (* first char is double-quote *)
-    ; Tl
-    ; at-last(?[34];![]) (* last char is double-quote *)
-    ; implode-string
-
-  de-escape
-    = explode-string
-    ; De-Escape
-    ; implode-string
-
-rules
-
-  De-Escape:    Cons(92,Cons(34,xs))    -> Cons(34,<De-Escape>xs)
-  De-Escape:    Cons(92,Cons(92,xs))    -> Cons(92,<De-Escape>xs)
-  De-Escape:    Cons(x,xs)              -> Cons(x,<De-Escape>xs)
-  De-Escape:    Nil                     -> Nil
-
-strategies
-
-  quote
-    = explode-string
-    ; Quote
-    ; implode-string
-
-  escape
-    = explode-string;
-      map(Escape);
-      concat;
-      implode-string
-
-rules
-
-  Quote:
-    chars       -> <concat>[[34],chars,[34]]
-
-  Escape: (* double-quote *)
-    34   -> [92,34]
-  Escape: (* back-slash *)
-    92   -> [92,92]
-  Escape:
-    char -> [char]
-

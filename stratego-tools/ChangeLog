@@ -1,3 +1,11 @@
+2002-03-16  Eelco Visser  <visser@acm.org>
+
+	* src/sdf2stratego/Prod2Oper.r: Import Literal-lib instead of redefining
+	rules.
+
+	* src/sdf2stratego/Makefile.am: Disabled test for sdf2stratego; it is not
+	clear whether the input data are correct
+
 2002-03-13  Eelco Visser  <visser@acm.org>
 
 	* src/sdf2stratego/Sdf2Overlays.r: Replaced usage of TNil/TCons by

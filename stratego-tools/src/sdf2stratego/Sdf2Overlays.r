@@ -1,6 +1,6 @@
 module Sdf2Overlays
 
-(* $Id: Sdf2Overlays.r,v 1.2 2002/03/13 21:59:17 eelco Exp $ *)
+(* $Id: Sdf2Overlays.r,v 1.3 2002/03/16 14:52:20 eelco Exp $ *)
 
 (* Warning: Sdf and Stratego both have Module(...) in their signature *)
 
@@ -71,13 +71,10 @@ strategies
    <+ \ s -> cf(s) \
 
   Sep-by(s)
-    = rec x ( Nil()
-           <+ Cons(id,Nil())
-           <+ Cons(id,x;CONS(s))
+    = rec x ( []
+           <+ [id]
+           <+ [id | ![<s>, <x>]]
             )
-
-rules
-  CONS(x): xs -> Cons(<x>(),xs)
 
 strategies
 
@@ -91,7 +88,7 @@ signature
 
 rules
   Sym2Var: cf(opt(layout()))	-> layout-variable(v) where new => v
-  Sym2Var: cf(_)		-> variable(v) where new => v
+  Sym2Var: cf(x)		-> variable(v) where <not(opt(layout))> x; new => v
   Sym2Var: lit(x)		-> lit(x)
 
   Var2Param:       layout-variable(v)	-> v
@@ -139,7 +136,7 @@ rules
 
 rules
   MyCns: 
-    appl(p, ts) -> <mkterm> ("c", ts)
+    appl(p, ts) -> "c" #(ts)
 
 rules
   lit-sort2lit-term:
@@ -174,9 +171,8 @@ strategies
       yield;
       \ x -> Lay(x) \
 
-  once-literal-yield
-    = {str: appl(prod(id,lit(?str), id), id);
-            !Lit(str) }
+  once-literal-yield :
+    appl(prod(_,lit(str), _), _) -> Lit(str) 
 
   layout-yield
     = rec x(try(appl(id, filter(try( once-layout-yield 
