@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/06/08 16:09:13 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2001/11/22 08:33:10 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -38,7 +38,7 @@ EXTRA_DIST   = parse.sh.src
 CLEANFILES   = parse
 
 % : %.sh.src Makefile
-	sed 's@__ASFIXTOOLS__@$(ASFIXTOOLSGB)@g;\
+	sed 's@__ASFIXTOOLS__@$(ASFIX_TOOLSGB)@g;\
 	     s@__PREFIX__@$(prefix)@g;\
 	     s@__SGLR__@$(SGLR)@g'\
 	     < $< > $@ && chmod +x $@

@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.3 2001/06/11 12:17:52 mdejonge Exp $
+# $Id: Makefile.am,v 1.4 2001/11/22 08:33:11 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -43,8 +43,8 @@ CLEANFILES  += sdf2gxml2dot-check get-sort-graph sdf-doc.make
 
 % : %.sh.src Makefile
 	@sed 's@__DATADIR__@$(pkgdatadir)@g;\
-              s@__GRAPHTOOLS__@$(GRAPHTOOLS)@g;\
-              s@__SDFTOOLS__@$(SDFTOOLS)@g'\
+              s@__GRAPHTOOLS__@$(GRAPH_TOOLS)@g;\
+              s@__SDFTOOLS__@$(SDF_TOOLS)@g'\
            < $< > $@ && \
 	chmod 755 $@
 
@@ -53,9 +53,9 @@ CLEANFILES  += sdf2gxml2dot-check get-sort-graph sdf-doc.make
               s@__DATADIR__@$(pkgdatadir)@g;\
               s@__GB__@$(GB)@g;\
               s@__GRAPHVIZ__@$(GRAPHVIZ)@g;\
-              s@__GRAPHTOOLS__@$(GRAPHTOOLS)@g;\
-              s@__SDFTOOLS__@$(SDFTOOLS)@g;\
-              s@__ASFIXTOOLS__@$(ASFIXTOOLS)@g;\
+              s@__GRAPHTOOLS__@$(GRAPH_TOOLS)@g;\
+              s@__SDFTOOLS__@$(SDF_TOOLS)@g;\
+              s@__ASFIXTOOLS__@$(ASFIX_TOOLS)@g;\
               s@__LIBEXEC__@$(libexecdir)@g;\
               s@__MAKE__@$(MAKE)@g;\
               s@__VERSION__@$(VERSION)@g;' \

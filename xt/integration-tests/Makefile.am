@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.5 2001/06/12 08:13:28 mdejonge Exp $
+# $Id: Makefile.am,v 1.6 2001/11/22 08:33:09 mdejonge Exp $
 
 SUBDIRS      = data 
 
@@ -41,7 +41,7 @@ CLEANFILES   = parsesdf-yield-check \
 # Generate test-tools
 %-check: %-check.src Makefile.am
 	sed 's#__XT__#$(prefix)#g;\
-             s#__GRAMMARRECOVERY__#$(GRAMMARRECOVERY)#g;\
+             s#__GRAMMARRECOVERY__#$(GRAMMAR_RECOVERY)#g;\
              s#__GPP__#$(GPP)#g;\
 	     s#__MAKE__#$(MAKE)#g' < $< > $@
 	chmod +x $@

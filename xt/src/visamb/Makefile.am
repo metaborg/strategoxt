@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.3 2001/06/12 08:20:58 mdejonge Exp $
+# $Id: Makefile.am,v 1.4 2001/11/22 08:33:11 mdejonge Exp $
 
 include $(srcdir)/../templates/make_rules 
 include $(srcdir)/../templates/make_rules.stratego
@@ -36,7 +36,7 @@ CLEANFILES  += visamb1_check visamb2_check
 EXTRA_DIST  += visamb.pp
 
 SCFLAGS     += -I $(srcdir)/../lib \
-               -I $(ASFIXTOOLS)/share/asfix-tools
+               -I $(ASFIX_TOOLS)/share/asfix-tools
 
 visamb1_check_prog    = visamb
 visamb1_check_input   = data/input.test.tree
