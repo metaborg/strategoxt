@@ -13,5 +13,6 @@ exports
 
     "~stmt*:" StrategoTerm	-> Stmt* 	{cons("FromTerm")}
     "~id:" StrategoTerm		-> Id		{cons("FromTerm")}
-
+    "~attrs:" StrategoTerm      -> Attrs        {cons("FromTerm")}
+    
 
