@@ -20,13 +20,9 @@ SCFLAGS = -I ../match
 bin_SCRIPTS = \
   Stratego-Normal-Format Stratego-Canonical-Format Stratego-Optimized-Format 
 
-# Abstract-Machine-Format
-
 CLEANFILES = $(bin_SCRIPTS)
 
 EXTRA_DIST = $(wildcard *.r)
-
-bootdir	= $(top_srcdir)/src/sig
 
 BOOTSOURCES = \
 	Stratego-Normal-Format.c \

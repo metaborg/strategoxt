@@ -25,9 +25,7 @@ bin_SCRIPTS = si primitives stratego
 
 CLEANFILES = si primitives eval-lib-primitives.tree
 
-EXTRA_DIST = \
-  eval-import.r primitives.r  stratego-eval-closure.r  stratego-eval.r \
-  implode-term.r  si.r stratego-eval-test.r stratego.in 
+EXTRADIST = $(wildcard *.r)
 
 si : stratego-eval.r si.r eval-lib-primitives.tree
 
@@ -39,8 +37,6 @@ eval-lib-primitives.tree: primitives
 	$(top_builddir)/spec/syn/pack-stratego -I $(srcdir)/../slib/spec -i lib \
 		-dep eval-lib-primitives \
 	| ./primitives > $@
-
-bootdir	= $(top_srcdir)/src/si
 
 BOOTSOURCES = si.c primitives.c stratego.in stratego
 

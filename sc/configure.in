@@ -16,23 +16,18 @@
 # 02111-1307, USA.
 
 AC_INIT(spec/front/inlining.r)
-AM_INIT_AUTOMAKE(stratego-spec,0.6)
+AM_INIT_AUTOMAKE(sc,0.6a)
 
-AC_ARG_WITH(xt, [  --with-xt            Specify location of XT library, default: \$prefix], XT=$withval, XT="$prefix")
-AC_ARG_WITH(cgen, [  --with-cgen            Specify location of CGEN library, default: \$prefix], CGEN=$withval, CGEN="$prefix")
-AC_ARG_WITH(cpl, [  --with-cpl            Specify location of choice point library, default: \$XT], CPL=$withval, CPL="$XT")
-AC_ARG_WITH(aterm, [  --with-aterm            Specify location of aterm library, default: \$XT], ATERM=$withval, ATERM="$XT")
-AC_ARG_WITH(release, [  --with-release            Specify location of releases, default: \$XT], RELEASE=$withval, RELEASE="$prefix")
-AC_ARG_WITH(gpp, [  --with-gpp            Specify location of gpp, default: \$XT], GPP=$withval, GPP="$XT")
-AC_ARG_WITH(stratego, [  --with-stratego            Specify location of stratego, default: \$XT], STRATEGO=$withval, STRATEGO="$XT")
-AC_ARG_WITH(stratego-boot, [  --with-stratego-boot           Specify location of stratego, default: \$XT], STRATEGOBOOT=$withval, STRATEGOBOOT="$XT")
+AC_ARG_WITH(cgen,    [  --with-cgen      Specify location of CGEN library, default: \$prefix], CGEN=$withval, CGEN="$prefix")
+#AC_ARG_WITH(cpl,    [  --with-cpl       Specify location of choice point library, default: \$prefix], CPL=$withval, CPL="$prefix")
+AC_ARG_WITH(aterm,   [  --with-aterm     Specify location of aterm library, default: \$prefix], ATERM=$withval, ATERM="$prefix")
+AC_ARG_WITH(gpp,     [  --with-gpp       Specify location of gpp, default: \$prefix], GPP=$withval, GPP="$prefix")
+AC_ARG_WITH(boot,    [  --with-boot      Specify Stratego Compiler to use in bootstrapping, default: \$prefix], STRATEGOBOOT=$withval, STRATEGOBOOT="$prefix")
+AC_ARG_WITH(sc-boot, [  --with-sc-boot   Specify where to install bootstrapped sources, default: \$pwd], SCBOOT=$withval, SCBOOT="$pwd")
+AC_ARG_WITH(ssl,     [  --with-ssl       Specify location of Stratego Library , default: \$prefix], STRATEGOLIB=$withval, STRATEGOLIB="$STRATEGO")
+AC_ARG_WITH(srts,    [  --with-srts      Specify location of Stratego Run-time System, default: \$prefix], STRATEGORTS=$withval, STRATEGORTS="$STRATEGO")
 
-AC_ARG_WITH(stratego-lib, [  --with-stratego-lib            Specify location of stratego, default: \$XT], STRATEGOLIB=$withval, STRATEGOLIB="$STRATEGO")
-
-AC_ARG_WITH(stratego-rts, [  --with-stratego-rts            Specify location of stratego, default: \$XT], STRATEGORTS=$withval, STRATEGORTS="$STRATEGO")
-
-
-AC_REVISION($Id: configure.in,v 1.1 2001/08/22 09:38:13 visser Exp $)
+AC_REVISION($Id: configure.in,v 1.2 2001/08/22 10:22:53 visser Exp $)
 
 AC_PROG_CC
 AC_PROG_RANLIB
@@ -53,12 +48,10 @@ changequote([, ])dnl
 AC_SUBST(DIST_ALPHA)
 
 AC_SUBST(CC)
-AC_SUBST(XT)
 AC_SUBST(CGEN)
-AC_SUBST(CPL)
+#AC_SUBST(CPL)
 AC_SUBST(ATERM)
-AC_SUBST(RELEASE)
-AC_SUBST(STRATEGO)
+AC_SUBST(SCBOOT)
 AC_SUBST(STRATEGOBOOT)
 AC_SUBST(STRATEGOLIB)
 AC_SUBST(STRATEGORTS)
@@ -71,7 +64,6 @@ AC_OUTPUT( \
 	spec/make_rules \
 	spec/c/Makefile \
 	spec/c/data/Makefile \
-	spec/c/ac2c \
 	spec/front/Makefile \
 	spec/front/data/Makefile \
 	spec/match/Makefile \
@@ -88,7 +80,5 @@ AC_OUTPUT( \
 	spec/test1/Makefile \
 	spec/test2/Makefile \
 	spec/test3/Makefile \
-	spec/test4/Makefile \
 	spec/sdf/Makefile \
-	spec/src/Makefile \
 )

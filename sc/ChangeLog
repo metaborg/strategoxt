@@ -1,5 +1,8 @@
 2001-08-22  Eelco Visser  <visser@acm.org>
 
+	* SCBOOT dependency in configure specifies where to install
+	bootstrapped C sources.	
+
 	* Restructuring of the source tree, new CVS repository. The
 	Stratego library and the Stratego Run-time System have been split
 	off into separate packages. The bootstrapped sources are also

@@ -31,6 +31,10 @@ check: $(TESTRUNS) $(IOTESTRUNS)
 
 CLEANFILES = $(TESTBINS) $(IOTESTBINS) $(TESTRUNS) $(IOTESTRUNS)  $(TESTSRCS) $(IOTESTSRCS) *.o *.ac *.s? *.ac *.c.abox *.tree
 
+EXTRADIST = $(wildcard *.r)
+
 #include $(top_srcdir)/share/Stratego.Make
 
 include make-rules
+
+bootinstall:

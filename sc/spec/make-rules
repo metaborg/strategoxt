@@ -7,8 +7,8 @@ SC = $(STRATEGOBOOT)/bin/sc
 	touch $@
 
 bootinstall: $(BOOTSOURCES)
-	$(mkinstalldirs) $(bootdir)
-	cp -f $(BOOTSOURCES) $(bootdir)
+	$(mkinstalldirs) $(SCBOOT)/src
+	cp -f $(BOOTSOURCES) $(SCBOOT)/src
 
 %.comp: %.c
 	$(CC) -g $< -o $@ \

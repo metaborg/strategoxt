@@ -34,7 +34,7 @@ parse_stratego_SOURCES 	= \
 parse_mod_SOURCES = \
   parse-mod.c stratego.grm stratego.lx options.h $(BUILT_SOURCES)
 
-EXTRA_DIST = syntax-test.r pack-stratego.r
+EXTRADIST = $(wildcard *.r)
 
 %.grm.tab.c: %.grm
 	bison -d -t -v $<
@@ -42,8 +42,6 @@ EXTRA_DIST = syntax-test.r pack-stratego.r
 %.yy.c: %.lx
 	flex $<
 	mv lex.yy.c $@
-
-bootdir	= $(top_srcdir)/src/syn
 
 BOOTSOURCES = $(SOURCES) pack-stratego.c
 

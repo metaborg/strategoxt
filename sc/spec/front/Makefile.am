@@ -38,9 +38,7 @@ TESTS = needed-defs-test frontend-test
 
 EXTRA_DIST = $(wildcard *.r)
 
-bootdir	= $(top_srcdir)/src/front
-
-BOOTSOURCES = frontend.c extract.c extract-all.c inline.c
+BOOTSOURCES = frontend.c extract.c extract-all.c inline.c rename-defs.c 
 
 include $(srcdir)/../make-rules
 

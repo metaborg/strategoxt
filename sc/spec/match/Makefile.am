@@ -31,17 +31,7 @@ CLEANFILES = compile-match compile-match.c *.dep \
 TESTS = matrix-test 
 # match-to-matrix-test
 
-EXTRA_DIST = \
-	automaton.r \
-	linearize.r \
-	match-to-matrix.r \
-	matrix-to-dfa.r \
-	compile-match.r \
-	match-to-matrix-test.r \
-	matrix-test.r \
-	matrix.r
-
-bootdir	= $(top_srcdir)/src/match
+EXTRA_DIST = $(wildcard *.r)
 
 BOOTSOURCES = compile-match.c optimize1.c optimize2.c
 

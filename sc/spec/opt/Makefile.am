@@ -27,11 +27,7 @@ TESTS = build-match-laws-test
 
 CLEANFILES = optimizer optimizer.c *.dep
 
-optimizer_sources = $(wildcard *.r)
-
-EXTRA_DIST = $(optimizer_sources)
-
-bootdir	= $(top_srcdir)/src/opt
+EXTRADIST = $(wildcard *.r) 
 
 BOOTSOURCES = fusion.c
 

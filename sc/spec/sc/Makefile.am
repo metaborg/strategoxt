@@ -23,9 +23,7 @@ bin_SCRIPTS = proto-sc sc
 
 CLEANFILES = proto-sc proto-sc.c *.dep
 
-EXTRA_DIST = proto-sc.r sc.in sc
-
-bootdir	= $(top_srcdir)/src/sc
+EXTRADIST = $(wildcard *.r) sc.in sc
 
 BOOTSOURCES = proto-sc.c sc.in sc
 

@@ -28,9 +28,7 @@ EXTRA_DIST = $(wildcard *.r)
 
 TESTS = stratlib-test
 
-bootdir = ../../src/lib
-
-BOOTSOURCES = dummy
+BOOTSOURCES = rename-vars.c
 
 dummy:
 	touch $@
