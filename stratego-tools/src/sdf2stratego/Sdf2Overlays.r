@@ -1,6 +1,6 @@
 module Sdf2Overlays
 
-(* $Id: Sdf2Overlays.r,v 1.3 2002/03/16 14:52:20 eelco Exp $ *)
+(* $Id: Sdf2Overlays.r,v 1.4 2002/03/16 15:14:30 eelco Exp $ *)
 
 (* Warning: Sdf and Stratego both have Module(...) in their signature *)
 
@@ -136,7 +136,7 @@ rules
 
 rules
   MyCns: 
-    appl(p, ts) -> "c" #(ts)
+    appl(p, ts) -> "c"#(ts)
 
 rules
   lit-sort2lit-term:
