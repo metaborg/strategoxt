@@ -20,3 +20,4 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 */
 
 ATerm SSLgetAnnotations(ATerm t);
+ATerm SSLsetAnnotations(ATerm t, ATerm ts);

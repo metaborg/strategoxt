@@ -26,7 +26,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 ATerm SSLgetAnnotations(ATerm t)
 {
   ATerm annos = ATgetAnnotations(t);
-  if(annos == NULL) 
-    _fail(t);
-  return annos;
+  if(annos == NULL)
+    return ATempty;
+  else 
+    return annos;
+}
+
+ATerm SSLsetAnnotations(ATerm t, ATerm ts)
+{
+  if((ATermList) ts == ATempty)
+    return AT_removeAnnotations(t);
+  else
+    return ATsetAnnotations(t, ts);
 }
