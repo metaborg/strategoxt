@@ -1,0 +1,54 @@
+#! /bin/sh
+#
+# Autobundle -- Tool suite for automated source tree composition
+#
+# Author: Merijn de Jonge (M.de.Jonge@tue.nl)
+#
+# $Id$
+
+GRAPHTOOLS=__GRAPHTOOLS__
+DOTTOOLS=__DOTTOOLS__
+GPP=__GPP__
+DOTNEATO=__DOTNEATO__
+AUTOBUNDLE=__AUTOBUNDLE__
+
+# Read configuration file and automatically export all defined variables
+set -a
+. ./opb.conf
+set +a
+
+. ${AUTOBUNDLE}/libexec/cgi-lib.sh
+
+PATH=${AUTOBUNDLE}/bin:${GPP}/bin:${GRAPHTOOLS}/bin:${DOTNEATO}/bin:$PATH
+export PATH
+
+PKGSEARCHPATH="`for p in ${PKGREPOSITORY}; do echo -I $p; done`"
+
+get_pkgs
+
+echo "Content-type:  image/gif"
+echo ""
+
+bundlegen ${PKGSEARCHPATH} ${argument_s} -g \
+   | GraphXML2dot -S \
+   | ast2abox -p ${DOTTOOLS}/share/dot-tools/Dot.pp \
+   | abox2text \
+   | tred \
+   | dot -Tgif -Gconcentrate=true -Gratio=fill -Gcenter=1 -Gbgcolor=white
+
+# Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.

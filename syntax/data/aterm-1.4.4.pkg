@@ -1,0 +1,20 @@
+package 
+identification
+   name=aterm
+   version=1.4.4
+   location=http://www.cwi.nl/projects/MetaEnv/aterm
+   info=http://www.cwi.nl/projects/MetaEnv/aterm
+   description='ATerm (short for Annotated Term) is an abstract data type
+                designed for the exchange of tree-like data structures
+                between distributed applications.'
+   keywords=library baf aterm term tree
+
+interface
+     dbg     'enable generation of libraries with debug info'
+     java    'enable generation of java library'
+
+requires
+
+configuration
+     dbg
+     

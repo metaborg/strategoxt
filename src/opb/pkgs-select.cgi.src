@@ -1,0 +1,93 @@
+#! /bin/sh
+#
+# Autobundle -- Tool suite for automated source tree composition
+#
+# Author: Merijn de Jonge (M.de.Jonge@tue.nl)
+#
+# $Id: pkgs-select.cgi.src,v 1.1 2002/06/27 12:17:34 mdejonge Exp $
+
+AUTOBUNDLE=__AUTOBUNDLE__
+
+# Read configuration file and automatically export all defined variables
+set -a
+. ./opb.conf
+set +a
+
+. ${AUTOBUNDLE}/libexec/cgi-lib.sh
+
+PATH=${AUTOBUNDLE}/bin:$PATH
+export PATH
+
+PKGSEARCHPATH="`for p in ${PKGREPOSITORY}; do echo -I $p; done`"
+
+get_value() {
+echo ${QUERY_STRING} \
+| tr '[&]' '[\n]' \
+| grep "$1=" \
+| sed "s/$1=//"
+
+}
+
+
+pkgs="`get_value name`"
+topbar="`get_value topbar`"
+bottombar="`get_value bottombar`"
+exclude="`get_value exclude`"
+description="`get_value description`"
+keywords="`get_value keywords`"
+
+for switch in topbar bottombar keywords description exclude
+do
+   value=`get_value ${switch}`
+   if [ "a${value}" = "ano" ]; then
+      switches="${switches} --no_${switch}"
+   fi
+done
+
+check="`get_value check`"
+if [ "a${check}" = "ayes" ]; then
+   switches="${switches} --check"
+fi
+
+bodyonly="`get_value bodyonly`"
+if [ "a${bodyonly}" = "ayes" ]; then
+   switches="${switches} -b"
+fi
+
+for pkg in ${pkgs}
+do
+   p="`find ${PKGREPOSITORY} -name ${pkg}-\*.pkg \
+       | egrep ${pkg}'-[^-]*.pkg' \
+       | sed 's@.*/@@;s@.pkg@@;s@^@-p @'`"
+   select="${select} ${p}"
+done
+
+
+echo "Content-type: text/html"
+echo ""
+
+
+pkgs2form \
+   ${PKGSEARCHPATH} \
+   -c ${CGIPATH}/opb-stub.cgi \
+   -l "<img border=\"0\" src=\"${PKGDEP_ICON}\" alt=\"Package dependency graph\" align=\"center\">" \
+   -P "<img border=\"0\" src=\"${PKGDEF_ICON}\" alt=\"Package definition file\" align=\"center\">" \
+   ${switches} \
+   ${select}    
+
+# Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.

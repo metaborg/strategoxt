@@ -1,0 +1,98 @@
+\literate[version-comparison-test]
+
+ Autobundle -- Tool suite for automated source tree composition
+
+ Author: Merijn de Jonge (M.de.Jonge@tue.nl)
+
+ $Id: autobundle-sig.r,v 1.4 2002/05/27 21:51:17 mdejonge Exp $
+
+\begin{code}
+module version-comparison-test
+
+imports
+   sunit version-comparison
+
+strategies
+version-comparison-test =
+   test-suite(!"version-comparison-test",
+   test1; test2; test3; test4; test5;
+   test6; test7; test8; test9; test10
+)
+
+// "1.2" > "1.1" => true
+test1 =
+   apply-test( !"test1",
+   version-gt,
+   !("1.2", "1.1"))
+
+// "1.2.3" > "1.2.2" => true
+test2 =
+   apply-test( !"test2",
+   version-gt,
+   !("1.2.3", "1.2.2"))
+
+// "1.2.4beta" > "1.2.4alpha" => true
+test3 =
+   apply-test( !"test3",
+   version-gt,
+   !("1.2.4beta", "1.2.4alpha"))
+
+// "1.2.4" > "1.2.4beta" => true
+test4 =
+   apply-test( !"test4",
+   version-gt,
+   !("1.2.4", "1.2.4beta"))
+
+// "1.2" > "1.2" => false
+test5 =
+   apply-and-fail( !"test5",
+   version-gt,
+   !("1.2", "1.2"))
+
+// "1.2beta" > "1.2beta" => false
+test6 =
+   apply-and-fail( !"test6",
+   version-gt,
+   !("1.2beta", "1.2beta"))
+
+// "1.1" > "1.2" => false
+test7 =
+   apply-and-fail( !"test7",
+   version-gt,
+   !("1.1", "1.2"))
+
+// "1.2.2" > "1.2.3" => false
+test8 =
+   apply-and-fail( !"test8",
+   version-gt,
+   !("1.2.2", "1.2.3"))
+
+// "1.2.4alpha" > "1.2.4beta" => false
+test9 =
+   apply-and-fail( !"test9",
+   version-gt,
+   !("1.2.4alpha", "1.2.4beta"))
+
+// "1.2.4beta" > "1.2.4" => false
+test10 =
+   apply-and-fail( !"test10",
+   version-gt,
+   !("1.2.4beta", "1.2.4"))
+
+\end{code}
+% Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.

@@ -1,0 +1,101 @@
+\literate[cycle-check-test]
+
+ Autobundle -- Tool suite for automated source tree composition
+
+ Author: Merijn de Jonge (M.de.Jonge@tue.nl)
+
+ $Id: autobundle-sig.r,v 1.4 2002/05/27 21:51:17 mdejonge Exp $
+
+\begin{code}
+module cycle-check-test
+
+imports
+   sunit bundle-generator
+
+strategies
+cycle-check-test =
+   test-suite(!"cycle-check-test",
+   case-a;
+   case-b;
+   case-c;
+   case-d)
+
+
+// Case a   => true
+//   a1  
+//   b1
+//   a1
+case-a =
+   apply-and-fail( !"case a",
+   cycle-check,
+    !([pkg-id("b", "1"),pkg-id("a", "1")],
+      [pkg(pkg-id("a", "1"), [pkg-id("b","1")]),
+       pkg(pkg-id("b", "1"), [pkg-id("a", "1")])
+      ]
+      ))
+
+// Case b    => true
+//      a1  
+//   b1  c1
+//       d1
+//       c1
+case-b =
+   apply-and-fail( !"case b",
+   cycle-check,
+    !([pkg-id("b", "1"),pkg-id("d", "1"),pkg-id("c","1"),pkg-id("a","1")],
+      [pkg(pkg-id("a", "1"), [pkg-id("b","1"),pkg-id("c","1")]),
+       pkg(pkg-id("b", "1"), []),
+       pkg(pkg-id("c", "1"), [pkg-id("d","1")]),
+       pkg(pkg-id("d", "1"), [pkg-id("c","1")])
+      ]
+      ))
+
+// Case c   => true
+//      a1  
+//   b1  c1
+//       d1
+//       a1
+case-c =
+   apply-and-fail( !"case c",
+   cycle-check,
+    !([pkg-id("b", "1"),pkg-id("d", "1"),pkg-id("c","1"),pkg-id("a","1")],
+      [pkg(pkg-id("a", "1"), [pkg-id("b","1"),pkg-id("c","1")]),
+       pkg(pkg-id("b", "1"), []),
+       pkg(pkg-id("c", "1"), [pkg-id("d","1")]),
+       pkg(pkg-id("d", "1"), [pkg-id("a","1")])
+      ]
+      ))
+
+// Case d    => false
+//      a1
+//   b1  c1
+//       d1
+//       b1
+case-d =
+   apply-test( !"case d",
+      cycle-check,
+    !([pkg-id("b", "1"),pkg-id("d", "1"),pkg-id("c","1"),pkg-id("a","1")],
+      [pkg(pkg-id("a", "1"), [pkg-id("b","1"),pkg-id("c","1")]),
+       pkg(pkg-id("b", "1"), []),
+       pkg(pkg-id("c", "1"), [pkg-id("d","1")]),
+       pkg(pkg-id("d", "1"), [pkg-id("b","1")])
+      ]
+      ))
+   
+\end{code}
+% Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.

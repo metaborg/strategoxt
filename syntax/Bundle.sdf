@@ -1,0 +1,11 @@
+module Bundle
+imports Package
+
+exports
+  sorts Bundle
+
+  context-free syntax
+    "bundle" Identification Interface Requires Bundles -> Bundle {cons("Bundle")}
+    "bundles" Package* -> Bundles {cons("Bundles")}
+    "package" Identification Configuration -> Package {cons("Package")}
+

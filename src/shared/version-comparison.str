@@ -1,0 +1,131 @@
+\literate[version-comparison]
+
+ Autobundle -- Tool suite for automated source tree composition
+
+ Author: Merijn de Jonge (M.de.Jonge@tue.nl)
+
+ $Id: autobundle-sig.r,v 1.4 2002/05/27 21:51:17 mdejonge Exp $
+
+
+ This module contains strategies for comparing version numbers
+
+\begin{code}
+module version-comparison
+imports lib
+(*
+   check whether version1 > version2
+
+   a version (a.b.c, ann1) > (d.e.f, ann2)  whenever
+     a > d, or
+     a = d and b > e, or
+     a = d, b = e, and c > f,
+     a = d, b = e, c = f, and ann1 > ann2
+
+  examples
+   "1.2"       > "1.1"
+   "1.2.3"     > "1.2.2"
+   "1.2.4beta" > "1.2.4alpha"
+   "1.2.4      > "1.2.4beta"
+
+*)
+strategies 
+version-gt =
+  ?(version-s1, version-s2);
+  (string-to-version, string-to-version);
+  (
+     ?((version, ann1), (version, ann2));
+     (
+        <ann-check>(ann1, ann2);
+        !version-s1
+     <+
+        fail
+     )
+  <+
+     ?((version1, ann1), (version2, ann2));
+     (
+        <version-check>(version1, version2);
+        !version-s1
+     <+
+        fail
+     )
+   )
+
+version-check =
+   rec x({ v, vs, v1, vs1, v2, vs2:
+      ?([], _ ); fail
+    <+
+      ?([v|vs], [])
+    <+
+      ?([v1|vs1], [v2|vs2]);
+      (
+         <gt>(v1, v2)
+       <+
+         <eq>(v1, v2);
+         <x>(vs1, vs2)
+      )
+   })
+
+// Check whether annotation string a1 of the tuple (a1, a2) is less than, or
+// equal to the annotation string a2.
+ann-check =
+      (?"",not(?""))
+   <+
+      (not(?""), not(?""));
+      string-gt
+
+(*
+   Return a tuple of the list of version numbers obtained from a version string
+   and the optional version annotation string.
+   example:
+     "1.10.3"  becomes ([1, 10, 3], "")
+     "1.2beta" becomes ([1,2], "beta")
+
+
+  A version string is a sequence of numbers separated by dots. The trailing
+  number may optionally be followed by a version annotation string.
+  
+  examples:
+    "1.2"
+    "1.3.4beta"
+
+*)
+string-to-version =
+    ?s;
+    !(<explode-string>s, [], []);
+    
+    rec x({rem, version, d, xs:
+       ?([], rem, version);
+       !(<conc>(version, [<implode-string;try(string-to-int)>rem]), "")
+     <+
+        ?([46|xs], rem, version);
+        <x>(xs, [], <conc>(version,[<implode-string;string-to-int>rem]))
+        
+     <+
+        ?([d|xs], rem, version );
+        <is-alpha>d;
+        !(<conc>(version,
+                [<implode-string;string-to-int>rem]),
+                <implode-string>[d|xs])
+     <+
+        ?([d|xs], rem, version);
+        <is-num>d;
+        <x>(xs, <conc>(rem, [d]), version)
+    })
+    
+\end{code}
+% Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.

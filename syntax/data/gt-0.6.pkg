@@ -1,0 +1,18 @@
+package 
+identification
+   name=gt
+   version=0.6
+   location=http://www.cwi.nl/~mdejonge/pkgs
+   info=http://www.program-transformation.org/gt
+   description='Grammar Tools, a collection of grammar related tools.'
+
+   keywords=grammar sdf
+interface
+
+requires
+  stratego	0.4.22
+  gpp		1.33
+  graph-tools	0.1
+  graphviz	1.4
+
+     

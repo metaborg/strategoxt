@@ -1,0 +1,84 @@
+#! /bin/sh
+#
+# Autobundle -- Tool suite for automated source tree composition
+#
+# Author: Merijn de Jonge (M.de.Jonge@tue.nl)
+#
+# $Id: cgi-lib.sh.src,v 1.4 2002/06/06 15:16:01 mdejonge Exp $
+
+# Set of functions shared by online package base CGI scripts
+
+# Function that produces an HTML error page
+fail () {
+cat << END_FILE_MSG
+Content-type: text/html
+
+<html>
+ <head>
+  <title>$1</title>
+ </head>
+ <body bgcolor="white">
+  <center>
+   <h3><font color="red">Error</font></h3>
+   <p>
+    `cat`
+   </p>
+  </center>
+ </body>
+</html>
+END_FILE_MSG
+}
+
+
+
+get_pkgs () {
+   # Determine the list of packages selected on the html form
+   pkgs="`echo ${QUERY_STRING} \
+          | tr '[&]' '[\n]' \
+          | sed 's/^-//' \
+          | grep '=on' \
+          | sed 's/=on//g' `"
+
+   # Check whether any packages are selected
+   if [ "a${pkgs}" = "a" ]; then
+      (
+         echo "No packages are selected<br><br>"
+         echo "Please select the packages you need and<br>"
+         echo "try again."
+      ) | fail "No Packages Selected"
+   exit 1
+   fi
+
+   for pkg in ${pkgs}
+   do
+      pkg_version=`echo ${QUERY_STRING} \
+                   | tr '[&]' '[\n]'\
+                   | sed 's/^-//' \
+                   | grep "^${pkg}-version" \
+                   | sed 's/.*=//'`
+      # Determine whether a package shoudl be excluded from the bundle
+      if [ "a${pkg_version}" = "aexclude" ]; then
+         pkg_switch="-db ${pkg}"
+      else
+         pkg_switch="-p ${pkg}${pkg_version:+-${pkg_version}}"
+      fi
+      argument_s="${argument_s} ${pkg_switch}"
+   done
+}
+
+# Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.

@@ -1,0 +1,86 @@
+\literate[bundlegen]
+
+ Autobundle -- Tool suite for automated source tree composition
+
+ Author: Merijn de Jonge (M.de.Jonge@tue.nl)
+
+ $Id$
+
+\begin{code}
+module bundlegen
+imports 
+   version-resolver package-resolver bundlegen-options 
+   bundle-generator graph-generator autobundle-version
+   dependency-resolver
+
+strategies
+
+short-description(p) = 
+   !["Usage: ", <p>(), " [options]"]
+
+long-description(p) = 
+   !["This program generates a software bundle definition\n",
+    "from a selected set of package definitions. Use the -p\n",
+    "switch to add packages, use the -db switch to exclude\n",
+    "packages\n"]
+
+default-configuration =
+   <set-config>("-B", "${prefix}")
+
+bundlegen = 
+   where(default-configuration);
+   output-wrap(bundlegen-options, Bundlegen)
+
+
+Bundlegen =
+   // Obtain the list of packages to bundle, or fatal error when no packages
+   // have been specified.
+   (<get-config;map(string-2-pkgdep)>"-p"
+      <+ <fatal-error>["*** bundle error: No packages specified to bundle."]) => tops;
+
+   // Determine list of package names not to bundle
+   (<get-config>"-db" <+ ![] ) => dont-bundle;
+
+   // Resolve packages
+   !(tops, dont-bundle);
+   package-resolver;
+   
+   // Add to resulting package graph a virtual root package which has all
+   // specified packages as package dependencies.
+   (id,\ resolved -> [root(<map(\x -> RunTime(x)\)>tops)|resolved] \);
+
+   // Resolve package version constraints
+   version-resolver;
+
+   // Resolve dependencies of package to be bundled.
+   dependency-resolver;
+
+   // Error if there is nothing to bundle.
+   if(pkg-graph([],id,id), <fatal-error>["*** bundle error: No matching packages found."]);
+
+   // If -g switch was specified, construct a GraphXML graph, otherwise,
+   // construct a bundle definition
+   if( where(<get-config>"-g"), graph-generator, bundle-generator)
+
+overlays
+
+root(deps) = 
+   pkg(pkg-id("root", "0"), deps)
+
+\end{code}
+% Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.

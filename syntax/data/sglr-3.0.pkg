@@ -1,0 +1,26 @@
+package 
+identification
+   name=sglr
+   version=3.0
+   location=http://www.cwi.nl/projects/MetaEnv/sglr
+   info=http://www.cwi.nl/projects/MetaEnv/sglr
+   description='The SGLR (Scannerless Generalized LR) parser is the improved
+                version of GLR (Generalized LR) parser which, in turn, is a
+                generalization of the (standard) LR parsing algorithm, that
+                contrary to LR, allows conflicts in the syntax. SGLR is the
+                scannerless extension of GLR in which the scanner phase is
+                eliminated. In doing so, the interface between scanner and
+                parser disappears. The underlying syntax definition
+                formalism (SDF2) allows a more subtle way of defining
+                syntaxes of languages.'
+
+   keywords=parsing sdf glr
+interface
+
+requires
+  aterm 1.4.6 with
+      debug
+  asfix 0.2.2 with
+      debug      
+
+     

@@ -1,0 +1,1 @@
+"autobundle-0"(PackageDef(Identification(Name("test4-b"),Version("2"),Location(Some("a")),Info(Some("b")),Description(Some("'a'")),Keywords([])),InterfaceOld([]),Requires([ReqPackage("test4-d","1",[])]),None))

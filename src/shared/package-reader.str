@@ -1,0 +1,54 @@
+\literate[read-pkg]
+
+ Autobundle -- Tool suite for automated source tree composition
+
+ Author: Merijn de Jonge (M.de.Jonge@tue.nl)
+
+ $Id$
+
+
+ This module contains strategies for reading package definition files
+
+\begin{code}
+module read-pkg
+imports lib termid
+
+strategies
+
+// read-pkg: string -> (string, pkg)
+//
+// This package reads a package '<package>.pkg.af' and returns a tuple
+// containing the full path name to the package definition and the package
+// definition itself. The package is searched in the directories specified
+// with the '-I' command line option.
+read-pkg =
+   where((<get-config>"-I" <+ ![]) => path);
+   split(id, !"pkg.af");
+   add-extension;
+   split(id, !path);
+   find-in-path;
+   split(id, ReadFromFile; termid-check("\"autobundle-0\""))
+
+// Remove .pkg and .pkg.af extensions from arguments to -p switch
+remove-extensions =
+   try(has-extension(!"af");basename(!['a','f']) );
+   try(has-extension(!"pkg");basename(!['p','g','g']) )
+
+
+\end{code}
+% Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.

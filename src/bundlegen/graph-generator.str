@@ -1,0 +1,80 @@
+\literate[graph-generator]
+
+ Autobundle -- Tool suite for automated source tree composition
+
+ Author: Merijn de Jonge (M.de.Jonge@tue.nl)
+
+ $Id$
+
+
+ This module contains strategies for transforming package graphs to
+ GraphXML.
+
+\begin{code}
+module graph-generator
+imports GraphXML package-graph misc
+strategies
+
+// graph-generator: pkg-graph -> graphxml
+//
+// Create a GraphXML graph for a package graph
+graph-generator: pkg-graph(pkgs, tops, unresolved) -> graphxml
+where
+   !pkgs;
+
+   // Obtain the edges of the graph
+   map( pkg2graphxml );concat => edges;
+
+   // Create special nodes for unresolved packages
+   <map(\ BuildTime(n) -> unresolved-node(<pkgid-to-string>n) \ 
+        +
+        \ RunTime(n) -> unresolved-node(<pkgid-to-string>n ) \ )>unresolved 
+      => unresolved-nodes;
+
+   // Create special nodes for top nodes
+   <map(\ BuildTime(n) -> top-node(<pkgid-to-string>n) \ 
+        +
+        \ RunTime(n) -> top-node(<pkgid-to-string>n) \ )>tops
+      => top-nodes;
+
+   // Create GraphXML graph
+   <mkterm>
+    ("\"graphxml_1_1-0\"", 
+    [GraphXML([], [graph([],<concat>[edges, top-nodes,unresolved-nodes])])]) => graphxml
+
+// Create an edge from pkgid to d for each package d in deps
+pkg2graphxml: pkg(pkgid,deps) -> edges
+where
+   <pkgid-to-string>pkgid => target;
+   !deps;
+   map(
+      (?RunTime(<id>) + ?BuildTime(<id>) );
+      \pkgid -> edge(target, <pkgid-to-string>pkgid) \ ) => edges
+
+
+overlays
+nondeclared-top = class("\"nondeclared-top\"")
+declared-top = class("\"declrared-top\"")
+declared = class("\"declared\"")
+
+top-node(name) = node1([name(name), declared-top, declared])
+unresolved-node(name) = node1([name(name), nondeclared-top])
+edge(target, source) = edge1([target(target), source(source)])
+
+\end{code}
+% Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.

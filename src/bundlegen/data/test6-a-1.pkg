@@ -1,0 +1,15 @@
+package
+identification
+  name=test6-a
+  version=1
+  location=a
+  info=b
+  description='a'
+  keywords=
+
+interface
+
+requires
+  test6-b 1
+  test6-b 2
+

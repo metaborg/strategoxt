@@ -1,0 +1,326 @@
+\literate[pkgs2form]
+
+ Autobundle -- Tool suite for automated source tree composition
+
+ Author: Merijn de Jonge (M.de.Jonge@tue.nl)
+
+ $Id$
+
+\begin{code}
+module pkgs2htmlform
+imports lib Autobundle version-comparison package-reader autobundle-version
+
+strategies
+short-description(p) =
+   !["Usage: ", <p>(), " [options]"]
+
+long-description(p) =
+   !["This program produces an HTML form from the information\n",
+     "contained in a set of package definitions. The form includes\n",
+     "buttons which, when pressed, execute a CGI script on\n",
+     "the server side to generate a software bundle or a dependency\n",
+     "graph from the selected packages ."]
+
+pkgs2form = 
+   where(default-configuration);
+   option-wrap( 
+      Pkgs2form-options,
+      Pkgs2form)
+
+default-configuration =
+   <set-config>("-p", []);
+   <set-config>("-c", "/cgi-bin/autobundle-stub.cgi");
+   <set-config>("-w", "");
+   <set-config>("-l", "dependency graph");
+   <set-config>("-P", "package definition");
+   <set-config>("-t", "Autobundle Package Base")
+
+Pkgs2form-options =
+   ArgOption( "-c", 
+      where(<set-config>("-c", <id>)),
+      !"-c <cgiscript>   Call <cgiscript> when a form button is pressed" ) +
+   ArgOption( "-l", 
+      where(<set-config>("-l", <id>)),
+      !"-l <deplink>     Put <deplink> between anchors of dependency graph link" ) +
+   ArgOption( "-P",
+      where(<set-config>("-P", <id>)),
+      !"-P <pkglink>     Put <pkglink> between anchors of package definition link" ) +
+   ArgOption( "-I",
+      where(<extend-config>("-I", [<id>])),
+      !"-I <dir>         Search for packages in <dir>" ) +
+   ArgOption( "-p",
+      where(<extend-config>("-p", [<remove-extensions><id>])),
+      !"-p <pkg>         Include package <pkg> in bundle" )  +
+   ArgOption( "-w",
+      where(<set-config>("-w", <id>)),
+      !"-w <words>       Fill search entry with <words>" ) +
+   ArgOption( "-t",
+      where(<set-config>("-t", <id>)),
+      !"-t <title>       Use <title> as page title" ) +
+   Option( "-b", 
+      where(<set-config>("-b", <id>)),
+      !"-b               Only produce HTML body text" ) +
+   Option( "--no_topbar",
+      where(<set-config>("--no_topbar", <id>)),
+      !"--no_topbar      Don't include top button bar in HTML output" ) +
+   Option( "--no_bottombar",
+      where(<set-config>("--no_bottombar", <id>)),
+      !"--no_bottombar   Don't include bottom button bar in HTML output" ) +
+   Option( "--no_description",
+      where(<set-config>("--no_description", <id>)),
+      !"--no_description Don't include package descriptions in HTML output" ) +
+   Option( "--no_keywords",
+      where(<set-config>("--no_keywords", <id>)),
+      !"--no_keywords    Don't include keywords in HTML output" ) +
+   Option( "--no_exclude",
+      where(<set-config>("--no_exclude", <id>)),
+      !"--no_exclude     Don't offer package exclude mechanism" ) +
+   Option( "--check",
+      where(<set-config>("--check", <id>)),
+      !"--check          Check all check boxes") 
+
+Pkgs2form =
+    <get-config>"-p";
+
+    // Read all packages as specified with the -p switch.
+    collect( read-pkg;Snd ) => pkg-list;
+
+    // Obtain a list of names of all packages to include in the HTML form
+    // and sort them alphabetically.
+    collect( \PackageDef(Identification(Name(n),_,_,_,_,_),_,_,_) -> n \ ); 
+    uniq; string-sort => uniq-pkgs;
+
+    where( <get-config>"-c" => cgi-stub );
+    where( <get-config>"-t" => title );
+    where( <get-config>"-w" => search_words );
+
+    // Only output HTML header when -b switch was not used
+    where(try(not(<get-config>"-b");
+       !(stdout, ["<html>\n<head><title>", title,"</title>"]);printnl;
+       !(stdout, ["<style type=\"text/css\">A {color:blue}</style>"]);printnl;
+       !(stdout, ["</head>\n<body bgcolor=\"white\">"]); printnl
+    ));
+
+    where(<concat-strings>[
+       // Ensure correct button handling such that if pressing enter in the
+       // search input field, the search routine is called instead of the
+       // bundle action.
+       "<input type=\"button\" 
+               value=\"bundle\"
+               onclick='this.form.opb_action.value=\"bundle\";this.form.submit()'>\n", 
+
+       // The dependency button sets the form target to "pkgdep" to make
+       // sure the dependency graph is opened in a separate window
+       "<input type=\"button\" 
+               value=\"dependency graph\"
+               onclick='this.form.target=\"pkgdep\";
+                        this.form.opb_action.value=\"dependency graph\";
+                        this.form.submit();
+                        this.form.target=\"_self\"'>\n",
+               
+       "<input type=\"reset\" 
+               value=\"clear\">\n"] => buttons);
+
+    where(<concat-strings>[
+       "Package search: \n",
+       "<input type=\"text\" 
+               name=\"search_words\" 
+               value=\"", search_words, "\"
+               onfocus='this.form.opb_action.value=\"search\"'>\n",
+       "<input type=\"button\" 
+               value=\"search\" 
+               onclick='this.form.opb_action.value=\"search\";this.form.submit()'>\n"] => search_top);
+
+//    where(<concat-strings>[
+//       "Package search: <input type=\"text\" name=\"search_words_bottom\" value=\"", search_words, "\">\n",
+//       "<input type=\"submit\" name=\"action_search_bottom\" value=\"search\">\n"] => search_bottom);
+
+
+    where(!(stdout, [
+       "<form method=\"POST\" 
+              name=\"opb\"
+              action=\"", cgi-stub, "\">\n", 
+       "<input type=\"hidden\" 
+               name=\"opb_action\">\n",
+       "<table>\n"
+       ]); printnl);
+
+    // produce top button bar unless --no_topbar switch was used
+    where(
+       try(not(<get-config>"--no_topbar");
+          !(stdout, [
+          "<tr bgcolor=\"#dddddd\"><td nowrap colspan=\"30\">&nbsp;&nbsp;\n",
+          buttons,
+          "&nbsp;&nbsp;&nbsp;",
+          search_top,
+          "&nbsp;&nbsp;&nbsp;",
+          <length;int-to-string>uniq-pkgs,
+          " pkgs / ",
+          <length;int-to-string>pkg-list,
+          " versions"
+          ]); printnl
+       ));
+
+    // produce html form
+    map(pkg2htmlform(!pkg-list));
+
+    // produce bottom button bar unless --no_bottombar switch was used
+    where(
+       try(not(<get-config>"--no_bottombar");
+          !(stdout, [
+          "<tr bgcolor=\"#dddddd\"><td nowrap colspan=\"30\">&nbsp;&nbsp;\n",
+          buttons,
+          "&nbsp;&nbsp;&nbsp;",
+          "The Online Package Base is created by ",
+          "<a href=\"http://www.cwi.nl/~mdejonge/autobundle\">autobundle</a>."
+   //       ,search_bottom
+          ]); printnl
+       ));
+       
+    where(!(stdout, ["</table>", "</form>\n"]); printnl);
+
+    // Only output HTML footer when -b switch was not used
+    where(try(not(<get-config>"-b");
+      !(stdout, ["</body></html>\n"]);printnl
+    ))
+
+pkg2htmlform(pkg-list) =
+   ?name;
+
+   pkg-list;
+   // Obtain a list of all package definitions with name name.
+   filter( \ PackageDef(Identification(Name(n),v,l,i,d,k),_,_,_) ->
+             Identification(Name(n),v,l,i,d,k) where !n;?name\ );
+   // sort the list according package version numbers in descending order
+   sort-list(PkgVersionSort) => matching_pkgs;
+
+   // The first package in the list is the package with highest version
+   // number. The information of this package is included on the HTML form.
+   Hd => most_recent_package;
+
+   // Determine whether checkboxes should always be checked
+   ( <get-config>"--check"; !"checked" <+ !"" ) => always_checked;
+
+   // Obtain a list of all available versions of the same package.
+   !matching_pkgs;
+   map( \ Identification(_,Version(v),Location(l),_,_,_) -> (v,l) \ 
+        +
+        \ Identification(_,Version(v),LocationPBSD(l),_,_,_) -> (v,l) \ 
+        
+      ) => all-versions;
+
+   !most_recent_package;
+   where(oncetd(Info(Some(?info))) <+ !"" => info);
+   where(oncetd(Description(Some(?descr))) <+ !"''" => descr);
+   where(oncetd(Keywords(?keywords)));
+   where(oncetd(Version(?the_version)));
+
+   !(stdout, ["<tr valign=\"top\" bgcolor=\"#cccccc\">"]); printnl;
+   !(stdout, ["<td nowrap><input type=\"checkbox\" name=\"", name, "\"", always_checked, ">"]); printnl;
+   !(stdout, ["<a href=\"", info, "\" target=\"_top\">",name, "</a>"]); printnl;
+   !(stdout, ["</td>"]); printnl;
+
+   // Obtain information for adding links to package definition files and
+   // dependency graph generation.
+   where(<get-config>"-c" => cgi-stub );
+   where(<get-config>"-l" => deplink);
+   where(<get-config>"-P" => pkglink);
+
+   !all-versions;
+
+   where(Hd => hd);
+   map(
+   \(v,l) -> (v,l)
+   where
+    (
+      // Always check the first radio button (it corresponds to the package
+      // with highest version number)
+      ?hd;
+      !(stdout, ["<td nowrap align=\"center\"><input type=\"radio\" name=\"", name, "-version\" value=\"", v, "\" checked> "]); print
+    <+
+      !(stdout, ["<td nowrap align=\"center\"><input type=\"radio\" name=\"", name, "-version\" value=\"", v, "\"> "]); print
+    );
+    <print_pkg_version>(name, v, l );
+    !(stdout, ["<br><a href=\"", cgi-stub, "?opb_action=pkgdef&-",   name, "=on&-", name, "-version=", v, "\" target=\"pkgdef\">", pkglink, "</a>"]); printnl;
+    !(stdout, [    "<a href=\"", cgi-stub, "?opb_action=dependency+graph&-", name, "=on&-", name, "-version=", v, "\" target=\"pkgdep\">", deplink, "</a>"]); printnl;
+    !(stdout, ["</td>"] ); printnl
+    \ );
+
+   // Add a radio buttion which, when selected, excludes the package from a software bundle, unlesss --no_exclude switch was used
+   try(not(<get-config>"--no_exclude");
+      !(stdout, ["<td nowrap><input type=\"radio\" name=\"", name, "-version\" value=\"exclude\"> exclude </td>"]); printnl);
+
+   // We will fill up the table with a single column filling all remaining column entries.
+   // How much collumns remain after printing all versions?:
+   //    (max number of versions(30) - 2) - |all-versions| 
+   // -2 because two columns are always occupied (the most left column, and
+   //    the one containing "exclude"
+   <length>all-versions => length-all-versions;
+   <subt>(28, length-all-versions) => cols-remaining;
+   !(stdout, ["<td colspan=\"", <int-to-string>cols-remaining, "\" width=\"100%\">&nbsp;</td>"]); printnl;
+
+   // If there are more then 6 columns filled with version numbers, only use
+   // the first 6 to display a package description and keywords.
+   !(stdout, ["</tr><tr><td></td>"]);printnl;
+   (
+      <gt>(length-all-versions, 6);!(stdout, ["<td colspan=\"6\">"]); printnl
+   <+
+      // Otherwise, fill all columns (including the remaining empty ones)
+      !(stdout, ["<td colspan=\"29\">"]); printnl
+   );
+   // Output package description unless --no_description switch was used
+   try(not(<get-config>"--no_description");
+      !(stdout, [<un-single-quote>descr]); printnl);
+  
+   // Output package keywords unless no_keywords switch was used
+   try(not(<get-config>"--no_keywords");
+      !(stdout, ["<br>keywords: <em>", <keyword-list>keywords, "</em>"]); printnl);
+   !(stdout, ["</td></tr>"]); printnl
+
+
+// If a location was specified in the package file, display the package
+// version as a hyper link pointing to the download location of the package.
+print_pkg_version =
+  ?(name, version, Some(location));
+  !(stdout, ["<a href=\"",location ,"/", name, "-", version, ".tar.gz\">", version, "</a>"]); printnl
+
+// If two locations were specified to enable package-based software
+// development, we select the first (primary) locations
+print_pkg_version =
+  (id, id, \ (PrimaryLoc(location),_) -> Some(location) \ );
+  print_pkg_version
+
+
+// Otherwise, just display the version name
+print_pkg_version =
+  ?(name, version, None);
+  !(stdout, [version]); printnl
+
+
+PkgVersionSort =
+   SortL( ?(p1, p2);
+          <oncetd(Version(?v1))>p1;
+          <oncetd(Version(?v2))>p2;
+          <version-gt>(v2, v1);!p2 )
+
+keyword-list =
+   map( separate-by(!" ");concat-strings );
+   separate-by( !", ");concat-strings
+   
+\end{code}
+% Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.

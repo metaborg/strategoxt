@@ -1,0 +1,46 @@
+module Package
+exports
+  sorts PackageDef
+
+  context-free syntax
+    "package" Identification Interface Requires* Configuration? -> PackageDef {cons("PackageDef")}
+    "name" "=" Literal -> Name {cons("Name")}
+    "version" "=" Literal -> Version {cons("Version")}
+    "location" "=" Literal? -> Location {cons("Location")}
+    "location" (PrimaryLoc SecondaryLoc) -> Location {cons("LocationPBSD")}
+    "primary" "=" Literal -> PrimaryLoc {cons("PrimaryLoc")}
+    "secondary" "=" Literal -> SecondaryLoc {cons("SecondaryLoc")}
+    "info" "=" Literal? -> Info {cons("Info")}
+    "description" "=" Text? -> Description {cons("Description")}
+    "keywords" "=" {Literal+ ","}* -> Keywords {cons("Keywords")}
+    "identification" Name Version Location Info Description Keywords -> Identification {cons("Identification")}
+    Literal Text -> Option {cons("Option")}
+    "interface" Option* -> Interface {cons("InterfaceOld")}
+    "configuration" "interface" Option* -> Interface {cons("Interface")}
+    "requires" ReqPackage* -> Requires {cons("Requires")}
+    "build-time" "requires"  ReqPackage* -> Requires {cons("BuildTimeRequires")}
+    "run-time"   "requires"  ReqPackage* -> Requires {cons("RunTimeRequires")}
+    Literal1 Literal1 ( "with" Switch+ )? -> ReqPackage {cons("ReqPackage")}
+    Literal1 -> Switch {cons("Switch")}
+    Literal1 "=" Literal1 -> Switch {cons("ArgSwitch")}
+    "configuration" Switch* -> Configuration {cons("Configuration")}
+
+  lexical syntax
+    ~[\ \t\n\,\=]+ -> Literal
+    "'" UnquotedChar+ "'" -> Text
+    ~[\'] -> UnquotedChar
+    [\\] [\'] -> UnquotedChar
+    "#" ~[\n]* [\n] -> LAYOUT
+    [\ \t\n] -> LAYOUT
+    "with" -> Literal1 {reject}
+    "requires" -> Literal1 {reject}
+    "build-time" -> Literal1 {reject}
+    "run-time" -> Literal1 {reject}
+    "interface" -> Literal1 {reject}
+    "identification" -> Literal1 {reject}
+    "configuration" -> Literal1 {reject}
+    Literal -> Literal1
+
+  lexical restrictions
+    Literal -/- ~[\ \t\n\,\=]
+

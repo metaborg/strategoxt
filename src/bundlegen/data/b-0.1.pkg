@@ -1,0 +1,15 @@
+package 
+identification
+   name=b
+   version=0.1
+   location=http://www.somewhere
+   info=http://www.somewhere
+   description='demo package'
+   keywords=
+
+interface
+
+requires
+a 0.1
+
+configuration

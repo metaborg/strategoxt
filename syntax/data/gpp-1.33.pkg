@@ -1,0 +1,17 @@
+package 
+identification
+   name=gpp
+   version=1.33
+   location=http://www.cwi.nl/~mdejonge/gpp/download
+   info=http://www.cwi.nl.nl/gpp
+   description='The generic pretty-printer'
+
+   keywords=grammar sdf
+interface
+
+requires
+  asfix		0.2.2
+  asc-support   0.4
+  aterm		0.4.7
+  sglr		3.0
+

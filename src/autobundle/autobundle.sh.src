@@ -1,0 +1,296 @@
+#! /bin/sh
+#
+# Autobundle -- Tool suite for automated source tree composition
+#
+# Author: Merijn de Jonge (M.de.Jonge@tue.nl)
+#
+# $Id$
+
+# usage
+#   autobundle [-h] [-n name] [-v version] [-o output] [-I dir ...]
+#              [-s] [-R README] [-N NEWS] [-A AUTHORS] [-B binding]
+#              -p package -db package ...
+#   autobundle [--version]
+#   autobundle [-v]
+#
+# where
+#     -A  AUTHORS  Use given AUTHORS file instead of default generated one
+#     -B  binding  (experimental) set component binding (default ${prefix})
+#     -h           Display usage information.
+#     -I  dir      Look for package definition in 'dir'
+#     -n  name     Set name of bundle to 'name'
+#     -o  output   Location where bundle should be stored (by default the
+#                  bundle is copied to stdout).
+#     -p  package  Name of package to bundle
+#     -db package  Don't bundle package
+#     -N  NEWS     Use given NEWS file instead of default generated one
+#     -R  README   Use given README file instead of default generated one
+#     -v  version  Set version of bundle to 'version'
+#     --version    Display version information
+#     -s           Obtain packages from autobundle server.
+#
+# The environment variable AUTOBUNDLE_SEARCH_PATH is a colon separated list of
+# directory names which are used in addition to the -I switches to locate
+# package definition files.
+# 
+# In case the -s switch is specified, packages are obtained from an autobundle server and
+# the package search path is discarded.
+
+PKGDATA=__PKGDATA__
+BINDIR=__BINDIR__
+GNUAUTOCONF=__GNUAUTOCONF__
+GNUAUTOMAKE=__GNUAUTOMAKE__
+GNUMAKE=__GNUMAKE__
+AUTOBUNDLE_URL=__AUTOBUNDLE_URL__
+VERSION=__VERSION__
+PROGRAM=$0
+
+OUTPUT=-
+BUNDLENAME=
+BUNDLEVERSION=
+USE_AUTOBUNDLE_SERVER=false
+
+tmp=/tmp/autob.$$
+mkdir -p ${tmp}/
+trap "rm -fr $tmp*" 0 1 2 3 4 5 6 7 8 9 10
+   
+usage() {
+cat <<ENDCAT
+usage
+   autobundle [-n name] [-v version] [-o output] [-I dir ...]
+              [-s] [-R README] [-N NEWS] [-A AUTHORS] [-B binding]
+              -p package -db package ...
+   autobundle [--version]
+   autobundle [-h]
+where
+    -A  AUTHORS  Use given AUTHORS file instead of default generated one
+    -B  binding  (experimental) set component binding (default \${prefix})
+    -h           Display usage information.
+    -I  dir      Look for package definition in 'dir'
+    -n  name     Set name of bundle to 'name'
+    -o  output   Location where bundle should be stored (by default the
+                 bundle is copied to stdout).
+    -p  package  Name of package to bundle
+    -db package  Don't bundle package
+    -N  NEWS     Use given NEWS file instead of default generated one
+    -R  README   Use given README file instead of default generated one
+    -v  version  Set version of bundle to 'version'
+    --version    Display version information
+    -s           Obtain packages from autobundle server.
+
+The environment variable AUTOBUNDLE_SEARCH_PATH is a colon separated list of
+directory names which are used in addition to the -I switches to locate
+package definition files.
+ 
+In case the -s switch is specified, packages are obtained from an autobundle
+server and the package search path is discarded.
+ENDCAT
+}
+
+version () {
+   echo ${PROGRAM} version ${VERSION}
+}
+
+for arg in $*
+do
+   case $1 in
+      -A  ) AUTHORS_FILE=$2; shift; shift;;
+      -B  ) BINDING="-B $2"; shift; shift ;;
+      -db ) DONTS="${DONTS} $2"; shift; shift;;
+      -h  ) usage; exit 0 ;;
+      -I  ) AUTOBUNDLE_SEARCH_PATH="${AUTOBUNDLE_SEARCH_PATH}:$2"; 
+            shift; shift ;;
+      -o  ) OUTPUT=$2; shift; shift ;;
+      -n  ) BUNDLENAME="$2"; shift; shift ;;
+      -v  ) BUNDLEVERSION="$2"; shift; shift ;;
+      -p  ) PKGS="${PKGS} $2"; shift ; shift ;;
+      -N  ) NEWS_FILE=$2; shift; shift;;
+      -R  ) README_FILE=$2; shift; shift ;;
+      -s  ) USE_AUTOBUNDLE_SERVER="true"; shift ;;
+      --version ) version; exit 0 ;;
+      -*  ) usage; exit 1 ;;
+   esac
+done
+
+# Obtain a software bundle via an online package base server.
+if [ "a${USE_AUTOBUNDLE_SERVER}" = "atrue" ]; then
+   # Determine which package and version to bundle and which packages to exclude
+   for p in ${PKGS} ${DONTS}
+   do
+      pkg=`echo ${p} | cut -d- -f 1`
+      pkg_version=`echo ${p} | cut -d- -f 2-`
+
+      # If ${pkg} is listed int the list of excluded packages (i.e., is contained in ${DONTS}),
+      # set version to "exclude" to instruct server not to bundle the package.
+      for db in ${DONTS}
+      do
+         if [ "a${db}" = "a${pkg}" ]; then
+            pkg_version="exclude"
+            break
+         fi
+      done
+      
+      # Extend package url to include the package and version
+      RPKGS="${RPKGS}&${pkg}=on&${pkg}-version=${pkg_version}"
+      
+   done
+   
+   # Specify name of bundle
+   if [ "a${BUNDLENAME}" != "a" ] ; then
+      BUNDLENAME="bundle-name=${BUNDLENAME}"
+   fi
+   # Specify version of bundle
+   if [ "a${BUNDLEVERSION}" != "a" ]; then
+      BUNDLEVERSION="bundle-version=${BUNDLEVERSION}"
+   fi
+   
+   # Construct URL to send to package base server
+   URL="${AUTOBUNDLE_URL}?${RPKGS}&${BUNDLENAME}&${BUNDLEVERSION}"
+
+   # If -o switch is specified, the bundle is stored in the given directory. 
+   # Curl which is used to communicate with server does not consider the
+   # filename specified in the HTML header as returned by the autobundle
+   # server. Therefore, we save the header and inspect it ourselves. Rather
+   # clumsy and suggestions for improvements are welcome.
+   if [ "a${OUTPUT}" != "a-" ]; then
+      curl ${URL} -s -S -D ${tmp}/log  -o ${tmp}/pkg || exit 1
+      pkg_name="`grep 'Content-Disposition: filename=' ${tmp}/log \
+                 | sed 's/.*"\(.*\)".*/\1/'`"
+      pkg_name=`eval echo -n ${pkg_name}`
+      mv ${tmp}/pkg ${OUTPUT}/${pkg_name}
+   else
+      curl ${URL} -s -S  || exit 1
+   fi
+   exit 0
+fi
+
+### Generation of bundles from local package repositories.
+# Specify name of bundle
+if [ "a${BUNDLENAME}" != "a" ] ; then
+   BUNDLENAME="-n ${BUNDLENAME}"
+fi
+# Specify version of bundle
+if [ "a${BUNDLEVERSION}" != "a" ]; then
+   BUNDLEVERSION="-v ${BUNDLEVERSION}"
+fi
+
+PKGS="`echo "${PKGS}" | sed 's/ / -p /g'`"
+DONTS="`echo "${DONTS}" | sed 's/ / -db /g'`"
+
+
+AUTOBUNDLE_SEARCH_PATH="`echo ${AUTOBUNDLE_SEARCH_PATH} \
+                        | sed 's/^://;s/:/ -I /g;s/^..*/-I &/'`"
+
+${BINDIR}/bundlegen ${AUTOBUNDLE_SEARCH_PATH} \
+                    ${BUNDLENAME} ${BUNDLEVERSION} \
+                    ${BINDING} \
+                    -o ${tmp}/bundle \
+                    ${PKGS} \
+                    ${DONTS} || exit 1
+
+${BINDIR}/bundle2configure -i ${tmp}/bundle > ${tmp}/configure.ac
+${BINDIR}/bundle2pkglist  -i ${tmp}/bundle > ${tmp}/pkg-list
+
+FILES="configure.ac pkg-list Makefile.am collect.sh acinclude.m4 \
+       AUTHORS ChangeLog NEWS README \
+       Makefile.am.pre-checks"
+
+# Get the name of the bundle
+bundle_name="`grep AC_INIT ${tmp}/configure.ac \
+            | sed 's/AC_INIT(//' \
+            | cut -d, -f 1`"
+
+bundle_capital_name="`echo ${bundle_name} | tr '[a-z]' '[A-Z]'`"
+
+bundle_version="`grep AC_INIT ${tmp}/configure.ac \
+               | cut -d, -f2 \
+               | tr -d '[ ]' \
+               | sed 's/)$//'`"
+
+# where to store bundle files
+bundle_prefix=${tmp}/${bundle_name}-${bundle_version}
+bundle_dist=${bundle_name}-${bundle_version}
+
+# Try to create a directory where generated files are stored and exit on
+# failure
+mkdir -p ${bundle_prefix}/ || exit 1
+
+for file in ${FILES}
+do
+   mkdir -p ${bundle_prefix}/`dirname $file`
+   case $file in
+   configure.ac | pkg-list )
+      mv ${tmp}/$file ${bundle_prefix}/$file;
+      ;;
+   collect.sh )
+      cp ${PKGDATA}/$file ${bundle_prefix}/$file;
+      chmod +x ${bundle_prefix}/$file
+      ;;
+   README | NEWS | ChangeLog )
+      sed "s/__BUNDLE_NAME__/${bundle_capital_name}/g;\
+           s/__BUNDLE_VERSION__/${bundle_version}/g" \
+         < ${PKGDATA}/$file.templ > ${bundle_prefix}/$file 
+      ;;
+   *Makefile.am | AUTHORS)
+      cp ${PKGDATA}/$file.templ ${bundle_prefix}/$file
+      ;;
+   *Makefile.am.pre-checks)
+      mkdir -p ${bundle_prefix}/pre-checks
+      cp ${PKGDATA}/$file.templ ${bundle_prefix}/pre-checks/Makefile.am
+      ;;
+   * )
+      cp ${PKGDATA}/$file ${bundle_prefix}/$file
+      ;;
+   esac
+done
+
+
+# In case user specified AUTHORS/NEWS/README files, copy them into the bundle
+if [ "a${AUTHORS_FILE}" != "a" ]; then
+   cp ${AUTHORS_FILE} ${bundle_prefix}/AUTHORS
+fi
+
+if [ "a${NEWS_FILE}" != "a" ]; then
+   cp ${NEWS_FILE} ${bundle_prefix}/NEWS
+fi
+if [ "a${README_FILE}" != "a" ]; then
+   cp ${README_FILE} ${bundle_prefix}/README
+fi
+
+(
+   PATH=${GNUAUTOCONF}/bin:${GNUAUTOMAKE}/bin:${GNUMAKE}/bin:${PATH}; export PATH
+   cd ${tmp}/${bundle_name}-${bundle_version}/
+   aclocal
+   autoconf
+   automake -a -c --include-deps
+# No longer use configure/make to build distribution to improve performance
+#   ./configure
+#   make dist DIST_SUBDIRS=pre-checks EXTRA_FILES='pkg-list collect.sh'
+) 2>/dev/null 1>/dev/null
+
+if [ "a${OUTPUT}" = "a-" ]; then
+    (cd ${tmp}; tar cf - ${bundle_dist}) | gzip
+# no longer use automake generated distribution
+#    cat ${bundle_prefix}/${bundle_dist}.tar.gz
+else
+    (cd ${tmp}; tar cf - ${bundle_dist}) | gzip > ${OUTPUT}/${bundle_dist}.tar.gz
+# no longer use automake generated distribution
+#    cp ${bundle_prefix}/${bundle_dist}.tar.gz ${OUTPUT}
+fi
+
+# Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.

@@ -1,0 +1,18 @@
+package 
+identification
+   name=xt
+   version=0.6
+   location=http://www.cwi.nl/~mdejonge/pkgs
+   info=http://www.program-transformation.org/xt
+   description='XT prgram-transformation tools'
+   keywords=XT prgram transformation
+interface
+
+requires
+   pgen 0.6
+   gpp 1.33
+   gb  0.6
+   gt 0.6
+
+
+     

@@ -1,0 +1,14 @@
+package 
+identification
+   name=pkgb
+   version=0.2beta
+   location=http://www.somewhere
+   info=http://www.somewhere
+   description='demo package'
+   keywords=
+
+interface
+
+requires
+   pkga 0.2beta
+configuration

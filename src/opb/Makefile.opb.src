@@ -1,0 +1,59 @@
+# Autobundle -- Tool suite for automated source tree composition
+#
+# Author: Merijn de Jonge (M.de.Jonge@tue.nl)
+#
+# $Id: Makefile.opb.src,v 1.9 2002/05/02 19:03:10 mdejonge Exp $
+
+AUTOBUNDLE=__AUTOBUNDLE__
+ASFIXTOOLS=__ASFIXTOOLS__
+SGLR=__SGLR__
+pkgdata=__pkgdata__
+
+include opb.conf
+
+FULLPKGS      := $(shell pkgs=$(PKGREPOSITORY); find $${pkgs} -name \*.pkg)
+PKGS          := $(notdir $(FULLPKGS))
+AFPKGS        := $(FULLPKGS:.pkg=.pkg.af)
+PKGSWITCHES   := $(PKGS:%.pkg=-p %)
+PKGREPOSITORY := $(shell echo $(PKGREPOSITORY))
+
+all:: index.html
+
+packages.html: $(AFPKGS)
+	$(AUTOBUNDLE)/bin/pkgs2form -b $(PKGREPOSITORY:%= -I %) $(PKGSWITCHES) \
+                  -c $(CGIPATH)/opb-stub.cgi \
+                  -l '<img border="0" src="$(PKGDEP_ICON)" alt="Package dependency graph" align="middle">' \
+                  -P '<img border="0" src="$(PKGDEF_ICON)" alt="Package definition file" align="middle">'> $@
+
+%.pkg.af: %.pkg
+	$(RM) $@
+	$(SGLR)/bin/sglr -2 -p $(pkgdata)/Autobundle.tbl -i $< \
+        | $(ASFIXTOOLS)/bin/implode-asfix -S > $@
+
+# create index.html by running pkgs-search-stub.cgi with empty search key
+index.html : packages.html header.html
+	QUERY_STRING= $(AUTOBUNDLE)/libexec/pkgs-search-stub.cgi \
+	   | tail +3 > $@
+
+header.html : $(HTML_HEADER_SRC) opb.conf
+	sed 's#__OPB_LOGO__#$(OPB)/opb-logo.png#' < $(HTML_HEADER_SRC) > $@
+
+clean::
+	$(RM) *.af *~ index.html packages.html
+
+# Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.

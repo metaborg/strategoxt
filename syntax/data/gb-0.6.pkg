@@ -1,0 +1,16 @@
+package 
+identification
+   name=gb
+   version=0.6
+   location=http://www.cwi.nl/~mdejonge/pkgs
+   info=http://www.program-transformation.org/gb
+   description='The Grammar Base, a collection of SDF grammars.'
+
+   keywords=grammar sdf
+interface
+
+requires
+  gt 0.6
+  sglr 3.0
+  pgen 0.6
+     

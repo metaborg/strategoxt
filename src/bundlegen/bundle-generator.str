@@ -1,0 +1,273 @@
+\literate[bundlegen-generator]
+
+ Autobundle -- Tool suite for automated source tree composition
+
+ Author: Merijn de Jonge (M.de.Jonge@tue.nl)
+
+ $Id$
+
+
+  This module contains strategies for transforming a set of package
+  definitions to a bundle definition.
+ 
+\begin{code}
+module bundle-generator
+imports lib Autobundle package-graph graph-linearize
+
+strategies
+
+// Construct a bundle definition from a package graph.
+// If a cycle is contained in the package dependency graph the bundle
+// generator will terminate because the correct build order cannot be
+// determined.
+bundle-generator: (tops, pkgs, unresolved) -> bundle
+where
+   // Put the nodes of the package graph in a linearized list of nodes,
+   // which respects their build order.
+   <graph-linearize>(pkgs, tops);
+
+   // Obtain stored package definitions
+   map(get-pkg-def) => pkg-defs;
+
+   <bundle-identification>(tops, unresolved, pkg-defs) => identification;
+   <bundle-ingredients>pkg-defs => ingredients;
+   <bundle-interface>(ingredients, pkg-defs) => interface;
+   <bundle-requires>unresolved => requires;
+
+   <mkterm>("\"autobundle-0\"", 
+      [Bundle(identification, interface, requires, ingredients)]) => bundle
+
+///////////////////////////////////////////////////////////////////////////////
+// Construct bundle identification section
+bundle-identification: (tops, unresolved, pkg-defs) -> identification
+where
+   !(tops, pkg-defs);
+
+   // A bundle with a single top-level component has a different
+   // identification section than a bundle with multiple top-level
+   // components.
+   (single-package-identification <+ composite-package-identification);
+
+   identification(
+      try(<get-config>"-n"),  // Set name if specified with the -n switch
+      try(<get-config>"-v"),  // Set version if specified with the -v switch
+      id,
+      id,
+      unresolved-msg(!unresolved),  // Add message about external packages
+      id
+      ) => identification
+
+// Create an identification section when the user specified only one package
+// to bundle. Name, version, keywords, and description are inherited from
+// that single component.
+single-package-identification:
+   ([top], pkg-defs) -> identification
+where
+   // Single top package is always a runtime dependency
+   !top => RunTime(pkg-id(pkg-name,version));
+
+   // Find the package definition for this package
+   <oncetd( ?identification(pkg-name,version,loc,info,descr,keywords))>pkg-defs;
+
+   // Create a bundle identification section
+   !identification(
+      <concat-strings>[pkg-name, "-bundle"],
+      version, loc, info, descr, keywords
+    ) => identification
+
+// Create an identification section when the user specified more than one
+// package to bundle. Name, version are generated, keywords is a collection
+// of the keywords from each package.
+composite-package-identification:
+   (tops, pkg-defs) -> identification
+where
+   // Turn the list of top packages whcih are always RunTime dependencies into a list of package names
+   !tops;
+   map(\RunTime(pkg-id(name,_)) -> name \) => pkg-names;
+      
+   // Build a package name from all selected packages. Make sure that the
+   // name (incl. "-bundle" postfix) does not exceed 100 characters. This is
+   // to make sure that the name can be mapped to a directory name
+   separate-by(!"-");concat-strings;cut-string-at(!93);
+   <concat-strings>[<id>, "-bundle"] => bundle-name;
+
+   // Construct a bundle description
+   <concat-strings>["'", "Bundle of the package(s): ",
+      <separate-by(!", "); concat-strings>pkg-names, "'"] => descr;
+
+   // Construct a bundle identification section
+   !identification(
+      bundle-name, "0.1", Location(""), "", descr,
+      <collect( \ Keywords(kw) -> kw \ );concat;uniq>pkg-defs
+    ) => identification
+
+// Add a message about external packages to the description of the bundle
+unresolved-msg(unresolved): msg -> msg'
+where
+   unresolved;
+   (
+      []; !msg
+   <+
+      // Obtain the actual mesage text and strip the trailing quote (')
+      // because the text will be extended below
+      where(<oncetd(is-string;explode-string;at-last(![' ']);
+      implode-string;?the-msg)>msg);
+
+      // Create a list of unresolved package names separated by ", "
+      map( \ RunTime(pkg-id(n,_)) -> n \ 
+           +
+           \ BuildTime(pkg-id(n,_)) -> n \ ); separate-by(!", ") => unresolved-names;
+
+      // Construct the message text by concatenation
+      ![the-msg, 
+        "The bundle requires external package(s): ",
+        <concat-strings>unresolved-names,
+        "'"]; concat-strings;
+       !Some(<id>)
+   ) => msg'
+
+bundle-interface: 
+  (Bundles(ingredients), pkg-defs) -> Interface(configuration-interface)
+where
+   // Obtain a list of global unbound variability parameters. These will
+   // constitute the bundle's variability parameters.
+   !ingredients;
+   map( unbound-parameter-list(!pkg-defs) ); concat; uniq => configuration-interface
+
+// Return a list of globally unbound configuration parameters
+unbound-parameter-list(pkg-defs):
+   Package( ident, Configuration(switches) ) -> unbound-parameters
+where
+   !ident => identification(name,_,_,_,_,_);
+
+   // Optain a list of bound parameters
+   !switches;
+   map( \ Switch(s) -> s \ + \ ArgSwitch(s,a) -> s \ ) => opts;
+
+   // Then optain a total list parameters of the package
+   <pkg-defs>();
+   fetch(PackageDef(identification(?name,id,id,id,id,id),
+                    Interface(?interface)+InterfaceOld(?interface),
+                    id,
+                    id
+                   )
+        );
+   
+   // Finally, calculate the set of unbound parameters for the package
+   !interface;
+   filter({l: 
+      not(?Option(l,_); where(<fetch(?l)>opts))
+   }) => unbound-parameters
+
+///////////////////////////////////////////////////////////////////////////////
+// Construct bundle requires sections.
+// There are three possible requires sections: run-time requires, build-time requires, and requires.
+//
+// Therefore we split all requirements in these three categories as follows:
+// run-time requires   = runtime -   (runtime \isect buildtime)
+// build-time requires = buildtime - (buildtime \isect runtime)
+// requires            = buildtime \isect runtime
+bundle-requires: unresolved -> requires
+where
+   // Obtain a list of global unbound run-time or build-time dependency
+   // parameters.
+   where( collect(\RunTime(pkg-id(n,v)) -> ReqPackage(n,v,[])\)   => runtime );
+   where( collect(\BuildTime(pkg-id(n,v)) -> ReqPackage(n,v,[])\) => buildtime );
+   
+   <isect>(runtime, buildtime) => buildtime-runtime;
+   
+   ![Requires(buildtime-runtime), 
+     RunTimeRequires(<diff>(runtime, buildtime-runtime)), 
+     BuildTimeRequires(<diff>(buildtime, buildtime-runtime))];
+    filter(
+       not(Requires([])+RunTimeRequires([])+BuildTimeRequires([]))
+    ) => requires
+   
+///////////////////////////////////////////////////////////////////////////////
+// Construct bundle ingredients
+bundle-ingredients: pkg-defs -> Bundles(ingredients)
+where
+   map( create-package(!pkg-defs) ) => ingredients
+
+// Create a package in a bundle from a package definition. This involves
+// copying the identification section from the package definition, and
+// creating a configuration section from all bound parameters of the
+// package.
+create-package(pkg-list):
+   PackageDef(ident, interf, req, config) -> Package(ident, Configuration(config'))
+where
+   !ident => identification(name,_,_,_,_,_);
+
+   // collect all configuration parameter bindings for the package
+   <pkg-list>();
+
+   collect( {bindings: ReqPackage( ?name, id, Fst;?bindings);!bindings });
+
+   concat;
+   // Turn 'with f=on' configuration switches to equivalent 'with f'
+   // switches.
+   map( try(\ ArgSwitch(n, "on") -> Switch(n) \ )) => configuration-bindings;
+
+   // Find out all dependency parameter bindings by determining which
+   // required packages are bundled. For each of them, add Arg1(pkg,
+   // ${prefix}) (or whatever binding was specified with the -B
+   // option) to the package to indicate where the package will be installed
+   // (in ${prefix}).
+   !req;
+   collect( \
+      ReqPackage(n,_,_) -> ArgSwitch(n, <get-config>"-B")
+      where
+         pkg-list;
+         oncetd( 
+           PackageDef(identification(?n,id,id,id,id,id),id,id,id))
+   \ ) => dependency-bindings;
+
+   // Create configuration parameter bindings for the package by
+   // extending pre-bound parameters (in the package's configuration
+   // section with dependency parameter and variability parameter
+   // bingings.
+   !config;
+   (
+      ?None;
+      ![configuration-bindings, dependency-bindings]
+   <+
+      ?Some(Configuration(pre-bound));
+      ![configuration-bindings, pre-bound, dependency-bindings]
+   ); concat; uniq  => config';
+
+   // Check whether configuration parameters are bound multiple times.
+   // Raise a fatal-error when multiple bindings exist
+   map( \ArgSwitch(name,_) -> name \ + \ Switch(name) -> name \ );
+   ?cfg;
+   uniq;
+   filter( \x -> <filter(?x);Tl>cfg \);
+   concat;uniq;
+   ( [] <+ <fatal-error>["*** bundle error: Double bindings for configuration parameter(s) of package ", name, ": ",<id>])
+
+overlays
+identification(name,version,location,info,description,keywords) =
+   Identification(
+      Name(name),
+      Version(version),
+      location,
+      Info(info),
+      Description(description),
+      Keywords(keywords))
+
+\end{code}
+% Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.

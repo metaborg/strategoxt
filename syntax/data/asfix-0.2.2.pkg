@@ -1,0 +1,17 @@
+package 
+identification
+   name=asfix
+   version=0.2.2
+   location=http://www.cwi.nl/projects/MetaEnv/asfix
+   info=http://www.cwi.nl/projects/MetaEnv/asfix
+   description='The library libasfix provides an interface to AsFix terms.
+                AsFix (short for ASF+SDF prefix) is a parse
+                tree format to represent parse trees of ASF+SDF terms. '
+   keywords=asfix library
+
+interface
+
+requires
+  aterm 1.4.5 
+
+     

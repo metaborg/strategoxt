@@ -1,0 +1,117 @@
+\literate[graph-linearize]
+
+ Autobundle -- Tool suite for automated source tree composition
+
+ Author: Merijn de Jonge (M.de.Jonge@tue.nl)
+
+ $Id: autobundle-sig.r,v 1.4 2002/05/27 21:51:17 mdejonge Exp $
+
+\begin{code}
+module graph-linearize-test
+
+imports
+   sunit graph-linearize
+
+strategies
+graph-linearize-test =
+   test-suite(!"graph-linearize-test",
+    id
+    ;case-a
+    ;case-b
+    ;case-c
+    ;case-d
+   ) 
+
+// Case a
+//   a1   d1
+// b1  c2 c2  => [b1,c2,a1,d1]
+//     b1 b1
+case-a =
+   apply-test( !"case-a",
+   graph-linearize,
+    !([
+    pkg(pkg-id("a", "1"), [pkg-id("b","1"), pkg-id("c", "2")]),
+    pkg(pkg-id("b", "1"), []),
+    pkg(pkg-id("d", "1"), [pkg-id("c","2")]),
+    pkg(pkg-id("c", "2"), [pkg-id("b","1")])
+    ], [pkg-id("a","1"),pkg-id("d","1")]),
+    ![pkg-id("b","1"),pkg-id("c","2"),pkg-id("a","1"),pkg-id("d","1")]
+)
+
+// Case b
+//   a1   d1 f1
+// b2  c3 c3 c3 ==> [e1,b2,c3,a1,d1,f1]
+// e1  b2 b2 b2
+//     e1 e1 e1
+case-b =
+   apply-test( !"case-b",
+   graph-linearize,
+    !([
+    pkg(pkg-id("a", "1"), [pkg-id("b","2"), pkg-id("c", "3")]),
+    pkg(pkg-id("b", "2"), [pkg-id("e","1")]),
+    pkg(pkg-id("e", "1"), []),
+    pkg(pkg-id("d", "1"), [pkg-id("c","3")]),
+    pkg(pkg-id("f", "1"), [pkg-id("c","3")]),
+    pkg(pkg-id("c", "3"), [pkg-id("b","2")])
+    ],
+    [pkg-id("a","1"),pkg-id("d","1"),pkg-id("f","1")]),
+    ![pkg-id("e","1"),pkg-id("b","2"),pkg-id("c","3"),pkg-id("a","1"),pkg-id("d","1"),pkg-id("f","1")]
+)
+
+// Case c
+//    a1   e1
+//  b1 c1  f1
+//     d1  g1  a1
+//         d1 b1 c1   => [b1,d1,c1,a1,g1,f1,e1]
+//               d1
+case-c =
+   apply-test( !"case-c",
+   graph-linearize,
+    !(
+     [pkg(pkg-id("a","1"),[pkg-id("b","1"),pkg-id("c","1")]),
+      pkg(pkg-id("b","1"),[]),
+      pkg(pkg-id("c","1"),[pkg-id("d","1")]),
+      pkg(pkg-id("d","1"),[]),
+      pkg(pkg-id("e","1"),[pkg-id("f","1")]),
+      pkg(pkg-id("f","1"),[pkg-id("g","1"),pkg-id("a","1")]),
+      pkg(pkg-id("g","1"),[pkg-id("d","1")])
+     ],[pkg-id("a","1"),pkg-id("e","1")]),
+     ![pkg-id("b","1"),pkg-id("d","1"),pkg-id("c","1"),pkg-id("a","1"),
+       pkg-id("g","1"),pkg-id("f","1"), pkg-id("e","1")]
+    )
+      
+
+// Case d
+//
+//  a1
+//  b1   => [b1,a1]
+//  a1
+//  
+case-d =
+   apply-test( !"case-d",
+   graph-linearize,
+    !([
+    pkg(pkg-id("a","1"),[pkg-id("b","1")]),
+    pkg(pkg-id("b","1"),[pkg-id("a","1")])
+   ],
+   [pkg-id("a","1")]),
+   ![pkg-id("b","1"),pkg-id("a","1")]
+   )
+
+\end{code}
+% Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.

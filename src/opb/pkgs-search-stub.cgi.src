@@ -1,0 +1,79 @@
+#! /bin/sh
+#
+# Autobundle -- Tool suite for automated source tree composition
+#
+# Author: Merijn de Jonge (M.de.Jonge@tue.nl)
+#
+# $Id: pkgs-search-stub.cgi.src,v 1.8 2002/05/02 20:39:05 mdejonge Exp $
+
+AUTOBUNDLE=__AUTOBUNDLE__
+
+# Read configuration file and automatically export all defined variables
+set -a
+. ./opb.conf
+set +a
+
+. ${AUTOBUNDLE}/libexec/cgi-lib.sh
+
+PATH=${AUTOBUNDLE}/bin:$PATH
+export PATH
+
+PKGSEARCHPATH="`for p in ${PKGREPOSITORY}; do echo -I $p; done`"
+
+display_header () {
+   echo "Content-type: text/html"
+   echo ""
+   cat ./header.html
+}
+
+words="`echo ${QUERY_STRING} \
+        | tr '[&]' '[\n]' \
+        | grep "search_words=" \
+        | sed  "s/search_words=//g" \
+        | head -1 \
+        | cut -d= -f 2- \
+        | sed 's/+/ /g'`"
+
+word_switches="`echo ${words} | sed 's/ / -w /g;s/^..*/-w &/g'`"
+
+display_header ${words}
+
+if [ "a${words}" = "a" ]; then
+   set ${PKGREPOSITORY}
+   cat ${1}/packages.html
+else
+   pkgs="`find ${PKGREPOSITORY} -name \*.pkg | sed 's@.*/@@;s@.pkg@@;s@^@-p @'`"
+
+   matches="`pkg-search \
+             ${PKGSEARCHPATH} \
+             ${pkgs} \
+             ${word_switches} | sed 's@.*/@@;s@.pkg.af@@;s@^@-p @'`"
+pkgs2form \
+   -b \
+   -w "${words}" \
+   ${PKGSEARCHPATH} \
+   -c ${CGIPATH}/opb-stub.cgi \
+   -l "<img border=\"0\" src=\"${PKGDEP_ICON}\" alt=\"Package dependency graph\" align=\"center\">" \
+   -P "<img border=\"0\" src=\"${PKGDEF_ICON}\" alt=\"Package definition file\" align=\"center\">" \
+   ${matches}
+fi
+
+echo "</body>"
+echo "</html>"
+
+# Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.

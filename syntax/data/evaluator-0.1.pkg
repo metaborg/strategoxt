@@ -1,0 +1,21 @@
+package 
+identification
+   name=evaluator
+   version=0.1
+   location=http://www.cwi.nl/projects/MetaEnv/evaluator
+   info=http://www.cwi.nl/projects/MetaEnv/evaluator
+   description='The ASF evaluator is meant to serve as a runtime system for
+                *existing* ASF+SDF specifications. An alternative runtime
+                environment for ASF+SDF is provided by compiling
+                specifications.'
+   keywords=asf evaluator
+
+interface
+   traversals 'Enable generation of traversal functions'
+   layout     'Enable layout preserving rewriting'
+
+requires
+  aterm 1.4.5 
+  asfix 0.2.2 
+  asc-support 0.4 
+     

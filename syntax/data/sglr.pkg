@@ -1,0 +1,23 @@
+package 
+identification
+   name=sglr
+   version=3.0
+   location=http://www.cwi.nl/projects/MetaEnv/sglr
+   info=http://www.cwi.nl/projects/MetaEnv/sglr
+   description=
+   keywords=
+
+interface
+     debug        'enable debugging support'
+     debug-c-code 'enable deug of c code'
+
+requires
+  aterm 0.4.1 with
+      debug
+      asfix=/tmp
+  asfix 0.2.2 with
+      debug      
+
+configuration
+     debug
+     

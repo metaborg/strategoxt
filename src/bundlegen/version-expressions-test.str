@@ -1,0 +1,142 @@
+\literate[version-expressions-test]
+
+ Autobundle -- Tool suite for automated source tree composition
+
+ Author: Merijn de Jonge (M.de.Jonge@tue.nl)
+
+ $Id: autobundle-sig.r,v 1.4 2002/05/27 21:51:17 mdejonge Exp $
+
+\begin{code}
+module version-expressions-test
+
+imports
+   sunit version-expressions
+
+strategies
+version-expressions-test =
+   test-suite(!"version-expressions-test",
+   test-a;
+   test-b;
+   test-c;
+   test-d;
+   test-e;
+   test-f;
+   test-g;
+   test-h;
+   test-i;
+   test-j;
+   test-k;
+   test-l;
+   test-m;
+   test-n;
+   test-o;
+   test-p
+    )
+
+test-a =
+   apply-test( !"test-a",
+   reduce,
+      !GTE("1.0"),
+      !GTE("1.0"))
+
+test-b =
+   apply-test( !"test-b",
+   reduce,
+      !EQ("1.0"),
+      !EQ("1.0"))
+
+test-c =
+   apply-test( !"test-c",
+   reduce,
+      !LTE("1.0"),
+      !LTE("1.0"))
+
+test-d =
+   apply-test( !"test-d",
+   reduce,
+      !And(EQ("1.0"),EQ("1.0")),
+      !EQ("1.0"))
+
+test-e =
+   apply-test( !"test-e",
+   reduce,
+      !And(GTE("1.0"),EQ("2.0")),
+      !EQ("2.0"))
+
+test-f =
+   apply-test( !"test-f",
+   reduce,
+      !And(EQ("2.0"),GTE("1.0")),
+      !EQ("2.0"))
+
+test-g =
+   apply-and-fail( !"test-g",
+   reduce,
+      !And(EQ("2.0"),GTE("3.0")))
+
+test-h =
+   apply-and-fail( !"test-h",
+   reduce,
+      !And(GTE("3.0"),EQ("2.0")))
+
+test-i =
+   apply-and-fail( !"test-i",
+   reduce,
+      !And(EQ("3.0"),EQ("2.0")))
+
+test-j =
+   apply-test( !"test-j",
+   reduce,
+      !And(EQ("2.0"),LTE("3.0")),
+      !EQ("2.0"))
+
+test-k =
+   apply-test( !"test-k",
+   reduce,
+      !And(LTE("3.0"),EQ("2.0")),
+      !EQ("2.0"))
+
+test-l =
+   apply-test( !"test-l",
+   reduce,
+      !And(LTE("3.0"),LTE("2.0")),
+      !LTE("2.0"))
+
+test-m =
+   apply-test( !"test-m",
+   reduce,
+      !And(LTE("2.0"),LTE("3.0")),
+      !LTE("2.0"))
+
+test-n =
+   apply-test( !"test-n",
+   reduce,
+      !And(GTE("2.0"),LTE("3.0")),
+      !And(GTE("2.0"),LTE("3.0")))
+
+test-o =
+   apply-and-fail( !"test-o",
+   reduce,
+      !And(GTE("2.0"),LTE("1.0")))
+
+test-p =
+   apply-and-fail( !"test-o",
+   reduce,
+      !And(EQ("2.0"),LTE("1.0")))
+\end{code}
+% Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.

@@ -1,0 +1,94 @@
+# Autobundle -- Tool suite for automated source tree composition
+
+# Author: Merijn de Jonge (M.de.Jonge@tue.nl)
+
+# Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+# $Id$
+
+# If you want to exclude packages from the build process, issue
+#    gmake EXCLUDE="<packages_to_exclude>"
+# Note that this may lead to build failures due to package dependencies.
+BUILD_PKGS   = $(filter-out $(EXCLUDE), $(PKGS))
+DIST_SUBDIRS = pre-checks \
+               $(BUILD_PKGS)
+
+EXTRA_DIST   = $(EXTRA_FILES)
+EXTRA_FILES  = SOFTWARE README collect.sh pkg-list
+
+# We need at least one subdir to be defined such that automake will generate
+# the code for traversing subdirectories
+SUBDIRS      = pre-checks
+
+# Location where to install README and Copyright files
+docdir = $(datadir)/doc
+
+# Always install the file SOFTWARE in $(docdir)
+doc_DATA = SOFTWARE
+
+PKG_DOCFILES = README COPYING COPYRIGHT LICENSE
+
+all: install
+
+check clean:
+	PATH=$(bindir):$${PATH}; export PATH ;\
+	for subdir in $(DIST_SUBDIRS); do \
+	   ( cd $$subdir && $(MAKE) $@ ) || exit 1 ;\
+	done
+
+collect :
+	./collect.sh configure.ac pkg-list
+
+bundle : collect
+	./configure
+	$(MAKE) dist
+
+# Install and uninstall hooks for installing/uninstalling packages and
+# documentation files
+install-exec-hook:
+	PATH=$(bindir):$${PATH}; export PATH ;\
+	for subdir in $(DIST_SUBDIRS); do \
+	   ( cd $$subdir && $(MAKE) all install ) || exit 1 ;\
+	done
+
+uninstall-hook:
+	PATH=$(bindir):$${PATH}; export PATH ;\
+	for subdir in $(DIST_SUBDIRS); do \
+	   ( cd $$subdir && $(MAKE) uninstall ) || exit 1 ;\
+	done
+
+# Local target to install README and Copyright files
+install-data-local:
+	$(mkinstalldirs) $(DESTDIR)$(docdir)
+	for p in $(PKGS); do \
+	   for f in $(PKG_DOCFILES); do \
+	      if [ -f $$p/$$f ]; then \
+	         $(INSTALL_DATA) $$p/$$f $(DESTDIR)$(docdir)/$$p.$$f ;\
+	      fi ;\
+	   done ;\
+	done
+
+uninstall-local:
+	for p in $(PKGS); do \
+	   for f in $(PKG_DOCFILES) ; do \
+	      if [ -f $(docdir)/$$p.$$f ]; then \
+	         $(RM) $(docdir)/$$p.$$f ;\
+	      fi ;\
+	   done ;\
+	done
+

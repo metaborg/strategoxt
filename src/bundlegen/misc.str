@@ -1,0 +1,76 @@
+\literate[misc]
+
+ Autobundle -- Tool suite for automated source tree composition
+
+ Author: Merijn de Jonge (M.de.Jonge@tue.nl)
+
+ $Id$
+
+\begin{code}
+module misc
+
+imports lib package-graph version-expressions
+
+strategies
+
+// Create a package string from a package identifier
+pkgid-to-string: pkg-id(n,v) -> s
+where
+   <concat-strings;double-quote>[n,"-",v] => s
+
+// Split a package string into a package name and a version number
+parse-pkg-string: s -> (name, version)
+where
+   explode-string;
+   reverse;
+   where(
+      rec x ({xs:
+            [45|id]; Tl
+         <+
+            Tl;x
+      }
+      );
+      reverse;
+      implode-string => name
+   );
+   where(
+      rec x ({xs:
+          ?[45|_]; ![]
+         <+
+          [id|x]
+      }
+      );
+      reverse;
+      implode-string => version
+   )
+
+// Create a package dependency from a package string
+string-2-pkgdep: s -> pkg-dep(name, GTE(version))
+where
+   parse-pkg-string => (name, version)
+
+// Cut a string after n characters
+cut-string-at(n) =
+   explode-string;
+   nzip(id);
+   partition( {i,e:?(i,e);<leq>(i,<n>());!e} );
+   Fst;
+   implode-string
+
+\end{code}
+% Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.

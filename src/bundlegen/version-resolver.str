@@ -1,0 +1,160 @@
+\literate[version-resolver]
+
+ Autobundle -- Tool suite for automated source tree composition
+
+ Author: Merijn de Jonge (M.de.Jonge@tue.nl)
+
+ $Id$
+
+
+ This module contains strategies for resolving package version expressions
+
+\begin{code}
+module version-resolver
+imports version-expressions package-graph
+
+strategies
+
+// Resolve package versions for the package in a package graph, such that
+// there exists only one instance of a package in the resulting graph which
+// respects all version constraints
+// Return  package graph consisting of package identifiers, a list of top
+// nodes, and a list of unresolved packages (i.e., packages for which the
+// version constraints could not be satisfied)
+version-resolver : (tops, pkgs) -> (tops, pkgs, required)
+where
+   !pkgs;
+   // Resolve package version constraints
+   resolve-version-constraints => required
+
+// pkg-version-requirements: (list(pkg), pkg-id) -> list(pkg-id)
+// 
+// Return a list of of package dependencies for pkgid 
+pkg-version-requirements: (pkgs, pkg) -> version-requirements
+where
+   !pkgs;
+   (
+      where(!pkg;?RunTime(pkgid));
+      fetch-elem( ?pkg(pkgid, <id>) );
+      map( \ RunTime(pkg-dep(n,v))   -> (n, v, RunTime) \ 
+      +    \ BuildTime(pkg-dep(n,v)) -> (n, v, BuildTime) \
+      )
+   <+
+      where(!pkg;?BuildTime(pkgid));
+      fetch-elem( ?pkg(pkgid, <id>) );
+      filter( \ BuildTime(pkg-dep(n,v)) -> (n, v, BuildTime) \ )
+   <+
+      ![] 
+   ) => version-requirements
+
+// map-version-requirements: list( (name, VExpr)) -> list((name, version))
+// 
+// Change the version expressions in a list of version requirements to the
+// reduct of the expression for that package
+map-version-requirements =
+   map( \
+      (n,v,w) -> <version-constraint>(n,v,w)
+      \);
+   uniq
+
+// Initialize version contraints by storing the version constraints of the
+// packages in 'the-pkgs'.
+init-version-constraints =
+   ?(the-pkgs,pkgs);
+   destroy-version-constraints;
+   !the-pkgs;
+   map(
+       <pkg-version-requirements>(pkgs,<id>);
+       map( \ (n,e,w) -> <put-version-constraint>(n,e,w) \ )
+   )
+
+resolve-version-constraints =
+   ?pkgs;
+
+   // Initialization: obtain the list of version requirements of the 
+   // virtual package "root-0".
+   !RunTime(pkg-id("root","0")) => top-pkg;
+   <pkg-version-requirements>(pkgs,top-pkg) => top-version-requirements;
+
+   // recursively, resolve version constraints
+   rec x({version-requirements,the-pkgs:
+
+   // For each node, store its version requirements
+   where(
+      map( \ (n,e,w) -> <put-version-constraint>(n,e,w) \ )
+   );
+
+   // Obtain a list of version requirements found thus far. If two versions
+   // of a package are required, then only the one with the strongest
+   // version requirement is considerd. E.g., if ("a",GTE("1")) and
+   // ("a",GTE("2")) are two version requirements, then the first one is
+   // dropped because it cannot be satisfied due to the second version
+   // requirement.
+   get-version-constraints;
+
+   map( \ (n,VExpr(v,_,w)) -> (n,v,w) \ ) => version-requirements;
+
+   // make a list of packages by resolving package version requirements
+   map( \ (n,e,RunTime) -> RunTime(pkg-id(n,<version-expr-to-version>e)) \
+   +
+   \ (n,e,BuildTime) -> BuildTime(pkg-id(n,<version-expr-to-version>e)) \
+    ) => the-pkgs;
+
+   // For each resolved package 'p', extend the list of version requirements with
+   // the version requirements of 'p'.
+   map(<pkg-version-requirements>(pkgs, <id> ));
+   ![version-requirements|<id>];
+   concat;
+   
+   map-version-requirements;
+
+   // Fixed-point reached when the list of version requirements has not changed.
+   if(?version-requirements,
+      // Fixed point reached.
+      // Initialize version contraints by collecting version contraints
+      // transitively from the top-level components.  This way, unreachable
+      // constraints, from components that are no longer part of the
+      // composition, are removed. If such constraints existed, we start
+      // over again.  Otherwise, we're done.
+      { all-constraints, transitive-reduced-constraints:
+      get-version-constraints => all-constraints;
+
+      <init-version-constraints>([top-pkg|the-pkgs],pkgs);
+      get-version-constraints => transitive-reduced-constraints;
+      !(all-constraints, transitive-reduced-constraints);
+      diff
+      };
+
+      if( ?[], !the-pkgs, <x>top-version-requirements)
+   
+      // Fixed point not reached yet. Continue version resolution
+      ,x)
+   })
+
+// Simple strategy that maps a version expression to a concrete version.
+// Currently we have the simplification that a version requirement GTE(v), 
+// LTE(v), or EQ(v) corresponds exactly to the package version v
+version-expr-to-version =
+   \ GTE(v) -> v \
+   +
+   \ LTE(v) -> v \
+   +
+   \ EQ(v) -> v \
+
+\end{code}
+% Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.

@@ -1,0 +1,84 @@
+#! /bin/sh
+#
+# Autobundle -- Tool suite for automated source tree composition
+#
+# Author: Merijn de Jonge (M.de.Jonge@tue.nl)
+#
+# $Id: autobundle-stub.cgi.src,v 1.5 2002/05/02 19:03:11 mdejonge Exp $
+
+# Example script to be executed by web server when user presses the "bundle"
+# button on the package base web-site.
+
+AUTOBUNDLE=__AUTOBUNDLE__
+
+# Read configuration file and automatically export all defined variables
+set -a
+. ./opb.conf
+set +a
+
+. ${AUTOBUNDLE}/libexec/cgi-lib.sh
+
+PATH=${AUTOBUNDLE}/bin:$PATH
+export PATH
+
+get_pkgs
+
+bundle_name="`echo ${QUERY_STRING} | tr '[&]' '[\n]'|grep '^bundle-name='| cut -d= -f2`"
+if [ "a${bundle_name}" != "a" ]; then
+   bundle_name="-n ${bundle_name}"
+fi
+
+bundle_version="`echo ${QUERY_STRING} \
+                 | tr '[&]' '[\n]' \
+                 | grep '^bundle-version=' \
+                 | cut -d= -f2`"
+
+if [ "a${bundle_version}" != "a" ]; then
+   bundle_version="-v ${bundle_version}"
+fi
+
+TMP=/tmp/ab-$$
+mkdir -p ${TMP}
+trap "rm -fr ${TMP}" 0 1 2 3 4 5 6 7 8 9 10
+
+PKGSEARCHPATH="`for p in ${PKGREPOSITORY}; do echo -I $p; done`"
+
+# run autobundle and save error message in 'msg' if any
+msg=`autobundle ${PKGSEARCHPATH} ${bundle_name} ${bundle_version} \
+     -o ${TMP} ${argument_s} 2>&1`
+
+# Evaluate the error message
+case "$msg" in
+   "" ) break;;
+   "*** bundle error: "* )
+      echo "$msg" \
+      | sed 's/*** bundle error://g' \
+      | fail "Autobundle Error"; exit 1;;
+   *) eval '(echo "The autobundle server encountered an internal error<br><br>" ;\
+            echo "Please try again another time." \
+           ) | fail "Internal Error"; \
+           exit 1'
+esac
+
+file="`basename ${TMP}/*.gz`"
+echo "Content-type: application/x-tar-gzip"
+echo "Content-Disposition: filename=\"${file}\""
+echo
+cat ${TMP}/*.gz
+
+# Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.

@@ -1,0 +1,73 @@
+Description
+===========
+
+Autobundle is an utility for making software distributions by bundling
+multiple (third-party) software packages. Autobundle promotes the
+development of reusable components which can be distributed separately, or as
+part of larger software systems. Autobundle thus allows you to easily
+distribute your software as self-contained packages (by bundling all
+required components). This greatly simplifies the installation process of
+your software because a user does not need to obtain, configure, and install
+these required software packages first.
+
+Two typical applications of autobundle are:
+1) The distribution of the ASF+SDF Meta-Environment
+   (www.cwi.nl/projects/MetaEnv), which bundles amongst others the ToolBus
+   software application architecture, the ATerms abstract data type and
+   libraries, a parser, and a parser generator. All these components are
+   also distributed and used separately.
+2) XT, which stands for `Program Transformations Tools'
+   (www.program-transformation.org/xt). It bundles some of the components of
+   the ASF+SDF Meta-Environment (the ATerms abstract data type, the parser,
+   and parser generator), but in addition the programming language Stratego
+   (www.stratego-language.org), a pretty-printer (www.cwi.nl/~mdejonge/gpp),
+   the grammar tools (GT) package (www.program-transformation.org/gt), and
+   the grammar bases (GB) package (www.program-transformation.org/gb).
+
+Autobundle allows you to easily define such distributions by listing the
+components, together with a version number, and the location where the
+components can be retrieved. A typical autobundle distribution is thus
+simply a collection of components of a particular version.
+
+The autobundle software helps creating an initial framework for the package
+and creates the software bundle for you, by downloading the different
+components and building a single distribution from them. Autobundle
+requires that the components are constructed using autoconf
+(www.gnu.org/software/autoconf) and automake
+(www.gnu.org/software/automake). The use of autoconf and automake is clearly
+described in the documentation of both packages and not addressed here.
+
+Installation
+============
+
+1) Getting the software
+
+The autobundle package is open source and distributed as a gzipped tar file
+named `autobundle-<version>.tar.gz', where <version> denotes the version of
+the package. You can download the package at:
+
+   http://www.cwi.nl/~mdejonge/downloads/
+
+or at the online package base:
+   http://www.program-transformation.org/package-base/
+
+After downloading the autobundle package, you can unpack the package as
+follows:
+
+> gunzip -c autobundle-<version>.tar.gz | tar xvf -
+
+2) Building and Installing
+
+Then the package needs to be configured:
+
+> cd autobundle-<version>
+> ./configure --prefix=<installation_prefix>
+
+Where <installation_prefix> denotes the location where the autobundle
+software should be installed (e.g. /opt).
+
+Then you can build and install the package:
+
+> gmake
+> gmake install
+

@@ -1,0 +1,16 @@
+package 
+identification
+   name=c
+   version=0.1
+   location=http://www.somewhere
+   info=http://www.somewhere
+   description='demo package'
+   keywords=
+
+interface
+
+requires
+b 0.1
+d 0.1
+
+configuration

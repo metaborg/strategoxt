@@ -1,0 +1,12 @@
+module Autobundle
+imports Bundle
+
+exports
+  context-free restrictions
+    LAYOUT? -/- [\ \t\n\#]
+
+exports
+  syntax
+    <START> -> SURROGATE-START {cons("\"autobundle-0\"")}
+    SURROGATE-START [\256] -> <Start> {prefer, cons("SURROGATE-START")}
+

@@ -1,0 +1,117 @@
+#! /bin/sh
+#
+# Autobundle -- Tool suite for automated source tree composition
+#
+# Author: Merijn de Jonge (M.de.Jonge@tue.nl)
+#
+# $Id$
+     
+# CGI script called from online package base which calls autobundle tools
+
+AUTOBUNDLE=__AUTOBUNDLE__
+
+# Read configuration file and automatically export all defined variables
+set -a
+. ./opb.conf
+set +a
+
+
+# If QUERY_STRING is empty, a http POST method was used and the data is
+# passed through via standard input. In that case we read the data from
+# standard input and store it in the environment variable QUERY_STRING.
+# Otherwise the GET method was used and data is already put in the
+# environment variable QUERY_STRING.
+if [ "a${QUERY_STRING}" = "a" ]; then
+   QUERY_STRING=`cat`
+fi
+
+. ${AUTOBUNDLE}/libexec/cgi-lib.sh
+
+show_pkgdef() {
+   get_pkgs
+
+   pkg=`echo ${argument_s} | sed 's/-p //g;s/-db //g' | head -1`
+
+
+   for p in ${PKGREPOSITORY}
+   do 
+      if [ -f ${p}/${pkg}.pkg ]; then
+         the_pkg="${p}/${pkg}.pkg"
+         break 
+      fi
+   done
+
+cat <<ENDCAT
+Content-type: text/html
+
+<html>
+ <head>
+  <title>Package Definition</title>
+ </head>
+
+ <body bgcolor="white" onLoad="JavaScript:self.focus();">
+  <pre>
+`cat  ${the_pkg}`
+  </pre>
+ </body>
+</html>
+ENDCAT
+exit 0
+
+}
+
+show_depgraph () {
+get_pkgs
+
+cat <<ENDCAT
+Content-type: text/html
+
+<html>
+ <head>
+  <title>Dependency Graph</title>
+ </head>
+
+ <body bgcolor="white" onLoad="JavaScript:self.focus();">
+  <center>
+   <img src="${CGIPATH}/depgraph-stub.cgi?${QUERY_STRING}">
+  </center>
+ </body>
+
+</html>
+ENDCAT
+exit 0
+
+}
+
+
+# determine which action to perform
+opb_action="`echo ${QUERY_STRING} \
+         | tr '[&]' '[\n]' \
+         | grep 'opb_action=' \
+         | sed 's/opb_action=//g' \
+         | head -1`"
+         
+# Dispatcher
+case ${opb_action} in
+         dependency+graph ) show_depgraph ;;
+                   pkgdef ) show_pkgdef ;;
+                   bundle ) exec ${AUTOBUNDLE}/libexec/autobundle-stub.cgi ;;
+                 search|* ) exec ${AUTOBUNDLE}/libexec/pkgs-search-stub.cgi ;;
+esac
+
+# Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.

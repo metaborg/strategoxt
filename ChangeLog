@@ -1,0 +1,515 @@
+2004-03-05 Merijn de Jonge <mdejonge@cs.uu.nl>
+   * autobundle/Makefile.am.templ: improved makefile templates such that
+     packages _and_ documentation files gets installed/uninstalled
+
+2004-02-29 Merijn de Jonge <mdejonge@cs.uu.nl>
+   * autobundle/README.templ: updated url's
+   * autobundle/autobundle.sh.src: bug fix: default component binding was
+     not displayed correctly in autobundle's usage message
+
+2004-02-11 Merijn de Jonge <mdejonge@cs.uu.nl>
+   * started version 0.9.9.1
+   * Makefile.xt: build process now terminates when pretty-print table is
+     not consistent with Autobundle's grammar.
+
+2004-01-29 Merijn de Jonge <mdejonge@cs.uu.nl>
+   * Added -L switch to curl
+
+2004-01-26 Merijn de Jonge <mdejonge@cs.uu.nl>
+   * Renamed '-b' switch for specifying component bindings to '-B' because
+     '-b' switch was already defined.
+
+2004-01-25 Merijn de Jonge <mdejonge@cs.uu.nl>
+   * Small adaptions to new StrategoXT-0.9.4 release
+   * collect.sh: remove trailing backslash from download locations
+   * replaced dependency graphviz by dotneato. Dotneato is a subpackage of
+     graphviz containing 'dot', the only required component
+   * autoxt.m4 changed --with-stratego-xt flag to strategoxt flag according
+     to package name
+
+2004-01-23 Merijn de Jonge <mdejonge@cs.uu.nl>
+   * bundlegen,autobundle: added '-b' switch to change component bindings.
+     By default components are bound to ${prefix} but this can now be
+     changed, e.g., to ${top_builddir}/../%c, to reference a component in
+     its source tree.
+   * bundle2configure: added '%c' place holder symbol that can be used in
+     dependency switches to reference the component name
+
+2004-01-13 Merijn de Jonge <mdejonge@cs.uu.nl>
+   * autobundle/Makefile.am.templ: building a composition now consists of
+     executing "$(MAKE) all install" for each bundled component. (thanks to
+     discussion with Martin Bravenboer)
+   * Renamed configure.in by configure.ac
+   * autobundle/autobundle.sh.src: replaced configure.in by configure.ac
+   * autobundle/collect.sh: support both configure.in and configure.ac
+
+2003-12-07 Merijn de Jonge <m.de.jonge@tue.nl>
+   * Replaced use of wget by curl
+   * collect.sh: if packages are already collected don't collect them again,
+     unless the --force switch is specified. 
+
+2003-12-07 Merijn de Jonge <m.de.jonge@tue.nl>
+   * renamed src/pkg-switch directory to pbsd. This directoy will contain
+     several tools related to Package-Based Software Development.
+
+2003-12-05 Merijn de Jonge <m.de.jonge@tue.nl>
+   * Package names specified with the -p switch, can now include the
+     extension .pkg or .pkg.af. These extensions will be removed by any tool
+     that accepts the -p command line switch.
+   * Changed syntax of pacakge definitions to support primary and secondary
+     location fields (see article Package-Based software development)
+   * added tool pkg-switch which swaps primary and secondary pacakge
+     locations
+   * added pkg-find tool that reports the location in the file system of one
+     or more package definitions
+   * autobundle/collect.sh: bug fix where name and version were not
+     correctly retrieved from a configure.in file
+   * bug fix: package search order was wrong
+
+2003-12-02 Merijn de Jonge <m.de.jonge@tue.nl>
+   * added functionality to display autobundle's version number
+
+2003-11-25 Merijn de Jonge <m.de.jonge@tue.nl>
+   * syntax: added testset for Autobundle grammar
+   * executed svn propset -R svn:keywords "Id" . to turn on "Id"
+     substitution
+   * Build process now issues a warning message when pretty-print table is
+     no longer consistent with syntax definition
+   * opb/mkopb.sh.src: fixed bug where existing configuration files and
+     Makefiles where overwritten on each invocation of mkopb
+
+2003-11-24 Merijn de Jonge <m.de.jonge@tue.nl>
+   * bundlegen/bundle-generator.str: now fatal error when multiple bindings
+     for configuration parameteres exist
+   * bundlegen: fatal-erros now all have the same prefix string (*** bundle
+     error:). 
+   * opb/autobundle-stub.sh.src: error handling based on standard prefix of
+     error messages.
+   * Makefile.xt: .pp file is only generated if it does not exist
+   * syntax/Bundle.sdf: made bundle definition more consistent with package
+     definition by having a separate configuration interface section and a
+     require section (there used to be only a configuration interface
+     section).
+   * bundlegen/bundle-generator.str: adapted for changed syntax
+   * bundlegen/data: adapted test output for changed syntax
+   * bundle2configure/bundle2configre.str: adapted for changed syntax
+   * bundle2pkglist/bundle2pkglist.str: adapted for changed syntax
+
+2003-11-23 Merijn de Jonge <m.de.jonge@tue.nl>
+   * created ./syntax directory containing SDF definition of package and
+     bundle definitions, as well as pretty-print table
+   * autobundle-sig.str is now repaced by (generated) Autobundle.str
+   * autobundle.def replaced by Autobundle.def
+   * autobundle.pp replaced by Autobundle.pp
+   * fixed VPATH building
+   * autobundle.tbl and autobundle-sig.str are removed from src/shared
+
+
+2003-11-15 Merijn de Jonge <m.de.jonge@tue.nl>
+   * started version 0.9.9
+   * released 0.9.8
+   * bundlegen/version-resolver.str: fixed-point was not always
+     reached due to changing ordering of version constraints: fixed
+   * bundlegen/version-resolver-test.str: some more checks added
+
+2003-11-10 Merijn de Jonge <m.de.jonge@tue.nl>
+   * released version 0.9.7
+   * increased version number to 0.9.8
+   * bundlegen: prepared for version expressions LTE and EQ
+
+2003-11-04 Merijn de Jonge <m.de.jonge@tue.nl>
+   * started version 0.9.7
+   * bundlegen2configure.str: removed backwards-compatibility stuff and
+     placed it in acinclude.m4. Added call to AB_INIT_AUTOBUNDLE
+     initialization macro
+   * acinclude.m4: added backwards-compatibility stuff, added
+     AB_INIT_AUTOBUNDLE macro
+   * acinclude.m4: caching of configure results is now always turned on
+   * shared/package-reader.str: moved pkg-read strategy in separate file 
+     to get rid of duplication in multiple modules
+   * some reactorings
+
+2003-11-03 Merijn de Jonge <m.de.jonge@tue.nl>
+   * released 0.9.6
+   * bundlegen/Makefile.am: added cycle-check-test
+   * bundlegen/cycle-check-test.str: test for cyclic dependency graphs
+   * bundlegen/bundle-generator.str: added cycle-check strategy which
+     terminates program execution on detection of cycles in the package
+     graph
+   * bundlegen/graph-linearize.str: now using table-push strategy
+   * shared/version-comparison-test.str: some refactorings
+   * opb/autobundle-stub.cgi.src: improved error handling
+   * configure.in increased version number to 0.9.6
+   * added DISTCHECK_CONFIGURE_FLAGS to Makefile.am
+
+2003-10-30 Merijn de Jonge <m.de.jonge@tue.nl>
+   * Released 0.9.5
+   * Created OPB logo for Online Package Bases
+
+2003-10-31 Merijn de Jonge <m.de.jonge@tue.nl>
+   * Increased version number to 0.9.5
+   * Renamed .r to .str files
+   * Buildprocess now makes use of Makefile.xt. No longer use of
+     configure.in.src and package.conf files
+   * bundlegen: complete new implementation which is faster and more robust
+     (Cyclic dependencies can now be handled).
+
+
+2003-10-23 Merijn de Jonge <m.de.jonge@tue.nl>
+   * Released version 0.5.6
+   * pkgs2form.r: generated HTML now displays number of packages and
+     number of versions
+   * opb.conf.sample: HTML_HEADER now points to header.html in package
+     repository instead of the one in $(pkgdatadir)
+
+2003-10-20 Merijn de Jonge <m.de.jonge@tue.nl>
+   * Released version 0.5.5
+   * pkgs2form.r: fixed the way that button actions are executed
+   * opb/*: minor html fixes to make it strict xHTML 1.0
+   * opb-stub.cgi.src: added support for "POST" as submission method
+   * pkgs2form.r: now use POST method instead of GET method
+   * opb-stub.cgi.src: removed 'Window-target' attribute
+   * pkgs2form.r: fixed bug where "dependency" button activated search
+     function.
+   * pkgs2form.r: Creating dependency graphs in separate window now works
+     correctly
+   * Increased version to 0.5.5
+
+2003-10-14  Merijn de Jonge <m.de.jonge@tue.nl>
+   * released version 0.5.4
+   * pkgs2form.r: Fixed bug where pressing the enter button in the search
+     input entry activated the bundle action in stead of a search.
+   * increased version to 0.5.4
+
+2003-10-13  Merijn de Jonge <m.de.jonge@tue.nl>
+   * released version 0.5.3
+   * moved autobundle.def from src/opb to src/shared
+   * increased version to 0.5.3
+   * Changes to make 'make distcheck' work
+   * package.conf: updated package version requirements
+   * configure.in.src: update for recent autoconf/automake version
+   * bundlegen/Makefile.am: test output is no longer written to
+    ./$(srcdir)/data but in data
+   * bundlegen/bundlegen.r: Some refactorings to simplify implementation
+   * bundlegen/bundlegen.r: Performance improvement in creating huge
+     dependency graphs
+
+2003-10-02  Merijn de Jonge <m.de.jonge@tue.nl>
+   * bundlegen/graph-algorithms.r: new implementation of reachability-graph
+     strategy with significant improved performance
+   * Makefile.am's make_rules.stratego: changed SC/SCFLAGS by STRC/STRCFLAGS
+   * Added dependency on dot-tools packages (because of Dot.pp)
+
+2003-09-16  Merijn de Jonge <m.de.jonge@tue.nl>
+   * autobundle/Makefile.am.templ: removed ulimit because it turns out not
+     to be portable
+
+2003-09-09  Merijn de Jonge <m.de.jonge@tue.nl>
+   * autobundle/collect.sh: fixed order in auto* tool chain
+
+2003-08-25  Merijn de Jonge <m.de.jonge@tue.nl>
+   * autobundle/collect.sh: standarized url syntax (i.e., http://, cvs://,
+     file://
+   * autobundle/collect.sh: added libtoolize and rearranged tool chain
+   * package.conf: increased version to 0.5.2 and fixed package dependencies
+
+2003-08-07  Merijn de Jonge <m.de.jonge@tue.nl>
+   * autobundle/Makefile.am.templ: added $(mkinstalldirs) $(docdir)
+     to install-data-local target to make sure that documentation directory
+     exists before copying files.
+   * autobundle/Makefile.am.templ: added $(DESTDIR) to paths in
+     install-data-local target.
+   * bundle2configure/bundle2configure.r: fixed problem with newer versions
+     of autoconf where AC_OUTPUT_SUBDIRS has been renamed to
+     _AC_OUTPUT_SUBDIRS
+
+2003-06-20  Merijn de Jonge <m.de.jonge@tue.nl>
+   * collect.sh: fixed argument ordering in call to wget
+
+2002-09-26  Merijn de Jonge <M.de.Jonge@tue.nl>
+   * Replaced dependency on stratego package by a dependency on sc-boot
+     package
+
+2002-09-16  Merijn de Jonge <M.de.Jonge@tue.nl>
+   * package.conf: updated versions of required packages
+
+2002-08-08  Merijn de Jonge <M.de.Jonge@tue.nl>
+   * opb/autobundle.def: fixed disambiguation error in autobundle grammar
+   * autobundle now installs doc files under $(datadir)/doc instead of
+     $(prefix)/doc
+
+2002-08-02  Merijn de Jonge <M.de.Jonge@tue.nl>
+   * package.conf: updated version requirement for gpp package
+
+2002-07-29  Merijn de Jonge <M.de.Jonge@tue.nl>
+   * autobundle/collect.sh: Bug fix: quoted arguments to tr command
+   * autobundle/collect.sh: Improved handling of cvs location
+
+2002-07-25  Merijn de Jonge <M.de.Jonge@tue.nl>
+   * opb/opb-stub.cgi.src: removed unused code
+
+2002-06-27  Merijn de Jonge <M.de.Jonge@tue.nl>
+   * pkgs2form: added several switches to customize generated output
+   * opb/pkgs-select.cgi.src: added package selection tool
+
+2002-06-06  Merijn de Jonge <M.de.Jonge@tue.nl>
+   * Bug fix: autobundle with -s and -db didn't work correctly
+   * Bug fix: urls generated by pkgs2form were sometimes recognized as html
+     escape sequences. For example in
+     action=dependency+graph&gt=on&gt-version=0.6. &gt was recognized as the
+     symbol '>'.
+
+2002-06-04  Merijn de Jonge <M.de.Jonge@tue.nl>
+   * Repaired generation of package definition file 
+   * Added EXCLUDE variable to generated Makefile.am in order to explicitly
+     exclude packages from the build process (use at your own risk).
+
+2002-05-27  Merijn de Jonge <M.de.Jonge@tue.nl>
+   * package.conf: changed to dependency to graphviz-1.8.6 which finally
+     builds properly.
+   * Changed constructor symbol for old style syntax of configuration
+     section
+   * Fixed an incorrect pattern to match configuration switches
+
+2002-05-19  Merijn de Jonge <M.de.Jonge@tue.nl>
+   * pkgs2form: pressing enter key in search field now works
+
+2002-05-14  Merijn de Jonge <M.de.Jonge@tue.nl>
+   * autobundle.sh.src: Exit when creation of temporary directory fails
+   * bundlegen: Make sure that generated bundle name does not exceed 100
+     characters. This is to make sure that it can be mapped to directory
+     names.
+
+2002-04-25  Merijn de Jonge <M.de.Jonge@tue.nl>
+   * Updated copyrights
+   * (Temporarily) removed bottom search entry
+   * Added link to autobundle home page
+   * Released version 0.5
+   * Increased version to 0.6beta
+
+2002-04-25  Merijn de Jonge <M.de.Jonge@tue.nl>
+   * pgen added as required package
+   * autobundle.tbl is now generated at build time
+
+2002-04-24  Merijn de Jonge <M.de.Jonge@tue.nl>
+   * Updated copyright info
+   * Removed (some) obsolete pacakge dependencies from Makefiles and cgi
+     scripts
+   * Added explicit dependencies to packages instead of single  XT package
+   * Updated NEWS file
+
+2002-04-22  Merijn de Jonge <M.de.Jonge@tue.nl>
+   * autobundle/collect.sh: specifying configure script and pkg-list file is
+                            no longer required.
+   * autobundle/README.templ: simplified installation instructions
+   * opb/opb-stub.cgi: new cgi-script that deals to handle user requests
+   * opb/Makefile.opb.src: OPB now really supports multiple package repositories
+   * opb/ : General support for online package bases. The script mkopb
+            initialized a new online package base
+   * package.conf: Autobundle package now depends on XT, no longer on
+     individual sub packages
+
+2002-04-08  Merijn de Jonge <M.de.Jonge@tue.nl>
+   * pkgs2form: All scripting is now performed using a cgi-dispatch script.
+                Removed -d switch. Pkgs search field added to generated
+                html. Dependency graph can now also be generated from
+                selections of packages.
+
+2002-04-03  Merijn de Jonge <M.de.Jonge@tue.nl>
+   * repairings for stratego 0.7
+   * repaired test set
+
+2002-03-22  Merijn de Jonge <M.de.Jonge@tue.nl>
+   * Repaired package dependencies
+
+2002-03-21 Merijn de Jonge <M.de.Jonge@tue.nl>
+   * autobundle.sh.src: Greatly improved performance by no longer using
+     autoconf/automake for building distributions. Use tar instead
+
+2002-03-05 Merijn de Jonge <M.de.Jonge@tue.nl>
+   * pkgs2html: Added nowrap attribute to leading and trailing button
+     bars
+
+2002-02-28 Merijn de Jonge <M.de.Jonge@tue.nl>
+   * pkgs2html: Added reset button to generated html form.
+
+2002-02-20 Merijn de Jonge <M.de.Jonge@tue.nl>
+   * pkgs2html: improved html layout,
+
+2002-02-15 Merijn de Jonge <M.de.Jonge@tue.nl>
+   * pkgs2html: improved html layout,
+
+2002-01-23 Merijn de Jonge <M.de.Jonge@tue.nl>
+   * pkgs2html: improved html layout, added support to view pkg definition
+     file
+
+2002-01-09 Merijn de Jonge <M.de.Jonge@tue.nl>
+   * bundle2configure: simplified generation of --with-bundled-packages
+     switch
+
+2001-12-11 Merijn de Jonge <M.de.Jonge@tue.nl>
+   * autobundle/makefile.am.templ: The README and copyright files of all
+     bundled packages are now installed in ${prefix}/doc/${pkgname}.{README,
+     COPYING, Copyright}.
+   * pkgs2form: html text between anchors that link to dependency graph is
+     now variable using the (new) -l command line switch.
+
+2001-12-06 Merijn de Jonge <M.de.Jonge@tue.nl>
+   * pkgs2form: Added -d switch and now generate link to package dependency graphs
+
+2001-11-30 Merijn de Jonge <M.de.Jonge@tue.nl>
+   * pkgs2form: added -b switch to only produce HTML body text
+   * pkgs2form: version numbers are now hyper-linked and point to the
+     download location of the package.
+   * bundle2configure: Dollar signs ($) in configuration strings are now
+     escaped to postpone evaluation of variables to Makefiles
+   * configuratio now uses AC_PACKAGE_REQUIRE m4 macro
+   * repaired distcheck
+   * updated package requirements
+
+2001-11-28 Merijn de Jonge <M.de.Jonge@tue.nl>
+   * released version 0.4
+   * Updated NEWS file
+   * Fixed VERSION.in
+   * Updated package requirements
+   * Increased version to 0.4
+
+2001-11-27 Merijn de Jonge <M.de.Jonge@tue.nl>
+   * repaired genconf.sh to really remove temporary files on exit
+
+2001-11-25 Merijn de Jonge <M.de.Jonge@tue.nl> 
+   * bundlegen: fixed incorrect grammar identifier
+
+2001-11-21 Merijn de Jonge <M.de.Jonge@tue.nl> 
+   * bundle2configure: ${prefix} as configuration arguments is now quoted
+
+2001-11-14 Merijn de Jonge <M.de.Jonge@tue.nl> 
+   * autobundle: added -A, -N, -R switches to specify additional AUTHORS,
+     NEWS, and README files
+
+2001-11-12 Merijn de Jonge <M.de.Jonge@tue.nl> 
+   * bundle2configure: Constructor "Switch" is no longer mapped to --with-
+     configuration switch but to --enable.
+
+2001-11-01 Merijn de Jonge <M.de.Jonge@tue.nl> 
+   * bundle2configure, bundle2pkglist: bug fix with termid-check
+   * bundle2configure: Each component is now configured with the additional
+     --with-bundled-packages switch. It is configured with the complete list
+     of bundled packages. This way a component can check with which packages
+     it is bundled.
+
+2001-10-08 Merijn de Jonge <M.de.Jonge@tue.nl> 
+   * Adapted to use io-idwrap and grammar identifiers
+   * collect.sh: prevent conflicts with make by unsetting MAKELEVEL and
+     MAKEFLAGS
+   * collect.sh: add support for initpack based software packages
+
+2001-09-27 Merijn de Jonge <M.de.Jonge@tue.nl> 
+   * Version checking of unresolved packages fixed
+
+2001-09-26 Merijn de Jonge <M.de.Jonge@tue.nl> 
+   * bundlegen: bug fix: package dependency calculation with unresolved
+     packages was incorrect.
+
+2001-09-25 Merijn de Jonge <M.de.Jonge@tue.nl> 
+   * bundlegen: Bug fix: package dependency calculation was incorrect when
+     an old package is replaced by a newer version which has different
+     dependencies.
+
+2001-09-20 Merijn de Jonge <M.de.Jonge@tue.nl> 
+   * autobundle: bug fix: missing back-quotes added
+   * autobundle: added NEWS.templ and ChangeLog.templ
+
+2001-09-18 Merijn de Jonge <M.de.Jonge@tue.nl> 
+   * autobundle: added -s switch to obtain bundles from an autobundle server
+     instead of from local package repositories.
+
+2001-09-12 Merijn de Jonge <M.de.Jonge@tue.nl> 
+   * pkgs2form: explicitely call exit before program termination.
+   * autobundle: Improved README.templ. It gets instantiated with
+     the name of the software bundle during bundle generation.
+   * autobundle: collect.sh. Script improved to also support file url, and
+     terminates with non-zero exit code on failure.
+   * bundle2configure: explicitely call exit before program termination.
+   * bundle2pkglist: explicitely call exit before program termination.
+
+2001-09-06 Merijn de Jonge <M.de.Jonge@tue.nl> 
+   * bundle2configure: generated configure.in now checks for existence of
+     wget utility which is required during "make collect".
+
+2001-09-02 Merijn de Jonge <M.de.Jonge@tue.nl> 
+   * bundlegen: added <exit>0 to terminate cleanly
+
+2001-08-28 Merijn de Jonge <M.de.Jonge@tue.nl> 
+   * bundlegen: bug fix in graph generation
+
+2001-08-22 Merijn de Jonge <M.de.Jonge@tue.nl> 
+   * bundlegen: Top nodes are displayed as squares with the -g option 
+
+2001-08-22 Merijn de Jonge <M.de.Jonge@tue.nl> 
+   * pkg-search: added -h switch
+   * bundlegen: some codeimprovements 
+   * bundlegen: added -db (don't bundle) switch to specify pacakges that
+     should _not_ be bundled.
+   * autobundle: added -db switch to autobundle script
+   * bundle2pkglist: bug fix
+   * added missing pkgs2form package to package.conf
+   * pkg2form: added "exclude" radio button to indicate that a pacakge should
+     be excluded from a bundle.
+   * autobundle: handle exclude mechanism in cgi script
+
+2001-08-20 Merijn de Jonge <M.de.Jonge@tue.nl> 
+   * pkg-search: Search is now performed case insensitive
+   * created separate directories under ./src for each component of the
+     autobundle distribution.
+   * Updated README file
+   * increased version number to 0.3
+   * pkgs2form: bug fix: displayed information of a package p is obtained
+     from a selected package definition for p with the highest version
+     number.
+
+2001-08-13 Merijn de Jonge <M.de.Jonge@tue.nl> 
+   * pkg-search.r: tool to find packages that match a given set of keywords
+
+2001-08-09 Merijn de Jonge <M.de.Jonge@tue.nl> 
+   * Removed support for bootstrapping because it does not work yet
+   * bundlegen now includes GraphXML.r which makes the autobundle package
+     dependend on the graph-tools package.
+   * pkgs2form: Changed html method=put to method="GET"
+
+2001-08-08 Merijn de Jonge <M.de.Jonge@tue.nl> 
+   * Unresolved packages are displayed as dashed circles when using
+     bundlegen -g
+
+2001-08-03 Merijn de Jonge <M.de.Jonge@tue.nl> 
+   * pkgs2form.r: Url's are now always colored blue
+
+2001-07-31 Merijn de Jonge <M.de.Jonge@tue.nl> 
+   * Added --with-make switch which is used in the autobundle script to find
+     the make utility
+
+2001-07-31 Merijn de Jonge <M.de.Jonge@tue.nl> 
+   * Released version 0.2
+   * added --with-autoconf and --with-automake switches which are used in
+     the autobundle script
+
+2001-06-14 Merijn de Jonge <M.de.Jonge@tue.nl> 
+   * Added bootstrap support to generated bundles. This aims construction of
+     binary packages.
+
+2001-06-13 Merijn de Jonge <M.de.Jonge@tue.nl> 
+   * src/autobundle: Improved version checking algorithm. The algorith now
+     supports version numbers with annotation (i.e., 0.2beta)
+
+2001-06-10 Merijn de Jonge <M.de.Jonge@tue.nl> 
+   * autobundle can now deal with bundling packages (i.e., packages with an
+     empty location field)
+
+2001-06-09 Merijn de Jonge <M.de.Jonge@tue.nl> 
+   * src/autobundle/autobundle.sh.src: Added -n -v, and -I switches
+   * src/autobundle/autobundle.sh.src: AUTBUNDLE_SEARCH_PATH now is a colon
+     separated list of directories
+   * src/autobundle/bundlegen.r: name and version of bundle can now always
+     be set by command line switches
+   * src/autobundle/autobundle-stub.sh.src: Can handle bundle-name and
+     bundle-version arguments

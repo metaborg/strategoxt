@@ -1,0 +1,1 @@
+"autobundle-0"(PackageDef(Identification(Name("pkga"),Version("0.2beta"),Location(Some("http://www.somewhere")),Info(Some("http://www.somewhere")),Description(Some("'demo package'")),Keywords([])),InterfaceOld([]),Requires([]),Some(Configuration([]))))

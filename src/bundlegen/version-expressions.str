@@ -1,0 +1,170 @@
+\literate[version-expressions]
+
+ Autobundle -- Tool suite for automated source tree composition
+
+ Author: Merijn de Jonge (M.de.Jonge@tue.nl)
+
+ $Id$
+
+
+ This module contains strategies for storing and evaluating version
+ expressions
+
+\begin{code}
+
+module version-expressions
+imports lib version-comparison
+
+signature
+constructors
+   VExpr: Reduct * Expr * When -> VExpr
+   And:   Expr * Expr   -> Expr
+
+   RunTime :  When
+   BuildTime :  When
+
+   GTE:   Version       -> Expr
+   LTE:   Version       -> Expr
+   EQ:    Version       -> Expr
+
+
+strategies
+
+// constrain: (VExpr, Expr) -> VExpr
+//
+// Add contraint Expr to VExpr and reduce the resulting expression
+constrain:
+   (VExpr(_,e1,w1),e2,w2) -> VExpr(r,e,w3)
+   where
+   <add-constraint>(e1,e2) => e;
+   reduce => r;
+   <time-constrain>(w1,w2) => w3
+
+time-constrain =
+    ?(<RunTime>,_)
+    <+
+    ?(_,<RunTime>)
+    <+
+    ?(<BuildTime>, _)
+
+// Add a version constraint, respecting Boolean identity 
+// laws. E.g., A /\ A = A
+add-constraint =
+     \ (e,e) -> e \
+   <+
+     \ (And(e1,e2),e1) -> And(e1,e2) \
+   <+
+     \ (And(e1,e2),e3) -> And(e1,<add-constraint>(e2,e3)) \
+   <+
+     \ (e1,e2) -> And(e1,e2) \
+
+
+// Add a new version contraint 'e' for expression named 'n' and store the
+// result in table "constraints"
+put-version-constraint =
+   ?(n,e,w);
+   (
+      <table-get>("constraints", n);
+      <constrain>(<id>,e,w)
+   <+
+      !VExpr(<reduce>e,e,w)
+   );
+   <table-put>("constraints",n,<id>)
+   
+// get-version-constraints: -> list((string,list(VExpr))
+//
+// Return a list of name version expression tuples
+get-version-constraints = <table-getlist>"constraints"  
+
+
+// Destroy all stored version constraints
+destroy-version-constraints = <table-destroy>"constraints"
+
+// reduct: VExpr -> Expr
+reduct: VExpr(r,es,_) -> r
+
+//  Reduction rules
+// reduce Expr -> Expr
+reduce =
+   \ GTE(v) -> GTE(v) \
+   +
+   \ LTE(v) -> LTE(v) \
+   +
+   \ EQ(v)  -> EQ(v) \
+   
+reduce : And(e1,e2) -> e
+where
+   <reduce>e1 => e1';
+   <reduce>e2 => e2';
+   <and-reduce>(e1', e2') => e
+
+
+// GTE(x) /\ EQ(y)    y iff y >= x
+// GTE(x) /\ GTE(y)   x iff x >= y, y otherwise
+// GTE(x) /\ LTE(y)   id
+// LTE(x) /\ EQ(y)    y iff y <= x
+and-reduce: (GTE(v1), EQ(v2)) -> EQ(v2)
+where
+   <version-gt>(v2,v1)
+
+and-reduce: (EQ(v1), GTE(v2)) -> <and-reduce>(GTE(v2), EQ(v1))
+
+and-reduce: (EQ(v1), LTE(v2)) -> EQ(v1)
+where
+   <not(version-gt)>(v1,v2)
+
+and-reduce: (LTE(v1), EQ(v2)) -> <and-reduce>(EQ(v2), LTE(v2))
+where
+   <not(version-gt)>(v2,v1)
+
+and-reduce: (EQ(v), EQ(v)) -> EQ(v)
+
+and-reduce: (LTE(v1), LTE(v2)) -> LTE(v)
+where
+   !(v1,v2);
+   if( not(version-gt), !v1, !v2) => v
+
+and-reduce: (GTE(v1), LTE(v2)) -> And(GTE(v1), LTE(v2))
+where
+   !(v1,v2);
+   not(version-gt)   
+
+and-reduce: (LTE(v1), GTE(v2)) -> <and-reduce>(GTE(v2),LTE(v1))
+
+and-reduce: (GTE(v1), GTE(v2)) -> GTE(v)
+where
+   !(v1,v2);
+   if( version-gt, !v1, !v2) => v
+      
+// version-constraint: (string,Expr) -> expr
+//
+// returns the strongest version constraint for "n". Either
+// "e" is returned if no other constraints have been registered,
+// or the reduct of the total version expression is returned
+version-constraint: (n,e,w) -> vc
+where
+   if( <table-get>("constraints", n),
+      \ VExpr(_,e,w) ->  (n,e',w)
+        where
+           reduct => e' 
+      \,
+      id
+   ) => vc
+
+\end{code}
+% Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.

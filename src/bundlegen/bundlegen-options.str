@@ -1,0 +1,56 @@
+\literate[bundlegen-options]
+
+ Autobundle -- Tool suite for automated source tree composition
+
+ Author: Merijn de Jonge (M.de.Jonge@tue.nl)
+
+ $Id$
+
+
+ This module defines the command line options of bundlegen
+
+\begin{code}
+module bundlegen-options
+imports lib package-reader
+
+strategies
+bundlegen-options =
+   ArgOption( "-I",
+      where(<post-extend-config>("-I", [<id>])), 
+      !"-I <dir>         Search for packages in <dir>" ) +
+   ArgOption( "-p",
+      where(<extend-config>("-p", [<remove-extensions><id>])),
+      !"-p <pkg>         Include package <pkg> in bundle" ) +
+   ArgOption( "-db",
+      where(<extend-config>("-db", [<id>])),
+      !"-db <pkg>        Don't include <pkg> in bundle" ) +
+   ArgOption( "-n",
+      where(<set-config>("-n", <id>)),
+      !"-n <name>        Generate software bundle with name <name>" ) +
+   ArgOption( "-v",
+      where(<set-config>("-v", <id>)),
+      !"-v <version>     Generate software bundle with version <version>") +
+   Option( "-g",
+      where(<set-config>("-g", <id>)),
+      !"-g               Produce a package dependency graph" ) +
+   ArgOption( "-B",
+      where(<set-config>("-B", <id>)),
+      !"-B <binding>     (experimental) set component binding (default ${prefix})" )
+
+\end{code}
+% Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.

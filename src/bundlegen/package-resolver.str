@@ -1,0 +1,126 @@
+\literate[version-resolver]
+
+ Autobundle -- Tool suite for automated source tree composition
+
+ Author: Merijn de Jonge (M.de.Jonge@tue.nl)
+
+ $Id$
+
+
+ This module contains strategies for finding/reading/storing package
+ definition files
+
+\begin{code}
+module package-resolver
+imports
+   lib misc pack-graph version-expressions Autobundle package-reader
+
+strategies
+// package-resolver: (list(pkg-dep), list(string)) -> pkg-graph
+//
+// Given a list of package dependencies (the top packages) and a list of
+// names of packages that should not be bundled:
+//
+//   1) read all package definitions of the packages that can be
+//      transitively reached from the top packages
+//   2) store them in table "packages".
+//   3) for each package, store the list of required packages in table
+//      "requires"
+//   4) return a package graph of the packages and their relations
+package-resolver:(tops, dont-bundle) -> (tops, the-pkgs)
+where
+   // Read all packages using the generic pack algorithm graph-nodes-roots
+   !(tops,(),[]);
+   graph-nodes-roots(get-pkg-node(!dont-bundle),requires,add-pkg-node);
+
+   // Construct a package graph from the "requires" table
+   <table-getlist>"requires";
+
+   map( \(i,d) -> pkg(i,d) \ ) => the-pkgs
+
+
+// Add a package definition to the table "packages" and its package
+// dependencies to the tagble "requires", unless the package definition has
+// already been stored, or it should not be bundled at all.
+get-pkg-node(dont_bundle) =
+   ?(pkg-dep(name,GTE(version)), graph);
+   (
+      // Skip the node when the user specified _not_ to bundle it
+      dont_bundle; fetch-elem(?name);!()
+   <+
+      // If the package definition is already contained in the table,
+      // we're done
+      !pkg-id(name,version);
+      where(<table-get>("packages", <id>))
+   <+
+      // Otherwise, try to read the package definition from the file system
+      <concat-strings>[name,"-",version];
+      read-pkg; Snd => pkg;
+      
+      ?PackageDef(_,_,<id>,_);
+      
+      // Collect all package dependencies
+      where(collectRequires( \(n,v,_) -> pkg-dep(n,GTE(v)) \ ) => requires);
+
+      // Collect timed dependency information (i.e., whether packages are
+      // required at build or at run time.
+      map(
+         ?Requires(
+             <collectRequires( \ (n,v,_) -> [BuildTime(pkg-dep(n,GTE(v))),
+                                             RunTime(pkg-dep(n,GTE(v)))] \ );concat>
+         )
+         +
+         ?BuildTimeRequires( 
+            <collectRequires( \(n,v,_) -> BuildTime(pkg-dep(n,GTE(v))) \ )> )
+         +
+         ?RunTimeRequires(
+            <collectRequires( \ (n,v,_) -> RunTime(pkg-dep(n,GTE(v))) \ )> )
+      );concat => timed-dependencies;
+
+      // Store the package definition itself, and its package dependencies
+      !pkg-id(name,version);
+      where(<table-put>("packages", <id>, pkg));
+      where(<table-put>("requires", <id>, timed-dependencies));
+      where(<table-put>("timed-dependencies", <id>, timed-dependencies))
+   <+
+      // Don't complain if a package definition could not be found
+      !()
+   )
+
+collectRequires(s) =
+   collect( \ ReqPackage(n,v,c) -> <s>(n,v,c) \ )
+   
+// Add a new node the the list of visited nodes
+add-pkg-node: (name,node,nodes) -> [node|nodes]
+
+// Return a list of outgoing edges of a node (this equals the list of
+// dependencies of a package)
+requires = 
+   <table-get>("requires", <id>);
+   map( ?RunTime(<id>) + ?BuildTime(<id>) ); uniq
+
+timed-dependencies = <table-get>("timed-dependencies", <id>)
+
+// Return a stored package definition
+//
+// get-pkg-def: name -> pkg
+get-pkg-def = <table-get>("packages", <id>)
+
+
+\end{code}
+% Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.

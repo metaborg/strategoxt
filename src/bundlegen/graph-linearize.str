@@ -1,0 +1,70 @@
+module graph-linearize
+imports lib package-graph
+strategies
+graph-linearize: (graph, tops) -> node-list
+where
+   !graph;
+   repeat(expand-tree) => tree;
+   rules(Tree: x -> tree);
+   map( ?pkg(<id>,_));
+   qsort(PackageOrder)  => node-list
+
+expand-tree =
+   ?lst; oncetd(Expand(!lst))
+
+// Expand the list of dependencies (deps), by adding for each d in deps the
+// dependencies of d: If d is a runtime dependency then only d's runtime
+// dependencies are expanded. If d in a buildtime dependency, than both d's
+// runtime and buildtime dependencies are expanded. If d is an unresolved
+// dependency, then expansion yields an empty list.
+Expand(lst): pkg(n, deps) -> pkg(n, deps')
+where
+   !deps;
+   map( \ BuildTime(x) -> [BuildTime(x)| <lst;fetch-elem( ?pkg(x,<id>) ) <+ ![]>] \ 
+          +
+        \ RunTime(x)   -> [RunTime(x)  | <lst;fetch-elem(?pkg(x,<filter(RunTime(id))>) )<+ ![]>] \
+   );
+   concat;uniq => deps';
+   not(?deps)
+   
+   
+
+  
+/*
+    Sort two packages in correct build order based on their dependencies.
+  
+    The following dependencies can exist
+    a      b      relation
+    BT(b)  -      a > b
+    BT(b)  BT(a)  cyclic dependency
+    BT(b)  RT(a)  a > b
+    RT(b)  -      a = b (no specific build order required)
+    RT(b)  BT(a)  a < b
+    RT(b)  RT(a)  a = b
+    -      BT(a)  a < b
+    -      RT(a)  a = b
+    
+    Only when a and b both have a build-time dependency on each other,
+    it is impossible to determine a correct build order.
+    
+    A package 'a' has to be build before 'b' whenever 'b' has a build time
+    dependency on 'a' and 'a' does not have a build time dependency on 'b'
+*/
+PackageOrder: (a,b) -> (a,b)
+where
+   Tree => t;
+
+   // Check whether 'a' is a build-time dependency of 'b'
+   where(
+      fetch-elem(?pkg(b,<id>));
+      fetch-elem( BuildTime(?a))
+   );
+
+   // Check whether 'b' is a build-time dependency of 'a'.
+   // In that case we cannot determine a correct build order.
+   where(
+      fetch-elem(?pkg(a,<id>));
+      if(fetch-elem( BuildTime(?b)),
+         <fatal-error>["*** bundle error: Cycle detected between ", 
+                        a, " and ", b, " in package dependency graph."])
+   )

@@ -1,0 +1,16 @@
+package 
+identification
+   name=stratego
+   version=0.4.20
+   location=http://www.stratego-language.org/ftp
+   info=http://www.stratego-language.org/
+   description='Specification of Program Transformation Systems'
+
+   keywords=transformation programming language
+interface
+
+requires
+  aterm 1.4.4 with
+      debug
+
+     

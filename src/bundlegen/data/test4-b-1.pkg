@@ -1,0 +1,13 @@
+package
+identification
+  name=test4-b
+  version=1
+  location=a
+  info=b
+  description='a'
+  keywords=
+
+interface
+
+requires
+  test4-c 1

@@ -1,0 +1,51 @@
+\literate[pkg-find]
+
+ Autobundle -- Tool suite for automated source tree composition
+
+ Author: Merijn de Jonge (M.de.Jonge@tue.nl)
+
+ $Id: pkg-search.str 4587 2003-12-05 12:43:44Z merijn $
+
+\begin{code}
+module pkg-find
+imports lib Autobundle package-reader autobundle-version
+
+strategies
+short-description(p) =
+   !["Usage: ", <p>(), " [options]"]
+
+long-description(p) = 
+   !["This program finds package definition files and reports their\n",
+     "location in the file system.\n"]
+                         
+pkg-find = 
+   option-wrap(Pkg-find-options, Pkg-find)
+
+Pkg-find-options =
+   ArgOption( "-I", 
+      where(<post-extend-config>("-I", [<id>])),
+      !"-I <dir>         Search for packages in <dir>" ) +
+   ArgOption( "-p", 
+      where(<extend-config>("-p", [<remove-extensions><id>])),
+      !"-p <pkg>         Find package with name <pkg>" )
+
+Pkg-find =
+   <get-config>"-p"; 
+   filter(read-pkg;Fst;echo)
+
+\end{code}
+% Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>
+%
+% This program is free software; you can redistribute it and/or modify it
+% under the terms of the GNU General Public License as published by the Free
+% Software Foundation; either version 2, or (at your option) any later
+% version.
+%
+% This program is distributed in the hope that it will be useful, but
+% WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+% or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+% for more details.
+%
+% You should have received a copy of the GNU General Public License along
+% with this program; if not, write to the Free Software Foundation, Inc., 59
+% Temple Place - Suite 330, Boston, MA 02111-1307, USA.

@@ -1,0 +1,21 @@
+package 
+identification
+   name=pgen
+   version=0.6
+   location=http://www.cwi.nl/projects/MetaEnv/pgen
+   info=http://www.cwi.nl/projects/MetaEnv/pgen
+   description='Pgen is a parser generator to be used in combination with
+                sglr.'
+   keywords=sglr pgen parser generator glr
+
+interface
+
+requires
+   asfix 0.2.2 
+   aterm 1.4.5 
+   asc-support 0.4 
+   sglr 3.0 
+
+
+configuration
+     

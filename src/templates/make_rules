@@ -1,0 +1,46 @@
+# Autobundle -- Tool suite for automated source tree composition
+#
+# Author: Merijn de Jonge (M.de.Jonge@tue.nl)
+#
+# $Id$
+
+diff :
+	patch_name="$(PACKAGE)-$(VERSION)-`echo $(subdir) | sed 's@/@_@g'`.patch" ;\
+	echo "Updating sources" >&2 ;\
+	cvs -Q upd -d;\
+	echo "Determine differences" >&2 ;\
+	cvs -Q diff > $${patch_name}|| true ;\
+	echo "Patch is saved in \"$${patch_name}\".\
+	 Please send this patchfile to the maintainers of $(PACKAGE)." | fmt >&2
+
+%_check : Makefile
+	(\
+	  prog=./$($(*)_check_prog) ;\
+	  input=$($(*)_check_input) ;\
+	  if [ "a$${input}" != "a" ]; then input="-i $(srcdir)/$${input}"; fi ;\
+	  output=$($(*)_check_output) ;\
+	  correct=$(srcdir)/$($(*)_check_correct) ;\
+	  switches="$($(*)_check_switches)" ;\
+	  echo set -e ;\
+	  echo "$${prog} $${switches} $${input} | $(ATERM)/bin/baf2trm -o $${output}";\
+	  echo diff $${output} $${correct}  ;\
+	  echo rm $${output} ;\
+	) >$@ && \
+	chmod +x $@
+
+# Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.

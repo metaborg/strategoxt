@@ -1,0 +1,138 @@
+\literate[bundle2configure]
+
+ Autobundle -- Tool suite for automated source tree composition
+
+ Author: Merijn de Jonge (M.de.Jonge@tue.nl
+
+ $Id$
+
+\begin{code}
+module bundle2configure
+imports lib Autobundle termid autobundle-version
+
+strategies
+
+short-description(p) = 
+   !["Usage: ", <p>(), " [options]"]
+
+long-description(p)  = 
+   !["This program generates an autoconf configre script from a software ",
+     "bundle\ndefinition as produced by autobundle."]
+
+bundle2configure = 
+   input-wrap(termid-check("\"autobundle-0\""); Bundle2configure)
+
+Bundle2configure = 
+   ?Bundle(identification, Interface(interface), requires, Bundles(all-bundles));
+
+   // Don't include bundling packages in the configure.ac script (i.e.,
+   // packages with an empty location field)
+   !all-bundles;
+   filter( not(Package(Identification(id,id,Location(None),id,id,id),id))) => bundles;
+   !identification => Identification(Name(name),Version(version),_,_,_,_);
+   !(stdout, ["AC_INIT(", name, ",", version, ")"]); printnl;
+   !(stdout, ["AB_INIT_AUTOBUNDLE"]); printnl;
+   !(stdout, ["AM_INIT_AUTOMAKE"]); printnl;
+   !(stdout, [""]); printnl;
+   !(stdout, ["AC_PATH_PROG(CURL, curl)"]); printnl;
+   !(stdout, ["if test -z \"$CURL\"; then"]); printnl;
+   !(stdout, ["   AC_MSG_ERROR([curl command not found])"]); printnl;
+   !(stdout, ["fi"]); printnl;
+   !(stdout, ["AC_SUBST(CURL)"]); printnl;
+   !(stdout, [""]); printnl;
+   
+   !bundles;
+   collect(\ Package(Identification(Name(name),_,_,_,_,_),_)->name \ ) => pkgs;
+
+   !(stdout, ["PKGS=", "\"", <separate-by(!" ");concat-strings>pkgs, "\""]); printnl;
+   !(stdout, ["AC_SUBST(PKGS)"]); printnl;
+   !(stdout, [""]); printnl;
+
+   !interface;
+   map( { o, s:
+      ?Option(o,s);
+      !(stdout, ["AC_ARG_WITH(", o, ","]); printnl;
+      !(stdout, ["   AC_HELP_STRING([--with-", o, "],[", <un-single-quote>s, "]))"]); printnl
+   } );
+   !(stdout, [""]); printnl;
+
+   !requires;
+   map(requires2ConfigureSwitch);
+   !(stdout, [""]); printnl;
+      
+   !(stdout, ["AC_CONFIG_FILES(["]); printnl;
+   !(stdout, ["   Makefile\n   pre-checks/Makefile"]);printnl;
+   !(stdout, ["])"]); printnl;
+   !(stdout, ["AC_OUTPUT"]); printnl;
+   !(stdout, [""]); printnl;
+   !bundles;
+   map(
+      { name, config:
+      ?Package( Identification(Name(name),_,_,_,_,_), Configuration(config));
+      !(stdout, ["AB_CONFIG_PKG(", name, ","]); printnl;
+      !config;
+      map( \ Switch(o)      -> <printnl>(stdout, ["   --enable-", o]) \ +
+           \ ArgSwitch(o,v) -> <printnl>(stdout, ["   --with-", o, "=",<escape-dollars;replace(!o)>v]) \ );
+      !(stdout, ["   --with-bundled-packages='${PKGS}'"]); printnl;
+      !(stdout, [")"]);printnl
+      }
+      )
+
+
+// Create an Autoconf configuration switch from the requires sections from a bundle definition.
+requires2ConfigureSwitch =
+   (
+      ?Requires(<collect( \ ReqPackage(n,v,_) -> (n,v, "") \ )> )
+   +
+      ?RunTimeRequires(<collect( \ ReqPackage(n,v,_) -> (n,v, " This package is only needed at run-time.") \ )> )
+   +
+      ?BuildTimeRequires( <collect( \ ReqPackage(n,v,_) -> (n,v, " This package is only needed at build-time.") \ )> )
+   );
+   map( \ (n,v,s) -> () 
+      where
+      !(stdout, ["AC_ARG_WITH(",n, ","]); printnl;
+      !(stdout, ["   AC_HELP_STRING([--with-", n, "],",
+                                   "[Location of external package \"", n, "\" (version ", v, " or above is required).", s, "]))"]); printnl
+      
+   \ )
+
+// Replace '$var' in string by '\\\$var'. This way evaluation of $var is
+// posponed to the Makefile.
+escape-dollars =
+   escape(EscapeDollars) 
+
+EscapeDollars(x) : [36|cs] -> [92,92,92,36|<x>cs]
+
+
+// replaces '%c' by cname
+replace(cname) =
+   explode-string;
+   rec x( { cs:
+      \ [37,99|cs] -> <conc>(<cname;explode-string>(), <x>cs) \
+      <+
+         [id | x] 
+      <+ 
+        []
+   });
+   implode-string
+
+
+\end{code}
+%
+% Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.
+

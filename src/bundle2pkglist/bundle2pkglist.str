@@ -1,0 +1,61 @@
+\literate[bundle2pkglist]
+
+ Autobundle -- Tool suite for automated source tree composition
+
+ Author: Merijn de Jonge (M.de.Jonge@tue.nl)
+
+ $Id$
+
+\begin{code}
+module bundle2pkglist
+imports lib Autobundle termid autobundle-version
+
+strategies
+short-description(p) =
+   !["Usage: ", <p>(), " [options]"]
+
+long-description(p) = 
+   !["This program generates a package list from a software bundle",
+     "definition\nas produced by autobudle. The package list lists all",
+     "constituent packages\nof a software bundle, their versions, and",
+     "their download locations. This\ninformation is needed to obtain and",
+     "merge all source trees of these packages."]
+                        
+bundle2pkglist = 
+   input-wrap(termid-check("\"autobundle-0\""); Bundle2pkglist)
+
+Bundle2pkglist = 
+   ?Bundle(identification, interface, requires, Bundles(bundles));
+   !bundles;
+   map({ name, version, location:
+      // Don't create a package list entry for a bundling package (i.e., a
+      // package with an empty location field)
+        Package(Identification(id,id,Location(None),id,id,id),id)
+      <+
+        Package(Identification(Name(?name),
+                                Version(?version),
+                                Location(Some(?location))
+                                +
+                                LocationPBSD((PrimaryLoc(?location),id)),
+                                id,id,id),id);
+        !(stdout, [name, ",", version, ",", location]); printnl
+      }
+   )
+
+\end{code}
+% Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.
