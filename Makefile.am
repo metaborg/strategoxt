@@ -12,7 +12,7 @@ pre-pkgs/build/srts.dummy :
 	mkdir -p pre-pkgs/build &&\
 	cp -rfp srts pre-pkgs/build/ &&\
 	cd pre-pkgs/build/srts &&\
-	./configure --prefix=`pwd`/pre-pkgs/build --with-aterm=$(ATERM) --with-cpl=$(CPL) --with-strc=$(STRATEGOXT)  --with-ssl=$(STRATEGOXT) &&\
+	./configure --prefix=`pwd`/.. --with-aterm=$(ATERM) --with-cpl=$(CPL) --with-strc=$(STRATEGOXT)  --with-ssl=$(STRATEGOXT) &&\
 	$(MAKE) &&\
 	$(MAKE) install &&\
 	touch ./pre-pkgs/build/srts.dummy
@@ -21,7 +21,7 @@ pre-pkgs/install/xtc.dummy :
 	mkdir -p pre-pkgs/install &&\
 	cp -rfp xtc pre-pkgs/install/ &&\
 	cd pre-pkgs/install/xtc &&\
-	./configure --prefix=`pwd`/pre-pkgs/install --with-srts=`pwd`/pre-pkgs/build --with-aterm=$(ATERM) --with-stratego-xt=$(STRATEGOXT) &&\
+	./configure --prefix=`pwd`/.. --with-srts=`pwd`/../../build --with-aterm=$(ATERM) --with-stratego-xt=$(STRATEGOXT) &&\
 	$(MAKE) &&\
 	$(MAKE) install &&\
 	touch ./pre-pkgs/install/xtc.dummy
