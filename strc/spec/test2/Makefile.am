@@ -23,7 +23,7 @@ check_PROGRAMS 	= arity-test as-pattern assignment \
 
 TESTS 		= $(check_PROGRAMS)
 
-STRATEGORUNLIBS = -lstratego.opt -lstratego-choice -lstratego-lib.opt -lATerm-gcc -lm
+STRATEGORUNLIBS = -lstratego_opt -lstratego-choice -lstratego-lib_opt -lATerm-gcc -lm
 LDADD 		= $(STRATEGORUNLIBS)
 
 CLEANFILES 	= *.o *.ac *.s[0-9]* *.f* *.ac *.c.abox \
