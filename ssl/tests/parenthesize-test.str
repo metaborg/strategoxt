@@ -4,30 +4,86 @@ strategies
 
   main = 
     test-suite(!"parenthesize-test",
-      test1
+      parenthesize-tests
     )
 
-  test1 =
-    apply-test(!"test1"
-	, id
-	, !()
-	, !()
-	)
-\end{code}
+  parenthesize-tests =
+    apply-test(!"Unary construct"
+    , test-parenthesize
+    , !Uminus(Plus(Int(1), Int(2)))
+    , !Uminus(Paren(Plus(Int(1), Int(2))))
+    )
+  ; apply-test(!"Unary construct"
+    , test-parenthesize
+    , !Uminus(Uminus(Int(2)))
+    , !Uminus(Uminus(Int(2)))
+    )
+  ; apply-test(!"Binary construct"
+    , test-parenthesize
+    , !Times(Plus(Int(1), Int(2)), Or(Int(1), Int(2)))
+    , !Times(Paren(Plus(Int(1), Int(2))), Paren(Or(Int(1), Int(2))))
+    )
+  ; apply-test(!"Binary construct. left"
+    , test-parenthesize
+    , !Plus(Int(1), Plus(Int(2), Int(3)))
+    , !Plus(Int(1), Paren(Plus(Int(2), Int(3))))
+    )
 
-% Copyright (C) 2003 Eelco Visser <visser@acm.org>
-% 
-% This program is free software; you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation; either version 2, or (at your option)
-% any later version.
-% 
-% This program is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-% 
-% You should have received a copy of the GNU General Public License
-% along with this program; if not, write to the Free Software
-% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-% 02111-1307, USA.
+
+  test-parenthesize =
+    parenthesize(!Paren(<id>), test-priorities)
+   
+  test-priorities =
+     ![(None,			["Uminus","FieldVar","Subscript"]),
+       (Some("left"),		["Power"]),
+       (Some("left"),		["Times","Divide"]),
+       (Some("left"),		["Plus","Minus"]),
+       (Some("non-assoc"),	["CPlus","CMinus","Eq","Neq","Gt","Lt","Geq","Leq"]),
+       (Some("left"),		["And"]),
+       (Some("left"),		["Or"]),
+       (None,			["Array"]),
+       (None,			["Assign"]),
+       (Some("right"),		["If","While","For"])]
+
+signature
+  constructors
+    Paren  : Exp -> Exp
+
+    Uminus : Exp -> Exp
+    Power  : Exp * Exp -> Exp
+    Times  : Exp * Exp -> Exp
+    Divide : Exp * Exp -> Exp
+    Plus   : Exp * Exp -> Exp
+    Minus  : Exp * Exp -> Exp
+    CPlus  : Exp * Exp -> Exp
+    CMinus : Exp * Exp -> Exp
+    Eq     : Exp * Exp -> Exp
+    Neq    : Exp * Exp -> Exp
+    Gt     : Exp * Exp -> Exp
+    Lt     : Exp * Exp -> Exp
+    Geq    : Exp * Exp -> Exp
+    Leq    : Exp * Exp -> Exp
+    True   : Exp
+    False  : Exp
+    And    : Exp * Exp -> Exp
+    Or     : Exp * Exp -> Exp
+    Int    : Int -> Exp
+
+/**
+ * Copyright (C) 2003 Eelco Visser <visser@acm.org>
+ *  
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *  
+ *  This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
+ */

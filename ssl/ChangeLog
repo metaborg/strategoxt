@@ -1,30 +1,37 @@
+2003-12-01  Martin Bravenboer <martin@cs.uu.nl>
+
+	* spec/parenthesize.str: fixed problem with unary operators. Added
+	a Disambiguate(paren) rule for these cases.
+
+	* tests/parenthesize-test.str: started a testsuite for parenthesize.
+
 2003-11-16  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/string.str: get-extension from filename
 
-2003-09-23  Merijn de Jonge <m.de.jogne@cwi.nl>
-  * spec/tables.str: added more informative argument names to strategy
-    "table-rename"
+2003-09-23  Merijn de Jonge <m.de.jonge@cwi.nl>
+
+	* spec/tables.str: added more informative argument names to
+	strategy "table-rename"
 
 2003-09-19  Martin Bravenboer <mbravenb@cs.uu.nl>
-  
-  * spec/list-set.str: added nub as an alias of make-set.
+
+	* spec/list-set.str: added nub as an alias of make-set.
 
 2003-09-17  Martin Bravenboer <mbravenb@cs.uu.nl>
-  
-  * spec/posix-error.str: new module
 
-  * spec/dir.str: extended rename-file to copy files
-    if rename fails because of an XDEV error.
+	* spec/posix-error.str: new module
 
-    Thanks to Arthur van Dam for reporting this problem.
+	* spec/dir.str: extended rename-file to copy files if rename fails
+	because of an XDEV error. Thanks to Arthur van Dam for reporting
+	this problem.
 
-  * spec/list-misc.str: added split-last.
+	* spec/list-misc.str: added split-last.
 
 2003-09-16  Martin Bravenboer <mbravenb@cs.uu.nl>
-  
-  * spec/integers.str: added set-random-seed, get-random-max,
-    and next-random to generate random numbers.
+
+	* spec/integers.str: added set-random-seed, get-random-max, and
+	next-random to generate random numbers.
 
 2003-08-17  Eelco Visser  <visser@cs.uu.nl>
 
@@ -33,20 +40,20 @@
 
 2003-08-15  Martin Bravenboer <mbravenb@cs.uu.nl>
 
-  * spec/string.str: added unescape-chars(s) to allow the specification 
-    of UnEscape rules to apply.
+	* spec/string.str: added unescape-chars(s) to allow the
+	specification of UnEscape rules to apply.
 
-  * spec/string.str: added unquote(s1, s2) to allow different start 
-    and end 'quotes'. Typical examples: [ ] or ( ).
+	* spec/string.str: added unquote(s1, s2) to allow different start
+	and end 'quotes'. Typical examples: [ ] or ( ).
 
-  * Some xDoc comments.
+	* Some xDoc comments.
 
 2003-08-14  Martin Bravenboer <mbravenb@cs.uu.nl>
 
-  * spec/parenthesize.str: fixed typo in gen-right. GenLeftAssoc
-    should be GenRightAssoc.
+	* spec/parenthesize.str: fixed typo in gen-right. GenLeftAssoc
+	should be GenRightAssoc.
 
-  * Moved parenthesize-test.str to tests directory.
+	* Moved parenthesize-test.str to tests directory.
 
 2003-08-12  Eelco Visser  <visser@cs.uu.nl>
 

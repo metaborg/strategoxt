@@ -50,6 +50,10 @@ strategies
 	; <map(test(<GreaterThan>(e,<id>)); paren)> mid => mid'
         ; <try(test(<LeftAssoc>  (e,<id>)); paren)> r => r'
 
+  Disambiguate(paren) :
+    e@op#([l]) -> (op#([l']))
+    where <test(<GreaterThan>(e,<id>)); paren> l => l'
+
 /**
  * Generation of the parenthesation rules.
  */
