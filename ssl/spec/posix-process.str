@@ -1,5 +1,5 @@
 module posix-process
-imports posix-signal verbose
+imports posix-signal verbose io
 
 /**
  * Run-time process information
