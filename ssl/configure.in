@@ -20,4 +20,5 @@ AC_OUTPUT( \
 	README \
 	spec/Makefile \
 	spec/data/Makefile \
+	tests/Makefile \
 )

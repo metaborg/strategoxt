@@ -1,6 +1,6 @@
 include $(top_srcdir)/Makefile.xt
 
-SUBDIRS 	  = . spec
+SUBDIRS 	  = . spec tests
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 EXTRA_DIST 	  = README README.in bootstrap stdconfig Makefile.xt
 
@@ -15,5 +15,4 @@ CONFIGURE = ./configure				\
 SUBST = s+__SRTS_VERSION__+$(VERSION)+g;\
         s+__ATERM_VERSION__+1.6.7+g;\
 	s+__ATERM__+$(ATERM)+g;
-
 
