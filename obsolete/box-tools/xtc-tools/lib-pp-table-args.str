@@ -1,5 +1,5 @@
 module lib-parse-pp-table-args
-imports verbose dir xtc-proc xtc-tools-lib
+imports verbose dir xtc-proc stratego-xt-xtc-tools
 
 strategies
 

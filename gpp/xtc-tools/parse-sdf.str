@@ -1,5 +1,5 @@
 module parse-sdf
-imports xtc-lib xtc-tools-lib
+imports xtc-lib stratego-xt-xtc-tools
 
 strategies
   

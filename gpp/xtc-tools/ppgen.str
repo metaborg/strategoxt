@@ -1,5 +1,5 @@
 module ppgen
-imports xtc-lib xtc-tools-lib options
+imports xtc-lib stratego-xt-xtc-tools options
 
 signature
   constructors

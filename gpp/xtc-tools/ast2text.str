@@ -1,5 +1,5 @@
 module ast2text
-imports xtc-lib xtc-tools-lib options verbose lib-pp-table-args abox2text
+imports xtc-lib stratego-xt-xtc-tools options verbose lib-pp-table-args abox2text
 
 strategies
 
@@ -13,7 +13,7 @@ strategies
   ast2text =
     xtc-io(
       xtc-transform(!"ast2abox", !<get-config> "-p")
-    ; xtc-abox2text-width
+    ; xtc-abox2text(pass-width)
     )
 
 
