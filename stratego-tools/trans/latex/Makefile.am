@@ -4,6 +4,7 @@ include $(wildcard *.dep)
 SCFLAGS 	= --main io-$*
 STRINCLUDES     = -I $(STRATEGO_FRONT)/share/sdf/stratego-front \
                   -I $(STRATEGO_FRONT)/share/stratego-front \
+                  -I $(ASFIX_TOOLS)/share/asfix-tools \
                   -I $(CONCRETE_SYNTAX)/share/concrete-syntax \
                   -I $(XTC)/share/xtc
 

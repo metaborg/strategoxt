@@ -1,5 +1,5 @@
 module pp-stratego-latex-alltt
-imports options parse-cs-lib
+imports options parse-cs-lib asfix
 
 strategies
 
@@ -10,7 +10,19 @@ strategies
       pcs-input-file
     ; init-language-binding
     ; pcs-parse-asfix2me
-    ; xtc-asfix2me-yield
+    ; xtc-io-transform(to-latex-alltt)
+//    ; xtc-asfix2me-yield
 
   xtc-asfix2me-yield =
     xtc-transform(!"unparsePT")
+
+  to-latex-alltt =
+    topdown(try(CheerUp))
+
+rules
+
+  CheerUp =
+    appl(prod([varsym(id)], id, id), map(try(FancyVar)))
+
+  FancyVar :
+    lit(s) -> lit(<concat-strings> ["\\metavar{", s, "}"])
