@@ -1,5 +1,5 @@
 module const-prop
-imports Stratego lib stratlib unification
+imports Stratego-Amb lib stratlib unification
 strategies
 
   const-prop-io =
@@ -41,9 +41,14 @@ strategies
     ; PrimT(id, map(exec-maybe(cp)), alltd(Binding))
 
   prop-traversal(cp) =
-    (?All(_) + ?One(_) + ?Some(_) + ?Thread(_) + ?Bagof(_))
+    (?All(_) + ?One(_) + ?Some(_) + ?Thread(_) + ?Bagof(_) )
     ; UndefCurrentTerm
     ; one(exec-maybe(cp))
+
+  prop-traversal(cp) =
+    ?Cong(_,_)
+    ; UndefCurrentTerm
+    ; Cong(id, map(exec-maybe(cp)))
 
   prop-rec(cp) =
     ? Rec(_,_)
@@ -146,7 +151,7 @@ strategies
     [(Wld, t) | ps] -> ps
 
   AsMatch :
-    [(As(Var(x),p),t) | ps] -> [(Var(x), t), (p, t) | ps]
+    [(As(p1,p2),t) | ps] -> [(p1, t), (p2, t) | ps]
 
   prop-choice(uv) =
     ?Choice(_, _)

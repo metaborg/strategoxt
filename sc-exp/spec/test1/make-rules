@@ -12,6 +12,17 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 	 -L$(ATERM)/lib -lATerm-gcc $(CHOICELDFLAGS) \
 	 -lm
 
+# PRETTY-PRINTING ####################################################
+
+%.txt: % $(STRATEGO_FRONT)/bin/pp-stratego
+	$(STRATEGO_FRONT)/bin/pp-stratego -a -i $< -o $@
+
+%.atxt : %
+	$(ATERM)/bin/baffle -wt -i $< -o $@
+
+%.ttxt : %
+	$(ATERM_TOOLS)/bin/pp-aterm -i $< -o $@
+
 # FRONT-END ###########################################################
 
 %.tree : %.r ../pack/pack-stratego$(EXE) 
@@ -40,11 +51,17 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 
 # OPTIMIZE ###########################################################
 
+## Simplification
+
 %.s4 : %.s3 ../match/optimize1$(EXE)
 	../match/optimize1 -i $< -o $@ -b
 
+## Innermost fusion
+
 %.s5: %.s4 ../opt/fusion$(EXE)
 	../opt/fusion  -i $< -o $@ -b --verbose 2
+
+# Inlining
 
 %.s6 : %.s5 ../opt/inline$(EXE)
 	../opt/inline -i $< -o $@ -b
@@ -52,23 +69,27 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 %.s7 : %.s6 ../opt/dead-def-elim$(EXE)
 	../opt/dead-def-elim -i $< -o $@ -b
 
+## First Optimization
 
 %.s7.opt1 : %.s7 ../match/optimize2$(EXE)
 	../match/optimize2 -i $< -o $@ -b
 
-%.s7.opt2 : %.s7.opt1 ../opt/const-prop$(EXE)
+%.s7.opt2 : %.s7.opt1 ../match/define-congruences$(EXE)
+	../match/define-congruences -i $< -o $@ -b
+
+%.s7.opt3 : %.s7.opt2 ../opt/const-prop$(EXE)
 	../opt/const-prop -i $< -o $@ -b
 
-%.s7.opt3 : %.s7.opt2 ../c/canonicalize$(EXE)
+%.s7.opt4 : %.s7.opt3 ../c/canonicalize$(EXE)
 	../c/bound-unbound-vars -i $< -o $@ -b
 
-%.s7.opt4 : %.s7.opt3 ../opt/dead-var-elim$(EXE)
+%.s7.opt5 : %.s7.opt4 ../opt/dead-var-elim$(EXE)
 	../opt/dead-var-elim -i $< -o $@ -b
 
-%.s7.opt : %.s7.opt4 ../match/optimize2$(EXE)
+%.s7.opt : %.s7.opt5 ../match/optimize2$(EXE)
 	../match/optimize2 -i $< -o $@ -b
 
-
+## Pattern match compilation
 
 %.s8 : %.s7.opt ../match/compile-match$(EXE)
 	../match/compile-match -i $< -o $@ -b
@@ -76,32 +97,30 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 %.s9 : %.s8 ../match/desugar-case$(EXE)
 	../match/desugar-case -i $< -o $@ -b
 
+# Inlining
 
-%.s10 : %.s9 ../match/optimize2$(EXE)
+%.s10 : %.s9 ../opt/inline$(EXE)
+	../opt/inline -i $< -o $@ -b
+
+%.s11 : %.s10 ../opt/dead-def-elim$(EXE)
+	../opt/dead-def-elim -i $< -o $@ -b
+
+## Second optimization
+
+%.s11.opt1 : %.s11 ../match/optimize2$(EXE)
 	../match/optimize2 -i $< -o $@ -b
 
-%.s11 : %.s10 ../opt/const-prop$(EXE)
+%.s11.opt2 : %.s11.opt1 ../opt/const-prop$(EXE)
 	../opt/const-prop -i $< -o $@ -b
 
-%.s11.opt1 : %.s11 ../c/canonicalize$(EXE)
+%.s11.opt3 : %.s11.opt2 ../c/canonicalize$(EXE)
 	../c/bound-unbound-vars -i $< -o $@ -b
 
-%.s11.dve : %.s11.opt1 ../opt/dead-var-elim$(EXE)
+%.s11.opt4 : %.s11.opt3 ../opt/dead-var-elim$(EXE)
 	../opt/dead-var-elim -i $< -o $@ -b
 
-%.s11.opt : %.s11.dve ../match/optimize2$(EXE)
+%.s11.opt : %.s11.opt4 ../match/optimize2$(EXE)
 	../match/optimize2 -i $< -o $@ -b
-
-# PRETTY-PRINTING ####################################################
-
-%.txt: % $(STRATEGO_FRONT)/bin/pp-stratego
-	$(STRATEGO_FRONT)/bin/pp-stratego -a -i $< -o $@
-
-%.atxt : %
-	$(ATERM)/bin/baffle -wt -i $< -o $@
-
-%.ttxt : %
-	$(ATERM_TOOLS)/bin/pp-aterm -i $< -o $@
 
 # BACK-END ###########################################################
 
@@ -128,8 +147,9 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 
 # C COMPILATION #####################################################
 
+
 %.o: %.c
-	time $(CC) $(CINCL) -g -c $< -O4
+	time $(CC) $(DEFS) $(CINCL) -g -c $< -O4
 
 %.bin : %.o 
 	time $(CC) -g $< -o $@ $(SCLibs)
@@ -153,7 +173,7 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 # USING INSTALLED SC ###############################################
 
 %.ibin: %.r
-	../sc/strc -i $< -o $@ --verbose 3 --output-optimized --output-canonical
+	../sc/strc -O 4 -i $< -o $@ --verbose 3 --output-optimized --output-canonical
 
 %.irun: %.ibin
 	./$<

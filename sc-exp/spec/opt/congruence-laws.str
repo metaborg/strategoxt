@@ -7,6 +7,9 @@ rules
     Cong(f, ss) -> <Mapp2> Match(Op(f, ts))
     where <map(\ Match(t) -> t \ + \ Id -> Wld \ )> ss => ts
 
+  MatchingCongruence :
+    Cong(f, []) -> Match(Op(f, []))
+
   TransformingCongruence :
     Cong(f, ss) -> 
     Scope([a | <conc>(xs, ys)], 

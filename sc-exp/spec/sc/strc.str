@@ -133,6 +133,7 @@ strategies
 	; olevel4(dead-def-elim)
 
         ; olevel4(optimize2)
+        ; define-congruences
         ; olevel4(const-prop; bound-unbound-vars; dead-var-elim)
         ; olevel4(optimize2)
 
@@ -176,6 +177,9 @@ strategies
 
   optimize2 = 
     xtc-transform(!"optimize2", !["-b" | <pass-verbose> ])
+
+  define-congruences = 
+    xtc-transform(!"define-congruences", !["-b" | <pass-verbose> ])
 
   stratego-of = 
     xtc-transform(!"Stratego-Optimized-Format", !["-b" | <pass-verbose> ])

@@ -34,10 +34,14 @@ strategies
     ; map(inline-sdef)
 
   inline-sdef =
-    rec x({| InlineCall :
-             (UndefineSDef <+ repeat(InlineCall0 <+ InlineCall));
+    rec x({| InlineCall, InlineCall0 :
+             (UndefineSDef <+ DeclareInline <+ repeat(InlineCall0 <+ InlineCall));
 	     all(x)
           |})
+
+  DeclareInline = 
+    ?Let(defs, s)
+    ; where(<map(local-inlinable(!s); AddSDef)> defs)
 
   UndefineSDef =
     ?SDefT(f,_,_,_);
@@ -89,15 +93,23 @@ strategies
   inlineable = 
     //debug(!"inlineable?: ");
     SDefT(not("main_0_0"); ?f, id, id
-         , where(not(oncetd(?CallT(SVar(f),[],[])))); body-to-inline)
+         , where(not(oncetd(?CallT(SVar(f),_,_)))); body-to-inline)
     // ; where(<not(fetch(?f))> dont-inline)
     // ; where(<debug(!"inlineable: ")> f )
+
+  local-inlinable(s1) =
+    ?SDefT(f, _, _, s2)
+    ; where( 
+	<not(oncetd(?CallT(SVar(f),_,_)))> s2 // not recursive
+        ; <leq>(<occurrences(?CallT(SVar(f),_,_))> <s1>, 1) // used at most once
+      )
 
   body-to-inline = 
     rec x(
         Id
 	+ Fail
 	+ CallT(SVar(id),id,id)
+	+ PrimT(SVar(id),id,id)
 	+ Build(id)
 	+ Match(id)
 	+ Seq(Match(id), id)
@@ -108,6 +120,7 @@ strategies
 	+ Choice(x, x)
 	+ LChoice(x, x)
 	+ GuardedLChoice(x, x, x)
+        + Rec(id, id)
     );
     where(<leq>(<term-size>, 50))
 

@@ -1,3 +1,30 @@
+2003-07-27  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/opt/stratego-laws.str: Moved BuildMatch to basic
+	simplification.  CopyPropagation and NoEffect are obsolete.
+
+	* spec/match/compile-match.str: Separate definition of congruences
+	from standard simplifications into a separate component. Depending
+	on where this component is called in the compilation pipeline,
+	different effects are achieved. Currently included *after* inliner
+	to ensure that congruences are inlined.
+
+	* spec/sc/strc.str: Call define-congruences component after
+	inlining, but before pattern mach compilation.
+
+	* spec/opt/inlining.str: Inlining of local definitions (applicable
+	especially after pattern match compilation when continuations of
+	pattern matches are factored out to prevent duplication).
+
+	* spec/opt/dead-def-elim.str: Delete local definitions if
+	they are dead. (after inlining them)
+	
+	* spec/opt/const-prop.str: Treat congruences in constant
+	propagation.
+
+	* spec/opt/build-match-laws.str: Rule NoEffect is subsumed by
+	BuildMatch. Primitive cancels build. Wildcard is unit in _@t.
+
 2003-07-26  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/opt/build-match-laws.str: Simplify sequences of builds and

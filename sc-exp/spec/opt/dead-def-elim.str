@@ -3,7 +3,7 @@ imports Stratego stratlib lib pack-graph
 strategies
 
   dead-def-elim-io = 
-    iowrap(Specification([id,Strategies(dead-def-elim)]))
+    iowrap(Specification([id,Strategies(dead-def-elim; map(local-dead-def-elim))]))
 
   dead-def-elim =
     !(["main_0_0"], <map(RegisterDefinition)>, [])
@@ -14,4 +14,25 @@ strategies
     ; rules(
         Definition : (f, _) -> sdef
       )
+  
+  local-dead-def-elim =
+    rec x({| DefDead :
+	     try(DeclareDead <+ DeclareNotDead)
+	     ; all(x)
+	     ; try(DeleteDeadDefinitions)
+          |})
 
+  DeclareDead =
+    Let(map(DeclareDefDead), id)
+
+  DeclareDefDead =
+    ?SDefT(f, _, _, _)
+    ; rules(DefDead : SDefT(f, _, _, _) -> ())
+
+  DeleteDeadDefinitions =
+     Let(filter(not(DefDead)), id)
+
+  DeclareNotDead =
+     ?CallT(SVar(f), _, _)
+     ; override rules(DefDead : SDefT(f, _, _, _) -> Undefined)
+  

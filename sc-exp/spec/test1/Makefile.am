@@ -68,7 +68,7 @@ CLEANFILES = \
 
 EXTRA_DIST = $(wildcard *.r) make-rules io-test*.in
 
-#include $(top_srcdir)/share/Stratego.Make
+include $(top_srcdir)/Makefile.xt
 
 include make-rules
 

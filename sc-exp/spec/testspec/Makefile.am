@@ -30,3 +30,5 @@ EXTRA_DIST = $(wildcard *.r) $(wildcard *.res)
 check: $(subst .r,.bin,$(wildcard *-main.r))
 
 bootinstall:
+
+DEFS = -DPACKAGE_NAME=\"$(PACKAGE_NAME)\" -DPACKAGE_TARNAME=\"$(PACKAGE_TARNAME)\" -DPACKAGE_VERSION=\"$(PACKAGE_VERSION)\" -DPACKAGE_STRING=\"$(PACKAGE_STRING)\" -DPACKAGE_BUGREPORT=\"$(PACKAGE_BUGREPORT)\" -DPACKAGE=\"$(PACKAGE)\" -DVERSION=\"$(VERSION)\" -DXTC_REPOSITORY\(\)=ATmakeString\(\"$(XTC_REPOSITORY)\"\)

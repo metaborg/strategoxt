@@ -17,12 +17,21 @@ strategies
    => Let([Fdec("f",["x"],Call("h",[Var("x")])),Vdec("y",Var("z"))],
           [Call("h",[Var("z")])])
 
-  inline = 
+  inlineDEBUG = 
   rec i({| Subst, Inline :
            debug(!"inline a: "); Declare; debug(!"inline b: "); all(i); debug(!"inline c: ")
            <+ debug(!"inline d: "); Inline; debug(!"inline da: "); i; debug(!"inline db: ")
 	   <+ debug(!"inline e: "); Subst; debug(!"inline ea: "); i; debug(!"inline b: ")
            <+ debug(!"inline f: ");  debug(!"inline fa: "); all(i); debug(!"inline fb: ")
+        |}
+  )
+ 
+  inline = 
+  rec i({| Subst, Inline :
+           Declare; all(i)
+           <+ Inline; i
+	   <+ Subst; i
+           <+ all(i)
         |}
   )
  
@@ -43,8 +52,7 @@ strategies
     rules(
       Inline : 
         Call(f,es) -> e
-        where debug(!"Inline: ")
-	    ; <debug(!"Inline: "); zip({?(x,e); rules(Subst : Var(x) -> e)})> (xs, es)
+        where <zip({?(x,e); rules(Subst : Var(x) -> e)})> (xs, es)
     )
-    ; where(<table-getlist> "Inline"; debug(!"Inline rule: "))
+    ; where(<table-getlist> "Inline")
 

@@ -9,7 +9,7 @@ SCFLAGS	= -I $(STRATEGO_FRONT)/share/stratego-front \
 	  -I $(srcdir)/../lib \
 	  -I $(srcdir)/../front
 
-libexec_PROGRAMS = optimize1 optimize2 compile-match desugar-case
+libexec_PROGRAMS = optimize1 optimize2 compile-match desugar-case define-congruences
 #check_PROGRAMS 	 = matrix-test
 
 CLEANFILES 	 = *.dep $(TESTS) 
@@ -31,3 +31,6 @@ optimize1.c: compile-match.str
 
 optimize2.c: compile-match.str
 	$(SCOMPILE) $(SCFLAGS) -i $< --main optimize2-comp -o optimize2.c -c
+
+define-congruences.c: compile-match.str
+	$(SCOMPILE) $(SCFLAGS) -i $< --main define-congruences-comp -o $@ -c
