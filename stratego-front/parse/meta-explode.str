@@ -1,6 +1,6 @@
 \begin{code}
 module meta-explode
-imports lib stratego
+imports lib stratego-ext
 strategies
 
   meta-explode = 
