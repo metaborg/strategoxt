@@ -1,3 +1,64 @@
+2003-08-13  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/sc/strc.str: Reorganized specification; more compact
+	definition of components; cluster components together if
+	same optimization level.
+
+	* spec/sc/strc-options.str: Turn on warnings by default (in
+	order to force test).
+
+	* spec/front/spec-to-sdefs.str: Use new signature for sorts
+
+	* spec/opt/simplify[1,2,3].str: Invoke simplifier; with slight
+	variations.
+	
+	* spec/opt/stratego-laws.str: Apply simplifications using
+	innermost. Moved most useful rules to Simplify and Optimize.
+	Scope narrowing and cleaning is not useful anymore since these
+	were meant for constant propagation, which is now done much better
+	by the const-prop component.
+
+	* spec/opt/opt-lib.str: Utilities for optimization components; 
+	currently only apply-to-bodies/1
+
+	* spec/opt/lift-definitions.str: Don't simplify
+
+	* spec/opt/inlining.str: Inline congruences before their
+	expansion.
+
+	* spec/opt/define-congruences.str: simplify after defining
+	congruences
+
+	* spec/opt/build-match-laws.str: Define all rules directly on
+	sequences instead of factoring them out. This entails some
+	duplication since each rule should be defined for Seq(s1,s2) and
+	for Seq(s1,Seq(s2,s3)). However, this formulation integrates
+	better with innermost normalization, which is now used for
+	simplification.
+
+	* spec/opt/dead-var-elim.str: Don't remove bound/ubound
+	annotations; leave this to simplify3
+	
+	* spec/opt/bound-unbound-vars.str: Avoid exponential behaviour
+	caused by intersecting at all definitions in a let. The effect
+	that this has is to undefine MarkVar for variables that are
+	bound in some definition, but not in another. To keep the
+	analysis correct, all such variables are undefined prior
+	to propagation in the definitions and body of a let. This
+	makes the analysis less optimal, but the effect is probably
+	small. A much better analysis ('inter-procedural') would
+	be needed anyway to get optimal results.
+
+	* spec/match/compile-match.str: Factored out definitions of
+	simplification components and moved them to ../opt/. Expand id to
+	\ x -> x \ prior to pattern match compilation. This makes it
+	possible to incorporate the default case in applying a set of
+	rules, as in try(A + B + C), thus avoiding a <+ which is locally
+	resolvable. That is, the choice is pushed into the continuations
+	of the matches, where they can hopefully be resolved, but at least
+	less often. For instance, !t <+ s reduces to !t if all variables
+	in t are bound.
+	
 2003-08-12  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/sig/Stratego-Normal-Format.str: Removed dead code
