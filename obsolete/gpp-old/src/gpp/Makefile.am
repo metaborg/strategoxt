@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.8 2001/11/02 21:06:46 mdejonge Exp $
+# $Id: Makefile.am,v 1.9 2001/11/22 08:09:23 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -56,7 +56,7 @@ CLEANFILES  += ast2abox asfix2abox ppgen abox2html abox2latex \
                no_generation_for_bracket_function_check
 
 # Additional flags for the Stratego compiler
-SCFLAGS     += -I ${ASFIXTOOLS}/share/asfix-tools --main $@
+SCFLAGS     += -I ${ASFIX_TOOLS}/share/asfix-tools --main $@
 
 % : %.sh.src Makefile
 	sed 's@__PREFIX__@$(prefix)@g;\
@@ -71,7 +71,7 @@ gpp.Makefile : gpp.Makefile.src Makefile
 	     s@__ABOX2LATEX__@$(prefix)@g;\
 	     s@__ABOX2HTML__@$(prefix)@g;\
 	     s@__SGLR__@$(SGLR)@g;\
-	     s@__ASFIXTOOLS__@$(ASFIXTOOLS)@g;\
+	     s@__ASFIXTOOLS__@$(ASFIX_TOOLS)@g;\
 	     s@__PKGDATA__@$(pkgdatadir)@g'\
 	       < $< > $@
 %.tbl : %.def

@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.3 2001/09/18 15:12:17 jvisser Exp $
+# $Id: Makefile.am,v 1.4 2001/11/22 08:16:01 mdejonge Exp $
 
 include $(srcdir)/../templates/make_rules
 include $(srcdir)/../templates/make_rules.stratego
@@ -33,7 +33,7 @@ TESTS        = sdf_rmlabel_check sdf_label_check
 
 CLEANFILES  += sdf_rmlabel_check sdf_label_check
 
-SCFLAGS     += -I $(ASFIXTOOLS)/share/asfix-tools \
+SCFLAGS     += -I $(ASFIX_TOOLS)/share/asfix-tools \
                -I $(srcdir)/../lib --main $@
 
 sdf_label_check_prog    = sdf-label

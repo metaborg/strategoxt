@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.3 2001/09/18 15:12:16 jvisser Exp $
+# $Id: Makefile.am,v 1.4 2001/11/22 08:15:59 mdejonge Exp $
 
 include $(srcdir)/../templates/make_rules
 include $(srcdir)/../templates/make_rules.stratego
@@ -34,7 +34,7 @@ EXTRA_DIST  += KNOWN-BUGS
 TESTS        = sdf_cons_check sdf_cons_injections_check 
 
 SCFLAGS     += -I $(srcdir)/../lib \
-               -I $(ASFIXTOOLS)/share/asfix-tools --main $@
+               -I $(ASFIX_TOOLS)/share/asfix-tools --main $@
 
 CLEANFILES  += sdf_cons_check sdf_cons_injections_check
 

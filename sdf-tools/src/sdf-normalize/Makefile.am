@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.6 2001/09/18 15:12:18 jvisser Exp $
+# $Id: Makefile.am,v 1.7 2001/11/22 08:16:01 mdejonge Exp $
 
 include $(srcdir)/../templates/make_rules
 include $(srcdir)/../templates/make_rules.stratego
@@ -47,7 +47,7 @@ CLEAN_FILES +=\
 
 SCFLAGS     += -I $(srcdir)/../lib \
 	       -I $(srcdir)/../sdf-bracket \
-               -I $(ASFIXTOOLS)/share/asfix-tools \
+               -I $(ASFIX_TOOLS)/share/asfix-tools \
 	       --main $@
 
 sdf_normalize_check_prog    = sdf-normalize

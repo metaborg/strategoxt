@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.5 2001/09/18 15:12:16 jvisser Exp $
+# $Id: Makefile.am,v 1.6 2001/11/22 08:16:00 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -43,7 +43,7 @@ TESTS        = sdf-doc-check
 EXTRA_DIST  += sdf-doc-check 
 
 # Additional flags for the Stratego compiler
-SCFLAGS      += -I $(ASFIXTOOLS)/share/asfix-tools \
+SCFLAGS      += -I $(ASFIX_TOOLS)/share/asfix-tools \
                 -I $(srcdir)/../lib -I $(srcdir)/../sdf-wf \
-                -I $(GRAPHTOOLS)/share/graph-tools
+                -I $(GRAPH_TOOLS)/share/graph-tools
 

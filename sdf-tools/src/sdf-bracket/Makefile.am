@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.3 2001/09/18 15:12:15 jvisser Exp $
+# $Id: Makefile.am,v 1.4 2001/11/22 08:15:59 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -41,7 +41,7 @@ TESTS        = sdf_bracket_check
 
 CLEANFILES  += sdf_bracket_check
 # Additional flags for the Stratego compiler
-SCFLAGS     += -I $(ASFIXTOOLS)/share/asfix-tools --main $@ 
+SCFLAGS     += -I $(ASFIX_TOOLS)/share/asfix-tools --main $@ 
 
 sdf_bracket_check_prog    = sdf-bracket
 sdf_bracket_check_input   = data/sdf-bracket.sdf.af

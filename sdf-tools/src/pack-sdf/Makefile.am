@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.5 2001/09/18 15:12:15 jvisser Exp $
+# $Id: Makefile.am,v 1.6 2001/11/22 08:15:59 mdejonge Exp $
 
 include $(srcdir)/../templates/make_rules
 include $(srcdir)/../templates/make_rules.stratego
@@ -35,7 +35,7 @@ TESTS        = pack_sdf_check
 
 CLEAN_FILES += pack_sdf_check
 
-SCFLAGS     += -I $(srcdir)/../lib -I $(ASFIXTOOLS)/share/asfix-tools
+SCFLAGS     += -I $(srcdir)/../lib -I $(ASFIX_TOOLS)/share/asfix-tools
 
 pack_sdf_check_prog     = pack-sdf
 pack_sdf_check_switches = -I data -dep data/syntax-test.def -o /dev/null
