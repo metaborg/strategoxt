@@ -2,37 +2,41 @@ StrategoXT 0.11 -- released July 16, 2004
 
 ---------++ Summary of Changes
 
-   * Separate compilation ready for use
+   * Separate compilation is now ready for use
 
-   * Many deployment improvements
-     * Cygwin and Mac OS X Support (really!)
-     * Reduced size of distributions
-     * Check dependencies at configure-time
+   * Cygwin and Mac OS X Support (really!)
 
-   * XML Support
+   * Various deployment improvements
+      * Reduced the size of distributions
+      * Check dependencies during configure
 
-   * Upgrade of SDF packages
+   * Upgrade of SDF packages (pgen 2.2)
 
-   * New tool: parenthesize generator, improves the support for the
-     implementation of pretty-printers.
+   * Support for XML Processing
+      * Generate or transform XML
+      * Interoperability with XML tools
 
-   * Global choice operator is now much easier to use. You won't need
-     a separate StrategoXT installation to use the global choice.
+   * Various new or improved tools:
+      * pack-sdf can now include modules from syntax definitions
+      * sdf2parenthesize improves the support for implementing
+        pretty-printers
 
    * New strategies in the Stratego library:
-      * stateful sets
-      * filtering text files
-      * new-name: generate unique names with a prefix
+      * generate unique names with a prefix (Arthur van Dam)
+      * stateful sets (Martin Bravenboer)
+      * make (temporary) directories (Eelco Visser)
+      * filtering text files (Eelco Visser)
+
+   * Various improvements of XTC:
+      * Construction of build-time XTC repositories
+      * Compilatgion of XTC tools with stand-alone strc
+
+   * Global choice operator is now much easier to use.
 
    * Many bug-fixes, e.g.
       * fixed a bug that causes crashes in large XTC tools
       * improvements of new dynamic rules
       * mutual recursive lets
-
-   * Related releases:
-      * JavaFront
-      * StrategoShell (interpreter!)
-      * Tiger
 
 ---------++ Separate Compilation
 
@@ -45,17 +49,122 @@ StrategoXT 0.11 -- released July 16, 2004
 
    * Size of distribution
 
+   * Can be used with stand-alone strc.
+
+   (Eelco Visser and Martin Bravenboer)
+
 ---------++ Cygwin and Mac OS X Support
 
----------++ XML Support
+   * Mac OS X: stand-alone strc can used
+
+   * Fixed problem in the implementation of some
+
+   * Separate compilation works
+
+   * Support has completely been verified (including check)
+
+   * Binary distributions available
+
+   * Cygwin: separate compilation not supported
+
+   * Binary distributions available
+
+   (Eelco Dolstra, Martin Bravenboer and Dick Eimers)
+
+---------++ Various Deployment Improvements
+
+   * Reduced size of distributions
+
+   * No bootstrapped of check files
+
+   * No parse tables
+
+   * Reduced size of C sources due to separate compilation
+
+   * Check dependencies at configure-time: aterm (ATerm-gcc) and
+     packages part of the sdf2-bundle.
+
+   * Implemented as macros in AutoXT. You can use them in your own
+     packages.
+
+   (Martin Bravenboer)
 
 ---------++ Upgrade of SDF Packages
 
+   * New SDF2 Bundle, includes ASF Library.
+
+   * New SDF feature: declare context-free start-symbols.
+
+   (Martin Bravenboer)
+
+---------++ Support for XML Processing
+
+   * Parse XML
+
+   * Transform XML
+
+   * Generating well-formed XML in Stratego. XHTML.
+
+   (Martin Bravenboer)
+
+---------++ New and Improved Tools
+
+   * pack-sdf allows include from syntax definitions.
+
+   * sdf2parenthesize: improves the support for implementing
+        pretty-printers
+
+   * Various new or improved tools:
+      * pack-sdf can now include modules from syntax definitions
+      * sdf2parenthesize improves the support for implementing
+        pretty-printers
+
+---------++ New strategies in the Stratego library:
+
+   * generate unique names with a prefix (Arthur van Dam)
+
+   * stateful sets (Martin Bravenboer)
+
+   * make (temporary) directories (Eelco Visser)
+
+   * filtering text files (Eelco Visser)
+
+---------++ Various improvements of XTC:
+
+   * Construction of build-time XTC repositories
+
+   * Compilatgion of XTC tools with stand-alone strc
+
+   (Martin Bravenboer)
+
 ---------++ Global choice operator
 
+   * Global choice operator is now much easier to use.
+
    * Improved support for the global choice operator
-      * See howto
-      * Supported by strc
+
+   * cpl-stratego is now an add-on to StrategoXT: you can just install
+     it as an optional feature of your StrategoXT solution.
+
+   * Supported by stand-alone strc
+
+   * See howto
+
+   (Martin Bravenboer)
+
+---------++ Many bug-fixes
+
+   * fixed a bug that causes crashes in large XTC tools
+
+   * improvements of new dynamic rules
+
+   * mutual recursive lets
+
+---------++ Detailed List of Issues
+
+The full list of issues closed in this release is available at:
+
+   * http://www.stratego-language.org/Stratego/StrategoRelease010Issues
 
 ---------++ Download and Installation
 
@@ -83,4 +192,15 @@ issues to see if a report about the problem was already submitted.
 
 Developments, beta tests, and bug fixes were carried out by
 
-   * ...
+   * Martin Bravenboer
+   * Arthur van Dam
+   * Valentin David
+   * Eelco Dolstra
+   * Dick Eimers
+   * Kyle Ross
+   * Clement Vasseur
+   * Rob Vermaas
+   * Eelco Visser
+
+Thanks a lot to the people working on the Transformers project. Their
+immediate feedback to changes in StrategoXT is very useful.
