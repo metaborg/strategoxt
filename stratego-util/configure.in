@@ -1,6 +1,8 @@
 AC_INIT([stratego-util],[0.9.1],[stratego-bugs@cs.uu.nl])
 AM_INIT_AUTOMAKE
 
+USE_XT_PACKAGES
+
 AC_PROG_CC
 AC_PROG_INSTALL
 
