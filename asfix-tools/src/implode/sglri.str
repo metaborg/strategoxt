@@ -87,10 +87,16 @@ strategies
     ; xtc-transform-always(id, report-parse-error-summary(|input)
       | "sglr", ["-p", tbl | args ])
 
-  xtc-transform-always(c, f|tool, args) =
+  xtc-transform-always(c, f| tool, args) =
     ?FILE(f)
     ; where(<xtc-new-file> f => g)
     ; <conc> (args, ["-i", f, "-o", g])
+    ; if xtc-command-silent(|tool) then <c> FILE(g) else <f> FILE(g) end
+
+  xtc-transform-always(c, f | tool, args) =
+    ?stdin()
+    ; where(xtc-new-file => g)
+    ; <conc> (args, ["-o", g])
     ; if xtc-command-silent(|tool) then <c> FILE(g) else <f> FILE(g) end
 
   xtc-command-silent(|tool) =
