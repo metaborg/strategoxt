@@ -62,7 +62,7 @@ docdatadir  	= ${datadir}/doc/${PACKAGE}
 	$(SCOMPILE) $(STRINCLUDES) $(SCFLAGS) -i $< -o $@ -c
 
 .str.rtree :
-	$(PARSESTRATEGO) $(STRINCLUDES) -i $< -o $@ --verbose 0
+	$(PARSESTRATEGO) $(STRINCLUDES) -i $< -o $@ 
 
 .rtree.c : 
 	$(SCOMPILE) $(STRINCLUDES) $(SCFLAGS) -i $< -o $@ -c
