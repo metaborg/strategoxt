@@ -8,15 +8,23 @@ imports Sdf2-Syntax StrategoRenamed
 exports
   context-free syntax
 
-    "|[" Section  "]|"   -> StrategoTerm {cons("ToTerm")}
+        "|[" Section  "]|"   -> StrategoTerm {cons("ToTerm")}
+    "s" "|[" Section  "]|"   -> StrategoTerm {cons("ToTerm")}
 
-    "|[" Grammar  "]|"   -> StrategoTerm {cons("ToTerm")}
-    "|[" Attributes "]|" -> StrategoTerm {cons("ToTerm")}
+        "|[" Grammar  "]|"   -> StrategoTerm {cons("ToTerm")}
+    "G" "|[" Grammar  "]|"   -> StrategoTerm {cons("ToTerm")}
 
-    "|[" Production  "]|" -> StrategoTerm {cons("ToTerm"), prefer}
-    "|[" Productions "]|" -> StrategoTerm {cons("ToTerm")}
+        "|[" Attributes "]|" -> StrategoTerm {cons("ToTerm")}
+    "$" "|[" Attributes "]|" -> StrategoTerm {cons("ToTerm")}
 
-    "|[" Symbol      "]|" -> StrategoTerm {cons("ToTerm")}
+        "|[" Production  "]|" -> StrategoTerm {cons("ToTerm"), prefer}
+    "p" "|[" Production  "]|" -> StrategoTerm {cons("ToTerm")}
+
+         "|[" Productions "]|" -> StrategoTerm {cons("ToTerm")}
+    "p*" "|[" Productions "]|" -> StrategoTerm {cons("ToTerm")}
+
+        "|[" Symbol      "]|" -> StrategoTerm {cons("ToTerm")}
+    "A" "|[" Symbol      "]|" -> StrategoTerm {cons("ToTerm")}
 
     "~"     StrategoTerm   -> Symbol {cons("FromTerm")}
     "~sym:" StrategoTerm   -> Symbol {cons("FromTerm")}
@@ -41,6 +49,28 @@ exports
     "p" [0-9\']*     -> Production
     "p" [0-9\']* "*" -> Production*
     "p" [0-9\']* "+" -> Production+
+
+  variables %% section
+
+    "L" -> Literal
+
+  variables %% section 8.1.1
+
+    "g" [0-9\']*      -> Group
+    "gg" [0-9\']* "*" -> {Group ">"}*
+    "gg" [0-9\']* "+" -> {Group ">"}+
+
+    "pr" [0-9\']*     -> Priority
+    "pr" [0-9\']* "*" -> {Priority ","}*
+    "pr" [0-9\']* "+" -> {Priority ","}+
+
+    "as" [0-9\']*     -> Associativity
+
+  variables %% section 8.4.1
+
+    "restr" [0-9\']*     -> Restriction
+    "restr" [0-9\']* "*" -> Restriction*
+    "restr" [0-9\']* "+" -> Restriction+
 
   variables %% section 9.3.1
 
