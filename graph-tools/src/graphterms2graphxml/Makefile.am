@@ -7,6 +7,7 @@ LDADD           += $(SSL_LIBS)
 
 BOOTCLEANFILES	 = graph-term2GraphXML.c
 CLEANFILES	 = $(wildcard *.dep)
+EXTRA_DIST       = $(wildcard *.str) 
 
 STRINCLUDES = \
   -I $(srcdir)/../graphxml \

@@ -10,6 +10,7 @@ LDADD           += $(SSL_LIBS)
 
 BOOTCLEANFILES 	 = GraphXML-analysis.c
 CLEANFILES	 = $(wildcard *.dep)
+EXTRA_DIST       = $(wildcard *.str) 
 
 # TESTS      	 = program-check
 

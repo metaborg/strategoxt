@@ -12,6 +12,7 @@ TESTS        	 = graphxml2dot_check
 
 BOOTCLEANFILES   = graphxml2dot_check.c GraphXML2dot.c
 CLEANFILES	 = $(wildcard *.dep)
+EXTRA_DIST       = $(wildcard *.str) 
 
 STRINCLUDES = \
   -I $(srcdir)/../graphxml \
