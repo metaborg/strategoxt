@@ -15,7 +15,7 @@
  *    iter-star(bracket-symbol(alt(sort("A"),sort("B"))))
  */
 module sdf-bracket
-imports lib Regular-Sdf-Syntax Bracket-Symbol asfix
+imports lib Sdf2-Syntax Bracket-Symbol AsFix
 
 strategies
 

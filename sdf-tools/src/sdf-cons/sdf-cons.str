@@ -58,9 +58,6 @@ strategies
     end
 
   uniquify-modular =
-    Definition(map(uniquify-module))
-
-  uniquify-modular =
     definition(map(uniquify-module))
 
   uniquify =
