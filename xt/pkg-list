@@ -16,17 +16,16 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 #
-# $Id: Makefile.am,v 1.2 2000/03/27 15:52:41 mdejonge Exp $
+# $Id: pkg-list,v 1.1 2000/03/27 15:52:41 mdejonge Exp $
+#
 
-DIST_SUBDIRS = aterm asc-support sglr pgen stratego gb gt #gpp
-EXTRA_DIST   = SOFTWARE
+# This file lists name, version, and location of all components 
+# of an XT distribution.
 
-# We need at least one subdir to be defined such that automake will generate
-# the code for traversing subdirectories
-SUBDIRS=aterm
-
-
-all:
-	for subdir in $(DIST_SUBDIRS); do \
-	   ( cd $$subdir && $(MAKE) install ) \
-	done
+aterm,0.23,cvs:/ufs/gipe/CVS
+asc-support,0.2,cvs:/ufs/gipe/CVS
+pgen,0.1,cvs:/ufs/gipe/CVS
+sglr,2.28,cvs:/ufs/gipe/CVS
+stratego,0.4.10,http://www.cs.uu.nl/~visser/ftp/stratego-0.4.10.tar.gz
+gb,0.1.1,cvs:/ufs/gipe/CVS
+gt,0.1.1,cvs:/ufs/gipe/CVS

@@ -1,21 +1,44 @@
-AC_INIT
+dnl XT -- Program Transformation tools
+dnl Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
+dnl
+dnl This program is free software; you can redistribute it and/or modify
+dnl it under the terms of the GNU General Public License as published by
+dnl the Free Software Foundation; either version 2, or (at your option)
+dnl any later version.
+dnl
+dnl This program is distributed in the hope that it will be useful,
+dnl but WITHOUT ANY WARRANTY; without even the implied warranty of
+dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+dnl GNU General Public License for more details.
+dnl
+dnl You should have received a copy of the GNU General Public License
+dnl along with this program; if not, write to the Free Software
+dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+dnl 02111-1307, USA.
+dnl
+dnl $Id: configure.in,v 1.2 2000/03/27 15:52:41 mdejonge Exp $
+
+AC_INIT(Makefile.in)
 AM_INIT_AUTOMAKE(xt,0.1)
 
-AC_ARG_WITH(aterm, [  --with-aterm=DIR        ATerm-library is in DIR], ATERM=${withval},ATERM=${prefix})
+AC_REVISION($Id: configure.in,v 1.2 2000/03/27 15:52:41 mdejonge Exp $)
 
-AC_REVISION($Id: configure.in,v 1.1 2000/01/27 11:07:43 eelco Exp $)
-
-AC_PROG_CC
-AC_PROG_RANLIB
-
-AC_SUBST(PRODUCT)
-AC_SUBST(VERSION)
-AC_SUBST(ATERM)
-
-AC_CONFIG_SUBDIRS(aterm-0.20 gb asc-support gpp-v1.0b20 gt sglr stratego)
 
 AC_OUTPUT(
 	Makefile \
 	README \
-	asource/Makefile \
 )
+
+
+AC_CONFIG_PKG(aterm,       --with-all)
+AC_CONFIG_PKG(asc-support, --with-aterm=${prefix})
+AC_CONFIG_PKG(sglr,        --with-aterm=${prefix})
+AC_CONFIG_PKG(pgen,        --with-aterm=${prefix})
+AC_CONFIG_PKG(stratego,    --with-aterm=${prefix})
+AC_CONFIG_PKG(gb,          --with-aterm=${prefix} \
+                           --with-stratego=${prefix} \
+                           --with-gt=${prefix})
+AC_CONFIG_PKG(gt,          --with-aterm=${prefix} \
+                           --with-stratego=${prefix} \
+                           --with-gb=${prefix})
+dnl AC_CONFIG_PKG(gpp)
