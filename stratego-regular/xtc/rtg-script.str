@@ -84,3 +84,13 @@ rules
       ; write-to
       > file
 
+  eval-command :
+    (Include(cmds), file) ->
+      < read-from
+      ; RTG(Start(<union> (start, <id>)), ProdRules(<conc> (<id>, prod-rules)))
+      ; write-to
+      >  file
+
+        where <rtg-script-eval> cmds
+            ; read-from
+            ; ?RTG(Start(start), ProdRules(prod-rules))
