@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2002/09/17 16:38:01 eelco Exp $
+# $Id: Makefile.am,v 1.2 2002/09/18 09:51:16 eelco Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -44,7 +44,7 @@ pkgdata_DATA =
 # TESTS        = program-check
 
 # List all files that should be distributed here
-EXTRA_DIST    += $(wildcard *.r) $(wildcard *.sdf) $(wildcard *.pp)
+EXTRA_DIST    += $(wildcard *.r) $(wildcard *.sdf) $(wildcard *.pp) pp-term.sh.src
 
 % : %.sh.src Makefile
 	sed 's@__PREFIX__@$(prefix)@g;\
