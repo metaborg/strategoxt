@@ -1,3 +1,12 @@
+2002-11-19  Eelco Visser  <visser@acm.org>
+
+	* spec/*/*.r : renamed extension .r to .str for automake support
+	
+	* spec/*/*.c : added generated C files to enable usage of the
+	sc package in bootstrap mode
+	
+	* spec/Makefile.stratego : automake support for stratego
+
 2002-11-16  Eelco Visser  <visser@acm.org>
 
 	* spec/syn/Makefile.am: automake suffix rules for compilation of
