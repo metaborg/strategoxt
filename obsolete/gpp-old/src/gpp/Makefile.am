@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.4 2001/09/04 10:58:52 mdejonge Exp $
+# $Id: Makefile.am,v 1.5 2001/09/22 12:17:30 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -77,7 +77,7 @@ gpp.Makefile : gpp.Makefile.src Makefile
 # rule to generate imploded pretty-print tables
 %.pp.af : %.pp
 	@PATH=$(bindir):$(SGLR)/bin:$${PATH}; export PATH ;\
-	sglr -p ./pp-tables.tbl -i $< \
+	sglr -2 -p ./pp-tables.tbl -i $< \
 	   | implode-asfix -S -o $@ 
 
 no_generation_for_bracket_function_check_prog    = Ppgen
