@@ -1,6 +1,8 @@
 2002-03-16  Eelco Visser  <visser@acm.org>
 
-	* src/tests/data/: Upgraded test inputs: TCons/Tnil -> (...)
+	* src/tests/data: new tests, regenerated test data
+
+	* src/abox2text/Abox2text.r, src/lib/pp-tables-io.r: refactoring
 
 2002-03-14  Eelco Visser  <visser@acm.org>
 

@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Abox2text.r,v 1.2 2001/12/20 15:16:39 mdejonge Exp $
+% $Id: Abox2text.r,v 1.3 2002/03/16 15:23:45 eelco Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
@@ -42,20 +42,21 @@ imports pp-tables lib Literal-lib
 
 strategies
 
-Abox2text = parse-options(  io-options )  => options;
-       (
-          need-help( usage )
-       <+
-          where(option-defined(?Output(outfile));<open-file>outfile <+ !stdout => outfile);
-          input-file;
-          (id, abox2text => b);!b; 
-          topdown( try(is-string;
-                   where(split(!outfile, \x -> [x] \); print )));
-          <print>(outfile, ["\n"]);
-          report-success
-       <+
-          report-failure
-       )
+  Abox2text = 
+    parse-options(  io-options )  => options;
+    (
+       need-help( usage )
+    <+
+       where(option-defined(?Output(outfile));<open-file>outfile <+ !stdout => outfile);
+       input-file;
+       (id, abox2text => b);!b; 
+       topdown(try(is-string; 
+                   where(!(outfile, [<id>]); print )));
+       <print>(outfile, ["\n"]);
+       report-success
+    <+
+       report-failure
+    )
 
 usage =
        where(option-defined(?Program(prog));
@@ -93,9 +94,9 @@ Abox-2-text =
    ; <string-length> hs => hsl
    ; !Pair(<filter(not([] + H([],[])))> xs, xpos)
    ; thread-map({s, xpos': 
-                 \ Pair(b, xpos) -> Pair(s, <add>(hsl, xpos'))
+                 \ (b, xpos) -> (s, <add>(hsl, xpos'))
                    where <Abox-2-text> (b, xpos) => (s, xpos')\ })
-   ; ?Pair(zs, xpos2)
+   ; ?(zs, xpos2)
    ; !(<separate-by(!hs)> zs, xpos2)
    ; try((not([]), \ xpos -> <subt> (xpos, hsl)\ ))
 
@@ -120,32 +121,32 @@ Abox-2-text =
       ; split(id, !xpos')
     )
 
-  Abox-2-text =
-    \ (S(s), xpos) -> (s, <add>(xpos, <string-length'(!xpos)>s)) \
+  Abox-2-text :
+    (S(s), xpos) -> (s, <add>(xpos, <string-length'(!xpos)>s))
 
-  Abox-2-text =
-    \ (C(_,[S(s)]), xpos) -> (s, xpos) \
+  Abox-2-text :
+    (C(_,[S(s)]), xpos) -> (s, xpos)
 
-  Abox-2-text =
-    \ (FBOX(_,b), xpos) -> <Abox-2-text>(b, xpos) \
+  Abox-2-text :
+    (FBOX(_,b), xpos) -> <Abox-2-text>(b, xpos)
 
-  Abox-2-text =
-    \ (HV(sopt, bs), xpos) -> <Abox-2-text> (H(sopt, bs), xpos) \
+  Abox-2-text :
+    (HV(sopt, bs), xpos) -> <Abox-2-text> (H(sopt, bs), xpos)
 
-  Abox-2-text =
-    \ (R(sopt, bs), xpos) -> <Abox-2-text> (H(sopt, bs), xpos) \
+  Abox-2-text :
+    (R(sopt, bs), xpos) -> <Abox-2-text> (H(sopt, bs), xpos) 
 
-  Abox-2-text =
-    \ (A(_,sopt, bs), xpos) -> <Abox-2-text> (V(sopt, <map-to-r-box>bs), xpos) \
+  Abox-2-text :
+    (A(_,sopt, bs), xpos) -> <Abox-2-text> (V(sopt, <map-to-r-box>bs), xpos) 
       
-  Abox-2-text =
-    \ (ALT( a1, a2), xpos) -> <Abox-2-text> (a1, xpos) \
+  Abox-2-text :
+    (ALT( a1, a2), xpos) -> <Abox-2-text> (a1, xpos)
 
-  Abox-2-text =
-    \ ([x], xpos) -> <Abox-2-text> (x, xpos) \
+  Abox-2-text :
+    ([x], xpos) -> <Abox-2-text> (x, xpos)
 
-  Abox-2-text =
-    \ ([], xpos) -> ("", xpos) \
+  Abox-2-text :
+    ([], xpos) -> ("", xpos)
 
 strategies
   // Make sure that all arguments of an A box are R boxes. Put boxes

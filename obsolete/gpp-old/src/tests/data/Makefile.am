@@ -18,10 +18,10 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/12/18 11:25:56 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2002/03/16 15:23:46 eelco Exp $
 
 TEST_SET = Opt-seq Opt-seq2 Opt-iter Opt-iter1 Iter-sep Iter-sep1 Iter-sep2 Iter-sep3 \
-	   Iter-sep-seq Iter-sep-seq2 Alt Alt2 Alt3 Seq Iter-seq Seq2 Seq3
+	   Iter-sep-seq Iter-sep-seq2 Alt Alt2 Alt3 Seq Iter-seq Seq2 Seq3 Or QLiteral
 
 EXTRA_DIST = tests.def tests.pp  \
 	     $(TEST_SET:%=%.trm) $(TEST_SET:%=%-asfix.in) $(TEST_SET:%=%-af.in)\
@@ -54,7 +54,7 @@ testsetclean:
 	   echo '$(top_builddir)/src/ast2abox/Ast2abox -p tests.pp.af -i ${srcdir}/$*-af.in -o $*.tested' ;\
 	   echo 'diff $*.tested ${srcdir}/$*.out' ;\
 	) > $@ && chmod +x $@
-	   
+
 %-asfix.in : 
 	PATH=$(SGLR)/bin:$${PATH} sglr -2 -s $* -p tests.tbl -i ${srcdir}/$*.trm \
 	| $(ASFIX_TOOLS)/bin/implode-asfix --lex --pt --list -o $@

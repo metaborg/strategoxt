@@ -51,5 +51,6 @@
    seq3.2:opt.1:seq                               -- KW["TO"] _1,
    iter-seq                                       -- _1,
    iter-seq.1:iter                                -- _1,
-   iter-seq.1:iter.1:seq                          -- _1 _2
+   iter-seq.1:iter.1:seq                          -- _1 _2,
+   or						  -- _1 "\\/" _2
 ]

@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: pp-tables-io.r,v 1.1 2001/12/18 11:25:31 mdejonge Exp $
+% $Id: pp-tables-io.r,v 1.2 2002/03/16 15:23:46 eelco Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
@@ -82,7 +82,7 @@ MakePPTerm =
           +
            ?SOpt(x,n); !SOpt(x, n)
           +
-           ?S( x ) ; !S(<de-quote;de-escape>x)
+           S(de-quote; de-escape)
           +
            ?selector(n, x ); !selector(<string-to-int>n, x )
            

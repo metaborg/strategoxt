@@ -1,0 +1,1 @@
+appl(prod([cf(opt(layout)),cf(sort("Or")),cf(opt(layout))],sort("<START>"),no-attrs),[layout([]),appl(prod([cf(sort("A")),cf(opt(layout)),lit("\\/"),cf(opt(layout)),cf(sort("B"))],cf(sort("Or")),attrs([term(cons("or"))])),["a",layout([" "]),lit("\\/"),layout([" "]),"B"]),layout(["\n"])])
