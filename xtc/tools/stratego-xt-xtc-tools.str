@@ -23,7 +23,7 @@ strategies
     xtc-transform(!"abox2text", pass-verbose)
 
   xtc-abox2text(width) =
-    xtc-transform(!"abox2text", <conc> (<width> (), <pass-verbose> ()))
+    xtc-transform(!"abox2text", <conc> (["--width", <width; int-to-string> ()], <pass-verbose> ()))
 
   xtc-parse-pp-table =
     xtc-transform(!"parse-pp-table")
@@ -76,5 +76,4 @@ strategies
   add-arg-flags =
        \ (_   , []    ) -> [] \
     <+ \ (flag, values) -> [flag | <<separate-by> (flag, <id>)> values ] \
-
 
