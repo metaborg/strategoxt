@@ -26,8 +26,7 @@ release() {
    pkg=$1
    version=$2
    new_version=$3
-
-
+  
    (cd $pkg
     make dist VERSION=${new_version}
     cp ${pkg}-${new_version}.tar.gz /tmp
@@ -72,14 +71,40 @@ update_deps() {
    done
 }
 
+get_name() {
+   grep AC_INIT $1 \
+   | sed 's/AC_INIT(//' \
+   | cut -d, -f 1
+}
+
+has_uncommitted_changed() {
+   pkg=$1
+   pkg_version=$2
+   
+   uncommitted=""
+   
+   if [ -d ${pkg}/CVS ]; then
+      uncommitted="`cvs -n update ${pkg}/ |grep '^M '`"
+   elif [ -d ${pkg}/.svn ]; then
+      echo;
+   fi
+   
+   if [ "a${uncommitted}" = "a" ]; then
+      return 1
+   else
+      return 0
+   fi
+}
+
+get_version() {
+   grep AC_INIT $1 \
+   | cut -d, -f2 | tr -d '[ ]' | sed 's/)$//'
+}
 # determine bundle name
-bundle_name="`grep AC_INIT configure.ac \
-            | sed 's/AC_INIT(//' \
-            | cut -d, -f 1`"
+bundle_name="`get_name ./configure.ac`"
 
 # determine bundle version
-bundle_version=`grep AC_INIT configure.ac \
-             | cut -d, -f2 | tr -d '[ ]' | sed 's/)$//'`
+bundle_version=`get_version ./configure.ac`
 
 # determine set of bundled packages
 bundled_pkgs=`awk -F, '{print ""$1"-"$2}' < pkg-list`
@@ -91,17 +116,29 @@ do
    pkg_version=`grep "^${pkg}," pkg-list | cut -d, -f2`
 
    # check whether package is in development mode
-   pkg_loc=`pkg-find -I ${DEVEL_REPO} -p ${pkg}-${pkg_version}`
-   if [ "a${pkg_loc}" = "a" ]; then
+   pkg_dev_loc=`pkg-find -I ${DEVEL_REPO} -p ${pkg}-${pkg_version}`
+   if [ "a${pkg_dev_loc}" = "a" ]; then
       echo "Package ${pkg} not in development mode." >&2 
       exit 1
    fi
    
-   # If so, remove its package definition from development repository
-   rm -f ${pkg_loc}
 
    # determine new package version
-   new_pkg_version=`awk "END{print ${pkg_version} + 0.1}" < /dev/null`
+   new_pkg_version=`get_version ${pkg}/configure.ac`
+
+   # check whether package already exists
+   pkg_loc=`pkg-find ${SEARCH_SWITCHES} -p ${pkg}-${new_pkg_version}`
+   if [ "a${pkg_loc}" != "a" ]; then
+      echo "Package ${pkg} with version ${new_pkg_version} already exists." >&2 
+      exit 1
+   fi
+
+   # Check if everything has been committed
+   if has_uncommitted_changed ${pkg} ${pkg_version} ;
+   then
+      echo "Uncommitted changes in ${pkg}. First commit." >&2
+      exit 1
+   fi
 
    # release the package
    release ${pkg} ${pkg_version} ${new_pkg_version}
@@ -111,6 +148,11 @@ do
    
    # add new package to set of packages to be bundled
    new_to_bundle="${new_to_bundle} ${pkg}-${new_pkg_version}"
+
+   # Package has been released, so we remove its package definition from
+   # development repository
+   rm -f ${pkg_dev_loc}
+
 done
 
 # determine full set of packages to be bundled
@@ -121,7 +163,7 @@ new_bundle="-p `echo ${bundled_pkgs} ${new_to_bundle} | sed 's/[ ]/ -p&/g'`"
   autobundle ${new_bundle} \
              -n ${bundle_name} \
              -v ${bundle_version} \
-             -I ${DEVEL_REPO} -I ${DEPLOY_REPO} \
+             -I ${DEVEL_REPO} ${SEARCH_SWITCHES} \
   | gunzip -c | tar xf - ${bundle_name}-${bundle_version}/pkg-list \
                           ${bundle_name}-${bundle_version}/configure.ac \
                           ${bundle_name}-${bundle_version}/configure

@@ -18,7 +18,7 @@ STRATEGO_PRG   = pkg-switch pkg-set
 bin_PROGRAMS   = $(STRATEGO_PRG) 
 
 # These scripts are still under development and will not yet get installed
-noinst_SCRIPTS    = pkg-edit.sh pkg-release.sh
+noinst_SCRIPTS    = pkg-edit.sh pkg-release.sh pkg-revert.sh
 
 # Additional flags for the Stratego compiler
 STRINCLUDES    = -I $(srcdir)/../shared -I $(top_builddir)/syntax
@@ -67,6 +67,10 @@ pkg-release.sh : pkg-release.sh.src
 	sed 's@__AUTOBUNDLE__@$(prefix)@g;\
              s@__GPP__@$(GPP)@g'\
 	< $<  > $@ \
+	&& chmod +x $@
+
+pkg-revert.sh : pkg-revert.sh.src
+	sed '' < $<  > $@ \
 	&& chmod +x $@
 
 # Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>

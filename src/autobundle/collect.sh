@@ -58,7 +58,7 @@ where
                              (default ./configure.ac)
   --pkg-list <pkg-list>      specifies package list file (default ./pkg-list)
   --force                    specifies that packages should always be
-                             retrieved even if they are already present
+                             retrieved even they are already present
   --help|-h                  displays this help
   pkg                        specifies the names of packages that should
                              be retrieved (by default all packages from
@@ -85,14 +85,15 @@ PKGS=                   # Empty package list
 # system, but save them in a specific  directoy (e.g., ${_pkg}-cvs)
 save_vcs () {
    _pkg=$1
+   fullname=`cd ${_pkg}; basename \`/bin/pwd\``
    if [ -d ./${_pkg}/CVS ]; then
       echo "A copy of the CVS checked out version of"\
            "${_pkg} is saved in ${_pkg}-cvs." >&2
-      mv ${_pkg} ${_pkg}-cvs
+      mv ${fullname} ${_pkg}-cvs
    elif [ -d ./${_pkg}/.svn ]; then
       echo "A copy of the SubVersion checked out version of"\
            "${_pkg} is saved in ${_pkg}-svn." >&2
-      mv ${_pkg} ${_pkg}-svn
+      mv ${fullname} ${_pkg}-svn
    fi
 }
 
@@ -103,15 +104,15 @@ restore_vcs() {
    # If we have already a saved CVS copy; rename it to
    # ${pkg}-${pkg_version} such that a cvs update command can be
    # performed.
-   if [ -d ${pkg}-${pkg_version}-cvs -a -d ${pkg}-${pkg_version}-cvs/CVS ]; then
+   if [ -d ${pkg}-cvs -a -d ${pkg}-cvs/CVS ]; then
       rm -fr ./${pkg}-${pkg_version}
-      mv ${pkg}-${pkg_version}-cvs ${pkg}-${pkg_version}
+      mv ${pkg}-cvs ${pkg}-${pkg_version}
    # If we have already a saved SubVersion copy; rename it to
    # ${pkg}-${pkg_version} such that a svn update command can be
    # performed.
-   elif [ -d ${pkg}-${pkg_version}-svn -a -d ${pkg}-${pkg_version}-svn/.svn ]; then
+   elif [ -d ${pkg}-svn -a -d ${pkg}-svn/.svn ]; then
       rm -fr ./${pkg}-${pkg_version}
-      mv ${pkg}-${pkg_version}-svn ${pkg}-${pkg_version}
+      mv ${pkg}-svn ${pkg}-${pkg_version}
    fi
 }
 
@@ -213,7 +214,7 @@ do_collect () {
 
       file://* | http://* | ftp://* )
          # Save cvs checked out versions
-         save_vcs ${pkg}-${pkg_version}
+         save_vcs ${pkg}
          
          protocol="`echo ${pkg_url} | cut -d: -f 1 | tr [:lower:] [:upper:]`"
 
@@ -277,12 +278,13 @@ do
    # trip trailing backslash from pkg_url
    pkg_url="`echo ${pkg_url} | sed 's|/$||'`"
 
-   # remove old link to pkg-version
-   rm -f "./${pkg}" 2>/dev/null
 
    # Obtain sources of software package
    do_collect "${pkg}" "${pkg_version}" "${pkg_url}" || exit 1
  
+   # remove old link to pkg-version
+   rm -f "./${pkg}" 2>/dev/null
+
    # Create link <pkg> to <pkg>-<version>
    ln -s "${pkg}-${pkg_version}" "${pkg}"
 

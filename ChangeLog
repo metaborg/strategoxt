@@ -1,3 +1,12 @@
+2004-04-22 Merijn de Jonge <mdejonge@cs.uu.nl>
+   * pbsd/pkg-revert.sh.src: new tool that undoes an edit operation, by
+     removing package definition from development repository and then
+     re-collects. The collect tool will save any uncommitted changes.
+   * pbsd/pkg-release.sh.src: only allow release if all changes have been
+     committed
+   * autobundle/collect.sh: no longer create copy pkg-version-cvs but,
+     pkg-cvs
+
 2004-04-21 Merijn de Jonge <mdejonge@cs.uu.nl>
    * pbsd/pkg-release.sh.src: release tool added for package-based software
      development
