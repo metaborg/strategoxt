@@ -1,3 +1,9 @@
+2003-01-17  Eelco Visser  <visser@cs.uu.nl>
+
+	* renamed box-tools to gpp
+	* installed LGPL license in all packages
+	* removed reconf scripts; now using bootstrap
+
 2003-01-01  Eelco Visser  <visser@cs.uu.nl>
 
 	* configure.in: switch --with-strategoxt changed to --with-stratego-xt.

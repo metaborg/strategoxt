@@ -2,7 +2,7 @@ EXTRA_DIST   = $(EXTRA_FILES)
 
 EXTRA_FILES  = README README.in bootstrap acinclude.m4 StrategoXT.spec
 
-SUBDIRS      = emacs $(PKGS)
+SUBDIRS      = $(PKGS)
 
 all: install
 
@@ -41,28 +41,7 @@ install-%: %
 WWWSTRATEGO=sunshine.cs.uu.nl:/users/ftp/stratego/StrategoXT
 
 upload:
-	scp *.tar.gz */*.tar.gz $(WWWSTRATEGO)
-
-upload-stratego:
 	scp StrategoXT-$(VERSION).tar.gz $(WWWSTRATEGO)
-
-upload-srts:
-	scp srts/srts-*.tar.gz $(WWWSTRATEGO)
-
-upload-sc-boot:
-	scp sc-boot/sc-boot-*.tar.gz $(WWWSTRATEGO)
-
-upload-gpp-boot:
-	scp gpp-boot/gpp-boot-*.tar.gz $(WWWSTRATEGO)
-
-upload-sc:
-	scp sc/sc-*.tar.gz $(WWWSTRATEGO)
-
-upload-ssl:
-	scp ssl/ssl-*.tar.gz $(WWWSTRATEGO)
-
-upload-stratego-front:
-	scp stratego-front/stratego-front-*.tar.gz $(WWWSTRATEGO)
 
 bootclean :
 	@for dir in $(PKGS); do \
