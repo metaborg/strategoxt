@@ -1,9 +1,8 @@
 #! /bin/sh
-
-# XT -- Program Transformation tools
+#
+# autobundle -- Make distributions by bundling separate software packages.
+#
 # Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
-#                    Eelco Visser <visser@acm.org>
-#                    Joost Visser <jvisser@cwi.nl>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,10 +19,10 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: collect.sh,v 1.13 2000/07/24 15:44:29 mdejonge Exp $
+# $Id: collect.sh,v 1.14 2000/10/31 20:51:38 mdejonge Exp $
 
 
-# This script will collect all required packages for the XT distribution.
+# This script will collect all required packages for an autobundle distribution.
 #
 # usage:
 #   collect configure.in pkg-list
@@ -58,37 +57,37 @@ do_collect () {
          echo "Building a developer installation for \"${pkg}\" from CVS.">&2
          cvsroot=`echo ${pkg_url} | sed 's/cvsdev://g'`
          (
-            mkdir -p /tmp/xt-$$
-            cd /tmp/xt-$$
+            mkdir -p /tmp/autobundle-$$
+            cd /tmp/autobundle-$$
             cvs -d ${cvsroot} checkout ${pkg}
 	    mv ${pkg} ${pkg}-${pkg_version}
             tar cf ${pkg}-${pkg_version}.tar ${pkg}-${pkg_version}
 	    gzip ${pkg}-${pkg_version}.tar
          )
-         cp /tmp/xt-$$/${pkg}-${pkg_version}.tar.gz .
-         rm -fr /tmp/xt-$$/
+         cp /tmp/autobundle-$$/${pkg}-${pkg_version}.tar.gz .
+         rm -fr /tmp/autobundle-$$/
          ;;
                   
       cvs* )
          echo "Building a distribution for \"${pkg}\" from CVS.">&2
          cvsroot=`echo ${pkg_url} | sed 's/cvs://g'`
          (
-            mkdir -p /tmp/xt-$$
-            cd /tmp/xt-$$
+            mkdir -p /tmp/autobundle-$$
+            cd /tmp/autobundle-$$
             cvs -d ${cvsroot} checkout ${pkg}
             cd ${pkg}
             ./reconf
             ./configure
             gmake dist
          )
-         cp /tmp/xt-$$/${pkg}/${pkg}-${pkg_version}.tar.gz .
-         rm -fr /tmp/xt-$$/
+         cp /tmp/autobundle-$$/${pkg}/${pkg}-${pkg_version}.tar.gz .
+         rm -fr /tmp/autobundle-$$/
          ;;
                   
       http*)
          echo "Obtaining a distribution of \"${pkg}\" via HTTP." >&2
-         lynx -dump ${pkg_url}/${pkg}-${pkg_version}.tar.gz > \
-                    ${pkg}-${pkg_version}.tar.gz ;;
+         wget -q ${pkg_url}/${pkg}-${pkg_version}.tar.gz 
+         ;;
       * ) "echo unrecognized url: \"$pkg_url\"" >&2; exit 1 ;;
    esac
 }
@@ -109,8 +108,8 @@ fi
 
 for pkg in ${pkgs}
 do
-   pkg_version=`grep \^${pkg}, ${pkg_file} | cut -d, -f2`
-   pkg_url=`grep \^${pkg}, ${pkg_file} | cut -d, -f3-`
+   pkg_version=`tr -d '[\ \t]' < ${pkg_file} | grep \^${pkg}, | cut -d, -f2`
+   pkg_url=`tr -d '[\ \t]' < ${pkg_file} | grep \^${pkg}, | cut -d, -f3-`
 
    if [ ! -f ./pkgs/${pkg}-${pkg_version}.tar.gz ]; then
       cd ./pkgs
@@ -127,32 +126,19 @@ do
 
 done
 
-# Generate text file describing all packages in XT 
-xt_version=`grep AM_INIT ${configure} | tr -d -c '.[0-9]'`
+# Get the name of the autobundle package
+pkg_name="`grep AM_INIT ${configure} \
+            | sed 's/AM_INIT_AUTOMAKE(//' \
+            | cut -d, -f 1 \
+            | tr [a-z] [A-Z]`"
+
+# Generate text file describing all packages in an autobundle package 
+pkg_version=`grep AM_INIT ${configure} | tr -d -c '.[0-9]'`
 
 (
 cat <<EOF
-# XT -- Program Transformation tools
-# Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
-#                    Eelco Visser <visser@acm.org>
-#                    Joost Visser <jvisser@cwi.nl>
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2, or (at your option)
-# any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-# 02111-1307, USA. 
 
-XT version ${xt_version} is a collection of the following packages:
+${pkg_name} version ${pkg_version} is a collection of the following packages:
 
 EOF
  
