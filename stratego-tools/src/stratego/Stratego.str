@@ -1,0 +1,2 @@
+module Stratego
+imports Stratego-Strategies Stratego-Overlays

@@ -12,7 +12,7 @@ BOOTCLEANFILES 	 = sdf2stratego.c
 
 EXTRA_DIST  	 = $(wildcard *.str) README
 
-CLEANFILES  	 = sdf2stratego_check
+CLEANFILES  	 = sdf2stratego_check $(wildcard *.dep)
 
 SCFLAGS    	 = -I ${srcdir}/../stratego \
 	           -I $(ASFIX_TOOLS)/share/asfix-tools \

@@ -4,9 +4,12 @@ include $(wildcard *.dep)
 
 SUBDIRS		= data
 
-bin_PROGRAMS = strip-comments conc-modules add-main strat-count
-libexec_PROGRAMS = strip-comments conc-modules add-main strat-count
-BOOTCLEANFILES = strip-comments.c conc-modules.c add-main.c strat-count.c
+bin_PROGRAMS = strip-comments conc-modules add-main 
+#strat-count
+libexec_PROGRAMS = strip-comments conc-modules add-main 
+#strat-count
+BOOTCLEANFILES = strip-comments.c conc-modules.c add-main.c 
+#strat-count.c
 
 SCFLAGS     = --main $*
 

@@ -18,19 +18,19 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.5 2002/12/08 11:24:17 stratego Exp $
+# $Id: Makefile.am,v 1.6 2003/01/01 23:36:16 stratego Exp $
 
 include $(srcdir)/../templates/make_rules
 include $(top_srcdir)/Makefile.xt
 
 SUBDIRS = data
 
-STRATEGO_MODULES = Stratego-Layout.r     Stratego-Specifications.r \
-                   Stratego-Lexicals.r   Stratego-Strategies.r \
-                   Stratego-Modules.r    Stratego-Sugar.r \
-                   Stratego-Overlays.r   Stratego-Syntax.r \
-                   Stratego-Rules.r      Stratego-Terms.r \
-                   Stratego-Signatures.r
+STRATEGO_MODULES = Stratego-Layout.str Stratego-Rules.str	    \
+	           Stratego-Sugar.str				    \
+		   Stratego-Lexicals.str Stratego-Signatures.str    \
+		   Stratego-Syntax.str Stratego-Modules.str	    \
+		   Stratego-Specifications.str Stratego-Terms.str   \
+		   Stratego-Overlays.str Stratego-Strategies.str
 
 EXTRA_DIST       = $(STRATEGO_MODULES) \
                    README stratego.pp stratego.def

@@ -1,6 +1,6 @@
 module Sdf2Overlays
 
-(* $Id: Sdf2Overlays.str,v 1.1 2002/12/08 11:24:17 stratego Exp $ *)
+(* $Id: Sdf2Overlays.str,v 1.2 2003/01/01 23:36:16 stratego Exp $ *)
 
 (* Warning: Sdf and Stratego both have Module(...) in their signature *)
 
@@ -9,6 +9,7 @@ imports
 (*  Implode-Asfix *)
   asfix
   Prod2Oper
+  Stratego
 
 rules
 
