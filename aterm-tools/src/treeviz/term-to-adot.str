@@ -48,13 +48,19 @@ rules
 
   graph-to-adot :
     edges -> Graph|[ digraph Term { ~stmt*:stms } ]|
-    where <map(ListEdgeToDot <+ EdgeToDot); concat> edges => stms
+    where <map(TupleEdgeToDot <+ ListEdgeToDot <+ EdgeToDot); concat> edges => stms
 
   ListEdgeToDot :
     (n0, ns) ->  
     Stmt* |[ ~id:n0 [label = "\"[]\""] ; 
              ~stmt*:<map(\ n1 -> Stmt|[ ~id:n0 -> ~id:n1 ; ]|\ )> ns ]|
     where <is-list> ns
+
+  TupleEdgeToDot :
+    (n0, ns) ->  
+    Stmt* |[ ~id:n0 [label = "\"( )\""] ; 
+             ~stmt*:<map(\ n1 -> Stmt|[ ~id:n0 -> ~id:n1 ; ]|\ )> ns1 ]|
+    where <?""#(<id>)>ns => ns1
 
   EdgeToDot :
     (n0, i) -> 
