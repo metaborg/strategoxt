@@ -1,5 +1,5 @@
 include ${srcdir}/../templates/make_rules
-$(top_srcdir)/Makefile.xt
+include $(top_srcdir)/Makefile.xt
 
 SUBDIRS      = data
 
