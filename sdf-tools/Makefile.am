@@ -23,10 +23,7 @@ include $(top_srcdir)/Makefile.xt
 SUBDIRS           = . src
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 
-EXTRA_DIST        = ADDING-TOOLS VERSION configure.in.src genconf.sh \
-		    package.conf reconf $(PACKAGE)-$(VERSION).pkg    \
-		    program-check.m4				     \
-	     	    Makefile.xt
+EXTRA_DIST        = VERSION configure.in bootstrap $(PACKAGE)-$(VERSION).pkg Makefile.xt
 
 # Generation of a package defintion file from the package.conf file. This
 # file in combination with autobundle enables integration of the package
@@ -44,11 +41,12 @@ $(PACKAGE)-$(VERSION).pkg: package.conf
 	   echo "  description='$(description)'" ;\
 	   echo "  keywords=$(keywords)" ;\
 	   echo "" ;\
-           echo "configuration interface" ;\
-           echo $(patsubst %",%\n", $(interface)) | sed 's/"//g;s/^ */  /g' ;\
-           echo "requires" ;\
+     echo "configuration interface" ;\
+     echo $(patsubst %",%\n", $(interface)) | sed 's/"//g;s/^ */  /g' ;\
+     echo "requires" ;\
 	   echo '$(requires)' \
 	         | tr -s '[ \t]' ' ' \
 	         | sed 's/^"/  /;s/" "/"  /g' \
 	         | tr '"' '\n' ;\
        ) > $@
+

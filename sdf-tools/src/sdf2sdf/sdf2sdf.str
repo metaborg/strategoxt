@@ -1,95 +1,65 @@
-\literate[sdf2sdf]
-
-	\begin{abstract}
-	This module defines a tool for applying transformations to SDF
-	definitions. By means of command line options the application
-	of several transformations can be applied. Without any options
-	the tool acts as a pretty-printer.
-	\end{abstract}
-
-
-\paragraph{Usage}
-
-\begin{verbatim}
-  sdf2sdf -i file -o file [--pack-sdf] [--sdfcons] [--sdf2asdf] [--sdf-bracket]
-\end{verbatim}
-
-This tool combines several tools working on SDF abstract syntax and
-provides a parsing front-end and pretty-printing back-end.
-
-\begin{code}
 module sdf2sdf
-imports lib sglr
-signature
-  constructors
-    Tool : String -> Option
+imports xtc-lib stratego-xt-xtc-tools
 
+/**
+ * sdf2sdf is a tool for applying transformations to SDF
+ * definitions. By means of command line options the application
+ * of several transformations can be applied. Without any options
+ * the tool acts as a pretty-printer.
+ *
+ * This tool combines several tools working on SDF abstract syntax and
+ * provides a parsing front-end and pretty-printing back-end.
+ *
+ * Usage:
+ *  sdf2sdf -i file -o file [--pack-sdf] [--sdfcons] [--sdf2asdf] [--sdf-bracket]
+ *
+ * Authors:
+ *    Merijn de Jonge <mdejonge@cwi.nl>
+ *    Eelco Visser <visser@acm.org>
+ *    Joost Visser <jvisser@cwi.nl>
+ *    Martin Bravenboer <martin@mbravenboer.org>
+ */
 strategies
 
-  sdf2sdf = 
-  parse-options(sdf2sdf-options <+ io-options)
-  ; ((option-defined(Input(?input))
-     ; option-defined(Output(?output))
-     ; where(filter( \ Tool(x) -> x\ ; not("pack-sdf") ) => tools)
-     ; where(new-file => tmp1)
-     ; where(new-file => tmp2)
-     )
-    <+ default-usage)
-  ;(((option-defined(Tool("pack-sdf"))
-     ; <call-sdf-tool> ("pack-sdf", ["-i", input, "-o", tmp2])
-     ; <call-asfix-tool> ("implode-asfix", ["-i", tmp2, "-o", tmp1])
-     ) 
-     <+ <parse-sdf>(input, tmp1))
-      ;<call-asfix-tool>("implode-asfix", ["-i", tmp1, "-o", tmp2])
-    ; (  <call-tools> (tmp2, tmp1, tools) => tmp
-    ; <call-sdf-tool> ("sdf-bracket", ["-i", tmp, "-o", tmp1])
-    ; <call-sdf-tool> ("sdf2text", ["-a", "-i", tmp1,  "-o", output])
-    ; <rm-files> [tmp1, tmp2]
+  sdf2sdf =
+    xtc-io-wrap(sdf2sdf-options,
+      (do-pack-sdf < xtc-pack-sdf(sdf-includes) + xtc-parse-sdf)
+    ; execute-specified-tools 
+    ; xtc-pp-sdf
     )
-   <+ <rm-files> [tmp1, tmp2]
-    )
+
+  execute-specified-tools =
+    <foldl(\ (tool, file) -> <xtc-transform(!tool)> file \)> (<specified-tools> (), <id>)
+
+strategies // for options
 
   sdf2sdf-options = 
-      Option("--pack-sdf",    !Tool("pack-sdf"))
-    + Option("--sdfcons",     !Tool("sdf-cons"))
-    + Option("--sdf2asdf",    !Tool("sdf2asdf"))
-    + Option("--sdf-bracket", !Tool("sdf-bracket"))
+      Option("--pack-sdf"
+      , where(<set-config>("--pack-sdf", "dummy"))
+      , !"--pack-sdf       Pack sdf modules before applying other tools"
+      )
+    + ArgOption("-I" + "--Include"
+      , where(<extend-config>("-SDFI", [<id>]))
+      , !"-I d | --Include d\n                    Include modules from directory d"
+      )
+    + Option("--sdfcons"
+      , where(<extend-config>("--tools", ["sdf-cons"]))
+      , !"--sdfcons        Apply sdf2cons"
+      )
+    + Option("--sdf2asdf"
+      , where(<extend-config>("--tools", ["sdf2asdf"]))
+      , !"--sdf2asdf       Apply sdf2asdf"
+      )
+    + Option("--sdf-bracket"
+      , where(<extend-config>("--tools", ["sdf-bracket"]))
+      , !"--sdf-bracket    Apply sdf-bracket"
+      )
 
-  call-tools = ?(tmp1, tmp2, []); !tmp1
+  sdf-includes =
+    <get-config> "-SDFI" <+ ![]
 
-  call-tools = ?(tmp1, tmp2, [tool | tools])
-    ; <call-sdf-tool> (tool, ["-i", tmp1, "-o", tmp2])
-    ; <call-tools> (tmp2, tmp1, tools)
+  specified-tools =
+    <get-config> "--tools" <+ ![]
 
-  call-sdf-tool = 
-    ?(prog, args);
-    <xtc-command(!prog)> args
-
-    //<call-noisy>( <concat-strings>[SDFTOOLS, "/bin/", prog], args)
-
-  call-asfix-tool = 
-    ?(prog, args);
-    <xtc-command(!prog)> args
-    // <call-noisy>( <concat-strings>[ASFIXTOOLS, "/bin/", prog], args)
-\end{code}
-
-% Sdf Tools
-% Copyright (C) 2000, 2002 
-%		     Merijn de Jonge <mdejonge@cwi.nl>
-%                    Eelco Visser <visser@acm.org>
-%                    Joost Visser <jvisser@cwi.nl>
-%
-% This program is free software; you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation; either version 2, or (at your option)
-% any later version.
-%
-% This program is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-%
-% You should have received a copy of the GNU General Public License
-% along with this program; if not, write to the Free Software
-% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-% 02111-1307, USA.
+  do-pack-sdf =
+    where(<get-config> "--pack-sdf")
