@@ -82,7 +82,7 @@ parse_mod_SOURCES = \
 	mv lex.yy.c $@
 
 # Generate srcipts
-%: %.src Makefile.am
+%: %.src Makefile
 	sed 's#__GPP__#$(GPP)#g;\
              s#__CGEN__#$(CGEN)#g;\
 	     s#__prefix__#$(prefix)#g;\

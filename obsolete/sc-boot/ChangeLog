@@ -1,3 +1,7 @@
+2001-10-01  Eelco Visser  <visser@acm.org>
+
+	* bootinstall (renaming Operations -> Constructors)
+
 2001-09-22  Eelco Visser  <visser@acm.org>
 
 	* Release 0.6.1
