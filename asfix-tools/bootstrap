@@ -7,8 +7,10 @@ autoxt
 aclocal -I .
 autoconf
 #acconfig
-autoheader
+#autoheader
 automake -a
 
 rm -f config.cache
 rm -f acconfig.h
+
+touch src/*/*.c
