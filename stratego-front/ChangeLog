@@ -1,20 +1,28 @@
+2003-12-05  Martin Bravenboer  <martin@cs.uu.nl>
+
+	* parse/parse-stratego.str: parse-stratego applies pack-sdf and
+	must no longer apply asfix-yield.
+
+	Are there more place where pack-sdf is used?
+	
 2003-09-30  Valentin David  <valentin@lrde.epita.fr>
 
 	* parse/meta-explode.str: cleanup layouts when concrete syntax parts
 	are treated as AsFix.
+	
 	* parse/parse-stratego.str: deal with --asfix option.
 
 	* test/Makefile.am: Update.
 
 2003-09-16  Martin Bravenboer  <mbravenb@cs.uu.nl>
 
-  * parse/meta-explode.str: added explosion
-    of int terms to trm-explode.
+	* parse/meta-explode.str: added explosion of int terms to
+	trm-explode.
 
 2003-09-15  Martin Bravenboer  <mbravenb@cs.uu.nl>
 
-  * parse/stratego-ensugar.str: implemented ensugaring of
-    Cons/Nil to List and ListTail.
+	* parse/stratego-ensugar.str: implemented ensugaring of Cons/Nil
+	to List and ListTail.
 
 2003-08-27  Eelco Visser  <visser@cs.uu.nl>
 

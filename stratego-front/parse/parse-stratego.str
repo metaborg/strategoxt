@@ -81,6 +81,5 @@ strategies
      <+ if-verbose2(say(!"creating syntax definition"))
       ; !FILE(<guarantee-extension(!"sdf")>)
       ; xtc-transform(!"pack-sdf", <get-config; map(!["-I", <id>]); concat> "-I")
-      ; xtc-transform(!"asfix-yield")
       ; rename-to(!def)
       )
