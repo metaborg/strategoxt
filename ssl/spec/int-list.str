@@ -54,6 +54,7 @@ strategies
  *
  * @type Int       -> [Int]
  * @type Int * Int -> [Int]
+ * @since 0.9.3
  */
 strategies
 
@@ -73,6 +74,7 @@ strategies
  * @type step Int
  * @type      Int       -> [Int]
  * @type      Int * Int -> [Int]
+ * @since 0.9.3
  */
 strategies
 
@@ -88,6 +90,7 @@ strategies
  *
  * @type      Int       -> [Int]
  * @type      Int * Int -> [Int]
+ * @since 0.9.3
  */
 strategies
 
