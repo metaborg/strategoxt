@@ -20,4 +20,3 @@ AC_CONFIG_FILES([
 	src/Makefile 
   src/boxenv/Makefile
 ])
-AC_OUTPUT
