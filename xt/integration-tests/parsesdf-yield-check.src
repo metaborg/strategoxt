@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: parsesdf-yield-check.src,v 1.6 2000/12/19 13:29:19 mdejonge Exp $
+# $Id: parsesdf-yield-check.src,v 1.7 2001/02/15 16:25:28 mdejonge Exp $
 #
 
 # Exit immediately if a command exits with a non-zero status.
@@ -32,7 +32,7 @@ XT=__XT__
 PATH=${XT}/bin:${PATH}
 GB=${XT}/share/gb
 
-Sdf=${GB}/sdf.2.1/Sdf.cons
+Sdf=${GB}/sdf.2.1/sdf.cons
 Pico=${GB}/pico.1/pico
 ATerms=${GB}/aterms.2/aterms
 Grammars="${Pico} ${ATerms} ${Sdf}"

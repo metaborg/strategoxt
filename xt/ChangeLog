@@ -1,3 +1,6 @@
+2001-02-15 Merijn de Jonge <mdejonge@cwi.nl>
+        * fixed integration tests (renamed Sdf to sdf)
+
 2001-02-14 Joost Visser <jvisser@cwi.nl>
 	* Increased version of JJForester to 0.5
 	
