@@ -14,6 +14,7 @@ strategies
       //test1;
       //test2;
       test3
+    ; aterm-io-tests
     )
 
   test1 =
@@ -47,6 +48,19 @@ strategies
 	, !(stdout, ["\"\\\\/\""])
 	, !(stdout, ["\"\\\\/\""])
 	)
+
+  aterm-io-tests =
+      apply-test(!"ATerm IO -- 1", test-write-read-term, !"Bla Bla Bla", !"Bla Bla Bla")
+    ; apply-test(!"ATerm IO -- 2", test-write-read-term, !(), !())
+    ; apply-test(!"ATerm IO -- 3", test-write-read-term, !1, !1)
+    ; apply-test(!"ATerm IO -- 4", test-write-read-term, !None(), !None())
+
+  test-write-read-term =
+      ?t
+    ; <WriteToTextFile> ("test.aterm", t)
+    ; <ReadFromFile> "test.aterm" => t
+    ; <remove-file> "test.aterm"
+    ; !t
 
 \end{code}
 

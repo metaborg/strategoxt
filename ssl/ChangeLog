@@ -1,5 +1,16 @@
 2003-03-24  Martin Bravenboer <martin@mbravenboer.org>
 
+  * spec/io.str: defined ReadFromFile, WriteToTextFile
+    and WriteToBinaryFile in terms of new POSIX
+    strategies. Behaviour should be exactly the same
+    as the native implementations.
+
+  * spec/posix-file.str: added fgetc
+
+  * spec/io.str: deprecated getchar
+
+2003-03-24  Martin Bravenboer <martin@mbravenboer.org>
+
   * spec/posix-file.str: split write-to-stream 
     in baf/taf/text. Note the failing test with taf.
 

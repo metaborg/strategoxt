@@ -113,6 +113,19 @@ strategies
   puts =
     ?str; prim("SSL_puts", str); !Stream(<id>)
 
+
+/**
+ * Character input from stream
+ */
+strategies
+
+  /**
+   * fgetc() reads the next character from the stream and returns the 
+   * ASCII code of the character as an Int. Fails on end of file or error.
+   */
+  fgetc = 
+    ?Stream(stream); prim("SSL_fgetc", stream)
+
 /**
  * ATerm input and output with streams
  * TODO: move to io module.

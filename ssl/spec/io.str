@@ -101,6 +101,7 @@ strategies
   // Returns the ascii code of the character.
 
   getchar = 
+      obsolete(!"getchar; use fgetc");
     ?file; prim("SSL_getchar", file)
 
   // <readline> file => List(Int)
@@ -119,18 +120,42 @@ strategies
   // The file needs to be in textual or binary ATerm format.
 
   ReadFromFile =
-      ?file; prim("SSL_ReadFromFile", file)      
-    <+ debug(!"** WARNING: file doesn't exist or doesn't contain a valid term: "); fail
+      (?Stream(_) <+ <open-stream> (<id>, "r"))
+    ; where(read-from-stream => trm)
+    ; fclose
+    ; !trm
+
+        /*
+        ReadFromFile =
+            ?file; prim("SSL_ReadFromFile", file)      
+          <+ debug(!"** WARNING: file doesn't exist or doesn't contain a valid term: "); fail
+        */
 
   // <WriteToBinaryFile> (file, term) writes term to file in BAF format.
 
   WriteToBinaryFile = 
-    ?(file, t); prim("SSL_WriteToBinaryFile", file, t)
+    WriteToFile(write-in-baf-to-stream)
+
+        /*
+        WriteToBinaryFile = 
+          ?(file, t); prim("SSL_WriteToBinaryFile", file, t)
+         */
 
   // <WriteToTextFile> (file, term) writes term to file in textual ATerm format.
-
   WriteToTextFile = 
-    ?(file, t); prim("SSL_WriteToTextFile", file, t)
+    WriteToFile(write-in-text-to-stream)
+
+        /*
+          WriteToTextFile = 
+            ?(file, t); prim("SSL_WriteToTextFile", file, t)
+         */
+
+  WriteToFile(writer) =
+      ?(<id>, trm)
+    ; (?Stream(_) <+ <open-stream> (<id>, "w"))
+    ; <writer> (<id>, trm)
+    ; fclose
+    ; !trm
 
   open(file) = 
     file; ReadFromFile
