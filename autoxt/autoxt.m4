@@ -199,6 +199,14 @@ AC_ARG_WITH([concrete-syntax],
 )
 AC_SUBST(CONCRETE_SYNTAX)
 
+AC_ARG_WITH([xml-front],
+  AC_HELP_STRING([--with-xml-front=DIR],
+                 [use XML Front at DIR @<:@STRATEGOXT@:>@]),
+  [XML_FRONT="$withval"],
+  [XML_FRONT="$STRATEGOXT"]
+)
+AC_SUBST(XML_FRONT)
+
 AC_ARG_WITH([stratego-regular], 
   AC_HELP_STRING([--with-stratego-regular=DIR],
                  [use StrategoRegular at DIR @<:@STRATEGOXT@:>@]), 
