@@ -30,7 +30,7 @@ strategies
     ; <set-config>("-CI", ["-I", <conc-strings>(<xtc-find-path> "SRTS", "/include"),
                            "-I", <conc-strings>(<xtc-find-path> "SRTS", "/include"),
                            "-I", <conc-strings>(<xtc-find-path> "ATERM", "/include")])
-    ; <set-config>("-CL", ["-L", <conc-strings>(<xtc-find-path> "SRTS", "/lib"),
+    ; <set-config>("-CL", ["-L", <conc-strings>(<xtc-find-path> "SRTS", "/lib/srts"),
                            "-lstratego-lib.opt", "-lstratego.opt",
                            "-L", <conc-strings>(<xtc-find-path> "ATERM", "/lib"),
                            "-lATerm-gcc",

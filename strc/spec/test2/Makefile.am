@@ -1,8 +1,3 @@
-.PRECIOUS: %.ac %.c
-
-test50OBJECTS = ../test1/bar.o
-
-test51LDADD = -L$(SRTS)/lib/srts -lliblib
 
 SINCLUDES	 = -I $(STRATEGO_FRONT)/share/stratego-front \
 	  	   -I $(STRATEGO_FRONT)/share/sdf/stratego-front \
@@ -12,30 +7,33 @@ SINCLUDES	 = -I $(STRATEGO_FRONT)/share/stratego-front \
 	  	   -I $(srcdir)/../lib			     \
 		   -I $(SSL)/share/ssl
 
-TESTFILES = $(wildcard *.r)
-TESTBINS = $(subst .r,.bin,$(TESTFILES))
-TESTSRCS = $(subst .r,.c,$(TESTFILES))
-TESTRUNS = $(subst .r,.run,$(TESTFILES))
 
-IOTESTFILES = $(wildcard io-test*.r)
-IOTESTSRCS = $(subst .r,.c,$(IOTESTFILES))
-IOTESTBINS = $(subst .r,.bin,$(IOTESTFILES))
-IOTESTRUNS = $(subst .r,.io-run,$(IOTESTFILES))
+check_PROGRAMS 	= arity-test as-pattern assignment backtrack-test2    \
+		  backtrack-test3 backtrack-test comment-test	      \
+		  conditional-innermost congruence-arguments	      \
+		  congruence-thread dynamic-rules-test empty-sections \
+		  explode-test flatten-test higher-order-arg	      \
+		  implicit-var-decl improper-list-test innermost-pure \
+		  match-arity match-automaton-test mkterm	      \
+		  number-syntax-test number-test overlay-test	      \
+		  overloading-constructors-test overloading    \
+		  prop quoted-keywords rename-test stratlib-test tail \
+		  thread-test traversal-test twice unification-test 
 
-TESTS = $(TESTBINS) $(IOTESTBINS)
 
-TESTIBINS = $(subst .r,.ibin,$(TESTFILES))
-TESTIRUNS = $(subst .r,.irun,$(TESTFILES))
+STRATEGORUNLIBS = -lstratego.opt -lstratego-lib.opt -lATerm-gcc -lm
+LDADD 		= $(STRATEGORUNLIBS)
 
-check-strc: $(TESTIRUNS)
+CLEANFILES 	= *.o *.ac *.s[0-9]* *.f* *.ac *.c.abox \
+		  *.tree *.mtree *.rtree *.txt *.s5fused libtest*.c \
+		  *.dep *.c *.out
 
-CLEANFILES = $(TESTBINS) $(IOTESTBINS) $(TESTRUNS) $(IOTESTRUNS)  $(TESTSRCS) $(IOTESTSRCS) *.o *.c *.ac *.s? *.tree *.c.abox
-
-EXTRA_DIST = $(wildcard *.r) $(wildcard *.res) $(wildcard *.meta)
-
-include $(top_srcdir)/Makefile.xt
+EXTRA_DIST 	= $(wildcard *.str) make-rules io-test*.in 
 
 include $(srcdir)/../test1/make-rules
 include $(wildcard *.dep)
 
 bootinstall:
+
+
+
