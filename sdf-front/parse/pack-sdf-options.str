@@ -2,9 +2,12 @@
  * @author  Martin Bravenboer <martin@cs.uu.nl>
  */
 module pack-sdf-options
-imports xtc-proc lib stratego-xt-xtc-tools sdf-xtc-tools
-imports Sdf2
-imports asfix-abstractions
+imports
+  liblib
+  strategoxt-xtc-tools
+  sdf-xtc-tools
+  Sdf2
+  asfix-abstractions
 
 /**
  * Options
@@ -111,3 +114,9 @@ strategies
       <create-dep-file(depfile-from-config)> ((), <id>)
     )
 
+  create-dep-file(dep-base) :
+    (outfile, files) -> (outfile, files)
+    where <dep-base> outfile => out  
+	; <open-file> (<add-extension> (out, "dep"), "w") => dep
+	; <printnl> (dep, [out | <separate-by(!" \\\n\t")> [" :" | files]])
+	; <close-file> dep

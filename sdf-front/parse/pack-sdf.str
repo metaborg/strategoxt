@@ -10,10 +10,13 @@
  *             Martin Bravenboer <martin@cs.uu.nl>
  */
 module pack-sdf
-imports pack-sdf-options
-imports xtc-lib lib strategoxt-xtc-tools sdf-xtc-tools 
-imports Sdf2
-imports asfix-abstractions pack-modules 
+imports
+  pack-sdf-options
+  liblib
+  strategoxt-xtc-tools
+  sdf-xtc-tools 
+  Sdf2
+  asfix-abstractions
 
 /**
  * Entry point

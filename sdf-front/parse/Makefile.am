@@ -13,6 +13,4 @@ EXTRA_DIST       = $(wildcard *.str) $(wildcard *.meta)
 CLEANFILES       = $(wildcard *.dep)
 BOOTCLEANFILES   = $(wildcard *.c)
 
-unpack_sdf_LDADD  = $(SSL_LIBS)
-sdf_desugar_LDADD = $(SSL_LIBS)
-sdf_ensugar_LDADD = $(SSL_LIBS)
+LDADD += $(SSL_LIBS)
