@@ -28,9 +28,11 @@ strategies
 
   format-check =
     xtc-ensure-file
-    ; xtc-try-transform(!"core-format-check", 
+    ; xtc-transform(!"core-format-check", 
           <flatten-list> ["--rtg-nf", <input-to-rtg-nf>, <pass-verbose> (), <pass-start-nonterm>]
       )
+    <+ <xtc-exit> 1
+
 
   format-check-to-xhtml =
     xtc-ensure-file

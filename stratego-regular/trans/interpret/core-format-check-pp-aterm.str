@@ -17,8 +17,7 @@ strategies
 strategies
 
   format-check-pp-aterm =
-      format-check-init
-    ; try(my-format-check)
+    main-format-check
     ; pp-aterm-types
 
   my-format-check =
