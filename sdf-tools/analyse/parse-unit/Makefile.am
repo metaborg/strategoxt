@@ -7,7 +7,7 @@ BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 bin_PROGRAMS   = parse-unit parse-parse-testsuite
 SCFLAGS        = --main main-$* 
 STRINCLUDES    = -I $(XTC)/share/xtc \
-                 -I $(ATERM_TOOLS)/share/aterm-tools \
+                 -I $(ATERM_FRONT)/share/aterm-front \
                  -I sig
 
 EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta)
