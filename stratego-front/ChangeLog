@@ -1,3 +1,8 @@
+2004-07-27  Martin Bravenboer <martin@cs.uu.nl>
+
+	* parse/stratego-desugar.str: improved desugaring of StratRules
+	without conditions.
+	
 2004-06-29  Martin Bravenboer <martin@cs.uu.nl>
 
 	Improved pretty-printing of Stratego using the sdf2parenthesize
