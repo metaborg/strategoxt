@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.22 2000/09/27 22:12:44 mdejonge Exp $
+# $Id: Makefile.am,v 1.23 2000/09/28 21:30:05 mdejonge Exp $
 
 DIST_SUBDIRS = pre-checks aterm asfix asc-support sglr pgen graph-tools \
                stratego gpp gt gb  integration-tests www
@@ -59,11 +59,11 @@ pkg :
 	   ( cd $$subdir && $(MAKE)  ) || exit 1 ;\
 	done ;\
 	$(MAKE) install prefix=$(PKG_INSTALL_DIR)
-	$(INSTALL_DATA) ${srcdir}/README   ${prefix}
-	$(INSTALL_DATA) ${srcdir}/SOFTWARE ${prefix}
-	$(INSTALL_DATA) ${srcdir}/COPYING  ${prefix}
-	$(INSTALL_DATA) ${srcdir}/AUTHORS  ${prefix}
-	$(INSTALL_DATA) ${srcdir}/NEWS     ${prefix}
+	$(INSTALL_DATA) ${srcdir}/README   ${PKG_INSTALL_DIR}
+	$(INSTALL_DATA) ${srcdir}/SOFTWARE ${PKG_INSTALL_DIR}
+	$(INSTALL_DATA) ${srcdir}/COPYING  ${PKG_INSTALL_DIR}
+	$(INSTALL_DATA) ${srcdir}/AUTHORS  ${PKG_INSTALL_DIR}
+	$(INSTALL_DATA) ${srcdir}/NEWS     ${PKG_INSTALL_DIR}
 
 
 
