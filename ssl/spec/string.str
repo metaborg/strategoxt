@@ -260,10 +260,41 @@ strategies
 
 strategies
 
-  split-at-space =
-    explode-string;
-    SplitInit;
-    rec x(SplitExit <+ SplitNext; x)  
+  // _ -> Char :: String * Int -> String
+  padd-with(s) =
+    <align-right> (<s> (), <Fst>, <Snd>)
+
+  // :: Char * String * Int -> String
+  align-right :
+    (c, s, n) -> <conc-strings> (add, s)
+      where <align-helper> (c, s, n) => add
+
+  // :: Char * String * Int -> String
+  align-left :
+    (c, s, n) -> <conc-strings> (s, add)
+      where <align-helper> (c, s, n) => add
+
+  // :: Char * String * Int -> String
+  align-center :
+    (c, s, n) -> <concat-strings> [add-before, s, add-after]
+      where <string-length> s => l
+          ; <subt> (n, l) => whitespace
+          ; <   even
+              < div2; Dupl
+              + dec; div2; Dupl; (inc, id)
+            > whitespace => (before, after)
+          ; <align-helper> (c, s, <add> (l, before)) => add-before
+          ; <align-helper> (c, s, <add> (l, after )) => add-after
+
+      // :: Char * String * Int -> String
+      align-helper :
+        (c, s, n) -> add
+          where < string-length
+                ; <subt> (n, <id>)
+                ; (pos < <copy-char> (<id>, c) + !"")
+                > s => add
+
+      div2 = <div> (<id>, 2)
 
 rules
 
@@ -283,6 +314,11 @@ rules
 
 strategies
 
+  split-at-space =
+    explode-string;
+    SplitInit;
+    rec x(SplitExit <+ SplitNext; x)  
+
   split-at-dot =
 	  split(![],explode-string)
 	; rec r(   \(int,[46|frac]) -> (int,frac)\ 
@@ -290,19 +326,7 @@ strategies
 		<+ (id,Nil))
 	; (implode-string,implode-string)
 
-  padd-with(s) = ?(str,n);
-    !str;
-    explode-string => str';
-    length => l;
-    (<geq>(l,n);!str <+
-     <subt>(n,l);
-     rec r(\0 -> []\ <+ \n -> [<s>()|<subt;r>(n,1)]\);
-     \padd -> (padd,str')\;
-     conc;
-     implode-string
-    )
-
-// fails if sub isn't in l
+  // fails if sub isn't in l
   split-before = ?(l,sub);
         <explode-string>sub => sub';
         <explode-string>l;
