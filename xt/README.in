@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: README.in,v 1.8 2000/07/28 09:05:52 mdejonge Exp $
+# $Id: README.in,v 1.9 2000/12/04 13:50:00 jvisser Exp $
 
 -------------------------------------------------------------------------------
 
@@ -40,14 +40,15 @@
 
  - asc-support  : the Asf+Sdf compiler support/runtime library
  - aterm	: a library for the representation of terms
- - gb 		: grammar base, a collection of SDF2 syntax definitions
+ - gb 		: grammar base, a collection of SDF syntax definitions
  - gt		: grammar tools, a collection of tools for grammar engineering
- - pgen         : the SDF2 parser generator
+ - pgen         : the SDF parser generator
  - sglr		: the scannerless, generalized-LR parser
  - stratego	: a language for specification of program transformation 
                   systems
  - gpp		: generic pretty-printer, a collection of tools for 
                   pretty-printing
+ - jjforester	: parser and visitor generator for Java
 
 -------------------------------------------------------------------------------
 
