@@ -1,5 +1,5 @@
 module pp-dot
-imports xtc-lib stratego-xt-xtc-tools
+imports liblib strategoxt-xtc-tools
 
 strategies
   
