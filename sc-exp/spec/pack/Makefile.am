@@ -4,7 +4,7 @@ include $(wildcard *.dep)
 bin_PROGRAMS     = pack-stratego
 libexec_PROGRAMS = pack-stratego
 
-STRINCLUDES  = -I $(STRATEGO_FRONT)/share/stratego-front -CI "-I.." 
+STRINCLUDES  = -I $(STRATEGO_FRONT)/share/stratego-front -I $(srcdir)/../sig
 SCFLAGS      = --main $* $(XTCFLAGS)
 
 EXTRA_DIST     = pack-stratego.str 
