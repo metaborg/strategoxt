@@ -27,17 +27,24 @@ ConcModules =
    !Specification(<id>)
 
 Parse(path) =
-   guarantee-extension(!"r");
+   ( 
+   guarantee-extension(!"rtree");
+   <debug(!"Reading*: ");find-in-path> (<id>,<path>());
+   ReadFromFile;
+   ?Specification(xs);!xs
+  <+
+   guarantee-extension(!"str");
    <debug(!"Reading*: ");find-in-path> (<id>,<path>());
    parse-mod;
    ?Specification(xs);!xs
+  )
 
 
 parse-mod : 
   filein -> trm
   where <conc-strings> ("pack-stratego",
                         <get-pid; int-to-string>()) => fileout;
-        <call>("parse-mod",
+        <call>("parse-stratego",
                ["-silent", "-i", filein, "-o", fileout]);
         <ReadFromFile> fileout => trm;               
         <rm-files> [fileout]

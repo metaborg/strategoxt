@@ -1,3 +1,8 @@
+2003-06-18  Merijn de Jonge  <m.de.jonge@tue.nl>
+	* stratego-stats/conc-modules.str: now reads .str files,
+	  can deal with .rtree files, and now uses parse-stratego rather
+	  than parse-mod.
+
 2003-01-05  Eelco Visser  <visser@cs.uu.nl>
 
 	* src/stratego-stats/Makefile.am: Replaced strat-count; problem
