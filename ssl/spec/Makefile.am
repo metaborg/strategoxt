@@ -1,13 +1,25 @@
-include $(top_srcdir)/Makefile.stratego
+include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
+
+check_PROGRAMS = accept-test migrate-tuples-test annotation-props-test \
+options-test annotations-test option-test apply-test parallel-test     \
+char-test parse-options-test client-test reals-test connect-test       \
+rename-test dir-test scoped-finite-map-test env-traversal-test	       \
+server-test exec-test share-test integers-test simple-traversal-test   \
+int-list-test strcmp-test io-test string-test list-basic-test	       \
+substitution-test list-filter-test tables-test list-index-test	       \
+template-test list-misc-test term-zip-test list-set-test time-test     \
+list-sort-test tuple-test list-zip-test unification-test
 
 SUBDIRS 	= data
 
-SCFLAGS 	= -I $(srcdir) --verbose 0
+SCFLAGS 	= -I $(srcdir)
 
-pkgdata_DATA 	= $(subst .r,.rtree,$(wildcard *.r))
+pkgdata_DATA 	= $(subst .str,.rtree,$(wildcard *.str))
 
-TESTS 		= $(subst .r,,$(wildcard *-test.r))
-EXTRA_DIST 	= $(wildcard *.r) $(pkgdata_DATA)
-CLEANFILES     += $(TESTS) $(bin_SCRIPTS)
-BOOTCLEANFILES 	= $(parsed)
+TESTS 		= $(check_PROGRAMS)
+
+EXTRA_DIST 	= $(wildcard *) $(pkgdata_DATA)
+CLEANFILES      = $(TESTS) 
+
+BOOTCLEANFILES 	= $(pkgdata_DATA) $(subst .str,.c,$(wildcard *-test.str))

@@ -1,9 +1,9 @@
-rm -f config.cache
-rm -f acconfig.h
-aclocal
+rm -f config.cache acconfig.h aclocal.m4
+autoxt
+aclocal -I .
 autoconf
 #acconfig
-autoheader
+#autoheader
 automake -a
 
 
