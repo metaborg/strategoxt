@@ -41,5 +41,5 @@ TESTS = C-simplify-test
 
 BOOTSOURCES = canonicalize.c s2c.c ac2c.src
 
-include $(srcdir)/../Makefile.stratego
+include $(srcdir)/../Makefile.common
 include $(wildcard *.dep)
