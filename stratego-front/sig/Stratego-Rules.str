@@ -3,10 +3,12 @@ signature
   constructors
     RDefNoArgs : Id * Rule -> RuleDef
     RDef       : Id * List(Typedid) * Rule -> RuleDef
+    RDef       : Id * List(Typedid) * List(Typedid) * Rule -> RuleDef
 signature
   constructors
     SRDefNoArgs : Id * StratRule -> RuleDef
     SRDef       : Id * List(Typedid) * StratRule -> RuleDef
+    SRDef       : Id * List(Typedid) * List(Typedid) * StratRule -> RuleDef
 signature
   constructors
     RuleNoCond : Term * Term -> Rule

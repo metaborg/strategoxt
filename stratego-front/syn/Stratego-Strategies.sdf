@@ -3,7 +3,9 @@ exports
 
   context-free syntax
     Id  		      "=" Strategy -> StrategyDef {cons("SDefNoArgs")}
-    Id "(" {Typedid ","}* ")" "=" Strategy -> StrategyDef {cons("SDef")}
+    Id "(" {Typedid ","}* ")" "=" Strategy -> StrategyDef {cons("SDefS")}
+    Id "(" {Typedid ","}* 
+       "|" {Typedid ","}* ")" "=" Strategy -> StrategyDef {cons("SDef")}
 
   context-free syntax
     Id 				  	  -> Typedid {cons("DefaultVarDec")}
@@ -20,7 +22,8 @@ exports
     Id					  -> SVar {cons("SVar")}
     "let" Def* "in" Strategy 		  -> Strategy {cons("Let")}
     SVar "(" {Strategy ","}* ")" 	  -> Strategy {cons("Call")}
-    SVar "(" {Term ","}* "|" {Strategy ","}* ")" -> Strategy {cons("CallT")}
+    SVar "(" {Strategy ","}* 
+         "|" {Term ","}* ")" 	          -> Strategy {cons("Call")}
 
 
     %% Match and build
@@ -46,19 +49,18 @@ exports
 
     "rec" Id "(" Strategy ")" 		  -> Strategy {cons("Rec")}
 
-    "not" "(" Strategy ")" 		  -> Strategy {cons("Not")}
+    "not"   "(" Strategy ")" 		  -> Strategy {cons("Not")}
     "where" "(" Strategy ")" 		  -> Strategy {cons("Where")}
-    "test" "(" Strategy ")" 		  -> Strategy {cons("Test")}
+    "test"  "(" Strategy ")" 		  -> Strategy {cons("Test")}
     "bagof" "(" Strategy ")" 		  -> Strategy {cons("Bagof")}
 
 
     %% Primitives
 
-    "prim" "(" String ")" 		 	 -> Strategy {cons("PrimNoArgs")}
-    "prim" "(" String "," {Term ","}* ")"	 -> Strategy {cons("Prim")}
-    "prim" "(" String "," {Term ","}* "|" {Strategy ","}*")" 	-> Strategy {cons("PrimTS")}
-    "prim" "(" String "|" {Strategy ","}*")" 	-> Strategy {cons("PrimS")}
-
+    "prim" "(" String ")" 		  -> Strategy {cons("PrimNoArgs")}
+    "prim" "(" String "," {Term ","}* ")" -> Strategy {cons("Prim")}
+    "prim" "(" String "," {Strategy ","}* 
+                      "|" {Term ","}*")"  -> Strategy {cons("Prim")}
 
     %% Traversal
 
@@ -75,6 +77,8 @@ exports
     Int 				  -> Strategy {cons("IntCong")}
     Real 				  -> Strategy {cons("RealCong")}
     Char 			 	  -> Strategy {cons("CharCong")}
+
+    String "(" {Strategy ","}* ")" 	  -> Strategy {cons("CongQ")}
 
     %%"(" {Strategy ","}* ")" 		  -> Strategy {cons("TupleCong"),avoid}
 

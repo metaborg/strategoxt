@@ -1,5 +1,5 @@
 module stratego-ensugar
-imports Stratego options string simple-traversal
+imports stratego options string simple-traversal
 
 /**
  * This is a preliminary  implementation of the ensugaring

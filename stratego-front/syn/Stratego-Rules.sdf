@@ -8,10 +8,14 @@ exports
   context-free syntax
     Id ":" Rule 				-> RuleDef {cons("RDefNoArgs")}
     Id "(" {Typedid ","}* ")" ":" Rule 		-> RuleDef {cons("RDef")}
+    Id "(" {Typedid ","}* 
+       "|" {Typedid ","}* ")" ":" Rule 		-> RuleDef {cons("RDef")}
 
   context-free syntax
     Id "::" StratRule 				-> RuleDef {cons("SRDefNoArgs")}
     Id "(" {Typedid ","}* ")" "::" StratRule 	-> RuleDef {cons("SRDef")}
+    Id "(" {Typedid ","}* 
+       "|" {Typedid ","}*")" "::" StratRule 	-> RuleDef {cons("SRDef")}
 
   context-free syntax
     Term "->" Term 		    		-> Rule {cons("RuleNoCond")}

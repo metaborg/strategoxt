@@ -14,7 +14,9 @@ exports
     "**" 			-> Kind {cons("StarStar")}
 
   context-free syntax
-    Id ":" Type 		-> Opdecl {cons("OpDecl")}
+    Id     ":" Type 		-> Opdecl {cons("OpDecl")}
+    String ":" Type 		-> Opdecl {cons("OpDeclQ")}
+           ":" Type 		-> Opdecl {cons("OpDeclInj")}
 
   context-free syntax
     Term 			-> Type {cons("ConstType")}

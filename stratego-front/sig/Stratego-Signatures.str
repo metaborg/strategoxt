@@ -13,7 +13,9 @@ signature
     StarStar : Kind
 signature
   constructors
-    OpDecl : Id * Type -> Opdecl
+    OpDecl    : Id * Type -> Opdecl
+    OpDeclQ   : String * Type -> Opdecl
+    OpDeclInj : Type -> Opdecl
 signature
   constructors
     ConstType : Term -> Type

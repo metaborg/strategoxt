@@ -53,7 +53,9 @@ exports
 
   context-free syntax
     Id  		      "=" Strategy -> StrategyDef {cons("SDefNoArgs")}
-    Id "(" {Typedid ","}* ")" "=" Strategy -> StrategyDef {cons("SDef")}
+    Id "(" {Typedid ","}* ")" "=" Strategy -> StrategyDef {cons("SDefS")}
+    Id "(" {Typedid ","}* 
+       "|" {Typedid ","}* ")" "=" Strategy -> StrategyDef {cons("SDef")}
 
   context-free syntax
     Id 				  	  -> Typedid {cons("DefaultVarDec")}
@@ -70,7 +72,8 @@ exports
     Id					  -> SVar {cons("SVar")}
     "let" Def* "in" Strategy 		  -> Strategy {cons("Let")}
     SVar "(" {Strategy ","}* ")" 	  -> Strategy {cons("Call")}
-    SVar "(" {Term ","}* "|" {Strategy ","}* ")" -> Strategy {cons("CallT")}
+    SVar "(" {Strategy ","}* 
+         "|" {Term ","}* ")" 	          -> Strategy {cons("Call")}
 
 
     %% Match and build
@@ -96,19 +99,18 @@ exports
 
     "rec" Id "(" Strategy ")" 		  -> Strategy {cons("Rec")}
 
-    "not" "(" Strategy ")" 		  -> Strategy {cons("Not")}
+    "not"   "(" Strategy ")" 		  -> Strategy {cons("Not")}
     "where" "(" Strategy ")" 		  -> Strategy {cons("Where")}
-    "test" "(" Strategy ")" 		  -> Strategy {cons("Test")}
+    "test"  "(" Strategy ")" 		  -> Strategy {cons("Test")}
     "bagof" "(" Strategy ")" 		  -> Strategy {cons("Bagof")}
 
 
     %% Primitives
 
-    "prim" "(" String ")" 		 	 -> Strategy {cons("PrimNoArgs")}
-    "prim" "(" String "," {Term ","}* ")"	 -> Strategy {cons("Prim")}
-    "prim" "(" String "," {Term ","}* "|" {Strategy ","}*")" 	-> Strategy {cons("PrimTS")}
-    "prim" "(" String "|" {Strategy ","}*")" 	-> Strategy {cons("PrimS")}
-
+    "prim" "(" String ")" 		  -> Strategy {cons("PrimNoArgs")}
+    "prim" "(" String "," {Term ","}* ")" -> Strategy {cons("Prim")}
+    "prim" "(" String "," {Strategy ","}* 
+                      "|" {Term ","}*")"  -> Strategy {cons("Prim")}
 
     %% Traversal
 
@@ -125,6 +127,8 @@ exports
     Int 				  -> Strategy {cons("IntCong")}
     Real 				  -> Strategy {cons("RealCong")}
     Char 			 	  -> Strategy {cons("CharCong")}
+
+    String "(" {Strategy ","}* ")" 	  -> Strategy {cons("CongQ")}
 
     %%"(" {Strategy ","}* ")" 		  -> Strategy {cons("TupleCong"),avoid}
 
@@ -210,10 +214,14 @@ exports
   context-free syntax
     Id ":" Rule 				-> RuleDef {cons("RDefNoArgs")}
     Id "(" {Typedid ","}* ")" ":" Rule 		-> RuleDef {cons("RDef")}
+    Id "(" {Typedid ","}* 
+       "|" {Typedid ","}* ")" ":" Rule 		-> RuleDef {cons("RDef")}
 
   context-free syntax
     Id "::" StratRule 				-> RuleDef {cons("SRDefNoArgs")}
     Id "(" {Typedid ","}* ")" "::" StratRule 	-> RuleDef {cons("SRDef")}
+    Id "(" {Typedid ","}* 
+       "|" {Typedid ","}*")" "::" StratRule 	-> RuleDef {cons("SRDef")}
 
   context-free syntax
     Term "->" Term 		    		-> Rule {cons("RuleNoCond")}
@@ -239,6 +247,7 @@ exports
     "_" 			 -> Term {cons("Wld")}
     Var 			 -> Term 
     Id "(" {Term ","}* ")" 	 -> Term {cons("Op")}
+    String "(" {Term ","}* ")" 	 -> Term {cons("OpQ")}
     Term "#" "(" Term ")" 	 -> Term {cons("Explode")}
     Term "{" {Term ","}* "}"	 -> Term {cons("Anno")}
 
@@ -280,7 +289,9 @@ exports
     "**" 			-> Kind {cons("StarStar")}
 
   context-free syntax
-    Id ":" Type 		-> Opdecl {cons("OpDecl")}
+    Id     ":" Type 		-> Opdecl {cons("OpDecl")}
+    String ":" Type 		-> Opdecl {cons("OpDeclQ")}
+           ":" Type 		-> Opdecl {cons("OpDeclInj")}
 
   context-free syntax
     Term 			-> Type {cons("ConstType")}

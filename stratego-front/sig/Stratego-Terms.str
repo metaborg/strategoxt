@@ -10,6 +10,7 @@ signature
     Char         : Char -> Term
     Wld          : Term
     Op           : Id * List(Term) -> Term
+    OpQ          : String * List(Term) -> Term
     Explode      : Term * Term -> Term
     Anno         : Term * List(Term) -> Term
     App          : Strategy * Term -> Term

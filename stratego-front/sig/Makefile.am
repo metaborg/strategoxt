@@ -7,7 +7,8 @@ pkgdata_DATA 	= Stratego.rtree				   \
 		  Stratego-Terms.rtree Stratego-Layout.rtree	   \
 		  Stratego-Script.rtree Stratego-Modules.rtree	   \
 		  Stratego-Signatures.rtree Stratego-Strategies.rtree \
-		  Stratego-Amb.rtree
+		  Stratego-Amb.rtree \
+	 	  stratego.rtree
 
 CLEANFILES	= $(wildcard *.atree)
 BOOTCLEANFILES	= $(wildcard *.str) $(wildcard *.rtree) Stratego.def 

@@ -1,5 +1,17 @@
 2003-07-11  Eelco Visser  <visser@cs.uu.nl>
 
+	* syn/Stratego-Strategies.sdf: Syntax for quoted constructors.
+
+	* syn/Stratego-Terms.sdf: Syntax for quoted constructors.
+
+	* syn/Stratego-Signatures.sdf: Syntax for quoted constructors
+	and injections.
+
+	* syn/Stratego-Strategies.sdf: Syntax extension: terms can be
+	passed directly to strategies using f(s1,...,sn|t1,...,tn).
+	Strategies can be passed to primitives using
+	prim("f",s1,...,sn|t1,...,tn). 
+
 	* parse/pp-stratego.str: pretty-print annotations on ast with
 	--annotations option.
 
