@@ -76,10 +76,8 @@ strategies
       )
 
   print-report-line
-    = try( 
-        not(has-option(!Silent);has-option(!WarningsAreErrors))
-      ; ?ts; !(stderr,ts); printnl
-      )
+    = value(Verbose(0);has-option(!WarningsAreErrors),
+            ?ts; !(stderr,ts); printnl)
 
   obtain-wf-analyses
     = where( declared-sorts        => alldecs )
@@ -101,7 +99,7 @@ strategies
     + Option("-e",!WarningsAreErrors, !"-e          exit with error if grammar is ill-formed")
 
 
-  try-debug(s)=option-value(Verbose(id),s;debug)
+  try-debug(s) = option-value(Verbose(0),s;debug)
 
 signature
   constructors
