@@ -171,12 +171,12 @@ strategies
    * @inc set-eq-test4
    * @inc set-eq-test5
    */
-  set-eq(eq) = subset-gen(eq, ?[])
+  set-eq(eq)   = subset-gen(eq, ?[])
 
-  subset     = subset(eq)
-  subset(eq) = subset-gen(eq, ?[_|_])
-  subseteq   = subseteq(eq)
-  subseteq   = subset-gen(eq, ?[] + ?[_|_])
+  subset       = subset(eq)
+  subset(eq)   = subset-gen(eq, ?[_|_])
+  subseteq     = subseteq(eq)
+  subseteq(eq) = subset-gen(eq, ?[] + ?[_|_])
 
   /**
    * The general strategy for comparing two list sets.
