@@ -44,7 +44,13 @@ strategies
    * @warning  The first arugment is added in the runtime.
    */
   execvp = 
-    ?(file, argv); prim("SSL_execvp", file, argv)
+    ?(file, argv)
+  ; if <file-exists>file then 
+      prim("SSL_execvp", file, argv)
+    else
+      say(<concat-strings>["execvp: ",file," does not exist."])
+    ; fail
+    end
 
   /**
    * Replaces the current process image with a new  process image.
@@ -53,7 +59,14 @@ strategies
    * @warning  The first arugment is not added in the runtime.
    */
   execv = 
-    ?(file, argv); prim("SSL_execv", file, argv)
+    ?(file, argv)
+  ; if <file-exists>file then 
+      prim("SSL_execvp", file, argv)
+    else
+      say(<concat-strings>["execv: ",file," does not exist."])
+    ; fail
+    end
+
 
 /**
  * Process termination 
