@@ -149,7 +149,8 @@ strategies
     ?FILE(_)
 
   xtc-ensure-file =
-      where(<xtc-new-file> () => f)
+      ?stdin()
+    ; where(<xtc-new-file> () => f)
     ; <copy-file> (stdin(), f)
     ; !FILE(f)
 
