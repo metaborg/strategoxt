@@ -1,3 +1,10 @@
+2003-09-17  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+  * ssl/exec.[ch]: added:
+    - ATerm SSL_get_errno(void);
+    - ATerm SSL_set_errno(ATerm code);
+    - ATerm SSL_EXDEV(void);
+
 2003-09-16  Martin Bravenboer <mbravenb@cs.uu.nl>
 
   * ssl/number.[ch]: added SSL_rand, SSL_RAND_MAX, and

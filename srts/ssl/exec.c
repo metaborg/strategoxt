@@ -29,6 +29,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <sys/wait.h>
+#include <errno.h>
+
+inline static int _get_int(ATerm t) {
+  if(ATgetType(t) == AT_INT)
+    return ATgetInt((ATermInt) t); 
+  else 
+    _fail(t);
+  return(0);
+}
 
 /*************************************************************************
  * Stream conversion
@@ -121,6 +130,23 @@ FILE* stream_from_term_transitional(ATerm stream) {
   }
 
   return result;
+}
+
+/**************************************************************************
+ * Error code
+ */
+ATerm SSL_get_errno(void) {
+  return ((ATerm) ATmakeInt(errno));
+}
+
+ATerm SSL_set_errno(ATerm code) {
+  int val = _get_int(code);
+  errno = val;
+  return (ATerm) ATempty;
+}
+
+ATerm SSL_EXDEV(void) {
+  return ((ATerm) ATmakeInt(EXDEV));
 }
 
 /**************************************************************************
@@ -811,3 +837,4 @@ ATerm SSL_pipe_term_to_child(ATerm t, ATerm prog, ATerm args0)
   }
   return((ATerm) ATempty);
 }
+

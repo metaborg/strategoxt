@@ -67,6 +67,10 @@ ATerm SSL_strlen(ATerm str);
 ATerm SSL_strcat(ATerm str1, ATerm str2);
 ATerm SSL_concat_strings(ATerm strings);
 
+ATerm SSL_get_errno(void);
+ATerm SSL_set_errno(ATerm code);
+ATerm SSL_EXDEV(void);
+
 #define SSL_P_tmpdir() ((ATerm)ATmakeString(P_tmpdir))
 
 ATerm SSL_stdin_stream(void);
@@ -76,4 +80,5 @@ ATerm SSL_stderr_stream(void);
 #define SSL_STDIN_FILENO() ((ATerm)ATmakeInt(STDIN_FILENO))
 #define SSL_STDOUT_FILENO() ((ATerm)ATmakeInt(STDOUT_FILENO))
 #define SSL_STDERR_FILENO() ((ATerm)ATmakeInt(STDERR_FILENO))
+
 
