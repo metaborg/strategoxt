@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Abox2text.r,v 1.5 2001/09/19 09:33:56 mdejonge Exp $
+% $Id: Abox2text.r,v 1.6 2001/09/19 09:34:45 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
@@ -154,9 +154,9 @@ strategies
      ?xs;
      !( xs, [], [] );
      rec s ({ a1, a2, x, xs, ys, zs:
-        ?( [], [], zs ); !zs; debug(!"ONE")
+        ?( [], [], zs ); !zs
      <+
-        ?( [], ys, zs ) ; <conc>(zs, [R([], ys)]);debug(!"TWO")
+        ?( [], ys, zs ) ; <conc>(zs, [R([], ys)])
      <+
         ?( [R(a1, a2)| xs], [], zs ) ;
          <s>(xs, [], [R(a1,a2)|zs] )
