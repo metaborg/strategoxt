@@ -1,3 +1,11 @@
+2003-01-01  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/sdf-bench/Makefile.am: runbm.str does compile any more
+	because of the stricter use-def analysis in sc. Since the program
+	seems to be obsolete anyway (does anyone use it?), it is not in
+	the build anymore. If still useful it should be modernized. There
+	are probably much better ways to do this now.
+
 2002-12-13  Eelco Visser  <visser@cs.uu.nl>
 
 	* src/sdf2sdf/sdf2sdf.str: Using xtc instead of gt-paths
