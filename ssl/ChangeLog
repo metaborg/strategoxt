@@ -1,3 +1,10 @@
+2003-01-25  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/simple-traversal.str: Turned top-level local recursion into
+	recursive definition
+
+	* spec/list-set-test.str: test for collect with skip
+
 2003-01-11  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/parenthesize.str: place parentheses based

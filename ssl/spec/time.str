@@ -192,6 +192,11 @@ strategies
   run-time =
     times; crush(!0, add); ticks-to-seconds
 
+  profile(s) =
+    where(times => start)
+    ; s
+    ; !(<id>, <<diff-times> (<times>, start); crush(!0, add)>)
+
   profile(msg, s) =
     where(times => start)
     ; s

@@ -264,7 +264,15 @@ strategies
 	, collect-all(G(id,id))
 	, !F(G(A,G(A,B)),G(B,C))
 	, ![G(A,G(A,B)),G(A,B),G(B,C)]
+	);
+    apply-test(!"test9c"
+	, collect(G(id,id), not-under-f)
+	, !H(G(A,G(A,B)),F(G(B,C),G(A,B)))
+	, ![G(A,G(A,B)),G(A,B)]
 	)
+
+  not-under-f(coll, ignore) =
+    F(ignore, coll)
 
   test10 = 
     apply-test(!"test10a"

@@ -146,8 +146,8 @@ strategies
   // collect all subtrees for which s succeeds
 
   collect-all(s) =
-    rec x(![<s> | <crush(![],union,x)>]
-          <+ crush(![],union,x))
+    ![<s> | <crush(![],union,collect-all(s))>]
+    <+ crush(![],union,collect-all(s))
 
   // collect with user-defined union operator
 
@@ -171,20 +171,20 @@ strategies
     crush(!ys, \ (x, xs) -> <postorder-collect(s, !xs)> x \ )
 
   collect-om(s) =
-    rec x(![<s>] 
-          <+ crush(![],union,x))
+    ![<s>] 
+    <+ crush(![],union,collect-om(s))
 
   collect(s) = 
     collect-om(s)
 
   collect-set(s) =
-    rec x(![<s>] 
-          <+ crush(![],conc,x))
+    ![<s>] 
+    <+ crush(![],conc,collect-set(s))
 
   collect(s, skip: a * (a -> a) * (a -> a) -> a) =
-    rec x(![<s>]
-          <+ skip(x,![]); crush(![],union,id)
-          <+ crush(![],union,x))
+    ![<s>]
+    <+ skip(collect(s,skip), ![]); crush(![],union,id)
+    <+ crush(![],union,collect(s,skip))
 
   collect-exc(base, special : a * (a -> b) -> b) = 
     rec coll(

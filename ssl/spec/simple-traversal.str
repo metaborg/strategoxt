@@ -29,26 +29,20 @@ strategies
 	to all nodes of a term.
 
 \begin{code}
-  //topdown(s) = 
-  //  rec x(s; all(x))
-
   topdown(s) = 
     s; all(topdown(s))
-
-//  bottomup(s) = 
-//    rec x(all(x); s)
 
   bottomup(s) = 
     all(bottomup(s)); s
  
   downup(s) = 
-    rec x(s; all(x); s)
+    s; all(downup(s)); s
 
   downup(s1, s2) = 
-    rec x(s1; all(x); s2)
+    s1; all(downup(s1, s2)); s2
 
   downup2(s1, s2) =  
-    rec x(s1; all(x); s2)
+    s1; all(downup2(s1, s2)); s2
 \end{code} 
 	
 	The traversals above go through all constructors. If it
@@ -58,16 +52,21 @@ strategies
 
 \begin{code}
   topdownS(s, stop: a * (a -> a) -> a) = 
-    rec x(s; (stop(x) <+ all(x)))
+    s
+    ; (stop(topdownS(s,stop)) <+ all(topdownS(s,stop)))
 
   bottomupS(s, stop: a * (a -> a) -> a) = 
-    rec x((stop(x) <+ all(x)); s)
+    (stop(bottomupS(s, stop)) <+ all(bottomupS(s, stop)))
+    ; s
 
   downupS(s, stop: a * (a -> a) -> a) = 
-    rec x(s; (stop(x) <+ all(x)); s)
+    s
+    ; (stop(downupS(s, stop)) <+ all(downupS(s, stop))); s
 
   downupS(s1, s2, stop: a * (a -> a) -> a) = 
-    rec x(s1; (stop(x) <+ all(x)); s2)
+    s1
+    ; (stop(downupS(s1, s2, stop)) <+ all(downupS(s1, s2, stop)))
+    ; s2
 \end{code} 
 
 	The strategy \verb|don't-stop| is a unit for these traversals,
@@ -84,7 +83,8 @@ strategies
 
 \begin{code}
   bottomup-para(s) = 
-    rec x(!(<id>, <all(x)>); s)
+    !(<id>, <all(bottomup-para(s))>)
+    ; s
 \end{code}
 
 	\paragraph{Along a Spine}
@@ -97,16 +97,16 @@ strategies
 
 \begin{code}
   spinetd(s) = 
-    rec x(s; try(one(x)))
+    s; try(one(spinetd(s)))
 
   spinebu(s) = 
-    rec x(try(one(x)); s)
+    try(one(spinebu(s))); s
 
   spinetd'(s) = 
-    rec x(s; (one(x) + all(fail)))
+    s; (one(spinetd'(s)) + all(fail))
 
   spinebu'(s) = 
-    rec x((one(x) + all(fail)); s)
+    (one(spinebu'(s)) + all(fail)); s
 \end{code}
 
 	\paragraph{Along all Spines}
