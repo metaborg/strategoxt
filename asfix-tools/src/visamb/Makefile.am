@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.5 2002/05/08 08:44:45 mdejonge Exp $
+# $Id: Makefile.am,v 1.6 2002/10/30 14:33:49 eelco Exp $
 
 include $(srcdir)/../templates/make_rules 
 include $(srcdir)/../templates/make_rules.stratego
@@ -24,7 +24,7 @@ include $(STRATEGO_PRG:%=%.dep)
 
 SUBDIRS         = data
 
-STRATEGO_PRG    = Vis-amb
+STRATEGO_PRG    = Vis-amb nonterminal-tree
 
 libexec_SCRIPTS = $(STRATEGO_PRG)
 pkgdata_DATA    = Vis-amb.r

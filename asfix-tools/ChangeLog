@@ -1,3 +1,10 @@
+2002-10-28  Eelco Visser  <visser@acm.org>
+
+	* src/implode/implode-asfix.r: 
+	  - is-layout' does not recognize literals anymore
+	  - added option --nt which transforms production applications
+	    to sort applications (traditional parse tree view)
+
 2002-09-26  Merijn de Jonge <mdejonge@cwi.nl>
    * Replaced dependency on stratego package by a dependency on sc-boot
      package

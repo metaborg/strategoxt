@@ -33,10 +33,11 @@
 
 \begin{code}
 module implode-asfix
-imports lib asfix options
+imports lib asfix options verbalize-sdf
 
 signature
    constructors
+      ApplToSort   : Option
       FlatLex      : Option
       FlatList     : Option
       RemoveLayout : Option
@@ -67,6 +68,7 @@ strategies
               + Option( "--lit",    !RemoveLit,    !"--lit            Remove literal nodes from the AsFix? parse tree") 
               + Option( "--alt",    !FlatAlt,      !"--alt            Flat alternatives")
               + Option( "--appl",   !ReplaceAppl,  !"--appl           Replace 'appl' applications by constructor applications" )
+              + Option( "--nt",     !ApplToSort ,  !"--nt             Replace 'appl' applications by non-terminal application" )
               + Option( "--inj",    !FlatInj,      !"--inj            Remove injections from the parse tree." )
               + Option( "--list",   !FlatList,     !"--list           Flatten lists." )
               + Option( "--seq",    !RemoveSeq,    !"--seq            Replace sequences by tuples" )
@@ -81,6 +83,7 @@ strategies
        ?term;
        try((option-defined(FlatLex),      flat-lex));
        try((option-defined(RemoveLayout), remove-layout));
+       try((option-defined(ApplToSort),   appl-to-sort));
        try((option-defined(FlatList),     flat-list));
        try((option-defined(RemoveLit),    remove-lit));
        try((option-defined(FlatInj),      flat-injections));
@@ -89,6 +92,11 @@ strategies
        try((option-defined(RemoveSeq),    remove-seq));
        try((option-defined(RemovePT),     remove-pt));
        try(?term; (id, implodeAsfix))
+
+  // 0) Replace applications by application of sort symbol
+
+  appl-to-sort = 
+    topdown(repeat(ApplToSort))
 
   // 1) Flatten lexical sub trees in the parse tree
   flat-lex = downup2( try(implode-lexical), try(flat-layout))
@@ -143,6 +151,19 @@ strategies
     <+ amb(list(impl))
     <+ all(impl)
     )
+
+rules
+
+  ApplToSort :
+    appl(prod(as, sort("<START>"), _), [t]) -> t
+
+  ApplToSort :
+    appl(prod(as, a, _), ts) -> c#(ts)
+    where <?cf(<id>)> a
+        //; ![["\""],<PpSym>,["\""]]; concat
+        ; PpSym
+        ; concat-strings 
+       => c
 
 rules
 
@@ -228,7 +249,8 @@ strategies
   yield = rec x((appl(id, map(x)); Kids) <+ Kids'); implode-string
 
   implode-lexical = 
-      ?appl(prod([lex(_)],cf(_),_), _); yield
+       ?appl(prod([lex(_)],cf(_),_), _); yield
+    <+ ?appl(prod(_,lex(_),_), _); yield
     <+ ?appl(prod(_,lit(_),_),_); !lit(<yield>)
     <+ ?appl(prod(_,varsym(cf(iter-star(_))),_),_); !meta-listvar(<yield>)
     <+ ?appl(prod(_,varsym(cf(iter-star-sep(_,_))),_),_); !meta-listvar(<yield>)
@@ -254,7 +276,7 @@ strategies
 //+ appl(prod([lit(id)],cf(alt(id,id)),no-attrs), id)
   + cf(opt(layout))
 
-  is-layout' = appl(prod(id, cf(opt(layout)) + lit(id), id), id)
+  is-layout' = appl(prod(id, cf(opt(layout)), id), id)
              + cf(opt(layout))
              + layout(id)
              
