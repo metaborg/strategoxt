@@ -79,8 +79,8 @@ strategies
   test6 = 
     apply-test(!"test6"
 	, collect-split(\ H(x,y) -> I(x) \, \ H(x,y) -> [H(x,y)] \ )
-	, !F(G(A,H(A,3.0)),H(1,C))
-	, !(F(G(A,I(A)), I(1)), [H(A,3.0),H(1,C)])
+	, !F(G("a",H(A,3.0)),H(1,C))
+	, !(F(G("a",I(A)), I(1)), [H(A,3.0),H(1,C)])
 	)
 
   test7 = 

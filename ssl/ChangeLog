@@ -1,3 +1,9 @@
+2002-03-07  Eelco Visser  <visser@acm.org>
+
+	* spec/server-test.r, spec/connect.r, spec/accept-test.r:
+	disabled connect tests; not tests in the sense of sunit;
+	should be refactored.
+
 2002-02-23  Eelco Visser  <visser@acm.org>
 
 	* src/connect.ch, spec/connect.r, spec/accept-test.r,

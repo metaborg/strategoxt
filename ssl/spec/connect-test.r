@@ -12,7 +12,9 @@ strategies
 // wait bij beiden -> deadlock tot wait over is
 // wait bij connect -> na wait faalt connect
   
-  main = iowrap
+  main = id
+
+  bla = iowrap
 	( where (<connect>("localhost", 6667, 0) => fd)
 	//; repeat(recv; debug(!"recvd: "))
         ; <where(send);send>(fd,<id>)

@@ -160,21 +160,24 @@ strategies
     <+ ![]
 
   collect-split(splitter) = 
+    rec x(CollectSplit(x, splitter <+ !(<id>,[])))
+
+  collect-split'(splitter) = 
     rec x((is-string + is-int); splitter
           <+ CollectSplit(x, splitter))
 
   collect-split(f, g) = 
-    collect-split(split(try(f), g <+ ![]))
+    rec x(CollectSplit(x, !(<try(f)>, <g <+ ![]>)))
 
 rules
 
   CollectSplit(s, splitter) :
     c#(as) -> (t, <union> (ys, <unions> xs))
-    where <list(s); unzip> as => (bs, xs);
+    where <unzip(s)> as => (bs, xs);
           <splitter> c#(bs) => (t, ys)
 
   CollectSplit(s, f, g) = 
-    CollectSplit(s, split(try(f), g <+ ![]))
+    CollectSplit(s, !(<try(f)>, <g <+ ![]>))
 \end{code}
 
 	\paragraph{Occurence Counting}
