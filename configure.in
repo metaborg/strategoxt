@@ -132,7 +132,7 @@ AB_CONFIG_PKG(stratego-front,
    --with-asfix-tools=${ASFIX_TOOLS}    
    --with-stratego-tools=${STRATEGO_TOOLS}
    --with-sdf-tools=${SDF_TOOLS}
-   --with-gpp=${GPP}
+   --with-gpp=${prefix}
    --with-cgen=${CGEN}
 )
 AB_CONFIG_PKG(sc,
