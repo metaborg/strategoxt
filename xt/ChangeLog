@@ -1,8 +1,7 @@
 2001-11-25 Merijn de Jonge <mdejonge@cwi.nl>
    * renamed acinclude.m4 to program-check.m4
    * added new version of program-check.m4
-
-2001-11-25 Merijn de Jonge <mdejonge@cwi.nl>
+   * add stratego-0.6.2 to list of required packages
    * Updated version requirements for required packages sgler and pgen.
    * Weakened configuation of graphviz package (xt will also build without
      the graphviz package).
