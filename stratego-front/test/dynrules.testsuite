@@ -25,12 +25,6 @@ test Labeled scope with inline term application
 test Add a label to a scope
   "{| A :+ f |}" succeeds
 
-test Branch the dynamic rules of the current scope
-  "branch( A : s )" succeeds
-
-test Union of two branches
-  " union(branch(A : s1 ), branch(A : s2 ))" succeeds
-
 test Generate a dynamic rule
   "rules( A : p -> p )" succeeds
 

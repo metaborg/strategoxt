@@ -19,18 +19,6 @@ exports
 
   context-free syntax
 
-    "commit" "rules" "(" DynRuleSet ")" -> Strategy {cons("CommitDynRules")}
-    "rules" Id "=" DynRuleSet           -> Strategy {cons("AssignDynRules")}
-    DynRuleSet                          -> Strategy {cons("IgnoreDynRules")}
-
-    "branch"    "(" RuleDec ":" Strategy  ")" -> DynRuleSet {cons("BranchDynRules")}
-    "union"     "(" {DynRuleSet ","}+ ")" -> DynRuleSet {cons("UnionDynRules")}
-    "intersect" "(" {DynRuleSet ","}+ ")" -> DynRuleSet {cons("IntersectDynRules")}
-
-
-
-  context-free syntax
-
     Id                         -> RuleDec {cons("RuleDecNoArgs")}
     Id "(" {Typedid ","}* ")"  -> RuleDec {cons("RuleDec")}
     Id "(" {Typedid ","}* 
