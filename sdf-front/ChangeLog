@@ -1,5 +1,20 @@
 2004-02-18  Martin Bravenboer  <martin@cs.uu.nl>
 
+	* syn/version-2.1/*: renamed the embedding of SDF 2.1 in Stratego
+	to Stratego-Sdf2-Syntax because SDF syntax definition has the same
+	name and I want to use Stratego-Sdf2 for the new syntax
+	definition. All .meta files have been changed.
+
+	* syn/version-pgen-2.0: now pack-sdf has been updated we can pack
+	the sdf definition in ourselves. The modules have been unpacked
+	and added to SVN. Todo: pack the modules from the ASF library and
+	include the ASF library in the sdf2-bundle.
+
+	* syn/version-pgen-2.0/embeddings/stratego:embedding of the new
+	SDF syntax in Stratego.
+	
+2004-02-18  Martin Bravenboer  <martin@cs.uu.nl>
+
 	* parse/pack-sdf.str: moved from sdf-tools to sdf-front.
 
 	* sig/version-2.1: moved old signatures to subdirectory for the

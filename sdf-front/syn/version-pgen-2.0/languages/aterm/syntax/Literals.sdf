@@ -1,0 +1,33 @@
+module languages/aterm/syntax/Literals
+imports basic/Whitespace
+
+hiddens
+  sorts AlphaNumericalEscChar DecimalEscChar EscChar L-Char
+
+exports
+  sorts QLiteral
+  lexical syntax
+    "\\" ~[012]                    -> AlphaNumericalEscChar {cons("default")}
+
+    "\\" [01] [0-9] [0-9]          -> DecimalEscChar {cons("dec0_199")}
+    "\\" "2" [0-4] [0-9]           -> DecimalEscChar {cons("dec200_249")}
+    "\\" "2" "5" [0-5]             -> DecimalEscChar {cons("dec250_255")}
+
+    alpha:AlphaNumericalEscChar  -> EscChar {cons("alpha-numeric")}
+    decimal:DecimalEscChar       -> EscChar {cons("decimal")}
+
+    ~[\000-\031\"\\] \/ [\t\n\r] -> L-Char {cons("normal")}
+    EscChar                      -> L-Char {cons("escaped")}
+
+    "\"" chars:L-Char* "\""        -> QLiteral {cons("quoted")}
+
+  sorts UQLiteral
+  lexical syntax
+    [a-z]                          -> UQLiteral {cons("one-char")}
+    [a-z][A-Za-z0-9\-]*[A-Za-z0-9] -> UQLiteral {cons("more-chars")}
+
+  sorts Literal
+  context-free syntax
+    QLiteral  -> Literal {cons("qlit")}
+    UQLiteral -> Literal {cons("uqlit")}
+

@@ -1,0 +1,9 @@
+ module languages/aterm/syntax/RealCon
+imports languages/aterm/syntax/IntCon
+exports
+  sorts OptExp RealCon
+  context-free syntax
+    "e" IntCon                -> OptExp {cons("present")}
+                              -> OptExp {cons("absent")}
+    IntCon "." NatCon OptExp  -> RealCon {cons("real-con")}
+

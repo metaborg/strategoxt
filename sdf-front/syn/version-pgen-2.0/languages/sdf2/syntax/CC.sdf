@@ -1,0 +1,7 @@
+module languages/sdf2/syntax/CC
+imports languages/sdf2/syntax/Character-Class 
+        languages/sdf2/syntax/Kernel
+exports
+  context-free syntax
+    CharClass -> Symbol {cons("char-class")}
+
