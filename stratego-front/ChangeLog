@@ -1,3 +1,7 @@
+2003-07-30  Eelco Visser  <visser@cs.uu.nl>
+
+	* syn/Stratego-Strategies.sdf: delimit let with end to avoid ambiguities
+
 2003-07-18  Eelco Visser  <visser@cs.uu.nl>
 
 	* pp/Stratego-pretty.pp, parsed/stratego-ensugar: Improved

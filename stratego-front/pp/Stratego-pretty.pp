@@ -95,11 +95,12 @@
    Id -- KW["id"],
    SVar -- _1,
    
-   Let -- V[H[KW["let"] V[_1]] H[KW["in"] _2]],
+   Let -- V[H[KW["let"] V[_1]] H[KW["in"] _2] KW["end"]],
    Let.1:iter-star -- _1,
    Let.1:iter-star.1:alt -- _1 _2,
    
    Cong			    	    -- H hs=0[_1 KW["("] H[_2] KW[")"]],
+   Cong.2:iter-star-sep 	    -- H hs=0[_1 KW[","]],
 
    CallNoArgs 			    -- _1,
    Call 			    -- H hs=0[_1 KW["("] H[_2] KW[")"]],

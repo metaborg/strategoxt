@@ -11,7 +11,7 @@
    Fail                             -- KW["fail"],
    Id                               -- KW["id"],
    SVar                             -- _1,
-   Let                              -- KW["let"] _1 KW["in"] _2,
+   Let                              -- KW["let"] _1 KW["in"] _2 KW["end"],
    Let.1:iter-star                  -- _1,
    Call                             -- _1 KW["("] _2 KW[")"],
    Call.2:iter-star-sep             -- _1 KW[","],

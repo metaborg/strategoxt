@@ -10,7 +10,10 @@ strategies
         ; xtc-transform(!"stratego-ensugar")
 	; (where(<get-config> "--annotations")
            <+ xtc-transform(!"annos-to-term"))
-        ; xtc-transform(!"ast2text", !["-p", <xtc-find> "Stratego-pretty.pp"])
+        ; xtc-transform(!"ast2abox", !["-p", <xtc-find> "Stratego-pretty.pp" | <pass-verbose>])
+        ; xtc-transform(!"abox2text", !<pass-verbose>)
+
+//        ; xtc-transform(!"ast2text", !["-p", <xtc-find> "Stratego-pretty.pp" | <pass-verbose>])
       )
     )
 
