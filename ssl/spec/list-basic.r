@@ -99,13 +99,16 @@ strategies
   RevExit : ([], ys) -> ys
 
   reverse = 
-    reverse(![])
+    reverse-acc(id, ![])
 
-  reverse(acc) : 
+  reverse(s) = 
+    reverse-acc(s, ![])
+
+  reverse-acc(s, acc) : 
     [] -> <acc>()
 
-  reverse(acc) : 
-    [x | xs] -> <reverse(![x | <acc>])> xs
+  reverse-acc(s, acc) : 
+    [x | xs] -> <where(![<s>x | <acc>] => ys); reverse-acc(!ys)> xs
 
 rules
 

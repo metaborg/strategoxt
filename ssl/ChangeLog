@@ -1,3 +1,8 @@
+2002-01-26  Eelco Visser  <visser@acm.org>
+
+	* spec/list-basic.r: reverse(s) applies s to the elements of the
+	list that is reversed (Suggested by Otto Skrove Bagge)
+
 2002-01-22  Eelco Visser  <visser@acm.org>
 
 	* src/io.c: Removed obsolete (commented out) code for consnil
