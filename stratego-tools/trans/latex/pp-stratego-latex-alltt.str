@@ -19,10 +19,23 @@ strategies
 
   pp-stratego-latex-alltt =
       pcs-input-file
-    ; init-language-binding
+    ; init-language-binding(default-StrategoStratego)
     ; pcs-parse-asfix2me
     ; xtc-io-transform(to-latex-alltt)
     ; xtc-asfix2me-yield
+
+  init-language-binding(overrides) =
+    where(
+      fetch-meta-data(!Meta([]))
+      ; syntax-override
+      ; overrides
+      ; if-verbose2(debug(!"meta-data: "))
+      ; meta-data-to-rules
+      ; where(get-parse-table)
+    )
+
+  default-StrategoStratego = 
+    Meta(fetch(?Syntax(_)) <+ ![Syntax("StrategoStratego") | <id>])
 
   xtc-asfix2me-yield =
     xtc-transform(!"unparsePT")
