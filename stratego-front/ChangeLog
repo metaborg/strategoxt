@@ -1,3 +1,11 @@
+2003-09-30  Valentin David  <valentin@lrde.epita.fr>
+
+	* parse/meta-explode.str: cleanup layouts when concrete syntax parts
+	are treated as AsFix.
+	* parse/parse-stratego.str: deal with --asfix option.
+
+	* test/Makefile.am: Update.
+
 2003-09-16  Martin Bravenboer  <mbravenb@cs.uu.nl>
 
   * parse/meta-explode.str: added explosion

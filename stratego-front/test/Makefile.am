@@ -12,11 +12,15 @@ check_DATA = PropStratego.tbl
 
 TESTS = prop1
 
-check: check1 check2 check3 check4
+check: check1 check1-asfix check2 check3 check4
 
 check1 : Prop.str
 	$(MAKE) clean
-	$(srcdir)/../parse/parse-stratego -i prop1.str -o prop.rtree --verbose 10
+	$(srcdir)/../parse/parse-stratego -i prop1.str -o prop.rtree --verbose 10 --asfix
+
+check1-asfix : Prop.str
+	$(MAKE) clean
+	$(srcdir)/../parse/parse-stratego -i prop1.str -o prop-asfix.rtree --verbose 10
 
 check2 : Prop.str
 	$(MAKE) clean

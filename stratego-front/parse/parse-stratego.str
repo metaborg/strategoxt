@@ -17,6 +17,8 @@ strategies
   + Option("-silent", where(<set-config>("--verbose", 0)),
 	      !"-silent ")
 
+  + Option("--asfix", where(<set-config>("--asfix", 1)), !"--asfix")
+
   parse-stratego =
     xtc-iowrap(parse-stratego-options, 
       where(<extend-config> ("-I", ["./", <xtc-find-path> "StrategoRenamed.sdf"]))
@@ -30,9 +32,11 @@ strategies
     if-verbose6(debug(!"parse-module: "))
     ; where(FILE(basename => base); get-syntax; get-parse-table => FILE(tbl))
     ; xtc-transform(!"sglr", !["-2", "-p", tbl | <![]; if-verbose3(!["-v"])>])
-    ; xtc-transform(!"implode-asfix",    pass-verbose)
+    ; xtc-transform(!"implode-asfix",    <concat> [<pass-verbose>,
+                         <get-config < !["--concrete"] + ![]> "--asfix"])
     ; if-keep1(copy-to(<guarantee-extension(!"atree")> base))
-    ; xtc-transform(!"meta-explode",     pass-verbose)
+    ; xtc-transform(!"meta-explode",     <concat> [<pass-verbose>,
+                         <get-config < !["--asfix"] + ![]> "--asfix"])
     ; xtc-transform(!"stratego-desugar", pass-verbose)
 
   get-syntax = 

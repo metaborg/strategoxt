@@ -1,10 +1,48 @@
 \begin{code}
 module meta-explode
 imports lib stratego-ext
+signature
+  constructors
+    AsFix        : Option
+    appl         : Term * List(Term)        -> Term
+    prod         : List(Term) * Term * Term -> Term
+    cf           : Term                     -> Term
+    opt          : Term                     -> Term
+    layout       : Term
+
+rules
+
+  // There is no Wld/0 in asfix so this not buggy.
+  Clean : Op("Wld",[]) -> Wld
+
+  Clean : Op(i,[]) -> Int(<int-to-string> i)
+          where <is-int> i
+
 strategies
 
-  meta-explode = 
-    iowrap(MetaExplode)
+  // It replaces layouts by the right variable.
+  ImplodeLayout(build) = rec x(alltd(
+    BA(ImplodeLayout(fail), ImplodeLayout(id))
+    <+ Build(ImplodeLayout(id))
+    <+ AM(x, ImplodeLayout(id))
+    <+ RuleNoCond(x, ImplodeLayout(id))
+    <+ Rule(x, ImplodeLayout(id), x)
+    <+ (appl(prod(id, cf(opt(layout)), id), id)
+       ; {layout_var:
+           appl(prod([cf(layout)], cf(opt(layout)), id),
+               oncetd(?meta-var(layout_var)))
+         < !meta-var(layout_var) + try(not(build); !Wld)})))
+                                                                               
+  asfix-option =
+    Option( "--asfix",
+       !AsFix,
+       !"--asfix          treat concrete syntax parts as AsFix trees")
+
+  meta-explode =
+    iowrap(try((option-defined(AsFix), ImplodeLayout(fail)));
+           (id, MetaExplode);
+           try((option-defined(AsFix), topdown(try(Clean))))
+          , asfix-option)
 
   MetaExplode =
     alltd(?ToTerm(<trm-explode>) 
