@@ -80,7 +80,11 @@ strategies
     ; (fetch-elem(
 	\ dir -> 
 	  <fetch-elem(!(<id>, FILE(<concat-strings; file-exists> [dir, "/", mod, ".", <id>])))> exts 
-	  where <is-relpath> mod \	
+	  where <is-relpath> mod \
+        +  
+        \ dir -> 
+	  <fetch-elem(!(<id>, FILE(<concat-strings; file-exists> [mod, ".", <id>])))> exts 
+	  where <is-abspath> mod \
 	)
      <+ <fetch-elem(!(<id>, FILE(<concat-strings; xtc-find-loc> [mod, ".", <id>])))> exts 
      <+ ( <get-config>"--slack" 
