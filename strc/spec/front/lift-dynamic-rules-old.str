@@ -1,0 +1,193 @@
+module lift-dynamic-rules-old
+imports Stratego lib desugar
+strategies
+
+  LiftDynamicRules-old =
+    Specification([id,id, Strategies(define-rule-scope-old; lift-dynamic-rules-old)])
+
+/* Desugar dynamic rule scopes {| ... : ... |} */
+
+  define-rule-scope-old =
+    topdown(try(DefDynamicRuleScope))
+
+  DefDynamicRuleScope :
+    |[ {| : s |} ]| -> s
+
+  DefDynamicRuleScope :
+    |[ {| x, x* : s |} ]| -> |[ scope(!~str:x, {| x* : s |}) ]|
+
+/* Lift dynamic rules from strategy definitions.  One dynamic rule set
+is lifted out at a time, after which the process repeats; a definition
+may contain multiple dynamic rules, and a dynamic rule itself may
+contain dynamic rules. */
+
+  lift-dynamic-rules-old =
+    listtd(repeat(lift-dynamic-rule-old))
+
+  lift-dynamic-rule-old :
+    [def | defs] -> <conc> ([def' | rdefs], defs)
+    where {| ContextVar : 
+	     <def-tvars> def; DeclareContextVars
+           ; <split-dynamic-rule-old(split-dynamic-rules-old => (ss, rdefs); !Seqs(ss))> 
+	        def => def'
+	   |}
+
+  def-tvars =
+    <union> (<tvars>,
+	     <?SDefT(_,_,<map(?DefaultVarDec(<id>) + ?VarDec(<id>,_))>,_)
+	      <+ ?RDefT(_,_,<map(?DefaultVarDec(<id>) + ?VarDec(<id>,_))>,_)
+	      <+ ![]
+             >
+	    )
+
+/* Traverse to find dynamic rule definition.  Record all variables
+that are declared in context using the dynamic rule ContextVar */
+
+  split-dynamic-rule-old(s) = 
+    rec x(oncetd(s <+ split-under-scope-old(x)))
+
+  split-under-scope-old(f) :
+    |[ { x* : s } ]| -> |[ { x* : s' } ]|
+    where {| ContextVar : <DeclareContextVars> x*; <f> s => s' |}
+
+  DeclareContextVars =
+    map({(?ListVar(x) <+ ?x); rules(ContextVar : x -> x)})
+
+/* Split each rule in a dynamic rule set */
+
+  split-dynamic-rules-old :
+    |[ rules(rd*) ]| -> 
+    <map(SplitDynamicRule-old(!|[ assert(!~str:<id>) ]|)); unzip> rd*
+
+  split-dynamic-rules-old :
+    |[ override rules(rd*) ]| -> 
+    <map(SplitDynamicRule-old(!|[ override-key(!~str:<id>) ]|)); unzip> rd*
+
+  split-dynamic-rules-old :
+    |[ extend rules(rd*) ]| -> 
+    <map(ExtendSplitDynamicRule-old(!|[ extend-assert(!~str:<id>) ]|)
+	 + ExtendSplitDynamicRuleUndefined-old(!|[ extend-assert-undefined(!~str:<id>) ]|)); unzip; (id, concat)> rd*
+
+  split-dynamic-rules-old :
+    |[ extend override rules(rd*) ]| -> 
+    <map(ExtendSplitDynamicRule-old(!|[ extend-override-key(!~str:<id>) ]|)
+	 + ExtendSplitDynamicRuleUndefined-old(!|[ extend-override-key-undefined(!~str:<id>) ]|)); unzip; (id, concat)> rd*
+
+/* Split a dynamic rule into an call to assert which records a mapping
+from the left-hand side of the rule instantiated with the bindings to
+context variables to the set of bindings to the context variales not
+occurring in the left-hand side.
+
+Notes:
+ - the stamp identifies the rule that introduced the binding, in order
+   to distinguish between dynamic rules with the same left-hand side
+   but different right-hand sides
+ - non-context variables are replaced with 'Dummy()' in the term that
+   is used as key in the table (dummify)
+ - if all variables in the lhs are context-variables, the lookup in the
+   table can simply use a pointer to the term matched on the lhs (efficient!)
+
+Bug! Current translation scheme does not take extended match patterns
+into account. No contexts and term projects should be used in a
+dynamic rule. */
+
+  dummify =
+    alltd(
+        \Term|[ x ]|     -> |[ Nil() ]| where not(Var(ContextVar + ListVar(ContextVar)))\
+     <+ \Term|[ _ ]|     -> |[ Nil() ]|\
+     <+ \Term|[ <s> ]|   -> |[ Keys( ~term*:<tvars; map(!Var(<id>))> s ) ]|\
+     <+ \Term|[ <s> t ]| -> |[ Keys( ~term*:<tvars; map(!Var(<id>))> (s,t) ) ]|\
+     <+ ?Con(_,_,_); <fatal-error> ["context in left-hand side of dynamic rule"]
+    )
+
+  SplitDynamicRule-old(assert) :
+    |[ f(as1|as2) : t1 -> t2 where s ]| ->
+    (|[ where(<~<assert> f> Pair(t1', Defined(~str:stamp, t*))) ]|,
+     |[ f(as1|as2) : x@t1 -> t2 
+                where where(<rewrite(!~str:f)> t1'' => Defined(~str:stamp, t*)); s ]|)
+    where 
+      <not(eq)>(t2, |[ Undefined() ]|)
+
+      ; new => x
+      ; <dummify> t1 => t1'
+      ; try(?t1; !Var(x)) => t1''
+
+      ; <tvars; map(!Var(<id>))> t1' => keys
+      ; <tvars; filter(test(ListVar(ContextVar) <+ ContextVar); !Var(<id>))> (t2, s) => vals1
+      ; <diff> (vals1, keys) => t*
+
+      ; new => stamp
+
+  SplitDynamicRule-old(assert) :
+    |[ f(as1|as2) : t1 -> Undefined() where s ]| ->
+    (|[ where(<~<assert> f> Pair(t1', Undefined())) ]|,
+     |[ f(as1|as2) : x@t1 -> Undefined()
+                where where(<rewrite(!~str:f)> t1'' => Undefined()); s; fail ]|)
+    where 
+       new => x
+       ; <dummify> t1 => t1'
+       ; try(?t1; !Var(x)) => t1''
+
+
+  ExtendSplitDynamicRule-old(assert) :
+    |[ f(as1|as2) : t1 -> t2 where s ]| -> <desugar>
+    (|[ where(<~<assert> f> (t1', Defined(~str:stamp, t*))) ]|,
+     [
+       |[ f(as1|as2) : x@t1 -> t2 
+            where where(<extend-rewrite(!~str:f)> t1'' => [Defined(~str:stamp, t*) | _]); s ]|,
+
+       |[ g(as1|as2) : x@t1 -> y
+            where <extend-rewrite(!~str:f)> t1''
+		; filter(<f'(s1*|t1*)>(x,<id>)) => y ]|,
+
+       |[ f'(as1|as2) : (t1, Defined(~str:stamp, t*)) -> t2 where Fst; s ]|
+
+     ])
+    where 
+      <not(eq)>(t2, |[ Undefined() ]|)
+
+      ; <conc-strings>("bagof-", f) => g
+      ; <conc-strings>("aux-", f) => f'  // has to be the same such that + of aux-f works
+      ; new => y
+      
+      ; <map((?DefaultVarDec(<id>) + ?VarDec(<id>,_)); !Call(SVar(<id>),[]))> as1 => s1*
+      ; <map((?DefaultVarDec(<id>) + ?VarDec(<id>,_)); !Var(<id>))> as2 => t1*
+
+      ; new => x
+      ; <dummify> t1 => t1'
+      ; try(?t1; !Var(x)) => t1''
+
+      ; <tvars; map(!Var(<id>))> t1' => keys
+      ; <tvars; filter(test(ListVar(ContextVar) <+ ContextVar); !Var(<id>))> (t2, s) => vals1
+      ; <diff> (vals1, keys) => t*
+
+      ; new => stamp
+
+  ExtendSplitDynamicRuleUndefined-old(assert) :
+    |[ f(as1|as2) : t1 -> Undefined() where s ]| ->
+    (|[ where(<~<assert> f> t1') ]|,
+     [|[ f(as1|as2) : x@t1 -> Undefined()
+                where where(<extend-rewrite(!~str:f)> t1'' => []); s; fail ]| ])
+    where 
+       new => x
+       ; <dummify> t1 => t1'
+       ; try(?t1; !Var(x)) => t1''
+
+\end{code}
+
+% Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
+% 
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+% 
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% 
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.

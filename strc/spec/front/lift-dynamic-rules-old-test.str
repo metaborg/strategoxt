@@ -1,9 +1,9 @@
-module lift-dynamic-rules-test
-imports sunit lift-dynamic-rules
+module lift-dynamic-rules-old-test
+imports sunit lift-dynamic-rules-old
 strategies
 
   lift-dynamic-rules-test-io =
-    test-suite(!"lift-dynamic-rules-test",
+    test-suite(!"lift-dynamic-rules-old-test",
       test1;
       test2;
       test3
@@ -11,7 +11,7 @@ strategies
 
   test1 =
     apply-test(!"test1"
-	, Strategies(lift-dynamic-rule)
+	, Strategies(lift-dynamic-rule-old)
 	, !|[ strategies
 		BindConstant(|) =
                   ?Assign(Var(X), E)
@@ -22,13 +22,13 @@ strategies
   test2 =
     apply-test(!"test2"
 	, where(!["X", "E"])
-	  ; SplitDynamicRule(!|[ assert(!~str:<id>) ]|)
+	  ; SplitDynamicRule-old(!|[ assert(!~str:<id>) ]|)
 	, !|[ ConstProp(|) : Var(X) -> E where id ]|
 	)
 
   test3 =
     apply-test(!"test3"
-	, Strategies(lift-dynamic-rule)
+	, Strategies(lift-dynamic-rule-old)
 	, !|[ strategies
 		BindConstant(|) =
                   ?fdec@FunDec(F, _, _)

@@ -8,7 +8,7 @@
  */
 
 module normalize-spec
-imports Stratego lib desugar lift-dynamic-rules
+imports Stratego lib desugar lift-dynamic-rules-old lift-dynamic-rules
 strategies
 
   normalize-spec-io = 
@@ -24,7 +24,7 @@ strategies
     ; topdown(try(HL))		// remove syntactic sugar
     ; vars-to-consts
     ; define-lrules
-    ; LiftDynamicRules(|<get-config <+ !"old"> "--dr")
+    ; (where(<get-config> "--dr" => "new") < LiftDynamicRules + LiftDynamicRules-old)
     ; topdown(try(HL))		// remove syntactic sugar
     ; Specification(fetch(\ Constructors(decls) -> Signature([Constructors(decls)]) \ ))
 
