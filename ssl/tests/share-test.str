@@ -1,6 +1,6 @@
 \literate[test]
 \begin{code}
-module test
+module share-test
 imports share sunit
 
 signature

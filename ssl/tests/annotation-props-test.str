@@ -1,4 +1,4 @@
-module annotation-props-TestSuite
+module annotation-props-test
 //imports sunit annotation-props
 imports liblib
 
