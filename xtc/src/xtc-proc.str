@@ -8,6 +8,7 @@ signature
     TEMP : XtcKey
 
     TempFiles : Table
+    TempDirs : Table
 
 strategies
 
@@ -300,6 +301,17 @@ strategies
           ; <xtc-open-fd> file => fdout
           ; <map(File-as-fd(<fdcopy> (<id>, fdout)))> in-files
           ; <xtc-close-fd> fdout
+
+  /**
+   * Transform character chunks in text file.
+   *
+   * See filter-text-file in char-io module.
+   */
+
+  xtc-filter-text-file(more, done) :
+    FILE(f) -> FILE(g)
+    where <xtc-new-file> f => g
+	; <filter-text-file(more, done)> (f, g)
 
   /**
    * File-as-fd applies the specified strategy to
