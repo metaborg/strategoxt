@@ -1,6 +1,4 @@
 module logging
-imports options
-
 signature
   constructors
     Emergency : Severity
