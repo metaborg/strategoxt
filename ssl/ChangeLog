@@ -1,3 +1,7 @@
+2001-10-05  Eelco Visser  <visser@acm.org>
+
+	* src/term.c (SSL_explode_term): Repair string handling (Merijn de Jonge)
+
 2001-09-28  Eelco Visser  <visser@acm.org>
 
 	* spec/free-variables.r: Replaced collect-kids with crush/3

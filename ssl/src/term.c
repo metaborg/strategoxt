@@ -45,15 +45,26 @@ ATerm SSL_explode_term(ATerm t)
 {
   switch(ATgetType(t)) {
   case AT_APPL :
-    return(App2("TCons", ATmakeString(ATgetName(ATgetSymbol(t))), 
-	      App2("TCons",
-		(ATerm) 
-		list_to_consnil_shallow((ATerm)ATgetArguments((ATermAppl)t)),
-		   App0("TNil"))));
+    {
+      Symbol sym;
+      char*  s;
+      ATerm t1;
+      sym = ATgetSymbol(t);
+      if(ATisQuoted(sym))
+	t = ATmakeStringQ(ATgetName(sym));
+      else
+	t = ATmakeString(ATgetName(sym));
+      return(App2("TCons", t, 
+		  App2("TCons",
+		       (ATerm) 
+		       list_to_consnil_shallow((ATerm)ATgetArguments((ATermAppl)t)),
+		       App0("TNil"))));
+    }
   case AT_INT :
     return(ATmake("TCons(<int>,TCons(Nil,TNil))", ATgetInt((ATermInt)t)));
   case AT_REAL :
     return(ATmake("TCons(<real>,TCons(Nil,TNil))", ATgetReal((ATermReal)t)));
+  default:
     _fail(t);
   }
   _fail(t);
