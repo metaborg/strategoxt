@@ -2,10 +2,16 @@ module foo
 strategies
 
   main =
-    !|[ s1 <+ s2 ]| + s
+    !|[ s1 <+ s2 ]|
 
   foo =
     {| L : s |}
 
   bar =
     s1 <+ s2
+
+  fred = 
+    ?x
+ 
+  barney = 
+    ?[x*]

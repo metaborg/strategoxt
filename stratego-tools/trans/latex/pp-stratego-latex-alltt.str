@@ -35,6 +35,28 @@ strategies
   CheerUp =
     appl(prod([varsym(id)], id, id), map(try(FancyVar)))
 
+  CheerUp =
+    appl(
+        check-cons-of-prod(?"Var")
+      ; check-sort-of-prod(?"StrategoVar")
+    , [ appl(
+          check-sort-of-prod(?"StrategoId")
+        , [appl(id, FancyVar)]
+        )
+      ]
+    )
+
+  CheerUp =
+    appl(
+        check-cons-of-prod(?"ListVar")
+      ; check-sort-of-prod(?"StrategoLID")
+    , [ appl(
+          check-sort-of-prod(?"StrategoLId")
+        , [appl(id, FancyVar)]
+        )
+      ]
+    )
+
   /**
    * Quotation to concrete object syntax
    */
@@ -60,6 +82,10 @@ rules
 
   FancyVar :
     lit(s) -> lit(<concat-strings> ["\\metavar{", s, "}"])
+
+  FancyVar :
+    chars -> <concat> [<explode-string> "\\metavar{", chars, <explode-string> "}"]
+      where <is-list; map(is-int)> chars
 
   FancyLChoice :
     lit("<+") -> lit("\\lchoice")
@@ -89,8 +115,19 @@ strategies
     + "FromStrategy"
 
   check-cons-of-appl(cons-check) = 
+    appl(check-cons-of-prod(cons-check), id)
+
+  check-cons-of-prod(cons-check) =
     where(
-      ?appl(prod(_, _, attrs(<id>)), _)
+      ?prod(_, _, attrs(<id>))
     ; fetch-elem(?term(cons(<id>)))
     ; cons-check
     )
+
+  check-sort-of-prod(sort-check) =
+    where(
+      ?prod(_, <?cf(sort(<id>)) + ?lex(sort(<id>))>, _)
+    ; sort-check
+    )
+
+
