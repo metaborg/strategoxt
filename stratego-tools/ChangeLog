@@ -1,7 +1,19 @@
+2004-03-22  Martin Bravenboer <martin@cs.uu.nl>
+
+	* src/sig2: removed all the sig2 tools. They are not used in
+	practice and are replaced by much better tools in
+	stratego-regular.
+
+	* src/templates: removed, use autoxt
+
+	* src/rsdf2sdf: removed, not used in practice.
+
 2004-02-22   Merijn de Jonge  <mdejonge@cs.uu.nl>
-   * Makefile.am: added autoxt.m4 to EXTRA_DIST
-   * Makefile.am: added line: ACLOCAL_AMFLAGS = -I . such that autoreconf
-     can find autoxt.m4
+
+	* Makefile.am: added autoxt.m4 to EXTRA_DIST
+
+	* Makefile.am: added line: ACLOCAL_AMFLAGS = -I . such that
+	autoreconf can find autoxt.m4
 
 2003-07-12  Eelco Visser  <visser@cs.uu.nl>
 

@@ -1,4 +1,4 @@
-include $(srcdir)/../templates/make_rules
+include $(srcdir)/../make_rules
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 

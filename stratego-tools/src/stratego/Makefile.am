@@ -20,7 +20,7 @@
 
 # $Id: Makefile.am,v 1.8 2003/01/13 20:53:21 stratego Exp $
 
-include $(srcdir)/../templates/make_rules
+include $(srcdir)/../make_rules
 include $(top_srcdir)/Makefile.xt
 
 SUBDIRS = data
