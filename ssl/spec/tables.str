@@ -43,6 +43,12 @@ strategies
   hashtable-keys =
     ?Hashtable(tbl); prim("SSL_hashtable_keys", tbl)
 
+  hashtable-getlist =
+    ?htbl
+  ; hashtable-keys
+  ; map(\ x -> (x, <hashtable-get(|x)> htbl) \)
+
+
 /**
  * Legacy table strategies
  */
