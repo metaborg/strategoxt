@@ -1,3 +1,21 @@
+2003-07-21  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/match/matrix.str: Deal with patterns of the form ?_@Foo(...).
+	This was a bug in the pattern match compiler that went unnoticed for
+	a long time since no one would imagine patterns of this form.
+
+	* spec/opt/dead-var-elim.str: Analysis for choices. Assuming
+	bound/unbound vars analysis prior to application of
+	transformation. Remove annotations afterwards. Dynamic rule
+	left-hand sides don't seem to match terms with annotations.
+
+	* spec/c/bound-unbound-vars.str: Marking second occurrence of same variable
+	in a match pattern as bound.
+
+	* spec/opt/const-prop.str: Undefine current term at places where there
+	is no certainty. Propagating constant bindings to match patterns as
+	well.
+
 2003-07-18  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/opt/const-prop.str: Constant propagation for term variables

@@ -2,7 +2,7 @@ module build-match-laws-test
 imports build-match-laws sunit
 strategies
 
-  build-match-laws-test =
+  build-match-laws-test-io =
     test-suite(!"build-match-laws-test",
 	test1
     )

@@ -15,6 +15,7 @@ strategies
 
   term-to-matrix =
     ! As(Off([]), [<id>])
+    ; topdown(try(?As(Wld, <id>)))
     ; topdown(try(Propagate))
     ; collect-substitutions
     ; \ (ts, s) -> Matrix(<collect-offsets> ts, 
@@ -32,9 +33,9 @@ strategies
       Matrix(<map(?Row(<id>,_)); collect-offsets> rows, rows) \
 
   rename-row = 
-    RenameRow; 
-    Row(topdown(try(Propagate)), id);
-    AddRowSubstitutions
+    RenameRow
+    ; Row(topdown(repeat(Propagate)), id)
+    ; AddRowSubstitutions
 
 rules
 

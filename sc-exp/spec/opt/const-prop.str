@@ -26,36 +26,39 @@ strategies
 
   prop-call(cp) =
     ?CallT(_, _, _)
-    ; CallT(id, cp, alltd(debug(!"binding? "); Binding; debug(!"binding! ")))
+    ; CallT(id
+	   , map(UndefCurrentTerm; cp)
+	   , alltd(debug(!"binding? "); Binding; debug(!"binding! ")))
     ; UndefCurrentTerm
-
-  UndefCurrentTerm =
-    rules(CurrentTerm : _ -> Undefined)
 
   prop-call(cp) =
     ?PrimT(_, _, _)
     ; PrimT(id, cp, alltd(debug(!"binding? "); Binding; debug(!"binding! ")))
-    ; rules(CurrentTerm : _ -> Undefined)
+    ; UndefCurrentTerm
 
   prop-scope(cp) =
     ?Scope(xs, _)
     ; {| Binding :
 	   where(<map({?x; rules(Binding : Var(x) -> Undefined)})> xs)
            ; Scope(id, cp)
+	   ; where(try(
+ 	       CurrentTerm; oncetd({x: ?Var(x); <fetch(?x)> xs})
+               ; UndefCurrentTerm
+	     ))
       |}
     
   prop-sdef(cp) =
     ?SDefT(f, _, xs, _)
     ; {| Binding :
 	   where(<map({?VarDec(x,_); rules(Binding : Var(x) -> Undefined)})> xs)
-           ; SDefT(id, id, id, cp)
+           ; SDefT(id, id, id, UndefCurrentTerm; cp)
       |}
 
   prop-let(cp) =
     ?Let(_,_)
-    ; where(save-Binding => bnd0)
+    ; where(save-Binding => bnd0; save-CurrentTerm => trm0)
     ; Let(map(where(UndefCurrentTerm; <restore-Binding> bnd0); cp)
-         , where(UndefCurrentTerm; <restore-Binding> bnd0); cp)
+         , where(<restore-CurrentTerm> trm0; <restore-Binding> bnd0); cp)
     
   prop-build =
     ?Build(_)
@@ -69,27 +72,39 @@ strategies
     ; debug(!"prop-build: ")
 
   prop-match =
-    ?Match(t)
+    ?Match(_)
     ; debug(!"prop-match: ")
+    ; Match(alltd(Binding))
+    ; debug(!"prop-match expanded: ")
+    ; ?Match(t)
     ; (where(CurrentTerm => ct; debug(!"CurrentTerm: "))
        ; (where(
              <debug(!"match? "); prop-pattern-match; debug(!"match! ")> [(t, ct)]
-	     ; map({?(Var(x), t); debug(!"binding: "); rules(Binding : Var(x) -> t)}))
+	     ; map(introduce-binding))
          <+ where(<debug(!"no match with current term: ")> ("strat: ", <id>, "current: ", ct))
             ; !Fail)
-      <+ rules(CurrentTerm : _ -> t)
+      <+ where(<not(oncetd(?Wld + ?As(_,_)))> t)
+         ; rules(CurrentTerm : _ -> t)
+      <+ id
       )
      ; debug(!"prop-match: ")
+
+  introduce-binding =
+    ?(Var(x), t) ; rules(Binding : Var(x) -> t)
 
   prop-pattern-match = 
     for(\ pairs -> (pairs, []) \
        ,\ ([], sbs) -> sbs \
-       ,(UfIdem, id) <+ MatchVar(Var(id)) + (UfDecompose, id) + TermIsVar(Var(id)))
+       ,(UfIdem, id) <+ MatchVar(Var(id)) + (UfDecompose, id) + TermIsVar(Var(id))
+	 + AsMatch)
 
   TermIsVar(isvar) :
     ([(x,y) | ps], sbs) -> (ps, [(y, x) | sbs])
-    where <not(isvar)> x; <isvar> x
+    where <not(isvar)> x; <isvar> y
         ; <not(fetch({z: ?(y,z); <not(eq)> (x, z)}))> sbs
+
+  AsMatch :
+    [(As(Var(x),p),t) | ps] -> [(Var(x), t), (p, t) | ps]
 
   prop-choice(uv) =
     Choice(id, id)
@@ -105,11 +120,16 @@ strategies
 	           ,GuardedLChoice(id,id,uv))
 
   prop-abstract-choice(left, right) =
-    where(save-Binding => bnd0)
+    where(save-Binding => bnd0; save-CurrentTerm => trm0)
     ; left
-    ; where(save-Binding => bndL; <restore-Binding> bnd0)
+    ; where(
+	save-Binding => bndL; <restore-Binding> bnd0
+        ; save-CurrentTerm => trm1; <restore-CurrentTerm> trm0
+      )
     ; right
-    ; where(<isect-Binding> bndL)
+    ; where(
+        <isect-Binding> bndL; <isect-CurrentTerm> trm1
+      )
 
 
 strategies // Dynamic rule manipulation
@@ -127,8 +147,33 @@ strategies // Dynamic rule manipulation
 
   isect-Binding =
      map(try(?(Scopes,_)
-        <+ {?(key, [Defined(_)|_]);
-            (where(<table-get> ("Binding", key) => [Defined(_)|_])
+        <+ {?(key, [Defined(_,val)|_]);
+            (where(<table-get> ("Binding", key) => [Defined(_,val)|_])
              <+ !(key, [Undefined]))
            }))
     ; restore-Binding
+
+
+  UndefCurrentTerm =
+    rules(CurrentTerm : _ -> Undefined)
+
+  save-CurrentTerm =
+    <table-getlist> "CurrentTerm"
+    ; debug(!"CurrentTerm saved: ")
+
+  clean-CurrentTerm =
+    where(<table-destroy> "CurrentTerm";
+          <table-putlist>("CurrentTerm", []))
+
+  restore-CurrentTerm = ?tbl;
+    where(<table-destroy> "CurrentTerm";
+          <table-putlist>("CurrentTerm", tbl))
+
+  isect-CurrentTerm =
+     map(try(?(Scopes,_)
+        <+ {?(key, [Defined(_,val)|_]);
+            (where(<table-get> ("CurrentTerm", key) => [Defined(_,val)|_])
+             <+ !(key, [Undefined]))
+           }))
+    ; debug(!"CurrentTerm intersected: ")
+    ; restore-CurrentTerm

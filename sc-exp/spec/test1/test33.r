@@ -1,5 +1,5 @@
 module dynrules
-imports list dynamic-rules
+imports list dynamic-rules io
 signature
   constructors
     Var  : String -> Exp
@@ -19,10 +19,10 @@ strategies
 
   inline = 
   rec i({| Subst, Inline :
-           Declare; all(i)
-           <+ Inline; i
-	   <+ Subst; i
-           <+ all(i)
+           debug(!"inline a: "); Declare; debug(!"inline b: "); all(i); debug(!"inline c: ")
+           <+ debug(!"inline d: "); Inline; debug(!"inline da: "); i; debug(!"inline db: ")
+	   <+ debug(!"inline e: "); Subst; debug(!"inline ea: "); i; debug(!"inline b: ")
+           <+ debug(!"inline f: ");  debug(!"inline fa: "); all(i); debug(!"inline fb: ")
         |}
   )
  
@@ -31,6 +31,7 @@ strategies
 
   DeclareVar =
     ?Vdec(x,e); 
+    debug(!"DeclareVar: ");
     rules(
       Inline : Var(x) -> e
       Subst  : Var(x) -> Undefined
@@ -38,9 +39,12 @@ strategies
 
   DeclareFun =
     ?Fdec(f, xs, e); 
+    debug(!"DeclareFun: ");
     rules(
       Inline : 
         Call(f,es) -> e
-        where <zip({?(x,e); rules(Subst : Var(x) -> e)})> (xs, es)
+        where debug(!"Inline: ")
+	    ; <debug(!"Inline: "); zip({?(x,e); rules(Subst : Var(x) -> e)})> (xs, es)
     )
+    ; where(<table-getlist> "Inline"; debug(!"Inline rule: "))
 

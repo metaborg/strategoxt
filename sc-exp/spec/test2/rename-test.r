@@ -44,7 +44,7 @@ Tests
 \begin{code}
    test1 = 
      apply-and-check(!"test1"
-	, erename
+	, debug(!"bla: "); erename;  debug(!"blabla: ")
 	, !App(Abs("x", Var("x")), Var("x"))
 	, {?App(Abs(a_0, Var(a_0)),Var("x")); where(<not(eq)> (a_0, "x"))}
 	)

@@ -20,9 +20,10 @@ strategies
 
   mark-match :
     Match(t) -> Match(t')
-    where <alltd(MarkVar)> t => t'
-        ; <collect(?Var(<id>))> t
-        ; map({?x; rules(MarkVar : Var(x) -> Var(x){"bound"})})
+    where <alltd(
+             MarkVar
+             ; where({?Var(x); rules(MarkVar : Var(x) -> Var(x){"bound"})})
+           )> t => t'
 
   mark-buv =
     mark-match 
@@ -119,8 +120,8 @@ strategies // Dynamic rule manipulation
 
   isect-MarkVar =
      map(try(?(Scopes,_)
-        <+ {?(key, [Defined(_)|_]);
-            (where(<table-get> ("MarkVar", key) => [Defined(_)|_])
+        <+ {?(key, [Defined(_,val)|_]);
+            (where(<table-get> ("MarkVar", key) => [Defined(_,val)|_])
              <+ !(key, [Undefined]))
            }))
     ; restore-MarkVar

@@ -56,10 +56,13 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 %.s7.opt2 : %.s7.opt1 ../opt/const-prop$(EXE)
 	../opt/const-prop -i $< -o $@ -b
 
-%.s7.opt3 : %.s7.opt2 ../opt/dead-var-elim$(EXE)
+%.s7.opt3 : %.s7.opt2 ../c/canonicalize$(EXE)
+	../c/bound-unbound-vars -i $< -o $@ -b
+
+%.s7.opt4 : %.s7.opt3 ../opt/dead-var-elim$(EXE)
 	../opt/dead-var-elim -i $< -o $@ -b
 
-%.s7.opt : %.s7.opt3 ../match/optimize2$(EXE)
+%.s7.opt : %.s7.opt4 ../match/optimize2$(EXE)
 	../match/optimize2 -i $< -o $@ -b
 
 
@@ -77,7 +80,10 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 %.s11 : %.s10 ../opt/const-prop$(EXE)
 	../opt/const-prop -i $< -o $@ -b
 
-%.s11.dve : %.s11 ../opt/dead-var-elim$(EXE)
+%.s11.opt1 : %.s11 ../c/canonicalize$(EXE)
+	../c/bound-unbound-vars -i $< -o $@ -b
+
+%.s11.dve : %.s11.opt1 ../opt/dead-var-elim$(EXE)
 	../opt/dead-var-elim -i $< -o $@ -b
 
 %.s11.opt : %.s11.dve ../match/optimize2$(EXE)

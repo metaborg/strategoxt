@@ -13,7 +13,8 @@ strategies
  
   dead-var-elim-io =
     iowrap(
-      Specification([Signature(id),Strategies(map(dead-var-elim))])
+      Specification([Signature(id),Strategies(map(dead-var-elim
+	; topdown(try(?Var(<!Var(<id>)>){_}))))])
     )
 
   dead-var-elim = rec dve(
@@ -23,6 +24,9 @@ strategies
     <+ PrimT(id, map(dve), map(mark-build-term))
     <+ CallT(id, map(dve), map(mark-build-term))
     <+ Seq(id, dve); Seq(dve, id) 
+    <+ elim-choice(dve)
+    <+ elim-lchoice(dve)
+    <+ elim-guardedlchoice(dve)
     <+ EliminateFromMatch
     <+ all(dve)
   )
@@ -44,21 +48,52 @@ strategies
     ?x; rules(ElimVar : Var(x) -> Wld)
 
   EliminateFromScope =
-    Scope(filter(not(ElimVar)), id)
+    Scope(filter(not(!Var(<id>); ElimVar)), id)
 
   DeclareAlive =
     ?x; rules(ElimVar : Var(x) -> Undefined)
 
   mark-build-term =
-    alltd({?Var(x); override rules(ElimVar : Var(x) -> Undefined)})
+    alltd({?Var(x); debug(!"marking as needed: "); override rules(ElimVar : Var(x) -> Undefined)})
 
   MarkBuild =
     Build(mark-build-term)
 
   EliminateFromMatch =
-    Match(alltd(ElimVar))
+    Match(
+      alltd(
+        {?Var(x){"bound"}
+         ; debug(!"EliminateFromMatch: ")
+         ; override rules(ElimVar : Var(x) -> Undefined)})
+      ; alltd(?Var(<!Var(<id>)>){_}; ElimVar)
+    )
 
- 
+strategies // Choice 
+
+  elim-choice(uv) =
+    Choice(id, id)
+    ; elim-abstract-choice(Choice(uv,id),Choice(id, uv))
+
+  elim-lchoice(uv) =
+    LChoice(id, id)
+    ; elim-abstract-choice(LChoice(uv,id),LChoice(id, uv))
+
+  elim-guardedlchoice(uv) =
+    GuardedLChoice(id, id, id)
+    ; elim-abstract-choice(GuardedLChoice(id,uv,id); GuardedLChoice(uv,id,id)
+	           ,GuardedLChoice(id,id,uv))
+
+  elim-abstract-choice(left, right) =
+    where(save-ElimVar => bnd0)
+    ; left
+    ; where(
+	save-ElimVar => bndL; <restore-ElimVar> bnd0
+      )
+    ; right
+    ; where(
+        <isect-ElimVar> bndL
+      )
+
 strategies // Dynamic rule manipulation
 
   save-ElimVar =
