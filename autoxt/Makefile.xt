@@ -231,7 +231,8 @@ all-local::
         done; \
 	for file in fordummy $(bin_PROGRAMS) $(bin_SCRIPTS) ; do \
 	  if [ "$$file" = "fordummy" ]; then continue; fi; \
-          $(XTC)/bin/xtc -r $(BUILD_REPOSITORY) register -l `pwd` -V $(VERSION) \
+          if test -f "$$file"; then d="`pwd`"; else d="@abs_srcdir@"; fi; \
+          $(XTC)/bin/xtc -r $(BUILD_REPOSITORY) register -l "$$d" -V $(VERSION) \
 		-t `basename $$file $(EXEEXT)` ; \
         done ; \
 	for file in fordummy $(libexec_PROGRAMS) $(libexec_SCRIPTS) ; do \

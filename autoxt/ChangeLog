@@ -1,3 +1,10 @@
+2004-12-07   Merijn de Jonge  <mdejonge@cs.uu.nl>
+	* Makefile.xt: register bin_SCRIPTS in BUILD_REPOSITORY from @abs_srcdir@
+	  when builddir neq srcdir and bin_SCRIPT is not generated. This
+	  ensures that BUILD_REPOSITORY will contain correct tot
+	  non-generated build scripts.
+
+
 2004-09-25   Martin Bravenboer  <martin@cs.uu.nl>
 
 	* autoxt.m4: applied the improved autoxt.m4, which was contributed
