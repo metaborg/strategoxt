@@ -17,10 +17,11 @@
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 #
 #
-# $Id: Makefile.am,v 1.1 2001/08/06 11:56:57 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2001/08/06 12:05:38 mdejonge Exp $
 
 include ../templates/make_rules
 
+SUBDIRS    = data
 
 SRCS       = boxenv.ins boxenv.doc
 EXTRA_DIST = $(SRCS)
