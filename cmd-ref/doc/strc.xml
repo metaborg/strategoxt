@@ -22,12 +22,22 @@
     <para>
       Stratego is a language for program transformation based on the
       paradigm of rewriting strategies.
+
+      The Stratego compiler <command>strc</command> translates a Stratego
+      program to a C program and to an executable if necessary. Stratego
+      modules have file extension .str.
     </para>
 
     <para>
-      Note that strc is a whole program compiler, i.e, it
-      compiles all (recursively) imported modules into
-      a single C source file.
+      Note that <command>strc</command> is a whole program compiler. This
+      means that it completely reads all imported modules and then compiles
+      the result in its entirety to one C program. Thus, there is no separate
+      compilation for modules. This compilation scheme is prompted by some
+      features of the language, and also allows aggressive optimization of
+      programs. A downside however, is that compilation may take longer than
+      expected. Even for a seemingly small module, a large part of the library
+      of over 8000 lines of code is compiled. When developing, compile time
+      can be reduced by reducing the optimization level.
     </para>
   </refsect1>
 

@@ -26,4 +26,10 @@
 
     <include href="pack-sdf.xml" xmlns="http://www.w3.org/2001/XInclude"/>
   </chapter>
+
+  <chapter>
+    <title>GPP</title>
+
+    <include href="ppgen.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </chapter>
 </book>
