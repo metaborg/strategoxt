@@ -73,10 +73,48 @@ including the term =HeuristicFilters(Off)= in the .meta file for that
 module. This is especially useful if you are using a lot of concrete
 syntax and if you are implementing an object language embedding in
 Stratego. Disabling the heuristic filters makes ambiguities and
-non-ambiguities less surprising.
+non-ambiguities less surprising. See the next subsection for an
+example.
 
 ---------+++ Improved Reporting of Ambiguities
 
+If you are using concrete object syntax in Stratego, then you might
+encounter ambiguities in your Stratego program, in particular if you
+disable the heuristic filters of SGLR. Ambiguites in the Stratego code
+(not in the object code) caused the compiler to fail in a horrible way
+during C compilation. This has now been fixed by detecting these
+ambiguities and reporting them in a more user-friendly way.
+
+For example, consider this Stratego program
+<verbatim>
+module foo
+imports Stratego list-cons tuple-cons
+strategies
+
+  main =
+    !|[ Foo ]|
+</verbatim>
+
+and its meta file:
+<verbatim>
+Meta([
+  Syntax("StrategoStratego")
+, HeuristicFilters(Off())
+])
+</verbatim>
+
+The =|[ Foo ]|= construct is highly ambiguous, which is now reported as:
+<verbatim>
+martin@logistico:~/tmp/str> strc -i foo.str
+compiling foo.str
+error: ambiguity in the definition of main. Alternatives:
+    - Op("CallNoArgs",[Op("SVar",[Str("Foo")])])
+    - Op("Var",[Str("Foo")])
+    - Op("ConstType",[Op("SortNoArgs",[Str("Foo")])])
+</verbatim>
+
+This report uses abstract syntax for Stratego, which might be improved
+to concrete syntax in the future.
 
 ---------+++ Cons and Nil: Special Constructor Names
 
