@@ -20,11 +20,10 @@
 include $(top_srcdir)/Makefile.xt
 include package.conf
 
-SUBDIRS	= . src
+SUBDIRS	= . src syn
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 
-EXTRA_DIST = ADDING-TOOLS VERSION configure.in.src genconf.sh \
-             package.conf bootstrap $(PACKAGE)-$(VERSION).pkg program-check.m4 \
+EXTRA_DIST = VERSION package.conf bootstrap $(PACKAGE)-$(VERSION).pkg \
 	     Makefile.xt
 
 # Generation of a package defintion file from the package.conf file. This

@@ -1,0 +1,27 @@
+module ATerm
+imports ATerm-Literals ATerm-Layout
+
+exports
+  sorts ATerm
+
+  context-free syntax
+  
+    Int  Ann? -> ATerm {cons("ATermInt")}
+    Real Ann? -> ATerm {cons("ATermReal")}
+
+    "[" ATerms "]" Ann? -> ATerm {cons("ATermList")}
+    "(" ATerms ")" Ann? -> ATerm {cons("ATermTuple")}
+
+    AFun Ann?                -> ATerm {cons("ATermEmptyAppl")}
+    AFun "(" ATerms ")" Ann? -> ATerm {cons("ATermAppl")}
+    
+    Literal -> AFun {cons("AFun")}
+   
+  aliases
+    {ATerm ","}*       -> ATerms
+    ( "{" ATerms "}" ) -> Ann
+    
+  context-free syntax
+  
+    ATerm -> ATerm-GrammarID {cons("\"aterms-2\"")}
+    
