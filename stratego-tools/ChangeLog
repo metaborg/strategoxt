@@ -1,3 +1,8 @@
+2002-06-05  Merijn de Jonge <mdejonge@cwi.nl>
+   * added strateg-stats package for stratego statistics. Added
+     strip-comments as first component. It removes comments from stratego
+     programs to allow line counting.
+
 2002-06-04  Merijn de Jonge <mdejonge@cwi.nl>
    * Repaired generation of package definition file
 
