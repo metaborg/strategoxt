@@ -19,7 +19,7 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
  02111-1307, USA.
 
- $Id: GraphXML2dot.r,v 1.3 2001/08/08 09:35:48 mdejonge Exp $
+ $Id: GraphXML2dot.r,v 1.4 2001/08/28 14:46:14 mdejonge Exp $
 *)
 
 module GraphXML2dot
@@ -32,8 +32,11 @@ strategies
     = iowrap(GraphXML2dot)
 
   GraphXML2dot
-    = \GraphXML(_,[graph(_,xs)]) -> dot-graph("","digraph","GraphXML",ss)
-       where <filter(node2dot<+edge2dot)>xs => ss
+    = \GraphXML(_,[graph(_,xs)]) -> dot-graph("",alt(1,[]),"GraphXML",semicolon([url|ss]))
+       where 
+
+          !TCons(Attr-Stmt(node(comma([attr-id("URL","\"\\N.html\"")]))),TCons(None,TNil)) => url;
+          <filter(node2dot<+edge2dot)>xs => ss
       \
 
   node2dot
