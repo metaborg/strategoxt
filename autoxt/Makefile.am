@@ -1,13 +1,11 @@
 
 pkgdocdir 	= $(prefix)/doc/$(PACKAGE)
-pkgtemplatedir	= $(pkgdatadir)/package
 
 bin_SCRIPTS 	= autoxt 
-#genxtpack
-pkgdata_DATA 	= autoxt.m4 Makefile.xt Makefile.ext
+pkgdata_DATA 	= autoxt.m4 Makefile.xt
 pkgdoc_DATA 	= README
 
-EXTRA_DIST	= autoxt.src Makefile.xt Makefile.ext autoxt.m4 bootstrap
+EXTRA_DIST	= autoxt.src Makefile.xt autoxt.m4 bootstrap
 
 autoxt: autoxt.src Makefile
 	sed 's@__pkgdatadir__@$(pkgdatadir)@g;\
@@ -20,6 +18,3 @@ genxtpack: genxtpack.src Makefile
              < $< > $@ && chmod +x $@
 
 bootclean:
-
-rpm : dist
-	rpmbuild -ta $(PACKAGE)-$(VERSION).tar.gz
