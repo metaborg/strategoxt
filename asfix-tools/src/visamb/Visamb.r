@@ -164,6 +164,14 @@ strategies
   Lexical =
 	appl(prod([lex(id)],cf(id),id), id); yield; MkLex; F' 
         + appl(prod(id,lit(id),id), id); ![]
+
+
+// Constructors 
+signature
+   constructors
+      lexical : a -> a
+      root :    a -> a
+      N :       a * a -> a   
 \end{code}
 
 

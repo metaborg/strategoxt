@@ -19,13 +19,15 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: asfix1.r,v 1.1 2001/05/30 15:19:00 mdejonge Exp $
+% $Id: asfix1.r,v 1.2 2001/09/01 19:32:40 mdejonge Exp $
 
 \begin{code}
 module asfix1
 signature
   constructors
     term : a * a * a * a * a * a * a * a * a -> a
+    prod : a * a * a * a * a * a * a * a * a -> a
+    'id : a -> a
     appl : Prod * W * List(Tree) -> Tree
     list : Sort * W * Tree -> Tree
     lex  : AFun * Sort -> Tree
