@@ -16,7 +16,7 @@ AM_LDFLAGS  = -avoid-version
 pkgdocdatadir 	= $(pkgdatadir)/doc
 
 pkgdata_DATA   	= libxtclib.rtree liblib.rtree
-pkgdocdata_DATA = libxtclib.str   liblib.str
+# pkgdocdata_DATA = libxtclib.str   liblib.str
 
 EXTRA_DIST      = $(wildcard *.str) $(wildcard *.rtree)
 CLEANFILES      = $(wildcard *.c) $(wildcard *.dep)
@@ -28,10 +28,10 @@ bootclean :
 libxtclib.c : 
 	$(STRC)/bin/strc -c --library --verbose 2 \
         -I $(XTC)/share/xtc \
-        -i ./xtclib.str -o libxtclib.rtree
+        -i ./xtclib.str -o libxtclib.rtree && \
+        rm libxtclib.str
 
-
-PARSESTRATEGO 	= $(STRATEGO_FRONT)/bin/parse-stratego
+PARSESTRATEGO = $(STRATEGO_FRONT)/bin/parse-stratego
 
 .str.rtree :
 	$(PARSESTRATEGO) $(STRINCLUDES) -i $< -o $@ --verbose 0
