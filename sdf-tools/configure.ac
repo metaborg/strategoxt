@@ -20,7 +20,6 @@ AC_SUBST(UNRELEASED)
 
 AC_CONFIG_FILES([
   Makefile
-  VERSION
 
   analyse/Makefile
   analyse/parse-unit/Makefile

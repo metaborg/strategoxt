@@ -1,4 +1,4 @@
 #!/bin/sh
 
 autoxt || exit 1
-autoreconf -if || exit 1
+autoreconf -ifv || exit 1
