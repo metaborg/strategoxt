@@ -60,6 +60,10 @@ GPP
  - The SGLR parser which can be obtained from
    http://www.cwi.nl/projects/MetaEnv/sglr
 
+ - The graphviz graph visualization library package from AT&T (when using
+   the tohtml tool) available from 
+   http://www.research.att.com/sw/tools/graphviz
+
 ----------------------------------------------------------------------
  CONFIGURATION
 
@@ -71,7 +75,8 @@ GPP
                --with-stratego=/stratego/install/directory \
                --with-asfix-tools=/asfix-tools/install/directory \
                --with-pgen=/pgen/install/directory \
-               --with-sglr=/sglr/install/directory
+               --with-sglr=/sglr/install/directory \
+               --with-graphviz=/graphviz/install/directory
 
  This will cause executables to be installed in /usr/local/bin,
  libraries in /usr/local/lib, include files in /usr/local/include.
