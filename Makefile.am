@@ -1,9 +1,9 @@
-SUBDIRS      = $(PKGS)
+SUBDIRS      = . $(PKGS)
 EXTRA_DIST   = $(EXTRA_FILES)
 EXTRA_FILES  = README README.in bootstrap acinclude.m4 strategoxt.spec.in strategoxt.spec
 
-all: pre-pkgs/build/srts.dummy
-install: pre-pkgs/build/srts.dummy install-recursive
+all-local: pre-pkgs/build/srts.dummy
+install-exec-local: pre-pkgs/build/srts.dummy
 
 # installs a local srts for building the StrategoXT packages
 # TODO: configure srts with cpl if necessary
