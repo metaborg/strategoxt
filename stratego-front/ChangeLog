@@ -1,3 +1,11 @@
+2003-08-20  Martin Bravenboer  <mbravenb@cs.uu.nl>
+
+  * parse/meta-explode.str: in str-explode a string should
+    be exploded to a Match, not a Cong (solution suggested by Eelco)
+
+  * parse/meta-explode.str: in str-explode allow a FromApp as an alias of
+    FromStrategy (should be disabled if you don't agree).
+
 2003-08-12  Eelco Visser  <visser@cs.uu.nl>
 
 	* syn/Stratego-Identifiers.sdf: Distinghuish lower and upper case
