@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: gbquery.sh.src,v 1.7 2002/04/05 12:45:44 mdejonge Exp $
+# $Id: gbquery.sh.src,v 1.8 2002/04/05 12:50:13 mdejonge Exp $
 
 # gbquery: obtain information from the Grammar Base
 #
@@ -37,7 +37,7 @@ MAKE=__MAKE__
 
 FUNCTION="list-grammars"
 LANGUAGE=""
-LANGUAGE_VERSION='*'
+LANGUAGE_VERSION=
 
 usage () {
 cat <<ENDCAT>&2
@@ -75,12 +75,12 @@ grammar_dir () {
       exit 1
    fi
 
-   dir=`ls -d ${GB}/share/gb/*.${version} \
+   dir=`ls -d ${GB}/share/gb/*.${version:-*} \
       | fgrep -i "${language}.${version}" \
       | sort -r \
       | head -1 2>/dev/null`
    if [ "a${dir}" = "a" ]; then
-      echo "No grammar ${language}.${version} available in the Grammar Base" >&2
+      echo "No grammar ${language}.${version:-*} available in the Grammar Base" >&2
       exit 1
    fi
    echo ${dir}      
@@ -105,7 +105,7 @@ get_parse_table () {
 
    # Error because no table found at all
    if [ "a${table}" = "a" ]; then
-      echo "No parse table for \"${LANGUAGE}.${LANGUAGE_VERSION}\" available in the Grammar Base." >&2
+      echo "No parse table for \"${LANGUAGE}.${LANGUAGE_VERSION:-*}\" available in the Grammar Base." >&2
       exit 1
    fi 
 
@@ -136,7 +136,7 @@ get_pp_table () {
 
    # Error because no table found at all
    if [ "a${table}" = "a" ]; then
-      echo "No pretty-print table for \"${LANGUAGE}.${LANGUAGE_VERSION}\" available in the Grammar Base." >&2
+      echo "No pretty-print table for \"${LANGUAGE}.${LANGUAGE_VERSION:-*}\" available in the Grammar Base." >&2
       exit 1
    fi 
 
