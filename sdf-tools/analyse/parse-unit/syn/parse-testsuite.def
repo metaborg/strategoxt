@@ -1,19 +1,31 @@
 definition
-module RealCon
-imports IntCon
+module languages/aterm/syntax/RealCon
+
+imports languages/aterm/syntax/IntCon
+
+hiddens
+  context-free start-symbols 
+    RealCon
 
 exports
   sorts OptExp RealCon
+
   context-free syntax
     "e" IntCon -> OptExp {cons("present")}
                -> OptExp {cons("absent")}
 
     IntCon "." NatCon OptExp  -> RealCon {cons("real-con")}
 
-module IntCon
-imports Whitespace
+module languages/aterm/syntax/IntCon
+
+imports basic/Whitespace
+
+hiddens
+  context-free start-symbols 
+    IntCon
 
 exports
+
   sorts NatCon IntCon
   lexical syntax   
     [0-9]+ -> NatCon  {cons("digits")}
@@ -22,19 +34,22 @@ exports
     pos:"+" NatCon -> IntCon {cons("positive")}
     neg:"-" NatCon -> IntCon {cons("negative")}
 
-module Whitespace
+module basic/Whitespace
 
 exports
   lexical syntax
-    [\ \t\n\13]	-> LAYOUT
+    [\ \t\n\r]	-> LAYOUT
   context-free restrictions
-    LAYOUT? -/- [\ \t\n\13]
+    LAYOUT? -/- [\ \t\n\r]
 
-module Literals
-imports Whitespace
+module languages/aterm/syntax/Literals
+
+imports basic/Whitespace
 
 hiddens
   sorts AlphaNumericalEscChar DecimalEscChar EscChar L-Char
+  context-free start-symbols
+    Literal
 
 exports
   sorts QLiteral
@@ -48,7 +63,7 @@ exports
     alpha:AlphaNumericalEscChar  -> EscChar {cons("alpha-numeric")}
     decimal:DecimalEscChar       -> EscChar {cons("decimal")}
 
-    ~[\000-\031\"\\] \/ [\t\n\13] -> L-Char {cons("normal")}
+    ~[\000-\031\"\\] \/ [\t\n\r] -> L-Char {cons("normal")}
     EscChar                      -> L-Char {cons("escaped")}
 
     "\"" chars:L-Char* "\""        -> QLiteral {cons("quoted")}
@@ -66,11 +81,19 @@ exports
   lexical restrictions
     UQLiteral -/- [A-Za-z0-9]
 
-module ATerms
-imports Literals IntCon RealCon
+module languages/aterm/syntax/ATerms
+
+imports languages/aterm/syntax/Literals 
+        languages/aterm/syntax/IntCon 
+        languages/aterm/syntax/RealCon
+
+hiddens
+  context-free start-symbols 
+    ATerm
 
 exports
   sorts ATermList ACon AFun ATerm Ann
+
   context-free syntax
     "[" elems:{ ATerm ","}* "]"             -> ATermList {cons("not-empty")}
     IntCon                                  -> ACon      {cons("int")}
@@ -89,7 +112,7 @@ exports
     "<" type:ATerm ">" Ann                  -> ATerm {cons("annotated-placeholder")}
 
 module parse-testsuite
-imports ATerms
+imports languages/aterm/syntax/ATerms
 hiddens
   context-free start-symbols TestSuite
 

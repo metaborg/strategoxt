@@ -1,5 +1,5 @@
 module parse-testsuite
-imports ATerms
+imports languages/aterm/syntax/ATerms
 hiddens
   context-free start-symbols TestSuite
 
