@@ -1,3 +1,6 @@
+2000-11-08 Merijn de Jonge <mdejonge@cwi.nl>
+        * version is now 0.4 almost ready for release
+
 2000-10-31 Merijn de Jonge <mdejonge@cwi.nl>
         * JJForester added to pkg-list
         * XT now uses autobundle software
