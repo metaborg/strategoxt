@@ -16,7 +16,7 @@ strategies
     ]
     where
       !t => Op(_,_)
-      ; <tvars> t => x1*
+      ; <diff>(<tvars> t, <map(?VarDec(<id>,_))> a2*) => x1*
       ; <diff> (x*, x1*) => x2*
       ; <map(!VarDec(<id>, ConstType(Sort("ATerm", []))))> x1* => a3*
       ; <conc>(a2*, a3*) => a4*
@@ -26,5 +26,5 @@ strategies
      
   worker-wrapper :
     |[ f(a1* | a2*) = ?t; s ]| -> 
-    <worker-wrapper> |[ f(a1* | a2*) = {?t; s} ]|
+    <worker-wrapper> |[ f(a1* | a2*) = { : ?t; s} ]|
      

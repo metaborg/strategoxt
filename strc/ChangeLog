@@ -1,3 +1,11 @@
+2003-09-06  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/opt/worker-wrapper.str: Variables in a match expression are
+	abstracted over; even the variables that are term arguments. As a
+	result these variables are passed twice to the worker. Fix by
+	diffing term arguments from the list of variables passed on to
+	the worker.
+
 2003-09-05  Rob Vermaas   <rob@strategoxt.org>
 	* spec/pack/pack-stratego.str: Don't fail if module
 	file cannot be found, when using --slack flag.
