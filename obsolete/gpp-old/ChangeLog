@@ -1,4 +1,8 @@
 2001-12-19 Merijn de Jonge <mdejonge@cwi.nl>
+   * asfix2box: Fixed insertion of initial and trailing layout in generated
+     box terms
+
+2001-12-19 Merijn de Jonge <mdejonge@cwi.nl>
    * asfix2abox: added initial support for conservative pretty-printing
 
 2001-12-18 Merijn de Jonge <mdejonge@cwi.nl>

@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: layout.r,v 1.2 2001/12/19 12:04:35 mdejonge Exp $
+% $Id: layout.r,v 1.3 2001/12/20 09:43:20 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdejonge@cwi.nl)
 
@@ -83,15 +83,21 @@ insert-layout =
    <+
       id
    }   );
-   // Add initial + trailing layout to result BOX term
+
+   // Put box in HV box when it is a list of boxes
+   (try(is-list; \x -> HV([], x) \ ), id );
    ?(abox, [trailing-layout|xs]);
-   !HV([SOpt(HS,"0")],
-   <filter(
-      not(layout(id))
+   
+   // Put optional initial + trailing layout in H box
+   ![initial-layout, abox, trailing-layout];
+   filter(
+       not(layout(id))
      <+layout(id);has-option(!Conservative);has-layout;layout2box
      <+layout(id);not(has-option(!Conservative));has-significant-layout;layout2box
-     );
-     flat-list>[initial-layout, abox, trailing-layout])
+   );flat-list;
+   (  \ [x] -> x \ 
+   <+ \ x -> H([SOpt(HS,"0")], x ) \
+   )
 
 InsLayout(s) = 
    rec x ( {a,a',w,b,b',xs, ws, ws', ws'',xs',ws''':
