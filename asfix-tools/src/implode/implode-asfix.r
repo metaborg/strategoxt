@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: implode-asfix.r,v 1.2 2001/06/08 09:43:07 mdejonge Exp $
+% $Id: implode-asfix.r,v 1.3 2001/08/02 13:04:34 jvisser Exp $
 
 
 	This module defines a transformation from AsFix terms produced
@@ -85,7 +85,7 @@ strategies
        try((option-defined(ReplaceAppl),  replace-appl));
        try((option-defined(RemoveSeq),    remove-seq));
        try((option-defined(RemovePT),     remove-pt));
-       try(?term; (id, implode-asfix))
+       try(?term; (id, implodeAsfix))
 
   // 1) Flatten lexical sub trees in the parse tree
   flat-lex = downup2( try(implode-lexical), try(flat-layout))
@@ -116,7 +116,7 @@ strategies
   remove-pt = PT
   
   // Apply all previous filters together
-  implode-asfix = 
+  implodeAsfix = 
     PT
   ; rec x(try(
        implode-lexical
