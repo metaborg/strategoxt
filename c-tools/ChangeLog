@@ -1,6 +1,11 @@
+
+
 2003-03-12  Martin Bravenboer <martin@mbravenboer.org>
 
-  * syn/C-Constants.sdf: corrected lexical syntax of Hex.
+  * syn/C-Constants.sdf: corrected lexical syntax of Hex
+    and added suffixes to IntLiterals. All reported
+    by Stefaan Himpe.
+    
   * syn/C-Expressions.sdf: fixed typo in AndExp.
 
 2002-11-23  Martin Bravenboer <martin@mbravenboer.org>

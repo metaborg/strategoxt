@@ -804,7 +804,8 @@ exports
     "#" WS "include" WS "\"" FileName "\"" WS [\n]                   -> ControlLine
     "#" WS "include" WS TokenSeq WS [\n]                             -> ControlLineNot
     "#" WS "line" WS [0-9]+ WS ( "\"" WS FileName WS "\"" )? WS [\n] -> ControlLine
-    "#" WS Constant ( "\"" WS FileName WS "\"" )? WS [\n]            -> ControlLine
+    "#" WS IntLiteral WS "\"" FileName "\"" WS {LineFlag [\ ]+}* [\n] -> ControlLine
+   
     "#" WS "error" WS TokenSeq? WS [\n]                              -> ControlLine
     "#" WS "pragma" WS TokenSeq? WS [\n]                             -> ControlLine
     "#" WS "if" WS ConstantExp WS [\n]                               -> IfLine
@@ -814,6 +815,11 @@ exports
     "#" WS "ifndef" WS ID WS [\n]                                    -> IfLine
     "#" WS "elif" WS ConstantExp WS [\n]                             -> ElifLine
     "#" WS "else" WS [\n]                                            -> ElseLine
+    
+    "1" -> LineFlag
+    "2" -> LineFlag
+    "3" -> LineFlag
+    "4" -> LineFlag
 
   context-free syntax
     ControlLine -> ExternalDef
@@ -844,40 +850,49 @@ module C-Constants
 exports
   context-free syntax
     IntLiteral   -> Constant {cons("IntConst")}
-    FloatLiteral -> Constant {cons("FloatConst")}
     HexLiteral   -> Constant {cons("HexConst")}
+    OctLiteral   -> Constant {cons("OctConst")}
+    FloatLiteral -> Constant {cons("FloatConst")}    
     CharLiteral  -> Constant {cons("CharConst")}
-
-    %%% TODO: Undefined non-terminal??
-    OCTALconstant -> Constant {cons("OctConst")}
 
     %%% TODO: Why a list??
     StringLiteral+ -> StringLiteralList {cons("StringLit")}
 
   lexical syntax
     [L]? "\"" StringChar* "\"" -> StringLiteral
-    [0-9]+                     -> IntLiteral
-    "0" [xX] [0-9a-fA-F]+      -> HexLiteral
-    [L]? "'" Char "'"          -> CharLiteral
-
-    "." [0-9]+ ( [eE] "-"? [0-9]+ )? [fFlL]?        -> FloatLiteral
-    [0-9]+ "." [0-9]* ( [eE] "-"? [0-9]+ )? [fFlL]? -> FloatLiteral
-    [0-9]+ [eE] "-"? [0-9]+ [fFlL]?                 -> FloatLiteral
+    [L]? "'" Char "'"          -> CharLiteral    
+    
+    [1-9][0-9]+            IntFlags? -> IntLiteral
+    "0" [xX] [0-9a-fA-F]+  IntFlags? -> HexLiteral
+    "0" [0-7]+             IntFlags? -> OctLiteral    
+        
+    "." [0-9]+ ( [eE] "-"? [0-9]+ )?        FloatFlags? -> FloatLiteral
+    [0-9]+ "." [0-9]* ( [eE] "-"? [0-9]+ )? FloatFlags? -> FloatLiteral
+    [0-9]+ [eE] "-"? [0-9]+                 FloatFlags? -> FloatLiteral
 
     ~[\\\'\n]                  -> Char
     [\\] [ntvbrfa\\\?\'\"]     -> Char
     [\\] [x] [0-9A-E] [0-9A-E] -> Char
-    Octal                      -> Char
+    OctalEsc                   -> Char
 
     ~[\\\"\n]                  -> StringChar
     [\\] [ntvbrfa\\\?\"]       -> StringChar
     [\\] [x] [0-9A-E] [0-9A-E] -> StringChar
-    Octal                      -> StringChar
-
-    [\\] [0-7] [0-7]? [0-7]?   -> Octal
-
+    OctalEsc                   -> StringChar
+    
+    [\\] [0-7] [0-7]? [0-7]?   -> OctalEsc
+    
+    [uUlL]   -> IntFlags
+    [uU][lL] -> IntFlags
+    
+    [lLfF]   -> FloatFlags
+    [lL][fF] -> FloatFlags
+    
   lexical restrictions
-    IntLiteral HexLiteral FloatLiteral -/- [0-9]
+    FloatLiteral -/- [0-9lLfF]
+    IntLiteral   -/- [0-9UuLl]
+    HexLiteral   -/- [0-9a-zA-F]
+    OctLiteral   -/- [0-9a-zA-F]
 
 module C-Keywords
 exports

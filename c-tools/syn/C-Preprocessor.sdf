@@ -25,7 +25,8 @@ exports
     "#" WS "include" WS "\"" FileName "\"" WS [\n]                   -> ControlLine
     "#" WS "include" WS TokenSeq WS [\n]                             -> ControlLineNot
     "#" WS "line" WS [0-9]+ WS ( "\"" WS FileName WS "\"" )? WS [\n] -> ControlLine
-    "#" WS Constant ( "\"" WS FileName WS "\"" )? WS [\n]            -> ControlLine
+    "#" WS IntLiteral WS "\"" FileName "\"" WS {LineFlag [\ ]+}* [\n] -> ControlLine
+   
     "#" WS "error" WS TokenSeq? WS [\n]                              -> ControlLine
     "#" WS "pragma" WS TokenSeq? WS [\n]                             -> ControlLine
     "#" WS "if" WS ConstantExp WS [\n]                               -> IfLine
@@ -35,6 +36,11 @@ exports
     "#" WS "ifndef" WS ID WS [\n]                                    -> IfLine
     "#" WS "elif" WS ConstantExp WS [\n]                             -> ElifLine
     "#" WS "else" WS [\n]                                            -> ElseLine
+    
+    "1" -> LineFlag
+    "2" -> LineFlag
+    "3" -> LineFlag
+    "4" -> LineFlag
 
   context-free syntax
     ControlLine -> ExternalDef
@@ -45,4 +51,3 @@ exports
     ( ElifLine ExternalDef* )* 
     ( ElseLine ExternalDef* )? 
     "#" "endif" -> ExternalDef {cons("PpIf")}
-

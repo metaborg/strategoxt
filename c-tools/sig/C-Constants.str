@@ -2,8 +2,8 @@ module C-Constants
 signature
   constructors
     IntConst   : IntLiteral -> Constant
-    FloatConst : FloatLiteral -> Constant
     HexConst   : HexLiteral -> Constant
+    OctConst   : OctLiteral -> Constant
+    FloatConst : FloatLiteral -> Constant
     CharConst  : CharLiteral -> Constant
-    OctConst   : OCTALconstant -> Constant
     StringLit  : List(StringLiteral) -> StringLiteralList
