@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: collect.sh,v 1.14 2000/10/31 20:51:38 mdejonge Exp $
+# $Id: collect.sh,v 1.15 2000/11/12 13:51:05 mdejonge Exp $
 
 
 # This script will collect all required packages for an autobundle distribution.
@@ -48,40 +48,53 @@
 
 
 do_collect () {
-   pkg=$1
-   pkg_version=$2
-   pkg_url=$3
-   
-   case ${pkg_url} in
+   pkg="$1"
+   pkg_version="$2"
+   pkg_url="$3"
+
+   tmp=/tmp/autobundle-$$
+   trap "rm -f ${tmp}" 0 1 2 3 4 5 6 7 8 9 10
+
+   case "${pkg_url}" in
       cvsdev* )
          echo "Building a developer installation for \"${pkg}\" from CVS.">&2
-         cvsroot=`echo ${pkg_url} | sed 's/cvsdev://g'`
+         cvsroot=`echo "${pkg_url}" | sed 's/cvsdev://g'`
          (
-            mkdir -p /tmp/autobundle-$$
-            cd /tmp/autobundle-$$
+            mkdir -p ${tmp}
+            cd ${tmp}
             cvs -d ${cvsroot} checkout ${pkg}
-	    mv ${pkg} ${pkg}-${pkg_version}
-            tar cf ${pkg}-${pkg_version}.tar ${pkg}-${pkg_version}
-	    gzip ${pkg}-${pkg_version}.tar
+	    mv ${pkg} "${pkg}-${pkg_version}"
+            tar cf "${pkg}-${pkg_version}.tar" "${pkg}-${pkg_version}"
+	    gzip "${pkg}-${pkg_version}.tar"
          )
-         cp /tmp/autobundle-$$/${pkg}-${pkg_version}.tar.gz .
-         rm -fr /tmp/autobundle-$$/
+
+         pkg_version=`grep AM_INIT ${tmp}/${pkg}/configure.in \
+                         | cut -d, -f2 | tr -d '[ ]' | sed 's/)$//'`
+
+         cp "${tmp}/${pkg}-${pkg_version}.tar.gz" .
+
+         rm -fr ${tmp}
          ;;
                   
       cvs* )
          echo "Building a distribution for \"${pkg}\" from CVS.">&2
          cvsroot=`echo ${pkg_url} | sed 's/cvs://g'`
          (
-            mkdir -p /tmp/autobundle-$$
-            cd /tmp/autobundle-$$
+            mkdir -p ${tmp}
+            cd ${tmp}
             cvs -d ${cvsroot} checkout ${pkg}
             cd ${pkg}
             ./reconf
             ./configure
             gmake dist
          )
-         cp /tmp/autobundle-$$/${pkg}/${pkg}-${pkg_version}.tar.gz .
-         rm -fr /tmp/autobundle-$$/
+
+         pkg_version=`grep AM_INIT ${tmp}/${pkg}/configure.in \
+                         | cut -d, -f2 | tr -d '[ ]' | sed 's/)$//'`
+
+         cp ${tmp}/${pkg}/${pkg}-${pkg_version}.tar.gz .
+
+         rm -fr ${tmp}
          ;;
                   
       http*)
@@ -99,7 +112,12 @@ fi
 
 configure=$1
 pkg_file=$2
+tmp_pkg_file=/tmp/autobundle-$$.pkgs
 pkgs="`grep -v '^#' ${pkg_file} | cut -d, -f1`"
+
+trap "rm -f ${tmp_pkg_file}" 0 1 2 3 4 5 6 7 8 9 10
+
+rm -f  ${tmp_pkg_file}
 
 # collect and unpack software packages
 if [ ! -d ./pkgs ]; then
@@ -111,19 +129,28 @@ do
    pkg_version=`tr -d '[\ \t]' < ${pkg_file} | grep \^${pkg}, | cut -d, -f2`
    pkg_url=`tr -d '[\ \t]' < ${pkg_file} | grep \^${pkg}, | cut -d, -f3-`
 
-   if [ ! -f ./pkgs/${pkg}-${pkg_version}.tar.gz ]; then
+   case $pkg_url in 
+      cvs* ) use_cvs=true;;
+         * ) use_cvs=false;;
+   esac
+
+   if [ ${use_cvs} = "true" \
+        -o ! -f "./pkgs/${pkg}-${pkg_version}.tar.gz" \
+        -o ! -d "./${pkg}-${pkg_version}" ]; 
+   then
       cd ./pkgs
-      do_collect ${pkg} ${pkg_version} ${pkg_url} || exit 1
+      do_collect "${pkg}" "${pkg_version}" "${pkg_url}" || exit 1
       cd ..
-      rm -fr ${pkg}-${pkg_version}
-      rm -fr ./${pkg}
-      gunzip -c ./pkgs/${pkg}-${pkg_version}.tar.gz |  tar xf -
-      if [ ! -f ./${pkg} ]
-      then
-        ln -s ${pkg}-${pkg_version} ${pkg}
-      fi
+
+      rm -fr "${pkg}-${pkg_version}"
+      rm -fr "./${pkg}"
+      gunzip -c "./pkgs/${pkg}-${pkg_version}.tar.gz" |  tar xf -
    fi
 
+   rm -f "./${pkg}" 2>/dev/null
+   ln -s "${pkg}-${pkg_version}" "${pkg}"
+
+   echo "${pkg},${pkg_version},${pkg_url}" >> ${tmp_pkg_file}
 done
 
 # Get the name of the autobundle package
@@ -144,8 +171,8 @@ EOF
  
 for pkg in ${pkgs}
 do
-   pkg_version=`grep \^${pkg}, ${pkg_file} | cut -d, -f2`
-   pkg_url=`grep \^${pkg}, ${pkg_file} | cut -d, -f3-`
+   pkg_version=`grep \^${pkg}, ${tmp_pkg_file} | cut -d, -f2`
+   pkg_url=`grep \^${pkg}, ${tmp_pkg_file} | cut -d, -f3-`
 
    echo "   ${pkg}-${pkg_version} from ${pkg_url}"
 done

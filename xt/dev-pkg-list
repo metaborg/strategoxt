@@ -18,20 +18,21 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: dev-pkg-list,v 1.15 2000/11/10 07:07:26 mdejonge Exp $
+# $Id: dev-pkg-list,v 1.16 2000/11/12 13:51:05 mdejonge Exp $
 
 # This file lists name, version, and location of all components 
 # of an XT distribution.
 
-aterm,1.4.4,http://www.cwi.nl/projects/MetaEnv/aterm/
-asfix,0.2.1,http://www.cwi.nl/projects/MetaEnv/asfix/
-asc-support,0.3,http://www.cwi.nl/projects/MetaEnv/asc-runtime/
-pgen,0.5,http://www.cwi.nl/projects/MetaEnv/pgen/
-sglr,2.39,http://www.cwi.nl/projects/MetaEnv/sglr/
+aterm,1.4.5,http://www.cwi.nl/projects/MetaEnv/aterm/
+asfix,0.2.2,http://www.cwi.nl/projects/MetaEnv/asfix/
+asc-support,0.4,http://www.cwi.nl/projects/MetaEnv/asc-runtime/
+pgen,0.6,http://www.cwi.nl/projects/MetaEnv/pgen/
+sglr,3.0,http://www.cwi.nl/projects/MetaEnv/sglr/
 stratego,0.4.21,http://www.cs.uu.nl/~visser/ftp/
-gb,0.4,cvsdev:gondel.cwi.nl:/ufs/gipe/CVS
-gt,0.4,cvsdev:gondel.cwi.nl:/ufs/gipe/CVS
-gpp,1.30,http://www.cwi.nl/~mdejonge/gpp/download/
-graph-tools,0.1,cvs:eelco@gondel.cwi.nl:/ufs/leon/CVS
+gb,*,cvsdev:gondel.cwi.nl:/ufs/gipe/CVS
+gt,*,cvsdev:gondel.cwi.nl:/ufs/gipe/CVS
+gpp,1.31,http://www.cwi.nl/~mdejonge/gpp/download/
+graph-tools,*,cvs:eelco@gondel.cwi.nl:/ufs/leon/CVS
+JJForester,0.1.1,http://www.cwi.nl/~jvisser/jjforester
 
 

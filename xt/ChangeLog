@@ -1,5 +1,9 @@
 2000-11-12 Merijn de Jonge <mdejonge@cwi.nl>
         * Increased version to 0.5beta
+        * Updated pkg-list and dev-pkg-list to bundle the most recent
+          versions of XT's sub-component's
+        * New version of collect script which no longer requires version
+          numbers of cvs packages to be defined in the package list files.
 
 2000-11-08 Joost Visser <jvisser@cwi.nl>
 	* Updated the NEWS file for version 0.4.
