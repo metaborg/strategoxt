@@ -24,12 +24,13 @@ ATerm Tools
 
 ----------------------------------------------------------------------
 
- Authors: Merijn de Jonge <mdejonge@cwi.nl>, Eelco Visser <visser@acm.org>,
+ Authors: Merijn de Jonge <mdejonge@cwi.nl>
+          Eelco Visser <visser@acm.org>
           Joost Visser <jvisser@cwi.nl>
 
 ----------------------------------------------------------------------
 
- The ATerm Tools package contains a bundle of tools for ATerm manipulation
+ The ATerm Tools package contains tools for ATerm manipulation
 
 ----------------------------------------------------------------------
 
@@ -37,28 +38,24 @@ ATerm Tools
 
  Documentation can be found at the following site:
 
-   http://www.program-transofmration.org
+   http://www.program-transformation.org
 
 ----------------------------------------------------------------------
 
  ATERM LIBRARY
 
- For the installation of GT, the ATerm library is required. The
- ATerm library can be obtained from
+ For the installation of GT, the Stratego compiler is required, which
+ can be obtained from
 
-   http://www.cwi.nl/projects/MetaEnv/aterm/
-
- For installation of this library see the installation instructions
- included in the ATerm package
-
+   http://www.stratego-language.org
 
 ----------------------------------------------------------------------
  CONFIGURATION
 
  Set prefix to any appropriate value when installing and specify
- location of the ATerm library, e.g.,
+ location of the Stratego compiler, e.g.,
 
- > ./configure --prefix=/usr/local --with-aterm=/aterm/install/directory
+ > ./configure --prefix=/usr/local --with-stratego=/stratego/install/directory
 
  This will cause executables to be installed in /usr/local/bin,
  libraries in /usr/local/lib, include files in /usr/local/include.
