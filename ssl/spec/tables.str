@@ -91,6 +91,13 @@ strategies
     hashtable-put(|key, <conc>(value, <hashtable-get(|key) <+ ![]>))
 
   /**
+   * pushes union of values and already present values 
+   * Current term is the hashtable and remains untouched.
+   */
+  hashtable-pushunion(|key, value) =
+    hashtable-put(|key, <union>(value, <hashtable-get(|key) <+ ![]>))
+
+  /**
    * pops off the top element of the stack for key.
    * Current term is the hashtable and remains untouched.
    */
@@ -112,6 +119,54 @@ strategies
     where(hashtable-peek(|key) => val)
   ; hashtable-pop(|key)
   ; !val
+
+  /**
+   * Intersect hashtables
+   *
+   * Changes tbl1; fails if no changes are made
+   */
+
+  hashtable-intersect(|tbl2) = ?tbl1;
+    where(
+
+      hashtable-keys
+      ; filter({key, val1, val2: 
+          ?key
+          ; <hashtable-get(|key)> tbl1 => val1
+          ; <isect>(val1, <hashtable-get(|key) <+ ![]> tbl2) => val2
+          ; not(?val1)
+          ; <hashtable-put(|key, val2)> tbl1
+        }) => changes1
+
+      ; <hashtable-keys> tbl2
+      ; filter({key, val1, val2: 
+          ?key
+          ; not(<hashtable-get(|key)>tbl1)
+          ; <hashtable-put(|key, [])> tbl1
+        }) => changes2
+
+      ; (<not([])> changes1 <+ <not([])> changes2)
+
+    )
+
+  /**
+   * Union of hashtables
+   *
+   * Changes tbl1; fails if no changes are made
+   */
+
+  hashtable-union(|tbl2) = ?tbl1;
+    where(
+      <hashtable-keys> tbl2
+      ; filter({key, val1, val2 : 
+          ?key
+          ; <hashtable-get(|key) <+ ![]> tbl1 => val1
+          ; <union>(<hashtable-get(|key)> tbl2, val1) => val2
+          ; not(?val1)
+          ; <hashtable-put(|key, val2)> tbl1
+        })
+      ; not([])
+    )
 
 /**
  * Legacy table strategies

@@ -22,6 +22,9 @@ strategies
     ; test-copy
     
     ; test-stack
+
+    ; test-intersect
+    ; test-union
     )
 
 strategies
@@ -188,3 +191,135 @@ strategies
       , !tbl
       )
     ; where(<hashtable-destroy> tbl)
+
+  test-intersect =
+    where(new-hashtable => tbl1)
+    ; where(new-hashtable => tbl2)
+    ; apply-test(!"hashtable-intersect setup1"
+      , hashtable-push(|"keyA", "value1")
+        ; hashtable-push(|"keyA", "value2")
+        ; hashtable-push(|"keyA", "value3")
+        ; hashtable-push(|"keyB", "value4")
+      , !tbl1
+      , !tbl1
+      )
+    ; apply-test(!"hashtable-intersect setup2"
+      , hashtable-push(|"keyA", "value1")
+        ; hashtable-push(|"keyA", "value4")
+        ; hashtable-push(|"keyA", "value5")
+        ; hashtable-push(|"keyC", "value6")
+      , !tbl2
+      , !tbl2
+      )
+    ; apply-test(!"hashtable-intersect test-tbl1 A"
+      , hashtable-get(|"keyA")
+      , !tbl1
+      , !["value3", "value2", "value1"]
+      )
+    ; apply-test(!"hashtable-intersect test-tbl1 B"
+      , hashtable-get(|"keyB")
+      , !tbl1
+      , !["value4"]
+      )
+    ; apply-test(!"hashtable-intersect test-tbl2 A"
+      , hashtable-get(|"keyA")
+      , !tbl2
+      , !["value5", "value4", "value1"]
+      )
+    ; apply-and-fail(!"hashtable-intersect test-tbl2 B"
+      , hashtable-get(|"keyB")
+      , !tbl2
+      )
+    ; apply-test(!"hashtable-intersect test-tbl2 C"
+      , hashtable-get(|"keyC")
+      , !tbl2
+      , !["value6"]
+      )
+
+    ; apply-test(!"hashtable-intersect"
+      , hashtable-intersect(|tbl2)
+      , !tbl1
+      , !tbl1
+      )
+
+    ; apply-test(!"hashtable-intersect test-tbl1 A"
+      , hashtable-get(|"keyA")
+      , !tbl1
+      , !["value1"]
+      )
+    ; apply-test(!"hashtable-intersect test-tbl1 B"
+      , hashtable-get(|"keyB")
+      , !tbl1
+      , ![]
+      )
+    ; apply-test(!"hashtable-intersect test-tbl1 C"
+      , hashtable-get(|"keyC")
+      , !tbl1
+      , ![]
+      )
+
+  test-union = 
+    where(new-hashtable => tbl1)
+    ; where(new-hashtable => tbl2)
+    ; apply-test(!"hashtable-union setup1"
+      , hashtable-push(|"keyA", "value1")
+        ; hashtable-push(|"keyA", "value2")
+        ; hashtable-push(|"keyA", "value3")
+        ; hashtable-push(|"keyB", "value4")
+      , !tbl1
+      , !tbl1
+      )
+    ; apply-test(!"hashtable-union setup2"
+      , hashtable-push(|"keyA", "value1")
+        ; hashtable-push(|"keyA", "value4")
+        ; hashtable-push(|"keyA", "value5")
+        ; hashtable-push(|"keyC", "value6")
+      , !tbl2
+      , !tbl2
+      )
+    ; apply-test(!"hashtable-union test-tbl1 A"
+      , hashtable-get(|"keyA")
+      , !tbl1
+      , !["value3", "value2", "value1"]
+      )
+    ; apply-test(!"hashtable-union test-tbl1 B"
+      , hashtable-get(|"keyB")
+      , !tbl1
+      , !["value4"]
+      )
+    ; apply-test(!"hashtable-union test-tbl2 A"
+      , hashtable-get(|"keyA")
+      , !tbl2
+      , !["value5", "value4", "value1"]
+      )
+    ; apply-and-fail(!"hashtable-union test-tbl2 B"
+      , hashtable-get(|"keyB")
+      , !tbl2
+      )
+    ; apply-test(!"hashtable-union test-tbl2 C"
+      , hashtable-get(|"keyC")
+      , !tbl2
+      , !["value6"]
+      )
+
+    ; apply-test(!"hashtable-union"
+      , hashtable-union(|tbl2)
+      , !tbl1
+      , !tbl1
+      )
+
+    ; apply-test(!"hashtable-union test-tbl1 A"
+      , hashtable-get(|"keyA")
+      , !tbl1
+      , !["value5","value4","value3","value2","value1"]
+      )
+    ; apply-test(!"hashtable-union test-tbl1 B"
+      , hashtable-get(|"keyB")
+      , !tbl1
+      , !["value4"]
+      )
+    ; apply-test(!"hashtable-union test-tbl1 C"
+      , hashtable-get(|"keyC")
+      , !tbl1
+      , !["value6"]
+      )
