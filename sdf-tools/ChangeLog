@@ -1,5 +1,10 @@
 2005-02-12  Martin Bravenboer  <martin@cs.uu.nl>
 
+	* analyse/parse-unit/tests/*: implemented a badly needed testsuite
+	for parse-unit.
+
+2005-02-12  Martin Bravenboer  <martin@cs.uu.nl>
+
 	* analyse/parse-unit/parse-unit.str: fixed the testing of
 	testsuites with 'succeeds' and 'fails' output checks. Output
 	checks are not always patterns.

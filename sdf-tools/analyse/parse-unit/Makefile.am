@@ -1,7 +1,7 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-SUBDIRS = syn sig
+SUBDIRS = syn sig tests
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 
 bin_PROGRAMS     = parse-unit

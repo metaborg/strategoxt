@@ -25,6 +25,7 @@ AC_CONFIG_FILES([
   analyse/parse-unit/Makefile
   analyse/parse-unit/syn/Makefile
   analyse/parse-unit/sig/Makefile
+  analyse/parse-unit/tests/Makefile
 
   trans/Makefile
 

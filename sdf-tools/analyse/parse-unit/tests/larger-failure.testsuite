@@ -1,0 +1,30 @@
+testsuite Expressions
+topsort Exp
+
+test simple int literal
+  "5" -> Int("5")
+
+test simple addition
+  "2 + 3" -> Plus(Int("2"), Int("3"))
+
+test addition is left associative
+  "1 + 2 + 3" -> Plus(Plus(Int("1"), Int("2")), Int("3"))
+
+test
+  "1 + 2 + 3" succeeds
+
+test multiplication has higher priority than addition
+  "1 + 2 * 3" -> Plus(Int("1"), Mul(Int("2"), Int("3")))
+
+test
+  "x" -> Var("x")
+
+test
+  "x1" -> Var("x1")
+
+test
+  "x1" fails
+
+test
+  "1 * 2 * 3" -> Mul(Int("1"), Mul(Int("2"), Int("3")))
+
