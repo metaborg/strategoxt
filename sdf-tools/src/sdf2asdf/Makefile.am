@@ -1,43 +1,19 @@
-# GT -- Grammar Tools
-# Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2, or (at your option)
-# any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-# 02111-1307, USA.
-
-# $Id: Makefile.am,v 1.5 2002/05/08 11:03:02 mdejonge Exp $
-
 include $(srcdir)/../templates/make_rules
-include $(srcdir)/../templates/make_rules.stratego
+include $(wildcard *.dep)
+include $(top_srcdir)/Makefile.xt
 
-include $(STRATEGO_PRG:%=%.r.dep)
+SUBDIRS      	 = data
 
-# define any subdir here
-SUBDIRS      = data
+bin_PROGRAMS 	 = sdf2asdf
+libexec_PROGRAMS = sdf2asdf
 
-STRATEGO_PRG = sdf2asdf
+BOOTCLEANFILES 	 = sdf2asdf.c
+CLEANFILES  	 = sdf2asdf_check $(wildcard *.dep)
+TESTS        	 = sdf2asdf_check
 
-bin_SCRIPTS	= $(STRATEGO_PRG)
-libexec_SCRIPTS	= $(STRATEGO_PRG)
+EXTRA_DIST  	 = $(wildcard *.str) $(wildcard *.meta) 
 
-TESTS        = sdf2asdf_check
-
-EXTRA_DIST  += Sdf-2-ASdf.r
-
-CLEANFILES  += sdf2asdf_check
-
-SCFLAGS     += -I $(srcdir)/../lib -I $(ASFIX_TOOLS)/share/asfix-tools
+SCFLAGS     	 = -I $(srcdir)/../lib -I $(ASFIX_TOOLS)/share/asfix-tools
 
 sdf2asdf_check_prog    = sdf2asdf
 sdf2asdf_check_input   = data/test.def.af

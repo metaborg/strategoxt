@@ -1,0 +1,18 @@
+\literate[gt-paths]
+
+	This module provides the basic path names for XT, GT, and GB
+	for use in specifications. This module should be instantiated
+	by configure.
+
+\begin{code}
+module gt-paths
+overlays
+
+  GPP		= "/usr/local/build/Boot"
+  PGEN 		= "/usr/local/build/SDF2"
+  SDFTOOLS	= "/usr/local/build/Boot"
+  SGLR 		= "/usr/local/build/SDF2"
+  STRATEGO 	= ""
+  GRAPHTOOLS    = "/usr/local/build/Boot"
+  ASFIXTOOLS    = "/usr/local/build/Boot"
+\end{code}

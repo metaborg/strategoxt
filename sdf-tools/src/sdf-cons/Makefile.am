@@ -1,42 +1,20 @@
-# Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2, or (at your option)
-# any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-# 02111-1307, USA.
-
-# $Id: Makefile.am,v 1.4 2001/11/22 08:15:59 mdejonge Exp $
-
 include $(srcdir)/../templates/make_rules
-include $(srcdir)/../templates/make_rules.stratego
+include $(top_srcdir)/Makefile.xt
+include $(wildcard *.dep)
 
-include $(STRATEGO_PRG:%=%.dep)
+SUBDIRS      	 = data
 
-SUBDIRS      = data
+bin_PROGRAMS 	 = sdf-cons rm-cons
+libexec_PROGRAMS = sdf-cons rm-cons
+BOOTCLEANFILES 	 = sdf-cons.c rm-cons.c
 
-STRATEGO_PRG = sdf-cons rm-cons
+EXTRA_DIST  	 = KNOWN-BUGS $(wildcard *.str) $(wildcard *.meta) 
 
-bin_SCRIPTS	= $(STRATEGO_PRG)
-libexec_SCRIPTS	= $(STRATEGO_PRG)
+TESTS         	 = sdf_cons_check sdf_cons_injections_check 
+CLEANFILES  	 = sdf_cons_check sdf_cons_injections_check $(wildcard *.dep)
 
-EXTRA_DIST  += KNOWN-BUGS 
-
-TESTS        = sdf_cons_check sdf_cons_injections_check 
-
-SCFLAGS     += -I $(srcdir)/../lib \
-               -I $(ASFIX_TOOLS)/share/asfix-tools --main $@
-
-CLEANFILES  += sdf_cons_check sdf_cons_injections_check
+SCFLAGS     	 = -I $(srcdir)/../lib \
+		   -I $(ASFIX_TOOLS)/share/asfix-tools --main $*
 
 sdf_cons_check_prog    = sdf-cons
 sdf_cons_check_input   = data/test1.sdf.af

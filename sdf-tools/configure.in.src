@@ -17,66 +17,21 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 dnl 02111-1307, USA.
 
-dnl $Id: configure.in.src,v 1.11 2002/11/23 11:30:46 stratego Exp $
+dnl $Id: configure.in.src,v 1.12 2002/12/08 10:57:23 stratego Exp $
 
 AC_INIT(configure.in)
 AM_INIT_AUTOMAKE(__PACKAGE__,__VERSION__)
 
-#AC_CONFIG_AUX_DIR([config])
+USE_XT_PACKAGES
 
-dnl Package switches.
-
-AC_ARG_WITH(sc-boot, 
-  [  --with-sc-boot=DIR         Location of Stratego Compiler], 
-  SC_BOOT=$withval, 
-  SC_BOOT="$prefix"
-)
-AC_SUBST(SC_BOOT)
-
-AC_ARG_WITH(pgen, 
-   [  --with-pgen             Specify location of parser generator package], 
-  PGEN=$withval, 
-  PGEN="$prefix"
-)
-AC_SUBST(PGEN)
-
-AC_ARG_WITH(sglr, 
-   [  --with-sglr             Specify location of SGLR parser package], 
-  SGLR=$withval, 
-  SGLR="$prefix"
-)
-AC_SUBST(SGLR)
-
-AC_ARG_WITH(gpp, 
-   [  --with-gpp             Specify location of GPP parser package], 
-  GPP=$withval, 
-  GPP="$prefix"
-)
-AC_SUBST(GPP)
-
-AC_ARG_WITH(asfix-tools, 
-   [  --with-asfix-tools      Specify location of asfix-tools package], 
-  ASFIX_TOOLS=$withval, 
-  ASFIX_TOOLS="$prefix"
-)
-AC_SUBST(ASFIX_TOOLS)
-
-AC_ARG_WITH(graph-tools, 
-   [  --with-graph-tools      Specify location of graph-tools package], 
-  GRAPH_TOOLS=$withval, 
-  GRAPH_TOOLS="$prefix"
-)
-AC_SUBST(GRAPH_TOOLS)
-
-AC_REVISION($Id: configure.in.src,v 1.11 2002/11/23 11:30:46 stratego Exp $)
+AC_REVISION($Id: configure.in.src,v 1.12 2002/12/08 10:57:23 stratego Exp $)
 
 AC_PROG_CC
 AC_PROG_INSTALL
 
-
 AC_PATH_PROGS(SH, sh)
 
-AM_CONFIG_HEADER(config.h)
+AC_DEFINE_UNQUOTED(XTC_REPOSITORY_LOC, "$REPOSITORY", [Location of the XTC Repository])
 
 dnl Check for perl
 AC_PATH_PROG(PERL,perl)

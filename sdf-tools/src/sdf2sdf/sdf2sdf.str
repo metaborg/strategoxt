@@ -39,9 +39,7 @@ strategies
      ; <call-sdf-tool> ("pack-sdf", ["-i", input, "-o", tmp2])
      ; <call-asfix-tool> ("implode-asfix", ["-i", tmp2, "-o", tmp1])
      ) 
-     <+ <sglr> (<concat-strings>[SDFTOOLS, "/share/sdf-tools/sdf.cons.tbl"],
-                input,
-                tmp1))
+     <+ <parse-sdf>(input, tmp1))
       ;<call-asfix-tool>("implode-asfix", ["-i", tmp1, "-o", tmp2])
     ; (  <call-tools> (tmp2, tmp1, tools) => tmp
     ; <call-sdf-tool> ("sdf-bracket", ["-i", tmp, "-o", tmp1])

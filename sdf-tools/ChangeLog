@@ -1,3 +1,7 @@
+2002-12-08  Eelco Visser  <visser@cs.uu.nl>
+
+	* Using Makefile.stratego template
+
 2002-09-27  Merijn de Jonge <mdejonge@cwi.nl>
    * Package now depends on stratego-0.8
    * sdf-wf: removed use of Obsolete constructor Silent

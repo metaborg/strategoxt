@@ -18,24 +18,15 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.11 2002/11/15 00:06:01 stratego Exp $
+include $(top_srcdir)/Makefile.xt
 
-# define any subdir here
-SUBDIRS      = data
+SUBDIRS      	= data
 
-EXTRA_DIST = $(wildcard *.r) sdf.def sdf.pp sdf.cons.pp sdf.cons.def README
+EXTRA_DIST 	= sdf.def sdf.pp sdf.cons.pp sdf.cons.def README \
+		  $(wildcard *.str) $(wildcard *.meta) 
 
-pkgdata_DATA = $(wildcard *.r) \
-               sdf.tbl sdf.cons.pp sdf.cons.tbl sdf.cons.pp.af
+pkgdata_DATA 	= sdf.tbl sdf.cons.pp sdf.cons.tbl sdf.cons.pp.af
 
-CLEANFILES = sdf.cons.pp.af sdf.tbl sdf.cons.tbl
+CLEANFILES 	= sdf.cons.pp.af sdf.tbl sdf.cons.tbl
 
-sdf.cons.tbl : sdf.cons.def
-	PATH=$(PGEN)/bin:$${PATH} sdf2table -m GB-Main $< -o $@
-
-%.tbl : %.def
-	PATH=$(PGEN)/bin:$${PATH} sdf2table $< -o $@
-
-%.pp.af : %.pp
-	$(MAKE) -f $(GPP)/share/gpp/gpp.Makefile $@
-
+PGEN_FLAGS 	= -m GB-Main  

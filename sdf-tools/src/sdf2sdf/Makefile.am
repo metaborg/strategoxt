@@ -1,44 +1,26 @@
-# Sdf-Tools
-# Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2, or (at your option)
-# any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-# 02111-1307, USA.
-
-# $Id: Makefile.am,v 1.3 2001/11/22 08:16:02 mdejonge Exp $
-
 include $(srcdir)/../templates/make_rules
-include $(srcdir)/../templates/make_rules.stratego
+include $(top_srcdir)/Makefile.xt
+include $(wildcard *.dep)
 
-include $(STRATEGO_PRG:%=%.r.dep)
+SUBDIRS          = data
 
-# define any subdir here
-SUBDIRS      = data
+bin_PROGRAMS 	 = sdf2sdf sdf-regularize
+libexec_PROGRAMS = sdf2sdf sdf-regularize
 
-STRATEGO_PRG = sdf2sdf sdf-regularize
+sdf2sdf.o	 : xtc-conf.h
+sdf-regularize.o : xtc-conf.h
 
-bin_SCRIPTS  = $(STRATEGO_PRG)
+TESTS        	 = sdf2sdf_check
+CLEANFILES       = sdf2sdf_check $(wildcard *.dep)
 
-TESTS        = sdf2sdf_check
+BOOTCLEANFILES 	 = sdf2sdf.c sdf-regularize.c
 
-CLEANFILES  += sdf2sdf_check
+EXTRA_DIST 	 = $(wildcard *.str) $(wildcard *.meta) 
 
-SCFLAGS     += -I $(srcdir)/../lib \
-               -I $(ASFIX_TOOLS)/share/asfix-tools \
-               --main $@ 
-
-# --trace-all
+SCFLAGS     	 = -I $(srcdir)/../lib \
+                   -I $(ASFIX_TOOLS)/share/asfix-tools \
+		   $(XTCFLAGS) \
+                   --main $*
 
 sdf2sdf_check_prog     = sdf2sdf
 sdf2sdf_check_switches = --sdfcons --sdf2asdf --sdf-bracket

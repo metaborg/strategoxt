@@ -1,40 +1,20 @@
-# Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2, or (at your option)
-# any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-# 02111-1307, USA.
-
-# $Id: Makefile.am,v 1.4 2001/11/22 08:16:01 mdejonge Exp $
-
 include $(srcdir)/../templates/make_rules
-include $(srcdir)/../templates/make_rules.stratego
+include $(top_srcdir)/Makefile.xt
+include $(wildcard *.dep)
 
-include $(STRATEGO_PRG:%=%.dep)
+SUBDIRS      	 = data
 
-SUBDIRS      = data
+bin_PROGRAMS 	 = sdf-label sdf-rmlabel
+libexec_PROGRAMS = sdf-label sdf-rmlabel
 
-STRATEGO_PRG = sdf-label sdf-rmlabel
+BOOTCLEANFILES 	 = sdf-label.c sdf-rmlabel.c
+TESTS        	 = sdf_rmlabel_check sdf_label_check
+CLEANFILES  	 = sdf_rmlabel_check sdf_label_check $(wildcard *.dep)
 
-bin_SCRIPTS	= $(STRATEGO_PRG)
-libexec_SCRIPTS	= $(STRATEGO_PRG)
+SCFLAGS     	 = -I $(ASFIX_TOOLS)/share/asfix-tools \
+                   -I $(srcdir)/../lib --main $*
 
-TESTS        = sdf_rmlabel_check sdf_label_check
-
-CLEANFILES  += sdf_rmlabel_check sdf_label_check
-
-SCFLAGS     += -I $(ASFIX_TOOLS)/share/asfix-tools \
-               -I $(srcdir)/../lib --main $@
+EXTRA_DIST 	 = $(wildcard *.str) $(wildcard *.meta) 
 
 sdf_label_check_prog    = sdf-label
 sdf_label_check_input   = data/add-label.sdf.af
