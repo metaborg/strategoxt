@@ -72,6 +72,12 @@ stratego-choice.h: Makefile
 cpl-used: 
 	@echo no
 
+TESTS = dummy-test
+
+dummy-test:
+	echo "#! /bin/sh" > $@
+	chmod +x $@
+
 endif
 
 ##################################################################

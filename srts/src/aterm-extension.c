@@ -29,8 +29,11 @@ ATermList ATmap(ATermList l, ATerm (* f)(ATerm))
 {
   if(ATisEmpty(l))
     return l;
-  else
-    return ATinsert(ATmap(ATgetNext(l), f), f(ATgetFirst(l)));
+  else 
+    {
+      ATerm hd = f(ATgetFirst(l));
+      return ATinsert(ATmap(ATgetNext(l), f), hd);
+    }
 }
 
 ATerm ATmakeString(char *name)

@@ -60,6 +60,33 @@ ATerm _id(ATerm t)
 
 ATerm _all(ATerm t, ATerm f(ATerm))
 {
+  ATerm annos = ATgetAnnotations(t);
+  switch(ATgetType(t))
+    {
+    case AT_APPL :
+      {
+	Symbol c = ATgetSymbol((ATermAppl) t);
+	int i, arity = ATgetArity(c);
+	ATerm kids[arity];
+	for(i = 0; i < arity; i++)
+	  kids[i] = f(ATgetArgument(t, i));
+	t = (ATerm) ATmakeApplArray(c, kids);
+      }
+      break;
+    case AT_LIST :
+      if((ATermList) t != ATempty)
+	{
+	  t = (ATerm)ATmap((ATermList) t, f);
+	}
+      break;
+    }
+  return(ATsetAnnotations(t, annos));
+}
+
+/*
+ATerm _allold(ATerm t, ATerm f(ATerm))
+{
+  ATerm annos = ATgetAnnotations(t);
   switch(ATgetType(t))
     {
     case AT_APPL :
@@ -75,7 +102,7 @@ ATerm _all(ATerm t, ATerm f(ATerm))
 	  } 
 	else 
 	  {
-	    ATerm kids[ALLARRAY];
+	    ATerm kids[arity];
 	    for(i = 0; i < arity; i++)
 	      kids[i] = f(ATgetArgument(t, i));
 	    t = (ATerm) ATmakeApplArray(c, kids);
@@ -92,11 +119,14 @@ ATerm _all(ATerm t, ATerm f(ATerm))
       break;
     }
   
-  return(t);
+  return(ATsetAnnotations(t, annos));
 }
  
+*/
+
 ATerm _one(ATerm t, ATerm f(ATerm))
 {
+  ATerm annos = ATgetAnnotations(t);
   //ATfprintf(stderr, "_one(%t)\n", t);
   switch(ATgetType(t)) {
   case AT_APPL :
@@ -153,12 +183,13 @@ ATerm _one(ATerm t, ATerm f(ATerm))
   default:
     _fail(t);
   }
-  return(t);
+  return(ATsetAnnotations(t, annos));
 }       
        
 ATerm _some(ATerm t, ATerm f(ATerm)) 
 {
   int transformed = 0;
+  ATerm annos = ATgetAnnotations(t);
 
   //ATfprintf(stderr, "_some(%t)\n", t);
 
@@ -250,16 +281,18 @@ ATerm _some(ATerm t, ATerm f(ATerm))
   default :
     _fail(t);
   }
-  return(t);
+  return(ATsetAnnotations(t, annos));
 }           
 
 ATerm _thread(ATerm t, ATerm f(ATerm))
 {
   ATerm env;
+  ATerm annos;
   if(!match_cons(t, sym__2)) 
     _fail(t);
   env = ATgetArgument(t,1);
   t = ATgetArgument(t,0);
+  annos = ATgetAnnotations(t);
   switch(ATgetType(t)) {
   case AT_APPL:
     { 
@@ -307,7 +340,7 @@ ATerm _thread(ATerm t, ATerm f(ATerm))
     }
     break;
   }
-  return (ATerm)ATmakeAppl2(sym__2, t, env);
+  return (ATerm)ATmakeAppl2(sym__2, ATsetAnnotations(t, annos), env);
 }
 
 ATermList CheckATermList(ATerm t)
@@ -400,7 +433,7 @@ int main(int argc, char *argv[])
 
   ATinit(argc, argv, &out_term);
 
-  ATprotectArray(bag, BAGS);
+  ATprotectArray((ATerm*)bag, BAGS); 
   init_constructors_srts();
   init_constructors();
 
