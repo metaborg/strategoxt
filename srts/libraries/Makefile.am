@@ -1,7 +1,8 @@
-pkglib_LIBRARIES = libliblib.a 
-libliblib_a_SOURCES = liblib.c
+#pkglib_LIBRARIES = libliblib.a 
+#libliblib_a_SOURCES = liblib.c
 
-#pkglib_LTLIBRARIES = libliblib.la 
+pkglib_LTLIBRARIES = libliblib.la 
+libliblib_la_SOURCES = liblib.c
 
 pkgdocdatadir 	= $(pkgdatadir)/doc
 

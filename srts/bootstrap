@@ -2,6 +2,7 @@
 rm -f config.cache
 rm -f acconfig.h
 autoxt
+libtoolize --force
 aclocal -I .
 autoconf
 #acconfig

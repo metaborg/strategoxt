@@ -55,6 +55,7 @@ SCFLAGS	       = --verbose 1
 STRINCLUDES    = -I $(top_srcdir)/spec -I $(SRTS)/share/srts
 LDFLAGS	       = -L$(SRTS)/lib/srts
 
+STRATEGORUNLIBS  = -lstratego.opt -lstratego-lib.opt -lATerm-gcc -lm
 annotations_test_LDADD 		= -lliblib $(STRATEGORUNLIBS)
 annotation_props_test_LDADD 	= -lliblib $(STRATEGORUNLIBS)
 char_test_LDADD 		= -lliblib $(STRATEGORUNLIBS)
