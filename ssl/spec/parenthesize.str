@@ -66,7 +66,7 @@ strategies
 
   gen-right :
     (greater, [(Some("right"), ops) | rest]) -> (<conc>(ops, greater), rest)
-    where <for-each-pair(GenLeftAssoc)> (ops, ops)
+    where <for-each-pair(GenRightAssoc)> (ops, ops)
         ; <for-each-pair(GenGreaterThan; GenLeftAssoc; GenRightAssoc)> (greater, ops)
 
   gen-non-assoc :

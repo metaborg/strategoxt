@@ -1,3 +1,10 @@
+2003-08-14  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+  * spec/parenthesize.str: fixed typo in gen-right. GenLeftAssoc
+    should be GenRightAssoc.
+
+  * Moved parenthesize-test.str to tests directory.
+
 2003-08-12  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/scoped-finite-map.str: At the end of a rule scope, remove
