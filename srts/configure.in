@@ -1,4 +1,4 @@
-AC_INIT([srts],[0.9.6pre],[stratego-bugs@cs.uu.nl])
+AC_INIT([srts],[0.10],[stratego-bugs@cs.uu.nl])
 AM_INIT_AUTOMAKE
 
 AM_CONFIG_HEADER(config.h)
