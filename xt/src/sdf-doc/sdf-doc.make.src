@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: sdf-doc.make.src,v 1.1 2001/06/11 11:03:26 mdejonge Exp $
+# $Id: sdf-doc.make.src,v 1.2 2001/06/11 11:11:27 mdejonge Exp $
 
 ###########################################################
 # Parameters:                                             #
@@ -32,7 +32,6 @@ BINDIR=__BINDIR__
 DATADIR=__DATADIR__
 LIBEXEC=__LIBEXEC__
 
-GPP=__GPP__
 GRAPHVIZ=__GRAPHVIZ__
 MAKE=__MAKE__
 VERSION=__VERSION__
@@ -41,7 +40,6 @@ SDFTOOLS=__SDFTOOLS__
 ASFIXTOOLS=__ASFIXTOOLS__
 
 SDFCONSPARSETBL = $(SDFTOOLS)/share/sdf-tools/sdf.cons.tbl
-DOTPPTABLE	= $(GRAPHTOOLS)/share/graph-tools/dot.pp
 
 all: sortgraph $(GRAMMAR).wf
 
@@ -67,8 +65,7 @@ sortgraph: $(GRAMMAR).sg.dot
 	PATH=$(GRAPHTOOLS)/bin:$${PATH} GraphXML2dot -i $< -o $@
 
 %.dot: %.dot.af
-	PATH=$(GPP)/bin:$${PATH}; export PATH ;\
-	ast2abox -i $< -p $(DOTPPTABLE) | box2text -a > $@
+	PATH=$(BINDIR):$${PATH} pp -l dot -O text -a -i $< -o $@
 
 %.ps: %.dot
 	@echo "Writing sort graph to file $@"
