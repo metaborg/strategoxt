@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: README.in,v 1.6 2000/04/07 13:45:00 jvisser Exp $
+# $Id: README.in,v 1.7 2000/04/12 11:37:50 jvisser Exp $
 
 -------------------------------------------------------------------------------
 
@@ -56,7 +56,7 @@
  Documentation for the XT distribution and the packages it bundles can be found
  via the following site:
 
-   http://www.cwi.nl/~mdejonge/xt-wiki/
+   http://www.cs.uu.nl/~visser/xt/
 
 -------------------------------------------------------------------------------
 
