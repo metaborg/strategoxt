@@ -1,4 +1,4 @@
-# GT -- Grammar Tools
+# Sdf-Tools
 # Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
 #                    Eelco Visser <visser@acm.org>
 #                    Joost Visser <jvisser@cwi.nl>
@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.2 2001/06/01 14:12:43 mdejonge Exp $
+# $Id: Makefile.am,v 1.3 2001/06/07 12:32:35 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -30,7 +30,7 @@ include $(STRATEGO_PRG:%=%.dep)
 SUBDIRS      = data
 
 # Which Stratego programs to build
-STRATEGO_PRG = sdf-doc graph-term2GraphXML GraphXML2dot sdf2sg
+STRATEGO_PRG = sdf-doc sdf2sg
 
 # What scipts to build
 bin_SCRIPTS  = $(STRATEGO_PRG)
@@ -39,15 +39,13 @@ bin_SCRIPTS  = $(STRATEGO_PRG)
 #TESTS        = sdf-doc-check sdf2gxml2dot-check
 
 # List all files that should be distributed here
-EXTRA_DIST  += Dot.r GraphXML.r \
-	       sdf-doc-check get-sort-graph.sh.src sdf-doc.make.src \
-               sdf2gxml2dot-check dot.pp GraphXML.pp
-
-pkgdata_DATA = dot.pp GraphXML.pp #dot.pp.af
+EXTRA_DIST  += sdf-doc-check get-sort-graph.sh.src sdf-doc.make.src \
+               sdf2gxml2dot-check
 
 # Additional flags for the Stratego compiler
 SCFLAGS      += -I $(ASFIXTOOLS)/share/asfix-tools \
-                -I $(srcdir)/../lib -I $(srcdir)/../sdf-wf
+                -I $(srcdir)/../lib -I $(srcdir)/../sdf-wf \
+                -I $(GRAPHTOOLS)/share/graph-tools
 
 #% : %.sh.src Makefile
 #	@sed 's@__BINDIR__@$(bindir)@g;\
@@ -72,8 +70,3 @@ SCFLAGS      += -I $(ASFIXTOOLS)/share/asfix-tools \
 #             s@__VERSION__@$(VERSION)@g;' \
 #           < $< > $@
 #	chmod 755 $@
-## rule to generate imploded pretty-print tables
-#%.pp.af : %.pp
-#	@PATH=$(bindir):$(SGLR)/bin:$${PATH}; export PATH ;\
-#	sglr -p ../gpp/pp-tables.tbl -i $< \
-#	   | implode-asfix -S -o $@ 
