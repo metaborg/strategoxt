@@ -18,13 +18,10 @@
 # 02111-1307, USA.
 
 include $(top_srcdir)/Makefile.xt
+
 SUBDIRS 	  = trans src
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
-
-include package.conf
-
-EXTRA_DIST = VERSION package.conf bootstrap $(PACKAGE)-$(VERSION).pkg \
-             Makefile.xt autoxt.m4
+EXTRA_DIST = bootstrap Makefile.xt autoxt.m4
 
 ACLOCAL_AMFLAGS = -I .
 
@@ -33,22 +30,23 @@ ACLOCAL_AMFLAGS = -I .
 # source tree with other software packages. See the online package base
 # (www.program-transformation.org/package-base) for more information and
 # available packages.
-$(PACKAGE)-$(VERSION).pkg: package.conf
-	@( \
-	   echo "package" ;\
-	   echo "identification" ;\
-	   echo "  name=$(name)" ;\
-	   echo "  version=$(version)" ;\
-	   echo "  location=$(location)" ;\
-	   echo "  info=$(info)" ;\
-	   echo "  description='$(description)'" ;\
-	   echo "  keywords=$(keywords)" ;\
-	   echo "" ;\
-           echo "configuration interface" ;\
-           echo $(patsubst %",%\n", $(interface)) | sed 's/"//g;s/^ */  /g' ;\
-           echo "requires" ;\
-	   echo '$(requires)' \
-	         | tr -s '[ \t]' ' ' \
-	         | sed 's/^"/  /;s/" "/"  /g' \
-	         | tr '"' '\n' ;\
-       ) > $@
+# $(PACKAGE)-$(VERSION).pkg: package.conf
+# 	@( \
+# 	   echo "package" ;\
+# 	   echo "identification" ;\
+# 	   echo "  name=$(name)" ;\
+# 	   echo "  version=$(version)" ;\
+# 	   echo "  location=$(location)" ;\
+# 	   echo "  info=$(info)" ;\
+# 	   echo "  description='$(description)'" ;\
+# 	   echo "  keywords=$(keywords)" ;\
+# 	   echo "" ;\
+#            echo "configuration interface" ;\
+#            echo $(patsubst %",%\n", $(interface)) | sed 's/"//g;s/^ */  /g' ;\
+#            echo "requires" ;\
+# 	   echo '$(requires)' \
+# 	         | tr -s '[ \t]' ' ' \
+# 	         | sed 's/^"/  /;s/" "/"  /g' \
+# 	         | tr '"' '\n' ;\
+#        ) > $@
+# 
