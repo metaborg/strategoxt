@@ -25,7 +25,7 @@ strategies
     ; <concat> (<pass-verbose> (), <create-pp-table-args> (), <pass-conservative> ())
 
   pass-conservative =
-    <get-config> "--conservative" < !["-c" | <id>] + ![]
+    <get-config> "--conservative" < !["-c"] + ![]
 
 /*
 usage:
