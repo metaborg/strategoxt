@@ -183,6 +183,9 @@ strategies
   dup =
     ?fd; prim("SSL_dup", fd)
 
+  dup2 =
+    ?(fd1, fd2); prim("SSL_dup2", fd1, fd2)
+
   /**
    * checks the accessibility of the specified file wrt to the
    * specified permissions. Fails if the access is not allowed,
