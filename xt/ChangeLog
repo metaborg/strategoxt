@@ -1,3 +1,7 @@
+2001-08-30 Merijn de Jonge <mdejonge@cwi.nl>
+        * src/sdf-doc/data/incomplete.sdf.sg.dot.af.correct: updated since
+          output of GraphXML2dot has changed a bit.
+
 2001-08-09 Merijn de Jonge <mdejonge@cwi.nl>
         * Added boxenv to required package list package.conf
 
