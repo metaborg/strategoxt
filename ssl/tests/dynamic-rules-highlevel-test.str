@@ -12,8 +12,6 @@ signature
     FooKill : Int -> FooBar
     FooKill : String * Int -> FooBar
 
-    Closure : String * a -> Closure
-
 strategies
 
   main =

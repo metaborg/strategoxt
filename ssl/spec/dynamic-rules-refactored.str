@@ -11,6 +11,7 @@ signature
   constructors
     RuleScope : List(String) * HashTable -> RuleScope
     ChangeSet : HashTable -> RuleScope
+    Closure : String * a -> Closure
 
 strategies // currently active rule set 
 
