@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.2 2002/05/08 07:49:50 mdejonge Exp $
+# $Id: Makefile.am,v 1.3 2002/05/14 15:14:46 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -42,7 +42,7 @@ TESTS        = no_generation_for_bracket_function_check
 EXTRA_DIST   = $(wildcard *.r) \
                ppgen.sh.src sdf.cons.def
 
-BOOTSOURCES  = $(EXTRA_DIST)
+BOOTSOURCES  = $(STRATEGO_PRG:%=%.c) $(wildcard *.c) sdf.cons.tbl
 
 # What should be cleaned
 CLEANFILES  += ppgen no_generation_for_bracket_function_check sdf.cons.tbl

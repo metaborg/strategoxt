@@ -15,9 +15,14 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/06/05 09:11:45 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2002/05/14 15:14:26 mdejonge Exp $
 
 SUBDIRS = @TOOLS@
 
 DIST_SUBDIRS = templates @RELEASED@
 
+bootinstall :
+	list='$(SUBDIRS)'; for subdir in $$list;\
+	do \
+	( cd $$subdir && $(MAKE) bootinstall ) ;\
+	done

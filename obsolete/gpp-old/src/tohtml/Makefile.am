@@ -18,10 +18,11 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.5 2001/11/22 08:09:24 mdejonge Exp $
+# $Id: Makefile.am,v 1.6 2002/05/14 15:14:55 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
+include $(srcdir)/../templates/make_rules.stratego
 
 # define any subdir here
 SUBDIRS       = data

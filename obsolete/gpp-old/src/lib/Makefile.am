@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/12/18 11:25:30 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2002/05/14 15:14:44 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -39,7 +39,7 @@ pkgdata_DATA = gpp.Makefile pp-tables.tbl pp-tables.pp pp-tables.pp.af
 EXTRA_DIST   = $(wildcard *.r) gpp.Makefile.src \
                pp-tables.def pp-tables.pp
 
-BOOTSOURCES  = $(EXTRA_DIST)
+BOOTSOURCES  = gpp.Makefile.src pp-tables.tbl pp-tables.pp pp-tables.pp.af
 
 # What should be cleaned
 CLEANFILES  += gpp.Makefile pp-tables.pp.af pp-tables.tbl

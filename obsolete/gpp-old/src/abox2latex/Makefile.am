@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.2 2002/05/08 07:49:22 mdejonge Exp $
+# $Id: Makefile.am,v 1.3 2002/05/14 15:14:33 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -38,7 +38,7 @@ pkgdata_DATA = default.abbrevs
 # List all files that should be distributed here
 EXTRA_DIST   = $(wildcard *.r) abox2latex.sh.src default.abbrevs
 
-BOOTSOURCES  = $(EXTRA_DIST)
+BOOTSOURCES  = $(STRATEGO_PRG:%=%.c) $(wildcard *.c) default.abbrevs
 
 # What should be cleaned
 CLEANFILES  += abox2latex
