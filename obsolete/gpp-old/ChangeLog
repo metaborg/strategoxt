@@ -1,3 +1,7 @@
+2001-10-06 Merijn de Jonge <mdejonge@cwi.nl> 
+   * Due to a recent Stratego bug fix related to quoted constructor names,
+     gpp now depends on version 0.6.2 of Stratego
+
 2001-09-22 Merijn de Jonge <mdejonge@cwi.nl> 
    * Added -2 switch to sglr call
 
