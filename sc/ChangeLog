@@ -1,3 +1,10 @@
+2002-12-23  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/syn/pack-stratego.str: Inlined specification from pack-modules
+	to improve XTC behaviour, i.e., deleting of temporary files. Added 
+	option --imports to produce a list with all imported modules. Makes
+	stratego-imports obsolete.
+
 2002-12-22  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/sc/sc.str: Emitting intermediate file on various keep levels

@@ -1,29 +1,56 @@
-\literate[Pack-Stratego: Flattening a Stratego module hierarchy]
+/* Module flattening strategy for Stratego based on the generic graph
+flattening algorithm from the library.  The program handles
+command-line options for indicating paths to directories with library
+modules and finds modules based on such a path.  It writes
+dependencies for inclusion in a Makefile to the .r.dep file.
+Pack-stratego calls an external process (parse-mod) for parsing
+individual modules. */
 
-	\begin{abstract}
-
-	Module flattening strategy for Stratego based on the generic
-	graph flattening algorithm from the library.
-	The program handles command-line options for indicating paths
-	to directories with library modules and finds modules based on
-	such a path.
-	It writes dependencies for inclusion in a Makefile to the .r.dep file.
-	Pack-stratego calls an external process (parse-mod) for parsing
-	individual modules.
-
-	\end{abstract}
-
-\begin{code}
 module pack-stratego
-imports lib xtc-lib pack-graph pack-modules sugar config
+imports lib xtc-lib pack-graph sugar config
 strategies
 
   pack-stratego = 
-    pack-modules(pack-stratego-modules, basename)
+    xtc-iowrap(pack-stratego-options,
+      pack-stratego-modules => (files, spec)
+      ; (<get-config> "--imports"
+        ; <map(get-filename; basename); write-to-text> files
+       <+ <create-dep-file> files
+        ; <write-to> spec
+        )
+    )
 
-  pack-stratego-modules(mkpt) =
-    !(["list-cons","tuple-cons", <id>], (), [])
-    ; graph-nodes-roots(Fst; get-module(!["." | <mkpt>()])
+  pack-stratego-options =
+      ArgOption("-I" + "--Include",        
+	where(<extend-config>("-I", ["-I", <id>])); !(),
+	!"-I d | --Include d   Include modules from directory d")
+
+    + Option("--nodep" + "-nodep", 
+	where(<set-config> ("--nodep", "")); !(),
+	!"--nodep              Don't create dependency file")
+
+    + ArgOption("--dep" + "-d" + "-dep",
+	where(<set-config> ("--dep", <id>)); !(),
+	!"--dep f | -d f       Write dependency to file f")
+
+    + Option("--imports",
+	where(<set-config> ("--imports", ())); !(),
+	!"--imports            Produce a list of imported modules only")
+
+  create-dep-file :
+    files -> FILE(depfile)
+    where <get-config> "-o" => outfile
+        ; (<get-config> "--dep" <+ not(<get-config> "--nodep")) => dep-base
+        ; <add-extension> (<id>, "dep") => depfile
+        ; <open-file> (depfile, "w") => dep
+        ; <printnl> (dep, [dep-base | <separate-by(!" \\\n\t")> [" :" | files]])
+        ; <close-file> dep
+
+  pack-stratego-modules =
+    ?FILE(infile)
+    ; where((<get-config; filter(not("-I"))> "-I" <+ ![]) => path)
+    ; !(["list-cons","tuple-cons", infile], (), [])
+    ; graph-nodes-roots(Fst; get-module(!["." | path])
 		       , get-stratego-imports
 		       , \ (n,x,xs) -> [x|xs] \ )
     ; unzip

@@ -85,7 +85,7 @@ strategies
     <conc-strings>(<get-config> "baseout", <suffix>)
 
   dep-name =
-    !["-dep", <<get-config> "-o" <+ <get-config> "infile">]
+    !["--dep", <<get-config> "-o" <+ <get-config> "infile">]
 
   parse =
     get-infile
