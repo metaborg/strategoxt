@@ -36,8 +36,8 @@ strategies
                            "-lATerm-gcc",
                            "-lm"])
 // Currently, warnings are not yet switched on by default
-//    ; <set-config>("--warning", ["all"])
-    ; <set-config>("--warning", [])
+    ; <set-config>("--warning", ["all"])
+//    ; <set-config>("--warning", [])
   )
 
   olevel(n, s) =

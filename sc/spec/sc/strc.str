@@ -1,20 +1,23 @@
-/* This module glues together the components that make up the Stratego
-compiler. It is based on XTC, the transformation tool composition
-model. */
+/** 
+ * This module glues together the components that make up the Stratego
+ * compiler. It is based on XTC, the transformation tool composition
+ * model. 
+ */
 
 module strc
 imports lib xtc-lib strc-options sugar
 strategies
 
   strc = 
-  ( command-line-options
+    command-line-options
     ; profile'(if-verbose1(<printnl>(stderr, ["-----\ncompilation succeeded:   " | <id>])), 
-        compile
-      )
+                compile)
     ; if-verbose2(<printnl>(stderr, ["compilation succeeded (", <run-time>, " secs)"]))
     ; <exit> 0
-  ) <+ <printnl>(stderr, ["compilation failed (", <run-time>, " secs)"])
-       ; <exit> 1
+   <+ <printnl>(stderr, ["compilation failed (", <run-time>, " secs)"])
+      ; <exit> 1
+
+strategies
 
   compile =
     xtc-input(
@@ -23,50 +26,6 @@ strategies
       ; back-end
       ; c-compile
     )
-
-strategies
-
-// Compiler components
-	
-  // Collect all modules into one abstract syntax tree
-
-  get-infile :
-    FILE(file) -> FILE(basein)
-    where <basename> file => basein
-	; if-verbose3(debug(!"basein: "))
-        ; <set-config> ("basein",  basein)
-        ; (<get-config; basename> "-o" <+ !basein) => baseout
-	; if-verbose3(debug(!"baseout: "))
-        ; <set-config> ("baseout", baseout)
-
-  get-outfile(suffix) =
-    <conc-strings>(<get-config> "baseout", <suffix>)
-
-  dep-name =
-    !["--dep", <<get-config> "-o" <+ <get-config> "baseout">]
-
-strategies
-
-  // save intermediate results
-
-  save-as(ext) = 
-    where(
-      copy-to(get-outfile(ext) => file1)
-      ; xtc-transform(!"pp-stratego", !["--abstract" | <pass-verbose> ] )
-      ; copy-to(<conc-strings> (file1, ".txt") => file2)
-      ; say(!["abstract syntax in", file1, " concrete syntax in ", file2])
-    )
-
-  save-as1(ext) = if-keep1(save-as(ext))
-  save-as2(ext) = if-keep2(save-as(ext))
-  save-as3(ext) = if-keep3(save-as(ext))
-  save-as4(ext) = if-keep4(save-as(ext))
-  save-as5(ext) = if-keep5(save-as(ext))
-  save-as6(ext) = if-keep6(save-as(ext))
-  save-as7(ext) = if-keep7(save-as(ext))
-  save-as8(ext) = if-keep8(save-as(ext))
-
-strategies
 
   front-end =
     if-verbose2(debug(!"front-end: "));
@@ -83,177 +42,92 @@ strategies
       ; rename-defs
     )
 
-  parse =
-    get-infile
-    ; xtc-transform(!"pack-stratego", 
-	   <concat> [<dep-name>, <get-config> "-I", <pass-verbose>, <pass-keep>])
-
-  repair-types =
-    xtc-transform(!"repair-types", <concat> [<pass-verbose>] )
-
-  output-ast =
-    try(where(<get-config> "--ast")
-       ; copy-to(get-outfile(!".ast") => astfile)
-       ; where(<echo> ["abstract syntax (after parsing) written to file"])
-       ; xtc-io-exit
-    )
-
-  output-frontend =
-    try(where(<get-config> "-F")
-       ; (extract-all <+ <fatal-error> ["extracting all definitions failed"])
-       ; copy-to(get-outfile(!".tree") => file)
-       ; say(!["abstract syntax (after frontend) written to file"])
-       ; xtc-io-exit
-    )
-
-  // Adding main strategy
-  // What happens if the specification already contains a main strategy? 
-
-  AddMain(m) : 
-    Specification(sects) -> 
-    Specification([Strategies([SDef("main", [], Call(SVar(<m>()), []))])
-                  | sects])
-
-  add-main =
-    try(where(<get-config> "-m" => m; if-verbose2(debug(!"main strategy is: ")))
-        ; xtc-io-transform(AddMain(!m)))
-    ; save-as3(!".with-main")
-
-  frontend = 
-    xtc-transform(!"frontend", !["-b" | <pass-verbose> ])
-    ; save-as2(!".fro")
-
-  extract = 
-    xtc-transform(!"extract", !["-b" | <pass-verbose> ])
-    ; save-as2(!".ext")
-
-  warnings = 
-    xtc-transform(!"stratego-warnings", 
-       <concat>[<pass-verbose>, ["-b"]|
-	        <get-config; map(!["--warning", <id>])> "--warning"])
-
-  extract-all = 
-    xtc-transform(!"extract-all", !["-b" | <pass-verbose> ])
-
-  rename-defs = 
-    xtc-transform(!"rename-defs", !["-b" | <pass-verbose> ])
-    ; save-as2(!".rn")
-
-  stratego-nf = 
-    xtc-transform(!"Stratego-Normal-Format", !["-b" | <pass-verbose> ])
-
-strategies
-
   optimize =
     if-verbose2(say(!"optimization"));
     profile'(if-verbose1(<printnl>(stderr, ["optimization succeeded:  " | <id>])), 
 	if-verbose3(where(<get-config> "-O"; debug(!"optimization level: ")))
-
-        ; olevel1(optimize1)
-        ; save-as1(!".opt1")
-
-        ; olevel2(try(where(not(<get-config> "--fusion")); fusion))
-        ; save-as2(!".opt2")
-
-	; olevel6(optimize2; worker-wrapper)
-        ; save-as6(!".opt3a")
-
-        ; olevel4(inline; dead-def-elim)
-        ; save-as4(!".opt3")
-
-        ; olevel4(optimize2)
+	// SIMPLIFICATION
+        ; olevel1(	
+	    simplify1
+            				; save-as1(!".opt1")
+ 	  )
+	// INNERMOST FUSION
+        ; olevel2(
+	    try(where(not(<get-config> "--fusion"))
+		; fusion
+            				; save-as2(!".opt2")
+            )
+          )
+	// INLINING
+	// inline small definitions, congruences
+        ; olevel4(
+	    worker-wrapper
+            				; save-as6(!".opt3a")
+	    ; inline
+	    ; dead-def-elim
+            				; save-as4(!".opt3")
+	    ; simplify1
+          )
         ; define-congruences
-        ; olevel4(const-prop; bound-unbound-vars; dead-var-elim)
-        ; olevel4(optimize2)
-        ; save-as4(!".opt4")
-
-        ; olevel2(compile-match)
-	; olevel2(desugar-case)
-        ; save-as2(!".opt5")
-
-        ; olevel5(inline)
-        ; save-as5(!".opt7")
-	; olevel5(dead-def-elim)
-        ; save-as5(!".opt8")
-
-        ; olevel3(optimize2)
-        ; save-as3(!".opt9")
-        ; olevel3(const-prop
-		; save-as3(!".opt10")
-		; bound-unbound-vars
-		; save-as3(!".opt11")
-		; dead-var-elim
+	// CONSTANT PROPAGATION
+        ; olevel4( 
+	    const-prop
+	    ; bound-unbound-vars
+	    ; dead-var-elim
+	    ; simplify3
+            				; save-as4(!".opt4")
+          )
+	// PATTERN MATCH COMPILATION
+        ; olevel2( 
+	    compile-match
+	    ; desugar-case
+            				; save-as2(!".opt5")
 	  )
-        ; save-as3(!".opt12")
-        ; olevel1(optimize3)
-        ; save-as1(!".opt13")
-
-        ; olevel1(stratego-of)
-        ; save-as1(!".opt14")
+	// INLINING 
+        // inline local definitions introduced by pattern match compilation
+        ; olevel5(
+	   inline
+           				; save-as5(!".opt7")
+	   ; dead-def-elim
+           				; save-as5(!".opt8")
+          )
+	// CONSTANT PROPAGATION
+        ; olevel3(
+	    simplify2 // lift term arguments from (prim) calls
+            				; save-as3(!".opt9")
+            ; const-prop
+	    				; save-as3(!".opt10")
+	    ; bound-unbound-vars
+	    				; save-as3(!".opt11")
+	    ; dead-var-elim
+            				; save-as3(!".opt12")
+	  )
+	// SIMPLIFICATION
+        ; olevel1(
+	    simplify3
+            				; save-as1(!".opt13")
+	    ; stratego-of
+            				; save-as1(!".opt14")
+          )
     )
 
-  optimize1 = 
-    xtc-transform(!"optimize1", !["-b" | <pass-verbose> ])
-
-  fusion = 
-    xtc-transform(!"fusion", !["-b" | <pass-verbose> ])
-
-  inline = 
-    xtc-transform(!"inline", !["-b" | <pass-verbose> ])
-
-  dead-def-elim = 
-    xtc-transform(!"dead-def-elim", !["-b" | <pass-verbose> ])
-
-  compile-match = 
-    xtc-transform(!"compile-match", !["-b" | <pass-verbose> ])
-
-  desugar-case = 
-    xtc-transform(!"desugar-case", !["-b" | <pass-verbose> ])
-
-  const-prop = 
-    xtc-transform(!"const-prop", !["-b" | <pass-verbose> ])
-
-  bound-unbound-vars = 
-    xtc-transform(!"bound-unbound-vars", !["-b" | <pass-verbose> ])
-
-  dead-var-elim = 
-    xtc-transform(!"dead-var-elim", !["-b" | <pass-verbose> ])
-
-  worker-wrapper = 
-    xtc-transform(!"worker-wrapper", !["-b" | <pass-verbose> ])
-
-  optimize2 = 
-    xtc-transform(!"optimize2", !["-b" | <pass-verbose> ])
-
-  optimize3 = 
-    xtc-transform(!"optimize3", !["-b" | <pass-verbose> ])
-
-  define-congruences = 
-    xtc-transform(!"define-congruences", !["-b" | <pass-verbose> ])
-
-  stratego-of = 
-    xtc-transform(!"Stratego-Optimized-Format", !["-b" | <pass-verbose> ])
-
-  canonicalize = 
-    xtc-transform(!"canonicalize", !["-b" | <pass-verbose> ])
- 
-  lift-definitions = 
-    xtc-transform(!"lift-definitions", !["-b" | <pass-verbose> ])
- 
-  bound-unbound-vars = 
-    xtc-transform(!"bound-unbound-vars", !["-b" | <pass-verbose> ])
- 
 strategies
 
   back-end =
     if-verbose2(say(!"back-end"));
     profile'(if-verbose1(<printnl>(stderr, ["back-end succeeded:      " | <id>])), 
       canonicalize
-      ; save-as1(!".can")
-      ; olevel1(lift-definitions)
-      ; save-as1(!".opt15")
-      ; olevel3(bound-unbound-vars)
-      ; save-as1(!".opt16")
+      					; save-as1(!".can")
+      ; olevel1(
+          lift-definitions
+      					; save-as1(!".opt15")
+          ; simplify1
+      					; save-as1(!".opt16")
+        )
+      ; olevel3(
+	  bound-unbound-vars
+      					; save-as3(!".opt17")
+	)
       ; stratego-cf
       ; s2c
       ; ac2abox
@@ -261,35 +135,7 @@ strategies
       ; rename-to(get-outfile(!".c"))
     )
 
-  stratego-cf = 
-    xtc-transform(!"Stratego-Canonical-Format", !["-b" | <pass-verbose> ])
-
-  s2c =
-    xtc-transform(!"s2c",  
-	 <concat>[<pass-verbose>, ["-b" ]
-	         |<get-config; map(!["--C-include", <id>])> "--C-include"])
-			  
-		  // <TraceAllFuns; !["--trace-all"] <+ get-traced-funs> () )
-
-  get-traced-funs =
-    <table-getlist> "TraceFun";
-    map(\ (f, _) -> ["-t", f] \ );
-    concat;
-    if-verbose1([] <+ debug(!"traced functions: "))
-
-
-  // Pretty-printing generated code
-
-  ac2abox = 
-    xtc-transform(!"ast2abox", !["-p", <xtc-find> "C-pretty.pp"])
-
-  abox2text = 
-    xtc-transform(!"abox2text")
-
-
-strategies
-
-  // Compile generated C code
+strategies // Compile generated C code
 
   c-compile =
      where(<get-config> "-c")
@@ -313,3 +159,146 @@ strategies
         ; <if-verbose3(debug); call> 
 	    ("gcc", [ofile, "-o", target | <get-config> "-CL"])
 
+strategies
+
+  // save intermediate results
+
+  save-as(ext) = 
+    where(
+      copy-to(get-outfile(ext) => file1)
+      ; xtc-transform(!"pp-stratego", !["--abstract" | <pass-verbose> ] )
+      ; copy-to(<conc-strings> (file1, ".txt") => file2)
+      ; say(!["abstract syntax in", file1, " concrete syntax in ", file2])
+    )
+
+  save-as1(ext) = if-keep1(save-as(ext))
+  save-as2(ext) = if-keep2(save-as(ext))
+  save-as3(ext) = if-keep3(save-as(ext))
+  save-as4(ext) = if-keep4(save-as(ext))
+  save-as5(ext) = if-keep5(save-as(ext))
+  save-as6(ext) = if-keep6(save-as(ext))
+  save-as7(ext) = if-keep7(save-as(ext))
+  save-as8(ext) = if-keep8(save-as(ext))
+
+  output-ast =
+    try(where(<get-config> "--ast")
+       ; copy-to(get-outfile(!".ast") => astfile)
+       ; where(<echo> ["abstract syntax (after parsing) written to file"])
+       ; xtc-io-exit
+    )
+
+  output-frontend =
+    try(where(<get-config> "-F")
+       ; (extract-all <+ <fatal-error> ["extracting all definitions failed"])
+       ; copy-to(get-outfile(!".tree") => file)
+       ; say(!["abstract syntax (after frontend) written to file"])
+       ; xtc-io-exit
+    )
+
+strategies 
+
+  comp(|f) =
+    xtc-transform(!f, !["-b" | <pass-verbose> ])
+
+  comp(|f,args) =
+    xtc-transform(!f, <concat>[["-b"], <pass-verbose>, args])
+
+strategies // COMPILER COMPONENTS
+
+// PARSER
+
+  parse =
+    get-infile
+    ; comp(|"pack-stratego", <concat> [<dep-name>, <get-config> "-I", <pass-keep>])
+
+  // Collect all modules into one abstract syntax tree
+
+  get-infile :
+    FILE(file) -> FILE(basein)
+    where <basename> file => basein
+	; if-verbose3(debug(!"basein: "))
+        ; <set-config> ("basein",  basein)
+        ; (<get-config; basename> "-o" <+ !basein) => baseout
+	; if-verbose3(debug(!"baseout: "))
+        ; <set-config> ("baseout", baseout)
+
+  get-outfile(suffix) =
+    <conc-strings>(<get-config> "baseout", <suffix>)
+
+  dep-name =
+    !["--dep", <<get-config> "-o" <+ <get-config> "baseout">]
+
+// FRONTEND
+
+  // Adding main strategy
+  // What happens if the specification already contains a main strategy? 
+
+  AddMain(m) : 
+    Specification(sects) -> 
+    Specification([Strategies([SDef("main", [], Call(SVar(<m>()), []))])
+                  | sects])
+
+  add-main =
+    try(where(<get-config> "-m" => m; if-verbose2(debug(!"main strategy is: ")))
+        ; xtc-io-transform(AddMain(!m)))
+    ; save-as3(!".with-main")
+
+  warnings = 
+    xtc-transform(!"stratego-warnings", 
+       <concat>[<pass-verbose>, ["-b"]|
+	        <get-config; map(!["--warning", <id>])> "--warning"])
+
+  repair-types 		= comp(|"repair-types")
+  frontend 		= comp(|"frontend"); save-as2(!".fro")
+  extract 		= comp(|"extract"); save-as2(!".ext")
+  extract-all 		= comp(|"extract-all")
+  rename-defs 		= comp(|"rename-defs"); save-as2(!".rn")
+  stratego-nf 		= comp(|"Stratego-Normal-Format")
+
+
+// OPTIMIZER
+
+  fusion 		= comp(|"fusion")
+  inline 		= comp(|"inline")
+  dead-def-elim 	= comp(|"dead-def-elim")
+  compile-match 	= comp(|"compile-match")
+  desugar-case 		= comp(|"desugar-case")
+  const-prop 		= comp(|"const-prop")
+  bound-unbound-vars 	= comp(|"bound-unbound-vars")
+  dead-var-elim 	= comp(|"dead-var-elim")
+  worker-wrapper 	= comp(|"worker-wrapper")
+  simplify1 		= comp(|"simplify1")
+  simplify2 		= comp(|"simplify2")
+  simplify3 		= comp(|"simplify3")
+  define-congruences 	= comp(|"define-congruences")
+  stratego-of 		= comp(|"Stratego-Optimized-Format")
+  canonicalize 		= comp(|"canonicalize")
+  lift-definitions 	= comp(|"lift-definitions")
+  bound-unbound-vars 	= comp(|"bound-unbound-vars")
+
+
+// BACK-END
+
+  stratego-cf 		= comp(|"Stratego-Canonical-Format")
+
+  s2c =
+    xtc-transform(!"s2c",  
+	 <concat>[<pass-verbose>, ["-b" ]
+	         |<get-config; map(!["--C-include", <id>])> "--C-include"])
+			  
+		  // <TraceAllFuns; !["--trace-all"] <+ get-traced-funs> () )
+
+  get-traced-funs =
+    <table-getlist> "TraceFun";
+    map(\ (f, _) -> ["-t", f] \ );
+    concat;
+    if-verbose1([] <+ debug(!"traced functions: "))
+
+
+  // Pretty-printing generated code
+
+  ac2abox = 
+    xtc-transform(!"ast2abox", !["-p", <xtc-find> "C-pretty.pp"])
+
+  abox2text = 
+    xtc-transform(!"abox2text")
