@@ -1,12 +1,12 @@
-Version 1.7 
-   released: 2001-09-20
+Version 1.8 released: 2001-11-27
+   * Bug fix in genconf.sh
+
+Version 1.7 released: 2001-09-20
 
    * The boxenv package is restructured and contains a package.conf file
      containing package information and configuration.
 
-Version 1.0b8
-
-   released: February 21, 2000
+Version 1.0b8 released: February 21, 2000
 
    * Starting with this version, boxenv.sty is under the GNU General
      Public Licence (GPL). This means that you can redistribute the
