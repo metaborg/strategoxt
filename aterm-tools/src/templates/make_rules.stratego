@@ -18,17 +18,20 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: make_rules.stratego,v 1.1 2001/05/30 11:49:17 mdejonge Exp $
+# $Id: make_rules.stratego,v 1.2 2001/05/30 14:26:33 mdejonge Exp $
 
 SC = sc
 
 EXTRA_DIST   += $(STRATEGO_PRG:%=%.r)
 
 CLEANFILES   += $(STRATEGO_PRG) \
-               $(STRATEGO_PRG:%=%.c) \
-               $(STRATEGO_PRG:%=%.dep)
+                $(STRATEGO_PRG:%=%.c) \
+                $(STRATEGO_PRG:%=%.dep)
+
+SCFLAGS       = -I $(srcdir) -I .
+
 % : %.r
-	$(SC) $(SCFLAGS) -i $*
+	$(SC) $(SCFLAGS) -i $< -o $@
 
 %.dep :
 	touch $@
