@@ -55,10 +55,19 @@ strategies
       )
 
  /**
-  * copy-file copies a file using memory mapped I/O.
+  * Copy a file using memory mapped I/O. 
+  *
+  * If newname is a directory the file is copied to a file in the directory
+  * with the same base name as the old file.
   */
   copy-file =
-    ?(oldname, newname); prim("SSL_copy", oldname, newname)
+    ?(oldname, newname)
+    ; where(
+        if <file-exists; filemode; isdir> newname then
+          <concat-strings>[newname, "/", <base-filename> oldname]
+        else !newname end => newname'
+      )
+    ; prim("SSL_copy", oldname, newname')
 
   fdcopy =
     ?(fdin, fdout); prim("SSL_fdcopy", fdin, fdout)
