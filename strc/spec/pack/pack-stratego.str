@@ -115,7 +115,14 @@ strategies
 
   include-pathname :
     file -> (file, tree)
-      where log-include
+      where has-extension(!".rtree")
+          ; log-include
+          ; <ReadFromFile> file => tree
+
+  include-pathname :
+    file -> (file, tree)
+      where has-extension(!".str")
+          ; log-include
           ; <parse-stratego> file => tree
 
   include-from-dir-cached(|mod) :
