@@ -5,7 +5,7 @@ pkglib_LTLIBRARIES = libliblib.la
 libliblib_la_SOURCES = liblib.c
 
 AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_srcdir)/ssl -I$(ATERM)/include -I$(srcdir)
-AM_LDFLAGS  = -avoid-version -no-undefined
+AM_LDFLAGS  = -avoid-version 
 
 pkgdocdatadir 	= $(pkgdatadir)/doc
 

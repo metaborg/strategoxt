@@ -5,7 +5,7 @@ include_HEADERS = \
   ssl-string.h term.h annotations.h placeholder.h dir.h
 
 AM_CPPFLAGS = -I$(srcdir)/../src -I$(ATERM)/include
-AM_LDFLAGS  = -avoid-version -no-undefined
+AM_LDFLAGS  = -avoid-version
 
 pkglib_LTLIBRARIES = \
   libstratego-lib.la \
