@@ -1,9 +1,8 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-pkgdata_DATA   = Box.pp.af pp-table.pp.af
-docdata_DATA   = Box.pp pp-table.pp
+pkgdata_DATA   = Box.pp Box.pp.af pp-table.pp pp-table.pp.af
 
-EXTRA_DIST     = $(docdata_DATA) $(pkgdata_DATA)
-BOOTCLEANFILES = $(pkgdata_DATA) 
+EXTRA_DIST     = $(pkgdata_DATA)
+BOOTCLEANFILES = Box.pp.af pp-table.pp.af
 

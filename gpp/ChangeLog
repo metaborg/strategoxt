@@ -1,3 +1,7 @@
+2004-02-22   Merijn de Jonge  <mdejonge@cs.uu.nl>
+   * pp/Box.pp and pp/pp-tables.pp are now installed in <prefix>/share/gpp
+     (no longer in <prefix>/share/doc/gpp
+
 2003-11-25   Merijn de Jonge  <M.de.Jonge@tue.nl>
    * pptable-diff: if --new switch is missing, standard input is used
    * ppgen: added -t switch to produce AST output
