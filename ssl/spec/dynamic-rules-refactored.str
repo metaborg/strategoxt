@@ -96,7 +96,7 @@ strategies // high-level API with implicit rule set
 
   dr-ignore-state(s|name) =
     where(
-      dr-new-ruleset
+      dr-new-rule-set
       ; dr-switch-rule-set(|name) => rs
     )
   ; s
