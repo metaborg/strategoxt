@@ -28,7 +28,7 @@
 
 \begin{code}
 module bin-tree-set
-imports bin-tree
+imports bin-tree term
 strategies
 
   branch(mky, lt, gt, et) = 

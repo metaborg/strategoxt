@@ -1,5 +1,5 @@
 module term-io
-imports io list string integers time conditional
+imports io list string integers conditional
 
 /**
  * Term input and output
