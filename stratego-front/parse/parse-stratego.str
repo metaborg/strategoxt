@@ -31,8 +31,9 @@ strategies
 
   parse-module =
     if-verbose6(debug(!"parse-module: "))
-    ; where(FILE(basename => base); get-syntax; get-parse-table => FILE(tbl))
-    ; where(FILE(basename => base); pass-sort => sort)
+    ; where( FILE(basename => base) )
+    ; where( get-syntax ; get-parse-table => FILE(tbl) )
+    ; where( pass-sort => sort )
     ; xtc-transform(!"sglr", !["-2", "-p", tbl | <conc> (<if-verbose3(!["-v"])> [], sort)])
     ; xtc-transform(!"implode-asfix",
         !["-b" | <concat> [<pass-verbose>, <get-config < !["--concrete"] + ![]> "--asfix"]])
@@ -50,7 +51,7 @@ strategies
     if-verbose6(debug(!"get-syntax: "))
     ; ?FILE(file)
     ; (<get-config> "--syntax"
-     <+ get-meta
+     <+ get-meta 
       ; (?Meta(<fetch-elem(?Syntax(<id>))>)
          <+ <error> ["Meta data ", <id>, " for module ", file, " not valid: "]; fail)
      <+ !"Stratego"
