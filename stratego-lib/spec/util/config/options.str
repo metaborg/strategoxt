@@ -227,7 +227,7 @@ strategies
    * stderr.
    */
   report-run-time = 
-    if-verbose2(
+    if-verbose5(
       <printnl> (stderr,
         [<whoami> (), " (", <run-time>, " secs)"]
       )
