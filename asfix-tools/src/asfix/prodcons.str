@@ -36,12 +36,13 @@ module prodcons
 *)
 
 imports 
-  lib Sdf-Syntax Sdf-NormLit-Syntax 
+  lib Sdf-Syntax Sdf-NormLit-Syntax
   verbalize-sdf Literal-lib Char-lib
 
 signature
   constructors
     Injections: Option
+    term : ATerm -> Attribute
 
 rules
 
@@ -50,7 +51,7 @@ rules
     where <get-constr> p => c
 
   prodcons :
-    p -> <add-attributes>(p, [cons(<mk-constr> p)])
+    p -> <add-attributes>(p, [term(cons(<mk-constr> p))])
     where <not(get-constr + is-bracket + is-reject + is-injection)> p 
 
   mk-constr :
@@ -114,7 +115,10 @@ strategies
 
   is-injection =
     prod([syntaxless-sort], id, id)
-  ; has-option(!Injections)
+  ; where(
+      has-option(!Injections)
+    + <get-config> "--injections"
+    )
 
   syntaxless-sort =
     rec x(
