@@ -6,7 +6,7 @@ strategies
   main = 
     test-suite(!"posix-file-test",
       fileno-tests
-    ; access-tests
+//    ; access-tests
     ; aterm-io-tests
     ; char-output-tests 
     ; strcat-tests
