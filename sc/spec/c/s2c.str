@@ -73,6 +73,19 @@ overlays
 
 rules
 
+/*
+  TranslateSpec :
+    Specification([Signature(ops), Strategies(defs)]) -> 
+    |[ 
+       void init_constant_terms();
+       ~dec: <TranslateSig> Signature(ops)
+    ]|
+    where <map(SDefToDeclaration)> defs => sigs
+        ; <get-config; map(!Include(<conc-strings> ("#include ", <id>))) <+ ![]> "--C-include" => incl
+
+<============
+*/
+
   TranslateSpec :
     Specification([Signature(ops), Strategies(defs)]) -> 
     TranslationUnit(<concat> [incl, 
@@ -129,11 +142,18 @@ Strategy definitions
 
 \begin{code}
   SDefToDeclaration :
+    |[ f(a*) = s ]| ->
+    dec|[ ATerm ~id:f (ATerm, ~param-dec*:params); ]|
+    where
+      <map(TranslateVarDec)> a* => params
+/*
+  SDefToDeclaration :
     SDef(f, args, s) -> 
     Declaration2(TypeSpec([],TypeId("ATerm"),[]),
                  [IdDecl([],Id(f),Some(ParamList([TypeSpec([],TypeId("ATerm"),[]) | params])))])
     where
       <map(TranslateVarDec)> args => params
+*/
 
   TranslateDef :
     SDef(f, args, s) -> 
@@ -203,6 +223,7 @@ Strategy expressions
     Choice(s1, s2) ->
     LChoice(s1, s2)
 
+/*
   TranslateStrat :
     LChoice(s1, s2) ->
     Compound([Declaration2(TypeSpec([],TypeId("ATerm"),[]),
@@ -214,7 +235,20 @@ Strategy expressions
                      Compound([],[Stat(Assign(Id("t"),AssignEq,Id(x))), s2]))])
     where new => x; new => ptr
 
-   
+===> */
+
+  TranslateStrat :
+    LChoice(s1, s2) ->
+    |[
+       { ATerm ~id:x = t;
+         int ~id:ptr = stack_ptr;
+         if(PushChoice() == 0)
+           { ~stm:s1; LocalPopChoice(~id:ptr); }
+         else 
+           { t = ~id:x; ~stm:s2 } 
+       }
+    ]|
+    where new => x; new => ptr
 
   TranslateStrat :
     GuardedLChoice(s1, s2, s3) ->
