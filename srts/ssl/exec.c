@@ -448,6 +448,7 @@ ATerm SSL_dup2(ATerm fromfd, ATerm tofd) {
  */
 ATerm SSL_mkstemp(ATerm template) {
   char* str    = AT_getString(template);
+  ATerm term_result;
 
   /**
    * str is not allowed to be modified, so we copy it.
@@ -461,7 +462,10 @@ ATerm SSL_mkstemp(ATerm template) {
     _fail(template);
   }
 
-  return (ATerm) App2("", (ATerm) ATmakeString(result), (ATerm) ATmakeInt(fd));
+  term_result = (ATerm) App2("", (ATerm) ATmakeString(result), (ATerm) ATmakeInt(fd));
+  free(result);
+
+  return term_result;
 }
 
 /**
