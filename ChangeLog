@@ -1,3 +1,8 @@
+
+2004-11-04  Karl Trygve Kalleberg <karltk@cs.uu.nl>
+	* bootstrap: added WANT_AUTOMAKE and WANT_AUTOCONF to make bootstrap
+	more compatible with Gentoo, Mandrake, etc.
+
 2004-07-06  Martin Bravenboer <martin@cs.uu.nl>
 
 	* configure.ac: check for dependencies (ATerm and SDF packages) by
