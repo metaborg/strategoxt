@@ -21,7 +21,6 @@ AC_CONFIG_FILES([
   VERSION
 
   src/Makefile 
-  src/templates/Makefile 
 
   src/treeviz/Makefile
   
