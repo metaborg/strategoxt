@@ -1,3 +1,8 @@
+2000-08-31  Merijn de Jonge  <mdejonge@cwi.nl>
+        * no longer use --with-all flag to configure aterm library to
+          prevent building the -cc.a libraries which require "cc" to exist.
+        * added gcc-check in pre-checks to check for gcc existence.
+
 2000-08-30  Merijn de Jonge  <mdejonge@cwi.nl>
         * added graph-tools to DIST_SUBDIRS variable in Makefile.am
 

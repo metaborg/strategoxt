@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2000/07/24 15:38:41 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2000/08/31 12:08:10 mdejonge Exp $
 
 # Author: Merijn de Jonge (mdejonge@cwi.nl)
 
@@ -29,7 +29,7 @@
 # These checks are not performed during execution of configure because 
 # not all make targets depend on the same tools/libraries. 
 
-PRE_CHECKS=gnumake-check
+PRE_CHECKS=gnumake-check gcc-check
 
 all install install-strip check: $(PRE_CHECKS)
 
@@ -39,5 +39,14 @@ gnumake-check:
 	if [ "a$$gnumake" = "a" ] ;\
 	then \
 	   echo "Use GNU make to build Completa" >&2 ;\
+	   exit 1;\
+	fi
+
+# Check whether gcc exists
+gcc-check:
+	@gcc -v 2>/dev/null ;\
+	if [ $$? -ne 0 ] ;\
+	then \
+	   echo "The GNU c compiler (gcc) could not be found" >&2 ;\
 	   exit 1;\
 	fi
