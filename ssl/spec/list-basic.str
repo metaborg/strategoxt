@@ -71,14 +71,15 @@ strategies
   /**
    * @type  a * [a] ->? _
    */
-  elem = elem(eq)
+  elem =
+    ?(x, <id>); fetch(?x)
   
   /**
    * @type eq  a * a ->? _
    * @type     a * [a] ->? _
    */
   elem(eq) =
-    ?(x, <id>); one(where(<eq> (x, <id>)))
+    ?(x, <id>); fetch(<eq> (x, <id>))
 
   /**
    * Find first list element for which s succeeds.

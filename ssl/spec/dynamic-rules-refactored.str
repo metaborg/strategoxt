@@ -378,7 +378,6 @@ strategies // extending a rule
    * @assert: dr-add-to-rule-set(|l, k, v) 
    *               = set-rule(|l, k, [v | <lookup-rule(|l, k, v) <+ ![]>])
    */
-
   dr-add-to-rule-set(|label, key, value) =
     dr-add-to-rule-set(dr-add-fail | label, key, value)
 
