@@ -280,19 +280,57 @@ strategies
  */
 strategies
 
+  /**
+   * Finds a file in a list of directories (a path).
+   *
+   * This strategy operates on a tuple (f, [d*]) where f is the name of the file
+   * to be found, and d* are the directories to search in. The full path of the
+   * first match is the output term.
+   * Example (when run in strategoxt root):
+   *   <find-in-path> ("file.str", ["ssl/spec", "ssl/tests"]) => "ssl/spec/file.str"
+   */
   find-in-path =
     ?(file, <id>) 
     ; fetch-elem(<concat-strings; file-exists> [<id>,"/",file])
 
+  /**
+   * Finds a file in a list of directories (a path).
+   *
+   * Differs from find-in-path/(0,0) in that it exits with fatal-error if file is
+   * not found.
+   *
+   * @param should build a list of paths in which the search is performed.
+   */
   find-in-path(mkpath) =
     file-exists 
     <+ split(id, mkpath); find-in-path
     <+ <fatal-error> ["no such file: ", <id>]
 
-  find-file(mkpath, ext) =
-    guarantee-extension(ext)
-    ; find-in-path(mkpath)
-
+  /**
+   * Finds one file with a specific file extension in a list of directories.
+   *
+   * This strategy operates on a tuple (f, [d*]). The one file that will be
+   * searched for is determined by the basename of f and the requested file
+   * extension.
+   * Example:
+   *   <find-file(!"rtree")> ("file.str", ["."])
+   * searches for file.rtree in the current dir.
+   *
+   * @param should build the file extension as a string.
+   */
   find-file(ext) =
     (guarantee-extension(ext), id)
     ; find-in-path
+
+  /**
+   * Finds one file with a specific file extension in a list of directories.
+   *
+   * Differs from find-file/(1,0) in that it exits with fatal error if file is
+   * not found.
+   *
+   * @param should build a list of paths in which the search is performed.
+   * @param should build the file extension as a string.
+   */
+  find-file(mkpath, ext) =
+    guarantee-extension(ext)
+    ; find-in-path(mkpath)
