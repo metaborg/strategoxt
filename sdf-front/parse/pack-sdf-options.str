@@ -117,13 +117,9 @@ strategies
     end
 
   dep-options = 
-    Option("--nodep" + "-nodep"
-    , where(<set-config> ("-nodep", ""))
-    , !"--nodep              Do not create dependency file"
-    )
-  + ArgOption("--dep" + "-d" + "-dep"
+    ArgOption("--dep" + "-d" + "-dep"
     , where(<set-config> ("-dep", <id>))
-    , !"--dep f | -d f       Write dependencies to file f"
+    , !"-d | --dep <file>    Write make dependencies to <file>"
     )
 
   /**
@@ -138,13 +134,14 @@ strategies
     <get-config> "-dep"
 
   maybe-create-depfile =
-    try(
-      <create-dep-file(depfile-from-config)> ((), <id>)
-    )
+    where(try(create-dep-file))
 
-  create-dep-file(dep-base) :
-    (outfile, files) -> (outfile, files)
-    where <dep-base> outfile => out  
-	; <open-file> (<add-extension> (out, "dep"), "w") => dep
-	; <printnl> (dep, [out | <separate-by(!" \\\n\t")> [" :" | files]])
-	; <close-file> dep
+  create-dep-file =
+    ?files
+    ; where(
+        <get-config> "-o" => outfile
+      ; <fopen> (<depfile-from-config> (), "w") => stream
+      )
+    ; ![outfile | <separate-by(|" \\\n\t")> [":" | files]]
+    ; map(<fputs> (<id>, stream))
+    ; <fclose> stream

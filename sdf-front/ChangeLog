@@ -1,3 +1,9 @@
+2004-09-25  Martin Bravenboer  <martin@cs.uu.nl>
+
+	* parse/pack-sdf.str: fixed the support for creating a dependency
+	file. Makefile.xt will instruct pack-sdf to do this, so there is
+	no longer a need to specify dependencies of SDF files.
+	
 2004-08-04  Martin Bravenboer  <martin@cs.uu.nl>
 
 	* parse/pack-sdf.str: improved error reporting for missing
