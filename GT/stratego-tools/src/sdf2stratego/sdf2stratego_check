@@ -1,0 +1,4 @@
+set -e
+./sdf2stratego -i ./data/prop.sdf.af -o data/prop.r.af
+diff data/prop.r.af ./data/prop.r.af.correct
+rm data/prop.r.af
