@@ -1,3 +1,6 @@
+2002-07-25  Merijn de Jonge <mdejonge@cwi.nl>
+   * Added "concrete" configuration switch to stratego package
+
 2002-06-14  Merijn de Jonge <mdejonge@cwi.nl>
    * Updated NEWS file
 
