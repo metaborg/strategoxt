@@ -47,7 +47,7 @@ Anno_flags= --concrete
 EXTRA_DIST = \
   $(TEST_SET:%=%.trm) \
   $(TEST_SET:%=%.out) \
-  tiny.tree tiny.trm
+  tiny.tree tiny.trm tests.def
 
 TESTS = $(TEST_SET:%=%.sh)
 
