@@ -1,7 +1,7 @@
 include $(top_srcdir)/Makefile.xt
 SUBDIRS           = src tools
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
-EXTRA_DIST        = Makefile.xt autoxt.m4
+EXTRA_DIST        = Makefile.xt autoxt.m4 bootstrap
 
 ACLOCAL_AMFLAGS = -I .
 
