@@ -1,3 +1,9 @@
+2003-02-26 Martin Bravenboer  <martin@mbravenboer.org>
+
+	* syn/ATerms.sdf: consider move to aterm-tools
+  * syn/*.sdf: Upgrade from SDF 2.1 to SDF 2.4
+  * syn/Makefile.am: set deps
+
 
 * Fill-out the package description in desciption.pkg
 * Update author information in the copyright notices
@@ -14,4 +20,3 @@
 * lib/graph-terms.r should be probably moved to the graph-tools package also
 * lib/text.r is obsolete and should be removed
 * lib/gt-paths.r.src shouild be renamed to sdf-tools-paths (or something)
-

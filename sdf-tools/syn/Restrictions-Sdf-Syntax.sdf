@@ -1,0 +1,26 @@
+module Restrictions-Sdf-Syntax
+imports CC-Sdf-Syntax
+exports
+  sorts Restriction Restrictions
+  context-free syntax
+    CharClass                    -> Lookahead
+    CharClass "." Lookaheads     -> Lookahead
+    Lookahead                    -> Lookaheads
+    Lookaheads "|" Lookaheads    -> Lookaheads {right}
+    "(" Lookaheads ")"           -> Lookaheads {bracket}
+    "[[" {Lookahead ","}* "]]"   -> Lookaheads
+
+    Symbols "-/-" Lookaheads     -> Restriction
+
+    Restriction*                 -> Restrictions
+    "restrictions" Restrictions  -> Grammar
+    "reject"                     -> Attribute
+    "prefer"                     -> Attribute
+    "avoid"                      -> Attribute
+  context-free priorities
+    CharClass "." Lookaheads     -> Lookahead
+  >  Lookaheads "|" Lookaheads   -> Lookaheads
+
+
+
+

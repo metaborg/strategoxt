@@ -1,0 +1,10 @@
+module Symbols
+imports Layout
+exports
+  sorts Symbol Symbols
+  context-free syntax
+    "(" Symbol ")"       -> Symbol {bracket}
+    Symbol*              -> Symbols
+
+
+

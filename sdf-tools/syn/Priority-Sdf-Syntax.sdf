@@ -1,0 +1,21 @@
+module Priority-Sdf-Syntax
+imports Kernel-Sdf-Syntax
+exports
+  sorts Associativity Group Priority Priorities
+  context-free syntax
+    "left"                                -> Associativity
+    "right"                               -> Associativity
+    "non-assoc"                           -> Associativity
+    "assoc"                               -> Associativity
+    "bracket"                             -> Attribute
+    Associativity                         -> Attribute
+    Production                            -> Group
+    "{" Productions "}"                   -> Group
+    "{" Associativity ":" Productions "}" -> Group
+    {Group ">"}+                          -> Priority
+    Group Associativity Group             -> Priority
+    {Priority  ","}*                      -> Priorities
+    "priorities"  Priorities              -> Grammar
+
+
+

@@ -1,0 +1,17 @@
+module Basic-Sdf-Syntax
+imports Kernel-Sdf-Syntax
+exports
+  context-free syntax
+    "lexical" "syntax"      Productions -> Grammar
+    "context-free" "syntax" Productions -> Grammar
+    "variables"             Productions -> Grammar
+    "lexical" "variables"   Productions -> Grammar
+
+    "<" Symbol "-CF"  ">"               -> Symbol
+    "<" Symbol "-LEX" ">"               -> Symbol
+    "<" Symbol "-VAR" ">"               -> Symbol
+
+    "LAYOUT"                            -> Symbol
+
+
+
