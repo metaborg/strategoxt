@@ -3,47 +3,61 @@
 WORKINGDIR=`pwd`
 echo "** INFO -- Working directory: $WORKINGDIR"
 
+# try to set the best BOOTSTRAP_MAKE variable: MAKE <+ gmake <+ make
+BESTMAKE=
+GMAKE="`which gmake`"
+
+if [[ $GMAKE = "" ]]
+  then
+    echo "** INFO -- gmake is not on the PATH. Assuming GNU Make is make!"
+    BESTMAKE="`which make`"
+  else
+    BESTMAKE=$GMAKE
+fi
+
+BOOTSTRAP_MAKE=${MAKE-$BESTMAKE}
+echo "** INFO -- Make is: $BOOTSTRAP_MAKE"
+# end of setting BOOTSTRAP_MAKE
+
 # touch bootstrapped sources because subversion doesn't sets the mtime of files
 # to checkout time, not to the last mtime in the repository.
-
 MTIME=`date +%Y%m%d%H%M.%S`
-echo "** INFO - Modification time: $MTIME"
+echo "** INFO -- Modification time: $MTIME"
 find . -print | xargs touch -t $MTIME
-
 # end of touch
-# install bootstrap time packages: autoxt
 
+# install bootstrap time packages: autoxt
 mkdir -p pre-pkgs
 mkdir -p pre-pkgs/bootstrap
 cp -rf autoxt pre-pkgs/bootstrap/
 cd pre-pkgs/bootstrap/autoxt
 ./bootstrap
 ./configure --prefix=$WORKINGDIR/pre-pkgs/bootstrap
-make
-make install
+$BOOTSTRAP_MAKE
+$BOOTSTRAP_MAKE install
 
 cd $WORKINGDIR
 export PATH=$WORKINGDIR/pre-pkgs/bootstrap/bin:$PATH
-
 echo "** INFO -- AutoXT is: `which autoxt`"
-
 # end of autoxt install
-# proceed with applying the autotools
 
-rm -f mkinstalldirs missing install-sh
-
+# bootstrap the subpackages
 PKGS="autoxt srts xtc sdf-import sc ssl gpp c-tools stratego-front aterm-tools asfix-tools dot-tools graph-tools sdf-front sdf-tools stratego-tools boxenv stratego-util"
 
 for dir in $PKGS
 do 
   echo
-  echo "bootstrapping in $dir"
+  echo "** INFO -- bootstrapping in $dir"
   echo
   (cd $dir; ./bootstrap)
 done
+# end of bootstrap the subpackages
 
+# apply the autotools
 touch README
 touch NEWS
+
+rm -f mkinstalldirs missing install-sh
 
 rm -f config.cache
 rm -f acconfig.h
