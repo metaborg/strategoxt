@@ -28,11 +28,14 @@ strategies
     ; <set-config>("-CI", ["-I", <conc-strings>(<xtc-find-path> "SRTS", "/include"),
                            "-I", <conc-strings>(<xtc-find-path> "SRTS", "/include"),
                            "-I", <conc-strings>(<xtc-find-path> "ATERM", "/include")])
-    ; <set-config>("-CL", [<concat-strings> ["-L", <xtc-find-path> "SRTS", "/lib/srts"],
-                           "-lstratego-lib.opt", "-lstratego-choice.opt", "-lstratego.opt",
-                           <concat-strings> ["-L", <xtc-find-path> "ATERM", "/lib"],
-                           "-lATerm-gcc",
-                           "-lm"])
+    ; <set-config> ("-CL",
+        [ <concat-strings> ["-L", <xtc-find-path> "SRTS", "/lib/srts"]
+        , "-lstratego-lib.opt"
+        , "-lstratego-choice"
+        , "-lstratego.opt"
+        , <concat-strings> ["-L", <xtc-find-path> "ATERM", "/lib"]
+        , "-lATerm-gcc"
+        , "-lm"])
     ; <set-config>("--dr", "old")
     ; <set-config>("--warning", ["all"])
   )
@@ -114,6 +117,23 @@ strategies
   + ArgOption("--dr",
   where(("old" + "new"); <set-config>("--dr", <id>)); !(),
 	!"--dr (old|new)     Use old/new dynamic rule semantics (default: old)" )
+
+  + ArgOption("--choice-lib"
+      , where(set-choice-point-lib); !()
+      , !"--choice-lib file  Link with specified choice point library (e.g. /usr/lib/foo.a)"
+      )
+
+  + where(<xtc-find> "libcpl-stratego.la")
+    ; Option("--cpl"
+      , where(<xtc-find; set-choice-point-lib> "libcpl-stratego.la"); !()
+      , !"--cpl              Use the Nancy Choice Point Library"
+      )
+
+  set-choice-point-lib = 
+    ?lib
+    ; <get-config> "-CL"
+    ; map(try( \ "-lstratego-choice" -> lib \ ))
+    ; <set-config> ("-CL", <id>)
 
 //  + Option("--trace-all",  
 //	where(<set-config>("--trace-all",())); !(),

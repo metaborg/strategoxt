@@ -1,5 +1,13 @@
 2004-06-25  Martin Bravenboer  <martin@cs.uu.nl>
 
+	* spec/strc/strc-options.str: added "--choice-lib file" option for
+	specifying the the choice point library to use. The "--cpl"
+	options is also available if there is a libcpl-stratego.la
+	available in the XTC repository. Thus, tools that require the CPL
+	can now compiled at the command-line with strc.
+	
+2004-06-25  Martin Bravenboer  <martin@cs.uu.nl>
+
 	* spec/test1/Makefile.am: disabled test26. This test uses the
 	global choice, which can no longer be linked with the standard
 	choice point implementation.
