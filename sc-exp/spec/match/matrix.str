@@ -14,13 +14,14 @@ strategies
 // Creating a matrix from a term
 
   term-to-matrix =
-    \ t -> As(Off([]), [t]) \;  
-    topdown(try(Propagate));
-    collect-substitutions;
-    \ (ts, s) -> Matrix(<collect-offsets> ts, [Row(ts, Seqs(s))]) \
+    ! As(Off([]), [<id>])
+    ; topdown(try(Propagate))
+    ; collect-substitutions
+    ; \ (ts, s) -> Matrix(<collect-offsets> ts, 
+			 [Row(ts, Seq(Seqs(s), Build(Var([0]))))]) \
 
   collect-offsets =
-    collect( \ Off(p) -> p \ )
+    collect(?Off(<id>))
 
 // Renaming the matrix to obtain the same variables based on position 
 // relative to the root in all patterns 
@@ -28,7 +29,7 @@ strategies
   rename-matrix = 
     Matrix(map(rename-row));
     \ Matrix(rows) -> 
-      Matrix(<map( \ Row(ts,s) -> ts \ ); collect-offsets> rows, rows) \
+      Matrix(<map(?Row(<id>,_)); collect-offsets> rows, rows) \
 
   rename-row = 
     RenameRow; 
@@ -78,11 +79,11 @@ rules
   IgnoreVar : 
     As(Off(path), Var(x)) -> As(Off(path), Wld) where <is-list> path
 
-  IgnoreVar : 
-    As(Var(x), As(Off(path), t)) -> As(Off(path), t)
-
   CollectSubst : 
     As(Off(path), Var(x)) -> [Assign(Var(x), Var(path))]
+
+  IgnoreVar : 
+    As(Var(x), As(Off(path), t)) -> As(Off(path), t)
 
   CollectSubst : 
     As(Var(x), As(Off(path), t)) -> [Assign(Var(x), Var(path))]

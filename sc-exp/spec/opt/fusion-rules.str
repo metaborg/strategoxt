@@ -54,6 +54,6 @@ rules
   // Always valid?
  
   BottomupOverConstructor :     
-    Term|[ <bottomup_1(s)> c(t1*) ]| -> Term|[ <s> c(t2*) ]|
-    where <map(\ t -> Term|[ <bottomup_1(s)> t ]| \ )> [t1*] => [t2*]
+    Term|[ <bottomup_1_0(s|)> c(t1*) ]| -> Term|[ <s> c(t2*) ]|
+    where <map(\ t -> Term|[ <bottomup_1_0(s|)> t ]| \ )> [t1*] => [t2*]
 

@@ -1,3 +1,27 @@
+2003-07-15  Eelco Visser  <visser@cs.uu.nl>
+
+	Compilation of strategy operators with term arguments and primitives
+	with strategy arguments. This has the effect that we can now mix 
+	call by name (pass a strategy) and call by value (pass a term). The
+	extension is motivated by the need for call by value for optimizing
+	Stratego programs. 
+
+	The extension has quite some impact on the compiler. The abstract
+	syntax was extended with SDefT/4, RDefT/4, CallT/3, PrimT/3, which
+	all have an extra argument corresponding to the additional list of
+	terms or strategies. In concrete syntax the argument lists are
+	separated by a |. The old notation without | is of course still 
+	supported (backwards compatibility, and it should be used only in
+	case the extra parameters are actually needed). The SDef/3, RDef/3,
+	Call/2, and Prim/2 constructs had to be replaced with the new
+	constructs throughout the compiler and mappings from the old to
+	the new added in the frontend. Operators are now distinguished by
+	two arities instead of one. 
+
+2003-07-14  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/front/needed-defs.str: Apapted to N x M definitions and calls.
+
 2003-07-11  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/c/s2c.str: Special translation for guarded left choice

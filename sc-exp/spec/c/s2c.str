@@ -22,9 +22,9 @@ strategies
 
 signature
   constructors
-    TraceAll : Option
-    Trace    : String -> Option
-    Include   : String -> Option
+    TraceAll        : Option
+    Trace           : String -> Option
+    Include         : String -> Option
     InitCachedTerms : Stat
 
 strategies
@@ -96,9 +96,15 @@ rules
                        [IdDecl([],Id("init_constant_terms"),Some(ParamList([])))])
 	, Signature(ops)
         , InitCachedTerms
-        ], sigs,defs] )
+        ]
+        , sigs
+        , [ SDefT("main_0", [], [], CallT(SVar("main_0_0"), [],[])) 
+          | defs ]
+    ])
     where <map(SDefToDeclaration)> defs => sigs
-        ; <get-config; map(!Include(<conc-strings> ("#include ", <id>))) <+ ![]> "--C-include" => incl
+        ; <get-config; map(!Include(<conc-strings> ("#include ", <id>))) 
+           <+ ![]> "--C-include" => incl
+
 \end{code}
 
 Signatures
@@ -145,10 +151,19 @@ Strategy definitions
 
 \begin{code}
   SDefToDeclaration :
-    |[ f(a*) = s ]| ->
-    dec|[ ATerm ~id:f (ATerm, ~param-dec*:params); ]|
-    where
-      <map(TranslateVarDec)> a* => params
+    SDefT(f, as1, as2, s) ->
+    //Def|[ f(a1* | a2*) = s ]| ->
+    dec|[ ATerm ~id:f (~param-dec*:params); ]|
+    where <map(TranslateVarDec)> as1 => params1
+        ; <map(TranslateVarDec)> as2 => params2
+        ; <concat> [params1, params2, [TypeSpec([],TypeId("ATerm"),[])]] => params
+
+  SDefToDeclaration :
+    Def|[ f(a*) = s ]| ->
+    dec|[ ATerm ~id:f (~param-dec*:params); ]|
+    where <map(TranslateVarDec)> a* => params
+ 	; <conc>(params, [TypeSpec([],TypeId("ATerm"),[])])
+
 /*
   SDefToDeclaration :
     SDef(f, args, s) -> 
@@ -161,10 +176,23 @@ Strategy definitions
   TranslateDef :
     SDef(f, args, s) -> 
     FunDef(TypeSpec([],TypeId("ATerm"),[]),
-           IdDecl([],Id(f),Some(ParamList([ParamDecl(TypeSpec([],TypeId("ATerm"),[]),
-                                                     IdDecl([],Id("t"),None)) | args']))),
+           IdDecl([],Id(f),Some(ParamList(<conc>(args',
+					         [ParamDecl(TypeSpec([],TypeId("ATerm"),[]),
+                                                     IdDecl([],Id("t"),None))])))),
 	   body)
     where <map(TranslateVarDec)> args => args'
+        ; <(TraceFun <+ TraceAllFuns, id); TracedBody <+ PlainBody> (f, s) => body
+
+  TranslateDef :
+    SDefT(f, args1, args2, s) -> 
+    FunDef(TypeSpec([],TypeId("ATerm"),[]),
+           IdDecl([],Id(f),Some(ParamList(<conc>(args',
+					         [ParamDecl(TypeSpec([],TypeId("ATerm"),[]),
+                                                     IdDecl([],Id("t"),None))])))),
+	   body)
+    where <map(TranslateVarDec)> args1 => args1'
+        ; <map(TranslateVarDec)> args2 => args2'
+	; <conc> (args1', args2') => args'
         ; <(TraceFun <+ TraceAllFuns, id); TracedBody <+ PlainBody> (f, s) => body
 
   PlainBody : 
@@ -300,15 +328,33 @@ Strategy expressions
 
   // prim("f",[x1,...,xn]) --> f(x1,...,xn)
   //
+/*
   TranslateStrat :
     Prim(p,ts) ->
     Stat(Assign(Id("t"),AssignEq,FunCall(Id(p),es)))
     where <map(topdown(try(construct-term)))> ts => es
+*/
 
   TranslateStrat :
-    Call(SVar(f),args) ->
+    PrimT(p, args1, args2) ->
+    Stat(Assign(Id("t"), AssignEq, FunCall(Id(p), args')))
+    where <map(\ CallT(SVar(x),[],[]) -> Id(x) \ )> args1 => args1'
+        ; <map(topdown(try(construct-term)))> args2 => args2'
+        ; <conc>(args1', args2') => args'
+
+/*
+  TranslateStrat :
+    Call(SVar(f), args) ->
     Stat(Assign(Id("t"),AssignEq,FunCall(Id(f),[Id("t") | args'])))
     where <map(\ Call(SVar(x),[]) -> Id(x) \ )> args => args'
+*/
+
+  TranslateStrat :
+    CallT(SVar(f), args1, args2) ->
+    Stat(Assign(Id("t"), AssignEq, FunCall(Id(f), args')))
+    where <map(\ CallT(SVar(x),[],[]) -> Id(x) \ )> args1 => args1'
+        ; <map(topdown(try(construct-term)))> args2 => args2'
+        ; <concat>[args1', args2', [Id("t")]] => args'
 
   TranslateStrat :
     Test(s) ->

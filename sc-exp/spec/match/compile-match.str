@@ -21,7 +21,7 @@ strategies
     simplify-widen
 
   apply-to-bodies(s) = 
-    Specification([id,Strategies(map(SDef(id,id,s)))])
+    Specification([id,Strategies(map(SDef(id,id,s) + SDefT(id,id,id,s)))])
 
   optimize1-comp =
     iowrap(apply-to-bodies(simplify; simplify-widen; simplify; simplify-narrow; simplify))
@@ -33,6 +33,6 @@ strategies
     iowrap(apply-to-bodies(simplify-widen; simplify; simplify-clean))
 
   match-to-dfa = 
-    match-to-matrix;
-    matrix-to-dfa;
-    strename
+    match-to-matrix    
+    ; matrix-to-dfa
+    ; strename

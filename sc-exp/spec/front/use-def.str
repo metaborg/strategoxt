@@ -13,7 +13,7 @@ strategies
   def-use-def = 
     {| Context, Bound : 
        where(tvars; DefineUnbound)
-       ; sdef-ud <+ rdef-ud <+ overlay-ud 
+       ; (sdef-ud <+ rdef-ud <+ overlay-ud)
     |} 
 
   sdef-ud =
@@ -21,6 +21,14 @@ strategies
     ; where(
         rules( Context : msg -> ["Error in definition ", f, ": " | msg] )
        ; <unbound-vars> s
+    )
+
+  sdef-ud =
+    ?|[ f(a1* | a2*) = s ]|
+    ; where(
+        rules( Context : msg -> ["Error in definition ", f, ": " | msg] )
+	; <declared-vars; DefineBound> a2*
+        ; <unbound-vars> s
     )
 
   rdef-ud =
@@ -33,9 +41,20 @@ strategies
       )
 
   rdef-ud =
-    ?RDef(f, as, StratRule(s1, s2, s3))
+    ?|[ f(a1* | a2*) : t1 -> t2 where s ]|
     ; where(
         rules( Context : msg -> ["Error in rule ", f, ": " | msg] )
+	; <declared-vars; DefineBound> a2*
+	; <bind-vars> t1
+        ; <unbound-vars> s
+        ; <use-vars> t2
+      )
+
+  rdef-ud =
+    ?RDefT(f, as1, as2, StratRule(s1, s2, s3))
+    ; where(
+        rules( Context : msg -> ["Error in rule ", f, ": " | msg] )
+	; <declared-vars; DefineBound> as2
         ; <unbound-vars> s1
         ; <unbound-vars> s2
         ; <unbound-vars> s3

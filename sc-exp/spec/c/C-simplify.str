@@ -10,9 +10,15 @@ rules
     Compound(decs1, [Compound(decs2, stats)]) -> 
     Compound(<conc>(decs1,decs2), stats)
 
-  //Csimplify' :
-  //  Compound(decs, stats) -> Compound(decs, stats')
-  //  where <fetch(\ [Compound([], stats1) | stats2] -> <conc> (stats1, stats2) \ )> stats => stats'
+  Csimplify :
+    Compound(decs, stats) -> Compound(decs, stats')
+    where <listbu1(LiftCompound)> stats => stats'
+
+  listbu1(s) = 
+    ([id | listbu1(s)]; try(s)) <+ s
+
+  LiftCompound :
+    [Compound([], stats1) | stats2] -> <conc> (stats1, stats2)
 
   Csimplify :
     [Compound([], stats) | stats'] -> <conc>(stats, stats')
@@ -34,3 +40,4 @@ rules
   Csimplify' : // not valid if s is a macro
     If(e, Compound([],[s])) -> If(e, s)
     where <Stat(id)> s
+

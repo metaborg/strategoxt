@@ -8,7 +8,8 @@ strategies
 	tvars-test1;
 	tvars-test2;
 	tsubstitute-test1;
-	srename-test1
+	srename-test1;
+	strename-test1
     )
 
   tvars-test1 =
@@ -31,3 +32,15 @@ strategies
 	, !SDef("downup",[VarDec("s1",DefaultStrat),VarDec("s2",DefaultStrat)],Rec("x",Seq(Call(SVar("s1"),[]),Seq(All(Call(SVar("x"),[])),Call(SVar("s2"),[])))))
 	, {?SDef("downup",[VarDec(a_0,DefaultStrat),VarDec(b_0,DefaultStrat)],Rec(c_0,Seq(Call(SVar(a_0),[]),Seq(All(Call(SVar(c_0),[])),Call(SVar(b_0),[])))))}
 	)
+
+  strename-test1 =
+    apply-and-check(!"strename-test1"
+        , strename
+	, !|[ split(F, G | ) = {X: ?X; !(<F(|)> X, <G(|)> X)} ]|
+	, ?|[ split(f, g | ) = {x: ?x; !(<f(|)> x, <g(|)> x)} ]|
+          ; <different>["F", "G", "X", f, g, x]
+	)
+
+  different =
+    [] + where(!(<Hd>, <Tl>); not(member))
+         ; where(Tl; different)

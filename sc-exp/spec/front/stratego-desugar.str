@@ -11,49 +11,52 @@ strategies
   stratego-desugar = 
     iowrap(try(\ _#([x]) -> x \ ) ; topdown(repeat(Desugar); try(DesugarOnce)))
 
+  pre-desugar =
+    topdown(repeat(Desugar); try(DesugarOnce))
+
 rules
 
   Desugar :
     Module(x, decls) -> Specification(decls)
 
   Desugar :
-    RDefNoArgs(f, r) 	-> RDef(f, [], r)
-//  Desugar :
-//    RDef(f, xs, r) 	-> RDef(f, xs, [], r)
+    RDefNoArgs(f, r) 	-> RDefT(f, [], [], r)
   Desugar :
-    SRDefNoArgs(f, r) 	-> SRDef(f, [], r)
-//  Desugar :
-//    SRDef(f, xs, r) 	-> SRDef(f, xs, [], r)
+    RDef(f, xs, r) 	-> RDefT(f, xs, [], r)
+  Desugar :
+    SRDefNoArgs(f, r) 	-> SRDefT(f, [], [], r)
+  Desugar :
+    SRDef(f, xs, r) 	-> SRDefT(f, xs, [], r)
 
   Desugar :
-    SDefNoArgs(f, s) 	-> SDef(f, [], s)
-//  Desugar :
-//    SDef(f, xs, s) 	-> SDef(f, xs, [], s)
+    SDefNoArgs(f, s) 	-> SDefT(f, [], [], s)
+  Desugar :
+    SDef(f, xs, s) 	-> SDefT(f, xs, [], s)
 
   Desugar :
-    CallNoArgs(f) 	-> Call(f, [])
-//  Desugar :
-//    Call(f, ss) 	-> Call(f, ss, [])
+    CallNoArgs(f) 	-> CallT(f, [], [])
+  Desugar :
+    Call(f, ss) 	-> CallT(f, ss, [])
 
   Desugar :
-    PrimNoArgs(f) 	-> Prim(<un-double-quote>f, [])
-//  Desugar :
-//    Prim(f,ts) 	-> Prim(<un-double-quote>f, [], ts)
+    PrimNoArgs(f) 	-> PrimT(<try(un-double-quote)>f, [], [])
+  Desugar :
+    Prim(f,ts) 	        -> PrimT(<try(un-double-quote)>f, [], ts)
 
   Desugar :
-    RChoice(s1, s2) -> LChoice(s2, s1)
+    RChoice(s1, s2) 	-> LChoice(s2, s1)
 
   Desugar :
     OverlayNoArgs(f, t) -> Overlay(f, [], t)
 
   Desugar :
-    RuleNoCond(l, r) -> Rule(l, r, Id)
+    RuleNoCond(l, r) 	-> Rule(l, r, Id)
 
   Desugar :
     StratRuleNoCond(l, r) -> StratRule(l, r, Id)
 
 //  Desugar :
-//    StratRule(l, r, s) -> Rule(l, r, s)
+//    StratRule(l, r, s) 	-> Rule(l, r, s)
 
 //  Desugar :
 //    Inj(x) -> x
@@ -175,9 +178,10 @@ rules
     Real(x) -> Real(y)
     where <string-to-real> x => y
 
-  DesugarOnce : 
-    Str(x) -> Str(y)
-    where <un-double-quote; unescape> x => y
+// note: this should not be done in frontend if already done by pack-stratego
+//  DesugarOnce : 
+//    Str(x) -> Str(y)
+//    where <un-double-quote; unescape> x => y
 
   Desugar : 
     SortNoArgs(x) -> Sort(x, [])
@@ -189,9 +193,9 @@ strategies
 
   DesugarOnce =
     DefaultVarDec(RemoveLeadingPrime)
-//    + RDef(RemoveLeadingPrime,id,id,id)
+    + RDefT(RemoveLeadingPrime,id,id,id)
     + RDef(RemoveLeadingPrime,id,id)
-//    + SDef(RemoveLeadingPrime,id,id,id)
+    + SDefT(RemoveLeadingPrime,id,id,id)
     + SDef(RemoveLeadingPrime,id,id)
     + VarDec(RemoveLeadingPrime,id)
     + Var(RemoveLeadingPrime)

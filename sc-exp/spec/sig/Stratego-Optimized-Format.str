@@ -13,6 +13,12 @@ strategies
 
   strategy-definition =
     SDef(is-string, list(VarDec(is-string,type-expression)), strategy-expression)
+
+    <+ SDefT(is-string
+	    , list(VarDec(is-string,type-expression))
+	    , list(VarDec(is-string,type-expression))
+	    , strategy-expression)
+
 //    + SDef(list(DontInline), is-string, [], strategy-expression)
     <+ debug(!"Not a strategy-definition: ")
 
@@ -32,7 +38,8 @@ strategies
 	+ GuardedLChoice(exp, exp, exp)
 	+ GChoice(exp, exp)
 	+ LGChoice(exp, exp)
-	+ Call(SVar(is-string),list(exp))
+//	+ Call(SVar(is-string),list(exp))
+	+ CallT(SVar(is-string),list(exp), list(term-expression))
 	+ Rec(is-string, exp)
 	+ Path(is-int, exp)
 	+ Cong(is-string, list(exp))
@@ -44,7 +51,8 @@ strategies
 	+ Build(term-expression)
 	+ Scope(list(is-string + list(is-int)), exp)
 	+ Where(exp)
-	+ Prim(is-string,list(term-expression))
+//	+ Prim(is-string,list(term-expression))
+	+ PrimT(is-string,list(exp),list(term-expression))
 
 	+ Let(list(SDef(is-string,[],exp)
                    // + SDef(list(id), is-string,[],exp)

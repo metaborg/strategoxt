@@ -32,12 +32,12 @@ strategies
     GuardedLChoice(Match(Str(str)), s1
                   , Case(alts, s2))
 
-  DesugarAlt :
+  DesugarCase :
     Case([Alt(Int(i), xs, s1) | alts], s2) -> 
     GuardedLChoice(Match(Int(i)), s1
                   , Case(alts, s2))
 
-  DesugarAlt :
+  DesugarCase :
     Case([Alt(Real(i), xs, s1) | alts], s2) -> 
     GuardedLChoice(Match(Real(i)), s1
                   , Case(alts, s2))

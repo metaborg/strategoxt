@@ -6,7 +6,7 @@
 
 \begin{code}
 module spec-to-sdefs
-imports Stratego DefaultStrat stratlib list-sort
+imports Stratego desugar stratlib list-sort
 \end{code}
 
 \paragraph{Congruences from Signature}
@@ -26,11 +26,11 @@ imports Stratego DefaultStrat stratlib list-sort
 rules
   
   MkCongDef : 
-    OpDecl(f, ConstType(t)) -> SDef(f, [], Cong(f, []))
+    OpDecl(f, ConstType(t)) -> SDefT(f, [], [], Cong(f, []))
 
   MkCongDef : 
     OpDecl(f, FunType(ts, t)) -> 
-    SDef(f, xdecs, Cong(f, <map(MkCall)> xs))
+    SDefT(f, xdecs, [], Cong(f, <map(MkCall)> xs))
     where <map(new; !(VarDec(<id>, DefaultStrat), <id>));
            unzip> ts => (xdecs, xs)
 
@@ -77,11 +77,11 @@ rules
     rec x(try(Op(id, map(x))); Trm-to-Cong)
 
   Trm-to-Cong : 
-    Var(x) -> Call(SVar(x), [])
+    Var(x) -> CallT(SVar(x), [], [])
   Trm-to-Cong : 
-    Op(f, ts) -> Call(SVar(f), ts)
+    Op(f, ts) -> CallT(SVar(f), ts, [])
   Trm-to-Cong : 
-    Anno(t, ts) -> Call(SVar("Anno_Cong__"), [t, ts])
+    Anno(t, ts) -> CallT(SVar("Anno_Cong__"), [t, ts], [])
   Trm-to-Cong : 
     Str(x) -> Match(Str(x))
   Trm-to-Cong : 
@@ -98,13 +98,23 @@ rules
 overlays
 
   AnnoCongDef =
-    RDef("Anno_Cong__", 
+    RDefT("Anno_Cong__", 
          [VarDec("s1",FunType([ConstType(Op("ATerm",[]))],ConstType(Op("ATerm",[])))), 
           VarDec("s2",FunType([ConstType(Op("ATerm",[]))],ConstType(Op("ATerm",[]))))],
+	 [],
          Rule(Anno(Var("x"), Var("y")), 
               Anno(Var("x'"), Var("y'")),
               Seqs([BAM(Call(SVar("s1"),[]), Var("x"), Var("x'")), 
                     BAM(Call(SVar("s2"),[]), Var("y"), Var("y'"))])))
+
+/*
+  AnnoCongDef =
+    |[ Anno_Cong__(S1 : ATerm -> ATerm, S2 : ATerm -> ATerm) : 
+         X1{Y1} -> X2{Y2}
+         where <S1()> X1 => X2; <S2()> Y1 => Y2
+    ]|
+*/
+
 \end{code}
 
 \paragraph{Expanding Overlays}   
@@ -143,10 +153,24 @@ strategies
 rules
 
   RDtoSD : 
-    RDef(f, xs, r) -> SDef(f, xs, Scope(<tvars> r, SRule(r)))
+    RDef(f, xs, r) -> SDefT(f, xs, [], Scope(<tvars> r, SRule(r)))
+
+  RDtoSD : 
+    RDefT(f, xs, ys, r) -> SDefT(f, xs, ys, Scope(<diff>(<tvars> r, ys'), SRule(r)))
+    where <declared-vars> ys => ys'
 
   DeclareVariables :
-    SDef(f, xs, s) -> SDef(f, xs, Scope(<tvars> s, s))
+    SDef(f, xs, s) -> SDefT(f, xs, [], Scope(<tvars> s, s))
+
+  DeclareVariables :
+    SDefT(f, xs, ys, s) -> SDefT(f, xs, ys, Scope(<diff>(<tvars> s, ys'), s))
+    where <declared-vars> ys => ys'
+
+  ExpandCall :
+    Call(f, ss) -> CallT(f, ss, [])
+
+  expand-calls =
+    topdown(try(ExpandCall))
 \end{code} 
 
 \paragraph{Specification to Definition List}
@@ -171,7 +195,7 @@ rules
     Specification([
       Signature(bsigs),
       Strategies(<conc> (<congdefs> bsigs, 
-                           <map(RDtoSD + DeclareVariables)> [AnnoCongDef| sdefs]))
+                           <map((RDtoSD + DeclareVariables); expand-calls)> [AnnoCongDef| sdefs]))
     ])
 
   ExpandOverlays : 

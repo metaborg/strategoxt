@@ -23,18 +23,34 @@ imports Stratego DefaultStrat desugar stratlib list-set list-misc lib pack-graph
 strategies
 
   sort-defs = 
-    map(
-     {?def@SDef(f, xs, s);
-      where(
-        <length> xs => n;
-        <Definitions <+ ![]> (f, n) => defs;
-        <union>([n], <Arities <+ ![]> f) => ns;
-        rules(
+    map(RegisterSDefT)
+
+  RegisterSDef =
+    ?def@SDef(f, xs, s);
+    where(
+      <length> xs => n
+      ; <Definitions <+ ![]> (f, (n, 0)) => defs
+      ; <union>([n], <Arities <+ ![]> f) => ns
+      ; rules(
           Definitions : (f, n) -> [def | defs]
           Arities : f -> ns
         )
-      )}
     )
+
+  RegisterSDefT =
+    ?def@SDefT(f, xs, ys, s);
+    where(
+        <length> xs => n
+      ; <length> ys => m
+      ; ![def | <Definitions <+ ![]> (f, (n, m))] => defs
+      ; <union>([(n,m)], <Arities <+ ![]> f) => aris
+      ; rules(
+          Definitions : (f, (n, m)) -> defs
+          Arities : f -> aris
+        )
+    )
+
+
 \end{code}
 
 	\paragraph{Joining Definitions}
@@ -52,11 +68,24 @@ rules
   JoinDefs1 : 
     [sdef] -> sdef
 
+/*
   JoinDefs2 : 
     defs @ [SDef(f, xs, s) | _] -> SDef(f, ys, <choices> ss)
     where <map(VarDec(new,id))> xs => ys;
 	  <map(\ VarDec(y, t) -> Call(SVar(y), []) \ )> ys => ys'; 
 	  <map(\ SDef(_, zs, s) -> <ssubs> (<map(\ VarDec(x,_) -> x \ )> zs, ys', s) \ )> defs => ss
+*/
+
+  JoinDefs2 : 
+    defs @ [SDefT(f, xs1, xs2, s) | _] -> SDefT(f, ys1, ys2, <choices> ss)
+    where <map(VarDec(new,id))> xs1 => ys1
+	; <map(VarDec(new,id))> xs2 => ys2
+	; <map(\ VarDec(y, t) -> CallT(SVar(y), [], []) \ )> ys1 => ys1'
+	; <map(\ VarDec(y, t) -> Var(y) \ )> ys2 => ys2'
+	; <map(\ SDefT(_, zs1, zs2, s) -> 
+                 <tsubs> (<map(\ VarDec(z2,_) -> z2 \ )> zs2, ys2', 
+		   <ssubs> (<map(\ VarDec(z1,_) -> z1 \ )> zs1, ys1', s)
+                 ) \ )> defs => ss
 
   choices = 
     foldr(!Fail, !Choice(<Fst>,<Snd>))
@@ -68,14 +97,20 @@ rules
 strategies
 
   definition-names =
-    foldr(![], union, \ SDef(f,xs,_) -> [(f, <length>xs)]\ )
+    foldr(![], union, DefinitionName)
+
+// DefinitionName :
+//    SDef(f,xs,_) -> [(f, (<length>xs, 0))]
+
+  DefinitionName :
+    SDefT(f,xs,ys,_) -> [(f, (<length>xs, <length>ys))]
 
   all-defs = 
     !(<definition-names>, <sort-defs>, []);
     extract-needed-defs
 
   needed-defs = 
-    !([("main", 0)], <sort-defs>, []);
+    !([("main", (0,0))], <sort-defs>, []);
     extract-needed-defs
 
   extract-needed-defs =
@@ -99,13 +134,13 @@ rules
     CongruenceDef <+ OverloadedDef; (joindefs, id)
 
   DefinitionExists :
-    (f, 0) -> (f, n)
-    where <Arities> f => [n]; <Definitions> (f, n)
+    (f, (0,0)) -> (f, (n,m))
+    where <Arities> f => [(n,m)]; <Definitions> (f, (n,m))
 
   DefinitionExists =
-    ?(f, 0)
+    ?(f, (0,0))
     ; <Arities> f => [_,_|_]
-    ; not(fetch(?0))
+    ; not(fetch(?(0,0)))
     ; <error> ["passing name of overloaded definition: ", f]
     ; giving-up
 
@@ -158,8 +193,8 @@ overlays
 
 rules
   DefineCongruence :
-    (c, "D", n) -> 
-    SDef(Mod(c, "D"), ss, Scope([env | <conc>(xs1, ys1)], 
+    (c, "D", (n,m)) -> 
+    SDefT(Mod(c, "D"), ss, [], Scope([env | <conc>(xs1, ys1)], 
                                 SRule(Rule(OpPair(Op(c, xs2), Var(env)), 
                                            Op(c, ys2), 
                                            Seqs(conds)))))
@@ -168,7 +203,12 @@ rules
               => (conds, ss, xs1, xs2, ys1, ys2)
 
   MkDistApplication : 
-    env -> (BAM(Call(SVar(s),[]), OpPair(Var(x), env), Var(y)), 
+    env -> (BAM(CallT(SVar(s),[],[]), OpPair(Var(x), env), Var(y)), 
+            VarDec(s,DefaultStrat), x, Var(x), y, Var(y))
+    where new => s; new => x; new => y
+
+  MkDistApplication : 
+    env -> (BAM(CallT(SVar(s),[],[]), OpPair(Var(x), env), Var(y)), 
             VarDec(s,DefaultStrat), x, Var(x), y, Var(y))
     where new => s; new => x; new => y
 \end{code}
@@ -191,16 +231,16 @@ rules
 \begin{code}
 
   DefineCongruence :
-    (c, "T", 0) -> 
-    SDef(Mod(c, "T"), [], Scope([e], 
+    (c, "T", (0,m)) -> 
+    SDefT(Mod(c, "T"), [], [], Scope([e], 
                                 SRule(Rule(OpPair(Op(c, []), Var(e)), 
                                            OpPair(Op(c, []), Var(e)), 
                                            Id))))
     where new => e
 
   DefineCongruence :
-    (c, "T", n) -> 
-    SDef(Mod(c, "T"), ss, Scope([e-first | <concat> [es, xs1, ys1]], 
+    (c, "T", (n,m)) -> 
+    SDefT(Mod(c, "T"), ss, [], Scope([e-first | <concat> [es, xs1, ys1]], 
                                 SRule(Rule(OpPair(Op(c, xs2), Var(e-first)), 
                                            OpPair(Op(c, ys2), Var(e-last)), 
                                            Seqs(as)))))
@@ -210,7 +250,7 @@ rules
 	     => (as, ss, xs1, xs2, ys1, ys2)
 
   MkThreadApplication : 
-    (e1,e2) -> (BAM(Call(SVar(s),[]), OpPair(Var(x), Var(e1)), 
+    (e1,e2) -> (BAM(CallT(SVar(s),[],[]), OpPair(Var(x), Var(e1)), 
                                       OpPair(Var(y), Var(e2))), 
                 VarDec(s,DefaultStrat), x, Var(x), y, Var(y))
     where new => s; new => x; new => y

@@ -1,17 +1,18 @@
 \literate[{\tt FRONTEND}]
 \begin{code}
 module frontend
-imports normalize-spec spec-to-sdefs use-def check-constructors desugar
+imports normalize-spec spec-to-sdefs use-def check-constructors desugar stratego-desugar
 strategies
  
   frontend = 
     iowrap(frontend-transformation)
 
   frontend-transformation =	  timing(!"  frontend initialization: ")
+    ; pre-desugar		; timing(!"  pre-desugar: ")
     ; normalize-spec		; timing(!"  normalize-spec: ")
     ; where(spec-use-def)	; timing(!"  spec-use-def: ")
     ; ExpandOverlays		; timing(!"  ExpandOverlays: ")
-    ; CheckConstructors		; timing(!"  CheckConstructors: ")
+    ; CheckConstructors		; timing(!"  CheckConstructors: ") 
     ; RulesToSdefs		; timing(!"  RulesToSdefs: ")
     ; DesugarListMatching	; timing(!"  DesugarListMatching: ")
     ; strename			; timing(!"  strename: ")

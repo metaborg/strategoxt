@@ -4,12 +4,13 @@ include $(wildcard *.dep)
 SUBDIRS 	 = data
 
 SCFLAGS 	 = -I $(STRATEGO_FRONT)/share/stratego-front \
+	   	   -I $(STRATEGO_FRONT)/share/sdf/stratego-front \
 	   	   -I $(srcdir)/../sig \
 	   	   -I $(srcdir)/../match \
 	  	   -I $(srcdir)/../lib \
 	  	   -I $(srcdir)/../opt \
 	  	   --main $* \
-	  	   --keep 1 --verbose 1 
+	  	   --keep 1 --verbose 1
 
 libexec_PROGRAMS = frontend extract extract-all rename-defs inline stratego-warnings
 check_PROGRAMS	 = use-def-test lift-dynamic-rules-test

@@ -33,7 +33,7 @@ rules
     where <simple-strategy> s
 
   RowLet :
-    Row(ts, s) -> ([SDef(f, [], s)], Row([], ts, Call(SVar(f), [])))
+    Row(ts, s) -> ([SDefT(f, [], [], s)], Row([], ts, CallT(SVar(f), [], [])))
     where <not(simple-strategy)> s; new => f
 
 strategies
@@ -46,7 +46,7 @@ strategies
       + Seqs([]) 
       + Build(Var(id) + Op(id,list(Var(id))) + Int(id) + Real(id) + Str(id))
       + Prim(id,id) 
-      + Call(id,id)
+      + CallT(id,id,id)
       + Seqs([x])
     )
     //; debug(!"yes: ")

@@ -3,3 +3,5 @@ imports Stratego
 overlays
 
   DefaultStrat = FunType([ConstType(Op("ATerm",[]))], ConstType(Op("ATerm",[])))
+
+  DefaultTerm = ConstType(Op("ATerm",[]))

@@ -36,13 +36,15 @@ rules
  
   IsVar  : Var(x) -> x
   IsSVar : Call(SVar(x), []) -> x
+  IsSVar : CallT(SVar(x), [], []) -> x
   MkTVar : x -> Var(x)
   MkSVar : x -> SVar(x)
-  MkCall : x -> Call(SVar(x), [])
+ // MkCall : x -> Call(SVar(x), [])
+  MkCall : x -> CallT(SVar(x), [], [])
 
 strategies
 
-  SVarShape(s) = Call(SVar(s), [])
+  SVarShape(s) = Call(SVar(s), []) + CallT(SVar(s), [], [])
 
 \end{code}
 
@@ -60,31 +62,51 @@ rules
 
   Bind0 : Scope(xs, s) -> xs
   Bind0 : LRule(Rule(t1, t2, s)) -> <tvars> t1
-  Bind1 : Let(defs, s2) -> <map(\ SDef(f, xs, s1) -> f\ )> defs
-  Bind2 : SDef(f, xs, s) -> <map(\ VarDec(x, _) -> x \ )> xs
+  Bind1 : Let(defs, s2) -> <map(?SDef(<id>,_,_) + ?SDefT(<id>,_,_,_))> defs
+  Bind2 : SDef(f, xs, s) -> <declared-vars> xs
   Bind3 : Rec(x, s) -> [x]
 
   Bind4 : DynamicRules(rs) -> <tvars> rs
+
+  Bind5 : SDefT(f, xs, ys, s) -> <declared-vars> xs
+  Bind6 : SDefT(f, xs, ys, s) -> <declared-vars> ys
+
+  Bind7 : RDefT(f, xs, ys, s) -> <declared-vars> xs
+  Bind8 : RDefT(f, xs, ys, s) -> <declared-vars> ys
 
 strategies
 
   tpaste(nwvars) =
     Scope(nwvars, id)
+    + SDefT(id, id, split(id, nwvars); zip(ReplaceVar), id)
+    + RDefT(id, id, split(id, nwvars); zip(ReplaceVar), id)
+
+  ReplaceVar :
+    (VarDec(x,t), y) -> VarDec(y,t)
+
+  ReplaceVar :
+    (DefaultVarDec(x), y) -> DefaultVarDec(y)
 
   tboundin(bnd, ubnd, ignore) =
     Scope(ignore, bnd)
+    + SDefT(ignore, ignore, ignore, bnd)
+    + RDefT(ignore, ignore, ignore, bnd)
     + DynamicRules(bnd)
 
   spaste(nwvars) =
       Let(split(id,nwvars); 
-          zip(\ (SDef(_,xs,s), f) -> SDef(f,xs,s)\ )
+          zip(\ (SDef(_,xs,s), f) -> SDef(f,xs,s)\ + 
+              \ (SDefT(_,xs,ys,s), f) -> SDefT(f,xs,ys,s)\)
          , id)
-    + SDef(id, split(id, nwvars); zip(\ (VarDec(x,t), y) -> VarDec(y,t)\ ), id)
+    + SDef(id,  split(id, nwvars); zip(ReplaceVar), id)
+    + SDefT(id, split(id, nwvars); zip(ReplaceVar), id, id)
+    + RDefT(id, split(id, nwvars); zip(ReplaceVar), id, id)
     + Rec(nwvars; Hd, id)
 
   sboundin(bnd, ubnd, ignore) =
       Let(bnd, bnd)
     + SDef(ignore, ignore, bnd)
+    + SDefT(ignore, ignore, ignore, bnd)
     + Rec(ignore, bnd)
 
 \end{code}
@@ -94,16 +116,19 @@ strategies
 \begin{code}
 strategies
 
-  tvars = free-vars(Add1, Bind0 + Bind4, tboundin)
+  declared-vars =
+    map(?VarDec(<id>,_) + ?DefaultVarDec(<id>))
 
-  svars = free-vars(Add2, Bind1 + Bind2 + Bind3, sboundin)
+  tvars = free-vars(Add1, Bind0 + Bind4 + Bind6 + Bind8, tboundin)
 
-  trename = rename(Var, Bind0, tboundin, tpaste)
-  srename = rename(SVar, Bind1 + Bind2 + Bind3, sboundin, spaste)
+  svars = free-vars(Add2, Bind1 + Bind2 + Bind3 + Bind5 + Bind7, sboundin)
+
+  trename = rename(Var, Bind0 + Bind6 + Bind8, tboundin, tpaste)
+  srename = rename(SVar, Bind1 + Bind2 + Bind3 + Bind5 + Bind7, sboundin, spaste)
 
   svars-arity = 
-    free-vars2(\Call(SVar(f), as) -> [(f, <length> as)]\
-              ,Bind1 + Bind2 + Bind3
+    free-vars2(\CallT(SVar(f), as1, as2) -> [(f, (<length> as1, <length> as2))]\
+              ,Bind1 + Bind2 + Bind3 + Bind5 + Bind7
               ,sboundin
               ,{f:?((f,_),f)})
 
@@ -111,7 +136,7 @@ strategies
 
   ssubs = substitute(IsSVar)
 
-  tsubstitute = substitute(IsVar, Var, Bind0, tboundin, tpaste)
+  tsubstitute = substitute(IsVar, Var, Bind0 + Bind4 + Bind6 + Bind8, tboundin, tpaste)
 
   strename = trename ; srename
 

@@ -83,9 +83,9 @@ dynamic rule. */
     )
 
   SplitDynamicRule(assert) :
-    |[ f(as) : t1 -> t2 where s ]| ->
+    |[ f(as1|as2) : t1 -> t2 where s ]| ->
     (|[ where(<~<assert> f> Pair(t1', Defined(~str:stamp, t*))) ]|,
-     |[ f(as) : x@t1 -> t2 
+     |[ f(as1|as2) : x@t1 -> t2 
                 where <rewrite(!~str:f)> t1'' => Defined(~str:stamp, t*); s ]|)
     where 
       <not(eq)>(t2, |[ Undefined() ]|)
@@ -101,9 +101,9 @@ dynamic rule. */
       ; new => stamp
 
   SplitDynamicRule(assert) :
-    |[ f(as) : t1 -> Undefined() where s ]| ->
+    |[ f(as1|as2) : t1 -> Undefined() where s ]| ->
     (|[ where(<~<assert> f> Pair(t1', Undefined())) ]|,
-     |[ f(as) : x@t1 -> Undefined()
+     |[ f(as1|as2) : x@t1 -> Undefined()
                 where <rewrite(!~str:f)> t1'' => Undefined(); s; fail ]|)
     where 
        new => x

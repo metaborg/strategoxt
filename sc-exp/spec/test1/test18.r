@@ -15,7 +15,7 @@ strategies
 	test1;
 	test2;
 	test3;
-	test4;
+//	test4;
 	test5;
 	test6
     )
@@ -55,7 +55,7 @@ strategies
 	, ![("g",[])]
 	, ![g]
 	);
-    apply-test(!"test2b"
+    apply-test(!"test2c"
 	, \ [(f,args)] -> [f#(args)] \
 	, ![("\"f\"",[])]
 	, !["f"]
@@ -78,6 +78,7 @@ strategies
 	, !F(A,B)
 	)
 
+/*
   test4 =
     apply-test(!"test4a"
 	, [explode-term]
@@ -89,6 +90,7 @@ strategies
 	, !3.0
 	, !(3.0, [])
 	)
+*/
 
   test5 =
     apply-test(!"test5a"

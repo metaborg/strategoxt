@@ -13,10 +13,10 @@ strategies
 rules
 
   CallIdFun :
-    Id -> Call(SVar("_id"),[])
+    Id -> CallT(SVar("_id"),[],[])
 
   CallFailFun :
-    Fail -> Call(SVar("_fail"),[])
+    Fail -> CallT(SVar("_fail"),[],[])
 
 (*
  
@@ -26,6 +26,7 @@ rules
 
 *)
 
+/*
   Canon :
     Call(f, args) -> Let(defs', Call(f, args'))
     where <unzip(try(CallIdFun + CallFailFun); 
@@ -34,34 +35,71 @@ rules
                   split(id,![])))> args => (args', defs)
         ; <concat> defs => defs'
         ; not([])
+*/
+
+  Canon :
+    CallT(f, args1, args2) -> Let(defs', CallT(f, args1', args2))
+    where <unzip(try(CallIdFun + CallFailFun); 
+                 (CreateDef1 <+ 
+                  not(CallT(SVar(id),[],[])); CreateDef2 <+ 
+                  split(id,![])))> args1 => (args1', defs)
+        ; <concat> defs => defs'
+        ; not([])
+
+  Canon :
+    PrimT(f, args1, args2) -> Let(defs', PrimT(f, args1', args2))
+    where <unzip(try(CallIdFun + CallFailFun); 
+                 (CreateDef1 <+ 
+                  not(CallT(SVar(id),[],[])); CreateDef2 <+ 
+                  split(id,![])))> args1 => (args1', defs)
+        ; <concat> defs => defs'
+        ; not([])
+
+//  CreateDef1 :
+//    Let(defs,Call(SVar(f),[])) -> (Call(SVar(f),[]), defs)
 
   CreateDef1 :
-    Let(defs,Call(SVar(f),[])) -> (Call(SVar(f),[]), defs)
+    Let(defs,CallT(SVar(f),[],[])) -> (CallT(SVar(f),[],[]), defs)
+
+//  CreateDef2 :
+//    s -> (Call(SVar(f),[]), [SDef(f,[],s)])
+//    where new => f
 
   CreateDef2 :
-    s -> (Call(SVar(f),[]), [SDef(f,[],s)])
+    s -> (CallT(SVar(f),[],[]), [SDefT(f,[],[],s)])
     where new => f
 
+/*
   Canon :
     Call(f, args) -> Call(f, args')
     where //<map(try(CallIdFun + CallFailFun))> args => args'
       <rec x([(CallIdFun + CallFailFun)|try(x)] <+ [id|x])> args => args'
+*/
 
   Canon :
-    Bagof(s) -> Call(SVar("_bagof"),[s])
+    CallT(f, args1, args2) -> CallT(f, args1', args2)
+    where //<map(try(CallIdFun + CallFailFun))> args => args'
+      <rec x([(CallIdFun + CallFailFun)|try(x)] <+ [id|x])> args1 => args1'
 
   Canon :
-    All(s) -> Call(SVar("_all"),[s])
+    PrimT(f, args1, args2) -> PrimT(f, args1', args2)
+    where //<map(try(CallIdFun + CallFailFun))> args => args'
+      <rec x([(CallIdFun + CallFailFun)|try(x)] <+ [id|x])> args1 => args1'
 
   Canon :
-    One(s) -> Call(SVar("_one"),[s])
+    Bagof(s) -> CallT(SVar("SRTS_bagof"),[s],[])
 
   Canon :
-    Some(s) -> Call(SVar("_some"),[s])
+    All(s) -> CallT(SVar("SRTS_all"),[s],[])
 
   Canon :
-    Thread(s) -> Call(SVar("_thread"),[s])
+    One(s) -> CallT(SVar("SRTS_one"),[s],[])
 
+  Canon :
+    Some(s) -> CallT(SVar("SRTS_some"),[s],[])
+
+  Canon :
+    Thread(s) -> CallT(SVar("SRTS_thread"),[s],[])
 
   Canon :
     Scope([],s) -> s
@@ -82,11 +120,11 @@ rules
     Seq(Where(s1), Seq(Build(t), s2)) -> Seq(s1, Seq(Build(t), s2))
 
   Canon :
-    SDef(f, [], Rec(x, s)) ->
-    SDef(f, [], <alltd(?Call(SVar(x),[]); !Call(SVar(f),[]))> s)
+    SDefT(f, [], [], Rec(x, s)) ->
+    SDefT(f, [], [], <alltd(?CallT(SVar(x),[],[]); !CallT(SVar(f),[],[]))> s)
 
   Canon :
-    Rec(x, s) -> Let([SDef(x, [], s)], Call(SVar(x),[]))
+    Rec(x, s) -> Let([SDefT(x, [], [], s)], CallT(SVar(x),[],[]))
 
 //  Canon :
 //    SDef([DontInline],f,xs,s) -> SDef(f,xs,s)

@@ -20,7 +20,7 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 	../pack/pack-stratego $(SINCLUDES) -i $< -o $@ 
 
 %.s1 : %.tree ../front/frontend$(EXE)
-	../front/frontend -i $< -o $@ -b
+	../front/frontend -i $< -o $@ -b --verbose 10
 
 %.s2 : %.s1 ../front/extract$(EXE)
 	../front/extract -i $< -o $@ -b
@@ -53,9 +53,14 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 
 # PRETTY-PRINTING ####################################################
 
-%.txt: % $(STRATEGOFRONT)/bin/astratego2text 
-	$(STRATEGOFRONT)/bin/astratego2text -i $< -o $@
+%.txt: % $(STRATEGO_FRONT)/bin/pp-stratego
+	$(STRATEGO_FRONT)/bin/pp-stratego -a -i $< -o $@
 
+%.atxt : %
+	$(ATERM)/bin/baffle -wt -i $< -o $@
+
+%.ttxt : %
+	$(ATERM_TOOLS)/bin/pp-aterm -i $< -o $@
 
 # BACK-END ###########################################################
 
