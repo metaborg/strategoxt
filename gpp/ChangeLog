@@ -1,3 +1,8 @@
+2002-12-11  Martin Bravenboer  <martin@mbravenboer.org>
+
+  * trans/abox2/Abox-2-text.str: Do not print unnecessary whitespace
+    in the right column of A/R boxes.
+
 2002-12-11  Eelco Visser  <visser@cs.uu.nl>
 
 	* src/ast2abox/ast2text.str: composition of ast2abox and abox2text

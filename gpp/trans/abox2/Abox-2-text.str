@@ -1,5 +1,6 @@
 module Abox-2-text
-imports Box Box-util lib plain-text xtc-proc
+imports Box Box-util plain-text xtc-proc
+imports options list-index string integers
 
 /** 
  * This is a simple Box to text converter.
@@ -107,29 +108,32 @@ strategies
             ; map(?R(_, <id>))
             ; warn-not-matrix
             ; matrix-transpose
+            ; reverse; add-indices; reverse
             > bs => columns
           ; <zip> (aopt, columns) => column-tuples
           ; <foldl(do-A-column)> (column-tuples, (xpos, [])) => (last-xpos, str-columns)
           ; <reverse; matrix-transpose> str-columns => str-rows
           ; <format-vbox> (sopt, <map(!(<id>, last-xpos))> str-rows, xpos) => result
 
-      // :: (A-OPTION * [BOX]) * (Int * [[Strs]]) -> Int * [[Strs]]
+      // :: (A-OPTION * (Int * [BOX])) * (Int * [[Strs]]) -> Int * [[Strs]]
       do-A-column :
-        ((aopt, bs), (xpos, columns)) -> (<add> (<string-length> hs, max-xpos), [ new-column | columns ])
+        ((aopt, (index, bs)), (xpos, columns)) -> (<add> (<string-length> hs, max-xpos), [ new-column | columns ])
           where < map(<try-abox2text> (<id>, xpos))
                 ; unzip
                 ; (map(try(flatten-list; concat-strings)), list-max)
                 > bs => (strings, max-xpos)
               ; <subt> (max-xpos, xpos) => max-width
-              ; <SOpts-of-alignment; hs-text> aopt => hs
+              ; (<gt> (index, 1) < <SOpts-of-alignment; hs-text> aopt + !"") => hs
               ; <map(
-                  <align-column> (aopt, (' ', <id>, max-width))
+                  <align-column> (index, aopt, (' ', <id>, max-width))
                 ; <conc-strings> (<id>, hs)
                 )> strings => new-column
 
-      align-column : (AL(_), t) -> <align-left>   t
-      align-column : (AR(_), t) -> <align-right>  t
-      align-column : (AC(_), t) -> <align-center> t
+      align-column : (_, AR(_), t) -> <align-right>  t
+      align-column : (_, AC(_), t) -> <align-center> t
+      align-column : (1, AL(_), (_, s, _)) -> s
+      align-column : (i, AL(_), t) -> <align-left>   t
+        where <gt> (i, 1)
 
       // TODO: align cannot handle newlines in cells
       // TODO: remove flatten-list and implement our own align strategies
