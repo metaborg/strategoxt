@@ -1,6 +1,6 @@
 pkgdata_DATA = C.pp C.pp.af      
 
-EXTRA_DIST = $(wildcard *.pp) C.pp.af      
+EXTRA_DIST = C.pp C.pp.af 
 
 C.pp.af: C.pp
 	echo "[]" > bla.ac
