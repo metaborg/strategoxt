@@ -80,7 +80,7 @@ rules
     ; !t{anno*}
 
   VeryExplicitImplode :
-    Element(Name(_, "appl"), [Attribute(Name(_, "cons"), name)], content) -> name#(children)
+    Element(Name(_, "appl"), [Attribute(Name(_, "fun"), name)], content) -> name#(children)
     where
       <filter(not(is-anno-element + ?Text(_)))> content => children
 

@@ -1,0 +1,35 @@
+grammar {
+  start =
+    aterm
+
+  aterm =
+    int | astring | appl | alist | tuple
+
+  int =
+    element int {
+      anno*,
+      element value { xsd:integer }
+    }
+
+  astring = 
+    element string {
+      anno*,
+      element value { text }
+    }
+
+  appl =
+    element appl   {
+      attribute fun { text },
+      anno*,
+      aterm*
+    }
+
+  alist =
+    element list {anno*, aterm*}
+
+  tuple =
+    element tuple {anno*, aterm*}
+
+  anno =
+    element anno { aterm }
+}

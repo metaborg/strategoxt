@@ -145,7 +145,7 @@ rules
     s -> %><string><value><% <Explode-String> s %></value></string><%
 
   VeryExplicitExplode-Appl(x) :
-    s#(children) -> %><appl cons="<% !s %>"><% <flatten-list> children :: * %></appl><%
+    s#(children) -> %><appl fun="<% !s %>"><% <flatten-list> children :: * %></appl><%
 
   VeryExplicitExplode-Attr(x) =
     !%><anno><% bottomup(x) %></anno><%
