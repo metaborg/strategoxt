@@ -121,13 +121,14 @@ AB_CONFIG_PKG(xtc,
 
 # sdf-import registers the location of the installed SRTS,
 # therefore we configure with this SRTS and not BUILD_SRTS
+
 AB_CONFIG_PKG(sdf-import,
    --with-aterm=${ATERM}
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
    --with-xtc=${prefix}
    --with-stratego-xt=${STRATEGOXT}
-   --with-srts=${SRTS}  
+   --with-srts=${STRATEGOXT}  
    --with-repository=${REPOSITORY}
 )
 
