@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Asfix-2-abox.r,v 1.1 2002/05/08 07:49:37 mdejonge Exp $
+% $Id: Asfix-2-abox.r,v 1.2 2002/05/08 07:54:36 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 % Changes: Eelco Visser <visser@acm.org> 19/5/20001
@@ -38,7 +38,7 @@ signature
 
 strategies
 
-   Asfix2abox = 
+   Asfix-2-abox = 
      iowrap(asfix2abox,
              Option( "-V", !Verbose(),           !"-V               verbose execution." )
         +    Option( "-c", !Conservative(),      !"-c               Ck

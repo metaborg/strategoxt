@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Ast-2-abox.r,v 1.1 2002/05/08 07:49:44 mdejonge Exp $
+% $Id: Ast-2-abox.r,v 1.2 2002/05/08 07:54:38 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
@@ -34,7 +34,7 @@ signature
       PP-Table : String -> Option
       
 strategies
-   Ast2abox = iowrap( ast2abox, 
+   Ast-2-abox = iowrap( ast2abox, 
                    Option( "-v", !Verbose()) +
                    ArgOption( "-p", \x -> PP-Table(x)\ ,
                     !"-p <table>       Use pretty-print entries from <table>"))

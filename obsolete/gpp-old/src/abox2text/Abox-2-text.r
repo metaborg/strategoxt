@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Abox-2-text.r,v 1.1 2002/05/08 07:49:29 mdejonge Exp $
+% $Id: Abox-2-text.r,v 1.2 2002/05/08 07:54:34 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
@@ -42,7 +42,7 @@ imports pp-tables lib Literal-lib
 
 strategies
 
-  Abox2text = 
+  Abox-2-text = 
     parse-options(  io-options )  => options;
     (
        need-help( usage )
