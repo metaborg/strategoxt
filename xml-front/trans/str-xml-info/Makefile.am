@@ -10,8 +10,7 @@ STRINCLUDES = -I $(XTC)/share/xtc \
               -I $(top_srcdir)/sig/xml \
               -I $(top_srcdir)/sig/xml-info \
               -I $(top_srcdir)/trans \
-              -I $(top_srcdir)/trans/process \
-              -I $(STRATEGO_REGULAR)/share/stratego-regular
+              -I $(top_srcdir)/trans/process
 
 LDADD += $(SSL_LIBS)
 

@@ -1,6 +1,9 @@
 module xml-doc2xml-info
-imports xml-doc xml-info xml-text-tools logging
-imports liblib
+imports
+  xml-doc
+  xml-info
+  xml-text-tools
+  liblib
 
 strategies
 
@@ -30,7 +33,7 @@ strategies // for rewriting xml to xml-info constructors
         ?Element(s, _, _, s)
       < rewrite-well-formed-Element
       +   ?Element(s, _, _, e)
-        ; <fatal-err(|"Start tag doesn't match end tag: ")> (s, e)
+        ; <fatal-error> ["error: start tag ", s, " doesn't match end tag ", e]
 
   /**
    * @implementation-note  is-list is used to handle Conc elements in concrete syntax.
@@ -102,7 +105,7 @@ strategies // for applying namespaces
         filter(is-namespace-decl-attribute)
       ; map({ prefix, value :
           ?Attribute(Name(Some(Prefix("xmlns")), prefix), value)
-        ; <log(|Debug(), "Found namespace declaration")> (prefix, value)
+        ; if-verbose3(<debug(!"debug: found namespace declaration")> (prefix, value))
         ; rules(ResolvePrefix: prefix -> value)
         })
     )
@@ -111,7 +114,7 @@ strategies // for applying namespaces
   remember-default-namespace =
       (?"" < !None() + !Some(<id>))
     ; ?ns
-    ; log(|Debug(), "Default namespace declaration")
+    ; if-verbose3(debug(!"debug: default namespace declaration"))
     ; rules( DefaultNamespace: () -> ns)
 
   /**
@@ -127,7 +130,7 @@ strategies // for applying namespaces
   apply-prefix-namespace:
     Name(Some(Prefix(prefix)), lname) -> Name(Some(value), lname)
       where < ResolvePrefix
-              <+ fatal-err(|"Cannot resolve the namespace of prefix")
+              <+ <fatal-error> ["error: cannot resolve the namespace of prefix ", <id>]
             > prefix => value
 
   /**

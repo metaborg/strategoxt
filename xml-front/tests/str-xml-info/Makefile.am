@@ -8,8 +8,8 @@ apply-tests.c : match-test1.rtree build-test1.rtree
 
 SCFLAGS        = --main main-$*
 STRINCLUDES    = -I $(XML_FRONT)/share/xml-front \
-                 -I $(XTC)/share/xtc \
-                 -I $(STRATEGO_REGULAR)/share/stratego-regular
+                 -I $(XTC)/share/xtc 
+
 LDADD         += $(SSL_LIBS)
 
 EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) $(wildcard *.strxml) $(wildcard *.xhtml)

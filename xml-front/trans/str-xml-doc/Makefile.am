@@ -9,7 +9,6 @@ SCFLAGS = --main main-$* --dr new
 STRINCLUDES = \
   -I $(top_srcdir)/sig/xml \
   -I $(top_srcdir)/trans/process \
-  -I $(STRATEGO_REGULAR)/share/stratego-regular \
   -I $(XTC)/share/xtc 
 
 LDADD += $(SSL_LIBS) 

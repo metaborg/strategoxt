@@ -15,7 +15,6 @@ BOOTCLEANFILES = $(wildcard *.c) xml-xtc-tools.rtree
 
 SCFLAGS      = --main main-$* 
 STRINCLUDES  = -I $(XTC)/share/xtc \
-               -I $(STRATEGO_REGULAR)/share/stratego-regular \
                -I $(top_srcdir)/sig/xml-info \
                -I $(top_srcdir)/lib
 

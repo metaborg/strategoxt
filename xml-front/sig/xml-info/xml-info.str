@@ -1,0 +1,11 @@
+module xml-info
+imports list-cons option
+signature
+  constructors
+    Document  : Element -> Document
+    Element   : Name * AttributeList * ContentList -> Element
+              : Element -> Content
+    Text      : String -> Content
+    Attribute : Name * String -> Attribute
+    Name      : Option(Namespace) * String -> Name
+    Namespace : String -> Namespace
