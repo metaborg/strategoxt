@@ -1,7 +1,0 @@
-module IntCon
-imports Whitespace
-signature
-  constructors
-    natural  : NatCon -> IntCon
-    positive : NatCon -> IntCon
-    negative : NatCon -> IntCon
