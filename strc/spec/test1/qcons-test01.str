@@ -1,0 +1,15 @@
+/**
+ * Build of a quoted constructor
+ */
+module qcons-test01
+imports
+  libstrategolib
+
+strategies
+
+  main =
+    !"aap"(1)
+
+signature
+  constructors
+   "aap" : Term -> Term

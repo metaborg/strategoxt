@@ -11,7 +11,8 @@ check_PROGRAMS 	= test02 test03 test04 test05			    \
 		  test46 test47 test48 test49 test50 test51 test52  \
 		  test53 test54 test55 test56 test57 test58 test59  \
 		  test60 \
-		  io-test10 io-test11 io-test1 io-test2 io-test3  
+		  io-test10 io-test11 io-test1 io-test2 io-test3 \
+                  qcons-test01 qcons-test02 qcons-test03 qcons-test04
 
 # test26 global choice
 
@@ -93,8 +94,14 @@ nodist_test57_SOURCES = test57.c
 nodist_test58_SOURCES = test58.c
 nodist_test59_SOURCES = test59.c
 nodist_test60_SOURCES = test60.c
+
 nodist_io_test10_SOURCES = io-test10.c
 nodist_io_test11_SOURCES = io-test11.c
 nodist_io_test1_SOURCES = io-test1.c
 nodist_io_test2_SOURCES = io-test2.c
 nodist_io_test3_SOURCES = io-test3.c
+
+nodist_qcons_test01_SOURCES = qcons-test01.c
+nodist_qcons_test02_SOURCES = qcons-test02.c
+nodist_qcons_test03_SOURCES = qcons-test03.c
+nodist_qcons_test04_SOURCES = qcons-test04.c

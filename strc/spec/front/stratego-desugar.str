@@ -116,8 +116,16 @@ rules
   Desugar :
     CharCong(c) -> Match(Char(c))
 
-  // Term sugar
+  /**
+   * A quoted congruence is translated to a strategy call.
+   */
+  Desugar :
+    CongQ(f, ss) -> Call(SVar(<escape> f), ss)
 
+/**
+ * Term sugar
+ */
+rules
   Desugar :
     Tuple([t]) -> t
 
@@ -130,6 +138,16 @@ rules
 
   Desugar :
     ListTail(ts,t) -> <foldr(!t,\ (t1, t2) -> Op("Cons",[t1,t2]) \ )> ts
+
+  /**
+   * Quoted constructors are translated to ordinary Ops, where the
+   * symbol is escaped. So, the symbol "foo" is represented as
+   * \"foo\".
+   */
+  Desugar :
+    OpQ(f, ts) -> Op(<escape> f, ts)
+
+rules
 
   //Desugar :
   //  Con(t1, Con1(t2)) -> Con(t1, t2, Call(SVar("oncetd"),[]))

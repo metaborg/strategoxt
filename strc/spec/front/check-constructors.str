@@ -1,35 +1,17 @@
+/**
+ * Checks if all constructors used in a Stratego program
+ * are declared.
+ */
 module check-constructors
-imports Stratego dynamic-rules lib
+imports
+  Stratego
+  dynamic-rules
+  lib
 
 strategies
 
   check-constructors-io = 
     io-wrap(CheckConstructors)
-
-/* replaced by declarations in module tuple-cons
-
-overlays
-
-  TupleDeclarations(decs) =
-    [OpDecl("", ConstType(Var("a"))),
-     OpDecl("", FunType([Var("a")],Var("a"))),
-     OpDecl("", FunType([Var("a"),Var("a")],Var("a"))),
-     OpDecl("", FunType([Var("a"),Var("a"),Var("a")],Var("a"))),
-     OpDecl("", FunType([Var("a"),Var("a"),Var("a"),Var("a")],Var("a"))),
-     OpDecl("", FunType([Var("a"),Var("a"),Var("a"),Var("a"),Var("a")],Var("a"))),
-     OpDecl("", FunType([Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a")],Var("a"))),
-     OpDecl("", FunType([Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a")],Var("a"))),
-     OpDecl("", FunType([Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a")],Var("a"))),
-     OpDecl("", FunType([Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a")],Var("a"))),
-     OpDecl("", FunType([Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a")],Var("a"))),
-     OpDecl("", FunType([Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a")],Var("a"))),
-     OpDecl("", FunType([Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a")],Var("a"))),
-     OpDecl("", FunType([Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a")],Var("a"))),
-     OpDecl("", FunType([Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a")],Var("a"))),
-     OpDecl("", FunType([Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a")],Var("a")))
-    | decs]
-
-*/
 
 rules
 
@@ -38,21 +20,21 @@ rules
       Signature([Constructors(ods1)]), 
       Overlays(ols),
       Strategies(sdefs)
-    ]) 
+    ])
   -> 
     Specification([
       Signature([Constructors(ods2)]), 
       Overlays(ols),
       Strategies(sdefs)
     ])
-    where /* !TupleDeclarations(ods1) => ods2 */
-	  <map(try(TupleDecl))> ods1 => ods2
+    where <map(try(TupleDecl + QuotedConstrDecl))> ods1 => ods2
         ; <map(GenerateCheckRule)> ods2
         ; <map(GenerateCheckRule)> ols
         ; <filter(check-constructors)> ols => []
         ; <filter(check-constructors)> sdefs => []
 
-//        ; (TupleDeclarations <+ ![]) => ods3
+  QuotedConstrDecl :
+    OpDeclQ(s, type) -> OpDecl(<escape> s, type)
 
   TupleDecl :
     OpDeclInj(tp@FunType(args,res)) -> OpDecl("", tp)
@@ -99,24 +81,6 @@ rules
     ; rules(
         CheckCons : Op(c, <length => n>) -> Op(c, [])
       )
-
-/*
-  // CheckTuple implements generic checking of tuple constructors (for arbitrary arity)
-  // For some reason the generation of operator declarations for tuples does not work.
-
-  CheckTuple =
-    ?Op("", ts);
-    where(
-      <length> ts => n
-      ; !"" => c
-      ; !OpDecl("", FunType(<copy>(n,Var("a")),Var("a"))) => decl
-      ; GenerateCheckRule
-      ; ![decl | <TupleDeclarations <+ ![]>] => decs
-      ; rules(
-          TupleDeclarations : _ -> decs
-        )
-    )
-*/
 
   check-constructors =
     ?RDefT(f, xs, ys, <id>)

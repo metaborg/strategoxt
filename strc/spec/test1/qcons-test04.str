@@ -1,0 +1,14 @@
+/**
+ * The constructors "aap" and aap are different.
+ */
+module qconc-test04
+strategies
+
+  main =
+    !"aap"(1)
+    ; not(?aap(_))
+
+signature
+  constructors
+   "aap" : Term -> Term
+   aap   : Term -> Term

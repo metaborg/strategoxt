@@ -233,7 +233,11 @@ rules
   Cify(x) : ['\'' | cs] -> ['_', 'p', '_' | <x>cs]
   Cify(x) : ['-'  | cs] -> ['_'           | <x>cs]
   Cify(x) : ['_'  | cs] -> ['_', '_'      | <x>cs]
+  Cify(x) : ['"'  | cs] -> ['_', 'q', '_' | <x>cs]
+  Cify(x) : ['\'  | cs] -> ['_', 'b', '_' | <x>cs]
 
+  UnCify1(x) : ['_', 'b', '_' | cs] -> ['\'  | <x>cs]
+  UnCify1(x) : ['_', 'q', '_' | cs] -> ['"'  | <x>cs]
   UnCify1(x) : ['_', 'p', '_' | cs] -> ['\'' | <x>cs]
   UnCify2(x) : ['_', '_'      | cs] -> ['_'  | <x>cs]
   UnCify3(x) : ['_'           | cs] -> ['-'  | <x>cs]
