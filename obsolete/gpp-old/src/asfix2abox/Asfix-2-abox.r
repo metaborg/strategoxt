@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Asfix-2-abox.r,v 1.3 2002/06/05 20:00:07 mdejonge Exp $
+% $Id: Asfix-2-abox.r,v 1.4 2002/08/01 12:59:53 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 % Changes: Eelco Visser <visser@acm.org> 19/5/20001
@@ -314,8 +314,10 @@ get-pp-entry =
       <pp-table-get>path; Snd
    )
    
-rules
-appl2abox: 
+appl2abox =
+   application-to-abox <+ fatal-ambiguity
+
+application-to-abox: 
    appl(prod(syms, sym, attrs), args) -> abox
    where
       <get-templ>appl(prod(syms, sym, attrs), args) => (cons-name, pp-entry);
@@ -324,6 +326,10 @@ appl2abox:
                  [cons-name], 1) => sub-boxes;
       <instantiate>(pp-entry, sub-boxes) => abox
 
+fatal-ambiguity = 
+   amb(id);
+   <fatal-error>["Unable to pretty-print term due to ambiguities."]
+  
 \end{code}
   This strategy traverse a box template and the corresponding argument
 boxes, and removes any abox from the argument list that does not correspond
