@@ -20,3 +20,9 @@ strategies
     ; where( collect(is-string; !("a",<id>)) => xs )
     ; where( innermost-scope-A => z )
     ; rules( A.z : e -> x depends on xs )
+
+  assign-aux =
+    ? (x, e)
+    ; where( collect(is-string; !("a",<id>)) => xs )
+    ; where( innermost-scope-B => z )
+    ; rules( B.z : (e, y) -> (x, y) depends on xs )
