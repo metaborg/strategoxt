@@ -105,8 +105,9 @@ bootclean:
 # Makerules for XTC
 #
 
-XTCFLAGS = -I $(XTC)/share/xtc \
-	   --C-include "\"xtc-conf.h\""
+XTCFLAGS = -I $(XTC)/share/xtc 
+
+#	   --C-include "\"xtc-conf.h\""
 
 xtc-conf.h :
 	echo "#define XTC_REPOSITORY() ATmakeString(\"$(REPOSITORY)\")" > $@
