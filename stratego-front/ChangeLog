@@ -1,3 +1,11 @@
+2004-02-13  Martin Bravenboer <martin@cs.uu.nl>
+
+	* parse/parse-stratego.str: invoke implode-asfix with -b.
+	
+	* parse/parse-stratego.str: optionally use a TopSort("...") meta
+	property in the .meta file. This should solve the problems of
+	parsing a Stratego module as some sort of the object language.
+	
 2004-01-20  Eelco Visser  <visser@cs.uu.nl>
 
 	* syn/Stratego-Strategies.sdf: Syntax for 'extend rules' and

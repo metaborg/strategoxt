@@ -2,8 +2,9 @@ module parse-stratego
 imports xtc-lib lib
 signature
   constructors
-    Meta   : List(MetaProperty) -> MetaData
-    Syntax : String -> MetaProperty
+    Meta    : List(MetaProperty) -> MetaData
+    Syntax  : String -> MetaProperty
+    TopSort : String -> MetaProperty
 
 strategies
 
@@ -31,13 +32,19 @@ strategies
   parse-module =
     if-verbose6(debug(!"parse-module: "))
     ; where(FILE(basename => base); get-syntax; get-parse-table => FILE(tbl))
-    ; xtc-transform(!"sglr", !["-2", "-p", tbl | <![]; if-verbose3(!["-v"])>])
-    ; xtc-transform(!"implode-asfix",    <concat> [<pass-verbose>,
-                         <get-config < !["--concrete"] + ![]> "--asfix"])
+    ; where(FILE(basename => base); pass-sort => sort)
+    ; xtc-transform(!"sglr", !["-2", "-p", tbl | <conc> (<if-verbose3(!["-v"])> [], sort)])
+    ; xtc-transform(!"implode-asfix",
+        !["-b" | <concat> [<pass-verbose>, <get-config < !["--concrete"] + ![]> "--asfix"]])
     ; if-keep1(copy-to(<guarantee-extension(!"atree")> base))
     ; xtc-transform(!"meta-explode",     <concat> [<pass-verbose>,
                          <get-config < !["--asfix"] + ![]> "--asfix"])
     ; xtc-transform(!"stratego-desugar", pass-verbose)
+
+  pass-sort =
+      get-meta => Meta(<fetch-elem(?TopSort(<id>))>)
+    ; !["-s", <is-string>]
+    <+ ![]
 
   get-syntax = 
     if-verbose6(debug(!"get-syntax: "))
