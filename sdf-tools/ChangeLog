@@ -1,3 +1,7 @@
+2001-08-09 Joost.Visser@cwi.nl
+   * sdf-de-normalize now also de-normalizes character classes
+     and literals.
+	
 2001-08-09 Merijn de Jonge <mdejonge@cwi.nl> 
    * src/sdf-imports: Adapted graphxml output for fixed graphxml signature
    * src/sdf-imports: -g switch now produces graphxml output (was import
