@@ -3,6 +3,7 @@
         * Removed sub directory dummy
         * Added pre-checks sub directory in which runtime checks are
           performed prior to the build process of XT.
+        * Upgraded to version 1.30 of GPP
 
 2000-07-17 <mdejonge@cwi.nl>
         * Upgraded to use new version (version 1.1) of the aterm library
