@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: parsesdf-implode-sdf2text-check.src,v 1.2 2000/07/25 12:02:58 mdejonge Exp $
+# $Id: parsesdf-implode-sdf2text-check.src,v 1.3 2000/07/25 15:51:24 mdejonge Exp $
 #
 
 # Exit immediately if a command exits with a non-zero status.
@@ -37,22 +37,18 @@ GRAMMARS=${XT}/share/gb
 Sdf=${GRAMMARS}/Sdf.cons
 Pico=${GRAMMARS}/Pico
 ATerms=${GRAMMARS}/ATerms
+
 Grammars="${Pico} ${ATerms} ${Sdf}"
 
-#sdf2text=../spec/sdf-pp/sdf2text
-pp=ast2box
-box2text=box2text
-pptable=${GRAMMARS}/Sdf.pp
+sdf2text=sdf2text
 sglr=sglr
-\
 implode_asfix=implode-asfix
 
 for Grammar in ${Grammars}
 do
     echo "Testing grammar \"${Grammar}\"." >&2
-    ${sglr} -p ${Sdf}.tbl -i ${Grammar}.sdf \
+    ${sglr} -p ${Sdf}.tbl -i ${Grammar}.def \
       | ${implode_asfix} \
-      | ${pp} -a ${pptable} \
-      | ${box2text} -q -a \
+      | ${sdf2text} -a \
       | ${sglr} -p ${Sdf}.tbl > /dev/null
 done

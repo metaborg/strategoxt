@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 #
-# $Id: parseyacc-yacc2sdf-sdf2text-check.src,v 1.1 2000/07/25 12:02:58 mdejonge Exp $
+# $Id: parseyacc-yacc2sdf-sdf2text-check.src,v 1.2 2000/07/25 15:51:24 mdejonge Exp $
 #
 
 # Exit immediately if a command exits with a non-zero status.
@@ -34,14 +34,20 @@ export PATH
 GB=${XT}/share/gb
 GBSRC=../gb/
 
+YACCTESTS=${GBSRC}/grammars/yacc/data/c5.2.y
+
 sglr=sglr
 implodeasfix=implode-asfix
 yacc2sdf=yacc2sdf
 sdf2text=sdf2text
 
 
-${sglr} -p ${GB}/yacc.tbl -i ${GBSRC}/spec/yacc/data/c5.1.y -o c5.1.tree
-${implode-asfix} -i c5.1.tree -o c5.1.ayacc
-${yacc2sdf} -i c5.1.ayacc -o c5.1.asdf
-${sdf2text} -a -i c5.1.asdf -o c5.1.sdf
+for yacc in ${YACCTESTS}
+do
+   yaccspec=`basename ${yacc} .y`
+   ${sglr} -p ${GB}/yacc.tbl -i ${yacc} -o ${yaccspec}.tree
+   ${implodeasfix} -i ${yaccspec}.tree -o ${yaccspec}.ayacc
+   ${yacc2sdf} -i ${yaccspec}.ayacc -o ${yaccspec}.asdf
+   ${sdf2text} -a -i ${yaccspec}.asdf -o /dev/null
+done
 

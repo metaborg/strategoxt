@@ -1,5 +1,6 @@
 2000-07-25 <mdejonge@cwi.nl>
         * added subdirectory with top-level XT integration tests
+        * added parseyacc-yacc2sdf-sdf2text-check.src integration test
 
 2000-07-24 <mdejonge@cwi.nl>
         * Removed sub directory dummy

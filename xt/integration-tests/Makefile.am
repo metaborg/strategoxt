@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.2 2000/07/25 12:02:58 mdejonge Exp $
+# $Id: Makefile.am,v 1.3 2000/07/25 15:51:24 mdejonge Exp $
 
 # Optional tests to run
 TESTS        = parsesdf-yield-check \
@@ -38,6 +38,6 @@ CLEANFILES   = parsesdf-yield-check \
 
 # Generate test-tools
 %-check: %-check.src Makefile.am
-	sed 's#__XT__#../prefix/#g;\
+	sed 's#__XT__#$(prefix)#g;\
 	     s#__MAKE__#$(MAKE)#g' < $< > $@
 	chmod +x $@
