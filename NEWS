@@ -4,21 +4,24 @@ News about Stratego releases
 
 ------------------------------------------------------------------------------
 
-Version 0.8beta1
+Version 0.8
 
- released: June 20, 2002
+ released: June 26, 2002
 
 SUMMARY OF CHANGES
 
- * Support for concrete syntax is provided in the stratego-front package
+ * Support for concrete object syntax is provided in the stratego-front package
    - this includes the full syntax of Stratego in SDF
    - a pretty-printer for Stratego
    - a signature for Stratego abstract syntax
    - stratego-desugar: removes simple syntactic abstractions
+   - meta-explode: explodes embedded abstract syntax into Stratego abstract syntax
    - MetaStratego: specification of transformations on Stratego programs 
      using concrete syntax
+   - Paper "Meta-Programming with Concrete Object Syntax" -- explanation
+   - Paper "Building Interpreters with Rewriting Strategies" -- application
 
- * The implementation of annotations has been completed
+ * The implementation of term annotations has been completed.
 
  * Syntax for list variables, with implementation of very simple list
    matching [t*] and [t,t*] (this is still an experimental feature;
@@ -26,6 +29,8 @@ SUMMARY OF CHANGES
 
  * Innermost fusion: an optimization that specializes applications of innermost
    to its argument, typically a choice of rules.
+   - Paper "Fusing logic and control with local transformations: 
+     An example optimization."
 
  * Use of configuration ATerm files instead of wrapper scripts
 
@@ -38,8 +43,9 @@ SUMMARY OF CHANGES
    High-level combinations to connect to a child process via a
    pipe. (experimental feature)
 
- * stratego-connect: a separate package extending Stratego with interprocess
-   communication
+ * Stratego-connect: a separate package extending Stratego with interprocess
+   communication (experimental; this package is not yet part of the standard
+   stratego bundle because of portability problems)
 
 MORE INFORMATION
 
@@ -59,6 +65,18 @@ CONTRIBUTIONS
 
 CONFIGURATION
 
+ * See ./configure --help for all configuration options. Here are some
+   typical configurations:
+
+ * To get a Stratego installation without concrete syntax configure as
+
+   ./configure --prefix=`pwd` \
+	--with-aterm=/home/xt/XT-1.0
+
+   assuming that the aterm installation in /home/xt/XT-1.0 is used. This
+   set-up will not compile the sources in stratego-front *and* will also
+   not compile the source of the Stratego compiler in sc. 
+
  * To use concrete syntax a number of additional configuration parameters are
    required. For example, this is how I configure the stratego distribution:
 
@@ -68,17 +86,25 @@ CONFIGURATION
  	--with-pgen=/home/xt/XT-1.0 \
 	--with-asfix-tools=/home/xt/XT-1.0 \
 	--with-stratego-tools=/home/xt/XT-1.0 \
-	--with-sdf-tools=/home/xt/XT-1.0
+	--with-sdf-tools=/home/xt/XT-1.0 \
+	--enable-concrete
 
-   See ./configure --help
+   The components in the stratego-front package are not bootstrapped, i.e.,
+   require the Stratego compiler. However, the generated C files are
+   included in the distribution.
 
    This requires an installation of XT-1.0. Future distributions of XT will 
    integrate the Stratego packages with concrete syntax support. A minimal
    bundle for Stratego with concrete syntax will also be provided.
 
-   The components in the stratego-front package are not bootstrapped, i.e.,
-   require the Stratego compiler. However, I have included the generated C files
-   in the distribution.
+ * To bootstrap the compiler sources in sc/ use the option
+
+	--enable-boot
+
+   This requires configuring the options needed for concrete syntax, since some
+   of the compiler components are written in MetaStratego.
+
+ * To install on Windows platform with Cygwin use the --enable-exe option.
 
 STRATEGO FRONT (CONCRETE SYNTAX)
 
@@ -140,12 +166,13 @@ STRATEGO STANDARD LIBRARY (SSL)
    correctness of library modules. First step towards separate
    compilation.
 
- * time.r: support for time measurements extended with primitives calling
-   the system calls clock and time. Module time defines a number of useful
-   abstractions over this. In particular, <run-time> returns the seconds
-   of total run-time so far, including the run-time of all child processes.
-   The operator profile(msg, s) measures the time used to apply s and then
-   prints user and system time, including children time.
+ * simple-list-traversal.r, spec/env-list-traversal.r: generic
+   traversals in which lists are traversed by visiting head and tail,
+   instead of visiting all elements (behaviour of all). Contributed by
+   Otto Skrove Bagge.
+
+ * fixpoint-traversal.r: innermost-tagged uses annotations to tag
+   terms that are in normal form.
 
  * annotations.r: List of annotations. Additional operators for
    annotations: has-annotation, if-annotation, preserve-annotation
@@ -162,15 +189,14 @@ STRATEGO STANDARD LIBRARY (SSL)
  * options.r: Use set-config to store option values in configuration
    table. Use <run-time> instead of dtime to measure time in iowrap.
 
+ * time.r: support for time measurements extended with primitives calling
+   the system calls clock and time. Module time defines a number of useful
+   abstractions over this. In particular, <run-time> returns the seconds
+   of total run-time so far, including the run-time of all child processes.
+   The operator profile(msg, s) measures the time used to apply s and then
+   prints user and system time, including children time.
+
  * dir.r: <readdir> d gives list of filenames of directory d
-
- * simple-list-traversal.r, spec/env-list-traversal.r: generic
-   traversals in which lists are traversed by visiting head and tail,
-   instead of visiting all elements (behaviour of all). Contributed by
-   Otto Skrove Bagge.
-
- * fixpoint-traversal.r: innermost-tagged uses annotations to tag
-   terms that are in normal form.
 
  * exec.r, Lower-level primitives for process control such as
    fork, exec, and pipe.

@@ -9,4 +9,8 @@
  	--with-pgen=/home/xt/XT-1.0 \
 	--with-asfix-tools=/home/xt/XT-1.0 \
 	--with-stratego-tools=/home/xt/XT-1.0 \
-	--with-sdf-tools=/home/xt/XT-1.0
+	--with-sdf-tools=/home/xt/XT-1.0 \
+	--enable-boot \
+	--enable-concrete
+	
+# --with-exe
