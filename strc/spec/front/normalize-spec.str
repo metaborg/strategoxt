@@ -12,14 +12,19 @@ imports Stratego lib desugar lift-dynamic-rules
 strategies
 
   normalize-spec-io = 
-    io-wrap(normalize-spec)
+    io-wrap(normalize-spec-options, normalize-spec)
+
+  normalize-spec-options =
+    ArgOption("--dr",
+  where(("old" + "new"); <set-config>("--dr", <id>)); !(),
+	!"--dr (old|new)   Use old/new dynamic rule semantics (default: old)" )
 
   normalize-spec =
     CombineSections
     ; topdown(try(HL))		// remove syntactic sugar
     ; vars-to-consts
     ; define-lrules
-    ; LiftDynamicRules
+    ; LiftDynamicRules(|<get-config <+ !"old"> "--dr")
     ; topdown(try(HL))		// remove syntactic sugar
     ; Specification(fetch(\ Constructors(decls) -> Signature([Constructors(decls)]) \ ))
 

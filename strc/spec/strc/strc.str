@@ -302,7 +302,7 @@ strategies // COMPILER COMPONENTS
 				<concat> [<dep-name>, <get-include-dirs>, <pass-keep>,
 				  <get-config < !["--asfix"] + ![]> "--asfix"])
   pre-desugar 		= comp(|"pre-desugar")
-  normalize-spec 	= comp(|"normalize-spec")
+  normalize-spec 	= comp(|"normalize-spec", <pass-dr>)
   use-def 		= comp(|"use-def", <pass-maybe-unbound-warnings>)
   check-constructors 	= comp(|"check-constructors")
   spec-to-sdefs 	= comp(|"spec-to-sdefs")

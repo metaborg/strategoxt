@@ -2,7 +2,20 @@ module lift-dynamic-rules
 imports Stratego lib desugar
 strategies
 
-  LiftDynamicRules =
+  LiftDynamicRules(|style) =
+    ?spec
+  ; !style
+  ; (?"old"
+     < <LiftDynamicRules-old> spec
+     + (?"new"
+        < <LiftDynamicRules-new> spec
+        + LiftDynamicRules-old // should not happen, but default to 'old'
+       )
+    )
+
+  LiftDynamicRules-new = LiftDynamicRules-old
+
+  LiftDynamicRules-old =
     Specification([id,id, Strategies(define-rule-scope; lift-dynamic-rules)])
 
 /* Desugar dynamic rule scopes {| ... : ... |} */
