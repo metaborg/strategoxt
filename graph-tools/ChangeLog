@@ -1,4 +1,5 @@
 2001-08-08 Merijn de Jonge <mdejonge@cwi.nl> 
+   * Fixed pp table for dot
    * src/graphxml2dot/GraphXML2dot.r: added support for label attribute.
    * src/graphxml2dot/GraphXML2dot.r: fixed generated AST for node
      attributes
