@@ -5,7 +5,7 @@ DEFS = \
   sdf-cons-injections-correct.sdf
 
 check_DATA = $(DEFS:.sdf=.sdf.af)
-CLEANFILES  = $(noinst_DATA)
+CLEANFILES  = $(check_DATA)
 EXTRA_DIST  = $(DEFS)
 
 %.sdf.af : %.sdf

@@ -1,3 +1,16 @@
+2004-05-01  Martin Bravenboer  <martin@cs.uu.nl>
+
+	* Updated to most recent SDF:
+	- sdf-doc
+	- sdf-wf
+	- sdf2sg
+	- sdf-bracket
+	- sdf2asdf
+	- fdl2sdf
+	- sdf2sdf
+	- sdf-regularize
+	- sdf-imports
+
 2004-04-23  Martin Bravenboer  <martin@cs.uu.nl>
 
 	* src/sdf-cons/sdf-cons.str: upgraded to new SDF syntax.

@@ -1,32 +1,29 @@
 module sdf-analysis
-imports lib Sdf2-Syntax
-
+imports lib Sdf2
 strategies
 
-  declared-sorts
-    = collect(\Sorts(ss) -> <map(\sort(s)->s\)>ss\)
+  declared-sorts =
+      collect(\'sorts(ss) -> <map(\sort(s)->s\)>ss\)
     ; concat
 
-  defined-sorts
-    = collect( \prod    (  _,sort(s),_) -> s\
-            <+ \prod-fun(_,_,sort(s),_) -> s\
-            <+ \alias(_,sort(s)) -> s\
-             )
+  defined-sorts =
+    collect(
+       ?prod(_, sort(<id>), _)
+    <+ ?prod-fun(_, _, sort(<id>), _)
+    <+ ?alias(_, sort(<id>))
+    )
 
-  used-sorts
-    = collect( \prod    (  ss,_,_) -> <map(collect-sorts);concat>ss\
-            <+ \prod-fun(_,ss,_,_) -> <map(collect-sorts);concat>ss\
-             , skip-appl // skip the production child of non-imploded application node
-             )
+  used-sorts =
+    collect(
+       \ prod(  ss,_,_)     -> <map(collect-sorts);concat>ss \
+    <+ \ prod-fun(_,ss,_,_) -> <map(collect-sorts);concat>ss \
+    , skip-appl // skip the production child of non-imploded application node
+    )
     ; concat
     ; uniq
 
-  skip-appl(x,t)
-    = \appl(_,ts) -> <x>ts\
+  skip-appl(x,t) =
+    ?appl(_,<x>)
 
-  collect-sorts
-    = collect(\sort(s)->s\)
-
-signature
-  constructors
-    appl : Production * List(AsFixTerm) -> AsFixTerm
+  collect-sorts =
+    collect(?sort(<id>))

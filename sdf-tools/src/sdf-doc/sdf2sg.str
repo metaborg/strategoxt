@@ -1,11 +1,9 @@
 module sdf2sg
-imports
-  lib sdf-analysis GraphXML Literal-lib termid
-
+imports lib sdf-analysis GraphXML Literal-lib
 strategies
 
-  main
-    = io-idwrap(InOutId("\"sdf-2.1\"", !"\"graphxml_1_1-0\""), sort-graph)
+  main =
+    io-wrap(sort-graph; !"\"graphxml_1_1-0\""#([<id>]))
 
   sort-graph
     = where(collect-edges => es)

@@ -1,6 +1,5 @@
 module sdf-imports
-imports get-modules AsFix lib pack-graph pack file Sdf2-Syntax sglr
-
+imports get-modules lib pack-graph pack file Sdf2 sdf-xtc-tools
 signature
   sorts Node
   constructors
@@ -8,72 +7,46 @@ signature
 
 strategies
 
-  main = get-modules(imports-sdf, !"sdf"); <exit>0
+  main =
+    get-modules(imports-sdf, !"sdf"); <exit>0
 
   imports-sdf(mkpt, ext) =
-	\ root -> (root, ["." | <mkpt>()], []) \;
-	graph-nodes(parse-sdf(ext),
-		    out-edges,
-                    add-node )
+    \ root -> (root, ["." | <mkpt>()], []) \
+    ; graph-nodes(
+        my-parse-sdf(ext)
+      , out-edges
+      , add-node
+      )
 
-
-parse-sdf( ext) =
-        (guarantee-extension(ext), id);
-        ?module-name;
-        find-in-path => m;
-        debug(!"  including ");
-        split(id , parse-sdf ) => tree;
-        <get-sdf-imports> tree => i;
-        <get-module-name> tree => n;
-        !Node(module-name, m, i)
+  my-parse-sdf(ext) = 
+      (guarantee-extension(ext), id)
+    ; ?module-name
+    ; find-in-path
+    ; debug(!"  including ")
+    ; xtc-temp-files(
+        !FILE(<id>)
+      ; xtc-parse-sdf2-module
+      ; read-from
+      )
+    ; !Node(module-name, <get-module-name>, <get-sdf-imports>)
 
 rules
 
-add-node: (m, Node( (f,p), location, edges), xs) -> <conc>(xs',[Node(m, location)])
-   where
-      <map( add_edge(!m) ) >edges => edges';
-      <conc>(edges', xs) => xs'
+  get-module-name =
+    ?'module(unparameterized(<id>), _, _)
 
-out-edges:
-   x -> edges
-   where
-      ?Node( _,_, edges )
+  get-sdf-imports =
+      collect(?'imports(<id>))
+    ; concat
+    ; map(?'module(unparameterized(<id>)))
 
-get-sdf-imports:
-   x -> y
-   where 
-      <collect(?appl(prod(_, cf(sort("Import")), _), _); get-module-name, skip)>x => y
+  add-node:
+    (m, Node( (f,p), location, edges), xs) -> <conc>(xs',[Node(m, location)])
+      where <map(add_edge(!m))> edges => edges'
+          ; <conc> (edges', xs) => xs'
 
-get-module-name:
-   x -> y
-   where
-      <oncetd(?appl(prod(_,cf(sort("ModuleId")),_),_);yield=>y)>x
+  out-edges:
+    Node(_, _, edges) -> edges
 
-add_edge(k) : x -> e
-   where
-      k             => k';
-      !Edge(k', x ) => e
-
-strategies
-   yield = rec x(appl(id, map(x)); \ appl(p, ts) -> <concat> ts \
-	        <+ \ a -> [a] \ ); 
-           implode-string 
-
-  skip(x,y) =  parsetree(x,id) 
-             <+
-               appl(prod(id, cf(sort("Module")), id), [id,id,id,x,id,x])
-             <+
-               appl(prod(id, cf(opt(layout) 
-                              <+ 
-                                sort("Productions") 
-                              <+
-                                sort("Symbols") 
-                              <+
-                                sort("Priorities")  
-                              <+
-                                sort("Restrictions")  
-                              <+
-                                sort("Aliases")  
-                               ), id), id ) ; y
-             <+
-                prod(id,id,id); y
+  add_edge(k) :
+    x -> Edge(<k> (), x)

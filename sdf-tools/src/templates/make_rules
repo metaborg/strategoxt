@@ -42,3 +42,18 @@ diff :
 	  echo rm $${output} ;\
 	) >$@ && \
 	chmod +x $@
+
+%_errcheck : Makefile
+	(\
+	  prog=./$($(*)_check_prog) ;\
+	  input=$($(*)_check_input) ;\
+	  if [ "a$${input}" != "a" ]; then input="-i $(srcdir)/$${input}"; fi ;\
+	  output=$($(*)_check_output) ;\
+	  correct=$(srcdir)/$($(*)_check_correct) ;\
+	  switches="$($(*)_check_switches)" ;\
+	  echo set -e;\
+	  echo "$${prog} -o /dev/null $${switches} $${input} 2>$${output}";\
+	  echo diff $${output} $${correct}  ;\
+	  echo rm $${output} ;\
+	) >$@ && \
+	chmod +x $@

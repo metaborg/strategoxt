@@ -1,36 +1,31 @@
 module sdf-doc
-imports
-  lib Sdf2-Syntax graph-terms termid
-
+imports lib Sdf2 graph-terms
 strategies
 
-  main
-    = io-idwrap(InId("\"sdf-2.1\""), sort-graph)
+  main =
+    io-wrap(sort-graph)
 
-  sort-graph
-    = collect( \prod    (  ss,sort(s),_) -> <build-edges>(ss,s)\
-            <+ \prod-fun(_,ss,sort(s),_) -> <build-edges>(ss,s)\
-            <+ \alias   (   a,sort(s))   -> <build-edges>(a ,s)\
-             , skip-appl // skip the production child of non-imploded application node
-             )
+  sort-graph =
+    collect(
+       \ prod    (  ss,sort(s),_) -> <build-edges>(ss,s) \
+    <+ \ prod-fun(_,ss,sort(s),_) -> <build-edges>(ss,s) \
+    <+ \ alias   (   a,sort(s))   -> <build-edges>(a ,s) \
+         , skip-appl // skip the production child of non-imploded application node
+    )
     ; concat
     ; graph-from-edges
 
-  graph-from-edges
-    = \edgelist -> graph(nodes(<collect-nodes>edgelist),edges(edgelist))\
+  graph-from-edges :
+    edgelist -> graph(nodes(<collect-nodes>edgelist),edges(edgelist))
 
-  build-edges
-    = \(ss,s) -> <filter(collect(\sort(x)-><mk-edge>(x,s)\));concat>ss\
+  build-edges :
+    (ss,s) -> <filter(collect(\sort(x)-><mk-edge>(x,s)\));concat> ss
 
-  mk-edge
-    = \(x,y) -> ['id(x),'id(y)]\
+  mk-edge :
+    (x,y) -> ['id(x),'id(y)]
 
-  skip-appl(x,t)
-    = \appl(_,ts) -> <x>ts\
+  skip-appl(x,t) :
+    appl(_,ts) -> <x> ts
 
-  collect-nodes
-    = collect(?'id(_))
-
-signature
-  constructors
-    appl : Production * List(AsFixTerm) -> AsFixTerm
+  collect-nodes =
+    collect(?'id(_))

@@ -1,48 +1,28 @@
-// SDF Tools
-// Copyright (C) 2001 Merijn de Jonge <mdejonge@cwi.nl>
-//                    Eelco Visser <visser@acm.org>
-//                    Joost Visser <jvisser@cwi.nl>
-//
-// This program is free software; you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 2, or (at your option)
-// any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-// 02111-1307, USA.           
-
-
 module sdf-wf
-imports
-  lib sdf-analysis termid
-
+imports lib sdf-analysis
 strategies
 
-  sdf-wf
-    = io-idwrap( InId("\"sdf-2.1\""), (id,sdf-wf-main), sdf-wf-options )
+  sdf-wf =
+    io-wrap(sdf-wf-options, sdf-wf-main)
 
-  short-description(p) = ![<p>(), " -- check the well-formedness of an SDF grammar"]
-  long-description(p)  = !["Input is an SDF grammar (in AST form).\n",
-                           "Output is an SDF grammar (in AST form).\n",
-                           "The well-formedness report is writen to stderr.\n",
-                           "If both -e and -S are supplied, no report is emitted."]
+  short-description(p) =
+    ![<p>(), " -- check the well-formedness of an SDF grammar"]
+
+  long-description(p)  =
+    !["Input is an SDF grammar (in AST form).\n",
+      "Output is an SDF grammar (in AST form).\n",
+      "The well-formedness report is writen to stderr.\n",
+      "If both -e and -S are supplied, no report is emitted."]
 
   sdf-wf-main
     = where (
         obtain-wf-analyses
-      ; where ( sdf-wf-main-short <+ sdf-wf-main-long )
+      ; where(sdf-wf-main-short <+ sdf-wf-main-long)
       ; maybe-exit-with-error
     )
 
   sdf-wf-main-short
-    = has-option(!ShortForm)
+    = where(<get-config> ShortForm())
     ; ?(alldecs,decs,defs,uses,tops,doubledecs,srts,nondecs,bots,nd-tops,uk-decs)
     ; try-debug(!"Well-formedness report (short form)")
     ; ![" Top sorts:               ",tops]   ;print-report-line
@@ -68,19 +48,18 @@ strategies
 
   maybe-exit-with-error
     = try(
-        has-option(!WarningsAreErrors)
+        where(<get-config> WarningsAreErrors())
       ; ?(alldecs,decs,defs,uses,tops,doubledecs,srts,nondecs,bots,nd-tops,uk-decs)
       ; try( !bots;    not(?[]); <fatal-error>["Error: Grammar contains bottom sorts"] )
       ; try( !nd-tops; not(?[]); <fatal-error>["Error: Grammar contains non-declared top sorts"] )
       ; try( !uk-decs; not(?[]); <fatal-error>["Error: Grammar contains unknown declared sorts"] )
       )
 
-  print-report-line
-    = option-value(Verbose(0);has-option(!WarningsAreErrors),
-            ?ts; !(stderr,ts); printnl)
+  print-report-line =
+    <printnl> (stderr(), <id>)
 
-  obtain-wf-analyses
-    = where( declared-sorts        => alldecs )
+  obtain-wf-analyses =
+      where( declared-sorts        => alldecs )
     ; where( <uniq>alldecs         => decs )
     ; where( defined-sorts         => defs )
     ; where( used-sorts            => uses )
@@ -94,12 +73,18 @@ strategies
     ; where( !(decs,srts);diff     => uk-decs )
     ; !(alldecs,decs,defs,uses,tops,doubledecs,srts,nondecs,bots,nd-tops,uk-decs)
   
-  sdf-wf-options
-    = Option("--short",!ShortForm,    !"--short     print short form of well-formedness report")
-    + Option("-e",!WarningsAreErrors, !"-e          exit with error if grammar is ill-formed")
+  sdf-wf-options=
+      Option("--short"
+      , <set-config> (ShortForm(), ())
+      , !"--short     print short form of well-formedness report"
+      )
+    + Option("-e"
+      , <set-config> (WarningsAreErrors(), ())
+      , !"-e          exit with error if grammar is ill-formed"
+      )
 
-
-  try-debug(s) = option-value(Verbose(0),s;debug)
+  try-debug(s) =
+    if-verbose1(where(s; debug))
 
 signature
   constructors
@@ -108,13 +93,13 @@ signature
 
 strategies
 
-  doubles
-    = {xs: ?xs ; filter(not(once(!xs))) ; uniq}
+  doubles =
+      ?xs
+    ; filter(not(once(!xs)))
+    ; uniq
 
-  once(xs) 
-    = {x : ?x
-       ; where(
-          xs; filter(?x) => [_]
-        )
-       ;!x }
+  once(xs) = 
+      ?x
+    ; where(xs; filter(?x) => [_])
+    ; !x
 
