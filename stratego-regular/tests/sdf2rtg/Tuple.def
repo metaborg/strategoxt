@@ -2,6 +2,7 @@ definition
 module Tuple
 imports Identifier Layout
 exports
+  context-free start-symbols Exp
   sorts Exp
   context-free syntax
     "switch" Exp ("case" Exp ":" Exp)* "end" -> Exp  {cons("Switch")}

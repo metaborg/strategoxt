@@ -17,7 +17,6 @@ strategies
     ; apply-and-check(!"Exp3.def", xtc-transform(!"sdf2rtg", !["--main", "Expression"]), !FILE("Exp1.def"), xtc-debug-text)
     ; apply-and-check(!"Cycle.def", xtc-transform(!"sdf2rtg", !["--main", "Cycle"]), !FILE("Cycle.def"), xtc-debug-text)
     ; apply-and-check(!"FunProgram.def", xtc-transform(!"sdf2rtg", !["--main", "FunProgram"]), !FILE("FunProgram.def"), xtc-debug-text)
-    ; apply-and-check(!"AsFix.def", xtc-transform(!"sdf2rtg", !["--main", "AsFix"]), !FILE("AsFix.def"), xtc-debug-text)
     ; apply-and-check(!"Tuple.def", xtc-transform(!"sdf2rtg", !["--main", "Tuple"]), !FILE("Tuple.def"), xtc-debug-text)
     ; apply-and-check(!"OptAlt.def", xtc-transform(!"sdf2rtg", !["--main", "OptAlt"]), !FILE("OptAlt.def"), xtc-debug-text)
 

@@ -2,7 +2,7 @@ definition
 module Expression
   imports Identifier Layout
   exports
-    sorts Exp
+    context-free start-symbols Exp
 
     context-free syntax
       Exp "*" Exp -> Exp {cons("Mul")}

@@ -1,7 +1,7 @@
 definition
 module OptAlt
 exports
-  sorts Fred
+  context-free start-symbols Fred
   context-free syntax
    "bar" -> Bar {cons("bar")}
    "foo" -> Foo {cons("foo")}

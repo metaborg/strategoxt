@@ -1,6 +1,7 @@
 definition
   module FunProgram
   exports
+    context-free start-symbols Program
     sorts Var Fun Term FunDef Program
 
     aliases

@@ -5,7 +5,7 @@ module Cycle
 module Expression
   imports Identifier Statement
   exports
-    sorts Exp
+    context-free start-symbols Exp
 
     context-free syntax
       Id  -> Exp {cons("Var")}
