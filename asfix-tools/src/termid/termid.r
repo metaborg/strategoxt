@@ -1,6 +1,6 @@
 \literate
 % GT -- Grammar Tools
-% Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
+% Copyright (C) 2001 Merijn de Jonge <mdejonge@cwi.nl>
 %                    Eelco Visser <visser@acm.org>
 %                    Joost Visser <jvisser@cwi.nl>
 %
@@ -19,13 +19,13 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: termid.r,v 1.5 2001/10/10 16:59:14 mdejonge Exp $
+% $Id: termid.r,v 1.6 2001/10/10 21:34:47 mdejonge Exp $
 
 The io-idwrap strategy is used to perform identity checking of input terms
-and to add term identifiers of output terms. Term identifiers provide some
-(weak) form of type checking of terms and, when used with AST's,it provides
+and to add term identifiers to output terms. Term identifiers provide some
+(weak) form of type checking of terms and, when used with AST's, it provides
 grammar identification to verify that the input term is an AST generated
-from a partivular grammar.
+from a particular grammar.
 
 The strategy adds the '--strict' command line switch, which when specified,
 issues a fatal error in case term identification of a term fails. Otherwise,
@@ -54,7 +54,7 @@ examples:
   add the identifier "\"sdf-2.1\"" to it.
 
 
-This module also provides startegies to manually perform identifier
+This module also provides strategies to manually perform identifier
 verification and addition of term identifiers.
 
 examples:
@@ -65,11 +65,11 @@ examples:
 
  When t equals "sdf-2.1"(f(a,b)), the result would be f(a,b).
 
- To accept any term id use the following:
+ To accept any term identifier use the following:
 
     <termid-check>(id)>t   
 
- To set the identifier of a term us the strategy "termid-set":
+ To set the identifier of a term use the strategy "termid-set":
 
     <termid-set(!"\"sdf-2.1\"")>t
 
@@ -97,7 +97,7 @@ io-idwrap('id, strat, extra-options) =
 
 // Check the term identifier i by applying strategy in-type to it. Issue a
 // warning (or fatal error) when in-type failes. If in-type succeeds, or
-// in case --strict switchs was not specified, retrun trm as result.
+// in case --strict switch was not specified, return trm as result.
 InId(in-type): ("in-type",  i#([trm])) -> trm
    where
       <in-type <+ type-failure>i
@@ -131,7 +131,7 @@ termid-check('id): t -> trm
    where
       <InId('id)>("in-type", t) => trm
 
-// Set identity of term to i : f(a,b) becomes i(f(a,b)). This is a filter
+// Set identity of term to i: f(a,b) becomes i(f(a,b)). This is a filter
 // that operates on a tuple (options, t) and is used within io-idwrap.
 termid-set'('id) : (options, t) -> (options, trm)
    where
