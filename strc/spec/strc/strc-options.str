@@ -41,7 +41,7 @@ strategies
         , "-lATerm-gcc"
         , "-lm"])
     ; <set-config> ("-CD", [])
-    ; <set-config> ("--dr", "new")
+    ; <set-config> ("--dr", "old")
   )
 
   get-include-dirs =
