@@ -32,6 +32,6 @@ TESTS = stratlib-test
 BOOTSOURCES = rename-vars.c
 BOOTCLEANFILES = rename-vars.c
 
-include $(srcdir)/../Makefile.stratego
+include $(srcdir)/../Makefile.common
 include $(wildcard *.dep)
 

@@ -1703,3 +1703,15 @@ Bootstrapping: phase 1 started [Fri Nov 22 16:48:35 CET 2002]
 
 Bootclean [Fri Nov 22 16:48:35 CET 2002]
 Bootclean finished [Fri Nov 22 16:48:36 CET 2002]
+
+Bootstrapping version 0.9beta6 [Sat Nov 23 13:30:54 CET 2002 - Linux loempia.cs.uu.nl i686]
+Bootstrapping: phase 1 started [Sat Nov 23 13:30:54 CET 2002]
+
+Bootclean [Sat Nov 23 13:30:54 CET 2002]
+Bootclean finished [Sat Nov 23 13:30:54 CET 2002]
+Bootstrapping: phase 2 started [Sat Nov 23 13:51:05 CET 2002]
+
+Bootclean [Sat Nov 23 13:51:05 CET 2002]
+Bootclean finished [Sat Nov 23 13:51:06 CET 2002]
+Bootstrapping: phase 3 started [Sat Nov 23 14:18:20 CET 2002]
+Bootstrapping: finished [Sat Nov 23 14:37:06 CET 2002]

@@ -34,5 +34,5 @@ BOOTSOURCES = \
 	Stratego-Canonical-Format.c \
 	Stratego-Optimized-Format.c
 
-include $(srcdir)/../Makefile.stratego
+include $(srcdir)/../Makefile.common
 include $(wildcard *.dep)

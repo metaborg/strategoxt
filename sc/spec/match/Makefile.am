@@ -44,6 +44,6 @@ optimize1.c: compile-match.str
 optimize2.c: compile-match.str
 	$(SC) $(SCFLAGS) -i $< --main optimize2-comp -o optimize2.c -c
 
-include $(srcdir)/../Makefile.stratego
+include $(srcdir)/../Makefile.common
 include $(wildcard *.dep)
 

@@ -617,9 +617,9 @@ void init_constant_terms (void)
   ATprotect(&(term_c_19));
   term_c_19 = (ATerm) ATmakeAppl(ATmakeSymbol("o_0", 0, ATtrue));
   ATprotect(&(term_e_19));
-  term_e_19 = (ATerm) ATmakeAppl(ATmakeSymbol("a_0", 0, ATtrue));
+  term_e_19 = (ATerm) ATmakeAppl(ATmakeSymbol("c_0", 0, ATtrue));
   ATprotect(&(term_g_19));
-  term_g_19 = (ATerm) ATmakeAppl(ATmakeSymbol("b_0", 0, ATtrue));
+  term_g_19 = (ATerm) ATmakeAppl(ATmakeSymbol("d_0", 0, ATtrue));
   ATprotect(&(term_h_19));
   term_h_19 = (ATerm) ATmakeAppl(ATmakeSymbol("fusion: application of innermost found", 0, ATtrue));
   ATprotect(&(term_s_19));
@@ -948,7 +948,7 @@ ATerm try_1 (ATerm, ATerm g_114 (ATerm));
 ATerm table_get_0 (ATerm);
 ATerm table_push_0 (ATerm);
 ATerm register_usage_1 (ATerm, ATerm j_96 (ATerm));
-ATerm Option_3 (ATerm, ATerm c_0 (ATerm), ATerm d_0 (ATerm), ATerm q_0 (ATerm));
+ATerm Option_3 (ATerm, ATerm a_0 (ATerm), ATerm b_0 (ATerm), ATerm q_0 (ATerm));
 ATerm system_usage_switch_0 (ATerm);
 ATerm UndefinedOption_0 (ATerm);
 ATerm Cons_2 (ATerm, ATerm s_89 (ATerm), ATerm t_89 (ATerm));
@@ -4567,7 +4567,7 @@ ATerm SeqOverLChoiceR_0 (ATerm t)
                     g_53 = ATgetArgument(e_53, 0);
                     h_53 = ATgetArgument(e_53, 1);
                     r_52 :
-                    if(match_string(g_53, "b_0"))
+                    if(match_string(g_53, "d_0"))
                       {
                         if(((y_52 != NULL) && (y_52 != h_53)))
                           _fail(h_53);
@@ -4631,7 +4631,7 @@ ATerm SeqOverChoiceR_0 (ATerm t)
                     a_54 = ATgetArgument(z_53, 0);
                     b_54 = ATgetArgument(z_53, 1);
                     o_53 :
-                    if(match_string(a_54, "a_0"))
+                    if(match_string(a_54, "c_0"))
                       {
                         if(((v_53 != NULL) && (v_53 != b_54)))
                           _fail(b_54);
@@ -10897,7 +10897,7 @@ ATerm register_usage_1 (ATerm t, ATerm j_96 (ATerm))
   }
   return(t);
 }
-ATerm Option_3 (ATerm t, ATerm c_0 (ATerm), ATerm d_0 (ATerm), ATerm q_0 (ATerm))
+ATerm Option_3 (ATerm t, ATerm a_0 (ATerm), ATerm b_0 (ATerm), ATerm q_0 (ATerm))
 {
   ATerm c_121 = NULL,d_121 = NULL,e_121 = NULL;
   c_121 = t;
@@ -10918,14 +10918,14 @@ ATerm Option_3 (ATerm t, ATerm c_0 (ATerm), ATerm d_0 (ATerm), ATerm q_0 (ATerm)
             z_34 = t;
             {
               t = not_null(d_121);
-              t = c_0(t);
+              t = a_0(t);
             }
             t = z_34;
             {
               ATerm j_121 = NULL;
               t = term_f_25;
               {
-                t = d_0(t);
+                t = b_0(t);
                 {
                   j_121 = t;
                   if(((h_121 != NULL) && (h_121 != j_121)))

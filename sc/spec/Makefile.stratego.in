@@ -1,10 +1,10 @@
-INCLUDES 	= -I/home/xt/XT/include \
-		  -I/home/xt/XT/include \
-		  -I/home/xt/XT/include
+INCLUDES 	= -I@STRATEGORTS@/include \
+		  -I@STRATEGOLIB@/include \
+		  -I@ATERM@/include
 
-LDFLAGS		= -L/home/xt/XT/lib \
-		  -L/home/xt/XT/lib \
-		  -L/home/xt/XT/lib 
+LDFLAGS		= -L@STRATEGORTS@/lib \
+		  -L@STRATEGOLIB@/lib \
+		  -L@ATERM@/lib 
 
 LDADD		= -lstratego.opt \
 		  -lstratego-lib.opt \
@@ -12,7 +12,7 @@ LDADD		= -lstratego.opt \
 		  -lm
 
 SUFFIXES 	= .str .cr
-SC 		= /home/xt/XT/bin/sc
+SC 		= @prefix@/bin/sc
 
 .str.c : 
 	$(SC) $(STRINCLUDES) $(SCFLAGS) -i $< -o $@ -c

@@ -43,6 +43,6 @@ BOOTSOURCES = si.c primitives.c stratego.in stratego
 
 BOOTCLEANFILES = eval-lib-primitives.rtree si.c primitives.c stratego
 
-include $(srcdir)/../Makefile.stratego
+include $(srcdir)/../Makefile.common
 include $(wildcard *.dep)
 

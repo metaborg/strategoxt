@@ -38,5 +38,5 @@ EXTRA_DIST = $(wildcard *.str) $(wildcard *.cr) $(wildcard *.syn)
 
 BOOTSOURCES = fusion.c
 
-include $(srcdir)/../Makefile.stratego
+include $(srcdir)/../Makefile.common
 include $(wildcard *.dep)

@@ -33,5 +33,5 @@ EXTRA_DIST = $(wildcard *.str) sc.config.src sc-manual.txt
 
 BOOTSOURCES = sc.c sc.config.src
 
-include $(srcdir)/../Makefile.stratego
+include $(srcdir)/../Makefile.common
 include $(wildcard *.dep)

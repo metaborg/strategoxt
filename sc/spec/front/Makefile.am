@@ -44,7 +44,7 @@ extract-test.str             needed-defs.str
 
 BOOTSOURCES = frontend.c extract.c extract-all.c inline.c rename-defs.c
 
-include $(srcdir)/../Makefile.stratego
+include $(srcdir)/../Makefile.common
 include $(wildcard *.dep)
 
 

@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-EXTRA_DIST = make_rules.in make-rules conf.h.src Makefile.stratego
+EXTRA_DIST = make_rules.in make-rules conf.h.src Makefile.stratego.in Makefile.common
 
 pkgdata_DATA = Makefile.stratego conf.h
 
@@ -35,6 +35,7 @@ BOOTSOURCES = conf.h.src
 
 bootstep :
 	$(MAKE) bootclean
+	$(MAKE) clean
 	$(MAKE)
 	$(MAKE) bootcheck
 	$(MAKE) install
@@ -48,6 +49,7 @@ bootcheck :
 boot0 :
 	$(MAKE) bootstep
 	cd ..; ./stdconfig
+	$(MAKE) bootclean
 	$(MAKE) clean
 	$(MAKE)
 	$(MAKE) bootcheck
@@ -86,7 +88,6 @@ bootinstall :
 	@echo "Bootinstall finished [`date`]" >> log/bootlog
 
 bootclean :
-	@echo "" >> log/bootlog
 	@echo "Bootclean [`date`]" >> log/bootlog
 	list='$(BOOTSUBDIRS)'; for subdir in $$list; do \
 	   (cd $$subdir ; $(MAKE) $@ ;) \

@@ -1103,7 +1103,7 @@ ATerm explode_string_0 (ATerm);
 ATerm concat_strings_0 (ATerm);
 ATerm long_description_1 (ATerm, ATerm h_80 (ATerm));
 ATerm map_1 (ATerm, ATerm y_92 (ATerm));
-ATerm reverse_acc_2 (ATerm, ATerm h_0 (ATerm), ATerm i_0 (ATerm));
+ATerm reverse_acc_2 (ATerm, ATerm f_0 (ATerm), ATerm i_0 (ATerm));
 ATerm reverse_0 (ATerm);
 ATerm short_description_1 (ATerm, ATerm g_80 (ATerm));
 ATerm Program_1 (ATerm, ATerm m_70 (ATerm));
@@ -1116,7 +1116,7 @@ ATerm try_1 (ATerm, ATerm r_101 (ATerm));
 ATerm table_get_0 (ATerm);
 ATerm table_push_0 (ATerm);
 ATerm register_usage_1 (ATerm, ATerm l_80 (ATerm));
-ATerm Option_3 (ATerm, ATerm c_0 (ATerm), ATerm d_0 (ATerm), ATerm g_0 (ATerm));
+ATerm Option_3 (ATerm, ATerm a_0 (ATerm), ATerm b_0 (ATerm), ATerm e_0 (ATerm));
 ATerm system_usage_switch_0 (ATerm);
 ATerm UndefinedOption_0 (ATerm);
 ATerm Cons_2 (ATerm, ATerm x_75 (ATerm), ATerm y_75 (ATerm));
@@ -1537,7 +1537,7 @@ ATerm Canon_0 (ATerm t)
         int w_5 = stack_ptr;
         if((PushChoice() == 0))
           {
-            ATerm a_0 (ATerm t)
+            ATerm c_0 (ATerm t)
             {
               ATerm x_5 = t;
               int y_5 = stack_ptr;
@@ -1553,12 +1553,12 @@ ATerm Canon_0 (ATerm t)
                 }
               return(t);
             }
-            ATerm b_0 (ATerm t)
+            ATerm d_0 (ATerm t)
             {
               t = try_1(t, r_10);
               return(t);
             }
-            t = Cons_2(t, a_0, b_0);
+            t = Cons_2(t, c_0, d_0);
             LocalPopChoice(w_5);
           }
         else
@@ -1586,9 +1586,9 @@ ATerm Canon_0 (ATerm t)
     ATerm u_9 = NULL,v_9 = NULL,w_9 = NULL;
     t = not_null(e_8);
     {
-      ATerm e_0 (ATerm t)
+      ATerm g_0 (ATerm t)
       {
-        ATerm f_0 (ATerm t)
+        ATerm h_0 (ATerm t)
         {
           ATerm b_6 = t;
           int e_6 = stack_ptr;
@@ -1604,7 +1604,7 @@ ATerm Canon_0 (ATerm t)
             }
           return(t);
         }
-        t = try_1(t, f_0);
+        t = try_1(t, h_0);
         {
           ATerm f_6 = t;
           int g_6 = stack_ptr;
@@ -1657,7 +1657,7 @@ ATerm Canon_0 (ATerm t)
         }
         return(t);
       }
-      t = unzip_1(t, e_0);
+      t = unzip_1(t, g_0);
       {
         u_9 = t;
         d_7 :
@@ -3764,7 +3764,7 @@ ATerm map_1 (ATerm t, ATerm y_92 (ATerm))
   t = x_23(t);
   return(t);
 }
-ATerm reverse_acc_2 (ATerm t, ATerm h_0 (ATerm), ATerm i_0 (ATerm))
+ATerm reverse_acc_2 (ATerm t, ATerm f_0 (ATerm), ATerm i_0 (ATerm))
 {
   ATerm e_24 = NULL,f_24 = NULL,g_24 = NULL;
   g_24 = t;
@@ -3799,7 +3799,7 @@ ATerm reverse_acc_2 (ATerm t, ATerm h_0 (ATerm), ATerm i_0 (ATerm))
               ATerm n_24 = NULL;
               t = not_null(e_24);
               {
-                t = h_0(t);
+                t = f_0(t);
                 {
                   n_24 = t;
                   if(((m_24 != NULL) && (m_24 != n_24)))
@@ -3827,7 +3827,7 @@ ATerm reverse_acc_2 (ATerm t, ATerm h_0 (ATerm), ATerm i_0 (ATerm))
               t = not_null(j_24);
               return(t);
             }
-            t = reverse_acc_2(t, h_0, g_2);
+            t = reverse_acc_2(t, f_0, g_2);
           }
         }
       }
@@ -4251,14 +4251,14 @@ ATerm register_usage_1 (ATerm t, ATerm l_80 (ATerm))
   }
   return(t);
 }
-ATerm Option_3 (ATerm t, ATerm c_0 (ATerm), ATerm d_0 (ATerm), ATerm g_0 (ATerm))
+ATerm Option_3 (ATerm t, ATerm a_0 (ATerm), ATerm b_0 (ATerm), ATerm e_0 (ATerm))
 {
   ATerm o_28 = NULL,p_28 = NULL,q_28 = NULL;
   o_28 = t;
   n_28 :
   if(match_string(o_28, "register-usage-info"))
     {
-      t = register_usage_1(t, g_0);
+      t = register_usage_1(t, e_0);
     }
   else
     {
@@ -4272,14 +4272,14 @@ ATerm Option_3 (ATerm t, ATerm c_0 (ATerm), ATerm d_0 (ATerm), ATerm g_0 (ATerm)
             z_15 = t;
             {
               t = not_null(p_28);
-              t = c_0(t);
+              t = a_0(t);
             }
             t = z_15;
             {
               ATerm u_28 = NULL;
               t = term_h_13;
               {
-                t = d_0(t);
+                t = b_0(t);
                 {
                   u_28 = t;
                   if(((t_28 != NULL) && (t_28 != u_28)))

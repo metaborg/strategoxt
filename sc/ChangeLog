@@ -1,5 +1,9 @@
 2002-11-23  Eelco Visser  <visser@acm.org>
 
+	* complete bootstrap
+
+	* configure.in: Removed version number from libexecdir
+
 	* spec/ : renamed .r files to .str
 
 	* spec/syn/pack-stratego.config.src : libexec -> libexecdir
