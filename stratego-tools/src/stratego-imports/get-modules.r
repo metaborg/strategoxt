@@ -17,7 +17,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: get-modules.r,v 1.2 2001/08/09 12:20:20 mdejonge Exp $
+% $Id: get-modules.r,v 1.3 2001/09/18 06:24:10 mdejonge Exp $
 
 \begin{code}
 module get-modules
@@ -38,7 +38,7 @@ signature
 
 strategies
 
-   get-modules( get-imports, def-ext ) =
+   get-modules( get-imports: a * (a -> a) * (a -> a) -> a, def-ext ) =
    parse-options( 
             ArgOption( "-I", \ x -> Include(x) \ ) +
             ArgOption( "-e", \ x -> Ext(x) \ ) +
