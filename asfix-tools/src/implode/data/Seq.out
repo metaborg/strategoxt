@@ -1,0 +1,1 @@
+Seq(TCons("a",TCons("b",TCons("c",TNil))))

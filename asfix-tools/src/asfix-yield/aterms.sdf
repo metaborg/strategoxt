@@ -1,0 +1,85 @@
+%%% GT -- Grammar Tools
+%%% Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
+%%%                    Eelco Visser <visser@acm.org>
+%%%                    Joost Visser <jvisser@cwi.nl>
+%%%
+%%% This program is free software; you can redistribute it and/or modify
+%%% it under the terms of the GNU General Public License as published by
+%%% the Free Software Foundation; either version 2, or (at your option)
+%%% any later version.
+%%%
+%%% This program is distributed in the hope that it will be useful,
+%%% but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%%% GNU General Public License for more details.
+%%%
+%%% You should have received a copy of the GNU General Public License
+%%% along with this program; if not, write to the Free Software
+%%% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+%%% 02111-1307, USA.
+%%%
+%%% $Id: aterms.sdf,v 1.1 2001/05/30 15:19:01 mdejonge Exp $
+
+definition
+
+module Main
+imports ATerms
+
+module Layout
+exports
+  lexical syntax
+    [\ \t\n] -> LAYOUT
+
+module Literals
+imports Layout
+exports
+  sorts Literal
+  lexical syntax
+    "\\" ~ []                      -> EscChar
+    "\\" [01] [0-7] [0-7]          -> EscChar
+    ~ [\0-\31\"\\] \/ [\t\n]       -> L-Char
+    EscChar                        -> L-Char
+    "\"" L-Char* "\""              -> Literal
+    [A-Za-z\-\_][A-Za-z0-9\-\_]+   -> Literal
+
+module IntCon
+imports Layout
+exports
+  sorts NatCon IntCon
+  lexical syntax
+    [0-9]+ -> NatCon
+  context-free syntax
+    NatCon     -> IntCon
+    "+" NatCon -> IntCon
+    "-" NatCon -> IntCon
+
+module RealCon
+imports IntCon
+exports
+  sorts OptExp RealCon
+  context-free syntax
+    "e" IntCon                -> OptExp
+                              -> OptExp
+    IntCon "." NatCon OptExp  -> RealCon
+
+module ATerms
+imports Literals IntCon RealCon
+exports
+  sorts ATerms ATermList ACon AFun ATerm Ann
+  context-free syntax
+    ATerm                     -> ATerms
+    ATerm "," ATerms          -> ATerms
+    "[" "]"                   -> ATermList
+    "[" ATerms "]"            -> ATermList
+    IntCon                    -> ACon
+    RealCon                   -> ACon
+    Literal                   -> AFun
+    ACon                      -> ATerm
+    ATermList                 -> ATerm
+    AFun                      -> ATerm
+    AFun "(" ATerms ")"       -> ATerm
+    "{" ATerms "}"            -> Ann
+    ACon                 Ann  -> ATerm
+    ATermList            Ann  -> ATerm
+    AFun                 Ann  -> ATerm
+    AFun "(" ATerms ")"  Ann  -> ATerm

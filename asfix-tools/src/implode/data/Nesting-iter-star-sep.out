@@ -1,0 +1,1 @@
+appl(prod([cf(sort("Nesting-iter-star-sep"))],sort("<START>"),no-attrs),[appl(prod([cf(iter-star-sep(iter-star(sort("A")),lit(";")))],cf(sort("Nesting-iter-star-sep")),attrs([cons("Nesting-iter-star-sep"),id("Main")])),[[["a","b","c"],lit(";"),["d","e","f"],lit(";"),["g","h","i"]]])])
