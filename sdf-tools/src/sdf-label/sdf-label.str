@@ -1,16 +1,15 @@
 module sdf-label
-imports Sdf2-Syntax list Literal-lib verbalize-sdf termid AsFix
+imports Sdf2 list Literal-lib verbalize-sdf AsFix
 signature
    constructors
       empty-layout : a
 
 strategies
 
-  sdf-label
-    = io-idwrap(InOutId("\"sdf-2.1\"", !"\"sdf-2.1\""), Sdf-label)
+  sdf-label= io-wrap(Sdf-label)
 
-  Sdf-label
-    = alltd(dont-label <+ label-production)
+  Sdf-label =
+    alltd(dont-label <+ label-production)
 
   label-production
     = ( prod(map(try(label-symbol)),id,id)

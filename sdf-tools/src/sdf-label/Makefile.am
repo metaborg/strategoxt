@@ -11,8 +11,10 @@ BOOTCLEANFILES 	 = sdf-label.c sdf-rmlabel.c
 TESTS        	 = sdf_rmlabel_check sdf_label_check
 CLEANFILES  	 = sdf_rmlabel_check sdf_label_check $(wildcard *.dep)
 
-SCFLAGS     	 = -I $(ASFIX_TOOLS)/share/asfix-tools \
-                   -I $(srcdir)/../lib --main $*
+SCFLAGS = \
+  -I $(ASFIX_TOOLS)/share/asfix-tools \
+  -I $(srcdir)/../lib \
+  --main $*
 
 EXTRA_DIST 	 = $(wildcard *.str) $(wildcard *.meta) 
 
@@ -25,9 +27,3 @@ sdf_rmlabel_check_prog    = sdf-rmlabel
 sdf_rmlabel_check_input   = data/rm-label.asfix
 sdf_rmlabel_check_output  = data/rm-label.asfix.out
 sdf_rmlabel_check_correct = data/rm-label.asfix.correct
-
-% : %.sh.src Makefile
-	@sed 's@__BINDIR__@$(bindir)@g;\
-             s@__DATADIR__@$(pkgdatadir)@g'\
-           < $< > $@
-	chmod 755 $@
