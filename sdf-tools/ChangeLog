@@ -2,6 +2,7 @@
    * src/sdf-imports: Adapted graphxml output for fixed graphxml signature
    * src/sdf-imports: -g switch now produces graphxml output (was import
      graph format). New -ig switch to get import graph output.
+   * src/sdf-doc: Adapted graphxml output for fixed graphxml signature
 
 2001-06-11 Merijn de Jonge <mdejonge@cwi.nl> 
    * src/lib: intergation module ppp-wrap moved to xt-package

@@ -19,7 +19,7 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
  02111-1307, USA.
 
- $Id: sdf2sg.r,v 1.1 2001/05/31 14:20:51 mdejonge Exp $
+ $Id: sdf2sg.r,v 1.2 2001/08/09 12:02:39 mdejonge Exp $
 *)
 
 module sdf2sg
@@ -65,7 +65,7 @@ strategies
     ; where( !(uses,defs);diff     => bs   )	// Bottom sorts
     ; where( !(tops,decs);diff     => ndts )	// Non-declared top sorts
     ; where( !(decs,srts);diff     )		// Unknown declared sorts
-    ; !bs ; map( \s -> node([name(<quote>s),class(<quote>"bottom")])\ )
+    ; !bs ; map( \s -> node1([name(<quote>s),class(<quote>"bottom")])\ )
 *)
 
   collect-nodes
@@ -89,13 +89,13 @@ strategies
        \
 
   mk-bottom-node
-    = \n -> node([name(<quote>n),class(<quote>"bottom")])\
+    = \n -> node1([name(<quote>n),class(<quote>"bottom")])\
   mk-nondeclared-top-node
-    = \n -> node([name(<quote>n),class(<quote>"nondeclared-top")])\
+    = \n -> node1([name(<quote>n),class(<quote>"nondeclared-top")])\
   mk-declared-top-node
-    = \n -> node([name(<quote>n),class(<quote>"declared-top")])\
+    = \n -> node1([name(<quote>n),class(<quote>"declared-top")])\
   mk-declared-node
-    = \n -> node([name(<quote>n),class(<quote>"declared")])\
+    = \n -> node1([name(<quote>n),class(<quote>"declared")])\
 
   graph-from-edges
     = \es -> GraphXML([],[graph([],es)])\
@@ -104,7 +104,7 @@ strategies
     = \(ss,s) -> <filter(collect(\x -> <mk-edge>(<get-sortname>x,s)\));concat>ss\
 
   mk-edge
-    = \(x,y) -> edge([source(<quote>x),target(<quote>y)])\
+    = \(x,y) -> edge1([source(<quote>x),target(<quote>y)])\
 
   skip-appl(x,t)
     = \appl(_,ts) -> <x>ts\
