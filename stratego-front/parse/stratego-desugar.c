@@ -521,27 +521,27 @@ static void init_module_constant_terms (void)
 }
 #include <srts/init-stratego-application.h>
 ATerm implode_string_0_0 (ATerm t);
-ATerm Var_1_0 (ATerm m_88 (ATerm), ATerm t);
+ATerm Var_1_0 (ATerm d_89 (ATerm), ATerm t);
 ATerm is_string_0_0 (ATerm t);
 ATerm string_to_int_0_0 (ATerm t);
 ATerm string_to_real_0_0 (ATerm t);
 ATerm unescape_0_0 (ATerm t);
 static ATerm a_0 (ATerm t);
 ATerm DesugarOnce_0_0 (ATerm t);
-ATerm try_1_0 (ATerm o_92 (ATerm), ATerm t);
+ATerm try_1_0 (ATerm f_93 (ATerm), ATerm t);
 ATerm un_double_quote_0_0 (ATerm t);
-ATerm foldr_2_0 (ATerm t_107 (ATerm), ATerm u_107 (ATerm), ATerm t);
+ATerm foldr_2_0 (ATerm k_108 (ATerm), ATerm l_108 (ATerm), ATerm t);
 ATerm new_0_0 (ATerm t);
 ATerm Snd_0_0 (ATerm t);
 ATerm Fst_0_0 (ATerm t);
-ATerm foldr_3_0 (ATerm v_107 (ATerm), ATerm w_107 (ATerm), ATerm x_107 (ATerm), ATerm t);
+ATerm foldr_3_0 (ATerm m_108 (ATerm), ATerm n_108 (ATerm), ATerm o_108 (ATerm), ATerm t);
 static ATerm b_0 (ATerm t);
 static ATerm e_0 (ATerm t);
 static ATerm i_0 (ATerm t);
 ATerm mk_rulenames_0_0 (ATerm t);
 ATerm explode_string_0_0 (ATerm t);
 ATerm Nil_0_0 (ATerm t);
-ATerm Cons_2_0 (ATerm w_80 (ATerm), ATerm x_80 (ATerm), ATerm t);
+ATerm Cons_2_0 (ATerm n_81 (ATerm), ATerm o_81 (ATerm), ATerm t);
 static ATerm l_13 (ATerm z_6, ATerm a_7, ATerm t);
 static ATerm m_13 (ATerm d_7, ATerm e_7, ATerm t);
 static ATerm k_0 (ATerm t);
@@ -559,9 +559,9 @@ static ATerm e_1 (ATerm t);
 static ATerm f_1 (ATerm t);
 static ATerm g_1 (ATerm t);
 ATerm Desugar_0_0 (ATerm t);
-ATerm repeat_1_0 (ATerm o_93 (ATerm), ATerm t);
-ATerm topdown_1_0 (ATerm l_94 (ATerm), ATerm t);
-ATerm io_wrap_1_0 (ATerm j_121 (ATerm), ATerm t);
+ATerm repeat_1_0 (ATerm f_94 (ATerm), ATerm t);
+ATerm topdown_1_0 (ATerm c_95 (ATerm), ATerm t);
+ATerm io_wrap_1_0 (ATerm a_122 (ATerm), ATerm t);
 static ATerm j_1 (ATerm t);
 static ATerm k_1 (ATerm t);
 static ATerm l_1 (ATerm t);
@@ -847,7 +847,7 @@ ATerm DesugarOnce_0_0 (ATerm t)
                     }
                   else
                     {
-                      ATerm s_6 = NULL,d_12 = NULL,t_12 = NULL,u_0 = NULL;
+                      ATerm s_6 = NULL,y_11 = NULL,o_12 = NULL,u_0 = NULL;
                       if(match_cons(t, sym_Op_2))
                         {
                           p_5 = ATgetArgument(t, 0);
@@ -864,14 +864,14 @@ ATerm DesugarOnce_0_0 (ATerm t)
                           ATerm x_1 = ATgetFirst((ATermList) t);
                           if(((ATgetType(x_1) != AT_INT) || (ATgetInt((ATermInt) x_1) != 39)))
                             _fail(t);
-                          d_12 = (ATerm) ATgetNext((ATermList) t);
+                          y_11 = (ATerm) ATgetNext((ATermList) t);
                         }
                       else
                         _fail(t);
-                      t = d_12;
+                      t = y_11;
                       t = implode_string_0_0(t);
-                      t_12 = t;
-                      t = (ATerm) ATmakeAppl(sym_Op_2, t_12, q_5);
+                      o_12 = t;
+                      t = (ATerm) ATmakeAppl(sym_Op_2, o_12, q_5);
                       u_0 = t;
                       t = SSLsetAnnotations(u_0, s_6);
                     }
@@ -1032,11 +1032,11 @@ static ATerm x_0 (ATerm t)
 }
 static ATerm y_0 (ATerm t)
 {
-  ATerm s_9 = NULL,t_9 = NULL,u_9 = NULL;
-  u_9 = t;
+  ATerm s_9 = NULL,t_9 = NULL,v_9 = NULL;
+  v_9 = t;
   t = Fst_0_0(t);
   s_9 = t;
-  t = u_9;
+  t = v_9;
   t = Snd_0_0(t);
   t_9 = t;
   t = (ATerm) ATmakeAppl(sym_Sort_2, term_c_2, (ATerm) ATinsert(ATinsert(ATempty, t_9), s_9));
@@ -1317,11 +1317,11 @@ ATerm Desugar_0_0 (ATerm t)
                                       r_7 = ATgetArgument(t, 1);
                                       o_7 = ATgetArgument(t, 2);
                                       {
-                                        ATerm c_9 = NULL;
+                                        ATerm d_9 = NULL;
                                         t = r_7;
                                         t = mk_rulenames_0_0(t);
-                                        c_9 = t;
-                                        t = (ATerm) ATmakeAppl(sym_CallT_3, term_s_3, (ATerm)ATinsert(ATinsert(ATempty, o_7), q_7), (ATerm) ATinsert(ATempty, c_9));
+                                        d_9 = t;
+                                        t = (ATerm) ATmakeAppl(sym_CallT_3, term_s_3, (ATerm)ATinsert(ATinsert(ATempty, o_7), q_7), (ATerm) ATinsert(ATempty, d_9));
                                       }
                                     }
                                   else

@@ -186,7 +186,7 @@ regular tree grammar
     ListStarOfTokenChar_0                                       -> <string>
     ListPlusOfTokenChar_0                                       -> <string>
     OptFloatFlags_0                                             -> <string>
-    a_0                                                         -> <string>
+    OptLit_0                                                    -> <string>
     OptIntFlags_0                                               -> <string>
     ListStarOfStringChar_0                                      -> <string>
     ListPlusOfStringChar_0                                      -> <string>

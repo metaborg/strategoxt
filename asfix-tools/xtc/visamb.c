@@ -22,14 +22,14 @@ static ATerm term_n_0;
 static ATerm term_m_0;
 static ATerm term_l_0;
 static ATerm term_j_0;
-static ATerm term_h_0;
+static ATerm term_i_0;
 static ATerm term_g_0;
 static void init_module_constant_terms (void)
 {
   ATprotect(&(term_g_0));
   term_g_0 = (ATerm) ATmakeAppl(ATmakeSymbol("visamb.pp.af", 0, ATtrue));
-  ATprotect(&(term_h_0));
-  term_h_0 = (ATerm) ATmakeAppl(ATmakeSymbol("Sdf2.pp.af", 0, ATtrue));
+  ATprotect(&(term_i_0));
+  term_i_0 = (ATerm) ATmakeAppl(ATmakeSymbol("Sdf2.pp.af", 0, ATtrue));
   ATprotect(&(term_j_0));
   term_j_0 = (ATerm) ATmakeAppl(ATmakeSymbol("-p", 0, ATtrue));
   ATprotect(&(term_l_0));
@@ -62,7 +62,7 @@ ATerm build_pp_tables_0_0 (ATerm t)
   t = term_g_0;
   t = xtc_find_0_0(t);
   b_0 = t;
-  t = term_h_0;
+  t = term_i_0;
   t = xtc_find_0_0(t);
   c_0 = t;
   t = (ATerm) ATinsert(ATinsert(ATinsert(ATinsert(ATempty, c_0), term_j_0), b_0), term_j_0);

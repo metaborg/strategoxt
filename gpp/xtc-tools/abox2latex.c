@@ -221,12 +221,12 @@ static void init_module_constant_terms (void)
 }
 #include <srts/init-stratego-application.h>
 ATerm get_config_0_0 (ATerm t);
-ATerm try_1_0 (ATerm o_92 (ATerm), ATerm t);
+ATerm try_1_0 (ATerm f_93 (ATerm), ATerm t);
 ATerm pass_verbose_0_0 (ATerm t);
 ATerm write_to_0_0 (ATerm t);
 ATerm concat_0_0 (ATerm t);
 ATerm ReadFromFile_0_0 (ATerm t);
-ATerm map_1_0 (ATerm w_100 (ATerm), ATerm t);
+ATerm map_1_0 (ATerm n_101 (ATerm), ATerm t);
 ATerm create_table_file_0_0 (ATerm t);
 static ATerm a_0 (ATerm t);
 static ATerm b_0 (ATerm t);
@@ -235,8 +235,8 @@ ATerm xtc_transform_2_0 (ATerm l_6 (ATerm), ATerm m_6 (ATerm), ATerm t);
 ATerm xtc_io_1_0 (ATerm o_5 (ATerm), ATerm t);
 ATerm io_options_0_0 (ATerm t);
 ATerm set_config_0_0 (ATerm t);
-ATerm ArgOption_3_0 (ATerm e_4 (ATerm), ATerm f_4 (ATerm), ATerm g_4 (ATerm), ATerm t);
-ATerm Option_3_0 (ATerm b_4 (ATerm), ATerm c_4 (ATerm), ATerm d_4 (ATerm), ATerm t);
+ATerm ArgOption_3_0 (ATerm g_4 (ATerm), ATerm h_4 (ATerm), ATerm i_4 (ATerm), ATerm t);
+ATerm Option_3_0 (ATerm j_4 (ATerm), ATerm k_4 (ATerm), ATerm l_4 (ATerm), ATerm t);
 static ATerm d_0 (ATerm t);
 static ATerm f_0 (ATerm t);
 static ATerm h_0 (ATerm t);
@@ -250,7 +250,7 @@ static ATerm t_0 (ATerm t);
 static ATerm a_1 (ATerm t);
 static ATerm b_1 (ATerm t);
 ATerm abox2latex_options_0_0 (ATerm t);
-ATerm option_wrap_2_0 (ATerm v_120 (ATerm), ATerm w_120 (ATerm), ATerm t);
+ATerm option_wrap_2_0 (ATerm m_121 (ATerm), ATerm n_121 (ATerm), ATerm t);
 static ATerm c_1 (ATerm t);
 static ATerm d_1 (ATerm t);
 static ATerm e_1 (ATerm t);

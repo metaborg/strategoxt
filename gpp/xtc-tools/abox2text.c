@@ -158,7 +158,7 @@ static ATerm b_0 (ATerm t);
 ATerm abox2text_0_0 (ATerm t);
 ATerm xtc_io_1_0 (ATerm o_5 (ATerm), ATerm t);
 ATerm set_config_0_0 (ATerm t);
-ATerm ArgOption_3_0 (ATerm e_4 (ATerm), ATerm f_4 (ATerm), ATerm g_4 (ATerm), ATerm t);
+ATerm ArgOption_3_0 (ATerm g_4 (ATerm), ATerm h_4 (ATerm), ATerm i_4 (ATerm), ATerm t);
 ATerm general_options_0_0 (ATerm t);
 ATerm output_option_0_0 (ATerm t);
 ATerm input_option_0_0 (ATerm t);
@@ -166,7 +166,7 @@ static ATerm e_0 (ATerm t);
 static ATerm g_0 (ATerm t);
 static ATerm h_0 (ATerm t);
 ATerm abox2text_options_0_0 (ATerm t);
-ATerm option_wrap_2_0 (ATerm v_120 (ATerm), ATerm w_120 (ATerm), ATerm t);
+ATerm option_wrap_2_0 (ATerm m_121 (ATerm), ATerm n_121 (ATerm), ATerm t);
 static ATerm k_0 (ATerm t);
 ATerm main_0_0 (ATerm t);
 ATerm main_0 (ATerm t)
