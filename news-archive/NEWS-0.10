@@ -344,15 +344,64 @@ program can handle all AsFix constructs.
 
 ---------++ Support for Cygwin and Mac OS X
 
-Cygwin in buildfarm.
+In the meantime we have added a Cygwin machine to our buildfarm. This
+way we can make sure that StrategoXT is working on Cygwin. Since no
+Stratego developer is using Cygwin, this used to be a problem in the
+past. Testing StrategoXT now and then on Cygwin wasn't working: users
+want firm answers. Does it work, or does it not?
 
   (Martin Bravenboer)
 
-Mac OS X reported to work.
+StrategoXT 0.10 also supports the most recent Mac OS X release. This
+is mostly thanks to the updates of the development tools for Mac OS X.
 
 ---------++ Many bug fixes and minor improvements
 
 Just before StrategoXT 0.9.5 we adopted the JIRA issue tracking
-system. This has been very helpful in 
+system. This has been very helpful in for keeping track of problems
+that need to be fixed. Many small problems have been fixed in this
+release. Before we adopting JIRA, many of these issues would have been
+forgotten.
 
-List of all issues is available online.
+Please report any issues to JIRA, even if you think that it is not
+that important, or if you have already found a workaround. Feedback of
+users is very important in adding the finishing touch to our tools!
+
+Some pointers to overview of issues:
+
+   * [[StrategoRelease010Issues][list of all issues closed in StrategoXT 0.10]]
+   * [[TODO][StrategoXT roadmap]]
+
+---------++ Download and Installation
+
+The release page contains the source distributions, binary RPMs, and
+detailed instructions on how to install the distributions:
+
+   * http://www.stratego-language.org/Stratego/StrategoRelease010
+
+---------++ Bugs and Known Problems
+
+Not all bugs and known problems for StrategXT have been solved in this
+release, otherwise this would release 1.0 ;). See our issue tracking
+systems for reports about (open) bugs:
+
+   * https://catamaran.labs.cs.uu.nl/jira/
+
+For an overview of features planned for future releases:
+
+   * [[TODO][StrategoXT roadmap]]
+   * ReleasePlan: http://www.stratego-language.org/Stratego/ReleasePlan
+   * Todo: http://www.stratego-language.org/Stratego/ToDo
+
+Please report any problems with installation or bugs in the
+implementation to our issue tracking system. Please check the existing
+issues to see if a report about the problem was already submitted.
+
+---------++ Contributions
+
+Developments, beta tests, and bug fixes were carried out by
+
+  * Martin Bravenboer
+  * Arthur van Dam
+  * Valentin David
+  * Eelco Visser
