@@ -1,5 +1,5 @@
 module atermdiff
-imports  LayoutPreserve
+imports  LayoutPreserve lib
 signature
   constructors 
     Input2: String -> Option
@@ -11,7 +11,8 @@ signature
 
 strategies
 
-  main = iowrapNoOutput((id,ldiff),ops,my-usage) 
+  main =
+    iowrapNoOutput((id,ldiff),ops,my-usage) 
 
   version = !"0.2"
 
