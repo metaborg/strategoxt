@@ -3,9 +3,9 @@ include $(wildcard *.dep)
 
 TBLS_DEFS       = C.def C.tbl Stratego-C.def Stratego-C.tbl \
 		  Stratego-Stratego-C.def Stratego-Stratego-C.tbl
-pkgdata_DATA 	= $(TBLS_DEFS) $(wildcard *.sdf)
+sdfdata_DATA 	= $(TBLS_DEFS) $(wildcard *.sdf)
 BOOTCLEANFILES	= $(TBLS_DEFS)
-EXTRA_DIST   	= $(pkgdata_DATA)
+EXTRA_DIST   	= $(sdfdata_DATA)
 
 SDFINCLUDES  	= -I $(STRATEGO_FRONT)/share/sdf/stratego-front
 PGEN_FLAGS   	= -m $*

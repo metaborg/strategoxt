@@ -38,6 +38,9 @@ rules
     Prim(f,xs) -> Prim(<un-double-quote>f, xs)
 
   Desugar :
+    RChoice(s1, s2) -> LChoice(s2, s1)
+
+  Desugar :
     OverlayNoArgs(f, t) -> Overlay(f, [], t)
 
   Desugar :

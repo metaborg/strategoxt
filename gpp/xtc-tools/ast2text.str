@@ -12,7 +12,7 @@ strategies
 
   ast2text =
     xtc-io(
-      xtc-transform(!"ast2abox", !<get-config> "-p")
+      xtc-transform(!"ast2abox", <get-config; map(!["-p", <id>]); concat> "-p")
     ; xtc-abox2text(pass-width)
     )
 

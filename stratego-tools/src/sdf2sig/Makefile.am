@@ -8,10 +8,7 @@ bin_PROGRAMS	 = sdf-to-sig sdf2sig
 libexec_PROGRAMS = sdf2sig
 pkgdata_DATA	 = dummy.pp dummy.pp.af
 
-sdf-to-sig.o	 : xtc-conf.h
-sdf2sig.o	 : xtc-conf.h
-
-BOOTCLEANFILES 	 = sdf2sig.c
+BOOTCLEANFILES 	 = sdf-to-sig.c sdf2sig.c
 CLEANFILES       = sdf2sig1_check sdf2sig2_check $(wildcard *.dep) 
 
 EXTRA_DIST 	 = $(wildcard *.str) $(pkgdata_DATA)

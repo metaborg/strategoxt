@@ -66,6 +66,9 @@ strategies
     ?EpochTime(t); prim("SSL_epoch2localtime", t); prim-tuple-to-ComponentTime
 
   // :: EpochTime -> ComponentTime
+  epoch2utc =
+    ?EpochTime(t); prim("SSL_epoch2UTC", t); prim-tuple-to-ComponentTime
+
   epoch2UTC =
     ?EpochTime(t); prim("SSL_epoch2UTC", t); prim-tuple-to-ComponentTime
 

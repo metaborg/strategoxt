@@ -108,7 +108,7 @@ bootclean-recursive :
 #
 
 %.pp.af : %.pp
-	$(MAKE) -f $(GPP)/share/gpp/gpp.Makefile $@
+	$(BOX_TOOLS)/bin/parse-pp-table -i $< -o $@
 
 .def.pp :
 	$(BOX_TOOLS)/bin/ppgen -i $< -o $@

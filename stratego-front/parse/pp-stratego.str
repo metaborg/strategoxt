@@ -5,8 +5,7 @@ strategies
   pp-stratego =
     option-wrap(io-options,
       xtc-io(
-	debug
-	; xtc-transform(!"parse-stratego")
+	xtc-transform(!"parse-stratego")
         ; xtc-transform(!"ast2text", !["-p", <xtc-find> "Stratego-pretty.pp"])
       )
     )

@@ -976,6 +976,7 @@ ATerm flat_list_0 (ATerm t)
   if((PushChoice() == 0))
     {
       t = Nil_0(t);
+      ;
       LocalPopChoice(f_6);
     }
   else
@@ -987,6 +988,7 @@ ATerm flat_list_0 (ATerm t)
         if((PushChoice() == 0))
           {
             t = Cons_2(t, Nil_0, flat_list_0);
+            ;
             LocalPopChoice(h_6);
           }
         else
@@ -1033,6 +1035,7 @@ ATerm flat_list_0 (ATerm t)
                       }
                     }
                   }
+                  ;
                   LocalPopChoice(m_6);
                 }
               else
@@ -1184,6 +1187,7 @@ ATerm instantiate_0 (ATerm t)
                     return(t);
                   }
                   t = Instantiate_1(t, f_0);
+                  ;
                   LocalPopChoice(s_6);
                 }
               else
@@ -1334,6 +1338,7 @@ ATerm instantiate_sep_list_1 (ATerm t, ATerm x_93 (ATerm))
     if((PushChoice() == 0))
       {
         t = Nil_0(t);
+        ;
         LocalPopChoice(u_6);
       }
     else
@@ -1345,6 +1350,7 @@ ATerm instantiate_sep_list_1 (ATerm t, ATerm x_93 (ATerm))
           if((PushChoice() == 0))
             {
               t = Cons_2(t, _id, Nil_0);
+              ;
               LocalPopChoice(j_7);
             }
           else
@@ -1453,6 +1459,7 @@ ATerm foldr_3 (ATerm t, ATerm k_84 (ATerm), ATerm l_84 (ATerm), ATerm m_84 (ATer
     {
       t = Nil_0(t);
       t = k_84(t);
+      ;
       LocalPopChoice(n_7);
     }
   else
@@ -1571,6 +1578,7 @@ ATerm collect_p__1 (ATerm t, ATerm d_100 (ATerm))
             r_8 = s_8;
           t = (ATerm) ATinsert(ATempty, not_null(r_8));
         }
+        ;
         LocalPopChoice(y_7);
       }
     else
@@ -1684,6 +1692,7 @@ ATerm BuildSepList_1 (ATerm t, ATerm u_69 (ATerm))
                 }
               }
             }
+            ;
             LocalPopChoice(c_8);
           }
         else
@@ -1819,6 +1828,7 @@ ATerm symbol2abox6_helper_0 (ATerm t)
                                               if((PushChoice() == 0))
                                                 {
                                                   t = (ATerm) ATinsert(ATempty, not_null(c_11));
+                                                  ;
                                                   LocalPopChoice(n_8);
                                                 }
                                               else
@@ -1850,6 +1860,7 @@ ATerm symbol2abox6_helper_0 (ATerm t)
                       }
                     }
                   }
+                  ;
                   LocalPopChoice(g_8);
                 }
               else
@@ -2207,6 +2218,7 @@ ATerm subt_0 (ATerm t)
         if((PushChoice() == 0))
           {
             t = SSL_subti(not_null(h_16), not_null(i_16));
+            ;
             LocalPopChoice(q_8);
           }
         else
@@ -2357,6 +2369,7 @@ ATerm symbol2abox_0 (ATerm t)
   if((PushChoice() == 0))
     {
       t = symbol2abox1_0(t);
+      ;
       LocalPopChoice(a_9);
     }
   else
@@ -2368,6 +2381,7 @@ ATerm symbol2abox_0 (ATerm t)
         if((PushChoice() == 0))
           {
             t = symbol2abox2_0(t);
+            ;
             LocalPopChoice(c_9);
           }
         else
@@ -2379,6 +2393,7 @@ ATerm symbol2abox_0 (ATerm t)
               if((PushChoice() == 0))
                 {
                   t = symbol2abox3_0(t);
+                  ;
                   LocalPopChoice(i_9);
                 }
               else
@@ -2390,6 +2405,7 @@ ATerm symbol2abox_0 (ATerm t)
                     if((PushChoice() == 0))
                       {
                         t = symbol2abox4_0(t);
+                        ;
                         LocalPopChoice(k_9);
                       }
                     else
@@ -2401,6 +2417,7 @@ ATerm symbol2abox_0 (ATerm t)
                           if((PushChoice() == 0))
                             {
                               t = symbol2abox5_0(t);
+                              ;
                               LocalPopChoice(m_9);
                             }
                           else
@@ -2412,6 +2429,7 @@ ATerm symbol2abox_0 (ATerm t)
                                 if((PushChoice() == 0))
                                   {
                                     t = symbol2abox6_0(t);
+                                    ;
                                     LocalPopChoice(s_9);
                                   }
                                 else
@@ -2544,6 +2562,7 @@ ATerm arg2abox_0 (ATerm t)
                         _fail(t);
                       }
                   }
+                  ;
                   LocalPopChoice(b_10);
                 }
               else
@@ -2658,6 +2677,7 @@ ATerm genzip_4 (ATerm t, ATerm v_79 (ATerm), ATerm w_79 (ATerm), ATerm x_79 (ATe
     if((PushChoice() == 0))
       {
         t = v_79(t);
+        ;
         LocalPopChoice(d_10);
       }
     else
@@ -2744,6 +2764,7 @@ ATerm try_pp_table_get_0 (ATerm t)
     if((PushChoice() == 0))
       {
         t = pp_table_get_0(t);
+        ;
         LocalPopChoice(i_10);
       }
     else
@@ -2953,6 +2974,7 @@ ATerm trm2abox_0 (ATerm t)
   if((PushChoice() == 0))
     {
       t = trm2abox_string_0(t);
+      ;
       LocalPopChoice(m_10);
     }
   else
@@ -2964,6 +2986,7 @@ ATerm trm2abox_0 (ATerm t)
         if((PushChoice() == 0))
           {
             t = trm2abox_int_0(t);
+            ;
             LocalPopChoice(w_10);
           }
         else
@@ -2975,6 +2998,7 @@ ATerm trm2abox_0 (ATerm t)
               if((PushChoice() == 0))
                 {
                   t = trm2abox_list_0(t);
+                  ;
                   LocalPopChoice(z_10);
                 }
               else
@@ -2986,6 +3010,7 @@ ATerm trm2abox_0 (ATerm t)
                     if((PushChoice() == 0))
                       {
                         t = trm2abox_appl_0(t);
+                        ;
                         LocalPopChoice(f_11);
                       }
                     else
@@ -3072,6 +3097,7 @@ ATerm assert_1 (ATerm t, ATerm d_86 (ATerm))
                       {
                         t = (ATerm) ATmakeAppl(sym__2, not_null(n_28), term_k_11);
                         t = table_get_0(t);
+                        ;
                         LocalPopChoice(j_11);
                       }
                     else
@@ -3532,6 +3558,7 @@ ATerm copy_to_1 (ATerm t, ATerm m_0 (ATerm))
                   if((PushChoice() == 0))
                     {
                       t = stdout_0(t);
+                      ;
                       LocalPopChoice(o_12);
                     }
                   else
@@ -3547,6 +3574,7 @@ ATerm copy_to_1 (ATerm t, ATerm m_0 (ATerm))
               }
             }
             t = (ATerm) ATmakeAppl(sym_FILE_1, not_null(n_33));
+            ;
             LocalPopChoice(m_12);
           }
         else
@@ -3576,6 +3604,7 @@ ATerm copy_to_1 (ATerm t, ATerm m_0 (ATerm))
                             if((PushChoice() == 0))
                               {
                                 t = stdout_0(t);
+                                ;
                                 LocalPopChoice(e_13);
                               }
                             else
@@ -3587,6 +3616,7 @@ ATerm copy_to_1 (ATerm t, ATerm m_0 (ATerm))
                                   if((PushChoice() == 0))
                                     {
                                       t = stderr_0(t);
+                                      ;
                                       LocalPopChoice(i_13);
                                     }
                                   else
@@ -3618,6 +3648,7 @@ ATerm copy_to_1 (ATerm t, ATerm m_0 (ATerm))
                     }
                   }
                   t = (ATerm) ATmakeAppl(sym_FILE_1, not_null(n_33));
+                  ;
                   LocalPopChoice(s_12);
                 }
               else
@@ -3669,6 +3700,7 @@ ATerm table_pop_0 (ATerm t)
               {
                 t = table_get_0(t);
                 t = Tl_0(t);
+                ;
                 LocalPopChoice(l_13);
               }
             else
@@ -3721,6 +3753,7 @@ ATerm end_scope_1 (ATerm t, ATerm a_86 (ATerm))
             {
               t = (ATerm) ATmakeAppl(sym__2, not_null(b_35), term_k_11);
               t = table_get_0(t);
+              ;
               LocalPopChoice(v_13);
             }
           else
@@ -3797,6 +3830,7 @@ ATerm restore_always_2 (ATerm t, ATerm r_76 (ATerm), ATerm s_76 (ATerm))
     {
       t = r_76(t);
       t = s_76(t);
+      ;
       LocalPopChoice(x_13);
     }
   else
@@ -3834,6 +3868,7 @@ ATerm begin_scope_1 (ATerm t, ATerm z_85 (ATerm))
             if((PushChoice() == 0))
               {
                 t = table_get_0(t);
+                ;
                 LocalPopChoice(i_14);
               }
             else
@@ -3882,6 +3917,7 @@ ATerm xtc_temp_files_1 (ATerm t, ATerm t_71 (ATerm))
           {
             t = term_o_14;
             t = table_get_0(t);
+            ;
             LocalPopChoice(l_14);
           }
         else
@@ -3963,6 +3999,7 @@ ATerm xtc_io_1 (ATerm t, ATerm u_71 (ATerm))
           }
         }
         t = (ATerm) ATmakeAppl(sym_FILE_1, not_null(n_36));
+        ;
         LocalPopChoice(q_14);
       }
     else
@@ -3981,6 +4018,7 @@ ATerm xtc_io_1 (ATerm t, ATerm u_71 (ATerm))
             {
               t = term_h_15;
               t = get_config_0(t);
+              ;
               LocalPopChoice(g_15);
             }
           else
@@ -4441,6 +4479,7 @@ ATerm UnEscape_0 (ATerm t)
   if((PushChoice() == 0))
     {
       t = UnEscape_double_quote_0(t);
+      ;
       LocalPopChoice(d_16);
     }
   else
@@ -4452,6 +4491,7 @@ ATerm UnEscape_0 (ATerm t)
         if((PushChoice() == 0))
           {
             t = UnEscape_backslash_0(t);
+            ;
             LocalPopChoice(j_16);
           }
         else
@@ -4463,6 +4503,7 @@ ATerm UnEscape_0 (ATerm t)
               if((PushChoice() == 0))
                 {
                   t = UnEscape_linefeed_0(t);
+                  ;
                   LocalPopChoice(l_16);
                 }
               else
@@ -4485,6 +4526,7 @@ ATerm unescape_chars_0 (ATerm t)
     if((PushChoice() == 0))
       {
         t = Cons_2(t, _id, unescape_chars_0);
+        ;
         LocalPopChoice(n_16);
       }
     else
@@ -4510,6 +4552,7 @@ ATerm at_last_1 (ATerm t, ATerm u_78 (ATerm))
       {
         t = Cons_2(t, _id, Nil_0);
         t = u_78(t);
+        ;
         LocalPopChoice(w_16);
       }
     else
@@ -4576,6 +4619,7 @@ ATerm last_0 (ATerm t)
   if((PushChoice() == 0))
     {
       t = Last_0(t);
+      ;
       LocalPopChoice(a_17);
     }
   else
@@ -4884,6 +4928,7 @@ ATerm MakePPTerm_0 (ATerm t)
   if((PushChoice() == 0))
     {
       t = Arg_1(t, string_to_int_0);
+      ;
       LocalPopChoice(p_17);
     }
   else
@@ -4895,6 +4940,7 @@ ATerm MakePPTerm_0 (ATerm t)
         if((PushChoice() == 0))
           {
             t = Arg2_2(t, string_to_int_0, string_to_int_0);
+            ;
             LocalPopChoice(r_17);
           }
         else
@@ -4906,6 +4952,7 @@ ATerm MakePPTerm_0 (ATerm t)
               if((PushChoice() == 0))
                 {
                   t = SOpt_2(t, _id, _id);
+                  ;
                   LocalPopChoice(v_17);
                 }
               else
@@ -4923,6 +4970,7 @@ ATerm MakePPTerm_0 (ATerm t)
                           return(t);
                         }
                         t = S_1(t, x_1);
+                        ;
                         LocalPopChoice(x_17);
                       }
                     else
@@ -5000,6 +5048,7 @@ ATerm oncetd_1 (ATerm t, ATerm o_74 (ATerm))
     if((PushChoice() == 0))
       {
         t = o_74(t);
+        ;
         LocalPopChoice(d_18);
       }
     else
@@ -5110,6 +5159,7 @@ ATerm type_failure_0 (ATerm t)
         t = (ATerm) ATinsert(ATempty, term_u_18);
         t = fatal_error_0(t);
       }
+      ;
       LocalPopChoice(m_18);
     }
   else
@@ -5198,6 +5248,7 @@ ATerm InId_1 (ATerm t, ATerm l_93 (ATerm))
               if((PushChoice() == 0))
                 {
                   t = l_93(t);
+                  ;
                   LocalPopChoice(g_19);
                 }
               else
@@ -5258,6 +5309,7 @@ ATerm ReadFromFile_0 (ATerm t)
           h_51 = i_51;
         t = SSL_ReadFromFile(not_null(h_51));
       }
+      ;
       LocalPopChoice(j_19);
     }
   else
@@ -5373,6 +5425,7 @@ ATerm get_config_p_0 (ATerm t)
     {
       t = term_c_20;
       t = get_config_0(t);
+      ;
       LocalPopChoice(b_20);
     }
   else
@@ -5447,6 +5500,7 @@ ATerm extend_config_0 (ATerm t)
           if((PushChoice() == 0))
             {
               t = get_config_0(t);
+              ;
               LocalPopChoice(n_20);
             }
           else
@@ -5646,6 +5700,7 @@ ATerm verbose_option_0 (ATerm t)
         return(t);
       }
       t = Option_3(t, x_2, y_2, z_2);
+      ;
       LocalPopChoice(g_21);
     }
   else
@@ -5706,6 +5761,7 @@ ATerm verbose_option_0 (ATerm t)
               return(t);
             }
             t = ArgOption_3(t, a_3, b_3, c_3);
+            ;
             LocalPopChoice(o_21);
           }
         else
@@ -5749,6 +5805,7 @@ ATerm general_options_0 (ATerm t)
   if((PushChoice() == 0))
     {
       t = verbose_option_0(t);
+      ;
       LocalPopChoice(l_22);
     }
   else
@@ -5760,6 +5817,7 @@ ATerm general_options_0 (ATerm t)
         if((PushChoice() == 0))
           {
             t = keep_option_0(t);
+            ;
             LocalPopChoice(o_22);
           }
         else
@@ -5832,6 +5890,7 @@ ATerm aterm_output_option_0 (ATerm t)
   if((PushChoice() == 0))
     {
       t = output_option_0(t);
+      ;
       LocalPopChoice(s_22);
     }
   else
@@ -5985,6 +6044,7 @@ ATerm io_options_0 (ATerm t)
   if((PushChoice() == 0))
     {
       t = input_option_0(t);
+      ;
       LocalPopChoice(d_23);
     }
   else
@@ -5996,6 +6056,7 @@ ATerm io_options_0 (ATerm t)
         if((PushChoice() == 0))
           {
             t = aterm_output_option_0(t);
+            ;
             LocalPopChoice(f_23);
           }
         else
@@ -6014,6 +6075,7 @@ ATerm ast2abox_options_0 (ATerm t)
   if((PushChoice() == 0))
     {
       t = io_options_0(t);
+      ;
       LocalPopChoice(h_23);
     }
   else
@@ -6097,6 +6159,7 @@ ATerm add_0 (ATerm t)
         if((PushChoice() == 0))
           {
             t = SSL_addi(not_null(i_57), not_null(j_57));
+            ;
             LocalPopChoice(n_23);
           }
         else
@@ -6120,6 +6183,7 @@ ATerm foldr_2 (ATerm t, ATerm i_84 (ATerm), ATerm j_84 (ATerm))
     {
       t = Nil_0(t);
       t = i_84(t);
+      ;
       LocalPopChoice(p_23);
     }
   else
@@ -6237,6 +6301,7 @@ ATerm gt_0 (ATerm t)
           if((PushChoice() == 0))
             {
               t = SSL_gti(not_null(r_58), not_null(s_58));
+              ;
               LocalPopChoice(s_23);
             }
           else
@@ -6283,6 +6348,7 @@ ATerm geq_0 (ATerm t)
         {
           _fail(t);
         }
+      ;
       LocalPopChoice(u_23);
     }
   else
@@ -6420,6 +6486,7 @@ ATerm need_help_1 (ATerm t, ATerm g_86 (ATerm))
     if((PushChoice() == 0))
       {
         t = Help_0(t);
+        ;
         LocalPopChoice(c_24);
       }
     else
@@ -6431,6 +6498,7 @@ ATerm need_help_1 (ATerm t, ATerm g_86 (ATerm))
           if((PushChoice() == 0))
             {
               t = Undefined_1(t, _id);
+              ;
               LocalPopChoice(e_24);
             }
           else
@@ -6526,6 +6594,7 @@ ATerm echo_0 (ATerm t)
     if((PushChoice() == 0))
       {
         t = is_list_0(t);
+        ;
         LocalPopChoice(i_24);
       }
     else
@@ -6729,6 +6798,7 @@ ATerm system_usage_0 (ATerm t)
             f_63 = g_63;
         }
       }
+      ;
       LocalPopChoice(m_24);
     }
   else
@@ -6917,6 +6987,7 @@ ATerm fetch_1 (ATerm t, ATerm d_78 (ATerm))
     if((PushChoice() == 0))
       {
         t = Cons_2(t, d_78, _id);
+        ;
         LocalPopChoice(w_24);
       }
     else
@@ -6989,6 +7060,7 @@ ATerm concat_0 (ATerm t)
   if((PushChoice() == 0))
     {
       t = Nil_0(t);
+      ;
       LocalPopChoice(z_24);
     }
   else
@@ -7079,6 +7151,7 @@ ATerm at_end_1 (ATerm t, ATerm j_78 (ATerm))
     if((PushChoice() == 0))
       {
         t = Cons_2(t, _id, e_66);
+        ;
         LocalPopChoice(b_25);
       }
     else
@@ -7128,6 +7201,7 @@ ATerm conc_0 (ATerm t)
   if((PushChoice() == 0))
     {
       t = conc_two_lists_0(t);
+      ;
       LocalPopChoice(d_25);
     }
   else
@@ -7280,6 +7354,7 @@ ATerm map_1 (ATerm t, ATerm u_77 (ATerm))
     if((PushChoice() == 0))
       {
         t = Nil_0(t);
+        ;
         LocalPopChoice(i_25);
       }
     else
@@ -7306,6 +7381,7 @@ ATerm eval_config_0 (ATerm t)
   if((PushChoice() == 0))
     {
       t = is_string_0(t);
+      ;
       LocalPopChoice(k_25);
     }
   else
@@ -7322,6 +7398,7 @@ ATerm eval_config_0 (ATerm t)
               return(t);
             }
             t = map_1(t, t_4);
+            ;
             LocalPopChoice(m_25);
           }
         else
@@ -7349,6 +7426,7 @@ ATerm eval_config_0 (ATerm t)
                           if((PushChoice() == 0))
                             {
                               t = get_config_0(t);
+                              ;
                               LocalPopChoice(r_25);
                             }
                           else
@@ -7469,6 +7547,7 @@ ATerm try_1 (ATerm t, ATerm c_76 (ATerm))
   if((PushChoice() == 0))
     {
       t = c_76(t);
+      ;
       LocalPopChoice(z_25);
     }
   else
@@ -7519,6 +7598,7 @@ ATerm table_push_0 (ATerm t)
             if((PushChoice() == 0))
               {
                 t = table_get_0(t);
+                ;
                 LocalPopChoice(c_26);
               }
             else
@@ -7852,6 +7932,7 @@ ATerm parse_options_p__1 (ATerm t, ATerm q_88 (ATerm))
           if((PushChoice() == 0))
             {
               t = Nil_0(t);
+              ;
               LocalPopChoice(u_26);
             }
           else
@@ -7862,6 +7943,7 @@ ATerm parse_options_p__1 (ATerm t, ATerm q_88 (ATerm))
                 t = Cons_2(t, _id, k_5);
               }
             }
+          ;
           LocalPopChoice(q_26);
         }
       else
@@ -7935,6 +8017,7 @@ ATerm parse_options_1 (ATerm t, ATerm p_88 (ATerm))
       if((PushChoice() == 0))
         {
           t = p_88(t);
+          ;
           LocalPopChoice(c_27);
         }
       else
@@ -7961,6 +8044,7 @@ ATerm parse_options_1 (ATerm t, ATerm p_88 (ATerm))
                 {
                   t = term_e_26;
                   t = get_config_0(t);
+                  ;
                   LocalPopChoice(h_27);
                 }
               else
@@ -7977,6 +8061,7 @@ ATerm parse_options_1 (ATerm t, ATerm p_88 (ATerm))
                 t = exit_0(t);
               }
             }
+            ;
             LocalPopChoice(e_27);
           }
         else
@@ -8045,6 +8130,7 @@ ATerm option_wrap_4 (ATerm t, ATerm m_86 (ATerm), ATerm n_86 (ATerm), ATerm o_86
         if((PushChoice() == 0))
           {
             t = need_help_1(t, n_86);
+            ;
             LocalPopChoice(l_27);
           }
         else
@@ -8057,6 +8143,7 @@ ATerm option_wrap_4 (ATerm t, ATerm m_86 (ATerm), ATerm n_86 (ATerm), ATerm o_86
                 {
                   t = p_86(t);
                   t = report_success_0(t);
+                  ;
                   LocalPopChoice(n_27);
                 }
               else
