@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: latex.r,v 1.2 2002/05/19 13:22:14 mdejonge Exp $
+% $Id: latex.r,v 1.3 2002/06/05 22:03:26 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
@@ -176,7 +176,7 @@ latex-string =
    map(try(
       \32 -> <explode-string>"\\boxspace{}" \ (* space *)
    +
-      \35 -> <explode-string>"\\\#" \ (* # *)
+      \35 -> <explode-string>"\\#" \ (* # *)
    +
       \36 -> <explode-string>"\\$" \ (* $ *)
    +
@@ -184,23 +184,23 @@ latex-string =
    +
       \38 -> <explode-string>"\\&" \ (* & *)
    +
-      \45 -> <explode-string>"\\\mbox{-}" \ (* - *)
+      \45 -> <explode-string>"\\mbox{-}" \ (* - *)
    +
       \60 -> <explode-string>"\\ensuremath{<}" \ (* < *)
    +
       \62 -> <explode-string>"\\ensuremath{>}" \ (* > *)
    +
-      \92 -> <explode-string>"\\\ensuremath{\\\backslash}" \ (* \ *)
+      \92 -> <explode-string>"\\ensuremath{\\backslash}" \ (* \ *)
    +
       \94 -> <explode-string>"\\^{}" \ (* ^ *)
    +
       \95 -> <explode-string>"\\_" \ (* _ *)
    +
-      \123 -> <explode-string>"\\\{" \ (* { *)
+      \123 -> <explode-string>"\\{" \ (* { *)
    +
       \124 -> <explode-string>"\\ensuremath{\\vert}" \ (* | *)
    +
-      \125 -> <explode-string>"\\\}" \ (* } *)
+      \125 -> <explode-string>"\\}" \ (* } *)
    +
       \126 -> <explode-string>"\\~{}" \ (* ~ *)
    ));
