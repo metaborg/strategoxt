@@ -8,13 +8,13 @@ AM_LDFLAGS  = -avoid-version
 
 pkglib_LTLIBRARIES = \
   libstratego.la \
-  libstratego.dbg.la \
-  libstratego.opt.la \
-  libstratego.prof.la \
+  libstratego_dbg.la \
+  libstratego_opt.la \
+  libstratego_prof.la \
   libstratego-choice.la \
-  libstratego-choice.dbg.la \
-  libstratego-choice.opt.la \
-  libstratego-choice.prof.la
+  libstratego-choice_dbg.la \
+  libstratego-choice_opt.la \
+  libstratego-choice_prof.la
 
 LIB_SOURCES = \
   stratego.c \

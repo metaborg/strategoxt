@@ -30,9 +30,9 @@ strategies
                            "-I", <conc-strings>(<xtc-find-path> "ATERM", "/include")])
     ; <set-config> ("-CL",
         [ <concat-strings> ["-L", <xtc-find-path> "SRTS", "/lib/srts"]
-        , "-lstratego-lib.opt"
+        , "-lstratego-lib_opt"
         , "-lstratego-choice"
-        , "-lstratego.opt"
+        , "-lstratego_opt"
         , <concat-strings> ["-L", <xtc-find-path> "ATERM", "/lib"]
         , "-lATerm-gcc"
         , "-lm"])

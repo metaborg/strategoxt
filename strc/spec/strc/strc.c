@@ -1507,11 +1507,11 @@ static void init_module_constant_terms (void)
   ATprotect(&(term_o_90));
   term_o_90 = (ATerm) ATmakeAppl(ATmakeSymbol("/lib", 0, ATtrue));
   ATprotect(&(term_p_90));
-  term_p_90 = (ATerm) ATmakeAppl(ATmakeSymbol("-lstratego-lib.opt", 0, ATtrue));
+  term_p_90 = (ATerm) ATmakeAppl(ATmakeSymbol("-lstratego-lib_opt", 0, ATtrue));
   ATprotect(&(term_t_90));
   term_t_90 = (ATerm) ATmakeAppl(ATmakeSymbol("-lstratego-choice", 0, ATtrue));
   ATprotect(&(term_v_90));
-  term_v_90 = (ATerm) ATmakeAppl(ATmakeSymbol("-lstratego.opt", 0, ATtrue));
+  term_v_90 = (ATerm) ATmakeAppl(ATmakeSymbol("-lstratego_opt", 0, ATtrue));
   ATprotect(&(term_x_90));
   term_x_90 = (ATerm) ATmakeAppl(ATmakeSymbol("-lATerm-gcc", 0, ATtrue));
   ATprotect(&(term_z_90));

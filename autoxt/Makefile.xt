@@ -16,9 +16,9 @@
 AM_CPPFLAGS = -I$(SRTS)/include -I$(ATERM)/include
 
 STRATEGORUNLIBS = \
-  -lstratego.opt \
-  -lstratego-choice.opt \
-  -lstratego-lib.opt \
+  -lstratego_opt \
+  -lstratego-choice_opt \
+  -lstratego-lib_opt \
   -lATerm-gcc \
   -lm
 

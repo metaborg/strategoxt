@@ -9,9 +9,9 @@ AM_LDFLAGS  = -avoid-version
 
 pkglib_LTLIBRARIES = \
   libstratego-lib.la \
-  libstratego-lib.dbg.la \
-  libstratego-lib.opt.la \
-  libstratego-lib.prof.la
+  libstratego-lib_dbg.la \
+  libstratego-lib_opt.la \
+  libstratego-lib_prof.la
 
 LIB_SOURCES = \
   io.h stratego-lib.h tables.h sets.h ssl-time.h exec.h number.h \
