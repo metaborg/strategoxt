@@ -1,14 +1,14 @@
 
 #bin_SCRIPTS = 
 
-pkgdata_DATA = Stratego.r 
+pkgdata_DATA = Stratego.rtree
 #StrategoStratego.r
 
 # TESTS = 
 
 # CLEANFILES =
 
-EXTRA_DIST = $(wildcard *.r)
+EXTRA_DIST = $(wildcard *.r) $(pkgdata_DATA)
 
 #PPSTRATEGO = $(top_srcdir)/pp/Stratego.pp
 PPSTRATEGO = $(top_srcdir)/pp/stratego.pp
@@ -34,5 +34,8 @@ SDFTBL = $(SDF_TOOLS)/share/sdf-tools/sdf.cons.tbl
 
 %.dep:
 	touch $@
+
+%.rtree: %.r $(STRATEGO)/bin/parse-mod
+	$(STRATEGO)/bin/parse-mod -i $< -o $@
 
 #include $(wilcard *.dep)
