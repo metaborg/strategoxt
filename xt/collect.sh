@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: collect.sh,v 1.15 2000/11/12 13:51:05 mdejonge Exp $
+# $Id: collect.sh,v 1.16 2000/11/24 18:49:25 mdejonge Exp $
 
 
 # This script will collect all required packages for an autobundle distribution.
@@ -52,8 +52,6 @@ do_collect () {
    pkg_version="$2"
    pkg_url="$3"
 
-   tmp=/tmp/autobundle-$$
-   trap "rm -f ${tmp}" 0 1 2 3 4 5 6 7 8 9 10
 
    case "${pkg_url}" in
       cvsdev* )
@@ -67,9 +65,6 @@ do_collect () {
             tar cf "${pkg}-${pkg_version}.tar" "${pkg}-${pkg_version}"
 	    gzip "${pkg}-${pkg_version}.tar"
          )
-
-         pkg_version=`grep AM_INIT ${tmp}/${pkg}/configure.in \
-                         | cut -d, -f2 | tr -d '[ ]' | sed 's/)$//'`
 
          cp "${tmp}/${pkg}-${pkg_version}.tar.gz" .
 
@@ -89,8 +84,12 @@ do_collect () {
             gmake dist
          )
 
-         pkg_version=`grep AM_INIT ${tmp}/${pkg}/configure.in \
-                         | cut -d, -f2 | tr -d '[ ]' | sed 's/)$//'`
+         # Determine package version from configure.in in case it was
+         # defined in the pkg-list file as '*'.
+         if [ "a${pkg_version}" = "a*" ]; then
+            pkg_version=`grep AM_INIT ${tmp}/${pkg}/configure.in \
+                            | cut -d, -f2 | tr -d '[ ]' | sed 's/)$//'`
+         fi
 
          cp ${tmp}/${pkg}/${pkg}-${pkg_version}.tar.gz .
 
@@ -112,11 +111,14 @@ fi
 
 configure=$1
 pkg_file=$2
-tmp_pkg_file=/tmp/autobundle-$$.pkgs
+set -x 
+
+tmp=/tmp/autobundle-$$
+trap "rm -f ${tmp}*" 0 1 2 3 4 5 6 7 8 9 10
+
 pkgs="`grep -v '^#' ${pkg_file} | cut -d, -f1`"
 
-trap "rm -f ${tmp_pkg_file}" 0 1 2 3 4 5 6 7 8 9 10
-
+tmp_pkg_file=${tmp}.pkgs
 rm -f  ${tmp_pkg_file}
 
 # collect and unpack software packages
