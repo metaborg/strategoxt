@@ -1,3 +1,8 @@
+2002-03-16  Eelco Visser  <visser@acm.org>
+
+	* src/atermdiff/term-size.r: Make Stratego library strategy
+	for measuring term size into a program.
+
 2001-11-29 Merijn de Jonge <mdejonge@cwi.nl>
     * Version 0.2 released
     * Increased version number
