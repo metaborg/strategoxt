@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 #
-# $Id: collect.sh,v 1.4 2000/03/29 09:39:44 mdejonge Exp $
+# $Id: collect.sh,v 1.5 2000/03/29 11:23:39 mdejonge Exp $
 #
 #
 # This script will collect all required packages for the CT distribution.
@@ -95,8 +95,8 @@ do
    if [ ! -f ./pkgs/${pkg}-${pkg_version}.tar.gz ]; then
       cd ./pkgs
       do_collect ${pkg} ${pkg_version} ${pkg_url} || exit 1
-
       cd ..
+      rm -fr ${pkg}-${pkg_version}
    fi
    if [ ! -d ${pkg}-${pkg_version} ] ; then
       gunzip -c ./pkgs/${pkg}-${pkg_version}.tar.gz | tar xf -
