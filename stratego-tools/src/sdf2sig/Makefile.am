@@ -14,7 +14,7 @@ sdf2sig.o	 : xtc-conf.h
 BOOTCLEANFILES 	 = sdf2sig.c
 CLEANFILES       = sdf2sig1_check sdf2sig2_check $(wildcard *.dep) 
 
-EXTRA_DIST 	 = $(wildcard *.str)
+EXTRA_DIST 	 = $(wildcard *.str) $(pkgdata_DATA)
 
 TESTS        	 = sdf2sig1_check sdf2sig2_check
 

@@ -97,7 +97,7 @@ AM_CONFIG_HEADER([config.h])
 
 ### PACKAGES ##########################
 
-PKGS="autoxt srts xtc sdf-import sc ssl gpp cgen stratego-front asfix-tools aterm-tools graph-tools sdf-tools stratego-tools xt boxenv"
+PKGS="autoxt srts xtc sdf-import sc ssl gpp cgen stratego-front asfix-tools aterm-tools graph-tools sdf-tools dot-tools stratego-tools xt boxenv"
 
 #gbtools stratego-connect grammar-recovery
 
@@ -154,34 +154,38 @@ AB_CONFIG_PKG(sdf-import,
 
 AB_CONFIG_PKG(sc,
    --with-aterm=${ATERM}
-   --with-ssl=${prefix}
-   --with-srts=${prefix}
-   --with-sc-boot=${top_srcdir}/sc-boot
-   --with-cgen=${prefix}
-   --with-gpp=${prefix}
+   --with-sglr=${SGLR}
+   --with-pgen=${PGEN}
+   --with-xtc=${prefix}
+   --with-strategoxt=${prefix}
+   --with-repository=${REPOSITORY}
 )
 
 AB_CONFIG_PKG(cgen,
    --with-aterm=${ATERM}
-   --with-ssl=${prefix}
-   --with-srts=${prefix}
+   --with-sglr=${SGLR}
+   --with-pgen=${PGEN}
+   --with-xtc=${prefix}
+   --with-strategoxt=${prefix}
+   --with-repository=${REPOSITORY}
 )
 
 AB_CONFIG_PKG(stratego-front,
-   --with-stratego=${prefix} 
-   --with-sglr=${SGLR}      
-   --with-pgen=${PGEN}                
-   --with-asfix-tools=${prefix}
-   --with-stratego-tools=${prefix}
-   --with-sdf-tools=${prefix}
-   --with-gpp=${prefix}
-   --with-cgen=${prefix}
+   --with-aterm=${ATERM}
+   --with-sglr=${SGLR}
+   --with-pgen=${PGEN}
+   --with-xtc=${prefix}
+   --with-strategoxt=${prefix}
+   --with-repository=${REPOSITORY}
 )
 
 AB_CONFIG_PKG(ssl,
    --with-aterm=${ATERM}
-   --with-srts=${prefix}
-   --with-stratego=${prefix}
+   --with-sglr=${SGLR}
+   --with-pgen=${PGEN}
+   --with-xtc=${prefix}
+   --with-strategoxt=${prefix}
+   --with-repository=${REPOSITORY}
 )
 
 AB_CONFIG_PKG(asfix-tools,
@@ -194,54 +198,61 @@ AB_CONFIG_PKG(asfix-tools,
 )
 
 AB_CONFIG_PKG(gpp,
-   --with-asfix-tools=${prefix}
+   --with-sc-boot=${prefix}
+   --with-srts=${prefix}
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
-   --with-graphviz=${prefix}
-   --with-graph-tools=${prefix}
-   --with-stratego=${prefix}
-   --with-bundled-packages='${PKGS}'
-)
-
-AB_CONFIG_PKG(aterm-tools,
-   --with-sc=${prefix} 
-)
-AB_CONFIG_PKG(graph-tools,
-   --with-sc-boot=${prefix} 
-)
-AB_CONFIG_PKG(sdf-tools,
-   --with-stratego=${prefix}
-   --with-sglr=${SGLR}
-   --with-pgen=${PGEN}
-   --with-asfix-tools=${prefix}
-   --with-graph-tools=${prefix}
-   --with-gpp=${prefix}
-   --with-bundled-packages='${PKGS}'
    --with-xtc=${prefix}
    --with-repository=${REPOSITORY}
 )
-AB_CONFIG_PKG(stratego-tools,
+
+AB_CONFIG_PKG(aterm-tools,
+   --with-aterm=${ATERM}
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
-   --with-stratego=${prefix}
-   --with-asfix-tools=${prefix}
-   --with-graph-tools=${prefix}
-   --with-sdf-tools=${prefix}
-   --with-gpp=${prefix}
-   --with-bundled-packages='${PKGS}'
+   --with-xtc=${prefix}
+   --with-strategoxt=${prefix}
+   --with-repository=${REPOSITORY}
+)
+AB_CONFIG_PKG(graph-tools,
+   --with-aterm=${ATERM}
+   --with-sglr=${SGLR}
+   --with-pgen=${PGEN}
+   --with-xtc=${prefix}
+   --with-strategoxt=${prefix}
+   --with-repository=${REPOSITORY}
+)
+AB_CONFIG_PKG(sdf-tools,
+   --with-aterm=${ATERM}
+   --with-sglr=${SGLR}
+   --with-pgen=${PGEN}
+   --with-xtc=${prefix}
+   --with-strategoxt=${prefix}
+   --with-repository=${REPOSITORY}
+)
+AB_CONFIG_PKG(dot-tools,
+   --with-aterm=${ATERM}
+   --with-sglr=${SGLR}
+   --with-pgen=${PGEN}
+   --with-xtc=${prefix}
+   --with-strategoxt=${prefix}
+   --with-repository=${REPOSITORY}
+)
+AB_CONFIG_PKG(stratego-tools,
+   --with-aterm=${ATERM}
+   --with-sglr=${SGLR}
+   --with-pgen=${PGEN}
+   --with-xtc=${prefix}
+   --with-strategoxt=${prefix}
+   --with-repository=${REPOSITORY}
 )
 AB_CONFIG_PKG(xt,
-  --with-pgen=${PGEN}           
-  --with-sglr=${SGLR}                  
-  --with-gpp=${prefix}                
-  --with-gb=${GB}               
-  --with-grammar-recovery=${GRAMMAR_RECOVERY}          
-  --with-sc-boot=${prefix}    
-  --with-stratego-tools=${prefix}   
-  --with-asfix-tools=${prefix}      
-  --with-aterm-tools=${prefix}      
-  --with-graph-tools=${prefix}      
-  --with-sdf-tools=${prefix}        
+   --with-aterm=${ATERM}
+   --with-sglr=${SGLR}
+   --with-pgen=${PGEN}
+   --with-xtc=${prefix}
+   --with-strategoxt=${prefix}
+   --with-repository=${REPOSITORY}
   --with-graphviz=${GRAPHVIZ}
 )
 AB_CONFIG_PKG(boxenv,

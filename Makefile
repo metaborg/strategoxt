@@ -93,7 +93,7 @@ EXE =
 INSTALL_STRIP_PROGRAM = ${SHELL} $(install_sh) -c -s
 PACKAGE = StrategoXT
 PGEN = /usr/local/build/SDF2
-PKGS = autoxt srts xtc sdf-import sc ssl gpp cgen stratego-front asfix-tools aterm-tools graph-tools sdf-tools stratego-tools xt boxenv
+PKGS = autoxt srts xtc sdf-import sc ssl gpp cgen stratego-front asfix-tools aterm-tools graph-tools sdf-tools dot-tools stratego-tools xt boxenv
 REPOSITORY = /usr/local/build/Boot/share/StrategoXT/XTC
 SDF = /usr/local/build/SDF2
 SGLR = /usr/local/build/SDF2
@@ -564,6 +564,13 @@ upload-ssl:
 
 upload-stratego-front:
 	scp stratego-front/stratego-front-*.tar.gz $(WWWSTRATEGO)
+
+source-tree.txt : 
+	tree -d | grep -v CVS \
+		| grep -v autom4te-2.53.cache \
+		| grep -v data \
+		| grep -v config \
+		> $@
 
 #include Makefile.rpm
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

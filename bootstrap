@@ -19,13 +19,13 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: bootstrap,v 1.6 2002/12/08 11:37:49 stratego Exp $
+# $Id: bootstrap,v 1.7 2002/12/11 10:49:00 stratego Exp $
 
 rm -f mkinstalldirs missing install-sh
 
-PKGS="autoxt srts sc ssl gpp cgen stratego-front aterm-tools asfix-tools graph-tools sdf-tools stratego-tools xt boxenv"
+PKGS="autoxt srts sc ssl gpp cgen stratego-front aterm-tools asfix-tools dot-tools graph-tools sdf-tools stratego-tools xt boxenv"
 
-#sc-boot gpp-boot gbtools stratego-connect grammar-recovery 
+#gbtools stratego-connect grammar-recovery 
 
 for dir in $PKGS
 do 
@@ -37,7 +37,7 @@ done
 
 rm -f config.cache
 rm -f acconfig.h
-aclocal
+aclocal -I .
 autoconf
 #acconfig
 autoheader
