@@ -1,3 +1,8 @@
+2003-07-29  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/list-basic.str: reverse-map(s) applies s to elements in
+	reverse order; useful for data-flow optimizations.
+
 2003-07-29  Martin Bravenboer <mbravenb@cs.uu.nl>
 
 	* spec/int-list.str: added range strategy, inspired by

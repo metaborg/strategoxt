@@ -45,6 +45,9 @@ strategies
   map1(s) = 
     [s | id]; [id | try(map1(s))] <+ [id | map1(s)]
 
+  reverse-map(s) = 
+    [id | reverse-map(s)]; [s | id] <+ []
+
   list(s) = 
     rec x([] + [s | x])
 
