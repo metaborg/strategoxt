@@ -7,8 +7,9 @@ AC_PROG_CC
 AC_PROG_INSTALL
 
 AC_CONFIG_FILES([
-	Makefile 
-	emacs/Makefile 
-  refcard/Makefile
+	Makefile
+	emacs/Makefile
+	refcard/Makefile
+	nedit/Makefile
 ])
 AC_OUTPUT
