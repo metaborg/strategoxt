@@ -1,0 +1,44 @@
+# Stratego Run-Time System
+
+INCLUDES 	= -I@SRTS@/include \
+		  -I@ATERM@/include
+
+LDFLAGS		= -L@SRTS@/lib \
+		  -L@ATERM@/lib 
+
+LDADD		= -lstratego.opt \
+		  -lstratego-lib.opt \
+		  -lATerm-gcc \
+		  -lm
+
+
+# Stratego Compiler
+
+SUFFIXES = .str .cr .r .rtree
+
+SCOMPILE = @SC@/bin/sc
+
+.str.c : 
+	$(SCOMPILE) $(STRINCLUDES) $(SCFLAGS) -i $< -o $@ -c
+
+.cr.c : 
+	$(SCOMPILE) $(STRINCLUDES) $(SCFLAGS) -i $< -o $@ -c
+
+.r.rtree :
+	$(PARSESTRATEGO) $(SCFLAGS) -i $< -o $@
+
+%.c.dep : 
+	touch $@
+
+CLEANFILES = $(wildcard *.dep)
+
+bootclean:
+	rm -f $(BOOTCLEANFILES)
+
+
+# Stratego Front
+
+PARSESTRATEGO = @STRATEGO_FRONT@/bin/parse-stratego
+
+.rtree.c : 
+	$(SCOMPILE) $(STRINCLUDES) $(SCFLAGS) -i $< -o $@ -c
