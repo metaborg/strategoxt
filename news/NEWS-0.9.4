@@ -1,0 +1,173 @@
+StrategoXT 0.9.4 -- under construction
+
+
+Concrete-Syntax
+---------------
+Generic program for parsing programs with embedded concrete
+syntax. The program is parameterized with meta-data indicating
+components for various aspects such as parsing, exploding,
+desugaring, and pretty-printing. The meta data can be specified in
+a .meta file specific for a program to be parsed, or it can be
+associated with an extension and registered in an XTC repository.
+
+For example, the following is the contents of pl.meta, the
+meta-data for Prolog programs with embedded syntax. The assumption
+(in this example) is that syntax embeddings use a standard
+(ToTerm) convention for indicating the boundary between meta- and
+object-syntax.
+
+  Meta([
+    Syntax(Prolog),
+    ParseTable(Prolog.tbl),
+    Explode(prolog-explode),
+    PrettyPrintTable(Prolog-pretty.pp.af)
+  ])
+
+This information can be overridden in a file specific .meta file
+with the same extension. For example, the following indicates an
+embedding of ABIR in Prolog and a specific desugaring tool for
+this format:
+
+  Meta([
+    Syntax(PrologABIR),
+    PostExplodeDesugar(abir-in-prolog-implode)
+  ])
+
+It overrides the syntax component, and adds a desugaring component.
+
+In order to define such meta-data for a whole class of programs,
+it can be defined in a meta file associated with a new
+extension. For example, the following is the contents plabir.meta,
+which defines all meta-data for preprocessing Prolog with embedded
+ABIR in files with extension .plabir.
+
+  Meta([
+    Syntax(PrologABIR),
+    Explode(prolog-explode),
+    PostExplodeDesugar(abir-in-prolog-implode),
+    PrettyPrintTable(Prolog-pretty.pp.af)
+  ])
+
+
+matchapp bug
+
+* src/stratego.c (_all, _one): Changed one-step traversal
+functions such that a new term is only built if there was an
+actual change to at least one of the sub-terms, thus avoiding
+unnecessary term construction. Idea: Eelco Dolstra.
+A one off test on one program suggests that it makes no difference
+at all. But we should wait for results with more programs.
+
+* Improved setjmp() choice operator implementation.  Instead of
+  allocating a gigantic fixed-length array of jmp_buf buffers in the
+  data segment, we now dynamically allocate the array on the heap.
+  The array starts at size 1 and is doubled on demand, for O(1)
+  amortised time complexity.
+
+  This should fix the problems with very large statically allocated
+  data observed on some platforms (cygwin, SuSE 8.1).  The new
+  implementation should also be slightly more efficient due to
+  inlining. (Eelco Dolstra)
+
+Martin:
+  * spec/front/check-constructors.str: added GenerateCheckRule
+    for injections. Injections should now be
+    supported by Stratego.
+
+
+Valentin:
+The following changes were prompted by Automake that now does check that the
+names of macros being defined are properly quoted.  While I was at it, I have
+update a couple of stylistic issues:
+- properly quote where expected
+- don't shell-quote where not needed
+- use the weak versioning conventions (#serial)
+
+This is the resulting autoxt.m4, still valid for both Autoconf 2.1x and 2.5x,
+thanks!
+
+Add the support of --asfix option. Valentin
+
+Merijn:
+ * pptable-diff: also differences due to change production rules are
+   reported. These cal also be patches, without loosing the originals ones.
+
+* xtc: added pp-dot pretty-print tool
+ * Added pptable-diff tool, which reports about differences between
+   pretty-print tables, and which can patch an old pretty-print tableby
+   inserting newer pretty-print rules and removing obsolete ones
+
+
+
+Martin:
+spec/posix-error.str: new module
+
+  * spec/dir.str: extended rename-file to copy files
+    if rename fails because of an XDEV error.
+
+    Thanks to Arthur van Dam for reporting this problem.
+
+  * spec/list-misc.str: added split-last.
+
+Martin:
+  * ssl/exec.[ch]: added:
+    - ATerm SSL_get_errno(void);
+    - ATerm SSL_set_errno(ATerm code);
+    - ATerm SSL_EXDEV(void);
+ * ssl/number.[ch]: added SSL_rand, SSL_RAND_MAX, and
+    SSL_srand to generate random numbers.
+
+  * spec/integers.str: added set-random-seed, get-random-max,
+    and next-random to generate random numbers.
+
+  * parse/meta-explode.str: added explosion
+    of int terms to trm-explode.
+  * parse/stratego-ensugar.str: implemented ensugaring of
+    Cons/Nil to List and ListTail.
+
+Eelco Visser:
+bug in Stratego compiler
+Variables in a match expression are
+abstracted over; even the variables that are term arguments. As a
+result these variables are passed twice to the worker. Fix by
+diffing term arguments from the list of variables passed on to
+the worker.
+
+Rob:
+  pack-stratego
+    * added --slack flag to pack-stratego. using this will let pack-stratego con
+tinue even if a module isn't found, producing only a warning.
+
+
+
+
+DOWNLOAD AND INSTALLATION
+
+  The release page contains the source distributions, binary RPMs, and
+  detailed instructions on how to install the distributions:
+
+  *  http://www.stratego-language.org/Stratego/StrategoRelease094
+
+BUGS / KNOWN PROBLEMS
+
+  All the bugs and known problems for StrategXT distributions have
+  been solved in this release.
+
+  For a more detailed overview of problems and missing features please
+  visit:
+
+  * ReleasePlan: http://www.stratego-language.org/Stratego/ReleasePlan
+  * Todo: http://www.stratego-language.org/Stratego/ToDo
+
+  Please report any problems with installation or bugs in the
+  implementation to the stratego-bugs@cs.uu.nl mailing list. Please
+  check the archive of the list to see if a report about the problem 
+  was already submitted.
+
+CONTRIBUTIONS
+
+  * Beta tests carried out by:
+    Martin Bravenboer, Rob Vermaaas, Arthur van Dam
+
+  * Major developments were carried out by:
+    Eelco Visser, Martin Bravenboer, Rob Vermaas
