@@ -1,0 +1,58 @@
+/**
+ * @author  Martin Bravenboer
+ */
+module explode-aterm
+imports ATerms options
+
+strategies
+
+  io-explode-aterm =
+    io-wrap(explode-aterm)
+
+strategies
+
+  explode-aterm =
+       explode-list
+    <+ explode-int
+    <+ explode-fun
+    <+ explode-appl
+
+  /**
+   * list
+   */
+  explode-list :
+    [x*]{} -> list(not-empty(<map(explode-aterm)> x*))
+
+  /**
+   * integer
+   */
+  explode-int :
+    i{} -> constant(int(natural(<int-to-string> i)))
+      where <is-int> i
+
+  explode-fun :
+    s#([]){} -> fun(<explode-afun> s)
+
+  explode-appl :
+    s#([x*]){} -> appl(<explode-afun> s, <map(explode-aterm)> x*)
+
+  explode-afun :
+    s -> uqlit(s)
+      where <not(is-double-quoted)> s
+
+  explode-afun :
+    s -> qlit(s)
+      where <is-double-quoted> s
+
+
+  /**
+   * todo: annotations
+
+    placeholder           : ATerm -> ATerm
+    annotation            : List(ATerm) -> Ann
+    annotated-constant    : ACon * Ann -> ATerm
+    annotated-list        : ATermList * Ann -> ATerm
+    annotated-fun         : AFun * Ann -> ATerm
+    annotated-appl        : AFun * List(ATerm) * Ann -> ATerm
+    annotated-placeholder : ATerm * Ann -> ATerm
+    */
