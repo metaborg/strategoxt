@@ -1,32 +1,39 @@
+2004-02-12  Martin Bravenboer  <martin@cs.uu.nl>
+
+	* syn/*: added the pgen 2.0 syntax definition for SDF as the first
+	step into upgrading to the most recent sdf version. sdf-front now
+	contains two versions of SDF2. The old one is still called
+	Sdf2-Syntax. The new one is Sdf2.
+	
 2003-05-27  Martin Bravenboer  <martin@mbravenboer.org>
 
-  * syn/Renaming-Sdf-Syntax.sdf: renaming productions now have constructors.
-    Constructor names copied from the v2.4 grammar at:
-    http://homepages.cwi.nl/~mdejonge/grammar-base/sdf.2.4/sdf.2.4-V.def
+	* syn/Renaming-Sdf-Syntax.sdf: renaming productions now have
+	constructors.  Constructor names copied from the v2.4 grammar at:
+	http://homepages.cwi.nl/~mdejonge/grammar-base/sdf.2.4/sdf.2.4-V.def
 
-  * syn/Stratego-Sdf2.sdf: added quotation and anti-quotation for aliases and
-    renamings.
+	* syn/Stratego-Sdf2.sdf: added quotation and anti-quotation for
+	aliases and renamings.
 
 2003-05-27  Martin Bravenboer  <martin@mbravenboer.org>
 
-  * parse/sdf-ensugar.str and desugar.str: added (de)sugaring of no-attrs
-    to attrs([]). 
+	* parse/sdf-ensugar.str and desugar.str: added (de)sugaring of
+	no-attrs to attrs([]).
 
-  * syn/Stratego-Sdf2.sdf: added variables for symbols, attributes and 
-    productions. Quotations for Grammar and Attributes.
+	* syn/Stratego-Sdf2.sdf: added variables for symbols, attributes
+	and productions. Quotations for Grammar and Attributes.
 
 2003-05-26  Martin Bravenboer  <martin@mbravenboer.org>
 
-  * Added quotation and anti-quotation of symbols to Stratego-Sdf2
+	* Added quotation and anti-quotation of symbols to Stratego-Sdf2
 
-  * Added initial sdf-ensugar.
+	* Added initial sdf-ensugar.
 
-  * Added initial sdf-desugar. What is sugar? What is normalization?
+	* Added initial sdf-desugar. What is sugar? What is normalization?
 
-  * Added initial Sdf2 in Stratego syntax definition. Useful
-    for generation of Sdf2 and unit-testing of sdf-tools.
+	* Added initial Sdf2 in Stratego syntax definition. Useful for
+	generation of Sdf2 and unit-testing of sdf-tools.
 
 2003-05-23  Martin Bravenboer  <martin@mbravenboer.org>
 
-  * Creation of sdf-front. This is a collection of material
-    from sdf-tools that hasn't yet been distributed.
+	* Creation of sdf-front. This is a collection of material from
+	sdf-tools that hasn't yet been distributed.

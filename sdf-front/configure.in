@@ -10,6 +10,8 @@ AC_CONFIG_FILES([
   Makefile
 
   syn/Makefile
+  syn/version-2.1/Makefile
+  syn/version-pgen-2.0/Makefile
   sig/Makefile
   pp/Makefile
   parse/Makefile

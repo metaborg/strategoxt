@@ -33,6 +33,6 @@ CLEANFILES       = Sdf2-Syntax.def $(wildcard *.dep)
 BOOTCLEANFILES   = $(wildcard *.c) $(SIGS) $(pkgdata_DATA)
 
 Sdf2-Syntax.def :
-	ln -s $(top_srcdir)/syn/Sdf2-Syntax.def $@
+	ln -s $(top_srcdir)/syn/version-2.1/Sdf2-Syntax.def $@
 
 $(SIGS) : Sdf2-Syntax.def
