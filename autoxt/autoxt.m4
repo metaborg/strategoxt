@@ -1,5 +1,5 @@
 #     							-*- Autoconf -*-
-# serial 2
+# serial 3
 #
 # Author: Eelco Visser <visser@cs.uu.nl>
 #
@@ -7,6 +7,10 @@
 # with the XT bundle of program transformation tools.
 # The macros are organized hierarchically such that packages that are included
 # in a larger bundle do not need to be provided explicitly.
+
+# XT_ left in configure is the sign a macro was not defined, or there was a typo
+# in a macro invocation.
+m4_pattern_forbid([^XT_])
 
 AC_DEFUN([XT_SETUP],
 [
@@ -20,6 +24,9 @@ AC_DEFUN([XT_DARWIN],
   AC_REQUIRE([AC_CANONICAL_HOST])
   AC_REQUIRE([AC_CANONICAL_BUILD])
 
+  # As an exception to XT_* macros name, this is a valid part of configure.
+  m4_pattern_allow([^XT_DARWIN(_TRUE|_FALSE)?$])
+
   AC_MSG_CHECKING([whether host operating system is Darwin])
   xt_darwin="no"
   case $host_os in
@@ -31,249 +38,73 @@ AC_DEFUN([XT_DARWIN],
   AM_CONDITIONAL([XT_DARWIN], [test "$xt_darwin" = "yes"])
 ])
 
+# XT_ARG_WITH(OPTION, VAR, DEFAULT, ARGNAME, NAME)
+# ------------------------------------------------
+# Declaring the option --with-OPTION=ARGNAME to specify the location of the package NAME.
+# Store the result in VAR, defaulting to $DEFAULT (note the $).
+AC_DEFUN([XT_ARG_WITH],
+[AC_ARG_WITH([$1],
+             [AS_HELP_STRING([--with-$1=$4], [use $5 at $4 @<:@$3@:>@])],
+	     [$2=$withval],
+	     [$2=$$3])
+AC_SUBST([$2])
+])
+
+
+
 # USE_XT_PACKAGES
 # ---------------
 AC_DEFUN([USE_XT_PACKAGES],
 [
   AC_REQUIRE([XT_SETUP])
 
-############ XT ###########################################################
+  BUILD_XTC="XTC"
 
-AC_ARG_WITH([xt],
-  AC_HELP_STRING([--with-xt=XT], [use XT at XT @<:@PREFIX@:>@]),
-  [XT=$withval],
-  [XT=$prefix]
-)
-AC_SUBST([XT])
+  # M-x align-all-strings is your friend.
+  XT_ARG_WITH([xt],              [XT],              [prefix],              [XT],        [XT])
+  XT_ARG_WITH([aterm],           [ATERM],           [XT],                  [DIR],       [ATerm Library])
+  XT_ARG_WITH([sdf],             [SDF],             [XT],                  [SDF],       [SDF])
+  XT_ARG_WITH([sglr],            [SGLR],            [SDF],                 [SGLR],      [SGLR])
+  XT_ARG_WITH([pgen],            [PGEN],            [SDF],                 [PGEN],      [PGEN])
+  XT_ARG_WITH([pt-support],      [PT_SUPPORT],      [SDF],                 [DIR],       [pt-support])
+  XT_ARG_WITH([asf-library],     [ASF_LIBRARY],     [SDF],                 [DIR],       [ASF library])
+  XT_ARG_WITH([strategoxt],      [STRATEGOXT],      [XT],                  [STRATEGOXT],[StrategoXT])
+  XT_ARG_WITH([srts],            [SRTS],            [STRATEGOXT],          [DIR],       [Stratego Run-Time System])
+  XT_ARG_WITH([xtc],             [XTC],             [STRATEGOXT],          [DIR],       [XTC (XT Composition)])
+  XT_ARG_WITH([repository],      [REPOSITORY],      [datadir/$PACKAGE/XTC],[FILE],      [XTC repository])
+  XT_ARG_WITH([build-repository],[BUILD_REPOSITORY],[BUILD_XTC],           [FILE],      [build-time XTC repository])
+  XT_ARG_WITH([strc],            [STRC],            [STRATEGOXT],          [DIR],       [Stratego Compiler])
+  XT_ARG_WITH([sc],              [STRC],            [STRATEGOXT],          [DIR],       [Stratego Compiler])
+  XT_ARG_WITH([ssl],             [SSL],             [STRATEGOXT],          [DIR],       [Stratego Standard Library])
+  XT_ARG_WITH([gpp],             [GPP],             [STRATEGOXT],          [DIR],       [GPP])
+  XT_ARG_WITH([c-tools],         [C_TOOLS],         [STRATEGOXT],          [DIR],       [C_TOOLS])
+  XT_ARG_WITH([stratego-front],  [STRATEGO_FRONT],  [STRATEGOXT],          [DIR],       [Stratego Front])
+  XT_ARG_WITH([asfix-tools],     [ASFIX_TOOLS],     [STRATEGOXT],          [DIR],       [AsFix Tools])
+  XT_ARG_WITH([aterm-front],     [ATERM_FRONT],     [STRATEGOXT],          [DIR],       [ATerm Front])
+  XT_ARG_WITH([aterm-tools],     [ATERM_TOOLS],     [STRATEGOXT],          [DIR],       [Aterm Tools])
+  XT_ARG_WITH([graph-tools],     [GRAPH_TOOLS],     [STRATEGOXT],          [DIR],       [Graph Tools])
+  XT_ARG_WITH([sdf-front],       [SDF_FRONT],       [STRATEGOXT],          [DIR],       [SDF Front])
+  XT_ARG_WITH([sdf-tools],       [SDF_TOOLS],       [STRATEGOXT],          [DIR],       [SDF Tools])
+  XT_ARG_WITH([concrete-syntax], [CONCRETE_SYNTAX], [STRATEGOXT],          [DIR],       [concrete-syntax])
+  XT_ARG_WITH([xml-front],       [XML_FRONT],       [STRATEGOXT],          [DIR],       [XML Front])
+  XT_ARG_WITH([stratego-regular],[STRATEGO_REGULAR],[STRATEGOXT],          [DIR],       [StrategoRegular])
+  XT_ARG_WITH([stratego-tools],  [STRATEGO_TOOLS],  [STRATEGOXT],          [DIR],       [Stratego Tools])
+  XT_ARG_WITH([dot-tools],       [DOT_TOOLS],       [STRATEGOXT],          [DIR],       [Dot Tools])
 
-############ ATerm Library ################################################
+  # Make sure BUILD_REPOSITORY is an absolute path.
+  case $BUILD_REPOSITORY in
+    [\\/]* ) ;;
+    *) BUILD_REPOSITORY=`pwd`/$BUILD_REPOSITORY ;;
+  esac
 
-AC_ARG_WITH([aterm],
-  AC_HELP_STRING([--with-aterm=DIR], [use ATerm Library at DIR @<:@XT@:>@]),
-  [ATERM=$withval],
-  [ATERM=$XT]
-)
-AC_SUBST([ATERM])
+  # Backward compatibility?
+  AC_SUBST([SC], [$STRC])
 
-############ SDF ##########################################################
-
-AC_ARG_WITH([sdf],
-  AC_HELP_STRING([--with-sdf=SDF], [use SDF at SDF @<:@XT@:>@]),
-  [SDF=$withval],
-  [SDF=$XT]
-)
-AC_SUBST([SDF])
-
-AC_ARG_WITH([sglr],
-  AC_HELP_STRING([--with-sglr=DIR], [use SGLR at DIR @<:@SDF@:>@]),
-  [SGLR=$withval],
-  [SGLR=$SDF]
-)
-AC_SUBST([SGLR])
-
-AC_ARG_WITH([pgen],
-  AC_HELP_STRING([--with-pgen=DIR], [use PGEN at DIR @<:@SDF@:>@]),
-  [PGEN=$withval],
-  [PGEN=$SDF]
-)
-AC_SUBST([PGEN])
-
-AC_ARG_WITH([pt-support],
-  AC_HELP_STRING([--with-pt-support=DIR], [use pt-support at DIR @<:@SDF@:>@]),
-  [PT_SUPPORT=$withval],
-  [PT_SUPPORT=$SDF]
-)
-AC_SUBST([PT_SUPPORT])
-
-AC_ARG_WITH([asf-library],
-  AC_HELP_STRING([--with-asf-library=DIR], [use ASF library at DIR @<:@SDF@:>@]),
-  [ASF_LIBRARY=$withval],
-  [ASF_LIBRARY=$SDF]
-)
-AC_SUBST([ASF_LIBRARY])
-
-############ StrategoXT ##################################################
-
-AC_ARG_WITH([strategoxt],
-  AC_HELP_STRING([--with-strategoxt=STRATEGOXT],
-                 [use StrategoXT at STRATEGOXT @<:@XT@:>@]),
-  [STRATEGOXT=$withval],
-  [STRATEGOXT=$XT]
-)
-AC_SUBST([STRATEGOXT])
-
-AC_ARG_WITH([srts],
-  AC_HELP_STRING([--with-strs=DIR],
-                 [use Stratego Run-Time System at DIR @<:@STRATEGOXT@:>@]),
-  [SRTS=$withval],
-  [SRTS=$STRATEGOXT]
-)
-AC_SUBST([SRTS])
-
-AC_ARG_WITH([xtc],
-  AC_HELP_STRING([--with-xtc=DIR],
-                 [use XTC (XT Composition) at DIR @<:@STRATEGOXT@:>@]),
-  [XTC=$withval],
-  [XTC=$STRATEGOXT]
-)
-AC_SUBST([XTC])
-
-AC_ARG_WITH([repository],
-  AC_HELP_STRING([--with-repository=FILE],
-                 [use XTC repository at FILE @<:@pkgdatadir/XTC@:>@]),
-  [REPOSITORY=$withval],
-  [REPOSITORY=$datadir/$PACKAGE/XTC]
-)
-AC_SUBST([REPOSITORY])
-
-AC_ARG_WITH([build-repository],
-  AC_HELP_STRING([--with-build-repository=FILE],
-                 [use build-time XTC repository at FILE @<:@pkgdatadir/XTC@:>@]),
-  [BUILD_REPOSITORY=$withval],
-  [BUILD_REPOSITORY=`pwd`/XTC]
-)
-AC_SUBST([BUILD_REPOSITORY])
-
-AC_ARG_WITH([strc],
-  AC_HELP_STRING([--with-strc=DIR],
-                 [use Stratego Compiler at DIR @<:@STRATEGOXT@:>@]),
-  [STRC=$withval SC=$withval],
-  [STRC=$STRATEGOXT SC=$STRATEGOXT]
-)
-AC_SUBST([STRC])
-
-AC_ARG_WITH([sc],
-  AC_HELP_STRING([--with-sc=DIR],
-                 [use Stratego Compiler at DIR @<:@STRATEGOXT@:>@]),
-  [STRC=$withval SC=$withval],
-  [STRC=$STRATEGOXT SC=$STRATEGOXT]
-)
-AC_SUBST([SC])
-
-AC_ARG_WITH([ssl],
-  AC_HELP_STRING([--with-ssl=DIR],
-                 [use Stratego Standard Library at DIR @<:@STRATEGOXT@:>@]),
-  [SSL=$withval],
-  [SSL=$STRATEGOXT]
-)
-AC_SUBST([SSL])
-
-AC_ARG_WITH([gpp],
-  AC_HELP_STRING([--with-gpp=DIR],
-                 [use GPP at DIR @<:@STRATEGOXT@:>@]),
-  [GPP=$withval],
-  [GPP=$STRATEGOXT]
-)
-AC_SUBST([GPP])
-
-AC_ARG_WITH([c-tools],
-  AC_HELP_STRING([--with-c-tools=DIR],
-                 [use C_TOOLS at DIR @<:@STRATEGOXT@:>@]),
-  [C_TOOLS=$withval],
-  [C_TOOLS=$STRATEGOXT]
-)
-AC_SUBST([C_TOOLS])
-
-AC_ARG_WITH([stratego-front],
-  AC_HELP_STRING([--with-stratego-front=DIR],
-                 [use Stratego Front at DIR @<:@STRATEGOXT@:>@]),
-  [STRATEGO_FRONT=$withval],
-  [STRATEGO_FRONT=$STRATEGOXT]
-)
-AC_SUBST([STRATEGO_FRONT])
-
-AC_ARG_WITH([asfix-tools],
-  AC_HELP_STRING([--with-asfix-tools=DIR],
-                 [use AsFix Tools at DIR @<:@STRATEGOXT@:>@]),
-  [ASFIX_TOOLS=$withval],
-  [ASFIX_TOOLS=$STRATEGOXT]
-)
-AC_SUBST([ASFIX_TOOLS])
-
-AC_ARG_WITH([aterm-front],
-  AC_HELP_STRING([--with-aterm-front=DIR],
-                 [use ATerm Front at DIR @<:@STRATEGOXT@:>@]),
-  [ATERM_FRONT=$withval],
-  [ATERM_FRONT=$STRATEGOXT]
-)
-AC_SUBST([ATERM_FRONT])
-
-AC_ARG_WITH([aterm-tools],
-  AC_HELP_STRING([--with-aterm-tools=DIR],
-                 [use Aterm Tools at DIR @<:@STRATEGOXT@:>@]),
-  [ATERM_TOOLS=$withval],
-  [ATERM_TOOLS=$STRATEGOXT]
-)
-AC_SUBST([ATERM_TOOLS])
-
-AC_ARG_WITH([graph-tools],
-  AC_HELP_STRING([--with-graph-tools=DIR],
-                 [use Graph Tools at DIR @<:@STRATEGOXT@:>@]),
-  [GRAPH_TOOLS=$withval],
-  [GRAPH_TOOLS=$STRATEGOXT]
-)
-AC_SUBST([GRAPH_TOOLS])
-
-AC_ARG_WITH([sdf-front],
-  AC_HELP_STRING([--with-sdf-front=DIR],
-                 [use SDF Front at DIR @<:@STRATEGOXT@:>@]),
-  [SDF_FRONT=$withval],
-  [SDF_FRONT=$STRATEGOXT]
-)
-AC_SUBST([SDF_FRONT])
-
-AC_ARG_WITH([sdf-tools],
-  AC_HELP_STRING([--with-sdf-tools=DIR],
-                 [use SDF Tools at DIR @<:@STRATEGOXT@:>@]),
-  [SDF_TOOLS=$withval],
-  [SDF_TOOLS=$STRATEGOXT]
-)
-AC_SUBST([SDF_TOOLS])
-
-AC_ARG_WITH([concrete-syntax], 
-  AC_HELP_STRING([--with-concrete-syntax=DIR], 
-		 [use concrete-syntax at DIR @<:@STRATEGOXT@:>@]),
-  [CONCRETE_SYNTAX=$withval],
-  [CONCRETE_SYNTAX=$STRATEGOXT]
-)
-AC_SUBST(CONCRETE_SYNTAX)
-
-AC_ARG_WITH([xml-front],
-  AC_HELP_STRING([--with-xml-front=DIR],
-                 [use XML Front at DIR @<:@STRATEGOXT@:>@]),
-  [XML_FRONT="$withval"],
-  [XML_FRONT="$STRATEGOXT"]
-)
-AC_SUBST(XML_FRONT)
-
-AC_ARG_WITH([stratego-regular], 
-  AC_HELP_STRING([--with-stratego-regular=DIR],
-                 [use StrategoRegular at DIR @<:@STRATEGOXT@:>@]), 
-  [STRATEGO_REGULAR=$withval], 
-  [STRATEGO_REGULAR=$STRATEGOXT]
-)
-AC_SUBST([STRATEGO_REGULAR])
-
-AC_ARG_WITH([stratego-tools],
-  AC_HELP_STRING([--with-stratego-tools=DIR],
-                 [use Stratego Tools at DIR @<:@STRATEGOXT@:>@]),
-  [STRATEGO_TOOLS=$withval],
-  [STRATEGO_TOOLS=$STRATEGOXT]
-)
-AC_SUBST([STRATEGO_TOOLS])
-
-AC_ARG_WITH([dot-tools],
-  AC_HELP_STRING([--with-dot-tools=DIR],
-                 [use Dot Tools at DIR @<:@STRATEGOXT@:>@]),
-  [DOT_TOOLS=$withval],
-  [DOT_TOOLS=$STRATEGOXT]
-)
-AC_SUBST([DOT_TOOLS])
-
-AC_DEFINE(XTC_REPOSITORY(),
-          [ATmakeString("@REPOSITORY@")],
-          [Location of the XTC repository.])
+  AC_DEFINE([XTC_REPOSITORY()],
+            [ATmakeString("@REPOSITORY@")],
+            [Location of the XTC repository.])
 ])# USE_XT_PACKAGES
+
 
 ############ SVN REVISION ########################################################
 
@@ -317,25 +148,25 @@ AC_DEFUN([XT_TERM_DEFINE],
 [
   AC_REQUIRE([XT_SVN_REVISION])
 
-  AC_DEFINE(PACKAGE_NAME_TERM(),[ATmakeString("@PACKAGE_NAME@")])
-  AC_DEFINE(PACKAGE_TARNAME_TERM(),[ATmakeString("@PACKAGE_TARNAME@")])
-  AC_DEFINE(PACKAGE_VERSION_TERM(),[ATmakeString("@PACKAGE_VERSION@")])
-  AC_DEFINE(VERSION_TERM(),[ATmakeString("@VERSION@")])
-  AC_DEFINE(PACKAGE_BUGREPORT_TERM(),[ATmakeString("@PACKAGE_BUGREPORT@")])
-  AC_DEFINE(SVN_REVISION_TERM(),[ATmakeString("@SVN_REVISION@")])
+  AC_DEFINE([PACKAGE_NAME_TERM()],     [ATmakeString("@PACKAGE_NAME@")])
+  AC_DEFINE([PACKAGE_TARNAME_TERM()],  [ATmakeString("@PACKAGE_TARNAME@")])
+  AC_DEFINE([PACKAGE_VERSION_TERM()],  [ATmakeString("@PACKAGE_VERSION@")])
+  AC_DEFINE([VERSION_TERM()],          [ATmakeString("@VERSION@")])
+  AC_DEFINE([PACKAGE_BUGREPORT_TERM()],[ATmakeString("@PACKAGE_BUGREPORT@")])
+  AC_DEFINE([SVN_REVISION_TERM()],     [ATmakeString("@SVN_REVISION@")])
 ])
 
 ############ TEST PACKAGES ########################################################
 
 AC_DEFUN([XT_PKG_ATERM],
 [
-  XT_PROG_BAFFLE  
+  XT_PROG_BAFFLE
   XT_LIB_ATERM
 ])
 
 AC_DEFUN([XT_PKG_PGEN],
 [
-  XT_PROG_SDF2TABLE  
+  XT_PROG_SDF2TABLE
 ])
 
 AC_DEFUN([XT_PKG_SGLR],

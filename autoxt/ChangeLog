@@ -1,3 +1,15 @@
+2004-09-25   Martin Bravenboer  <martin@cs.uu.nl>
+
+	* autoxt.m4: applied the improved autoxt.m4, which was contributed
+	by Akim. The main improvement is a concise XT_ARG_WITH macro that
+	can be used to the define --with flags. Also, autoconf now fails
+	if there are undefined macros.
+
+	I've fixed several minor issues in the contributed autoxt.m4:
+	- Merged with recent changes.
+	- AC_DEFINES should have a (), since they are applied as
+	functions.
+
 2004-07-27   Martin Bravenboer  <martin@cs.uu.nl>
 
 	* autoxt.m3: added XT_PRE_RELEASE. This macro extends the VERSION
