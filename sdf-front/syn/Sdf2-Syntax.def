@@ -358,16 +358,14 @@ exports
 
 module Renaming-Sdf-Syntax
 imports Kernel-Sdf-Syntax
+
 exports
   sorts Renaming Renamings
+
   context-free syntax
-    "[" Renaming* "]"     -> Renamings
-    Symbol     "=>" Symbol      -> Renaming
-    Production "=>" Production  -> Renaming
-
-
-
-
+    "[" Renaming* "]" -> Renamings {cons("renamings")}
+    Symbol "=>" Symbol -> Renaming {cons("symbol")}
+    Production "=>" Production -> Renaming {cons("production")}
 
 module Modular-Sdf-Syntax
 imports Kernel-Sdf-Syntax Renaming-Sdf-Syntax

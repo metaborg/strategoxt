@@ -32,6 +32,12 @@ exports
         "|[" Symbol      "]|" -> StrategoTerm {cons("ToTerm")}
     "A" "|[" Symbol      "]|" -> StrategoTerm {cons("ToTerm")}
 
+         "|[" Renaming "]|" -> StrategoTerm {cons("ToTerm")}
+    "ro" "|[" Renaming "]|" -> StrategoTerm {cons("ToTerm")}
+
+         "|[" Alias "]|" -> StrategoTerm {cons("ToTerm")}
+    "al" "|[" Alias "]|" -> StrategoTerm {cons("ToTerm")}
+
     "~"     StrategoTerm   -> Symbol {cons("FromTerm")}
     "~sym:" StrategoTerm   -> Symbol {cons("FromTerm")}
 
@@ -77,6 +83,12 @@ exports
     "restr" [0-9\']*     -> Restriction
     "restr" [0-9\']* "*" -> Restriction*
     "restr" [0-9\']* "+" -> Restriction+
+
+  variables %% section 9.1.1
+
+    "ro" [0-9\']*     -> Renaming
+    "ro" [0-9\']* "*" -> Renaming*
+    "ro" [0-9\']* "+" -> Renaming+
 
   variables %% section 9.2.1
 

@@ -1,5 +1,14 @@
 2003-05-27  Martin Bravenboer  <martin@mbravenboer.org>
 
+  * syn/Renaming-Sdf-Syntax.sdf: renaming productions now have constructors.
+    Constructor names copied from the v2.4 grammar at:
+    http://homepages.cwi.nl/~mdejonge/grammar-base/sdf.2.4/sdf.2.4-V.def
+
+  * syn/Stratego-Sdf2.sdf: added quotation and anti-quotation for aliases and
+    renamings.
+
+2003-05-27  Martin Bravenboer  <martin@mbravenboer.org>
+
   * parse/sdf-ensugar.str and desugar.str: added (de)sugaring of no-attrs
     to attrs([]). 
 

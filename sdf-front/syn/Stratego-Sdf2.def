@@ -764,16 +764,14 @@ exports
 
 module Renaming-Sdf-Syntax
 imports Kernel-Sdf-Syntax
+
 exports
   sorts Renaming Renamings
+
   context-free syntax
-    "[" Renaming* "]"     -> Renamings
-    Symbol     "=>" Symbol      -> Renaming
-    Production "=>" Production  -> Renaming
-
-
-
-
+    "[" Renaming* "]" -> Renamings {cons("renamings")}
+    Symbol "=>" Symbol -> Renaming {cons("symbol")}
+    Production "=>" Production -> Renaming {cons("production")}
 
 module Modular-Sdf-Syntax
 imports Kernel-Sdf-Syntax Renaming-Sdf-Syntax
@@ -937,6 +935,12 @@ exports
         "|[" Symbol      "]|" -> StrategoTerm {cons("ToTerm")}
     "A" "|[" Symbol      "]|" -> StrategoTerm {cons("ToTerm")}
 
+         "|[" Renaming "]|" -> StrategoTerm {cons("ToTerm")}
+    "ro" "|[" Renaming "]|" -> StrategoTerm {cons("ToTerm")}
+
+         "|[" Alias "]|" -> StrategoTerm {cons("ToTerm")}
+    "al" "|[" Alias "]|" -> StrategoTerm {cons("ToTerm")}
+
     "~"     StrategoTerm   -> Symbol {cons("FromTerm")}
     "~sym:" StrategoTerm   -> Symbol {cons("FromTerm")}
 
@@ -982,6 +986,12 @@ exports
     "restr" [0-9\']*     -> Restriction
     "restr" [0-9\']* "*" -> Restriction*
     "restr" [0-9\']* "+" -> Restriction+
+
+  variables %% section 9.1.1
+
+    "ro" [0-9\']*     -> Renaming
+    "ro" [0-9\']* "*" -> Renaming*
+    "ro" [0-9\']* "+" -> Renaming+
 
   variables %% section 9.2.1
 
