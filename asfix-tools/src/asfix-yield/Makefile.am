@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.5 2001/09/18 15:29:01 jvisser Exp $
+# $Id: Makefile.am,v 1.6 2002/05/08 08:11:25 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -33,22 +33,22 @@ SUBDIRS      = data
 STRATEGO_PRG = asfix-yield
 
 # What scipts to build
-bin_SCRIPTS	= $(STRATEGO_PRG) asource
-libexec_SCRIPTS	= $(STRATEGO_PRG) asource
+bin_SCRIPTS	= $(STRATEGO_PRG)
+libexec_SCRIPTS	= $(STRATEGO_PRG)
 
 # Optional tests to run
 TESTS        = asfix_yield1_check \
                asfix_yield2_check
 
 # What should be cleaned
-CLEANFILES   += asource \
-                asfix_yield1_check asfix_yield2_check
+CLEANFILES   += asfix_yield1_check asfix_yield2_check
 
 # Additional flags for the Stratego compiler
 SCFLAGS      += -I $(srcdir)/../asfix
 
-asource:
-	ln -s asfix-yield asource
+install-exec-local:
+	ln -sf asfix-yield ${bindir}/asource
+	ln -sf asfix-yield ${libexecdir}/asource
 
 asfix_yield1_check_prog    = asfix-yield
 asfix_yield1_check_input   = data/tiny.tree

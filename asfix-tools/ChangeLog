@@ -1,3 +1,8 @@
+2002-05-08 Merijn de Jonge <mdejonge@cwi.nl>
+   * asfix-yield: Changed way that asource is created in order to
+     asfix-tools package compile on cygwin
+
+
 2002-03-16  Eelco Visser  <visser@acm.org>
 
 	* src/asfix/Literal-lib.r: Evaluation order bug in definition of De-Escape
