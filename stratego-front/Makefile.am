@@ -42,7 +42,7 @@ CONFIGURE = ./configure \
 		--with-rpmdir=$(RPMDIR)
 
 SUBST = s+__SRTS_VERSION__+$(VERSION)+g;\
-        s+__GPP_VERSION__+2.2+g;\
+        s+__GPP_VERSION__+2.3+g;\
         s+__SGLR_VERSION__+3.7+g;\
         s+__PGEN_VERSION__+1.4+g;\
         s+__ASFIX_TOOLS_VERSION__+0.4+g;\

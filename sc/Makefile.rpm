@@ -138,6 +138,8 @@ CLEANFILES += $(RPMSPEC) $(PACKAGE)-$(VERSION).pkg $(RPMFILES)
 #
 # Generic rules for creating .pkg file for use with AutoBundle
 
+pkg: $(PACKAGE)-$(VERSION).pkg 
+
 $(PACKAGE)-$(VERSION).pkg : $(PACKAGE).pkg Makefile
 	sed '$(SUBST)\
              s+__MAKE__+$(MAKE)+g;\

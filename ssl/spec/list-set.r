@@ -112,9 +112,17 @@ strategies
     obsolete(!"collect-kids(s); use crush(![],union,s)");
     crush(![],union,s)
 
+  // collect all subtrees for which s succeeds
+
   collect-all(s) =
     rec x(![<s> | <crush(![],union,x)>]
           <+ crush(![],union,x))
+
+  // collect with user-defined union operator
+
+  collect-all(s,un) =
+    rec x(![<s> | <crush(![],un,x)>]
+          <+ crush(![],un,x))
 
 /* bug in Let?
   postorder-collect-new(s) =

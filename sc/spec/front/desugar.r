@@ -163,14 +163,6 @@ rules
   ListBuild : 
     Build(t[Op("Cons", [Var(ListVar(x)), Op("Nil", [])])]) -> 
     Build(t[Var(x)])
-
-  ListMatch : 
-    Match(t[Op("Cons", [t, Op("Cons", [Var(ListVar(x)), Op("Nil", [])])])]) -> 
-    Match(t[Op("Cons", [t, Var(x)])])
-
-  ListMatch : 
-    Build(t[Op("Cons", [t, Op("Cons", [Var(ListVar(x)), Op("Nil", [])])])]) -> 
-    Build(t[Op("Cons", [t, Var(x)])])
 \end{code}
 
 \paragraph{Term Explosion and Construction}

@@ -1,29 +1,29 @@
-\literate[list-sort-test]
-
-	\begin{abstract}
-	Tests for list sorting strategies
-	\end{abstract}
-
-\begin{code}
-module list-sort-test
-imports list-sort sunit
-
+module term-properties
+imports simple-traversal
 strategies
 
-  main = 
-    test-suite(!"list-sort-test",
-	tuple-uniq-test
-     )
+  // subterm and superterms
 
-  tuple-uniq-test =
-    apply-test(!"tuple-uniq-test"
-              ,uniq
-              ,![1,2,3,5,3,7,1,4,9,2]
-              ,![1,2,3,5,7,4,9]
-              )
+  is-superterm =
+    ?(x, y); where(<oncetd(?y)> x)
 
-\end{code}
-% Copyright (C) 1998-2001 Eelco Visser <visser@acm.org>
+  is-proper-superterm =
+    ?(x, y); not(eq); is-superterm
+
+  is-subterm =
+    ?(x, y); where(<oncetd(?x)> y)
+
+  is-proper-subterm =
+    ?(x, y); not(eq); is-subterm
+
+  is-proper-subterm-set =
+    ?([y|_], xs); where(<fetch(not(?y); oncetd(?y))> xs)
+
+  is-proper-superterm-set =
+    ?([x|_], ys); where(<fetch(<is-proper-superterm>(x,<id>))> ys)
+
+
+% Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
 % 
 % This program is free software; you can redistribute it and/or modify
 % it under the terms of the GNU General Public License as published by

@@ -280,12 +280,11 @@
   (insert "Hs([])")
   (backward-char 2))
 
-(defvar stratego-open-paren "[({"
+(defvar stratego-open-paren "[({<"
   "Characters which will be considered as open parens.")
 
-(defvar stratego-close-paren "])}"
+(defvar stratego-close-paren "])}>"
   "Characters which will be considered as close parens.
-
 `]' must be the first character, if it is used.")
 
 (defun stratego-find-last-open (&optional OPEN CLOSE)

@@ -30,8 +30,8 @@ CONFIGURE = ./configure \
 		--with-rpmdir=$(RPMDIR)
 
 SUBST = s+__SRTS_VERSION__+$(VERSION)+g;\
-        s+__GPP_VERSION__+2.2.1+g;\
-        s+__ATERM_VERSION__+1.6.6+g;\
+        s+__GPP_VERSION__+2.3+g;\
+        s+__ATERM_VERSION__+1.6.7+g;\
 	s+__ATERM__+$(ATERM)+g;
 
 include Makefile.rpm

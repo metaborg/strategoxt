@@ -9,7 +9,7 @@
 
 \begin{code}
 module unification
-imports list term substitution
+imports list term term-properties substitution
 \end{code}
 
 	\verb|<unify(isvar)> [(t1,t2),(t3,t4),...] => [(x1,p1),(x2,p2),...]| 
@@ -72,7 +72,7 @@ rules
 
   UfVar(isvar) : 
 	([(x,y) | ps], sbs) -> (ps', [(x, y) | sbs''])
-	where <isvar> x; <not('in)>(x,y); 
+	where <isvar> x; <not(is-subterm)>(x,y); 
               <substitute(isvar)> ([(x,y)], (sbs, ps)) => (sbs'', ps')
 
   UfSwap(isvar) : 
@@ -84,6 +84,7 @@ rules
   // Test occurrence of a in b 
 
   'in : (a, t) -> <oncetd(?a)> t
+   where obsolete(!"'in: use is-subterm")
 
 strategies
 

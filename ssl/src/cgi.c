@@ -5,7 +5,7 @@
 #define LF 10
 #define CR 13
 
-void getword(char *word, char *line, char stop) 
+void getword(char *word, char *line, char stop)
 {
     int x = 0,y;
 
