@@ -10,8 +10,6 @@ AC_PROG_LIBTOOL
 
 AC_CONFIG_FILES([
   Makefile 
-  src/Makefile 
-  src/stratego-stats/Makefile
   trans/Makefile
   trans/latex/Makefile
 ])

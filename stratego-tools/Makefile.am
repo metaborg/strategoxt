@@ -19,7 +19,7 @@
 
 include $(top_srcdir)/Makefile.xt
 
-SUBDIRS 	  = trans src
+SUBDIRS 	  = trans
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 EXTRA_DIST = bootstrap Makefile.xt autoxt.m4
 
