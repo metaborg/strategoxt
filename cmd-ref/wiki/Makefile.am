@@ -21,3 +21,7 @@ ppgen.navxhtml : $(top_srcdir)/xhtml/re03.html
 
 
 CLEANFILES = $(wildcard *.navxhtml) $(wildcard *.html)
+
+upload :
+	chmod a+r *.html
+	scp -p *.html losser:public_html/tool-ref/
