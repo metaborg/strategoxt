@@ -44,3 +44,9 @@ ATerm SSL_int_to_string(ATerm x);
 ATerm SSL_string_to_real(ATerm x);
 ATerm SSL_real_to_string(ATerm x);
 ATerm SSL_real(ATerm t);
+
+ATerm SSL_RAND_MAX();
+ATerm SSL_rand();
+ATerm SSL_srand(ATerm seed);
+
+

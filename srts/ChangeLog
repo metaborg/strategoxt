@@ -1,3 +1,8 @@
+2003-09-16  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+  * ssl/number.[ch]: added SSL_rand, SSL_RAND_MAX, and
+    SSL_srand to generate random numbers.
+
 2003-07-14  Eelco Visser  <visser@cs.uu.nl>
 
 	* src/srts/stratego.h: SSL_all, SSL_one, etc. are macros for

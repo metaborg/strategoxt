@@ -211,8 +211,7 @@ ATerm SSL_real_to_string(ATerm x)
   return((ATerm) ATmakeString(buf));
 }
 
-ATerm SSL_real(ATerm t)
-{ 
+ATerm SSL_real(ATerm t) { 
   if(ATgetType(t) == AT_INT)
     return((ATerm)ATmakeReal((double)ATgetInt((ATermInt) t)));
   else  if(ATgetType(t) == AT_REAL)
@@ -221,3 +220,19 @@ ATerm SSL_real(ATerm t)
     _fail(t);
   return(t);
 }
+
+ATerm SSL_rand() {
+  int result = rand();
+  return((ATerm) ATmakeInt(result));
+}
+
+ATerm SSL_srand(ATerm seed) {
+  int val = _get_int(seed);
+  srand(val);
+  return (ATerm) ATempty;
+}
+
+ATerm SSL_RAND_MAX() {
+  return((ATerm) ATmakeInt(RAND_MAX));
+}
+
