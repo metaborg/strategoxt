@@ -12,16 +12,6 @@ imports
   system/io/exec
 
 strategies
-	
-  init-record = !(0,0)
-
-  record-success = (\x -> <add>(x,1)\ , id)
-
-  record-failure = (id, \x -> <add>(x,1)\ )
-
-  check-for-failures = (id, 0)
-
-  report-test = (debug(!"successes: "), debug(!"failures: "))
 
   test-suite(name, tests) =
     name
@@ -31,18 +21,9 @@ strategies
     ; report-test
     ; check-for-failures
 
-  do-test(nr, s) =
-    where(nr; debug)
-    ; (where(s); record-success 
-       <+ record-failure)
-
-  testing(nr, s) =
-    do-test(nr, s; debug(!"  succeeded: ") 
-	   	<+ debug(!"  failed: "); fail)
-
   apply-test(name, s, 'in, out) =
     do-test(name,
-            ('in; s <+ <debug> "  failed"; fail) => tmp;
+            (sunit-create-input('in); s <+ <debug> "  strategy failed"; fail) => tmp;
   	    out => tmp'; 
 	    ((!tmp' => tmp)
                <+ (<debug(!"  result not equal : ")> tmp;
@@ -50,12 +31,12 @@ strategies
 
   apply-test(name, s, 'in) =
     do-test(name,
-      ('in; s <+ <debug> "  failed"; fail)
+      (sunit-create-input('in); s <+ <debug> "  strategy failed"; fail)
     )
 
   apply-and-check(name, s, 'in, check) =
     do-test(name,
-      ('in; s  <+ <debug> "  application failed"; fail)
+      (sunit-create-input('in); s  <+ <debug> "  application failed"; fail)
       ; (check <+ (debug(!"  check failed: "); fail))
     )
 
@@ -64,17 +45,20 @@ strategies
 
   apply-and-fail(name, s, 'in, out) =
     do-test(name,
-	    (('in; not(s))
+	    ((sunit-create-input('in); not(s))
              <+ <debug> "  succeeded (should fail)"; fail))
 
   apply-and-show(name, s, 'in) =
     do-test(name
-	   ,('in; s <+ <debug> "  failed"; fail)
+	   ,(sunit-create-input('in); s <+ <debug> "  strategy failed"; fail)
             ; <debug> ["  succeeded; result: ", <id>]
            )
 
-// term arguments variants of the old sunit strategies
+/**
+ * Term arguments variants of the old sunit strategies
+ */
 strategies
+
   apply-test(s | name, 'in, out) =
     apply-test(!name, s, !'in, !out)
 
@@ -93,8 +77,56 @@ strategies
   apply-and-show(s | name, 'in) =
     apply-and-show(!name, s, !'in)
 
+/**
+ * Internal helpers
+ */
+strategies
+
+  sunit-create-input(s) =
+    s <+ say(!"error: input strategy for this test failed"); fail
+
+  do-test(nr, s) =
+    where(nr; debug)
+    ; (where(s); record-success 
+       <+ record-failure)
+
+  testing(nr, s) =
+    do-test(nr, s; debug(!"  succeeded: ") 
+	   	<+ debug(!"  failed: "); fail)
 
   do-test(s | nr) =
     where(< debug>nr )
   ; ( where(s) ; record-success <+ record-failure )
 
+/**
+ * Test results are stored in a tuple of two integers. This tuple is
+ * passed from test to test. (success, failure)
+ */
+strategies
+	
+  init-record =
+    !(0,0)
+
+  /**
+   * Internal: record a successful test
+   */
+  record-success =
+    (inc, id)
+
+  /**
+   * Internal: record a failed test
+   */
+  record-failure =
+    (id, inc)
+
+  /**
+   * Internal: fails if there was a failure
+   */
+  check-for-failures =
+    (id, 0)
+
+  /**
+   * Internal: report the number of successes and failures
+   */
+  report-test =
+    (debug(!"successes: "), debug(!"failures: "))
