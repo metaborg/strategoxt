@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/06/05 12:34:30 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2001/06/05 12:41:14 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -31,5 +31,5 @@ SUBDIRS      = data
 
 EXTRA_DIST   = Dot.r dot.pp
 
-pkgdata_DATA = Dot.r dot.pp
+pkgdata_DATA = Dot.r
 
