@@ -53,6 +53,37 @@ strategies
   save(file) = 
     <WriteToTextFile> (<file>, <id>)
 
+/**
+ * ATerm input and output with streams
+ * TODO: move to io module.
+ */
+strategies
+
+  /**
+   * Writes an ATerm to a Stream
+   *
+   * :: Stream * _ -> Stream
+   */
+  write-to-stream =
+    write-in-baf-to-stream
+
+  write-in-baf-to-stream =
+    ?(Stream(stream), term); prim("SSL_write_term_to_stream_baf", stream, term); !Stream(<id>)
+
+  write-in-taf-to-stream =
+    ?(Stream(stream), term); prim("SSL_write_term_to_stream_taf", stream, term); !Stream(<id>)
+
+  write-in-text-to-stream =
+    ?(Stream(stream), term); prim("SSL_write_term_to_stream_text", stream, term); !Stream(<id>)
+
+  /**
+   * Reads an ATerm from a Stream
+   *
+   * :: Stream -> _
+   */
+  read-from-stream =
+    ?Stream(stream); prim("SSL_read_term_from_stream", stream)
+
 strategies
 
   /* 
