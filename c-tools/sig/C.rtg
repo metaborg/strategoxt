@@ -386,8 +386,8 @@ regular tree grammar
     IDENTIFIER                   -> Id(ID)
     ID                           -> <string>
     ExternalDef                  -> PpIf(IfLine,b_2,f_2,c_2)
-    MemberDeclaration            -> ControlLine
-    ExternalDef                  -> ControlLine
+    MemberDeclaration            -> PpControl(ControlLine)
+    ExternalDef                  -> PpControl(ControlLine)
     LineFlag                     -> <string>
     ElseLine                     -> <string>
     ElifLine                     -> <string>

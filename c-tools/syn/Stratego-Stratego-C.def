@@ -1190,8 +1190,8 @@ exports
     "4" -> LineFlag
 
   context-free syntax
-    ControlLine -> ExternalDef
-    ControlLine -> MemberDeclaration
+    ControlLine -> ExternalDef {cons("PpControl")}
+    ControlLine -> MemberDeclaration {cons("PpControl")}
 
   context-free syntax
     IfLine ExternalDef* 

@@ -1,8 +1,8 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-DEFS = C.def Stratego-C.def Stratego-Stratego-C.def
-TBLS = C.tbl Stratego-C.tbl Stratego-Stratego-C.tbl
+DEFS = C.def Stratego-C.def Stratego-Stratego-C.def Stratego-Sugar-and-C-in-Stratego.def
+TBLS = C.tbl Stratego-C.tbl Stratego-Stratego-C.tbl Stratego-Sugar-and-C-in-Stratego.tbl
 
 sdfdata_DATA 	= $(TBLS) $(DEFS) $(wildcard *.sdf)
 CLEANFILES	= $(TBLS)
@@ -22,4 +22,6 @@ C.def : C-AbstractDeclarators.sdf C-Constants.sdf C-Declarators.sdf \
 Stratego-C.def : Stratego-C.sdf C.def
 
 Stratego-Stratego-C.def : Stratego-Stratego-C.sdf C.def
+
+Stratego-Sugar-and-C-in-Stratego.def : Stratego-Sugar-and-C-in-Stratego.sdf Stratego-C.def
 

@@ -202,11 +202,11 @@ signature
     Id                  : ID -> IDENTIFIER
                         : String -> ID
     MemDecl             : TypeSpecifier * List(MemberDeclarator) -> MemberDeclaration
-                        : ControlLine -> MemberDeclaration
+    PpControl           : ControlLine -> MemberDeclaration
                         : Declaration -> ExternalDef
                         : FunDef -> ExternalDef
     PpIf                : IfLine * List(ExternalDef) * List(d_2) * Option(a_2) -> ExternalDef
-                        : ControlLine -> ExternalDef
+    PpControl           : ControlLine -> ExternalDef
                         : String -> ElseLine
                         : String -> ElifLine
                         : String -> IfLine
