@@ -1,10 +1,10 @@
 include $(top_srcdir)/Makefile.xt 
 
-SUBDIRS = sig pack c front lib match opt sc si test1 test2 log
+SUBDIRS = sig pack c front lib match opt strc si test1 test2 log
 
 DIST_SUBDIRS = testlib test3 testspec $(SUBDIRS)
 
-BOOTCLEAN_SUBDIRS = sig c front lib match opt sc pack si
+BOOTCLEAN_SUBDIRS = sig c front lib match opt strc pack si
 
 bootstep :
 	$(MAKE) bootclean
