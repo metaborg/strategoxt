@@ -1,0 +1,13 @@
+#!/bin/sh
+
+./reconf
+./configure --prefix=/home/xt/xt \
+	--with-sdf=/home/xt/SDF  \
+	--with-stratego=/home/xt/xt  \
+	--with-gpp=/home/xt/xt \
+	--with-sdf-tools=/home/xt/xt  \
+	--with-stratego-tools=/home/xt/xt  \
+	--with-asfix-tools=/home/xt/xt
+
+# --prefix=`pwd`/.. \
+#	--with-stratego=/home/visser/res/Stratego

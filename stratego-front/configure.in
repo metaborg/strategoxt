@@ -1,0 +1,92 @@
+AC_INIT(syn/Stratego.sdf)
+AM_INIT_AUTOMAKE(stratego-front,0.8alpha3)
+
+####################### 
+# XT
+
+AC_ARG_WITH(stratego, 
+   [  --with-stratego=DIR        Specify location of Stratego, [\$prefix]], 
+   STRATEGO="$withval", 
+   STRATEGO="$prefix"
+)
+AC_SUBST(STRATEGO)
+
+AC_ARG_WITH(sc, 
+   [  --with-sc=DIR              Specify location of Stratego Compiler, [\$prefix]], 
+   SC="$withval", 
+   SC="$STRATEGO"
+)
+AC_SUBST(SC)
+
+AC_ARG_WITH(sdf, 
+  [  --with-sdf=DIR              Specify location of SDF, [\$prefix]], 
+  SDF="$withval", 
+  SDF="$prefix"
+)
+AC_SUBST(SDF)
+
+AC_ARG_WITH(sglr, 
+  [  --with-sglr=DIR             Specify location of SGLR, [\$SDF]], 
+  SGLR="$withval", 
+  SGLR="$SDF"
+)
+AC_SUBST(SGLR)
+
+AC_ARG_WITH(pgen, 
+  [  --with-pgen=DIR             Specify location of PGEN, [\$SDF]], 
+  PGEN="$withval", 
+  PGEN="$SDF"
+)
+AC_SUBST(PGEN)
+
+AC_ARG_WITH(asfix-tools, 
+  [  --with-asfix-tools=DIR      Specify location of ASFIX-TOOLS, [\$SDF]], 
+  ASFIX_TOOLS="$withval", 
+  ASFIX_TOOLS="$SDF"
+)
+AC_SUBST(ASFIX_TOOLS)
+
+AC_ARG_WITH(stratego-tools, 
+  [  --with-stratego-tools=DIR   Specify location of STRATEGO-TOOLS, [\$prefix]], 
+  STRATEGO_TOOLS="$withval", 
+  STRATEGO_TOOLS="$prefix"
+)
+AC_SUBST(STRATEGO_TOOLS)
+
+AC_ARG_WITH(sdf-tools, 
+  [  --with-sdf-tools=DIR        Specify location of SDF-TOOLS, [\$prefix]], 
+  SDF_TOOLS="$withval", 
+  SDF_TOOLS="$prefix"
+)
+AC_SUBST(SDF_TOOLS)
+
+AC_ARG_WITH(gpp, 
+  [  --with-gpp=DIR              Specify location of GPP, [\$prefix]], 
+  GPP="$withval", 
+  GPP="$prefix"
+)
+AC_SUBST(GPP)
+
+AC_ARG_WITH(cgen, 
+  [  --with-cgen=DIR             Specify location of CGEN, [\$prefix]], 
+  CGEN="$withval", 
+  CGEN="$STRATEGO"
+)
+AC_SUBST(CGEN)
+
+####################### 
+
+AC_REVISION($Id: configure.in,v 1.1 2002/06/09 16:42:22 stratego Exp $)
+
+AC_PROG_CC
+
+AC_PROG_INSTALL
+
+AC_OUTPUT( \
+	Makefile \
+	syn/Makefile \
+	pp/Makefile \
+	sig/Makefile \
+	parse/Makefile \
+	test/Makefile \
+)

@@ -1,0 +1,260 @@
+module Lexical
+exports
+  lexical syntax
+    [a-z\`] -> Lcstart
+
+  lexical syntax
+    [A-Z\_] -> Ucstart
+
+  lexical syntax
+    Lcstart -> Idchars
+    Ucstart -> Idchars
+    [0-9\'\.\-] -> Idchars
+
+  lexical syntax
+    Lcstart Idchars* -> Lcid
+
+  lexical syntax
+    Ucstart Idchars* -> Ucid
+
+  lexical syntax
+    [\'] Lcid -> Primeid
+    Ucid -> Primeid
+
+  lexical syntax
+    Lcid -> ID
+    Ucid -> ID
+
+  lexical syntax
+    [\t\ ]* -> Ws
+
+  lexical syntax
+    [\-]? [0-9]+ -> Num
+
+  lexical syntax
+    [\-]? [0-9]+ [\.] [0-9]+ -> Real
+
+  lexical syntax
+    "//" ~[\n]* [\n] -> Shortcom
+
+  lexical syntax
+    \x5C -> Backslash
+
+  lexical syntax
+    Backslash "literate" -> Literate
+
+  lexical syntax
+    Backslash "end\{code\}" -> Endcode
+
+  lexical syntax
+    Backslash "begin\{code\}" -> Begincode
+
+  lexical syntax
+    Backslash "endliterate" -> Endliterate
+
+  lexical syntax
+    "*" -> ASTERISK
+
+  lexical syntax
+    "=" -> EQ
+
+  lexical syntax
+    "imports" -> IMPORTS
+
+  lexical syntax
+    "strategies" -> STRATEGIES
+
+  lexical syntax
+    "rules" -> RULES
+
+  lexical syntax
+    "signature" -> SIGNATURE
+
+  lexical syntax
+    "overlays" -> OVERLAYS
+
+  lexical syntax
+    ">" -> GT
+
+  lexical syntax
+    ":dump" -> DUMP
+
+  lexical syntax
+    ":load" -> LOAD
+
+  lexical syntax
+    "override" -> OVERRIDE
+
+  lexical syntax
+    "rec" -> MU
+
+  lexical syntax
+    "fail" -> FAIL
+
+  lexical syntax
+    "id" -> SUCC
+
+  lexical syntax
+    "some" -> SOMETOK
+
+  lexical syntax
+    "one" -> ONE
+
+  lexical syntax
+    "thread" -> THREAD
+
+  lexical syntax
+    "all" -> ALL
+
+  lexical syntax
+    "not" -> NOT
+
+  lexical syntax
+    "let" -> LET
+
+  lexical syntax
+    "in" -> IN
+
+  lexical syntax
+    "?" -> MATCHe
+
+  lexical syntax
+    "!" -> BUILDe
+
+  lexical syntax
+    "@" -> AS
+
+  lexical syntax
+    "where" -> WHERE
+
+  lexical syntax
+    "test" -> TEST
+
+  lexical syntax
+    "sorts" -> SORTS
+
+  lexical syntax
+    "constructors" -> CONSTRUCTORS
+
+  lexical syntax
+    "prim" -> PRIM
+
+  lexical syntax
+    "stratego" -> STRATEGO
+
+  lexical syntax
+    "script" -> SCRIPT
+
+  lexical syntax
+    "\\" -> BACKSLASH
+
+  lexical syntax
+    "." -> DOT
+
+  lexical syntax
+    ":-" -> BACKARROW
+
+  lexical syntax
+    ":=" -> ASSIGN
+
+  lexical syntax
+    "+" -> PLUS
+
+  lexical syntax
+    "<+" -> LTPLUS
+
+  lexical syntax
+    "_" -> UNDERSCORE
+
+  lexical syntax
+    "**" -> STARSTAR
+
+  lexical syntax
+    "*" -> ASTERISK
+
+  lexical syntax
+    "=" -> EQ
+
+  lexical syntax
+    "," -> COMMA
+
+  lexical syntax
+    ";" -> SEMICOLON
+
+  lexical syntax
+    ":" -> COLON
+
+  lexical syntax
+    "::" -> DOUBLECOLON
+
+  lexical syntax
+    "(" -> LPAREN
+
+  lexical syntax
+    ")" -> RPAREN
+
+  lexical syntax
+    "{|" -> LCURLYBAR
+
+  lexical syntax
+    "{" -> LCURLY
+
+  lexical syntax
+    "|}" -> BARRCURLY
+
+  lexical syntax
+    "}" -> RCURLY
+
+  lexical syntax
+    "[" -> LBRACK
+
+  lexical syntax
+    "]" -> RBRACK
+
+  lexical syntax
+    "<" -> LT
+
+  lexical syntax
+    ">" -> GT
+
+  lexical syntax
+    "<<" -> LL
+
+  lexical syntax
+    ">>" -> GG
+
+  lexical syntax
+    "-->" -> LONGARROW
+
+  lexical syntax
+    "->" -> ARROW
+
+  lexical syntax
+    "=>" -> DOUBLEARROW
+
+  lexical syntax
+    "<=" -> LEFTDOUBLEARROW
+
+  lexical syntax
+    "|" -> BAR
+
+  lexical syntax
+    "#" -> EXPLODE
+
+  lexical syntax
+    "^" -> MODIFIER
+
+  lexical syntax
+    Lcid -> LCID
+
+  lexical syntax
+    Ucid -> UCID
+
+  lexical syntax
+    Primeid -> UCID
+
+  lexical syntax
+    Num -> INT
+
+  lexical syntax
+    Real -> REAL

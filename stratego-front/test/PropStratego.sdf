@@ -1,0 +1,7 @@
+module PropStratego
+imports Prop Stratego [ Term => StrategoTerm ]
+exports
+  context-free syntax
+    "[[" Prop "]]" -> StrategoTerm {cons("ToTerm")}
+  variables
+    [pqr][0-9]* -> Prop

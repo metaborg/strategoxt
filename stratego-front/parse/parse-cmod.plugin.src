@@ -1,0 +1,4 @@
+[ 
+  ("STRATEGO_FRONT",  Path("__prefix__")),
+  (Ext("cr"), Prefix(Var("STRATEGO_FRONT"), Path("/bin/parse-cmod")))
+]

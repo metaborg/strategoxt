@@ -1,0 +1,15 @@
+module Prop
+exports
+  sorts Prop
+  context-free syntax
+    "true"  		-> Prop {cons("True")}
+    "false" 		-> Prop {cons("False")}
+    "~" Prop		-> Prop {cons("Not")}
+    Prop "/\\" Prop 	-> Prop {cons("And"),left}
+    Prop "\\/" Prop 	-> Prop {cons("Or"),left}
+    "(" Prop ")"	-> Prop {bracket}
+  context-free priorities 
+    "~" Prop		-> Prop {cons("Not")}
+  > Prop "/\\" Prop 	-> Prop {cons("And"),left}
+  > Prop "\\/" Prop 	-> Prop {cons("Or"),left}
+

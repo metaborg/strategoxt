@@ -1,0 +1,4 @@
+2002-06-09  Eelco Visser  <visser@acm.org>
+
+	* stratego-front is a new package that extends the Stratego
+	Compiler with support for concrete syntax.

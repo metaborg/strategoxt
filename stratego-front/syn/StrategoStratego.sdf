@@ -1,0 +1,93 @@
+module StrategoStratego
+imports Stratego
+
+imports 
+  Stratego [
+	Id 		=> StrategoId 
+	ModName 	=> StrategoModName
+	Ws 		=> StrategoWs
+	ShortCom 	=> StrategoShortCom
+	LongCom 	=> StrategoLongCom
+	Asterisk 	=> StrategoAsterisk
+	CommChar 	=> StrategoCommChar
+	VeryLongCom 	=> StrategoVeryLongCom
+	Eof 		=> StrategoEof
+	VLCchar 	=> StrategoVLCchar 
+	Backslash 	=> StrategoBackslash
+	Int 		=> StrategoInt
+	Real 		=> StrategoReal
+	String 		=> StrategoString
+	StrChar 	=> StrategoStrChar	
+	Module 		=> StrategoModule
+	Script 		=> StrategoScript
+	Command 	=> StrategoCommand
+	Decl 		=> StrategoDecl
+	Def  		=> StrategoDef
+	Sdecl 		=> StrategoSdecl 
+	Sort 		=> StrategoSort
+	Kind 		=> StrategoKind
+	Opdecl 		=> StrategoOpdecl
+	Type 		=> StrategoType 
+	Var 		=> StrategoVar
+	Term 		=> StrategoTerm 
+	Context 	=> StrategoContext
+	RuleDef 	=> StrategoRuleDef
+	Rule 		=> StrategoRule 
+	StratRule 	=> StrategoStratRule 
+	Strategy 	=> StrategoStrategy 
+	StrategyAngle 	=> StrategoStrategyAngle 
+	StrategyParen 	=> StrategoStrategyParen 
+	SVar 		=> StrategoSVar 
+	StrategyMid 	=> StrategoStrategyMid
+	Mod 		=> StrategoMod
+	StrategyDef 	=> StrategoStrategyDef 
+	Typedid 	=> StrategoTypedid  
+	Overlay 	=> StrategoOverlay
+  ]
+
+exports
+  context-free syntax
+    "[[" Module      "]]" -> StrategoTerm {cons("ToTerm"),prefer}
+    "[[" Decl        "]]" -> StrategoTerm {cons("ToTerm")}
+    "[[" Sdecl       "]]" -> StrategoTerm {cons("ToTerm")}
+
+    "[[" Opdecl      "]]" -> StrategoTerm {cons("ToTerm")}
+    "[[" Type        "]]" -> StrategoTerm {cons("ToTerm")}
+
+
+    "[[" Term        "]]"  -> StrategoTerm {cons("ToTerm")}
+    "[[" Term        ":" "T" "]]" -> StrategoTerm {cons("ToTerm")}
+
+    "[[" StratRule   "]]" -> StrategoTerm {cons("ToTerm")}
+    "[[" Rule        "]]" -> StrategoTerm {cons("ToTerm")}
+    "[[" RuleDef     "]]" -> StrategoTerm {cons("ToTerm")}
+
+    "[[" Strategy    "]]"  -> StrategoTerm {cons("ToTerm")}
+    "[[" Strategy    ":" "S" "]]" -> StrategoTerm {cons("ToTerm")}
+    "[[" StrategyDef "]]"  -> StrategoTerm {cons("ToTerm")}
+
+    "[[" Overlay     ":" "O" "]]" -> StrategoTerm {cons("ToTerm")}
+
+    "~" StrategoTerm      -> Strategy {cons("FromTerm")}
+
+    "<" StrategoStrategy ">" -> StrategoStrategyAngle {bracket}
+    %%"((" StrategoStrategy "))" -> StrategoStrategy {bracket,prefer}
+    "(" StrategoStrategy ")" -> StrategoStrategy {bracket,prefer}
+
+  variables
+    [xyzfglc][0-9\']*    	-> Id       {prefer}
+    [xyzfgl][0-9\']*"*" 	-> {Id ","}* {prefer}
+    "xs"[0-9\']*       		-> {Id ","}* {prefer}
+
+    [t][0-9\']* 	  	-> Term     {prefer}
+    [t][0-9\']*"*"  		-> {Term ","}*     {prefer}
+    "ts"[0-9\']*    		-> {Term ","}*     {prefer}  
+
+    [s][0-9\']* 	  	-> Strategy {prefer}
+    "ss"[0-9\']*	  	-> {Strategy ","}* {prefer}
+
+    [r][0-9\']* 	  	-> Rule     {prefer}
+
+    "a"[0-9\']*   		-> Typedid        {prefer}
+    "as"[0-9\']*  		-> {Typedid ","}+ {prefer} 
+

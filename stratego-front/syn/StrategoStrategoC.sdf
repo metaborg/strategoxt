@@ -1,0 +1,5 @@
+module StrategoStrategoC
+imports StrategoStratego C
+exports
+  context-free syntax
+    "[[" Expression "]]" -> StrategoTerm {cons("ToTerm")}
