@@ -74,22 +74,22 @@ signature
     amb-abbr : String * AbbrTree -> AmbAbbr
 strategies
 
-  main = 
+  Visamb = 
     parse-options(io-options); 
     store-options;
     (
        need-help(default-usage)
     <+ 
        input-file;
-       apply-strategy((id,Visamb));
-output-file;
+       apply-strategy((id,visamb));
+       output-file;
        report-success
     <+ 
        report-failure
     )
 
 
-  Visamb = 
+  visamb = 
 	collect-ambs;
         abbrev-ambs
 \end{code}
