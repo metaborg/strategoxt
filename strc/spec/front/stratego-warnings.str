@@ -69,9 +69,9 @@ strategies
   collect( ?OpDecl(<id>, _)  );
   uniq;
   filter( 
-     \ x -> ConstructorWarning(<double-quote>x) 
-       where
-          lower-case => x
+    \ x -> ConstructorWarning(<double-quote>x) 
+      where lower-case => x
+          ; not(?"")
      \ )
 
   MaybeUnboundVariables(spec) =
@@ -133,7 +133,7 @@ mk-warning: (strat, DebugWarning(warning)) -> msg
 mk-warning: ConstructorWarning(warning) -> msg
    where
    <concat-strings>
-   ["warning: lower-constructor name found: ", warning, "\n"] => msg
+   ["warning: lowercase constructor name found: ", warning, "\n"] => msg
    
 // A strategy-invokation warning is a warning related to a invokation of a
 // strategy. Typically, this means a call to an obsolete strategy.
