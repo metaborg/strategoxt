@@ -9,7 +9,8 @@ strategies
   main =
     test-suite(!"list-misc-test",
 	test1;
-	copy-test
+	copy-test;
+	number-test
     )
 
   test1 =
@@ -27,6 +28,14 @@ strategies
 	, copy
 	, !(4, "a")
 	, !["a", "a", "a", "a"]
+	)
+
+
+  number-test = 
+    apply-test(!"number-test"
+	, number(\ (x, i) -> ((x,i),i) \ )
+	, !["a", "b", "c", "d"]
+	, ![("a",0),("b",1),("c",2),("d",3)]
 	)
 
 \end{code}

@@ -61,6 +61,9 @@ strategies
   thread-map(s) = 
     rec x(Cons^T(s, x) + Nil^T)
 
+  number(s) =
+    !(<id>, 0); thread-map(s; (id,inc)); ?(<id>,_)
+
   take-while(s) = 
     at-suffix([] + ([not(s)|id];![]))
 
