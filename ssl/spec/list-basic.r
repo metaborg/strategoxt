@@ -57,7 +57,7 @@ strategies
   list-some-filter(s) =
     rec x([s| id]; [id| filter(s)] <+ [id| x]; Tl)
 
-  length = rec x([]; !0 + Tl; x; \n -> <add> (n, 1)\ )
+  length = foldr(!0, add, !1)
 
   fetch(s) = rec x([s | id] <+ [id | x])
 

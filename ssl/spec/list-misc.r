@@ -44,18 +44,21 @@ strategies
 
   foldr1(s) = rec x((FoldR1 <+ FoldR; (id, x)); s)
 
-  foldr(s1, s2)     = rec x([]; s1 + FoldR; (id, x); s2)
+  foldr(s1, s2) = 
+    []; s1 
+    + \ [y|ys] -> <s2>(y, <foldr(s1, s2)> ys) \
 
-  (* foldr(s1, s2, f)  = rec x([]; s1 + FoldR; (f, x); s2) *)
-
-  foldr(s1, s2, f)  = rec x([]; s1 + \ [y|ys] -> (<f>y, <x>ys) \ ; s2)
+  foldr(s1, s2, f)  = 
+    []; s1 + 
+    \ [y|ys] -> <s2> (<f> y, <foldr(s1, s2, f)> ys) \
 
   tfoldr(s1, s2)    = rec x(TNil; s1 + TFoldR; (id, x); s2)
 
   foldl(s) = rec x( \ ([], y) -> y \ + FoldL(s); x)
 
   mapfoldr(s1, s2, s3) = 
-    rec x([]; s1 <+ [s2|x]; \ [a|b]->(a,b)\; s3)
+    obsolete(!"mapfoldr; use foldr/3");
+    foldr(s1, s3, s2)
 
   mapfoldr1(s1, s2, s3) = 
     rec x([id]; s1 <+ [s2|x]; \ [a|b]->(a,b)\; s3)

@@ -73,10 +73,17 @@ strategies
     rec x(Escape; [id, id | x] <+ [id | x] <+ []);
     implode-string
 
+  bla(s) = 
+    where(\ x -> [x]\ ; debug(s))
+
   unescape = 
+    //bla(!"unescape a: ");
     explode-string;
+    //bla(!"unescape b: ");
     rec x(try(UnEscape); ([id | x] <+ []));
+    //bla(!"unescape c: ");
     implode-string
+    ///; bla(!"unescape d: ")
 
   string-length =
     explode-string;
@@ -97,6 +104,7 @@ rules
   // UnEscape : [92, 39 | cs]  -> [39 | cs]
   UnEscape : [92, 92 | cs]  -> [92 | cs]
   UnEscape : [92, 110 | cs] -> [10 | cs]
+  UnEscape : [92, 116 | cs] -> [9 | cs]
 
   S2I1 : (n, [])         -> n
 
@@ -269,9 +277,10 @@ strategies
 	; map(implode-string)
 
   //in: a binary tuple of exploded strings (==list of ASCII numbers)
+  // but two strings can also be given.
   string-gt = 
-//    try((is-string, is-string); (implode-string, implode-string));
-   strcmp; ?1
+    try((explode-string, explode-string));
+    strcmp; ?1
 
   strcmp = rec r
 	(  \([x|xs],[x|ys]) -> <r>(xs,ys)\

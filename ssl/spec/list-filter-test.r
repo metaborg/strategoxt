@@ -28,11 +28,19 @@ strategies
 
   main = 
     test-suite(!"list-filter-test",
-      test1
+      test1;
+      test2
     )
 
   test1 =
     apply-test(!"test1"
+	, filter(?("a",_))
+	, ![("b",0),("a","b"),("b","c"),("a",1)]
+	, ![("a","b"),("a",1)]
+	)
+
+  test2 =
+    apply-test(!"test2"
 	, partition(is-string)
 	, ![0,"a","b",1]
 	, !(["a","b"],[0,1])

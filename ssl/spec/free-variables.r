@@ -64,15 +64,15 @@ strategies
 
   free-vars(getvars, boundvars) = 
     rec x(getvars 
-          <+ split(collect-kids(x), boundvars <+ ![]); diff)
+          <+ split(crush(![],union,x), boundvars <+ ![]); diff)
 
   free-vars(getvars, boundvars
            , boundin : term * (term -> term) * (term -> term) * (term -> term) -> term) = 
     rec x(getvars 
           <+ {vs: where(boundvars => vs); 
                   boundin(split(x, !vs); diff, x, ![])};
-             collect-kids(id)
-          <+ collect-kids(x))
+             crush(![],union,id)
+          <+ crush(![],union,x))
 
 (* // if we had strategy abstraction /\(x1,...,xn) -> s
 
@@ -89,8 +89,8 @@ strategies
   = rec x(getvars 
           <+ {vs: where(boundvars => vs); 
                   boundin(split(x, !vs); diff(eq), x, ![])};
-             collect-kids(id)
-          <+ collect-kids(x))
+             crush(![],union,id)
+          <+ crush(![],union,x))
 \end{code}
 
 	\paragraph{Variables are not Leafs}
@@ -104,7 +104,7 @@ strategies
 
   free-vars2(getvars, boundvars) = 
     rec x(split(getvars <+ ![],
-	        split(collect-kids(x), boundvars <+ ![]); diff); 
+	        split(crush(![],union,x), boundvars <+ ![]); diff); 
           union)
 
   free-vars2(getvars, boundvars
@@ -112,17 +112,17 @@ strategies
     rec x(split(getvars <+ ![],
                 ({vs: where(boundvars => vs); 
                       boundin(split(x, !vs); diff, x, ![])};
-                 collect-kids(id)
-                 <+ collect-kids(x)));
+                 crush(![],union,id)
+                 <+ crush(![],union,x)));
           union)
 
   free-vars2(getvars, boundvars
             , boundin : term * (term -> term) * (term -> term) * (term -> term) -> term
-            , eq) 
+            , eq)
   = rec x(split(getvars <+ ![]
                ,{vs: where(boundvars => vs);
                      boundin(split(x, !vs); diff(eq), x, ![]);
-                     collect-kids(id)}
-                <+ collect-kids(x)
+                     crush(![],union,id)}
+                <+ crush(![],union,x)
                ); union)
 \end{code}

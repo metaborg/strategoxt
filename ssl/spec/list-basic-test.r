@@ -29,19 +29,19 @@ strategies
 
   main =
     test-suite(!"list-basic-test",
-      test1;
+      split-fetch-test;
       upto-test1;
       upto-test2;
       fetch-test;
       fetch-elem-test
     )
 
-  test1 =
-    apply-test(!"test1"
-	      ,split-fetch(?4)
-	      ,![1,2,3,4,5,6,7]
-	      ,!([1,2,3],[5,6,7])
-              )
+  split-fetch-test =
+    apply-test(!"split-fetch-test"
+	,split-fetch(?4)
+	,![1,2,3,4,5,6,7]
+	,!([1,2,3],[5,6,7])
+	)
 
   upto-test1 =
     apply-test(!"upto-test1"
@@ -58,16 +58,23 @@ strategies
               )
 
   fetch-test = 
-    apply-test	(!"fetch-test"
-		,fetch(\3 -> 6\)
-		,![1,2,3,4,5]
-		,![1,2,6,4,5]
-		)
+    apply-test(!"fetch-test"
+	,fetch(\3 -> 6\)
+	,![1,2,3,4,5]
+	,![1,2,6,4,5]
+	)
 
   fetch-elem-test = 
     apply-test	(!"fetch-elem-test"
 		,fetch-elem(\3 -> 6\)
 		,![1,2,3,4,5]
 		,!6
+		)
+
+  length-test = 
+    apply-test	(!"length-test"
+		,length
+		,![1,2,3,4,5]
+		,!5
 		)
 \end{code}

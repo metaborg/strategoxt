@@ -26,24 +26,25 @@ module list-filter
 imports list
 strategies
 
-  filter(s) = rec x(Nil + (Cons(s, x) <+ Tl; x))
+  filter(s) = 
+    [] + [s | filter(s)] <+ \ [_|xs] -> xs \ ; filter(s)
 
   filter-gen(pred, cont : term * (term -> term) -> term) =
-  	rec x(Nil + (pred; cont(x)) <+ Tl; x)
+    rec x([] + (pred; cont(x)) <+ Tl; x)
 
-  (* filter(s) = filter-gen(Cons(s,id), at-tail) *)
+  (* filter(s) = filter-gen([s | id], at-tail) *)
 
   skip1(s) = at-tail(s)
   skip2(s) = at-tail(at-tail(s))
 
-  filter-option-args(flag) = filter-gen(Cons(flag,id);Tl, skip1)
+  filter-option-args(flag) = filter-gen([flag | id];Tl, skip1)
 
-  filter-options(flag) = filter-gen(Cons(flag,id), skip2)
+  filter-options(flag) = filter-gen([flag | id], skip2)
 
   // partition(s) = split(filter(s), filter(not(s)))
 
   partition(s) =
-    rec x(\ [] -> ([],[]) \
-          + ([s  | x]; \ [x | (xs, ys) ] -> ([x|xs],ys) \ <+
-             [id | x]; \ [x | (xs, ys) ] -> (xs,[x|ys]) \ ))
+    rec part(\ [] -> ([],[]) \
+          + ([s  | part]; \ [x | (xs, ys) ] -> ([x|xs],ys) \ <+
+             [id | part]; \ [x | (xs, ys) ] -> (xs,[x|ys]) \ ))
 \end{code}

@@ -35,7 +35,8 @@ strategies
 	test4;  
 	test5;
 	test6;
-	test7
+	test7;
+	test8
      )
 
   test1 = 
@@ -60,10 +61,15 @@ strategies
 	)
 
   test4 =
-    apply-test(!"test4"
+    apply-test(!"test4a"
 	, diff
 	, !(["a","b"],["b","d"])
 	, !["a"]
+	);
+    apply-test(!"test4b"
+	, isect
+	, !(["a","b"],["b","d"])
+	, !["b"]
 	)
 
 signature
@@ -93,9 +99,26 @@ strategies
 	)
 
   test7 = 
-    apply-test(!"test7"
-	, nrofoccs(?A)
+    apply-test(!"test7a"
+	, occurrences(?A)
 	, !F(G(A,H(A,3.0)),H(1,C))
 	, !2
+	); 
+    apply-test(!"test7b"
+	, occurrences(?H(_,_))
+	, !F(G(A,H(A,H(A,A))),H(1,C))
+	, !3
+	)
+
+  test8 = 
+    apply-test(!"test8a"
+	, node-size
+	, !F(G(A,H(A,3.0)),H(1,C))
+	, !2
+	);
+    apply-test(!"test8b"
+	, term-size
+	, !F(G(A,H(A,3.0)),H(1,C))
+	, !9
 	)
 \end{code}

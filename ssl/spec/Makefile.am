@@ -33,5 +33,5 @@ CLEANFILES = $(TESTS)
 
 include $(srcdir)/make-rules
 
-#include $(wildcard *.dep)
+include $(wildcard *.dep)
 

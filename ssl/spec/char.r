@@ -36,5 +36,4 @@ strategies
 
   to-upper = try(is-lower;\x -> <subt>(x,32)\)
   to-lower = try(is-upper;\x -> <add>(x,32)\)
-
 \end{code}

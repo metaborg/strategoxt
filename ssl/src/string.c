@@ -65,6 +65,8 @@ ATerm SSL_implode_string(ATerm chars)
 
   ATerm t;
 
+  // ATfprintf(stderr, "SSL_implode_string(%t)\n");
+
   /* Allocate initial buffer */
   if( str == NULL )
   {
@@ -103,7 +105,11 @@ ATerm SSL_implode_string(ATerm chars)
      	size = 1024;
      str = (char*)realloc( str, size);
   }
-  return((ATerm) ATmakeString(str));
+  {
+    ATerm t = (ATerm) ATmakeString(str);
+    //ATfprintf(stderr, "SSL_implode_string = %s = %t\n", str, t);
+    return(t);
+  }
 }
 
 ATerm SSL_explode_string(ATerm t)

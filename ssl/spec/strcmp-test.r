@@ -29,6 +29,8 @@ a=
 	; strcasecmp-test2
 	; strcasecmp-test3
 
+	; string-gt-test1
+
 	; string-sort-test1
 	; string-sort-test2
 	)
@@ -113,6 +115,11 @@ strcasecmp-test3 =
    !(<explode-string>"bA", <explode-string>"baJ"),
    !-1)
 
+
+string-gt-test1 =
+   apply-and-fail( !"string-gt-test1",
+   string-gt,
+   !("aap", "aap"))
 
 string-sort-test1 = 
 	  apply-test( !"string-sort-test1",

@@ -29,6 +29,7 @@ strategies
 
   main = 
     test-suite(!"string-test",
+        explode-implode-test;
 	basename-test;
 	single-quote-test;
 	un-double-quote-test;
@@ -41,8 +42,21 @@ strategies
 	upper-case-test;
 	is-substring-test;
 	get-path-test;
-	escape-test
+	escape-test;
+	unescape-test
     )
+
+  explode-implode-test =
+    apply-test(!"explode-implode-test1"
+	, explode-string; implode-string
+	,!"foOBaR"
+	,!"foOBaR"
+	);
+    apply-test(!"explode-implode-test2"
+	, explode-string; implode-string
+	,!"\n\t"
+	,!"\n\t"
+	)
 
   upper-case-test = 
     apply-test(!"upper-case-test",upper-case,!"foOBaR",!"FOOBAR")
@@ -103,5 +117,27 @@ strategies
 	, cify
 	, !"a-b_c'"
 	, !"a_b__c_p_"
+	)
+
+  unescape-test =
+    apply-test(!"unescape-test1"
+	, [unescape]
+	, !["\\\"ab\\\\c"]
+	, !["\"ab\\c"]
+	);
+    apply-test(!"unescape-test2"
+	, [un-double-quote; unescape]
+	, !["\" \\\\\\n\\t\""]
+	, ![" \\\n\t"]
+	);
+    apply-test(!"unescape-test3"
+	, [unescape]
+	, ![" \\\\\\na\\b"]
+	, ![" \\\na\\b"]
+	);
+    apply-test(!"unescape-test4"
+	, [unescape]
+	, !["\" \\\\\\n\\\\t\""]
+	, !["\" \\\n\\t\""]
 	)
 \end{code}

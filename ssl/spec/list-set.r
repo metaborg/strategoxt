@@ -31,10 +31,11 @@ imports list-basic term
 
 rules
  
-  HdMember(mklst) : Cons(x, xs) -> xs where mklst; fetch(?x)
+  HdMember(mklst) : 
+    [x | xs] -> xs where mklst; fetch(?x)
 
   HdMember'(eq, mklst) : 
-     Cons(x, xs) -> xs 
+     [x | xs] -> xs 
      where mklst; fetch(\y -> <eq> (x, y)\)
 \end{code}
 
@@ -44,8 +45,8 @@ rules
 \begin{code}
 rules
 
-  union : (l1, l2) -> 
-	  <rec x([]; !l2 <+ HdMember(!l2); x <+ [id | x])> l1
+  union : 
+    (l1, l2) -> <rec x([]; !l2 <+ HdMember(!l2); x <+ [id | x])> l1
 \end{code}
 
 \begin{code}
@@ -60,20 +61,20 @@ strategies
 \begin{code}
 rules
 
-  diff : (l1, l2) ->
-   	 <rec x([] <+ HdMember(!l2); x <+ [id | x])> l1 
+  diff : 
+    (l1, l2) -> <rec x([] <+ HdMember(!l2); x <+ [id | x])> l1 
 \end{code}
 
 \begin{code}
 rules
 
-  diff'(eq) :
-  	(l1, l2) -> 
-   	<rec x([] <+ HdMember'(eq, !l2); x <+ [id | x])> l1
+  diff'(eq) = 
+    obsolete(!"diff'/1; use diff/1");
+    diff(eq)
 
-strategies
-
-  diff(eq) = diff'(eq)
+  diff(eq) :
+    (l1, l2) -> 
+    <rec x([] <+ HdMember'(eq, !l2); x <+ [id | x])> l1
 \end{code}
 
 	Intersection is defined in terms of difference.
@@ -81,8 +82,8 @@ strategies
 \begin{code}
 rules
 
-  isect : (l1, l2) -> <diff> (l1, <diff> (l1, l2))
-
+  isect : 
+    (l1, l2) -> <rec x([] <+ test(HdMember(!l2)); [id | x] <+ Tl; x)> l1 
 \end{code}
 
 	\paragraph{Collection}
@@ -100,9 +101,11 @@ imports tuple
 
 rules
 
-  crush(nul, sum) : _#(xs) -> <foldr(nul,sum)> xs
+  crush(nul, sum) : 
+    _#(xs) -> <foldr(nul,sum)> xs
 
-  crush(nul, sum, s) : _#(xs) -> <foldr(nul,sum, s)> xs
+  crush(nul, sum, s) : 
+    _#(xs) -> <foldr(nul,sum, s)> xs
 
 strategies
 
@@ -114,9 +117,17 @@ strategies
     obsolete(!"foldr-kids/3; use crush/3");
     crush(nul, sum, s)
 
+  node-size =
+    crush(!0, add, !1)
+
+  term-size =
+    crush(!1, add, term-size)
+
 strategies
 
-  collect-kids(s) = crush(![],union,s)
+  collect-kids(s) = 
+    obsolete(!"collect-kids(s); use crush(![],union,s)");
+    crush(![],union,s)
 
   collect(s) =
     rec x(s; \y -> [y]\ 
@@ -126,13 +137,20 @@ strategies
     rec x(s; \y -> [y]\
           <+ crush(![],conc,x))
 
-  collect(s, skip: a * (a -> a) * (a -> a)  -> a) =
+  collect(s, skip: a * (a -> a) * (a -> a) -> a) =
     rec x(s; \y -> [y]\
-          <+ skip(x,![]); collect-kids(id)
-          <+ collect-kids(x))
+          <+ skip(x,![]); crush(![],union,id)
+          <+ crush(![],union,x))
+
+  collect-exc(base, special : a * (a -> b) -> b) = 
+    rec coll(
+      base
+      + special(coll)
+      + crush(![], union, coll)
+    )
 
   bu-collect(s) =
-    rec x(some(x); collect-kids([s|id] <+ ![])
+    rec x(some(x); crush(![],union,[s|id] <+ ![])
           <+ s; \y -> [y]\ )
     <+ ![]
 
@@ -159,7 +177,15 @@ rules
 \begin{code}
 strategies
 
-  nrofoccs(s) = rec count(s; !1 <+ crush(!0,add,count))
+  nrofoccs(s) = 
+    obsolete(!"nrofoccs/1; use occurrences/1");
+    occurrences(s)
+
+  om-occurrences(s) = 
+    s; !1 <+ crush(!0, add, occurrences(s))
+
+  occurrences(s) = 
+    split(s; !1 <+ !0, crush(!0, add, occurrences(s))); add
 
   twicetd(s) = oncetd(explode-term; 
                       (id, at-suffix(Cons(oncetd(s), oncetd(s))));
