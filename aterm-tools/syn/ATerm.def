@@ -1,0 +1,72 @@
+definition
+module ATerm-Layout
+exports
+  lexical syntax
+    [\ \t\n] -> LAYOUT
+
+  context-free restrictions
+    LAYOUT? -/- [\ \t\n]
+
+module ATerm-Literals
+imports ATerm-Layout
+
+exports
+  lexical syntax
+    QLiteral  -> Literal
+    UQLiteral -> Literal
+    
+    "\"" L-Char* "\""             -> QLiteral
+    [A-Za-z\-\_] [A-Za-z0-9\-\_]* -> UQLiteral
+
+    EscChar -> L-Char    
+    AlphaNumericalEscChar -> EscChar
+    DecimalEscChar        -> EscChar
+
+    "\\" ~[] -> AlphaNumericalEscChar {avoid}
+    
+    "\\" [01] [0-9] [0-9] -> DecimalEscChar
+    "\\" "2"  [0-4] [0-9] -> DecimalEscChar
+    "\\" "2"  "5"   [0-5] -> DecimalEscChar
+    
+    ~[\0-\31\"\\] \/ [\t\n] -> L-Char
+  
+
+  lexical syntax
+    [0-9]+ -> Natural
+
+  context-free syntax
+        NatInt -> Int {cons("Int")   }
+    "+" NatInt -> Int {cons("Plus")  }
+    "-" NatInt -> Int {cons("Minus") }
+
+  context-free syntax
+
+    Int "." NatInt Exponent? -> Real {cons("Real")}
+    "e" IntCon -> Exponent {cons("Exp")}
+
+module ATerm
+imports ATerm-Literals ATerm-Layout
+
+exports
+  sorts ATerm
+
+  context-free syntax
+  
+    Int  Ann? -> ATerm {cons("ATermInt")}
+    Real Ann? -> ATerm {cons("ATermReal")}
+
+    "[" ATerms "]" Ann? -> ATerm {cons("ATermList")}
+    "(" ATerms ")" Ann? -> ATerm {cons("ATermTuple")}
+
+    AFun Ann?                -> ATerm {cons("ATermEmptyAppl")}
+    AFun "(" ATerms ")" Ann? -> ATerm {cons("ATermAppl")}
+    
+    Literal -> AFun {cons("AFun")}
+   
+  aliases
+    {ATerm ","}*       -> ATerms
+    ( "{" ATerms "}" ) -> Ann
+    
+  context-free syntax
+  
+    ATerm -> ATerm-GrammarID {cons("\"aterms-2\"")}

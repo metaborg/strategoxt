@@ -1,0 +1,11 @@
+module ATerm-Literals
+imports ATerm-Layout
+signature
+  constructors
+    Int   : NatInt -> Int
+    Plus  : NatInt -> Int
+    Minus : NatInt -> Int
+signature
+  constructors
+    Real : Int * NatInt * Option(Exponent) -> Real
+    Exp  : IntCon -> Exponent
