@@ -15,7 +15,7 @@
 #    along with this program; if not, write to the Free Software
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 #
-# $Id: gpp.Makefile.src,v 1.6 2001/09/03 16:06:53 mdejonge Exp $
+# $Id: gpp.Makefile.src,v 1.7 2001/09/04 11:02:24 mdejonge Exp $
 #
 # GNU make specific generic make rules for the generation of pretty-printed
 # documents.
@@ -72,7 +72,6 @@ ASFIX2ABOX    = PATH=__ASFIX2ABOX__/bin:$${PATH} asfix2abox
 ABOX2LATEX    = PATH=__ABOX2LATEX__/bin:$${PATH} abox2latex
 ABOX2HTML     = PATH=__ABOX2HTML__/bin:$${PATH} abox2html
 SGLR          = PATH=__SGLR__/bin:$${PATH} sglr -2
-SDF2TABLE     = PATH=__PGEN__/bin:$${PATH} sdf2table
 IMPLODE_ASFIX = PATH=__ASFIXTOOLS__/bin:$${PATH} implode-asfix
 PREFIX        = __PREFIX__
 
@@ -110,10 +109,6 @@ PREFIX        = __PREFIX__
 
 
 # the rules below define how to obtain .asfix files from .trm files.
-
-# rule how to make a parse table from a SDF2 definition
-%.tbl : %.def
-	@$(SDF2TABLE) -i $< -o $@
 
 # rule how to parse a .trm file. $^ is used to determine the parse table to
 # use.
