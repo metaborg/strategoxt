@@ -82,7 +82,6 @@ strategies
     where(tool; xtc-find-warning => loc)
     ; where(<call> (loc, <id>))
 
-
   // Transparent transformation of terms and files by external processes
 
   xtc-transform(tool) =
@@ -100,12 +99,12 @@ strategies
   xtc-transform-file(tool, args) :
     FILE(f) -> FILE(g)
     where <xtc-new-file> f => g
-        ; <xtc-command(tool)> ["-i", f, "-o", g | <args>]
+        ; <conc; xtc-command(tool)> (<args>, ["-i", f, "-o", g])
 
   xtc-transform-file(tool, args) :
     stdin -> FILE(g)
     where xtc-new-file => g
-        ; <xtc-command(tool)> ["-o", g | <args>]
+        ; <conc; xtc-command(tool)> (<args>, ["-o", g])
 
   // Transforming a term with an external process
 

@@ -1,5 +1,9 @@
 2002-12-16  Eelco Visser  <visser@cs.uu.nl>
 
+	* src/xtc-proc.str: xtc-transform-... : changed the order
+	of the -i/-o arguments and the other arguments to enable
+	calling Java tools.
+
 	* src/xtc-rep.str: All repository entries should be lists.
 
 	* src/cp-file.str: Copy input file to output file 
