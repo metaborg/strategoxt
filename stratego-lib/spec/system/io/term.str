@@ -16,7 +16,8 @@ imports
   term/string 
   term/integer
   strategy/conditional
-
+  util/config/options
+  
 /**
  * Term input and output
  */
@@ -246,7 +247,7 @@ strategies
     <fatal-error>["giving-up"]
 
   obsolete(msg) = 
-    where(msg; debug(!"obsolete library strategy: "))
+    log(|Warning(), <conc-strings> ("program uses obsolete strategy ", <msg> ()))
 
   dissuader(msg) = 
     where(if-verbose2(msg; debug(!"dissuasive library strategy: ")))

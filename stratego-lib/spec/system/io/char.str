@@ -29,7 +29,10 @@ strategies
   * The file should have been opened; a warning is issued if this is not the case
   * Fails if EOF is reached. Returns the ascii code of the character.
   *
-  * E.g. <getchar> file => Int
+  * This strategy used the obsolete open file table.
+  *
+  * @type String -> Int
+  * @obsolete use fgetc.
   */
   getchar = 
       dissuader(!"getchar; use fgetc");

@@ -188,11 +188,11 @@ strategies
    */
   verbose-option =
       Option("-S"+"--silent"
-      , where(<set-config> ("--verbose",0)); !Verbose(0)
+      , where(<set-verbosity> 0); !Verbose(0)
       , !"-S|--silent      Silent execution (same as --verbose 0)"
       )
     + ArgOption("--verbose"
-      , where(<set-config> ("--verbose",<string-to-int>)); !Verbose(<id>)
+      , where(string-to-int; set-verbosity); !Verbose(<id>)
       , !"--verbose i      Verbosity level i (default 1)"
       )
 
@@ -227,7 +227,7 @@ strategies
    * stderr.
    */
   report-run-time = 
-    if-verbose1(
+    if-verbose2(
       <printnl> (stderr,
         [<whoami> (), " (", <run-time>, " secs)"]
       )

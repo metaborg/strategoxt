@@ -8,26 +8,31 @@ strategies
  /**
   * Sets the verbosity level.
   *
-  * E.g. <set-verbosity>4 sets the verbosity level to 4.
+  * E.g. <set-verbosity> 4 sets the verbosity level to 4.
+  *
+  * @type Int -> _
   */
   set-verbosity = 
     <set-config> ("--verbose", <id>)
 
  /**
-  * Give the current verbosity level. Default is 0.
+  * Give the current verbosity level. Default is 1.
+  *
+  * @type _ -> Int
   */
   verbosity = 
-    <get-config> "--verbose" <+ !0
+    <get-config> "--verbose" <+ !1
 
  /**
-  * Builds command-line parameter for verbosity levels for calling XT tools. 
+  * Builds command-line parameter for verbosity levels for calling XT tools.
   *
   * E.g. xtc-transform(!"abox2text", pass-verbose ) passes the verbosity level
   * to abox2text.
+  *
+  * @type _ -> List(String)
   */
   pass-verbose = 
-    !["--verbose", <subt; int-to-string>(<get-config <+ !1> "--verbose", 1)]
-
+    !["--verbose", <verbosity; int-to-string> ()]
 
 /**
  * Apply the supplied strategy if the verbosity level is set to a value greater 
@@ -39,30 +44,18 @@ strategies
  */
 strategies
 
- if-verbose(s|t) = 
-    where(<geq> (<get-config <+ !0> "--verbose", t)) < s + id
+  if-verbose(s|t) = 
+    if <geq> (<verbosity> (), t) then
+      s
+    end
 
-  if-verbose1(s) = 
-    try(where(<geq>(<get-config> "--verbose", 1)); s)
-
-  if-verbose2(s) = 
-    try(where(<geq>(<get-config> "--verbose", 2)); s)
-
-  if-verbose3(s) = 
-    try(where(<geq>(<get-config> "--verbose", 3)); s)
-
-  if-verbose4(s) = 
-    try(where(<geq>(<get-config> "--verbose", 4)); s)
-
-  if-verbose5(s) = 
-    try(where(<geq>(<get-config> "--verbose", 5)); s)
-
-  if-verbose6(s) = 
-    try(where(<geq>(<get-config> "--verbose", 6)); s)
-
-  if-verbose7(s) = 
-    try(where(<geq>(<get-config> "--verbose", 7)); s)
-
+  if-verbose1(s) = if-verbose(s|1)
+  if-verbose2(s) = if-verbose(s|2)
+  if-verbose3(s) = if-verbose(s|3)
+  if-verbose4(s) = if-verbose(s|4) 
+  if-verbose5(s) = if-verbose(s|5) 
+  if-verbose6(s) = if-verbose(s|6) 
+  if-verbose7(s) = if-verbose(s|7)
 
 /**
  * Apply the supplied strategy if the verbosity level is set to a value lesser 
@@ -74,25 +67,15 @@ strategies
  */
 strategies
 
-  if-less-verbose1(s) = 
-    try(where(<leq>(<get-config> "--verbose", 1)); s)
+ if-less-verbose(s|t) = 
+    if <leq> (<verbosity> (), t) then
+      s
+    end
 
-  if-less-verbose2(s) = 
-    try(where(<leq>(<get-config> "--verbose", 2)); s)
-
-  if-less-verbose3(s) = 
-    try(where(<leq>(<get-config> "--verbose", 3)); s)
-
-  if-less-verbose4(s) = 
-    try(where(<leq>(<get-config> "--verbose", 4)); s)
-
-  if-less-verbose5(s) = 
-    try(where(<leq>(<get-config> "--verbose", 5)); s)
-
-  if-less-verbose6(s) = 
-    try(where(<leq>(<get-config> "--verbose", 6)); s)
-
-  if-less-verbose7(s) = 
-    try(where(<leq>(<get-config> "--verbose", 7)); s)
-
-
+  if-less-verbose1(s) = if-less-verbose(s|1)
+  if-less-verbose2(s) = if-less-verbose(s|2) 
+  if-less-verbose3(s) = if-less-verbose(s|3) 
+  if-less-verbose4(s) = if-less-verbose(s|4) 
+  if-less-verbose5(s) = if-less-verbose(s|5) 
+  if-less-verbose6(s) = if-less-verbose(s|6)
+  if-less-verbose7(s) = if-less-verbose(s|7)

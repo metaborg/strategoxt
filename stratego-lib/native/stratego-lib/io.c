@@ -75,31 +75,6 @@ ATerm SSL_open_file(ATerm name, ATerm mode)
   return(name);
 }
 
-// obsolete: use SSL_open_file(name, "a")
-
-ATerm SSL_append_file(ATerm name)
-{
-  FILE *file;
-
-  if(SSL_file_table == NULL)
-    SSL_file_table_init();
-  
-  if(ATmatch(name, "stdout"))
-    file = stdout;
-  else if(ATmatch(name, "stderr"))
-    file = stderr;
-  else if(ATmatch(name, "stdin"))
-    file = stdin;
-  else if(t_is_string(name))
-    {
-      file = fopen(t_string(name), "a");
-      if(file == NULL)
-	_fail(name);
-      ATtablePut(SSL_file_table, name, ATmake("<int>", (int)file));      
-    }
-  return(name);
-}
-
 FILE *_SSL_file_table_lookup(ATerm name)
 {
   ATerm desc;
