@@ -1,0 +1,4 @@
+#! /bin/sh
+
+exec __PREFIX__/bin/strc $*
+
