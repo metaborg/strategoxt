@@ -1,26 +1,25 @@
-include $(top_srcdir)/Makefile.stratego
+include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-SUBDIRS      = data
+SUBDIRS      	= data
 
 bin_PROGRAMS	= asfix-yield
 libexec_SCRIPTS	= asfix-yield
 
-TESTS        = asfix_yield1_check \
-               asfix_yield2_check
+TESTS        	= asfix_yield1_check asfix_yield2_check
+CLEANFILES   	= asfix_yield1_check asfix_yield2_check $(wildcard *.dep)
+BOOTCLEANFILES 	= asfix-yield.c
 
-# What should be cleaned
-CLEANFILES   += asfix_yield1_check asfix_yield2_check
-
-BOOTCLEANFILES = asfix-yield.c
-
-# Additional flags for the Stratego compiler
-SCFLAGS       = -I $(srcdir)/../asfix
+SCFLAGS       	= -I $(srcdir)/../asfix $(XTCFLAGS)
 
 install-exec-local:
 	$(RM) ${bindir}/asource ${libexecdir}/asource
 	ln -sf asfix-yield ${bindir}/asource
 	ln -sf asfix-yield ${libexecdir}/asource
+
+install-data-local:
+	$(XTC)/bin/xtc-register -r $(REPOSITORY) -l $(libexecdir) -V $(VERSION) \
+		-t asfix-yield
 
 asfix_yield1_check_prog    = asfix-yield
 asfix_yield1_check_input   = data/tiny.tree

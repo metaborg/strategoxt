@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: termid.r,v 1.6 2001/10/10 21:34:47 mdejonge Exp $
+% $Id: termid.str,v 1.1 2002/12/06 23:21:19 stratego Exp $
 
 The io-idwrap strategy is used to perform identity checking of input terms
 and to add term identifiers to output terms. Term identifiers provide some

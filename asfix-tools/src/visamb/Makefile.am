@@ -1,4 +1,4 @@
-include $(top_srcdir)/Makefile.stratego
+include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
 SUBDIRS          = data
@@ -12,7 +12,7 @@ TESTS            = visamb1_check visamb2_check
 
 SCFLAGS          = -I $(srcdir)/../asfix --main $*
 
-CLEANFILES      += visamb1_check visamb2_check
+CLEANFILES       = visamb1_check visamb2_check $(wildcard *.dep)
 
 EXTRA_DIST 	 = $(wildcard *.str)
 

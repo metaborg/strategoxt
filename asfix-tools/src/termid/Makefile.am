@@ -1,49 +1,28 @@
-# GT -- Grammar Tools
-# Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
-#                    Eelco Visser <visser@acm.org>
-#                    Joost Visser <jvisser@cwi.nl>
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2, or (at your option)
-# any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-# 02111-1307, USA.
-
-# $Id: Makefile.am,v 1.3 2001/10/10 16:59:14 mdejonge Exp $
-
 include $(srcdir)/../templates/make_rules
-include $(srcdir)/../templates/make_rules.stratego
+include $(top_srcdir)/Makefile.xt
+include $(wildcard *.dep)
 
-include $(STRATEGO_PRG:%=%.dep)
+SUBDIRS      	= data
+check_PROGRAMS 	= termid-check1 termid-check2 termid-check3
 
-SUBDIRS      = data
-STRATEGO_PRG = termid-check1 termid-check2 termid-check3
+pkgdata_DATA   	= termid.rtree
 
-pkgdata_DATA   = termid.r
+EXTRA_DIST  	= termid.str termid-check1.str termid-check2.str termid-check3.str \
+		  $(pkgdata_DATA)
 
-EXTRA_DIST  += termid.r termid-check1.r termid-check2.r termid-check3.r
+BOOTCLEANFILES	= termid.c termid1_check.c termid2_check.c termid3_check.c
+CLEANFILES	= $(wildcard *.dep) $(wildcard *.rtree)
 
-TESTS = termid1_check termid2_check termid3_check
+TESTS 		= termid1_check termid2_check termid3_check
 
 termid1_check: termid-check1 
 termid2_check: termid-check2
 termid3_check: termid-check3
 
-
 termid1_check_prog    = termid-check1
 termid1_check_input   = data/termid1.in
 termid1_check_output  = data/termid1.out
 termid1_check_correct = data/termid1.correct
-
 
 termid2_check_prog    = termid-check2
 termid2_check_input   = data/termid2.in

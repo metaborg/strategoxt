@@ -1,0 +1,49 @@
+module sglri
+imports xtc-lib lib
+strategies
+
+  sglri =
+    parse-options(sglri-options <+ io-options)
+    ; parse-and-implode
+    ; <exit> 0
+
+  sglri-options =
+    ArgOption("-p",
+	where(<set-config> ("-p", <id>)),
+	!"-p f              use parse table |f| (required)")
+  + ArgOption("--sglr", 
+	where(<extend-config> ("--sglr", <id>)),
+	!"--sglr opt        pass option to sglr")
+  + ArgOption("--impl", 
+	where(<extend-config> ("--impl", <id>)),
+	!"--impl opt        pass option to implode asfix")
+
+  short-description(p) = 
+    !["Usage: ", <p>(), " [options]"]
+ 
+  long-description(p)  = 
+    !["The sglri tool parses a text file according to the parse table provided with\n",
+      "the -p option and implodes the resulting concrete (asfix) tree to an abstract\n",
+      "syntax tree.\n"]
+
+  parse-and-implode =
+    xtc-temp-files(
+      (!FILE(<get-config > "-i") <+ !stdin)
+      ; sglr(<get-config> "-p", !["-2" | <get-config <+ ![]> "--sglr"])
+      ; implode-asfix(<get-config <+ ![]> "--impl")
+      ; rename-to(!<get-config> "-o")
+      )
+
+  sglr(tbl) =
+    xtc-transform-file(!"sglr", !["-p", <tbl>])
+
+  sglr(tbl, args) =
+    xtc-transform-file(!"sglr", !["-p", <tbl> | <args>])
+      
+  implode-asfix(args) = 
+    xtc-transform(!"implode-asfix", args)
+
+
+
+
+  

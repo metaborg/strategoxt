@@ -1,3 +1,8 @@
+2002-12-07  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/implode/sglri.str: composition of sglr and implode-asfix by
+	means of XTC abstractions.
+
 2002-10-28  Eelco Visser  <visser@acm.org>
 
 	* src/implode/implode-asfix.r: 

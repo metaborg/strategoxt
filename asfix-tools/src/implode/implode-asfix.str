@@ -61,25 +61,59 @@ signature
 \begin{code}
 strategies
 
-    implode-asfix = 
-      iowrap(implode, 
-                Option( "--lex",    !FlatLex,      !"--lex            Flatten lexical substrings to strings" ) 
-              + Option( "--layout", !RemoveLayout, !"--layout         Remove layout nodes from the AsFix? parse tree" )
-              + Option( "--lit",    !RemoveLit,    !"--lit            Remove literal nodes from the AsFix? parse tree") 
-              + Option( "--alt",    !FlatAlt,      !"--alt            Flat alternatives")
-              + Option( "--appl",   !ReplaceAppl,  !"--appl           Replace 'appl' applications by constructor applications" )
-              + Option( "--nt",     !ApplToSort ,  !"--nt             Replace 'appl' applications by non-terminal application" )
-              + Option( "--inj",    !FlatInj,      !"--inj            Remove injections from the parse tree." )
-              + Option( "--list",   !FlatList,     !"--list           Flatten lists." )
-              + Option( "--seq",    !RemoveSeq,    !"--seq            Replace sequences by tuples" )
-              + Option( "--pt",     !RemovePT,     !"--pt             Remove the outer 'pt' function symbol from the parse tree" ) )
+  implode-asfix = 
+    iowrap(implode, implode-options)
 
-    short-description(p) = !["Usage: ", <p>(), " [options]"]
-    long-description(p)  = !["The implode-asfix utility maps an AsFix parse tree to an abstract syntax tree.\n",
-                             "Without any switches, a full implosion is performed. By specifying any switches,\n",
-                             "the exact implosion steps to perform can be specified.\n"]
+  implode-options = 
+    Option( "--lex",    
+	!FlatLex,      
+	!"--lex            Flatten lexical substrings to strings" )
 
-    implode =
+  + Option( "--layout", 
+	!RemoveLayout, 
+	!"--layout         Remove layout nodes from the AsFix? parse tree" )
+
+  + Option( "--lit",    
+	!RemoveLit,    
+	!"--lit            Remove literal nodes from the AsFix? parse tree")
+
+  + Option( "--alt",    
+	!FlatAlt,      
+	!"--alt            Flat alternatives")
+
+  + Option( "--appl",   
+	!ReplaceAppl,  
+	!"--appl           Replace 'appl' applications by constructor applications" )
+
+  + Option( "--nt",     
+	!ApplToSort ,  
+	!"--nt             Replace 'appl' applications by non-terminal application" )
+
+  + Option( "--inj",    
+	!FlatInj,      
+	!"--inj            Remove injections from the parse tree." )
+
+  + Option( "--list",   
+	!FlatList,     
+	!"--list           Flatten lists." )
+
+  + Option( "--seq",    
+	!RemoveSeq,    
+	!"--seq            Replace sequences by tuples" )
+
+  + Option( "--pt",     
+	!RemovePT,     
+	!"--pt             Remove the outer 'pt' function symbol from the parse tree" )
+
+  short-description(p) = 
+    !["Usage: ", <p>(), " [options]"]
+ 
+  long-description(p)  = 
+    !["The implode-asfix utility maps an AsFix parse tree to an abstract syntax tree.\n",
+      "Without any switches, a full implosion is performed. By specifying any switches,\n",
+      "the exact implosion steps to perform can be specified.\n"]
+
+  implode =
        ?term;
        try((option-defined(FlatLex),      flat-lex));
        try((option-defined(RemoveLayout), remove-layout));
@@ -359,6 +393,8 @@ rules
   is-conc = ?prod([_,_,_],cf(iter(_)),_)
   is-conc = ?prod([_,_,_],iter-sep(_,_),_)
   is-conc = ?prod([_,_],iter(_),_)
+  is-conc = ?prod([_,_,_],cf(iter-star(_)),_)
+  is-conc = ?prod([_,_,_],iter-star(_),_)
 
   is-none = ?prod([], cf(opt(_)), _)
   is-none = ?prod([], opt(_), _)
