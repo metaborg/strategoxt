@@ -20,12 +20,6 @@ strategies
     main-format-check
     ; pp-aterm-types
 
-  my-format-check =
-    bottomup-consnil(
-       where(get-types)
-    <+ repeat(Type)
-    )
-
 strategies
 
   pp-aterm-types =
