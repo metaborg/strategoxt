@@ -13,9 +13,9 @@ liblibxtclib_prof_la_CFLAGS = -pg  $(AM_CFLAGS)
 AM_CPPFLAGS = -I$(SRTS)/include -I$(ATERM)/include
 AM_LDFLAGS  = -avoid-version 
 
-pkgdocdatadir 	= $(pkgdatadir)/doc
-
 pkgdata_DATA   	= libxtclib.rtree liblib.rtree
+
+# pkgdocdatadir = $(pkgdatadir)/doc
 # pkgdocdata_DATA = libxtclib.str   liblib.str
 
 EXTRA_DIST      = $(wildcard *.str) $(wildcard *.rtree)
