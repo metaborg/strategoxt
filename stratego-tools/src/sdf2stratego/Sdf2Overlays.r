@@ -1,6 +1,6 @@
 module Sdf2Overlays
 
-(* $Id: Sdf2Overlays.r,v 1.1 2001/06/06 15:45:40 mdejonge Exp $ *)
+(* $Id: Sdf2Overlays.r,v 1.2 2002/03/13 21:59:17 eelco Exp $ *)
 
 (* Warning: Sdf and Stratego both have Module(...) in their signature *)
 
@@ -24,8 +24,8 @@ rules
 
   prod2OMB(n) :
     prod -> ( Overlay( cnstr-overlay, params,  o-term ),
-              SDef   ( cnstr-match,   Some(TCons(params', TNil)), m-strat),
-              SDef   ( cnstr-build,   Some(TCons(params', TNil)), b-strat) )
+              SDef   ( cnstr-match,   Some(""#([params'])), m-strat),
+              SDef   ( cnstr-build,   Some(""#([params'])), b-strat) )
     where <prod2cf-prod> prod 	=> cf-prod
         ; <id>cf-prod 		=> prod(syms,sym,attrs)
         ; <filter(Sym2Var)> syms 		=> vars
@@ -40,7 +40,7 @@ rules
         ; <add-suffix(!"-match")> cnstr 	=> cnstr-match
         ; <add-suffix(!"-build")> cnstr		=> cnstr-build
         ; <asfix2sterm(n)>appl(cf-prod,aterms)	=> o-term
-        ; !Call(SVar(cnstr-overlay),Some(TCons(<filter(Var2MatchStrat)>vars,TNil))) => m-strat
+        ; !Call(SVar(cnstr-overlay),Some(""#([<filter(Var2MatchStrat)>vars]))) => m-strat
         ; !Build(Op(cnstr-overlay,<filter(Var2BuildTerm)>vars))   => b-strat
 
 strategies

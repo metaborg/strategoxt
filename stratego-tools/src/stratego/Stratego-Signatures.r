@@ -5,8 +5,11 @@ module Stratego-Signatures
       Sorts : List(SortDecl) -> BSig
       Operations : List(OpDecl) -> BSig
       Constructors : List(OpDecl) -> BSig
-      Sort : Identifier * List(Identifier) -> SortDecl
       OpDecl : Identifier * Type -> OpDecl
       ConstType : Term -> Type
-      FunType : List(Term) * Term -> Type
 
+      FunType : List(Type) * Type -> Type
+      Sort : Identifier * List(Term) -> SortDecl
+
+      As: Identifier * Term -> Term
+      BuildDefault: Term -> Term

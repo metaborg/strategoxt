@@ -1,3 +1,10 @@
+2002-03-13  Eelco Visser  <visser@acm.org>
+
+	* src/sdf2stratego/Sdf2Overlays.r: Replaced usage of TNil/TCons by
+	fixed length tuples.
+
+	* package.conf: Removed empty tool stratego-pp
+
 2001-12-21 Merijn de Jonge <mdejonge@cwi.nl>
     * stratego-imports: added usage information
     * stratego: added stratego sdf definition and stratego pretty-print
