@@ -29,6 +29,8 @@ imports
  	int-list
 	integers
 	reals
+	tables
+        sets
 
  // system
 
@@ -37,7 +39,7 @@ imports
 	memo
 	options
 	parse-options
-	tables
+
 
  // object variables
 
