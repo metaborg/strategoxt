@@ -42,11 +42,7 @@ strategies // to parse a pretty-print table in pp-table syntax to aterms
     ; if-verbose2(debug(!"** INFO: Using existing parsed pretty print-table: "))
 
   parse-to-temp-file =
-      ?pp
-    ; xtc-temp-files(
-        !FILE(pp)
-      ; xtc-parse-pp-table
-      ; rename-to(new-file)
-      )
+     !FILE(<id>)
+    ; xtc-parse-pp-table
     ; ?FILE(<id>)
     ; if-verbose2(debug(!"** INFO: Using temporary file for parsed print-table: "))
