@@ -782,7 +782,7 @@ strategies // intersection and union of rule-sets
 	 ; <apply-rm-set(|rmset1)> tbl2
 	 ; <iset-union(|rmset2)> rmset1
 	 ; <iset-union(|rmset1)> rmset2
-         ; <hashtable-intersect-symm-wempty(|[])> (tbl1, tbl2)
+         ; <hashtable-intersect-symm-wempty-ignore-left(|[])> (tbl1, tbl2)
 	}
     )
 

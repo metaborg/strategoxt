@@ -153,6 +153,10 @@ strategies
   remove-yes    = id
   remove-no     = fail
   default-no    = fail
+  change1-yes   = id
+  change1-no    = fail
+  change2-yes   = id
+  change2-no    = fail
 
 strategies
 
@@ -177,38 +181,56 @@ strategies
    *         used to create appropriately specialized algorithms.
    */
 
-  hashtable-merge(symm, iterate1, iterate2, remove, merge, default, lookup1, lookup2) : 
+
+  hashtable-merge(symm, iterate1, iterate2, remove, merge, default, lookup1, lookup2) =
+  hashtable-merge(symm, iterate1, iterate2, remove, merge, default, 
+	          change1-yes, change2-yes, lookup1, lookup2)
+
+  hashtable-merge(symm, iterate1, iterate2, remove, merge
+		 , default, change1, change2, lookup1, lookup2) :
     (tbl1, tbl2) -> tbl1
     where if iterate1 then
-
 	    <hashtable-keys> tbl1
 	    ; filter({key, val1, val2, val3: 
 	        ?key
-		; if <lookup2 <+ default> key => val2 then 
+		; if <lookup2> key => val2 then 
                     <hashtable-get(|key)> tbl1 => val1
                     ; <merge>(val1, val2) => val3
                     ; ior(
 			if <?val1> val3 then 
 			  fail // no change to tbl1
 			else
-                          <hashtable-put(|key, val3)> tbl1
+                          <hashtable-put(|key, val3)> tbl1; change1
 		        end
-	              , if symm; <not(?val2)> val3 then 
-                          <hashtable-put(|key, val3)> tbl2 
-			else
+	              , if symm; <?val2> val3 then 
 			  fail // no change to tbl2
+ 		        else
+                          <hashtable-put(|key, val3)> tbl2; change2
                         end
 		      )
-		  else // lookup2 failed
+		  else if <default> key => val2 then
+                    <hashtable-get(|key)> tbl1 => val1
+                    ; <merge>(val1, val2) => val3
+                    ; ior(
+			if <?val1> val3 then 
+			  fail // no change to tbl1
+			else
+                          <hashtable-put(|key, val3)> tbl1; change1
+		        end
+	              , if symm then 
+                          <hashtable-put(|key, val3)> tbl2; change2
+                        end
+		      )
+	          else // lookup2 failed, no default
 		    if remove then 
 		      <hashtable-remove(|key)> tbl1;
 		      if symm then
-		        <hashtable-remove(|key)> tbl2
-		      else id end		
+		        <hashtable-remove(|key)> tbl2; change2
+		      end		
 		    else 
                       fail // no change to either table	    
 		    end
-		  end
+		  end end
               })
 	  else ![] end => changes1
 
@@ -217,19 +239,19 @@ strategies
 	    <hashtable-keys> tbl2
 	    ; filter({key, val1, val2, val3: 
 	        ?key
-	        ; if iterate1 then not(<hashtable-get(|key)>tbl1) else id end
+	        ; if iterate1 then not(<hashtable-get(|key)>tbl1) end
 		; if <lookup1> key => val1 then 
                     <hashtable-get(|key)> tbl2 => val2
                     ; <merge>(val1, val2) => val3
                     ; ior(if <?val1> val3 then 
 			    fail // no change to tbl1
 			  else 
-			    <hashtable-put(|key, val3)> tbl1
+			    <hashtable-put(|key, val3)> tbl1; change1
 		          end
-	                ,if symm; <not(?val2)> val3 then 
-                           <hashtable-put(|key, val3)> tbl2 
-			 else
+	                ,if symm; <?val2> val3 then 
 			   fail // no change to tbl2
+			 else
+                           <hashtable-put(|key, val3)> tbl2; change2
                          end
 		        )
 		  else if <default> key => val1 then 
@@ -237,16 +259,14 @@ strategies
                     ; <merge>(val1, val2) => val3
                     ; <hashtable-put(|key, val3)> tbl1
 	            ; if symm; <not(?val2)> val3 then 
-                        <hashtable-put(|key, val3)> tbl2 
-		      else
-			id
+                        <hashtable-put(|key, val3)> tbl2
                       end
 		  else // lookup1 failed and no default
 		    if remove then 
 		      <hashtable-remove(|key)> tbl1;
 		      if symm then
-		        <hashtable-remove(|key)> tbl2
-		      else id end	
+		        <hashtable-remove(|key)> tbl2; change2
+		      end	
 		    else 
                       fail // no change to either table	    
 		    end
@@ -330,6 +350,30 @@ strategies // intersection merges
 	remove-no,
 	isect,
 	!emptyElt,
+	\ key -> <hashtable-get(|key)> tbl1 \,
+	\ key -> <hashtable-get(|key)> tbl2 \
+     )
+
+  /**
+   * Intersect hashtables symmetrically with default element.
+   *
+   * Changes tbl1 and tbl2; fails if no changes are made in tbl1
+   * Assumes that both hashtables contains lists as values, and intersects
+   * the two listvalues for each key.
+   * Places a dummy value if key does not exist in one of the tables.
+   */
+
+  hashtable-intersect-symm-wempty-ignore-left(|emptyElt) =
+    ?(tbl1, tbl2)
+    ; hashtable-merge(
+	symmetric-yes,
+	iterate1-yes,
+	iterate2-yes,
+	remove-no,
+	isect,
+	!emptyElt,
+	change1-no,
+	change2-yes,
 	\ key -> <hashtable-get(|key)> tbl1 \,
 	\ key -> <hashtable-get(|key)> tbl2 \
      )
