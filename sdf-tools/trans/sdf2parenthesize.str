@@ -19,8 +19,8 @@ strategies
         sdf-spread-cons
       ; topdown(try(simple-group(Prod2Pattern <+ !NoPattern())))
       ; collect(
-          Assoc2BracketPatterns
-        + Chain2BracketPatterns
+          Assoc2Patterns
+        + Chain2Patterns
         )
       ; concat
       ; map(Pattern2Rule(|<RuleName>))
@@ -51,7 +51,7 @@ strategies
 
          signature
            constructors
-             Bracket : Unknown -> Unknown
+             Parentheses : Unknown -> Unknown
       ]|
     where ModuleName => M1
         ; LanguageName => M2
@@ -60,7 +60,7 @@ strategies
         ; RuleName => l
 
   RuleName =
-    <conc-strings> (<LanguageName>, "Bracket") => l
+    <conc-strings> (<LanguageName>, "Parenthesize") => l
 
 /**
  * Assoc
@@ -70,24 +70,17 @@ strategies
   /**
    * @type  Priority -> List(Term)
    */
-  Assoc2BracketPatterns :
+  Assoc2Patterns :
     assoc(simple-group(t1), left(), simple-group(t2))
       ->
     <AssocLeft2Patterns(|t1)> t2
 
-  Chain2BracketPatterns :
+  Chain2Patterns :
     chain([simple-group(t1), simple-group(t2)])
       ->
     <PatternsOne(|t2)> t1
 
 strategies
-
-  /**
-   * Puts t children in a Bracket constructor.
-  InBracket(|t) :
-    |[ x(t1*) ]| -> |[ x(t2*) ]|
-      where <map(try(?t; !Bracket(t)))> t1* => t2*
-   */
 
   /**
    * Term with Brackets to a rewrite rule.
@@ -99,8 +92,8 @@ strategies
    */
   Pattern2Rule(|l) :
     p -> |[ l : t1 -> t2 ]|
-      where <topdown(try(?Bracket(<id>)))> p => t1
-          ; <topdown(try(\ Bracket(t) -> |[ Bracket(t) ]| \ ))> p => t2
+      where <topdown(try(?Parenthetical(<id>)))> p => t1
+          ; <topdown(try(\ Parenthetical(t) -> |[ Parenthetical(t) ]| \ ))> p => t2
     
   /**
    * Put the pattern p2 at all places where it is not allowed.
@@ -115,7 +108,7 @@ strategies
     |[ x(t, t1*) ]| -> ps
       where let set-pattern = {t2* :
               \ (n, p) -> |[ x(t, t2*) ]| 
-                  where <set-index> (<dec> n, Bracket(p2), t1*) => t2* \ }
+                  where <set-index> (<dec> n, Parenthetical(p2), t1*) => t2* \ }
              in <map-with-index(set-pattern)> t1* => ps
             end
 
@@ -126,7 +119,7 @@ strategies
     |[ x(t1*) ]| -> ps
       where let set-pattern = {t2* :
               \ (n, p) -> |[ x(t2*) ]| 
-                  where <set-index> (<dec> n, Bracket(p2), t1*) => t2* \ }
+                  where <set-index> (<dec> n, Parenthetical(p2), t1*) => t2* \ }
              in <map-with-index(set-pattern)> t1* => ps
             end
 
@@ -183,5 +176,5 @@ strategies
 signature
   constructors
     StrategoModuleFlag : Flag
-    Bracket            : Term -> Term
+    Parenthetical      : Term -> Term
     NoPattern          : Term
