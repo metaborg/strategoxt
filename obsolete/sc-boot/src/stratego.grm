@@ -212,8 +212,8 @@ sdecl	: SORTS idlist			{$$ = App1("Sorts", (ATerm) $2);}
 idlist  :                   		{$$ = ATmakeList0();}
         | idlist id optkind             {$$ = ATappend($1, App2("Sort", $2, $3));}
 
-optkind : 				{$$ = ATempty;}
-	| LPAREN termlist RPAREN 	{$$ = $2;}
+optkind : 				{$$ = (ATerm) ATempty;}
+	| LPAREN termlist RPAREN 	{$$ = (ATerm) $2;}
         ;
 
 kinds   : kind 				{$$ = ATmakeList1($1);}
@@ -266,7 +266,14 @@ term 	: id optcont		      	{if(ATisEmpty($2))
 	| LT strategy GT term 		{$$ = App2("App", $2, $4);}
 	| LT strategy GT 		{$$ = App1("RootApp", $2);}
 	| LBRACK termlist tail RBRACK   {$$ = list_to_consnil_op_tl($2, $3);}
-	| LPAREN termlist RPAREN	{$$ = list_to_tconstnil_op($2);}
+
+
+	| LPAREN termlist RPAREN	{if(ATgetLength($2) == 1)
+    					   $$ = ATgetFirst($2);
+  				 	 else
+					   $$ = App2("Op", ATmakeString(""), (ATerm) $2);}
+
+
 	| term EXPLODE LPAREN term RPAREN 
 					{$$ = App2("Explode", $1, $4)}
         ;
@@ -370,7 +377,13 @@ strategy
 	| ONE LPAREN strategy RPAREN	{$$ = App1("One", $3);}
 	| ALL LPAREN strategy RPAREN	{$$ = App1("All", $3);}
 	| THREAD LPAREN strategy RPAREN	{$$ = App1("Thread", $3);}
-	| LPAREN strategylist RPAREN	{$$ = tuple_cong($2);}
+
+
+	| LPAREN strategylist RPAREN	{if(ATgetLength($2) == 1)
+    					   $$ = ATgetFirst($2);
+  				 	 else
+					   $$ = App2("Call", App1("SVar", ATmakeString("")), (ATerm) $2);}
+
 	| LBRACK strategylist 
 		 strategytail RBRACK	{$$ = list_cong($2, $3);}
 	| STRINGTOK			{$$ = App1("Match", App1("Str", $1));}
