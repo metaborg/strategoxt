@@ -1,3 +1,8 @@
+2001-11-25 Merijn de Jonge <mdejonge@cwi.nl>
+   * Updated version requirements for required packages sgler and pgen.
+   * Weakened configuation of graphviz package (xt will also build without
+     the graphviz package).
+
 2001-11-23 Merijn de Jonge <mdejonge@cwi.nl>
    * integration-tests/Makefile.am: fixed test script generation
 

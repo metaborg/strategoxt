@@ -1,3 +1,6 @@
+2001-11-25 Merijn de Jonge <mdejonge@cwi.nl>
+   * Updated version requirements for required packages sgler and pgen.
+
 2001-11-22 Merijn de Jonge <mdejonge@cwi.nl>
    * configuration of sdf-tools package adapted to make use of
      AC_PACKAGE_REQUIRE macro in configure.in
