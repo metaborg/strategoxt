@@ -23,7 +23,7 @@
 
 \begin{code}
 module Pptable-diff
-imports lib 
+imports lib pp-table
 imports pp-tables-io misc
 
 signature
@@ -33,6 +33,8 @@ signature
       Verbose: 	  Option    
       Patch:      Option
       Prune:      Option
+
+Patched : String -> String
 strategies
 
    io-Pptable-diff = 
@@ -65,7 +67,7 @@ strategies
       map(<table-get>("old-table", <id> );
           Fst; path-to-string
          );
-      <printnl>(stderr, ["Obsolete entries: ", <id>]);
+      try(not([]);<printnl>(stderr, ["Obsolete entries: ", <id>]));
 
       // Find new pp entries by calculating the set difference:
       // new-table \ old-table
@@ -73,10 +75,37 @@ strategies
       map(<table-get>("new-table", <id> );
           Fst; path-to-string
          );
-      <printnl>(stderr, ["New entries: ", <id>]);
+      try(not([]);<printnl>(stderr, ["New entries: ", <id>]));
 
+      // Find entries for changed productions, by testing the terminal and
+      // non-terminal symbols (as place holders) Arg2(elem,sub-elem)
+      // elements are checked as Arg(elem) (i.e., their sub-elements are
+      // ignored. If a pp entry in both tables has different terminal
+      // symbols or place holder symbols, the entries are considered
+      // different. This way, we abstract over different BOX expressions.
+      !keys-old;
+      map({path,elems:\ key -> (key, path, elems)
+      where
+         <table-get>("old-table", <id>);
+         (id, collect( S(id) + Arg(id) + \ Arg2(x,y) -> Arg(x) \  ));
+         ?(path, elems)
+      \ }) => old-elements;
+      !keys-new;
+      map({path,elems: \ key -> (key, path, elems)
+      where
+         <table-get>("new-table", <id>);
+         (id, collect( S(id) + Arg(id) + \ Arg2(x,y) -> Arg(x) \  ));
+         ?(path, elems)
+      \ }) => new-elements;
+      <diff>(old-elements, new-elements);
+      where(map( \(key,_,_) -> key \ ) => changed-ones);
+      map(\ (_,path,_) -> <path-to-string>path \);
+      try(not([]);<printnl>(stderr, ["Changed productions: ", <id>]));
 
-      try(has-option(!Patch); <patch>new-ones);
+      
+      
+      // Patch and prune old pp table if required
+      try(has-option(!Patch); <patch>(new-ones, changed-ones));
       try(has-option(!Prune); <prune>obsolete-ones);
     
       try((has-option(!Patch) + has-option(!Prune));
@@ -88,14 +117,29 @@ strategies
           output(id)
       )
 
-
 // Construct new pretty-print table from "old-table" by inserting
 // new pp entries from "new-table"
 patch =
+   ?(new-ones, changed-ones);
+   !new-ones;
    // Insert new entries in "old-table"
    map(\ x -> 
       <table-put>("old-table", x,<table-get>("new-table", x) )
+       \ );
+
+   // Update changed entries in "old-table" and save old ones
+   // Entries are saved by storing (key,(path,box)) as
+   // (Patched(key),(Patched(path,box))
+   // This way uniq tables are created to store old entries. Later,
+   // patches terms are prefixed by the string '--saved--entry'.
+   !changed-ones;
+   map(\ x -> <table-put>("old-table", x,<table-get>("new-table", x) )
+         where
+          <table-get>("old-table", x);
+          (!Patched(<id>), id);
+         <table-put>("old-table", Patched(x),<id>)
        \ )
+   
 
 // Construct new pretty-print table from "old-table" by removing obsolete pp
 // entries  from "old-table"
@@ -111,6 +155,8 @@ desugar =
           + SOpt(id, id)
           + S(escape; double-quote)
           + selector(int-to-string, id)
+          + \ Patched(Path(x,y)) -> Path(<concat-strings>["--saved-entry--", x],y) \
+          + \ Patched(Path1(x)) -> Path1(<concat-strings>["--saved-entry--", x]) \
         ))
       
     
