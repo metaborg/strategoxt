@@ -20,6 +20,6 @@ signature
     EdgeNoAttrs : Node * List(EdgeOp) -> Stmt
     Edge : Node * List(EdgeOp) * Attrs -> Stmt
     SubGraph : Id * List(Stmt) -> SubGraph
-    SubGraph : Id -> SubGraph
+    SubGraphNoArgs : Id -> SubGraph
     Arrow : Node -> EdgeOp
     Line : Node -> EdgeOp

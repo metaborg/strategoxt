@@ -74,7 +74,7 @@ exports
     Node EdgeOp+ Attrs ";" 		-> Stmt		{cons("Edge")}
 
     "subgraph" Id "{" Stmt* "}"		-> SubGraph	{cons("SubGraph")}
-    "subgraph" Id 			-> SubGraph	{cons("SubGraph")}
+    "subgraph" Id 			-> SubGraph	{cons("SubGraphNoArgs")}
 
     "->" Node                           -> EdgeOp	{cons("Arrow")}
     "--" Node                           -> EdgeOp	{cons("Line")}
@@ -283,9 +283,9 @@ exports
     %% Var "[" Term "]" "(" Id ")"  -> Term {cons("Con")}
 
     Var "[" Term "]" 				 -> Term {cons("Con1")}
-    Var "[" Term "]" "(" Id ")" 		 -> Term {cons("Con2")}
+    Var "[" Term "]" "(" Id ")" 		 -> Term {cons("Con")}
     Var "[" Term "where" Strategy "]"  		 -> Term {cons("Con3")}
-    Var "[" Term "where" Strategy "]" "(" Id ")" -> Term {cons("Con")}
+    Var "[" Term "where" Strategy "]" "(" Id ")" -> Term {cons("Con4")}
 
   context-free priorities
     Term "#" "(" Term ")" 	 -> Term {cons("Explode")}

@@ -29,7 +29,7 @@
    Edge.2:iter -- _1,
    SubGraph -- KW["subgraph"] _1 KW["{"] _2 KW["}"],
    SubGraph.2:iter-star -- _1,
-   SubGraph -- KW["subgraph"] _1,
+   SubGraphNoArgs -- KW["subgraph"] _1,
    Arrow -- KW["->"] _1,
    Line -- KW["--"] _1
 ]

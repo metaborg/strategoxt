@@ -74,7 +74,7 @@ exports
     Node EdgeOp+ Attrs ";" 		-> Stmt		{cons("Edge")}
 
     "subgraph" Id "{" Stmt* "}"		-> SubGraph	{cons("SubGraph")}
-    "subgraph" Id 			-> SubGraph	{cons("SubGraph")}
+    "subgraph" Id 			-> SubGraph	{cons("SubGraphNoArgs")}
 
     "->" Node                           -> EdgeOp	{cons("Arrow")}
     "--" Node                           -> EdgeOp	{cons("Line")}
