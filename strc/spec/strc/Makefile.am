@@ -17,7 +17,7 @@ pkgdata_DATA 	= strc-manual.txt
 CLEANFILES 	= $(wildcard *.dep)
 BOOTCLEANFILES 	= strc.c
 
-EXTRA_DIST 	= $(wildcard *.str) strc-version.str.in \
+EXTRA_DIST 	= $(wildcard *.str) \
 		  strc-manual.txt $(man_MANS)
 
 man_MANS 	= strc.1

@@ -2,7 +2,6 @@ module strc-options
 imports
   options
   config
-  strc-version
   stratego-warnings-options
 
 strategies
@@ -23,7 +22,7 @@ strategies
 
   init-strc-config = 
   where(
-    <set-config> ("VERSION", strc-version-number)
+    <set-config> ("VERSION", <strc-version-number>)
     ; <set-config> ("--verbose", 1)
     ; <set-config> ("--keep", 0)
     ; <set-config> ("-O", 6)
@@ -237,6 +236,8 @@ strategies
 	   "modify it under the terms of the GNU Lesser General Public\n",
 	   "License as published by the Free Software Foundation; either\n",
 	   "version 2 of the License, or (at your option) any later version.\n"]))
+
+  strc-version-number = prim("VERSION_TERM") 
 
   strc-announce =
     if-verbose2(strc-version)

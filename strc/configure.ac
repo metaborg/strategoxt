@@ -3,6 +3,8 @@ AC_INIT([strc],[0.13],[stratego-bugs@cs.uu.nl])
 AM_INIT_AUTOMAKE
 
 USE_XT_PACKAGES
+XT_TERM_DEFINE
+
 
 EXE=""
 AC_ARG_WITH(exe,    
@@ -32,7 +34,6 @@ AC_CONFIG_FILES([
   spec/match/data/Makefile 
   spec/opt/Makefile 
   spec/strc/Makefile 
-  spec/strc/strc-version.str
   spec/sig/Makefile 
   spec/pack/Makefile 
 
