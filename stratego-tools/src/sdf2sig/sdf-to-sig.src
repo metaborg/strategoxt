@@ -1,0 +1,25 @@
+#! /bin/sh
+
+# usage :
+#
+#   sdf-to-sig syn
+#
+# where syn is the name of syntax definition
+
+prefix=__prefix__
+STRATEGO_FRONT=__STRATEGO_FRONT__
+GPP=__GPP__
+GB=__GB__
+SDF_TOOLS=__SDFTOOLS__
+
+PPSTRATEGO=$STRATEGO_FRONT/share/stratego-front/Stratego-pretty.pp
+
+INPUT=$1
+
+$GB/bin/parse -l sdf -v 2.1 -I -i $INPUT.def |\
+$prefix/bin/sdf2sig |\
+$GPP/bin/ast2abox -p $PPSTRATEGO |\
+$GPP/bin/abox2text -o `basename $INPUT`.rdef
+
+$SDF_TOOLS/bin/unpack `basename $INPUT`.rdef r
+ 

@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.4 2001/11/22 08:24:39 mdejonge Exp $
+# $Id: Makefile.am,v 1.5 2002/09/17 16:06:24 eelco Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -31,7 +31,7 @@ SUBDIRS		= data
 STRATEGO_PRG = sdf2sig
 
 # What scipts to build
-bin_SCRIPTS	= $(STRATEGO_PRG)
+bin_SCRIPTS	= $(STRATEGO_PRG) sdf-to-sig
 libexec_SCRIPTS	= $(STRATEGO_PRG)
 
 # Optional tests to run
@@ -56,3 +56,17 @@ sdf2sig2_check_prog     = sdf2sig
 sdf2sig2_check_input    = data/regular.sdf.af
 sdf2sig2_check_output   = data/regular-sig.r.af
 sdf2sig2_check_correct  = data/regular-sig.r.af.correct
+
+# Generate scripts
+%: %.src Makefile
+	sed 's#__prefix__#$(prefix)#g;\
+             s#__datadir__#$(datadir)#g;\
+             s#__pkgdatadir__#$(pkgdatadir)#g;\
+             s#__VERSION__#$(VERSION)#g;\
+             s#__PACKAGE__#$(PACKAGE)#g;\
+             s#__STRATEGO_FRONT__#$(STRATEGO_FRONT)#g;\
+             s#__GPP__#$(GPP)#g;\
+             s#__GB__#$(GB)#g;\
+             s#__SDFTOOLS__#$(SDF_TOOLS)#g;\
+             s#__MAKE__#$(MAKE)#g' < $< > $@
+	chmod +x $@

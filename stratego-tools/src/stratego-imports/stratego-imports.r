@@ -1,4 +1,4 @@
-\literate[{\btt PACK-MODULES}]
+\literate[{\btt STRATEGO-IMPORTS}]
 
 % Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
 % 
@@ -17,10 +17,10 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: stratego-imports.r,v 1.4 2002/03/21 14:26:28 mdejonge Exp $
+% $Id: stratego-imports.r,v 1.5 2002/09/17 16:06:25 eelco Exp $
 
 \begin{code}
-module stratego-stratego
+module stratego-imports
 imports
   lib pack-graph file
   get-modules
