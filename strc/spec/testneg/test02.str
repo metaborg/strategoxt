@@ -1,0 +1,12 @@
+module foo
+imports lib
+
+strategies
+
+   main =
+    <Foo> ("ah", "a")
+
+rules
+
+   Foo:
+     (s1, s2) -> <concat-strings> [s1, s]

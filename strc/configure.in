@@ -42,6 +42,7 @@ AC_OUTPUT([
 	spec/test1/Makefile 
 	spec/test2/Makefile 
 	spec/test3/Makefile 
+	spec/testneg/Makefile
 	spec/testlib/Makefile 
 	spec/testspec/Makefile 
 ])
