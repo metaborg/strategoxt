@@ -4,7 +4,7 @@ include $(wildcard *.dep)
 pgkdatadocdir = ${pkgdatadir}/doc
 
 check_PROGRAMS =  \
-accept-test            list-basic-test      scoped-finite-map-test  \
+list-basic-test        scoped-finite-map-test  \
 annotation-props-test  list-filter-test\
 annotations-test       list-index-test      share-test  \
 apply-test             list-misc-test       simple-traversal-test  \
