@@ -1,3 +1,29 @@
+2002-12-31  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/exec.str: 
+
+	- fork-and-wait fails if the child returns with a non-zero exit
+	status.
+
+	- call definined in terms of fork and execvp in Stratego; previous
+	implementation was complex C implementation. 
+
+	- call(init-child) is like call, but applies init-child in the
+	child process before the execvp
+		
+	- redirect-stdout-to-file and redirect-stdin-from-file do as their
+	name suggest. They can be used with call(...) to redirect input
+	and/or output of the child process. Using this files can be copied
+	using the cat program as follows:
+	
+	  cat :
+	    (filein, fileout) -> fileout
+	    where <call(<redirect-stdin-from-file> filein;
+		        <redirect-stdout-to-file> fileout)> ("cat", [])
+
+	Typical use of all this is to coerce programs that only read or
+	write using stdio into using file io.
+
 2002-12-30  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/string.str: get-filename removes path

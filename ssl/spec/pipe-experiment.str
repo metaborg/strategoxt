@@ -7,9 +7,30 @@ strategies
   main = id
 
 /*
-    ?[prog | <at-last(?[outfile]; ![]); ?infiles>]
-    ; copy-prog-to-file(!"cat", !infiles, !outfile)
+    ?[prog | <at-last(?[outfile]; ![]); ?[infile]>]
+    ; <call(<redirect-stdin-from-file> infile;
+	    <redirect-stdout-to-file> outfile)>("cat", [])
+*/
+
+    //; copy-prog-to-file(!"cat", !infiles, !outfile)
     
+  copy-prog-to-file(prog, args, outfile) =
+    fork(args; Hd; redirect-stdin-from-file
+         ; outfile; redirect-stdout-to-file
+         ; <debug; execvp> (<prog>, []))
+    ; ?(pid, _)
+    ; where(<waitpid> pid 
+            ; (exited + signaled + stopped))
+
+  copy-prog-to-file'(prog, args, outfile) =
+    fork(args; Hd; redirect-stdin-from-file
+         ; outfile; redirect-stdout-to-file
+         ; <debug; execvp> (<prog>, <args>))
+    ; ?(pid, _)
+    ; where(<waitpid> pid 
+            ; (exited + signaled + stopped))
+
+/*
   copy-prog-to-file(prog, args, outfile) =
     where(pipe => p)
     ; fork(<stdout-to-pipe> p; <execvp> (<prog>, <args>))
@@ -17,6 +38,7 @@ strategies
     ; <copy-pipe-to-file> (p, <outfile>)
     ; where(<waitpid> pid 
             ; (exited + signaled + stopped))
+
 */
     
 

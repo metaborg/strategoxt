@@ -61,7 +61,7 @@ strategies //primitives
     ?t; fork; ?pid; (?0; <child> t <+ <parent>(pid, t))
 
   fork-and-wait(child) =
-    ?t; fork; ?pid; (?0; <child> t <+ <waitpid>pid; !t)
+    ?t; fork; ?pid; (?0; <child> t <+ <waitpid>pid; ?WaitStatus(0,_,_); !t)
 
   /*   The  execv  and  execvp functions provide an array of pointers to
        null-terminated strings that represent the argument  list  avail­
@@ -88,8 +88,13 @@ strategies //primitives
 
   // File descriptors
 
-  //open =
-  //  ?fd; prim("SSL_open", fd)
+  // create a file and return a file descriptor
+  creat =
+    ?pathname; prim("SSL_creat", pathname)
+
+  // open a file and return a file descriptor
+  open =
+    ?pathname; prim("SSL_open", pathname)
 
   close =
     ?fd; prim("SSL_close", fd)
@@ -126,21 +131,38 @@ strategies //primitives
 
   call = 
     ?(prog,args)
-    ; prim("SSL_call",prog,args)
+    //; prim("SSL_call",prog,args)
+    ; fork-and-wait(<execvp> (prog, args))
+
+  call(init-child) = 
+    ?(prog,args)
+    ; fork-and-wait(init-child; <execvp> (prog, args))
 
   // call-noisy :: String * List(String) -> String * List(String)
   // call prog with list of strings args and print information
 
   call-noisy = 
     ?(prog,args)
-    ; prim("SSL_call_noisy",prog,args)
-
+    //; prim("SSL_call_noisy",prog,args)
+    ; fork-and-wait(<debug; execvp> (prog, args))
 
   pipe-term-to-child(prog, args) = 
     ?t; where(prog => prog-trm; args => args-trm)
     ; prim("SSL_pipe_term_to_child", t, prog-trm, args-trm)
 
 strategies // non-primitives
+
+  redirect-stdout-to-file =
+    ?file
+    ; where(STDOUT_FILENO
+            ; close
+            ; <creat> file)
+
+  redirect-stdin-from-file =
+    ?file
+    ; where(STDIN_FILENO
+            ; close
+            ; <open> file)
 
   // rm-files :: List(String) -> List(String)
   // remove files
