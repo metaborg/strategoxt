@@ -1,3 +1,9 @@
+2000-06-21  XT Tester  <xtest@node11794.a2000.nl>
+
+	* collect.sh: Moving ${pkg} to ${pkg}-${version} such that a
+	directory ${pkg}-${version} is made in the main directory in the
+	case of cvsdev; for consistency
+
 2000-04-17 <mdejonge@cwi.nl>
         * added --with-aterm=${prefix} to configuration of asfix library
 2000-04-13 <mdejonge@cwi.nl>

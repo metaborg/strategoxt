@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: collect.sh,v 1.11 2000/04/13 08:11:38 mdejonge Exp $
+# $Id: collect.sh,v 1.12 2000/06/25 06:55:31 eelco Exp $
 
 
 # This script will collect all required packages for the XT distribution.
@@ -61,7 +61,8 @@ do_collect () {
             mkdir -p /tmp/xt-$$
             cd /tmp/xt-$$
             cvs -d ${cvsroot} checkout ${pkg}
-            tar cf ${pkg}-${pkg_version}.tar ${pkg}
+	    mv ${pkg} ${pkg}-${pkg_version}
+            tar cf ${pkg}-${pkg_version}.tar ${pkg}-${pkg_version}
 	    gzip ${pkg}-${pkg_version}.tar
          )
          cp /tmp/xt-$$/${pkg}-${pkg_version}.tar.gz .

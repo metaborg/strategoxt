@@ -18,7 +18,10 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: TODO,v 1.6 2000/04/07 12:48:47 mdejonge Exp $
+# $Id: TODO,v 1.7 2000/06/25 06:55:31 eelco Exp $
+
+* There is (semi-)circular dependency between gt and gb: pack-sdf uses
+  the parse table for Sdf2 and pico.1 uses pack-sdf to create Pico.def
 
 * Improve documentation.
   Specifically:
