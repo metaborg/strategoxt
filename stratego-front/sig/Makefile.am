@@ -16,3 +16,5 @@ Stratego.def:
 	ln -s ../syn/Stratego.def .
 
 EXTRA_DIST 	= $(wildcard *.str) $(pkgdata_DATA) Stratego.def
+
+Stratego.str Stratego-Constants.str Stratego-Overlays.str Stratego-Identifiers.str Stratego-Rules.str Stratego-Terms.str Stratego-Layout.str Stratego-Script.str Stratego-Modules.str Stratego-Signatures.str Stratego-Strategies.str : Stratego.def
