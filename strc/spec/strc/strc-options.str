@@ -43,7 +43,6 @@ strategies
         , "-lm"])
     ; <set-config> ("-CD", [])
     ; <set-config> ("--dr", "old")
-    ; <set-config> ("--warning", ["all"])
   )
 
   get-include-dirs =
