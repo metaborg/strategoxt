@@ -30,8 +30,14 @@ strategies
 
   round-list = map(test(sect(leq, !100)) <+ int)
 
+ /**
+  * @inc sort-test
+  */
   int-sort = sort-list(SortL(gt))
 
+ /**
+  * @inc is-interval-test
+  */
   is-interval-from = 
   rec r(
     \ (low,[]) -> low \
@@ -52,9 +58,10 @@ strategies
  *
  * The documentation of the range strategy is partly copied from the Python tutorial.
  *
- * @type Int       -> [Int]
- * @type Int * Int -> [Int]
+ * @type  Int       -> [Int]
+ * @type  Int * Int -> [Int]
  * @since 0.9.3
+ * @inc   range
  */
 strategies
 
@@ -74,7 +81,8 @@ strategies
  * @type step Int
  * @type      Int       -> [Int]
  * @type      Int * Int -> [Int]
- * @since 0.9.3
+ * @since     0.9.3
+ * @inc       range
  */
 strategies
 

@@ -5,6 +5,9 @@
 module char
 strategies
 
+ /**
+  * @inc is-alphanum-test
+  */
   is-alphanum = is-num + is-alpha
   is-alpha = is-upper + is-lower
 
@@ -14,6 +17,10 @@ strategies
     + where(<leq-leq> ('a', <id>, 'f'))
     + where(<leq-leq> ('A', <id>, 'F'))
 
+ /**
+  * @inc is-num-test
+  * @inc is-not-num-test
+  */
   is-num   = where(<leq-leq> ('0', <id>, '9'))
   is-upper = where(<leq-leq> ('A', <id>, 'Z'))
   is-lower = where(<leq-leq> ('a', <id>, 'z'))

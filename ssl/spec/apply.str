@@ -22,6 +22,9 @@ strategies
   apply-start = split(id,!Fail)
   apply(s) = try((s,!Success))
 
+ /**
+  * @inc apply-test
+  */
   apply(a,b) = 
 	  apply-start
 	; apply(a)

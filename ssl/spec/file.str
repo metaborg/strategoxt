@@ -84,6 +84,7 @@ strategies
 
   /**
    * @type String -> String
+   * @inc  create?
    */
   can-create-file =
     where(dirname; can-write-file)
@@ -96,7 +97,7 @@ strategies
   /**
    * Returns directory portion of pathname in a POSIX compatible way.
    *
-   * @see   file-tests for examples
+   * @inc   dirname
    * @type  String -> String
    */
   dirname =
@@ -144,6 +145,7 @@ strategies
    *
    * @type  String -> String
    * @since 0.9.4
+   * @inc   is-abs-path
    */
   is-abspath =
     where(explode-string; ?['/' | _])
@@ -163,6 +165,7 @@ strategies
    * Strips the directory from a pathname.
    *
    * @type  String -> String
+   * @inc   base-filename-test
    */
   base-filename =
       <string-tokenize> (['/'], <id>)
@@ -178,7 +181,8 @@ strategies
    *
    * @warning basename is not comparable to the basename of sh. 
    *          sh's basename strips the direcrory an optionallythe suffix.
-   * @type     String -> String
+   * @type    String -> String
+   * @inc     basename-test
    */
   basename =
     basename(id)
@@ -212,12 +216,18 @@ strategies
     where(explode-string; at-suffix(?echars))
   
   // path from program name "/usr/local/bin/prog" -> "/usr/local/bin/"
+ /**
+  * @inc get-path-test
+  */
   get-path = 
     explode-string;
     (rec x([id|x] <+ [47|![]]) <+ ![]);
     implode-string
 
   // file name from path "/usr/local/bin/prog" -> "prog"
+ /**
+  * @inc get-filename-test
+  */
   get-filename = 
     explode-string
     ; try(at-suffix-rev(?['/' | name]); !name)
