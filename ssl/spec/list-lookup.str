@@ -27,7 +27,7 @@ strategies
 
   /**
    * lookup' is equivalent to lookup.
-   * The advantage over lookup is that it does not construct
+   * The advantage over lookup is that lookup' does not construct
    * intermediate pairs.
    *
    * @type  k * [k * v] -> v
