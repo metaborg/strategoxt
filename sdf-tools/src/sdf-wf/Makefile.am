@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.2 2001/06/01 14:12:54 mdejonge Exp $
+# $Id: Makefile.am,v 1.3 2001/08/17 15:53:43 jvisser Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -36,7 +36,7 @@ STRATEGO_PRG = sdf-wf
 bin_SCRIPTS  = $(STRATEGO_PRG)
 
 # Optional tests to run
-TESTS        = sdf_wf_check
+TESTS        = sdf_wf_check sdf_wf_short_check sdf_wf_se_check
 
 # List all files that should be distributed here
 EXTRA_DIST  += sdf-analysis.r
@@ -51,3 +51,15 @@ sdf_wf_check_switches = -o /dev/null -S 2>$${output}
 sdf_wf_check_input    = data/test1.sdf.af
 sdf_wf_check_output   = data/test1.sdf.wf.out
 sdf_wf_check_correct  = data/test1.sdf.wf.ok
+
+sdf_wf_short_check_prog     = sdf-wf
+sdf_wf_short_check_switches = --short -o /dev/null -S 2>$${output}
+sdf_wf_short_check_input    = data/test1.sdf.af
+sdf_wf_short_check_output   = data/test1.sdf.wf.short.out
+sdf_wf_short_check_correct  = data/test1.sdf.wf.short.ok
+
+sdf_wf_se_check_prog     = sdf-wf
+sdf_wf_se_check_switches = -S -e 2>$${output}
+sdf_wf_se_check_input    = data/test2.sdf.af
+sdf_wf_se_check_output   = data/test2.sdf.wf.out
+sdf_wf_se_check_correct  = data/test2.sdf.wf.ok

@@ -1,4 +1,10 @@
-2001-08-09 Joost.Visser@cwi.nl
+2001-08-17 Joost.Visser@cwi.nl
+   * Added -e and --short switches to sdf-wf. The first treats
+	warnings as errors. The second produces a short version
+	of the well-formedness report. When both these switches
+	are specified, not report is emitted.
+	
+2001-08-16 Joost.Visser@cwi.nl
    * sdf-de-normalize now also de-normalizes character classes
      and literals.
 	

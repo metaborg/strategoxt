@@ -1,0 +1,7 @@
+Makefile.in
+Makefile
+*.c
+*.o
+*_check
+*.dep
+sdf-wf
