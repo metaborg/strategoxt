@@ -23,7 +23,7 @@ TESTS 		 = stratego-eval-test
 stri.c		 : eval-lib-primitives.rtree
 
 #primitives
-eval-lib-primitives.str: 
+eval-lib-primitives.rtree, eval-lib-primitives.str: 
 	$(MAKE) primitives
 	$(top_builddir)/spec/pack/pack-stratego -I $(SSL)/share/ssl -i lib -o lib.packed
 	./primitives -i lib.packed | $(STRATEGO_FRONT)/bin/pp-stratego --abstract -o $@
@@ -33,4 +33,4 @@ BOOTSOURCES = stri.c primitives.c stratego.in stratego
 BOOTCLEANFILES = \
   eval-lib-primitives.str \
   eval-lib-primitives.rtree \
-  stri.c primitives.c stratego stratego-eval-test.c
+  stri.c primitives.c stratego stratego-eval-test.c 
