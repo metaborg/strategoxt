@@ -63,9 +63,8 @@ strategies // for escaping to C like escape sequences
   // :: List(Char) -> List(Char)
   unescape-chars = 
     rec x(
-      debug; try(UnEscape)
+      try(UnEscape)
     ; ([id | x] <+ [])
-    ; debug
     )
 
   // :: List(Char) -> List(Char)

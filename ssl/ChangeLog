@@ -1,3 +1,17 @@
+2002-12-16  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/string.str: Removed calls to debug in unescape-chars
+
+	* spec/parse-options.str: Writing usage information to stdout instead
+	of stderr. (Then we can use help2man to generate man files.)
+
+	* spec/dir.str: Including C function SSL_copy for verbatim copying
+	of files.
+
+	* spec/options.str: option-wrap is an abstraction for option handling
+	that does determine the io behaviour, as does io-wrap. This is
+	useful in combination with the XTC abstractions.
+
 2002-12-15  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/Makefile.am: Installing module sources in ${pkgdatadir}/doc

@@ -105,17 +105,15 @@ strategies
   // descrition of the program is displayed when it is defined.
   system-usage  = 
      option-defined(Program(?p));
-     try
-(
-       <printnl>(stderr, [<short-description(!p);concat-strings>() ])
+     try(
+       <printnl>(stdout, [<short-description(!p);concat-strings>() ])
      );
      
-     <printnl>(stderr, ["\nOptions:"]);
+     <printnl>(stdout, ["\nOptions:"]);
      <table-get;reverse>("usage-table", "usage");
-      map( \x -> <printnl>(stderr, ["   ", x]) \ );
+      map(<printnl>(stdout, ["   ", <id>]));
       try(
-        <printnl>(stderr, ["\nDescription:\n", 
-                         <long-description(!p);concat-strings>()])
+        <printnl>(stdout, ["\n" | <long-description(!p)>])
       )
 
 rules

@@ -47,8 +47,17 @@ strategies
   rename-file =
     ?(oldname, newname); prim("SSL_rename", oldname, newname)
 
+  // copy-file copies a file using memory mapped I/O
+
+  copy-file =
+    ?(oldname, newname); prim("SSL_copy", oldname, newname)
+
+  // link-file creats a hard link from file 'new' to file 'old'
+
   link-file =
     ?(old, new); prim("SSL_link", old, new)
+
+  // remove-file removes 
 
   remove-file =
     ?name; prim("SSL_remove", name)

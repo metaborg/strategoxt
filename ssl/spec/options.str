@@ -23,6 +23,24 @@ signature
 \begin{code}
 strategies
 
+  // OPTION-WRAP
+  // read options, display help, report success or failure, call strategy
+
+  option-wrap(opts, usage, announce, s) =
+    parse-options(opts)
+    ; store-options
+    ; announce
+    ; (need-help(usage)
+       <+ s; report-success
+       <+ report-failure)
+
+  option-wrap(opts, s) =
+    option-wrap(opts, default-usage, id, s)
+
+  // IOWRAP
+  // handle options, read term from input file, transform, write result 
+  // to output file
+
   iowrap(strat) = 
     iowrap((id, strat), fail)
 
@@ -42,35 +60,20 @@ strategies
     iowrap(strat, extra-options, usage)
 
   iowrap(strat, extra-options, usage, announce) =
-    parse-options(extra-options <+ io-options); 
-    store-options;
-    announce;
-    (
-        need-help(usage)
-     <+ 
-	input-file;
-	apply-strategy(strat);
-	output-file;
-	report-success
-     <+ 
-	report-failure
+    option-wrap(extra-options <+ io-options, usage, announce, 
+      input-file;
+      apply-strategy(strat);
+      output-file
     )
 
   iowrapNoOutput(strat, extra-options) = 
-  iowrapNoOutput(strat, extra-options, default-usage)
+    iowrapNoOutput(strat, extra-options, default-usage)
 
   iowrapNoOutput(strat, extra-options, usage) =
-   	parse-options(extra-options <+ io-options);
-   	store-options;
-	(
-	    need-help(usage)
-   	 <+ 
-	    input-file;
-	    apply-strategy(strat);
-	    report-success
-   	 <+ 
-   	    report-failure
-	)
+    option-wrap(extra-options <+ io-options, usage, announce, 
+      input-file;
+      apply-strategy(strat)
+    )
 
 strategies
 
