@@ -15,12 +15,14 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.2 2001/06/11 12:29:59 mdejonge Exp $
+# $Id: Makefile.am,v 1.3 2001/06/12 08:20:58 mdejonge Exp $
 
 include $(srcdir)/../templates/make_rules 
 include $(srcdir)/../templates/make_rules.stratego
 
 include $(STRATEGO_PRG:%=%.dep)
+
+SUBDIRS      = data
 
 STRATEGO_PRG = visamb
 

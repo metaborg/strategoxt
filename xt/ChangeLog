@@ -2,6 +2,7 @@
         * src/gbquery: added -d switch to retrieve the location of a grammar
           definition file
         * integration-tests: Adapted and re-enabled integration tests
+        * visamb/Makefile.am: added data to SUBDIRS variable
 
 2001-06-08 Merijn de Jonge <mdejonge@cwi.nl>
         * src/sdf-doc: glue tools from sdf-tools package added
