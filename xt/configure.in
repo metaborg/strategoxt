@@ -18,12 +18,12 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 dnl 02111-1307, USA.
 
-dnl $Id: configure.in,v 1.36 2001/03/23 16:46:05 mdejonge Exp $
+dnl $Id: configure.in,v 1.37 2001/05/31 07:15:56 mdejonge Exp $
 
 AC_INIT(Makefile.in)
-AM_INIT_AUTOMAKE(xt,0.7beta)
+AM_INIT_AUTOMAKE(xt,0.7)
 
-AC_REVISION($Id: configure.in,v 1.36 2001/03/23 16:46:05 mdejonge Exp $)
+AC_REVISION($Id: configure.in,v 1.37 2001/05/31 07:15:56 mdejonge Exp $)
 
 AC_ARG_WITH(pkginstalldir,
    [  --with-pkginstalldir    Specify location where softwere gets installed 
