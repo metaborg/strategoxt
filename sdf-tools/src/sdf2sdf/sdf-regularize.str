@@ -8,7 +8,7 @@
  * Author: Eelco Visser
  */
 module sdf-regularize
-imports lib Sdf2 dynamic-rules
+imports liblib Sdf2
 
 strategies
 

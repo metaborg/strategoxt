@@ -17,7 +17,7 @@
  *    Martin Bravenboer <martin@cs.uu.nl>
  */
 module sdf2sdf
-imports xtc-lib sdf-xtc-tools
+imports liblib sdf-xtc-tools
 strategies
 
   sdf2sdf =

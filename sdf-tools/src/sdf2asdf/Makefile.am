@@ -14,6 +14,7 @@ TESTS        	 = sdf2asdf_check
 EXTRA_DIST  	 = $(wildcard *.str) $(wildcard *.meta) 
 
 SCFLAGS     	 = -I $(srcdir)/../lib -I $(ASFIX_TOOLS)/share/asfix-tools
+LDADD           += $(SSL_LIBS)
 
 sdf2asdf_check_prog    = sdf2asdf
 sdf2asdf_check_input   = data/test.def.af

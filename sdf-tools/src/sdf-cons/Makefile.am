@@ -7,6 +7,7 @@ SUBDIRS      	 = data
 bin_PROGRAMS 	 = sdf-cons rm-cons
 libexec_PROGRAMS = sdf-cons rm-cons
 BOOTCLEANFILES 	 = sdf-cons.c rm-cons.c
+LDADD           += $(SSL_LIBS)
 
 EXTRA_DIST  	 = KNOWN-BUGS $(wildcard *.str) $(wildcard *.meta) 
 

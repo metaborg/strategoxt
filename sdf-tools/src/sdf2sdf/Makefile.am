@@ -15,7 +15,8 @@ EXTRA_DIST       = $(wildcard *.str) $(wildcard *.meta)
 STRINCLUDES    	 = -I $(top_srcdir)/src/lib \
                    -I $(SDF_FRONT)/share/sdf-front \
                    -I $(XTC)/share/xtc
-SCFLAGS          = --main $*
+SCFLAGS          = --main $* --dr new
+LDADD           += $(SSL_LIBS)
 
 sdf2sdf_check_prog     = sdf2sdf
 sdf2sdf_check_switches = --sdfcons --sdf2asdf --sdf-bracket

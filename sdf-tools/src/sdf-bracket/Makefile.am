@@ -17,6 +17,7 @@ SCFLAGS     =  --main io-$*
 STRINCLUDES = \
   -I $(SDF_FRONT)/share/sdf-front \
   -I $(ASFIX_TOOLS)/share/asfix-tools
+LDADD += $(SSL_LIBS)
 
 sdf_bracket_check_prog    = sdf-bracket
 sdf_bracket_check_input   = data/sdf-bracket.sdf.af

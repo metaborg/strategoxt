@@ -1,5 +1,5 @@
 module sdf-rmlabel
-imports AsFix lib
+imports AsFix liblib
 
 signature
   constructors
@@ -21,4 +21,4 @@ strategies
     !label-overlay(<k_21>(),empty-layout(),empty-layout(),<n_21>())
 
  sdf-rmlabel =
-   iowrap(topdown(try(\label-overlay(a,b,c,d) -> d\ )))
+   io-wrap(topdown(try(\label-overlay(a,b,c,d) -> d\ )))

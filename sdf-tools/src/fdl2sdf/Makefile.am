@@ -2,9 +2,9 @@ include $(srcdir)/../templates/make_rules
 include $(top_srcdir)/Makefile.xt
 include 
 
-SUBDIRS      = data
-
+SUBDIRS       = data
 bin_PROGRAMS  = fdl2sdf
+LDADD        += $(SSL_LIBS)
 
 EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) 
 CLEANFILES     = $(wildcard *.dep)

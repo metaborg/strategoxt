@@ -15,20 +15,24 @@
  *    iter-star(bracket-symbol(alt(sort("A"),sort("B"))))
  */
 module sdf-bracket
-imports lib Sdf2 Bracket-Symbol AsFix
+imports liblib Sdf2 Bracket-Symbol AsFix
 
 strategies
 
-  short-description(p) =
-    !["Usage: ", <p>(), " [options]"]
+  sdf-bracket-usage =
+    default-system-usage(
+      !["Usage: sdf-bracket [options]"]
+    , ![ "This program generates a disambiguated AST of SDF modules\n"
+       , "by inserting bracket symbols for SDF infix operators.\n"
+       , "Use this program before pretty-printing ASTs of SDF modules.\n"
+       ]
+    )
 
-  long-description(p)  =
-    ![ "This program generates a disambiguated AST of SDF modules\n"
-     , "by inserting bracket symbols for SDF infix operators.\n"
-     , "Use this program before pretty-printing ASTs of SDF modules.\n"]
+  sdf-bracket-about =
+    system-about
 
   io-sdf-bracket = 
-    io-wrap(sdf-bracket)
+    io-wrap(fail, sdf-bracket-usage, sdf-bracket-about, sdf-bracket)
 
   sdf-bracket =
       topdown(try(Bracket))

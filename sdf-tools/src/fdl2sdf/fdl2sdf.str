@@ -1,19 +1,19 @@
 module fdl2sdf
-imports Sdf2 fdl options AsFix
+imports Sdf2 fdl AsFix liblib
 strategies
 
   fdl2sdf =
-    io-wrap(bottomup(try(Fdl2Sdf)))
+    io-wrap(fail, fdl2sdf-usage, system-about, bottomup(try(Fdl2Sdf)))
 
-  short-description(p) =
-    !["Usage: ", <p>(), " [options]"]
-
-  long-description(p)  =
-    ![ "This program generates an SDF syntax definition from a Feature Description\n",
-       "written in the Feature Description Language (FDL). Feature constraints\n",
-       "are discarded.\n\n",
-       "The program takes as input a parsed and imploded feature description. It\n",
-       "produces an AST of an SDF module as output."]
+  fdl2sdf-usage =
+    default-system-usage(
+      !["Usage: fdl2sdf [options]"]
+    , !["This program generates an SDF syntax definition from a Feature Description\n",
+        "written in the Feature Description Language (FDL). Feature constraints\n",
+        "are discarded.\n\n",
+        "The program takes as input a parsed and imploded feature description. It\n",
+        "produces an AST of an SDF module as output."]
+    )
 
   Fdl2Sdf :
     one-of(xs) -> <foldr1(\[x] -> x\, \(x,y) -> alt(x,y)\ )>xs

@@ -4,7 +4,7 @@
  * @author  Joost Visser <Joost.Visser@cwi.nl>
  */
 module Sdf-2-ASdf
-imports lib Sdf2 Literal-lib AsFix
+imports liblib Sdf2 Literal-lib AsFix
 signature
    constructors
       dummy: Dummy

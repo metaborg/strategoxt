@@ -6,6 +6,7 @@ SUBDIRS      	 = data
 
 bin_PROGRAMS 	 = sdf-label sdf-rmlabel
 libexec_PROGRAMS = sdf-label sdf-rmlabel
+LDADD           += $(SSL_LIBS)
 
 BOOTCLEANFILES 	 = sdf-label.c sdf-rmlabel.c
 TESTS        	 = sdf_rmlabel_check sdf_label_check

@@ -1,5 +1,5 @@
 module sdf2sg
-imports lib sdf-analysis GraphXML Literal-lib
+imports liblib sdf-analysis GraphXML Literal-lib
 strategies
 
   main =

@@ -1,18 +1,18 @@
 module sdf-wf
-imports lib sdf-analysis
+imports liblib sdf-analysis
 strategies
 
   sdf-wf =
-    io-wrap(sdf-wf-options, sdf-wf-main)
+    io-wrap(sdf-wf-options, sdf-wf-usage, system-about, sdf-wf-main)
 
-  short-description(p) =
-    ![<p>(), " -- check the well-formedness of an SDF grammar"]
-
-  long-description(p)  =
-    !["Input is an SDF grammar (in AST form).\n",
-      "Output is an SDF grammar (in AST form).\n",
-      "The well-formedness report is writen to stderr.\n",
-      "If both -e and -S are supplied, no report is emitted."]
+  sdf-wf-usage =
+    default-system-usage(
+      !["sdf-wf -- check the well-formedness of an SDF grammar"]
+    , !["Input is an SDF grammar (in AST form).\n",
+       "Output is an SDF grammar (in AST form).\n",
+       "The well-formedness report is writen to stderr.\n",
+       "If both -e and -S are supplied, no report is emitted."]
+    )
 
   sdf-wf-main
     = where (

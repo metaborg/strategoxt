@@ -5,6 +5,7 @@ include $(wildcard *.dep)
 SUBDIRS      	 = data
 bin_PROGRAMS 	 = sdf-wf
 libexec_PROGRAMS = sdf-wf
+LDADD           += $(SSL_LIBS)
 
 BOOTCLEANFILES 	 = sdf-wf.c
 EXTRA_DIST 	 = $(wildcard *.str) $(wildcard *.meta) 

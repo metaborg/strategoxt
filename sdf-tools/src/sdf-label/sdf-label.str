@@ -1,11 +1,10 @@
 module sdf-label
 imports
   Sdf2
-  options
-  list
   Literal-lib
   verbalize-sdf
   AsFix
+  liblib
 
 signature
    constructors

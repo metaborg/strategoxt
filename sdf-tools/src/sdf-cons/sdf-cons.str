@@ -18,11 +18,11 @@
  *   - Upgrade to SDF2 syntax of PGEN 2.0
  */
 module sdf-cons
-imports lib Sdf2 prodcons
+imports liblib Sdf2 prodcons
 strategies
 
   io-sdf-cons =
-    io-wrap(sdf-cons-options,
+    io-wrap(sdf-cons-options, sdf-cons-usage, sdf-cons-about, 
       if ?"\"sdf-2.1\""#([trm]) then
         !"\"sdf-2.1\""#([<sdf-cons> trm])
       else
@@ -40,11 +40,14 @@ strategies
       , !"--injections   do not generate constructors for injections"
       )
 
-  short-description(p) =
-    ![<p>(), " -- usage:"]
+  sdf-cons-usage =
+    default-system-usage(
+      !["sdf-cons -- usage:"]
+    , !["This program adds constructor names to productions of an SDF grammar." ]
+    )
 
-  long-description(p)  =
-    !["This program adds constructor names to productions of an SDF grammar." ]
+  sdf-cons-about =
+    system-about
 
 strategies
 
@@ -96,7 +99,7 @@ strategies
 rules
 
   prime-prod :
-    Pair(p@prod(ss,res,as), n) -> Pair(prod(ss, res, <at-cons(!c)> as), <add> (n, 1))
+    (p@prod(ss,res,as), n) -> (prod(ss, res, <at-cons(!c)> as), <add> (n, 1))
       where <prime-constr> (<get-constr> p, n) => c
           ; <table-put>("prods", prod(ss, res, no-attrs()), c)
 
