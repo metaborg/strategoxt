@@ -3,7 +3,6 @@ includedir = $(prefix)/include/srts
 include_HEADERS = \
   zip.h
 
-
 AM_CPPFLAGS = -I$(SRTS)/include -I$(ATERM)/include
 AM_LDFLAGS  = -avoid-version 
 LDADD       = -lz
@@ -23,3 +22,5 @@ LIB_SOURCES = \
   minizip-zip.h
 
 libxtar_lib_la_SOURCES = $(LIB_SOURCES)
+
+bootclean:
