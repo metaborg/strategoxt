@@ -17,3 +17,4 @@ rules
   A : F(x) -> x
 
 > A
+> echo

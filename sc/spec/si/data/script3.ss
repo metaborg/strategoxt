@@ -2,6 +2,8 @@
 
 stratego script
 
+:load "lib.sim"
+
 strategies
   f = rec h(g; h <+ id)
   g = h
@@ -10,8 +12,6 @@ strategies
 > !F(F(F(A())))
 
 > f
-
-
-
+> echo
 
 

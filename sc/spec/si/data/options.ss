@@ -1,4 +1,4 @@
-#!/bin/sh stratego
+#! /bin/sh stratego
 
 stratego script
 :load "lib.sim"
@@ -18,3 +18,5 @@ strategies
 
 > ?res; where(<WriteToTextFile> (out, res))
 > ?res; <WriteToFile> (out, res)
+
+> echo

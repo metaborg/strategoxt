@@ -9,3 +9,4 @@ stratego script
 > A <+ echo(!"A does not apply here: ")
 > Succ(A)
 > save(!"def.trm")
+> echo

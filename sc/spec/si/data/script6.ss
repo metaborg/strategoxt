@@ -7,3 +7,5 @@ imports script6
 > B
 > Succ(A)
 
+
+> echo

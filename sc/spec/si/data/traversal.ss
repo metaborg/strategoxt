@@ -1,4 +1,4 @@
-#!/bin/sh stratego
+#! /bin/sh stratego 
 
 stratego script
 :load "lib.sim"

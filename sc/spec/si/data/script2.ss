@@ -13,5 +13,6 @@ strategies
 > ?t
 > !Pair(t, "a", 1, 1.2)
 > ?Pair(_, a, 1, _)
+> echo
 
 

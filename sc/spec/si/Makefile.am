@@ -15,33 +15,30 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-SCFLAGS = -I $(top_srcdir)/spec/sig \
-	  -I $(top_srcdir)/spec/front \
-	  -I $(top_srcdir)/spec/lib
+SCFLAGS		 = -I $(top_srcdir)/spec/sig \
+	  	   -I $(top_srcdir)/spec/front \
+	  	   -I $(top_srcdir)/spec/lib
 
-SUBDIRS = data
+SUBDIRS 	 = data
 
-bin_SCRIPTS = si
+bin_PROGRAMS 	 = si 
+bin_SCRIPTS	 = stratego
+libexec_PROGRAMS = primitives 
+check_PROGRAMS   = stratego-eval-test
 
-libexec_SCRIPTS = primitives stratego
+#stratego_SOURCES = si.str
 
-CLEANFILES = si primitives eval-lib-primitives.tree
+CLEANFILES 	 = eval-lib-primitives.rtree $(wildcard *.dep)
+EXTRA_DIST 	 = $(wildcard *.str) eval-lib-primitives.rtree
+TESTS 		 = stratego-eval-test
 
-EXTRA_DIST = $(wildcard *.r)
-
-si : stratego-eval.r si.r eval-lib-primitives.tree
-
-primitives: primitives.r
-
-TESTS = stratego-eval-test
-
-eval-lib-primitives.tree: primitives
-	$(top_builddir)/spec/syn/pack-stratego -I $(srcdir)/../slib/spec -i lib \
-		-dep eval-lib-primitives \
+eval-lib-primitives.rtree: $(top_builddir)/spec/si/primitives
+	$(top_builddir)/spec/syn/pack-stratego -I $(STRATEGOLIB)/share/ssl -i lib \
+		-dep eval-lib-primitives.rtree \
 	| ./primitives > $@
 
 BOOTSOURCES = si.c primitives.c stratego.in stratego
 
-include $(srcdir)/../make-rules
+include $(srcdir)/../Makefile.stratego
 include $(wildcard *.dep)
 

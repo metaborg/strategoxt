@@ -6,3 +6,5 @@ imports peano
 
 > !Mul(Succ(Succ(Zero())), Succ(Succ(Zero())))
 > eval-peano
+
+> echo

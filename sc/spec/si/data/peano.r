@@ -6,6 +6,7 @@ signature
     Zero : Nat
     Succ : Nat -> Nat
     Plus : Nat * Nat -> Nat
+    Sub  : Nat * Nat -> Nat
     Mul  : Nat * Nat -> Nat
     Mod  : Nat * Nat -> Nat
 

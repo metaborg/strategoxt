@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/sh 
 #
 # Stratego, a script for running the StrategoScript interpreter
 #
@@ -22,8 +22,9 @@
 #echo $*
 
 prefix=@prefix@
+STRATEGOLIB=@STRATEGOLIB@
 VERSION=@VERSION@
 
 cat $1 | grep -v "^#" \
-       | parse-mod -silent \
-       | si -I ${prefix}/share/stratego @version ${VERSION} -t --args $*
+       | ${prefix}/bin/parse-mod -silent \
+       | si -I ${STRATEGOLIB}/share/ssl @version ${VERSION} -t --args $*

@@ -13,3 +13,4 @@ stratego script
 > echo
 > split(!"bla.trm", id)
 > WriteToTextFile
+> echo

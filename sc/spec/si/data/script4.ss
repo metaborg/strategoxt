@@ -19,3 +19,4 @@ rules
 > A
 
 :load "bla.sim"
+> echo
