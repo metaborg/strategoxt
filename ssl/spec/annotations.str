@@ -45,12 +45,12 @@ strategies
   catch-annos = 
     rec x(has-annotation < !Anno(<rm-annotations; all(x)>, <get-annotations>) + all(x))
 
-  preserve-annotation(s) =
-    has-annotation < Preserve-Annotation(s) + s
+  preserve-annotation(s) = preserve-annos(s)
 
-  Preserve-Annotation(s):
+  preserve-annos(s):
     t{a*} -> r{a*}
-    where <s> t => r
+      where <s> t => r
+
 \end{code}
 
 % Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
