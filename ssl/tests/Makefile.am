@@ -8,6 +8,7 @@ check_PROGRAMS = \
   annotations-test \
   apply-test \
   char-test \
+  collect-test \
   dir-test \
   env-traversal-test \
   exec-test \

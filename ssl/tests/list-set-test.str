@@ -37,14 +37,6 @@ strategies
 	test4d;
 	test4e;
   
-	test5;
-	test5b;
-	test6;
-	test7;
-	test8;
-	test9;
-	test10;
-
   set-eq-test-1;
   set-eq-test-2;
   set-eq-test-3;
@@ -205,98 +197,10 @@ strategies
 	, ![]
 	)
 
-signature
-  constructors
-    F : A * A -> A
-    G : A * A -> A
-    H : A * A -> A
-    I : A -> A
-    A : A
-    B : A
-    C : A
-
-strategies
-
-  test5 = 
-    apply-test(!"test5"
-	, collect-split(\ H(x,y) -> I(x) \, \ H(x,y) -> [H(x,y)] \ )
-	, !F(G(A,H(A,B)),H(B,C))
-	, !(F(G(A,I(A)), I(B)), [H(A,B),H(B,C)])
-	)
-
-  test5b = 
-    apply-test(!"test5b"
-	, collect-split(\ H(x,y) -> I(x) \, \ H(x,y) -> [H(x,y)] \ )
-	, !F(G(A,H(A{"Test1"},B)){"Test2"},H(B,C))
-	, !(F(G(A,I(A{"Test1"})){"Test2"}, I(B)), [H(A{"Test1"},B),H(B,C)])
-	)
-
-  test6 = 
-    apply-test(!"test6"
-	, collect-split(\ H(x,y) -> I(x) \, \ H(x,y) -> [H(x,y)] \ )
-	, !F(G("a",H(A,3.0)),H(1,C))
-	, !(F(G("a",I(A)), I(1)), [H(A,3.0),H(1,C)])
-	)
-
-  test7 = 
-    apply-test(!"test7a"
-	, occurrences(?A)
-	, !F(G(A,H(A,3.0)),H(1,C))
-	, !2
-	); 
-    apply-test(!"test7b"
-	, occurrences(?H(_,_))
-	, !F(G(A,H(A,H(A,A))),H(1,C))
-	, !3
-	)
-
-  test8 = 
-    apply-test(!"test8a"
-	, node-size
-	, !F(G(A,H(A,3.0)),H(1,C))
-	, !2
-	);
-    apply-test(!"test8b"
-	, term-size
-	, !F(G(A,H(A,3.0)),H(1,C))
-	, !9
-	)
-
-  test9 = 
-    apply-test(!"test9a"
-	, collect-om(G(id,id))
-	, !F(G(A,G(A,B)),G(B,C))
-	, ![G(A,G(A,B)),G(B,C)]
-	);
-    apply-test(!"test9b"
-	, collect-all(G(id,id))
-	, !F(G(A,G(A,B)),G(B,C))
-	, ![G(A,G(A,B)),G(A,B),G(B,C)]
-	);
-    apply-test(!"test9c"
-	, collect(G(id,id), not-under-f)
-	, !H(G(A,G(A,B)),F(G(B,C),G(A,B)))
-	, ![G(A,G(A,B)),G(A,B)]
-	)
-
-  not-under-f(coll, ignore) =
-    F(ignore, coll)
-
-  test10 = 
-    apply-test(!"test10a"
-	, crush(id, ![<Fst> | <Snd>])
-	, !F(G(A,G(A,B)),G(B,C))
-	, ![G(A,G(A,B)),G(B,C)]
-	);
-    apply-test(!"test10b"
-	, rec x(crush(id, ![<Fst> | <Snd>], x))
-	, !F(G(A,G(A,B)),G(B,C))
-	, ![[[],[[],[]]],[[],[]]]
-	)
-
 /**
  * Set Equality
  */
+strategies
 
   set-eq-test-1 =
   apply-test(

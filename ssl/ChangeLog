@@ -1,3 +1,13 @@
+2004-03-22  Martin Bravenboer <martin@cs.uu.nl>
+
+	* collect.str: improved the documentation of the collect
+	strategies.
+
+	* collect.str: added collect-all and collect-om with three
+	arguments: s, union and skip. The skip strategy can be used to
+	reduce the current term to skip parts of it. It is not higher
+	order, but a simple term to term strategy.
+	
 2004-04-06  Eelco Visser <visser@cs.uu.nl>
 
 	* tables.str: hashtable-intersect and hashtable-union
