@@ -1,0 +1,16 @@
+module parenthesize-tests
+imports parenthesize-Exp xtc-register options
+
+strategies
+
+  io-parenthesize-tests =
+    option-wrap(io-options,
+      test-suite(!"sdf2parenthesize generator tests",
+        where(register-test-data)
+      ; id
+      )
+    )
+
+  register-test-data =
+      xtc-register(|"Exp.pp.af", "Foo", ".")
+    ; xtc-register(|"Exp.tbl", "Foo", ".")

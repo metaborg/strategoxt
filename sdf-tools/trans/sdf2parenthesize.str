@@ -51,7 +51,7 @@ strategies
 
          signature
            constructors
-             Parentheses : Unknown -> Unknown
+             Parenthetical : Unknown -> Unknown
       ]|
     where ModuleName => M1
         ; LanguageName => M2

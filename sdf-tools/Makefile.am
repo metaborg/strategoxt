@@ -20,7 +20,7 @@
 include package.conf
 include $(top_srcdir)/Makefile.xt
 
-SUBDIRS           = . trans analyse src
+SUBDIRS           = . trans analyse src tests
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 
 EXTRA_DIST        = VERSION package.conf bootstrap $(PACKAGE)-$(VERSION).pkg \
