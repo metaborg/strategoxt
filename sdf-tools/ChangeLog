@@ -1,3 +1,6 @@
+2001-10-09 Merijn de Jonge <mdejonge@cwi.nl> 
+    * sdf/Makefile.am: fixed rule to generate parse table
+
 2001-10-08 Merijn de Jonge <mdejonge@cwi.nl> 
     * Adapted to use io-idwrap and grammar identifiers
 
