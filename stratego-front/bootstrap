@@ -7,4 +7,4 @@ autoconf
 #autoheader
 automake -a
 
-
+touch pp/*.pp.af syn/*.tbl sig/*.rtree
