@@ -1,4 +1,4 @@
-
+#! /bin/sh
 rm -f config.cache acconfig.h config.status
 
 autoxt
