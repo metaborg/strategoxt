@@ -1,6 +1,6 @@
 StrategoXT 0.13 -- released January ?, 2005
 
----------++ Summary of Changes
+---------++!! Summary of Changes
 
 StrategoXT 0.13, which represents over 3 months of development,
 features updates of the Stratego compiler, the Stratego language, and
@@ -336,20 +336,20 @@ Resolution: please add a cons attribute to this production.
 
     (Martin Bravenboer)
 
----------++ Detailed List of Issues
+---------++!! Detailed List of Issues
 
 The full list of issues closed in this release is available at:
 
    * http://www.stratego-language.org/Stratego/StrategoRelease013Issues
 
----------++ Download and Installation
+---------++!! Download and Installation
 
 The release page contains the source distributions, binary RPMs, and
 detailed instructions on how to install the distributions:
 
    * http://www.stratego-language.org/Stratego/StrategoRelease013
 
----------++ Bugs and Known Problems
+---------++!! Bugs and Known Problems
 
 See our issue tracking systems for reports about (open) bugs:
 
@@ -359,7 +359,7 @@ Please report any problems with installation or bugs in the
 implementation to our issue tracking system. Please check the existing
 issues to see if a report about the problem was already submitted.
 
----------++ Contributions
+---------++!! Contributions
 
 Developments, beta tests, and bug fixes were carried out by
 
