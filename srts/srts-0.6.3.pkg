@@ -1,0 +1,14 @@
+package 
+identification
+   name=srts
+   version=0.6.3
+   location=http://www.stratego-language.org/ftp
+   info=http://www.stratego-language.org/
+   description='The Stratego Run Time System'
+
+
+   keywords=transformation, programming language, stratego
+interface
+
+requires
+  aterm 1.6.3 with gcc
