@@ -39,11 +39,10 @@ strategies
         <length> xs => n
       ; <length> ys => m
       ; ![def | <Definitions <+ ![]> (f, (n, m))] => defs
-      ; ![def | <ExtDefinitions <+ ![]> (f, (n, m))] => extdefs
       ; <union>([(n,m)], <Arities <+ ![]> f) => aris
       ; rules(
           Definitions : (f, (n, m)) -> defs
-          ExtDefinitions : (f, (n, m)) -> extdefs
+          ExtDefinition : (f, (n, m)) -> def
           Arities : f -> aris
         )
     )
@@ -54,11 +53,10 @@ strategies
         <length> xs => n
       ; <length> ys => m
       ; ![def | <Definitions <+ ![]> (f, (n, m))] => defs
-      ; ![def | <ExtDefinitions <+ ![]> (f, (n, m))] => extdefs
       ; <union>([(n,m)], <Arities <+ ![]> f) => aris
       ; rules(
           Definitions : (f, (n, m)) -> defs
-          ExtDefinitions : (f, (n, m)) -> extdefs
+          ExtDefinition : (f, (n, m)) -> def
           Arities : f -> aris
         )
     )
@@ -114,13 +112,12 @@ rules
   choices = 
     foldr(!Fail, !Choice(<Fst>,<Snd>))
 
-  /**
-   * @todo Separate dynamic rule for external definitions?
-   */
+strategies
+
   check-ext-overload =
     let helper =
           sdef-key;
-          if ExtDefinitions; not(?[]) then
+          if ExtDefinition then
             sdef-key-to-string
           ; debug(!"error: redefining external definition: ")
           ; <exit> 1
