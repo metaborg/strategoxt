@@ -1,6 +1,8 @@
 AC_PREREQ([2.58])
 AC_INIT([xtc],[0.13],[stratego-bugs@cs.uu.nl])
+AC_CONFIG_AUX_DIR([../config])
 AM_INIT_AUTOMAKE
+
 
 USE_XT_PACKAGES
 

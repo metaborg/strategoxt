@@ -1,6 +1,8 @@
 AC_PREREQ([2.58])
 AC_INIT([strategoxt],[0.13],[stratego-bugs@cs.uu.nl])
+AC_CONFIG_AUX_DIR([config])
 AM_INIT_AUTOMAKE
+
 
 # set the prefix immediately to the default prefix
 test "x$prefix" = xNONE && prefix=$ac_default_prefix

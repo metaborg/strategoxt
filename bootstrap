@@ -31,6 +31,7 @@ find . -print | xargs touch -t $MTIME
 mkdir -p pre-pkgs
 mkdir -p pre-pkgs/bootstrap
 cp -rf autoxt pre-pkgs/bootstrap/
+mkdir -p pre-pkgs/bootstrap/config
 cd pre-pkgs/bootstrap/autoxt
 ./bootstrap  || exit 1
 ./configure --prefix=$WORKINGDIR/pre-pkgs/bootstrap  || exit 1

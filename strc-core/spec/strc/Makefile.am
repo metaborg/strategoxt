@@ -19,8 +19,6 @@ pkgdata_DATA 	= strc-manual.txt
 nodist_strc_SOURCES = strc.c
 nodist_strc_pre_SOURCES = strc-pre.c
 
-nodist_strc_SOURCES = strc.c
-
 CLEANFILES 	= $(wildcard *.dep)
 BOOTCLEANFILES 	= strc.c
 
