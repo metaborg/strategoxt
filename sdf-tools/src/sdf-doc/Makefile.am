@@ -4,7 +4,6 @@ include $(wildcard *.dep)
 
 SUBDIRS      = data
 
-bin_PROGRAMS     = sdf-doc sdf2sg
 libexec_PROGRAMS = sdf-doc sdf2sg
 
 sdf2sg_LDADD = $(SSL_LIBS)
