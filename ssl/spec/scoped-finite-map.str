@@ -39,7 +39,10 @@ strategies
   end-scope(ns) = //debug(!"end-scope: ");
   where(ns => ns
   ; (<table-get>(ns, Scopes) <+ ![[]]) => [scope | scopes]
-  ; <table-put>(ns, Scopes, scopes)
+  ; if !scopes => []
+      then <table-remove> (ns, Scopes)
+      else <table-put>(ns, Scopes, scopes)
+    end
   ; <map( \ key -> <table-pop-rm>(ns, key) \ )> scope
   )
 
