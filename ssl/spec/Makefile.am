@@ -28,4 +28,4 @@ CLEANFILES      = $(TESTS)
 
 BOOTCLEANFILES 	= $(pkgdata_DATA) $(subst .str,.c,$(wildcard *-test.str))
 
-noinst_PROGRAMS = pipe-experiment
+#noinst_PROGRAMS = pipe-experiment
