@@ -27,3 +27,5 @@ EXTRA_DIST 	= $(wildcard *.str) $(pkgdata_DATA)
 CLEANFILES      = $(TESTS) 
 
 BOOTCLEANFILES 	= $(pkgdata_DATA) $(subst .str,.c,$(wildcard *-test.str))
+
+#noinst_PROGRAMS = pipe-experiment

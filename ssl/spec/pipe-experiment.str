@@ -4,6 +4,24 @@ strategies
 
 //---------------------------------------------------------------
 
+  main = id
+
+/*
+    ?[prog | <at-last(?[outfile]; ![]); ?infiles>]
+    ; copy-prog-to-file(!"cat", !infiles, !outfile)
+    
+  copy-prog-to-file(prog, args, outfile) =
+    where(pipe => p)
+    ; fork(<stdout-to-pipe> p; <execvp> (<prog>, <args>))
+    ; ?(pid, _)
+    ; <copy-pipe-to-file> (p, <outfile>)
+    ; where(<waitpid> pid 
+            ; (exited + signaled + stopped))
+*/
+    
+
+//---------------------------------------------------------------
+
   main'' =
     <write-to-prog(!"term-size", ![])> "A"#(["B"#([])])
 
@@ -41,7 +59,7 @@ strategies
     // ; map(waitpid; (exited + signaled + stopped))
     ; debug(!"f: ")
 
-  main = 
+  main'' = 
     setup-filter-pipe
     ; debug(!"a: ")
     ; spawn-filter-with-prog(!"sglr", 
@@ -119,7 +137,7 @@ strategies
       ; (?0 // child
             ; <stdin-from-pipe> p1
             ; <stdout-to-pipe> p2
-            ; <execvp> (<prog>, <args>)
+            ; <execvp> (<prog>, <args>) => t-out
          <+ ?pid // parent
             ; <write-term-to-text-pipe> (p1, t-in)
             ; <read-term-from-text-pipe> p2 => t-out

@@ -52,6 +52,9 @@ strategies
   copy-file =
     ?(oldname, newname); prim("SSL_copy", oldname, newname)
 
+  fdcopy =
+    ?(fdin, fdout); prim("SSL_fdcopy", fdin, fdout)
+
   // link-file creats a hard link from file 'new' to file 'old'
 
   link-file =

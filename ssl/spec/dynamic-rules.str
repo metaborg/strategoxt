@@ -27,3 +27,6 @@ signature
     Defined   : Term * Term * Term * Term * Term * Term * Term * Term * Term * Term -> Vals
 
     Undefined : Vals
+
+    Dummy     : a
+

@@ -47,7 +47,7 @@ strategies
   downup(s1, s2) = 
     rec x(s1; all(x); s2)
 
-  downup2(s1, s2) = 
+  downup2(s1, s2) =  
     rec x(s1; all(x); s2)
 \end{code} 
 	
