@@ -1,4 +1,0 @@
-2002-06-09  Eelco Visser  <visser@acm.org>
-
-	* stratego-connect is a package that extends Stratego with
-	primitives for interprocess communication

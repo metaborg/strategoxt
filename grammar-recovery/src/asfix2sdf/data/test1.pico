@@ -1,4 +1,0 @@
-begin
-  declare a : natural, b: string;
-  while a do b := a od
-end
