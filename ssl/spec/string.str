@@ -58,7 +58,7 @@ strategies
   /**
    * Concats a list of Strings
    *
-   * @type [String] -> String
+   * @type List(String) -> String
    */
   concat-strings =
     ?strings; prim("SSL_concat_strings", strings)
@@ -81,15 +81,19 @@ strategies
   strlen =
     ?str; prim("SSL_strlen", str)
 
-strategies // for escaping to C like escape sequences
+strategies
 
   /**
+   * Escapes double quotes, backslash and linefeed to C like escape sequences.
+   *
    * @type String -> String
    */
   escape = string-as-chars(escape-chars)
 
   /**
-   * @type [Char] -> [Char]
+   * Escapes double quotes, backslash and linefeed to C like escape sequences.
+   *
+   * @type List(Char) -> List(Char)
    */
   escape-chars = 
     rec x(
@@ -99,21 +103,34 @@ strategies // for escaping to C like escape sequences
     )
 
   /**
+   * Unescapes double quotes, backslash, linefeed and tabs.
+   *
    * @type String -> String
    */
   unescape = string-as-chars(unescape-chars)
 
   /**
-   * @type [Char] -> [Char]
+   * Unescapes characters using a specified unescape strategy.
+   *
+   * @param List(Char) -> List(Char)
+   * @type  List(Char) -> List(Char)
    */
-  unescape-chars = 
+  unescape-chars(s) = 
     rec x(
-      try(UnEscape)
+      try(s)
     ; ([id | x] <+ [])
     )
 
   /**
-   * @type [Char] -> [Char]
+   * Unescapes double quotes, backslash, linefeed and tabs.
+   *
+   * @type List(Char) -> List(Char)
+   */
+  unescape-chars = 
+    unescape-chars(UnEscape)
+
+  /**
+   * @type List(Char) -> List(Char)
    */
   Escape =
       Escape-double-quote
@@ -126,6 +143,9 @@ strategies // for escaping to C like escape sequences
   Escape-linefeed        : ['\n' | cs ] -> ['\', 'n'  | cs ]
   Escape-carriage-return : ['\r' | cs ] -> ['\', 'r'  | cs ]
 
+  /**
+   * @type List(Char) -> List(Char)
+   */
   UnEscape =
       UnEscape-double-quote
     + UnEscape-backslash
@@ -138,6 +158,9 @@ strategies // for escaping to C like escape sequences
   UnEscape-carriage-return : ['\', 'r'  | cs ] -> ['\r' | cs ]
   UnEscape-linefeed        : ['\', 'n'  | cs ] -> ['\n' | cs ]
   UnEscape-tab             : ['\', 't'  | cs ] -> ['\t' | cs ]
+
+  UnEscape(|c) :
+    ['\', c | cs ] -> [c  | cs ]
 
 strategies
 
@@ -177,22 +200,62 @@ strategies // for quoting
 
 strategies // for unquoting
 
-  // Char -> fail? :: List(Char) -> List(Char)
-  unquote-chars(s) =
-      where(Hd;   s)
-    ; where(last; s)
-    ; Tl
-    ; init
-
-  // Char -> fail? :: String -> String
+  /**
+   * Removes the first and last character of a string.
+   * The characters must satisfy s.
+   *
+   * @param s Char ->? _ 
+   * @type String -> String
+   */
   unquote(s) =
     string-as-chars(unquote-chars(s))
 
-  // :: List(Char) -> List(Char)
+  /**
+   * Removes the first and last character of a string.
+   * The first character must satisfy s1.
+   * The last character must satisfy s2.
+   *
+   * @param  Char ->? _ 
+   * @param  Char ->? _ 
+   * @type   String -> String
+   */
+  unquote(s1, s2) =
+    string-as-chars(unquote-chars(s1, s2))
+
+  /**
+   * Removes the first and last character of a list of characters.
+   * The characters must satisfy s.
+   *
+   * @param  Char ->? _ 
+   * @type   List(Char) -> List(Char)
+   */  
+  unquote-chars(s) =
+    unquote-chars(s, s)
+
+  /**
+   * Removes the first and last character of a list of characters.
+   * The first character must satisfy s1.
+   * The last character must satisfy s2.
+   *
+   * @param  Char ->? _ 
+   * @param  Char ->? _ 
+   * @type   List(Char) -> List(Char)
+   */  
+  unquote-chars(s1, s2) =
+      where(Hd;   s1)
+    ; where(last; s2)
+    ; Tl
+    ; init
+
+  /**
+   * @type  List(Char) -> List(Char)
+   */
   un-single-quote-chars = unquote-chars(?'\'')
   un-double-quote-chars = unquote-chars(?'"' )
 
-  // :: String -> String
+  /**
+   * @type  String -> String
+   */
   un-single-quote = string-as-chars(un-single-quote-chars)
   un-double-quote = string-as-chars(un-double-quote-chars)
 

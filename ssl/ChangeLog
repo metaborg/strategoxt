@@ -1,3 +1,13 @@
+2003-08-15  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+  * spec/string.str: added unescape-chars(s) to allow the specification 
+    of UnEscape rules to apply.
+
+  * spec/string.str: added unquote(s1, s2) to allow different start 
+    and end 'quotes'. Typical examples: [ ] or ( ).
+
+  * Some xDoc comments.
+
 2003-08-14  Martin Bravenboer <mbravenb@cs.uu.nl>
 
   * spec/parenthesize.str: fixed typo in gen-right. GenLeftAssoc
