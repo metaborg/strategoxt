@@ -54,3 +54,33 @@ rules
       ; write-to
       > file
 
+  eval-command :
+    (DeleteTerm(nt, t), file) -> 
+      < read-from
+      ; RTG(
+          id
+        , ProdRules(
+            map(
+              try(ProdRule(?Nonterm(nt), filter(not(oncetd(?t)))))
+            )
+          ; filter(not(ProdRule(id, [])))
+          )
+        )
+      ; write-to
+      > file
+
+  eval-command :
+    (DeleteTerm(t), file) -> 
+      < read-from
+      ; RTG(
+          id
+        , ProdRules(
+            map(
+              try(ProdRule(id, filter(not(oncetd(?t)))))
+            )
+          ; filter(not(ProdRule(id, [])))
+          )
+        )
+      ; write-to
+      > file
+
