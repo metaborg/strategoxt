@@ -16,10 +16,11 @@ libexec_PROGRAMS= \
 SCFLAGS           = --main main-$* 
 STRINCLUDES       = -I $(top_srcdir)/sig \
                     -I $(top_srcdir)/lib
+LDADD            += $(SSL_LIBS)
 
 EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta)
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c)
 
-rhg_group_LDADD = $(SSL_LIBS)
-rtg_group_LDADD = $(SSL_LIBS)
+
+

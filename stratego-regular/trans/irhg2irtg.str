@@ -5,7 +5,7 @@
  * @author  Martin Bravenboer
  */
 module irhg2irtg
-imports irhg irtg options rtg-util logging
+imports liblib irhg irtg rtg-util logging
 
 strategies
 

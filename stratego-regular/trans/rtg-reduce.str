@@ -5,7 +5,7 @@
  * @author  Martin Bravenboer <martin@cs.uu.nl>
  */
 module rtg-reduce
-imports options collect list rtg rtg-util rhg-reduce logging
+imports liblib rtg rtg-util rhg-reduce logging
 
 strategies
 
