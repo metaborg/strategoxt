@@ -1,5 +1,5 @@
 AC_INIT(Makefile.in)
-AM_INIT_AUTOMAKE(stratego,0.6.4)
+AM_INIT_AUTOMAKE(stratego,0.7beta)
 
 PKGS="srts ssl cgen sc-boot gpp-boot sc"
 AC_SUBST(PKGS)

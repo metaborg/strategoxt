@@ -4,9 +4,29 @@ News about Stratego releases
 
 ------------------------------------------------------------------------------
 
+Version 0.7beta
+
+ released: January 9, 2002
+
+SUMMARY OF CHANGES
+
+ (with respect to release 0.6.4)
+
+ * Support for `native' ATerm lists and tuples
+ * List traversal: lists considered as varyadic constructors
+
+ * Requires aterm-1.6.5
+ * Might break existing code based
+ * XT needs to be updated
+
+ * See http://www.stratego-language.org/Stratego/StrategoRelease07
+   for more details
+
+------------------------------------------------------------------------------
+
 Version 0.6.4
 
- released: 
+ released: January 3, 2002
 
 SUMMARY OF CHANGES
 
