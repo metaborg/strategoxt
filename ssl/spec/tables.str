@@ -124,6 +124,8 @@ strategies
    * Intersect hashtables
    *
    * Changes tbl1; fails if no changes are made
+   * Assumes that both hashtables contains lists as values, and intersects
+   * the two listvalues for each key.
    */
 
   hashtable-intersect(|tbl2) = ?tbl1;
