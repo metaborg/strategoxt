@@ -1,7 +1,16 @@
+2004-05-28  Martin Bravenboer  <martin@cs.uu.nl>
+
+	* spec/s2c/s2c.str: declare local functions. Solves STR-52.
+
+	* spec/test1/test58.str: test for STR-52 (more complex lets)
+	
 2004-05-12  Merijn de Jonge  <mdejonge@cs.uu.nl>
+	
 	* spec/front/stratego-warnings.str: Replaced SDef/3 by SDefT/4
+	
         * spec/front/stratego-warnings.str: stratego-warnings -h now
           displays all possible warnings that can be toggled on
+	
         * sprc/front/stratego-warnings.str: Added check for lower-case
           constructor names. It is adviced to write constructor names in
           Upper-case and variables in lower-case. THis is a heuristicto
