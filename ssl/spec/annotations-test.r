@@ -27,21 +27,21 @@ strategies
     apply-test(!"test1"
 	, set-annotations
 	, !(Plus(Var("a"), Var("b")), Int)
-	, !()
+	, !Plus(Var("a"),Var("b")){Int}
 	)
 
   test2 =
     apply-test(!"test2"
 	, set-annotations; topdown(id)
 	, !(Plus(Var("a"), Var("b")), Int)
-	, !()
+	, !Plus(Var("a"), Var("b")){Int}
 	)
 
   test3 =
     apply-test(!"test3"
 	, set-annotations; CatchAnnos
 	, !(Plus(Var("a"), Var("b")), Int)
-	, !()
+	, !Anno(Plus(Var("a"),Var("b")),Int)
 	)
 
 \end{code}
