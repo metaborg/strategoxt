@@ -1,3 +1,10 @@
+2003-12-04  Martin Bravenboer <martin@cs.uu.nl>
+
+	* spec/posix-error.str: added perror and strerror.
+	
+	* spec/posix-error-test.str: testsuite for strategies in
+	posix-error.
+
 2003-12-01  Martin Bravenboer <martin@cs.uu.nl>
 
 	* spec/parenthesize.str: fixed problem with unary operators. Added

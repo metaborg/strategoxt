@@ -13,17 +13,39 @@ signature
 strategies
 
   /**
-   * @type  _ -> Error
+   * @type    _ -> Error
+   * @since   0.9.4
    */
   get-last-error =
     !ErrorNumber(<get-errno>)
 
   /**
-   * @see   man errno
-   * @type  _ -> Int
+   * @see     man errno
+   * @type    _ -> Int
+   * @since   0.9.4
    */
   get-errno =
     prim("SSL_get_errno")
+
+  /**
+   * Print a system error message.
+   *
+   * @see    man perror
+   * @type   String -> String
+   * @since  0.9.4
+   */
+  perror =
+    ?s; prim("SSL_get_perror", s)
+
+  /**
+   * Return string describing error code
+   *
+   * @see    man strerror
+   * @type   Int -> String
+   * @since  0.9.4
+   */
+  strerror =
+    ?s; prim("SSL_strerror", s)
 
 overlays
 

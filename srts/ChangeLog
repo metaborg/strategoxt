@@ -1,3 +1,8 @@
+2003-12-04  Martin Bravenboer <martin@cs.uu.nl>
+	
+	* ssl/exec.[ch]: added ANSI C/POSIX strerror and perror to improve error
+	reporting in the SSL.
+	
 2003-11-10  Eelco Visser  <visser@cs.uu.nl>
 
 	* src/stratego.c (_all, _one): Changed one-step traversal

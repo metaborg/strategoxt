@@ -69,6 +69,8 @@ ATerm SSL_concat_strings(ATerm strings);
 
 ATerm SSL_get_errno(void);
 ATerm SSL_set_errno(ATerm code);
+ATerm SSL_strerror(ATerm errnum);
+ATerm SSL_perror(ATerm msg);
 ATerm SSL_EXDEV(void);
 
 #define SSL_P_tmpdir() ((ATerm)ATmakeString(P_tmpdir))

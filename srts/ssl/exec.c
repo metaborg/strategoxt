@@ -149,6 +149,25 @@ ATerm SSL_EXDEV(void) {
   return ((ATerm) ATmakeInt(EXDEV));
 }
 
+ATerm SSL_strerror(ATerm errnum) {
+  int val = _get_int(errnum);
+  char* result = strerror(val);
+  return (ATerm) ATmakeString(result);
+}
+
+ATerm SSL_perror(ATerm msg) {
+  char* s;
+  
+  if(ATisString(msg)) {
+    s = AT_getString(msg);
+    perror(s);
+  } else {
+    perror(NULL);
+  }
+
+  return msg;
+}
+
 /**************************************************************************
  * POSIX process procedures
  */
