@@ -94,5 +94,4 @@ bootclean :
 	done
 	@echo "Bootclean finished [`date`]" >> log/bootlog
 
-
-include Makefile.stratego
+include Makefile.common
