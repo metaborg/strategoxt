@@ -125,6 +125,7 @@ AB_CONFIG_PKG(sc-boot,
 AB_CONFIG_PKG(gpp-boot,
    --with-aterm=${ATERM}
    --with-ssl=${prefix}
+   --with-sglr=${SGLR}
 )
 AB_CONFIG_PKG(stratego-front,
    --with-stratego=${prefix} 
