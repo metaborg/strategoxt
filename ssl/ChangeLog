@@ -1,3 +1,30 @@
+2002-02-19  Eelco Visser  <visser@acm.org>
+
+	* spec/getopt.r: I've written an option parser for Stratego.  I'm
+	using it in CodeBoost now, without problems, but I haven't tested
+	it extensively, so there may still be issues.  Source is attached
+	to this email, with documentation.
+
+	It handles most of the standard GNU / Unix option syntax: short
+	options ("-a", "-b"), multiple short options in one word ("-ab"),
+	short options with arguments ("-a foo", "-bbar"), long options
+	("--long", "--long=arg", "--long arg"), options with optional
+	arguments ("-f", "-ffoo", "--file", "--file=foo", etc.), and
+	options that can be given mulitiple times.  A nicely formatted
+	help text is created automatically.  Options are (by default)
+	collected into a table, and can be retrieved at any time.
+	Non-option arguments are collected and returned.
+
+	I've only tested this with Stratego 0.6.4, so tweaking may be
+	necessary to make it work on 0.7. -- Otto Bagge
+
+
+2002-02-12  Eelco Visser  <visser@acm.org>
+
+	* spec/annotations.r: get-, set-, and rm-annotations are the SSL
+	names of the corresponding ATerm annotation manipulation
+	functions.
+
 2002-01-27  Eelco Visser  <visser@acm.org>
 
 	* spec/list-basic.r: bug in definition of reverse-acc

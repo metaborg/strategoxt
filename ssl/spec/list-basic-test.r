@@ -19,10 +19,15 @@ strategies
     )
 
   map-test =
-    apply-test(!"map-test"
+    apply-test(!"map-test1"
 	,map(!3)
 	,![1,2,3,4,5,6,7]
 	,![3,3,3,3,3,3,3]
+	);
+    apply-test(!"map-test2"
+	,map(!3)
+	,![]
+	,![]
 	)
 
   split-fetch-test =

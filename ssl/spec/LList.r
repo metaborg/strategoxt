@@ -26,6 +26,7 @@ module LList
 imports lib apply
   signature
     constructors
+      LNil : LList(a)
       LCons : a * Layout * LList(a) -> LList(a)
     overlays
       LCons(hd,tl) = LCons(hd,_ UL,tl)

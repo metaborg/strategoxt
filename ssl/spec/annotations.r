@@ -1,21 +1,26 @@
 \literate[annotations]
 
-% Copyright (C) 1998-2001 Eelco Visser <visser@acm.org>
-% 
-% This program is free software; you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation; either version 2, or (at your option)
-% any later version.
-% 
-% This program is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-% 
-% You should have received a copy of the GNU General Public License
-% along with this program; if not, write to the Free Software
-% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-% 02111-1307, USA.
+\begin{code}
+module annotations
+strategies
+
+  get-annotations = ?t; prim("SSLgetAnnotations", t)
+  set-annotations = ?(t, a); prim("ATsetAnnotations", t, a)
+  rm-annotations = ?t; prim("ATremoveAnnotations", t)
+
+  catch-annos(s) = rec x(CatchAnnos(s); Anno(all(x), id) <+ all(x))
+
+signature
+  constructors
+    Anno : a * b -> a
+
+rules
+
+  CatchAnnos =
+    bottomup(try(!Anno(<rm-annotations>, <get-annotations>)))
+\end{code}
+
+comments below are no longer valid EV 12/2/2002
 
 NOTE: NOT OPERATIVE
 
@@ -36,25 +41,19 @@ NOTE: NOT OPERATIVE
 	This module defines a transformation that captures
 	annotations.
 
-\begin{code}
-module annotations
-signature
-  constructors
-    Anno : a * List(b) -> a
-
-strategies
-
-  get-annotation = prim("_ST_get_annotation")
-  set-annotation = prim("_ST_set_annotation")
-
-  catch-annos(s) = rec x(CatchAnnos(s); Anno(all(x), id) <+ all(x))
-
-rules
-
-  CatchAnnos(keys) : 
-	x -> Anno(x, annos)
-	where <rzip(GetAnno)> (x, <keys>()) => annos
-
-  GetAnno : (trm, key) -> <mkterm> (key, anno)
-	    where <get-annotation> (trm, key) => anno
-\end{code}
+% Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
+% 
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+% 
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% 
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.

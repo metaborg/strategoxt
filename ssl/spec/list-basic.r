@@ -36,7 +36,7 @@ strategies
     rec x([] + [s | x])
 
   list-some(s) =
-    rec x([s| id]; [id| list(try(s))] <+ [id| x])
+    rec x([s| id] < [id| list(try(s))] + [id| x])
 
   list-some-filter(s) =
     rec x([s| id]; [id| filter(s)] <+ [id| x]; Tl)

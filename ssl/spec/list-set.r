@@ -149,9 +149,9 @@ strategies
 
   collect-exc(base, special : a * (a -> b) -> b) = 
     rec coll(
-      base
-      + special(coll)
-      + crush(![], union, coll)
+      (base 
+      <+ special(coll))
+      <+ crush(![], union, coll)
     )
 
   bu-collect(s) =

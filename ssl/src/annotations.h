@@ -19,9 +19,4 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 
 */
 
-
-#define _ST_set_annotation()   GO(_set_annotation())
-#define _ST_get_annotation()   GO(_get_annotation())
-
-void *_set_annotation(void);
-void *_get_annotation(void);
+ATerm SSLgetAnnotations(ATerm t);
