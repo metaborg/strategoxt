@@ -11,7 +11,14 @@ pkgdata_DATA 	= Stratego.rtree				   \
 	 	  stratego-ext.rtree
 
 CLEANFILES	= $(wildcard *.atree)
-BOOTCLEANFILES	= $(wildcard *.str) $(wildcard *.rtree) Stratego.def 
+BOOTCLEANFILES	= $(signatures) $(wildcard *.rtree) Stratego.def Stratego-Amb.def
+
+signatures 	= Stratego-Amb.str Stratego-Modules.str Stratego.str \
+	          Stratego-Constants.str Stratego-Overlays.str	     \
+	          Stratego-Strategies.str			     \
+	          Stratego-Rules.str Stratego-Terms.str		     \
+	          Stratego-Identifiers.str Stratego-Script.str	     \
+	          Stratego-Layout.str Stratego-Signatures.str	     
 
 Stratego.def: 
 	rm -f Stratego.def
