@@ -23,8 +23,6 @@ OPTFLAGS	= -O2
 PROFFLAGS	= -pg
 INCLUDES 	= -I$(srcdir)/../src -I$(ATERM)/include
 
-EXTRA_DIST 	= make_rules.in
-
 LDFLAGS		= -L$(top_builddir)/ssl \
 		  -L$(top_builddir)/src \
 		  -L$(ATERM)/lib 

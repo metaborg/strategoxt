@@ -16,9 +16,9 @@ News about Stratego releases
 
 Version 0.9 - under construction
 
-Release 0.9 is still under construction. The news items about the 0.9beta
-releases provide details about the changes. This entry provides a summary
-of the changes since release 0.8.1.
+Release 0.9 is still under construction. The news items about the
+0.9beta releases below provide details about the changes. This entry
+provides a summary of the changes since release 0.8.1.
 
 DOWNLOAD AND INSTALLATION
 
@@ -77,6 +77,7 @@ SUMMARY OF CHANGES with respect to 0.9beta7
   * XTC -- polishing
   * More tools based on XTC -- parse-stratego, sc, pack-stratego
   * C-Tools -- support for C generation (and transformation)
+  * AutoXT -- support for recursive 
   * Bug fixes and refactorings
 
 DETAILS
