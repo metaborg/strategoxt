@@ -14,7 +14,7 @@ strategies
             parenthesize-Stratego
           ; topdown(try(\ Parenthetical(s) -> ParenStrat(s) \ ))
           )
-        ; xtc-transform(!"ast2abox", !["-p", <xtc-find> "Stratego-pretty.pp" | <pass-verbose>])
+        ; xtc-transform(!"ast2abox", !["-p", <(get-config <+ !"Stratego-pretty.pp"); xtc-find> "-p" | <pass-verbose>])
         ; xtc-transform(!"abox2text", !<pass-verbose>)
       )
     )
@@ -28,6 +28,9 @@ strategies
 
   + ArgOption("-I" + "--Include", where(<extend-config>("-I", [<id>])),
 	      !"-I p|--Include p   include modules from directory p") 
+
+  + ArgOption("-p" , where(<set-config>("-p", <id>)),
+	      !"-p file   use pptable in file instead of Stratego-pretty.pp")
 
   pass-includes =
     <get-config<+![]> "-I" ; foldr(id, conc, !["-I", <id>])
