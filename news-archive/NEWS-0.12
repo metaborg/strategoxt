@@ -2,7 +2,19 @@ StrategoXT 0.12 -- released August ..., 2004
 
 ---------++ Summary of Changes
 
-   * Format Checking
+   * format-check: improved performance and error reporting
+
+   * pack-sdf: various improvements
+
+   * ater2xml and xml2aterm: pragmatic xml support.
+
+   * parse-unit: minor usability enhancements.
+
+   * sdf2parenthesize now fixes more conflicts.
+
+   * Stratego language: new if then construct
+
+   * Support for comment preserving transformations.
 
 ---------++ Format Checking
 
@@ -44,5 +56,5 @@ Developments, beta tests, and bug fixes were carried out by
 
    * Martin Bravenboer
    * Arthur van Dam
-   * Rob Vermaas
+   * Akim
    * Eelco Visser
