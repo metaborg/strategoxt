@@ -17,7 +17,7 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 dnl 02111-1307, USA.
 
-dnl $Id: configure.in.src,v 1.4 2001/11/22 08:24:38 mdejonge Exp $
+dnl $Id: configure.in.src,v 1.5 2001/12/21 09:33:54 mdejonge Exp $
 
 AC_INIT(configure.in)
 AM_INIT_AUTOMAKE(__PACKAGE__,__VERSION__)
@@ -39,12 +39,16 @@ AC_PACKAGE_REQUIRE(graph-tools, GraphXML2dot,
    [  --with-graph-tools      Specify location of graph-tools package])
 AC_SUBST(GRAPH_TOOLS)
 
+AC_PACKAGE_REQUIRE(pgen, sdf2table,
+   [  --with-pgen             Specify location of parser generator package])
+AC_SUBST(PGEN)
+
 AC_PACKAGE_REQUIRE(gpp, ast2abox,
    [  --with-gpp              Specify location of generic pretty-print
 package])
 AC_SUBST(GPP)
 
-AC_REVISION($Id: configure.in.src,v 1.4 2001/11/22 08:24:38 mdejonge Exp $)
+AC_REVISION($Id: configure.in.src,v 1.5 2001/12/21 09:33:54 mdejonge Exp $)
 
 AC_PROG_CC
 AC_PROG_INSTALL

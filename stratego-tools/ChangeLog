@@ -2,6 +2,7 @@
     * stratego-imports: added usage information
     * stratego: added stratego sdf definition and stratego pretty-print
       table
+    * stratego-pp: added stratego pretty-print tool tohtml-stratego
 
 2001-11-29 Merijn de Jonge <mdejonge@cwi.nl>
     * Version 0.2 released
