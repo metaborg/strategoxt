@@ -9,7 +9,7 @@ strategies
   * repeat(s,c) repeats strategy s as long as possible and finishes with c.
   */ 
   repeat(s, c)       = rec x(s; x <+ c)
-  repeat(s)          = rec x(try(s; x))
+  repeat(s)          = repeat(s, id)
 
  /**
   * repeat1(s,c) applies s at least once.
