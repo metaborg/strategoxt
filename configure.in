@@ -67,7 +67,7 @@ AC_ARG_WITH(pgen,
 AC_SUBST(PGEN)
 
 AC_ARG_WITH(latex, 
-  AC_HELP_STRING([--with-latex=DIR], [use LaTeX distribution at DIR @<:PREFIX@:>@]),
+  AC_HELP_STRING([--with-latex=DIR], [use LaTeX distribution at DIR @<:@PREFIX@:>@]),
   LATEX="$withval", 
   LATEX="$prefix"
 )
@@ -254,4 +254,5 @@ AB_CONFIG_PKG(xt,
   --with-graphviz=${GRAPHVIZ}
 )
 AB_CONFIG_PKG(boxenv,
+   --with-latex=${LATEX}
 )

@@ -17,18 +17,19 @@
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 #
 #
-# $Id: Makefile.am,v 1.4 2003/03/21 15:52:23 stratego Exp $
+# $Id: Makefile.am,v 1.5 2003/03/21 16:41:03 stratego Exp $
 
 include ../templates/make_rules
 
 SUBDIRS    = data
 
+# TODO: make boxenv.sty part of a distribution
+
 SRCS       = boxenv.ins boxenv.doc
 EXTRA_DIST = $(SRCS) boxenv.ins boxenv.doc
-
-CLEANFILES = $(data_DATA) *.log  *~
+CLEANFILES = $(pkgdata_DATA) *.log  *~
 
 pkgdata_DATA=boxenv.sty
 
 boxenv.sty: $(SRCS)
-	TEXINPUTS=$$TEXINPUTS:$(srcdir) latex boxenv.ins > /dev/null
+	TEXINPUTS=$$TEXINPUTS:$(srcdir) $(LATEX)/bin/latex boxenv.ins > /dev/null

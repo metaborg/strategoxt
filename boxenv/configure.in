@@ -1,19 +1,17 @@
 AC_INIT([boxenv],[0.9],[stratego-bugs@cs.uu.nl])
 AM_INIT_AUTOMAKE
 
-dnl Package switches.
+AC_ARG_WITH(latex, 
+  AC_HELP_STRING([--with-latex=DIR], [use LaTeX distribution at DIR @<:@PREFIX@:>@]),
+  LATEX="$withval", 
+  LATEX="$prefix"
+)
+AC_SUBST(LATEX)
 
-dnl Example:
-dnl
-dnl AC_ARG_WITH(aterm,    
-dnl    [  --with-aterm            Specify location of aterm library, default: ${prefix}], ATERM=$withval, ATERM=${prefix})
-dnl AC_SUBST(ATERM)
-
-AC_REVISION($Id: configure.in,v 1.5 2003/01/25 23:13:33 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.6 2003/03/21 16:41:03 stratego Exp $)
 
 AC_PROG_CC
 AC_PROG_INSTALL
-
 
 AC_PATH_PROGS(SH, sh)
 
@@ -25,13 +23,15 @@ AC_SUBST(TOOLS)
 AC_SUBST(RELEASED)
 AC_SUBST(UNRELEASED)
 
-AC_OUTPUT( 
+AC_CONFIG_FILES([
 	Makefile 
 	VERSION 
 
 	src/Makefile 
-	
-                          src/templates/Makefile                  src/templates/data/Makefile                  src/boxenv/Makefile                  src/boxenv/data/Makefile
+  src/templates/Makefile
+  src/templates/data/Makefile
 
-)
-
+  src/boxenv/Makefile
+  src/boxenv/data/Makefile
+])
+AC_OUTPUT
