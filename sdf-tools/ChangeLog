@@ -1,3 +1,8 @@
+2001-08-09 Merijn de Jonge <mdejonge@cwi.nl> 
+   * src/sdf-imports: Adapted graphxml output for fixed graphxml signature
+   * src/sdf-imports: -g switch now produces graphxml output (was import
+     graph format). New -ig switch to get import graph output.
+
 2001-06-11 Merijn de Jonge <mdejonge@cwi.nl> 
    * src/lib: intergation module ppp-wrap moved to xt-package
    * src/sdf-doc: Integertion stuff moved to xt package

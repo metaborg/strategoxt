@@ -17,7 +17,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: get-modules.r,v 1.2 2001/06/07 13:22:15 mdejonge Exp $
+% $Id: get-modules.r,v 1.3 2001/08/09 11:58:35 mdejonge Exp $
 
 \begin{code}
 module get-modules
@@ -42,8 +42,9 @@ strategies
    parse-options( 
             ArgOption( "-I", \ x -> Include(x) \ ) +
             ArgOption( "-e", \ x -> Ext(x) \ ) +
-               Option( "-g", !GraphOutput ) +
-               Option( "-l", !FullPathName ) +
+               Option( "-l",          !FullPathName ) +
+               Option( "--ig",        !GraphOutput ) +
+               Option( "-g",          !GraphOutput ) +
                Option( "--graphxml" , !GraphXMLOutput ) + 
                io-options );
    ?options;
@@ -72,9 +73,9 @@ strategies
    <+
       // Generate GraphXML output
       where(<option-defined(?GraphXMLOutput())>options) ;
-      split( collect( \ Node(x)    -> node(name(<quote>x)) \ ), 
-             collect( \ Edge(x, y) -> edge([source(<quote>x), 
-                                      target(<quote>y)]) \ ) ); 
+      split( collect( \ Node(x)    -> node1(name(<quote>x)) \ ), 
+             collect( \ Edge(x, y) -> edge1([source(<quote>y), 
+                                      target(<quote>x)]) \ ) ); 
       ?(nodes, edges); 
       !GraphXML( [], [graph([], <conc>(nodes, edges))])
    <+
@@ -90,8 +91,8 @@ strategies
 	       ["usage : ", prog, 
                 " [-S] [-I dir] [-i file]",
 		" [-o file] [-s] [--help|-h|-?]",
-                " [-g] [-l]",
-                " [--graphxml]",
+                " [-g|--graphxml] [-l]",
+                " [--ig]",
                 " [-e ext]" ]);
     <exit> 1
 \end{code}
