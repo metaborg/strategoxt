@@ -1,0 +1,10 @@
+module parse-parse-testsuite
+imports xtc-lib stratego-xt-xtc-tools
+
+strategies
+
+  main-parse-parse-testsuite =
+    xtc-io-wrap(
+      xtc-sglr(!"parse-testsuite.tbl", !"TestSuite")
+    ; xtc-implode-asfix
+    )

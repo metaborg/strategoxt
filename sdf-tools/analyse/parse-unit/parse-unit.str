@@ -1,10 +1,10 @@
 module parse-unit
 imports xtc-lib io list-filter string list-cons options config
-imports parse-unit-testsuite
+imports oldskool-parse-testsuite parse-testsuite test-results testsuite-upgrade
 
 strategies
 
-  io-parse-unit =
+  main-parse-unit =
     xtc-io-wrap(parse-unit-options, parse-unit)
 
   parse-unit-options =
@@ -27,8 +27,9 @@ strategies
 
   parse-unit = 
     xtc-io-transform(
-      echo-start
-    ; ?TestSuite(Name(name), Sort(sort), Tests(<id>))
+      try(upgrade-oldskool-testsuite)
+    ; echo-start
+    ; ?parse-testsuite(name(name), topsort(sort), <id>)
     ; map-with-index(execute-test(!sort, get-parse-table))
     ; !TestResults(<id>)
     ; where(<echo-results> (name, <id>))
@@ -42,7 +43,7 @@ strategies
 
   execute-test(sort, table) = 
       ?(i, <id>); ?t
-    ; ?Test(Descr(n), input, expected)
+    ; ?parse-test(description(n), input, expected)
     ; <parse> (<sort>, <table>, input)
     ; ?result
     ; <create-test-result> (<id>, expected)
@@ -53,7 +54,7 @@ strategies
   echo-start =
     if-verbose1(
       where(
-        ?TestSuite(Name(name), _, Tests(tests))
+        ?parse-testsuite(name(name), _, tests)
       ; <echo> "-----------------------------------------------------------------------"
       ; <concat-strings; echo> ["executing testsuite ", name, " with ", <length; int-to-string> tests, " tests"]
       ; <echo> "-----------------------------------------------------------------------"
@@ -74,7 +75,7 @@ strategies
 
   echo-report =
     if-verbose1(
-      ?(i, Test(Descr(n), _, expected), result, <id>)
+      ?(i, parse-test(description(n), _, expected), result, <id>)
     ; where(
         try(
           ?Success()
@@ -93,25 +94,41 @@ strategies
 
 strategies
 
-  create-test-result:
-    (ParseResult(Failure(), _), Failure()) -> Success()
+  create-test-result =
+       create-test-result-simple
+    <+ create-test-compare
+    <+ !Failure()
 
-  create-test-result:
-    (ParseResult(Failure(), _), expected) -> Failure()
-      where !expected; not(?Failure())
+  /**
+   * failure & success -> failure
+   */
+  create-test-result-simple:
+    (ParseResult(Failure(), _), success()) -> Failure()
 
-  create-test-result:
-    (ParseResult(Success(), _), Success()) -> Success()
+  /**
+   * failure & pattern -> failure
+   */
+  create-test-result-simple:
+    (ParseResult(Failure(), _), pattern(_)) -> Failure()
 
-  create-test-result:
-    (ParseResult(Success(), f@FILE(_)), expected) -> Success()
-      where !expected; not(?Success())
-          ; !(<read-from> f, expected); eq
+  /**
+   * success & success -> success
+   */
+  create-test-result-simple:
+    (ParseResult(Success(), _), success()) -> Success()
 
-  create-test-result:
-    (ParseResult(Success(), f@FILE(_)), expected) -> Failure()
-      where !expected; not(?Success())
-          ; !(<read-from> f, expected); not(eq)
+  /**
+   * failure & failure -> success
+   */
+  create-test-result-simple:
+    (ParseResult(Failure(), _), failure()) -> Success()
+
+  /**
+   * success & pattern -> compare
+   */
+  create-test-compare:
+    (ParseResult(Success(), f@FILE(_)), pattern(p)) -> Success()
+      where <eq> (<read-from> f, <implode-aterm> p)
 
 strategies
 
@@ -123,20 +140,20 @@ strategies
     ; <parse-helper> (["-2A", "-p", table, "-s", sort], input)
 
   parse-helper = 
-      ?(options, String(s))
+      ?(options, string(s))
     ; <print-to-tmp-file> s
     ; ?file
     ; finally(
-        <parse-sglr> (options, File(<id>))
+        <parse-sglr> (options, file(<id>))
       , <rm-files> [file]
       )
 
   parse-helper :
-    (opts, File(s)) -> <parse-sglr> (opts, File(<abs-test-file> s))
+    (opts, file(s)) -> <parse-sglr> (opts, file(<abs-test-file> s))
     
   parse-sglr =
-      ?(options, File(file))
-    ; !FILE(file)
+      ?(options, file(pathname))
+    ; !FILE(pathname)
     ; xtc-transform(!"sglr", !options)
     ; (   xtc-transform(!"implode-asfix", !["-b"])
         ; !ParseResult(Success(), <id>)

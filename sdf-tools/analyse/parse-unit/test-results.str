@@ -1,0 +1,10 @@
+module test-results
+
+signature
+  constructors
+    TestResults: List(TestResult) -> TestResults
+
+    Success:    TestResult
+    Failure:    TestResult
+
+    ParseResult: Result * a -> ParseResult(a)

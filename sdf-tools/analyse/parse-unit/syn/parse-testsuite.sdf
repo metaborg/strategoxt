@@ -1,0 +1,62 @@
+module parse-testsuite
+imports ATerms
+exports
+  sorts TestSuite
+
+  context-free syntax
+    "testsuite" Name TopSort Test+ -> TestSuite {cons("parse-testsuite")}
+    "topsort" Sort -> TopSort {cons("topsort")}
+
+    "test" Description Input Result -> Test {cons("parse-test")}
+
+    "->" ATerm -> Result {cons("pattern")}
+    "_" -> ATerm {cons("wildcard")}
+
+    "fails"    -> Result {cons("failure")}
+    "succeeds" -> Result {cons("success")}
+
+    "file" PathName -> Input {cons("file")}
+
+  %% allow unquoted upper case AFuns
+  lexical syntax
+    [A-Z][A-Za-z0-9\-]*[A-Za-z0-9] -> UQLiteral {cons("more-chars")}
+
+  %% allow function applications without arguments
+  context-free syntax
+    fun:AFun "(" ")" -> ATerm {cons("fun")}
+
+  syntax
+    "\""       <InputChars1-LEX> "\""       -> <Input-CF> {cons("string")}
+    "\"\""     <InputChars2-LEX> "\"\""     -> <Input-CF> {cons("string")}
+    "\"\"\""   <InputChars3-LEX> "\"\"\""   -> <Input-CF> {cons("string")}
+    "\"\"\"\"" <InputChars4-LEX> "\"\"\"\"" -> <Input-CF> {cons("string")}
+
+  context-free syntax
+    EOLString -> Name {cons("name")}
+    EOLString -> Description {cons("description")}
+
+  lexical syntax
+    [A-Z]                          -> Sort
+    [A-Z][A-Za-z0-9\-]*[A-Za-z0-9] -> Sort
+
+    ~[\n]+ -> EOLString
+    ~[\"]* -> InputChars1
+
+    (~[\"]  | DQuote1) -> InputChars2
+    (~[\"]  | DQuote1 | DQuote2) -> InputChars3
+    (~[\"]  | DQuote1 | DQuote2 | DQuote3 ) -> InputChars4
+
+    "\""     -> DQuote1
+    "\"\""   -> DQuote2
+    "\"\"\"" -> DQuote3
+
+    ~[]*   -> InputChars2
+
+    [A-Za-z0-9\-\_\.\\\/]+ -> PathName
+
+  lexical restrictions
+    Sort      -/- [A-Za-z0-9\-]
+    EOLString -/- ~[\n]
+    DQuote1   -/- [\"]
+    DQuote2   -/- [\"]
+    DQuote3   -/- [\"]

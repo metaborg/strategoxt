@@ -1,0 +1,26 @@
+module testsuite-upgrade
+imports oldskool-parse-testsuite parse-testsuite explode-aterm
+
+strategies
+
+  upgrade-oldskool-testsuite :
+    TestSuite(Name(n), Sort(s), Tests(ts)) -> parse-testsuite(name(n), topsort(s), <map(upgrade-test)> ts)
+
+  upgrade-test :
+    Test(Descr(d), input, result) -> parse-test(description(d), <upgrade-input> input, <upgrade-result> result)
+
+  upgrade-input :
+    String(s) -> string(s)
+    
+  upgrade-input :
+    File(f) -> file(f)
+
+  upgrade-result =
+       \ Success() -> success() \
+    <+ \ Failure() -> failure() \
+    <+ \ t -> pattern(<explode-aterm> t) \
+
+
+signature
+  constructors
+    string : String -> Input

@@ -2,7 +2,7 @@ testsuite RTG nonterminals
 topsort NonTerm
 
 test Primitive string
-  "<string>" -> string()
+  "<string>" -> string
 
 test Primitive string
   "String" -> plain("String")
@@ -17,8 +17,7 @@ test Quoted non terminal 1
   "[Bl\]a]" succeeds
 
 test Quoted non terminal 7
-  "[Bl\a]" -> nonterm(quoted([chars("Bl"), escapr-seq(92),
-  chars("a")]))
+  "[Bl\a]" -> nonterm(quoted([chars("Bl"), escapr-seq(92), chars("a")]))
 
 test Whatever
   file aap/noot/mies -> Plus(_, Plus(_, _))

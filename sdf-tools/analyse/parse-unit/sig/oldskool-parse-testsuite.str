@@ -18,11 +18,3 @@ signature
 
     String:     String -> Input
     File:       File   -> Input
-
-    TestResults: List(TestResult) -> TestResults
-
-    Success:    TestResult
-    Failure:    TestResult
-
-    ParseResult: Result * a -> ParseResult(a)
-

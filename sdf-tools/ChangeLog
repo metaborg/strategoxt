@@ -1,3 +1,37 @@
+2004-02-15  Martin Bravenboer  <martin@cs.uu.nl>
+
+	* analyse/parse-unit/*: designed a concrete syntax for parse-unit
+	testsuites. Parse-unit is now ready for the technology push.
+
+	Example:
+	----------------------------------------------------
+	testsuite RTG nonterminals
+	topsort NonTerm
+
+	test Primitive string
+	  "<string>" -> string
+
+	test Primitive string
+	  "String" -> plain("String")
+
+	test Quoted non terminal 1
+	  "[Bla]"  -> nonterm(quoted([chars("Bla")]))
+
+	test Quoted non terminal 1
+	  "[Bl]a]" fails
+
+	test Quoted non terminal 1
+	  "[Bl]a]" succeeds
+	----------------------------------------------------
+
+	The concrete syntax does not require escaping and that's very
+	convenient in typical parse-testsuites. Instead of escaping
+	special characters you just write more double quotes if your test
+	involves double quotes. Descriptions of tests and testsuite are
+	terminated by an newline. Wildcards are allowed in the syntax, but
+	are not supported in the implementation. Implementing wildcards in
+	parse-unit is a to do.
+
 2004-02-13  Martin Bravenboer  <martin@cs.uu.nl>
 
 	* trans/gen-renamed-sdf-module.str: a simple collect over the AST

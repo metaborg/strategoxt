@@ -1,0 +1,19 @@
+module parse-testsuite
+imports ATerms
+signature
+  constructors
+    parse-testsuite : Name * TopSort * List(Test) -> TestSuite
+    topsort         : Sort -> TopSort
+    parse-test      : Description * Input * Result -> Test
+    pattern         : ATerm -> Result
+    wildcard        : ATerm
+    failure         : Result
+    success         : Result
+    file            : PathName -> Input
+signature
+  constructors
+    fun : AFun -> ATerm
+signature
+  constructors
+    name        : EOLString -> Name
+    description : EOLString -> Description
