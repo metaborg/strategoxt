@@ -18,18 +18,20 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: dev-pkg-list,v 1.1 2000/04/12 16:04:54 eelco Exp $
+# $Id: dev-pkg-list,v 1.2 2000/04/12 16:58:01 mdejonge Exp $
 
 # This file lists name, version, and location of all components 
 # of an XT distribution.
 
 aterm,0.24,http://www.cwi.nl/projects/MetaEnv/aterm/aterm-0.24.tar.gz
 
+asfix,0.1,http://www.cwi.nl/projects/MetaEnv/asfix/asfix-0.1.tar.gz
+
 asc-support,0.2,http://www.cwi.nl/projects/MetaEnv/asc-runtime/asc-support-0.2.tar.gz
 
-pgen,0.2,http://www.cwi.nl/projects/MetaEnv/pgen/pgen-0.2.tar.gz
+pgen,0.3,http://www.cwi.nl/projects/MetaEnv/pgen/pgen-0.3.tar.gz
 
-sglr,2.28,http://www.cwi.nl/projects/MetaEnv/sglr/sglr-2.28.tar.gz
+sglr,2.29,http://www.cwi.nl/projects/MetaEnv/sglr/sglr-2.29.tar.gz
 
 stratego,0.4.12,cvsdev:sunshine.cs.uu.nl:/users/visser/CVSREP
 #stratego,0.4.12,http://www.cs.uu.nl/~visser/ftp/stratego-0.4.12.tar.gz
