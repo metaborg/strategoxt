@@ -1,3 +1,10 @@
+2003-12-11  Martin Bravenboer  <martin@cs.uu.nl>
+
+	* autoxt.m4: added improved SET_SVN_REVISION AC macro. It
+	determines the SVN revision of the source tree using svn status |
+	awk or svn-revision. Arthur van Dam contributed to the fetching of
+	the correct revision.
+
 2003-12-05  Martin Bravenboer  <martin@cs.uu.nl>
 
 	* Makefile.xt: In the .sdf.def rule applying asfix-yield is no

@@ -204,3 +204,24 @@ AC_DEFINE(XTC_REPOSITORY(),
           [ATmakeString("@REPOSITORY@")],
           [Location of the XTC repository.])
 ])# USE_XT_PACKAGES
+
+AC_DEFUN([SET_SVN_REVISION],
+[
+AC_MSG_CHECKING([for the SVN revision of the source tree])
+
+if test -e ".svn"; then
+   REVFIELD="1"
+   SVN_REVISION=`svn status -v -N -q ./ | awk "{ if(\\\$NF == \".\") print \\\$$REVFIELD }"`
+   AC_MSG_RESULT($SVN_REVISION)
+else
+  if test -e "svn-revision"; then
+    SVN_REVISION="`cat svn-revision`"
+    AC_MSG_RESULT($SVN_REVISION)
+  else
+    SVN_REVISION="0"
+    AC_MSG_RESULT([not available, defaulting to 0])
+  fi
+fi
+AC_SUBST(SVN_REVISION)
+
+])
