@@ -5,7 +5,7 @@ module Stratego-Optimized-Format
 imports Stratego-Amb automaton lib
 strategies
 
-  main = iowrap(stratego-specification) 
+  main = io-wrap(stratego-specification) 
 
   stratego-specification =
     Specification([id, Strategies(list(strategy-definition))])

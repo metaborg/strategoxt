@@ -9,7 +9,7 @@ signature
 
 strategies
 
-  main = iowrap(stratego-specification)
+  main = io-wrap(stratego-specification)
 
   stratego-specification =
     Specification([
