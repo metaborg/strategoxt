@@ -1,3 +1,30 @@
+2003-12-24  Martin Bravenboer <martin@cs.uu.nl>
+
+	* spec/posix-file.str: added chdir to change the current working
+	directory. Note that chdir implements the error reporting in the
+	SSL itself now we have a perror in the SSL. If you really want no
+	warning, then you can use the plain primitive.
+
+	This kind of error-reporting is very easy to implement in
+	Stratego:
+
+	?pathname; prim("SSL_chdir", pathname) => 0
+	<+ < conc-strings
+	   ; perror
+	   ; fail
+	   > ("SSL/chdir: Cannot change current working directory to ", <id>)
+
+	This will for example output the following message if the pathname
+	does not exist:
+	
+        SSL/chdir: Cannot change current working directory to /tddmp: No
+	such file or directory
+
+	* tests/posix-file-test.str: tests for chdir
+
+	* Adding new primitives is quite complex now we have separation
+	compilation with SSL libraries in the SRTS ...
+
 2003-12-21  Martin Bravenboer <martin@cs.uu.nl>
 
 	* spec/posix-process.str: added execv.

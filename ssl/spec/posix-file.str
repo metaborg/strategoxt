@@ -136,8 +136,20 @@ strategies
   P_tmpdir =
     prim("SSL_P_tmpdir")
 
+  /**
+   * Returns the current working directory.
+   */
   getcwd =
     prim("SSL_getcwd")
+
+  /**
+   * Change current working directory.
+   *
+   * @type String -> String
+   */
+  chdir =
+    ?pathname; prim("SSL_chdir", pathname) => 0
+    <+ <conc-strings; perror; fail> ("SSL/chdir: Cannot change current working directory to ", <id>)
 
   home-dir =
     <getenv> "HOME"

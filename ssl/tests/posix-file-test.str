@@ -8,8 +8,15 @@ strategies
       fileno-tests
 //    ; access-tests
     ; aterm-io-tests
-    ; char-output-tests 
+    ; char-output-tests
+    ; cwd-tests
     )
+
+  cwd-tests =
+      where(getcwd => cwd)
+    ; apply-test(!"chdir to tmpdir", chdir; getcwd, temp-dir, temp-dir)
+    ; apply-test(!"chdir to home dir", chdir; getcwd, home-dir, home-dir)
+    ; apply-test(!"chdir to old cwd", chdir; getcwd, !cwd, !cwd)
 
   fileno-tests =
       apply-test(!"fileno on stdin  -- 1", fileno, stdin-stream, !0)
