@@ -54,8 +54,11 @@ strategies
    * @type  starts  List(NonTerm)
    */
   format-check =
-    bottomup-consnil(
+    where(<repeat(Type)> "")
+  ; bottomup-consnil(
        where(get-types)
+
+    <+ type-string
 
     <+ repeat1(Type)
        ; report-types
@@ -64,6 +67,12 @@ strategies
 
     <+ report-type-failure(id)
     )
+
+  type-string =
+    is-string
+    ; ?s
+    ; where(<get-types> "" => set)
+    ; rules(Types : s -> set)
 
   is-typed =
     where(get-types; iset-elements => [_ | _])
@@ -243,7 +252,7 @@ strategies
   retrieve-types =
     Types
     <+ ?t
-       ; new-iset(|8, 75) => set
+       ; new-iset(|4, 75) => set
        ; rules(Types : t -> set)
 
   get-types =

@@ -7,6 +7,7 @@ libexec_PROGRAMS = \
   core-format-check-to-xhtml \
   core-format-check-pp-aterm
 
+AM_CFLAGS=-pg
 SCFLAGS          = --main main-$* --dr new
 STRINCLUDES      = -I $(top_srcdir)/sig \
                    -I $(top_srcdir)/lib \
@@ -16,7 +17,17 @@ STRINCLUDES      = -I $(top_srcdir)/sig \
                    -I $(XML_FRONT)/share/xml-front \
                    -I $(XML_FRONT)/share/sdf/xml-front
 
-LDADD += $(SSL_LIBS)
+LDADD = \
+  -L$(SRTS)/lib/srts \
+  -L$(ATERM)/lib \
+  -lliblib_prof \
+  -lstratego_prof \
+  -lstratego-choice_prof \
+  -lstratego-lib_prof \
+  -lATerm-gcc \
+  -lm
+
+# LDADD += $(SSL_LIBS)
 
 EXTRA_DIST       = $(wildcard *.str) $(wildcard *.meta)
 CLEANFILES       = $(wildcard *.dep)
