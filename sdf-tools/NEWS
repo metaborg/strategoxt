@@ -1,3 +1,14 @@
+Version 0.2 released: 2001-11-29
+	* Tools adapted for new versions of sglr/pgen.
+	* Added support for grammar identifier checking.
+	* runbm: re-added -n switch (it is supported by sglr again).
+	* sdf-regularize.r: Recognize groups of productions that can be
+	  expressed by means of a regular expression. Assumptions: (1) all
+	  productions for a sort are in one context-free syntax section (2)
+	  all productions are available.  Sorts representing regular
+	  expressions are replaced by these expressions to improve the
+	  abstract syntax of the language (no superfluous injections).
+
 Version 0.1 released: 2001-09-20
 	* This package contains the sdf tools extracted from the
 	  Grammar Tools package, version 0.7.
