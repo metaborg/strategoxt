@@ -1,15 +1,11 @@
 module lift-dynamic-rules
-imports Stratego lib desugar
-
-signature // will be moved to SSL module later...
-  constructors
-
-    Closure : Id * List(Term) -> Closure
+imports Stratego lib desugar dr-old-to-new
 
 strategies
 
   LiftDynamicRules =
-    Specification([id,id, Strategies(define-rule-scope; lift-dynamic-rules)])
+    upgrade-old-dr-constructs
+  ; Specification([id,id, Strategies(define-rule-scope; lift-dynamic-rules)])
 
 /* Desugar dynamic rule scopes {| ... : ... |} */
 
@@ -70,7 +66,7 @@ that are declared in context using the dynamic rule ContextVar */
 
   split-dynamic-rules :
     |[ rules(drd*) ]| -> 
-    <map(SplitDynamicRule); unzip> drd*
+    <map(SplitDynamicRule); unzip; (id, concat)> drd*
 
   SplitDynamicRule:
     drd@DynRuleDef|[ f(as1|as2) : r ]| ->

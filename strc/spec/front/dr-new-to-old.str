@@ -55,10 +55,7 @@ strategies
    * Rewrites :-
    */
   Downgrade-DynRuleDef :
-    UndefineDynRuleNoCond(DynRuleId(RDecT(x, ss, st)), t) -> RDefT(x, ss, st, |[ t -> Undefined() where id ]|)
-
-  Downgrade-DynRuleDef :
-    UndefineDynRule(DynRuleId(RDecT(x, ss, st)), t, s) -> RDefT(x, ss, st, |[ t -> Undefined() where s ]|)
+    UndefineDynRule(DynRuleId(RDecT(x, ss, st)), t) -> RDefT(x, ss, st, |[ t -> Undefined() where id ]|)
 
   /**
    * Rewrites :+

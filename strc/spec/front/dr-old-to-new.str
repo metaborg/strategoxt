@@ -1,37 +1,44 @@
 module dr-old-to-new
-imports Stratego lib
+imports Stratego
 
 strategies
 
-  dr-old-to-new-io = 
-    io-wrap(dr-old-to-new)
-
-  dr-old-to-new = bottomup(DROldToNew)
+  upgrade-old-dr-constructs =
+    topdown(
+      if ?|[ extend rules(rd*) ]|
+        then UpgradeExtendDynamicRules
+        else if ?|[ override rules(rd*) ]|
+          then UpgradeOverrideDynamicRules
+          else if ?|[ extend override rules(rd*) ]|
+            then UpgradeExtendOverrideDynamicRules
+            else id
+          end
+        end
+      end
+    )
 
 rules
 
-  DROldToNew :
-   |[ rules(rd*) ]| -> GenDynRules(drd*)
-   where <map(RDefToDRDef)> rd* => drd*
-
-  DROldToNew :
-   |[ extend rules(rd*) ]| -> GenDynRules(drd*)
+  UpgradeExtendDynamicRules :
+   |[ extend rules(rd*) ]| -> |[ rules(drd*) ]|
    where <map(RDefToDRDef-extend)> rd* => drd*
 
-  RDefToDRDef :
-    |[ f : r ]| -> DRN:|[ f : r ]|
-
-  RDefToDRDef :
-    |[ f(as) : r ]| -> DRN:|[ f(as) : r ]|
-
-  RDefToDRDef :
-    |[ f(as1|as2) : r ]| -> DRN:|[ f(as1|as2) : r ]|
+  RDefToDRDef-extend :
+    |[ f(as1|as2) : t1 -> t2 where s ]| -> DynRuleDef|[ f(as1|as2) :+ t1 -> t2 where s ]|
+    where not(!t2 => Term|[ Undefined ]|)
 
   RDefToDRDef-extend :
-    |[ f : r ]| -> DRN:|[ f :+ r ]|
+    rd@|[ f(as1|as2) : t1 -> Undefined where s ]| -> DynRuleDef|[ f(as1|as2) :- t1 ]|
+    where id//!t2 => Term|[ Undefined ]|
+        ; (!s => |[ id ]|
+           <+      say(!"[normalize-spec | warning] rule undefining doesn't allow a condition strategy anymore")
+              ; <debug(!"[normalize-spec | warning] Your condition has been removed from the original dynamic rule:")> rd
+          )
 
-  RDefToDRDef-extend :
-    |[ f(as) : r ]| -> DRN:|[ f(as) :+ r ]|
+  UpgradeOverrideDynamicRules =
+    say(!"[normalize-spec | fatal error] `override rules' not yet supported in conversion to new style.")
+  ; <exit> 1
 
-  RDefToDRDef-extend :
-    |[ f(as1|as2) : r ]| -> DRN:|[ f(as1|as2) :+ r ]|
+  UpgradeExtendOverrideDynamicRules =
+    say(!"[normalize-spec | fatal error] `extend override rules' not yet supported in conversion to new style.")
+  ; <exit> 1
