@@ -74,7 +74,7 @@ AM_CONFIG_HEADER([config.h])
 
 ### PACKAGES ##########################
 
-PKGS="autoxt srts xtc sdf-import stratego-front asfix-tools strc gpp c-tools ssl concrete-syntax aterm-front sdf-front dot-tools graph-tools sdf-tools aterm-tools stratego-regular stratego-tools boxenv stratego-util"
+PKGS="autoxt srts xtc sdf-import stratego-front asfix-tools strc gpp c-tools ssl concrete-syntax aterm-front sdf-front dot-tools graph-tools sdf-tools aterm-tools stratego-regular xml-front stratego-tools boxenv stratego-util"
 AC_SUBST(PKGS)
 
 top_srcdir=`pwd`
@@ -266,6 +266,16 @@ AB_CONFIG_PKG(dot-tools,
 )
 
 AB_CONFIG_PKG(stratego-regular,
+   --with-aterm=${ATERM}
+   --with-sglr=${SGLR}
+   --with-pgen=${PGEN}
+   --with-strategoxt=${STRATEGOXT}
+   --with-srts=${BUILD_SRTS}
+   --with-xtc=${INSTALL_XTC}
+   --with-repository=${REPOSITORY}
+)
+
+AB_CONFIG_PKG(xml-front,
    --with-aterm=${ATERM}
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
