@@ -1,3 +1,8 @@
+2003-08-24  Eelco Visser  <visser@cs.uu.nl>
+
+	* syn/Stratego-Strategies.sdf: Allow list variables as
+	formal term arguments.
+
 2003-08-20  Martin Bravenboer  <mbravenb@cs.uu.nl>
 
   * parse/meta-explode.str: in str-explode a string should
