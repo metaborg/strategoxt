@@ -8,11 +8,8 @@ SINCLUDES	 = -I $(STRATEGO_FRONT)/share/stratego-front \
 
 AM_LDFLAGS	= -L$(SRTS)/lib/srts -L$(ATERM)/lib 
 
-export LD_LIBRARY_PATH := $(SRTS)/lib/srts:${LD_LIBRARY_PATH}
-
-check_PROGRAMS 	= arity-test as-pattern assignment backtrack-test2    \
-		  backtrack-test3 backtrack-test comment-test	      \
-		  conditional-innermost congruence-arguments	      \
+check_PROGRAMS 	= arity-test as-pattern assignment \
+		  comment-test conditional-innermost congruence-arguments \
 		  congruence-thread dynamic-rules-test empty-sections \
 		  explode-test flatten-test higher-order-arg	      \
 		  implicit-var-decl improper-list-test innermost-pure \
@@ -22,9 +19,11 @@ check_PROGRAMS 	= arity-test as-pattern assignment backtrack-test2    \
 		  prop quoted-keywords rename-test stratlib-test tail \
 		  thread-test traversal-test twice unification-test 
 
+# backtrack-test2 backtrack-test3 backtrack-test
+
 TESTS 		= $(check_PROGRAMS)
 
-STRATEGORUNLIBS = -lstratego.opt -lstratego-lib.opt -lATerm-gcc -lm
+STRATEGORUNLIBS = -lstratego.opt -lstratego-choice -lstratego-lib.opt -lATerm-gcc -lm
 LDADD 		= $(STRATEGORUNLIBS)
 
 CLEANFILES 	= *.o *.ac *.s[0-9]* *.f* *.ac *.c.abox \

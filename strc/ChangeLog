@@ -1,3 +1,18 @@
+2004-06-25  Martin Bravenboer  <martin@cs.uu.nl>
+
+	* spec/test1/Makefile.am: disabled test26. This test uses the
+	global choice, which can no longer be linked with the standard
+	choice point implementation.
+
+	* spec/test2/Makefile.am: disabled backtrack tests.
+
+	* spec/test1/Makefile.am: link with stratego-choice library.
+	* spec/test2/Makefile.am: link with stratego-choice library.
+
+	* spec/test1/Makefile.am:
+	* spec/test2/Makefile.am: removed LD_LIBRARY_PATH, since this
+	is not required when using libtool for linking.
+	
 2004-06-20  Martin Bravenboer  <martin@cs.uu.nl>
 
 	* Makefile.am: install libtool as an libexec program.

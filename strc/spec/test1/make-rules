@@ -11,7 +11,7 @@ CINCL = -I$(SRTS)/include \
 
 AM_CFLAGS = -I$(SRTS)/include -I$(ATERM)/include -I /usr/include
 
-SCLibs = -L$(SRTS)/lib/srts -lstratego-lib -lstratego \
+SCLibs = -L$(SRTS)/lib/srts -lstratego-lib -lstratego-choice -lstratego \
 	 -L$(ATERM)/lib -lATerm-gcc $(CHOICELDFLAGS) \
 	 -lm
 
