@@ -1,0 +1,5 @@
+module Stratego-Amb
+imports Stratego
+signature
+  constructors
+    Cong : Id * List(Strat) -> Strat
