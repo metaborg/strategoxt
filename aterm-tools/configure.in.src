@@ -17,7 +17,7 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 dnl 02111-1307, USA.
 
-dnl $Id: configure.in.src,v 1.9 2001/06/05 14:39:28 mdejonge Exp $
+dnl $Id: configure.in.src,v 1.10 2001/07/16 17:15:32 jvisser Exp $
 
 AC_INIT(configure.in)
 AM_INIT_AUTOMAKE(__PACKAGE__,__VERSION__)
@@ -30,10 +30,10 @@ dnl Package switches.
 AC_ARG_WITH(stratego, 
    [  --with-stratego         Specify location of stratego library], 
    STRATEGO=$withval, 
-   STRATEGO='$prefix')
+   STRATEGO='${prefix}')
 AC_SUBST(STRATEGO)
 
-AC_REVISION($Id: configure.in.src,v 1.9 2001/06/05 14:39:28 mdejonge Exp $)
+AC_REVISION($Id: configure.in.src,v 1.10 2001/07/16 17:15:32 jvisser Exp $)
 
 AC_PROG_CC
 AC_PROG_INSTALL
