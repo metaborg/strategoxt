@@ -137,12 +137,11 @@ strategies // high-level API with implicit rule set
   dr-add-rule(|name, label, key, value) =
     where(
       dr-get-rule-set(|name)
-      ; debug(!"dr-add-rule1: ")
+      //; debug(!"dr-add-rule1: ")
       ; dr-add-to-rule-set(|label, key, value)
-      ; debug(!"dr-add-rule2: ")
+      //; debug(!"dr-add-rule2: ")
       ; dr-set-rule-set(|name)
     )
-
 
   /**
    * Intersect live rule-set with given rule set changing the live rule set.
@@ -364,9 +363,9 @@ strategies // extending a rule
               add1(|labels, tbl2, key, value)
               <+ (<hashtable-get(|(labels, key))> tbl1
                   <+ <hashtable-get(|key)> tbl2
-                  <+ ![])
+                  <+ ![]) 
 	         // check that value not yet member of this set????
-                 ; <hashtable-put(|(labels, key), [value | <id>])> tbl1
+                 ; \ values -> <hashtable-put(|(labels, key), [value | values])> tbl1 \
          in <dr-add-to-rule-set(add2 | label, key, value)> rs
         end
       )
