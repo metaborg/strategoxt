@@ -40,7 +40,7 @@ test51LDADD = -L$(SRTS)/lib/srts -lliblib
 
 bar.o: bar.c
 
-#include $(top_srcdir)/Makefile.xt
+include $(top_srcdir)/Makefile.xt
 
 include make-rules
 
