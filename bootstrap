@@ -1,25 +1,23 @@
 #! /bin/sh
 
 WORKINGDIR=`pwd`
-
-echo "PWD: $PWD"
+echo "** INFO -- Working directory: $WORKINGDIR"
 
 # touch bootstrapped sources because subversion doesn't sets the mtime of files
 # to checkout time, not to the last mtime in the repository.
 
 MTIME=`date +%Y%m%d%H%M.%S`
 echo "** INFO - Modification time: $MTIME"
-
 find . -print | xargs touch -t $MTIME
 
 # end of touch
-
 # install bootstrap time packages: autoxt
 
 mkdir -p pre-pkgs
 mkdir -p pre-pkgs/bootstrap
 cp -rf autoxt pre-pkgs/bootstrap/
 cd pre-pkgs/bootstrap/autoxt
+./bootstrap
 ./configure --prefix=$WORKINGDIR/pre-pkgs/bootstrap
 make
 make install
@@ -29,6 +27,7 @@ export PATH=$WORKINGDIR/pre-pkgs/bootstrap/bin:$PATH
 
 echo "** INFO -- AutoXT is: `which autoxt`"
 
+# end of autoxt install
 # proceed with applying the autotools
 
 rm -f mkinstalldirs missing install-sh
