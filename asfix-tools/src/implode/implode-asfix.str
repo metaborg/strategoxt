@@ -68,6 +68,7 @@ strategies
   + Option( "--concrete",
 	where(<set-config>("--concrete", <id>)),
         !"--concrete       Skip concrete syntax parts for Stratego parsing")
+
   (*
   short-description(p) = 
     !["Usage: ", <p>(), " [options]"]
@@ -283,7 +284,12 @@ strategies
    * The yield of an AsFixTerm is the string consisting of the
    * characters at the leaves of the tree.1
    */
-  yield = rec x((appl(id, map(x)); Kids) <+ Kids'); implode-string
+  yield =
+    ?appl(_, _){anno*}
+    ; rec x((appl(id, map(x)); Kids) <+ Kids')
+    ; implode-string
+    ; ?s
+    ; !s{anno*}
 
   implode-lexical = 
        ?appl(prod([lex(_)],cf(_),_), _); yield
@@ -296,9 +302,6 @@ strategies
     //<+ ?appl(prod(_,varsym(cf(iter-n(_))),_),_); !meta-listvar(<yield>)
     //<+ ?appl(prod(_,varsym(cf(iter-sep-n(_,_))),_),_); !meta-listvar(<yield>)
     <+ ?appl(prod(_,varsym(_),_),_); !meta-var(<yield>)
-
-
-
 
 /**
  * Layout
@@ -346,7 +349,7 @@ strategies
 rules
 
   ReplNamedCons(impl) : 
-    appl(p, ts) -> c#(<map(impl)>ts)
+    appl(p, ts){a*} -> c#(<map(impl)>ts){a*}
     where <get-cons> p => c
 
   get-cons : 

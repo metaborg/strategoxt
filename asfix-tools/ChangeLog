@@ -1,3 +1,18 @@
+2004-09-01  Martin Bravenboer <martin@cs.uu.nl>
+
+	* src/implode/implode-asfix.str: implode-asfix now supports
+	preservation of annotations in AsFix trees. This means that
+	implode-asfix now supports the addPosInfo position annotation
+	tool, and the future comment annotation tool.
+
+	Currently, implode-asfix only preserves the annotations of
+	applications of lexical constructs and named
+	constructors. Annotation on other constructs, such as list, will
+	still be lost.
+
+	If you want full annotation preservation, use AsFix2ME output of
+	sglr (don't use -2 ) and implode the tree with implodePT.
+
 2004-04-30  Martin Bravenboer <martin@cs.uu.nl>
 
 	* sig/*: added a clean signature of AsFix.
