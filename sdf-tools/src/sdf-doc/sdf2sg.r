@@ -25,7 +25,7 @@ imports
 strategies
 
   main
-    = io-idwrap(InOutId("\"sdf-2.1\"", !"\"graphxml_1_1.0\""), sort-graph)
+    = io-idwrap(InOutId("\"sdf-2.1\"", !"\"graphxml_1_1-0\""), sort-graph)
 
   sort-graph
     = where(collect-edges => es)
