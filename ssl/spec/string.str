@@ -394,6 +394,15 @@ strategies
     ; <separate-by> (".", <id>)
     ; concat-strings
 
+  /**
+   * Get extension from filename
+   *
+   * @type   String -> String
+   */
+  get-extension =
+    <string-tokenize> (['.'], <id>)
+    ; last
+
 strategies
 
  /**

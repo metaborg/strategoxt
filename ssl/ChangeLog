@@ -1,3 +1,7 @@
+2003-11-16  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/string.str: get-extension from filename
+
 2003-09-23  Merijn de Jonge <m.de.jogne@cwi.nl>
   * spec/tables.str: added more informative argument names to strategy
     "table-rename"
