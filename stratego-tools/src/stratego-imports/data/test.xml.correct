@@ -1,1 +1,1 @@
-GraphXML([],[graph([],[node(name("\"./test1\"")),node(name("\"test2\"")),node(name("\"test3\"")),edge([source("\"test2\""),target("\"test3\"")]),edge([source("\"./test1\""),target("\"test2\"")]),edge([source("\"./test1\""),target("\"test3\"")])])])
+GraphXML([],[graph([],[node(name("\"./test1.r\"")),node(name("\"test2\"")),node(name("\"test3\"")),edge([source("\"test2\""),target("\"test3\"")]),edge([source("\"./test1.r\""),target("\"test2\"")]),edge([source("\"./test1.r\""),target("\"test3\"")])])])
