@@ -7,7 +7,7 @@ StrategoXT 0.10 -- released May 08, 2004
       * If then else and switch operators
 
    * Tools
-      * Upgrade of XT
+      * Update of XT
       * Introduction of Stratego Regular
 
    * Deployment
@@ -293,29 +293,46 @@ Declare SDF2RTG_FLAGS
 
   (Martin Bravenboer)
 
----------++ Upgrade of XT
+---------++ Updated of XT
 
-For StrategoXT 0.10 we have massively updated the XT tools in
-StrategoXT.
+For StrategoXT 0.10 we have updated many XT tools that are part of
+StrategoXT. Unfortunately, many SDF Tools, but even the Stratego
+Tools, have not been kept up-to-date with respect to the languages
+they operate on in the last few years.
 
-In particular have the SDF tools all been updated to the most recent
-recently released version of SDF2, which is the one in in PGEN
-2.0. There a quite some SDF tools in StrategoXT, but the most relevant
-ones are ppgen, pack-sdf, and sdf-cons. sdf-to-sig is no longer
-available. It has been replaced by the tools of Stratego Regular.
+The SDF tools have all been updated to the most recent version of
+SDF2, which is the one in in PGEN 2.0. There are quite some SDF tools
+in StrategoXT, but the most relevant ones are _ppgen_, the
+pretty-print table generator, _pack-sdf_, for collecting SDF modules
+in a single definition, and _sdf-cons_, for adding constructors to SDF
+productions. The tool sdf-to-sig, for generating Stratego Signatures
+from an SDF syntax definition is no longer available. It has been
+replaced by tools available in Stratego Regular.
 
-StrategoXT now just contains tools for this version of SDF2. If you
-have developed SDF tools based on StrategoXT, then you might need to
-upgrade your tools. The previous versions of StrategoXT used to ship
-with three versions of SDF. SDF 2.1, which was refered to as
-Sdf2-Syntax, an older version of SDF, which was named =sdf= and
-=sdf.cons=, and the most recent one, which is called =Sdf2=. The
-latest is the only one that is left. If your tools use the older
-versions of Sdf, then you need to upgrade. Most SDF tools only have to
-change the top-level constructor names, which are now completely
-lower-case.
+If you have yourself developed SDF tools based on StrategoXT, then you
+might need to upgrade your tools. The previous versions of StrategoXT
+used to ship with three versions of SDF. _SDF 2.1_, which was named
+=Sdf2-Syntax=, an older version of SDF, which was named =sdf= or
+=sdf.cons=, and the most recent one, which is called =Sdf2=. This last
+version is the only one that is left in StrategoXT 0.10. If your tools
+use one of the older versions of SDF, then you need to update
+them. Most SDF tools only have to change the top-level constructor
+names, which are now completely lower-case. If you need more
+information on upgrading issues, then just sent e-mail to the
+stratego-dev mailing list.
 
   (Martin Bravenboer and Valentin David)
+
+AsFix Tools has been cleanup as well. The definition of AsFix in this
+package was not very clear and the package used to contain signatues
+for SDF modules, which have now been removed in StrategoXT 0.10. The
+SDF signatures of the most recent SDF2 are part of the SDF Front
+package. The signature for =asfix= has been replaced by a new
+signature, now called =AsFix=. This module defines the AsFix language
+in a single signature. If you import this module, then your program
+can handle all AsFix constructs.
+
+  (Martin Bravenboer)
 
 The Stratego Tools package has been updated to use the latest
 definitions of Stratego in stratego-front. The existing tools in
@@ -323,56 +340,57 @@ Stratego Tools are not really heavily used, so you will probably never
 have experienced any problems.
 
 Stratego Tools in StrategoXT 0.10 contains a new tool,
-pp-stratego-latex-alltt. This tool is mainly useful for including
-Stratego code in publications and documentation written LaTeX. The
-tool adds some macro invocations to a Stratego module, and preserves
-the layout of the input. Currently it marks quotation symbols,
-meta-variables, dynamic rule scope. You can define the macros yourself
-if you want a different presentation of the source code. The source
-directory of tool contains an example LaTeX document.
-
-AsFix Tools has been cleanup as well. This packages used to contain
-signatues for SDF modules, which have now been removed in StrategoXT
-0.10. The SDF signatures of the most recent SDF2 are part of the SDF
-Front package. The signature for =asfix= has been replaced by a
-new signature, now called =AsFix=. This module defines the AsFix
-language in a single signature. If you import this module, then your
-program can handle all AsFix constructs.
+=pp-stratego-latex-alltt=. This tool is useful for including Stratego
+code in publications and documentation written LaTeX. The tool adds
+some macro invocations to a Stratego module, while preserving the
+layout of the code. Currently it marks quotation symbols,
+meta-variables, and dynamic rule scope. It escapes characters that
+have a special meaning in the alltt environment. You can define the
+macros yourself, so you can completely control the presentation of the
+marked constructs. The source directory of the tool contains an
+example LaTeX document.
 
   (Martin Bravenboer)
 
 ---------++ Support for Cygwin and Mac OS X
 
-In the meantime we have added a Cygwin machine to our buildfarm. This
-way we can make sure that StrategoXT is working on Cygwin. Since no
-Stratego developer is using Cygwin, this used to be a problem in the
-past. Testing StrategoXT now and then on Cygwin wasn't working: users
-want firm answers. Does it work, or does it not?
+In the meantime we have added a Cygwin machine to our buildfarm. In
+this way we can make sure that StrategoXT is working on Cygwin. Since
+no of our Stratego contributors is using Cygwin, signaling problems
+with Cygwin used to be a problem in the past. Testing StrategoXT now
+and then on Cygwin was not sufficient.
 
   (Martin Bravenboer)
 
 StrategoXT 0.10 also supports the most recent Mac OS X release. This
-is mostly thanks to the updates of the development tools for Mac OS X.
+is mostly thanks to the updates of the development tools for Mac OS
+X. We are looking forward to reports of Mac OS X users, especially
+concerning the performance of StrategoXT. In particular, if someone
+has access to a G5, then it would be great to hear some experiences.
 
 ---------++ Editor Support
 
-vim, improved nedit.
+Shishir Ramam contributed Vim syntax files for Stratego and SDF. These
+files are available in the stratego-util package, which is part of
+StrategoXT.
+
+Arthur van Dam has implemented SDF and Stratego syntax highlighting
+patterns for NEdit. These are available in stratego-util as well.
 
   (Arthur van Dam and Shishir Ramam)
 
 ---------++ Many bug fixes and minor improvements
 
-Just before StrategoXT 0.9.5 we adopted the JIRA issue tracking
-system. This has been very helpful in for keeping track of problems
-that need to be fixed. Many small problems have been fixed in this
-release. Before we adopting JIRA, many of these issues would have been
-forgotten. Please report any issues to JIRA, even if you think that it
-is not that important, or if you have already found a
-workaround. Feedback of users is very important in adding the
-finishing touch to our tools!
+Just before the release of StrategoXT 0.9.5 we adopted the JIRA issue
+tracking system. JIRA has been very helpful in keeping track of
+problems. In particular many small problems have been fixed in this
+release, which would typically have been forgotten before we adopted
+JIRA. Please report any issues to JIRA, even if you think that it is
+not that important, or if you have already found a workaround. Any
+annoyance is welcome! Feedback of users is very important in adding
+the finishing touch to our tools.
 
 Some pointers to overviews of issues:
-
    * [[StrategoRelease010Issues][list of all issues closed in StrategoXT 0.10]]
    * [[TODO][StrategoXT roadmap]]
 
