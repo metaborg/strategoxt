@@ -8,18 +8,22 @@
  *             Eelco Visser <visser@acm.org>
  *             Joost Visser <jvisser@cwi.nl>
  *             Martin Bravenboer <martin@cs.uu.nl>
- * @copyright  see end of module
  */
 module pack-sdf
-imports xtc-proc lib stratego-xt-xtc-tools
+imports pack-sdf-options
+imports xtc-proc lib stratego-xt-xtc-tools sdf-xtc-tools 
 imports Sdf2
 imports asfix-abstractions pack-modules 
 
+/**
+ * Entry point
+ */
 strategies
 
   main-pack-sdf =
-    xtc-io-wrap(pack-options + of-option,
-      pack-sdf(|<include-path>) => (files, spec)
+    xtc-io-wrap(pack-sdf-options,
+      process-options
+    ; pack-sdf(|<include-path>) => (files, spec)
     ; <maybe-create-depfile> files
     ; <write-to> spec
     ; (  where(of-config => "txt")   < xtc-asfix-yield
@@ -29,43 +33,10 @@ strategies
       )
     )
 
+/**
+ * Main strategy
+ */
 strategies
-
-  of-config = 
-    <get-config> "--output-format" <+ !"txt"
-
-  of-option =
-    OutputFormatOption(|["txt", "asfix", "ast"])
-
-  OutputFormatOption(|formats) =
-    ArgOption("-of" + "--output-format"
-    , where(
-        where(<elem> (<id>, formats))
-      ; <set-config> ("--output-format", <id>)
-      <+ <fatal-error> ["pack-sdf: ", <id>, " is not a valid output format. Supported formats: " | <separate-by> (", ", formats)]
-      )
-    , <concat-strings> ["-of f            Use output format f (", <separate-by; concat-strings> (", ", formats), ")"]
-     )
-
-strategies
-
-  /**
-   * Gets the include path from the config.
-   *
-   * The current working directory . is added to this path.
-   */
-  include-path =
-      (<get-config> "-I" <+ ![])
-    ; filter(not("-I"))
-    ; !["." | <id>]
-
-  maybe-create-depfile =
-    try(
-      <create-dep-file(depfile-from-config)> ((), <id>)
-    )
-
-  depfile-from-config =
-    <get-config> "-dep"
 
   pack-sdf(|mkpt) =
       ?FILE(<id>)
@@ -76,22 +47,48 @@ strategies
     ; unzip
     ; (id, ConcatModules)
 
+  /**
+   * @type  (String, List(IncludeVal)) -> (String, AsFix(Module))
+   */
   parse-sdf' =
-    (guarantee-extension(!"sdf"), id)
-    ; (find-in-path <+ (Fst; xtc-find-loc))
-    ; if-verbose1(debug(!"  including "))
-    ; !(<id>, <parse-sdf-pgen2> <id>)
+      (guarantee-extension(!"sdf"); remove-extension, id)
+    ; ?(mod, includes)
+    ; <fetch-elem(
+         include-from-dir(|mod)
+       + include-from-def(|mod)
+       + include-from-xtc(|mod)
+       )> includes
 
-  parse-sdf-pgen2 :
-    infile -> tree
-    where <is-string> infile
-        ; <xtc-sglr(!"Sdf2.baf", !"Module")> FILE(infile) 
-        ; read-from
-        ; ?parsetree(tree,_)
+  include-from-dir(|mod) :
+    IncludeDir(dir) -> (file, tree)
+      where <concat-strings; file-exists> [dir,"/", mod, ".sdf"] => file
+          ; if-verbose1(debug(!"  including "))
+          ; <parse-sdf2-module-to-asfix> file => tree
+
+  include-from-xtc(|mod) :
+    IncludeXTC() -> (file, tree)
+      where <conc-strings; xtc-find-loc> (mod, ".sdf") => file
+          ; if-verbose1(say(<concat-strings> ["  including ", mod, " from XTC repository"]))
+          ; <parse-sdf2-module-to-asfix> file => tree
+
+  include-from-def(|mod) :
+    IncludeDef(file, mods) -> (file, Module_START(NewLine(), tree, NewLine()))
+      where <fetch-elem(?(mod, <id>))> mods => tree
+          ; if-verbose1(say(<concat-strings> ["  including ", mod, " from ", file]))
+
+  parse-sdf2-module-to-asfix = 
+      <xtc-sglr(!"Sdf2.baf", !"Module")> FILE(<id>)
+    ; read-from
+    ; ?parsetree(<id>, _)
+
+strategies
 
   get-sdf-imports = 
-    collect(?appl(prod(_,cf(sort("Import")),_),_); get-module-name, 
-            skip-non-imports)
+    collect(
+        ?appl(prod(_,cf(sort("Import")),_),_)
+      ; get-module-name
+    , skip-non-imports
+    )
 
   skip-non-imports(search, ignore) =  
     parsetree(search,id)
@@ -108,8 +105,12 @@ strategies
    * Obtain module name from Import construct by removing optional parameters
    */
   get-module-name =
-      oncetd(?appl(prod(_,cf(sort("ModuleId")),_),_); yield=>y)
+      oncetd(?appl(prod(_,cf(sort("ModuleId")),_),_); yield => y)
     ; !y
+
+  module-to-module-name = 
+    ?appl(prod(_, cf(sort("Module")), _), [_, _, mid | _])
+    ; <get-module-name> mid
 
   /**
    * Composing AsFix; The parser produces an AsFix term for each module. These
@@ -151,6 +152,9 @@ signature
   constructors
     'id: Arg -> ID
 
+/**
+ * Overlays for SDF constructs
+ */
 overlays 
 
   /**
@@ -233,21 +237,3 @@ overlays
     char-class([111]),
     char-class([110])],lit("definition"),no-attrs()),[100,101,102,105,110,105,116,105,111,110]),b_1,c_1])
 
-/**
- * Copyright (C) 2001-2003  Eelco Visser <visser@acm.org>
- *                    
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
- * 02111-1307, USA.
- */

@@ -1,3 +1,11 @@
+2004-05-28  Martin Bravenboer  <martin@cs.uu.nl>
+
+	* parse/pack-sdf.str: pack-sdf now supports the "-Idef Foo.def"
+	flag. This flag can be used to import SDF modules (.sdf) from an
+	SDF syntax definition (.def). The order of mixed -I and -Idef
+	arguments is respected. Pack-sdf has been cleaned up a bit as
+	well. (STR-42)
+	
 2004-04-23  Valentin David  <valentin@lrde.epita.fr>
 
 	* parse/pack-sdf.str: When using "-of" switch of pack-sdf, the
