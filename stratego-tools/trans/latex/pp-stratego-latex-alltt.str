@@ -79,6 +79,46 @@ strategies
     )
 
   /**
+   * Term variables of strategies
+   */
+  CheerUp =
+    appl(
+      check-cons-of-prod(?"SDefT")
+    , [ appl(id, id) // name
+      , appl(id, id) // layout
+      , lit("(")
+      , appl(id, id) // layout
+      , appl(id, id) // svars
+      , appl(id, id) // layout
+      , lit("|")
+      , appl(id, id) // layout
+      , appl(id, topdown(try(
+          appl(
+            check-sort-of-prod(?"StrategoId")
+          , [ appl(id, FancyVar)]))))
+      , appl(id, id)
+      , lit(")")
+      | id ]
+    )
+
+  /**
+   * Scope declaration
+   */
+  CheerUp =
+    appl(
+      check-cons-of-prod(?"Scope")
+    , [ lit("\\{")
+      , appl(id, id) // layout
+      , appl(id, topdown(try(
+          appl(
+            check-sort-of-prod(?"StrategoId")
+          , [ appl(id, FancyVar)]))))
+      , appl(id, id) // layout
+      , lit(":")
+      | id ]
+    )
+
+  /**
    * Quotation to concrete object syntax
    */
   CheerUp =
