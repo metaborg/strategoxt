@@ -70,7 +70,6 @@ has_uncommitted_changed() {
    pkg_version=$2
    
    uncommitted=""
-   
    if [ -d ${pkg}/CVS ]; then
       uncommitted="`cvs -n update ${pkg}/ |grep '^[MDAC] '`"
    elif [ -d ${pkg}/.svn ]; then
@@ -112,8 +111,27 @@ do
    # Check if everything has been committed
    if has_uncommitted_changed ${pkg} ${pkg_version} ;
    then
-      echo "Uncommitted changes in ${pkg}. First commit." >&2
-      exit 1
+#      echo "Uncommitted changes in ${pkg}. First commit." >&2
+#      exit 1
+
+      # Issue a warning messgae
+      echo "Uncommitted changes exits; checking out fresh version. Changes are saved." >&2
+      
+      # Save a copy of checked-out version
+      mv ${pkg} ${pkg}-dist-saved
+      
+      # Check a fresh version out
+      ./collect.sh ${pkg}
+
+      # copy configuration status information
+      cp -p ${pkg}-dist-saved/config.status ${pkg}
+      
+      # Create Makefiles from previous generated configuration information
+      ( cd ${pkg} && ./config.status )
+      
+      # indicate that after building the distribution, the CM repository
+      # needs to be restored.      
+      RESTORE_CM=true
    fi
 
    # release the package
@@ -129,6 +147,12 @@ do
    # development repository
    rm -f ${pkg_dev_loc}
 
+   # Restore saved CM version
+   if [ "a$RESTORE_CM" = "atrue" ]; then
+      rm -fr ${pkg}
+      mv ${pkg}-dist-saved ${pkg}
+      RESTORE_CM=""
+   fi
 done
 
 create_a_bundle ${bundled_pkgs} ${new_to_bundle}

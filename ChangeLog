@@ -1,3 +1,9 @@
+2004-04-28 Merijn de Jonge <mdejonge@cs.uu.nl>
+   * pbsd/pkg-release: now saves a cvs checked-out version and checks-out a
+     fresh version when uncomitted changes exist. After building the
+     distribution, the changes are saved in <pkg>-cvs directory. This is
+     according to the paper Package-Based Software Development.
+
 2004-04-23 Merijn de Jonge <mdejonge@cs.uu.nl>
    * pbsd: factored out generic stuff into pbsd-lib.sh
 
