@@ -1,3 +1,7 @@
+2000-07-28  Merijn de Jonge  <mdejonge@cwi.nl>
+        * Integration tests adapted to new installation location of grammars
+          in prefix/gb/share/agrammar.version
+
 2000-07-25 <mdejonge@cwi.nl>
         * returned to version 2.31 of sglr and version 0.3 of pgen because
           of bugs in the most recent versions
