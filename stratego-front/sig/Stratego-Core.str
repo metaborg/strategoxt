@@ -32,20 +32,18 @@ signature
     Let            : List(Def) * Strategy -> Strategy
     SVar           : Id -> SVar
                    : StrategyDef -> Def
-    OpA            : Constructor * List(Term) * List(Term) -> Term
-    StrA           : String * List(Term) -> Term
-    RealA          : Real * List(Term) -> Term
-    IntA           : Int * List(Term) -> Term
+    Explode        : Term * Term -> PreTerm
+    OpQ            : String * List(Term) -> PreTerm
+    Op             : Id * List(Term) -> PreTerm
+    Str            : String -> PreTerm
+    Real           : Real -> PreTerm
+    Int            : Int -> PreTerm
+    Anno           : PreTerm * Term -> Term
     As             : Var * Term -> Term
                    : Var -> Term
-    Expl           : Term -> Constructor
-    StrC           : String -> Constructor
-    Con            : Id -> Constructor
+    Wld            : Term
                    : Id -> ID
     SeqVar         : Var -> Var
-    WldA           : List(Term) -> Var
-    VarA           : Id * List(Term) -> Var
-    Wld            : Var
     Var            : Id -> Var
     FunType        : List(Type) * Type -> Type
     ConstType      : Sort -> Type

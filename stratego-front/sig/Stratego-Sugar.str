@@ -103,39 +103,33 @@ signature
     SortVar                 : LCID -> Sort
     Constructors            : List(Opdecl) -> Sdecl
     Sorts                   : List(Sort) -> Sdecl
+    ListTail                : List(Term) * Term -> PreTerm
+    List                    : List(Term) -> PreTerm
+    Tuple                   : List(Term) -> PreTerm
+    Char                    : Char -> PreTerm
+    Explode                 : Term * Term -> PreTerm
+    OpQ                     : String * List(Term) -> PreTerm
+    Op                      : Id * List(Term) -> PreTerm
+    Str                     : String -> PreTerm
+    Real                    : Real -> PreTerm
+    Int                     : Int -> PreTerm
     Con4                    : Var * Term * Strategy * Id -> Term
     Con3                    : Var * Term * Strategy -> Term
     Con                     : Var * Term * Id -> Term
     Con1                    : Var * Term -> Term
-    BuildDefault            : Term -> Term
-    ListTail                : List(Term) * Term -> Term
-    List                    : List(Term) -> Term
-    Tuple                   : List(Term) -> Term
     RootApp                 : StrategyAngle -> Term
     App                     : Strategy * Term -> Term
-    Explode                 : Term * Term -> Term
-    OpQ                     : String * List(Term) -> Term
-    Op                      : Id * List(Term) -> Term
-    Char                    : Char -> Term
-    Str                     : String -> Term
-    Real                    : Real -> Term
-    Int                     : Int -> Term
-    OpA                     : Constructor * List(Term) * List(Term) -> Term
-    StrA                    : String * List(Term) -> Term
-    RealA                   : Real * List(Term) -> Term
-    IntA                    : Int * List(Term) -> Term
+    NoAnnoList              : PreTerm -> Term
+    AnnoList                : PreTerm * List(Term) -> Term
+    BuildDefault            : Term -> Term
+    Anno                    : PreTerm * Term -> Term
     As                      : Var * Term -> Term
                             : Var -> Term
-    Expl                    : Term -> Constructor
-    StrC                    : String -> Constructor
-    Con                     : Id -> Constructor
+    Wld                     : Term
                             : LId -> ID
                             : Id -> ID
     Var                     : LID -> Var
     SeqVar                  : Var -> Var
-    WldA                    : List(Term) -> Var
-    VarA                    : Id * List(Term) -> Var
-    Wld                     : Var
     Var                     : Id -> Var
                             : String -> Char
                             : String -> String

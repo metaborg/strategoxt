@@ -4,34 +4,29 @@ imports
   Stratego-Core-Constants
 
 exports
-  sorts ID LID Var
+  sorts ID Var
   context-free syntax
     Id 				-> Var  {cons("Var")}
-    "_" 			-> Var  {cons("Wld")}
-    Id  "{" {Term ","}* "}"	-> Var  {cons("VarA")}
-    "_" "{" {Term ","}* "}"	-> Var  {cons("WldA")}
     Id				-> ID
     ":" Var                     -> Var  {cons("SeqVar")}
 
-  sorts Constructor
+  sorts Term PreTerm
   context-free syntax
+    "_" 			 -> Term {cons("Wld")}
+    Var 			 -> Term 
+    Var "@" Term 		 -> Term {cons("As")}
 
-    %% Constructors
+    Int 			 -> PreTerm {cons("Int")}
+    Real 			 -> PreTerm {cons("Real")}
+    String 			 -> PreTerm {cons("Str")}
 
-    Id 				    -> Constructor {cons("Con")}
-    String 			    -> Constructor {cons("StrC")}
-    Term "#"			    -> Constructor {cons("Expl")}
+    Id "(" {Term ","}* ")" 	 -> PreTerm {cons("Op")}
+    String "(" {Term ","}* ")" 	 -> PreTerm {cons("OpQ")}
+    Term "#" "(" Term ")" 	 -> PreTerm {cons("Explode")}
 
-  sorts Term
-  context-free syntax
+    PreTerm "{^" Term "}"	 -> Term {cons("Anno")}
 
-    Var 			    -> Term 
-    Var "@" Term 		    -> Term {cons("As")}
-
-    Int         "{" {Term ","}* "}" -> Term {cons("IntA")}
-    Real        "{" {Term ","}* "}" -> Term {cons("RealA")}
-    String      "{" {Term ","}* "}" -> Term {cons("StrA")}
-    Constructor "(" {Term ","}* ")" 
-                "{" {Term ","}* "}" -> Term {cons("OpA")}
-
-
+  context-free priorities
+    Term "#" "(" Term ")" 	 -> PreTerm {cons("Explode")}
+  > PreTerm "{" {Term ","}* "}"	 -> Term {cons("Anno")}
+  > Var "@" Term 		 -> Term {cons("As")}
