@@ -1,6 +1,3 @@
-module sdf2sdf
-imports xtc-lib stratego-xt-xtc-tools
-
 /**
  * sdf2sdf is a tool for applying transformations to SDF
  * definitions. By means of command line options the application
@@ -17,16 +14,26 @@ imports xtc-lib stratego-xt-xtc-tools
  *    Merijn de Jonge <mdejonge@cwi.nl>
  *    Eelco Visser <visser@acm.org>
  *    Joost Visser <jvisser@cwi.nl>
- *    Martin Bravenboer <martin@mbravenboer.org>
+ *    Martin Bravenboer <martin@cs.uu.nl>
  */
+module sdf2sdf
+imports xtc-lib sdf-xtc-tools
 strategies
 
   sdf2sdf =
     xtc-io-wrap(sdf2sdf-options,
-      (do-pack-sdf < xtc-pack-sdf(sdf-includes) + xtc-parse-sdf)
+      if do-pack-sdf then
+        xtc-pack-sdf2(sdf-includes)
+      else id end
+    ; xtc-parse-sdf2
     ; execute-specified-tools 
-    ; xtc-pp-sdf
+    ; xtc-pp-sdf2
     )
+
+  xtc-pack-sdf2(includes) =
+      xtc-transform(!"pack-sdf",
+        <conc> (<pass-verbose> (), <includes; <add-arg-flags> ("-I", <id>)> ())
+      )
 
   execute-specified-tools =
     !(<specified-tools>, <id>)
