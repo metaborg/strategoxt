@@ -185,8 +185,9 @@ rules
     RDef(f, xs, r) -> SDefT(f, xs, [], Scope(<tvars> r, SRule(r)))
 
   RDtoSD : 
-    RDefT(f, xs, ys, r) -> SDefT(f, xs, ys, Scope(<diff>(<tvars> r, ys'), SRule(r)))
+    RDefT(f, xs, ys, r) -> SDefT(f, xs, ys, Scope(<diff>(vs, ys'), SRule(r)))
     where <declared-vars> ys => ys'
+        ; <tvars; map(try(?ListVar(<id>)))> r => vs
 
   DeclareVariables :
     SDef(f, xs, s) -> SDefT(f, xs, [], Scope(<tvars> s, s))

@@ -41,7 +41,9 @@ strategies
       ; normalize-spec
       ; save-as5(!".normalize-spec")
       ; use-def
+      ; save-as6(!".use-def")
       ; check-constructors
+      ; save-as6(!".check-constructors")
       ; spec-to-sdefs
       ; save-as5(!".spec-to-sdefs")
       ; rename-vars
