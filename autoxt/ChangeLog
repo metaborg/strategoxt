@@ -1,3 +1,15 @@
+2005-01-27  Akim Demaille  <akim@epita.fr>
+
+	* config/autoxt.m4 (XT_ARG_WITH): Compute the variable name from
+	the option name.
+	Accept $5 as witness, to perform early checks on --with- values.
+	(XT_USE_XT_PACKAGES): Normalize ARGNAME to FILE/DIR.
+	Remove the duplicate ARG_WITH for repository, which default was
+	datadir/$PACKAGE/XTC_REQ.
+	Check the definition of ATERM, SGLR, PGEN, XTC.
+	Fix the quotation when checking whether $BUILD_REPOSITORY is an
+	absolute path.
+
 2005-01-29   Martin Bravenboer  <martin@cs.uu.nl>
 
 	* Makefile.xt: changed the name and location of shared
