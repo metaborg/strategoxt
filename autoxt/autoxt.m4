@@ -129,9 +129,9 @@ AC_DEFUN([XT_USE_XT_PACKAGES],
   # Backward compatibility?
   AC_SUBST([SC], [$STRC])
 
-  AC_DEFINE_UNQUOTED([XTC_REPOSITORY()],
-                     [ATmakeString("$REPOSITORY")],
-                     [Location of the XTC repository.])
+  AC_DEFINE([XTC_REPOSITORY()],
+            [ATmakeString("@REPOSITORY@")],
+            [Location of the XTC repository.])
 ])
 
 AU_DEFUN([USE_XT_PACKAGES], [XT_USE_XT_PACKAGES])
