@@ -146,7 +146,7 @@ strategies
     where(
       /* check if there is any input */
       if not(<get-config> "-i") then
-        say(!"error: no input specified")
+        log(|Error(), "no input specified")
         ; <xtc-exit> 1
       end
 
@@ -156,10 +156,10 @@ strategies
     ; explode-string
     ; if at-suffix( \ ['.', 's', 'd', 'f'] -> [] \ ); ?lang then
         <implode-string> lang
-        ; debug(!"info: language name is ")
+        ; log(|Info(), <conc-strings> ("info: language name is ", <id>))
         ; <set-config> ("language-name", <id>)
       else
-        say(!"error: input file must have the extension .sdf")
+        log(|Error(), "error: input file must have the extension .sdf")
         ; <xtc-exit> 1
       end
 
@@ -170,7 +170,7 @@ strategies
 
       /* Set the default verbosity level */
     ; if not(<get-config> "--verbose") then
-        <set-config> ("--verbose", 0)
+        <set-config> ("--verbose", 1)
       end
     )
 
@@ -208,20 +208,8 @@ overlays
   xtar-tool-usage =
     [ Usage("xtar -i <lang.sdf> [OPTIONS]")
     , Summary(
-       "Creates an xtar.")
+       "Creates an XT Archive (xtar)")
     , OptionUsage()
-    , Description([
-       "This is a test program to demonstrate use of 
-        parse-options and  generation of usage
-        info from option and switch specificatios.
-        These now contain usage info as additional
-        third argument."
-      ,"This is a test program to demonstrate use of 
-        parse-options and  generation of usage
-        info from option and switch specificatios.
-        These now contain usage info as additional
-        third argument."
-        ])
     , AutoReportBugs()
     ]
 
@@ -233,7 +221,11 @@ overlays
         , Def("Revision", Paragraph(<prim("SVN_REVISION_TERM")> ()))
         ])
       ])
-    , GNU_LGPL("2004", "Eelco Visser <visser@acm.org>")
+    , Authors([
+        Person("Martin Bravenboer", "martin@cs.uu.nl")
+      , Person("Karl Trygve Kalleberg", "karltk@ii.uib.no")
+      ])
+    , GNU_LGPL("2004-2005", "Eelco Visser <visser@acm.org>")
     , Config([
         DefaultXTCRepository()
       , CurrentXTCRepository()
