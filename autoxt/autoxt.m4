@@ -74,7 +74,7 @@ AC_ARG_WITH([stratego-xt],
   AC_HELP_STRING([--with-stratego-xt=STRATEGOXT],
                  [use StrategoXT at STRATEGOXT @<:@XT@:>@]),
   [STRATEGOXT=$withval],
-  [STRATEGOXT=$XT]
+  [STRATEGOXT=$STRATEGOXT]
 )
 AC_SUBST([STRATEGOXT])
 

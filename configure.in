@@ -56,15 +56,15 @@ AC_ARG_WITH(pgen,
 )
 AC_SUBST(PGEN)
 
-AC_ARG_WITH(stratego-xt, 
-  AC_HELP_STRING([--with-stratego-xt=DIR], [use StrategoXT at DIR (bootstrap only) @<:@PREFIX@:>@]),
-  STRATEGOXT="$withval", 
-  STRATEGOXT="$prefix"
-)
 AC_ARG_WITH(strategoxt, 
   AC_HELP_STRING([--with-strategoxt=DIR], [use StrategoXT at DIR (bootstrap only) @<:@PREFIX@:>@]),
   STRATEGOXT="$withval", 
   STRATEGOXT="$prefix"
+)
+AC_ARG_WITH(stratego-xt, 
+  AC_HELP_STRING([--with-stratego-xt=DIR], [use StrategoXT at DIR (bootstrap only) @<:@PREFIX@:>@]),
+  STRATEGOXT="$withval", 
+  STRATEGOXT="$STRATEGOXT"
 )
 AC_SUBST(STRATEGOXT)
 
