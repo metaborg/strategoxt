@@ -63,6 +63,12 @@ bootclean :
 	   (cd $$dir && $(MAKE) bootclean) ; \
 	done
 
+bootstep :
+	$(MAKE) bootclean 
+	$(MAKE) 
+	$(MAKE) check 
+	$(MAKE) install
+
 source-tree.txt : 
 	tree -d | grep -v CVS \
 		| grep -v autom4te-2.53.cache \
