@@ -17,8 +17,8 @@ strategies
    * Kill all dynamic rules dependent on the subject term.
    */
 
-  kill-dynamic-rules(|Rs) = 
+  undefine-dynamic-rules(|Rs) = 
     ?dep
-    ; <map(dr-kill(|dep))> Rs
+    ; <map(dr-undefine(|dep))> Rs
 
-  dr-kill(|dep) = fail
+  dr-undefine(|dep) = fail

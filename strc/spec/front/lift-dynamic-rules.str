@@ -7,7 +7,7 @@ strategies
     upgrade-old-dr-constructs
     ; Specification([
         Constructors(![
-          OpDecl("DR_KILL", 
+          OpDecl("DR_UNDEFINE", 
 	         FunType([ConstType(Sort("ATerm", []))], ConstType(Sort("ATerm", []))))
         , OpDecl("DR_DUMMY", ConstType(Sort("ATerm", [])))
           | <id>]) 
@@ -164,7 +164,7 @@ strategies
            ; !t4 => y2 // dependencies
            ; map({x1, x2: ?(x1,x2)
                    ; rules( 
-                       f(|).x1 :+ DR_KILL(x2) -> (y0, y1, y2) where id 
+                       f(|).x1 :+ DR_UNDEFINE(x2) -> (y0, y1, y2) where id 
                      )
                  })
          )
@@ -181,11 +181,11 @@ strategies
         ; !|[ f2(|scope) = ?dep;
               where(
 		rules( f+scope )
-		; <f4> DR_KILL(dep)
+		; <f4> DR_UNDEFINE(dep)
 		; map({lhs, deps : 
                        ?(_, lhs, _)
                        ; rules( f(|).scope :- lhs ) })
-		; rules( f(|).scope :- DR_KILL(dep) )
+		; rules( f(|).scope :- DR_UNDEFINE(dep) )
 	      )
            ]| => newdef
         ; !|[ dr-new(|scope, dep) = ?~str:f; <f2(|scope)> dep ]| => newgendef
@@ -194,53 +194,53 @@ strategies
         ; rules( NewStrategy : f )
       )
 
-    // kill-f : undefine all rules that depend on x
+    // undefine-f : undefine all rules that depend on x
 
-    create-kill-strategy = ?f; not(KillStrategy);
+    create-undefine-strategy = ?f; not(UndefineStrategy);
       where(
-	  <concat-strings> ["kill-",  f] => f3
+	  <concat-strings> ["undefine-",  f] => f3
 	; <concat-strings> ["bagof-", f] => f4
 	; <concat-strings> ["aux-",   f] => f5
 	; !|[ f3(|) = ?dep;
 	      where(
 
 		// find all rules that depend on dep
-		<f4> DR_KILL(dep)
+		<f4> DR_UNDEFINE(dep)
 
 		// remove each rule and related dependencies
 		; map({scope, lhs, deps: 
                       ? (scope, lhs, deps)
 
-		      // kill the rule with left-hand side lhs
+		      // undefine the rule with left-hand side lhs
 		      ; rules( f(|).scope :- lhs )
 
-		      // kill each kill rule related to dep for this dependency
+		      // undefine each undefine rule related to dep for this dependency
 		      ; !deps
-		      ; map({scope2, dep2, kill-dep2, closures: 
+		      ; map({scope2, dep2, undefine-dep2, closures: 
 			    ?(scope2, dep2)
 
-			    // find all kill rules for dependency y2
-			    ; !DR_KILL(dep2) => kill-dep2
-			    ; <dr-lookup-rule(|~str:f, kill-dep2)> kill-dep2
+			    // find all undefine rules for dependency y2
+			    ; !DR_UNDEFINE(dep2) => undefine-dep2
+			    ; <dr-lookup-rule(|~str:f, undefine-dep2)> undefine-dep2
 
 			    // keep those closures that do not depend on dep
 			    ; filter(where({deps2:
-				f5(|dep2, kill-dep2)
+				f5(|dep2, undefine-dep2)
 				; ?(_,_,deps2)
 				; !deps2
 				; not(fetch(?(_,dep)))
 			      })) => closures
 	
 			    // put remaing closures back
-			    ; dr-set-rules-vis(|~str:f, scope2, kill-dep2, closures)
+			    ; dr-set-rules-vis(|~str:f, scope2, undefine-dep2, closures)
                         })
 	           })
 	       )
-	    ]| => killdef
-        ; !|[ dr-kill(|dep) = ?~str:f; <f3(|)> dep ]| => killgendef
-	; rules( LiftedRules :+ () -> killdef )
-	; rules( LiftedRules :+ () -> killgendef )
-        ; rules( KillStrategy : f )
+	    ]| => undefinedef
+        ; !|[ dr-undefine(|dep) = ?~str:f; <f3(|)> dep ]| => undefinegendef
+	; rules( LiftedRules :+ () -> undefinedef )
+	; rules( LiftedRules :+ () -> undefinegendef )
+        ; rules( UndefineStrategy : f )
      )
 
 strategies
@@ -426,7 +426,7 @@ rules
       ; <conc> (callees, callers)
       ; map({?x; rules( LiftedRules :+ () -> x )})
       ; <try(create-new-strategy)> f
-      ; <try(create-kill-strategy)> f
+      ; <try(create-undefine-strategy)> f
 
 strategies
 
