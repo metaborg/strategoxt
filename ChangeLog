@@ -1,3 +1,13 @@
+2003-12-23  Martin Bravenboer <martin@cs.uu.nl>
+
+	* Makefile.am: configure build time srts with strc and ssl.
+
+	* configure.in: configure srts with strc and ssl.
+
+	* strategoxt.spec.in: Requires of aterm and sdf2-bundle to
+	>=. More recent releases of aterm and the sdf2-bundle are now used
+	in the buildfarm.
+
 2003-12-05  Martin Bravenboer <martin@cs.uu.nl>
 
 	* Makefile.am: pass CPL configuration to the build time ATerm
