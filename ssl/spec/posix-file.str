@@ -171,9 +171,12 @@ strategies
    *
    * @type String -> Int
    */
-  mkdir =
-    ?(pathname, mode); prim("SSL_mkdir", pathname, mode) => 0
+  mkdir(|mode) =
+    ?pathname; prim("SSL_mkdir", pathname, mode) => 0
     <+ <conc-strings; perror; fail> ("SSL/mkdir: Cannot create directory ", <id>)
+
+  mkdir =
+    mkdir(|[Read, Write, Execute])
 
   /**
    * Remove empty directory
