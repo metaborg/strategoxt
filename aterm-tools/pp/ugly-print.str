@@ -7,7 +7,8 @@ strategies
     has-annotation < ugly-print-with-anno + ugly-print-without-anno
 
   ugly-print-without-anno =
-     UP-Int 
+     UP-Int
+	<+ UP-Real
 	<+ UP-Str
 	<+ UP-List(ugly-print) 
   <+ UP-Tuple(ugly-print)
@@ -31,6 +32,11 @@ rules // string & int
     x -> |[ NUM [ ~lit:s ] ]|
       where <is-int> x
           ; <int-to-string> x => s
+
+  UP-Real :
+    x -> |[ NUM [ ~lit:s ] ]|
+      where <is-real> x
+          ; <real-to-string> x => s
 
 rules // constructor applications
 
