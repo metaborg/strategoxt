@@ -11,5 +11,6 @@ strategies
     + pp-options
 
   ast2text =
-      xtc-transform(!"ast2abox", <get-config; map(!["-p", <id>]); concat> "-p")
-    ; xtc-abox2text(pass-width)
+      xtc-transform(!"Ast-2-abox", create-pp-table-args)
+    ; xtc-transform(!"Abox-2-text", <conc> (<pass-width> (), <pass-verbose> ()))
+
