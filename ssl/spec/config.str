@@ -91,8 +91,8 @@ strategies
     ?(key, val)
     ; <table-put> ("config", key, <conc> (<get-config <+ ![]> key, val))
 
-  get-config = ?key;
-    <table-get; try(eval-config; where(<table-put>("config", key, <id>)))> ("config", key)
+  get-config = 
+    <table-get> ("config", <id>)
 
   // get configurations of keys for which pred succeeds
 
@@ -103,19 +103,4 @@ strategies
 
   get-config-keys(pred) =
     <table-getlist> "config"; filter((pred,id); Fst) 
-
-  eval-config : 
-    Prefix(x, y) -> <conc-strings> (<eval-config> x, <eval-config> y)
-
-  eval-config :
-    Var(x) -> <get-config <+ debug(!"No configuration for variable: "); fail> x
-
-  eval-config :
-    Path(x) -> x
-
-  eval-config =
-    map(try(eval-config))
-
-  eval-config =
-    is-string
 
