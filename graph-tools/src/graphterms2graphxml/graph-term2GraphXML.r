@@ -19,7 +19,7 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
  02111-1307, USA.
 
- $Id: graph-term2GraphXML.r,v 1.4 2001/10/08 15:42:08 mdejonge Exp $
+ $Id: graph-term2GraphXML.r,v 1.5 2001/10/09 15:09:13 mdejonge Exp $
 *)
 
 module graph-term2GraphXML
@@ -32,7 +32,7 @@ strategies
     = io-idwrap(?"\"graphterm-0\"", graph-term2graphXML)
 
   graph-term2graphXML
-    = \graph(nodes(ns),edges(es)) -> <mkterm>("\"graphxml_1_1.0\"",[GraphXML([],[graph([],<conc>(ns',es'))])])
+    = \graph(nodes(ns),edges(es)) -> <termid(!"\"graphxml_1_1.0\"")>GraphXML([],[graph([],<conc>(ns',es'))])
        where <map(\'id(n)          -> node1([name(<enquote>n)])\)> ns => ns';
              <map(\['id(s),'id(t)] -> edge1([source(<enquote>s),target(<enquote>t)])\)> es => es'
       \
