@@ -1,17 +1,17 @@
 module atermdiff
 imports  LayoutPreserve
 signature
-  constructors
+  constructors 
     Input2: String -> Option
-    Path: Option
-    SquashedPath: Option
+    Path: Option 
+    SquashedPath: Option  
     NoPath: Option
-    TopMost: Option
+    TopMost: Option 
     UseAmbMark: Option
 
 strategies
 
-  main = iowrapNoOutput((id,ldiff),ops,my-usage)
+  main = iowrapNoOutput((id,ldiff),ops,my-usage) 
 
   version = !"0.2"
 
