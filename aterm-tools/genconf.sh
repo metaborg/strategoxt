@@ -1,6 +1,6 @@
 #! /bin/sh
 #
-# $Id: genconf.sh,v 1.2 2001/05/30 14:23:19 mdejonge Exp $
+# $Id: genconf.sh,v 1.3 2001/05/30 16:12:04 mdejonge Exp $
 #
 # Author: Merijn de Jonge (mdejonge@cwi.nl)
 #
@@ -80,8 +80,8 @@ trap "rm -fr $tmpMakefile" 0 1 2 3 4 5 6 7 8 9 10
 
 (
    cat ${config_file};
-   echo "getValue:";
-   echo "	@echo $($(NAME))"
+   echo 'getValue:';
+   echo '	@echo $($(NAME))'
  
 ) > ${tmpMakeFile}
 
