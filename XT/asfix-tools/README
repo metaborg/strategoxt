@@ -1,0 +1,80 @@
+# AsFix Tools
+# Copyright (C) 2001 Merijn de Jonge <mdejonge@cwi.nl>
+#                    Eelco Visser <visser@acm.org>
+#                    Joost Visser <jvisser@cwi.nl>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+----------------------------------------------------------------------
+
+AsFix Tools
+
+----------------------------------------------------------------------
+
+ Authors: Merijn de Jonge <mdejonge@cwi.nl>
+          Eelco Visser <visser@acm.org>
+          Joost Visser <jvisser@cwi.nl>
+
+----------------------------------------------------------------------
+
+ The AsFix Tools package contains tools for AsFix manipulation
+
+----------------------------------------------------------------------
+
+ DOCUMENTATION
+
+ Documentation can be found at the following site:
+
+   http://www.program-transformation.org
+
+----------------------------------------------------------------------
+
+ STRATEGO COMPILER
+
+ For the installation of GT, the Stratego compiler is required, which
+ can be obtained from
+
+   http://www.stratego-language.org
+
+----------------------------------------------------------------------
+ CONFIGURATION
+
+ Set prefix to any appropriate value when installing and specify
+ location of the Stratego compiler, e.g.,
+
+ > ./configure --prefix=/usr/local --with-stratego=/stratego/install/directory
+
+ This will cause executables to be installed in /usr/local/bin,
+ libraries in /usr/local/lib, include files in /usr/local/include.
+
+ Note that you need to include prefix/bin in your PATH, if it is not
+ already.
+
+ For information on other configuration parameters, type:
+
+ > ./configure --help
+
+----------------------------------------------------------------------
+
+ INSTALLATION
+
+ To build and install the AsFix Tools package, issue the following
+ commands:
+
+ > gmake
+ > gmake install
+
+----------------------------------------------------------------------

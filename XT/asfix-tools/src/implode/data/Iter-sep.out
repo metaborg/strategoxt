@@ -1,0 +1,1 @@
+appl(prod([cf(sort("Iter-sep"))],sort("<START>"),no-attrs),[appl(prod([cf(iter-sep(sort("A"),lit(",")))],cf(sort("Iter-sep")),attrs([cons("Iter-sep"),id("Main")])),[["a",lit(","),"b",lit(","),"c"]])])
