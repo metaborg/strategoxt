@@ -1,7 +1,7 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-libexec_PROGRAMS = strip-comments strat-count
+libexec_PROGRAMS = strip-comments 
 CLEANFILES 	 = $(wildcard *.dep)
 BOOTCLEANFILES 	 = $(wildcard *.c)
 
