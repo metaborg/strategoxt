@@ -1,0 +1,19 @@
+definition
+
+module Main
+exports
+  context-free syntax
+    "a"         -> A {cons("a")}
+    ( "a" | B ) -> A {cons("a1")}
+
+  context-free syntax
+    A         -> B 
+    ( A | C ) -> B 
+    A?        -> B 
+    A+        -> B 
+    A*        -> B 
+    {A ";"}+  -> B 
+    {A ";"}*  -> B 
+
+  context-free syntax
+    A -> C {cons("AtoC")}

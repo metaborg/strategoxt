@@ -1,0 +1,43 @@
+
+definition
+
+module Main
+exports
+  context-free syntax
+    A     -> S {cons("A")}
+    "a"   -> S {cons("a")}
+    "a" B -> S {cons("a1")}
+
+  context-free syntax
+    ( )   -> S {cons("unit")}
+    (A A) -> S {cons("A-A")}
+    A?    -> S {cons("A-opt")}
+    A+    -> S {cons("A-p")}
+    A*    -> S {cons("A-s")}
+
+  context-free syntax
+    {A "."}+ -> S {cons("A-p1")}
+    {A ","}+ -> S {cons("A-p2")}
+    {A B}+   -> S {cons("A-B-p")}
+    {"." B}+ -> S {cons("B-p")}
+    {"," B}+ -> S {cons("B-p1")}
+
+  context-free syntax
+    {A "."}* -> S {cons("A-s1")}
+    {A ","}* -> S {cons("A-s2")}
+    {A B}*   -> S {cons("A-B-s")}
+    {"." B}* -> S {cons("B-s")}
+    {"," B}* -> S {cons("B-s1")}
+
+  context-free syntax
+     A 1+     -> S {cons("A-n")}
+    {A "."}1+ -> S {cons("A-n1")}
+    {A ","}1+ -> S {cons("A-n2")}
+    {A B}1+   -> S {cons("A-B-n")}
+    {"." B}1+ -> S {cons("B-n")}
+    {"," B}1+ -> S {cons("B-n1")}
+
+  context-free syntax
+    ( A # B )   -> S {cons("A-and-B")}
+    ( A => B )  -> S {cons("A-to-B")}
+    ( A | B )   -> S {cons("A-or-B")}
