@@ -21,7 +21,7 @@ macro of =autoxt= to add =--with-x= configuration flags to the
 configure script. This macro now provides also adds an
 =--with-strategoxt= arguments, which is an alternative to the
 =--with-stratego-xt= flag. The additional flags corresponds with the
-package name of Stratego/XT, which is =strategoxt=.
+package name of StrategoXT, which is =strategoxt=.
 
 ---------++ JIRA Issue Tracking System
 
@@ -29,14 +29,14 @@ We have finally adopted an issue tracking system. Arthur van Dam
 suggested to use JIRA, which is free (not Free) for open-source
 projects. Fortunately he has taken care of evaluating and installing
 it as well. We have just started to use the system, but it already
-looks very promosing. The user-interface is very attractive compared
+looks very promising. The user-interface is very attractive compared
 to Bugzilla and JIRA provides many useful overviews for
 developers. without having to struggle with a generic query interface.
 
 Our JIRA installation is public and everyone can submit issues. Please
 report issues to the JIRA issue tracking system from now on. New
 issues reported in JIRA will be send to the stratego-bugs mailing list
-for notification. The issue in JIRA is however the prefered place to
+for notification. The issue in JIRA is however the preferred place to
 for comments. Of course you are welcome to discuss issues at the
 stratego-dev mailing list first.
 
@@ -46,7 +46,7 @@ stratego-dev mailing list first.
 
 ---------++ Documentation
 
-Documentation for Stratego/XT users has been improved in several
+Documentation for StrategoXT users has been improved in several
 areas.
 
 Rob Vermaas, who is now a scientific programmer at our institute, is
@@ -57,7 +57,7 @@ work remains to be done at this point.
 (Rob Vermaas)
 
 Feedback by new users inspired us to revive the Tools web and start
-working on a comprehensive reference for the tools in Stratego/XT. The
+working on a comprehensive reference for the tools in StrategoXT. The
 reference is still far from being complete, but it is a start. The
 documentation for all tools should provide an introduction,
 explanation of the command-line arguments and usage examples, The tool
@@ -81,11 +81,11 @@ and pointers to relevant information. The new website is available at
 ---------++ Compiler
 
 The name of a module declared in file did not really matter in the
-past. This was rather frustrating for xDoc. From Stratego/XT 0.9.5 the
+past. This was rather frustrating for xDoc. From StrategoXT 0.9.5 the
 compiler outputs a warning message if the declared module name does
 not correspond with the name of the file.
 
-Stratego/XT 0.9.5 fixes several annoying problems in the
+StrategoXT 0.9.5 fixes several annoying problems in the
 user-interface of the Stratego compiler and tools of stratego-front
 such as =parse-stratego= and =pp-stratego=. From this release
 =pp-stratego= for example accepts an =-I= flag, which can be used to
@@ -94,7 +94,7 @@ syntax.
 
 (Rob Vermaas)
 
-In Stratego/XT 0.9.4 compiling programs that use term arguments
+In StrategoXT 0.9.4 compiling programs that use term arguments
 resulted in loads of warnings from the C compiler. These warnings are
 caused by the types of the term argument, which are not declared
 correctly in the C code produced by the Stratego compiler. This
@@ -113,7 +113,7 @@ comparable to the Stratego =Stream= representation of native
 streams. Hashtables that are created in this way will not affect other
 parts of the program, unless the hashtable is passed to the code. The
 old table mechanism is of course still available and is still useful
-to implictly pass information around. The new hashtale strategies
+to implicitly pass information around. The new hashtable strategies
 include: =new-hashtable(|initial_size, max_load)=,
 =hashtable-put(|key, value)=, =hashtable-get(|key)=. We are
 considering to lift hashtables from the API to the language level by
@@ -164,7 +164,7 @@ wider range of SDF constructs.
 
 ---------+++ Syntax Definition and Parsing
 
-SDF related tools in Stratego/XT 0.9.4 are using a rather old version
+SDF related tools in StrategoXT 0.9.4 are using a rather old version
 of SDF, 2.1. The difference between this SDF version and the most
 recent one used in PGEN 2.0 are not large, but since SDF undergo more
 heavy changes in the near future, it is important to be up-to-date. We
@@ -186,7 +186,7 @@ ParseUnit, a tool for unit-testing syntax definitions, has been
 extended with a concise, concrete syntax for testsuites. The new
 testsuite syntax also allows partial specification of expected
 outcomes by using wildcards. The concrete syntax for ParseUnit
-testsuites does not require escaping of special charachters in the
+testsuites does not require escaping of special characters in the
 test input. This makes the inputs much more readable, because special
 characters are in practice not special in parse testsuites.
 
@@ -200,7 +200,7 @@ More information:
 Syntax definitions of concrete object syntax embeddings require
 renamings of the sorts of the imported syntax definitions. Defining
 these renaming modules by hand is annoying and error-prone. The
-sdf-tools package of Stratego/XT now features =gen-renamed-sdf-module=
+sdf-tools package of StrategoXT now features =gen-renamed-sdf-module=
 a tool that automates this task. It takes an SDF syntax definition and
 produces an SDF module that renames the sorts in some user-definable
 way, by prefixing it with the language name for example.
@@ -219,7 +219,7 @@ detailed instructions on how to install the distributions:
 
 ---------++ Bugs and Known Problems
 
-Not all the bugs and known problems for Strateg/XT have been solved in
+Not all the bugs and known problems for StrategXT have been solved in
 this release, otherwise this would release 1.0. See our issue tracking
 systems for reports about (open) bugs:
 
