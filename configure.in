@@ -1,6 +1,11 @@
 AC_INIT([StrategoXT],[0.9.2],[stratego-bugs@cs.uu.nl])
 AM_INIT_AUTOMAKE
 
+# set the prefix immediately to the default prefix
+test "x$prefix" = xNONE && prefix=$ac_default_prefix
+
+echo "** INFO -- Prefix is $prefix"
+
 ### ATerm Library #####################
 AC_ARG_WITH(aterm, 
   AC_HELP_STRING([--with-aterm=DIR], [use ATerm Library at DIR @<:@PREFIX@:>@]),

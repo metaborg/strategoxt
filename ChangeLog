@@ -1,3 +1,8 @@
+2003-06-20  Martin Bravenboer  <martin@mbravenboer.org>
+
+  * configure.in: set the prefix before the AC_ARG_WITHs
+    to the default prefix. Fixed by Valentin David.
+
 2003-06-18  Martin Bravenboer  <martin@mbravenboer.org>
 
   * strategoxt.spec.in: do not make with DESTDIR
