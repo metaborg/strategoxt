@@ -119,8 +119,9 @@ strategies
   // <ReadFromFile> file reads the term in file. 
   // The file needs to be in textual or binary ATerm format.
 
-  ReadFromFile = 
-    ?file; prim("SSL_ReadFromFile", file)
+  ReadFromFile =
+      ?file; prim("SSL_ReadFromFile", file)      
+    <+ debug(!"** WARNING: file doesn't exist or doesn't contain a valid term: "); fail
 
   // <WriteToBinaryFile> (file, term) writes term to file in BAF format.
 
