@@ -21,9 +21,9 @@ TESTS = $(subst .r,.bin,$(wildcard *-test.r))
 
 SINCLUDES = -I $(STRATEGOLIB)/share/ssl
 
-CLEANFILES = $(TESTS) *.o *.c *.ac *.s? *.tree *.c.abox
+CLEANFILES = $(TESTS) *.o *.c *.ac *.s? *.tree *.c.abox *.r
 
-all:
+all, install:
 	cp $(STRATEGOLIB)/share/ssl/*.r .
 
 bootinstall:
