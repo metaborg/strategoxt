@@ -114,7 +114,13 @@ strategies
   // defined, followed by the usages of all switches. Finally, the long
   // descrition of the program is displayed when it is defined.
 
-  system-usage  = 
+  system-usage = 
+    override-system-usage
+    <+ default-system-usage
+
+  override-system-usage = fail
+    
+  default-system-usage  = 
     (<get-config> "program" => p <+ option-defined(Program(?p)))
     ; try(short-description(!p); echo)
     ; <echo> "\nOptions:"

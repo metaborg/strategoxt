@@ -47,6 +47,18 @@ strategies
     ; rec x(![<fgetc> stream | <x> ()] <+ ![])
     ; implode-string
 
+
+  /**
+   * Reads the contents of a textfile.
+   *
+   * :: String -> String
+   */
+  read-text-file =
+    ?file
+    ; <fopen> (file,"r") => stream
+    ; read-text-from-stream
+    ; where(<fclose> stream)
+
 /**
  * Copyright (C) 1998-2003 Eelco Visser <visser@acm.org>
  * 

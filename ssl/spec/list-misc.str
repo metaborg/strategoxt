@@ -17,22 +17,45 @@ rules
 
 strategies
 
+  /**
+   * s1 :: [a] -> b
+   * s2 :: a * b -> b
+   *    :: [a] -> b
+   */
   foldr1(s1, s2) = 
     rec x([id]; s1 <+ FoldR; (id, x); s2)
 
+  /**
+   * s1 :: a * b -> b
+   *    :: [a] -> b
+   */
   foldr1(s) = 
     rec x((FoldR1 <+ FoldR; (id, x)); s)
 
+  /**
+   * s1 :: [] -> b
+   * s2 :: a * b -> b
+   *    :: [a] -> b
+   */
   foldr(s1, s2) = 
     []; s1 
     + \ [y|ys] -> <s2>(y, <foldr(s1, s2)> ys) \
 
+  /**
+   * s1 :: [] -> b
+   * s2 :: c * b -> b
+   *  f :: a -> c
+   *    :: [a] -> b
+   */
   foldr(s1, s2, f)  = 
     []; s1 + 
     \ [y|ys] -> <s2> (<f> y, <foldr(s1, s2, f)> ys) \
 
 
-  // a * b -> b :: List(a) * b -> b
+  /**
+   * s :: a * b -> b
+   *   :: [a] * b -> b
+   */ 
   foldl(s) = 
     rec x( \ ([], y) -> y \ + FoldL(s); x)
 
@@ -114,4 +137,3 @@ strategies
 % along with this program; if not, write to the Free Software
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
-
