@@ -21,16 +21,26 @@ strategies
           format-check
         end
       end
+    ; xtc-output(id)
+    ; get-exit-code
+    ; xtc-exit
     )
 
   format-check =
     xtc-ensure-file
-    ; where(
-        xtc-transform(!"core-format-check", 
+    ; xtc-try-transform(!"core-format-check", 
           <flatten-list> ["--rtg-nf", <input-to-rtg-nf>, <pass-verbose> (), <pass-start-nonterm>]
-        )
       )
-    <+ <xtc-exit> 1
+
+  xtc-try-transform(tool, args) :
+    FILE(f) -> FILE(g)
+    where <xtc-new-file> f => g
+        ; ( <conc; xtc-command(tool)> (<args>, ["-i", f, "-o", g])
+          <+ where(<set-config> ("--exit-code", 1))
+          )
+
+  get-exit-code =
+    <get-config> "--exit-code" <+ !0
 
   format-check-to-xhtml =
       xtc-transform(!"core-format-check-to-xhtml",

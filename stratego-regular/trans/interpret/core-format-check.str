@@ -16,7 +16,9 @@ strategies
       )
     ; format-check
     ; format-check-report(|<get-start-nonterms(!starts)>)
-    <+ <exit> 1
+    ; where(output(id))
+    ; <get-config> "--exit-code"
+    ; exit
     )
 
   format-check-init =
@@ -55,8 +57,13 @@ strategies
     <+ repeat1(Type)
        ; report-types
 
-    <+ report-type-failure
+    <+ one-consnil(not(is-typed))
+
+    <+ report-type-failure(id)
     )
+
+  is-typed =
+    where(get-types; iset-elements => [_ | _])
 
   /**
    * bttomup variant that traverses lists as cons/nil.
@@ -257,7 +264,6 @@ strategies
   get-types =
     Types
 
-
 /**
  * Reporting
  */
@@ -267,17 +273,20 @@ strategies
     where(
      get-types; iset-elements => types
     ; if !types => [] then
-        <fatal-error> ["error: term cannot be typed."]
+        !1 // already reported <fatal-error> ["error: term cannot be typed."]
       else
           <isect> (starts, <id>)
         ; if ?[] then
-              <fatal-error>
+              <printnl>
                 ["error: term typed as ", <types-to-string> types, 
                  " but expected ", <types-to-string> starts]
+            ; !1
           else
             if-verbose1(<types-to-string; debug(!"info: term typed as ")> types)
+            ; !0
           end
       end
+    ; <set-config> ("--exit-code", <id>)
     )
 
   report-types = if-verbose2(
@@ -297,7 +306,7 @@ strategies
      )
    )
   
-  report-type-failure =
+  report-type-failure(finally) =
     ?t
     ; where(
         <fprintnl> (<stderr-stream>, ["error: cannot type ", <write-to-string>])
@@ -310,7 +319,7 @@ strategies
           )
         )> t
       else id end
-    ; <exit> 1
+    ; finally
 
   types-to-string =
     map(nonterm-to-string); separate-by(!", "); concat-strings
