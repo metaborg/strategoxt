@@ -222,9 +222,24 @@ chunk.
 
   (Eelco Visser)
 
----------++ Various improvements of XTC:
+---------++ Various improvements of XTC
 
-   * Construction of build-time XTC repositories
+In StrategoXT 0.11 AutoXT also constructs build-time XTC
+repositories. A build-time repository refers to files in the build
+tree, instead of the installation directory. The repository is named
+XTC and is created in the top-level directory of the build
+tree. Build-time repositories can be used to invoke tools in the build
+tree at build- or check-time. Thus, build-time XTC repositories can be
+used to implement support for a 'make check' without having the
+package installed. Indeed, the StrategoShell and JavaFront have
+already been changed to use the build-time repositories and now fully 
+support a pre-install check and 'make distcheck'.
+
+XTC tools can now be compiled with stand-alone Stratego compiler,
+=strc=.
+
+
+
 
    * Compilatgion of XTC tools with stand-alone strc
 
