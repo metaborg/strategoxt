@@ -66,7 +66,9 @@ ATerm SSL_write_term_to_stream_text(ATerm stream, ATerm term);
 ATerm SSL_write_term_to_stream_taf(ATerm stream, ATerm term);
 
 ATerm SSL_read_term_from_stream(ATerm stream);
+
 ATerm SSL_read_term_from_string(ATerm string);
+ATerm SSL_write_term_to_string(ATerm term);
 
 ATerm SSL_strlen(ATerm str);
 ATerm SSL_strcat(ATerm str1, ATerm str2);

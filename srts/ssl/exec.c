@@ -653,6 +653,21 @@ ATerm SSL_read_term_from_string(ATerm str_term) {
   return result;
 }
 
+ATerm SSL_write_term_to_string(ATerm term) {
+  ATerm result_term;
+
+  /* result points to some internal buffer of the ATerm lib */
+  char* result = ATwriteToString(term);
+
+  if(result == NULL) {
+    perror("SRTS/write_term_to_string");
+    _fail(term);
+  }
+
+  result_term = ATmakeString(result);
+  return result_term;
+}
+
 /**
  * String operations
  */

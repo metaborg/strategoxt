@@ -1,5 +1,10 @@
 2004-02-12  Martin Bravenboer <martin@cs.uu.nl>
 
+	* ssl/exec.[ch]: added SSL_write_term_to_string, which writes an
+	ATerm to a String.
+
+2004-02-12  Martin Bravenboer <martin@cs.uu.nl>
+
 	* ssl/exec.[ch]: added SSL_read_term_from_string, which reads an
 	ATerm from a String. Useful in general, but especially for parsing
 	command line ATerm arguments.
