@@ -1,3 +1,7 @@
+2002-12-31  Eelco Visser  <visser@cs.uu.nl>
+
+	* autoxt.m4 (USE_XT_PACKAGES): template for use in config file
+
 2002-12-21  Eelco Visser  <visser@cs.uu.nl>
 
 	* Makefile.xt (sdfdatadir): Install .sdf, .def, and .tbl files as

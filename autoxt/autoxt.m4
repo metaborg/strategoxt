@@ -156,4 +156,8 @@ AC_ARG_WITH(dot-tools,
 )
 AC_SUBST(DOT_TOOLS)
 
+
+AC_DEFINE(XTC_REPOSITORY(), [ATmakeString("@REPOSITORY@")], [Location of the XTC repository])
+
+
 ])
