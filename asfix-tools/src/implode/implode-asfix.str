@@ -46,7 +46,7 @@ signature
       RemoveLit    : Option
       RemovePT     : Option
       RemoveSeq    : Option
-      FlatAlt      : Option
+      FlatAltOpt   : Option
       Concrete     : Option
 
       ToTerm       : Term -> Term
@@ -83,7 +83,7 @@ strategies
 	!"--lit            Remove literal nodes from the AsFix? parse tree")
 
   + Option( "--alt",    
-	!FlatAlt,      
+	!FlatAltOpt,      
 	!"--alt            Flat alternatives")
 
   + Option( "--appl",   
@@ -129,9 +129,9 @@ strategies
        try((option-defined(ApplToSort),   appl-to-sort));
        try((option-defined(FlatList),     flat-list));
        try((option-defined(RemoveLit),    remove-lit));
-       try((option-defined(FlatInj),      flat-injections));
-       try((option-defined(FlatAlt),      flat-alt));
        try((option-defined(ReplaceAppl),  replace-appl));
+       try((option-defined(FlatInj),      flat-injections));
+       try((option-defined(FlatAltOpt),   flat-alt));
        try((option-defined(RemoveSeq),    remove-seq));
        try((option-defined(RemovePT),     remove-pt));
        try(?term; (option-defined(Concrete), id)
@@ -157,7 +157,7 @@ strategies
   flat-alt = topdown( try(FlatAlt) )
 
   // 5) Replace appl nodes with their cons attribute if available.
-  replace-appl = topdown(try(appl(id,id);Cns)); conc-to-cons
+  replace-appl = topdown(try(appl(id,id); Cns)); conc-to-cons
 
   // 6) Flatten injections in a parse tree
   flat-injections = bottomup(try(Inj))
@@ -262,7 +262,7 @@ strategies
 
 strategies
 
-  FlatAlt =
+  FlatAlt = 
    (  appl(prod([cf(?s)<+?s], cf(?alt(a1,a2)),  id), ?args)
    <+ appl(prod([?s],         lex(?alt(a1,a2)), id), ?args)
    );  
@@ -270,7 +270,7 @@ strategies
    rec x({n, ai, aj:
         ?(s, n); !alt(n,args)
      <+ ?(alt(s, si), n); !alt(n, args)
-     <+ ?(alt(ai, aj), n ); <x>(aj, <add>(n, 1))
+     <+ ?(alt(ai, aj), n); <x>(aj, <add>(n, 1))
    })
 
 // Flatten list constructs
@@ -471,7 +471,7 @@ rules
 
   CnsGeneric : 
     appl(p, ts) -> c#(ts)
-    where <(Constr0 <+ Constr1);try(Rename-Keyword)> p => c 
+    where <(Constr0 <+ Constr1); try(Rename-Keyword)> p => c 
 
   Constr0 : 
     prod(_, _, as) -> x
@@ -483,9 +483,11 @@ rules
   Constr1 : prod([x], iter(x), _)                 -> "Ins"
 
   Constr1 : prod([_,_,_,_,_],cf(iter-sep(_,_)),_) -> "Conc"
-  Constr1 : prod([_,_,_],cf(iter(_)),_)           -> "Conc"
-  Constr1 : prod([_,_,_],iter-sep(_,_),_)	  -> "Conc"
-  Constr1 : prod([_,_],iter(_),_)                 -> "Conc"
+  Constr1 : prod([_,_,_],    cf(iter-sep(_,_)),_) -> "Conc" // after layout removal
+  Constr1 : prod([_,_,_],    cf(iter(_)),_)       -> "Conc"
+  Constr1 : prod([_,_],      cf(iter(_)),_)       -> "Conc" // after layout removal
+  Constr1 : prod([_,_,_],    iter-sep(_,_),_)	  -> "Conc"
+  Constr1 : prod([_,_],      iter(_),_)           -> "Conc"
 
   Constr1 : prod([], cf(opt(_)), _)		  -> "None"
   Constr1 : prod([], opt(_), _)			  -> "None"

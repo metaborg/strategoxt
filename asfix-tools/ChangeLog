@@ -1,3 +1,8 @@
+2003-12-21  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/implode/implode-asfix.str: Bugs in implosion using separate
+	phases. Not clear why these went undetected.
+
 2003-011-30  Martin Bravenboer  <martin@cs.uu.nl>
 
 	* src/implode/sglri.str: fixed the --sglr and --impl
