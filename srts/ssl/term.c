@@ -129,6 +129,63 @@ ATerm SSL_explode_term(ATerm t)
   return(t);
 }
 
+
+ATerm SSL_get_constructor(ATerm t)
+{
+  switch(ATgetType(t)) {
+  case AT_APPL :
+    {
+      Symbol sym;
+      sym = ATgetSymbol(t);
+      if(ATisQuoted(sym))
+        t = ATmakeStringQ(ATgetName(sym));
+      else
+        t = ATmakeString(ATgetName(sym));
+      break;
+    }
+  case AT_INT :
+    break;
+  case AT_REAL :
+    break;
+  case AT_LIST :
+    {
+      t = (ATerm)ATempty;
+      break;
+    }
+  case AT_PLACEHOLDER :
+    {
+      t = (ATerm) ATmakePlaceholder((ATerm) ATempty);
+	break;
+    }
+  default:
+    _fail(t);
+  }
+  return(t);
+}
+
+ATerm SSL_get_arguments(ATerm t)
+{
+  switch(ATgetType(t)) {
+  case AT_APPL :
+      t = (ATerm) ATgetArguments((ATermAppl)t);
+      break;
+  case AT_INT :
+    t = (ATerm)ATempty;
+    break;
+  case AT_REAL :
+    t = (ATerm)ATempty;
+    break;
+  case AT_LIST :
+    break;
+  case AT_PLACEHOLDER :
+    t = (ATerm) ATmakeList1(ATgetPlaceholder((ATermPlaceholder) t));
+    break;
+  default:
+    _fail(t);
+  }
+  return(t);
+}
+
 ATerm SSL_address_lt(ATerm x, ATerm y) {
   ATfprintf(stderr, "<address-lt> (%t,%t) (%d,%d): ", x, y, x, y);
 

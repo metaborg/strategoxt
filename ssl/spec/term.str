@@ -31,8 +31,26 @@ strategies
   * also as a congruence s1#(s2).
   *
   * E.g. <explode-term> f(t1,...,tn) is the inverse of mkterm and produces (f, [t1,...,tn]).
+  *
+  * Note that explode-term is equivalent to !(<get-constructor>, <get-arguments>).
   */ 
   explode-term = ?t; prim("SSL_explode_term",t)
+
+ /**
+  * Get the constructor of a term.
+  *
+  * Note that explode-term is equivalent to !(<get-constructor>, <get-arguments>).
+  */
+
+  get-constructor = ?t; prim("SSL_get_constructor", t)
+
+ /**
+  * Get the arguments of a term.
+  *
+  * Note that explode-term is equivalent to !(<get-constructor>, <get-arguments>).
+  */
+
+  get-arguments = ?t; prim("SSL_get_arguments", t)
 
  /**
   * Compare the address of two terms and succeeds if the address of the first is 
