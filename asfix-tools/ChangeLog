@@ -1,5 +1,6 @@
 2001-05-31 Merijn de Jonge <mdejonge@cwi.nl> 
    * Added src/asfix/prodcons.r and src/asfix/verbalize.r
+   * Fixed switch handling in configure.in.src
 
 2001-05-29 Merijn de Jonge <mdejonge@cwi.nl> 
    * Extracted asfix tools from Gramar Tools package 0.7 and created a

@@ -1,3 +1,6 @@
+2001-05-31 Merijn de Jonge <mdejonge@cwi.nl> 
+   * Fixed switch handling in configure.in.src
+
 2001-05-29 Merijn de Jonge <mdejonge@cwi.nl> 
    * Extracted aterm tools from Grammar Tools package 0.7 and created a
      separated ATerm Tools package for them.
