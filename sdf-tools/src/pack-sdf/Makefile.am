@@ -11,9 +11,9 @@ CLEANFILES 	 = pack_sdf_check $(wildcard *.dep)
 BOOTCLEANFILES 	 = pack-sdf.c 
 EXTRA_DIST  	 = $(wildcard *.str) $(wildcard *.meta) 
 
-SCFLAGS     	 = -I $(srcdir)/../lib -I $(ASFIX_TOOLS)/share/asfix-tools $(XTCFLAGS)
+SCFLAGS     	 = -I $(srcdir)/../lib -I $(ASFIX_TOOLS)/share/asfix-tools $(XTCFLAGS) 
 
-pack-sdf.o	 : xtc-conf.h
+#		   --main $*
 
 pack_sdf_check_prog     = pack-sdf
 pack_sdf_check_switches = -I data -dep data/syntax-test.def -o /dev/null
