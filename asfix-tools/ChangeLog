@@ -1,7 +1,7 @@
 2001-09-01 Merijn de Jonge <mdejonge@cwi.nl>
    * added missing constructors
-   * Added Sdf-Bracket.r module which contains constructor definition of
-     sdf-bracket
+   * Added Bracket-Symbol.r module which contains constructor definition of
+     bracket-symbol
 
 2001-06-12 Merijn de Jonge <mdejonge@cwi.nl>
    * src/visamb/Makefile.am: added data to SUBDIRS variable
