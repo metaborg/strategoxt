@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 
 #include <stdio.h>
 #include <aterm2.h>
-#include "debug.h"
+#include "srts/debug.h"
 
 #define ATmakeSymbol ATmakeAFun
 

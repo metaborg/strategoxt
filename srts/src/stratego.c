@@ -25,9 +25,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 #include <setjmp.h>
 #include <assert.h>
 #include <aterm2.h> 
-#include "stratego.h"
-#include "mprotect.h"
-#include "choice.h"
+#include "srts/stratego.h"
+#include "srts/mprotect.h"
 
 //static Symbol sym_Cons_2;
 //static Symbol sym_Nil_0;
@@ -370,7 +369,7 @@ ATerm main_0(ATerm);
 int main(int argc, char *argv[])
 {
 
-#ifdef USECPL
+#ifdef HAVE_CPL
   long bp;
 #endif
 
@@ -380,7 +379,7 @@ int main(int argc, char *argv[])
 
   //ATfprintf(stderr, "main a\n");
 
-#ifdef USECPL
+#ifdef HAVE_CPL
   //ATfprintf(stderr, "using cpl\n");
   CPL_init_malloc_protect(at_malloc_protect);
   CPL_init_malloc(malloc);

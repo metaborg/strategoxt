@@ -19,6 +19,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 
 */
 
+#ifndef SRTS_ATERM_EXTENSION_H
+#define SRTS_ATERM_EXTENSION_H
+
 #include <aterm2.h>
 
 /* Extension of ATerm library */
@@ -69,3 +72,5 @@ ATerm App6(char *name, ATerm arg1, ATerm arg2, ATerm arg3, ATerm arg4, ATerm arg
 ATerm App7(char *name, ATerm arg1, ATerm arg2, ATerm arg3, ATerm arg4, ATerm arg5, ATerm arg6, ATerm arg7);
 
 ATerm AppN(char *name, ATermList args);
+
+#endif

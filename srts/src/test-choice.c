@@ -108,7 +108,7 @@ void mix_local_and_global_choice2(void)
 ATerm main_0(ATerm t)
 {
   fprintf(stderr, "main_0(%t)\n", t);
-#ifdef USECPL
+#ifdef HAVE_CPL
   mix_local_and_global_choice();
   mix_local_and_global_choice2();
 #endif

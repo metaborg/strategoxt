@@ -29,7 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
  #include <signal.h>
 #endif
 
-#include "mprotect.h"
+#include "srts/mprotect.h"
 
 /*
  * This function calculates the number of pages of available stack space, and

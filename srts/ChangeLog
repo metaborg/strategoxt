@@ -1,3 +1,21 @@
+2002-11-19  Eelco Visser  <visser@acm.org>
+
+	* ssl/ : Added C implementations of Stratego primitives to the
+	run-time system. This simplifies bootstrapping, and allows the
+	Stratego part of the ssl package to be built later on in the build
+	process.
+
+	* src/ : Improved conditional use of the CPL library.
+
+	* src/srts/ : Header files in subdirectory with package name, for
+	compatibility with installation situation. Renamed some header
+	files.
+
+	* src/Makefile.am: Derive implementation of choice in CPL from
+	libchoice and add it to libstratego. This way the rest of the
+	Stratego compiler does not need to be aware of the need for the
+	CPL library
+
 2002-03-31  Eelco Visser  <visser@acm.org>
 
 	* src/Makefile.am: Conditional configuration did not work very well.

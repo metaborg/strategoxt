@@ -15,105 +15,58 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-ATERM = @ATERM@
+SUBDIRS = srts
 
 includedir = $(prefix)/include/srts
 
-############# CPL ##################################################
-
-EXTRA_DIST = choice-simple.c choice-simple.h choice-cpl.h choice-cpl.c \
-	test-choice.c choice.h
-
 if USECPL
 
-# Use the choice point library CPL to implement choice
-CHOICEHEADERS = choice.h
-CHOICESOURCES = choice.h choice-cpl.c
-CHOICEINCLUDES = -DUSECPL
-CHOICELIBADD = choice.o
+# Derive implementation of choice in CPL from libchoice and
+# add it to libstratego. This way the rest of the Stratego
+# compiler does not need to be aware of the need for the CPL
+# library
 
-CHOICELIBADDdbg = 
-#$(CPL)/lib/libchoice-dbg.a
-CHOICELIBADDgcc = $(CPL)/lib/libchoice-gcc.a
-CHOICELIBADDprof = $(CPL)/lib/libchoice-prof.a
-CHOICELDFLAGS = -L$(CPL)/lib -lchoice -DUSECPL
+CHOICELIBADD = choice.o 
+CHOICELIBADDgcc = choice-gcc.o
+CHOICELIBADDprof = choice-prof.o
+#CHOICELDFLAGS = -L$(CPL)/lib -lchoice -DUSECPL
 
-TESTS = test-choice
-
-CLEANFILES = test-choice choice.o choice.h stratego-choice.h
-
-cpl-used: 
-	@echo yes
-
-choice.h: $(CPL)/include/choice.h
+choice-cpl.h: $(CPL)/include/choice.h
 	cp $< $@
 
 choice.o: $(CPL)/lib/libchoice.a
 	ar x $<
+
 choice-%.o: $(CPL)/lib/libchoice-%.a
 	ar x $<
 
-stratego-choice.h: Makefile
-	cp $(srcdir)/choice-cpl.h $@
-
 else
 
-# Use setjmp and longjmp to implement choice
-CHOICEHEADERS = 
-CHOICESOURCES = choice-simple.c
-CHOICEINCLUDES = 
-CHOICELIBADD = 
-
-CLEANFILES += test-choice choice.o choice.h stratego-choice.h
-
-stratego-choice.h: Makefile
-	cp $(srcdir)/choice-simple.h $@
-
-choice.h: Makefile choice.c   
-	-rm -f $@
-	touch $@
-
-choice.c: Makefile
-	-rm -f $@
-	echo "#include \"choice.h\"" > $@ 
-
-cpl-used:   
-	@echo no
-
-TESTS = dummy-test
-
-dummy-test:
-	echo "#! /bin/sh" > $@
-	chmod +x $@
+CHOICELIBADD =
 
 endif
 
-##################################################################
-
-stratego.o: stratego-choice.h
+stratego.o: srts/stratego-choice.h srts/stratego-config.h
 
 OPTFLAGS	= -O2
-INCLUDES 	= -I. -I$(ATERM)/include -I$(srcdir) $(CHOICEINCLUDES)
-LDFLAGS		= $(INCLUDES) -L. -lstratego -L$(ATERM)/lib -lATerm $(CHOICELDFLAGS) 
+INCLUDES 	= -I. -I$(ATERM)/include -I$(srcdir) 
+LDFLAGS		= $(INCLUDES) -L. -lstratego -L$(ATERM)/lib -lATerm 
+#$(CHOICELDFLAGS) 
 
 lib_LIBRARIES 	= libstratego.a libstratego.dbg.a \
 		  libstratego.opt.a libstratego.prof.a \
 		  libatermextension.a libatermextension.dbg.a \
 		  libatermextension.opt.a libatermextension.prof.a
 
-include_HEADERS = \
-	stratego.h aterm-extension.h debug.h stratego-choice.h $(CHOICEHEADERS)
+#include_HEADERS = \
+#	srts/stratego.h srts/aterm-extension.h srts/debug.h srts/stratego-choice.h srts/config.h
 
 libstratego_a_SOURCES = \
 	stratego.c aterm-extension.c debug.c mprotect.c \
-	stratego.h aterm-extension.h debug.h mprotect.h \
-	stratego-choice.h $(CHOICESOURCES)
+	srts/stratego.h srts/aterm-extension.h srts/debug.h srts/mprotect.h \
+	srts/stratego-choice.h stratego-choice.c 
 
 #BUILT_SOURCES = stratego-choice.h
-
-libatermextension_a_SOURCES = \
-	aterm-extension.c debug.c mprotect.c\
-	aterm-extension.h debug.h mprotect.h
 
 libstratego_dbg_a_SOURCES = 
 libstratego_opt_a_SOURCES = 
@@ -121,12 +74,17 @@ libstratego_prof_a_SOURCES =
 
 #libstratego_a_OBJECTS += $(CHOICELIBADD) $(libstratego_a_OBJECTS)
 
-libstratego_a_LIBADD = $(CHOICELIBADD) 
-#$(subst .o,.dbg.o,$(libstratego_a_OBJECTS)) 
+libstratego_a_LIBADD = $(CHOICELIBADD)
+
+#$(subst .o,.dbg.o,$(libstratego_a_OBJECTS))
 
 libstratego_dbg_a_LIBADD = $(CHOICELIBADDdbg) $(subst .o,.dbg.o,$(libstratego_a_OBJECTS))
 libstratego_opt_a_LIBADD = $(CHOICELIBADD) $(subst .o,.opt.o,$(libstratego_a_OBJECTS)) 
 libstratego_prof_a_LIBADD = $(CHOICELIBADDprof) $(subst .o,.prof.o,$(libstratego_a_OBJECTS))
+
+libatermextension_a_SOURCES = \
+	aterm-extension.c debug.c mprotect.c \
+	srts/aterm-extension.h srts/debug.h srts/mprotect.h
 
 libatermextension_dbg_a_SOURCES = 
 libatermextension_opt_a_SOURCES = 

@@ -16,7 +16,9 @@
 # 02111-1307, USA.
 
 AC_INIT(src/stratego.c)
-AM_INIT_AUTOMAKE(srts,0.9beta2)
+AM_INIT_AUTOMAKE(srts,0.9beta3)
+
+AM_CONFIG_HEADER(config.h)
 
 AC_CONFIG_AUX_DIR(config)
 
@@ -37,6 +39,11 @@ AC_ARG_WITH(cpl,
 )
 AC_SUBST(CPL)
 AM_CONDITIONAL(USECPL, test x$usecpl = xtrue)
+
+if test x$usecpl = xtrue
+then
+AC_DEFINE(HAVE_CPL, 1, [Are we using the Choice Point Library?])
+fi
 
 AC_ARG_WITH(rpmprefix,
   [  --with-rpmprefix          Specify location of installation prefix for rpm: /usr],
@@ -59,14 +66,12 @@ AC_ARG_WITH(rpmtmp,
 )
 AC_SUBST(RPMTMP)
 
-AC_REVISION($Id: configure.in,v 1.23 2002/11/16 15:15:00 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.24 2002/11/19 22:39:35 stratego Exp $)
 
 AC_CHECK_FUNCS([getpagesize])
 AC_CHECK_HEADERS([stdlib.h])
 AC_CHECK_HEADERS([string.h])
 AC_CHECK_HEADERS([unistd.h])
-
-AM_CONFIG_HEADER([config.h])
 
 AC_C_INLINE
 AC_FUNC_MALLOC
@@ -93,4 +98,6 @@ AC_OUTPUT(
 	README 
 	src/Makefile
 	src/make_rules
+	src/srts/Makefile
+	ssl/Makefile
 )

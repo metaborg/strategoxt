@@ -1,9 +1,14 @@
+#ifndef SRTS_STRATEGO_H
+#define SRTS_STRATEGO_H
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <setjmp.h>
 #include <assert.h>
 #include <aterm2.h>
+#include "stratego-config.h"
+#include "aterm-extension.h"  
 #include "stratego-choice.h"
 
 ATerm _id(ATerm);
@@ -32,4 +37,4 @@ ATerm _cpl_loaded(ATerm);
 #define not_null(x) \
         (x == NULL ? _fail(x) : x)
 
-
+#endif
