@@ -2,6 +2,7 @@ include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
 SCFLAGS		 = -I $(STRATEGO_FRONT)/share/stratego-front \
+	  	   -I $(srcdir)/../front \
 	  	   -I $(srcdir)/../match \
 	  	   -I $(srcdir)/../opt \
 	 	   --main $*

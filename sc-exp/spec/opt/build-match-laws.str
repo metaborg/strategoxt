@@ -1,5 +1,5 @@
 module build-match-laws
-imports strategy sugar
+imports Stratego sugar
 strategies
 
   BMF = MisMatch + BuildMatchFusion + BuildBuild + BuildPrim

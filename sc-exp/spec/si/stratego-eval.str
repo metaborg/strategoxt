@@ -1,6 +1,6 @@
 
 module stratego-eval
-imports strategy sugar unification eval-lib-primitives
+imports Stratego-Amb unification eval-lib-primitives
 
 signature
   constructors

@@ -5,7 +5,7 @@
 
 \begin{code}
 module desugar
-imports Stratego stratlib list-sort use-def lib
+imports Stratego-Amb DefaultStrat sugar stratlib list-sort use-def lib
 \end{code} 
 
 	\paragraph{Varyadic operators}

@@ -1,5 +1,5 @@
 module canonicalize
-imports strategy sugar lib C C-simplify dynamic-rules
+imports Stratego lib C C-simplify dynamic-rules
 
 strategies
 

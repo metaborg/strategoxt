@@ -1,5 +1,5 @@
 module s2c
-imports strategy automaton sugar lib C C-simplify dynamic-rules config
+imports Stratego automaton lib C C-simplify dynamic-rules config
 
 strategies
 

@@ -30,7 +30,9 @@ AC_OUTPUT([
 	spec/match/data/Makefile 
 	spec/opt/Makefile 
 	spec/sc/Makefile 
+	spec/sc/sc-version.str
 	spec/sig/Makefile 
+	spec/pack/Makefile 
 
 	spec/lib/Makefile 
 

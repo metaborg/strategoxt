@@ -39,9 +39,9 @@ rules
 			   ; <not(is-subterm)> (Call(SVar(f),[]), s2) \ )
           > defs1 => defs2        
 
-  InlineDont :
-    Let([SDef(f, [], s1)], s2) -> 
-    Let([SDef([DontInline], f, [], s1)], s2)
+//  InlineDont :
+//    Let([SDef(f, [], s1)], s2) -> 
+//    Let([SDef([DontInline], f, [], s1)], s2)
 
   // dead code elimination
 

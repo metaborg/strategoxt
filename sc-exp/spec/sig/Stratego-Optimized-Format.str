@@ -43,7 +43,8 @@ strategies
 	+ Prim(is-string,list(term-expression))
 
 	+ Let(list(SDef(is-string,[],exp)
-                   + SDef(list(id), is-string,[],exp))
+                   // + SDef(list(id), is-string,[],exp)
+		  )
              , exp)
 
 	+ Case(is-string, Var(id), list(Alt(id,id,exp)), exp)

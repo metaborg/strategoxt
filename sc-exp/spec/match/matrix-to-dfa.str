@@ -1,7 +1,7 @@
 // Translating renamed matrix to automaton
 
 module matrix-to-dfa
-imports Matrix stratego-laws desugar match-to-matrix dynamic-rules
+imports matrix stratego-laws desugar match-to-matrix dynamic-rules
 
 strategies
 

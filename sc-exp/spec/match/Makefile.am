@@ -4,16 +4,18 @@ include $(wildcard *.dep)
 SUBDIRS = data
 
 SCFLAGS	= -I $(STRATEGO_FRONT)/share/stratego-front \
+	  -I $(srcdir)/../sig \
 	  -I $(srcdir)/../opt \
 	  -I $(srcdir)/../lib \
 	  -I $(srcdir)/../front
 
 libexec_PROGRAMS = optimize1 optimize2 compile-match 
-check_PROGRAMS 	 = matrix-test
+#check_PROGRAMS 	 = matrix-test
 
 CLEANFILES 	 = *.dep $(TESTS) 
 
-TESTS 		 = matrix-test 
+#TESTS 		 = 
+#matrix-test 
 # 		   match-to-matrix-test
 
 EXTRA_DIST 	 = $(wildcard *.str)

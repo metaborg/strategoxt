@@ -2,9 +2,11 @@ include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
 SCFLAGS		= -I $(STRATEGO_FRONT)/share/stratego-front \
-	  	  -I $(srcdir)/../match		      \
-	  	  -I $(srcdir)/../lib		      \
-		  -I $(SSL)/share/ssl		\
+	  	  -I $(XTC)/share/xtc			    \
+	  	  -I $(srcdir)/../sig			    \
+	  	  -I $(srcdir)/../match			    \
+	  	  -I $(srcdir)/../lib			    \
+		  -I $(SSL)/share/ssl			    \
 	  	  --main $*	
 
 bin_PROGRAMS 	= sc

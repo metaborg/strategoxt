@@ -4,6 +4,7 @@ include $(wildcard *.dep)
 SUBDIRS 	 = data
 
 SCFLAGS 	 = -I $(STRATEGO_FRONT)/share/stratego-front \
+	   	   -I $(srcdir)/../sig \
 	   	   -I $(srcdir)/../match \
 	  	   -I $(srcdir)/../lib \
 	  	   -I $(srcdir)/../opt \

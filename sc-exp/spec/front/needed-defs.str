@@ -9,7 +9,7 @@
 
 \begin{code}
 module needed-defs
-imports Stratego desugar stratlib list-set list-misc lib pack-graph
+imports Stratego DefaultStrat desugar stratlib list-set list-misc lib pack-graph
 	dynamic-rules
 \end{code}
 

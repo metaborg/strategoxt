@@ -2,6 +2,7 @@ include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
 SCFLAGS		 = -I $(STRATEGO_FRONT)/share/stratego-front \
+	  	   -I $(top_srcdir)/spec/sig \
 	  	   -I $(top_srcdir)/spec/front \
 	  	   -I $(top_srcdir)/spec/lib
 
@@ -22,7 +23,7 @@ si.c		 : eval-lib-primitives.rtree
 #primitives
 eval-lib-primitives.rtree: 
 	$(MAKE) primitives
-	$(top_builddir)/spec/syn/pack-stratego -I $(SSL)/share/ssl -i lib -o lib.packed
+	$(top_builddir)/spec/pack/pack-stratego -I $(SSL)/share/ssl -i lib -o lib.packed
 	./primitives -i lib.packed -o $@
 
 BOOTSOURCES = si.c primitives.c stratego.in stratego

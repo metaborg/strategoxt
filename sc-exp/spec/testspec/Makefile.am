@@ -19,6 +19,8 @@ SINCLUDES = \
 	-I $(srcdir)/../syn \
 	-I $(srcdir)/../sc \
 	-I $(srcdir)/../c \
+	-I $(srcdir)/../pack \
+	-I $(STRATEGO_FRONT)/share/stratego-front \
 	-I $(C_TOOLS)/share/c-tools \
 	-I $(C_TOOLS)/share/sdf/c-tools \
 	-I $(XTC)/share/xtc

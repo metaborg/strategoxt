@@ -1,5 +1,5 @@
 module congruence-laws
-imports stratego desugar
+imports Stratego-Amb desugar
 
 rules
 

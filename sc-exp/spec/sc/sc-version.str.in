@@ -1,0 +1,4 @@
+module sc-version
+overlays
+
+  sc-version = "@VERSION@"

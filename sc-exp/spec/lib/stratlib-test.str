@@ -1,5 +1,5 @@
 module stratlib-test
-imports stratlib sunit
+imports stratlib sunit DefaultStrat
 
 strategies
 
