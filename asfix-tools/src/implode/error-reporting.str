@@ -8,46 +8,45 @@ strategies
   /**
    * Reports an error summary to the stderr.
    *
-   * @type Summary -> Summary
+   * @param Summary -> Summary
+   * @type  a -> a
    */
-  report-error-summary =
-    ?summary(producer, _, errors)
+  report-error-summary(|summary) =
+    ?input
     ; where(
-        !errors
-        ; map(
-             report-specific-error(|producer)
-          <+ report-error(|producer)
-          )
+        !summary => summary(producer, _, errors)
+      ; !errors
+      ; map({error:
+          ?error
+        ; <report-specific-error(|producer, error) <+ report-error(|producer, error)> input
+        })
       )
     <+ say(!"error: An error occured, but the error summary cannot be presented in a nice way. Please report this as a bug.")
        ; debug(!"       Structured error summary: ")
 
   /**
-   * @type Error -> Error
+   * @param error Error
+   * @type  a -> a
    */
-  report-error(|producer) =
-    ?error(err, [localized(descr, location)])
-    ; where(
-        <report-location(|err, descr)> location
-      )
+  report-error(|producer, error) =
+    where(!error => error(err, [localized(descr, location)]))
+    ; report-location(|err, descr, location)
 
   /**
-   * @type Location -> Location
+   * @param error Location
+   * @type  a -> a
    */
-  report-location(|err, descr) =
-    ?area-in-file(file, area)
-    ; where(
-        report-area(|err, descr, file, area)
-      )
+  report-location(|err, descr, location) =
+    where(!location => area-in-file(file, area))
+    ; report-area(|err, descr, file, area)
 
   /**
-   * @type Location -> Location
+   * @param location Location
+   * @type  a -> a
    */
-  report-location(|err, descr) =
-    ?file(file)
-    ; where(
-        report-file(|err, descr, file)
-      )
+  report-location(|err, descr, location) =
+    where(!location => file(file))
+    ; report-file(|err, descr, file)
 
 /**
  * Specific cases
@@ -59,10 +58,11 @@ strategies
    * a problem, is the parse table. So, we lookup the parse table from
    * the -p config.
    *
-   * @type Error -> Error
+   * @param error Error
+   * @type  a -> a
    */
-  report-specific-error(|producer) =
-    ?error("Parse Table error", [localized(descr, _)])
+  report-specific-error(|producer, error) =
+    where(!error => error("Parse Table error", [localized(descr, _)]))
     ; where(
         <fprintnl> ( <stderr-stream> (), [<get-config> "-p", ": Parse table error: ", descr])
       )
@@ -102,7 +102,11 @@ strategies
 
         print-location =
           where(
-            <fprintnl> (<stderr-stream> (), [<filename> (), ": ",  descr, " at line ", <int-to-string> begin-line, ", column ", <int-to-string> begin-column])
+            <fprintnl> (<stderr-stream> (), [
+              <filename> (), ": ",  descr, " at line "
+            , <int-to-string> begin-line, ", column "
+            , <int-to-string> begin-column
+            ])
           )
 
         print-context-in-file =
@@ -128,7 +132,9 @@ strategies
           ; where(<fprintnl> (<stderr-stream> (), [<id>]))
 
      in print-location
-      ; <error-filename-to-file> file
+      ; if not(?FILE(_) + stdin()) then
+          <error-filename-to-file> file
+        end
       ; if ?FILE(_) then
           print-context-in-file
         end

@@ -114,6 +114,7 @@ strategies
   report-sglri-error-summary(|input) =
     finally(
       read-from
-      ; report-error-summary
+      ; ?summary
+      ; <report-error-summary(|summary)> ()
     , fail
     )
