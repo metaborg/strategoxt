@@ -10,4 +10,4 @@ TESTS_ENVIRONMENT =\
   PARSE_UNIT="$(prefix)/bin/parse-unit$(EXEEXT)"\
   VERBOSE="1"
 
-EXTRA_DIST = Exp.sdf $(wildcard *.testsuite)
+EXTRA_DIST = $(check_SCRIPTS) Exp.sdf $(wildcard *.testsuite)
