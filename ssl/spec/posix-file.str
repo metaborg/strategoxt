@@ -2,19 +2,139 @@ module posix-file
 imports string
 
 /**
+ * Stream and file representations
+ */
+signature
+  constructors
+    Stream    : ImplDep -> Stream
+
+    Path      : String -> FileLoc
+
+    stdin     : FileLoc
+    stdout    : FileLoc
+    stderr    : FileLoc
+
+    /*
+    FileDescr : Int -> FileDescr
+    */
+
+/**
+ * Abstractions for streams
+ */
+strategies
+
+  /**
+   * opens a Stream associated to a FileLoc
+   *
+   * :: FileLoc -> Stream
+   */
+  open-stream = ?(_, _);
+    (  Fst; stdio-stream
+    <+ (?Path(<id>), id); fopen
+    <+ (is-string,   id); fopen
+    )
+
+  /**
+   * :: FileLoc -> Stream
+   */
+  stdio-stream = ?stdin() ; stdin-stream
+  stdio-stream = ?stdout(); stdout-stream
+  stdio-stream = ?stderr(); stderr-stream
+
+/**
+ * Standard streams
+ */
+strategies
+
+  /**
+   * Returns the Stream for stdin, stdout and stderr
+   *
+   * :: _ -> Stream
+   */
+  stdin-stream  = prim("SSL_stdin_stream") ; !Stream(<id>)
+  stdout-stream = prim("SSL_stdout_stream"); !Stream(<id>)
+  stderr-stream = prim("SSL_stderr_stream"); !Stream(<id>)
+
+/**
  * Stream operations
  */
 strategies
  
-  /*   The  fclose function dissociates the named stream from its under�
-       lying file or set of functions.  If the stream was being used for
-       output, any buffered data is written first, using fflush(3). */
+   
+
+  /**
+   * Opens the file whose name is the string pointed to by 
+   * pathname and returns a Stream associated with this file.
+   * For documentation on the mode string, see the man page of
+   * fopen.
+   *
+   * fails if the file couldn't be opened. 
+   * :: String * String -> Stream
+   */
+  fopen =
+    ?(pathname, mode); prim("SSL_fopen", pathname, mode); !Stream(<id>)
+
+  /**
+   * Dissociates the named stream from its underlying file or set of functions.
+   * If the stream was being used for output, any buffered data is written 
+   * first, using fflush(3).
+   *
+   * :: Stream -> ()
+   */
   fclose =
-    ?stream; prim("SSL_fclose", stream)
-    
+    ?Stream(stream); prim("SSL_fclose", stream)
+      <+ ?stream-old; prim("SSL_fclose", stream-old) // legacy
+
+  /**
+   * Forces a write of all user-space buffered data for the given Stream
+   *
+   * :: Stream -> Stream
+   */
   fflush =
-    ?stream; prim("SSL_fflush", stream)
-    
+    ?Stream(stream); prim("SSL_fflush", stream); !Stream(<id>)
+      <+ ?stream-old; prim("SSL_fflush", stream-old); !Stream(<id>) // legacy
+
+/**
+ * Character output to stream
+ */
+strategies
+
+  /**
+   * Writes a String to a Stream
+   * :: String * Stream -> Stream
+   */
+  fputs =
+    ?(str, Stream(stream)); prim("SSL_fputs", str, stream); !Stream(<id>)
+
+  /**
+   * Writes a String to stdout with a trailing newline and returns stdout.
+   * :: String -> Stream
+   */
+  puts =
+    ?str; prim("SSL_puts", str); !Stream(<id>)
+
+/**
+ * ATerm input and output with streams
+ */
+strategies
+
+  /**
+   * Writes an ATerm to a Stream
+   *
+   * :: Stream * _ -> Stream
+   */
+  write-to-stream =
+    ?(Stream(stream), term); prim("SSL_write_term_to_stream", stream, term); !Stream(<id>)
+      //TODO: offer baf and taf variants.
+
+  /**
+   * Reads an ATerm from a Stream
+   *
+   * :: Stream -> _
+   */
+  read-from-stream =
+    ?Stream(stream); prim("SSL_read_term_from_stream", stream)
+  
 /**
  * Standard file descriptors
  */
@@ -105,7 +225,7 @@ strategies
    * fdopen :: FileDescr * String -> Stream
    */
   fdopen = 
-    ?(fd, mode); prim("SSL_fdopen", fd, mode)
+    ?(fd, mode); prim("SSL_fdopen", fd, mode); !Stream(<id>)
 
   /**
    * The function fileno examines the argument stream and returns its 
@@ -116,7 +236,7 @@ strategies
    *    where FileDescr is currently an Int.
    */
   fileno = 
-    ?stream; prim("SSL_fileno", stream)
+    ?Stream(stream); prim("SSL_fileno", stream)
 
 /**
  * Pipes (and FIFOs)
@@ -134,4 +254,26 @@ strategies
 signature
   constructors
     Pipe       : Int * Int -> Pipe
-    
+
+/**
+ * String manipulations
+ */
+strategies
+
+  /**
+   * :: String -> Int
+   */
+  strlen =
+    ?str; prim("SSL_strlen", str)
+
+  /**
+   * :: String * String -> String
+   */
+  strcat =
+    ?(str1, str2); prim("SSL_strcat", str1, str2)
+
+  /**
+   * :: [String] -> String
+   */
+  new-concat-strings =
+    ?strings; prim("SSL_concat_strings", strings)

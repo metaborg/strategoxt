@@ -6,15 +6,18 @@ strategies
   main = 
     test-suite(!"posix-file-test",
       fileno-tests
+    ; strcat-tests
+    ; strlen-tests
+    ; new-concat-strings-tests
     )
 
   fileno-tests =
-    apply-test(!"fileno on stdin  -- 1", fileno, !stdin(), !0)
-  ; apply-test(!"fileno on stdin  -- 2", fileno, !stdin(), STDIN_FILENO)
-  ; apply-test(!"fileno on stdout -- 1", fileno, !stdout(), !1)
-  ; apply-test(!"fileno on stdout -- 2", fileno, !stdout(), STDOUT_FILENO)
-  ; apply-test(!"fileno on stderr -- 1", fileno, !stderr(), !2)
-  ; apply-test(!"fileno on stderr -- 2", fileno, !stderr(), STDERR_FILENO)
+    apply-test(!"fileno on stdin  -- 1", fileno, stdin-stream, !0)
+  ; apply-test(!"fileno on stdin  -- 2", fileno, stdin-stream, STDIN_FILENO)
+  ; apply-test(!"fileno on stdout -- 1", fileno, stdout-stream, !1)
+  ; apply-test(!"fileno on stdout -- 2", fileno, stdout-stream, STDOUT_FILENO)
+  ; apply-test(!"fileno on stderr -- 1", fileno, stderr-stream, !2)
+  ; apply-test(!"fileno on stderr -- 2", fileno, stderr-stream, STDERR_FILENO)
 
   ; where(new-temp-file => (tmp-name, tmp-fd))
 
@@ -27,6 +30,50 @@ strategies
     )
 
   ; where(<remove-file> tmp-name)
+
+/*
+  main = 
+    test-bla-out
+  ; test-bla-in
+  ; test-stdout
+  ; test-suite(!"POSIX functions",
+
+    )
+  ; <exit> 0
+
+  test-bla-out =
+      <fopen> ("bla.txt", "w")
+    ; <write-to-stream> (<id>, "Bla Bla Bla")
+    ; new-fclose
+
+  test-stdout =
+      stdout-stream
+    ; <write-to-stream> (<id>, "This is stdout (1)")
+    ; <fputs> ("This is stdout (2)\n", <id>)
+    ; <puts> "This is stdout (3)"
+
+  test-bla-in =
+      <fopen> ("bla.txt", "r")
+    ; where(read-from-stream => "Bla Bla Bla")
+    ; new-fclose
+*/
+
+  strcat-tests =
+      apply-test(!"strcat-1", strcat, !("",  ""), !"")
+    ; apply-test(!"strcat-2", strcat, !("a", ""), !"a")
+    ; apply-test(!"strcat-3", strcat, !("",  "a"), !"a")
+    ; apply-test(!"strcat-4", strcat, !("hello ",  "world"), !"hello world")
+
+  strlen-tests =
+      apply-test(!"strlen-1", strlen, !"", !0)
+    ; apply-test(!"strlen-2", strlen, !"a", !1)
+    ; apply-test(!"strlen-3", strlen, !"hello world", !11)
+
+  new-concat-strings-tests =
+      apply-test(!"new-concat-strings-1", new-concat-strings, ![], !"")
+    ; apply-test(!"new-concat-strings-2", new-concat-strings, !["a", ""], !"a")
+    ; apply-test(!"new-concat-strings-3", new-concat-strings, !["",  "a"], !"a")
+    ; apply-test(!"new-concat-strings-4", new-concat-strings, !["hello ",  "world"], !"hello world")
 
 /**
  * Copyright (C) 2003 Eelco Visser <visser@acm.org>

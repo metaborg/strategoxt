@@ -1,3 +1,11 @@
+2003-03-24  Martin Bravenboer <martin@mbravenboer.org>
+
+  * spec/posix-file.str: new stream representation
+
+  * spec/posix-file.str: added fopen, strlen, strcat,
+    stdin-stream, stdout-stream, open-stream and
+    rewritten all code to new stream representation.
+
 2003-03-21  Martin Bravenboer <martin@mbravenboer.org>
 
   * spec/posix-file.str: added fileno
