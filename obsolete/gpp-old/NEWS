@@ -1,3 +1,8 @@
+Version 2.1 released: 2001-11-29
+	* Fixed error in default.abbrevs.
+	* Added support for generatin bootstrapped-distributions of gpp.
+	* Pretty-print tables ow accept quoted strings as constructor names.
+
 Version 2.0 released: 2001-09-20
 	* This package replaces the gpp package version 1.33 and earlier.
 	  The implementation is now Stratego-based instead of ASF-based.

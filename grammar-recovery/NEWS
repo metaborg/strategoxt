@@ -1,3 +1,7 @@
+Version 0.2 released: 2001-11-29
+	* Added handling of grammar identifiers.
+	* Fixed yacc2sdf.
+
 Version 0.1 released: 2001-09-20
 	* This package contains the grammar recovery tools extracted from
           the Grammar Tools package, version 0.7.

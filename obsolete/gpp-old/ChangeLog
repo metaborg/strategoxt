@@ -1,3 +1,6 @@
+2001-11-27 Merijn de Jonge <mdejonge@cwi.nl>
+   * Updated NEWS file
+
 2001-11-26 Merijn de Jonge <mdejonge@cwi.nl>
    * package.conf: updated versions of required packages
 
@@ -11,7 +14,7 @@
    * added new version of program-check.m4
 
 2001-11-25 Merijn de Jonge <mdejonge@cwi.nl>
-   * Updated version requirements for required packages sgler and pgen.
+   * Updated version requirements for required packages sglr and pgen.
    * Weakened configuation of graphviz package (gpp will also build without
      the graphviz package).
 
@@ -47,9 +50,6 @@
 2001-10-06 Merijn de Jonge <mdejonge@cwi.nl> 
    * pp-tables: Syntax of pp tables now accepts quoted strings as
      constructor names.
-
->>>>>>> 1.28
-2001-10-06 Merijn de Jonge <mdejonge@cwi.nl> 
    * Due to a recent Stratego bug fix related to quoted constructor names,
      gpp now depends on version 0.6.2 of Stratego
 
