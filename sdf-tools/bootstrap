@@ -9,4 +9,4 @@ autoconf -f
 automake -a -f  
 #--warnings=all  --warnings=no-portability
 
-touch sig/*.str
+touch src/sdf/*.pp pp/*.pp pp/*.pp.af syn/*.tbl sig/*.str sig/*.rtree
