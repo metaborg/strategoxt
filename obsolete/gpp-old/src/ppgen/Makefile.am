@@ -20,7 +20,8 @@ pkgdata_DATA	 = sdf.cons.def sdf.cons.tbl
 
 TESTS        	 = no_generation_for_bracket_function_check
 
-EXTRA_DIST  	 = $(wildcard *.str) ppgen.sh.src sdf.cons.def sdf.cons.tbl
+EXTRA_DIST  	 = $(wildcard *.str) ppgen.sh.src sdf.cons.def sdf.cons.tbl \
+		   no_generation_for_bracket_function_check
 
 % : %.sh.src Makefile
 	sed 's@__PREFIX__@$(prefix)@g;\

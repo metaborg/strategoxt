@@ -1,0 +1,4 @@
+set -e
+./Pp-gen -i ./data/ppgencheck1.in -o data/ppgencheck1.out
+diff data/ppgencheck1.out ./data/ppgencheck1.correct
+rm data/ppgencheck1.out
