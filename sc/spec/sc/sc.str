@@ -40,11 +40,10 @@ strategies
         ; <set-config> ("baseout", baseout)
 
   get-outfile(suffix) =
-    //<get-config> "-o" <+ 
     <conc-strings>(<get-config> "baseout", <suffix>)
 
   dep-name =
-    !["--dep", <<get-config> "-o" <+ <get-config> "infile">]
+    !["--dep", <<get-config> "-o" <+ <get-config> "baseout">]
 
 strategies
 
@@ -116,7 +115,6 @@ strategies
   stratego-nf = 
     xtc-transform(!"Stratego-Normal-Format", !["-b" | <pass-verbose> ])
 
-
 strategies
 
   optimize =
@@ -151,6 +149,8 @@ strategies
   canonicalize = 
     xtc-transform(!"canonicalize", !["-b" | <pass-verbose> ])
  
+
+strategies
 
   back-end =
     if-verbose2(debug(!"back-end: "));
@@ -203,18 +203,17 @@ strategies
   c-to-object-code :
     FILE(cfile) -> FILE(ofile)
     where if-verbose2(say(!"compiling C code"))
-        //; if-verbose3(debug(!"C file: "))
 	; get-outfile(!".o") => ofile
-        ; <if-verbose3(where(<printnl>(stderr, <id>))); call> 
+        ; <if-verbose3(debug); call> 
 	   ("gcc", <conc> (<get-config> "-CI", 
 			  ["-c", cfile,"-o", ofile]))
 
   link-object-code :
     FILE(ofile) -> FILE(target)
     where if-verbose2(say(!"linking object code"))
-	; get-outfile(!"") => target
-        ; <if-verbose3(where(<printnl>(stderr, [<Fst> | <Snd>])));call> 
-	    ("gcc", [ofile, "-o", target | <get-config> "-CL"]) 
+	; (<get-config> "-o" <+ get-outfile(!"")) => target
+        ; <if-verbose3(debug); call> 
+	    ("gcc", [ofile, "-o", target | <get-config> "-CL"])
 \end{code}
 
 % Copyright (C) 1999-2002 Eelco Visser <visser@acm.org>
