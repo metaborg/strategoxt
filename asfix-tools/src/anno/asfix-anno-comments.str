@@ -4,8 +4,9 @@ imports liblib AsFix
 strategies
 
   main-asfix-anno-comments = 
-    io-wrap(
-      topdown-consnil(try(AnnoComment))
+    io-wrap(comment-sort-option,
+      init-comment-sorts
+      ; topdown-consnil(try(AnnoComment))
     )
 
 strategies
@@ -23,11 +24,13 @@ strategies
          }))> a2 => a2'
 
   fetch-comment =
-    oncetd(
-      ?appl(prod(_, lex(sort("Comment")), _), _)
-    ; yield
-    ; ?s
-    )
+    where(get-comment-sorts => sortnames)
+    ; oncetd({sortname:
+      ?appl(prod(_, lex(sort(sortname)), _), _)
+      ; where(<fetch(?sortname)> sortnames)
+      ; yield
+      ; ?s
+      })
     ; !s
 
   has-cons =
@@ -61,3 +64,17 @@ strategies
 signature
    constructors
      Comment : AnnoKey
+
+strategies
+  
+  comment-sort-option = 
+    ArgOption("--sort"
+    , <extend-config> ("comment-sorts", [<id>])
+    , !"--sort name      Specify a comment sort. Multiple --sort options are allowed [Comment]"
+    )
+    
+  init-comment-sorts =
+    where(<get-config> "comment-sorts" <+ <set-config> ("comment-sorts", ["Comment"]))
+
+  get-comment-sorts =
+    <get-config> "comment-sorts"
