@@ -1,0 +1,32 @@
+module xml-info-typematch
+strategies
+  is-Document =
+    ?Document(_)
+
+  is-Element =
+    ?Element(_, _, _)
+
+  is-AttributeList =
+    ?[_|_]
+    + ?[]
+
+  is-ContentList =
+    ?[_|_]
+    + ?[]
+
+  is-Content =
+    is-Element
+    + ?Text(_)
+
+  is-Attribute =
+    ?Attribute(_, _)
+
+  is-Name =
+    ?Name(_, _)
+
+  is-NamespaceOpt =
+    ?Some(_)
+    + ?None()
+
+  is-Namespace =
+    ?Namespace(_)
