@@ -170,7 +170,6 @@ rules
 
   get-types-to-chardata =
     retrieve-types
-  ; iset-elements
   ; types-to-string
   ; xml-escape
 
