@@ -1,3 +1,6 @@
+2002-02-21 Merijn de Jonge <mdejonge@cwi.nl>
+   * src/sdf-pp/Makefile.am: (again) commented out tests to run
+
 2002-02-19 Merijn de Jonge <mdejonge@cwi.nl>
    * src/fdl2sdf/fdl2sdf.r: bug fix due to incorrect dependency on evaluation
      order
