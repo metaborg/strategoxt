@@ -8,15 +8,8 @@ AC_PROG_INSTALL
 
 AC_CONFIG_FILES([
   Makefile
-
   syn/Makefile
-  syn/version-2.1/Makefile
-  syn/version-pgen-2.0/Makefile
-
   sig/Makefile
-  sig/version-2.1/Makefile
-  sig/version-pgen-2.0/Makefile
-
   pp/Makefile
   parse/Makefile
   xtc/Makefile

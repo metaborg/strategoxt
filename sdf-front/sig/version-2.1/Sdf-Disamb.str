@@ -1,3 +1,0 @@
-module Sdf-Disamb
-imports Sdf2-Syntax
-signature

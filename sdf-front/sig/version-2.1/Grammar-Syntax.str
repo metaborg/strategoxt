@@ -1,6 +1,0 @@
-module Grammar-Syntax
-imports Layout
-signature
-  constructors
-    empty-grammar : Grammar
-    conc-grammars : Grammar * Grammar -> Grammar

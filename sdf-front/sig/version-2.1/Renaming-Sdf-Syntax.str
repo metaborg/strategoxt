@@ -1,7 +1,0 @@
-module Renaming-Sdf-Syntax
-imports Kernel-Sdf-Syntax
-signature
-  constructors
-    renamings  : List(Renaming) -> Renamings
-    renaming   : Symbol * Symbol -> Renaming
-    production : Production * Production -> Renaming
