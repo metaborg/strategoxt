@@ -1,4 +1,4 @@
-AC_INIT([xml-front],[0.12pre],[stratego-bugs@cs.uu.nl])
+AC_INIT([xml-front],[0.12],[stratego-bugs@cs.uu.nl])
 AM_INIT_AUTOMAKE
 
 test "x$prefix" = xNONE && prefix=$ac_default_prefix

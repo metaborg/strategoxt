@@ -3,7 +3,7 @@ AM_INIT_AUTOMAKE
 
 XT_SVN_REVISION
 # comment to make this a stable release
-XT_PRE_RELEASE
+# XT_PRE_RELEASE
 
 # set the prefix immediately to the default prefix
 test "x$prefix" = xNONE && prefix=$ac_default_prefix

@@ -1,4 +1,4 @@
-AC_INIT([stratego-util],[0.12pre],[stratego-bugs@cs.uu.nl])
+AC_INIT([stratego-util],[0.12],[stratego-bugs@cs.uu.nl])
 AM_INIT_AUTOMAKE
 
 USE_XT_PACKAGES

@@ -1,4 +1,4 @@
-AC_INIT([concrete-syntax],[0.12pre],[visser@acm.org])
+AC_INIT([concrete-syntax],[0.12],[visser@acm.org])
 AM_INIT_AUTOMAKE
 
 USE_XT_PACKAGES
