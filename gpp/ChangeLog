@@ -1,3 +1,8 @@
+2003-02-18   Martin Bravenboer  <martin@mbravenboer.org>
+
+  * trans/abox/Box-util.str: Fixed pretty printing of an empty
+    String in an S box.
+
 2003-01-28   Martin Bravenboer  <martin@mbravenboer.org>
 
   * xtc-tools/asfix2abox.str: Fixed pass-conservative. Reported by
