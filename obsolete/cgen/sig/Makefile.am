@@ -9,6 +9,6 @@ Types.rtree
 EXTRA_DIST = $(pkgdata_DATA) $(wildcard *.str)      
 
 C.def: 
-	ln -s ../syn/C.def .
+	cp ../syn/C.def .
 
 BOOTCLEANFILES = C.def
