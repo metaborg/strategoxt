@@ -1,5 +1,5 @@
 module xtc-proc
-imports xtc-rep config scoped-finite-map options io exec dir
+imports xtc-rep 
 
 signature
   constructors

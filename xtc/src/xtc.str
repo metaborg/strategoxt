@@ -1,6 +1,5 @@
 module xtc
-imports lib config verbose xtc-lib
-	xtc-register xtc-query xtc-call xtc-get
+imports liblib xtc-lib xtc-query xtc-call xtc-get
 strategies
 
   xtc = 

@@ -1,5 +1,5 @@
 module xtc-register
-imports config xtc-rep string
+imports xtc-rep
 strategies
 
   // Finding an entry in the repository

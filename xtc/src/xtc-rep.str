@@ -1,6 +1,4 @@
 module xtc-rep
-imports exec tables config file
-
 signature
   sorts XtcKey
   constructors
