@@ -7,6 +7,9 @@ test Strategy variable
 test Strategy variable
   "<s> t" -> BA(_, Var("t"))
 
+test Choice and sequence priority
+  "s; s + s; s" -> Choice(Seq(_,_), Seq(_,_))
+
 test If then else 
   "if s then s else s" -> CondChoice(_, _, _)
 
@@ -31,10 +34,10 @@ test Seq of s and seq in else branche of if then else
         else s; s"
     -> Seq(_, CondChoice(_, _, Seq(_, _)))
 
-test Seq of s and seq in else branche of if then else
+test Seq of s and choice in else branche of if then else
   "s; if s
         then s
-        else s + s"
+        else (s + s)"
     -> Seq(_, CondChoice(_, _, Choice(_, _)))
 
 test If then else in else branche of if then else
