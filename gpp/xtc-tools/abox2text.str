@@ -1,5 +1,5 @@
 module abox2text
-imports xtc-lib options
+imports liblib
 
 strategies
 

@@ -1,5 +1,5 @@
 module abox2html
-imports options xtc-lib date-format
+imports liblib
 
 strategies
 

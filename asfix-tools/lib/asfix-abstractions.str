@@ -1,5 +1,8 @@
 module asfix-abstractions
-imports AsFix list tuple Sdf2 asfix-extra
+imports
+  AsFix
+  Sdf2
+  asfix-extra
 
 signature
 constructors

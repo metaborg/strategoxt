@@ -38,8 +38,5 @@ signature
     V        : List(S-OPTION) * List(BOX) -> BOX
     H        : List(S-OPTION) * List(BOX) -> BOX
     S        : QLiteral -> BOX
-    minus    : NatCon -> IntCon
-    plus     : NatCon -> IntCon
-    NatCon   : NatCon -> IntCon
              : String -> NatCon
              : String -> QLiteral

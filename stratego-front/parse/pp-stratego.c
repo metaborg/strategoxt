@@ -200,20 +200,20 @@ static void init_module_constant_terms (void)
 }
 #include <srts/init-stratego-application.h>
 ATerm pass_verbose_0_0 (ATerm t);
-ATerm xtc_transform_2_0 (ATerm t_105 (ATerm), ATerm u_105 (ATerm), ATerm t);
+ATerm xtc_transform_2_0 (ATerm m_107 (ATerm), ATerm n_107 (ATerm), ATerm t);
 ATerm xtc_find_0_0 (ATerm t);
-ATerm try_1_0 (ATerm d_101 (ATerm), ATerm t);
-ATerm topdown_1_0 (ATerm u_82 (ATerm), ATerm t);
+ATerm try_1_0 (ATerm w_102 (ATerm), ATerm t);
+ATerm topdown_1_0 (ATerm n_84 (ATerm), ATerm t);
 ATerm StrategoParenthesize_0_0 (ATerm t);
-ATerm innermost_1_0 (ATerm g_109 (ATerm), ATerm t);
-ATerm xtc_io_transform_1_0 (ATerm p_104 (ATerm), ATerm t);
-ATerm xtc_transform_1_0 (ATerm s_105 (ATerm), ATerm t);
+ATerm innermost_1_0 (ATerm z_110 (ATerm), ATerm t);
+ATerm xtc_io_transform_1_0 (ATerm i_106 (ATerm), ATerm t);
+ATerm xtc_transform_1_0 (ATerm l_107 (ATerm), ATerm t);
 ATerm get_config_0_0 (ATerm t);
 ATerm conc_0_0 (ATerm t);
-ATerm foldr_3_0 (ATerm y_94 (ATerm), ATerm z_94 (ATerm), ATerm a_95 (ATerm), ATerm t);
+ATerm foldr_3_0 (ATerm r_96 (ATerm), ATerm s_96 (ATerm), ATerm t_96 (ATerm), ATerm t);
 static ATerm a_0 (ATerm t);
 ATerm pass_includes_0_0 (ATerm t);
-ATerm xtc_io_1_0 (ATerm b_105 (ATerm), ATerm t);
+ATerm xtc_io_1_0 (ATerm u_106 (ATerm), ATerm t);
 ATerm io_options_0_0 (ATerm t);
 ATerm extend_config_0_0 (ATerm t);
 ATerm ArgOption_3_0 (ATerm k_3 (ATerm), ATerm l_3 (ATerm), ATerm m_3 (ATerm), ATerm t);
@@ -229,7 +229,7 @@ static ATerm h_0 (ATerm t);
 static ATerm i_0 (ATerm t);
 static ATerm j_0 (ATerm t);
 ATerm pp_stratego_options_0_0 (ATerm t);
-ATerm option_wrap_2_0 (ATerm z_106 (ATerm), ATerm a_107 (ATerm), ATerm t);
+ATerm option_wrap_2_0 (ATerm s_108 (ATerm), ATerm t_108 (ATerm), ATerm t);
 static ATerm k_0 (ATerm t);
 static ATerm l_0 (ATerm t);
 static ATerm m_0 (ATerm t);
@@ -252,42 +252,42 @@ ATerm main_0 (ATerm t)
 }
 ATerm StrategoParenthesize_0_0 (ATerm t)
 {
-  ATerm f_3 = NULL,g_3 = NULL,n_3 = NULL,o_3 = NULL,p_3 = NULL,q_3 = NULL,r_3 = NULL,s_3 = NULL,t_3 = NULL,v_3 = NULL,w_3 = NULL,x_3 = NULL;
+  ATerm n_3 = NULL,o_3 = NULL,p_3 = NULL,q_3 = NULL,r_3 = NULL,s_3 = NULL,t_3 = NULL,u_3 = NULL,v_3 = NULL,x_3 = NULL,y_3 = NULL,z_3 = NULL;
   if(match_cons(t, sym_DynRuleUnion_3))
     {
-      v_3 = ATgetArgument(t, 0);
-      x_3 = ATgetArgument(t, 1);
-      q_3 = ATgetArgument(t, 2);
-      t = q_3;
+      x_3 = ATgetArgument(t, 0);
+      z_3 = ATgetArgument(t, 1);
+      s_3 = ATgetArgument(t, 2);
+      t = s_3;
       if(match_cons(t, sym_Seq_2))
         {
-          f_3 = ATgetArgument(t, 0);
-          g_3 = ATgetArgument(t, 1);
-          t = x_3;
+          n_3 = ATgetArgument(t, 0);
+          o_3 = ATgetArgument(t, 1);
+          t = z_3;
           if(match_cons(t, sym_DynRuleUnion_3))
             {
-              t_3 = ATgetArgument(t, 0);
-              r_3 = ATgetArgument(t, 1);
-              o_3 = ATgetArgument(t, 2);
-              t = v_3;
+              v_3 = ATgetArgument(t, 0);
+              t_3 = ATgetArgument(t, 1);
+              q_3 = ATgetArgument(t, 2);
+              t = x_3;
               if(match_cons(t, sym_DynRuleUnion_3))
                 {
-                  w_3 = ATgetArgument(t, 0);
-                  s_3 = ATgetArgument(t, 1);
-                  p_3 = ATgetArgument(t, 2);
-                  t = (ATerm) ATmakeAppl(sym_DynRuleUnion_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnion_3, t_3, r_3, o_3)), q_3);
+                  y_3 = ATgetArgument(t, 0);
+                  u_3 = ATgetArgument(t, 1);
+                  r_3 = ATgetArgument(t, 2);
+                  t = (ATerm) ATmakeAppl(sym_DynRuleUnion_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnion_3, v_3, t_3, q_3)), s_3);
                 }
               else
                 {
                   if(match_cons(t, sym_Seq_2))
                     {
-                      w_3 = ATgetArgument(t, 0);
-                      s_3 = ATgetArgument(t, 1);
-                      t = (ATerm) ATmakeAppl(sym_DynRuleUnion_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnion_3, t_3, r_3, o_3)), q_3);
+                      y_3 = ATgetArgument(t, 0);
+                      u_3 = ATgetArgument(t, 1);
+                      t = (ATerm) ATmakeAppl(sym_DynRuleUnion_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnion_3, v_3, t_3, q_3)), s_3);
                     }
                   else
                     {
-                      t = (ATerm) ATmakeAppl(sym_DynRuleUnion_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnion_3, t_3, r_3, o_3)), q_3);
+                      t = (ATerm) ATmakeAppl(sym_DynRuleUnion_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnion_3, v_3, t_3, q_3)), s_3);
                     }
                 }
             }
@@ -295,51 +295,51 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
             {
               if(match_cons(t, sym_Seq_2))
                 {
-                  t_3 = ATgetArgument(t, 0);
-                  r_3 = ATgetArgument(t, 1);
-                  t = v_3;
+                  v_3 = ATgetArgument(t, 0);
+                  t_3 = ATgetArgument(t, 1);
+                  t = x_3;
                   if(match_cons(t, sym_DynRuleUnion_3))
                     {
-                      w_3 = ATgetArgument(t, 0);
-                      s_3 = ATgetArgument(t, 1);
-                      p_3 = ATgetArgument(t, 2);
-                      t = (ATerm) ATmakeAppl(sym_DynRuleUnion_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnion_3, w_3, s_3, p_3)), x_3, q_3);
+                      y_3 = ATgetArgument(t, 0);
+                      u_3 = ATgetArgument(t, 1);
+                      r_3 = ATgetArgument(t, 2);
+                      t = (ATerm) ATmakeAppl(sym_DynRuleUnion_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnion_3, y_3, u_3, r_3)), z_3, s_3);
                     }
                   else
                     {
                       if(match_cons(t, sym_Seq_2))
                         {
-                          w_3 = ATgetArgument(t, 0);
-                          s_3 = ATgetArgument(t, 1);
-                          t = (ATerm) ATmakeAppl(sym_DynRuleUnion_3, v_3, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Seq_2, f_3, g_3)));
+                          y_3 = ATgetArgument(t, 0);
+                          u_3 = ATgetArgument(t, 1);
+                          t = (ATerm) ATmakeAppl(sym_DynRuleUnion_3, x_3, z_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Seq_2, n_3, o_3)));
                         }
                       else
                         {
-                          t = (ATerm) ATmakeAppl(sym_DynRuleUnion_3, v_3, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Seq_2, f_3, g_3)));
+                          t = (ATerm) ATmakeAppl(sym_DynRuleUnion_3, x_3, z_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Seq_2, n_3, o_3)));
                         }
                     }
                 }
               else
                 {
-                  t = v_3;
+                  t = x_3;
                   if(match_cons(t, sym_DynRuleUnion_3))
                     {
-                      w_3 = ATgetArgument(t, 0);
-                      s_3 = ATgetArgument(t, 1);
-                      p_3 = ATgetArgument(t, 2);
-                      t = (ATerm) ATmakeAppl(sym_DynRuleUnion_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnion_3, w_3, s_3, p_3)), x_3, q_3);
+                      y_3 = ATgetArgument(t, 0);
+                      u_3 = ATgetArgument(t, 1);
+                      r_3 = ATgetArgument(t, 2);
+                      t = (ATerm) ATmakeAppl(sym_DynRuleUnion_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnion_3, y_3, u_3, r_3)), z_3, s_3);
                     }
                   else
                     {
                       if(match_cons(t, sym_Seq_2))
                         {
-                          w_3 = ATgetArgument(t, 0);
-                          s_3 = ATgetArgument(t, 1);
-                          t = (ATerm) ATmakeAppl(sym_DynRuleUnion_3, v_3, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Seq_2, f_3, g_3)));
+                          y_3 = ATgetArgument(t, 0);
+                          u_3 = ATgetArgument(t, 1);
+                          t = (ATerm) ATmakeAppl(sym_DynRuleUnion_3, x_3, z_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Seq_2, n_3, o_3)));
                         }
                       else
                         {
-                          t = (ATerm) ATmakeAppl(sym_DynRuleUnion_3, v_3, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Seq_2, f_3, g_3)));
+                          t = (ATerm) ATmakeAppl(sym_DynRuleUnion_3, x_3, z_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Seq_2, n_3, o_3)));
                         }
                     }
                 }
@@ -347,31 +347,31 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
         }
       else
         {
-          t = x_3;
+          t = z_3;
           if(match_cons(t, sym_DynRuleUnion_3))
             {
-              t_3 = ATgetArgument(t, 0);
-              r_3 = ATgetArgument(t, 1);
-              o_3 = ATgetArgument(t, 2);
-              t = v_3;
+              v_3 = ATgetArgument(t, 0);
+              t_3 = ATgetArgument(t, 1);
+              q_3 = ATgetArgument(t, 2);
+              t = x_3;
               if(match_cons(t, sym_DynRuleUnion_3))
                 {
-                  w_3 = ATgetArgument(t, 0);
-                  s_3 = ATgetArgument(t, 1);
-                  p_3 = ATgetArgument(t, 2);
-                  t = (ATerm) ATmakeAppl(sym_DynRuleUnion_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnion_3, t_3, r_3, o_3)), q_3);
+                  y_3 = ATgetArgument(t, 0);
+                  u_3 = ATgetArgument(t, 1);
+                  r_3 = ATgetArgument(t, 2);
+                  t = (ATerm) ATmakeAppl(sym_DynRuleUnion_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnion_3, v_3, t_3, q_3)), s_3);
                 }
               else
                 {
                   if(match_cons(t, sym_Seq_2))
                     {
-                      w_3 = ATgetArgument(t, 0);
-                      s_3 = ATgetArgument(t, 1);
-                      t = (ATerm) ATmakeAppl(sym_DynRuleUnion_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnion_3, t_3, r_3, o_3)), q_3);
+                      y_3 = ATgetArgument(t, 0);
+                      u_3 = ATgetArgument(t, 1);
+                      t = (ATerm) ATmakeAppl(sym_DynRuleUnion_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnion_3, v_3, t_3, q_3)), s_3);
                     }
                   else
                     {
-                      t = (ATerm) ATmakeAppl(sym_DynRuleUnion_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnion_3, t_3, r_3, o_3)), q_3);
+                      t = (ATerm) ATmakeAppl(sym_DynRuleUnion_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnion_3, v_3, t_3, q_3)), s_3);
                     }
                 }
             }
@@ -379,50 +379,50 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
             {
               if(match_cons(t, sym_Seq_2))
                 {
-                  t_3 = ATgetArgument(t, 0);
-                  r_3 = ATgetArgument(t, 1);
-                  t = v_3;
+                  v_3 = ATgetArgument(t, 0);
+                  t_3 = ATgetArgument(t, 1);
+                  t = x_3;
                   if(match_cons(t, sym_DynRuleUnion_3))
                     {
-                      w_3 = ATgetArgument(t, 0);
-                      s_3 = ATgetArgument(t, 1);
-                      p_3 = ATgetArgument(t, 2);
-                      t = (ATerm) ATmakeAppl(sym_DynRuleUnion_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnion_3, w_3, s_3, p_3)), x_3, q_3);
+                      y_3 = ATgetArgument(t, 0);
+                      u_3 = ATgetArgument(t, 1);
+                      r_3 = ATgetArgument(t, 2);
+                      t = (ATerm) ATmakeAppl(sym_DynRuleUnion_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnion_3, y_3, u_3, r_3)), z_3, s_3);
                     }
                   else
                     {
                       if(match_cons(t, sym_Seq_2))
                         {
-                          w_3 = ATgetArgument(t, 0);
-                          s_3 = ATgetArgument(t, 1);
-                          t = (ATerm) ATmakeAppl(sym_DynRuleUnion_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Seq_2, t_3, r_3)), q_3);
+                          y_3 = ATgetArgument(t, 0);
+                          u_3 = ATgetArgument(t, 1);
+                          t = (ATerm) ATmakeAppl(sym_DynRuleUnion_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Seq_2, v_3, t_3)), s_3);
                         }
                       else
                         {
-                          t = (ATerm) ATmakeAppl(sym_DynRuleUnion_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Seq_2, t_3, r_3)), q_3);
+                          t = (ATerm) ATmakeAppl(sym_DynRuleUnion_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Seq_2, v_3, t_3)), s_3);
                         }
                     }
                 }
               else
                 {
-                  t = v_3;
+                  t = x_3;
                   if(match_cons(t, sym_DynRuleUnion_3))
                     {
-                      w_3 = ATgetArgument(t, 0);
-                      s_3 = ATgetArgument(t, 1);
-                      p_3 = ATgetArgument(t, 2);
-                      t = (ATerm) ATmakeAppl(sym_DynRuleUnion_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnion_3, w_3, s_3, p_3)), x_3, q_3);
+                      y_3 = ATgetArgument(t, 0);
+                      u_3 = ATgetArgument(t, 1);
+                      r_3 = ATgetArgument(t, 2);
+                      t = (ATerm) ATmakeAppl(sym_DynRuleUnion_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnion_3, y_3, u_3, r_3)), z_3, s_3);
                     }
                   else
                     {
                       if(match_cons(t, sym_Seq_2))
                         {
-                          w_3 = ATgetArgument(t, 0);
-                          s_3 = ATgetArgument(t, 1);
+                          y_3 = ATgetArgument(t, 0);
+                          u_3 = ATgetArgument(t, 1);
                         }
                       else
                         _fail(t);
-                      t = (ATerm) ATmakeAppl(sym_DynRuleUnion_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Seq_2, w_3, s_3)), x_3, q_3);
+                      t = (ATerm) ATmakeAppl(sym_DynRuleUnion_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Seq_2, y_3, u_3)), z_3, s_3);
                     }
                 }
             }
@@ -432,41 +432,41 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
     {
       if(match_cons(t, sym_DynRuleIntersect_3))
         {
-          v_3 = ATgetArgument(t, 0);
-          x_3 = ATgetArgument(t, 1);
-          q_3 = ATgetArgument(t, 2);
-          t = q_3;
+          x_3 = ATgetArgument(t, 0);
+          z_3 = ATgetArgument(t, 1);
+          s_3 = ATgetArgument(t, 2);
+          t = s_3;
           if(match_cons(t, sym_DynRuleUnion_3))
             {
-              f_3 = ATgetArgument(t, 0);
-              g_3 = ATgetArgument(t, 1);
-              n_3 = ATgetArgument(t, 2);
-              t = x_3;
+              n_3 = ATgetArgument(t, 0);
+              o_3 = ATgetArgument(t, 1);
+              p_3 = ATgetArgument(t, 2);
+              t = z_3;
               if(match_cons(t, sym_DynRuleIntersect_3))
                 {
-                  t_3 = ATgetArgument(t, 0);
-                  r_3 = ATgetArgument(t, 1);
-                  o_3 = ATgetArgument(t, 2);
-                  t = v_3;
+                  v_3 = ATgetArgument(t, 0);
+                  t_3 = ATgetArgument(t, 1);
+                  q_3 = ATgetArgument(t, 2);
+                  t = x_3;
                   if(match_cons(t, sym_DynRuleIntersect_3))
                     {
-                      w_3 = ATgetArgument(t, 0);
-                      s_3 = ATgetArgument(t, 1);
-                      p_3 = ATgetArgument(t, 2);
-                      t = (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, t_3, r_3, o_3)), q_3);
+                      y_3 = ATgetArgument(t, 0);
+                      u_3 = ATgetArgument(t, 1);
+                      r_3 = ATgetArgument(t, 2);
+                      t = (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, v_3, t_3, q_3)), s_3);
                     }
                   else
                     {
                       if(match_cons(t, sym_DynRuleUnion_3))
                         {
-                          w_3 = ATgetArgument(t, 0);
-                          s_3 = ATgetArgument(t, 1);
-                          p_3 = ATgetArgument(t, 2);
-                          t = (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, t_3, r_3, o_3)), q_3);
+                          y_3 = ATgetArgument(t, 0);
+                          u_3 = ATgetArgument(t, 1);
+                          r_3 = ATgetArgument(t, 2);
+                          t = (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, v_3, t_3, q_3)), s_3);
                         }
                       else
                         {
-                          t = (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, t_3, r_3, o_3)), q_3);
+                          t = (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, v_3, t_3, q_3)), s_3);
                         }
                     }
                 }
@@ -474,54 +474,54 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                 {
                   if(match_cons(t, sym_DynRuleUnion_3))
                     {
-                      t_3 = ATgetArgument(t, 0);
-                      r_3 = ATgetArgument(t, 1);
-                      o_3 = ATgetArgument(t, 2);
-                      t = v_3;
+                      v_3 = ATgetArgument(t, 0);
+                      t_3 = ATgetArgument(t, 1);
+                      q_3 = ATgetArgument(t, 2);
+                      t = x_3;
                       if(match_cons(t, sym_DynRuleIntersect_3))
                         {
-                          w_3 = ATgetArgument(t, 0);
-                          s_3 = ATgetArgument(t, 1);
-                          p_3 = ATgetArgument(t, 2);
-                          t = (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, w_3, s_3, p_3)), x_3, q_3);
+                          y_3 = ATgetArgument(t, 0);
+                          u_3 = ATgetArgument(t, 1);
+                          r_3 = ATgetArgument(t, 2);
+                          t = (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, y_3, u_3, r_3)), z_3, s_3);
                         }
                       else
                         {
                           if(match_cons(t, sym_DynRuleUnion_3))
                             {
-                              w_3 = ATgetArgument(t, 0);
-                              s_3 = ATgetArgument(t, 1);
-                              p_3 = ATgetArgument(t, 2);
-                              t = (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, v_3, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnion_3, f_3, g_3, n_3)));
+                              y_3 = ATgetArgument(t, 0);
+                              u_3 = ATgetArgument(t, 1);
+                              r_3 = ATgetArgument(t, 2);
+                              t = (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, x_3, z_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnion_3, n_3, o_3, p_3)));
                             }
                           else
                             {
-                              t = (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, v_3, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnion_3, f_3, g_3, n_3)));
+                              t = (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, x_3, z_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnion_3, n_3, o_3, p_3)));
                             }
                         }
                     }
                   else
                     {
-                      t = v_3;
+                      t = x_3;
                       if(match_cons(t, sym_DynRuleIntersect_3))
                         {
-                          w_3 = ATgetArgument(t, 0);
-                          s_3 = ATgetArgument(t, 1);
-                          p_3 = ATgetArgument(t, 2);
-                          t = (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, w_3, s_3, p_3)), x_3, q_3);
+                          y_3 = ATgetArgument(t, 0);
+                          u_3 = ATgetArgument(t, 1);
+                          r_3 = ATgetArgument(t, 2);
+                          t = (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, y_3, u_3, r_3)), z_3, s_3);
                         }
                       else
                         {
                           if(match_cons(t, sym_DynRuleUnion_3))
                             {
-                              w_3 = ATgetArgument(t, 0);
-                              s_3 = ATgetArgument(t, 1);
-                              p_3 = ATgetArgument(t, 2);
-                              t = (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, v_3, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnion_3, f_3, g_3, n_3)));
+                              y_3 = ATgetArgument(t, 0);
+                              u_3 = ATgetArgument(t, 1);
+                              r_3 = ATgetArgument(t, 2);
+                              t = (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, x_3, z_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnion_3, n_3, o_3, p_3)));
                             }
                           else
                             {
-                              t = (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, v_3, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnion_3, f_3, g_3, n_3)));
+                              t = (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, x_3, z_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnion_3, n_3, o_3, p_3)));
                             }
                         }
                     }
@@ -529,32 +529,32 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
             }
           else
             {
-              t = x_3;
+              t = z_3;
               if(match_cons(t, sym_DynRuleIntersect_3))
                 {
-                  t_3 = ATgetArgument(t, 0);
-                  r_3 = ATgetArgument(t, 1);
-                  o_3 = ATgetArgument(t, 2);
-                  t = v_3;
+                  v_3 = ATgetArgument(t, 0);
+                  t_3 = ATgetArgument(t, 1);
+                  q_3 = ATgetArgument(t, 2);
+                  t = x_3;
                   if(match_cons(t, sym_DynRuleIntersect_3))
                     {
-                      w_3 = ATgetArgument(t, 0);
-                      s_3 = ATgetArgument(t, 1);
-                      p_3 = ATgetArgument(t, 2);
-                      t = (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, t_3, r_3, o_3)), q_3);
+                      y_3 = ATgetArgument(t, 0);
+                      u_3 = ATgetArgument(t, 1);
+                      r_3 = ATgetArgument(t, 2);
+                      t = (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, v_3, t_3, q_3)), s_3);
                     }
                   else
                     {
                       if(match_cons(t, sym_DynRuleUnion_3))
                         {
-                          w_3 = ATgetArgument(t, 0);
-                          s_3 = ATgetArgument(t, 1);
-                          p_3 = ATgetArgument(t, 2);
-                          t = (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, t_3, r_3, o_3)), q_3);
+                          y_3 = ATgetArgument(t, 0);
+                          u_3 = ATgetArgument(t, 1);
+                          r_3 = ATgetArgument(t, 2);
+                          t = (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, v_3, t_3, q_3)), s_3);
                         }
                       else
                         {
-                          t = (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, t_3, r_3, o_3)), q_3);
+                          t = (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, v_3, t_3, q_3)), s_3);
                         }
                     }
                 }
@@ -562,53 +562,53 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                 {
                   if(match_cons(t, sym_DynRuleUnion_3))
                     {
-                      t_3 = ATgetArgument(t, 0);
-                      r_3 = ATgetArgument(t, 1);
-                      o_3 = ATgetArgument(t, 2);
-                      t = v_3;
+                      v_3 = ATgetArgument(t, 0);
+                      t_3 = ATgetArgument(t, 1);
+                      q_3 = ATgetArgument(t, 2);
+                      t = x_3;
                       if(match_cons(t, sym_DynRuleIntersect_3))
                         {
-                          w_3 = ATgetArgument(t, 0);
-                          s_3 = ATgetArgument(t, 1);
-                          p_3 = ATgetArgument(t, 2);
-                          t = (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, w_3, s_3, p_3)), x_3, q_3);
+                          y_3 = ATgetArgument(t, 0);
+                          u_3 = ATgetArgument(t, 1);
+                          r_3 = ATgetArgument(t, 2);
+                          t = (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, y_3, u_3, r_3)), z_3, s_3);
                         }
                       else
                         {
                           if(match_cons(t, sym_DynRuleUnion_3))
                             {
-                              w_3 = ATgetArgument(t, 0);
-                              s_3 = ATgetArgument(t, 1);
-                              p_3 = ATgetArgument(t, 2);
-                              t = (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnion_3, t_3, r_3, o_3)), q_3);
+                              y_3 = ATgetArgument(t, 0);
+                              u_3 = ATgetArgument(t, 1);
+                              r_3 = ATgetArgument(t, 2);
+                              t = (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnion_3, v_3, t_3, q_3)), s_3);
                             }
                           else
                             {
-                              t = (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnion_3, t_3, r_3, o_3)), q_3);
+                              t = (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnion_3, v_3, t_3, q_3)), s_3);
                             }
                         }
                     }
                   else
                     {
-                      t = v_3;
+                      t = x_3;
                       if(match_cons(t, sym_DynRuleIntersect_3))
                         {
-                          w_3 = ATgetArgument(t, 0);
-                          s_3 = ATgetArgument(t, 1);
-                          p_3 = ATgetArgument(t, 2);
-                          t = (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, w_3, s_3, p_3)), x_3, q_3);
+                          y_3 = ATgetArgument(t, 0);
+                          u_3 = ATgetArgument(t, 1);
+                          r_3 = ATgetArgument(t, 2);
+                          t = (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, y_3, u_3, r_3)), z_3, s_3);
                         }
                       else
                         {
                           if(match_cons(t, sym_DynRuleUnion_3))
                             {
-                              w_3 = ATgetArgument(t, 0);
-                              s_3 = ATgetArgument(t, 1);
-                              p_3 = ATgetArgument(t, 2);
+                              y_3 = ATgetArgument(t, 0);
+                              u_3 = ATgetArgument(t, 1);
+                              r_3 = ATgetArgument(t, 2);
                             }
                           else
                             _fail(t);
-                          t = (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnion_3, w_3, s_3, p_3)), x_3, q_3);
+                          t = (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnion_3, y_3, u_3, r_3)), z_3, s_3);
                         }
                     }
                 }
@@ -618,66 +618,66 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
         {
           if(match_cons(t, sym_RGChoice_2))
             {
-              v_3 = ATgetArgument(t, 0);
-              x_3 = ATgetArgument(t, 1);
-              t = v_3;
+              x_3 = ATgetArgument(t, 0);
+              z_3 = ATgetArgument(t, 1);
+              t = x_3;
               if(match_cons(t, sym_RGChoice_2))
                 {
-                  w_3 = ATgetArgument(t, 0);
-                  s_3 = ATgetArgument(t, 1);
-                  t = (ATerm) ATmakeAppl(sym_RGChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, w_3, s_3)), x_3);
+                  y_3 = ATgetArgument(t, 0);
+                  u_3 = ATgetArgument(t, 1);
+                  t = (ATerm) ATmakeAppl(sym_RGChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, y_3, u_3)), z_3);
                 }
               else
                 {
                   if(match_cons(t, sym_GuardedLChoice_3))
                     {
-                      w_3 = ATgetArgument(t, 0);
-                      s_3 = ATgetArgument(t, 1);
-                      p_3 = ATgetArgument(t, 2);
-                      t = (ATerm) ATmakeAppl(sym_RGChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, w_3, s_3, p_3)), x_3);
+                      y_3 = ATgetArgument(t, 0);
+                      u_3 = ATgetArgument(t, 1);
+                      r_3 = ATgetArgument(t, 2);
+                      t = (ATerm) ATmakeAppl(sym_RGChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, y_3, u_3, r_3)), z_3);
                     }
                   else
                     {
                       if(match_cons(t, sym_LGChoice_2))
                         {
-                          w_3 = ATgetArgument(t, 0);
-                          s_3 = ATgetArgument(t, 1);
-                          t = (ATerm) ATmakeAppl(sym_RGChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, w_3, s_3)), x_3);
+                          y_3 = ATgetArgument(t, 0);
+                          u_3 = ATgetArgument(t, 1);
+                          t = (ATerm) ATmakeAppl(sym_RGChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, y_3, u_3)), z_3);
                         }
                       else
                         {
                           if(match_cons(t, sym_GChoice_2))
                             {
-                              w_3 = ATgetArgument(t, 0);
-                              s_3 = ATgetArgument(t, 1);
-                              t = (ATerm) ATmakeAppl(sym_RGChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, w_3, s_3)), x_3);
+                              y_3 = ATgetArgument(t, 0);
+                              u_3 = ATgetArgument(t, 1);
+                              t = (ATerm) ATmakeAppl(sym_RGChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, y_3, u_3)), z_3);
                             }
                           else
                             {
                               if(match_cons(t, sym_RChoice_2))
                                 {
-                                  w_3 = ATgetArgument(t, 0);
-                                  s_3 = ATgetArgument(t, 1);
-                                  t = (ATerm) ATmakeAppl(sym_RGChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RChoice_2, w_3, s_3)), x_3);
+                                  y_3 = ATgetArgument(t, 0);
+                                  u_3 = ATgetArgument(t, 1);
+                                  t = (ATerm) ATmakeAppl(sym_RGChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RChoice_2, y_3, u_3)), z_3);
                                 }
                               else
                                 {
                                   if(match_cons(t, sym_LChoice_2))
                                     {
-                                      w_3 = ATgetArgument(t, 0);
-                                      s_3 = ATgetArgument(t, 1);
-                                      t = (ATerm) ATmakeAppl(sym_RGChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LChoice_2, w_3, s_3)), x_3);
+                                      y_3 = ATgetArgument(t, 0);
+                                      u_3 = ATgetArgument(t, 1);
+                                      t = (ATerm) ATmakeAppl(sym_RGChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LChoice_2, y_3, u_3)), z_3);
                                     }
                                   else
                                     {
                                       if(match_cons(t, sym_Choice_2))
                                         {
-                                          w_3 = ATgetArgument(t, 0);
-                                          s_3 = ATgetArgument(t, 1);
+                                          y_3 = ATgetArgument(t, 0);
+                                          u_3 = ATgetArgument(t, 1);
                                         }
                                       else
                                         _fail(t);
-                                      t = (ATerm) ATmakeAppl(sym_RGChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Choice_2, w_3, s_3)), x_3);
+                                      t = (ATerm) ATmakeAppl(sym_RGChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Choice_2, y_3, u_3)), z_3);
                                     }
                                 }
                             }
@@ -689,66 +689,66 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
             {
               if(match_cons(t, sym_GChoice_2))
                 {
-                  v_3 = ATgetArgument(t, 0);
-                  x_3 = ATgetArgument(t, 1);
-                  t = v_3;
+                  x_3 = ATgetArgument(t, 0);
+                  z_3 = ATgetArgument(t, 1);
+                  t = x_3;
                   if(match_cons(t, sym_GChoice_2))
                     {
-                      w_3 = ATgetArgument(t, 0);
-                      s_3 = ATgetArgument(t, 1);
-                      t = (ATerm) ATmakeAppl(sym_GChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, w_3, s_3)), x_3);
+                      y_3 = ATgetArgument(t, 0);
+                      u_3 = ATgetArgument(t, 1);
+                      t = (ATerm) ATmakeAppl(sym_GChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, y_3, u_3)), z_3);
                     }
                   else
                     {
                       if(match_cons(t, sym_GuardedLChoice_3))
                         {
-                          w_3 = ATgetArgument(t, 0);
-                          s_3 = ATgetArgument(t, 1);
-                          p_3 = ATgetArgument(t, 2);
-                          t = (ATerm) ATmakeAppl(sym_GChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, w_3, s_3, p_3)), x_3);
+                          y_3 = ATgetArgument(t, 0);
+                          u_3 = ATgetArgument(t, 1);
+                          r_3 = ATgetArgument(t, 2);
+                          t = (ATerm) ATmakeAppl(sym_GChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, y_3, u_3, r_3)), z_3);
                         }
                       else
                         {
                           if(match_cons(t, sym_RGChoice_2))
                             {
-                              w_3 = ATgetArgument(t, 0);
-                              s_3 = ATgetArgument(t, 1);
-                              t = (ATerm) ATmakeAppl(sym_GChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, w_3, s_3)), x_3);
+                              y_3 = ATgetArgument(t, 0);
+                              u_3 = ATgetArgument(t, 1);
+                              t = (ATerm) ATmakeAppl(sym_GChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, y_3, u_3)), z_3);
                             }
                           else
                             {
                               if(match_cons(t, sym_LGChoice_2))
                                 {
-                                  w_3 = ATgetArgument(t, 0);
-                                  s_3 = ATgetArgument(t, 1);
-                                  t = (ATerm) ATmakeAppl(sym_GChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, w_3, s_3)), x_3);
+                                  y_3 = ATgetArgument(t, 0);
+                                  u_3 = ATgetArgument(t, 1);
+                                  t = (ATerm) ATmakeAppl(sym_GChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, y_3, u_3)), z_3);
                                 }
                               else
                                 {
                                   if(match_cons(t, sym_RChoice_2))
                                     {
-                                      w_3 = ATgetArgument(t, 0);
-                                      s_3 = ATgetArgument(t, 1);
-                                      t = (ATerm) ATmakeAppl(sym_GChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RChoice_2, w_3, s_3)), x_3);
+                                      y_3 = ATgetArgument(t, 0);
+                                      u_3 = ATgetArgument(t, 1);
+                                      t = (ATerm) ATmakeAppl(sym_GChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RChoice_2, y_3, u_3)), z_3);
                                     }
                                   else
                                     {
                                       if(match_cons(t, sym_LChoice_2))
                                         {
-                                          w_3 = ATgetArgument(t, 0);
-                                          s_3 = ATgetArgument(t, 1);
-                                          t = (ATerm) ATmakeAppl(sym_GChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LChoice_2, w_3, s_3)), x_3);
+                                          y_3 = ATgetArgument(t, 0);
+                                          u_3 = ATgetArgument(t, 1);
+                                          t = (ATerm) ATmakeAppl(sym_GChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LChoice_2, y_3, u_3)), z_3);
                                         }
                                       else
                                         {
                                           if(match_cons(t, sym_Choice_2))
                                             {
-                                              w_3 = ATgetArgument(t, 0);
-                                              s_3 = ATgetArgument(t, 1);
+                                              y_3 = ATgetArgument(t, 0);
+                                              u_3 = ATgetArgument(t, 1);
                                             }
                                           else
                                             _fail(t);
-                                          t = (ATerm) ATmakeAppl(sym_GChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Choice_2, w_3, s_3)), x_3);
+                                          t = (ATerm) ATmakeAppl(sym_GChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Choice_2, y_3, u_3)), z_3);
                                         }
                                     }
                                 }
@@ -760,66 +760,66 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                 {
                   if(match_cons(t, sym_RChoice_2))
                     {
-                      v_3 = ATgetArgument(t, 0);
-                      x_3 = ATgetArgument(t, 1);
-                      t = v_3;
+                      x_3 = ATgetArgument(t, 0);
+                      z_3 = ATgetArgument(t, 1);
+                      t = x_3;
                       if(match_cons(t, sym_RChoice_2))
                         {
-                          w_3 = ATgetArgument(t, 0);
-                          s_3 = ATgetArgument(t, 1);
-                          t = (ATerm) ATmakeAppl(sym_RChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RChoice_2, w_3, s_3)), x_3);
+                          y_3 = ATgetArgument(t, 0);
+                          u_3 = ATgetArgument(t, 1);
+                          t = (ATerm) ATmakeAppl(sym_RChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RChoice_2, y_3, u_3)), z_3);
                         }
                       else
                         {
                           if(match_cons(t, sym_GuardedLChoice_3))
                             {
-                              w_3 = ATgetArgument(t, 0);
-                              s_3 = ATgetArgument(t, 1);
-                              p_3 = ATgetArgument(t, 2);
-                              t = (ATerm) ATmakeAppl(sym_RChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, w_3, s_3, p_3)), x_3);
+                              y_3 = ATgetArgument(t, 0);
+                              u_3 = ATgetArgument(t, 1);
+                              r_3 = ATgetArgument(t, 2);
+                              t = (ATerm) ATmakeAppl(sym_RChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, y_3, u_3, r_3)), z_3);
                             }
                           else
                             {
                               if(match_cons(t, sym_RGChoice_2))
                                 {
-                                  w_3 = ATgetArgument(t, 0);
-                                  s_3 = ATgetArgument(t, 1);
-                                  t = (ATerm) ATmakeAppl(sym_RChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, w_3, s_3)), x_3);
+                                  y_3 = ATgetArgument(t, 0);
+                                  u_3 = ATgetArgument(t, 1);
+                                  t = (ATerm) ATmakeAppl(sym_RChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, y_3, u_3)), z_3);
                                 }
                               else
                                 {
                                   if(match_cons(t, sym_LGChoice_2))
                                     {
-                                      w_3 = ATgetArgument(t, 0);
-                                      s_3 = ATgetArgument(t, 1);
-                                      t = (ATerm) ATmakeAppl(sym_RChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, w_3, s_3)), x_3);
+                                      y_3 = ATgetArgument(t, 0);
+                                      u_3 = ATgetArgument(t, 1);
+                                      t = (ATerm) ATmakeAppl(sym_RChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, y_3, u_3)), z_3);
                                     }
                                   else
                                     {
                                       if(match_cons(t, sym_GChoice_2))
                                         {
-                                          w_3 = ATgetArgument(t, 0);
-                                          s_3 = ATgetArgument(t, 1);
-                                          t = (ATerm) ATmakeAppl(sym_RChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, w_3, s_3)), x_3);
+                                          y_3 = ATgetArgument(t, 0);
+                                          u_3 = ATgetArgument(t, 1);
+                                          t = (ATerm) ATmakeAppl(sym_RChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, y_3, u_3)), z_3);
                                         }
                                       else
                                         {
                                           if(match_cons(t, sym_LChoice_2))
                                             {
-                                              w_3 = ATgetArgument(t, 0);
-                                              s_3 = ATgetArgument(t, 1);
-                                              t = (ATerm) ATmakeAppl(sym_RChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LChoice_2, w_3, s_3)), x_3);
+                                              y_3 = ATgetArgument(t, 0);
+                                              u_3 = ATgetArgument(t, 1);
+                                              t = (ATerm) ATmakeAppl(sym_RChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LChoice_2, y_3, u_3)), z_3);
                                             }
                                           else
                                             {
                                               if(match_cons(t, sym_Choice_2))
                                                 {
-                                                  w_3 = ATgetArgument(t, 0);
-                                                  s_3 = ATgetArgument(t, 1);
+                                                  y_3 = ATgetArgument(t, 0);
+                                                  u_3 = ATgetArgument(t, 1);
                                                 }
                                               else
                                                 _fail(t);
-                                              t = (ATerm) ATmakeAppl(sym_RChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Choice_2, w_3, s_3)), x_3);
+                                              t = (ATerm) ATmakeAppl(sym_RChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Choice_2, y_3, u_3)), z_3);
                                             }
                                         }
                                     }
@@ -831,66 +831,66 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                     {
                       if(match_cons(t, sym_Choice_2))
                         {
-                          v_3 = ATgetArgument(t, 0);
-                          x_3 = ATgetArgument(t, 1);
-                          t = v_3;
+                          x_3 = ATgetArgument(t, 0);
+                          z_3 = ATgetArgument(t, 1);
+                          t = x_3;
                           if(match_cons(t, sym_Choice_2))
                             {
-                              w_3 = ATgetArgument(t, 0);
-                              s_3 = ATgetArgument(t, 1);
-                              t = (ATerm) ATmakeAppl(sym_Choice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Choice_2, w_3, s_3)), x_3);
+                              y_3 = ATgetArgument(t, 0);
+                              u_3 = ATgetArgument(t, 1);
+                              t = (ATerm) ATmakeAppl(sym_Choice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Choice_2, y_3, u_3)), z_3);
                             }
                           else
                             {
                               if(match_cons(t, sym_GuardedLChoice_3))
                                 {
-                                  w_3 = ATgetArgument(t, 0);
-                                  s_3 = ATgetArgument(t, 1);
-                                  p_3 = ATgetArgument(t, 2);
-                                  t = (ATerm) ATmakeAppl(sym_Choice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, w_3, s_3, p_3)), x_3);
+                                  y_3 = ATgetArgument(t, 0);
+                                  u_3 = ATgetArgument(t, 1);
+                                  r_3 = ATgetArgument(t, 2);
+                                  t = (ATerm) ATmakeAppl(sym_Choice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, y_3, u_3, r_3)), z_3);
                                 }
                               else
                                 {
                                   if(match_cons(t, sym_RGChoice_2))
                                     {
-                                      w_3 = ATgetArgument(t, 0);
-                                      s_3 = ATgetArgument(t, 1);
-                                      t = (ATerm) ATmakeAppl(sym_Choice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, w_3, s_3)), x_3);
+                                      y_3 = ATgetArgument(t, 0);
+                                      u_3 = ATgetArgument(t, 1);
+                                      t = (ATerm) ATmakeAppl(sym_Choice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, y_3, u_3)), z_3);
                                     }
                                   else
                                     {
                                       if(match_cons(t, sym_LGChoice_2))
                                         {
-                                          w_3 = ATgetArgument(t, 0);
-                                          s_3 = ATgetArgument(t, 1);
-                                          t = (ATerm) ATmakeAppl(sym_Choice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, w_3, s_3)), x_3);
+                                          y_3 = ATgetArgument(t, 0);
+                                          u_3 = ATgetArgument(t, 1);
+                                          t = (ATerm) ATmakeAppl(sym_Choice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, y_3, u_3)), z_3);
                                         }
                                       else
                                         {
                                           if(match_cons(t, sym_GChoice_2))
                                             {
-                                              w_3 = ATgetArgument(t, 0);
-                                              s_3 = ATgetArgument(t, 1);
-                                              t = (ATerm) ATmakeAppl(sym_Choice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, w_3, s_3)), x_3);
+                                              y_3 = ATgetArgument(t, 0);
+                                              u_3 = ATgetArgument(t, 1);
+                                              t = (ATerm) ATmakeAppl(sym_Choice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, y_3, u_3)), z_3);
                                             }
                                           else
                                             {
                                               if(match_cons(t, sym_RChoice_2))
                                                 {
-                                                  w_3 = ATgetArgument(t, 0);
-                                                  s_3 = ATgetArgument(t, 1);
-                                                  t = (ATerm) ATmakeAppl(sym_Choice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RChoice_2, w_3, s_3)), x_3);
+                                                  y_3 = ATgetArgument(t, 0);
+                                                  u_3 = ATgetArgument(t, 1);
+                                                  t = (ATerm) ATmakeAppl(sym_Choice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RChoice_2, y_3, u_3)), z_3);
                                                 }
                                               else
                                                 {
                                                   if(match_cons(t, sym_LChoice_2))
                                                     {
-                                                      w_3 = ATgetArgument(t, 0);
-                                                      s_3 = ATgetArgument(t, 1);
+                                                      y_3 = ATgetArgument(t, 0);
+                                                      u_3 = ATgetArgument(t, 1);
                                                     }
                                                   else
                                                     _fail(t);
-                                                  t = (ATerm) ATmakeAppl(sym_Choice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LChoice_2, w_3, s_3)), x_3);
+                                                  t = (ATerm) ATmakeAppl(sym_Choice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LChoice_2, y_3, u_3)), z_3);
                                                 }
                                             }
                                         }
@@ -902,74 +902,74 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                         {
                           if(match_cons(t, sym_GuardedLChoice_3))
                             {
-                              v_3 = ATgetArgument(t, 0);
-                              x_3 = ATgetArgument(t, 1);
-                              q_3 = ATgetArgument(t, 2);
-                              t = x_3;
+                              x_3 = ATgetArgument(t, 0);
+                              z_3 = ATgetArgument(t, 1);
+                              s_3 = ATgetArgument(t, 2);
+                              t = z_3;
                               if(match_cons(t, sym_GuardedLChoice_3))
                                 {
-                                  t_3 = ATgetArgument(t, 0);
-                                  r_3 = ATgetArgument(t, 1);
-                                  o_3 = ATgetArgument(t, 2);
-                                  t = v_3;
+                                  v_3 = ATgetArgument(t, 0);
+                                  t_3 = ATgetArgument(t, 1);
+                                  q_3 = ATgetArgument(t, 2);
+                                  t = x_3;
                                   if(match_cons(t, sym_GuardedLChoice_3))
                                     {
-                                      w_3 = ATgetArgument(t, 0);
-                                      s_3 = ATgetArgument(t, 1);
-                                      p_3 = ATgetArgument(t, 2);
-                                      t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, t_3, r_3, o_3)), q_3);
+                                      y_3 = ATgetArgument(t, 0);
+                                      u_3 = ATgetArgument(t, 1);
+                                      r_3 = ATgetArgument(t, 2);
+                                      t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, t_3, q_3)), s_3);
                                     }
                                   else
                                     {
                                       if(match_cons(t, sym_RGChoice_2))
                                         {
-                                          w_3 = ATgetArgument(t, 0);
-                                          s_3 = ATgetArgument(t, 1);
-                                          t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, t_3, r_3, o_3)), q_3);
+                                          y_3 = ATgetArgument(t, 0);
+                                          u_3 = ATgetArgument(t, 1);
+                                          t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, t_3, q_3)), s_3);
                                         }
                                       else
                                         {
                                           if(match_cons(t, sym_LGChoice_2))
                                             {
-                                              w_3 = ATgetArgument(t, 0);
-                                              s_3 = ATgetArgument(t, 1);
-                                              t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, t_3, r_3, o_3)), q_3);
+                                              y_3 = ATgetArgument(t, 0);
+                                              u_3 = ATgetArgument(t, 1);
+                                              t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, t_3, q_3)), s_3);
                                             }
                                           else
                                             {
                                               if(match_cons(t, sym_GChoice_2))
                                                 {
-                                                  w_3 = ATgetArgument(t, 0);
-                                                  s_3 = ATgetArgument(t, 1);
-                                                  t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, t_3, r_3, o_3)), q_3);
+                                                  y_3 = ATgetArgument(t, 0);
+                                                  u_3 = ATgetArgument(t, 1);
+                                                  t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, t_3, q_3)), s_3);
                                                 }
                                               else
                                                 {
                                                   if(match_cons(t, sym_RChoice_2))
                                                     {
-                                                      w_3 = ATgetArgument(t, 0);
-                                                      s_3 = ATgetArgument(t, 1);
-                                                      t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, t_3, r_3, o_3)), q_3);
+                                                      y_3 = ATgetArgument(t, 0);
+                                                      u_3 = ATgetArgument(t, 1);
+                                                      t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, t_3, q_3)), s_3);
                                                     }
                                                   else
                                                     {
                                                       if(match_cons(t, sym_LChoice_2))
                                                         {
-                                                          w_3 = ATgetArgument(t, 0);
-                                                          s_3 = ATgetArgument(t, 1);
-                                                          t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, t_3, r_3, o_3)), q_3);
+                                                          y_3 = ATgetArgument(t, 0);
+                                                          u_3 = ATgetArgument(t, 1);
+                                                          t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, t_3, q_3)), s_3);
                                                         }
                                                       else
                                                         {
                                                           if(match_cons(t, sym_Choice_2))
                                                             {
-                                                              w_3 = ATgetArgument(t, 0);
-                                                              s_3 = ATgetArgument(t, 1);
-                                                              t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, t_3, r_3, o_3)), q_3);
+                                                              y_3 = ATgetArgument(t, 0);
+                                                              u_3 = ATgetArgument(t, 1);
+                                                              t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, t_3, q_3)), s_3);
                                                             }
                                                           else
                                                             {
-                                                              t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, t_3, r_3, o_3)), q_3);
+                                                              t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, t_3, q_3)), s_3);
                                                             }
                                                         }
                                                     }
@@ -982,67 +982,67 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                 {
                                   if(match_cons(t, sym_RGChoice_2))
                                     {
-                                      t_3 = ATgetArgument(t, 0);
-                                      r_3 = ATgetArgument(t, 1);
-                                      t = v_3;
+                                      v_3 = ATgetArgument(t, 0);
+                                      t_3 = ATgetArgument(t, 1);
+                                      t = x_3;
                                       if(match_cons(t, sym_GuardedLChoice_3))
                                         {
-                                          w_3 = ATgetArgument(t, 0);
-                                          s_3 = ATgetArgument(t, 1);
-                                          p_3 = ATgetArgument(t, 2);
-                                          t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, w_3, s_3, p_3)), x_3, q_3);
+                                          y_3 = ATgetArgument(t, 0);
+                                          u_3 = ATgetArgument(t, 1);
+                                          r_3 = ATgetArgument(t, 2);
+                                          t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, y_3, u_3, r_3)), z_3, s_3);
                                         }
                                       else
                                         {
                                           if(match_cons(t, sym_RGChoice_2))
                                             {
-                                              w_3 = ATgetArgument(t, 0);
-                                              s_3 = ATgetArgument(t, 1);
-                                              t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, t_3, r_3)), q_3);
+                                              y_3 = ATgetArgument(t, 0);
+                                              u_3 = ATgetArgument(t, 1);
+                                              t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, v_3, t_3)), s_3);
                                             }
                                           else
                                             {
                                               if(match_cons(t, sym_LGChoice_2))
                                                 {
-                                                  w_3 = ATgetArgument(t, 0);
-                                                  s_3 = ATgetArgument(t, 1);
-                                                  t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, t_3, r_3)), q_3);
+                                                  y_3 = ATgetArgument(t, 0);
+                                                  u_3 = ATgetArgument(t, 1);
+                                                  t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, v_3, t_3)), s_3);
                                                 }
                                               else
                                                 {
                                                   if(match_cons(t, sym_GChoice_2))
                                                     {
-                                                      w_3 = ATgetArgument(t, 0);
-                                                      s_3 = ATgetArgument(t, 1);
-                                                      t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, t_3, r_3)), q_3);
+                                                      y_3 = ATgetArgument(t, 0);
+                                                      u_3 = ATgetArgument(t, 1);
+                                                      t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, v_3, t_3)), s_3);
                                                     }
                                                   else
                                                     {
                                                       if(match_cons(t, sym_RChoice_2))
                                                         {
-                                                          w_3 = ATgetArgument(t, 0);
-                                                          s_3 = ATgetArgument(t, 1);
-                                                          t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, t_3, r_3)), q_3);
+                                                          y_3 = ATgetArgument(t, 0);
+                                                          u_3 = ATgetArgument(t, 1);
+                                                          t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, v_3, t_3)), s_3);
                                                         }
                                                       else
                                                         {
                                                           if(match_cons(t, sym_LChoice_2))
                                                             {
-                                                              w_3 = ATgetArgument(t, 0);
-                                                              s_3 = ATgetArgument(t, 1);
-                                                              t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, t_3, r_3)), q_3);
+                                                              y_3 = ATgetArgument(t, 0);
+                                                              u_3 = ATgetArgument(t, 1);
+                                                              t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, v_3, t_3)), s_3);
                                                             }
                                                           else
                                                             {
                                                               if(match_cons(t, sym_Choice_2))
                                                                 {
-                                                                  w_3 = ATgetArgument(t, 0);
-                                                                  s_3 = ATgetArgument(t, 1);
-                                                                  t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, t_3, r_3)), q_3);
+                                                                  y_3 = ATgetArgument(t, 0);
+                                                                  u_3 = ATgetArgument(t, 1);
+                                                                  t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, v_3, t_3)), s_3);
                                                                 }
                                                               else
                                                                 {
-                                                                  t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, t_3, r_3)), q_3);
+                                                                  t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, v_3, t_3)), s_3);
                                                                 }
                                                             }
                                                         }
@@ -1055,67 +1055,67 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                     {
                                       if(match_cons(t, sym_LGChoice_2))
                                         {
-                                          t_3 = ATgetArgument(t, 0);
-                                          r_3 = ATgetArgument(t, 1);
-                                          t = v_3;
+                                          v_3 = ATgetArgument(t, 0);
+                                          t_3 = ATgetArgument(t, 1);
+                                          t = x_3;
                                           if(match_cons(t, sym_GuardedLChoice_3))
                                             {
-                                              w_3 = ATgetArgument(t, 0);
-                                              s_3 = ATgetArgument(t, 1);
-                                              p_3 = ATgetArgument(t, 2);
-                                              t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, w_3, s_3, p_3)), x_3, q_3);
+                                              y_3 = ATgetArgument(t, 0);
+                                              u_3 = ATgetArgument(t, 1);
+                                              r_3 = ATgetArgument(t, 2);
+                                              t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, y_3, u_3, r_3)), z_3, s_3);
                                             }
                                           else
                                             {
                                               if(match_cons(t, sym_RGChoice_2))
                                                 {
-                                                  w_3 = ATgetArgument(t, 0);
-                                                  s_3 = ATgetArgument(t, 1);
-                                                  t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, w_3, s_3)), x_3, q_3);
+                                                  y_3 = ATgetArgument(t, 0);
+                                                  u_3 = ATgetArgument(t, 1);
+                                                  t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, y_3, u_3)), z_3, s_3);
                                                 }
                                               else
                                                 {
                                                   if(match_cons(t, sym_LGChoice_2))
                                                     {
-                                                      w_3 = ATgetArgument(t, 0);
-                                                      s_3 = ATgetArgument(t, 1);
-                                                      t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, t_3, r_3)), q_3);
+                                                      y_3 = ATgetArgument(t, 0);
+                                                      u_3 = ATgetArgument(t, 1);
+                                                      t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, v_3, t_3)), s_3);
                                                     }
                                                   else
                                                     {
                                                       if(match_cons(t, sym_GChoice_2))
                                                         {
-                                                          w_3 = ATgetArgument(t, 0);
-                                                          s_3 = ATgetArgument(t, 1);
-                                                          t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, t_3, r_3)), q_3);
+                                                          y_3 = ATgetArgument(t, 0);
+                                                          u_3 = ATgetArgument(t, 1);
+                                                          t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, v_3, t_3)), s_3);
                                                         }
                                                       else
                                                         {
                                                           if(match_cons(t, sym_RChoice_2))
                                                             {
-                                                              w_3 = ATgetArgument(t, 0);
-                                                              s_3 = ATgetArgument(t, 1);
-                                                              t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, t_3, r_3)), q_3);
+                                                              y_3 = ATgetArgument(t, 0);
+                                                              u_3 = ATgetArgument(t, 1);
+                                                              t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, v_3, t_3)), s_3);
                                                             }
                                                           else
                                                             {
                                                               if(match_cons(t, sym_LChoice_2))
                                                                 {
-                                                                  w_3 = ATgetArgument(t, 0);
-                                                                  s_3 = ATgetArgument(t, 1);
-                                                                  t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, t_3, r_3)), q_3);
+                                                                  y_3 = ATgetArgument(t, 0);
+                                                                  u_3 = ATgetArgument(t, 1);
+                                                                  t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, v_3, t_3)), s_3);
                                                                 }
                                                               else
                                                                 {
                                                                   if(match_cons(t, sym_Choice_2))
                                                                     {
-                                                                      w_3 = ATgetArgument(t, 0);
-                                                                      s_3 = ATgetArgument(t, 1);
-                                                                      t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, t_3, r_3)), q_3);
+                                                                      y_3 = ATgetArgument(t, 0);
+                                                                      u_3 = ATgetArgument(t, 1);
+                                                                      t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, v_3, t_3)), s_3);
                                                                     }
                                                                   else
                                                                     {
-                                                                      t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, t_3, r_3)), q_3);
+                                                                      t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, v_3, t_3)), s_3);
                                                                     }
                                                                 }
                                                             }
@@ -1128,67 +1128,67 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                         {
                                           if(match_cons(t, sym_GChoice_2))
                                             {
-                                              t_3 = ATgetArgument(t, 0);
-                                              r_3 = ATgetArgument(t, 1);
-                                              t = v_3;
+                                              v_3 = ATgetArgument(t, 0);
+                                              t_3 = ATgetArgument(t, 1);
+                                              t = x_3;
                                               if(match_cons(t, sym_GuardedLChoice_3))
                                                 {
-                                                  w_3 = ATgetArgument(t, 0);
-                                                  s_3 = ATgetArgument(t, 1);
-                                                  p_3 = ATgetArgument(t, 2);
-                                                  t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, w_3, s_3, p_3)), x_3, q_3);
+                                                  y_3 = ATgetArgument(t, 0);
+                                                  u_3 = ATgetArgument(t, 1);
+                                                  r_3 = ATgetArgument(t, 2);
+                                                  t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, y_3, u_3, r_3)), z_3, s_3);
                                                 }
                                               else
                                                 {
                                                   if(match_cons(t, sym_RGChoice_2))
                                                     {
-                                                      w_3 = ATgetArgument(t, 0);
-                                                      s_3 = ATgetArgument(t, 1);
-                                                      t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, w_3, s_3)), x_3, q_3);
+                                                      y_3 = ATgetArgument(t, 0);
+                                                      u_3 = ATgetArgument(t, 1);
+                                                      t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, y_3, u_3)), z_3, s_3);
                                                     }
                                                   else
                                                     {
                                                       if(match_cons(t, sym_LGChoice_2))
                                                         {
-                                                          w_3 = ATgetArgument(t, 0);
-                                                          s_3 = ATgetArgument(t, 1);
-                                                          t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, w_3, s_3)), x_3, q_3);
+                                                          y_3 = ATgetArgument(t, 0);
+                                                          u_3 = ATgetArgument(t, 1);
+                                                          t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, y_3, u_3)), z_3, s_3);
                                                         }
                                                       else
                                                         {
                                                           if(match_cons(t, sym_GChoice_2))
                                                             {
-                                                              w_3 = ATgetArgument(t, 0);
-                                                              s_3 = ATgetArgument(t, 1);
-                                                              t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, t_3, r_3)), q_3);
+                                                              y_3 = ATgetArgument(t, 0);
+                                                              u_3 = ATgetArgument(t, 1);
+                                                              t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, v_3, t_3)), s_3);
                                                             }
                                                           else
                                                             {
                                                               if(match_cons(t, sym_RChoice_2))
                                                                 {
-                                                                  w_3 = ATgetArgument(t, 0);
-                                                                  s_3 = ATgetArgument(t, 1);
-                                                                  t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, t_3, r_3)), q_3);
+                                                                  y_3 = ATgetArgument(t, 0);
+                                                                  u_3 = ATgetArgument(t, 1);
+                                                                  t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, v_3, t_3)), s_3);
                                                                 }
                                                               else
                                                                 {
                                                                   if(match_cons(t, sym_LChoice_2))
                                                                     {
-                                                                      w_3 = ATgetArgument(t, 0);
-                                                                      s_3 = ATgetArgument(t, 1);
-                                                                      t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, t_3, r_3)), q_3);
+                                                                      y_3 = ATgetArgument(t, 0);
+                                                                      u_3 = ATgetArgument(t, 1);
+                                                                      t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, v_3, t_3)), s_3);
                                                                     }
                                                                   else
                                                                     {
                                                                       if(match_cons(t, sym_Choice_2))
                                                                         {
-                                                                          w_3 = ATgetArgument(t, 0);
-                                                                          s_3 = ATgetArgument(t, 1);
-                                                                          t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, t_3, r_3)), q_3);
+                                                                          y_3 = ATgetArgument(t, 0);
+                                                                          u_3 = ATgetArgument(t, 1);
+                                                                          t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, v_3, t_3)), s_3);
                                                                         }
                                                                       else
                                                                         {
-                                                                          t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, t_3, r_3)), q_3);
+                                                                          t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, v_3, t_3)), s_3);
                                                                         }
                                                                     }
                                                                 }
@@ -1201,67 +1201,67 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                             {
                                               if(match_cons(t, sym_RChoice_2))
                                                 {
-                                                  t_3 = ATgetArgument(t, 0);
-                                                  r_3 = ATgetArgument(t, 1);
-                                                  t = v_3;
+                                                  v_3 = ATgetArgument(t, 0);
+                                                  t_3 = ATgetArgument(t, 1);
+                                                  t = x_3;
                                                   if(match_cons(t, sym_GuardedLChoice_3))
                                                     {
-                                                      w_3 = ATgetArgument(t, 0);
-                                                      s_3 = ATgetArgument(t, 1);
-                                                      p_3 = ATgetArgument(t, 2);
-                                                      t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, w_3, s_3, p_3)), x_3, q_3);
+                                                      y_3 = ATgetArgument(t, 0);
+                                                      u_3 = ATgetArgument(t, 1);
+                                                      r_3 = ATgetArgument(t, 2);
+                                                      t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, y_3, u_3, r_3)), z_3, s_3);
                                                     }
                                                   else
                                                     {
                                                       if(match_cons(t, sym_RGChoice_2))
                                                         {
-                                                          w_3 = ATgetArgument(t, 0);
-                                                          s_3 = ATgetArgument(t, 1);
-                                                          t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, w_3, s_3)), x_3, q_3);
+                                                          y_3 = ATgetArgument(t, 0);
+                                                          u_3 = ATgetArgument(t, 1);
+                                                          t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, y_3, u_3)), z_3, s_3);
                                                         }
                                                       else
                                                         {
                                                           if(match_cons(t, sym_LGChoice_2))
                                                             {
-                                                              w_3 = ATgetArgument(t, 0);
-                                                              s_3 = ATgetArgument(t, 1);
-                                                              t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, w_3, s_3)), x_3, q_3);
+                                                              y_3 = ATgetArgument(t, 0);
+                                                              u_3 = ATgetArgument(t, 1);
+                                                              t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, y_3, u_3)), z_3, s_3);
                                                             }
                                                           else
                                                             {
                                                               if(match_cons(t, sym_GChoice_2))
                                                                 {
-                                                                  w_3 = ATgetArgument(t, 0);
-                                                                  s_3 = ATgetArgument(t, 1);
-                                                                  t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, w_3, s_3)), x_3, q_3);
+                                                                  y_3 = ATgetArgument(t, 0);
+                                                                  u_3 = ATgetArgument(t, 1);
+                                                                  t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, y_3, u_3)), z_3, s_3);
                                                                 }
                                                               else
                                                                 {
                                                                   if(match_cons(t, sym_RChoice_2))
                                                                     {
-                                                                      w_3 = ATgetArgument(t, 0);
-                                                                      s_3 = ATgetArgument(t, 1);
-                                                                      t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RChoice_2, t_3, r_3)), q_3);
+                                                                      y_3 = ATgetArgument(t, 0);
+                                                                      u_3 = ATgetArgument(t, 1);
+                                                                      t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RChoice_2, v_3, t_3)), s_3);
                                                                     }
                                                                   else
                                                                     {
                                                                       if(match_cons(t, sym_LChoice_2))
                                                                         {
-                                                                          w_3 = ATgetArgument(t, 0);
-                                                                          s_3 = ATgetArgument(t, 1);
-                                                                          t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RChoice_2, t_3, r_3)), q_3);
+                                                                          y_3 = ATgetArgument(t, 0);
+                                                                          u_3 = ATgetArgument(t, 1);
+                                                                          t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RChoice_2, v_3, t_3)), s_3);
                                                                         }
                                                                       else
                                                                         {
                                                                           if(match_cons(t, sym_Choice_2))
                                                                             {
-                                                                              w_3 = ATgetArgument(t, 0);
-                                                                              s_3 = ATgetArgument(t, 1);
-                                                                              t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RChoice_2, t_3, r_3)), q_3);
+                                                                              y_3 = ATgetArgument(t, 0);
+                                                                              u_3 = ATgetArgument(t, 1);
+                                                                              t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RChoice_2, v_3, t_3)), s_3);
                                                                             }
                                                                           else
                                                                             {
-                                                                              t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RChoice_2, t_3, r_3)), q_3);
+                                                                              t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RChoice_2, v_3, t_3)), s_3);
                                                                             }
                                                                         }
                                                                     }
@@ -1274,67 +1274,67 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                 {
                                                   if(match_cons(t, sym_LChoice_2))
                                                     {
-                                                      t_3 = ATgetArgument(t, 0);
-                                                      r_3 = ATgetArgument(t, 1);
-                                                      t = v_3;
+                                                      v_3 = ATgetArgument(t, 0);
+                                                      t_3 = ATgetArgument(t, 1);
+                                                      t = x_3;
                                                       if(match_cons(t, sym_GuardedLChoice_3))
                                                         {
-                                                          w_3 = ATgetArgument(t, 0);
-                                                          s_3 = ATgetArgument(t, 1);
-                                                          p_3 = ATgetArgument(t, 2);
-                                                          t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, w_3, s_3, p_3)), x_3, q_3);
+                                                          y_3 = ATgetArgument(t, 0);
+                                                          u_3 = ATgetArgument(t, 1);
+                                                          r_3 = ATgetArgument(t, 2);
+                                                          t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, y_3, u_3, r_3)), z_3, s_3);
                                                         }
                                                       else
                                                         {
                                                           if(match_cons(t, sym_RGChoice_2))
                                                             {
-                                                              w_3 = ATgetArgument(t, 0);
-                                                              s_3 = ATgetArgument(t, 1);
-                                                              t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, w_3, s_3)), x_3, q_3);
+                                                              y_3 = ATgetArgument(t, 0);
+                                                              u_3 = ATgetArgument(t, 1);
+                                                              t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, y_3, u_3)), z_3, s_3);
                                                             }
                                                           else
                                                             {
                                                               if(match_cons(t, sym_LGChoice_2))
                                                                 {
-                                                                  w_3 = ATgetArgument(t, 0);
-                                                                  s_3 = ATgetArgument(t, 1);
-                                                                  t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, w_3, s_3)), x_3, q_3);
+                                                                  y_3 = ATgetArgument(t, 0);
+                                                                  u_3 = ATgetArgument(t, 1);
+                                                                  t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, y_3, u_3)), z_3, s_3);
                                                                 }
                                                               else
                                                                 {
                                                                   if(match_cons(t, sym_GChoice_2))
                                                                     {
-                                                                      w_3 = ATgetArgument(t, 0);
-                                                                      s_3 = ATgetArgument(t, 1);
-                                                                      t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, w_3, s_3)), x_3, q_3);
+                                                                      y_3 = ATgetArgument(t, 0);
+                                                                      u_3 = ATgetArgument(t, 1);
+                                                                      t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, y_3, u_3)), z_3, s_3);
                                                                     }
                                                                   else
                                                                     {
                                                                       if(match_cons(t, sym_RChoice_2))
                                                                         {
-                                                                          w_3 = ATgetArgument(t, 0);
-                                                                          s_3 = ATgetArgument(t, 1);
-                                                                          t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RChoice_2, w_3, s_3)), x_3, q_3);
+                                                                          y_3 = ATgetArgument(t, 0);
+                                                                          u_3 = ATgetArgument(t, 1);
+                                                                          t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RChoice_2, y_3, u_3)), z_3, s_3);
                                                                         }
                                                                       else
                                                                         {
                                                                           if(match_cons(t, sym_LChoice_2))
                                                                             {
-                                                                              w_3 = ATgetArgument(t, 0);
-                                                                              s_3 = ATgetArgument(t, 1);
-                                                                              t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LChoice_2, t_3, r_3)), q_3);
+                                                                              y_3 = ATgetArgument(t, 0);
+                                                                              u_3 = ATgetArgument(t, 1);
+                                                                              t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LChoice_2, v_3, t_3)), s_3);
                                                                             }
                                                                           else
                                                                             {
                                                                               if(match_cons(t, sym_Choice_2))
                                                                                 {
-                                                                                  w_3 = ATgetArgument(t, 0);
-                                                                                  s_3 = ATgetArgument(t, 1);
-                                                                                  t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LChoice_2, t_3, r_3)), q_3);
+                                                                                  y_3 = ATgetArgument(t, 0);
+                                                                                  u_3 = ATgetArgument(t, 1);
+                                                                                  t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LChoice_2, v_3, t_3)), s_3);
                                                                                 }
                                                                               else
                                                                                 {
-                                                                                  t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LChoice_2, t_3, r_3)), q_3);
+                                                                                  t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LChoice_2, v_3, t_3)), s_3);
                                                                                 }
                                                                             }
                                                                         }
@@ -1347,67 +1347,67 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                     {
                                                       if(match_cons(t, sym_Choice_2))
                                                         {
-                                                          t_3 = ATgetArgument(t, 0);
-                                                          r_3 = ATgetArgument(t, 1);
-                                                          t = v_3;
+                                                          v_3 = ATgetArgument(t, 0);
+                                                          t_3 = ATgetArgument(t, 1);
+                                                          t = x_3;
                                                           if(match_cons(t, sym_GuardedLChoice_3))
                                                             {
-                                                              w_3 = ATgetArgument(t, 0);
-                                                              s_3 = ATgetArgument(t, 1);
-                                                              p_3 = ATgetArgument(t, 2);
-                                                              t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, w_3, s_3, p_3)), x_3, q_3);
+                                                              y_3 = ATgetArgument(t, 0);
+                                                              u_3 = ATgetArgument(t, 1);
+                                                              r_3 = ATgetArgument(t, 2);
+                                                              t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, y_3, u_3, r_3)), z_3, s_3);
                                                             }
                                                           else
                                                             {
                                                               if(match_cons(t, sym_RGChoice_2))
                                                                 {
-                                                                  w_3 = ATgetArgument(t, 0);
-                                                                  s_3 = ATgetArgument(t, 1);
-                                                                  t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, w_3, s_3)), x_3, q_3);
+                                                                  y_3 = ATgetArgument(t, 0);
+                                                                  u_3 = ATgetArgument(t, 1);
+                                                                  t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, y_3, u_3)), z_3, s_3);
                                                                 }
                                                               else
                                                                 {
                                                                   if(match_cons(t, sym_LGChoice_2))
                                                                     {
-                                                                      w_3 = ATgetArgument(t, 0);
-                                                                      s_3 = ATgetArgument(t, 1);
-                                                                      t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, w_3, s_3)), x_3, q_3);
+                                                                      y_3 = ATgetArgument(t, 0);
+                                                                      u_3 = ATgetArgument(t, 1);
+                                                                      t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, y_3, u_3)), z_3, s_3);
                                                                     }
                                                                   else
                                                                     {
                                                                       if(match_cons(t, sym_GChoice_2))
                                                                         {
-                                                                          w_3 = ATgetArgument(t, 0);
-                                                                          s_3 = ATgetArgument(t, 1);
-                                                                          t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, w_3, s_3)), x_3, q_3);
+                                                                          y_3 = ATgetArgument(t, 0);
+                                                                          u_3 = ATgetArgument(t, 1);
+                                                                          t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, y_3, u_3)), z_3, s_3);
                                                                         }
                                                                       else
                                                                         {
                                                                           if(match_cons(t, sym_RChoice_2))
                                                                             {
-                                                                              w_3 = ATgetArgument(t, 0);
-                                                                              s_3 = ATgetArgument(t, 1);
-                                                                              t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RChoice_2, w_3, s_3)), x_3, q_3);
+                                                                              y_3 = ATgetArgument(t, 0);
+                                                                              u_3 = ATgetArgument(t, 1);
+                                                                              t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RChoice_2, y_3, u_3)), z_3, s_3);
                                                                             }
                                                                           else
                                                                             {
                                                                               if(match_cons(t, sym_LChoice_2))
                                                                                 {
-                                                                                  w_3 = ATgetArgument(t, 0);
-                                                                                  s_3 = ATgetArgument(t, 1);
-                                                                                  t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LChoice_2, w_3, s_3)), x_3, q_3);
+                                                                                  y_3 = ATgetArgument(t, 0);
+                                                                                  u_3 = ATgetArgument(t, 1);
+                                                                                  t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LChoice_2, y_3, u_3)), z_3, s_3);
                                                                                 }
                                                                               else
                                                                                 {
                                                                                   if(match_cons(t, sym_Choice_2))
                                                                                     {
-                                                                                      w_3 = ATgetArgument(t, 0);
-                                                                                      s_3 = ATgetArgument(t, 1);
-                                                                                      t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Choice_2, t_3, r_3)), q_3);
+                                                                                      y_3 = ATgetArgument(t, 0);
+                                                                                      u_3 = ATgetArgument(t, 1);
+                                                                                      t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Choice_2, v_3, t_3)), s_3);
                                                                                     }
                                                                                   else
                                                                                     {
-                                                                                      t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Choice_2, t_3, r_3)), q_3);
+                                                                                      t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, x_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Choice_2, v_3, t_3)), s_3);
                                                                                     }
                                                                                 }
                                                                             }
@@ -1418,64 +1418,64 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                         }
                                                       else
                                                         {
-                                                          t = v_3;
+                                                          t = x_3;
                                                           if(match_cons(t, sym_GuardedLChoice_3))
                                                             {
-                                                              w_3 = ATgetArgument(t, 0);
-                                                              s_3 = ATgetArgument(t, 1);
-                                                              p_3 = ATgetArgument(t, 2);
-                                                              t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, w_3, s_3, p_3)), x_3, q_3);
+                                                              y_3 = ATgetArgument(t, 0);
+                                                              u_3 = ATgetArgument(t, 1);
+                                                              r_3 = ATgetArgument(t, 2);
+                                                              t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, y_3, u_3, r_3)), z_3, s_3);
                                                             }
                                                           else
                                                             {
                                                               if(match_cons(t, sym_RGChoice_2))
                                                                 {
-                                                                  w_3 = ATgetArgument(t, 0);
-                                                                  s_3 = ATgetArgument(t, 1);
-                                                                  t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, w_3, s_3)), x_3, q_3);
+                                                                  y_3 = ATgetArgument(t, 0);
+                                                                  u_3 = ATgetArgument(t, 1);
+                                                                  t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, y_3, u_3)), z_3, s_3);
                                                                 }
                                                               else
                                                                 {
                                                                   if(match_cons(t, sym_LGChoice_2))
                                                                     {
-                                                                      w_3 = ATgetArgument(t, 0);
-                                                                      s_3 = ATgetArgument(t, 1);
-                                                                      t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, w_3, s_3)), x_3, q_3);
+                                                                      y_3 = ATgetArgument(t, 0);
+                                                                      u_3 = ATgetArgument(t, 1);
+                                                                      t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, y_3, u_3)), z_3, s_3);
                                                                     }
                                                                   else
                                                                     {
                                                                       if(match_cons(t, sym_GChoice_2))
                                                                         {
-                                                                          w_3 = ATgetArgument(t, 0);
-                                                                          s_3 = ATgetArgument(t, 1);
-                                                                          t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, w_3, s_3)), x_3, q_3);
+                                                                          y_3 = ATgetArgument(t, 0);
+                                                                          u_3 = ATgetArgument(t, 1);
+                                                                          t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, y_3, u_3)), z_3, s_3);
                                                                         }
                                                                       else
                                                                         {
                                                                           if(match_cons(t, sym_RChoice_2))
                                                                             {
-                                                                              w_3 = ATgetArgument(t, 0);
-                                                                              s_3 = ATgetArgument(t, 1);
-                                                                              t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RChoice_2, w_3, s_3)), x_3, q_3);
+                                                                              y_3 = ATgetArgument(t, 0);
+                                                                              u_3 = ATgetArgument(t, 1);
+                                                                              t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RChoice_2, y_3, u_3)), z_3, s_3);
                                                                             }
                                                                           else
                                                                             {
                                                                               if(match_cons(t, sym_LChoice_2))
                                                                                 {
-                                                                                  w_3 = ATgetArgument(t, 0);
-                                                                                  s_3 = ATgetArgument(t, 1);
-                                                                                  t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LChoice_2, w_3, s_3)), x_3, q_3);
+                                                                                  y_3 = ATgetArgument(t, 0);
+                                                                                  u_3 = ATgetArgument(t, 1);
+                                                                                  t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LChoice_2, y_3, u_3)), z_3, s_3);
                                                                                 }
                                                                               else
                                                                                 {
                                                                                   if(match_cons(t, sym_Choice_2))
                                                                                     {
-                                                                                      w_3 = ATgetArgument(t, 0);
-                                                                                      s_3 = ATgetArgument(t, 1);
+                                                                                      y_3 = ATgetArgument(t, 0);
+                                                                                      u_3 = ATgetArgument(t, 1);
                                                                                     }
                                                                                   else
                                                                                     _fail(t);
-                                                                                  t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Choice_2, w_3, s_3)), x_3, q_3);
+                                                                                  t = (ATerm) ATmakeAppl(sym_GuardedLChoice_3, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Choice_2, y_3, u_3)), z_3, s_3);
                                                                                 }
                                                                             }
                                                                         }
@@ -1494,66 +1494,66 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                             {
                               if(match_cons(t, sym_LGChoice_2))
                                 {
-                                  v_3 = ATgetArgument(t, 0);
-                                  x_3 = ATgetArgument(t, 1);
-                                  t = v_3;
+                                  x_3 = ATgetArgument(t, 0);
+                                  z_3 = ATgetArgument(t, 1);
+                                  t = x_3;
                                   if(match_cons(t, sym_LGChoice_2))
                                     {
-                                      w_3 = ATgetArgument(t, 0);
-                                      s_3 = ATgetArgument(t, 1);
-                                      t = (ATerm) ATmakeAppl(sym_LGChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, w_3, s_3)), x_3);
+                                      y_3 = ATgetArgument(t, 0);
+                                      u_3 = ATgetArgument(t, 1);
+                                      t = (ATerm) ATmakeAppl(sym_LGChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, y_3, u_3)), z_3);
                                     }
                                   else
                                     {
                                       if(match_cons(t, sym_GuardedLChoice_3))
                                         {
-                                          w_3 = ATgetArgument(t, 0);
-                                          s_3 = ATgetArgument(t, 1);
-                                          p_3 = ATgetArgument(t, 2);
-                                          t = (ATerm) ATmakeAppl(sym_LGChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, w_3, s_3, p_3)), x_3);
+                                          y_3 = ATgetArgument(t, 0);
+                                          u_3 = ATgetArgument(t, 1);
+                                          r_3 = ATgetArgument(t, 2);
+                                          t = (ATerm) ATmakeAppl(sym_LGChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, y_3, u_3, r_3)), z_3);
                                         }
                                       else
                                         {
                                           if(match_cons(t, sym_RGChoice_2))
                                             {
-                                              w_3 = ATgetArgument(t, 0);
-                                              s_3 = ATgetArgument(t, 1);
-                                              t = (ATerm) ATmakeAppl(sym_LGChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, w_3, s_3)), x_3);
+                                              y_3 = ATgetArgument(t, 0);
+                                              u_3 = ATgetArgument(t, 1);
+                                              t = (ATerm) ATmakeAppl(sym_LGChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, y_3, u_3)), z_3);
                                             }
                                           else
                                             {
                                               if(match_cons(t, sym_GChoice_2))
                                                 {
-                                                  w_3 = ATgetArgument(t, 0);
-                                                  s_3 = ATgetArgument(t, 1);
-                                                  t = (ATerm) ATmakeAppl(sym_LGChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, w_3, s_3)), x_3);
+                                                  y_3 = ATgetArgument(t, 0);
+                                                  u_3 = ATgetArgument(t, 1);
+                                                  t = (ATerm) ATmakeAppl(sym_LGChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, y_3, u_3)), z_3);
                                                 }
                                               else
                                                 {
                                                   if(match_cons(t, sym_RChoice_2))
                                                     {
-                                                      w_3 = ATgetArgument(t, 0);
-                                                      s_3 = ATgetArgument(t, 1);
-                                                      t = (ATerm) ATmakeAppl(sym_LGChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RChoice_2, w_3, s_3)), x_3);
+                                                      y_3 = ATgetArgument(t, 0);
+                                                      u_3 = ATgetArgument(t, 1);
+                                                      t = (ATerm) ATmakeAppl(sym_LGChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RChoice_2, y_3, u_3)), z_3);
                                                     }
                                                   else
                                                     {
                                                       if(match_cons(t, sym_LChoice_2))
                                                         {
-                                                          w_3 = ATgetArgument(t, 0);
-                                                          s_3 = ATgetArgument(t, 1);
-                                                          t = (ATerm) ATmakeAppl(sym_LGChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LChoice_2, w_3, s_3)), x_3);
+                                                          y_3 = ATgetArgument(t, 0);
+                                                          u_3 = ATgetArgument(t, 1);
+                                                          t = (ATerm) ATmakeAppl(sym_LGChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LChoice_2, y_3, u_3)), z_3);
                                                         }
                                                       else
                                                         {
                                                           if(match_cons(t, sym_Choice_2))
                                                             {
-                                                              w_3 = ATgetArgument(t, 0);
-                                                              s_3 = ATgetArgument(t, 1);
+                                                              y_3 = ATgetArgument(t, 0);
+                                                              u_3 = ATgetArgument(t, 1);
                                                             }
                                                           else
                                                             _fail(t);
-                                                          t = (ATerm) ATmakeAppl(sym_LGChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Choice_2, w_3, s_3)), x_3);
+                                                          t = (ATerm) ATmakeAppl(sym_LGChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Choice_2, y_3, u_3)), z_3);
                                                         }
                                                     }
                                                 }
@@ -1565,66 +1565,66 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                 {
                                   if(match_cons(t, sym_LChoice_2))
                                     {
-                                      v_3 = ATgetArgument(t, 0);
-                                      x_3 = ATgetArgument(t, 1);
-                                      t = v_3;
+                                      x_3 = ATgetArgument(t, 0);
+                                      z_3 = ATgetArgument(t, 1);
+                                      t = x_3;
                                       if(match_cons(t, sym_LChoice_2))
                                         {
-                                          w_3 = ATgetArgument(t, 0);
-                                          s_3 = ATgetArgument(t, 1);
-                                          t = (ATerm) ATmakeAppl(sym_LChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LChoice_2, w_3, s_3)), x_3);
+                                          y_3 = ATgetArgument(t, 0);
+                                          u_3 = ATgetArgument(t, 1);
+                                          t = (ATerm) ATmakeAppl(sym_LChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LChoice_2, y_3, u_3)), z_3);
                                         }
                                       else
                                         {
                                           if(match_cons(t, sym_GuardedLChoice_3))
                                             {
-                                              w_3 = ATgetArgument(t, 0);
-                                              s_3 = ATgetArgument(t, 1);
-                                              p_3 = ATgetArgument(t, 2);
-                                              t = (ATerm) ATmakeAppl(sym_LChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, w_3, s_3, p_3)), x_3);
+                                              y_3 = ATgetArgument(t, 0);
+                                              u_3 = ATgetArgument(t, 1);
+                                              r_3 = ATgetArgument(t, 2);
+                                              t = (ATerm) ATmakeAppl(sym_LChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, y_3, u_3, r_3)), z_3);
                                             }
                                           else
                                             {
                                               if(match_cons(t, sym_RGChoice_2))
                                                 {
-                                                  w_3 = ATgetArgument(t, 0);
-                                                  s_3 = ATgetArgument(t, 1);
-                                                  t = (ATerm) ATmakeAppl(sym_LChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, w_3, s_3)), x_3);
+                                                  y_3 = ATgetArgument(t, 0);
+                                                  u_3 = ATgetArgument(t, 1);
+                                                  t = (ATerm) ATmakeAppl(sym_LChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, y_3, u_3)), z_3);
                                                 }
                                               else
                                                 {
                                                   if(match_cons(t, sym_LGChoice_2))
                                                     {
-                                                      w_3 = ATgetArgument(t, 0);
-                                                      s_3 = ATgetArgument(t, 1);
-                                                      t = (ATerm) ATmakeAppl(sym_LChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, w_3, s_3)), x_3);
+                                                      y_3 = ATgetArgument(t, 0);
+                                                      u_3 = ATgetArgument(t, 1);
+                                                      t = (ATerm) ATmakeAppl(sym_LChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, y_3, u_3)), z_3);
                                                     }
                                                   else
                                                     {
                                                       if(match_cons(t, sym_GChoice_2))
                                                         {
-                                                          w_3 = ATgetArgument(t, 0);
-                                                          s_3 = ATgetArgument(t, 1);
-                                                          t = (ATerm) ATmakeAppl(sym_LChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, w_3, s_3)), x_3);
+                                                          y_3 = ATgetArgument(t, 0);
+                                                          u_3 = ATgetArgument(t, 1);
+                                                          t = (ATerm) ATmakeAppl(sym_LChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, y_3, u_3)), z_3);
                                                         }
                                                       else
                                                         {
                                                           if(match_cons(t, sym_RChoice_2))
                                                             {
-                                                              w_3 = ATgetArgument(t, 0);
-                                                              s_3 = ATgetArgument(t, 1);
-                                                              t = (ATerm) ATmakeAppl(sym_LChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RChoice_2, w_3, s_3)), x_3);
+                                                              y_3 = ATgetArgument(t, 0);
+                                                              u_3 = ATgetArgument(t, 1);
+                                                              t = (ATerm) ATmakeAppl(sym_LChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RChoice_2, y_3, u_3)), z_3);
                                                             }
                                                           else
                                                             {
                                                               if(match_cons(t, sym_Choice_2))
                                                                 {
-                                                                  w_3 = ATgetArgument(t, 0);
-                                                                  s_3 = ATgetArgument(t, 1);
+                                                                  y_3 = ATgetArgument(t, 0);
+                                                                  u_3 = ATgetArgument(t, 1);
                                                                 }
                                                               else
                                                                 _fail(t);
-                                                              t = (ATerm) ATmakeAppl(sym_LChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Choice_2, w_3, s_3)), x_3);
+                                                              t = (ATerm) ATmakeAppl(sym_LChoice_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Choice_2, y_3, u_3)), z_3);
                                                             }
                                                         }
                                                     }
@@ -1636,81 +1636,81 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                     {
                                       if(match_cons(t, sym_Seq_2))
                                         {
-                                          v_3 = ATgetArgument(t, 0);
-                                          x_3 = ATgetArgument(t, 1);
-                                          t = x_3;
+                                          x_3 = ATgetArgument(t, 0);
+                                          z_3 = ATgetArgument(t, 1);
+                                          t = z_3;
                                           if(match_cons(t, sym_GuardedLChoice_3))
                                             {
-                                              t_3 = ATgetArgument(t, 0);
-                                              r_3 = ATgetArgument(t, 1);
-                                              o_3 = ATgetArgument(t, 2);
-                                              t = v_3;
+                                              v_3 = ATgetArgument(t, 0);
+                                              t_3 = ATgetArgument(t, 1);
+                                              q_3 = ATgetArgument(t, 2);
+                                              t = x_3;
                                               if(match_cons(t, sym_Seq_2))
                                                 {
-                                                  w_3 = ATgetArgument(t, 0);
-                                                  s_3 = ATgetArgument(t, 1);
-                                                  t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Seq_2, w_3, s_3)), x_3);
+                                                  y_3 = ATgetArgument(t, 0);
+                                                  u_3 = ATgetArgument(t, 1);
+                                                  t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Seq_2, y_3, u_3)), z_3);
                                                 }
                                               else
                                                 {
                                                   if(match_cons(t, sym_GuardedLChoice_3))
                                                     {
-                                                      w_3 = ATgetArgument(t, 0);
-                                                      s_3 = ATgetArgument(t, 1);
-                                                      p_3 = ATgetArgument(t, 2);
-                                                      t = (ATerm) ATmakeAppl(sym_Seq_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, t_3, r_3, o_3)));
+                                                      y_3 = ATgetArgument(t, 0);
+                                                      u_3 = ATgetArgument(t, 1);
+                                                      r_3 = ATgetArgument(t, 2);
+                                                      t = (ATerm) ATmakeAppl(sym_Seq_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, t_3, q_3)));
                                                     }
                                                   else
                                                     {
                                                       if(match_cons(t, sym_RGChoice_2))
                                                         {
-                                                          w_3 = ATgetArgument(t, 0);
-                                                          s_3 = ATgetArgument(t, 1);
-                                                          t = (ATerm) ATmakeAppl(sym_Seq_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, t_3, r_3, o_3)));
+                                                          y_3 = ATgetArgument(t, 0);
+                                                          u_3 = ATgetArgument(t, 1);
+                                                          t = (ATerm) ATmakeAppl(sym_Seq_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, t_3, q_3)));
                                                         }
                                                       else
                                                         {
                                                           if(match_cons(t, sym_LGChoice_2))
                                                             {
-                                                              w_3 = ATgetArgument(t, 0);
-                                                              s_3 = ATgetArgument(t, 1);
-                                                              t = (ATerm) ATmakeAppl(sym_Seq_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, t_3, r_3, o_3)));
+                                                              y_3 = ATgetArgument(t, 0);
+                                                              u_3 = ATgetArgument(t, 1);
+                                                              t = (ATerm) ATmakeAppl(sym_Seq_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, t_3, q_3)));
                                                             }
                                                           else
                                                             {
                                                               if(match_cons(t, sym_GChoice_2))
                                                                 {
-                                                                  w_3 = ATgetArgument(t, 0);
-                                                                  s_3 = ATgetArgument(t, 1);
-                                                                  t = (ATerm) ATmakeAppl(sym_Seq_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, t_3, r_3, o_3)));
+                                                                  y_3 = ATgetArgument(t, 0);
+                                                                  u_3 = ATgetArgument(t, 1);
+                                                                  t = (ATerm) ATmakeAppl(sym_Seq_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, t_3, q_3)));
                                                                 }
                                                               else
                                                                 {
                                                                   if(match_cons(t, sym_RChoice_2))
                                                                     {
-                                                                      w_3 = ATgetArgument(t, 0);
-                                                                      s_3 = ATgetArgument(t, 1);
-                                                                      t = (ATerm) ATmakeAppl(sym_Seq_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, t_3, r_3, o_3)));
+                                                                      y_3 = ATgetArgument(t, 0);
+                                                                      u_3 = ATgetArgument(t, 1);
+                                                                      t = (ATerm) ATmakeAppl(sym_Seq_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, t_3, q_3)));
                                                                     }
                                                                   else
                                                                     {
                                                                       if(match_cons(t, sym_LChoice_2))
                                                                         {
-                                                                          w_3 = ATgetArgument(t, 0);
-                                                                          s_3 = ATgetArgument(t, 1);
-                                                                          t = (ATerm) ATmakeAppl(sym_Seq_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, t_3, r_3, o_3)));
+                                                                          y_3 = ATgetArgument(t, 0);
+                                                                          u_3 = ATgetArgument(t, 1);
+                                                                          t = (ATerm) ATmakeAppl(sym_Seq_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, t_3, q_3)));
                                                                         }
                                                                       else
                                                                         {
                                                                           if(match_cons(t, sym_Choice_2))
                                                                             {
-                                                                              w_3 = ATgetArgument(t, 0);
-                                                                              s_3 = ATgetArgument(t, 1);
-                                                                              t = (ATerm) ATmakeAppl(sym_Seq_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, t_3, r_3, o_3)));
+                                                                              y_3 = ATgetArgument(t, 0);
+                                                                              u_3 = ATgetArgument(t, 1);
+                                                                              t = (ATerm) ATmakeAppl(sym_Seq_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, t_3, q_3)));
                                                                             }
                                                                           else
                                                                             {
-                                                                              t = (ATerm) ATmakeAppl(sym_Seq_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, t_3, r_3, o_3)));
+                                                                              t = (ATerm) ATmakeAppl(sym_Seq_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, v_3, t_3, q_3)));
                                                                             }
                                                                         }
                                                                     }
@@ -1724,75 +1724,75 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                             {
                                               if(match_cons(t, sym_RGChoice_2))
                                                 {
-                                                  t_3 = ATgetArgument(t, 0);
-                                                  r_3 = ATgetArgument(t, 1);
-                                                  t = v_3;
+                                                  v_3 = ATgetArgument(t, 0);
+                                                  t_3 = ATgetArgument(t, 1);
+                                                  t = x_3;
                                                   if(match_cons(t, sym_Seq_2))
                                                     {
-                                                      w_3 = ATgetArgument(t, 0);
-                                                      s_3 = ATgetArgument(t, 1);
-                                                      t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Seq_2, w_3, s_3)), x_3);
+                                                      y_3 = ATgetArgument(t, 0);
+                                                      u_3 = ATgetArgument(t, 1);
+                                                      t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Seq_2, y_3, u_3)), z_3);
                                                     }
                                                   else
                                                     {
                                                       if(match_cons(t, sym_GuardedLChoice_3))
                                                         {
-                                                          w_3 = ATgetArgument(t, 0);
-                                                          s_3 = ATgetArgument(t, 1);
-                                                          p_3 = ATgetArgument(t, 2);
-                                                          t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, w_3, s_3, p_3)), x_3);
+                                                          y_3 = ATgetArgument(t, 0);
+                                                          u_3 = ATgetArgument(t, 1);
+                                                          r_3 = ATgetArgument(t, 2);
+                                                          t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, y_3, u_3, r_3)), z_3);
                                                         }
                                                       else
                                                         {
                                                           if(match_cons(t, sym_RGChoice_2))
                                                             {
-                                                              w_3 = ATgetArgument(t, 0);
-                                                              s_3 = ATgetArgument(t, 1);
-                                                              t = (ATerm) ATmakeAppl(sym_Seq_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, t_3, r_3)));
+                                                              y_3 = ATgetArgument(t, 0);
+                                                              u_3 = ATgetArgument(t, 1);
+                                                              t = (ATerm) ATmakeAppl(sym_Seq_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, v_3, t_3)));
                                                             }
                                                           else
                                                             {
                                                               if(match_cons(t, sym_LGChoice_2))
                                                                 {
-                                                                  w_3 = ATgetArgument(t, 0);
-                                                                  s_3 = ATgetArgument(t, 1);
-                                                                  t = (ATerm) ATmakeAppl(sym_Seq_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, t_3, r_3)));
+                                                                  y_3 = ATgetArgument(t, 0);
+                                                                  u_3 = ATgetArgument(t, 1);
+                                                                  t = (ATerm) ATmakeAppl(sym_Seq_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, v_3, t_3)));
                                                                 }
                                                               else
                                                                 {
                                                                   if(match_cons(t, sym_GChoice_2))
                                                                     {
-                                                                      w_3 = ATgetArgument(t, 0);
-                                                                      s_3 = ATgetArgument(t, 1);
-                                                                      t = (ATerm) ATmakeAppl(sym_Seq_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, t_3, r_3)));
+                                                                      y_3 = ATgetArgument(t, 0);
+                                                                      u_3 = ATgetArgument(t, 1);
+                                                                      t = (ATerm) ATmakeAppl(sym_Seq_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, v_3, t_3)));
                                                                     }
                                                                   else
                                                                     {
                                                                       if(match_cons(t, sym_RChoice_2))
                                                                         {
-                                                                          w_3 = ATgetArgument(t, 0);
-                                                                          s_3 = ATgetArgument(t, 1);
-                                                                          t = (ATerm) ATmakeAppl(sym_Seq_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, t_3, r_3)));
+                                                                          y_3 = ATgetArgument(t, 0);
+                                                                          u_3 = ATgetArgument(t, 1);
+                                                                          t = (ATerm) ATmakeAppl(sym_Seq_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, v_3, t_3)));
                                                                         }
                                                                       else
                                                                         {
                                                                           if(match_cons(t, sym_LChoice_2))
                                                                             {
-                                                                              w_3 = ATgetArgument(t, 0);
-                                                                              s_3 = ATgetArgument(t, 1);
-                                                                              t = (ATerm) ATmakeAppl(sym_Seq_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, t_3, r_3)));
+                                                                              y_3 = ATgetArgument(t, 0);
+                                                                              u_3 = ATgetArgument(t, 1);
+                                                                              t = (ATerm) ATmakeAppl(sym_Seq_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, v_3, t_3)));
                                                                             }
                                                                           else
                                                                             {
                                                                               if(match_cons(t, sym_Choice_2))
                                                                                 {
-                                                                                  w_3 = ATgetArgument(t, 0);
-                                                                                  s_3 = ATgetArgument(t, 1);
-                                                                                  t = (ATerm) ATmakeAppl(sym_Seq_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, t_3, r_3)));
+                                                                                  y_3 = ATgetArgument(t, 0);
+                                                                                  u_3 = ATgetArgument(t, 1);
+                                                                                  t = (ATerm) ATmakeAppl(sym_Seq_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, v_3, t_3)));
                                                                                 }
                                                                               else
                                                                                 {
-                                                                                  t = (ATerm) ATmakeAppl(sym_Seq_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, t_3, r_3)));
+                                                                                  t = (ATerm) ATmakeAppl(sym_Seq_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, v_3, t_3)));
                                                                                 }
                                                                             }
                                                                         }
@@ -1806,75 +1806,75 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                 {
                                                   if(match_cons(t, sym_LGChoice_2))
                                                     {
-                                                      t_3 = ATgetArgument(t, 0);
-                                                      r_3 = ATgetArgument(t, 1);
-                                                      t = v_3;
+                                                      v_3 = ATgetArgument(t, 0);
+                                                      t_3 = ATgetArgument(t, 1);
+                                                      t = x_3;
                                                       if(match_cons(t, sym_Seq_2))
                                                         {
-                                                          w_3 = ATgetArgument(t, 0);
-                                                          s_3 = ATgetArgument(t, 1);
-                                                          t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Seq_2, w_3, s_3)), x_3);
+                                                          y_3 = ATgetArgument(t, 0);
+                                                          u_3 = ATgetArgument(t, 1);
+                                                          t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Seq_2, y_3, u_3)), z_3);
                                                         }
                                                       else
                                                         {
                                                           if(match_cons(t, sym_GuardedLChoice_3))
                                                             {
-                                                              w_3 = ATgetArgument(t, 0);
-                                                              s_3 = ATgetArgument(t, 1);
-                                                              p_3 = ATgetArgument(t, 2);
-                                                              t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, w_3, s_3, p_3)), x_3);
+                                                              y_3 = ATgetArgument(t, 0);
+                                                              u_3 = ATgetArgument(t, 1);
+                                                              r_3 = ATgetArgument(t, 2);
+                                                              t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, y_3, u_3, r_3)), z_3);
                                                             }
                                                           else
                                                             {
                                                               if(match_cons(t, sym_RGChoice_2))
                                                                 {
-                                                                  w_3 = ATgetArgument(t, 0);
-                                                                  s_3 = ATgetArgument(t, 1);
-                                                                  t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, w_3, s_3)), x_3);
+                                                                  y_3 = ATgetArgument(t, 0);
+                                                                  u_3 = ATgetArgument(t, 1);
+                                                                  t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, y_3, u_3)), z_3);
                                                                 }
                                                               else
                                                                 {
                                                                   if(match_cons(t, sym_LGChoice_2))
                                                                     {
-                                                                      w_3 = ATgetArgument(t, 0);
-                                                                      s_3 = ATgetArgument(t, 1);
-                                                                      t = (ATerm) ATmakeAppl(sym_Seq_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, t_3, r_3)));
+                                                                      y_3 = ATgetArgument(t, 0);
+                                                                      u_3 = ATgetArgument(t, 1);
+                                                                      t = (ATerm) ATmakeAppl(sym_Seq_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, v_3, t_3)));
                                                                     }
                                                                   else
                                                                     {
                                                                       if(match_cons(t, sym_GChoice_2))
                                                                         {
-                                                                          w_3 = ATgetArgument(t, 0);
-                                                                          s_3 = ATgetArgument(t, 1);
-                                                                          t = (ATerm) ATmakeAppl(sym_Seq_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, t_3, r_3)));
+                                                                          y_3 = ATgetArgument(t, 0);
+                                                                          u_3 = ATgetArgument(t, 1);
+                                                                          t = (ATerm) ATmakeAppl(sym_Seq_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, v_3, t_3)));
                                                                         }
                                                                       else
                                                                         {
                                                                           if(match_cons(t, sym_RChoice_2))
                                                                             {
-                                                                              w_3 = ATgetArgument(t, 0);
-                                                                              s_3 = ATgetArgument(t, 1);
-                                                                              t = (ATerm) ATmakeAppl(sym_Seq_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, t_3, r_3)));
+                                                                              y_3 = ATgetArgument(t, 0);
+                                                                              u_3 = ATgetArgument(t, 1);
+                                                                              t = (ATerm) ATmakeAppl(sym_Seq_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, v_3, t_3)));
                                                                             }
                                                                           else
                                                                             {
                                                                               if(match_cons(t, sym_LChoice_2))
                                                                                 {
-                                                                                  w_3 = ATgetArgument(t, 0);
-                                                                                  s_3 = ATgetArgument(t, 1);
-                                                                                  t = (ATerm) ATmakeAppl(sym_Seq_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, t_3, r_3)));
+                                                                                  y_3 = ATgetArgument(t, 0);
+                                                                                  u_3 = ATgetArgument(t, 1);
+                                                                                  t = (ATerm) ATmakeAppl(sym_Seq_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, v_3, t_3)));
                                                                                 }
                                                                               else
                                                                                 {
                                                                                   if(match_cons(t, sym_Choice_2))
                                                                                     {
-                                                                                      w_3 = ATgetArgument(t, 0);
-                                                                                      s_3 = ATgetArgument(t, 1);
-                                                                                      t = (ATerm) ATmakeAppl(sym_Seq_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, t_3, r_3)));
+                                                                                      y_3 = ATgetArgument(t, 0);
+                                                                                      u_3 = ATgetArgument(t, 1);
+                                                                                      t = (ATerm) ATmakeAppl(sym_Seq_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, v_3, t_3)));
                                                                                     }
                                                                                   else
                                                                                     {
-                                                                                      t = (ATerm) ATmakeAppl(sym_Seq_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, t_3, r_3)));
+                                                                                      t = (ATerm) ATmakeAppl(sym_Seq_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, v_3, t_3)));
                                                                                     }
                                                                                 }
                                                                             }
@@ -1888,75 +1888,75 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                     {
                                                       if(match_cons(t, sym_GChoice_2))
                                                         {
-                                                          t_3 = ATgetArgument(t, 0);
-                                                          r_3 = ATgetArgument(t, 1);
-                                                          t = v_3;
+                                                          v_3 = ATgetArgument(t, 0);
+                                                          t_3 = ATgetArgument(t, 1);
+                                                          t = x_3;
                                                           if(match_cons(t, sym_Seq_2))
                                                             {
-                                                              w_3 = ATgetArgument(t, 0);
-                                                              s_3 = ATgetArgument(t, 1);
-                                                              t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Seq_2, w_3, s_3)), x_3);
+                                                              y_3 = ATgetArgument(t, 0);
+                                                              u_3 = ATgetArgument(t, 1);
+                                                              t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Seq_2, y_3, u_3)), z_3);
                                                             }
                                                           else
                                                             {
                                                               if(match_cons(t, sym_GuardedLChoice_3))
                                                                 {
-                                                                  w_3 = ATgetArgument(t, 0);
-                                                                  s_3 = ATgetArgument(t, 1);
-                                                                  p_3 = ATgetArgument(t, 2);
-                                                                  t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, w_3, s_3, p_3)), x_3);
+                                                                  y_3 = ATgetArgument(t, 0);
+                                                                  u_3 = ATgetArgument(t, 1);
+                                                                  r_3 = ATgetArgument(t, 2);
+                                                                  t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, y_3, u_3, r_3)), z_3);
                                                                 }
                                                               else
                                                                 {
                                                                   if(match_cons(t, sym_RGChoice_2))
                                                                     {
-                                                                      w_3 = ATgetArgument(t, 0);
-                                                                      s_3 = ATgetArgument(t, 1);
-                                                                      t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, w_3, s_3)), x_3);
+                                                                      y_3 = ATgetArgument(t, 0);
+                                                                      u_3 = ATgetArgument(t, 1);
+                                                                      t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, y_3, u_3)), z_3);
                                                                     }
                                                                   else
                                                                     {
                                                                       if(match_cons(t, sym_LGChoice_2))
                                                                         {
-                                                                          w_3 = ATgetArgument(t, 0);
-                                                                          s_3 = ATgetArgument(t, 1);
-                                                                          t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, w_3, s_3)), x_3);
+                                                                          y_3 = ATgetArgument(t, 0);
+                                                                          u_3 = ATgetArgument(t, 1);
+                                                                          t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, y_3, u_3)), z_3);
                                                                         }
                                                                       else
                                                                         {
                                                                           if(match_cons(t, sym_GChoice_2))
                                                                             {
-                                                                              w_3 = ATgetArgument(t, 0);
-                                                                              s_3 = ATgetArgument(t, 1);
-                                                                              t = (ATerm) ATmakeAppl(sym_Seq_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, t_3, r_3)));
+                                                                              y_3 = ATgetArgument(t, 0);
+                                                                              u_3 = ATgetArgument(t, 1);
+                                                                              t = (ATerm) ATmakeAppl(sym_Seq_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, v_3, t_3)));
                                                                             }
                                                                           else
                                                                             {
                                                                               if(match_cons(t, sym_RChoice_2))
                                                                                 {
-                                                                                  w_3 = ATgetArgument(t, 0);
-                                                                                  s_3 = ATgetArgument(t, 1);
-                                                                                  t = (ATerm) ATmakeAppl(sym_Seq_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, t_3, r_3)));
+                                                                                  y_3 = ATgetArgument(t, 0);
+                                                                                  u_3 = ATgetArgument(t, 1);
+                                                                                  t = (ATerm) ATmakeAppl(sym_Seq_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, v_3, t_3)));
                                                                                 }
                                                                               else
                                                                                 {
                                                                                   if(match_cons(t, sym_LChoice_2))
                                                                                     {
-                                                                                      w_3 = ATgetArgument(t, 0);
-                                                                                      s_3 = ATgetArgument(t, 1);
-                                                                                      t = (ATerm) ATmakeAppl(sym_Seq_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, t_3, r_3)));
+                                                                                      y_3 = ATgetArgument(t, 0);
+                                                                                      u_3 = ATgetArgument(t, 1);
+                                                                                      t = (ATerm) ATmakeAppl(sym_Seq_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, v_3, t_3)));
                                                                                     }
                                                                                   else
                                                                                     {
                                                                                       if(match_cons(t, sym_Choice_2))
                                                                                         {
-                                                                                          w_3 = ATgetArgument(t, 0);
-                                                                                          s_3 = ATgetArgument(t, 1);
-                                                                                          t = (ATerm) ATmakeAppl(sym_Seq_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, t_3, r_3)));
+                                                                                          y_3 = ATgetArgument(t, 0);
+                                                                                          u_3 = ATgetArgument(t, 1);
+                                                                                          t = (ATerm) ATmakeAppl(sym_Seq_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, v_3, t_3)));
                                                                                         }
                                                                                       else
                                                                                         {
-                                                                                          t = (ATerm) ATmakeAppl(sym_Seq_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, t_3, r_3)));
+                                                                                          t = (ATerm) ATmakeAppl(sym_Seq_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, v_3, t_3)));
                                                                                         }
                                                                                     }
                                                                                 }
@@ -1970,75 +1970,75 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                         {
                                                           if(match_cons(t, sym_RChoice_2))
                                                             {
-                                                              t_3 = ATgetArgument(t, 0);
-                                                              r_3 = ATgetArgument(t, 1);
-                                                              t = v_3;
+                                                              v_3 = ATgetArgument(t, 0);
+                                                              t_3 = ATgetArgument(t, 1);
+                                                              t = x_3;
                                                               if(match_cons(t, sym_Seq_2))
                                                                 {
-                                                                  w_3 = ATgetArgument(t, 0);
-                                                                  s_3 = ATgetArgument(t, 1);
-                                                                  t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Seq_2, w_3, s_3)), x_3);
+                                                                  y_3 = ATgetArgument(t, 0);
+                                                                  u_3 = ATgetArgument(t, 1);
+                                                                  t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Seq_2, y_3, u_3)), z_3);
                                                                 }
                                                               else
                                                                 {
                                                                   if(match_cons(t, sym_GuardedLChoice_3))
                                                                     {
-                                                                      w_3 = ATgetArgument(t, 0);
-                                                                      s_3 = ATgetArgument(t, 1);
-                                                                      p_3 = ATgetArgument(t, 2);
-                                                                      t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, w_3, s_3, p_3)), x_3);
+                                                                      y_3 = ATgetArgument(t, 0);
+                                                                      u_3 = ATgetArgument(t, 1);
+                                                                      r_3 = ATgetArgument(t, 2);
+                                                                      t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, y_3, u_3, r_3)), z_3);
                                                                     }
                                                                   else
                                                                     {
                                                                       if(match_cons(t, sym_RGChoice_2))
                                                                         {
-                                                                          w_3 = ATgetArgument(t, 0);
-                                                                          s_3 = ATgetArgument(t, 1);
-                                                                          t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, w_3, s_3)), x_3);
+                                                                          y_3 = ATgetArgument(t, 0);
+                                                                          u_3 = ATgetArgument(t, 1);
+                                                                          t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, y_3, u_3)), z_3);
                                                                         }
                                                                       else
                                                                         {
                                                                           if(match_cons(t, sym_LGChoice_2))
                                                                             {
-                                                                              w_3 = ATgetArgument(t, 0);
-                                                                              s_3 = ATgetArgument(t, 1);
-                                                                              t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, w_3, s_3)), x_3);
+                                                                              y_3 = ATgetArgument(t, 0);
+                                                                              u_3 = ATgetArgument(t, 1);
+                                                                              t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, y_3, u_3)), z_3);
                                                                             }
                                                                           else
                                                                             {
                                                                               if(match_cons(t, sym_GChoice_2))
                                                                                 {
-                                                                                  w_3 = ATgetArgument(t, 0);
-                                                                                  s_3 = ATgetArgument(t, 1);
-                                                                                  t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, w_3, s_3)), x_3);
+                                                                                  y_3 = ATgetArgument(t, 0);
+                                                                                  u_3 = ATgetArgument(t, 1);
+                                                                                  t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, y_3, u_3)), z_3);
                                                                                 }
                                                                               else
                                                                                 {
                                                                                   if(match_cons(t, sym_RChoice_2))
                                                                                     {
-                                                                                      w_3 = ATgetArgument(t, 0);
-                                                                                      s_3 = ATgetArgument(t, 1);
-                                                                                      t = (ATerm) ATmakeAppl(sym_Seq_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RChoice_2, t_3, r_3)));
+                                                                                      y_3 = ATgetArgument(t, 0);
+                                                                                      u_3 = ATgetArgument(t, 1);
+                                                                                      t = (ATerm) ATmakeAppl(sym_Seq_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RChoice_2, v_3, t_3)));
                                                                                     }
                                                                                   else
                                                                                     {
                                                                                       if(match_cons(t, sym_LChoice_2))
                                                                                         {
-                                                                                          w_3 = ATgetArgument(t, 0);
-                                                                                          s_3 = ATgetArgument(t, 1);
-                                                                                          t = (ATerm) ATmakeAppl(sym_Seq_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RChoice_2, t_3, r_3)));
+                                                                                          y_3 = ATgetArgument(t, 0);
+                                                                                          u_3 = ATgetArgument(t, 1);
+                                                                                          t = (ATerm) ATmakeAppl(sym_Seq_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RChoice_2, v_3, t_3)));
                                                                                         }
                                                                                       else
                                                                                         {
                                                                                           if(match_cons(t, sym_Choice_2))
                                                                                             {
-                                                                                              w_3 = ATgetArgument(t, 0);
-                                                                                              s_3 = ATgetArgument(t, 1);
-                                                                                              t = (ATerm) ATmakeAppl(sym_Seq_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RChoice_2, t_3, r_3)));
+                                                                                              y_3 = ATgetArgument(t, 0);
+                                                                                              u_3 = ATgetArgument(t, 1);
+                                                                                              t = (ATerm) ATmakeAppl(sym_Seq_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RChoice_2, v_3, t_3)));
                                                                                             }
                                                                                           else
                                                                                             {
-                                                                                              t = (ATerm) ATmakeAppl(sym_Seq_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RChoice_2, t_3, r_3)));
+                                                                                              t = (ATerm) ATmakeAppl(sym_Seq_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RChoice_2, v_3, t_3)));
                                                                                             }
                                                                                         }
                                                                                     }
@@ -2052,75 +2052,75 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                             {
                                                               if(match_cons(t, sym_LChoice_2))
                                                                 {
-                                                                  t_3 = ATgetArgument(t, 0);
-                                                                  r_3 = ATgetArgument(t, 1);
-                                                                  t = v_3;
+                                                                  v_3 = ATgetArgument(t, 0);
+                                                                  t_3 = ATgetArgument(t, 1);
+                                                                  t = x_3;
                                                                   if(match_cons(t, sym_Seq_2))
                                                                     {
-                                                                      w_3 = ATgetArgument(t, 0);
-                                                                      s_3 = ATgetArgument(t, 1);
-                                                                      t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Seq_2, w_3, s_3)), x_3);
+                                                                      y_3 = ATgetArgument(t, 0);
+                                                                      u_3 = ATgetArgument(t, 1);
+                                                                      t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Seq_2, y_3, u_3)), z_3);
                                                                     }
                                                                   else
                                                                     {
                                                                       if(match_cons(t, sym_GuardedLChoice_3))
                                                                         {
-                                                                          w_3 = ATgetArgument(t, 0);
-                                                                          s_3 = ATgetArgument(t, 1);
-                                                                          p_3 = ATgetArgument(t, 2);
-                                                                          t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, w_3, s_3, p_3)), x_3);
+                                                                          y_3 = ATgetArgument(t, 0);
+                                                                          u_3 = ATgetArgument(t, 1);
+                                                                          r_3 = ATgetArgument(t, 2);
+                                                                          t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, y_3, u_3, r_3)), z_3);
                                                                         }
                                                                       else
                                                                         {
                                                                           if(match_cons(t, sym_RGChoice_2))
                                                                             {
-                                                                              w_3 = ATgetArgument(t, 0);
-                                                                              s_3 = ATgetArgument(t, 1);
-                                                                              t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, w_3, s_3)), x_3);
+                                                                              y_3 = ATgetArgument(t, 0);
+                                                                              u_3 = ATgetArgument(t, 1);
+                                                                              t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, y_3, u_3)), z_3);
                                                                             }
                                                                           else
                                                                             {
                                                                               if(match_cons(t, sym_LGChoice_2))
                                                                                 {
-                                                                                  w_3 = ATgetArgument(t, 0);
-                                                                                  s_3 = ATgetArgument(t, 1);
-                                                                                  t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, w_3, s_3)), x_3);
+                                                                                  y_3 = ATgetArgument(t, 0);
+                                                                                  u_3 = ATgetArgument(t, 1);
+                                                                                  t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, y_3, u_3)), z_3);
                                                                                 }
                                                                               else
                                                                                 {
                                                                                   if(match_cons(t, sym_GChoice_2))
                                                                                     {
-                                                                                      w_3 = ATgetArgument(t, 0);
-                                                                                      s_3 = ATgetArgument(t, 1);
-                                                                                      t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, w_3, s_3)), x_3);
+                                                                                      y_3 = ATgetArgument(t, 0);
+                                                                                      u_3 = ATgetArgument(t, 1);
+                                                                                      t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, y_3, u_3)), z_3);
                                                                                     }
                                                                                   else
                                                                                     {
                                                                                       if(match_cons(t, sym_RChoice_2))
                                                                                         {
-                                                                                          w_3 = ATgetArgument(t, 0);
-                                                                                          s_3 = ATgetArgument(t, 1);
-                                                                                          t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RChoice_2, w_3, s_3)), x_3);
+                                                                                          y_3 = ATgetArgument(t, 0);
+                                                                                          u_3 = ATgetArgument(t, 1);
+                                                                                          t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RChoice_2, y_3, u_3)), z_3);
                                                                                         }
                                                                                       else
                                                                                         {
                                                                                           if(match_cons(t, sym_LChoice_2))
                                                                                             {
-                                                                                              w_3 = ATgetArgument(t, 0);
-                                                                                              s_3 = ATgetArgument(t, 1);
-                                                                                              t = (ATerm) ATmakeAppl(sym_Seq_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LChoice_2, t_3, r_3)));
+                                                                                              y_3 = ATgetArgument(t, 0);
+                                                                                              u_3 = ATgetArgument(t, 1);
+                                                                                              t = (ATerm) ATmakeAppl(sym_Seq_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LChoice_2, v_3, t_3)));
                                                                                             }
                                                                                           else
                                                                                             {
                                                                                               if(match_cons(t, sym_Choice_2))
                                                                                                 {
-                                                                                                  w_3 = ATgetArgument(t, 0);
-                                                                                                  s_3 = ATgetArgument(t, 1);
-                                                                                                  t = (ATerm) ATmakeAppl(sym_Seq_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LChoice_2, t_3, r_3)));
+                                                                                                  y_3 = ATgetArgument(t, 0);
+                                                                                                  u_3 = ATgetArgument(t, 1);
+                                                                                                  t = (ATerm) ATmakeAppl(sym_Seq_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LChoice_2, v_3, t_3)));
                                                                                                 }
                                                                                               else
                                                                                                 {
-                                                                                                  t = (ATerm) ATmakeAppl(sym_Seq_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LChoice_2, t_3, r_3)));
+                                                                                                  t = (ATerm) ATmakeAppl(sym_Seq_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LChoice_2, v_3, t_3)));
                                                                                                 }
                                                                                             }
                                                                                         }
@@ -2134,75 +2134,75 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                                 {
                                                                   if(match_cons(t, sym_Choice_2))
                                                                     {
-                                                                      t_3 = ATgetArgument(t, 0);
-                                                                      r_3 = ATgetArgument(t, 1);
-                                                                      t = v_3;
+                                                                      v_3 = ATgetArgument(t, 0);
+                                                                      t_3 = ATgetArgument(t, 1);
+                                                                      t = x_3;
                                                                       if(match_cons(t, sym_Seq_2))
                                                                         {
-                                                                          w_3 = ATgetArgument(t, 0);
-                                                                          s_3 = ATgetArgument(t, 1);
-                                                                          t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Seq_2, w_3, s_3)), x_3);
+                                                                          y_3 = ATgetArgument(t, 0);
+                                                                          u_3 = ATgetArgument(t, 1);
+                                                                          t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Seq_2, y_3, u_3)), z_3);
                                                                         }
                                                                       else
                                                                         {
                                                                           if(match_cons(t, sym_GuardedLChoice_3))
                                                                             {
-                                                                              w_3 = ATgetArgument(t, 0);
-                                                                              s_3 = ATgetArgument(t, 1);
-                                                                              p_3 = ATgetArgument(t, 2);
-                                                                              t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, w_3, s_3, p_3)), x_3);
+                                                                              y_3 = ATgetArgument(t, 0);
+                                                                              u_3 = ATgetArgument(t, 1);
+                                                                              r_3 = ATgetArgument(t, 2);
+                                                                              t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, y_3, u_3, r_3)), z_3);
                                                                             }
                                                                           else
                                                                             {
                                                                               if(match_cons(t, sym_RGChoice_2))
                                                                                 {
-                                                                                  w_3 = ATgetArgument(t, 0);
-                                                                                  s_3 = ATgetArgument(t, 1);
-                                                                                  t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, w_3, s_3)), x_3);
+                                                                                  y_3 = ATgetArgument(t, 0);
+                                                                                  u_3 = ATgetArgument(t, 1);
+                                                                                  t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, y_3, u_3)), z_3);
                                                                                 }
                                                                               else
                                                                                 {
                                                                                   if(match_cons(t, sym_LGChoice_2))
                                                                                     {
-                                                                                      w_3 = ATgetArgument(t, 0);
-                                                                                      s_3 = ATgetArgument(t, 1);
-                                                                                      t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, w_3, s_3)), x_3);
+                                                                                      y_3 = ATgetArgument(t, 0);
+                                                                                      u_3 = ATgetArgument(t, 1);
+                                                                                      t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, y_3, u_3)), z_3);
                                                                                     }
                                                                                   else
                                                                                     {
                                                                                       if(match_cons(t, sym_GChoice_2))
                                                                                         {
-                                                                                          w_3 = ATgetArgument(t, 0);
-                                                                                          s_3 = ATgetArgument(t, 1);
-                                                                                          t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, w_3, s_3)), x_3);
+                                                                                          y_3 = ATgetArgument(t, 0);
+                                                                                          u_3 = ATgetArgument(t, 1);
+                                                                                          t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, y_3, u_3)), z_3);
                                                                                         }
                                                                                       else
                                                                                         {
                                                                                           if(match_cons(t, sym_RChoice_2))
                                                                                             {
-                                                                                              w_3 = ATgetArgument(t, 0);
-                                                                                              s_3 = ATgetArgument(t, 1);
-                                                                                              t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RChoice_2, w_3, s_3)), x_3);
+                                                                                              y_3 = ATgetArgument(t, 0);
+                                                                                              u_3 = ATgetArgument(t, 1);
+                                                                                              t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RChoice_2, y_3, u_3)), z_3);
                                                                                             }
                                                                                           else
                                                                                             {
                                                                                               if(match_cons(t, sym_LChoice_2))
                                                                                                 {
-                                                                                                  w_3 = ATgetArgument(t, 0);
-                                                                                                  s_3 = ATgetArgument(t, 1);
-                                                                                                  t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LChoice_2, w_3, s_3)), x_3);
+                                                                                                  y_3 = ATgetArgument(t, 0);
+                                                                                                  u_3 = ATgetArgument(t, 1);
+                                                                                                  t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LChoice_2, y_3, u_3)), z_3);
                                                                                                 }
                                                                                               else
                                                                                                 {
                                                                                                   if(match_cons(t, sym_Choice_2))
                                                                                                     {
-                                                                                                      w_3 = ATgetArgument(t, 0);
-                                                                                                      s_3 = ATgetArgument(t, 1);
-                                                                                                      t = (ATerm) ATmakeAppl(sym_Seq_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Choice_2, t_3, r_3)));
+                                                                                                      y_3 = ATgetArgument(t, 0);
+                                                                                                      u_3 = ATgetArgument(t, 1);
+                                                                                                      t = (ATerm) ATmakeAppl(sym_Seq_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Choice_2, v_3, t_3)));
                                                                                                     }
                                                                                                   else
                                                                                                     {
-                                                                                                      t = (ATerm) ATmakeAppl(sym_Seq_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Choice_2, t_3, r_3)));
+                                                                                                      t = (ATerm) ATmakeAppl(sym_Seq_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Choice_2, v_3, t_3)));
                                                                                                     }
                                                                                                 }
                                                                                             }
@@ -2214,72 +2214,72 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                                     }
                                                                   else
                                                                     {
-                                                                      t = v_3;
+                                                                      t = x_3;
                                                                       if(match_cons(t, sym_Seq_2))
                                                                         {
-                                                                          w_3 = ATgetArgument(t, 0);
-                                                                          s_3 = ATgetArgument(t, 1);
-                                                                          t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Seq_2, w_3, s_3)), x_3);
+                                                                          y_3 = ATgetArgument(t, 0);
+                                                                          u_3 = ATgetArgument(t, 1);
+                                                                          t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Seq_2, y_3, u_3)), z_3);
                                                                         }
                                                                       else
                                                                         {
                                                                           if(match_cons(t, sym_GuardedLChoice_3))
                                                                             {
-                                                                              w_3 = ATgetArgument(t, 0);
-                                                                              s_3 = ATgetArgument(t, 1);
-                                                                              p_3 = ATgetArgument(t, 2);
-                                                                              t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, w_3, s_3, p_3)), x_3);
+                                                                              y_3 = ATgetArgument(t, 0);
+                                                                              u_3 = ATgetArgument(t, 1);
+                                                                              r_3 = ATgetArgument(t, 2);
+                                                                              t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GuardedLChoice_3, y_3, u_3, r_3)), z_3);
                                                                             }
                                                                           else
                                                                             {
                                                                               if(match_cons(t, sym_RGChoice_2))
                                                                                 {
-                                                                                  w_3 = ATgetArgument(t, 0);
-                                                                                  s_3 = ATgetArgument(t, 1);
-                                                                                  t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, w_3, s_3)), x_3);
+                                                                                  y_3 = ATgetArgument(t, 0);
+                                                                                  u_3 = ATgetArgument(t, 1);
+                                                                                  t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RGChoice_2, y_3, u_3)), z_3);
                                                                                 }
                                                                               else
                                                                                 {
                                                                                   if(match_cons(t, sym_LGChoice_2))
                                                                                     {
-                                                                                      w_3 = ATgetArgument(t, 0);
-                                                                                      s_3 = ATgetArgument(t, 1);
-                                                                                      t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, w_3, s_3)), x_3);
+                                                                                      y_3 = ATgetArgument(t, 0);
+                                                                                      u_3 = ATgetArgument(t, 1);
+                                                                                      t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LGChoice_2, y_3, u_3)), z_3);
                                                                                     }
                                                                                   else
                                                                                     {
                                                                                       if(match_cons(t, sym_GChoice_2))
                                                                                         {
-                                                                                          w_3 = ATgetArgument(t, 0);
-                                                                                          s_3 = ATgetArgument(t, 1);
-                                                                                          t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, w_3, s_3)), x_3);
+                                                                                          y_3 = ATgetArgument(t, 0);
+                                                                                          u_3 = ATgetArgument(t, 1);
+                                                                                          t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_GChoice_2, y_3, u_3)), z_3);
                                                                                         }
                                                                                       else
                                                                                         {
                                                                                           if(match_cons(t, sym_RChoice_2))
                                                                                             {
-                                                                                              w_3 = ATgetArgument(t, 0);
-                                                                                              s_3 = ATgetArgument(t, 1);
-                                                                                              t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RChoice_2, w_3, s_3)), x_3);
+                                                                                              y_3 = ATgetArgument(t, 0);
+                                                                                              u_3 = ATgetArgument(t, 1);
+                                                                                              t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_RChoice_2, y_3, u_3)), z_3);
                                                                                             }
                                                                                           else
                                                                                             {
                                                                                               if(match_cons(t, sym_LChoice_2))
                                                                                                 {
-                                                                                                  w_3 = ATgetArgument(t, 0);
-                                                                                                  s_3 = ATgetArgument(t, 1);
-                                                                                                  t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LChoice_2, w_3, s_3)), x_3);
+                                                                                                  y_3 = ATgetArgument(t, 0);
+                                                                                                  u_3 = ATgetArgument(t, 1);
+                                                                                                  t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_LChoice_2, y_3, u_3)), z_3);
                                                                                                 }
                                                                                               else
                                                                                                 {
                                                                                                   if(match_cons(t, sym_Choice_2))
                                                                                                     {
-                                                                                                      w_3 = ATgetArgument(t, 0);
-                                                                                                      s_3 = ATgetArgument(t, 1);
+                                                                                                      y_3 = ATgetArgument(t, 0);
+                                                                                                      u_3 = ATgetArgument(t, 1);
                                                                                                     }
                                                                                                   else
                                                                                                     _fail(t);
-                                                                                                  t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Choice_2, w_3, s_3)), x_3);
+                                                                                                  t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Choice_2, y_3, u_3)), z_3);
                                                                                                 }
                                                                                             }
                                                                                         }
@@ -2299,33 +2299,33 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                         {
                                           if(match_cons(t, sym_AM_2))
                                             {
-                                              v_3 = ATgetArgument(t, 0);
-                                              x_3 = ATgetArgument(t, 1);
-                                              t = x_3;
+                                              x_3 = ATgetArgument(t, 0);
+                                              z_3 = ATgetArgument(t, 1);
+                                              t = z_3;
                                               if(match_cons(t, sym_DynRuleIntersect_3))
                                                 {
-                                                  t_3 = ATgetArgument(t, 0);
-                                                  r_3 = ATgetArgument(t, 1);
-                                                  o_3 = ATgetArgument(t, 2);
-                                                  t = v_3;
+                                                  v_3 = ATgetArgument(t, 0);
+                                                  t_3 = ATgetArgument(t, 1);
+                                                  q_3 = ATgetArgument(t, 2);
+                                                  t = x_3;
                                                   if(match_cons(t, sym_DynRuleIntersect_3))
                                                     {
-                                                      w_3 = ATgetArgument(t, 0);
-                                                      s_3 = ATgetArgument(t, 1);
-                                                      p_3 = ATgetArgument(t, 2);
-                                                      t = (ATerm) ATmakeAppl(sym_AM_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, t_3, r_3, o_3)));
+                                                      y_3 = ATgetArgument(t, 0);
+                                                      u_3 = ATgetArgument(t, 1);
+                                                      r_3 = ATgetArgument(t, 2);
+                                                      t = (ATerm) ATmakeAppl(sym_AM_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, v_3, t_3, q_3)));
                                                     }
                                                   else
                                                     {
                                                       if(match_cons(t, sym_Seq_2))
                                                         {
-                                                          w_3 = ATgetArgument(t, 0);
-                                                          s_3 = ATgetArgument(t, 1);
-                                                          t = (ATerm) ATmakeAppl(sym_AM_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, t_3, r_3, o_3)));
+                                                          y_3 = ATgetArgument(t, 0);
+                                                          u_3 = ATgetArgument(t, 1);
+                                                          t = (ATerm) ATmakeAppl(sym_AM_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, v_3, t_3, q_3)));
                                                         }
                                                       else
                                                         {
-                                                          t = (ATerm) ATmakeAppl(sym_AM_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, t_3, r_3, o_3)));
+                                                          t = (ATerm) ATmakeAppl(sym_AM_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, v_3, t_3, q_3)));
                                                         }
                                                     }
                                                 }
@@ -2333,50 +2333,50 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                 {
                                                   if(match_cons(t, sym_Seq_2))
                                                     {
-                                                      t_3 = ATgetArgument(t, 0);
-                                                      r_3 = ATgetArgument(t, 1);
-                                                      t = v_3;
+                                                      v_3 = ATgetArgument(t, 0);
+                                                      t_3 = ATgetArgument(t, 1);
+                                                      t = x_3;
                                                       if(match_cons(t, sym_DynRuleIntersect_3))
                                                         {
-                                                          w_3 = ATgetArgument(t, 0);
-                                                          s_3 = ATgetArgument(t, 1);
-                                                          p_3 = ATgetArgument(t, 2);
-                                                          t = (ATerm) ATmakeAppl(sym_AM_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, w_3, s_3, p_3)), x_3);
+                                                          y_3 = ATgetArgument(t, 0);
+                                                          u_3 = ATgetArgument(t, 1);
+                                                          r_3 = ATgetArgument(t, 2);
+                                                          t = (ATerm) ATmakeAppl(sym_AM_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, y_3, u_3, r_3)), z_3);
                                                         }
                                                       else
                                                         {
                                                           if(match_cons(t, sym_Seq_2))
                                                             {
-                                                              w_3 = ATgetArgument(t, 0);
-                                                              s_3 = ATgetArgument(t, 1);
-                                                              t = (ATerm) ATmakeAppl(sym_AM_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Seq_2, t_3, r_3)));
+                                                              y_3 = ATgetArgument(t, 0);
+                                                              u_3 = ATgetArgument(t, 1);
+                                                              t = (ATerm) ATmakeAppl(sym_AM_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Seq_2, v_3, t_3)));
                                                             }
                                                           else
                                                             {
-                                                              t = (ATerm) ATmakeAppl(sym_AM_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Seq_2, t_3, r_3)));
+                                                              t = (ATerm) ATmakeAppl(sym_AM_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Seq_2, v_3, t_3)));
                                                             }
                                                         }
                                                     }
                                                   else
                                                     {
-                                                      t = v_3;
+                                                      t = x_3;
                                                       if(match_cons(t, sym_DynRuleIntersect_3))
                                                         {
-                                                          w_3 = ATgetArgument(t, 0);
-                                                          s_3 = ATgetArgument(t, 1);
-                                                          p_3 = ATgetArgument(t, 2);
-                                                          t = (ATerm) ATmakeAppl(sym_AM_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, w_3, s_3, p_3)), x_3);
+                                                          y_3 = ATgetArgument(t, 0);
+                                                          u_3 = ATgetArgument(t, 1);
+                                                          r_3 = ATgetArgument(t, 2);
+                                                          t = (ATerm) ATmakeAppl(sym_AM_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleIntersect_3, y_3, u_3, r_3)), z_3);
                                                         }
                                                       else
                                                         {
                                                           if(match_cons(t, sym_Seq_2))
                                                             {
-                                                              w_3 = ATgetArgument(t, 0);
-                                                              s_3 = ATgetArgument(t, 1);
+                                                              y_3 = ATgetArgument(t, 0);
+                                                              u_3 = ATgetArgument(t, 1);
                                                             }
                                                           else
                                                             _fail(t);
-                                                          t = (ATerm) ATmakeAppl(sym_AM_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Seq_2, w_3, s_3)), x_3);
+                                                          t = (ATerm) ATmakeAppl(sym_AM_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Seq_2, y_3, u_3)), z_3);
                                                         }
                                                     }
                                                 }
@@ -2385,111 +2385,111 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                             {
                                               if(match_cons(t, sym_DynRuleUnionFix_2))
                                                 {
-                                                  v_3 = ATgetArgument(t, 0);
-                                                  x_3 = ATgetArgument(t, 1);
-                                                  t = x_3;
+                                                  x_3 = ATgetArgument(t, 0);
+                                                  z_3 = ATgetArgument(t, 1);
+                                                  t = z_3;
                                                   if(match_cons(t, sym_AM_2))
                                                     {
-                                                      t_3 = ATgetArgument(t, 0);
-                                                      r_3 = ATgetArgument(t, 1);
-                                                      t = v_3;
+                                                      v_3 = ATgetArgument(t, 0);
+                                                      t_3 = ATgetArgument(t, 1);
+                                                      t = x_3;
                                                       if(match_cons(t, sym_AM_2))
                                                         {
-                                                          w_3 = ATgetArgument(t, 0);
-                                                          s_3 = ATgetArgument(t, 1);
-                                                          t = (ATerm) ATmakeAppl(sym_DynRuleUnionFix_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_AM_2, t_3, r_3)));
+                                                          y_3 = ATgetArgument(t, 0);
+                                                          u_3 = ATgetArgument(t, 1);
+                                                          t = (ATerm) ATmakeAppl(sym_DynRuleUnionFix_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_AM_2, v_3, t_3)));
                                                         }
                                                       else
                                                         {
-                                                          t = (ATerm) ATmakeAppl(sym_DynRuleUnionFix_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_AM_2, t_3, r_3)));
+                                                          t = (ATerm) ATmakeAppl(sym_DynRuleUnionFix_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_AM_2, v_3, t_3)));
                                                         }
                                                     }
                                                   else
                                                     {
-                                                      t = v_3;
+                                                      t = x_3;
                                                       if(match_cons(t, sym_AM_2))
                                                         {
-                                                          w_3 = ATgetArgument(t, 0);
-                                                          s_3 = ATgetArgument(t, 1);
+                                                          y_3 = ATgetArgument(t, 0);
+                                                          u_3 = ATgetArgument(t, 1);
                                                         }
                                                       else
                                                         _fail(t);
-                                                      t = (ATerm) ATmakeAppl(sym_DynRuleUnionFix_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_AM_2, w_3, s_3)), x_3);
+                                                      t = (ATerm) ATmakeAppl(sym_DynRuleUnionFix_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_AM_2, y_3, u_3)), z_3);
                                                     }
                                                 }
                                               else
                                                 {
                                                   if(match_cons(t, sym_DynRuleIntersectFix_2))
                                                     {
-                                                      v_3 = ATgetArgument(t, 0);
-                                                      x_3 = ATgetArgument(t, 1);
-                                                      t = x_3;
+                                                      x_3 = ATgetArgument(t, 0);
+                                                      z_3 = ATgetArgument(t, 1);
+                                                      t = z_3;
                                                       if(match_cons(t, sym_AM_2))
                                                         {
-                                                          t_3 = ATgetArgument(t, 0);
-                                                          r_3 = ATgetArgument(t, 1);
-                                                          t = v_3;
+                                                          v_3 = ATgetArgument(t, 0);
+                                                          t_3 = ATgetArgument(t, 1);
+                                                          t = x_3;
                                                           if(match_cons(t, sym_AM_2))
                                                             {
-                                                              w_3 = ATgetArgument(t, 0);
-                                                              s_3 = ATgetArgument(t, 1);
-                                                              t = (ATerm) ATmakeAppl(sym_DynRuleIntersectFix_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_AM_2, t_3, r_3)));
+                                                              y_3 = ATgetArgument(t, 0);
+                                                              u_3 = ATgetArgument(t, 1);
+                                                              t = (ATerm) ATmakeAppl(sym_DynRuleIntersectFix_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_AM_2, v_3, t_3)));
                                                             }
                                                           else
                                                             {
-                                                              t = (ATerm) ATmakeAppl(sym_DynRuleIntersectFix_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_AM_2, t_3, r_3)));
+                                                              t = (ATerm) ATmakeAppl(sym_DynRuleIntersectFix_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_AM_2, v_3, t_3)));
                                                             }
                                                         }
                                                       else
                                                         {
-                                                          t = v_3;
+                                                          t = x_3;
                                                           if(match_cons(t, sym_AM_2))
                                                             {
-                                                              w_3 = ATgetArgument(t, 0);
-                                                              s_3 = ATgetArgument(t, 1);
+                                                              y_3 = ATgetArgument(t, 0);
+                                                              u_3 = ATgetArgument(t, 1);
                                                             }
                                                           else
                                                             _fail(t);
-                                                          t = (ATerm) ATmakeAppl(sym_DynRuleIntersectFix_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_AM_2, w_3, s_3)), x_3);
+                                                          t = (ATerm) ATmakeAppl(sym_DynRuleIntersectFix_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_AM_2, y_3, u_3)), z_3);
                                                         }
                                                     }
                                                   else
                                                     {
                                                       if(match_cons(t, sym_BA_2))
                                                         {
-                                                          v_3 = ATgetArgument(t, 0);
-                                                          x_3 = ATgetArgument(t, 1);
-                                                          t = x_3;
+                                                          x_3 = ATgetArgument(t, 0);
+                                                          z_3 = ATgetArgument(t, 1);
+                                                          t = z_3;
                                                           if(match_cons(t, sym_DynRuleUnionFix_2))
                                                             {
-                                                              t_3 = ATgetArgument(t, 0);
-                                                              r_3 = ATgetArgument(t, 1);
-                                                              t = v_3;
+                                                              v_3 = ATgetArgument(t, 0);
+                                                              t_3 = ATgetArgument(t, 1);
+                                                              t = x_3;
                                                               if(match_cons(t, sym_DynRuleUnionFix_2))
                                                                 {
-                                                                  w_3 = ATgetArgument(t, 0);
-                                                                  s_3 = ATgetArgument(t, 1);
-                                                                  t = (ATerm) ATmakeAppl(sym_BA_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnionFix_2, t_3, r_3)));
+                                                                  y_3 = ATgetArgument(t, 0);
+                                                                  u_3 = ATgetArgument(t, 1);
+                                                                  t = (ATerm) ATmakeAppl(sym_BA_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnionFix_2, v_3, t_3)));
                                                                 }
                                                               else
                                                                 {
                                                                   if(match_cons(t, sym_DynRuleIntersectFix_2))
                                                                     {
-                                                                      w_3 = ATgetArgument(t, 0);
-                                                                      s_3 = ATgetArgument(t, 1);
-                                                                      t = (ATerm) ATmakeAppl(sym_BA_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnionFix_2, t_3, r_3)));
+                                                                      y_3 = ATgetArgument(t, 0);
+                                                                      u_3 = ATgetArgument(t, 1);
+                                                                      t = (ATerm) ATmakeAppl(sym_BA_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnionFix_2, v_3, t_3)));
                                                                     }
                                                                   else
                                                                     {
                                                                       if(match_cons(t, sym_AM_2))
                                                                         {
-                                                                          w_3 = ATgetArgument(t, 0);
-                                                                          s_3 = ATgetArgument(t, 1);
-                                                                          t = (ATerm) ATmakeAppl(sym_BA_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnionFix_2, t_3, r_3)));
+                                                                          y_3 = ATgetArgument(t, 0);
+                                                                          u_3 = ATgetArgument(t, 1);
+                                                                          t = (ATerm) ATmakeAppl(sym_BA_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnionFix_2, v_3, t_3)));
                                                                         }
                                                                       else
                                                                         {
-                                                                          t = (ATerm) ATmakeAppl(sym_BA_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnionFix_2, t_3, r_3)));
+                                                                          t = (ATerm) ATmakeAppl(sym_BA_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnionFix_2, v_3, t_3)));
                                                                         }
                                                                     }
                                                                 }
@@ -2498,34 +2498,34 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                             {
                                                               if(match_cons(t, sym_DynRuleIntersectFix_2))
                                                                 {
-                                                                  t_3 = ATgetArgument(t, 0);
-                                                                  r_3 = ATgetArgument(t, 1);
-                                                                  t = v_3;
+                                                                  v_3 = ATgetArgument(t, 0);
+                                                                  t_3 = ATgetArgument(t, 1);
+                                                                  t = x_3;
                                                                   if(match_cons(t, sym_DynRuleUnionFix_2))
                                                                     {
-                                                                      w_3 = ATgetArgument(t, 0);
-                                                                      s_3 = ATgetArgument(t, 1);
-                                                                      t = (ATerm) ATmakeAppl(sym_BA_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnionFix_2, w_3, s_3)), x_3);
+                                                                      y_3 = ATgetArgument(t, 0);
+                                                                      u_3 = ATgetArgument(t, 1);
+                                                                      t = (ATerm) ATmakeAppl(sym_BA_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnionFix_2, y_3, u_3)), z_3);
                                                                     }
                                                                   else
                                                                     {
                                                                       if(match_cons(t, sym_DynRuleIntersectFix_2))
                                                                         {
-                                                                          w_3 = ATgetArgument(t, 0);
-                                                                          s_3 = ATgetArgument(t, 1);
-                                                                          t = (ATerm) ATmakeAppl(sym_BA_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleIntersectFix_2, t_3, r_3)));
+                                                                          y_3 = ATgetArgument(t, 0);
+                                                                          u_3 = ATgetArgument(t, 1);
+                                                                          t = (ATerm) ATmakeAppl(sym_BA_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleIntersectFix_2, v_3, t_3)));
                                                                         }
                                                                       else
                                                                         {
                                                                           if(match_cons(t, sym_AM_2))
                                                                             {
-                                                                              w_3 = ATgetArgument(t, 0);
-                                                                              s_3 = ATgetArgument(t, 1);
-                                                                              t = (ATerm) ATmakeAppl(sym_BA_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleIntersectFix_2, t_3, r_3)));
+                                                                              y_3 = ATgetArgument(t, 0);
+                                                                              u_3 = ATgetArgument(t, 1);
+                                                                              t = (ATerm) ATmakeAppl(sym_BA_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleIntersectFix_2, v_3, t_3)));
                                                                             }
                                                                           else
                                                                             {
-                                                                              t = (ATerm) ATmakeAppl(sym_BA_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleIntersectFix_2, t_3, r_3)));
+                                                                              t = (ATerm) ATmakeAppl(sym_BA_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleIntersectFix_2, v_3, t_3)));
                                                                             }
                                                                         }
                                                                     }
@@ -2534,65 +2534,65 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                                 {
                                                                   if(match_cons(t, sym_AM_2))
                                                                     {
-                                                                      t_3 = ATgetArgument(t, 0);
-                                                                      r_3 = ATgetArgument(t, 1);
-                                                                      t = v_3;
+                                                                      v_3 = ATgetArgument(t, 0);
+                                                                      t_3 = ATgetArgument(t, 1);
+                                                                      t = x_3;
                                                                       if(match_cons(t, sym_DynRuleUnionFix_2))
                                                                         {
-                                                                          w_3 = ATgetArgument(t, 0);
-                                                                          s_3 = ATgetArgument(t, 1);
-                                                                          t = (ATerm) ATmakeAppl(sym_BA_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnionFix_2, w_3, s_3)), x_3);
+                                                                          y_3 = ATgetArgument(t, 0);
+                                                                          u_3 = ATgetArgument(t, 1);
+                                                                          t = (ATerm) ATmakeAppl(sym_BA_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnionFix_2, y_3, u_3)), z_3);
                                                                         }
                                                                       else
                                                                         {
                                                                           if(match_cons(t, sym_DynRuleIntersectFix_2))
                                                                             {
-                                                                              w_3 = ATgetArgument(t, 0);
-                                                                              s_3 = ATgetArgument(t, 1);
-                                                                              t = (ATerm) ATmakeAppl(sym_BA_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleIntersectFix_2, w_3, s_3)), x_3);
+                                                                              y_3 = ATgetArgument(t, 0);
+                                                                              u_3 = ATgetArgument(t, 1);
+                                                                              t = (ATerm) ATmakeAppl(sym_BA_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleIntersectFix_2, y_3, u_3)), z_3);
                                                                             }
                                                                           else
                                                                             {
                                                                               if(match_cons(t, sym_AM_2))
                                                                                 {
-                                                                                  w_3 = ATgetArgument(t, 0);
-                                                                                  s_3 = ATgetArgument(t, 1);
-                                                                                  t = (ATerm) ATmakeAppl(sym_BA_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_AM_2, t_3, r_3)));
+                                                                                  y_3 = ATgetArgument(t, 0);
+                                                                                  u_3 = ATgetArgument(t, 1);
+                                                                                  t = (ATerm) ATmakeAppl(sym_BA_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_AM_2, v_3, t_3)));
                                                                                 }
                                                                               else
                                                                                 {
-                                                                                  t = (ATerm) ATmakeAppl(sym_BA_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_AM_2, t_3, r_3)));
+                                                                                  t = (ATerm) ATmakeAppl(sym_BA_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_AM_2, v_3, t_3)));
                                                                                 }
                                                                             }
                                                                         }
                                                                     }
                                                                   else
                                                                     {
-                                                                      t = v_3;
+                                                                      t = x_3;
                                                                       if(match_cons(t, sym_DynRuleUnionFix_2))
                                                                         {
-                                                                          w_3 = ATgetArgument(t, 0);
-                                                                          s_3 = ATgetArgument(t, 1);
-                                                                          t = (ATerm) ATmakeAppl(sym_BA_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnionFix_2, w_3, s_3)), x_3);
+                                                                          y_3 = ATgetArgument(t, 0);
+                                                                          u_3 = ATgetArgument(t, 1);
+                                                                          t = (ATerm) ATmakeAppl(sym_BA_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleUnionFix_2, y_3, u_3)), z_3);
                                                                         }
                                                                       else
                                                                         {
                                                                           if(match_cons(t, sym_DynRuleIntersectFix_2))
                                                                             {
-                                                                              w_3 = ATgetArgument(t, 0);
-                                                                              s_3 = ATgetArgument(t, 1);
-                                                                              t = (ATerm) ATmakeAppl(sym_BA_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleIntersectFix_2, w_3, s_3)), x_3);
+                                                                              y_3 = ATgetArgument(t, 0);
+                                                                              u_3 = ATgetArgument(t, 1);
+                                                                              t = (ATerm) ATmakeAppl(sym_BA_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_DynRuleIntersectFix_2, y_3, u_3)), z_3);
                                                                             }
                                                                           else
                                                                             {
                                                                               if(match_cons(t, sym_AM_2))
                                                                                 {
-                                                                                  w_3 = ATgetArgument(t, 0);
-                                                                                  s_3 = ATgetArgument(t, 1);
+                                                                                  y_3 = ATgetArgument(t, 0);
+                                                                                  u_3 = ATgetArgument(t, 1);
                                                                                 }
                                                                               else
                                                                                 _fail(t);
-                                                                              t = (ATerm) ATmakeAppl(sym_BA_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_AM_2, w_3, s_3)), x_3);
+                                                                              t = (ATerm) ATmakeAppl(sym_BA_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_AM_2, y_3, u_3)), z_3);
                                                                             }
                                                                         }
                                                                     }
@@ -2603,130 +2603,130 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                         {
                                                           if(match_cons(t, sym_Anno_2))
                                                             {
-                                                              v_3 = ATgetArgument(t, 0);
-                                                              x_3 = ATgetArgument(t, 1);
-                                                              t = x_3;
+                                                              x_3 = ATgetArgument(t, 0);
+                                                              z_3 = ATgetArgument(t, 1);
+                                                              t = z_3;
                                                               if(match_cons(t, sym_As_2))
                                                                 {
-                                                                  t_3 = ATgetArgument(t, 0);
-                                                                  r_3 = ATgetArgument(t, 1);
-                                                                  t = v_3;
+                                                                  v_3 = ATgetArgument(t, 0);
+                                                                  t_3 = ATgetArgument(t, 1);
+                                                                  t = x_3;
                                                                   if(match_cons(t, sym_As_2))
                                                                     {
-                                                                      w_3 = ATgetArgument(t, 0);
-                                                                      s_3 = ATgetArgument(t, 1);
-                                                                      t = (ATerm) ATmakeAppl(sym_Anno_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_As_2, t_3, r_3)));
+                                                                      y_3 = ATgetArgument(t, 0);
+                                                                      u_3 = ATgetArgument(t, 1);
+                                                                      t = (ATerm) ATmakeAppl(sym_Anno_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_As_2, v_3, t_3)));
                                                                     }
                                                                   else
                                                                     {
-                                                                      t = (ATerm) ATmakeAppl(sym_Anno_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_As_2, t_3, r_3)));
+                                                                      t = (ATerm) ATmakeAppl(sym_Anno_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_As_2, v_3, t_3)));
                                                                     }
                                                                 }
                                                               else
                                                                 {
-                                                                  t = v_3;
+                                                                  t = x_3;
                                                                   if(match_cons(t, sym_As_2))
                                                                     {
-                                                                      w_3 = ATgetArgument(t, 0);
-                                                                      s_3 = ATgetArgument(t, 1);
+                                                                      y_3 = ATgetArgument(t, 0);
+                                                                      u_3 = ATgetArgument(t, 1);
                                                                     }
                                                                   else
                                                                     _fail(t);
-                                                                  t = (ATerm) ATmakeAppl(sym_Anno_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_As_2, w_3, s_3)), x_3);
+                                                                  t = (ATerm) ATmakeAppl(sym_Anno_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_As_2, y_3, u_3)), z_3);
                                                                 }
                                                             }
                                                           else
                                                             {
                                                               if(match_cons(t, sym_Explode_2))
                                                                 {
-                                                                  v_3 = ATgetArgument(t, 0);
-                                                                  x_3 = ATgetArgument(t, 1);
-                                                                  t = x_3;
+                                                                  x_3 = ATgetArgument(t, 0);
+                                                                  z_3 = ATgetArgument(t, 1);
+                                                                  t = z_3;
                                                                   if(match_cons(t, sym_Anno_2))
                                                                     {
-                                                                      t_3 = ATgetArgument(t, 0);
-                                                                      r_3 = ATgetArgument(t, 1);
-                                                                      t = v_3;
+                                                                      v_3 = ATgetArgument(t, 0);
+                                                                      t_3 = ATgetArgument(t, 1);
+                                                                      t = x_3;
                                                                       if(match_cons(t, sym_Anno_2))
                                                                         {
-                                                                          w_3 = ATgetArgument(t, 0);
-                                                                          s_3 = ATgetArgument(t, 1);
-                                                                          t = (ATerm) ATmakeAppl(sym_Explode_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Anno_2, t_3, r_3)));
+                                                                          y_3 = ATgetArgument(t, 0);
+                                                                          u_3 = ATgetArgument(t, 1);
+                                                                          t = (ATerm) ATmakeAppl(sym_Explode_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Anno_2, v_3, t_3)));
                                                                         }
                                                                       else
                                                                         {
-                                                                          t = (ATerm) ATmakeAppl(sym_Explode_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Anno_2, t_3, r_3)));
+                                                                          t = (ATerm) ATmakeAppl(sym_Explode_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Anno_2, v_3, t_3)));
                                                                         }
                                                                     }
                                                                   else
                                                                     {
-                                                                      t = v_3;
+                                                                      t = x_3;
                                                                       if(match_cons(t, sym_Anno_2))
                                                                         {
-                                                                          w_3 = ATgetArgument(t, 0);
-                                                                          s_3 = ATgetArgument(t, 1);
+                                                                          y_3 = ATgetArgument(t, 0);
+                                                                          u_3 = ATgetArgument(t, 1);
                                                                         }
                                                                       else
                                                                         _fail(t);
-                                                                      t = (ATerm) ATmakeAppl(sym_Explode_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Anno_2, w_3, s_3)), x_3);
+                                                                      t = (ATerm) ATmakeAppl(sym_Explode_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Anno_2, y_3, u_3)), z_3);
                                                                     }
                                                                 }
                                                               else
                                                                 {
                                                                   if(match_cons(t, sym_Match_1))
                                                                     {
-                                                                      v_3 = ATgetArgument(t, 0);
-                                                                      t = v_3;
+                                                                      x_3 = ATgetArgument(t, 0);
+                                                                      t = x_3;
                                                                       if(match_cons(t, sym_BA_2))
                                                                         {
-                                                                          w_3 = ATgetArgument(t, 0);
-                                                                          s_3 = ATgetArgument(t, 1);
+                                                                          y_3 = ATgetArgument(t, 0);
+                                                                          u_3 = ATgetArgument(t, 1);
                                                                         }
                                                                       else
                                                                         _fail(t);
-                                                                      t = (ATerm) ATmakeAppl(sym_Match_1, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_BA_2, w_3, s_3)));
+                                                                      t = (ATerm) ATmakeAppl(sym_Match_1, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_BA_2, y_3, u_3)));
                                                                     }
                                                                   else
                                                                     {
                                                                       if(match_cons(t, sym_Build_1))
                                                                         {
-                                                                          v_3 = ATgetArgument(t, 0);
-                                                                          t = v_3;
+                                                                          x_3 = ATgetArgument(t, 0);
+                                                                          t = x_3;
                                                                           if(match_cons(t, sym_BA_2))
                                                                             {
-                                                                              w_3 = ATgetArgument(t, 0);
-                                                                              s_3 = ATgetArgument(t, 1);
+                                                                              y_3 = ATgetArgument(t, 0);
+                                                                              u_3 = ATgetArgument(t, 1);
                                                                             }
                                                                           else
                                                                             _fail(t);
-                                                                          t = (ATerm) ATmakeAppl(sym_Build_1, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_BA_2, w_3, s_3)));
+                                                                          t = (ATerm) ATmakeAppl(sym_Build_1, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_BA_2, y_3, u_3)));
                                                                         }
                                                                       else
                                                                         {
                                                                           if(match_cons(t, sym_ExplodeCong_2))
                                                                             {
-                                                                              v_3 = ATgetArgument(t, 0);
-                                                                              x_3 = ATgetArgument(t, 1);
-                                                                              t = x_3;
+                                                                              x_3 = ATgetArgument(t, 0);
+                                                                              z_3 = ATgetArgument(t, 1);
+                                                                              t = z_3;
                                                                               if(match_cons(t, sym_Match_1))
                                                                                 {
-                                                                                  t_3 = ATgetArgument(t, 0);
-                                                                                  t = v_3;
+                                                                                  v_3 = ATgetArgument(t, 0);
+                                                                                  t = x_3;
                                                                                   if(match_cons(t, sym_Match_1))
                                                                                     {
-                                                                                      w_3 = ATgetArgument(t, 0);
-                                                                                      t = (ATerm) ATmakeAppl(sym_ExplodeCong_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Match_1, t_3)));
+                                                                                      y_3 = ATgetArgument(t, 0);
+                                                                                      t = (ATerm) ATmakeAppl(sym_ExplodeCong_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Match_1, v_3)));
                                                                                     }
                                                                                   else
                                                                                     {
                                                                                       if(match_cons(t, sym_Build_1))
                                                                                         {
-                                                                                          w_3 = ATgetArgument(t, 0);
-                                                                                          t = (ATerm) ATmakeAppl(sym_ExplodeCong_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Match_1, t_3)));
+                                                                                          y_3 = ATgetArgument(t, 0);
+                                                                                          t = (ATerm) ATmakeAppl(sym_ExplodeCong_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Match_1, v_3)));
                                                                                         }
                                                                                       else
                                                                                         {
-                                                                                          t = (ATerm) ATmakeAppl(sym_ExplodeCong_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Match_1, t_3)));
+                                                                                          t = (ATerm) ATmakeAppl(sym_ExplodeCong_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Match_1, v_3)));
                                                                                         }
                                                                                     }
                                                                                 }
@@ -2734,43 +2734,43 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                                                 {
                                                                                   if(match_cons(t, sym_Build_1))
                                                                                     {
-                                                                                      t_3 = ATgetArgument(t, 0);
-                                                                                      t = v_3;
+                                                                                      v_3 = ATgetArgument(t, 0);
+                                                                                      t = x_3;
                                                                                       if(match_cons(t, sym_Match_1))
                                                                                         {
-                                                                                          w_3 = ATgetArgument(t, 0);
-                                                                                          t = (ATerm) ATmakeAppl(sym_ExplodeCong_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Match_1, w_3)), x_3);
+                                                                                          y_3 = ATgetArgument(t, 0);
+                                                                                          t = (ATerm) ATmakeAppl(sym_ExplodeCong_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Match_1, y_3)), z_3);
                                                                                         }
                                                                                       else
                                                                                         {
                                                                                           if(match_cons(t, sym_Build_1))
                                                                                             {
-                                                                                              w_3 = ATgetArgument(t, 0);
-                                                                                              t = (ATerm) ATmakeAppl(sym_ExplodeCong_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Build_1, t_3)));
+                                                                                              y_3 = ATgetArgument(t, 0);
+                                                                                              t = (ATerm) ATmakeAppl(sym_ExplodeCong_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Build_1, v_3)));
                                                                                             }
                                                                                           else
                                                                                             {
-                                                                                              t = (ATerm) ATmakeAppl(sym_ExplodeCong_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Build_1, t_3)));
+                                                                                              t = (ATerm) ATmakeAppl(sym_ExplodeCong_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Build_1, v_3)));
                                                                                             }
                                                                                         }
                                                                                     }
                                                                                   else
                                                                                     {
-                                                                                      t = v_3;
+                                                                                      t = x_3;
                                                                                       if(match_cons(t, sym_Match_1))
                                                                                         {
-                                                                                          w_3 = ATgetArgument(t, 0);
-                                                                                          t = (ATerm) ATmakeAppl(sym_ExplodeCong_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Match_1, w_3)), x_3);
+                                                                                          y_3 = ATgetArgument(t, 0);
+                                                                                          t = (ATerm) ATmakeAppl(sym_ExplodeCong_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Match_1, y_3)), z_3);
                                                                                         }
                                                                                       else
                                                                                         {
                                                                                           if(match_cons(t, sym_Build_1))
                                                                                             {
-                                                                                              w_3 = ATgetArgument(t, 0);
+                                                                                              y_3 = ATgetArgument(t, 0);
                                                                                             }
                                                                                           else
                                                                                             _fail(t);
-                                                                                          t = (ATerm) ATmakeAppl(sym_ExplodeCong_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Build_1, w_3)), x_3);
+                                                                                          t = (ATerm) ATmakeAppl(sym_ExplodeCong_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Build_1, y_3)), z_3);
                                                                                         }
                                                                                     }
                                                                                 }
@@ -2779,31 +2779,31 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                                             {
                                                                               if(match_cons(t, sym_AnnoCong_2))
                                                                                 {
-                                                                                  v_3 = ATgetArgument(t, 0);
-                                                                                  x_3 = ATgetArgument(t, 1);
+                                                                                  x_3 = ATgetArgument(t, 0);
+                                                                                  z_3 = ATgetArgument(t, 1);
                                                                                 }
                                                                               else
                                                                                 _fail(t);
-                                                                              t = x_3;
+                                                                              t = z_3;
                                                                               if(match_cons(t, sym_Match_1))
                                                                                 {
-                                                                                  t_3 = ATgetArgument(t, 0);
-                                                                                  t = v_3;
+                                                                                  v_3 = ATgetArgument(t, 0);
+                                                                                  t = x_3;
                                                                                   if(match_cons(t, sym_Match_1))
                                                                                     {
-                                                                                      w_3 = ATgetArgument(t, 0);
-                                                                                      t = (ATerm) ATmakeAppl(sym_AnnoCong_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Match_1, t_3)));
+                                                                                      y_3 = ATgetArgument(t, 0);
+                                                                                      t = (ATerm) ATmakeAppl(sym_AnnoCong_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Match_1, v_3)));
                                                                                     }
                                                                                   else
                                                                                     {
                                                                                       if(match_cons(t, sym_Build_1))
                                                                                         {
-                                                                                          w_3 = ATgetArgument(t, 0);
-                                                                                          t = (ATerm) ATmakeAppl(sym_AnnoCong_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Match_1, t_3)));
+                                                                                          y_3 = ATgetArgument(t, 0);
+                                                                                          t = (ATerm) ATmakeAppl(sym_AnnoCong_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Match_1, v_3)));
                                                                                         }
                                                                                       else
                                                                                         {
-                                                                                          t = (ATerm) ATmakeAppl(sym_AnnoCong_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Match_1, t_3)));
+                                                                                          t = (ATerm) ATmakeAppl(sym_AnnoCong_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Match_1, v_3)));
                                                                                         }
                                                                                     }
                                                                                 }
@@ -2811,43 +2811,43 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                                                 {
                                                                                   if(match_cons(t, sym_Build_1))
                                                                                     {
-                                                                                      t_3 = ATgetArgument(t, 0);
-                                                                                      t = v_3;
+                                                                                      v_3 = ATgetArgument(t, 0);
+                                                                                      t = x_3;
                                                                                       if(match_cons(t, sym_Match_1))
                                                                                         {
-                                                                                          w_3 = ATgetArgument(t, 0);
-                                                                                          t = (ATerm) ATmakeAppl(sym_AnnoCong_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Match_1, w_3)), x_3);
+                                                                                          y_3 = ATgetArgument(t, 0);
+                                                                                          t = (ATerm) ATmakeAppl(sym_AnnoCong_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Match_1, y_3)), z_3);
                                                                                         }
                                                                                       else
                                                                                         {
                                                                                           if(match_cons(t, sym_Build_1))
                                                                                             {
-                                                                                              w_3 = ATgetArgument(t, 0);
-                                                                                              t = (ATerm) ATmakeAppl(sym_AnnoCong_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Build_1, t_3)));
+                                                                                              y_3 = ATgetArgument(t, 0);
+                                                                                              t = (ATerm) ATmakeAppl(sym_AnnoCong_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Build_1, v_3)));
                                                                                             }
                                                                                           else
                                                                                             {
-                                                                                              t = (ATerm) ATmakeAppl(sym_AnnoCong_2, v_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Build_1, t_3)));
+                                                                                              t = (ATerm) ATmakeAppl(sym_AnnoCong_2, x_3, (ATerm) ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Build_1, v_3)));
                                                                                             }
                                                                                         }
                                                                                     }
                                                                                   else
                                                                                     {
-                                                                                      t = v_3;
+                                                                                      t = x_3;
                                                                                       if(match_cons(t, sym_Match_1))
                                                                                         {
-                                                                                          w_3 = ATgetArgument(t, 0);
-                                                                                          t = (ATerm) ATmakeAppl(sym_AnnoCong_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Match_1, w_3)), x_3);
+                                                                                          y_3 = ATgetArgument(t, 0);
+                                                                                          t = (ATerm) ATmakeAppl(sym_AnnoCong_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Match_1, y_3)), z_3);
                                                                                         }
                                                                                       else
                                                                                         {
                                                                                           if(match_cons(t, sym_Build_1))
                                                                                             {
-                                                                                              w_3 = ATgetArgument(t, 0);
+                                                                                              y_3 = ATgetArgument(t, 0);
                                                                                             }
                                                                                           else
                                                                                             _fail(t);
-                                                                                          t = (ATerm) ATmakeAppl(sym_AnnoCong_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Build_1, w_3)), x_3);
+                                                                                          t = (ATerm) ATmakeAppl(sym_AnnoCong_2, (ATerm)ATmakeAppl(sym_Parenthetical_1, (ATerm) ATmakeAppl(sym_Build_1, y_3)), z_3);
                                                                                         }
                                                                                     }
                                                                                 }

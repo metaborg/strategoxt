@@ -3,3 +3,6 @@ imports Stratego
 exports
   context-free syntax
     Id "(" {Strat ","}* ")" -> Strat {cons("Cong")}
+
+hiddens
+  context-free start-symbols Module

@@ -2,7 +2,14 @@
  * @author  Merijn de Jonge <mdjonge@cwi.nl>
  */
 module sdf-2-pp-lib
-imports pp-table Bracket-Symbol Sdf2 AsFix sdf-xtc-tools string-misc xtc-lib
+imports
+  liblib
+  pp-table
+  Bracket-Symbol
+  Sdf2
+  AsFix
+  sdf-xtc-tools
+
 strategies
 
   /**
@@ -22,13 +29,11 @@ strategies
         ); ![]
     )
 
-  is-whitespace = ?'\n' + ?'\r'
-
   missing-constructor-warning =
     xtc-temp-files(
       write-to
     ; xtc-pp-sdf2
-    ; ?FILE(<read-text-file; trim-whitespace>)
+    ; ?FILE(<read-text-file; trim('\n' + '\r' + ' ' + '\t')>)
     )
     ;   say(!"[ppgen | warning] No constructor defined for production" )
     ; debug(!"[ppgen | warning]   ")

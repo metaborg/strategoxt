@@ -1,9 +1,9 @@
 module abox-format
-imports Box io options
+imports liblib Box
  
 strategies
  
-  io-abox-format = iowrap(abox-format)
+  io-abox-format = io-wrap(abox-format)
 
   abox-format = Box
  

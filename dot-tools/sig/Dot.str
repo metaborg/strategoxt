@@ -26,5 +26,4 @@ signature
     StrictDotGraph   : Id * List(Stmt) -> Graph
     DotGraph         : Id * List(Stmt) -> Graph
                      : String -> Id
-                     : String -> UnquotedId
                      : String -> NumCon

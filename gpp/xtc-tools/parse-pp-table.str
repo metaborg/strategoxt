@@ -1,5 +1,5 @@
 module parse-pp-table
-imports xtc-lib  stratego-xt-xtc-tools
+imports liblib  strategoxt-xtc-tools
 
 strategies
   

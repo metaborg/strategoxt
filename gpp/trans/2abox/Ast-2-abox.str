@@ -2,7 +2,13 @@
  * @author Merijn de Jonge <mdjonge@cs.uu.nl>
  */
 module Ast-2-abox
-imports lib-pp-table-args pp-tables-io2 instantiate lib misc AsFix
+imports
+  liblib
+  lib-pp-table-args
+  pp-tables-io2
+  instantiate
+  misc
+  AsFix
       
 strategies
 

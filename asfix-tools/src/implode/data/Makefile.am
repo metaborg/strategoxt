@@ -44,14 +44,18 @@ Var2_flags=
 Concrete_flags= --concrete
 Anno_flags= --concrete
 
-EXTRA_DIST = tests.def \
-	     $(TEST_SET:%=%.trm) $(TEST_SET:%=%.in) \
-             $(TEST_SET:%=%.out) \
-             tiny.tree tiny.trm 
+EXTRA_DIST = \
+  $(TEST_SET:%=%.trm) \
+  $(TEST_SET:%=%.out) \
+  tiny.tree tiny.trm
 
 TESTS = $(TEST_SET:%=%.sh)
 
-CLEANFILES = $(TEST_SET:%=%.tested) $(TEST_SET:%=%.in)
+CLEANFILES = \
+  $(TEST_SET:%=%.tested) \
+  $(TEST_SET:%=%.in) \
+  $(TEST_SET:%=%.sh) \
+  tests.tbl
 
 .PRECIOUS: tests.tbl
 

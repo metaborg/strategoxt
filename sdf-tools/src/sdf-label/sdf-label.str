@@ -1,5 +1,12 @@
 module sdf-label
-imports Sdf2 list Literal-lib verbalize-sdf AsFix
+imports
+  Sdf2
+  options
+  list
+  Literal-lib
+  verbalize-sdf
+  AsFix
+
 signature
    constructors
       empty-layout : a

@@ -12,6 +12,8 @@ SCFLAGS          = --main io-$*
 STRINCLUDES      = -I $(top_srcdir)/sig/pp-table \
                    -I $(top_srcdir)/trans \
                    -I $(XTC)/share/xtc
+LDADD += $(SSL_LIBS)
+
 TESTS = Abox_2_latex1_check Abox_2_latex2_check Abox_2_latex3_check \
         Abox_2_latex4_check Abox_2_latex5_check
 

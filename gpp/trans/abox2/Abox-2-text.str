@@ -1,7 +1,3 @@
-module Abox-2-text
-imports Box Box-util plain-text xtc-proc
-imports options list-index string integers
-
 /** 
  * This is a simple Box to text converter.
  * It formats H, HV, A/R and ALT boxes.
@@ -20,6 +16,12 @@ imports options list-index string integers
  * - implemented HV and A/R boxes
  * - refactored many strategy defs
  */
+module Abox-2-text
+imports
+  liblib
+  Box
+  Box-util
+  plain-text
 
 strategies
 

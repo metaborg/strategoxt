@@ -1,5 +1,5 @@
 module ast2abox
-imports xtc-lib lib-pp-table-args options
+imports liblib lib-pp-table-args
 
 strategies
 

@@ -190,9 +190,6 @@ signature
                         : NoTypeSpecifier -> FunDefTypeSpec
     FunDef              : FunDefTypeSpec * FunDefDecl * CompoundStm -> FunDef
     TranslationUnit     : List(ExternalDef) -> TranslationUnit
-                        : IDENTIFIER -> ParenIdDeclarator
-    OldFunction2        : List(Pointer) * OldFunDeclarator * Option(PostfixingAbstractDeclarator) -> OldFunDeclarator
-    OldFunction1        : List(Pointer) * ParenIdDeclarator * List(IDENTIFIER) -> OldFunDeclarator
     TypedefDeclarator2  : List(Pointer) * TypedefDeclarator * Option(PostfixingAbstractDeclarator) -> TypedefDeclarator
     TypedefDeclarator1  : List(Pointer) * TypedefName * Option(PostfixingAbstractDeclarator) -> TypedefDeclarator
     FunDecl             : List(Pointer) * IdDeclarator * Option(PostfixingAbstractDeclarator) -> IdDeclarator
@@ -213,20 +210,7 @@ signature
                         : String -> ElseLine
                         : String -> ElifLine
                         : String -> IfLine
-                        : String -> ControlLineNot
                         : String -> ControlLine
-                        : String -> FileName
-                        : String -> TokenSeq
-                        : String -> WS
-                        : String -> TokWS
-                        : String -> Token
-                        : String -> Slash
-                        : String -> TokenChar
-                        : String -> FloatFlags
-                        : String -> IntFlags
-                        : String -> OctalEsc
-                        : String -> StringChar
-                        : String -> Char
                         : String -> FloatLiteral
                         : String -> OctLiteral
                         : String -> HexLiteral

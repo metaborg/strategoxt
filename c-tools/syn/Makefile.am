@@ -1,11 +1,13 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-TBLS_DEFS       = C.def C.tbl Stratego-C.def Stratego-C.tbl \
-		  Stratego-Stratego-C.def Stratego-Stratego-C.tbl
-sdfdata_DATA 	= $(TBLS_DEFS) $(wildcard *.sdf)
-BOOTCLEANFILES	= $(TBLS_DEFS)
-EXTRA_DIST   	= $(sdfdata_DATA)
+DEFS = C.def Stratego-C.def Stratego-Stratego-C.def
+TBLS = C.tbl Stratego-C.tbl Stratego-Stratego-C.tbl
+
+sdfdata_DATA 	= $(TBLS) $(DEFS) $(wildcard *.sdf)
+CLEANFILES	= $(TBLS)
+BOOTCLEANFILES	= $(DEFS)
+EXTRA_DIST   	= $(DEFS) $(wildcard *.sdf)
 
 SDFINCLUDES  	= -I $(STRATEGO_FRONT)/share/sdf/stratego-front
 PGEN_FLAGS   	= -m $*

@@ -9,7 +9,6 @@ signature
     Specification  : List(Decl) -> Module
     Module         : ModName * List(Decl) -> Module
                    : Strategy -> StrategyMid
-    ParenStrat     : Strategy -> StrategyParen
     VarDec         : ID * Type -> Typedid
     ExtSDef        : Id * List(Typedid) * List(Typedid) -> StrategyDef
     ExtSDefInl     : Id * List(Typedid) * List(Typedid) * Strategy -> StrategyDef
@@ -58,20 +57,10 @@ signature
     SortVar        : LCID -> Sort
     Constructors   : List(Opdecl) -> Sdecl
     Sorts          : List(Sort) -> Sdecl
-                   : String -> Asterisk2
-                   : String -> Asterisk1
-                   : String -> CommChar2
-                   : String -> CommChar1
-                   : String -> Eof
-                   : String -> LongCom
-                   : String -> ShortCom
-                   : String -> Ws
                    : String -> UCID
                    : String -> LCID
-                   : String -> LId
                    : String -> Id
                    : String -> ModName
-                   : String -> StrChar
                    : String -> String
                    : String -> Real
                    : String -> Int

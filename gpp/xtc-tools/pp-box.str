@@ -1,5 +1,5 @@
 module pp-box
-imports xtc-lib string stratego-xt-xtc-tools
+imports liblib strategoxt-xtc-tools
 
 strategies
 

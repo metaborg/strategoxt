@@ -1,29 +1,32 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-sdfdata_DATA = \
+DEFS = \
   Stratego.def \
   StrategoStratego.def \
+  Stratego-Core.def \
+  Stratego-Sugar.def \
   Stratego-Amb.def \
+  StrategoForTesting.def \
+  StrategoStrategoForTesting.def
+
+TBLS = \
   Stratego.tbl \
   StrategoStratego.tbl \
-  \
-  Stratego-Core.def \
   Stratego-Core.tbl \
-  \
-  Stratego-Sugar.def \
   Stratego-Sugar.tbl \
-  \
-  StrategoForTesting.def \
   StrategoForTesting.tbl \
-  StrategoStrategoForTesting.def \
-  StrategoStrategoForTesting.tbl \
-  StrategoRenamed.sdf \
-  $(wildcard *.sdf)				       
+  StrategoStrategoForTesting.tbl
 
-EXTRA_DIST     = $(sdfdata_DATA)
-CLEANFILES     = $(wildcard *.tbl)
-BOOTCLEANFILES = $(wildcard *.def) StrategoRenamed.sdf
+sdfdata_DATA = \
+  $(TBLS) \
+  $(DEFS) \
+  StrategoRenamed.sdf \
+  $(wildcard *.sdf)			       
+
+EXTRA_DIST     = $(DEFS) StrategoRenamed.sdf $(wildcard *.sdf)
+CLEANFILES     = $(TBLS)
+BOOTCLEANFILES = $(DEFS) StrategoRenamed.sdf
 
 PGEN_FLAGS = -m $*
 

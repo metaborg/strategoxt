@@ -1,5 +1,5 @@
 module gen-css-boxstyle
-imports options xtc-lib
+imports liblib
 
 strategies
 

@@ -1,5 +1,10 @@
 module verbalize-sdf
-imports AsFix lib Char-lib Literal-lib Sdf2
+imports
+  AsFix
+  Char-lib
+  Literal-lib
+  Sdf2
+
 strategies
 
   syms2strs 

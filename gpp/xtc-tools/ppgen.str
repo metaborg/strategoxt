@@ -1,5 +1,5 @@
 module ppgen
-imports xtc-lib sdf-xtc-tools options
+imports liblib sdf-xtc-tools
 
 signature
   constructors

@@ -5,8 +5,6 @@
  * @author Joost Visser (Joost.Visser@cwi.nl)
  */
 module Char-lib
-imports lib
-
 strategies
   
   isNum    = is-num
@@ -17,4 +15,3 @@ strategies
   isAlphaNumHyphen = isNum + isUpper + isLower + isHyphen
   isAlphaNum       = isNum + isUpper + isLower
   isAlpha	   =         isUpper + isLower
-

@@ -133,8 +133,6 @@ signature
     OpDeclInj                  : Type -> Opdecl
     OpDeclQ                    : String * Type -> Opdecl
     OpDecl                     : Id * Type -> Opdecl
-    StarStar                   : Kind
-    Star                       : Kind
     SortTuple                  : List(Sort) -> Sort
     SortListTl                 : List(Sort) * Sort -> Sort
     SortList                   : List(Sort) -> Sort
@@ -153,9 +151,7 @@ signature
     RDefT                      : Id * List(Typedid) * List(Typedid) * Rule -> RuleDef
     RDef                       : Id * List(Typedid) * Rule -> RuleDef
     RDefNoArgs                 : Id * Rule -> RuleDef
-                               : String -> CharChar
                                : String -> Char
-                               : String -> StrChar
                                : String -> String
                                : String -> Real
                                : String -> Int
@@ -164,14 +160,3 @@ signature
                                : String -> LId
                                : String -> Id
                                : String -> ModName
-                               : String -> Backslash
-                               : String -> VLCchar
-                               : String -> Eof
-                               : String -> VeryLongCom
-                               : String -> Asterisk2
-                               : String -> Asterisk1
-                               : String -> CommChar2
-                               : String -> CommChar1
-                               : String -> LongCom
-                               : String -> ShortCom
-                               : String -> Ws

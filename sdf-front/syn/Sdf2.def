@@ -70,10 +70,7 @@ module languages/sdf2/syntax/Start-Symbols
 imports languages/sdf2/syntax/Kernel
 
 exports
-  %% sorts StartSymbol
-
   context-free syntax
-    %%Symbol Attribute -> StartSymbol
   
     "start-symbols" Symbols                -> Grammar {cons("kernel-start-symbols")} 
     "lexical" "start-symbols" Symbols      -> Grammar {cons("lexical-start-symbols")}
@@ -244,7 +241,7 @@ imports languages/sdf2/syntax/Kernel
 hiddens
   sorts ModuleWord
 exports
-  context-free start-symbols Module Definition
+  context-free start-symbols Module
 
   sorts ModuleId ModuleName Import Imports
         Section Sections Module Definition ImpSection
@@ -589,3 +586,6 @@ hiddens
 
 module Sdf2
 imports languages/sdf2/syntax/Sdf2
+hiddens
+  context-free start-symbols
+    SDF Module

@@ -10,7 +10,7 @@ CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c) $(pkgdata_DATA)
 
 SCFLAGS     = --main io-$*
-STRINCLUDES = -I $(top_srcdir)/sig
+STRINCLUDES = -I $(top_srcdir)/sig -I $(SRTS)/share/srts
 
 explode_aterm_LDADD = $(SSL_LIBS)
 implode_aterm_LDADD = $(SSL_LIBS)

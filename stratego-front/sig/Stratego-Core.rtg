@@ -1,5 +1,5 @@
 regular tree grammar
-  start Int Real String StrChar ModName Id LId LCID UCID Ws ShortCom LongCom CommChar1 CommChar2 Asterisk1 Asterisk2 Eof Sdecl Sort Opdecl Type ID LID Var Constructor Term Def StrategyDef Typedid Strategy SVar StrategyParen StrategyMid Module Decl
+  start Module
   productions
     c_0           -> a_0
     c_0           -> <nil>()

@@ -1,6 +1,3 @@
-module Abox-2-latex
-imports Box Box-util Abox-2-latex-lib lib plain-text xtc-proc Abox-2-text
-
 /**
  * GT -- Grammar Tools
  *
@@ -9,6 +6,16 @@ imports Box Box-util Abox-2-latex-lib lib plain-text xtc-proc Abox-2-text
  * - Eelco Visser <visser@acm.org>
  * - Joost Visser <jvisser@cwi.nl>
  */
+module Abox-2-latex
+imports
+  liblib
+  Box
+  Box-util
+  Abox-2-latex-lib
+  plain-text
+  Abox-2-text
+  misc
+
 strategies
 
   io-Abox-2-latex = 
@@ -184,8 +191,6 @@ MkRows =
    <+
       table-row
    )
-
-copy = (0, id);![]
 
 make-latex-comment =
    explode-string;

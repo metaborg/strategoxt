@@ -1,6 +1,5 @@
 module lib-pp-table-args
-imports verbose dir xtc-proc stratego-xt-xtc-tools
-
+imports strategoxt-xtc-tools
 strategies
 
   create-pp-table-args =

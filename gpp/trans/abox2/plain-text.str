@@ -2,9 +2,6 @@ module plain-text
 
 strategies
 
-  flatten-list =
-    foldr(![], (is-list, id) < conc-two-lists + MkCons, is-list < flatten-list + id)
-
   // :: _ -> FILE
   topdown-print-to :
     strings -> FILE(name)

@@ -25,9 +25,6 @@
 
 \begin{code}
 module Abox-2-latex-lib
-
-imports lib misc
-
 signature
   constructors
     ALLTT    : Boxes                            -> ALLTT

@@ -1,2 +1,7 @@
 module ATerms
-imports languages/aterm/syntax/ATerms
+imports
+  languages/aterm/syntax/ATerms
+
+hiddens
+  context-free start-symbols
+    ATerm

@@ -1,5 +1,5 @@
 module gen-latex-boxstyle
-imports options xtc-lib
+imports liblib
 
 strategies
 

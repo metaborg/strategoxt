@@ -25,7 +25,12 @@
 
 \begin{code}
 module Abox-2-html
-imports Abox-2-html-lib Box Box-util xtc-proc plain-text
+imports 
+  liblib
+  Abox-2-html-lib
+  Box
+  Box-util
+  plain-text
 
 strategies
 

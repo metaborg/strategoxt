@@ -78,18 +78,17 @@ When applied to the term f(a,b) the result would be "sdf-2.1"f(a,b)
 \begin{code}
 
 module termid
-imports options
-
 signature
-constructors
-   Strict: Option
+  constructors
+    Strict: Option
 
 strategies
-io-idwrap('id, strat) =
-   io-idwrap('id, (id, strat), fail)
 
-io-idwrap('id, strat, extra-options) =
-   iowrap( 
+  io-idwrap('id, strat) =
+    io-idwrap('id, (id, strat), fail)
+
+  io-idwrap('id, strat, extra-options) =
+    iowrap( 
       try(termid-check'('id)); strat; try(termid-set'('id)),
       extra-options + Option("--strict", !Strict(),
                              !"--strict         Use strict typing of input term" )

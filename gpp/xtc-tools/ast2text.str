@@ -1,5 +1,5 @@
 module ast2text
-imports xtc-lib stratego-xt-xtc-tools options verbose lib-pp-table-args abox2text
+imports liblib strategoxt-xtc-tools lib-pp-table-args abox2text
 
 strategies
 

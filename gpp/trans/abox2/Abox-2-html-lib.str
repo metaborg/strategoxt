@@ -25,14 +25,16 @@
 
 \begin{code}
 module Abox-2-html-lib
+imports
+  pp-table
+  misc
 
-imports lib pp-table misc
+/**
+ * These are constructors for HTML constructs that are used for the BOX to
+ * HTML translation
+ */
 signature
-constructors
-
-// These are constructors for HTML constructs that are used for the BOX to
-// HTML translation
-
+  constructors
    TABLE: Opts * Rows -> Table
    TR   : Opts * Cels -> TableRpw
    TD   : Opts * Text -> TableData

@@ -23,8 +23,11 @@
 
 \begin{code}
 module Pptable-diff
-imports lib pp-table
-imports pp-tables-io misc
+imports
+  liblib
+  pp-table
+  pp-tables-io
+  misc
 
 signature
    constructors

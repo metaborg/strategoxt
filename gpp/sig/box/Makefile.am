@@ -5,6 +5,7 @@ SIGS = Box.str
 
 pkgdata_DATA     = abox-ext.rtree $(subst .str,.rtree,$(SIGS))
 libexec_PROGRAMS = abox-format
+LDADD += $(SSL_LIBS)
 
 SCFLAGS          = --main io-$*
 SDF2RTG_FLAGS    = -m $*

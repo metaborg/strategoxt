@@ -245,25 +245,25 @@ static void init_module_constant_terms (void)
 }
 #include <srts/init-stratego-application.h>
 ATerm pass_verbose_0_0 (ATerm t);
-ATerm xtc_transform_2_0 (ATerm t_105 (ATerm), ATerm u_105 (ATerm), ATerm t);
+ATerm xtc_transform_2_0 (ATerm m_107 (ATerm), ATerm n_107 (ATerm), ATerm t);
 ATerm concat_strings_0_0 (ATerm t);
 ATerm eq_0_0 (ATerm t);
 ATerm get_filename_0_0 (ATerm t);
 ATerm check_module_name_0_1 (ATerm a_0, ATerm t);
 ATerm read_from_0_0 (ATerm t);
-ATerm if_not_silent_1_0 (ATerm u_106 (ATerm), ATerm t);
+ATerm if_not_silent_1_0 (ATerm n_108 (ATerm), ATerm t);
 ATerm concat_0_0 (ATerm t);
 ATerm get_config_0_0 (ATerm t);
-ATerm guarantee_extension_1_0 (ATerm b_104 (ATerm), ATerm t);
+ATerm guarantee_extension_1_0 (ATerm u_105 (ATerm), ATerm t);
 ATerm copy_to_1_0 (ATerm g_3 (ATerm), ATerm t);
-ATerm if_keep1_1_0 (ATerm m_103 (ATerm), ATerm t);
+ATerm if_keep1_1_0 (ATerm f_105 (ATerm), ATerm t);
 ATerm conc_0_0 (ATerm t);
-ATerm if_verbose3_1_0 (ATerm k_102 (ATerm), ATerm t);
+ATerm if_verbose3_1_0 (ATerm d_104 (ATerm), ATerm t);
 ATerm is_string_0_0 (ATerm t);
 static ATerm c_0 (ATerm t);
 ATerm pass_sort_0_0 (ATerm t);
 ATerm rename_to_1_0 (ATerm f_3 (ATerm), ATerm t);
-ATerm map_1_0 (ATerm i_87 (ATerm), ATerm t);
+ATerm map_1_0 (ATerm b_89 (ATerm), ATerm t);
 static ATerm d_0 (ATerm t);
 static ATerm e_0 (ATerm t);
 static ATerm g_0 (ATerm t);
@@ -275,9 +275,9 @@ static ATerm l_0 (ATerm t);
 static ATerm m_0 (ATerm t);
 static ATerm n_0 (ATerm t);
 ATerm get_syntax_definition_0_0 (ATerm t);
-ATerm say_1_0 (ATerm d_82 (ATerm), ATerm t);
+ATerm say_1_0 (ATerm w_83 (ATerm), ATerm t);
 ATerm find_in_path_0_0 (ATerm t);
-ATerm find_in_includes_1_0 (ATerm h_20 (ATerm), ATerm t);
+ATerm find_in_includes_1_0 (ATerm k_20 (ATerm), ATerm t);
 static ATerm q_0 (ATerm t);
 static ATerm r_0 (ATerm t);
 static ATerm s_0 (ATerm t);
@@ -288,9 +288,9 @@ static ATerm z_0 (ATerm t);
 static ATerm f_1 (ATerm t);
 static ATerm g_1 (ATerm t);
 ATerm get_parse_table_0_0 (ATerm t);
-ATerm if_verbose2_1_0 (ATerm j_102 (ATerm), ATerm t);
+ATerm if_verbose2_1_0 (ATerm c_104 (ATerm), ATerm t);
 ATerm error_0_0 (ATerm t);
-ATerm fetch_elem_1_0 (ATerm u_87 (ATerm), ATerm t);
+ATerm fetch_elem_1_0 (ATerm n_89 (ATerm), ATerm t);
 static ATerm h_1 (ATerm t);
 static ATerm j_1 (ATerm t);
 static ATerm u_1 (ATerm t);
@@ -307,9 +307,9 @@ static ATerm a_3 (ATerm t);
 static ATerm b_3 (ATerm t);
 ATerm get_syntax_0_0 (ATerm t);
 ATerm basename_0_0 (ATerm t);
-ATerm FILE_1_0 (ATerm z_78 (ATerm), ATerm t);
-ATerm debug_1_0 (ATerm p_82 (ATerm), ATerm t);
-ATerm if_verbose6_1_0 (ATerm n_102 (ATerm), ATerm t);
+ATerm FILE_1_0 (ATerm s_80 (ATerm), ATerm t);
+ATerm debug_1_0 (ATerm i_84 (ATerm), ATerm t);
+ATerm if_verbose6_1_0 (ATerm g_104 (ATerm), ATerm t);
 static ATerm c_3 (ATerm t);
 static ATerm d_3 (ATerm t);
 static ATerm n_3 (ATerm t);
@@ -339,7 +339,7 @@ static ATerm i_4 (ATerm t);
 static ATerm j_4 (ATerm t);
 static ATerm k_4 (ATerm t);
 ATerm parse_stratego_options_0_0 (ATerm t);
-ATerm xtc_iowrap_2_0 (ATerm l_105 (ATerm), ATerm m_105 (ATerm), ATerm t);
+ATerm xtc_iowrap_2_0 (ATerm e_107 (ATerm), ATerm f_107 (ATerm), ATerm t);
 static ATerm l_4 (ATerm t);
 ATerm parse_stratego_0_0 (ATerm t);
 ATerm main_0_0 (ATerm t);
@@ -549,13 +549,13 @@ ATerm get_syntax_definition_0_0 (ATerm t)
   }
   return(t);
 }
-ATerm find_in_includes_1_0 (ATerm h_20 (ATerm), ATerm t)
+ATerm find_in_includes_1_0 (ATerm k_20 (ATerm), ATerm t)
 {
   ATerm n_1 = NULL,o_1 = NULL;
   static ATerm p_0 (ATerm t);
   static ATerm p_0 (ATerm t)
   {
-    t = debug_1_0(h_20, t);
+    t = debug_1_0(k_20, t);
     return(t);
   }
   o_1 = t;

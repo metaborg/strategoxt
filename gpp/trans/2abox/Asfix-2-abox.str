@@ -27,8 +27,17 @@
 
 \begin{code}
 module Asfix-2-abox
-imports lib 
-imports sdf-2-pp-lib pp-tables-io misc instantiate AsFix layout prodcons Bracket-Symbol Sdf2
+imports
+  liblib
+  sdf-2-pp-lib
+  pp-tables-io
+  misc
+  instantiate
+  AsFix
+  layout
+  prodcons
+  Bracket-Symbol
+  Sdf2
 
 signature
    constructors

@@ -1,2 +1,5 @@
 module Sdf2
 imports languages/sdf2/syntax/Sdf2
+hiddens
+  context-free start-symbols
+    SDF Module

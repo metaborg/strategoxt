@@ -4,10 +4,13 @@
  *
  *	de-quote : QLiteral -> String
  *	  Removes outer quotes from a Literal.
+ *
  *	de-escape : String -> String
  *	  Undoes escaping of double quotes and backslashes.
+ *
  *	quote : String -> QLiteral
  *	  Places double quotes around a String
+ *
  *	escape : String -> String
  *	  Escapes all double quotes and backslashes in a String.
  *
@@ -21,7 +24,7 @@
  * @author  Joost Visser (Joost.Visser@cwi.nl)
  */
 module Literal-lib
-imports lib Char-lib
+imports Char-lib
 
 strategies
     
@@ -54,26 +57,11 @@ strategies
     ; Quote
     ; implode-string
     
-  escape
-    = explode-string;
-      map(Escape);
-      concat;
-      implode-string
-
 rules
 
   Quote:
     chars       -> <concat>[[34],chars,[34]]
 
-  Escape =
-    Escape1 <+ Escape2 <+ Escape3
-
-  Escape1: (* double-quote *)
-    34   -> [92,34]
-  Escape2: (* back-slash *)
-    92   -> [92,92]
-  Escape3:
-    char -> [char]
 
 strategies
 

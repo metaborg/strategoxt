@@ -269,3 +269,6 @@ imports Stratego-Core-Constants
 	Stratego-Core-Terms
 	Stratego-Core-Strategies 
 	Stratego-Core-Modules
+
+hiddens
+  context-free start-symbols Module

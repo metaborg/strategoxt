@@ -19,8 +19,13 @@
  * 02111-1307, USA.
  */
 module sdf-2-pp-table
-imports sdf-2-pp-lib pp-tables-io lib
-imports Sdf2 Bracket-Symbol
+imports
+  liblib
+  sdf-2-pp-lib
+  pp-tables-io
+  Sdf2
+  Bracket-Symbol
+
 strategies
 
   io-sdf-2-pp-table =

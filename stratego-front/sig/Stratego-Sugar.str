@@ -19,8 +19,6 @@ signature
     Mod                     : Id * Id -> Mod
     StrategyCurly           : Strategy -> StrategyCurly
                             : Strategy -> StrategyAngle
-    StarStar                : Kind
-    Star                    : Kind
     ListVar                 : LId -> LID
     Overlays                : List(Overlay) -> Decl
     Rules                   : List(Def) -> Decl
@@ -139,9 +137,7 @@ signature
     VarA                    : Id * List(Term) -> Var
     Wld                     : Var
     Var                     : Id -> Var
-                            : String -> CharChar
                             : String -> Char
-                            : String -> StrChar
                             : String -> String
                             : String -> Real
                             : String -> Int
@@ -150,14 +146,3 @@ signature
                             : String -> LId
                             : String -> Id
                             : String -> ModName
-                            : String -> Backslash
-                            : String -> VLCchar
-                            : String -> VeryLongCom
-                            : String -> Asterisk2
-                            : String -> Asterisk1
-                            : String -> CommChar2
-                            : String -> CommChar1
-                            : String -> Eof
-                            : String -> LongCom
-                            : String -> ShortCom
-                            : String -> Ws

@@ -1,5 +1,5 @@
 regular tree grammar
-  start Ws ShortCom LongCom CommChar1 CommChar2 Asterisk1 Asterisk2 VeryLongCom Eof VLCchar Backslash ModName Id LId LCID UCID Int Real String StrChar Char CharChar RuleDef Rule StratRule Sdecl Sort Kind Opdecl Type StrategyDef Typedid StrategyParen Strategy SVar StrategyMid StrategyCurly StrategyAngle Mod ID LID Var Term Overlay Module Decl Def DynRuleDef DynRuleId DynRuleScopeId RuleDec
+  start Module
   productions
     c_0            -> a_0
     c_0            -> <nil>()

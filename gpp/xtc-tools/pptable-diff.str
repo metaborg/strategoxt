@@ -1,7 +1,6 @@
 module pptable-diff
 imports xtc-lib lib-pp-table-args options
 
-
 strategies
 
   io-pptable-diff = 
