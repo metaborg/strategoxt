@@ -200,6 +200,9 @@ strategies
   obsolete(msg) = 
     where(msg; debug(!"obsolete library strategy: "))
 
+  dissuader(msg) = 
+    where(if-verbose2(msg; debug(!"dissuasive library strategy: ")))
+
   Assert(s, msg) = 
     test(s) <+ debug(msg)
 
