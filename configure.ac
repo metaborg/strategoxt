@@ -86,13 +86,16 @@ AC_SUBST(INSTALL_XTC_DEST)
 
 DETECT_SVN_REVISION
 
+AC_PROG_LIBTOOL
+
 ### OUTPUT #############################
 
-AC_OUTPUT(
-	Makefile 
-   	news-archive/Makefile
-  	strategoxt.spec
-)
+AC_CONFIG_FILES([
+  Makefile 
+  news-archive/Makefile
+  strategoxt.spec
+])
+AC_OUTPUT
 
 ### SUBPACKAGES ########################
 
