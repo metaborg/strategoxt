@@ -1,5 +1,9 @@
+2002-06-19  Merijn de Jonge <mdejonge@cwi.nl>
+   * stratego-stats/strat-count: added tool for calculating individual
+     strategy usage
+
 2002-06-05  Merijn de Jonge <mdejonge@cwi.nl>
-   * added strateg-stats package for stratego statistics. Added
+   * added stratego-stats package for stratego statistics. Added
      strip-comments as first component. It removes comments from stratego
      programs to allow line counting.
 
