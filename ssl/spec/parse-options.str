@@ -81,16 +81,17 @@ strategies
   // specified '-h' switch.
 
   parse-options(s) =
-    where(<table-put>("usage-table", "usage", []))
+      where(<table-put>("usage-table", "usage", []))
     ; parse-options'(s + system-usage-switch)
-    ; try(where(<get-config> "--help" <+ option-defined(Help))
-         ; system-usage
-         ; <exit>0
-        <+ option-defined(Undefined(?option))
-         ; say(!["Invalid option: ", option])
-         ; system-usage
-         ; <exit> 1
-         )
+    ; try(
+          where(<get-config> "--help" <+ option-defined(Help))
+        ; system-usage
+        ; <exit> 0
+      <+  option-defined(Undefined(?option))
+        ; <printnl> (stderr(), ["Invalid option: ", option])
+        ; system-usage
+        ; <exit> 1
+      )
     ; where(<table-destroy> "usage-table")
        
   // Register all usages of all defined switches; then parse switches as
