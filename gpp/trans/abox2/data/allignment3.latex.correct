@@ -1,1 +1,24 @@
-"\\begin{boxenv}%\n\\begin{ABOX}{#\\hfill~&#\\hfill\\cr}%\n``a''&``b''&``c''\\crcr%\n\\end{ABOX}%\n%\n\\end{boxenv}\n"
+% 
+% This file is generated automatically by 
+% 
+%    abox2latex (C) 2001-2004 Merijn de Jonge (mdejonge@cs.uu.nl) 
+% 
+% Tokens from the BOX term are formatted using the LaTeX macros  
+% defined in the table(s):  
+% 
+% To use this file add: 
+%    \usepackage{boxenv} to your documents preamble 
+% and  
+%    \input{<this_file>}  
+% to your LaTeX document. 
+% 
+% If you don't have boxenv.sty already, generate it with:: 
+%    gen-latex-boxstyle -o boxenv.sty 
+% 
+\begin{boxenv}%
+\begin{ABOX}{#\hfill~&#\hfill\cr}%
+``a''&``b''&``c''\crcr%
+\end{ABOX}%
+%
+\end{boxenv}
+
