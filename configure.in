@@ -253,6 +253,10 @@ AB_CONFIG_PKG(xt,
 )
 AB_CONFIG_PKG(boxenv,
    --with-latex=${LATEX}
+   --with-xtc=${prefix}
+   --with-repository=${REPOSITORY}
 )
 AB_CONFIG_PKG(stratego-util,
+   --with-xtc=${prefix}
+   --with-repository=${REPOSITORY}
 )
