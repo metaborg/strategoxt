@@ -11,8 +11,8 @@ strategies
 
   main-gen-renamed-sdf-module =
     xtc-io-wrap(renaming-options,
-      xtc-sdf2-normalize(|<get-sdf-main-module>)
-    ; xtc-parse-sdf2(|"Grammar")
+      xtc-transform(!"sdf2table", !["-n", "-m", <get-sdf-main-module> | <pass-v-verbose>])
+    ; xtc-transform(!"implodePT")
     ; xtc-io-transform(
         collect-sorts
       ; map(rename-sort)

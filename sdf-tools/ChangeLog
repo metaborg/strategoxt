@@ -1,3 +1,12 @@
+2004-02-19  Martin Bravenboer  <martin@cs.uu.nl>
+
+	* trans/gen-renamed-sdf-module.str: since we are now using the
+	constructors of the SDF2 syntax definition in PGEN 2.0 it is
+	possible to implode the AsFix result of the sdf normalizer instead
+	of a yield followed by a parse. This is major performance
+	improvement. implodePT is used because the output of the
+	normalizer is AsFix2ME.
+
 2004-02-18  Martin Bravenboer  <martin@cs.uu.nl>
 
 	* src/pack-sdf/pack-sdf.str: now parses sdf modules using the new
