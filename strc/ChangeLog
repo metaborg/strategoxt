@@ -1,3 +1,12 @@
+2004-12-10  Martin Bravenboer <martin@cs.uu.nl>
+
+	* spec/front/needed-defs.str: check for external redefinitions
+	before removing definitions that are not invoked from the code in
+	the program that is currently being compiled. This solves issue
+	STR-135.
+
+	* spec/testneg/test03.str: negative test for STR-135.
+
 2004-11-26  Martin Bravenboer <martin@cs.uu.nl>
 
 	* spec/front/lift-dynamic-rules.str: changed the dummy used in

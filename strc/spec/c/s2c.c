@@ -1249,7 +1249,7 @@ static void init_module_constant_terms (void)
   term_b_38 = (ATerm) ATmakeAppl(ATmakeSymbol("-b               Write binary output", 0, ATtrue));
 }
 #include <srts/init-stratego-application.h>
-ATerm listbu1_1_0 (ATerm z_2 (ATerm), ATerm t);
+ATerm listbu1_1_0 (ATerm b_3 (ATerm), ATerm t);
 static ATerm a_0 (ATerm t);
 static ATerm c_0 (ATerm t);
 static ATerm i_0 (ATerm t);
@@ -1481,7 +1481,7 @@ ATerm main_0 (ATerm t)
   t = main_0_0(t);
   return(t);
 }
-ATerm listbu1_1_0 (ATerm z_2 (ATerm), ATerm t)
+ATerm listbu1_1_0 (ATerm b_3 (ATerm), ATerm t)
 {
   ATerm b_8 = t;
   int d_8 = stack_ptr;
@@ -1499,7 +1499,7 @@ ATerm listbu1_1_0 (ATerm z_2 (ATerm), ATerm t)
       t = SSLgetAnnotations(o_1);
       m_0 = t;
       t = r_1;
-      t = listbu1_1_0(z_2, t);
+      t = listbu1_1_0(b_3, t);
       u_0 = t;
       t = (ATerm) ATinsert(CheckATermList(u_0), p_1);
       q_0 = t;
@@ -1509,7 +1509,7 @@ ATerm listbu1_1_0 (ATerm z_2 (ATerm), ATerm t)
         int f_8 = stack_ptr;
         if((PushChoice() == 0))
           {
-            t = z_2(t);
+            t = b_3(t);
             LocalPopChoice(f_8);
           }
         else
@@ -1522,7 +1522,7 @@ ATerm listbu1_1_0 (ATerm z_2 (ATerm), ATerm t)
   else
     {
       t = b_8;
-      t = z_2(t);
+      t = b_3(t);
     }
   return(t);
 }
@@ -1643,7 +1643,7 @@ static ATerm s_0 (ATerm t)
 }
 ATerm Csimplify_0_0 (ATerm t)
 {
-  ATerm w_2 = NULL,x_2 = NULL,y_2 = NULL,a_3 = NULL,b_3 = NULL,d_3 = NULL,e_3 = NULL,f_3 = NULL,g_3 = NULL,h_3 = NULL,j_3 = NULL;
+  ATerm w_2 = NULL,x_2 = NULL,y_2 = NULL,z_2 = NULL,a_3 = NULL,d_3 = NULL,e_3 = NULL,f_3 = NULL,g_3 = NULL,h_3 = NULL,j_3 = NULL;
   if(match_cons(t, sym_IfElse_3))
     {
       d_3 = ATgetArgument(t, 0);
@@ -1754,8 +1754,8 @@ ATerm Csimplify_0_0 (ATerm t)
           t = d_3;
           if(match_cons(t, sym_Stat_1))
             {
-              a_3 = ATgetArgument(t, 0);
-              t = a_3;
+              z_2 = ATgetArgument(t, 0);
+              t = z_2;
               if(!(match_cons(t, sym_EmptyExp_0)))
                 _fail(t);
               t = e_3;
@@ -1764,15 +1764,15 @@ ATerm Csimplify_0_0 (ATerm t)
             {
               if(match_cons(t, sym_Compound_2))
                 {
-                  a_3 = ATgetArgument(t, 0);
-                  b_3 = ATgetArgument(t, 1);
+                  z_2 = ATgetArgument(t, 0);
+                  a_3 = ATgetArgument(t, 1);
                 }
               else
                 _fail(t);
-              t = a_3;
+              t = z_2;
               if(((ATgetType(t) != AT_LIST) || !(ATisEmpty(t))))
                 _fail(t);
-              t = (ATerm) ATmakeAppl(sym__2, b_3, e_3);
+              t = (ATerm) ATmakeAppl(sym__2, a_3, e_3);
               t = conc_0_0(t);
             }
         }

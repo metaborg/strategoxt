@@ -39,9 +39,11 @@ strategies
         <length> xs => n
       ; <length> ys => m
       ; ![def | <Definitions <+ ![]> (f, (n, m))] => defs
+      ; ![def | <ExtDefinitions <+ ![]> (f, (n, m))] => extdefs
       ; <union>([(n,m)], <Arities <+ ![]> f) => aris
       ; rules(
           Definitions : (f, (n, m)) -> defs
+          ExtDefinitions : (f, (n, m)) -> extdefs
           Arities : f -> aris
         )
     )
@@ -52,9 +54,11 @@ strategies
         <length> xs => n
       ; <length> ys => m
       ; ![def | <Definitions <+ ![]> (f, (n, m))] => defs
+      ; ![def | <ExtDefinitions <+ ![]> (f, (n, m))] => extdefs
       ; <union>([(n,m)], <Arities <+ ![]> f) => aris
       ; rules(
           Definitions : (f, (n, m)) -> defs
+          ExtDefinitions : (f, (n, m)) -> extdefs
           Arities : f -> aris
         )
     )
@@ -95,18 +99,43 @@ rules
           |}
 
   JoinDefsExt =
-    where(map(?ExtSDef(f, <length => i>, <length => j>) 
-	    + ?ExtSDefInl(f, <length => i>, <length => j>, s)))
+    where(map(
+      ?ExtSDef(f, <length => i>, <length => j>) 
+    + ?ExtSDefInl(f, <length => i>, <length => j>, s)
+    ))
     ; (fetch-elem(?ExtSDefInl(_,_,_,_)) <+ Hd)
 
   JoinDefsExt =
     fetch(?ExtSDef(f,_,_) + ?ExtSDefInl(f,_,_,_))
     ; fetch(?SDefT(f,_,_,_))
-    ; <debug(!"redefining external definition: ")> f
+    ; <debug(!"error: redefining external definition: ")> f
     ; giving-up
 
   choices = 
     foldr(!Fail, !Choice(<Fst>,<Snd>))
+
+  /**
+   * @todo Separate dynamic rule for external definitions?
+   */
+  check-ext-overload =
+    let helper =
+          sdef-key;
+          if ExtDefinitions; not(?[]) then
+            sdef-key-to-string
+          ; debug(!"error: redefining external definition: ")
+          ; <exit> 1
+          end
+     in map(where(?SDefT(_, _, _, _) < helper + id))
+    end
+
+  is-ext-sdef = 
+    ?ExtSDef(_, _, _) + ?ExtSDefInl(_, _, _, _)
+
+  sdef-key :
+    SDefT(f, xs, ys, _) -> (f, (<length> xs, <length> ys))
+
+  sdef-key-to-string :
+    (f, (s, t)) -> <concat-strings> [f, "/(", <int-to-string> s, ",", <int-to-string> t, ")"]
 
 strategies
 
@@ -122,7 +151,7 @@ strategies
    * Obtaining needed definitions
    */
   needed-defs = 
-    !([("main", (0,0))], <sort-defs>, []);
+    !([("main", (0,0))], <sort-defs; check-ext-overload>, []);
     extract-needed-defs
 
   extract-needed-defs =
