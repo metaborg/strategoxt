@@ -26,7 +26,7 @@ GPP
 
 ----------------------------------------------------------------------
 
- GPP is a generxc pretty-printer that supports pretty-printing of
+ GPP is a generic pretty-printer that supports pretty-printing of
  parse-trees (AsFix) with comment preservation and of abstract syntax trees.
  GPP supports the output formats plain text, LaTeX, and HTML.
  Formattings are defined in pretty-print tables which can be generated from
