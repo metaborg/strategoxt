@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: abox2latex.sh.src,v 1.4 2002/01/10 21:45:23 stratego Exp $
+# $Id: abox2latex.sh.src,v 1.5 2002/03/07 23:52:18 stratego Exp $
 
 # usage:
 #   abox2latex [-h] [-i abox] [-o latex] [-t table ...] [-w width]

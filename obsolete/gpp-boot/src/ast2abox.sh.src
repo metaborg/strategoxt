@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: ast2abox.sh.src,v 1.4 2002/01/10 21:45:23 stratego Exp $
+# $Id: ast2abox.sh.src,v 1.5 2002/03/07 23:52:18 stratego Exp $
 
 # usage:
 #   ast2abox [-h] [-i ast] [-o abox] [-p table_1] ... [-p table_n] [-v]
