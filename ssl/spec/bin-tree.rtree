@@ -1,1 +1,0 @@
-Specification([Signature([Sorts([Sort("BinTree",[SortVar("a")])]),Constructors([OpDecl("EmptyNode",ConstType(Sort("BinTree",[SortVar("a")]))),OpDecl("BinNode",FunType([ConstType(SortVar("a")),ConstType(Sort("BinTree",[SortVar("a")])),ConstType(Sort("BinTree",[SortVar("a")]))],ConstType(Sort("BinTree",[SortVar("a")]))))])])])
