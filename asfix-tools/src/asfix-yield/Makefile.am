@@ -4,19 +4,24 @@ include $(wildcard *.dep)
 
 SUBDIRS      	= data
 
-bin_PROGRAMS	= asfix-yield
-libexec_SCRIPTS	= asfix-yield
+bin_PROGRAMS	 = asfix-yield
+bin_SCRIPTS 	 = asource
+libexec_SCRIPTS  = asource
+libexec_PROGRAMS = asfix-yield
 
 TESTS        	= asfix_yield1_check asfix_yield2_check
-CLEANFILES   	= asfix_yield1_check asfix_yield2_check $(wildcard *.dep)
+CLEANFILES   	= asfix_yield1_check asfix_yield2_check $(wildcard *.dep) asfix-yield asource
 BOOTCLEANFILES 	= asfix-yield.c
 
 SCFLAGS       	= -I $(srcdir)/../asfix 
 
-install-exec-local:
-	$(RM) ${bindir}/asource ${libexecdir}/asource
-	ln -sf asfix-yield ${bindir}/asource
-	ln -sf asfix-yield ${libexecdir}/asource
+asource	: asfix-yield
+	ln $< $@
+
+#install-exec-local:
+#	$(RM) ${bindir}/asource ${libexecdir}/asource
+#	ln -sf asfix-yield ${bindir}/asource
+#	ln -sf asfix-yield ${libexecdir}/asource
 
 asfix_yield1_check_prog    = asfix-yield
 asfix_yield1_check_input   = data/tiny.tree
