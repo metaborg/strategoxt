@@ -56,10 +56,10 @@ strategies
     ['\'  | cs ] -> ['\', 'c', 'h', 'a', 'r', '9', '2' | cs ]
 
   latex-escape-curly :
-    ['{'  | cs ] -> ['\', '{' | cs ]
+    ['{'  | cs ] -> ['\', 'c', 'h', 'a', 'r', '1', '2', '3' | cs ]
 
   latex-escape-curly :
-    ['}'  | cs ] -> ['\', '}' | cs ]
+    ['}'  | cs ] -> ['\', 'c', 'h', 'a', 'r', '1', '2', '5' | cs ]
 
 strategies
 
