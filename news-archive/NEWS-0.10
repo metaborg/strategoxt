@@ -168,8 +168,9 @@ The same is possible for union, instead of intersection:
 
 Control structures that involve repetition (e.g. for-loops) often need
 repeated traversal until a fixed point in the rule set is reached.
-Two fixpoint traversals are available that meet the dynamic rule set with
-the one from the previous iteration until the rule set is free of changes.
+Two fixpoint traversals are available that meet the dynamic rule set
+with the one from the previous iteration until the rule set is free of
+changes.
 
   / f1, ..., fn \* s2                     dynamic rule fixpoint intersection
   \ f1, ..., fn /* s2                     dynamic rule fixpoint union
