@@ -1,3 +1,8 @@
+2003-05-28  Eelco Visser  <visser@cs.uu.nl>
+
+	* parse/stratego-desugar.str, syn/Stratego-Strategies.sdf: characters
+	can also be used as congruences (of course).
+
 2003-05-28  Martin Bravenboer <martin@mbravenboer.org>
 
   * syn/Stratego-Constants.sdf: allow newlines in String

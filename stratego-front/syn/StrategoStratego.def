@@ -124,6 +124,7 @@ exports
     String 				  -> Strategy {cons("StrCong")}
     Int 				  -> Strategy {cons("IntCong")}
     Real 				  -> Strategy {cons("RealCong")}
+    Char 			 	  -> Strategy {cons("CharCong")}
 
     %%"(" {Strategy ","}* ")" 		  -> Strategy {cons("TupleCong"),avoid}
 

@@ -46,6 +46,7 @@
    StrCong                          -- _1,
    IntCong                          -- _1,
    RealCong                         -- _1,
+   CharCong                         -- _1,
    AnnoCong                         -- _1 _2,
    StrategyCurly                    -- KW["{"] _1 KW["}"],
    EmptyTupleCong                   -- KW["("] KW[")"],

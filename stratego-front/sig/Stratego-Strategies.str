@@ -42,6 +42,7 @@ signature
     StrCong        : String -> Strategy
     IntCong        : Int -> Strategy
     RealCong       : Real -> Strategy
+    CharCong       : Char -> Strategy
     AnnoCong       : Strategy * StrategyCurly -> Strategy
     StrategyCurly  : Strategy -> StrategyCurly
     EmptyTupleCong : Strategy

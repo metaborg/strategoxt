@@ -105,6 +105,9 @@ rules
   Desugar :
     RealCong(x) -> Match(Real(x))
 
+  Desugar :
+    CharCong(c) -> Match(Char(c))
+
   // Term sugar
 
   Desugar :
