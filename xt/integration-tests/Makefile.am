@@ -18,14 +18,14 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.7 2001/11/23 08:12:21 mdejonge Exp $
+# $Id: Makefile.am,v 1.8 2002/12/30 14:11:19 stratego Exp $
 
 SUBDIRS      = data 
 
 # Optional tests to run
-TESTS        = parsesdf-yield-check \
- 	       parsesdf-implode-sdf2text-check \
-               parseyacc-yacc2sdf-sdf2text-check
+#TESTS        = parsesdf-yield-check \
+# 	       parsesdf-implode-sdf2text-check \
+#               parseyacc-yacc2sdf-sdf2text-check
 
 
 # List all files that should be distributed here
