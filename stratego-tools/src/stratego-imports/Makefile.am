@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.2 2001/06/07 15:11:48 mdejonge Exp $
+# $Id: Makefile.am,v 1.3 2001/06/08 17:24:57 daybuild Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -51,18 +51,18 @@ SCFLAGS     += -I $(srcdir)/../stratego \
 
 stratego_imports1_check_prog     = stratego-imports
 stratego_imports1_check_switches = -S -I data
-stratego_imports1_check_input    = test1
+stratego_imports1_check_input    = test1.r
 stratego_imports1_check_output   = data/test.out
 stratego_imports1_check_correct  = data/test.out.correct
 
 stratego_imports2_check_prog     = stratego-imports
 stratego_imports2_check_switches = -S -l -I data
-stratego_imports2_check_input    = test1
+stratego_imports2_check_input    = test1.r
 stratego_imports2_check_output   = data/test-l.out
 stratego_imports2_check_correct  = data/test-l.out.correct
 
 stratego_imports3_check_prog     = stratego-imports
 stratego_imports3_check_switches = -S --graphxml -I data
-stratego_imports3_check_input    = test1
+stratego_imports3_check_input    = test1.r
 stratego_imports3_check_output   = data/test.xml
 stratego_imports3_check_correct  = data/test.xml.correct
