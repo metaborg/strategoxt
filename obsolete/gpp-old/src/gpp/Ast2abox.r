@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Ast2abox.r,v 1.4 2001/10/12 14:20:10 mdejonge Exp $
+% $Id: Ast2abox.r,v 1.5 2001/10/22 08:35:56 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
@@ -70,7 +70,7 @@ trm2abox =
    // Obtain a box template for "f"
    ; <pp-table-get'>[f] => (path, abox)
 
-   ; <nzip( \ (x, y) -> <arg2abox> (x, [f], y) \ )> args => aboxes
+   ; <nzip( \ (x, y) -> <arg2abox> (x, [f], y) \ )>args => aboxes
   
    ; <instantiate>( abox, aboxes )
 
