@@ -1,5 +1,20 @@
 2003-08-12  Eelco Visser  <visser@cs.uu.nl>
 
+	* spec/opt/worker-wrapper.str: Split strategy definitions into
+	a worker which does the real work and a wrapper which matches the
+	current term. That is, a definition 
+	  
+	   foo(s | y) = {x : ?Bar(x); ... x ... y ... s}
+
+	is turned into the pair of definitions
+
+	   foo(s | y) = {x : ?Bar(x); foo'(s | y, x)}
+	   foo'(s | y, x) = ... x ... y ... s
+
+	This makes foo smaller and more attractive to inline with 
+	possibility to cancel out against a build. Added in -O 6.
+	   
+
 	* spec/test3/test-constructors.str: Test for check-constructors;
 	missing constructor declaration.
 

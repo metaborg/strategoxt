@@ -168,25 +168,28 @@ strategies
 	; olevel2(desugar-case)
         ; save-as2(!".opt5")
 
+	; olevel6(optimize2; worker-wrapper)
+        ; save-as6(!".opt6")
+
         ; olevel5(inline)
-        ; save-as5(!".opt6")
-	; olevel5(dead-def-elim)
         ; save-as5(!".opt7")
+	; olevel5(dead-def-elim)
+        ; save-as5(!".opt8")
 
         ; olevel3(optimize2)
-        ; save-as3(!".opt8")
+        ; save-as3(!".opt9")
         ; olevel3(const-prop
-		; save-as3(!".opt8a")
+		; save-as3(!".opt10")
 		; bound-unbound-vars
-		; save-as3(!".opt8b")
+		; save-as3(!".opt11")
 		; dead-var-elim
 	  )
-        ; save-as3(!".opt9")
+        ; save-as3(!".opt12")
         ; olevel1(optimize3)
-        ; save-as1(!".opt10")
+        ; save-as1(!".opt13")
 
         ; olevel1(stratego-of)
-        ; save-as1(!".opt11")
+        ; save-as1(!".opt14")
     )
 
   optimize1 = 
@@ -215,6 +218,9 @@ strategies
 
   dead-var-elim = 
     xtc-transform(!"dead-var-elim", !["-b" | <pass-verbose> ])
+
+  worker-wrapper = 
+    xtc-transform(!"worker-wrapper", !["-b" | <pass-verbose> ])
 
   optimize2 = 
     xtc-transform(!"optimize2", !["-b" | <pass-verbose> ])
@@ -245,9 +251,9 @@ strategies
       canonicalize
       ; save-as1(!".can")
       ; olevel1(lift-definitions)
-      ; save-as1(!".opt12")
+      ; save-as1(!".opt15")
       ; olevel3(bound-unbound-vars)
-      ; save-as1(!".opt13")
+      ; save-as1(!".opt16")
       ; stratego-cf
       ; s2c
       ; ac2abox

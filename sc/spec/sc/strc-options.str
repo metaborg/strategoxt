@@ -48,6 +48,7 @@ strategies
   olevel3(s) = olevel(!3, s)
   olevel4(s) = olevel(!4, s)
   olevel5(s) = olevel(!5, s)
+  olevel6(s) = olevel(!6, s)
 
   sc-options =
     ArgOption("-i",

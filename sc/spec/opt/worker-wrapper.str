@@ -1,0 +1,29 @@
+module worker-wrapper
+imports Stratego lib stratlib
+strategies
+
+  worker-wrapper-io =
+    io-wrap(worker-wrapper-spec)
+
+  worker-wrapper-spec =
+    Specification([id,Strategies(foldr(id,conc, worker-wrapper <+ ![<id>]))])
+
+  worker-wrapper :
+    |[ f(a1* | a2*) = {x* : ?t; s } ]| 
+  ->
+    [ |[ f(a1* | a2*) = {x1* : ?t; g(s* | t*)} ]|
+    , |[ g(a1* | a4*) = {x2* : s } ]| 
+    ]
+    where
+      <tvars> t => x1*
+      ; <diff> (x*, x1*) => x2*
+      ; <map(!VarDec(<id>, ConstType(Var("ATerm"))))> x1* => a3*
+      ; <conc>(a2*, a3*) => a4*
+      ; new => g
+      ; <map(\ VarDec(x, _) -> CallT(SVar(x),[],[]) \ )> a1* => s*
+      ; <map(\ VarDec(x, _) -> Var(x) \ )> a4* => t*
+     
+  worker-wrapper :
+    |[ f(a1* | a2*) = ?t; s ]| -> 
+    <worker-wrapper> |[ f(a1* | a2*) = {?t; s} ]|
+     
