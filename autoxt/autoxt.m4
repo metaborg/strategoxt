@@ -100,20 +100,6 @@ AC_ARG_WITH(gpp,
 )
 AC_SUBST(GPP)
 
-AC_ARG_WITH(box-tools,
-  AC_HELP_STRING([--with-box-tools=DIR], [use BOX Tools at DIR @<:@STRATEGOXT@:>@]),
-  BOX_TOOLS="$withval",
-  BOX_TOOLS="$STRATEGOXT"
-)
-AC_SUBST(BOX_TOOLS)
-
-AC_ARG_WITH(cgen,
-  AC_HELP_STRING([--with-cgen=DIR], [use CGEN at DIR @<:@STRATEGOXT@:>@]),
-  CGEN="$withval",
-  CGEN="$STRATEGOXT"
-)
-AC_SUBST(CGEN)
-
 AC_ARG_WITH(c-tools,
   AC_HELP_STRING([--with-c-tools=DIR], [use C_TOOLS at DIR @<:@STRATEGOXT@:>@]),
   C_TOOLS="$withval",

@@ -108,10 +108,10 @@ bootclean-recursive :
 #
 
 %.pp.af : %.pp
-	$(BOX_TOOLS)/bin/parse-pp-table -i $< -o $@
+	$(GPP)/bin/parse-pp-table -i $< -o $@
 
 .def.pp :
-	$(BOX_TOOLS)/bin/ppgen -i $< -o $@
+	$(GPP)/bin/ppgen -i $< -o $@
 
 ###########################################################
 #
