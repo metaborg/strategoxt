@@ -178,9 +178,6 @@ AB_CONFIG_PKG(xtc,
    --with-repository=${REPOSITORY}
 )
 
-if test "x$XTC2_ENABLED" = "xyes"
-then
-
 AB_CONFIG_PKG(xtc2,
    --with-aterm=${ATERM}
    --with-sglr=${SGLR}
@@ -191,11 +188,6 @@ AB_CONFIG_PKG(xtc2,
    --with-xtc=${BASELINE_XTC}
    --with-repository=${REPOSITORY}
 )
-
-fi
-
-if test "x$XTC2_ENABLED" = "xyes"
-then
 
 AB_CONFIG_PKG(xtc3,
    --with-aterm=${ATERM}
@@ -209,8 +201,6 @@ AB_CONFIG_PKG(xtc3,
    --with-curl=${CURL}
 )
 
-fi
-
 AB_CONFIG_PKG(strc,
    --with-aterm=${ATERM}
    --with-sglr=${SGLR}
@@ -222,9 +212,6 @@ AB_CONFIG_PKG(strc,
    --with-repository=${REPOSITORY}
 )
 
-if test "x$CORE_ENABLED" = "xyes"
-then
-
 AB_CONFIG_PKG(strc-core,
    --prefix=${STRC_CORE_PREFIX}
    --with-aterm=${ATERM}
@@ -235,8 +222,6 @@ AB_CONFIG_PKG(strc-core,
    --with-stratego-lib=${BASELINE_STRATEGO_LIB}
    --with-xtc=${BASELINE_XTC}
 )
-
-fi
 
 AB_CONFIG_PKG(c-tools,
    --with-aterm=${ATERM}
