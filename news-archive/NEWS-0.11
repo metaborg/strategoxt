@@ -12,7 +12,7 @@ StrategoXT 0.11 -- released July 16, 2004
       * Reduced the size of distributions
       * Check dependencies during configure
 
-   * Upgrade of SDF packages (pgen 2.2)
+   * Upgrade of <nop><nop>SDF packages (pgen 2.2)
 
    * Support for XML Processing
       * Generate or transform XML
@@ -30,14 +30,14 @@ StrategoXT 0.11 -- released July 16, 2004
       * make (temporary) directories
       * filtering text files
 
-   * Various improvements of XTC:
-      * Construction of build-time XTC repositories
-      * Compilation of XTC tools with stand-alone strc
+   * Various improvements of <nop>XTC:
+      * Construction of build-time <nop>XTC repositories
+      * Compilation of <nop>XTC tools with stand-alone strc
 
    * Global choice operator is now much easier to use.
 
    * Many bug-fixes, e.g.
-      * fixed a bug that causes crashes in large XTC tools
+      * fixed a bug that causes crashes in large <nop>XTC tools
       * improvements of new dynamic rules
       * mutual recursive lets
 
@@ -49,13 +49,13 @@ the feature has always been experimental. However, it was already
 clear that separate compilation drastically reduces the compilation
 time of Stratego programs. The open issues in the implementation of
 separate compilation, which are mostly configuration related, have all
-been resolved in this release, StrategoXT 0.11. Therefore, separate
+been resolved in this release, <nop>StrategoXT 0.11. Therefore, separate
 compilation of Stratego is now ready for use.
 
-First, AutoXT has been extended with support for separate
-compilation. Because of the support in AutoXT, using separate
+First, <nop>AutoXT has been extended with support for separate
+compilation. Because of the support in <nop>AutoXT, using separate
 compilation in your packages is very easy. Second, separate
-compilation is now also supported for XTC tools, for which it is
+compilation is now also supported for <nop>XTC tools, for which it is
 particularly useful. Third, the stand-alone Stratego compiler =strc=
 now accepts flags for separate compilation. This is very convenient
 for small tests programs, or just for testing separate compilation.
@@ -68,7 +68,7 @@ website (documentation section).
 
 ---------++ Shared libraries in the Stratego runtime
 
-In StrategoXT 0.11 the Stratego Runtime System (srts) uses Libtool to
+In <nop>StrategoXT 0.11 the Stratego Runtime System (srts) uses Libtool to
 build libraries. This means that shared libraries are created if the
 platform supports this. Since linkers by default prefer shared
 libraries over static libraries, your programs will be linked against
@@ -91,11 +91,11 @@ Stratego website.
 
 ---------++ Cygwin and Mac OS X Support
 
-For StrategoXT 0.10 we announced support for Mac OS X. Unfortunately,
+For <nop>StrategoXT 0.10 we announced support for Mac OS X. Unfortunately,
 this claim soon appeared to be poorly verified: we received several
-reports of failures at Mac OS X. For StrategoXT 0.11, we have worked
+reports of failures at Mac OS X. For <nop>StrategoXT 0.11, we have worked
 on solving all these issues and can now safely re-announce support for
-Mac OS X. StrategoXT 0.11 has been compiled and checked at two
+Mac OS X. <nop>StrategoXT 0.11 has been compiled and checked at two
 different Mac OS X 10.3.4 systems with Apple's GCC 3.3
 (unpatched). Older versions of GCC will probably not work. From now
 on, binary distributions for Mac OS X will be available at the release
@@ -110,7 +110,7 @@ Various problems had to be fixed in order to support Mac OS X:
    * Various issues with separate compilation at Mac OS X have been
    resolved. For example, initializers of dynamic libraries are by
    default invoked in a lazy way at Mac OS X, which Stratego separate
-   compilation does not allow. This issue has been fixed in AutoXT by
+   compilation does not allow. This issue has been fixed in <nop>AutoXT by
    passing a flag to the linker at Darwin systems.
 
    * The stand-alone Stratego compiler now passes more standard flags
@@ -122,7 +122,7 @@ Cygwin support has also been verified. Unfortunately, separate
 compilation is currently not supported at Cygwin, due to limitations
 of Microsoft Windows DLLs. As a result, static linking is used for the
 separately compiled SSL and executables are rather large. We hope to
-fix this in a future release. From StrategoXT 0.11 binary
+fix this in a future release. From <nop>StrategoXT 0.11 binary
 distributions for Cygwin will be available at the release pages.
 
    (Eelco Dolstra and Martin Bravenboer)
@@ -130,45 +130,45 @@ distributions for Cygwin will be available at the release pages.
 ---------++ Various Deployment Improvements
 
 Besides the support for Mac OS X and Cygwin, the deployment of
-StrategoXT has been improved at several other points. First, the
-distributions of StrategoXT 0.11 are much smaller then the
+<nop>StrategoXT has been improved at several other points. First, the
+distributions of <nop>StrategoXT 0.11 are much smaller then the
 distributions of the last few releases. A source distribution is now
 about 9 MB, which used to be 14 MB. This has been achieved by (1) not
 distributing bootstrapped sources of programs that are only used in a
 check, (2) not distributing parse tables, (3) reduction of the size of
 bootstrapped sources by heavy use of separate compilation in
-StrategoXT, (4) removing some tools that are obsolete or not working
+<nop>StrategoXT, (4) removing some tools that are obsolete or not working
 properly.
 
-Second, the dependencies of StrategoXT are now finally checked in the
+Second, the dependencies of <nop>StrategoXT are now finally checked in the
 configure script. If the provided configuration is incorrect, then the
 configure will fail and explain where the tools were expected in the
 configuration provided (or not) by the user. The configure scripts
 checks for the ATerm-gcc library in the aterm package, which reflects
 the requirement to configure this package with the --with-gcc
-flag. The StrategoXT configure script now also checks for several
+flag. The <nop>StrategoXT configure script now also checks for several
 tools that are part of the packages of the sdf2-bundle.
 
 The checks have been implemented as macros (=XT_PKG_ATERM= and
-=XT_PKG_SDF=) in AutoXT, so you can use them in your package as
+=XT_PKG_SDF=) in <nop>AutoXT, so you can use them in your package as
 well. The macro =XT_PKG_STRATEGOXT= can be used if you want to check
-that the provided configuration for StrategoXT is correct. This macro
-checks that some essential tools in StrategoXT are available at the
+that the provided configuration for <nop>StrategoXT is correct. This macro
+checks that some essential tools in <nop>StrategoXT are available at the
 specified prefix. If you want to, then you can also invoke the checks
 for the specific program directly: they are available as XT_PROG_
-macros in AutoXT.
+macros in <nop>AutoXT.
 
    (Martin Bravenboer)
 
----------++ Upgrade of SDF Packages
+---------++ Upgrade of <nop>SDF Packages
 
-StrategoXT 0.11 uses a new version of the SDF language and its
-implementation. The SDF packages are collected in the sdf2-bundle 2.2,
-which is available at the release page of StrategoXT 0.11.
+<nop>StrategoXT 0.11 uses a new version of the <nop>SDF language and its
+implementation. The <nop>SDF packages are collected in the sdf2-bundle 2.2,
+which is available at the release page of <nop>StrategoXT 0.11.
 
-%RED%Important: %ENDCOLODR% the new version of SDF contains a new
+%RED%Important: %ENDCOLOR% the new version of <nop>SDF contains a new
 construct for declaring start symbols of the syntax definition. In
-older versions of SDF there was no way to declare start
+older versions of <nop>SDF there was no way to declare start
 symbols. Instead, all declared sorts were implicitly added as start
 symbols. You must add this new explicit declaration of start-symbols
 to your syntax definition, otherwise the generated parse table will
@@ -185,8 +185,8 @@ constructs.
 
 ---------++ Support for XML Processing
 
-StrategoXT 0.11 has a new sub-package: =xml-front-. This package
-contains an SDF syntax definition for XML, a pretty-printer for XML,
+<nop>StrategoXT 0.11 has a new sub-package: =xml-front-. This package
+contains an <nop>SDF syntax definition for XML, a pretty-printer for XML,
 an embedding of XML in Stratego, and various tools for XML
 processing. The syntax definition of XML and the accompanying tools
 can be used for the implementation of XML transformations, for
@@ -200,15 +200,15 @@ which is in particular useful for generating XML in Stratego programs.
 
 ---------++ New and Improved Tools
 
-Many tools in StrategoXT have been improved. Some highlights:
+Many tools in <nop>StrategoXT have been improved. Some highlights:
 
 _pack-sdf_ now supports the "-Idef Foo.def" flag. This flag can
-be used to import SDF modules (.sdf) from an SDF syntax definition
+be used to import <nop>SDF modules (.sdf) from an <nop>SDF syntax definition
 (.def). The order of mixed -I and -Idef arguments is respected.
 
 _sdf2parenthesize_ is a new tool that generates a Stratego
 transformation tool that adds the necessary parentheses to an abstract
-syntax tree. The information is obtained from an SDF syntax
+syntax tree. The information is obtained from an <nop>SDF syntax
 definition. The tool handles associativity, relative priorities, and
 groups of associative productions. The tool has successfully been
 applied to improve the pretty-printers of Stratego in stratego-front
@@ -216,7 +216,7 @@ and Java in JavaFront. The tool is explained in more detail at the
 Tools web: [[Tools.SdfToParenthesize][sdf2parenthesize]].
 
 _sdf2rtg_, which is used for the generation of Stratego
-signatures, now uses the real start symbols of the SDF syntax
+signatures, now uses the real start symbols of the <nop>SDF syntax
 definition and not the declared sorts. sdf2rtg also complains if the
 syntax definition contains no start symbols at all.
 
@@ -261,32 +261,32 @@ strategy to commit the current chunk.
 
   (Eelco Visser)
 
----------++ Various improvements of XTC
+---------++ Various improvements of <nop>XTC
 
-In StrategoXT 0.11 AutoXT constructs build-time XTC repositories. Such
-a build-time XTC repository refers to files in the build tree, instead
-of the installation directory. The build-time repository is named XTC
+In <nop>StrategoXT 0.11 <nop>AutoXT constructs build-time <nop>XTC repositories. Such
+a build-time <nop>XTC repository refers to files in the build tree, instead
+of the installation directory. The build-time repository is named <nop>XTC
 and is created in the top-level directory of the build
 tree. Build-time repositories can be used to invoke tools in the build
-tree at build- or check-time. Thus, build-time XTC repositories can be
+tree at build- or check-time. Thus, build-time <nop>XTC repositories can be
 used to support a 'make check' without having the package
 installed. Indeed, the StrategoShell and JavaFront have already been
 changed to use the build-time repositories and now fully support a
-pre-install check and 'make distcheck'. For StrategoXT a 'make
+pre-install check and 'make distcheck'. For <nop>StrategoXT a 'make
 install' is still required before you can do a 'make check'.
 
-From StrategoXT 0.11, XTC tools can be compiled with stand-alone
-Stratego compiler. Until now, XTC tools could only be compiled in
-complete AutoXT-based packages. From this release, =strc= takes a flag
-=--xtc-repo= to set the default XTC repository when invoking strc as a
+From <nop>StrategoXT 0.11, <nop>XTC tools can be compiled with stand-alone
+Stratego compiler. Until now, <nop>XTC tools could only be compiled in
+complete <nop>AutoXT-based packages. From this release, =strc= takes a flag
+=--xtc-repo= to set the default <nop>XTC repository when invoking strc as a
 full program compiler. This argument has no meaning if strc is
-instructed to produce only C code. The definition of a default XTC
+instructed to produce only C code. The definition of a default <nop>XTC
 repository with the =--xtc-repo= flag is optional: if you leave it
-out, the tool will have no default XTC repository and will use the
-environment variable =XTC_REPOSITORY= or a repository that is passed
+out, the tool will have no default <nop>XTC repository and will use the
+environment variable =<nop>XTC_REPOSITORY= or a repository that is passed
 to the tool when it is invoked. In this way, it is now much easier to
 implement ad-hoc Stratego programs that invoke other tools using
-XTC. It might also be useful for users that are new to XTC and just
+<nop>XTC. It might also be useful for users that are new to <nop>XTC and just
 want to experiment without setting up an entire package.
 
    (Martin Bravenboer)
@@ -295,21 +295,21 @@ want to experiment without setting up an entire package.
 
 The global choice operator is now much easier to use. The global
 choice operator =++= was introduced in Stratego 0.7, but to use it,
-StrategoXT had to be configured with the location of the CPL. If the
-CPL was available, then it was used for _all_ programs compiled with
-this installation of StrategoXT. In StrategoXT 0.11 we have moved the
-choice for the implementation of choice-points to link-time. This is
-now much more flexible and easy to use: the new version of the CPL for
-StrategoXT (will be released in a few days) can be installed _after_
-the installation of StrategoXT and for each program you can decide if
-you want to use the implementation of global choices in the CPL. If a
-program uses the global choice, but it is not linked with the CPL,
-then linking will fail.
+<nop>StrategoXT had to be configured with the location of the CPL. If
+the CPL was available, then it was used for _all_ programs compiled
+with this installation of <nop>StrategoXT. In <nop>StrategoXT 0.11 we
+have moved the choice for the implementation of choice-points to
+link-time. This is now much more flexible and easy to use: the new
+version of the CPL for <nop>StrategoXT (will be released in a few
+days) can be installed _after_ the installation of <nop>StrategoXT and
+for each program you can decide if you want to use the implementation
+of global choices in the CPL. If a program uses the global choice, but
+it is not linked with the CPL, then linking will fail.
 
-If the CPL is installed and registered in the XTC repository of
-StrategoXT, then the Stratego compiler accepts a new argument =--cpl=,
+If the CPL is installed and registered in the <nop>XTC repository of
+<nop>StrategoXT, then the Stratego compiler accepts a new argument =--cpl=,
 which will link the program with the CPL. The argument is not visible
-if the CPL has not been registered in the XTC repository that is used
+if the CPL has not been registered in the <nop>XTC repository that is used
 by strc. The new configuration for the CPL and the new strc option for
 linking with the CPL, make it very easy to experiment with the global
 choice implementation.
@@ -318,17 +318,17 @@ choice implementation.
 
 ---------++ Many bug-fixes
 
-In StrategoXT 0.11 many bugs have been fixed in tools, the library,
+In <nop>StrategoXT 0.11 many bugs have been fixed in tools, the library,
 and the compiler. Some highlights:
 
    * fixed a bug in the implementation of =mkstemp= that causes
      segmentation faults in large programs that use this strategy. In
-     particular, all XTC tools in 0.9.4, 0.9.5 and 0.10 are
+     particular, all <nop>XTC tools in 0.9.4, 0.9.5 and 0.10 are
      affected. The segmentation fault occurs during garbage collection
      of ATerms by the ATerm library.
 
    * Several bugs have been fixed in the new implementation of dynamic
-     rules, which was introduced in StrategoXT 0.10. Also, the
+     rules, which was introduced in <nop>StrategoXT 0.10. Also, the
      performance of scope labeling has been improved by applying the
      new stateful sets.
 
@@ -382,4 +382,4 @@ Developments, beta tests, and bug fixes were carried out by
    * Eelco Visser
 
 Thanks a lot to the people working on the Transformers project. Their
-immediate feedback to changes in StrategoXT is very useful.
+immediate feedback to changes in <nop>StrategoXT is very useful.
