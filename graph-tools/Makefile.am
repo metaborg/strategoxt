@@ -25,7 +25,7 @@ SUBDIRS	= . src
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 
 EXTRA_DIST = ADDING-TOOLS VERSION \
-             package.conf bootstrap $(PACKAGE)-$(VERSION).pkg program-check.m4 \
+             package.conf bootstrap $(PACKAGE)-$(VERSION).pkg \
 	     Makefile.xt autoxt.m4
 
 ACLOCAL_AMFLAGS = -I .
