@@ -34,7 +34,7 @@ CLEANFILES = *.dep \
 	frontend-test \
 	rename-defs rename-defs.c
 
-TESTS = 
+#TESTS = 
 #needed-defs-test 
 #frontend-test 
 #extract-test

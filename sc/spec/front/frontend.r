@@ -1,6 +1,6 @@
 \literate[{\tt FRONTEND}]
 	
-% $Id: frontend.r,v 1.1 2001/08/22 09:34:58 visser Exp $
+% $Id: frontend.r,v 1.2 2002/03/07 23:21:40 stratego Exp $
 
 % Copyright (C) 1998, 1999, 2000 Eelco Visser <visser@acm.org>
 % 
@@ -46,7 +46,5 @@ strategies
 //; where(dtime; debug(!"  RulesToSdefs: "))
   ; strename
 //; where(dtime; debug(!"  strename: "))
-//  ; \Specification([_,Strategies(sdefs)]) -> sdefs\
-//; desugar-spec
   ; Specification([id,Strategies(desugar-spec)])
 \end{code}
