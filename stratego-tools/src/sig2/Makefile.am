@@ -5,15 +5,16 @@ SUBDIRS      	   = data
 
 bin_PROGRAMS     = sig2fc sig2typematch sig2fold-strategy
 libexec_PROGRAMS = astratego2tg tg2fc tg2typematch tg2fold-strategy fc-tree-grammar
+pkgdata_DATA     = tree-grammar.rtree
 
 SCFLAGS          = --main io-$* 
 STRINCLUDES      = -I $(STRATEGO_FRONT)/share/sdf/stratego-front \
                    -I $(STRATEGO_FRONT)/share/stratego-front \
                    -I $(XTC)/share/xtc
 
-EXTRA_DIST       = $(wildcard *.str) $(wildcard *.meta)
+EXTRA_DIST       = $(wildcard *.str) $(wildcard *.meta) $(pkgdata_DATA)
 CLEANFILES       = $(wildcard *.dep)
-BOOTCLEANFILES   = $(wildcard *.c) 
+BOOTCLEANFILES   = $(wildcard *.c) $(pkgdata_DATA)
 #tree-grammar-fc.str
 
 fc-tree-grammar.c: tree-grammar-fc.str
