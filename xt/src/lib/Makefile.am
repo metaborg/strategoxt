@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/06/08 16:09:09 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2001/06/08 16:12:26 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -41,8 +41,7 @@ CLEANFILES   = xt-paths.r.src
 pkgdata_DATA = xt-paths.r
 
 %.r : %.r.src Makefile
-	sed '
-	     s@__ATERMTOOLS__@$(ATERMTOOLS)@g;\
+	sed 's@__ATERMTOOLS__@$(ATERMTOOLS)@g;\
 	     s@__ASFIXTOOLS__@$(ASFIXTOOLS)@g;\
 	     s@__GRAPHTOOLS__@$(GRAPHTOOLS)@g;\
 	     s@__SDFTOOLS__@$(SDFTOOLS)@g;\
