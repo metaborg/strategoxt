@@ -17,9 +17,9 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 dnl 02111-1307, USA.
 
-dnl $Id: configure.in,v 1.41 2003/01/05 19:49:30 stratego Exp $
+dnl $Id: configure.in,v 1.42 2003/01/17 20:24:39 stratego Exp $
 
-AC_INIT([xt],[0.9beta10],[stratego-bugs@cs.uu.nl])
+AC_INIT([xt],[0.9beta11],[stratego-bugs@cs.uu.nl])
 AM_INIT_AUTOMAKE
 
 USE_XT_PACKAGES
@@ -30,7 +30,7 @@ AC_ARG_WITH(graphviz,
    GRAPHVIZ=${prefix})
 AC_SUBST(GRAPHVIZ)
 
-AC_REVISION($Id: configure.in,v 1.41 2003/01/05 19:49:30 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.42 2003/01/17 20:24:39 stratego Exp $)
 
 AC_PROG_CC
 AC_PROG_INSTALL

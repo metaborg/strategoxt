@@ -16,13 +16,13 @@ dnl    You should have received a copy of the GNU General Public License
 dnl    along with this program; if not, write to the Free Software
 dnl    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 dnl
-dnl $Id: configure.in,v 1.3 2003/01/05 19:49:29 stratego Exp $
+dnl $Id: configure.in,v 1.4 2003/01/17 20:24:38 stratego Exp $
 
 dnl Process this file with autoconf to produce a configure script.
 
-dnl $Id: configure.in,v 1.3 2003/01/05 19:49:29 stratego Exp $
+dnl $Id: configure.in,v 1.4 2003/01/17 20:24:38 stratego Exp $
 
-AC_INIT([boxenv],[0.9beta10],[stratego-bugs@cs.uu.nl])
+AC_INIT([boxenv],[0.9beta11],[stratego-bugs@cs.uu.nl])
 AM_INIT_AUTOMAKE
 
 dnl Package switches.
@@ -33,7 +33,7 @@ dnl AC_ARG_WITH(aterm,
 dnl    [  --with-aterm            Specify location of aterm library, default: ${prefix}], ATERM=$withval, ATERM=${prefix})
 dnl AC_SUBST(ATERM)
 
-AC_REVISION($Id: configure.in,v 1.3 2003/01/05 19:49:29 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.4 2003/01/17 20:24:38 stratego Exp $)
 
 AC_PROG_CC
 AC_PROG_INSTALL

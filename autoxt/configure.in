@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-AC_INIT([autoxt],[0.9beta10],[stratego-bugs@cs.uu.nl])
+AC_INIT([autoxt],[0.9beta11],[stratego-bugs@cs.uu.nl])
 AM_INIT_AUTOMAKE
 
 AC_OUTPUT(

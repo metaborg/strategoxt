@@ -38,7 +38,7 @@ install-%: %
            cp -f $< $$subdir ; \
 	done
 
-WWWSTRATEGO=sunshine.cs.uu.nl:/users/www/research/projects/stratego/ftp
+WWWSTRATEGO=sunshine.cs.uu.nl:/users/ftp/stratego/StrategoXT
 
 upload:
 	scp *.tar.gz */*.tar.gz $(WWWSTRATEGO)

@@ -78,6 +78,22 @@ SUMMARY OF CHANGES
 
 ------------------------------------------------------------------------------
 
+Version 0.9beta11 - under construction
+
+DOWNLOAD AND INSTALLATION
+
+The download page contains the source distribution and instructions
+for installation
+
+  * http://www.stratego-language.org/Stratego/StrategoRelease09
+
+CHANGES with respect to 0.9beta10
+
+ * STRATEGO-FRONT: support for ToBuild and FromApp to implement 
+   ASP style quotation after Jonne van Wijngaarden's idea.
+
+------------------------------------------------------------------------------
+
 Version 0.9beta10 - released January 12, 2003
 
 DOWNLOAD AND INSTALLATION

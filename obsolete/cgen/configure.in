@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2002 Eelco Visser <visser@acm.org>
+# Copyright (C) 2001-2003 Eelco Visser <visser@acm.org>
 # 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-AC_INIT([c-gen],[0.9beta10],[stratego-bugs@cs.uu.nl])
+AC_INIT([c-gen],[0.9beta11],[stratego-bugs@cs.uu.nl])
 AM_INIT_AUTOMAKE
 
 USE_XT_PACKAGES

@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-AC_INIT([srts],[0.9beta10],[stratego-bugs@cs.uu.nl])
+AC_INIT([srts],[0.9beta11],[stratego-bugs@cs.uu.nl])
 AM_INIT_AUTOMAKE
 
 AM_CONFIG_HEADER(config.h)
@@ -44,7 +44,7 @@ then
 AC_DEFINE(HAVE_CPL, 1, [Are we using the Choice Point Library?])
 fi
 
-AC_REVISION($Id: configure.in,v 1.29 2003/01/05 19:49:30 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.30 2003/01/17 20:24:38 stratego Exp $)
 
 AC_CHECK_FUNCS([getpagesize])
 AC_CHECK_HEADERS([stdlib.h])

@@ -31,7 +31,6 @@ strategies
         where <strename> |[ f(a1*) = s1 ]| => |[ f(a2*) = s2 ]|
     )
 
-
   inline-rules = 
     rec x(try(
 	Choice(x, x)
@@ -64,7 +63,7 @@ strategies
       new => x
       ; (<InlineStrat> Strategy|[ innermost_1(x()) ]|
          <+ if-verbose2(say(!"no definition of innermost_1: ")); fail)
-      ; (?|[ bottomup_1(rec z(x(); bottomup_1(z()) <+ id)) ]|
+      ; (?|[ bottomup_1(rec z(try_1(x(); bottomup_1(z())))) ]|
          <+ if-verbose1(debug(!"innermost is not innermost: ")); fail)
       ; if-verbose2(say(!"innermost is innermost "))
     )
