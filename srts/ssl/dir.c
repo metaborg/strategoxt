@@ -94,6 +94,15 @@ ATerm SSL_getcwd(void) {
 }
 
 /**
+ * chdir
+ */
+ATerm SSL_chdir(ATerm pathname) {
+  char* dir = AT_getString(pathname);
+  int result = chdir(dir);
+  return (ATerm) ATmakeInt(result);
+}
+
+/**
  * Read the entries from a directory and return a list
  * with all the names
  */

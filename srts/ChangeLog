@@ -1,3 +1,7 @@
+2003-12-24  Martin Bravenboer <martin@cs.uu.nl>
+	
+	* ssl/dir.[ch]: added chdir
+
 2003-12-19  Eelco Visser  <visser@cs.uu.nl>
 
 	* init-stratego-application.h, init-stratego-module.h: implement
