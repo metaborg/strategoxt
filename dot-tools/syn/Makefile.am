@@ -1,6 +1,6 @@
 include $(top_srcdir)/Makefile.xt
 
-SDFINCLUDES	= -I $(STRATEGO_FRONT)/share/stratego-front
+SDFINCLUDES	= -I $(STRATEGO_FRONT)/share/sdf/stratego-front
 
 pkgdata_DATA 	= $(wildcard *.sdf) \
 		  Dot.def Dot.tbl Dot.rtree Dot.pp.af \
