@@ -15,9 +15,9 @@ strategies
     )
 
   format-check-to-xhtml =
-      print-to-xhtml
+      print-to-xhtml-doc
 
-  print-to-xhtml =
+  print-to-xhtml-doc =
     !%>
       <?xml version="1.0"?>
       <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd" >
@@ -28,23 +28,28 @@ strategies
         </head>
         <body>
           <h1>format-check report</h1>
+
+          <p>
+            <% print-to-xhtml %>
+          </p>
         </body>
       </html>
     <%
     ; concat-content
 
-(*
-  ugly-print =
-    has-annotation < ugly-print-with-anno + ugly-print-without-anno
+  print-to-xhtml =
+       print-Int
+    <+ print-Real
+    <+ print-Str
+//    <+ print-List
+//    <+ print-Tuple
+    <+ print-Cnst
+    <+ print-App
 
-  ugly-print-without-anno =
-     UP-Int
-  <+ UP-Real
-  <+ UP-Str
-  <+ UP-List(ugly-print) 
-  <+ UP-Tuple(ugly-print)
-  <+ UP-Cnst	
-  <+ UP-App(ugly-print)
+(*
+  ugly-print-without-anno
+  // has-annotation < ugly-print-with-anno + ugly-print-without-anno
+
 
   ugly-print-with-anno :
     t -> |[  H hs=0 [  ~plain ~annos ] ]|
@@ -52,48 +57,68 @@ strategies
           ; < get-annotations
             ; pp-generic-list(ugly-print, !|[ "{}" ]|, !|[ "{" ]|, !|[ "}" ]|)
             > t => annos
+*)
 
-rules // string & int
+rules
 
-  UP-Str :
-    x -> |[ H hs=0 ["\"" ~lit:x "\""] ]|
-      where <is-string> x
+  /**
+   * @todo  escape the string.
+   */
+  print-Str :
+    s -> %>"<% !s :: cdata %>"<%
+      where <is-string> s
 
-  UP-Int :
-    x -> |[ NUM [ ~lit:s ] ]|
+  print-Int :
+    x -> %><% !s :: cdata %><%
       where <is-int> x
           ; <int-to-string> x => s
 
-  UP-Real :
-    x -> |[ NUM [ ~lit:s ] ]|
+  print-Real :
+    x ->  %><% !s :: cdata %><%
       where <is-real> x
           ; <real-to-string> x => s
 
-rules // constructor applications
+/**
+ * Constructor applications
+ */
+rules 
 
-  UP-Cnst : 
-    f#([]) -> |[ ~lit:f ]|
+  print-Cnst : 
+    f#([]) -> %><% !f :: cdata %>()<%
 
-  UP-App(s) =
-      where(<gt> (<term-size>, <get-max-term-size-config>))
-    < UP-App-worstcase(s)
-    + UP-App-nicecase(s)
-  
-  UP-App-nicecase(s):  
-    f#([x | xs]) -> |[ H hs=0 [ ~lit:f "(" ~<s> x ~*children ")"] ]|
-      where <map(! |[ H hs=1 [ "," ~<s> ] ]| )> xs => children
- 
-  UP-App-worstcase(s):  
+  print-App =
+    if <gt> (<term-size>, 8) then
+      print-App-worstcase
+    else
+      print-App-nicecase
+    end
+
+  print-App-nicecase:  
     f#([x | xs]) ->
-      |[  V vs=0 [
-            H hs=0 [ ~lit:f "(" ]
-            H hs=1 [" " ~<s> x]
-            ~*children
-            ")"
-          ]
-      ]|
-      where <map(! |[ H hs=1 [ "," ~<s> ] ]| )> xs => children
+      %><span><% !f :: cdata %>(<% !children :: content* %>)</span><%
+      where < map(print-to-xhtml)
+            ; <separate-by> (%>,<%, <id>)
+            > [x | xs] => children
 
+  print-App-worstcase:  
+    f#([x | xs]) ->
+      %><div>
+          <% !f :: cdata %>(
+            <div>
+              <div style="padding-left: 1em"><% <print-to-xhtml> x %></div>
+              <% <map(
+                   print-to-xhtml
+                 ; !%><div>
+                        <span style="position: absolute">,</span>
+                        <span style="padding-left: 1em"><% id %></span>
+                      </div><%
+                 )> xs
+               :: content* %>
+            </div>
+          )
+        </div><%
+
+(*
 rules // tuples and list      
          
   UP-Tuple(s) =
