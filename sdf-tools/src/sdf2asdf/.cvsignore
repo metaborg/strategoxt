@@ -1,9 +1,0 @@
-Makefile
-Makefile.in
-*.c
-*.dep
-*.so4
-*.tree
-*.tree1
-*.s1
-sdf2asdf
