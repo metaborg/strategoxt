@@ -1,6 +1,6 @@
 %{
 #include <aterm1.h>
-#include "stratego.h"
+#include <srts/stratego.h>
 
 extern int yylineno;
 extern char file_name[256];
@@ -108,13 +108,13 @@ int parse()
 %token IN
 
 %right COLON DOUBLECOLON
-%right PLUS LTPLUS
+%right PLUS PLUSPLUS LTPLUSPLUS LTPLUS PLUSGT PLUSPLUSGT
 %right SEMICOLON 
 %right DOUBLEARROW 
 %right LEFTDOUBLEARROW 
 %left  ASSIGN
 %right RBRACK
-%right NOT WHERE TEST ONE ALL THREAD SOMETOK MU LET
+%right NOT WHERE TEST ONE ALL THREAD SOMETOK MU LET BAGOF
 %right <real> REAL 
 %right <num> INT 
 
@@ -370,13 +370,24 @@ strategy
 	| LCURLY strategy RCURLY 	{$$ = App1("ScopeDefault", $2);}
 
 	| strategy SEMICOLON strategy	{$$ = App2("Seq", $1, $3);}
+
 	| strategy PLUS strategy 	{$$ = App2("Choice", $1, $3);}
+	| strategy PLUSPLUS strategy 	{$$ = App2("GChoice", $1, $3);}
+
         | strategy LTPLUS strategy   	{$$ = App2("LChoice", $1, $3);}
+        | strategy LTPLUSPLUS strategy  {$$ = App2("LGChoice", $1, $3);}
+
+        | strategy PLUSGT strategy   	{$$ = App2("LChoice", $3, $1);}
+        | strategy PLUSPLUSGT strategy  {$$ = App2("LGChoice", $3, $1);}
+
+	| BAGOF LPAREN strategy RPAREN	{$$ = App1("Bagof", $3);}
+
 	| MU id LPAREN strategy RPAREN{$$ = App2("Rec", $2, $4);}
 	| SOMETOK LPAREN strategy RPAREN{$$ = App1("Some", $3);}
 	| ONE LPAREN strategy RPAREN	{$$ = App1("One", $3);}
 	| ALL LPAREN strategy RPAREN	{$$ = App1("All", $3);}
 	| THREAD LPAREN strategy RPAREN	{$$ = App1("Thread", $3);}
+
 
 
 	| LPAREN strategylist RPAREN	{if(ATgetLength($2) == 1)

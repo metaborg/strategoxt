@@ -16,26 +16,27 @@
 # 02111-1307, USA.
 
 AC_INIT(src/stratego.c)
-AM_INIT_AUTOMAKE(srts,0.7beta)
+AM_INIT_AUTOMAKE(srts,0.7beta1)
 
 dnl Let aclocal use macros in ./config directory
 ACLOCAL="${ACLOCAL} -I ."
 
 AC_ARG_WITH(aterm, 
-  [  --with-aterm            Specify location of aterm library, default: \$prefix], 
+  [  --with-aterm          Specify location of aterm library, default: \$prefix], 
   ATERM=$withval, 
   ATERM="$prefix"
 )
 AC_SUBST(ATERM)
 
-#AC_ARG_WITH(cpl, 
-#  [  --with-cpl            Specify location of choice point library, default: \$prefix], 
-#  CPL=$withval, 
-#  CPL="$prefix"
-#)
-#AC_SUBST(CPL)
+AC_ARG_WITH(cpl, 
+  [  --with-cpl            Use the choice point library], 
+  CPL=$withval usecpl=true, 
+  usecpl=false
+)
+AC_SUBST(CPL)
+AM_CONDITIONAL(USECPL, test x$usecpl = xtrue)
 
-AC_REVISION($Id: configure.in,v 1.10 2002/01/10 21:25:18 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.11 2002/01/22 21:38:49 stratego Exp $)
 
 AC_PROG_CC
 AC_PROG_RANLIB
@@ -64,9 +65,9 @@ AC_SUBST(RELEASE)
 AC_SUBST(STRATEGO)
 AC_SUBST(GPP)
 
-AC_OUTPUT( \
-	Makefile \
-	README \
-	src/Makefile \
-	src/make_rules \
+AC_OUTPUT(
+	Makefile
+	README 
+	src/Makefile
+	src/make_rules
 )

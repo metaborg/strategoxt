@@ -1,3 +1,16 @@
+2002-01-15  Eelco Visser  <visser@acm.org>
+
+	* src/: Adapted the Stratego Run-Time System to (conditionally)
+	include the Nancy Choice Point Library. This provides an
+	alternative implementation for choice from the current
+	one---although it comes down to the same thing, i.e., setjmp and
+	longjmp. The advantage of this addition is that it enables global
+	choice. For programs only using local choice this extension is
+	transparent. By choosing the --with-cpl switch of srts/configure
+	the choice point library will be used. By default the old
+	implementation is used. For programs using the new ++ and <++
+	operators the --with-cpl flag should be used.
+
 2002-01-10  Eelco Visser  <visser@acm.org>
 
 	* Release 0.7beta

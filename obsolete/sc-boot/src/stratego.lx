@@ -1,7 +1,7 @@
 %{         
 
 #include <aterm2.h>
-#include "stratego.h"
+#include <srts/stratego.h>
 #include "stratego.grm.tab.h"
 #include "options.h"
 
@@ -120,6 +120,8 @@ endliterate	{backslash}"endliterate"
 <INITIAL>"let"		return LET;
 <INITIAL>"in"		return IN;
 
+<INITIAL>"bagof"	return BAGOF;
+
 <INITIAL>"?" 	   	return MATCHe;
 <INITIAL>"!" 		return BUILDe;
 
@@ -142,7 +144,11 @@ endliterate	{backslash}"endliterate"
 <INITIAL>":-"		return BACKARROW;
 <INITIAL>":="		return ASSIGN;
 <INITIAL>"+"		return PLUS;
+<INITIAL>"++"		return PLUSPLUS;
 <INITIAL>"<+"		return LTPLUS;
+<INITIAL>"+>"		return PLUSGT;
+<INITIAL>"<++"		return LTPLUSPLUS;
+<INITIAL>"<++"		return PLUSGT;
 <INITIAL>"_"		return UNDERSCORE;
 <INITIAL>"**"		return STARSTAR;
 <INITIAL>"*"		return ASTERISK;

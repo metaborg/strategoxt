@@ -1,5 +1,5 @@
-#include <stratego.h>
-#include <stratego-lib.h>
+#include <srts/stratego.h>
+#include <ssl/stratego-lib.h>
 Symbol sym_None_0;
 Symbol sym_Some_1;
 Symbol sym_Program_1;

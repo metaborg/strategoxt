@@ -1,5 +1,5 @@
 AC_INIT(Makefile.in)
-AM_INIT_AUTOMAKE(stratego,0.7beta)
+AM_INIT_AUTOMAKE(stratego,0.7beta1)
 
 PKGS="srts ssl cgen sc-boot gpp-boot sc"
 AC_SUBST(PKGS)
@@ -10,6 +10,14 @@ AC_ARG_WITH(aterm,
   ATERM="$prefix"
 )
 AC_SUBST(ATERM)
+
+AC_ARG_WITH(cpl, 
+  [  --with-cpl            Use the choice point library], 
+  CPL=$withval usecpl=true, 
+  usecpl=false
+)
+AC_SUBST(CPL)
+AM_CONDITIONAL(USECPL, test x$usecpl = xtrue)
 
 top_srcdir=`pwd`
 
@@ -25,6 +33,7 @@ AB_CONFIG_PKG(aterm,
 )
 AB_CONFIG_PKG(srts,
    --with-aterm=${ATERM}
+   --with-cpl=${CPL}
 )
 AB_CONFIG_PKG(ssl,
    --with-aterm=${ATERM}

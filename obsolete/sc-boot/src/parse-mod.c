@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 */
 
 #include <aterm2.h>
-#include "stratego.h"
+#include <srts/stratego.h>
 #include "options.h"
 
 int parse();

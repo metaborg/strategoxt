@@ -4,9 +4,9 @@ News about Stratego releases
 
 ------------------------------------------------------------------------------
 
-Version 0.7beta
+Version 0.7beta1
 
- released: January 9, 2002
+ released: January 17, 2002
 
 SUMMARY OF CHANGES
 
@@ -14,13 +14,77 @@ SUMMARY OF CHANGES
 
  * Support for `native' ATerm lists and tuples
  * List traversal: lists considered as varyadic constructors
+ * Global choice operators support global backtracking
 
- * Requires aterm-1.6.5
- * Might break existing code based
+ * Dependencies
+   - aterm-1.6.5: aterm library with support for tuples
+   - cpl-stratego-0.4: choice point library from INRIA (Nancy)
+
+ * Might break existing code based on generic tuples (TCons/TNil)
  * XT needs to be updated
 
- * See http://www.stratego-language.org/Stratego/StrategoRelease07
-   for more details
+MORE INFORMATION
+
+ * http://www.stratego-language.org/Stratego/StrategoRelease07
+
+CONTRIBUTIONS
+
+ * Bug reports by Martin Bravenboer (<++)
+
+LANGUAGE
+
+ * The operators ++ and <++ provide global non-deterministic and
+   global deterministic choice, respectively.
+
+ * For symmetry, the choice operators +> and ++> give priority
+   to their _right_ strategy argument.
+
+ * The operator bagof(s) returns the list of all possible
+   results produced by s.
+
+ * The operator cpl-loaded (and friends) tell you whether you
+   are running in an environment with the choice point library
+   loaded (module cpl.r in the library).
+
+COMPILER
+
+ * The translation to C has been adapted to support native lists.
+
+ * Implementation of native tuples is handled in the front-end; tuples
+   are just special constructors.
+
+ * The C back-end has been adapted to perform constant term caching.
+   This means that terms that are constant _at compile time_ are
+   constructed once at program startup and cached in global variables
+   for later use.
+
+RUN TIME SYSTEM
+
+ * Adapted the Stratego Run-Time System to (conditionally) include the
+   Nancy Choice Point Library. This provides an alternative
+   implementation for choice from the current one---although it comes
+   down to the same thing, i.e., setjmp and longjmp. The advantage of
+   this addition is that it enables global choice. For programs only
+   using local choice this extension is transparent. By choosing the
+   --with-cpl switch of srts/configure the choice point library will
+   be used. By default the old implementation is used. For programs
+   using the new ++ and <++ operators the --with-cpl flag should be
+   used.
+
+ * Choice buffer overflow repaired (?) when using cpl
+
+ * Include files are now installed in $prefix/include/srts to avoid 
+   file name clashes with other packages.
+
+LIBRARY
+
+ * Include files are installed in $prefix/include/ssl to avoid 
+   file name clashes with other packages.
+
+ * cpl.r: test if Choice Point Library is installed. 
+   - cpl-loaded: succeeds if CPL is loaded
+   - if-cpl-loaded(s): do s when loaded, otherwise exit 0
+   - if-cpl-loaded(s1, s2): do s1 when loaded, otherwise s2
 
 ------------------------------------------------------------------------------
 

@@ -47,40 +47,12 @@ void init_constructors_srts()
 
 ATerm stratego__main(ATerm);
 void init_constructors(void);
-
-// Choice point implementation
-
-#define JMPBUFS 16384
-jmp_buf jmpbufs[JMPBUFS];
-unsigned int nr_jmpbuf = 0;
-
-inline unsigned int allocJmpBuf()
-{
-    assert(nr_jmpbuf < JMPBUFS);
-    return nr_jmpbuf++;
-}
-
-ATerm _fail(ATerm t)
-{
-  // using setjmp and longjmp
-  // ATfprintf(stderr, "_fail(%t) %d\n", t, nr_jmpbuf);
-  assert(nr_jmpbuf > 0);
-  longjmp(jmpbufs[--nr_jmpbuf], 1);
-  
-  // localFail();
-  //fail();
-  return (ATerm)ATempty;
-}
-
-/* choice: s1 <+ s2
-   if(PushChoice() == 0) {s1; PopChoice();} else s2
-*/
+//oid init_constant_terms(void);
 
 ATerm _id(ATerm t)
 {
   return(t);
 }
-
 
 // Traversal combinators
 
@@ -350,16 +322,85 @@ ATermList CheckATermList(ATerm t)
   return (ATermList) t;
 }
 
+// Bag
+
+#define BAGS 256
+static ATermList bag[BAGS];
+int bag_ptr=-1;
+
+ATerm _bagof(ATerm t, ATerm f(ATerm))
+{
+  bag_ptr++;
+  assert(bag_ptr < BAGS);
+  bag[bag_ptr] = ATempty;
+
+  if(GlobalPushChoice() == 0)
+    {
+      ATerm res = f(t);
+      bag[bag_ptr] = ATinsert(bag[bag_ptr], res);
+      fail();
+    }
+  return (ATerm)ATreverse(bag[bag_ptr--]);
+}
+
+// Protection of CPL stack
+
+void *at_malloc_protect(int size) {
+  void *start = malloc(size);
+  ATprotectMemory(start,size);
+  return start;
+}
+
+void *at_realloc(char *old,int size) {
+  void *start = realloc(old,size);
+  if(!start) {
+    printf("at_realloc: out of memory\n");
+    exit(1);
+  }
+  return start;
+}
+
+void *at_realloc_protect(char *old,int size) {
+  void *start = realloc(old,size);
+  if(!start) {
+    printf("at_realloc_protect: out of memory\n");
+    exit(1);
+  }
+  ATunprotectMemory(old);
+  ATprotectMemory(start,size);
+  return start;
+}
+
+// Main function to be used by compiled programs
+
 ATerm main_0(ATerm);
 
 int main(int argc, char *argv[])
 {
-  //long bp;
+
+#ifdef USECPL
+  long bp;
+#endif
+
   ATerm out_term; 
   ATermList in_term;
   int i; 
-  // choice_init(&bp); 
+
+  //ATfprintf(stderr, "main a\n");
+
+#ifdef USECPL
+  //ATfprintf(stderr, "using cpl\n");
+  CPL_init_malloc_protect(at_malloc_protect);
+  CPL_init_malloc(malloc);
+  CPL_init_realloc_protect(at_realloc_protect);
+  CPL_init_realloc(at_realloc);
+                                   
+  choice_init(&bp); 
+#endif
+
   ATinit(argc, argv, &out_term);
+
+  ATprotectArray(bag, BAGS);
   init_constructors_srts();
   init_constructors();
 
@@ -368,21 +409,18 @@ int main(int argc, char *argv[])
   set_segv_handler();
 #endif
 
-  in_term = ATempty; // (ATerm)ATmakeAppl0(sym_Nil_0);
+  //ATfprintf(stderr, "main b\n");
+
+  in_term = ATempty; 
   for(i = argc - 1; i >= 0; i--)
     {
-      /*
-      in_term = (ATerm) 
-	ATmakeAppl2(sym_Cons_2,
-		    (ATerm) ATmakeAppl0(ATmakeSymbol(argv[i],0,ATtrue)),
-		    in_term);
-      */
       in_term = ATinsert(in_term, (ATerm) ATmakeAppl0(ATmakeSymbol(argv[i],0,ATtrue)));
     }
 
   if(PushChoice() == 0) {
     out_term = main_0((ATerm)in_term); 
     ATfprintf(stdout, "%t\n", out_term);
+    //ATfprintf(stderr, "main c\n");
     exit(0);
   } else {
     ATfprintf(stderr, "rewriting failed\n");
