@@ -200,5 +200,7 @@
         V is=2 [H[KW["context-free"] KW["start-symbols"]] HV[_1]],
    kernel-start-symbols       -- V is=2 [KW["start-symbols"] HV[_1]],
    lexical-start-symbols      --
-        V is=2 [H[KW["lexical"] KW["start-symbols"]] HV[_1]]
+        V is=2 [H[KW["lexical"] KW["start-symbols"]] HV[_1]],
+
+   bracket-symbol             -- KW["("] _1 KW[")"]
 ]
