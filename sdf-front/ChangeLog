@@ -1,3 +1,17 @@
+2004-02-18  Martin Bravenboer  <martin@cs.uu.nl>
+
+	* parse/pack-sdf.str: moved from sdf-tools to sdf-front.
+
+	* sig/version-2.1: moved old signatures to subdirectory for the
+	old version of sdf.
+
+	* sig/version-pgen-2.0/Sdf.str: Stratego signature voor SDF2 as it
+	appears in pgen 2.0. This signature has been generated using
+	sdf2rtg and rtg2sig of stratego-regular since sdf2sig cannot
+	handle these syntax definitions. The signature is not generated in
+	the build process because stratego-regular is not yet in
+	StrategoXT.
+	
 2004-02-13  Martin Bravenboer  <martin@cs.uu.nl>
 
 	* xtc/sdf-options.str: moved common sdf related command line
