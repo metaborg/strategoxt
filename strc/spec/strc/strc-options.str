@@ -42,8 +42,12 @@ strategies
         , "-lATerm-gcc"
         , "-lm"])
     ; <set-config> ("-CD", [])
+    ; <set-config> ("-Xlinker", <strc-system-ldflags> ())
     ; <set-config> ("--dr", "new")
   )
+
+  strc-system-ldflags =
+    <prim("STRC_SYSTEM_LDFLAGS")> ()
 
   get-include-dirs =
     <conc> (<get-config> "-I"
@@ -101,7 +105,16 @@ strategies
 
   + ArgOption("-la",
 	where(<extend-config>("-CL", [<file-exists <+ <concat-strings; xtc-find <+ <exit> 1> ["lib", <id>, ".la"]>])); !(),
-	!"-la <name>         Search the libtool library lib<name>.la when linking.\n")
+	!"-la <name>         Search the libtool library lib<name>.la when linking.")
+
+  /**
+   * @todo Replace -CL with more general -Xlinker
+   */
+  + ArgOption("-Xlinker",
+	where(<extend-config>("-Xlinker", [<id>])); !(),
+	!"-Xlinker <arg>     Pass <arg> on to the linker")
+
+  + ArgOption(fail, fail, !"")
 
   + ArgOption("--xtc-repo",
 	where(<extend-config>("-CD", [<concat-strings> ["-DXTC_REPOSITORY()=ATmakeString(\"", <id>, "\")"]])); !(),

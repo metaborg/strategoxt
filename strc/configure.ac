@@ -6,14 +6,15 @@ AM_INIT_AUTOMAKE
 XT_USE_XT_PACKAGES
 XT_TERM_DEFINE
 
-
-EXE=""
-AC_ARG_WITH(exe,    
-  [  --with-exe              Extension of executables], 
-  EXE=".exe", 
-  EXE=""
-)
-AC_SUBST(EXE)
+if test "$xt_darwin" = "yes"; then
+  AC_DEFINE([STRC_SYSTEM_LDFLAGS()],
+            [((ATerm) ATmakeList1(ATmakeString("-bind_at_load")))],
+            [Additional arguments to pass to the linker.])
+else
+  AC_DEFINE([STRC_SYSTEM_LDFLAGS()],
+            [((ATerm) ATmakeList0())],
+            [Additional arguments to pass to the linker.])
+fi
 
 libexecdir=\$\{exec_prefix\}/libexec/$PACKAGE
 AC_SUBST(libexecdir)

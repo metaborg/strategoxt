@@ -1,3 +1,18 @@
+2005-02-25  Martin Bravenboer <martin@cs.uu.nl>
+
+	* configure.ac: AC_DEFINE STRC_SYSTEM_LDFLAGS to handle system
+	specific linking problems. Added this to solve the -bind_at_load
+	problem in at Mac OS X when using the stand-alone strc.
+
+	* spec/strc/strc.str: pass -Xlinker config to libtool.
+
+	* spec/strc/strc-options.str: add -Xlinker option to pass system
+	specific to the linker (option name comes from gcc). The initial
+	value of this option is the list constructed by the
+	STRC_SYSTEM_LDFLAGS. that has been AC_DEFINED in configure.ac
+
+	* configure.ac: removed the EXE stuff: use EXEEXT.
+	
 2005-02-06  Martin Bravenboer <martin@cs.uu.nl>
 
 	* spec/strc/strc-options.str: changed the default value of --dr to
