@@ -1,0 +1,78 @@
+# Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
+# 
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+AC_INIT(src/connect.c)
+AM_INIT_AUTOMAKE(stratego-connect,0.8alpha3)
+
+AC_ARG_WITH(aterm, 
+ [  --with-aterm          Specify location of ATerm library, default: \$prefix], 
+ ATERM=$withval, 
+ ATERM="$prefix"
+)
+AC_SUBST(ATERM)
+
+AC_ARG_WITH(srts, 
+  [  --with-srts  Specify location of Stratego run-time system, default: \$prefix], 
+  STRATEGORTS=$withval, 
+  STRATEGORTS="$prefix"
+)
+AC_SUBST(STRATEGORTS)
+
+AC_ARG_WITH(ssl, 
+  [  --with-ssl  Specify location of Stratego Standard Library,  default: \$prefix], 
+  SSL=$withval, 
+  SSL="$prefix"
+)
+AC_SUBST(SSL)
+
+AC_ARG_WITH(stratego, 
+  [  --with-stratego  Specify location of Stratego Compiler (for testing), default: \$prefix], 
+  STRATEGO=$withval, 
+  STRATEGO="$prefix"
+)
+AC_SUBST(STRATEGO)
+
+AC_REVISION($Id: configure.in,v 1.1 2002/06/09 16:49:05 stratego Exp $)
+
+AC_PROG_CC
+AC_PROG_RANLIB
+AC_PROG_YACC
+AM_PROG_LEX
+AC_PROG_INSTALL
+
+TOP_SRCDIR=`pwd`
+AC_SUBST(TOP_SRCDIR)
+
+changequote(,)dnl
+case $VERSION in
+ [0-9]*.[0-9]*[a-z])  DIST_ALPHA="README-alpha";;
+ [0-9]*.[0-9]*.[0-9]*) DIST_ALPHA="README-alpha";;
+ *) DIST_ALPHA=;;
+esac
+changequote([, ])dnl
+AC_SUBST(DIST_ALPHA)
+
+AC_SUBST(ATERM)
+AC_SUBST(RELEASE)
+AC_SUBST(STRATEGORTS)
+
+AC_OUTPUT( \
+	Makefile \
+	README \
+	src/Makefile \
+	spec/Makefile \
+)
