@@ -1,0 +1,98 @@
+
+module Stratego-Sugar-4
+imports list-cons option
+signature
+  constructors
+    Overlay        : Id * List(Id) * Term -> Overlay
+                   : Strategy -> StrategyAngle
+    ListVar        : LId -> LID
+    Overlays       : List(Overlay) -> Decl
+    Rules          : List(Def) -> Decl
+    Signature      : List(Sdecl) -> Decl
+    Strategies     : List(Def) -> Decl
+    Imports        : List(ModName) -> Decl
+    Specification  : List(Decl) -> Module
+    Module         : ModName * List(Decl) -> Module
+                   : Strategy -> StrategyMid
+    DefaultVarDec  : ID -> Typedid
+    VarDec         : ID * Type -> Typedid
+    ExtSDef        : Id * List(Typedid) * List(Typedid) -> StrategyDef
+    ExtSDefInl     : Id * List(Typedid) * List(Typedid) * Strategy -> StrategyDef
+    SDefT          : Id * List(Typedid) * List(Typedid) * Strategy -> StrategyDef
+    SVar           : Id -> SVar
+                   : StrategyDef -> Def
+    FunType        : List(Type) * Type -> Type
+    ConstType      : Sort -> Type
+    OpDeclInj      : Type -> Opdecl
+    OpDeclQ        : String * Type -> Opdecl
+    OpDecl         : Id * Type -> Opdecl
+    SortTuple      : List(Sort) -> Sort
+    SortListTl     : List(Sort) * Sort -> Sort
+    SortList       : List(Sort) -> Sort
+    Sort           : Id * List(Sort) -> Sort
+    SortNoArgs     : UCID -> Sort
+    SortVar        : LCID -> Sort
+    Constructors   : List(Opdecl) -> Sdecl
+    Sorts          : List(Sort) -> Sdecl
+    Con4           : Var * Term * Strategy * Id -> Term
+    Con3           : Var * Term * Strategy -> Term
+    Con            : Var * Term * Id -> Term
+    Con1           : Var * Term -> Term
+    RootApp        : StrategyAngle -> Term
+    App            : Strategy * Term -> Term
+    BuildDefault   : Term -> Term
+    As             : Var * Term -> Term
+    Anno           : PreTerm * PreTerm -> Term
+    Wld            : Term
+                   : Var -> Term
+    RootApp        : StrategyAngle -> PreTerm
+    App            : Strategy * Term -> PreTerm
+    BuildDefaultPT : PreTerm -> PreTerm
+    Explode        : Term * Term -> PreTerm
+    OpQ            : String * List(Term) -> PreTerm
+    Op             : Id * List(Term) -> PreTerm
+    Str            : String -> PreTerm
+    Real           : Real -> PreTerm
+    Int            : Int -> PreTerm
+    Wld            : PreTerm
+                   : Var -> PreTerm
+                   : LId -> ID
+                   : Id -> ID
+    Var            : LID -> Var
+    SeqVar         : Var -> Var
+    Var            : Id -> Var
+                   : String -> String
+                   : String -> Real
+                   : String -> Int
+                   : String -> UCID
+                   : String -> LCID
+                   : String -> LId
+                   : String -> ModName
+    GChoice        : Strategy * Strategy -> Strategy
+    Choice         : Strategy * Strategy -> Strategy
+    Test           : Strategy -> Strategy
+    Where          : Strategy -> Strategy
+    Not            : Strategy -> Strategy
+    Rec            : Id * Strategy -> Strategy
+    LChoice        : Strategy * Strategy -> Strategy
+    Call           : SVar * List(Strategy) -> Strategy
+    Thread         : Strategy -> Strategy
+    All            : Strategy -> Strategy
+    One            : Strategy -> Strategy
+    Some           : Strategy -> Strategy
+    Path           : Int * Strategy -> Strategy
+    PrimT          : String * List(Strategy) * List(Term) -> Strategy
+    Bagof          : Strategy -> Strategy
+    GuardedLChoice : Strategy * StrategyMid * Strategy -> Strategy
+    LGChoice       : Strategy * Strategy -> Strategy
+    Seq            : Strategy * Strategy -> Strategy
+    Scope          : List(ID) * Strategy -> Strategy
+    Build          : Term -> Strategy
+    Match          : Term -> Strategy
+    Id             : Strategy
+    Fail           : Strategy
+    CallT          : SVar * List(Strategy) * List(Term) -> Strategy
+    Let            : List(Def) * Strategy -> Strategy
+    Cong           : Id * List(Strategy) -> Strategy
+                   : String -> Id
+    Mod            : String * String -> Id

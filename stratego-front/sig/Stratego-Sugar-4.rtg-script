@@ -1,0 +1,12 @@
+[ Read("Stratego-Sugar-3")
+
+, DeleteNonterm("Rule")
+, DeleteNonterm("RuleDef")
+, DeleteTerm(Term("SRule"))
+
+, DeleteTerm(Term("ScopeDefault"))
+, DeleteNonterm("RuleDec")
+
+, Reduce
+
+]
