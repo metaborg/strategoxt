@@ -1,0 +1,11 @@
+module C-Enumerators
+signature
+  constructors
+    Enum : Option(IdOrTypedefName) * List(Enumerator) -> EnumSpecifier
+    EnumId : IdOrTypedefName -> EnumSpecifier
+signature
+  constructors
+    Enumerator : IdOrTypedefName * Option(EnumeratorValue) -> Enumerator
+signature
+  constructors
+    EnumVal : ConstantExp -> EnumeratorValue

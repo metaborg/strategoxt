@@ -1,0 +1,9 @@
+module C-ParameterDeclarators
+signature
+  constructors
+    ParamDecl : ParamDeclTypeSpec * Option(Either(AbstractDeclarator, IdDeclarator)) -> ParamDeclaration
+    ParamDecl2 : Either(DeclarationSpecifier, TypeSpecifier) * TypedefDeclarator -> ParamDeclaration
+signature
+  constructors
+    TypeName : TypeSpecifier * Option(AbstractDeclarator) -> TypeName
+    TypeName : List(TypeQualifier) * Option(AbstractDeclarator) -> TypeName

@@ -1,0 +1,9 @@
+module C-Constants
+signature
+  constructors
+    IntConst : IntLiteral -> Constant
+    FloatConst : FloatLiteral -> Constant
+    HexConst : HexLiteral -> Constant
+    CharConst : CharLiteral -> Constant
+    OctConst : OCTALconstant -> Constant
+    StringLit : List(StringLiteral) -> StringLiteralList

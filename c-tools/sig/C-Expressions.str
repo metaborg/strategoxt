@@ -1,0 +1,86 @@
+module C-Expressions
+signature
+  constructors
+    ArrayIndex : PostfixExp * CommaExp -> PostfixExp
+    FunCall : PostfixExp * List(AssignExp) -> PostfixExp
+    Field : PostfixExp * MemberName -> PostfixExp
+    DerefMember : PostfixExp * MemberName -> PostfixExp
+    PostIncr : PostfixExp -> PostfixExp
+    PostDecr : PostfixExp -> PostfixExp
+signature
+  constructors
+    PreIncr : UnaryExp -> UnaryExp
+    PreDecr : UnaryExp -> UnaryExp
+    Address : CastExp -> UnaryExp
+    Deref : CastExp -> UnaryExp
+    Positive : CastExp -> UnaryExp
+    Negative : CastExp -> UnaryExp
+    Tilde : CastExp -> UnaryExp
+    Negation : CastExp -> UnaryExp
+    SizeofExp : UnaryExp -> UnaryExp
+    SizeofType : TypeName -> UnaryExp
+signature
+  constructors
+    TypeCast : TypeName * CastExp -> CastExp
+signature
+  constructors
+    Mul : MulExp * CastExp -> MulExp
+    Div : MulExp * CastExp -> MulExp
+    Mod : MulExp * CastExp -> MulExp
+signature
+  constructors
+    Add : AddExp * MulExp -> AddExp
+    Subt : AddExp * MulExp -> AddExp
+signature
+  constructors
+    ShiftLeft : ShiftExp * AddExp -> ShiftExp
+    ShiftRight : ShiftExp * AddExp -> ShiftExp
+signature
+  constructors
+    Lt : RelExp * ShiftExp -> RelExp
+    Gt : RelExp * ShiftExp -> RelExp
+    Le : RelExp * ShiftExp -> RelExp
+    Ge : RelExp * ShiftExp -> RelExp
+signature
+  constructors
+    Equal : EqualityExp * RelExp -> EqualityExp
+    NotEqual : EqualityExp * RelExp -> EqualityExp
+signature
+  constructors
+    And : EqualityExp * ANDExpn -> ANDExp
+signature
+  constructors
+    ExOr : ANDExp * ExclORExp -> ExclORExp
+signature
+  constructors
+    IncOr : ExclORExp * InclORExp -> InclORExp
+signature
+  constructors
+    LAnd : LogicalANDExp * InclORExp -> LogicalANDExp
+signature
+  constructors
+    LOr : LogicalORExp * LogicalANDExp -> LogicalORExp
+signature
+  constructors
+    IfExp : LogicalORExp * CommaExp * CondExp -> CondExp
+signature
+  constructors
+    Assign : UnaryExp * AssignOp * AssignExp -> AssignExp
+signature
+  constructors
+    AssignEq : AssignOp
+    AssignMul : AssignOp
+    AssignDiv : AssignOp
+    AssignMod : AssignOp
+    AssignPlus : AssignOp
+    AssignMin : AssignOp
+    AssignSL : AssignOp
+    AssignSR : AssignOp
+    AssignAnd : AssignOp
+    AssignExp : AssignOp
+    AssignOr : AssignOp
+signature
+  constructors
+    Comma : AssignExp * CommaExp -> CommaExp
+    EmptyExp : CommaExpOpt
+signature

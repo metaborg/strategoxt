@@ -1,0 +1,6 @@
+module C-Identifiers
+imports C-Keywords
+signature
+  constructors
+    Id : ID -> IDENTIFIER
+    TypeId : ID -> TypedefName

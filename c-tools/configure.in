@@ -1,0 +1,18 @@
+AC_INIT([c-tools],[0.9beta7],[stratego-bugs@cs.uu.nl])
+AM_INIT_AUTOMAKE
+
+USE_XT_PACKAGES
+
+AC_PROG_CC
+AC_PROG_INSTALL
+
+AC_CONFIG_FILES([\
+	README NEWS \
+	Makefile \
+	syn/Makefile \
+	pp/Makefile \
+	sig/Makefile \
+	xtc-tools/Makefile \
+])
+AC_OUTPUT
+

@@ -1,0 +1,39 @@
+module C-Constants
+exports
+  context-free syntax
+    IntLiteral   -> Constant {cons("IntConst")}
+    FloatLiteral -> Constant {cons("FloatConst")}
+    HexLiteral   -> Constant {cons("HexConst")}
+    CharLiteral  -> Constant {cons("CharConst")}
+
+    %%% TODO: Undefined non-terminal??
+    OCTALconstant -> Constant {cons("OctConst")}
+
+    %%% TODO: Why a list??
+    StringLiteral+ -> StringLiteralList {cons("StringLit")}
+
+  lexical syntax
+    [L]? "\"" StringChar* "\"" -> StringLiteral
+    [0-9]+                     -> IntLiteral
+    "0" [xX] [0-9]+            -> HexLiteral
+    [L]? "'" Char "'"          -> CharLiteral
+
+    "." [0-9]+ ( [eE] "-"? [0-9]+ )? [fFlL]?        -> FloatLiteral
+    [0-9]+ "." [0-9]* ( [eE] "-"? [0-9]+ )? [fFlL]? -> FloatLiteral
+    [0-9]+ [eE] "-"? [0-9]+ [fFlL]?                 -> FloatLiteral
+
+    ~[\\\'\n]                  -> Char
+    [\\] [ntvbrfa\\\?\'\"]     -> Char
+    [\\] [x] [0-9A-E] [0-9A-E] -> Char
+    Octal                      -> Char
+
+    ~[\\\"\n]                  -> StringChar
+    [\\] [ntvbrfa\\\?\"]       -> StringChar
+    [\\] [x] [0-9A-E] [0-9A-E] -> StringChar
+    Octal                      -> StringChar
+
+    [\\] [0-7] [0-7]? [0-7]?   -> Octal
+
+  lexical restrictions
+    IntLiteral HexLiteral FloatLiteral -/- [0-9]
+

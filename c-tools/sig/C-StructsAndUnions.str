@@ -1,0 +1,17 @@
+module C-StructsAndUnions
+signature
+signature
+  constructors
+    Struct : Option(IdOrTypedefName) * List(MemberDeclaration) -> StructSpecifier
+    StructId : IdOrTypedefName -> StructSpecifier
+signature
+  constructors
+    Union : Option(IdOrTypedefName) * List(MemberDeclaration) -> UnionSpecifier
+    UnionId : IdOrTypedefName -> UnionSpecifier
+signature
+  constructors
+    MemDecl : TypeSpecifier * List(MemberDeclarator) -> MemberDeclaration
+    MemDecl : List(TypeQualifier) * List(MemberIdDeclarator) -> MemberDeclaration
+signature
+  constructors
+    BitFieldSize : Option(Declarator) * ConstantExp -> MemberDeclarator

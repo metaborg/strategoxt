@@ -1,0 +1,5 @@
+2002-11-23  Martin Bravenboer <martin@mbravenboer.org>
+
+  * Small changes to configure.in to profit from new
+    autotools.
+
