@@ -5,8 +5,8 @@ Release: @SVN_REVISION@
 License: LGPL
 Group: Development/Languages/Stratego
 URL: http://www.stratego-language.org
-Source: @PACKAGE_TARNAME@-%{version}.tar.gz
-BuildRoot: %{_tmppath}/%{name}-%{version}-buildroot
+Source: @PACKAGE_TARNAME@-@VERSION@.tar.gz
+BuildRoot: %{_tmppath}/%{name}-@VERSION@-buildroot
 Requires: aterm >= 2.1
 Requires: sdf2-bundle >= 2.1
 Provides:  %{name} = %{version}
