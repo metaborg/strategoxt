@@ -1,4 +1,4 @@
-module Fdl
+module fdl
 
 signature
 constructors
@@ -19,4 +19,3 @@ requires          : AtomicFeature * AtomicFeature -> DiagramConstraint
 excludes          : AtomicFeature * AtomicFeature -> DiagramConstraint 
 include           : AtomicFeature -> UserConstraint 
 exclude           : AtomicFeature -> UserConstraint 
-

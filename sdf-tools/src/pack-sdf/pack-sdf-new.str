@@ -25,7 +25,7 @@
  *
  ****************************************************************************/
 
-module pack-sdf
+module pack-sdf-new
 imports lib Sdf-ParseTree-Syntax Kernel-Sdf-Syntax
 	asfix-abstractions pack-graph stratego-xt-xtc-tools
 
@@ -201,4 +201,3 @@ char-class([116]),
 char-class([105]),
 char-class([111]),
 char-class([110])],lit("definition"),no-attrs()),[100,101,102,105,110,105,116,105,111,110]),b_1,c_1])
-

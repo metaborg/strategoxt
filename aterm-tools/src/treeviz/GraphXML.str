@@ -1,4 +1,4 @@
-module ExternalDTD
+module GraphXML
   signature
     constructors
       GraphXML : List(GraphXML-Attribute) * (List(Either(Label,Either(Data,Either(Dataref,Either(Properties,Style))))),List(Graph),List(Either(Edit,Edit-bundle))) -> GraphXML
