@@ -108,16 +108,32 @@ strategies
   io-options =
       input-option
     + aterm-output-option
-    + verbose-option
+    + general-options
 
-    + ArgOption("-k" + "--keep"
-      , where(<set-config> ("--keep", <string-to-int>))
-      , !"--keep i | -k i  Keep intermediates (default 0)"
-      )
-    + Option("-v"+"--version"
-      , where(<set-config> ("-v",())); !Version()
-      , !"-v|--version     Display prgram's version"
-      )
+  input-options =
+      input-option
+    + general-options
+
+  output-options =
+      aterm-output-option
+    + general-options
+
+  general-options =
+      verbose-option
+    + keep-option
+    + version-option
+
+  keep-option =
+    ArgOption("-k" + "--keep"
+    , where(<set-config> ("--keep", <string-to-int>))
+    , !"--keep i | -k i  Keep intermediates (default 0)"
+    )
+
+  version-option =
+    Option("-v"+"--version"
+    , where(<set-config> ("-v",())); !Version()
+    , !"-v|--version     Display prgram's version"
+    )
 
   input-option =
     ArgOption("-i" + "--input"
