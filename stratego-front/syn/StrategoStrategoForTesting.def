@@ -381,10 +381,9 @@ exports
 
   context-free syntax
 
-    "rules" "(" DynRuleDef+ ")" -> Strategy {cons("GenDynRules")}
+    "rules" "(" DynRuleDef* ")" -> Strategy {cons("GenDynRules")}
 
-    DynRuleId ":-"  Term                  -> DynRuleDef {cons("UndefineDynRuleNoCond")}
-    DynRuleId ":-"  Term "where" Strategy -> DynRuleDef {cons("UndefineDynRule")}
+    DynRuleId ":-"  Term                  -> DynRuleDef {cons("UndefineDynRule")}
     DynRuleId ":"   Rule                  -> DynRuleDef {cons("SetDynRule")}
     DynRuleId ":+"  Rule                  -> DynRuleDef {cons("AddDynRule")}
 
