@@ -1,6 +1,7 @@
 SUBDIRS = pp sig syn data
 
-EXTRA_DIST = reconf README.in $(wildcard *.pkg) Makefile.rpm cgen.spec
+EXTRA_DIST = reconf README.in $(wildcard *.pkg) Makefile.rpm cgen.spec \
+	Makefile.xt
 
 CONFIGURE = ./configure \
 		--prefix=/usr \

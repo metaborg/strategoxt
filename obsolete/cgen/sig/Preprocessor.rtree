@@ -1,0 +1,1 @@
+Specification([Signature([]),Signature([Constructors([OpDecl("PpIf",FunType([ConstType(Var("IfLine")),ConstType(Op("List",[Var("ExternalDefinition")])),ConstType(Op("List",[Op("",[Var("ElifLine"),Op("List",[Var("ExternalDefinition")])])])),ConstType(Op("Option",[Op("",[Var("ElseLine"),Op("List",[Var("ExternalDefinition")])])]))],ConstType(Var("ExternalDefinition"))))])])])

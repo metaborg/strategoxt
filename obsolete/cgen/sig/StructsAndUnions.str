@@ -11,7 +11,7 @@ signature
 signature
   constructors
     MemDecl : TypeSpecifier * List(MemberDeclarator) -> MemberDeclaration
-    MemDecl1 : List(TypeQualifier) * List(MemberIdentifierDeclarator) -> MemberDeclaration
+    MemDecl : List(TypeQualifier) * List(MemberIdentifierDeclarator) -> MemberDeclaration
 signature
   constructors
     BitFieldSize : Option(Declarator) * ConstantExpression -> MemberDeclarator

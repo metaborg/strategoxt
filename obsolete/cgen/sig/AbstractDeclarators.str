@@ -5,8 +5,7 @@ signature
 signature
 signature
   constructors
-    Pointer : Pointers *
-              Option(Either(PostfixAbstractDeclarator,PostfixingAbstractDeclarator)) -> UnaryAbstractDeclarator
+    Pointer : Pointers * Option(Either(PostfixAbstractDeclarator, PostfixingAbstractDeclarator)) -> UnaryAbstractDeclarator
 signature
   constructors
     ParamListVarArgs : List(ParameterDeclaration) -> PostfixingAbstractDeclarator
@@ -17,6 +16,6 @@ signature
 signature
   constructors
     DeclBracket : UnaryAbstractDeclarator -> PostfixAbstractDeclarator
-    DeclBracket1 : PostfixAbstractDeclarator -> PostfixAbstractDeclarator
-    DeclBracket2 : PostfixingAbstractDeclarator -> PostfixAbstractDeclarator
+    DeclBracket : PostfixAbstractDeclarator -> PostfixAbstractDeclarator
+    DeclBracket : PostfixingAbstractDeclarator -> PostfixAbstractDeclarator
     FunType : UnaryAbstractDeclarator * PostfixingAbstractDeclarator -> PostfixAbstractDeclarator

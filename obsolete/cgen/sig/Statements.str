@@ -20,8 +20,7 @@ signature
   constructors
     While : CommaExpression * Statement -> IterationStatement
     DoWhile : Statement * CommaExpression -> IterationStatement
-    For : CommaExpressionOpt * CommaExpressionOpt * CommaExpressionOpt *
-          Statement -> IterationStatement
+    For : CommaExpressionOpt * CommaExpressionOpt * CommaExpressionOpt * Statement -> IterationStatement
 signature
   constructors
     Goto : IdentifierOrTypedefName -> JumpStatement

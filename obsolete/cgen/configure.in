@@ -15,39 +15,12 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-AC_INIT(sig/C.r)
+AC_INIT(sig/C.str)
 AM_INIT_AUTOMAKE(cgen,0.9beta3)
 
-AC_REVISION($Id: configure.in,v 1.22 2002/11/23 11:30:45 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.23 2002/12/08 23:14:06 stratego Exp $)
 
-AC_ARG_WITH(gpp,
-  [  --with-gpp             Specify location of gpp, default: \$prefix],
-  GPP=$withval,
-  GPP="$prefix"
-)
-AC_SUBST(GPP)                                                                   
-
-
-AC_ARG_WITH(rpmprefix,
-  [  --with-rpmprefix       Specify location of installation prefix for rpm: /usr],
-  RPMPREFIX=$withval,
-  RPMPREFIX="/usr"
-)
-AC_SUBST(RPMPREFIX)
-
-AC_ARG_WITH(rpmdir, 
-  [  --with-rpmdir          Specify location of rpm directory: /usr/src/redhat/], 
-  RPMDIR=$withval, 
-  RPMDIR="/usr/src/redhat/"
-)
-AC_SUBST(RPMDIR)
-
-AC_ARG_WITH(rpmtmp, 
-  [  --with-rpmtmp          Specify location of rpm temporary directory: /tmp], 
-  RPMTMP=$withval, 
-  RPMTMP="/tmp"
-)
-AC_SUBST(RPMTMP)
+USE_XT_PACKAGES
 
 AC_PROG_CC
 AC_PROG_RANLIB
