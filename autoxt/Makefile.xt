@@ -136,7 +136,7 @@ bootclean-recursive :
 	$(STRATEGO_REGULAR)/bin/sdf2rtg $(SDF2RTG_FLAGS) -i $< -o $@
 
 .rtg.str :
-	$(STRATEGO_REGULAR)/bin/rtg2sig --module $* -i $< -o $@
+	$(STRATEGO_REGULAR)/bin/rtg2sig --module `basename "$*"` -i $< -o $@
 
 ###########################################################
 #
