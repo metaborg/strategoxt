@@ -10,7 +10,7 @@ SCFLAGS 	= --main $* $(XTCFLAGS)
 EXTRA_DIST	= $(pkgdata_DATA) $(wildcard *.str) \
 		  $(wildcard *.meta) $(pkgdata_DATA)
 CLEANFILES	= $(wildcard *.dep)
-BOOTCLEANFILES	= xtc.c 
+BOOTCLEANFILES	= xtc.c  cp-file.c xtc-call.c xtc-get.c
 
 check_PROGRAMS  = test1 test2 test3
 
