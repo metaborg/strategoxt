@@ -19,6 +19,8 @@ bin_SCRIPTS 		= parse-mod
 libexec_PROGRAMS 	= parse-stratego pack-stratego parse-mod  
 pack_stratego_SOURCES 	= pack-stratego.c
 
+pack-stratego.o: ../conf.h
+
 parse_mod_LDADD		= @LEXLIB@ -latermextension $(STRATEGOLIBS)
 parse_stratego_LDADD 	= @LEXLIB@ -latermextension $(STRATEGOLIBS)
 pack_stratego_LDADD 	= -lstratego.opt $(STRATEGOLIBS)
@@ -32,13 +34,14 @@ parse_mod_SOURCES 	= parse-mod.c stratego-grm.y \
 #pkgdatadir 	= $(prefix)/pack-stratego-plugin
 pkgdata_DATA 	= pack-stratego.config
 
-CLEANFILES 	= pack-stratego pack-stratego.c pack-stratego.dep \
-		  stratego-grm.c stratego-grm.h stratego-lex.c
+CLEANFILES 	= pack-stratego.dep
 
 EXTRA_DIST 	= pack-stratego.str syntax-test.r pack-stratego.config.src stratego-grm.h
 
 BOOTSOURCES 	= $(SOURCES) pack-stratego.c stratego-grm.y stratego-grm.h \
 		  stratego-lex.l pack-stratego.config.src
+
+BOOTCLEANFILES 	= pack-stratego.c stratego-grm.c stratego-grm.h stratego-lex.c
 
 CFLAGS	 	= 
 DEBUGFLAGS	= -g
@@ -65,10 +68,5 @@ check1: parse-mod
 
 check2: pack-stratego 
 	./pack-stratego -I $(STRATEGOLIB)/share/ssl -I $(srcdir)/../sig -i syntax-test -o syntax-test.trm
-
-%: %.src
-	sed 's#__prefix__#$(prefix)#g;\
-             s#__libexec__#$(libexecdir)#g' < $< > $@
-
 
 include $(srcdir)/../Makefile.stratego

@@ -17,14 +17,14 @@
 
 EXTRA_DIST = make_rules.in make-rules conf.h.src Makefile.stratego
 
-pkgdata_DATA = conf.h
+pkgdata_DATA = Makefile.stratego conf.h
 
 CLEANFILES = conf.h
 
 conf.h: Makefile
 
 SUBDIRS = \
-  . syn c front lib match opt sc sig test1 test2 testlib testspec log
+  . syn sig c front lib match opt sc si test1 test2 testlib testspec log
 
 BOOTSUBDIRS = \
     syn c front lib match opt sc sig
@@ -34,7 +34,7 @@ DIST_SUBDIRS = si sdf test3 $(SUBDIRS)
 BOOTSOURCES = conf.h.src
 
 bootstep :
-	$(MAKE) clean
+	$(MAKE) bootclean
 	$(MAKE)
 	$(MAKE) bootcheck
 	$(MAKE) install
@@ -85,19 +85,13 @@ bootinstall :
 	done
 	@echo "Bootinstall finished [`date`]" >> log/bootlog
 
-# Generate scripts
-%: %.src Makefile
-	sed 's#__GPP__#$(GPP)#g;\
-             s#__CGEN__#$(CGEN)#g;\
-	     s#__prefix__#$(prefix)#g;\
-	     s#__datadir__#$(datadir)#g;\
-	     s#__pkgdatadir__#$(pkgdatadir)#g;\
-             s#__VERSION__#$(VERSION)#g;\
-	     s#__PACKAGE__#$(PACKAGE)#g;\
-             s#__ATERM__#$(ATERM)#g;\
-             s#__STRATEGORTS__#$(STRATEGORTS)#g;\
-             s#__STRATEGOLIB__#$(STRATEGOLIB)#g;\
-             s#__MAKE__#$(MAKE)#g' < $< > $@
-	chmod +x $@
+bootclean :
+	@echo "" >> log/bootlog
+	@echo "Bootclean [`date`]" >> log/bootlog
+	list='$(BOOTSUBDIRS)'; for subdir in $$list; do \
+	   (cd $$subdir ; $(MAKE) $@ ;) \
+	done
+	@echo "Bootclean finished [`date`]" >> log/bootlog
 
 
+include Makefile.stratego

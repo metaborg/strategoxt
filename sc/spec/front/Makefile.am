@@ -27,8 +27,6 @@ libexec_PROGRAMS = frontend extract extract-all rename-defs inline
 
 CLEANFILES = *.dep 
 
-#MOSTLYCLEANFILES = extract-all.c  extract.c  frontend.c  inline.c  rename-defs.c
-
 BOOTCLEANFILES = extract-all.c extract.c frontend.c inline.c rename-defs.c
 
 #TESTS = 
@@ -46,9 +44,7 @@ extract-test.str             needed-defs.str
 
 BOOTSOURCES = frontend.c extract.c extract-all.c inline.c rename-defs.c
 
-#include $(srcdir)/../make-rules
-include $(wildcard *.dep)
-
 include $(srcdir)/../Makefile.stratego
+include $(wildcard *.dep)
 
 

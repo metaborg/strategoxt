@@ -1,5 +1,5 @@
 
-/*  A Bison parser, made from stratego-grm.y
+/*  A Bison parser, made from /home/visser/res/StrategoXT/sc/spec/syn/stratego-grm.y
     by GNU Bison version 1.28  */
 
 #define YYBISON 1  /* Identify Bison output.  */

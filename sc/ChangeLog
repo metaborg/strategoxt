@@ -1,4 +1,28 @@
+2002-11-23  Eelco Visser  <visser@acm.org>
+
+	* spec/ : renamed .r files to .str
+
+	* spec/syn/pack-stratego.config.src : libexec -> libexecdir
+
+	* spec/ : All generated C sources are distributed and part of
+	the repository in order to enable bootstrapping. 
+
+	* spec/Makefile.stratego: Automake rules for compilation of
+	Stratego programs. Confusion about where conf.h is
+	generated. Uniform declaration of rule for instantiating .src
+	files. Also added suffix for .cr
+
+2002-11-22  Eelco Visser  <visser@acm.org>
+
+	* spec/si: Stratego Script is operational again, although it needs
+	some more debugging.
+
+	* spec/front/use-def.str: Use-def rule for guarded left-choice operator
+
 2002-11-21  Eelco Visser  <visser@acm.org>
+
+	* spec/sc/sc.str: Ensure that intermediate files are removed
+	(unless --norm is selected)
 
 	* spec/front/Makefile.am: first compile, then link (include flags where not
 	given to linker)
@@ -49,7 +73,6 @@
 
 	* spec/syn/stratego.lx: Detect end of file while scanning comments.
 	(Observed by Martin Bravenboer)
-
 2002-06-11  Eelco Visser  <visser@acm.org>
 
 	* spec/opt/fusion.cr, spec/syn/pack-stratego.r,

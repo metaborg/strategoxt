@@ -17,17 +17,22 @@
 
 SCFLAGS = -I ../match
 
-libexec_SCRIPTS = \
+libexec_PROGRAMS = \
   Stratego-Normal-Format Stratego-Canonical-Format Stratego-Optimized-Format 
 
-CLEANFILES = $(bin_SCRIPTS) *.dep
+CLEANFILES = *.dep
 
-EXTRA_DIST = $(wildcard *.r)
+BOOTCLEANFILES = \
+	Stratego-Normal-Format.c \
+	Stratego-Canonical-Format.c \
+	Stratego-Optimized-Format.c
+
+EXTRA_DIST = $(wildcard *.str)
 
 BOOTSOURCES = \
 	Stratego-Normal-Format.c \
 	Stratego-Canonical-Format.c \
 	Stratego-Optimized-Format.c
 
-include $(srcdir)/../make-rules
+include $(srcdir)/../Makefile.stratego
 include $(wildcard *.dep)

@@ -1,0 +1,29 @@
+module scope-laws
+imports stratego list-set
+
+rules
+
+  EmptyScope: 
+    Scope([], s) -> s
+
+  FuseScope : 
+    Scope(xs, Scope(ys, s)) -> Scope(<conc> (xs, ys), s)
+
+  WidenScope : 
+    Seq(Scope(xs, s1), s2) -> 
+    Scope(xs, Seq(s1, s2))
+
+  WidenScope : 
+    Seq(s1, Scope(xs, s2)) -> 
+    Scope(xs, Seq(s1, s2))
+
+  CleanupScope : 
+    Scope(xs, s) -> Scope(ys, s)
+    where <isect> (xs, <tvars> s) => ys; not(?xs)
+
+  NarrowScope : 
+    Scope(xs, Seq(s1, s2)) ->
+    Scope(ys, Seq(s1, Scope(zs, s2)))
+    where <isect> (<tvars> s1, xs) => ys;
+          <diff> (xs, ys) => zs; not([])
+

@@ -15,13 +15,20 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-EXTRA_DIST = $(wildcard *.r) ac2c.src
+EXTRA_DIST = $(wildcard *.str) 
 
-libexec_SCRIPTS = s2c canonicalize ac2c
+#ac2c.src
 
-CLEANFILES = $(bin_SCRIPTS) *.dep $(TESTS)
+libexec_PROGRAMS = s2c canonicalize 
+check_PROGRAMS = C-simplify-test 
 
-SCFLAGS = --main $@ -I ../sig \
+#bin_SCRIPTS = ac2c
+
+BOOTCLEANFILES = s2c.c canonicalize.c 
+
+CLEANFILES = *.dep $(TESTS)
+
+SCFLAGS = --main $* -I ../sig \
 	  -I $(CGEN)/share/cgen \
 	  -I $(STRATEGOFRONT)/share/stratego-front \
 	  -I ../match \
@@ -34,12 +41,5 @@ TESTS = C-simplify-test
 
 BOOTSOURCES = canonicalize.c s2c.c ac2c.src
 
-# Generate srcipts
-%: %.src Makefile.am
-	sed 's#__GPP__#$(GPP)#g;\
-             s#__CGEN__#$(CGEN)#g;' < $< > $@
-	chmod +x $@                 
-
-include $(srcdir)/../make-rules
-
+include $(srcdir)/../Makefile.stratego
 include $(wildcard *.dep)

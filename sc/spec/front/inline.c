@@ -848,7 +848,7 @@ ATerm try_1 (ATerm, ATerm x_109 (ATerm));
 ATerm table_get_0 (ATerm);
 ATerm table_push_0 (ATerm);
 ATerm register_usage_1 (ATerm, ATerm o_90 (ATerm));
-ATerm Option_3 (ATerm, ATerm c_0 (ATerm), ATerm d_0 (ATerm), ATerm m_0 (ATerm));
+ATerm Option_3 (ATerm, ATerm a_0 (ATerm), ATerm b_0 (ATerm), ATerm m_0 (ATerm));
 ATerm system_usage_switch_0 (ATerm);
 ATerm UndefinedOption_0 (ATerm);
 ATerm Cons_2 (ATerm, ATerm t_87 (ATerm), ATerm u_87 (ATerm));
@@ -929,12 +929,12 @@ ATerm SubsArgCall2_0 (ATerm t)
             ATerm b_8 = NULL,c_8 = NULL,d_8 = NULL;
             t = (ATerm) ATmakeAppl(sym_Keys_1, not_null(w_7));
             {
-              ATerm a_0 (ATerm t)
+              ATerm c_0 (ATerm t)
               {
                 t = term_s_6;
                 return(t);
               }
-              t = rewrite_1(t, a_0);
+              t = rewrite_1(t, c_0);
               {
                 b_8 = t;
                 q_7 :
@@ -996,12 +996,12 @@ ATerm SubsArgCall1_0 (ATerm t)
                 ATerm t_8 = NULL,u_8 = NULL,v_8 = NULL;
                 t = (ATerm) ATmakeAppl(sym_Keys_1, not_null(p_8));
                 {
-                  ATerm b_0 (ATerm t)
+                  ATerm d_0 (ATerm t)
                   {
                     t = term_t_6;
                     return(t);
                   }
-                  t = rewrite_1(t, b_0);
+                  t = rewrite_1(t, d_0);
                   {
                     t_8 = t;
                     i_8 :
@@ -9852,7 +9852,7 @@ ATerm register_usage_1 (ATerm t, ATerm o_90 (ATerm))
   }
   return(t);
 }
-ATerm Option_3 (ATerm t, ATerm c_0 (ATerm), ATerm d_0 (ATerm), ATerm m_0 (ATerm))
+ATerm Option_3 (ATerm t, ATerm a_0 (ATerm), ATerm b_0 (ATerm), ATerm m_0 (ATerm))
 {
   ATerm j_105 = NULL,k_105 = NULL,l_105 = NULL;
   j_105 = t;
@@ -9873,14 +9873,14 @@ ATerm Option_3 (ATerm t, ATerm c_0 (ATerm), ATerm d_0 (ATerm), ATerm m_0 (ATerm)
             n_33 = t;
             {
               t = not_null(k_105);
-              t = c_0(t);
+              t = a_0(t);
             }
             t = n_33;
             {
               ATerm p_105 = NULL;
               t = term_r_6;
               {
-                t = d_0(t);
+                t = b_0(t);
                 {
                   p_105 = t;
                   if(((o_105 != NULL) && (o_105 != p_105)))

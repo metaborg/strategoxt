@@ -15,7 +15,7 @@
 *)
 
 module primitives
-imports lib strategy
+imports lib stratego 
 
 strategies
 
@@ -30,10 +30,23 @@ strategies
 
 rules
 
+/*
   EvalPrimitive :
-    SDef(name,[],Prim(p)) ->
+    SDef(name,[],Seq(Match(Op("", xs)), Prim(p, xs)) ->
     RDef("EvalPrim", [], 
-         Rule(Op("App", [Op("Prim", [Str(p)]), Var("t")]),
+         Rule(Op("App", [Op("Prim", [Str(p), ]), Var("t")]),
               App(Call(SVar(name),[]), Var("t")),
               Id))
+    where <map(Var(id))> xs
+*/
+
+  EvalPrimitive :
+    Prim(p, ts) ->
+    RDef("EvalPrim", [], 
+         Rule(Op("App", [Op("Prim", [Str(p), ys]), Var("t")]),
+              App(Prim(p, zs), Var("t")),
+              Id))
+    where <map(!Var(<new>))> ts => xs
+        ; <foldr(!Op("Nil",[]), !Op("Cons", [<Fst>,<Snd>]))> xs => ys
+        ; <map(!App(Call(SVar("EvalTerm"),[]), <id>))> xs => zs
 

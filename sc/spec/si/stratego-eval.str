@@ -1,6 +1,10 @@
 
 module stratego-eval
-imports strategy sugar display unification eval-lib-primitives
+imports strategy sugar unification eval-lib-primitives
+
+signature
+  constructors
+    NULL : Term  // undefined variable binding
 
 strategies
 
@@ -39,7 +43,8 @@ rules
 
   EvalId :
     App(Id, t) -> t
-  
+    //|[ <id> t ]| -> |[ t ]| 
+
   EvalFail :
     App(Fail, t) -> Fail
 
@@ -58,6 +63,7 @@ rules
 
   EvalChoice(eval) :
     App(Choice(s1, s2), t) -> t'
+  // |[ <s1 + s2> t ]| -> |[ t' ]|
     where (<eval> App(s1, t); not(Fail) + <eval> App(s2, t); not(Fail)
            <+ !Fail) => t'
 
@@ -71,10 +77,10 @@ rules
   EvalCall(eval) :
     App(Call(SVar(f), as), t) -> t'
     where <table-lookup> ("senv", (f,<length>as)) => SDef(f, xs, s);
-          <zip(\ (x, a) -> 
-                 <table-push> ("senv", (x,0), SDef(x,[],a)) \ )> (xs, as);
+          <map(?DefaultVarDec(<id>) + ?VarDec(<id>, _))> xs => ys;
+          <zip(\ (x, a) -> <table-push> ("senv", (x,0), SDef(x,[],a)) \ )> (ys, as);
           <eval> App(s, t) => t';
-          <map(\ x -> <table-pop>("senv", (x,0))\ )> xs
+          <map(\ x -> <table-pop>("senv", (x,0))\ )> ys
 
   EvalCallFail :
     App(Call(SVar(f), as), t) -> Fail
@@ -120,13 +126,14 @@ rules
 
   EvalMatch : 
     App(Match(t1), t2) -> t2
-    where <stratego-match(Var(id)); map(BindVar)> [(t1, t2)]
+    where <stratego-match(Var(id)); ifdebug(debug(!"bindings: ")); map(BindVar)> [(t1, t2)]
 
   BindVar :
     (x, t) -> (x, t)
-    where //debug(!"BindVar: "); 
+    where ifdebug(debug(!"BindVar: ")); 
           (<table-lookup> ("tenv", x); 
-           (?t <+ ?NULL(); <table-replace> ("tenv", x, t)))
+              (?t <+ ?NULL(); <table-replace> ("tenv", x, t))
+           <+ <table-push> ("tenv", x, t))
 
   EvalMatchFail :
     App(Match(t1), t2) -> Fail
@@ -162,13 +169,25 @@ rules
 
   EvalBuild :
     App(Build(t1), t2) -> t3
-    where <rec x(SubsVar 
-                 <+ Op(id, map(x)); FoldOp
-		 + FoldConst)> t1 => t3
+    where <EvalTerm> t1 => t3
+
+  EvalTerm = 
+    rec x(SubsVar 
+          <+ Op(id, map(x)); fold-op
+          <+ FoldConst)
 
   SubsVar :
     x@Var(_) -> t
     where <table-lookup>("tenv", x) => t; not(?NULL())
+
+  fold-op = 
+    FoldCons <+ FoldNil <+ FoldOp
+
+  FoldCons :
+    Op("Cons", [t, ts]) -> [t | ts]
+
+  FoldNil :
+    Op("Nil", []) -> []    
 
   FoldOp :
     Op(f, ts) -> f#(ts)
@@ -215,4 +234,4 @@ rules
 // Primitive strategies
 
   EvalPrimFail :
-    App(Prim(p), t) -> Fail
+    App(Prim(p,ts), t) -> Fail

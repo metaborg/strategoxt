@@ -63,7 +63,7 @@ strategies
     )
 
   c-compile =
-     <get-config> "-c"
+     where(<get-config> "-c")
   <+ profile'(if-verbose1(<printnl>(stderr, ["C compilation succeeded: " | <id>])), 
        c-to-object-code 
        ; link-object-code
@@ -238,10 +238,20 @@ strategies
 	
   // Collect all modules into one abstract syntax tree
 
-  parse = 
+  parse-old = 
     pipe(<get-config> "pack-stratego", !".tree",
          <concat> [<!["-dep", <get-config> "-o"] <+ !["-dep", <get-config> "-i"]>,
                    <get-config> "-I", <pass-verbose> ])
+
+  parse =
+    ?(file, suf)
+    ; where(conc-strings => infile)
+    ; where((<get-config; basename> "-o" <+ !file) => base)
+    ; where(<conc-strings> (base, ".tree") => outfile)
+    ; <call>(<get-config> "pack-stratego"
+	    ,<concat> [<!["-dep", <get-config> "-o"] <+ !["-dep", <get-config> "-i"]>
+             ,<get-config> "-I", <pass-verbose>, ["-i", infile, "-o", outfile] ])
+    ; !(base, ".tree")
 
   output-ast =
     try(where(<get-config>"--ast")

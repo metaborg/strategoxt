@@ -1,7 +1,7 @@
 [
 
 ("prefix", 	Path("__prefix__")),
-("libexec", 	Path("__libexec__")),
+("libexec", 	Path("__libexecdir__")),
 
 ("parse-mod", 	Prefix(Var("libexec"), Path("/parse-mod"))),
 

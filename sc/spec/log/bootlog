@@ -1688,3 +1688,18 @@ Bootstrapping: finished [Sat Nov 16 09:44:41 CET 2002]
 
 Bootinstall [Sat Nov 16 10:00:34 CET 2002]
 Bootinstall finished [Sat Nov 16 10:00:35 CET 2002]
+
+Bootclean [Fri Nov 22 15:24:02 CET 2002]
+Bootclean finished [Fri Nov 22 15:24:03 CET 2002]
+
+Bootstrapping version 0.9beta3 [Fri Nov 22 16:39:51 CET 2002 - Linux loempia.cs.uu.nl i686]
+Bootstrapping: phase 1 started [Fri Nov 22 16:39:52 CET 2002]
+
+Bootclean [Fri Nov 22 16:39:52 CET 2002]
+Bootclean finished [Fri Nov 22 16:39:52 CET 2002]
+
+Bootstrapping version 0.9beta3 [Fri Nov 22 16:48:35 CET 2002 - Linux loempia.cs.uu.nl i686]
+Bootstrapping: phase 1 started [Fri Nov 22 16:48:35 CET 2002]
+
+Bootclean [Fri Nov 22 16:48:35 CET 2002]
+Bootclean finished [Fri Nov 22 16:48:36 CET 2002]

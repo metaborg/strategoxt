@@ -18,21 +18,20 @@
 SCFLAGS	= -I $(srcdir)/../sig \
 	  -I $(srcdir)/../match \
 	  -I $(srcdir)/../opt \
-	 --main $@
+	 --main $*
 
-libexec_SCRIPTS = rename-vars
+libexec_PROGRAMS = rename-vars
+check_PROGRAMS = stratlib-test
 
-CLEANFILES = *.dep $(bin_SCRIPTS)
+CLEANFILES = *.dep
 
-EXTRA_DIST = $(wildcard *.r)
+EXTRA_DIST = $(wildcard *.str)
 
 TESTS = stratlib-test
 
 BOOTSOURCES = rename-vars.c
+BOOTCLEANFILES = rename-vars.c
 
-dummy:
-	touch $@
-
-include $(srcdir)/../make-rules
+include $(srcdir)/../Makefile.stratego
 include $(wildcard *.dep)
 

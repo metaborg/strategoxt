@@ -19,18 +19,24 @@ SCFLAGS	= -I $(srcdir)/../sig \
 	  -I $(srcdir)/../match \
 	  -I $(srcdir)/../lib \
 	  -I $(srcdir)/../front \
-	  --main $@
+	  --main $*
 
-libexec_SCRIPTS = fusion
+libexec_PROGRAMS = fusion
+check_PROGRAMS = build-match-laws-test
+
+fusion_SOURCES = fusion.c
+
+fusion.c: fusion.cr
 
 TESTS = build-match-laws-test
 
-CLEANFILES = fusion fusion.c *.dep
+CLEANFILES = *.dep
 
-EXTRA_DIST = $(wildcard *.r) $(wildcard *.cr) $(wildcard *.syn)
+BOOTCLEANFILES = fusion.c
+
+EXTRA_DIST = $(wildcard *.str) $(wildcard *.cr) $(wildcard *.syn)
 
 BOOTSOURCES = fusion.c
 
-include $(srcdir)/../make-rules
+include $(srcdir)/../Makefile.stratego
 include $(wildcard *.dep)
-

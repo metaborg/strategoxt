@@ -22,30 +22,28 @@ SCFLAGS	= -I $(srcdir)/../sig \
 	  -I $(srcdir)/../lib \
 	  -I $(srcdir)/../front
 
-libexec_SCRIPTS = optimize1 optimize2 compile-match 
+libexec_PROGRAMS = optimize1 optimize2 compile-match 
+check_PROGRAMS 	 = matrix-test
 
-CLEANFILES = compile-match compile-match.c *.dep \
-	optimize1 optimize1.c optimize2 optimize2.c \
-	$(TESTS) matrix-test.c match-to-matrix-test.c
+CLEANFILES 	 = *.dep $(TESTS) 
 
 TESTS = matrix-test 
 # match-to-matrix-test
 
-EXTRA_DIST = $(wildcard *.r)
+EXTRA_DIST = $(wildcard *.str)
 
 BOOTSOURCES = compile-match.c optimize1.c optimize2.c
+BOOTCLEANFILES = compile-match.c optimize1.c optimize2.c
 
-compile-match: compile-match.r
-	$(SC) $(SCFLAGS) -i $< --main compile-match-comp -o $@
+compile-match.c: compile-match.str
+	$(SC) $(SCFLAGS) -i $< --main compile-match-comp -o $@ -c
 
-optimize1: compile-match.r
-	$(SC) $(SCFLAGS) -i $< --main optimize1-comp -o optimize1
-	cp compile-match.c optimize1.c
+optimize1.c: compile-match.str
+	$(SC) $(SCFLAGS) -i $< --main optimize1-comp -o optimize1.c -c
 
-optimize2: compile-match.r
-	$(SC) $(SCFLAGS) -i $< --main optimize2-comp -o optimize2
-	cp compile-match.c optimize2.c
+optimize2.c: compile-match.str
+	$(SC) $(SCFLAGS) -i $< --main optimize2-comp -o optimize2.c -c
 
-include $(srcdir)/../make-rules
+include $(srcdir)/../Makefile.stratego
 include $(wildcard *.dep)
 
