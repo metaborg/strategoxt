@@ -2,20 +2,11 @@ include $(top_srcdir)/Makefile.xt
 
 SUBDIRS 	  = . spec tests 
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
-EXTRA_DIST 	  = README bootstrap \
-                    Makefile.xt Makefile.subxt autoxt.m4
+EXTRA_DIST 	  = README bootstrap Makefile.xt autoxt.m4
 
 ACLOCAL_AMFLAGS   = -I .
 
-RPMRELEASE=1
+install-data-local :: install-xtc
 
-CONFIGURE = ./configure				\
-		--prefix=/usr			\
-		--with-aterm=$(ATERM)		\
-		--with-rpmdir=$(RPMDIR)		\
-		--with-rpmtmp=$(RPMTMP)
-
-SUBST = s+__SRTS_VERSION__+$(VERSION)+g;\
-        s+__ATERM_VERSION__+1.6.7+g;\
-	s+__ATERM__+$(ATERM)+g;
-
+install-xtc:
+	$(XTC)/bin/xtc register -r $(DREPOSITORY) -t liblib.rtree -l $(SRTS)/share/srts -V $(VERSION)

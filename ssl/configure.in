@@ -4,20 +4,16 @@ AM_INIT_AUTOMAKE
 USE_XT_PACKAGES
 
 AC_PROG_CC
-#AC_PROG_RANLIB
 AC_PROG_INSTALL
 AC_PROG_LIBTOOL
 
 TOP_SRCDIR=`pwd`
 AC_SUBST(TOP_SRCDIR)
 
-AC_SUBST(ATERM)
-AC_SUBST(RELEASE)
-AC_SUBST(STRATEGORTS)
-
-AC_OUTPUT(
-	Makefile
-	spec/Makefile
-	spec/data/Makefile
-	tests/Makefile
-)
+AC_CONFIG_FILES([
+  Makefile
+  spec/Makefile
+  spec/data/Makefile
+  tests/Makefile
+])
+AC_OUTPUT
