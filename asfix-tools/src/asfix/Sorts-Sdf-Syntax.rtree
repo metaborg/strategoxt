@@ -1,1 +1,0 @@
-Specification([Imports(["Kernel-Sdf-Syntax"]),Signature([Constructors([OpDecl("sort",FunType([ConstType(Var("Sort"))],ConstType(Var("Symbol")))),OpDecl("Sorts",FunType([ConstType(Var("Symbols"))],ConstType(Var("Grammar"))))])])])

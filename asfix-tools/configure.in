@@ -6,9 +6,9 @@ USE_XT_PACKAGES
 AC_PROG_CC
 AC_PROG_INSTALL
 
-TOOLS="templates asfix implode asfix-yield visamb termid explode-asfix2me "
+TOOLS="templates implode asfix-yield visamb termid explode-asfix2me "
 UNRELEASED=""
-RELEASED="templates asfix implode asfix-yield visamb termid explode-asfix2me"
+RELEASED="templates implode asfix-yield visamb termid explode-asfix2me"
 
 AC_SUBST(TOOLS)
 AC_SUBST(RELEASED)

@@ -1,1 +1,0 @@
-Specification([Signature([Constructors([OpDecl("lit",FunType([ConstType(Var("String"))],ConstType(Var("Literal"))))])])])

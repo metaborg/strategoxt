@@ -1,1 +1,0 @@
-Specification([Signature([Constructors([OpDecl("flatlex",FunType([ConstType(Var("String"))],ConstType(Var("AsFixTerm"))))])])])

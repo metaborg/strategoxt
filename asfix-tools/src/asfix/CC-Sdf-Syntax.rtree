@@ -1,1 +1,0 @@
-Specification([Imports(["Character-Class-Syntax","Kernel-Sdf-Syntax"]),Signature([Constructors([OpDecl("char-class",FunType([ConstType(Var("CharClass"))],ConstType(Var("Symbol"))))])])])
