@@ -33,8 +33,8 @@ strategies
 *)
 
   sdf-to-stratego =
-    ?Definition(d);
-    <mkterm>("\"stratego-0\"", [Definition(<filter(module2stratego)>d)])
+    Definition(filter(module2stratego));
+    termid(!"\"stratego-0\"")
 
 signature
   constructors

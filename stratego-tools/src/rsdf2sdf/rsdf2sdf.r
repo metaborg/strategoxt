@@ -23,7 +23,8 @@ strategies
     = io-idwrap("\"sdf-stratego-0\"", rsdf2sdf)
 
   rsdf2sdf
-    = rec x(gramfilter <+ all(try(x)))
+    = rec x(gramfilter <+ all(try(x)));
+      termid(!"\"sdf-2.1\"")
 
 rules
 

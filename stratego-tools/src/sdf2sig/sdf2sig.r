@@ -26,8 +26,8 @@ strategies
   sdf2sig
 //    = {ms : << Definition(ms) -> ms >> }
 //    ; filter(module2sig)
-    = ?Definition(d);
-      <mkterm>("\"stratego-0\"", [Definition(<filter(module2sig)>d)])
+    = Definition(filter(module2sig));
+      termid(!"\"stratego-0\"")
 
 signature
   constructors
