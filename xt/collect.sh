@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: collect.sh,v 1.8 2000/04/07 11:42:56 jvisser Exp $
+# $Id: collect.sh,v 1.9 2000/04/07 15:05:42 mdejonge Exp $
 
 
 # This script will collect all required packages for the XT distribution.
@@ -58,15 +58,16 @@ do_collect () {
          echo "Building a distribution for \"${pkg}\" from CVS.">&2
          cvsroot=`echo ${pkg_url} | sed 's/cvs://g'`
          (
-            cd /tmp
+            mkdir -p /tmp/xt-$$
+            cd /tmp/xt-$$
             cvs -d ${cvsroot} checkout ${pkg}
             cd ${pkg}
             ./reconf
             ./configure
             gmake dist
          )
-         cp /tmp/${pkg}/${pkg}-${pkg_version}.tar.gz .
-         rm -fr /tmp/${pkg}
+         cp /tmp/xt-$$/${pkg}/${pkg}-${pkg_version}.tar.gz .
+         rm -fr /tmp/xt-$$/
          ;;
                   
       http*)
