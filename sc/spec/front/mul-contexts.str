@@ -1,3 +1,4 @@
+module mul-contexts
 /*
 
 Copyright (C) 1998, 1999 Eelco Visser <visser@acm.org>
@@ -22,7 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 // \paragraph{Multiple Contexts}
 
 signature
-  operations
+  constructors
     Pair : a * b -> Pair(a, b)
 strategies
 
@@ -60,8 +61,9 @@ rules
   Seq5 : x                 -> [Cond(x)]
 
   OrderCon : (s, vs, cs) -> (Seq(s, s'), vs', cs')
-  where
-    <fetch(Context(
+  // TODO: quick parse fix
+    // where <fetch(Context(
+
 strategies
 
   defcons = repeat(OrderCon)
