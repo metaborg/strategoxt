@@ -19,3 +19,6 @@ strategies
   foobar =
     !|[ ?aap; !t ]|
 
+
+  foobar =
+    s1 / L \ s2

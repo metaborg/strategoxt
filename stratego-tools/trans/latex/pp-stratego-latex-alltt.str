@@ -28,7 +28,14 @@ strategies
     xtc-transform(!"unparsePT")
 
   to-latex-alltt =
-    topdown(try(CheerUp))
+      escape-alltt-special-chars
+    ; topdown(try(CheerUp))
+
+  escape-alltt-special-chars =
+    alltd(lit(string-as-chars(escape-chars(latex-escape-backslash))))
+
+  latex-escape-backslash :
+    ['\'  | cs ] -> ['\', 'c', 'h', 'a', 'r', '9', '2' | cs ]
 
 strategies
 
