@@ -1,3 +1,7 @@
+2001-10-12 Merijn de Jonge <mdejonge@cwi.nl> 
+    * sdf-bench/runbm.r: re-added -n switch to sglr call because it is
+      support again by sglr.
+
 2001-10-09 Merijn de Jonge <mdejonge@cwi.nl> 
     * sdf-bench/sglr-stats.sdf: Adapted for sglr version 3.4
 

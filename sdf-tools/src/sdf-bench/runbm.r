@@ -81,7 +81,7 @@ strategies
 
   collect-data(tbl, stattbl) = 
   	split3(collect-data(parse-noisy(tbl), stattbl, !["-l"]),
-	       collect-data(parse(tbl),       stattbl, !["-l"]),
+	       collect-data(parse(tbl),       stattbl, !["-ln"]),
 	       collect-data(parse(tbl),       stattbl, !["-lf"]))
 
   collect-data(parser, stattbl, opts) =
