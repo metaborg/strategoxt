@@ -1,4 +1,4 @@
 SUBDIRS = src
 
-EXTRA_DIST = $(wildcard *.pkg) reconf README.in
+EXTRA_DIST = $(wildcard *.pkg) reconf README.in program-check.m4
 

@@ -61,8 +61,13 @@ CLEANFILES = $(libexec_PROGRAMS) $(bin_SCRIPTS)
 	     chmod +x $@
 
 gpp.Makefile : gpp.Makefile.src Makefile
-	sed 's@__PKGDATA__@$(pkgdatadir)@g;\
-	     s@__SGLR__@$(SGLR)@g' < $< > $@
+	sed 's@__ASFIX2ABOX__@$(prefix)@g;\
+             s@__ABOX2LATEX__@$(prefix)@g;\
+             s@__ABOX2HTML__@$(prefix)@g;\
+             s@__SGLR__@$(SGLR)@g;\
+             s@__ASFIXTOOLS__@$(ASFIX_TOOLS)@g;\
+             s@__PKGDATA__@$(pkgdatadir)@g'\
+               < $< > $@
 
 EXTRA_DIST = \
 	abox2html.sh.src   abox2text.sh.src   ast2abox.sh.src \

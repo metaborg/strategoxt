@@ -19,53 +19,39 @@
 AC_INIT(src/abox-format.c)
 AM_INIT_AUTOMAKE(gpp-boot,2.2.1)
 
-AC_ARG_WITH(aterm, 
-  [  --with-aterm          Specify location of ATerm library, default: \$prefix], 
-  ATERM=$withval, 
-  ATERM="$prefix"
-)
+AC_PACKAGE_REQUIRE(aterm, baffle,
+  [  --with-aterm            Specify location of ATerm library])
 AC_SUBST(ATERM)
 
-AC_ARG_WITH(sglr, 
-  [  --with-sglr          Specify location of SGLR, default: \$prefix], 
-  SGLR=$withval, 
-  SGLR="$prefix"
-)
+AC_PACKAGE_REQUIRE(asfix-tools, implode-asfix,
+   [  --with-asfix-tools      Specify location of asfix-tools package])
+AC_SUBST(ASFIX_TOOLS)
+
+AC_PACKAGE_REQUIRE(sglr, sglr,
+   [  --with-sglr             Specify location of SGLR parser package])
 AC_SUBST(SGLR)
 
 AC_ARG_WITH(ssl,   
-  [  --with-ssl            Specify location of Stratego Library (SSL), default: \$prefix], 
+  [  --with-ssl              Specify location of Stratego Library (SSL), default: \$prefix], 
   STRATEGOLIB=$withval, 
   STRATEGOLIB="$prefix"
 )
 AC_SUBST(STRATEGOLIB)
 
 AC_ARG_WITH(srts,  
-  [  --with-srts           Specify location of Stratego run-time system (SRTS), default: \$prefix], 
+  [  --with-srts             Specify location of Stratego run-time system (SRTS), default: \$prefix], 
   STRATEGORTS=$withval, 
   STRATEGORTS="$prefix"
 )
 AC_SUBST(STRATEGORTS)
 
-AC_REVISION($Id: configure.in,v 1.16 2002/06/13 08:43:49 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.17 2002/06/18 12:27:41 stratego Exp $)
 
 AC_PROG_CC
 AC_PROG_RANLIB
 AC_PROG_YACC
 AM_PROG_LEX
 AC_PROG_INSTALL
-
-TOP_SRCDIR=`pwd`
-AC_SUBST(TOP_SRCDIR)
-
-changequote(,)dnl
-case $VERSION in
- [0-9]*.[0-9]*[a-z])  DIST_ALPHA="README-alpha";;
- [0-9]*.[0-9]*.[0-9]*) DIST_ALPHA="README-alpha";;
- *) DIST_ALPHA=;;
-esac
-changequote([, ])dnl
-AC_SUBST(DIST_ALPHA)
 
 AC_OUTPUT( \
 	Makefile \

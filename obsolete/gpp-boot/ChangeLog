@@ -1,3 +1,9 @@
+2002-06-18 Merijn de Jonge <mdeonge@cwi.nl>
+	* Added --with-sglr and --with-asfix-tools configuration switches.
+	* Added program-check.m4 macro file for automatic localizing
+	  required packages.
+        * Repaired generation of src/gpp.Makefile
+
 2002-05-21 Merijn de Jonge <mdeonge@cwi.nl>
 	* regenerated boot-strapped code after fixing a bug in gpp
 
