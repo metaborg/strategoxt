@@ -1,3 +1,6 @@
+2001-11-26 Merijn de Jonge <mdejonge@cwi.nl>
+   * Typo in package.conf fixed
+
 2001-11-25 Merijn de Jonge <mdejonge@cwi.nl>
    * visamb/Makefile.am: added visamb.pp.af to CLEANFILES
    * renamed acinclude.m4 to program-check.m4
