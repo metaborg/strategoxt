@@ -30,7 +30,7 @@ do
   echo
   echo "reconfiguring in $dir"
   echo
-  (cd $dir; sh ./bootstrap)
+  (cd $dir; ./bootstrap)
 done
 
 rm -f config.cache
