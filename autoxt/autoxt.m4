@@ -68,6 +68,7 @@ AC_DEFUN([USE_XT_PACKAGES],
   XT_ARG_WITH([pgen],            [PGEN],            [SDF],                     [DIR],       [PGEN Parser Generator])
   XT_ARG_WITH([pt-support],      [PT_SUPPORT],      [SDF],                     [DIR],       [PT Support])
   XT_ARG_WITH([asf-library],     [ASF_LIBRARY],     [SDF],                     [DIR],       [ASF Library])
+
   XT_ARG_WITH([strategoxt],      [STRATEGOXT],      [XT],                      [STRATEGOXT],[StrategoXT])
   XT_ARG_WITH([srts],            [SRTS],            [STRATEGOXT],              [DIR],       [Stratego Run-Time System])
   XT_ARG_WITH([xtc],             [XTC],             [STRATEGOXT],              [DIR],       [XTC (XT Composition)])
@@ -81,15 +82,18 @@ AC_DEFUN([USE_XT_PACKAGES],
   XT_ARG_WITH([stratego-front],  [STRATEGO_FRONT],  [STRATEGOXT],              [DIR],       [Stratego Front])
   XT_ARG_WITH([asfix-tools],     [ASFIX_TOOLS],     [STRATEGOXT],              [DIR],       [AsFix Tools])
   XT_ARG_WITH([aterm-front],     [ATERM_FRONT],     [STRATEGOXT],              [DIR],       [ATerm Front])
-  XT_ARG_WITH([aterm-tools],     [ATERM_TOOLS],     [STRATEGOXT],              [DIR],       [ATerm Tools])
-  XT_ARG_WITH([graph-tools],     [GRAPH_TOOLS],     [STRATEGOXT],              [DIR],       [Graph Tools])
   XT_ARG_WITH([sdf-front],       [SDF_FRONT],       [STRATEGOXT],              [DIR],       [SDF Front])
   XT_ARG_WITH([sdf-tools],       [SDF_TOOLS],       [STRATEGOXT],              [DIR],       [SDF Tools])
   XT_ARG_WITH([concrete-syntax], [CONCRETE_SYNTAX], [STRATEGOXT],              [DIR],       [Concrete Syntax])
   XT_ARG_WITH([xml-front],       [XML_FRONT],       [STRATEGOXT],              [DIR],       [XML Front])
   XT_ARG_WITH([stratego-regular],[STRATEGO_REGULAR],[STRATEGOXT],              [DIR],       [Stratego Regular])
-  XT_ARG_WITH([stratego-tools],  [STRATEGO_TOOLS],  [STRATEGOXT],              [DIR],       [Stratego Tools])
-  XT_ARG_WITH([dot-tools],       [DOT_TOOLS],       [STRATEGOXT],              [DIR],       [Dot Tools])
+
+  # Maybe this should be a separate macro.
+  XT_ARG_WITH([strategoxt-utils],[STRATEGOXT_UTILS],[STRATEGOXT],              [STRATEGOXT_UTILS],[StrategoXT Utilities])
+  XT_ARG_WITH([graph-tools],     [GRAPH_TOOLS],     [STRATEGOXT_UTILS],        [DIR],       [Graph Tools])
+  XT_ARG_WITH([dot-tools],       [DOT_TOOLS],       [STRATEGOXT_UTILS],        [DIR],       [Dot Tools])
+  XT_ARG_WITH([aterm-tools],     [ATERM_TOOLS],     [STRATEGOXT_UTILS],        [DIR],       [ATerm Tools])
+  XT_ARG_WITH([stratego-tools],  [STRATEGO_TOOLS],  [STRATEGOXT_UTILS],        [DIR],       [Stratego Tools])
 
   # Make sure BUILD_REPOSITORY is an absolute path.
   case $BUILD_REPOSITORY in
@@ -104,6 +108,8 @@ AC_DEFUN([USE_XT_PACKAGES],
             [ATmakeString("@REPOSITORY@")],
             [Location of the XTC repository.])
 ])# USE_XT_PACKAGES
+
+
 
 
 ############ SVN REVISION ########################################################
