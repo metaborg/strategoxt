@@ -8,13 +8,14 @@ bin_PROGRAMS = \
 
 pkgdata_DATA = xml-text-tools.rtree xml-doc2xml-info.rtree
 
-SCFLAGS     = --main main-$*
+SCFLAGS     = --main main-$* --dr new
 STRINCLUDES = \
   -I $(top_srcdir)/lib \
   -I $(top_srcdir)/sig/xml-info \
   -I $(top_srcdir)/sig/xml \
   -I $(top_srcdir)/syn/xml \
   -I $(STRATEGO_REGULAR)/share/stratego-regular
+LDADD += $(SSL_LIBS)
 
 EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) $(pkgdata_DATA)
 CLEANFILES     = $(wildcard *.dep)

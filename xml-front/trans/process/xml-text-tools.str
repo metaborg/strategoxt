@@ -1,6 +1,5 @@
 module xml-text-tools
-imports xml-doc string
-
+imports xml-doc 
 strategies
 
   /**

@@ -1,7 +1,6 @@
 module data2xml-doc
-
 imports xml-doc xml-info2xml-doc
-imports options simple-traversal string
+imports liblib
 
 strategies
 

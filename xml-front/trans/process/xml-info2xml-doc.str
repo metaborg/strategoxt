@@ -1,8 +1,6 @@
 module xml-info2xml-doc
-
 imports xml-doc xml-info xml-info-typematch xml-text-tools
-imports dynamic-rules options simple-traversal string
-imports concrete-syntax
+imports liblib concrete-syntax
 
 strategies
 

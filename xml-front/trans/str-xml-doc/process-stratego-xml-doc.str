@@ -1,5 +1,5 @@
 module process-stratego-xml-doc
-imports options simple-traversal xml-whitespace
+imports liblib xml-whitespace
 
 strategies
 
@@ -15,7 +15,3 @@ strategies
         )
       )
     )
-
-signature
-  constructors
-    Conc: List(a) * List(a) -> List(a)

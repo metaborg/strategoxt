@@ -1,8 +1,5 @@
 module xml-doc2abox
-
-imports xml-doc Box concrete-syntax
-imports simple-traversal list-basic options
-
+imports xml-doc Box concrete-syntax liblib
 strategies
 
   main-xml-doc2abox =

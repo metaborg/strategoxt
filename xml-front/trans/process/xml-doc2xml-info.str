@@ -1,7 +1,6 @@
 module xml-doc2xml-info
-
 imports xml-doc xml-info xml-text-tools logging
-imports dynamic-rules options simple-traversal string
+imports liblib
 
 strategies
 

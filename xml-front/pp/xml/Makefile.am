@@ -12,3 +12,5 @@ STRINCLUDES    = -I $(top_srcdir)/lib \
                  -I $(top_srcdir)/sig/xml \
                  -I $(GPP)/share/sdf/gpp \
                  -I $(GPP)/share/gpp
+LDADD += $(SSL_LIBS)
+

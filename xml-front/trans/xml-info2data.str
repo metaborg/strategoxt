@@ -1,5 +1,5 @@
 module xml-info2data
-imports xml-info options simple-traversal string
+imports xml-info liblib
 
 strategies
 

@@ -1,9 +1,4 @@
 module concrete-syntax
-imports simple-traversal
-
-signature
-  constructors
-    Conc : List(a) * List(a) -> List(a)
 
 strategies 
 

@@ -2,7 +2,7 @@
  * @author  Martin Bravenboer <mbravenb@cs.uu.nl>
  */
 module xml-whitespace
-imports xml-doc string
+imports xml-doc 
 
 strategies
 
