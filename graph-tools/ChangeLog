@@ -1,3 +1,8 @@
+2003-05-27  Merijn de Jonge <M.de.Jonge@tue.nl>
+   * Sync'ed dot grammar/signature with dot-tools package
+   * graphxml2dot now produces AST based on dot grammar with grammar
+     identifier 'dot-1'.
+
 2002-09-26  Merijn de Jonge <mdejonge@cwi.nl>
    * Replaced dependency on stratego package by a dependency on sc-boot
      package
