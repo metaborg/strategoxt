@@ -13,14 +13,16 @@
 # Variables
 #
 
-AM_INCLUDES 	= -I$(SRTS)/include -I$(ATERM)/include
+INCLUDES 	= -I$(SRTS)/include -I$(ATERM)/include
 AM_LDFLAGS	= -L$(SRTS)/lib -L$(ATERM)/lib 
-AM_LDADD 	= -lstratego.opt -lstratego-lib.opt -lATerm-gcc -lm
+LDADD 		= -lstratego.opt -lstratego-lib.opt -lATerm-gcc -lm
 
 SUFFIXES 	= .str .cr .r .rtree .def .tbl .pp .sdf
 
 SCOMPILE 	= $(SC)/bin/sc
 PARSESTRATEGO 	= $(STRATEGO_FRONT)/bin/parse-stratego
+
+sdfdatadir	= ${datadir}/sdf/${PACKAGE}
 
 ###########################################################
 #
@@ -113,6 +115,11 @@ install-data-local:
 	for file in fordummy $(pkgdata_DATA) ; do \
 	 	 	 	  if [ "$$file" = "fordummy" ]; then continue; fi; \
           $(XTC)/bin/xtc -r $(REPOSITORY) register -l $(pkgdatadir) -V $(VERSION) \
+		-t $$file ; \
+        done
+	for file in fordummy $(sdfdata_DATA) ; do \
+	 	 	 	  if [ "$$file" = "fordummy" ]; then continue; fi; \
+          $(XTC)/bin/xtc -r $(REPOSITORY) register -l $(sdfdatadir) -V $(VERSION) \
 		-t $$file ; \
         done
 	for file in fordummy $(bin_PROGRAMS) $(bin_SCRIPTS) ; do \
