@@ -1,5 +1,7 @@
 2002-03-08  Eelco Visser  <visser@acm.org>
 
+	* Release 0.7beta3
+
 	* spec/client-test.r: disabled connect tests; not tests in the
 	sense of sunit; should be refactored.
 

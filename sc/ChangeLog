@@ -1,5 +1,7 @@
 2002-03-08  Eelco Visser  <visser@acm.org>
 
+	* Release 0.7beta3
+
 	* spec/testlib/Makefile.am (all, install): install test files
 	also on install (which is the mode that autobundled packages
 	are made in).

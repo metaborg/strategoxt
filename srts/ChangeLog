@@ -1,5 +1,7 @@
 2002-03-08  Eelco Visser  <visser@acm.org>
 
+	* Release 0.7beta3
+
 	* src/stratego.c: Only add annotations after traversing a term
 	when the original term had annotations; ATsetAnnotations is only
 	defined if the annotations argument is a proper term.
