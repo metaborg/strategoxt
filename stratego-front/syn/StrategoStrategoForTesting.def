@@ -1,4 +1,39 @@
 definition
+module Stratego-DynamicRules
+exports
+
+  context-free syntax
+
+    "{|" {DynRuleScopeId ","}* ":" Strategy "|}" -> Strategy {cons("DynRuleScope"), prefer}
+    "{|" RuleDec ":+" Term                  "|}" -> Strategy {cons("AddScopeLabel")}
+
+  context-free syntax
+
+    "rules" "(" DynRuleDef+ ")" -> Strategy {cons("GenDynRules"), prefer}
+
+    DynRuleId ":-"  Term -> DynRuleDef {cons("UndefineDynRule")}
+    DynRuleId ":"   Rule -> DynRuleDef {cons("SetDynRule")}
+    DynRuleId ":+"  Rule -> DynRuleDef {cons("AddDynRule")}
+
+    RuleDec "." Term -> DynRuleId {cons("LabeledDynRuleId")}
+    RuleDec          -> DynRuleId {cons("DynRuleId")}
+
+    Id "." Term  -> DynRuleScopeId {cons("LabeledDynRuleScopeId")}
+    Id           -> DynRuleScopeId {cons("DynRuleScopeId")}
+
+  context-free syntax
+
+    Id                         -> RuleDec {cons("RDecNoArgs")}
+    Id "(" {Typedid ","}* ")"  -> RuleDec {cons("RDec")}
+    Id "(" {Typedid ","}* 
+       "|" {Typedid ","}* ")"  -> RuleDec {cons("RDecT")}
+
+  context-free syntax %% legacy Dynamic rules
+
+    "override" "rules" "(" RuleDef* ")"		 -> Strategy {cons("OverrideDynamicRules")}
+    "extend"   "rules" "(" RuleDef* ")"		 -> Strategy {cons("ExtendDynamicRules")}
+    "extend" "override" "rules" "(" RuleDef* ")" -> Strategy {cons("ExtendOverrideDynamicRules")}
+
 module StrategoRenamed
 imports Stratego
           [ Overlay       => StrategoOverlay
@@ -200,41 +235,6 @@ exports
     "[[" StrategyDef "]]"  -> StrategoTerm {cons("ToTerm")}
 
     "[[" Overlay     ":" "O" "]]" -> StrategoTerm {cons("ToTerm")}
-
-module Stratego-DynamicRules
-exports
-
-  context-free syntax
-
-    "{|" {DynRuleScopeId ","}* ":" Strategy "|}" -> Strategy {cons("DynRuleScope"), prefer}
-    "{|" RuleDec ":+" Term                  "|}" -> Strategy {cons("AddScopeLabel")}
-
-  context-free syntax
-
-    "rules" "(" DynRuleDef+ ")" -> Strategy {cons("GenDynRules"), prefer}
-
-    DynRuleId ":-"  Term -> DynRuleDef {cons("UndefineDynRule")}
-    DynRuleId ":"   Rule -> DynRuleDef {cons("SetDynRule")}
-    DynRuleId ":+"  Rule -> DynRuleDef {cons("AddDynRule")}
-
-    RuleDec "." Term -> DynRuleId {cons("LabeledDynRuleId")}
-    RuleDec          -> DynRuleId {cons("DynRuleId")}
-
-    Id "." Term  -> DynRuleScopeId {cons("LabeledDynRuleScopeId")}
-    Id           -> DynRuleScopeId {cons("DynRuleScopeId")}
-
-  context-free syntax
-
-    Id                         -> RuleDec {cons("RDecNoArgs")}
-    Id "(" {Typedid ","}* ")"  -> RuleDec {cons("RDec")}
-    Id "(" {Typedid ","}* 
-       "|" {Typedid ","}* ")"  -> RuleDec {cons("RDecT")}
-
-  context-free syntax %% legacy Dynamic rules
-
-    "override" "rules" "(" RuleDef* ")"		 -> Strategy {cons("OverrideDynamicRules")}
-    "extend"   "rules" "(" RuleDef* ")"		 -> Strategy {cons("ExtendDynamicRules")}
-    "extend" "override" "rules" "(" RuleDef* ")" -> Strategy {cons("ExtendOverrideDynamicRules")}
 
 module Stratego-Overlays
 exports
@@ -688,7 +688,7 @@ imports StrategoForTesting
 
 
 module StrategoStrategoForTesting
-imports StrategoForTestingRenamed StrategoStratego
+imports StrategoForTestingRenamed StrategoStratego Stratego-DynamicRules
 
 exports
   context-free syntax
@@ -697,5 +697,5 @@ exports
 
   variables
     "sc" [0-9\']             -> DynRuleScopeId {prefer}
-    "q" [0-9\'] "*"         -> {DynRuleScopeId ","}* {prefer}
+    "sc" [0-9\'] "*"         -> {DynRuleScopeId ","}* {prefer}
     "dr" [0-9\']             -> DynRuleId {prefer}

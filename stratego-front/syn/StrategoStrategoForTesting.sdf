@@ -1,5 +1,5 @@
 module StrategoStrategoForTesting
-imports StrategoForTestingRenamed StrategoStratego
+imports StrategoForTestingRenamed StrategoStratego Stratego-DynamicRules
 
 exports
   context-free syntax
