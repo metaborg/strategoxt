@@ -506,11 +506,6 @@ strategies
                \ (x',[x|xs]) -> <r>(<at-end(![x])>x',xs) \ );
 	(implode-string,implode-string)
 
-  left-match =
-    rec r(
-        {l,ls,rs:?([l|ls],[l|rs]); <r>(ls,rs)} <+
-        (id,[]) );
-    Fst
 
   is-substring(s) = 
     explode-string;?long;
@@ -536,26 +531,58 @@ strategies
     ; sort-list(SortL(string-lt))
     ; map(implode-string)
 
-  // in: a binary tuple of exploded strings (==list of ASCII numbers)
-  // but two strings can also be given.
+strategies
+
+  /**
+   * @type  (List(Char), List(Char)) -> 1
+   * @type  (String, String)         -> 1
+   */
   string-gt = 
     try((explode-string, explode-string));
     strcasecmp; ?1
 
+  /**
+   * @type  (List(Char), List(Char)) -> 1
+   * @type  (String, String)         -> 1
+   */
   string-lt = 
     try((explode-string, explode-string));
     strcasecmp; ?-1
 
-  strcmp = rec r
-	(  \([x|xs],[x|ys]) -> <r>(xs,ys)\
-	<+ \([],[]) -> 0\
-	<+ \([x|_],[y|_]) -> -1 where <lt>(x,y)\
-	<+ \([],[_|_]) -> -1\
-// these last two cases are handled faster by just !1
-//	<+ \([_|_],[]) -> 1\
-//	<+ \([x|_],[y|_]) -> 1\
-	<+ !1
-	)
+  /**
+   * Succeeds if the first String starts with the second String.
+   *
+   * If the strategy succeeds, the current is left untouched.
+   *
+   * @type  String -> String
+   */
+  string-starts-with(|start) =
+    where(<left-match> (<explode-string>, <explode-string> start))
+
+  /**
+   * Succeeds if the first list of terms starts with the second list of terms.
+   *
+   * Returns the part that is left of the first list.
+   *
+   * @type  (List(a), List(a)) -> List(a)
+   */
+  left-match =
+      rec r(
+         \ ([l|ls],[l|rs]) -> <r> (ls,rs) \
+      <+ (id,[])
+      )
+    ; Fst
+
+  strcmp = rec r(
+       \([x|xs],[x|ys]) -> <r>(xs,ys)\
+	  <+ \([],[]) -> 0\
+	  <+ \([x|_],[y|_]) -> -1 where <lt>(x,y)\
+	  <+ \([],[_|_]) -> -1\
+      // these last two cases are handled faster by just !1
+      //	<+ \([_|_],[]) -> 1\
+      //	<+ \([x|_],[y|_]) -> 1\
+	  <+ !1
+	  )
 
   strncmp = rec r
 	(  \(_,_,0) -> 0\
