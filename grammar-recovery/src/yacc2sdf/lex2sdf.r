@@ -13,13 +13,14 @@ strategies
 
   lex2sdf-main =
     topdown(repeat(Goal2Mod + Def2Prod + Rule2Prod + LexLiteral + Lex2Sdf));
-    alltd(sort(upper_no_underscore))
+    alltd(sort(upper_no_underscore));
+    termid(!"\"sdf-2.1\"")
 
 rules
 
   Goal2Mod :
     Goal(defs,[],rs) -> 
-    <mkterm>("\"sdf-2.1\"", [Module("Lexical", [Exports([defs, rs])], [])])
+    Module("Lexical", [Exports([defs, rs])], [])
 
   Def2Prod :
     Define(a, alts) -> 

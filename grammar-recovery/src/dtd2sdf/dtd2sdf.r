@@ -1,5 +1,5 @@
 module dtd2sdf
-(* $Id: dtd2sdf.r,v 1.3 2001/10/08 19:48:58 mdejonge Exp $ *)
+(* $Id: dtd2sdf.r,v 1.4 2001/10/09 15:49:31 mdejonge Exp $ *)
 (*
 	Conversion of an XML-DTD to an Sdf grammar.
 
@@ -27,12 +27,13 @@ strategies
     = debug(!"Warning!! Can't handle: ")
 
   xml2sdf
-    = dtd2sdf + document2sdf
+    = (dtd2sdf + document2sdf);
+      termid(!"\"sdf-2.1\"")
 
 rules
 
   dtd2sdf:
-    external-dtd(decls) -> <mkterm>("\"sdf-2.1\"", [Definition([m])])
+    external-dtd(decls) -> Definition([m])
     where !Module("ExternalDTD",
                   [],
                   [Exports(context-free-syntax(<map(decl2prods<+warn);concat>decls))])
@@ -40,7 +41,7 @@ rules
 
   document2sdf:
     Document(prolog,element)
-	-> <mkterm>("\"sdf-2.1\"", [Definition(<prolog2modules>prolog)])
+	-> Definition(<prolog2modules>prolog)
 
   prolog2modules:
     Prolog(_,None)

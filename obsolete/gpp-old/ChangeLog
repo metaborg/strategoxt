@@ -1,4 +1,7 @@
 2001-10-09 Merijn de Jonge <mdejonge@cwi.nl> 
+    * added uses of termid strategy
+    * all transformation tools now add grammar identifier to generated output
+    * test sets have been adapted to use grammar identifiers
     * new pp table and sdf definition obtained from grammar base
 
 2001-10-08 Merijn de Jonge <mdejonge@cwi.nl> 

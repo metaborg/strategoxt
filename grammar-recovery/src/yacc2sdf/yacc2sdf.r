@@ -18,14 +18,14 @@ strategies
 
   Main = 
     YACC2SDF;
-    alltd(sort(upper_no_underscore))
+    alltd(sort(upper_no_underscore));
+    termid(!"\"sdf-2.1\"")
 
 rules
 
   YACC2SDF : 
     Spec(defs, Rules(rs), _) -> 
-    <mkterm>("\"sdf-2.1\"",
-    [Definition([
+    Definition([
       Module("Main",
              [Imports(["Lexical", "Generated"])], []),
       Module("Lexical",[],
@@ -33,7 +33,7 @@ rules
       Module("Generated",[],
              [Exports([Sorts(<filter(StartSym)> defs) |
                        <map(Rule2Prod)> rs])])
-    ])])
+    ])
 
   Token2Prod : 
     Token(_, syms) -> <map(LexicalProd)> syms

@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Ppgen.r,v 1.6 2001/10/08 15:10:04 mdejonge Exp $
+% $Id: Ppgen.r,v 1.7 2001/10/09 15:52:12 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
@@ -64,4 +64,5 @@ Ppgen = io-idwrap( "\"sdf-2.1\"",
                 + \selector( n, x ) -> selector(<int-to-string>n, x) \
                 + \S(s) -> S(<quote>s) \
                 ))
+   ;termid(!"\"pp-tables-0\"")
 \end{code}
