@@ -9,7 +9,7 @@ imports liblib logging regular-options rtg rtg-util
 strategies
 
   main-core-format-check =
-    io-wrap(core-format-check-options,
+    io-wrap(core-fc-options,
       where(
           read-rtg-nf-config => rtg@RTG(Start(starts), _)
         ; generate-type-rules
@@ -19,7 +19,7 @@ strategies
     <+ <exit> 1
     )
 
-  core-format-check-options =
+  core-fc-options =
       rtg-nf-option(|"Check against normalized RTG in file")
     + start-nonterm-option(|"Term must be of type s (default: start non-terms of rtg)")
 

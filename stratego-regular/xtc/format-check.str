@@ -1,5 +1,9 @@
 module format-check
 imports aterm2irtg liblib strategoxt-xtc-tools tool-doc
+
+/**
+ * Main program
+ */
 strategies
 
   main-format-check = 
@@ -8,9 +12,12 @@ strategies
     , fc-usage
     , fc-about 
     , !["core-format-check"]
-    , format-check
-    ) 
-
+    , if is-xhtml-mode then
+        format-check-to-xhtml
+      else
+        format-check
+      end
+    )
 
   format-check =
     xtc-ensure-file
@@ -21,10 +28,34 @@ strategies
       )
     <+ <xtc-exit> 1
 
+  format-check-to-xhtml =
+      xtc-transform(!"core-format-check-to-xhtml",
+          <flatten-list> ["--rtg-nf", <input-to-rtg-nf>, <pass-verbose> (), <pass-start-nonterm>]
+      )
+    ; xtc-transform(!"pp-xml-doc", pass-verbose)
+
+/**
+ * Options
+ */
+strategies
+
   fc-options =
          rtg-option(|"Format check against rtg in file")
     + rtg-nf-option(|"Format check against normalized rtg in file")
     + start-nonterm-option(|"Term must be of type s (default: start non-terms of rtg)")
+    + xhtml-option
+
+  xhtml-option =
+    Option("--xhtml"
+    , set-xhtml-mode
+    , !HelpString("--xhtml", "Present the result in XHTML")
+    )
+
+  is-xhtml-mode =
+    <get-config> "--xhtml"
+
+  set-xhtml-mode =
+    <set-config> ("--xhtml", ())
 
   fc-usage =
     <tool-doc> fc-tool-doc()

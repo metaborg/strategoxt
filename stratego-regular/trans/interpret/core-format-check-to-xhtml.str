@@ -1,0 +1,142 @@
+/**
+ * @author  Martin Bravenboer <martin@cs.uu.nl>
+ */
+module core-format-check-to-xhtml
+imports
+  liblib 
+  xml-doc
+  core-format-check
+
+strategies
+
+  main-core-format-check-to-xhtml =
+    io-wrap(core-fc-options,
+      format-check-to-xhtml
+    )
+
+  format-check-to-xhtml =
+      print-to-xhtml
+
+  print-to-xhtml =
+    !%>
+      <?xml version="1.0"?>
+      <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd" >
+
+      <html>
+        <head>
+          <title>format-check report</title>
+        </head>
+        <body>
+          <h1>format-check report</h1>
+        </body>
+      </html>
+    <%
+    ; concat-content
+
+(*
+  ugly-print =
+    has-annotation < ugly-print-with-anno + ugly-print-without-anno
+
+  ugly-print-without-anno =
+     UP-Int
+  <+ UP-Real
+  <+ UP-Str
+  <+ UP-List(ugly-print) 
+  <+ UP-Tuple(ugly-print)
+  <+ UP-Cnst	
+  <+ UP-App(ugly-print)
+
+  ugly-print-with-anno :
+    t -> |[  H hs=0 [  ~plain ~annos ] ]|
+      where <ugly-print-without-anno> t => plain
+          ; < get-annotations
+            ; pp-generic-list(ugly-print, !|[ "{}" ]|, !|[ "{" ]|, !|[ "}" ]|)
+            > t => annos
+
+rules // string & int
+
+  UP-Str :
+    x -> |[ H hs=0 ["\"" ~lit:x "\""] ]|
+      where <is-string> x
+
+  UP-Int :
+    x -> |[ NUM [ ~lit:s ] ]|
+      where <is-int> x
+          ; <int-to-string> x => s
+
+  UP-Real :
+    x -> |[ NUM [ ~lit:s ] ]|
+      where <is-real> x
+          ; <real-to-string> x => s
+
+rules // constructor applications
+
+  UP-Cnst : 
+    f#([]) -> |[ ~lit:f ]|
+
+  UP-App(s) =
+      where(<gt> (<term-size>, <get-max-term-size-config>))
+    < UP-App-worstcase(s)
+    + UP-App-nicecase(s)
+  
+  UP-App-nicecase(s):  
+    f#([x | xs]) -> |[ H hs=0 [ ~lit:f "(" ~<s> x ~*children ")"] ]|
+      where <map(! |[ H hs=1 [ "," ~<s> ] ]| )> xs => children
+ 
+  UP-App-worstcase(s):  
+    f#([x | xs]) ->
+      |[  V vs=0 [
+            H hs=0 [ ~lit:f "(" ]
+            H hs=1 [" " ~<s> x]
+            ~*children
+            ")"
+          ]
+      ]|
+      where <map(! |[ H hs=1 [ "," ~<s> ] ]| )> xs => children
+
+rules // tuples and list      
+         
+  UP-Tuple(s) =
+    ?""#(<id>); pp-generic-list(s, !|[ "()" ]|, !|[ "(" ]|, !|[ ")" ]|)
+            
+  UP-List(s) =
+    pp-generic-list(s, !|[ "[]" ]|, !|[ "[" ]|, !|[ "]" ]|)
+    
+strategies
+      
+  pp-generic-list(s, empty, before, after) =
+      where(<gt> (<term-size>, 10))
+    < generic-list-worstcase(s, empty, before, after)
+    + generic-list-nicecase(s, empty, before, after)
+    
+  pp-generic-list(s, empty, before, after) :
+    [] -> <empty> ()
+    
+  generic-list-nicecase(s, empty, before, after) :
+    [x | xs] -> |[
+      H hs=0 [
+        ~<before> ()
+        ~<s> x ~*tail
+        ~<after> ()
+      ]
+    ]|
+      where <map(! |[ H hs=1 [ "," ~<s> ] ]| )> xs => tail
+
+  generic-list-worstcase(s, empty, before, after) :
+    [x | xs] -> |[
+      V vs=0 [
+        H hs=1 [
+          ~<before> ()
+          ~<s> x
+        ]
+        ~*tail
+        ~<after> ()
+      ]
+    ]|
+      where <map(! |[ H hs=1 [ "," ~<s> ] ]| )> xs => tail
+*)
+
+strategies 
+
+  concat-content = 
+    bottomup( try( \ Conc(l1, l2) -> <conc> (l1, l2) \ ))
