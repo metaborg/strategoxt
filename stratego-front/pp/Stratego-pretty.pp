@@ -38,14 +38,16 @@
    FunType.1:iter-sep -- _1 KW["*"],
    Var -- _1,
    ListVar -- _1,
-   Wld -- KW["_"],
-   Int -- _1,
+  
+   Int  -- _1,
    Real -- _1,
-   Str -- _1,
+   Str  -- _1,
    Char -- _1,
+   
+   Wld  -- KW["_"],
    BuildDefault -- KW["_"] _1,
-   Inj -- _1,
-   Con -- _1 _2,
+   Inj  -- _1,
+
    Op -- H hs=0[_1 KW["("] H[_2] KW[")"]],
    Op.2:iter-star-sep -- H hs=0[_1 KW[","]],
    As -- _1 KW["@"] _2,
@@ -62,11 +64,13 @@
    Anno -- _1 KW["{"] _2 KW["}"],
    AnnoCong -- _1 _2,
    StrategyCurly -- KW["{"] _1 KW["}"],
-   
-   Con1 -- H hs=0[KW["["] _1 KW["]"]],
-   Con2 -- H hs=0[KW["["] _1 KW["]"] KW["("] _2 KW[")"]],
+
+   Con  -- H hs=0 [_1 KW["["] _2 KW["]"] ],
+   Con1 -- H hs=0 [   KW["["] _1 KW["]"] ],
+   Con2 -- H hs=0 [   KW["["] _1 KW["]"] KW["("] _2 KW[")"]],
    Con3 -- KW["["] _1 KW["where"] _2 KW["]"],
    Con4 -- KW["["] _1 KW["where"] _2 KW["]"] KW["("] _3 KW[")"],
+   
    RDefNoArgs -- V is=2[H[_1 KW[":"]] _2],
    RDef -- V is=2[H[ H hs=0[_1 KW["("] H[_2] KW[")"]] KW[":"]] _3],
    RDef.2:iter-star-sep -- H hs=0[_1 KW[","]],
