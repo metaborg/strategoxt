@@ -7,7 +7,7 @@ function asc_support() {
   pkg="asc-support" version="2.0" $@
 }
 function asf_support() {
-  pkg="asf-support" version="1.3" $@
+  pkg="asf-support" version="1.4" $@
 }
 function sdf_support() {
   pkg="sdf-support" version="2.1.1" $@

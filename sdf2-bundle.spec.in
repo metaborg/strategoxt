@@ -7,7 +7,7 @@ Group: Development/Languages
 URL: http://www.cwi.nl/htbin/sen1/twiki/bin/view/SEN1/SDF2
 Source0: %{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-buildroot
-Requires: aterm >= 2.1
+Requires: aterm >= 2.2
 Provides:  %{name} = %{version}
 
 %description
