@@ -1,5 +1,10 @@
 2003-02-26  Martin Bravenboer <martin@mbravenboer.org>
 
+  * spec/cgi.str: moved to stratego-net
+	* spec/cgi-utils.str: moved to stratego-net
+
+2003-02-26  Martin Bravenboer <martin@mbravenboer.org>
+
   * spec/client-test.str: removed
 	* spec/communication.str: removed
 	* spec/connect-test.str: removed  
