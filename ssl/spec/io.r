@@ -76,7 +76,7 @@ signature
 \begin{code}
 strategies
 
-  print             = ?(name, strs); where(prim("ST_print", name, strs))
+  print             = ?(name, strs); where(prim("SSL_print", name, strs))
   printnl           = ?(name, strs); where(prim("SSL_printnl", name, strs))
   printascii        = ?(name, strs); where(prim("SSL_printascii", name, strs))
 

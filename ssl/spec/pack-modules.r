@@ -82,7 +82,8 @@ strategies
         <create-dep-file(!depfile)> (outfile, files)
     );
     dtime => time;
-    <printnl>(stderr, [prog, " (", time, " secs)"])
+    <printnl>(stderr, [prog, " (", time, " secs)"]);
+    <exit> 0
 
   pack-modules-usage =
     option-defined(?Program(prog));

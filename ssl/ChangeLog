@@ -1,5 +1,7 @@
 2001-08-22  Eelco Visser  <visser@acm.org>
 
+	* spec/io.r: typo in name of primitive print
+
 	* Library for Stratego 0.6
 
 2001-09-17  Eelco Visser  <visser@acm.org>
