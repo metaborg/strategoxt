@@ -9,5 +9,5 @@ EXTRA_DIST     = $(DEFS) $(wildcard *.sdf)
 CLEANFILES     = $(TBLS)
 BOOTCLEANFILES = $(DEFS) $(wildcard *.dep)
 
-SDFINCLUDES    = -I $(STRATEGO_FRONT)/share/sdf/stratego-front
+SDFINCLUDES    = -I $(top_srcdir)/../stratego-front/syn
 PGEN_FLAGS     = -m $*
