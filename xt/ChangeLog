@@ -1,3 +1,8 @@
+2000-09-19  Merijn de Jonge  <mdejonge@cwi.nl>
+        * bug fix: configure script now specifies asfix location for its
+          sub-packages using the --with-asfix switch
+        * increased version number to 0.4
+
 2000-08-31  Merijn de Jonge  <mdejonge@cwi.nl>
         * no longer use --with-all flag to configure aterm library to
           prevent building the -cc.a libraries which require "cc" to exist.

@@ -18,12 +18,12 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 dnl 02111-1307, USA.
 
-dnl $Id: configure.in,v 1.16 2000/08/31 12:08:07 mdejonge Exp $
+dnl $Id: configure.in,v 1.17 2000/09/19 08:47:56 mdejonge Exp $
 
 AC_INIT(Makefile.in)
-AM_INIT_AUTOMAKE(xt,0.3)
+AM_INIT_AUTOMAKE(xt,0.4)
 
-AC_REVISION($Id: configure.in,v 1.16 2000/08/31 12:08:07 mdejonge Exp $)
+AC_REVISION($Id: configure.in,v 1.17 2000/09/19 08:47:56 mdejonge Exp $)
 
 
 AC_OUTPUT(
@@ -40,21 +40,26 @@ AC_CONFIG_PKG(aterm,       --with-gcc --with-dbg)
 
 AC_CONFIG_PKG(asfix,       --with-aterm=${prefix})
 
-AC_CONFIG_PKG(asc-support sglr stratego, --with-aterm=${prefix})
+AC_CONFIG_PKG(asc-support stratego, --with-aterm=${prefix})
+
+AC_CONFIG_PKG(sglr,        --with-aterm=${prefix}
+                           --with-asfix=${prefix})
 
 AC_CONFIG_PKG(pgen,        --with-aterm=${prefix}
+                           --with-asfix=${prefix}
                            --with-sglr=${prefix})
 
-AC_CONFIG_PKG(gpp,         --with-asc=${prefix} \
-                           --with-asource=${prefix} \
-                           --with-aterm=${prefix} \
+AC_CONFIG_PKG(gpp,         --with-asc=${prefix}
+                           --with-asource=${prefix}
+                           --with-aterm=${prefix}
+                           --with-asfix=${prefix}
                            --with-sglr=${prefix})
 
-AC_CONFIG_PKG(gb,          --with-aterm=${prefix} \
-                           --with-stratego=${prefix} \
+AC_CONFIG_PKG(gb,          --with-aterm=${prefix}
+                           --with-stratego=${prefix}
                            --with-gt=${prefix})
 
-AC_CONFIG_PKG(gt,          --with-aterm=${prefix} \
-                           --with-stratego=${prefix} \
+AC_CONFIG_PKG(gt,          --with-aterm=${prefix}
+                           --with-stratego=${prefix}
                            --with-gb=${prefix})
 AC_CONFIG_PKG(graph-tools,)
