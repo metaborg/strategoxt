@@ -33,8 +33,8 @@ GPP=__GPP__
 
 MOD_EXTENSION1="sdf"
 IMPORTS="${PREFIX}/bin/sdf-imports"
-PPTABLES="${PREFIX}/share/sdf-tools/sdf.cons.pp"
-PARSETABLE="${PREFIX}/share/sdf-tools/sdf.cons.tbl"
+PPTABLES="${PREFIX}/share/sdf-front/Sdf2.pp.af"
+PARSETABLE="${PREFIX}/share/sdf-front/Sdf2.tbl"
 
 # Function to generate dot graph (as AST) for SDF definition
 spec2adot () {
