@@ -2,6 +2,31 @@ module xtc-register
 imports config xtc-rep string
 strategies
 
+  xtc-find =
+    ?[name | names]
+    ; xtc-get-stack
+    ; fetch-elem(!(<table-get>(<id>, name), <id>))
+    ; ?(val, tbl)
+    ; <xtc-find(|tbl, name)> (val, names)
+
+  xtc-find(|tbl, name) :
+    (val, []) -> val
+
+  xtc-find(|tbl1, name1) : 
+    (RepoTable(tbl2), [name2 | names]) -> <xtc-find(|tbl2, name2)> (val2, names)
+    where <table-get>(tbl2, name2) => val2
+   
+  xtc-find(|tbl1, name1) : 
+    (RepoTable(_,tbl2), [name2 | names]) -> <xtc-find(|tbl2, name2)> (val2, names)
+    where <table-get>(tbl2, name2) => val2
+   
+  xtc-find(|tbl1, name1) : 
+    (RepoFile(file), [name2 | names]) -> <xtc-find(|tbl2, name2)> (val2, names)
+    where <ReadFromFile; hashtable-init> file => tbl2
+	; <table-put>(tbl1, name1, RepoTable(file, tbl2))
+	; <table-get>(tbl2, name2) => val2
+   
+
   // Finding an entry in the repository
 
   xtc-find-warning = 
