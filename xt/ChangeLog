@@ -1,8 +1,6 @@
 2001-01-07 Merijn de Jonge <mdejonge@cwi.nl>
         * Removed second occurence of AC_CONFIG_PKG(gt, ...) in configure.in
         * New version of collect.sh
-        * XT now bundles GPP version 0.34, which fixes some bugs in
-          abox2ainput.
 
 2001-01-02 Merijn de Jonge <mdejonge@cwi.nl>
         * XT now bundles GPP version 0.33. Version 0.32 introduced a bug
