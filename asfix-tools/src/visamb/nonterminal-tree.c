@@ -26,6 +26,8 @@ Symbol sym_lit_1;
 Symbol sym_empty_0;
 Symbol sym_Nil_0;
 Symbol sym_Cons_2;
+Symbol sym_Cons_1;
+Symbol sym_Nil_0;
 Symbol sym_alt_2;
 Symbol sym_seq_2;
 Symbol sym_label_2;
@@ -96,6 +98,10 @@ static void init_module_constructors (void)
   ATprotectSymbol(sym_Nil_0);
   sym_Cons_2 = ATmakeSymbol("Cons", 2, ATfalse);
   ATprotectSymbol(sym_Cons_2);
+  sym_Cons_1 = ATmakeSymbol("Cons", 1, ATfalse);
+  ATprotectSymbol(sym_Cons_1);
+  sym_Nil_0 = ATmakeSymbol("Nil", 0, ATfalse);
+  ATprotectSymbol(sym_Nil_0);
   sym_alt_2 = ATmakeSymbol("alt", 2, ATfalse);
   ATprotectSymbol(sym_alt_2);
   sym_seq_2 = ATmakeSymbol("seq", 2, ATfalse);
@@ -186,14 +192,14 @@ ATerm concat_0_0 (ATerm t);
 ATerm De_Escape_0_0 (ATerm t);
 ATerm de_escape_0_0 (ATerm t);
 ATerm implode_string_0_0 (ATerm t);
-ATerm at_last_1_0 (ATerm s_90 (ATerm), ATerm t);
+ATerm at_last_1_0 (ATerm i_94 (ATerm), ATerm t);
 ATerm Tl_0_0 (ATerm t);
 ATerm Hd_0_0 (ATerm t);
 ATerm explode_string_0_0 (ATerm t);
 static ATerm a_0 (ATerm t);
 ATerm de_quote_0_0 (ATerm t);
-ATerm filter_1_0 (ATerm i_98 (ATerm), ATerm t);
-ATerm at_end_1_0 (ATerm h_90 (ATerm), ATerm t);
+ATerm filter_1_0 (ATerm y_101 (ATerm), ATerm t);
+ATerm at_end_1_0 (ATerm x_93 (ATerm), ATerm t);
 static ATerm b_0 (ATerm t);
 static ATerm d_0 (ATerm t);
 static ATerm f_0 (ATerm t);
@@ -201,9 +207,9 @@ static ATerm g_0 (ATerm t);
 static ATerm h_0 (ATerm t);
 ATerm Sym2Strs_0_0 (ATerm t);
 static ATerm u_1 (ATerm c_0, ATerm i_0, ATerm e_0, ATerm t);
-ATerm try_1_0 (ATerm y_103 (ATerm), ATerm t);
-ATerm topdown_1_0 (ATerm d_85 (ATerm), ATerm t);
-ATerm io_wrap_1_0 (ATerm y_110 (ATerm), ATerm t);
+ATerm try_1_0 (ATerm a_108 (ATerm), ATerm t);
+ATerm topdown_1_0 (ATerm t_88 (ATerm), ATerm t);
+ATerm io_wrap_1_0 (ATerm a_115 (ATerm), ATerm t);
 static ATerm j_0 (ATerm t);
 static ATerm k_0 (ATerm t);
 static ATerm l_0 (ATerm t);
@@ -216,28 +222,28 @@ ATerm main_0 (ATerm t)
 }
 ATerm De_Escape_0_0 (ATerm t)
 {
-  ATerm n_0 = NULL,o_0 = NULL,p_0 = NULL,q_0 = NULL;
+  ATerm m_0 = NULL,n_0 = NULL,o_0 = NULL,p_0 = NULL;
   if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
     {
-      p_0 = ATgetFirst((ATermList) t);
-      q_0 = (ATerm) ATgetNext((ATermList) t);
-      t = q_0;
+      o_0 = ATgetFirst((ATermList) t);
+      p_0 = (ATerm) ATgetNext((ATermList) t);
+      t = p_0;
       if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
         {
-          n_0 = ATgetFirst((ATermList) t);
-          o_0 = (ATerm) ATgetNext((ATermList) t);
-          t = n_0;
+          m_0 = ATgetFirst((ATermList) t);
+          n_0 = (ATerm) ATgetNext((ATermList) t);
+          t = m_0;
           if(match_int(t, 34))
             {
-              t = p_0;
+              t = o_0;
               if(match_int(t, 92))
                 {
-                  ATerm m_0 = t;
+                  ATerm q_0 = t;
                   int r_0 = stack_ptr;
                   if((PushChoice() == 0))
                     {
                       ATerm t_0 = NULL;
-                      t = o_0;
+                      t = n_0;
                       t = De_Escape_0_0(t);
                       t_0 = t;
                       t = (ATerm) ATinsert(CheckATermList(t_0), term_s_0);
@@ -245,30 +251,30 @@ ATerm De_Escape_0_0 (ATerm t)
                     }
                   else
                     {
-                      t = m_0;
+                      t = q_0;
                       {
                         ATerm x_0 = NULL;
-                        t = q_0;
+                        t = p_0;
                         t = De_Escape_0_0(t);
                         x_0 = t;
-                        t = (ATerm) ATinsert(CheckATermList(x_0), p_0);
+                        t = (ATerm) ATinsert(CheckATermList(x_0), o_0);
                       }
                     }
                 }
               else
                 {
                   ATerm b_1 = NULL;
-                  t = q_0;
+                  t = p_0;
                   t = De_Escape_0_0(t);
                   b_1 = t;
-                  t = (ATerm) ATinsert(CheckATermList(b_1), p_0);
+                  t = (ATerm) ATinsert(CheckATermList(b_1), o_0);
                 }
             }
           else
             {
               if(match_int(t, 92))
                 {
-                  t = p_0;
+                  t = o_0;
                   if(match_int(t, 92))
                     {
                       ATerm u_0 = t;
@@ -276,7 +282,7 @@ ATerm De_Escape_0_0 (ATerm t)
                       if((PushChoice() == 0))
                         {
                           ATerm d_1 = NULL;
-                          t = o_0;
+                          t = n_0;
                           t = De_Escape_0_0(t);
                           d_1 = t;
                           t = (ATerm) ATinsert(CheckATermList(d_1), term_w_0);
@@ -287,39 +293,39 @@ ATerm De_Escape_0_0 (ATerm t)
                           t = u_0;
                           {
                             ATerm g_1 = NULL;
-                            t = q_0;
+                            t = p_0;
                             t = De_Escape_0_0(t);
                             g_1 = t;
-                            t = (ATerm) ATinsert(CheckATermList(g_1), p_0);
+                            t = (ATerm) ATinsert(CheckATermList(g_1), o_0);
                           }
                         }
                     }
                   else
                     {
                       ATerm j_1 = NULL;
-                      t = q_0;
+                      t = p_0;
                       t = De_Escape_0_0(t);
                       j_1 = t;
-                      t = (ATerm) ATinsert(CheckATermList(j_1), p_0);
+                      t = (ATerm) ATinsert(CheckATermList(j_1), o_0);
                     }
                 }
               else
                 {
                   ATerm m_1 = NULL;
-                  t = q_0;
+                  t = p_0;
                   t = De_Escape_0_0(t);
                   m_1 = t;
-                  t = (ATerm) ATinsert(CheckATermList(m_1), p_0);
+                  t = (ATerm) ATinsert(CheckATermList(m_1), o_0);
                 }
             }
         }
       else
         {
           ATerm p_1 = NULL;
-          t = q_0;
+          t = p_0;
           t = De_Escape_0_0(t);
           p_1 = t;
-          t = (ATerm) ATinsert(CheckATermList(p_1), p_0);
+          t = (ATerm) ATinsert(CheckATermList(p_1), o_0);
         }
     }
   else

@@ -69,40 +69,40 @@ static void init_module_constructors (void)
   sym_Cons_2 = ATmakeSymbol("Cons", 2, ATfalse);
   ATprotectSymbol(sym_Cons_2);
 }
-ATerm term_r_0;
 ATerm term_q_0;
 ATerm term_p_0;
+ATerm term_o_0;
 ATerm term_n_0;
 ATerm term_m_0;
-ATerm term_k_0;
+ATerm term_l_0;
 ATerm term_j_0;
 static void init_module_constant_terms (void)
 {
   ATprotect(&(term_j_0));
   term_j_0 = (ATerm) ATmakeAppl(ATmakeSymbol("-v", 0, ATtrue));
-  ATprotect(&(term_k_0));
-  term_k_0 = (ATerm) ATmakeAppl(ATmakeSymbol("sglr", 0, ATtrue));
+  ATprotect(&(term_l_0));
+  term_l_0 = (ATerm) ATmakeAppl(ATmakeSymbol("sglr", 0, ATtrue));
   ATprotect(&(term_m_0));
   term_m_0 = (ATerm) ATmakeAppl(sym__0);
   ATprotect(&(term_n_0));
   term_n_0 = (ATerm) ATmakeAppl(ATmakeSymbol("-2A", 0, ATtrue));
+  ATprotect(&(term_o_0));
+  term_o_0 = (ATerm) ATmakeAppl(ATmakeSymbol("-p", 0, ATtrue));
   ATprotect(&(term_p_0));
-  term_p_0 = (ATerm) ATmakeAppl(ATmakeSymbol("-p", 0, ATtrue));
+  term_p_0 = (ATerm) ATmakeAppl(ATmakeSymbol("Box.tbl", 0, ATtrue));
   ATprotect(&(term_q_0));
-  term_q_0 = (ATerm) ATmakeAppl(ATmakeSymbol("Box.tbl", 0, ATtrue));
-  ATprotect(&(term_r_0));
-  term_r_0 = (ATerm) ATmakeAppl(ATmakeSymbol("implode-asfix", 0, ATtrue));
+  term_q_0 = (ATerm) ATmakeAppl(ATmakeSymbol("implode-asfix", 0, ATtrue));
 }
 #include <srts/init-stratego-application.h>
 ATerm pass_verbose_0_0 (ATerm t);
-ATerm xtc_transform_2_0 (ATerm i_109 (ATerm), ATerm j_109 (ATerm), ATerm t);
-ATerm if_verbose3_1_0 (ATerm f_105 (ATerm), ATerm t);
+ATerm xtc_transform_2_0 (ATerm k_113 (ATerm), ATerm l_113 (ATerm), ATerm t);
+ATerm if_verbose3_1_0 (ATerm h_109 (ATerm), ATerm t);
 static ATerm a_0 (ATerm t);
 ATerm pass_v_verbose_0_0 (ATerm t);
 ATerm xtc_find_0_0 (ATerm t);
-static ATerm e_0 (ATerm t);
-ATerm xtc_sglr_1_0 (ATerm c_0 (ATerm), ATerm t);
-ATerm xtc_io_wrap_1_0 (ATerm o_108 (ATerm), ATerm t);
+static ATerm d_0 (ATerm t);
+ATerm xtc_sglr_1_0 (ATerm e_0 (ATerm), ATerm t);
+ATerm xtc_io_wrap_1_0 (ATerm q_112 (ATerm), ATerm t);
 static ATerm g_0 (ATerm t);
 static ATerm h_0 (ATerm t);
 static ATerm i_0 (ATerm t);
@@ -124,28 +124,28 @@ ATerm pass_v_verbose_0_0 (ATerm t)
   t = if_verbose3_1_0(a_0, t);
   return(t);
 }
-static ATerm e_0 (ATerm t)
+static ATerm d_0 (ATerm t)
 {
-  t = term_k_0;
+  t = term_l_0;
   return(t);
 }
-ATerm xtc_sglr_1_0 (ATerm c_0 (ATerm), ATerm t)
+ATerm xtc_sglr_1_0 (ATerm e_0 (ATerm), ATerm t)
 {
   static ATerm f_0 (ATerm t);
   static ATerm f_0 (ATerm t)
   {
-    ATerm b_0 = NULL,d_0 = NULL;
+    ATerm b_0 = NULL,c_0 = NULL;
     t = term_m_0;
-    t = c_0(t);
+    t = e_0(t);
     t = xtc_find_0_0(t);
     b_0 = t;
     t = term_m_0;
     t = pass_v_verbose_0_0(t);
-    d_0 = t;
-    t = (ATerm) ATinsert(ATinsert(ATinsert(CheckATermList(d_0), b_0), term_p_0), term_n_0);
+    c_0 = t;
+    t = (ATerm) ATinsert(ATinsert(ATinsert(CheckATermList(c_0), b_0), term_o_0), term_n_0);
     return(t);
   }
-  t = xtc_transform_2_0(e_0, f_0, t);
+  t = xtc_transform_2_0(d_0, f_0, t);
   return(t);
 }
 static ATerm g_0 (ATerm t)
@@ -156,12 +156,12 @@ static ATerm g_0 (ATerm t)
 }
 static ATerm h_0 (ATerm t)
 {
-  t = term_q_0;
+  t = term_p_0;
   return(t);
 }
 static ATerm i_0 (ATerm t)
 {
-  t = term_r_0;
+  t = term_q_0;
   return(t);
 }
 ATerm main_0_0 (ATerm t)

@@ -109,40 +109,40 @@ static void init_module_constant_terms (void)
   term_r_1 = (ATerm) ATmakeAppl(ATmakeSymbol("Ast-2-abox", 0, ATtrue));
 }
 #include <srts/init-stratego-application.h>
-ATerm debug_1_0 (ATerm y_84 (ATerm), ATerm t);
-ATerm if_verbose5_1_0 (ATerm h_105 (ATerm), ATerm t);
+ATerm debug_1_0 (ATerm o_88 (ATerm), ATerm t);
+ATerm if_verbose5_1_0 (ATerm j_109 (ATerm), ATerm t);
 ATerm concat_0_0 (ATerm t);
-ATerm if_verbose2_1_0 (ATerm e_105 (ATerm), ATerm t);
-ATerm xtc_transform_1_0 (ATerm h_109 (ATerm), ATerm t);
+ATerm if_verbose2_1_0 (ATerm g_109 (ATerm), ATerm t);
+ATerm xtc_transform_1_0 (ATerm j_113 (ATerm), ATerm t);
 ATerm Fst_0_0 (ATerm t);
 ATerm geq_0_0 (ATerm t);
 ATerm modification_time_0_0 (ATerm t);
-ATerm _2_0 (ATerm s_69 (ATerm), ATerm t_69 (ATerm), ATerm t);
+ATerm _2_0 (ATerm i_73 (ATerm), ATerm j_73 (ATerm), ATerm t);
 ATerm file_exists_0_0 (ATerm t);
 ATerm add_extension_0_0 (ATerm t);
 static ATerm a_0 (ATerm t);
 static ATerm e_0 (ATerm t);
 ATerm lookup_pp_af_0_0 (ATerm t);
 ATerm fatal_error_0_0 (ATerm t);
-ATerm has_extension_1_0 (ATerm m_107 (ATerm), ATerm t);
+ATerm has_extension_1_0 (ATerm o_111 (ATerm), ATerm t);
 static ATerm g_0 (ATerm t);
 static ATerm h_0 (ATerm t);
+static ATerm i_0 (ATerm t);
 static ATerm j_0 (ATerm t);
-static ATerm k_0 (ATerm t);
-static ATerm m_0 (ATerm t);
+static ATerm l_0 (ATerm t);
 ATerm ensure_pp_table_parsed_0_0 (ATerm t);
-ATerm map_1_0 (ATerm q_89 (ATerm), ATerm t);
+ATerm map_1_0 (ATerm g_93 (ATerm), ATerm t);
 ATerm get_config_0_0 (ATerm t);
 ATerm get_config_p_0_0 (ATerm t);
+static ATerm n_0 (ATerm t);
 static ATerm o_0 (ATerm t);
-static ATerm p_0 (ATerm t);
 static ATerm q_0 (ATerm t);
 ATerm create_pp_table_args_0_0 (ATerm t);
-ATerm xtc_transform_2_0 (ATerm i_109 (ATerm), ATerm j_109 (ATerm), ATerm t);
+ATerm xtc_transform_2_0 (ATerm k_113 (ATerm), ATerm l_113 (ATerm), ATerm t);
 ATerm io_options_0_0 (ATerm t);
 ATerm extend_config_0_0 (ATerm t);
-ATerm ArgOption_3_0 (ATerm k_3 (ATerm), ATerm l_3 (ATerm), ATerm m_3 (ATerm), ATerm t);
-ATerm xtc_io_wrap_2_0 (ATerm p_108 (ATerm), ATerm q_108 (ATerm), ATerm t);
+ATerm ArgOption_3_0 (ATerm o_3 (ATerm), ATerm p_3 (ATerm), ATerm q_3 (ATerm), ATerm t);
+ATerm xtc_io_wrap_2_0 (ATerm r_112 (ATerm), ATerm s_112 (ATerm), ATerm t);
 static ATerm r_0 (ATerm t);
 static ATerm s_0 (ATerm t);
 static ATerm t_0 (ATerm t);
@@ -192,17 +192,17 @@ static ATerm h_0 (ATerm t)
   t = term_a_1;
   return(t);
 }
-static ATerm j_0 (ATerm t)
+static ATerm i_0 (ATerm t)
 {
   t = term_b_1;
   return(t);
 }
-static ATerm k_0 (ATerm t)
+static ATerm j_0 (ATerm t)
 {
-  t = debug_1_0(m_0, t);
+  t = debug_1_0(l_0, t);
   return(t);
 }
-static ATerm m_0 (ATerm t)
+static ATerm l_0 (ATerm t)
 {
   t = term_c_1;
   return(t);
@@ -250,10 +250,10 @@ ATerm ensure_pp_table_parsed_0_0 (ATerm t)
           {
             t = i_1;
             {
-              ATerm l_0 = NULL,c_0 = NULL;
-              l_0 = t;
-              t = (ATerm) ATmakeAppl(sym_FILE_1, l_0);
-              t = xtc_transform_1_0(j_0, t);
+              ATerm k_0 = NULL,c_0 = NULL;
+              k_0 = t;
+              t = (ATerm) ATmakeAppl(sym_FILE_1, k_0);
+              t = xtc_transform_1_0(i_0, t);
               if(match_cons(t, sym_FILE_1))
                 {
                   c_0 = ATgetArgument(t, 0);
@@ -261,7 +261,7 @@ ATerm ensure_pp_table_parsed_0_0 (ATerm t)
               else
                 _fail(t);
               t = c_0;
-              t = if_verbose2_1_0(k_0, t);
+              t = if_verbose2_1_0(j_0, t);
             }
           }
       }
@@ -285,15 +285,15 @@ ATerm get_config_p_0_0 (ATerm t)
     }
   return(t);
 }
-static ATerm o_0 (ATerm t)
+static ATerm n_0 (ATerm t)
 {
-  ATerm n_0 = NULL;
+  ATerm m_0 = NULL;
   t = ensure_pp_table_parsed_0_0(t);
-  n_0 = t;
-  t = (ATerm) ATinsert(ATinsert(ATempty, n_0), term_m_1);
+  m_0 = t;
+  t = (ATerm) ATinsert(ATinsert(ATempty, m_0), term_m_1);
   return(t);
 }
-static ATerm p_0 (ATerm t)
+static ATerm o_0 (ATerm t)
 {
   t = debug_1_0(q_0, t);
   return(t);
@@ -306,9 +306,9 @@ static ATerm q_0 (ATerm t)
 ATerm create_pp_table_args_0_0 (ATerm t)
 {
   t = get_config_p_0_0(t);
-  t = map_1_0(o_0, t);
+  t = map_1_0(n_0, t);
   t = concat_0_0(t);
-  t = if_verbose5_1_0(p_0, t);
+  t = if_verbose5_1_0(o_0, t);
   return(t);
 }
 static ATerm r_0 (ATerm t)
@@ -340,11 +340,11 @@ static ATerm t_0 (ATerm t)
 }
 static ATerm u_0 (ATerm t)
 {
-  ATerm i_0 = NULL;
-  i_0 = t;
-  t = (ATerm) ATmakeAppl(sym__2, term_m_1, (ATerm) ATinsert(ATempty, i_0));
+  ATerm p_0 = NULL;
+  p_0 = t;
+  t = (ATerm) ATmakeAppl(sym__2, term_m_1, (ATerm) ATinsert(ATempty, p_0));
   t = extend_config_0_0(t);
-  t = i_0;
+  t = p_0;
   return(t);
 }
 static ATerm v_0 (ATerm t)

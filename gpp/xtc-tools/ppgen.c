@@ -152,28 +152,28 @@ static void init_module_constant_terms (void)
 }
 #include <srts/init-stratego-application.h>
 ATerm pass_verbose_0_0 (ATerm t);
-ATerm xtc_transform_2_0 (ATerm i_109 (ATerm), ATerm j_109 (ATerm), ATerm t);
+ATerm xtc_transform_2_0 (ATerm k_113 (ATerm), ATerm l_113 (ATerm), ATerm t);
 ATerm get_config_0_0 (ATerm t);
-ATerm if_verbose3_1_0 (ATerm f_105 (ATerm), ATerm t);
+ATerm if_verbose3_1_0 (ATerm h_109 (ATerm), ATerm t);
 static ATerm a_0 (ATerm t);
 ATerm pass_v_verbose_0_0 (ATerm t);
 ATerm xtc_find_0_0 (ATerm t);
 static ATerm b_0 (ATerm t);
 ATerm xtc_sglr_2_0 (ATerm n_0 (ATerm), ATerm o_0 (ATerm), ATerm t);
-static ATerm d_0 (ATerm t);
+static ATerm e_0 (ATerm t);
 static ATerm j_0 (ATerm t);
 static ATerm k_0 (ATerm t);
-ATerm xtc_parse_sdf2_0_1 (ATerm h_0, ATerm t);
+ATerm xtc_parse_sdf2_0_1 (ATerm i_0, ATerm t);
 static ATerm l_0 (ATerm t);
 ATerm pre_process_sdf_0_0 (ATerm t);
 ATerm get_input_type_0_0 (ATerm t);
 static ATerm m_0 (ATerm t);
 static ATerm p_0 (ATerm t);
 ATerm ppgen_0_0 (ATerm t);
-ATerm xtc_io_1_0 (ATerm l_108 (ATerm), ATerm t);
+ATerm xtc_io_1_0 (ATerm n_112 (ATerm), ATerm t);
 ATerm io_options_0_0 (ATerm t);
 ATerm set_config_0_0 (ATerm t);
-ATerm Option_3_0 (ATerm h_3 (ATerm), ATerm i_3 (ATerm), ATerm j_3 (ATerm), ATerm t);
+ATerm Option_3_0 (ATerm l_3 (ATerm), ATerm m_3 (ATerm), ATerm n_3 (ATerm), ATerm t);
 static ATerm q_0 (ATerm t);
 static ATerm r_0 (ATerm t);
 static ATerm s_0 (ATerm t);
@@ -184,7 +184,7 @@ static ATerm y_0 (ATerm t);
 static ATerm z_0 (ATerm t);
 static ATerm b_1 (ATerm t);
 ATerm ppgen_options_0_0 (ATerm t);
-ATerm option_wrap_2_0 (ATerm k_110 (ATerm), ATerm l_110 (ATerm), ATerm t);
+ATerm option_wrap_2_0 (ATerm m_114 (ATerm), ATerm n_114 (ATerm), ATerm t);
 static ATerm e_1 (ATerm t);
 ATerm main_0_0 (ATerm t);
 ATerm main_0 (ATerm t)
@@ -214,24 +214,24 @@ ATerm xtc_sglr_2_0 (ATerm n_0 (ATerm), ATerm o_0 (ATerm), ATerm t)
   static ATerm c_0 (ATerm t);
   static ATerm c_0 (ATerm t)
   {
-    ATerm e_0 = NULL,f_0 = NULL,g_0 = NULL;
+    ATerm d_0 = NULL,f_0 = NULL,g_0 = NULL;
     t = term_l_1;
     t = n_0(t);
     t = xtc_find_0_0(t);
-    e_0 = t;
+    d_0 = t;
     t = term_l_1;
     t = o_0(t);
     f_0 = t;
     t = term_l_1;
     t = pass_v_verbose_0_0(t);
     g_0 = t;
-    t = (ATerm) ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(CheckATermList(g_0), f_0), term_o_1), e_0), term_n_1), term_m_1);
+    t = (ATerm) ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(CheckATermList(g_0), f_0), term_o_1), d_0), term_n_1), term_m_1);
     return(t);
   }
   t = xtc_transform_2_0(b_0, c_0, t);
   return(t);
 }
-static ATerm d_0 (ATerm t)
+static ATerm e_0 (ATerm t)
 {
   t = term_p_1;
   return(t);
@@ -246,15 +246,15 @@ static ATerm k_0 (ATerm t)
   t = term_r_1;
   return(t);
 }
-ATerm xtc_parse_sdf2_0_1 (ATerm h_0, ATerm t)
+ATerm xtc_parse_sdf2_0_1 (ATerm i_0, ATerm t)
 {
-  static ATerm i_0 (ATerm t);
-  static ATerm i_0 (ATerm t)
+  static ATerm h_0 (ATerm t);
+  static ATerm h_0 (ATerm t)
   {
-    t = h_0;
+    t = i_0;
     return(t);
   }
-  t = xtc_sglr_2_0(d_0, i_0, t);
+  t = xtc_sglr_2_0(e_0, h_0, t);
   t = xtc_transform_2_0(j_0, pass_verbose_0_0, t);
   t = xtc_transform_2_0(k_0, pass_verbose_0_0, t);
   return(t);

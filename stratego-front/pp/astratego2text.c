@@ -10,18 +10,18 @@ static void init_module_constructors (void)
   ATprotectSymbol(sym_Cons_2);
 }
 ATerm term_g_0;
-ATerm term_f_0;
+ATerm term_e_0;
 static void init_module_constant_terms (void)
 {
-  ATprotect(&(term_f_0));
-  term_f_0 = (ATerm) ATmakeAppl(ATmakeSymbol("pp-stratego", 0, ATtrue));
+  ATprotect(&(term_e_0));
+  term_e_0 = (ATerm) ATmakeAppl(ATmakeSymbol("pp-stratego", 0, ATtrue));
   ATprotect(&(term_g_0));
   term_g_0 = (ATerm) ATmakeAppl(ATmakeSymbol("--abstract", 0, ATtrue));
 }
 #include <srts/init-stratego-application.h>
 ATerm pass_verbose_0_0 (ATerm t);
-ATerm xtc_transform_2_0 (ATerm i_109 (ATerm), ATerm j_109 (ATerm), ATerm t);
-ATerm xtc_io_wrap_1_0 (ATerm o_108 (ATerm), ATerm t);
+ATerm xtc_transform_2_0 (ATerm k_113 (ATerm), ATerm l_113 (ATerm), ATerm t);
+ATerm xtc_io_wrap_1_0 (ATerm q_112 (ATerm), ATerm t);
 static ATerm b_0 (ATerm t);
 static ATerm c_0 (ATerm t);
 static ATerm d_0 (ATerm t);
@@ -39,7 +39,7 @@ static ATerm b_0 (ATerm t)
 }
 static ATerm c_0 (ATerm t)
 {
-  t = term_f_0;
+  t = term_e_0;
   return(t);
 }
 static ATerm d_0 (ATerm t)

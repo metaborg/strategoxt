@@ -69,33 +69,33 @@ static void init_module_constructors (void)
   sym_Cons_2 = ATmakeSymbol("Cons", 2, ATfalse);
   ATprotectSymbol(sym_Cons_2);
 }
-ATerm term_s_0;
-ATerm term_r_0;
 ATerm term_q_0;
 ATerm term_p_0;
+ATerm term_o_0;
+ATerm term_n_0;
 static void init_module_constant_terms (void)
 {
+  ATprotect(&(term_n_0));
+  term_n_0 = (ATerm) ATmakeAppl(ATmakeSymbol("--width", 0, ATtrue));
+  ATprotect(&(term_o_0));
+  term_o_0 = (ATerm) ATmakeAppl(ATmakeSymbol("Abox-2-text", 0, ATtrue));
   ATprotect(&(term_p_0));
-  term_p_0 = (ATerm) ATmakeAppl(ATmakeSymbol("--width", 0, ATtrue));
+  term_p_0 = (ATerm) ATmakeAppl(sym__0);
   ATprotect(&(term_q_0));
-  term_q_0 = (ATerm) ATmakeAppl(ATmakeSymbol("Abox-2-text", 0, ATtrue));
-  ATprotect(&(term_r_0));
-  term_r_0 = (ATerm) ATmakeAppl(sym__0);
-  ATprotect(&(term_s_0));
-  term_s_0 = (ATerm) ATmakeAppl(ATmakeSymbol("-w int | --width int       Specifies max width of output.", 0, ATtrue));
+  term_q_0 = (ATerm) ATmakeAppl(ATmakeSymbol("-w int | --width int       Specifies max width of output.", 0, ATtrue));
 }
 #include <srts/init-stratego-application.h>
 ATerm conc_0_0 (ATerm t);
 ATerm pass_verbose_0_0 (ATerm t);
 ATerm get_config_0_0 (ATerm t);
 ATerm pass_width_0_0 (ATerm t);
-ATerm xtc_transform_2_0 (ATerm i_109 (ATerm), ATerm j_109 (ATerm), ATerm t);
+ATerm xtc_transform_2_0 (ATerm k_113 (ATerm), ATerm l_113 (ATerm), ATerm t);
 static ATerm a_0 (ATerm t);
 static ATerm b_0 (ATerm t);
 ATerm abox2text_0_0 (ATerm t);
-ATerm xtc_io_1_0 (ATerm l_108 (ATerm), ATerm t);
+ATerm xtc_io_1_0 (ATerm n_112 (ATerm), ATerm t);
 ATerm set_config_0_0 (ATerm t);
-ATerm ArgOption_3_0 (ATerm k_3 (ATerm), ATerm l_3 (ATerm), ATerm m_3 (ATerm), ATerm t);
+ATerm ArgOption_3_0 (ATerm o_3 (ATerm), ATerm p_3 (ATerm), ATerm q_3 (ATerm), ATerm t);
 ATerm general_options_0_0 (ATerm t);
 ATerm output_option_0_0 (ATerm t);
 ATerm input_option_0_0 (ATerm t);
@@ -103,8 +103,8 @@ static ATerm e_0 (ATerm t);
 static ATerm g_0 (ATerm t);
 static ATerm h_0 (ATerm t);
 ATerm abox2text_options_0_0 (ATerm t);
-ATerm option_wrap_2_0 (ATerm k_110 (ATerm), ATerm l_110 (ATerm), ATerm t);
-static ATerm i_0 (ATerm t);
+ATerm option_wrap_2_0 (ATerm m_114 (ATerm), ATerm n_114 (ATerm), ATerm t);
+static ATerm k_0 (ATerm t);
 ATerm main_0_0 (ATerm t);
 ATerm main_0 (ATerm t)
 {
@@ -114,38 +114,38 @@ ATerm main_0 (ATerm t)
 }
 ATerm pass_width_0_0 (ATerm t)
 {
-  ATerm m_0 = t;
-  int n_0 = stack_ptr;
+  ATerm l_0 = t;
+  int m_0 = stack_ptr;
   if((PushChoice() == 0))
     {
-      t = term_p_0;
+      t = term_n_0;
       t = get_config_0_0(t);
-      LocalPopChoice(n_0);
+      LocalPopChoice(m_0);
       {
         ATerm c_0 = NULL;
         c_0 = t;
-        t = (ATerm) ATinsert(ATinsert(ATempty, c_0), term_p_0);
+        t = (ATerm) ATinsert(ATinsert(ATempty, c_0), term_n_0);
       }
     }
   else
     {
-      t = m_0;
+      t = l_0;
       t = (ATerm) ATempty;
     }
   return(t);
 }
 static ATerm a_0 (ATerm t)
 {
-  t = term_q_0;
+  t = term_o_0;
   return(t);
 }
 static ATerm b_0 (ATerm t)
 {
   ATerm d_0 = NULL,f_0 = NULL;
-  t = term_r_0;
+  t = term_p_0;
   t = pass_width_0_0(t);
   d_0 = t;
-  t = term_r_0;
+  t = term_p_0;
   t = pass_verbose_0_0(t);
   f_0 = t;
   t = (ATerm) ATmakeAppl(sym__2, d_0, f_0);
@@ -159,68 +159,68 @@ ATerm abox2text_0_0 (ATerm t)
 }
 static ATerm e_0 (ATerm t)
 {
-  ATerm j_0 = NULL;
-  j_0 = t;
+  ATerm i_0 = NULL;
+  i_0 = t;
   if(match_string(t, "-w"))
     {
-      t = j_0;
+      t = i_0;
     }
   else
     {
       if((ATgetSymbol((ATermAppl) t) != ATmakeSymbol("--width", 0, ATtrue)))
         _fail(t);
-      t = j_0;
+      t = i_0;
     }
   return(t);
 }
 static ATerm g_0 (ATerm t)
 {
-  ATerm k_0 = NULL;
-  k_0 = t;
-  t = (ATerm) ATmakeAppl(sym__2, term_p_0, k_0);
+  ATerm j_0 = NULL;
+  j_0 = t;
+  t = (ATerm) ATmakeAppl(sym__2, term_n_0, j_0);
   t = set_config_0_0(t);
-  t = k_0;
+  t = j_0;
   return(t);
 }
 static ATerm h_0 (ATerm t)
 {
-  t = term_s_0;
+  t = term_q_0;
   return(t);
 }
 ATerm abox2text_options_0_0 (ATerm t)
 {
-  ATerm t_0 = t;
-  int u_0 = stack_ptr;
+  ATerm r_0 = t;
+  int s_0 = stack_ptr;
   if((PushChoice() == 0))
     {
       t = input_option_0_0(t);
-      LocalPopChoice(u_0);
+      LocalPopChoice(s_0);
     }
   else
     {
-      t = t_0;
+      t = r_0;
       {
-        ATerm v_0 = t;
-        int w_0 = stack_ptr;
+        ATerm t_0 = t;
+        int u_0 = stack_ptr;
         if((PushChoice() == 0))
           {
             t = output_option_0_0(t);
-            LocalPopChoice(w_0);
+            LocalPopChoice(u_0);
           }
         else
           {
-            t = v_0;
+            t = t_0;
             {
-              ATerm x_0 = t;
-              int y_0 = stack_ptr;
+              ATerm v_0 = t;
+              int w_0 = stack_ptr;
               if((PushChoice() == 0))
                 {
                   t = general_options_0_0(t);
-                  LocalPopChoice(y_0);
+                  LocalPopChoice(w_0);
                 }
               else
                 {
-                  t = x_0;
+                  t = v_0;
                   t = ArgOption_3_0(e_0, g_0, h_0, t);
                 }
             }
@@ -229,13 +229,13 @@ ATerm abox2text_options_0_0 (ATerm t)
     }
   return(t);
 }
-static ATerm i_0 (ATerm t)
+static ATerm k_0 (ATerm t)
 {
   t = xtc_io_1_0(abox2text_0_0, t);
   return(t);
 }
 ATerm main_0_0 (ATerm t)
 {
-  t = option_wrap_2_0(abox2text_options_0_0, i_0, t);
+  t = option_wrap_2_0(abox2text_options_0_0, k_0, t);
   return(t);
 }

@@ -177,24 +177,24 @@ static void init_module_constant_terms (void)
 #include <srts/init-stratego-application.h>
 ATerm xtc_cat_0_0 (ATerm t);
 ATerm print_to_0_0 (ATerm t);
-ATerm xtc_transform_2_0 (ATerm i_109 (ATerm), ATerm j_109 (ATerm), ATerm t);
+ATerm xtc_transform_2_0 (ATerm k_113 (ATerm), ATerm l_113 (ATerm), ATerm t);
 ATerm date_format_0_0 (ATerm t);
 ATerm now_local_time_0_0 (ATerm t);
 ATerm create_time_0_0 (ATerm t);
 ATerm fatal_error_0_0 (ATerm t);
 ATerm get_title_0_0 (ATerm t);
 ATerm create_header_0_0 (ATerm t);
-ATerm xtc_io_1_0 (ATerm l_108 (ATerm), ATerm t);
+ATerm xtc_io_1_0 (ATerm n_112 (ATerm), ATerm t);
 static ATerm b_0 (ATerm t);
 static ATerm d_0 (ATerm t);
 ATerm abox2html_0_0 (ATerm t);
 ATerm pass_verbose_0_0 (ATerm t);
-ATerm xtc_generate_2_0 (ATerm c_108 (ATerm), ATerm d_108 (ATerm), ATerm t);
-ATerm xtc_output_1_0 (ATerm m_108 (ATerm), ATerm t);
+ATerm xtc_generate_2_0 (ATerm e_112 (ATerm), ATerm f_112 (ATerm), ATerm t);
+ATerm xtc_output_1_0 (ATerm o_112 (ATerm), ATerm t);
 ATerm get_config_0_0 (ATerm t);
 ATerm set_config_0_0 (ATerm t);
-ATerm ArgOption_3_0 (ATerm k_3 (ATerm), ATerm l_3 (ATerm), ATerm m_3 (ATerm), ATerm t);
-ATerm Option_3_0 (ATerm h_3 (ATerm), ATerm i_3 (ATerm), ATerm j_3 (ATerm), ATerm t);
+ATerm ArgOption_3_0 (ATerm o_3 (ATerm), ATerm p_3 (ATerm), ATerm q_3 (ATerm), ATerm t);
+ATerm Option_3_0 (ATerm l_3 (ATerm), ATerm m_3 (ATerm), ATerm n_3 (ATerm), ATerm t);
 ATerm general_options_0_0 (ATerm t);
 ATerm output_option_0_0 (ATerm t);
 ATerm input_option_0_0 (ATerm t);
@@ -205,9 +205,9 @@ static ATerm m_0 (ATerm t);
 static ATerm q_0 (ATerm t);
 static ATerm r_0 (ATerm t);
 ATerm abox2html_options_0_0 (ATerm t);
-ATerm option_wrap_2_0 (ATerm k_110 (ATerm), ATerm l_110 (ATerm), ATerm t);
+ATerm option_wrap_2_0 (ATerm m_114 (ATerm), ATerm n_114 (ATerm), ATerm t);
 static ATerm s_0 (ATerm t);
-static ATerm u_0 (ATerm t);
+static ATerm t_0 (ATerm t);
 static ATerm v_0 (ATerm t);
 ATerm main_0_0 (ATerm t);
 ATerm main_0 (ATerm t)
@@ -393,14 +393,14 @@ static ATerm s_0 (ATerm t)
   int o_2 = stack_ptr;
   if((PushChoice() == 0))
     {
-      ATerm t_0 = NULL;
-      t_0 = t;
+      ATerm u_0 = NULL;
+      u_0 = t;
       t = term_a_2;
       t = get_config_0_0(t);
       if((ATgetSymbol((ATermAppl) t) != ATmakeSymbol("gen-css", 0, ATtrue)))
         _fail(t);
-      t = t_0;
-      t = xtc_output_1_0(u_0, t);
+      t = u_0;
+      t = xtc_output_1_0(t_0, t);
       LocalPopChoice(o_2);
     }
   else
@@ -410,7 +410,7 @@ static ATerm s_0 (ATerm t)
     }
   return(t);
 }
-static ATerm u_0 (ATerm t)
+static ATerm t_0 (ATerm t)
 {
   t = xtc_generate_2_0(v_0, pass_verbose_0_0, t);
   return(t);
