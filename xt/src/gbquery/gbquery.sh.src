@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: gbquery.sh.src,v 1.5 2001/06/12 07:46:17 mdejonge Exp $
+# $Id: gbquery.sh.src,v 1.6 2001/06/12 13:40:55 mdejonge Exp $
 
 # gbquery: obtain information from the Grammar Base
 #
@@ -54,9 +54,9 @@ ENDCAT
 }
 
 get_value () {
-   grammar=$1
-   version=$2
-   variable=$3
+   grammar="$1"
+   version="$2"
+   variable="$3"
    
    (
       cat $1.$2/$1.spec 2>/dev/null
@@ -76,7 +76,7 @@ grammar_dir () {
    fi
 
    dir=`ls -d ${GB}/share/gb/*.${version} \
-      | grep -i ${language}.${version} \
+      | grep -i "${language}.${version}" \
       | sort -r \
       | head -1 2>/dev/null`
    if [ "a${dir}" = "a" ]; then
