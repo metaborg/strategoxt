@@ -55,7 +55,7 @@ strategies
     end
 
   code-red =
-    <conc-strings> (<implode-string> [27], "[00;31m")
+    <conc-strings> (<implode-string> [27], "[01;31m")
 
   code-plain =
     <conc-strings> (<implode-string> [27], "[m")
