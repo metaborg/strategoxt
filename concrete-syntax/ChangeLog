@@ -1,5 +1,7 @@
 2003-11-16  Eelco Visser  <visser@cs.uu.nl>
 
+	* xtc/parse-cs.str: Keeping intermediate results
+
 	* Generic program for parsing programs with embedded concrete
 	syntax. The program is parameterized with meta-data indicating
 	components for various aspects such as parsing, exploding,

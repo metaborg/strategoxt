@@ -1,0 +1,103 @@
+----------------------------------------------------------------------
+        __ __ __  __    _  __ __  __  __   __      _  _ _ _
+       |__   |   |__|  /_\   |   |__ | _  |  |  /   \/   |
+        __|  |   | \  /   \  |   |__ |__| |__| /   _/\_  |
+
+----------------------------------------------------------------------
+
+Package: CONCRETE-SYNTAX
+
+----------------------------
+PARSE-CS
+----------------------------
+
+Usage: parse-cs -i file.ext -o file.ast [-I incldir ...] [Options]
+
+Uses: file.meta and/or ext.meta
+
+For other options see parse-cs -h
+
+Parse-cs is a generic tool for parsing programs with embedded concrete
+syntax. The program is parameterized with meta-data indicating
+components for various aspects such as parsing, exploding, desugaring,
+and pretty-printing. The meta data can be specified in a .meta file
+specific for a program to be parsed, or it can be associated with an
+extension and registered in an XTC repository.
+
+For example, the following is the contents of pl.meta, the meta-data
+for Prolog programs with embedded syntax. The assumption (in this
+example) is that syntax embeddings use a standard (ToTerm) convention
+for indicating the boundary between meta- and object-syntax.
+
+	  Meta([
+	    Syntax("Prolog"),
+	    ParseTable("Prolog.tbl"),
+	    Explode("prolog-explode"),
+	    PrettyPrintTable("Prolog-pretty.pp.af")
+	  ])
+
+This information can be overridden in a file specific .meta file with
+the same extension. For example, the following indicates an embedding
+of ABIR in Prolog and a specific desugaring tool for this format:
+
+	  Meta([
+	    Syntax("PrologABIR"),
+	    PostExplodeDesugar("abir-in-prolog-implode")
+	  ])
+
+It overrides the syntax component, and adds a desugaring component.
+
+In order to define such meta-data for a whole class of programs, it
+can be defined in a meta file associated with a new extension. For
+example, the following is the contents plabir.meta, which defines all
+meta-data for preprocessing Prolog with embedded ABIR in files with
+extension .plabir.
+	
+	  Meta([
+	    Syntax("PrologABIR"),
+	    Explode("prolog-explode"),
+	    PostExplodeDesugar("abir-in-prolog-implode"),
+	    PrettyPrintTable("Prolog-pretty.pp.af")
+	  ])
+
+----------------------------
+Concrete Syntax Tools
+----------------------------
+
+Parse-cs is the only tool provided by the package at the moment. Other
+tools that might be provided in the future include:
+
+- embed-syntax : combines two syntax definitions embedding one
+  in the other by generating quotation productions and variable
+  schemas according to a standard schema which might be adapted.
+
+- gen-explode : a generic explosion transformation for embeddings that
+  can be expressed locally (term-like API in host language) and
+  generically
+
+----------------------------------------------------------------------
+
+For more information about installation, use, and development see
+
+   http://www.stratego-language.org
+
+----------------------------------------------------------------------
+
+Copyright (c) 2003 Eelco Visser <visser@acm.org>
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+02111-1307 USA
+
+----------------------------------------------------------------------

@@ -70,36 +70,26 @@ strategies
       include-options <+ syntax-option 
                       <+ ensugar-option 
                       <+ pretty-print-option
-    , if-verbose1(where(FILE(debug(!"preprocessing: "))))
-      ; where(<extend-config> ("-I", ["./"]))
-      ; resolve-file-name
-      ; if-verbose3(debug(!"file: "))
+    , if-verbose1(where(FILE(debug(!"Parsing with concrete syntax: "))))
+      ; pcs-input-file
       ; init-language-binding
-      ; where(?FILE(<basename => base>))
-
-      // parse the file and implode the parse tree
-
-      ; xtc-sglri(|<MetaData> "ParseTable")
-      ; try(xtc-transform(<MetaData> "PreExplodeDesugar", pass-ensugar))
-      ; try(xtc-transform(<MetaData> "Explode"))
-      ; try(xtc-transform(<MetaData> "PostExplodeDesugar", pass-ensugar))
-      ; try(
-	  where(<get-config> "-pp"; get-pp-table)
-	  ; xtc-transform(!"ast2abox", !["-p", <MetaData> "PrettyPrintTable"])
-	  ; xtc-transform(!"abox2text")
-        )
+      ; pcs-parse
+      ; pcs-pre-explode-desugar 
+      ; pcs-explode
+      ; pcs-post-explode-desugar 
+      ; pcs-pretty-print
     )
 
-  /*
-      ; if-verbose1(where(run-time; debug(!"exploding -- ")))
-      ; if-keep1(copy-to(<guarantee-extension(!"btree")> base))
-      ; if-keep1(copy-to(<guarantee-extension(!"atree")> base))
-  */
+  pcs-input-file =
+    where(<extend-config> ("-I", ["./"]))
+    ; resolve-file-name
+    ; where(?FILE(file); <set-config> ("input-file", file))
+    ; if-verbose3(debug(!"file: "))
 
   init-language-binding =
     where(
       fetch-meta-data(!Meta([]))
-      ; if-verbose3(debug(!"meta-data: "))
+      ; if-verbose2(debug(!"meta-data: "))
       ; syntax-override
       ; meta-data-to-rules
       ; where(get-parse-table)
@@ -108,13 +98,44 @@ strategies
   syntax-override = 
     try(Meta(fetch(Syntax(<get-config> "--syntax"))))
 
+  pcs-parse =
+    xtc-sglri(|<MetaData> "ParseTable")
+    ; if-keep1(copy-to(<add-extension> (<get-config> "input-file", "ast")))
+
+  pcs-pre-explode-desugar =
+    try(
+      xtc-transform(<MetaData> "PreExplodeDesugar", pass-ensugar)
+      ; if-keep3(copy-to(<add-extension> (<get-config> "input-file", "ds1")))
+    )
+
+  pcs-explode =
+    try(
+      xtc-transform(<MetaData> "Explode")
+      ; if-keep2(copy-to(<add-extension> (<get-config> "input-file", "exp")))
+    )
+
+  pcs-post-explode-desugar =
+    try(
+      xtc-transform(<MetaData> "PostExplodeDesugar", pass-ensugar)
+      ; if-keep3(copy-to(<add-extension> (<get-config> "input-file", "ds2")))
+    )
+
+  pcs-pretty-print =
+    try(
+      where(<get-config> "-pp"; get-pp-table)
+      ; xtc-transform(!"ast2abox", !["-p", <MetaData> "PrettyPrintTable"])
+      ; xtc-transform(!"abox2text")
+    )
+
 strategies // obtain parse table
 
   get-parse-table =
     if-verbose6(debug(!"get-parse-table: "))
     ; <MetaData> "Syntax" => syntax
     ; if-verbose6(debug(!"Syntax: "))
-    ; try(where(<extend-config> ("-I", ["./", <conc-strings; xtc-find-path> (syntax, ".sdf")])))
+    ; try(where(
+        <extend-config> ("-I", ["./", <conc-strings; xtc-find-path> (syntax, ".sdf")])
+      ))
     ; guarantee-extension(!"tbl") => tbl
     ; (<resolve-file-name> FILE(tbl)
        ; if-verbose2(debug(!"using parse table: "))
