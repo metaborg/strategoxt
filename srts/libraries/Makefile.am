@@ -9,6 +9,8 @@ pkgdocdatadir 	= $(pkgdatadir)/doc
 pkgdata_DATA   	= liblib.rtree
 pkgdocdata_DATA = liblib.str
 
+EXTRA_DIST	= liblib.rtree liblib.str
+
 INCLUDES 	= -I$(top_srcdir)/src -I$(top_srcdir)/ssl -I$(ATERM)/include -I$(srcdir)
 
 BOOTCLEANFILES 	= liblib.str liblib.rtree liblib.c
