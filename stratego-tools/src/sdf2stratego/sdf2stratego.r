@@ -22,7 +22,7 @@ module sdf2stratego
 imports Sdf2Stratego  termid
 strategies
 
-  sdf2stratego = io-idwrap( "\"sdf-2.1\"", sdf-to-stratego )
+  sdf2stratego = io-idwrap( InOutId("\"sdf-2.1\"",!"\"stratego-0\""), sdf-to-stratego )
 (*
   sdf2stratego with pppwarp
 
@@ -33,8 +33,7 @@ strategies
 *)
 
   sdf-to-stratego =
-    Definition(filter(module2stratego));
-    termid(!"\"stratego-0\"")
+    Definition(filter(module2stratego))
 
 signature
   constructors

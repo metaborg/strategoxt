@@ -9,12 +9,11 @@ imports lib lex Sdf2-Syntax asfix yacc2sdf termid
 strategies
 
   lex2sdf = 
-    io-idwrap("\"lex-0\"", lex2sdf-main)
+    io-idwrap(InOutId("\"lex-0\"",!"\"sdf-2.1\""), lex2sdf-main)
 
   lex2sdf-main =
     topdown(repeat(Goal2Mod + Def2Prod + Rule2Prod + LexLiteral + Lex2Sdf));
-    alltd(sort(upper_no_underscore));
-    termid(!"\"sdf-2.1\"")
+    alltd(sort(upper_no_underscore))
 
 rules
 

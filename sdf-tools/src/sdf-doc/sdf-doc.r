@@ -26,7 +26,7 @@ imports
 strategies
 
   main
-    = io-idwrap("\"sdf-2.1\"", sort-graph)
+    = io-idwrap(InId("\"sdf-2.1\""), sort-graph)
 
   sort-graph
     = collect( \prod    (  ss,sort(s),_) -> <build-edges>(ss,s)\

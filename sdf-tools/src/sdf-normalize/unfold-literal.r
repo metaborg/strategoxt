@@ -33,7 +33,7 @@ imports Sdf-Syntax lib sdf-bracket asfix dynamic-rules termid
 strategies
 
   unfold-literal = 
-    iowrap("\"sdf-2.1\"", UnfoldLiterals; SdfBracket)
+    iowrap(InId("\"sdf-2.1\""), UnfoldLiterals; SdfBracket)
 
   UnfoldLiterals =
     alltd(RemoveLiteralDef);

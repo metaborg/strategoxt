@@ -31,11 +31,10 @@ signature
 strategies
 
   sdf-label
-    = io-idwrap("\"sdf-2.1\"", Sdf-label)
+    = io-idwrap(InOutId("\"sdf-2.1\"", !"\"sdf-2.1\""), Sdf-label)
 
   Sdf-label
-    = alltd(don't-label <+ label-production);
-      termid(!"\"sdf-2.1\"")
+    = alltd(don't-label <+ label-production)
 
   label-production
     = ( prod(map(try(label-symbol)),id,id)

@@ -4,7 +4,7 @@ Authors: Eelco Visser, Merijn de Jonge
 
 \begin{code}
 module yacc2sdf
-imports yacc Sdf2-Syntax lib asfix io-idwrap termid
+imports yacc Sdf2-Syntax lib asfix termid
 
 signature
    constructors
@@ -14,12 +14,11 @@ signature
       
 strategies
 
-  yacc2sdf = io-idwrap("\"yacc-0\"", Main)
+  yacc2sdf = io-idwrap(InOutId("\"yacc-0\"",!"\"sdf-2.1\""), Main)
 
   Main = 
     YACC2SDF;
-    alltd(sort(upper_no_underscore));
-    termid(!"\"sdf-2.1\"")
+    alltd(sort(upper_no_underscore))
 
 rules
 

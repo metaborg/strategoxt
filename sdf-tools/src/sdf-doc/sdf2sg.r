@@ -25,7 +25,7 @@ imports
 strategies
 
   main
-    = io-idwrap(?"\"sdf-2.1\"", sort-graph)
+    = io-idwrap(InOutId("\"sdf-2.1\"", !"\"graphxml_1_1.0\""), sort-graph)
 
   sort-graph
     = where(collect-edges => es)
@@ -34,7 +34,6 @@ strategies
     //; !(es,[]);conc
     //; !es
     ; graph-from-edges
-    ; termid(!"\"graphxml_1_1.0\"")
 
   collect-edges
     = collect( \prod    (  ss,s,_) -> <build-edges>(ss ,<get-sortname>s)\

@@ -41,12 +41,11 @@ imports lib Regular-Sdf-Syntax Bracket-Symbol asfix termid
 strategies
 
   sdf-bracket = 
-    io-idwrap("\"sdf-2.1\"", SdfBracket)
+    io-idwrap(InOutId("\"sdf-2.1\"", !"\"sdf-2.1\""), SdfBracket)
 
   SdfBracket =
     topdown(try(Bracket));
-    topdown(try(DeBracket));
-    termid(!"\"sdf-2.1\"")
+    topdown(try(DeBracket))
 
   infix-op = alt(id, id) + pair(id,id)
 

@@ -1,3 +1,6 @@
+2001-10-10 Merijn de Jonge <mdejonge@cwi.nl> 
+   * termid/termid.r: Extended and improved term identifier support
+
 2001-10-09 Merijn de Jonge <mdejonge@cwi.nl> 
    * termid: bug fix + added termid strategy
 

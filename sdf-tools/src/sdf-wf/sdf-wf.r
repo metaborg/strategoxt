@@ -26,7 +26,13 @@ imports
 strategies
 
   sdf-wf
-    = io-idwrap( "\"sdf-2.1\"", (id,sdf-wf-main), sdf-wf-options, sdf-wf-usage  )
+    = io-idwrap( InId("\"sdf-2.1\""), (id,sdf-wf-main), sdf-wf-options )
+
+  short-description(p) = ![<p>(), " -- check the well-formedness of an SDF grammar"]
+  long-description(p)  = !["Input is an SDF grammar (in AST form).\n",
+                           "Output is an SDF grammar (in AST form).\n",
+                           "The well-formedness report is writen to stderr.\n",
+                           "If both -e and -S are supplied, no report is emitted."]
 
   sdf-wf-main
     = where (
@@ -91,39 +97,9 @@ strategies
     ; !(alldecs,decs,defs,uses,tops,doubledecs,srts,nondecs,bots,nd-tops,uk-decs)
   
   sdf-wf-options
-    = Option("--short",!ShortForm)
-    + Option("-e",!WarningsAreErrors)
+    = Option("--short",!ShortForm,    !"--short     print short form of well-formedness report",)
+    + Option("-e",!WarningsAreErrors, !"-e          exit with error if grammar is ill-formed",)
 
-  sdf-wf-usage
-    = where( option-defined(?Program(_));
-             !"sdf-wf" => prog;
-             <printnl>
-             ( stderr,
-               [ prog, " -- check the well-formedness of an SDF grammar\n",
-                 "\n",
-                 "usage : \n",
-                 "   ", prog, " [-S] [-i file] [-o file] [-b]\n",
-                 "   ", prog, " {--help|-h|-?}\n",
-                 "\n",
-                 "where\n",
-                 "   --short     print short form of well-formedness report\n",
-                 "   -e          exit with error if grammar is ill-formed\n",
-                 "   -S          run silently\n",
-                 "   -i file     read input from file (default: stdin)\n",
-                 "   -o file     write output to file (default: stdout)\n",
-                 "   -b          emit Binary ATerm (BAF) as output\n",
-                 "   -h          print help message\n",
-                 "\n",
-                 "   Input is an SDF grammar (in AST form).\n",
-                 "\n",
-                 "   Output is an SDF grammar (in AST form).\n",
-                 "\n",
-                 "   The well-formedness report is writen to stderr.\n",
-                 "   If both -e and -S are supplied, no report is emitted."
-               ] 
-             );
-             <exit> 1
-           )
 
   try-debug(s) = try(not(has-option(!Silent));where(s;debug))
 

@@ -22,7 +22,8 @@
 module imports-sdf
 imports get-modules asfix
         lib pack-graph pack file Sdf-ParseTree-Syntax Kernel-Sdf-Syntax
-        sglr gt-paths termid
+        sglr gt-paths
+
 signature
 sorts Node
 constructors

@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Ppgen.r,v 1.7 2001/10/09 15:52:12 mdejonge Exp $
+% $Id: Ppgen.r,v 1.8 2001/10/10 16:59:38 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
@@ -29,10 +29,9 @@ imports make pp-tables-io asfix lib misc Label-Sdf-Syntax Basic-Sdf-Syntax
         Bracket-Symbol termid
 
 strategies
-Ppgen = io-idwrap( "\"sdf-2.1\"", 
+Ppgen = io-idwrap( InOutId("\"sdf-2.1\"", !"\"pp-tables-0\""), 
                    (id, ppgenerate),
-                   Option( "-v", !Verbose(), !"-v     Verbose execution"),
-                   usage' )
+                   Option( "-v", !Verbose(), !"-v     Verbose execution"))
 
 \end{code} 
 
@@ -64,5 +63,4 @@ Ppgen = io-idwrap( "\"sdf-2.1\"",
                 + \selector( n, x ) -> selector(<int-to-string>n, x) \
                 + \S(s) -> S(<quote>s) \
                 ))
-   ;termid(!"\"pp-tables-0\"")
 \end{code}

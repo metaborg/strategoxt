@@ -42,34 +42,22 @@ signature
 strategies
 
   sdf-cons = 
-    io-idwrap("\"sdf-2.1\"",
+    io-idwrap(InOutId("\"sdf-2.1\"", !"\"sdf-2.1\""),
               sdf-cons,
               Option("--modular",!Modular,
 		!"--modular      unique names per module")
             + Option("--injections",!Injections,
-		!"--injections   do not generate constructors for injections")
-           ,sdf-cons-usage)
+		!"--injections   do not generate constructors for injections"))
+
+  short-description(p) = ![<p>(), " -- usage:"]
+  long-description(p)  = !["This program adds constructor names to productions of an SDF grammar." ]
 
   sdf-cons = 
     (store-options,id)
   ; (id, alltd(lexical-syntax(id) <+ (is-prod; prodcons)))
   ; try((option-defined(Modular), uniquify-modular))
   ; try((not(option-defined(Modular)), uniquify))
-  ; (id, termid(!"\"sdf-2.1\""))
   
-  sdf-cons-usage =
-  where(
-    option-defined(?Program(prog))
-  ; <printnl> (stderr,
-               ["usage : ", prog,
-                " [-S] [-i file] [-o file] [-b] [options] [-s] [--help|-h|-?]\n\n",
-		"  options \n\n",
-		"  --modular    : unique names per module\n",
-		"  --injections : do not generate constructors for injections"
-	       ])
-  ; <exit> 1
-  )
-
 (*
   sorts Grammar Production
   constructors

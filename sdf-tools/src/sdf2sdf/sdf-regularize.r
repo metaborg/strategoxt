@@ -37,7 +37,7 @@ imports lib Sdf-Syntax dynamic-rules termid
 strategies
 
   sdf-regularize =
-    io-idwrap("\"sdf-2.1\"", regularize; termid(!"\"sdf-2.1\""))
+    io-idwrap(InOutId("\"sdf-2.1\"", !"\"sdf-2.1\""), regularize)
 
   regularize = 
     alltd(context-free-syntax(order-productions));          

@@ -26,9 +26,8 @@ imports
 strategies
 
   sdf-de-normalize
-    = io-idwrap( "\"sdf-2.1\"",
-        alltd(de-normalize-syntax);
-        termid(!"\"sdf-2.1\""))
+    = io-idwrap( InOutId("\"sdf-2.1\"",!"\"sdf-2.1\""),
+        alltd(de-normalize-syntax))
 
   de-normalize-syntax
     = syntax(remove-generated-prods;?prods)

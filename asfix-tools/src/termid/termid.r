@@ -19,45 +19,61 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: termid.r,v 1.4 2001/10/09 13:59:23 mdejonge Exp $
+% $Id: termid.r,v 1.5 2001/10/10 16:59:14 mdejonge Exp $
 
-gmake
+The io-idwrap strategy is used to perform identity checking of input terms
+and to add term identifiers of output terms. Term identifiers provide some
+(weak) form of type checking of terms and, when used with AST's,it provides
+grammar identification to verify that the input term is an AST generated
+from a partivular grammar.
 
-The strategy io-idwrap applies a strategy to the outermost function symbol
-of an input term. The outermost function symbol then type-checking of input
-terms. For AST's the symbol servers grammar identification to verify
-that the input term is an AST generated from a partivular grammar.
-
-
-If the strategy fails and the --strict option was not specified, a warning
-is displayed. In case the --strict option was specified, the program
-terminates with exit code 1.
+The strategy adds the '--strict' command line switch, which when specified,
+issues a fatal error in case term identification of a term fails. Otherwise,
+only a warning message is issued when a term has an unexpected term
+identifier.
 
 examples:
- io-id-wrap( "\"sdf-2.2\"")
+    io-idwrap( InId("\"sdf-2.2\""), s)
 
- Verify that the input term was produced from version 2.2 of the grammar SDF.
+ Verify that the input term was produced from version 2.2 of the grammar
+ sdf, then apply s to the input term from which the outermost function
+ symbol has been stripped off.
 
-
- io-id-wrap( \""sdf-2.1\"" + "\"sdf-2.2\"" )
+    io-idwrap( InId("\"sdf-2.1\"" + "\"sdf-2.2\""), s )
  
- Version 2.1 and 2.2 of SDF are accepted.
+ Version 2.1 and 2.2 of sdf are accepted.
+
+    io-idwrap( InOutTyp( "\"sdf-2.1\"", "\"sdf-2.2\"",),  s)
+
+ Verify that input term has identifier "sdf-2.1", apply s, add identifier
+ "sdf-2.2" to resulting term.
+
+    io-idwrap( OutId("\"sdf-2.1\"" ), s )
+
+  Read a term (without checking its identifier), apply s to it and finally
+  add the identifier "\"sdf-2.1\"" to it.
 
 
-The strategy termid-check applies a strategy to the outermost fucntion
-symbol of as term to test validness of a term.
+This module also provides startegies to manually perform identifier
+verification and addition of term identifiers.
 
 examples:
    
-To check that the id of a term t equals "sdf-2.1", the following can be used:  
- <termid-check("\"sdf-2.2\"")>t
+ To check that the id of a term t equals "sdf-2.1", the following can be used:  
 
-To accept any term id use the following:
- <termid-check>(id)>t   
+    <termid-check("\"sdf-2.1\"")>t
 
-To set the identifier of a term us the strategy "termid":
+ When t equals "sdf-2.1"(f(a,b)), the result would be f(a,b).
 
-<termid(!"\"sdf-2.2\"")>t
+ To accept any term id use the following:
+
+    <termid-check>(id)>t   
+
+ To set the identifier of a term us the strategy "termid-set":
+
+    <termid-set(!"\"sdf-2.1\"")>t
+
+When applied to the term f(a,b) the result would be "sdf-2.1"f(a,b)
 
 \begin{code}
 
@@ -70,35 +86,70 @@ constructors
 
 strategies
 io-idwrap('id, strat) =
-   io-idwrap('id, (id, strat), fail, default-usage)
+   io-idwrap('id, (id, strat), fail)
 
 io-idwrap('id, strat, extra-options) =
-   io-idwrap('id, strat, extra-options, default-usage)
-
-io-idwrap('id, strat, extra-options, usage) =
    iowrap( 
-      termid-check('id); strat, 
-      extra-options + Option("--strict", !Strict()),
-      usage
+      try(termid-check'('id)); strat; try(termid-set'('id)),
+      extra-options + Option("--strict", !Strict(),
+                             !"--strict         Use strict typing of input term" )
    )
 
-
-rules 
-termid-check('id): (options, t ) -> (options, trm )
+// Check the term identifier i by applying strategy in-type to it. Issue a
+// warning (or fatal error) when in-type failes. If in-type succeeds, or
+// in case --strict switchs was not specified, retrun trm as result.
+InId(in-type): ("in-type",  i#([trm])) -> trm
    where
-      <termid-check('id)>t => trm
+      <in-type <+ type-failure>i
 
+// Create an identifier for term t. The identifier name is obtained by
+// applying strategy out-type to ()
+OutId(out-type): ("out-type", t) -> trm
+   where
+      <mkterm>(<out-type>(), [t]) => trm
+
+// Obtain the input identifier strategy from an InOut identifier.
+InOutId(in-type,out-type) = 
+    ("in-type",  id );
+    InId(in-type)
+
+// Obtain the output identifier strategy from an InOut identifier.
+InOutId(in-type,out-type) =
+   ("out-type", id);
+   OutId(out-type)
+
+// Check term identifier: i(f(a,b)) becomes f(a,b) when 'id applied to i
+// succeeds. This is a filter that operates on a tuple (options, t) and is
+// used within io-idwrap.
+termid-check'('id): (options, t) -> (options, trm)
+   where
+      <'id>("in-type", t) => trm
+
+// Check term identifier: i(f(a,b)) becomes f(a,b) when 'id applied to i
+// succeeds.
 termid-check('id): t -> trm
    where
-   try(
-   not(?i#([trm]);<'id>i);
+      <InId('id)>("in-type", t) => trm
+
+// Set identity of term to i : f(a,b) becomes i(f(a,b)). This is a filter
+// that operates on a tuple (options, t) and is used within io-idwrap.
+termid-set'('id) : (options, t) -> (options, trm)
+   where
+      <'id>("out-type", t) => trm
+
+// Set identity of term to i : f(a,b) becomes i(f(a,b))
+termid-set('id) : t -> trm
+   where
+      <OutId('id)>("out-type", t) => trm
+
+// Type failure: issue a warning or fatal error depending on strictness
+// setting which can be controlled by the switch --strict.
+type-failure = 
    (
      has-option(!Strict);
-     <fatal-error>["fatal: input term has incorrect grammar identifier."]
+     <fatal-error>["Fatal: input term has incorrect grammar identifier."]
    <+
      <error>["Warning: input term has incorrect grammar identifier." ]
-   ))
-
-termid('id) : t -> <mkterm>(<'id>(), [t] )
+   )
 
 \end{code}

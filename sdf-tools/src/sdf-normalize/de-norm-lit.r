@@ -40,8 +40,7 @@ imports
 strategies
 
   de-norm-lit
-    = io-idwrap("\"sdf-2.1\"", sometd(de-Normalize);
-      termid(!"\"sdf-2.1\""))
+    = io-idwrap(InOutId("\"sdf-2.1\"", !"\"sdf-2.1\""),sometd(de-Normalize))
 
 rules
 

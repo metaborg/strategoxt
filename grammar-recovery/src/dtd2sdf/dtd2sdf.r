@@ -1,5 +1,5 @@
 module dtd2sdf
-(* $Id: dtd2sdf.r,v 1.4 2001/10/09 15:49:31 mdejonge Exp $ *)
+(* $Id: dtd2sdf.r,v 1.5 2001/10/10 16:59:47 mdejonge Exp $ *)
 (*
 	Conversion of an XML-DTD to an Sdf grammar.
 
@@ -21,14 +21,13 @@ imports
 strategies
  
   dtd2sdf
-    = io-idwrap("\"xml_1_0.0\"", xml2sdf)
+    = io-idwrap(InOutId("\"xml_1_0.0\"",!"\"sdf-2.1\""), xml2sdf)
 
   warn
     = debug(!"Warning!! Can't handle: ")
 
   xml2sdf
-    = (dtd2sdf + document2sdf);
-      termid(!"\"sdf-2.1\"")
+    = (dtd2sdf + document2sdf)
 
 rules
 

@@ -5,7 +5,7 @@ imports
 strategies
 
   main
-    = io-idwrap(?"\"graphxml_1_1-0\"", 
+    = io-idwrap(InId("\"graphxml_1_1-0\""), 
                 get-sinks-and-origins;print-sinks-and-origins)
 
   get-targets

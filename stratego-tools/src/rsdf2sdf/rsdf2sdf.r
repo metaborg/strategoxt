@@ -20,11 +20,10 @@ imports
 strategies
 
   main
-    = io-idwrap("\"sdf-stratego-0\"", rsdf2sdf)
+    = io-idwrap(InOutId("\"sdf-stratego-0\"", !"\"sdf-2.1\""), rsdf2sdf)
 
   rsdf2sdf
-    = rec x(gramfilter <+ all(try(x)));
-      termid(!"\"sdf-2.1\"")
+    = rec x(gramfilter <+ all(try(x)))
 
 rules
 
