@@ -176,6 +176,13 @@ strategies // high-level API with implicit rule set
       ; dr-set-rule-set(|name)
     )
 
+  dr-set-rule-vis(|name, label, key, value) =
+    where(
+      dr-get-rule-set(|name)
+      ; dr-set-in-rule-set-vis(|label, key, [value])
+      ; dr-set-rule-set(|name)
+    )
+
   dr-undefine-rule(|name, key) =
     where(
       dr-get-rule-set(|name)
@@ -452,6 +459,69 @@ strategies // setting a rule
     // well. However, that is quite expensive since
     // it would entail first going through all scopes to
     // establish non-existence of a label.
+
+
+  /**
+   * Add a rule to the rule-set with the specified label and make sure
+   * it is visible by deleting any rules with the same key in scopes 
+   * upto the specified scope. Deleting by removing from the table, not
+   * undefining.
+   */ 
+
+  dr-set-in-rule-set-vis(|label, key, value) =
+    dr-set-in-rule-set-vis(dr-set-fail, dr-rm-fail | label, key, value)
+
+  dr-rm-fail(|scpid, tbl, key) =
+    fail
+
+  dr-set-in-rule-set-vis(
+      set : ATerm * Hashtable * ATerm * ATerm * ATerm -> ATerm,
+      rm  : ATerm * Hashtable * ATerm * ATerm         -> ATerm 
+      | label, key, value) 
+  = ?[RuleScope(labelset, tbl@Hashtable(hptr)) | rs]
+    ; where(
+        if <iset-contains(|label)> labelset then
+          set(|hptr, tbl, key, value)
+          <+ <hashtable-put(|key, value)> tbl
+        else 
+          (rm(|hptr, tbl, key) <+ try(<hashtable-remove(|key)> tbl))
+          ; <dr-set-in-rule-set-vis(set, rm | label, key, value)> rs
+        end
+      )
+
+  dr-set-in-rule-set-vis(
+      set1 : ATerm * Hashtable * ATerm * ATerm * ATerm -> ATerm,
+      rm1  : ATerm * Hashtable * ATerm * ATerm         -> ATerm 
+      | label, key, value)
+  = ?[ChangeSet(labelset, tbl1) | rs]
+    ; where(
+        let set2(|scpid, tbl2, key, value) =
+              set1(|scpid, tbl2, key, value)
+              <+ <hashtable-get(|key)> tbl2 => value
+                 ; <hashtable-remove(|(scpid, key))> tbl1
+              <+ <hashtable-put(|(scpid, key), value)> tbl1
+
+            rm2(|scpid, tbl2, key) =
+              rm1(|scpid, tbl2, key)
+	      <+ if <hashtable-get(|key)> tbl2 then
+                   <hashtable-put(|(scpid, key), "removed")> tbl1
+	         else id end // no entry to remove                 
+
+         in if <iset-contains(|label)> labelset then
+              <fetch-elem(?RuleScope(_,tbl@Hashtable(hptr)))> rs
+              ; set2(|hptr, tbl, key, value)
+            else 
+              <dr-set-in-rule-set-vis(set2, rm2 | label, key, value)> rs
+            end
+        end
+      )
+
+  // TODO
+  // Note when removing entries from a change set, the removal is
+  // marked (currently with the string "removed"); this should be
+  // interpreted in change set committing; will only do this when
+  // it turns out that this operation is useful
+   
 
 strategies // extending a rule
 
