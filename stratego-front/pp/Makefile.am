@@ -9,8 +9,8 @@ astratego2text.o : xtc-conf.h
 
 SCFLAGS 	= --main $* $(XTCFLAGS)
 
-pkgdata_DATA 	= Stratego.pp Stratego-pretty.pp StrategoStratego.pp	      \
-		  Stratego.pp.af Stratego-pretty.pp.af StrategoStratego.pp.af 
+pkgdata_DATA 	= Stratego.pp Stratego-pretty.pp      \
+		  Stratego.pp.af Stratego-pretty.pp.af 
 
 CLEANFILES 	= Stratego.pp StrategoStratego.pp	       \
 		Stratego.pp.af Stratego-pretty.pp.af	       \

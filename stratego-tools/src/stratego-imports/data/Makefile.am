@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/06/07 13:25:14 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2002/12/30 21:43:21 stratego Exp $
 
-EXTRA_DIST = test-l.out.correct test.out.correct test.xml.correct test1.r \
-             test2.r test3.r
+#EXTRA_DIST = test-l.out.correct test.out.correct test.xml.correct test1.r \
+#             test2.r test3.r

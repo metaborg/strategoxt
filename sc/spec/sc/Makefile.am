@@ -21,7 +21,7 @@ sc.o		: xtc-conf.h
 CLEANFILES 	= $(wildcard *.dep)
 BOOTCLEANFILES 	= sc.c sc.1
 
-EXTRA_DIST 	= $(wildcard *.str) sc.config.src sc-manual.txt $(man_MANS)
+EXTRA_DIST 	= $(wildcard *.str) version.str.in sc.config.src sc-manual.txt $(man_MANS)
 INCLUDES  	+= -I ..
 
 man_MANS 	= sc.1
