@@ -1,3 +1,6 @@
+2001-09-21 Merijn de Jonge <mdejonge@cwi.nl>                     
+   * package.conf: added missing quote
+
 2001-09-20 Merijn de Jonge <mdejonge@cwi.nl>                     
    * graph-tools package now depends on (not yet released) graphviz-1.8
      package. Version 1.7.9 contains errors and cannot yet be bundled.
