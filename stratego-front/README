@@ -1,2 +1,25 @@
-An example package structure for a project using XT. Automake and
-autoconf are used to make the package portable.
+,-----------.
+|     :     | 
+|    /|\    | stratego-front 
+|   / | \   | 
+|  /  |  \  | stratego@cs.uu.nl
+| /_\/_\/_\ | http://stratego-language.org
+`-----------'
+
+Description: 
+
+  The stratego-front package contains tools and definitions for the
+  Stratego syntax. It defines the Stratego syntax in SDF. These SDF
+  definitions are used to generate algebraic signatures that define the
+  Stratego abstract syntax. Stratego-front adds support for concrete
+  syntax to the basic Stratego compiler.
+
+  For more information,
+
+    http://www.stratego-language.org/Stratego/StrategoFront
+
+Bug reports:
+
+  stratego-bugs@cs.uu.nl
+
+
