@@ -44,6 +44,13 @@ strategies
   length = 
     foldr(!0, add, !1)
 
+  // :: a * List(a) -> fail?
+  elem = elem(eq)
+  
+  // a * a -> fail? :: a * List(a) -> fail?
+  elem(eq) =
+    ?(x, <id>); one(where(<eq> (x, <id>)))
+
   fetch(s) = 
     rec x([s | id] <+ [id | x])
 
