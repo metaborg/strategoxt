@@ -1,6 +1,7 @@
 2001-11-22 Merijn de Jonge <mdejonge@cwi.nl>
    * configuration of sdf-tools package adapted to make use of
      AC_PACKAGE_REQUIRE macro in configure.in
+   * sdf/makefile.am: repaired generation of sdf parse tables
 
 2001-11-21 Merijn de Jonge <mdejonge@cwi.nl> 
     * sdf/Makefile.am: added more generated files to CLEANFILES variable
