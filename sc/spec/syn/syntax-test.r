@@ -2,7 +2,7 @@
 
 \begin{code}
 module syntax-test
-imports lib
+imports stratego
 
 rules
 

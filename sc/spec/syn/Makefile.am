@@ -17,12 +17,17 @@
 
 include ../make_rules.in
 
-OPTFLAGS 	= -O4
-SCFLAGS		= -I $(srcdir)/../sig
+OPTFLAGS = -O4
+
+SCFLAGS = -I $(srcdir)/../sig \
+	  --C-include "\"conf.h\"" -CI "-I.."
 
 bin_PROGRAMS = parse-stratego parse-mod 
 
-bin_SCRIPTS = pack-stratego meta-explode
+bin_SCRIPTS = pack-stratego
+
+pkgdatadir = $(prefix)/pack-stratego-plugin
+pkgdata_DATA = pack-stratego.config
 
 CLEANFILES = pack-stratego pack-stratego.c pack-stratego.dep
 
@@ -34,7 +39,7 @@ parse_stratego_SOURCES 	= \
 parse_mod_SOURCES = \
    parse-mod.c stratego.grm stratego.lx options.h options.c util.h $(BUILT_SOURCES)
 
-EXTRA_DIST = $(wildcard *.r)
+EXTRA_DIST = $(wildcard *.r) $(wildcard *.config.src)
 
 %.grm.tab.c: %.grm
 	bison -d -t -v $<
@@ -43,7 +48,7 @@ EXTRA_DIST = $(wildcard *.r)
 	flex $<
 	mv lex.yy.c $@
 
-BOOTSOURCES = $(SOURCES) pack-stratego.c stratego.grm stratego.lx
+BOOTSOURCES = $(SOURCES) pack-stratego.c stratego.grm stratego.lx pack-stratego.config.src
 
 check: check1 check2
 
@@ -51,7 +56,10 @@ check1: parse-mod
 	./parse-mod -i syntax-test.r -o /dev/null
 
 check2: pack-stratego 
-	./pack-stratego -I $(STRATEGOLIB)/share/ssl -i syntax-test -o syntax-test.trm
+	./pack-stratego -I $(STRATEGOLIB)/share/ssl -I $(srcdir)/../sig -i syntax-test -o syntax-test.trm
+
+%: %.src
+	sed 's#__prefix__#$(prefix)#g' < $< > $@
 
 include $(srcdir)/../make-rules
 include $(wildcard *.dep)

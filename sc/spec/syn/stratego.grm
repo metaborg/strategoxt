@@ -48,6 +48,7 @@ int parse()
 %token <term> STRINGTOK 
 %token <term> UCID
 %token <term> ID
+%token <term> LID
 
 %token ARROW 
 %token LONGARROW 
@@ -124,6 +125,7 @@ int parse()
 %type <term> decl 
 %type <list> decls 
 %type <term> id 
+%type <term> lid 
 %type <list> idlist 
 %type <term> kind
 %type <list> kinds
@@ -245,6 +247,11 @@ id      : LCID 				{$$ = $1;}
    	| UCID 				{$$ = $1;}
         ;
 
+/* list identifier */
+
+lid     : LID 				{$$ = $1;}
+        ;
+
 /* Terms */
 
 term 	: id optcont		      	{if(ATisEmpty($2)) 
@@ -253,6 +260,8 @@ term 	: id optcont		      	{if(ATisEmpty($2))
 					   $$ = App3("Con", 
 						      App1("Var", $1), ATgetFirst($2), 
 						      ATgetFirst(ATgetNext($2)));}
+
+        | lid				{$$ = App1("Var",  App1("ListVar", $1));}
 						
 	| UNDERSCORE			{$$ = ATmake("Wld");}
 					
@@ -276,7 +285,7 @@ term 	: id optcont		      	{if(ATisEmpty($2))
 
 	| term EXPLODE LPAREN term RPAREN 
 					{$$ = App2("Explode", $1, $4)}
-        | term LCURLY term RCURLY	{$$ = App2("Anno", $1, $3)}
+        | term LCURLY termlist RCURLY	{$$ = App2("Anno", $1, list_to_consnil_op($3))}
         ;
 
 tail    : 				{$$ = ATmake("Op(\"Nil\",[])");}
@@ -410,8 +419,9 @@ strategy
 
 
 	| strategy LCURLY strategy RCURLY 
-				       {$$ = App2("Call", App1("SVar", ATmakeString("Anno_Cong__")), 
-					          ATmakeList2($1, $3));}
+				       {$$ = App2("Call", 
+						  App1("SVar", ATmakeString("Anno_Cong__")), 
+					          (ATerm) ATmakeList2($1, $3));}
         ;
 
 strategytail 
