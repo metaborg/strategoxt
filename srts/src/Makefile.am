@@ -28,8 +28,8 @@ include_HEADERS = \
 	stratego.h aterm-extension.h debug.h
 
 libstratego_a_SOURCES = \
-	stratego.c aterm-extension.c debug.c \
-	stratego.h aterm-extension.h debug.h
+	stratego.c aterm-extension.c debug.c mprotect.c\
+	stratego.h aterm-extension.h debug.h mprotect.h
 
 libstratego_dbg_a_SOURCES = 
 libstratego_opt_a_SOURCES = 

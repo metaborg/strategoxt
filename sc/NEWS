@@ -34,22 +34,40 @@ Version 0.6
    package for generation of C code is used. Thus to install Stratego 
    you now need the following packages:
 	
-	- srts	  : Stratego Run-Time System
-	- ssl	  : Stratego Standard Library
-	- sc-boot : Stratego Compiler (bootstrapped C sources)
-	- cgen	  : C generation utilities
-	- sc	  : Stratego Compiler (Stratego sources)
+	- srts	   : Stratego Run-Time System
+	- ssl	   : Stratego Standard Library
+	- sc-boot  : Stratego Compiler (bootstrapped C sources)
+	- gpp-boot : Generic Pretty-Printing utilities (bootstrapped C sources)
+	- cgen	   : C generation utilities
+	- sc	   : Stratego Compiler (Stratego sources)
 
    In addition the following external packages are required
 
 	- aterm : ATerm library
 	- gpp	: generic pretty-printing 
 
-   It is planned to produce a bundle of all these packages that will make 
-   installation easy.
+   These packages are also available as a single integrated package produced
+   with autobundle:
+
+	- stratego-0.6
 
  * The documentation of Stratego is not part of any of these packages at
    the moment. New documentation is in the making.
+
+ CONTRIBUTIONS
+
+ * Eelco Dolstra traced the problem of using nested functions on Sun machines
+   to the executability of code on the stack, and pointed out the solution using
+   mprotect.
+
+ * Merijn de Jonge tested the new distribution on various machines and
+   provided an extension of the run-time system to call mprotect when 
+   necessary.
+
+ * Arne de Bruijn, Merijn de Jonge, and Hedzer Westra contributed various
+   strategies to the library.
+
+ * The new compiler was implemented by Eelco Visser
 
  LANGUAGE
 
@@ -102,7 +120,8 @@ Version 0.6
    to be done. This is beneficial for code size, and thus compilation
    time, but a number of optimizations opportunities are thereby missed.
    More aggresive optimization and separate compilation are issues for
-   further experimentation.
+   a future version. Also the fusion of the innermost strategy with
+   rules is not yet integrated with the new compiler.
 
  RUN-TIME SYSTEM
 
@@ -110,7 +129,7 @@ Version 0.6
 
  * The run-time system has been reduced to the definition of the 
    generic traversal operators and an interface to the choice mechanism 
-   (setjmp/longjmp lcurrently). Most of the work is done by the ATerm library.
+   (setjmp/longjmp currently). Most of the work is done by the ATerm library.
 
  LIBRARY
 
@@ -156,6 +175,12 @@ Version 0.6
  * list-filter.r: partition
 
  * foldr-kids is obsolete, use crush.
+
+ CVS DISTRIBUTION and DAILY BUILD
+
+ * A new CVS repository has been created for the new set-up of the compiler.
+   The CVS repository is not yet publicly accessible. Also no automatic daily
+   builds are performed at the moment.
 
 ------------------------------------------------------------------------------
 

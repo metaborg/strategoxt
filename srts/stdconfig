@@ -2,5 +2,4 @@
 
 ./reconf
 ./configure --prefix=`pwd` \
-	--with-aterm=/home/visser/res/sandbox/aterm \
-	--with-cpl=/home/visser/res/sandbox/cpl
+	--with-aterm=`pwd`/../aterm

@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 #include <aterm2.h> 
 // #include <choice.h> 
 #include "stratego.h"
+#include "mprotect.h"
 
 static Symbol sym_Cons_2;
 static Symbol sym_Nil_0;
@@ -107,95 +108,94 @@ ATerm _all(ATerm t, ATerm f(ATerm))
     }
   return(t);
 }
-
+ 
 ATerm _one(ATerm t, ATerm f(ATerm))
 {
   if(ATgetType(t) == AT_APPL)
-    { 
+    {
       Symbol c = ATgetSymbol((ATermAppl) t);
       int i, arity = ATgetArity(c);
       for(i = 0; i < arity; i++)
-	{
-	  ATerm t_bak = t;
-	  int i_bak = i;
-	  if (PushChoice() == 0)
-	    {
-	      t = (ATerm)ATsetArgument((ATermAppl) t, f(ATgetArgument(t, i)), i);
-	      PopChoice();
-	      return(t);
-	    }
-	  i = i_bak;
-	  t = t_bak;
-	}
+        {
+          ATerm t_bak = t;
+          int i_bak = i;
+          if (PushChoice() == 0)
+            {
+              t = (ATerm)ATsetArgument((ATermAppl) t, f(ATgetArgument(t, i)), i);
+              PopChoice();
+              return(t);
+            }
+          i = i_bak;
+          t = t_bak;
+        }
       _fail(t);
     }
   else
     _fail(t);
   return(t);
-}
-
-ATerm _some(ATerm t, ATerm f(ATerm))
+}       
+       
+ATerm _some(ATerm t, ATerm f(ATerm)) 
 {
   int transformed = 0;
-
-  if(ATgetType(t) == AT_APPL) 
-    { 
+ 
+  if(ATgetType(t) == AT_APPL)
+    {
       Symbol c = ATgetSymbol((ATermAppl) t);
       int i, arity = ATgetArity(c);
       if(arity > ALLARRAY)
-	{
-	  ATermList ts = ATempty;
-	  for(i = 0; i < arity; i++)
-	    {
-	      ATermList ts_bak = ts;
-	      int transformed_bak = transformed;
-	      if (PushChoice() == 0)
-		{
-		  ts = ATinsert(ts, f(ATgetArgument(t, i)));
-		  PopChoice();
-		  transformed++;
-		}
-	      else 
-		{
-		  ts = ts_bak;
-		  transformed = transformed_bak;	
-		  ts = ATinsert(ts, ATgetArgument(t, i));
-		}
-	    }
-	  if(transformed > 0)
-	    t = (ATerm) ATmakeApplList(c, ATreverse(ts));
-	  else
-	    _fail(t);
-	}
-      else 
-	{
-	  ATerm kids[ALLARRAY];
-	  for(i = 0; i < arity; i++)
-	    {
-	      int transformed_bak = transformed;
-	      if (PushChoice() == 0)
-		{
-		  kids[i] = f(ATgetArgument(t, i));
-		  PopChoice();
-		  transformed++;
-		}
-	      else 
-		{
-		  transformed = transformed_bak;
-		  kids[i] = ATgetArgument(t, i);
-		}
-	    }
-	  if(transformed > 0)
-	    t = (ATerm) ATmakeApplArray(c, kids);
-	  else
-	    _fail(t);
-	}
+        {
+          ATermList ts = ATempty;
+          for(i = 0; i < arity; i++)
+            {
+              ATermList ts_bak = ts;
+              int transformed_bak = transformed;
+              if (PushChoice() == 0)
+                {
+                  ts = ATinsert(ts, f(ATgetArgument(t, i)));
+                  PopChoice();
+                  transformed++;
+                }
+              else
+                {
+                  ts = ts_bak;
+                  transformed = transformed_bak;
+                  ts = ATinsert(ts, ATgetArgument(t, i));
+                }
+            }
+          if(transformed > 0)
+            t = (ATerm) ATmakeApplList(c, ATreverse(ts));
+          else
+            _fail(t);
+        }
+      else
+        {
+          ATerm kids[ALLARRAY];
+          for(i = 0; i < arity; i++)
+            {
+              int transformed_bak = transformed;
+              if (PushChoice() == 0)
+                {
+                  kids[i] = f(ATgetArgument(t, i));
+                  PopChoice();
+                  transformed++;
+                }
+              else
+                {
+                  transformed = transformed_bak;
+                  kids[i] = ATgetArgument(t, i);
+                }
+            }
+          if(transformed > 0)
+            t = (ATerm) ATmakeApplArray(c, kids);
+          else
+            _fail(t);
+        }
     }
   else
     _fail(t);
   return(t);
-}
-
+}           
 
 ATerm _thread(ATerm t, ATerm f(ATerm))
 {
@@ -247,6 +247,10 @@ int main(int argc, char *argv[])
   init_constructors_srts();
   init_constructors();
 
+#ifdef NEEDS_MPROTECT
+  do_mprotect();
+#endif
+  
   in_term = (ATerm)ATmakeAppl0(sym_Nil_0);
   for(i = argc - 1; i >= 0; i--)
     {

@@ -21,7 +21,7 @@ SCFLAGS	= -I $(srcdir)/../sig \
 	  -I $(srcdir)/../front \
 	  --main $@
 
-bin_SCRIPTS = fusion
+#bin_SCRIPTS = fusion
 
 TESTS = build-match-laws-test
 

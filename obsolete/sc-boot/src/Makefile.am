@@ -36,6 +36,8 @@ LDADD		= -lstratego-lib.opt \
 		  -lATerm-gcc \
 		  -lm
 
+EXTRA_DIST = ac2c.src sc.src 
+
 bin_PROGRAMS = \
 	canonicalize \
 	compile-match \

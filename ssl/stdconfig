@@ -3,8 +3,7 @@
 ./reconf
 ./configure --prefix=`pwd` \
 	--with-aterm=`pwd`/../aterm \
-	--with-cpl=`pwd`/../cpl \
 	--with-gpp=/home/xt/xt \
-	--with-stratego=`pwd`/../stratego-spec \
-	--with-stratego-rts=`pwd`/../stratego-rts
+	--with-stratego=`pwd`/../sc-boot \
+	--with-stratego-rts=`pwd`/../srts
 

@@ -18,7 +18,7 @@
 EXTRA_DIST = make_rules.in make-rules
 
 SUBDIRS = \
-  syn c front lib match opt sc sig test1 test2 
+  syn c front lib match opt sc sig test1 test2 log
 
 DIST_SUBDIRS = si sdf test3 $(SUBDIRS)
 
@@ -38,7 +38,7 @@ boot0 :
 	$(MAKE)
 	$(MAKE) bootcheck
 
-bootstrap :
+bootstrap : 
 	@echo
 	@echo "BOOTSTRAPPING PHASE 1"
 	@echo

@@ -73,7 +73,7 @@ AC_ARG_WITH(srts,
 )
 AC_SUBST(STRATEGORTS)
 
-AC_REVISION($Id: configure.in,v 1.5 2001/08/27 12:45:17 visser Exp $)
+AC_REVISION($Id: configure.in,v 1.6 2001/08/27 22:19:47 visser Exp $)
 
 AC_PROG_CC
 AC_PROG_RANLIB
@@ -103,6 +103,7 @@ AC_OUTPUT( \
 	spec/c/Makefile \
 	spec/front/Makefile \
 	spec/front/data/Makefile \
+	spec/log/Makefile \
 	spec/match/Makefile \
 	spec/match/data/Makefile \
 	spec/opt/Makefile \
