@@ -1,0 +1,104 @@
+%%
+%%    boxenv -- A LaTeX Style File For Formatting Box Expressions
+%%    Copyright (C) 1998-2000  Merijn de Jonge (Merijn.de.Jonge@cwi.nl). 
+%%
+%%    This program is free software; you can redistribute it and/or modify
+%%    it under the terms of the GNU General Public License as published by
+%%    the Free Software Foundation; either version 2 of the License, or
+%%    (at your option) any later version.
+%%
+%%    This program is distributed in the hope that it will be useful,
+%%    but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%%    GNU General Public License for more details.
+%%
+%%    You should have received a copy of the GNU General Public License
+%%    along with this program; if not, write to the Free Software
+%%    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+%%
+%% $Id: sample4.tex,v 1.1.1.1 2001/08/06 11:56:57 mdejonge Exp $
+
+\documentclass{article}
+
+\usepackage{boxenv}
+
+\def\line#1{%
+\begin{HBOX}{0}%
+line#1%
+\end{HBOX}%
+}
+
+\def\linea{%
+\begin{VBOX}{0}{0}%
+\line{a}%
+
+\begin{LBOX}{=}%
+\line{a}%
+\end{LBOX}%
+\end{VBOX}%
+}
+
+\def\lineb{%
+\begin{VBOX}{0}{0}%
+\line{b}%
+
+\begin{LBOX}{=}%
+\line{b}%
+\end{LBOX}%
+\end{VBOX}%
+}
+
+\def\linec{%
+\begin{VBOX}{0}{0}%
+\begin{HBOX}{6}%
+\linea~\lineb%
+\end{HBOX}
+
+\begin{LBOX}{=}%
+\begin{HBOX}{6}%
+\linea~\lineb%
+\end{HBOX}%
+\end{LBOX}%
+\end{VBOX}
+}
+
+\def\lineda{%
+\begin{VBOX}{0}{24}%
+\linec%
+
+linec%
+\end{VBOX}%
+}
+
+\def\lined{%
+\begin{VBOX}{0}{0}%
+\lineda%
+
+\begin{LBOX}{=}%
+\lineda%
+\end{LBOX}%
+\end{VBOX}
+}
+
+\begin{document}
+
+\noindent
+This sample is an extension to sample1. It has nested width calculations
+which are oriented horizontally.  The strings ``linea'' and ``lineb'' are
+both underlined. Together both strings (and corresponding lines) are
+oriented horizontally and underlined as well. The string ``linec'' is
+displayed right to the other strings and a bar of total width underlines
+everything.
+\vspace{2cm}
+
+\noindent
+\begin{boxenv}
+\begin{VBOX}{0}{1}
+line0
+
+\lined
+\end{VBOX}
+
+\end{boxenv}
+\end{document}
+

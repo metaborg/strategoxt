@@ -1,0 +1,44 @@
+# Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
+#                    Eelco Visser <visser@acm.org>
+#                    Joost Visser <jvisser@cwi.nl>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+# $Id: make_rules,v 1.1.1.1 2001/08/06 11:56:57 mdejonge Exp $
+
+diff :
+	patch_name="$(PACKAGE)-$(VERSION)-`echo $(subdir) | sed 's@/@_@g'`.patch" ;\
+	echo "Updating sources" >&2 ;\
+	cvs -Q upd -d;\
+	echo "Determine differences" >&2 ;\
+	cvs -Q diff > $${patch_name}|| true ;\
+	echo "Patch is saved in \"$${patch_name}\".\
+	 Please send this patchfile to the maintainers of $(PACKAGE)." | fmt >&2
+
+%_check : Makefile
+	(\
+	  echo set -e ;\
+	  prog=./$($(*)_check_prog) ;\
+	  input=$($(*)_check_input) ;\
+	  if [ "a$${input}" != "a" ]; then input="-i $(srcdir)/$${input}"; fi ;\
+	  output=$($(*)_check_output) ;\
+	  correct=$(srcdir)/$($(*)_check_correct) ;\
+	  switches="$($(*)_check_switches)" ;\
+	  echo $${prog} $${switches} -i $${input} -o $${output};\
+	  echo diff $${output} $${correct}  ;\
+	  echo rm $${output} ;\
+	) >$@ && \
+	chmod +x $@

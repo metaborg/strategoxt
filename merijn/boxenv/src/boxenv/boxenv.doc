@@ -1,0 +1,1337 @@
+%%
+%%    boxenv -- A LaTeX Style File For Formatting Box Expressions
+%%    Copyright (C) 1998-2000  Merijn de Jonge (Merijn.de.Jonge@cwi.nl). 
+%%
+%%    This program is free software; you can redistribute it and/or modify
+%%    it under the terms of the GNU General Public License as published by
+%%    the Free Software Foundation; either version 2 of the License, or
+%%    (at your option) any later version.
+%%
+%%    This program is distributed in the hope that it will be useful,
+%%    but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%%    GNU General Public License for more details.
+%%
+%%    You should have received a copy of the GNU General Public License
+%%    along with this program; if not, write to the Free Software
+%%    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+%%
+%^^A
+%^^A $Id: boxenv.doc,v 1.1.1.1 2001/08/06 11:56:57 mdejonge Exp $
+%^^A
+%
+% \changes{v0.1}{1998/08/06}{Initial release}
+% \changes{v0.2}{1998/08/07}{Documentation added}
+% \changes{v0.3}{1998/08/20}{Several Enhancements, initial 
+%                            release of documentation}
+% \changes{v0.4}{1998/11/19}{Added macros boxlabel and boxref corresponding
+%                            to the box operators LBL and REF, respectively.}
+% \changes{v0.5}{1998/11/22}{Added support for different cross reference
+%                           styles.}
+% \changes{v0.6}{1999/02/08}{Added support for nested width calculation.}
+% \changes{v0.9}{1999/02/22}{Documentation added, improved A box (using
+%                            halign).}
+% \changes{v1.0b4}{1999/04/14}{Fixed nested width calculation.}
+% \changes{v1.0b5}{1999/04/14}{more fixes nested width calculation.}
+% \changes{v1.0b6}{2000/02/09}{fixed bug in \boxspace macro.}
+%
+%
+%
+% \section{Implementation}\label{implementation}
+% This section describes the implementation of the |boxenv| style file. It
+% describes the implementation of the user and system interface introduced
+% in Section~\ref{user interface} and Section~\ref{system interface}, as
+% well as the environments and macros that are used by the interfaces.
+% 
+% The translation from \bbox{} to \LaTeX{} requires the ability to
+% type-set boxes horizontally and vertically (with optional left
+% indentation), and the ability to calculate the width of boxes.
+% 
+% Horizontal placement and indentation is implemented by a new
+% environment (|box@hangpar|) that supports paragraphs with a hanging
+% indentation. Entering a |box@hangpar| environment marks the left margin
+% of subsequent paragraphs. Closing a |box@hangpar| environment restores
+% the left margin. By nesting |box@hangpar| environments, one can gradually
+% increase and decrease the indentation of lines and paragraphs.
+% 
+% Calculation of the width of paragraphs is performed by the |box@width|
+% environment and is required for the \textsf{ALT} and \textsf{L} operators. This
+% calculation is rather complicated and explained in detail in
+% Section~\ref{the box@width environment}. Since almost all \bbox{}
+% operators can be expressed in terms of paragraphs with hanging indentation
+% and width calculations, their implementation is straightforward by using
+% the |box@hangpar| and |box@width| environments.
+% 
+% 
+% All macros and variables that do not belong to the user interface of
+% \bboxenv{} (see Section~\ref{user interface}) are prefixed with
+% |box@| to make them inaccessible outside the style file.
+% Furthermore, to enforce that \bbox{} environments are used from within
+% the |boxenv| environment only, all environments test whether or not
+% they are embedded within the |boxenv| environment.
+%
+%
+% \subsection{Version}
+% Code to specify author, the version of |boxenv|, and last
+% modification date.
+%    \begin{macrocode}
+\def\@fileversion{1.7}
+\def\@filedate{2000/03/30}
+\def\@author{Merijn de Jonge (mdejonge@cwi.nl)}
+%    \end{macrocode}
+%
+% \noindent
+% Identification of package file:
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{boxenv}
+%    \end{macrocode}
+
+%    \begin{macrocode} 
+\typeout{Package: `boxenv' 
+   \@fileversion\space <\@filedate> (\@author)}
+%    \end{macrocode}
+%
+% \subsection{Processing Options Passed to boxenv}
+% The |refstyle| and |visiblespace| options can be passed as
+% key/value pairs to |boxenv|. For this value passing mechanism we used
+% the |keyvald| package of~\cite{Carlisle98}.
+%    \begin{macrocode}
+\RequirePackage{keyval}
+%    \end{macrocode}
+% We define a new set (`Boxenv') of key/value pairs that contains the
+% keys `refstyle' and `visiblespace', and we use the macros |\refstyle|
+% and |\visiblespace| to process the values corresponding to these
+% options (see Table~\ref{options} for the list of values currently
+% accepted for both options).
+% 
+%    \begin{macrocode}
+\define@key{Boxenv}{refstyle}{%
+\refstyle{#1}%
+}
+%    \end{macrocode}
+%    \begin{macrocode}
+\define@key{Boxenv}{visiblespace}{%
+\visiblespace{#1}%
+}
+%    \end{macrocode}
+
+
+% \begin{macro}{refstyle}
+% The macro |\restyle| selects a cross reference mechanism according
+% to its argument (see Table~\ref{options} for the list of mechanisms
+% currently available). For each mechanism $m$ two macros are defined
+% |\box@|$m$|label| and
+% |\box@|$m$|ref|. When processing the selected style we link the
+% macros corresponding to the selected style to the macros |\boxlabel|
+% and |\boxref|.
+%    \begin{macrocode}
+\def\refstyle#1{%
+\def\@tmpa{#1}%
+\def\@normal{normal}%
+\def\@none{none}%
+\def\@hyperref{hyperref}%
+%    \end{macrocode}
+% The option `|refstyle=normal|' has been selected. We link
+% |\box@normallabel| and |\box@normalref| to |\boxlabel|
+% and |\boxref|, respectively.
+%    \begin{macrocode}
+\ifx\@tmpa\@normal%
+   \def\boxlabel{\box@normallabel}%
+   \def\boxref{\box@normalref}%
+%    \end{macrocode}
+% The option `|refstyle=none|' has been selected. We link 
+% |\box@nonelabel| and |\box@noneref| to |\boxlabel| and
+% |\boxref|, respectively.
+%    \begin{macrocode}
+   \else%
+   \ifx\@tmpa\@none%
+   \def\boxlabel{\box@nonelabel}%
+   \def\boxref{\box@noneref}%
+%    \end{macrocode}
+% The option `|refstyle=hyperref|' has been selected. We link the macros
+% |\box@hyperlabel| and |\box@hyperref| to |\boxlabel| and |\boxref|,
+% respectively.
+%    \begin{macrocode}
+      \else%
+      \ifx\@tmpa\@hyperref%
+         \def\boxlabel{\box@hyperreflabel}%
+         \def\boxref{\box@hyperrefref}%
+%    \end{macrocode}
+% Display an error message when an invalid value has been specified.
+%    \begin{macrocode}
+      \else%
+         \errmessage{Invalid refstyle option passed.}%
+      \fi%
+   \fi%
+\fi%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{boxspace}
+% The macro |\boxspace| is used to display significant spaces. Using the
+% macro |\visiblespace|, this macro can be redefined to use either an
+% ordinary (invisible) space (the symbol `\~{}'), or the symbol
+% `\vvisiblespace'. By default the symbol `\~{}' is used.
+%    \begin{macrocode}
+\def\boxspace{\box@hspaceskip{1}\spaceskip=\the\box@tmpskip~}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{visiblespace}
+% The macro |\visiblespace| is used to select the symbol that is used
+% by \LaTeX{} to display a space character (see Section~\ref{visible
+% space} for a description of this macro). 
+%
+%
+% When the value |true| is passed to |\visiblespace|, we redefine the
+% macro |\boxspace| in order to display spaces as `\vvisiblespace'.
+% Otherwise, we use an ordinary (invisible) space (using the \LaTeX{}
+% character `\~{}').
+%    \begin{macrocode}
+\def\visiblespace#1{%
+\def\@tmpa{#1}%
+\def\@true{true}%
+\def\@false{false}%
+\ifx\@tmpa\@true%
+\def\boxspace{\leavevmode\hbox{\tt\char`\ }}%
+\else%
+\def\boxspace{~}%
+\fi%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{Process}
+% \begin{macro}{OptionsWithKV}
+% In order to be able to specify a key/value pair to `|\usepackage|', we
+% define the macro |\ProcessOptionsWithKV|. This macro is copied from 
+% the hyperref package~\cite{Rahtz98}.
+%    \begin{macrocode}
+\def\ProcessOptionsWithKV#1{%
+  \let\@tempc\relax
+  \let\@tempa\@empty
+  \@for\CurrentOption:=\@classoptionslist\do{%
+     \@ifundefined{KV@#1@\CurrentOption}%
+       {}%
+       {\edef\@tempa{\@tempa,\CurrentOption,}}}%
+     \edef\@tempa{%
+
+   \noexpand\setkeys{#1}%
+      {\@tempa\@ptionlist{\@currname.\@currext}}}%
+       \@tempa
+     \AtEndOfPackage{\let\@unprocessedoptions\relax}%
+}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \noindent
+% Finally, we process the options in the set of key/value pairs
+% `Boxenv'.
+%    \begin{macrocode}
+\ProcessOptionsWithKV{Boxenv}
+%    \end{macrocode}
+
+
+
+%
+% \subsection{Variable Declarations}
+% The variable |\box@leftmargin| defines the left margin in a
+% |box@hangpar| environment. It corresponds to the horizontal offset
+% from the beginning of the |box@hangpar| environment.
+% |\box@indentation| corresponds to the \textsf{is} space option passed
+% to the \textsf{V} and \textsf{HV} operators. Both variables are used after
+% starting a new paragraph to set the value of
+% |\leftskip| and |\hangindent|, respectively.
+%    \begin{macrocode}
+\newdimen\box@leftmargin
+\newdimen\box@indentation
+%    \end{macrocode}
+
+% \noindent
+% The variables below are used to store the results of
+% |\box@currentxpos| and |\box@width|, and to store temporary results
+% during width calculation.
+%    \begin{macrocode}
+\newdimen\box@xpos
+\newdimen\box@thewidth
+\newdimen\box@widthincalculation
+%    \end{macrocode}
+
+
+% \noindent
+% Inside the |\box@width| environment line widths are computed in order
+% to calculate the current $x$ position. The variable
+% |\box@lastlinewidth| contains the width of the last line of the most
+% recent paragraph
+%    \begin{macrocode}
+\newdimen\box@lastlinewidth
+%    \end{macrocode}
+
+
+% \noindent
+% The variables below are used to save \LaTeX{} settings when
+% entering the |boxenv| environment. They are restored when normal
+% text has to be formatted within the |latextext| environment.
+%    \begin{macrocode}
+\newdimen\box@linewidth
+\newdimen\box@rightskip
+\newdimen\box@parindent
+\newcount\box@hyphenpenalty
+%    \end{macrocode}
+
+% \noindent
+% The boolean |\ifbox@inboxenv| is used to test whether or not we are
+% inside a |box@hangpar| environment
+%    \begin{macrocode}
+\newif\ifbox@inboxenv
+%    \end{macrocode}
+
+% \noindent
+% The three variables defined below are required in the macros
+% |\box@traverselines| and |\box@thelinewidth|, and in the environment
+% |\box@width| for calculating the length of paragraphs.
+%
+%    \begin{macrocode}
+\newbox\box@investigation
+\newbox\box@tester
+\newbox\box@widthcalculation
+%    \end{macrocode}
+
+% \noindent
+% Finally, a global variable is required that is used by
+% |\box@hspaceskip| and |\box@vspaceskip| to store their return value.
+%    \begin{macrocode}
+\newskip\box@tmpskip
+%    \end{macrocode}
+
+% \subsection{Space Options}
+% According to the \bbox{} space options we define two macros that
+% calculate the horizontal and vertical spaceskip between words and
+% lines, respectively.
+%    \begin{macrocode}
+\newcommand{\box@vspaceskip}[1]{\box@tmpskip=#1ex}%
+%    \end{macrocode}
+%    \begin{macrocode}
+\newcommand{\box@hspaceskip}[1]{%
+\dimen0=#1em%
+\dimen0=.3333\dimen0%
+\box@tmpskip=\dimen0 plus \fontdimen3\font%
+}%
+%    \end{macrocode}
+
+% \subsection{Fonts}
+% \begin{macro}{KWf}
+% \begin{macro}{VARf}
+% \begin{macro}{NUMf}
+% \begin{macro}{MATHf}
+% \begin{macro}{COMMf}
+% As described in Section~\ref{user interface}, the \bboxenv{} file
+% contains mappings from \bbox{} font operators to \LaTeX{} fonts.
+% The following mappings are defined:
+%    \begin{macrocode}
+\def\KWf#1{\textbf{#1}}%
+\def\VARf#1{\textit{#1}}%
+\def\NUMf#1{\textrm{#1}}%
+\def\MATHf#1{\ensuremath{#1}}%
+\def\COMMf#1{\textrm{#1}}%
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \noindent
+% In order to allow a user to redefine these mappings to meet his
+% particular needs without modifying \bboxenv, he may define
+% mappings in a configuration file `|box-fonts.def|'. The existence
+% of this file is optional. When missing the default macros are used.
+%    \begin{macrocode}
+\IfFileExists{box-fonts.def}{%
+\input{box-fonts.def}%
+\typeout{Using box-font definitions 
+   from ``box-fonts.def''}%
+}{%
+\typeout{Using default box-font definitions.}%
+}%
+%    \end{macrocode}
+
+% \subsection{Implementation User Interface}
+%\begin{environment}{boxenv}
+% This environment initializes several parameters of the |boxenv|
+% style file. Therefore, each \bbox{} environment has to be embedded within
+% \bboxenv. The environment supports one optional argument (see
+% Section~\ref{user interface}).
+%    \begin{macrocode}
+\newenvironment{boxenv}[1][\linewidth]{%
+%    \end{macrocode}
+%
+%
+% \noindent
+% First, we save several \TeX/\LaTeX{} parameters. They are restored
+% when entering the |latextext| environment in order to be able to
+% type-set normal text. 
+%    \begin{macrocode}
+\box@linewidth=\linewidth%
+\box@rightskip=\rightskip%
+\box@hyphenpenalty=\hyphenpenalty%
+\box@parindent=\parindent%
+%    \end{macrocode}
+%
+%
+% \noindent
+% Next, the text width (parameters |\hsize| and |\linewidth|) is set
+% according to the optional argument to |boxenv|:
+%    \begin{macrocode}
+\linewidth=#1%
+\hsize=#1%
+%    \end{macrocode}
+%
+%
+% \noindent
+% Initialization of variables is the next step. Observe that we
+% configure a right skip with a rubber length to allow a ragged right
+% margin.
+%    \begin{macrocode}
+\box@leftmargin=\z@%
+\box@indentation=\z@%
+\rightskip=0pt plus 1 fill%
+\parindent=0pt%
+%    \end{macrocode}
+%
+%
+% \noindent
+% After initialization, we leave vertical mode and we set the flag
+% |\box@inboxenv| to |true|. This flag is inspected by other
+% \bbox-environments to verify that they are embedded within 
+% the |boxenv| environment.
+%
+%    \begin{macrocode}
+\leavevmode%
+\box@inboxenvtrue%
+%    \end{macrocode}
+%
+%
+% \noindent
+% We end the current paragraph explicitly when leaving the environment.
+%    \begin{macrocode}
+}{\par}%
+%    \end{macrocode}
+% \end{environment}
+
+% \begin{environment}{HBOX}
+% In Section~\ref{user interface} we described that the current
+% implementation of \bboxenv{} does not prevent inter-word line breaking and
+% that it should be prevented by the \boxlatex{} tool (by using
+% non-breakable spaces). The current implementation only prevents
+% breaking of lines and pages at hyphens.
+%
+% This implementation of the |HBOX| environment therefore consists of
+% the configuration of penalty parameters (|\penalty|,
+% |\linepenalty|, and |\hyphenpenalty|) and the configuration of
+% inter-word spacing according to the parameter passed to the
+% environment.
+%    \begin{macrocode}
+\newenvironment{HBOX}[1]{%
+\box@testforboxenv%
+\penalty10000%
+\linepenalty10000%
+\hyphenpenalty=10000%
+\box@hspaceskip{#1}\spaceskip=\the\box@tmpskip%
+}{}%
+%    \end{macrocode}
+% \end{environment}
+
+
+%\begin{environment}{VBOX}
+% See Section~\ref{user interface} for a description of the
+% environment and its parameters. The |VBOX| environment is
+% implemented as a |box@hangpar| environment. Before entering the
+% |box@hangpar| environment we verify that the |VBOX| environment is
+% enclosed by a |boxenv| environment.
+%    \begin{macrocode}
+\newenvironment{VBOX}[2]{%
+\box@testforboxenv%
+\begin{box@hangpar}{#1}{#2}%
+}{%
+\end{box@hangpar}%
+}%
+%    \end{macrocode}
+%\end{environment}
+
+% \begin{environment}{HVBOX}
+% See Section~\ref{user interface} for a description of the environment, its
+% parameters, and its use. The implementation of the \textsf{HV} environment is
+% similar to the implementation of the \textsf{V} environment, by using the
+% |box@hangpar| environment. But, unlike the \textsf{V} environment, the
+% \textsf{HV} environment also configures the inter-word spacing for the
+% horizontal formatting of text.
+%    \begin{macrocode}
+\newenvironment{HVBOX}[3]{%
+\box@testforboxenv%
+\box@hspaceskip{#1}\spaceskip=\the\box@tmpskip%
+\begin{box@hangpar}{#2}{#3}%
+}{%
+\end{box@hangpar}%
+}%
+%    \end{macrocode}
+% \end{environment}
+
+% \begin{environment}{ALTBOX}
+% The |ALTBOX| environment is implemented using the |\box@width|
+% environment. First the width $w$ of the text passed as argument |#1| is
+% calculated. Next, $w$ is compared to the maximal allowed width $max$
+% (i.e., $|\linewidth| - |\box@xpos|$). When $w \leq max$, the text
+% passed as argument |#1| is used, otherwise |#2| is used.
+%    \begin{macrocode}
+\newenvironment{ALTBOX}[2]{%
+\box@testforboxenv%
+\ifhmode\null\fi%
+%    \end{macrocode}
+% The |\parskip| is used to configure penalties to control where page breaks
+% may occur. Page breaks are only allowed when $|\parskip > 0$. Because we
+% do not want a page break tor occur within an |ALTBOX| environment, we set
+% |\parskip| to zero.
+%    \begin{macrocode}
+\parskip\z@%
+\box@currentxpos%
+\dimen0=\linewidth%
+\advance\dimen0-\box@xpos%
+\edef\remainingwidth{\the\dimen0}%
+\edef\saved@xpos{\the\box@xpos}%
+\begin{box@width}%
+#1%
+\end{box@width}%
+\hskip\saved@xpos%
+\hskip-\box@xpos%
+\ifdim\box@thewidth>\remainingwidth%
+#2%
+\else%
+#1%
+\fi%
+}{}%
+%    \end{macrocode}
+% \end{environment}
+
+
+% \begin{environment}{ABOX}
+% The |ABOX| environment is implemented as a \TeX{} alignment
+% (see Section~\ref{user interface} for  a description of
+% |ABOX|). The \boxlatex{} tool should construct a suitable string
+% defining the number and alignments of columns and the spacing
+% between columns (according to the \textsf{hs} space option). Furthermore,
+% this tool is responsible for inter-line spacing (the \textsf{vs} space
+% option). 
+%    \begin{macrocode}
+\newenvironment{ABOX}[1]{%
+\box@testforboxenv%
+\tabcolsep=0pt
+\box@hspaceskip{1}\spaceskip=\the\box@tmpskip%
+\begin{box@hangpar}{0}{0}%
+\halign\bgroup%
+\hskip\box@indentation\hskip\box@leftmargin#1%
+}{%
+\egroup%
+\end{box@hangpar}%
+}%
+%    \end{macrocode}
+% \end{environment}
+
+% \begin{environment}{LBOX}
+% The |LBOX| environment draws a line or a sequence of characters
+% according to the argument passed to the environment (see
+% Section~\ref{user interface}). The width of the line (or sequence
+% of characters) equals the width of the text within the environment.
+% The environment is implemented using the |\box@width| environment
+% which calculates the width (|\box@thewidth|) of the text in the
+% environment and the macro |\box@wcopies| which draws a line or sequence
+% of characters.
+%    \begin{macrocode}
+\newenvironment{LBOX}[1]{%
+\box@testforboxenv%
+\def\char{#1}%
+%    \end{macrocode}
+% The value of |\parskip| is used to configure penalties to control where
+% page breaks may occur. Page breaks are only allowed when $|\parskip
+% > 0$. Because we do not want a page break tor occur within an |LBOX|
+% environment, we set |\parskip| to zero.
+%    \begin{macrocode}
+\parskip\z@%
+\begin{box@width}%
+}{%
+\end{box@width}%
+\box@wcopies{\box@thewidth}{\char}%
+}%
+%    \end{macrocode}
+% \end{environment}
+
+% \begin{environment}{latextext}
+% The |latextext| environment is used to type-set ordinary text
+% within a |boxenv| environment. It is normally used to type-set text
+% specified in \textsf{C} boxes after the initial comment characters
+% `\%\%' have been removed. Parameters that were modified by \bbox{}
+% macros are restored when entering this environment.
+% These parameters include the left margin, penalties, 
+% |\spaceskip|, and |\hsize|. The text is formatted as a separate paragraph
+% (i.e., |latextext| starts and ends with an explicit |\par| command).
+%    \begin{macrocode}
+\newenvironment{latextext}{%
+\box@testforboxenv%
+\endgraf%
+\let\par\endgraf%
+\leftskip=0pt%
+\rightskip=0pt%
+\hsize=\box@linewidth%
+\advance\hsize-\box@leftmargin%
+\hangindent=0pt%
+\hyphenpenalty=50%
+\spaceskip=0pt%
+\parindent=\box@parindent%
+\ifhmode%
+\vbox%
+\fi%
+\bgroup%
+}{%
+\egroup%
+%    \end{macrocode}
+% We insert the command |\hidewidth| for the case that the text occurs
+% within an alignment. By doing so, the width of the text within the
+% |latextext| environment does not affect the width of entries within
+% alignments (it will stick out to the right). In this way, comments
+% can be used within the \textsf{A} \bbox{} operator without any
+% problem. Observe that |\hidewidth| is only inserted in horizontal
+% mode.
+%    \begin{macrocode}
+\ifhmode%
+\hidewidth%
+\fi%
+\par%
+}%
+%    \end{macrocode}
+% \end{environment}
+
+% \subsection{Cross Referencing}
+% This section describes the implementation of the cross referencing
+% mechanism. It contains a description of the three different
+% mechanisms that are currently implemented (see Table~\ref{options}). 
+% 
+% \begin{macro}{boxlabel}
+% \begin{macro}{boxref}
+%
+% The macros |\boxlabel| and |\boxref| are linked to different macros
+% depending on the `refstyle' option passed to |boxenv|. By default
+% they are linked to |\box@normallabel| and |\box@normalref|,
+% respectively.
+%    \begin{macrocode}
+\@ifundefined{boxlabel}{\def\boxlabel{\box@normallabel}}{}
+\@ifundefined{boxref}{\def\boxref{\box@normalref}{}}
+%    \end{macrocode} 
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{box@nonelabel}
+% \begin{macro}{box@noneref}
+%
+% The macros |\box@nonelabel| and |\box@noneref| are used 
+% when the option `refstyle=none' is passed to |boxenv| and
+% disable the cross reference mechanism.  
+%    \begin{macrocode}
+\long\def\box@nonelabel#1#2{#2}
+\long\def\box@noneref#1#2{#2}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{box@normallabel}
+% \begin{macro}{box@normalref}
+% Both macros are used when `refstyle=normal' is passed to |boxenv|. These
+% macros implement a cross reference mechanism using the \LaTeX{} commands
+% |\label| and |\ref|.
+%    \begin{macrocode}
+\long\def\box@normallabel#1#2{\label{#1}#2}
+%    \end{macrocode}
+%
+% \noindent
+% A reference is only displayed when the corresponding label is
+% defined. When no label has been defined the reference is discarded.
+%    \begin{macrocode}
+\long\def\box@normalref#1#2{%
+#2%
+\@ifundefined{r@#1}{}{%
+$^{\mbox{\tiny\ref{#1}}}$}%
+}
+%    \end{macrocode}
+% Note that the labels are displayed in super-script using |\tiny|
+% font.
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{box@hyperreflabel}
+% \begin{macro}{box@hyperrefref}
+% These macros are used when `refstyle=hyperref' has been specified.
+% When this option is specified, labeling and cross referencing is
+% implemented using the macros |\hypertarget| and |\hyperlink|,
+% respectively. This style of cross referencing is useful especially
+% when the \LaTeX{} document is processed by
+% \pdflatex{}~\cite{Tanh98} to obtain an interactive document. Cross
+% references are then implemented as hyper-links. We refer
+% to~\cite{Rahtz98} for a description of the macros |\hypertarget|
+% and |\hyperref|. How the labels and references are displayed in the
+% final document is described in~\cite{Rahtz98} as well.
+%    \begin{macrocode}
+\long\def\box@hyperreflabel#1#2{\hypertarget{#1}{}#2}
+\long\def\box@hyperrefref#1#2{\hyperlink{#1}{#2}}
+%    \end{macrocode}
+%\end{macro}
+%\end{macro}
+%
+% \subsection{The hangpar Environment}\label{the hangpar environment}
+% This section describes the implementation of the |box@hangpar|
+% environment and the macro |\box@currentxposition| that is used to
+% implement the environment.
+%
+% \begin{environment}{hangpar}
+% The |box@hangpar| environment is the most important building block of
+% the |boxenv| style file. It implements an environment in which
+% subsequent paragraphs are left indented according to the horizontal
+% position where the |box@hangpar| was entered.\\
+% 
+% \noindent
+% For example:
+%
+% \begin{minipage}{.5\linewidth}
+% \begin{verbatim}
+%
+%  a \begin{hangpar}{0}{0}b\\
+%       c
+%    \end{hangpar} d
+% \end{verbatim}
+% \end{minipage}
+% is formatted as
+% \begin{minipage}{.5\linewidth}
+% \begin{verbatim}
+%
+%  a b
+%    c d
+% \end{verbatim}
+% \end{minipage}
+% 
+% \noindent
+% The environment starts a new paragraph but does \emph{not} start a
+% new line. Likewise, text that follows a |box@hangpar| environment is not
+% placed on a new line.
+%
+% Left indentation of subsequent lines is implemented by defining a new
+% |\par| macro. This macro sets |\leftskip| to the $x$ position where
+% the environment was started. Furthermore, |\hangindent| is set
+% according to the indentation factor passed as argument to the
+% environment. The indentation factor corresponds to the \textsf{is} space
+% option of the \textsf{V} and \textsf{HV} \bbox{} operators.
+%
+%    \begin{macrocode}
+\newenvironment{box@hangpar}[2]{%
+\box@testforboxenv%
+\ifhmode\null\fi%
+%    \end{macrocode}
+%
+% \noindent
+% Initialization of |box@hangpar| is performed in a number of
+% steps. First, the current $x$ position is determined (using
+% |\box@currentxpos|, see below) and saved in |box@savedxpos| because it
+% might be changed by |\par|. Furthermore a new paragraph is started.
+%    \begin{macrocode}
+\box@currentxpos%
+\edef\box@savedxpos{\the\box@xpos}%
+\parskip=0pt%
+\parshape=0%
+\par%
+%    \end{macrocode}
+% After issuing the |\par| command we reset the current $x$ position.%
+%    \begin{macrocode}
+\global\box@xpos\box@savedxpos%
+%    \end{macrocode}       
+%
+%
+% \noindent
+% Next, we define a macro (|\newpar|) that extends the behavior of
+% the old |\par| macro. When the definition of |\par| is different from
+% |\newpar|, we save the definition of |\par| in |\oldpar|. The old
+% definition is used in |\newpar| to `chain' different extensions of the
+% |\par| macro. Initially |\oldpar| equals |\endgraf|. Starting a
+% new paragraph therefore results in the chain |\newpar| $\rightarrow$
+% |\endgraf|. In general, whenever a chain of extensions 
+% $\epsilon_0 \ldots\epsilon_i$ exists for the |\par|
+% macro, the chain is extended to obtain $\epsilon_0\ldots\epsilon_i
+% \epsilon_{i+1}$.
+%    \begin{macrocode}
+\def\newpar{%
+\dimen0\hangindent%
+\oldpar%
+\box@indentation=\the\dimen0%
+\box@setpenalty%
+\leftskip=\box@leftmargin%
+\hangindent=\box@indentation%
+\hangafter=0%
+%    \end{macrocode}
+% A |\par| command starts a new line, hence we reset the value of
+% |\box@xpos| to $|box@leftmargin| + |box@indentation|$.
+%    \begin{macrocode}
+\global\box@xpos\box@leftmargin%
+\global\advance\box@xpos\box@indentation%
+}%
+\ifx\par\newpar%
+\else%
+\let\oldpar=\par%
+\fi%
+\let\par\newpar%
+%    \end{macrocode}
+%
+%
+% \noindent
+% Next, the vertical skip between paragraphs is configured according
+% to the first argument of |box@hangpar|. This corresponds to
+% the \textsf{vs} space option of the \textsf{V} and \textsf{HV} operators. Because
+% the vertical space option should only affect boxes within the
+% \textsf{V} and \textsf{HV} boxes, the initial parskip is undone by an extra
+% |\vskip|.
+%    \begin{macrocode}
+\box@vspaceskip{#1}\parskip=\the\box@tmpskip%
+\vskip-\parskip%
+%    \end{macrocode}
+%
+%
+% \noindent
+% Indentation according to the \textsf{is} space option (which is passed as
+% second argument to |box@hangpar|) is implemented using
+% |\hangindent|. Since the value of this macro is reset by \LaTeX{}
+% after each new paragraph start, the desired left indentation is
+% saved in |\box@indentation| and used in |\newpar| to configure
+% |\hangindent| after a paragraph start. Note that the \textsf{is} space
+% option specifies extra white space \emph{between} boxes. This white
+% space should therefore \emph{not} be put in front of the first line
+% of text within the |box@hangpar| environment. For this reason
+% |\hangafter| is set to $1$ to take affect after the first line and setting
+% |\box@indentation| is delayed until the next paragraph (its future value is
+% store in |\hangindent|).
+%    \begin{macrocode}
+\box@hspaceskip{#2}\hangindent=\box@tmpskip%
+\box@indentation=\z@%
+\hangafter=1%
+%    \end{macrocode}
+%
+%
+% \noindent
+% The last initialization step of the |box@hangpar| environment is the
+% configuration of the left margin. It is configured by setting
+% |\leftskip| to the current $x$ position. Because |\leftskip| is reset
+% by \LaTeX{} during a paragraph start, we save the current $x$
+% position in |\box@xpos|. Its value is used in |\newpar| to
+% re-configure |\leftskip|.
+%    \begin{macrocode}
+\box@leftmargin=\box@xpos%
+\leftskip=\box@xpos%
+}
+%    \end{macrocode}
+%
+% \noindent
+% Ending a |box@hangpar| environment  should restore the left margin. 
+% Furthermore, whenever the |box@hangpar| environment is ended in
+% horizontal mode, we should accomplish that text following the
+% |box@hangpar| environment is continued on the same line. Whenever
+% the |box@hangpar| environment is ended in vertical mode, text
+% following the environment has to be placed under the environment
+% and no indentation is required.
+% 
+% To restore the left margin in horizontal mode a new paragraph
+% should be started to prevent \LaTeX{} from using this left margin
+% for the current paragraph as well. |\box@currentxpos| % is used to
+% obtain the current $x$ position and (as a side effect) to start a
+% new paragraph. |\box@leftindent| is used to accomplish that text
+% starting the new paragraph continues on the current line.
+%    \begin{macrocode}
+{%
+\ifhmode%
+\box@currentxpos%
+\box@leftindent\box@xpos%
+\fi%
+}
+%    \end{macrocode}
+% \end{environment}
+%
+%
+% \begin{macro}{box@currentxpos}
+% The macro |\box@currentxpos| determines the current $x$ position.
+% The current $x$ position is the horizontal position where the macro
+% |\box@currentxpos| occurs in the text (after type setting).
+% More precisely, the current $x$ position equals the width of the
+% last line of the paragraph that is ended by |\box@currentxpos|.
+%
+% We have implemented |\box@currentxpos| using the |\predisplaysize| macro
+% that gives access within a display to the width of the previous line. A
+% display ends the current paragraph and, as a consequence, ending the
+% current paragraph is a side effect of |\box@currentxpos|.
+%    \begin{macrocode}
+\newcommand{\box@currentxpos}{%
+\begingroup%
+%    \end{macrocode}
+%
+%
+% \noindent
+% Before opening a display, we disable page breaking before and after
+% the display by setting |\predisplaypenalty| and |\postdisplaypenalty|
+% to $10000$.
+%    \begin{macrocode}
+\predisplaypenalty10000%
+\postdisplaypenalty10000%
+$$%
+%    \end{macrocode}
+%
+%
+% \noindent
+% According to \cite[page 188]{Knu84.tex} |\predisplaysize| contains the
+% width of the line preceding the display plus two ems in the current
+% font. However, when the length of that line depends on
+% glue being stretched or shrunken, |\predisplaysize| is set to
+% |\maxdimen|. Finally, if there was no previous |\line|,
+% |\predisplaysize| is set to |-\maxdimen|. According to the value of
+% |\predisplaysize| we set |\box@xpos| to
+% $|\predisplaysize| - 2em$, |\linewidth|, and zero, respectively.
+%
+%    \begin{macrocode}
+\ifdim\predisplaysize=-\maxdimen%
+ \global\box@xpos=\z@%
+\else
+ \ifdim\predisplaysize=\maxdimen%
+  \global\box@xpos=\linewidth%
+ \else%
+  \global\box@xpos=\predisplaysize%
+  \global\advance\box@xpos-2em%
+ \fi%
+\fi%
+%    \end{macrocode}
+%
+%
+% \noindent
+% A display is assumed to take three lines~\cite[page 188]{Knu84.tex}. We
+% use negative display skips to prevent |\box@currentxpos| from occupying
+% these lines.
+%    \begin{macrocode}
+\abovedisplayskip-\baselineskip%
+\belowdisplayskip-\baselineskip%
+\abovedisplayshortskip-\baselineskip%
+\belowdisplayshortskip-\baselineskip%
+%    \end{macrocode}
+%
+%
+% \noindent
+% Finally, we end the display and the group and we are done.
+%    \begin{macrocode}
+$$%
+\endgroup% 
+}%
+%    \end{macrocode}
+% \end{macro}
+
+% \subsection{The box@width Environment}\label{the box@width environment}
+% This section documents the implementation of the |\box@width|
+% environment and several macros that are required for this
+% implementation.
+% 
+% 
+% The |\box@width| environment is able to calculate the maximum width of
+% paragraphs of text embedded in this environment. The width is stored
+% in the global variable |\box@thewidth|. 
+% 
+% 
+% The algorithm for the calculation of the width of text is as follows:
+% After each paragraph end (by a |\par| command), we traverse the
+% horizontal boxes constituting the lines of the last paragraph (using
+% |\lastbox|). Since \LaTeX{} keeps track of the width of these boxes, we
+% can obtain the width of each individual line during this traversal. When a
+% new maximum is found, the variable |\box@thewidth| is updated accordingly.
+% This variable thus contains the maximum line width of all paragraphs
+% within the environment after closing the environment. Traversing the
+% horizontal boxes of a paragraph was inspired by the traversal function
+% described in \cite[pages 53--54]{Eijk91} and \cite{TB11}.
+% 
+
+% \begin{environment}{box@width}
+% The text within the |\box@width| environment is type-set within a
+% |minipage| environment of width $|\linewidth| - |\box@xpos|$. 
+% The |minipage| environment is required because it enables us to use
+% |\lastbox| (|\lastbox| cannot be used in vertical mode).
+% To prevent that the minipage is put on the current page, we use an
+% |lrbox| to store the minipage.
+%
+% We define a new |\par| command that performs width calculation by
+% traversing the lines constituting the paragraph. Width calculation
+% is therefore performed automatically after issuing a |\par| command.
+%
+%
+% Remember from Section~\ref{the hangpar environment} that the macro
+% |\box@currentxpos| uses the value of |\predisplaysize| within a display to
+% calculate the current $x$ position. Remember also that a display ends the
+% current paragraph. \LaTeX{} does not end the paragraph using a |\par|
+% command however. This results in two problems. First, within a display we
+% do not have access to the |\lastbox| of the previous paragraph. The
+% paragraph can therefore not be traversed which makes the width calculation
+% impossible. Secondly, an explicit
+% |\par| command prior to a display sets |\predisplaysize| to zero
+% within the display. The macro |\predisplaysize| is in this case not
+% suitable to calculate the current $x$ position. As a consequence,
+% the implementation of |\box@currentxpos| from Section~\ref{the
+% hangpar environment} cannot be used in combination with the width
+% calculation.
+%
+% Since we have to traverse all lines of paragraphs for the width
+% calculation, it is rather easy to calculate the width of the last line
+% of a paragraph (which corresponds to the current $x$ position as
+% defined in Section~\ref{the hangpar environment}). Within a
+% |minipage| environment no page breaks occur. For the width
+% calculation this is no problem because the text remains invisible
+% after all. Page breaks are required outside the |\box@width|
+% environment however. Calculation of the current $x$ position outside the
+% |\box@width| environment can therefore not performed by traversing
+% the lines of a paragraph.
+%
+% To be able to calculate the width and the current $x$ position
+% correctly, a re-definition of |\box@xposition| is unavoidable.
+%
+% The implementation of |\box@width| therefore consists of the
+% re-definition of |\par| and |\box@currentxpos| and the formatting of
+% text in a |minipage| environment of width $|\linewidth| -
+% |\box@xpos|$.
+%    \begin{macrocode}
+\newenvironment{box@width}{%
+\box@testforboxenv%
+%    \end{macrocode}
+%
+% \noindent
+% In order to support nested width calculation, we save the values of
+% some global variables. These are restored after the current width
+% calculation terminates.
+%    \begin{macrocode}
+\edef\box@savedwidth{\the\box@widthincalculation}%
+\edef\box@savedlastlinewidth{\the\box@lastlinewidth}%
+\edef\box@savedxpos{\the\box@xpos}%
+%    \end{macrocode}
+%
+% \noindent
+% We use the value of |\box@leftindent| to accomplish that text following
+% the macro |\box@currentxpos| continuous on the same line.  
+% For the width calculation we start formatting text at position $0$
+% (ignoring the left margin) by setting the variables |\box@leftmargin|,
+% |\leftskip|, |\box@xpos|, and |\hangindent| to |\z@|. To construct lines of
+% correct width, we subtract the length of the left margin
+% (|box@leftmargin|) from the line width (|\hsize| and |\linewidth|). Then
+% we start a new paragraph but we continue formatting on the same line.
+% Finally, we enter an |lrbox| environment and we start a |minipage| of
+% width $|\linewidth| - |\box@xpos|$.  The value of |\rightskip| has to be
+% configured again since it is reset when entering the |minipage|
+% environment.
+%    \begin{macrocode}
+\bgroup%
+\box@leftindent\box@xpos%
+\advance\hsize-\box@leftmargin%
+\linewidth\hsize%
+\box@leftmargin\z@%
+\leftskip\z@%
+\box@xpos\z@%
+\hangindent\z@%
+\par%
+\vskip-\parskip%
+\begin{lrbox}{\box@widthcalculation}%
+\box@widthincalculation=-\maxdimen%
+\dimen0=\linewidth%
+\advance\dimen0-\box@xpos%
+\begin{minipage}{\dimen0}%
+\rightskip=0pt plus 1fill%
+%    \end{macrocode}
+%
+%
+% \noindent
+% The re-definition of |\par| extends the `chaining' of |\par|
+% macros. After a new paragraph is started using |\theoldpar|,
+% |\box@traverselines| is called to calculate the width of the
+% previous paragraph by traversing its lines.
+%    \begin{macrocode}
+\def\newpar{%
+\theoldpar%
+\box@traverselines%
+}%
+\let\theoldpar=\par%
+\let\par=\newpar%
+%    \end{macrocode}
+%
+%
+% \noindent
+% During the traversal of the lines of a paragraph, the width of the last
+% line of the paragraph is stored in |\box@lastlinewidth|.
+% The new definition of the macro |\box@currentxpos| first ends the current
+% paragraph and then uses the value of |\box@lastlinewidth| as current
+% $x$ position. When the paragraph was empty, |\box@lastlinewidth|
+% equals $-|\maxdimen|$ and  we return the left most position (i.e.,  
+% $|\box@savedindentation|$).
+%    \begin{macrocode}
+\def\box@currentxpos{%
+%    \end{macrocode}
+% Save the value of |\box@indentation| because it may be changed by |\par|.
+%    \begin{macrocode}
+\edef\savedindentation{\the\box@indentation}%
+\par%
+\ifdim\box@lastlinewidth=-\maxdimen%
+\global\box@xpos\savedindentation%
+\else%
+\global\box@xpos=\box@lastlinewidth%
+\fi%
+}%
+%\vbox\bgroup%
+%    \end{macrocode}
+%
+%
+% \noindent
+% We instantiate |\box@investigateline| such that 
+% |\box@thelinewidth| is called by |\box@traverselines| to calculate
+% the maximum line width.
+%    \begin{macrocode}
+\let\box@investigateline\box@thelinewidth%
+}{%
+%    \end{macrocode}
+%
+%
+% \noindent
+% When closing the |\box@width| environment, we end the current
+% paragraph (to calculate its width) and we close the |minipage| and
+% |lrbox| environments.
+%    \begin{macrocode}
+\par%
+\box@traverselines%
+\global\box@thewidth=\the\box@widthincalculation%
+\end{minipage}%
+\end{lrbox}%
+%    \end{macrocode}
+%
+% \noindent
+% To support nested width calculations, we restore the values of some global
+% variables.
+%    \begin{macrocode}
+\global\box@xpos=\box@savedxpos%
+\global\box@lastlinewidth=\box@savedlastlinewidth%
+\global\box@widthincalculation=\box@savedwidth%
+\egroup%
+}%
+%    \end{macrocode}
+% \end{environment}
+
+
+% \begin{macro}{box@traverselines}
+% This macro traverses the horizontal boxes of a paragraph. The
+% horizontal boxes are accessed using the |\lastbox| macro. For each
+% horizontal box the macro |\box@investigateline| is called which can
+% be instantiated differently to perform different calculations.
+% Furthermore, this macro stores in |\box@lastlinewidth| the width of
+% the last line (box) of the current paragraph. This variable is used
+% to implement |\box@currentxpos| in the |\box@width| environment.
+%
+% The traversal and inspection of horizontal boxes of a paragraph
+% using |\lastbox| was inspired by the traversal function described
+% in \cite[pages 53--54]{Eijk91} and \cite{TB11} .
+%    \begin{macrocode}
+\newcommand\box@traverselines{%
+\global\box@lastlinewidth=-\maxdimen%
+%    \end{macrocode}
+%
+% \noindent
+% The traversal function is a recursive function. The recursion is
+% implemented in |\@box@traverselines|. The macro |\box@traverselines|
+% now consists of the initialization of the variable
+% |\box@lastlinewidth| and a single call to |\@box@traverselines|.
+%    \begin{macrocode} 
+\def\@box@traverselines{%
+\begingroup%
+%    \end{macrocode}
+% We save |\lastbox| in |\box@investigation| and whenever it is a non-void box, we call
+% |\@box@traverselines| recursively, and |\box@investigateline|
+% afterwards. Furthermore, we save the width of the last line in
+% |\box@lastlinewidth|.
+%    \begin{macrocode}
+\setbox\box@investigation=\lastbox%
+\ifvoid\box@investigation\else%
+\unskip%
+\count0=\lastpenalty%
+\unpenalty%
+\setbox\box@tester=\hbox{\unhcopy\box@investigation}%
+%    \end{macrocode}
+% Calculate the width of the last line.
+%    \begin{macrocode}
+\ifdim\box@lastlinewidth=-\maxdimen%
+\global\box@lastlinewidth=\wd\box@tester%
+\global\advance\box@lastlinewidth\the\box@indentation%
+\fi%
+{\@box@traverselines}%
+\box@investigateline%
+%    \end{macrocode}
+% After traversing the box, we put it back and restore the
+% penalty that we have removed before.
+%     \begin{macrocode}
+\hbox{\box@indentation\dimen0\unhbox\box@investigation}%
+\penalty\count0%
+\fi%
+\endgroup%
+}%
+\@box@traverselines%
+}%
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{box@thelinewidth}
+% This macro is used to calculate the maximum width of a sequence of
+% lines. The maximum width so far is stored in |\box@widthincalculation|.
+% The line that is to be inspected is stored in |\box@tester|.
+% Whenever a new maximum has been found (in the case that $|\wd\box@tester| +
+% |\box@indentation| > |\box@widthincalculation|$), |\box@widthincalculation| 
+% is updated.
+%    \begin{macrocode}
+\newcommand{\box@thelinewidth}{%
+\begingroup%
+\dimen0=\the\wd\box@tester%
+\advance\dimen0\box@indentation%
+\ifdim\dimen0>\box@widthincalculation%
+ \global\box@widthincalculation=\the\dimen0%
+\fi%
+\endgroup%
+}%
+%    \end{macrocode}
+% \end{macro}
+
+% \subsection{Miscellaneous Macros}
+% This section, which concludes the implementation details of \bboxenv,
+% describes the implementation of the remaining macros.
+%
+% \begin{macro}{box@leftindent}
+% This macro inserts horizontal white space to accomplish that text
+% following the macro |\box@leftindent| continues on the current line.
+%    \begin{macrocode}
+\def\box@leftindent#1{%
+\aftergroup\insertindent%
+\gdef\insertindent{%
+\dimen0=#1%
+\advance\dimen0-\box@leftmargin%
+\advance\dimen0-\box@indentation%
+\makebox [\dimen0]{}%
+}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{box@testforboxenv}
+% This macro outputs an error message when the boolean |\box@inboxenv|
+% yields $false$. The \bbox{} environments should not be used outside
+% a |boxenv| environment. This macro is used to enforce that the
+% environments are surrounded by a |boxenv| environment.
+%    \begin{macrocode}
+\newcommand{\box@testforboxenv}{%
+\ifbox@inboxenv\else%
+\errmessage{Use of environment outside ``boxenv'' 
+   environment.}%
+\fi%
+}
+%    \end{macrocode}
+% \end{macro}
+
+
+% \begin{macro}{box@setpenalty}
+% We should restrict the number of places in a |box@hangpar| environment
+% where page breaks may occur. The macro |\box@setpenalty| is
+% therefore used after each paragraph start to configure the
+% penalties.
+% 
+% We allow a page break between two paragraphs within in a |VBOX| or
+% |HVBOX| environment to occur only when their vertical space factor (the
+% \textsf{vs} space option) is greater than zero. No page breaks are allowed
+% in other environments (except the |latextext| environment). Since
+% text within |latextext| is formatted as ordinary text, penalties
+% are restored to their default values within this environment.
+%    \begin{macrocode}
+\newcommand{\box@setpenalty}{%
+%    \end{macrocode}
+%
+% \noindent
+% When |\parskip| equals zero (i.e., the \textsf{is} space option equals
+% zero), we disable page breaking by setting |\penalty| to $10000$.
+% Otherwise, a default penalty of $50$ is used.
+%    \begin{macrocode}
+\ifdim\parskip=\z@%
+\penalty10000%
+\else%
+\penalty50%
+\fi%
+%    \end{macrocode}
+%
+%
+% \noindent
+% We always disable page breaks between lines and after discretionary
+% hyphens.
+%    \begin{macrocode}
+\linepenalty10000%
+\interlinepenalty=10000%
+\hyphenpenalty=10000%
+}%
+%    \end{macrocode}
+%\end{macro}
+
+
+% \begin{macro}{box@wcopies}
+% The macro |\box@wcopies| constructs a line of width approximately
+% equal to |#1|. The exact width of the line depends on |#2|:
+% \begin{itemize}
+%    \item When |#2| equals the symbol `=', a line is constructed
+%          using |\hrule|. Its width equals |#1|.
+%    \item Otherwise, a line is constructed by taking $n$ copies of
+%          |#2| such that:
+%          $n\times\vert|#2|\vert \leq |#1| < (n+1)\times\vert|#2|\vert$.
+%   \end{itemize}
+%    \begin{macrocode}
+\newcommand{\box@wcopies}[2]{%
+\if#2=%
+\vskip-1.5\baselineskip%
+\leavevmode\hbox to #1 {\leaders\hrule\hfill}%
+\else%
+ \newbox\tmp%
+ \setbox\tmp=\hbox{}%
+ \loop\ifdim#1>\wd\tmp%
+  \setbox\tmp\hbox{#2\box\tmp}%
+ \repeat%
+ \hbox{\hbox to \box@leftmargin{\box\tmp}}%
+\fi%
+}%
+%    \end{macrocode}
+% \end{macro}
+
+
+% \begin{macro}{box@absval}
+% |\box@absval| is a little macro that expands to the absolute value of
+% its argument.
+%    \begin{macrocode}
+\def\box@absval#1{\ifnum#1<\z@ -\fi#1}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{ifundefined}
+% This macro checks whether its argument has been previously defined
+% in the document. It has been taken from~\cite[page 40, page
+% 308]{Knu84.tex}.
+%    \begin{macrocode}
+\def\ifundefined#1{%
+\expandafter\ifx\csname #1\endcsname%
+\relax%
+}
+%    \end{macrocode}
+% \end{macro}
+
+
+% \Finale
