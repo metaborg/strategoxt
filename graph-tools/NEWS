@@ -1,2 +1,7 @@
-Version 0.0 released: YYYY-MM-DD
-	* Remarks
+Version 0.1 released: 2001-09-20
+	* This package contains the graph tools extracted from the
+	  Grammar Tools package, version 0.7.
+	* The GraphXML2dot tool now accepts --url-prefix and --url-ext
+          switches to support generation of clickable image maps.
+	* All `unglued' tools, i.e. those that require a front- or backend,
+	  are now installed in libexec.
