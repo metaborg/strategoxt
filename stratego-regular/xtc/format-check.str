@@ -104,14 +104,58 @@ strategies
 
 overlays
 
+  /**
+   * Do not edit the description here: instead edit the wiki topic and copy
+   * the description to the source code.
+   */
   fc-tool-doc =
     [ Usage("format-check --rtg file [OPTIONS]")
     , Summary(
-       "Checks if a term is in the language defined by an
-        RTG. If it is, then the term is said to be in the right
-        format."
+       "
+format-check analyzes whether the input ATerm conforms to the format
+that is specified in the RTG (Regular Tree Grammar).
+	"
       )
     , OptionUsage()
+    , Description(["
+format-check verifies that the input ATerm is part of the language
+defined in the RTG.  If this is not the case, then the ATerm contains
+format errors. format-check can operate in three modes: plain,
+visualize and XHTML.
+	","
+The plain mode is used if the other modes are not enabled. In the
+plain mode format errors are reported and no result is written the the
+output (stdout or a file). Hence, if format-check is included in a
+pipeline, then the following tool will probably fail. If the input
+term is correct, then it is written to the output.
+	","
+The visualize mode is enabled with the --vis option. In visualize mode
+format errors are reported and in a pretty-printed ATerm will be
+written to the output. All innermost parts of the ATerm that cause
+format errors are printed in red, if your terminal supports control
+characters for colors. If you want to browse through the ATerm with
+less, then you should use the -r flag.
+	","
+The XHTML mode is enabled with the --xhtml option. In XHTML mode
+format errors are reported and an report in XHTML will be written to
+the output. This report shows the parts of the ATerm that are not
+formatted correctly. Also, moving with your mouse over the nodes of
+ATerm, will show the non-terminals that have be inferred by
+format-check (do not use IE6. Firefox or Mozilla is recommended).
+	","
+format-check reports all innermost format errors. That is, only the
+deepest format errors are reported. A format error is reported by
+showing the ATerm that is not in the correct format, and the inferred
+types of the children of the ATerm. In XHTML and visualize mode a
+format error of term in a list is presented by a red comma and
+term. This means that a type has been inferred for the term itself,
+but that it is not expected at this point in the list. If only the
+term is red, then no type could be inferred for the term itself.
+	","
+In all modes format-check succeeds (exit code 0) if the ATerm contains
+no format errors. If the term does contain format errors, then
+format-check fails (exit code 1).
+	"])
     , AutoReportBugs()
     ]
 
@@ -119,6 +163,7 @@ overlays
     [ AutoProgram()
     , Author(Person("Martin Bravenboer", "martin@cs.uu.nl"))
     , GNU_LGPL("2002-2004", "Martin Bravenboer <martin@cs.uu.nl>")
+    , WebHome("http://www.program-transformation.org/Tools/FormatCheck")
     , Config([
         DefaultXTCRepository()
       , CurrentXTCRepository()
