@@ -36,12 +36,12 @@ strategies
 
   xtc-register =
     <get-config> "-t" => tools
-    ; if-verbose1(say(!"  Registering tool ")) 
-    ; if-verbose2(debug(!"    Tools:    "))
+    ; if-verbose2(say(!"  Registering tool ")) 
+    ; if-verbose3(debug(!"    Tools:    "))
     ; <get-config> "-V" => version
-    ; if-verbose2(debug(!"    Version:  "))
+    ; if-verbose3(debug(!"    Version:  "))
     ; <get-config> "-l" => loc
-    ; if-verbose2(debug(!"    Location: "))
+    ; if-verbose3(debug(!"    Location: "))
     ; !tools
     ; xtc-register(|tools, version, loc)
 
