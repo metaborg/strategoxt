@@ -1,3 +1,7 @@
+2001-09-20 Merijn de Jonge <mdejonge@cwi.nl>                     
+   * gpp package now depends on (not yet released) graphviz-1.8
+     package. Version 1.7.9 contains errors and cannot yet be bundled.
+
 2001-09-19 Merijn de Jonge <mdejonge@cwi.nl> 
    * Abox2text: bug fix: formatting of ABOX  was incorrect
 
