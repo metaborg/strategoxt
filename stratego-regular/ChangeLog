@@ -1,3 +1,11 @@
+2005-01-21  Martin Bravenboer <martin@cs.uu.nl>
+
+	* xtc/rtg2sig.str: improved the --help and --about by using
+	tool-doc.
+
+	* xtc/rtg2sig.str: use the basename of -i as the third alternative
+	for the name of the Stratego module.
+	
 2004-11-27  Martin Bravenboer <martin@cs.uu.nl>
 
 	* trans/sdf2rtg/core-sdf-grammar2rtg.str: nice names for character

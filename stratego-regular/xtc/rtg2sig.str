@@ -4,13 +4,48 @@
  * @author  Martin Bravenboer <martin@cs.uu.nl>
  */
 module rtg2sig
-imports liblib regular-xtc-tools strategoxt-xtc-tools module-option
+imports
+  liblib
+  regular-xtc-tools
+  strategoxt-xtc-tools
+  module-option
+  tool-doc
 
 strategies
   
   main-rtg2sig =
-    xtc-io-wrap(module-option,
-      xtc-rtg-front-end
-    ; xtc-core-rtg2sig(|<guess-module-name>)
-    ; xtc-pp-abstract-stratego
+    xtc-io-wrap(
+      module-option
+    , rtg2sig-usage
+    , rtg2sig-about
+    , ![]
+    , xtc-rtg-front-end
+      ; xtc-core-rtg2sig(|<guess-module-name>)
+      ; xtc-pp-abstract-stratego
     )
+
+  rtg2sig-usage =
+    <tool-doc>
+      [ Usage("rtg2sig [OPTIONS]")
+      , Summary(
+         "Generates a Stratego Signature from a Regular Tree Grammar (RTG).")
+      , OptionUsage()
+      , Description([
+          "The name of the resulting Stratego module is determined by
+           (1) the specified module name with the --module option.
+           (2) The name of the output file.
+           (3) The name of the input file."
+        ])
+      , AutoReportBugs()
+      ]
+
+  rtg2sig-about =
+    <tool-doc>
+      [ AutoProgram()
+      , Author(Person("Martin Bravenboer", "martin@cs.uu.nl"))
+      , GNU_LGPL("2002-2005", "Martin Bravenboer <martin@cs.uu.nl>")
+      , Config([
+          DefaultXTCRepository()
+        , CurrentXTCRepository()
+        ])
+      ]
