@@ -1,5 +1,7 @@
 2002-10-02  Merijn de Jonge <mdejonge@cwi.nl>
    * ppgen/make.r: renamed number to number-node to solve name clash
+   * abox2latex:Abox-2-latex.r rolled back changed by Eelco, because it
+     yields incorreect formatting.
 
 2002-09-26  Merijn de Jonge <mdejonge@cwi.nl>
    * Replaced dependency on stratego package by a dependency on sc-boot

@@ -119,7 +119,7 @@ Abox2latex:
    where
       <Vspace>so => vs;
       <Ispace>so => is;
-      <filter(not([]));separate-by(!"\\\\[\\parskip]%\n")>b => b'
+      <filter(not([]));separate-by(!"\n\n")>b => b'
 
 Abox2latex:
    HV(so, b ) -> HVBOX( hs, vs, is, b' )
