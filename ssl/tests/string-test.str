@@ -33,7 +33,6 @@ strategies
     ; strcat-tests
     ; strlen-tests
     ; concat-strings-tests
-    ; filename-tests
     ; quote-tests
     ; padd-with-test
     ; is-substring-test
@@ -63,41 +62,6 @@ strategies
     ; apply-test(!"concat-strings-2", concat-strings, !["a", ""], !"a")
     ; apply-test(!"concat-strings-3", concat-strings, !["",  "a"], !"a")
     ; apply-test(!"concat-strings-4", concat-strings, !["hello ",  "world"], !"hello world")
-    
-strategies // for testing filename manipulations
-    
-  filename-tests =
-    basename-test
-  ; get-path-test
-  ; get-filename-test    
-    
-  basename-test = 
-    apply-test(!"basename-test1", basename, !"./number.r", !"./number")
-  ; apply-test(!"basename-test2", basename, !"./number",   !"./number")
-  
-  get-path-test =
-    apply-test(!"get-path-test1"
-    , get-path
-    , !"/usr/local/bin/prog"
-    , !"/usr/local/bin/"
-    )
-  ; apply-test(!"get-path-test2"
-    , get-path
-    , !"prog"
-    , !""
-    )
-
-  get-filename-test =
-    apply-test(!"get-filename-test1"
-    , get-filename
-    , !"/usr/local/bin/prog"
-    , !"prog"
-    )
-  ; apply-test(!"get-filename-test2"
-    , get-filename
-    , !"prog"
-    , !"prog"
-    )
   
 strategies  // for testing quote strategies
   

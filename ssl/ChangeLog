@@ -1,3 +1,12 @@
+2003-12-09  Martin Bravenboer <martin@cs.uu.nl>
+
+	* spec/file.str: added pathname manipulations, removed them from
+	string.str
+
+	* spec/file.str: corrected documentation of basename strategy
+
+	* spec/file-test.str: same for tests
+	
 2003-12-04  Martin Bravenboer <martin@cs.uu.nl>
 
 	* spec/posix-error.str: added perror and strerror.

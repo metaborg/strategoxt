@@ -7,6 +7,9 @@ strategies
     test-suite(!"file-test",
       dirname-tests
     ; file-props-tests
+    ; basename-tests
+    ; get-path-tests
+    ; get-filename-tests
     )
     
 strategies
@@ -25,6 +28,35 @@ strategies
   file-props-tests =
       apply-and-fail(!"create? -- 1", can-create-file, !"/root/bla.txt")
     ; apply-test(!"create? -- 2", can-create-file, !"/tmp/bla.txt", !"/tmp/bla.txt")
+
+  basename-tests = 
+    apply-test(!"basename-test 1", basename, !"./number.r", !"./number")
+  ; apply-test(!"basename-test 2", basename, !"./number",   !"./number")
+  ; apply-test(!"basename-test 3", basename, !"/usr/bin/number.str", !"/usr/bin/number")
+
+  get-path-tests =
+    apply-test(!"get-path-test1"
+    , get-path
+    , !"/usr/local/bin/prog"
+    , !"/usr/local/bin/"
+    )
+  ; apply-test(!"get-path-test2"
+    , get-path
+    , !"prog"
+    , !""
+    )
+
+  get-filename-tests =
+    apply-test(!"get-filename-test1"
+    , get-filename
+    , !"/usr/local/bin/prog"
+    , !"prog"
+    )
+  ; apply-test(!"get-filename-test2"
+    , get-filename
+    , !"prog"
+    , !"prog"
+    )
 
 /**
  * Copyright (C) 1998-2003 Eelco Visser <visser@acm.org>

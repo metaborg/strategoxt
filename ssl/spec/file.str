@@ -53,30 +53,38 @@ strategies
 strategies
 
   /**
-   * @type String -> String
+   * @type  String -> String
    */
   file-exists =
     <access> (<id>, [F_OK()])
 
-  // @type String -> String
+  /**
+   * @type  String -> String
+   */
   can-read-file =
     <access> (<id>, [R_OK()])
 
   is-readable = can-read-file
 
-  // @type String -> String
+  /**
+   * @type  String -> String
+   */
   can-write-file =
     <access> (<id>, [W_OK()])
 
   is-writable = can-write-file
 
-  // @type String -> String
+  /**
+   * @type  String -> String
+   */
   can-execute-file =
     <access> (<id>, [X_OK()])
 
   is-executable = can-exutable-file
 
-  // @type String -> String
+  /**
+   * @type String -> String
+   */
   can-create-file =
     where(dirname; can-write-file)
 
@@ -86,9 +94,9 @@ strategies
 strategies
 
   /**
-   * returns directory portion of pathname in a POSIX compatible way
+   * Returns directory portion of pathname in a POSIX compatible way.
    *
-   * :: String -> String
+   * @type String -> String
    */
   dirname =
     string-as-chars(
@@ -116,6 +124,73 @@ strategies
                    shall be removed. */
               repeat(split-init-last; ?(<id>, '/'))
             ; (?[] < !['/'] + id))))))
+
+strategies
+
+  /**
+   * Strip extension from filename.
+   *
+   * @type  String -> String
+   */
+  basename =
+    basename(id)
+
+  /**
+   * Strip directory and extension from filename.
+   *
+   * @param  checks the extension
+   * @type   String -> String
+   */
+  basename(ext) =
+    explode-string;
+    try(rec x([id|x] <+ ['/' | id] <+ ['.' | ext]; ![]));
+    implode-string
+
+  guarantee-extension(ext) =
+    basename;
+    split(id, <ext>());
+    add-extension
+
+  // has-extension :: (_ -> String) -> String -> String
+  //
+  // has-extension(ext) checks whether the argument is a
+  // string that ends in <ext>.
+
+  has-extension(ext) =
+    where(ext; explode-string => echars);
+    where(explode-string; at-suffix(?echars))
+  
+  // path from program name "/usr/local/bin/prog" -> "/usr/local/bin/"
+  get-path = 
+    explode-string;
+    (rec x([id|x] <+ [47|![]]) <+ ![]);
+    implode-string
+
+  // file name from path "/usr/local/bin/prog" -> "prog"
+  get-filename = 
+    explode-string
+    ; try(at-suffix-rev(?['/' | name]); !name)
+    ; implode-string
+
+  // :: String * String -> String
+  add-extension : 
+    (name, ext) -> <concat-strings> [name, ".", ext]
+
+  // :: String -> String
+  remove-extension =
+      <string-tokenize> (['.'], <id>)
+    ; init
+    ; <separate-by> (".", <id>)
+    ; concat-strings
+
+  /**
+   * Get extension from filename
+   *
+   * @type   String -> String
+   */
+  get-extension =
+    <string-tokenize> (['.'], <id>)
+    ; last
 
 /**
  * Generate a new, not existing file name.
