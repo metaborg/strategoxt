@@ -122,7 +122,7 @@ specification
       Anno          : a * b -> a
 
   strategies
-    external Disambiguate(i_4 : ATerm() -> ATerm() | )
+    external Disambiguate(h_4 : ATerm() -> ATerm() | )
 
     external parenthesize(i_130 : ATerm() -> ATerm() | )
 
@@ -346,11 +346,11 @@ specification
 
     external range( | )
 
-    external range( | h_4 : ATerm())
+    external range( | g_4 : ATerm())
 
     external range-next(d_125 : ATerm() -> ATerm() | )
 
-    external range(g_4 : ATerm() -> ATerm() | )
+    external range(f_4 : ATerm() -> ATerm() | )
 
     external is-interval( | )
 
@@ -620,15 +620,15 @@ specification
 
     external UndefinedOption( | )
 
-    external Arg2Option(d_4 : ATerm() -> ATerm() , e_4 : ATerm() -> ATerm() , f_4 : ATerm() -> ATerm() | )
+    external Arg2Option(c_4 : ATerm() -> ATerm() , d_4 : ATerm() -> ATerm() , e_4 : ATerm() -> ATerm() | )
 
     external Arg2Option(j_121 : ATerm() -> ATerm() , k_121 : ATerm() -> ATerm() | )
 
     external ArgOption(h_121 : ATerm() -> ATerm() , i_121 : ATerm() -> ATerm() | )
 
-    external ArgOption(a_4 : ATerm() -> ATerm() , b_4 : ATerm() -> ATerm() , c_4 : ATerm() -> ATerm() | )
+    external ArgOption(z_3 : ATerm() -> ATerm() , a_4 : ATerm() -> ATerm() , b_4 : ATerm() -> ATerm() | )
 
-    external Option(x_3 : ATerm() -> ATerm() , y_3 : ATerm() -> ATerm() , z_3 : ATerm() -> ATerm() | )
+    external Option(w_3 : ATerm() -> ATerm() , x_3 : ATerm() -> ATerm() , y_3 : ATerm() -> ATerm() | )
 
     external Option(t_120 : ATerm() -> ATerm() , u_120 : ATerm() -> ATerm() | )
 
@@ -794,9 +794,9 @@ specification
 
     external read-from( | )
 
-    external copy-to(w_3 : ATerm() -> ATerm() | )
+    external copy-to(v_3 : ATerm() -> ATerm() | )
 
-    external rename-to(v_3 : ATerm() -> ATerm() | )
+    external rename-to(u_3 : ATerm() -> ATerm() | )
 
     external xtc-generate(e_117 : ATerm() -> ATerm() , f_117 : ATerm() -> ATerm() | )
 
@@ -808,7 +808,7 @@ specification
 
     external xtc-transform-term(z_116 : ATerm() -> ATerm() , a_117 : ATerm() -> ATerm() | )
 
-    external xtc-transform-file(t_3 : ATerm() -> ATerm() , u_3 : ATerm() -> ATerm() | )
+    external xtc-transform-file(s_3 : ATerm() -> ATerm() , t_3 : ATerm() -> ATerm() | )
 
     external xtc-transform-file(u_116 : ATerm() -> ATerm() | )
 
@@ -1226,7 +1226,7 @@ specification
 
     external if(g_113 : ATerm() -> ATerm() , h_113 : ATerm() -> ATerm() | )
 
-    external maybe(r_3 : ATerm() -> ATerm() , s_3 : ATerm() -> ATerm() | )
+    external maybe(q_3 : ATerm() -> ATerm() , r_3 : ATerm() -> ATerm() | )
 
     external maybe(b_113 : ATerm() -> ATerm() | )
 
@@ -1406,27 +1406,27 @@ specification
 
     external dr-new-change-set( | )
 
-    external dr-lookup-all-rules(p_3 : ATerm() -> ATerm() | q_3 : ATerm())
+    external dr-lookup-all-rules(o_3 : ATerm() -> ATerm() | p_3 : ATerm())
 
     external dr-lookup-all-rules( | a_48 : ATerm())
 
-    external dr-lookup-rule-pointer(n_3 : ATerm() -> ATerm() | o_3 : ATerm())
+    external dr-lookup-rule-pointer(m_3 : ATerm() -> ATerm() | n_3 : ATerm())
 
     external dr-lookup-rule-pointer( | r_47 : ATerm())
 
-    external dr-lookup-rule(l_3 : ATerm() -> ATerm() | m_3 : ATerm())
+    external dr-lookup-rule(k_3 : ATerm() -> ATerm() | l_3 : ATerm())
 
     external dr-lookup-rule( | i_47 : ATerm())
 
-    external dr-set-in-rule-set-vis(g_3 : ATerm() * Hashtable() * ATerm() * ATerm() * ATerm() -> ATerm() , h_3 : ATerm() * Hashtable() * ATerm() * ATerm() -> ATerm() | i_3 : ATerm() , j_3 : ATerm() , k_3 : ATerm())
+    external dr-set-in-rule-set-vis(f_3 : ATerm() * Hashtable() * ATerm() * ATerm() * ATerm() -> ATerm() , g_3 : ATerm() * Hashtable() * ATerm() * ATerm() -> ATerm() | h_3 : ATerm() , i_3 : ATerm() , j_3 : ATerm())
 
-    external dr-rm-fail( | d_3 : ATerm() , e_3 : ATerm() , f_3 : ATerm())
+    external dr-rm-fail( | c_3 : ATerm() , d_3 : ATerm() , e_3 : ATerm())
 
     external dr-set-in-rule-set-vis( | e_46 : ATerm() , f_46 : ATerm() , g_46 : ATerm())
 
     external dr-set-in-rule-set-vis( | c_46 : ATerm() , d_46 : ATerm())
 
-    external dr-set-in-rule-set(z_2 : ATerm() * Hashtable() * ATerm() * ATerm() * ATerm() -> ATerm() | a_3 : ATerm() , b_3 : ATerm() , c_3 : ATerm())
+    external dr-set-in-rule-set(y_2 : ATerm() * Hashtable() * ATerm() * ATerm() * ATerm() -> ATerm() | z_2 : ATerm() , a_3 : ATerm() , b_3 : ATerm())
 
     external dr-set-fail( | e_45 : ATerm() , f_45 : ATerm() , g_45 : ATerm() , h_45 : ATerm())
 
@@ -1434,11 +1434,11 @@ specification
 
     external dr-set-in-rule-set( | z_44 : ATerm() , a_45 : ATerm())
 
-    external dr-add-to-rule-set-vis(u_2 : ATerm() * Hashtable() * ATerm() * ATerm() * ATerm() -> ATerm() , v_2 : ATerm() * Hashtable() * ATerm() * ATerm() -> ATerm() | w_2 : ATerm() , x_2 : ATerm() , y_2 : ATerm())
+    external dr-add-to-rule-set-vis(t_2 : ATerm() * Hashtable() * ATerm() * ATerm() * ATerm() -> ATerm() , u_2 : ATerm() * Hashtable() * ATerm() * ATerm() -> ATerm() | v_2 : ATerm() , w_2 : ATerm() , x_2 : ATerm())
 
     external dr-add-to-rule-set-vis( | x_43 : ATerm() , y_43 : ATerm() , z_43 : ATerm())
 
-    external dr-add-to-rule-set(q_2 : ATerm() * Hashtable() * ATerm() * ATerm() * ATerm() -> ATerm() | r_2 : ATerm() , s_2 : ATerm() , t_2 : ATerm())
+    external dr-add-to-rule-set(p_2 : ATerm() * Hashtable() * ATerm() * ATerm() * ATerm() -> ATerm() | q_2 : ATerm() , r_2 : ATerm() , s_2 : ATerm())
 
     external dr-add-fail( | v_42 : ATerm() , w_42 : ATerm() , x_42 : ATerm() , y_42 : ATerm())
 
@@ -1782,7 +1782,7 @@ specification
 
     external UnCify1(t_107 : ATerm() -> ATerm() | )
 
-    external Cify(p_2 : ATerm() -> ATerm() | )
+    external Cify(o_2 : ATerm() -> ATerm() | )
 
     external double-quote( | )
 
@@ -1954,7 +1954,7 @@ specification
 
     external Nil-T( | )
 
-    external Cons-T(u_0 : ATerm() -> ATerm() , x_0 : ATerm() -> ATerm() | )
+    external Cons-T(t_0 : ATerm() -> ATerm() , w_0 : ATerm() -> ATerm() | )
 
     external thread-map(t_105 : ATerm() -> ATerm() | )
 
@@ -2126,7 +2126,7 @@ specification
 
     external set-eq( | )
 
-    external qsort(o_0 : ATerm() -> ATerm() | )
+    external qsort(l_0 : ATerm() -> ATerm() | )
 
     external uniq( | )
 
@@ -2278,7 +2278,7 @@ specification
 
     external Hd( | )
 
-    external reverse-acc(j_0 : ATerm() -> ATerm() , l_0 : ATerm() -> ATerm() | )
+    external reverse-acc(g_0 : ATerm() -> ATerm() , j_0 : ATerm() -> ATerm() | )
 
     external reverse(f_99 : ATerm() -> ATerm() | )
 
@@ -2482,7 +2482,7 @@ specification
 
     external oncetd(f_94 : ATerm() -> ATerm() | )
 
-    external spinebu'(g_0 : ATerm() -> ATerm() | )
+    external spinebu'(f_0 : ATerm() -> ATerm() | )
 
     external spinetd'(d_0 : ATerm() -> ATerm() | )
 

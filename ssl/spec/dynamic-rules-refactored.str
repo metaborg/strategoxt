@@ -897,8 +897,8 @@ strategies // generic fix-point strategies
     ; repeat(
         where(
 	  s 
-          ; if <filter({?(rulename,<id>); <merge1>(rulename, <id>)})> rs1; []
-	     ; <filter({?(rulename,<id>); <merge2>(rulename, <id>)})> rs2; [] 
+          ; if and(<filter({?(rulename,<id>); <merge1>(rulename, <id>)})> rs1; []
+	          ,<filter({?(rulename,<id>); <merge2>(rulename, <id>)})> rs2; [])
             then 
 	      ?e; fail // no changes in any of the rules
             end
