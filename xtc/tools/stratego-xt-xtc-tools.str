@@ -9,6 +9,14 @@ strategies
   xtc-abox-format =
     xtc-transform(!"abox-format", pass-verbose)
 
+  xtc-ast2abox(pps) =
+    xtc-transform(!"ast2abox",
+      <conc> (
+        <pass-verbose> ()
+      , ["-p" | <pps; map(xtc-find); <separate-by> ("-p", <id>)> () ]
+      )
+    )
+
   xtc-abox2text =
     xtc-transform(!"abox2text", pass-verbose)
 
