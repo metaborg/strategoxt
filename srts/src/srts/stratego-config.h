@@ -37,6 +37,9 @@
 /* Define to 1 if you have the <unistd.h> header file. */
 #define HAVE_UNISTD_H 1
 
+/* Do we need mprotect to deal with nested functions? */
+/* #undef NEEDS_MPROTECT */
+
 /* Name of package */
 #define PACKAGE "srts"
 

@@ -40,6 +40,6 @@ AC_TRY_RUN(
 mprotect_is_required=no
 ,
 mprotect_is_required=yes
-AC_DEFINE(NEEDS_MPROTECT),:)
+AC_DEFINE(NEEDS_MPROTECT, 1, [Do we need mprotect to deal with nested functions?]),:)
 AC_MSG_RESULT(${mprotect_is_required})
 ])
