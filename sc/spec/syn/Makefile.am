@@ -1,78 +1,18 @@
-# Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
-# 
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2, or (at your option)
-# any later version.
-# 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-# 02111-1307, USA.
+include $(top_srcdir)/Makefile.xt
+include $(wildcard *.dep)
 
-bin_SCRIPTS 		= 
-#parse-mod
-libexec_PROGRAMS 	= pack-stratego 
-#parse-mod  
-#pack_stratego_SOURCES 	= pack-stratego.c
+bin_SCRIPTS 	 = 
+libexec_PROGRAMS = pack-stratego 
 
-pack-stratego.o: ../conf.h
+pack-stratego.o	 : ../conf.h
 
-#parse_mod_LDADD		= @LEXLIB@ -latermextension $(STRATEGOLIBS)
-pack_stratego_LDADD 	= -lstratego.opt $(STRATEGOLIBS)
+pkgdata_DATA 	 = pack-stratego.config
 
-#parse_stratego_LDADD 	= @LEXLIB@ -latermextension $(STRATEGOLIBS)
-#parse_stratego_SOURCES 	= parse-stratego.c stratego-grm.y \
-#			  stratego-lex.l options.h options.c util.h 
+CLEANFILES 	 = pack-stratego.dep $(wildcard *.dep)
 
-#parse_mod_SOURCES 	= parse-mod.c stratego-grm.y \
-#			  stratego-lex.l options.h options.c util.h 
+EXTRA_DIST 	 = pack-stratego.str pack-stratego.config.src 
+BOOTCLEANFILES 	 = pack-stratego.c 
 
-#pkgdatadir 	= $(prefix)/pack-stratego-plugin
-pkgdata_DATA 	= pack-stratego.config
-
-CLEANFILES 	= pack-stratego.dep
-
-EXTRA_DIST 	= pack-stratego.str pack-stratego.config.src 
-#syntax-test.r 
-
-#stratego-grm.h
-
-#BOOTSOURCES 	= $(SOURCES) pack-stratego.c stratego-grm.y stratego-grm.h \
-#		  stratego-lex.l pack-stratego.config.src
-
-BOOTCLEANFILES 	= pack-stratego.c 
-#stratego-grm.c stratego-grm.h stratego-lex.c
-
-CFLAGS	 	= 
-DEBUGFLAGS	= -g
-PROFFLAGS	= -pg
-OPTFLAGS 	= -O4
-
-YFLAGS 		= -d -t -v
-
-STRINCLUDES 	= -I $(srcdir)/../sig -CI "-I.."
-SCFLAGS 	= --C-include "\"conf.h\""  
-
-# BOOTINSTALL
-
-#bootinstall: $(BOOTSOURCES)
-#	$(mkinstalldirs) $(SCBOOT)/src
-#	cp -f $(BOOTSOURCES) $(SCBOOT)/src
-
-## CHECK
-
-#check: check1 check2
-
-#check1: parse-mod
-#	./parse-mod -i syntax-test.r -o /dev/null
-
-#check2: pack-stratego 
-#	./pack-stratego -I $(STRATEGOLIB)/share/ssl -I $(srcdir)/../sig -i syntax-test -o syntax-test.trm
-
-include $(srcdir)/../Makefile.common
+STRINCLUDES 	 = -I $(srcdir)/../sig -CI "-I.."
+SCFLAGS 	 = --C-include "\"conf.h\""  
+INCLUDES	 += -I ..

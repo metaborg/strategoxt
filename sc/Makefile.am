@@ -17,7 +17,8 @@
 
 SUBDIRS = spec
 
-EXTRA_DIST = README.in $(wilcard *.pkg) stdconfig reconf sc.spec Makefile.rpm
+EXTRA_DIST = README.in $(wilcard *.pkg) stdconfig reconf sc.spec Makefile.rpm \
+	     Makefile.xt
 
 RPMRELEASE = 1
 

@@ -1,4 +1,4 @@
-include /usr/local/build/Boot/share/srts/Makefile.srts
+include @STRATEGORTS@/share/srts/Makefile.srts
 
 SUFFIXES = .str .cr .rtree
 

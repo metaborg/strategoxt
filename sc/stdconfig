@@ -1,6 +1,15 @@
 #! /bin/sh
 
 ./bootstrap
+./configure --prefix=/usr/local/build/Boot \
+    --with-aterm=/usr/local/build/ATerm \
+    --with-sdf=/usr/local/build/SDF2 \
+    --with-stratego-xt=/usr/local/build/Boot \
+    --with-repository=/usr/local/build/Boot/share/StrategoXT/XTC-StrategoXT
+
+exit 0
+
+./bootstrap
 ./configure \
     --prefix=/home/xt/XT \
     --with-aterm=/home/xt/XT \
