@@ -1,49 +1,53 @@
+
 module Stratego-Core
 imports list-cons option
 signature
   constructors
-                   : StrategyDef -> Def
     Signature      : List(Sdecl) -> Decl
     Strategies     : List(Def) -> Decl
     Imports        : List(ModName) -> Decl
     Specification  : List(Decl) -> Module
     Module         : ModName * List(Decl) -> Module
                    : Strategy -> StrategyMid
-    SVar           : Id -> SVar
-    SDefT          : Id * r_0 * r_0 * Strategy -> StrategyDef
-    StrCong        : String * Strategy -> Strategy
-    RealCong       : Real * Strategy -> Strategy
-    IntCong        : Int * Strategy -> Strategy
+    ParenStrat     : Strategy -> StrategyParen
+    VarDec         : ID * Type -> Typedid
+    ExtSDef        : Id * List(Typedid) * List(Typedid) -> StrategyDef
+    ExtSDefInl     : Id * List(Typedid) * List(Typedid) * Strategy -> StrategyDef
+    SDefT          : Id * List(Typedid) * List(Typedid) * Strategy -> StrategyDef
     Thread         : Strategy -> Strategy
     All            : Strategy -> Strategy
     One            : Strategy -> Strategy
     Some           : Strategy -> Strategy
     Path           : Int * Strategy -> Strategy
+    PrimT          : String * List(Strategy) * List(Term) -> Strategy
     Bagof          : Strategy -> Strategy
-    LGChoice       : Strategy * Strategy -> Strategy
-    Not            : Strategy -> Strategy
-    Rec            : Id * Strategy -> Strategy
     GuardedLChoice : Strategy * StrategyMid * Strategy -> Strategy
-    LChoice        : Strategy * Strategy -> Strategy
+    LGChoice       : Strategy * Strategy -> Strategy
     Seq            : Strategy * Strategy -> Strategy
-    Id             : Strategy
-    Fail           : Strategy
-    Scope          : n_0 * Strategy -> Strategy
+    Scope          : List(ID) * Strategy -> Strategy
     Build          : Term -> Strategy
     Match          : Term -> Strategy
-    PrimT          : String * List(Strategy) * List(Term) -> Strategy
+    Id             : Strategy
+    Fail           : Strategy
     CallT          : SVar * List(Strategy) * List(Term) -> Strategy
     Let            : List(Def) * Strategy -> Strategy
-                   : Id -> Var
-    Wld            : Term
-    Var            : Var -> Term
-    Op             : Constructor * List(Term) * List(Term) -> Term
-    Str            : String * List(Term) -> Term
-    Real           : Real * List(Term) -> Term
-    Int            : Int * List(Term) -> Term
+    SVar           : Id -> SVar
+                   : StrategyDef -> Def
+    OpA            : Constructor * List(Term) * List(Term) -> Term
+    StrA           : String * List(Term) -> Term
+    RealA          : Real * List(Term) -> Term
+    IntA           : Int * List(Term) -> Term
+    As             : Var * Term -> Term
+                   : Var -> Term
     Expl           : Term -> Constructor
     StrC           : String -> Constructor
     Con            : Id -> Constructor
+                   : Id -> ID
+    SeqVar         : Var -> Var
+    WldA           : List(Term) -> Var
+    VarA           : Id * List(Term) -> Var
+    Wld            : Var
+    Var            : Id -> Var
     FunType        : List(Type) * Type -> Type
     ConstType      : Sort -> Type
     OpDeclInj      : Type -> Opdecl
@@ -54,6 +58,14 @@ signature
     SortVar        : LCID -> Sort
     Constructors   : List(Opdecl) -> Sdecl
     Sorts          : List(Sort) -> Sdecl
+                   : String -> Asterisk2
+                   : String -> Asterisk1
+                   : String -> CommChar2
+                   : String -> CommChar1
+                   : String -> Eof
+                   : String -> LongCom
+                   : String -> ShortCom
+                   : String -> Ws
                    : String -> UCID
                    : String -> LCID
                    : String -> LId

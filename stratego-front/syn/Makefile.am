@@ -7,8 +7,13 @@ sdfdata_DATA = \
   Stratego-Amb.def \
   Stratego.tbl \
   StrategoStratego.tbl \
+  \
   Stratego-Core.def \
   Stratego-Core.tbl \
+  \
+  Stratego-Sugar.def \
+  Stratego-Sugar.tbl \
+  \
   StrategoForTesting.def \
   StrategoForTesting.tbl \
   StrategoStrategoForTesting.def \
@@ -47,6 +52,20 @@ Stratego.def : \
   Stratego-DynamicRules.sdf \
   Stratego-Rules.sdf \
   Stratego-Layout.sdf
+
+Stratego-Sugar.def : \
+  Stratego-Core.def \
+  Stratego-Sugar.sdf \
+  Stratego-Sugar-Signatures.sdf \
+  Stratego-Sugar-Modules.sdf \
+  Stratego-Sugar-Strategies.sdf \
+  Stratego-Sugar-Overlays.sdf \
+  Stratego-Sugar-Constants.sdf \
+  Stratego-Sugar-Terms.sdf \
+  Stratego-Identifiers.sdf \
+  Stratego-Sugar-DynamicRules.sdf \
+  Stratego-Sugar-Rules.sdf \
+  Stratego-Sugar-Layout.sdf
 
 Stratego-Core.def : \
   Stratego-Core.sdf \

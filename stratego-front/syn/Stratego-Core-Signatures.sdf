@@ -1,4 +1,7 @@
 module Stratego-Core-Signatures
+imports
+  Stratego-Identifiers
+  Stratego-Core-Constants
 exports
   sorts Sdecl
   context-free syntax

@@ -4,7 +4,12 @@ include $(wildcard *.dep)
 autogensignatures = \
   Stratego.str      \
   Stratego-Amb.str  \
-  Stratego-Core.str
+  Stratego-Core.str \
+  Stratego-Sugar.str\
+  Stratego.rtg      \
+  Stratego-Amb.rtg  \
+  Stratego-Core.rtg \
+  Stratego-Sugar.rtg
 
 staticsignatures = \
   Stratego-MetaTransition.str
@@ -25,12 +30,18 @@ Stratego-Core.def:
 	rm -f Stratego-Core.def
 	ln -s ../syn/Stratego-Core.def .
 
+Stratego-Sugar.def: 
+	rm -f Stratego-Sugar.def
+	ln -s ../syn/Stratego-Sugar.def .
+
 Stratego-Amb.def: 
 	rm -f Stratego-Amb.def
 	ln -s ../syn/Stratego-Amb.def .
 
-$(autogensignatures) : Stratego.def Stratego-Core.def Stratego-Amb.def
+$(autogensignatures) : Stratego.def Stratego-Core.def Stratego-Sugar.def Stratego-Amb.def
 
-%.str : %.def
-	$(STRATEGO_REGULAR)/bin/sdf2rtg -i $< -m $* | \
-	$(STRATEGO_REGULAR)/bin/rtg2sig -o $@
+%.rtg : %.def
+	$(STRATEGO_REGULAR)/bin/sdf2rtg -i $< -m $* -o $@
+
+%.str : %.rtg
+	$(STRATEGO_REGULAR)/bin/rtg2sig -i $< -o $@

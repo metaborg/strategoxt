@@ -1,5 +1,19 @@
 module Stratego-Core-Terms
+imports
+  Stratego-Identifiers
+  Stratego-Core-Constants
+
 exports
+  sorts ID LID Var
+  context-free syntax
+    Id 				-> Var  {cons("Var")}
+    "_" 			-> Var  {cons("Wld")}
+    Id  "{" {Term ","}* "}"	-> Var  {cons("VarA")}
+    "_" "{" {Term ","}* "}"	-> Var  {cons("WldA")}
+    Id				-> ID
+    ":" Var                     -> Var  {cons("SeqVar")}
+
+  sorts Constructor
   context-free syntax
 
     %% Constructors
@@ -8,17 +22,16 @@ exports
     String 			    -> Constructor {cons("StrC")}
     Term "#"			    -> Constructor {cons("Expl")}
 
-    %% Annotated Terms
+  sorts Term
+  context-free syntax
 
-    Int         "{" {Term ","}* "}" -> Term {cons("Int")}
-    Real        "{" {Term ","}* "}" -> Term {cons("Real")}
-    String      "{" {Term ","}* "}" -> Term {cons("Str")}
+    Var 			    -> Term 
+    Var "@" Term 		    -> Term {cons("As")}
+
+    Int         "{" {Term ","}* "}" -> Term {cons("IntA")}
+    Real        "{" {Term ","}* "}" -> Term {cons("RealA")}
+    String      "{" {Term ","}* "}" -> Term {cons("StrA")}
     Constructor "(" {Term ","}* ")" 
-                "{" {Term ","}* "}" -> Term {cons("Op")}
+                "{" {Term ","}* "}" -> Term {cons("OpA")}
 
-    %% Variables
 
-    Id 				    -> Var  
-    Var	Annos		    	    -> Term {cons("VarA")}
-    Var				    -> Term {cons("Var")}
-    "_" 		 	    -> Term {cons("Wld")}

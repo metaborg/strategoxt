@@ -1,67 +1,84 @@
 definition
 module Stratego-Core-Modules
-imports Stratego-Identifiers
+imports
+  Stratego-Identifiers
+  Stratego-Core-Strategies
+  Stratego-Core-Signatures
+
 exports 
   sorts Module
   context-free syntax
-    "module" ModName Decl* 	-> Module {cons("Module")}
-    "specification" Decl*	-> Module {cons("Specification")}
+    "module" ModName Decl* 	 -> Module {cons("Module")}
+    "specification" Decl*	 -> Module {cons("Specification")}
 
-  sorts Decl Def
+  sorts Decl 
   context-free syntax
     "imports" ModName* 		-> Decl {cons("Imports")}
     "strategies" Def* 		-> Decl {cons("Strategies")}
     "signature" Sdecl*  	-> Decl {cons("Signature")}
 
-    StrategyDef 		-> Def 
-
 module Stratego-Core-Strategies
-imports Stratego-Core-Terms
+imports
+  Stratego-Core-Terms
+  Stratego-Core-Constants
+  Stratego-Core-Signatures
+
 exports
+  sorts Def
   context-free syntax
+    StrategyDef					 -> Def 
+    Id						 -> SVar {cons("SVar")}
+    "let" Def* "in" Strategy "end"		 -> Strategy {cons("Let")}
+    SVar "(" {Strategy ","}* "|" {Term ","}* ")" -> Strategy {cons("CallT")}
 
-  %% Definitions
 
-    "let" Def* "in" Strategy "end"	   -> Strategy {cons("Let")}
-
+  sorts StrategyDef
+  context-free syntax
     Id "(" {Typedid ","}* 
        "|" {Typedid ","}* ")" "=" Strategy -> StrategyDef {cons("SDefT")}
 
-    ID ":" Type 			   -> Typedid {cons("VarDec")}
+    "external"
+    Id "(" {Typedid ","}* 
+       "|" {Typedid ","}* ")" "=" Strategy -> StrategyDef {cons("ExtSDefInl")}
 
-  %% Calls
+    "external"
+    Id "(" {Typedid ","}* 
+       "|" {Typedid ","}* ")"		   -> StrategyDef {cons("ExtSDef")}
 
-    Id					  -> SVar {cons("SVar")}
-    SVar "(" {Strategy ","}* 
-         "|" {Term ","}* ")" 	          -> Strategy {cons("CallT")}
-    "prim" "(" String "," {Strategy ","}* 
-                      "|" {Term ","}*")"  -> Strategy {cons("PrimT")}
 
-  %% Match and build
+  sorts Typedid
+  context-free syntax
+    ID ":" Type 			  -> Typedid {cons("VarDec")}
+
+
+  sorts Strategy SVar StrategyParen StrategyMid 
+  context-free syntax
+    "(" Strategy ")"			  -> StrategyParen {cons("ParenStrat")}
+
+    "fail" 				  -> Strategy {cons("Fail")}
+    "id" 				  -> Strategy {cons("Id")}
+
+    %% Match and build
 
     "?" Term 				  -> Strategy {cons("Match")}
     "!" Term 				  -> Strategy {cons("Build")}
     "{" {ID ","}* ":" Strategy "}" 	  -> Strategy {cons("Scope")}
 
-  %% Combinators
+    %% Combinators
 
-    "(" Strategy ")"			  -> StrategyParen {cons("ParenStrat")}
-    "fail" 				  -> Strategy {cons("Fail")}
-    "id" 				  -> Strategy {cons("Id")}
     Strategy ";" Strategy 		  -> Strategy {cons("Seq"),right}
-    Strategy "<+" Strategy 		  -> Strategy {cons("LChoice"),right}
+    Strategy "<++" Strategy 		  -> Strategy {cons("LGChoice"),right}
     Strategy "<" StrategyMid 
              "+" Strategy 		  -> Strategy {cons("GuardedLChoice"),right}
     Strategy 				  -> StrategyMid
-    "rec" Id "(" Strategy ")" 		  -> Strategy {cons("Rec")}
-    "not"   "(" Strategy ")" 		  -> Strategy {cons("Not")}
 
-  %% Global choice
-
-    Strategy "<++" Strategy 		  -> Strategy {cons("LGChoice"),right}
     "bagof" "(" Strategy ")" 		  -> Strategy {cons("Bagof")}
 
-  %% Traversal
+    %% Primitives
+
+    "prim" "(" String "," {Strategy ","}* "|" {Term ","}*")"  -> Strategy {cons("PrimT")}
+
+    %% Traversal
 
     Int Strategy 			  -> Strategy {cons("Path")}
     "some" "(" Strategy ")" 		  -> Strategy {cons("Some")}
@@ -69,27 +86,35 @@ exports
     "all" "(" Strategy ")" 		  -> Strategy {cons("All")}
     "thread" "(" Strategy ")" 		  -> Strategy {cons("Thread")}
 
-  %% Congruence operators
-
-    Int    "{" Strategy "}" 		       -> Strategy {cons("IntCong")}
-    Real   "{" Strategy "}"		       -> Strategy {cons("RealCong")}
-    String "{" Strategy "}"  		       -> Strategy {cons("StrCong")}
-    Const "(" {Term ","}* ")" "{" Strategy "}" -> Strategy {cons("OpCong")}
+  %% Priorities
 
   context-free priorities
-    {"!" Term 				  -> Strategy {cons("Build")}
-     "?" Term 				  -> Strategy {cons("Match")}
+    { "!" Term 				  -> Strategy {cons("Build")}
+      "?" Term 				  -> Strategy {cons("Match")}
     }
   > Strategy ";" Strategy 		  -> Strategy {cons("Seq"),right}
   > {right: 
-     Strategy "<+" Strategy 		  -> Strategy {cons("LChoice"),right}
      Strategy "<++" Strategy 		  -> Strategy {cons("LGChoice"),right}
      Strategy "<" StrategyMid 
               "+" Strategy 		  -> Strategy {cons("GuardedLChoice"),right}
     }
 
 module Stratego-Core-Terms
+imports
+  Stratego-Identifiers
+  Stratego-Core-Constants
+
 exports
+  sorts ID LID Var
+  context-free syntax
+    Id 				-> Var  {cons("Var")}
+    "_" 			-> Var  {cons("Wld")}
+    Id  "{" {Term ","}* "}"	-> Var  {cons("VarA")}
+    "_" "{" {Term ","}* "}"	-> Var  {cons("WldA")}
+    Id				-> ID
+    ":" Var                     -> Var  {cons("SeqVar")}
+
+  sorts Constructor
   context-free syntax
 
     %% Constructors
@@ -98,22 +123,22 @@ exports
     String 			    -> Constructor {cons("StrC")}
     Term "#"			    -> Constructor {cons("Expl")}
 
-    %% Annotated Terms
+  sorts Term
+  context-free syntax
 
-    Int         "{" {Term ","}* "}" -> Term {cons("Int")}
-    Real        "{" {Term ","}* "}" -> Term {cons("Real")}
-    String      "{" {Term ","}* "}" -> Term {cons("Str")}
+    Var 			    -> Term 
+    Var "@" Term 		    -> Term {cons("As")}
+
+    Int         "{" {Term ","}* "}" -> Term {cons("IntA")}
+    Real        "{" {Term ","}* "}" -> Term {cons("RealA")}
+    String      "{" {Term ","}* "}" -> Term {cons("StrA")}
     Constructor "(" {Term ","}* ")" 
-                "{" {Term ","}* "}" -> Term {cons("Op")}
-
-    %% Variables
-
-    Id 				    -> Var  
-    Var	Annos		    	    -> Term {cons("VarA")}
-    Var				    -> Term {cons("Var")}
-    "_" 		 	    -> Term {cons("Wld")}
+                "{" {Term ","}* "}" -> Term {cons("OpA")}
 
 module Stratego-Core-Signatures
+imports
+  Stratego-Identifiers
+  Stratego-Core-Constants
 exports
   sorts Sdecl
   context-free syntax
@@ -140,23 +165,35 @@ exports
 
 module Stratego-Core-Layout
 exports
-
+  sorts Ws ShortCom LongCom CommChar1 CommChar2 Asterisk1 Asterisk2 Eof 
   lexical syntax
-    [\t\ \n] 		-> Ws
-    "//" ~[\n]* [\n]	-> ShortCom
-    "/*" CommChar* "*/" -> LongCom
-    "*" 		-> Asterisk
-    ~[\*] 		-> CommChar
-    Asterisk 		-> CommChar
+    [\t\ \n\r]			-> Ws
+
+    "//" ~[\n]* ([\n] | Eof)	-> ShortCom
+    "/*" CommChar1* "*/"	-> LongCom
+    "(*" CommChar2* "*)"	-> LongCom
+     					 
+				-> Eof  
+
+    ~[\*]      -> CommChar1
+    ~[\*]      -> CommChar2
+
+    "*"        -> Asterisk1
+    "*"        -> Asterisk2
+    Asterisk1  -> CommChar1
+    Asterisk2  -> CommChar2
+
   lexical restrictions
-    Asterisk -/- [\/\)]
+    Asterisk1 -/- [\/]
+    Asterisk2 -/- [\)]
 
   lexical syntax
     ShortCom 	-> LAYOUT
     LongCom 	-> LAYOUT
     Ws 		-> LAYOUT
+
   context-free restrictions
-    LAYOUT? -/- [\ \t\n]
+    LAYOUT? -/- [\ \t\n\r]
 
 module Stratego-Identifiers
 exports
@@ -222,7 +259,7 @@ exports
     [\-]? [0-9]+ [\.] [0-9]+ 	-> Real
     "\"" StrChar* "\"" 		-> String
     ~[\"\\] 			-> StrChar
-    [\\] [\"tn\\] 		-> StrChar
+    [\\] [\"tnr\\] 		-> StrChar
 
 module Stratego-Core
 imports Stratego-Core-Constants 

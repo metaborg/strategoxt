@@ -11,7 +11,8 @@ SCFLAGS 	= --main $* $(XTCFLAGS)
 pkgdata_DATA 	= Stratego.pp Stratego-pretty.pp		   \
 		  Stratego.pp.af Stratego-pretty.pp.af		   \
 		  Stratego-Core.pp Stratego-Core-pretty.pp	   \
-		  Stratego-Core.pp.af Stratego-Core-pretty.pp.af 
+		  Stratego-Core.pp.af Stratego-Core-pretty.pp.af   \
+		  Stratego-Sugar.pp Stratego-Sugar.pp.af 
 
 BOOTCLEANFILES  = astratego2text.c Stratego.pp StrategoStratego.pp		\
 		  Stratego.pp.af Stratego-pretty.pp.af				\
@@ -29,6 +30,10 @@ Stratego.def :
 	ln -s ../syn/$@ .
 
 Stratego-Core.def : 
+	rm -f $@
+	ln -s ../syn/$@ .
+
+Stratego-Sugar.def : 
 	rm -f $@
 	ln -s ../syn/$@ .
 
