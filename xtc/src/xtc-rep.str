@@ -39,11 +39,18 @@ strategies
     ; if-verbose4(say(!"Repository read: "))
 
   read-repository-file = 
-    can-read-file
-    < ReadFromFile
-    + (not(file-exists); debug(!"** WARNING: Repository doesn't exist: ")
-                      <+ debug(!"** WARNING: No read permission for repository: "))
+    if can-read-file then
+      ReadFromFile
+    else
+      if file-exists then
+        debug(!"** WARNING: No read permission for repository: ")
+      else
+        if not(<get-config> "register") then
+          debug(!"** WARNING: Repository doesn't exist: ")
+        end
+      end
       ; ![]
+    end
 
   xtc-import = 
     where(
