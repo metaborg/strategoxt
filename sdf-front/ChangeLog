@@ -1,5 +1,7 @@
 2003-05-26  Martin Bravenboer  <martin@mbravenboer.org>
 
+  * Added initial sdf-desugar. What is sugar? What is normalization?
+
   * Added initial Sdf2 in Stratego syntax definition. Useful
     for generation of Sdf2 and unit-testing of sdf-tools.
 

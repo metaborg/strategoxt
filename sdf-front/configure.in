@@ -12,6 +12,7 @@ AC_CONFIG_FILES([
   syn/Makefile
   sig/Makefile
   pp/Makefile
+  parse/Makefile
   xtc/Makefile
 ])
 AC_OUTPUT
