@@ -49,11 +49,13 @@ problems when if a the left-hand side itself already contains an empty
 list. The dynamic rule dummy is now a =DR_DUMMY=, which solves these
 issues.
 
-Note, that two rules that have the same left-hand side pattern, except
+Note that two rules that have the same left-hand side pattern, except
 for an empty list in the first and a non-context variable in the
 second, now also have a different key. If you want them to have the
-same key, then you can for example move the [] pattern to the where
+same key, then you can for example move the =[]= pattern to the where
 condition.
+
+    (Martin Bravenboer)
 
 ---------+++ Redefinition of External Strategies
 
@@ -62,6 +64,8 @@ strategies was not always detected in the previous release. If a
 redefined strategy was only invoked from the code that was separately
 compiled, then the redefinition was not noticed by the compiler. This
 has now been fixed.
+
+    (Martin Bravenboer)
 
 ---------+++ Improved Reporting of Ambiguities
 
@@ -75,6 +79,8 @@ syntax and if you are implementing an object language embedding in
 Stratego. Disabling the heuristic filters makes ambiguities and
 non-ambiguities less surprising. See the next subsection for an
 example.
+
+    (Martin Bravenboer)
 
 ---------+++ Improved Reporting of Ambiguities
 
@@ -103,7 +109,8 @@ Meta([
 ])
 </verbatim>
 
-The =|[ Foo ]|= construct is highly ambiguous, which is now reported as:
+The generated =|[ Foo ]|= construct is highly ambiguous, which is now
+reported as:
 <verbatim>
 martin@logistico:~/tmp/str> strc -i foo.str
 compiling foo.str
@@ -116,6 +123,8 @@ error: ambiguity in the definition of main. Alternatives:
 This report uses abstract syntax for Stratego, which might be improved
 to concrete syntax in the future.
 
+    (Martin Bravenboer)
+
 ---------+++ Cons and Nil: Special Constructor Names
 
 =Cons/2= (=Cons= with two argument terms) and =Nil/0= are reserved
@@ -125,36 +134,60 @@ errors for programs that use =Cons= and =Nil= constructor names with a
 differnt arity. This has now been fixed, hence only =Cons/2= and
 =Nil/0= are reserved constructor names from now.
 
-
-   * Support for quoted constructors
-
     (Martin Bravenboer)
 
 ---------++ Stratego Standard Library
 
-   * iowrap is obsolete
+---------+++ Strategy iowrap Obsolete
+
+The strategy =iowrap= is now obsolete. Several releases ago it was
+replaced by =io-wrap=, which is easier to use, thanks to the storage
+of command-line option values in the global =config= table. Users that
+still use =iowrap= will now get a warning.
 
     (Rob Vermaas)
 
-* spec/pipe.str: bug fixes. 
-  - stdin-from-pipe and stdout-to-pipe didn't work correctly when
-  Pipe argument was stdin (0) or stdout (1). Since stdin and stdout
-  were explicitly closed, the connection with the pipe was lost.
-  Using dup2 instead of dup solves the problem because there is no
-  need to close file descriptiors.
-  -write-term-to-text-pipe uses WriteToTextFile but outfile argument
-  is a stream. Replacing WriteToTextFile by fprint solved the
-  problem.
+---------+++ Logging Module
 
-    (Merijn de Jonge)
+A small library for logging has been added to the Stratego Standard
+Library (it used to be part of the =stratego-regular= package). The
+=log= strategy in the =logging= module combines several features:
 
-* logging
+   * The =log= strategy does not change the current term and is
+     therefore easy to insert in your code. Optionally, it takes a
+     term argument that will be logged as well. Thus, you easily log a
+     different term then the current term.
 
-    (Niels Janssen)
+   * The =log= strategies print to the stream specified by the
+     =log-stream= entry in the =config= table, or by defaylt to
+     =stderr=. This makes logging to different files easier from
+     within a Stratego program.
+
+   * The =log= strategies take a severity argument, which is used to
+     determine whether the message should logged at all, based on the
+     verbosity level specified on the command-line.
+
+   * The log message will include the name of the program that
+     produced the message and the severity of the message.
+
+    (Niels Janssen and Martin Bravenboer)
+
+---------+++ Logging Module
 
 * call(|opt-fdin, opt-fdout, opt-fderr)
 
     (Martin Bravenboer)
+
+=stdin-from-pipe= and =stdout-to-pipe= didn't work correctly when the
+Pipe ]rgument was =stdin= (0) or =stdout= (1). Since =stdin= and
+=stdout= were explicitly closed, the connection with the pipe was
+lost. Using =dup2= instead of =dup= solves the problem because there
+is no need to close file descriptiors. =write-term-to-text-pipe= uses
+=WriteToTextFile= but the =outfile= argument is a stream. Replacing
+=WriteToTextFile= by =fprint= solved the problem.
+
+    (Merijn de Jonge)
+
 
 ---------++ AutoXT
 
