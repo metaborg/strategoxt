@@ -28,6 +28,9 @@ strategies
   filter-options(flag) = 
     filter-gen([flag | id], skip2)
 
+  list-some-filter(s) =
+    rec x([s| id]; [id| filter(s)] <+ [id| x]; Tl)
+
  /**
   * Partitions a list into a tuple of two lists.
   *
