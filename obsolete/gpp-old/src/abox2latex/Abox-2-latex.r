@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Abox-2-latex.r,v 1.3 2002/05/19 14:07:50 mdejonge Exp $
+% $Id: Abox-2-latex.r,v 1.4 2002/09/17 21:57:53 eelco Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
@@ -32,6 +32,7 @@ signature
 constructors
    LatexTable : String -> Option
    Width :      String -> option
+   Verbose:	Option
 strategies
 Abox-2-latex = parse-options(  io-options 
                      + ArgOption("-t",       \x -> LatexTable(x) \ )

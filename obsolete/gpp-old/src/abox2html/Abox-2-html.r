@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Abox-2-html.r,v 1.3 2002/05/19 14:07:49 mdejonge Exp $
+% $Id: Abox-2-html.r,v 1.4 2002/09/17 21:57:52 eelco Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
@@ -27,7 +27,9 @@
 module Abox-2-html
 
 imports html pp-tables
-
+signature
+  constructors
+      Verbose:	 Option    
 strategies
 Abox-2-html = parse-options(  io-options ) => options;
        (

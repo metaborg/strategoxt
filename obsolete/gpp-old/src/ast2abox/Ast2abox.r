@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Ast2abox.r,v 1.5 2002/09/17 09:25:39 eelco Exp $
+% $Id: Ast2abox.r,v 1.6 2002/09/17 21:57:54 eelco Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
@@ -62,6 +62,11 @@ trm2abox1 =
    ?s;
    is-string;
    !S(s)
+
+trm2abox1 =
+   ?i;
+   is-int;
+   !S(<int-to-string>i)
 
 trm2abox2 =
    is-list;

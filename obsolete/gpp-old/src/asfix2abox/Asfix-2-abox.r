@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Asfix-2-abox.r,v 1.5 2002/08/01 15:05:08 mdejonge Exp $
+% $Id: Asfix-2-abox.r,v 1.6 2002/09/17 21:57:53 eelco Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 % Changes: Eelco Visser <visser@acm.org> 19/5/20001
@@ -34,7 +34,8 @@ imports
 signature
    constructors
       PP-Table : String -> Option
-      layout:    String -> Layout      
+      layout:    String -> Layout  
+      Verbose:	 Option    
 
 strategies
 

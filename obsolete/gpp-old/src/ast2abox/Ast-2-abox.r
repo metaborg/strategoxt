@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Ast-2-abox.r,v 1.3 2002/06/06 15:24:29 mdejonge Exp $
+% $Id: Ast-2-abox.r,v 1.4 2002/09/17 21:57:54 eelco Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
@@ -32,6 +32,7 @@ imports
 signature
    constructors
       PP-Table : String -> Option
+      Verbose : Option
       
 strategies
    Ast-2-abox = iowrap( ast2abox, 
