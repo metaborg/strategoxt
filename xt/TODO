@@ -16,6 +16,13 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 #
-# $Id: TODO,v 1.3 2000/04/07 09:47:15 jvisser Exp $
+# $Id: TODO,v 1.4 2000/04/07 10:02:53 jvisser Exp $
 
 * replace asource by Stratego program
+
+* Improve documentation.
+  Specifically:
+  - Some instructions on how to connect parsers and pretty printers 
+    to stratego programs.
+  - Add references to stratego documentation.
+  - Document the components of the GPP package.
