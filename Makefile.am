@@ -5,6 +5,10 @@ EXTRA_FILES  = README README.in svn-revision bootstrap acinclude.m4 strategoxt.s
 all-local: $(BUILD_SRTS_DEST)/srts.dummy $(INSTALL_XTC_DEST)/xtc.dummy
 install-exec-local: $(BUILD_SRTS_DEST)/srts.dummy $(INSTALL_XTC_DEST)/xtc.dummy
 
+clean-local:
+	rm -rf $(BUILD_SRTS_DEST)
+	rm -rf $(INSTALL_XTC_DEST)
+
 $(BUILD_SRTS_DEST)/srts.dummy :
 	cd srts && \
 	$(MAKE) $(AM_MAKEFLAGS) && \
