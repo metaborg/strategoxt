@@ -1,0 +1,132 @@
+###########################################################
+# File: Makefile.xt
+#
+# autoxt
+#
+# Description
+#
+# This Makefile provides support for compiling Stratego 
+# programs and use of some other XT tools.
+#
+###########################################################
+#
+# Variables
+#
+
+INCLUDES 	= -I$(SRTS)/include -I$(ATERM)/include
+LDFLAGS		= -L$(SRTS)/lib -L$(ATERM)/lib 
+LDADD 		= -lstratego.opt -lstratego-lib.opt -lATerm-gcc -lm
+
+SUFFIXES 	= .str .cr .r .rtree .def .tbl .pp .sdf
+
+SCOMPILE 	= $(SC)/bin/sc
+PARSESTRATEGO 	= $(STRATEGO_FRONT)/bin/parse-stratego
+
+###########################################################
+#
+# Make rules for Stratego programs
+#
+
+.str.c : 
+	$(SCOMPILE) $(STRINCLUDES) $(SCFLAGS) -i $< -o $@ -c
+
+.str.rtree :
+	$(PARSESTRATEGO) $(STRINCLUDES) -i $< -o $@ --verbose 0
+
+.rtree.c : 
+	$(SCOMPILE) $(STRINCLUDES) $(SCFLAGS) -i $< -o $@ -c
+
+
+# Note: the .r and .cr extensions are obsolete. The following
+# rules take care of the conversion, while keeping the original
+# files.
+
+.PRECIOUS : %.str %.meta
+
+migrate :
+	for file in $(wildcard *.r) ; do \
+	  mv $$file `basename $$file .r`.str ; \
+	done
+	for file in $(wildcard *.cr) ; do \
+	  mv $$file `basename $$file .cr`.str ; \
+	done 
+	for file in $(wildcard *.syn) ; do \
+	  echo "Meta([Syntax(\"`cat $$file`\")])" > `basename $$file .syn`.meta ; \
+	done
+
+#.cr.str:
+#	cp $< $@
+#	mv $< $<.bak
+#	$(MAKE) $*.meta
+
+#.syn.meta: 
+#	echo "Meta([Syntax(\"`cat $<`\")])" > $@
+#	mv $< $<.bak
+
+# Dependencies
+
+#%.c.dep : 
+#	touch $@
+#
+#CLEANFILES = $(wildcard *.dep)
+
+bootclean: 
+	rm -f $(BOOTCLEANFILES)
+
+###########################################################
+#
+# Makerules for SDF definitions
+#
+
+.sdf.def : 
+	$(SDF_TOOLS)/bin/pack-sdf $(SDFINCLUDES) -i $<  \
+	| $(ASFIX_TOOLS)/bin/asfix-yield -o $@
+
+.def.tbl :
+	$(PGEN)/bin/sdf2table $(PGEN_FLAGS) -i $< -o $@
+
+###########################################################
+#
+# Makerules for GPP
+#
+
+%.pp.af : %.pp
+	@-echo "" | $(GPP)/bin/ast2abox -p $<
+
+.def.pp :
+	$(GPP)/bin/ppgen -i $< -o $@
+
+###########################################################
+#
+# Makerules for Stratego Tools
+#
+
+.def.str :
+	$(STRATEGO_TOOLS)/bin/sdf-to-sig $*
+
+###########################################################
+#
+# Makerules for XTC
+#
+
+XTCFLAGS = -I $(XTC)/share/xtc \
+	   --C-include "\"xtc-conf.h\""
+
+xtc-conf.h :
+	echo "#define XTC_REPOSITORY() ATmakeString(\"$(REPOSITORY)\")" > $@
+
+install-data-local:
+	for file in $(pkgdata_DATA) ; do \
+          $(XTC)/bin/xtc-register -r $(REPOSITORY) -l $(pkgdatadir) -V $(VERSION) \
+		-t $$file ; \
+        done
+	for file in $(bin_PROGRAMS) ; do \
+          $(XTC)/bin/xtc-register -r $(REPOSITORY) -l $(bindir) -V $(VERSION) \
+		-t $$file ; \
+        done
+	for file in $(libexec_PROGRAMS) ; do \
+          $(XTC)/bin/xtc-register -r $(REPOSITORY) -l $(libexecdir) -V $(VERSION) \
+		-t $$file ; \
+        done
+
+###########################################################
