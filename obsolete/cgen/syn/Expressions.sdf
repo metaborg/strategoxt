@@ -1,0 +1,126 @@
+module Expressions
+exports
+  context-free syntax
+    INTEGERconstant   -> Constant {cons("IntConst")}
+    FLOATINGconstant  -> Constant {cons("FloatConst")}
+    OCTALconstant     -> Constant {cons("OctConst")}
+    HEXconstant       -> Constant {cons("HexConst")}
+    CHARACTERconstant -> Constant {cons("CharConst")}
+
+  context-free syntax
+    STRINGliteral+ -> StringLiteralList {cons("StringLit")}
+
+  context-free syntax
+    IDENTIFIER              -> PrimaryExpression
+    Constant                -> PrimaryExpression
+    StringLiteralList       -> PrimaryExpression
+    "(" CommaExpression ")" -> PrimaryExpression {bracket}
+ 
+  context-free syntax
+    PrimaryExpression                                -> PostfixExpression
+    PostfixExpression "[" CommaExpression "]"        -> PostfixExpression {cons("ArrayIndex")}
+    PostfixExpression "(" {AssignmentExpression ","}* ")" -> PostfixExpression {cons("FunCall")}
+    PostfixExpression "." MemberName                 -> PostfixExpression {cons("Field")}
+    PostfixExpression "->" MemberName                -> PostfixExpression {cons("DerefMember")}
+    PostfixExpression "++"                           -> PostfixExpression {cons("PostIncr")}
+    PostfixExpression "--"                           -> PostfixExpression {cons("PostDecr")}
+
+  context-free syntax
+    IDENTIFIER  -> MemberName
+    TypedefName -> MemberName
+
+  context-free syntax
+    PostfixExpression         -> UnaryExpression
+    "++" UnaryExpression      -> UnaryExpression {cons("PreIncr")}
+    "--" UnaryExpression      -> UnaryExpression {cons("PreDecr")}
+    "sizeof" UnaryExpression  -> UnaryExpression {cons("SizeofExp")}
+    "sizeof" "(" TypeName ")" -> UnaryExpression {cons("SizeofType")}
+    "&" CastExpression        -> UnaryExpression {cons("Address")}
+    "*" CastExpression        -> UnaryExpression {cons("Deref")}
+    "+" CastExpression        -> UnaryExpression {cons("Positive")}
+    "-" CastExpression        -> UnaryExpression {cons("Negative")}
+    "~" CastExpression        -> UnaryExpression {cons("Tilde")}
+    "!" CastExpression        -> UnaryExpression {cons("Negation")}
+
+  context-free syntax
+    UnaryExpression                 -> CastExpression
+    "(" TypeName ")" CastExpression -> CastExpression {cons("TypeCast")}
+
+  context-free syntax
+    CastExpression                              -> MultiplicativeExpression
+    MultiplicativeExpression "*" CastExpression -> MultiplicativeExpression {cons("Mul")}
+    MultiplicativeExpression "/" CastExpression -> MultiplicativeExpression {cons("Div")}
+    MultiplicativeExpression "%" CastExpression -> MultiplicativeExpression {cons("Mod")}
+
+  context-free syntax
+    MultiplicativeExpression                        -> AdditiveExpression
+    AdditiveExpression "+" MultiplicativeExpression -> AdditiveExpression {cons("Add")}
+    AdditiveExpression "-" MultiplicativeExpression -> AdditiveExpression {cons("Subt")}
+
+  context-free syntax
+    AdditiveExpression                      -> ShiftExpression
+    ShiftExpression "<<" AdditiveExpression -> ShiftExpression {cons("ShiftLeft")}
+    ShiftExpression ">>" AdditiveExpression -> ShiftExpression {cons("ShiftRight")}
+
+  context-free syntax
+    ShiftExpression                           -> RelationalExpression
+    RelationalExpression "<" ShiftExpression  -> RelationalExpression {cons("Lt")}
+    RelationalExpression ">" ShiftExpression  -> RelationalExpression {cons("Gt")}
+    RelationalExpression "<=" ShiftExpression -> RelationalExpression {cons("Le")}
+    RelationalExpression ">=" ShiftExpression -> RelationalExpression {cons("Ge")}
+
+  context-free syntax
+    RelationalExpression                         -> EqualityExpression
+    EqualityExpression "==" RelationalExpression -> EqualityExpression {cons("Equal")}
+    EqualityExpression "!=" RelationalExpression -> EqualityExpression {cons("NotEqual")}
+
+  context-free syntax
+    EqualityExpression                   -> ANDexpression
+    EqualityExpression "&" ANDexpression -> ANDexpression {cons("And")}
+
+  context-free syntax
+    ANDexpression                           -> ExclusiveORExpression
+    ANDexpression "^" ExclusiveORExpression -> ExclusiveORExpression {cons("ExOr")}
+
+  context-free syntax
+    ExclusiveORExpression                           -> InclusiveORExpression
+    ExclusiveORExpression "|" InclusiveORExpression -> InclusiveORExpression {cons("IncOr")}
+
+  context-free syntax
+    InclusiveORExpression                           -> LogicalANDExpression
+    LogicalANDExpression "&&" InclusiveORExpression -> LogicalANDExpression {cons("LAnd")}
+
+  context-free syntax
+    LogicalANDExpression                          -> LogicalORExpression
+    LogicalORExpression "||" LogicalANDExpression -> LogicalORExpression {cons("LOr")}
+
+  context-free syntax
+    LogicalORExpression                                               -> ConditionalExpression
+    LogicalORExpression "?" CommaExpression ":" ConditionalExpression -> ConditionalExpression {cons("IfExp")}
+
+  context-free syntax
+    ConditionalExpression                                   -> AssignmentExpression
+    UnaryExpression AssignmentOperator AssignmentExpression -> AssignmentExpression {cons("Assign")}
+
+  context-free syntax
+    "="   -> AssignmentOperator {cons("AssignEq")}
+    "*="  -> AssignmentOperator {cons("AssignMul")}
+    "/="  -> AssignmentOperator {cons("AssignDiv")}
+    "%="  -> AssignmentOperator {cons("AssignMod")}
+    "+="  -> AssignmentOperator {cons("AssignPlus")}
+    "-="  -> AssignmentOperator {cons("AssignMin")}
+    "<<=" -> AssignmentOperator {cons("AssignSL")}
+    ">>=" -> AssignmentOperator {cons("AssignSR")}
+    "&="  -> AssignmentOperator {cons("AssignAnd")}
+    "^="  -> AssignmentOperator {cons("AssignExp")}
+    "|="  -> AssignmentOperator {cons("AssignOr")}
+
+  context-free syntax
+    AssignmentExpression                     -> CommaExpression
+    AssignmentExpression "," CommaExpression -> CommaExpression    {cons("Comma")}
+                                             -> CommaExpressionOpt {cons("EmptyExp")}
+    CommaExpression                          -> CommaExpressionOpt
+
+  context-free syntax
+    ConditionalExpression -> ConstantExpression
+

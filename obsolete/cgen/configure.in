@@ -1,0 +1,62 @@
+# Copyright (C) 2001 Eelco Visser <visser@acm.org>
+# 
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+AC_INIT(sig/C.r)
+AM_INIT_AUTOMAKE(cgen,0.1)
+
+AC_ARG_WITH(xt, [  --with-xt            Specify location of xt library, default: \$prefix], XT=$withval, XT="$prefix")
+AC_ARG_WITH(aterm, [  --with-aterm            Specify location of aterm library, default: \$XT], ATERM=$withval, ATERM="$XT")
+AC_ARG_WITH(release, [  --with-release            Specify location of releases, default: \$XT], RELEASE=$withval, RELEASE="$prefix")
+AC_ARG_WITH(gpp, [  --with-gpp            Specify location of gpp, default: \$XT], GPP=$withval, GPP="$XT")
+AC_ARG_WITH(stratego, [  --with-stratego            Specify location of stratego, default: \$XT], STRATEGO=$withval, STRATEGO="$XT")
+AC_ARG_WITH(stratego-rts, [  --with-stratego-rts            Specify location of stratego run-time system, default: \$XT], STRATEGORTS=$withval, STRATEGORTS="$XT")
+
+AC_REVISION($Id: configure.in,v 1.1 2001/08/21 22:10:32 visser Exp $)
+
+AC_PROG_CC
+AC_PROG_RANLIB
+AC_PROG_YACC
+AM_PROG_LEX
+AC_PROG_INSTALL
+
+TOP_SRCDIR=`pwd`
+AC_SUBST(TOP_SRCDIR)
+
+changequote(,)dnl
+case $VERSION in
+ [0-9]*.[0-9]*[a-z])  DIST_ALPHA="README-alpha";;
+ [0-9]*.[0-9]*.[0-9]*) DIST_ALPHA="README-alpha";;
+ *) DIST_ALPHA=;;
+esac
+changequote([, ])dnl
+AC_SUBST(DIST_ALPHA)
+
+AC_SUBST(ATERM)
+AC_SUBST(XT)
+AC_SUBST(GPP)
+AC_SUBST(RELEASE)
+AC_SUBST(STRATEGO)
+AC_SUBST(STRATEGORTS)
+
+AC_OUTPUT( \
+	Makefile \
+	README \
+	pp/Makefile \
+	sig/Makefile \
+	syn/Makefile \
+	data/Makefile \
+)

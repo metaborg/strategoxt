@@ -1,0 +1,27 @@
+module Constants
+exports
+  lexical syntax
+    [L]? "\"" StringChar* "\"" -> STRINGliteral
+    ~[\\\"\n]                  -> StringChar
+    [\\] [ntvbrfa\\\?\"]       -> StringChar
+    [\\] [x] [0-9A-E] [0-9A-E] -> StringChar
+    Octal                      -> StringChar
+    [\\] [0-7] [0-7]? [0-7]?   -> Octal
+
+  lexical syntax
+    "." [0-9]+ ( [eE] "-"? [0-9]+ )? [fFlL]?        -> FLOATINGconstant
+    [0-9]+ "." [0-9]* ( [eE] "-"? [0-9]+ )? [fFlL]? -> FLOATINGconstant
+    [0-9]+ [eE] "-"? [0-9]+ [fFlL]?                 -> FLOATINGconstant
+    [0-9]+                                          -> INTEGERconstant
+    [L]? "'" Char "'"                               -> CHARACTERconstant
+    ~[\\\'\n]                                       -> Char
+    [\\] [ntvbrfa\\\?\'\"]                          -> Char
+    Octal                                           -> Char
+    [\\] [x] [0-9A-E] [0-9A-E]                      -> Char
+
+  lexical syntax
+    "0" [xX] [0-9]+ -> HEXconstant
+
+  lexical restrictions
+    INTEGERconstant HEXconstant FLOATINGconstant -/- [0-9]
+

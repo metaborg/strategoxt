@@ -1,0 +1,3 @@
+ATerm main(void)
+{
+}

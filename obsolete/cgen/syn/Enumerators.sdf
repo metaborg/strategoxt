@@ -1,0 +1,12 @@
+module Enumerators
+exports
+  context-free syntax
+    "enum" IdentifierOrTypedefName? "{" {Enumerator ","}+ "}" -> EnumSpecifier {cons("Enum")}
+    "enum" IdentifierOrTypedefName                            -> EnumSpecifier {cons("EnumId")}
+
+  context-free syntax
+    IdentifierOrTypedefName EnumeratorValue? -> Enumerator {cons("Enumerator")}
+
+  context-free syntax
+    "=" ConstantExpression -> EnumeratorValue {cons("EnumVal")}
+

@@ -1,0 +1,7 @@
+2001-09-17  Eelco Visser  <visser@acm.org>
+
+	* CGEN is a package with utitilities supporting the generation of
+	C source code. The package contains and SDF2 definition for C
+	(beware ambiguities), a Stratego signature generated from the
+	syntax definition, a pretty-print table for use with ast2abox.
+	

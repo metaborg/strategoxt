@@ -1,0 +1,687 @@
+definition
+
+module Main
+imports C
+
+module C
+imports Lexical Generated Preprocessor Operators Keywords Identifiers Constants
+
+module Preprocessor
+exports
+  lexical syntax
+    ~[\ \t\n\/]                       -> TokenChar
+    [\/]                              -> Slash
+    Slash                             -> TokenChar
+    TokenChar+                        -> Token
+    [\ \t] | ( [\\] [\n] ) | Comment+ -> TokWS
+    [\ \t] | Comment*                 -> WS
+    {Token TokWS}+                    -> TokenSeq
+    ~[\"\ \t\n\>]+                    -> FileName
+
+  lexical restrictions
+    Slash    -/- [\*]
+    Token    -/- ~[\ \t\n\/]
+    TokenSeq -/- ~[\n]
+    WS       -/- [\ \t]
+
+  lexical syntax
+    "#" WS "define" WS IDENTIFIER WS ( "(" WS {( IDENTIFIER WS ) ( "," WS )}* ")" WS )? TokenSeq WS [\n] -> ControlLine
+    "#" WS "undef" WS IDENTIFIER WS [\n]                                                                 -> ControlLine
+    "#" WS "include" WS "<" FileName ">" WS [\n]                                                         -> ControlLine
+    "#" WS "include" WS "\"" FileName "\"" WS [\n]                                                       -> ControlLine
+    "#" WS "include" WS TokenSeq WS [\n]                                                                 -> ControlLine
+    "#" WS "line" WS Constant ( "\"" WS FileName WS "\"" )? WS [\n]                                      -> ControlLine
+    "#" WS "error" WS TokenSeq? WS [\n]                                                                  -> ControlLine
+    "#" WS "pragma" WS TokenSeq? WS [\n]                                                                 -> ControlLine
+    "#" WS "if" WS ConstantExpression WS [\n]                                                            -> IfLine
+    "#" WS "ifdef" WS IDENTIFIER WS [\n]                                                                 -> IfLine
+    "#" WS "ifndef" WS IDENTIFIER WS [\n]                                                                -> IfLine
+    "#" WS "elif" WS ConstantExpression WS [\n]                                                          -> ElifLine
+    "#" WS "else" WS [\n]                                                                                -> ElseLine
+
+  context-free syntax
+    ControlLine -> ExternalDefinition {cons("ControlLine")}
+    ControlLine -> MemberDeclaration  {cons("ControlLine1")}
+    IfLine ExternalDefinition* 
+      ( ElifLine ExternalDefinition* )* 
+      ( ElseLine ExternalDefinition* )? 
+    "#" "endif" 			-> ExternalDefinition {cons("IfPP")}
+
+module Lexical
+exports
+  lexical syntax
+    [\ \t\n]                    -> LAYOUT
+    "/*" ~[\*] | Asterisk* "*/" -> Comment
+    Comment                     -> LAYOUT
+    [\*]                        -> Asterisk
+    "//" ~[\n]* [\n]            -> Comment
+
+  lexical restrictions
+    Asterisk -/- [\/]
+
+  context-free restrictions
+    LAYOUT? -/- [\ \t\n]
+
+module Keywords
+exports
+  context-free syntax
+    "auto"     -> AUTO     {cons("auto")}
+    "double"   -> DOUBLE   {cons("double")}
+    "int"      -> INT      {cons("int")}
+    "struct"   -> STRUCT   {cons("struct")}
+    "break"    -> BREAK    {cons("break")}
+    "else"     -> ELSE     {cons("else")}
+    "long"     -> LONG     {cons("long")}
+    "switch"   -> SWITCH   {cons("switch")}
+    "case"     -> CASE     {cons("case")}
+    "enum"     -> ENUM     {cons("enum")}
+    "register" -> REGISTER {cons("register")}
+    "typedef"  -> TYPEDEF  {cons("typedef")}
+    "char"     -> CHAR     {cons("char")}
+    "extern"   -> EXTERN   {cons("extern")}
+    "return"   -> RETURN   {cons("return")}
+    "exit"     -> RETURN   {cons("exit")}
+    "union"    -> UNION    {cons("union")}
+    "const"    -> CONST    {cons("const")}
+    "float"    -> FLOAT    {cons("float")}
+    "short"    -> SHORT    {cons("short")}
+    "unsigned" -> UNSIGNED {cons("unsigned")}
+    "continue" -> CONTINUE {cons("continue")}
+    "for"      -> FOR      {cons("for")}
+    "signed"   -> SIGNED   {cons("signed")}
+    "void"     -> VOID     {cons("void")}
+    "default"  -> DEFAULT  {cons("default")}
+    "goto"     -> GOTO     {cons("goto")}
+    "sizeof"   -> SIZEOF   {cons("sizeof")}
+    "volatile" -> VOLATILE {cons("volatile")}
+    "do"       -> DO       {cons("do")}
+    "if"       -> IF       {cons("if")}
+    "static"   -> STATIC   {cons("static")}
+    "while"    -> WHILE    {cons("while")}
+
+  context-free syntax
+    "auto"     -> IDENTIFIER {reject}
+    "double"   -> IDENTIFIER {reject}
+    "int"      -> IDENTIFIER {reject}
+    "struct"   -> IDENTIFIER {reject}
+    "break"    -> IDENTIFIER {reject}
+    "else"     -> IDENTIFIER {reject}
+    "long"     -> IDENTIFIER {reject}
+    "switch"   -> IDENTIFIER {reject}
+    "case"     -> IDENTIFIER {reject}
+    "enum"     -> IDENTIFIER {reject}
+    "register" -> IDENTIFIER {reject}
+    "typedef"  -> IDENTIFIER {reject}
+    "char"     -> IDENTIFIER {reject}
+    "extern"   -> IDENTIFIER {reject}
+    "return"   -> IDENTIFIER {reject}
+    "exit"     -> IDENTIFIER {reject}
+    "union"    -> IDENTIFIER {reject}
+    "const"    -> IDENTIFIER {reject}
+    "float"    -> IDENTIFIER {reject}
+    "short"    -> IDENTIFIER {reject}
+    "unsigned" -> IDENTIFIER {reject}
+    "continue" -> IDENTIFIER {reject}
+    "for"      -> IDENTIFIER {reject}
+    "signed"   -> IDENTIFIER {reject}
+    "void"     -> IDENTIFIER {reject}
+    "default"  -> IDENTIFIER {reject}
+    "goto"     -> IDENTIFIER {reject}
+    "sizeof"   -> IDENTIFIER {reject}
+    "volatile" -> IDENTIFIER {reject}
+    "do"       -> IDENTIFIER {reject}
+    "if"       -> IDENTIFIER {reject}
+    "static"   -> IDENTIFIER {reject}
+    "while"    -> IDENTIFIER {reject}
+
+module Identifiers
+exports
+  lexical syntax
+    [a-zA-Z\_] [a-zA-Z\_0-9]* -> IDENTIFIER
+
+  lexical restrictions
+    IDENTIFIER -/- [a-zA-Z\_0-9]
+
+  context-free syntax
+    IDENTIFIER -> TypedefName {cons("IDENTIFIER")}
+
+module Constants
+exports
+  lexical syntax
+    [L]? "\"" StringChar* "\"" -> STRINGliteral
+    ~[\\\"\n]                  -> StringChar
+    [\\] [ntvbrfa\\\?\"]       -> StringChar
+    [\\] [x] [0-9A-E] [0-9A-E] -> StringChar
+    Octal                      -> StringChar
+    [\\] [0-7] [0-7]? [0-7]?   -> Octal
+
+  lexical syntax
+    "." [0-9]+ ( [eE] "-"? [0-9]+ )? [fFlL]?        -> FLOATINGconstant
+    [0-9]+ "." [0-9]* ( [eE] "-"? [0-9]+ )? [fFlL]? -> FLOATINGconstant
+    [0-9]+ [eE] "-"? [0-9]+ [fFlL]?                 -> FLOATINGconstant
+    [0-9]+                                          -> INTEGERconstant
+    [L]? "'" Char "'"                               -> CHARACTERconstant
+    ~[\\\'\n]                                       -> Char
+    [\\] [ntvbrfa\\\?\'\"]                          -> Char
+    Octal                                           -> Char
+    [\\] [x] [0-9A-E] [0-9A-E]                      -> Char
+
+  lexical syntax
+    "0" [xX] [0-9]+ -> HEXconstant
+
+  lexical restrictions
+    INTEGERconstant HEXconstant FLOATINGconstant -/- [0-9]
+
+module Operators
+exports
+  lexical syntax
+    "->"  -> ARROW
+    "++"  -> ICR
+    "--"  -> DECR
+    "<<"  -> LS
+    ">>"  -> RS
+    "<="  -> LE
+    ">="  -> GE
+    "=="  -> EQ
+    "!="  -> NE
+    "&&"  -> ANDAND
+    "||"  -> OROR
+    "..." -> ELLIPSIS
+    "*="  -> MULTassign
+    "/="  -> DIVassign
+    "%="  -> MODassign
+    "+="  -> PLUSassign
+    "-="  -> MINUSassign
+    "<<=" -> LSassign
+    ">>=" -> RSassign
+    "&="  -> ANDassign
+    "^="  -> ERassign
+    "|="  -> ORassign
+
+module Generated
+exports
+  sorts TranslationUnit
+
+  context-free syntax
+    INTEGERconstant   -> Constant {cons("INTEGERconstant")}
+    FLOATINGconstant  -> Constant {cons("FLOATINGconstant")}
+    OCTALconstant     -> Constant {cons("OCTALconstant")}
+    HEXconstant       -> Constant {cons("HEXconstant")}
+    CHARACTERconstant -> Constant {cons("CHARACTERconstant")}
+
+  context-free syntax
+    STRINGliteral+ -> StringLiteralList {cons("STRINGliteral-p")}
+
+  context-free syntax
+    IDENTIFIER              -> PrimaryExpression {cons("IDENTIFIER1")}
+    Constant                -> PrimaryExpression {cons("Constant")}
+    StringLiteralList       -> PrimaryExpression {cons("StringLiteralList")}
+    "(" CommaExpression ")" -> PrimaryExpression {cons("CommaExpression")}
+
+  context-free syntax
+    PrimaryExpression                                -> PostfixExpression {cons("PrimaryExpression")}
+    PostfixExpression "[" CommaExpression "]"        -> PostfixExpression {cons("PostfixExpression-CommaExpression")}
+    PostfixExpression "(" ")"                        -> PostfixExpression {cons("PostfixExpression")}
+    PostfixExpression "(" ArgumentExpressionList ")" -> PostfixExpression {cons("PostfixExpression-ArgumentExpressionList")}
+    PostfixExpression "." MemberName                 -> PostfixExpression {cons("PostfixExpression-MemberName")}
+    PostfixExpression ARROW MemberName               -> PostfixExpression {cons("PostfixExpression-ARROW-MemberName")}
+    PostfixExpression ICR                            -> PostfixExpression {cons("PostfixExpression-ICR")}
+    PostfixExpression DECR                           -> PostfixExpression {cons("PostfixExpression-DECR")}
+
+  context-free syntax
+    IDENTIFIER  -> MemberName {cons("IDENTIFIER2")}
+    TypedefName -> MemberName {cons("TypedefName")}
+
+  context-free syntax
+    {AssignmentExpression ","}+ -> ArgumentExpressionList {cons("comma")}
+
+  context-free syntax
+    PostfixExpression            -> UnaryExpression {cons("PostfixExpression1")}
+    ICR UnaryExpression          -> UnaryExpression {cons("ICR-UnaryExpression")}
+    DECR UnaryExpression         -> UnaryExpression {cons("DECR-UnaryExpression")}
+    UnaryOperator CastExpression -> UnaryExpression {cons("UnaryOperator-CastExpression")}
+    SIZEOF UnaryExpression       -> UnaryExpression {cons("SIZEOF-UnaryExpression")}
+    SIZEOF "(" TypeName ")"      -> UnaryExpression {cons("SIZEOF-TypeName")}
+
+  context-free syntax
+    "&" -> UnaryOperator {cons("UnaryOperator-dunno-a_0")}
+    "*" -> UnaryOperator {cons("UnaryOperator-dunno-b_0")}
+    "+" -> UnaryOperator {cons("plus")}
+    "-" -> UnaryOperator {cons("minus")}
+    "~" -> UnaryOperator {cons("UnaryOperator-dunno-c_0")}
+    "!" -> UnaryOperator {cons("UnaryOperator-dunno-d_0")}
+
+  context-free syntax
+    UnaryExpression                 -> CastExpression {cons("UnaryExpression")}
+    "(" TypeName ")" CastExpression -> CastExpression {cons("TypeName-CastExpression")}
+
+  context-free syntax
+    CastExpression                              -> MultiplicativeExpression {cons("CastExpression")}
+    MultiplicativeExpression "*" CastExpression -> MultiplicativeExpression {cons("MultiplicativeExpression-CastExpression")}
+    MultiplicativeExpression "/" CastExpression -> MultiplicativeExpression {cons("MultiplicativeExpression-CastExpression1")}
+    MultiplicativeExpression "%" CastExpression -> MultiplicativeExpression {cons("MultiplicativeExpression-CastExpression2")}
+
+  context-free syntax
+    MultiplicativeExpression                        -> AdditiveExpression {cons("MultiplicativeExpression")}
+    AdditiveExpression "+" MultiplicativeExpression -> AdditiveExpression {cons("plus1")}
+    AdditiveExpression "-" MultiplicativeExpression -> AdditiveExpression {cons("minus1")}
+
+  context-free syntax
+    AdditiveExpression                    -> ShiftExpression {cons("AdditiveExpression")}
+    ShiftExpression LS AdditiveExpression -> ShiftExpression {cons("ShiftExpression-LS-AdditiveExpression")}
+    ShiftExpression RS AdditiveExpression -> ShiftExpression {cons("ShiftExpression-RS-AdditiveExpression")}
+
+  context-free syntax
+    ShiftExpression                          -> RelationalExpression {cons("ShiftExpression")}
+    RelationalExpression "<" ShiftExpression -> RelationalExpression {cons("leftangle")}
+    RelationalExpression ">" ShiftExpression -> RelationalExpression {cons("rightangle")}
+    RelationalExpression LE ShiftExpression  -> RelationalExpression {cons("RelationalExpression-LE-ShiftExpression")}
+    RelationalExpression GE ShiftExpression  -> RelationalExpression {cons("RelationalExpression-GE-ShiftExpression")}
+
+  context-free syntax
+    RelationalExpression                       -> EqualityExpression {cons("RelationalExpression")}
+    EqualityExpression EQ RelationalExpression -> EqualityExpression {cons("EqualityExpression-EQ-RelationalExpression")}
+    EqualityExpression NE RelationalExpression -> EqualityExpression {cons("EqualityExpression-NE-RelationalExpression")}
+
+  context-free syntax
+    {EqualityExpression "&"}+ -> ANDexpression {cons("EqualityExpression-p")}
+
+  context-free syntax
+    {ANDexpression "^"}+ -> ExclusiveORExpression {cons("ANDexpression-p")}
+
+  context-free syntax
+    {ExclusiveORExpression "|"}+ -> InclusiveORExpression {cons("bar")}
+
+  context-free syntax
+    InclusiveORExpression                             -> LogicalANDExpression {cons("InclusiveORExpression")}
+    LogicalANDExpression ANDAND InclusiveORExpression -> LogicalANDExpression {cons("LogicalANDExpression-ANDAND-InclusiveORExpression")}
+
+  context-free syntax
+    LogicalANDExpression                          -> LogicalORExpression {cons("LogicalANDExpression")}
+    LogicalORExpression OROR LogicalANDExpression -> LogicalORExpression {cons("LogicalORExpression-OROR-LogicalANDExpression")}
+
+  context-free syntax
+    LogicalORExpression                                               -> ConditionalExpression {cons("LogicalORExpression")}
+    LogicalORExpression "?" CommaExpression ":" ConditionalExpression -> ConditionalExpression {cons("colon")}
+
+  context-free syntax
+    ConditionalExpression                                   -> AssignmentExpression {cons("ConditionalExpression")}
+    UnaryExpression AssignmentOperator AssignmentExpression -> AssignmentExpression {cons("UnaryExpression-AssignmentOperator-AssignmentExpression")}
+
+  context-free syntax
+    "="         -> AssignmentOperator {cons("equal")}
+    MULTassign  -> AssignmentOperator {cons("MULTassign")}
+    DIVassign   -> AssignmentOperator {cons("DIVassign")}
+    MODassign   -> AssignmentOperator {cons("MODassign")}
+    PLUSassign  -> AssignmentOperator {cons("PLUSassign")}
+    MINUSassign -> AssignmentOperator {cons("MINUSassign")}
+    LSassign    -> AssignmentOperator {cons("LSassign")}
+    RSassign    -> AssignmentOperator {cons("RSassign")}
+    ANDassign   -> AssignmentOperator {cons("ANDassign")}
+    ERassign    -> AssignmentOperator {cons("ERassign")}
+    ORassign    -> AssignmentOperator {cons("ORassign")}
+
+  context-free syntax
+    {AssignmentExpression ","}+ -> CommaExpression {cons("comma1")}
+
+  context-free syntax
+    ConditionalExpression -> ConstantExpression {cons("ConditionalExpression1")}
+
+  context-free syntax
+    CommaExpression? -> CommaExpressionOpt {cons("CommaExpression-opt")}
+
+  context-free syntax
+    SueDeclarationSpecifier ";" -> Declaration {cons("semicolon")}
+    SueTypeSpecifier ";"        -> Declaration {cons("semicolon1")}
+    DeclaringList ";"           -> Declaration {cons("semicolon2")}
+    DefaultDeclaringList ";"    -> Declaration {cons("semicolon3")}
+
+  context-free syntax
+    DeclarationQualifierList IdentifierDeclarator InitializerOpt -> DefaultDeclaringList {cons("DeclarationQualifierList-IdentifierDeclarator-InitializerOpt")}
+    TypeQualifierList IdentifierDeclarator InitializerOpt        -> DefaultDeclaringList {cons("TypeQualifierList-IdentifierDeclarator-InitializerOpt")}
+    DefaultDeclaringList "," IdentifierDeclarator InitializerOpt -> DefaultDeclaringList {cons("comma2")}
+
+  context-free syntax
+    DeclarationSpecifier Declarator InitializerOpt -> DeclaringList {cons("DeclarationSpecifier-Declarator-InitializerOpt")}
+    TypeSpecifier Declarator InitializerOpt        -> DeclaringList {cons("TypeSpecifier-Declarator-InitializerOpt")}
+    DeclaringList "," Declarator InitializerOpt    -> DeclaringList {cons("comma3")}
+
+  context-free syntax
+    BasicDeclarationSpecifier   -> DeclarationSpecifier {cons("BasicDeclarationSpecifier")}
+    SueDeclarationSpecifier     -> DeclarationSpecifier {cons("SueDeclarationSpecifier")}
+    TypedefDeclarationSpecifier -> DeclarationSpecifier {cons("TypedefDeclarationSpecifier")}
+
+  context-free syntax
+    BasicTypeSpecifier   -> TypeSpecifier {cons("BasicTypeSpecifier")}
+    SueTypeSpecifier     -> TypeSpecifier {cons("SueTypeSpecifier")}
+    TypedefTypeSpecifier -> TypeSpecifier {cons("TypedefTypeSpecifier")}
+
+  context-free syntax
+    StorageClass                                  -> DeclarationQualifierList {cons("StorageClass")}
+    TypeQualifierList StorageClass                -> DeclarationQualifierList {cons("TypeQualifierList-StorageClass")}
+    DeclarationQualifierList DeclarationQualifier -> DeclarationQualifierList {cons("DeclarationQualifierList-DeclarationQualifier")}
+
+  context-free syntax
+    TypeQualifier+ -> TypeQualifierList {cons("TypeQualifier-p")}
+
+  context-free syntax
+    StorageClass  -> DeclarationQualifier {cons("StorageClass1")}
+    TypeQualifier -> DeclarationQualifier {cons("TypeQualifier")}
+
+  context-free syntax
+    CONST    -> TypeQualifier {cons("CONST")}
+    VOLATILE -> TypeQualifier {cons("VOLATILE")}
+
+  context-free syntax
+    DeclarationQualifierList BasicTypeName         -> BasicDeclarationSpecifier {cons("DeclarationQualifierList-BasicTypeName")}
+    BasicTypeSpecifier StorageClass                -> BasicDeclarationSpecifier {cons("BasicTypeSpecifier-StorageClass")}
+    BasicDeclarationSpecifier DeclarationQualifier -> BasicDeclarationSpecifier {cons("BasicDeclarationSpecifier-DeclarationQualifier")}
+    BasicDeclarationSpecifier BasicTypeName        -> BasicDeclarationSpecifier {cons("BasicDeclarationSpecifier-BasicTypeName")}
+
+  context-free syntax
+    BasicTypeName                    -> BasicTypeSpecifier {cons("BasicTypeName")}
+    TypeQualifierList BasicTypeName  -> BasicTypeSpecifier {cons("TypeQualifierList-BasicTypeName")}
+    BasicTypeSpecifier TypeQualifier -> BasicTypeSpecifier {cons("BasicTypeSpecifier-TypeQualifier")}
+    BasicTypeSpecifier BasicTypeName -> BasicTypeSpecifier {cons("BasicTypeSpecifier-BasicTypeName")}
+
+  context-free syntax
+    DeclarationQualifierList ElaboratedTypeName  -> SueDeclarationSpecifier {cons("DeclarationQualifierList-ElaboratedTypeName")}
+    SueTypeSpecifier StorageClass                -> SueDeclarationSpecifier {cons("SueTypeSpecifier-StorageClass")}
+    SueDeclarationSpecifier DeclarationQualifier -> SueDeclarationSpecifier {cons("SueDeclarationSpecifier-DeclarationQualifier")}
+
+  context-free syntax
+    ElaboratedTypeName                   -> SueTypeSpecifier {cons("ElaboratedTypeName")}
+    TypeQualifierList ElaboratedTypeName -> SueTypeSpecifier {cons("TypeQualifierList-ElaboratedTypeName")}
+    SueTypeSpecifier TypeQualifier       -> SueTypeSpecifier {cons("SueTypeSpecifier-TypeQualifier")}
+
+  context-free syntax
+    TypedefTypeSpecifier StorageClass                -> TypedefDeclarationSpecifier {cons("TypedefTypeSpecifier-StorageClass")}
+    DeclarationQualifierList TypedefName             -> TypedefDeclarationSpecifier {cons("DeclarationQualifierList-TypedefName")}
+    TypedefDeclarationSpecifier DeclarationQualifier -> TypedefDeclarationSpecifier {cons("TypedefDeclarationSpecifier-DeclarationQualifier")}
+
+  context-free syntax
+    TypedefName                        -> TypedefTypeSpecifier {cons("TypedefName1")}
+    TypeQualifierList TypedefName      -> TypedefTypeSpecifier {cons("TypeQualifierList-TypedefName")}
+    TypedefTypeSpecifier TypeQualifier -> TypedefTypeSpecifier {cons("TypedefTypeSpecifier-TypeQualifier")}
+
+  context-free syntax
+    TYPEDEF  -> StorageClass {cons("TYPEDEF")}
+    EXTERN   -> StorageClass {cons("EXTERN")}
+    STATIC   -> StorageClass {cons("STATIC")}
+    "auto"     -> StorageClass {cons("AUTO")}
+    REGISTER -> StorageClass {cons("REGISTER")}
+
+  context-free syntax
+    INT      -> BasicTypeName {cons("INT")}
+    CHAR     -> BasicTypeName {cons("CHAR")}
+    SHORT    -> BasicTypeName {cons("SHORT")}
+    LONG     -> BasicTypeName {cons("LONG")}
+    FLOAT    -> BasicTypeName {cons("FLOAT")}
+    DOUBLE   -> BasicTypeName {cons("DOUBLE")}
+    SIGNED   -> BasicTypeName {cons("SIGNED")}
+    UNSIGNED -> BasicTypeName {cons("UNSIGNED")}
+    VOID     -> BasicTypeName {cons("VOID")}
+
+  context-free syntax
+    StructOrUnionSpecifier -> ElaboratedTypeName {cons("StructOrUnionSpecifier")}
+    EnumSpecifier          -> ElaboratedTypeName {cons("EnumSpecifier")}
+
+  context-free syntax
+    StructOrUnion "{" MemberDeclarationList "}"                         -> StructOrUnionSpecifier {cons("StructOrUnion-MemberDeclarationList")}
+    StructOrUnion IdentifierOrTypedefName "{" MemberDeclarationList "}" -> StructOrUnionSpecifier {cons("StructOrUnion-IdentifierOrTypedefName-MemberDeclarationList")}
+    StructOrUnion IdentifierOrTypedefName                               -> StructOrUnionSpecifier {cons("StructOrUnion-IdentifierOrTypedefName")}
+
+  context-free syntax
+    STRUCT -> StructOrUnion {cons("STRUCT")}
+    UNION  -> StructOrUnion {cons("UNION")}
+
+  context-free syntax
+    MemberDeclaration+ -> MemberDeclarationList {cons("MemberDeclaration-p")}
+
+  context-free syntax
+    MemberDeclaringList ";"        -> MemberDeclaration {cons("semicolon4")}
+    MemberDefaultDeclaringList ";" -> MemberDeclaration {cons("semicolon5")}
+
+  context-free syntax
+    TypeQualifierList MemberIdentifierDeclarator              -> MemberDefaultDeclaringList {cons("TypeQualifierList-MemberIdentifierDeclarator")}
+    MemberDefaultDeclaringList "," MemberIdentifierDeclarator -> MemberDefaultDeclaringList {cons("comma4")}
+
+  context-free syntax
+    TypeSpecifier MemberDeclarator           -> MemberDeclaringList {cons("TypeSpecifier-MemberDeclarator")}
+    MemberDeclaringList "," MemberDeclarator -> MemberDeclaringList {cons("comma5")}
+
+  context-free syntax
+    Declarator BitFieldSizeOpt -> MemberDeclarator {cons("Declarator-BitFieldSizeOpt")}
+    BitFieldSize               -> MemberDeclarator {cons("BitFieldSize")}
+
+  context-free syntax
+    IdentifierDeclarator BitFieldSizeOpt -> MemberIdentifierDeclarator {cons("IdentifierDeclarator-BitFieldSizeOpt")}
+    BitFieldSize                         -> MemberIdentifierDeclarator {cons("BitFieldSize1")}
+
+  context-free syntax
+    BitFieldSize? -> BitFieldSizeOpt {cons("BitFieldSize-opt")}
+
+  context-free syntax
+    ":" ConstantExpression -> BitFieldSize {cons("colon1")}
+
+  context-free syntax
+    ENUM "{" EnumeratorList "}"                         -> EnumSpecifier {cons("ENUM-EnumeratorList")}
+    ENUM IdentifierOrTypedefName "{" EnumeratorList "}" -> EnumSpecifier {cons("ENUM-IdentifierOrTypedefName-EnumeratorList")}
+    ENUM IdentifierOrTypedefName                        -> EnumSpecifier {cons("ENUM-IdentifierOrTypedefName")}
+
+  context-free syntax
+    IdentifierOrTypedefName EnumeratorValueOpt                    -> EnumeratorList {cons("IdentifierOrTypedefName-EnumeratorValueOpt")}
+    EnumeratorList "," IdentifierOrTypedefName EnumeratorValueOpt -> EnumeratorList {cons("comma6")}
+
+  context-free syntax
+                           -> EnumeratorValueOpt {cons("EnumeratorValueOpt-empty")}
+    "=" ConstantExpression -> EnumeratorValueOpt {cons("equal1")}
+
+  context-free syntax
+    ParameterList              -> ParameterTypeList {cons("ParameterList")}
+    ParameterList "," ELLIPSIS -> ParameterTypeList {cons("comma7")}
+
+  context-free syntax
+    {ParameterDeclaration ","}+ -> ParameterList {cons("comma8")}
+
+  context-free syntax
+    DeclarationSpecifier                            -> ParameterDeclaration {cons("DeclarationSpecifier")}
+    DeclarationSpecifier AbstractDeclarator         -> ParameterDeclaration {cons("DeclarationSpecifier-AbstractDeclarator")}
+    DeclarationSpecifier IdentifierDeclarator       -> ParameterDeclaration {cons("DeclarationSpecifier-IdentifierDeclarator")}
+    DeclarationSpecifier ParameterTypedefDeclarator -> ParameterDeclaration {cons("DeclarationSpecifier-ParameterTypedefDeclarator")}
+    DeclarationQualifierList                        -> ParameterDeclaration {cons("DeclarationQualifierList")}
+    DeclarationQualifierList AbstractDeclarator     -> ParameterDeclaration {cons("DeclarationQualifierList-AbstractDeclarator")}
+    DeclarationQualifierList IdentifierDeclarator   -> ParameterDeclaration {cons("DeclarationQualifierList-IdentifierDeclarator")}
+    TypeSpecifier                                   -> ParameterDeclaration {cons("TypeSpecifier")}
+    TypeSpecifier AbstractDeclarator                -> ParameterDeclaration {cons("TypeSpecifier-AbstractDeclarator")}
+    TypeSpecifier IdentifierDeclarator              -> ParameterDeclaration {cons("TypeSpecifier-IdentifierDeclarator")}
+    TypeSpecifier ParameterTypedefDeclarator        -> ParameterDeclaration {cons("TypeSpecifier-ParameterTypedefDeclarator")}
+    TypeQualifierList                               -> ParameterDeclaration {cons("TypeQualifierList")}
+    TypeQualifierList AbstractDeclarator            -> ParameterDeclaration {cons("TypeQualifierList-AbstractDeclarator")}
+    TypeQualifierList IdentifierDeclarator          -> ParameterDeclaration {cons("TypeQualifierList-IdentifierDeclarator")}
+
+  context-free syntax
+    {IDENTIFIER ","}+ -> IdentifierList {cons("comma9")}
+
+  context-free syntax
+    IDENTIFIER  -> IdentifierOrTypedefName {cons("IDENTIFIER3")}
+    TypedefName -> IdentifierOrTypedefName {cons("TypedefName2")}
+
+  context-free syntax
+    TypeSpecifier                        -> TypeName {cons("TypeSpecifier1")}
+    TypeSpecifier AbstractDeclarator     -> TypeName {cons("TypeSpecifier-AbstractDeclarator1")}
+    TypeQualifierList                    -> TypeName {cons("TypeQualifierList1")}
+    TypeQualifierList AbstractDeclarator -> TypeName {cons("TypeQualifierList-AbstractDeclarator1")}
+
+  context-free syntax
+                    -> InitializerOpt {cons("InitializerOpt-empty")}
+    "=" Initializer -> InitializerOpt {cons("equal2")}
+
+  context-free syntax
+    "{" InitializerList "}"     -> Initializer {cons("InitializerList")}
+    "{" InitializerList "," "}" -> Initializer {cons("comma10")}
+    AssignmentExpression        -> Initializer {cons("AssignmentExpression")}
+
+  context-free syntax
+    {Initializer ","}+ -> InitializerList {cons("comma11")}
+
+  context-free syntax
+    LabeledStatement    -> Statement {cons("LabeledStatement")}
+    CompoundStatement   -> Statement {cons("CompoundStatement")}
+    ExpressionStatement -> Statement {cons("ExpressionStatement")}
+    SelectionStatement  -> Statement {cons("SelectionStatement")}
+    IterationStatement  -> Statement {cons("IterationStatement")}
+    JumpStatement       -> Statement {cons("JumpStatement")}
+
+  context-free syntax
+    IdentifierOrTypedefName ":" Statement -> LabeledStatement {cons("colon2")}
+    CASE ConstantExpression ":" Statement -> LabeledStatement {cons("colon3")}
+    DEFAULT ":" Statement                 -> LabeledStatement {cons("colon4")}
+
+  context-free syntax
+    "{" "}"                               -> CompoundStatement {cons("CompoundStatement-dunno-d_0")}
+    "{" DeclarationList "}"               -> CompoundStatement {cons("DeclarationList")}
+    "{" StatementList "}"                 -> CompoundStatement {cons("StatementList")}
+    "{" DeclarationList StatementList "}" -> CompoundStatement {cons("DeclarationList-StatementList")}
+
+  context-free syntax
+    Declaration+ -> DeclarationList {cons("Declaration-p")}
+
+  context-free syntax
+    Statement+ -> StatementList {cons("Statement-p")}
+
+  context-free syntax
+    CommaExpressionOpt ";" -> ExpressionStatement {cons("semicolon6")}
+
+  context-free syntax
+    IF "(" CommaExpression ")" Statement                -> SelectionStatement {cons("IF-CommaExpression-Statement")}
+    IF "(" CommaExpression ")" Statement ELSE Statement -> SelectionStatement {cons("IF-CommaExpression-Statement-ELSE-Statement")}
+    SWITCH "(" CommaExpression ")" Statement            -> SelectionStatement {cons("SWITCH-CommaExpression-Statement")}
+
+  context-free syntax
+    WHILE "(" CommaExpression ")" Statement                                                -> IterationStatement {cons("WHILE-CommaExpression-Statement")}
+    DO Statement WHILE "(" CommaExpression ")" ";"                                         -> IterationStatement {cons("semicolon7")}
+    FOR "(" CommaExpressionOpt ";" CommaExpressionOpt ";" CommaExpressionOpt ")" Statement -> IterationStatement {cons("semicolon-semicolon")}
+
+  context-free syntax
+    GOTO IdentifierOrTypedefName ";" -> JumpStatement {cons("semicolon8")}
+    CONTINUE ";"                     -> JumpStatement {cons("semicolon9")}
+    BREAK ";"                        -> JumpStatement {cons("semicolon10")}
+    RETURN CommaExpressionOpt ";"    -> JumpStatement {cons("semicolon11")}
+
+  context-free syntax
+    ExternalDefinition+ -> TranslationUnit {cons("ExternalDefinition-p")}
+
+  context-free syntax
+    FunctionDefinition -> ExternalDefinition {cons("FunctionDefinition")}
+    Declaration        -> ExternalDefinition {cons("Declaration")}
+
+  context-free syntax
+    IdentifierDeclarator CompoundStatement                                           -> FunctionDefinition {cons("IdentifierDeclarator-CompoundStatement")}
+    DeclarationSpecifier IdentifierDeclarator CompoundStatement                      -> FunctionDefinition {cons("DeclarationSpecifier-IdentifierDeclarator-CompoundStatement")}
+    TypeSpecifier IdentifierDeclarator CompoundStatement                             -> FunctionDefinition {cons("TypeSpecifier-IdentifierDeclarator-CompoundStatement")}
+    DeclarationQualifierList IdentifierDeclarator CompoundStatement                  -> FunctionDefinition {cons("DeclarationQualifierList-IdentifierDeclarator-CompoundStatement")}
+    TypeQualifierList IdentifierDeclarator CompoundStatement                         -> FunctionDefinition {cons("TypeQualifierList-IdentifierDeclarator-CompoundStatement")}
+    OldFunctionDeclarator CompoundStatement                                          -> FunctionDefinition {cons("OldFunctionDeclarator-CompoundStatement")}
+    DeclarationSpecifier OldFunctionDeclarator CompoundStatement                     -> FunctionDefinition {cons("DeclarationSpecifier-OldFunctionDeclarator-CompoundStatement")}
+    TypeSpecifier OldFunctionDeclarator CompoundStatement                            -> FunctionDefinition {cons("TypeSpecifier-OldFunctionDeclarator-CompoundStatement")}
+    DeclarationQualifierList OldFunctionDeclarator CompoundStatement                 -> FunctionDefinition {cons("DeclarationQualifierList-OldFunctionDeclarator-CompoundStatement")}
+    TypeQualifierList OldFunctionDeclarator CompoundStatement                        -> FunctionDefinition {cons("TypeQualifierList-OldFunctionDeclarator-CompoundStatement")}
+    OldFunctionDeclarator DeclarationList CompoundStatement                          -> FunctionDefinition {cons("OldFunctionDeclarator-DeclarationList-CompoundStatement")}
+    DeclarationSpecifier OldFunctionDeclarator DeclarationList CompoundStatement     -> FunctionDefinition {cons("DeclarationSpecifier-OldFunctionDeclarator-DeclarationList-CompoundStatement")}
+    TypeSpecifier OldFunctionDeclarator DeclarationList CompoundStatement            -> FunctionDefinition {cons("TypeSpecifier-OldFunctionDeclarator-DeclarationList-CompoundStatement")}
+    DeclarationQualifierList OldFunctionDeclarator DeclarationList CompoundStatement -> FunctionDefinition {cons("DeclarationQualifierList-OldFunctionDeclarator-DeclarationList-CompoundStatement")}
+    TypeQualifierList OldFunctionDeclarator DeclarationList CompoundStatement        -> FunctionDefinition {cons("TypeQualifierList-OldFunctionDeclarator-DeclarationList-CompoundStatement")}
+
+  context-free syntax
+    IdentifierDeclarator -> Declarator {cons("IdentifierDeclarator")}
+    TypedefDeclarator    -> Declarator {cons("TypedefDeclarator")}
+
+  context-free syntax
+    ParenTypedefDeclarator     -> TypedefDeclarator {cons("ParenTypedefDeclarator")}
+    ParameterTypedefDeclarator -> TypedefDeclarator {cons("ParameterTypedefDeclarator")}
+
+  context-free syntax
+    TypedefName                              -> ParameterTypedefDeclarator {cons("TypedefName3")}
+    TypedefName PostfixingAbstractDeclarator -> ParameterTypedefDeclarator {cons("TypedefName-PostfixingAbstractDeclarator")}
+    CleanTypedefDeclarator                   -> ParameterTypedefDeclarator {cons("CleanTypedefDeclarator")}
+
+  context-free syntax
+    CleanPostfixTypedefDeclarator                    -> CleanTypedefDeclarator {cons("CleanPostfixTypedefDeclarator")}
+    "*" ParameterTypedefDeclarator                   -> CleanTypedefDeclarator {cons("ParameterTypedefDeclarator1")}
+    "*" TypeQualifierList ParameterTypedefDeclarator -> CleanTypedefDeclarator {cons("TypeQualifierList-ParameterTypedefDeclarator")}
+
+  context-free syntax
+    "(" CleanTypedefDeclarator ")"                              -> CleanPostfixTypedefDeclarator {cons("CleanTypedefDeclarator1")}
+    "(" CleanTypedefDeclarator ")" PostfixingAbstractDeclarator -> CleanPostfixTypedefDeclarator {cons("CleanTypedefDeclarator-PostfixingAbstractDeclarator")}
+
+  context-free syntax
+    ParenPostfixTypedefDeclarator                              -> ParenTypedefDeclarator {cons("ParenPostfixTypedefDeclarator")}
+    "*" "(" SimpleParenTypedefDeclarator ")"                   -> ParenTypedefDeclarator {cons("SimpleParenTypedefDeclarator")}
+    "*" TypeQualifierList "(" SimpleParenTypedefDeclarator ")" -> ParenTypedefDeclarator {cons("TypeQualifierList-SimpleParenTypedefDeclarator")}
+    "*" ParenTypedefDeclarator                                 -> ParenTypedefDeclarator {cons("ParenTypedefDeclarator1")}
+    "*" TypeQualifierList ParenTypedefDeclarator               -> ParenTypedefDeclarator {cons("TypeQualifierList-ParenTypedefDeclarator")}
+
+  context-free syntax
+    "(" ParenTypedefDeclarator ")"                                    -> ParenPostfixTypedefDeclarator {cons("ParenTypedefDeclarator2")}
+    "(" SimpleParenTypedefDeclarator PostfixingAbstractDeclarator ")" -> ParenPostfixTypedefDeclarator {cons("SimpleParenTypedefDeclarator-PostfixingAbstractDeclarator")}
+    "(" ParenTypedefDeclarator ")" PostfixingAbstractDeclarator       -> ParenPostfixTypedefDeclarator {cons("ParenTypedefDeclarator-PostfixingAbstractDeclarator")}
+
+  context-free syntax
+    TypedefName                          -> SimpleParenTypedefDeclarator {cons("TypedefName4")}
+    "(" SimpleParenTypedefDeclarator ")" -> SimpleParenTypedefDeclarator {cons("SimpleParenTypedefDeclarator1")}
+
+  context-free syntax
+    UnaryIdentifierDeclarator -> IdentifierDeclarator {cons("UnaryIdentifierDeclarator")}
+    ParenIdentifierDeclarator -> IdentifierDeclarator {cons("ParenIdentifierDeclarator")}
+
+  context-free syntax
+    PostfixIdentifierDeclarator                -> UnaryIdentifierDeclarator {cons("PostfixIdentifierDeclarator")}
+    "*" IdentifierDeclarator                   -> UnaryIdentifierDeclarator {cons("IdentifierDeclarator1")}
+    "*" TypeQualifierList IdentifierDeclarator -> UnaryIdentifierDeclarator {cons("TypeQualifierList-IdentifierDeclarator1")}
+
+  context-free syntax
+    ParenIdentifierDeclarator PostfixingAbstractDeclarator         -> PostfixIdentifierDeclarator {cons("ParenIdentifierDeclarator-PostfixingAbstractDeclarator")}
+    "(" UnaryIdentifierDeclarator ")"                              -> PostfixIdentifierDeclarator {cons("UnaryIdentifierDeclarator1")}
+    "(" UnaryIdentifierDeclarator ")" PostfixingAbstractDeclarator -> PostfixIdentifierDeclarator {cons("UnaryIdentifierDeclarator-PostfixingAbstractDeclarator")}
+
+  context-free syntax
+    IDENTIFIER                        -> ParenIdentifierDeclarator {cons("IDENTIFIER4")}
+    "(" ParenIdentifierDeclarator ")" -> ParenIdentifierDeclarator {cons("ParenIdentifierDeclarator1")}
+
+  context-free syntax
+    PostfixOldFunctionDeclarator                -> OldFunctionDeclarator {cons("PostfixOldFunctionDeclarator")}
+    "*" OldFunctionDeclarator                   -> OldFunctionDeclarator {cons("OldFunctionDeclarator")}
+    "*" TypeQualifierList OldFunctionDeclarator -> OldFunctionDeclarator {cons("TypeQualifierList-OldFunctionDeclarator")}
+
+  context-free syntax
+    ParenIdentifierDeclarator "(" IdentifierList ")"           -> PostfixOldFunctionDeclarator {cons("ParenIdentifierDeclarator-IdentifierList")}
+    "(" OldFunctionDeclarator ")"                              -> PostfixOldFunctionDeclarator {cons("OldFunctionDeclarator1")}
+    "(" OldFunctionDeclarator ")" PostfixingAbstractDeclarator -> PostfixOldFunctionDeclarator {cons("OldFunctionDeclarator-PostfixingAbstractDeclarator")}
+
+  context-free syntax
+    UnaryAbstractDeclarator      -> AbstractDeclarator {cons("UnaryAbstractDeclarator")}
+    PostfixAbstractDeclarator    -> AbstractDeclarator {cons("PostfixAbstractDeclarator")}
+    PostfixingAbstractDeclarator -> AbstractDeclarator {cons("PostfixingAbstractDeclarator")}
+
+  context-free syntax
+    ArrayAbstractDeclarator   -> PostfixingAbstractDeclarator {cons("ArrayAbstractDeclarator")}
+    "(" ")"                   -> PostfixingAbstractDeclarator {cons("PostfixingAbstractDeclarator-dunno-d_0")}
+    "(" ParameterTypeList ")" -> PostfixingAbstractDeclarator {cons("ParameterTypeList")}
+
+  context-free syntax
+    "[" "]"                                            -> ArrayAbstractDeclarator {cons("ArrayAbstractDeclarator-dunno-e_0")}
+    "[" ConstantExpression "]"                         -> ArrayAbstractDeclarator {cons("ConstantExpression")}
+    ArrayAbstractDeclarator "[" ConstantExpression "]" -> ArrayAbstractDeclarator {cons("ArrayAbstractDeclarator-ConstantExpression")}
+
+  context-free syntax
+    "*"                                      -> UnaryAbstractDeclarator {cons("UnaryAbstractDeclarator-dunno-f_0")}
+    "*" TypeQualifierList                    -> UnaryAbstractDeclarator {cons("TypeQualifierList2")}
+    "*" AbstractDeclarator                   -> UnaryAbstractDeclarator {cons("AbstractDeclarator")}
+    "*" TypeQualifierList AbstractDeclarator -> UnaryAbstractDeclarator {cons("TypeQualifierList-AbstractDeclarator2")}
+
+  context-free syntax
+    "(" UnaryAbstractDeclarator ")"                              -> PostfixAbstractDeclarator {cons("UnaryAbstractDeclarator1")}
+    "(" PostfixAbstractDeclarator ")"                            -> PostfixAbstractDeclarator {cons("PostfixAbstractDeclarator1")}
+    "(" PostfixingAbstractDeclarator ")"                         -> PostfixAbstractDeclarator {cons("PostfixingAbstractDeclarator1")}
+    "(" UnaryAbstractDeclarator ")" PostfixingAbstractDeclarator -> PostfixAbstractDeclarator {cons("UnaryAbstractDeclarator-PostfixingAbstractDeclarator")}

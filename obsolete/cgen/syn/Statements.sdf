@@ -1,0 +1,38 @@
+module Statements
+exports
+  context-free syntax
+    LabeledStatement    -> Statement
+    CompoundStatement   -> Statement
+    ExpressionStatement -> Statement
+    SelectionStatement  -> Statement
+    IterationStatement  -> Statement
+    JumpStatement       -> Statement
+
+  context-free syntax
+    IdentifierOrTypedefName ":" Statement   -> LabeledStatement {cons("Label")}
+    "case" ConstantExpression ":" Statement -> LabeledStatement {cons("Case")}
+    "default" ":" Statement                 -> LabeledStatement {cons("Default")}
+
+  context-free syntax
+    "{" Declaration* Statement* "}" -> CompoundStatement {cons("Compound")}
+
+  context-free syntax
+    CommaExpressionOpt ";" -> ExpressionStatement {cons("Stat")}
+
+  context-free syntax
+    "if" "(" CommaExpression ")" Statement                  -> SelectionStatement {cons("If")}
+    "if" "(" CommaExpression ")" Statement "else" Statement -> SelectionStatement {cons("IfElse")}
+    "switch" "(" CommaExpression ")" Statement              -> SelectionStatement {cons("Switch")}
+
+  context-free syntax
+    "while" "(" CommaExpression ")" Statement                                                -> IterationStatement {cons("While")}
+    "do" Statement "while" "(" CommaExpression ")" ";"                                       -> IterationStatement {cons("DoWhile")}
+    "for" "(" CommaExpressionOpt ";" CommaExpressionOpt ";" CommaExpressionOpt ")" Statement -> IterationStatement {cons("For")}
+
+  context-free syntax
+    "goto" IdentifierOrTypedefName ";" -> JumpStatement {cons("Goto")}
+    "continue" ";"                     -> JumpStatement {cons("Continue")}
+    "break" ";"                        -> JumpStatement {cons("Break")}
+    "return" CommaExpressionOpt ";"    -> JumpStatement {cons("Return")}
+    "exit" CommaExpressionOpt ";"      -> JumpStatement {cons("Exit")}
+
