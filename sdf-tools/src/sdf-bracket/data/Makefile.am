@@ -15,7 +15,13 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/05/31 14:20:50 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2002/02/13 12:44:34 mdejonge Exp $
 
 EXTRA_DIST = sdf-bracket.sdf sdf-bracket.sdf.af sdf-bracket.sdf.af.correct
+
+sdf-bracket.sdf.af : sdf-bracket.sdf
+	parse -l sdf -v 2.1 -I -i $< -o $@
+
+sdf-bracket.sdf.af.correct : sdf-bracket.sdf.af
+	../sdf-bracket -i $< -o $@
 

@@ -24,9 +24,10 @@ This is a simple utility that inserts brackets in the AST of SDF modules
 such that:
    implode(parse(sdf-bracket(AST))) = AST
 
-Currently this is implemented by putting the SDF infix operators  "alt" and
-"pair" inside a "bracket-symbol" in the context of iter and iter-star lists,
-or optionals.
+Currently this is implemented as follows:
+* SDF infix operators  "alt", "pair", and sequence (represented as lists)
+  are put inside a "bracket-symbol" in the context of nested SDF symbols
+  iter, iter-star, opt, alt, and sequence (represented as list).
 
 Example:
 The AST for the symbol (A|B)* is
@@ -39,6 +40,10 @@ module sdf-bracket
 imports lib Regular-Sdf-Syntax Bracket-Symbol asfix termid
 
 strategies
+short-description(p) = !["Usage: ", <p>(), " [options]"]
+long-description(p)  = !["This program generates a disambiguated AST of SDF modules\n",
+                         "by inserting bracket symbols for SDF infix operators.\n",
+                         "Use this program before pretty-printing ASTs of SDF modules.\n"]
 
   sdf-bracket = 
     io-idwrap(InOutId("\"sdf-2.1\"", !"\"sdf-2.1\""), SdfBracket)
@@ -47,21 +52,29 @@ strategies
     topdown(try(Bracket));
     topdown(try(DeBracket))
 
-  infix-op = alt(id, id) + pair(id,id)
+  infix-op = alt(id, id) + pair(id,id) + is-list
 
 rules
-
-  Bracket :
-    iter-star(s) -> iter-star(bracket-symbol(s)) where <infix-op>s
 
   Bracket :
     iter(s) -> iter(bracket-symbol(s)) where <infix-op>s
 
   Bracket :
+    iter-star(s) -> iter-star(bracket-symbol(s)) where <infix-op>s
+
+  Bracket :
     opt(s) -> opt(bracket-symbol(s)) where <infix-op>s
 
   Bracket :
-    [alt(s1,s2) | syms] -> [bracket-symbol(alt(s1,s2)) | syms]
+    alt(s1, s2) -> alt(<try(infix-op;!bracket-symbol(s1))>s1, 
+                       <try(not(alt(id,id));infix-op;!bracket-symbol(s2))>s2)
+
+  // This rule is for sequences  which are represented as lists.
+  Bracket :
+     [x|xs] -> xs'
+  where
+     map( \s -> <try(infix-op;!bracket-symbol(s))>s \ ) => xs'
+
 
   // Remove inserted brackets for productions of the form
   //     prod( [lit(f), bracket-symbol(s)], sort, attrs) 
