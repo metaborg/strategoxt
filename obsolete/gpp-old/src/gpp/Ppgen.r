@@ -19,19 +19,20 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Ppgen.r,v 1.4 2001/09/01 20:44:11 mdejonge Exp $
+% $Id: Ppgen.r,v 1.5 2001/10/08 13:47:57 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
 \begin{code}
 module Ppgen
 imports make pp-tables-io asfix lib misc Label-Sdf-Syntax Basic-Sdf-Syntax 
-        Bracket-Symbol
+        Bracket-Symbol termid
 
 strategies
-Ppgen = iowrap( (id, ppgenerate),
-                Option( "-v", !Verbose()),
-                usage' )
+Ppgen = io-idwrap( ?"\"sdf-2.1\"", 
+                   (id, ppgenerate),
+                   Option( "-v", !Verbose(), !"-v     Verbose execution"),
+                   usage' )
 
 \end{code} 
 

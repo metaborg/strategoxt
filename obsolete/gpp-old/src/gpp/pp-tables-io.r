@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: pp-tables-io.r,v 1.2 2001/06/08 09:44:18 mdejonge Exp $
+% $Id: pp-tables-io.r,v 1.3 2001/10/08 13:47:57 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
@@ -28,14 +28,17 @@
 module pp-tables-io
 
 imports
-   lib pp-tables Literal-lib
+   lib pp-tables Literal-lib termid
 
 strategies
 
 read-pp-tables =
    ?names;
    <table-create>"pp-table";
-   <map(notify(!"Reading table: "); ReadFromFile; build-pp-table)>names
+   <map(notify(!"Reading table: "); 
+               ReadFromFile;
+               termid-check(?"\"pp-tables-0\"");
+               build-pp-table)>names
 
 // Add entries to table. Reverse the list of entries to get correct ordering
 // of entries.

@@ -1,3 +1,6 @@
+2001-10-08 Merijn de Jonge <mdejonge@cwi.nl> 
+    * Adapted to use io-idwrap and grammar identifiers
+
 2001-10-06 Merijn de Jonge <mdejonge@cwi.nl> 
    * pp-tables: Syntax of pp tables now accepts quoted strings as
      constructor names.
