@@ -18,7 +18,11 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: ChangeLog,v 1.7 2000/04/07 12:48:46 mdejonge Exp $
+# $Id: ChangeLog,v 1.8 2000/04/12 09:02:16 mdejonge Exp $
+
+2000-04-12    <mdejonge@cwi.nl>
+        * increased version number to 0.2 (this should have been done a long  
+          ago, after releasing version 0.1)
 
 2000-04-07    <mdejonge@cwi.nl>
         * GPL copyright notices added

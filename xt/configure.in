@@ -18,12 +18,12 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 dnl 02111-1307, USA.
 
-dnl $Id: configure.in,v 1.7 2000/04/07 12:48:47 mdejonge Exp $
+dnl $Id: configure.in,v 1.8 2000/04/12 09:02:16 mdejonge Exp $
 
 AC_INIT(Makefile.in)
-AM_INIT_AUTOMAKE(xt,0.1)
+AM_INIT_AUTOMAKE(xt,0.2)
 
-AC_REVISION($Id: configure.in,v 1.7 2000/04/07 12:48:47 mdejonge Exp $)
+AC_REVISION($Id: configure.in,v 1.8 2000/04/12 09:02:16 mdejonge Exp $)
 
 
 AC_OUTPUT(
