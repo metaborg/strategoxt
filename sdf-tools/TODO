@@ -13,7 +13,5 @@
   the separate graph-tools package
 * lib/graph-terms.r should be probably moved to the graph-tools package also
 * lib/text.r is obsolete and should be removed
-* lib/Char-lib.r overlaps with char.r from the Stratego library, it can
-  probably be removed.
 * lib/gt-paths.r.src shouild be renamed to sdf-tools-paths (or something)
 
