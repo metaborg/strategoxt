@@ -1,135 +1,10 @@
+
 module Stratego-Amb
 imports list-cons option
 signature
   constructors
-                               : c_0 -> d_0
-    Nil                        : d_0
-    Conc                       : d_0 * d_0 -> d_0
-    Conc                       : d_0 * c_0 -> c_0
-    Conc                       : c_0 * d_0 -> c_0
-    Conc                       : c_0 * c_0 -> c_0
-    Cons                       : Id * d_0 -> c_0
                                : Strategy * Strategy -> e_0
-                               : f_0 -> g_0
-    Nil                        : g_0
-    Conc                       : g_0 * g_0 -> g_0
-    Conc                       : g_0 * f_0 -> f_0
-    Conc                       : f_0 * g_0 -> f_0
-    Conc                       : f_0 * f_0 -> f_0
-    Cons                       : e_0 * g_0 -> f_0
-                               : h_0 -> i_0
-    Nil                        : i_0
-    Conc                       : i_0 * i_0 -> i_0
-    Conc                       : i_0 * h_0 -> h_0
-    Conc                       : h_0 * i_0 -> h_0
-    Conc                       : h_0 * h_0 -> h_0
-    Cons                       : Strategy * i_0 -> h_0
-                               : j_0 -> k_0
-    Nil                        : k_0
-    Conc                       : k_0 * k_0 -> k_0
-    Conc                       : k_0 * j_0 -> j_0
-    Conc                       : j_0 * k_0 -> j_0
-    Conc                       : j_0 * j_0 -> j_0
-    Cons                       : Term * k_0 -> j_0
-                               : l_0 -> m_0
-    Nil                        : m_0
-    Conc                       : m_0 * m_0 -> m_0
-    Conc                       : m_0 * l_0 -> l_0
-    Conc                       : l_0 * m_0 -> l_0
-    Conc                       : l_0 * l_0 -> l_0
-    Cons                       : ID * m_0 -> l_0
-                               : n_0 -> o_0
-    Nil                        : o_0
-    Conc                       : o_0 * o_0 -> o_0
-    Conc                       : o_0 * n_0 -> n_0
-    Conc                       : n_0 * o_0 -> n_0
-    Conc                       : n_0 * n_0 -> n_0
-    Cons                       : Def * o_0 -> n_0
-                               : p_0 -> q_0
-    Nil                        : q_0
-    Conc                       : q_0 * q_0 -> q_0
-    Conc                       : q_0 * p_0 -> p_0
-    Conc                       : p_0 * q_0 -> p_0
-    Conc                       : p_0 * p_0 -> p_0
-    Cons                       : Typedid * q_0 -> p_0
-                               : r_0 -> s_0
-    Nil                        : s_0
-    Conc                       : s_0 * s_0 -> s_0
-    Conc                       : s_0 * r_0 -> r_0
-    Conc                       : r_0 * s_0 -> r_0
-    Conc                       : r_0 * r_0 -> r_0
-    Cons                       : RuleDef * s_0 -> r_0
-                               : t_0 -> u_0
-    Nil                        : u_0
-    Conc                       : u_0 * u_0 -> u_0
-    Conc                       : u_0 * t_0 -> t_0
-    Conc                       : t_0 * u_0 -> t_0
-    Conc                       : t_0 * t_0 -> t_0
-    Cons                       : DynRuleDef * u_0 -> t_0
-                               : v_0 -> w_0
-    Nil                        : w_0
-    Conc                       : w_0 * w_0 -> w_0
-    Conc                       : w_0 * v_0 -> v_0
-    Conc                       : v_0 * w_0 -> v_0
-    Conc                       : v_0 * v_0 -> v_0
-    Cons                       : DynRuleScopeId * w_0 -> v_0
-                               : x_0 -> y_0
-    Nil                        : y_0
-    Conc                       : y_0 * y_0 -> y_0
-    Conc                       : y_0 * x_0 -> x_0
-    Conc                       : x_0 * y_0 -> x_0
-    Conc                       : x_0 * x_0 -> x_0
-    Cons                       : Type * y_0 -> x_0
-                               : z_0 -> a_1
-    Nil                        : a_1
-    Conc                       : a_1 * a_1 -> a_1
-    Conc                       : a_1 * z_0 -> z_0
-    Conc                       : z_0 * a_1 -> z_0
-    Conc                       : z_0 * z_0 -> z_0
-    Cons                       : Sort * a_1 -> z_0
-                               : b_1 -> c_1
-    Nil                        : c_1
-    Conc                       : c_1 * c_1 -> c_1
-    Conc                       : c_1 * b_1 -> b_1
-    Conc                       : b_1 * c_1 -> b_1
-    Conc                       : b_1 * b_1 -> b_1
-    Cons                       : Opdecl * c_1 -> b_1
-                               : d_1 -> e_1
-    Nil                        : e_1
-    Conc                       : e_1 * e_1 -> e_1
-    Conc                       : e_1 * d_1 -> d_1
-    Conc                       : d_1 * e_1 -> d_1
-    Conc                       : d_1 * d_1 -> d_1
-    Cons                       : Sort * e_1 -> d_1
-                               : f_1 -> g_1
-    Nil                        : g_1
-    Conc                       : g_1 * g_1 -> g_1
-    Conc                       : g_1 * f_1 -> f_1
-    Conc                       : f_1 * g_1 -> f_1
-    Conc                       : f_1 * f_1 -> f_1
-    Cons                       : Overlay * g_1 -> f_1
-                               : h_1 -> i_1
-    Nil                        : i_1
-    Conc                       : i_1 * i_1 -> i_1
-    Conc                       : i_1 * h_1 -> h_1
-    Conc                       : h_1 * i_1 -> h_1
-    Conc                       : h_1 * h_1 -> h_1
-    Cons                       : Sdecl * i_1 -> h_1
-                               : j_1 -> k_1
-    Nil                        : k_1
-    Conc                       : k_1 * k_1 -> k_1
-    Conc                       : k_1 * j_1 -> j_1
-    Conc                       : j_1 * k_1 -> j_1
-    Conc                       : j_1 * j_1 -> j_1
-    Cons                       : ModName * k_1 -> j_1
-                               : l_1 -> m_1
-    Nil                        : m_1
-    Conc                       : m_1 * m_1 -> m_1
-    Conc                       : m_1 * l_1 -> l_1
-    Conc                       : l_1 * m_1 -> l_1
-    Conc                       : l_1 * l_1 -> l_1
-    Cons                       : Decl * m_1 -> l_1
-    Overlay                    : Id * d_0 * Term -> Overlay
+    Overlay                    : Id * List(Id) * Term -> Overlay
     OverlayNoArgs              : Id * Term -> Overlay
     Mod                        : Id * Id -> Mod
     StrategyCurly              : Strategy -> StrategyCurly
@@ -139,13 +14,13 @@ signature
     ParenStrat                 : Strategy -> StrategyParen
     VarDec                     : ID * Type -> Typedid
     DefaultVarDec              : ID -> Typedid
-    ExtSDef                    : Id * q_0 * q_0 -> StrategyDef
-    ExtSDefInl                 : Id * q_0 * q_0 * Strategy -> StrategyDef
-    SDefT                      : Id * q_0 * q_0 * Strategy -> StrategyDef
-    SDef                       : Id * q_0 * Strategy -> StrategyDef
+    ExtSDef                    : Id * List(Typedid) * List(Typedid) -> StrategyDef
+    ExtSDefInl                 : Id * List(Typedid) * List(Typedid) * Strategy -> StrategyDef
+    SDefT                      : Id * List(Typedid) * List(Typedid) * Strategy -> StrategyDef
+    SDef                       : Id * List(Typedid) * Strategy -> StrategyDef
     SDefNoArgs                 : Id * Strategy -> StrategyDef
-    RDecT                      : Id * q_0 * q_0 -> RuleDec
-    RDec                       : Id * q_0 -> RuleDec
+    RDecT                      : Id * List(Typedid) * List(Typedid) -> RuleDec
+    RDec                       : Id * List(Typedid) -> RuleDec
     RDecNoArgs                 : Id -> RuleDec
     DynRuleScopeId             : Id -> DynRuleScopeId
     LabeledDynRuleScopeId      : Id * Term -> DynRuleScopeId
@@ -158,8 +33,8 @@ signature
     UndefineDynRule            : DynRuleId * Term -> DynRuleDef
     AddScopeLabel              : Id * Term -> DynRuleDef
     AM                         : Strategy * Term -> Strategy
-    SwitchChoice               : Strategy * g_0 * Strategy -> Strategy
-    SwitchChoiceNoOtherwise    : Strategy * g_0 -> Strategy
+    SwitchChoice               : Strategy * List(e_0) * Strategy -> Strategy
+    SwitchChoiceNoOtherwise    : Strategy * List(e_0) -> Strategy
     CondChoice                 : Strategy * Strategy * Strategy -> Strategy
     RGChoice                   : Strategy * Strategy -> Strategy
     GChoice                    : Strategy * Strategy -> Strategy
@@ -169,14 +44,14 @@ signature
     LRule                      : Rule -> Strategy
     CallNoArgs                 : SVar -> Strategy
     ExplodeCong                : Strategy * StrategyParen -> Strategy
-    ListCong                   : i_0 * Strategy -> Strategy
-    ListCongNoTail             : i_0 -> Strategy
-    ModCong                    : Mod * i_0 -> Strategy
+    ListCong                   : List(Strategy) * Strategy -> Strategy
+    ListCongNoTail             : List(Strategy) -> Strategy
+    ModCong                    : Mod * List(Strategy) -> Strategy
     ModCongNoArgs              : Mod -> Strategy
-    TupleCong                  : Strategy * h_0 -> Strategy
+    TupleCong                  : Strategy * List(Strategy) -> Strategy
     EmptyTupleCong             : Strategy
     AnnoCong                   : Strategy * StrategyCurly -> Strategy
-    CongQ                      : String * i_0 -> Strategy
+    CongQ                      : String * List(Strategy) -> Strategy
     CharCong                   : Char -> Strategy
     RealCong                   : Real -> Strategy
     IntCong                    : Int -> Strategy
@@ -186,8 +61,8 @@ signature
     One                        : Strategy -> Strategy
     Some                       : Strategy -> Strategy
     Path                       : Int * Strategy -> Strategy
-    PrimT                      : String * i_0 * k_0 -> Strategy
-    Prim                       : String * k_0 -> Strategy
+    PrimT                      : String * List(Strategy) * List(Term) -> Strategy
+    Prim                       : String * List(Term) -> Strategy
     PrimNoArgs                 : String -> Strategy
     Bagof                      : Strategy -> Strategy
     Test                       : Strategy -> Strategy
@@ -199,49 +74,49 @@ signature
     LChoice                    : Strategy * Strategy -> Strategy
     Seq                        : Strategy * Strategy -> Strategy
     BA                         : StrategyAngle * Term -> Strategy
-    Scope                      : m_0 * Strategy -> Strategy
+    Scope                      : List(ID) * Strategy -> Strategy
     ScopeDefault               : Strategy -> Strategy
     Build                      : Term -> Strategy
     Match                      : Term -> Strategy
-    CallT                      : SVar * i_0 * k_0 -> Strategy
-    Call                       : SVar * i_0 -> Strategy
-    Let                        : o_0 * Strategy -> Strategy
+    CallT                      : SVar * List(Strategy) * List(Term) -> Strategy
+    Call                       : SVar * List(Strategy) -> Strategy
+    Let                        : List(Def) * Strategy -> Strategy
     Id                         : Strategy
     Fail                       : Strategy
-    ExtendOverrideDynamicRules : s_0 -> Strategy
-    ExtendDynamicRules         : s_0 -> Strategy
-    OverrideDynamicRules       : s_0 -> Strategy
-    DynRuleUnion               : Strategy * d_0 * Strategy -> Strategy
-    DynRuleIntersect           : Strategy * d_0 * Strategy -> Strategy
-    DynRuleUnionFix            : d_0 * Strategy -> Strategy
-    DynRuleIntersectFix        : d_0 * Strategy -> Strategy
-    GenDynRules                : u_0 -> Strategy
-    DynRuleScope               : w_0 * Strategy -> Strategy
+    ExtendOverrideDynamicRules : List(RuleDef) -> Strategy
+    ExtendDynamicRules         : List(RuleDef) -> Strategy
+    OverrideDynamicRules       : List(RuleDef) -> Strategy
+    DynRuleUnion               : Strategy * List(Id) * Strategy -> Strategy
+    DynRuleIntersect           : Strategy * List(Id) * Strategy -> Strategy
+    DynRuleUnionFix            : List(Id) * Strategy -> Strategy
+    DynRuleIntersectFix        : List(Id) * Strategy -> Strategy
+    GenDynRules                : List(DynRuleDef) -> Strategy
+    DynRuleScope               : List(DynRuleScopeId) * Strategy -> Strategy
     StratRule                  : Strategy * Strategy * Strategy -> StratRule
     StratRuleNoCond            : Strategy * Strategy -> StratRule
     Rule                       : Term * Term * Strategy -> Rule
     RuleNoCond                 : Term * Term -> Rule
-    SRDefT                     : Id * q_0 * q_0 * StratRule -> RuleDef
-    SRDef                      : Id * q_0 * StratRule -> RuleDef
+    SRDefT                     : Id * List(Typedid) * List(Typedid) * StratRule -> RuleDef
+    SRDef                      : Id * List(Typedid) * StratRule -> RuleDef
     SRDefNoArgs                : Id * StratRule -> RuleDef
-    RDefT                      : Id * q_0 * q_0 * Rule -> RuleDef
-    RDef                       : Id * q_0 * Rule -> RuleDef
+    RDefT                      : Id * List(Typedid) * List(Typedid) * Rule -> RuleDef
+    RDef                       : Id * List(Typedid) * Rule -> RuleDef
     RDefNoArgs                 : Id * Rule -> RuleDef
     Con4                       : Var * Term * Strategy * Id -> Term
     Con3                       : Var * Term * Strategy -> Term
     Con                        : Var * Term * Id -> Term
     Con1                       : Var * Term -> Term
     BuildDefault               : Term -> Term
-    ListTail                   : k_0 * Term -> Term
-    List                       : k_0 -> Term
-    Tuple                      : k_0 -> Term
+    ListTail                   : List(Term) * Term -> Term
+    List                       : List(Term) -> Term
+    Tuple                      : List(Term) -> Term
     As                         : Var * Term -> Term
     RootApp                    : StrategyAngle -> Term
     App                        : Strategy * Term -> Term
-    Anno                       : Term * k_0 -> Term
+    Anno                       : Term * List(Term) -> Term
     Explode                    : Term * Term -> Term
-    OpQ                        : String * k_0 -> Term
-    Op                         : Id * k_0 -> Term
+    OpQ                        : String * List(Term) -> Term
+    Op                         : Id * List(Term) -> Term
                                : Var -> Term
     Wld                        : Term
     Char                       : Char -> Term
@@ -253,28 +128,28 @@ signature
     ListVar                    : LId -> LID
     Var                        : LID -> Var
     Var                        : Id -> Var
-    FunType                    : x_0 * Type -> Type
+    FunType                    : List(Type) * Type -> Type
     ConstType                  : Sort -> Type
     OpDeclInj                  : Type -> Opdecl
     OpDeclQ                    : String * Type -> Opdecl
     OpDecl                     : Id * Type -> Opdecl
-    SortTuple                  : a_1 -> Sort
-    SortListTl                 : a_1 * Sort -> Sort
-    SortList                   : a_1 -> Sort
-    Sort                       : Id * a_1 -> Sort
+    SortTuple                  : List(Sort) -> Sort
+    SortListTl                 : List(Sort) * Sort -> Sort
+    SortList                   : List(Sort) -> Sort
+    Sort                       : Id * List(Sort) -> Sort
     SortNoArgs                 : UCID -> Sort
     SortVar                    : LCID -> Sort
-    Constructors               : c_1 -> Sdecl
-    Sorts                      : e_1 -> Sdecl
+    Constructors               : List(Opdecl) -> Sdecl
+    Sorts                      : List(Sort) -> Sdecl
                                : RuleDef -> Def
                                : StrategyDef -> Def
-    Overlays                   : g_1 -> Decl
-    Signature                  : i_1 -> Decl
-    Strategies                 : o_0 -> Decl
-    Rules                      : o_0 -> Decl
-    Imports                    : k_1 -> Decl
-    Specification              : m_1 -> Module
-    Module                     : ModName * m_1 -> Module
+    Overlays                   : List(Overlay) -> Decl
+    Signature                  : List(Sdecl) -> Decl
+    Strategies                 : List(Def) -> Decl
+    Rules                      : List(Def) -> Decl
+    Imports                    : List(ModName) -> Decl
+    Specification              : List(Decl) -> Module
+    Module                     : ModName * List(Decl) -> Module
                                : String -> Char
                                : String -> String
                                : String -> Real
