@@ -21,53 +21,6 @@ Symbol sym_WaitStatus_3;
 Symbol sym_Pipe_2;
 Symbol sym_None_0;
 Symbol sym_Some_1;
-Symbol sym_Var_1;
-Symbol sym_Path_1;
-Symbol sym_Prefix_2;
-Symbol sym_FILE_1;
-Symbol sym_DIR_1;
-Symbol sym_TEMP_0;
-Symbol sym_TempFiles_0;
-Symbol sym_Scopes_0;
-Symbol sym_Silent_0;
-Symbol sym_Verbose_1;
-Symbol sym_Version_0;
-Symbol sym_Input_1;
-Symbol sym_Output_1;
-Symbol sym_Binary_0;
-Symbol sym_Statistics_0;
-Symbol sym_Help_0;
-Symbol sym_Runtime_1;
-Symbol sym_DeclVersion_1;
-Symbol sym_Program_1;
-Symbol sym_Undefined_1;
-Symbol sym_EpochTime_1;
-Symbol sym_ComponentTime_3;
-Symbol sym_DayTime_3;
-Symbol sym_Date_3;
-Symbol sym_Dupl_2;
-Symbol sym_January_0;
-Symbol sym_February_0;
-Symbol sym_March_0;
-Symbol sym_April_0;
-Symbol sym_May_0;
-Symbol sym_June_0;
-Symbol sym_July_0;
-Symbol sym_August_0;
-Symbol sym_September_0;
-Symbol sym_October_0;
-Symbol sym_November_0;
-Symbol sym_December_0;
-Symbol sym_Sunday_0;
-Symbol sym_Monday_0;
-Symbol sym_Tuesday_0;
-Symbol sym_Wednesday_0;
-Symbol sym_Thursday_0;
-Symbol sym_Friday_0;
-Symbol sym_Saturday_0;
-Symbol sym_stdin_0;
-Symbol sym_stdout_0;
-Symbol sym_stderr_0;
 Symbol sym_Infinite_0;
 Symbol sym_Keys_0;
 Symbol sym_Keys_1;
@@ -93,6 +46,53 @@ Symbol sym_Defined_9;
 Symbol sym_Defined_10;
 Symbol sym_Undefined_0;
 Symbol sym_Dummy_0;
+Symbol sym_Scopes_0;
+Symbol sym_stdin_0;
+Symbol sym_stdout_0;
+Symbol sym_stderr_0;
+Symbol sym_EpochTime_1;
+Symbol sym_ComponentTime_3;
+Symbol sym_DayTime_3;
+Symbol sym_Date_3;
+Symbol sym_Dupl_2;
+Symbol sym_January_0;
+Symbol sym_February_0;
+Symbol sym_March_0;
+Symbol sym_April_0;
+Symbol sym_May_0;
+Symbol sym_June_0;
+Symbol sym_July_0;
+Symbol sym_August_0;
+Symbol sym_September_0;
+Symbol sym_October_0;
+Symbol sym_November_0;
+Symbol sym_December_0;
+Symbol sym_Sunday_0;
+Symbol sym_Monday_0;
+Symbol sym_Tuesday_0;
+Symbol sym_Wednesday_0;
+Symbol sym_Thursday_0;
+Symbol sym_Friday_0;
+Symbol sym_Saturday_0;
+Symbol sym_Var_1;
+Symbol sym_Path_1;
+Symbol sym_Prefix_2;
+Symbol sym_FILE_1;
+Symbol sym_DIR_1;
+Symbol sym_TEMP_0;
+Symbol sym_TempFiles_0;
+Symbol sym_Silent_0;
+Symbol sym_Verbose_1;
+Symbol sym_Version_0;
+Symbol sym_Input_1;
+Symbol sym_Output_1;
+Symbol sym_Binary_0;
+Symbol sym_Statistics_0;
+Symbol sym_Help_0;
+Symbol sym_Runtime_1;
+Symbol sym_DeclVersion_1;
+Symbol sym_Program_1;
+Symbol sym_Undefined_1;
 Symbol sym_Anno_2;
 void init_constructors (void)
 {
@@ -136,100 +136,6 @@ void init_constructors (void)
   ATprotectSymbol(sym_None_0);
   sym_Some_1 = ATmakeSymbol("Some", 1, ATfalse);
   ATprotectSymbol(sym_Some_1);
-  sym_Var_1 = ATmakeSymbol("Var", 1, ATfalse);
-  ATprotectSymbol(sym_Var_1);
-  sym_Path_1 = ATmakeSymbol("Path", 1, ATfalse);
-  ATprotectSymbol(sym_Path_1);
-  sym_Prefix_2 = ATmakeSymbol("Prefix", 2, ATfalse);
-  ATprotectSymbol(sym_Prefix_2);
-  sym_FILE_1 = ATmakeSymbol("FILE", 1, ATfalse);
-  ATprotectSymbol(sym_FILE_1);
-  sym_DIR_1 = ATmakeSymbol("DIR", 1, ATfalse);
-  ATprotectSymbol(sym_DIR_1);
-  sym_TEMP_0 = ATmakeSymbol("TEMP", 0, ATfalse);
-  ATprotectSymbol(sym_TEMP_0);
-  sym_TempFiles_0 = ATmakeSymbol("TempFiles", 0, ATfalse);
-  ATprotectSymbol(sym_TempFiles_0);
-  sym_Scopes_0 = ATmakeSymbol("Scopes", 0, ATfalse);
-  ATprotectSymbol(sym_Scopes_0);
-  sym_Silent_0 = ATmakeSymbol("Silent", 0, ATfalse);
-  ATprotectSymbol(sym_Silent_0);
-  sym_Verbose_1 = ATmakeSymbol("Verbose", 1, ATfalse);
-  ATprotectSymbol(sym_Verbose_1);
-  sym_Version_0 = ATmakeSymbol("Version", 0, ATfalse);
-  ATprotectSymbol(sym_Version_0);
-  sym_Input_1 = ATmakeSymbol("Input", 1, ATfalse);
-  ATprotectSymbol(sym_Input_1);
-  sym_Output_1 = ATmakeSymbol("Output", 1, ATfalse);
-  ATprotectSymbol(sym_Output_1);
-  sym_Binary_0 = ATmakeSymbol("Binary", 0, ATfalse);
-  ATprotectSymbol(sym_Binary_0);
-  sym_Statistics_0 = ATmakeSymbol("Statistics", 0, ATfalse);
-  ATprotectSymbol(sym_Statistics_0);
-  sym_Help_0 = ATmakeSymbol("Help", 0, ATfalse);
-  ATprotectSymbol(sym_Help_0);
-  sym_Runtime_1 = ATmakeSymbol("Runtime", 1, ATfalse);
-  ATprotectSymbol(sym_Runtime_1);
-  sym_DeclVersion_1 = ATmakeSymbol("DeclVersion", 1, ATfalse);
-  ATprotectSymbol(sym_DeclVersion_1);
-  sym_Program_1 = ATmakeSymbol("Program", 1, ATfalse);
-  ATprotectSymbol(sym_Program_1);
-  sym_Undefined_1 = ATmakeSymbol("Undefined", 1, ATfalse);
-  ATprotectSymbol(sym_Undefined_1);
-  sym_EpochTime_1 = ATmakeSymbol("EpochTime", 1, ATfalse);
-  ATprotectSymbol(sym_EpochTime_1);
-  sym_ComponentTime_3 = ATmakeSymbol("ComponentTime", 3, ATfalse);
-  ATprotectSymbol(sym_ComponentTime_3);
-  sym_DayTime_3 = ATmakeSymbol("DayTime", 3, ATfalse);
-  ATprotectSymbol(sym_DayTime_3);
-  sym_Date_3 = ATmakeSymbol("Date", 3, ATfalse);
-  ATprotectSymbol(sym_Date_3);
-  sym_Dupl_2 = ATmakeSymbol("Dupl", 2, ATfalse);
-  ATprotectSymbol(sym_Dupl_2);
-  sym_January_0 = ATmakeSymbol("January", 0, ATfalse);
-  ATprotectSymbol(sym_January_0);
-  sym_February_0 = ATmakeSymbol("February", 0, ATfalse);
-  ATprotectSymbol(sym_February_0);
-  sym_March_0 = ATmakeSymbol("March", 0, ATfalse);
-  ATprotectSymbol(sym_March_0);
-  sym_April_0 = ATmakeSymbol("April", 0, ATfalse);
-  ATprotectSymbol(sym_April_0);
-  sym_May_0 = ATmakeSymbol("May", 0, ATfalse);
-  ATprotectSymbol(sym_May_0);
-  sym_June_0 = ATmakeSymbol("June", 0, ATfalse);
-  ATprotectSymbol(sym_June_0);
-  sym_July_0 = ATmakeSymbol("July", 0, ATfalse);
-  ATprotectSymbol(sym_July_0);
-  sym_August_0 = ATmakeSymbol("August", 0, ATfalse);
-  ATprotectSymbol(sym_August_0);
-  sym_September_0 = ATmakeSymbol("September", 0, ATfalse);
-  ATprotectSymbol(sym_September_0);
-  sym_October_0 = ATmakeSymbol("October", 0, ATfalse);
-  ATprotectSymbol(sym_October_0);
-  sym_November_0 = ATmakeSymbol("November", 0, ATfalse);
-  ATprotectSymbol(sym_November_0);
-  sym_December_0 = ATmakeSymbol("December", 0, ATfalse);
-  ATprotectSymbol(sym_December_0);
-  sym_Sunday_0 = ATmakeSymbol("Sunday", 0, ATfalse);
-  ATprotectSymbol(sym_Sunday_0);
-  sym_Monday_0 = ATmakeSymbol("Monday", 0, ATfalse);
-  ATprotectSymbol(sym_Monday_0);
-  sym_Tuesday_0 = ATmakeSymbol("Tuesday", 0, ATfalse);
-  ATprotectSymbol(sym_Tuesday_0);
-  sym_Wednesday_0 = ATmakeSymbol("Wednesday", 0, ATfalse);
-  ATprotectSymbol(sym_Wednesday_0);
-  sym_Thursday_0 = ATmakeSymbol("Thursday", 0, ATfalse);
-  ATprotectSymbol(sym_Thursday_0);
-  sym_Friday_0 = ATmakeSymbol("Friday", 0, ATfalse);
-  ATprotectSymbol(sym_Friday_0);
-  sym_Saturday_0 = ATmakeSymbol("Saturday", 0, ATfalse);
-  ATprotectSymbol(sym_Saturday_0);
-  sym_stdin_0 = ATmakeSymbol("stdin", 0, ATfalse);
-  ATprotectSymbol(sym_stdin_0);
-  sym_stdout_0 = ATmakeSymbol("stdout", 0, ATfalse);
-  ATprotectSymbol(sym_stdout_0);
-  sym_stderr_0 = ATmakeSymbol("stderr", 0, ATfalse);
-  ATprotectSymbol(sym_stderr_0);
   sym_Infinite_0 = ATmakeSymbol("Infinite", 0, ATfalse);
   ATprotectSymbol(sym_Infinite_0);
   sym_Keys_0 = ATmakeSymbol("Keys", 0, ATfalse);
@@ -280,6 +186,100 @@ void init_constructors (void)
   ATprotectSymbol(sym_Undefined_0);
   sym_Dummy_0 = ATmakeSymbol("Dummy", 0, ATfalse);
   ATprotectSymbol(sym_Dummy_0);
+  sym_Scopes_0 = ATmakeSymbol("Scopes", 0, ATfalse);
+  ATprotectSymbol(sym_Scopes_0);
+  sym_stdin_0 = ATmakeSymbol("stdin", 0, ATfalse);
+  ATprotectSymbol(sym_stdin_0);
+  sym_stdout_0 = ATmakeSymbol("stdout", 0, ATfalse);
+  ATprotectSymbol(sym_stdout_0);
+  sym_stderr_0 = ATmakeSymbol("stderr", 0, ATfalse);
+  ATprotectSymbol(sym_stderr_0);
+  sym_EpochTime_1 = ATmakeSymbol("EpochTime", 1, ATfalse);
+  ATprotectSymbol(sym_EpochTime_1);
+  sym_ComponentTime_3 = ATmakeSymbol("ComponentTime", 3, ATfalse);
+  ATprotectSymbol(sym_ComponentTime_3);
+  sym_DayTime_3 = ATmakeSymbol("DayTime", 3, ATfalse);
+  ATprotectSymbol(sym_DayTime_3);
+  sym_Date_3 = ATmakeSymbol("Date", 3, ATfalse);
+  ATprotectSymbol(sym_Date_3);
+  sym_Dupl_2 = ATmakeSymbol("Dupl", 2, ATfalse);
+  ATprotectSymbol(sym_Dupl_2);
+  sym_January_0 = ATmakeSymbol("January", 0, ATfalse);
+  ATprotectSymbol(sym_January_0);
+  sym_February_0 = ATmakeSymbol("February", 0, ATfalse);
+  ATprotectSymbol(sym_February_0);
+  sym_March_0 = ATmakeSymbol("March", 0, ATfalse);
+  ATprotectSymbol(sym_March_0);
+  sym_April_0 = ATmakeSymbol("April", 0, ATfalse);
+  ATprotectSymbol(sym_April_0);
+  sym_May_0 = ATmakeSymbol("May", 0, ATfalse);
+  ATprotectSymbol(sym_May_0);
+  sym_June_0 = ATmakeSymbol("June", 0, ATfalse);
+  ATprotectSymbol(sym_June_0);
+  sym_July_0 = ATmakeSymbol("July", 0, ATfalse);
+  ATprotectSymbol(sym_July_0);
+  sym_August_0 = ATmakeSymbol("August", 0, ATfalse);
+  ATprotectSymbol(sym_August_0);
+  sym_September_0 = ATmakeSymbol("September", 0, ATfalse);
+  ATprotectSymbol(sym_September_0);
+  sym_October_0 = ATmakeSymbol("October", 0, ATfalse);
+  ATprotectSymbol(sym_October_0);
+  sym_November_0 = ATmakeSymbol("November", 0, ATfalse);
+  ATprotectSymbol(sym_November_0);
+  sym_December_0 = ATmakeSymbol("December", 0, ATfalse);
+  ATprotectSymbol(sym_December_0);
+  sym_Sunday_0 = ATmakeSymbol("Sunday", 0, ATfalse);
+  ATprotectSymbol(sym_Sunday_0);
+  sym_Monday_0 = ATmakeSymbol("Monday", 0, ATfalse);
+  ATprotectSymbol(sym_Monday_0);
+  sym_Tuesday_0 = ATmakeSymbol("Tuesday", 0, ATfalse);
+  ATprotectSymbol(sym_Tuesday_0);
+  sym_Wednesday_0 = ATmakeSymbol("Wednesday", 0, ATfalse);
+  ATprotectSymbol(sym_Wednesday_0);
+  sym_Thursday_0 = ATmakeSymbol("Thursday", 0, ATfalse);
+  ATprotectSymbol(sym_Thursday_0);
+  sym_Friday_0 = ATmakeSymbol("Friday", 0, ATfalse);
+  ATprotectSymbol(sym_Friday_0);
+  sym_Saturday_0 = ATmakeSymbol("Saturday", 0, ATfalse);
+  ATprotectSymbol(sym_Saturday_0);
+  sym_Var_1 = ATmakeSymbol("Var", 1, ATfalse);
+  ATprotectSymbol(sym_Var_1);
+  sym_Path_1 = ATmakeSymbol("Path", 1, ATfalse);
+  ATprotectSymbol(sym_Path_1);
+  sym_Prefix_2 = ATmakeSymbol("Prefix", 2, ATfalse);
+  ATprotectSymbol(sym_Prefix_2);
+  sym_FILE_1 = ATmakeSymbol("FILE", 1, ATfalse);
+  ATprotectSymbol(sym_FILE_1);
+  sym_DIR_1 = ATmakeSymbol("DIR", 1, ATfalse);
+  ATprotectSymbol(sym_DIR_1);
+  sym_TEMP_0 = ATmakeSymbol("TEMP", 0, ATfalse);
+  ATprotectSymbol(sym_TEMP_0);
+  sym_TempFiles_0 = ATmakeSymbol("TempFiles", 0, ATfalse);
+  ATprotectSymbol(sym_TempFiles_0);
+  sym_Silent_0 = ATmakeSymbol("Silent", 0, ATfalse);
+  ATprotectSymbol(sym_Silent_0);
+  sym_Verbose_1 = ATmakeSymbol("Verbose", 1, ATfalse);
+  ATprotectSymbol(sym_Verbose_1);
+  sym_Version_0 = ATmakeSymbol("Version", 0, ATfalse);
+  ATprotectSymbol(sym_Version_0);
+  sym_Input_1 = ATmakeSymbol("Input", 1, ATfalse);
+  ATprotectSymbol(sym_Input_1);
+  sym_Output_1 = ATmakeSymbol("Output", 1, ATfalse);
+  ATprotectSymbol(sym_Output_1);
+  sym_Binary_0 = ATmakeSymbol("Binary", 0, ATfalse);
+  ATprotectSymbol(sym_Binary_0);
+  sym_Statistics_0 = ATmakeSymbol("Statistics", 0, ATfalse);
+  ATprotectSymbol(sym_Statistics_0);
+  sym_Help_0 = ATmakeSymbol("Help", 0, ATfalse);
+  ATprotectSymbol(sym_Help_0);
+  sym_Runtime_1 = ATmakeSymbol("Runtime", 1, ATfalse);
+  ATprotectSymbol(sym_Runtime_1);
+  sym_DeclVersion_1 = ATmakeSymbol("DeclVersion", 1, ATfalse);
+  ATprotectSymbol(sym_DeclVersion_1);
+  sym_Program_1 = ATmakeSymbol("Program", 1, ATfalse);
+  ATprotectSymbol(sym_Program_1);
+  sym_Undefined_1 = ATmakeSymbol("Undefined", 1, ATfalse);
+  ATprotectSymbol(sym_Undefined_1);
   sym_Anno_2 = ATmakeSymbol("Anno", 2, ATfalse);
   ATprotectSymbol(sym_Anno_2);
   init_constant_terms();
@@ -447,13 +447,13 @@ ATerm copy_file_0 (ATerm);
 ATerm implode_string_0 (ATerm);
 ATerm concat_0 (ATerm);
 ATerm conc_more_lists_0 (ATerm);
-ATerm at_end_1 (ATerm, ATerm g_65 (ATerm));
+ATerm at_end_1 (ATerm, ATerm u_64 (ATerm));
 ATerm conc_two_lists_0 (ATerm);
 ATerm conc_0 (ATerm);
 ATerm explode_string_0 (ATerm);
 ATerm _2 (ATerm, ATerm x_50 (ATerm), ATerm y_50 (ATerm));
 ATerm conc_strings_0 (ATerm);
-ATerm debug_1 (ATerm, ATerm l_78 (ATerm));
+ATerm debug_1 (ATerm, ATerm h_72 (ATerm));
 ATerm is_string_0 (ATerm);
 ATerm eval_config_0 (ATerm);
 ATerm get_config_0 (ATerm);
@@ -471,8 +471,8 @@ ATerm default_usage_0 (ATerm);
 ATerm report_failure_0 (ATerm);
 ATerm ticks_to_seconds_0 (ATerm);
 ATerm add_0 (ATerm);
-ATerm foldr_2 (ATerm, ATerm f_71 (ATerm), ATerm g_71 (ATerm));
-ATerm crush_2 (ATerm, ATerm d_70 (ATerm), ATerm e_70 (ATerm));
+ATerm foldr_2 (ATerm, ATerm p_70 (ATerm), ATerm q_70 (ATerm));
+ATerm crush_2 (ATerm, ATerm n_69 (ATerm), ATerm o_69 (ATerm));
 ATerm times_0 (ATerm);
 ATerm run_time_0 (ATerm);
 ATerm gt_0 (ATerm);
@@ -480,42 +480,42 @@ ATerm geq_0 (ATerm);
 ATerm if_verbose1_1 (ATerm, ATerm g_59 (ATerm));
 ATerm report_success_0 (ATerm);
 ATerm Version_0 (ATerm);
-ATerm need_help_1 (ATerm, ATerm q_75 (ATerm));
+ATerm need_help_1 (ATerm, ATerm f_78 (ATerm));
 ATerm table_create_0 (ATerm);
 ATerm store_options_0 (ATerm);
 ATerm table_destroy_0 (ATerm);
 ATerm exit_0 (ATerm);
 ATerm is_list_0 (ATerm);
 ATerm echo_0 (ATerm);
-ATerm long_description_1 (ATerm, ATerm y_77 (ATerm));
-ATerm map_1 (ATerm, ATerm r_64 (ATerm));
+ATerm long_description_1 (ATerm, ATerm n_80 (ATerm));
+ATerm map_1 (ATerm, ATerm f_64 (ATerm));
 ATerm reverse_acc_2 (ATerm, ATerm h_0 (ATerm), ATerm i_0 (ATerm));
 ATerm reverse_0 (ATerm);
-ATerm short_description_1 (ATerm, ATerm x_77 (ATerm));
-ATerm Program_1 (ATerm, ATerm b_53 (ATerm));
+ATerm short_description_1 (ATerm, ATerm m_80 (ATerm));
+ATerm Program_1 (ATerm, ATerm t_57 (ATerm));
 ATerm system_usage_0 (ATerm);
 ATerm printnl_0 (ATerm);
 ATerm debug_0 (ATerm);
-ATerm say_1 (ATerm, ATerm m_78 (ATerm));
-ATerm Undefined_1 (ATerm, ATerm c_53 (ATerm));
-ATerm fetch_1 (ATerm, ATerm a_65 (ATerm));
-ATerm option_defined_1 (ATerm, ATerm x_76 (ATerm));
+ATerm say_1 (ATerm, ATerm i_72 (ATerm));
+ATerm Undefined_1 (ATerm, ATerm u_57 (ATerm));
+ATerm fetch_1 (ATerm, ATerm o_64 (ATerm));
+ATerm option_defined_1 (ATerm, ATerm m_79 (ATerm));
 ATerm Help_0 (ATerm);
-ATerm try_1 (ATerm, ATerm z_62 (ATerm));
+ATerm try_1 (ATerm, ATerm n_62 (ATerm));
 ATerm table_get_0 (ATerm);
 ATerm table_push_0 (ATerm);
-ATerm register_usage_1 (ATerm, ATerm c_78 (ATerm));
+ATerm register_usage_1 (ATerm, ATerm r_80 (ATerm));
 ATerm Option_3 (ATerm, ATerm a_0 (ATerm), ATerm d_0 (ATerm), ATerm g_0 (ATerm));
 ATerm system_usage_switch_0 (ATerm);
 ATerm UndefinedOption_0 (ATerm);
 ATerm Cons_2 (ATerm, ATerm g_52 (ATerm), ATerm h_52 (ATerm));
 ATerm Nil_0 (ATerm);
 ATerm set_config_0 (ATerm);
-ATerm parse_options_p__1 (ATerm, ATerm a_78 (ATerm));
+ATerm parse_options_p__1 (ATerm, ATerm p_80 (ATerm));
 ATerm table_put_0 (ATerm);
-ATerm parse_options_1 (ATerm, ATerm z_77 (ATerm));
-ATerm option_wrap_4 (ATerm, ATerm w_75 (ATerm), ATerm x_75 (ATerm), ATerm y_75 (ATerm), ATerm z_75 (ATerm));
-ATerm option_wrap_2 (ATerm, ATerm a_76 (ATerm), ATerm b_76 (ATerm));
+ATerm parse_options_1 (ATerm, ATerm o_80 (ATerm));
+ATerm option_wrap_4 (ATerm, ATerm l_78 (ATerm), ATerm m_78 (ATerm), ATerm n_78 (ATerm), ATerm o_78 (ATerm));
+ATerm option_wrap_2 (ATerm, ATerm p_78 (ATerm), ATerm q_78 (ATerm));
 ATerm cp_file_0 (ATerm);
 ATerm main_0 (ATerm);
 ATerm copy_file_0 (ATerm t)
@@ -631,7 +631,7 @@ ATerm conc_more_lists_0 (ATerm t)
   }
   return(t);
 }
-ATerm at_end_1 (ATerm t, ATerm g_65 (ATerm))
+ATerm at_end_1 (ATerm t, ATerm u_64 (ATerm))
 {
   ATerm a_3 (ATerm t)
   {
@@ -648,7 +648,7 @@ ATerm at_end_1 (ATerm t, ATerm g_65 (ATerm))
         t = j_3;
         {
           t = Nil_0(t);
-          t = g_65(t);
+          t = u_64(t);
         }
       }
     return(t);
@@ -776,7 +776,7 @@ ATerm conc_strings_0 (ATerm t)
   }
   return(t);
 }
-ATerm debug_1 (ATerm t, ATerm l_78 (ATerm))
+ATerm debug_1 (ATerm t, ATerm h_72 (ATerm))
 {
   ATerm o_3;
   o_3 = t;
@@ -786,7 +786,7 @@ ATerm debug_1 (ATerm t, ATerm l_78 (ATerm))
     p_3 = t;
     {
       ATerm p_4 = NULL;
-      t = l_78(t);
+      t = h_72(t);
       {
         p_4 = t;
         if(((o_4 != NULL) && (o_4 != p_4)))
@@ -1561,14 +1561,14 @@ ATerm add_0 (ATerm t)
     }
   return(t);
 }
-ATerm foldr_2 (ATerm t, ATerm f_71 (ATerm), ATerm g_71 (ATerm))
+ATerm foldr_2 (ATerm t, ATerm p_70 (ATerm), ATerm q_70 (ATerm))
 {
   ATerm o_8 = t;
   int p_8 = stack_ptr;
   if((PushChoice() == 0))
     {
       t = Nil_0(t);
-      t = f_71(t);
+      t = p_70(t);
       ;
       LocalPopChoice(p_8);
     }
@@ -1588,7 +1588,7 @@ ATerm foldr_2 (ATerm t, ATerm f_71 (ATerm), ATerm g_71 (ATerm))
               ATerm r_9 = NULL;
               t = not_null(n_9);
               {
-                t = foldr_2(t, f_71, g_71);
+                t = foldr_2(t, p_70, q_70);
                 {
                   r_9 = t;
                   if(((q_9 != NULL) && (q_9 != r_9)))
@@ -1599,7 +1599,7 @@ ATerm foldr_2 (ATerm t, ATerm f_71 (ATerm), ATerm g_71 (ATerm))
               }
               {
                 t = (ATerm) ATmakeAppl(sym__2, not_null(m_9), not_null(q_9));
-                t = g_71(t);
+                t = q_70(t);
               }
             }
           }
@@ -1611,7 +1611,7 @@ ATerm foldr_2 (ATerm t, ATerm f_71 (ATerm), ATerm g_71 (ATerm))
     }
   return(t);
 }
-ATerm crush_2 (ATerm t, ATerm d_70 (ATerm), ATerm e_70 (ATerm))
+ATerm crush_2 (ATerm t, ATerm n_69 (ATerm), ATerm o_69 (ATerm))
 {
   ATerm y_9 = NULL;
   ATerm a_10 = NULL;
@@ -1645,7 +1645,7 @@ ATerm crush_2 (ATerm t, ATerm d_70 (ATerm), ATerm e_70 (ATerm))
     }
     {
       t = not_null(a_10);
-      t = foldr_2(t, d_70, e_70);
+      t = foldr_2(t, n_69, o_69);
     }
   }
   return(t);
@@ -1863,7 +1863,7 @@ ATerm Version_0 (ATerm t)
     }
   return(t);
 }
-ATerm need_help_1 (ATerm t, ATerm q_75 (ATerm))
+ATerm need_help_1 (ATerm t, ATerm f_78 (ATerm))
 {
   ATerm t_1 (ATerm t)
   {
@@ -1897,7 +1897,7 @@ ATerm need_help_1 (ATerm t, ATerm q_75 (ATerm))
     return(t);
   }
   t = option_defined_1(t, t_1);
-  t = q_75(t);
+  t = f_78(t);
   return(t);
 }
 ATerm table_create_0 (ATerm t)
@@ -2012,12 +2012,12 @@ ATerm echo_0 (ATerm t)
   t = z_9;
   return(t);
 }
-ATerm long_description_1 (ATerm t, ATerm y_77 (ATerm))
+ATerm long_description_1 (ATerm t, ATerm n_80 (ATerm))
 {
   _fail(t);
   return(t);
 }
-ATerm map_1 (ATerm t, ATerm r_64 (ATerm))
+ATerm map_1 (ATerm t, ATerm f_64 (ATerm))
 {
   ATerm z_12 (ATerm t)
   {
@@ -2032,7 +2032,7 @@ ATerm map_1 (ATerm t, ATerm r_64 (ATerm))
     else
       {
         t = i_10;
-        t = Cons_2(t, r_64, z_12);
+        t = Cons_2(t, f_64, z_12);
       }
     return(t);
   }
@@ -2133,12 +2133,12 @@ ATerm reverse_0 (ATerm t)
   t = reverse_acc_2(t, _id, v_1);
   return(t);
 }
-ATerm short_description_1 (ATerm t, ATerm x_77 (ATerm))
+ATerm short_description_1 (ATerm t, ATerm m_80 (ATerm))
 {
   _fail(t);
   return(t);
 }
-ATerm Program_1 (ATerm t, ATerm b_53 (ATerm))
+ATerm Program_1 (ATerm t, ATerm t_57 (ATerm))
 {
   ATerm b_14 = NULL,c_14 = NULL;
   b_14 = t;
@@ -2161,7 +2161,7 @@ ATerm Program_1 (ATerm t, ATerm b_53 (ATerm))
           t = not_null(c_14);
           {
             ATerm j_14 = NULL;
-            t = b_53(t);
+            t = t_57(t);
             {
               h_14 = t;
               {
@@ -2348,18 +2348,18 @@ ATerm debug_0 (ATerm t)
   t = k_11;
   return(t);
 }
-ATerm say_1 (ATerm t, ATerm m_78 (ATerm))
+ATerm say_1 (ATerm t, ATerm i_72 (ATerm))
 {
   ATerm l_11;
   l_11 = t;
   {
-    t = m_78(t);
+    t = i_72(t);
     t = debug_0(t);
   }
   t = l_11;
   return(t);
 }
-ATerm Undefined_1 (ATerm t, ATerm c_53 (ATerm))
+ATerm Undefined_1 (ATerm t, ATerm u_57 (ATerm))
 {
   ATerm v_15 = NULL,w_15 = NULL;
   v_15 = t;
@@ -2382,7 +2382,7 @@ ATerm Undefined_1 (ATerm t, ATerm c_53 (ATerm))
           t = not_null(w_15);
           {
             ATerm d_16 = NULL;
-            t = c_53(t);
+            t = u_57(t);
             {
               b_16 = t;
               {
@@ -2408,7 +2408,7 @@ ATerm Undefined_1 (ATerm t, ATerm c_53 (ATerm))
     }
   return(t);
 }
-ATerm fetch_1 (ATerm t, ATerm a_65 (ATerm))
+ATerm fetch_1 (ATerm t, ATerm o_64 (ATerm))
 {
   ATerm j_16 (ATerm t)
   {
@@ -2416,7 +2416,7 @@ ATerm fetch_1 (ATerm t, ATerm a_65 (ATerm))
     int p_11 = stack_ptr;
     if((PushChoice() == 0))
       {
-        t = Cons_2(t, a_65, _id);
+        t = Cons_2(t, o_64, _id);
         ;
         LocalPopChoice(p_11);
       }
@@ -2430,9 +2430,9 @@ ATerm fetch_1 (ATerm t, ATerm a_65 (ATerm))
   t = j_16(t);
   return(t);
 }
-ATerm option_defined_1 (ATerm t, ATerm x_76 (ATerm))
+ATerm option_defined_1 (ATerm t, ATerm m_79 (ATerm))
 {
-  t = fetch_1(t, x_76);
+  t = fetch_1(t, m_79);
   return(t);
 }
 ATerm Help_0 (ATerm t)
@@ -2476,13 +2476,13 @@ ATerm Help_0 (ATerm t)
     }
   return(t);
 }
-ATerm try_1 (ATerm t, ATerm z_62 (ATerm))
+ATerm try_1 (ATerm t, ATerm n_62 (ATerm))
 {
   ATerm v_11 = t;
   int w_11 = stack_ptr;
   if((PushChoice() == 0))
     {
-      t = z_62(t);
+      t = n_62(t);
       ;
       LocalPopChoice(w_11);
     }
@@ -2564,13 +2564,13 @@ ATerm table_push_0 (ATerm t)
     }
   return(t);
 }
-ATerm register_usage_1 (ATerm t, ATerm c_78 (ATerm))
+ATerm register_usage_1 (ATerm t, ATerm r_80 (ATerm))
 {
   ATerm u_17 = NULL;
   ATerm v_17 = NULL;
   t = term_m_4;
   {
-    t = c_78(t);
+    t = r_80(t);
     {
       v_17 = t;
       if(((u_17 != NULL) && (u_17 != v_17)))
@@ -2812,7 +2812,7 @@ ATerm set_config_0 (ATerm t)
     }
   return(t);
 }
-ATerm parse_options_p__1 (ATerm t, ATerm a_78 (ATerm))
+ATerm parse_options_p__1 (ATerm t, ATerm p_80 (ATerm))
 {
   ATerm j_12;
   j_12 = t;
@@ -2820,7 +2820,7 @@ ATerm parse_options_p__1 (ATerm t, ATerm a_78 (ATerm))
     ATerm m_2 (ATerm t)
     {
       t = term_l_12;
-      t = a_78(t);
+      t = p_80(t);
       return(t);
     }
     t = try_1(t, m_2);
@@ -2875,7 +2875,7 @@ ATerm parse_options_p__1 (ATerm t, ATerm a_78 (ATerm))
             {
               t = x_12;
               {
-                t = a_78(t);
+                t = p_80(t);
                 t = Cons_2(t, _id, t_2);
               }
             }
@@ -2935,7 +2935,7 @@ ATerm table_put_0 (ATerm t)
   t = a_13;
   return(t);
 }
-ATerm parse_options_1 (ATerm t, ATerm z_77 (ATerm))
+ATerm parse_options_1 (ATerm t, ATerm o_80 (ATerm))
 {
   ATerm n_21 = NULL;
   ATerm b_13;
@@ -2952,7 +2952,7 @@ ATerm parse_options_1 (ATerm t, ATerm z_77 (ATerm))
       int e_13 = stack_ptr;
       if((PushChoice() == 0))
         {
-          t = z_77(t);
+          t = o_80(t);
           ;
           LocalPopChoice(e_13);
         }
@@ -3053,19 +3053,19 @@ ATerm parse_options_1 (ATerm t, ATerm z_77 (ATerm))
   }
   return(t);
 }
-ATerm option_wrap_4 (ATerm t, ATerm w_75 (ATerm), ATerm x_75 (ATerm), ATerm y_75 (ATerm), ATerm z_75 (ATerm))
+ATerm option_wrap_4 (ATerm t, ATerm l_78 (ATerm), ATerm m_78 (ATerm), ATerm n_78 (ATerm), ATerm o_78 (ATerm))
 {
-  t = parse_options_1(t, w_75);
+  t = parse_options_1(t, l_78);
   {
     t = store_options_0(t);
     {
-      t = y_75(t);
+      t = n_78(t);
       {
         ATerm w_13 = t;
         int x_13 = stack_ptr;
         if((PushChoice() == 0))
           {
-            t = need_help_1(t, x_75);
+            t = need_help_1(t, m_78);
             ;
             LocalPopChoice(x_13);
           }
@@ -3077,7 +3077,7 @@ ATerm option_wrap_4 (ATerm t, ATerm w_75 (ATerm), ATerm x_75 (ATerm), ATerm y_75
               int z_13 = stack_ptr;
               if((PushChoice() == 0))
                 {
-                  t = z_75(t);
+                  t = o_78(t);
                   t = report_success_0(t);
                   ;
                   LocalPopChoice(z_13);
@@ -3094,9 +3094,9 @@ ATerm option_wrap_4 (ATerm t, ATerm w_75 (ATerm), ATerm x_75 (ATerm), ATerm y_75
   }
   return(t);
 }
-ATerm option_wrap_2 (ATerm t, ATerm a_76 (ATerm), ATerm b_76 (ATerm))
+ATerm option_wrap_2 (ATerm t, ATerm p_78 (ATerm), ATerm q_78 (ATerm))
 {
-  t = option_wrap_4(t, a_76, default_usage_0, _id, b_76);
+  t = option_wrap_4(t, p_78, default_usage_0, _id, q_78);
   return(t);
 }
 ATerm cp_file_0 (ATerm t)

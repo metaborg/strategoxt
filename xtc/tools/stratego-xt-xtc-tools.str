@@ -1,5 +1,5 @@
 module stratego-xt-xtc-tools
-imports xtc-proc
+imports xtc-lib
 
 strategies
 
