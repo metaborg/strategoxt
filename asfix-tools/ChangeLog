@@ -1,6 +1,8 @@
 2002-05-08 Merijn de Jonge <mdejonge@cwi.nl>
    * asfix-yield: Changed way that asource is created in order to
      asfix-tools package compile on cygwin
+   * visamb: renamed Visamb.r to Vis-amb.r to solve case insensitiveness
+     problems on cygwin platform
 
 
 2002-03-16  Eelco Visser  <visser@acm.org>

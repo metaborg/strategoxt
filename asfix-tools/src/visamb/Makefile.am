@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.4 2001/06/12 08:31:25 mdejonge Exp $
+# $Id: Makefile.am,v 1.5 2002/05/08 08:44:45 mdejonge Exp $
 
 include $(srcdir)/../templates/make_rules 
 include $(srcdir)/../templates/make_rules.stratego
@@ -24,10 +24,10 @@ include $(STRATEGO_PRG:%=%.dep)
 
 SUBDIRS         = data
 
-STRATEGO_PRG    = Visamb
+STRATEGO_PRG    = Vis-amb
 
 libexec_SCRIPTS = $(STRATEGO_PRG)
-pkgdata_DATA    = Visamb.r
+pkgdata_DATA    = Vis-amb.r
 
 TESTS           = visamb1_check visamb2_check
 
@@ -35,12 +35,12 @@ SCFLAGS        += -I $(srcdir)/../asfix --main $*
 
 CLEANFILES     += visamb1_check visamb2_check
 
-visamb1_check_prog    = Visamb
+visamb1_check_prog    = Vis-amb
 visamb1_check_input   = data/input.test.tree
 visamb1_check_output  = data/input.test.tree.out
 visamb1_check_correct = data/input.test.tree.out.correct
 
-visamb2_check_prog    = Visamb
+visamb2_check_prog    = Vis-amb
 visamb2_check_input   = data/input.exp.tree
 visamb2_check_output  = data/input.exp.tree.out
 visamb2_check_correct = data/input.exp.tree.out.correct

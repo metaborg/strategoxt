@@ -1,6 +1,6 @@
 \literate[{\tt VISAMB}: Visualize Ambiguities]
 
-	Usage: Visamb -i parsetree.asfix -o parsetree.ambs
+	Usage: Vis-amb -i parsetree.asfix -o parsetree.ambs
 
 	This module defines a strategy to extract and display the
 	ambiguities in a parse tree represented in AsFix.  Ambiguities
@@ -67,7 +67,7 @@ exports
 	the tree using the text module.
 
 \begin{code}
-module Visamb
+module Vis-amb
 imports lib asfix
 signature
   constructors
@@ -84,7 +84,7 @@ strategies
         "ambiguities, the visamb tool extracts the ambiguities from a parse tree and\n",
         "displays them in a readable format.\n"]
 
-  Visamb = 
+  Vis-amb = 
     parse-options(io-options); 
     (
        input-file;
