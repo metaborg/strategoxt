@@ -1,0 +1,96 @@
+#! /bin/sh
+# Sdf-Tools
+# Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
+#                    Eelco Visser <visser@acm.org>
+#                    Joost Visser <jvisser@cwi.nl>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+# $Id: sdf2text.sh.src,v 1.1 2001/06/07 12:06:37 mdejonge Exp $
+
+#
+# sdf2text -- a tool for pretty-printing SDF modules or definitions
+#
+# usage:
+#  sdf2text [-a] [-i input] [-o output] [-v]
+#
+# where
+#     -a         Pretty-print abstract syntax tree rather than a concrete
+#                SDF term
+#     -h         Display usage information
+#     -i input   Read input from `input' 
+#     -o output  Write output to `output'
+#     -v         Display version information
+#
+
+PREFIX=__PREFIX__
+GPP=__GPP__
+SGLR=__SGLR__
+
+PATH=${GPP}/bin:${SGLR}/bin:${PREFIX}/bin:${PATH}
+export PATH
+
+
+INPUT=
+OUTPUT=
+ABSTRACT="false"
+
+usage ()
+{
+   cat <<ENDCAT
+sdf2text -- a tool for pretty-printing SDF modules or definitions
+
+usage:
+ sdf2text [-a] [-i input] [-o output] [-v]
+
+where
+    -a         Pretty-print abstract syntax tree rather than a concrete
+               SDF term
+    -h         Display usage information
+    -i input   Read input from \`input' 
+    -o output  Write output to \`output'
+    -v         Display version information
+ENDCAT
+}
+
+version ()
+{
+   echo sdf2text version __VERSION__ >&2
+}
+   
+
+# Parse command line arguments
+while getopts ahi:o:v c
+do
+   case $c in
+      a) ABSTRACT="true" ;;
+      h) usage; exit 0 ;;
+      i) INPUT="-i ${OPTARG}" ;;
+      o) OUTPUT="-o ${OPTARG}" ;;
+      v) version; exit 0 ;;
+      *) printf "Invalid option" ; exit 1;;
+   esac
+done
+
+if [ "a${ABSTRACT}" = "afalse" ]; then
+   sglr -p ${PREFIX}/share/sdf-tools/sdf.cons.tbl ${INPUT} \
+    | asfix2abox -p ${PREFIX}/share/sdf-tools/sdf.cons.pp \
+    | abox2text -q -a ${OUTPUT} || exit 1
+else
+   ast2abox  ${INPUT} -p ${PREFIX}/share/sdf-tools/sdf.cons.pp  \
+    | abox2text -q -a ${OUTPUT} || exit 1 
+fi
+
