@@ -12,7 +12,10 @@ imports options parse-cs-lib asfix
 strategies
 
   io-pp-stratego-latex-alltt =
-    xtc-io-wrap(syntax-option, pp-stratego-latex-alltt)
+    xtc-io-wrap(
+      syntax-option + include-options
+    , pp-stratego-latex-alltt
+    )
 
   pp-stratego-latex-alltt =
       pcs-input-file
