@@ -31,6 +31,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 #include <time.h>
 #include <sys/times.h>
 
+ATerm SSL_time(void)
+{
+  return ATmakeInt(time(NULL));
+}
+
 struct rusage rusage;
 
 double dtime(void)
@@ -88,8 +93,6 @@ ATerm SSL_TicksToSeconds(ATerm t)
       _fail(t);
 
   ticks = ATgetInt((ATermInt) t);
-
-  //ATfprintf(stderr, "tps = %d, ticks = %d, secs = %f\n", tps, ticks, (double)ticks / (double)tps);
 
   return (ATerm) ATmakeReal((double)ticks / (double)tps);
 }

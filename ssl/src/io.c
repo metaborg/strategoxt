@@ -138,7 +138,10 @@ ATerm SSL_print(ATerm file, ATerm str)
 {  
   FILE *outfile;
 
-  outfile = _SSL_file_table_lookup(file);
+  if(ATisInt(file))
+    outfile = (FILE *)AT_getInt(file);
+  else
+    outfile = _SSL_file_table_lookup(file);
   if(outfile == NULL) 
     _fail(file);
   //str = consnil_to_list(str);
@@ -160,7 +163,11 @@ ATerm SSL_printnl(ATerm file, ATerm str)
   FILE *outfile;
 
   // ATfprintf(stderr, "SSL_printnl(%t, %t)\n", file, str);
-  outfile = _SSL_file_table_lookup(file);
+  if(ATisInt(file))
+    outfile = (FILE *)AT_getInt(file);
+  else
+    outfile = _SSL_file_table_lookup(file);
+
   if(outfile == NULL) {
     ATfprintf(stderr, "printnl: could not open file: %t\n", file);
     _fail(file);
@@ -189,7 +196,10 @@ ATerm SSL_printascii(ATerm file, ATerm str)
 
   // ATfprintf(stderr, "SSL_printascii(): top = %t\n", Ttop());
 
-  outfile = _SSL_file_table_lookup(file);
+  if(ATisInt(file))
+    outfile = (FILE *)AT_getInt(file);
+  else
+    outfile = _SSL_file_table_lookup(file);
   if(outfile == NULL) 
     _fail(file);
   while(!ATisEmpty((ATermList)str))
@@ -214,6 +224,8 @@ ATerm SSL_ReadFromFile(ATerm filename)
     infile = stdin;
   else if(ATisString(filename))
     infile = fopen(t_string(filename), "r");
+  else if(ATisInt(filename))
+    infile = (FILE *)AT_getInt(filename);
   else
     _fail(filename);
 
@@ -243,7 +255,9 @@ ATerm SSL_WriteToFile(ATbool binary, ATerm filename, ATerm trm)
     outfile = stderr;
   else if(ATisString(filename))
     outfile = fopen(t_string(filename), "w");
-  else 
+  else if(ATisInt(filename))
+    outfile = (FILE *)AT_getInt(filename);
+  else
     _fail(filename);
 
   if(outfile != NULL)
@@ -275,7 +289,9 @@ ATerm SSL_getchar(ATerm filename)
 {
   FILE *infile;
 
-  if((infile = _SSL_file_table_lookup(filename)) == NULL)
+  if(ATisInt(filename))
+    infile = (FILE *)AT_getInt(filename);
+  else if((infile = _SSL_file_table_lookup(filename)) == NULL)
     {
       ATfprintf(stderr, "file %t not open\n", filename);
       _fail(filename);
