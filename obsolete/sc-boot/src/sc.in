@@ -10,7 +10,7 @@ CPL=@CPL@
 ${prefix}/bin/proto-sc \
     $* \
     -e ${prefix}/bin \
-    -I ${STRATEGOLIB}/share/stratego-lib \
+    -I ${STRATEGOLIB}/share/ssl \
     -CI "-I${STRATEGORTS}/include" \
     -CI "-I${STRATEGOLIB}/include" \
     -CL "-L${STRATEGOLIB}/lib -lstratego-lib.opt" \

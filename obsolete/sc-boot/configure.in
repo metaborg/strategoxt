@@ -16,7 +16,7 @@
 # 02111-1307, USA.
 
 AC_INIT(src/frontend.c)
-AM_INIT_AUTOMAKE(sc-boot,0.6)
+AM_INIT_AUTOMAKE(sc-boot,0.6a)
 
 AC_ARG_WITH(aterm, [  --with-aterm          Specify location of aterm library, default: \$prefix], ATERM=$withval, ATERM="$prefix")
 AC_ARG_WITH(cgen,  [  --with-cgen           Specify location of CGEN, default: \$prefix], CGEN=$withval, CGEN="$prefix")
@@ -24,7 +24,7 @@ AC_ARG_WITH(gpp,   [  --with-gpp            Specify location of GPP, default: \$
 AC_ARG_WITH(ssl,   [  --with-ssl            Specify location of Stratego Library (SSL), default: \$prefix], STRATEGOLIB=$withval, STRATEGOLIB="$XT")
 AC_ARG_WITH(srts,  [  --with-srts           Specify location of Stratego run-time system (SRTS), default: \$prefix], STRATEGORTS=$withval, STRATEGORTS="$XT")
 
-AC_REVISION($Id: configure.in,v 1.1 2001/08/22 12:13:39 visser Exp $)
+AC_REVISION($Id: configure.in,v 1.2 2001/08/22 16:21:49 visser Exp $)
 
 AC_PROG_CC
 AC_PROG_RANLIB
