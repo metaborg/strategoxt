@@ -1,3 +1,8 @@
+2003-08-07  Merijn de Jonge  <M.de.Jonge@tue.nl>
+   * pp/Dot.pp: added version tag
+   * pp/Dot-pretty.pp added version  tag
+   * pp/Makefile.am added Dot.pp Dot-pretty.pp to pkgdata_DATA
+
 2003-06-13 Rob Vermaas <rob@strategoxt.org>
 
 	* Changed structure of package to the common structure of -tools/-front packages. (pp/syn/sig)

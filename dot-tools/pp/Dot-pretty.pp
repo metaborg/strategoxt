@@ -1,4 +1,6 @@
 [
+   "dot-1" -- _1,
+
    DotGraph -- V[ V is=2 [ H[ KW["graph"] _1 KW["{"]] _2] KW["}"]],
    DotGraph.2:iter-star -- _1,
    StrictDotGraph -- V[ V is=2[ H[ KW["strict"] KW["graph"]  _1 KW["{"] ] _2 ] KW["}"]],
