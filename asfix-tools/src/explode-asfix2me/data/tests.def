@@ -1,0 +1,22 @@
+definition
+
+module  Main
+exports
+sorts S S1
+lexical syntax
+   [\ \t\n] -> LAYOUT
+   "%%" ~[\n]* "\n" -> LAYOUT
+
+context-free restrictions
+   LAYOUT? -/- [\ \t\n\%]
+
+context-free syntax
+   "a" -> S {cons("a")}
+   "b" -> S {cons("b")}
+
+   "c"* -> S {cons("c")}
+   
+   {"d" ","}+ -> S1{cons("d")}
+
+lexical syntax
+   "k"* -> S
