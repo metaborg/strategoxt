@@ -11,6 +11,7 @@ sdfdata_DATA = \
   Stratego-Core.tbl \
   StrategoForTesting.def \
   StrategoForTesting.tbl \
+  StrategoStrategoForTesting.def \
   StrategoStrategoForTesting.tbl \
   StrategoRenamed.sdf \
   $(wildcard *.sdf)				       
