@@ -1,4 +1,4 @@
-StrategoXT 0.10 is under construction
+StrategoXT 0.10 -- released May 08, 2004
 
 ---------++ Summary of Changes
 
@@ -58,7 +58,6 @@ and semantics, and is presented in BNF below. Some basic entities are:
   dsig  definition signature, identifier with optional strategy and term
         arguments: f(sd*|vd*).
 </verbatim>
-
 
 Generation of new rules always occurred within =override/extend rules(..)=
 constructs. Now, just one =rules(..)= construct is available. The dynamic
@@ -321,7 +320,7 @@ lower-case.
 The Stratego Tools package has been updated to use the latest
 definitions of Stratego in stratego-front. The existing tools in
 Stratego Tools are not really heavily used, so you will probably never
-have experiences any problems.
+have experienced any problems.
 
 Stratego Tools in StrategoXT 0.10 contains a new tool,
 pp-stratego-latex-alltt. This tool is mainly useful for including
@@ -359,19 +358,20 @@ is mostly thanks to the updates of the development tools for Mac OS X.
 
 vim, improved nedit.
 
+  (Arthur van Dam and Shishir Ramam)
+
 ---------++ Many bug fixes and minor improvements
 
 Just before StrategoXT 0.9.5 we adopted the JIRA issue tracking
 system. This has been very helpful in for keeping track of problems
 that need to be fixed. Many small problems have been fixed in this
 release. Before we adopting JIRA, many of these issues would have been
-forgotten.
+forgotten. Please report any issues to JIRA, even if you think that it
+is not that important, or if you have already found a
+workaround. Feedback of users is very important in adding the
+finishing touch to our tools!
 
-Please report any issues to JIRA, even if you think that it is not
-that important, or if you have already found a workaround. Feedback of
-users is very important in adding the finishing touch to our tools!
-
-Some pointers to overview of issues:
+Some pointers to overviews of issues:
 
    * [[StrategoRelease010Issues][list of all issues closed in StrategoXT 0.10]]
    * [[TODO][StrategoXT roadmap]]
@@ -408,5 +408,7 @@ Developments, beta tests, and bug fixes were carried out by
   * Martin Bravenboer
   * Arthur van Dam
   * Valentin David
-  * Eelco Visser
   * Shishir Ramam
+  * Rob Vermaas
+  * Eelco Visser
+
