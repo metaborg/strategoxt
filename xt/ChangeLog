@@ -1,3 +1,6 @@
+2001-08-09 Merijn de Jonge <mdejonge@cwi.nl>
+        * Added boxenv to required package list package.conf
+
 2001-06-12 Merijn de Jonge <mdejonge@cwi.nl>
         * src/gbquery: added -d switch to retrieve the location of a grammar
           definition file
