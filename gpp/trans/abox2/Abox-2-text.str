@@ -39,6 +39,10 @@ strategies
       , where(<set-config> ("--width", <string-to-int>))
       , !"-w int | --width int       Specifies max width of output."
       )
+    + Option("-l"
+            , where(<set-config> ("--width", "0"))
+            , !"-l               Add no additional newlines (same as --width 0)"
+            )
 
   get-width =
     <get-config> "--width" <+ !80
@@ -73,7 +77,9 @@ strategies
         hv-add-to-hbox(s,hsl) :
           (box, [(strs, xpos) | vbs ]) -> [([ str | strs ], <add> (new-xpos, <hsl> ())) | vbs]
             where <s> (box, xpos) => (str, new-xpos)
-                ; <leq> (new-xpos, <get-width> ())
+                ; <leq> ( new-xpos, <get-width> ())
+                          +
+                  <eq>  ( 0, <get-width> )
         
         hv-in-new-vbox(s,hsl, left-xpos) :
           (box, vbs) -> [([str], <add> (new-xpos, <hsl> ())) | vbs]

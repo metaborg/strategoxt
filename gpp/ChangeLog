@@ -1,3 +1,8 @@
+2005-03-11  Rene de Groot <rcgroot@cs.uu.nl>
+        * trans/abox2/Abox-2-text.str, xtc-tools/abox2text.str:
+        Added '-l' to avoid adding extra newlines when the target width 
+        is not limited. Implemented as setting width to zero.
+
 2005-01-30  Martin Bravenboer <martin@cs.uu.nl>
 
 	* xtc-tools/ast2abox.str: pass the verbose option to ast2abox.
