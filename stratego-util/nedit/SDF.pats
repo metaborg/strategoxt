@@ -27,11 +27,12 @@
 
 nedit.highlightPatterns: SDF:1:0{\n\
 		String:"L?""":"""":"$":String::\n\
-		Keywords:"<(?:module|imports|exports|hiddens|equations|sorts|variables|context-free|syntax|cons|bracket|left|right|assoc|non-assoc|lexical|syntax|priorities|restrictions|LAYOUT)>":::Keyword::\n\
+		Keywords:"<(?:module|imports|exports|hiddens|equations|sorts|variables|context-free|syntax|lexical|syntax|priorities|restrictions|LAYOUT)>":::Keyword::\n\
+		Attributes:"<(?:reject|cons|bracket|left|right|assoc|non-assoc)>":::Identifier1::\n\
 		Line comment:"%":"$"::Comment::\n\
 		Constructor:"[A-Z][\\w'\\-]*":::Identifier::\n\
 		right arrow:"\\-\\>":::Preprocessor::\n\
 		operator characters:"[\\*\\?\\+\\(\\){}\\>\\|]":::Preprocessor1::\n\
 		character set:"L?\\[":"\\]"::String1::\n\
 	}
-nedit.languageModes:	SDF:.sdf:::::::
+nedit.languageModes:	SDF:.sdf::::::
