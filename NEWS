@@ -14,6 +14,54 @@ News about Stratego releases
 
 ------------------------------------------------------------------------------
 
+Version 0.9 - under construction
+
+Release 0.9 is still under construction. The news items about the 0.9beta
+releases provide details about the changes. This entry provides a summary
+of the changes since release 0.8.1.
+
+DOWNLOAD AND INSTALLATION
+
+The download page contains the source distribution and instructions
+for installation
+
+  * http://www.stratego-language.org/Stratego/StrategoRelease09
+
+SUMMARY OF CHANGES 
+
+  * StrategoXT
+    - XT CVS repository moved from CWI to UU
+    - merged XT and Stratego repositories
+    - single distribution for StrategoXT
+    - separate packages will also be available
+
+  * AutoXT 
+    - autoconf/make support for XT packages
+    - Building the distribution uses only the C compiler
+
+  * SRTS
+    - Complete run-time system for Stratego programs, including
+      library primitives. After C generation, this package is
+      all that is needed to compile a Stratego program.
+
+  * XTC 
+    - Transformation tool composition
+    - Sdf-import -- XTC registration of sdf tools
+
+  * Dynamic rules
+    - bug in dynamic rules with overlapping left-hand sides fixed
+
+  * LEX/YACC grammar retired
+    - the compiler now depends on SDF
+
+  * Refactoring of packages
+    - C-Tools -- support for C generation (and transformation)
+    - Dot-tools -- syntax of the dot language
+
+  * Many bug fixes and refactorings
+
+------------------------------------------------------------------------------
+
 Version 0.9beta8 - released January 1, 2003
 
 DOWNLOAD AND INSTALLATION
@@ -71,11 +119,6 @@ DETAILS
   Parse-unit is a tool for unit testing SDF definitions. Contribution
   by Martin Bravenboer.
 
-* Bug fixes and refactorings
-
-  While fixing bugs and adding functionality, the compiler components
-  are gradually refactored to use more modern Stratego techniques.
-
 * SSL / exec
 	
   - fork-and-wait fails if the child returns with a non-zero exit
@@ -99,6 +142,11 @@ DETAILS
 
     Typical use of all this is to coerce programs that only read or
     write using stdio into using file io.
+
+* Bug fixes and refactorings
+
+  While fixing bugs and adding functionality, the compiler components
+  are gradually refactored to use more modern Stratego techniques.
 
 ------------------------------------------------------------------------------
 
@@ -291,6 +339,14 @@ DETAILS
 ------------------------------------------------------------------------------
 
 Version 0.9beta2
+
+SUMMARY OF CHANGES
+
+  * StrategoXT
+  * XT CVS repository from CWI to UU
+  * Autotools
+
+CHANGES
 
 * XT CVS repository from CWI to UU
 
