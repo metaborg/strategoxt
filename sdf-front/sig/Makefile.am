@@ -6,7 +6,7 @@ pkgdata_DATA     = Sdf2.rtree
 
 EXTRA_DIST       = $(SIGS) $(pkgdata_DATA) 
 CLEANFILES       = $(wildcard *.dep)
-BOOTCLEANFILES   = $(SIGS) $(pkgdata_DATA)
+BOOTCLEANFILES   = $(SIGS) $(pkgdata_DATA) Sdf2.def
 
 SDF2RTG_FLAGS = -m $*
 

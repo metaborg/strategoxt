@@ -4,7 +4,7 @@ include $(wildcard *.dep)
 pkgdata_DATA   = xml-doc.rtg xml-doc.str xml-doc.rtree 
 
 EXTRA_DIST     = $(pkgdata_DATA)
-BOOTCLEANFILES = $(pkgdata_DATA)
+BOOTCLEANFILES = $(pkgdata_DATA) xml-doc.def
 
 SDF2RTG_FLAGS  = --main xml
 

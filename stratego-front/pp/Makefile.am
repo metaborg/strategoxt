@@ -16,7 +16,8 @@ pkgdata_DATA 	= Stratego.pp Stratego-pretty.pp			\
 
 BOOTCLEANFILES = $(wildcard *.af) $(wildcard *.c)		    \
 		 Stratego.pp StrategoStratego.pp		    \
-		 Stratego.pp.af Stratego-Sugar.pp Stratego-Core.pp  
+		 Stratego.pp.af Stratego-Sugar.pp Stratego-Core.pp  \
+                 Stratego.def Stratego-Core.def Stratego-Sugar.def
 
 EXTRA_DIST 	=						    \
 		$(wildcard *.pp)				    \

@@ -6,7 +6,7 @@ pkgdata_DATA     = ATerms.rtree
 
 EXTRA_DIST       = $(SIGS) $(pkgdata_DATA) 
 CLEANFILES       = $(wildcard *.dep)
-BOOTCLEANFILES   = $(SIGS) $(pkgdata_DATA)
+BOOTCLEANFILES   = $(SIGS) $(pkgdata_DATA) ATerms.def
 
 ATerms.str : ATerms.def
 	$(STRATEGO_REGULAR)/bin/sdf2rtg -i $< -m ATerms | \
