@@ -6,7 +6,5 @@ autoconf
 #autoheader
 automake -a
 
-touch spec/*.rtree
-
 
 
