@@ -1,0 +1,10 @@
+Makefile.in
+Makefile
+configure
+config.h.in
+aclocal.m4
+config.log
+config.cache
+config.status
+VERSION
+*.tar.gz
