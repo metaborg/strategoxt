@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: pp.sh.src,v 1.1 2001/06/08 16:09:16 mdejonge Exp $
+# $Id: pp.sh.src,v 1.2 2001/06/08 16:23:13 mdejonge Exp $
 
 
 # pp -- pretty-print tool
@@ -44,7 +44,7 @@ PREFIX=__PREFIX__
 GPP=__GPP__
 
 
-PATH=${PREFIX}/bin:${GPP}/bin:${PATH}
+PATH=${PREFIX}/bin:${GPP}/bin:${PATH}; export PATH
 
 
 LANGUAGE=
@@ -106,9 +106,9 @@ table=`gbquery -pp ${LANGUAGE} ${VERSION}` || exit 1
 # options
 if [ "a${INPUT_TYPE}" = "atext" ]; then
    if [ "a${LANG_VERSION}" != 'a*' ]; then
-      LV="-v ${LANG_VERSION}"
+      LV="${LANG_VERSION}"
    fi
-   exec sh -c "parse -l ${LANGUAGE} ${LV} ${INPUT} | pp -l ${LANGUAGE} ${LV} -O ${OUTPUT_TYPE} -A ${OUTPUT}"
+   exec sh -c "parse ${LANGUAGE} ${LV} ${INPUT} | pp ${LANGUAGE} ${LV} -O ${OUTPUT_TYPE} -A ${OUTPUT}"
 
 
 elif [ "a${INPUT_TYPE}" = "aast" ]; then
