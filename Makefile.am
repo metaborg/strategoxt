@@ -1,7 +1,10 @@
+ACLOCAL_AMFLAGS = -I .
+
 SUBDIRS      = . news-archive $(PKGS)
 DIST_SUBDIRS = news-archive $(DIST_PKGS)
 EXTRA_DIST   = $(EXTRA_FILES)
 EXTRA_FILES  = README svn-revision bootstrap acinclude.m4 strategoxt.spec.in strategoxt.spec
+
 
 all-local: $(BUILD_SRTS_DEST)/srts.dummy $(INSTALL_XTC_DEST)/xtc.dummy
 install-exec-local: $(BUILD_SRTS_DEST)/srts.dummy $(INSTALL_XTC_DEST)/xtc.dummy
