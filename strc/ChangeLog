@@ -2,6 +2,11 @@
 	* spec/front/stratego-warnings.str: Replaced SDef/3 by SDefT/4
         * spec/front/stratego-warnings.str: stratego-warnings -h now
           displays all possible warnings that can be toggled on
+        * sprc/front/stratego-warnings.str: Added check for lower-case
+          constructor names. It is adviced to write constructor names in
+          Upper-case and variables in lower-case. THis is a heuristicto
+          distinguish them. The new test warns for lower-case constructor
+          names.
 
 2004-04-26  Arthur van Dam  <adam@cs.uu.nl>
 

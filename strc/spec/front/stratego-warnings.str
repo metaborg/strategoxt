@@ -16,13 +16,15 @@ signature
   constructors
     ObsoleteWarning: Str -> Warning
     DebugWarning   : Str -> Warning 
+    ConstructorWarning: Str -> Warning
 
 overlays
 
   AllWarnings = [
-     ("debug-arguments",         "Warns for missing build operator."), 
-     ("obsolete-strategy-calls", "Warns for obsolete strategies."), 
-     ("maybe-unbound-variables", "Warns for unbound variables.")
+     ("debug-arguments",         "Warns for missing build operator"), 
+     ("obsolete-strategy-calls", "Warns for obsolete strategies"), 
+     ("maybe-unbound-variables", "Warns for unbound variables"),
+     ("lower-case-constructors", "Warns for lower-case constructors")
      ]
 
 strategies
@@ -53,13 +55,24 @@ strategies
      concat-strings
      
   Warning(spec) =
-    WarningDebugArguments(spec)
+       WarningDebugArguments(spec)
     <+ WarningObsolete(spec)
     <+ MaybeUnboundVariables(spec)
+    <+ LowerCaseConstructors(spec)
     <+ <printnl> (stderr, ["** WARNING incorrect parameter passed to -W switch: ", <id>]);
        ![]
 
 strategies
+  LowerCaseConstructors(spec) =
+  ?"lower-case-constructors";
+  spec;
+  collect( ?OpDecl(<id>, _)  );
+  uniq;
+  filter( 
+     \ x -> ConstructorWarning(<double-quote>x) 
+       where
+          lower-case => x
+     \ )
 
   MaybeUnboundVariables(spec) =
     ?"maybe-unbound-variables" // handled by use-def component
@@ -116,7 +129,11 @@ mk-warning: (strat, DebugWarning(warning)) -> msg
    ["warning: possibly missing build operator in debug strategy in \"", strat,"\"\n",
     "  debug(",<double-quote>warning,")\n"] => msg
    
-
+// Create warning string for lower-case constructors
+mk-warning: ConstructorWarning(warning) -> msg
+   where
+   <concat-strings>
+   ["warning: lower-constructor name found: ", warning, "\n"] => msg
    
 // A strategy-invokation warning is a warning related to a invokation of a
 // strategy. Typically, this means a call to an obsolete strategy.
@@ -131,14 +148,13 @@ strategy-invokation-warning(s) =
     map-apply(get-strategy-callers)
    <+
     ![]
-// A strategy-argument warning warns about a possibl incorrect argument to a
+
+// A strategy-argument warning warns about a possible incorrect argument to a
 // strategy. A typical example is a string argument to the "debug" strategy:
 //    debug("debug message")   since it should be   debug(!"debug message)
 //
 strategy-argument-warning(s) =
    collect(s);concat
-      
-
 
 // Print a list of warnings to standard error and also print a count of the
 // number of warnings
