@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Asfix2abox.r,v 1.1 2001/12/18 11:24:20 mdejonge Exp $
+% $Id: Asfix2abox.r,v 1.2 2001/12/19 12:04:35 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 % Changes: Eelco Visser <visser@acm.org> 19/5/20001
@@ -39,10 +39,11 @@ signature
 strategies
 
    Asfix2abox = 
-     iowrap(asfix2abox
-	    ,Option( "-v", !Verbose())
-             + ArgOption( "-p", \x -> PP-Table(x)\ , 
-                !"-p <table>       Use pretty-print entries from <table>" ))
+     iowrap(asfix2abox,
+             Option( "-V", !Verbose(),           !"-V               verbose execution." )
+        +    Option( "-c", !Conservative(),      !"-c               Ck
+nservative pretty-printing (only format where needed).")
+        + ArgOption( "-p", \x -> PP-Table(x)\ ,  !"-p <table>       Use pretty-print entries from <table>" ))
 
    asfix2abox = 
       ?(options, term);

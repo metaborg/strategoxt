@@ -19,13 +19,17 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: layout.r,v 1.1 2001/12/18 11:24:21 mdejonge Exp $
+% $Id: layout.r,v 1.2 2001/12/19 12:04:35 mdejonge Exp $
 
-% Author: Merijn de Jonge (mdjonge@cwi.nl)
+% Author: Merijn de Jonge (mdejonge@cwi.nl)
 
 \begin{code}
 module layout
 imports lib pp-tables
+
+signature
+   constructors
+      Conservative: Option
 
 strategies
 
@@ -81,45 +85,61 @@ insert-layout =
    }   );
    // Add initial + trailing layout to result BOX term
    ?(abox, [trailing-layout|xs]);
-   !HV([],
-<filter(not(layout(id))+layout(id);is-significant-layout;layout2box);flat-list>
-            [initial-layout, 
-            abox, 
-            trailing-layout])
+   !HV([SOpt(HS,"0")],
+   <filter(
+      not(layout(id))
+     <+layout(id);has-option(!Conservative);has-layout;layout2box
+     <+layout(id);not(has-option(!Conservative));has-significant-layout;layout2box
+     );
+     flat-list>[initial-layout, abox, trailing-layout])
 
-deconstr =
-   ?H(a,b);!b
-   +
-   ?V(a,b);!b
-constr =
-   ?(H(a,b),b') ; !H(a,b')
-   
-   
 InsLayout(s) = 
-   rec x ( {a,a',w,b,xs, ws, ws', ws'',xs',ws''':
+   rec x ( {a,a',w,b,b',xs, ws, ws', ws'',xs',ws''':
       ([], id)
    <+
       ?([a], ws);<s>(a,ws);?(a',ws');!([a'],ws')
    <+
       ?([a,b|xs], ws); 
       <s>(a,ws) => (a',[w|ws']);
-      <x>([b|xs], ws');?(xs', ws'');
+      <x>([b|xs], ws');?([b'|xs'], ws'');
       (
-         <is-significant-layout>w;
-         !([a', <layout2box>w|xs'], ws'')
+         // In case of conservative pretty-printing we insert original
+         // layout (when it exists) in the generated BOX expression. When
+         // No layout exists, we use the layout of te generated BOX
+         // expressions.
+
+         has-option(!Conservative);
+         <has-layout>w;
+         !([H([SOpt(HS,"0")],[a', <layout2box>w, b'])|xs'], ws'')
       <+
-         !([a'|xs'],ws'')
+         // For non-conservative pretty-printing, we only insert significant
+         // layout (i.e., layout other than spaces, tabs, and new lines).
+         not(has-option(!Conservative));
+         <has-significant-layout>w;
+         !([H([SOpt(HS,"0")],[a', <layout2box>w, b'])|xs'], ws'')
+     <+
+         // No existing layout used. Instead, generated layout is used.
+         !([a', b'|xs'],ws'')
       )
    } )
-      
-is-significant-layout =
+
+has-layout = 
+   not(layout([]))
+
+has-significant-layout =
    where(
    ?layout(xs);!xs;concat-strings;
    explode-string;
    filter( not(9);not(10); not(32) );
    not([])
    )
+
 layout2box =
-      ?layout(x);
+   ?layout(x);
+   (
+      has-significant-layout;
       !C([],[S(<concat-strings>x)])
+   <+
+      !S(<concat-strings>x)
+   )
 \end{code}
