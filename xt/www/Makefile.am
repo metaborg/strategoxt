@@ -16,8 +16,6 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-
-
 EXTRA_DIST = \
 	contents.html \
 	counter.html \
@@ -29,6 +27,8 @@ EXTRA_DIST = \
 	home.html \
 	news.html \
 	template.html \
+	editable.html \
+	editable-contents.html \
 	\
 	CHANGES \
 	Makefile \
@@ -45,3 +45,7 @@ EXTRA_DIST = \
 	logo2.gif \
 	stratego.bib \
 	style.css
+
+www-install:
+	scp *.html *.css sunshine.cs.uu.nl:/users/visser/www/xt
+
