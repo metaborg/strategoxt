@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: DEVELOPERS-INFO,v 1.3 2000/04/07 13:55:33 jvisser Exp $
+# $Id: DEVELOPERS-INFO,v 1.4 2000/04/10 22:48:32 mdejonge Exp $
 
 Obtaining all Software Packages
 ===============================
@@ -54,7 +54,7 @@ To add a new software package to the XT distribution, do the following:
                     either be an URL (e.g.,
                     http://www.cs.uu.nl/~visser/ftp/stratego-0.4.11.tar.gz),
                     or a CVS repository (e.g.,
-                    cvs:vanille.cwi.nl:/ufs/gipe/CVS)
+                    cvs:gondel.cwi.nl:/ufs/gipe/CVS)
 
     Examples:
       -The following entry is used for Stratego version 0.4.11, which can be
@@ -63,9 +63,9 @@ To add a new software package to the XT distribution, do the following:
         stratego,0.4.11,http://www.cs.uu.nl/~visser/ftp/stratego-0.4.11.tar.gz
 
       -The following entry is used for GB version 0.1.1 which is available in
-       the CVS repository /ufs/gipe/CVS at vanille.cwi.nl:
+       the CVS repository /ufs/gipe/CVS at gondel.cwi.nl:
        
-        gb,0.1.1,cvs:vanille.cwi.nl:/ufs/gipe/CVS
+        gb,0.1.1,cvs:gondel.cwi.nl:/ufs/gipe/CVS
 
  2) Add the top-level directory of the package to the DIST_SUBDIRS variable
     in the top-level Makefile.am
@@ -95,5 +95,5 @@ you.
 It is essential that you have an up-to-date version (version 1.4 or above)
 of automake.
 
-Note for CWI developers. Adding "automake" to your ~/.pkgrc file
-in order to use the latest version of automake.
+Note for CWI developers. Add "automake" to your ~/.pkgrc file in order to
+use the latest version of automake.
