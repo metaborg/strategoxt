@@ -1,3 +1,15 @@
+2003-07-18  Eelco Visser  <visser@cs.uu.nl>
+
+	* pp/Stratego-pretty.pp, parsed/stratego-ensugar: Improved
+	pretty-printing by placing parentheses in stratego-ensugar instead
+	of in pretty-print table. Sequences are associated to the left to
+	produce nice straight sequence of strategies. Note that just using
+	Stratego-pretty.pp is not sufficient to get correct pretty-printing!
+	Use pp-stratego instead. Also note that pp-stratego has a -a or
+	--abstract option in order to pretty-print a generated abstract
+	syntax tree rather than a concrete syntax text.
+	
+
 2003-07-13  Eelco Visser  <visser@cs.uu.nl>
 
 	* parse/meta-explode.str: WithAnno is considered a special constructor

@@ -125,7 +125,7 @@
    LRule -- H[KW["\\"] _1 KW["\\"]],
    SRule -- H[KW["("]  _1 KW[")"]],
 
-   Seq      -- H hs=0[KW["("] V[_1 H[KW[";"] _2 ]] KW[")"]],
+   Seq      -- V[_1 H[KW[";"] _2 ]],
    Choice   -- H hs=0[KW["("] V[_1 H[KW["+"]   _2 ]] KW[")"]],
    LChoice  -- H hs=0[KW["("] V[_1 H[KW["<+"]  _2 ]] KW[")"]],
    RChoice  -- H hs=0[KW["("] V[_1 H[KW["+>"]  _2 ]] KW[")"]],

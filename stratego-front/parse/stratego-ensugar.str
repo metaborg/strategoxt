@@ -1,5 +1,5 @@
 module stratego-ensugar
-imports stratego options string simple-traversal
+imports stratego options string simple-traversal parenthesize
 
 /**
  * This is a preliminary  implementation of the ensugaring
@@ -18,6 +18,8 @@ strategies
         repeat(Ensugar)
       ; try(EnsugarOnce)
       )
+    ; innermost(AssociateSeqLeft)
+    ; stratego-parenthesize
 
 rules
 
@@ -30,6 +32,9 @@ rules
 
   Ensugar :
     StratRule(l, r, Id()) -> StratRuleNoCond(l, r)
+
+  AssociateSeqLeft :
+    Seq(s1, Seq(s2, s3)) -> Seq(Seq(s1, s2), s3)
 
 rules
 
@@ -89,3 +94,18 @@ overlays
     , "thread"
     , "where"
     ]
+
+strategies
+
+  // Placing parentheses
+
+  StrategoParenthesize =
+    !ParenStrat(<id>)
+
+  stratego-parenthesize =
+    parenthesize(StrategoParenthesize, stratego-priorities)
+   
+  stratego-priorities =
+    ![(Some("assoc"),		["Seq"]),
+      (Some("assoc"),		["LChoice", "Choice"])
+     ]
