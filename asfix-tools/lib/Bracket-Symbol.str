@@ -1,0 +1,10 @@
+/**
+ * Defines a  bracket constructor.
+ *
+ * Used to indicate postions in AST's where during
+ * pretty-printing brackets should be inserted
+ */
+module Bracket-Symbol
+signature
+  constructors
+    bracket-symbol : S -> S
