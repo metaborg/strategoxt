@@ -5,19 +5,14 @@ echo "** INFO -- Working directory: $WORKINGDIR"
 
 # try to set the best BOOTSTRAP_MAKE variable: MAKE <+ gmake <+ make
 BESTMAKE=
-GMAKE="`which gmake`"
-
 gmake -v
-
-#if [ "$GMAKE" = "" ]
 if [ "$?" != "0" ]
   then
     echo "** INFO -- gmake is not on the PATH. Assuming GNU Make is make!"
-    BESTMAKE="`which make`"
+    BESTMAKE="make"
   else
-    BESTMAKE=$GMAKE
+    BESTMAKE="gmake"
 fi
-
 BOOTSTRAP_MAKE=${MAKE-$BESTMAKE}
 echo "** INFO -- Make is: $BOOTSTRAP_MAKE"
 # end of setting BOOTSTRAP_MAKE
@@ -34,10 +29,10 @@ mkdir -p pre-pkgs
 mkdir -p pre-pkgs/bootstrap
 cp -rf autoxt pre-pkgs/bootstrap/
 cd pre-pkgs/bootstrap/autoxt
-./bootstrap
-./configure --prefix=$WORKINGDIR/pre-pkgs/bootstrap
-$BOOTSTRAP_MAKE
-$BOOTSTRAP_MAKE install
+./bootstrap  || exit 1
+./configure --prefix=$WORKINGDIR/pre-pkgs/bootstrap  || exit 1
+$BOOTSTRAP_MAKE  || exit 1
+$BOOTSTRAP_MAKE install || exit 1
 
 cd $WORKINGDIR
 PATH=$WORKINGDIR/pre-pkgs/bootstrap/bin:$PATH
