@@ -6,13 +6,13 @@ Stratego Language
 
    * New `if then' construct
 
-   * Bigger bag of dynamic rules
+   * Bigger bag of dynamic rule applications
 
 Stratego Library
 
-   * Improved newname in case of repeated application.
+   * Improved newname for repeated application.
 
-   * New mathematical operators: abs and gcd.
+   * New mathematical strategies: abs and gcd.
 
 Tools
 
@@ -22,7 +22,7 @@ Tools
    * Improved performance and error-reporting of format-check, a tool
      for checking the structure of an aterm,
 
-   * New features and various usabily enhancements in parse-unit, a
+   * New features and various usability enhancements in parse-unit, a
      tool for unit testing SDF syntax definitions.
 
    * The parenthesize generator, sdf2parenthesize, now fixes much more
@@ -38,27 +38,28 @@ Deployment
 
 ---------++ Format Checking
 
-[[Tools.FormatCheck][format-check]] has been reimplemented to boost
-the performance, error-reporting and visualization. The format checker
-now uses a bottom-up algorithm for format checking. The tool infers
-types in a bottom-up fashion and will complain at the innermost term
-for which no type can be inferred. If this term has subterms, then
-their types will be shown. The performance is even better in =--fast=
-mode, but this might reduce the quality of the error reporting.
+The format-check tool has been reimplemented in order to boost
+performance, and improve error-reporting and visualization. The format
+checker now uses a bottom-up algorithm for format checking. The tool
+infers types in a bottom-up fashion and will complain at the innermost
+term for which no type can be inferred. If this term has subterms,
+then their inferred types will be shown. The performance is even
+better in =--fast= mode, but this might reduce the quality of the
+error reports.
 
-Format-check now supports a --vis mode for showing the format error in
-a pretty-printed aterm at the command-line. Format-errors will be in
-pretty-printed in red if the terminal supports colors.
+Format-check now supports a =--vis= mode for showing format errors in
+a pretty-printed aterm at the command-line. Format-errors will be
+indicated in red if the terminal supports colors.
 
-Format-check also has a new feature to report the results of
-format-checking in an HTML document. This document contains the input
-term, formatted in the same way as pp-aterm. All innermost format
-errors in the ATerm are indicated in red boxes. Moving over the ATerm
-with your mouse will show the non-terminal of a term in an information
+Format-check also has a new feature to report the results of type
+inference in an HTML document. This document contains the input term,
+formatted in the same way as pp-aterm. All innermost format errors in
+the aterm are indicated by red boxes. Moving over the aterm with your
+mouse will show the inferred types of the aterms in an information
 box.
 
-More informaiton, examples, and a screenshot are available at the
-Tools web:
+More information, examples, and a screenshot are available at the
+Tools Wiki:
 
    * http://www.program-transformation.org/Tools/FormatCheck
 
@@ -102,22 +103,26 @@ user-friendly:
      pack-sdf to do this, so there is no longer a need to specify
      dependencies of SDF files.
 
+More information on pack-sdf is available at the Tools Wiki:
+
+   * http://www.program-transformation.org/Tools/PackSDF
+
 (Contributed by Martin Bravenboer)
 
 ---------++ Parse Unit
 
-In a previous releases of StrategoXT a parse-unit testsuite had to be
+In previous releases of StrategoXT, parse-unit testsuites had to be
 parsed with a separate tool before passing it to parse-unit. This is
 obviously a bad idea, so parse-unit itself now parses the
 testsuite. It will fall back to abstract syntax, so this change should
-not break anything. The --abstract-input option can be used to declare
-that you are passing a testsuite in abstract syntax.
+not break existing makefiles. The =--abstract-input= option can be
+used to declare that you are passing a testsuite in abstract syntax.
 
 Parse-unit now has an option to parse a single test and write the
 result to the output. In this mode ambiguities are accepted, which is
-useful for debugging. The option for the 'single test mode' is
+useful for debugging. The option for this 'single test mode' is
 =--single <nr>= where =<nr>= is the number in the testsuite (printed
-when the testsuite is executed). The --asfix2 flag can be used to
+when the testsuite is executed). The =--asfix2= flag can be used to
 produce asfix2 instead of an AST.
 
 Parse-unit now accepts a =--no-heuristic-filters= flag to disable the
@@ -126,85 +131,45 @@ filters of sglr. Using this flag is highly encouraged.
 
 
 More information and an example are available at the Tools Wiki:
+
    * http://www.program-transformation.org/Tools/ParseUnit
 
 (Contributed by Martin Bravenboer)
 
 ---------++ Parenthesizer Generation
 
-	* trans/sdf2ast-conflicts.str: separate tool for producing a list
-	of conflict information from an SDF syntax
-	definition. Currently, the only conflict information that is
-	produced is a SubtermConflict.
+A major bug in in the generation of rewrite rules for chain priorities
+has been fixed in this release of StrategoXT. In the previous version,
+the tool assumed that the SDF normalizer generates chain priorities
+for the transitive closure of the priorities that are defined in an
+SDF syntax definition. However, this is not the case and therefore the
+parenthesize generator now applies the transitive closure itself.
 
-	* trans/sdf2parenthesize.str: use the separate sdf2ast-conflicts
-	tool.
+Also, the determination of conflicting patterns in an AST has been
+separated from the parenthesize generator in the tool
+=sdf2ast-conflicts=. This tool might be useful for other applications.
 
-	* trans/sdf2parenthesize.str: produce more Stratego compiler
-	friendly output: for every constructor/pos there is now only a
-	single rewrite rule. This rewrite rule checks for a conflicting
-	subterm in the where clause. This reduces the number of generated
-	rules, the LOC, and it doesn't blow up the compile-match
-	component.
+More information and an example are available at the Tools Wiki:
 
-	* trans/sdf2ast-conflicts.str: fixed a major bug in the generation
-	of rewrite rules for chain priorities. I was assuming that the SDF
-	normalizer generates chain priorities for the transitive closure
-	of the priorities that are defined in an SDF syntax
-	definition. For example,
-
-	----------------------------------------------------
-	  context-free priorities
-	      Exp "*" Exp -> Exp
-            > Exp "+" Exp -> Exp
-            > Exp "<" Exp -> Exp 	
-	----------------------------------------------------
-
-	will not result in a chain priority 
-
-	----------------------------------------------------
-	  Exp "*" Exp -> Exp
-        > Exp "<" Exp -> Exp
-	----------------------------------------------------
-
-	sdf2parenthesize now takes the transitive closure itself, and
-	generates all the required rules for chain priorities.
+   * http://www.program-transformation.org/Tools/SdfToParenthesize
+   * http://www.program-transformation.org/Tools/SdfToAstConflicts
 
 (Contributed Martin Bravenboer)
 
 ---------++ Pragmatic XML Support
 
-	* xtc/aterm2xml.str: composes data2xml-doc and pp-xml-doc into a
-	single aterm to xml tool. This tool uses the --explicit mode of
-	data2xml-doc.
+In StrategoXT 0.12 some new tools are available that makes
+interoperability with other programs and libraries that are based on
+XML seamless. The tools aterm2xml and xml2aterm support this
+conversion from aterm to XML and vice versa. Since applications have
+different needs, there are three conversion modes available: implicit,
+explicit, and very explicit. The default mode, explicit, support a
+round trip for most common aterms.
 
-	* xtc/xml2aterm.str: composes parse-xml-info and xml-info2data
-	into a single xml to aterm tool. This tool uses the --explicit
-	mode of xml-info2data.
+More explanation and examples are available at the Tools Wiki:
 
-	* trans/data2xml-doc.str: added an --explicit and --very-explicit
-	mode. The explicit mode uses XML elements for indicating string,
-	int, list and tuple constructs. The --very-explicit mode also use
-	an XML element for applications.
-
-	* trans/xml-info2data.str: added support for the --explicit
-          mode.
-
-	* tests/xml-aterm-tests.str: aterm2xml | xml2aterm roundtrip
-	testsuite.
-
-	* trans/data2xml.str: in explicit mode, Some and None should be
-	explictly represented in XML.
-
-Added explicity argument to all tools. Default is explicit, but
-aterm2xml can now also be invoked with --implicit mode.
-
-xml-info2data now supports all explicity modes. The very explicit mode
-is now even more explicit to support annotations for every all aterm
-constructs
-
-RELAX NG schema for the very explicit representation of an ATerm in
-XML
+   * http://www.program-transformation.org/Tools/ATermToXml
+   * http://www.program-transformation.org/Tools/XmlToATerm
 
 (Contributed by Martin Bravenboer)
 
@@ -226,22 +191,36 @@ tool.
 
 ---------++ Language Enhancements
 
-   all-R with R a dynamic rule produces the values for R in all scopes.
+In StrategoXT 0.10 the =bagof-R= strategy was introduced. This
+strategy returns all applications of a dynamic rule. However,
+=bagof-R= only applies the dynamic rules that been defined in the
+innermost (most recent) scope where a rule =R= was defined. So, if
+dynamic rules with name =A= have been defined in several scopes, then
+not all applications are returned, but only the ones of defined in the
+innermost scope.
+
+In this release there is bigger bagof: =all-R=. This strategy applies
+all the defined dynamic rules of name =R=.
 
 (Contributed by Eelco Visser)
 
-	* syn/Stratego-Strategies.sdf: added the if-then construct: if s1
-	then s2 end.
+In StrategoXT 0.10 we added the if-then-else construct, which is
+basically just an alternative syntax for the guarded left choice
+(=where(s1) < s2 + s3=). Since we found ourselves writing a lot =if s1
+then s2 else id end=, we have now also added an if-then
+construct. This new strategy =if s1 then s2 end= is equivalent to =if
+s1 then s2 else id end=.
 
 (Contributed by Martin Bravenboer)
 
 ---------++ Improved New Name
 
-newname now trims any trailing digits up to the rightmost '_'. This
-allows for feeding previously generated new names as prefix into
-another call to SSL's newname.
+The library strategy =newname= (which is used for generating unique
+identifiers) now trims any trailing digits up to the rightmost
+'_'. Hence, repeated application of =newname= will no longer result in
+mutiple numeric postfixes (for example =a_0_0=).
 
-Example:
+For example:
 <verbatim>
     <newname> "a"        // produces "a_0"
   ; <newname> "b"        // produces "b_0"
@@ -254,11 +233,15 @@ Example:
 
 ----------++ AutoXT 
 
-The Autconf support of AutoXT has been updated. The Autoconf macros of
-autoxt.m4 now perform more checks. For example, Autoconf now fails if
-there are undefined macros. Furthermore, autoxt.m4 now defines a macro
-XT_ARG_WITH for concisely adding =--with-PACKAGE= arguments to
-configure scripts.
+The Autconf support of AutoXT has been updated. Autoconf macros of
+=autoxt.m4= now perform more checks. For example, Autoconf now fails
+if there are undefined macros with the XT prefix. Furthermore,
+=autoxt.m4= now defines a macro =XT_ARG_WITH= for concisely adding
+=--with-PACKAGE= arguments to configure scripts in your own packages.
+
+If you are developing packages based on StrategoXT and AutoXT, then
+you must have Autoconf 2.58 or newer. This does not affect users: the
+installation of a StrategoXT distribution doesn't require Autoconf.
 
 (Contributed by Akim Demaille)
 	
@@ -279,7 +262,7 @@ detailed instructions on how to install the distributions:
 
 See our issue tracking systems for reports about (open) bugs:
 
-   * https://catamaran.labs.cs.uu.nl/jira/
+   * https://catamaran.labs.cs.uu.nl/jira/browse/STR
 
 Please report any problems with installation or bugs in the
 implementation to our issue tracking system. Please check the existing
