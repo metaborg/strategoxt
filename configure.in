@@ -31,10 +31,23 @@ AB_CONFIG_PKG(aterm,
    --with-gcc
    --with-dbg
 )
+
+if test x$usecpl = xtrue
+then
+
 AB_CONFIG_PKG(srts,
    --with-aterm=${ATERM}
    --with-cpl=${CPL}
 )
+
+else
+
+AB_CONFIG_PKG(srts,
+   --with-aterm=${ATERM}
+)
+
+fi
+
 AB_CONFIG_PKG(ssl,
    --with-aterm=${ATERM}
    --with-srts=${prefix}
