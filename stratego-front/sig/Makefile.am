@@ -33,6 +33,7 @@ BOOTCLEANFILES	= $(autogensignatures) $(wildcard *.rtree) Stratego.def Stratego-
 pkgdata_DATA    = $(signatures:.str=.rtree)
 EXTRA_DIST      = \
   $(wildcard *.rtg-script) \
+  Cong.rtg \
   $(wildcard *.str) \
   $(wildcard *.rtree) \
   $(pkgdata_DATA) \
