@@ -23,6 +23,7 @@
 
 \begin{code}
 module conditional
+imports option
 
 strategies
 
