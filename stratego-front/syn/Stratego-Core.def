@@ -173,10 +173,10 @@ exports
     [a-z] [a-zA-Z0-9\'\-\_]*  -> LCID
     [A-Z] [a-zA-Z0-9\'\-\_]*  -> UCID
   lexical restrictions
-    Id   -/- [a-zA-Z0-9\'\.\-\_\*]
-    LId  -/- [a-zA-Z0-9\'\.\-\_]
-    LCID -/- [a-zA-Z0-9\'\.\-\_]
-    UCID -/- [a-zA-Z0-9\'\.\-\_]
+    Id   -/- [a-zA-Z0-9\'\-\_\*]
+    LId  -/- [a-zA-Z0-9\'\-\_]
+    LCID -/- [a-zA-Z0-9\'\-\_]
+    UCID -/- [a-zA-Z0-9\'\-\_]
   lexical syntax
     "all" 		-> Id {reject}
     "constructors" 	-> Id {reject}
@@ -204,7 +204,7 @@ exports
     "all" "constructors" "fail" "id" "in" "let" "module" "not" "one"
     "overlays" "override" "prim" "rules" "script" "signature" "some"
     "sorts" "strategies" "stratego" "test" "thread" "where" 
-    -/- [a-zA-Z0-9\'\.\-\_]
+    -/- [a-zA-Z0-9\'\-\_]
 
 module Stratego-Core-Constants
 exports
