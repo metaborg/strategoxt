@@ -1,40 +1,6 @@
 \literate[config]
 
-	\begin{abstract}
-
-	Strategies for creation and retrieval of configuration tables.
-
-	\end{abstract}
-
-	Configuration tables are the means to avoid embedding absolute
-	path names in programs.
-
-	A configuration table is stored in a file as an ATerm.
-
-	Can be read easily.
-
-	basic functionality:
-
-		string -> string
-
-	examples
-
-		program -> fully qualified program name, i.e., with absolute path name
-
-	extended functionality :
-
-		name -> path
-		name -> (name, name)
-
-	e.g.,	"SGLR" -> "/home/xt"
-		"sglr" -> Conc(Var("SGLR"), "/bin/sglr")
-
-	when getting "sglr", the SGLR variable should be expanded
-
-	other functionality: lookup in path
-
-	Questions: is there a single config table, i.e., with a globally defined
-	name?
+NOTE: Use XTC instead of configuration files.
 
 \begin{code}
 module config

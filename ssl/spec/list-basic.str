@@ -42,6 +42,9 @@ strategies
   map(s) = 
     rec x([] + [s | x]) 
 
+  map1(s) = 
+    [s | id]; [id | try(map1(s))] <+ [id | map1(s)]
+
   list(s) = 
     rec x([] + [s | x])
 
@@ -110,6 +113,9 @@ strategies
 
   listbu(s) = 
     rec x(([] + [id| x]); s)
+
+  listbu1(s) = 
+    [id| listbu1(s)]; try(s) <+ s
 
   listtd(s) = 
     rec x(s; ([] + [id| x]))

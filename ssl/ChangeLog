@@ -1,3 +1,8 @@
+2003-07-15  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/list-basic.str: definitions of map1 and listbu1 require that
+	at least one application succeeds.
+
 2003-06-10  Martin Bravenboer <martin@mbravenboer.org>
 
   * spec/parse-options.str: --about and --version are now
