@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.2 2001/06/11 11:11:27 mdejonge Exp $
+# $Id: Makefile.am,v 1.3 2001/06/11 12:17:52 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -42,7 +42,9 @@ EXTRA_DIST  += get-sort-graph.sh.src sdf-doc.make.src \
 CLEANFILES  += sdf2gxml2dot-check get-sort-graph sdf-doc.make
 
 % : %.sh.src Makefile
-	@sed 's@__DATADIR__@$(pkgdatadir)@g'\
+	@sed 's@__DATADIR__@$(pkgdatadir)@g;\
+              s@__GRAPHTOOLS__@$(GRAPHTOOLS)@g;\
+              s@__SDFTOOLS__@$(SDFTOOLS)@g'\
            < $< > $@ && \
 	chmod 755 $@
 
