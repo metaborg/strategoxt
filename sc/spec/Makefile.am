@@ -20,7 +20,7 @@ EXTRA_DIST = make_rules.in make-rules conf.h.src
 pkgdata_DATA = conf.h
 
 SUBDIRS = \
-  syn c front lib match opt sc sig test1 test2 testlib testspec log
+  . syn c front lib match opt sc sig test1 test2 testlib testspec log
 
 DIST_SUBDIRS = si sdf test3 $(SUBDIRS)
 
