@@ -1,5 +1,7 @@
-dnl XT -- Program Transformation tools
+dnl XT -- Program Transformation Tools
 dnl Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
+dnl                    Eelco Visser <visser@acm.org>
+dnl                    Joost Visser <jvisser@cwi.nl>
 dnl
 dnl This program is free software; you can redistribute it and/or modify
 dnl it under the terms of the GNU General Public License as published by
@@ -15,8 +17,9 @@ dnl You should have received a copy of the GNU General Public License
 dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 dnl 02111-1307, USA.
-dnl
-dnl $Id: acinclude.m4,v 1.1 2000/03/27 15:52:41 mdejonge Exp $
+
+dnl $Id: acinclude.m4,v 1.2 2000/04/07 12:48:47 mdejonge Exp $
+
 dnl Configure sub components with additional configure flags
 dnl usage:
 dnl    AC_CONFIG_PKG(pkgname, configure flags)

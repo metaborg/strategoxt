@@ -1,5 +1,7 @@
-# XT -- Program Transformation tools
+# XT -- Program Transformation Tools
 # Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
+#                    Eelco Visser <visser@acm.org>
+#                    Joost Visser <jvisser@cwi.nl>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,8 +17,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
-#
-# $Id: Makefile.am,v 1.7 2000/03/31 13:21:04 mdejonge Exp $
+
+# $Id: Makefile.am,v 1.8 2000/04/07 12:48:46 mdejonge Exp $
 
 DIST_SUBDIRS = dummy aterm asc-support sglr pgen stratego gpp gb gt
 EXTRA_DIST   = SOFTWARE
