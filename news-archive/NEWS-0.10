@@ -285,11 +285,80 @@ keywords. Therefore they are still allowed as identifiers.
 
 ---------++ Stratego Regular
 
-Signature generation
+In StrategoXT 0.10 the Stratego Regular package has been added to the
+packages of StrategoXT. Stratego Regular is a package of tools for
+working with tree languages, defined by a tree grammar. An abstract
+syntax for a language with context-free syntax is a regular tree
+language. Therefore it can be defined by a by a _regular_ tree
+grammar.
 
-Generate just one signature file.
+Stratego Regular contains two languages for defining regular tree
+grammars: Regular Tree Grammar (RTG) and Regular Hedge Grammar
+(RHG). RHG is only relevant to XML related tools , which are
+implemented in the XML Tools package. Currently RTG is the only
+relevant tree grammar language for StrategoXT applications.
 
-Declare SDF2RTG_FLAGS
+The RTG language is of course accompanied by several tools:
+
+  * =sdf2rtg= generates an RTG from an SDF syntax definition. If
+    =sdf2rtg= cannot transform a concrete syntax production into
+    abstract syntax, then it will complain. This might be caused by a
+    mistake in your syntax defintion (missing =cons= attribute for
+    example), or it might be a limitation of =sdf2rtg=, of which we of
+    course like to know about!
+
+  * =rtg2sig= generates a Stratego Signature from an RTG. This is a
+    rather straightforward translation. The tool tries to improve the
+    generated signature by using the parameterized sorts of Stratego
+    (=List= and =Option=).
+
+  * =format=check= verifies if an ATerm is an element of tree language
+    defined by an RTG. This tool can thus be used to check whether
+    your tools behave well, i.e. produce valid programs, or
+    not. Unfortunately, the error reporting of this tool is currently
+    very poor. This issue will be resolved for the next release of
+    StrategoXT, although it is still unclear which errors should be
+    reported to user.
+
+  * =rtg2typematch= generates a Strateg module with strategies for
+    testing if a constructor has a certain type, for example if it is
+    an expression, statement, or declaration. The generated strategies
+    are based on the constructor names and should therefore be applied
+    with care.
+
+Stratego Regular contains some more tools related to AsFix and format
+checking, but these tools have to be developed a little bit more
+before they can be used in practice.
+
+---------+++ Important: Stratego Signature Generation
+
+Stratego Signature generation from an SDF syntax definition is in
+StrategoXT 0.10 based on Stratego Regular. The old =sdf-to-sig= has
+been removed because it was based on an old version of
+SDF. =Makefile.xt= declares two new rules, one for creating an RTG
+from an SDF definition, and one to generate a signature from an RTG.
+
+Existing packages that generate signatures must be
+updated because the new tools generate only one file containing the
+full signature. Fortunately, these changes are usually limited to
+=Makefile.am=.
+
+Two changes are needed in a typical =Makefile.am= that generates a
+signature.
+
+   * Declare that only the _Language_.str module must be
+   generated. This means that you can just remove all other modules
+   that used to be generated.
+
+   * Declare the main module of the SDF syntax definition in a
+     variable SDF2RTG_FLAGS. If the main module has the same name as
+     the .def file, which is usually the case, then the value should
+     be =-m $*=. The main module defaults to =Main=, which is also the
+     default main module of =sdf2table=.
+
+Of course you can send an e-mail to stratego@cs.uu.nl or
+stratego-dev@cs.uu.nl if you have any problems with the conversion to
+the new Stratego Signature generation tools.
 
   (Martin Bravenboer)
 
