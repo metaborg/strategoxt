@@ -28,9 +28,9 @@ strategies
     ; <set-config>("-CI", ["-I", <conc-strings>(<xtc-find-path> "SRTS", "/include"),
                            "-I", <conc-strings>(<xtc-find-path> "SRTS", "/include"),
                            "-I", <conc-strings>(<xtc-find-path> "ATERM", "/include")])
-    ; <set-config>("-CL", ["-L", <conc-strings>(<xtc-find-path> "SRTS", "/lib/srts"),
+    ; <set-config>("-CL", [<concat-strings> ["-L", <xtc-find-path> "SRTS", "/lib/srts"],
                            "-lstratego-lib.opt", "-lstratego.opt",
-                           "-L", <conc-strings>(<xtc-find-path> "ATERM", "/lib"),
+                           <concat-strings> ["-L", <xtc-find-path> "ATERM", "/lib"],
                            "-lATerm-gcc",
                            "-lm"])
     ; <set-config>("--dr", "old")
@@ -81,7 +81,7 @@ strategies
 	!"-CI d              Include C headers from directory d")
 
   + ArgOption("-CL",
-	where(<extend-config>("-CL", [<id>])); !(),
+	where(<extend-config>("-CL", [<conc-strings> ("-L", <id>)])); !(),
 	!"-CL d              Include binary libraries from directory d\n")
 
 

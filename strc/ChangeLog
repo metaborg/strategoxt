@@ -1,3 +1,10 @@
+2004-06-04  Martin Bravenboer  <martin@cs.uu.nl>
+
+	* spec/strc/strc-options.str: -L dir should be -Ldir.
+
+	* spec/strc/strc-options.str: -CL dir arguments should be passed
+	as -Ldir.
+	
 2004-05-28  Martin Bravenboer  <martin@cs.uu.nl>
 
 	* spec/s2c/s2c.str: declare local functions. Solves STR-52.
