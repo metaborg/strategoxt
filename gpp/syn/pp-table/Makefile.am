@@ -7,7 +7,7 @@ DEFS = pp-table.def
 sdfdata_DATA   = $(TBLS) $(DEFS) $(wildcard *.sdf)
 pkgdata_DATA   = pp-table.pp pp-table.pp.af
 
-EXTRA_DIST     = $(DEFS) $(wildcard *.sdf)
+EXTRA_DIST     = $(DEFS) $(wildcard *.sdf) $(pkgdata_DATA)
 CLEANFILES     = $(TBLS)
 BOOTCLEANFILES = $(DEFS) pp-table.pp.af
 
