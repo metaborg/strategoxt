@@ -1,3 +1,8 @@
+2001-09-03 Merijn de Jonge <mdejonge@cwi.nl> 
+   * gpp/gpp.Makefile: added functionality for generating latex and html
+     files. Functionality obtained from gpp.makefile from previous gpp
+     distribution.
+
 2001-09-01 Merijn de Jonge <mdejonge@cwi.nl> 
    * gpp now uses Bracket-Symbol module for constructor definition of
      bracket-symbol

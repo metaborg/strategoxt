@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.2 2001/08/28 15:16:48 mdejonge Exp $
+# $Id: Makefile.am,v 1.3 2001/09/03 15:40:17 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -64,9 +64,14 @@ SCFLAGS     += -I ${ASFIXTOOLS}/share/asfix-tools --main $@
 	     chmod +x $@
 
 gpp.Makefile : gpp.Makefile.src Makefile
-	sed 's@__PREFIX__@$(prefix)@g;\
-	     s@__SGLR__@$(SGLR)@g' < $< > $@
-
+	sed 's@__ASFIX2ABOX__@$(prefix)@g;\
+	     s@__ABOX2LATEX__@$(prefix)@g;\
+	     s@__ABOX2HTML__@$(prefix)@g;\
+	     s@__SGLR__@$(SGLR)@g;\
+	     s@__PGEN__@$(PGEN)@g;\
+	     s@__ASFIXTOOLS__@$(ASFIXTOOLS)@g;\
+	     s@__PREFIX__@$(prefix)@g'\
+	       < $< > $@
 %.tbl : %.def
 	PATH=$(PGEN)/bin:$(PATH) sdf2table $< -o $@
 
