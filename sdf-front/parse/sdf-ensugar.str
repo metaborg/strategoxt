@@ -20,10 +20,11 @@ strategies
   Ensugar :
     attrs([]) -> no-attrs()
 
+  Ensugar :
+    lit(s) -> lit(qlit(<double-quote> s))
+
 strategies
  
   EnsugarOnce =
     term(explode-aterm)
 
-  EnsugarOnce =
-    lit(double-quote)

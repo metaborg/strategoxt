@@ -20,10 +20,10 @@ strategies
   Desugar :
     no-attrs() -> attrs([])
 
+  Desugar :
+    lit(qlit(s)) -> lit(<un-double-quote> s)
+
 rules
 
   DesugarOnce =
     term(implode-aterm)
-
-  EnsugarOnce =
-    lit(double-quote)
