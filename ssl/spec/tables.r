@@ -6,80 +6,75 @@
 	to the hash-table facility provided by the ATerm library.
 \end{abstract}
 
-% Copyright (C) 1998-2001 Eelco Visser <visser@acm.org>
-% 
-% This program is free software; you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation; either version 2, or (at your option)
-% any later version.
-% 
-% This program is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-% 
-% You should have received a copy of the GNU General Public License
-% along with this program; if not, write to the Free Software
-% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-% 02111-1307, USA.
-
 \begin{code}
 module tables
 imports list
 strategies
 
-  table-create 	= 
+  table-create = 
     ?name; prim("SSL_table_create", name)
 
   table-destroy = 
     ?name; prim("SSL_table_destroy", name)
 
-  table-put 	= 
+  table-put = 
     where(?(table,key,value); prim("SSL_table_put",table,key,value))
 
-  table-get 	= 
+  table-get = 
     ?(table, key); prim("SSL_table_get",table,key)
 
-  table-remove 	= 
+  table-remove = 
     where(?(table, key); prim("SSL_table_remove",table,key))
 
-  table-keys 	= 
+  table-keys = 
     ?table; prim("SSL_table_keys",table)
+
+  table-rename = ?(name1, name2);
+    prim("SSL_table_rename", name1, name2)
+\end{code}
+
+	\begin{itemize}
+
+	\item \verb|<table-create> name| creates a table with name
+	\verb|name|, which can be any term.
+
+	\item \verb|<table-destroy> name| destroys it.
+
+	\item \verb|<table-put> (name, key, value)| associates \verb|value|
+	with \verb|key| in the \verb|name| table.
+
+	\item \verb|<table-get> (name, key)| yields the value associated to
+	\verb|key| or fails.
+
+	\item \verb|<table-remove> (name, key)| removes the entry for
+	\verb|key| from table \verb|name|.
+
+	\item \verb|<table-keys> name| produces the list of keys of table
+	\verb|name|.
+
+	\end{itemize}
+
+\begin{code}
+strategies
 
   table-getlist = ?name; 
     table-keys; map(\ x -> (x, <table-get> (name, x))\ )
 
   table-putlist = ?(name, list); 
     <map({x,y: ?(x, y); <table-put> (name, x, y)})> list
+
+  table-copy = ?(name1, name2);
+    where(<table-putlist>(name2, <table-getlist> name1)) 
 \end{code}
 
-\paragraph{Usage}
+	\begin{itemize}
+	\item \verb|<table-getlist> name| produces the list of (key,value) pairs
+	in the table \verb|name|
 
-\begin{itemize}
+	\item \verb|<table-putlist> (name, list)| puts the (key,value) 
+	pairs in \verb|list| into table \verb|name|
 
-\item \verb|<table-create> name| creates a table with name
-	\verb|name|, which can be any term.
-
-\item \verb|<table-destroy> name| destroys it.
-
-\item \verb|<table-put> (name, key, value)| associates \verb|value|
-with \verb|key| in the \verb|name| table.
-
-\item \verb|<table-get> (name, key)| yields the value associated to
-\verb|key| or fails.
-
-\item \verb|<table-remove> (name, key)| removes the entry for
-\verb|key| from table \verb|name|.
-
-\item \verb|<table-keys> name| produces the list of keys of table
-\verb|name|.
-
-\item \verb|<table-getlist> name| produces the list of (key,value) pairs
-in the table \verb|name|
-
-\item \verb|<table-putlist> (name, list)| puts the (key,value) pairs in \verb|list| into table \verb|name|
-
-\end{itemize}
+	\end{itemize}
 
 	Symbol tables that deal with scoped bindings need to be able
 	to store multiple bindings for the same symbol. The following
@@ -146,3 +141,20 @@ strategies
   destroy-table   = obsolete(!"destroy-table: use table-destroy"); 
 		    table-destroy
 \end{code}
+
+% Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
+% 
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+% 
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% 
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.

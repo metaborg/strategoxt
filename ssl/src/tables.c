@@ -97,6 +97,14 @@ ATerm SSL_table_remove(ATerm table, ATerm key)
 
 ATerm SSL_table_keys(ATerm table)
 {
-  //return list_to_consnil((ATerm)ATtableKeys((ATermTable)lookup_table(table)));
   return (ATerm)ATtableKeys((ATermTable)lookup_table(table));
+}
+
+ATerm SSL_table_rename(ATerm table1, ATerm table2)
+{
+  int i;
+  i = lookup_table(table1);
+  ATtablePut(SSL_table_table, table2, (ATerm)ATmakeInt((int)i));
+  ATtableRemove(SSL_table_table, table1);
+  return table2;
 }

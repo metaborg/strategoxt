@@ -25,3 +25,4 @@ ATerm SSL_table_put(ATerm table, ATerm key, ATerm value);
 ATerm SSL_table_get(ATerm table, ATerm key);
 ATerm SSL_table_remove(ATerm table, ATerm key);
 ATerm SSL_table_keys(ATerm table);
+ATerm SSL_table_rename(ATerm table1, ATerm table2);

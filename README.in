@@ -11,7 +11,7 @@ Version @VERSION@
 
 ----------------------------------------------------------------------
 
-Copyright (c) 1998-2001 Eelco Visser <visser@acm.org>
+Copyright (c) 1998-2002 Eelco Visser <visser@acm.org>
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -98,44 +98,45 @@ such as pretty-printers from syntax definitions. See
 
 ----------------------------------------------------------------------
 
-CONTENTS 
-
-This directory contains the Stratego implementation. It consists of
-
- - spec/  	 : specification of the compiler components
-	
- - src/		 : bootstrapped compiler components
-
- - test/	 : regression tests for the compiler
-
- - doc/ 	 : reference manual, tutorial, library and compiler
-                   documentation
-
- - xmpl/	 : small examples
-
- - bench/	 : benchmarks
-
-
- - share/tex	 : LaTeX packages
-
- - share/bib	 : BibTeX files
-
- - www/		 : Stratego web site
-
- - build/	 : buildfiles for automatically building the distribution
-		   (requires the autobuild software of Merijn de Jonge)
-
- - rpm/		 : RPM specifications for aterm and stratego
-
- installation creates the following directories
-
- - prefix/share/stratego : installed Stratego library
-
- - prefix/bin/		 : installed executables
-
- - prefix/include/	 : installed include files
-
- - prefix/lib/		 : installed binary libraries
+STRUCTURE OF THE DISTRIBUTION
+.
+|-- cgen		: Support for generation of C code
+|   |-- data
+|   |-- pp
+|   |-- sig
+|   `-- syn
+|-- emacs		: Emacs syntax highlighting for Stratego
+|-- gpp-boot		: Bootstrapped sources of GPP (pretty-printing)
+|   `-- src
+|-- sc			: Stratego sources of the Stratego Compiler
+|   `-- spec
+|       |-- c
+|       |-- front
+|       |   `-- data
+|       |-- lib
+|       |-- log
+|       |-- match
+|       |   `-- data
+|       |-- opt
+|       |-- sc
+|       |-- sdf
+|       |-- si
+|       |   `-- data
+|       |-- sig
+|       |-- syn
+|       |-- test1
+|       |-- test2
+|       |-- test3
+|       |-- testlib
+|       `-- testspec
+|-- sc-boot		: Bootstrapped (C) sources of Stratego Compiler
+|   `-- src
+|-- srts		: Stratego Run-Time System
+|   `-- src
+`-- ssl			: Stratego Standard Library
+    |-- spec		: Stratego library modules
+    |   `-- data
+    `-- src		: C implementation of primitives
 
 ----------------------------------------------------------------------
 
@@ -208,13 +209,15 @@ For both kinds of configurations, make the compiler by
 BOOTSTRAPPING
  
 To create a new version of the compiler, edit the appropriate files in
-the spec/* directories. Then do the following
+the spec/* directories. Then compile the components by
  
  > cd spec
  > gmake
- > gmake install
  
 Then use the generated compiler to compile some test specifications.
+
+ > gmake check
+
 If that seems to work, try to bootstrap by
  
  > gmake bootstrap
@@ -224,7 +227,7 @@ This will compile the compiler components with itself.
 If this goes wrong at some point, you'll have to reinstall the stable
 compiler in the src/ tree:
  
- > cd ..
+ > cd ../..
  > gmake install
  
 It can be useful to have two installations of the compiler, one of
@@ -250,8 +253,8 @@ them the stable compiler from src. To achieve this do the following.
 
  > gmake bootinstall
 
- in the spec/ directory to install the bootstrapped sources in the
- src/ tree.
+ in the spec/ directory to install the bootstrapped C sources in the
+ sc-boot tree.
  
 ----------------------------------------------------------------------
 
@@ -259,6 +262,6 @@ CONTRIBUTIONS
 
 If you have made a useful improvement or extension of the library,
 compiler, or language, please send a patch with respect to the
-latest release to visser@cs.uu.nl. 
+latest release to visser@acm.org. 
 
 ----------------------------------------------------------------------

@@ -37,7 +37,7 @@ strategies
 
   test3 =
     apply-test(!"test3"
-	, set-annotations; CatchAnnos
+	, set-annotations; catch-annos
 	, !(Plus(Var("a"), Var("b")), Int)
 	, !Anno(Plus(Var("a"),Var("b")),Int)
 	)

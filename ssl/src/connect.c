@@ -138,7 +138,11 @@ ATerm SSL_accept(ATerm h, ATerm p, ATerm w)
   	char *host;
 	int port = 0, wait = 0, numwait = 0;
 	struct protoent *pe = NULL;
-	socklen_t addrlen = 0;
+
+//      socklen_t is not known on all machines (Sun at cs.uu.nl)
+//	socklen_t addrlen = 0;
+	unsigned int addrlen = 0; // 
+
 	in_addr_t ip = 0;
 	struct hostent *he = NULL;
 	struct timeval tw;
