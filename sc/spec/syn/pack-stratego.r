@@ -86,7 +86,9 @@ rules
 	<get-parse-table(mkpath)> syntax => tbl;
 	debug(!"parse-cmod c: ");
 	new-file => fileout1; new-file => fileout2; 
-        new-file => fileout3; new-file => fileout4; new-file => fileout5;
+        new-file => fileout3; 
+        <basename; guarantee-extension(!"rtree")> filein => fileout4; 
+        new-file => fileout5;
 	debug(!"parse-cmod d: ");
 	<call> ("sglr",  ["-2", "-p", tbl, "-i", filein,   "-o", fileout1]);
 	debug(!"parse-cmod e: ");
@@ -97,7 +99,7 @@ rules
 	<call> ("stratego-desugar", ["-i", fileout3, "-o", fileout4]);
 	debug(!"parse-cmod h: ");
 	<ReadFromFile> fileout4 => trm;
-	debug(!"parse-cmod i: ")
+	<debug(!"parse-cmod ast in: ")> fileout4
 
   get-parse-table(mkpath) :
     syntax -> tbl2

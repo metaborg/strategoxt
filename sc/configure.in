@@ -16,7 +16,7 @@
 # 02111-1307, USA.
 
 AC_INIT(spec/front/inlining.r)
-AM_INIT_AUTOMAKE(sc,0.7)
+AM_INIT_AUTOMAKE(sc,0.8beta1)
 
 AC_ARG_WITH(cgen,    
   [  --with-cgen      Specify location of CGEN library, default: \$prefix], 
@@ -81,7 +81,14 @@ AC_ARG_WITH(srts,
 )
 AC_SUBST(STRATEGORTS)
 
-AC_REVISION($Id: configure.in,v 1.18 2002/03/10 21:24:03 stratego Exp $)
+AC_ARG_WITH(gb-stratego,    
+  [  --with-gb-stratego   Specify location of Grammar Base with Stratego definition, default: \$prefix], 
+  GBSTRATEGO=$withval, 
+  GBSTRATEGO="$prefix"
+)
+AC_SUBST(GBSTRATEGO)
+
+AC_REVISION($Id: configure.in,v 1.19 2002/03/17 21:30:31 stratego Exp $)
 
 AC_PROG_CC
 AC_PROG_RANLIB

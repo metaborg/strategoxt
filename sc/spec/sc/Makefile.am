@@ -37,5 +37,6 @@ include $(wildcard *.dep)
              s#__VERSION__#$(VERSION)#g;\
              s#__STRATEGORTS__#$(STRATEGORTS)#g;\
              s#__STRATEGOLIB__#$(STRATEGOLIB)#g;\
+             s#__GBSTRATEGO__#$(GBSTRATEGO)#g;\
              s#__MAKE__#$(MAKE)#g' < $< > $@
 	chmod +x $@                 

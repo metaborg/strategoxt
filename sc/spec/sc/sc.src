@@ -23,6 +23,7 @@ VERSION=__VERSION__
 STRATEGORTS=__STRATEGORTS__
 STRATEGOLIB=__STRATEGOLIB__
 STRATEGOOPT=__STRATEGOOPT__
+GBSTRATEGO=__GBSTRATEGO__
   
 ${prefix}/bin/proto-sc \
     -CI "-O2" \
@@ -30,6 +31,7 @@ ${prefix}/bin/proto-sc \
     $* \
     -e ${prefix}/bin \
     -I ${STRATEGOLIB}/share/ssl \
+    -I ${GBSTRATEGO} \
     \
     -CI "-I${STRATEGOLIB}/include" \
     -CL "-L${STRATEGOLIB}/lib -lstratego-lib.opt" \

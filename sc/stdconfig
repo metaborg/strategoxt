@@ -4,9 +4,12 @@
 ./configure \
     --prefix=`pwd`/.. \
     --with-aterm=/home/xt/ATerm \
-    --with-sc-boot=`pwd`/../sc-boot
+    --with-sc-boot=`pwd`/../sc-boot \
+    --with-gb-stratego=/home/visser/res/XT/share/gb/stratego.0.7
 
 exit 0
+
+echo "this should'nt be executed"
 
     --with-gpp=/home/xt/xt \
 

@@ -16,7 +16,7 @@
 # 02111-1307, USA.
 
 AC_INIT(Makefile.in)
-AM_INIT_AUTOMAKE(stratego,0.7)
+AM_INIT_AUTOMAKE(stratego,0.8beta1)
 
 PKGS="srts ssl cgen sc-boot gpp-boot sc"
 AC_SUBST(PKGS)

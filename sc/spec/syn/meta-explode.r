@@ -28,7 +28,7 @@ strategies
   <+ is-string; !Str(<id>)
   <+ ?FromTerm(<meta-explode>)
   <+ ?FromStrategy(<meta-explode>)
-  <+ \ Conc(Ins(t1),t2) -> Op("Cons", [<trm-explode> t1, <trm-explode> t2]) \
+  <+ \ Conc(ts1,ts2) -> <foldr(!<trm-explode> ts2, !Op("Cons", [<Fst>, <Snd>]), trm-explode)> ts1 \
   <+ \ [] -> Op("Nil", []) \
   <+ \ [x | xs] -> Op("Cons", [<trm-explode> x, <trm-explode> xs]) \
   <+ \ op#(ts) -> Op(op, <map(trm-explode)> ts) \
