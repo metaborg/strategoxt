@@ -253,26 +253,3 @@ strategies
 signature
   constructors
     Pipe       : Int * Int -> Pipe
-
-/**
- * String manipulations
- */
-strategies
-
-  /**
-   * :: String -> Int
-   */
-  strlen =
-    ?str; prim("SSL_strlen", str)
-
-  /**
-   * :: String * String -> String
-   */
-  strcat =
-    ?(str1, str2); prim("SSL_strcat", str1, str2)
-
-  /**
-   * :: [String] -> String
-   */
-  new-concat-strings =
-    ?strings; prim("SSL_concat_strings", strings)

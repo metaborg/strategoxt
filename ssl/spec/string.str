@@ -1,6 +1,5 @@
 /**
- * This module defines some operations on strings, including
- * conversions to and from numbers.
+ * Operations on strings
  */
 module string
 imports list conditional iteration char
@@ -9,43 +8,89 @@ strategies // primitives
 
   new = prim("SSL_new")
 
-  is-string	 = ?x; prim("SSL_is_string"     , x)
+  is-string	 = ?x; prim("SSL_is_string", x)
+
+  /**
+   * Implodes a list of chars to a string.
+   *
+   * @type [Char] -> String
+   */
   implode-string = ?x; prim("SSL_implode_string", x)
+
+  /**
+   * Explodes a String to a list of chars.
+   *
+   * @type String -> [Char]
+   */
   explode-string = ?x; prim("SSL_explode_string", x)   
 
-strategies // concat
-  
-  // :: String * String -> String
-  conc-strings =
-      (explode-string, explode-string)
-    ; conc
-    ; implode-string
-
-  // :: List(String) -> String
-  concat-strings =
-      map(explode-string)
-    ; concat
-    ; implode-string
-
-strategies
-
-  // :: String -> Int
-  string-length =
-      explode-string
-    ; length
-
-  // List(Char) -> List(Char) :: String -> String
+  /**
+   * Wraps a strategy on a list of chars in a strategy on a string.
+   *
+   * @type s [Char] -> [Char]
+   * @type   String -> String
+   */
   string-as-chars(s) =
       explode-string
     ; s
     ; implode-string
 
+strategies
+  
+  /**
+   * Concats a tuple of two Strings.
+   *
+   * @warning  doesn't accept tuples with more than two string.
+   * @type     String * String -> String
+   */
+  conc-strings =
+    strcat
+
+  /**
+   * Concats a tuple of two Strings.
+   *
+   * @warning  doesn't accept tuples with more than two string.
+   * @type     String * String -> String
+   */
+  strcat =
+    ?(str1, str2); prim("SSL_strcat", str1, str2)
+
+  /**
+   * Concats a list of Strings
+   *
+   * @type [String] -> String
+   */
+  concat-strings =
+    ?strings; prim("SSL_concat_strings", strings)
+
+strategies
+
+  /**
+   * Returns the number of characters in a string.
+   *
+   * @type String -> Int
+   */
+  string-length =
+    strlen
+
+  /**
+   * Returns the number of characters in a string.
+   *
+   * @type String -> Int
+   */
+  strlen =
+    ?str; prim("SSL_strlen", str)
+
 strategies // for escaping to C like escape sequences
 
-  // :: String -> String
+  /**
+   * @type String -> String
+   */
   escape = string-as-chars(escape-chars)
 
-  // :: List(Char) -> List(Char)
+  /**
+   * @type [Char] -> [Char]
+   */
   escape-chars = 
     rec x(
        (Escape; [id, id | x])
@@ -53,17 +98,23 @@ strategies // for escaping to C like escape sequences
     <+ []
     )
 
-  // :: String -> String
+  /**
+   * @type String -> String
+   */
   unescape = string-as-chars(unescape-chars)
 
-  // :: List(Char) -> List(Char)
+  /**
+   * @type [Char] -> [Char]
+   */
   unescape-chars = 
     rec x(
       try(UnEscape)
     ; ([id | x] <+ [])
     )
 
-  // :: List(Char) -> List(Char)
+  /**
+   * @type [Char] -> [Char]
+   */
   Escape =
       Escape-double-quote
     + Escape-backslash
@@ -267,7 +318,7 @@ strategies
   * it returns a list of tokens for a given string (the second
   * argument). See string-test for examples.
   *
-  * @type  List(Char) * String -> List(String)
+  * @type  [Char] * String -> [String]
   */
   string-tokenize =
       (id, explode-string)
@@ -443,4 +494,3 @@ strategies
 
   sect(op, arg) = obsolete(!"sect/2; use term wrap patterns");
     <op> (<id>, <arg> ())
-

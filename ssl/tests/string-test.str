@@ -30,6 +30,9 @@ strategies
   main = 
     test-suite(!"string-test",
       explode-implode-test
+    ; strcat-tests
+    ; strlen-tests
+    ; concat-strings-tests
     ; filename-tests
     ; quote-tests
     ; padd-with-test
@@ -41,6 +44,25 @@ strategies
     ; string-tokenize-test
     ; split-tests
     )
+
+strategies
+
+  strcat-tests =
+      apply-test(!"strcat-1", strcat, !("",  ""), !"")
+    ; apply-test(!"strcat-2", strcat, !("a", ""), !"a")
+    ; apply-test(!"strcat-3", strcat, !("",  "a"), !"a")
+    ; apply-test(!"strcat-4", strcat, !("hello ",  "world"), !"hello world")
+
+  strlen-tests =
+      apply-test(!"strlen-1", strlen, !"", !0)
+    ; apply-test(!"strlen-2", strlen, !"a", !1)
+    ; apply-test(!"strlen-3", strlen, !"hello world", !11)
+
+  concat-strings-tests =
+      apply-test(!"concat-strings-1", concat-strings, ![], !"")
+    ; apply-test(!"concat-strings-2", concat-strings, !["a", ""], !"a")
+    ; apply-test(!"concat-strings-3", concat-strings, !["",  "a"], !"a")
+    ; apply-test(!"concat-strings-4", concat-strings, !["hello ",  "world"], !"hello world")
     
 strategies // for testing filename manipulations
     

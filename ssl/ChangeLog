@@ -1,3 +1,13 @@
+2003-08-07  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+  * Moved strlen en strcat from posix-file to string.
+  * Defined string-length in terms of strlen.
+  * Defined conc-strings in terms of strcat.
+
+  * new-concat-strings is now concat-strings.
+
+  * Added some xDoc comments.
+
 2003-08-01  Martin Bravenboer <mbravenb@cs.uu.nl>
 
   * spec/list-misc: split-at is an alias of split-fetch.

@@ -9,9 +9,6 @@ strategies
 //    ; access-tests
     ; aterm-io-tests
     ; char-output-tests 
-    ; strcat-tests
-    ; strlen-tests
-    ; new-concat-strings-tests
     )
 
   fileno-tests =
@@ -132,23 +129,6 @@ strategies
       ; map(<fputc> (<id>, stream))
       ; where(<fclose> stream)
       ; !()
-
-  strcat-tests =
-      apply-test(!"strcat-1", strcat, !("",  ""), !"")
-    ; apply-test(!"strcat-2", strcat, !("a", ""), !"a")
-    ; apply-test(!"strcat-3", strcat, !("",  "a"), !"a")
-    ; apply-test(!"strcat-4", strcat, !("hello ",  "world"), !"hello world")
-
-  strlen-tests =
-      apply-test(!"strlen-1", strlen, !"", !0)
-    ; apply-test(!"strlen-2", strlen, !"a", !1)
-    ; apply-test(!"strlen-3", strlen, !"hello world", !11)
-
-  new-concat-strings-tests =
-      apply-test(!"new-concat-strings-1", new-concat-strings, ![], !"")
-    ; apply-test(!"new-concat-strings-2", new-concat-strings, !["a", ""], !"a")
-    ; apply-test(!"new-concat-strings-3", new-concat-strings, !["",  "a"], !"a")
-    ; apply-test(!"new-concat-strings-4", new-concat-strings, !["hello ",  "world"], !"hello world")
 
 /**
  * Copyright (C) 2003 Eelco Visser <visser@acm.org>

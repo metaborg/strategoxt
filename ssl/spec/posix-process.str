@@ -1,26 +1,28 @@
-module posix-process
-imports posix-signal verbose io
-
 /**
  * Run-time process information
  */
+module posix-process
+imports posix-signal verbose io
+
 strategies
 
-  // get-pid :: a -> Int
-  // return process identifier of current process
-
+  /**
+   * Return process identifier of current process
+   *
+   * @type _ -> Int
+   */
   get-pid = 
     prim("SSL_get_pid")
 
 /**
  * Process creation
- *
- * fork() exec() 
  */
 strategies   
 
   /**
-   * fork creates a child process that differs from the parent process
+   * Creates a child process almost equivalent to the parent process.
+   *
+   * The new process differs from the parent process
    * only in its PID and PPID, and in the fact that resource  
    * utilizations  are  set  to  0. File locks and pending signals are not
    * inherited. 
@@ -29,51 +31,60 @@ strategies
    * On success, the PID of the child process is returned  in  the  parent’s
    * thread  of execution, and a 0 is returned in the child’s thread of exe‐
    * cution.
+   *
+   * @type fork :: a -> Int
    */
-
-  // fork :: a -> Int
   fork =
     prim("SSL_fork")
     
-  /*   The  execv  and  execvp functions provide an array of pointers to
-       null-terminated strings that represent the argument  list  avail�
-       able  to  the  new  program.   The first argument, by convention,
-       should point to the file name associated with the file being exe�
-       cuted.   The  array  of  pointers  must  be  terminated by a NULL
-       pointer. */
-
+  /**
+   * Replaces the current process image with a new  process image.
+   *
+   * The execv  and  execvp functions provide an array of pointers to
+   * null-terminated strings that represent the argument  list  avail�
+   * able  to  the  new  program.   The first argument, by convention,
+   * should point to the file name associated with the file being exe�
+   * cuted.   The  array  of  pointers  must  be  terminated by a NULL
+   * pointer. 
+   *
+   * @warning The first arugment is added in the runtime.
+   */
   execvp = 
     ?(file, argv); prim("SSL_execvp", file, argv)
 
 /**
  * Process termination 
- *
- * wait() and waitpid()
  */
 strategies 
 
-  // waitpid :: Int -> WaitStatus
+  /**
+   * @type Int -> WaitStatus
+   */
   waitpid =
     ?pid; prim("SSL_waitpid", pid)
     
 signature
   constructors
+    /**
+     * Collects the information returned from a wait call.
+     *
+     * (1) Exit status or -1 if process did not terminate properly
+     * (2) Signal number or -1 if the process wasn't terminated because of a signal
+     * (3) Signal number or -1 if the process wasn't stopped
+     */
     WaitStatus : Int * Int * Int -> WaitStatus
     
-  // (1) Exit status or -1 if process did not terminate properly
-  // (2) Signal number or -1 if the process wasn't terminated because of a signal
-  // (3) Signal number or -1 if the process wasn't stopped
-
 /**
  * Terminating the Current Process
- *
- * exit() _exit() abort() 
  */
 strategies 
  
-  // exit :: Int
-  // abort execution with exit value n
-  
+
+  /**
+   * Abort execution with exit value n.
+   *
+   * @type Int -> _
+   */
   exit = 
     ?n; prim("SSL_exit", n)
   
@@ -83,9 +94,10 @@ strategies
 strategies
  
   /**
-   * kill :: Int * Signal -> Int * Signal
+   * Sends the specified signal to the specified process.
    *
-   * fails on failure, if succesful the current term will be left untouched
+   * @fail fails on failure of the kill invocation
+   * @type Int * Signal -> Int * Signal
    */
   kill =
     where(
