@@ -15,3 +15,7 @@ strategies
  
   barney = 
     ?[x*]
+
+  foobar =
+    !|[ ?aap; !t ]|
+
