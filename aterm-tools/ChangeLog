@@ -1,5 +1,9 @@
 2004-02-15  Martin Bravenboer <martin@cs.uu.nl>
 
+	* trans/implode-aterm.str: undo explode-aterm.
+
+2004-02-15  Martin Bravenboer <martin@cs.uu.nl>
+
 	* trans/explode-aterm.str: tool to explode an aterm to the
 	signature of the aterm syntax definition. Annotations have not yet
 	been implemented.
