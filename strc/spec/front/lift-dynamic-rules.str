@@ -5,9 +5,20 @@ strategies
 
   LiftDynamicRules =
     upgrade-old-dr-constructs
-  ; Specification([id,id, Strategies(define-rule-scope; lift-dynamic-rules)])
+    ; Specification([
+        Constructors(![
+          OpDecl("DR_KILL", 
+	         FunType([ConstType(Sort("ATerm", []))], ConstType(Sort("ATerm", []))))
+          | <id>])
+      , id
+      , Strategies(define-rule-scope; lift-dynamic-rules-from-spec)
+      ])
 
-/* Desugar dynamic rule scopes {| ... : ... |} */
+strategies
+
+  /**
+   * Desugar dynamic rule scopes {| ... : ... |} 
+   */
 
   define-rule-scope =
     topdown(repeat(DefDynRuleScope))
@@ -15,34 +26,49 @@ strategies
   DefDynRuleScope :
     |[ {| : s |} ]| -> s
 
-/* Collect any labels for the head scope-id (uniquely) in one step.
-Only one real scope is thus created for each scope-id/rulename. */
+
+  /**
+   * Collect any labels for the head scope-id (uniquely) in one step.
+   * Only one real scope is thus created for each scope-id/rulename. 
+   */
 
   DefDynRuleScope :
     |[ {| x, sc* : s |} ]| -> |[ dr-scope(s1; {| sc2* : s |} | ~str:x) ]|
-    where <partition(?LabeledDynRuleScopeId(x,_) + ?DynRuleScopeId(x))> sc* => (sc1*, sc2*)
-        ; <collect(?LabeledDynRuleScopeId(x,<id>)); map(!|[ rules(x + ~<id>) ]|); !Seqs(<id>)> sc1* => s1
+    where 
+       <partition(?LabeledDynRuleScopeId(x,_) 
+                  + ?DynRuleScopeId(x))> sc* => (sc1*, sc2*)
+       ; <collect(?LabeledDynRuleScopeId(x,<id>))
+          ; map(!|[ rules(x + ~<id>) ]|)
+          ; !Seqs(<id>)> sc1* => s1
 
   DefDynRuleScope :
     |[ {| x.t, sc* : s |} ]| -> |[ dr-scope(s1; {| sc2* : s |} | ~str:x) ]|
-    where <partition(?LabeledDynRuleScopeId(x,_) + ?DynRuleScopeId(x))> sc* => (sc1*, sc2*)
-        ; <collect(?LabeledDynRuleScopeId(x,<id>)); ![t|<id>]; map(!|[ rules(x + ~<id>) ]|); !Seqs(<id>)> sc1* => s1
+    where 
+       <partition(?LabeledDynRuleScopeId(x,_) 
+                  + ?DynRuleScopeId(x))> sc* => (sc1*, sc2*)
+       ; <collect(?LabeledDynRuleScopeId(x,<id>))
+          ; ![t|<id>]; map(!|[ rules(x + ~<id>) ]|)
+          ; !Seqs(<id>)> sc1* => s1
 
 
-/* Lift dynamic rules from strategy definitions.  One dynamic rule set
-is lifted out at a time, after which the process repeats; a definition
-may contain multiple dynamic rules, and a dynamic rule itself may
-contain dynamic rules. */
+strategies
 
-  lift-dynamic-rules = 
-    listtd(repeat(lift-dynamic-rule))
+  /** 
+   * Lift dynamic rules from strategy definitions. One dynamic rule set
+   * is lifted out at a time, after which the process repeats; a
+   * definition may contain multiple dynamic rules, and a dynamic rule
+   * itself may contain dynamic rules.
+   */
 
-  lift-dynamic-rule :
+  lift-dynamic-rules-from-spec = 
+    listtd(repeat(lift-dynamic-rule-from-def))
+
+  lift-dynamic-rule-from-def :
     [def | defs] -> <conc> ([def' | rdefs], defs)
-    where {| ContextVar : 
-	     <def-tvars> def; DeclareContextVars
-           ; <split-dynamic-rule(split-dynamic-rules => (ss, rdefs); !Seqs(ss))> 
-	        def => def'
+    where {| ContextVar, LiftedRules
+	   : <def-tvars> def; DeclareContextVars
+           ; <lift-dynamic-rule> def => def'
+	   ; <bagof-LiftedRules <+ ![]>() => rdefs
 	   |}
 
   def-tvars =
@@ -53,11 +79,19 @@ contain dynamic rules. */
              >
 	    )
 
-/* Traverse to find dynamic rule definition.  Record all variables
-that are declared in context using the dynamic rule ContextVar */
+  /**
+   * Traverse to find dynamic rule definition.  Record all variables
+   * that are declared in context using the dynamic rule ContextVar 
+   */
 
-  split-dynamic-rule(s) = 
-    rec x(oncetd(s <+ split-under-scope(x)))
+  lift-dynamic-rule = 
+    rec x(
+      oncetd(
+        DesugarDynRuleDef; x
+        <+ SplitDynamicRule
+        <+ split-under-scope(x)
+      )
+    )
 
   split-under-scope(f) :
     |[ { x* : s } ]| -> |[ { x* : s' } ]|
@@ -66,90 +100,151 @@ that are declared in context using the dynamic rule ContextVar */
   DeclareContextVars =
     map({(?ListVar(x) <+ ?x); rules(ContextVar : x -> x)})
 
+strategies
 
-/* Split each rule within a dynamic rules block */
-
-  split-dynamic-rules :
-    |[ rules(drd*) ]| -> 
-    <map(split-dynamic-rule); flatten-list; unzip; (id, concat)> drd*
-
-  split-dynamic-rule =
-    (DesugarDynRuleDef <+ ![<id>])
-  ; map(SplitDynamicRule)
+  /**
+   * Desugaring dynamic rules
+   */
 
   DesugarDynRuleDef :
-    DynRuleDef|[ f(as1|as2)+t : r ]| ->
-      [ DynRuleDef|[ f(as1|as2) : r ]|, DynRuleDef|[ f + t ]| ]
+    |[ rules() ]| -> |[ id ]|
+
+  // Multiple rules
 
   DesugarDynRuleDef :
-    DynRuleDef|[ f(as1|as2)+t :+ r ]| ->
-      [ DynRuleDef|[ f(as1|as2) :+ r ]|, DynRuleDef|[ f + t ]| ]
+    |[ rules(drd1 drd2 drd*) ]| -> 
+    |[ rules(drd1); rules(drd2 drd*) ]|
+
+
+  // Labeling the current scope
 
   DesugarDynRuleDef :
-    DynRuleDef|[ f(as1|as2)+t :- t1 ]| ->
-      [ DynRuleDef|[ f(as1|as2) :- t1 ]|, DynRuleDef|[ f + t ]| ]
+    |[ rules(     f(as1|as2)+t : r ) ]| -> 
+    |[ rules( f+t f(as1|as2)   : r ) ]|
 
   DesugarDynRuleDef :
-    DynRuleDef|[ f(as1|as2)+t : t1 ]| ->
-      [ DynRuleDef|[ f(as1|as2) : t1 ]|, DynRuleDef|[ f + t ]| ]
+    |[ rules(     f(as1|as2)+t :+ r ) ]| -> 
+    |[ rules( f+t f(as1|as2)   :+ r  ) ]|
 
+  DesugarDynRuleDef :
+    |[ rules(     f(as1|as2)+t :- t1 ) ]| -> 
+    |[ rules( f+t f(as1|as2)   :- t1 ) ]|
+
+  DesugarDynRuleDef :
+    |[ rules(     f(as1|as2)+t : t1 ) ]| -> 
+    |[ rules( f+t f(as1|as2)   : t1 ) ]|
+
+
+  // Depends on
+
+  DesugarDynRuleDef :
+    |[ rules( f(as1|as2)    : t2 -> t3          depends on t4 ) ]| ->
+    |[ rules( f(as1|as2).() : t2 -> t3 where id depends on t4 ) ]|
+
+  DesugarDynRuleDef :
+    |[ rules( f(as1|as2)    : t2 -> t3 where s depends on t4 ) ]| ->
+    |[ rules( f(as1|as2).() : t2 -> t3 where s depends on t4 ) ]|
+
+  DesugarDynRuleDef :
+    |[ rules( f(as1|as2).t1 : t2 -> t3          depends on t4 ) ]| ->
+    |[ rules( f(as1|as2).t1 : t2 -> t3 where id depends on t4 ) ]|
+
+  // TODO: caching
+  // make sure that kill- and gen- rules are only generated once
+
+  DesugarDynRuleDef :
+    |[ rules( f(as1|as2).t1 : t2 -> t3 where s depends on t4 ) ]| ->
+    |[ rules( f(as1|as2).t1 : t2 -> t3 where s )
+       ; where( 
+           !t4 => y
+           ; map({x: ?x
+                   ; rules( 
+                       f(as1|as2).t1 :+ DR_KILL(x) -> (t2, y, t1) where id 
+                     )
+                 })
+         )
+    ]|
+    where new => x; new => y; new => y2; new => z
+	; <concat-strings> ["new-",  f] => f2
+	; <concat-strings> ["kill-", f] => f3
+	; <concat-strings> ["bagof-", f] => f4
+	; <tvars> t2 => x*
+        ; !|[ f2(|z) = ?x
+		; rules( f+z )
+		; <f4> DR_KILL(x)
+		; map({y2, x* : 
+                      ? (t2, y2, _ )
+		      ; rules( f(|).z :- t2 )
+		      ; !y2
+		      ; map({y: ?y; rules( f(|).z :- DR_KILL(y) ) })
+                      })
+           ]| => newdef
+	; rules( LiftedRules :+ () -> newdef )
+	; !|[ f3(|z) = ?x
+		; <f4> DR_KILL(x)
+		; map({z, y2, x* : 
+                      ? (t2, y2, z)
+		      ; rules( f(|).z :- t2 )
+		      ; !y2
+		      ; map({y: ?y; rules( f(|).z :- DR_KILL(y) )})
+                      })
+	   ]| => killdef
+	; rules( LiftedRules :+ () -> killdef )
+
+strategies
+
+  /**
+   * Define dynamic rule API call for each rule form and call
+   * SplitDynamicRule(s) which does the actual splitting.
+   */
 
   SplitDynamicRule :
-    DynRuleDef|[ f + t ]| -> (|[ dr-label-scope(|~str:f, t) ]|, [])
+    |[ rules( f+t ) ]| -> |[ dr-label-scope(|~str:f, t) ]|
 
-  SplitDynamicRule:
-    drd@DynRuleDef|[ f(as1|as2) : r ]| ->
+  SplitDynamicRule :
+    drd@|[ rules( f(as1|as2) : r ) ]| ->
       <SplitDynamicRule(!|[ dr-set-rule(|~str:f, ~<Fst>, ~<Snd>) ]|)> drd
 
-  SplitDynamicRule:
-    DynRuleDef|[ f(as1|as2).t : r ]| ->
-      <SplitDynamicRule(!|[ dr-set-rule-vis(|~str:f, t, ~<Fst>, ~<Snd>) ]|)> DynRuleDef|[ f(as1|as2) : r ]|
+  SplitDynamicRule :
+    |[ rules(  f(as1|as2).t : r ) ]| ->
+      <SplitDynamicRule(!|[ dr-set-rule-vis(|~str:f, t, ~<Fst>, ~<Snd>) ]|)> 
+	|[ rules( f(as1|as2) : r ) ]|
 
-  SplitDynamicRule:
-    DynRuleDef|[ f(as1|as2) :+ r ]| ->
-      <SplitDynamicRule(!|[ dr-add-rule(|~str:f, ~<Fst>, ~<Snd>) ]|)> DynRuleDef|[ f(as1|as2) : r ]|
+  SplitDynamicRule :
+    |[ rules( f(as1|as2) :+ r ) ]| ->
+      <SplitDynamicRule(!|[ dr-add-rule(|~str:f, ~<Fst>, ~<Snd>) ]|)> 
+	|[ rules( f(as1|as2) : r ) ]|
 
-  SplitDynamicRule:
-    DynRuleDef|[ f(as1|as2).t :+ r ]| ->
-      <SplitDynamicRule(!|[ dr-add-rule(|~str:f, t, ~<Fst>, ~<Snd>) ]|)> DynRuleDef|[ f(as1|as2) : r ]|
+  SplitDynamicRule :
+    |[ rules(  f(as1|as2).t :+ r ) ]| ->
+      <SplitDynamicRule(!|[ dr-add-rule-vis(|~str:f, t, ~<Fst>, ~<Snd>) ]|)> 
+	|[ rules(  f(as1|as2) : r ) ]|
 
-  SplitDynamicRule:
-    DynRuleDef|[ f(as1|as2) : t ]| ->
-      <SplitDynamicRule(!|[ dr-set-rule(|~str:f, ~<Fst>, ~<Snd>) ]|)> DynRuleDef|[ f(as1|as2) : t -> t where id ]|
+  SplitDynamicRule :
+    |[ rules( f(as1|as2) : t ) ]| ->
+      <SplitDynamicRule(!|[ dr-set-rule(|~str:f, ~<Fst>, ~<Snd>) ]|)> 
+	|[ rules( f(as1|as2) : t -> t where id ) ]|
 
-  SplitDynamicRule:
-    DynRuleDef|[ f(as1|as2).t : t1 ]| ->
-      <SplitDynamicRule(!|[ dr-set-rule-vis(|~str:f, t, ~<Fst>, ~<Snd>) ]|)> DynRuleDef|[ f(as1|as2) : t1 -> t1 where id ]|
+  SplitDynamicRule :
+    |[ rules(  f(as1|as2).t : t1 ) ]| ->
+      <SplitDynamicRule(!|[ dr-set-rule-vis(|~str:f, t, ~<Fst>, ~<Snd>) ]|)> 
+	|[ rules(  f(as1|as2) : t1 -> t1 where id ) ]|
 
-  SplitDynamicRule:
-    DynRuleDef|[ f(as1|as2) :- t ]| ->
-      <SplitDynamicRule(!|[ dr-undefine-rule(|~str:f, ~<Fst>) ]|)> DynRuleDef|[ f(as1|as2) : t -> () where id ]|
+  SplitDynamicRule :
+    |[ rules( f(as1|as2) :- t ) ]| ->
+      <SplitDynamicRule(!|[ dr-undefine-rule(|~str:f, ~<Fst>) ]|)> 
+	|[ rules( f(as1|as2) : t -> () where id ) ]|
 
-  SplitDynamicRule:
-    DynRuleDef|[ f(as1|as2).t :- t1 ]| ->
-      <SplitDynamicRule(!|[ dr-undefine-rule(|~str:f, t, ~<Fst>) ]|)> DynRuleDef|[ f(as1|as2) : t1 -> () where id ]|
+  SplitDynamicRule :
+    |[ rules( f(as1|as2).t :- t1 ) ]| ->
+      <SplitDynamicRule(!|[ dr-undefine-rule-vis(|~str:f, t, ~<Fst>) ]|)> 
+	|[ rules( f(as1|as2) : t1 -> () where id ) ]|
 
-
-/**
- * Split a dynamic rule into an call to assert which records a mapping
- * from the left-hand side of the rule instantiated with the bindings to
- * context variables to the set of bindings to the context variales not
- * occurring in the left-hand side.
- * 
- * Notes:
- *  - the stamp identifies the rule that introduced the binding, in order
- *    to distinguish between dynamic rules with the same left-hand side
- *    but different right-hand sides
- *  - non-context variables are replaced with 'Dummy()' in the term that
- *    is used as key in the table (dummify)
- *  - if all variables in the lhs are context-variables, the lookup in the
- *    table can simply use a pointer to the term matched on the lhs (efficient!)
- * 
- * Bug! Current translation scheme does not take extended match patterns
- * into account. No contexts and term projects should be used in a
- * dynamic rule.
- */
 strategies
+
+  /**
+   * Derive key from term by replacing non-context variables by a dummy.
+   */
 
   dummify =
     // a hack to deal with list variables in lists in dr lhss
@@ -157,22 +252,49 @@ strategies
       \ Op("Cons", [Var(ListVar(x)), Op("Nil", [])]) -> Var(ListVar(x)) \
       <+ \ |[ x@t ]| -> |[ t ]| \
     ));
-    alltd(
-        \Term|[ x ]|     -> |[ Nil() ]| where not(Var(ContextVar + ListVar(ContextVar)))\
-     <+ \Term|[ _ ]|     -> |[ Nil() ]|\
-     <+ \Term|[ <s> ]|   -> |[ Keys( ~term*:<tvars; map(!Var(<id>))> s ) ]|\
-     <+ \Term|[ <s> t ]| -> |[ Keys( ~term*:<tvars; map(!Var(<id>))> (s,t) ) ]|\
-     <+ ?Con(_,_,_); <fatal-error> ["context in left-hand side of dynamic rule"]
-    )
+    alltd(DummifyTerm)
 
+  DummifyTerm :
+    Term|[ x ]| -> |[ Nil() ]| 
+    where not(Var(ContextVar + ListVar(ContextVar)))
+
+  DummifyTerm :
+    Term|[ _ ]| -> |[ Nil() ]|
+
+  DummifyTerm :
+    Term|[ <s> ]| -> |[ Keys( ~term*:<tvars; map(!Var(<id>))> s ) ]|
+
+  DummifyTerm :
+    Term|[ <s> t ]| -> |[ Keys( ~term*:<tvars; map(!Var(<id>))> (s,t) ) ]|
+
+  DummifyTerm =
+     ?Con(_,_,_); <fatal-error> ["context in left-hand side of dynamic rule"]
 
 rules
 
+  /**
+   * Split a dynamic rule into an call to assert which records a mapping
+   * from the left-hand side of the rule instantiated with the bindings to
+   * context variables to the set of bindings to the context variales not
+   * occurring in the left-hand side.
+   * 
+   * Notes:
+   *  - the stamp identifies the rule that introduced the binding, in order
+   *    to distinguish between dynamic rules with the same left-hand side
+   *    but different right-hand sides
+   *  - non-context variables are replaced with 'Dummy()' in the term that
+   *    is used as key in the table (dummify)
+   *  - if all variables in the lhs are context-variables, the lookup in the
+   *    table can simply use a pointer to the term matched on the lhs (efficient!)
+   * 
+   * Bug! Current translation scheme does not take extended match patterns
+   * into account. No contexts and term projects should be used in a
+   * dynamic rule.
+   */
+
   SplitDynamicRule(saveclsr):
-    drd@DynRuleDef|[ f(as1|as2) : t1 -> t2 where s ]| ->
-    (|[ where(~<saveclsr> (t1', |[ (~str:stamp, t*) ]| )) ]|,
-      <conc> (callees, callers)
-     )
+    drd@|[ rules(  f(as1|as2) : t1 -> t2 where s ) ]| ->
+    |[ where(~<saveclsr> (t1', |[ (~str:stamp, t*) ]| )) ]|
     where
     // Prepare LHS for use as a key
       <dummify> t1 => t1'
@@ -217,7 +339,7 @@ rules
           else
               <conc-strings>("bagof-", f) => g
             ; <conc-strings>("once-", f) => g2
-            ; <conc-strings>("all-", f) => g3
+            ; <conc-strings>("bigbagof-", f) => g3
 
             // Transform passed arguments of f into calling arguments for f'
             ; <map((?DefaultVarDec(<id>) + ?VarDec(<id>,_)); !Call(SVar(<id>),[]))> as1 => s1*
@@ -243,10 +365,11 @@ rules
             ; rules(DRCallersGenerated : (rsig, t1') -> ())
           end
       end
-
-
+      ; <conc> (callees, callers)
+      ; map({?x; rules( LiftedRules :+ () -> x )})
 
 strategies
+
   dr-rename-vars =
   {| DRRenameVar:
     where(<reset-counter> "DRVarNumber")
@@ -266,13 +389,16 @@ strategies
   + Scope(map(s), x)
 
 rules
+
   NewNumberedVar :
     x -> y
     where <next-counter> "DRVarNumber" => n
         ; <strcat> ("v", <int-to-string> n) => y
         ; rules(DRRenameVar: x -> y)
 
-\end{code}
+/*
 
-% Copyright (C) 2001-2004 Eelco Visser <visser@acm.org>
+Copyright (C) 2001-2004 Eelco Visser <visser@acm.org>
+
+*/
 
