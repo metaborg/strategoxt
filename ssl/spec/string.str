@@ -6,8 +6,50 @@ imports list conditional iteration char file
 
 strategies // primitives
 
+  /**
+   * Generates a unique new string of the form 'c_d',
+   * where c is one char and d is a positive integer.
+   */
   new = prim("SSL_new")
 
+  /**
+   * Generates a unique new string with user-defined prefix.
+   * The produced string is *always* unique across a program run.
+   *
+   * The prefix comes in front of an increasing number, which is
+   * separate for each prefix.
+   *
+   * @see newname-basic-tests
+   */
+  newname = ?prefix; newname(|prefix)
+
+  /**
+   * Generates a unique new string with user-defined prefix.
+   * The produced string is *always* unique across a program run.
+   *
+   * The prefix comes in front of a globally increasing number, which is
+   * shared among all other newname-shared calls.
+   *
+   * @see newname-shared-tests
+   */
+  newname-shared = newname(|"")
+
+  /**
+   * Generates a unique new string with user-defined prefix.
+   * The produced string is *always* unique across a program run.
+   *
+   * The prefix comes in front of an increasing number, which is
+   * shared among all other newname-calls within the specified countergroup.
+   *
+   * @see newname-grouped-tests
+   */
+  newname(|countergroup) =
+    ?prefix; prim("SSL_newname", prefix, countergroup)
+
+
+  /**
+   * Checks whether input term is a string.
+   */
   is-string	 = ?x; prim("SSL_is_string", x)
 
   /**

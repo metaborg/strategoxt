@@ -1,3 +1,21 @@
+2004-05-30  Arthur van Dam <adam@cs.uu.nl>
+
+	* spec/string.str: `newname' and `newname-shared' strategies that
+	generate unique strings with user-defined prefix. The increasing
+	counter that is used as postfix can be shared among various
+	`newname' calls that use the same countergroup.
+
+	newname -- use current term as prefix and groupname (i.e. each
+	prefix has its own numbering starting at 0)
+	newname-shared -- use current term as prefix and use a global
+	counter (groupname = "")
+	newname(|groupname) -- use current term as prefix and number within
+	specified groupname.
+
+	Note that uniqueness-checking occurs over any grouping or scoping,
+	no previously used string (within one program run) will ever be
+	returned by newname.
+
 2004-04-28  Martin Bravenboer <martin@cs.uu.nl>
 
 	* spec/placeholder.str: new SSL module that adds library support
