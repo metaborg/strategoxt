@@ -1,3 +1,24 @@
+// SDF Tools
+// Copyright (C) 2001 Merijn de Jonge <mdejonge@cwi.nl>
+//                    Eelco Visser <visser@acm.org>
+//                    Joost Visser <jvisser@cwi.nl>
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2, or (at your option)
+// any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+// 02111-1307, USA.           
+
+
 \literate[unfold-literal]
 
 	\begin{abstract}
@@ -8,39 +29,18 @@
 
 \begin{code}
 module unfold-literal
-imports Sdf-Syntax lib sdf-bracket gt-paths asfix
+imports Sdf-Syntax lib sdf-bracket asfix dynamic-rules
 strategies
 
-(*  unfold-literal = 
-    pppwrap(!["-l", "sdf", "-v", "2.1"]
-           ,!["-p", <concat-strings>[SDFTOOLS, "/share/gt/sdf.cons.pp"]]
-           ,UnfoldLiterals; SdfBracket)
-*)
-
-    unfold-literal = iowrap(UnfoldLiterals; SdfBracket)
-
+  unfold-literal = 
+    iowrap(UnfoldLiterals; SdfBracket)
 
   UnfoldLiterals =
-  where(find-literals => subst)
-  ; topdown(repeat(replace-literal(!subst)))
+    alltd(RemoveLiteralDef);
+    alltd(ReplaceLiteral)
 
-  find-literals =
-  where(<table-create> "literals")
-  ; alltd(add-production)
-  ; <table-getlist> "literals"
-  ; where(<table-destroy> "literals")
-  ; filter((id,[[lit(id)]]; Hd; Hd)
-  )
-
-  add-production = 
-  where(prod(?syms,?s,not(oncetd(reject)))
-  ; <table-push>("literals", s, syms)
-  )
-
-  replace-literal(subst) =
-    \ sort(s) -> lit(<lookup> (sort(s), <subst>())) \
-
-  replace-literal(subst) =
-    \ [prod([lit(_)],sort(s),_) | x] -> x
-      where <lookup> (sort(s), <subst>()) \
+  RemoveLiteralDef :
+    [prod([lit(l)],sort(s),attrs) | ps] -> ps
+    where <not(oncetd(reject))> attrs
+        ; rules( ReplaceLiteral : sort(s) -> lit(l) )
 \end{code}
