@@ -73,7 +73,7 @@ AC_PROG_CC
 
 ### PACKAGES ##########################
 
-PKGS="autoxt srts xtc sdf-import stratego-front asfix-tools strc gpp c-tools ssl concrete-syntax aterm-front sdf-front xml-front dot-tools graph-tools sdf-tools aterm-tools stratego-regular xml-front stratego-tools boxenv stratego-util"
+PKGS="autoxt srts xtc sdf-import stratego-front asfix-tools strc gpp c-tools ssl concrete-syntax xml-front aterm-front sdf-front dot-tools graph-tools sdf-tools aterm-tools stratego-regular xml-front stratego-tools boxenv stratego-util"
 AC_SUBST(PKGS)
 
 BUILD_SRTS_DEST="`pwd`/pre-pkgs/build"
