@@ -19,7 +19,8 @@ SINCLUDES = \
 	-I $(STRATEGO_FRONT)/share/stratego-front \
 	-I $(C_TOOLS)/share/c-tools \
 	-I $(C_TOOLS)/share/sdf/c-tools \
-	-I $(XTC)/share/xtc
+	-I $(XTC)/share/xtc 
+
 
 TESTS = $(TESTBINS)
 

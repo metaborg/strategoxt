@@ -116,11 +116,11 @@ strategies
 	+ Scope(id, Match(id))
 	+ Scope(id, Seq(Match(id), id))
 	+ Seq(Scope(id, Seq(Match(id), id)), id)
-	+ Cong(id,id)
 	+ Choice(x, x)
 	+ LChoice(x, x)
 	+ GuardedLChoice(x, x, x)
-        + Rec(id, id)
+//	+ Cong(id,id)
+//        + Rec(id, id)
     );
     where(<leq>(<term-size>, 50))
 

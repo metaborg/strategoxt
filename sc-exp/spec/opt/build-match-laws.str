@@ -59,3 +59,7 @@ rules // other rules
   WhereSavesCurrentTerm :
     Where(s) -> Scope([x], Seq(Match(Var(x)), Seq(s, Build(Var(x)))))
     where new => x
+
+  TestSavesCurrentTerm :
+    Test(s) -> Scope([x], Seq(Match(Var(x)), Seq(s, Build(Var(x)))))
+    where new => x

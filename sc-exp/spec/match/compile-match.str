@@ -21,7 +21,8 @@ strategies
     simplify-widen
 
   define-congruences-comp = 
-    iowrap(apply-to-bodies(downup2(repeat(DefineCongruences + Simplify), repeat(Simplify))))
+    iowrap(apply-to-bodies(downup2(repeat(Simplify)
+				  , repeat(DefineCongruences + Simplify))))
 
   apply-to-bodies(s) = 
     Specification([id,Strategies(map(SDef(id,id,s) + SDefT(id,id,id,s)))])

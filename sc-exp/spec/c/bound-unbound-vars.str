@@ -6,9 +6,9 @@ strategies
     iowrap(mark-bound-unbound-vars)
 
   mark-bound-unbound-vars =
-    say(!"marking bound-unbound-vars");
-    Specification([id, Strategies(map(mark-buv))])
-    ;say(!"marked bound-unbound-vars")
+    if-verbose4(say(!"marking bound-unbound-vars"))
+    ; Specification([id, Strategies(map(mark-buv))])
+    ; if-verbose4(say(!"marked bound-unbound-vars"))
 
   mark-scope =
     ? Scope(xs, _)

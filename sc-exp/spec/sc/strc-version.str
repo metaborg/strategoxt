@@ -1,4 +1,4 @@
-module sc-version
+module strc-version
 overlays
 
-  sc-version = "0.9.3"
+  strc-version-number = "0.9.3"

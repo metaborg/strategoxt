@@ -53,6 +53,7 @@ strategies
       parse
       ; output-ast
       ; add-main
+      ; repair-types
       ; frontend
       ; output-frontend
       ; extract
@@ -65,6 +66,9 @@ strategies
     get-infile
     ; xtc-transform(!"pack-stratego", 
 	   <concat> [<dep-name>, <get-config> "-I", <pass-verbose>, <pass-keep>])
+
+  repair-types =
+    xtc-transform(!"repair-types", <concat> [<pass-verbose>] )
 
   output-ast =
     try(where(<get-config> "--ast")
@@ -124,9 +128,11 @@ strategies
 strategies
 
   optimize =
-    if-verbose2(debug(!"optimize: "));
+    if-verbose2(say(!"optimization"));
     profile'(if-verbose1(<printnl>(stderr, ["optimization succeeded:  " | <id>])), 
-        olevel1(optimize1)
+	if-verbose3(where(<get-config> "-O"; debug(!"optimization level: ")))
+
+        ; olevel1(optimize1)
         ; olevel2(try(where(not(<get-config> "--fusion")); fusion))
 
         ; olevel4(inline)
@@ -140,12 +146,15 @@ strategies
         ; olevel2(compile-match)
 	; olevel2(desugar-case)
 
+        ; olevel5(inline)
+	; olevel5(dead-def-elim)
+
         ; olevel3(optimize2)
         ; olevel3(const-prop; bound-unbound-vars; dead-var-elim)
         ; olevel1(optimize2)
 
-        ; stratego-of
-        ; output-optimized
+        ; olevel1(stratego-of)
+        ; olevel1(output-optimized)
     )
 
   optimize1 = 
@@ -192,7 +201,6 @@ strategies
  
   output-optimized =
     try(where(
-	  debug(!"output-optimized: ");
           where(<get-config> "--output-optimized")
           ; copy-to(get-outfile(!".opt") => file1)
           ; xtc-transform(!"pp-stratego", !["--abstract" | <pass-verbose> ] )
@@ -202,7 +210,6 @@ strategies
 
   output-canonical =
     try(where(
-	  debug(!"output-canonical: ");
           where(<get-config> "--output-canonical")
           ; copy-to(get-outfile(!".can") => file1)
           ; xtc-transform(!"pp-stratego", !["--abstract", "--annotations" | <pass-verbose> ] )
@@ -213,10 +220,10 @@ strategies
 strategies
 
   back-end =
-    if-verbose2(debug(!"back-end: "));
+    if-verbose2(say(!"back-end"));
     profile'(if-verbose1(<printnl>(stderr, ["back-end succeeded:      " | <id>])), 
       canonicalize
-      ; olevel1(bound-unbound-vars)
+      ; olevel3(bound-unbound-vars)
       ; stratego-cf
       ; output-canonical
       ; s2c

@@ -28,6 +28,7 @@ strategies
     + HoistLet 
     + FuseScope
     + WhereSavesCurrentTerm
+    + TestSavesCurrentTerm
 
   simplify0 = 
     downup(repeat(Simplify))

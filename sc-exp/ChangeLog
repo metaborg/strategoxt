@@ -1,3 +1,26 @@
+2003-07-28  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/sig/Stratego-Optimized-Format.str: Restricted format to
+	actual output. Don't allow constructs which should have been 
+	eliminated before. Distinghuish build and match terms.
+
+	* spec/sc/strc.str: Second inlining phase after pattern match
+	compilation.
+
+	* spec/sc/strc-options.str: Default optimization level is 5, i.e.,
+	turn on all optimizations. In order to test all optimizations.
+
+	* spec/opt/inlining.str: Don't inline congruences and rec's since
+	that blows up the target code. Try inlining congruences again
+	after dealing properly with annotations.
+
+	* spec/opt/build-match-laws.str: TestSavesCurrentTerm desugares
+	test(_) operator just like where(_). According to official semantics
+	bindings should be restored after test; this is not currently the
+	case.
+
+	* spec/c/bound-unbound-vars.str: decrease verbosity
+
 2003-07-27  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/opt/stratego-laws.str: Moved BuildMatch to basic

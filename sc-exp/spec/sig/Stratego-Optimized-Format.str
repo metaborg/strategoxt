@@ -5,7 +5,7 @@ module Stratego-Optimized-Format
 imports Stratego-Amb automaton lib
 strategies
 
-  main = iowrap(stratego-specification)
+  main = iowrap(stratego-specification) 
 
   stratego-specification =
     Specification([id, Strategies(list(strategy-definition))])
@@ -15,15 +15,18 @@ strategies
     SDef(is-string, list(VarDec(is-string,type-expression)), strategy-expression)
 
     <+ SDefT(is-string
-	    , list(VarDec(is-string,type-expression))
-	    , list(VarDec(is-string,type-expression))
+	    , vardecs
+	    , vardecs
 	    , strategy-expression)
 
 //    + SDef(list(DontInline), is-string, [], strategy-expression)
     <+ debug(!"Not a strategy-definition: ")
 
+  vardecs =
+    list(VarDec(is-string,type-expression))
+
   type-expression = 
-    ConstType(Op(is-string,[]))
+    ConstType(rec x(Op(is-string,list(x)) + Var(is-string))) 
     + FunType(list(type-expression), type-expression)
 
   strategy-expression =
@@ -31,46 +34,45 @@ strategies
 	Id
 	+ Fail
 	+ Not(exp)
-	+ Test(exp)
 	+ Seq(exp, exp)
 	+ Choice(exp, exp)
 	+ LChoice(exp, exp)
 	+ GuardedLChoice(exp, exp, exp)
 	+ GChoice(exp, exp)
 	+ LGChoice(exp, exp)
-//	+ Call(SVar(is-string),list(exp))
-	+ CallT(SVar(is-string),list(exp), list(term-expression))
+
+	+ CallT(SVar(is-string),list(exp), list(build-term-expression))
+	+ PrimT(is-string,list(exp),list(build-term-expression))
+
 	+ Rec(is-string, exp)
 	+ Path(is-int, exp)
-	+ Cong(is-string, list(exp))
 	+ One(exp)
 	+ Some(exp)
 	+ All(exp)
 	+ Thread(exp)
-	+ Match(shallow-term-expression)
-	+ Build(term-expression)
+
+	+ Match(match-term-expression)
+	+ Build(build-term-expression)
+
 	+ Scope(list(is-string + list(is-int)), exp)
-	+ Where(exp)
+	+ Let(list(SDefT(is-string,vardecs,vardecs,exp)), exp)
+
+//	+ Test(exp)
+//	+ Cong(is-string, list(exp))
+//	+ Call(SVar(is-string),list(exp))
 //	+ Prim(is-string,list(term-expression))
-	+ PrimT(is-string,list(exp),list(term-expression))
-
-	+ Let(list(SDef(is-string,[],exp)
-                   + SDefT(is-string,[],[],exp))
-             , exp)
-
-	//+ Case(is-string, Var(id), list(Alt(id,id,exp)), exp)
-	//+ Continue(is-string)
-
-	+ Assign(Var(id),term-expression)
-	+ Assign(Var(id))
+//	+ Where(exp)
+//	+ Case(is-string, Var(id), list(Alt(id,id,exp)), exp)
+//	+ Continue(is-string)
+//	+ Assign(Var(id),term-expression)
+//	+ Assign(Var(id))
 
 	<+ debug(!"Not a strategy-expression: ")
 	)
 
-  term-expression =
+  build-term-expression =
   rec trm(
-	Wld 
-	+ Var(is-string)
+	Var(is-string)
 	+ Int(is-int)
 	+ Real(is-real)
 	+ Str(is-string)
@@ -79,14 +81,27 @@ strategies
 	<+ debug(!"Not a term-expression: ")
 	)
 
-  shallow-term-expression =
+  match-term-expression =
   rec trm(
-	//Wld 
-	Var(is-string)
+	Wld 
+	+ Var(is-string)
 	+ Int(is-int)
 	+ Real(is-real)
 	+ Str(is-string)
-	+ Op(is-string, list(Var(is-string)))
+	+ Op(is-string, list(trm))
+	+ As(trm, trm)
+	<+ debug(!"Not a term-expression: ")
+	)
+
+  shallow-term-expression =
+  rec trm(
+	Wld 
+	+ Var(is-string)
+	+ Int(is-int)
+	+ Real(is-real)
+	+ Str(is-string)
+	+ Op(is-string, list(Var(is-string) + Wld))
+	+ As(trm, trm)
 	<+ debug(!"Not a shallow term-expression: ")
 	)
 \end{code}

@@ -1,4 +1,4 @@
-module sc-version
+module strc-version
 overlays
 
-  sc-version = "@VERSION@"
+  strc-version-number = "@VERSION@"
