@@ -2,8 +2,9 @@ SUBDIRS = srts
 
 includedir = $(prefix)/include/srts
 
-INCLUDES 	= -I. -I$(ATERM)/include -I$(srcdir) 
-AM_CFLAGS       = -Wall
+AM_CPPFLAGS = -I. -I$(ATERM)/include -I$(srcdir) 
+AM_CFLAGS   = -Wall
+AM_LDFLAGS  = -avoid-version
 
 pkglib_LTLIBRARIES = \
   libstratego.la \

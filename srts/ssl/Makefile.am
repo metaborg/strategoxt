@@ -4,7 +4,8 @@ include_HEADERS = \
   io.h stratego-lib.h tables.h sets.h ssl-time.h exec.h number.h \
   ssl-string.h term.h annotations.h placeholder.h dir.h
 
-INCLUDES = -I$(srcdir)/../src -I$(ATERM)/include
+AM_CPPFLAGS = -I$(srcdir)/../src -I$(ATERM)/include
+AM_LDFLAGS  = -avoid-version
 
 pkglib_LTLIBRARIES = \
   libstratego-lib.la \
