@@ -1,0 +1,38 @@
+module prop1-asfix
+imports AsFix list-cons tuple-cons string
+rules
+
+  DN : |[ ~ ~ p ]| -> |[ p ]|
+
+  DAOL : |[ p /\ (q \/ r) ]| -> |[ (p /\ q) \/ (p /\ r) ]|
+
+strategies
+
+  KeepLayout(|a, b) =
+    ?|[ p la1 \/ la2 q ]|
+  ; <eq> (<implode> |[ ~ la1 A ]|, <concat-strings> ["~", a, "A"])
+  ; <eq> (<implode> |[ ~ la2 A ]|, <concat-strings> ["~", b, "A"])
+
+  implode =
+    rec x(is-int <+ ?appl(_,<id>); map(x))
+  ; flatten-list
+  ; implode-string
+
+  Bla =
+    |>
+       P /\
+
+       <| let do =
+              |>
+                E /\ <| id |>
+              <|
+          in appl(id, [do, id, id, id, do])
+          end
+       |>
+
+       /\ Q
+    <|
+
+  main =
+    <KeepLayout(|" /* 1 */ ", " /* 2 */ ")> |[ A /* 1 */ \/ /* 2 */ B ]|
+  ; <Bla> |[ A{| "A" |} /\ (B \/ C /\ D) ]|

@@ -11,3 +11,4 @@ exports
     Prop "{|" {StrategoTerm ","}* "|}" -> Prop 		   {cons("WithAnno")}
   variables
     [pqr][0-9]* -> Prop
+    "la"[0-9]  -> LAYOUT

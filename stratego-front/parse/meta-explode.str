@@ -23,6 +23,7 @@ strategies
   ImplodeLayout(build) = rec x(alltd(
     BA(ImplodeLayout(fail), ImplodeLayout(id))
     <+ Build(ImplodeLayout(id))
+    <+ ToBuild(ImplodeLayout(id))
     <+ AM(x, ImplodeLayout(id))
     <+ RuleNoCond(x, ImplodeLayout(id))
     <+ Rule(x, ImplodeLayout(id), x)
@@ -34,7 +35,7 @@ strategies
                                                                                
   asfix-option =
     Option( "--asfix",
-       !AsFix,
+       <set-config> ("--asfix", ()); !AsFix,
        !"--asfix          treat concrete syntax parts as AsFix trees")
 
   meta-explode =

@@ -1,3 +1,15 @@
+2005-02-03  Valentin David  <valentin.david@gmail.com>
+
+	* test/prop1-asfix.str, test/prop1-asfix.meta:
+	New. Check that asfix concrete syntax works fine including the
+	layout matching.
+
+	* test/PropStratego.sdf: Add layout variables.
+	* test/Makefile.am: Update.
+
+	* parse/meta-explode.str:
+	Fix --asfix option. Disable layout deleting into ToBuild trees.
+
 2005-01-12  Martin Bravenboer <martin@cs.uu.nl>
 
 	* parse/parse-stratego.str: use sglri for parsing: the stratego
