@@ -158,6 +158,14 @@ AC_ARG_WITH([asfix-tools],
 )
 AC_SUBST([ASFIX_TOOLS])
 
+AC_ARG_WITH([aterm-front],
+  AC_HELP_STRING([--with-aterm-front=DIR],
+                 [use ATerm Front at DIR @<:@STRATEGOXT@:>@]),
+  [ATERM_FRONT=$withval],
+  [ATERM_FRONT=$STRATEGOXT]
+)
+AC_SUBST([ATERM_FRONT])
+
 AC_ARG_WITH([aterm-tools],
   AC_HELP_STRING([--with-aterm-tools=DIR],
                  [use Aterm Tools at DIR @<:@STRATEGOXT@:>@]),
