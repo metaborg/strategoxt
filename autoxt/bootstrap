@@ -1,8 +1,3 @@
 #! /bin/sh
 
-rm -f config.cache
-rm -f acconfig.h
-
-aclocal -I .  || exit 1
-autoconf  || exit 1
-automake -a  || exit 1
+autoreconf -if || exit 1

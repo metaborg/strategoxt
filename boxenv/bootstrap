@@ -1,11 +1,4 @@
 #! /bin/sh
-rm -f config.cache
-rm -f acconfig.h
 
-autoxt
-aclocal -I .
-
-autoconf
-automake -a
-
-#touch src/boxenv/*.sty
+autoxt || exit 1
+autoreconf -if || exit 1
