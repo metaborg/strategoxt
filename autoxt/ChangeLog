@@ -1,3 +1,8 @@
+2004-03-26   Martin Bravenboer  <martin@cs.uu.nl>
+
+	* Added the XT_TERM_DEFINE macro, which defines ATerm variants for
+	PACKAGE_NAME, PACKAGE_VERSION, etc.
+	
 2004-03-02   Merijn de Jonge  <mdejonge@cs.uu.nl>
 	* Makefile.am: added trailing newline
 	* Makefile.xt: integrated pptable-diff in build process of
