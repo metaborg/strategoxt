@@ -14,6 +14,7 @@ AC_SUBST(SVN_REVISION)
 
 AC_CONFIG_FILES([
   Makefile 
+  concrete-syntax.spec
   xtc/Makefile
 ])
 AC_OUTPUT
