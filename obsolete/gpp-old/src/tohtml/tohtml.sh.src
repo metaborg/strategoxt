@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: tohtml.sh.src,v 1.4 2001/06/07 11:18:33 mdejonge Exp $
+# $Id: tohtml.sh.src,v 1.5 2001/06/08 08:36:55 mdejonge Exp $
 
 #
 #
@@ -57,12 +57,12 @@ PATH=${GRAPHTOOLS}/bin:${GRAPHVIZ}/bin:${BINDIR}:${PATH}
 export PATH
 
 # Programs
-ASFIX2ABOX="${BINDIR}/asfix2abox"
-AST2ABOX="${BINDIR}/ast2abox"
-ABOX2TEXT="${BINDIR}/abox2text"
-ABOX2HTML="${BINDIR}/abox2html"
+ASFIX2ABOX="asfix2abox"
+AST2ABOX="ast2abox"
+ABOX2TEXT="abox2text"
+ABOX2HTML="abox2html"
 GXML2DOT="GraphXML2dot"
-DOT_PP_TABLE=${DATADIR}/dot.pp
+DOT_PP_TABLE=${GRAPHTOOLS}/share/graph-tools/dot.pp
 DOT="dot"
 ISMAP2USEMAP="${LIBEXEC}/ismap2usemap"
 DEBUG=false

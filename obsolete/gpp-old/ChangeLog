@@ -1,5 +1,6 @@
 2001-06-08 Merijn de Jonge <mdejonge@cwi.nl> 
-   * bugfix: --main switch interfered with implementation strategies.
+   * src/gpp: bug fix: --main switch interfered with implementation strategies.
+   * src/tohtml: fixed path to dot.pp
 
 2001-06-07 Merijn de Jonge <mdejonge@cwi.nl> 
    * src/gpp/gpp.Makefile.am.src: Fixed some PATH problems
