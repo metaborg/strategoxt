@@ -1,0 +1,25 @@
+definition 
+module Main
+imports
+  Prop
+  
+module Prop
+   exports sorts
+      Prop
+
+   lexical syntax
+      [a-zA-Z] -> Atom
+      [\ \t\n] -> LAYOUT
+
+   context-free syntax
+      Atom            -> Prop {cons("Atom")}
+      "~" Prop        -> Prop {cons("Not")}
+      Prop "/\\" Prop -> Prop {cons("And"), left}
+      Prop "\\/" Prop -> Prop {cons("Or"), left}
+
+      "(" Prop ")"    -> Prop {bracket}
+
+   context-free priorities
+      "~" Prop        -> Prop {cons("Not")}       >
+      Prop "/\\" Prop -> Prop {cons("And"), left} >
+      Prop "\\/" Prop -> Prop {cons("Or"), left}
