@@ -1,5 +1,15 @@
 2004-10-17  Martin Bravenboer <martin@cs.uu.nl>
 
+	* xtc/xtar.str: added generation of ,pp, pp.af (renamed to app:
+	single file extension works much better) .rtg, .rtgnf (no dash),
+	.str, and .rtree. The basic xtar functionality is now complete!
+
+        Maybe we should include and use some meta information by
+        default, instead of mining the contents of an xtar.
+
+
+2004-10-17  Martin Bravenboer <martin@cs.uu.nl>
+
 	* xtc/xtar.str: Implemented very basic version of xtar. It creates
 	an SDF definition, and SGLR parse table and stores them in a zip
 	archive by invoking the command-line zip tool.

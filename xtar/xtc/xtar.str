@@ -17,11 +17,18 @@ strategies
   main-xtar =
     option-wrap(xtar-options,  xtar-usage, xtar-about, id, 
       xtar-init-options
-    ; xtc-io(create-xtar)
+    ; xtc-io(
+        create-xtar
+      <+ say(!"sorry, could not create xtar")
+         ; <xtc-exit> 1
+      )
     )
 
   /**
    * @todo  must the temp dir be removed? Could xtc temp files handle that?
+   * @todo  add .rtg and .rtg-nf
+   * @todo  add .rtree
+   * @todo  add .pp.af
    *
    * @type  FILE -> FILE
    */
@@ -30,7 +37,14 @@ strategies
     ; ?mod
     ; <create-syntax-def(|dir)> mod => def
     ; <create-parse-table(|dir)> def => tbl
-    ; <xtc-zip> [def, tbl]
+    ; <create-pp-table(|dir)> def => pp
+    ; <create-pp-table-parsed(|dir)> pp => app
+    ; <create-rtg(|dir)> def => rtg
+    ; <create-rtgnf(|dir)> rtg => rtgnf
+    ; <create-str-sig(|dir)> rtg => strsig
+    ; <create-rtree-sig(|dir)> strsig => rtreesig
+
+    ; <xtc-zip> [def, tbl, pp, app, rtg, rtgnf, strsig, rtreesig]
 
   /**
    * Creates a zip archive.
@@ -56,12 +70,62 @@ strategies
    * @type  FILE -> FILE
    */  
   create-syntax-def(|dir) =
-    xtc-transform(!"pack-sdf", pass-verbose)
-    ; rename-to(<concat-strings> [dir, "/", <get-language-name> (), ".def"])
+    xtar-create(
+      xtc-transform(!"pack-sdf", <conc> (<pass-verbose>, <pass-sdf-includes>))
+    | dir, "def")
+
+  pass-sdf-includes =
+    <get-config> "-I"
+    ; reverse
+    ; map(
+        \ IncludeDef(def) -> ["-Idef", def] \
+      + \ IncludeDir(dir) -> ["-I",    dir] \
+      )
+    ; concat
+
+    <+ ![]
+
+  xtar-create(s | dir, ext) =
+    s
+    ; rename-to(<concat-strings> [dir, "/", <get-language-name> (), ".", ext])
 
   create-parse-table(|dir) =
-    xtc-transform(!"sdf2table", !["-m", <get-language-name> ()])
-    ; rename-to(<concat-strings> [dir, "/", <get-language-name> (), ".tbl"])
+    xtar-create(
+      xtc-transform(!"sdf2table", !["-m", <get-language-name> ()])
+    | dir, "tbl")
+
+  create-rtg(|dir) =
+    xtar-create(
+      xtc-transform(!"sdf2rtg", !["-m", <get-language-name> ()])
+    | dir, "rtg")
+
+  create-rtgnf(|dir) =
+    xtar-create(
+      xtc-transform(!"parse-rtg")
+      ; xtc-transform(!"rtg-reduce")
+      ; xtc-transform(!"rtg-group")
+    | dir, "rtgnf")
+
+  create-str-sig(|dir) =
+    xtar-create(
+      xtc-transform(!"rtg2sig", !["--module", <get-language-name> ()])
+    | dir, "str")
+
+  create-rtree-sig(|dir) =
+    xtar-create(
+      xtc-transform(!"parse-stratego")
+    | dir, "rtree")
+
+  create-pp-table(|dir) =
+    xtar-create(
+      xtc-transform(!"ppgen")
+    | dir, "pp")
+
+  create-pp-table-parsed(|dir) =
+    xtar-create(
+      xtc-transform(!"parse-pp-table")
+    | dir, "app")
+
 
 /**
  * Options
