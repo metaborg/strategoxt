@@ -12,7 +12,7 @@ strategies
 
   main-parse-unit =
     init-parse-unit-options
-    ; xtc-input-wrap(parse-unit-options, parse-unit)
+    ; xtc-io-wrap(parse-unit-options, parse-unit)
 
   init-parse-unit-options =
     where(<set-verbosity> 1)
