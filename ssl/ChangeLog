@@ -1,3 +1,21 @@
+2002-12-07  Eelco Visser  <visser@cs.uu.nl>
+
+	* ssl/spec/options.r: --keep option indicates that intermediate
+	files should not be removed.
+
+	* ssl/spec/dir.r: rename-file, link-file, remove-file
+
+2002-12-02  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/options.r: --keep option indicates to what extend intermediate
+	results should be kept
+
+2002-12-01  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/Makefile.am: simplified makefile
+
+	* spec/exec.r: typo
+
 2002-11-22  Eelco Visser  <visser@acm.org>
 
 	* spec/exec.r: Adding missing import (verbose.r)

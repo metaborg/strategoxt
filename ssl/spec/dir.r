@@ -33,13 +33,33 @@ strategies
   file-newer =
     (modification-time, modification-time); gt
 
+  /* 
+       rename renames a file, moving it between directories if required.
+       Any  other  hard links to the file (as created using link(2)) are unaf~
+       fected.
+       If newpath already exists it will be atomically replaced (subject to  a
+       few  conditions ~ see ERRORS below), so that there is no point at which
+       another process attempting to access newpath will find it missing.
+       If newpath exists but the operation fails for some reason rename  guar~
+       antees to leave an instance of newpath in place.
+  */
+
+  rename-file =
+    ?(oldname, newname); prim("SSL_rename", oldname, newname)
+
+  link-file =
+    ?(old, new); prim("SSL_link", old, new)
+
+  remove-file =
+    ?name; prim("SSL_remove", name)
+    
+
   /*   The  getenv() function searches the environment list for a
        string that matches the string pointed to  by  name.   The
        strings are of the form name = value. */
 
   getenv = 
     ?name; prim("SSL_getenv", name)
-
 
   /*   The  setenv() function adds the variable name to the envi­
        ronment with the value value, if  name  does  not  already
@@ -48,8 +68,8 @@ strategies
        overwrite  is zero, then the value of name is not changed. */
 
   setenv = 
-    ?(name, value, overwrite); 
-    where(prim("SSL_setenv", name, value, overwrite))
+    ?(name, value, overwrite)
+    ; where(prim("SSL_setenv", name, value, overwrite))
 
 \end{code}
 

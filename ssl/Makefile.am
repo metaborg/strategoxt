@@ -1,4 +1,4 @@
-SUBDIRS = spec
+SUBDIRS = . spec
 
 EXTRA_DIST = README README.in reconf stdconfig 
 
@@ -15,6 +15,11 @@ SUBST = s+__SRTS_VERSION__+$(VERSION)+g;\
 	s+__ATERM__+$(ATERM)+g;
 
 CLEANFILES = 
+
+noinst_DATA = Makefile.stratego
+
+Makefile.stratego : $(SC_BOOT)/share/sc/Makefile.stratego
+	cp $< $@
 
 #include Makefile.rpm
 

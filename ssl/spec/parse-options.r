@@ -140,11 +140,18 @@ rules
   // "register-usage-info".
   ArgOption(is-flag, label, s) =
      "register-usage-info";register-usage(s)
+
+  Arg2Option(is-flag, label, s) =
+     "register-usage-info";register-usage(s)
      
   ArgOption(is-flag, label) =
     ArgOption(is-flag, label, !"")
 
   Arg2Option(is-flag, label) :
+  	[flag, arg1, arg2 | rest] -> [<label> (arg1, arg2) | rest]
+	where <is-flag> flag
+
+  Arg2Option(is-flag, label, s) :
   	[flag, arg1, arg2 | rest] -> [<label> (arg1, arg2) | rest]
 	where <is-flag> flag
 

@@ -1,1 +1,1 @@
-Specification([Signature([]),Overlays([Overlay("Pair",["x","y"],Op("",[Var("x"),Var("y")]))])])
+Specification([Overlays([Overlay("Pair",["x","y"],Op("",[Var("x"),Var("y")]))])])

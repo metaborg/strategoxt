@@ -184,7 +184,7 @@ strategies // non-primitives
 
   call-out(comm, args, out, cont) = 
     ? filein
-    ; <call>(<comm>, ["-i", filein, "-o", <out>, | <args> ])
+    ; <call>(<comm>, ["-i", filein, "-o", <out> | <args> ])
     ; out
     ; cont
 

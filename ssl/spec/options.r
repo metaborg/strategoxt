@@ -119,6 +119,10 @@ strategies
 		where(<set-config> ("--verbose",<string-to-int>)); !Verbose(<id>),         
 		!"--verbose i      Verbosity level i (default 1)")
 
+	+ ArgOption("--keep",         
+		where(<set-config> ("--keep",<string-to-int>)),         
+		!"--keep i         Keep intermediates (default 0)")
+
 	+ Option("-v"+"--version",    
 		where(<set-config> ("-v",())); !Version(),         
 		!"-v|--version     Display prgram's version")
