@@ -1,34 +1,55 @@
-module restore-asfix2
+\literate[explode-asfix2me]
+
+notes:
+   inconsistencies:
+   Elements in list construct need to be inserted in the list sort:
+      S1* -> S
+      requires
+      S1 -> S1*
+   such injectens are cntained in AsFix2ME, but for seprated lists
+      {S1 S2}* -> S
+   the injection
+      S1 -> {S1 S2}*
+   is not contined in AsFix2ME
+\begin{code}
+       
+module explode-asfix2me
 
 imports lib Sdf-Syntax asfix2me
 
 overlays 
    CfIterStarEmpty(s)     = appl(prod([],cf(iter-star(s)),no-attrs),[])
    CfIter2IterStar(s,es)  = appl(prod([cf(iter(s))],cf(iter-star(s)),no-attrs),es)
-   CfIterSingleton(s,e)   = appl(prod([cf(s)], cf(iter(s)), no-attrs),[e])
-   CfIterCons(s,e1,ws,e2) = appl(prod([cf(iter(s)),cf(opt(layout)),cf(iter(s))],cf(iter(s)),attrs([atr(left)])),[e1,ws,e2])
+   CfIterSingleton(s,e)   = appl(prod([s], cf(iter(s)), no-attrs),[e])
+   CfIterCons(s,e1,ws,e2) = appl(prod([cf(iter(s)),cf(opt(layout)),cf(iter(s))],cf(iter(s)),attrs([assoc(left)])),[e1,ws,e2])
 
 
    CfIterStarSepEmpty(s1,s2)       = appl(prod([],cf(iter-star-sep(s1,s2)),no-attrs),[])
    CfIterSep2IterStarSep(s1,s2,es) = appl(prod([cf(iter-sep(s1,s2))],cf(iter-star-sep(s1,s2)),no-attrs),es)
    CfIterSepSingleton(s1,s2,e)     = appl(prod([cf(s1)], cf(iter-sep(s1,s2)), no-attrs),[e])
-   CfIterSepCons(s1,s2,e1,ws1,s,ws2,e2) = appl(prod([cf(iter-sep(s1,s2)),cf(opt(layout)),cf(s2),cf(opt(layout)),cf(iter-sep(s1,s2))],cf(iter-sep(s1,s2)),attrs([atr(left)])),[e1,ws1,s,ws2,e2])
+   CfIterSepCons(s1,s2,e1,ws1,s,ws2,e2) = appl(prod([cf(iter-sep(s1,s2)),cf(opt(layout)),s2,cf(opt(layout)),cf(iter-sep(s1,s2))],cf(iter-sep(s1,s2)),attrs([assoc(left)])),[e1,ws1,s,ws2,e2])
 
    LexIterStarEmpty(s)    = appl(prod([],lex(iter-star(s)),no-attrs),[])
    LexIter2IterStar(s,es) = appl(prod([lex(iter(s))],lex(iter-star(s)),no-attrs),es)
    LexIterSingleton(s,e)  = appl(prod([lex(s)], lex(iter(s)), no-attrs),[e])
-   LexIterCons(s,e1,e2)   = appl(prod([lex(iter(s)),lex(iter(s))],lex(iter(s)),attrs([atr(left)])),[e1,e2])
+   LexIterCons(s,e1,e2)   = appl(prod([lex(iter(s)),lex(iter(s))],lex(iter(s)),attrs([assoc(left)])),[e1,e2])
 
-   LayoutCharacter(e) = appl(prod([lex(layout)],cf(layout),no-attrs),[appl(prod([char-class([range(0,255)])],lex(layout),no-attrs),[e])])
-   LexLayoutElement(e,s) = appl(prod([lex(layout)],cf(layout),no-attrs),[appl(prod([lex(s)],lex(layout),no-attrs),[e])])
-   CfLayoutElement(e,s)  = appl(prod([cf(s)],cf(layout),no-attrs),[e])
-   LayoutCons(s1,s2)     = appl(prod([cf(layout),cf(layout)],cf(layout),attrs(atr(left))),[s1,s2]) 
+   LayoutCharacter(e)       = appl(prod([lex(layout)],cf(layout),no-attrs),[appl(prod([char-class([range(0,255)])],lex(layout),no-attrs),[e])])
+   LexLayoutElement(e,s)    = appl(prod([lex(layout)],cf(layout),no-attrs),[appl(prod([s],lex(layout),no-attrs),[e])])
+   CfLayoutElement(e,s)     = appl(prod([cf(s)],cf(layout),no-attrs),[e])
+   LayoutCons(s1,s2)        = appl(prod([cf(layout),cf(layout)],cf(layout),attrs([assoc(left)])),[s1,s2]) 
    
 strategies
-    restore-asfix2 = iowrap( RestoreAsFix2 )
+  short-description(p) = !["Usage: ", <p>(), " [options]"]
+  long-description(p)  = !["This tool explodes an AsFix2ME term to a valid AsFix2 term. Explosion involes\n",
+                           "unflattening of lists, layout, literals, and lexicals.\n\n",
+                           "Observe that the structure of lexicals cannot be restored. Lexicals are\n",
+                           "unflattened into left linear binary trees."]
+                           
+explode-asfix2me = iowrap( ExplodeAsFix2ME )
 
    
-RestoreAsFix2 = 
+ExplodeAsFix2ME = 
    bottomup(try(unflatten-literal)
            ;
               try(unflatten-list)
@@ -36,6 +57,7 @@ RestoreAsFix2 =
               try(unflatten-layout)
            ;
               try(unflatten-lexical)
+              
            )
 
 
@@ -43,10 +65,11 @@ unflatten-literal:
    appl(prod, args) -> appl(prod, args')
    where
    !args;
-   list-some( {s, Characters: \
-      lit(s) -> appl(prod(Characters,lit(s),no-attrs),Characters)
+   list-some( {s, Characters', Characters: \
+      lit(s) -> appl(prod(Characters',lit(s),no-attrs),Characters)
       where
-         <explode-string>s => Characters
+         <explode-string>s             => Characters;
+         map( \x -> char-class([x]) \) => Characters'
       \ } ) => args'
 
 // Construct Cf iter and iter-star from AsFix2ME lists
@@ -83,15 +106,16 @@ unflatten-list:
 
 MkCfConsList(s) =
       rec x ({e1,e2,e,ws1,ws2,es:
-         ?[e]; !CfIterSingleton(<s>(),e)
+         ?[e]; !e
       <+
          ?[e1,ws1,e2|es]
-         ;<x>[CfIterCons(<s>(),CfIterSingleton(<s>(),e1),ws1,CfIterSingleton(<s>(),e2))|es]
+         ;<x>[CfIterCons(<s>(),e1,ws1,e2)|es]
       })
 
+// For separator lists, an extra injection has to be inserted (see notes at the top)
 MkCfConsList(s1,s2) =
       rec x ({e1,ws1,sep,ws2,e2,e,es:
-         ?[e]; !CfIterSepSingleton(<s1>(),<s2>(),e)
+         ?[e]; !e
       <+
          ?[e1,ws1,sep,ws2,e2|es]
          ;<x>[CfIterSepCons(<s1>(),<s2>(),CfIterSepSingleton(<s1>(),<s2>(),e1),ws1,sep,ws2,CfIterSepSingleton(<s1>(),<s2>(),e2))|es]
@@ -124,7 +148,7 @@ MkLexConsList(s) =
       })
 
 unflatten-layout :
-   appl(prod([cf(layout)],cf(opt(layout)),no-attrs),xs) -> appl(prod([cf(layout)],cf(opt(layout)),no-attrs),x')
+   appl(prod([cf(layout)],cf(opt(layout)),no-attrs),xs) -> appl(prod([cf(layout)],cf(opt(layout)),no-attrs),[x'])
     where
      <MkLayoutConsList> xs => x'
 
@@ -142,12 +166,14 @@ MkLayoutCharacter =
     (
        is-int;
        !LayoutCharacter(e)
-    +
+    <+
        ?appl(prod(syms,lex(s),attrs),_);
-       !LexLayoutElement(e,s)
-    +
-       ?appl(prod(syms,cf(s),attrs),_);
-            !CfLayoutElement(e,s)                    
+       !LexLayoutElement(e,lex(s))
+    <+
+       ?appl(prod(syms,lit(s),attrs),_);
+       !LexLayoutElement(e,lit(s))
+    <+
+       id
     )
     
 unflatten-lexical:
@@ -160,3 +186,4 @@ unflatten-lexical:
 
 
 
+\end{code}

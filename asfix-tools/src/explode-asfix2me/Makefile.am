@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2002/02/08 17:27:15 jurgenv Exp $
+# $Id: Makefile.am,v 1.2 2002/02/10 18:51:09 mdejonge Exp $
 
 include $(srcdir)/../templates/make_rules
 include $(srcdir)/../templates/make_rules.stratego
@@ -26,12 +26,10 @@ include $(srcdir)/../templates/make_rules.stratego
 include $(STRATEGO_PRG:%=%.dep)
 
 SUBDIRS      = data
-STRATEGO_PRG = restore-asfix2
+STRATEGO_PRG = explode-asfix2me
 
-EXTRA_DIST   = restore-asfix2-test.r asfix2me.r
+EXTRA_DIST   = asfix2me.r
 
 libexec_SCRIPTS = $(STRATEGO_PRG)
 
 SCFLAGS        += -I $(srcdir)/../asfix --main $*
-
-TESTS = restore-asfix2-test
