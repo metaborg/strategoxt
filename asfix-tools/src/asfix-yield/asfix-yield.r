@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: asfix-yield.r,v 1.3 2001/09/02 11:45:22 mdejonge Exp $
+% $Id: asfix-yield.r,v 1.4 2001/10/18 20:06:22 mdejonge Exp $
 
 \begin{code}
 module asfix-yield
@@ -27,16 +27,15 @@ imports lib Sdf-ParseTree-Syntax asfix1
 strategies
 
   main = parse-options( io-options );
-         (
-            need-help(default-usage)
-         <+
             where(option-defined(?Output(outfile));<open-file>outfile <+ !stdout => outfile);
             input-file;
-            (id, asfix-yield(!outfile))
-         );
+            (id, asfix-yield(!outfile));
          <exit>0
 
-  asfix-yield(outfile) = 
+    short-description(p) = !["Usage: ", <p>(), " [options]"]
+    long-description(p)  = !["The asfix-yield utility unparses an asfix tree to flat text.\n",
+                             "It reads from standard input and writes to standard output.\n"]
+asfix-yield(outfile) = 
 	is-asfix1; asfix-yield1(outfile)
     	<+ is-asfix2; asfix-yield2(outfile) 	
 	<+ literal(outfile)

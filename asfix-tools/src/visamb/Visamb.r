@@ -73,13 +73,20 @@ signature
   constructors
     amb-abbr : String * AbbrTree -> AmbAbbr
 strategies
+  short-description(p) = !["Usage: ", <p>(), " [options]"]
+  long-description(p)  = ![
+        "The SDF2 implementation caters for arbitrary context-free grammars. That is,\n",
+        "even for ambiguous grammars the parser will produce a parse trees containing\n",
+        "a concise encoding of allpossible parses. Ambiguities are represented by\n",
+        "means of amb nodes that contain a list of possible parse trees at that\n",
+        "point. For most applications, however, it is desirable to develop\n",
+        "unambiguous grammars. To aid the grammar writer in detecting and solving the\n",
+        "ambiguities, the visamb tool extracts the ambiguities from a parse tree and\n",
+        "displays them in a readable format.\n"]
 
   Visamb = 
     parse-options(io-options); 
-    store-options;
     (
-       need-help(default-usage)
-    <+ 
        input-file;
        apply-strategy((id,visamb));
        output-file;
