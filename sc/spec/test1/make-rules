@@ -1,0 +1,88 @@
+.PRECIOUS: %.c %.tree %.s1 %.s2 %.s3 %.s4 %.s5 %.s6 %.s7 %.s8 %.s9 %.ac %.c.abox %.bin
+
+CINCL = -I$(STRATEGORTS)/include \
+	-I$(STRATEGOLIB)/include \
+	-I$(ATERM)/include
+
+SCLibs = -L$(STRATEGOLIB)/lib -lstratego-lib \
+	 -L$(STRATEGORTS)/lib -lstratego \
+	 -L$(ATERM)/lib -lATerm-gcc \
+	 -lm
+
+# FRONT-END ###########################################################
+
+%.tree : %.r ../syn/pack-stratego ../syn/parse-mod
+	../syn/pack-stratego $(SINCLUDES) -i $< -o $@
+
+%.s1 : %.tree ../front/frontend
+	../front/frontend -i $< -o $@
+
+%.s2 : %.s1 ../front/extract
+	../front/extract -i $< -o $@
+
+%.s2.check: %.s2
+	../sig/Stratego-Normal-Format -i $< -o $@
+
+%.s3 : %.s2 %.s2.check ../front/rename-defs
+	../front/rename-defs -i $< -o $@
+
+# OPTIMIZE ###########################################################
+
+%.s4 : %.s3 ../front/inline
+	../front/inline -i $< -o $@
+
+%.s5 : %.s4 ../match/optimize1
+	../match/optimize1 -i $< -o $@
+
+%.s6 : %.s5 ../match/compile-match
+	../match/compile-match -i $< -o $@
+
+%.s7 : %.s6 ../match/optimize2
+	../match/optimize2 -i $< -o $@
+
+# BACK-END ###########################################################
+
+%.s8 : %.s7 ../c/canonicalize
+	../c/canonicalize -i $< -o $@
+
+%.s8.check : %.s8 ../sig/Stratego-Canonical-Format
+	../sig/Stratego-Canonical-Format -i $< -o $@
+
+%.ac : %.s8 %.s8.check ../c/s2c
+	../c/s2c -i $< -o $@
+
+%.c.abox : %.ac $(CGEN)/share/cgen/C.pp
+	time $(GPP)/bin/ast2abox -p $(CGEN)/share/cgen/C.pp -i $< -o $@
+
+%.c.abox.check : %.c.abox
+	abox-format -i $< 
+
+%.c : %.c.abox 
+	time $(GPP)/bin/abox2text -i $< -o $@
+
+# C COMPILATION #####################################################
+
+%.o: %.c
+	time $(CC) $(CINCL) -c $< -O4
+
+%.bin : %.o 
+	time $(CC) $< -o $@ $(SCLibs)
+
+# RUNNING ###########################################################
+
+%.run : %.bin
+	$< 
+
+%.io-run : %.bin
+	$< -i $*.in -o $*.out 
+
+# PARSING C PROGRAMS ###############################################
+
+%.af: %.c
+	sglr -p $(CGEN)/share/cgen/c.tbl -i $< -o $@ 
+
+%.trm: %.af
+	implode-asfix -i $< -o $@
+
+
+
