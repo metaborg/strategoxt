@@ -94,6 +94,38 @@ ATerm SSL_getcwd(void) {
 }
 
 /**
+ * The mkdtemp() function generates a uniquely-named temporary
+ * directory from template. The last six characters of template must
+ * be XXXXXX and these are replaced with a string that makes the
+ * directory name unique.  The directory is then created with
+ * permissions 0700.  Since it will be modified, template must not be
+ * a string constant, but should be declared as a character array.
+ */
+
+ATerm SSL_mkdtemp(ATerm template) {
+  char* result;
+  ATerm term_result;
+  int fd;
+
+  const char* str = AT_getString(template);
+  /**
+   * str is not allowed to be modified, so we copy it.
+   */
+  result = (char*) malloc(strlen(str) + 1);
+  strcpy(result, str);
+
+  fd = mkdtemp(result);
+  if(fd == -1) {
+    _fail(template);
+  }
+
+  term_result = (ATerm) App2("", (ATerm) ATmakeString(result), (ATerm) ATmakeInt(fd));
+  free(result);
+
+  return term_result;
+}
+
+/**
  * chdir
  */
 ATerm SSL_chdir(ATerm pathname) {
