@@ -1,4 +1,4 @@
-module Sdf2Stratego
+module Sdf-2-Stratego
 imports
   lib
   Prod2Oper
@@ -23,4 +23,3 @@ rules
     Rules(t)		-> Rules(t)
   gram2moditems(n) :
     Strategies(t)	-> Strategies(t)
-

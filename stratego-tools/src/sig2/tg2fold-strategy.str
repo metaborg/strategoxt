@@ -1,4 +1,4 @@
-module rtg2fold-strategy
+module tg2fold-strategy
 
 imports Stratego tree-grammar
 imports options string
@@ -88,4 +88,3 @@ strategies
   to-nt-paramname = <conc-strings> ("to-s", <int-to-string>)
 
   int-to-int-list = <copy> (<id>, ()); map-with-index(Fst)
-

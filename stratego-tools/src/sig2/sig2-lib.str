@@ -1,4 +1,4 @@
-module sig2-args
+module sig2-lib
 imports xtc-lib options
 
 strategies  // very abstract
@@ -70,4 +70,3 @@ strategies
 
   str2astratego =
     xtc-transform(!"sc", !["--ast" | <concat> [<pass-keep> (), <pass-verbose> (), <pass-includes> ()]])
-

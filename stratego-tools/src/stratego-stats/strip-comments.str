@@ -16,7 +16,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: strip-comments.str,v 1.1 2002/12/08 11:24:18 stratego Exp $
+% $Id: strip-comments.str,v 1.2 2003/03/27 10:15:02 stratego Exp $
 
 
 Strip comments from parsed stratego program.
@@ -30,7 +30,7 @@ parse -l stratego -i <prog.r> \
   | abox2text
 
 \begin{code}
-module rmlayout
+module strip-comments
 
 imports lib
 
