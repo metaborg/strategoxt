@@ -32,9 +32,8 @@ GPP=__GPP__
 # default module extension; can be changed using the -e option
 
 MOD_EXTENSION="r"
-IMPORTS="${PREFIX}/bin/stratego-imports"
-PPTABLES="${PREFIX}/share/stratego-tools/stratego.pp"
-PARSETABLE="${PREFIX}/share/stratego-tools/stratego.tbl"
-
+IMPORTS="${PREFIX}/bin/pack-stratego --imports"
+PPTABLES="${PREFIX}/share/stratego-front/Stratego-Pretty.pp"
+PARSETABLE="${PREFIX}/share/stratego-front/sdf/Stratego.tbl"
 
 . ${GPP}/libexec/tohtml

@@ -1,6 +1,6 @@
 include $(top_srcdir)/Makefile.xt
 
-SUBDIRS		  = stratego stratego-imports stratego-stats
+SUBDIRS		  = stratego-stats
 DIST_SUBDIRS 	  = $(SUBDIRS)
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 

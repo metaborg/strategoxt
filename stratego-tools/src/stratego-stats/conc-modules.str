@@ -1,7 +1,5 @@
 module conc-modules
-
 imports lib
-
 signature
    constructors
       Module : String -> Option
@@ -11,7 +9,7 @@ signature
       Imports: List(Module) -> Imports
 
 strategies
-conc-modules = parse-options( io-options
+  io-conc-modules = parse-options( io-options
                  + ArgOption("-m", \x -> Module(x)\,       !"-m <module>  Concat <module>")
                  + ArgOption("-I", \x -> Include(x)\,      !"-I <dir>     Search in dir")
                  );

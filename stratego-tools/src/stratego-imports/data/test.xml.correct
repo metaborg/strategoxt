@@ -1,1 +1,0 @@
-"graphxml_1_1-0"(GraphXML([],[graph([],[node1(name("\"./test1.r\"")),node1(name("\"test2\"")),node1(name("\"test3\"")),edge1([source("\"test2\""),target("\"test3\"")]),edge1([source("\"./test1.r\""),target("\"test2\"")]),edge1([source("\"./test1.r\""),target("\"test3\"")])])]))

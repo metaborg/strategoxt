@@ -1,14 +1,11 @@
-include $(srcdir)/../make_rules
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-SUBDIRS		 = data
+libexec_PROGRAMS = strip-comments strat-count
+CLEANFILES 	 = $(wildcard *.dep)
+BOOTCLEANFILES 	 = $(wildcard *.c)
 
-bin_PROGRAMS 	 = strip-comments   conc-modules   strat-count
-libexec_PROGRAMS = strip-comments   conc-modules   strat-count
-BOOTCLEANFILES 	 = strip-comments.c conc-modules.c strat-count.c
+SCFLAGS     	 = --main io-$*
+STRINCLUDES      = -I $(STRATEGO_FRONT)/share/stratego-front
 
-SCFLAGS     	 = --main $*
-
-EXTRA_DIST 	 = $(wildcard *.str)
-
+EXTRA_DIST 	 = $(wildcard *.str) 

@@ -15,12 +15,6 @@ AC_CONFIG_FILES([
   VERSION 
   src/Makefile 
 
-  src/stratego/Makefile
-  src/stratego/data/Makefile
-
-  src/stratego-imports/Makefile
-  src/stratego-imports/data/Makefile
-
   src/stratego-stats/Makefile
   src/stratego-stats/data/Makefile
 
