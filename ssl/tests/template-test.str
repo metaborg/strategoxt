@@ -6,7 +6,7 @@
 
 \begin{code}
 module template-test
-imports sunit template
+imports sunit
 strategies
 
   main = 
