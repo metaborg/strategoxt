@@ -230,18 +230,6 @@ strategies
             after
           %></span><%
 
-  /**
-   * @type  List(a) -> List(b)
-   * @type  s List(a) -> b
-   */
-  map-consnil(s) =
-    rec x({tail:
-      ?[_ | tail]
-    ; s
-    ; ![<id> | <x> tail]
-    <+ []
-    })
-
   generic-list-worstcase(empty, before, after) :
     [x | xs] -> 
       %><div>
@@ -249,12 +237,16 @@ strategies
             <span style="position: absolute"><% before %></span>
             <div style="padding-left: 1em"><% <print-to-xhtml> x %></div>
           </div>
-          <% <map(
-               print-to-xhtml
-             ; !%><div>
-                    <span style="position: absolute">,</span>
-                    <div style="padding-left: 1em"><% id %></div>
-                  </div><%
+          <% 
+             <map-consnil(
+                print-type(
+                  ?[<id> | _]
+                ; print-to-xhtml
+                ; !%><div>
+                      <span style="position: absolute">,</span>
+                      <div style="padding-left: 1em"><% id %></div>
+                    </div><%
+                )
              )> xs
            :: content* %>
           <div><% after %></div>

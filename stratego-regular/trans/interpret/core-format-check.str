@@ -68,24 +68,6 @@ strategies
   is-typed =
     where(get-types; iset-elements => [_ | _])
 
-  /**
-   * bttomup variant that traverses lists as cons/nil.
-   */
-  bottomup-consnil(s) =
-    rec x(all-consnil(x); s)
-
-  /**
-   * all variant that traverses lists as cons/nil.
-   */
-  all-consnil(s) = 
-    is-list < ([s | s] + []) + all(s)
-
-  /**
-   * one variant that traverses lists as cons/nil.
-   */
-  one-consnil(s) = 
-    is-list < ([s | id] + [id | s]) + one(s)
-
 /**
  * Define type rules for the productions of an RTG.
  *
@@ -335,3 +317,36 @@ strategies
 
   nonterm-to-string :
     Nonterm(s) -> s
+
+
+strategies
+
+  /**
+   * @type  List(a) -> List(b)
+   * @type  s List(a) -> b
+   */
+  map-consnil(s) =
+    rec x({tail:
+      ?[_ | tail]
+    ; s
+    ; ![<id> | <x> tail]
+    <+ []
+    })
+
+  /**
+   * bttomup variant that traverses lists as cons/nil.
+   */
+  bottomup-consnil(s) =
+    rec x(all-consnil(x); s)
+
+  /**
+   * all variant that traverses lists as cons/nil.
+   */
+  all-consnil(s) = 
+    is-list < ([s | s] + []) + all(s)
+
+  /**
+   * one variant that traverses lists as cons/nil.
+   */
+  one-consnil(s) = 
+    is-list < ([s | id] + [id | s]) + one(s)
