@@ -51,7 +51,7 @@ that are declared in context using the dynamic rule ContextVar */
     where {| ContextVar : <DeclareContextVars> x*; <f> s => s' |}
 
   DeclareContextVars =
-    map({?x; rules(ContextVar : Var(x) -> Var(x))})
+    map({(?ListVar(x) <+ ?x); rules(ContextVar : x -> x)})
 
 /* Split each rule in a dynamic rule set */
 
@@ -103,7 +103,7 @@ dynamic rule. */
       ; try(?t1; !Var(x)) => t1''
 
       ; <tvars; map(!Var(<id>))> t1' => keys
-      ; <tvars; filter(!Var(<id>); ContextVar)> (t2, s) => vals1
+      ; <tvars; filter(test(ListVar(ContextVar) <+ ContextVar); !Var(<id>))> (t2, s) => vals1
       ; <diff> (vals1, keys) => t*
 
       ; new => stamp
