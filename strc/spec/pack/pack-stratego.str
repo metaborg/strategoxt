@@ -27,8 +27,8 @@ strategies
     ; !(<id>, mkpt, [])
     ; graph-nodes-undef(
         pack-stratego-parse-stratego
-      , get-stratego-imports
-        ; map(!IncludeFromPath(<id>))
+      , get-stratego-imports 
+      ; map(IncludePathName(id) <+ !IncludeFromPath(<id>))
       , \ (n,x,xs) -> [x|xs] \
       )
     ; if ?(_, []) then
@@ -163,6 +163,7 @@ strategies
   include-dirs =
     (<get-config> "-I" <+ ![])
   ; filter(?IncludeDir(<id>))
+  ; uniq
 
   pass-include-dirs =
     include-dirs ; mapconcat(!["-I",<id>])
@@ -177,7 +178,7 @@ strategies
 
   get-stratego-imports =
     ?(file, Specification(<id>))
-    ; filter(?Imports(<id>) ; mapconcat(expand-import))
+    ; filter(?Imports(<id>) ; mapconcat(expand-import)) 
     ; concat
     ; where(
         map({import:
@@ -195,23 +196,41 @@ strategies
     ![<is-string>]
   + \ Import(i) -> [i] \ 
   + ?ImportWildcard(<id>) => path
-  ; include-dirs
-  ; mapconcat(
-      {dir:
-        ?dir 
-      ; <concat-strings>[dir,"/",path] 
-      ; readdir 
-      ; filter(
-          ( has-extension(!".rtree") 
-          + has-extension(!".str") 
-          + has-extension(!".r")
-          ) 
-        ; basename
-        ; <concat-strings>[path,"/",<id>]
-        )
-      <+ ![]
-      }
+  ; search-subpath
+  ; mapconcat(search-stratego-files(|path))
+  ; uniq
+
+  search-subpath = 
+    ?path
+  ; include-dirs 
+  ; filter( <concat-strings>[<id>,"/",path] ; where(readdir) )
+  ; switch id
+      case [] :
+        log(|Error(),<concat-strings>["No matching subdirectory found in includes for wildcard '",path,"/*'!"])
+      ; <xtc-exit>1
+      case ?[_,_|_] :
+        log(| Warning()
+            , <concat-strings>[ "Found more than one matching subdirectory found for '", path, "'!"]
+            , <id>) 
+      otherwise: 
+        id
+    end
+
+  search-stratego-files(|path) =
+    ?dir
+  ; readdir
+  ; filter(
+      ( has-extension(!".rtree") 
+      + has-extension(!".str") 
+      + has-extension(!".r")
+      ) 
+    ; basename
+    ; <concat-strings>[path,"/",<id>]
     )
+  ; if [] then
+      log(|Warning(),<concat-strings>["No Stratego files found in directory '",dir,"'!"]) 
+    end
+    
 
 signature
   constructors
