@@ -36,9 +36,10 @@ strategies
 	      !"--desugaring on/off : turn desugaring on or off (default: on)")
 
   parse-stratego =
-    xtc-iowrap(parse-stratego-options, 
+    xtc-io-wrap(parse-stratego-options, 
       where(<extend-config> ("-I", ["./", <xtc-find-path> "StrategoRenamed.sdf"]))
       ; parse-module
+      <+ <xtc-exit> 1
     )
 
   find-in-includes(msg) =

@@ -162,8 +162,8 @@ static void init_module_constructors (void)
   sym_Module_2 = ATmakeSymbol("Module", 2, ATfalse);
   ATprotectSymbol(sym_Module_2);
 }
-static ATerm term_h_9;
-static ATerm term_g_9;
+static ATerm term_j_9;
+static ATerm term_i_9;
 static ATerm term_v_8;
 static ATerm term_u_8;
 static ATerm term_t_8;
@@ -205,15 +205,15 @@ static ATerm term_i_6;
 static ATerm term_h_6;
 static ATerm term_g_6;
 static ATerm term_f_6;
-static ATerm term_c_6;
+static ATerm term_e_6;
+static ATerm term_b_6;
+static ATerm term_a_6;
 static ATerm term_z_5;
 static ATerm term_y_5;
 static ATerm term_x_5;
 static ATerm term_w_5;
 static ATerm term_v_5;
 static ATerm term_u_5;
-static ATerm term_t_5;
-static ATerm term_s_5;
 static ATerm term_p_5;
 static ATerm term_o_5;
 static ATerm term_n_5;
@@ -225,24 +225,24 @@ static void init_module_constant_terms (void)
   term_o_5 = (ATerm) ATmakeAppl(ATmakeSymbol(") and module name (", 0, ATtrue));
   ATprotect(&(term_p_5));
   term_p_5 = (ATerm) ATmakeAppl(ATmakeSymbol(") specified", 0, ATtrue));
-  ATprotect(&(term_s_5));
-  term_s_5 = (ATerm) ATmakeAppl(ATmakeSymbol("--start", 0, ATtrue));
-  ATprotect(&(term_t_5));
-  term_t_5 = (ATerm) ATmakeAppl(ATmakeSymbol("get-syntax-definition: ", 0, ATtrue));
   ATprotect(&(term_u_5));
-  term_u_5 = (ATerm) ATmakeAppl(ATmakeSymbol("def", 0, ATtrue));
+  term_u_5 = (ATerm) ATmakeAppl(ATmakeSymbol("--start", 0, ATtrue));
   ATprotect(&(term_v_5));
-  term_v_5 = (ATerm) ATmakeAppl(ATmakeSymbol("using syntax definition: ", 0, ATtrue));
+  term_v_5 = (ATerm) ATmakeAppl(ATmakeSymbol("get-syntax-definition: ", 0, ATtrue));
   ATprotect(&(term_w_5));
-  term_w_5 = (ATerm) ATmakeAppl(ATmakeSymbol("creating syntax definition", 0, ATtrue));
+  term_w_5 = (ATerm) ATmakeAppl(ATmakeSymbol("def", 0, ATtrue));
   ATprotect(&(term_x_5));
-  term_x_5 = (ATerm) ATmakeAppl(ATmakeSymbol("sdf", 0, ATtrue));
+  term_x_5 = (ATerm) ATmakeAppl(ATmakeSymbol("using syntax definition: ", 0, ATtrue));
   ATprotect(&(term_y_5));
-  term_y_5 = (ATerm) ATmakeAppl(ATmakeSymbol("pack-sdf", 0, ATtrue));
+  term_y_5 = (ATerm) ATmakeAppl(ATmakeSymbol("creating syntax definition", 0, ATtrue));
   ATprotect(&(term_z_5));
-  term_z_5 = (ATerm) ATmakeAppl(ATmakeSymbol("-I", 0, ATtrue));
-  ATprotect(&(term_c_6));
-  term_c_6 = (ATerm) ATmakeAppl(ATmakeSymbol("get-parse-table: ", 0, ATtrue));
+  term_z_5 = (ATerm) ATmakeAppl(ATmakeSymbol("sdf", 0, ATtrue));
+  ATprotect(&(term_a_6));
+  term_a_6 = (ATerm) ATmakeAppl(ATmakeSymbol("pack-sdf", 0, ATtrue));
+  ATprotect(&(term_b_6));
+  term_b_6 = (ATerm) ATmakeAppl(ATmakeSymbol("-I", 0, ATtrue));
+  ATprotect(&(term_e_6));
+  term_e_6 = (ATerm) ATmakeAppl(ATmakeSymbol("get-parse-table: ", 0, ATtrue));
   ATprotect(&(term_f_6));
   term_f_6 = (ATerm) ATmakeAppl(ATmakeSymbol("tbl", 0, ATtrue));
   ATprotect(&(term_g_6));
@@ -325,12 +325,13 @@ static void init_module_constant_terms (void)
   term_u_8 = (ATerm) ATmakeAppl(sym__2, term_v_7, term_t_8);
   ATprotect(&(term_v_8));
   term_v_8 = (ATerm) ATmakeAppl(ATmakeSymbol("--desugaring on/off : turn desugaring on or off (default: on)", 0, ATtrue));
-  ATprotect(&(term_g_9));
-  term_g_9 = (ATerm) ATmakeAppl(ATmakeSymbol("StrategoRenamed.sdf", 0, ATtrue));
-  ATprotect(&(term_h_9));
-  term_h_9 = (ATerm) ATmakeAppl(ATmakeSymbol("./", 0, ATtrue));
+  ATprotect(&(term_i_9));
+  term_i_9 = (ATerm) ATmakeAppl(ATmakeSymbol("StrategoRenamed.sdf", 0, ATtrue));
+  ATprotect(&(term_j_9));
+  term_j_9 = (ATerm) ATmakeAppl(ATmakeSymbol("./", 0, ATtrue));
 }
 #include <srts/init-stratego-application.h>
+ATerm xtc_exit_0_0 (ATerm t);
 ATerm pass_verbose_0_0 (ATerm t);
 ATerm xtc_transform_2_0 (ATerm l_6 (ATerm), ATerm m_6 (ATerm), ATerm t);
 ATerm get_config_0_0 (ATerm t);
@@ -411,7 +412,7 @@ ATerm xtc_find_path_0_0 (ATerm t);
 ATerm set_config_0_0 (ATerm t);
 ATerm ArgOption_3_0 (ATerm g_4 (ATerm), ATerm h_4 (ATerm), ATerm i_4 (ATerm), ATerm t);
 ATerm Option_3_0 (ATerm j_4 (ATerm), ATerm k_4 (ATerm), ATerm l_4 (ATerm), ATerm t);
-static ATerm m_4 (ATerm t);
+static ATerm f_4 (ATerm t);
 static ATerm n_4 (ATerm t);
 static ATerm o_4 (ATerm t);
 static ATerm p_4 (ATerm t);
@@ -430,7 +431,7 @@ static ATerm c_5 (ATerm t);
 static ATerm d_5 (ATerm t);
 static ATerm e_5 (ATerm t);
 ATerm parse_stratego_options_0_0 (ATerm t);
-ATerm xtc_iowrap_2_0 (ATerm d_6 (ATerm), ATerm e_6 (ATerm), ATerm t);
+ATerm xtc_io_wrap_2_0 (ATerm s_5 (ATerm), ATerm t_5 (ATerm), ATerm t);
 static ATerm f_5 (ATerm t);
 ATerm parse_stratego_0_0 (ATerm t);
 ATerm main_0_0 (ATerm t);
@@ -554,7 +555,7 @@ ATerm pass_sort_0_0 (ATerm t)
         t = not_null(d_1);
         t = is_string_0_0(t);
         h_1 = t;
-        t = (ATerm) ATinsert(ATinsert(ATempty, h_1), term_s_5);
+        t = (ATerm) ATinsert(ATinsert(ATempty, h_1), term_u_5);
       }
     }
   else
@@ -571,17 +572,17 @@ static ATerm e_0 (ATerm t)
 }
 static ATerm f_0 (ATerm t)
 {
-  t = term_t_5;
+  t = term_v_5;
   return(t);
 }
 static ATerm g_0 (ATerm t)
 {
-  t = term_u_5;
+  t = term_w_5;
   return(t);
 }
 static ATerm h_0 (ATerm t)
 {
-  t = term_v_5;
+  t = term_x_5;
   return(t);
 }
 static ATerm i_0 (ATerm t)
@@ -591,22 +592,22 @@ static ATerm i_0 (ATerm t)
 }
 static ATerm j_0 (ATerm t)
 {
-  t = term_w_5;
+  t = term_y_5;
   return(t);
 }
 static ATerm k_0 (ATerm t)
 {
-  t = term_x_5;
+  t = term_z_5;
   return(t);
 }
 static ATerm l_0 (ATerm t)
 {
-  t = term_y_5;
+  t = term_a_6;
   return(t);
 }
 static ATerm m_0 (ATerm t)
 {
-  t = term_z_5;
+  t = term_b_6;
   t = get_config_0_0(t);
   t = map_1_0(n_0, t);
   t = concat_0_0(t);
@@ -616,7 +617,7 @@ static ATerm n_0 (ATerm t)
 {
   ATerm q_1 = NULL;
   q_1 = t;
-  t = (ATerm) ATinsert(ATinsert(ATempty, q_1), term_z_5);
+  t = (ATerm) ATinsert(ATinsert(ATempty, q_1), term_b_6);
   return(t);
 }
 ATerm get_syntax_definition_0_0 (ATerm t)
@@ -628,8 +629,8 @@ ATerm get_syntax_definition_0_0 (ATerm t)
   k_1 = t;
   t = l_1;
   {
-    ATerm a_6 = t;
-    int b_6 = stack_ptr;
+    ATerm c_6 = t;
+    int d_6 = stack_ptr;
     if((PushChoice() == 0))
       {
         ATerm m_1 = NULL;
@@ -637,11 +638,11 @@ ATerm get_syntax_definition_0_0 (ATerm t)
         t = find_in_includes_1_0(h_0, t);
         m_1 = t;
         t = (ATerm) ATmakeAppl(sym_FILE_1, m_1);
-        LocalPopChoice(b_6);
+        LocalPopChoice(d_6);
       }
     else
       {
-        t = a_6;
+        t = c_6;
         {
           ATerm o_1 = NULL;
           static ATerm u_0 (ATerm t);
@@ -671,7 +672,7 @@ ATerm find_in_includes_1_0 (ATerm b_27 (ATerm), ATerm t)
     return(t);
   }
   w_1 = t;
-  t = term_z_5;
+  t = term_b_6;
   t = get_config_0_0(t);
   u_1 = t;
   t = (ATerm) ATmakeAppl(sym__2, w_1, u_1);
@@ -686,7 +687,7 @@ static ATerm w_0 (ATerm t)
 }
 static ATerm x_0 (ATerm t)
 {
-  t = term_c_6;
+  t = term_e_6;
   return(t);
 }
 static ATerm y_0 (ATerm t)
@@ -1233,7 +1234,7 @@ ATerm parse_module_0_0 (ATerm t)
   }
   return(t);
 }
-static ATerm m_4 (ATerm t)
+static ATerm f_4 (ATerm t)
 {
   ATerm x_3 = NULL;
   x_3 = t;
@@ -1253,7 +1254,7 @@ static ATerm n_4 (ATerm t)
 {
   ATerm y_3 = NULL;
   y_3 = t;
-  t = (ATerm) ATmakeAppl(sym__2, term_z_5, (ATerm) ATinsert(ATempty, y_3));
+  t = (ATerm) ATmakeAppl(sym__2, term_b_6, (ATerm) ATinsert(ATempty, y_3));
   t = extend_config_0_0(t);
   t = y_3;
   return(t);
@@ -1369,7 +1370,7 @@ ATerm parse_stratego_options_0_0 (ATerm t)
   int x_8 = stack_ptr;
   if((PushChoice() == 0))
     {
-      t = ArgOption_3_0(m_4, n_4, o_4, t);
+      t = ArgOption_3_0(f_4, n_4, o_4, t);
       LocalPopChoice(x_8);
     }
   else
@@ -1433,20 +1434,32 @@ ATerm parse_stratego_options_0_0 (ATerm t)
 }
 static ATerm f_5 (ATerm t)
 {
-  ATerm e_4 = NULL,f_4 = NULL;
-  e_4 = t;
-  t = term_g_9;
-  t = xtc_find_path_0_0(t);
-  f_4 = t;
-  t = (ATerm) ATmakeAppl(sym__2, term_z_5, (ATerm) ATinsert(ATinsert(ATempty, f_4), term_h_9));
-  t = extend_config_0_0(t);
-  t = e_4;
-  t = parse_module_0_0(t);
+  ATerm g_9 = t;
+  int h_9 = stack_ptr;
+  if((PushChoice() == 0))
+    {
+      ATerm e_4 = NULL,m_4 = NULL;
+      e_4 = t;
+      t = term_i_9;
+      t = xtc_find_path_0_0(t);
+      m_4 = t;
+      t = (ATerm) ATmakeAppl(sym__2, term_b_6, (ATerm) ATinsert(ATinsert(ATempty, m_4), term_j_9));
+      t = extend_config_0_0(t);
+      t = e_4;
+      t = parse_module_0_0(t);
+      LocalPopChoice(h_9);
+    }
+  else
+    {
+      t = g_9;
+      t = term_t_8;
+      t = xtc_exit_0_0(t);
+    }
   return(t);
 }
 ATerm parse_stratego_0_0 (ATerm t)
 {
-  t = xtc_iowrap_2_0(parse_stratego_options_0_0, f_5, t);
+  t = xtc_io_wrap_2_0(parse_stratego_options_0_0, f_5, t);
   return(t);
 }
 ATerm main_0_0 (ATerm t)
