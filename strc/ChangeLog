@@ -1,4 +1,12 @@
-2004-04-23   Martin Bravenboer <martin@cs.uu.nl>
+2004-04-26  Arthur van Dam  <adam@cs.uu.nl>
+
+	* spec/front/lift-dynamic-rules.str:
+	Added `AddDynRuleMatch' (LHS-only rule). `rules(RuleA : t)', which is
+	in fact `rules(RuleA : t -> t)', i.e. a scoped-dynamic id-strategy.
+	(Note: the rule-id can use all the same labeling constructs as other
+	dynrule defs)
+
+2004-04-23  Martin Bravenboer  <martin@cs.uu.nl>
 
 	* spec/testneg/*: added negative regression tests. The solutions
 	is based on the negative tests in the cxx-grammar package of the
@@ -24,6 +32,13 @@
 	The make-rules of test1 are included, which means that the testneg
 	can be applied in the bootcheck without installing the compiler.
 	
+2004-04-21  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/front/lift-dynamic-rules.str:
+	generate implementation of once-A rule for a dynamic rule A;
+	the rule once-A returns the first result for which the application
+	succeeds and then removes the corresponding closure.
+
 2004-04-18   Arthur van Dam  <adam@cs.uu.nl>
 
 	* front/dr-old-to-new.str now generates new-style dynamic rules

@@ -89,6 +89,10 @@ that are declared in context using the dynamic rule ContextVar */
     DynRuleDef|[ f(as1|as2)+t :- t1 ]| ->
       [ DynRuleDef|[ f(as1|as2) :- t1 ]|, DynRuleDef|[ f + t ]| ]
 
+  DesugarDynRuleDef :
+    DynRuleDef|[ f(as1|as2)+t : t1 ]| ->
+      [ DynRuleDef|[ f(as1|as2) : t1 ]|, DynRuleDef|[ f + t ]| ]
+
 
   SplitDynamicRule :
     DynRuleDef|[ f + t ]| -> (|[ dr-label-scope(|~str:f, t) ]|, [])
@@ -108,6 +112,14 @@ that are declared in context using the dynamic rule ContextVar */
   SplitDynamicRule:
     DynRuleDef|[ f(as1|as2).t :+ r ]| ->
       <SplitDynamicRule(!|[ dr-add-rule(|~str:f, t, ~<Fst>, ~<Snd>) ]|)> DynRuleDef|[ f(as1|as2) : r ]|
+
+  SplitDynamicRule:
+    DynRuleDef|[ f(as1|as2) : t ]| ->
+      <SplitDynamicRule(!|[ dr-add-rule(|~str:f, ~<Fst>, ~<Snd>) ]|)> DynRuleDef|[ f(as1|as2) : t -> t where id ]|
+
+  SplitDynamicRule:
+    DynRuleDef|[ f(as1|as2).t : t1 ]| ->
+      <SplitDynamicRule(!|[ dr-add-rule(|~str:f, t, ~<Fst>, ~<Snd>) ]|)> DynRuleDef|[ f(as1|as2) : t1 -> t1 where id ]|
 
   SplitDynamicRule:
     DynRuleDef|[ f(as1|as2) :- t ]| ->
@@ -176,7 +188,6 @@ rules
       then // An equivalent aux-Rule has already been lifted, do nothing now.
           ![] => callees
         ; ![] => callers
-        ; <debug(!"aux-Rule already generated: ")> (stamp, stdrule)
       else // aux-Rule has not been lifted yet
 
           <conc-strings>("aux-", f) => f'  // has to be the same such that + of aux-f works
@@ -202,10 +213,9 @@ rules
         ; if <DRCallersGenerated> (rsig, t1')
           then 
               ![] => callers
-            ; <debug(!"callers already generated: ")> (rsig, t1')
           else
               <conc-strings>("bagof-", f) => g
-            ; <conc-strings>("once-", f) => h
+            ; <conc-strings>("once-", f) => g2
 
             // Transform passed arguments of f into calling arguments for f'
             ; <map((?DefaultVarDec(<id>) + ?VarDec(<id>,_)); !Call(SVar(<id>),[]))> as1 => s1*
@@ -221,13 +231,12 @@ rules
                       where dr-lookup-rule(|~str:f, t1'') => closures ]|,
                  |[ g(as1|as2) : x@t1 -> <filter(f'(s1*|t1'*))> closures
                       where (dr-lookup-rule(|~str:f, t1'') <+ ![]) => closures ]|,
-                 |[ h(as1|as2) : x@t1 -> res
+                 |[ g2(as1|as2) : x@t1 -> res
                       where dr-lookup-rule-pointer(|~str:f, t1'') => (closures, key, tbl)
-			  ; <split-fetch(f'(s1*|t1'*); ?res); conc> closures => closures'
-			  ; <hashtable-put(|key, closures')> tbl ]|
+                    ; <split-fetch(f'(s1*|t1'*); ?res); conc> closures => closures'
+                    ; <hashtable-put(|key, closures')> tbl ]|
                ] => callers
             ; rules(DRCallersGenerated : (rsig, t1') -> ())
-            ; <debug(!"freshly generating the DR callers: ")> (rsig, t1')
           end
       end
 
