@@ -133,32 +133,39 @@ strategies
 
   upto = UptoInit; rec x(UptoExit <+ UptoStep; x)
 
-rules
+strategies
 
+strategies
+
+  // :: List(a) * -> List(a)
   conc =
     conc-two-lists <+ conc-more-lists
 
+  // :: List(a) * List(a) -> List(a)
   conc-two-lists :
     (l1, l2) -> <at-end(!l2)> l1
 
+  // :: List(a) * -> List(a)
   conc-more-lists :
     "" # (xs) -> <concat> xs
 
-  //conc : (l1, l2) -> <at-end(!l2)> l1
-  //Concat(x) : [l | ls] -> <at-end(<x> ls)> l
+  // :: List(List(a)) -> List(a)
+  concat =
+    rec x([] + \ [l | ls] -> <at-end(<x> ls)> l\ )
 
 strategies
 
-  concat = rec x([] + \ [l | ls] -> <at-end(<x> ls)> l\ )
+  // :: a * List(b) -> List(a or b)
+  separate-by :
+    (a, xs) -> <[] + [id | rec x( [] + [id | x]; ![a | <id>])]> xs
 
-rules
+  // _ -> a :: List(b) -> List(a or b)
+  separate-by(s) = dissuader(!"separate-by/1; Use separate-by/0 and term wrap patterns: <separate-by> (a, <id>)");
+    <separate-by> (<s> (), <id>)
 
-  Sep(s) : [x| xs] -> [<s>(), x | xs]
+  Sep(s) = obsolete(!"Sep/1; This is a private and obsolete util rule of separate-by");
+    \ [x| xs] -> [<s>(), x | xs] \
 
-strategies
-
-  separate-by(s) = 
-    [] + [id| rec x([] + [id| x]; Sep(s))]
 \end{code}
 
 % Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
