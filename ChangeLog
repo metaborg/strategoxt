@@ -1,3 +1,8 @@
+2003-06-18  Martin Bravenboer  <martin@mbravenboer.org>
+
+  * strategoxt.spec.in: using SVN_REVISION for the
+    release of an RPM.
+
 2003-06-22  Martin Bravenboer  <martin@mbravenboer.org>
 
   * configure.in: using SET_SVN_REVISION to determine

@@ -1,7 +1,7 @@
 Summary: The StrategoXT tools for constructing program transformation systems
 Name: @PACKAGE_TARNAME@
 Version: @PACKAGE_VERSION@
-Release: 1
+Release: @SVN_REVISION@
 License: LGPL
 Group: Development/Languages/Stratego
 URL: http://www.stratego-language.org
