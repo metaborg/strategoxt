@@ -7,7 +7,7 @@ LDADD         += $(SSL_LIBS)
 
 EXTRA_DIST     = $(wildcard *.str) $(wildcard *.rtree) $(wildcard *.meta)
 CLEANFILES     = $(wildcard *.dep)
-BOOTCLEANFILES = $(wildcard *.c)
+BOOTCLEANFILES = $(wildcard *.c) parse-cs-lib.rtree
 
 SCFLAGS      = --main io-$* --dr new
 STRINCLUDES  = -I $(XTC)/share/xtc \

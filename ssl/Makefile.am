@@ -2,6 +2,7 @@ include $(top_srcdir)/Makefile.xt
 
 SUBDIRS 	  = . spec tests 
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
+CLEANFILES        = XTC
 EXTRA_DIST 	  = README bootstrap Makefile.xt autoxt.m4
 
 ACLOCAL_AMFLAGS   = -I .

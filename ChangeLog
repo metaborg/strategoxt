@@ -1,3 +1,21 @@
+2005-01-26  Martin Bravenboer <martin@cs.uu.nl>
+
+	* Removed all bootstrap sources (more than 300)
+
+	* Removed several obsolete C sources.
+
+	* Changed many Makefile.am files to bootclean or clean more
+	thoroughly.
+
+	* Added file and target to set svn ignore. svn status on a clean
+	and bootclean source tree will now only show ? for autoxt.m4,
+	Makefile.xt and a few misc. files that are hard to capture in a
+	general ignore propety.
+
+	* Fixed a lot of dependency problems where bootstrap rtrees and c
+	files where not updated. Some build results could not even be
+	created at all.
+
 2005-01-25  Martin Bravenboer <martin@cs.uu.nl>
 
 	* bootstrap: invoke autoreconf with -v flag

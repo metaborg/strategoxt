@@ -11,7 +11,6 @@ SCFLAGS		= -I $(STRATEGO_FRONT)/share/stratego-front \
 	  	  --main $*	
 
 bin_PROGRAMS 	= strc
-noinst_PROGRAMS = strc-pre
 pkgdata_DATA 	= strc-manual.txt
 
 CLEANFILES 	= $(wildcard *.dep)

@@ -7,7 +7,7 @@ TBLS = xml.tbl Stratego-xml.tbl  Stratego-xml-info.tbl
 sdfdata_DATA   = $(TBLS) $(DEFS) $(wildcard *.sdf)
 EXTRA_DIST     = $(DEFS) $(wildcard *.sdf)
 CLEANFILES     = $(TBLS)
-BOOTCLEANFILES = $(DEFS)
+BOOTCLEANFILES = $(DEFS) $(wildcard *.dep)
 
 SDFINCLUDES    = -I $(STRATEGO_FRONT)/share/sdf/stratego-front
 PGEN_FLAGS     = -m $*

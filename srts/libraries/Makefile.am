@@ -21,7 +21,8 @@ pkgdata_DATA   	= libstrategolib.rtree
 pkgdocdata_DATA = libstrategolib.str 
 
 EXTRA_DIST	= $(wildcard *.str) $(wildcard *.rtree)
-BOOTCLEANFILES 	= libstrategolib.str libstrategolib.rtree libstrategolib.c 
+BOOTCLEANFILES 	= libstrategolib.str libstrategolib.rtree libstrategolib.c $(wildcard *.dep)
+
 bootclean :
 	rm -f $(BOOTCLEANFILES)
 

@@ -11,5 +11,5 @@ sdfdata_DATA   = $(DEFS) $(TBLS)
 EXTRA_DIST     = $(DEFS) Sdf2.sdf Stratego-Sdf2.sdf
 
 CLEANFILES     = $(TBLS)
-BOOTCLEANFILES = $(DEFS)
+BOOTCLEANFILES = $(DEFS) $(wildcard *.dep)
 

@@ -3,6 +3,7 @@ include $(top_srcdir)/Makefile.xt
 SUBDIRS           = syn sig pp trans lib xtc tests
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 DIST_SUBDIRS      = $(SUBDIRS)
+CLEANFILES        = XTC
 
 EXTRA_DIST = bootstrap autoxt.m4 Makefile.xt 
 

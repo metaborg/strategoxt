@@ -8,4 +8,6 @@ SDFINCLUDES    = -I $(ASF_LIBRARY)/share/asf-library/library
 
 sdfdata_DATA   = $(TBLS_DEFS)
 EXTRA_DIST     = ATerms.sdf ATerms.def
+
+CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(TBLS_DEFS)

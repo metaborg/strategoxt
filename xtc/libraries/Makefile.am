@@ -3,8 +3,6 @@ pkglib_LTLIBRARIES = \
   liblibxtclib_dbg.la \
   liblibxtclib_prof.la
 
-# xtclib
-
 liblibxtclib_la_SOURCES      = libxtclib.c
 liblibxtclib_dbg_la_SOURCES  = libxtclib.c
 liblibxtclib_prof_la_SOURCES = libxtclib.c
@@ -20,8 +18,9 @@ pkgdocdatadir 	= $(pkgdatadir)/doc
 pkgdata_DATA   	= libxtclib.rtree liblib.rtree
 pkgdocdata_DATA = libxtclib.str   liblib.str
 
-EXTRA_DIST	= $(wildcard *.str) $(wildcard *.rtree)
-BOOTCLEANFILES 	= libxtclib.str libxtclib.rtree libxtclib.c
+EXTRA_DIST      = $(wildcard *.str) $(wildcard *.rtree)
+CLEANFILES      = $(wildcard *.c) $(wildcard *.dep)
+BOOTCLEANFILES  = libxtclib.str libxtclib.rtree libxtclib.c liblib.rtree
 
 bootclean :
 	rm -f $(BOOTCLEANFILES)
@@ -31,3 +30,8 @@ libxtclib.c :
         -I $(XTC)/share/xtc \
         -i ./xtclib.str -o libxtclib.rtree
 
+
+PARSESTRATEGO 	= $(STRATEGO_FRONT)/bin/parse-stratego
+
+.str.rtree :
+	$(PARSESTRATEGO) $(STRINCLUDES) -i $< -o $@ --verbose 0

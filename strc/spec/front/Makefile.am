@@ -19,12 +19,8 @@ check_PROGRAMS	 = use-def-test lift-dynamic-rules-old-test
 nodist_use_def_test_SOURCES = use-def-test.c
 nodist_lift_dynamic_rules_old_test_SOURCES = lift-dynamic-rules-old-test.c
 
-CLEANFILES 	 = $(wildcard *.dep) $(wildcard *.tmp)
-
-BOOTCLEANFILES = extract-all.c extract.c frontend.c inline.c  \
-		 rename-defs.c use-def-test.c		      \
-		 lift-dynamic-rules-old-test.c repair-types.c \
-		 pre-desugar.c				     
+CLEANFILES     = $(wildcard *.dep) $(wildcard *.tmp)
+BOOTCLEANFILES = $(wildcard *.c)
 
 TESTS 		 = use-def-test lift-dynamic-rules-old-test
 #needed-defs-test 

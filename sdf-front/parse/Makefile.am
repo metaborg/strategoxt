@@ -13,6 +13,6 @@ STRINCLUDES      = -I $(top_srcdir)/sig \
 
 EXTRA_DIST       = $(wildcard *.str) $(wildcard *.meta) $(pkgdata_DATA)
 CLEANFILES       = $(wildcard *.dep)
-BOOTCLEANFILES   = $(wildcard *.c)
+BOOTCLEANFILES   = $(wildcard *.c) pack-sdf-options.rtree
 
 LDADD += $(SSL_LIBS)

@@ -12,7 +12,7 @@ xtc_LDFLAGS     = $(AM_LDFLAGS) -static
 EXTRA_DIST	= $(pkgdata_DATA) $(wildcard *.str) \
 		  $(wildcard *.meta) $(pkgdata_DATA)
 CLEANFILES	= $(wildcard *.dep)
-BOOTCLEANFILES	= $(wildcard *.c)
+BOOTCLEANFILES	= $(wildcard *.c) $(pkgdata_DATA)
 
 check_PROGRAMS  = test1 test2 test3
 

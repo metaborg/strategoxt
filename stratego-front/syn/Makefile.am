@@ -29,7 +29,7 @@ sdfdata_DATA = \
   $(wildcard *.sdf)			       
 
 EXTRA_DIST     = $(DEFS) StrategoRenamed.sdf $(wildcard *.sdf)
-CLEANFILES     = $(TBLS)
+CLEANFILES     = $(TBLS) $(wildcard *.dep)
 BOOTCLEANFILES = $(DEFS) StrategoRenamed.sdf
 
 PGEN_FLAGS = -m $*

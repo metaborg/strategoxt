@@ -5,7 +5,7 @@ DEFS = C.def Stratego-C.def Stratego-Stratego-C.def Stratego-Sugar-and-C-in-Stra
 TBLS = C.tbl Stratego-C.tbl Stratego-Stratego-C.tbl Stratego-Sugar-and-C-in-Stratego.tbl
 
 sdfdata_DATA 	= $(TBLS) $(DEFS) $(wildcard *.sdf)
-CLEANFILES	= $(TBLS)
+CLEANFILES	= $(TBLS) $(wildcard *.dep)
 BOOTCLEANFILES	= $(DEFS)
 EXTRA_DIST   	= $(DEFS) $(wildcard *.sdf)
 

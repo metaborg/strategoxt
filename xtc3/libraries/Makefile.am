@@ -24,7 +24,7 @@ pkgdocdata_DATA = libxtclib.str   liblib.str
 
 EXTRA_DIST	= $(wildcard *.str) $(wildcard *.rtree) \
 		  libxtclib.rtree libxtclib.str
-BOOTCLEANFILES 	= libxtclib.str libxtclib.rtree libxtclib.c
+BOOTCLEANFILES 	= libxtclib.str libxtclib.rtree libxtclib.c liblib.rtree
 
 STRINCLUDES    = -I $(top_srcdir)/syn \
 		 -I $(top_srcdir)/sig \

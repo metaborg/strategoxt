@@ -8,7 +8,7 @@ sdfdata_DATA   = $(TBLS) $(DEFS) $(wildcard *.sdf)
 pkgdata_DATA   = Box.pp Box.pp.af
 
 EXTRA_DIST     = $(DEFS) $(wildcard *.sdf) $(pkgdata_DATA)
-CLEANFILES     = $(TBLS)
+CLEANFILES     = $(TBLS) $(wildcard *.dep)
 BOOTCLEANFILES = $(DEFS) Box.pp.af
 
 SDFINCLUDES    = -I $(STRATEGO_FRONT)/share/sdf/stratego-front

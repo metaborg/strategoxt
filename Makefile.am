@@ -91,3 +91,6 @@ source-tree.txt :
 		| grep -v data \
 		| grep -v config \
 		> $@
+
+svnignore :
+	svn propset -R svn:ignore -F svn-ignore .

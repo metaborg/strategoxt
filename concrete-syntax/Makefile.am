@@ -5,7 +5,7 @@ BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 DIST_SUBDIRS      = $(SUBDIRS)
 EXTRA_DIST        = bootstrap Makefile.xt autoxt.m4 \
 		    svn-revision concrete-syntax.spec.in
-
+CLEANFILES        = XTC
 ACLOCAL_AMFLAGS   = -I .
 
 ignore : ignore-svn ignore-targets
