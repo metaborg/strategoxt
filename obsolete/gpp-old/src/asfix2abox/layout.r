@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: layout.r,v 1.4 2002/01/23 15:25:09 mdejonge Exp $
+% $Id: layout.r,v 1.5 2002/04/05 16:55:06 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdejonge@cwi.nl)
 
@@ -116,13 +116,13 @@ InsLayout(s) =
 
          has-option(!Conservative);
          <has-layout>w;
-         !([H([SOpt(HS,"0")],[a', <layout2box>w, b'])|xs'], ws'')
+         !([H([SOpt(HS,"0")],[H([],[a']), <layout2box>w, H([],[b'])])|xs'], ws'')
       <+
          // For non-conservative pretty-printing, we only insert significant
          // layout (i.e., layout other than spaces, tabs, and new lines).
          not(has-option(!Conservative));
          <has-significant-layout>w;
-         !([H([SOpt(HS,"0")],[a', <layout2box>w, b'])|xs'], ws'')
+         !([a', <layout2box>w, b'|xs'], ws'')
      <+
          // No existing layout used. Instead, generated layout is used.
          !([a', b'|xs'],ws'')

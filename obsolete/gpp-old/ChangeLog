@@ -1,3 +1,6 @@
+2002-04-05  Merijn de Jonge <mdejonge@cwi.nl>
+   * asfix2abox: fixes incorrect comment preservation
+
 2002-03-22  Merijn de Jonge <mdejonge@cwi.nl>
    * Repaired package dependencies
 
