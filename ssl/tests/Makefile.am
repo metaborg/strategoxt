@@ -23,7 +23,6 @@ check_PROGRAMS = \
   list-set-test \
   list-sort-test \
   list-zip-test \
-  migrate-tuples-test \
   option-test \
   options-test \
   parallel-test \
