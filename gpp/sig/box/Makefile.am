@@ -3,7 +3,7 @@ include $(wildcard *.dep)
 
 SIGS = Box.str
 
-pkgdata_DATA     = abox-ext.rtree $(subst .str,.rtree,$(SIGS))
+pkgdata_DATA     = Box.rtg abox-ext.rtree $(subst .str,.rtree,$(SIGS))
 libexec_PROGRAMS = abox-format
 LDADD += $(SSL_LIBS)
 
