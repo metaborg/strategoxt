@@ -70,8 +70,6 @@ AC_SUBST(STRATEGOXT)
 AC_CHECK_PROGS(RPMBUILD, rpmbuild rpm)
 AC_SUBST(RPMBUILD)
 
-AM_CONFIG_HEADER([config.h])
-
 ### PACKAGES ##########################
 
 PKGS="autoxt srts xtc sdf-import stratego-front asfix-tools strc gpp c-tools ssl concrete-syntax aterm-front sdf-front dot-tools graph-tools sdf-tools aterm-tools stratego-regular xml-front stratego-tools boxenv stratego-util"
