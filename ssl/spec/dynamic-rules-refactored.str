@@ -269,8 +269,8 @@ strategies // change sets
     where <dr-destroy-change-set> cs
 
   dr-commit-labels(|labelset) =
-    [ ChangeSet(iset-union(|labelset), id)
-      + RuleScope(iset-union(|labelset), id)
+    [ ChangeSet(<iset-union> (<id>, labelset), id)
+      + RuleScope(<iset-union> (<id>, labelset), id)
     | id]
 
   dr-apply-change(|tbl) :
@@ -364,7 +364,7 @@ strategies // setting a rule
 	   | label, key, value) =
     ?[RuleScope(labelset, tbl@Hashtable(hptr)) | rs]
     ; where(
-        <iset-elem(|label)> labelset
+        <iset-contains(|label)> labelset
         < (set(|hptr, tbl, key, value)
            <+ where(<hashtable-put(|key, value)> tbl))
         + <dr-set-in-rule-set(set | label, key, value)> rs
@@ -379,7 +379,7 @@ strategies // setting a rule
               <+ <hashtable-get(|key)> tbl2 => value
                  ; <hashtable-remove(|(scpid, key))> tbl1
               <+ <hashtable-put(|(scpid, key), value)> tbl1
-         in if <iset-elem(|label)> labelset
+         in if <iset-contains(|label)> labelset
             then <fetch-elem(?RuleScope(_,tbl@Hashtable(hptr)))> rs
                  ; set2(|hptr, tbl, key, value)
             else <dr-set-in-rule-set(set2 | label, key, value)> rs
@@ -420,7 +420,7 @@ strategies // extending a rule
 	     | label, key, value) =
     ?[RuleScope(labelset, tbl@Hashtable(hptr)) | rs]
     ; where(
-        <iset-elem(|label)> labelset
+        <iset-contains(|label)> labelset
         < (add(|hptr, tbl, key, value)
            <+ where(<hashtable-push(|key, value)> tbl))
         + <dr-add-to-rule-set(add | label, key, value)> rs
@@ -437,7 +437,7 @@ strategies // extending a rule
                   <+ ![]) 
 	         // check that value not yet member of this set????
                  ; \ values -> <hashtable-put(|(scpid, key), [value | values])> tbl1 \
-         in if <iset-elem(|label)> labelset
+         in if <iset-contains(|label)> labelset
             then <fetch-elem(?RuleScope(_,tbl@Hashtable(hptr)))> rs
                  ; set2(|hptr, tbl, key, value)
             else <dr-add-to-rule-set(add2 | label, key, value)> rs
@@ -619,16 +619,16 @@ strategies // union
   	     ,<dr-union-rule-sets> (rs1, rs2))
 // todo: unions 
   dr-union-rule-sets2 :
-    (rs@[ChangeSet(tbl1) | rs1], [ChangeSet(tbl2) | rs2]) -> rs
+    (rs@[ChangeSet(labels1, tbl1) | rs1], [ChangeSet(labels2, tbl2) | rs2]) -> rs
     where ior(<hashtable-union(|tbl2)> tbl1
   	     ,<dr-union-rule-sets> (rs1, rs2))
 
   dr-union-rule-sets3 =
-    ?([ChangeSet(tbl1) | rs1], [RuleScope(labels2, tbl2) | rs2])
+    ?([ChangeSet(labels1, tbl1) | rs1], [RuleScope(labels2, tbl2) | rs2])
     ; error
 
   dr-union-rule-sets3 =
-    ?([RuleScope(labels2, tbl2) | rs2], [ChangeSet(tbl1) | rs1])
+    ?([RuleScope(labels2, tbl2) | rs2], [ChangeSet(labels1, tbl1) | rs1])
     ; error
 
 
@@ -643,7 +643,7 @@ strategies // union
   	     ,<dr-union-rule-sets> (rs1, rs2))
 
   dr-union-rule-sets-symm2 :
-    ([ChangeSet(tbl1) | rs1], rs@[ChangeSet(tbl2) | rs2]) -> rs
+    ([ChangeSet(labels1, tbl1) | rs1], rs@[ChangeSet(labels2, tbl2) | rs2]) -> rs
     where ior(<hashtable-union-symm-wempty(|[])> (tbl1, tbl2)
   	     ,<dr-union-rule-sets> (rs1, rs2))
 
@@ -706,9 +706,10 @@ strategies // rule-set equality
   dr-eq-rule-sets =
   let rseq =
         ?(RuleScope(lbl1, tbl1), RuleScope(lbl2, tbl2))
-      ; <set-eq> (lbl1, lbl2)
+      ; <iset-eq> (lbl1, lbl2)
       ; <hashtable-eq> (tbl1, tbl2)
-    +   ?(ChangeSet(tbl1), ChangeSet(tbl2))
+    +   ?(ChangeSet(lbl1, tbl1), ChangeSet(lbl2, tbl2))
+      ; <iset-eq> (lbl1, lbl2)
       ; <hashtable-eq> (tbl1, tbl2)
    in where(zip(rseq))
   end
@@ -741,7 +742,7 @@ strategies // debugging
     where(map(dr-print-scope))
 
   dr-print-scope =
-    ?RuleScope(labels, tbl)
+    ?RuleScope(labelset, tbl)
   ; where(
       debug
     ; <hashtable-keys> tbl
@@ -753,7 +754,7 @@ strategies // debugging
     )
 
   dr-print-scope =
-    ?ChangeSet(tbl)
+    ?ChangeSet(labelset, tbl)
   ; where(
       debug
     ; <hashtable-keys> tbl

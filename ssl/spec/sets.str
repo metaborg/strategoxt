@@ -107,26 +107,29 @@ strategies
   /**
    *
    */
-  iset-union(|set2) =
-    ?set1
-  ; where(<iset-elements; map({ ?elem; <iset-add(|elem)> set1 })> set2)
+  iset-union =
+    ?(set1, set2)
+  ; where(<iset-elements; map({elem: ?elem; <iset-add(|elem)> set1 })> set2)
+  ; !set1
 
-  iset-isect(|set2) =
-    ?set1
-  ; where(iset-elements
-          ; map({ ?elem
+  iset-isect =
+    ?(set1, set2)
+  ; where(<iset-elements> set1
+          ; map({ elem:
+                  ?elem
                 ; (<iset-contains(|elem)> set2
                    <+ <iset-remove(|elem)> set1)
                 }))
+  ; !set1
 
-  iset-subset(|set2) =
-    ?set1
-  ; where(<iset-elements; map({ ?elem; <iset-contains(|elem)> set1 })> set2)
+  iset-subset =
+    ?(set1, set2)
+  ; where(<iset-elements; map({elem: ?elem; <iset-contains(|elem)> set1 })> set2)
 
-  iset-eq(|set2) =
-    ?set1
-  ; where(iset-subset(|set2))
-  ; where(<iset-subset(|set1)> set2)
+  iset-eq =
+    ?(set1, set2)
+  ; where(<iset-subset> (set1, set2))
+  ; where(<iset-subset> (set2, set1))
 
 /**
  * Low-level set strategies (having knowledge of an index)
