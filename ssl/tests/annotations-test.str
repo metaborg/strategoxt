@@ -228,7 +228,8 @@ strategies
     test-suite(!"Get the annotations of a term",
       test-get-1
     ; test-get-2
-    ; test-get-3
+    ; test-get-3a
+    ; test-get-3b
     ; test-get-4
     )
 
@@ -248,9 +249,17 @@ strategies
 	, ![]
 	)
 
+  // with 1 list annotation
+  test-get-3a =
+    apply-test(!"test-get-annos-3a"
+	, get-annos
+	, !Var("a"){[]}
+	, ![[]]
+	)
+
   // with 1 annotation
-  test-get-3 =
-    apply-test(!"test-get-annos-3"
+  test-get-3b =
+    apply-test(!"test-get-annos-3b"
 	, get-annos
 	, !Var("a"){Int}
 	, ![Int]
