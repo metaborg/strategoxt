@@ -1,5 +1,5 @@
 module lift-dynamic-rules-old
-imports Stratego lib desugar 
+imports Stratego lib desugar dr-new-to-old
 
 signature
   constructors
@@ -8,6 +8,7 @@ signature
 
     GenDynRules     : List(DynRuleDef) -> Strategy
     SetDynRule      : DynRuleId * Rule -> DynRuleDef
+    UndefineDynRule : DynRuleId * Rule -> DynRuleDef
     DynRuleScopeId  : String -> DynRuleScopeId
     DynRuleId       : String -> DynRuleScopeId
 
@@ -16,37 +17,8 @@ signature
 strategies
 
   LiftDynamicRules-old =
-      convert-new-syntax-to-old
-    ; check-for-too-new-constructs
+      downgrade-new-dr-syntax
     ; Specification([id,id, Strategies(define-rule-scope-old; lift-dynamic-rules-old)])
-
-  convert-new-syntax-to-old =
-    topdown(
-      if ?GenDynRules(_)
-        then DowngradeGenerator
-        else if ?DynRuleScope(_,_)
-          then DowngradeScope
-          else id
-        end
-      end
-    )
-
-  DowngradeGenerator :
-    GenDynRules([SetDynRule(DynRuleId(RDecT(x, ss, st)), rule)])
-      ->
-    DynamicRules([RDefT(x, ss, st, rule)])
-
-  DowngradeScope :
-    DynRuleScope(ids, s) -> DynRuleScope(<map(DowngradeScopeId)> ids, s)
-
-  DowngradeScopeId =
-       is-string
-    <+ ?DynRuleScopeId(<id>)
-    <+     say(!"[normalize-spec | fatal error] Labelled dynamic rule scope not supported by old style dynamic rules")
-       ; debug(!"[normalize-spec | fatal error] ")
-       ; <exit> 1
-
-  check-for-too-new-constructs = id
 
 strategies
 
@@ -56,15 +28,18 @@ strategies
     topdown(try(DefDynamicRuleScope))
 
   DefDynamicRuleScope :
-    |[ {| : s |} ]| -> s
+    DynRuleScope([], s) -> s
 
   DefDynamicRuleScope :
-    |[ {| x, x* : s |} ]| -> |[ scope(!~str:x, {| x* : s |}) ]|
+    DynRuleScope([x | xs], s) -> |[ scope(!~str:x, ~DynRuleScope(xs, s)) ]|
 
-/* Lift dynamic rules from strategy definitions.  One dynamic rule set
-is lifted out at a time, after which the process repeats; a definition
-may contain multiple dynamic rules, and a dynamic rule itself may
-contain dynamic rules. */
+/**
+ * Lift dynamic rules from strategy definitions.  One dynamic rule set
+ * is lifted out at a time, after which the process repeats; a definition
+ * may contain multiple dynamic rules, and a dynamic rule itself may
+ * contain dynamic rules.
+ */
+strategies
 
   lift-dynamic-rules-old =
     listtd(repeat(lift-dynamic-rule-old))
@@ -85,9 +60,10 @@ contain dynamic rules. */
              >
 	    )
 
-/* Traverse to find dynamic rule definition.  Record all variables
-that are declared in context using the dynamic rule ContextVar */
-
+  /**
+   * Traverse to find dynamic rule definition.  Record all variables
+   * that are declared in context using the dynamic rule ContextVar
+   */
   split-dynamic-rule-old(s) = 
     rec x(oncetd(s <+ split-under-scope-old(x)))
 
@@ -98,10 +74,11 @@ that are declared in context using the dynamic rule ContextVar */
   DeclareContextVars =
     map({(?ListVar(x) <+ ?x); rules(ContextVar : x -> x)})
 
-/* Split each rule in a dynamic rule set */
-
+  /**
+   * Split each rule in a dynamic rule set
+   */
   split-dynamic-rules-old :
-    |[ rules(rd*) ]| -> 
+    DynamicRules(rd*) ->
     <map(SplitDynamicRule-old(!|[ assert(!~str:<id>) ]|)); unzip> rd*
 
   split-dynamic-rules-old :
@@ -118,23 +95,26 @@ that are declared in context using the dynamic rule ContextVar */
     <map(ExtendSplitDynamicRule-old(!|[ extend-override-key(!~str:<id>) ]|)
 	 + ExtendSplitDynamicRuleUndefined-old(!|[ extend-override-key-undefined(!~str:<id>) ]|)); unzip; (id, concat)> rd*
 
-/* Split a dynamic rule into an call to assert which records a mapping
-from the left-hand side of the rule instantiated with the bindings to
-context variables to the set of bindings to the context variales not
-occurring in the left-hand side.
-
-Notes:
- - the stamp identifies the rule that introduced the binding, in order
-   to distinguish between dynamic rules with the same left-hand side
-   but different right-hand sides
- - non-context variables are replaced with 'Dummy()' in the term that
-   is used as key in the table (dummify)
- - if all variables in the lhs are context-variables, the lookup in the
-   table can simply use a pointer to the term matched on the lhs (efficient!)
-
-Bug! Current translation scheme does not take extended match patterns
-into account. No contexts and term projects should be used in a
-dynamic rule. */
+/**
+ * Split a dynamic rule into an call to assert which records a mapping
+ * from the left-hand side of the rule instantiated with the bindings to
+ * context variables to the set of bindings to the context variales not
+ * occurring in the left-hand side.
+ * 
+ * Notes:
+ *  - the stamp identifies the rule that introduced the binding, in order
+ *    to distinguish between dynamic rules with the same left-hand side
+ *    but different right-hand sides
+ *  - non-context variables are replaced with 'Dummy()' in the term that
+ *    is used as key in the table (dummify)
+ *  - if all variables in the lhs are context-variables, the lookup in the
+ *    table can simply use a pointer to the term matched on the lhs (efficient!)
+ * 
+ * Bug! Current translation scheme does not take extended match patterns
+ * into account. No contexts and term projects should be used in a
+ * dynamic rule.
+ */
+strategies
 
   dummify =
     alltd(
@@ -217,22 +197,3 @@ dynamic rule. */
        new => x
        ; <dummify> t1 => t1'
        ; try(?t1; !Var(x)) => t1''
-
-\end{code}
-
-% Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
-% 
-% This program is free software; you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation; either version 2, or (at your option)
-% any later version.
-% 
-% This program is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-% 
-% You should have received a copy of the GNU General Public License
-% along with this program; if not, write to the Free Software
-% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-% 02111-1307, USA.

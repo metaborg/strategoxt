@@ -15,7 +15,7 @@ libexec_PROGRAMS = extract extract-all rename-defs stratego-warnings \
 		   repair-types desugar pre-desugar normalize-spec use-def \
 		   check-constructors spec-to-sdefs 
 
-check_PROGRAMS	 = use-def-test lift-dynamic-rules-test
+check_PROGRAMS	 = use-def-test lift-dynamic-rules-old-test
 
 CLEANFILES 	 = $(wildcard *.dep) $(wildcard *.tmp)
 
