@@ -15,13 +15,13 @@ liblibstrategolib_prof_la_CFLAGS = -pg  $(AM_CFLAGS)
 AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_srcdir)/ssl -I$(ATERM)/include -I$(srcdir)
 AM_LDFLAGS  = -avoid-version 
 
-pkgdocdatadir 	= $(pkgdatadir)/doc
+# pkgdocdatadir   = $(pkgdatadir)/doc
+# pkgdocdata_DATA = libstrategolib.str
 
 pkgdata_DATA   	= libstrategolib.rtree 
-pkgdocdata_DATA = libstrategolib.str 
-
-EXTRA_DIST	= $(wildcard *.str) $(wildcard *.rtree)
-BOOTCLEANFILES 	= libstrategolib.str libstrategolib.rtree libstrategolib.c $(wildcard *.dep)
+EXTRA_DIST	= libstrategolib.rtree strategolib.str
+CLEANFILES      = $(wildcard *.dep)
+BOOTCLEANFILES 	= libstrategolib.str libstrategolib.rtree libstrategolib.c
 
 bootclean :
 	rm -f $(BOOTCLEANFILES)
@@ -29,4 +29,5 @@ bootclean :
 libstrategolib.c : 
 	$(STRC)/bin/strc -c --library --verbose 2 \
         -I $(SSL)/share/ssl \
-        -i ./strategolib.str -o libstrategolib.rtree
+        -i ./strategolib.str -o libstrategolib.rtree && \
+        rm libstrategolib.str
