@@ -447,15 +447,21 @@ ATerm SSL_dup2(ATerm fromfd, ATerm tofd) {
  * mkstemp
  */
 ATerm SSL_mkstemp(ATerm template) {
-  char* str = AT_getString(template);
+  char* str    = AT_getString(template);
 
-  int fd = mkstemp(str);
+  /**
+   * str is not allowed to be modified, so we copy it.
+   */
+  char* result = (char*) malloc(strlen(str) + 1);
+  strcpy(result, str);
+
+  int fd = mkstemp(result);
 
   if(fd == -1) {
     _fail(template);
   }
 
-  return (ATerm) App2("", (ATerm) ATmakeString(str), (ATerm) ATmakeInt(fd));
+  return (ATerm) App2("", (ATerm) ATmakeString(result), (ATerm) ATmakeInt(fd));
 }
 
 /**

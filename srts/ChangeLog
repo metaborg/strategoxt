@@ -1,3 +1,8 @@
+2004-05-11  Martin Bravenboer <martin@cs.uu.nl>
+
+	* ssl/exec.c: fixed a major bug in mkstemp: mkstemp wrote the
+	result to an aterm symbol!
+
 2004-03-22  Martin Bravenboer <martin@cs.uu.nl>
 
 	* Added hashtable primitives that operate on an Hashtable
