@@ -398,16 +398,20 @@ ATerm _thread(ATerm t, ATerm f(ATerm))
     return (ATerm)ATmakeAppl2(sym__2, ATsetAnnotations(t, annos), env);
 }
 
-ATermList CheckATermList(ATerm t)
-{
+ATermList CheckATermList(ATerm t) {
   //ATfprintf(stderr, "CheckATermList(%t)\n", t);
-  if(ATgetType(t) != AT_LIST)
-    {
-      ATfprintf(stderr, "Warning: trying to build list with illegal tail: %t\n", t);
-      _fail(t);
-    }
+  if(ATgetType(t) != AT_LIST) {
+    ATfprintf(stderr, "Warning: trying to build list with illegal tail: %t\n", t);
+    _fail(t);
+  }
   //ATfprintf(stderr, "CheckATermList(%t) = true\n", t);
   return (ATermList) t;
+}
+
+ATerm SRTS_pop_seqvar(ATermList* list) {
+  ATerm result = ATgetFirst(*list);
+  *list = ATgetNext(*list);
+  return result;
 }
 
 // Bag

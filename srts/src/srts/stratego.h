@@ -48,6 +48,8 @@ ATerm _bagof(ATerm t, ATerm f(ATerm));
 #define SRTS_thread(f, t) _thread(t, f)
 #define SRTS_bagof(f, t)  _bagof(t, f)
 
+ATerm SRTS_pop_seqvar(ATermList* list);
+
 ATerm _cpl_loaded(ATerm);
 
 #define match_cons(t, sym) \
