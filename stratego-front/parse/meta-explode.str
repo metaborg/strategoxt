@@ -99,7 +99,7 @@ strategies
 			 trm-explode)> ts1
 
   str-explode =
-    \ meta-var(x) -> Call(SVar(x),[]) \
+    \ meta-var(x) -> Match(Var(x)) \
     <+ TrmFromTerm
     <+ TrmFromStr
     <+ ?FromApp(<MetaExplode>)
