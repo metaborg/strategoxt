@@ -1,3 +1,11 @@
+2003-08-12  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/scoped-finite-map.str: At the end of a rule scope, remove
+	the entry for the lhs if there are no more rules in scope. These
+	entries used to clutter the tables representing dynamic rules;
+	possibly causing overhead for manipulation of dynamic rules in
+	data-flow optimizations.
+
 2003-08-12  Martin Bravenboer <mbravenb@cs.uu.nl>
 
   * spec/process.str: defined call/(0,0) in terms of call(1,0)

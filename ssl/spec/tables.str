@@ -95,6 +95,13 @@ strategies
   table-pop = ?(dis, key);
     where(<table-put>(dis, key, <table-get; Tl <+ ![]>(dis, key)))
 
+  table-pop-rm = ?(dis, key);
+    where(
+      <table-get>(dis, key) => [_|xs]
+      < <table-put>(dis, key, xs)
+      + <table-remove>(dis, key)
+    )
+
   table-pop-get = ?(dis, key);
     where( <table-get>(dis, key) => [val | vals]
          ; <table-put>(dis, key, vals)

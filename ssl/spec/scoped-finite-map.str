@@ -40,7 +40,7 @@ strategies
   where(ns => ns
   ; (<table-get>(ns, Scopes) <+ ![[]]) => [scope | scopes]
   ; <table-put>(ns, Scopes, scopes)
-  ; <map( \ key -> <table-pop>(ns, key) \ )> scope
+  ; <map( \ key -> <table-pop-rm>(ns, key) \ )> scope
   )
 
 //  scope(ns, s) =
