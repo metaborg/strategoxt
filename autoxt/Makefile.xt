@@ -16,6 +16,8 @@ AM_CPPFLAGS	= -I$(SRTS)/include -I$(ATERM)/include
 AM_LDFLAGS	= -L$(SRTS)/lib -L$(ATERM)/lib 
 LDADD 		= -lstratego.opt -lstratego-lib.opt -lATerm-gcc -lm
 
+STRATEGORUNLIBS = -lstratego.opt -lstratego-lib.opt -lATerm-gcc -lm
+
 SUFFIXES 	= .str .cr .r .rtree .def .tbl .pp .sdf
 
 SCOMPILE 	= $(STRC)/bin/strc
