@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Abox2text.r,v 1.3 2001/06/08 09:44:16 mdejonge Exp $
+% $Id: Abox2text.r,v 1.4 2001/06/08 16:40:29 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
@@ -122,6 +122,9 @@ Abox-2-text =
 
   Abox-2-text =
     \ (S(s), xpos) -> (s, <add>(xpos, <string-length>s)) \
+
+  Abox-2-text =
+    \ (C(_,[S(s)]), xpos) -> (s, xpos) \
 
   Abox-2-text =
     \ (FBOX(_,b), xpos) -> <Abox-2-text>(b, xpos) \
