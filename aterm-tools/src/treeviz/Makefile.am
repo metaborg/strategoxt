@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.2 2001/09/18 15:32:55 jvisser Exp $
+# $Id: Makefile.am,v 1.3 2002/03/14 22:53:02 eelco Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -30,11 +30,13 @@ include $(STRATEGO_PRG:%=%.dep)
 SUBDIRS      = data
 
 # Which Stratego programs to build
-STRATEGO_PRG = treeviz
+STRATEGO_PRG = treeviz term-to-adot
 
 # What scipts to build
-bin_SCRIPTS	= treeviz
-libexec_SCRIPTS	= treeviz
+bin_SCRIPTS	= treeviz term-to-adot
+libexec_SCRIPTS	= treeviz term-to-adot
+
+pkgdata_DATA = dot-pretty.pp
 
 # Optional tests to run
 # TESTS        = program-check
