@@ -23,6 +23,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
 
 ATerm SSL_is_string(ATerm t);
 ATerm SSL_new(void);
-ATerm SSL_newname(ATerm prefix, ATerm groupname);
+ATerm SSL_newname(ATerm prefix);
 ATerm SSL_implode_string(ATerm chars);
 ATerm SSL_explode_string(ATerm t);

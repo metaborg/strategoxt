@@ -59,40 +59,71 @@ ATerm SSL_new(void)
  * newname: generate new strings
  * prefix is user-definable prefix (instead of changing alpha_counter
  * in SSL_new)
- * groupname is group within which numbering takes place (e.g. "var"
- * and "fun" might be groupnames, with separate numbering for both.)
+ * Any trailing digits are trimmed off, if they are preceded by '_':
+ * "a" => "a"
+ * "a_23" => "a"
+ * "a_" => "a"
+ * "a_b" => "a_b"
+ * "a_12_34" => "a_12"
  */
 
 ATermTable SSL_newname_table = NULL;
 char newname_string[256] = "";
 
-ATerm SSL_newname(ATerm prefix, ATerm groupname)
+ATerm SSL_newname(ATerm prefix)
 {
   int newname_counter;
   char* prefix_string;
-  ATerm groupvalue;
+  char* prefix_base;
+  ATerm lastvalue;
 
   if(SSL_newname_table == NULL)
     SSL_newname_table = ATtableCreate(15, 80);
 
   prefix_string = ATgetName(ATgetSymbol(prefix));
-  groupvalue = ATtableGet(SSL_newname_table, groupname);
 
-  if(groupvalue != NULL) {
-    newname_counter = ATgetInt((ATermInt)groupvalue);
+  /* Now try to trim off a trailing counter part, if applicable */
+  char *last_delim;
+  last_delim = strrchr(prefix_string, '_');
+
+  if (last_delim != NULL) {
+    int n = last_delim - prefix_string;
+     /* Check all chars after last '_' */
+    while (1) {
+      last_delim++;
+      if (*last_delim == '\0') {
+        /* All trailing chars checked, now use trimmed prefix as base */
+        prefix_base = (char*)malloc((n + 1) * sizeof(char));
+        strncpy(prefix_base, prefix_string, n);
+        break;
+      } else if(!isdigit(*last_delim)) {
+        /* Invalid char, do not trim at all */
+        prefix_base = prefix_string;
+        break;
+      }
+    }
+  } else {
+    prefix_base = prefix_string;
+  }
+  /* The proper base prefix is now known for looking up counter. */
+  ATerm count_key = (ATerm) ATmakeString(prefix_base);
+  lastvalue = ATtableGet(SSL_newname_table, count_key);
+
+  if(lastvalue != NULL) {
+    newname_counter = ATgetInt((ATermInt)lastvalue);
   } else {
     newname_counter = -1;
   }
-  
+
   newname_counter++;
-  sprintf(newname_string, "%s_%d", prefix_string, newname_counter);
+  sprintf(newname_string, "%s_%d", prefix_base, newname_counter);
 
   while(AT_findSymbol(newname_string, 0, ATtrue)) {
     newname_counter++;
-    sprintf(newname_string, "%s_%d", prefix_string, newname_counter);
+    sprintf(newname_string, "%s_%d", prefix_base, newname_counter);
   }
 
-  ATtablePut(SSL_newname_table, groupname, (ATerm)ATmakeInt(newname_counter));
+  ATtablePut(SSL_newname_table, count_key, (ATerm)ATmakeInt(newname_counter));
   return((ATerm) ATmakeAppl0(ATmakeSymbol(newname_string, 0, ATtrue)));
 }
 
