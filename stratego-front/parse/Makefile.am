@@ -1,14 +1,14 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-SCFLAGS 	= -I ../sig --main $* --C-include "\"conf.h\"" -CI "-I.." $(XTCFLAGS)
+SCFLAGS 	= -I ../syn -I ../sig --main $* --C-include "\"conf.h\"" -CI "-I.." $(XTCFLAGS)
 
 bin_PROGRAMS 	= meta-explode stratego-desugar parse-stratego 
 noinst_PROGRAMS = pp-stratego
 
-meta-explode .o		: xtc-conf.h
-stratego-desugar .o	: xtc-conf.h
-parse-stratego .o	: xtc-conf.h
+meta-explode.o		: xtc-conf.h
+stratego-desugar.o	: xtc-conf.h
+parse-stratego.o	: xtc-conf.h
 pp-stratego.o		: xtc-conf.h
 
 

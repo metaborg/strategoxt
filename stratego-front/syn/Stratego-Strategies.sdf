@@ -20,6 +20,7 @@ exports
     Id					  -> SVar {cons("SVar")}
     "let" Def* "in" Strategy 		  -> Strategy {cons("Let")}
     SVar "(" {Strategy ","}* ")" 	  -> Strategy {cons("Call")}
+    SVar "(" {Term ","}* "|" {Strategy ","}* ")" -> Strategy {cons("CallT")}
 
 
     %% Match and build
@@ -53,7 +54,10 @@ exports
 
     %% Primitives
 
-    "prim" "(" String "," {Term ","}* ")" -> Strategy {cons("Prim")}
+    "prim" "(" String ")" 		 	 -> Strategy {cons("PrimNoArgs")}
+    "prim" "(" String "," {Term ","}* ")"	 -> Strategy {cons("Prim")}
+    "prim" "(" String "," {Term ","}* "|" {Strategy ","}*")" 	-> Strategy {cons("PrimTS")}
+    "prim" "(" String "|" {Strategy ","}*")" 	-> Strategy {cons("PrimS")}
 
 
     %% Traversal
@@ -90,8 +94,6 @@ exports
 %%    Strategy "#" "(" Strategy ")" 	  -> Strategy {cons("ExplodeCong")}
     Strategy "#" StrategyParen	  	  -> Strategy {cons("ExplodeCong")}
 
-
-
   %% Syntactic sugar sugar
 
   context-free syntax
@@ -106,7 +108,7 @@ exports
 
     SVar  		  		  -> Strategy {cons("CallNoArgs")}
     "\\" Rule "\\" 			  -> Strategy {cons("LRule")}
-    "prim" "(" String ")" 		  -> Strategy {cons("PrimNoArgs")}
+    "(" Rule ")" 			  -> Strategy {cons("SRule")}
     Strategy "+" Strategy 		  -> Strategy {cons("Choice"),right} 
     Strategy "+>" Strategy 		  -> Strategy {cons("RChoice"),right}
     Strategy "++" Strategy 		  -> Strategy {cons("GChoice"),right}

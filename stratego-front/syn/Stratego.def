@@ -21,6 +21,7 @@ exports
     Id					  -> SVar {cons("SVar")}
     "let" Def* "in" Strategy 		  -> Strategy {cons("Let")}
     SVar "(" {Strategy ","}* ")" 	  -> Strategy {cons("Call")}
+    SVar "(" {Term ","}* "|" {Strategy ","}* ")" -> Strategy {cons("CallT")}
 
 
     %% Match and build
@@ -54,7 +55,10 @@ exports
 
     %% Primitives
 
-    "prim" "(" String "," {Term ","}* ")" -> Strategy {cons("Prim")}
+    "prim" "(" String ")" 		 	 -> Strategy {cons("PrimNoArgs")}
+    "prim" "(" String "," {Term ","}* ")"	 -> Strategy {cons("Prim")}
+    "prim" "(" String "," {Term ","}* "|" {Strategy ","}*")" 	-> Strategy {cons("PrimTS")}
+    "prim" "(" String "|" {Strategy ","}*")" 	-> Strategy {cons("PrimS")}
 
 
     %% Traversal
@@ -107,7 +111,7 @@ exports
 
     SVar  		  		  -> Strategy {cons("CallNoArgs")}
     "\\" Rule "\\" 			  -> Strategy {cons("LRule")}
-    "prim" "(" String ")" 		  -> Strategy {cons("PrimNoArgs")}
+    "(" Rule ")" 			  -> Strategy {cons("SRule")}
     Strategy "+" Strategy 		  -> Strategy {cons("Choice"),right} 
     Strategy "+>" Strategy 		  -> Strategy {cons("RChoice"),right}
     Strategy "++" Strategy 		  -> Strategy {cons("GChoice"),right}
@@ -161,7 +165,7 @@ exports
 
   context-free syntax
     Id "::" StratRule 				-> RuleDef {cons("SRDefNoArgs")}
-    Id "(" {Typedid ","}* ")" "::" StratRule 	-> RuleDef {cons("SRDef")} 
+    Id "(" {Typedid ","}* ")" "::" StratRule 	-> RuleDef {cons("SRDef")}
 
   context-free syntax
     Term "->" Term 		    		-> Rule {cons("RuleNoCond")}

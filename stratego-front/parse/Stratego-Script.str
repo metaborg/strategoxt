@@ -1,8 +1,0 @@
-module Stratego-Script
-signature
-  constructors
-    Script : List(Command) -> Script
-    Command : Decl -> Command
-    Dump : String -> Command
-    Load : String -> Command
-    Eval : Strategy -> Command

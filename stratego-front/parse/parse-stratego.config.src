@@ -12,7 +12,8 @@
 ("GPP",			Path("__GPP__")),
 ("PGEN",		Path("__PGEN__")), 
 
-("-I",			[Var("pkgdatadir")]),
+("-I",			[Var("pkgdatadir"), 
+		 	 Prefix(Var("datadir"), Path("/sdf/stratego-front"))]),
 
 ("--verbose",		1),
 

@@ -1,19 +1,9 @@
 module astratego2text
-imports lib
+imports xtc-lib
 strategies
 
   astratego2text =
-    where([?program; get-path => prefix | id])
-    ; where(prim("get_conf_pkgdatadir") => pkgdatadir)
-    ; import-config-file(
-        find-config-file(![prefix,pkgdatadir], !"astratego2text.config")
-      )
-    ; parse-options(io-options)
-    ; <get-config> "-i"
-    ; where((<get-config> "-o" <+ <conc-strings> (<id>, ".txt")) => outfile)
-    ; call-tmp(<get-config>"ast2abox", !["-p", <get-config> "Stratego-pretty.pp"],
-      call-out(<get-config>"abox2text", ![], !outfile, id))
-    ; try(<get-config> "-S" <+ say(!program))
-
-
-    
+    xtc-iowrap(
+      xtc-transform(!"ast2abox", !["-p", <xtc-find> "Stratego-pretty.pp"])
+      ; xtc-transform(!"abox2text")
+    )

@@ -1,3 +1,18 @@
+2002-12-21  Eelco Visser  <visser@cs.uu.nl>
+
+	* syn/StrategoStratego.sdf: Cleaned up definitions of concrete
+	syntax injections. The |[ ... ]| quotation marks should be used
+	instead of [[ ... ]]. The latter are still defined, but will be
+	phased out.
+
+	* pp/astratego2text.str: Using XTC
+
+	* syn/Stratego-Strategies.sdf: Make rule without scope (SRule) into
+	a strategy by means of parentheses: (t1 -> t2 where s) is a strategy.
+	This was already the case in the abstract syntax. Primitives and
+	calls can both have terms *and* strategies as arguments. This has
+	not been implemented in the compiler yet.
+
 2002-12-18  Eelco Visser  <visser@cs.uu.nl>
 
 	* syn/StrategoStratego.sdf: added |[ ... ]| style injections

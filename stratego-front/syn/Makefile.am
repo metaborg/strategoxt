@@ -1,7 +1,7 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-pkgdata_DATA 	= Stratego.def StrategoStratego.def StrategoStrategoC.def \
+sdfdata_DATA 	= Stratego.def StrategoStratego.def StrategoStrategoC.def \
 	          Stratego.tbl StrategoStratego.tbl StrategoStrategoC.tbl \
 	      	  $(wildcard *.sdf)				       
 
