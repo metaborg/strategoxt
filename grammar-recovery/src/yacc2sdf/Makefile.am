@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.2 2001/09/18 15:38:15 jvisser Exp $
+# $Id: Makefile.am,v 1.3 2001/09/29 16:40:23 eelco Exp $
 
 include $(srcdir)/../templates/make_rules
 include $(srcdir)/../templates/make_rules.stratego
@@ -26,21 +26,27 @@ include $(STRATEGO_PRG:%=%.dep)
 # define any subdir here
 SUBDIRS      = data
 
-STRATEGO_PRG = yacc2sdf
+STRATEGO_PRG = yacc2sdf lex2sdf
 
 bin_SCRIPTS	= $(STRATEGO_PRG)
 libexec_SCRIPTS	= $(STRATEGO_PRG)
 
-TESTS        = yacc2sdf_check
+TESTS        = yacc2sdf_check lex2sdf_check
 
 EXTRA_DIST  += yacc.r
 
-CLEANFILES  += yacc2sdf_check
+CLEANFILES  += yacc2sdf_check lex2sdf_check
 
-SCFLAGS     += -I $(ASFIXTOOLS)/share/asfix-tools
+SCFLAGS     += -I $(ASFIXTOOLS)/share/asfix-tools \
+	       --main $@
 
 
 yacc2sdf_check_prog    = yacc2sdf
 yacc2sdf_check_input   = data/yacc2sdf-check.input
 yacc2sdf_check_output  = data/yacc2sdf-check.output
 yacc2sdf_check_correct = data/yacc2sdf-check.reference
+
+lex2sdf_check_prog    = lex2sdf
+lex2sdf_check_input   = data/lex2sdf-check.input
+lex2sdf_check_output  = data/lex2sdf-check.output
+lex2sdf_check_correct = data/lex2sdf-check.reference

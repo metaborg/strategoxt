@@ -1,3 +1,11 @@
+2001-09-29  Eelco Visser  <visser@acm.org>
+
+	* src/yacc2sdf/lex2sdf.r: Translation of LEX definition to SDF2.
+
+2001-09-28  Eelco Visser  <visser@acm.org>
+
+	* src/yacc2sdf/yacc2sdf.r: Token2Prod was not adapted to new signature.
+
 2001-09-22 Merijn de Jonge <mdejonge@cwi.nl> 
    * Added -2 switch to sglr calls
 
