@@ -355,6 +355,10 @@ want firm answers. Does it work, or does it not?
 StrategoXT 0.10 also supports the most recent Mac OS X release. This
 is mostly thanks to the updates of the development tools for Mac OS X.
 
+---------++ Editor Support
+
+vim, improved nedit.
+
 ---------++ Many bug fixes and minor improvements
 
 Just before StrategoXT 0.9.5 we adopted the JIRA issue tracking
@@ -405,3 +409,4 @@ Developments, beta tests, and bug fixes were carried out by
   * Arthur van Dam
   * Valentin David
   * Eelco Visser
+  * Shishir Ramam
