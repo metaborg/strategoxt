@@ -20,4 +20,10 @@
 
     <include href="strc.xml" xmlns="http://www.w3.org/2001/XInclude"/>
   </chapter>
+
+  <chapter>
+    <title>SDF</title>
+
+    <include href="pack-sdf.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </chapter>
 </book>
