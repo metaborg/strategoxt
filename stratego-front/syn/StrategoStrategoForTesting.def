@@ -618,7 +618,7 @@ exports
 module Stratego-Layout
 exports
   lexical syntax
-    [\t\ \n\13]		 -> Ws
+    [\t\ \n\r]		 -> Ws
     "//" ~[\n]* ([\n] | Eof) -> ShortCom
     "/*" CommChar* "*/"  -> LongCom
     "(*" CommChar* "*)"  -> LongCom
