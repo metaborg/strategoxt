@@ -277,7 +277,7 @@ strategies // high-level API with implicit rule set
    */
     
   dr-intersect-symm(|name) =
-    <dr-intersect-rule-sets-symm>(<id>, <dr-get-rule-set(|name)>)
+    <dr-intersect-rule-sets-symm>(<dr-get-rule-set(|name)>, <id>)
     ; dr-set-rule-set(|name)
 
   /**
