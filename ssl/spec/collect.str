@@ -54,12 +54,12 @@ strategies
     ![<s>] 
     <+ crush(![],conc,collect-set(s))
 
-  collect(s, skip: a * (a -> a) * (a -> a) -> a) =
+  collect(s, skip: (a -> a) * (a -> a) * a -> a) =
     ![<s>]
     <+ skip(collect(s,skip), ![]); crush(![],union,id)
     <+ crush(![],union,collect(s,skip))
 
-  collect-exc(base, special : a * (a -> b) -> b) = 
+  collect-exc(base, special : (a -> b) * a -> b) = 
     rec coll(
       (base 
       <+ special(coll))

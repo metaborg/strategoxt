@@ -7,7 +7,7 @@ strategies
   filter(s) = 
     [] + [s | filter(s)] <+ ?[_ | <filter(s)> ]
 
-  filter-gen(pred, cont : term * (term -> term) -> term) =
+ filter-gen(pred, cont : (term -> term) * term -> term) =
     rec x([] + (pred; cont(x)) <+ Tl; x)
 
   (* filter(s) = filter-gen([s | id], at-tail) *)
