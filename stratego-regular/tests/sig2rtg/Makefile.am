@@ -11,3 +11,5 @@ EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta)
 
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c)
+
+nodist_sig2rtg_test_SOURCES = sig2rtg-test.c

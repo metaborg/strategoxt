@@ -18,4 +18,4 @@ EXTRA_DIST       = $(wildcard *.str) $(wildcard *.meta)
 check_PROGRAMS	 = term-to-adot-test
 TESTS            = term-to-adot-test
 
-
+nodist_term_to_adot_test_SOURCES = term-to-adot-test.c

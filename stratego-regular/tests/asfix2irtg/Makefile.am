@@ -14,3 +14,5 @@ EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) $(wildcard *.sdf)  $(wildc
 
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c) Exp.tbl
+
+nodist_asfix2irtg_test_SOURCES = asfix2irtg-test.c

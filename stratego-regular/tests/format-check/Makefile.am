@@ -11,3 +11,5 @@ EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) $(wildcard *.rtg) $(wildca
 
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c)
+
+nodist_format_check_tests_SOURCES = format-check-tests.c

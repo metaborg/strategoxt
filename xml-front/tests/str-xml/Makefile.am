@@ -11,3 +11,5 @@ STRINCLUDES   = -I $(top_srcdir)/sig/xml \
 EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta)
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c)
+
+nodist_str_xml_tests_SOURCES = str-xml-tests.c

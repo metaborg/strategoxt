@@ -21,3 +21,5 @@ BOOTCLEANFILES = $(wildcard *.c)
 	$(XML_FRONT)/libexec/process-stratego-xml-info | \
 	$(STRATEGO_FRONT)/bin/meta-explode | \
 	$(STRATEGO_FRONT)/bin/stratego-desugar -o $@
+
+nodist_apply_tests_SOURCES = apply-tests.c

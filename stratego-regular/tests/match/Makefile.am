@@ -13,3 +13,5 @@ CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c)
 
 LDADD += $(SSL_LIBS)
+
+nodist_char_match_test_SOURCES = char-match-test.c

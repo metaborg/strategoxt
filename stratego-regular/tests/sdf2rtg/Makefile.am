@@ -20,3 +20,5 @@ EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) $(wildcard *.sdf)  $(wildc
 
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c) Stratego-Sdf2-rtg.tbl
+
+nodist_sdf2rtg_test_SOURCES = sdf2rtg-test.c
