@@ -102,11 +102,20 @@ strategies
         (xpos, left-xpos, boxes) -> <[<try-abox2text> (<id>, xpos) | map(<try-abox2text> (<id>, left-xpos))]> boxes
 
   // A
+  
+  // The first two rules are to handle empty alignment operators, i.e., A
+  // boxses with [] or [[]] as third argument.
+  // Without subboxes ([] as third argument)
+  abox2text :
+    (A(AOPTIONS(aopt), sopt, []), xpos) -> ([], xpos)
+  // Without subboxes ([[]] as third argument)
+  abox2text :
+    (A(AOPTIONS(aopt), sopt, [[]]), xpos) -> ([], xpos)
   abox2text :
     (A(AOPTIONS(aopt), sopt, bs), xpos) -> result
       where < construct-rows
             ; map(?R(_, <id>))
-            ; warn-not-matrix
+            ; to-matrix(<length>aopt)
             ; matrix-transpose
             ; reverse; add-indices; reverse
             > bs => columns
@@ -138,11 +147,40 @@ strategies
       // TODO: align cannot handle newlines in cells
       // TODO: remove flatten-list and implement our own align strategies
 
+  // Make sure that all R boxes have the same number of arguments. If not,
+  // add empty boxes ([]) to make equal lengths.
+  to-matrix(nr-cols) =  map( FitToMax(nr-cols) )
+  
+  FitToMax(nr-cols): lst -> new-lst
+     where(length => my-length);
+     <subt>(<nr-cols>(), my-length) => diff;
+     (
+       <gt>(<id>, 0);
+       // Create new (empty) columns
+       <copy>(diff, []) => l;
+       // Create row with correct number of columns
+       <conc>(lst, l)
+     <+
+        0;
+        !lst
+     <+
+       // A row with to many columns cause a fatal error, because
+       // since formatting information is missing, we do not know
+       // how to format these extra columns
+       <fatal-error> ["** ERROR: too many columns in row: ", lst]
+     ) => new-lst
+
+/*
+ Merijn: no longer used because not all rows need to have the same number of
+ columns. Instead, we use the strategy 'to-matrix' which makes a matrix by
+ adding columns to rows that have too few columns.
+ 
   warn-not-matrix =
     where(
       (map(length); make-set; length)
     ; ?1 < id + <fatal-error> ["** ERROR: R children of A box have different numbers of boxes"]
     )
+*/
 
   warn-not-R =
     <fatal-error> ["** ERROR: All children of an A box must be R boxes: ", <id>]

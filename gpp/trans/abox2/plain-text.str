@@ -11,4 +11,3 @@ strategies
       where xtc-new-file => name
           ; <topdown(try(is-string; where(<print> (name, [<id>]))))> strings
           ; <close-file> name
-

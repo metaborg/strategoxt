@@ -17,10 +17,11 @@ strategies
     + ArgOption("-w", <set-config> ("--width",  <id>))
 
   abox2latex =
-    ![ <create-header; print-to> "Test"
-      , <xtc-transform(!"Abox-2-latex", create-abox2latex-args)>
-      ]
-    ; xtc-cat
+xtc-io-transform-text(
+    ![ <create-header> "Test"
+      , <xtc-transform(!"Abox-2-latex",
+        create-abox2latex-args)>
+      ])
 
   create-abox2latex-args =
       !["-t", <create-table-file> () | <pass-verbose> ()]
@@ -49,7 +50,7 @@ strategies
       "% \n",
       "% Tokens from the BOX term are formatted using the LaTeX macros  \n",
       "% defined in the table(s):  \n",
-      "% `abs $LATEX_TABLES | fmt -75 | sed 's/^/%    /g'` \n",
+      <tables2text>(),
       "% \n",
       "% To use this file add: \n",
       "%    \\usepackage{boxenv} to your documents preamble \n",
@@ -60,7 +61,15 @@ strategies
       "% If you don't have boxenv.sty already, generate it with:: \n",
       "%    gen-latex-boxstyle -o boxenv.sty \n",
       "% \n"
-    ]
+    ]; concat-strings
+
+
+// Create list of abbreviation tables
+tables2text =
+      (<get-config> "--latex-tables" <+ ![]);
+      map( !["%   ", <id>, "\n"]; concat-strings );
+      concat-strings
+      
 
 /*
 usage:

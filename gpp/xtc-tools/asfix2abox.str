@@ -21,8 +21,7 @@ strategies
       )
 
   build-impl-args =
-      create-pp-table-args
-    ; <concat> (<pass-verbose> (), <create-pp-table-args> (), <pass-conservative> ())
+    <concat> [<pass-verbose> (), <create-pp-table-args> (), <pass-conservative> ()]
 
   pass-conservative =
     <get-config> "--conservative" < !["-c"] + ![]

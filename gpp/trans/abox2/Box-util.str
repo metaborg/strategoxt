@@ -59,12 +59,14 @@ strategies
   //
   // <string-length'(x)>"my_string" => 9
   // <string-length'(x)>"my\nstring" => 6 - x
-  rel-string-length:
+rel-string-length:
     (str, xpos) -> length
       where <string-tokenize> ('\n', str)
-          ; ( ?[<string-length>]
+          ; (
+               ?[]; !0
+            <+
+               ?[<string-length>]
             <+ <subt> (<last; string-length>, xpos)
-            <+ !0
             ) => length
 
 /*

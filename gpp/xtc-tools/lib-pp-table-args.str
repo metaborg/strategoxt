@@ -4,13 +4,17 @@ imports verbose dir xtc-proc stratego-xt-xtc-tools
 strategies
 
   create-pp-table-args =
-      get-config-p
-    ; map(ensure-pp-table-parsed)
-    ; <separate-by> ("-p", <id>); !["-p" | <id>]
+    get-config-p
+    ; map(ensure-pp-table-parsed; \x -> ["-p", x]\); concat
     ; if-verbose5(debug(!"INFO: pretty print table argumets: "))
 
   get-config-p =
-    <get-config> "-p" <+ <fatal-error> ["** ERROR: no pretty-print tables specified with -p arguments"]
+    <get-config> "-p" <+ ![]
+                       // Merijn: Specifyng  pretty-print tables
+                       // _should_ be optional. Hence no call to
+                       // fatal-error here when pretty-print tables are not
+                       // specified. Instead return an emtpy list
+                       // <fatal-error> ["** ERROR: no pretty-print tables specified with -p arguments"]
 
   pp-options =
     ArgOption("-p"

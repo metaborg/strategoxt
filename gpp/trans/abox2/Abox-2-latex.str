@@ -9,33 +9,27 @@ imports Box Box-util Abox-2-latex-lib lib plain-text xtc-proc
  * - Eelco Visser <visser@acm.org>
  * - Joost Visser <jvisser@cwi.nl>
  */
-
 strategies
 
-  io-Abox-2-latex =
-    option-wrap(Abox2latex-options, load-latex-table; Abox-2-latex)
-
-  Abox-2-latex =
-    xtc-io-wrap(
-        read-from
-      ; abox2latex
-      ; topdown-print-to
-    )
+  io-Abox-2-latex = iowrap( abox2latex, Abox2latex-options)
 
   Abox2latex-options =
       io-options 
-    + ArgOption("-t", <set-config> ("--latex-table", <id>))
-    + ArgOption("-w", <set-config> ("--width",       <id>))
+    + ArgOption("-t", <set-config> ("--latex-table", <id>), !"--latex-table f  Use LaTeX abbreviaitions from file f")
+    + ArgOption("-w", <set-config> ("--width",       <id>), !"--width w        Use page width w")
 
-  load-latex-table =
-      where(<table-create> "latex-abbrevs")
-    ; <get-config> "--latex-table"
+  load-latex-table = where(
+      <table-create> "latex-abbrevs"
+    ; try(
+      <get-config> "--latex-table"
     ; ReadFromFile
     ; map( \ [s1, s2] -> <table-put> ("latex-abbrevs", s1, s2) \ )
+    ))
 
-  abox2latex = 
-      topdown(try(Abox2latex))
-    ; <latex2text> BOXENV(<BOXENV-args>, <id>)
+  abox2latex = (id, load-latex-table
+                    ; topdown(try(Abox2latex))
+                    ; <latex2text> BOXENV(<BOXENV-args>, <id>);
+                      collect-set(is-string); concat-strings)
 
   BOXENV-args =
     <get-config> "--width"; ![<id>] <+ ![]

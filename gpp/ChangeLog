@@ -1,3 +1,34 @@
+2003-04-22   Merijn de Jonge  <M.de.Jonge@tue.nl>
+ * repaired asfix2abox:
+      xtc-tools/asfix2abox.str: 
+        - build-impl-args: removed redundant call to create-pp-table-args
+        - fixed use of concat. Used to operate (incorrectly) on a tuple, now
+          operates on a list
+      xtc-tools/lib-pp-table-args.str: create-pp-table-args/get-config-p:
+        - passing pretty-print tables should be optional. No longer raises a
+          fatal error in case no pretty-print tables were specified.
+ * repaired abox2latex:
+       trans/abox2/Abox-2-latex.str:
+        - Fix. LaTeX abbreviation tables where not loaded
+        - Fix. No longer use topdown-print-to. It didn't work in xtc setting
+       xtc-tools/abox2latex.str:
+        - Fix. Repaired IO handling now using xtc-io-transform-text
+        - Fix. List of used latex abbreviation files is correclty displayed
+               in file header.
+
+ * repaired abox2text:
+      trans/abox2/Abox-2-text.str:
+        - Fix. The rows in A-boxes don't need to have the same number of
+          columns.  Removed call to 'warn-not-matrix' and replaced by
+          'to-matrix' which adds columns to rows when needed.
+        - Fix. abox2text couldn't handle alignments with empty rows.
+
+ * General repairs:
+      Box-util.str:
+       - Fix. rel-string-length couldn't deal with empty strings
+
+ * Added initial testset for abox2 subdir
+
 2003-02-28   Martin Bravenboer  <martin@mbravenboer.org>
 
   * xtc/parse-sdf: removed, part of sdf-tools now.
