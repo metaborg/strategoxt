@@ -1,3 +1,40 @@
+2004-07-10  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/tables.str : Refactored the definition of merge operations
+	on pairs of hashtables. There is now a single (78 LOC!) rule that
+	defines many different scenarios for merging two hashtables. This
+	hashtable-merge rule takes as arguments a number of switches for
+	choosing the desired scenario.  For example, the following merge
+	strategy is defined in terms of hashtable-merge:
+
+	  hashtable-intersect-wempty(|tbl2, emptyElt) =
+	    ?tbl1
+	    ; !(tbl1, tbl2)
+	    ; hashtable-merge(
+		symmetric-no, 
+		iterate1-yes, 
+		iterate2-yes, 
+		remove-no,	
+		isect, 
+		!emptyElt, 
+		\ key -> <hashtable-get(|key)> tbl1 \,
+		\ key -> <hashtable-get(|key)> tbl2 \
+	    )
+
+	The -yes, -no strategies are synonyms for id and fail and serve
+	to remind us of the choices made in the instantiation. When
+	good use is made of compile-time inlining and evaluation (constant
+	folding), the generic algorithm should be reduced to a fairly
+	decent specialized algorithm.
+	
+	* spec/dynamic-rules-refactored.str : Fixed bug in definition of
+	dr-fork-and-union; now relevant entries that do not occur in a
+	changeset, but are defined in the corresponding scope, are also
+	retrieved when computing the union. Also generalized the merging
+	of rule sets and the corresponding fork- and fix-
+	operations. Instantiation for a specific merge operation is now a
+	matter of a few lines.
+
 2004-07-07  Martin Bravenboer <martin@cs.uu.nl>
 
 	* spec/options.str: fix in the 'usage' invoked by iowrap. Also

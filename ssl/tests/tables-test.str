@@ -316,7 +316,7 @@ strategies
     ; apply-test(!"hashtable-union test-tbl1 A"
       , hashtable-get(|"keyA")
       , !tbl1
-      , !["value5","value4","value3","value2","value1"]
+      , !["value3","value2","value5","value4","value1"]
       )
     ; apply-test(!"hashtable-union test-tbl1 B"
       , hashtable-get(|"keyB")

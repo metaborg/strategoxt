@@ -20,6 +20,7 @@ strategies
   ; test-labeled-1
   ; test-add-1
   ; test-add-bagof
+  ; test-dr-fork-and-union
   )
 
 // plain dynamic rule
@@ -210,3 +211,28 @@ strategies
         FooDef("h",0), FooGen("h", 2, 60), FooGen("g", 1, 40), FooGen("g", 1, 50), FooKill("g", 1), [], FooKill("h", 1), [],
         FooDef("i",0), FooGen("i", 1, 70), [Bar(3, 60)]]
   )
+
+  test-dr-fork-and-union =
+    apply-test(!"test-dr-fork-and-union1"
+	, test-dr-fork-and-union-strategy1
+	, !()
+	, !["a", "b"]
+	);
+    apply-test(!"test-dr-fork-and-union2"
+	, test-dr-fork-and-union-strategy2
+	, !()
+	, !["a", "b"]
+	)
+
+  test-dr-fork-and-union-strategy1 =
+    {| A 
+    : dr-fork-and-union(rules(A : _ -> "b"), rules( A : _ -> "a") | ["A"])
+    ; bagof-A
+    |}
+
+  test-dr-fork-and-union-strategy2 =
+    {| A 
+    : rules( A : _ -> "a")
+    ; dr-fork-and-union(rules(A : _ -> "b"), id | ["A"])
+    ; bagof-A
+    |}

@@ -201,10 +201,18 @@ strategies // high-level API with implicit rule set
     <dr-intersect-rule-sets-symm>(<id>, <dr-get-rule-set(|name)>)
     ; dr-set-rule-set(|name)
 
+  /**
+   * Merge live rule-set with given rule set using union changing the live rule set.
+   */
+
   dr-union-with(|name) =
     <dr-union-rule-sets>(<dr-get-rule-set(|name)>, <id>)
     ; dr-set-rule-set(|name)
 
+  /**
+   * Merge live rule-set with give rule set using union changing both.
+   */
+    
   dr-union-symm(|name) =
     <dr-union-rule-sets-symm>(<id>, <dr-get-rule-set(|name)>)
     ; dr-set-rule-set(|name)
@@ -445,6 +453,99 @@ strategies // extending a rule
         end
       )
 
+strategies 
+
+  /**
+   * Merge two rule sets scope by scope.
+   *
+   * @merge-rs : operation to merge RuleScopes
+   * @merge-cs : operation to merge ChangeSets
+   */   
+
+  dr-merge-rule-sets(merge-rs, merge-cs) = 
+    rec x(
+      eq < fail
+      + (dr-merge-rule-sets1(merge-rs, x)
+         <+ dr-merge-rule-sets2(merge-cs, x))
+    )
+
+  dr-merge-rule-sets1(merge-rs, merge-rec) :
+    (rs1@[RuleScope(labels1, tbl1) | rs1a], rs2@[RuleScope(labels2, tbl2) | rs2a]) -> rs1
+    where ior(<merge-rs> (rs1, tbl1, rs2, tbl2), <merge-rec> (rs1a, rs2a))
+
+  dr-merge-rule-sets2(merge-cs, merge-rec) :
+    (rs1@[ChangeSet(labels1, tbl1) | rs1a], rs2@[ChangeSet(labels2, tbl2) | rs2a]) -> rs1
+    where ior(<merge-cs> (rs1, tbl1, rs2, tbl2), <merge-rec> (rs1a, rs2a))
+
+
+strategies 
+
+  /**
+   * Fork and merge two rule-sets.
+   *
+   * @param merge : 
+   */
+
+  dr-fork-and-merge(merge, s1, s2 | rulenames) = 
+    where(
+      <map({?rulename
+	    ; dr-get-rule-set(|rulename)
+            ; !(rulename, <dr-start-change-set>)
+            ; dr-start-change-set(|rulename)})> rulenames => rs1
+    )
+    ; s1
+    ; where(<map({(?rulename,dr-switch-rule-set(|rulename))})> rs1 => rs2)
+    ; s2
+    ; where(
+        <map({?(rulename, <id>)
+	      ; try(<merge>(rulename, <id>))
+              ; dr-commit-change-set(|rulename)})> rs2
+      )
+
+    // comments to insert when debugging
+    // ; debug(!"before first branch: ")
+    // ; dr-print-rule-sets(|rulenames)
+    // ; debug(!"after first branch: ")
+    // ; dr-print-rule-sets(|rulenames)
+    // ; debug(!"after second branch: ")
+    // ; dr-print-rule-sets(|rulenames)
+    // ; debug(!"after merge: ")
+    // ; dr-print-rule-sets(|rulenames)
+
+  /**
+   * Iterate and merge two rule-sets.
+   *
+   * @param merge : 
+   */
+
+  dr-fix-and-merge(merge, s | rulenames) =
+    where(
+      <map({?rulename
+	    ; dr-get-rule-set(|rulename)
+            ; !(rulename, <dr-start-change-set>)
+            ; dr-start-change-set(|rulename)})> rulenames => rs
+    ); 
+    repeat(
+      where(
+	s 
+        ; if <filter({?(rulename,<id>); <merge>(rulename, <id>)})> rs; [] 
+          then ?e; fail // no changes in any of the rules
+          else id       // some rule changed; continue
+          end
+      )
+    )
+    ; where(<map(dr-commit-change-set(|<id>))> rulenames)
+    ; !e
+
+        // comments to insert when debugging
+        //  debug(!"before iteration: ")
+        // ; dr-print-rule-sets(|rulenames);
+        // ; debug(!"after iteration: ")
+        // ; dr-print-rule-sets(|rulenames)
+        // ; debug(!"after union: ")
+        // ; dr-print-rule-sets(|rulenames)
+
+
 strategies // intersection
 
   /**
@@ -453,23 +554,15 @@ strategies // intersection
    * assumption: the scope structure is the same
    * intersection works scope by scope 
    * note that labels are ignored
+   *
+   * @todo: intersect labelsets as well!!
    */
 
   dr-intersect-rule-sets =
-    eq < fail
-    + (dr-intersect-rule-sets1  
-       <+ dr-intersect-rule-sets2)
-
-  dr-intersect-rule-sets1 :
-    (rs@[RuleScope(labels1, tbl1) | rs1], [RuleScope(labels2, tbl2) | rs2]) -> rs
-    where ior(<hashtable-intersect-wempty(|tbl2, [])> tbl1
-  	     ,<dr-intersect-rule-sets> (rs1, rs2))
-
-  dr-intersect-rule-sets2 :
-    (rs@[ChangeSet(labels1, tbl1) | rs1], [ChangeSet(labels2, tbl2) | rs2]) -> rs
-    where ior(<hashtable-intersect-wempty(|tbl2, [])> tbl1
-  	     ,<dr-intersect-rule-sets> (rs1, rs2))
-// todo: intersect labelsets as well!!
+    dr-merge-rule-sets(
+        \ (rs1, tbl1, rs2, tbl2) -> <hashtable-intersect-wempty(|tbl2, [])> tbl1 \
+      , \ (rs1, tbl1, rs2, tbl2) -> <hashtable-intersect-wempty(|tbl2, [])> tbl1 \
+    )
 
   /**
    * Symmetric intersection of two rule-sets
@@ -477,65 +570,29 @@ strategies // intersection
    * assumption: the scope structure is the same
    * intersection works scope by scope 
    * note that labels are ignored
+   *
+   * @todo: intersect labelsets as well!!
    */
 
   dr-intersect-rule-sets-symm =
-    eq < fail
-    + (dr-intersect-rule-sets-symm1  
-       <+ dr-intersect-rule-sets-symm2)
-
-  dr-intersect-rule-sets-symm1 :
-    ([RuleScope(labels1, tbl1) | rs1], rs@[RuleScope(labels2, tbl2) | rs2]) -> rs
-    where ior(<hashtable-intersect-symm-wempty(|[])> (tbl1, tbl2)
-  	     ,<dr-intersect-rule-sets> (rs1, rs2))
-
-  dr-intersect-rule-sets-symm2 :
-    ([ChangeSet(labels1, tbl1) | rs1], rs@[ChangeSet(labels2, tbl2) | rs2]) -> rs
-    where ior(<hashtable-intersect-symm-wempty(|[])> (tbl1, tbl2)
-  	     ,<dr-intersect-rule-sets> (rs1, rs2))
-
-     /* Note:
-	First definition of intersection on rule-sets requires that
-	entries have exactly the same value. Interesting point here:
-	in the current data-flow application we have specialized
-	intersections that don't require the rule-tags in the closures
-	to be the same, since we know there that the rules are really
-	the same.  We should achieve this by creating equal rule tags
-	for equivalent rules.
-     */
+    dr-merge-rule-sets(
+        \ (rs1, tbl1, rs2, tbl2) -> <hashtable-intersect-symm-wempty(|[])> (tbl1, tbl2) \
+      , \ (rs1, tbl1, rs2, tbl2) -> <hashtable-intersect-symm-wempty(|[])> (tbl1, tbl2) \
+    )
 
   /**
    * two-way split in data-flow (if-then-else) for list of rules
    */
 
   dr-fork-and-intersect(s1, s2 | rulenames) = 
-    where(
-      <map({?rulename
-	    ; dr-get-rule-set(|rulename)
-            ; !(rulename, <dr-start-change-set>)
-            ; dr-start-change-set(|rulename)})> rulenames => rs1
-    )
-    // ; debug(!"before first branch: ")
-    // ; dr-print-rule-sets(|rulenames)
-    ; s1
-    // ; debug(!"after first branch: ")
-    // ; dr-print-rule-sets(|rulenames)
-    ; where(
-        <map({(?rulename,dr-switch-rule-set(|rulename))})> rs1 => rs2
-      )
-    ; s2
-    // ; debug(!"after second branch: ")
-    // ; dr-print-rule-sets(|rulenames)
-    ; where(
-        <map({?(rulename, <id>)
-	      ; try(dr-intersect-with(|rulename))
-              ; dr-commit-change-set(|rulename)})> rs2
-      )
-    // ; debug(!"after intersection: ")
-    // ; dr-print-rule-sets(|rulenames)
+    dr-fork-and-merge(\ (rulename, rs) -> <dr-intersect-with(|rulename)> rs \
+		     , s1, s2 | rulenames)
+
 
   /**
    * n-way split in data-flow (case)
+   *
+   * @todo : generalize to factor out table merge operation
    */
 
   dr-fold-and-intersect(empty, hd, tl : (a -> a) * a -> a | rulenames) = 
@@ -565,7 +622,9 @@ strategies // intersection
     end
   
   /**
-   * fork and intersect over a list 
+   * fork and intersect over a list
+   *
+   * @todo : generalize to factor out table merge operation 
    */
 
   dr-map-and-intersect(s | rulenames) = 
@@ -578,128 +637,58 @@ strategies // intersection
    */
 
   dr-fix-and-intersect(s | rulenames) =
-    where(
-      <map({?rulename
-	    ; dr-get-rule-set(|rulename)
-            ; !(rulename, <dr-start-change-set>)
-            ; dr-start-change-set(|rulename)})> rulenames => rs
-    ); 
-    repeat(
-      where(
-	s 
-        ; if <filter({?(rulename,<id>); dr-intersect-symm(|rulename)})> rs
-	     ; [] 
-          then ?e; fail // no changes in any of the rules
-          else id       // some rule changed; continue
-          end
-      )
-    ) 
-    ; where(<map(dr-commit-change-set(|<id>))> rulenames)
-    ; !e
+    dr-fix-and-merge(\ (rulename, rs) -> <dr-intersect-symm(|rulename)> rs \
+		    , s | rulenames)
 
-
-strategies // union
+strategies
 
   /**
    * Union of two rule-sets
    *
-   * assumption: the scope structure is the same
-   * union works scope by scope 
+   * assumption: the scope structure of the two rule-sets is the same 
+   * and union works scope by scope 
    * 
    */
 
   dr-union-rule-sets =
-    eq < fail
-    + (dr-union-rule-sets1
-       <+ dr-union-rule-sets2)
+    dr-merge-rule-sets(
+        \ (rs1, tbl1, rs2, tbl2) -> 
+          <hashtable-union(|tbl2)> tbl1 \
 
-  dr-union-rule-sets1 :
-    (rs@[RuleScope(labels1, tbl1) | rs1], [RuleScope(labels2, tbl2) | rs2]) -> rs
-    where ior(<hashtable-union(|tbl2)> tbl1
-  	     ,<dr-union-rule-sets> (rs1, rs2))
-// todo: unions 
-  dr-union-rule-sets2 :
-    (rs@[ChangeSet(labels1, tbl1) | rs1], [ChangeSet(labels2, tbl2) | rs2]) -> rs
-    where ior(<hashtable-union(|tbl2)> tbl1
-  	     ,<dr-union-rule-sets> (rs1, rs2))
-
-  dr-union-rule-sets3 =
-    ?([ChangeSet(labels1, tbl1) | rs1], [RuleScope(labels2, tbl2) | rs2])
-    ; error
-
-  dr-union-rule-sets3 =
-    ?([RuleScope(labels2, tbl2) | rs2], [ChangeSet(labels1, tbl1) | rs1])
-    ; error
-
+      , \ (rs1, tbl1, rs2, tbl2) -> 
+	  <hashtable-merge(
+  	     symmetric-no, 
+	     iterate1-no, 
+	     iterate2-yes, 
+	     remove-no,	
+	     union, 
+	     ![], 
+	     \ (_,key) -> <dr-lookup-rule(|key)> rs1\,
+	     \ (_,key) -> <dr-lookup-rule(|key)> rs2\
+          )> (tbl1, tbl2) \
+    )
 
   dr-union-rule-sets-symm =
-    eq < fail
-    + (dr-union-rule-sets-symm1  
-       <+ dr-union-rule-sets-symm2)
+    dr-merge-rule-sets(
+        \ (rs1, tbl1, rs2, tbl2) -> <hashtable-union-symm-wempty(|[])> (tbl1, tbl2) \
+      , \ (rs1, tbl1, rs2, tbl2) -> <hashtable-union-symm-wempty(|[])> (tbl1, tbl2) \
+    )
 
-  dr-union-rule-sets-symm1 :
-    ([RuleScope(labels1, tbl1) | rs1], rs@[RuleScope(labels2, tbl2) | rs2]) -> rs
-    where ior(<hashtable-union-symm-wempty(|[])> (tbl1, tbl2)
-  	     ,<dr-union-rule-sets> (rs1, rs2))
-
-  dr-union-rule-sets-symm2 :
-    ([ChangeSet(labels1, tbl1) | rs1], rs@[ChangeSet(labels2, tbl2) | rs2]) -> rs
-    where ior(<hashtable-union-symm-wempty(|[])> (tbl1, tbl2)
-  	     ,<dr-union-rule-sets> (rs1, rs2))
-
+  /**
+   * Fork and union of two rule-sets
+   */
 
   dr-fork-and-union(s1, s2 | rulenames) = 
-    where(
-      <map({?rulename
-	    ; dr-get-rule-set(|rulename)
-            ; !(rulename, <dr-start-change-set>)
-            ; dr-start-change-set(|rulename)})> rulenames => rs1
-    )
-    // ; debug(!"before first branch: ")
-    // ; dr-print-rule-sets(|rulenames)
-    ; s1
-    // ; debug(!"after first branch: ")
-    // ; dr-print-rule-sets(|rulenames)
-    ; where(
-        <map({(?rulename,dr-switch-rule-set(|rulename))})> rs1 => rs2
-      )
-    ; s2
-    // ; debug(!"after second branch: ")
-    // ; dr-print-rule-sets(|rulenames)
-    ; where(
-        <map({?(rulename, <id>)
-	      ; try(dr-union-with(|rulename))
-              ; dr-commit-change-set(|rulename)})> rs2
-      )
-    // ; debug(!"after union: ")
-    // ; dr-print-rule-sets(|rulenames)
+    dr-fork-and-merge(\ (rulename, rs) -> <dr-union-with(|rulename)> rs \
+		     , s1, s2 | rulenames)
 
+  /**
+   * Iterate union of two rule-sets
+   */
 
   dr-fix-and-union(s | rulenames) =
-    where(
-      <map({?rulename
-	    ; dr-get-rule-set(|rulename)
-            ; !(rulename, <dr-start-change-set>)
-            ; dr-start-change-set(|rulename)})> rulenames => rs
-    ); 
-    repeat(
-      where(
-        //  debug(!"before iteration: ")
-        // ; dr-print-rule-sets(|rulenames);
-	s 
-        // ; debug(!"after iteration: ")
-        // ; dr-print-rule-sets(|rulenames)
-        ; if <filter({?(rulename,<id>); dr-union-symm(|rulename)})> rs
-	     ; [] 
-          then ?e; fail // no changes in any of the rules
-          else id       // some rule changed; continue
-          end
-        // ; debug(!"after union: ")
-        // ; dr-print-rule-sets(|rulenames)
-      )
-    )
-    ; where(<map(dr-commit-change-set(|<id>))> rulenames)
-    ; !e
+    dr-fix-and-merge(\ (rulename, rs) -> <dr-union-symm(|rulename)> rs \
+		    , s | rulenames)
 
 strategies // rule-set equality
 
@@ -713,8 +702,6 @@ strategies // rule-set equality
       ; <hashtable-eq> (tbl1, tbl2)
    in where(zip(rseq))
   end
-
-
 
 strategies // debugging
 
