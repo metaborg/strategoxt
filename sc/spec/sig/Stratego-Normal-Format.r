@@ -27,6 +27,7 @@ strategies
 	+ Seq(exp, exp)
 	+ Choice(exp, exp)
 	+ LChoice(exp, exp)
+	+ GuardedLChoice(exp, exp, exp)
 	+ GChoice(exp, exp)
 	+ LGChoice(exp, exp)
 	+ Call(SVar(is-string + Mod(is-string,is-string)),list(exp))    

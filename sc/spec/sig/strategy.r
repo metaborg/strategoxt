@@ -28,6 +28,7 @@ signature
     Seq     : Strat * Strat                 -> Strat    (* s1 ;  s2 *)
     Choice  : Strat * Strat                 -> Strat    (* s1 +  s2 *)
     LChoice : Strat * Strat                 -> Strat    (* s1 <+ s2 *)
+    GuardedLChoice : Strat * Strat * Strat  -> Strat    (* s1 < s2 + s3 *)
     
     GChoice  : Strat * Strat                -> Strat    (* s1 ++  s2 *)
     LGChoice : Strat * Strat                -> Strat    (* s1 <++ s2 *)

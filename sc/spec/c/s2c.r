@@ -205,6 +205,20 @@ Strategy expressions
                      Compound([],[Stat(Assign(Id("t"),AssignEq,Id(x))), s2]))])
     where new => x; new => ptr
 
+   
+
+  TranslateStrat :
+    GuardedLChoice(s1, s2, s3) ->
+    Compound([Declaration2(TypeSpec([],TypeId("ATerm"),[]),
+                           [DeclInit(IdDecl([],Id(x),None),AssignInit(Id("t")))]),
+	      Declaration2(TypeSpec([],TypeId("int"),[]),
+                           [DeclInit(IdDecl([],Id(ptr),None),AssignInit(Id("stack_ptr")))])],
+             [IfElse(Equal(FunCall(Id("PushChoice"),[]),IntConst("0")),
+                     Compound([],[s1,Stat(FunCall(Id("LocalPopChoice"),[Id(ptr)])),s2]),
+                     Compound([],[Stat(Assign(Id("t"),AssignEq,Id(x))), s3]))])
+    where new => x; new => ptr
+
+
   TranslateStrat :
     GChoice(s1, s2) ->
     LGChoice(s1, s2)

@@ -377,6 +377,9 @@ strategy
         | strategy LTPLUS strategy   	{$$ = App2("LChoice", $1, $3);}
         | strategy LTPLUSPLUS strategy  {$$ = App2("LGChoice", $1, $3);}
 
+        | strategy LT strategy 
+		 PLUS strategy   	{$$ = App3("GuardedLChoice", $1, $3, $5);}
+
         | strategy PLUSGT strategy   	{$$ = App2("LChoice", $3, $1);}
         | strategy PLUSPLUSGT strategy  {$$ = App2("LGChoice", $3, $1);}
 

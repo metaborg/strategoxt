@@ -1,20 +1,32 @@
+2002-01-27  Eelco Visser  <visser@acm.org>
+
+	* spec/sig/Stratego-Canonical-Format.r,
+	spec/sig/Stratego-Normal-Format.r,
+	spec/sig/Stratego-Optimized-Format.r, spec/sig/strategy.r,
+	spec/syn/stratego.grm, spec/c/s2c.r, spec/test1/test27.r: Added
+	the guarded left choice operator s1 < s2 + s3, which commits to
+	its choice after s1 has succeeded.
+
 2002-01-22  Eelco Visser  <visser@acm.org>
 
 	* spec/syn/stratego.lx, spec/syn/stratego.grm,
 	spec/sig/strategy.r: bagof, ++, <++, ++>, +> are new operators
 
-	* spec/sc/sc.in: Changed include paths for srts and ssl includes (relative
-	to include/srts and include/ssl to avoid filename clashes).
+	* spec/sc/sc.in: Changed include paths for srts and ssl includes
+	(relative to include/srts and include/ssl to avoid filename
+	clashes).
 
 	* c/s2c.r: Generate code for ++ and <++ (GChoice and LGChoice)
 
-	* c/s2c.r: Added constant term build caching. All terms that are constant
-	at compile time are built once in the function init_constant_terms which
-	is called from init_constructors. One variable is created for each _subterm_
-	of a constant term. The non constant term caching translation of term builds
-	is still available in the specification; could be turned on/off on demand.
+	* c/s2c.r: Added constant term build caching. All terms that are
+	constant at compile time are built once in the function
+	init_constant_terms which is called from init_constructors. One
+	variable is created for each _subterm_ of a constant term. The non
+	constant term caching translation of term builds is still
+	available in the specification; could be turned on/off on demand.
 
-	* spec/c/canonicalize.r: Map the Bagof operator to the C function _bagof
+	* spec/c/canonicalize.r: Map the Bagof operator to the C function
+	_bagof
 
 	* configure.in: CPL is no longer a configuration option; inclusion
 	of CPL goes through the run-time system srts.
