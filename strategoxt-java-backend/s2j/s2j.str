@@ -35,12 +35,27 @@ rules
  
   TranslateSpec:
     Specification([Signature([Constructors(ops)]), Strategies(defs)]) ->
+
     compilation-unit |[
-         public class HelloWorld
-         {
-           public static void main(String[] ps)
-           {
-             System.err.println("Hello world!");
+
+         public class MyStrategoProgram {
+
+           private static ATerm SSL_println(ATerm a, ATerm b) { 
+             return SRTS.StrategoLib.SSL_println(t,s);
            }
          }
-       ]|
+	]|
+/*	
+      public class MyStrategoProgram {
+
+        //private aterm.pure.PureFactory atermFactory; 
+	
+        private static boolean not_null(ATerm t) {
+          return SRTS.StrategoLib.not_null(t);
+        }
+
+        private static ATerm SSL_println(ATerm t, ATerm s) {
+          return SRTS.StrategoLib.SSL_println(t,s);
+        }
+	  }    
+*/
