@@ -60,7 +60,7 @@ strategies
     ; try(upgrade-oldskool-testsuite)
     ; parse-testsuite(id, id, map(try(add-description)))
     ; parse-testsuite(id, id, map(ensure-test-input-in-file))
-    ; parse-testsuite(id, id, map(ensure-test-output-in-pattern))
+    ; parse-testsuite(id, id, map(ensure-test-output-not-in-file))
 
   xtc-sglri(|tbl, sort) =
     xtc-transform(!"sglri", !["-p", <xtc-find> tbl, "--start", sort | <pass-verbose> ()])
@@ -87,16 +87,18 @@ rules
     parse-test(id, file(abs-test-file), id)
 
 
-/**
- * Ensures that the test output is a pattern, en could write them from file
- */
-  ensure-test-output-in-pattern :
+  /**
+   * Ensures that the test output is not in a file.
+   */
+  ensure-test-output-not-in-file =
+    if ?parse-test(_, _, file(_)) then
+      read-test-output-to-pattern
+    end
+
+  read-test-output-to-pattern :
     parse-test(desc, input, file(f)) -> parse-test(desc, input, pattern(p)) 
       where <read-from;explode-aterm> FILE(f) => p
             <+ if-verbose7(!f ; debug(!"Reading aterm result failed: "))
-
-  ensure-test-output-in-pattern =
-    ?parse-test(desc, input, pattern(_))
     
 rules
 

@@ -1,5 +1,11 @@
 2005-02-12  Martin Bravenboer  <martin@cs.uu.nl>
 
+	* analyse/parse-unit/parse-unit.str: fixed the testing of
+	testsuites with 'succeeds' and 'fails' output checks. Output
+	checks are not always patterns.
+	
+2005-02-12  Martin Bravenboer  <martin@cs.uu.nl>
+
 	* analyse/parse-unit/parse-unit.str: fallback to abstract input is
 	no longer supported. Use --abstract-input to disable parsing of
 	the testsuite by parse-unit.
