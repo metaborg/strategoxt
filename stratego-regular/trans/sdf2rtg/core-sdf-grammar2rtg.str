@@ -330,8 +330,6 @@ rules
     prod(_, varsym(sym), _) -> rtg |[ x -> meta-var(<string>) ]|
       where <sym2nonterm> sym => x
 
-
-
 /**
  * Special, marked, productions.
  */
@@ -353,7 +351,8 @@ rules
    ; (  <table-get> ("generated-nonterms", key)
      <+ <table-get> ("generated-nonterms", cf(key))
      <+ <table-get> ("generated-nonterms", <?cf(<id>)> key)
-     <+ new; where(<table-put> ("generated-nonterms", key, <id>))
+     <+ sdf-symbol-to-string
+      ; where(<table-put> ("generated-nonterms", key, <id>))
      )
 
   is-seq-symbol =
@@ -467,3 +466,66 @@ strategies
 
   err(s) = log(|Error(), <s> (), <id>)
   dbg(s) = log(|Debug(), <s> (), <id>)
+
+strategies
+
+  sdf-symbol-to-string =
+    Symbol2String
+    ; newname
+    <+ debug(!"warning: cannot generate a nice name for symbol ")
+       ; say(!"  please report this bug at ")
+       ; say(!"    - https://catamaran.labs.cs.uu.nl/jira/secure/BrowseProject.jspa?id=10000")
+       ; say(!"    - or stratego-bugs@cs.uu.nl")
+       ; say(!"    - or martin@cs.uu.nl")
+     ; new
+     ; debug(!"  resolution: falling back to the ugly name ")
+
+
+  Symbol2String :
+    cf(sym) -> <Symbol2String> sym
+
+  Symbol2String :
+    lex(sym) -> <Symbol2String> sym
+
+  Symbol2String :
+    iter(sym) -> <conc-strings> ("ListPlusOf", <Symbol2String> sym)
+
+  Symbol2String :
+    iter-star(sym) -> <conc-strings> ("ListStarOf", <Symbol2String> sym)
+
+  Symbol2String :
+    iter-sep(sym, sep) -> <conc-strings> ("ListPlusOf", <Symbol2String> sym)
+
+  Symbol2String :
+    iter-star-sep(sym, sep) -> <conc-strings> ("ListStarOf", <Symbol2String> sym)
+
+  Symbol2String :
+    sort(s) -> s
+      where <is-string> s
+
+  Symbol2String :
+    label(_,sym) -> <Symbol2String> sym
+
+  Symbol2String :
+    opt(sym) -> <conc-strings> ("Opt", <Symbol2String> sym)
+
+  Symbol2String :
+    seq(sym, syms) ->
+      < filter(not(?lit(_)))
+      ; map(Symbol2String)
+      ; <separate-by> ("_", <id>)
+      ; concat-strings
+      > [sym | syms]
+
+  Symbol2String :
+    alt(sym1, sym2) -> <concat-strings> [<Symbol2String> sym1, "_", <Symbol2String> sym2]
+
+(*
+  Sym2Strings = rec x(
+  + \ iter-n(sym,_)		-> <concat>[<x>sym,       ["n"]] \
+  + \ iter-sep-n(sym,sep,_)	-> <concat>[<x>sym,<x>sep,["n"]] \
+  + \ pair(s1,s2)		-> <concat>[<x>s1,["and"],<x>s2] \
+  + \ func(ss,s)		-> <concat>[<filter(x);concat>ss,["to"],<x>s] \
+  )
+*)
+

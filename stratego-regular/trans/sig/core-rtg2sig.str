@@ -18,6 +18,7 @@ strategies
    */ 
   rtg2sig =
       group-productions
+    ; RTG(id, ProdRules(map(ProdRule(id, make-set))))
     ; RTG(id, ProdRules(filter(not(ignore-prodrule))))
     ; ungroup-productions
 
