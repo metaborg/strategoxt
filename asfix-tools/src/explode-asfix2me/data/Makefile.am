@@ -19,7 +19,7 @@ testset: $(TESTSET_IN) $(TESTSET_CORRECT)
 	$(MAKE) tests.tbl
 	sglr -p tests.tbl -i $< -o $@
 
-%.correct
+%.correct:
 	../explode-asfix2me < $*.in > $*.correct
 
 %.sh : Makefile
