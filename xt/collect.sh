@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 #
-# $Id: collect.sh,v 1.3 2000/03/27 21:38:38 mdejonge Exp $
+# $Id: collect.sh,v 1.4 2000/03/29 09:39:44 mdejonge Exp $
 #
 #
 # This script will collect all required packages for the CT distribution.
@@ -94,7 +94,7 @@ do
 
    if [ ! -f ./pkgs/${pkg}-${pkg_version}.tar.gz ]; then
       cd ./pkgs
-      do_collect ${pkg} ${pkg_version} ${pkg_url}
+      do_collect ${pkg} ${pkg_version} ${pkg_url} || exit 1
 
       cd ..
    fi
@@ -107,7 +107,7 @@ do
 done
 
 # Generate text file describing all packages in XT 
-xt_version=`grep AM_INIT ${configure} | tr -d -c [0-9.]`
+xt_version=`grep AM_INIT ${configure} | tr -d -c '.[0-9]'`
 
 (
 echo "XT version ${xt_version} is a collection of the following packages:"
