@@ -1,10 +1,46 @@
+/**
+ * Compilation of Stratego programs to Java
+ */
 module s2j
-imports liblib Stratego Java-15
+imports Stratego lib Java-15 dynamic-rules config
+signature
+  constructors
+    Include : String -> ExternalDef
 
 strategies
 
   io-s2j = s2j
+  
+  s2j = 
+    io-wrap(s2java-options, compile)
+ 
+  compile = TranslateSpec
 
-  s2j = id
+strategies
 
-  test-it-now = \ |[ ?t ]| -> expr |[ new Rob() ]| \
+  /**
+   * Command line options
+   */
+
+  s2java-options = 
+    ArgOption("--C-include",       
+	where(<post-extend-config>("--C-include", [<id>])),
+	!"--C-include h   include header file h (\"file.h\" or <file.h>)")
+
+  + Option("--library" + "--lib"
+	  ,where(<set-config> ("--library", ()))
+	  ,!"--library | --lib    build library instead of application")
+
+rules
+ 
+  TranslateSpec:
+    Specification([Signature([Constructors(ops)]), Strategies(defs)]) ->
+    compilation-unit |[
+         public class HelloWorld
+         {
+           public static void main(String[] ps)
+           {
+             System.err.println("Hello world!");
+           }
+         }
+       ]|

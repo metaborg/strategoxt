@@ -1,5 +1,5 @@
 include $(top_srcdir)/Makefile.xt
-include $(wildcard *.dep)
+#include $(wildcard *.dep)
 
 libexec_PROGRAMS = s2j
 
