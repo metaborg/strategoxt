@@ -18,12 +18,18 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: NEWS,v 1.6 2000/04/13 12:54:46 jvisser Exp $
+# $Id: NEWS,v 1.7 2000/08/31 13:53:29 jvisser Exp $
+
+Version 0.3
+  released: September 1, 2000
+	* Upgraded to use newest versions of constituent software
+	  packages (see file SOFTWARE for details).
+	* Integration test have been added.
+	* The new XT site is at: http://www.program-transformation.org/xt/
 
 Version 0.2 
 
       released: April 13, 2000
-
  * XT now uses automake and configure to configure and build all
    constituents. On top of this XT offers a script that takes care of
    collecting (downloading or checking-out) all constituent packages.
