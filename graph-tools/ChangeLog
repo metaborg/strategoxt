@@ -1,4 +1,10 @@
 2001-08-27 Merijn de Jonge <mdejonge@cwi.nl> 
+   * Graph2XML2dot: bug fix: generated AST was not corresponding to the
+     dot.0 grammar.
+   * GraphXML2dot: dot output contains extra URL node attribute to enable
+     generation of clackable image maps.
+
+2001-08-27 Merijn de Jonge <mdejonge@cwi.nl> 
    * Moved templates to package.conf
 
 2001-08-19 Merijn de Jonge <mdejonge@cwi.nl> 
