@@ -1,3 +1,18 @@
 module Regular-Sdf-Syntax
 imports Kernel-Sdf-Syntax IntCon
 signature
+  constructors
+    empty         : Symbol
+    seq           : Symbol * List(Symbol) -> Symbol
+    opt           : Symbol -> Symbol
+    iter          : Symbol -> Symbol
+    iter-star     : Symbol -> Symbol
+    iter-sep      : Symbol * Symbol -> Symbol
+    iter-star-sep : Symbol * Symbol -> Symbol
+    iter-n        : Symbol * NatCon -> Symbol
+    iter-sep-n    : Symbol * Symbol * NatCon -> Symbol
+    set           : Symbol -> Symbol
+    pair          : Symbol * Symbol -> Symbol
+    func          : Symbols * Symbol -> Symbol
+    alt           : Symbol * Symbol -> Symbol
+    perm          : Symbols -> Symbol

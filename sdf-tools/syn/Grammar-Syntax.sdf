@@ -1,11 +1,10 @@
 module Grammar-Syntax
 imports Layout
+
 exports
   sorts Grammar
+  
   context-free syntax
-    "(/)"                 -> Grammar
-    Grammar Grammar       -> Grammar {assoc}
-    "(" Grammar ")"       -> Grammar {bracket}
-
-
-
+    "(/)"            -> Grammar {cons("empty-grammar")}
+    Grammar Grammar  -> Grammar {cons("conc-grammars"), assoc}
+    "(" Grammar ")"  -> Grammar {bracket}

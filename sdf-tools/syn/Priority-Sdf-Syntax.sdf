@@ -3,19 +3,16 @@ imports Kernel-Sdf-Syntax
 exports
   sorts Associativity Group Priority Priorities
   context-free syntax
-    "left"                                -> Associativity
-    "right"                               -> Associativity
-    "non-assoc"                           -> Associativity
-    "assoc"                               -> Associativity
-    "bracket"                             -> Attribute
-    Associativity                         -> Attribute
-    Production                            -> Group
-    "{" Productions "}"                   -> Group
-    "{" Associativity ":" Productions "}" -> Group
-    {Group ">"}+                          -> Priority
-    Group Associativity Group             -> Priority
-    {Priority  ","}*                      -> Priorities
-    "priorities"  Priorities              -> Grammar
-
-
-
+    "left"                                -> Associativity	{cons("left")}
+    "right"                               -> Associativity	{cons("right")}
+    "non-assoc"                           -> Associativity	{cons("non-assoc")}
+    "assoc"                               -> Associativity	{cons("assoc")}
+    "bracket"                             -> Attribute		{cons("bracket")}
+    Associativity                         -> Attribute		{cons("atr")}
+    Production                            -> Group              {cons("simple-group")}
+    "{" Productions "}"                   -> Group              {cons("prods-group")}
+    "{" Associativity ":" Productions "}" -> Group              {cons("assoc-group")}
+    {Group ">"}+                          -> Priority		{cons("priority-chain")}
+    Group Associativity Group             -> Priority		{cons("priority-assoc")}
+    {Priority  ","}*                      -> Priorities         {cons("priority-list")}
+  "priorities"  Priorities              -> Grammar		{cons("priorities")}

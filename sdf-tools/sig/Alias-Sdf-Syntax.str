@@ -1,3 +1,6 @@
 module Alias-Sdf-Syntax
 imports Kernel-Sdf-Syntax
 signature
+  constructors
+    aliases : List(Alias) -> Grammar
+    alias   : Symbol * Symbol -> Alias

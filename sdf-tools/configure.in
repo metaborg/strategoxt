@@ -21,7 +21,8 @@ AC_CONFIG_FILES([
   syn/Makefile
   sig/Makefile
   pp/Makefile
-
+  xtc/Makefile
+  
 	src/Makefile 
   src/templates/Makefile
   src/templates/data/Makefile

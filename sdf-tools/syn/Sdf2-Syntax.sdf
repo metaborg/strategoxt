@@ -14,20 +14,20 @@ imports Kernel-Sdf-Syntax
         
 exports
   sorts SDF Definition-GrammarID Module-GrammarID
+  
   context-free syntax
   
     SDF     -> Definition-GrammarID {cons("\"sdf-2.1\"")}
     Module  ->     Module-GrammarID {cons("\"sdf-2.1\"")}
     
-    "definition" Definition                     -> SDF
-    
-    "lexical"      "priorities" Priorities      -> Grammar
-    "context-free" "priorities" Priorities      -> Grammar
-    "lexical"      "restrictions" Restrictions  -> Grammar
-    "context-free" "restrictions" Restrictions  -> Grammar
-    
-    "<START>"                                   -> Symbol
-    "<Start>"                                   -> Symbol
+  context-free syntax
+    "<START>"                                   -> Symbol	{cons("START")}
+    "<Start>"                                   -> Symbol	{cons("Start")}
+    "lexical"      "priorities" Priorities      -> Grammar	{cons("lexical-priorities")}
+    "context-free" "priorities" Priorities      -> Grammar	{cons("context-free-priorities")}
+    "lexical"      "restrictions" Restrictions  -> Grammar	{cons("lexical-restrictions")}
+    "context-free" "restrictions" Restrictions  -> Grammar	{cons("context-free-restrictions")}
+    "definition" Definition                     -> SDF		{cons("Definition")}
     
   context-free priorities
     Symbol "|" Symbol  -> Symbol >

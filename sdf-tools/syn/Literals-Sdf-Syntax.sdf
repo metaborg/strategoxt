@@ -1,14 +1,15 @@
 module Literals-Sdf-Syntax
 imports Kernel-Sdf-Syntax Literals
+
 exports
   sorts UQLiteral
+  
   lexical syntax
     [a-z]                          -> UQLiteral
     [a-z][A-Za-z0-9\-]*[A-Za-z0-9] -> UQLiteral
+    
   context-free syntax
-    UQLiteral                                            -> Literal
-    Literal                                              -> Symbol
-    Literal "(" {Symbol ","}* ")" "->" Symbol Attributes -> Production
-
-
-
+    UQLiteral  -> Literal
+    Literal    -> Symbol  {cons("lit")}
+    
+    Literal "(" {Symbol ","}* ")" "->" Symbol Attributes -> Production	{cons("prod-fun")}

@@ -2,6 +2,10 @@
 
   * Moved pretty-print table from src/sdf to pp. Renamed
     to Sdf2.pp
+    
+  * xtc/parse-sdf-module: XTC tool to parse SDF module
+
+  * syn/*.sdf using constructors (to be refactored)
 
 2003-01-18  Eelco Visser  <visser@cs.uu.nl>
 

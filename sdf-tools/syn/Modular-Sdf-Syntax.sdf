@@ -9,20 +9,17 @@ exports
     "/" ModuleId            -> ModuleId
     ModuleWord "/" ModuleId -> ModuleId
   context-free syntax
-    Module*                                  -> Definition
-    "module" ModuleName ImpSection* Sections -> Module
-    "exports" Grammar            -> Section
-    "hiddens" Grammar            -> Section
+    Module*                                  -> Definition	
+    "module" ModuleName ImpSection* Section* -> Module		{cons("Module")}
+    "exports" Grammar            -> Section			{cons("Exports")}
+    "hiddens" Grammar            -> Section			{cons("Hiddens")}
     Section*                     -> Sections
-    ModuleId                     -> ModuleName
-    ModuleId "[" Symbols "]"     -> ModuleName
-    "id" "(" ModuleName ")"      -> Attribute
-    "imports" Imports            -> ImpSection
+    ModuleId                     -> ModuleName		
+    ModuleId "[" Symbols "]"     -> ModuleName                  {cons("RenamedModuleName")}
+    "id" "(" ModuleName ")"      -> Attribute			{cons("Id")}
+    "imports" Imports            -> ImpSection			{cons("Imports")}
     ImpSection                   -> Grammar
     Import*                      -> Imports
     ModuleName                   -> Import
     ModuleName Renamings         -> Import
     "(" Import ")"               -> Import {bracket}
-
-
-

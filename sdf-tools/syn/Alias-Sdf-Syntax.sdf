@@ -1,11 +1,10 @@
 module Alias-Sdf-Syntax
 imports Kernel-Sdf-Syntax
+
 exports
-  sorts Alias Aliases
+  sorts Alias
+  
   context-free syntax
-    "aliases" Aliases  -> Grammar
-    Symbol "->" Symbol -> Alias
-    Alias*             -> Aliases
-
-
-
+  
+    "aliases" Alias*    -> Grammar {cons("aliases")}
+    Symbol "->" Symbol  -> Alias   {cons("alias")}

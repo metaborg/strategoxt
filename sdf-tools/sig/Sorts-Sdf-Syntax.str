@@ -1,3 +1,6 @@
 module Sorts-Sdf-Syntax
 imports Kernel-Sdf-Syntax
 signature
+  constructors
+    sort  : Sort -> Symbol
+    Sorts : Symbols -> Grammar

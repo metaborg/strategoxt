@@ -1,8 +1,9 @@
 module Sdf-Disamb
 imports Sdf2-Syntax
+
 exports
   lexical syntax
-    "LAYOUT"            -> Sort      {reject}
+    "LAYOUT"            -> Sort    {reject}
 
   context-free syntax
     "aliases"           -> UQLiteral {reject}
@@ -15,6 +16,7 @@ exports
     "module"            -> UQLiteral {reject}
     "exports"           -> UQLiteral {reject}
     "hiddens"           -> UQLiteral {reject}
+    "imports"           -> UQLiteral {reject}
     "left"              -> UQLiteral {reject}
     "right"             -> UQLiteral {reject}
     "assoc"             -> UQLiteral {reject}
@@ -35,6 +37,7 @@ exports
     "module"            -> ModuleName {reject}
     "exports"           -> ModuleName {reject}
     "hiddens"           -> ModuleName {reject}
+    "imports"           -> ModuleName {reject}
     "left"              -> ModuleName {reject}
     "right"             -> ModuleName {reject}
     "assoc"             -> ModuleName {reject}
@@ -60,6 +63,7 @@ exports
     "module"
     "exports"
     "hiddens"
+    "imports"
     "left"
     "right"
     "assoc"
