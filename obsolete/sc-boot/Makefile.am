@@ -1,6 +1,8 @@
 SUBDIRS = src
 
-EXTRA_DIST = conf.h.src conf.h README.in reconf $(wildcard *.pkg) stdconfig
+pkgdata_DATA = conf.h
+
+EXTRA_DIST = conf.h.src README.in reconf $(wildcard *.pkg) stdconfig
 
 # Generate scripts
 %: %.src Makefile

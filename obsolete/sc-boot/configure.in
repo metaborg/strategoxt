@@ -53,7 +53,7 @@ AC_ARG_WITH(srts,
 )
 AC_SUBST(STRATEGORTS)
 
-AC_REVISION($Id: configure.in,v 1.17 2002/06/11 12:13:32 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.18 2002/06/22 10:38:20 stratego Exp $)
 
 AC_PROG_CC
 AC_PROG_RANLIB
@@ -77,5 +77,4 @@ AC_OUTPUT( \
 	Makefile \
 	README \
 	src/Makefile \
-	config.h \
 )

@@ -90,16 +90,39 @@ ATerm SSL_getenv(ATerm name)
   return (ATerm)ATmakeString(value);
 }
 
+// Note: this auxiliary function need not be defined if setenv is
+// implemented; platform dependent.
+
+static int ssl_aux_setenv( const char* name, const char* value, int overwrite )
+{
+   char* env_str;
+   char* buf;
+   int   status;
+      
+   env_str = getenv( name );
+   if( env_str != NULL && overwrite == 0 )
+      return 0;
+   
+   buf = (char*)malloc( strlen( name ) + strlen( value ) + 1 + 1);
+   if( buf == NULL )
+      return -1;
+   
+   sprintf( buf, "%s=%s", name, value );
+   
+   status = putenv( buf );
+   
+   return status;
+}
+   
 ATerm SSL_setenv(ATerm name, ATerm value, ATerm overwrite)
 {
   if(!t_is_string(name)) _fail(name);
   if(!t_is_string(value)) _fail(value);
   if(!ATisInt(overwrite)) _fail(overwrite);
 
-  setenv(ATgetName(ATgetSymbol(name)), 
-	 ATgetName(ATgetSymbol(value)), 
-	 ATgetInt((ATermInt)overwrite));
+  ssl_aux_setenv(ATgetName(ATgetSymbol(name)), 
+		 ATgetName(ATgetSymbol(value)), 
+		 ATgetInt((ATermInt)overwrite));
 
   return (ATerm)ATempty;
 }
-
