@@ -91,7 +91,7 @@ strategies
    * See list-misc-test for examples.
    * 
    * type in = a or [in]
-   * flatten-list :: in -> [a]
+   * flatten-list :: [in] -> [a]
    */
   flatten-list =
     foldr(![], (is-list, id) < conc-two-lists + MkCons, is-list < flatten-list + id)
