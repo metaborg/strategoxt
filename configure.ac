@@ -4,7 +4,7 @@ dnl Author: Merijn de Jonge (M.de.Jonge@tue.nl)
 dnl
 dnl $Id$
 
-AC_INIT(autobundle,0.9.9.1, M.de.Jonge@tue.nl,)
+AC_INIT(autobundle,0.10, M.de.Jonge@tue.nl,)
 AM_INIT_AUTOMAKE
 
 AC_REVISION($Id$)

@@ -1,3 +1,7 @@
+2004-05-04 Merijn de Jonge <mdejonge@cs.uu.nl>
+   * Changed version to 0.10
+   * Updated NEWS file
+
 2004-05-03 Merijn de Jonge <mdejonge@cs.uu.nl>
    * bundlegen/graph-generator.str: since a package can be both a runtime
      and a build time dependency, package dependencies occured twice in a
@@ -33,7 +37,7 @@
    * moved bundlegen/version-expressions.str, bundlegen/package-graph.str to
      shared
    * pbsd/pkg-set.str: added a tool to change some of the settings of a
-     package definition. Currently only the version, (primary) locaton, and
+     package definition. Currently only the version, (primary) location, and
      a package dependency version can be changed.
 
 2004-04-20 Merijn de Jonge <mdejonge@cs.uu.nl>

@@ -1,3 +1,37 @@
+Version 0.10 released 2004-may-05
+   * Updated URLs in README file that is part of generated bundles.
+   * collect.sh: added support for subversion. A location field starting
+     with 'svn:' is considerd a subversion address. What remains after
+     'svn:' is considered as a subversion repository.
+   * Autobundle now supports timed dependencies. To that end, the syntax of
+     package definitions has been extended with a 'build-time requires' and
+     a 'run-time requires' section, which serve to declare build-time and
+     run-time dependencies. Packages declared in the 'requires' section are
+     considered build-time and run-time dependencies. All requires sections
+     are optional. 
+     
+     Timed dependencies serve to improve circular dependencies. Only when
+     two packages have a build-time dependency on each other, bundlegen will
+     raise an error.
+   * Added support for package-based software development (see Merijn de
+     Jonge (2003). Package-Based Software Development). New tools added:
+     - pkg-edit: to put package in development mode
+     - pkg-release: to release package and put it in deployment mode 
+     - pkg-revert: to put pacakge in deployment mode without release
+     - pkg-set: to change (some of) the contents of package definition
+       files. Currently supported are: version, (primary) location, version
+       numbers in package dependencies.
+   * Bug fix: default component binding was not displayed correctly in
+     autobundle's usage message.
+   * Bug fix: Fixed installation/deinstallation of packages and
+     documentation in bundled Makefile.
+   * Bug fix: detecting when a parameter is bound more then once has been
+     fixed. Bundlegen will terminate when mutpe parameter bindings are
+     detected.
+   * Bug fix: AUTOBUNDLE_SEARCH_PATH had incorrect priority. I.e., it
+     overrides -I command line switches
+       
+       
 Version 0.9.9 released 2004-feb-09
    * Building a composition now consists of executing "$(MAKE) all install"
      for each bundled component. This way a component only gets installed
