@@ -9,7 +9,7 @@ strategies
     <+ 
        xtc-temp-files(
 	(!FILE(<get-config> "-i") <+ !stdin)
-	; if-verbose3(debug(!"Input: "))
+	; if-verbose2(debug(!"Input: "))
 	; read-from
 	; if-verbose3(debug(!"Term read: "))
 	; to-adot
