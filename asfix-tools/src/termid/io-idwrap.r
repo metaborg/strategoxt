@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: io-idwrap.r,v 1.1 2001/10/01 13:51:20 mdejonge Exp $
+% $Id: io-idwrap.r,v 1.2 2001/10/01 16:46:57 mdejonge Exp $
 
 The strategy io-idwrap applies a strategy to the outermost function symbol
 of an input term. The outermost function symbol then type-checking of input
@@ -52,32 +52,35 @@ constructors
    Strict: Option
 
 strategies
-io-idwrap(id-check, strat) =
-   io-idwrap(id-check, strat, fail, default-usage)
+io-idwrap('id, strat) =
+   io-idwrap('id, strat, fail, default-usage)
 
-io-idwrap(id-check, strat, extra-options) =
-   io-idwrap(id-check, strat, extra, default-usage)
+io-idwrap('id, strat, extra-options) =
+   io-idwrap('id, strat, extra, default-usage)
 
-io-idwrap(id-check, strat, extra-options, usage) =
+io-idwrap('id, strat, extra-options, usage) =
    iowrap( 
-      idwrap(id-check); strat, 
+      idcheck('id); strat, 
       extra-options + Option("--strict", !Strict()),
       usage
    )
 
 
+rules 
+idcheck('id): (options, t ) -> (options, trm )
+   where
+      <idcheck('id)>t => trm
 
-idwrap(id-check) =
-   ?(options, i#([trm]) );
+idcheck('id): t -> trm
+   where
    try(
-      not(<id-check>i);
-      (
-        has-option(!Strict);
-        <fatal-error>["fatal: input term has incorrect grammar identifier."]
-      <+
-        <error>["Warning: input term has incorrect grammar identifier." ]
-      )
-   );
-   !(options, trm)
-     
+   not(?i#([trm]);<'id>i);
+   (
+     has-option(!Strict);
+     <fatal-error>["fatal: input term has incorrect grammar identifier."]
+   <+
+     <error>["Warning: input term has incorrect grammar identifier." ]
+   ))
+
+
 \end{code}
