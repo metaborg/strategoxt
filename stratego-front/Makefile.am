@@ -1,4 +1,4 @@
-SUBDIRS = syn pp sig parse test
+SUBDIRS = . syn pp sig parse test
 
 EXTRA_DIST = stdconfig reconf conf.h.src
 
