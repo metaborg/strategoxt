@@ -338,7 +338,7 @@ ATerm _bagof(ATerm t, ATerm f(ATerm))
     {
       ATerm res = f(t);
       bag[bag_ptr] = ATinsert(bag[bag_ptr], res);
-      fail();
+      _fail(t);
     }
   return (ATerm)ATreverse(bag[bag_ptr--]);
 }

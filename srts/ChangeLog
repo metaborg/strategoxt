@@ -1,3 +1,8 @@
+2002-01-26  Eelco Visser  <visser@acm.org>
+
+	* src/stratego.c (_bagof): Replaced call to fail() by call to
+	_fail(t), which is the srts interface function for failure.
+
 2002-01-25  Eelco Visser  <visser@acm.org>
 
 	* src/Makefile.am (libstratego_a_SOURCES): Declared
