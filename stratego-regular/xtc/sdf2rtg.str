@@ -50,8 +50,8 @@ overlays
 
   sdf2rtg-tool-about =
     [ AutoProgram()
-    , Author(Person("Martin Bravenboer", "mbravenb@cs.uu.nl"))
-    , GNU_LGPL("2002-2003", "Martin Bravenboer <martin@cs.uu.nl>")
+    , Author(Person("Martin Bravenboer", "martin@cs.uu.nl"))
+    , GNU_LGPL("2002-2004", "Martin Bravenboer <martin@cs.uu.nl>")
     , Config([
         DefaultXTCRepository()
       , CurrentXTCRepository()

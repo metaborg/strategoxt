@@ -11,7 +11,6 @@ bin_PROGRAMS=\
   sdf2rtg \
   sig2rtg \
   rtg2sig \
-  auto-regular \
   rtg2typematch 
 
 libexec_PROGRAMS = tool-doc2abox
