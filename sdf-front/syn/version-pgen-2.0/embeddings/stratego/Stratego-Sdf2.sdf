@@ -19,6 +19,8 @@ exports
         "|[" Grammar  "]|" -> StrategoTerm {cons("ToTerm")}
     "G" "|[" Grammar  "]|" -> StrategoTerm {cons("ToTerm")}
 
+    "is" "|[" ImpSection "]|" -> StrategoTerm {cons("ToTerm")}
+
         "|[" Attributes "]|" -> StrategoTerm {cons("ToTerm")}
     "$" "|[" Attributes "]|" -> StrategoTerm {cons("ToTerm")}
 

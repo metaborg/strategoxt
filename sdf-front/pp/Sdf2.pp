@@ -20,6 +20,12 @@
 
    Definition.1:iter-star -- _1,
 
+   definition -- 
+      V vs=1 [KW["definition"] _1],
+
+   definition.1:iter-star -- _1,
+
+
    attrs -- 
       H hs=0[ "{" H[_1] "}"],
       
@@ -58,18 +64,18 @@
    layout -- 
       KW["LAYOUT"],
       
-   Module -- 
-      V [ H [KW["module"] _1] V vs=1[_2 _3]],
+   Module -- V [ H [KW["module"] _1] V vs=1[_2 _3]],
+   module -- V [ H [KW["module"] _1] V vs=1[_2 _3]],
       
    Module.2:iter-star -- _1,
-
    Module.3:iter-star -- _1,
+   module.2:iter-star -- _1,
+   module.3:iter-star -- _1,
    
-   Exports -- 
-      V is=2 [KW["exports"] V vs=1[_1]],
-      
-   Hiddens -- 
-      V is=2[KW["hiddens"] V vs=1[_1]],
+   Exports --  V is=2 [KW["exports"] V vs=1[_1]],
+   Hiddens --  V is=2 [KW["hiddens"] V vs=1[_1]],
+   exports --  V is=2 [KW["exports"] V vs=1[_1]],
+   hiddens --  V is=2 [KW["hiddens"] V vs=1[_1]],
 
    RenamedModuleName --
       H hs=0 [ _1 KW["["] H[_2] KW["]"]],

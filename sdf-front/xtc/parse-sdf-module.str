@@ -1,16 +1,9 @@
 module parse-sdf-module
-imports xtc-lib sdf-xtc-tools switch-options
+imports xtc-lib sdf-xtc-tools
 
 strategies
   
   io-parse-sdf-module =
-    xtc-io-wrap(parse-sdf-options,
-      if-switch(!"use-id"
-      , xtc-parse-sdf2-module-id
-      , xtc-parse-sdf2-module
-      )
+    xtc-io-wrap(
+      xtc-parse-sdf2-module
     )
-
-  parse-sdf-options =
-    SwitchOption(!"use-id", !"specify whether to produce language id")
-    

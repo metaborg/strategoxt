@@ -1,5 +1,11 @@
 2004-02-18  Martin Bravenboer  <martin@cs.uu.nl>
 
+	* xtc/parse-sdf-module.str: now uses the new sdf syntax.
+
+	* xtc/parse-sdf-definition.str: idem
+
+2004-02-18  Martin Bravenboer  <martin@cs.uu.nl>
+
 	* syn/version-2.1/*: renamed the embedding of SDF 2.1 in Stratego
 	to Stratego-Sdf2-Syntax because SDF syntax definition has the same
 	name and I want to use Stratego-Sdf2 for the new syntax
