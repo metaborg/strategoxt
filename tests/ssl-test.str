@@ -1,0 +1,73 @@
+module ssl-test
+imports ssh-test
+
+strategies 
+
+  main-ssl-test = 
+    xtc-temp-files(
+      test-suite(!"
+               ************ stratego- shell ssl tests **********",
+        ssl-test
+      )
+    )
+
+  ssl-test = id
+//    ; ssl-test(|"annotation-props")   using liblib
+//    ; ssl-test(|"annotations")        using liblib
+    ; ssl-test(|"apply")
+//    ; ssl-test(|"char")
+    ; ssl-test(|"collect")
+//    ; ssl-test(|"dir")
+//    ; ssl-test(|"env-traversal")
+    ; ssl-test(|"exec")
+    ; ssl-test(|"file")
+    ; ssl-test(|"integers")
+    ; ssl-test(|"int-list")
+    ; ssl-test(|"io")
+    ; ssl-test(|"iteration")
+    ; ssl-test(|"list-basic")
+    ; ssl-test(|"list-filter")
+    ; ssl-test(|"list-index")
+    ; ssl-test(|"list-misc")
+    ; ssl-test(|"list-set")
+//    ; ssl-test(|"list-sort")        using liblib
+    ; ssl-test(|"list-zip")
+    ; ssl-test(|"options")
+    ; ssl-test(|"option")
+    ; ssl-test(|"parallel")
+    ; ssl-test(|"parenthesize")
+    ; ssl-test(|"parse-options")
+    ; ssl-test(|"posix-error")
+    ; ssl-test(|"posix-file")
+    ; ssl-test(|"posix-process")
+    ; ssl-test(|"reals")
+    ; ssl-test(|"rename")
+    ; ssl-test(|"scoped-finite-map")
+    ; ssl-test(|"share")
+    ; ssl-test(|"simple-traversal")
+    ; ssl-test(|"strcmp")
+    ; ssl-test(|"string-misc")
+    ; ssl-test(|"string")
+    ; ssl-test(|"substitution")
+    ; ssl-test(|"tables")
+    ; ssl-test(|"template")
+    ; ssl-test(|"term-zip")
+    ; ssl-test(|"time")
+    ; ssl-test(|"tuple")
+    ; ssl-test(|"unification")
+    ; where(
+        say(!"-----------------------------------------------------------------------------")
+      ; say(!"                                total results                                ")
+      ; say(!"-----------------------------------------------------------------------------")
+      )
+
+
+  ssl-test(|modname) =
+      where(<debug(!"--------------------------------------------------------------------------------------- ")> modname);
+      ssh-apply-and-show(|modname,  (), <concat-strings> [" import ", <ssl-testdir>, modname, "-test.str ;; main ;; "])
+
+  ssl-testdir =
+    <xtc-find-silent> "lib.rtree"
+    ; dirname
+    ; <conc-strings> (<id>, "/tests/")
+    ; debug

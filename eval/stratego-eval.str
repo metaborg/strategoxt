@@ -1,0 +1,532 @@
+/**
+ * Evaluation of Stratego in Stratego.
+ *
+ * @author Eelco Visser <visser@cs.uu.nl>
+ *         Martin Bravenboer <martin@cs.uu.nl>
+ */
+module stratego-eval
+imports Stratego  string-misc
+imports stratego-env eval-lib-primitives
+
+signature
+  constructors
+    Apply : Strategy * Term -> Strategy
+    BuildConst : Term -> Strategy
+
+strategies
+
+   /** 
+    * Evaluate the application of a strategy to a term.
+    *
+    * The input of this strategy must be an Apply(s, t).
+    *
+    * The result is a term, or Fail if the application of s to t fails
+    * according to the semantics of Stratego.
+
+    * An application of strategy-eval fails, if the strategy is incorrect or 
+    * if there is an internal error in the
+    * implementation of the stratego-interpreter.
+    */
+  stratego-eval(|env) =
+       if-trace-eval(trace-evaluation)
+     ; if-stats(where(<inc-stat> "recursion-depth"))
+    ; finally(
+        EvalExtension(|env)
+     <+ EvalId 
+      + EvalFail
+      + EvalTest(|env)
+      + EvalNot(|env)
+      + EvalSeq(|env)
+      + EvalChoice(|env)
+      + EvalLChoice(|env)
+
+      + (EvalCall(|env) <+ EvalCallFail(|env))
+      + (EvalEmptyLet(|env) <+ EvalLet(|env))
+      + EvalRec(|env)
+     
+      + (EvalAll(|env)  <+ EvalAllFail)
+      + (EvalSome(|env) <+ EvalSomeFail)
+      + (EvalOne(|env)  <+ EvalOneFail)
+      + (EvalCong(|env) <+ EvalCongFail)
+  
+      + (EvalEmptyScope(|env) <+ EvalScope(|env))
+      + (EvalMatch(|env) <+ EvalMatchFail)
+      + EvalBuild(|env)
+      + EvalWhere(|env)
+      + (EvalPrim(EvalTerm(|env)) <+ EvalPrimFail)
+     <+ say(!"[eval | error] evaluation failed: ")
+      ; trace-evaluation
+      ; fail
+    , if-stats(where(<dec-stat> "recursion-depth"))
+    )
+
+  inc-stat =
+    <set-config> (<id>, <get-stat; inc>)
+
+  dec-stat =
+    <set-config> (<id>, <get-stat; dec>)
+
+  get-stat = 
+    get-config <+ !0
+
+strategies
+
+  is-whitespace = ?'\n' + ?'\r'
+
+  trace-evaluation =
+    where(
+      ?Apply(<id>, t)
+      ; xtc-temp-files(
+          write-to
+        ; xtc-transform(!"pp-stratego", !["--abstract"])
+        ; ?FILE(<read-text-file; trim-whitespace>)
+        ; <string-tokenize> (['\n'], <id>)
+        )
+      ; where(<write-to-string> t => ts)
+      ; if ?[s]
+        then <concat-strings> [s, " to ", <write-to-string> t]
+           ; debug(!"[eval | trace] apply ")
+        else       say(!"[eval | trace] apply")
+           ; map(debug(!"[eval | trace]      "))
+           ;    <debug(!"[eval | trace]   to ")> ts
+        end
+      <+ debug(!"[eval | trace] cannot pp: ")
+    )
+
+/**
+ * Extension hook
+ */
+strategies
+
+  EvalExtension(|env) = fail
+
+/**
+ * Sequential programming operators.
+ */
+rules
+
+  EvalId :
+    Apply(Id, t) -> t
+
+  EvalFail :
+    Apply(Fail, t) -> Fail
+
+  EvalFail :
+    Apply(s, Fail) -> Fail
+
+  EvalTest(|env) :
+    Apply(Test(s), t) -> t'
+      where <stratego-eval(|env)> Apply(s, t)
+          ; (?Fail() <+ !t) => t'
+
+   EvalNot(|env) : 
+    Apply(Not(s), t) -> t'
+      where (<stratego-eval(|env)> Apply(s, t) => Fail; !t
+          <+ !Fail) => t'
+
+  EvalSeq(|env) :
+    Apply(Seq(s1, s2), t) -> t2
+      where <stratego-eval(|env)> Apply(s1, t)
+          ; if Fail()
+            then id
+            else <stratego-eval(|env)> Apply(s2, <id>)
+            end => t2
+
+  /**
+   * @todo  Should the environment be restored?
+   */
+  EvalChoice(|env) :
+    Apply(Choice(s1, s2), t) -> t'
+      where (<stratego-eval(|env)> Apply(s1, t); not(Fail)
+           + <stratego-eval(|env)> Apply(s2, t); not(Fail)
+          <+ !Fail) => t'
+
+  EvalLChoice(|env) :
+    Apply(LChoice(s1, s2), t) -> t'
+      where (<stratego-eval(|env)> Apply(s1, t); not(Fail)
+          <+ <stratego-eval(|env)> Apply(s2, t); not(Fail)
+          <+ !Fail) => t'
+
+  EvalChoice(|env) :
+    Apply(GuardedLChoice(s1, s2, s3), t) -> t'
+      where ( ( <stratego-eval(|env)> Apply(s1, t)
+                ; not(Fail())
+              < <stratego-eval(|env)> Apply(s2, <id>); not(Fail)
+              + <stratego-eval(|env)> Apply(s3, t); not(Fail) )
+          <+ !Fail) => t'
+
+/**
+ * Strategy definition and call.
+ */
+strategies
+
+  EvalCall(|env) :
+    Apply(c@CallT(SVar(f), sargs, targs), t) -> t'
+      where <is-string> f
+          ; <key-of-CallT; strat-binding(|env)> c
+               => StrClosure(SDefT(f, sfargs, tfargs, s), StrEnv(scopes))
+
+          ; <new-scope> () => scope
+          ; !StrEnv([scope | scopes]) => cenv
+
+          ; < zip(ActualParam-to-SDefT)
+            ; map(define-strat(|cenv,env))
+            > (sfargs, sargs)
+          
+          ; <TermArgs-to-Scope(|env)> (tfargs, targs, s) => scope-strat
+
+          ; <stratego-eval(|cenv)> Apply(scope-strat, t) => t'
+
+          ; <destroy-scope> scope
+
+  ActualParam-to-SDefT :
+    (VarDec(x, FunType(argtypes, result)), CallT(SVar(f), [], []))
+      ->
+    SDefT(x, sdecs, tdecs, CallT(SVar(f), sargs, targs))
+      where not(!argtypes => [ConstType(_)])
+
+          ; <last> argtypes => ConstType(_)
+          ; <init; split-at-keep(?ConstType(_))> argtypes => (sargtypes, targtypes)
+
+          ; <map(new)> sargtypes => sargids
+          ; <map(new)> targtypes => targids
+
+          ; <zip( \ (x, type) -> VarDec(x, type) \ )> (sargids, sargtypes) => sdecs
+          ; <zip( \ (x, type) -> VarDec(x, type) \ )> (targids, targtypes) => tdecs
+
+          ; <map(!CallT(SVar(<id>), [], []))> sargids  => sargs
+          ; <map(!Var(<id>))> targids  => targs
+
+  split-at-keep(s) =
+      split-fetch(where(s); ?t)
+    ; (id, ![t | <id>])
+    <+ !(<id>, [])
+
+  ActualParam-to-SDefT :
+    (VarDec(x, 
+       FunType(
+         [ConstType(_)]
+       , ConstType(_)
+       )
+     ), s) -> SDefT(x,[],[],s)
+
+  /**
+   * Creates a scope for term arguments of a strategy call
+   *
+   * @todo  Remove the BuildConst
+   */
+  TermArgs-to-Scope(|env) =
+    ?(tfargs, targs, s)
+    ; <map(?VarDec(<id>, _))> tfargs => tfids
+    ; <map(EvalTerm(|env))> targs => etargs
+    ; !(tfids, etargs)
+    ; zip( \ (x, t) -> Where(Seq(BuildConst(t), Match(Var(x)))) \ )
+    ; reverse
+    ; ![s | <id>]
+    ; <foldl(!Seq(<Fst>, <Snd>))> (<id>, Id())
+    ; !Scope(tfids, <id>)
+
+  /**
+   * Call failure: undefined operator, or internal error.
+   */
+  EvalCallFail(|env) :
+    Apply(c@CallT(SVar(f), sargs, targs), t) -> Fail
+      where <is-string> f
+          ; <key-of-CallT> c => key
+          ; ( not(<strat-binding(|env)> key)
+          < <fprintnl> (<stderr-stream>, ["operator ", <key-to-string> key, " not defined"])
+          + <fprintnl> (<stderr-stream>, ["application of  ", <key-to-string> key, " failed due to an internal error"]))
+
+strategies
+
+  EvalEmptyLet(|env) :
+    Apply(Let([], s), t) -> <stratego-eval(|env)> Apply(s, t)
+
+  EvalLet(|env) :
+    Apply(Let(sdefs, s), t) -> t2
+      where begin-scope(|env,sdefs,[]) => env2
+          ; <stratego-eval(|env2)> Apply(s, t) => t2
+          ; end-scope(|env2,sdefs,[])
+
+  EvalRec(|env) :
+    Apply(Rec(x, s), t) -> <stratego-eval(|env)> Apply(Let([SDefT(x, [], [], s)], CallT(SVar(x), [], [])), t)
+
+/**
+ * Local scope for term variables.
+ */
+rules
+
+  EvalEmptyScope(|env) :
+    Apply(Scope([], s), t) -> <stratego-eval(|env)> Apply(s, t)
+
+  EvalScope(|env) :
+    Apply(Scope(xs, s), t) -> t'
+    where <not(?[])> xs
+        ; begin-scope(|env,[],xs) => env'
+        ; <stratego-eval(|env')> Apply(s, t) => t'
+        ; end-scope(|env',[],xs)
+
+  EvalWhere(|env) :
+    Apply(Where(s), t) -> r
+    where <stratego-eval(|env)> Apply(s, t)
+        ; (?Fail() < id + !t) => r
+
+/**
+ * Matching terms against a pattern
+ *
+ * make sure that bindings are consistent with existing bindings
+ *
+ * matchings done in the outer loop of the interpreter bind
+ * undeclared variables
+ */
+rules
+
+  EvalMatch(|env) : 
+    Apply(Match(t1), t2) -> t2
+      where < stratego-match(Var(id))
+            ; map(BindVar(|env))
+            > [(t1, t2)]
+
+  BindVar(|env) =
+    ?(Var(x), t)
+    ; where(
+         <term-binding(|env)> x => t
+      <+ <bind-term(|env)> (x, t)
+      <+ <term-binding(|env)> x
+       < fail
+       + <debug(!"** ERROR -- undefined variable: ")> x
+       ; fail
+      )
+
+  EvalMatchFail :
+    Apply(Match(t1), t2) -> Fail
+
+strategies
+
+  stratego-match(isvar) = 
+    for(
+      !(<id>, [])
+    , ?([], <id>)
+    ,   MatchVar(isvar)
+     + (MatchWild, id)
+     + (PatDecompose, id)
+    )
+
+rules
+
+  MatchWild :
+    [(Wld, _) | ps] -> ps
+
+  PatDecompose :
+    [ (As(v, p), t) | ps ] -> [(v, t), (p, t) | ps]
+
+  PatDecompose :
+    [(Op(f, xs), f#(ys)) | ps] -> <conc> (<zip(id)> (xs, ys), ps)
+
+  PatDecompose :
+    [(Op("Cons", [p1, p2]), [t1 | t2]) | ps] -> [(p1, t1), (p2, t2) | ps]
+
+  PatDecompose :
+    [(Op("Nil", []), []) | ps] -> ps
+
+  PatDecompose :
+    [(Int(n), n) | ps] -> ps
+
+  PatDecompose :
+    [(Str(s), s) | ps] -> ps
+
+  PatDecompose :
+    [(Real(r), r) | ps] -> ps
+
+rules
+
+  EvalBuild(|env) :
+    Apply(BuildConst(t1), _) -> t1
+
+  EvalBuild(|env) :
+    Apply(Build(t1), t2) -> t3
+      where <EvalTerm(|env)> t1 => t3
+
+  EvalTerm(|env) = 
+    rec x(
+       SubsVar(|env) 
+    <+ FoldList; map(x)
+    <+ Op(id, map(x)); fold-op
+    <+ FoldConst
+    )
+
+  FoldList =
+    ?List(<id>)
+    
+  /**
+   * @todo  produces an internal error if a strategy is not bound.
+   *        The build should however fail.
+   */
+  SubsVar(|env) :
+    Var(x) -> t
+      where <term-binding(|env)> x => t
+          ; not(?NULL())
+ 
+  fold-op = 
+    FoldCons <+ FoldNil <+ FoldOp
+
+  FoldCons :
+    Op("Cons", [t, ts]) -> [t | ts]
+
+  FoldNil :
+    Op("Nil", []) -> []    
+
+  FoldOp :
+    Op(f, ts) -> f#(ts)
+
+  FoldConst :
+    Int(n) -> n
+
+  FoldConst :
+    Str(s) -> s
+
+  FoldConst :
+    Real(r) -> r
+
+/**
+ * Evaluate term traversal primitives.
+ *
+ * @todo  Implement Some or is it desugared?
+ */
+rules
+
+  EvalAll(|env) :
+    Apply(All(s), t1) -> t2
+      where <all(<stratego-eval(|env)> Apply(s, <id>); not(Fail))> t1 => t2
+
+  EvalOne(|env) :
+    Apply(One(s), t1) -> t2
+      where <one(<stratego-eval(|env)> Apply(s, <id>); not(Fail))> t1 => t2
+
+  EvalSome(|env) :
+    Apply(Some(s), t1) -> t2
+      where <some(<stratego-eval(|env)> Apply(s, <id>); not(Fail))> t1 => t2
+
+  EvalSomeFail : Apply(Some(s), t) -> Fail
+  EvalAllFail  : Apply(All(s),  t) -> Fail
+  EvalOneFail  : Apply(One(s),  t) -> Fail
+
+
+/**
+ * Distributing congruence
+ */
+rules
+
+  EvalCong(|env) :
+    Apply(CallT(SVar(Mod(f, "D")), ss, []), (f#(ts){a*}, distr)) -> result
+      where <not("Cons" + "Nil")> f
+          ; <zip(\ (s, t) -> Apply(s, (t, distr)) \)> (ss, ts) => apps
+          ; <map(stratego-eval(|env))> apps
+          ; (fetch(Fail()) < !Fail() +  !f#(<id>){a*}) => result
+
+  /**
+   * List Cons workaround
+   */
+  EvalCong(|env) :
+    Apply(CallT(SVar(Mod("Cons", "D")), [s1, s2], []), ([t1 | t2], distr)) -> result
+      where <stratego-eval(|env)> Apply(s1, (t1, distr)) => t1'
+          ; <stratego-eval(|env)> Apply(s2, (t2, distr)) => t2'
+          ; if !t1' => Fail() + !t2' => Fail()
+            then !Fail()
+            else ![t1' | t2']
+            end => result
+
+  EvalCongFail :
+    Apply(CallT(SVar(Mod("Cons", "D")), [s1, s2], []), _) -> Fail()
+
+  /**
+   * List Nil workaround
+   */
+  EvalCong(|env) :
+    Apply(CallT(SVar(Mod("Nil", "D")), [], []), ([], _)) -> []
+
+  EvalCongFail :
+    Apply(CallT(SVar(Mod("Nil", "D")), [], []), _) -> Fail()
+
+/**
+ * Threading congruence
+ */
+rules
+
+  /**
+   * List Cons workaround
+   */
+  EvalCong(|env) :
+    Apply(CallT(SVar(Mod("Cons", "T")), [s1, s2], []), ([t1 | t2], thr0)) -> result
+      where <stratego-eval(|env)> Apply(s1, (t1, thr0)) => r1
+          ; if !r1 => Fail() + not(!r1 => (_,_))
+            then !Fail()
+            else !r1 => (t1', thr1)
+               ; <stratego-eval(|env)> Apply(s2, (t2, thr1)) => r2
+               ; if !r2 => Fail() + not(!r2 => (_,_))
+                 then !Fail()    
+                 else !r2 => (t2', thr2)
+                    ; !([t1' | t2'], thr2)
+                 end
+            end => result
+
+  EvalCongFail :
+    Apply(CallT(SVar(Mod("Cons", "T")), [s1, s2], []), _) -> Fail()
+
+  /**
+   * List Nil workaround
+   */
+  EvalCong(|env) :
+    Apply(CallT(SVar(Mod("Nil", "T")), [], []), ([], thr)) -> ([], thr)
+
+  EvalCongFail :
+    Apply(CallT(SVar(Mod("Nil", "T")), [], []), _) -> Fail()
+
+/**
+ * Ordinary congruence
+ */
+rules
+
+  EvalCong(|env) :
+    Apply(Cong(f, ss), f#(ts){a*}) -> result
+      where <zip(\ (s, t) -> Apply(s, t) \ )> (ss, ts) => apps
+          ; <map(stratego-eval(|env))> apps 
+          ; (fetch(Fail()) < !Fail() +  !f#(<id>){a*}) => result
+
+  /**
+   * Tuple workaround
+   */
+  EvalCall(|env) :
+    Apply(CallT(SVar(""), as, []), t) -> <stratego-eval(|env)> Apply(Cong("", as), t)
+
+  /**
+   * List workaround
+   */
+  EvalCong(|env) :
+    Apply(Cong("Cons", [s1, s2]), [t1 | t2]) -> [ t1'  | t2']
+      where <stratego-eval(|env); not(Fail)> Apply(s1, t1) => t1'
+          ; <stratego-eval(|env); not(Fail)> Apply(s2, t2) => t2'
+
+  EvalCong(|env) :
+    Apply(Cong("Nil", []), []) -> []
+
+  EvalCongFail :
+    Apply(Cong(f, ss), g#(ts)) -> Fail()
+
+/**
+ * Evaluate primitives.
+ * 
+ * The implementation of primitives is generated by the 'primitives' tool.
+ */
+strategies
+
+  EvalPrimFail :
+    Apply(PrimT(p,s*, t*), t) -> Fail()
+
+/**
+ * @todo  Where are congruences defined?
+ */
+signature
+  constructors
+    Cong: Foo * Foo -> Foo
+    LetNotRec: List(StrategyDef) * Strategy -> Strategy

@@ -1,0 +1,122 @@
+module stratego-shell-lang
+imports Stratego PathNames
+exports
+  sorts ShellCommand
+  context-free start-symbols ShellCommand ShellScript
+  context-free syntax
+    Strategy  -> ShellCommand {cons("Rewrite")}
+    Def       -> ShellCommand {cons("Define")}
+    "import" PathName -> ShellCommand {cons("Import")}
+
+    "#" Id -> Strategy  {cons("Break")}
+
+  sorts InternalCommand
+  context-free syntax  
+    ":" InternalCommand -> ShellCommand {cons("Internal")}
+
+    ShowEnvCommand -> InternalCommand
+    AboutCommand   -> InternalCommand
+    ExitCommand    -> InternalCommand
+    HelpCommand    -> InternalCommand
+
+    "include" PathName -> InternalCommand {cons("Include")}
+
+    "about" -> AboutCommand {cons("About")}
+    "help"  -> HelpCommand {cons("Help")}
+    "?"     -> HelpCommand {cons("Help")}
+
+    "exit"  -> ExitCommand {cons("Exit")}
+    "quit"  -> ExitCommand {cons("Exit")}
+    "q"     -> ExitCommand {cons("Exit")}
+
+    "clear" -> InternalCommand {cons("ClearScreen")}
+    "reset" -> InternalCommand {cons("Reset")}
+    "syntax" PathName -> InternalCommand {cons("Syntax")}
+
+    "trace"    SwitchValue -> InternalCommand {cons("Trace")}
+    "stats"    SwitchValue -> InternalCommand {cons("Statistics")}
+    "autoshow" SwitchValue -> InternalCommand {cons("AutoShow")}
+    "verbose"  Verbosity   -> InternalCommand {cons("Verbose")}
+
+    "xtc"    XtcCommand -> InternalCommand {cons("XTC")}
+    "import" PathName   -> XtcCommand      {cons("Import")}
+
+  sorts BreakShellCommand %% BreakInternalCommand
+  context-free syntax
+    ":" BreakInternalCommand -> BreakShellCommand {cons("Internal")}
+
+    ShowEnvCommand -> BreakInternalCommand
+    AboutCommand   -> BreakInternalCommand
+    ExitCommand    -> BreakInternalCommand
+    HelpCommand    -> BreakInternalCommand
+
+    "continue" -> BreakInternalCommand {cons("Continue")}
+    "cancel"   -> BreakInternalCommand {cons("Cancel")}
+
+
+  
+  sorts ShowEnvCommand
+  context-free syntax
+    "show"        -> ShowEnvCommand {cons("Show")}
+    "binding"  Id -> ShowEnvCommand {cons("Binding")}
+
+    "showenv"     -> ShowEnvCommand {cons("ShowEnv")}
+
+    "showdef"  Id -> ShowEnvCommand {cons("ShowSDef")}
+    "showdef"  Id "/" "(" Arity "," Arity ")" -> ShowEnvCommand {cons("ShowSDef")}
+    "showast"  Id "/" "(" Arity "," Arity ")" -> ShowEnvCommand {cons("ShowAST")}
+
+
+
+  sorts SwitchValue
+  context-free syntax
+    "on"  -> SwitchValue {cons("On")}
+    "off" -> SwitchValue {cons("Off")}
+
+  sorts Arity Verbosity
+  lexical syntax
+    [0-9]+ -> Arity
+    [0-9]+ -> Verbosity
+
+  sorts ShellScript
+  context-free syntax
+    ShellCommandString+ -> ShellScript {cons("Seq")}
+
+  syntax
+    <CommandString-LEX> ";;" -> <ShellCommandString-CF> {cons("Command")}
+
+  sorts CommandString
+  lexical syntax
+    CommandChar+ -> CommandString
+
+    ~[\;]     -> CommandChar
+    Semicolon -> CommandChar
+    ";"       -> Semicolon
+
+  lexical restrictions
+    CommandString -/- ~[\;]
+    Semicolon     -/- [\;]
+
+  context-free syntax
+    XtcCommand -> ShellCommand {cons("XTC"), avoid}
+
+  context-free syntax
+    "nop"                     -> XtcCommand {cons("Nop")}
+    XtcCommand ";" XtcCommand -> XtcCommand {cons("Seq"),right}
+    XtcExp XtcExp*            -> XtcCommand {cons("Call")}
+
+    XtcStringLit -> XtcExp
+    XtcToken     -> XtcExp {cons("String")}
+    XtcPath      -> XtcExp {cons("Path")}
+
+  syntax
+    "&" <XtcExp-CF> -> <XtcExp-CF> {cons("XtcFind")}
+    "\"" <XtcStringChars-LEX> "\"" -> <XtcStringLit-CF> {cons("String")}
+
+  lexical syntax
+    ~[\"]*         -> XtcStringChars
+    [\-\_a-zA-Z0-9][\.\-\_a-zA-Z0-9]* -> XtcToken
+    "nop" -> XtcToken {reject}
+
+  context-free restrictions
+    XtcToken    -/- [\.\-\_a-zA-Z0-9]

@@ -1,0 +1,403 @@
+module stratego-shell-test
+imports ssh-test Stratego
+
+strategies 
+
+  main-stratego-shell-test = 
+    xtc-temp-files(
+      test-suite(!"
+                  ************** stratego shell tests *************",
+        internal-cmd-tests
+      ; build-tests
+      ; match-tests
+      ; prim-tests
+      ; scope-tests
+      ; closure-tests
+      ; sdef-tests 
+      ; sugar-tests
+      ; cong-tests
+      ; termarg-tests
+      ; test-tests
+      ; as-tests
+      ; dynrule-tests
+      ; traversal-tests
+      ; lib-tests
+      ; cos-tests 
+      ; bugreport-tests
+      )
+    )
+
+  internal-cmd-tests =
+          ssh-apply-test(|":help", (),   " :help ;; ", ())
+    ;     ssh-apply-test(|":about", (),  " :about ;; ", ())
+    ;     ssh-apply-test(|":?", (),      " :? ;; ", ())
+    ;     ssh-apply-test(|":quit", (),   " :quit ;; ", ())
+    ;     ssh-apply-test(|":exit", (),   " :exit ;; ", ())
+    ;     ssh-apply-test(|":q", (),      " :q ;; ", ())
+    ;     ssh-apply-test(|":show", (),   " :show ;; ", ())
+    ;     ssh-apply-test(|":binding", ()," ?x ;; :binding x ;; ", ())
+
+
+  prim-tests =
+      ssh-apply-and-fail(|"fail fails",               (),  " fail ;; ")
+    ;     ssh-apply-test(|"id leaves term untouched", 1,   " id ;; ", 1)
+    ;     ssh-apply-test(|"id leaves term untouched", 2,   " id ;; ", 2)
+
+  build-tests =
+          ssh-apply-test(|"build int", 1,    " !5         ;; ", 5)
+    ;     ssh-apply-test(|"build string", 1, " !\"a\"     ;; ", "a")
+    ;     ssh-apply-test(|"build tuple", 1,  " !(2, 3)    ;; ", (2, 3))
+    ;     ssh-apply-test(|"build list", 1,   " ![]        ;; ", [])
+    ;     ssh-apply-test(|"build list", 1,   " ![1, 2, 3] ;; ", [1, 2, 3])
+    ; ssh-apply-and-fail(|"build unbound var", 1, " !x ;; ")
+
+  match-tests =
+          ssh-apply-test(|"match int 1",  2,       " ?2       ;;", 2)
+    ;     ssh-apply-test(|"match string", "abc",   " ?\"abc\" ;;", "abc")
+    ; ssh-apply-and-fail(|"match int 2",  3,       " ?4       ;;")
+    ; ssh-apply-and-fail(|"match string", "abc",   " ?\"ab\"  ;;")
+
+    ;     ssh-apply-test(|"match tuple 1", (1, 2), " ?(x, y) ;; !x ;;", 1)
+    ;     ssh-apply-test(|"match tuple 2", (1, 2), " ?(x, y) ;; !y ;;", 2)
+    ;     ssh-apply-test(|"match tuple 3", (2, 2), " ?(x, x) ;; !x ;;", 2)
+    ; ssh-apply-and-fail(|"match tuple 4", (2, 3), " ?(x, x) ;; ")
+
+    ;     ssh-apply-test(|"match list 1",  [1, 2], " ?[x, y] ;; !x ;; ", 1)
+    ;     ssh-apply-test(|"match list 2",  [1, 2], " ?[x, y] ;; !y ;; ", 2)
+    ;     ssh-apply-test(|"match list 3",  [2, 2], " ?[x, x] ;; !x ;; ", 2)
+    ; ssh-apply-and-fail(|"match list 4",  [2, 3], " ?[x, x] ;; ")
+
+    ;     ssh-apply-test(|"match and build 1", 1,      " ?x ;; !5 ;; !x ;; ", 1)
+    ; ssh-apply-and-fail(|"match and build 2", 1,  " ?x ;; !5 ;; ?x ;; ")
+
+  scope-tests =
+      ssh-apply-and-fail(|"out of scope 1", 2,  " {x: ?x } ;; !5 ;; !x ;; ")
+    ;     ssh-apply-test(|"match interrupted by scope 1", 2,  " ?y ;; !3 ;; {x: ?x } ;; !y ;;", 2)
+    ;     ssh-apply-test(|"match interrupted by scope 2", 2,  " ?y ;; !3 ;; {y: ?y } ;; !y ;;", 2)
+    ;     ssh-apply-test(|"match interrupted by scope 3", 2,  " ?y ; !3 ; {x: ?x } ; !y ;;", 2)
+    ;     ssh-apply-test(|"match interrupted by scope 4", 2,  " ?y ; !3 ; {y: ?y } ; !y ;;", 2)
+    ; ssh-apply-and-fail(|"out of scope 3", 2,  " {x: ?x } ;; {x: !x } ;; ")
+//    ;     ssh-apply-test(|"lchoice and scope",  2,  " (?x; fail <+ !3; ?x) ;; ", 3)
+//    ;     ssh-apply-test(|"ndchoice and scope", 2,  " (?x; fail  + !3; ?x) ;; ", 3)
+
+  cong-tests =
+          ssh-apply-test(|"cong int 1", 2,         " 2         ;;", 2)
+    ; ssh-apply-and-fail(|"cong int 2", 3,         " 4         ;;")
+    ;     ssh-apply-test(|"cong string 1", "foo",  " \"foo\"   ;;", "foo")
+    ; ssh-apply-and-fail(|"cong string 2", "foo",  " \"bar\"   ;;")
+    ;     ssh-apply-test(|"cong tuple  1", (3, 4), " (id, id)  ;;", (3, 4))
+    ;     ssh-apply-test(|"cong tuple  2", (3, 4), " import integers ;; (inc, inc) ;; ", (4, 5))
+    ; ssh-apply-and-fail(|"cong tuple  3", (3, 4), " (id, fail) ;; ")
+    ;     ssh-apply-test(|"cong tuple  4", (3, 4), " (3, !5) ;; ", (3, 5))
+    ; ssh-apply-and-fail(|"cong tuple  5", (3, 4), " (2, id) ;; ")
+    ;     ssh-apply-test(|"cong list   1", [],     " [] ;; ", [])
+    ;     ssh-apply-test(|"cong list   2", [1],    " [!2] ;; ", [2])
+    ;     ssh-apply-test(|"cong list   3", [1, 2], " [1, !3] ;; ", [1, 3])
+    ;     ssh-apply-test(|"cong list   4", [1],    " [id | ![]] ;; ", [1])
+    ;     ssh-apply-test(|"cong list   5", [1, 2], " [id | ![]] ;; ", [1])
+    ; ssh-apply-and-fail(|"cong list   6", [1, 2], " [?3 | id] ;; ")
+    ; ssh-apply-and-fail(|"cong list   7", [1, 2], " [id | ?[]] ;; ")
+    ; ssh-apply-and-fail(|"cong list   8", [1, 2], " [id | ?[3]] ;; ")
+    ;     ssh-apply-test(|"cong list   9", [1, 2], " [1 | ?xs] ;; !xs ;;", [2])
+    ;     ssh-apply-test(|"cong list  10", [1, 2], " [id | ?[x]] ;; !x ;;", 2)
+    ; ssh-apply-and-fail(|"cong list  11", [1],    " [fail] ;; ")
+    ; ssh-apply-test(|"distributing congruence  1", ([1,2], 3), 
+        " rec x(Cons^D(id,  x) + Nil^D) ;; 
+        ", [(1,3), (2,3)])
+    ; ssh-apply-test(|"distributing congruence  2", ([1,2], 3), 
+        " import integers;;
+          rec x(Cons^D(add, x) + Nil^D) ;; 
+        ", [4, 5])
+    ; ssh-apply-test(|"threading congruence  1", ([1,2, 3], 0),
+        " rec x(Cons^T(id,  x) + Nil^T) ;; 
+        ", ([1, 2, 3], 0))
+    ; ssh-apply-test(|"threading congruence  2", ([1,2,3], 0), 
+        " import integers;;
+          rec x(Cons^T((id, inc), x) + Nil^T) ;; 
+        ", ([1, 2, 3], 3))
+
+
+  termarg-tests =
+          ssh-apply-test(|"id term-arg 1", (), " foo(|x) = !x ;; foo(|3) ;;", 3)
+    ;     ssh-apply-test(|"id term-arg 2", 2,  " foo(|x) = !x ;; foo(|<id>) ;;", 2)
+
+  sdef-tests =
+          ssh-apply-test(|"foo sdef 0.1", (), " foo(|t) = !2 ;; ", ())
+    ;     ssh-apply-test(|"foo sdef 0.2", (), " foo(s)  = !2 ;; ", ())
+    ;     ssh-apply-test(|"foo sdef 1", (), " foo = !3   ;; foo     ;;", 3)
+    ;     ssh-apply-test(|"foo sdef 2", (), " foo(s) = s ;; foo(!3) ;;", 3)
+    ;     ssh-apply-test(|"foo sdef 3", (), " foo(|t) = !t ;; foo(|3) ;;", 3)
+    ;     ssh-apply-test(|"foo rdef 1", 1,  " Foo : 1 -> 2 ;; Foo ;;", 2)
+    ;     ssh-apply-test(|"foo rdef 2", (),  " Swap : (x, y) -> (y, x) ;; <Swap> (1, 2) ;;", (2, 1))
+    ;     ssh-apply-test(|"foo rdef 3", (),  " import string ;; Foo : x -> 2 where <gt> (x, 1) ;; <Foo> 2 ;;", 2)
+    ; ssh-apply-and-fail(|"foo rdef 4", (),  " import string ;; Foo : x -> 2 where <gt> (x, 4) ;; <Foo> 3 ;;")
+    ;     ssh-apply-test(|"overloading 1", (), "
+            foo(s1) = s1; ?1 ;;
+            foo(s2) = s2; ?2 ;;
+            foo(!1) ;;
+          ", 1)
+    ;     ssh-apply-test(|"overloading 2", (), "
+            foo(s1) = s1; ?1 ;;
+            foo(s2) = s2; ?2 ;;
+            foo(!2) ;;
+          ", 2)
+    ;     ssh-apply-test(|"overloading 3", (), "
+            foo(|t1) = !t1; ?1 ;;
+            foo(|t2) = !t2; ?2 ;;
+            foo(|1) ;;
+          ", 1)
+    ;     ssh-apply-test(|"overloading 4", (), "
+            foo(|t1) = !t1; ?1 ;;
+            foo(|t2) = !t2; ?2 ;;
+            foo(|2) ;;
+          ", 2)
+
+  lib-tests =
+          ssh-apply-test(|"inc int", 1,           " import integers ;; inc ;;", 2)
+    ;     ssh-apply-test(|"add int", (1, 2),      " import integers ;; add ;;", 3)
+    ;     ssh-apply-test(|"add int", (),          " import integers ;; <add> (1, 2) ;;", 3)
+    ;     ssh-apply-test(|"gt int", (),           " import integers ;; <gt> (2, 1) ;;", (2, 1))
+    ; ssh-apply-and-fail(|"gt int", (),           " import integers ;; <gt> (1, 3) ;;")
+    ;     ssh-apply-test(|"mul int", (2, 3),      " import integers ;; mul ;;", 6)
+    ;     ssh-apply-test(|"swap tuple", (1, 2),   " import tuple ;; Swap ;;", (2, 1))
+    ;     ssh-apply-test(|"int-to-string", 14,    " import string ;; int-to-string  ;;", "14")
+    ;     ssh-apply-test(|"explode-string", "ab", " import string ;; explode-string ;;", [97,98])
+    ;     ssh-apply-test(|"Fst tuple", (1, 2),    " import tuple ;; Fst ;;", 1)
+    ;     ssh-apply-test(|"Snd tuple", (1, 2),    " import tuple ;; Snd ;;", 2)
+    ;     ssh-apply-test(|"sum of int list", [1, 2, 3], " import int-list ;; sum ;;", 6)
+    ;     ssh-apply-test(|"sum of int list", [1, 1, 1, 1, 1, 1, 1, 1, 1, 1], " import int-list ;; sum ;;", 10)
+    ;     ssh-apply-test(|"inc int list 2",  [1, 2, 3], " import integers ;; map(inc) ;;", [2, 3, 4])
+    ;     ssh-apply-test(|"fetch elem 1", [1, 2, 3], " import list ;; fetch-elem(?2) ;;", 2)
+    ;     ssh-apply-test(|"fetch 1", [1, 2, 3], " import list ;; fetch(?2; ?x) ;; !x ;;", 2)
+    ; ssh-apply-and-fail(|"fetch 2", [1, 2, 3], " import list ;; fetch(?4) ;;")
+    ;     ssh-apply-test(|"conc", ([1, 2, 3], [3, 4, 5]), " import list-set ;; conc ;;", [1, 2, 3, 3, 4, 5])
+    ;     ssh-apply-test(|"concat", [[1, 2, 3], [3, 4, 5]], " import list-set ;; concat ;;", [1, 2, 3, 3, 4, 5])
+    ;     ssh-apply-test(|"union", ([1, 2, 3], [3, 4, 5]), " import list-set ;; union ;;", [1, 2, 3, 4, 5])
+
+    ;     ssh-apply-test(|"term-size ", 2, " import term ;; term-size ;;", 1)
+    ;     ssh-apply-test(|"collect-om 1", [1, (2, 3), 3], " import collect ;; collect-om(is-int) ;;", [1, 2, 3])
+
+  cos-tests =
+      ssh-apply-test(|"stratego concrete object syntax", 1, " :syntax StrategoStratego ;; !|[ !2 ]| ;;", Build(Int("2")))
+
+  traversal-tests = 
+      ssh-apply-test(|"topdown try"
+      , (1, 2, (3, 4))
+      , " import simple-traversal ;;
+          topdown(try((3 -> 4))) ;;
+        "
+      , (1,2,(4,4)))
+
+  sugar-tests =
+          ssh-apply-test(|"wrap split 1", 2,        " !(<id>, <id>)   ;;", (2, 2))
+    ;     ssh-apply-test(|"wrap split 2", 2,        " !(<id>, 3)      ;;", (2, 3))
+    ;     ssh-apply-test(|"wrap split 3", 2,        " import integers ;; !(<inc>, <inc>) ;;", (3, 3))
+    ;     ssh-apply-test(|"wrap split 4", 2,        " ![<id>, <id>] ;;", [2, 2])
+    ;     ssh-apply-test(|"project 1", (2, 3),      " ?(<id>, _) ;;", 2)
+    ;     ssh-apply-test(|"project 2", (2, 3),      " ?(_, <id>) ;;", 3)
+
+  test-tests =
+          ssh-apply-test(|"test 1", 2,              " test(?2; !3) ;;", 2)
+    ; ssh-apply-and-fail(|"test 2", 3,              " test(?2) ;;")
+
+  as-tests =
+          ssh-apply-test(|"as 1", (1, 2),           " ?t@(1, 2) ;; !() ;; !(t, t) ;;", ((1, 2), (1, 2)))
+    ;     ssh-apply-test(|"as 2", (1, 2),           " ?(x@1, 2) ;; !() ;; !(x, x) ;; ", (1, 1))
+
+  dynrule-tests =
+          ssh-apply-test(|"dynrule counter 1",  (), 
+          " import integers ;;
+            new-counter => c ;;
+            <next-counter> c ;;
+            <next-counter> c ;;
+            !Foo() ;;
+            <get-counter> c ;;
+          ", 2)
+
+  closure-tests =
+          ssh-apply-test(|"closure test 1",  (),
+          " foo(s) = ?y; s ;;
+            !1 ;;
+            ?y ;;
+            !2 ;;
+            foo(!y) ;;
+          ", 1)
+
+    ;     ssh-apply-test(|"closure test 2",  (),
+          " foo(s) = !1; s; !2 ;;
+            foo(?y) ;;
+            !y ;;
+          ", 1)
+
+    ;     ssh-apply-test(|"let test 1",  1,
+         " let foo = !2 in foo end ;;
+         ", 2)
+
+    ;     ssh-apply-test(|"let test 2",  1,
+         "  inc =  prim(\"SSL_addi\",  <id>, 1) ;;
+            let foo = bar; inc  bar = !1 in foo end ;;
+         ", 2)
+
+    ;     ssh-apply-test(|"closure test 2a",  [5, 5, 5, 5, 5, 5, 5, 5, 5, 5],
+          " let foo = [!3 | foo] + [] in foo end ;;
+          ", [3, 3, 3, 3, 3, 3, 3, 3, 3, 3])
+
+    ;     ssh-apply-test(|"closure test 2b",  [5, 5, 5, 5, 5, 5, 5, 5, 5, 5],
+          " foo = [!3 | foo] + [] ;;
+            foo ;;
+          ", [3, 3, 3, 3, 3, 3, 3, 3, 3, 3])
+
+    ;     ssh-apply-test(|"closure test 2c",  [5, 5, 5, 5, 5, 5, 5, 5, 5, 5],
+          " bar = rec foo ([!3 | foo] + []) ;;
+            bar ;;
+          ", [3, 3, 3, 3, 3, 3, 3, 3, 3, 3])
+
+    ;     ssh-apply-test(|"closure test 2d",  (5, (5, (5, (5, (5, (5, (5, (5, (5, ()))))))))),
+          " let cons(s) = (!3, s)
+                    foo = cons(foo) + ()
+             in foo
+            end ;;
+          ", (3, (3, (3, (3, (3, (3, (3, (3, (3, ()))))))))))
+
+    ;     ssh-apply-test(|"closure test 2e",  (5, (5, (5, (5, (5, (5, (5, (5, (5, ()))))))))),
+          " let cons(s) = (!3, s) 
+             in let foo = cons(foo) + ()
+                 in foo
+                end
+            end ;;"
+          , (3, (3, (3, (3, (3, (3, (3, (3, (3, ()))))))))))
+
+    ;     ssh-apply-test(|"closure test 2f",  (5, (5, (5, (5, (5, (5, (5, (5, (5, ()))))))))),
+          " cons(s) = (!3, s) ;;
+            let foo = cons(foo) + () in foo end ;;
+          ", (3, (3, (3, (3, (3, (3, (3, (3, (3, ()))))))))))
+
+    ; ssh-apply-and-fail(|"closure test 3a",  (),
+          " foo(s|t) = s ;;
+            foo(!t|1) ;;
+          ")
+
+    ; ssh-apply-and-fail(|"closure test 3b",  (),
+          " foo(s1, s2) = s2 ;;
+            foo(!2, s1) ;;
+          ")
+
+    ; ssh-apply-and-fail(|"closure test 3c",  (),
+          " foo(s1, s2) = s2 ;;
+            foo(!2, !3); s1 ;;
+          ")
+
+    ;     ssh-apply-test(|"closure test 4",  1,
+          " foo(s) = rec x(!2; s) ;;
+            rec x(?2 <+ foo(x); !3) ;;
+          ", 3)
+
+    ;     ssh-apply-test(|"closure test 5a",  [1, 2, 3],
+          " let map(s) = [] + [s | map(s)] in map(!1) end ;;
+          ", [1, 1, 1])
+
+    ;     ssh-apply-test(|"closure test 5b",  [1, 2, 3],
+          " map(s) =  [] + [s | map(s)] ;;
+            map(!1) ;;
+          ", [1, 1, 1]) 
+
+    ;     ssh-apply-test(|"closure test 6",  (),
+          " foo(s) =  let x = !2 in s end ;;
+            let x = !1 in foo(x) end ;;
+          ", 1)
+
+    ;     ssh-apply-test(|"closure test 7",  [5, 5, 5, 5, 5, 5, 5, 5, 5, 5],
+          " inc    =  prim(\"SSL_addi\",  <id>, 1) ;;
+            dec    =  prim(\"SSL_subti\", <id>, 1) ;;
+            bar(s) =  rec x([] + [inc | s]) ;;
+            foo    =  rec x([] + [dec | bar(x)]) ;;
+            foo ;;
+          ", [4, 6, 4, 6, 4, 6, 4, 6, 4, 6])
+
+    ;     ssh-apply-test(|"closure test 8",  [5, 5, 5, 5, 5, 5, 5, 5, 5, 5],
+          " inc =  prim(\"SSL_addi\",  <id>, 1) ;;
+            dec =  prim(\"SSL_subti\", <id>, 1) ;;
+            bar =  rec x([] + [inc | foo]) ;;
+            foo =  rec x([] + [dec | bar]) ;;
+            foo ;;
+          ", [4, 6, 4, 6, 4, 6, 4, 6, 4, 6])
+
+    ;     ssh-apply-test(|"closure test 9",  [5, 5, 5, 5, 5, 5, 5, 5, 5, 5],
+          " inc =  prim(\"SSL_addi\",  <id>, 1) ;;
+            dec =  prim(\"SSL_subti\", <id>, 1) ;;
+            bar(s) =  rec x([] + [inc | s]) ;;
+            foo    =  rec x([] + [dec | bar(foo)]) ;;
+            foo ;;
+          ", [4, 6, 4, 6, 4, 6, 4, 6, 4, 6])
+
+    ;     ssh-apply-test(|"closure test 10",  [5, 5, 5, 5, 5, 5, 5, 5, 5, 5],
+          " inc    =  prim(\"SSL_addi\",  <id>, 1) ;;
+            dec    =  prim(\"SSL_subti\", <id>, 1) ;;
+            bar(s) =  rec x([] + [inc | s]) ;;
+            foo    =  let x = [] + [dec | bar(x)] in x end ;;
+            foo ;;
+          ", [4, 6, 4, 6, 4, 6, 4, 6, 4, 6])
+
+    ;     ssh-apply-test(|"closure test 11",  [5, 5, 5, 5, 5, 5, 5, 5, 5, 5],
+          " inc    =  prim(\"SSL_addi\",  <id>, 1) ;;
+            dec    =  prim(\"SSL_subti\", <id>, 1) ;;
+            bar(s) =  let x = [] + [inc | s]      in x end ;;
+            foo    =  let x = [] + [dec | bar(x)] in x end ;;
+            foo ;;
+          ", [4, 6, 4, 6, 4, 6, 4, 6, 4, 6])
+
+    ;     ssh-apply-test(|"closure test 12",  [5, 5, 5, 5, 5, 5, 5, 5, 5, 5],
+          " inc    =  prim(\"SSL_addi\",  <id>, 1) ;;
+            dec    =  prim(\"SSL_subti\", <id>, 1) ;;
+            bar(s) =  let x = [] + [inc | s] in x end ;;
+            foo    =  rec x([] + [dec | bar(x)]) ;;
+            foo ;;
+          ", [4, 6, 4, 6, 4, 6, 4, 6, 4, 6])
+
+    ;     ssh-apply-test(|"closure test 13",  1,
+          " inc    =  prim(\"SSL_addi\",  <id>, 1) ;;
+            bar(s) =  s; inc ;;
+            foo    =  ?x; let barney = !x; inc in bar(barney; inc) end ;;
+            foo ;;
+          ", 4)
+
+  bugreport-tests = 
+    ssh-apply-test(|"SSH-1, reported by Arthur van Dam",  (),
+      "import list;;
+
+       main = <cart-set(id)> ([1, 2, 3, 4], [5, 6, 7, 8]) ;;
+             
+       cart-set(s) =
+         ?(xs, ys)
+       ; <cart-set-init> ys
+       ; cart-set-foldr(|xs)
+       ; cart-set-unpack ;;
+
+       cart-set-init() =
+         is-list; !(([], <id>), []) ;;
+
+       cart-set-foldr(|xs) =
+         rec x(
+           \\ ((ys, []), cs) -> ((ys, []), cs) \\
+        <+ \\ ((ys, [z|zs]), cs) -> <x> ((<conc> (ys, [z]), zs), [<zip> (xs, <conc> ([z|zs], ys)) | cs] ) \\
+         ) ;;
+
+       cart-set-unpack =
+         ?((_,_), <id>)  ;;
+
+       main ;;", [[(1,8),(2,5),(3,6),(4,7)],[(1,7),(2,8),(3,5),(4,6)],[(1,6),(2,7),(3,8),(4,5)],[(1,5),(2,6),(3,7),(4,8)]])
+  ; ssh-apply-test(|"SSH-2, reported by Arthur van Dam",  (),
+      "import file ;;
+       import dir ;;
+       get-files(|ext) = readdir ; filter(test(get-extension => ext)) ;;
+       <get-files(|\"foo\")> \"/\";;
+      ", [])
+  ; ssh-apply-and-fail(|"Matching error", (),
+      " !1 ;;
+        ?z ;;
+        !Var(\"z\") ;;
+        ?z ;; ")
+  ; ssh-apply-test(|"SSL term-zip error", (),
+      " import list ;;
+        <Hd> [Var(\"x\")] ;;
+      ", Var("x"))

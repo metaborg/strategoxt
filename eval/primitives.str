@@ -1,0 +1,44 @@
+/**
+ * For each primitive invocation in the input
+ * generate an evaluation rule
+ * 
+ *  EvalPrim : App(Prim(f, ts), t) -> <prim(f, ts ...)> t
+ *
+ * @author Martin Bravenboer <martin@cs.uu.nl>
+ *         Eelco Visser <visser@cs.uu.nl>
+ */
+module primitives
+imports lib Stratego 
+
+strategies
+
+  main = 
+    io-wrap(
+      get-primitives
+    ; \ rdefs -> |[
+          module eval-lib-primitives
+          rules
+            ~*rdefs
+      ]| \
+    )
+
+  get-primitives =
+    collect-all(EvalPrimitive)
+
+rules
+
+  EvalPrimitive :
+    |[ prim(str, t0*) ]|
+      ->
+    |[ EvalPrim(evalt) :
+         Apply(PrimT(str, [], [t1*]), to) -> <prim(str, t2*)> to
+    ]|
+      where <map(new-stratego-var)> t0* => t1*
+          ; <map(apply-eval-term )> t1* => t2*
+
+  new-stratego-var =
+      new => x
+    ; !Term |[ x ]|
+
+  apply-eval-term :
+   Term |[ t ]| -> Term |[ <evalt> t ]|

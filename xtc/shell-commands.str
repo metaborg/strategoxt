@@ -1,0 +1,11 @@
+module shell-commands
+
+rules
+
+  execute-command(|env) :
+    (Internal(Exit()), term) -> <exit> 0
+
+signature
+  constructors
+    Internal : InternalCommand -> ShellCommand
+    Exit     : InternalCommand

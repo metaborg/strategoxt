@@ -1,0 +1,21 @@
+module PathNames
+
+exports
+  %% sorts RelPathName AbsPathName PathName Path FileName
+
+  context-free syntax
+    RelPathName -> Path {cons("Relative")}
+    AbsPathName -> Path {cons("Absolute")}
+
+  lexical syntax
+    RelPathName        -> PathName
+    AbsPathName        -> PathName
+    "/" RelPathName    -> AbsPathName
+    {FileName "/"}+    -> RelPathName
+    [\.\-\_a-zA-Z0-9]+ -> FileName
+
+  lexical restrictions
+    FileName    -/- [\.\-\_a-zA-Z0-9]
+    AbsPathName -/- [\/\.\-\_a-zA-Z0-9]
+    RelPathName -/- [\/\.\-\_a-zA-Z0-9]
+

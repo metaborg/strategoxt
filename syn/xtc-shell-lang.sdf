@@ -1,0 +1,46 @@
+module xtc-shell-lang
+imports PathNames
+
+exports
+  sorts ShellCommand
+
+  context-free syntax
+    ":" InternalCommand -> ShellCommand {cons("Internal")}
+    Command             -> ShellCommand {cons("Do")}
+
+    "cd" PathName -> InternalCommand {cons("Chdir")}
+    "pwd"         -> InternalCommand {cons("Getcwd")}
+
+    "exit"  -> InternalCommand {cons("Exit")}
+    "quit"  -> InternalCommand {cons("Exit")}
+    "q"     -> InternalCommand {cons("Exit")}
+
+  context-free syntax
+    "nop"               -> Command {cons("Nop")}
+    Command ";" Command -> Command {cons("Seq"),right}
+    Exp Exp*            -> Command {cons("Call")}
+
+    Var       -> Exp
+    StringLit -> Exp
+    Token     -> Exp {cons("String")}
+    Path      -> Exp {cons("Path")}
+
+  syntax
+    "$" <Id-LEX> -> <Var-CF> {cons("Var")}
+    "&" <Exp-CF> -> <Exp-CF> {cons("XtcFind")}
+
+    "\"" <StringChars-LEX> "\"" -> <StringLit-CF> {cons("String")}
+
+  lexical syntax
+    ~[\"]*         -> StringChars
+
+    [\-\_a-zA-Z0-9][\.\-\_a-zA-Z0-9]* -> Token
+    [a-zA-Z][\.\-\_a-zA-Z0-9]* -> Id
+    "nop" -> Id {reject}
+
+    [\ \t\n] -> LAYOUT
+
+  context-free restrictions
+    Token    -/- [\.\-\_a-zA-Z0-9]
+    LAYOUT?  -/- [\ \t\n]
+

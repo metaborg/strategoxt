@@ -1,0 +1,634 @@
+2004-04-11  Martin Bravenboer <martin@cs.uu.nl>
+
+	* Improved the overloading of strategies. Stratego-env now
+	provides a workaround if the arguments of overloaded strategies
+	have different names.
+
+	* Added a separate trace facility, which used to be done at some
+	verbosity level. The trace facility now also pretty-prints the
+	strategy that is be evaluated to concrete syntax. The performance
+	of the trace facility is somewhat poor, but for tracing this
+	shouldn't be a problem.
+	
+2004-01-21  Martin Bravenboer <martin@cs.uu.nl>
+
+	* eval/stratego-eval.str: implement all/some/one using
+	all/some/one. Suggested by Eelco Visser.
+
+2004-01-21  Martin Bravenboer <martin@cs.uu.nl>
+
+	* eval/stratego-eval.str: Implemented some.
+
+	* eval/stratego-eval.str: fixed annotations in:
+	 - some
+	 - all
+	 - one
+
+	* Added simple-traversal and annotations testsuite.
+
+2004-01-20  Martin Bravenboer <martin@cs.uu.nl>
+
+	* :clear is now :reset. :reset sets the current term to (). This
+	is only useful if your shell session is a mess for some
+	reason. Maybe reset should do even more resetting stuff.
+
+	* :clear clears the screen
+
+2004-01-20  Martin Bravenboer <martin@cs.uu.nl>
+
+	* Fixed problem in xtc-import: register-import doesn't really
+	import the module in the current repository. xtc stuff now works,
+	as is illustrated by this session:
+
+	martin@logistico:~/wc/pt-xml/xmpl/stratego-xml> stratego-shell
+	stratego> :include xml-doc.strs
+	stratego> !%><foo/><%
+	EmptyElement(QName(None,"foo"),[])
+	stratego> write-to
+	FILE("/tmp/StrategoXTEqL9Cy")
+	stratego> xtc-transform(!"pp-xml-doc")
+	FILE("/tmp/StrategoXT7mI00D")
+	stratego> ?FILE(<read-text-file>)
+	"<foo/>\n"
+	stratego> debug
+	<foo/>
+
+	xml-doc.strs contains:
+	
+	:xtc import /pkg/xml-tools/current/share/xml-tools/XTC ;;
+	:syntax /pkg/xml-tools/current/share/sdf/xml-tools/Stratego-xml ;;
+	import xtc-lib;;
+
+2004-01-20  Martin Bravenboer <martin@cs.uu.nl>
+
+	* Added an :include command to include a script. This works (or
+	should work) in	the shell and in scripts. Implementing Rob's
+	request for a ~/.stratego-shell is now trivial because it can be
+	implemented in terms of this command.
+	
+2004-01-15  Martin Bravenboer <martin@cs.uu.nl>
+
+	* Changed syntax of stratego script to a sequence of commands
+	terminated by ;;. The closing character used to be a newline,
+	where line continuation was a todo. CDuce uses a ;; and I think
+	this is a smart choice. Line continuations are just annoying,
+	especially in constructs like strategy declaration and
+	let/in/end. They are not necessary now because all whitespace is
+	part of the command.
+
+2004-01-14  Martin Bravenboer <martin@cs.uu.nl>
+
+	* Implemented higher order strategy arguments. All tests pass.
+
+2004-01-14  Martin Bravenboer <martin@cs.uu.nl>
+
+	* Implemented guarded left choice and added the string-test
+	testsuite. In this suite there is a problem with higher order
+	arguments, which was already on the todo list.
+
+2004-01-14  Martin Bravenboer <martin@cs.uu.nl>
+
+	* Added overloading of strategies. This solves all problems in the
+	current testsuites: stratego-shell-test, list-basic-test, and integers-test
+	all succeed!
+	
+2004-01-14  Martin Bravenboer <martin@cs.uu.nl>
+
+	* The display is gone, so there should be no display command.
+	
+2004-01-13  Martin Bravenboer <martin@cs.uu.nl>
+
+	Opeens weet je het: je wordt treinconducteur.
+	
+	successes: 127
+	failures: 0
+
+2004-01-13  Martin Bravenboer <martin@cs.uu.nl>
+
+	successes: 124
+	failures: 1
+	
+2004-01-13  Martin Bravenboer <martin@cs.uu.nl>
+
+	* More tests related to The Bug (which all succeed :( ), added
+	:showenv, :showdisplay and :showscopes, mostly for debugging the
+	interpreter, but they might be interesting for getting insight in
+	Stratego programs as well.
+
+2004-01-12  Martin Bravenboer <martin@cs.uu.nl>
+
+	* Pretty-printing of breakpoints is now implemented using an
+	additional pp-table for the shell specific extensions of Stratego.
+	
+2004-01-10  Martin Bravenboer <martin@cs.uu.nl>
+
+	* xtc/stratego-debugs.str: prefix the prompt of the break shell
+	with a # to make it more clear that the user is in a break
+	shell. For a break strategy #foo the prompt is now
+	#foo. (suggested by Rob).
+
+	* syn/stratego-shell-lang.sdf: allow more commands in a break
+	shell: quit, help, about.
+
+	Another example session to wetten your appetite:
+	-----------------------------------------
+	stratego> !3
+	3
+	stratego> foo(s) = ?x; #bar; !(x, <s>)
+	stratego> foo(!2)
+	#bar> :show
+	3
+	#bar> :showdef s
+	s( | ) =
+	  !2
+
+	#bar> :binding x
+	x is bound to 3
+	#bar> :continue
+	(3,2)
+	stratego>
+	-----------------------------------------
+	
+2004-01-10  Martin Bravenboer <martin@cs.uu.nl>
+
+	* xtc/stratego-debug.str: We have a debugger!
+
+	The stratego-shell now supports an extension of the Stratego
+	language: setting breakpoints. A #foo will break the evaluation
+	of the interpreter and present a break shell with prompt
+	'foo'. You can inspect the environment and the current term in
+	this shell. With :continue the evaluation continues.
+
+	Example session:
+	martin@logistico:~> stratego-shell
+	stratego> !1; ?a; #foo ; !(a, a)
+	foo> :show
+	1
+	foo> :binding a
+	a is bound to 1
+	foo> :continue
+	(1,1)
+	stratego>
+
+	In a break shell you can use the :showdef, :binding, and :show
+	commands. This allows you to inspect term bindings, strategy
+	definitions (global, let, arguments) and the current term.
+
+	Maybe I will allow rewriting of the current term in the future,
+	maybe without effect on the transformation. This is completely
+	controlled by the syntax definition, which defines subsets of
+	shell commands.
+	
+2004-01-09  Martin Bravenboer <martin@cs.uu.nl>
+
+	* eval/stratego-interpreter.str: scoping of term variables.
+
+2004-01-09  Martin Bravenboer <martin@cs.uu.nl>
+
+	* eval/stratego-eval.str: all table manipulations to higher level
+	strategies in stratego-interpreter.str
+
+	* eval/stratego-eval.str: call now completely defined in terms of
+	Scope and LetNotRec. Still need to improve the environmental stuff
+	however.
+	
+2004-01-09  Martin Bravenboer <martin@cs.uu.nl>
+
+	* eval/stratego-eval.str: allow an App at the left hand side of an
+	App. Term arguments of strategies are now defined using a scope
+	and a series of matches to the evaluated actual values of the term
+	arguments.
+
+2004-01-09  Martin Bravenboer <martin@cs.uu.nl>
+
+	* ASCII logo of Stratego/XT, created by Arthur van Dam. in about.
+
+	* Completely shut up at startup
+
+	* 'een beetje klooien', especially on environment stuff.
+	
+2004-01-08  Martin Bravenboer <martin@cs.uu.nl>
+
+	* eval/stratego-eval-front.str: define the term variables of a
+	strategy in the environment.
+
+	* eval/stratego-eval.str: strategy definitions are now defined in
+	the environment as a closure, that is, together with their
+	environment. This solves the scoping problems observed in the
+	testsuites.
+
+2004-01-07  Martin Bravenboer <martin@cs.uu.nl>
+
+	* eval/stratego-eval.str: introduced warning for undefined
+	variables. I think this will be changed to a fatal error in the
+	future.
+	
+
+2004-01-07  Martin Bravenboer <martin@cs.uu.nl>
+
+	* eval/* : moved primitive rule generation to the
+	stratego-shell. I had to change the type of the primitive rules.
+
+	* xtc/stratego-eval.str: refactoring: passing environment around
+	as a term argument. No closures yet, so no bugs are fixed.
+	
+2004-01-06  Martin Bravenboer <martin@cs.uu.nl>
+
+	* tests/ssl-test.str: applying ssl testsuites by importing the
+	testsuite followed by an invocation of main. I need to implement
+	some bootstrap download mechanism to fetch all ssl
+	testsuites. Still lots of problems, but most are easy to fix!
+
+	* xtc/stratego-eval.str: fixed bug in implementation of Let. The
+	problem is similar to the renaming problem in strategy calls. The
+	problem was illustrated by 'concat'. This strategy caused a
+	segmentation fault (non termination). In the invocation two rec x
+	patterns are used that influence each other because they are not
+	renamed.
+
+	The Let code is now very similar to a strategy call, which is not
+	surprising. I think a call should be implemented in terms of a Let
+	(for strategy arguments) and Scope and matches (for term
+	arguments).
+
+2004-01-06  Martin Bravenboer <martin@cs.uu.nl>
+
+	* xtc/stratego-eval.str: implemented (missing) support for @
+	(As). The stratego-shell now supports dynamic rules in imports,
+	not yet at the command line. Note that the stratego-shell can thus
+	be used to inspect the content of the dynamic rule tables at
+	runtime.
+
+2004-01-06  Martin Bravenboer <martin@cs.uu.nl>
+
+	* xtc/stratego-eval.str: fixed bug in evaluation of test(s).
+	
+2004-01-06  Martin Bravenboer <martin@cs.uu.nl>
+
+	* syn/stratego-shell-lang.sdf: rule definitions at the command
+	line.
+
+	* xtc/stratego-shell-commands.str: support for rule definitions.
+	
+2004-01-06  Martin Bravenboer <martin@cs.uu.nl>
+
+	* xtc/stratego-shell-commands.str: higher order shell strategy
+	definitions at command line.
+	
+2004-01-06  Martin Bravenboer <martin@cs.uu.nl>
+
+	* xtc/stratego-eval.str: implemented support for term arguments in
+	the interpreter. Improved some other evaluation rules as well.
+
+	* xtc/stratego-shell-commands.str: implemented support for
+	strategy definitions with term and strategy arguments.
+
+	* syn/stratego-shell-lang.sdf: commands in a script are now
+	terminated by a newline. The commands are parsed at runtime, so
+	:syntax should now work in scripts as well (not tested yet). Empty
+	lines are currently not accepted.
+
+2004-01-05  Martin Bravenboer <martin@cs.uu.nl>
+
+	* xtc/stratego-eval.str: found and fixed bug in list congruence
+	evaluation. Failure was not detected and resulted in 'Fail'
+	terms. A collect-om application showed this problem. collect and
+	fetch now work and are in the testsuite.
+
+2004-01-05  Martin Bravenboer <martin@cs.uu.nl>
+
+	* xtc/stratego-shell.str: set the outstream of GNU Readline to
+	stderr. The stratego-shell in interactive mode uses a prompt,
+	which must not be written to the stdout (default of GNU
+	Readline). The stratego-shell can now be embedded in a pipeline:
+
+	> tiger-xmpl -x fac | parse-tiger | stratego-shell | pp-tiger
+	stratego> ?Let(_, [<id>])
+	Call(Var("printint"),[Call(Var("fact"),[Int("10")])])
+	stratego> :quit
+	printint(fact(10))
+	> 
+
+	Of course you can pass a script to the stratego-shell in a
+	pipe. This already worked because there is no prompt in this
+	case.
+
+2003-12-31  Martin Bravenboer <martin@cs.uu.nl>
+
+	* xtc/stratego-shell-commands.str: GNU Readline is GPL, so the
+	stratego-shell must be GPL, not LGPL.
+
+2003-12-31  Martin Bravenboer <martin@cs.uu.nl>
+
+	* xtc/stratego-shell-commands.str: support for concrete object
+	syntax in the Stratego Shell.
+
+	The command ":syntax name.def" is used to change the syntax of the
+	Stratego Shell commands. The shell command language of the
+	Stratego Shell is at runtime added to this language, so there is
+	no need to combine syntax definitions by hand. Any existing
+	concrete object syntax definition can be used.
+
+	Examples:
+	stratego> :syntax StrategoStratego
+	
+	stratego> !|[ !(1, 2) ]|
+	Build(Tuple([Int("1"),Int("2")]))
+
+	stratego> !|[ Foo : 1 -> 2 ]|
+	RDefNoArgs("Foo",RuleNoCond(Int("1"),Int("2")))
+
+	stratego> !|[ foo(sa) = ![1, 2, 3] ]|
+	SDef("foo",[DefaultVarDec("sa")],Build(List([Int("1"),Int("2"),Int("3")])))
+
+	stratego> :syntax /pkg/xml-tools/current/share/sdf/Stratego-xml
+
+	stratego> !%><foo/><%
+	EmptyElement(QName(None,"foo"),[])
+
+	stratego> \ %><foo/><% -> %><bar/><% \
+	EmptyElement(QName(None,"bar"),[])
+
+	Have a lot of fun!
+	
+2003-12-30  Martin Bravenboer <martin@cs.uu.nl>
+
+	* xtc/stratego-shell.str: For list congruences importing list-cons
+	is required. This module is now imported by default.
+
+	For tuple congruence importing tuple-cons doesn't define the
+	appropiate strategies. stratego-eval now has a dirty rule that
+	writes this case back to a Cong.
+
+	* tests/stratego-shell-tests.str: Tests for congruences. The
+	testsuite now consists of 50 tests, but there should be much, much
+	more. Maybe I can reuse the tests of the Stratego Compiler.
+
+2003-12-30  Martin Bravenboer <martin@cs.uu.nl>
+
+	* xtc/stratego-eval.str: Fixed problem illustrated by the 'sum of
+	int list' test. There were two problems:
+
+	1) List congruences didn't work because of problems
+	comparable to the pattern decomposition of lists.
+
+	2) Recursive calls with strategy arguments didn't work because of
+	the way strategy arguments used to be defined. This is now fixed
+	with a rather ad-hoc renaming of the arguments in the strategy
+	body. Maybe we need some scoping mechanism like scoped-finite-map
+	here. Implementing term arguments will be even more tricky without
+	a decent scope mechanism I'm afraid.
+
+	All tests in our tiny testsuite now succeed, so there are no known
+	problems (except for term arguments of course).
+
+2003-12-30  Martin Bravenboer <martin@cs.uu.nl>
+
+	* xtc/stratego-shell-commands.str: added :showast command. Same as
+	:showdef, but shows AST of strategy definition. Very useful for
+	debugging.
+
+2003-12-30  Martin Bravenboer <martin@cs.uu.nl>
+
+	* xtc/stratego-shell-commands.str: added :showdef command. This
+	command shows the definition in normalized Stratego of a defined
+	strategy. Example:
+
+	martin@queen:~> stratego-shell
+	Welcome to the Stratego Shell!
+
+	Type :help for a list of available commands
+	stratego> import integers
+	stratego> :showdef add
+	add() =
+	  {x, y :
+	   ?(x, y)
+	   ; (prim("SSL_addi",x,y)
+	      <+ prim("SSL_addr",x,y))}
+        stratego> 
+
+	* xtc/stratego-shell-commands.str: fixed infinite adding of file
+	extensions :o .
+	
+2003-12-30  Martin Bravenboer <martin@cs.uu.nl>
+ 
+	* xtc/stratego-eval.str: fixed "match and build 2" bug.  !1;?x;
+	!5; ?x; succeeded (should fail). The problem was a "s1; s2 <+ s3"
+	in the lookup of bindings in the environment. If s1 suceeds but s2
+	fails then s3 is chosen. Replaced by a guared left choice: "s1 < s2
+	+ s3".
+
+2003-12-30  Martin Bravenboer <martin@cs.uu.nl>
+
+	* xtc/stratego-shell.str: exit on failure.
+
+2003-12-29  Martin Bravenboer <martin@cs.uu.nl>
+
+	* xtc/stratego-eval.str: solved all known list problems by adding
+	PatDecompose rules for Cons and Nil patterns with list terms.
+	
+2003-12-29  Martin Bravenboer <martin@cs.uu.nl>
+
+	* tests/*: High time for a testsuite.
+	
+2003-12-29  Martin Bravenboer <martin@cs.uu.nl>
+
+	* xtc/stratego-shell.str: Changed input and output of scripts and
+	terms. The stratego-shell is now an ordinary io tool: it
+	(optionally) takes a term on the stdin or -i, and produces a term
+	on the stdout or -o. The --script argument can be used to execute
+	a script in non-interactive mode. I will add a --cmd option later
+	to specify a single command to be executed.
+
+	The reading of terms from stdin	is tricky because the commands in
+	interactive mode are read from the stdin as well be default by the
+	GNU Readline. It is now detected if the stdin is no a terminal
+	(using isatty) and the real terminal is used instead.
+
+	This is an interesting change because the stratego-shell can now
+	be used to perform minor transformations in a pipe, in the Unix
+	shell, or in Makefiles. Of course you want to use the xtc-shell
+	for this, but well, we need to take care of legacy shells as well
+	;) .
+
+	Note that this smells like an aterm-shell: You can *interactively*
+	inspect an ATerm using the Stratego language constructs (even in a
+	pipe), modify it, or continue with the same term.
+
+2003-12-29  Martin Bravenboer <martin@cs.uu.nl>
+
+	* xtc/stratego-shell-commands.str: import, file extension is now
+	optional. Try file system as well.
+	
+2003-12-28  Martin Bravenboer <martin@cs.uu.nl>
+
+	* Implemented support for importing modules. Currently the module
+	is looked up in the XTC repository. This should be merged with the
+	xtc-shell stuff.
+
+	Example sessions:
+	martin@queen:~> stratego-shell
+	Welcome to the Stratego Shell!
+	Type :help for a list of available commands
+	stratego> import integers.rtree
+	stratego> <add> (2, 3)
+	5
+	stratego> !2
+	2
+	stratego> inc
+	3
+	stratego> inc
+	4
+	stratego> inc
+	5
+	stratego> inc
+	6
+	stratego> string-to-int
+	rewriting failed
+	command failed
+	stratego> int-to-string
+	"6"
+	stratego> explode-string
+	[54]
+	stratego>
+
+2003-12-28  Martin Bravenboer <martin@cs.uu.nl>
+
+	* Fixed the Stratego Interpreter support for primitives. The shell
+	should now be able to invoke all primitives. import is next!
+	
+2003-12-27  Martin Bravenboer <martin@cs.uu.nl>
+
+	* xtc/stratego-shell-commands.str: desugar strategy definitions to
+	core stratego. The term arguments are really becoming a problem. I
+	need to take a look a closer look at the interpreter. It looks
+	like it does not support term arguments.
+
+2003-12-27  Martin Bravenboer <martin@cs.uu.nl>
+
+	* syn/Makefile.am: Generate RHG abstract syntax definitions from
+	SDF concrete syntax definitions.
+
+	* sig/Makefile.am: Generate Stratego Signatures from RHG abstract
+	syntax definitions.
+
+	* xtc/stratego-shell-commands.str: use generated Stratego
+	Signatures.
+	
+2003-12-24  Martin Bravenboer <martin@cs.uu.nl>
+
+	* xtc/xtc-shell.str: implemented :cd pathname and :pwd. pwd is
+	actually an executable program in the file system, but well ...
+	Notice that I'm using the internal command syntax because I think
+	changing the current directory is about the shell, not about the
+	commands to be executed.
+	
+2003-12-20  Martin Bravenboer <martin@cs.uu.nl>
+
+	* syn/xtc-shell-lang.sdf: 
+	- using & to find a file in the repository:
+	xtc> &sglri -p &Stratego.tbl -i ./foo.str -o foo.aterm
+	...
+	xtc> &pp-aterm -i foo.aterm
+	...
+	
+	- Variables, xtc-find and String literals in SDF syntax sections
+  	to get a nice AST for free.
+
+	- Added follow restrictions. Interesting to see is that some of
+	the problems only showed up after disabling direct eagerness (d),
+	eagerness (e), and injection count (i) filters in the invocation
+	of sglr.
+
+	* xtc/xtc-shell.str:
+	- invoking tools in the current directory without a ./ prefix is
+	now allowed.
+	
+	- Using the execv variant in the family of exec funtctions to skip
+	searching the PATH. This requires the latest of the latest
+	Stratego runtime, which cannot be installed currently.
+
+	- Invoke sglr with -fe, -fi, and -fd
+
+	- Applying xtc-find now also possible for command line arguments.
+
+2003-12-20  Martin Bravenboer <martin@cs.uu.nl>
+
+	* xtc/xtc-shell.str: started implementation of the xtc-shell.
+
+	The xtc-shell does not search the PATH environment variable to
+	locate executable files, nor are the default paths of execvp used
+	to search for programs (/bin and /usr/bin).
+
+	The xtc-shell resolves the location of a tool using an environment
+	of tool bindings. An XTC repository serves as a stored set of tool
+	bindings. Programs that are not in the XTC repository can be
+	invoked as well, but their path must be specified explicitly using
+	an absolute path (starts with a /) or an explicitly relative path
+	(starts with ./).
+
+	The xtc-shell will be based on an xtc composition language that
+	will provide concrete syntax for creating xtc
+	compositions. Currently the following syntax is used:
+
+	/bin/date() - Execute the date tool
+	$strc()     - Execute the strc tools as defined in by the
+	              repository. The $ syntax will probably change
+		      because the $ will be used for variables. Tools
+		      should have a separate namespace.
+
+	* sig/Makefile.am: signature generation for the command languages
+	from tree grammars.
+
+	* syn/Makefile.am: generate tree grammars from SDF syntax
+	definitions.
+
+	* syn/xtc-shell-lang.sdf: fooling around with a syntax for XTC
+	compositions.
+
+	* configure.ac: stratego-shell now requires stratego-regular.
+
+2003-12-17  Martin Bravenboer <martin@cs.uu.nl>
+
+	* Inserted some Stratego Compiler components into the pipeline to
+	desugar constructs to core Stratego (whatever that is). The
+	Stratego Shell now (seems) to support term wrap, term projection
+	application (<s> t), anonymous rules ( \  \ ), strategy rules etc.
+	
+2003-06-18  Martin Bravenboer <martin@mbravenboer.org>
+
+	* Using GNU Readline library for a better shell: all the usual
+	stuff (history, arrow keys) can now be used in the Stratego Shell
+	(thanks to Eelco Dolstra for the tip).
+
+2003-06-17  Martin Bravenboer <martin@mbravenboer.org>
+
+	* if verbosity is 1, print ast
+
+2003-06-17  Martin Bravenboer <martin@mbravenboer.org>
+
+	* Restored the evaluation of all and one
+
+	* Let stratego-eval fail when the interpreter cannot evaluate the
+	AST (not complete).
+
+	* autoshow is now enabled by default
+
+2003-06-17  Martin Bravenboer <martin@mbravenboer.org>
+
+	* Added :q as an alias for :exit (requested by Rob)
+
+	* Added :autoshow on|off to show the current subject term after
+	each rewrite.
+
+	* Print terms to stderr using write-in-text-to-stream instread of
+	fprint or debug. This preserves double quotes.
+
+	* Fail when the result of stratego-eval is Fail
+
+	* No exit when operator is not defined
+
+2003-06-15  Martin Bravenboer <martin@mbravenboer.org>
+
+	* Started the stratego-shell just for fun. Developing a
+	stratego-shell was suggested by Armijn Hemel.

@@ -1,0 +1,62 @@
+/**
+ * Simplification/normalization/desugaring of the complete Stratego syntax
+ * to something the interpreter accepts.
+ *
+ * This language is rather ill-defined though. Maybe this is Core-Stratego?
+ *
+ * @author Martin Bravenboer <martin@cs.uu.nl>
+ */
+module stratego-eval-front
+imports xtc-proc Stratego
+
+strategies
+
+  stratego-module-normalize =
+      xtc-temp-files(
+        write-to
+      ; xtc-stratego-module-normalize
+      ; read-from
+      )
+    ; if-verbose7(debug(!"** DEBUG -- Module in Core Stratego -- "))
+
+  xtc-stratego-module-normalize =
+      ( xtc-io-transform(?Module(_, _))
+      < xtc-transform(!"meta-explode", pass-verbose)
+      ; xtc-transform(!"stratego-desugar", pass-verbose)
+      + id
+      )
+    ; xtc-transform(!"pre-desugar", pass-verbose)
+    ; xtc-transform(!"normalize-spec", pass-verbose)
+    ; xtc-transform(!"spec-to-sdefs", pass-verbose)
+    ; xtc-transform(!"desugar", pass-verbose)
+
+  /**
+   * Desugar a strategy defintion to Core Stratego.
+   *
+   * @todo  Using dynamic rules results in more SDefs that must be returned.
+   * @type  StrategyDef -> StrategyDef
+   */
+  strategy-def-desugar = 
+      ?def
+    ; !Module("foo", [ Strategies([def])])
+    ; stratego-module-normalize
+    ; where(<sdef-to-key> def => key)
+    ; ?Specification(
+         [ Signature([Constructors(_)])
+         , Strategies(
+             <fetch-elem(?SDefT(_, _, _, _); where(sdef-to-key => key))>
+           )
+         ]
+       )
+    ; if-verbose5(debug(!"** DEBUG -- Definition in Core Stratego -- "))
+
+  /**
+   * Desugar a strategy to Core Stratego.
+   *
+   * @type Strategy -> Strategy
+   */
+  strategy-desugar(|env) =
+      !SDefNoArgs(<new => name>, <id>)
+    ; strategy-def-desugar
+    ; ?SDefT(_, _, _, Scope(xs, <id>))
+    ; where(<map(term-binding(|env) <+ define-term(|env))> xs)

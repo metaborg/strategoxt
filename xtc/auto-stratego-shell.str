@@ -1,0 +1,13 @@
+module auto-stratego-shell
+imports xtc-lib
+
+strategies
+
+  main-auto-stratego-shell =
+      install-stratego-shell-m4
+    ; <exit> 0
+
+  install-stratego-shell-m4 =
+      <xtc-find-file> "stratego-shell.m4"
+    ; copy-to(!"stratego-shell.m4")
+

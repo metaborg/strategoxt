@@ -1,0 +1,51 @@
+/**
+ * Stratego interface to the GNU Readline library.
+ *
+ * @author  Martin Bravenboer <martin@cs.uu.nl>
+ */
+module gnu-readline
+
+strategies
+
+  /**
+   * Read a line using a specified prompt.
+   *
+   * @type  String -> String
+   */  
+  gnu-readline = 
+    ?prompt; prim("GNU_Readline_readline", prompt)
+
+  /**
+   * Add a command to the GNU Readline history.
+   *
+   * @type  String -> String
+   */
+  gnu-add-history = 
+    ?command; prim("GNU_Readline_add_history", command)
+
+  /**
+   * @type  Stream -> Stream
+   */
+  gnu-readline-set-instream =
+    prim("GNU_Readline_set_instream", <?Stream(<id>)>)
+
+  /**
+   * @type  _ -> Stream
+   */
+  gnu-readline-get-instream =
+    !Stream(<prim("GNU_Readline_get_instream")>)
+
+  /**
+   * @type  Stream -> Stream
+   */
+  gnu-readline-set-outstream =
+    prim("GNU_Readline_set_outstream", <?Stream(<id>)>)
+
+  /**
+   * @type  _ -> Stream
+   */
+  gnu-readline-get-outstream =
+    !Stream(<prim("GNU_Readline_get_outstream")>)
+  
+  gnu-readline-set-completion(s) =
+    prim("GNU_Readline_set_completion_entry_strat", s|)

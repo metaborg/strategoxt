@@ -1,0 +1,14 @@
+stratego-shell:
+
+xtc-shell:
+
+  * Pathnames are not allowed to end with a /.
+
+  * Command & -- fork without a wait.
+
+  * :chdir path -- change the current directory
+
+  * Compose tools using the composition mechanism of the tool as defined in
+  the reposity (currently by default the xt component model)
+
+  * Compose tools using a plain pipe.

@@ -1,0 +1,34 @@
+module ssh-test
+imports sunit xtc-lib 
+
+strategies 
+
+  ssh-apply-test(|s, input, sscript, output) =
+    apply-test(!s,
+        where(<print-to> [sscript] => FILE(file))
+      ; write-to
+      ; xtc-transform(!"stratego-shell", !["--script", file])
+      ; read-from
+    , !input
+    , !output
+    )
+
+  ssh-apply-and-show(|s, input, sscript) =
+    apply-and-show(!s,
+        where(<print-to> [sscript] => FILE(file))
+      ; write-to
+      ; xtc-transform(!"stratego-shell", !["--script", file])
+      ; read-from
+    , !input
+    )
+
+
+  ssh-apply-and-fail(|s, input, sscript) =
+    apply-and-fail(!s,
+        where(<print-to> [sscript] => FILE(file))
+      ; write-to
+      ; xtc-transform(!"stratego-shell", !["--script", file])
+      ; read-from
+    , !input
+    )
+

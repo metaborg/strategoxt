@@ -1,0 +1,378 @@
+module stratego-shell-commands
+
+imports char-io 
+imports xtc-lib stratego-xt-xtc-tools
+imports stratego-shell-lang
+imports stratego-eval-front stratego-eval
+
+rules
+
+  execute-command(|env) :
+    (Rewrite(s), term) -> 
+      < Apply(strategy-desugar(|env), id)
+      ; stratego-eval(|env)
+      ; not(?Fail())
+      ; if-autoshow(<execute-command(|env)> (Internal(Show()), <id>))
+      > Apply(s, term)
+
+  print-term =
+    where(<write-in-text-to-stream> (<stderr-stream>, <id>); fput-newline)
+
+  execute-command(|env) :
+    (Define(def), term) -> term
+      where < strategy-def-desugar
+            ; define-strat(|env)
+            > def
+
+strategies
+
+  execute-command(|env) :
+    (Internal(Syntax(def)), term) -> term
+      where < pathname-of-def
+            ; set-shell-syntax
+            > def
+
+  execute-command(|env) :
+    (Internal(Include(pathname)), term1) -> term2
+      where <parse-script> FILE(<ensure-script-extension> pathname) => scr
+          ; <run-script(|scr, env)> term1 => term2
+
+  ensure-script-extension =
+    where(has-extension(!".strs")) < id + <conc-strings> (<id>, ".strs")
+
+strategies
+
+  execute-command(|env) :
+    (Internal(ShowSDef(sid)), term) -> term
+      where strat-bindings(|env)
+          ; filter(?(sid, _, _))
+          ; map(show-sdef(|env))
+
+  execute-command(|env) :
+    (Internal(ShowSDef(sid, sargs, targs)), term) -> term
+      where <show-sdef(|env)> (sid, <string-to-int> sargs, <string-to-int> targs)
+
+   show-sdef(|env)=
+      strat-binding(|env)
+     ; ?StrClosure(<id>, _)
+     ; write-to
+     ; xtc-pp-stratego-shell-stratego
+     ; ?FILE(<read-text-file>)
+     ; debug
+
+  xtc-pp-stratego-shell-stratego =
+      xtc-transform(!"stratego-ensugar")
+    ; xtc-transform(!"ast2abox", ![
+        "-p", <xtc-find> "Stratego-pretty.pp.af",
+        "-p", <xtc-find> "StrategoShell-Extensions.pp.af" | <pass-verbose>])
+    ; xtc-transform(!"abox2text", pass-verbose)
+
+  execute-command(|env) :
+    (Internal(ShowAST(sid, sargs, targs)), term) -> term
+      where <strat-binding(|env)> (sid, <string-to-int> sargs, <string-to-int> targs)
+          ; ?StrClosure(<id>, _)
+          ; show-pp-aterm
+
+
+  execute-command(|env) :
+    (Import(modname), term) -> term
+      where < xtc-transform(!"pack-stratego",
+                 !["-I", <dir-of-modname> modname
+                  , "-I", <dir-of-modname> "lib.rtree"
+                  | <pass-verbose> ()
+                  ])
+            ; xtc-stratego-module-normalize
+            ; read-from
+            ; alltd(?SDefT(_, _, _, _); where(define-strat(|env)))
+            > FILE(<basename> modname)
+
+  /**
+   * @todo  Passing this stuff via the config is very dirty.
+   */
+  execute-command(|env) :
+    (Internal(XTC(Import(pathname))), term) -> term
+      where <xtc-read> pathname
+
+
+
+  execute-command(|env) :
+    (Internal(ShowEnv()), term) -> term
+      where !env => StrEnv(scopes)
+          ; <map(show-scope)> scopes
+
+  show-scope =
+      ?StrScope(sdefs, sterms)
+    ; say(!"---------------------------------------------")
+    ; debug(!"Scope: ")
+    ; say(!"---------------------------------------------")
+    ; say(!"Strategies: ")
+    ; <hashtable-keys; show-pp-aterm> sdefs
+    ; say(!"Terms: ")
+    ; <hashtable-keys; show-pp-aterm> sterms
+
+  show-pp-aterm =
+      write-to
+    ; xtc-transform(!"pp-aterm")
+    ; ?FILE(<read-text-file>)
+    ; debug
+
+  dir-of-modname =
+    dir-of-modname-silent
+    <+ say(!"file not found")
+     ; fail
+
+  dir-of-modname-silent =
+    let has-ext =
+          has-extension(!".rtree")
+        + has-extension(!".str")
+    in where(file-exists)
+     ; dirname
+    <+ xtc-find-silent
+     ; dirname
+    <+ not(has-ext)
+     ; <conc-strings> (<id>, ".rtree")
+     ; dir-of-modname-silent
+    <+ not(has-ext)
+     ; <conc-strings> (<id>, ".str")
+     ; dir-of-modname-silent
+   end
+
+  pathname-of-def =
+    pathname-of-def-silent
+    <+ say(!"file not found")
+     ; fail
+
+  pathname-of-def-silent =
+    let has-ext =
+          has-extension(!".def")
+    in where(file-exists)
+    <+ xtc-find-silent
+    <+ not(has-ext)
+     ; <conc-strings> (<id>, ".def")
+     ; pathname-of-def-silent
+   end
+
+  execute-command(|env) :
+    (Internal(Exit()), term) -> <output(id); <xtc-exit> 0> term
+
+  execute-command(|env) :
+    (Internal(Show()), term) -> term
+      where <write-in-text-to-stream> (<stderr-stream>, term); fput-newline
+
+  execute-command(|env) :
+    (Internal(Reset()), _) -> ()
+
+  execute-command(|env) :
+    (Internal(ClearScreen()), term) -> term
+      where <call> ("clear", [])
+
+  execute-command(|env) :
+    (Internal(Verbose(s)), term) -> term
+      where <string-to-int; set-verbosity> s
+
+  execute-command(|env) :
+    (Internal(AutoShow(val)), term) -> term
+      where <set-autoshow> val
+
+  execute-command(|env) :
+    (Internal(Trace(val)), term) -> term
+      where <set-trace-eval> val
+
+  execute-command(|env) :
+    (Internal(Statistics(val)), term) -> term
+      where <set-stats-config> val
+
+  execute-command(|env) :
+    (Internal(Binding(s)), term) -> term
+      where <term-binding(|env)> s
+            < where(<fputs> (<conc-strings> (s, " is bound to "), <stderr-stream>))
+              ; <write-in-text-to-stream> (<stderr-stream>, <id>)
+              ; fput-newline
+            + where(<fputs> (<conc-strings> (s, " is not bound to a term"), <stderr-stream>); fput-newline)
+
+  fput-newline =
+    <fputc> ('\n', <id>)
+
+  execute-command(|env) :
+    (Internal(Help()), term) -> term
+      where <fprintnl> (<stderr-stream>, ["
+  strategy          rewrite the current subject term with strategy
+  id = strategy     define a strategy (doesn't change the current subject term)
+  import modname    import strategy definitions from 'modname' (file system or xtc)
+
+  :syntax defname   set the syntax to the sdf definition in 'defname'.
+
+  :binding id       show term binding of id
+  :showdef id       show defintions of all strategies 'id'/(s,t)
+  :showdef id/(s,t) show defintion of strategy 'id'/(s,t)
+  :showast id/(s,t) show ast of defintion of strategy 'id'/(s,t)
+
+  :xtc import pathname
+  :include file     execute command in the script of `file`
+
+  :show             show the current subject term
+  :autoshow on|off  show the current subject term after each rewrite
+  :reset            set the current subject term to the empty tuple ()
+  :clear            clear the screen
+
+  :verbose int      set the verbosity level (0-9)
+  :exit             exit the Stratego Shell
+  :quit             same as :exit
+  :q                same as :exit
+  :about            information about the Stratego Shell
+  :help             show this help information"])
+
+  execute-command(|env) :
+    (Internal(About()), term) -> term
+      where <fprintnl> (<stderr-stream>, [
+"
+  ,-----------.
+  |     :     | Stratego Shell
+  |    /|\\    | version ", <package-version>, ", revision ", <svn-revision>, "
+  |   / | \\   | 
+  |  /  |  \\  | stratego@cs.uu.nl
+  | /_\\/_\\/_\\ | http://stratego-language.org
+  `-----------'
+
+Authors:
+   * Shell: Martin Bravenboer <martin@cs.uu.nl>
+   * Interpreter: Martin Bravenboer and Eelco Visser <martin|visser@cs.uu.nl>
+   * Stratego Logo in ASCII: Arthur van Dam
+
+Bug reports:
+   * ", <package-bugreport>, "
+
+License:
+   Copyright (C) 2002-2004  Martin Bravenboer <martin@cs.uu.nl>
+
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+"])
+
+strategies
+
+  /**
+   * Returns the package version as defined by Autoconf.
+   *
+   * Type : _ -> String
+   */
+  package-version = prim("PACKAGE_VERSION_TERM")
+
+  /**
+   * Returns the package svn revision as defined by Autoconf.
+   *
+   * Type : _ -> String
+   */
+  svn-revision = prim("SVN_REVISION_TERM")
+
+  /**
+   * Returns the email address to send bug reports to as defined by Autoconf.
+   *
+   * Type : _ -> String
+   */
+  package-bugreport = prim("PACKAGE_BUGREPORT_TERM")
+
+strategies
+
+  if-autoshow(s) =
+    where(get-autoshow; ?On()) < s + id
+
+  get-autoshow =
+    <get-config> "autoshow"
+
+  set-autoshow =
+    <set-config> ("autoshow", <id>)
+
+strategies
+
+  if-trace-eval(s) =
+    where(get-trace-eval; ?On()) < s + id
+
+  get-trace-eval =
+    <get-config> "trace-eval"
+
+  set-trace-eval =
+    <set-config> ("trace-eval", <id>)
+
+strategies
+
+  if-stats(s) =
+    where(get-stats-config; ?On()) < s + id
+
+  get-stats-config =
+    <get-config> "strateg-shell-statistics"
+
+  set-stats-config =
+    <set-config> ("strateg-shell-statistics", <id>)
+
+/**
+ * Horrible implementation
+ */
+strategies
+
+  /**
+   * @todo  Use AsFix or AST
+   * @todo  Implement external tool to union two .defs?
+   */
+  set-shell-syntax =
+      where(base-filename; remove-extension => modname1)
+    ; read-def-modules => def1
+    ; read-shell-def-modules => def2
+    ; <xtc-find> "stratego-shell-lang-renamed.sdf"; read-text-file => mod3
+    ; ![
+       "definition
+        module Main
+          imports stratego-shell-lang-renamed ", modname1, "
+          exports
+            lexical syntax
+              StrategoWs -> LAYOUT {prefer}
+       ", mod3, "
+       ", def1, "
+       ", def2, "
+       "]
+    ; print-to
+    ; if-verbose5(debug(!"def -- "))
+    ; xtc-transform(!"sdf2table", pass-v-verbose)
+    ; if-verbose5(debug(!"parse table -- "))
+    ; ?FILE(<id>)
+    ; <set-config> ("--syntax", <id>)
+
+  read-shell-def-modules = 
+      <xtc-find> "stratego-shell-lang.def" 
+    ; read-def-modules
+
+  read-def-modules =
+      <fopen> (<id>,"r") => stream
+    ; where(read-line)       // definition
+    ; read-text-from-stream  // modules
+    ; where(<fclose> stream)
+
+  /**
+   * @todo  move into SSL
+   * @type  Stream -> String
+   */
+  read-line =
+    ?stream
+    ; rec x(![<fgetc; not(?'\n')> stream | <x>()] <+ ![])
+    ; implode-string
+
+  /**
+   * @todo  move into SSL
+   * @type  Stream -> String
+   */
+  write-text-file =
+    ?(file, string)
+    ; <fopen> (file, "w")
+    ; <fputs> (string, <id>)
+    ; fclose

@@ -1,0 +1,40 @@
+module xtc-shell-commands
+
+imports xtc-lib stratego-xt-xtc-tools stratego-shell-lang
+
+strategies
+  execute-command(|env) =
+    ?(XTC(<id>), term)
+    ; eval-command(|term)
+   ; if-autoshow(<execute-command(|env)> (Internal(Show()), <id>))
+
+strategies
+
+  eval-command(|term) =
+    ?Call(prg, args)
+    ; where(!term; (?FILE(_) <+ write-to) => FILE(input))
+    ; where(xtc-new-file => output)
+    ; <call-nopath> (<eval-exp> prg, ["-i", input, "-o", output | <map(eval-exp)> args])
+    ; !FILE(output)
+
+  eval-exp : String(s)  -> s
+  eval-exp : Var(v)     -> <say(!"Variables not yet supported")> v
+  eval-exp : XtcFind(e) -> <eval-exp; xtc-find> e
+/*
+  eval-exp : Path(Relative(s)) -> <abspath> s
+  eval-exp : Path(Absolute(s)) -> s
+*/
+
+
+/**
+ * TODO: move into SSL.
+ */
+strategies
+
+  call-nopath = 
+    fork-exec(\ (prog, args) -> <execv> (prog, [prog | args]) \)
+
+  fork-exec(exec) =
+    ?(prog,args)
+    ; fork-and-wait(<exec> (prog, args); <exit> -1)
+

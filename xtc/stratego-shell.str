@@ -1,0 +1,206 @@
+/**
+ * @author  Martin Bravenboer <martin@cs.uu.nl>
+ */
+module stratego-shell
+
+imports char-io gnu-readline 
+imports xtc-lib stratego-xt-xtc-tools
+imports stratego-eval stratego-interpreter
+imports stratego-shell-commands xtc-shell-commands
+imports stratego-debug
+
+/**
+ * Command line entry point and options.
+ */
+strategies
+  
+  main-stratego-shell =
+    xtc-temp-files(
+      option-wrap(stratego-shell-options,
+        stratego-shell
+      <+ <exit> 1
+      )
+    )
+
+  stratego-shell-options =
+       script-option
+    <+ program-option
+    <+ cmd-option
+    <+ cmds-option
+    <+ io-options
+    <+ general-options
+
+
+  script-option =
+    ArgOption("--script"
+    , where(<set-config> ("--script", FILE(<id>)))
+    , !"--script file    Execute script in file (default: interactive)"
+    )
+
+  cmd-option =
+    ArgOption("--cmd"
+    , where(<print-to> [<id>, ";;"]; <set-config> ("--script", <id>))
+    , !"--cmd 'cmd'        Just execute cmd (do not terminate with ;;)"
+    )
+
+  cmds-option =
+    ArgOption("--cmds"
+    , where(<print-to> [<id>]; <set-config> ("--script", <id>))
+    , !"--cmds 'cmds' Just execute cmds (terminate every cmd with ;;)"
+    )
+
+
+  program-option =
+    ArgOption("--prg"
+    , where(
+        explode-string; split-at('@'); (implode-string, implode-string) => (main, prg)
+      ; <print-to> ["import ", prg, ";;", main, ";;"]; <set-config> ("--script", <id>)
+      )
+    , !"--prg main@file  Execute program in file"
+    )
+
+  /**
+   * Succeeds if a script is to be executed
+   */
+  use-script =
+    where(<get-config> "--script")
+
+/**
+ * Initialization, input, and output.
+ */
+strategies
+
+  stratego-shell =
+     where(new-environment => env)
+   ; <set-config> ("--syntax", <xtc-find> "stratego-shell-lang.tbl")
+   ; <execute-command(|env)> (Import("list-cons.rtree"),  "foo")
+   ; <execute-command(|env)> (Import("tuple-cons.rtree"), "foo")
+   ; ( use-script
+     < script-stratego-shell(|env)
+     + interactive-stratego-shell(|env)
+     )
+
+  get-syntax =
+    <get-config> "--syntax"
+
+  shell-io(s) =
+    shell-input(output(s))
+
+  shell-input(s) =
+    let file-input =
+          <get-config> "-i"
+
+        stdin-input =
+          STDIN_FILENO; not(isatty); !stdin()
+
+        default-input =
+          !()
+     in  (file-input <+ stdin-input)
+       ; ReadFromFile
+      <+ default-input
+    end
+    ; s
+
+/**
+ * Non-Interactive Stratego Shell (script)
+ */
+strategies
+
+  script-stratego-shell(|env) =
+      <set-autoshow> Off()
+    ; shell-io(run-script(|<read-script>, env))
+
+  /**
+   * @type Any -> Any
+   */
+  run-script(|scr, env) =
+    <foldl(
+      (?Command(<parse-command>), id)
+    ; execute-command(|env)
+    )> (scr, <id>)
+
+  /**
+   * @type _ -> List(ShellCommand)
+   */
+  read-script =
+    <get-config> "--script"
+    ; parse-script
+
+  /**
+   * @type FILE -> List(ShellCommand)
+   */
+  parse-script =
+      xtc-sglr(!"stratego-shell-lang.tbl", !"ShellScript")
+    ; xtc-implode-asfix
+    ; read-from
+    ; ?Seq(<id>)
+
+/**
+ * Interactive Stratego Shell
+ */
+strategies
+      
+  interactive-stratego-shell(|env) =
+     ensure-tty-input
+   ; where(stderr-stream; gnu-readline-set-outstream)
+   ; where(gnu-readline-set-completion(sdef-completion(|env)))
+   ; <set-autoshow> On()
+   ; shell-io(
+       repeat(
+           shell-command(|env)
+        <+ say(!"command failed")
+       )
+     )
+
+  /**
+   * @todo  use ctermid
+   */
+  ensure-tty-input =
+    where(try(
+      STDIN_FILENO; not(isatty)
+    ; <fopen; gnu-readline-set-instream> ("/dev/tty", "r")
+    ))
+
+  sdef-completion(|env) =
+      ?start
+    ; <strat-bindings(|env)> ()
+    ; map(Fst)
+    ; filter(string-starts-with(|start))
+
+  /**
+   * @type : a -> b
+   */
+  shell-command(|env) =
+    ?term   
+    ; read-command
+    ; parse-command
+    ; <execute-command(|env)> (<id>, term)
+
+  /**
+   * @type : _ -> String
+   */
+  read-command =
+    <gnu-readline> "stratego> "
+    ; gnu-add-history
+
+  /**
+   * @type : String -> ShellCommand
+   */
+  parse-command =
+    parse-command(|"ShellCommand")
+
+  /**
+   * @type  String -> ShellCommand
+   */
+  parse-command(|nonterm) =
+      <print-to> [<id>]
+    ; xtc-sglr-strict(|<get-syntax>, nonterm)
+    ; xtc-implode-asfix
+    ; read-from
+
+  xtc-sglr-strict(|tbl, sort) =
+    xtc-transform(!"sglr", !["-2A", "-p", tbl, "-s", sort | <pass-v-verbose> ()])
+
+  // "-fe", "-fi", "-fd","
+
+

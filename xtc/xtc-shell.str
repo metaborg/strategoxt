@@ -1,0 +1,93 @@
+module xtc-shell
+
+imports xtc-lib stratego-xt-xtc-tools xtc-shell-lang
+imports gnu-readline shell-commands
+
+strategies
+  
+  main-xtc-shell =
+    option-wrap(general-options,
+      xtc-temp-files(
+        xtc-shell
+      )
+    )
+
+  xtc-shell =
+     !()
+   ; repeat(
+         shell-command
+      <+ say(!"command failed")
+     )
+
+strategies
+
+  /**
+   * Type : a -> b
+   */
+  shell-command =
+    ?term
+    ; read-command
+    ; parse-command
+    ; <execute-command> (<id>, term)
+
+  /**
+   * Type : _ -> String
+   */
+  read-command =
+    <gnu-readline> "xtc> "
+    ; gnu-add-history
+
+  /**
+   * Type : String -> Strategy
+   */
+  parse-command =
+      <print-to> [<id>]
+    ; xtc-sglr-strict(|"xtc-shell-lang.tbl", "ShellCommand")
+    ; xtc-implode-asfix
+    ; read-from
+
+  xtc-sglr-strict(|tbl, sort) =
+    xtc-transform(!"sglr", !["-2A", "-p", <xtc-find> tbl, "-s", sort | <pass-v-verbose> ()])
+ 
+strategies
+
+  execute-command =
+    ?(Do(<id>), term)
+    ; eval-command
+
+  execute-command =
+    ?(Internal(Chdir(pathname)), <id>); where(<chdir> pathname)
+
+  execute-command =
+    ?(Internal(Getcwd()), <id>); say(getcwd)
+
+  eval-command =
+    ?Nop()
+
+  eval-command =
+    Seq(eval-command, eval-command)
+
+  eval-command =
+    ?Call(prg, args)
+    ; <call-nopath> (<eval-exp> prg, <map(eval-exp)> args)
+
+  eval-exp : String(s)  -> s
+  eval-exp : Var(v)     -> <say(!"Variables not yet supported")> v
+  eval-exp : XtcFind(e) -> <eval-exp; xtc-find> e
+
+  eval-exp : Path(Relative(s)) -> <abspath> s
+  eval-exp : Path(Absolute(s)) -> s
+
+
+/**
+ * TODO: move into SSL.
+ */
+strategies
+
+  call-nopath = 
+    fork-exec(\ (prog, args) -> <execv> (prog, [prog | args]) \)
+
+  fork-exec(exec) =
+    ?(prog,args)
+    ; fork-and-wait(<exec> (prog, args); <exit> -1)
+

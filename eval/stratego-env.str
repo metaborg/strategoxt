@@ -1,0 +1,194 @@
+/**
+ * Stratego environment representation.
+ *
+ * Structure of the environment:
+ *  - display: Id to scope references for strategy and term variables
+ *  - scopes:  stack of scopes.
+ *
+ * The Id to scope references are stored in two hashtables, one for
+ * terms and one for strategies. The hashtable values are lists, which
+ * represent the scopes of the variables.
+ *
+ * The values refer to a hashtable for the scope where the identifier was
+ * declared. For a term variable the value in this hashtable is a term. For
+ * a strategy variable it is a StrClosure: the definition together with
+ * the environment at definition time.
+ *
+ * @author  martin@cs.uu.nl
+ */
+module stratego-env
+
+signature
+  constructors
+    StrEnv     : List(StrScope) -> StrEnv
+    StrScope   : HashTable(A,B) * HashTable(A,B) -> StrScope
+    StrClosure : StrategyDef * StrEnv -> StrClosure
+
+  constructors
+    /**
+     * Undefined variable binding
+     */
+    NULL : Term
+
+/**
+ * Stratego environment.
+ */
+strategies
+
+  /**
+   * Create a new, empty, environment.
+   *
+   * @type  _ -> StrEnv
+   */
+  new-environment =
+    !StrEnv([<new-scope> ()])
+
+  /**
+   * @type  _ -> StrScope
+   */
+  new-scope =
+    !StrScope(<new-hashtable(|10,75)>, <new-hashtable(|10,75)>)
+
+  destroy-scope =
+    StrScope(hashtable-destroy, hashtable-destroy)
+
+  /**
+   * Recursive scope
+   *
+   * @type  StrEnv -> StrEnv
+   */
+  begin-scope(|env,sdefs,tvars) =
+      !env => StrEnv(scopes)
+    ; where(<inc-stat> "created-scopes")
+    ; where(<inc-stat> "active-scopes")
+    ; <new-scope> () => scope@StrScope(senv, tenv)
+    ; !StrEnv([scope | scopes]) => new-env
+    ; !StrEnv([scope | scopes]) => closure-env
+
+    ; <map({s: ?s; <hashtable-put(|<key-of-SDefT> s, StrClosure(s, closure-env))> senv})> sdefs
+    ; <map({t: ?t; <hashtable-put(|t, NULL())> tenv})> tvars
+
+    ; !new-env
+
+  end-scope(|env,sdefs,tvars) =
+      !env => StrEnv([scope | scopes])
+    ; where(<dec-stat> "active-scopes")
+    ; <destroy-scope> scope
+    ; !()
+
+  /**
+   * Do not invoke this strategy directly. Use begin/end scope.
+   */
+  define-term(|env) =
+      ?x
+    ; !env => StrEnv([StrScope(_, tenv) | _])
+    ; <hashtable-put(|x, NULL())> tenv
+
+  define-strat(|env) =
+    define-strat(|env,env)
+
+  define-strat(|env,cenv) =
+      ?sdef@SDefT(f, sargs, targs, s1)
+    ; where(
+        <key-of-SDefT> sdef => key
+      ; !env => StrEnv([StrScope(senv, _) | _])
+      )
+    ; if (not(!sdef => SDefT("Cons", [_,_], [], Cong("Cons", [_, _]))))
+       ; (<hashtable-get(|key)> senv => StrClosure(SDefT(_, sargs2, targs2, s2), cenv))
+      then if <eq> (sargs, sargs2); <eq> (targs, targs2)
+         then !SDefT(f, sargs, targs, Choice(s2, s1))
+         else new => f'
+            ; !SDefT(f, sargs2, targs2
+               , Choice(s2, 
+                   Let(
+                     [ SDefT(f', sargs, targs, s1) ]
+                   , CallT(
+                       SVar(f')
+                     , <map( \ VarDec(x, _) -> CallT(SVar(x), [], []) \ )> sargs2
+                     , <map( \ VarDec(x, _) -> Var(x) \ )>  targs2
+                     )
+                   )
+                 )
+               )
+         end
+      else !sdef
+      end => sdef2
+    ; <hashtable-put(|key, StrClosure(sdef2, cenv))>  senv
+    ; if-verbose1(<debug(!"** DEBUG -- defined strategy ")> key)
+
+/**
+ * Terms bindings
+ */
+strategies
+
+  /**
+   * @type  (Id, Term) -> _
+   */
+  bind-term(|env) =
+      ?(key, t)
+    ; where(!env => StrEnv(scopes))
+    ; <fetch-elem(where(<term-binding-in-scope> (<id>, key)))> scopes => scope@StrScope(_, tenv)
+    ; <hashtable-get(|key)> tenv
+    ; ?NULL()
+    ; <hashtable-put(|key, t)> tenv
+
+  /**
+   * @type  Id -> Term
+   */
+  term-binding(|env) =
+    ?key
+    ; where(!env => StrEnv(scopes))
+    ; <fetch-elem(<term-binding-in-scope> (<id>, key))> scopes
+
+  term-binding-in-scope =
+    ?(StrScope(_, tenv), key)
+    ; <hashtable-get(|key)> tenv
+
+/**
+ * Strategy bindings
+ */
+strategies
+
+  /**
+   * @type  (String, Int, Int) -> StrClosure
+   */
+  strat-binding(|env) =
+    ?key@(_, _, _)
+    ; where(!env => StrEnv(scopes))
+    ; <fetch-elem(<strat-binding-in-scope> (<id>, key))> scopes
+
+  strat-binding-in-scope =
+    ?(StrScope(senv, _), key)
+    ; <hashtable-get(|key)> senv
+
+/**
+ * Keys of stuff stored in the environment.
+ */
+strategies
+
+  key-of-SDefT :
+    SDefT(f, sargs, targs, body) -> (f, <length> sargs, <length> targs)
+
+  key-of-CallT :
+    CallT(SVar(f), sargs, targs) -> (f, <length> sargs, <length> targs)
+
+  sdef-to-key :
+    SDefNoArgs(name, body) -> (name, 0, 0)
+
+  sdef-to-key :
+    SDef(name, sargs, body) -> (name, <length> sargs, 0)
+
+  sdef-to-key :
+    RDefNoArgs(name, rule) -> (name, 0, 0)
+
+  sdef-to-key :
+    RDef(name, sargs, rule) -> (name, <length> sargs, 0)
+
+  sdef-to-key :
+    RDefT(name, sargs, targs, rule) -> (name, <length> sargs, <length> targs)
+
+  sdef-to-key =
+    key-of-SDefT
+
+  key-to-string :
+    (name, sargs, targs) -> <concat-strings> [name, "/(", <int-to-string> sargs, ",",  <int-to-string> targs, ")"]

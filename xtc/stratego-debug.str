@@ -1,0 +1,56 @@
+module stratego-debug
+
+imports iteration
+imports stratego-shell-lang
+imports stratego-eval-front stratego-eval
+
+rules
+
+  EvalExtension(|env) =
+    if-stats(
+      !env => StrEnv(scopes)
+    ; <length; int-to-string> scopes => stack
+    ; <get-stat; int-to-string> "recursion-depth" => recurs
+    ; <get-stat; int-to-string> "created-scopes" => created
+    ; <get-stat; int-to-string> "active-scopes" => active
+    ; say(<concat-strings> ["[eval | statistic] ", 
+                "scopes stack: ", stack, 
+                "\tscopes created: ", created,
+                "\tscopes active: ", active,
+                "\trecursion: ", recurs])
+    ); fail
+
+  EvalExtension(|env) = EvalBreak(|env)
+
+  EvalBreak(|env) :
+    Apply(Break(bid), t) -> t
+      where repeat-until(
+              <break-shell-command(|bid, env)> t <+ say(!"command failed")
+            , ?Continue()
+            )
+
+strategies
+
+  /**
+   * @type  a -> b
+   */
+  break-shell-command(|bid,env) =
+      ?term
+    ; read-break-command(|bid)
+    ; parse-break-command
+    ; <execute-command(|env)> (<id>, term)
+
+  execute-command(|env) :
+    (Internal(Continue()), _) -> Continue()
+
+  /**
+   * @type  _ -> String
+   * @todo  break must have a name, prompt is name of break
+   */
+  read-break-command(|bid) =
+    <concat-strings; gnu-readline> ["#", bid, "> "]
+    ; gnu-add-history
+
+  parse-break-command =
+    parse-command(|"BreakShellCommand")
+  

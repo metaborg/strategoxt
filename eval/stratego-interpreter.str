@@ -1,0 +1,17 @@
+/**
+ * Main interface to the Stratego Interpreter
+ * 
+ * @author  martin@cs.uu.nl
+ */
+module stratego-interpreter
+imports stratego-eval stratego-env
+
+strategies
+
+  /**
+   * @type _ -> List((String, Int, Int))
+   */
+  strat-bindings(|env) =
+    !env; ?StrEnv(<map(?StrScope(<hashtable-keys>, _)); unions>)
+
+
