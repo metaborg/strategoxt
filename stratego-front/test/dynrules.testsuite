@@ -1,0 +1,5 @@
+testsuite Stratego Dynamic Rules
+topsort Strategy
+
+test Scope
+  "{| A : s |}" succeeds
