@@ -20,6 +20,8 @@ AC_CONFIG_FILES([
   sig/Makefile 
   lib/Makefile
   xtc/Makefile
+  test/Makefile
+
   src/Makefile 
 
   src/templates/Makefile
