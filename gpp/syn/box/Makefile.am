@@ -10,3 +10,9 @@ BOOTCLEANFILES = $(TBLS_DEFS)
 SDFINCLUDES    = -I $(STRATEGO_FRONT)/share/sdf/stratego-front
 PGEN_FLAGS     = -m $*
 
+Box.def : Box-Atoms.sdf Box-Base.sdf Box-Disambiguation.sdf \
+		      Box-Layout.sdf Box-Lists.sdf Box-Literal.sdf \
+		      Box-Operators.sdf Box.sdf
+
+Stratego-Box.def : Stratego-Box.sdf Box.def
+

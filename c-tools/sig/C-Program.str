@@ -1,6 +1,6 @@
 module C-Program
 signature
   constructors
-    TranslationUnit : List(ExternalDef) -> TranslationUnit
-    FunDef : FunDefTypeSpec * FunDefDecl * CompoundStm -> FunDef
-    NoTypeSpecifier : NoTypeSpecifier
+    TranslationUnit : List(ExternalDef) -> TranslationUnit                
+    FunDef          : FunDefTypeSpec * FunDefDecl * CompoundStm -> FunDef 
+    NoTypeSpecifier : NoTypeSpecifier                                     

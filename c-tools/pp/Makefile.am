@@ -1,9 +1,7 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-LANGUAGE=C
-
-pkgdata_DATA = $(LANGUAGE).pp.af $(LANGUAGE).pp
-EXTRA_DIST   = $(LANGUAGE).pp.af $(LANGUAGE).pp 
-CLEANFILES   = $(LANGUAGE).pp.af
+pkgdata_DATA   = C.pp.af
+EXTRA_DIST     = C.pp.af C.pp 
+BOOTCLEANFILES = C.pp.af
 

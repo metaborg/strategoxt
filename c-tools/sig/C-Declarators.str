@@ -2,13 +2,13 @@ module C-Declarators
 signature
 signature
   constructors
-    IdDecl : List(Pointer) * IDENTIFIER * Option(PostfixingAbstractDeclarator) -> IdDeclarator
-    FunDecl : List(Pointer) * IdDeclarator * Option(PostfixingAbstractDeclarator) -> IdDeclarator
+    IdDecl  : List(Pointer) * IDENTIFIER * Option(PostfixingAbstractDeclarator) -> IdDeclarator   
+    FunDecl : List(Pointer) * IdDeclarator * Option(PostfixingAbstractDeclarator) -> IdDeclarator 
 signature
   constructors
-    TypedefDeclarator1 : List(Pointer) * TypedefName * Option(PostfixingAbstractDeclarator) -> TypedefDeclarator
-    TypedefDeclarator2 : List(Pointer) * TypedefDeclarator * Option(PostfixingAbstractDeclarator) -> TypedefDeclarator
+    TypedefDeclarator1 : List(Pointer) * TypedefName * Option(PostfixingAbstractDeclarator) -> TypedefDeclarator       
+    TypedefDeclarator2 : List(Pointer) * TypedefDeclarator * Option(PostfixingAbstractDeclarator) -> TypedefDeclarator 
 signature
   constructors
-    OldFunction1 : List(Pointer) * ParenIdDeclarator * List(IDENTIFIER) -> OldFunDeclarator
-    OldFunction2 : List(Pointer) * OldFunDeclarator * Option(PostfixingAbstractDeclarator) -> OldFunDeclarator
+    OldFunction1 : List(Pointer) * ParenIdDeclarator * List(IDENTIFIER) -> OldFunDeclarator                    
+    OldFunction2 : List(Pointer) * OldFunDeclarator * Option(PostfixingAbstractDeclarator) -> OldFunDeclarator 
