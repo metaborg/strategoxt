@@ -1,4 +1,4 @@
-AC_INIT([autoxt],[0.11pre],[stratego-bugs@cs.uu.nl])
+AC_INIT([autoxt],[0.11],[stratego-bugs@cs.uu.nl])
 AM_INIT_AUTOMAKE
 
 AC_OUTPUT(

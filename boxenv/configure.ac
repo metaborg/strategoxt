@@ -1,4 +1,4 @@
-AC_INIT([boxenv],[0.11pre],[stratego-bugs@cs.uu.nl])
+AC_INIT([boxenv],[0.11],[stratego-bugs@cs.uu.nl])
 AM_INIT_AUTOMAKE
 
 USE_XT_PACKAGES
@@ -18,10 +18,9 @@ AC_PROG_CC
 AC_PROG_INSTALL
 
 AC_CONFIG_FILES([
-	VERSION 
-
-	Makefile 
-	src/Makefile 
+  VERSION 
+  Makefile 
+  src/Makefile 
   src/boxenv/Makefile
 ])
 AC_OUTPUT

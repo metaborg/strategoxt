@@ -1,4 +1,4 @@
-AC_INIT([sdf-import],[0.11pre],[stratego-bugs@cs.uu.nl])
+AC_INIT([sdf-import],[0.11],[stratego-bugs@cs.uu.nl])
 AM_INIT_AUTOMAKE
 
 USE_XT_PACKAGES
