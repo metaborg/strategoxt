@@ -1,3 +1,9 @@
+2003-12-19  Eelco Visser  <visser@cs.uu.nl>
+
+	* Pretty-printing external definitions
+
+	* parse/stratego-ensugar.str: ensugaring PrimT
+
 2003-12-13  Martin Bravenboer <martin@cs.uu.nl>
 
 	* parse/stratego-ensugar.str: added ensugaring of

@@ -29,6 +29,10 @@ rules
       where <not(is-double-quoted)> f
 
   Ensugar :
+    PrimT(f, xs, ys) -> PrimT(<double-quote> f, xs, ys)
+      where <not(is-double-quoted)> f
+
+  Ensugar :
     Rule(l, r, Id()) -> RuleNoCond(l, r)
 
   Ensugar :

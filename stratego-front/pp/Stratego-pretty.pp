@@ -198,6 +198,15 @@
    SDefT.2:iter-star-sep            -- H hs=0[_1 KW[","]],
    SDefT.3:iter-star-sep            -- H hs=0[_1 KW[","]],
 
+   ExtSDefInl       
+	-- V is=2[H[ KW["external"]  H hs=0[_1 KW["("] H[_2]] KW["|"] H hs=0[H[_3] KW[")"]] KW["="]] _4],
+                
+   ExtSDefInl.2:iter-star-sep       -- _1 KW[","],
+   ExtSDefInl.3:iter-star-sep       -- _1 KW[","],
+   ExtSDef -- H[ KW["external"]  H hs=0[_1 KW["("] H[_2]] KW["|"] H hs=0[H[_3] KW[")"]]],
+   ExtSDef.2:iter-star-sep          -- _1 KW[","],
+   ExtSDef.3:iter-star-sep          -- _1 KW[","],
+
    DefaultVarDec -- _1,
    VarDec -- H[_1 KW[":"] _2],
    OverlayNoArgs -- _1 KW["="] _2,
