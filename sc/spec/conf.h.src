@@ -1,0 +1,5 @@
+#define get_conf_version() 	ATmakeString("__VERSION__")
+#define get_conf_package() 	ATmakeString("__PACKAGE__")
+#define get_conf_prefix() 	ATmakeString("__prefix__")
+#define get_conf_datadir() 	ATmakeString("__datadir__")
+#define get_conf_pkgdatadir() 	ATmakeString("__pkgdatadir__")
