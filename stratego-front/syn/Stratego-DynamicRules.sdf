@@ -10,21 +10,15 @@ exports
     "{|" {DynRuleScopeId ","}* ":" Strategy "|}" -> Strategy {cons("DynRuleScope")}
 
   sorts DynRuleDef DynRuleId DynRuleScopeId RuleDec
-
-  lexical syntax
-    ":" -> Colon
-  lexical restrictions
-    Colon -/- [\-]
-
   context-free syntax
 
     "rules" "(" DynRuleDef* ")" -> Strategy {cons("GenDynRules")}
 
     Id "+" Term                 -> DynRuleDef {cons("AddScopeLabel")} 
     DynRuleId ":-"  Term        -> DynRuleDef {cons("UndefineDynRule")}
-    DynRuleId Colon Rule        -> DynRuleDef {cons("SetDynRule")}
+    DynRuleId ":"   Rule        -> DynRuleDef {cons("SetDynRule")}
     DynRuleId ":+"  Rule        -> DynRuleDef {cons("AddDynRule")}
-    DynRuleId Colon Term        -> DynRuleDef {cons("SetDynRuleMatch")}
+    DynRuleId ":"   Term        -> DynRuleDef {cons("SetDynRuleMatch")}
 
     RuleDec "." Term            -> DynRuleId {cons("LabeledDynRuleId")}
     RuleDec "+" Term            -> DynRuleId {cons("AddLabelDynRuleId")}
