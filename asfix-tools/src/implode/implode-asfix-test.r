@@ -1,6 +1,11 @@
 module implode-asfix-test
 imports implode-asfix sunit
 
+signature
+  constructors
+    range: a * a -> a
+    'id: a -> a
+    
 strategies
 
   implode-asfix-test = 

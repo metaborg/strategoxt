@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: asfix-yield.r,v 1.2 2001/06/07 14:45:53 mdejonge Exp $
+% $Id: asfix-yield.r,v 1.3 2001/09/02 11:45:22 mdejonge Exp $
 
 \begin{code}
 module asfix-yield
@@ -33,7 +33,8 @@ strategies
             where(option-defined(?Output(outfile));<open-file>outfile <+ !stdout => outfile);
             input-file;
             (id, asfix-yield(!outfile))
-         )
+         );
+         <exit>0
 
   asfix-yield(outfile) = 
 	is-asfix1; asfix-yield1(outfile)

@@ -1,5 +1,7 @@
+2001-09-02 Merijn de Jonge <mdejonge@cwi.nl>
+   * added more missing constructors
+
 2001-09-01 Merijn de Jonge <mdejonge@cwi.nl>
-   * added missing constructors
    * Added Bracket-Symbol.r module which contains constructor definition of
      bracket-symbol
 
