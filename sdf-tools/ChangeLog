@@ -1,3 +1,6 @@
+2001-06-11 Merijn de Jonge <mdejonge@cwi.nl> 
+   * src/sdf-doc: Integertion stuff moved to xt package
+
 2001-06-10 Merijn de Jonge <mdejonge@cwi.nl> 
    * src/sdf-normalize/data: added missing file to EXTRA_DIST variable
 
