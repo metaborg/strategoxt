@@ -53,41 +53,43 @@ strategies
   laydiff(s,l) = rec r({f,g,fs,gs,a,b:
 	   eq;Fst
 	<+ (is-layout,is-layout);Fst
-        <+ \(f#(fs),f#(gs)) -> f#(a) where 
+        <+ \ (f#(fs),f#(gs)) -> f#(a) where 
 		<eq>(<length>fs,<length>gs);<zip(r)>(fs,gs) => a\
-	<+ l;\(Label(_,f),g) -> <r>(f,g)\
-	<+ l;\(f,Label(_,g)) -> <r>(f,g)\
-        <+ \(a,b) -> amb(amb1(a),amb2(b)) where s\
-        <+ \(a,b) -> amb(a,b)\
+	<+ l;\ (Label(_,f),g) -> <r>(f,g)\
+	<+ l;\ (f,Label(_,g)) -> <r>(f,g)\
+        <+ \ (a,b) -> amb(amb1(a),amb2(b)) where s\
+        <+ \ (a,b) -> amb(a,b)\
         })
 
   laydiff-squash(s) = laydiff-squash(s,fail)
-  laydiff-squash(s,l) = rec r({f,g,fs,gs,a,hs,b,fhs:
-	  try((LConstoCons,LConstoCons))
-	;
-	(  eq;Fst;try(not([]);!"..")
-	<+ (is-layout,is-layout);!".."
-        <+ \(f#(fs),f#(gs)) -> fhs where 
-		  <eq>(<length>fs,<length>gs)
-		; <zip(r)>(fs,gs)
-		; (   <eq>(f,"Cons")		// wrong!
-		    ; [id]
-		   <+ foldr (id,
-  			{xs:(is-diff,[is-diff|?xs])
-				  ; ![".."|xs]}
-			   <+ \(a,[]) -> a where <is-list>a\
-			   <+ \(a,b) -> [a|b]\
-			)) => hs
-		; (   <eq>(f,"Cons")
-		    ; <Cons(id,try(not(is-list);\a -> [a]\))>hs
-		  <+  [is-diff]
-		    ; !".."
-		  <+ !f#(hs)) => fhs\
-	<+ l;\(Label(_,f),g) -> <r>(f,g)\
-	<+ l;\(f,Label(_,g)) -> <r>(f,g)\
-        <+ \(a,b) -> amb(amb1(a),amb2(b)) where s\
-        <+ \(a,b) -> amb(a,b)\
-        )})
+  laydiff-squash(s,l) = 
+    rec r(
+      //{f,g,fs,gs,a,hs,b,fhs:
+	try((LConstoCons,LConstoCons))
+	; (  eq; Fst; try(not([]); !"..")
+	 <+ (is-layout, is-layout); !".."
+         <+ laydiff-squash-ops(s, l, r)
+	 <+ l; \ (Label(_,f),g) -> <r>(f,g)\
+	 <+ l; \ (f,Label(_,g)) -> <r>(f,g)\
+         <+ \ (a,b) -> amb(amb1(a),amb2(b)) where s\
+         <+ \ (a,b) -> amb(a,b)\
+         )
+      //}
+    )
+
+  laydiff-squash-ops(s, l, r) :
+    (f#(fs),f#(gs)) -> fhs 
+    where 
+      <eq>(<length>fs, <length>gs)
+      ; <zip(r)>(fs,gs)
+      ; (<eq>(f,"Cons"); [id] // wrong!
+        <+ foldr(id,{xs: (is-diff, [is-diff|?xs]); ![".."|xs]}
+	            <+ \ (a,[]) -> a where <is-list>a\
+		    <+ \ (a,b) -> [a|b]\
+	)) => hs
+      ; (<eq>(f,"Cons"); <Cons(id, try(not(is-list); \a -> [a]\ ))> hs
+	<+ [is-diff]; !".."
+	<+ !f#(hs)) => fhs
 
   is-diff = ?".."
   is-layout = NL + UL + L(id)
