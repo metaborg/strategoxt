@@ -47,7 +47,7 @@ echo "** INFO -- autoconf is `which autoconf`"
 # end of autoxt install
 
 # bootstrap the subpackages
-PKGS="autoxt srts xtc sdf-import strc ssl gpp c-tools concrete-syntax aterm-front stratego-front aterm-tools asfix-tools dot-tools graph-tools sdf-front sdf-tools stratego-regular xml-front stratego-tools boxenv stratego-util strc-core"
+PKGS="autoxt srts xtc sdf-import strc ssl gpp c-tools concrete-syntax aterm-front stratego-front aterm-tools asfix-tools dot-tools graph-tools sdf-front sdf-tools stratego-regular xml-front stratego-tools boxenv stratego-util stratego-lib strc-core"
 
 for dir in $PKGS
 do 
