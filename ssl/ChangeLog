@@ -1,3 +1,6 @@
+2001-11-15  Merijn de Jonge  <mdejonge@cwi.nl>
+	* Removed unused AC_ARG_WITH calls from configure.in
+
 2001-10-06  Eelco Visser  <visser@acm.org>
 
 	* spec/string.r (string-gt): use strcasecmp instead of strcmp so

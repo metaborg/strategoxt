@@ -25,18 +25,6 @@ AC_ARG_WITH(aterm,
 )
 AC_SUBST(ATERM)
 
-AC_ARG_WITH(gpp, 
-  [  --with-gpp           Specify location of GPP, default: \$prefix], 
-  GPP=$withval, 
-  GPP="$prefix"
-)
-
-AC_ARG_WITH(stratego, 
-  [  --with-stratego      Specify location of the Stratego compiler, default: \$prefix], 
-  STRATEGO=$withval, 
-  STRATEGO="$prefix"
-)
-
 AC_ARG_WITH(stratego-rts, 
   [  --with-stratego-rts  Specify location of Stratego run-time system, default: \$prefix], 
   STRATEGORTS=$withval, 
@@ -44,14 +32,7 @@ AC_ARG_WITH(stratego-rts,
 )
 AC_SUBST(STRATEGORTS)
 
-#AC_ARG_WITH(cpl, 
-#  [  --with-cpl          Specify location of choice point library (CPL), default: \$prefix], 
-#  CPL=$withval, 
-#  CPL="$prefix"
-#)
-#AC_SUBST(CPL)
-
-AC_REVISION($Id: configure.in,v 1.8 2001/10/10 14:54:12 visser Exp $)
+AC_REVISION($Id: configure.in,v 1.9 2001/11/15 13:00:44 stratego Exp $)
 
 AC_PROG_CC
 AC_PROG_RANLIB
@@ -72,10 +53,7 @@ changequote([, ])dnl
 AC_SUBST(DIST_ALPHA)
 
 AC_SUBST(ATERM)
-AC_SUBST(XT)
-AC_SUBST(GPP)
 AC_SUBST(RELEASE)
-AC_SUBST(STRATEGO)
 AC_SUBST(STRATEGORTS)
 
 AC_OUTPUT( \
