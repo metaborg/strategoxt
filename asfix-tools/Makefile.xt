@@ -14,13 +14,15 @@
 #
 
 INCLUDES 	= -I$(SRTS)/include -I$(ATERM)/include
-LDFLAGS		= -L$(SRTS)/lib -L$(ATERM)/lib 
+AM_LDFLAGS	= -L$(SRTS)/lib -L$(ATERM)/lib 
 LDADD 		= -lstratego.opt -lstratego-lib.opt -lATerm-gcc -lm
 
 SUFFIXES 	= .str .cr .r .rtree .def .tbl .pp .sdf
 
 SCOMPILE 	= $(SC)/bin/sc
 PARSESTRATEGO 	= $(STRATEGO_FRONT)/bin/parse-stratego
+
+sdfdatadir	= ${datadir}/sdf/${PACKAGE}
 
 ###########################################################
 #
@@ -44,24 +46,18 @@ PARSESTRATEGO 	= $(STRATEGO_FRONT)/bin/parse-stratego
 .PRECIOUS : %.str %.meta
 
 migrate :
-	for file in $(wildcard *.r) ; do \
+	for file in fordummy $(wildcard *.r) ; do \
+	 	if [ "$$file" = "fordummy" ]; then continue; fi; \
 	  mv $$file `basename $$file .r`.str ; \
 	done
-	for file in $(wildcard *.cr) ; do \
+	for file in fordummy $(wildcard *.cr) ; do \
+	 	if [ "$$file" = "fordummy" ]; then continue; fi; \
 	  mv $$file `basename $$file .cr`.str ; \
 	done 
-	for file in $(wildcard *.syn) ; do \
+	for file in fordummy $(wildcard *.syn) ; do \
+	 	if [ "$$file" = "fordummy" ]; then continue; fi; \
 	  echo "Meta([Syntax(\"`cat $$file`\")])" > `basename $$file .syn`.meta ; \
 	done
-
-#.cr.str:
-#	cp $< $@
-#	mv $< $<.bak
-#	$(MAKE) $*.meta
-
-#.syn.meta: 
-#	echo "Meta([Syntax(\"`cat $<`\")])" > $@
-#	mv $< $<.bak
 
 # Dependencies
 
@@ -116,15 +112,23 @@ xtc-conf.h :
 	echo "#define XTC_REPOSITORY() ATmakeString(\"$(REPOSITORY)\")" > $@
 
 install-data-local:
-	for file in $(pkgdata_DATA) ; do \
+	for file in fordummy $(pkgdata_DATA) ; do \
+	 	 	 	  if [ "$$file" = "fordummy" ]; then continue; fi; \
           $(XTC)/bin/xtc -r $(REPOSITORY) register -l $(pkgdatadir) -V $(VERSION) \
 		-t $$file ; \
         done
-	for file in $(bin_PROGRAMS) $(bin_SCRIPTS) ; do \
+	for file in fordummy $(sdfdata_DATA) ; do \
+	 	 	 	  if [ "$$file" = "fordummy" ]; then continue; fi; \
+          $(XTC)/bin/xtc -r $(REPOSITORY) register -l $(sdfdatadir) -V $(VERSION) \
+		-t $$file ; \
+        done
+	for file in fordummy $(bin_PROGRAMS) $(bin_SCRIPTS) ; do \
+	 	      if [ "$$file" = "fordummy" ]; then continue; fi; \
           $(XTC)/bin/xtc -r $(REPOSITORY) register -l $(bindir) -V $(VERSION) \
 		-t $$file ; \
         done
-	for file in $(libexec_PROGRAMS) ; do \
+	for file in fordummy $(libexec_PROGRAMS) ; do \
+	 	      if [ "$$file" = "fordummy" ]; then continue; fi; \
           $(XTC)/bin/xtc -r $(REPOSITORY) register -l $(libexecdir) -V $(VERSION) \
 		-t $$file ; \
         done

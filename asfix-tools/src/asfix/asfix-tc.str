@@ -1,0 +1,20 @@
+(* $Id: asfix-tc.str,v 1.1 2002/12/22 01:27:28 stratego Exp $
+
+	A typechecker for AsFixTerms
+
+*)
+
+module asfix-tc
+imports asfix-abstractions
+
+strategies
+
+  asfix-tc = stdio(isAsFixTerm)
+
+  isAsFixTerm =
+    rec x(
+	is-int
+    <+
+	appl(prod(list(isAsFixSort), isAsFixSort, id),
+             list(isAsFixTerm))
+    )
