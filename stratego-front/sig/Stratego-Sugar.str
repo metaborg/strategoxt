@@ -144,7 +144,7 @@ signature
     RootApp                    : StrategyAngle -> PreTerm
     App                        : Strategy * Term -> PreTerm
     Char                       : Char -> PreTerm
-    BuildDefault               : Term -> PreTerm
+    BuildDefaultPT             : PreTerm -> PreTerm
     Explode                    : Term * Term -> PreTerm
     OpQ                        : String * List(Term) -> PreTerm
     Op                         : Id * List(Term) -> PreTerm

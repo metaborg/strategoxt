@@ -176,8 +176,6 @@ regular tree grammar
     PreTerm                    -> RootApp(StrategyAngle)
     Term                       -> App(Strategy,Term)
     PreTerm                    -> App(Strategy,Term)
-    Term                       -> NoAnnoList(PreTerm)
-    Term                       -> AnnoList(PreTerm,ListStarOfTerm_0)
     Term                       -> BuildDefault(Term)
     PreTerm                    -> BuildDefaultPT(PreTerm)
     ID                         -> LId

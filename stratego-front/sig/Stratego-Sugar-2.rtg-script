@@ -1,0 +1,5 @@
+[ Read("Stratego-Sugar-1")
+, DeleteTerm(Term("NoAnnoList"))
+, DeleteTerm(Term("AnnoList"))
+, Reduce
+]

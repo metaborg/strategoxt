@@ -1,5 +1,4 @@
-[ Read("Stratego-Sugar")
-, Include([Read("Cong")])
+[ Read("Stratego-Sugar-Cong")
 , DeleteTerm(Term("NoAnnoList"))
 , DeleteTerm(Term("AnnoList"))
 

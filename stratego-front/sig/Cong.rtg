@@ -1,5 +1,5 @@
 regular tree grammar
   start Strategy
   productions
-    Strategy -> Cong(Id, u_0)
+    Strategy -> Cong(Id, ListStarOfStrategy_0)
     Id       -> Mod(String, String)

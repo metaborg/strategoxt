@@ -1,5 +1,5 @@
 
-module Stratego-Sugar-1
+module Stratego-Sugar-2
 imports list-cons option
 signature
   constructors
@@ -59,8 +59,6 @@ signature
     Con1                       : Var * Term -> Term
     RootApp                    : StrategyAngle -> Term
     App                        : Strategy * Term -> Term
-    NoAnnoList                 : PreTerm -> Term
-    AnnoList                   : PreTerm * List(Term) -> Term
     BuildDefault               : Term -> Term
     As                         : Var * Term -> Term
     Anno                       : PreTerm * PreTerm -> Term

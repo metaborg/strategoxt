@@ -124,6 +124,13 @@ exports
 
     "M"   [0-9\']*        -> ModName {prefer}
 
+    "def" [0-9\']*        -> Def
+    "def" [0-9\']* "*"    -> Def*
+    "sdecl" [0-9\']*      -> Sdecl
+    "sdecl" [0-9\']* "*"  -> Sdecl*
+    "ol" [0-9\']*         -> Overlay
+    "ol" [0-9\']* "*"     -> Overlay*
+
   variables
     "sc" [0-9\']*         -> DynRuleScopeId        {prefer}
     "sc" [0-9\']* "*"     -> {DynRuleScopeId ","}* {prefer}

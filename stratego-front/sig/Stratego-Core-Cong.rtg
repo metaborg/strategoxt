@@ -164,4 +164,5 @@ regular tree grammar
     String                -> <string>
     Real                  -> <string>
     Int                   -> <string>
-    Strategy              -> Cong(Id,n_0)
+    Strategy              -> Cong(Id,ListStarOfStrategy_0)
+    Id                    -> Mod(String,String)

@@ -1,0 +1,15 @@
+[ Read("Stratego-Sugar-2")
+
+, DeleteNonterm("DynRuleDef")
+, DeleteTerm(Term("ExtendOverrideDynamicRules"))
+, DeleteTerm(Term("ExtendDynamicRules"))
+, DeleteTerm(Term("OverrideDynamicRules"))
+, DeleteTerm(Term("DynRuleUnion"))
+, DeleteTerm(Term("DynRuleIntersect"))
+, DeleteTerm(Term("DynRuleUnionFix"))
+, DeleteTerm(Term("DynRuleIntersectFix"))
+, DeleteTerm(Term("GenDynRules"))
+, DeleteTerm(Term("DynRuleScope"))
+
+, Reduce
+]

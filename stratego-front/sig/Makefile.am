@@ -17,7 +17,11 @@ autogensignatures =				\
   Stratego-Core-Cong.rtg			\
   Stratego-Core-Cong.str			\
   Stratego-Sugar-1.rtg				\
-  Stratego-Sugar-1.str
+  Stratego-Sugar-1.str				\
+  Stratego-Sugar-2.rtg				\
+  Stratego-Sugar-2.str				\
+  Stratego-Sugar-3.rtg				\
+  Stratego-Sugar-3.str
 
 staticsignatures =				\
   Stratego-MetaTransition.str			\
@@ -57,3 +61,7 @@ $(autogensignatures) : Stratego.def Stratego-Core.def Stratego-Sugar.def Strateg
 
 %.rtg : %.rtg-script Stratego-Sugar.rtg Cong*.rtg
 	$(STRATEGO_REGULAR)/bin/rtg-script -i $< -o $@
+
+Stratego-Sugar-2.rtg : Stratego-Sugar-1.rtg
+Stratego-Sugar-3.rtg : Stratego-Sugar-2.rtg
+Stratego-Sugar-4.rtg : Stratego-Sugar-3.rtg

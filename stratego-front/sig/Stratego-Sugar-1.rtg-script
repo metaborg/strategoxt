@@ -1,27 +1,18 @@
-[ Read("Stratego-Sugar")
-, Include([Read("Cong")])
-, DeleteTerm(Term("NoAnnoList"))
-, DeleteTerm(Term("AnnoList"))
-
-, DeleteNonterm("DynRuleDef")
-, DeleteTerm(Term("ExtendOverrideDynamicRules"))
-, DeleteTerm(Term("ExtendDynamicRules"))
-, DeleteTerm(Term("OverrideDynamicRules"))
-, DeleteTerm(Term("DynRuleUnion"))
-, DeleteTerm(Term("DynRuleIntersect"))
-, DeleteTerm(Term("DynRuleUnionFix"))
-, DeleteTerm(Term("DynRuleIntersectFix"))
-, DeleteTerm(Term("GenDynRules"))
-, DeleteTerm(Term("DynRuleScope"))
+[ Read("Stratego-Sugar-Cong")
 
 , DeleteTerm(Term("AM"))
+, DeleteTerm(Term("BA"))
+
 , DeleteTerm(Term("SwitchChoice"))
 , DeleteTerm(Term("SwitchChoiceNoOtherwise"))
 , DeleteTerm(Term("CondChoice"))
 , DeleteTerm(Term("RGChoice"))
 , DeleteTerm(Term("RChoice"))
-, DeleteTerm(Term("SRule"))
+
 , DeleteTerm(Term("CallNoArgs"))
+, DeleteTerm(Term("PrimNoArgs"))
+, DeleteTerm(Term("Prim"))
+
 , DeleteTerm(Term("ExplodeCong"))
 , DeleteTerm(Term("ListCong"))
 , DeleteTerm(Term("ListCongNoTail"))
@@ -35,36 +26,17 @@
 , DeleteTerm(Term("RealCong"))
 , DeleteTerm(Term("IntCong"))
 , DeleteTerm(Term("StrCong"))
-, DeleteTerm(Term("Test"))
-, DeleteTerm(Term("PrimNoArgs"))
-, DeleteTerm(Term("Not"))
-, DeleteTerm(Term("BA"))
-, DeleteTerm(Term("ScopeDefault"))
-, DeleteTerm(Term("Thread"))
-, DeleteTerm(Term("Prim"))
-, DeleteTerm(Term("Con4"))
-, DeleteTerm(Term("Con3"))
-, DeleteTerm(Term("Con"))
-, DeleteTerm(Term("Con1"))
-, DeleteTerm(Term("RootApp"))
-, DeleteTerm(Term("App"))
 
 , DeleteTerm(Term("ListTail"))
 , DeleteTerm(Term("List"))
 , DeleteTerm(Term("Tuple"))
 , DeleteTerm(Term("Char"))
 
-
-, DeleteNonterm("RuleDec")
 , DeleteNonterm("StratRule")
-, DeleteNonterm("Rule")
-, DeleteNonterm("RuleDef")
 
 , DeleteTerm(Term("OverlayNoArgs"))
 , DeleteTerm(Term("SDefNoArgs"))
 , DeleteTerm(Term("SDef"))
-, DeleteTerm(Term("DefaultVarDec"))
-, DeleteTerm(Term("Rules"))
 
 , Reduce
 

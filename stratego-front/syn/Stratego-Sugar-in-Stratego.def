@@ -793,7 +793,7 @@ exports
     LId				-> ID
 
   context-free syntax
-    "_" Term 			 -> PreTerm {cons("BuildDefault")}
+    "_" PreTerm 		 -> PreTerm {cons("BuildDefaultPT")}
     "_" Term 			 -> Term {cons("BuildDefault"),prefer}
 
     Char 			 -> PreTerm {cons("Char")}
@@ -815,7 +815,6 @@ exports
     Var "[" Term "]" "(" Id ")" 		 -> Term {cons("Con")}
     Var "[" Term "where" Strategy "]"  		 -> Term {cons("Con3")}
     Var "[" Term "where" Strategy "]" "(" Id ")" -> Term {cons("Con4")}
-
 
   context-free priorities
     Term "#" "(" Term ")" 	 -> PreTerm {cons("Explode")}
@@ -1293,6 +1292,13 @@ exports
     "srt" [xyz] [0-9\']*  -> UCID         {prefer}
 
     "M"   [0-9\']*        -> ModName {prefer}
+
+    "def" [0-9\']*        -> Def
+    "def" [0-9\']* "*"    -> Def*
+    "sdecl" [0-9\']*      -> Sdecl
+    "sdecl" [0-9\']* "*"  -> Sdecl*
+    "ol" [0-9\']*         -> Overlay
+    "ol" [0-9\']* "*"     -> Overlay*
 
   variables
     "sc" [0-9\']*         -> DynRuleScopeId        {prefer}

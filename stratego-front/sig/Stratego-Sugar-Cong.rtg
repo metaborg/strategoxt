@@ -234,7 +234,7 @@ regular tree grammar
     Term                          -> AnnoList(PreTerm,ListStarOfTerm_0)
     PreTerm                       -> Char(Char)
     Term                          -> BuildDefault(Term)
-    PreTerm                       -> BuildDefault(Term)
+    PreTerm                       -> BuildDefaultPT(PreTerm)
     ID                            -> LId
     Var                           -> Var(LID)
     LID                           -> ListVar(LId)
@@ -315,5 +315,5 @@ regular tree grammar
     LongCom                       -> <string>
     ShortCom                      -> <string>
     Ws                            -> <string>
-    Strategy                      -> Cong(Id,u_0)
+    Strategy                      -> Cong(Id,ListStarOfStrategy_0)
     Id                            -> Mod(String,String)
