@@ -82,14 +82,22 @@
    Con3 -- KW["["] _1 KW["where"] _2 KW["]"],
    Con4 -- KW["["] _1 KW["where"] _2 KW["]"] KW["("] _3 KW[")"],
    
-   RDefNoArgs 	 		    -- V is=2[H[_1 KW[":"]] _2],
-   RDef 			    -- V is=2[H[ H hs=0[_1 KW["("] H[_2] KW[")"]] KW[":"]] _3],
-   RDef.2:iter-star-sep 	    -- H hs=0[_1 KW[","]],
+   RDefNoArgs            -- V is=2[H[_1 KW[":"]] _2],
+   RDef                  -- V is=2[H[ H hs=0[_1 KW["("] H[_2] KW[")"]] KW[":"]] _3],
+   RDef.2:iter-star-sep  -- H hs=0[_1 KW[","]],
 
-   RDefT                            -- V is=2[H[ H hs=0[_1 KW["("] H[_2 KW["|"] _3] KW[")"]] KW[":"]] _4],
-   RDefT.2:iter-star-sep            -- H hs=0[_1 KW[","]],
-   RDefT.3:iter-star-sep            -- H hs=0[_1 KW[","]],
-   
+   RDefT                 -- V is=2[H[ H hs=0[_1 KW["("] H[_2 KW["|"] _3] KW[")"]] KW[":"]] _4],
+   RDefT.2:iter-star-sep -- H hs=0[_1 KW[","]],
+   RDefT.3:iter-star-sep -- H hs=0[_1 KW[","]],
+
+   RDecNoArgs            -- _1,
+   RDec                  -- H hs=0 [_1 KW["("] H[_2] KW[")"]],
+   RDec.2:iter-star-sep  -- H hs=0 [_1 KW[","]],
+
+   RDecT                 -- H hs=0 [_1 KW["("] H[_2 KW["|"] _3] KW[")"]],
+   RDecT.2:iter-star-sep -- H hs=0 [_1 KW[","]],
+   RDecT.3:iter-star-sep -- H hs=0 [_1 KW[","]],
+
    SRDefNoArgs -- _1 KW["::"] _2,
    SRDef -- _1 KW["("] _2 KW[")"] KW["::"] _3,
    SRDef.2:iter-star-sep -- _1 KW[","],
@@ -186,6 +194,9 @@
    ListCong -- KW["["] _1 KW["|"] _2 KW["]"],
    ListCong.1:iter-star-sep -- _1 KW[","],
    ExplodeCong -- _1 KW["#"] _2,
+
+   GenDynRules -- V[V is=2[H[KW["rules"] KW["("]] _1] KW[")"]],
+   GenDynRules.1:iter-star -- _1,
 
    DynamicRules -- V[V is=2[H[KW["rules"] KW["("]] _1] KW[")"]],
    DynamicRules.1:iter-star -- _1,

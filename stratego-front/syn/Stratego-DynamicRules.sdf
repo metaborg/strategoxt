@@ -23,6 +23,12 @@ exports
     Id "(" {Typedid ","}* 
        "|" {Typedid ","}* ")"  -> RuleDec {cons("RuleDecT")}
 
+  context-free syntax %% legacy Dynamic rules
+
+    "override" "rules" "(" RuleDef* ")"		 -> Strategy {cons("OverrideDynamicRules")}
+    "extend"   "rules" "(" RuleDef* ")"		 -> Strategy {cons("ExtendDynamicRules")}
+    "extend" "override" "rules" "(" RuleDef* ")" -> Strategy {cons("ExtendOverrideDynamicRules")}
+
   %% context-free syntax
 
     %% "commit" "(" DynRuleSet ")" -> Strategy {cons("CommitDynRules")}
@@ -33,4 +39,3 @@ exports
     %% "intersect" "(" {DynRuleSet ","}+ ")" -> DynRuleSet {cons("IntersectDynRules")}
 
     %% "rules" Id "=" DynRuleSet           -> Strategy {cons("AsDynRules")}
-
