@@ -1,3 +1,9 @@
+2003-01-08  Eelco Visser  <visser@cs.uu.nl>
+
+	* ssl/Makefile.am (includedir): Installing ssl header files in
+	include/srts instead of include/ssl to avoid conflict with
+	OpenSSL.
+
 2002-12-31  Eelco Visser  <visser@cs.uu.nl>
 
 	* ssl/exec.c: Added SSL_creat and SSL_open to open files,
