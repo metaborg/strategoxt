@@ -1,24 +1,19 @@
-INCLUDES 	= -I@STRATEGORTS@/include \
-		  -I@STRATEGOLIB@/include \
-		  -I@ATERM@/include
+include @STRATEGORTS@/share/srts/Makefile.srts
 
-LDFLAGS		= -L@STRATEGORTS@/lib \
-		  -L@STRATEGOLIB@/lib \
-		  -L@ATERM@/lib 
+SUFFIXES = .str .cr
 
-LDADD		= -lstratego.opt \
-		  -lstratego-lib.opt \
-		  -lATerm-gcc \
-		  -lm
-
-SUFFIXES 	= .str .cr
-SC 		= @prefix@/bin/sc
+SC = @prefix@/bin/sc
 
 .str.c : 
 	$(SC) $(STRINCLUDES) $(SCFLAGS) -i $< -o $@ -c
 
 .cr.c : 
 	$(SC) $(STRINCLUDES) $(SCFLAGS) -i $< -o $@ -c
+
+%.c.dep : 
+	touch $@
+
+CLEANFILES = $(wildcard *.dep)
 
 bootclean:
 	rm -f $(BOOTCLEANFILES)

@@ -1,24 +1,19 @@
-INCLUDES 	= -I/home/xt/XT/include \
-		  -I/home/xt/XT/include \
-		  -I/home/xt/XT/include
+include /home/xt/XT/share/srts/Makefile.srts
 
-LDFLAGS		= -L/home/xt/XT/lib \
-		  -L/home/xt/XT/lib \
-		  -L/home/xt/XT/lib 
+SUFFIXES = .str .cr
 
-LDADD		= -lstratego.opt \
-		  -lstratego-lib.opt \
-		  -lATerm-gcc \
-		  -lm
-
-SUFFIXES 	= .str .cr
-SC 		= /home/xt/XT/bin/sc
+SC = /home/xt/XT/bin/sc
 
 .str.c : 
 	$(SC) $(STRINCLUDES) $(SCFLAGS) -i $< -o $@ -c
 
 .cr.c : 
 	$(SC) $(STRINCLUDES) $(SCFLAGS) -i $< -o $@ -c
+
+%.c.dep : 
+	touch $@
+
+CLEANFILES = $(wildcard *.dep)
 
 bootclean:
 	rm -f $(BOOTCLEANFILES)
