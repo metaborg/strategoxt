@@ -1,3 +1,6 @@
+2001-09-18 Joost.Visser@cwi.nl
+   * All `unglued' tools are now also installed in libexec.
+
 2001-09-18 Merijn de Jonge <mdejonge@cwi.nl> 
    * Added -2 switch to sglr calls to forse asfix2 output
    * stratego-imports/get-modules.r: provided type annotation for first

@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.2 2001/06/06 16:04:22 mdejonge Exp $
+# $Id: Makefile.am,v 1.3 2001/09/18 15:56:51 jvisser Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -31,7 +31,8 @@ SUBDIRS      = data
 STRATEGO_PRG = sdf2stratego
 
 # What scipts to build
-bin_SCRIPTS  = $(STRATEGO_PRG)
+bin_SCRIPTS	= $(STRATEGO_PRG)
+libexec_SCRIPTS	= $(STRATEGO_PRG)
 
 # Optional tests to run
 TESTS        = sdf2stratego_check
