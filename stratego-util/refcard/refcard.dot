@@ -1,0 +1,85 @@
+digraph StrategoXT {
+
+subgraph sdf2 {
+  sdf2table
+  "sdf-to-sig"
+  ppgen
+  rank=same
+}
+
+"Lang.sdf" -> "pack-sdf" -> "Lang.def" [color=blue]
+
+"Lang.def" -> "unpack-sdf" -> "Lang.sdf" [constraint=false]
+
+"Lang.def" -> sdf2table -> "Lang.tbl" [color=blue]
+
+"Lang.def" -> ppgen -> "Lang.pp"  [color=blue]
+"Lang.pp" -> edit -> "Lang.pp" [color=blue]
+
+"Lang.def" -> "sdf-to-sig" -> "Lang.str" [color=blue]
+
+".lang (in)" -> sglr
+"Lang.tbl" -> sglr -> ".asfix"
+
+"Lang.tbl" -> sglri -> ".ast (in)" [color=red]
+".lang (in)" -> sglri  [color=red]
+
+".asfix" -> "implode-asfix" -> ".ast (in)"
+".asfix" -> "asfix-yield"
+"asfix-yield" -> ".lang (in)" [constraint=false]
+
+".ast (out)" -> "ast2abox" -> ".abox"
+"Lang.pp" -> "ast2abox"
+
+".abox" -> "abox2text" -> ".lang (out)"
+".abox" -> "abox2html" -> ".html"
+".abox" -> "abox2latex" -> ".ltx"
+
+".ast (out)" -> "ast2text" -> ".lang (out)" [color=red]
+"Lang.pp" -> "ast2text" [color=red]
+
+#sc -> "parse-stratego" [style=dotted]
+
+".ast (in)" -> "term-to-dot" -> ".dot" -> dot -> ".ps"
+
+"Lang.str" -> "trafo.str" [color=blue]
+"trafo.str" -> sc -> "trafo.c" [color=blue]
+
+"trafo.str" -> "parse-stratego" -> ".rtree"
+
+".rtree" -> sc
+
+"trafo.str" -> "pp-stratego" -> "trafo.str"
+
+"trafo.c" -> gcc -> "trafo" [color=blue]
+
+".ast (in)" -> trafo -> ".ast (out)" [color=red]
+
+"Lang.def"  [shape=box]
+"Lang.sdf"  [shape=box]
+"Lang.str"  [shape=box] 
+"trafo.str"  [shape=box]
+"Lang.tbl" [shape=box]
+
+".dot"  [shape=box]
+".ps"  [shape=box]
+"Lang.pp"  [shape=box]
+".asfix"  [shape=box]
+ "trafo.c"  [shape=box]
+".ast (in)"  [shape=triangle,width=1,height=1,fixedsize=true]
+".ast (out)"  [shape=triangle,width=1,height=1,fixedsize=true]
+".abox"  [shape=box]
+".lang (in)"  [shape=box]
+".lang (out)"  [shape=box]
+".ltx"  [shape=box]
+".html" [shape=box]
+
+"XTC"  [shape=box]
+
+"XTC" -> trafo
+
+xtc -> "XTC" -> "xtc-call"
+"XTC" -> "xtc-get"
+
+
+}
