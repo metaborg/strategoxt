@@ -66,7 +66,7 @@ if test "x$XTC2_ENABLED" = "xyes"
 then
 
   PKGS="autoxt srts xtc2 stratego-front asfix-tools \
-     strc gpp c-tools ssl stratego-lib concrete-syntax xml-front \
+     strc gpp c-tools ssl concrete-syntax xml-front \
      aterm-front sdf-front sdf-tools \
      stratego-regular xtar \
      boxenv"
@@ -79,7 +79,7 @@ elif test "x$XTC3_ENABLED" = "xyes"
 then
 
   PKGS="autoxt srts xtc3 stratego-front asfix-tools \
-     strc gpp c-tools ssl stratego-lib concrete-syntax xml-front \
+     strc gpp c-tools ssl concrete-syntax xml-front \
      aterm-front sdf-front sdf-tools \
      stratego-regular xtar \
      boxenv"
@@ -91,7 +91,7 @@ then
 else
 
   PKGS="autoxt srts xtc stratego-front asfix-tools \
-     strc gpp c-tools ssl stratego-lib concrete-syntax xml-front \
+     strc gpp c-tools ssl concrete-syntax xml-front \
      aterm-front sdf-front sdf-tools \
      stratego-regular xtar \
      boxenv"
@@ -246,17 +246,6 @@ AB_CONFIG_PKG(stratego-front,
 )
 
 AB_CONFIG_PKG(ssl,
-   --with-aterm=${ATERM}
-   --with-sglr=${SGLR}
-   --with-pgen=${PGEN}
-   --with-strategoxt=${STRATEGOXT}
-   --with-srts=${BASELINE_SRTS}
-   --with-ssl=${BASELINE_SSL}
-   --with-xtc=${BASELINE_XTC}
-   --with-repository=${REPOSITORY}
-)
-
-AB_CONFIG_PKG(stratego-lib,
    --with-aterm=${ATERM}
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
