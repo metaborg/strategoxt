@@ -18,7 +18,7 @@ pkgdata_DATA   	= libxtclib.rtree liblib.rtree
 # pkgdocdatadir = $(pkgdatadir)/doc
 # pkgdocdata_DATA = libxtclib.str   liblib.str
 
-EXTRA_DIST      = libxtclib.rtree liblib.rtree liblib.str
+EXTRA_DIST      = xtclib.str libxtclib.rtree liblib.rtree liblib.str
 CLEANFILES      = $(wildcard *.dep)
 BOOTCLEANFILES  = libxtclib.str libxtclib.rtree libxtclib.c liblib.rtree
 
