@@ -1,4 +1,4 @@
-module sdfcons
+module prodcons
 
 (* $Id: prodcons.str,v 1.2 2003/01/29 10:25:26 stratego Exp $ *)
 (*
@@ -164,4 +164,3 @@ rules
   add-attributes :
     (prod-fun(fun,syms,sym,attrs(as')),as)
 	-> prod-fun(fun,syms,sym,attrs(<conc>(as',as)))
-
