@@ -55,6 +55,9 @@ SDF Tools
  - The AsFix Tools package which can be obtained from
    http://www.cwi.nl/~mdejonge/downloads
 
+ - The Graph Tools package which can be obtained from
+   http://www.cwi.nl/~mdejonge/downloads
+
  - The SDF parser generator pgen which can be obtained from
    http://www.cwi.nl/projects/MetaEnv/pgen
 
@@ -68,13 +71,13 @@ SDF Tools
  CONFIGURATION
 
  Set prefix to any appropriate value when installing and specify
- location of the Stratego compiler, the asfix tools package and the parser
- generator e.g.,
+ location of the required packages e.g.
 
  > ./configure --prefix=/usr/local \
                --with-stratego=/stratego/install/directory \
                --with-asfix-tools=/asfix-tools/install/directory \
                --with-pgen=/pgen/install/directory \
+               --with-graph-tools=/graph-tools/install/directory \
                --with-sglr=/sglr/install/directory
 
  This will cause executables to be installed in /usr/local/bin,

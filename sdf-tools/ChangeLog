@@ -4,6 +4,7 @@
    * src/sdf-pp: Sdf pretty-print tools added
    * sdf-tools now depends on graph-tools package
    * extended gt-paths.r.src
+   * src/sdf-imports: imports tool added
 
 2001-06-06 Merijn de Jonge <mdejonge@cwi.nl> 
    * src/sdf-normalize/asfix2sdf* moved to new package grammar-recovery
