@@ -12,10 +12,10 @@ strategies
     xtc-parse-sdf2(!"Module-GrammarID")
     
   xtc-parse-sdf2-definition =
-    xtc-parse-sdf2(!"Module")
+    xtc-parse-sdf2(!"SDF")
 
   xtc-parse-sdf2-definition-id =
-    xtc-parse-sdf2(!"Definition-GrammarID")
+    xtc-parse-sdf2(!"SDF-GrammarID")
 
 strategies
     
