@@ -1,3 +1,29 @@
+2004-04-23   Martin Bravenboer <martin@cs.uu.nl>
+
+	* spec/testneg/*: added negative regression tests. The solutions
+	is based on the negative tests in the cxx-grammar package of the
+	Transformers. The Transformers have really paid attention to their
+	build system. Very nice work!
+
+	Programs that should fail can be added to the variable STRPROGS:
+
+	STRPROGS = \
+          test01.str \
+	  test02.str
+
+	If the program succeeds for some reason, but this is acceptable
+	for the current release, then you can add the program to the file
+	'accept-success.list'.
+
+	For each program that has to be tested a symlink is created to the
+	test program 'testfail'. This program invokes make and switches
+	the exit value. It also prints the result of testing, for all
+	three cases: should fail -> fail, should fail -> success, should
+	fail -> acceptable success.
+
+	The make-rules of test1 are included, which means that the testneg
+	can be applied in the bootcheck without installing the compiler.
+	
 2004-04-18   Arthur van Dam  <adam@cs.uu.nl>
 
 	* front/dr-old-to-new.str now generates new-style dynamic rules
