@@ -65,6 +65,12 @@ AC_ARG_WITH([strategoxt],
 )
 AC_SUBST(STRATEGOXT)
 
+
+DETECT_SVN_REVISION
+
+# sets EXEEXT
+AC_PROG_CC
+
 ### PACKAGES ##########################
 
 PKGS="autoxt srts xtc sdf-import stratego-front asfix-tools strc gpp c-tools ssl concrete-syntax aterm-front sdf-front dot-tools graph-tools sdf-tools aterm-tools stratego-regular xml-front stratego-tools boxenv stratego-util"
@@ -77,12 +83,12 @@ INSTALL_XTC="$INSTALL_XTC_DEST$prefix"
 AC_SUBST(BUILD_SRTS_DEST)
 AC_SUBST(INSTALL_XTC_DEST)
 
-DETECT_SVN_REVISION
+XT_PKG_ATERM
+XT_PKG_SDF
 
 AC_PROG_LIBTOOL
 
 ### OUTPUT #############################
-
 AC_CONFIG_FILES([
   Makefile 
   news-archive/Makefile

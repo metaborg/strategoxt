@@ -1,161 +1,110 @@
-2004-01-22  Eelco Visser  <visser@cs.uu.nl>
+2004-07-06  Martin Bravenboer <martin@cs.uu.nl>
 
-	* Release 0.9.4
-
-2003-12-24  Eelco Visser  <visser@cs.uu.nl>
-
-	* Makefile.am: pre-pkgs is build relative to build directory not
-	to source directory.
-
-2003-12-23  Martin Bravenboer <martin@cs.uu.nl>
-
-	* Makefile.am: configure build time srts with strc and ssl.
-
-	* configure.in: configure srts with strc and ssl.
-
-	* strategoxt.spec.in: Requires of aterm and sdf2-bundle to
-	>=. More recent releases of aterm and the sdf2-bundle are now used
-	in the buildfarm.
-
-2003-12-05  Martin Bravenboer <martin@cs.uu.nl>
-
-	* Makefile.am: pass CPL configuration to the build time ATerm
-	library.
-
-2003-12-05  Martin Bravenboer <martin@cs.uu.nl>
-
-	* configure.in: do not set a default location of LaTeX: boxenv
-	will search the PATH for it.
-	
-2003-11-16  Eelco Visser  <visser@cs.uu.nl>
-
-	* bootstrap, configure.in: concrete-syntax package
-
-2003-08-14  Eelco Visser  <visser@cs.uu.nl>
-
-	* configure.in: Adapt build order for packages; bootstrapped
-	sources for aterm-tools, ssl, and stratego-tools are no longer kept
-	in repository
-
-2003-08-12  Martin Bravenboer  <mbravenb@cs.uu.nl>
-
-  * configure.in: removed configure of sc-exp
-
-2003-07-10  Eelco Visser  <visser@cs.uu.nl>
-
-	* configure.in: Building sc-exp at end of complete StrategoXT build
-
-2003-07-10  Eelco Visser  <visser@cs.uu.nl>
-
-	* configure.in: Building sc-exp at end of complete StrategoXT build
-
-2003-06-12  Martin Bravenboer  <martin@mbravenboer.org>
-
-  * Makefile.am: distribute the svn-co-revision file.
-
-  * strategoxt.spec.in: using SVN_REVISION for the
-    release of an RPM.
+	* configure.ac: check for dependencies (ATerm and SDF packages) by
+	invoking the new autoxt macros XT_PKG_ATERM and XT_PKG_SDF.
 
 2003-06-22  Martin Bravenboer  <martin@mbravenboer.org>
 
-  * configure.in: using SET_SVN_REVISION to determine
-    to SVN revision of the checkout.
+	* configure.in: using SET_SVN_REVISION to determine to SVN
+	revision of the checkout.
 
-  * acinclude.m4: added SET_SVN_REVISION to determine
-    to SVN revision of the checkout.
+	* acinclude.m4: added SET_SVN_REVISION to determine to SVN
+	revision of the checkout.
 
 2003-06-20  Martin Bravenboer  <martin@mbravenboer.org>
 
-  * configure.in: set the prefix before the AC_ARG_WITHs
-    to the default prefix. Fixed by Valentin David.
+	* configure.in: set the prefix before the AC_ARG_WITHs to the
+	default prefix. Fixed by Valentin David.
 
 2003-06-18  Martin Bravenboer  <martin@mbravenboer.org>
 
-  * strategoxt.spec.in: do not make with DESTDIR
+	* strategoxt.spec.in: do not make with DESTDIR
 
-  * strategoxt.spec.in: changed release to 1
+	* strategoxt.spec.in: changed release to 1
 
 2003-06-18  Martin Bravenboer  <martin@mbravenboer.org>
 
-  * Makefile.am: Install a local xtc. This xtc 
-    installation will be used at install time to create 
-    a repository.
+	* Makefile.am: Install a local xtc. This xtc installation will be
+	used at install time to create a repository.
 
-  * Configure.in: configure subpackages with the local
-    xtc.
+	* Configure.in: configure subpackages with the local xtc.
 
 2003-06-17  Martin Bravenboer  <martin@mbravenboer.org>
 
-  * Makefile.am: build in prefix order
-  * Makefile.am: using all-local instead of overriding all.
+	* Makefile.am: build in prefix order
+
+	* Makefile.am: using all-local instead of overriding all.
 
 2003-06-13  Martin Bravenboer  <martin@mbravenboer.org>
 
-  * bootstrap: more portable shell-scripting
+	* bootstrap: more portable shell-scripting
 
-  * Makefile.am: install the srts only once. Repeated
-    installation causes recompilation of c sources.
-    TODO: reinstall after a clean
+	* Makefile.am: install the srts only once. Repeated installation
+	causes recompilation of c sources.  TODO: reinstall after a clean
 
 2003-06-13  Martin Bravenboer  <martin@mbravenboer.org>
 
-  * Makefile.am: install srts in pre-pkgs/build before
-    doing make install.
+	* Makefile.am: install srts in pre-pkgs/build before doing make
+	install.
 
-  * configure.in: removed cgen configuration.
+	* configure.in: removed cgen configuration.
 
-  * configure.in: configure subpackages with build-time
-    srts.
-
-2003-06-12  Martin Bravenboer  <martin@mbravenboer.org>
-
-  * Makefile.am: install srts in pre-pkgs/build before
-    doing make all. The locally installed srts is not yet
-    used by the packages.
+	* configure.in: configure subpackages with build-time srts.
 
 2003-06-12  Martin Bravenboer  <martin@mbravenboer.org>
 
-  * bootstrap: install a local autoxt for bootstrapping
-    purposes. AutoXT is installed at prefix pre-pkgs/bootstrap 
-    and pre-pkgs/bootstrap/bin is put in front of the PATH.
+	* Makefile.am: install srts in pre-pkgs/build before doing make
+	all. The locally installed srts is not yet used by the packages.
 
 2003-06-12  Martin Bravenboer  <martin@mbravenboer.org>
 
-  * Changed versions to 0.9.2
-  * removed srts/Makefile.rpm
-  * removed sdf-tools/ADDING_TOOLS
-  * removed graph-tools/configure.in.src: confusing
-  * do not include .spec files of subpackages in distribution:
-    causes problems.
+	* bootstrap: install a local autoxt for bootstrapping
+	purposes. AutoXT is installed at prefix pre-pkgs/bootstrap and
+	pre-pkgs/bootstrap/bin is put in front of the PATH.
 
 2003-06-12  Martin Bravenboer  <martin@mbravenboer.org>
 
-  * StrategoXT.spec.in: PACKAGE_NAME should be PACKAGE_TARNAME
-    (SuSE problem).
+	* Changed versions to 0.9.2
 
-  * sc/Makefile.am, srts/Makefile.am, autoxt/Makefile.am, 
-    xtc/Makefile.am: do not distribute .spec files of 
-    subpackages (SuSE problem).
+	* removed srts/Makefile.rpm
 
-  * strategoxt.spec.in: renamed from StrategoXT.spec.in. Difference
-    between package tarname and package name causes problems.
+	* removed sdf-tools/ADDING_TOOLS
+
+	* removed graph-tools/configure.in.src: confusing
+
+	* do not include .spec files of subpackages in distribution:
+	causes problems.
 
 2003-06-12  Martin Bravenboer  <martin@mbravenboer.org>
 
-  * bootstrap: don't make check scripts executable. wget
-    is no longer used by the buildfarm to checkout the
-    sources.
+	* StrategoXT.spec.in: PACKAGE_NAME should be PACKAGE_TARNAME
+	(SuSE problem).
+
+	* sc/Makefile.am, srts/Makefile.am, autoxt/Makefile.am,
+	xtc/Makefile.am: do not distribute .spec files of subpackages
+	(SuSE problem).
+
+	* strategoxt.spec.in: renamed from StrategoXT.spec.in. Difference
+	between package tarname and package name causes problems.
+
+2003-06-12  Martin Bravenboer  <martin@mbravenboer.org>
+
+	* bootstrap: don't make check scripts executable. wget is no
+	longer used by the buildfarm to checkout the sources.
 
 2003-05-22  Martin Bravenboer  <martin@mbravenboer.org>
 
-  * stratego-util is now part of the StrategoXT distribution
+	* stratego-util is now part of the StrategoXT distribution
 
 2003-03-21  Martin Bravenboer  <martin@mbravenboer.org>
 
-  * corrected sdf2 download location in README.in
-  * using AC_HELP_STRING in configure.in
-  * specify default values for configure flags
-  * added LaTeX configure flag
+	* corrected sdf2 download location in README.in
+
+	* using AC_HELP_STRING in configure.in
+
+	* specify default values for configure flags
+
+	* added LaTeX configure flag
 
 2003-01-17  Eelco Visser  <visser@cs.uu.nl>
 
