@@ -15,7 +15,7 @@ pre-pkgs/build/srts.dummy :
 	./configure --prefix=`cd ..; pwd` --with-aterm=$(ATERM) --with-cpl=$(CPL) --with-strc=$(STRATEGOXT)  --with-ssl=$(STRATEGOXT) &&\
 	$(MAKE) &&\
 	$(MAKE) install &&\
-	cd ../srts.dummy
+	touch ../srts.dummy
 
 pre-pkgs/install/xtc.dummy :
 	mkdir -p pre-pkgs/install &&\
@@ -24,7 +24,7 @@ pre-pkgs/install/xtc.dummy :
 	./configure --prefix=`cd ..; pwd` --with-srts=`cd ../../build; pwd` --with-aterm=$(ATERM) --with-stratego-xt=$(STRATEGOXT) &&\
 	$(MAKE) &&\
 	$(MAKE) install &&\
-	cd ../xtc.dummy
+	touch ../xtc.dummy
 
 rpm : dist
 	$(RPMBUILD) -ta $(PACKAGE_TARNAME)-$(VERSION).tar.gz
