@@ -71,15 +71,15 @@ AC_SUBST(SDF_TOOLS)
 AC_ARG_ENABLE(concrete, 
 [  --enable-concrete           Enable concrete syntax (requires sglr, pgen, 
                               asfix-tools, stratego-tools, sdf-tools)], 
-  CONCRETE="yes" FRONT="stratego-front", 
-  CONCRETE="no"  FRONT=""
+  CONCRETE="yes"; FRONTPKG="stratego-front", 
+  CONCRETE="no" ; FRONTPKG=""
 )
 AC_SUBST(CONCRETE)
 
 AC_ARG_ENABLE(boot, 
   [  --enable-boot               Enable bootstrapping (implies concrete syntax)], 
-  BOOT="yes" FRONT="stratego-front" BOOT="sc", 
-  BOOT="no"  BOOT=""
+  BOOT="yes" ; FRONTPKG="stratego-front" ; BOOTPKG="sc", 
+  BOOT="no"  ; BOOTPKG=""
 )
 AC_SUBST(BOOT)
 
@@ -90,7 +90,7 @@ AC_ARG_ENABLE(exe,
 )
 AC_SUBST(EXE)
 
-PKGS="srts ssl cgen sc-boot gpp-boot $FRONT $BOOT"
+PKGS="srts ssl cgen sc-boot gpp-boot $FRONT $BOOTPKG"
 AC_SUBST(PKGS)
 
 top_srcdir=`pwd`
