@@ -8,17 +8,13 @@ strategies
 
   compile = 
     init-term-caching;
-    rec x({| Initialized : 
-             repeat(TranslateSpec 
-                    <+ TranslateSig 
-                    <+ TranslateDef 
-                    <+ TranslateStratMatchGuard 
-                    <+ TranslateStrat)
-           ; all(x)
-           ; repeat(Csimplify) 
-           |}
-	 );
-    try(oncetd(?InitCachedTerms; init-cached-terms))
+    downup2(repeat(TranslateSpec 
+                   <+ TranslateSig 
+                   <+ TranslateDef 
+                   <+ TranslateStratMatchGuard 
+                   <+ TranslateStrat)
+	   ,repeat(Csimplify))
+    ; try(oncetd(?InitCachedTerms; init-cached-terms))
 
 signature
   constructors

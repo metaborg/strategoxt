@@ -75,7 +75,7 @@ rules
     Where(Seq(s1, Seq(Build(t), s2)))
 \end{code}
 
-% Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
+% Copyright (C) 1998-2003 Eelco Visser <visser@acm.org>
 % 
 % This program is free software; you can redistribute it and/or modify
 % it under the terms of the GNU General Public License as published by

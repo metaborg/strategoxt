@@ -3,6 +3,7 @@ imports Stratego sugar
 strategies
 
   BMF = MisMatch + BuildMatchFusion + BuildBuild + BuildPrim
+	+ MatchIdem + BuildMatchIdem + MatchBuildIdem
 
 rules
 
@@ -48,3 +49,13 @@ rules
     (Build(t1), Where(Prim(p,ts))) -> Prim(p,ts)
 
   // where(s; !t) == where(s)
+
+  MatchIdem :
+    (Match(t), Match(t)) -> Match(t)
+    
+  BuildMatchIdem :
+    (Build(t), Match(t)) -> Build(t)
+    
+  MatchBuildIdem :
+    (Match(t), Build(t)) -> Match(t)
+    

@@ -30,6 +30,7 @@ strategies
     <+ mark-build
     <+ mark-scope
     <+ mark-let
+    <+ mark-traversal
     <+ mark-sdef 
     <+ mark-call
     <+ mark-prim
@@ -41,6 +42,12 @@ strategies
 
   mark-build = 
     Build(alltd(MarkVar))
+
+  mark-traversal =
+    (?All(_) + ?One(_) + ?Some(_) + ?Thread(_))
+    ; where(save-MarkVar => bnd)
+    ; one(mark-buv)
+    ; where(<isect-MarkVar> bnd)
 
   mark-call =
     Call(id,id)

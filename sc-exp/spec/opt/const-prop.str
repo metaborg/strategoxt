@@ -13,42 +13,46 @@ strategies
     <+ prop-build
     <+ prop-scope(cp)
     <+ prop-call(cp)
+    <+ prop-traversal(cp)
     <+ prop-seq(cp)
     <+ prop-choice(cp)
-    <+ prop-lchoice(cp)
-    <+ prop-guardedlchoice(cp)
     <+ prop-let(cp)
     <+ prop-rec(cp)
     <+ prop-not(cp)
     <+ prop-sdef(cp)
     <+ all(cp)
 
+  exec-maybe(s) =
+    where(UndefCurrentTerm; save-Binding => bnd0)
+    ; s
+    ; where(UndefCurrentTerm; <restore-Binding> bnd0)
+
   prop-seq(cp) =
     Seq(cp, cp)
 
   prop-call(cp) =
     ?CallT(_, _, _)
-    ; CallT(id
-	   , map(UndefCurrentTerm; cp)
-	   , alltd(Binding))
     ; UndefCurrentTerm
+    ; CallT(id, map(exec-maybe(cp)), alltd(Binding))
 
   prop-call(cp) =
     ?PrimT(_, _, _)
-    ; PrimT(id, cp, alltd(Binding))
     ; UndefCurrentTerm
+    ; PrimT(id, map(exec-maybe(cp)), alltd(Binding))
+
+  prop-traversal(cp) =
+    (?All(_) + ?One(_) + ?Some(_) + ?Thread(_) + ?Bagof(_))
+    ; UndefCurrentTerm
+    ; one(exec-maybe(cp))
 
   prop-rec(cp) =
     ? Rec(_,_)
-    ; where(save-Binding => bnd0)
-    ; Rec(id, UndefCurrentTerm; cp)
-    ; where(UndefCurrentTerm; <restore-Binding> bnd0)
+    ; Rec(id,  exec-maybe(cp))
 
   prop-not(cp) =
     ? Not(_)
-    ; where(save-Binding => bnd0)
-    ; Not(cp)
-    ; where(UndefCurrentTerm; <restore-Binding> bnd0)
+    ; UndefCurrentTerm
+    ; Not(exec-maybe(cp))
 
   prop-scope(cp) =
     ?Scope(xs, _)
@@ -79,18 +83,34 @@ strategies
     ; ?Build(t)
     ; rules(CurrentTerm : _ -> t)
 
+/*
   prop-match =
     Match(alltd(Binding))
     ; ?Match(t)
-    ; (where(CurrentTerm => ct)
-       ; (where(<prop-pattern-match> [(t, ct)]
-	        ; map(try(introduce-binding)))
-         <+ where(<debug(!"no match with current term: ")> ("strat: ", <id>, "current: ", ct))
-            ; !Fail
-         )
-      <+ where(<not(oncetd(?Wld + ?As(_,_)))> t)
-         ; rules(CurrentTerm : _ -> t)
-      <+ id
+    ; try(//where(<not(oncetd(?Wld + ?As(_,_)))> t)
+        ; (where(CurrentTerm => ct)
+          ; (where(<prop-pattern-match> [(t, ct)]
+	           ; map(try(introduce-binding)))
+             <+ where(<debug(!"no match with current term: ")> 
+		      ("strat: ", <id>, "current: ", ct))
+                ; !Fail)
+          <+ where(<not(oncetd(?Wld + ?As(_,_)))> t)
+	     ; rules(CurrentTerm : _ -> t)
+         ))
+*/
+
+  prop-match =
+    Match(alltd(Binding))
+    ; ?Match(t)
+    ; try(
+        where(CurrentTerm => ct)
+        ; (where(<prop-pattern-match> [(t, ct)]; map(try(introduce-binding)))
+           /*; Match(alltd(Binding)) */
+           <+ <debug(!"no match with current term: ")> 
+		      ("strat: ", <id>, "current: ", ct)
+              ; !Fail)
+       <+ where(<not(oncetd(?Wld + ?As(_,_)))> t)
+	  ; rules(CurrentTerm : _ -> t)
       )
 
   introduce-binding =
@@ -101,8 +121,10 @@ strategies
   prop-pattern-match = 
     for(\ pairs -> (pairs, []) \
        ,\ ([], sbs) -> sbs \
-       ,MatchVar(Var(id)) 
-	<+ (UfIdem, id)
+       ,
+        (UfIdem, id)
+	<+ //MatchVar(Var(id)) 
+	   UfVar(Var(id))
 	<+ (UfDecompose, id) 
 	<+ (AsMatch, id)
 	<+ (MatchWildCard, id)
@@ -127,15 +149,16 @@ strategies
     [(As(Var(x),p),t) | ps] -> [(Var(x), t), (p, t) | ps]
 
   prop-choice(uv) =
-    Choice(id, id)
+    ?Choice(_, _)
     ; prop-abstract-choice(Choice(uv,id),Choice(id, uv))
-
-  prop-lchoice(uv) =
-    LChoice(id, id)
+   <+
+    ?GChoice(_, _)
+    ; prop-abstract-choice(GChoice(uv,id),GChoice(id, uv))
+   <+
+    ?LChoice(_, _)
     ; prop-abstract-choice(LChoice(uv,id),LChoice(id, uv))
-
-  prop-guardedlchoice(uv) =
-    GuardedLChoice(id, id, id)
+   <+
+    ?GuardedLChoice(_,_,_)
     ; prop-abstract-choice(GuardedLChoice(uv,id,id);GuardedLChoice(id,uv,id)
 	           ,GuardedLChoice(id,id,uv))
 

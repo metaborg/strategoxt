@@ -23,7 +23,10 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 %.tree : %.rtree ../pack/pack-stratego$(EXE) 
 	../pack/pack-stratego $(SINCLUDES) -i $< -o $@ 
 
-%.s1 : %.tree ../front/frontend$(EXE)
+%.s0 : %.tree ../front/repair-types$(EXE)
+	../front/repair-types -i $< -o $@
+
+%.s1 : %.s0 ../front/frontend$(EXE)
 	../front/frontend -i $< -o $@ -b --verbose 10
 
 %.s2 : %.s1 ../front/extract$(EXE)

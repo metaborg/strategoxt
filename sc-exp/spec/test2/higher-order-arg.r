@@ -6,7 +6,7 @@ strategies
   implode-string = ?x; prim("SSL_implode_string", x)
   explode-string = ?x; prim("SSL_explode_string", x)
 
-  escape(esc : List(String) * (List(String) -> List(String)) -> List(String) ) = 
+  escape(esc :  List(String) * (List(String) -> List(String))  -> List(String) ) = 
     explode-string;
     rec x(esc(x) <+ [id | x] <+ []);
     implode-string

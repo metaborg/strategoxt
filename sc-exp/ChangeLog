@@ -1,3 +1,26 @@
+2003-07-26  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/opt/build-match-laws.str: Simplify sequences of builds and
+	matches with identical terms.
+	
+	* spec/front/repair-types.str: Detect explicit type declarations
+	for strategy arguments with wrong (= old) order of arguments. For
+	each declaration give a warning and repair the declaration.
+
+	* spec/c/s2c.str: Refactored translation strategy using downup
+	strategy. Dynamic rule 'Initialized' is obsolete; replaced by
+	bound-unbound-vars analysis.
+
+	* spec/opt/const-prop.str: Treatment of traversal operators. Make
+	sure to undefine the current term and restore bindings in places
+	where it is unknown whether a strategy will be actually executed.
+	Use unification for pattern matching. 
+
+	* spec/c/bound-unbound-vars.str: Treatment of traversal operators
+
+	* spec/front/needed-constructors.str: Constructors are needed for
+	congruences as well as ops.
+
 2003-07-23  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/sc/strc.str: Renamed sc to strc and added the -O option to

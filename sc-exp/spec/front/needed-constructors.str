@@ -12,3 +12,8 @@ strategies
     ?Op(c, _)
     ; rules(ConstructorNeeded : OpDecl(c, t) -> OpDecl(c, t))
 
+
+  DeclareConstructorNeeded =
+    ?Cong(c, _)
+    ; rules(ConstructorNeeded : OpDecl(c, t) -> OpDecl(c, t))
+

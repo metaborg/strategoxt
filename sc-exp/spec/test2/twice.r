@@ -11,8 +11,8 @@ rules
 
 strategies
 
-    main       = <Main> [A, A]
+    main       = debug(!"main: "); <Main> [A, A]; debug(!"main x: ")
 
-    Main       = memo-scope([ma, ma])
+    Main       = debug(!"Main: "); memo-scope([ma, ma]); debug(!"Main x: ")
 
-    ma 	       = memo(RuleA)
+    ma 	       = debug(!"ma: "); memo(RuleA); debug(!"ma x: ")
