@@ -143,7 +143,9 @@ strategies
  */
 strategies
 
-  temp-dir = P_tmpdir
+  temp-dir =
+    <getenv> "TMPDIR"
+    <+ P_tmpdir
 
   P_tmpdir =
     prim("SSL_P_tmpdir")
