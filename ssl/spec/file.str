@@ -39,6 +39,9 @@ strategies
   open-file =
     ?(name, mode); prim("SSL_open_file", name, mode)
 
+  /**
+   * @obsolete use <open-file> (file, mode)
+   */
   open-file =
     ?name; not(?(_, _))
     ; obsolete(!"<open-file> file; use <open-file> (file, mode)")
@@ -49,7 +52,9 @@ strategies
 
 strategies
 
-  // @type String -> String
+  /**
+   * @type String -> String
+   */
   file-exists =
     <access> (<id>, [F_OK()])
 
@@ -155,4 +160,3 @@ strategies
   find-file(ext) =
     (guarantee-extension(ext), id)
     ; find-in-path
-

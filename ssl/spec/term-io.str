@@ -143,6 +143,8 @@ strategies
   * The primitive print-stack prints the top n elements of
   * the stack if applied as <print-stack>n or the entire
   * stack if applied to a non-integer term.
+  *
+  * @obsolete use debug or gdb
   */
   print-stack = 
     obsolete(!"print-stack; use debug or gdb")
@@ -226,6 +228,9 @@ strategies
   printstring = 
     where(<print> (stdout, [<id>]))
 
+  /**
+   * @obsolete use echo
+   */
   debug-stdout(msg) = 
     obsolete(!"debug-stdout; use echo");
     echo(msg)
@@ -257,4 +262,3 @@ strategies
     <s> (<id>, <ReadFromFile> stdin())
     ; <WriteToTextFile> (stdout(), <id>)
     <+ <fatal-error> ["** rewriting failed"]
-

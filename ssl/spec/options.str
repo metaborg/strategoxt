@@ -59,7 +59,7 @@ strategies
     ; ( where(<get-config> "-b") < WriteToBinaryFile + WriteToTextFile )
 
  /**
-  * Wraps a strategy into a strategy that handles inputput options.
+  * Wraps a strategy into a strategy that handles input options.
   *
   * Reads a term from the file specified by the -i option (or stdin).
   */ 
@@ -108,28 +108,49 @@ strategies
       verbose-option
     + keep-option
 
+  /**
+   * Option specifcation for level of keeping intermediate results.
+   */
   keep-option =
     ArgOption("-k" + "--keep"
     , where(<set-config> ("--keep", <string-to-int>))
     , !"--keep i | -k i  Keep intermediates (default 0)"
     )
 
+  /**
+   * @obsolete --version is a standard option
+   */
   version-option =
       obsolete(!"version-option/0: is a standard option")
     ; fail
 
+  /**
+   * Option specifications for reading input.
+   *
+   * Defines -i.
+   */
   input-option =
     ArgOption("-i" + "--input"
     , where(<set-config> ("-i",<id>)); !Input(<id>)
     , !"-i f|--input f   Read input from f"
     )
 
+  /**
+   * Option specifications for writing output.
+   *
+   * Defines -o.
+   */
   output-option =
     ArgOption("-o" + "--output"
     , where(<set-config> ("-o",<id>)); !Output(<id>)
     , !"-o f|--output f  Write output to f" 
     )
 
+  /**
+   * Option specifications for ATerm output.
+   *
+   * Defines -b option for binary output.
+   */
   aterm-output-option =
       output-option
     + Option("-b"
@@ -137,6 +158,11 @@ strategies
       , !"-b               Write binary output"
       )
 
+  /**
+   * Option specifications for verbosity.
+   *
+   * Defines -S, --silent, --verbose and -s.
+   */
   verbose-option =
       Option("-S"+"--silent"
       , where(<set-config> ("--verbose",0)); !Verbose(0)
@@ -185,6 +211,9 @@ strategies
     ; <printnl> (stderr, [<whoami> (), ": rewriting failed"])
     ; <exit> 1
 
+  /**
+   * Outputs the name of the program and the run time in seconds to stderr.
+   */
   report-run-time = 
     if-verbose1(
       <printnl> (stderr,
@@ -333,6 +362,9 @@ strategies
 	 where((option-defined(?Input(infile)) <+ !stdin => infile));
   	 split(id, <ReadFromFile> infile)
 
+  /**
+   * @obsolete use profile(s).
+   */
   apply-strategy(strat) =
    	 where(dtime);
    	 strat;
