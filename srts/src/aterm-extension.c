@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1998-2001 Eelco Visser <visser@acm.org>
+Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ ATermList ATmap(ATermList l, ATerm (* f)(ATerm))
 
 ATerm ATmakeString(char *name)
 {
-  return (ATerm) ATmakeAppl0(ATmakeSymbol(name, 0, ATtrue));
+  return (ATerm) ATmakeAppl0(ATmakeAFun(name, 0, ATtrue));
 }
 
 ATerm ATmakeStringQ(char *name)
@@ -112,6 +112,7 @@ ATerm AppN(char *name, ATermList args)
 /* Conversion from terms with list notation to lists with Cons/Nil and
    back. */
 
+/*
 ATerm list_to_consnil(ATerm t)
 {
 
@@ -143,6 +144,7 @@ ATerm list_to_consnil(ATerm t)
     return t;
   }
 }
+*/
 
 ATerm list_to_consnil_op(ATermList t)
 {
@@ -166,6 +168,7 @@ ATerm list_to_consnil_op_tl(ATermList t, ATerm tl)
 			      list_to_consnil_op_tl(ATgetNext(t), tl)));
 }
 
+/*
 ATerm list_to_tconstnil(ATerm t)
 {
 
@@ -197,8 +200,9 @@ ATerm list_to_tconstnil(ATerm t)
     return t;
   }
 }
+*/
 
-
+/*
 ATerm list_to_consnil_shallow(ATerm t)
 {
 
@@ -221,7 +225,9 @@ ATerm list_to_consnil_shallow(ATerm t)
   else      
     return t;
 }
+*/
 
+/*
 ATerm list_to_tconstnil_op(ATermList t)
 {
 
@@ -233,7 +239,9 @@ ATerm list_to_tconstnil_op(ATermList t)
 	     ATmakeList2(ATgetFirst(t),
 			 list_to_tconstnil_op(ATgetNext(t))));
 }
+*/
 
+/*
 ATerm consnil_to_list(ATerm t)
 {
   switch(ATgetType(t)) {
@@ -316,7 +324,8 @@ ATerm consnil_to_list_shallow(ATerm t)
     return t;
   }
 }
-
+*/
+/*
 ATerm tuple_cong_aux(ATermList t)
 {
   if(ATisEmpty(t))
@@ -336,6 +345,7 @@ ATerm tuple_cong(ATermList t)
   else
     return tuple_cong_aux(t);
 }
+*/
 
 ATerm list_cong_aux(ATermList t, ATerm tl)
 {

@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2001 Eelco Visser <visser@acm.org>
+# Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
 # 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,7 +22,9 @@ INCLUDES 	= -I$(ATERM)/include -I$(srcdir)
 LDFLAGS		= -L$(ATERM)/lib
 
 lib_LIBRARIES 	= libstratego.a libstratego.dbg.a \
-		  libstratego.opt.a libstratego.prof.a
+		  libstratego.opt.a libstratego.prof.a \
+		  libatermextension.a libatermextension.dbg.a \
+		  libatermextension.opt.a libatermextension.prof.a
 
 include_HEADERS = \
 	stratego.h aterm-extension.h debug.h
@@ -31,6 +33,10 @@ libstratego_a_SOURCES = \
 	stratego.c aterm-extension.c debug.c mprotect.c\
 	stratego.h aterm-extension.h debug.h mprotect.h
 
+libatermextension_a_SOURCES = \
+	aterm-extension.c debug.c mprotect.c\
+	aterm-extension.h debug.h mprotect.h
+
 libstratego_dbg_a_SOURCES = 
 libstratego_opt_a_SOURCES = 
 libstratego_prof_a_SOURCES = 
@@ -38,4 +44,12 @@ libstratego_prof_a_SOURCES =
 libstratego_dbg_a_LIBADD = $(subst .o,.dbg.o,$(libstratego_a_OBJECTS))
 libstratego_opt_a_LIBADD = $(subst .o,.opt.o,$(libstratego_a_OBJECTS))
 libstratego_prof_a_LIBADD = $(subst .o,.prof.o,$(libstratego_a_OBJECTS))
+
+libatermextension_dbg_a_SOURCES = 
+libatermextension_opt_a_SOURCES = 
+libatermextension_prof_a_SOURCES = 
+
+libatermextension_dbg_a_LIBADD = $(subst .o,.dbg.o,$(libatermextension_a_OBJECTS))
+libatermextension_opt_a_LIBADD = $(subst .o,.opt.o,$(libatermextension_a_OBJECTS))
+libatermextension_prof_a_LIBADD = $(subst .o,.prof.o,$(libatermextension_a_OBJECTS))
 

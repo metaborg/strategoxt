@@ -1,3 +1,24 @@
+2002-01-10  Eelco Visser  <visser@acm.org>
+
+	* Release 0.7beta
+
+2002-01-06  Eelco Visser  <visser@acm.org>
+
+	* src/stratego.c: Special handling of lists in generic traversal
+	operators required by support for native ATerm lists.
+
+	* src/aterm-extension.c (AThasName): Commented out functions
+	converting to and from cons/nil lists
+
+2002-01-04  Eelco Visser  <visser@acm.org>
+
+	* src/aterm-extension.c: Commented out functions converting to and
+	from tcons/tnil tuples
+
+2002-01-03  Eelco Visser  <visser@acm.org>
+
+	* Release 0.6.4
+	
 2001-11-26  Eelco Visser  <visser@acm.org>
 
 	* Release 0.6.3

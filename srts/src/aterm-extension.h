@@ -52,6 +52,8 @@ ATbool ATisThisString(ATerm t, char *name);
 ATermList ATmap(ATermList l, ATerm (* f)(ATerm));
 ATbool AThasName(ATerm t, char *name);
 
+ATermList CheckATermList(ATerm t);
+
 ATerm App0(char *name);
 ATerm App1(char *name, ATerm arg1);
 ATerm App2(char *name, ATerm arg1, ATerm arg2);

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1998-2001 Eelco Visser <visser@acm.org>
+Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -28,23 +28,25 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 #include "stratego.h"
 #include "mprotect.h"
 
-static Symbol sym_Cons_2;
-static Symbol sym_Nil_0;
-static Symbol sym_Pair_2;
+//static Symbol sym_Cons_2;
+//static Symbol sym_Nil_0;
+//static Symbol sym_Pair_2;
+static Symbol sym__2;
 
 void init_constructors_srts()
 {
-  sym_Cons_2 = ATmakeSymbol("Cons", 2, ATfalse);
-  ATprotectSymbol(sym_Cons_2);     
-  sym_Nil_0 = ATmakeSymbol("Nil", 0, ATfalse);
-  ATprotectSymbol(sym_Nil_0); 
-  sym_Pair_2 = ATmakeSymbol("Pair", 2, ATfalse);
-  ATprotectSymbol(sym_Pair_2);                 
+  //sym_Cons_2 = ATmakeSymbol("Cons", 2, ATfalse);
+  //ATprotectSymbol(sym_Cons_2);     
+  //sym_Nil_0 = ATmakeSymbol("Nil", 0, ATfalse);
+  //ATprotectSymbol(sym_Nil_0); 
+  //sym_Pair_2 = ATmakeSymbol("Pair", 2, ATfalse);
+  //ATprotectSymbol(sym_Pair_2);    
+  sym__2 = ATmakeSymbol("", 2, ATfalse);
+  ATprotectSymbol(sym__2);                              
 }
 
 ATerm stratego__main(ATerm);
 void init_constructors(void);
-
 
 // Choice point implementation
 
@@ -86,62 +88,114 @@ ATerm _id(ATerm t)
 
 ATerm _all(ATerm t, ATerm f(ATerm))
 {
-  if(ATgetType(t) == AT_APPL) 
-    { 
-      Symbol c = ATgetSymbol((ATermAppl) t);
-      int i, arity = ATgetArity(c);
-      if(arity > ALLARRAY)
+  switch(ATgetType(t))
+    {
+    case AT_APPL :
+      {
+	Symbol c = ATgetSymbol((ATermAppl) t);
+	int i, arity = ATgetArity(c);
+	if(arity > ALLARRAY)
+	  {
+	    ATermList ts = ATempty;
+	    for(i = 0; i < arity; i++)
+	      ts = ATinsert(ts, f(ATgetArgument(t, i)));
+	    t = (ATerm) ATmakeApplList(c, ATreverse(ts));
+	  } 
+	else 
+	  {
+	    ATerm kids[ALLARRAY];
+	    for(i = 0; i < arity; i++)
+	      kids[i] = f(ATgetArgument(t, i));
+	    t = (ATerm) ATmakeApplArray(c, kids);
+	  }
+      }
+      break;
+    case AT_LIST :
+      if((ATermList) t != ATempty)
 	{
-	  ATermList ts = ATempty;
-	  for(i = 0; i < arity; i++)
-	    ts = ATinsert(ts, f(ATgetArgument(t, i)));
-	  t = (ATerm) ATmakeApplList(c, ATreverse(ts));
-	} 
-      else 
-	{
-	  ATerm kids[ALLARRAY];
-	  for(i = 0; i < arity; i++)
-	    kids[i] = f(ATgetArgument(t, i));
-	  t = (ATerm) ATmakeApplArray(c, kids);
+	  //ATerm hd = f(ATgetFirst((ATermList) t));
+	  //ATerm tl = f((ATerm) ATgetNext((ATermList) t));
+	  t = (ATerm)ATmap((ATermList) t, f);
 	}
+      break;
     }
+  
   return(t);
 }
  
 ATerm _one(ATerm t, ATerm f(ATerm))
 {
-  if(ATgetType(t) == AT_APPL)
+  //ATfprintf(stderr, "_one(%t)\n", t);
+  switch(ATgetType(t)) {
+  case AT_APPL :
     {
       Symbol c = ATgetSymbol((ATermAppl) t);
       int i, arity = ATgetArity(c);
       for(i = 0; i < arity; i++)
-        {
-          ATerm t_bak = t;
-          int i_bak = i;
-          if (PushChoice() == 0)
-            {
-              t = (ATerm)ATsetArgument((ATermAppl) t, f(ATgetArgument(t, i)), i);
-              PopChoice();
-              return(t);
-            }
+	{
+	  ATerm t_bak = t;
+	  int i_bak = i;
+	  if (PushChoice() == 0)
+	    {
+	      t = (ATerm)ATsetArgument((ATermAppl) t, f(ATgetArgument(t, i)), i);
+	      PopChoice();
+	      //ATfprintf(stderr, "_one: %t\n", t);
+	      return(t);
+	    }
           i = i_bak;
           t = t_bak;
-        }
+	}
       _fail(t);
     }
-  else
+    break;
+  case AT_LIST :
+    {
+      ATermList prefix = ATempty, suffix = (ATermList) t;
+      ATerm el;
+      while(!ATisEmpty(suffix))
+	{
+	  ATerm el_bak;
+	  el = ATgetFirst(suffix);
+	  suffix = ATgetNext(suffix);
+	  el_bak = el;
+	  if(PushChoice() == 0)
+	    {
+	      el = f(el);
+	      PopChoice();
+	      suffix = ATinsert(suffix, el);
+	      while(!ATisEmpty(prefix)) {
+		suffix = ATinsert(suffix, ATgetFirst(prefix));
+		prefix = ATgetNext(prefix);
+	      }
+	      // ATfprintf(stderr, "_one: %t\n", suffix);
+	      return (ATerm) suffix;
+	    }
+	  else 
+	    {
+	      prefix = ATinsert(prefix, el_bak);
+	    }
+	}
+      _fail(t);
+    }
+    break;
+  default:
     _fail(t);
+  }
   return(t);
 }       
        
 ATerm _some(ATerm t, ATerm f(ATerm)) 
 {
   int transformed = 0;
- 
-  if(ATgetType(t) == AT_APPL)
+
+  //ATfprintf(stderr, "_some(%t)\n", t);
+
+  switch(ATgetType(t)) {
+  case AT_APPL:
     {
       Symbol c = ATgetSymbol((ATermAppl) t);
       int i, arity = ATgetArity(c);
+      //ATfprintf(stderr, "_some(%t) : AT_APPL\n", t);
       if(arity > ALLARRAY)
         {
           ATermList ts = ATempty;
@@ -191,18 +245,51 @@ ATerm _some(ATerm t, ATerm f(ATerm))
             _fail(t);
         }
     }
-  else
+    break;
+  case AT_LIST :
+    {
+      ATermList prefix = ATempty, suffix = (ATermList) t;
+      ATerm el;
+      //ATfprintf(stderr, "_some(%t) : AT_LIST\n", t);
+      while(!ATisEmpty(suffix))
+	{
+	  ATerm el_bak;
+	  el = ATgetFirst(suffix);
+	  suffix = ATgetNext(suffix);
+	  el_bak = el;
+	  if (PushChoice() == 0)
+	    {
+	      el = f(el);
+	      PopChoice();
+	      prefix = ATinsert(prefix, el);
+	      transformed++;
+	    }
+	  else
+	    {
+	      prefix = ATinsert(prefix, el_bak);
+	    }
+	}
+      if(transformed > 0)
+	t = (ATerm) ATreverse(prefix);
+      else
+	_fail(t);
+    }
+    break;
+  default :
     _fail(t);
+  }
   return(t);
 }           
 
 ATerm _thread(ATerm t, ATerm f(ATerm))
 {
   ATerm env;
-  if(!match_cons(t, sym_Pair_2)) _fail(t);
+  if(!match_cons(t, sym__2)) 
+    _fail(t);
   env = ATgetArgument(t,1);
   t = ATgetArgument(t,0);
-  if(ATgetType(t) == AT_APPL)
+  switch(ATgetType(t)) {
+  case AT_APPL:
     { 
       Symbol c = ATgetSymbol((ATermAppl) t);
       int i, arity = ATgetArity(c);
@@ -211,8 +298,8 @@ ATerm _thread(ATerm t, ATerm f(ATerm))
 	  ATermList ts = ATempty;
 	  for(i = 0; i < arity; i++)
 	    {
-	      ATerm tmp = f((ATerm)ATmakeAppl2(sym_Pair_2, ATgetArgument(t, i), env));
-	      if(!match_cons(tmp, sym_Pair_2)) _fail(t);
+	      ATerm tmp = f((ATerm)ATmakeAppl2(sym__2, ATgetArgument(t, i), env));
+	      if(!match_cons(tmp, sym__2)) _fail(t);
 	      ts = ATinsert(ts, ATgetArgument(tmp,0));
 	      env = ATgetArgument(tmp,1);
 	    }
@@ -223,15 +310,44 @@ ATerm _thread(ATerm t, ATerm f(ATerm))
 	  ATerm kids[ALLARRAY];
 	  for(i = 0; i < arity; i++)
 	    {
-	      ATerm tmp = f((ATerm)ATmakeAppl2(sym_Pair_2, ATgetArgument(t, i), env));
-	      if(!match_cons(tmp, sym_Pair_2)) _fail(t);
+	      ATerm tmp = f((ATerm)ATmakeAppl2(sym__2, ATgetArgument(t, i), env));
+	      if(!match_cons(tmp, sym__2)) _fail(t);
 	      kids[i] = ATgetArgument(tmp,0);
 	      env = ATgetArgument(tmp,1);
 	    }
 	  t = (ATerm) ATmakeApplArray(c, kids);
 	}
     }
-  return((ATerm)ATmakeAppl2(sym_Pair_2, t, env));
+    break;
+  case AT_LIST:
+    {
+      ATermList prefix = ATempty, suffix = (ATermList) t;
+      while(!ATisEmpty(suffix))
+	{
+	  ATerm tmp = f((ATerm)ATmakeAppl2(sym__2, ATgetFirst(suffix), env));
+	  if(!match_cons(tmp, sym__2)) 
+	    _fail(t);
+	  prefix = ATinsert(prefix, ATgetArgument(tmp,0));
+	  suffix = ATgetNext(suffix);
+	  env = ATgetArgument(tmp,1);
+	}
+      t = (ATerm) ATreverse(prefix);
+    }
+    break;
+  }
+  return (ATerm)ATmakeAppl2(sym__2, t, env);
+}
+
+ATermList CheckATermList(ATerm t)
+{
+  //ATfprintf(stderr, "CheckATermList(%t)\n", t);
+  if(ATgetType(t) != AT_LIST)
+    {
+      ATfprintf(stderr, "Warning: trying to build list with illegal tail: %t\n", t);
+      _fail(t);
+    }
+  //ATfprintf(stderr, "CheckATermList(%t) = true\n", t);
+  return (ATermList) t;
 }
 
 ATerm main_0(ATerm);
@@ -239,10 +355,11 @@ ATerm main_0(ATerm);
 int main(int argc, char *argv[])
 {
   //long bp;
-  ATerm in_term, out_term; 
+  ATerm out_term; 
+  ATermList in_term;
   int i; 
   // choice_init(&bp); 
-  ATinit(argc, argv, &in_term);
+  ATinit(argc, argv, &out_term);
   init_constructors_srts();
   init_constructors();
 
@@ -251,17 +368,20 @@ int main(int argc, char *argv[])
   set_segv_handler();
 #endif
 
-  in_term = (ATerm)ATmakeAppl0(sym_Nil_0);
+  in_term = ATempty; // (ATerm)ATmakeAppl0(sym_Nil_0);
   for(i = argc - 1; i >= 0; i--)
     {
+      /*
       in_term = (ATerm) 
 	ATmakeAppl2(sym_Cons_2,
 		    (ATerm) ATmakeAppl0(ATmakeSymbol(argv[i],0,ATtrue)),
 		    in_term);
+      */
+      in_term = ATinsert(in_term, (ATerm) ATmakeAppl0(ATmakeSymbol(argv[i],0,ATtrue)));
     }
 
   if(PushChoice() == 0) {
-    out_term = main_0(in_term); 
+    out_term = main_0((ATerm)in_term); 
     ATfprintf(stdout, "%t\n", out_term);
     exit(0);
   } else {
