@@ -20,7 +20,7 @@ strategies
   test2 =
     apply-test(!"test2"
 	, mark-buv
-	, !|[ F(|s_5 : Int) = 
+	, !|[ F(|s_5 : Int()) = 
 	      {h_0, i_0, j_0, k_0, l_0 :
                !s_5
                ; ?h_0
@@ -32,7 +32,7 @@ strategies
                ; !Cons(s_5, Nil())
 	      } 
 	   ]|
-	, !SDefT("F",[],[VarDec("s_5",ConstType(Var("Int")))],
+	, !SDefT("F",[],[VarDec("s_5",ConstType(Sort("Int",[])))],
 	     Scope(["h_0","i_0","j_0","k_0","l_0"],
 		Seq(Build(Var("s_5"){"bound"}),
 		Seq(Match(Var("h_0"){"unbound"}),

@@ -155,6 +155,9 @@ strategies
         ; olevel2(try(where(not(<get-config> "--fusion")); fusion))
         ; save-as2(!".opt2")
 
+	; olevel6(optimize2; worker-wrapper)
+        ; save-as6(!".opt3a")
+
         ; olevel4(inline; dead-def-elim)
         ; save-as4(!".opt3")
 
@@ -167,9 +170,6 @@ strategies
         ; olevel2(compile-match)
 	; olevel2(desugar-case)
         ; save-as2(!".opt5")
-
-	; olevel6(optimize2; worker-wrapper)
-        ; save-as6(!".opt6")
 
         ; olevel5(inline)
         ; save-as5(!".opt7")

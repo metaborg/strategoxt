@@ -27,6 +27,7 @@ strategies
     Simplify
     + HoistLet 
     + FuseScope
+    + WidenScope
     + WhereSavesCurrentTerm
     + TestSavesCurrentTerm
 
@@ -36,7 +37,7 @@ strategies
   simplify = 
     downup(repeat(Optimize))
 
-  simplify-widen =
+  simplify-widen = // note same as simplify
     downup(repeat(Optimize + WidenScope))
 
   simplify-narrow =

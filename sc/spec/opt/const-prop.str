@@ -33,12 +33,12 @@ strategies
   prop-call(cp) =
     ?CallT(_, _, _)
     ; UndefCurrentTerm
-    ; CallT(id, map(exec-maybe(cp)), id)
+    ; CallT(id, map(exec-maybe(cp)), alltd(Binding; Var(id)))
 
   prop-call(cp) =
     ?PrimT(_, _, _)
     ; UndefCurrentTerm
-    ; PrimT(id, map(exec-maybe(cp)), id)
+    ; PrimT(id, map(exec-maybe(cp)), alltd(Binding; Var(id)))
 
   prop-traversal(cp) =
     (?All(_) + ?One(_) + ?Some(_) + ?Thread(_) + ?Bagof(_) )

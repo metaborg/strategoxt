@@ -15,9 +15,10 @@ strategies
     , |[ g(a1* | a4*) = {x2* : s } ]| 
     ]
     where
-      <tvars> t => x1*
+      !t => Op(_,_)
+      ; <tvars> t => x1*
       ; <diff> (x*, x1*) => x2*
-      ; <map(!VarDec(<id>, ConstType(Var("ATerm"))))> x1* => a3*
+      ; <map(!VarDec(<id>, ConstType(Sort("ATerm", []))))> x1* => a3*
       ; <conc>(a2*, a3*) => a4*
       ; new => g
       ; <map(\ VarDec(x, _) -> CallT(SVar(x),[],[]) \ )> a1* => s*

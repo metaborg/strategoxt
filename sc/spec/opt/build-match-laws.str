@@ -51,6 +51,7 @@ rules // combinations of match and build
   MatchBuildIdemVar :
     (Match(Var(x)), Build(Var(x))) -> Match(Var(x))
 
+
 rules // other rules 
 
   MatchSimplify = 

@@ -21,7 +21,7 @@ strategies
     <set-config>("VERSION", strc-version-number)
     ; <set-config>("--verbose", 2)
     ; <set-config>("--keep", 0)
-    ; <set-config>("-O", 5)
+    ; <set-config>("-O", 6)
     ; <set-config>("-I", ["-I", <xtc-find-path> "lib.rtree",
                           "-I", <xtc-find-path> "Stratego.rtree",
                           "-I", <xtc-find-path> "StrategoRenamed.sdf"])

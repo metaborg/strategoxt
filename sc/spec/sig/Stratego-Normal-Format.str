@@ -15,11 +15,6 @@ strategies
     <+ debug(!"not a stratego-specification: ")
 
   strategy-definition =
-//    SDef(is-string + Mod(is-string,is-string)
-//	, list(VarDec(is-string,id))
-//	, strategy-expression)
-
-//    <+
       SDefT(is-string + Mod(is-string,is-string)
 	    , list(VarDec(is-string,id))
 	    , list(VarDec(is-string,id))

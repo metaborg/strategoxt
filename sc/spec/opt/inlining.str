@@ -35,7 +35,7 @@ strategies
 
   inline-sdef =
     rec x({| InlineCall, InlineCall0 :
-             (UndefineSDef <+ DeclareInline <+ repeat(InlineCall0 <+ InlineCall));
+             (UndefineSDef <+ DeclareInline <+ repeat(/* InlineCall0 <+ */ InlineCall));
 	     all(x)
           |})
 

@@ -51,7 +51,7 @@ strategies
      |}
 
   DeclareVarToConst =
-    ?|[ x : t ]|
+    ?|[ x : srt ]|
     ; rules( VarToConst : Term|[ x ]| -> Term|[ x() ]| )
 
   DeclareVarToConst =

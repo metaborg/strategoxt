@@ -2,6 +2,6 @@ module DefaultStrat
 imports Stratego
 overlays
 
-  DefaultStrat = FunType([ConstType(Op("ATerm",[]))], ConstType(Op("ATerm",[])))
+  DefaultStrat = FunType([ConstType(Sort("ATerm",[]))], ConstType(Sort("ATerm",[])))
 
-  DefaultTerm = ConstType(Op("ATerm",[]))
+  DefaultTerm = ConstType(Sort("ATerm",[]))

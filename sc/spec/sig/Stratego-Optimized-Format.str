@@ -26,7 +26,7 @@ strategies
     list(VarDec(is-string,type-expression))
 
   type-expression = 
-    ConstType(rec x(Op(is-string,list(x)) + Var(is-string))) 
+    ConstType(rec x(Sort(is-string,list(x)) + SortVar(is-string)))
     + FunType(list(type-expression), type-expression)
 
   strategy-expression =
@@ -56,16 +56,6 @@ strategies
 
 	+ Scope(list(is-string + list(is-int)), exp)
 	+ Let(list(SDefT(is-string,vardecs,vardecs,exp)), exp)
-
-//	+ Test(exp)
-//	+ Cong(is-string, list(exp))
-//	+ Call(SVar(is-string),list(exp))
-//	+ Prim(is-string,list(term-expression))
-//	+ Where(exp)
-//	+ Case(is-string, Var(id), list(Alt(id,id,exp)), exp)
-//	+ Continue(is-string)
-//	+ Assign(Var(id),term-expression)
-//	+ Assign(Var(id))
 
 	<+ debug(!"Not a strategy-expression: ")
 	)

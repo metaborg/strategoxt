@@ -10,6 +10,9 @@ rules
     Let([SDefT(f, [], [], s)], CallT(SVar(f), [], [])) -> s
     where <not(oncetd(?CallT(SVar(f),[],[])))> s
 
+  LetHoist :
+    Let(defs1, Let(defs2, s)) -> Let(<conc>(defs1, defs2), s)
+
 rules
 
   // inlining with contextual rules

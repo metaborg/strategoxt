@@ -1,5 +1,26 @@
 2003-08-12  Eelco Visser  <visser@cs.uu.nl>
 
+	* spec/sig/Stratego-Normal-Format.str: Removed dead code
+
+	* spec/sc/strc.str: Apply worker-wrapper *before* inlining.
+
+	* spec/sc/strc-options.str: Default optimization level is 6
+	(worker-wrapper)
+
+	* spec/opt/const-prop.str: Only propagate variable copies into
+	term arguments of primitives and strategy operators.
+
+	* spec/opt/bind-laws.str: Merging nested let declarations
+
+	* spec/opt/bound-unbound-vars-test.str,
+	spec/front/normalize-spec.str, spec/front/DefaultStrat.str: New
+	syntax for sorts
+
+	* spec/sig/Stratego-Optimized-Format.str: Adapted check of
+	type-expressions. Removed dead code.
+
+	* spec/opt/inlining.str: Don't inline name passing calls (InlineCall0).
+
 	* spec/opt/worker-wrapper.str: Split strategy definitions into
 	a worker which does the real work and a wrapper which matches the
 	current term. That is, a definition 
@@ -13,7 +34,6 @@
 
 	This makes foo smaller and more attractive to inline with 
 	possibility to cancel out against a build. Added in -O 6.
-	   
 
 	* spec/test3/test-constructors.str: Test for check-constructors;
 	missing constructor declaration.

@@ -29,13 +29,13 @@ strategies
     Specification([id,Strategies(map(SDef(id,id,s) + SDefT(id,id,id,s)))])
 
   optimize1-comp =
-    iowrap(apply-to-bodies(simplify; simplify-widen; simplify; simplify-narrow; simplify))
+    iowrap(apply-to-bodies(simplify; simplify))
 
   compile-match-comp = 
     iowrap(apply-to-bodies(match-to-dfa))
 
   optimize2-comp =
-    iowrap(apply-to-bodies(simplify-widen; simplify; simplify-clean))
+    iowrap(apply-to-bodies(simplify; simplify))
 
   optimize3-comp =
     iowrap(apply-to-bodies(simplify-lift; simplify-widen; simplify; simplify-clean))
