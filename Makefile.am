@@ -31,7 +31,10 @@ rpm : dist
 	$(RPMBUILD) -ta $(PACKAGE_TARNAME)-$(VERSION).tar.gz
 
 dailydist : dist
-	mv $(PACKAGE_TARNAME)-$(VERSION).tar.gz $(PACKAGE_TARNAME)-dailydist.tar.gz 
+	mv $(PACKAGE)-$(VERSION).tar.gz $(PACKAGE)-dailydist.tar.gz 
+
+revision-dist : dist
+	mv $(PACKAGE)-$(VERSION).tar.gz $(PACKAGE)-$(VERSION)-$(SVN_REVISION).tar.gz 
 
 package-dist :
 	PATH=$(bindir):$${PATH}; export PATH ;\
