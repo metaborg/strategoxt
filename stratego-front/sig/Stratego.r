@@ -91,7 +91,7 @@ signature
     Match : Term -> Strategy
     Build : Term -> Strategy
     ScopeDefault : Strategy -> Strategy
-    Scope : List(Id) * Strategy -> Strategy
+    Scope : List(ID) * Strategy -> Strategy
     BA : StrategyAngle * Term -> Strategy
     AM : Strategy * Term -> Strategy
     ParenStrat : Strategy -> StrategyParen

@@ -44,10 +44,10 @@ rules
   // Note: watch out for free variable capture
 
   SeqOverScopeR :
-    [[ {xs : s1}; s2 ]] -> [[ {xs : s1; s2} ]]
+    [[ {x* : s1}; s2 ]] -> [[ {x* : s1; s2} ]]
 
   SeqOverScopeL :
-    [[ s1; {xs : s2} ]] -> [[ {xs : s1; s2} ]]
+    [[ s1; {x* : s2} ]] -> [[ {x* : s1; s2} ]]
 
 
   // Note: Code duplication

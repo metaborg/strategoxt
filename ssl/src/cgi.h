@@ -1,1 +1,1 @@
-ATerm SSL_get_cgi_query(void) 
+ATerm SSL_get_cgi_query(void);

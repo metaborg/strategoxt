@@ -573,6 +573,8 @@ exports
     "thread" 		-> Id {reject}
     "where" 		-> Id {reject}
 
+    
+
   lexical restrictions
     "all" 		
     "constructors" 	
@@ -698,6 +700,8 @@ exports
     Id 				-> Var  {cons("Var")}
     LId 			-> LID  {cons("ListVar")}
     LID				-> Var  {cons("Var")}
+    Id				-> ID				
+    LId				-> ID
 
   context-free syntax
     "_" 			 -> Term {cons("Wld")}
@@ -768,7 +772,7 @@ exports
     "?" Term 				  -> Strategy {cons("Match")}
     "!" Term 				  -> Strategy {cons("Build")}
     "{" Strategy "}" 			  -> Strategy {cons("ScopeDefault")}
-    "{" {Id ","}* ":" Strategy "}" 	  -> Strategy {cons("Scope")}
+    "{" {ID ","}* ":" Strategy "}" 	  -> Strategy {cons("Scope")}
      StrategyAngle Term 		  -> Strategy {cons("BA")}
      %%"<" Strategy ">" Term 		  -> Strategy {cons("BA")}
      Strategy "=>" Term 		  -> Strategy {cons("AM")}
@@ -925,7 +929,21 @@ exports
 
     "a"[0-9\']*   		-> Typedid        {prefer}
     "a"[0-9\']* 	"*"   	-> {Typedid ","}+ {prefer}
-    "as"[0-9\']*  		-> {Typedid ","}+ {prefer}
+    "as"[0-9\']*  		-> {Typedid ","}+ {prefer} 
+
+  lexical syntax
+    "xs"[0-9\']*       		-> Id  {reject}
+
+    [t][0-9\']* 	  	-> Id  {reject}
+    "ts"[0-9\']*    		-> Id  {reject}  
+
+    [s][0-9\']* 	  	-> Id  {reject}
+    "ss"[0-9\']*	  	-> Id  {reject}
+
+    [r][0-9\']* 	  	-> Id  {reject}
+ 
+    "a"[0-9\']*   		-> Id  {reject}
+    "as"[0-9\']*  		-> Id  {reject}
 
 module StrategoStrategoC
 imports StrategoStratego C
