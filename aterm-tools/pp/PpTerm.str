@@ -1,10 +1,10 @@
 module PpTerm
-imports options ugly-print
+imports options ugly-print pp-aterm-options
 
 strategies
 
   io-PpTerm =
-    io-wrap(
+    io-wrap(max-term-size-option,
       ugly-print
     ; concat-content
     )

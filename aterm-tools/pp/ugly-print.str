@@ -1,5 +1,5 @@
 module ugly-print
-imports Box annotations
+imports Box annotations pp-aterm-options
 
 strategies
 
@@ -38,7 +38,7 @@ rules // constructor applications
     f#([]) -> |[ ~lit:f ]|
 
   UP-App(s) =
-      where(<gt> (<term-size>, 8))
+      where(<gt> (<term-size>, <get-max-term-size-config>))
     < UP-App-worstcase(s)
     + UP-App-nicecase(s)
   
