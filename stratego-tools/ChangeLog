@@ -1,3 +1,7 @@
+2002-10-02  Merijn de Jonge <mdejonge@cwi.nl>
+   * Commented out sdf-to-sig glue script and the package dependencies it
+     introduces, because they yield bootstrap problems
+
 2002-09-26  Merijn de Jonge <mdejonge@cwi.nl>
    * Replaced dependency on stratego package by a dependency on sc-boot
      package

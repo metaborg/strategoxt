@@ -17,20 +17,22 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 dnl 02111-1307, USA.
 
-dnl $Id: configure.in.src,v 1.8 2002/10/02 09:13:25 mdejonge Exp $
+dnl $Id: configure.in.src,v 1.9 2002/10/02 09:16:37 mdejonge Exp $
 
 AC_INIT(configure.in)
 AM_INIT_AUTOMAKE(__PACKAGE__,__VERSION__)
 
 dnl Package switches.
 
-AC_PACKAGE_REQUIRE(gb, parse,
-   [  --with-gb              Specify location of gb tools])
-AC_SUBST(GB)
 
 AC_PACKAGE_REQUIRE(sc-boot, sc,
    [  --with-sc-boot          Specify location of stratego compiler])
 AC_SUBST(SC_BOOT)
+
+dnl Commented out because sdf-to-sig is not build due to bootstrap problems
+dnl AC_PACKAGE_REQUIRE(gb, parse,
+dnl    [  --with-gb              Specify location of gb tools])
+dnl AC_SUBST(GB)
 
 dnl Commented out because it introduces a bootstrap problem with stratego-front
 dnl AC_PACKAGE_REQUIRE(stratego-front, parse-cmod,
@@ -62,7 +64,7 @@ AC_PACKAGE_REQUIRE(gpp, ast2abox,
 package])
 AC_SUBST(GPP)
 
-AC_REVISION($Id: configure.in.src,v 1.8 2002/10/02 09:13:25 mdejonge Exp $)
+AC_REVISION($Id: configure.in.src,v 1.9 2002/10/02 09:16:37 mdejonge Exp $)
 
 AC_PROG_CC
 AC_PROG_INSTALL
