@@ -18,7 +18,7 @@
 AC_INIT(sig/C.r)
 AM_INIT_AUTOMAKE(cgen,0.9beta3)
 
-AC_REVISION($Id: configure.in,v 1.21 2002/11/19 22:50:31 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.22 2002/11/23 11:30:45 stratego Exp $)
 
 AC_ARG_WITH(gpp,
   [  --with-gpp             Specify location of gpp, default: \$prefix],
@@ -53,7 +53,7 @@ AC_PROG_CC
 AC_PROG_RANLIB
 AC_PROG_INSTALL
 
-AM_CONFIG_HEADER([config.h])
+AM_CONFIG_HEADER(config.h)
 
 TOP_SRCDIR=`pwd`
 AC_SUBST(TOP_SRCDIR)

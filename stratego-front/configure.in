@@ -83,9 +83,9 @@ AC_SUBST(RPMTMP)
 
 ####################### 
 
-AC_REVISION($Id: configure.in,v 1.10 2002/11/19 22:50:32 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.11 2002/11/23 11:30:46 stratego Exp $)
 
-AM_CONFIG_HEADER([config.h])
+AM_CONFIG_HEADER(config.h)
 
 AC_PROG_CC
 

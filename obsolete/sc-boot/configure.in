@@ -93,7 +93,7 @@ AC_SUBST(RPMTMP)
 libexecdir=\$\{exec_prefix\}/libexec/sc-$VERSION
 AC_SUBST(libexecdir)
 
-AC_REVISION($Id: configure.in,v 1.24 2002/11/19 22:50:31 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.25 2002/11/23 11:30:46 stratego Exp $)
 
 AC_CHECK_HEADERS([malloc.h])
 AC_CHECK_HEADERS([stdlib.h])
@@ -103,7 +103,7 @@ AC_C_CONST
 AC_FUNC_ALLOCA
 AC_FUNC_MALLOC
 AC_HEADER_STDC
-AM_CONFIG_HEADER([config.h.in])
+AM_CONFIG_HEADER(config.h)
 
 AC_PROG_CC
 AC_PROG_RANLIB

@@ -29,6 +29,7 @@ if USECPL
 CHOICELIBADD = choice.o 
 CHOICELIBADDgcc = choice-gcc.o
 CHOICELIBADDprof = choice-prof.o
+CHOICELIBADDdbg = choice-dbg.o
 #CHOICELDFLAGS = -L$(CPL)/lib -lchoice -DUSECPL
 
 choice-cpl.h: $(CPL)/include/choice.h

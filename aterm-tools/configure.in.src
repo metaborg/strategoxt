@@ -17,12 +17,12 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 dnl 02111-1307, USA.
 
-dnl $Id: configure.in.src,v 1.13 2002/11/15 00:05:59 stratego Exp $
+dnl $Id: configure.in.src,v 1.14 2002/11/23 11:30:45 stratego Exp $
 
 AC_INIT(configure.in)
 AM_INIT_AUTOMAKE(__PACKAGE__,__VERSION__)
 
-AC_CONFIG_AUX_DIR([config])
+#AC_CONFIG_AUX_DIR([config])
 
 dnl Package switches.
 
@@ -33,12 +33,12 @@ AC_ARG_WITH(sc,
 )
 AC_SUBST(SC_BOOT)
 
-AC_REVISION($Id: configure.in.src,v 1.13 2002/11/15 00:05:59 stratego Exp $)
+AC_REVISION($Id: configure.in.src,v 1.14 2002/11/23 11:30:45 stratego Exp $)
 
 AC_PROG_CC
 AC_PROG_INSTALL
 
-AM_CONFIG_HEADER([config.h])
+AM_CONFIG_HEADER(config.h)
 
 TOOLS=__TOOLS__
 UNRELEASED=__UNRELEASED__
