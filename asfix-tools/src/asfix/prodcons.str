@@ -1,6 +1,6 @@
 module sdfcons
 
-(* $Id: prodcons.str,v 1.1 2002/12/22 01:27:28 stratego Exp $ *)
+(* $Id: prodcons.str,v 1.2 2003/01/29 10:25:26 stratego Exp $ *)
 (*
 	Author: Joost Visser (Joost.Visser@cwi.nl)
 	Changes by : Merijn de Jonge, Eelco Visser, and Hedzer Westra.
@@ -95,7 +95,7 @@ strategies
     ; separate-by(!"-")
     ; concat-strings
 
-; ?s;<not('in)>(s,["START","LCons","SCons","some","all","id","Cons","Nil","TCons","TNil","NL","L","Bracket"])
+; ?s;<not(is-subterm)>(s,["START","LCons","SCons","some","all","id","Cons","Nil","TCons","TNil","NL","L","Bracket"])
     ; !s;escape;quote
 
   string-Hd

@@ -1,3 +1,8 @@
+2003-01-29  Martin Bravenboer <martin@mbravenboer.org>
+
+	* src/asfix/prodcons.str: replaced 'in to is-subterm.
+    Reported by Rob Vermaas.
+
 2003-01-01  Eelco Visser  <visser@cs.uu.nl>
 
 	* src/asfix/Makefile.am: Install .rtree instead of .str
