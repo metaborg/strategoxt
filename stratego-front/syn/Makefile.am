@@ -10,7 +10,7 @@ CLEANFILES 	= $(wildcard *.tbl) $(TESTS)
 
 BOOTCLEANFILES	= $(wildcard *.def) 
 
-EXTRA_DIST 	= Stratego.def StrategoStratego.def Stratego-Core \
+EXTRA_DIST 	= Stratego.def StrategoStratego.def Stratego-Core.def \
 		  Stratego.tbl StrategoStratego.tbl Stratego-Core.tbl \
 		  $(wildcard *.def) $(wildcard *.sdf)
 
