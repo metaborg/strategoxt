@@ -181,11 +181,6 @@ strategies
    *         used to create appropriately specialized algorithms.
    */
 
-
-  hashtable-merge(symm, iterate1, iterate2, remove, merge, default, lookup1, lookup2) =
-  hashtable-merge(symm, iterate1, iterate2, remove, merge, default, 
-	          change1-yes, change2-yes, lookup1, lookup2)
-
   hashtable-merge(symm, iterate1, iterate2, remove, merge
 		 , default, change1, change2, lookup1, lookup2) :
     (tbl1, tbl2) -> tbl1
@@ -276,6 +271,14 @@ strategies
 	  else ![] end => changes2
 	  ; (<not([])> changes1 <+ <not([])> changes2)
 
+
+  /**
+   * Version without change arguments for backward compatibility
+   */
+  hashtable-merge(symm, iterate1, iterate2, remove, merge, default, 
+                  lookup1, lookup2) =
+  hashtable-merge(symm, iterate1, iterate2, remove, merge, default, 
+	          change1-yes, change2-yes, lookup1, lookup2)
 
   /**
    * Merge hashtables creating a new one.
