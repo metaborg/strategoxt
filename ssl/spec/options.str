@@ -1,7 +1,7 @@
 \literate[options]
 \begin{code}
 module options
-imports io parse-options config time verbose
+imports io parse-options config time verbose keep
 signature
   constructors
     Silent      : Option

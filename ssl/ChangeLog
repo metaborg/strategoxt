@@ -1,3 +1,16 @@
+2002-12-18  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/verbose.str: pass-verbose to pass verbose option to children
+
+	* spec/pack-modules.str: Refactored using new (config-style) option handling.
+
+	* spec/file.str: find-file(ext) is new; refactored other definitions
+
+	* spec/sunit.str, spec/pipe.str: unbound variable fixes
+
+	* spec/sunit.str: Adapted to comply with more strict checks
+	for unbound variables in frontend.
+
 2002-12-17  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/: cosmetics

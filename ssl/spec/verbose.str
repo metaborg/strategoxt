@@ -10,6 +10,9 @@ strategies
   verbosity = 
     <get-config> "--verbose" <+ !0
 
+  pass-verbose = 
+    !["--verbose", <subt; int-to-string>(<get-config <+ !1> "--verbose", 1)]
+
   if-verbose1(s) = 
     try(where(<geq>(<get-config> "--verbose", 1)); s)
 

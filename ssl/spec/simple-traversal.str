@@ -139,7 +139,7 @@ strategies
   oncebu(s) = 
     rec x(one(x) <+ s)
 
-  oncetd-stop(s, skip: a * (a -> a) -> a) = 
+  oncetd-skip(s, skip: a * (a -> a) -> a) = 
     rec x(s <+ skip(x) <+ one(x))
 
     // this really requires a cut to avoid backtracking to one

@@ -54,8 +54,7 @@ strategies
 
   apply-test(name, s, 'in, out) =
     do-test(name,
-            (('in; s => tmp) 
-                <+ <debug> "  failed"; fail);
+            ('in; s <+ <debug> "  failed"; fail) => tmp;
   	    out => tmp'; 
 	    ((!tmp' => tmp)
                <+ (<debug(!"  result not equal: ")> tmp;
@@ -63,16 +62,14 @@ strategies
 
   apply-test(name, s, 'in) =
     do-test(name,
-            (('in; s => tmp) 
-                <+ <debug> "  failed"; fail)
-  	   )
+      ('in; s <+ <debug> "  failed"; fail)
+    )
 
   apply-and-check(name, s, 'in, check) =
     do-test(name,
-            (('in; s => tmp) 
-                <+ <debug> "  application failed"; fail);
-	    ((<check> tmp)
-              <+ (<debug(!"  check failed: ")> tmp); fail))
+      ('in; s  <+ <debug> "  application failed"; fail)
+      ; (check <+ (debug(!"  check failed: "); fail))
+    )
 
   apply-and-fail(name, s, 'in) =
     apply-and-fail(name, s, 'in, !())
@@ -84,8 +81,8 @@ strategies
 
   apply-and-show(name, s, 'in) =
     do-test(name
-	   ,(('in; s => tmp) <+ <debug> "  failed"; fail)
-            ; <debug> ["  succeeded; result: ", tmp]
+	   ,('in; s <+ <debug> "  failed"; fail)
+            ; <debug> ["  succeeded; result: ", <id>]
            )
 \end{code}
 

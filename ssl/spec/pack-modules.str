@@ -1,6 +1,8 @@
 \literate[pack-modules]
 
-  CHANGES (by Joost Visser)
+
+CHANGES (by Joost Visser)
+  
   * Strategy pack-modules(pack, dep-base) now takes two additonal 
     options:
       -dep target
@@ -10,93 +12,57 @@
     the argument dep-base is used instead. Finally, the -nodep option
     can be used to disable this and prevent any dependency file to
     be created. Note that -dep takes precendence over -nodep.
+
   * An additional strategy pack-modules(pack) was added that behaves
     like pack-modules, except no default for the dependency file 
     base name needs to be specified. Hence, only the command line
     options are relevant.
 
+by Eelco Visser (2002-12-18)
+
+  * Refactored using new (config-style) option handling.
+
+
 \begin{code}
 module pack-modules
 imports options pack-graph dynamic-rules config verbose
-signature
-  constructors
-    Include: File -> Include
-    Prefix : String -> Option
-    Ignore : Option
-
 strategies
-
-  pack-module-options =
-    parse-options( io-options + pack-options )
 
   pack-options =
     ArgOption("-I" + "--Include",        
-	where(<extend-config>("-I", ["-I", <id>])); !Include(<id>),
-	!"-I d|--Include d   Include modules from directory d")
+	where(<extend-config>("-I", ["-I", <id>])); !(),
+	!"-I d | --Include d   Include modules from directory d")
 
-  + Option("-nodep", 
-	where(<set-config> ("-nodep", "")); !NoDependency,
-	!"-nodep")
+  + Option("--nodep" + "-nodep", 
+	where(<set-config> ("-nodep", "")); !(),
+	!"--nodep              Don't create dependency file")
 
-  + ArgOption("-dep",
-	where(<set-config> ("-dep", <id>)); \x -> Dependency(x)\,
-	!"-dep f             write dependency to file f")
-
-  + ArgOption("--prefix", 
-	where(<set-config> ("--prefix", <id>)); \x -> Prefix(x) where rules(Prefix : () -> x) \,
-	!"--prefix")
+  + ArgOption("--dep" + "-d" + "-dep",
+	where(<set-config> ("-dep", <id>)); !(),
+	!"--dep f | -d f       Write dependency to file f")
 
   pack-modules(pack : term * (term -> term) -> term)
     = pack-modules(pack, fail)
       <+ <fatal-error> ["Packing modules failed"]
 
   pack-modules(pack : term * (term -> term) -> term, dep-base) =
-    pack-module-options => options;
-    try(need-help(pack-modules-usage));
-    list(try( ?Program(prog)
-            + ?Input('in) + ?Output(out) //+ ?Binary;!bin
-            + ?Dependency(dep)
-            ));
-    filter( \Include(p)->p\ ) => path;
-    (!'in <+ !stdin) => infile;
-    (!out <+ !stdout) => outfile;
-    <pack(!path)> infile => (files, spec);
-    !options;
-    (
-       option-defined(?Binary);
-       <WriteToBinaryFile>(outfile, spec)
-    <+
-       <WriteToTextFile>(outfile, spec)
-    );
-    try((!dep <+ (not(<option-defined(?NoDependency())> options);
-                      dep-base)) => depfile;
-        <create-dep-file(!depfile)> (outfile, files)
-    );
-    if-verbose1(<printnl>(stderr, [prog, " (", <run-time>, " secs)"]));
-    <exit> 0
+    option-wrap(pack-options <+ io-options,
+      (<get-config; filter(not("-I"))> "-I" <+ ![]) => path
+      ; (<get-config> "-i" <+ !stdin) => infile
+      ; (<get-config> "-o" <+ !stdout) => outfile
+      ; <pack(!path)> infile => (files, spec)
+      ; (<get-config> "-b"; <WriteToBinaryFile>(outfile, spec)
+         <+ <WriteToTextFile>(outfile, spec))
+      ; try((<get-config> "-dep" <+ not(<get-config> "-nodep"); dep-base) => depfile
+            ; <create-dep-file(!depfile)> (outfile, files))
+    )
 
-  pack-modules-usage =
-    option-defined(?Program(prog));
-    <printnl> (stderr,
-	       ["usage : ", prog, 
-                " [-S] [-I dir] [-i file]",
-		" [-o file] [-b] [-s] [--help|-h|-?]",
-                " [-dep target | -nodep]" ]);
-    <exit> 1
-
-rules
-  
   create-dep-file(dep-base) :
     (outfile, files) -> (outfile, files)
     where <dep-base> outfile => out  
 	; <open-file> (<add-extension> (out, "dep"), "w") => dep
 	; <printnl> (dep, [out | <separate-by(!" \\\n\t")> [" :" | files]])
 	; <close-file> dep
-
-signature
-  constructors
-    NoDependency :         Option
-    Dependency : String -> Option
 \end{code}
 
 % Copyright (C) 2000,2002 Eelco Visser <visser@acm.org>

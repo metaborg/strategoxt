@@ -122,10 +122,10 @@ strategies
           ; <stdout-to-pipe> p
           ; <execvp> (<prog>, <args>)
        <+ ?pid // parent
-          ; <read-term-from-pipe> p => t
-          ; <waitpid> pid 
-          ; (exited + signaled + stopped))
-   ); !t
+          ; <read-term-from-pipe> p 
+          ; where( <waitpid> pid 
+                ; (exited + signaled + stopped)))
+   )
 
 strategies
 

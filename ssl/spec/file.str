@@ -1,24 +1,24 @@
 \begin{code}
 module file
 imports io
-
-rules
-
-  find-in-path :
-    (file, path) -> 
-    <rec x(\ [dir|_] -> <concat-strings; file-exists> [dir,"/",file] \
-	   <+ Tl; x)> path
-
 strategies
 
+  find-in-path =
+    ?(file, <id>) 
+    ; fetch-elem(<concat-strings; file-exists> [<id>,"/",file])
+
   find-in-path(mkpath) =
-	file-exists 
-	<+ split(id, mkpath); find-in-path
-	<+ \ x -> <fatal-error> ["no such file: ", x] \
+    file-exists 
+    <+ split(id, mkpath); find-in-path
+    <+ <fatal-error> ["no such file: ", <id>]
 
   find-file(mkpath, ext) =
-        guarantee-extension(ext);
-	find-in-path(mkpath)
+    guarantee-extension(ext)
+    ; find-in-path(mkpath)
+
+  find-file(ext) =
+    (guarantee-extension(ext), id)
+    ; find-in-path
 \end{code}
 
 % Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
