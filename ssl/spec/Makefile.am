@@ -12,7 +12,9 @@ EXTRA_DIST     = $(wildcard *.str) $(pkgdata_DATA)
 BOOTCLEANFILES = $(pkgdata_DATA) liblib.str liblib.rtree liblib.c
 
 lib%.str, lib%.c, lib%.rtree : %.str
-	$(STRC)/bin/strc -i $< -o lib$*.rtree -c --library --verbose 2 
+	$(STRC)/bin/strc -i $< -o lib$*.rtree -c --library --verbose 2
+	touch lib$*.c
 
+#include $(wildcard *.dep)
 
-include $(wildcard *.dep)
+liblib.rtree : $(subst .str,.rtree,$(wildcard *.str))

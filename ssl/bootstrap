@@ -7,5 +7,4 @@ autoconf
 #autoheader
 automake -a
 
-
-
+touch spec/*.c
