@@ -47,6 +47,7 @@ rules
   Bind3 : Rec(x, s) -> [x]
 
   Bind4 : DynamicRules(rs) -> <tvars> rs
+  Bind4 : OverrideDynamicRules(rs) -> <tvars> rs
 
   Bind5 : SDefT(f, xs, ys, s) -> <declared-vars> xs
   Bind6 : SDefT(f, xs, ys, s) -> <declared-vars> ys
@@ -72,6 +73,7 @@ strategies
     + SDefT(ignore, ignore, ignore, bnd)
     + RDefT(ignore, ignore, ignore, bnd)
     + DynamicRules(bnd)
+    + OverrideDynamicRules(bnd)
 
   spaste(nwvars) =
       Let(split(id,nwvars); 
