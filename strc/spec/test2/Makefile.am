@@ -8,6 +8,8 @@ SINCLUDES	 = -I $(STRATEGO_FRONT)/share/stratego-front \
 
 AM_LDFLAGS	= -L$(SRTS)/lib/srts -L$(ATERM)/lib 
 
+export LD_LIBRARY_PATH := $(SRTS)/lib/srts:${LD_LIBRARY_PATH}
+
 check_PROGRAMS 	= arity-test as-pattern assignment backtrack-test2    \
 		  backtrack-test3 backtrack-test comment-test	      \
 		  conditional-innermost congruence-arguments	      \
