@@ -90,7 +90,7 @@ endif
 
 ##################################################################
 
-stratego.o: choice.h
+stratego.o: stratego-choice.h
 
 OPTFLAGS	= -O2
 INCLUDES 	= -I. -I$(ATERM)/include -I$(srcdir) $(CHOICEINCLUDES)

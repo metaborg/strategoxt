@@ -1,4 +1,4 @@
 [ 
-  ("STRATEGO_FRONT",  Path("/home/xt/xt")),
+  ("STRATEGO_FRONT",  Path("/home/visser/res/XT")),
   (Ext("cr"), Prefix(Var("STRATEGO_FRONT"), Path("/bin/parse-cmod")))
 ]

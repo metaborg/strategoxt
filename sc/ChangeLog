@@ -1,5 +1,7 @@
 2002-06-09  Eelco Visser  <visser@acm.org>
 
+	* spec/Makefile.am (SUBDIRS): Making targets in current directory first
+
 	* spec/opt/fusion-rules.r, spec/opt/fusion.r: replaced by corresponding .cr
 	modules
 

@@ -1,5 +1,7 @@
 2002-06-09  Eelco Visser  <visser@acm.org>
 
+	* src/conf.h.src: macros with paths instantiated by configuration
+
 	* See changes in SC; use of configuration files.
 
 2002-03-14  Eelco Visser  <visser@acm.org>

@@ -1,5 +1,12 @@
 2002-06-09  Eelco Visser  <visser@acm.org>
 
+	* spec/*.rtree: Add parsed modules to CVS repository to enable
+	bootstrapping.
+
+	* src/dir.h, src/dir.c: directory manipulations
+
+	* src/*.c: Added missing casts
+
 	* src/stratego-lib.h: added annotations and dir
 	
 	* src/annotations.c: No annotations = empty list of annotations

@@ -16,13 +16,13 @@
 # 02111-1307, USA.
 
 AC_INIT(Makefile.in)
-AM_INIT_AUTOMAKE(stratego,0.8beta1)
+AM_INIT_AUTOMAKE(stratego,0.8alpha3)
 
-PKGS="srts ssl cgen sc-boot gpp-boot sc"
+PKGS="srts ssl cgen sc-boot gpp-boot stratego-front sc"
 AC_SUBST(PKGS)
 
 AC_ARG_WITH(aterm, 
-  [  --with-aterm            Location of external aterm package. [$prefix]], 
+  [  --with-aterm          Location of external aterm package. [$prefix]], 
   ATERM=$withval, 
   ATERM="$prefix"
 )
@@ -35,6 +35,48 @@ AC_ARG_WITH(cpl,
 )
 AC_SUBST(CPL)
 AM_CONDITIONAL(USECPL, test x$usecpl = xtrue)
+
+AC_ARG_WITH(sdf, 
+  [  --with-sdf=DIR             Specify location of SDF, [\$prefix]], 
+  SDF="$withval", 
+  SDF="$prefix"
+)
+AC_SUBST(SDF)
+
+AC_ARG_WITH(sglr, 
+  [  --with-sglr=DIR             Specify location of SGLR, [\$SDF]], 
+  SGLR="$withval", 
+  SGLR="$SDF"
+)
+AC_SUBST(SGLR)
+
+AC_ARG_WITH(asfix-tools, 
+  [  --with-asfix-tools=DIR      Specify location of ASFIX-TOOLS, [\$SDF]], 
+  ASFIX_TOOLS="$withval", 
+  ASFIX_TOOLS="$SDF"
+)
+AC_SUBST(ASFIX_TOOLS)
+
+AC_ARG_WITH(stratego-tools, 
+  [  --with-stratego-tools=DIR   Specify location of STRATEGO-TOOLS, [\$prefix]], 
+  STRATEGO_TOOLS="$withval", 
+  STRATEGO_TOOLS="$prefix"
+)
+AC_SUBST(STRATEGO_TOOLS)
+
+AC_ARG_WITH(sdf-tools, 
+  [  --with-sdf-tools=DIR        Specify location of SDF-TOOLS, [\$prefix]], 
+  SDF_TOOLS="$withval", 
+  SDF_TOOLS="$prefix"
+)
+AC_SUBST(SDF_TOOLS)
+
+AC_ARG_WITH(exe,    
+  [  --with-exe              Extension of executables], 
+  EXE=".exe", 
+  EXE=""
+)
+AC_SUBST(EXE)
 
 top_srcdir=`pwd`
 
@@ -83,6 +125,15 @@ AB_CONFIG_PKG(sc-boot,
 AB_CONFIG_PKG(gpp-boot,
    --with-aterm=${ATERM}
    --with-ssl=${prefix}
+)
+AB_CONFIG_PKG(stratego-front,
+   --with-stratego=${prefix} 
+   --with-sglr=${SGLR}             
+   --with-asfix-tools=${ASFIX_TOOLS}    
+   --with-stratego-tools=${STRATEGO_TOOLS}
+   --with-sdf-tools=${SDF_TOOLS}
+   --with-gpp=${GPP}
+   --with-cgen=${CGEN}         
 )
 AB_CONFIG_PKG(sc,
    --with-aterm=${ATERM}
