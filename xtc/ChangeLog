@@ -1,3 +1,8 @@
+2002-12-07  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/xtc-proc.str: Scoped introduction and automatic removal of 
+	temporary files.
+
 2002-12-03  Eelco Visser  <visser@cs.uu.nl>
 
 	* src/xtc.str: Strategies for calling tools that are registered in

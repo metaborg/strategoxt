@@ -1,3 +1,4 @@
 module xtc-lib
-imports xtc-rep xtc-proc
+imports xtc-rep xtc-proc xtc-register
+
 

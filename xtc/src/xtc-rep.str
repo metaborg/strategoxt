@@ -35,7 +35,7 @@ strategies
     if-verbose5(debug(!"xtc-load: ")); 
     where(
       <table-get>(XTC, Repository)
-      <+ xtc-get-repository
+      <+ xtc-location
          ; xtc-read
 	 ; xtc-import
     )
