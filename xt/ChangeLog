@@ -1,3 +1,7 @@
+2000-07-14 <mdejonge@cwi.nl>
+        * bug fix. Build process now teminates when building one of its sub
+          components fails
+
 2000-06-21  XT Tester  <xtest@node11794.a2000.nl>
 
 	* collect.sh: Moving ${pkg} to ${pkg}-${version} such that a
