@@ -61,7 +61,7 @@ testsetclean:
 %.sh :
 	(\
 	   echo 'set -e' ;\
-	   echo 'gmake tests.tbl $*.in' ;\
+	   echo '${MAKE} tests.tbl $*.in' ;\
 	   echo '../implode-asfix $($(subst -,_,$*)_flags) -i $(srcdir)/$*.in -o $*.tested' ;\
 	   echo 'diff $*.tested $(srcdir)/$*.out' ;\
 	) > $@ && chmod +x $@
