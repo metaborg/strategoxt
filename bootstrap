@@ -47,7 +47,7 @@ echo $CHECKSCRIPTS
 
 rm -f mkinstalldirs missing install-sh
 
-PKGS="autoxt srts xtc sdf-import sc ssl gpp c-tools stratego-front aterm-tools asfix-tools dot-tools graph-tools sdf-tools stratego-tools xt boxenv stratego-util"
+PKGS="autoxt srts xtc sdf-import sc ssl gpp c-tools stratego-front aterm-tools asfix-tools dot-tools graph-tools sdf-front sdf-tools stratego-tools xt boxenv stratego-util"
 
 for dir in $PKGS
 do 
