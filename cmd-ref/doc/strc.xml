@@ -1,9 +1,10 @@
-<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN" "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
 
 <refentry lang="en">
   <refnamediv>
     <refname>strc</refname>
-    <refpurpose>compile a Stratego module</refpurpose>
+    <refpurpose>compiles Stratego programs to C or executable code</refpurpose>
   </refnamediv>
 
   <refsynopsisdiv>
@@ -11,7 +12,7 @@
       <command>strc</command>
       <arg>-i <replaceable>file</replaceable></arg>
       <arg>-o <replaceable>file</replaceable></arg>
-      <arg>--main <replaceable>module</replaceable></arg>
+      <arg rep="repeat"><replaceable>options</replaceable></arg>
     </cmdsynopsis>
   </refsynopsisdiv>
 
@@ -19,12 +20,76 @@
     <title>Description</title>
 
     <para>
-      For the given concrete syntax definition in the syntax definition formalism <glossterm>sdf2</glossterm>, 
-      the command <command>sdf2rtg</command> generates
-      an abstract syntax definition in the rtg (regular tree grammar) language.
-      This rtg defines the set of abstract syntax trees that will result from 
-      parsing text in the concrete syntax specified by the sdf2 definition.
+      Stratego is a language for program transformation based on the
+      paradigm of rewriting strategies.
     </para>
+
+    <para>
+      Note that strc is a whole program compiler, i.e, it
+      compiles all (recursively) imported modules into
+      a single C source file.
+    </para>
+  </refsect1>
+
+  <refsect1>
+    <title>Options</title>
+
+    <variablelist>
+      <varlistentry>
+        <term><option>-i </option></term>
+        <listitem>
+          <para>foo
+          </para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Examples</title>
+
+    <para>
+      Compile module <filename><replaceable>M</replaceable>.str</filename> to
+      an executable <filename><replaceable>M</replaceable></filename>
+    </para>
+
+    <cmdsynopsis>
+      <command>strc</command>
+      <arg choice="plain">-i <replaceable>M</replaceable></arg>
+    </cmdsynopsis>
+
+    <para>
+      Use the strategy <replaceable>foo</replaceable> as main strategy instead of
+      <function>main</function>.
+    </para>
+
+    <cmdsynopsis>
+      <command>strc</command>
+      <arg choice="plain">-i <replaceable>M</replaceable></arg>
+      <arg choice="plain">--main <replaceable>foo</replaceable></arg>
+    </cmdsynopsis>
+
+    <para>
+      Compile module <filename><replaceable>M</replaceable>.str</filename> to
+      C code in file <filename><replaceable>M</replaceable>.c</filename>
+    </para>
+
+    <cmdsynopsis>
+      <command>strc</command>
+      <arg choice="plain">-i <replaceable>M</replaceable></arg>
+      <arg choice="plain">-c</arg>
+    </cmdsynopsis>
+
+    <para>
+      Include modules from directory <filename class="directory">../sig</filename>
+    </para>
+
+    <cmdsynopsis>
+      <command>strc</command>
+      <arg choice="plain">-i <replaceable>M</replaceable></arg>
+      <arg choice="plain">-I ../sig</arg>
+    </cmdsynopsis>
   </refsect1>
 
   <refsect1>
