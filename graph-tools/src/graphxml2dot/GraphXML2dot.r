@@ -19,7 +19,7 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
  02111-1307, USA.
 
- $Id: GraphXML2dot.r,v 1.6 2001/08/29 14:37:37 mdejonge Exp $
+ $Id: GraphXML2dot.r,v 1.7 2001/08/30 09:52:26 mdejonge Exp $
 *)
 
 module GraphXML2dot
@@ -74,7 +74,7 @@ strategies
        where 
           option-value(UrlPrefix(?p), !"" => p) ;
           option-value(UrlExt(?e),    !".html" => e);
-          <concat-strings>[p, "\\N", e] => url-string;
+          <concat-strings;quote>[p, "\\N", e] => url-string;
           !TCons(Attr-Stmt(node(comma([attr-id("URL",url-string)]))),TCons(None,TNil)) => url;
           <filter(node2dot<+edge2dot)>xs => ss
       \

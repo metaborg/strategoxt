@@ -1,4 +1,7 @@
 2001-08-29 Merijn de Jonge <mdejonge@cwi.nl> 
+   * graphxml2dot/GraphXML2dot.r: bug fix in generated DOT output
+
+2001-08-29 Merijn de Jonge <mdejonge@cwi.nl> 
    * graphxml2dot/GraphXML2dot.r: added --url-prefix and --url-ext switches
      and adapted test output.
    * dot/Dot.r: added new constructors
