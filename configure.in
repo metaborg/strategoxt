@@ -139,7 +139,7 @@ AB_CONFIG_PKG(xtc,
    --with-aterm=${ATERM}
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
-   --with-strategoxt=${prefix}
+   --with-stratego-xt=${prefix}
    --with-repository=${REPOSITORY}
 )
 
@@ -148,7 +148,7 @@ AB_CONFIG_PKG(sdf-import,
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
    --with-xtc=${prefix}
-   --with-strategoxt=${prefix}
+   --with-stratego-xt=${prefix}
    --with-repository=${REPOSITORY}
 )
 
@@ -157,7 +157,7 @@ AB_CONFIG_PKG(sc,
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
    --with-xtc=${prefix}
-   --with-strategoxt=${prefix}
+   --with-stratego-xt=${prefix}
    --with-repository=${REPOSITORY}
 )
 
@@ -166,7 +166,7 @@ AB_CONFIG_PKG(cgen,
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
    --with-xtc=${prefix}
-   --with-strategoxt=${prefix}
+   --with-stratego-xt=${prefix}
    --with-repository=${REPOSITORY}
 )
 
@@ -175,7 +175,7 @@ AB_CONFIG_PKG(c-tools,
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
    --with-xtc=${prefix}
-   --with-strategoxt=${prefix}
+   --with-stratego-xt=${prefix}
    --with-repository=${REPOSITORY}
 )
 
@@ -184,7 +184,7 @@ AB_CONFIG_PKG(stratego-front,
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
    --with-xtc=${prefix}
-   --with-strategoxt=${prefix}
+   --with-stratego-xt=${prefix}
    --with-repository=${REPOSITORY}
 )
 
@@ -193,7 +193,7 @@ AB_CONFIG_PKG(ssl,
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
    --with-xtc=${prefix}
-   --with-strategoxt=${prefix}
+   --with-stratego-xt=${prefix}
    --with-repository=${REPOSITORY}
 )
 
@@ -220,7 +220,7 @@ AB_CONFIG_PKG(aterm-tools,
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
    --with-xtc=${prefix}
-   --with-strategoxt=${prefix}
+   --with-stratego-xt=${prefix}
    --with-repository=${REPOSITORY}
 )
 AB_CONFIG_PKG(graph-tools,
@@ -228,7 +228,7 @@ AB_CONFIG_PKG(graph-tools,
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
    --with-xtc=${prefix}
-   --with-strategoxt=${prefix}
+   --with-stratego-xt=${prefix}
    --with-repository=${REPOSITORY}
 )
 AB_CONFIG_PKG(sdf-tools,
@@ -236,7 +236,7 @@ AB_CONFIG_PKG(sdf-tools,
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
    --with-xtc=${prefix}
-   --with-strategoxt=${prefix}
+   --with-stratego-xt=${prefix}
    --with-repository=${REPOSITORY}
 )
 AB_CONFIG_PKG(dot-tools,
@@ -244,7 +244,7 @@ AB_CONFIG_PKG(dot-tools,
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
    --with-xtc=${prefix}
-   --with-strategoxt=${prefix}
+   --with-stratego-xt=${prefix}
    --with-repository=${REPOSITORY}
 )
 AB_CONFIG_PKG(stratego-tools,
@@ -252,7 +252,7 @@ AB_CONFIG_PKG(stratego-tools,
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
    --with-xtc=${prefix}
-   --with-strategoxt=${prefix}
+   --with-stratego-xt=${prefix}
    --with-repository=${REPOSITORY}
 )
 AB_CONFIG_PKG(xt,
@@ -260,7 +260,7 @@ AB_CONFIG_PKG(xt,
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
    --with-xtc=${prefix}
-   --with-strategoxt=${prefix}
+   --with-stratego-xt=${prefix}
    --with-repository=${REPOSITORY}
   --with-graphviz=${GRAPHVIZ}
 )

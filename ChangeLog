@@ -1,3 +1,7 @@
+2003-01-01  Eelco Visser  <visser@cs.uu.nl>
+
+	* configure.in: switch --with-strategoxt changed to --with-stratego-xt.
+
 2002-11-27  Eelco Visser  <visser@acm.org>
 
 	* asfix-tools and stratego-front packages are now bootstrapped
