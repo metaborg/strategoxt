@@ -22,70 +22,20 @@ strategies
   core-format-check-options =
     rtg-nf-option(|"Check against normalized RTG in file")
 
- format-check-report(|starts) =
-    where(
-     get-types; iset-elements => types
-    ; if !types => [] then
-        <fatal-error> ["error: term cannot be typed."]
-      else
-          <isect> (starts, <id>)
-        ; if ?[] then
-              <fatal-error>
-                ["error: term typed as ", <types-to-string> types, 
-                 " but expected ", <types-to-string> starts]
-          else
-            if-verbose1(<types-to-string; debug(!"info: term typed as ")> types)
-          end
-      end
-    )
-
-  report-types = if-verbose2(
-    ?term
-    ; where(
-        get-types
-      ; iset-elements
-      ; switch id
-          case ?[] :
-            !["  Cannot type ", term]
-          case ?[t] :
-            !["  Typed ", <write-to-string> term, " as ", <nonterm-to-string> t]
-          otherwise:
-            !["  Typed ", <write-to-string> term, " as one of ", <types-to-string>]
-        end
-     ; <fprintnl> (<stderr-stream>, <id>)
-     )
-   )
-  
-  report-type-failure =
-    ?t
-    ; where(
-        <fprintnl> (<stderr-stream>, ["error: cannot type ", <write-to-string>])
-      )
-    ; if <one-consnil(id)> t then
-        <fprintnl> (<stderr-stream>, ["    inferred types of subterms: "])
-      ; <all-consnil(
-          where(
-            <fprintnl> (<stderr-stream>, ["    typed ", <write-to-string>, " as ", <retrieve-types; iset-elements; types-to-string>])
-          )
-        )> t
-      else id end
-    ; <exit> 1
-
-  types-to-string =
-    map(nonterm-to-string); separate-by(!", "); concat-strings
-
-  nonterm-to-string :
-    Int() -> "<int>"
-
-  nonterm-to-string :
-    String() -> "<string>"
-
-  nonterm-to-string :
-    Nonterm(s) -> s
-
 strategies
 
   /**
+   * Main format check traversal.
+   *
+   * The first alternatives reuses the result of previous
+   * type checking. The size of the traversal is therefore the
+   * size of the maximal shared tree.
+   *
+   * The second alternative tries to infer as many types
+   * as possible, but at least one.
+   *
+   * If this fails, then the term is not in the right format.
+   *
    * @type  starts  List(NonTerm)
    */
   format-check =
@@ -98,12 +48,21 @@ strategies
     <+ report-type-failure
     )
 
+  /**
+   * bttomup variant that traverses lists as cons/nil.
+   */
   bottomup-consnil(s) =
     rec x(all-consnil(x); s)
 
+  /**
+   * all variant that traverses lists as cons/nil.
+   */
   all-consnil(s) = 
     is-list < ([s | s] + []) + all(s)
 
+  /**
+   * one variant that traverses lists as cons/nil.
+   */
   one-consnil(s) = 
     is-list < ([s | id] + [id | s]) + one(s)
 
@@ -288,25 +247,69 @@ strategies
   get-types =
     Types
 
-(*
-  Interpret(x|rtg) :
-    (f#(ts), Appl(Term(f), a* )) -> Appl(Term(f), <zip(x)> (ts, a* ))
 
-  /**
-   * Some term application
-   */
-  Interpret(x|rtg) :
-    (Some(t), Appl(SomeTerm(), [a])) -> Appl(SomeTerm(), [<x> (t, a)])
+/**
+ * Reporting
+ */
+strategies
 
-  /**
-   * None term application
-   */
-  Interpret(x|rtg) :
-    (None(), Appl(NoneTerm(), [])) -> Appl(NoneTerm(), [])
+ format-check-report(|starts) =
+    where(
+     get-types; iset-elements => types
+    ; if !types => [] then
+        <fatal-error> ["error: term cannot be typed."]
+      else
+          <isect> (starts, <id>)
+        ; if ?[] then
+              <fatal-error>
+                ["error: term typed as ", <types-to-string> types, 
+                 " but expected ", <types-to-string> starts]
+          else
+            if-verbose1(<types-to-string; debug(!"info: term typed as ")> types)
+          end
+      end
+    )
 
-  /**
-   * Production rule
-   */
-  Interpret(x|rtg) :
-    (t, ProdRule(nt, a* )) -> Prod(nt, <interpret-one(x|rtg)> (t, a* ))
-*)
+  report-types = if-verbose2(
+    ?term
+    ; where(
+        get-types
+      ; iset-elements
+      ; switch id
+          case ?[] :
+            !["  Cannot type ", term]
+          case ?[t] :
+            !["  Typed ", <write-to-string> term, " as ", <nonterm-to-string> t]
+          otherwise:
+            !["  Typed ", <write-to-string> term, " as one of ", <types-to-string>]
+        end
+     ; <fprintnl> (<stderr-stream>, <id>)
+     )
+   )
+  
+  report-type-failure =
+    ?t
+    ; where(
+        <fprintnl> (<stderr-stream>, ["error: cannot type ", <write-to-string>])
+      )
+    ; if <one-consnil(id)> t then
+        <fprintnl> (<stderr-stream>, ["    inferred types of subterms: "])
+      ; <all-consnil(
+          where(
+            <fprintnl> (<stderr-stream>, ["    typed ", <write-to-string>, " as ", <retrieve-types; iset-elements; types-to-string>])
+          )
+        )> t
+      else id end
+    ; <exit> 1
+
+  types-to-string =
+    map(nonterm-to-string); separate-by(!", "); concat-strings
+
+  nonterm-to-string :
+    Int() -> "<int>"
+
+  nonterm-to-string :
+    String() -> "<string>"
+
+  nonterm-to-string :
+    Nonterm(s) -> s
