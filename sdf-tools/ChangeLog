@@ -1,3 +1,7 @@
+2002-12-13  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/sdf2sdf/sdf2sdf.str: Using xtc instead of gt-paths
+
 2002-12-08  Eelco Visser  <visser@cs.uu.nl>
 
 	* src/lib/sglr.str: using new xtc api

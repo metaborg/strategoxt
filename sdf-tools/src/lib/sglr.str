@@ -19,7 +19,7 @@
 // 02111-1307, USA.
 
 module sglr
-imports exec gt-paths asfix verbose xtc-lib
+imports exec asfix verbose xtc-lib
 
 rules
 

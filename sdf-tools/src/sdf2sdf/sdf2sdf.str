@@ -19,7 +19,7 @@ provides a parsing front-end and pretty-printing back-end.
 
 \begin{code}
 module sdf2sdf
-imports lib gt-paths sglr
+imports lib sglr
 signature
   constructors
     Tool : String -> Option
@@ -63,11 +63,14 @@ strategies
 
   call-sdf-tool = 
     ?(prog, args);
-    <call-noisy>( <concat-strings>[SDFTOOLS, "/bin/", prog], args)
+    <xtc-command(!prog)> args
+
+    //<call-noisy>( <concat-strings>[SDFTOOLS, "/bin/", prog], args)
 
   call-asfix-tool = 
     ?(prog, args);
-    <call-noisy>( <concat-strings>[ASFIXTOOLS, "/bin/", prog], args)
+    <xtc-command(!prog)> args
+    // <call-noisy>( <concat-strings>[ASFIXTOOLS, "/bin/", prog], args)
 \end{code}
 
 % Sdf Tools
