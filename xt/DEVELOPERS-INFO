@@ -1,0 +1,97 @@
+# XT -- Program Transformation tools
+# Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
+# 
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+#
+# $Id: DEVELOPERS-INFO,v 1.1 2000/03/29 09:39:14 mdejonge Exp $
+
+Obtaining all Software Packages
+===============================
+The CVS repository of XT itself does not include the software packages which
+are distributed as part of XT. Therefore you should first obtain the
+packages yourself before compiling XT or building an XT distribution. 
+
+The software package scan be obtained by executing the command:
+
+   ./collect.sh configure.in pkg-list
+
+in the top-level XT directory. This command collects all software packages
+(as defined in the file pkg-list) and stores them in the directory ./pkgs.
+Furthermore, it unpacks all packages in the top-level XT directory and it
+creates the file SOFTWARE which contains a list of all packages, their
+version, and the location where they can be downloaded. The file SOFTWARE is
+included in the XT distribution and exactly defines which software packages
+define a particular XT distribution.
+
+Adding Software Packages
+========================
+To add a new software package to the XT distribution, do the following:
+
+ 1) Add the package to the file pkg-list by adding the following entry to
+    the file:
+
+      <pkg>,<version>,<location>
+
+      where
+         <pkg>      denotes the name of the package
+         <version>  specifies which version of the package to include
+         <location> specifies where the package can be obtained. This can
+                    either be an URL (e.g.,
+                    http://www.cs.uu.nl/~visser/ftp/stratego-0.4.11.tar.gz),
+                    or a CVS repository (e.g.,
+                    cvs:vanille.cwi.nl:/ufs/gipe/CVS)
+
+    Examples:
+      -The following entry is used for Stratego version 0.4.11, which can be
+       obtained via www:
+
+        stratego,0.4.11,http://www.cs.uu.nl/~visser/ftp/stratego-0.4.11.tar.gz
+
+      -The following entry is used for GB version 0.1.1 which is available in
+       the CVS repository /ufs/gipe/CVS at vanille.cwi.nl:
+       
+        gb,0.1.1,cvs:vanille.cwi.nl:/ufs/gipe/CVS
+
+ 2) Add the top-level directory of the package to the DIST_SUBDIRS variable
+    in the top-level Makefile.am
+ 
+ 3) Configure the package by adding a call to AC_CONFIG_PKG in the top-level
+    configure.in.
+    
+    Example, the package Stratego is configured as follows:
+       AC_CONFIG_PKG(stratego,    --with-aterm=${prefix})
+
+ 4) run ./reconf and ./confgure <configure_options>
+ 
+
+Building and Configuring XT
+===========================
+The build process of XT library is controlled by autoconf and automake (see
+www.gnu.org).
+
+Before running ./configure to configure the system and to create Makefiles
+from Makefile.in's, you should first run ./reconf which generates among
+others Makefile.in's from Makefile.am's.
+
+Running ./reconf might give several warnings about non-existent files which
+can safely be ignored because automake will install these missing files for
+you.
+
+It is essential that you have an up-to-date version (version 1.4 or above)
+of automake.
+
+Note for CWI developers. Adding "automake" to your ~/.pkgrc file
+in order to use the latest version of automake.
