@@ -24,6 +24,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
 
 ATerm SSL_mkdtemp(ATerm template);
 ATerm SSL_getcwd(void);
+ATerm SSL_mkdir(ATerm pathname, ATerm mode);
+ATerm SSL_rmdir(ATerm pathname);
 ATerm SSL_chdir(ATerm pathname);
 ATerm SSL_readdir(ATerm t);
 ATerm SSL_rename(ATerm oldname, ATerm newname);

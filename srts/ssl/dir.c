@@ -126,6 +126,25 @@ ATerm SSL_mkdtemp(ATerm template) {
 }
 
 /**
+ * Create drectory, if it does not already exist.
+ */
+ATerm SSL_mkdir(ATerm pathname, ATerm mode)
+{
+  int result = mkdir(AT_getString(pathname), AT_getString(mode));
+  return (ATerm) ATmakeInt(result);
+}
+
+/**
+ * Deletes a directory, which must be empty.
+ */
+
+ATerm SSL_rmdir(ATerm pathname)
+{
+  int result = rmdir(AT_getString(pathname));
+  return (ATerm) ATmakeInt(result);
+}
+
+/**
  * chdir
  */
 ATerm SSL_chdir(ATerm pathname) {
