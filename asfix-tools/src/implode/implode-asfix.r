@@ -229,8 +229,14 @@ strategies
 
   implode-lexical = 
       ?appl(prod([lex(_)],cf(_),_), _); yield
-    + ?appl(prod(_,lit(_),_),_); !lit(<yield>)
-    + ?appl(prod(_,varsym(_),_),_); !meta-var(<yield>)
+    <+ ?appl(prod(_,lit(_),_),_); !lit(<yield>)
+    <+ ?appl(prod(_,varsym(cf(iter-star(_))),_),_); !meta-listvar(<yield>)
+    <+ ?appl(prod(_,varsym(cf(iter-star-sep(_,_))),_),_); !meta-listvar(<yield>)
+    <+ ?appl(prod(_,varsym(cf(iter(_))),_),_); !meta-listvar(<yield>)
+    <+ ?appl(prod(_,varsym(cf(iter-sep(_,_))),_),_); !meta-listvar(<yield>)
+    //<+ ?appl(prod(_,varsym(cf(iter-n(_))),_),_); !meta-listvar(<yield>)
+    //<+ ?appl(prod(_,varsym(cf(iter-sep-n(_,_))),_),_); !meta-listvar(<yield>)
+    <+ ?appl(prod(_,varsym(_),_),_); !meta-var(<yield>)
 \end{code}
 
 	\paragraph{Layout}

@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: asfix.r,v 1.3 2002/03/16 14:55:43 eelco Exp $
+% $Id: asfix.r,v 1.4 2002/09/18 15:14:41 eelco Exp $
 
 
 	Abstract syntax for parse tree representation of SDF2 parsers.
@@ -64,6 +64,7 @@ signature
     amb      : List(AsFixTerm) -> AsFixTerm
     flatlex  : Sort * String -> AsFixTerm
     meta-var : String -> AsFixTerm
+    meta-listvar : String -> AsFixTerm
 \end{code}
 
 	Note: integers are also AsFixTerms
