@@ -1,3 +1,8 @@
+2002-03-19  Eelco Visser  <visser@acm.org>
+
+	* src/treeviz/Makefile.am (EXTRA_DIST): Really distribute
+	all files that are needed.
+
 2002-03-17  Eelco Visser  <visser@acm.org>
 
 	* src/treeviz/term-to-adot.r: Tree and DAG visualization of ATerms
