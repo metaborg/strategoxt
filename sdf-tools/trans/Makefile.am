@@ -1,8 +1,8 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-bin_PROGRAMS     = gen-renamed-sdf-module sdf-spread-cons sdf2parenthesize
-libexec_PROGRAMS = sdf2ast-conflicts
+bin_PROGRAMS     = gen-renamed-sdf-module sdf2parenthesize
+libexec_PROGRAMS = sdf2ast-conflicts sdf-spread-cons
 LDADD       += $(SSL_LIBS)
 
 SCFLAGS       = --main io-$* --dr new
