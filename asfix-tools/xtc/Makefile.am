@@ -6,6 +6,7 @@ pkgdata_DATA 	  = visamb.pp.af
 
 STRINCLUDES     = -I $(XTC)/share/xtc
 SCFLAGS         = --main main-$*
+LDADD          += $(SSL_LIBS)
 
 CLEANFILES      = $(wildcard *.dep)
 BOOTCLEANFILES  = visamb.c visamb.pp.af 
