@@ -1,0 +1,56 @@
+module rtg-script
+imports
+  liblib
+  regular-xtc-tools
+  rtg
+
+signature
+  constructors
+                  : List(RTGCommand) -> RTGScript
+    Read          : String -> RTGCommand
+    Include       : List(RTGCommand) -> RTGCommand
+
+    DeleteNonterm : String -> RTGCommand
+    DeleteTerm    : String * String -> RTGCommand
+    DeleteTerm    : String -> RTGCommand
+
+    Reduce        : RTGCommand 
+    Group         : RTGCommand
+
+strategies
+
+  main-rtg-script =
+    xtc-io-wrap(
+      read-from
+    ; rtg-script-eval 
+    ; xtc-pp-rtg
+    )
+
+  rtg-script-eval =
+    !(<id>, ())
+    ; foldl(eval-command)
+
+rules
+
+  eval-command :
+    (Read(file), ()) ->
+      <xtc-parse-rtg> FILE(<conc-strings> (file, ".rtg"))
+
+  eval-command :
+    (Reduce(), file) ->
+      <xtc-rtg-reduce> file
+
+  eval-command :
+    (Group(), file) ->
+      <xtc-rtg-group> file
+
+  eval-command :
+    (DeleteNonterm(s), file) ->
+      < read-from
+      ; RTG(
+          Start(filter(not(?Nonterm(s))))
+        , ProdRules(filter(not(?ProdRule(Nonterm(s), _))))
+        )
+      ; write-to
+      > file
+

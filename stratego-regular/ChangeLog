@@ -1,3 +1,12 @@
+2004-07-21  Martin Bravenboer <martin@cs.uu.nl>
+
+	* xtc/rtg-script.str: new tool for processing RTGs. The tool is
+	subject to any change that you can imagine, but the basic
+	functionality is useful, so the features will probably always be
+	available in a certain way. Currently the tool supports: Read (no
+	-I yet), Reduce, Group, and DeleteNonterm. More functionanility is
+	on the way.
+
 2004-07-20  Martin Bravenboer <martin@cs.uu.nl>
 
 	* xtc/format-check.str: format-check has a new feature to report

@@ -9,12 +9,14 @@ bin_PROGRAMS=\
   sdf2rtg \
   sig2rtg \
   rtg2sig \
-  rtg2typematch 
+  rtg2typematch \
+  rtg-script
 
 libexec_PROGRAMS = tool-doc2abox
 
 SCFLAGS        = --main main-$*
 STRINCLUDES    = -I $(top_srcdir)/lib \
+                 -I $(top_srcdir)/sig \
                  -I $(SDF_FRONT)/share/sdf-front \
                  -I $(XTC)/share/xtc \
                  -I $(GPP)/share/sdf/gpp \
