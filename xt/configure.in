@@ -18,12 +18,12 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 dnl 02111-1307, USA.
 
-dnl $Id: configure.in,v 1.30 2001/01/07 12:27:01 mdejonge Exp $
+dnl $Id: configure.in,v 1.31 2001/01/09 13:37:17 jvisser Exp $
 
 AC_INIT(Makefile.in)
 AM_INIT_AUTOMAKE(xt,0.6beta)
 
-AC_REVISION($Id: configure.in,v 1.30 2001/01/07 12:27:01 mdejonge Exp $)
+AC_REVISION($Id: configure.in,v 1.31 2001/01/09 13:37:17 jvisser Exp $)
 
 AC_ARG_WITH(pkginstalldir,
    [  --with-pkginstalldir    Specify location where softwere gets installed 
@@ -46,7 +46,7 @@ AC_OUTPUT(
 
 dnl Configuration of sub-pacakages
 
-AC_CONFIG_PKG(aterm,       --with-gcc --with-dbg)
+AC_CONFIG_PKG(aterm,       --with-gcc --with-dbg --with-java)
 
 AC_CONFIG_PKG(asfix,       --with-aterm=${PKG_XT})
 
