@@ -34,6 +34,14 @@ strategies
   file-exists =
     <access> (<id>, [F_OK()])
 
+  // :: String -> String
+  can-read-file =
+    <access> (<id>, [R_OK()])
+
+  // :: String -> String
+  can-write-file =
+    <access> (<id>, [W_OK()])
+
 strategies
 
   find-in-path =
