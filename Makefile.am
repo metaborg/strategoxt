@@ -1,23 +1,25 @@
+SUBDIRS      = $(PKGS)
 EXTRA_DIST   = $(EXTRA_FILES)
-
 EXTRA_FILES  = README README.in bootstrap acinclude.m4 strategoxt.spec.in strategoxt.spec
 
-SUBDIRS      = $(PKGS)
+all : install-buildtime-pre-pkgs
 
-all: install
+# installs a local srts for building the StrategoXT packages
+# TODO: configure srts with cpl if necessary
+install-buildtime-pre-pkgs :
+	mkdir -p pre-pkgs &&\
+	mkdir -p pre-pkgs/build &&\
+	cp -rf srts pre-pkgs/build/ &&\
+	cd pre-pkgs/build/srts &&\
+	./configure --prefix=@abs_top_srcdir@/pre-pkgs/build --with-aterm=$(ATERM) &&\
+	make &&\
+	make install
 
 rpm : dist
 	$(RPMBUILD) -ta $(PACKAGE_TARNAME)-$(VERSION).tar.gz
 
 dailydist : dist
-	mv $(PACKAGE)-$(VERSION).tar.gz $(PACKAGE)-dailydist.tar.gz 
-
-# check clean install uninstall:
-#	PATH=$(bindir):$${PATH}; export PATH ;\
-#	ulimit -s 20000 ;\
-#	for subdir in $(SUBDIRS); do \
-#	   ( cd $$subdir && $(MAKE) $@ ) || exit 1 ;\
-#	done
+	mv $(PACKAGE_TARNAME)-$(VERSION).tar.gz $(PACKAGE_TARNAME)-dailydist.tar.gz 
 
 package-dist :
 	PATH=$(bindir):$${PATH}; export PATH ;\
@@ -40,11 +42,6 @@ install-%: %
 	for subdir in $(PKGS) ; do \
            cp -f $< $$subdir ; \
 	done
-
-WWWSTRATEGO=sunshine.cs.uu.nl:/users/ftp/stratego/StrategoXT
-
-upload:
-	scp StrategoXT-$(VERSION).tar.gz $(WWWSTRATEGO)
 
 bootclean :
 	@for dir in $(PKGS); do \

@@ -2,26 +2,17 @@ include $(srcdir)/../templates/make_rules
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-SUBDIRS      	= data
+SUBDIRS = data
 
-bin_PROGRAMS	 = asfix-yield
-bin_SCRIPTS 	 = asource
+bin_PROGRAMS     = asfix-yield
 libexec_SCRIPTS  = asource
 libexec_PROGRAMS = asfix-yield
 
-TESTS        	= asfix_yield1_check asfix_yield2_check
-CLEANFILES   	= asfix_yield1_check asfix_yield2_check $(wildcard *.dep) asfix-yield asource
-BOOTCLEANFILES 	= asfix-yield.c
+TESTS          = asfix_yield1_check asfix_yield2_check
+CLEANFILES     = asfix_yield1_check asfix_yield2_check $(wildcard *.dep) asfix-yield
+BOOTCLEANFILES = asfix-yield.c
 
-SCFLAGS       	= -I $(srcdir)/../asfix 
-
-asource	: asfix-yield
-	ln -f $< $@
-
-#install-exec-local:
-#	$(RM) ${bindir}/asource ${libexecdir}/asource
-#	ln -sf asfix-yield ${bindir}/asource
-#	ln -sf asfix-yield ${libexecdir}/asource
+SCFLAGS        = -I $(srcdir)/../asfix 
 
 asfix_yield1_check_prog    = asfix-yield
 asfix_yield1_check_input   = data/tiny.tree
