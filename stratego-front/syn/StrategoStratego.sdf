@@ -5,23 +5,27 @@ exports
 
   context-free syntax
 
-              "|[" Module   "]|" -> StrategoTerm {cons("ToTerm"),prefer}
-    "Module"  "|[" Module   "]|" -> StrategoTerm {cons("ToTerm")}
+              "|[" Module "]|" -> StrategoTerm {cons("ToTerm"),prefer}
+    "Module"  "|[" Module "]|" -> StrategoTerm {cons("ToTerm")}
 
-              "|[" Decl     "]|" -> StrategoTerm {cons("ToTerm")}
-              "|[" Sdecl    "]|" -> StrategoTerm {cons("ToTerm")}
+              "|[" Decl   "]|" -> StrategoTerm {cons("ToTerm")}
+              "|[" Sdecl  "]|" -> StrategoTerm {cons("ToTerm")}
 
-              "|[" Opdecl   "]|" -> StrategoTerm {cons("ToTerm")}
-    "Constr"  "|[" Opdecl   "]|" -> StrategoTerm {cons("ToTerm")}
+              "|[" Opdecl "]|" -> StrategoTerm {cons("ToTerm")}
+    "Constr"  "|[" Opdecl "]|" -> StrategoTerm {cons("ToTerm")}
 
-              "|[" Type     "]|" -> StrategoTerm {cons("ToTerm")}
-    "Type"    "|[" Type     "]|" -> StrategoTerm {cons("ToTerm")}
+              "|[" Type   "]|" -> StrategoTerm {cons("ToTerm")}
+    "Type"    "|[" Type   "]|" -> StrategoTerm {cons("ToTerm")}
 
-              "|[" Term     "]|" -> StrategoTerm {cons("ToTerm")}
-    "Term"    "|[" Term     "]|" -> StrategoTerm {cons("ToTerm")}
+              "|[" Sort   "]|" -> StrategoTerm {cons("ToTerm")}
+    "Sort"    "|[" Sort   "]|" -> StrategoTerm {cons("ToTerm")}
 
-              "|[" Def      "]|" -> StrategoTerm {cons("ToTerm")}
-    "Def"     "|[" Def      "]|" -> StrategoTerm {cons("ToTerm")}
+
+              "|[" Term   "]|" -> StrategoTerm {cons("ToTerm")}
+    "Term"    "|[" Term   "]|" -> StrategoTerm {cons("ToTerm")}
+
+              "|[" Def    "]|" -> StrategoTerm {cons("ToTerm")}
+    "Def"     "|[" Def    "]|" -> StrategoTerm {cons("ToTerm")}
 
              "|[" Rule      "]|" -> StrategoTerm {cons("ToTerm")}
     "Rule"   "|[" Rule      "]|" -> StrategoTerm {cons("ToTerm")}
@@ -53,8 +57,9 @@ exports
     "~*"        StrategoTerm -> {Strategy ","}*  {cons("FromTerm")}
     "~strat*:"  StrategoTerm -> {Strategy ","}*  {cons("FromTerm")}
 
-    "~sortvar:" StrategoTerm -> LCID {cons("FromTerm")}
-    "~sortid:"  StrategoTerm -> UCID {cons("FromTerm")}
+    "~srt:"     StrategoTerm -> Sort {cons("FromTerm")}
+    "~srtvar:"  StrategoTerm -> LCID {cons("FromTerm")}
+    "~srtid:"   StrategoTerm -> UCID {cons("FromTerm")}
 
     "~id:"    StrategoTerm -> Id        {cons("FromTerm")}
     "~int:"   StrategoTerm -> Int       {cons("FromTerm")}
@@ -103,7 +108,8 @@ exports
     "tp"[0-9\']*          -> Type 
     "tp"[0-9\']*  "*"     -> {Type "*"}+  
 
-    "srt"[0-9\']*          -> Sort 
+    "srt" [0-9\']*        -> Sort {prefer}
+    "srt" [xyz] [0-9\']*  -> UCID {prefer}
 
   lexical syntax
     "xs"[0-9\']*          -> Id  {reject}
