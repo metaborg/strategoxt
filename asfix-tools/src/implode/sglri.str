@@ -31,7 +31,7 @@ strategies
       (!FILE(<get-config > "-i") <+ !stdin)
       ; sglr(<get-config> "-p", !["-2" | <get-config <+ ![]> "--sglr"])
       ; implode-asfix(<get-config <+ ![]> "--impl")
-      ; rename-to(!<get-config> "-o")
+      ; rename-to(<get-config> "-o" <+ !stdout)
       )
 
   sglr(tbl) =
