@@ -20,7 +20,7 @@ AM_INIT_AUTOMAKE(srts,0.9beta3)
 
 AM_CONFIG_HEADER(config.h)
 
-AC_CONFIG_AUX_DIR(config)
+#AC_CONFIG_AUX_DIR(config)
 
 dnl Let aclocal use macros in ./config directory
 ACLOCAL="${ACLOCAL} -I ."
@@ -66,7 +66,7 @@ AC_ARG_WITH(rpmtmp,
 )
 AC_SUBST(RPMTMP)
 
-AC_REVISION($Id: configure.in,v 1.24 2002/11/19 22:39:35 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.25 2002/11/23 10:52:17 stratego Exp $)
 
 AC_CHECK_FUNCS([getpagesize])
 AC_CHECK_HEADERS([stdlib.h])
