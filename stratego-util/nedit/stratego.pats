@@ -57,6 +57,7 @@ nedit.highlightPatterns: \
 		str dynrule def assignmentsym:"\\9":""::Keyword:str dynrule def:C\n\
 		str strat app:"\\<[^\\+\\s]":"\\>":"(//|/\\*)":Subroutine::\n\
 		str strat app nest1:"\\<[^\\+\\s]":"\\>"::Subroutine1:str strat app:\n\
+		str strat app nest2:"\\<[^\\+\\s]":"\\>"::Identifier2:str strat app nest1:\n\
 		string escape chars:"\\\\(?:.|\\n)":::String1:string:\n\
 		Concrete syntax:"\\|\\[[\\s\\n]":"[\\n\\s]\\]\\|"::String1::\n\
 		Debug-statements:"(output\\-nest[\\s\\n]*\\(|on\\-debug\\(\\|[\\w'][\\w\\-_']*(,[\\s]*""[\\s:\\w\\-_'.]*"")?\\)|on\\-say\\(\\|[\\w'][\\w\\-_']*(,[\\s]*""[\\s:\\w\\-_'.]*"")?\\))":::plaingray::\n\
