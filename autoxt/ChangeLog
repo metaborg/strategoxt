@@ -1,3 +1,9 @@
+2003-01-02  Eelco Visser  <visser@cs.uu.nl>
+
+	* Makefile.xt (bootclean-recursive): make rules supporting recursive
+	bootclean target. Define BOOTCLEAN_SUBDIRS for any directory with
+	subdirectories that should be bootcleaned.
+
 2002-12-31  Eelco Visser  <visser@cs.uu.nl>
 
 	* autoxt.m4 (USE_XT_PACKAGES): template for use in config file
