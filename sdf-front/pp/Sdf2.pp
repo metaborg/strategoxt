@@ -1,7 +1,11 @@
 [
    "sdf-2.1" -- _1,
+
    START -- KW["<START>"],
+   start -- KW["<START>"],
+
    Start -- KW["<Start>"],
+   file-start -- KW["<Start>"],
 
    lexical-priorities -- 
       V is=2[ H[KW["lexical"] KW["priorities"]] _1],
@@ -25,13 +29,8 @@
 
    definition.1:iter-star -- _1,
 
-
-   attrs -- 
-      H hs=0[ "{" H[_1] "}"],
-      
-   attrs.1:iter-star-sep -- 
-      H hs=0 [_1 KW[","]],
-
+   attrs --  H hs=0[ "{" H[_1] "}"],
+   attrs.1:iter-star-sep --  H hs=0 [_1 KW[","]],
    no-attrs --,
 
    prod -- 
@@ -141,6 +140,9 @@
 
    priority-chain.1:iter-sep -- 
       H [_1 KW[">"]],
+
+   chain -- _1,
+   chain.1:iter-sep -- H [_1 KW[">"]],
       
    priority-assoc --
       HV[_1 _2 _3],
@@ -194,8 +196,8 @@
    lookaheads-list.1:iter-star-sep -- 
       H hs=0[_1 ","],
       
-   follow-restriction -- 
-      R[HV[_1] H[KW["-/-"] H[_2]]],
+   follow-restriction --  R[HV[_1] H[KW["-/-"] H[_2]]],
+   follow -- R[HV[_1] H[KW["-/-"] H[_2]]],
       
    restrictions -- 
       V is=2[ KW["restrictions"] _1],
@@ -224,6 +226,7 @@
    no-charranges --,
 
    present -- _1,
+   numeric -- _1,
 
    simple-charclass -- 
       H hs=0[KW["["] _1 KW["]"]],
@@ -249,6 +252,7 @@
    qlit  -- _1,
    uqlit -- _1,
    term  -- _1,
+   list  -- _1,
 
    appl  -- H hs=0 [_1 KW["("] _2 KW[")"]],
    appl.2:iter-star-sep -- H hs=0[_1 KW[","]]
