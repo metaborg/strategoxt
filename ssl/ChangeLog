@@ -1,3 +1,12 @@
+2003-07-29  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+	* spec/int-list.str: added range strategy, inspired by
+    Python's range function. The range strategy produces
+    lists of ints given a range, step or step strategy.
+
+  * spec/simple-traversal.str: corrected the order of 
+    higher order strategy arguments.
+
 2003-07-15  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/list-basic.str: definitions of map1 and listbu1 require that

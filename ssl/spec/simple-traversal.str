@@ -51,19 +51,19 @@ strategies
 	with a strategy operator \verb|stop| that 
 
 \begin{code}
-  topdownS(s, stop: a * (a -> a) -> a) = 
+  topdownS(s, stop: (a -> a) * a -> a) = 
     s
     ; (stop(topdownS(s,stop)) <+ all(topdownS(s,stop)))
 
-  bottomupS(s, stop: a * (a -> a) -> a) = 
+  bottomupS(s, stop: (a -> a) * a -> a) = 
     (stop(bottomupS(s, stop)) <+ all(bottomupS(s, stop)))
     ; s
 
-  downupS(s, stop: a * (a -> a) -> a) = 
+  downupS(s, stop: (a -> a) * a -> a) = 
     s
     ; (stop(downupS(s, stop)) <+ all(downupS(s, stop))); s
 
-  downupS(s1, s2, stop: a * (a -> a) -> a) = 
+  downupS(s1, s2, stop: (a -> a) * a -> a) = 
     s1
     ; (stop(downupS(s1, s2, stop)) <+ all(downupS(s1, s2, stop)))
     ; s2
@@ -139,12 +139,12 @@ strategies
   oncebu(s) = 
     rec x(one(x) <+ s)
 
-  oncetd-skip(s, skip: a * (a -> a) -> a) = 
+  oncetd-skip(s, skip: (a -> a) * a -> a) = 
     rec x(s <+ skip(x) <+ one(x))
 
     // this really requires a cut to avoid backtracking to one
 
-  oncetd-stop(s, stop: a * (a -> a) -> a) = 
+  oncetd-stop(s, stop: (a -> a) * a -> a) = 
     obsolete(!"oncetd-stop");
     rec x(s <+ not(stop(id)); one(x))
 \end{code} 
@@ -185,7 +185,7 @@ strategies
 	\paragraph{Leaves}
 
 \begin{code}
-  leaves(s, is-leaf, skip: a * (a -> a) -> a) =
+  leaves(s, is-leaf, skip: (a -> a) * a -> a) =
     rec x((is-leaf; s) <+ skip(x) <+ all(x))
 
   leaves(s, is-leaf) =

@@ -31,7 +31,8 @@ strategies
     test-suite(!"int-list-test",
 	sort-test;
 	is-interval-test;
-	is-not-interval-test
+	is-not-interval-test;
+  range-tests
     )
  
   sort-test =
@@ -42,4 +43,25 @@ strategies
 
   is-not-interval-test =
     apply-test(!"is-interval-test",not(is-interval),![2,3,5],![2,3,5])
+ 
+  range-tests =
+      apply-test(!"range 1",  range,       !10,          ![0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+    ; apply-test(!"range 2",  range,       !(5, 10),     ![5, 6, 7, 8, 9])
+    ; apply-test(!"range 3",  range(|3),   !(0, 10),     ![0, 3, 6, 9])
+    ; apply-test(!"range 4",  range(|-30), !(-10, -100), ![-10, -40, -70])
+    ; apply-test(!"range 5",  range,       !(5, 5),      ![])
+    ; apply-test(!"range 6",  range,       !0,           ![])
+    ; apply-test(!"range 7",  range,       !(0, -1),     ![])
+    ; apply-test(!"range 8",  range,       !(-1, 0),     ![-1])
+    ; apply-test(!"range 9",  range-mul2,  !(1, 256),    ![1, 2, 4, 8, 16, 32, 64, 128])
+    ; apply-test(!"range 10", range-sqr,   !(3, 6),      ![3])
+    ; apply-test(!"range 11", range,       !1,           ![0])
+    ; apply-test(!"range 12", range; length, !1000, !1000)
+
+  range-mul2 = 
+    range(<mul> (<id>, 2))
+
+  range-sqr = 
+    range(<mul> (<id>, <id>))
+
 \end{code}
