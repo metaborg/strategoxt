@@ -1,5 +1,7 @@
 2001-09-11 Merijn de Jonge <mdejonge@cwi.nl>
-   * src/sdf-imports/get-modules.r: re-added type annotations.
+   * sdf-imports/get-modules.r: re-added type annotations. 
+   * pack-sdf/data/src/pack-sdf/data/syntax-test.def.dep.correct: updated
+     because the layout of dependency files has changed.
 
 2001-09-11 Merijn de Jonge <mdejonge@cwi.nl>
    * src/sdf-imports/get-modules.r: removed type annotations because it is
