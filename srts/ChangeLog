@@ -1,3 +1,12 @@
+2001-08-28  Eelco Visser  <visser@acm.org>
+
+	* src/mprotect.[ch] (set_segv_handler): The solution of Merijn to
+	mprotect the entire stack once at the start of execution did not
+	completely work, maybe because only the parts of the stack that
+	are already allocated are protected. Eelco Dolstra added a mechanism
+	for trapping segmentation faults and mprotecting the stack at that
+	point. This works!
+
 2001-08-27  Eelco Visser  <visser@acm.org>
 
 	* src/stratego.c: Save variables before PushChoice and restore

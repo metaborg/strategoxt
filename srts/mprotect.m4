@@ -19,9 +19,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 
 */
 
-/* The CHECK_FOR_MPROTECT function, tries to determine whether or notsr	
+/* The CHECK_FOR_MPROTECT function, tries to determine whether or not
    dynamic functions require the use of mprotect to make the stack executable.
-*/
+ */
 AC_DEFUN(CHECK_FOR_MPROTECT,[
 AC_MSG_CHECKING([whether platform requires use of mprotect])
 AC_TRY_RUN(

@@ -25,7 +25,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 #include <setjmp.h>
 #include <assert.h>
 #include <aterm2.h> 
-// #include <choice.h> 
 #include "stratego.h"
 #include "mprotect.h"
 
@@ -249,8 +248,9 @@ int main(int argc, char *argv[])
 
 #ifdef NEEDS_MPROTECT
   do_mprotect();
+  set_segv_handler();
 #endif
-  
+
   in_term = (ATerm)ATmakeAppl0(sym_Nil_0);
   for(i = argc - 1; i >= 0; i--)
     {
@@ -270,3 +270,5 @@ int main(int argc, char *argv[])
   }
 
 }
+
+

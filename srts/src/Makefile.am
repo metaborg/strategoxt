@@ -18,8 +18,8 @@
 include make_rules.in
 
 OPTFLAGS	= -O4
-INCLUDES 	= -I$(ATERM)/include -I$(CPL)/include -I$(srcdir)
-LDFLAGS		= -L$(ATERM)/lib -L$(CPL)/lib 
+INCLUDES 	= -I$(ATERM)/include -I$(srcdir)
+LDFLAGS		= -L$(ATERM)/lib
 
 lib_LIBRARIES 	= libstratego.a libstratego.dbg.a \
 		  libstratego.opt.a libstratego.prof.a
