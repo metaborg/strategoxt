@@ -28,6 +28,7 @@ strategies
       sdf-spread-cons
     ; topdown(try(simple-group(Prod2Symbol <+ !NoSymbol())))
     ; <conc> (<chain-patterns>, <assoc-patterns>)
+    ; filter(not(oncetd(?NoSymbol())))
 
 signature
  constructors
