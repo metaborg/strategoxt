@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.5 2001/09/22 12:17:30 mdejonge Exp $
+# $Id: Makefile.am,v 1.6 2001/10/08 23:40:33 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -72,7 +72,7 @@ gpp.Makefile : gpp.Makefile.src Makefile
 	     s@__PREFIX__@$(prefix)@g'\
 	       < $< > $@
 %.tbl : %.def
-	PATH=$(PGEN)/bin:$(PATH) sdf2table $< -o $@
+	PATH=$(PGEN)/bin:$${PATH} sdf2table -m GB-Main $< -o $@
 
 # rule to generate imploded pretty-print tables
 %.pp.af : %.pp

@@ -1,3 +1,6 @@
+2001-10-09 Merijn de Jonge <mdejonge@cwi.nl> 
+    * new pp table and sdf definition obtained from grammar base
+
 2001-10-08 Merijn de Jonge <mdejonge@cwi.nl> 
     * Adapted to use io-idwrap and grammar identifiers
 

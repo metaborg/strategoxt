@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.4 2001/09/22 12:37:47 mdejonge Exp $
+# $Id: Makefile.am,v 1.5 2001/10/08 23:40:34 mdejonge Exp $
 
 TEST_SET = Opt-seq Opt-seq2 Opt-iter Opt-iter1 Iter-sep Iter-sep1 Iter-sep2 Iter-sep3 \
 	   Iter-sep-seq Iter-sep-seq2 Alt Alt2 Alt3 Seq Iter-seq Seq2 Seq3
@@ -57,22 +57,22 @@ testsetclean:
 	) > $@ && chmod +x $@
 	   
 %-asfix.in : 
-	PATH=$(SGLR)/bin:$(PATH) sglr -2 -s $* -p tests.tbl -i ${srcdir}/$*.trm \
+	PATH=$(SGLR)/bin:$${PATH} sglr -2 -s $* -p tests.tbl -i ${srcdir}/$*.trm \
 	| $(ASFIXTOOLS)/bin/implode-asfix --lex --pt --list -o $@
 
 %-af.in : 
-	PATH=$(SGLR)/bin:$(PATH) sglr -2 -s $* -p tests.tbl -i $[srcdir}/$*.trm \
+	PATH=$(SGLR)/bin:$${PATH} sglr -2 -s $* -p tests.tbl -i ${srcdir}/$*.trm \
 	| $(ASFIXTOOLS)/bin/implode-asfix -o $@
 
 %.tbl : %.def
-	PATH=$(PGEN)/bin:$(PATH) sdf2table -i $< -o $@
+	PATH=$(PGEN)/bin:$${PATH} sdf2table -i $< -o $@
 
 %.out :
 	$(MAKE) tests.pp.af
 	../Asfix2abox -p tests.pp.af -i ${srcdir}/$*-asfix.in -o $@
 
 %.pp.af : %.pp ../pp-tables.tbl
-	PATH=$(SGLR)/bin:$(PATH) sglr -2 -p ../pp-tables.tbl -i $< \
+	PATH=$(SGLR)/bin:$${PATH} sglr -2 -p ../pp-tables.tbl -i $< \
 	   | $(ASFIXTOOLS)/bin/implode-asfix -o $@
 
 ppgencheck1.in:
