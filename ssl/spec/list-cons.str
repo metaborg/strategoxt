@@ -3,8 +3,8 @@
  */
 module list-cons
 signature
-  sorts List(Type)
+  sorts List(a)
   constructors
     Nil  : List(a)
     Cons : a * List(a) -> List(a)
-
+    Conc : List(a) * List(a) -> List(a)
