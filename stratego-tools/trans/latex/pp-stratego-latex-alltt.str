@@ -7,7 +7,7 @@
  * @author  Martin Bravenboer <martin@cs.uu.nl>
  */
 module pp-stratego-latex-alltt
-imports options parse-cs-lib AsFix
+imports liblib parse-cs-lib AsFix
 
 strategies
 

@@ -1,5 +1,5 @@
 module parse-cs-lib
-imports lib xtc-lib stratego-xt-xtc-tools
+imports liblib strategoxt-xtc-tools
 
 /**
  * Options
@@ -283,13 +283,3 @@ strategies
   fetch-meta-datum(s) =
     FILE(id){fetch(Meta(fetch(s; ?x)))}; !x
 
-strategies // file extension
-
-  /**
-   * Get extension from filename (move to SSL)
-   *
-   * @type   String -> String
-   */
-  get-extension =
-    <string-tokenize> (['.'], <id>)
-    ; last

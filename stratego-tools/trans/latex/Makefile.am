@@ -1,7 +1,7 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-SCFLAGS 	= --main io-$*
+SCFLAGS 	= --main io-$* --dr new
 STRINCLUDES     = -I $(STRATEGO_FRONT)/share/sdf/stratego-front \
                   -I $(STRATEGO_FRONT)/share/stratego-front \
                   -I $(ASFIX_TOOLS)/share/asfix-tools \
@@ -9,6 +9,8 @@ STRINCLUDES     = -I $(STRATEGO_FRONT)/share/sdf/stratego-front \
                   -I $(XTC)/share/xtc
 
 libexec_PROGRAMS = pp-stratego-latex-alltt
+
+LDADD += $(SSL_LIBS)
 
 CLEANFILES     	= $(wildcard *.dep)
 BOOTCLEANFILES  = $(wildcard *.c)
@@ -20,3 +22,4 @@ output.ltx : sample-input.str $(libexecdir)/pp-stratego-latex-alltt
 
 sample-doc.pdf : output.ltx
 	pdflatex sample-doc.ltx
+
