@@ -22,3 +22,6 @@ strategies
 
   foobar =
     s1 / L \ s2
+
+  curly =
+    {x : foo }

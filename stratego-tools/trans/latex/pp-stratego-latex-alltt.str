@@ -32,10 +32,21 @@ strategies
     ; topdown(try(CheerUp))
 
   escape-alltt-special-chars =
-    alltd(lit(string-as-chars(escape-chars(latex-escape-backslash))))
+    alltd(lit(string-as-chars(
+      escape-chars(
+        latex-escape-backslash
+      + latex-escape-curly
+      )
+    )))
 
   latex-escape-backslash :
     ['\'  | cs ] -> ['\', 'c', 'h', 'a', 'r', '9', '2' | cs ]
+
+  latex-escape-curly :
+    ['{'  | cs ] -> ['\', '{' | cs ]
+
+  latex-escape-curly :
+    ['}'  | cs ] -> ['\', '}' | cs ]
 
 strategies
 
@@ -107,10 +118,10 @@ rules
     lit("]|") -> lit("\\rquote{]|}")
 
   FancyDynRuleScope :
-    lit("{|") -> lit("\\ldrscope{}")
+    lit("\\{|") -> lit("\\ldrscope{}")
 
   FancyDynRuleScope :
-    lit("|}") -> lit("\\rdrscope{}")
+    lit("|\\}") -> lit("\\rdrscope{}")
 
 strategies
 
