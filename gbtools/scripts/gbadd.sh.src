@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: gbadd.sh.src,v 1.1 2002/03/06 20:40:37 mdejonge Exp $
+# $Id: gbadd.sh.src,v 1.2 2002/08/08 08:38:28 mdejonge Exp $
 
 # This script simplifies the addition of new grammars to the Grammar Base by
 # providing a form with grammar parameters to the grammar engineer. After
@@ -166,6 +166,15 @@ update_files ${tmp}/${grammar}.${version}
 ( 
  cd ${tmp}/${grammar}.${version}/
  ${MAKE} -f ${PREFIX}/share/gbtools/make_rules.gbtools configure.in GBTOOLS=${PREFIX}
+)
+
+# generate README.src, NEWS, AUTHORS, and ChangeLog files
+(
+   cd ${tmp}/${grammar}.${version}/
+   for f in README.src NEWS AUTHORS ChangeLog 
+   do
+      echo "Initial $f file, edit by hand" > $f
+   done
 )
 
 # generate tar file 
