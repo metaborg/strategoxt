@@ -61,6 +61,7 @@ strategies
     ; try(upgrade-oldskool-testsuite)
     ; parse-testsuite(id, id, map(try(add-description)))
     ; parse-testsuite(id, id, map(ensure-test-input-in-file))
+    ; parse-testsuite(id, id, map(ensure-test-output-in-pattern))
 
   trying-abstract-syntax-warning =
     debug(<concat-strings>
@@ -91,6 +92,18 @@ rules
   ensure-test-input-in-file  =
     parse-test(id, file(abs-test-file), id)
 
+
+/**
+ * Ensures that the test output is a pattern, en could write them from file
+ */
+  ensure-test-output-in-pattern :
+    parse-test(desc, input, file(f)) -> parse-test(desc, input, pattern(p)) 
+      where <read-from;explode-aterm> FILE(f) => p
+            <+ if-verbose7(!f ; debug(!"Reading aterm result failed: "))
+
+  ensure-test-output-in-pattern =
+    ?parse-test(desc, input, pattern(_))
+    
 rules
 
   parse-unit-exit-on-failure =
@@ -132,6 +145,7 @@ strategies
    */
   core-sglri(|options) =
     ?input@FILE(_);
+
 
     let /**
          * @type FILE ->parseResult

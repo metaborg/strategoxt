@@ -12,8 +12,9 @@ exports
     "test" Description Input Result -> Test {cons("parse-test")}
     "test"             Input Result -> Test {cons("parse-test")}
 
-    "->" ATerm -> Result {cons("pattern")}
-    "_" -> ATerm {cons("wildcard")}
+    "->" "file" PathName -> Result {cons("file")}
+    "->" ATerm           -> Result {cons("pattern")}
+    "_"                  -> ATerm  {cons("wildcard")}
 
     "fails"    -> Result {cons("failure")}
     "succeeds" -> Result {cons("success")}

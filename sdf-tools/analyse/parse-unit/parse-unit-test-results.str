@@ -27,6 +27,7 @@ strategies
     <+ create-test-compare
     <+ !Failure()
 
+
   /**
    * failure & success -> failure
    */
@@ -57,3 +58,4 @@ strategies
   create-test-compare:
     (ParseResult(_, Success(f@FILE(_))), pattern(p)) -> Success()
       where <aterm-eq> (<read-from; explode-aterm> f, p)
+
