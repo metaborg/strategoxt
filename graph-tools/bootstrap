@@ -37,4 +37,4 @@ automake -a
 rm -f config.cache
 rm -f acconfig.h
 
-touch src/graphxml/GraphXML.str
+# touch src/graphxml/GraphXML.str
