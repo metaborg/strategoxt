@@ -383,11 +383,13 @@ exports
 
     "rules" "(" DynRuleDef* ")" -> Strategy {cons("GenDynRules")}
 
+    DynRuleId				  -> DynRuleDef {cons("LabelDynRule")}
     DynRuleId ":-"  Term                  -> DynRuleDef {cons("UndefineDynRule")}
     DynRuleId ":"   Rule                  -> DynRuleDef {cons("SetDynRule")}
     DynRuleId ":+"  Rule                  -> DynRuleDef {cons("AddDynRule")}
 
     RuleDec "." Term -> DynRuleId {cons("LabeledDynRuleId")}
+    RuleDec "+" Term -> DynRuleId {cons("AddLabelDynRuleId")}
     RuleDec          -> DynRuleId {cons("DynRuleId")}
 
     Id "." Term  -> DynRuleScopeId {cons("LabeledDynRuleScopeId")}

@@ -91,7 +91,7 @@ strategies
     \ meta-var(x) -> Call(SVar(x),[]) \
     <+ TrmFromTerm
     <+ TrmFromStr
-    <+ \ FromApp(s) -> <TrmFromStr> FromStrategy(s) \
+    <+ ?FromApp(<MetaExplode>)
     <+ \ [] -> Cong("Nil", []) \
     <+ \ [t | ts] -> Cong("Cons", [<str-explode>t,<str-explode>ts]) \
     <+ is-string; !Match(Str(<id>))
