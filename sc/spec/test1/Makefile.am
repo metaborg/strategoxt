@@ -33,7 +33,7 @@
 
 ##################################################################
 
-SINCLUDES = -I $(STRATEGOLIB)/share/ssl
+SINCLUDES = -I $(SSL)/share/ssl
 
 TESTFILES = $(wildcard test*.r)
 TESTBINS = $(subst .r,.bin,$(TESTFILES))

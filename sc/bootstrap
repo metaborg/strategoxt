@@ -3,7 +3,7 @@ autoxt
 aclocal -I .
 autoconf
 #acconfig
-autoheader
+#autoheader
 automake -a
 
 

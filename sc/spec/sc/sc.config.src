@@ -50,7 +50,7 @@
 ("abox2text", 		Prefix(Var("GPP"), "/bin/abox2text")),
 ("ast2abox", 		Prefix(Var("GPP"), "/bin/ast2abox")),
 
-("C.pp", 		Prefix(Var("CGEN"), "/share/cgen/C.pp")),
+("C.pp", 		Prefix(Var("CGEN"), "/share/cgen/C-pretty.pp")),
 
 ("Stratego-Normal-Format", 	Prefix(Var("libexec"), "/Stratego-Normal-Format")),
 ("Stratego-Optimized-Format", 	Prefix(Var("libexec"), "/Stratego-Optimized-Format")),

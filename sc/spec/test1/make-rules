@@ -5,12 +5,10 @@ CINCLUDES = \
 	--C-include "<ssl/stratego-lib.h>" \
 	--C-include "\"../conf.h\""
 
-CINCL = -I$(STRATEGORTS)/include \
-	-I$(STRATEGOLIB)/include \
+CINCL = -I$(SRTS)/include \
 	-I$(ATERM)/include $(CHOICEINCLUDES)
 
-SCLibs = -L$(STRATEGOLIB)/lib -lstratego-lib \
-	 -L$(STRATEGORTS)/lib -lstratego \
+SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 	 -L$(ATERM)/lib -lATerm-gcc $(CHOICELDFLAGS) \
 	 -lm
 
@@ -108,3 +106,7 @@ SCLibs = -L$(STRATEGOLIB)/lib -lstratego-lib \
 
 %.irun: %.ibin
 	$<
+
+%.trm: %
+	$(ATERM)/bin/baffle -wt -i $< -o $@
+

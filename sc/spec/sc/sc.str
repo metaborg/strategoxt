@@ -245,7 +245,7 @@ strategies
   parse-old = 
     pipe(<get-config> "pack-stratego", !".tree",
          <concat> [<!["-dep", <get-config> "-o"] <+ !["-dep", <get-config> "-i"]>,
-		   ["--keep", <get-config; string-to-int> "--keep"],
+		   ["--keep", <get-config; int-to-string> "--keep"],
                    <get-config> "-I", <pass-verbose> ])
 
   parse =
@@ -260,9 +260,11 @@ strategies
     ; <conc-strings> (base, ".tree")		=> outfile
     ; <concat-strings> [file, suf]		=> infile
 
-    ; <call>(<get-config> "pack-stratego"
+    ; <call-noisy>(<get-config> "pack-stratego"
 	    ,<concat> [<!["-dep", <get-config> "-o"] <+ !["-dep", <get-config> "-i"]>
-             ,<get-config> "-I", <pass-verbose>, ["-i", infile, "-o", outfile] ])
+		      ,["--keep", <(get-config <+ !0); int-to-string> "--keep"]
+                      ,<get-config> "-I", <pass-verbose>
+                      ,["-i", infile, "-o", outfile] ])
 
     //; !(dirbase, ".tree")
     ; !(base, ".tree")

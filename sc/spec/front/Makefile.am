@@ -21,7 +21,7 @@ BOOTCLEANFILES   = extract-all.c extract.c frontend.c inline.c rename-defs.c
 #frontend-test 
 #extract-test
 
-EXTRA_DIST 	 = acheck-constructors.str frontend.str		    \
+EXTRA_DIST 	 = check-constructors.str frontend.str		    \
 		   needed-defs-test.str check-constructors-test.str \
 		   frontend-test.str normalize-spec.str desugar.str \
 		   inline.str rename-defs.str extract-all.str	    \
