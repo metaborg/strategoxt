@@ -20,7 +20,7 @@ TESTS 		= $(check_PROGRAMS)
 STRATEGORUNLIBS = -lstratego_opt -lstratego-choice_opt -lstratego-lib_opt -lATerm-gcc -lm
 LDADD 		= $(STRATEGORUNLIBS)
 test50_LDADD 	= bar.o $(STRATEGORUNLIBS)
-test51_LDADD 	= -L$(SRTS)/lib/srts -lliblib $(STRATEGORUNLIBS)
+test51_LDADD 	= -L$(SRTS)/lib/srts -llibstrategolib $(STRATEGORUNLIBS)
 
 bar.o 		: bar.c
 

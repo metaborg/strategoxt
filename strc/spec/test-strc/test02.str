@@ -1,5 +1,5 @@
 module test02
-imports strategolib
+imports libstrategolib
 
 strategies
 
