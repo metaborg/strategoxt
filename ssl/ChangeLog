@@ -1,3 +1,16 @@
+2003-02-12  Martin Bravenboer <martin@cs.uu.nl>
+
+	* ssl/term-io.str: added write-to-string. This strategies takes an
+	ATerm and returns the ATerm in a String.
+
+2003-02-12  Martin Bravenboer <martin@cs.uu.nl>
+
+	* ssl/term-io.str: add read-from-string. This strategies takes a
+	String and returns the ATerm in this String.
+
+	* ssl/term-io.str: removed print-stack since it is completely
+	obsolete.
+
 2004-01-20  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/scoped-finite-map.str: Table manipulation operations for

@@ -1,10 +1,3 @@
-\literate[io-test]
-
-	\begin{abstract}
-	Tests for io operations
-	\end{abstract}
-
-\begin{code}
 module io-test
 imports sunit io
 strategies
@@ -50,10 +43,56 @@ strategies
 	)
 
   aterm-io-tests =
-      apply-test(!"ATerm IO -- 1", test-write-read-term, !"Bla Bla Bla", !"Bla Bla Bla")
-    ; apply-test(!"ATerm IO -- 2", test-write-read-term, !(), !())
-    ; apply-test(!"ATerm IO -- 3", test-write-read-term, !1, !1)
-    ; apply-test(!"ATerm IO -- 4", test-write-read-term, !None(), !None())
+      apply-test(!"ATerm IO -- 1"
+      , test-write-read-term
+      , !"Bla Bla Bla"
+      , !"Bla Bla Bla"
+      )
+    ; apply-test(!"ATerm IO -- 2"
+      , test-write-read-term
+      , !()
+      , !()
+      )
+    ; apply-test(!"ATerm IO -- 3"
+      , test-write-read-term
+      , !1
+      , !1
+      )
+    ; apply-test(!"ATerm IO -- 4"
+      , test-write-read-term
+      , !None()
+      , !None()
+      )
+    ; apply-test(!"ATerm from String -- 1"
+      , read-from-string
+      , !"[1,2,3]"
+      , ![1,2,3]
+      )
+    ; apply-test(!"ATerm to String -- 1"
+      , write-to-string
+      , ![1,2,3]
+      , !"[1,2,3]"
+      )
+   ;  apply-test(!"ATerm string IO -- 1"
+      , test-write-read-term-string
+      , !"Bla Bla Bla"
+      , !"Bla Bla Bla"
+      )
+    ; apply-test(!"ATerm string IO -- 2"
+      , test-write-read-term-string
+      , !()
+      , !()
+      )
+    ; apply-test(!"ATerm string IO -- 3"
+      , test-write-read-term-string
+      , !1
+      , !1
+      )
+    ; apply-test(!"ATerm string IO -- 4"
+      , test-write-read-term-string
+      , !None()
+      , !None()
+      )
 
   test-write-read-term =
       ?t
@@ -62,21 +101,28 @@ strategies
     ; <remove-file> "test.aterm"
     ; !t
 
-\end{code}
+  test-write-read-term-string =
+      ?t
+    ; <WriteToTextFile> ("test.aterm", t)
+    ; <ReadFromFile> "test.aterm" => t
+    ; <remove-file> "test.aterm"
+    ; !t
 
-% Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
-% 
-% This program is free software; you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation; either version 2, or (at your option)
-% any later version.
-% 
-% This program is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-% 
-% You should have received a copy of the GNU General Public License
-% along with this program; if not, write to the Free Software
-% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-% 02111-1307, USA.
+/**
+ * Copyright (C) 1998-2004 Eelco Visser <visser@acm.org>
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
+ */

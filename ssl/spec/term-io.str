@@ -88,6 +88,22 @@ strategies
   read-from-stream =
     ?Stream(stream); prim("SSL_read_term_from_stream", stream)
 
+  /**
+   * Reads an ATerm from a String
+   *
+   * @type String -> _
+   */
+  read-from-string =
+    ?s; prim("SSL_read_term_from_string", s)
+
+  /**
+   * Writes an ATerm to a String
+   *
+   * @type a -> String
+   */
+  write-to-string =
+    ?t; prim("SSL_write_term_to_string", t)
+
 strategies
 
   /**
@@ -139,16 +155,6 @@ strategies
   */
   printnl = 
     ?(name, strs); where(prim("SSL_printnl", name, strs))
-
- /**
-  * The primitive print-stack prints the top n elements of
-  * the stack if applied as <print-stack>n or the entire
-  * stack if applied to a non-integer term.
-  *
-  * @obsolete use debug or gdb
-  */
-  print-stack = 
-    obsolete(!"print-stack; use debug or gdb")
 
 strategies
 
