@@ -1,5 +1,14 @@
 #! /bin/sh
 
+./bootstrap
+./configure \
+    --prefix=/home/xt/XT \
+    --with-aterm=/home/xt/XT \
+    --with-sc-boot=`pwd`/../sc-boot \
+    --with-rpmdir=/home/visser/rpm
+
+exit 0
+
 ./reconf
 ./configure \
     --prefix=/home/xt/xt \

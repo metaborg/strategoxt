@@ -35,6 +35,8 @@ LDADD		= -lstratego-lib.opt \
 		  -lATerm-gcc \
 		  -lm
 
+bin_PROGRAMS = parse-mod
+
 libexec_PROGRAMS = \
 	canonicalize \
 	compile-match \

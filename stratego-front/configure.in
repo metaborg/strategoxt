@@ -1,5 +1,5 @@
 AC_INIT(syn/Stratego.sdf)
-AM_INIT_AUTOMAKE(stratego-front,0.8.1)
+AM_INIT_AUTOMAKE(stratego-front,0.9beta1)
 
 ####################### 
 # XT
@@ -14,21 +14,21 @@ AC_SUBST(SC)
 AC_ARG_WITH(sglr, 
   [  --with-sglr=DIR             Specify location of SGLR, [\$SDF]], 
   SGLR="$withval", 
-  SGLR="$SDF"
+  SGLR="$prefix"
 )
 AC_SUBST(SGLR)
 
 AC_ARG_WITH(pgen, 
   [  --with-pgen=DIR             Specify location of PGEN, [\$SDF]], 
   PGEN="$withval", 
-  PGEN="$SDF"
+  PGEN="$prefix"
 )
 AC_SUBST(PGEN)
 
 AC_ARG_WITH(asfix-tools, 
   [  --with-asfix-tools=DIR      Specify location of ASFIX-TOOLS, [\$SDF]], 
   ASFIX_TOOLS="$withval", 
-  ASFIX_TOOLS="$SDF"
+  ASFIX_TOOLS="$prefix"
 )
 AC_SUBST(ASFIX_TOOLS)
 
@@ -83,7 +83,9 @@ AC_SUBST(RPMTMP)
 
 ####################### 
 
-AC_REVISION($Id: configure.in,v 1.7 2002/09/18 19:33:58 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.8 2002/11/15 00:06:01 stratego Exp $)
+
+AM_CONFIG_HEADER([config.h])
 
 AC_PROG_CC
 

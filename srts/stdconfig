@@ -1,6 +1,6 @@
 #! /bin/sh
 
-./reconf
+./bootstrap
 ./configure --prefix=`pwd`/.. \
 	--with-aterm=/home/xt/ATerm \
 	--with-rpmdir=/home/visser/rpm

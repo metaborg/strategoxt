@@ -15,13 +15,12 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-include $(srcdir)/make_rules.in
-
 includedir = $(prefix)/include/ssl
 
 CFLAGS	 	= -Wall 
 DEBUGFLAGS	= -g
 OPTFLAGS	= -O2
+PROFFLAGS	= -pg
 INCLUDES 	= -I$(STRATEGORTS)/include -I$(ATERM)/include
 
 EXTRA_DIST = make_rules.in
@@ -50,3 +49,11 @@ libstratego_lib_dbg_a_LIBADD = $(subst .o,.dbg.o,$(libstratego_lib_a_OBJECTS))
 libstratego_lib_opt_a_LIBADD = $(subst .o,.opt.o,$(libstratego_lib_a_OBJECTS))
 libstratego_lib_prof_a_LIBADD = $(subst .o,.prof.o,$(libstratego_lib_a_OBJECTS))
 
+%.dbg.o: %.c
+	$(CC) $(DEBUGFLAGS) $(CFLAGS) $(DEFS) $(INCLUDES) -c $< -o $@
+
+%.opt.o: %.c
+	$(CC) $(OPTFLAGS) $(CFLAGS) $(DEFS) $(INCLUDES) -c $< -o $@
+
+%.prof.o: %.c
+	$(CC) $(PROFFLAGS) $(CFLAGS) $(DEFS) $(INCLUDES) -c $< -o $@

@@ -18,15 +18,17 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.2 2001/06/09 23:44:25 mdejonge Exp $
+# $Id: Makefile.am,v 1.3 2002/11/15 00:05:59 stratego Exp $
 
 include $(srcdir)/../templates/make_rules
 include $(srcdir)/../templates/make_rules.stratego
 
 SUBDIRS      = data
 
+STRATEGO_PRG =
+
 ASFIX_LIB    = $(wildcard *.r)
-EXTRA_DIST   = $(ASFIX_LIB)
+EXTRA_DIST   += $(ASFIX_LIB)
 
 pkgdata_DATA = $(ASFIX_LIB)
 

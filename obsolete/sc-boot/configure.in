@@ -16,7 +16,9 @@
 # 02111-1307, USA.
 
 AC_INIT(src/frontend.c)
-AM_INIT_AUTOMAKE(sc-boot,0.8.1)
+AM_INIT_AUTOMAKE(sc-boot,0.9beta1)
+
+#AC_CONFIG_AUX_DIR([config])
 
 AC_ARG_WITH(aterm, 
   [  --with-aterm          Specify location of ATerm library, default: \$prefix], 
@@ -91,7 +93,17 @@ AC_SUBST(RPMTMP)
 libexecdir=\$\{exec_prefix\}/libexec/sc-$VERSION
 AC_SUBST(libexecdir)
 
-AC_REVISION($Id: configure.in,v 1.21 2002/09/17 22:17:18 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.22 2002/11/15 00:06:01 stratego Exp $)
+
+AC_CHECK_HEADERS([malloc.h])
+AC_CHECK_HEADERS([stdlib.h])
+AC_CHECK_HEADERS([string.h])
+AC_CHECK_HEADERS([unistd.h])
+AC_C_CONST
+AC_FUNC_ALLOCA
+AC_FUNC_MALLOC
+AC_HEADER_STDC
+AM_CONFIG_HEADER([config.h.in])
 
 AC_PROG_CC
 AC_PROG_RANLIB

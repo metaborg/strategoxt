@@ -16,9 +16,9 @@
 # 02111-1307, USA.
 
 AC_INIT(sig/C.r)
-AM_INIT_AUTOMAKE(cgen,0.8.1)
+AM_INIT_AUTOMAKE(cgen,0.9beta1)
 
-AC_REVISION($Id: configure.in,v 1.18 2002/09/17 22:17:17 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.19 2002/11/15 00:05:59 stratego Exp $)
 
 AC_ARG_WITH(gpp,
   [  --with-gpp             Specify location of gpp, default: \$prefix],
@@ -51,21 +51,12 @@ AC_SUBST(RPMTMP)
 
 AC_PROG_CC
 AC_PROG_RANLIB
-AC_PROG_YACC
-AM_PROG_LEX
 AC_PROG_INSTALL
+
+AM_CONFIG_HEADER([config.h])
 
 TOP_SRCDIR=`pwd`
 AC_SUBST(TOP_SRCDIR)
-
-changequote(,)dnl
-case $VERSION in
- [0-9]*.[0-9]*[a-z])  DIST_ALPHA="README-alpha";;
- [0-9]*.[0-9]*.[0-9]*) DIST_ALPHA="README-alpha";;
- *) DIST_ALPHA=;;
-esac
-changequote([, ])dnl
-AC_SUBST(DIST_ALPHA)
 
 AC_OUTPUT( \
 	Makefile \

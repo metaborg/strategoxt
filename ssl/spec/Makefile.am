@@ -36,13 +36,13 @@ SC = $(STRATEGO)/bin/sc
 
 if DEVELOP
 
-%.rtree: %.r $(STRATEGO)/bin/parse-mod
-	$(STRATEGO)/bin/parse-mod -i $< -o $@
+%.rtree: %.r $(SC_BOOT)/libexec/sc-0.8.1/parse-mod
+	$(SC_BOOT)/libexec/sc-0.8.1/parse-mod -i $< -o $@
 
 else
 
 %.rtree: 
-	$(STRATEGO)/bin/parse-mod -i $*.r -o $@
+	$(SC_BOOT)/libexec/sc-0.8.1/parse-mod -i $*.r -o $@
 
 endif
 

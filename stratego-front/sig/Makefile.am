@@ -35,7 +35,7 @@ SDFTBL = $(SDF_TOOLS)/share/sdf-tools/sdf.cons.tbl
 %.dep:
 	touch $@
 
-%.rtree: %.r $(STRATEGO)/bin/parse-mod
-	$(STRATEGO)/bin/parse-mod -i $< -o $@
+%.rtree: %.r $(SC)/libexec/sc-0.8.1/parse-mod
+	$(SC)/libexec/sc-0.8.1/parse-mod -i $< -o $@
 
 #include $(wilcard *.dep)

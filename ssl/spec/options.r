@@ -94,7 +94,7 @@ strategies
 
   check-option: option -> ()
     where get-options => ops
-        ; <'in>(option,ops)
+        ; <is-subterm>(option,ops)
 \end{code}
 
 	Handling of options

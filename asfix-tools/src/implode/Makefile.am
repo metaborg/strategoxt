@@ -18,13 +18,13 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.5 2001/09/18 15:29:01 jvisser Exp $
+# $Id: Makefile.am,v 1.6 2002/11/15 00:05:59 stratego Exp $
 
 include $(srcdir)/../templates/make_rules
 include $(srcdir)/../templates/make_rules.stratego
 
 include $(STRATEGO_PRG:%=%.dep)
-include implode-asfix-test.dep
+#include implode-asfix-test.dep
 
 SUBDIRS      = data
 

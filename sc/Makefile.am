@@ -38,4 +38,6 @@ SUBST = s+__SRTS_VERSION__+$(VERSION)+g;\
         s+__GPP_VERSION__+2.3+g;\
 	s+__ATERM__+$(ATERM)+g;
 
-include Makefile.rpm
+CLEANFILES = 
+
+#include Makefile.rpm

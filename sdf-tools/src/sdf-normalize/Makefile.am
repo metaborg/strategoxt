@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.7 2001/11/22 08:16:01 mdejonge Exp $
+# $Id: Makefile.am,v 1.8 2002/11/15 00:06:01 stratego Exp $
 
 include $(srcdir)/../templates/make_rules
 include $(srcdir)/../templates/make_rules.stratego
@@ -40,7 +40,7 @@ TESTS        = sdf_normalize_check\
 	       sdf_denormalize_check\
 	       sdf_denormalize_cons_check
 
-CLEAN_FILES +=\
+CLEANFILES +=\
 	sdf_normalize_check\
 	sdf_denormalize_check\
 	sdf_denormalize_cons_check

@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.4 2002/05/14 15:24:30 mdejonge Exp $
+# $Id: Makefile.am,v 1.5 2002/11/15 00:05:59 stratego Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -36,7 +36,7 @@ bin_SCRIPTS = abox2html
 pkgdata_DATA = boxstyle.css
 
 # List all files that should be distributed here
-EXTRA_DIST   = $(wildcard *.r) abox2html.sh.src boxstyle.css
+EXTRA_DIST  += $(wildcard *.r) abox2html.sh.src boxstyle.css
 
 BOOTSOURCES  = $(STRATEGO_PRG:%=%.c) $(wildcard *.src) boxstyle.css
 

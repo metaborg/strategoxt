@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.6 2002/05/14 15:14:55 mdejonge Exp $
+# $Id: Makefile.am,v 1.7 2002/11/15 00:06:00 stratego Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -27,6 +27,8 @@ include $(srcdir)/../templates/make_rules.stratego
 # define any subdir here
 SUBDIRS       = data
 
+STRATEGO_PRG =
+
 libexec_SCRIPTS = tohtml ismap2usemap
 pkgdata_DATA    = tohtml.css
 
@@ -34,11 +36,11 @@ pkgdata_DATA    = tohtml.css
 # TESTS         = program-check
 
 # List all files that should be distributed here
-EXTRA_DIST      = tohtml.sh.src ismap2usemap.perl.src \
+EXTRA_DIST      += tohtml.sh.src ismap2usemap.perl.src \
                   tohtml.css
 
 # What should be cleaned
-CLEANFILES      = tohtml ismap2usemap
+CLEANFILES      += tohtml ismap2usemap
 
 % : %.sh.src Makefile
 	sed 's@__BINDIR__@$(bindir)@g;\

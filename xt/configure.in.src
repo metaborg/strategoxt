@@ -17,7 +17,7 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 dnl 02111-1307, USA.
 
-dnl $Id: configure.in.src,v 1.8 2002/09/26 13:43:27 mdejonge Exp $
+dnl $Id: configure.in.src,v 1.9 2002/11/15 00:06:02 stratego Exp $
 
 AC_INIT(configure.in)
 AM_INIT_AUTOMAKE(__PACKAGE__,__VERSION__)
@@ -81,8 +81,10 @@ AC_SUBST(GRAPHVIZ)
 
 
 
+AM_CONFIG_HEADER([config.h])
 
-AC_REVISION($Id: configure.in.src,v 1.8 2002/09/26 13:43:27 mdejonge Exp $)
+
+AC_REVISION($Id: configure.in.src,v 1.9 2002/11/15 00:06:02 stratego Exp $)
 
 AC_PROG_CC
 AC_PROG_INSTALL

@@ -154,6 +154,10 @@ strategies
 	where(<set-config>("-CC",())); !CC,
 	!"-CC                Produce C code only (don't compile)" )
 
+  + Option("-c",          
+	where(<set-config>("-CC",())); !CC,
+	!"-c                 Produce C code only (don't compile)" )
+
   + Option("--ast",
 	where(<set-config>("--ast",())); !AST,
 	!"--ast              Produce abstract syntax tree" )

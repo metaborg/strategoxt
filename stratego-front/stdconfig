@@ -1,9 +1,17 @@
 #!/bin/sh
 
+./bootstrap
+./configure --prefix=`pwd`/.. \
+	--with-sglr=/home/xt/SDF \
+	--with-pgen=/home/xt/SDF \
+	--with-rpmdir=/home/visser/rpm
+
+exit 0
+
 ./reconf
 ./configure --prefix=/home/xt/xt \
-	--with-sglr=/home/xt/xt \
-	--with-pgen=/home/xt/xt \
+	--with-sglr=/home/xt/SDF \
+	--with-pgen=/home/xt/SDF \
 	--with-sc=/home/xt/xt \
 	--with-gpp=/home/xt/xt \
 	--with-sdf-tools=/home/xt/xt \

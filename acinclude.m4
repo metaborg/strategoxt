@@ -17,7 +17,7 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 dnl 02111-1307, USA.
 
-dnl $Id: acinclude.m4,v 1.1 2001/09/22 09:32:44 visser Exp $
+dnl $Id: acinclude.m4,v 1.2 2002/11/15 00:05:59 stratego Exp $
 
 dnl Configure sub components with additional configure flags
 dnl usage:
@@ -36,6 +36,8 @@ dnl     the same configure flags
 dnl    -Use multiple calls to AB_CONFIG_PKG to configure multiple packages
 dnl     differently.
 
+ifdef([AC_OUTPUT_SUBDIRS],[],
+   [AC_DEFUN([AC_OUTPUT_SUBDIRS],[subdirs=$1; _AC_OUTPUT_SUBDIRS])])
 
 AC_DEFUN(AB_CONFIG_PKG,
 [

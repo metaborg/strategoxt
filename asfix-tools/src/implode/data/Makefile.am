@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.7 2002/03/16 14:55:46 eelco Exp $
+# $Id: Makefile.am,v 1.8 2002/11/15 00:05:59 stratego Exp $
 
 TEST_SET = Iter Iter-sep Iter-star Iter-star-sep Nesting-iter-sep1 \
            Nesting-iter-sep2 Nesting-iter-star-sep Empty-iter-star-sep \
@@ -49,7 +49,7 @@ EXTRA_DIST = tests.def \
 TESTS = $(TEST_SET:%=%.sh)
 
 
-CLEANFILES += $(TEST_SET:%=%.tested) $(TEST_SET:%=%.in)
+CLEANFILES = $(TEST_SET:%=%.tested) $(TEST_SET:%=%.in)
 
 .PRECIOUS: tests.tbl
 

@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.4 2001/11/22 08:33:11 mdejonge Exp $
+# $Id: Makefile.am,v 1.5 2002/11/15 00:06:02 stratego Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -36,10 +36,10 @@ pkgdata_DATA = sdf-doc.make
 TESTS        = sdf2gxml2dot-check
 
 # List all files that should be distributed here
-EXTRA_DIST  += get-sort-graph.sh.src sdf-doc.make.src \
+EXTRA_DIST  = get-sort-graph.sh.src sdf-doc.make.src \
                sdf2gxml2dot-check.sh.src
 
-CLEANFILES  += sdf2gxml2dot-check get-sort-graph sdf-doc.make
+CLEANFILES  = sdf2gxml2dot-check get-sort-graph sdf-doc.make
 
 % : %.sh.src Makefile
 	@sed 's@__DATADIR__@$(pkgdatadir)@g;\

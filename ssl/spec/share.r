@@ -112,7 +112,7 @@ rules
   dead : 
 	GraphLet([(a, skel) | graph], t) -> 
 	GraphLet(graph, t)
-	where <not('in)> (a, t)
+	where <not(is-subterm)> (a, t)
 
   dont-inline(mklet) : 
 	GraphLet([(a, skel) | graph], t) -> 

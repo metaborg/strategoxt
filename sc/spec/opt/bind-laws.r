@@ -30,13 +30,13 @@ rules
     Let([SDef(f, [], s1)], s2) -> s2'
     where <oncetd-stop(?Call(SVar(f),[]); !s1, 
                   Case(id,id,id,id) + Matrix(id,id))> s2 => s2';
-          <not('in)> (Call(SVar(f),[]), s2')
+          <not(is-subterm)> (Call(SVar(f),[]), s2')
 
   Inline :
     Let(defs1, s1) -> Let(defs2, s2)
     where <at-suffix(\ [SDef(f, [], s)|defs] -> defs
                        where <oncetd(?Call(SVar(f),[]); !s)> s1 => s2
-			   ; <not('in)> (Call(SVar(f),[]), s2) \ )
+			   ; <not(is-subterm)> (Call(SVar(f),[]), s2) \ )
           > defs1 => defs2        
 
   InlineDont :
@@ -47,7 +47,7 @@ rules
 
   Dead : 
     Let([SDef(f, xs, s1)], s2) -> s2
-    where <not('in)> (SVar(f), s2)
+    where <not(is-subterm)> (SVar(f), s2)
 
   // hoisting let bindings
 
@@ -73,27 +73,27 @@ rules
     Seq(Build(t), Scope(xs, Seq(Assign(Var(x)), s))) ->
     Seq(Build(t), Scope(ys, <tsubs> ([x], [t], s)))
     where (<Var(id)> t ) // + <leq> (<nrofoccs(?Var(x))> s, 1))
-        ; <'in> (x, xs); <diff> (xs, [x]) => ys          
+        ; <is-subterm> (x, xs); <diff> (xs, [x]) => ys          
 
   CopyPropagation :
     Seq(Build(t), Scope(xs, Seq(Assign(Var(x)), s))) ->
     Seq(Build(t), Scope(ys, <tsubs> ([x], [t], s)))
-    where <Var(id)> t; <'in> (x, xs); <diff> (xs, [x]) => ys          
+    where <Var(id)> t; <is-subterm> (x, xs); <diff> (xs, [x]) => ys          
 
   CopyPropagation :
     Scope(xs, Seq(Assign(Var(x), Var(y)), s)) ->
     Scope(ys, <tsubs> ([x], [Var(y)], s))
-    where <'in> (x, xs); <diff> (xs, [x]) => ys
+    where <is-subterm> (x, xs); <diff> (xs, [x]) => ys
 
   CopyPropagation :
     Scope(xs, Seq(Assign(Var(x)), Seq(Assign(Var(y)), s))) ->
     Scope(ys, Seq(Assign(Var(x)), <tsubs> ([y], [Var(x)], s)))
-    where <'in> (x, xs); <'in> (y, xs); <diff> (xs, [y]) => ys
+    where <is-subterm> (x, xs); <is-subterm> (y, xs); <diff> (xs, [y]) => ys
 
   CopyPropagation :
     Scope(xs, Seq(Assign(Var(x)), Seq(Assign(Var(y), Var(x)), s))) ->
     Scope(ys, Seq(Assign(Var(x)), <tsubs> ([y], [Var(x)], s)))
-    where <'in> (x, xs); <'in> (y, xs); <diff> (xs, [y]) => ys
+    where <is-subterm> (x, xs); <is-subterm> (y, xs); <diff> (xs, [y]) => ys
 
   CopyPropagation :
     Seq(Assign(Var(x)), Seq(Build(Var(x)), s)) ->

@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.3 2001/12/21 09:32:28 mdejonge Exp $
+# $Id: Makefile.am,v 1.4 2002/11/15 00:06:02 stratego Exp $
 
 include $(srcdir)/../templates/make_rules
 
@@ -36,7 +36,7 @@ EXTRA_DIST       = $(STRATEGO_MODULES) \
 
 pkgdata_DATA     = $(STRATEGO_MODULES) stratego.pp stratego.pp.af stratego.tbl 
 
-CLEANFILES      += stratego.pp.af stratego.tbl
+CLEANFILES       = stratego.pp.af stratego.tbl
 
 %.pp.af : %.pp
 	$(MAKE) -f $(GPP)/share/gpp/gpp.Makefile $@

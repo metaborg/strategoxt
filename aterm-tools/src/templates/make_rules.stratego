@@ -18,13 +18,13 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: make_rules.stratego,v 1.5 2002/09/26 13:43:22 mdejonge Exp $
+# $Id: make_rules.stratego,v 1.6 2002/11/15 00:05:59 stratego Exp $
 
 SC = PATH=$(SC_BOOT)/bin:$${PATH} sc
 
-EXTRA_DIST   += $(STRATEGO_PRG:%=%.r)
+EXTRA_DIST   = $(STRATEGO_PRG:%=%.r)
 
-CLEANFILES   += $(STRATEGO_PRG) $(STRATEGO_PRG:%=%.c) $(STRATEGO_PRG:%=%.dep)
+CLEANFILES   = $(STRATEGO_PRG) $(STRATEGO_PRG:%=%.c) $(STRATEGO_PRG:%=%.dep)
 
 SCFLAGS       = -I $(srcdir) -I .
 

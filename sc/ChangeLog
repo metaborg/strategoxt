@@ -1,3 +1,7 @@
+2002-11-13  Eelco Visser  <visser@acm.org>
+
+	* spec/opt/bind-laws.r: Using is-subterm instead of 'in
+
 2002-09-17  Eelco Visser  <visser@acm.org>
 
 	* spec/syn/pack-stratego.config.src: added pointer to libexec

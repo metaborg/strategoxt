@@ -1,4 +1,4 @@
-s# Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
+# Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,11 @@ s# Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
 # 02111-1307, USA.
 
 AC_INIT(Makefile.in)
-AM_INIT_AUTOMAKE(stratego,0.8.1)
+AM_INIT_AUTOMAKE(StrategoXT,0.9beta1)
+
+#AC_CONFIG_AUX_DIR([config])
+
+### ATerm Library #####################
 
 AC_ARG_WITH(aterm, 
   [  --with-aterm=DIR            Location of external aterm package.], 
@@ -24,6 +28,8 @@ AC_ARG_WITH(aterm,
   ATERM="$prefix"
 )
 AC_SUBST(ATERM)
+
+### Choice Point Library #############
 
 AC_ARG_WITH(cpl, 
   [  --with-cpl=DIR              Use the choice point library (optional)], 
@@ -33,40 +39,30 @@ AC_ARG_WITH(cpl,
 AC_SUBST(CPL)
 AM_CONDITIONAL(USECPL, test x$usecpl = xtrue)
 
+### SDF ###############################
+
+AC_ARG_WITH(sdf, 
+  [  --with-sdf=DIR             Specify location of SDF], 
+  SDF="$withval", 
+  SDF="$prefix"
+)
+AC_SUBST(SDF)
+
 AC_ARG_WITH(sglr, 
   [  --with-sglr=DIR             Specify location of SGLR], 
   SGLR="$withval", 
-  SGLR="$prefix"
+  SGLR="$SDF"
 )
 AC_SUBST(SGLR)
 
 AC_ARG_WITH(pgen, 
   [  --with-pgen=DIR             Specify location of SDF2 parser generator], 
   PGEN="$withval", 
-  PGEN="$prefix"
+  PGEN="$SDF"
 )
 AC_SUBST(PGEN)
 
-AC_ARG_WITH(asfix-tools, 
-  [  --with-asfix-tools=DIR      Specify location of asfix-tools], 
-  ASFIX_TOOLS="$withval", 
-  ASFIX_TOOLS="$prefix"
-)
-AC_SUBST(ASFIX_TOOLS)
-
-AC_ARG_WITH(stratego-tools, 
-  [  --with-stratego-tools=DIR   Specify location of stratego-tools], 
-  STRATEGO_TOOLS="$withval", 
-  STRATEGO_TOOLS="$prefix"
-)
-AC_SUBST(STRATEGO_TOOLS)
-
-AC_ARG_WITH(sdf-tools, 
-  [  --with-sdf-tools=DIR        Specify location of sdf-tools], 
-  SDF_TOOLS="$withval", 
-  SDF_TOOLS="$prefix"
-)
-AC_SUBST(SDF_TOOLS)
+### Concrete Syntax ####################
 
 AC_ARG_ENABLE(concrete, 
 [  --enable-concrete           Enable concrete syntax (requires sglr, pgen, 
@@ -93,16 +89,30 @@ AC_ARG_ENABLE(exe,
 )
 AC_SUBST(EXE)
 
-PKGS="srts ssl cgen sc-boot gpp-boot $FRONTPKG $BOOTPKG"
+AM_CONFIG_HEADER([config.h])
+
+
+### PACKAGES ##########################
+
+PKGS="srts ssl sc-boot gpp-boot cgen aterm-tools asfix-tools sdf-tools stratego-tools stratego-front sc gpp xt graph-tools boxenv"
+
+#gbtools stratego-connect grammar-recovery
+
+#PKGS="srts ssl cgen sc-boot gpp-boot $FRONTPKG $BOOTPKG"
 AC_SUBST(PKGS)
 
 top_srcdir=`pwd`
+
+
+### OUTPUT #############################
 
 AC_OUTPUT(
 	Makefile 
 	README
 	emacs/Makefile
 )
+
+### SUBPACKAGES ########################
 
 AB_CONFIG_PKG(aterm,
    --with-gcc
@@ -148,13 +158,57 @@ AB_CONFIG_PKG(gpp-boot,
    --with-pgen=${PGEN}
    --with-asfix-tools=${ASFIX_TOOLS}
 )
+
+AB_CONFIG_PKG(aterm-tools,
+   --with-sc=${prefix} 
+)
+
+AB_CONFIG_PKG(asfix-tools,
+   --with-sc-boot=${prefix} 
+)
+
+AB_CONFIG_PKG(graph-tools,
+   --with-sc-boot=${prefix} 
+)
+
+AB_CONFIG_PKG(gpp,
+   --with-asfix-tools=${prefix}
+   --with-sglr=${prefix}
+   --with-pgen=${prefix}
+   --with-graphviz=${prefix}
+   --with-graph-tools=${prefix}
+   --with-stratego=${prefix}
+   --with-bundled-packages='${PKGS}'
+)
+
+AB_CONFIG_PKG(sdf-tools,
+   --with-stratego=${prefix}
+   --with-sglr=${prefix}
+   --with-pgen=${prefix}
+   --with-asfix-tools=${prefix}
+   --with-graph-tools=${prefix}
+   --with-gpp=${prefix}
+   --with-bundled-packages='${PKGS}'
+)
+
+AB_CONFIG_PKG(stratego-tools,
+   --with-sglr=${SGLR}
+   --with-pgen=${PGEN}
+   --with-stratego=${prefix}
+   --with-asfix-tools=${prefix}
+   --with-graph-tools=${prefix}
+   --with-sdf-tools=${prefix}
+   --with-gpp=${prefix}
+   --with-bundled-packages='${PKGS}'
+)
+
 AB_CONFIG_PKG(stratego-front,
    --with-stratego=${prefix} 
    --with-sglr=${SGLR}      
    --with-pgen=${PGEN}                
-   --with-asfix-tools=${ASFIX_TOOLS}    
-   --with-stratego-tools=${STRATEGO_TOOLS}
-   --with-sdf-tools=${SDF_TOOLS}
+   --with-asfix-tools=${prefix}
+   --with-stratego-tools=${prefix}
+   --with-sdf-tools=${prefix}
    --with-gpp=${prefix}
    --with-cgen=${prefix}
 )
@@ -165,4 +219,22 @@ AB_CONFIG_PKG(sc,
    --with-sc-boot=${top_srcdir}/sc-boot
    --with-cgen=${prefix}
    --with-gpp=${prefix}
+)
+
+AB_CONFIG_PKG(xt,
+  --with-pgen=${PGEN}           
+  --with-sglr=${SGLR}                  
+  --with-gpp=${prefix}              
+  --with-gb=${GB}               
+  --with-grammar-recovery=${GRAMMAR_RECOVERY} 
+  --with-stratego-tools=${prefix}   
+  --with-asfix-tools=${prefix}      
+  --with-aterm-tools=${prefix}      
+  --with-graph-tools=${prefix}      
+  --with-sdf-tools=${prefix}        
+  --with-graphviz=${GRAPHVIZ}         
+
+)
+
+AB_CONFIG_PKG(boxenv,
 )

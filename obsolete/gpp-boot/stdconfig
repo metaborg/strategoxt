@@ -1,9 +1,10 @@
 #! /bin/sh
 
-./reconf
+./bootstrap
 ./configure --prefix=`pwd`/.. \
+	    --with-sglr=/home/xt/SDF \
 	    --with-aterm=/home/xt/ATerm \
-	    --with-rpmdir=/home/visser/rpm
+	    --with-rpmdir=/home/visser/rpm 
 
 exit 0
 	--with-aterm=`pwd`/../aterm \

@@ -15,12 +15,39 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-include ../make_rules.in
+CFLAGS	 	= -Wall
+DEBUGFLAGS	= -g
+PROFFLAGS	= -pg
+
+INCLUDES 	= -I$(STRATEGORTS)/include \
+		  -I$(STRATEGOLIB)/include \
+		  -I$(ATERM)/include
+
+LDFLAGS		= -L$(STRATEGORTS)/lib \
+		  -L$(STRATEGOLIB)/lib \
+		  -L$(ATERM)/lib 
+
+LDADD		= -lstratego-lib.opt \
+		  -latermextension.opt \
+		  -lATerm-gcc \
+		  -lm
+
+%.dbg.o: %.c
+	$(CC) $(DEBUGFLAGS) $(CFLAGS) $(DEFS) $(INCLUDES) -c $< -o $@
+
+%.opt.o: %.c
+	$(CC) $(OPTFLAGS) $(CFLAGS) $(DEFS) $(INCLUDES) -c $< -o $@
+
+%.prof.o: %.c
+	$(CC) $(PROFFLAGS) $(CFLAGS) $(DEFS) $(INCLUDES) -c $< -o $@
+
 
 OPTFLAGS = -O4
 
 SCFLAGS = -I $(srcdir)/../sig \
 	  --C-include "\"conf.h\"" -CI "-I.."
+
+bin_PROGRAMS = parse-mod
 
 libexec_PROGRAMS = parse-stratego parse-mod
 

@@ -1,8 +1,12 @@
 #! /bin/sh
 
-./reconf
-./configure --prefix=/home/xt/xt \
+./bootstrap
+./configure --prefix=`pwd`/.. \
 	--with-aterm=/home/xt/ATerm \
+	--with-rpmdir=/home/visser/rpm
+
+exit 0
+
 	--with-cgen=/home/xt/xt \
 	--with-gpp=/home/xt/xt \
 	--with-ssl=/home/xt/xt \

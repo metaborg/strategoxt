@@ -15,14 +15,14 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-include make_rules.in
+ATERM = @ATERM@
 
 includedir = $(prefix)/include/srts
 
 ############# CPL ##################################################
 
 EXTRA_DIST = choice-simple.c choice-simple.h choice-cpl.h choice-cpl.c \
-	test-choice.c
+	test-choice.c choice.h
 
 if USECPL
 
@@ -40,7 +40,7 @@ CHOICELDFLAGS = -L$(CPL)/lib -lchoice -DUSECPL
 
 TESTS = test-choice
 
-CLEANFILES += test-choice choice.o choice.h stratego-choice.h
+CLEANFILES = test-choice choice.o choice.h stratego-choice.h
 
 cpl-used: 
 	@echo yes
@@ -124,9 +124,9 @@ libstratego_prof_a_SOURCES =
 libstratego_a_LIBADD = $(CHOICELIBADD) 
 #$(subst .o,.dbg.o,$(libstratego_a_OBJECTS)) 
 
-libstratego_dbg_a_LIBADD = $(CHOICELIBADDdbg) $(subst .o,.dbg.o,$(libstratego_a_OBJECTS)) 
+libstratego_dbg_a_LIBADD = $(CHOICELIBADDdbg) $(subst .o,.dbg.o,$(libstratego_a_OBJECTS))
 libstratego_opt_a_LIBADD = $(CHOICELIBADD) $(subst .o,.opt.o,$(libstratego_a_OBJECTS)) 
-libstratego_prof_a_LIBADD = $(CHOICELIBADDprof) $(subst .o,.prof.o,$(libstratego_a_OBJECTS)) 
+libstratego_prof_a_LIBADD = $(CHOICELIBADDprof) $(subst .o,.prof.o,$(libstratego_a_OBJECTS))
 
 libatermextension_dbg_a_SOURCES = 
 libatermextension_opt_a_SOURCES = 
@@ -136,3 +136,16 @@ libatermextension_dbg_a_LIBADD = $(subst .o,.dbg.o,$(libatermextension_a_OBJECTS
 libatermextension_opt_a_LIBADD = $(subst .o,.opt.o,$(libatermextension_a_OBJECTS))
 libatermextension_prof_a_LIBADD = $(subst .o,.prof.o,$(libatermextension_a_OBJECTS))
 
+CC       	= gcc
+CFLAGS	 	= -Wall
+DEBUGFLAGS	= -g
+PROFFLAGS	= -pg
+
+%.dbg.o: %.c
+	$(CC) $(DEBUGFLAGS) $(CFLAGS) $(DEFS) $(INCLUDES) -c $< -o $@
+
+%.opt.o: %.c
+	$(CC) $(OPTFLAGS) $(CFLAGS) $(DEFS) $(INCLUDES) -c $< -o $@
+
+%.prof.o: %.c
+	$(CC) $(PROFFLAGS) $(CFLAGS) $(DEFS) $(INCLUDES) -c $< -o $@

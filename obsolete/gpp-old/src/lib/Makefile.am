@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.2 2002/05/14 15:14:44 mdejonge Exp $
+# $Id: Makefile.am,v 1.3 2002/11/15 00:06:00 stratego Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -36,7 +36,7 @@ bin_SCRIPTS =
 pkgdata_DATA = gpp.Makefile pp-tables.tbl pp-tables.pp pp-tables.pp.af
 
 # List all files that should be distributed here
-EXTRA_DIST   = $(wildcard *.r) gpp.Makefile.src \
+EXTRA_DIST  += $(wildcard *.r) gpp.Makefile.src \
                pp-tables.def pp-tables.pp
 
 BOOTSOURCES  = gpp.Makefile.src pp-tables.tbl pp-tables.pp pp-tables.pp.af

@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.5 2002/09/25 20:47:33 eelco Exp $
+# $Id: Makefile.am,v 1.6 2002/11/15 00:06:00 stratego Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -36,7 +36,7 @@ bin_SCRIPTS = ast2abox
 pkgdata_DATA = 
  
 # List all files that should be distributed here
-EXTRA_DIST   = $(wildcard *.r) ast2abox.sh.src 
+EXTRA_DIST  += $(wildcard *.r) ast2abox.sh.src 
 
 BOOTSOURCES  = $(STRATEGO_PRG:%=%.c) $(wildcard *.src)
 

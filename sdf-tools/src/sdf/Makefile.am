@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.10 2002/03/16 15:15:31 eelco Exp $
+# $Id: Makefile.am,v 1.11 2002/11/15 00:06:01 stratego Exp $
 
 # define any subdir here
 SUBDIRS      = data
@@ -28,7 +28,7 @@ EXTRA_DIST = $(wildcard *.r) sdf.def sdf.pp sdf.cons.pp sdf.cons.def README
 pkgdata_DATA = $(wildcard *.r) \
                sdf.tbl sdf.cons.pp sdf.cons.tbl sdf.cons.pp.af
 
-CLEANFILES += sdf.cons.pp.af sdf.tbl sdf.cons.tbl
+CLEANFILES = sdf.cons.pp.af sdf.tbl sdf.cons.tbl
 
 sdf.cons.tbl : sdf.cons.def
 	PATH=$(PGEN)/bin:$${PATH} sdf2table -m GB-Main $< -o $@

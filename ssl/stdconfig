@@ -1,11 +1,15 @@
 #! /bin/sh
 
-./reconf
-./configure --prefix=/home/xt/xt \
-	--with-aterm=/home/xt/xt \
+./bootstrap
+./configure --prefix=/home/xt/XT \
+	--with-aterm=/home/xt/XT \
+	--with-sc=/home/xt/XT \
+	--with-rpmdir=/home/visser/rpm \
+
+#	--enable-develop
+
+exit 0
+
 	--with-gpp=/home/xt/xt \
 	--with-stratego=/home/xt/xt \
-	--with-srts=/home/xt/xt \
-	--with-rpmdir=/home/visser/rpm \
-	--enable-develop
- 
+	--with-srts=/home/xt/xt \ 

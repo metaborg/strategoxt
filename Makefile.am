@@ -22,7 +22,7 @@
 DIST_SUBDIRS = emacs $(PKGS)
 
 EXTRA_DIST   = $(EXTRA_FILES)
-EXTRA_FILES  = README README.in reconf acinclude.m4
+EXTRA_FILES  = README README.in bootstrap acinclude.m4
 
 # We need at least one subdir to be defined such that automake will generate
 # the code for traversing subdirectories
@@ -38,7 +38,14 @@ check clean install uninstall:
 	   ( cd $$subdir && $(MAKE) $@ ) || exit 1 ;\
 	done
 
-package-dist:
+package-dist :
+	PATH=$(bindir):$${PATH}; export PATH ;\
+	ulimit -s 20000 ;\
+	for subdir in $(PKGS); do \
+	   ( cd $$subdir && $(MAKE) dist ) || exit 1 ;\
+	done
+
+package-dist-old:
 	$(MAKE) dist
 	cd srts; ./reconf; $(MAKE) dist
 	cd ssl; ./reconf; $(MAKE) dist
@@ -132,5 +139,7 @@ SUBST = s+__SRTS_VERSION__+$(VERSION)+g;\
         s+__ATERM_VERSION__+1.6.7+g;\
         s+__ATERM__+$(ATERM)+g;
 
-include Makefile.rpm
+CLEANFILES = 
+
+#include Makefile.rpm
 

@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.4 2002/03/21 14:18:42 mdejonge Exp $
+# $Id: Makefile.am,v 1.5 2002/11/15 00:06:01 stratego Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -35,7 +35,7 @@ bin_SCRIPTS  = tohtml-sdf sdf2text
 EXTRA_DIST   = tohtml-sdf.sh.src sdf2text.sh.src
 
 # What extra files should be cleaned
-CLEANFILES   += tohtml-sdf
+CLEANFILES   = tohtml-sdf
 
 % : %.sh.src Makefile
 	sed 's@__PREFIX__@$(prefix)@g;\

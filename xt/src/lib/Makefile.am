@@ -17,11 +17,13 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.6 2002/09/26 13:43:27 mdejonge Exp $
+# $Id: Makefile.am,v 1.7 2002/11/15 00:06:02 stratego Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
 include $(srcdir)/../templates/make_rules.stratego
+
+STRATEGO_PRG = 
 
 # define any subdir here
 SUBDIRS      = data
@@ -33,10 +35,10 @@ SUBDIRS      = data
 # TESTS        = program-check
 
 # List all extra files that should be distributed here
-EXTRA_DIST   = xt-paths.r.src ppp-wrap.r
+EXTRA_DIST   += xt-paths.r.src ppp-wrap.r
 
 # What extra files should be cleaned
-CLEANFILES   = xt-paths.r
+CLEANFILES   += xt-paths.r
 
 pkgdata_DATA = xt-paths.r
 

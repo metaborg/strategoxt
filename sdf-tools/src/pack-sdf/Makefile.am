@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.6 2001/11/22 08:15:59 mdejonge Exp $
+# $Id: Makefile.am,v 1.7 2002/11/15 00:06:01 stratego Exp $
 
 include $(srcdir)/../templates/make_rules
 include $(srcdir)/../templates/make_rules.stratego
@@ -33,7 +33,7 @@ libexec_SCRIPTS  = $(STRATEGO_PRG)
 
 TESTS        = pack_sdf_check
 
-CLEAN_FILES += pack_sdf_check
+CLEANFILES += pack_sdf_check
 
 SCFLAGS     += -I $(srcdir)/../lib -I $(ASFIX_TOOLS)/share/asfix-tools
 

@@ -20,4 +20,4 @@ SUBST = s+__SRTS_VERSION__+$(VERSION)+g;\
         s+__PACKAGE__+$(PACKAGE)+g;\
         s+__MAKE__+$(MAKE)+g;
 
-include Makefile.rpm
+#include Makefile.rpm
