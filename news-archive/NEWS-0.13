@@ -1,0 +1,32 @@
+StrategoXT 0.13 -- released December ?, 2004
+
+---------++ Summary of Changes
+	
+---------++ Detailed List of Issues
+
+The full list of issues closed in this release is available at:
+
+   * http://www.stratego-language.org/Stratego/StrategoRelease013Issues
+
+---------++ Download and Installation
+
+The release page contains the source distributions, binary RPMs, and
+detailed instructions on how to install the distributions:
+
+   * http://www.stratego-language.org/Stratego/StrategoRelease013
+
+---------++ Bugs and Known Problems
+
+See our issue tracking systems for reports about (open) bugs:
+
+   * https://catamaran.labs.cs.uu.nl/jira/browse/STR
+
+Please report any problems with installation or bugs in the
+implementation to our issue tracking system. Please check the existing
+issues to see if a report about the problem was already submitted.
+
+---------++ Contributions
+
+Developments, beta tests, and bug fixes were carried out by
+
+
