@@ -19,7 +19,7 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
  02111-1307, USA.
 
- $Id: Dot.r,v 1.4 2002/09/26 14:22:01 mdejonge Exp $
+ $Id: Dot.r,v 1.5 2002/09/26 14:26:30 mdejonge Exp $
 *)
 
 module Dot
@@ -39,4 +39,4 @@ module Dot
       node: Attr-List -> Attr-Stmt
       comma: ListSep(Attr) -> Attr-List
       semicolon: ListSep(Stmtm) -> Stmt-List
-      alt: X*Y -> Option
+      alt: X * Y -> Option
