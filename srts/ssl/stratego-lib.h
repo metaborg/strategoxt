@@ -32,6 +32,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
 #include "ssl-string.h"        
 #include "term.h"        
 #include "annotations.h"
+#include "placeholder.h"
 #include "dir.h"
 #endif
 

@@ -25,13 +25,13 @@ pkglib_LIBRARIES = \
 
 include_HEADERS = \
 	io.h stratego-lib.h tables.h ssl-time.h exec.h number.h \
-	ssl-string.h term.h annotations.h dir.h
+	ssl-string.h term.h annotations.h placeholder.h dir.h
 
 libstratego_lib_a_SOURCES = \
 	io.h stratego-lib.h tables.h ssl-time.h exec.h number.h \
 	ssl-string.h term.h dir.h \
 	io.c tables.c time.c exec.c number.c string.c term.c \
-	annotations.c dir.c 
+	annotations.c placeholder.c dir.c 
 
 libstratego_lib_dbg_a_SOURCES = 
 libstratego_lib_opt_a_SOURCES = 
