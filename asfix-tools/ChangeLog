@@ -1,4 +1,12 @@
+2004-04-30  Martin Bravenboer <martin@cs.uu.nl>
+
+	* sig/*: added a clean signature of AsFix.
+	
+	* src/asfix-yield/*: use the plain signature. Removed AsFix1
+	support.
+	
 2004-02-22   Merijn de Jonge  <mdejonge@cs.uu.nl>
+	
 	* Makefile.am: added autoxt.m4 to EXTRA_DIST
 	* Makefile.am: added line: ACLOCAL_AMFLAGS = -I .
 

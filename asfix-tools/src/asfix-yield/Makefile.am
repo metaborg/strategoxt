@@ -10,7 +10,7 @@ TESTS          = asfix_yield1_check asfix_yield2_check
 CLEANFILES     = asfix_yield1_check asfix_yield2_check $(wildcard *.dep) asfix-yield
 BOOTCLEANFILES = asfix-yield.c
 
-SCFLAGS        = -I $(srcdir)/../asfix 
+SCFLAGS        = -I $(top_srcdir)/sig
 
 asfix_yield1_check_prog    = asfix-yield
 asfix_yield1_check_input   = data/tiny.tree
