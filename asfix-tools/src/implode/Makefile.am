@@ -14,6 +14,6 @@ STRINCLUDES = \
 
 LDADD += $(SSL_LIBS)
 
-EXTRA_DIST  	= $(wildcard *.str) $(wildcard *.meta)
+EXTRA_DIST  	= $(pkgdata_DATA) $(wildcard *.str) $(wildcard *.meta)
 BOOTCLEANFILES 	= implode-asfix.c sglri.c
 CLEANFILES	= $(wildcard *.dep)
