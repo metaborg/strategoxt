@@ -1,0 +1,11 @@
+module IntCon
+imports Whitespace
+
+exports
+  sorts NatCon IntCon
+  lexical syntax   
+    [0-9]+ -> NatCon  {cons("digits")}
+  context-free syntax
+    NatCon         -> IntCon {cons("natural")}
+    pos:"+" NatCon -> IntCon {cons("positive")}
+    neg:"-" NatCon -> IntCon {cons("negative")}

@@ -1,3 +1,15 @@
+2004-02-15  Martin Bravenboer <martin@cs.uu.nl>
+
+	* syn/*.sdf: upgraded aterm syntax definition to latest definition
+	in the ASF library. I modified the modules at a few points:
+	- rewritten \r to \13 (\r is not supported by 2.1)
+	- removed directory structure of the modules (which is not
+	supported by pack-sdf and sdf2sig)
+	- removed "context-free start symbols", which are not yet support
+	by pgen 2.0 and pack-sdf.
+
+	* sig/Makefile.am: generate the new signatures.
+
 2003-12-09  Martin Bravenboer <martin@cs.uu.nl>
 
 	* src/atermdiff/apply.str: removed, is in the SSL.
