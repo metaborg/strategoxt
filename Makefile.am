@@ -30,8 +30,8 @@ pre-pkgs/install/xtc.dummy :
 rpm : dist
 	$(RPMBUILD) -ta $(PACKAGE_TARNAME)-$(VERSION).tar.gz
 
-dailydist : dist
-	mv $(PACKAGE)-$(VERSION).tar.gz $(PACKAGE)-dailydist.tar.gz 
+fixeddist : dist
+	mv $(PACKAGE)-$(VERSION).tar.gz $(PACKAGE).tar.gz
 
 revision-dist : dist
 	mv $(PACKAGE)-$(VERSION).tar.gz $(PACKAGE)-$(VERSION)-$(SVN_REVISION).tar.gz 
