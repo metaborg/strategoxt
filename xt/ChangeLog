@@ -1,3 +1,6 @@
+2000-11-20 Merijn de Jonge <mdejonge@cwi.nl>
+        * Increased version of JJForester to 0.2
+
 2000-11-12 Merijn de Jonge <mdejonge@cwi.nl>
         * Increased version to 0.5beta
         * Updated pkg-list and dev-pkg-list to bundle the most recent
