@@ -3,7 +3,7 @@ imports Stratego
 
 signature
   constructors
-    Final  : List(Int) -> Automaton
+//    Final  : List(Int) -> Automaton
     Case   : String * Path * List(Alt) * Automaton -> Automaton
     Case   :          Path * List(Alt) * Automaton -> Automaton
     Alt    : Pat * List(Path) * Automaton -> Automaton

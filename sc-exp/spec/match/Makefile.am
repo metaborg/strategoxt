@@ -9,7 +9,7 @@ SCFLAGS	= -I $(STRATEGO_FRONT)/share/stratego-front \
 	  -I $(srcdir)/../lib \
 	  -I $(srcdir)/../front
 
-libexec_PROGRAMS = optimize1 optimize2 compile-match 
+libexec_PROGRAMS = optimize1 optimize2 compile-match desugar-case
 #check_PROGRAMS 	 = matrix-test
 
 CLEANFILES 	 = *.dep $(TESTS) 
@@ -20,7 +20,7 @@ CLEANFILES 	 = *.dep $(TESTS)
 
 EXTRA_DIST 	 = $(wildcard *.str)
 
-BOOTCLEANFILES 	 = compile-match.c optimize1.c optimize2.c matrix-test.c
+BOOTCLEANFILES 	 = compile-match.c optimize1.c optimize2.c matrix-test.c desugar-case.c
 
 
 compile-match.c: compile-match.str

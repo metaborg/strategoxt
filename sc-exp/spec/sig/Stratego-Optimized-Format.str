@@ -8,13 +8,17 @@ strategies
   main = iowrap(stratego-specification)
 
   stratego-specification =
-    list(strategy-definition)
+    Specification([id, Strategies(list(strategy-definition))])
     <+ debug(!"Not a strategy-specification: ")
 
   strategy-definition =
-    SDef(is-string, [], strategy-expression)
+    SDef(is-string, list(VarDec(is-string,type-expression)), strategy-expression)
 //    + SDef(list(DontInline), is-string, [], strategy-expression)
     <+ debug(!"Not a strategy-definition: ")
+
+  type-expression = 
+    ConstType(Op(is-string,[]))
+    + FunType(list(type-expression), type-expression)
 
   strategy-expression =
   rec exp(
@@ -28,7 +32,7 @@ strategies
 	+ GuardedLChoice(exp, exp, exp)
 	+ GChoice(exp, exp)
 	+ LGChoice(exp, exp)
-	+ Call(SVar(is-string),[])
+	+ Call(SVar(is-string),list(exp))
 	+ Rec(is-string, exp)
 	+ Path(is-int, exp)
 	+ Cong(is-string, list(exp))
@@ -36,7 +40,7 @@ strategies
 	+ Some(exp)
 	+ All(exp)
 	+ Thread(exp)
-	// + Match(term-expression)
+	+ Match(shallow-term-expression)
 	+ Build(term-expression)
 	+ Scope(list(is-string + list(is-int)), exp)
 	+ Where(exp)
@@ -47,8 +51,8 @@ strategies
 		  )
              , exp)
 
-	+ Case(is-string, Var(id), list(Alt(id,id,exp)), exp)
-	+ Continue(is-string)
+	//+ Case(is-string, Var(id), list(Alt(id,id,exp)), exp)
+	//+ Continue(is-string)
 
 	+ Assign(Var(id),term-expression)
 	+ Assign(Var(id))
@@ -66,5 +70,16 @@ strategies
 	+ Op(is-string, list(trm))
 	+ BuildDefault(trm)
 	<+ debug(!"Not a term-expression: ")
+	)
+
+  shallow-term-expression =
+  rec trm(
+	//Wld 
+	Var(is-string)
+	+ Int(is-int)
+	+ Real(is-real)
+	+ Str(is-string)
+	+ Op(is-string, list(Var(is-string)))
+	<+ debug(!"Not a shallow term-expression: ")
 	)
 \end{code}

@@ -1,0 +1,43 @@
+module desugar-case
+imports automaton lib
+strategies
+
+  main =
+    iowrap(topdown(repeat(DesugarAssign + DesugarCase)))
+
+  DesugarAssign :
+    Assign(Var(x), t) -> Seq(Build(t), Match(Var(x)))
+
+  DesugarAssign :
+    Assign(Var(x)) -> Match(Var(x))
+
+  DesugarCase :
+    Case(lab, x, alts, s) ->
+    Case(x, alts, s)
+
+  DesugarCase :
+    Case(Var(t), [], s) -> s
+
+  DesugarCase :
+    Case(Var(t), [Alt(Fun(c, n), xs, s1) | alts], s2) ->
+    GuardedLChoice(Seq(Build(Var(t)), Match(Op(c, xs)))
+                  , s1
+                  , Case(Var(t), alts, s2))
+
+  DesugarCase :
+    Case(Var(t), [Alt(Str(str), xs, s1) | alts], s2) -> 
+    GuardedLChoice(Seq(Build(Var(t)), Match(Str(str)))
+                  , s1
+                  , Case(Var(t), alts, s2))
+
+  DesugarAlt :
+    Case(Var(t), [Alt(Int(i), xs, s1) | alts], s2) -> 
+    GuardedLChoice(Seq(Build(Var(t)), Match(Int(i)))
+                  , s1
+                  , Case(Var(t), alts, s2))
+
+  DesugarAlt :
+    Case(Var(t), [Alt(Real(i), xs, s1) | alts], s2) -> 
+    GuardedLChoice(Seq(Build(Var(t)), Match(Real(i)))
+                  , s1
+                  , Case(Var(t), alts, s2))

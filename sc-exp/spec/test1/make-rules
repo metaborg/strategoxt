@@ -45,7 +45,10 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 %.s6 : %.s5fused ../match/compile-match$(EXE)
 	../match/compile-match -i $< -o $@ -b
 
-%.s7 : %.s6 ../match/optimize2$(EXE)
+%.s6desugared : %.s6 ../match/desugar-case$(EXE)
+	../match/desugar-case -i $< -o $@ -b
+
+%.s7 : %.s6desugared ../match/optimize2$(EXE)
 	../match/optimize2 -i $< -o $@ -b
 
 # PRETTY-PRINTING ####################################################
@@ -101,7 +104,7 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 # USING INSTALLED SC ###############################################
 
 %.ibin: %.r
-	../sc/sc -i $< -o $@ --verbose 1
+	../sc/sc -i $< -o $@ --verbose 3 --output-optimized
 
 %.irun: %.ibin
 	./$<

@@ -129,9 +129,11 @@ strategies
         optimize1 
         ; try(where(not(<get-config> "--fusion")); fusion)
         ; inline
-        ; compile-match 
+        ; compile-match
+	; desugar-case
         ; optimize2
-        //  ; stratego-of
+        ; stratego-of
+        ; output-optimized
     )
 
   optimize1 = 
@@ -146,6 +148,9 @@ strategies
   compile-match = 
     xtc-transform(!"compile-match", !["-b" | <pass-verbose> ])
 
+  desugar-case = 
+    xtc-transform(!"desugar-case", !["-b" | <pass-verbose> ])
+
   optimize2 = 
     xtc-transform(!"optimize2", !["-b" | <pass-verbose> ])
 
@@ -155,6 +160,15 @@ strategies
   canonicalize = 
     xtc-transform(!"canonicalize", !["-b" | <pass-verbose> ])
  
+  output-optimized =
+    try(where(
+	  debug(!"output-optimized: ");
+          where(<get-config> "--output-optimized")
+          ; copy-to(get-outfile(!".opt") => file1)
+          ; xtc-transform(!"pp-stratego", !["--abstract" | <pass-verbose> ] )
+          ; copy-to(get-outfile(!".opt.txt") => file2)
+          ; say(![" (after frontend) written to file"])
+    ))
 
 strategies
 

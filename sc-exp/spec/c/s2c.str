@@ -83,7 +83,6 @@ rules
     where <map(SDefToDeclaration)> defs => sigs
         ; <get-config; map(!Include(<conc-strings> ("#include ", <id>))) <+ ![]> "--C-include" => incl
 
-<============
 */
 
   TranslateSpec :
@@ -235,7 +234,7 @@ Strategy expressions
                      Compound([],[Stat(Assign(Id("t"),AssignEq,Id(x))), s2]))])
     where new => x; new => ptr
 
-===> */
+*/
 
   TranslateStrat :
     LChoice(s1, s2) ->
