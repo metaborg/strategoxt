@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 // 02111-1307, USA.
 
-(* $Id: pack-sdf.r,v 1.5 2002/03/16 15:15:30 eelco Exp $
+(* $Id: pack-sdf.r,v 1.6 2002/09/07 13:43:13 eelco Exp $
 
 	Pack-sdf creates an SDF definition file containing all modules
 	imported from the given top module.
@@ -41,10 +41,12 @@ strategies
     pack-modules(pack-sdf)
 
   pack-sdf(mkpt) =
-    \ root -> (root, ["." | <mkpt>()], []) \;
-    graph-nodes(parse-sdf, get-sdf-imports,\ (n,x,xs) -> [x|xs] \ );
-    unzip;
-    (id, ConcatModules)
+    !(<id>, ["." | <mkpt>], [])
+    ; graph-nodes-undef(parse-sdf, get-sdf-imports, \ (n,x,xs) -> [x|xs] \ )
+    ; (id, map(<print>(stderr, ["Module ", <id>, " not found\n"])); [])
+    ; Fst
+    ; unzip
+    ; (id, ConcatModules)
 
   parse-sdf =
     (guarantee-extension(!"sdf"), id);
