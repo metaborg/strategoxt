@@ -186,20 +186,20 @@ static void init_module_constant_terms (void)
 #include <srts/init-stratego-application.h>
 ATerm exit_0_0 (ATerm t);
 ATerm fatal_error_0_0 (ATerm t);
-ATerm Cons_2_0 (ATerm n_81 (ATerm), ATerm o_81 (ATerm), ATerm t);
-ATerm list_1_0 (ATerm r_101 (ATerm), ATerm t);
+ATerm Cons_2_0 (ATerm m_81 (ATerm), ATerm n_81 (ATerm), ATerm t);
+ATerm list_1_0 (ATerm q_101 (ATerm), ATerm t);
 ATerm asfix_skip2_1_0 (ATerm v_7 (ATerm), ATerm t);
 ATerm is_leaf_0_0 (ATerm t);
 ATerm printascii_0_0 (ATerm t);
-ATerm split_2_0 (ATerm d_110 (ATerm), ATerm e_110 (ATerm), ATerm t);
+ATerm split_2_0 (ATerm c_110 (ATerm), ATerm d_110 (ATerm), ATerm t);
 ATerm print_0_0 (ATerm t);
 ATerm is_string_0_0 (ATerm t);
-ATerm leaves_3_0 (ATerm f_97 (ATerm), ATerm g_97 (ATerm), ATerm h_97 (ATerm (ATerm), ATerm), ATerm t);
+ATerm leaves_3_0 (ATerm e_97 (ATerm), ATerm f_97 (ATerm), ATerm g_97 (ATerm (ATerm), ATerm), ATerm t);
 static ATerm b_0 (ATerm t);
 static ATerm c_0 (ATerm t);
 ATerm asfix_yield2_1_0 (ATerm u_7 (ATerm), ATerm t);
 ATerm asfix_yield_1_0 (ATerm t_7 (ATerm), ATerm t);
-ATerm _2_0 (ATerm s_81 (ATerm), ATerm t_81 (ATerm), ATerm t);
+ATerm _2_0 (ATerm r_81 (ATerm), ATerm s_81 (ATerm), ATerm t);
 ATerm input_file_0_0 (ATerm t);
 ATerm open_file_0_0 (ATerm t);
 ATerm option_defined_1_0 (ATerm o_122 (ATerm), ATerm t);

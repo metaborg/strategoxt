@@ -178,20 +178,20 @@ static void init_module_constant_terms (void)
   term_y_2 = (ATerm) ATmakeAppl(ATmakeSymbol("--sort name      Specify a comment sort. Multiple --sort options are allowed [Comment]", 0, ATtrue));
 }
 #include <srts/init-stratego-application.h>
-ATerm oncetd_1_0 (ATerm g_96 (ATerm), ATerm t);
+ATerm oncetd_1_0 (ATerm f_96 (ATerm), ATerm t);
 ATerm implode_string_0_0 (ATerm t);
 ATerm concat_0_0 (ATerm t);
-ATerm map_1_0 (ATerm n_101 (ATerm), ATerm t);
+ATerm map_1_0 (ATerm m_101 (ATerm), ATerm t);
 ATerm yield_0_0 (ATerm t);
-ATerm fetch_1_0 (ATerm v_101 (ATerm), ATerm t);
+ATerm fetch_1_0 (ATerm u_101 (ATerm), ATerm t);
 ATerm get_comment_sorts_0_0 (ATerm t);
 ATerm fetch_comment_0_0 (ATerm t);
 static ATerm g_0 (ATerm t);
 static ATerm s_0 (ATerm k_0, ATerm m_3, ATerm n_3, ATerm n_0, ATerm t);
 ATerm AnnoComment_0_0 (ATerm t);
-ATerm try_1_0 (ATerm f_93 (ATerm), ATerm t);
+ATerm try_1_0 (ATerm e_93 (ATerm), ATerm t);
 ATerm Nil_0_0 (ATerm t);
-ATerm Cons_2_0 (ATerm n_81 (ATerm), ATerm o_81 (ATerm), ATerm t);
+ATerm Cons_2_0 (ATerm m_81 (ATerm), ATerm n_81 (ATerm), ATerm t);
 ATerm is_list_0_0 (ATerm t);
 ATerm all_consnil_1_0 (ATerm l_8 (ATerm), ATerm t);
 ATerm topdown_consnil_1_0 (ATerm j_8 (ATerm), ATerm t);

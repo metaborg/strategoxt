@@ -138,7 +138,17 @@ differnt arity. This has now been fixed, hence only =Cons/2= and
 
 ---------++ Stratego Standard Library
 
----------+++ Strategy iowrap Obsolete
+----------++ Separate compilation
+
+In the previous version of StrategoXT, the separately compiled
+=liblib= library imported the SSL as well as the XTC library. This librar
+
+split into libstrategolib and libxtclib. The 
+module liblib is still available and imports the
+libraries above, in order to avoid having to patch
+zillions of Stratego modules.
+
+---------+++ Obsolete Strategy: iowrap
 
 The strategy =iowrap= is now obsolete. Several releases ago it was
 replaced by =io-wrap=, which is easier to use, thanks to the storage
@@ -147,7 +157,7 @@ still use =iowrap= will now get a warning.
 
     (Rob Vermaas)
 
----------+++ Logging Module
+---------+++ New Module for Logging
 
 A small library for logging has been added to the Stratego Standard
 Library (it used to be part of the =stratego-regular= package). The
@@ -172,11 +182,19 @@ Library (it used to be part of the =stratego-regular= package). The
 
     (Niels Janssen and Martin Bravenboer)
 
----------+++ Logging Module
+---------+++ New Strategy: =call= with Optional Redirection
 
-* call(|opt-fdin, opt-fdout, opt-fderr)
+The SSL now includes a strategy that makes the redirections of file
+descriptors from method calls much easier. This new =call= strategy
+takes three term arguments, which are optional (=Some= or =None=) file
+descriptors for the =stdin=, =stdout=, and =stderr= of the new
+process. This strategy makes it easier to write to result of a program
+invocation to some file, without knowing all the nasty low-level
+functions of processes and IO.
 
     (Martin Bravenboer)
+
+---------+++ Bug Fixes: Pipe module
 
 =stdin-from-pipe= and =stdout-to-pipe= didn't work correctly when the
 Pipe ]rgument was =stdin= (0) or =stdout= (1). Since =stdin= and
@@ -188,8 +206,9 @@ is no need to close file descriptiors. =write-term-to-text-pipe= uses
 
     (Merijn de Jonge)
 
-
 ---------++ AutoXT
+
+
 
 All macros now use the XT prefix
 
@@ -222,13 +241,6 @@ Use AC_CONFIG_AUX_DIR and fix in strc-core Makefile.am
 	implicit, explicit or very explicit.
 
     (Martin Bravenboer)
-
-----------++ Separate compilation
-
-liblib split into libstrategolib and libxtclib. The 
-module liblib is still available and imports the
-libraries above, in order to avoid having to patch
-zillions of Stratego modules.
 
 ---------++ Emacs Mode
 

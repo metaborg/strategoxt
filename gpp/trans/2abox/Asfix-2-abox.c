@@ -787,7 +787,7 @@ static void init_module_constant_terms (void)
   term_m_38 = (ATerm) ATmakeAppl(ATmakeSymbol("-p <table>       Use pretty-print entries from <table>", 0, ATtrue));
 }
 #include <srts/init-stratego-application.h>
-ATerm split_2_0 (ATerm d_110 (ATerm), ATerm e_110 (ATerm), ATerm t);
+ATerm split_2_0 (ATerm c_110 (ATerm), ATerm d_110 (ATerm), ATerm t);
 static ATerm b_6 (ATerm u_25, ATerm t);
 static ATerm c_0 (ATerm t);
 ATerm has_significant_layout_0_0 (ATerm t);
@@ -802,13 +802,13 @@ static ATerm o_0 (ATerm t);
 static ATerm w_0 (ATerm t);
 static ATerm x_0 (ATerm t);
 ATerm insert_layout_0_0 (ATerm t);
-ATerm crush_3_0 (ATerm n_113 (ATerm), ATerm o_113 (ATerm), ATerm p_113 (ATerm), ATerm t);
+ATerm crush_3_0 (ATerm m_113 (ATerm), ATerm n_113 (ATerm), ATerm o_113 (ATerm), ATerm t);
 static ATerm y_0 (ATerm t);
 ATerm collect_p__1_0 (ATerm o_43 (ATerm), ATerm t);
 ATerm fatal_ambiguity_0_0 (ATerm t);
 ATerm flat_list_0_0 (ATerm t);
 ATerm Instantiate_1_0 (ATerm b_0 (ATerm), ATerm t);
-ATerm bottomup_1_0 (ATerm d_95 (ATerm), ATerm t);
+ATerm bottomup_1_0 (ATerm c_95 (ATerm), ATerm t);
 ATerm is_string_0_0 (ATerm t);
 static ATerm z_0 (ATerm t);
 static ATerm d_1 (ATerm t);
@@ -820,7 +820,7 @@ ATerm even_0_0 (ATerm t);
 static ATerm f_2 (ATerm t);
 static ATerm g_2 (ATerm t);
 static ATerm g_6 (ATerm i_42 (ATerm), ATerm j_42 (ATerm), ATerm k_42 (ATerm), ATerm l_42 (ATerm), ATerm k_17, ATerm l_17, ATerm t);
-ATerm nzip_1_0 (ATerm b_104 (ATerm), ATerm t);
+ATerm nzip_1_0 (ATerm a_104 (ATerm), ATerm t);
 static ATerm h_6 (ATerm y_16, ATerm z_16, ATerm x_16, ATerm e_17, ATerm t);
 ATerm index_0_0 (ATerm t);
 static ATerm u_2 (ATerm t);
@@ -833,8 +833,8 @@ static ATerm z_3 (ATerm t);
 ATerm pp_table_get_0_0 (ATerm t);
 ATerm table_get_0_0 (ATerm t);
 static ATerm i_6 (ATerm e_22, ATerm d_22, ATerm t);
-ATerm say_1_0 (ATerm r_100 (ATerm), ATerm t);
-ATerm trim_chars_1_0 (ATerm c_113 (ATerm), ATerm t);
+ATerm say_1_0 (ATerm q_100 (ATerm), ATerm t);
+ATerm trim_chars_1_0 (ATerm b_113 (ATerm), ATerm t);
 ATerm read_text_file_0_0 (ATerm t);
 ATerm pass_verbose_0_0 (ATerm t);
 ATerm xtc_transform_2_0 (ATerm l_6 (ATerm), ATerm m_6 (ATerm), ATerm t);
@@ -855,7 +855,7 @@ static ATerm u_4 (ATerm t);
 static ATerm v_4 (ATerm t);
 static ATerm w_4 (ATerm t);
 ATerm missing_constructor_warning_0_0 (ATerm t);
-ATerm fetch_1_0 (ATerm v_101 (ATerm), ATerm t);
+ATerm fetch_1_0 (ATerm u_101 (ATerm), ATerm t);
 static ATerm h_52 (ATerm h_49, ATerm i_49, ATerm j_49, ATerm k_49, ATerm t);
 static ATerm z_4 (ATerm t);
 static ATerm a_5 (ATerm t);
@@ -889,7 +889,7 @@ static ATerm i_7 (ATerm t);
 static ATerm j_7 (ATerm t);
 ATerm ignore_prod_0_0 (ATerm t);
 ATerm symbols2pp_entries_1_0 (ATerm n_42 (ATerm), ATerm t);
-ATerm fetch_elem_1_0 (ATerm x_101 (ATerm), ATerm t);
+ATerm fetch_elem_1_0 (ATerm w_101 (ATerm), ATerm t);
 static ATerm q_7 (ATerm t);
 ATerm get_cnstr_name_0_0 (ATerm t);
 static ATerm v_7 (ATerm t);
@@ -914,7 +914,7 @@ ATerm number_nonterminals_0_0 (ATerm t);
 static ATerm t_8 (ATerm t);
 static ATerm w_8 (ATerm t);
 ATerm argument_list_0_0 (ATerm t);
-ATerm _2_0 (ATerm s_81 (ATerm), ATerm t_81 (ATerm), ATerm t);
+ATerm _2_0 (ATerm r_81 (ATerm), ATerm s_81 (ATerm), ATerm t);
 ATerm mkterm_0_0 (ATerm t);
 ATerm flat_alt_0_0 (ATerm t);
 static ATerm c_9 (ATerm t);
@@ -929,7 +929,7 @@ static ATerm b_65 (ATerm j_64, ATerm k_64, ATerm l_64, ATerm m_64, ATerm n_64, A
 static ATerm r_9 (ATerm t);
 static ATerm t_9 (ATerm t);
 ATerm get_pp_entry_0_0 (ATerm t);
-ATerm oncetd_1_0 (ATerm g_96 (ATerm), ATerm t);
+ATerm oncetd_1_0 (ATerm f_96 (ATerm), ATerm t);
 static ATerm u_9 (ATerm t);
 ATerm uq2q_0_0 (ATerm t);
 ATerm get_constr_0_0 (ATerm t);
@@ -942,7 +942,7 @@ static ATerm c_10 (ATerm t);
 static ATerm d_10 (ATerm t);
 ATerm strs2constr_0_0 (ATerm t);
 ATerm conc_0_0 (ATerm t);
-ATerm at_end_1_0 (ATerm c_102 (ATerm), ATerm t);
+ATerm at_end_1_0 (ATerm b_102 (ATerm), ATerm t);
 static ATerm e_10 (ATerm t);
 static ATerm h_10 (ATerm t);
 static ATerm i_10 (ATerm t);
@@ -953,7 +953,7 @@ static ATerm l_10 (ATerm t);
 ATerm sym2strs_0_0 (ATerm t);
 ATerm syms2strs_0_0 (ATerm t);
 ATerm quote_0_0 (ATerm t);
-ATerm at_last_1_0 (ATerm n_102 (ATerm), ATerm t);
+ATerm at_last_1_0 (ATerm m_102 (ATerm), ATerm t);
 ATerm Tl_0_0 (ATerm t);
 static ATerm m_10 (ATerm t);
 ATerm de_quote_0_0 (ATerm t);
@@ -965,7 +965,7 @@ ATerm is_num_0_0 (ATerm t);
 static ATerm d_69 (ATerm z_68, ATerm t);
 static ATerm s_10 (ATerm t);
 ATerm toAlphaNum_0_0 (ATerm t);
-ATerm separate_by_1_0 (ATerm j_101 (ATerm), ATerm t);
+ATerm separate_by_1_0 (ATerm i_101 (ATerm), ATerm t);
 ATerm implode_string_0_0 (ATerm t);
 ATerm De_Escape_0_0 (ATerm t);
 ATerm explode_string_0_0 (ATerm t);
@@ -982,7 +982,7 @@ ATerm mk_constr_0_0 (ATerm t);
 ATerm get_config_0_0 (ATerm t);
 ATerm Nil_0_0 (ATerm t);
 ATerm syntaxless_sort_0_0 (ATerm t);
-ATerm Cons_2_0 (ATerm n_81 (ATerm), ATerm o_81 (ATerm), ATerm t);
+ATerm Cons_2_0 (ATerm m_81 (ATerm), ATerm n_81 (ATerm), ATerm t);
 static ATerm d_11 (ATerm t);
 ATerm is_injection_0_0 (ATerm t);
 static ATerm e_11 (ATerm t);
@@ -996,12 +996,12 @@ static ATerm q_6 (ATerm e_13, ATerm f_13, ATerm d_13, ATerm c_13, ATerm t);
 static ATerm s_11 (ATerm t);
 static ATerm w_11 (ATerm t);
 static ATerm r_6 (ATerm l_12, ATerm j_12, ATerm k_12, ATerm m_12, ATerm t);
-ATerm filter_1_0 (ATerm o_109 (ATerm), ATerm t);
+ATerm filter_1_0 (ATerm n_109 (ATerm), ATerm t);
 ATerm is_list_0_0 (ATerm t);
-ATerm try_1_0 (ATerm f_93 (ATerm), ATerm t);
-ATerm topdown_1_0 (ATerm c_95 (ATerm), ATerm t);
-ATerm sometd_1_0 (ATerm q_96 (ATerm), ATerm t);
-ATerm repeat_1_0 (ATerm f_94 (ATerm), ATerm t);
+ATerm try_1_0 (ATerm e_93 (ATerm), ATerm t);
+ATerm topdown_1_0 (ATerm b_95 (ATerm), ATerm t);
+ATerm sometd_1_0 (ATerm p_96 (ATerm), ATerm t);
+ATerm repeat_1_0 (ATerm e_94 (ATerm), ATerm t);
 ATerm concat_strings_0_0 (ATerm t);
 ATerm concat_0_0 (ATerm t);
 ATerm int_to_string_0_0 (ATerm t);
@@ -1026,16 +1026,16 @@ ATerm has_option_1_0 (ATerm n_120 (ATerm), ATerm t);
 static ATerm n_12 (ATerm t);
 ATerm type_failure_0_0 (ATerm t);
 ATerm ReadFromFile_0_0 (ATerm t);
-ATerm debug_1_0 (ATerm d_101 (ATerm), ATerm t);
+ATerm debug_1_0 (ATerm c_101 (ATerm), ATerm t);
 ATerm if_verbose1_1_0 (ATerm u_118 (ATerm), ATerm t);
-ATerm map_1_0 (ATerm n_101 (ATerm), ATerm t);
+ATerm map_1_0 (ATerm m_101 (ATerm), ATerm t);
 ATerm table_create_0_0 (ATerm t);
 static ATerm o_12 (ATerm t);
 static ATerm p_12 (ATerm t);
 static ATerm q_12 (ATerm t);
 ATerm read_pp_tables_0_0 (ATerm t);
 ATerm reverse_0_0 (ATerm t);
-ATerm collect_1_0 (ATerm d_107 (ATerm), ATerm t);
+ATerm collect_1_0 (ATerm c_107 (ATerm), ATerm t);
 static ATerm t_12 (ATerm t);
 static ATerm u_12 (ATerm t);
 static ATerm v_12 (ATerm t);
@@ -3432,11 +3432,11 @@ ATerm symbol2abox_0_0 (ATerm t)
                         {
                           b_40 = ATgetArgument(t, 0);
                           {
-                            ATerm q_43 = NULL;
+                            ATerm p_43 = NULL;
                             t = (ATerm) ATmakeAppl(sym_iter_1, b_40);
-                            q_43 = t;
+                            p_43 = t;
                             t = (ATerm) ATmakeAppl(sym__4, (ATerm)ATmakeAppl(sym_iter_1, b_40), c_40, g_40, h_40);
-                            t = f_6(q_43, c_40, g_40, h_40, t);
+                            t = f_6(p_43, c_40, g_40, h_40, t);
                           }
                         }
                       else
@@ -6444,14 +6444,14 @@ ATerm Sym2Strs_0_0 (ATerm t)
                                                   _fail(t);
                                                 LocalPopChoice(y_28);
                                                 {
-                                                  ATerm z_67 = NULL,a_68 = NULL;
+                                                  ATerm y_67 = NULL,a_68 = NULL;
                                                   t = a_67;
                                                   t = Sym2Strs_0_0(t);
-                                                  z_67 = t;
+                                                  y_67 = t;
                                                   t = b_67;
                                                   t = Sym2Strs_0_0(t);
                                                   a_68 = t;
-                                                  t = (ATerm) ATinsert(ATinsert(ATinsert(ATempty, (ATerm) ATinsert(ATempty, term_w_28)), a_68), z_67);
+                                                  t = (ATerm) ATinsert(ATinsert(ATinsert(ATempty, (ATerm) ATinsert(ATempty, term_w_28)), a_68), y_67);
                                                   t = concat_0_0(t);
                                                 }
                                               }
@@ -8830,14 +8830,14 @@ ATerm read_pp_tables_0_0 (ATerm t)
 }
 static ATerm t_12 (ATerm t)
 {
-  ATerm r_81 = NULL;
+  ATerm t_81 = NULL;
   if(match_cons(t, sym_PP_Table_1))
     {
-      r_81 = ATgetArgument(t, 0);
+      t_81 = ATgetArgument(t, 0);
     }
   else
     _fail(t);
-  t = r_81;
+  t = t_81;
   return(t);
 }
 static ATerm u_12 (ATerm t)

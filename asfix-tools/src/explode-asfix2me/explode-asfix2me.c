@@ -336,23 +336,23 @@ static void init_module_constant_terms (void)
 #include <srts/init-stratego-application.h>
 static ATerm u_1 (ATerm d_12, ATerm e_12, ATerm f_12, ATerm t);
 ATerm unflatten_lexical_0_0 (ATerm t);
-ATerm try_1_0 (ATerm f_93 (ATerm), ATerm t);
+ATerm try_1_0 (ATerm e_93 (ATerm), ATerm t);
 ATerm is_int_0_0 (ATerm t);
 ATerm MkLayoutCharacter_0_0 (ATerm t);
 ATerm MkLayoutConsList_0_0 (ATerm t);
 static ATerm v_1 (ATerm t_11, ATerm t);
 ATerm MkCfConsList_1_0 (ATerm s_20 (ATerm), ATerm t);
-ATerm Cons_2_0 (ATerm n_81 (ATerm), ATerm o_81 (ATerm), ATerm t);
+ATerm Cons_2_0 (ATerm m_81 (ATerm), ATerm n_81 (ATerm), ATerm t);
 ATerm MkCfConsList_2_0 (ATerm u_20 (ATerm), ATerm v_20 (ATerm), ATerm t);
 ATerm MkLexConsList_1_0 (ATerm x_20 (ATerm), ATerm t);
 ATerm unflatten_list_0_0 (ATerm t);
-ATerm map_1_0 (ATerm n_101 (ATerm), ATerm t);
+ATerm map_1_0 (ATerm m_101 (ATerm), ATerm t);
 ATerm explode_string_0_0 (ATerm t);
-ATerm list_some_1_0 (ATerm s_101 (ATerm), ATerm t);
+ATerm list_some_1_0 (ATerm r_101 (ATerm), ATerm t);
 static ATerm n_0 (ATerm t);
 static ATerm o_0 (ATerm t);
 static ATerm w_1 (ATerm c_0, ATerm e_0, ATerm t);
-ATerm bottomup_1_0 (ATerm d_95 (ATerm), ATerm t);
+ATerm bottomup_1_0 (ATerm c_95 (ATerm), ATerm t);
 ATerm system_about_0_0 (ATerm t);
 ATerm default_system_usage_2_0 (ATerm x_123 (ATerm), ATerm y_123 (ATerm), ATerm t);
 ATerm io_wrap_4_0 (ATerm d_122 (ATerm), ATerm e_122 (ATerm), ATerm f_122 (ATerm), ATerm g_122 (ATerm), ATerm t);

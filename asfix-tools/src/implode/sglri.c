@@ -246,21 +246,21 @@ static void init_module_constant_terms (void)
 #include <srts/init-stratego-application.h>
 ATerm get_config_0_0 (ATerm t);
 ATerm xtc_transform_2_0 (ATerm l_6 (ATerm), ATerm m_6 (ATerm), ATerm t);
-ATerm debug_1_0 (ATerm d_101 (ATerm), ATerm t);
+ATerm debug_1_0 (ATerm c_101 (ATerm), ATerm t);
 ATerm read_from_0_0 (ATerm t);
 ATerm conc_strings_0_0 (ATerm t);
 ATerm copy_char_0_0 (ATerm t);
 ATerm lt_0_0 (ATerm t);
 ATerm dec_0_0 (ATerm t);
 ATerm Snd_0_0 (ATerm t);
-ATerm fetch_elem_1_0 (ATerm x_101 (ATerm), ATerm t);
+ATerm fetch_elem_1_0 (ATerm w_101 (ATerm), ATerm t);
 ATerm add_indices_0_0 (ATerm t);
 ATerm get_lines_0_0 (ATerm t);
 ATerm read_text_file_0_0 (ATerm t);
 ATerm report_area_0_1 (ATerm w_2, ATerm t);
 ATerm fprintnl_0_0 (ATerm t);
 ATerm stderr_stream_0_0 (ATerm t);
-ATerm finally_2_0 (ATerm a_94 (ATerm), ATerm b_94 (ATerm), ATerm t);
+ATerm finally_2_0 (ATerm z_93 (ATerm), ATerm a_94 (ATerm), ATerm t);
 static ATerm e_0 (ATerm t);
 ATerm report_parse_error_summary_0_1 (ATerm t_2, ATerm t);
 ATerm call_0_3 (ATerm w_67, ATerm x_67, ATerm y_67, ATerm t);

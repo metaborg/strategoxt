@@ -221,12 +221,12 @@ static void init_module_constant_terms (void)
 }
 #include <srts/init-stratego-application.h>
 ATerm get_config_0_0 (ATerm t);
-ATerm try_1_0 (ATerm f_93 (ATerm), ATerm t);
+ATerm try_1_0 (ATerm e_93 (ATerm), ATerm t);
 ATerm pass_verbose_0_0 (ATerm t);
 ATerm write_to_0_0 (ATerm t);
 ATerm concat_0_0 (ATerm t);
 ATerm ReadFromFile_0_0 (ATerm t);
-ATerm map_1_0 (ATerm n_101 (ATerm), ATerm t);
+ATerm map_1_0 (ATerm m_101 (ATerm), ATerm t);
 ATerm create_table_file_0_0 (ATerm t);
 static ATerm a_0 (ATerm t);
 static ATerm b_0 (ATerm t);

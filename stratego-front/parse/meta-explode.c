@@ -359,12 +359,12 @@ static void init_module_constant_terms (void)
 }
 #include <srts/init-stratego-application.h>
 ATerm str_explode_0_0 (ATerm t);
-ATerm map_1_0 (ATerm n_101 (ATerm), ATerm t);
+ATerm map_1_0 (ATerm m_101 (ATerm), ATerm t);
 ATerm TrmOp_0_0 (ATerm t);
 static ATerm d_1 (ATerm f_15, ATerm g_15, ATerm t);
 ATerm Snd_0_0 (ATerm t);
 ATerm Fst_0_0 (ATerm t);
-ATerm foldr_3_0 (ATerm m_108 (ATerm), ATerm n_108 (ATerm), ATerm o_108 (ATerm), ATerm t);
+ATerm foldr_3_0 (ATerm l_108 (ATerm), ATerm m_108 (ATerm), ATerm n_108 (ATerm), ATerm t);
 static ATerm a_0 (ATerm t);
 static ATerm g_0 (ATerm t);
 static ATerm g_1 (ATerm j_15, ATerm h_15, ATerm t);
@@ -381,12 +381,12 @@ ATerm MetaExplode_0_0 (ATerm t);
 ATerm int_to_string_0_0 (ATerm t);
 ATerm is_int_0_0 (ATerm t);
 ATerm Clean_0_0 (ATerm t);
-ATerm try_1_0 (ATerm f_93 (ATerm), ATerm t);
-ATerm topdown_1_0 (ATerm c_95 (ATerm), ATerm t);
-ATerm oncetd_1_0 (ATerm g_96 (ATerm), ATerm t);
+ATerm try_1_0 (ATerm e_93 (ATerm), ATerm t);
+ATerm topdown_1_0 (ATerm b_95 (ATerm), ATerm t);
+ATerm oncetd_1_0 (ATerm f_96 (ATerm), ATerm t);
 ATerm Nil_0_0 (ATerm t);
-ATerm Cons_2_0 (ATerm n_81 (ATerm), ATerm o_81 (ATerm), ATerm t);
-ATerm alltd_1_0 (ATerm u_96 (ATerm), ATerm t);
+ATerm Cons_2_0 (ATerm m_81 (ATerm), ATerm n_81 (ATerm), ATerm t);
+ATerm alltd_1_0 (ATerm t_96 (ATerm), ATerm t);
 static ATerm k_0 (ATerm t);
 ATerm ImplodeLayout_1_0 (ATerm d_31 (ATerm), ATerm t);
 ATerm get_config_0_0 (ATerm t);
