@@ -72,7 +72,7 @@ strategies
 
   sdf2sdf-options = 
       Option("--pack-sdf",    !Tool("pack-sdf"))
-    + Option("--sdfcons",     !Tool("sdfcons"))
+    + Option("--sdfcons",     !Tool("sdf-cons"))
     + Option("--sdf2asdf",    !Tool("sdf2asdf"))
     + Option("--sdf-bracket", !Tool("sdf-bracket"))
 
