@@ -25,7 +25,7 @@ strategies
     exp-test(|txt, txt)
 
   exp-test(|txt1, txt2) =
-    apply-test(!txt1, 
+    apply-test(<concat-strings> [txt1, "  ->  " , txt2],
       xtc-temp-files(
         <print-to> [<id>]
       ; xtc-sglr(!"Exp.tbl")

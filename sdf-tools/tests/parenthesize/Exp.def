@@ -5,24 +5,59 @@ exports
   sorts Exp Id
 
   context-free syntax
-    Exp "*" Exp -> Exp {cons("Mul"), left}
-    Exp "/" Exp -> Exp {cons("Div"), left}
+    Id           -> Exp {cons("Var")}
+    "(" Exp ")"  -> Exp {bracket}
 
-    Exp "+" Exp -> Exp {cons("Plus"), left}
-    Exp "-" Exp -> Exp {cons("Min"), left}
+    Exp "instanceof" Id -> Exp {cons("InstanceOf")}
 
-    "(" Exp ")" -> Exp {bracket}
-    Id          -> Exp {cons("Var")}
+    "++" Exp -> Exp {cons("PreIncr")}
+    "--" Exp -> Exp {cons("PreDecr")}
+    Exp "++" -> Exp {cons("PostIncr")}
+    Exp "--" -> Exp {cons("PostDecr")}
+
+    Exp "*"   Exp -> Exp  {left, cons("Mul")}
+    Exp "/"   Exp -> Exp  {left, cons("Div")}
+    Exp "+"   Exp -> Exp  {left, cons("Plus")}
+    Exp "-"   Exp -> Exp  {left, cons("Minus")}
+    Exp "<"   Exp -> Exp  {left, cons("Lt")}
+    Exp ">"   Exp -> Exp  {left, cons("Gt")}
+    Exp "=="  Exp -> Exp  {left, cons("Eq")}
+    Exp "!="  Exp -> Exp  {left, cons("NotEq")}
+
+    Exp "&&"  Exp -> Exp  {left, cons("And")}
+    Exp "||"  Exp -> Exp  {left, cons("Or")}
+
+    Exp "?" Exp ":" Exp -> Exp {right, cons("Cond")}
 
   context-free priorities
-      {left:
-        Exp "*" Exp -> Exp
-        Exp "/" Exp -> Exp
-      }
-    > {left:
-        Exp "+" Exp -> Exp
-        Exp "-" Exp -> Exp
-      }
+    {right:
+      Exp "++" -> Exp
+      Exp "--" -> Exp
+    }
+  > {right:
+      "++" Exp -> Exp
+      "--" Exp -> Exp
+    }
+  > {left:
+      Exp "*" Exp -> Exp
+      Exp "/" Exp -> Exp
+    } 
+  > {left:
+      Exp "+" Exp -> Exp
+      Exp "-" Exp -> Exp
+    }
+  > {left:
+      Exp "instanceof" Id -> Exp
+      Exp "<"   Exp -> Exp
+      Exp ">"   Exp -> Exp
+    }
+  > {left:
+      Exp "=="  Exp -> Exp
+      Exp "!="  Exp -> Exp
+    }
+  >   Exp "&&"  Exp -> Exp
+  >   Exp "||"  Exp -> Exp
+  >   Exp "?" Exp ":" Exp -> Exp
 
   lexical syntax
     [a-zA-Z\_] [a-zA-Z0-9\_]* -> Id
