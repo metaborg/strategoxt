@@ -919,3 +919,26 @@ exports
     "p" [0-9\']*     -> Production
     "p" [0-9\']* "*" -> Production*
     "p" [0-9\']* "+" -> Production+
+
+  variables %% section 9.3.1
+
+    "Mid" [0-9\']*     -> ModuleId
+    "M"   [0-9\']* "*" -> ModuleName
+    
+    "s" [0-9\']*     -> Section
+    "s" [0-9\']* "*" -> Section*
+    "s" [0-9\']* "+" -> Section+
+
+    "m" [0-9\']*     -> Module
+    "m" [0-9\']* "*" -> Module*
+    "m" [0-9\']* "+" -> Module+
+
+    "d" [0-9\']*     -> Definition
+
+    "i" [0-9\']*     -> Import
+    "i" [0-9\']* "*" -> Import*
+    "i" [0-9\']* "+" -> Import+
+
+    "is" [0-9\']*     -> ImpSection
+    "is" [0-9\']* "*" -> ImpSection*
+    
