@@ -89,6 +89,25 @@ strategies
   //; debug(!"overriden: ")
   )
 
+  extend-assert-undefined(ns) = ?key; //debug(!"assert: ");
+  where(ns => ns
+  ; (<table-get>(ns, Scopes) <+ ![[]]) => [scope | scopes]
+  ; (<elem>(key, scope)
+     ; <table-get>(ns, key) => [prevvals | morevals]
+     ; <table-put>(ns, key, [[] | morevals])
+    <+ <table-push>(ns, key, [])
+       ; <table-put>(ns, Scopes, [[key | scope] | scopes])
+     )
+  //; debug(!"asserted: ")
+  )
+
+  extend-override-key-undefined(ns) = ?key; //debug(!"override-key: ");
+  where(ns => ns
+    ; <table-get>(ns, key) => [prevvals | morevals]
+    ; <table-put>(ns, key, [[] | morevals])
+  //; debug(!"overriden: ")
+  )
+
    extend-rewrite(ns) = rewrite(ns)
 \end{code}
 
