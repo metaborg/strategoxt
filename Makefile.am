@@ -9,12 +9,12 @@ all: install
 rpm : dist
 	rpmbuild -ta $(PACKAGE)-$(VERSION).tar.gz
 
-check clean install uninstall:
-	PATH=$(bindir):$${PATH}; export PATH ;\
-	ulimit -s 20000 ;\
-	for subdir in $(SUBDIRS); do \
-	   ( cd $$subdir && $(MAKE) $@ ) || exit 1 ;\
-	done
+# check clean install uninstall:
+#	PATH=$(bindir):$${PATH}; export PATH ;\
+#	ulimit -s 20000 ;\
+#	for subdir in $(SUBDIRS); do \
+#	   ( cd $$subdir && $(MAKE) $@ ) || exit 1 ;\
+#	done
 
 package-dist :
 	PATH=$(bindir):$${PATH}; export PATH ;\
