@@ -39,7 +39,7 @@ nedit.highlightPatterns: \
 		string:"L?""":"""":"$":String::\n\
 		character constant:"L?'.'":::Character Const::\n\
 		operators:"\\+|\\<\\+|\\+\\>|=\\>|\\-\\>|;|!|\\?|\\{\\||\\|\\}|:\\+|:\\-":::Keyword::\n\
-		str keyword:"<(?:all|case|constructors|end|fail|id|imports|in|let|module|not|one|overlays|prim|extend|otherwise|override|rules|script|signature|some|sorts|strategies|stratego|switch|test|thread|where)>":::Keyword::\n\
+		str keyword:"<(?:all|case|constructors|else|end|fail|id|if|imports|in|let|module|not|one|overlays|prim|extend|otherwise|override|rec|rules|script|signature|some|sorts|strategies|stratego|switch|test|then|thread|where)>":::Keyword::\n\
 		scopesSpec:"(\\{((\\s)*([\\l'\\-_][\\w'\\-\\*]*)(\\s)*,)*(\\s)*([\\l'\\-_][\\w'\\-\\*]*)(\\s)*:|\\})":::Label::\n\
 		str strategy def:"^[\\s]*([\\l'\\-_][\\w'\\-]*)[\\s\\n]*(\\([\\s\\n]*([\\l'\\-_][\\w'\\-\\*]*([\\s\\n]*,[\\s\\n]*[\\l'\\-_][\\w'\\-\\*]*)*)?([\\s\\n]*\\|[\\s\\n]*([\\l'\\-_][\\w'\\-\\*]*([\\s\\n]*,[\\s\\n]*[\\l'\\-_][\\w'\\-\\*]*)*))?[\\s\\n]*\\))?[\\n\\s]*=":::Identifier::\n\
 		str strategy def name:"\\1":""::Identifier:str strategy def:C\n\
