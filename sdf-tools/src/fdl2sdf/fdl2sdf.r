@@ -7,7 +7,7 @@ strategies
 
 fdl2sdf = 
    io-idwrap(InOutId("\"fdl-1\"", !"\"sdf-2.1\""), 
-   bottomup(Fdl2Sdf))
+   bottomup(try(Fdl2Sdf)))
 
 short-description(p) = !["Usage: ", <p>(), " [options]"]
 
@@ -64,6 +64,4 @@ Fdl2Sdf:
       <collect(sort(id));uniq>d       => s;
       !Exports(Sorts(s))              => 'sorts;
       !Exports(context-free-syntax(d)) => cfs
-
-Fdl2Sdf = id
 

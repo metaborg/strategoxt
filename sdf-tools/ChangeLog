@@ -1,3 +1,7 @@
+2002-02-19 Merijn de Jonge <mdejonge@cwi.nl>
+   * src/fdl2sdf/fdl2sdf.r: bug fix due to incorrect dependency on evaluation
+     order
+
 2002-03-14  Eelco Visser  <visser@acm.org>
 
 	* src/sdf-cons/sdf-cons.r: Upgraded definition of uniquify-constr
