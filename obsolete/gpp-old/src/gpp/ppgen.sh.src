@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: ppgen.sh.src,v 1.1 2001/06/05 09:11:48 mdejonge Exp $
+# $Id: ppgen.sh.src,v 1.2 2001/06/08 07:29:02 mdejonge Exp $
 
 # usage:
 #   ppgen [-A] [-a] [-h] [-i grammar] [-o file] [-S] [-v]
@@ -90,7 +90,7 @@ esac
 cmd="$cmd \
      | ${PREFIX}/libexec/Ppgen ${SILENT} \
      | ast2abox ${VERBOSE} -p ${PREFIX}/share/gpp/pp-tables.pp \
-     | ${PREFIX}/bin/abox2text -q -a"
+     | ${PREFIX}/bin/abox2text"
 
 # -o option has been specified
 if [ "a${OUTPUT}" != "a-" -a "a${OUTPUT}" != "a" ]; then

@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: sdf2text.sh.src,v 1.1 2001/06/07 12:06:37 mdejonge Exp $
+# $Id: sdf2text.sh.src,v 1.2 2001/06/08 07:28:15 mdejonge Exp $
 
 #
 # sdf2text -- a tool for pretty-printing SDF modules or definitions
@@ -88,9 +88,9 @@ done
 if [ "a${ABSTRACT}" = "afalse" ]; then
    sglr -p ${PREFIX}/share/sdf-tools/sdf.cons.tbl ${INPUT} \
     | asfix2abox -p ${PREFIX}/share/sdf-tools/sdf.cons.pp \
-    | abox2text -q -a ${OUTPUT} || exit 1
+    | abox2text ${OUTPUT} || exit 1
 else
    ast2abox  ${INPUT} -p ${PREFIX}/share/sdf-tools/sdf.cons.pp  \
-    | abox2text -q -a ${OUTPUT} || exit 1 
+    | abox2text ${OUTPUT} || exit 1 
 fi
 
