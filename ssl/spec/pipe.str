@@ -17,9 +17,7 @@ strategies
   stdin-from-pipe =
   where(
     ?Pipe(fd1, fd2)
-    ; STDIN_FILENO; close
-    ; <dup> fd1
-    ; <close> fd1
+    ; <dup2> (fd1, <STDIN_FILENO>)
     ; <close> fd2
   )
 
@@ -33,10 +31,8 @@ strategies
   stdout-to-pipe =
   where(
     ?Pipe(fd1, fd2)
-    ; STDOUT_FILENO; close
-    ; <dup> fd2
+    ; <dup2> (fd2, <STDOUT_FILENO>)
     ; <close> fd1
-    ; <close> fd2
   )
 
   // create a file that is connected to output side (fd2) of the pipe
@@ -49,7 +45,7 @@ strategies
   where(
     ?(p, t)
     ; <file-to-pipe> p => outfile
-    ; <WriteToTextFile> (outfile, t)
+    ; <fprint> (outfile, [t])
     ; <fclose> outfile
   )
 

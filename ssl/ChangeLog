@@ -1,3 +1,14 @@
+2004-12-10  Merijn de Jonge <mdejonge@cs.uu.nl>
+	* spec/pipe.str: bug fixes. 
+	  - stdin-from-pipe and stdout-to-pipe didn't work correctly when
+	  Pipe argument was stdin (0) or stdout (1). Since stdin and stdout
+	  were explicitly closed, the connection with the pipe was lost.
+	  Using dup2 instead of dup solves the problem because there is no
+	  need to close file descriptiors.
+	  -write-term-to-text-pipe uses WriteToTextFile but outfile argument
+	  is a stream. Replacing WriteToTextFile by fprint solved the
+	  problem.
+
 2004-08-29  Martin Bravenboer <martin@cs.uu.nl>
 
 	* spec/string.str: added a string-tokenize variant using a term
