@@ -18,9 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.2 2001/06/07 09:48:05 mdejonge Exp $
-
-include ${GPP}/share/gpp/gpp.Makefile
+# $Id: Makefile.am,v 1.3 2001/06/07 15:16:05 mdejonge Exp $
 
 # define any subdir here
 SUBDIRS      = data
@@ -33,5 +31,7 @@ pkgdata_DATA = $(wildcard *.r) \
 CLEANFILES += sdf.pp.cons.pp.af 
 
 %.tbl : %.def
-	PATH=$(PGEN)/bin:$${PATH} sdf2table $< -o $@
+	PATH=$(PGEN)/bin:$$PATH} sdf2table $< -o $@
 
+%.pp.af : %.pp
+	$(MAKE) -f $(GPP)/share/gpp/gpp.Makefile $@
