@@ -1,3 +1,6 @@
+2001-06-11 Merijn de Jonge <mdejonge@cwi.nl>
+   * src/visamb component added (moved integration stuff to xt package)
+
 2001-06-08 Merijn de Jonge <mdejonge@cwi.nl> 
    * removed obsolete calls to iowrapO
 
