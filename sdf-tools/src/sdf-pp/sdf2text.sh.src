@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: sdf2text.sh.src,v 1.4 2002/08/14 07:00:40 mdejonge Exp $
+# $Id: sdf2text.sh.src,v 1.5 2002/08/15 06:24:24 mdejonge Exp $
 
 #
 # sdf2text -- a tool for pretty-printing SDF modules or definitions
@@ -81,7 +81,7 @@ do
       -i) INPUT="-i ${2}" ; shift; shift ;;
       -o) OUTPUT="-o ${2}" ; shift; shift ;;
       -v) version; exit 0 ;;
-       *) printf "Invalid option $1" ; exit 1;;
+      -*) printf "Invalid option $1" ; exit 1;;
    esac
 done
 
