@@ -367,6 +367,7 @@ regular tree grammar
     FunDefTypeSpec               -> DeclarationSpecifier
     FunDefTypeSpec               -> TypeSpecifier
     FunDefTypeSpec               -> NoTypeSpecifier
+    Declaration                  -> FunDef
     FunDef                       -> FunDef(FunDefTypeSpec,FunDefDecl,CompoundStm)
     ExternalDef                  -> Declaration
     ExternalDef                  -> FunDef

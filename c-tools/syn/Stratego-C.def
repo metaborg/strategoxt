@@ -929,6 +929,8 @@ exports
 
     FunDefTypeSpec FunDefDecl CompoundStm -> FunDef {cons("FunDef")}
 
+    FunDef -> Declaration %% injection for internal functions (a GCC extension of C)
+
     NoTypeSpecifier           -> FunDefTypeSpec
     TypeSpecifier             -> FunDefTypeSpec
     DeclarationSpecifier      -> FunDefTypeSpec

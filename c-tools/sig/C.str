@@ -67,8 +67,6 @@ signature
                         : Declarator -> VarDecl
     IdDeclInit          : IdDeclarator * Initializer -> IdDecl
                         : IdDeclarator -> IdDecl
-    Declaration2        : j_0 * List(VarDecl) -> Declaration
-    Declaration         : o_1 * List(IdDecl) -> Declaration
     Volatile            : TypeQualifier
     Const               : TypeQualifier
     Void                : BasicTypeName
@@ -188,6 +186,9 @@ signature
                         : DeclarationSpecifier -> FunDefTypeSpec
                         : TypeSpecifier -> FunDefTypeSpec
                         : NoTypeSpecifier -> FunDefTypeSpec
+    Declaration2        : j_0 * List(VarDecl) -> Declaration
+    Declaration         : o_1 * List(IdDecl) -> Declaration
+                        : FunDef -> Declaration
     FunDef              : FunDefTypeSpec * FunDefDecl * CompoundStm -> FunDef
     TranslationUnit     : List(ExternalDef) -> TranslationUnit
     TypedefDeclarator2  : List(Pointer) * TypedefDeclarator * Option(PostfixingAbstractDeclarator) -> TypedefDeclarator
