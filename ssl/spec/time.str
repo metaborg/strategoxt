@@ -43,8 +43,9 @@ signature
   
 strategies
 
-  /*   time  returns the time since the Epoch (00:00:00 UTC, JanÂ­
-       uary 1, 1970), measured in seconds. */
+  /* time returns the time since the Epoch (00:00:00 UTC, January 1, 1970), measured in seconds.
+   * It is an alias of now-epoch-time.
+   */
   time = 
     prim("SSL_time")
 
