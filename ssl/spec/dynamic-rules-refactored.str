@@ -577,7 +577,7 @@ strategies // setting a rule
               rm1(|scpid, tbl2, key)
 	      <+ if <hashtable-get(|key)> tbl2 then
                    <hashtable-remove(|(scpid, key))> tbl1
-		   ; <iset-add(|(ccpid, key))> rmset 
+		   ; <iset-add(|(scpid, key))> rmset 
 	         end 
 
          in if <iset-contains(|label)> labelset then
@@ -693,7 +693,7 @@ strategies // extending a rule
               rm1(|scpid, tbl2, key)
 	      <+ if <hashtable-get(|key)> tbl2 then
                    <hashtable-remove(|(scpid, key))> tbl1
-		   ; <iset-add(|(ccpid, key))> rmset 
+		   ; <iset-add(|(scpid, key))> rmset 
 	         end         
 
          in if <iset-contains(|label)> labelset then

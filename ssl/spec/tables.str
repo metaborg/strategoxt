@@ -66,16 +66,27 @@ strategies
    */
   hashtable-putlist(|kv*) =
     ?htbl
-  ; where(<map(\ (key, value) -> <hashtable-put(|key, value)> htbl \)> kv*)
+    ; where(<map(\ (key, value) -> <hashtable-put(|key, value)> htbl \)> kv*)
+
+  hashtable-putlist(f : ATerm * ATerm * Hashtable -> Hashtable|kv*) = 
+    ?htbl
+    ; where(<map(\ (key, value) -> <f(|key, value)> htbl \)> kv*)
+
+  /**
+   * Create a new hashtable and initialize it from a key-value pair list.
+   */
+  hashtable-init = 
+    ?kv*
+  ; new-hashtable(|<length>, 75)
+  ; hashtable-putlist(|kv*)
 
   /**
    * Creates a new hashtable and copies the entire contents of the current
    * table into the new one.
    */
   hashtable-copy =
-    hashtable-getlist => kv*
-  ; new-hashtable(|<length>, 75)
-  ; hashtable-putlist(|kv*)
+    hashtable-getlist
+  ; hashtable-init
 
 /**
  * Stack operations (when stored values in hashtables are list-based stacks)

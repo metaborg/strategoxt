@@ -33,6 +33,7 @@ imports
 	integers
 	reals
 	tables
+	nested-tables
         sets
         date-format
 

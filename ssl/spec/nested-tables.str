@@ -1,0 +1,66 @@
+module nested-tables
+imports tables
+signature
+  constructors
+    NestedTable : Hashtable -> TableValue
+    Tables      : TableKey
+    NewTable    : TableKey
+strategies
+
+  nestedtable-put(|keys, value) = 
+    let forward = try(?NewTable; !NestedTable(<new-hasthable>); !(<id>,<id>))
+     in hashtable-put(forward | keys, value)
+    end
+
+  nestedtable-put(forward | keys, value) = 
+    forward
+    ; ?NestedTable(tbl)
+    ; <nestedtable-put-aux(forward | tbl, value)> keys 
+
+  nestedtable-get(|keys) =
+    nestedtable-get(id|keys)
+
+  nestedtable-get(forward|keys) = 
+    forward
+    ; ?NestedTable(tbl)
+    ; <nestedtable-get-aux(|tbl)> keys
+
+//  nestedtable-remove(|keys) = 
+
+//  nestedtable-keys =
+
+//  nestedtable-getlist =
+
+//  nestedtable-putlist(|kv*) =
+
+strategies // hidden
+
+  nestedtable-get-aux(forward | tbl) :
+    [] -> tbl
+
+  nestedtable-get-aux(forward | tbl) :
+    [key] -> value
+    where <hashtable-get(|key)> tbl => value
+
+  nestedtable-get-aux(forward | tbl1) :
+    [key1, key2 | keys] -> value
+    where <hashtable-get(|key1); forward> tbl1 => NestedTable(tbl2)
+	; <nestedtable-get-aux(forward | tbl2)> [key2 | keys] => value
+
+strategies // hidden
+
+  nestedtable-put-aux(forward | tbl, value) :
+    [] -> tbl
+    where fail
+
+  nestedtable-put-aux(forward | tbl, value) :
+    [key] -> tbl
+    where <hashtable-put(|key, value)> tbl
+
+  nestedtable-put-aux(forward | tbl1, value) :
+    [key1, key2 | keys] -> value
+    where (<hashtable-get(|key1); forward> tbl1 => NestedTable(tbl2)
+           <+ <forward> NewTable => (x, NestedTable(tbl2))
+              ; <hashtable-put(|key1, x)> tbl1
+	      ; <hashtable-push(|Tables, key1)> tbl1)
+	; <nestedtable-put-aux(forward | tbl2, value)> [key2 | keys]
