@@ -191,6 +191,14 @@ strategies
   xtc-iowrap(extra-opts, s) = 
     xtc-io-wrap(extra-opts, s)
 
+  xtc-input-wrap(s) =
+    xtc-input-wrap(fail,s)
+
+  xtc-input-wrap(extra-options, s) = 
+      option-wrap(extra-options <+ input-options, xtc-input(s))
+
+
+
   // check tools upon which this tool depends 
 
   check-options(deps) = 
