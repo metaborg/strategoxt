@@ -26,8 +26,24 @@ strategies
     rec x([id]; s1 <+ FoldR; (id, x); s2)
 
   /**
-   * @type s1  a * b -> b
+   * foldr, requires a list of length > 1.
+   * The additional parameter strategy f is applied to each element just
+   * before each folding step.
+   *
+   * @type s1  [c] -> b
+   * @type s2  c * b -> b
+   * @type f   a -> c
    * @type     [a] -> b
+   */
+  foldr1(s1, s2, f) = 
+    rec x([f]; s1 <+ FoldR; (f, x); s2)
+
+  /**
+   * foldr, requires a list of length > 1.
+   * Note that s maps (a, a) to a, only one type is involved.
+   *
+   * @type s  a * a -> a
+   * @type     [a] -> a
    */
   foldr1(s) = 
     rec x((FoldR1 <+ FoldR; (id, x)); s)
@@ -42,6 +58,10 @@ strategies
     + \ [y|ys] -> <s2>(y, <foldr(s1, s2)> ys) \
 
   /**
+   * Right fold a list.
+   * The additional parameter strategy f is applied to each element just
+   * before each folding step.
+   *
    * s1 :: [] -> b
    * s2 :: c * b -> b
    *  f :: a -> c
