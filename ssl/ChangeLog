@@ -1,5 +1,15 @@
 2003-08-07  Martin Bravenboer <mbravenb@cs.uu.nl>
 
+  * collect-om(s) and collect-set(s) are now defined
+    in terms of collect-om(s, op).
+
+  * collect-om(s, op): collect outermost terms using
+    a user specified union strategy.
+
+  * xDoc comments
+
+2003-08-07  Martin Bravenboer <mbravenb@cs.uu.nl>
+
   * Moved strlen en strcat from posix-file to string.
   * Defined string-length in terms of strlen.
   * Defined conc-strings in terms of strcat.

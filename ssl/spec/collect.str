@@ -6,14 +6,16 @@ imports list-basic list-misc term
 
 strategies
 
-  // collect all subtrees for which s succeeds
-
+  /**
+   * collect all subterms for which s succeeds
+   */
   collect-all(s) =
     ![<s> | <crush(![],union,collect-all(s))>]
     <+ crush(![],union,collect-all(s))
 
-  // collect with user-defined union operator
-
+  /**
+   * collect all subterms with user-defined union operator.
+   */
   collect-all(s,un) =
     rec x(![<s> | <crush(![],un,x)>]
           <+ crush(![],un,x))
@@ -25,19 +27,38 @@ strategies
     where((![<s> | <acc>] <+ acc) => ys);
     crush(!ys, \ (x, xs) -> <postorder-collect(s, !xs)> x \ )
 
-  collect-om(s) =
-    ![<s>] 
-    <+ crush(![],union,collect-om(s))
-  
- /**
-  * Produce a collection of all outermost subterms for which a given strategy succeeds.
-  */
+strategies
+
+  /**
+   * Synonym of collect-om.
+   */
   collect(s) = 
     collect-om(s)
 
+  /**
+   * Collect a set of outermost subterms for which s succeeds.
+   */
+  collect-om(s) =
+    collect-om(s, union)
+
+  /**
+   * Collect a bag of outermost subterms for which s succeeds.
+   *
+   * @warning despite its name, this strategy does return duplicates.
+   */
   collect-set(s) =
+    collect-om(s, conc)
+
+  /**
+   * Collect outermost subterms for which s succeeds.
+   *
+   * Intermediate results are combined using the 'op' strategy
+   */
+  collect-om(s, op) =
     ![<s>] 
-    <+ crush(![],conc,collect-set(s))
+    <+ crush(![], op, collect-om(s, op))
+
+strategies
 
   collect(s, skip: (a -> a) * (a -> a) * a -> a) =
     ![<s>]
@@ -64,16 +85,19 @@ strategies
           <+ CollectSplit(x, splitter))
 
  /**
-  * Strategy \verb|collect-split(f, g)| reduces terms with
-  * \verb|f| and extracts information with \verb|g| resulting in a
-  * pair \verb|(t, xs)| of a reduced term and the list of
-  * extracted subterms.
+  * Produces pair of a reduced term and a list of extracted subterms.
+  *
+  * Reduces terms with f and extracts information with g resulting in a
+  * pair (t, xs) of a reduced term and the list of extracted subterms.
   */
   collect-split(f, g) = 
     rec x(CollectSplit(x, !(<try(f)>, <g <+ ![]>)))
     
 strategies
 
+  /**
+   * @obsolete use crush(![],union,s)
+   */
   collect-kids(s) = 
     obsolete(!"collect-kids(s); use crush(![],union,s)");
     crush(![],union,s)

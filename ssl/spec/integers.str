@@ -16,8 +16,19 @@ strategies
    */
   plus 	= obsolete(!"plus; use add"); add
 
+  /**
+   * Adds two numbers (integer or real)
+   */
   add  = ?(x,y); (prim("SSL_addi",x,y) <+ prim("SSL_addr",x,y))
+
+  /**
+   * Adds two integers
+   */
   addi = ?(x,y); prim("SSL_addi",x,y)
+
+  /**
+   * Adds two reals
+   */
   addr = ?(x,y); prim("SSL_addr",x,y)
 
   subt  = ?(x,y); (prim("SSL_subti",x,y) <+ prim("SSL_subtr",x,y))
