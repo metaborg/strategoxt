@@ -35,12 +35,7 @@ MTIME=`date +%Y%m%d%H%M.%S`
 echo "MTIME"
 echo $MTIME
 
-BOOTSTRAPPED_FILES=`find $SRCROOT -name "*.rtree" -o -name "*.c" -o -name "*.pp.af" -o -name "*.pp
-" -o -name "*.tbl" -o -name "*.def"`
-touch -t $MTIME $BOOTSTRAPPED_FILES
-
-echo "BOOTSTRAPPED_FILES"
-echo $BOOTSTRAPPED_FILES
+find . -print | xargs touch -t $MTIME
 
 # Make some scripts executable, because we checkout with wget in the daily build system.
 
