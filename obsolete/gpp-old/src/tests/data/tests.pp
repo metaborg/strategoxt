@@ -16,8 +16,8 @@
    iter-sep1                                      -- _1,
    iter-sep1.1:iter-sep                           -- _1 KW[","],
    iter-sep2                                      -- _1,
-   iter-sep2.1:iter-sep                           -- H hs=0 [_1 _2],
-   iter-sep2.1:iter-sep.1:iter                    -- V[_1],
+   iter-sep2.1:iter-sep                           -- H hs=0 [V[_1] _2],
+   iter-sep2.1:iter-sep.1:iter                    -- _1,
    iter-sep2.1:iter-sep.2:iter                    -- _1,
    iter-sep3                                      -- _1,
    iter-sep3.1:iter-sep                           -- _1 _2,
@@ -52,5 +52,7 @@
    iter-seq                                       -- _1,
    iter-seq.1:iter                                -- _1,
    iter-seq.1:iter.1:seq                          -- _1 _2,
-   or						  -- _1 "\\/" _2
+   or						  -- _1 "\\/" _2,
+   lit-iter-star                                  -- _1,
+   lit-iter-star.1:iter-star                      -- KW["aap"]
 ]

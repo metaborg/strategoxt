@@ -4,7 +4,7 @@ imports Literals
 exports
    sorts Opt-seq Opt-seq2 Opt-iter Opt-iter1 Iter-sep Iter-sep1 Iter-sep2
          Iter-sep3 Iter-sep-seq Iter-sep-seq2 Alt Alt2 Alt3 Seq Seq2 Iter-seq
-         Seq3 Or QLiteral
+         Seq3 Or QLiteral Lit-Iter-Star
 
 lexical syntax
    [\ \t\n] -> LAYOUT
@@ -45,6 +45,8 @@ context-free syntax
 
    A "\\/" B			-> Or {cons("or")}
 
+
+   "aap"*                       -> Lit-Iter-Star {cons("lit-iter-star")}
 
 module Literals
 imports Layout

@@ -18,10 +18,12 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.4 2002/05/08 07:49:58 mdejonge Exp $
+# $Id: Makefile.am,v 1.5 2002/08/01 15:04:49 mdejonge Exp $
 
 TEST_SET = Opt-seq Opt-seq2 Opt-iter Opt-iter1 Iter-sep Iter-sep1 Iter-sep2 Iter-sep3 \
 	   Iter-sep-seq Iter-sep-seq2 Alt Alt2 Alt3 Seq Iter-seq Seq2 Seq3 Or
+# Due to a bug in implode-asfix, this test won't work
+#           Lit-Iter-Star
 
 EXTRA_DIST = tests.def tests.pp  \
 	     $(TEST_SET:%=%.trm) $(TEST_SET:%=%-asfix.in) $(TEST_SET:%=%-af.in)\
