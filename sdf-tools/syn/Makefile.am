@@ -15,6 +15,7 @@ Sdf2-Syntax.def : \
   Basic-Sdf-Syntax.sdf \
   CC-Sdf-Syntax.sdf \
   Character-Class-Syntax.sdf \
+  Character-Syntax.sdf \
   Grammar-Syntax.sdf \
   IntCon.sdf \
   Kernel-Sdf-Syntax.sdf \
@@ -32,7 +33,6 @@ Sdf2-Syntax.def : \
   Sdf2-Syntax.sdf \
   Sorts-Sdf-Syntax.sdf \
   Symbols.sdf 
-
 
 
 
