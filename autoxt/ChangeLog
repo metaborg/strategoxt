@@ -1,3 +1,7 @@
+2004-05-04   Merijn de Jonge  <mdejonge@cs.uu.nl>
+	* Makefile.xt: Fixed generation of pretty-print tables during 'make
+          distcheck'.
+
 2004-03-26   Martin Bravenboer  <martin@cs.uu.nl>
 
 	* Added the XT_TERM_DEFINE macro, which defines ATerm variants for

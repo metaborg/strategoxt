@@ -119,11 +119,12 @@ bootclean-recursive :
 	@if [ ! -f ${srcdir}/$@ ]; then \
            $(GPP)/bin/ppgen -i $< -o $@ ;\
         else \
-           $(GPP)/bin/parse-pp-table -i $@ -o $@.af ;\
+           $(GPP)/bin/parse-pp-table -i ${srcdir}/$@ -o $@.af ;\
            $(GPP)/bin/ppgen -t -i $< \
            | $(GPP)/bin/pptable-diff --old $@.af 2>&1 || \
                      eval "echo '## pptable-diff error: $@ is not consistent with syntax definition' >&2; exit 1";\
            touch $@ ;\
+           $(RM) $@.af ;\
         fi
 
 ###########################################################
