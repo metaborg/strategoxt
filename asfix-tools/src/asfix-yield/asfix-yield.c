@@ -1783,15 +1783,9 @@ ATerm default_system_usage_0_0 (ATerm t)
     t = term_m_8;
     t = echo_0_0(t);
     t = term_u_7;
-    if(((c_23 != NULL) && (c_23 != t)))
-      _fail(t);
-    else
-      c_23 = t;
+    c_23 = t;
     t = term_v_7;
-    if(((d_23 != NULL) && (d_23 != t)))
-      _fail(t);
-    else
-      d_23 = t;
+    d_23 = t;
     t = term_n_8;
     t = j_3(c_23, d_23, t);
     t = reverse_acc_2_0(_id, h_2, t);
@@ -2228,15 +2222,9 @@ ATerm parse_options_p__1_0 (ATerm t_84 (ATerm), ATerm t)
         return(t);
       }
       t = z_26(t);
-      if(((m_26 != NULL) && (m_26 != t)))
-        _fail(t);
-      else
-        m_26 = t;
+      m_26 = t;
       t = (ATerm) ATinsert(CheckATermList(m_26), (ATerm) ATmakeAppl(sym_Program_1, j_26));
-      if(((d_5 != NULL) && (d_5 != t)))
-        _fail(t);
-      else
-        d_5 = t;
+      d_5 = t;
       t = SSLsetAnnotations(d_5, i_26);
     }
   }
@@ -2422,23 +2410,14 @@ ATerm parse_options_1_0 (ATerm s_84 (ATerm), ATerm t)
                 }
                 t = fetch_1_0(h_3, t);
                 t = term_u_5;
-                if(((w_27 != NULL) && (w_27 != t)))
-                  _fail(t);
-                else
-                  w_27 = t;
+                w_27 = t;
                 t = (ATerm) ATinsert(ATinsert(ATempty, not_null(e_27)), term_s_10);
-                if(((x_27 != NULL) && (x_27 != t)))
-                  _fail(t);
-                else
-                  x_27 = t;
+                x_27 = t;
                 t = SSL_printnl(w_27, x_27);
                 t = (ATerm) ATmakeAppl(sym__2, term_u_5, (ATerm) ATinsert(ATinsert(ATempty, not_null(e_27)), term_s_10));
                 t = default_system_usage_0_0(t);
                 t = term_w_5;
-                if(((v_27 != NULL) && (v_27 != t)))
-                  _fail(t);
-                else
-                  v_27 = t;
+                v_27 = t;
                 t = SSL_exit(v_27);
                 ;
                 LocalPopChoice(r_10);
@@ -2449,15 +2428,9 @@ ATerm parse_options_1_0 (ATerm s_84 (ATerm), ATerm t)
               }
           }
         }
-      if(((f_27 != NULL) && (f_27 != t)))
-        _fail(t);
-      else
-        f_27 = t;
+      f_27 = t;
       t = term_u_7;
-      if(((h_27 != NULL) && (h_27 != t)))
-        _fail(t);
-      else
-        h_27 = t;
+      h_27 = t;
       t = SSL_table_destroy(h_27);
       t = f_27;
     }
@@ -2608,22 +2581,13 @@ ATerm main_0_0 (ATerm t)
         {
           t = t_11;
           t = term_w_11;
-          if(((i_28 != NULL) && (i_28 != t)))
-            _fail(t);
-          else
-            i_28 = t;
+          i_28 = t;
         }
       t = not_null(i_28);
       t = ReadFromFile_0_0(t);
-      if(((j_28 != NULL) && (j_28 != t)))
-        _fail(t);
-      else
-        j_28 = t;
+      j_28 = t;
       t = (ATerm) ATmakeAppl(sym__2, g_28, j_28);
-      if(((m_28 != NULL) && (m_28 != t)))
-        _fail(t);
-      else
-        m_28 = t;
+      m_28 = t;
       if(match_cons(t, sym__2))
         {
           ATerm x_11 = ATgetArgument(t, 0);
@@ -2632,10 +2596,7 @@ ATerm main_0_0 (ATerm t)
       else
         _fail(t);
       t = SSLgetAnnotations(m_28);
-      if(((k_28 != NULL) && (k_28 != t)))
-        _fail(t);
-      else
-        k_28 = t;
+      k_28 = t;
       t = j_28;
       {
         ATerm t_3 (ATerm t)
@@ -2644,21 +2605,12 @@ ATerm main_0_0 (ATerm t)
           return(t);
         }
         t = asfix_yield_1_0(t_3, t);
-        if(((l_28 != NULL) && (l_28 != t)))
-          _fail(t);
-        else
-          l_28 = t;
+        l_28 = t;
         t = (ATerm) ATmakeAppl(sym__2, g_28, l_28);
-        if(((r_5 != NULL) && (r_5 != t)))
-          _fail(t);
-        else
-          r_5 = t;
+        r_5 = t;
         t = SSLsetAnnotations(r_5, k_28);
         t = term_c_7;
-        if(((h_28 != NULL) && (h_28 != t)))
-          _fail(t);
-        else
-          h_28 = t;
+        h_28 = t;
         t = SSL_exit(h_28);
       }
     }
