@@ -65,19 +65,25 @@ ATerm _all(ATerm t, ATerm f(ATerm))
     {
     case AT_APPL :
       {
-	Symbol c = ATgetSymbol((ATermAppl) t);
-	int i, arity = ATgetArity(c);
-	ATerm kids[arity];
-	for(i = 0; i < arity; i++)
-	  kids[i] = f(ATgetArgument(t, i));
-	t = (ATerm) ATmakeApplArray(c, kids);
+        Symbol c = ATgetSymbol((ATermAppl) t);
+        int i, arity = ATgetArity(c), changed = 0;
+        ATerm kids[arity], original, new;
+        for(i = 0; i < arity; i++)
+          {
+            original = ATgetArgument(t, i);
+            new = f(original);
+            kids[i] = new;
+            if(original != new) changed++;
+          }
+        if(changed)
+          t = (ATerm) ATmakeApplArray(c, kids);
       }
       break;
     case AT_LIST :
       if((ATermList) t != ATempty)
-	{
-	  t = (ATerm)ATmap((ATermList) t, f);
-	}
+        {
+          t = (ATerm)ATmap((ATermList) t, f);
+        }
       break;
     }
   if(annos == NULL)
@@ -97,11 +103,14 @@ ATerm _one(ATerm t, ATerm f(ATerm))
       int i, arity = ATgetArity(c);
       for(i = 0; i < arity; i++)
 	{
-	  ATerm t_bak = t;
+	  ATerm t_bak = t, original, new;
 	  int i_bak = i;
 	  if (PushChoice() == 0)
 	    {
-	      t = (ATerm)ATsetArgument((ATermAppl) t, f(ATgetArgument(t, i)), i);
+	      original = ATgetArgument(t, i);
+	      new = f(original);
+	      if(new != original)
+		t = (ATerm)ATsetArgument((ATermAppl) t, new, i);
 	      PopChoice();
 	      //ATfprintf(stderr, "_one: %t\n", t);
 	      return(t);
@@ -126,11 +135,16 @@ ATerm _one(ATerm t, ATerm f(ATerm))
 	    {
 	      el = f(el);
 	      PopChoice();
-	      suffix = ATinsert(suffix, el);
-	      while(!ATisEmpty(prefix)) {
-		suffix = ATinsert(suffix, ATgetFirst(prefix));
-		prefix = ATgetNext(prefix);
-	      }
+	      if(el == el_bak)
+		suffix = (ATermList) t;
+	      else
+		{
+		  suffix = ATinsert(suffix, el);
+		  while(!ATisEmpty(prefix)) {
+		    suffix = ATinsert(suffix, ATgetFirst(prefix));
+		    prefix = ATgetNext(prefix);
+		  }
+		}
 	      // ATfprintf(stderr, "_one: %t\n", suffix);
 	      return (ATerm) suffix;
 	    }

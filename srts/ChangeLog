@@ -1,3 +1,10 @@
+2003-11-10  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/stratego.c (_all, _one): Changed one-step traversal
+	functions such that a new term is only built if there was an
+	actual change to at least one of the sub-terms, thus avoiding
+	unnecessary term construction. Idea: Eelco Dolstra.
+	
 2003-09-17  Martin Bravenboer <mbravenb@cs.uu.nl>
 
   * ssl/exec.[ch]: added:
