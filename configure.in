@@ -64,13 +64,6 @@ AC_ARG_WITH(stratego-xt,
 )
 AC_SUBST(STRATEGOXT)
 
-AC_ARG_ENABLE(exe,
-  AC_HELP_STRING([--enable-exe], [use .exe extension for executables]),
-  EXE=".exe", 
-  EXE=""
-)
-AC_SUBST(EXE)
-
 ### PROGRAMS ##########################
 
 AC_CHECK_PROGS(RPMBUILD, rpmbuild rpm)
@@ -85,6 +78,7 @@ AC_SUBST(PKGS)
 
 top_srcdir=`pwd`
 BUILD_SRTS=${top_srcdir}/pre-pkgs/build
+INSTALL_XTC=${top_srcdir}/pre-pkgs/install
 
 ### OUTPUT #############################
 
@@ -116,6 +110,7 @@ AB_CONFIG_PKG(xtc,
    --with-pgen=${PGEN}
    --with-stratego-xt=${STRATEGOXT}
    --with-srts=${BUILD_SRTS}
+   --with-xtc=${INSTALL_XTC}
    --with-repository=${REPOSITORY}
 )
 
@@ -126,9 +121,9 @@ AB_CONFIG_PKG(sdf-import,
    --with-aterm=${ATERM}
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
-   --with-xtc=${prefix}
    --with-stratego-xt=${STRATEGOXT}
    --with-srts=${prefix}  
+   --with-xtc=${INSTALL_XTC}
    --with-repository=${REPOSITORY}
 )
 
@@ -136,9 +131,9 @@ AB_CONFIG_PKG(sc,
    --with-aterm=${ATERM}
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
-   --with-xtc=${prefix}
    --with-stratego-xt=${STRATEGOXT}
    --with-srts=${BUILD_SRTS}
+   --with-xtc=${INSTALL_XTC}
    --with-repository=${REPOSITORY}
 )
 
@@ -146,9 +141,9 @@ AB_CONFIG_PKG(c-tools,
    --with-aterm=${ATERM}
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
-   --with-xtc=${prefix}
    --with-stratego-xt=${STRATEGOXT}
    --with-srts=${BUILD_SRTS}
+   --with-xtc=${INSTALL_XTC}
    --with-repository=${REPOSITORY}
 )
 
@@ -156,9 +151,9 @@ AB_CONFIG_PKG(stratego-front,
    --with-aterm=${ATERM}
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
-   --with-xtc=${prefix}
    --with-stratego-xt=${STRATEGOXT}
    --with-srts=${BUILD_SRTS}
+   --with-xtc=${INSTALL_XTC}
    --with-repository=${REPOSITORY}
 )
 
@@ -166,9 +161,9 @@ AB_CONFIG_PKG(ssl,
    --with-aterm=${ATERM}
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
-   --with-xtc=${prefix}
    --with-stratego-xt=${STRATEGOXT}
    --with-srts=${BUILD_SRTS}
+   --with-xtc=${INSTALL_XTC}
    --with-repository=${REPOSITORY}
 )
 
@@ -176,9 +171,9 @@ AB_CONFIG_PKG(asfix-tools,
    --with-srts=${prefix}
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
-   --with-xtc=${prefix}
    --with-stratego-xt=${STRATEGOXT}
    --with-srts=${BUILD_SRTS}
+   --with-xtc=${INSTALL_XTC}
    --with-repository=${REPOSITORY}
 )
 
@@ -186,9 +181,9 @@ AB_CONFIG_PKG(gpp,
    --with-srts=${prefix}
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
-   --with-xtc=${prefix}
    --with-stratego-xt=${STRATEGOXT}
    --with-srts=${BUILD_SRTS}
+   --with-xtc=${INSTALL_XTC}
    --with-repository=${REPOSITORY}
 )
 
@@ -196,9 +191,9 @@ AB_CONFIG_PKG(aterm-tools,
    --with-aterm=${ATERM}
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
-   --with-xtc=${prefix}
    --with-stratego-xt=${STRATEGOXT}
    --with-srts=${BUILD_SRTS}
+   --with-xtc=${INSTALL_XTC}
    --with-repository=${REPOSITORY}
 )
 
@@ -206,9 +201,9 @@ AB_CONFIG_PKG(graph-tools,
    --with-aterm=${ATERM}
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
-   --with-xtc=${prefix}
    --with-stratego-xt=${STRATEGOXT}
    --with-srts=${BUILD_SRTS}
+   --with-xtc=${INSTALL_XTC}
    --with-repository=${REPOSITORY}
 )
 
@@ -216,9 +211,9 @@ AB_CONFIG_PKG(sdf-front,
    --with-aterm=${ATERM}
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
-   --with-xtc=${prefix}
    --with-stratego-xt=${STRATEGOXT}
    --with-srts=${BUILD_SRTS}
+   --with-xtc=${INSTALL_XTC}
    --with-repository=${REPOSITORY}
 )
 
@@ -226,9 +221,9 @@ AB_CONFIG_PKG(sdf-tools,
    --with-aterm=${ATERM}
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
-   --with-xtc=${prefix}
    --with-stratego-xt=${STRATEGOXT}
    --with-srts=${BUILD_SRTS}
+   --with-xtc=${INSTALL_XTC}
    --with-repository=${REPOSITORY}
 )
 
@@ -236,9 +231,9 @@ AB_CONFIG_PKG(dot-tools,
    --with-aterm=${ATERM}
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
-   --with-xtc=${prefix}
    --with-stratego-xt=${STRATEGOXT}
    --with-srts=${BUILD_SRTS}
+   --with-xtc=${INSTALL_XTC}
    --with-repository=${REPOSITORY}
 )
 
@@ -246,19 +241,19 @@ AB_CONFIG_PKG(stratego-tools,
    --with-aterm=${ATERM}
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
-   --with-xtc=${prefix}
    --with-stratego-xt=${STRATEGOXT}
    --with-srts=${BUILD_SRTS}
+   --with-xtc=${INSTALL_XTC}
    --with-repository=${REPOSITORY}
 )
 
 AB_CONFIG_PKG(boxenv,
    --with-latex=${LATEX}
-   --with-xtc=${prefix}
+   --with-xtc=${INSTALL_XTC}
    --with-repository=${REPOSITORY}
 )
 
 AB_CONFIG_PKG(stratego-util,
-   --with-xtc=${prefix}
+   --with-xtc=${INSTALL_XTC}
    --with-repository=${REPOSITORY}
 )

@@ -2,8 +2,8 @@ SUBDIRS      = . $(PKGS)
 EXTRA_DIST   = $(EXTRA_FILES)
 EXTRA_FILES  = README README.in bootstrap acinclude.m4 strategoxt.spec.in strategoxt.spec
 
-all-local: pre-pkgs/build/srts.dummy
-install-exec-local: pre-pkgs/build/srts.dummy
+all-local: pre-pkgs/build/srts.dummy pre-pkgs/install/xtc.dummy
+install-exec-local: pre-pkgs/build/srts.dummy pre-pkgs/install/xtc.dummy
 
 # installs a local srts for building the StrategoXT packages
 # TODO: configure srts with cpl if necessary
@@ -17,6 +17,15 @@ pre-pkgs/build/srts.dummy :
 	$(MAKE) &&\
 	$(MAKE) install &&\
 	touch @abs_top_srcdir@/pre-pkgs/build/srts.dummy
+
+pre-pkgs/install/xtc.dummy :
+	mkdir -p pre-pkgs/install &&\
+	cp -rf xtc pre-pkgs/install/ &&\
+	cd pre-pkgs/install/xtc &&\
+	./configure --prefix=@abs_top_srcdir@/pre-pkgs/install --with-srts=@abs_top_srcdir@/pre-pkgs/build --with-aterm=$(ATERM) --with-stratego-xt=$(STRATEGOXT) &&\
+	$(MAKE) &&\
+	$(MAKE) install &&\
+	touch @abs_top_srcdir@/pre-pkgs/install/xtc.dummy
 
 rpm : dist
 	$(RPMBUILD) -ta $(PACKAGE_TARNAME)-$(VERSION).tar.gz

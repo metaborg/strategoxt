@@ -1,3 +1,12 @@
+2003-06-18  Martin Bravenboer  <martin@mbravenboer.org>
+
+  * Makefile.am: Install a local xtc. This xtc 
+    installation will be used at install time to create 
+    a repository.
+
+  * Configure.in: configure subpackages with the local
+    xtc.
+
 2003-06-17  Martin Bravenboer  <martin@mbravenboer.org>
 
   * Makefile.am: build in prefix order
