@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.3 2001/06/07 12:32:35 mdejonge Exp $
+# $Id: Makefile.am,v 1.4 2001/06/11 10:54:04 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -36,37 +36,13 @@ STRATEGO_PRG = sdf-doc sdf2sg
 bin_SCRIPTS  = $(STRATEGO_PRG)
 
 # Optional tests to run
-#TESTS        = sdf-doc-check sdf2gxml2dot-check
+TESTS        = sdf-doc-check
 
 # List all files that should be distributed here
-EXTRA_DIST  += sdf-doc-check get-sort-graph.sh.src sdf-doc.make.src \
-               sdf2gxml2dot-check
+EXTRA_DIST  += sdf-doc-check 
 
 # Additional flags for the Stratego compiler
 SCFLAGS      += -I $(ASFIXTOOLS)/share/asfix-tools \
                 -I $(srcdir)/../lib -I $(srcdir)/../sdf-wf \
                 -I $(GRAPHTOOLS)/share/graph-tools
 
-#% : %.sh.src Makefile
-#	@sed 's@__BINDIR__@$(bindir)@g;\
-#             s@__DATADIR__@$(pkgdatadir)@g;\
-#             s@__GB__@$(GB)@g;\
-#             s@__GPP__@$(GPP)@g;\
-#             s@__GRAPHVIZ__@$(GRAPHVIZ)@g;\
-#             s@__LIBEXEC__@$(libexecdir)@g;\
-#             s@__MAKE__@$(MAKE)@g;\
-#             s@__VERSION__@$(VERSION)@g;' \
-#           < $< > $@
-#	chmod 755 $@
-#
-#%.make : %.make.src Makefile
-#	@sed 's@__BINDIR__@$(bindir)@g;\
-#             s@__DATADIR__@$(pkgdatadir)@g;\
-#             s@__GB__@$(GB)@g;\
-#             s@__GPP__@$(GPP)@g;\
-#             s@__GRAPHVIZ__@$(GRAPHVIZ)@g;\
-#             s@__LIBEXEC__@$(libexecdir)@g;\
-#             s@__MAKE__@$(MAKE)@g;\
-#             s@__VERSION__@$(VERSION)@g;' \
-#           < $< > $@
-#	chmod 755 $@
