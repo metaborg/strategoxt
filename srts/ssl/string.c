@@ -26,14 +26,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
 
 /* Strings */
 
-ATerm SSL_is_string(ATerm t)
-{ 
-  char *k;
-  if(ATmatch(t, "<str>", &k))
-    return(t); 
-  else 
-    _fail(t);
-  return(t);
+ATerm SSL_is_string(ATerm t) { 
+  if(ATisString(t)) {
+    return t; 
+  }
+
+  _fail(t);
 }
 
 /* New: generating new strings */
