@@ -5,7 +5,7 @@ strategies
 
   canonicalize-io =
     iowrap(
-      downup2(repeat(Canon),repeat(Canon))
+      downup2(repeat(Canon + LiftPrimArgs + LiftCallArgs),repeat(Canon))
       ; simplify0
     )
 
@@ -25,17 +25,6 @@ rules
 
 *)
 
-/*
-  Canon :
-    Call(f, args) -> Let(defs', Call(f, args'))
-    where <unzip(try(CallIdFun + CallFailFun); 
-                 (CreateDef1 <+ 
-                  not(Call(SVar(id),[])); CreateDef2 <+ 
-                  split(id,![])))> args => (args', defs)
-        ; <concat> defs => defs'
-        ; not([])
-*/
-
   Canon :
     CallT(f, args1, args2) -> Let(defs', CallT(f, args1', args2))
     where <unzip(try(CallIdFun + CallFailFun); 
@@ -54,26 +43,12 @@ rules
         ; <concat> defs => defs'
         ; not([])
 
-//  CreateDef1 :
-//    Let(defs,Call(SVar(f),[])) -> (Call(SVar(f),[]), defs)
-
   CreateDef1 :
     Let(defs,CallT(SVar(f),[],[])) -> (CallT(SVar(f),[],[]), defs)
-
-//  CreateDef2 :
-//    s -> (Call(SVar(f),[]), [SDef(f,[],s)])
-//    where new => f
 
   CreateDef2 :
     s -> (CallT(SVar(f),[],[]), [SDefT(f,[],[],s)])
     where new => f
-
-/*
-  Canon :
-    Call(f, args) -> Call(f, args')
-    where //<map(try(CallIdFun + CallFailFun))> args => args'
-      <rec x([(CallIdFun + CallFailFun)|try(x)] <+ [id|x])> args => args'
-*/
 
   Canon :
     CallT(f, args1, args2) -> CallT(f, args1', args2)

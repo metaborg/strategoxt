@@ -48,7 +48,7 @@ rules
     ?OpDecl(c, FunType(ts, t));
     where(<length> ts => n);
     rules(
-      CheckCons : Op(c, <length => n>) -> Op(c, [])
+      CheckCons : Op(c, <length => n>) -> Op(c, []) 
     )
 
   // CheckTuple implements generic checking of tuple constructors (for arbitrary arity)
@@ -68,10 +68,12 @@ rules
     )
 
   check-constructors =
-    ?RDef(f, xs, <id>); check-constructors'(!f, !"rule")
+    ?RDefT(f, xs, ys, <id>)
+    ; check-constructors'(!(f, <length> xs, <length> ys), !"rule")
 
   check-constructors =
-    ?SDef(f, xs, <id>); check-constructors'(!f, !"definition")
+    ?SDefT(f, xs, ys, <id>)
+    ; check-constructors'(!(f, <length> xs, <length> ys), !"definition")
 
   check-constructors'(f, kind) =
     {| CheckConsError :

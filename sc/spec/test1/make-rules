@@ -119,8 +119,8 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 %.s11.opt4 : %.s11.opt3 ../opt/dead-var-elim$(EXE)
 	../opt/dead-var-elim -i $< -o $@ -b
 
-%.s11.opt : %.s11.opt4 ../match/optimize2$(EXE)
-	../match/optimize2 -i $< -o $@ -b
+%.s11.opt : %.s11.opt4 ../match/optimize3$(EXE)
+	../match/optimize3 -i $< -o $@ -b
 
 # BACK-END ###########################################################
 

@@ -28,4 +28,4 @@ eval-lib-primitives.rtree:
 
 BOOTSOURCES = stri.c primitives.c stratego.in stratego
 
-BOOTCLEANFILES = eval-lib-primitives.rtree si.c primitives.c stratego stratego-eval-test.c
+BOOTCLEANFILES = eval-lib-primitives.rtree stri.c primitives.c stratego stratego-eval-test.c

@@ -182,7 +182,7 @@ strategies
 		; dead-var-elim
 	  )
         ; save-as3(!".opt9")
-        ; olevel1(optimize2)
+        ; olevel1(optimize3)
         ; save-as1(!".opt10")
 
         ; olevel1(stratego-of)
@@ -218,6 +218,9 @@ strategies
 
   optimize2 = 
     xtc-transform(!"optimize2", !["-b" | <pass-verbose> ])
+
+  optimize3 = 
+    xtc-transform(!"optimize3", !["-b" | <pass-verbose> ])
 
   define-congruences = 
     xtc-transform(!"define-congruences", !["-b" | <pass-verbose> ])

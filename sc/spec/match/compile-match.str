@@ -37,6 +37,9 @@ strategies
   optimize2-comp =
     iowrap(apply-to-bodies(simplify-widen; simplify; simplify-clean))
 
+  optimize3-comp =
+    iowrap(apply-to-bodies(simplify-lift; simplify-widen; simplify; simplify-clean))
+
   match-to-dfa = 
     match-to-matrix    
     ; matrix-to-dfa

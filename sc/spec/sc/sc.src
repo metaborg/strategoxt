@@ -1,4 +1,7 @@
 #! /bin/sh
 
+echo "**** WARNING: sc has been renamed to strc
+echo "     and will no longer be available in the next release (0.9.4)"
+
 exec __PREFIX__/bin/strc $*
 

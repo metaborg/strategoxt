@@ -1,3 +1,22 @@
+2003-08-12  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/test3/test-constructors.str: Test for check-constructors;
+	missing constructor declaration.
+
+	* spec/opt/congruence-laws.str: Use Bapp instead of Bapp2
+
+	* spec/sig/Stratego-Canonical-Format.str: 
+	* spec/opt/canonicalize.str: Removed obsolete rules
+
+	* spec/sc/strc.str,spec/opt/stratego-laws.str,
+	spec/match/compile-match.str: optimize3 lifts term arguments from
+	primitives and calls to ensure that they will be cached in the
+	back-end.
+
+	* spec/front/check-constructors.str: Fix of constructor checking;
+	new definition forms were not checked; calls for use of restricted
+	signatures.
+
 2003-08-06  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/sc/strc.str: Save more intermediate results

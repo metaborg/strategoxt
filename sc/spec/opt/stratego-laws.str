@@ -45,6 +45,10 @@ strategies
   simplify-clean =
     topdown(try(CleanupScope; try(FuseScope)))
 
+  simplify-lift =
+    downup2(repeat(Optimize + LiftPrimArgs + LiftCallArgs)
+	   ,repeat(Optimize))
+
 rules
 
   Commutativity : 

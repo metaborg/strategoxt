@@ -9,7 +9,7 @@ SCFLAGS 	 = -I $(STRATEGO_FRONT)/share/stratego-front	 \
 	   	   -I $(srcdir)/../match			 \
 	  	   -I $(srcdir)/../lib				 \
 	  	   -I $(srcdir)/../opt				 \
-	  	   --main $*					 
+	  	   --main $* --keep 0			 
 		  
 
 libexec_PROGRAMS = frontend extract extract-all rename-defs stratego-warnings \
