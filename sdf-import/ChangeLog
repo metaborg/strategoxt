@@ -1,3 +1,8 @@
+2003-08-14  Eelco Visser  <visser@cs.uu.nl>
+
+	* Makefile.am (bootclean): make sure install directory exists
+	before registering tools
+
 2002-12-07  Eelco Visser  <visser@cs.uu.nl>
 
 	* Makefile.am (install-xtc): using new version of xtc tool
