@@ -1,0 +1,35 @@
+module Stratego-Sugar-Terms
+imports
+  Stratego-Core-Terms
+  Stratego-Sugar-Strategies
+
+exports
+  sorts ID LID Var
+  context-free syntax
+    LId 			-> LID  {cons("ListVar")}
+    LID				-> Var  {cons("Var")}
+    LId				-> ID
+
+  context-free syntax
+    Int 			 -> Term {cons("Int")}
+    Real 			 -> Term {cons("Real")}
+    String 			 -> Term {cons("Str")}
+    Char 			 -> Term {cons("Char")}
+
+    Id "(" {Term ","}* ")" 	 -> Term {cons("Op")}
+    String "(" {Term ","}* ")" 	 -> Term {cons("OpQ")}
+    Term "#" "(" Term ")" 	 -> Term {cons("Explode")}
+    %%Term "{" {Term ","}* "}"	 -> Term {cons("Anno")}          %% !!
+
+    "<" Strategy ">" Term 	 -> Term {cons("App")}
+    StrategyAngle		 -> Term {cons("RootApp")}
+
+    "(" {Term ","}* ")" 	 -> Term {cons("Tuple")}
+    "[" {Term ","}* "]" 	 -> Term {cons("List")}
+    "[" {Term ","}* "|" Term "]" -> Term {cons("ListTail")}
+    "_" Term 			 -> Term {cons("BuildDefault")}
+
+    Var "[" Term "]" 				 -> Term {cons("Con1")}
+    Var "[" Term "]" "(" Id ")" 		 -> Term {cons("Con")}
+    Var "[" Term "where" Strategy "]"  		 -> Term {cons("Con3")}
+    Var "[" Term "where" Strategy "]" "(" Id ")" -> Term {cons("Con4")}
