@@ -1,0 +1,3 @@
+module Stratego-Stratego-C
+imports Stratego-C StrategoStratego
+
