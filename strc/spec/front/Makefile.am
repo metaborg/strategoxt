@@ -30,3 +30,6 @@ TESTS 		 = use-def-test lift-dynamic-rules-old-test
 #extract-test
 
 EXTRA_DIST 	 = $(wildcard *.str) $(wildcard *.meta)
+
+%.atree : %.str
+	parse-stratego $(STRINCLUDES) -i $< | pp-aterm -o $@

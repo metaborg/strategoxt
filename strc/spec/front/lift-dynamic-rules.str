@@ -159,9 +159,9 @@ strategies
     |[ rules( f(as1|as2).t1 : t2 -> t3 where s depends on t4 ) ]| ->
     |[ rules( f(as1|as2).t1 : t2 -> t3 where s )
        ; where( 
-	     !t1 => y0 // scope
-	   ; !t2 => y1 // left-hand side (should be the key)
-           ; !t4 => y2 // dependencies
+	     !t1  => y0 // scope
+	   ; !t2' => y1 // left-hand side (should be the key)
+           ; !t4  => y2 // dependencies
            ; map({x1, x2: ?(x1,x2)
                    ; rules( 
                        f(|).x1 :+ DR_UNDEFINE(x2) -> (y0, y1, y2) where id 
@@ -171,6 +171,7 @@ strategies
     ]|
     where new => x; new => x1; new => x2
 	; new => y0; new => y1; new => y2; new => z
+        ; <dummify> t2 => t2'
 
     // new-f : locally undefine all rules that depend on x
 
