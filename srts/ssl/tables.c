@@ -75,6 +75,12 @@ ATerm SSL_hashtable_destroy(ATerm table_term) {
   return table_term;
 }
 
+ATerm SSL_hashtable_reset(ATerm table_term) {
+  ATermTable table = hashtable_from_term(table_term);
+  ATtableReset(table);
+  return table_term;
+}
+
 ATerm SSL_hashtable_put(ATerm table_term, ATerm key, ATerm value) {
   ATermTable table = hashtable_from_term(table_term);
   ATtablePut(table, key, value);
