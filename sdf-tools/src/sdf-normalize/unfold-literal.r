@@ -8,7 +8,7 @@
 
 \begin{code}
 module unfold-literal
-imports Sdf-Syntax lib sdf-bracket gt-paths
+imports Sdf-Syntax lib sdf-bracket gt-paths asfix
 strategies
 
 (*  unfold-literal = 

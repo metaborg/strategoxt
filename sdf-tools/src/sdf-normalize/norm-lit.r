@@ -18,7 +18,7 @@ module norm-lit
 *)
 
 imports
-  Literal-lib
+  Literal-lib Literals-Sdf-Syntax asfix
 
 strategies
 

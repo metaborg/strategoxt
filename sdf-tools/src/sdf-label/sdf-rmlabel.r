@@ -4,6 +4,8 @@ imports asfix lib
   signature
     constructors
       label : Literal * Symbol -> Symbol
+      'id: a -> a
+      empty-layout : a
 overlays
 
     label-overlay(u_20,v_20,w_20,x_20)

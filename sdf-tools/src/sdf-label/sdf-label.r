@@ -25,6 +25,11 @@ imports
   Sdf-Syntax list Literal-lib 
   verbalize-sdf
 
+signature
+   constructors
+      'id: a -> a
+      empty-layout : a
+
 strategies
 
   sdf-label

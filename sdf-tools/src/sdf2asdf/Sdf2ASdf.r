@@ -9,6 +9,11 @@ imports
   lib 
   Sdf2-Syntax
   Literal-lib
+  asfix
+
+signature
+   constructors
+      dummy: Dummy
 
 strategies
 

@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: runbm.r,v 1.2 2001/06/08 09:41:55 mdejonge Exp $
+% $Id: runbm.r,v 1.3 2001/09/01 21:06:55 mdejonge Exp $
 
  	usage
 
@@ -36,6 +36,23 @@ signature
   statistics : List(Stat) -> Stats
 
   CharsPerSec : Int -> Field
+
+  StatTbl : a -> a
+  plot: a * a -> a
+  TokenInput: a * a * a -> a
+  Lines: a -> a
+  ParseTime: a -> a
+  Branches : a -> a
+  Rejects : a -> a
+  Reductions: a -> a
+  ReductionsPerSec: a -> a
+  ReductionsPerToken: a -> a
+  Ambiguities: a -> a
+  AmbCalls: a -> a
+  Minor : a -> a
+  Major : a -> a
+  ParseTime : a -> a
+  Branches : a * a * a * a * a -> a
 \end{code}
 
 	\paragraph{Main}

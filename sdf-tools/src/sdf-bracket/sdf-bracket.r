@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: sdf-bracket.r,v 1.1 2001/05/31 14:20:50 mdejonge Exp $
+% $Id: sdf-bracket.r,v 1.2 2001/09/01 21:06:56 mdejonge Exp $
 
 This is a simple utility that inserts brackets in the AST of SDF modules
 such that:
@@ -37,7 +37,7 @@ sdf-bracket transforms this AST into
 
 \begin{code}
 module sdf-bracket
-imports lib Regular-Sdf-Syntax
+imports lib Regular-Sdf-Syntax Bracket-Symbol asfix
 
 strategies
 

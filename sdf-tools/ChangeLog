@@ -1,3 +1,6 @@
+2001-09-01 Merijn de Jonge <mdejonge@cwi.nl>
+   * added missing constructors
+
 2001-08-28 Merijn de Jonge <mdejonge@cwi.nl> 
    * src/sdf-imports: bug fix: -g switch still produced ig output (not
      graphxml)
