@@ -1,3 +1,8 @@
+2003-12-24  Eelco Visser  <visser@cs.uu.nl>
+
+	* Makefile.am: pre-pkgs is build relative to build directory not
+	to source directory.
+
 2003-12-23  Martin Bravenboer <martin@cs.uu.nl>
 
 	* Makefile.am: configure build time srts with strc and ssl.

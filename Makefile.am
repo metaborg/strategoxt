@@ -12,19 +12,19 @@ pre-pkgs/build/srts.dummy :
 	mkdir -p pre-pkgs/build &&\
 	cp -rfp srts pre-pkgs/build/ &&\
 	cd pre-pkgs/build/srts &&\
-	./configure --prefix=@abs_top_srcdir@/pre-pkgs/build --with-aterm=$(ATERM) --with-cpl=$(CPL) --with-strc=$(STRATEGOXT)  --with-ssl=$(STRATEGOXT) &&\
+	./configure --prefix=`pwd`/pre-pkgs/build --with-aterm=$(ATERM) --with-cpl=$(CPL) --with-strc=$(STRATEGOXT)  --with-ssl=$(STRATEGOXT) &&\
 	$(MAKE) &&\
 	$(MAKE) install &&\
-	touch @abs_top_srcdir@/pre-pkgs/build/srts.dummy
+	touch ./pre-pkgs/build/srts.dummy
 
 pre-pkgs/install/xtc.dummy :
 	mkdir -p pre-pkgs/install &&\
 	cp -rfp xtc pre-pkgs/install/ &&\
 	cd pre-pkgs/install/xtc &&\
-	./configure --prefix=@abs_top_srcdir@/pre-pkgs/install --with-srts=@abs_top_srcdir@/pre-pkgs/build --with-aterm=$(ATERM) --with-stratego-xt=$(STRATEGOXT) &&\
+	./configure --prefix=`pwd`/pre-pkgs/install --with-srts=@abs_top_srcdir@/pre-pkgs/build --with-aterm=$(ATERM) --with-stratego-xt=$(STRATEGOXT) &&\
 	$(MAKE) &&\
 	$(MAKE) install &&\
-	touch @abs_top_srcdir@/pre-pkgs/install/xtc.dummy
+	touch ./pre-pkgs/install/xtc.dummy
 
 rpm : dist
 	$(RPMBUILD) -ta $(PACKAGE_TARNAME)-$(VERSION).tar.gz
