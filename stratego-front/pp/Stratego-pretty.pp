@@ -5,7 +5,7 @@
 
    Module -- V[H[KW["module"] _1] _2],
    Module.2:iter-star -- _1,
-   Specification -- V  is=2 [H  [KW["specification"]] _1],
+   Specification -- V  vs=1 is=2 [H  [KW["specification"]] _1],
    Specification.1:iter-star -- _1,
    Script -- V  [H  [KW["stratego"] KW["script"]] _1],
    Script.1:iter-star -- _1,
