@@ -254,28 +254,17 @@ should also be slightly more efficient due to inlining.
 
 -------+++ Posix Error Codes
 
-spec/posix-error.str: new module
+The SSL has been extended with the module posix-error. This module
+provides strategies to report errors that have occurred in POSIX
+system functions. These strategies can be used to improve the error
+reporting of for example IO related strategies. The posix-module
+provides access to the errno variable and makes the strerror and
+perror POSIX functions available to Stratego programs. The perror
+strategy takes a String and produces an error message on the standard
+error output describing the last error encountered during a call to a
+system function.
 
-  * spec/dir.str: extended rename-file to copy files
-    if rename fails because of an XDEV error.
-
-    Thanks to Arthur van Dam for reporting this problem.
-
-  * spec/list-misc.str: added split-last.
-
-Added execv.  Note that the implementation in the runtime does not add
-the program to the list of argument. execvp does this, which is
-horrible. I think this should be changed in the runtime part of execvp
-and the invocations to execvp should be adapated.
-
-Added chdir to change the current working directory. Note that chdir
-implements the error reporting in the SSL itself now we have a perror
-in the SSL. If you really want no warning, then you can use the plain
-primitive.
-
-This kind of error-reporting is very easy to implement in
-Stratego:
-
+The strategy =chdir= is for example implemented as:
 <verbatim>
   ?pathname; prim("SSL_chdir", pathname) => 0
   <+ < conc-strings
@@ -284,30 +273,48 @@ Stratego:
      > ("SSL/chdir: Cannot change current working directory to ", <id>)
 <verbatim>
 
-This will for example output the following message if the pathname
-does not exist:
+=chdir= output the following message if the pathname does not exist:
 
-  * ssl/exec.[ch]: added:
-    - ATerm SSL_get_errno(void);
-    - ATerm SSL_set_errno(ATerm code);
-    - ATerm SSL_EXDEV(void);
- * ssl/number.[ch]: added SSL_rand, SSL_RAND_MAX, and
-    SSL_srand to generate random numbers.
-
-  * spec/integers.str: added set-random-seed, get-random-max,
-    and next-random to generate random numbers.
-
+<verbatim>
+  SSL/chdir: Cannot change current working directory to /tddmp: No
+  such file or directory
+<verbatim>
 
 (Martin Bravenboer)
 
 -------+++ String Manipulation
 
-spec/string-misc.str: new module
-
-  * Some miscellaneous strategies on strings (indenting, apply an s to all
-    lines, trim trailing characters, and some more)
+The new module string-misc implements miscellaneous strategies on
+strings. The module provides strategies for indenting, applying an s
+to all lines, trim trailing characters, and some more.
 
 (Arthur van Dam)
+
+-------+++ Misc
+
+   * set-random-seed, next-random, get-random-max: generate random
+   numbers.
+
+   * execv: execute a file without searching the PATH like execvp
+     does.
+
+   * chdir, getcwd: Change or get the working directory.
+
+   * rename-file: in cause of external devices the file is now copied.
+
+   * split-last: Splits a list into a tuple of its init list and last
+     element
+
+   * abspath, is-abspath, is-relpath, base-filename: posix compatible
+     strategies for the manipulation of pathnames.
+
+-------+++ XTC
+
+XTC is now using =mkstemp= for the creation of temporary. This means
+that that temporary files of XTC are from now created in the default
+directory for temporary files (usually /tmp).
+
+(Martin Bravenboer)
 
 -----------------------++ Utilities
 
@@ -326,9 +333,19 @@ parts of the language that were not changed are reused.
 -------+++ Pack-stratego
 
 Added --slack flag to pack-stratego. Using this will let pack-stratego
-continue even if a module isn't found, producing only a warning.
+continue even if a module isn't found, producing only a
+warning. Pack-stratego has been extended to accept absolute pathnames
+as input.
 
-(RobVermaas)
+(Rob Vermaas)
+
+-------+++ Pack-sdf
+
+Pack-sdf supports multiple output formats using the -of (or
+--output-format) flag. By default pack-sdf from now returns an SDF
+definition in concrete syntax (-of txt). Other supported output
+formats are asfix and ast. Pack-sdf from this release fails if a
+module is not found.
 
 -----------------------++ Configuration
 
