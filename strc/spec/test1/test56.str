@@ -3,4 +3,4 @@ imports list
 strategies
 
    main =
-     rules(Foo: t@(1, 2) -> [1, 2])
+     rules(Foo: t@(1, x@2) -> [1, 2, t, x])
