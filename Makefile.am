@@ -21,7 +21,7 @@ pre-pkgs/install/xtc.dummy :
 	mkdir -p pre-pkgs/install &&\
 	cp -rfp xtc pre-pkgs/install/ &&\
 	cd pre-pkgs/install/xtc &&\
-	./configure --prefix=`pwd`/pre-pkgs/install --with-srts=@abs_top_srcdir@/pre-pkgs/build --with-aterm=$(ATERM) --with-stratego-xt=$(STRATEGOXT) &&\
+	./configure --prefix=`pwd`/pre-pkgs/install --with-srts=`pwd`/pre-pkgs/build --with-aterm=$(ATERM) --with-stratego-xt=$(STRATEGOXT) &&\
 	$(MAKE) &&\
 	$(MAKE) install &&\
 	touch ./pre-pkgs/install/xtc.dummy
