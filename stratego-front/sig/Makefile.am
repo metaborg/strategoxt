@@ -1,27 +1,27 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-autogensignatures = \
-  Stratego.rtg      \
-  Stratego-Amb.rtg  \
-  Stratego-Core.rtg \
-  Stratego-Sugar.rtg\
-  Stratego.str      \
-  Stratego-Amb.str  \
-  Stratego-Core.str \
-  Stratego-Sugar.str 
+autogensignatures =				\
+  Stratego.rtg					\
+  Stratego-Amb.rtg				\
+  Stratego-Core.rtg				\
+  Stratego-Sugar.rtg				\
+  Stratego.str					\
+  Stratego-Amb.str				\
+  Stratego-Core.str				\
+  Stratego-Sugar.str				\
+  Stratego-Sugar-Cong.rtg			\
+  Stratego-Sugar-Cong.str			\
+  Stratego-Sugar-HL.rtg				\
+  Stratego-Sugar-HL.str				\
+  Stratego-Core-Cong.rtg			\
+  Stratego-Core-Cong.str			\
+  Stratego-Sugar-1.rtg				\
+  Stratego-Sugar-1.str
 
-staticsignatures = \
-  Stratego-MetaTransition.str \
-  Stratego-Sugar-MetaTransition.str \
-  Stratego-Sugar-Cong.rtg \
-  Stratego-Sugar-Cong.str \
-  Stratego-Sugar-HL.rtg \
-  Stratego-Sugar-HL.str \
-  Stratego-Core-Cong.rtg \
-  Stratego-Core-Cong.str 
-#  Stratego-Sugar-1.rtg \
-#  Stratego-Sugar-1.str
+staticsignatures =				\
+  Stratego-MetaTransition.str			\
+  Stratego-Sugar-MetaTransition.str
 
 signatures = $(autogensignatures) $(staticsignatures)
 
