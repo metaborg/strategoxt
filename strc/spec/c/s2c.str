@@ -213,7 +213,6 @@ strategies
         ; <map(TranslateVarDec)> a2* => ps2
 	; <conc>(ps1, ps2) => ps
 
-
 /**
  * Translation of strategy definition to C function
  */
@@ -250,6 +249,8 @@ strategies
   is-local-function =
     explode-string
     ; [is-alpha, '_' | list(is-num)]
+
+strategies
 
   translate-body =
     topdown(repeat(TranslateDef <+ TranslateStratMatchGuard <+ TranslateStrat))
@@ -367,7 +368,8 @@ rules // Strategy expressions
     where new => x
 
   TranslateStrat :
-    Let(defs,s) -> Compound(defs, [s])
+    Let(defs,s) -> Compound(<conc> (decs, defs), [s])
+      where <map(SDefToDeclaration)> defs => decs
 
 signature
   constructors
