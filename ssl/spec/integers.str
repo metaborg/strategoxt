@@ -61,6 +61,10 @@ strategies
   max = gt < Fst + Snd
   min	= gt < Snd + Fst
 
+  // :: Int -> Int
+  pos = where(<geq> (<id>, 0))
+  neg = where(<lt>  (<id>, 0))
+
   int   = ?x; prim("SSL_int",x)
 
   int-to-string = ?x; prim("SSL_int_to_string",x)
