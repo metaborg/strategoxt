@@ -210,7 +210,10 @@ strategies
     end
 
   abs =
-    is-int ; try(<subt>(0,<neg>))
+    (is-int + is-real)
+    ; if neg then
+        <subt> (0, <id>)
+      end
 
 signature
   sorts IntI
