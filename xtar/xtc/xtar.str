@@ -1,8 +1,117 @@
+/**
+ * Creates an xtar.
+ *
+ * @since 0.13
+ */
 module xtar
 imports
   liblib
+  pack-sdf-options
+  tool-doc
 
 strategies
 
   main-xtar =
+    option-wrap(xtar-options,  xtar-usage, xtar-about, id, 
+      xtar-init-options
+    ; xtc-io(create-xtar)
+    )
+
+  create-xtar =
     say(!"Nothing here yet")
+
+/**
+ * Options
+ */
+strategies
+
+  xtar-options =
+       xtar-input-option
+    <+ xtar-output-option
+
+    <+ Option(fail, fail, !"     ")
+    <+ include-from-dir-option
+    <+ include-from-def-option
+    <+ dep-options
+
+    <+ Option(fail, fail, !"     ")
+    <+ xtar-verbose-option
+
+  xtar-init-options =
+    where(
+      if not(<get-config> "-i") then
+        say(!"error: no input specified")
+        ; <exit> 1
+      end
+
+    ; if not(<get-config> "--verbose") then
+        <set-config> ("--verbose", 1)
+      end
+    )
+
+  xtar-input-option =
+    ArgOption("-i" + "--input"
+    , where(<set-config> ("-i",<id>))
+    , !"-i|--input <lang.sdf>    Create xtar for SDF module <lang.sdf> (required)"
+    )
+
+  xtar-output-option =
+    ArgOption("-o" + "--output"
+    , where(<set-config> ("-o",<id>)); !Output(<id>)
+    , !"-o|--output <lang.xtar>  Write xtar to <lang.xtar> (default: lang.xtar)" 
+    )
+
+  xtar-verbose-option =
+    ArgOption("--verbose"
+    , where(<set-config> ("--verbose", <string-to-int>))
+    , !"--verbose <i>    Verbosity level <i> (default: 1)"
+    )
+
+/**
+ * Help and about
+ */
+strategies
+
+  xtar-usage =
+    <tool-doc> xtar-tool-usage()
+
+  xtar-about =
+    <tool-doc> xtar-tool-about()
+
+overlays
+
+  xtar-tool-usage =
+    [ Usage("xtar -i <lang.sdf> [OPTIONS]")
+    , Summary(
+       "Creates an xtar.")
+    , OptionUsage()
+    , Description([
+       "This is a test program to demonstrate use of 
+        parse-options and  generation of usage
+        info from option and switch specificatios.
+        These now contain usage info as additional
+        third argument."
+      ,"This is a test program to demonstrate use of 
+        parse-options and  generation of usage
+        info from option and switch specificatios.
+        These now contain usage info as additional
+        third argument."
+        ])
+    , AutoReportBugs()
+    ]
+
+  xtar-tool-about =
+    [ HSection("xtar", [
+        DefList([
+          Def("Package",  Paragraph(<package-name> ()))
+        , Def("Version",  Paragraph(<package-version> ()))
+        , Def("Revision", Paragraph(<prim("SVN_REVISION_TERM")> ()))
+        ])
+      ])
+    , GNU_LGPL("2004", "Eelco Visser <visser@acm.org>")
+    , Config([
+        DefaultXTCRepository()
+      , CurrentXTCRepository()
+      ])
+    , AutoReportBugs()
+    ]
