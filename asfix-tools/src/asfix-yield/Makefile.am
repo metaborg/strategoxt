@@ -10,7 +10,8 @@ TESTS        	= asfix_yield1_check asfix_yield2_check
 CLEANFILES   	= asfix_yield1_check asfix_yield2_check $(wildcard *.dep)
 BOOTCLEANFILES 	= asfix-yield.c
 
-SCFLAGS       	= -I $(srcdir)/../asfix $(XTCFLAGS)
+SCFLAGS       	= -I $(srcdir)/../asfix 
+#$(XTCFLAGS)
 
 install-exec-local:
 	$(RM) ${bindir}/asource ${libexecdir}/asource

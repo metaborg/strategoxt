@@ -1,3 +1,7 @@
+2002-12-08  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/asfix-yield/asfix-yield.str: Using new version of open-file
+
 2002-12-07  Eelco Visser  <visser@cs.uu.nl>
 
 	* src/implode/sglri.str: composition of sglr and implode-asfix by
