@@ -1,0 +1,24 @@
+module Stratego-Core-Terms
+exports
+  context-free syntax
+
+    %% Constructors
+
+    Id 				    -> Constructor {cons("Con")}
+    String 			    -> Constructor {cons("StrC")}
+    Term "#"			    -> Constructor {cons("Expl")}
+
+    %% Annotated Terms
+
+    Int         "{" {Term ","}* "}" -> Term {cons("Int")}
+    Real        "{" {Term ","}* "}" -> Term {cons("Real")}
+    String      "{" {Term ","}* "}" -> Term {cons("Str")}
+    Constructor "(" {Term ","}* ")" 
+                "{" {Term ","}* "}" -> Term {cons("Op")}
+
+    %% Variables
+
+    Id 				    -> Var  
+    Var	Annos		    	    -> Term {cons("VarA")}
+    Var				    -> Term {cons("Var")}
+    "_" 		 	    -> Term {cons("Wld")}

@@ -1,3 +1,14 @@
+2003-08-27  Eelco Visser  <visser@cs.uu.nl>
+
+	* Made restricted version of the Stratego syntax under the name
+	Stratego-Core. The idea is that the back-end of the compiler only
+	processes modules in this restricted language.  The user language
+	should be an extension with sugar of the core language. A few
+	refactorings have been applied to the syntax definition of the
+	core constructs such as: explicit annotations on all term
+	constructors; pulling together of id, string, and variable
+	constructor.
+
 2003-08-24  Eelco Visser  <visser@cs.uu.nl>
 
 	* syn/Stratego-Strategies.sdf: Allow list variables as

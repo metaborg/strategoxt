@@ -1,0 +1,14 @@
+module Stratego-Core-Modules
+imports Stratego-Identifiers
+exports 
+  sorts Module
+  context-free syntax
+    "module" ModName Decl* 	-> Module {cons("Module")}
+    "specification" Decl*	-> Module {cons("Specification")}
+
+  context-free syntax
+    "imports" ModName* 		-> Decl {cons("Imports")}
+    "strategies" Def* 		-> Decl {cons("Strategies")}
+    "signature" Sdecl*  	-> Decl {cons("Signature")}
+
+    StrategyDef 		-> Def 

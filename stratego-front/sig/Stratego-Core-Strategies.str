@@ -1,0 +1,32 @@
+module Stratego-Core-Strategies
+imports Stratego-Core-Terms
+signature
+  constructors
+    Let            : List(Def) * Strategy -> Strategy
+    SDefT          : Id * List(Typedid) * List(Typedid) * Strategy -> StrategyDef
+    VarDec         : ID * Type -> Typedid
+    SVar           : Id -> SVar
+    CallT          : SVar * List(Strategy) * List(Term) -> Strategy
+    PrimT          : String * List(Strategy) * List(Term) -> Strategy
+    Match          : Term -> Strategy
+    Build          : Term -> Strategy
+    Scope          : List(ID) * Strategy -> Strategy
+    ParenStrat     : Strategy -> StrategyParen
+    Fail           : Strategy
+    Id             : Strategy
+    Seq            : Strategy * Strategy -> Strategy
+    LChoice        : Strategy * Strategy -> Strategy
+    GuardedLChoice : Strategy * StrategyMid * Strategy -> Strategy
+    Rec            : Id * Strategy -> Strategy
+    Not            : Strategy -> Strategy
+    LGChoice       : Strategy * Strategy -> Strategy
+    Bagof          : Strategy -> Strategy
+    Path           : Int * Strategy -> Strategy
+    Some           : Strategy -> Strategy
+    One            : Strategy -> Strategy
+    All            : Strategy -> Strategy
+    Thread         : Strategy -> Strategy
+    IntCong        : Int * Strategy -> Strategy
+    RealCong       : Real * Strategy -> Strategy
+    StrCong        : String * Strategy -> Strategy
+    OpCong         : Const * List(Term) * Strategy -> Strategy

@@ -1,0 +1,72 @@
+module Stratego-Core-Strategies
+imports Stratego-Core-Terms
+exports
+  context-free syntax
+
+  %% Definitions
+
+    "let" Def* "in" Strategy "end"	   -> Strategy {cons("Let")}
+
+    Id "(" {Typedid ","}* 
+       "|" {Typedid ","}* ")" "=" Strategy -> StrategyDef {cons("SDefT")}
+
+    ID ":" Type 			   -> Typedid {cons("VarDec")}
+
+  %% Calls
+
+    Id					  -> SVar {cons("SVar")}
+    SVar "(" {Strategy ","}* 
+         "|" {Term ","}* ")" 	          -> Strategy {cons("CallT")}
+    "prim" "(" String "," {Strategy ","}* 
+                      "|" {Term ","}*")"  -> Strategy {cons("PrimT")}
+
+  %% Match and build
+
+    "?" Term 				  -> Strategy {cons("Match")}
+    "!" Term 				  -> Strategy {cons("Build")}
+    "{" {ID ","}* ":" Strategy "}" 	  -> Strategy {cons("Scope")}
+
+  %% Combinators
+
+    "(" Strategy ")"			  -> StrategyParen {cons("ParenStrat")}
+    "fail" 				  -> Strategy {cons("Fail")}
+    "id" 				  -> Strategy {cons("Id")}
+    Strategy ";" Strategy 		  -> Strategy {cons("Seq"),right}
+    Strategy "<+" Strategy 		  -> Strategy {cons("LChoice"),right}
+    Strategy "<" StrategyMid 
+             "+" Strategy 		  -> Strategy {cons("GuardedLChoice"),right}
+    Strategy 				  -> StrategyMid
+    "rec" Id "(" Strategy ")" 		  -> Strategy {cons("Rec")}
+    "not"   "(" Strategy ")" 		  -> Strategy {cons("Not")}
+
+  %% Global choice
+
+    Strategy "<++" Strategy 		  -> Strategy {cons("LGChoice"),right}
+    "bagof" "(" Strategy ")" 		  -> Strategy {cons("Bagof")}
+
+  %% Traversal
+
+    Int Strategy 			  -> Strategy {cons("Path")}
+    "some" "(" Strategy ")" 		  -> Strategy {cons("Some")}
+    "one" "(" Strategy ")" 		  -> Strategy {cons("One")}
+    "all" "(" Strategy ")" 		  -> Strategy {cons("All")}
+    "thread" "(" Strategy ")" 		  -> Strategy {cons("Thread")}
+
+  %% Congruence operators
+
+    Int    "{" Strategy "}" 		       -> Strategy {cons("IntCong")}
+    Real   "{" Strategy "}"		       -> Strategy {cons("RealCong")}
+    String "{" Strategy "}"  		       -> Strategy {cons("StrCong")}
+    Const "(" {Term ","}* ")" "{" Strategy "}" -> Strategy {cons("OpCong")}
+
+  context-free priorities
+    {"!" Term 				  -> Strategy {cons("Build")}
+     "?" Term 				  -> Strategy {cons("Match")}
+    }
+  > Strategy ";" Strategy 		  -> Strategy {cons("Seq"),right}
+  > {right: 
+     Strategy "<+" Strategy 		  -> Strategy {cons("LChoice"),right}
+     Strategy "<++" Strategy 		  -> Strategy {cons("LGChoice"),right}
+     Strategy "<" StrategyMid 
+              "+" Strategy 		  -> Strategy {cons("GuardedLChoice"),right}
+    }
