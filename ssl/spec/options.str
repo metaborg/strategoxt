@@ -70,7 +70,7 @@ strategies
     iowrapNoOutput(strat, extra-options, default-usage)
 
   iowrapNoOutput(strat, extra-options, usage) =
-    option-wrap(extra-options <+ io-options, usage, announce, 
+    option-wrap(extra-options <+ io-options, usage, id, 
       input-file;
       apply-strategy(strat)
     )
