@@ -22,6 +22,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
 */
 
 #include <stdlib.h>
+#include <errno.h>
+#include <limits.h>
 #include <sys/types.h>
 #include <sys/mman.h>
 #include <fcntl.h>
@@ -30,9 +32,71 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
 #include <unistd.h>
 #include <srts/stratego.h>
 
-// read the entries from a directory and return a list
-// with all the names
 
+/* From Advanced Programming in the Unix Environment */
+
+#ifdef PATH_MAX
+static int pathmax = PATH_MAX;
+#else
+static int pathmax = 0;
+#endif
+
+#define PATH_MAX_GUESS 1024
+
+/**
+ * Allocate a string that can hold a path.
+ */
+char* path_alloc(int *size) {
+  char *result;
+
+  if(pathmax == 0) {
+    errno = 0;
+    if( (pathmax = pathconf("/", _PC_PATH_MAX)) < 0) {
+      if(errno = 0) {
+        pathmax = PATH_MAX_GUESS;
+      } else {
+        perror("path_alloc_fun error for _PC_PATH_MAX");
+        pathmax = PATH_MAX_GUESS;        
+      }
+    } else {
+      pathmax++;
+    }
+  }
+
+  if( (result = malloc(pathmax + 1)) == NULL) {
+    perror("malloc error for path_alloc_fun");
+  }
+
+  if(size != NULL) {
+    *size = pathmax + 1;
+  }
+
+  return result;
+}
+
+/**
+ * Return the current directory
+ */
+ATerm SSL_getcwd(void) {
+  ATerm term_result;
+  char *result;
+  int size;
+  
+  result = path_alloc(&size);
+  if(getcwd(result, size) == NULL) {
+    perror("getcwd failed");
+    _fail((ATerm) ATempty);
+  }
+
+  term_result = ATmakeString(result);
+  free(result);
+  return term_result;
+}
+
+/**
+ * Read the entries from a directory and return a list
+ * with all the names
+ */
 ATerm SSL_readdir(ATerm t) 
 {
   DIR *dir = NULL;
@@ -116,6 +180,8 @@ ATerm SSL_copy(ATerm oldname, ATerm newname)
       
   return newname;
 }
+
+
 
 ATerm SSL_fdcopy(ATerm fdinA, ATerm fdoutA)
 {

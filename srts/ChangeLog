@@ -1,3 +1,10 @@
+2003-12-09  Martin Bravenboer <martin@cs.uu.nl>
+	
+	* ssl/dir.[ch]: added getcwd. Pathname allocation is tricky
+	(that's probably why this function still wasn't in the SSL). Using
+	the path_alloc function from Advanced Programming in the Unix
+	Environment book.
+	
 2003-12-04  Martin Bravenboer <martin@cs.uu.nl>
 	
 	* ssl/exec.[ch]: added ANSI C/POSIX strerror and perror to improve error
