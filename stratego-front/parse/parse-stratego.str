@@ -40,7 +40,7 @@ strategies
     ; if-keep1(copy-to(<guarantee-extension(!"atree")> base))
     ; xtc-transform(!"meta-explode",     <concat> [<pass-verbose>,
                          <get-config < !["--asfix"] + ![]> "--asfix"])
-    ; where( read-from ; check-module-name(|base) )
+    ; where( if-not-silent(read-from ; check-module-name(|base)) )
     ; xtc-transform(!"stratego-desugar", pass-verbose)
 
   check-module-name(|base) =
@@ -49,6 +49,11 @@ strategies
 
   check-module-name(|base) =
     ?Specification(_)
+
+  if-not-silent(s) =
+    where( <get-config>"--verbose" => 0 )
+  < id
+  + s
 
   pass-sort =
       get-meta => Meta(<fetch-elem(?TopSort(<id>))>)
