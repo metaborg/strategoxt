@@ -18,24 +18,26 @@ rules
 strategies
 
   /**
-   * s1 :: [a] -> b
-   * s2 :: a * b -> b
-   *    :: [a] -> b
+   * foldr, requires a list of length > 1.
+   *
+   * @type s1  [a] -> b
+   * @type s2  a * b -> b
+   * @type     [a] -> b
    */
   foldr1(s1, s2) = 
     rec x([id]; s1 <+ FoldR; (id, x); s2)
 
   /**
-   * s1 :: a * b -> b
-   *    :: [a] -> b
+   * @type s1  a * b -> b
+   * @type     [a] -> b
    */
   foldr1(s) = 
     rec x((FoldR1 <+ FoldR; (id, x)); s)
 
   /**
-   * s1 :: [] -> b
-   * s2 :: a * b -> b
-   *    :: [a] -> b
+   * @type s1  [] -> b
+   * @type s2  a * b -> b
+   * @type     [a] -> b
    */
   foldr(s1, s2) = 
     []; s1 
@@ -59,6 +61,9 @@ strategies
   foldl(s) = 
     rec x( \ ([], y) -> y \ + FoldL(s); x)
 
+  /**
+   * @warning  obsolete, use foldr/3
+   */
   mapfoldr(s1, s2, s3) = 
     obsolete(!"mapfoldr; use foldr/3");
     foldr(s1, s3, s2)
@@ -103,8 +108,11 @@ strategies
   drop-until(s) = 
     at-suffix(([] + [s|id]);?xs); !xs
 
+  /**
+   * @warning  alias of split-fetch/1
+   */
   split-at(s) = 
-    at-suffix([s|id];[id|?tl];![]); !(<id>, tl)
+    split-fetch(s)
 
   drop(isn) = 
     nzip0(id); drop-until((isn,id)); map(Snd)

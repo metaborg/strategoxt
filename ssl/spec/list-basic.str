@@ -60,10 +60,15 @@ strategies
   length = 
     foldr(!0, add, !1)
 
-  // :: a * [a] -> fail?
+  /**
+   * @type  a * [a] ->? _
+   */
   elem = elem(eq)
   
-  // a * a -> fail? :: a * [a] -> fail?
+  /**
+   * @type eq  a * a ->? _
+   * @type     a * [a] ->? _
+   */
   elem(eq) =
     ?(x, <id>); one(where(<eq> (x, <id>)))
 
@@ -73,9 +78,21 @@ strategies
   fetch-elem(s) = 
     fetch(s;?x);!x
 
-  // split-fetch, splits a list in two at the point 
-  // where the argument strategy succeeds.
-
+  /**
+   * splits a list in two at the point where s succeeds.
+   *
+   * The element to which s was applied is not part of the result. split-fetch
+   * fails if s cannot be applied to any of the elements.
+   *
+   * Examples:
+   *   <split-fetch(\ 3 -> 6 \)> [1, 2, 3] => ([1,2], [])
+   *   <split-fetch(\ 3 -> 6 \)> [2, 3, 4] => ([2], [4])
+   *   <split-fetch(\ 3 -> 6 \)> [3, 4, 5] => ([], [4,5])
+   *   not(<split-fetch(\ 3 -> 6 \)> [8, 7, 6])
+   *
+   * @type s  a ->? _
+   * @type    [a] -> [a] * [a]
+   */
   split-fetch(s) =
     at-suffix([s|id];[id|?tl];![]); !(<id>, tl)
 

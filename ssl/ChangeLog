@@ -1,3 +1,10 @@
+2003-08-01  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+  * spec/list-misc: split-at is an alias of split-fetch.
+    Reported by Arthur van Dam
+
+  * spec/list-basic: xDoc for split-fetch.
+
 2003-07-29  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/list-basic.str: reverse-map(s) applies s to elements in
