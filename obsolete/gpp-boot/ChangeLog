@@ -1,0 +1,5 @@
+2001-08-22  Eelco Visser  <visser@acm.org>
+
+	* SC-BOOT is a package containing the bootstrapped C sources
+	of the Stratego Compiler.
+

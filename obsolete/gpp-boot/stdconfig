@@ -1,0 +1,10 @@
+#! /bin/sh
+
+./reconf
+./configure --prefix=`pwd` \
+	--with-aterm=/home/visser/res/sandbox/aterm \
+	--with-cgen=`pwd`/../cgen \
+	--with-gpp=`pwd`/../gpp \
+	--with-ssl=`pwd`/../ssl \
+	--with-srts=`pwd`/../srts 
+
