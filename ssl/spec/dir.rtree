@@ -1,0 +1,1 @@
+Specification([Strategies([SDef("readdir",[],Seq(Match(Var("dir")),Prim("SSL_ReadDir",[Var("dir")])))])])

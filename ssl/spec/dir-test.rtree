@@ -1,0 +1,1 @@
+Specification([Imports(["sunit","dir"]),Strategies([SDef("main",[],Call(SVar("test-suite"),[Build(Str("dir-test")),Call(SVar("test1"),[])])),SDef("test1",[],Call(SVar("apply-test"),[Build(Str("test1")),Seq(Call(SVar("readdir"),[]),Call(SVar("fetch-elem"),[Match(Str("dir-test.c"))])),Build(Str(".")),Build(Str("dir-test.c"))]))])])

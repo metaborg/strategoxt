@@ -1,0 +1,1 @@
+Specification([Signature([Sorts([Sort("List",[Var("Type")])]),Constructors([OpDecl("Nil",ConstType(Op("List",[Var("a")]))),OpDecl("Cons",FunType([ConstType(Var("a")),ConstType(Op("List",[Var("a")]))],ConstType(Op("List",[Var("a")]))))])])])

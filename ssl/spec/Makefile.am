@@ -31,7 +31,7 @@ CLEANFILES = $(TESTS) $(bin_SCRIPTS) $(parsed)
 
 SC = $(STRATEGO)/bin/sc
 
-%.rtree: %.r
+%.rtree: %.r $(STRATEGO)/bin/parse-mod
 	$(STRATEGO)/bin/parse-mod -i $< -o $@
 
 % : %.r

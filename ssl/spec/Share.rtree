@@ -1,0 +1,1 @@
+Specification([Imports(["lib","share"]),Strategies([SDef("main",[],Call(SVar("stdio"),[Call(SVar("share"),[LRule(Rule(Var("x"),Op("Var",[Var("x")]),Id)),Fail,LRule(Rule(Op("",[Var("x"),Var("e"),Var("e'")]),Op("Let",[Var("x"),Var("e"),Var("e'")]),Id))])]))])])
