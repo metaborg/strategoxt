@@ -15,9 +15,9 @@ strategies
       ArgOption("-p",
         where(<set-config> ("-p", <id>)),
         !"-p <file.tbl>           Use parse table <file.tbl> (required)")
-    + ArgOption("--start", 
+    + ArgOption("-s" + "--start", 
         where(<set-config> ("--start", <id>)),
-        !"--start <symbol>        Start parsing with <symbol>")
+        !"-s, --start <symbol>    Start parsing with <symbol>")
     + sglr-filter-options
 
     + Option(fail, fail, !"")
