@@ -15,42 +15,49 @@
 
 \begin{code}
 module pack-stratego
-imports lib pack-graph pack-modules sugar dynamic-rules
+imports lib pack-graph pack-modules sugar dynamic-rules config
 signature
   constructors
-    Prefix : Option
+    Ext : String -> ConfigKey
 
 strategies
 
   main = 
-    where([get-path => prefix | id]; rules(Option : Prefix -> prefix));
-    pack-modules(pack-stratego, basename)
+    where([get-path => prefix | id])
+    ; where(prim("get_conf_datadir") => datadir)
+    ; where(prim("get_conf_pkgdatadir") => pkgdatadir)
+    ; import-config-file(
+        find-config-file(![prefix, pkgdatadir], !"pack-stratego.config")
+      )
+    ; import-config-files(
+        find-plugins(![prefix, <conc-strings>(datadir,"/pack-stratego-plugins")], 
+		     !".plugin")
+      )
+    ; pack-modules(pack-stratego, basename)
 
   pack-stratego(mkpt) =
-	\ root -> (["list-cons","tuple-cons",root], (), []) \;
-	graph-nodes-roots(Fst; get-module(!["." | <mkpt>()])
-		         ,get-stratego-imports
-		         ,\ (n,x,xs) -> [x|xs] \ );
-	unzip;
-	(id, flatten-stratego)
-
+    \ root -> (["list-cons","tuple-cons",root], (), []) \
+    ; graph-nodes-roots(Fst; get-module(!["." | <mkpt>()])
+		       , get-stratego-imports
+		       , \ (n,x,xs) -> [x|xs] \ )
+    ; unzip
+    ; (id, flatten-stratego)
 
   get-module(mkpath) =
-     guarantee-extension(!"r"); //debug(!"looking for: ");
-     <find-in-path> (<id>, <mkpath>);
-     (   !(<id>, <parse-mod>)
-      <+ <fatal-error> ["parse error in ", <id>])
+    ? mod
+    ; get-config-keys(?Ext(<id>))
+    ; fetch-elem(!(<id>, mod); get-module-ext(mkpath))
+    <+ <fatal-error> ["module ", <id>, " not found"]
 
-  <+ guarantee-extension(!"cr"); //debug(!"looking for: ");
-     <find-in-path> (<id>, <mkpath>);
-     (   !(<id>, <parse-cmod(mkpath)>)
-      <+ <fatal-error> ["parse error in ", <id>])
-
-  <+ guarantee-extension(!"mtree"); //debug(!"looking for: ");
-     <find-in-path>(<id>, <mkpath>); 
-     !(<id>, <ReadFromFile>)
-
-  <+ <fatal-error> ["module ", <id>, " not found"]
+  get-module-ext(mkpath) =
+    ?(ext, <id>)
+    ; guarantee-extension(!ext)
+    ; <find-in-path>(<id>, <mkpath>)
+    ; (  !(<id>
+           , <parse-file(mkpath)> (<id>
+			          ,<basename; guarantee-extension(!"mtree")>
+				  ,<get-config> Ext(ext)))
+       <+ <fatal-error> ["parse error in ", <id>] )
 
   get-stratego-imports =
     \ (_, Specification(xs)) -> xs \;
@@ -62,77 +69,17 @@ strategies
     concat; 
     \ xs -> Specification(xs) \ 
 
-rules
+  parse-file(mkpath) : 
+    (filein, fileout, tool) -> trm
+    where <not(eq)> (None, tool)
+        ; <call>(tool, [//"--silent", 
+			"-i", filein, "-o", fileout])
+	; <ReadFromFile> fileout => trm
 
-  parse-mod : 
-    filein -> trm
-    where <conc-strings> ("pack-stratego", 
-                          <get-pid; int-to-string>()) => fileout; 
-	  (* <printnl> (stderr, ["  parsing ", filein]); *)
-	  <call>(<conc-strings>(<Option>Prefix,"parse-mod"), 
-		 ["-silent", "-i", filein, "-o", fileout]);
-	  <ReadFromFile> fileout => trm;
-	  <rm-files> [fileout]
+  parse-file(mkpath) : 
+    (filein, fileout, None) -> <if-not-silent(debug(!"reading ")); ReadFromFile> filein
 
-
-  // parse module with concrete syntax terms
-
-  parse-cmod(mkpath) : 
-    filein -> trm
-    where 
-	debug(!"parse-cmod a: ");
-	<basename; guarantee-extension(!"syn"); ReadFromFile> filein => syntax#(_);
-	debug(!"parse-cmod b: ");
-	<get-parse-table(mkpath)> syntax => tbl;
-	debug(!"parse-cmod c: ");
-	new-file => fileout1; new-file => fileout2; 
-        new-file => fileout3; 
-        <basename; guarantee-extension(!"rtree")> filein => fileout4; 
-        new-file => fileout5;
-	debug(!"parse-cmod d: ");
-	<call> ("sglr",  ["-2", "-p", tbl, "-i", filein,   "-o", fileout1]);
-	debug(!"parse-cmod e: ");
-	<call> ("implode-asfix",    ["-i", fileout1, "-o", fileout2]);
-	debug(!"parse-cmod f: ");
-	<call> (<conc-strings>(<Option>Prefix,"meta-explode"), ["-i", fileout2, "-o", fileout3]);
-	debug(!"parse-cmod g: ");
-	<call> ("stratego-desugar", ["-i", fileout3, "-o", fileout4]);
-	debug(!"parse-cmod h: ");
-	<ReadFromFile> fileout4 => trm;
-	<debug(!"parse-cmod ast in: ")> fileout4
-
-  get-parse-table(mkpath) :
-    syntax -> tbl2
-    where
-    debug(!"get-parse-table a: ");
-    <guarantee-extension(!"tbl")> syntax => tbl1;
-    debug(!"get-parse-table b: ");
-    ( <find-in-path> (tbl1, <mkpath>)
-    <+ <get-syntax-definition(mkpath)> syntax => def;
-       debug(!"get-parse-table c: ");
-       <call> ("sdf2table", ["-i", def, "-o", tbl1, "-m", syntax]);
-       debug(!"get-parse-table d: ");
-       !tbl1
-    )  => tbl2
-
-  get-syntax-definition(mkpath) :
-    syntax -> def
-    where 
-        debug(!"get-syntax-definition a: ");
-	<guarantee-extension(!"def")> syntax => def;
-        debug(!"get-syntax-definition b: ");
-        ( <find-in-path> (def, <mkpath>);
-          debug(!"get-syntax-definition c: ")
-        <+ <guarantee-extension(!"sdf")> syntax => sdf;
-           debug(!"get-syntax-definition d: ");
-	   new-file => adef;
-           <call> ("pack-sdf", ["-i", sdf, "-o", adef | <mkpath;map(!["-I", <id>]); concat>]);
-           <call> ("asource",  ["-i", adef, "-o", def ]);
-           debug(!"get-syntax-definition e: ");
-	   !def
-        )
 \end{code}
-
 % Copyright (C) 2000-2002 Eelco Visser <visser@acm.org>
 % 
 % This program is free software; you can redistribute it and/or modify

@@ -1,0 +1,10 @@
+[
+
+("prefix", 	Path("__prefix__")),
+
+("parse-mod", 	Prefix(Var("prefix"), Path("/bin/parse-mod"))),
+
+(Ext("r"), 	Var("parse-mod")),
+(Ext("rtree"),  None)
+
+]
