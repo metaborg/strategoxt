@@ -1,3 +1,7 @@
+2001-10-05 Merijn de Jonge <mdejonge@cwi.nl>
+       * src/sdf/sdf.cons.pp: added pp rule for grammar identification
+         production.
+
 2001-10-01  Eelco Visser  <visser@acm.org>
 
 	* src/*/*.r: Added copyright headers to modules
