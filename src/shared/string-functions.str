@@ -1,4 +1,4 @@
-\literate[misc]
+\literate[string-functions]
 
  Autobundle -- Tool suite for automated source tree composition
 
@@ -7,7 +7,7 @@
  $Id$
 
 \begin{code}
-module misc
+module string-functions
 
 imports lib package-graph version-expressions
 

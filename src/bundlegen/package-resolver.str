@@ -13,7 +13,7 @@
 \begin{code}
 module package-resolver
 imports
-   lib misc pack-graph version-expressions Autobundle package-reader
+   lib string-functions pack-graph version-expressions Autobundle package-reader
 
 strategies
 // package-resolver: (list(pkg-dep), list(string)) -> pkg-graph

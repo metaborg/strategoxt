@@ -1,0 +1,129 @@
+#! /bin/sh
+
+AUTOBUNDLE=__AUTOBUNDLE__
+GPP=__GPP__
+
+# set of packages to release
+pkgs=$*
+
+PKG_SEARCH_PATH="`echo $AUTOBUNDLE_SEARCH_PATH | sed 's/:/ /g'`"
+
+# determine what deployment and development repositories are
+set $PKG_SEARCH_PATH
+DEVEL_REPO=$1
+shift
+DEPLOY_REPO=$*
+
+SEARCH_SWITCHES="-I `echo ${DEPLOY_REPO} | sed 's/ / -I /g'`"
+
+# release a package by
+# -increasing version number
+# -creating a distribution
+# -copying distribution to /tmp
+# -creating new package definition with new version number and /tmp as
+#   location field
+release() {
+   pkg=$1
+   version=$2
+   new_version=$3
+
+
+   (cd $pkg
+    make dist VERSION=${new_version}
+    cp ${pkg}-${new_version}.tar.gz /tmp
+   )
+
+   locaf=`pkg-find -p ${pkg}-${version} ${SEARCH_SWITCHES}`
+   dir=`dirname ${locaf}`
+   
+   pkg-set \
+      -i ${locaf} \
+      -o ${dir}/${pkg}-${new_version}.pkg.af \
+      --location file:///tmp \
+      --version ${new_version}
+   
+   ${GPP}/bin/ast2abox \
+      -p ${AUTOBUNDLE}/share/autobundle/Autobundle.pp \
+      -i ${locaf} \
+   | ${GPP}/bin/abox2text \
+      -o ${dir}/${pkg}-${new_version}.pkg
+}
+
+# update all package requirements to ${pkg} in the package in a bundle
+# to reflect the new version number of the package
+update_deps() {
+   pkg=$1
+   new_version=$2
+   # Change all dependencies in current bundle to ${pkg} to newwest version
+   for p in ${bundled_pkgs}
+   do
+      locaf=`pkg-find -p ${p} ${SEARCH_SWITCHES}`
+      loc=`echo ${locaf} | sed 's/.af$//'`
+
+      pkg-set \
+         -i ${locaf} \
+         -o ${locaf} \
+         --dependency ${pkg}-${new_version}
+      ${GPP}/bin/ast2abox \
+         -p ${AUTOBUNDLE}/share/autobundle/Autobundle.pp \
+         -i ${locaf} \
+      | ${GPP}/bin/abox2text \
+         -o ${loc}
+   done
+}
+
+# determine bundle name
+bundle_name="`grep AC_INIT configure.ac \
+            | sed 's/AC_INIT(//' \
+            | cut -d, -f 1`"
+
+# determine bundle version
+bundle_version=`grep AC_INIT configure.ac \
+             | cut -d, -f2 | tr -d '[ ]' | sed 's/)$//'`
+
+# determine set of bundled packages
+bundled_pkgs=`awk -F, '{print ""$1"-"$2}' < pkg-list`
+
+# sequentially release all packages as specified on the command line
+for pkg in ${pkgs}
+do  
+   # determine version
+   pkg_version=`grep "^${pkg}," pkg-list | cut -d, -f2`
+
+   # check whether package is in development mode
+   pkg_loc=`pkg-find -I ${DEVEL_REPO} -p ${pkg}-${pkg_version}`
+   if [ "a${pkg_loc}" = "a" ]; then
+      echo "Package ${pkg} not in development mode." >&2 
+      exit 1
+   fi
+   
+   # If so, remove its package definition from development repository
+   rm -f ${pkg_loc}
+
+   # determine new package version
+   new_pkg_version=`awk "END{print ${pkg_version} + 0.1}" < /dev/null`
+
+   # release the package
+   release ${pkg} ${pkg_version} ${new_pkg_version}
+
+   # updtae dependencie to the package
+   update_deps ${pkg} ${new_pkg_version}
+   
+   # add new package to set of packages to be bundled
+   new_to_bundle="${new_to_bundle} ${pkg}-${new_pkg_version}"
+done
+
+# determine full set of packages to be bundled
+new_bundle="-p `echo ${bundled_pkgs} ${new_to_bundle} | sed 's/[ ]/ -p&/g'`"
+
+# create new bundle
+( cd .. 
+  autobundle ${new_bundle} \
+             -n ${bundle_name} \
+             -v ${bundle_version} \
+             -I ${DEVEL_REPO} -I ${DEPLOY_REPO} \
+  | gunzip -c | tar xf - ${bundle_name}-${bundle_version}/pkg-list \
+                          ${bundle_name}-${bundle_version}/configure.ac \
+                          ${bundle_name}-${bundle_version}/configure
+)
+./collect.sh

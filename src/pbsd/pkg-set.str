@@ -1,0 +1,94 @@
+\literate[pkg-set]
+
+ Autobundle -- Tool suite for automated source tree composition
+
+ Author: Merijn de Jonge (M.de.Jonge@tue.nl)
+
+ $Id: pkg-search.str 4566 2003-12-02 17:01:17Z merijn $
+
+\begin{code}
+module pkg-set
+imports lib Autobundle package-reader autobundle-version string-functions
+
+strategies
+short-description(p) =
+   !["Usage: ", <p>(), " [options]"]
+
+long-description(p) = 
+   !["This tool can change values in a package definition.\n"]
+                         
+pkg-set = 
+   io-wrap( pkg-set-options, Pkg-set)
+
+pkg-set-options =
+   ArgOption( "--version",
+      where(<set-config>("--version", [<id>])),
+      !"--version <v>         Set version number to 'v'" ) +
+   ArgOption( "--location",
+      where(<set-config>("--location", [<id>])),
+      !"--location <l>        Set location field to 'v'" ) +
+   ArgOption( "--dependency",
+      where(<set-config>("--dependency", [<id>])),
+      !"--dependency <d>        Set dependency  to 'd'" ) 
+
+
+set-version(version) : pkg -> pkg'
+where
+   PackageDef(
+      Identification(
+        id,
+        Version(<version>()),
+        id,
+        id,
+        id,
+        id)
+      ,id,id,id) => pkg'
+
+set-location(location) : pkg -> pkg'
+where
+   PackageDef(
+      Identification(
+        id,
+        id,
+        Location(!Some(<location>()))
+        +
+        LocationPBSD((PrimaryLoc(<location>()),id))
+        ,
+        id,
+        id,
+        id)
+      ,id,id,id) => pkg'
+
+set-dependency(dep) : pkg -> pkg'
+where
+   where(<dep>(); parse-pkg-string => (name,version));
+   topdown( try(
+        ReqPackage(?name,!version,id) )) => pkg'
+
+Pkg-set =
+   termid-check("\"autobundle-0\"");
+      
+   if( where(<get-config>"--version" => [v]),
+       set-version(!v) );
+   if( where(<get-config>"--location" => [l]),
+       set-location(!l) );
+   if( where(<get-config>"--dependency" => [d]),
+       set-dependency(!d) );
+   termid-set(!"\"autobundle-0\"")
+      
+\end{code}
+% Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>
+%
+% This program is free software; you can redistribute it and/or modify it
+% under the terms of the GNU General Public License as published by the Free
+% Software Foundation; either version 2, or (at your option) any later
+% version.
+%
+% This program is distributed in the hope that it will be useful, but
+% WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+% or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+% for more details.
+%
+% You should have received a copy of the GNU General Public License along
+% with this program; if not, write to the Free Software Foundation, Inc., 59
+% Temple Place - Suite 330, Boston, MA 02111-1307, USA.

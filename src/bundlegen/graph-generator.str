@@ -12,7 +12,7 @@
 
 \begin{code}
 module graph-generator
-imports GraphXML package-graph misc
+imports GraphXML package-graph string-functions
 strategies
 
 // graph-generator: pkg-graph -> graphxml

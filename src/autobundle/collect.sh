@@ -58,7 +58,7 @@ where
                              (default ./configure.ac)
   --pkg-list <pkg-list>      specifies package list file (default ./pkg-list)
   --force                    specifies that packages should always be
-                             retrieved even they are already present
+                             retrieved even if they are already present
   --help|-h                  displays this help
   pkg                        specifies the names of packages that should
                              be retrieved (by default all packages from

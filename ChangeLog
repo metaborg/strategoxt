@@ -1,3 +1,13 @@
+2004-04-21 Merijn de Jonge <mdejonge@cs.uu.nl>
+   * pbsd/pkg-release.sh.src: release tool added for package-based software
+     development
+   * renamed bundlegen/misc.str to shared/string-functions.str
+   * moved bundlegen/version-expressions.str, bundlegen/package-graph.str to
+     shared
+   * pbsd/pkg-set.str: added a tool to change some of the settings of a
+     package definition. Currently only the version, (primary) locaton, and
+     a package dependency version can be changed.
+
 2004-04-20 Merijn de Jonge <mdejonge@cs.uu.nl>
    * autobundle/collect.sh: Added support for subversion. Refactored script
      to prevent code duplication

@@ -12,13 +12,13 @@ include $(wildcard *.dep)
 SUBDIRS        = data
 
 # Which Stratego programs to build
-STRATEGO_PRG   = pkg-switch
+STRATEGO_PRG   = pkg-switch pkg-set
 
 # What programs to build
 bin_PROGRAMS   = $(STRATEGO_PRG) 
 
 # These scripts are still under development and will not yet get installed
-noinst_SCRIPTS    = pkg-edit.sh
+noinst_SCRIPTS    = pkg-edit.sh pkg-release.sh
 
 # Additional flags for the Stratego compiler
 STRINCLUDES    = -I $(srcdir)/../shared -I $(top_builddir)/syntax
@@ -62,6 +62,13 @@ pkg_switch3_check_correct  = $(top_srcdir)/syntax/data/aterm-1.4.4.pkg.af
 pkg-edit.sh : pkg-edit.sh.src
 	sed '' < $<  > $@ \
 	&& chmod +x $@
+
+pkg-release.sh : pkg-release.sh.src
+	sed 's@__AUTOBUNDLE__@$(prefix)@g;\
+             s@__GPP__@$(GPP)@g'\
+	< $<  > $@ \
+	&& chmod +x $@
+
 # Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>
 #
 # This program is free software; you can redistribute it and/or modify

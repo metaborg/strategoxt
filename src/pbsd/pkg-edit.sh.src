@@ -14,6 +14,12 @@ SEARCH_SWITCHES="-I `echo ${DEPLOY_REPO} | sed 's/ / -I /g'`"
 for pkg in ${pkgs}
 do
    pkg_version=`grep "^${pkg}," pkg-list | cut -d, -f2`
+   pkg_loc=`pkg-find -p ${pkg}-${pkg_version} -I ${DEVEL_REPO}`
+   if [ "a${pkg_loc}" != "a" ]; then
+      echo "Package ${pkg} already in development mode." >&2
+      exit 1
+   fi
+
    loc=`pkg-find -p ${pkg}-${pkg_version} ${SEARCH_SWITCHES}`
    pkg-switch -i ${loc} -o ${DEVEL_REPO}/${pkg}-${pkg_version}.pkg.af
 done
