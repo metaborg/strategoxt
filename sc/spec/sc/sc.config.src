@@ -9,6 +9,8 @@
 ("GPP", 		Path("__GPP__")),
 ("CGEN", 		Path("__CGEN__")),
 
+("--verbose",		1),
+
 ("-I", 			["-I", Prefix(Var("STRATEGOLIB"),   "/share/ssl"),
 			 "-I", Prefix(Var("STRATEGOFRONT"), "/share/stratego-front")]),
 

@@ -72,12 +72,11 @@ strategies
   parse-file(mkpath) : 
     (filein, fileout, tool) -> trm
     where <not(eq)> (None, tool)
-        ; <call>(tool, [//"--silent", 
-			"-i", filein, "-o", fileout])
+        ; <call>(tool, [ "-i", filein, "-o", fileout | <!["-silent"]; if-verbose2(![])> ])
 	; <ReadFromFile> fileout => trm
 
   parse-file(mkpath) : 
-    (filein, fileout, None) -> <if-not-silent(debug(!"reading ")); ReadFromFile> filein
+    (filein, fileout, None) -> <if-verbose2(debug(!"reading ")); ReadFromFile> filein
 
 \end{code}
 % Copyright (C) 2000-2002 Eelco Visser <visser@acm.org>

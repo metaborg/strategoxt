@@ -10,11 +10,70 @@
 
 \begin{code}
 module proto-sc
-imports lib sugar dynamic-rules config
+imports lib sugar dynamic-rules config verbose
 strategies
 
   proto-sc = 
-  ( where([get-path => prefix | id])
+  ( command-line-options
+    ; profile'( if-verbose1(<printnl>(stderr, ["-----\ncompilation succeeded:   " | <id>])), 
+        compile
+      )
+    ; if-verbose2(<printnl>(stderr, ["compilation succeeded (", <run-time>, " secs)"]))
+    ; <exit> 0
+  ) <+ <printnl>(stderr, ["compilation failed (", <run-time>, " secs)"])
+       ; <exit> 1
+
+  compile =
+    front
+    ; optimize
+    ; back-end
+    ; c-compile
+    ; try(not(<get-config>"--norm"); remove-intermediates)
+
+  front =
+    profile'(if-verbose1(<printnl>(stderr, ["front-end succeeded:     " | <id>])), 
+      parse
+      ; output-ast
+      ; add-main 
+      ; frontend 
+      ; output-frontend
+      ; extract  
+      ; stratego-nf 
+      ; rename-defs
+    )
+ 
+  optimize =
+    profile'(if-verbose1(<printnl>(stderr, ["optimization succeeded:  " | <id>])), 
+        optimize1 
+        ; try(where(not(<get-config> "--fusion")); fusion)
+        ; inline
+        ; compile-match 
+        ; optimize2
+        //  ; stratego-of
+    )
+
+  back-end =
+    profile'(if-verbose1(<printnl>(stderr, ["back-end succeeded:      " | <id>])), 
+      canonicalize
+      ; stratego-cf
+      ; s2c
+      //  ; c-format
+      ; ac2abox
+      ; abox2text
+    )
+
+  c-compile =
+    profile'(if-verbose1(<printnl>(stderr, ["C compilation succeeded: " | <id>])), 
+      c-to-object-code 
+      ; link-object-code
+    )
+
+strategies
+
+// Command line options
+
+  command-line-options =
+    where([get-path => prefix | id])
     ; where(prim("get_conf_pkgdatadir") => pkgdatadir)
     ; where(prim("get_conf_datadir") => datadir)
     ; import-config-file(
@@ -31,47 +90,9 @@ strategies
           ; sc-version 
           ; <exit> 0)
     ; (!(<get-config; basename> "-i", "")  
-       <+ <fatal-error> ["no main module specified"]) 
+       <+ <fatal-error> ["no main module specified"])
     ; sc-announce
-    ; profile(!"compile time: ", 
-       profile(!"front-end time: ", 
-         parse
-         ; output-ast
-         ; add-main 
-         ; frontend 
-         ; output-frontend
-         ; extract  
-         ; stratego-nf 
-         ; rename-defs
-       );
-      profile(!"optimization time: ", 
-        optimize1 
-        ; try(where(not(<get-config> "--fusion")); fusion)
-        ; inline
-        ; compile-match 
-        ; optimize2
-        //  ; stratego-of
-      );
-      profile(!"back-end time: ", 
-        canonicalize
-        ; stratego-cf
-        ; s2c
-        //  ; c-format
-        ; ac2abox
-        ; abox2text
-      );
-      profile(!"C compile time: ", 
-        cc1
-        ; cc2
-      )
-    )
-    ; try(not(<get-config>"--norm"); remove-intermediates)
-    ; <printnl>(stderr, ["compilation succeeded (", <run-time>, " secs)"])
-    ; <exit> 0
-  ) <+ <printnl>(stderr, ["compilation failed (", <run-time>, " secs)"])
-       ; <exit> 1
-
-// Command line options
+    ; if-verbose1(where(<get-config> "-i"; debug(!"compiling ")))
 
 signature
   sorts Option
@@ -158,14 +179,14 @@ strategies
 	!"-t f               Instrument definition of f to print tracing information\n" )
 
 
+  + ArgOption("--verbose",         
+	where(<set-config> ("--verbose",<string-to-int>)); !Verbose(<id>),         
+	!"--verbose i       Verbosity level i (default 1)")
 
-  + Option("--verbose",         
-	where(<set-config> ("--verbose",())); !Verbose(),         
-	!"--verbose          Verbose execution")
+  + Option("-S"+"--silent",       
+	where(<set-config> ("--verbose",0)); !Verbose(0),          
+	!"-S|--silent      Silent execution (same as --verbose 0)")
 
-  + Option("-S" + "--silent",         
-	where(<set-config> ("-S",())); !Silent(),         
-	!"-S | --silent      Silent execution")
 
   + Option("-h" + "--help",         
 	where(<set-config> ("-h",())); !Help(),         
@@ -178,8 +199,6 @@ strategies
   + Option("-v"+"--version",     
 	where(<set-config> ("-v",())); !Version(),         
 	!"-v|--version       Display program's version")
-
-
 
   short-description(p) = 
     !["Usage: ", <p>(), " [options]"] 
@@ -211,15 +230,18 @@ strategies
 	  ["The Stratego Compiler (version ", <get-config> "VERSION", ")"]))
 
   sc-announce =
-    try(where(<get-config> "--verbose"; sc-version))
+    if-verbose2(sc-version)
+
+strategies
+
+// Compiler components
 	
   // Collect all modules into one abstract syntax tree
 
   parse = 
     pipe(<get-config> "pack-stratego", !".tree",
-         <concat> [<!["-dep", <get-config> "-o"] <+ !["-dep", <get-config> "-i"]>, 
-                   ["--silent"],
-                   <get-config> "-I"])
+         <concat> [<!["-dep", <get-config> "-o"] <+ !["-dep", <get-config> "-i"]>,
+                   <get-config> "-I", <pass-verbose> ])
 
   output-ast =
     try(where(<get-config>"--ast")
@@ -247,63 +269,91 @@ strategies
     ; transform-file(AddMain(!m), !".tree1")
    <+ transform-file(id, !".tree1")
 
-strategies
+  pass-verbose = 
+    !["--verbose", <subt; int-to-string>(<get-config <+ !1> "--verbose", 1)]
 
+  frontend = 
+    pipe(<get-config> "frontend", !".s1", !["-b" | <pass-verbose> ])
 
-strategies
+  extract = 
+    pipe(<get-config> "extract", !".s2", !["-b" | <pass-verbose> ])
 
-  frontend        = pipe(<get-config> "frontend",		!".s1", !["-b"])
-  extract         = pipe(<get-config> "extract",		!".s2", !["-b"])
-  extract-all     = pipe(<get-config> "extract-all",		!".sdefs", !["-b"])
-  rename-defs     = pipe(<get-config> "rename-defs",		!".s3", !["-b"])
-  stratego-nf     = pipe(<get-config> "Stratego-Normal-Format", id,     !["-b"])
-  optimize1       = pipe(<get-config> "optimize1",		!".s4", !["-b"])
-  fusion          = pipe(<get-config> "fusion",			!".s5", !["-b"])
-  inline          = pipe(<get-config> "inline",			!".s6", !["-b"])
-  compile-match   = pipe(<get-config> "compile-match",		!".s7", !["-b"])
-  optimize2       = pipe(<get-config> "optimize2",		!".s8", !["-b"])
-  stratego-of     = pipe(<get-config> "Stratego-Optimized-Format", id,  !["-b"])
-  canonicalize    = pipe(<get-config> "canonicalize",		!".s9", !["-b"])
-  stratego-cf     = pipe(<get-config> "Stratego-Canonical-Format", id,  !["-b"]) 
+  extract-all = 
+    pipe(<get-config> "extract-all", !".sdefs", !["-b" | <pass-verbose> ])
 
-  s2c             
-    = pipe(<get-config> "s2c", !".ac",
-	   !["-b" | <get-config; map(!["--C-include", <id>]); concat> "--C-include"])
+  rename-defs = 
+    pipe(<get-config> "rename-defs", !".s3", !["-b" | <pass-verbose> ])
+
+  stratego-nf = 
+    pipe(<get-config> "Stratego-Normal-Format", id, !["-b" | <pass-verbose> ])
+
+  optimize1 = 
+    pipe(<get-config> "optimize1", !".s4", !["-b"| <pass-verbose> ])
+
+  fusion = 
+    pipe(<get-config> "fusion", !".s5", !["-b" | <pass-verbose> ])
+
+  inline = 
+    pipe(<get-config> "inline", !".s6", !["-b" | <pass-verbose> ])
+
+  compile-match = 
+    pipe(<get-config> "compile-match", !".s7", !["-b" | <pass-verbose> ])
+
+  optimize2 = 
+    pipe(<get-config> "optimize2", !".s8", !["-b" | <pass-verbose> ])
+
+  stratego-of = 
+    pipe(<get-config> "Stratego-Optimized-Format", id,  !["-b" | <pass-verbose> ])
+
+  canonicalize = 
+    pipe(<get-config> "canonicalize", !".s9", !["-b" | <pass-verbose> ])
+ 
+  stratego-cf = 
+    pipe(<get-config> "Stratego-Canonical-Format", id,  !["-b" | <pass-verbose> ]) 
+
+  s2c =
+    pipe(<get-config> "s2c", !".ac", 
+	 <conc>(<pass-verbose>,
+	        ["-b" | <get-config; map(!["--C-include", <id>]); concat> "--C-include"]))
 			  
 		  // <TraceAllFuns; !["--trace-all"] <+ get-traced-funs> () )
 
-  c-format        = pipe(<get-config> "C-Format",      !".ac", !["-b"])
+  c-format = 
+    pipe(<get-config> "C-Format",      !".ac", !["-b"])
 
-  ac2abox	  = pipe(<get-config> "ast2abox",      !".c.abox", !["-p", <get-config> "C.pp"])
-  abox2text	  = pipe(<get-config> "abox2text",     !".c")
+  ac2abox = 
+    pipe(<get-config> "ast2abox",      !".c.abox", !["-p", <get-config> "C.pp"])
+
+  abox2text = 
+    pipe(<get-config> "abox2text",     !".c")
 
   get-traced-funs =
     <table-getlist> "TraceFun";
     map(\ (f, _) -> ["-t", f] \ );
     concat;
-    ([] <+ debug(!"traced functions: "))
+    if-verbose1([] <+ debug(!"traced functions: "))
 
-  cc1 =
-    if(not(<get-config>"-S"),
-       say(!"compiling C code"))
-    ;  where(conc-strings => cfile)
+  c-to-object-code =
+    if-verbose2(say(!"compiling C code"))
+    ; where(conc-strings => cfile)
     ; (id, !".o")       
     ; where(conc-strings => target)
-    ; where(<call> ("gcc", <conc> (<get-config> "-CI", ["-c", cfile,"-o", target])))
+    ; where(<if-verbose3(where(<printnl>(stderr, [<Fst> | <Snd>]))); call> 
+		("gcc", <conc> (<get-config> "-CI", ["-c", cfile,"-o", target])))
 
-  cc2 = 
-    if(not(<get-config>"-S"),
-       say(!"linking object code"))
+  link-object-code = 
+    if-verbose2(say(!"linking object code"))
     ; where(conc-strings => ofile)
     ; (try(<get-config> "-o"), !"") 
     ; where(conc-strings => target)
-    ; where(<call> ("gcc", [ofile, "-o", target | <get-config> "-CL"]))
+    ; where(<if-verbose3(where(<printnl>(stderr, [<Fst> | <Snd>])));call> 
+		("gcc", [ofile, "-o", target | <get-config> "-CL"]))
 
   remove-intermediates =
     ?(base, _);
     where(<rzip(conc-strings); rm-files>
             (base, [".tree", ".tree1", ".s1", ".s2", 
-		    ".s3", ".s4", ".s5", ".s6", ".s7", ".s8", 
+		    ".s3", ".s4", ".s5", ".s6", ".s7", ".s8", ".s9", 
 		    ".ac", ".c.abox", ".o"]))
 \end{code}
 
