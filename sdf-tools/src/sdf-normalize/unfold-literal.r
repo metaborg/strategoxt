@@ -11,10 +11,14 @@ module unfold-literal
 imports Sdf-Syntax lib ppp-wrap sdf-bracket gt-paths
 strategies
 
-  unfold-literal = 
+(*  unfold-literal = 
     pppwrap(!["-l", "sdf", "-v", "2.1"]
            ,!["-p", <concat-strings>[SDFTOOLS, "/share/gt/sdf.cons.pp"]]
            ,UnfoldLiterals; SdfBracket)
+*)
+
+    unfold-literal = iowrap(UnfoldLiterals; SdfBracket)
+
 
   UnfoldLiterals =
   where(find-literals => subst)

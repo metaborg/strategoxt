@@ -1,4 +1,5 @@
 2001-06-11 Merijn de Jonge <mdejonge@cwi.nl> 
+   * src/lib: intergation module ppp-wrap moved to xt-package
    * src/sdf-doc: Integertion stuff moved to xt package
 
 2001-06-10 Merijn de Jonge <mdejonge@cwi.nl> 
