@@ -1,0 +1,590 @@
+/**
+ * Compilation of Stratego programs to Java
+ */
+module s2java
+imports Stratego automaton lib Java-15 dynamic-rules config
+signature
+  constructors
+    Include : String -> ExternalDef
+
+strategies
+
+  s2java = 
+    io-wrap(s2java-options, compile)
+ 
+  compile = TranslateSpec
+
+strategies
+
+  /**
+   * Command line options
+   */
+
+  s2java-options = 
+    ArgOption("--C-include",       
+	where(<post-extend-config>("--C-include", [<id>])),
+	!"--C-include h   include header file h (\"file.h\" or <file.h>)")
+
+  + Option("--library" + "--lib"
+	  ,where(<set-config> ("--library", ()))
+	  ,!"--library | --lib    build library instead of application")
+
+strategies
+
+  /**
+   * Building a library
+   */
+
+  if-lib(s1, s2) = where(<get-config>"--library") < s1 + s2
+  if-lib(s)      = if-lib(s, id)
+  if-not-lib(s)  = if-lib(id, s)
+
+overlays
+
+  // FIXME: ~expr:id, ~expr:id
+  FuncallTerm = java:expr|[ ATinsert() ]|
+  
+  CastATerm(e) = 
+    java:expr|[ (ATerm) ~e ]|
+    // TypeCast(TypeName(TypeSpec([],TypeId("ATerm"),[]),None),e)
+
+  CheckATermList(e) = java:bstm|[ CheckATermList(~e); ]|
+/*   CheckATermList(e) = 
+    FunCall(Id("CheckATermList"), [e])
+*/
+
+rules
+ 
+  TranslateSpec:
+    Specification([Signature([Constructors(ops)]), Strategies(defs)]) -> //compilation-unit
+    <concatenate-lists>
+    |[ 
+
+	import aterm.ATerm;
+	import aterm.AFun;
+		
+	// C includes specified on command-line or by default configuration
+//	~ext-def*:incl
+
+    public class MyStrategoProgram implements SRTS.StrategoProgram {
+
+	private aterm.pure.PureFactory atermFactory; 
+	
+	private static boolean not_null(ATerm t) {
+		return SRTS.StrategoLib.not_null(t);
+	}
+	
+	private static ATerm SSL_println(ATerm t, ATerm s) {
+		return SRTS.StrategoLib.SSL_println(t,s);
+	}
+	
+	private static void _fail(ATerm t) {
+		SRTS.StrategoLib._fail(t);
+	}
+	
+	public MyStrategoProgram() {
+		atermFactory = new aterm.pure.PureFactory();		
+	}
+	
+	// initialize variables denoting constructor symbols
+	~*cnstr-decls
+	static void initModuleConstructors ()
+	{
+	  //~stm*:cnstr-inits
+	}
+
+	// initialize cached constant terms
+	//~ext-def*:cnst-decls
+	static void initModuleConstantTerms ()
+	{
+	  //~stm*:cnst-inits
+	}
+
+	public static void main(String args[]) {
+		MyStrategoProgram p = new MyStrategoProgram();
+		SRTS.StrategoLib.main(args, p);
+	}
+/*
+	// include functions for calling the initialization functions
+	~ext-def*:
+	  <if-lib(
+	     ![Include("#include <srts/init-stratego-module.h>")],
+	     ![Include("#include <srts/init-stratego-application.h>")]
+	   )>	
+*/
+	// signatures of all generated functions
+	//~ext-def*:function-sigs
+
+	// function definitions themselves
+//	~<if-lib(![], ![<MainDef>])>
+//	~function-defs
+	}
+    ]|
+    where //GenerateIncludes => incl
+	 <map(DeclareConstructor)> ops => cnstr-decls
+//        ; <map(InitConstructor); concat> ops => cnstr-inits
+//	; <map(SDefToDeclaration)> defs => function-sigs
+	; <filter(?SDefT(_,_,_,_))
+           ; map(TranslateDef)> defs => function-defs
+//    ; where(<debug> function-defs)
+//	; (CachedTerms <+ ![])
+//	; !(<map(DeclareTermId)>, <map(InitTermId); concat; reverse>) 
+//	  => (cnst-decls, cnst-inits)
+
+  concatenate-lists =
+    bottomup(try(\ Conc(xs, ys) -> <conc>(xs, ys) \ ))
+
+
+strategies 
+
+  DeclareConstructor :
+    OpDecl(c, t) -> class-body-dec|[ AFun ~x:csym; ]|
+    // Declaration2(TypeSpec([],TypeId("Symbol"),[]),[IdDecl([],Id(csym),None)])
+    where <Arity> t => n
+        ; <concat-strings>["sym_", <cify> c, "_", <int-to-string> n] => csym
+        ; rules(ConstructorName : (c, n) -> csym)
+
+  Arity : 
+    ConstType(t) -> 0
+
+  Arity : 
+    FunType(ts, t) -> <length> ts
+
+  MainDef = 
+    !|[ 
+	public ATerm main_0(ATerm t) 
+	{
+	  t = main_0_0(t);
+	  return(t);
+	}
+    ]|
+
+strategies
+
+  TranslateDef :
+    Def|[ f(a1*|a2*) = s ]| ->
+    java:class-body-dec|[ 
+       ATerm ~x:f(~*args, ATerm t)
+       {
+         ~stm:s''
+		 return(t);
+       }
+    ]|
+    where <not(is-local-function)> f
+	; <map(TranslateVarDec)> a1* => args1
+    ; <map(TranslateVarDec)> a2* => args2
+	; <conc>(args1, args2) => args
+	; <translate-body> s => s''
+
+
+
+/*
+  TranslateDef :
+    Def|[ f(a1*|a2*) = s ]| ->
+    |[ 
+       static ATerm ~x:f(~args, ATerm t)
+       {
+         ~stm:<translate-body>s;
+		 return(t);
+       }
+    ]|
+    where <is-local-function> f
+	; <map(TranslateVarDec)> a1* => args1
+        ; <map(TranslateVarDec)> a2* => args2
+	; <conc>(args1, args2) => args
+*/
+  is-local-function =
+    explode-string
+    ; [is-alpha, '_' | list(is-num)]
+
+strategies
+
+  translate-body =
+      merge-SeqVar
+    ; topdown(repeat(TranslateDef /*<+ TranslateStratMatchGuard*/ <+ TranslateStrat)) 
+
+
+  /**
+   * @todo Necessary because the build transformation to C performs a bottomup traversal.
+   *       Remove as soon as SeqVar is a real Var and not a Var wrapper: SeqVar(Var(_))
+   */
+
+  merge-SeqVar =
+    topdown(try(SeqVar(?Var(<id>))))
+
+  TranslateVarDec = id
+
+  TranslateVarDec :
+    VarDec(x, ConstType(_)) -> java:bstm|[ ATerm x; ]|
+
+/*
+  TranslateVarDec :
+    VarDec(x, FunType(ts,_)) -> 
+    |[ ATerm ~x = null; ]| // FIXME!! = new ATerm(t)
+    // where <map(TranslateType)> ts => t
+*/    
+/*
+  TranslateType : 
+    ConstType(_) -> TypeSpec([],TypeId("ATerm"),[])
+
+  TranslateType :
+    FunType(ts, _) -> 
+    ParamDecl(TypeSpec([],TypeId("ATerm"),[]),ParamList(<map(TranslateType)> ts))
+*/
+
+/**
+ * Strategy expressions
+ */
+rules 
+
+
+  TranslateStrat :
+    Id -> stm|[ { } ]|
+    
+/*
+  TranslateStrat :
+    Fail -> stm|[ _fail(t); ]|
+*/
+
+  TranslateStrat :
+    Scope(xs, s) -> 
+    java:bstm|[ 
+       {
+       /* FIXME
+		 ~dec*:[Declaration2(TypeSpec([],TypeId("ATerm"),[]),
+	        // <map(!var-dec|[~id:<id> = NULL]|)> xs
+		<map(!DeclInit(IdDecl([],Id(<id>),None),AssignInit(Id("NULL"))))> xs)
+	       ]
+		*/
+       	~stm:s
+       }
+    ]|
+
+  TranslateStrat :
+    |[ s1; s2 ]| -> java:bstm|[ { ~stm:s1 ~stm:s2 } ]|
+/*
+  TranslateStrat :
+    |[ s1 + s2 ]| -> |[ s1 <+ s2 ]|
+
+  TranslateStrat :
+    |[ s1 <+ s2 ]| -> |[ s1 < id + s2 ]|
+
+  TranslateStrat :
+    |[ s1 < s2 + s3 ]| ->
+    java:bstm|[
+      {
+        ATerm ~x:x = t;
+        int ~x:ptr = stack_ptr;
+	if(PushChoice() == 0)
+	  { ~stm:s1; LocalPopChoice(~x:ptr); ~stm:s2 }
+	else
+          { t = ~x:x; ~stm:s3 }
+      }      
+    ]|
+    where new => x; new => ptr
+
+  TranslateStrat :
+    |[ s1 ++ s2 ]| -> |[ s1 <++ s2 ]|
+
+  TranslateStrat :
+    |[ s1 <++ s2 ]| ->
+    |[ { ATerm x = t;
+         if(GlobalPushChoice() == 0)
+	   { ~stm:s1 }
+	 else 
+	   { t = ~x:x; ~stm:s2 }
+       }
+    ]|
+    where new => x
+
+  TranslateStrat :
+    |[ not(s) ]| -> 
+    java:bstm|[ 
+      {
+        ATerm ~x:x = t;
+	if(PushChoice() == 0)
+	  { ~stm:s PopChoice(); _fail(t); }
+	else
+	  { t = ~x:x; }
+      }
+    ]|
+    where new => x
+*/
+
+  TranslateStrat :
+    Strat|[ prim(~str:f, s* | t* ) ]| -> java:bstm|[ t = ~x:f(~*args); ]|
+    where <map(\ CallT(SVar(x),[],[]) -> Id(x) \ )> s* => args1
+		; <map(topdown(try(construct-term)))> t* => args2
+        ; <conc>(args1, args2) => args
+
+/*
+  TranslateStrat :
+    Strat|[ f(s* | t* ) ]| -> java:stm|[ t = ~x:f(~*:args); ]|
+    where <map(\ CallT(SVar(x),[],[]) -> Id(x) \ )> s* => args1
+        ; <map(topdown(try(construct-term)))> t* => args2
+        ; <concat>[args1, args2, [Id("t")]] => args
+*/        
+/*
+  TranslateStrat :
+    Test(s) -> Where(s)
+
+  TranslateStrat :
+    Where(s) -> 
+    stm|[ 
+      {
+        ATerm ~x:x;
+        x = t;
+        ~stm:s;
+        t = x;
+      }
+    ]|
+    where new => x
+*/    
+/*
+  TranslateStrat :
+    Let(defs,s) -> Block(<conc> (decs, defs), [s])
+      where <map(SDefToDeclaration)> defs => decs
+*/
+
+rules // Building
+
+
+  TranslateStrat : // FIXME: cache?
+    Build(t) -> java:stm|[ t = ~expr:t'; ]| where <construct-term> t => t'
+
+  construct-term =
+    bottomup(try(ConstructList <+ ConstructTerm))
+
+  ConstructTerm :
+    Int(i) -> java:expr|[ (ATerm)ATmakeInt(~deci:<int-to-string> i) ]|
+/*
+  ConstructTerm :
+    Real(x) -> java:expr|[ (ATerm)ATmakeReal(~float:<real-to-string> x) ]|
+
+  ConstructTerm :
+    Str(x) -> 
+    java:expr|[ (ATerm)ATmakeAppl(ATmakeSymbol(~string:<escape; double-quote>x, 0, ATtrue)) ]|
+*/
+
+  ConstructTerm :
+    Var(x){"bound"} -> Id(x)
+
+  ConstructTerm :
+    Var(x){} -> java:expr|[ not_null(~x:x) ]| 
+
+  ConstructTerm :
+    Var(x){"unbound"} -> java:expr|[ not_null(~x:x) ]| 
+
+  ConstructTerm :
+    Var(x){"(un)bound"} -> java:expr|[ not_null(~x:x) ]| 
+
+
+  /**
+   * @todo  I need expression blocks. Using a call to a runtime function for now.
+   * @todo  Check the cast.
+   */
+/*   
+  ConstructTerm:
+    SeqVar(x) -> java:expr |[ x == ATempty || x == NULL ? _fail(x) : SRTS_pop_seqvar(x) ]|
+
+  ConstructTerm :
+    BuildDefault(t) -> t
+*/
+
+  ConstructTerm :
+    Op(c, ts) -> java:expr|[ atermFactory.makeAppl(~x:<ConstructorName>(c, <length> ts), ~*ts) ]|
+
+/*
+  ConstructTerm :
+    Anno(t1, t2) -> java:expr|[ (ATerm)ATsetAnnotations(~expr:t1, ~expr:t2) ]|
+*/
+  ConstructList :
+    Op("Nil", []) -> java:expr|[ (ATerm) ATempty ]|
+/*
+  ConstructList :
+    Op("Cons", [hd, tl]) -> java:expr|[ (ATerm) ATinsert(~expr:tl', ~expr:hd) ]|
+    where <?CastATerm(<Id("ATempty") + FuncallTerm >) 
+           <+ !CheckATermList(tl)> tl => tl'
+
+  ConstructList' :
+    Op("Cons", [hd, tl]) -> java:expr|[ (ATerm)ATinsert(~expr:tl', ~expr:hd) ]|
+    where (<(Op("Nil", []) + Op("Cons", [id, id])); ConstructList> tl 
+           <+ !CheckATermList(tl)) => tl'
+*/
+
+signature
+  constructors
+    Match : Term * Exp -> Exp
+
+/**
+ * Matching
+ */
+rules
+
+  TranslateStrat :
+    Match(t) ->
+    Match(t, Id("t"))
+/*
+  TranslateStrat :
+    Match(Wld, trm) ->
+    Compound([],[])
+
+  TranslateStrat :
+    Match(BuildDefault(t), trm) ->
+    Compound([],[])
+
+  TranslateStrat :
+    Match(As(t1,t2), trm) ->
+    Compound([],[Match(t1,trm),Match(t2,trm)])
+
+  TranslateStrat :
+    Match(Var(x){"unbound"}, trm) ->
+    Stat(Assign(Id(x),AssignEq,trm))
+
+  TranslateStrat :
+    Match(Var(x){"bound"}, trm) ->
+    If(NotEqual(Id(x),trm)
+      , Compound([], [Stat(FunCall(Id("_fail"),[trm]))]))
+
+  TranslateStrat :
+    Match(Var(x){"(un)bound"}, trm) ->
+    IfElse(LAnd(NotEqual(Id(x),Id("NULL")), NotEqual(Id(x),trm)),
+           Stat(FunCall(Id("_fail"),[trm])),
+           Stat(Assign(Id(x),AssignEq,trm)))
+*/
+  TranslateStrat :
+    Match(Var(x){}, trm) -> java:bstm|[ if(x != null && x != ~id:trm) { _fail(~id:trm); } else { x = ~id:trm; } ]|
+//    IfElse(LAnd(NotEqual(Id(x),Id("NULL")), NotEqual(Id(x),trm)),
+//           Stat(FunCall(Id("_fail"),[trm])),
+//           Stat(Assign(Id(x),AssignEq,trm)))
+/*           
+/*
+
+  /**
+   * @todo  Check the cast to a list.
+   */
+/*
+  TranslateStrat :
+    Match(SeqVar(x), y) ->
+      |[ { if(x == NULL) {
+             x = (ATerm) ATempty;
+           }
+
+           x = (ATerm) ATappend((ATermList) x, y);
+         }
+      ]|
+/*
+  /**
+   * @todo  String constants should probably be cached, just like constructor names
+   */
+/*
+  TranslateStrat :
+    Match(Str(x), trm) -> 
+    If(NotEqual(SymOfAppl(trm), 
+                FunCall(Id("ATmakeSymbol"),
+                        [StringLit([<escape; double-quote>x]),IntConst("0"),Id("ATtrue")]))
+      ,CallFail)
+
+  TranslateStrat :
+    Match(Int(i), trm) -> 
+    If(LOr(NotEqual(FunCall(Id("ATgetType"),[trm]),Id("AT_INT")),
+           NotEqual(FunCall(Id("ATgetInt"),[CastATermInt(trm)]),IntConst(<int-to-string>i)))
+      ,CallFail)
+
+  TranslateStrat :
+    Match(Real(i),trm) -> 
+    If(LOr(NotEqual(FunCall(Id("ATgetType"),[trm]),Id("AT_REAL")),
+           NotEqual(FunCall(Id("ATgetReal"),[CastATermReal(trm)]),FloatConst(<real-to-string>i)))
+      ,CallFail)
+
+  TranslateStrat :
+    Match(Op(c, ts), trm) ->
+    IfElse(FunCall(Id("match_cons"),[trm, Id(<ConstructorName> (c, <length> ts))])
+          ,Compound([],match-args)
+	  ,CallFail)
+    where <not("Nil" + "Cons")> c; 
+      <thread-map(\ Pair(t,i) -> 
+         Pair(<MatchArg1 <+ MatchArg2>(t, ATgetArgument(trm,IntConst(<int-to-string>i))), 
+              <add>(i,1)) \ )> 
+	     Pair(ts,0) => Pair(match-args,_)
+
+  MatchArg1 : 
+    (Var(x){t*}, trm) -> Match(Var(x){t*}, trm)
+
+  MatchArg2 : 
+    (t, trm) -> 
+    Compound([Declaration2(TypeSpec([],TypeId("ATerm"),[]),
+		           DeclInit(IdDecl([],Id(x),None), AssignInit(trm)))]
+            ,[Match(t, Id(x))])
+   where new => x
+
+  TranslateStrat :
+    Match(Op("Nil", []), trm) ->
+    If(LOr(NotEqual(FunCall(Id("ATgetType"),[trm]), Id("AT_LIST")), 
+	   Negation(FunCall(Id("ATisEmpty"),[trm]))),
+       CallFail)
+
+  TranslateStrat :
+    Match(Op("Cons", [hd, tl]), trm) ->
+    IfElse(LAnd(Equal(FunCall(Id("ATgetType"),[trm]), Id("AT_LIST")), 
+                Negation(FunCall(Id("ATisEmpty"),[trm])))
+          ,Compound([], match-args)
+	  ,CallFail)
+    where <map(MatchArg1 <+ MatchArg2)> 
+	   [(hd, FunCall(Id("ATgetFirst"),[CastATermList(trm)])), 
+            (tl, CastATerm(FunCall(Id("ATgetNext"),[CastATermList(trm)])))] => match-args
+*/
+
+/**
+ * Matching automaton with guarded left choice
+ */
+rules 
+/*
+  TranslateStratMatchGuard :
+    GuardedLChoice(Match(Str(str)), s1, s2) ->
+    IfElse(FunCall(Id("match_string"),[Id("t"),StringLit([<escape; double-quote>str])])
+          ,Compound([],[s1])
+          ,Compound([],[s2]))
+
+  TranslateStratMatchGuard :
+    GuardedLChoice(Match(Int(i)), s1, s2) ->
+    IfElse(FunCall(Id("match_int"),[Id("t"),IntConst(<int-to-string>i)])
+          ,Compound([],[s1])
+          ,Compound([],[s2]))
+
+  TranslateStratMatchGuard :
+    GuardedLChoice(Match(Real(i)), s1, s2) ->
+    IfElse(FunCall(Id("match_real"),[Id("t"),FloatConst(<real-to-string>i)])
+          ,Compound([],[s1])
+          ,Compound([],[s2]))
+
+  TranslateStratMatchGuard :
+    GuardedLChoice(Match(Op(c, xs)), s1, s2) ->
+    IfElse(FunCall(Id("match_cons"),[Id("t"), Id(<ConstructorName> (c, <length>xs))])
+          ,Compound([], <conc>(get-args, [s1]))
+          ,Compound([],[s2]))
+    where <not("Nil" + "Cons")> c; <map(Var(id))> xs; 
+      <thread-map(\ Pair(Var(x), i) -> 
+         Pair(Stat(Assign(Id(x), AssignEq, ATgetArgument(Id("t"),IntConst(<int-to-string>i))))
+             , <add>(i,1)) \ )> 
+      Pair(xs,0) => Pair(get-args,_)
+
+  TranslateStratMatchGuard :
+    GuardedLChoice(Match(Op("Nil", [])), s1, s2) ->
+    IfElse(LAnd(Equal(FunCall(Id("ATgetType"),[Id("t")]), Id("AT_LIST")), 
+	        FunCall(Id("ATisEmpty"),[Id("t")]))
+          ,Compound([], [s1])
+          ,Compound([], [s2]))
+
+  TranslateStratMatchGuard :
+    GuardedLChoice(Match(Op("Cons", [Var(x1),Var(x2)])), s1, s2) ->
+    IfElse(LAnd(Equal(FunCall(Id("ATgetType"),[Id("t")]), Id("AT_LIST")), 
+                Negation(FunCall(Id("ATisEmpty"),[Id("t")])))
+          ,Compound([], [Stat(Assign(Id(x1), AssignEq, 
+				     FunCall(Id("ATgetFirst"),[CastATermList(Id("t"))])))
+                        ,Stat(Assign(Id(x2), AssignEq, 
+				     CastATerm(FunCall(Id("ATgetNext"),[CastATermList(Id("t"))]))))
+                        ,s1])
+          ,Compound([],[s2]))
+*/
+    
