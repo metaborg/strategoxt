@@ -1,4 +1,11 @@
+2002-06-20  Eelco Visser  <visser@acm.org>
+
+	* Primitives and strategies for process control 
+
 2002-06-11  Eelco Visser  <visser@acm.org>
+
+	* spec/dir.r, src/dir.c, src/dir.h: getenv and setenv can
+	be used to retrieve and set environment variables.
 
 	* spec/verbose.r, spec/exec.r, spec/config.r, spec/exec.r,
 	spec/options.r, spec/pack-modules.r, spec/parse-options.r,
