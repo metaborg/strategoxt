@@ -3,19 +3,13 @@
  */
 module util/config/options
 imports 
-  // system.io.*
-  system/io/file 
-  system/io/dir 
-  system/io/pipe 
-  system/io/char 
-  system/io/term 
-  system/io/exec
-
+  system/io/*
   util/config/parse-options 
   util/config/common 
   util/config/verbose 
-  util/config/keep
+  util/config/keep 
   util/time 
+  util/log
 
 strategies
 
@@ -192,12 +186,20 @@ strategies
       , !"-S|--silent      Silent execution (same as --verbose 0)"
       )
     + ArgOption("--verbose"
-      , where(string-to-int; set-verbosity); !Verbose(<id>)
-      , !"--verbose i      Verbosity level i (default 1)"
+      , where(verbose-to-int; set-verbosity); !Verbose(<id>)
+      , !"--verbose i      Verbosity level i (default 1)
+                    ( i as a number or as a verbosity descriptor:
+                      emergency, alert, critical, error, 
+                      warning, notice, info, debug, vomit )"
       )
 
 strategies
 
+  verbose-to-int = 
+      string-to-level
+        <+
+      string-to-int
+  
   need-help(u) =
     (  <get-config> "--help"
       <+ option-defined(

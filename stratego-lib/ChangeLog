@@ -1,3 +1,8 @@
+2005-03-11 Rene de Groot <rcgroot@cs.uu.nl>
+        * spec/util/log.str, spec/util/config/verbose.str: Added commandline 
+        alternative on verbose level setting. Level can also be set with a 
+        verbose level descriptor.
+
 2005-02-17  Martin Bravenboer <martin@cs.uu.nl>
 
 	* ssl-compat/*: moved non-hierarchical SSL sources to a separate

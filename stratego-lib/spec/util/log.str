@@ -86,9 +86,35 @@ rules
   severity-string : Info()      -> "info"
   severity-string : Warning()   -> "warning"
   severity-string : Notice()    -> "notice"
-  severity-string : Info()      -> "info"
   severity-string : Debug()     -> "debug"
   severity-string : Vomit()     -> "vomit"
+  
+  string-to-level : "emergency" -> level
+    where <verbose-level> Emergency() => level
+    
+  string-to-level : "alert"     -> level
+    where <verbose-level> Alert() => level
+
+  string-to-level : "critical"  -> level
+    where <verbose-level> Critical() => level
+    
+  string-to-level : "error"     -> level
+    where <verbose-level> Error() => level
+    
+  string-to-level : "warning"   -> level
+    where <verbose-level> Warning() => level
+    
+  string-to-level : "notice"    -> level
+    where <verbose-level> Notice() => level
+    
+  string-to-level : "info"      -> level
+    where <verbose-level> Info() => level
+    
+  string-to-level : "debug"     -> level
+    where <verbose-level> Debug() => level
+    
+  string-to-level : "vomit"     -> level
+    where <verbose-level> Vomit() => level
 
 strategies
 
