@@ -45,14 +45,22 @@ USA
 
 #else
 
-extern jmp_buf jmpbufs[];
-extern unsigned int nr_jmpbuf;
+extern jmp_buf *jmpbufs_start;
+extern jmp_buf *jmpbufs_end;
+extern jmp_buf *jmpbufs_pos;
 extern unsigned int stack_ptr;
-extern unsigned int allocJmpBuf();
- 
-#define PushChoice() (setjmp(jmpbufs[allocJmpBuf()]))
-#define PopChoice() --nr_jmpbuf
-#define LocalPopChoice(i) --nr_jmpbuf
+
+void resizeJmpBufs(void);
+
+static inline jmp_buf *allocJmpBuf()
+{
+    if (jmpbufs_pos >= jmpbufs_end) resizeJmpBufs();
+    return jmpbufs_pos++;
+}
+
+#define PushChoice() (setjmp(*allocJmpBuf()))
+#define PopChoice() --jmpbufs_pos
+#define LocalPopChoice(i) --jmpbufs_pos
 
 #define GlobalPushChoice() PushChoice()
 #define GlobalPopChoice() PopChoice()

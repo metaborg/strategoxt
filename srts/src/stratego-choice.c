@@ -49,25 +49,48 @@ ATerm _cpl_loaded(ATerm t)
 
 // Choice point implementation
 
-// #define JMPBUFS 16384
-#define JMPBUFS 1638400
-jmp_buf jmpbufs[JMPBUFS];
-unsigned int nr_jmpbuf = 0;
+/* Pointer to the start of  a dynamically allocated array of jmp_buf
+   structures. */
+jmp_buf *jmpbufs_start = 0;
+
+/* Pointer just past the end of the jmpbufs array. */
+jmp_buf *jmpbufs_end = 0;
+
+/* The lowest free element of the jmpbufs array. */
+jmp_buf *jmpbufs_pos = 0;
+
+/* For compatibility with the cpl implementation; always 0. */
 unsigned int stack_ptr = 0;
 
-inline unsigned int allocJmpBuf()
+
+void resizeJmpBufs()
 {
-    assert(nr_jmpbuf < JMPBUFS);
-    return nr_jmpbuf++;
+    unsigned int n = jmpbufs_end - jmpbufs_start;
+    jmp_buf *new;
+
+    n = n == 0 ? 1 : n * 2;
+#ifdef DEBUG
+    fprintf(stderr, "srts: resizing jump buffer array to hold %d elements\n", n);
+#endif
+
+    new = realloc(jmpbufs_start, n * sizeof(jmp_buf));
+    if (!new) {
+        fprintf(stderr, "srts: cannot resize jump buffer array to hold %d elements", n);
+        abort();
+    }
+
+    jmpbufs_pos = new + (jmpbufs_pos - jmpbufs_start);
+    jmpbufs_end = new + n;
+    jmpbufs_start = new;
 }
 
 ATerm _fail(ATerm t)
 {
   // using setjmp and longjmp
   // ATfprintf(stderr, "_fail(%t) %d\n", t, nr_jmpbuf);
-  assert(nr_jmpbuf > 0);
-  longjmp(jmpbufs[--nr_jmpbuf], 1);
-  
+  assert(jmpbufs_pos > jmpbufs_start);
+  longjmp(*--jmpbufs_pos, 1);
+
   // localFail();
   //fail();
   return (ATerm)ATempty;
