@@ -68,7 +68,7 @@ exports
 
 \begin{code}
 module Vis-amb
-imports lib asfix
+imports lib AsFix
 signature
   constructors
     amb-abbr : String * AbbrTree -> AmbAbbr

@@ -4,18 +4,20 @@ include $(wildcard *.dep)
 
 SUBDIRS          = data
 
-libexec_PROGRAMS = Vis-amb nonterminal-tree
 pkgdata_DATA     = Vis-amb.str
+libexec_PROGRAMS = Vis-amb nonterminal-tree
+SCFLAGS          = --main $*
 
-BOOTCLEANFILES   = Vis-amb.c nonterminal-tree.c
-
-TESTS            = visamb1_check visamb2_check
-
-SCFLAGS          = -I $(srcdir)/../asfix --main $*
-
-CLEANFILES       = visamb1_check visamb2_check $(wildcard *.dep)
+STRINCLUDES = \
+  -I $(top_srcdir)/lib \
+  -I $(top_srcdir)/sig \
+  -I $(SDF_FRONT)/share/sdf-front 
 
 EXTRA_DIST 	 = $(wildcard *.str)
+BOOTCLEANFILES   = Vis-amb.c nonterminal-tree.c
+CLEANFILES       = visamb1_check visamb2_check $(wildcard *.dep)
+
+TESTS            = visamb1_check visamb2_check
 
 visamb1_check_prog    = Vis-amb
 visamb1_check_input   = data/input.test.tree

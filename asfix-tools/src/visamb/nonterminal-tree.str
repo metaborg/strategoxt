@@ -1,13 +1,15 @@
 module nonterminal-tree
-imports lib asfix verbalize-sdf
+imports lib AsFix verbalize-sdf
 strategies
 
   nonterminal-tree =
-    iowrap(topdown(try(ApplToSort + LitToString)))
+    io-wrap(
+      topdown(try(ApplToSort + LitToString))
+    )
 
   ApplToSort :
     appl(prod(as, a, _), ts) -> c#(ts)
-    where <![["\""],<Sym2Strs>,["\""]]; concat; concat-strings> a => c
+      where <![["\""],<Sym2Strs>,["\""]]; concat; concat-strings> a => c
 
   LitToString :
     lit(s) -> s
