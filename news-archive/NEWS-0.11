@@ -1,0 +1,77 @@
+StrategoXT 0.11 -- released July ..., 2004
+
+---------++ Summary of Changes
+
+   * Faster installation
+
+   * Smaller distribution
+
+   * Using new version of SDF (PGEN 2.1)
+
+   * Dynamic linking
+      * libtool
+
+   * Separate compilation
+      * Now actually works
+      * Also for XTC tools
+      * See HowTo at Wiki
+
+   * Global choice operator
+      * See howto
+      * Supported by strc
+
+   * Tools
+      * Parenthesize generator
+      * Idef for pack-sdf
+
+   * Strategies
+      * filter text files
+      * Stateful sets
+      * new-name
+
+   * New packages
+      * xml-front
+
+   * Major bug-fixes
+      * mkstemp
+      * mutual recursive lets
+      * new dynamic rules   
+
+   * Portability
+      * Cygwin tested
+      * Mac OS X tested
+
+   * Other releases
+      * JavaFront
+      * StrategoShell (interpreter!)
+      * Tiger
+
+---------++ Download and Installation
+
+The release page contains the source distributions, binary RPMs, and
+detailed instructions on how to install the distributions:
+
+   * http://www.stratego-language.org/Stratego/StrategoRelease011
+
+---------++ Bugs and Known Problems
+
+Not all bugs and known problems for StrategoXT have been solved in
+this release, otherwise this would release 1.0 ;). See our issue
+tracking systems for reports about (open) bugs:
+
+   * https://catamaran.labs.cs.uu.nl/jira/
+
+For an overview of features planned for future releases:
+
+   * Release plan: http://www.stratego-language.org/Stratego/ReleasePlan
+   * To do: http://www.stratego-language.org/Stratego/ToDo
+
+Please report any problems with installation or bugs in the
+implementation to our issue tracking system. Please check the existing
+issues to see if a report about the problem was already submitted.
+
+---------++ Contributions
+
+Developments, beta tests, and bug fixes were carried out by
+
+   * ...
