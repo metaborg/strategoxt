@@ -1,3 +1,18 @@
+2004-03-05  Martin Bravenboer <martin@cs.uu.nl>
+
+	* syn/Box/Makefile.am:
+	- install Box.pp in pkgdata_DATA
+	- install Box.pp.af as well
+	- Do not remove Box.pp on bootclean
+
+	* syn/pp-table/Makefile.am
+	- install pp-table.pp in pkgdata_DATA
+	- install pp-table.pp.af as well
+	- Do not remove pp-table.pp on bootclean
+
+	* xtc-tools/pp-pp-table.str: only used the pp-table.pp.af pretty
+	print table, not the one of Box.
+		
 2004-03-03   Merijn de Jonge  <mdejonge@cs.uu.nl>
    * Readded *.str *.def, and *.c because gpp is part of StrategoXT
      bootstrap procedure and these files (although generated) need to be

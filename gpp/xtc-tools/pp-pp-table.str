@@ -5,7 +5,7 @@ strategies
 
   io-pp-pp-table =
     xtc-io-wrap(
-      xtc-transform(!"ast2abox", !["-p", <xtc-find> "Box.pp.af", "-p", <xtc-find> "pp-table.pp.af"])
+      xtc-transform(!"ast2abox", !["-p", <xtc-find> "pp-table.pp.af"])
     ; xtc-abox-format
     ; xtc-abox2text
     )
