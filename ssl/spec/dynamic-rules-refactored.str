@@ -65,6 +65,9 @@ strategies // high-level API with implicit rule set
     ; (s < dr-end-scope(|name)
          + dr-end-scope(|name); fail)
 
+  /**
+   * @type  t -> t
+   */
   dr-begin-scope(|name) =
     where(
       dr-get-rule-set(|name)
@@ -72,6 +75,9 @@ strategies // high-level API with implicit rule set
       ; dr-set-rule-set(|name)
     )
 
+  /**
+   * @type  t -> t
+   */
   dr-end-scope(|name) =
     where(
       dr-get-rule-set(|name)
@@ -79,6 +85,9 @@ strategies // high-level API with implicit rule set
       ; dr-set-rule-set(|name)
     )
 
+  /**
+   * @type  t -> t
+   */
   dr-start-change-set(|name) =
     where(
       dr-get-rule-set(|name)
@@ -86,6 +95,9 @@ strategies // high-level API with implicit rule set
       ; dr-set-rule-set(|name)
     )
 
+  /**
+   * @type  t -> t
+   */
   dr-commit-change-set(|name) =
     where(
       dr-get-rule-set(|name)
@@ -93,6 +105,9 @@ strategies // high-level API with implicit rule set
       ; dr-set-rule-set(|name)
     )
 
+  /**
+   * @type  t -> t
+   */
   dr-label-scope(|name, label) =
     where(
       dr-get-rule-set(|name)
