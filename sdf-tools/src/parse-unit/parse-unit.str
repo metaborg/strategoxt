@@ -79,7 +79,7 @@ strategies
         try(
           ?Failure()
         ; <concat-strings; echo> ["* ERROR: test ", <int-to-string> i, " (", n, ")"]
-        ; <debug(!"** Result:   ")> result
+        ; <try(ParseResult(Success, read-from)); debug(!"** Result:   ")> result
         ; <debug(!"** Expected: ")> expected
         )
       )
@@ -98,14 +98,14 @@ strategies
     (ParseResult(Success(), _), Success()) -> Success()
 
   create-test-result:
-    (ParseResult(Success(), result), expected) -> Success()
+    (ParseResult(Success(), f@FILE(_)), expected) -> Success()
       where !expected; not(?Success())
-          ; !(result, expected); eq
+          ; !(<read-from> f, expected); eq
 
   create-test-result:
-    (ParseResult(Success(), result), expected) -> Failure()
+    (ParseResult(Success(), f@FILE(_)), expected) -> Failure()
       where !expected; not(?Success())
-          ; !(result, expected); not(eq)
+          ; !(<read-from> f, expected); not(eq)
 
 strategies
 
@@ -133,8 +133,8 @@ strategies
     ; !FILE(file)
     ; xtc-transform(!"sglr", !options)
     ; (   xtc-transform(!"implode-asfix", !["-b"])
-        ; !ParseResult(Success(), <read-from>)
-      <+  !ParseResult(Failure(), <read-from>)
+        ; !ParseResult(Success(), <id>)
+      <+  !ParseResult(Failure(), <id>)
       )
     <+ !ParseResult(Failure(), None())
   
