@@ -108,6 +108,16 @@ strategies // high-level API with implicit rule set
   /**
    * @type  t -> t
    */
+  dr-discard-change-set(|name) =
+    where(
+      dr-get-rule-set(|name)
+      ; dr-discard-change-set
+      ; dr-set-rule-set(|name)
+    )
+
+  /**
+   * @type  t -> t
+   */
   dr-label-scope(|name, label) =
     where(
       dr-get-rule-set(|name)
@@ -246,6 +256,9 @@ strategies // change sets
     [ChangeSet(tbl) | rs] -> rs'
     where <hashtable-keys> tbl
         ; foldr(!rs, dr-apply-change(|tbl)) => rs'
+
+  dr-discard-change-set :
+    [ChangeSet(tbl) | rs] -> rs
 
   dr-apply-change(|tbl) :
     (key1@([label | _], key), rs) -> <dr-set-in-rule-set(|label, key, <hashtable-get(|key1)> tbl)> rs
