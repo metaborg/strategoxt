@@ -159,19 +159,27 @@ in Stratego programs.
 
 ---------++ New and Improved Tools
 
-   * pack-sdf allows include from syntax definitions.
+_pack-sdf_ now supports the "-Idef Foo.def" flag. This flag can be used
+to import SDF modules (.sdf) from an SDF syntax definition (.def). The
+order of mixed -I and -Idef arguments is respected.
 
-   * sdf2parenthesize: improves the support for implementing
-        pretty-printers
+_sdf2parenthesize_ is a new tool that generates a Stratego
+transformation tool that adds the necessary parentheses to an abstract
+syntax tree. The information is obtained from an SDF syntax
+definition. The tool handles associativity, relative priorities, and
+groups of associative productions. The tool has succesfully been
+applied to improve the pretty-printers of Stratego in stratego-front
+and Java in JavaFront. The tool is explained in more detail at the
+Tools web: 
 
-   * Various new or improved tools:
-      * pack-sdf can now include modules from syntax definitions
-      * sdf2parenthesize improves the support for implementing
-        pretty-printers
+   * http://www.program-transformation.org/Tools/SdfToParenthesize
 
-      * sdf2rtg complains about missing start symbols
+The _sdf2rtg_ tool, which is used for the generation of Stratego
+signatures, now uses the real start symbols of the SDF syntax
+definition and not the declared sorts. sdf2rtg also complains if the
+syntax definition contains no start symbols at all.
 
----------++ New strategies in the Stratego library:
+---------++ New strategies in the Stratego library
 
    * generate unique names with a prefix (Arthur van Dam)
 
