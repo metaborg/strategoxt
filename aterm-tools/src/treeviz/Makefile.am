@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.7 2002/06/10 14:23:12 eelco Exp $
+# $Id: Makefile.am,v 1.8 2002/06/11 05:46:55 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -42,7 +42,8 @@ pkgdata_DATA = dot-pretty.pp
 # TESTS        = program-check
 
 # List all files that should be distributed here
-EXTRA_DIST    += $(wildcard *.r) $(wildcard *.sdf) $(wildcard *.pp)
+EXTRA_DIST    += $(wildcard *.r) $(wildcard *.sdf) $(wildcard *.pp) \
+                 term-to-dot.sh.src
 
 
 % : %.sh.src Makefile
