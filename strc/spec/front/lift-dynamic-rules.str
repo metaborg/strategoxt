@@ -1,5 +1,11 @@
 module lift-dynamic-rules
 imports Stratego lib desugar
+
+signature // will be moved to SSL module later...
+  constructors
+
+    Closure : Id * List(Term) -> Closure
+
 strategies
 
   LiftDynamicRules =
@@ -14,14 +20,14 @@ strategies
     |[ {| : s |} ]| -> s
 
   DefDynRuleScope :
-    |[ {| x, sc* : s |} ]| -> |[ rule-scope({| sc* : s |} | x) ]|
+    |[ {| x, sc* : s |} ]| -> |[ rule-scope({| sc* : s |} | ~str:x) ]|
 
   DefDynRuleScope :
     |[ {| x.t, sc* : s |} ]| -> |[ rule-scope( {| x :+ t |}; {| sc* : s |}
-                                             | x ) ]|
+                                             | ~str:x ) ]|
 
   DefDynRuleScopeLabel :
-    |[ {| x :+ t |} ]| -> |[ label-scope(|x, t) ]|
+    |[ {| x :+ t |} ]| -> |[ label-scope(|~str:x, t) ]|
 
 /* Lift dynamic rules from strategy definitions.  One dynamic rule set
 is lifted out at a time, after which the process repeats; a definition
@@ -64,44 +70,46 @@ that are declared in context using the dynamic rule ContextVar */
 
   split-dynamic-rules :
     |[ rules(drd*) ]| -> 
-    <map(SplitDynamicRule); unzip> rd*
+    <map(SplitDynamicRule); unzip> drd*
 
   SplitDynamicRule:
     drd@DynRuleDef|[ f(as1|as2) : r ]| ->
-      <SplitDynamicRule(!|[ add-to-ruleset(|f, ~<Fst>, ~<Snd>) ]|)> drd
+      <SplitDynamicRule(!|[ add-to-ruleset(|~str:f, ~<Fst>, ~<Snd>) ]|)> drd
 
   SplitDynamicRule:
     DynRuleDef|[ f(as1|as2).t : r ]| ->
-      <SplitDynamicRule(!|[ add-to-ruleset(|f, t, ~<Fst>, ~<Snd>) ]|)> DynRuleDef|[ f(as1|as2) : r ]|
+      <SplitDynamicRule(!|[ add-to-ruleset(|~str:f, t, ~<Fst>, ~<Snd>) ]|)> DynRuleDef|[ f(as1|as2) : r ]|
 
   SplitDynamicRule:
     DynRuleDef|[ f(as1|as2) :+ r ]| ->
-      <SplitDynamicRule(!|[ extend-ruleset(|f, ~<Fst>, ~<Snd>) ]|)> DynRuleDef|[ f(as1|as2) : r ]|
+      <SplitDynamicRule(!|[ extend-ruleset(|~str:f, ~<Fst>, ~<Snd>) ]|)> DynRuleDef|[ f(as1|as2) : r ]|
 
   SplitDynamicRule:
     DynRuleDef|[ f(as1|as2).t :+ r ]| ->
-      <SplitDynamicRule(!|[ extend-ruleset(|f, t, ~<Fst>, ~<Snd>) ]|)> DynRuleDef|[ f(as1|as2) : r ]|
+      <SplitDynamicRule(!|[ extend-ruleset(|~str:f, t, ~<Fst>, ~<Snd>) ]|)> DynRuleDef|[ f(as1|as2) : r ]|
 /*
   SplitDynamicRule:
     DynRuleDef|[ f(as1|as2) :- t ]| ->
-      <SplitUndefineDynamicRule(!|[ undefine-rule(|f, ~<id>) ]|)> DynRuleDef|[ f(as1|as2) :- t ]|
+      <SplitUndefineDynamicRule(!|[ undefine-rule(|~str:f, ~<id>) ]|)> DynRuleDef|[ f(as1|as2) :- t ]|
 
   SplitDynamicRule:
     DynRuleDef|[ f(as1|as2).t :- t1 ]| ->
-      <SplitUndefineDynamicRule(!|[ undefine-rule(|f, t, ~<id>) ]|)> DynRuleDef|[ f(as1|as2) :- t1 ]|
+      <SplitUndefineDynamicRule(!|[ undefine-rule(|~str:f, t, ~<id>) ]|)> DynRuleDef|[ f(as1|as2) :- t1 ]|
 */
-  SplitDynamicRule(saveclsr): x -> x
-/*
-    |[ f(as1|as2) : t1 -> t2 where s ]| ->
-    (|[ where(~<saveclsr> (t1', Closure(~str:stamp, [t*])) ]|,
-     [ |[ f'(as1|as2') : Closure(~str:stamp, [t*]) -> t2 
-            where s ]|
-       |[ f(as1|as2) : x@t1 -> <fetch-elem(f'(as1|as2'))> closures
+  SplitDynamicRule(saveclsr):
+    DynRuleDef|[ f(as1|as2) : t1 -> t2 where s ]| ->
+    (|[ where(~<saveclsr> (t1', |[ Closure(~str:stamp, [t*]) ]| )) ]|,
+     [ /*
+       |[ f'(as1|as2') : Closure(~str:stamp, [t*]) -> t2 
+            where s ]|,
+       |[ f(as1|as2) : x@t1 -> <fetch-elem(f'(s1*|t1'* ))> closures
             where lookup-rule(|~str:f, t1'') => closures ]|,
-       |[ g(as1|as2) : x@t1 -> <filter(f'(as1|as2'))> closures
+       |[ g(as1|as2) : x@t1 -> <filter(f'(s1*|t1'* ))> closures
             where (lookup-rule(|~str:f, t1'') <+ ![]) => closures ]|
+       */
      ])
     where 
+    debug(!"SplitDynamicRule/(1,0) input: ");
       <not(eq)>(t2, |[ Undefined() ]|)
 
       ; <conc-strings>("bagof-", f) => g
@@ -116,13 +124,12 @@ that are declared in context using the dynamic rule ContextVar */
       ; try(?t1; !Var(x)) => t1''
 
       ; <tvars; map(!Var(<id>))> t1' => keys
-      ; <conc> (as2, keys) => as2'
+      ; <conc> (t1*, keys) => t1'*
       ; <tvars; filter(test(ListVar(ContextVar) <+ ContextVar); !Var(<id>))> (t2, s) => vals1
       ; <diff> (vals1, keys) => t*
 
       ; new => stamp
 
-*/
 \end{code}
 
 % Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
