@@ -31,7 +31,7 @@ GPP=__GPP__
 
 # default module extension; can be changed using the -e option
 
-MOD_EXTENSION="sdf"
+MOD_EXTENSION1="sdf"
 IMPORTS="${PREFIX}/bin/sdf-imports"
 PPTABLES="${PREFIX}/share/sdf-tools/sdf.cons.pp"
 PARSETABLE="${PREFIX}/share/sdf-tools/sdf.cons.tbl"
