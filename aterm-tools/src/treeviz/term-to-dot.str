@@ -1,12 +1,17 @@
 module term-to-dot
 imports xtc-lib lib term-to-adot
+
 strategies
 
   term-to-dot =
-    option-wrap(term-to-adot-options <+ io-options,
-      xtc-io(
-        xtc-io-transform(to-adot)
-        ; xtc-transform(!"ast2abox", !["-p", <xtc-find> "Dot-pretty.pp"])
-        ; xtc-transform(!"abox2text")
-      )
+    xtc-io-wrap(term-to-adot-options,
+      xtc-io-transform(to-adot)
+    ; xtc-transform(!"ast2abox", !["-p", <xtc-find> "Dot-pretty.pp"])
+    ; xtc-transform(!"abox2text")
     )
+
+  // Insert "where(try(set-undefined-output))" in term-to-dot to output to .dot by default.
+  set-undefined-output =
+      where(not(<get-config> "-o"))
+    ; <set-config> ("-o", <conc-strings> (<get-config> "-i", ".dot"))
+
