@@ -1,52 +1,28 @@
 includedir = $(prefix)/include/srts
 
-AM_CFLAGS	= 
-DEBUGFLAGS	= -g
-OPTFLAGS	= -O2
-PROFFLAGS	= -pg
-INCLUDES 	= -I$(srcdir)/../src -I$(ATERM)/include
-
-AM_LDFLAGS	= -L$(top_builddir)/ssl \
-		  -L$(top_builddir)/src \
-		  -L$(ATERM)/lib 
-
-LDADD		= -lstratego-lib.opt \
-		  -lstratego.opt \
-		  -lATerm-gcc \
-		  -lm
-
-# TARGETS
-
-check_PROGRAMS 	= extract
-
-pkglib_LIBRARIES = \
-	libstratego-lib.a libstratego-lib.dbg.a \
-	libstratego-lib.opt.a libstratego-lib.prof.a
-
 include_HEADERS = \
-	io.h stratego-lib.h tables.h sets.h ssl-time.h exec.h number.h \
-	ssl-string.h term.h annotations.h placeholder.h dir.h
+  io.h stratego-lib.h tables.h sets.h ssl-time.h exec.h number.h \
+  ssl-string.h term.h annotations.h placeholder.h dir.h
 
-libstratego_lib_a_SOURCES = \
-	io.h stratego-lib.h tables.h sets.h ssl-time.h exec.h number.h \
-	ssl-string.h term.h dir.h \
-	io.c tables.c sets.c time.c exec.c number.c string.c term.c \
-	annotations.c placeholder.c dir.c 
+INCLUDES = -I$(srcdir)/../src -I$(ATERM)/include
 
-libstratego_lib_dbg_a_SOURCES = 
-libstratego_lib_opt_a_SOURCES = 
-libstratego_lib_prof_a_SOURCES = 
+pkglib_LTLIBRARIES = \
+  libstratego-lib.la \
+  libstratego-lib.dbg.la \
+  libstratego-lib.opt.la \
+  libstratego-lib.prof.la
 
-libstratego_lib_dbg_a_LIBADD = $(subst .o,.dbg.o,$(libstratego_lib_a_OBJECTS))
-libstratego_lib_opt_a_LIBADD = $(subst .o,.opt.o,$(libstratego_lib_a_OBJECTS))
-libstratego_lib_prof_a_LIBADD = $(subst .o,.prof.o,$(libstratego_lib_a_OBJECTS))
+LIB_SOURCES = \
+  io.h stratego-lib.h tables.h sets.h ssl-time.h exec.h number.h \
+  ssl-string.h term.h dir.h \
+  io.c tables.c sets.c time.c exec.c number.c string.c term.c \
+  annotations.c placeholder.c dir.c
 
-%.dbg.o: %.c
-	$(CC) $(DEBUGFLAGS) $(CFLAGS) $(AM_CFLAGS) $(DEFS) $(INCLUDES) -c $< -o $@
+libstratego_lib_la_SOURCES      = $(LIB_SOURCES)
+libstratego_lib_dbg_la_SOURCES  = $(LIB_SOURCES)
+libstratego_lib_prof_la_SOURCES = $(LIB_SOURCES)
+libstratego_lib_opt_la_SOURCES  = $(LIB_SOURCES)
 
-%.opt.o: %.c
-	$(CC) $(OPTFLAGS) $(CFLAGS) $(AM_CFLAGS) $(DEFS) $(INCLUDES) -c $< -o $@
-
-%.prof.o: %.c
-	$(CC) $(PROFFLAGS) $(CFLAGS) $(AM_CFLAGS) $(DEFS) $(INCLUDES) -c $< -o $@
-
+libstratego_lib_dbg_la_CFLAGS  = -g  $(AM_CFLAGS)
+libstratego_lib_prof_la_CFLAGS = -pg $(AM_CFLAGS)
+libstratego_lib_opt_la_CFLAGS  = -O2 $(AM_CFLAGS)
