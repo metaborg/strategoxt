@@ -1,7 +1,9 @@
+2001-11-26 Merijn de Jonge <mdejonge@cwi.nl>
+   * gpp/sdf.cons.defL sdf.cons.tbl is now generated
+
 2001-11-25 Merijn de Jonge <mdejonge@cwi.nl>
    * gpp/pp-tables.pp: improved formatting rules
    * added sdf-tools as required package
-   * gpp/Makefile.am: sdf.cons.tbl is now obtained from sdf-tools package
    * renamed acinclude.m4 to program-check.m4
    * added new version of program-check.m4
 

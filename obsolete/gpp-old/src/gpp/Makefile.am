@@ -1,7 +1,5 @@
-# GT -- Grammar Tools
+# GPP -- Grammar Tools
 # Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
-#                    Eelco Visser <visser@acm.org>
-#                    Joost Visser <jvisser@cwi.nl>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.11 2001/11/25 23:46:52 mdejonge Exp $
+# $Id: Makefile.am,v 1.12 2001/11/26 08:53:56 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -46,14 +44,14 @@ EXTRA_DIST   = $(wildcard *.r) gpp.Makefile.src \
                ast2abox.sh.src asfix2abox.sh.src ppgen.sh.src \
                abox2html.sh.src abox2latex.sh.src abox2text.sh.src \
                pp-tables.def boxstyle.css default.abbrevs pp-tables.pp \
-               sdf.cons.tbl
+               sdf.cons.def
 
 BOOTSOURCES  = $(EXTRA_DIST)
 
 # What should be cleaned
 CLEANFILES  += ast2abox asfix2abox ppgen abox2html abox2latex \
                abox2text gpp.Makefile pp-tables.pp.af pp-tables.tbl \
-               no_generation_for_bracket_function_check
+               no_generation_for_bracket_function_check sdf.cons.tbl
 
 # Additional flags for the Stratego compiler
 SCFLAGS     += -I ${ASFIX_TOOLS}/share/asfix-tools --main $@
@@ -61,7 +59,6 @@ SCFLAGS     += -I ${ASFIX_TOOLS}/share/asfix-tools --main $@
 % : %.sh.src Makefile
 	sed 's@__PREFIX__@$(prefix)@g;\
 	     s@__SGLR__@$(SGLR)@g;\
-	     s@__SDFTOOLS__@$(SDF_TOOLS)@g;\
 	     s@__MAKE__@$(MAKE)@g;\
 	     s@__pkgdatadir__@$(pkgdatadir)@g;' \
 	        < $< > $@ && \
