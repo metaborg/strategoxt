@@ -1,0 +1,222 @@
+module term-io
+imports io list string integers time conditional
+
+/**
+ * Term input and output
+ */
+strategies
+
+  // <ReadFromFile> file reads the term in file. 
+  // The file needs to be in textual or binary ATerm format.
+
+/*
+  ReadFromFile =
+      (?Stream(_) <+ <open-stream> (<id>, "r"))
+    ; where(read-from-stream => trm)
+    ; fclose
+    ; !trm
+*/
+
+  ReadFromFile =
+      ?file; prim("SSL_ReadFromFile", file)      
+    <+ debug(!"** WARNING: file doesn't exist or doesn't contain a valid term: "); fail
+
+  // <WriteToBinaryFile> (file, term) writes term to file in BAF format.
+
+/*
+  WriteToBinaryFile = 
+    WriteToFile(write-in-baf-to-stream)
+*/
+
+  WriteToBinaryFile = 
+    ?(file, t); prim("SSL_WriteToBinaryFile", file, t)
+
+  // <WriteToTextFile> (file, term) writes term to file in textual ATerm format.
+  /*
+    WriteToTextFile = 
+      WriteToFile(write-in-text-to-stream)
+  */
+
+  WriteToTextFile = 
+    ?(file, t); prim("SSL_WriteToTextFile", file, t)
+
+  WriteToFile(writer) =
+      ?(<id>, trm)
+    ; (?Stream(_) <+ <open-stream> (<id>, "w"))
+    ; <writer> (<id>, trm)
+    ; fclose
+    ; !trm
+
+  open(file) = 
+    file; ReadFromFile
+
+  save(file) = 
+    <WriteToTextFile> (<file>, <id>)
+
+strategies
+
+  /* 
+    \verb|<print> (file, [t1,...,tn])| prints the terms \verb|ti|
+    to file. If \verb|ti| is a string it is printed without quotes,
+    otherwise it is printed as a term. \verb|printnl| has the same
+    behaviour, but also prints a newline after \verb|tn|.
+  
+    Before printing to a file the file should be opened using
+    \verb|<open-file> filename|, which truncates the file, or creates
+    it if it doesn't exist.  To append to a file, open the file
+    with \verb|<append-file> filename|.  The file is created if it
+    doesn't exist.
+  
+  */
+  
+  // <print> (file, [t1,...,tn])
+  // Prints terms ti to file. Terms ti that are strings are printed without quotes
+
+  print = 
+    ?(name, strs); where(prim("SSL_print", name, strs))
+
+  // <printnl> (file, [t1,...,tn])
+  // Same as print, but prints a newline at the end
+
+  printnl = 
+    ?(name, strs); where(prim("SSL_printnl", name, strs))
+
+  // <printascii> (file, [i1, ..., in])
+  // Prints integers ij as characters to file (using ASCII encoding).
+
+  /*
+    The primitive \verb|print-stack| prints the top n elements of
+    the stack if applied as \verb|<print-stack>| n or the entire
+    stack if
+    applied to a non-integer term.
+  */
+  
+  print-stack = 
+    obsolete(!"print-stack; use debug or gdb")
+
+strategies
+
+  print-strings-nl(out) =
+    where(<printnl> (<out>, <id>))
+
+/**
+ * The strategy \verb|debug| prints the
+ * current term to \verb|stderr| without changing it. This is
+ * a useful strategy for debugging specifications (hence its
+ * name).
+ */
+strategies
+
+  debug = 
+    where(<printnl> (stderr, [<id>]))
+
+  debug(msg) = 
+    where(<printnl> (stderr, [<msg>,<id>]))
+    
+  debug-depth = 
+    debug-depth(!4, !"")
+
+  debug-depth(depth) = 
+    debug-depth(depth, !"")
+    
+  debug-depth(depth, s) = 
+    where(  
+      at-depth(depth, !"...")
+    ; debug(s)
+    )
+    
+  say(msg) = 
+    where(msg; debug)
+
+  trace(msg,s) =
+    debug(msg); (s; debug(!"succeeded: ") <+ debug(!"failed: "))
+
+  error = 
+    where(<printnl> (stderr, <id>))
+
+  fatal-error = 
+    where(error; <exit> 1)
+
+  giving-up = 
+    <fatal-error>["giving-up"]
+
+  obsolete(msg) = 
+    where(msg; debug(!"obsolete library strategy: "))
+
+  dissuader(msg) = 
+    where(if-verbose2(msg; debug(!"dissuasive library strategy: ")))
+
+  Assert(s, msg) = 
+    test(s) <+ debug(msg)
+
+  risky(msg, s) = 
+    restore(s, debug(msg))
+
+/**
+ * Print to the stdout. You usually don't want this.
+ */
+strategies
+
+  echo = 
+    where(<printnl> (stdout, <is-list <+ ![<id>]>))
+
+  echo(msg) = 
+    where(<printnl> (stdout, [<msg>,<id>]))
+
+  printchar = 
+    where(<printascii> (stdout, [<id>]))
+
+  printstring = 
+    where(<print> (stdout, [<id>]))
+
+  debug-stdout(msg) = 
+    obsolete(!"debug-stdout; use echo");
+    echo(msg)
+
+/**
+ * The operator \verb|stdio| implements a simple user-interface
+ * for transformers. A term is read from standard input,
+ * transformed with parameter strategy \verb|s| and then written
+ * to standard output. If the transformation failed the text
+ * \verb|rewriting failed| is written to standard error.
+ * 
+ * Prefer io-wrap in the module options.
+ */
+strategies
+
+  stdio(s) =
+      <ReadFromFile> stdin()
+    ; s
+    ; <WriteToTextFile> (stdout(), <id>)
+    <+ <fatal-error> ["** rewriting failed"]
+
+  /** 
+	 * A variant of this strategy provides a pair of the command-line
+	 * options and the input file to the strategy.
+   */
+
+strategies
+
+  stdioO(s) =
+    <s> (<id>, <ReadFromFile> stdin())
+    ; <WriteToTextFile> (stdout(), <id>)
+    <+ <fatal-error> ["** rewriting failed"]
+
+/**
+ * Copyright (C) 1998-2003 Eelco Visser <visser@acm.org>
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
+ */

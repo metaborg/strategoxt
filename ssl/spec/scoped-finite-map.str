@@ -17,7 +17,7 @@
 
 \begin{code}
 module scoped-finite-map
-imports tables io
+imports tables list conditional
 
 signature
   constructors

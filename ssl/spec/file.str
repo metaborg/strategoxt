@@ -3,7 +3,7 @@
  * operations in the module posix-file.
  */
 module file
-imports posix-file io list-basic list-misc string
+imports posix-file io list string
 
 /**
  * Abstractions for streams
