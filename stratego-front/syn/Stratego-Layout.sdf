@@ -33,4 +33,4 @@ exports
     Ws 		-> LAYOUT
 
   context-free restrictions
-    LAYOUT? -/- [\ \t\n\13]
+    LAYOUT? -/- [\ \t\n\r]
