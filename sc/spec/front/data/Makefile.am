@@ -12,7 +12,7 @@ check2:
 	sc -i module1 -F
 
 check3 : ../frontend ../extract
-	$(top_builddir)/spec/syn/pack-stratego -I $(STRATEGOLIB)/share/stratego-lib -i dynrules -o dynrules.tree
+	$(top_builddir)/spec/syn/pack-stratego -I $(STRATEGOLIB)/share/ssl -i dynrules -o dynrules.tree
 	../frontend -i dynrules.tree -o dynrules.fr
 	../extract -i dynrules.fr -o dynrules.e
 #	diff dynrules.e dynrules.e.expected

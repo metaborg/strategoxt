@@ -34,7 +34,7 @@ parse_stratego_SOURCES 	= \
 parse_mod_SOURCES = \
    parse-mod.c stratego.grm stratego.lx options.h options.c util.h $(BUILT_SOURCES)
 
-EXTRADIST = $(wildcard *.r)
+EXTRA_DIST = $(wildcard *.r)
 
 %.grm.tab.c: %.grm
 	bison -d -t -v $<
@@ -51,7 +51,7 @@ check1: parse-mod
 	./parse-mod -i syntax-test.r -o /dev/null
 
 check2: pack-stratego 
-	./pack-stratego -I $(STRATEGOLIB)/share/stratego-lib -i syntax-test -o syntax-test.trm
+	./pack-stratego -I $(STRATEGOLIB)/share/ssl -i syntax-test -o syntax-test.trm
 
 include $(srcdir)/../make-rules
 include pack-stratego.dep

@@ -31,7 +31,7 @@ check: $(TESTRUNS) $(IOTESTRUNS)
 
 CLEANFILES = $(TESTBINS) $(IOTESTBINS) $(TESTRUNS) $(IOTESTRUNS)  $(TESTSRCS) $(IOTESTSRCS) *.o *.c *.ac *.s? *.tree *.c.abox
 
-EXTRADIST = $(wildcard *.r)
+EXTRA_DIST = $(wildcard *.r)
 
 #include $(top_srcdir)/share/Stratego.Make
 

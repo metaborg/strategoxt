@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-SINCLUDES = -I $(STRATEGOLIB)/share/stratego-lib 
+SINCLUDES = -I $(STRATEGOLIB)/share/ssl
 
 TESTFILES = $(wildcard test*.r)
 TESTBINS = $(subst .r,.bin,$(TESTFILES))
@@ -31,7 +31,7 @@ check: $(TESTRUNS) $(IOTESTRUNS)
 
 CLEANFILES = $(TESTBINS) $(IOTESTBINS) $(TESTRUNS) $(IOTESTRUNS)  $(TESTSRCS) $(IOTESTSRCS) *.o *.ac *.s? *.ac *.c.abox *.tree
 
-EXTRADIST = $(wildcard *.r)
+EXTRA_DIST = $(wildcard *.r) make-rules
 
 #include $(top_srcdir)/share/Stratego.Make
 

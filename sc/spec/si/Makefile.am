@@ -25,7 +25,7 @@ bin_SCRIPTS = si primitives stratego
 
 CLEANFILES = si primitives eval-lib-primitives.tree
 
-EXTRADIST = $(wildcard *.r)
+EXTRA_DIST = $(wildcard *.r)
 
 si : stratego-eval.r si.r eval-lib-primitives.tree
 

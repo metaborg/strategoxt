@@ -21,15 +21,17 @@ SCFLAGS	= -I $(srcdir)/../sig \
 	  -I $(srcdir)/../front \
 	  --main $@
 
-bin_SCRIPTS = fusion
+bin_SCRIPTS = 
+#fusion
 
 TESTS = build-match-laws-test
 
 CLEANFILES = optimizer optimizer.c *.dep
 
-EXTRADIST = $(wildcard *.r) 
+EXTRA_DIST = $(wildcard *.r) 
 
-BOOTSOURCES = fusion.c
+BOOTSOURCES = 
+# fusion.c
 
 dummy:
 	touch $@

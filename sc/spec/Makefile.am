@@ -15,12 +15,12 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-EXTRA_DIST = make_rules.in
+EXTRA_DIST = make_rules.in make-rules
 
 SUBDIRS = \
   syn c front lib match opt sc sig test1 test2 
 
-DISTSUBDIRS = si sdf
+DIST_SUBDIRS = si sdf test3 $(SUBDIRS)
 
 bootstep :
 	$(MAKE) clean
