@@ -187,10 +187,10 @@ definition and warn you about suspicious constructs.
 StrategoXT 0.11 has a new sub-package: =xml-front-. This package
 contains an SDF syntax definition for XML, a pretty-printer for XML,
 an embedding of XML in Stratego, and various tools for XML
-processing. The syntax definition of XML and the accompaning tools can
+processing. The syntax definition of XML and the accompanying tools can
 be used for the implementation of XML transformations, for generating
 XML (e.g. XHTML web pages) or for interoperability with external
-XML-baed tools. How you can use the tools of =xml-front= for XML
+XML-based tools. How you can use the tools of =xml-front= for XML
 applications will be explained in some HowTo's at the Stratego
 Wiki. The first one will explain the embedding of XML in Stratego,
 which is in particular useful for generating XML in Stratego programs.
@@ -209,7 +209,7 @@ _sdf2parenthesize_ is a new tool that generates a Stratego
 transformation tool that adds the necessary parentheses to an abstract
 syntax tree. The information is obtained from an SDF syntax
 definition. The tool handles associativity, relative priorities, and
-groups of associative productions. The tool has succesfully been
+groups of associative productions. The tool has successfully been
 applied to improve the pretty-printers of Stratego in stratego-front
 and Java in JavaFront. The tool is explained in more detail at the
 Tools web: 
@@ -229,11 +229,11 @@ The Stratego Standard Library has been extended with several useful
 strategies. 
 
 The =newname= strategy is a variant of the =new= strategy. It
-generates unqiue strings, just like new, but it also accepts an prefix
+generates unique strings, just like new, but it also accepts an prefix
 that will be part of the generated string. By default, the numbering
-is also done per prefix. For example, if you apply newname three
-times to the string "foo", then the results will be ="foo_0"=, ="foo_1"=
-and ="foo_2"=. If the newname is applied to "bar" after this, then the
+is also done per prefix. For example, if you apply newname three times
+to the string "foo", then the results will be ="foo_0"=, ="foo_1"= and
+="foo_2"=. If the newname is applied to "bar" after this, then the
 result will be ="bar_0"=, not ="bar_4"=. Thus, The =newname= strategy
 is very useful for generating more user-friendly, unique names in a
 program transformation.
@@ -283,7 +283,7 @@ repository when invoking strc as a full program compiler. This
 argument has no meaning if strc only produces C code. The definition
 of a default XTC repository with the =--xtc-repo= flag is also
 optional: if you leave it out, the tool will have no default XTC
-repository and will therefore use the environemnt variable
+repository and will therefore use the environment variable
 XTC_REPOSITORY or a repository =passed to the tool when it is
 invoked. In this way, it is now much easier to implement ad-hoc
 Stratego programs that invoke other tools using XTC. It might also be
@@ -297,7 +297,7 @@ The global choice operator is now much easier to use. The global
 choice operator =++= was introduced in Stratego 0.8, but to use it,
 StrategoXT had to be configured with the location of the CPL for
 StrategoXT. If the CPL was available, then it was used for all
-programs compiled with this installtion of StrategoXT. By moving the
+programs compiled with this installation of StrategoXT. By moving the
 choice for the implementation of choice-points to link-time, this is
 now much more flexible and easy to use: the new version of the CPL for
 StrategoXT (will be released in a few days) can be installed _after_
