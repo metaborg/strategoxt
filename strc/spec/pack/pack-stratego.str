@@ -72,19 +72,24 @@ strategies
 		=> (ext, FILE(name))
         ; if-verbose3(where(<debug(!" reading ")> name))
 	; parse-module => tree
+	
 
   find-module(mkpath) =
     ?(mod, exts)
     ; mkpath
-    ; (fetch-elem(\ dir
+    ; (fetch-elem(
+	\ dir
 	 -> <fetch-elem(!(<id>, FILE(<concat-strings; file-exists> [dir, "/", mod, ".", <id>])))> exts 
        \ )
      <+ <fetch-elem(!(<id>, FILE(<concat-strings; xtc-find-loc> [mod, ".", <id>])))> exts 
-     <+ ( <get-config>"--slack" < say(<concat-strings>["*** module ", mod, " not found"]) ; fail + <fatal-error> ["*** module ", mod, " not found"] )
+     <+ ( <get-config>"--slack" 
+          < say(<concat-strings>["*** module ", mod, " not found"]) 
+            ; fail 
+          + <fatal-error> ["*** module ", mod, " not found"] )
       )
 
   parse-module =
-    ?("rtree", <?name>); Snd
+    ?("rtree", name); Snd
     ; (read-from
        <+ <fatal-error> ["parse error in ", name])
 

@@ -877,7 +877,7 @@ ATerm t_7 (ATerm r_20, ATerm s_20, ATerm);
 ATerm create_dep_file_0_0 (ATerm);
 ATerm v_7 (ATerm g_39, ATerm h_39, ATerm);
 ATerm w_7 (ATerm u_42, ATerm v_42, ATerm);
-ATerm x_7 (ATerm t_95 (ATerm), ATerm w_426, ATerm y_42, ATerm);
+ATerm x_7 (ATerm t_95 (ATerm), ATerm h_427, ATerm y_42, ATerm);
 ATerm c_0 (ATerm);
 ATerm write_to_text_0_0 (ATerm);
 ATerm basename_1_0 (ATerm w_91 (ATerm), ATerm);
@@ -985,7 +985,7 @@ ATerm s_8 (ATerm v_86 (ATerm), ATerm a_26, ATerm z_25, ATerm);
 ATerm k_4 (ATerm);
 ATerm l_4 (ATerm);
 ATerm m_4 (ATerm);
-ATerm x_8 (ATerm m_568, ATerm r_568, ATerm r_52, ATerm);
+ATerm x_8 (ATerm x_568, ATerm c_569, ATerm r_52, ATerm);
 ATerm o_4 (ATerm);
 ATerm r_4 (ATerm);
 ATerm s_4 (ATerm);
@@ -1290,10 +1290,10 @@ ATerm w_7 (ATerm u_42, ATerm v_42, ATerm t)
   t = (ATerm) ATmakeAppl(sym_Stream_1, v_2);
   return(t);
 }
-ATerm x_7 (ATerm t_95 (ATerm), ATerm w_426, ATerm y_42, ATerm t)
+ATerm x_7 (ATerm t_95 (ATerm), ATerm h_427, ATerm y_42, ATerm t)
 {
   ATerm w_2 = NULL;
-  t = (ATerm) ATmakeAppl(sym__2, w_426, term_b_12);
+  t = (ATerm) ATmakeAppl(sym__2, h_427, term_b_12);
   t = l_8(t);
   w_2 = t;
   t = (ATerm) ATmakeAppl(sym__2, w_2, y_42);
@@ -3956,10 +3956,10 @@ ATerm m_4 (ATerm t)
   t = (ATerm) ATinsert(CheckATermList(q_36), p_36);
   return(t);
 }
-ATerm x_8 (ATerm m_568, ATerm r_568, ATerm r_52, ATerm t)
+ATerm x_8 (ATerm x_568, ATerm c_569, ATerm r_52, ATerm t)
 {
   ATerm u_35 = NULL,v_35 = NULL,w_35 = NULL,z_35 = NULL;
-  t = SSL_explode_term(r_568);
+  t = SSL_explode_term(c_569);
   if(match_cons(t, sym__2))
     {
       u_35 = ATgetArgument(t, 0);
@@ -3967,7 +3967,7 @@ ATerm x_8 (ATerm m_568, ATerm r_568, ATerm r_52, ATerm t)
     }
   else
     _fail(t);
-  t = SSL_explode_term(m_568);
+  t = SSL_explode_term(x_568);
   if(match_cons(t, sym__2))
     {
       if((u_35 != ATgetArgument(t, 0)))
