@@ -1,4 +1,4 @@
-\literate[pack-stratego]
+\literate[Pack-Stratego: Flattening a Stratego module hierarchy]
 
 	\begin{abstract}
 
@@ -34,13 +34,18 @@ strategies
 
   get-module(mkpath) =
      guarantee-extension(!"r"); //debug(!"looking for: ");
-     split(id, mkpath); find-in-path;
-     (   split(id, parse-mod)
+     <find-in-path> (<id>, <mkpath>);
+     (   !(<id>, <parse-mod>)
       <+ <fatal-error> ["parse error in ", <id>])
 
-  <+ guarantee-extension(!"tree"); //debug(!"looking for: ");
-     split(id, mkpath); find-in-path;
-     split(id, ReadFromFile)
+  <+ guarantee-extension(!"cr"); //debug(!"looking for: ");
+     <find-in-path> (<id>, <mkpath>);
+     (   !(<id>, <parse-cmod(mkpath)>)
+      <+ <fatal-error> ["parse error in ", <id>])
+
+  <+ guarantee-extension(!"mtree"); //debug(!"looking for: ");
+     <find-in-path>(<id>, <mkpath>); 
+     !(<id>, <ReadFromFile>)
 
   <+ <fatal-error> ["module ", <id>, " not found"]
 
@@ -57,18 +62,72 @@ strategies
 rules
 
   parse-mod : 
-    'in -> trm
+    filein -> trm
     where <conc-strings> ("pack-stratego", 
-                          <get-pid; int-to-string>()) => out; 
-	  (* <printnl> (stderr, ["  parsing ", in]); *)
+                          <get-pid; int-to-string>()) => fileout; 
+	  (* <printnl> (stderr, ["  parsing ", filein]); *)
 	  <call>(<conc-strings>(<Prefix>(),"parse-mod"), 
-		 ["-silent", "-i", 'in, "-o", out]);
-	  <ReadFromFile> out => trm;
-	  <rm-files> [out]
+		 ["-silent", "-i", filein, "-o", fileout]);
+	  <ReadFromFile> fileout => trm;
+	  <rm-files> [fileout]
+
+
+  // parse module with concrete syntax terms
+
+  parse-cmod(mkpath) : 
+    filein -> trm
+    where 
+	debug(!"parse-cmod a: ");
+	<basename; guarantee-extension(!"syn"); ReadFromFile> filein => syntax#(_);
+	debug(!"parse-cmod b: ");
+	<get-parse-table(mkpath)> syntax => tbl;
+	debug(!"parse-cmod c: ");
+	new-file => fileout1; new-file => fileout2; 
+        new-file => fileout3; new-file => fileout4; new-file => fileout5;
+	debug(!"parse-cmod d: ");
+	<call> ("sglr",  ["-2", "-p", tbl, "-i", filein,   "-o", fileout1]);
+	debug(!"parse-cmod e: ");
+	<call> ("implode-asfix",    ["-i", fileout1, "-o", fileout2]);
+	debug(!"parse-cmod f: ");
+	<call> ("/home/xt/xt/bin/meta-explode",     ["-i", fileout2, "-o", fileout3]);
+	debug(!"parse-cmod g: ");
+	<call> ("stratego-desugar", ["-i", fileout3, "-o", fileout4]);
+	debug(!"parse-cmod h: ");
+	<ReadFromFile> fileout4 => trm;
+	debug(!"parse-cmod i: ")
+
+  get-parse-table(mkpath) :
+    syntax -> tbl2
+    where
+    debug(!"get-parse-table a: ");
+    <guarantee-extension(!"tbl")> syntax => tbl1;
+    debug(!"get-parse-table b: ");
+    ( <find-in-path> (tbl1, <mkpath>)
+    <+ <get-syntax-definition(mkpath)> syntax => def;
+       debug(!"get-parse-table c: ");
+       <call> ("sdf2table", ["-i", def, "-o", tbl1, "-m", syntax]);
+       debug(!"get-parse-table d: ");
+       !tbl1
+    )  => tbl2
+
+  get-syntax-definition(mkpath) :
+    syntax -> def
+    where 
+        debug(!"get-syntax-definition a: ");
+	<guarantee-extension(!"def")> syntax => def;
+        debug(!"get-syntax-definition b: ");
+        ( <find-in-path> (def, <mkpath>);
+          debug(!"get-syntax-definition c: ")
+        <+ <guarantee-extension(!"sdf")> syntax => sdf;
+           debug(!"get-syntax-definition d: ");
+	   new-file => adef;
+           <call> ("pack-sdf", ["-i", sdf, "-o", adef | <mkpath;map(!["-I", <id>]); concat>]);
+           <call> ("asource",  ["-i", adef, "-o", def ]);
+           debug(!"get-syntax-definition e: ");
+	   !def
+        )
 \end{code}
 
-% Pack-Stratego: A Tool for flattening a Stratego module hierarchy
-%
 % Copyright (C) 2000-2002 Eelco Visser <visser@acm.org>
 % 
 % This program is free software; you can redistribute it and/or modify

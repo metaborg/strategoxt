@@ -23,13 +23,13 @@ overlays
 rules
 
   CheckConstructors :
-    Specification([Signature([Constructors(ods)]), Strategies(sdefs)]) -> 
-    Specification([Signature([Constructors(ods')]), Strategies(sdefs)])
-    where !TupleDeclarations(ods) => ods'
-        ; <map(GenerateCheckRule)> ods'
+    Specification([Signature([Constructors(ods1)]), Strategies(sdefs)]) -> 
+    Specification([Signature([Constructors(<conc>(ods3,ods2))]), Strategies(sdefs)])
+    where !TupleDeclarations(ods1) => ods2
+        ; <map(GenerateCheckRule)> ods2
         ; <filter(check-constructors)> sdefs => []
+        ; (TupleDeclarations <+ ![]) => ods3
  
-
   GenerateCheckRule =
     ?OpDecl(c, ConstType(t));
     where(!0 => n);
@@ -50,18 +50,15 @@ rules
 
   CheckTuple =
     ?Op("", ts);
-    try(where(
-//debug(!"CheckTuple a: ");
+    where(
       <length> ts => n
-//; debug(!"CheckTuple b: ")
-      ; <not(TupleDeclared)> n)
-//; debug(!"CheckTuple c: ")
-      ; ![OpDecl("", FunType(<copy>(n,Var("a")),Var("a"))) | <TupleDeclarations <+ ![]>] => decs;
-//; debug(!"CheckTuple d: ")
-      rules(
-        TupleDeclared : n -> ()
-        TupleDeclarations : _ -> decs
-      )
+      ; !"" => c
+      ; !OpDecl("", FunType(<copy>(n,Var("a")),Var("a"))) => decl
+      ; GenerateCheckRule
+      ; ![decl | <TupleDeclarations <+ ![]>] => decs
+      ; rules(
+          TupleDeclarations : _ -> decs
+        )
     )
 
   check-constructors =
@@ -81,5 +78,5 @@ rules
 		    "constructor ", c, "/", <length; int-to-string> ts,
 		    " not declared"])
        );
-       manytd(not(CheckCons (* + CheckTuple *)); CheckConsError)
+       manytd(not(CheckCons <+ CheckTuple); CheckConsError)
     |}

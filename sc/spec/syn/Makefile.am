@@ -22,7 +22,7 @@ SCFLAGS		= -I $(srcdir)/../sig
 
 bin_PROGRAMS = parse-stratego parse-mod 
 
-bin_SCRIPTS = pack-stratego
+bin_SCRIPTS = pack-stratego meta-explode
 
 CLEANFILES = pack-stratego pack-stratego.c pack-stratego.dep
 

@@ -1,5 +1,18 @@
+2002-03-14  Eelco Visser  <visser@acm.org>
+
+	* spec/syn/meta-explode.r: Explosion of abstract syntax trees
+	for object language to Stratego term abstract syntax.
+
+	* spec/syn/pack-stratego.r: Support for concrete object syntax in
+	modules.
+
+	* spec/front/check-constructors.r: Generalized declaration of
+	tuple constructors such that tuples of any length are supported.
+
 2002-03-13  Eelco Visser  <visser@acm.org>
 
+	* Release 0.7 (fix1)
+ 	
 	* spec/c/C-simplify.r: Disabled certain simplification rules that
 	removed { } around single statement branch of a conditional
 	statement. (Bug report by Martin Bravenboer)

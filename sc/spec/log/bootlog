@@ -724,3 +724,12 @@ Bootstrapping: finished [Wed Mar 13 17:14:15 CET 2002]
 
 Bootinstall [Wed Mar 13 17:14:26 CET 2002]
 Bootinstall finished [Wed Mar 13 17:14:26 CET 2002]
+
+Bootstrapping version 0.7 [Thu Mar 14 13:45:46 CET 2002 - Linux node11794.a2000.nl i686]
+Bootstrapping: phase 1 started [Thu Mar 14 13:45:46 CET 2002]
+Bootstrapping: phase 2 started [Thu Mar 14 13:56:31 CET 2002]
+Bootstrapping: phase 3 started [Thu Mar 14 14:03:21 CET 2002]
+Bootstrapping: finished [Thu Mar 14 14:08:03 CET 2002]
+
+Bootinstall [Thu Mar 14 15:15:50 CET 2002]
+Bootinstall finished [Thu Mar 14 15:15:51 CET 2002]
