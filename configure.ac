@@ -30,11 +30,43 @@ AC_ARG_ENABLE([strc-core],
 )
 AC_SUBST([CORE_ENABLED])
 
-PKGS="autoxt srts xtc stratego-front asfix-tools \
-   strc gpp c-tools ssl stratego-lib concrete-syntax xml-front \
-   aterm-front sdf-front sdf-tools \
-   stratego-regular xtar \
-   boxenv"
+AC_ARG_ENABLE([xtc2],
+  AS_HELP_STRING([--enable-xtc2], [use the xtc2 library]),
+  [XTC2_ENABLED=$enable_xtc2],
+  [XTC2_ENABLED="no"]
+)
+AC_SUBST([XTC2_ENABLED])
+
+if test "x$XTC2_ENABLED" = "xyes"
+then
+
+  PKGS="autoxt srts xtc2 stratego-front asfix-tools \
+     strc gpp c-tools ssl stratego-lib concrete-syntax xml-front \
+     aterm-front sdf-front sdf-tools \
+     stratego-regular xtar \
+     boxenv"
+
+  DIST_PKGS="$PKGS xtc"
+
+  XTC_DIR="xtc2"
+
+else
+
+  PKGS="autoxt srts xtc stratego-front asfix-tools \
+     strc gpp c-tools ssl stratego-lib concrete-syntax xml-front \
+     aterm-front sdf-front sdf-tools \
+     stratego-regular xtar \
+     boxenv"
+
+  DIST_PKGS="$PKGS xtc2" 
+
+  XTC_DIR="xtc"
+
+fi
+AC_SUBST([PKGS])
+AC_SUBST([DIST_PKGS])
+AC_SUBST([XTC_DIR])
+
 
 if test "x$CORE_ENABLED" = "xyes"
 then
@@ -42,11 +74,13 @@ then
   DIST_PKGS=$PKGS
   STRC_CORE_PREFIX=${prefix}/strc-core
 else
-  DIST_PKGS="$PKGS strc-core" 
+  DIST_PKGS="$DIST_PKGS strc-core" 
   STRC_CORE_PREFIX=${prefix}/strc-core 
 fi
 AC_SUBST([PKGS])
 AC_SUBST([DIST_PKGS])
+AC_SUBST([STRC_CORE_PREFIX])
+
 
 BUILD_SRTS_DEST="`pwd`/pre-pkgs/build"
 INSTALL_XTC_DEST="`pwd`/pre-pkgs/install"
@@ -95,6 +129,16 @@ AB_CONFIG_PKG(srts,
 fi
 
 AB_CONFIG_PKG(xtc,
+   --with-aterm=${ATERM}
+   --with-sglr=${SGLR}
+   --with-pgen=${PGEN}
+   --with-strategoxt=${STRATEGOXT}
+   --with-srts=${BUILD_SRTS}
+   --with-xtc=${INSTALL_XTC}
+   --with-repository=${REPOSITORY}
+)
+
+AB_CONFIG_PKG(xtc2,
    --with-aterm=${ATERM}
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
