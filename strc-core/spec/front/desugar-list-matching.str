@@ -56,9 +56,9 @@ rules
     + ?PreTerm|[ Nil() ]|
 
   ListVarAsTail : 
-    PreTerm|[ Cons(lid, t){^pt} ]| -> PreTerm|[ lid{^pt} ]|
+    Term|[ Cons(lid, t){^pt*} ]| -> Term|[ lid{^pt*} ]|
     where <is-nil> t
 
   ListVarInBuild : 
-    PreTerm|[ Cons(lid, t){^pt} ]| -> PreTerm|[ <conc>(lid, t){^pt} ]|
+    Term|[ Cons(lid, t){^pt*} ]| -> Term|[ <conc>(lid, t){^pt*} ]|
     where <not(is-nil)> t
