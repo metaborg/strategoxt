@@ -13,11 +13,11 @@
 module pack-sdf
 imports xtc-proc lib stratego-xt-xtc-tools
 imports Sdf-ParseTree-Syntax Kernel-Sdf-Syntax
-imports asfix-abstractions sglr pack-modules 
+imports asfix-abstractions pack-modules 
 
 strategies
 
-  io-pack-sdf =
+  main-pack-sdf =
     xtc-io-wrap(pack-options + of-option,
       pack-sdf(|<include-path>) => (files, spec)
     ; <maybe-create-depfile> files
@@ -28,15 +28,6 @@ strategies
          <+ <fatal-error> ["pack-sdf: ", <id>, " is not a valid output format."]
       )
     )
-
-  parse-sdf-pgen2 :
-    (infile, outfile) -> outfile
-    where <sglr> (<xtc-find> "Sdf2.tbl", infile, outfile) => outfile
-
-  parse-sdf-pgen2 :
-    infile -> tree
-    where <is-string> infile
-        ; <sglr> (<xtc-find> "Sdf2.tbl", infile) => tree
 
 strategies
 
@@ -90,6 +81,18 @@ strategies
     ; (find-in-path <+ (Fst; xtc-find-loc))
     ; if-verbose1(debug(!"  including "))
     ; !(<id>, <parse-sdf-pgen2> <id>)
+
+  sglr :
+    (tbl, infile) -> tree
+    where xtc-temp-files(
+            <xtc-transform(!"sglr", !["-2", "-p", tbl])> FILE(infile)
+	  ; read-from => parsetree(tree,_)
+          )
+
+  parse-sdf-pgen2 :
+    infile -> tree
+    where <is-string> infile
+        ; <sglr> (<xtc-find> "Sdf2.tbl", infile) => tree
 
   get-sdf-imports = 
     collect(?appl(prod(_,cf(sort("Import")),_),_); get-module-name, 
