@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.10 2001/11/22 12:47:45 mdejonge Exp $
+# $Id: Makefile.am,v 1.11 2001/11/25 23:46:52 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -61,6 +61,7 @@ SCFLAGS     += -I ${ASFIX_TOOLS}/share/asfix-tools --main $@
 % : %.sh.src Makefile
 	sed 's@__PREFIX__@$(prefix)@g;\
 	     s@__SGLR__@$(SGLR)@g;\
+	     s@__SDFTOOLS__@$(SDF_TOOLS)@g;\
 	     s@__MAKE__@$(MAKE)@g;\
 	     s@__pkgdatadir__@$(pkgdatadir)@g;' \
 	        < $< > $@ && \
