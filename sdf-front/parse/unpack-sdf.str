@@ -1,42 +1,58 @@
 /**
- * Unpack-sdf extracts the modules from an SDF definition and writes them to separate files.
+ * Unpack-sdf extracts the modules from an SDF definition and writes
+ * them to separate files.
+ *
+ * @author  Rob Vermaas
+ * @author  Martin Bravenboer
  */
 module unpack-sdf
-imports lib xtc-lib stratego-xt-xtc-tools Sdf2-Syntax
+imports lib xtc-lib sdf-xtc-tools Sdf2
 
 strategies
 
-  io-unpack-sdf = io-wrap(unpack-sdf-options, unpack-sdf)
+  main-unpack-sdf =
+    xtc-io-wrap(unpack-sdf-options, unpack-sdf)
 
   unpack-sdf-options =
-    ArgOption("-d", where(<set-config>("-d", <id>)), !"-d dir    Destination directory")  
+    ArgOption("-d", where(<set-config>("-d", <id>)), !"-d dir    Destination directory")
+
+  get-destination-dir =
+    <get-config> "-d" <+ !"."
+
+strategies
 
   unpack-sdf =
-    xtc-temp-files(
-      !FILE(<get-config>"-i")
-    ; xtc-parse-sdf
+      xtc-parse-sdf2-definition
     ; read-from
-    )
-  ; split-sdf-definition
+    ; split-sdf-definition
+    ; <xtc-exit> 0
 
   split-sdf-definition =
-    "\"sdf-2.1\""#([Definition(map(save-sdf-module-to-file))])
+    definition(map(save-sdf-module-to-file))
 
   save-sdf-module-to-file =
-    where( get-module-name => basename )
+    where(get-module-name => basename)
   ; xtc-temp-files(
       write-to
-    ; xtc-transform(!"pp-sdf")
+    ; xtc-pp-sdf2
     ; where( 
-        <concat-strings>[ <get-config<+!".">"-d", "/", basename, ".sdf"] => file
-      ; dirname 
+        <concat-strings>[<get-destination-dir>, "/", basename, ".sdf"] => pathname
+      ; dirname
       ; mkdir
       )
-    ; copy-to(!file)
+    ; copy-to(!pathname)
     )
 
   get-module-name =
-    ?Module(<id>,_,_)
+    ?'module(<module-name-to-string>,_,_)
+
+  module-name-to-string :
+    unparameterized(s) -> s
+
+  module-name-to-string :
+    parameterized(s, _) -> s
+
+strategies
 
   mkdir = 
-    where( readdir <+ <call>("mkdir",[<id>]) )
+    where(readdir <+ <call> ("mkdir",["-p", <id>]))

@@ -1,7 +1,7 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-bin_PROGRAMS     = pack-sdf
+bin_PROGRAMS     = pack-sdf unpack-sdf
 libexec_PROGRAMS = sdf-desugar sdf-ensugar
 
 SCFLAGS          = --main main-$*

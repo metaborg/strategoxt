@@ -3,11 +3,16 @@
       V vs=1 [KW["definition"] _1],
 
    module -- V [ H [KW["module"] _1] V vs=1[_2 _3]],
+
+   module -- V [ H [KW["module"] _1] V vs=1[_2 _3]],
    module.2:iter-star -- _1,
 
    imports -- H[ KW["imports"] HV[_1]],
    exports -- V is=2 [KW["exports"] V vs=1[_1]],
    hiddens -- V is=2 [KW["hiddens"] V vs=1[_1]],
+
+   module         -- _1,
+   renamed-module -- V vs=0 is=2 [ _1 _2 ],
     
    syntax   -- V is=2 [KW["syntax"] A(l,l,l,l)[ _1 ]],
 
@@ -137,8 +142,6 @@
 
    id             -- KW["id"] KW["("] _1 KW[")"],
    imp-section    -- _1,
-   module         -- _1,
-   renamed-module -- V vs=0 is=2 [ _1 _2 ],
 
    cf     -- H hs=0[KW["<"] _1 KW["-CF"] KW[">"]],
    lex    -- H hs=0[KW["<"] _1 KW["-LEX"] KW[">"]],
