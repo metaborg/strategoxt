@@ -32,7 +32,7 @@ definition
 %%% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 %%% 02111-1307, USA.
 %%%
-%%% $Id: pp-tables.def,v 1.1 2001/06/05 09:11:48 mdejonge Exp $
+%%% $Id: pp-tables.def,v 1.2 2001/10/08 12:44:53 mdejonge Exp $
 
 module Box-Disambiguation
 exports
@@ -59,7 +59,7 @@ exports
 %%% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 %%% 02111-1307, USA.
 %%%
-%%% $Id: pp-tables.def,v 1.1 2001/06/05 09:11:48 mdejonge Exp $
+%%% $Id: pp-tables.def,v 1.2 2001/10/08 12:44:53 mdejonge Exp $
 
 module Box-Layout
 imports
@@ -89,7 +89,7 @@ exports
 %%% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 %%% 02111-1307, USA.
 %%%
-%%% $Id: pp-tables.def,v 1.1 2001/06/05 09:11:48 mdejonge Exp $
+%%% $Id: pp-tables.def,v 1.2 2001/10/08 12:44:53 mdejonge Exp $
 
 %% \noindent
 %% This module introduces the sort BOX-LIST as a sequence of zero or more
@@ -124,7 +124,7 @@ module Box-Lists-Syntax
 %%% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 %%% 02111-1307, USA.
 %%%
-%%% $Id: pp-tables.def,v 1.1 2001/06/05 09:11:48 mdejonge Exp $
+%%% $Id: pp-tables.def,v 1.2 2001/10/08 12:44:53 mdejonge Exp $
 
 module IntCon
 imports Layout
@@ -157,7 +157,7 @@ exports
 %%% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 %%% 02111-1307, USA.
 %%%
-%%% $Id: pp-tables.def,v 1.1 2001/06/05 09:11:48 mdejonge Exp $
+%%% $Id: pp-tables.def,v 1.2 2001/10/08 12:44:53 mdejonge Exp $
 
 %% \noindent
 %% Expressions over the BOX language can be constructed by
@@ -388,7 +388,7 @@ imports IntCon
 %% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 %% 02111-1307, USA.
 
-%% $Id: pp-tables.def,v 1.1 2001/06/05 09:11:48 mdejonge Exp $
+%% $Id: pp-tables.def,v 1.2 2001/10/08 12:44:53 mdejonge Exp $
 
 module Layout
 exports
@@ -417,7 +417,7 @@ exports
 %%% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 %%% 02111-1307, USA.
 %%%
-%%% $Id: pp-tables.def,v 1.1 2001/06/05 09:11:48 mdejonge Exp $
+%%% $Id: pp-tables.def,v 1.2 2001/10/08 12:44:53 mdejonge Exp $
 
 module Literals
 imports Layout
@@ -458,7 +458,7 @@ exports
 %%% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 %%% 02111-1307, USA.
 %%%
-%%% $Id: pp-tables.def,v 1.1 2001/06/05 09:11:48 mdejonge Exp $
+%%% $Id: pp-tables.def,v 1.2 2001/10/08 12:44:53 mdejonge Exp $
 
 module Literal-Box-Syntax
 imports Literals
@@ -486,7 +486,7 @@ exports
 %%% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 %%% 02111-1307, USA.
 %%%
-%%% $Id: pp-tables.def,v 1.1 2001/06/05 09:11:48 mdejonge Exp $
+%%% $Id: pp-tables.def,v 1.2 2001/10/08 12:44:53 mdejonge Exp $
 
 %% \noindent
 %% Base module of the BOX markup language. Here only the sort BOX is
@@ -516,7 +516,7 @@ module Box-Syntax-Base
 %%% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 %%% 02111-1307, USA.
 %%%
-%%% $Id: pp-tables.def,v 1.1 2001/06/05 09:11:48 mdejonge Exp $
+%%% $Id: pp-tables.def,v 1.2 2001/10/08 12:44:53 mdejonge Exp $
 
 %% \noindent
 %% The most elementary boxes are strings enclosed in double quotes
@@ -553,7 +553,7 @@ module Box-Atoms-Syntax
 %%% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 %%% 02111-1307, USA.
 %%%
-%%% $Id: pp-tables.def,v 1.1 2001/06/05 09:11:48 mdejonge Exp $
+%%% $Id: pp-tables.def,v 1.2 2001/10/08 12:44:53 mdejonge Exp $
 
 %% \noindent
 %% This module contains the syntax of the BOX markup language. This version
@@ -614,7 +614,7 @@ module Box-Syntax
 %%% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 %%% 02111-1307, USA.
 %%%
-%%% $Id: pp-tables.def,v 1.1 2001/06/05 09:11:48 mdejonge Exp $
+%%% $Id: pp-tables.def,v 1.2 2001/10/08 12:44:53 mdejonge Exp $
 
 module PlaceHolder
 imports
@@ -645,7 +645,7 @@ context-free syntax
 %%% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 %%% 02111-1307, USA.
 %%%
-%%% $Id: pp-tables.def,v 1.1 2001/06/05 09:11:48 mdejonge Exp $
+%%% $Id: pp-tables.def,v 1.2 2001/10/08 12:44:53 mdejonge Exp $
 
 module PP-Tables
 imports
@@ -660,6 +660,7 @@ exports
 %%   {Path "."}+     -> PP-Identifier
 lexical syntax
    ~[\ \t\n\.]+       -> ConsName
+   "\"" ~[\"]+ "\""    -> ConsName
 
 context-free restrictions
    ConsName -/- ~[\ \t\n\.]
@@ -695,7 +696,7 @@ context-free syntax
 %%% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 %%% 02111-1307, USA.
 %%%
-%%% $Id: pp-tables.def,v 1.1 2001/06/05 09:11:48 mdejonge Exp $
+%%% $Id: pp-tables.def,v 1.2 2001/10/08 12:44:53 mdejonge Exp $
 
 module Main
 imports

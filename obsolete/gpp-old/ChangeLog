@@ -1,4 +1,8 @@
 2001-10-06 Merijn de Jonge <mdejonge@cwi.nl> 
+   * pp-tables: Syntax of pp tables now accepts quoted strings as
+     constructor names.
+
+2001-10-06 Merijn de Jonge <mdejonge@cwi.nl> 
    * Due to a recent Stratego bug fix related to quoted constructor names,
      gpp now depends on version 0.6.2 of Stratego
 
