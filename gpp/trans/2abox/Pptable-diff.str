@@ -82,6 +82,7 @@ strategies
       try((has-option(!Fix) + has-option(!Prune));
           <table-getlist>"old-table";
           map(\  (_, (path,box)) -> PP-Entry(path, box) \ );
+          desugar;
           !PP-Table(<id>);
           termid-set(!"\"pp-tables-0\"");
           output(id)
@@ -102,7 +103,15 @@ prune =
    // Remove obsolete entries from "old-table"
    map( <table-remove>("old-table", <id>) )
    
-    
+desugar = 
+    topdown( 
+       try(
+            Arg(int-to-string)
+          + Arg2(int-to-string, int-to-string)
+          + SOpt(id, id)
+          + S(escape; double-quote)
+          + selector(int-to-string, id)
+        ))
       
     
 \end{code}
