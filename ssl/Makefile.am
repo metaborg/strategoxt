@@ -1,4 +1,4 @@
-SUBDIRS = src spec
+SUBDIRS = spec
 
 EXTRA_DIST = README README.in reconf stdconfig 
 

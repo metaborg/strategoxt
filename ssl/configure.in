@@ -15,8 +15,8 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-AC_INIT(src/stratego-lib.h)
-AM_INIT_AUTOMAKE(ssl,0.9beta2)
+AC_INIT(spec/lib.r)
+AM_INIT_AUTOMAKE(ssl,0.9beta3)
 
 #AC_CONFIG_AUX_DIR([config])
 
@@ -69,7 +69,7 @@ AC_ARG_ENABLE(develop,
 )
 AM_CONDITIONAL(DEVELOP, test "x$develop" = "xtrue")
 
-AM_CONFIG_HEADER([config.h])
+AM_CONFIG_HEADER(config.h)
 AC_PROG_CC
 AC_PROG_RANLIB
 AC_PROG_INSTALL
@@ -84,7 +84,6 @@ AC_SUBST(STRATEGORTS)
 AC_OUTPUT( \
 	Makefile \
 	README \
-	src/Makefile \
 	spec/Makefile \
 	spec/data/Makefile \
 )
