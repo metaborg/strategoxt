@@ -3,4 +3,10 @@ imports StrategoForTestingRenamed StrategoStratego
 
 exports
   context-free syntax
+    "DRN:|[" Strategy "]|"   -> StrategoTerm {cons("ToTerm")}
     "DRN:|[" DynRuleDef "]|" -> StrategoTerm {cons("ToTerm")}
+
+  variables
+    "sc" [0-9\']             -> DynRuleScopeId {prefer}
+    "sc" [0-9\'] "*"         -> {DynRuleScopeId ","}* {prefer}
+    "dr" [0-9\']             -> DynRuleId {prefer}
