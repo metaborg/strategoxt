@@ -23,7 +23,7 @@ StrategoXT 0.10 is under construction
 For StrategoXT 0.10 we have completely redesigned and reimplemented
 dynamic rules. Scoped dynamic rewrite rules have been introduced in
 Stratego 0.6 (August 2001). Dynamic rules have been applied
-extensively since then. In particular they have proven to be very
+extensively since then. In particular they have proved to be very
 useful for implementing context-sensitive transformations. However,
 these applications also revealed some missing features in scoped
 dynamic rewrite rules.
@@ -33,19 +33,20 @@ dynamic rewrite rules.
 First, there is a need for forking and merging sets of dynamic rules
 in data-flow optimizations and probably many other application
 areas. At first we have implemented this at the implementation level
-of dynamic rules. In StrategoXT this functionality has been lifted to
-the language levels by allowing intersection and union operations on
+of dynamic rules. In StrategoXT 0.10 this functionality has been lifted
+to the language level by allowing intersection and union operations on
 sets of rules.
 
-Second, many applications need to define a list of possible rewrite
+Second, many applications need to define more than one possible rewrite
 rules that can all be applied, possibly all at once to retrieve a list
 of possible rewrites. A first implementation of this idea was already
 available in StrategoXT 0.9.4 (extend rules).
 
 Third, the 'override rules' facility for defining dynamic in rules in
 outer scopes proved to be insufficient. To this end we have added
-labeled scopes. Labeled scopes are based on an idea raised by Ganesh
-Sittampalam in a discussion at the Stratego User Days 2004.
+labeled scopes. Rules can be tied to specifically labeled scopes. Labeled
+scopes are based on an idea raised by Ganesh Sittampalam in a discussion
+at the Stratego User Days 2004.
 
 ---------+++ New Syntax and Semantics
 
@@ -55,7 +56,7 @@ and semantics, and is presented in BNF below. Some basic entities are:
   s     strategy,
   f     rule/strategy identifier, e.g. 'EvalBinOp', or 'innermost',
   dsig  definition signature, identifier with optional strategy and term
-        arguments: =f(sd*|vd*)=.
+        arguments: f(sd*|vd*).
 </verbatim>
 
 
@@ -70,7 +71,7 @@ rule definitions within determine the semantics.
 ---------++++ Labeling of Scopes
 
 To prevent rules from being undefined too early at the end of the current
-scopes, the =override rules(..)= could be used in the past. Rules were tied
+scope, the =override rules(..)= could be used in the past. Rules were tied
 to some outer scope, instead of the current innermost.
 
 The new dynamic rules still support the same scoping syntax, but now
@@ -89,9 +90,9 @@ labels.
 
 ---------++++ Dynamic Rule Definitions
 
-Besides the mandatory rulename, dynamic rule definitions now may also
+Besides the mandatory rule name, dynamic rule definitions now may also
 contain a label, specifying in which scope this rule should be placed.
-No label naturaly means generation within the current inner scope.
+No label naturally means generation within the current inner scope.
 <verbatim>
   drsig ::= sig                           relative to current scope
             sig.p                         relative to labeled scope
@@ -101,8 +102,8 @@ No label naturaly means generation within the current inner scope.
   drd ::= drsig : p1 -> p2 (where s)?     dynamic rule definition
 </verbatim>
 
-Instead of `extend rules' blocks, now the rule definitions specify themselves
-whether 'extend-behaviour' is intended:
+Instead of =extend rules= blocks, now the rule definitions specify themselves
+whether 'extend-behavior' is intended:
 <verbatim>
   drd ::= drsig :+ p1 -> p2 (where s)?    dynamic rule extension
 </verbatim>
@@ -135,7 +136,7 @@ It tries to rewrite with the most recently generated instance of =UsedInExp=,
 and repeatedly tries older instances until rewriting succeeds or no more
 instances exist in the same generation scope (i.e. no inheritance from higher
 scopes than the one of latest generation).
-Not that the semantics of this simple rewriting has changed: in the old model,
+Note that the semantics of this simple rewriting has changed: in the old model,
 no older instances were available for rewriting if the youngest instance failed)
 
 Two special rules are automatically available for each dynamic rule:
@@ -149,20 +150,20 @@ and returns a list of succeeded result terms.
 <verbatim>
   <once-UsedInExp> |[ y ]| => |[ e' ]|    // Rewriting once
 </verbatim>
-=once-RuleName= rewrites just like =RuleName= would do, but upon successfull
+=once-RuleName= rewrites just like =RuleName= would do, but upon successful
 rewriting that rule instance is removed. A generated rule thus is used for
 rewriting only once.
 
----------++++ Branching and Meeting Rulesets
+---------++++ Branching and Meeting Rule Sets
 
-When performing control-flow optimizations, rulesets had to be explicitly
+When performing control-flow optimizations, rule sets had to be explicitly
 saved, intersected and restored. The new model now provides some variants for
 this at the language level (with generic functionality available in the API).
 
-The best-known branch-meet operation is the intersection of rulesets after
+The best-known branch-meet operation is the intersection of rule sets after
 constant propagation through the then- and else-branch of an if-then-else.
 The general syntax allows two strategies to be performed, followed by an
-automatic intersection of one or more named rulesets:
+automatic intersection of one or more named rule sets:
 <verbatim>
   s1 / f1, ..., fn \ s2                   dynamic rule intersection
 </verbatim>
@@ -173,10 +174,10 @@ The same is possible for union, instead of intersection:
   s1 \ f1, ..., fn / s2                   dynamic rule union
 </verbatim>
 
-control structures that involve repetition (e.g. for-loops) often nead
-repeated traversal until a fixed point in the ruleset is reached.
-Two fixpoint traversals are available that meet the dynamic ruleset with
-the one from the previous iteration until the ruleset is free of changes.
+Control structures that involve repetition (e.g. for-loops) often need
+repeated traversal until a fixed point in the rule set is reached.
+Two fixpoint traversals are available that meet the dynamic rule set with
+the one from the previous iteration until the rule set is free of changes.
 <verbatim>
   / f1, ..., fn \* s2                     dynamic rule fixpoint intersection
   \ f1, ..., fn /* s2                     dynamic rule fixpoint union
@@ -186,10 +187,10 @@ Example: =/PropConst\* While(s,s)=
 ---------++++ Dynamic Rules API
 
 For in-depth specification of the underlying dynamic rules implementation,
-please refer to the 'dynamic-rules-refactored' module in the SSL.
+please refer to the =dynamic-rules-refactored= module in the SSL.
 At least the debug strategies are useful for end-users:
 <verbatim>
-  dr-debug-rule-set(|name)                // Output dynamic ruleset on stderr
+  dr-debug-rule-set(|name)                // Output dynamic rule set on stderr
   dr-debug-rule-set(|name, msg)           // Id. preceded by user's message
 </verbatim>
 
