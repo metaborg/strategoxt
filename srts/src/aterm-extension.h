@@ -28,9 +28,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 #define t_is_appl(t) (ATgetType(t) == AT_APPL)
 
 #define t_is_string(t) (t_is_appl(t) && ATisQuoted(ATgetSymbol(t)))
+#define AT_isString(t) (t_is_appl(t) && ATisQuoted(ATgetSymbol(t)))
 
 #define ATisReal(t) (ATgetType(t) == AT_REAL)
 #define ATisInt(t)  (ATgetType(t) == AT_INT)
+
+#define AT_getInt(t)    (ATisInt(t) ? (((ATermInt)t)->value) : (int)_fail(t))
+#define AT_getString(t) (AT_isString(t) ? (ATgetName(ATgetSymbol(t))) : (char*)_fail(t))
+
 
 ATerm list_to_consnil(ATerm t);
 ATerm list_to_tconstnil(ATerm t);
@@ -64,5 +69,3 @@ ATerm App6(char *name, ATerm arg1, ATerm arg2, ATerm arg3, ATerm arg4, ATerm arg
 ATerm App7(char *name, ATerm arg1, ATerm arg2, ATerm arg3, ATerm arg4, ATerm arg5, ATerm arg6, ATerm arg7);
 
 ATerm AppN(char *name, ATermList args);
-
-#define ATisInt(t) (ATgetType(t) == AT_INT)
