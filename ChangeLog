@@ -1,3 +1,10 @@
+2003-03-21  Martin Bravenboer  <martin@mbravenboer.org>
+
+  * corrected sdf2 download location in README.in
+  * using AC_HELP_STRING in configure.in
+  * specify default values for configure flags
+  * added LaTeX configure flag
+
 2003-01-17  Eelco Visser  <visser@cs.uu.nl>
 
 	* renamed box-tools to gpp

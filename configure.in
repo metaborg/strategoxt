@@ -1,13 +1,13 @@
-#AC_INIT([StrategoXT],[0.9],[stratego-bugs@cs.uu.nl])
-#AM_INIT_AUTOMAKE
+AC_INIT([StrategoXT],[0.9],[stratego-bugs@cs.uu.nl])
+AM_INIT_AUTOMAKE
 
-AC_INIT(Makefile.in)
-AM_INIT_AUTOMAKE(StrategoXT,0.9)
+#AC_INIT(Makefile.in)
+#AM_INIT_AUTOMAKE(StrategoXT,0.9)
 
 ### ATerm Library #####################
 
 AC_ARG_WITH(aterm, 
-  [  --with-aterm=DIR            Location of external aterm package.], 
+  AC_HELP_STRING([--with-aterm=DIR], [use ATerm Library at DIR @<:@PREFIX@:>@]),
   ATERM=$withval, 
   ATERM="$prefix"
 )
@@ -16,7 +16,7 @@ AC_SUBST(ATERM)
 ### Choice Point Library #############
 
 AC_ARG_WITH(cpl, 
-  [  --with-cpl=DIR              Use the choice point library (optional)], 
+  AC_HELP_STRING([--with-cpl=DIR], [use Choice Point Library at DIR (optional)]),
   CPL=$withval usecpl=true, 
   usecpl=false
 )
@@ -26,15 +26,14 @@ AM_CONDITIONAL(USECPL, test x$usecpl = xtrue)
 ############ XTC ##########################################################
 
 AC_ARG_WITH(xtc,
-  [  --with-xtc=DIR              Use XTC (XT Composition) [[prefix]]],
+  AC_HELP_STRING([--with-xtc=DIR], [use XTC (XT Composition) at DIR @<:@PREFIX@:>@]),
   XTC="$withval",
   XTC="$prefix"
 )
 AC_SUBST(XTC)
 
 AC_ARG_WITH(repository,
-  [  --with-repository=DIR       XTC repository [[pkgdatadir/XTC-$StrategoXT]]]
-,
+  AC_HELP_STRING([--with-repository=FILE], [use XTC repository at FILE @<:@PREFIX/share/StrategoXT/XTC@:>@]),
   REPOSITORY="$withval",
   REPOSITORY="$prefix/share/$PACKAGE/XTC"
 )
@@ -43,7 +42,7 @@ AC_SUBST(REPOSITORY)
 ### SDF ###############################
 
 AC_ARG_WITH(sdf, 
-  [  --with-sdf=DIR             Specify location of SDF2], 
+  AC_HELP_STRING([--with-sdf=SDF], [use SDF bundle at SDF @<:@PREFIX@:>@]),
   SDF="$withval", 
   SDF="$prefix"
 )
@@ -52,7 +51,7 @@ AC_SUBST(SDF)
 echo "SDF = $SDF"
 
 AC_ARG_WITH(sglr, 
-  [  --with-sglr=DIR            Specify location of SGLR], 
+  AC_HELP_STRING([--with-sglr=DIR], [use SGLR bundle at DIR @<:@SDF@:>@]),
   SGLR="$withval", 
   SGLR="$SDF"
 )
@@ -61,23 +60,30 @@ AC_SUBST(SGLR)
 echo "SGLR = $SGLR"
 
 AC_ARG_WITH(pgen, 
-  [  --with-pgen=DIR            Specify location of SDF2 parser generator], 
+  AC_HELP_STRING([--with-pgen=DIR], [use SDF parser generator at DIR @<:@SDF@:>@]),
   PGEN="$withval", 
   PGEN="$SDF"
 )
 AC_SUBST(PGEN)
 
+AC_ARG_WITH(latex, 
+  AC_HELP_STRING([--with-latex=DIR], [use LaTeX distribution at DIR @<:PREFIX@:>@]),
+  LATEX="$withval", 
+  LATEX="$prefix"
+)
+AC_SUBST(LATEX)
+
+
 #AC_SUBST(STRATEGOFRONT)
 
-AC_ARG_ENABLE(exe,    
-  [  --enable-exe               Extension of executables], 
+AC_ARG_ENABLE(exe,
+  AC_HELP_STRING([--enable-exe], [use .exe extension for executables]),
   EXE=".exe", 
   EXE=""
 )
 AC_SUBST(EXE)
 
 AM_CONFIG_HEADER([config.h])
-
 
 ### PACKAGES ##########################
 
