@@ -30,7 +30,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.in,v 1.6 2002/09/17 09:25:40 eelco Exp $
+# $Id: Makefile.in,v 1.7 2002/09/25 20:47:34 eelco Exp $
 
 
 SHELL = @SHELL@
@@ -100,6 +100,8 @@ translit = @translit@
 TEST_SET = Opt-seq Opt-seq2 Opt-iter Opt-iter1 Iter-sep Iter-sep1 Iter-sep2 Iter-sep3 \
 	   Iter-sep-seq Iter-sep-seq2 Alt Alt2 Alt3 Seq Iter-seq Seq2 Seq3 Or
 
+# Due to a bug in implode-asfix, this test won't work
+#           Lit-Iter-Star
 
 EXTRA_DIST = tests.def tests.pp  \
 	     $(TEST_SET:%=%.trm) $(TEST_SET:%=%-asfix.in) $(TEST_SET:%=%-af.in)\
@@ -251,7 +253,7 @@ testsetclean:
 	(\
 	   echo 'set -e' ;\
 	   echo '$(MAKE) tests.tbl tests.pp.af $*-asfix.in' ;\
-	   echo '$(top_builddir)/src/asfix2abox/Asfix2abox -p tests.pp.af -i ${srcdir}/$*-asfix.in -o $*.tested' ;\
+	   echo '$(top_builddir)/src/asfix2abox/Asfix-2-abox -p tests.pp.af -i ${srcdir}/$*-asfix.in -o $*.tested' ;\
 	   echo 'diff $*.tested ${srcdir}/$*.out' ;\
 	) > $@ && chmod +x $@
 
@@ -259,7 +261,7 @@ testsetclean:
 	(\
 	   echo 'set -e' ;\
 	   echo '$(MAKE) tests.tbl tests.pp.af $*-af.in' ;\
-	   echo '$(top_builddir)/src/ast2abox/Ast2abox -p tests.pp.af -i ${srcdir}/$*-af.in -o $*.tested' ;\
+	   echo '$(top_builddir)/src/ast2abox/Ast-2-abox -p tests.pp.af -i ${srcdir}/$*-af.in -o $*.tested' ;\
 	   echo 'diff $*.tested ${srcdir}/$*.out' ;\
 	) > $@ && chmod +x $@
 
@@ -276,7 +278,7 @@ testsetclean:
 
 %.out :
 	$(MAKE) tests.pp.af
-	$(top_builddir)/src/asfix2abox/Asfix2abox -p tests.pp.af -i ${srcdir}/$*-asfix.in -o $@
+	$(top_builddir)/src/asfix2abox/Asfix-2-abox -p tests.pp.af -i ${srcdir}/$*-asfix.in -o $@
 
 %.pp.af : %.pp $(top_builddir)/src/lib/pp-tables.tbl
 	PATH=$(SGLR)/bin:$${PATH} sglr -2 -p $(top_builddir)/src/lib/pp-tables.tbl -i $< \

@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Abox-2-latex.r,v 1.4 2002/09/17 21:57:53 eelco Exp $
+% $Id: Abox-2-latex.r,v 1.5 2002/09/25 20:47:33 eelco Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
@@ -121,7 +121,7 @@ Abox2latex:
    where
       <Vspace>so => vs;
       <Ispace>so => is;
-      <filter(not([]));separate-by(!"\n\n")>b => b'
+      <filter(not([]));separate-by(!"\\par%\n")>b => b'
 
 Abox2latex:
    HV(so, b ) -> HVBOX( hs, vs, is, b' )

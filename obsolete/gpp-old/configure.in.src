@@ -17,13 +17,10 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 dnl 02111-1307, USA.
 
-dnl $Id: configure.in.src,v 1.16 2001/11/26 08:53:56 mdejonge Exp $
+dnl $Id: configure.in.src,v 1.17 2002/09/25 20:47:32 eelco Exp $
 
 AC_INIT(configure.in)
 AM_INIT_AUTOMAKE(__PACKAGE__,__VERSION__)
-
-
-
 
 dnl Package switches.
 
@@ -61,7 +58,7 @@ AC_ARG_WITH(gpp-boot,
 AC_SUBST(GPPBOOT)
 
 
-AC_REVISION($Id: configure.in.src,v 1.16 2001/11/26 08:53:56 mdejonge Exp $)
+AC_REVISION($Id: configure.in.src,v 1.17 2002/09/25 20:47:32 eelco Exp $)
 
 AC_PROG_CC
 AC_PROG_INSTALL

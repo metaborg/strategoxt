@@ -1,3 +1,12 @@
+2002-09-25  Eelco Visser  <visser@acm.org>
+
+	* src/abox2latex/Abox-2-latex.r: Separate boxes in a VBOX by means
+	of an explicit \par, instead of two blank lines. The
+	textcolor{}{...}  applications cannot deal with blank lines in its
+	argument; only works on `paragraphs'. (In my first attempt I used
+	\\ to separate boxes, but that that broke vertical space
+	settings.)
+
 2002-09-17  Eelco Visser  <visser@acm.org>
 
 	* src/*: Added Verbose option.
