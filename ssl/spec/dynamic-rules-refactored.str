@@ -207,9 +207,7 @@ strategies // high-level API with implicit rule set
   dr-add-rule(|name, label, key, value) =
     where(
       dr-get-rule-set(|name)
-      //; debug(!"dr-add-rule1: ")
       ; dr-add-to-rule-set(|label, key, value)
-      //; debug(!"dr-add-rule2: ")
       ; dr-set-rule-set(|name)
     )
 
@@ -467,6 +465,10 @@ strategies // setting a rule
    * upto the specified scope. Deleting by removing from the table, not
    * undefining.
    */ 
+
+
+  dr-set-in-rule-set-vis(|key, value) =
+    dr-set-in-rule-set(|key, value)
 
   dr-set-in-rule-set-vis(|label, key, value) =
     dr-set-in-rule-set-vis(dr-set-fail, dr-rm-fail | label, key, value)
