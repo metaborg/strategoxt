@@ -1,17 +1,12 @@
-/*
- stratego-warnings.str: a module for generating stratego compilation warnings 
-
- author: Merijn de Jonge (m.de.jonge@tue.nl)
-
- usage: sc -i stratego-wargings.str
-        pack-stratego -I <xt>/share/ssl -i <your_spec>.str -o <your_spec>.ast
-        frontend -i <your_spec>.ast -o <your_spec>.ast1
-        extract -i <your_spec>.ast1 -o <your_spec>.ast2
-        stratego-warnings -i <your_spec>.ast.2 -o /dev/null
+/**
+ * Tool for generating stratego compilation warnings 
+ *
+ * @author Merijn de Jonge (m.de.jonge@tue.nl)
  */
 module stratego-warnings
 imports
   lib
+  xtc-lib
   stratego-warnings-options
   Stratego
 
@@ -34,45 +29,80 @@ strategies
     <+ WarningObsolete(spec)
     <+ MaybeUnboundVariables(spec)
     <+ LowerCaseConstructors(spec)
-    <+ <printnl> (stderr, ["** WARNING incorrect parameter passed to -W switch: ", <id>]);
-       ![]
+    <+ log(|Warning(), "incorrect parameter passed to -W switch: ", <id>)
+       ; ![]
 
 strategies
 
   LowerCaseConstructors(spec) =
-  ?"lower-case-constructors";
-  spec;
-  collect( ?OpDecl(<id>, _)  );
-  uniq;
-  filter( 
-    \ x -> ConstructorWarning(<double-quote>x) 
-      where lower-case => x
-          ; not("" + "stdin" + "stdout" + "stderr" + "meta-var" + "meta-listvar" + "amb")
-     \ )
+    ?"lower-case-constructors"
+    ; spec
+    ; collect( ?OpDecl(<id>, _)  )
+    ; uniq
+    ; filter( 
+        \ x -> ConstructorWarning(<double-quote>x) 
+          where
+            lower-case => x
+            ; not("" + "stdin" + "stdout" + "stderr" + "meta-var" + "meta-listvar" + "amb")
+        \
+      )
 
+  /**
+   * Handled by use-def component
+   */
   MaybeUnboundVariables(spec) =
-    ?"maybe-unbound-variables" // handled by use-def component
+    ?"maybe-unbound-variables"
     ; ![]
 
 strategies
 
-  // debug arguments
-
+  /**
+   * Debug arguments
+   */
   WarningDebugArguments(spec) =
     ?"debug-arguments"
     ; spec
-    ; debug-with-incorrect-string
+    ; missing-build-warning
+
+  /**
+   * Strategy to find calls to strategies with incorrect string
+   * congruence arguments
+   */
+  missing-build-warning =
+    let debug-call = {ast, arg:
+          \ ast@CallT(SVar("debug"),[arg],[]) -> MissingBuildWarning(0, ast)
+            where
+              <?Match(Str(_))> arg
+          \ }
+
+        xtc-transform-call = {ast, arg:
+          \ ast@CallT(SVar("xtc-transform"),[arg | _ ], []) -> MissingBuildWarning(0, ast)
+            where
+              <?Match(Str(_))> arg
+          \ }
+
+
+     in strategy-argument-warning(
+          sdef-with-property(
+            debug-call
+          + xtc-transform-call
+          )
+        )
+    end
 
 strategies
 
-  // obsolete strategy definitions
-
+  /**
+   * Obsolete strategy definitions
+   */
   WarningObsolete(spec) =
     ?"obsolete-strategy-calls"
     ; spec
     ; obsolete-def
 
-  // Strategy to find calls to the "obsolete" strategy
+  /**
+   * Strategy to find calls to the "obsolete" strategy
+   */
   obsolete-def = 
     strategy-invokation-warning(
       sdef-with-property( 
@@ -80,59 +110,102 @@ strategies
       )
     )
 
-// Strategy to find calls to "debug" strategy with incorrect argument
-debug-with-incorrect-string =
-   strategy-argument-warning(
-   sdef-with-property({arg, msg:
-   \   CallT(SVar("debug"),[arg],[]) -> DebugWarning(msg) 
-       where
-         <Match(Str(?msg))>arg
-   \ }))
+  /**
+   * Create warning string for obsolete warning
+   */
+  mk-warning:
+    (caller, strat, ObsoleteWarning(warning)) -> msg
+    where
+      <concat-strings>
+      ["warning: obsolete strategy or rule invoked from \"", caller, "\":\n  ", 
+       strat, ": \"", warning, "\"\n"] => msg
 
-// Create warning string for obsolete warning
-mk-warning: (caller, strat, ObsoleteWarning(warning)) -> msg
-   where
-   <concat-strings>
-   ["warning: obsolete strategy or rule invoked from \"", caller, "\":\n  ", 
-     strat, ": \"", warning, "\"\n"] => msg
+  /**
+   * Create warning string for debug warning
+   */
+  mk-warning:
+    (strat, MissingBuildWarning(index, ast)) -> msg
+    where
+      let found-txt =
+            <pp-stratego-fragment> ast
+            ; <conc-strings> ("  found (desugared) :\n    ", <id>)
 
-// Create warning string for debug warning
-mk-warning: (strat, DebugWarning(warning)) -> msg
-   where
-   <concat-strings>
-   ["warning: possibly missing build operator in debug strategy in \"", strat,"\"\n",
-    "  debug(",<double-quote>warning,")\n"] => msg
+          expected-txt = 
+            <CallT(id, <at-index(fix-build)> (index, <id>), id)> ast
+            ; pp-stratego-fragment
+            ; <conc-strings> ("  expected:\n    ", <id>)
+            <+ !""
+
+          fix-build =
+            \ Match(t) -> Build(t) \ <+ !Build(<id>)
+
+       in <concat-strings> [
+            "warning: possibly missing build operator in strategy ", strat, "\n"
+          , <found-txt>
+          , <expected-txt>
+          ]
+      end => msg
+
+  /**
+   * @todo baseline issue: remove if at-index is in baseline.
+   */
+  at-index(s) =
+    ?(i, <id>);
+
+    let next(|j) =
+          if !j => i then
+            [s | id]
+          else
+            [id | next(|<inc> j)]
+          end
+     in next(|0)
+    end
+
+  pp-stratego-fragment =
+    xtc-temp-files(
+      write-to
+    ; xtc-transform(!"pp-stratego", !["--abstract" | <pass-verbose>])
+    ; ?FILE(<read-text-file>)
+    )
    
-// Create warning string for lower-case constructors
-mk-warning: ConstructorWarning(warning) -> msg
-   where
-   <concat-strings>
-   ["warning: lowercase constructor name found: ", warning, "\n"] => msg
+  /**
+   * Create warning string for lower-case constructors
+   */
+  mk-warning:
+    ConstructorWarning(warning) -> msg
+    where
+      <concat-strings> ["warning: lowercase constructor name found: ", warning, "\n"] => msg
    
-// A strategy-invokation warning is a warning related to a invokation of a
-// strategy. Typically, this means a call to an obsolete strategy.
-// The result is a list of triples (caller, strat, warning)
-// where
-//  caller  is the caller to strat
-//  strat   is the strategy causeing the warning (for instance because it is
-//          obsolete 
-//  warning is the warning messeage (typically the argument to obsolete)
-strategy-invokation-warning(s) =
+  /**
+   * A strategy-invokation warning is a warning related to a invokation of a
+   * strategy. Typically, this means a call to an obsolete strategy.
+   * The result is a list of triples (caller, strat, warning)
+   * where
+   *   caller  is the caller to strat
+   *   strat   is the strategy causeing the warning (for instance because it is
+   *           obsolete 
+   *   warning is the warning messeage (typically the argument to obsolete)
+   */
+  strategy-invokation-warning(s) =
     split(id, collect(s);concat;not([]));
     map-apply(get-strategy-callers)
    <+
     ![]
 
-// A strategy-argument warning warns about a possible incorrect argument to a
-// strategy. A typical example is a string argument to the "debug" strategy:
-//    debug("debug message")   since it should be   debug(!"debug message")
-//
-strategy-argument-warning(s) =
-   collect(s);concat
+  /**
+   * A strategy-argument warning warns about a possible incorrect argument to a
+   *  strategy. A typical example is a string argument to the "debug" strategy:
+   *     debug("debug message")   since it should be   debug(!"debug message")
+   */
+  strategy-argument-warning(s) =
+    collect(s)
+    ; concat
 
-// Print a list of warnings to standard error and also print a count of the
-// number of warnings
-print-warnings = 
+  /**
+   * Print a list of warnings to standard error and also print a count of the
+   * number of warnings
+   */
+  print-warnings = 
     []
    <+
     map(mk-warning);
@@ -142,43 +215,49 @@ print-warnings =
     !(stderr, ["\n", nr, " warning(s)\n"]);
     print
   
-// Return a list of callers to strategy "strat-name"
-get-strategy-callers:
-  (t, (strat-name, warning-msg) ) -> warning
-  where
-   !t;
-   collect(
-      caller(!strat-name);
-      not(?strat-name);
-      !(<id>, strat-name, warning-msg)
-   ) => warning
+  /**
+   * Return a list of callers to strategy "strat-name"
+   */
+  get-strategy-callers:
+    (t, (strat-name, warning-msg) ) -> warning
+    where
+     !t;
+     collect(
+        caller(!strat-name);
+        not(?strat-name);
+        !(<id>, strat-name, warning-msg)
+     ) => warning
 
-// Return a list of strategy names which invoke strategy "To"
-caller(To) = 
-   ?SDefT(name, _, _,def);
-   To => to;
-   !def;
-   collect( CallT(SVar(?to), id, id);!to );
-   not([]);
-   !name
+  /**
+   * Return a list of strategy names which invoke strategy "To"
+   */
+  caller(To) = 
+    ?SDefT(name, _, _,def)
+    ; To => to
+    ; !def
+    ; collect( CallT(SVar(?to), id, id);!to )
+    ; not([])
+    ; !name
 
-// Return a list of tuples (name, match) for strategy definition for which
-// "prop" holds 
-sdef-with-property(prop) =
-   SDefT(?name, id, id,?def);
-   !def;
-   collect(prop);
-   not([]);
-   map( \match -> (name, match) \ )
-   
-// map-apply(s) : (t,l) -> t'
-// Transform t by subsequently applying strategy s with argument a1...an
-// from the list l
-map-apply(s) =
-   rec x ({a,as,t:
-      (id,[]); Fst
-   <+
+  /**
+   * Return a list of tuples (name, match) for strategy definition for which
+   * "prop" holds 
+   */
+  sdef-with-property(prop) =
+    ?SDefT(name, _, _, <id>)
+    ; collect(prop)
+    ; not([])
+    ; map( \match -> (name, match) \ )
+
+  /**
+   * Transform t by subsequently applying strategy s with argument a1...an from the list l
+   *
+   * @type (t,l) -> t'
+   */
+  map-apply(s) =
+    rec x ({a,as,t:
+      (id, []); Fst
+    <+
       ?(t, [a|as]);
       <x>(<s>(t,a), as)
    })
-   

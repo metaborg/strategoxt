@@ -6,9 +6,9 @@ imports options Stratego
 
 signature
   constructors
-    ObsoleteWarning    : Str -> Warning
-    DebugWarning       : Str -> Warning 
-    ConstructorWarning : Str -> Warning
+    ObsoleteWarning     : Str -> Warning
+    MissingBuildWarning : Index * Strategy -> Warning 
+    ConstructorWarning  : Str -> Warning
 
 overlays
 
