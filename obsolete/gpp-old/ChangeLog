@@ -1,3 +1,6 @@
+2001-10-10 Merijn de Jonge <mdejonge@cwi.nl> 
+    * test sets have been adapted to use grammar identifiers
+
 2001-10-09 Merijn de Jonge <mdejonge@cwi.nl> 
     * added uses of termid strategy
     * all transformation tools now add grammar identifier to generated output
