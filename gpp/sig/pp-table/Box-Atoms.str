@@ -1,5 +1,0 @@
-module Box-Atoms
-imports Box-Base Box-Literal
-signature
-  constructors
-    S : BoxLiteral -> BOX

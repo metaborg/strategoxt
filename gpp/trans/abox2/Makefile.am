@@ -16,7 +16,7 @@ TESTS = Abox_2_latex1_check Abox_2_latex2_check Abox_2_latex3_check \
         Abox_2_latex4_check Abox_2_latex5_check
 
 EXTRA_DIST       = $(wildcard *.str) $(wildcard *.meta) boxstyle.css
-CLEANFILES       = $(wildcard *.dep)
+CLEANFILES       = $(wildcard *.dep) $(TESTS)
 BOOTCLEANFILES   = $(wildcard *.c)
 
 Abox_2_latex1_check_prog    = Abox-2-latex

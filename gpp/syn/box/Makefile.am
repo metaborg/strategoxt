@@ -1,7 +1,7 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-TBLS_DEFS = Box.def Stratego-Box.def Box.tbl Stratego-Box.tbl
+TBLS_DEFS = Box.def Stratego-Box.def Box.tbl Stratego-Box.tbl Box.pp
 
 sdfdata_DATA   = $(TBLS_DEFS) $(wildcard *.sdf) 
 EXTRA_DIST     = $(sdfdata_DATA)

@@ -29,5 +29,5 @@ module Box-Lists
    exports
       sorts BOX-LIST
 
-      context-free syntax
+      aliases
          BOX* -> BOX-LIST 

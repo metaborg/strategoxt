@@ -49,6 +49,8 @@ module Box-Operators
       context-free syntax
          SPACE-SYMBOL "=" NatCon -> S-OPTION     {cons("SOpt")}
          SPACE-SYMBOL "=" BOX    -> S-OPTION     {cons("SOptB")}
+      
+      aliases
          S-OPTION*               -> S-OPTIONS
 
 %%
@@ -62,6 +64,7 @@ module Box-Operators
 %% modification of the vertical offset in combination of the \textsf{H}
 %% operator does not make any sense.
 %%
+      context-free syntax
          "vs"                    -> SPACE-SYMBOL {cons("VS")}
          "hs"                    -> SPACE-SYMBOL {cons("HS")}
          "is"                    -> SPACE-SYMBOL {cons("IS")}
@@ -163,7 +166,11 @@ module Box-Operators
       context-free syntax
          FONT-PARAM "=" NatCon     -> F-OPTION      {cons("FNAT")}
          FONT-PARAM "=" FID        -> F-OPTION      {cons("FFID")}
+
+      aliases
          F-OPTION*                 -> F-OPTIONS
+
+      context-free syntax
          "F" F-OPTIONS             -> FONT-OPERATOR {cons("F")}
          FONT-OPERATOR "[" BOX "]" -> BOX           {cons("FBOX")}
          "fn"                      -> FONT-PARAM    {cons("FN")}

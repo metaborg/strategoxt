@@ -25,11 +25,15 @@ imports pp-table-PlaceHolder pp-table-IntCon
 exports
   sorts PP-Entry PP-Table PP-Table-GrammarId PP-Tables PP-Identifier
 
-  context-free syntax
+exports
+  syntax
+    <START> -> SURROGATE-START {cons("\"pp-tables-0\"")}
+    SURROGATE-START [\256] -> <Start> {prefer, cons("SURROGATE-START")}
 
-    PP-Table -> PP-Table-GrammarId {cons("\"pp-tables-0\"")}
-
+  aliases
     PP-Table* -> PP-Tables 
+
+  context-free syntax
     "[" {PP-Entry ","}* "]" -> PP-Table {cons("PP-Table")}
 
     Path "--" BOX-LIST -> PP-Entry {cons("PP-Entry")}

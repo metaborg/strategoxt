@@ -10,19 +10,18 @@ dnl Check for perl
 AC_PATH_PROG(PERL,perl)
 
 AC_CONFIG_FILES([
-	Makefile 
-	syn/Makefile
+  Makefile 
+  syn/Makefile
   syn/box/Makefile
   syn/pp-table/Makefile 
-	sig/Makefile
+  sig/Makefile
   sig/box/Makefile
   sig/pp-table/Makefile 
-	pp/Makefile 
-	trans/Makefile
+  trans/Makefile
   trans/2abox/Makefile
   trans/abox2/Makefile 
   trans/abox2/data/Makefile 
-	xtc-tools/Makefile 
+  xtc-tools/Makefile 
   tohtml/Makefile
   tohtml/data/Makefile
 ])

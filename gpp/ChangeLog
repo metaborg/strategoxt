@@ -2,6 +2,15 @@
    * Pptable-diff: if inconsistencies are detected and the --patch switch
      is not specified, the program terminates with an exit code of 1
    * pptable-diff: now detects whether Pptable-diff succeeded or not
+   * trans/abox2/Makefile.am: added $(TESTS) to CLEANFILES
+   * removed *.tbl, *.def from subversion repository
+   * moved pretty-print table stuff to corresponding syntax directories
+   * made pretty-print tables of Box and pp-table consistent with syntax
+     definitions
+   * Box.*.sdf: added aliases for list costructs without constructor
+     annotation
+   * sig: removed generated files from subversion repo
+   * removed *.c from subversion repo
 
 2004-02-22   Merijn de Jonge  <mdejonge@cs.uu.nl>
    * pp/Box.pp and pp/pp-tables.pp are now installed in <prefix>/share/gpp
