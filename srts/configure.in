@@ -49,7 +49,6 @@ AC_SUBST(RELEASE)
 
 AC_CONFIG_FILES([
   Makefile
-  Makefile.srts
   src/Makefile
   src/srts/Makefile
   ssl/Makefile
