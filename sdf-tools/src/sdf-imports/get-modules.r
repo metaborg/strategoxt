@@ -17,7 +17,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: get-modules.r,v 1.1 2001/06/07 12:18:48 mdejonge Exp $
+% $Id: get-modules.r,v 1.2 2001/06/07 13:22:15 mdejonge Exp $
 
 \begin{code}
 module get-modules
@@ -81,7 +81,7 @@ strategies
       filter( \Node(x) -> x\ ) 
    );
    split( !options, id);
-   output-file'
+   output-file
 
 
   get-modules-usage =
