@@ -92,6 +92,8 @@ rules
   UDjoin : Scope(xs, uds)     -> <map(JoinScope(!xs))> uds
   UDjoin : Overlay(f, xs, t)  -> Overlay(f, xs, <seqs-join> [([],xs,[]),t])
 
+  UDjoin : GuardedLChoice(xs, ys, zs) -> <cart(Union)>(<seqs-join> [xs, ys], zs)
+
   JoinScope(xs) : 
     (u, d, e) -> 
     (u, <diff> (d, <xs>()), <conc> (<isect> (u, <xs>()), e))
