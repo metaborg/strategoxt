@@ -1,3 +1,6 @@
+2001-03-28 Merijn de Jonge <mdejonge@cwi.nl>
+        * Now using version 0.5.3 af the aterm library.
+
 2001-03-23 Merijn de Jonge <mdejonge@cwi.nl>
         * Removed graph-tools package from XT distribution
 
