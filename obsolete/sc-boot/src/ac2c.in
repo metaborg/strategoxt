@@ -1,0 +1,12 @@
+#! /bin/sh
+
+infile=$2
+outfile=$4
+
+GPP=@GPP@
+CGEN=@CGEN@
+
+echo $prog
+
+time $GPP/bin/ast2abox -p ${CGEN}/share/cgen/C.pp -i $infile -o $infile.abox
+time $GPP/bin/abox2text -i $infile.abox -o $outfile
