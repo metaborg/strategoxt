@@ -2,13 +2,11 @@ include $(top_srcdir)/Makefile.xt
 
 SUBDIRS           = spec
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
-EXTRA_DIST        = $(wilcard *.pkg) bootstrap Makefile.xt autoxt.m4
+EXTRA_DIST        = Makefile.xt
 CLEANFILES        = XTC
-
-ACLOCAL_AMFLAGS   = -I .
-
 libexec_SCRIPTS   = libtool
 
+ACLOCAL_AMFLAGS   = -I ../config
 XTC_IMPORT = $(STRATEGOXT)/share/strategoxt/XTC
 
 install-exec-hook: install-xtc

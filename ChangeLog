@@ -1,3 +1,23 @@
+2005-01-28  Martin Bravenboer <martin@cs.uu.nl>
+
+	* bootstrap: use autoxt in STRATEGOXT_BASELINE, fall-back with a
+	warning to autoxt on the PATH.
+
+	* bootstrap: gmake/MAKE/make/which crap is no longer necessary,
+	since nothing is installed in the bootstrap script anymore.
+
+	* bootstrap: touch of all the sources is no longer necessary,
+	since there are not bootstrapped sources in Subversion anymore.
+
+	* bootstrap: bootstrap subpackages with autoreconf instead of
+	bootstrap scripts.
+
+	* */bootstrap: removed. Use autoreconf and autoxt when needed.
+
+	* */Makefile.am: don't distribute bootstrap scripts and autoxt.m4
+
+	* */Makefile.am: use autoxt.m4 in the shared config directory.
+	
 2005-01-26  Martin Bravenboer <martin@cs.uu.nl>
 
 	* Removed all bootstrap sources (more than 300)

@@ -5,6 +5,6 @@ BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 DIST_SUBDIRS      = $(SUBDIRS)
 CLEANFILES        = XTC
 
-EXTRA_DIST = bootstrap autoxt.m4 Makefile.xt 
+EXTRA_DIST = Makefile.xt 
 
-ACLOCAL_AMFLAGS = -I .
+ACLOCAL_AMFLAGS = -I ../config

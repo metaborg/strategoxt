@@ -1,7 +1,0 @@
-#! /bin/sh
-
-export WANT_AUTOMAKE="1.8"
-export WANT_AUTOCONF="2.59"
-
-autoxt || exit 1
-autoreconf -if || exit 1

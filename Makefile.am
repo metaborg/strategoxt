@@ -3,7 +3,7 @@ ACLOCAL_AMFLAGS = -I .
 SUBDIRS      = . news-archive $(PKGS)
 DIST_SUBDIRS = news-archive $(DIST_PKGS)
 EXTRA_DIST   = $(EXTRA_FILES)
-EXTRA_FILES  = README svn-revision bootstrap autoxt.m4 acinclude.m4 strategoxt.spec.in strategoxt.spec
+EXTRA_FILES  = README svn-revision bootstrap autoxt.m4 acinclude.m4 strategoxt.spec.in strategoxt.spec Makefile.xt
 
 install-data-local: install-xtc
 

@@ -1,64 +1,53 @@
-#! /bin/sh
+#! /bin/sh -e
 
+# Environment variables for our Gentoo friends.
 export WANT_AUTOMAKE="1.8"
 export WANT_AUTOCONF="2.59"
 
-WORKINGDIR=`pwd`
-echo "** INFO -- Working directory: $WORKINGDIR"
-
-# try to set the best BOOTSTRAP_MAKE variable: MAKE <+ gmake <+ make
-BESTMAKE=
-gmake -v
-if [ "$?" != "0" ]
-  then
-    echo "** INFO -- gmake is not on the PATH. Assuming GNU Make is make!"
-    BESTMAKE="make"
-  else
-    BESTMAKE="gmake"
+# Determine autoxt to use.
+if test -z "$STRATEGOXT_BASELINE"; then
+  echo "***********************************************************"
+  echo "                          WARNING"
+  echo ""
+  echo "The environment variable STRATEGOXT_BASELINE is not set."
+  echo "It is recommended to set this variable to make sure that"
+  echo "the right autoxt is used for bootstrapping Stratego/XT. I"
+  echo "assume that the baseline you want to use is on the path."
+  echo "***********************************************************"
+  AUTOXT="autoxt"
+elif test !-x "$STRATEGOXT_BASELINE/bin/autoxt"; then
+  echo "error: $STRATEGOXT_BASELINE/bin/autoxt does not exist."
+  echo "Please check your STRATEGOXT_BASELINE environment variable"
+  exit 1
+elif test -x "$STRATEGOXT_BASELINE/bin/autoxt"; then
+  AUTOXT="$STRATEGOXT_BASELINE/bin/autoxt"
+else
+  echo "This is impossible in theory and practice."
+  exit 1
 fi
-BOOTSTRAP_MAKE=${MAKE-$BESTMAKE}
-echo "** INFO -- Make is: $BOOTSTRAP_MAKE"
-# end of setting BOOTSTRAP_MAKE
 
-# touch bootstrapped sources because subversion doesn't sets the mtime of files
-# to checkout time, not to the last mtime in the repository.
-# @todo might not be necessary anymore
-MTIME=`date +%Y%m%d%H%M.%S`
-echo "** INFO -- Modification time: $MTIME"
-find . -print | xargs touch -t $MTIME
-# end of touch
+echo "bootstrap: using autoxt at $AUTOXT"
 
-# install bootstrap time packages: autoxt
-mkdir -p pre-pkgs
-mkdir -p pre-pkgs/bootstrap
-cp -rf autoxt pre-pkgs/bootstrap/
-mkdir -p pre-pkgs/bootstrap/config
-cd pre-pkgs/bootstrap/autoxt
-./bootstrap  || exit 1
-./configure --prefix=$WORKINGDIR/pre-pkgs/bootstrap  || exit 1
-$BOOTSTRAP_MAKE  || exit 1
-$BOOTSTRAP_MAKE install || exit 1
+# Apply the autotools
+$AUTOXT
+cp ./autoxt.m4 ./config/
+autoreconf -ifv
 
-cd $WORKINGDIR
-PATH=$WORKINGDIR/pre-pkgs/bootstrap/bin:$PATH
-export PATH
-echo "** INFO -- AutoXT is `which autoxt`"
-# end of autoxt install
-
-# bootstrap the subpackages
-PKGS="autoxt srts xtc xtc2 xtc3 strc ssl gpp c-tools concrete-syntax aterm-front stratego-front asfix-tools sdf-front sdf-tools stratego-regular xml-front xtar boxenv stratego-lib strc-core"
+# Bootstrap the subpackages
+PKGS="autoxt srts xtc xtc2 xtc3 strc ssl gpp c-tools concrete-syntax \
+  aterm-front stratego-front asfix-tools sdf-front sdf-tools \
+  stratego-regular xml-front xtar boxenv stratego-lib strc-core"
 
 for dir in $PKGS
 do 
   echo
-  echo "** INFO -- bootstrapping in $dir"
+  echo "bootstrap: bootstrapping in $dir"
   echo
-  (cd $dir; ./bootstrap)
+  cd $dir
+  if test "$dir" != "autoxt"
+  then
+    cp ../Makefile.xt .
+  fi
+  autoreconf -ifv
+  cd ..
 done
-# end of bootstrap the subpackages
-
-# apply the autotools
-
-autoxt || exit 1
-cp ./autoxt.m4 ./config/ || exit 1
-autoreconf -ifv || exit 1

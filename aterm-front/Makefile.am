@@ -2,7 +2,7 @@ include $(top_srcdir)/Makefile.xt
 
 SUBDIRS	= . syn sig pp trans
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
-EXTRA_DIST = bootstrap Makefile.xt autoxt.m4
+EXTRA_DIST = Makefile.xt
 CLEANFILES = XTC
 
-ACLOCAL_AMFLAGS = -I .
+ACLOCAL_AMFLAGS = -I ../config
