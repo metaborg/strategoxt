@@ -186,6 +186,13 @@
    DynamicRules.1:iter-star -- _1,
    OverrideDynamicRules -- KW["override"] KW["rules"] KW["("] _1 KW[")"],
    OverrideDynamicRules.1:iter-star -- _1,
+
+   ExtendDynamicRules -- V[V is=2[H[KW["extend"] KW["rules"] KW["("]] _1] KW[")"]],
+   ExtendDynamicRules.1:iter-star -- _1,
+
+   ExtendOverrideDynamicRules -- KW["extend"] KW["override"] KW["rules"] KW["("] _1 KW[")"],
+   ExtendOverrideDynamicRules.1:iter-star -- _1,
+
    DynRuleScope -- V[V is=3[H hs=0[KW["{|"] _1 KW[":"]] _2] KW["|}"]],
    DynRuleScope.1:iter-star-sep -- _1 KW[","],
 

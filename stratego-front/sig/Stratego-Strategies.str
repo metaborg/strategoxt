@@ -58,14 +58,16 @@ signature
     ExplodeCong    : Strategy * StrategyParen -> Strategy
 signature
   constructors
-    DynamicRules         : List(RuleDef) -> Strategy
-    OverrideDynamicRules : List(RuleDef) -> Strategy
-    DynRuleScope         : List(Id) * Strategy -> Strategy
-    CallNoArgs           : SVar -> Strategy
-    LRule                : Rule -> Strategy
-    SRule                : Rule -> Strategy
-    Choice               : Strategy * Strategy -> Strategy
-    RChoice              : Strategy * Strategy -> Strategy
-    GChoice              : Strategy * Strategy -> Strategy
-    RGChoice             : Strategy * Strategy -> Strategy
-    AM                   : Strategy * Term -> Strategy
+    DynamicRules               : List(RuleDef) -> Strategy
+    OverrideDynamicRules       : List(RuleDef) -> Strategy
+    ExtendDynamicRules         : List(RuleDef) -> Strategy
+    ExtendOverrideDynamicRules : List(RuleDef) -> Strategy
+    DynRuleScope               : List(Id) * Strategy -> Strategy
+    CallNoArgs                 : SVar -> Strategy
+    LRule                      : Rule -> Strategy
+    SRule                      : Rule -> Strategy
+    Choice                     : Strategy * Strategy -> Strategy
+    RChoice                    : Strategy * Strategy -> Strategy
+    GChoice                    : Strategy * Strategy -> Strategy
+    RGChoice                   : Strategy * Strategy -> Strategy
+    AM                         : Strategy * Term -> Strategy
