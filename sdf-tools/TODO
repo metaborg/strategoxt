@@ -1,8 +1,16 @@
 2003-02-26 Martin Bravenboer  <martin@mbravenboer.org>
 
-  * syn/ATerms.sdf: consider move to aterm-tools
+  * syn/ATerms.sdf: Use ATerm syntax defintion of 
+    aterm-tools.
+  
+2003-02-26 Martin Bravenboer  <martin@mbravenboer.org>
+  
+  * syn/*.sdf: Remove "Syntax" postfix and make Sdf
+    a prefix.
+    
+2003-02-26 Martin Bravenboer  <martin@mbravenboer.org>    
+
   * syn/*.sdf: Upgrade from SDF 2.1 to SDF 2.4
-  * syn/Makefile.am: set deps
   
 2003-02-26 Martin Bravenboer  <martin@mbravenboer.org>
 

@@ -18,8 +18,7 @@ exports
   
     SDF     -> Definition-GrammarID {cons("\"sdf-2.1\"")}
     Module  ->     Module-GrammarID {cons("\"sdf-2.1\"")}
-  
-  
+    
     "definition" Definition                     -> SDF
     
     "lexical"      "priorities" Priorities      -> Grammar
@@ -33,4 +32,3 @@ exports
   context-free priorities
     Symbol "|" Symbol  -> Symbol >
     Literal ":" Symbol -> Symbol
-
