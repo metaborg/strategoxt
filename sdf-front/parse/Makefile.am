@@ -7,7 +7,7 @@ libexec_PROGRAMS = sdf-desugar sdf-ensugar
 SCFLAGS          = --main main-$*
 STRINCLUDES      = -I $(top_srcdir)/sig/version-2.1\
                    -I $(top_srcdir)/xtc \
-                   -I $(ATERM_TOOLS)/share/aterm-front
+                   -I $(ATERM_FRONT)/share/aterm-front
 
 EXTRA_DIST       = $(wildcard *.str) $(wildcard *.meta)
 CLEANFILES       = $(wildcard *.dep)
