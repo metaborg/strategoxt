@@ -1,4 +1,10 @@
-2004-03-27  Martin Bravenboer  <martin@cs.uu.nl>
+2004-04-23  Valentin David  <valentin@lrde.epita.fr>
+
+	* parse/pack-sdf.str: When using "-of" switch of pack-sdf, the
+	output tree is false. Specially the constructor of the definition
+	which is "Definition" but should be "definition".
+	
+2004-04-23  Martin Bravenboer  <martin@cs.uu.nl>
 
 	* parse/sdf-desugar.str: implode aterm attributes.
 

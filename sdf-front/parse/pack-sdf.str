@@ -12,7 +12,7 @@
  */
 module pack-sdf
 imports xtc-proc lib stratego-xt-xtc-tools
-imports Sdf-ParseTree-Syntax Kernel-Sdf-Syntax
+imports Sdf2
 imports asfix-abstractions pack-modules 
 
 strategies
@@ -207,7 +207,7 @@ overlays
    */
   MM-iter(m1, w, m2) =
     appl(prod([cf(iter(sort("Module"))),cf(opt(layout)),cf(iter(sort("Module")))],
-     cf(iter(sort("Module"))),attrs([atr("left")])),[m1, w, m2])
+     cf(iter(sort("Module"))),attrs([assoc(left())])),[m1, w, m2])
 
   /**
    * M -> M+
@@ -226,7 +226,7 @@ overlays
    */
   Definition-overlay(b_1,c_1) = 
   appl(prod([lit("definition"),cf(opt(layout())),cf(sort("Definition"))],cf(sort("SDF")),
-         attrs([term(cons("Definition")),'id("Sdf2-Syntax")])),[appl(prod([
+         attrs([term(cons("definition"))])),[appl(prod([
     char-class([100]),
     char-class([101]),
     char-class([102]),
