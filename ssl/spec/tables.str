@@ -38,7 +38,7 @@ strategies
     ?Hashtable(tbl); prim("SSL_hashtable_get", tbl, key)
 
   hashtable-remove(|key) =
-    ?Hashtable(tbl); prim("SSL_hashtable_remove", tbl, key)
+    ?Hashtable(tbl); prim("SSL_hashtable_remove", tbl, key); !Hashtable(<id>)
   
   hashtable-keys =
     ?Hashtable(tbl); prim("SSL_hashtable_keys", tbl)
@@ -111,17 +111,38 @@ strategies
  */
 strategies
 
+  /**
+   * Retrieves the primitive table-table as a Hashtable
+   */
+  table-hashtable =
+    prim("SSL_table_hashtable"); !Hashtable(<id>)
+
+  /**
+   * Retrieves a named table by looking it up in the table-table.
+   */
+  lookup-table(|name) =
+    table-hashtable
+  ; (  hashtable-get(|name)
+    <+ where(<table-create> name); hashtable-get(|name))
+
  /**
   * Creates a table with a given name, which can be any term.
   */
   table-create = 
-    ?name; prim("SSL_table_create", name)
+    ?name
+  ; where(new-hashtable => htbl)
+  ; where(table-hashtable; hashtable-put(|name, htbl))
 
  /**
   * Destroy a table with a given name, which can be any term.
   */
   table-destroy = 
-    ?name; prim("SSL_table_destroy", name)
+    ?name
+  ; where(table-hashtable
+    ; where(lookup-table(|name)
+          ; hashtable-destroy)
+    ; hashtable-remove(|name)
+    )
 
  /**
   * Associate a value with a key in a table. 
@@ -129,7 +150,11 @@ strategies
   * E.g. <table-put> (t1, key, value) associates value with key in the t1 table.
   */
   table-put = 
-    where(?(table,key,value); prim("SSL_table_put",table,key,value))
+  where(
+    ?(name,key,value)
+  ; lookup-table(|name)
+  ; hashtable-put(|key, value)
+  )
 
  /**
   * Get the value associated with a key from a table.
@@ -137,7 +162,9 @@ strategies
   * E.g. <table-get> (t1, key) yields the value associated to key or fails in the t1 table.
   */
   table-get = 
-    ?(table, key); prim("SSL_table_get",table,key)
+    ?(name,key)
+  ; lookup-table(|name)
+  ; hashtable-get(|key)
 
  /**
   * Remove association of a key in a table.
@@ -145,7 +172,11 @@ strategies
   * E.g. <table-remove> (t1, key) removes the entry for key from table t1.
   */
   table-remove = 
-    where(?(table, key); prim("SSL_table_remove",table,key))
+  where(
+    ?(name,key)
+  ; lookup-table(|name)
+  ; hashtable-remove(|key)
+  )
 
  /**
   * Produce a list of keys of a table.
@@ -153,10 +184,21 @@ strategies
   * E.g. <table-keys>t1 produces the list of keys of table t1.
   */
   table-keys = 
-    ?table; prim("SSL_table_keys",table)
+    ?name
+  ; lookup-table(|name)
+  ; hashtable-keys
 
-  table-rename = ?(from-name, to-name);
-    prim("SSL_table_rename", from-name, to-name)
+ /**
+  * Renames a table, i.e. only the entry in the table-table is renamed,
+  * the table contents remain untouched.
+  */
+  table-rename =
+    ?(from-name, to-name)
+  ; where(lookup-table(|from-name) => htbl)
+  ; table-hashtable
+  ; hashtable-put(|to-name, htbl)
+  ; hashtable-remove(|from-name)
+  ; !to-name
 
 
 strategies

@@ -109,6 +109,17 @@ ATerm SSL_hashtable_keys(ATerm table_term) {
  */
 ATermTable SSL_table_table = NULL;
 
+/**
+ * Converts SSL's ATermTable table-table to a representation in an ATerm.
+ */
+ATerm SSL_table_hashtable(){
+  if(SSL_table_table == NULL)
+    SSL_table_table = ATtableCreate(100, 80);
+
+  return hashtable_to_term(SSL_table_table);
+}
+
+
 /* <create-table> term -> creates table indexed by term */
 
 ATerm SSL_table_create(ATerm name)
