@@ -1,3 +1,9 @@
+2002-03-17  Eelco Visser  <visser@acm.org>
+
+	* src/tests/data/Makefile.am (TEST_SET): Disabled QLiteral test since
+	Asfix2abox introduces spurious HV box which makes comparison with
+	result of Ast2abox fail.
+
 2002-03-16  Eelco Visser  <visser@acm.org>
 
 	* src/tests/data: new tests, regenerated test data

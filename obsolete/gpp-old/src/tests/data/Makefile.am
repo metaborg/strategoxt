@@ -18,10 +18,10 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.2 2002/03/16 15:23:46 eelco Exp $
+# $Id: Makefile.am,v 1.3 2002/03/17 00:04:32 eelco Exp $
 
 TEST_SET = Opt-seq Opt-seq2 Opt-iter Opt-iter1 Iter-sep Iter-sep1 Iter-sep2 Iter-sep3 \
-	   Iter-sep-seq Iter-sep-seq2 Alt Alt2 Alt3 Seq Iter-seq Seq2 Seq3 Or QLiteral
+	   Iter-sep-seq Iter-sep-seq2 Alt Alt2 Alt3 Seq Iter-seq Seq2 Seq3 Or
 
 EXTRA_DIST = tests.def tests.pp  \
 	     $(TEST_SET:%=%.trm) $(TEST_SET:%=%-asfix.in) $(TEST_SET:%=%-af.in)\
