@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: explode-asfix2me.r,v 1.3 2002/02/10 23:50:12 mdejonge Exp $
+% $Id: explode-asfix2me.r,v 1.4 2002/02/11 12:40:46 mdejonge Exp $
 
 notes:
    inconsistencies:
@@ -27,11 +27,11 @@ notes:
       S1* -> S
       requires
       S1 -> S1*
-   such injectens are cntained in AsFix2ME, but for seprated lists
+   such injections are contained in AsFix2ME, but for separated lists
       {S1 S2}* -> S
    the injection
       S1 -> {S1 S2}*
-   is not contined in AsFix2ME
+   is not contained in AsFix2ME
 \begin{code}
        
 module explode-asfix2me
@@ -136,11 +136,12 @@ MkCfConsList(s) =
 
 // For separator lists, an extra injection has to be inserted (see notes at the top)
 MkCfConsList(s1,s2) =
+      [?e;!CfIterSepSingleton(<s1>(), <s2>(),e)| id];
       rec x ({e1,ws1,sep,ws2,e2,e,es:
          ?[e]; !e
       <+
          ?[e1,ws1,sep,ws2,e2|es]
-         ;<x>[CfIterSepCons(<s1>(),<s2>(),CfIterSepSingleton(<s1>(),<s2>(),e1),ws1,sep,ws2,CfIterSepSingleton(<s1>(),<s2>(),e2))|es]
+         ;<x>[CfIterSepCons(<s1>(),<s2>(),e1,ws1,sep,ws2,CfIterSepSingleton(<s1>(),<s2>(),e2))|es]
       })
 
 
