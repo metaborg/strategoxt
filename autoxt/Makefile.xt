@@ -65,8 +65,6 @@ docdatadir  	= ${datadir}/doc/${PACKAGE}
 # rules take care of the conversion, while keeping the original
 # files.
 
-.PRECIOUS : %.str %.meta
-
 migrate :
 	for file in fordummy $(wildcard *.r) ; do \
 	 	if [ "$$file" = "fordummy" ]; then continue; fi; \
