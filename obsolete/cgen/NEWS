@@ -34,6 +34,8 @@ SUMMARY OF CHANGES
  * Changes and deletions to overcome problems with case insensitiveness on
    windows and macos; Stratego should now install on Windows+cygwin
 
+ * Lower-level primitives for process control such as fork, exec, and pipe.
+
  * stratego-connect: a package extending Stratego with interprocess
    communication
 

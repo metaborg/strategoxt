@@ -1617,3 +1617,18 @@ Bootinstall []
 
 Bootinstall [Tue Jun 11 08:43:45 CEST 2002]
 Bootinstall finished [Tue Jun 11 08:43:47 CEST 2002]
+
+Bootstrapping version 0.8beta1 [Thu Jun 20 11:57:13 CEST 2002 - Linux node11794.a2000.nl i686]
+Bootstrapping: phase 1 started [Thu Jun 20 11:57:13 CEST 2002]
+
+Bootstrapping version 0.8beta1 [Thu Jun 20 12:10:27 CEST 2002 - Linux node11794.a2000.nl i686]
+Bootstrapping: phase 1 started [Thu Jun 20 12:10:27 CEST 2002]
+
+Bootstrapping version 0.8beta1 [Thu Jun 20 12:52:30 CEST 2002 - Linux node11794.a2000.nl i686]
+Bootstrapping: phase 1 started [Thu Jun 20 12:52:30 CEST 2002]
+Bootstrapping: phase 2 started [Thu Jun 20 13:08:37 CEST 2002]
+Bootstrapping: phase 3 started [Thu Jun 20 13:27:08 CEST 2002]
+Bootstrapping: finished [Thu Jun 20 13:42:53 CEST 2002]
+
+Bootinstall [Thu Jun 20 13:42:58 CEST 2002]
+Bootinstall finished [Thu Jun 20 13:43:01 CEST 2002]

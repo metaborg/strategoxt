@@ -34,7 +34,11 @@ SUMMARY OF CHANGES
  * Changes and deletions to overcome problems with case insensitiveness on
    windows and macos; Stratego should now install on Windows+cygwin
 
- * stratego-connect: a package extending Stratego with interprocess
+ * Lower-level primitives for process control such as fork, exec, and pipe.
+   High-level combinations to connect to a child process via a
+   pipe. (experimental)
+
+ * stratego-connect: a separate package extending Stratego with interprocess
    communication
 
 MORE INFORMATION
@@ -162,6 +166,12 @@ STRATEGO STANDARD LIBRARY (SSL)
 
  * fixpoint-traversal.r: innermost-tagged uses annotations to tag
    terms that are in normal form.
+
+ * exec.r, Lower-level primitives for process control such as
+   fork, exec, and pipe.
+
+ * pipe.r: High-level combinations to connect to a child process via a
+   pipe. (experimental)
 
 STRATEGO-CONNECT
 

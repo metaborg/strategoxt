@@ -1,5 +1,5 @@
 module pipe
-imports exec
+imports exec io
 strategies
 
   // examine wait status

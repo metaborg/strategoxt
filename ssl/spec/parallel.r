@@ -1,5 +1,5 @@
 module parallel
-imports exec
+imports exec pipe
 strategies
 
   // par(s1, s2) : apply strategies s1 and s2 in parallel to the subject term
