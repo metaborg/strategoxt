@@ -1,5 +1,5 @@
 module xtc-register
-imports config xtc-rep 
+imports config xtc-rep string
 strategies
 
   // Finding an entry in the repository
@@ -24,6 +24,8 @@ strategies
     tool -> loc
     where <table-get> (XTC, Tool(tool)) => [(version, loc) | _]
 
+  xtc-find-path =
+    xtc-find; get-path
 
   // Registering an entry
 

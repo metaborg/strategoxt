@@ -1,5 +1,8 @@
 2002-12-22  Eelco Visser  <visser@cs.uu.nl>
 
+	* src/xtc-register.str: xtc-find-path --- find the path
+	of a tool by stripping of the file name from the location
+
 	* src/xtc-proc.str: xtc-transform -- no backtracking when
 	transform-file fails.
 
