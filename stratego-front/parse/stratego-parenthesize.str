@@ -1,0 +1,854 @@
+module stratego-parenthesize
+imports liblib Stratego
+strategies
+  io-stratego-parenthesize =
+    io-wrap(parenthesize-Stratego)
+
+  parenthesize-Stratego =
+    innermost(StrategoParenthesize)
+rules
+  StrategoParenthesize :
+    AnnoCong(Build(e_0), c_0) -> AnnoCong(Parenthetical(Build(e_0)), c_0)
+
+  StrategoParenthesize :
+    AnnoCong(b_0, Build(e_0)) -> AnnoCong(b_0, Parenthetical(Build(e_0)))
+
+  StrategoParenthesize :
+    AnnoCong(Match(h_0), g_0) -> AnnoCong(Parenthetical(Match(h_0)), g_0)
+
+  StrategoParenthesize :
+    AnnoCong(f_0, Match(h_0)) -> AnnoCong(f_0, Parenthetical(Match(h_0)))
+
+  StrategoParenthesize :
+    ExplodeCong(Build(k_0), j_0) -> ExplodeCong(Parenthetical(Build(k_0)), j_0)
+
+  StrategoParenthesize :
+    ExplodeCong(i_0, Build(k_0)) -> ExplodeCong(i_0, Parenthetical(Build(k_0)))
+
+  StrategoParenthesize :
+    ExplodeCong(Match(o_0), n_0) -> ExplodeCong(Parenthetical(Match(o_0)), n_0)
+
+  StrategoParenthesize :
+    ExplodeCong(m_0, Match(o_0)) -> ExplodeCong(m_0, Parenthetical(Match(o_0)))
+
+  StrategoParenthesize :
+    Build(BA(q_0, r_0)) -> Build(Parenthetical(BA(q_0, r_0)))
+
+  StrategoParenthesize :
+    Match(BA(t_0, u_0)) -> Match(Parenthetical(BA(t_0, u_0)))
+
+  StrategoParenthesize :
+    BA(AM(x_0, y_0), w_0) -> BA(Parenthetical(AM(x_0, y_0)), w_0)
+
+  StrategoParenthesize :
+    BA(v_0, AM(x_0, y_0)) -> BA(v_0, Parenthetical(AM(x_0, y_0)))
+
+  StrategoParenthesize :
+    AM(Seq(b_1, c_1), a_1) -> AM(Parenthetical(Seq(b_1, c_1)), a_1)
+
+  StrategoParenthesize :
+    AM(z_0, Seq(b_1, c_1)) -> AM(z_0, Parenthetical(Seq(b_1, c_1)))
+
+  StrategoParenthesize :
+    LChoice(Choice(d_1, e_1), g_1) -> LChoice(Parenthetical(Choice(d_1, e_1)), g_1)
+
+  StrategoParenthesize :
+    Choice(LChoice(h_1, i_1), k_1) -> Choice(Parenthetical(LChoice(h_1, i_1)), k_1)
+
+  StrategoParenthesize :
+    Choice(LChoice(l_1, m_1), o_1) -> Choice(Parenthetical(LChoice(l_1, m_1)), o_1)
+
+  StrategoParenthesize :
+    LChoice(Choice(p_1, q_1), s_1) -> LChoice(Parenthetical(Choice(p_1, q_1)), s_1)
+
+  StrategoParenthesize :
+    RChoice(Choice(t_1, u_1), w_1) -> RChoice(Parenthetical(Choice(t_1, u_1)), w_1)
+
+  StrategoParenthesize :
+    Choice(RChoice(x_1, y_1), a_2) -> Choice(Parenthetical(RChoice(x_1, y_1)), a_2)
+
+  StrategoParenthesize :
+    Choice(RChoice(b_2, c_2), e_2) -> Choice(Parenthetical(RChoice(b_2, c_2)), e_2)
+
+  StrategoParenthesize :
+    RChoice(Choice(f_2, g_2), i_2) -> RChoice(Parenthetical(Choice(f_2, g_2)), i_2)
+
+  StrategoParenthesize :
+    GChoice(Choice(j_2, k_2), m_2) -> GChoice(Parenthetical(Choice(j_2, k_2)), m_2)
+
+  StrategoParenthesize :
+    Choice(GChoice(n_2, o_2), q_2) -> Choice(Parenthetical(GChoice(n_2, o_2)), q_2)
+
+  StrategoParenthesize :
+    Choice(GChoice(r_2, s_2), u_2) -> Choice(Parenthetical(GChoice(r_2, s_2)), u_2)
+
+  StrategoParenthesize :
+    GChoice(Choice(v_2, w_2), y_2) -> GChoice(Parenthetical(Choice(v_2, w_2)), y_2)
+
+  StrategoParenthesize :
+    LGChoice(Choice(z_2, a_3), c_3) -> LGChoice(Parenthetical(Choice(z_2, a_3)), c_3)
+
+  StrategoParenthesize :
+    Choice(LGChoice(d_3, e_3), g_3) -> Choice(Parenthetical(LGChoice(d_3, e_3)), g_3)
+
+  StrategoParenthesize :
+    Choice(LGChoice(h_3, i_3), k_3) -> Choice(Parenthetical(LGChoice(h_3, i_3)), k_3)
+
+  StrategoParenthesize :
+    LGChoice(Choice(l_3, m_3), o_3) -> LGChoice(Parenthetical(Choice(l_3, m_3)), o_3)
+
+  StrategoParenthesize :
+    RGChoice(Choice(p_3, q_3), s_3) -> RGChoice(Parenthetical(Choice(p_3, q_3)), s_3)
+
+  StrategoParenthesize :
+    Choice(RGChoice(t_3, u_3), w_3) -> Choice(Parenthetical(RGChoice(t_3, u_3)), w_3)
+
+  StrategoParenthesize :
+    Choice(RGChoice(x_3, y_3), a_4) -> Choice(Parenthetical(RGChoice(x_3, y_3)), a_4)
+
+  StrategoParenthesize :
+    RGChoice(Choice(b_4, c_4), e_4) -> RGChoice(Parenthetical(Choice(b_4, c_4)), e_4)
+
+  StrategoParenthesize :
+    GuardedLChoice(Choice(f_4, g_4), i_4, j_4) -> GuardedLChoice(Parenthetical(Choice(f_4, g_4)), i_4, j_4)
+
+  StrategoParenthesize :
+    GuardedLChoice(h_4, Choice(f_4, g_4), j_4) -> GuardedLChoice(h_4, Parenthetical(Choice(f_4, g_4)), j_4)
+
+  StrategoParenthesize :
+    Choice(GuardedLChoice(k_4, l_4, m_4), o_4) -> Choice(Parenthetical(GuardedLChoice(k_4, l_4, m_4)), o_4)
+
+  StrategoParenthesize :
+    GuardedLChoice(RGChoice(p_4, q_4), s_4, t_4) -> GuardedLChoice(Parenthetical(RGChoice(p_4, q_4)), s_4, t_4)
+
+  StrategoParenthesize :
+    GuardedLChoice(r_4, RGChoice(p_4, q_4), t_4) -> GuardedLChoice(r_4, Parenthetical(RGChoice(p_4, q_4)), t_4)
+
+  StrategoParenthesize :
+    RGChoice(GuardedLChoice(u_4, v_4, w_4), y_4) -> RGChoice(Parenthetical(GuardedLChoice(u_4, v_4, w_4)), y_4)
+
+  StrategoParenthesize :
+    RGChoice(LGChoice(z_4, a_5), c_5) -> RGChoice(Parenthetical(LGChoice(z_4, a_5)), c_5)
+
+  StrategoParenthesize :
+    LGChoice(RGChoice(d_5, e_5), g_5) -> LGChoice(Parenthetical(RGChoice(d_5, e_5)), g_5)
+
+  StrategoParenthesize :
+    LGChoice(RGChoice(h_5, i_5), k_5) -> LGChoice(Parenthetical(RGChoice(h_5, i_5)), k_5)
+
+  StrategoParenthesize :
+    RGChoice(LGChoice(l_5, m_5), o_5) -> RGChoice(Parenthetical(LGChoice(l_5, m_5)), o_5)
+
+  StrategoParenthesize :
+    GuardedLChoice(LGChoice(p_5, q_5), s_5, t_5) -> GuardedLChoice(Parenthetical(LGChoice(p_5, q_5)), s_5, t_5)
+
+  StrategoParenthesize :
+    GuardedLChoice(r_5, LGChoice(p_5, q_5), t_5) -> GuardedLChoice(r_5, Parenthetical(LGChoice(p_5, q_5)), t_5)
+
+  StrategoParenthesize :
+    LGChoice(GuardedLChoice(u_5, v_5, w_5), y_5) -> LGChoice(Parenthetical(GuardedLChoice(u_5, v_5, w_5)), y_5)
+
+  StrategoParenthesize :
+    GuardedLChoice(RGChoice(z_5, a_6), c_6, d_6) -> GuardedLChoice(Parenthetical(RGChoice(z_5, a_6)), c_6, d_6)
+
+  StrategoParenthesize :
+    GuardedLChoice(b_6, RGChoice(z_5, a_6), d_6) -> GuardedLChoice(b_6, Parenthetical(RGChoice(z_5, a_6)), d_6)
+
+  StrategoParenthesize :
+    RGChoice(GuardedLChoice(e_6, f_6, g_6), i_6) -> RGChoice(Parenthetical(GuardedLChoice(e_6, f_6, g_6)), i_6)
+
+  StrategoParenthesize :
+    LGChoice(GChoice(j_6, k_6), m_6) -> LGChoice(Parenthetical(GChoice(j_6, k_6)), m_6)
+
+  StrategoParenthesize :
+    GChoice(LGChoice(n_6, o_6), q_6) -> GChoice(Parenthetical(LGChoice(n_6, o_6)), q_6)
+
+  StrategoParenthesize :
+    GChoice(LGChoice(r_6, s_6), u_6) -> GChoice(Parenthetical(LGChoice(r_6, s_6)), u_6)
+
+  StrategoParenthesize :
+    LGChoice(GChoice(v_6, w_6), y_6) -> LGChoice(Parenthetical(GChoice(v_6, w_6)), y_6)
+
+  StrategoParenthesize :
+    RGChoice(GChoice(z_6, a_7), c_7) -> RGChoice(Parenthetical(GChoice(z_6, a_7)), c_7)
+
+  StrategoParenthesize :
+    GChoice(RGChoice(d_7, e_7), g_7) -> GChoice(Parenthetical(RGChoice(d_7, e_7)), g_7)
+
+  StrategoParenthesize :
+    GChoice(RGChoice(h_7, i_7), k_7) -> GChoice(Parenthetical(RGChoice(h_7, i_7)), k_7)
+
+  StrategoParenthesize :
+    RGChoice(GChoice(l_7, m_7), o_7) -> RGChoice(Parenthetical(GChoice(l_7, m_7)), o_7)
+
+  StrategoParenthesize :
+    GuardedLChoice(GChoice(p_7, q_7), s_7, t_7) -> GuardedLChoice(Parenthetical(GChoice(p_7, q_7)), s_7, t_7)
+
+  StrategoParenthesize :
+    GuardedLChoice(r_7, GChoice(p_7, q_7), t_7) -> GuardedLChoice(r_7, Parenthetical(GChoice(p_7, q_7)), t_7)
+
+  StrategoParenthesize :
+    GChoice(GuardedLChoice(u_7, v_7, w_7), y_7) -> GChoice(Parenthetical(GuardedLChoice(u_7, v_7, w_7)), y_7)
+
+  StrategoParenthesize :
+    GuardedLChoice(RGChoice(z_7, a_8), c_8, d_8) -> GuardedLChoice(Parenthetical(RGChoice(z_7, a_8)), c_8, d_8)
+
+  StrategoParenthesize :
+    GuardedLChoice(b_8, RGChoice(z_7, a_8), d_8) -> GuardedLChoice(b_8, Parenthetical(RGChoice(z_7, a_8)), d_8)
+
+  StrategoParenthesize :
+    RGChoice(GuardedLChoice(e_8, f_8, g_8), i_8) -> RGChoice(Parenthetical(GuardedLChoice(e_8, f_8, g_8)), i_8)
+
+  StrategoParenthesize :
+    RGChoice(LGChoice(j_8, k_8), m_8) -> RGChoice(Parenthetical(LGChoice(j_8, k_8)), m_8)
+
+  StrategoParenthesize :
+    LGChoice(RGChoice(n_8, o_8), q_8) -> LGChoice(Parenthetical(RGChoice(n_8, o_8)), q_8)
+
+  StrategoParenthesize :
+    LGChoice(RGChoice(r_8, s_8), u_8) -> LGChoice(Parenthetical(RGChoice(r_8, s_8)), u_8)
+
+  StrategoParenthesize :
+    RGChoice(LGChoice(v_8, w_8), y_8) -> RGChoice(Parenthetical(LGChoice(v_8, w_8)), y_8)
+
+  StrategoParenthesize :
+    GuardedLChoice(LGChoice(z_8, a_9), c_9, d_9) -> GuardedLChoice(Parenthetical(LGChoice(z_8, a_9)), c_9, d_9)
+
+  StrategoParenthesize :
+    GuardedLChoice(b_9, LGChoice(z_8, a_9), d_9) -> GuardedLChoice(b_9, Parenthetical(LGChoice(z_8, a_9)), d_9)
+
+  StrategoParenthesize :
+    LGChoice(GuardedLChoice(e_9, f_9, g_9), i_9) -> LGChoice(Parenthetical(GuardedLChoice(e_9, f_9, g_9)), i_9)
+
+  StrategoParenthesize :
+    GuardedLChoice(RGChoice(j_9, k_9), m_9, n_9) -> GuardedLChoice(Parenthetical(RGChoice(j_9, k_9)), m_9, n_9)
+
+  StrategoParenthesize :
+    GuardedLChoice(l_9, RGChoice(j_9, k_9), n_9) -> GuardedLChoice(l_9, Parenthetical(RGChoice(j_9, k_9)), n_9)
+
+  StrategoParenthesize :
+    RGChoice(GuardedLChoice(o_9, p_9, q_9), s_9) -> RGChoice(Parenthetical(GuardedLChoice(o_9, p_9, q_9)), s_9)
+
+  StrategoParenthesize :
+    GChoice(RChoice(t_9, u_9), w_9) -> GChoice(Parenthetical(RChoice(t_9, u_9)), w_9)
+
+  StrategoParenthesize :
+    RChoice(GChoice(x_9, y_9), a_10) -> RChoice(Parenthetical(GChoice(x_9, y_9)), a_10)
+
+  StrategoParenthesize :
+    RChoice(GChoice(b_10, c_10), e_10) -> RChoice(Parenthetical(GChoice(b_10, c_10)), e_10)
+
+  StrategoParenthesize :
+    GChoice(RChoice(f_10, g_10), i_10) -> GChoice(Parenthetical(RChoice(f_10, g_10)), i_10)
+
+  StrategoParenthesize :
+    LGChoice(RChoice(j_10, k_10), m_10) -> LGChoice(Parenthetical(RChoice(j_10, k_10)), m_10)
+
+  StrategoParenthesize :
+    RChoice(LGChoice(n_10, o_10), q_10) -> RChoice(Parenthetical(LGChoice(n_10, o_10)), q_10)
+
+  StrategoParenthesize :
+    RChoice(LGChoice(r_10, s_10), u_10) -> RChoice(Parenthetical(LGChoice(r_10, s_10)), u_10)
+
+  StrategoParenthesize :
+    LGChoice(RChoice(v_10, w_10), y_10) -> LGChoice(Parenthetical(RChoice(v_10, w_10)), y_10)
+
+  StrategoParenthesize :
+    RGChoice(RChoice(z_10, a_11), c_11) -> RGChoice(Parenthetical(RChoice(z_10, a_11)), c_11)
+
+  StrategoParenthesize :
+    RChoice(RGChoice(d_11, e_11), g_11) -> RChoice(Parenthetical(RGChoice(d_11, e_11)), g_11)
+
+  StrategoParenthesize :
+    RChoice(RGChoice(h_11, i_11), k_11) -> RChoice(Parenthetical(RGChoice(h_11, i_11)), k_11)
+
+  StrategoParenthesize :
+    RGChoice(RChoice(l_11, m_11), o_11) -> RGChoice(Parenthetical(RChoice(l_11, m_11)), o_11)
+
+  StrategoParenthesize :
+    GuardedLChoice(RChoice(p_11, q_11), s_11, t_11) -> GuardedLChoice(Parenthetical(RChoice(p_11, q_11)), s_11, t_11)
+
+  StrategoParenthesize :
+    GuardedLChoice(r_11, RChoice(p_11, q_11), t_11) -> GuardedLChoice(r_11, Parenthetical(RChoice(p_11, q_11)), t_11)
+
+  StrategoParenthesize :
+    RChoice(GuardedLChoice(u_11, v_11, w_11), y_11) -> RChoice(Parenthetical(GuardedLChoice(u_11, v_11, w_11)), y_11)
+
+  StrategoParenthesize :
+    GuardedLChoice(RGChoice(z_11, a_12), c_12, d_12) -> GuardedLChoice(Parenthetical(RGChoice(z_11, a_12)), c_12, d_12)
+
+  StrategoParenthesize :
+    GuardedLChoice(b_12, RGChoice(z_11, a_12), d_12) -> GuardedLChoice(b_12, Parenthetical(RGChoice(z_11, a_12)), d_12)
+
+  StrategoParenthesize :
+    RGChoice(GuardedLChoice(e_12, f_12, g_12), i_12) -> RGChoice(Parenthetical(GuardedLChoice(e_12, f_12, g_12)), i_12)
+
+  StrategoParenthesize :
+    RGChoice(LGChoice(j_12, k_12), m_12) -> RGChoice(Parenthetical(LGChoice(j_12, k_12)), m_12)
+
+  StrategoParenthesize :
+    LGChoice(RGChoice(n_12, o_12), q_12) -> LGChoice(Parenthetical(RGChoice(n_12, o_12)), q_12)
+
+  StrategoParenthesize :
+    LGChoice(RGChoice(r_12, s_12), u_12) -> LGChoice(Parenthetical(RGChoice(r_12, s_12)), u_12)
+
+  StrategoParenthesize :
+    RGChoice(LGChoice(v_12, w_12), y_12) -> RGChoice(Parenthetical(LGChoice(v_12, w_12)), y_12)
+
+  StrategoParenthesize :
+    GuardedLChoice(LGChoice(z_12, a_13), c_13, d_13) -> GuardedLChoice(Parenthetical(LGChoice(z_12, a_13)), c_13, d_13)
+
+  StrategoParenthesize :
+    GuardedLChoice(b_13, LGChoice(z_12, a_13), d_13) -> GuardedLChoice(b_13, Parenthetical(LGChoice(z_12, a_13)), d_13)
+
+  StrategoParenthesize :
+    LGChoice(GuardedLChoice(e_13, f_13, g_13), i_13) -> LGChoice(Parenthetical(GuardedLChoice(e_13, f_13, g_13)), i_13)
+
+  StrategoParenthesize :
+    GuardedLChoice(RGChoice(j_13, k_13), m_13, n_13) -> GuardedLChoice(Parenthetical(RGChoice(j_13, k_13)), m_13, n_13)
+
+  StrategoParenthesize :
+    GuardedLChoice(l_13, RGChoice(j_13, k_13), n_13) -> GuardedLChoice(l_13, Parenthetical(RGChoice(j_13, k_13)), n_13)
+
+  StrategoParenthesize :
+    RGChoice(GuardedLChoice(o_13, p_13, q_13), s_13) -> RGChoice(Parenthetical(GuardedLChoice(o_13, p_13, q_13)), s_13)
+
+  StrategoParenthesize :
+    LGChoice(GChoice(t_13, u_13), w_13) -> LGChoice(Parenthetical(GChoice(t_13, u_13)), w_13)
+
+  StrategoParenthesize :
+    GChoice(LGChoice(x_13, y_13), a_14) -> GChoice(Parenthetical(LGChoice(x_13, y_13)), a_14)
+
+  StrategoParenthesize :
+    GChoice(LGChoice(b_14, c_14), e_14) -> GChoice(Parenthetical(LGChoice(b_14, c_14)), e_14)
+
+  StrategoParenthesize :
+    LGChoice(GChoice(f_14, g_14), i_14) -> LGChoice(Parenthetical(GChoice(f_14, g_14)), i_14)
+
+  StrategoParenthesize :
+    RGChoice(GChoice(j_14, k_14), m_14) -> RGChoice(Parenthetical(GChoice(j_14, k_14)), m_14)
+
+  StrategoParenthesize :
+    GChoice(RGChoice(n_14, o_14), q_14) -> GChoice(Parenthetical(RGChoice(n_14, o_14)), q_14)
+
+  StrategoParenthesize :
+    GChoice(RGChoice(r_14, s_14), u_14) -> GChoice(Parenthetical(RGChoice(r_14, s_14)), u_14)
+
+  StrategoParenthesize :
+    RGChoice(GChoice(v_14, w_14), y_14) -> RGChoice(Parenthetical(GChoice(v_14, w_14)), y_14)
+
+  StrategoParenthesize :
+    GuardedLChoice(GChoice(z_14, a_15), c_15, d_15) -> GuardedLChoice(Parenthetical(GChoice(z_14, a_15)), c_15, d_15)
+
+  StrategoParenthesize :
+    GuardedLChoice(b_15, GChoice(z_14, a_15), d_15) -> GuardedLChoice(b_15, Parenthetical(GChoice(z_14, a_15)), d_15)
+
+  StrategoParenthesize :
+    GChoice(GuardedLChoice(e_15, f_15, g_15), i_15) -> GChoice(Parenthetical(GuardedLChoice(e_15, f_15, g_15)), i_15)
+
+  StrategoParenthesize :
+    GuardedLChoice(RGChoice(j_15, k_15), m_15, n_15) -> GuardedLChoice(Parenthetical(RGChoice(j_15, k_15)), m_15, n_15)
+
+  StrategoParenthesize :
+    GuardedLChoice(l_15, RGChoice(j_15, k_15), n_15) -> GuardedLChoice(l_15, Parenthetical(RGChoice(j_15, k_15)), n_15)
+
+  StrategoParenthesize :
+    RGChoice(GuardedLChoice(o_15, p_15, q_15), s_15) -> RGChoice(Parenthetical(GuardedLChoice(o_15, p_15, q_15)), s_15)
+
+  StrategoParenthesize :
+    RGChoice(LGChoice(t_15, u_15), w_15) -> RGChoice(Parenthetical(LGChoice(t_15, u_15)), w_15)
+
+  StrategoParenthesize :
+    LGChoice(RGChoice(x_15, y_15), a_16) -> LGChoice(Parenthetical(RGChoice(x_15, y_15)), a_16)
+
+  StrategoParenthesize :
+    LGChoice(RGChoice(b_16, c_16), e_16) -> LGChoice(Parenthetical(RGChoice(b_16, c_16)), e_16)
+
+  StrategoParenthesize :
+    RGChoice(LGChoice(f_16, g_16), i_16) -> RGChoice(Parenthetical(LGChoice(f_16, g_16)), i_16)
+
+  StrategoParenthesize :
+    GuardedLChoice(LGChoice(j_16, k_16), m_16, n_16) -> GuardedLChoice(Parenthetical(LGChoice(j_16, k_16)), m_16, n_16)
+
+  StrategoParenthesize :
+    GuardedLChoice(l_16, LGChoice(j_16, k_16), n_16) -> GuardedLChoice(l_16, Parenthetical(LGChoice(j_16, k_16)), n_16)
+
+  StrategoParenthesize :
+    LGChoice(GuardedLChoice(o_16, p_16, q_16), s_16) -> LGChoice(Parenthetical(GuardedLChoice(o_16, p_16, q_16)), s_16)
+
+  StrategoParenthesize :
+    GuardedLChoice(RGChoice(t_16, u_16), w_16, x_16) -> GuardedLChoice(Parenthetical(RGChoice(t_16, u_16)), w_16, x_16)
+
+  StrategoParenthesize :
+    GuardedLChoice(v_16, RGChoice(t_16, u_16), x_16) -> GuardedLChoice(v_16, Parenthetical(RGChoice(t_16, u_16)), x_16)
+
+  StrategoParenthesize :
+    RGChoice(GuardedLChoice(y_16, z_16, a_17), c_17) -> RGChoice(Parenthetical(GuardedLChoice(y_16, z_16, a_17)), c_17)
+
+  StrategoParenthesize :
+    RChoice(LChoice(d_17, e_17), g_17) -> RChoice(Parenthetical(LChoice(d_17, e_17)), g_17)
+
+  StrategoParenthesize :
+    LChoice(RChoice(h_17, i_17), k_17) -> LChoice(Parenthetical(RChoice(h_17, i_17)), k_17)
+
+  StrategoParenthesize :
+    LChoice(RChoice(l_17, m_17), o_17) -> LChoice(Parenthetical(RChoice(l_17, m_17)), o_17)
+
+  StrategoParenthesize :
+    RChoice(LChoice(p_17, q_17), s_17) -> RChoice(Parenthetical(LChoice(p_17, q_17)), s_17)
+
+  StrategoParenthesize :
+    GChoice(LChoice(t_17, u_17), w_17) -> GChoice(Parenthetical(LChoice(t_17, u_17)), w_17)
+
+  StrategoParenthesize :
+    LChoice(GChoice(x_17, y_17), a_18) -> LChoice(Parenthetical(GChoice(x_17, y_17)), a_18)
+
+  StrategoParenthesize :
+    LChoice(GChoice(b_18, c_18), e_18) -> LChoice(Parenthetical(GChoice(b_18, c_18)), e_18)
+
+  StrategoParenthesize :
+    GChoice(LChoice(f_18, g_18), i_18) -> GChoice(Parenthetical(LChoice(f_18, g_18)), i_18)
+
+  StrategoParenthesize :
+    LGChoice(LChoice(j_18, k_18), m_18) -> LGChoice(Parenthetical(LChoice(j_18, k_18)), m_18)
+
+  StrategoParenthesize :
+    LChoice(LGChoice(n_18, o_18), q_18) -> LChoice(Parenthetical(LGChoice(n_18, o_18)), q_18)
+
+  StrategoParenthesize :
+    LChoice(LGChoice(r_18, s_18), u_18) -> LChoice(Parenthetical(LGChoice(r_18, s_18)), u_18)
+
+  StrategoParenthesize :
+    LGChoice(LChoice(v_18, w_18), y_18) -> LGChoice(Parenthetical(LChoice(v_18, w_18)), y_18)
+
+  StrategoParenthesize :
+    RGChoice(LChoice(z_18, a_19), c_19) -> RGChoice(Parenthetical(LChoice(z_18, a_19)), c_19)
+
+  StrategoParenthesize :
+    LChoice(RGChoice(d_19, e_19), g_19) -> LChoice(Parenthetical(RGChoice(d_19, e_19)), g_19)
+
+  StrategoParenthesize :
+    LChoice(RGChoice(h_19, i_19), k_19) -> LChoice(Parenthetical(RGChoice(h_19, i_19)), k_19)
+
+  StrategoParenthesize :
+    RGChoice(LChoice(l_19, m_19), o_19) -> RGChoice(Parenthetical(LChoice(l_19, m_19)), o_19)
+
+  StrategoParenthesize :
+    GuardedLChoice(LChoice(p_19, q_19), s_19, t_19) -> GuardedLChoice(Parenthetical(LChoice(p_19, q_19)), s_19, t_19)
+
+  StrategoParenthesize :
+    GuardedLChoice(r_19, LChoice(p_19, q_19), t_19) -> GuardedLChoice(r_19, Parenthetical(LChoice(p_19, q_19)), t_19)
+
+  StrategoParenthesize :
+    LChoice(GuardedLChoice(u_19, v_19, w_19), y_19) -> LChoice(Parenthetical(GuardedLChoice(u_19, v_19, w_19)), y_19)
+
+  StrategoParenthesize :
+    GuardedLChoice(RGChoice(z_19, a_20), c_20, d_20) -> GuardedLChoice(Parenthetical(RGChoice(z_19, a_20)), c_20, d_20)
+
+  StrategoParenthesize :
+    GuardedLChoice(b_20, RGChoice(z_19, a_20), d_20) -> GuardedLChoice(b_20, Parenthetical(RGChoice(z_19, a_20)), d_20)
+
+  StrategoParenthesize :
+    RGChoice(GuardedLChoice(e_20, f_20, g_20), i_20) -> RGChoice(Parenthetical(GuardedLChoice(e_20, f_20, g_20)), i_20)
+
+  StrategoParenthesize :
+    RGChoice(LGChoice(j_20, k_20), m_20) -> RGChoice(Parenthetical(LGChoice(j_20, k_20)), m_20)
+
+  StrategoParenthesize :
+    LGChoice(RGChoice(n_20, o_20), q_20) -> LGChoice(Parenthetical(RGChoice(n_20, o_20)), q_20)
+
+  StrategoParenthesize :
+    LGChoice(RGChoice(r_20, s_20), u_20) -> LGChoice(Parenthetical(RGChoice(r_20, s_20)), u_20)
+
+  StrategoParenthesize :
+    RGChoice(LGChoice(v_20, w_20), y_20) -> RGChoice(Parenthetical(LGChoice(v_20, w_20)), y_20)
+
+  StrategoParenthesize :
+    GuardedLChoice(LGChoice(z_20, a_21), c_21, d_21) -> GuardedLChoice(Parenthetical(LGChoice(z_20, a_21)), c_21, d_21)
+
+  StrategoParenthesize :
+    GuardedLChoice(b_21, LGChoice(z_20, a_21), d_21) -> GuardedLChoice(b_21, Parenthetical(LGChoice(z_20, a_21)), d_21)
+
+  StrategoParenthesize :
+    LGChoice(GuardedLChoice(e_21, f_21, g_21), i_21) -> LGChoice(Parenthetical(GuardedLChoice(e_21, f_21, g_21)), i_21)
+
+  StrategoParenthesize :
+    GuardedLChoice(RGChoice(j_21, k_21), m_21, n_21) -> GuardedLChoice(Parenthetical(RGChoice(j_21, k_21)), m_21, n_21)
+
+  StrategoParenthesize :
+    GuardedLChoice(l_21, RGChoice(j_21, k_21), n_21) -> GuardedLChoice(l_21, Parenthetical(RGChoice(j_21, k_21)), n_21)
+
+  StrategoParenthesize :
+    RGChoice(GuardedLChoice(o_21, p_21, q_21), s_21) -> RGChoice(Parenthetical(GuardedLChoice(o_21, p_21, q_21)), s_21)
+
+  StrategoParenthesize :
+    LGChoice(GChoice(t_21, u_21), w_21) -> LGChoice(Parenthetical(GChoice(t_21, u_21)), w_21)
+
+  StrategoParenthesize :
+    GChoice(LGChoice(x_21, y_21), a_22) -> GChoice(Parenthetical(LGChoice(x_21, y_21)), a_22)
+
+  StrategoParenthesize :
+    GChoice(LGChoice(b_22, c_22), e_22) -> GChoice(Parenthetical(LGChoice(b_22, c_22)), e_22)
+
+  StrategoParenthesize :
+    LGChoice(GChoice(f_22, g_22), i_22) -> LGChoice(Parenthetical(GChoice(f_22, g_22)), i_22)
+
+  StrategoParenthesize :
+    RGChoice(GChoice(j_22, k_22), m_22) -> RGChoice(Parenthetical(GChoice(j_22, k_22)), m_22)
+
+  StrategoParenthesize :
+    GChoice(RGChoice(n_22, o_22), q_22) -> GChoice(Parenthetical(RGChoice(n_22, o_22)), q_22)
+
+  StrategoParenthesize :
+    GChoice(RGChoice(r_22, s_22), u_22) -> GChoice(Parenthetical(RGChoice(r_22, s_22)), u_22)
+
+  StrategoParenthesize :
+    RGChoice(GChoice(v_22, w_22), y_22) -> RGChoice(Parenthetical(GChoice(v_22, w_22)), y_22)
+
+  StrategoParenthesize :
+    GuardedLChoice(GChoice(z_22, a_23), c_23, d_23) -> GuardedLChoice(Parenthetical(GChoice(z_22, a_23)), c_23, d_23)
+
+  StrategoParenthesize :
+    GuardedLChoice(b_23, GChoice(z_22, a_23), d_23) -> GuardedLChoice(b_23, Parenthetical(GChoice(z_22, a_23)), d_23)
+
+  StrategoParenthesize :
+    GChoice(GuardedLChoice(e_23, f_23, g_23), i_23) -> GChoice(Parenthetical(GuardedLChoice(e_23, f_23, g_23)), i_23)
+
+  StrategoParenthesize :
+    GuardedLChoice(RGChoice(j_23, k_23), m_23, n_23) -> GuardedLChoice(Parenthetical(RGChoice(j_23, k_23)), m_23, n_23)
+
+  StrategoParenthesize :
+    GuardedLChoice(l_23, RGChoice(j_23, k_23), n_23) -> GuardedLChoice(l_23, Parenthetical(RGChoice(j_23, k_23)), n_23)
+
+  StrategoParenthesize :
+    RGChoice(GuardedLChoice(o_23, p_23, q_23), s_23) -> RGChoice(Parenthetical(GuardedLChoice(o_23, p_23, q_23)), s_23)
+
+  StrategoParenthesize :
+    RGChoice(LGChoice(t_23, u_23), w_23) -> RGChoice(Parenthetical(LGChoice(t_23, u_23)), w_23)
+
+  StrategoParenthesize :
+    LGChoice(RGChoice(x_23, y_23), a_24) -> LGChoice(Parenthetical(RGChoice(x_23, y_23)), a_24)
+
+  StrategoParenthesize :
+    LGChoice(RGChoice(b_24, c_24), e_24) -> LGChoice(Parenthetical(RGChoice(b_24, c_24)), e_24)
+
+  StrategoParenthesize :
+    RGChoice(LGChoice(f_24, g_24), i_24) -> RGChoice(Parenthetical(LGChoice(f_24, g_24)), i_24)
+
+  StrategoParenthesize :
+    GuardedLChoice(LGChoice(j_24, k_24), m_24, n_24) -> GuardedLChoice(Parenthetical(LGChoice(j_24, k_24)), m_24, n_24)
+
+  StrategoParenthesize :
+    GuardedLChoice(l_24, LGChoice(j_24, k_24), n_24) -> GuardedLChoice(l_24, Parenthetical(LGChoice(j_24, k_24)), n_24)
+
+  StrategoParenthesize :
+    LGChoice(GuardedLChoice(o_24, p_24, q_24), s_24) -> LGChoice(Parenthetical(GuardedLChoice(o_24, p_24, q_24)), s_24)
+
+  StrategoParenthesize :
+    GuardedLChoice(RGChoice(t_24, u_24), w_24, x_24) -> GuardedLChoice(Parenthetical(RGChoice(t_24, u_24)), w_24, x_24)
+
+  StrategoParenthesize :
+    GuardedLChoice(v_24, RGChoice(t_24, u_24), x_24) -> GuardedLChoice(v_24, Parenthetical(RGChoice(t_24, u_24)), x_24)
+
+  StrategoParenthesize :
+    RGChoice(GuardedLChoice(y_24, z_24, a_25), c_25) -> RGChoice(Parenthetical(GuardedLChoice(y_24, z_24, a_25)), c_25)
+
+  StrategoParenthesize :
+    GChoice(RChoice(d_25, e_25), g_25) -> GChoice(Parenthetical(RChoice(d_25, e_25)), g_25)
+
+  StrategoParenthesize :
+    RChoice(GChoice(h_25, i_25), k_25) -> RChoice(Parenthetical(GChoice(h_25, i_25)), k_25)
+
+  StrategoParenthesize :
+    RChoice(GChoice(l_25, m_25), o_25) -> RChoice(Parenthetical(GChoice(l_25, m_25)), o_25)
+
+  StrategoParenthesize :
+    GChoice(RChoice(p_25, q_25), s_25) -> GChoice(Parenthetical(RChoice(p_25, q_25)), s_25)
+
+  StrategoParenthesize :
+    LGChoice(RChoice(t_25, u_25), w_25) -> LGChoice(Parenthetical(RChoice(t_25, u_25)), w_25)
+
+  StrategoParenthesize :
+    RChoice(LGChoice(x_25, y_25), a_26) -> RChoice(Parenthetical(LGChoice(x_25, y_25)), a_26)
+
+  StrategoParenthesize :
+    RChoice(LGChoice(b_26, c_26), e_26) -> RChoice(Parenthetical(LGChoice(b_26, c_26)), e_26)
+
+  StrategoParenthesize :
+    LGChoice(RChoice(f_26, g_26), i_26) -> LGChoice(Parenthetical(RChoice(f_26, g_26)), i_26)
+
+  StrategoParenthesize :
+    RGChoice(RChoice(j_26, k_26), m_26) -> RGChoice(Parenthetical(RChoice(j_26, k_26)), m_26)
+
+  StrategoParenthesize :
+    RChoice(RGChoice(n_26, o_26), q_26) -> RChoice(Parenthetical(RGChoice(n_26, o_26)), q_26)
+
+  StrategoParenthesize :
+    RChoice(RGChoice(r_26, s_26), u_26) -> RChoice(Parenthetical(RGChoice(r_26, s_26)), u_26)
+
+  StrategoParenthesize :
+    RGChoice(RChoice(v_26, w_26), y_26) -> RGChoice(Parenthetical(RChoice(v_26, w_26)), y_26)
+
+  StrategoParenthesize :
+    GuardedLChoice(RChoice(z_26, a_27), c_27, d_27) -> GuardedLChoice(Parenthetical(RChoice(z_26, a_27)), c_27, d_27)
+
+  StrategoParenthesize :
+    GuardedLChoice(b_27, RChoice(z_26, a_27), d_27) -> GuardedLChoice(b_27, Parenthetical(RChoice(z_26, a_27)), d_27)
+
+  StrategoParenthesize :
+    RChoice(GuardedLChoice(e_27, f_27, g_27), i_27) -> RChoice(Parenthetical(GuardedLChoice(e_27, f_27, g_27)), i_27)
+
+  StrategoParenthesize :
+    GuardedLChoice(RGChoice(j_27, k_27), m_27, n_27) -> GuardedLChoice(Parenthetical(RGChoice(j_27, k_27)), m_27, n_27)
+
+  StrategoParenthesize :
+    GuardedLChoice(l_27, RGChoice(j_27, k_27), n_27) -> GuardedLChoice(l_27, Parenthetical(RGChoice(j_27, k_27)), n_27)
+
+  StrategoParenthesize :
+    RGChoice(GuardedLChoice(o_27, p_27, q_27), s_27) -> RGChoice(Parenthetical(GuardedLChoice(o_27, p_27, q_27)), s_27)
+
+  StrategoParenthesize :
+    RGChoice(LGChoice(t_27, u_27), w_27) -> RGChoice(Parenthetical(LGChoice(t_27, u_27)), w_27)
+
+  StrategoParenthesize :
+    LGChoice(RGChoice(x_27, y_27), a_28) -> LGChoice(Parenthetical(RGChoice(x_27, y_27)), a_28)
+
+  StrategoParenthesize :
+    LGChoice(RGChoice(b_28, c_28), e_28) -> LGChoice(Parenthetical(RGChoice(b_28, c_28)), e_28)
+
+  StrategoParenthesize :
+    RGChoice(LGChoice(f_28, g_28), i_28) -> RGChoice(Parenthetical(LGChoice(f_28, g_28)), i_28)
+
+  StrategoParenthesize :
+    GuardedLChoice(LGChoice(j_28, k_28), m_28, n_28) -> GuardedLChoice(Parenthetical(LGChoice(j_28, k_28)), m_28, n_28)
+
+  StrategoParenthesize :
+    GuardedLChoice(l_28, LGChoice(j_28, k_28), n_28) -> GuardedLChoice(l_28, Parenthetical(LGChoice(j_28, k_28)), n_28)
+
+  StrategoParenthesize :
+    LGChoice(GuardedLChoice(o_28, p_28, q_28), s_28) -> LGChoice(Parenthetical(GuardedLChoice(o_28, p_28, q_28)), s_28)
+
+  StrategoParenthesize :
+    GuardedLChoice(RGChoice(t_28, u_28), w_28, x_28) -> GuardedLChoice(Parenthetical(RGChoice(t_28, u_28)), w_28, x_28)
+
+  StrategoParenthesize :
+    GuardedLChoice(v_28, RGChoice(t_28, u_28), x_28) -> GuardedLChoice(v_28, Parenthetical(RGChoice(t_28, u_28)), x_28)
+
+  StrategoParenthesize :
+    RGChoice(GuardedLChoice(y_28, z_28, a_29), c_29) -> RGChoice(Parenthetical(GuardedLChoice(y_28, z_28, a_29)), c_29)
+
+  StrategoParenthesize :
+    LGChoice(GChoice(d_29, e_29), g_29) -> LGChoice(Parenthetical(GChoice(d_29, e_29)), g_29)
+
+  StrategoParenthesize :
+    GChoice(LGChoice(h_29, i_29), k_29) -> GChoice(Parenthetical(LGChoice(h_29, i_29)), k_29)
+
+  StrategoParenthesize :
+    GChoice(LGChoice(l_29, m_29), o_29) -> GChoice(Parenthetical(LGChoice(l_29, m_29)), o_29)
+
+  StrategoParenthesize :
+    LGChoice(GChoice(p_29, q_29), s_29) -> LGChoice(Parenthetical(GChoice(p_29, q_29)), s_29)
+
+  StrategoParenthesize :
+    RGChoice(GChoice(t_29, u_29), w_29) -> RGChoice(Parenthetical(GChoice(t_29, u_29)), w_29)
+
+  StrategoParenthesize :
+    GChoice(RGChoice(x_29, y_29), a_30) -> GChoice(Parenthetical(RGChoice(x_29, y_29)), a_30)
+
+  StrategoParenthesize :
+    GChoice(RGChoice(b_30, c_30), e_30) -> GChoice(Parenthetical(RGChoice(b_30, c_30)), e_30)
+
+  StrategoParenthesize :
+    RGChoice(GChoice(f_30, g_30), i_30) -> RGChoice(Parenthetical(GChoice(f_30, g_30)), i_30)
+
+  StrategoParenthesize :
+    GuardedLChoice(GChoice(j_30, k_30), m_30, n_30) -> GuardedLChoice(Parenthetical(GChoice(j_30, k_30)), m_30, n_30)
+
+  StrategoParenthesize :
+    GuardedLChoice(l_30, GChoice(j_30, k_30), n_30) -> GuardedLChoice(l_30, Parenthetical(GChoice(j_30, k_30)), n_30)
+
+  StrategoParenthesize :
+    GChoice(GuardedLChoice(o_30, p_30, q_30), s_30) -> GChoice(Parenthetical(GuardedLChoice(o_30, p_30, q_30)), s_30)
+
+  StrategoParenthesize :
+    GuardedLChoice(RGChoice(t_30, u_30), w_30, x_30) -> GuardedLChoice(Parenthetical(RGChoice(t_30, u_30)), w_30, x_30)
+
+  StrategoParenthesize :
+    GuardedLChoice(v_30, RGChoice(t_30, u_30), x_30) -> GuardedLChoice(v_30, Parenthetical(RGChoice(t_30, u_30)), x_30)
+
+  StrategoParenthesize :
+    RGChoice(GuardedLChoice(y_30, z_30, a_31), c_31) -> RGChoice(Parenthetical(GuardedLChoice(y_30, z_30, a_31)), c_31)
+
+  StrategoParenthesize :
+    RGChoice(LGChoice(d_31, e_31), g_31) -> RGChoice(Parenthetical(LGChoice(d_31, e_31)), g_31)
+
+  StrategoParenthesize :
+    LGChoice(RGChoice(h_31, i_31), k_31) -> LGChoice(Parenthetical(RGChoice(h_31, i_31)), k_31)
+
+  StrategoParenthesize :
+    LGChoice(RGChoice(l_31, m_31), o_31) -> LGChoice(Parenthetical(RGChoice(l_31, m_31)), o_31)
+
+  StrategoParenthesize :
+    RGChoice(LGChoice(p_31, q_31), s_31) -> RGChoice(Parenthetical(LGChoice(p_31, q_31)), s_31)
+
+  StrategoParenthesize :
+    GuardedLChoice(LGChoice(t_31, u_31), w_31, x_31) -> GuardedLChoice(Parenthetical(LGChoice(t_31, u_31)), w_31, x_31)
+
+  StrategoParenthesize :
+    GuardedLChoice(v_31, LGChoice(t_31, u_31), x_31) -> GuardedLChoice(v_31, Parenthetical(LGChoice(t_31, u_31)), x_31)
+
+  StrategoParenthesize :
+    LGChoice(GuardedLChoice(y_31, z_31, a_32), c_32) -> LGChoice(Parenthetical(GuardedLChoice(y_31, z_31, a_32)), c_32)
+
+  StrategoParenthesize :
+    GuardedLChoice(RGChoice(d_32, e_32), g_32, h_32) -> GuardedLChoice(Parenthetical(RGChoice(d_32, e_32)), g_32, h_32)
+
+  StrategoParenthesize :
+    GuardedLChoice(f_32, RGChoice(d_32, e_32), h_32) -> GuardedLChoice(f_32, Parenthetical(RGChoice(d_32, e_32)), h_32)
+
+  StrategoParenthesize :
+    RGChoice(GuardedLChoice(i_32, j_32, k_32), m_32) -> RGChoice(Parenthetical(GuardedLChoice(i_32, j_32, k_32)), m_32)
+
+  StrategoParenthesize :
+    Seq(Choice(p_32, q_32), o_32) -> Seq(Parenthetical(Choice(p_32, q_32)), o_32)
+
+  StrategoParenthesize :
+    Seq(n_32, Choice(p_32, q_32)) -> Seq(n_32, Parenthetical(Choice(p_32, q_32)))
+
+  StrategoParenthesize :
+    Seq(LChoice(t_32, u_32), s_32) -> Seq(Parenthetical(LChoice(t_32, u_32)), s_32)
+
+  StrategoParenthesize :
+    Seq(r_32, LChoice(t_32, u_32)) -> Seq(r_32, Parenthetical(LChoice(t_32, u_32)))
+
+  StrategoParenthesize :
+    Seq(RChoice(x_32, y_32), w_32) -> Seq(Parenthetical(RChoice(x_32, y_32)), w_32)
+
+  StrategoParenthesize :
+    Seq(v_32, RChoice(x_32, y_32)) -> Seq(v_32, Parenthetical(RChoice(x_32, y_32)))
+
+  StrategoParenthesize :
+    Seq(GChoice(b_33, c_33), a_33) -> Seq(Parenthetical(GChoice(b_33, c_33)), a_33)
+
+  StrategoParenthesize :
+    Seq(z_32, GChoice(b_33, c_33)) -> Seq(z_32, Parenthetical(GChoice(b_33, c_33)))
+
+  StrategoParenthesize :
+    Seq(LGChoice(f_33, g_33), e_33) -> Seq(Parenthetical(LGChoice(f_33, g_33)), e_33)
+
+  StrategoParenthesize :
+    Seq(d_33, LGChoice(f_33, g_33)) -> Seq(d_33, Parenthetical(LGChoice(f_33, g_33)))
+
+  StrategoParenthesize :
+    Seq(RGChoice(j_33, k_33), i_33) -> Seq(Parenthetical(RGChoice(j_33, k_33)), i_33)
+
+  StrategoParenthesize :
+    Seq(h_33, RGChoice(j_33, k_33)) -> Seq(h_33, Parenthetical(RGChoice(j_33, k_33)))
+
+  StrategoParenthesize :
+    Seq(GuardedLChoice(n_33, o_33, p_33), m_33) -> Seq(Parenthetical(GuardedLChoice(n_33, o_33, p_33)), m_33)
+
+  StrategoParenthesize :
+    Seq(l_33, GuardedLChoice(n_33, o_33, p_33)) -> Seq(l_33, Parenthetical(GuardedLChoice(n_33, o_33, p_33)))
+
+  StrategoParenthesize :
+    Explode(Anno(s_33, t_33), r_33) -> Explode(Parenthetical(Anno(s_33, t_33)), r_33)
+
+  StrategoParenthesize :
+    Explode(q_33, Anno(s_33, t_33)) -> Explode(q_33, Parenthetical(Anno(s_33, t_33)))
+
+  StrategoParenthesize :
+    Anno(As(w_33, x_33), v_33) -> Anno(Parenthetical(As(w_33, x_33)), v_33)
+
+  StrategoParenthesize :
+    Anno(u_33, As(w_33, x_33)) -> Anno(u_33, Parenthetical(As(w_33, x_33)))
+
+  StrategoParenthesize :
+    BA(DynRuleIntersectFix(a_34, b_34), z_33) -> BA(Parenthetical(DynRuleIntersectFix(a_34, b_34)), z_33)
+
+  StrategoParenthesize :
+    BA(y_33, DynRuleIntersectFix(a_34, b_34)) -> BA(y_33, Parenthetical(DynRuleIntersectFix(a_34, b_34)))
+
+  StrategoParenthesize :
+    BA(DynRuleUnionFix(e_34, f_34), d_34) -> BA(Parenthetical(DynRuleUnionFix(e_34, f_34)), d_34)
+
+  StrategoParenthesize :
+    BA(c_34, DynRuleUnionFix(e_34, f_34)) -> BA(c_34, Parenthetical(DynRuleUnionFix(e_34, f_34)))
+
+  StrategoParenthesize :
+    DynRuleIntersectFix(AM(i_34, j_34), h_34) -> DynRuleIntersectFix(Parenthetical(AM(i_34, j_34)), h_34)
+
+  StrategoParenthesize :
+    DynRuleIntersectFix(g_34, AM(i_34, j_34)) -> DynRuleIntersectFix(g_34, Parenthetical(AM(i_34, j_34)))
+
+  StrategoParenthesize :
+    DynRuleUnionFix(AM(m_34, n_34), l_34) -> DynRuleUnionFix(Parenthetical(AM(m_34, n_34)), l_34)
+
+  StrategoParenthesize :
+    DynRuleUnionFix(k_34, AM(m_34, n_34)) -> DynRuleUnionFix(k_34, Parenthetical(AM(m_34, n_34)))
+
+  StrategoParenthesize :
+    AM(DynRuleIntersect(q_34, r_34, s_34), p_34) -> AM(Parenthetical(DynRuleIntersect(q_34, r_34, s_34)), p_34)
+
+  StrategoParenthesize :
+    AM(o_34, DynRuleIntersect(q_34, r_34, s_34)) -> AM(o_34, Parenthetical(DynRuleIntersect(q_34, r_34, s_34)))
+
+  StrategoParenthesize :
+    DynRuleIntersect(DynRuleUnion(w_34, x_34, y_34), u_34, v_34) -> DynRuleIntersect(Parenthetical(DynRuleUnion(w_34, x_34, y_34)), u_34, v_34)
+
+  StrategoParenthesize :
+    DynRuleIntersect(t_34, DynRuleUnion(w_34, x_34, y_34), v_34) -> DynRuleIntersect(t_34, Parenthetical(DynRuleUnion(w_34, x_34, y_34)), v_34)
+
+  StrategoParenthesize :
+    DynRuleIntersect(t_34, u_34, DynRuleUnion(w_34, x_34, y_34)) -> DynRuleIntersect(t_34, u_34, Parenthetical(DynRuleUnion(w_34, x_34, y_34)))
+
+  StrategoParenthesize :
+    DynRuleUnion(Seq(c_35, d_35), a_35, b_35) -> DynRuleUnion(Parenthetical(Seq(c_35, d_35)), a_35, b_35)
+
+  StrategoParenthesize :
+    DynRuleUnion(z_34, Seq(c_35, d_35), b_35) -> DynRuleUnion(z_34, Parenthetical(Seq(c_35, d_35)), b_35)
+
+  StrategoParenthesize :
+    DynRuleUnion(z_34, a_35, Seq(c_35, d_35)) -> DynRuleUnion(z_34, a_35, Parenthetical(Seq(c_35, d_35)))
+
+  StrategoParenthesize :
+    Seq(Seq(a_139, b_139), d_139) -> Seq(Parenthetical(Seq(a_139, b_139)), d_139)
+
+  StrategoParenthesize :
+    LChoice(LChoice(e_139, f_139), h_139) -> LChoice(Parenthetical(LChoice(e_139, f_139)), h_139)
+
+  StrategoParenthesize :
+    LGChoice(LGChoice(i_139, j_139), l_139) -> LGChoice(Parenthetical(LGChoice(i_139, j_139)), l_139)
+
+  StrategoParenthesize :
+    GuardedLChoice(GuardedLChoice(m_139, n_139, o_139), q_139, r_139) -> GuardedLChoice(Parenthetical(GuardedLChoice(m_139, n_139, o_139)), q_139, r_139)
+
+  StrategoParenthesize :
+    GuardedLChoice(p_139, GuardedLChoice(m_139, n_139, o_139), r_139) -> GuardedLChoice(p_139, Parenthetical(GuardedLChoice(m_139, n_139, o_139)), r_139)
+
+  StrategoParenthesize :
+    Choice(Choice(s_139, t_139), v_139) -> Choice(Parenthetical(Choice(s_139, t_139)), v_139)
+
+  StrategoParenthesize :
+    RChoice(RChoice(w_139, x_139), z_139) -> RChoice(Parenthetical(RChoice(w_139, x_139)), z_139)
+
+  StrategoParenthesize :
+    GChoice(GChoice(a_140, b_140), d_140) -> GChoice(Parenthetical(GChoice(a_140, b_140)), d_140)
+
+  StrategoParenthesize :
+    RGChoice(RGChoice(e_140, f_140), h_140) -> RGChoice(Parenthetical(RGChoice(e_140, f_140)), h_140)
+
+  StrategoParenthesize :
+    DynRuleIntersect(DynRuleIntersect(i_140, j_140, k_140), m_140, n_140) -> DynRuleIntersect(Parenthetical(DynRuleIntersect(i_140, j_140, k_140)), m_140, n_140)
+
+  StrategoParenthesize :
+    DynRuleIntersect(l_140, DynRuleIntersect(i_140, j_140, k_140), n_140) -> DynRuleIntersect(l_140, Parenthetical(DynRuleIntersect(i_140, j_140, k_140)), n_140)
+
+  StrategoParenthesize :
+    DynRuleUnion(DynRuleUnion(o_140, p_140, q_140), s_140, t_140) -> DynRuleUnion(Parenthetical(DynRuleUnion(o_140, p_140, q_140)), s_140, t_140)
+
+  StrategoParenthesize :
+    DynRuleUnion(r_140, DynRuleUnion(o_140, p_140, q_140), t_140) -> DynRuleUnion(r_140, Parenthetical(DynRuleUnion(o_140, p_140, q_140)), t_140)
+signature
+  constructors
+    Parenthetical : Unknown -> Unknown

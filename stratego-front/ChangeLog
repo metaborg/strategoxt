@@ -1,3 +1,30 @@
+2004-06-29  Martin Bravenboer <martin@cs.uu.nl>
+
+	Improved pretty-printing of Stratego using the sdf2parenthesize
+	generator.
+
+	* parse/Makefile.am:
+
+	- pp-stratego now uses stratego-parenthesize to place parentheses
+	at the required locations only.
+
+	- LDADD += $(SSL_LIBS) for alles tools.
+
+	* pp/Stratego-pretty.pp: removed brute-force parentheses in
+	several pretty print rules.
+
+	* parse/pp-stratego.str: invokes the stratego-parenthesize
+	strategy in the generated Stratego module stratego-parenthesize.
+
+	* parse/stratego-ensugar.str:
+
+	- do not assiocate Seq left. This is not right assoc and it is not
+	needed if your parenthesize implementation is powerful enough.
+
+	- removed the hand-written parenthesize stuff.
+
+	- stratego-ensugar can be compiled separately
+	
 2004-05-26  Martin Bravenboer <martin@cs.uu.nl>
 
 	* syn/Stratego-Layout.sdf: *) in /* */ is now allowed and vice

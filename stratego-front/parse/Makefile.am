@@ -9,16 +9,19 @@ STRINCLUDES     = -I $(top_srcdir)/syn \
 bin_PROGRAMS 	= meta-explode stratego-desugar parse-stratego \
 		  pp-stratego stratego-ensugar
 
-stratego_desugar_LDADD = $(SSL_LIBS)
-pp_stratego_LDADD = $(SSL_LIBS)
-parse_stratego_LDADD = $(SSL_LIBS)
-meta_explode_LDADD = $(SSL_LIBS)
+LDADD += $(SSL_LIBS)
 
 CLEANFILES     	= $(wildcard *.dep)
 
 BOOTCLEANFILES  = meta-explode.c stratego-desugar.c parse-stratego.c \
-		  pp-stratego.c stratego-ensugar.c
+		  pp-stratego.c stratego-ensugar.c stratego-parenthesize.str
 
 EXTRA_DIST 	= $(wildcard *.str) $(wildcard *.meta) \
 		  $(wildcard *.rtree) $(wildcard *.src) \
 		  $(wildcard *.c) 
+
+# generate a parenthesize Stratego module
+pp-stratego.c : stratego-parenthesize.str
+
+stratego-parenthesize.str : $(top_builddir)/syn/Stratego.def
+	$(SDF_TOOLS)/bin/sdf2parenthesize -i $< -o $@ -m Stratego --omod stratego-parenthesize --lang Stratego

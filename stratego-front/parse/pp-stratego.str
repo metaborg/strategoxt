@@ -1,5 +1,5 @@
 module pp-stratego
-imports liblib
+imports liblib stratego-parenthesize
 strategies
 
   pp-stratego =
@@ -10,6 +10,10 @@ strategies
         ; xtc-transform(!"stratego-ensugar")
 	; (where(<get-config> "--annotations")
            <+ xtc-transform(!"annos-to-term"))
+        ; xtc-io-transform(
+            parenthesize-Stratego
+          ; topdown(try(\ Parenthetical(s) -> ParenStrat(s) \ ))
+          )
         ; xtc-transform(!"ast2abox", !["-p", <xtc-find> "Stratego-pretty.pp" | <pass-verbose>])
         ; xtc-transform(!"abox2text", !<pass-verbose>)
       )

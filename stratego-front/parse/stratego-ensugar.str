@@ -6,7 +6,7 @@
  * problems when pretty-printing Stratego programs.
  */
 module stratego-ensugar
-imports Stratego-Amb options string simple-traversal parenthesize
+imports Stratego-Amb liblib
 
 strategies
  
@@ -19,8 +19,6 @@ strategies
         repeat(Ensugar)
       ; try(EnsugarOnce)
       )
-    ; innermost(AssociateSeqLeft)
-    ; stratego-parenthesize
 
 rules
 
@@ -39,6 +37,9 @@ rules
     StratRule(l, r, Id()) -> StratRuleNoCond(l, r)
 
   Ensugar :
+    Call(f, []) -> CallNoArgs(f)
+
+  Ensugar :
     Op("Nil",[]) -> List([])
 
   Ensugar =
@@ -49,19 +50,9 @@ rules
       <+ \ (elems, last)         -> ListTail(elems, last) \
       )
 
-  /**
-   * @type List(a) -> (List(a), a)
-   */
-  split-last =
-      at-last(?[x]; ![])
-    ; !(<id>, x)
-  
   implode-cons =
     \ Op("Cons",[e, tail]) -> [e | <implode-cons> tail] \
     <+ ![<id>]
-
-  AssociateSeqLeft :
-    Seq(s1, Seq(s2, s3)) -> Seq(Seq(s1, s2), s3)
 
 rules
 
@@ -125,18 +116,3 @@ overlays
     , "thread"
     , "where"
     ]
-
-strategies
-
-  // Placing parentheses
-
-  StrategoParenthesize =
-    !ParenStrat(<id>)
-
-  stratego-parenthesize =
-    parenthesize(StrategoParenthesize, stratego-priorities)
-   
-  stratego-priorities =
-    ![(Some("assoc"),		["Seq"]),
-      (Some("assoc"),		["LChoice", "Choice"])
-     ]

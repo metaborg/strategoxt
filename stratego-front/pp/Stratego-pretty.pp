@@ -151,18 +151,18 @@
    
    AngleStrat -- H hs=0[KW["<"] _1 KW[">"]],
    ParenStrat -- H hs=0[KW["("] _1 KW[")"]],
-   
+  
    LRule -- H[KW["\\"] _1 KW["\\"]],
    SRule -- H[KW["("]  _1 KW[")"]],
 
-   Seq      -- V[_1 H[KW[";"] _2 ]],
-   Choice   -- H hs=0[KW["("] V[_1 H[KW["+"]   _2 ]] KW[")"]],
-   LChoice  -- H hs=0[KW["("] V[_1 H[KW["<+"]  _2 ]] KW[")"]],
-   RChoice  -- H hs=0[KW["("] V[_1 H[KW["+>"]  _2 ]] KW[")"]],
-   GChoice  -- H hs=0[KW["("] V[_1 H[KW["++"]  _2 ]] KW[")"]],
-   LGChoice -- H hs=0[KW["("] V[_1 H[KW["<++"] _2 ]] KW[")"]],
-   RGChoice -- H hs=0[KW["("] V[_1 H[KW["++>"] _2 ]] KW[")"]],
-   GuardedLChoice -- V[H hs=0[KW["("] _1] H[KW["<"] _2] H[KW["+"] _3 ] KW[")"]],
+   Seq      -- V [_1 H[KW[";"] _2 ]],
+   Choice   -- V [_1 H[KW["+"]   _2 ]],
+   LChoice  -- V [_1 H[KW["<+"]  _2 ]],
+   RChoice  -- V [_1 H[KW["+>"]  _2 ]],
+   GChoice  -- V [_1 H[KW["++"]  _2 ]],
+   LGChoice -- V [_1 H[KW["<++"] _2 ]],
+   RGChoice -- V [_1 H[KW["++>"] _2 ]],
+   GuardedLChoice -- V[_1 H[KW["<"] _2] H[KW["+"] _3 ]],
    CondChoice -- V vs=0 [
      H hs=1 [KW["if"] _1]
      H hs=1 [KW["then"] _2]
