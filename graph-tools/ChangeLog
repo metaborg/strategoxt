@@ -1,3 +1,6 @@
+2001-08-27 Merijn de Jonge <mdejonge@cwi.nl> 
+   * Moved templates to package.conf
+
 2001-08-19 Merijn de Jonge <mdejonge@cwi.nl> 
    * Added graphviz-1.7.8 as required package
 
