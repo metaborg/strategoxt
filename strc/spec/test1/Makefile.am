@@ -1,5 +1,5 @@
-SINCLUDES 	= -I $(SSL)/share/ssl -I $(SRTS)/share/srts
-AM_LDFLAGS	= -L$(SSL)/lib/ssl -L$(SRTS)/lib/srts -L$(ATERM)/lib 
+SINCLUDES 	= -I $(STRATEGO_LIB)/share/stratego-lib -I $(SRTS)/share/srts
+AM_LDFLAGS	= -L$(STRATEGO_LIB)/lib/stratego-lib -L$(SRTS)/lib/srts -L$(ATERM)/lib 
 
 check_PROGRAMS 	= test02 test03 test04 test05			    \
 		  test06 test07 test08 test09 test10 test11 test12  \
@@ -22,7 +22,7 @@ TESTS 		= $(check_PROGRAMS)
 STRATEGORUNLIBS = -lstratego-runtime-opt -lstratego-runtime-choice-opt -lstratego-lib-native-opt -lATerm-gcc -lm
 LDADD 		= $(STRATEGORUNLIBS)
 test50_LDADD 	= bar.o $(STRATEGORUNLIBS)
-test51_LDADD 	= -L$(SSL)/lib/ssl -lstratego-lib $(STRATEGORUNLIBS)
+test51_LDADD 	= -L$(STRATEGO_LIB)/lib/stratego-lib -lstratego-lib $(STRATEGORUNLIBS)
 
 bar.o 		: bar.c
 

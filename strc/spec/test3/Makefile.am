@@ -23,6 +23,6 @@ EXTRA_DIST = $(wildcard *.r)
 include $(srcdir)/../test1/make-rules
 
 SINCLUDES = \
-	-I $(SSL)/share/ssl \
+	-I $(STRATEGO_LIB)/share/stratego-lib \
 	-I $(C_TOOLS)/share/c-tools \
 	-I $(C_TOOLS)/share/sdf/c-tools 

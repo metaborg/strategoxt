@@ -1,4 +1,4 @@
 include $(top_srcdir)/Makefile.xt
 
-SUBDIRS 	  = ssl
+SUBDIRS 	  = stratego-lib
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)

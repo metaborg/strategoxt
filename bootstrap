@@ -34,7 +34,7 @@ mv ./autoxt.m4 ./config/  || exit 1
 autoreconf -ifv  || exit 1
 
 # Bootstrap the subpackages
-PKGS="autoxt srts xtc xtc2 xtc3 strc ssl gpp c-tools concrete-syntax \
+PKGS="autoxt srts xtc xtc2 xtc3 strc gpp c-tools concrete-syntax \
   aterm-front stratego-front asfix-tools sdf-front sdf-tools \
   stratego-regular xml-front xtar boxenv stratego-lib strc-core"
 

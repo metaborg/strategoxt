@@ -18,16 +18,16 @@ install-xtc:
 	$(BASELINE_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t baffle -l $(ATERM)/bin -V X
 	$(BASELINE_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t ATERM -l $(ATERM) -V X
 	$(BASELINE_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t SRTS -l $(prefix) -V X
-	$(BASELINE_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t SSL -l $(prefix) -V X
-	$(BASELINE_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t libstrategolib.rtree -l $(prefix)/share/ssl -V $(VERSION)
+	$(BASELINE_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t stratego-lib -l $(prefix) -V X
+	$(BASELINE_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t libstrategolib.rtree -l $(prefix)/share/stratego-lib -V $(VERSION)
 	$(BASELINE_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t libxtclib.rtree -l $(prefix)/share/xtc -V $(VERSION)
 	$(BASELINE_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t liblib.rtree -l $(prefix)/share/xtc -V $(VERSION)
-	$(BASELINE_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t libstratego-lib.la -l $(prefix)/lib/ssl -V $(VERSION)
+	$(BASELINE_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t libstratego-lib.la -l $(prefix)/lib/stratego-lib -V $(VERSION)
 	$(BASELINE_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t libstratego-xtc.la -l $(prefix)/lib/xtc -V $(VERSION)
 
 if !XT_USING_BASELINE
-all-local: $(BASELINE_DESTDIR)/srts.dummy $(BASELINE_DESTDIR)/ssl.dummy $(BASELINE_DESTDIR)/xtc.dummy
-install-exec-local: $(BASELINE_DESTDIR)/srts.dummy $(BASELINE_DESTDIR)/ssl.dummy $(BASELINE_DESTDIR)/xtc.dummy
+all-local: $(BASELINE_DESTDIR)/srts.dummy $(BASELINE_DESTDIR)/stratego-lib.dummy $(BASELINE_DESTDIR)/xtc.dummy
+install-exec-local: $(BASELINE_DESTDIR)/srts.dummy $(BASELINE_DESTDIR)/stratego-lib.dummy $(BASELINE_DESTDIR)/xtc.dummy
 
 clean-local:
 	rm -rf $(BASELINE_DESTDIR)
@@ -40,15 +40,15 @@ $(BASELINE_DESTDIR)/srts.dummy :
 	cp -LRfp src/.libs $(BASELINE_DESTDIR)/$(prefix)/lib/srts/ && \
 	touch $(BASELINE_DESTDIR)/srts.dummy
 
-$(BASELINE_DESTDIR)/ssl.dummy :
-	cd ssl && \
+$(BASELINE_DESTDIR)/stratego-lib.dummy :
+	cd stratego-lib && \
 	$(MAKE) $(AM_MAKEFLAGS) && \
 	$(MAKE) $(AM_MAKEFLAGS) DESTDIR=$(BASELINE_DESTDIR) install && \
-	cp -fp   libraries/*.la  $(BASELINE_DESTDIR)/$(prefix)/lib/ssl/ && \
-	cp -LRfp libraries/.libs $(BASELINE_DESTDIR)/$(prefix)/lib/ssl/ && \
-	cp -fp   native/ssl/*.la  $(BASELINE_DESTDIR)/$(prefix)/lib/ssl/ && \
-	cp -LRfp native/ssl/.libs $(BASELINE_DESTDIR)/$(prefix)/lib/ssl/ && \
-	touch $(BASELINE_DESTDIR)/ssl.dummy
+	cp -fp   libraries/*.la  $(BASELINE_DESTDIR)/$(prefix)/lib/stratego-lib/ && \
+	cp -LRfp libraries/.libs $(BASELINE_DESTDIR)/$(prefix)/lib/stratego-lib/ && \
+	cp -fp   native/stratego-lib/*.la  $(BASELINE_DESTDIR)/$(prefix)/lib/stratego-lib/ && \
+	cp -LRfp native/stratego-lib/.libs $(BASELINE_DESTDIR)/$(prefix)/lib/stratego-lib/ && \
+	touch $(BASELINE_DESTDIR)/stratego-lib.dummy
 
 $(BASELINE_DESTDIR)/xtc.dummy :
 	cd $(XTC_DIR) && \

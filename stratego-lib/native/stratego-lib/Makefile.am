@@ -1,4 +1,4 @@
-includedir = $(prefix)/include/ssl
+includedir = $(prefix)/include/stratego-lib
 
 include_HEADERS = \
   io.h stratego-lib.h tables.h sets.h ssl-time.h exec.h number.h \

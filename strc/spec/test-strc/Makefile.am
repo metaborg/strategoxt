@@ -11,6 +11,6 @@ TESTS = \
 
 TESTS_ENVIRONMENT =\
   STRC="$(bindir)/strc" \
-  SSL="$(prefix)"
+  STRATEGO_LIB="$(prefix)"
 
 EXTRA_DIST  = $(TESTS) $(STRPROGS)

@@ -66,7 +66,7 @@ if test "x$XTC2_ENABLED" = "xyes"
 then
 
   PKGS="autoxt srts xtc2 stratego-front asfix-tools \
-     strc gpp c-tools ssl concrete-syntax xml-front \
+     strc gpp c-tools stratego-lib concrete-syntax xml-front \
      aterm-front sdf-front sdf-tools \
      stratego-regular xtar \
      boxenv"
@@ -79,7 +79,7 @@ elif test "x$XTC3_ENABLED" = "xyes"
 then
 
   PKGS="autoxt srts xtc3 stratego-front asfix-tools \
-     strc gpp c-tools ssl concrete-syntax xml-front \
+     strc gpp c-tools stratego-lib concrete-syntax xml-front \
      aterm-front sdf-front sdf-tools \
      stratego-regular xtar \
      boxenv"
@@ -91,7 +91,7 @@ then
 else
 
   PKGS="autoxt srts xtc stratego-front asfix-tools \
-     strc gpp c-tools ssl concrete-syntax xml-front \
+     strc gpp c-tools stratego-lib concrete-syntax xml-front \
      aterm-front sdf-front sdf-tools \
      stratego-regular xtar \
      boxenv"
@@ -122,13 +122,13 @@ AC_SUBST([STRC_CORE_PREFIX])
 if test "$xt_baseline" = "yes"
 then
   BASELINE_SRTS="$STRATEGOXT"
-  BASELINE_SSL="$STRATEGOXT"
+  BASELINE_STRATEGO_LIB="$STRATEGOXT"
   BASELINE_XTC="$STRATEGOXT"
 else
   BASELINE_DESTDIR="`pwd`/local-baseline"
 
   BASELINE_SRTS="$BASELINE_DESTDIR$prefix"
-  BASELINE_SSL="$BASELINE_DESTDIR$prefix"
+  BASELINE_STRATEGO_LIB="$BASELINE_DESTDIR$prefix"
   BASELINE_XTC="$BASELINE_DESTDIR$prefix"
 
   AC_SUBST([BASELINE_DESTDIR])
@@ -173,7 +173,8 @@ AB_CONFIG_PKG(xtc,
    --with-pgen=${PGEN}
    --with-strategoxt=${STRATEGOXT}
    --with-srts=${BASELINE_SRTS}
-   --with-ssl=${BASELINE_SSL}
+   --with-ssl=${BASELINE_STRATEGO_LIB}
+   --with-stratego-lib=${BASELINE_STRATEGO_LIB}
    --with-xtc=${BASELINE_XTC}
    --with-repository=${REPOSITORY}
 )
@@ -184,7 +185,8 @@ AB_CONFIG_PKG(xtc2,
    --with-pgen=${PGEN}
    --with-strategoxt=${STRATEGOXT}
    --with-srts=${BASELINE_SRTS}
-   --with-ssl=${BASELINE_SSL}
+   --with-ssl=${BASELINE_STRATEGO_LIB}
+   --with-stratego-lib=${BASELINE_STRATEGO_LIB}
    --with-xtc=${BASELINE_XTC}
    --with-repository=${REPOSITORY}
 )
@@ -195,7 +197,8 @@ AB_CONFIG_PKG(xtc3,
    --with-pgen=${PGEN}
    --with-strategoxt=${STRATEGOXT}
    --with-srts=${BASELINE_SRTS}
-   --with-ssl=${BASELINE_SSL}
+   --with-ssl=${BASELINE_STRATEGO_LIB}
+   --with-stratego-lib=${BASELINE_STRATEGO_LIB}
    --with-xtc=${BASELINE_XTC}
    --with-repository=${REPOSITORY}
    --with-curl=${CURL}
@@ -207,7 +210,8 @@ AB_CONFIG_PKG(strc,
    --with-pgen=${PGEN}
    --with-strategoxt=${STRATEGOXT}
    --with-srts=${BASELINE_SRTS}
-   --with-ssl=${BASELINE_SSL}
+   --with-ssl=${BASELINE_STRATEGO_LIB}
+   --with-stratego-lib=${BASELINE_STRATEGO_LIB}
    --with-xtc=${BASELINE_XTC}
    --with-repository=${REPOSITORY}
 )
@@ -219,7 +223,8 @@ AB_CONFIG_PKG(strc-core,
    --with-pgen=${PGEN}
    --with-strategoxt=${STRATEGOXT}
    --with-srts=${BASELINE_SRTS}
-   --with-ssl=${BASELINE_SSL}
+   --with-ssl=${BASELINE_STRATEGO_LIB}
+   --with-stratego-lib=${BASELINE_STRATEGO_LIB}
    --with-xtc=${BASELINE_XTC}
 )
 
@@ -229,7 +234,8 @@ AB_CONFIG_PKG(c-tools,
    --with-pgen=${PGEN}
    --with-strategoxt=${STRATEGOXT}
    --with-srts=${BASELINE_SRTS}
-   --with-ssl=${BASELINE_SSL}
+   --with-ssl=${BASELINE_STRATEGO_LIB}
+   --with-stratego-lib=${BASELINE_STRATEGO_LIB}
    --with-xtc=${BASELINE_XTC}
    --with-repository=${REPOSITORY}
 )
@@ -240,18 +246,20 @@ AB_CONFIG_PKG(stratego-front,
    --with-pgen=${PGEN}
    --with-strategoxt=${STRATEGOXT}
    --with-srts=${BASELINE_SRTS}
-   --with-ssl=${BASELINE_SSL}
+   --with-ssl=${BASELINE_STRATEGO_LIB}
+   --with-stratego-lib=${BASELINE_STRATEGO_LIB}
    --with-xtc=${BASELINE_XTC}
    --with-repository=${REPOSITORY}
 )
 
-AB_CONFIG_PKG(ssl,
+AB_CONFIG_PKG(stratego-lib,
    --with-aterm=${ATERM}
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
    --with-strategoxt=${STRATEGOXT}
    --with-srts=${BASELINE_SRTS}
-   --with-ssl=${BASELINE_SSL}
+   --with-ssl=${BASELINE_STRATEGO_LIB}
+   --with-stratego-lib=${BASELINE_STRATEGO_LIB}
    --with-xtc=${BASELINE_XTC}
    --with-repository=${REPOSITORY}
 )
@@ -262,7 +270,8 @@ AB_CONFIG_PKG(asfix-tools,
    --with-pgen=${PGEN}
    --with-strategoxt=${STRATEGOXT}
    --with-srts=${BASELINE_SRTS}
-   --with-ssl=${BASELINE_SSL}
+   --with-ssl=${BASELINE_STRATEGO_LIB}
+   --with-stratego-lib=${BASELINE_STRATEGO_LIB}
    --with-xtc=${BASELINE_XTC}
    --with-repository=${REPOSITORY}
 )
@@ -273,7 +282,8 @@ AB_CONFIG_PKG(gpp,
    --with-pgen=${PGEN}
    --with-strategoxt=${STRATEGOXT}
    --with-srts=${BASELINE_SRTS}
-   --with-ssl=${BASELINE_SSL}
+   --with-ssl=${BASELINE_STRATEGO_LIB}
+   --with-stratego-lib=${BASELINE_STRATEGO_LIB}
    --with-xtc=${BASELINE_XTC}
    --with-repository=${REPOSITORY}
 )
@@ -284,7 +294,8 @@ AB_CONFIG_PKG(concrete-syntax,
    --with-pgen=${PGEN}
    --with-strategoxt=${STRATEGOXT}
    --with-srts=${BASELINE_SRTS}
-   --with-ssl=${BASELINE_SSL}
+   --with-ssl=${BASELINE_STRATEGO_LIB}
+   --with-stratego-lib=${BASELINE_STRATEGO_LIB}
    --with-xtc=${BASELINE_XTC}
    --with-repository=${REPOSITORY}
 )
@@ -296,7 +307,8 @@ AB_CONFIG_PKG(aterm-front,
    --with-asf-library=${ASF_LIBRARY}
    --with-strategoxt=${STRATEGOXT}
    --with-srts=${BASELINE_SRTS}
-   --with-ssl=${BASELINE_SSL}
+   --with-ssl=${BASELINE_STRATEGO_LIB}
+   --with-stratego-lib=${BASELINE_STRATEGO_LIB}
    --with-xtc=${BASELINE_XTC}
    --with-repository=${REPOSITORY}
 )
@@ -308,7 +320,8 @@ AB_CONFIG_PKG(sdf-front,
    --with-asf-library=${ASF_LIBRARY}
    --with-strategoxt=${STRATEGOXT}
    --with-srts=${BASELINE_SRTS}
-   --with-ssl=${BASELINE_SSL}
+   --with-ssl=${BASELINE_STRATEGO_LIB}
+   --with-stratego-lib=${BASELINE_STRATEGO_LIB}
    --with-xtc=${BASELINE_XTC}
    --with-repository=${REPOSITORY}
 )
@@ -320,7 +333,8 @@ AB_CONFIG_PKG(sdf-tools,
    --with-asf-library=${ASF_LIBRARY}
    --with-strategoxt=${STRATEGOXT}
    --with-srts=${BASELINE_SRTS}
-   --with-ssl=${BASELINE_SSL}
+   --with-ssl=${BASELINE_STRATEGO_LIB}
+   --with-stratego-lib=${BASELINE_STRATEGO_LIB}
    --with-xtc=${BASELINE_XTC}
    --with-repository=${REPOSITORY}
 )
@@ -332,7 +346,8 @@ AB_CONFIG_PKG(stratego-regular,
    --with-asf-library=${ASF_LIBRARY}
    --with-strategoxt=${STRATEGOXT}
    --with-srts=${BASELINE_SRTS}
-   --with-ssl=${BASELINE_SSL}
+   --with-ssl=${BASELINE_STRATEGO_LIB}
+   --with-stratego-lib=${BASELINE_STRATEGO_LIB}
    --with-xtc=${BASELINE_XTC}
    --with-repository=${REPOSITORY}
 )
@@ -344,7 +359,8 @@ AB_CONFIG_PKG(xml-front,
    --with-asf-library=${ASF_LIBRARY}
    --with-strategoxt=${STRATEGOXT}
    --with-srts=${BASELINE_SRTS}
-   --with-ssl=${BASELINE_SSL}
+   --with-ssl=${BASELINE_STRATEGO_LIB}
+   --with-stratego-lib=${BASELINE_STRATEGO_LIB}
    --with-xtc=${BASELINE_XTC}
    --with-repository=${REPOSITORY}
 )
@@ -356,7 +372,8 @@ AB_CONFIG_PKG(xtar,
    --with-asf-library=${ASF_LIBRARY}
    --with-strategoxt=${STRATEGOXT}
    --with-srts=${BASELINE_SRTS}
-   --with-ssl=${BASELINE_SSL}
+   --with-ssl=${BASELINE_STRATEGO_LIB}
+   --with-stratego-lib=${BASELINE_STRATEGO_LIB}
    --with-xtc=${BASELINE_XTC}
    --with-repository=${REPOSITORY}
 )

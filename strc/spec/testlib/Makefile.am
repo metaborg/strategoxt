@@ -14,7 +14,7 @@ check-strc: $(TESTIRUNS)
 
 EXTRA_DIST 	= $(wildcard *.rtree) testlib.dummy
 
-SINCLUDES 	= -I $(SSL)/share/ssl
+SINCLUDES 	= -I $(STRATEGO_LIB)/share/stratego-lib
 
 CLEANFILES 	= $(TESTS) $(TESTIBINS) *.o *.c *.ac *.s? *.s?? *.txt *.s?.check *.trm \
 		  *.tree *.tree? *.dep *.c.abox *.r testlib.dummy \
@@ -23,8 +23,8 @@ CLEANFILES 	= $(TESTS) $(TESTIBINS) *.o *.c *.ac *.s? *.s?? *.txt *.s?.check *.t
 pkgdata_DATA 	= testlib.dummy
 
 testlib.dummy :
-	-cp $(SSL)/share/ssl/*.rtree .
-	-cp $(SSL)/share/ssl/tests/*.str .
+	-cp $(STRATEGO_LIB)/share/stratego-lib/*.rtree .
+	-cp $(STRATEGO_LIB)/share/stratego-lib/tests/*.str .
 	touch $@
 
 include $(srcdir)/../test1/make-rules

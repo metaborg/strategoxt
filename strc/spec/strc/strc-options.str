@@ -28,12 +28,12 @@ strategies
     ; <set-config> ("-O", 6)
     ; <set-config> ("-I", [])
     ; <set-config> ("--C-include", 
-		   ["<srts/stratego.h>", "<ssl/stratego-lib.h>"])
+		   ["<srts/stratego.h>", "<stratego-lib/stratego-lib.h>"])
     ; <set-config> ("-CI", ["-I", <conc-strings>(<xtc-find-path> "SRTS", "/include"),
-                            "-I", <conc-strings>(<xtc-find-path> "SSL", "/include"),
+                            "-I", <conc-strings>(<xtc-find-path> "stratego-lib", "/include"),
                             "-I", <conc-strings>(<xtc-find-path> "ATERM", "/include")])
     ; <set-config> ("-CL",
-        [  <concat-strings> ["-L", <xtc-find-path> "SSL", "/lib/ssl"]
+        [  <concat-strings> ["-L", <xtc-find-path> "stratego-lib", "/lib/stratego-lib"]
         , "-lstratego-lib-native-opt"
         , <concat-strings> ["-L", <xtc-find-path> "SRTS", "/lib/srts"]
         , "-lstratego-runtime-choice-opt"

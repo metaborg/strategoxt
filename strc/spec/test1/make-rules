@@ -4,14 +4,14 @@
 
 CINCLUDES = \
 	--C-include "<srts/stratego.h>" \
-	--C-include "<ssl/stratego-lib.h>" 
+	--C-include "<stratego-lib/stratego-lib.h>" 
 
 CINCL = -I$(SRTS)/include \
 	-I$(ATERM)/include $(CHOICEINCLUDES)
 
 AM_CFLAGS = -I$(SSL)/include -I$(SRTS)/include -I$(ATERM)/include -I /usr/include
 
-SCLibs = -L$(SSL)/lib/ssl -lstratego-lib-native -L$(SRTS)/lib/srts -lstratego-runtime-choice -lstratego-runtime \
+SCLibs = -L$(STRATEGO_LIB)/lib/stratego-lib -lstratego-lib-native -L$(SRTS)/lib/srts -lstratego-runtime-choice -lstratego-runtime \
 	 -L$(ATERM)/lib -lATerm-gcc $(CHOICELDFLAGS) \
 	 -lm
 

@@ -4,9 +4,9 @@ SINCLUDES	 = -I $(STRATEGO_FRONT)/share/stratego-front \
 	  	   -I $(srcdir)/../match		     \
 	  	   -I $(srcdir)/../opt			     \
 	  	   -I $(srcdir)/../lib			     \
-		   -I $(SSL)/share/ssl
+		   -I $(STRATEGO_LIB)/share/stratego-lib
 
-AM_LDFLAGS	= -L$(SSL)/lib/ssl -L$(SRTS)/lib/srts -L$(ATERM)/lib 
+AM_LDFLAGS	= -L$(STRATEGO_LIB)/lib/stratego-lib -L$(SRTS)/lib/srts -L$(ATERM)/lib 
 
 check_PROGRAMS 	= arity-test as-pattern assignment \
 		  comment-test conditional-innermost congruence-arguments \
