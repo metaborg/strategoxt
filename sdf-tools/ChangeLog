@@ -1,3 +1,19 @@
+2005-03-12  Martin Bravenboer  <martin@cs.uu.nl>
+
+	* trans/sdf2parenthesize.str: --lang was used for several purposes
+	(signature, prefix of rules and more), which leads to problems
+	when using hierachical module names (which contain a / ). This
+	now solved by having specific flags for the various names that can
+	be configured. They all default to --lang, so this will not break
+	existing invocations.
+	
+	* trans/sdf2parenthesize.str: at --verbose info level,
+	sdf2parenthesize now reports the way it is going to use the
+	configuration specified at the command-line.
+
+	* trans/sdf2parenthesize.str: using tool-doc for more attractive
+	help and about.
+
 2005-02-13  Martin Bravenboer  <martin@cs.uu.nl>
 
 	* trans/sdf2parenthesize.str: the --lang and --omod are now
