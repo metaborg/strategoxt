@@ -1,3 +1,12 @@
+2003-11-20  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/front/desugar.str: Rule Mapp0 
+
+		Mapp0 : Match(t[RootApp(Match(t'))]) -> Match(t[t'](pat-td))
+
+	is not correct, since it throws away the projection effect of the
+	RootApp.  Discovered by Arthur van Dam.
+
 2003-09-30  Valentin David  <valentin@lrde.epita.fr>
 
 	* spec/strc/strc.str, spec/strc/strc-options.str,

@@ -156,7 +156,7 @@ explosions. Avoid lifting an App from within another App or RootApp.
 \begin{code}
 strategies
 
-  Mapp = Mapp0 <+ Mapp1 <+ Mapp2
+  Mapp = Mapp1 <+ Mapp2
 
 rules
 
@@ -167,8 +167,6 @@ rules
                      Seq(Build(Var(x)), 
                      Seq(Build(t'), s))))
           where new => x
-
-  Mapp0 : Match(t[RootApp(Match(t'))]) -> Match(t[t'](pat-td))
 
   Mapp1 : Match(RootApp(s)) -> s
 
