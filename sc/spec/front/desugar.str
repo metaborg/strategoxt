@@ -108,17 +108,17 @@ rules
 	applications in arbitrary builds;
 
 \begin{code}
-strategies
-
-  Bapp = Bapp0 <+ Bapp1 <+ Bapp2
-
 rules
+
+  // this rule is not valid, consider a RootApp in t'
 
   Bapp0 : Build(t[App(Build(t'), t'')]) -> Build(t[t'](pat-td))
 
+  // follows from Bapp2
+
   Bapp1 : Build(App(s, t')) -> Seq(Build(t'), s)
 
-  Bapp2 : Build(t[App(s, t')]) -> 
+  Bapp : Build(t[App(s, t')]) -> 
           Scope([x], Seq(Where(BAM(s, t', Var(x))), Build(t[Var(x)](pat-td))))
           where new => x
 
@@ -126,11 +126,11 @@ rules
 
   Bapp1 : Build(RootApp(s)) -> s
 
-  Bapp2 : Build(t[RootApp(s)]) -> 
+  Bapp : Build(t[RootApp(s)]) -> 
           Scope([x], Seq(Where(Seq(s, Match(Var(x)))), Build(t[Var(x)](pat-td))))
           where new => x
 
-  Bapp2 : Build(t[Anno(t1, t2)]) -> 
+  Bapp : Build(t[Anno(t1, t2)]) -> 
           Scope([x], Seq(Where(Seq(PrimT("SSLsetAnnotations", [], [t1, t2]), Match(Var(x)))), 
                          Build(t[Var(x)](pat-td))))
           where new => x
@@ -144,8 +144,8 @@ explosions. Avoid lifting an App from within another App or RootApp.
     s <+ (Op(id, fetch(pat-td(s)))
          + Explode(id, pat-td(s))
          + Explode(pat-td(s), id)
-//         + Prim(id, fetch(pat-td(s)))
          + PrimT(id, id, fetch(pat-td(s)))
+         + CallT(id, id, fetch(pat-td(s)))
 	 + As(id, pat-td(s)))	 
 \end{code}
 
@@ -171,7 +171,6 @@ rules
   Mapp2 : Match(t[RootApp(s)]) -> 
           Scope([x], Seq(Match(t[Var(x)](pat-td)), Seq(Build(Var(x)), s)))
           where new => x
-
 
   Mapp2 : Match(t[Anno(t1, t2)]) -> 
           Scope([x], Seq(Match(t[As(Var(x), t1)](pat-td)), 

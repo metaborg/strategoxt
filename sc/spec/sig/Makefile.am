@@ -1,8 +1,7 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-SCFLAGS = -I ../match -I $(STRATEGO_FRONT)/share/stratego-front \
-	-O 1
+SCFLAGS = -I ../match -I $(STRATEGO_FRONT)/share/stratego-front
 
 libexec_PROGRAMS = \
   Stratego-Normal-Format Stratego-Canonical-Format Stratego-Optimized-Format 

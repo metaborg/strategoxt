@@ -3,7 +3,7 @@ imports Stratego lib C dynamic-rules stratego-laws
 
 strategies
 
-  canonicalize =
+  canonicalize-io =
     iowrap(
       downup2(repeat(Canon),repeat(Canon))
       ; simplify0

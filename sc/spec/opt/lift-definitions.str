@@ -31,8 +31,6 @@ strategies
   SuperCombinator =
     ?def@SDefT(f, xs, ys, s)
     ; where(
- 	<debug(!"SuperCombinator? ")> f
-        ; <tvars; debug(!"  tvars: ")> def => []
-        ; <svars; filter(not(TopLevel)); debug(!"  svars: ")> def => []
- 	; <debug(!"  SuperCombinator: ")> f
+        <tvars> def => []
+        ; <svars; filter(not(TopLevel))> def => []
       )

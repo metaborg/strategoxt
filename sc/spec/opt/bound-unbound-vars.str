@@ -2,7 +2,7 @@ module bound-unbound-vars
 imports Stratego dynamic-rules lib verbose
 strategies
 
-  bound-unbound-vars =
+  bound-unbound-vars-io =
     iowrap(mark-bound-unbound-vars)
 
   mark-bound-unbound-vars =
@@ -27,24 +27,35 @@ strategies
 
   mark-scope =
     ? Scope(xs, _)
+    //; debug(!"mark-scope: ")
     ; where(!"unbound" => anno)
     ; Scope(id,
         {| MarkVar : 
            where(!xs; map({?x; rules(MarkVar : Var(x) -> Var(x){anno})}))
            ; mark-buv
         |})
+    //; debug-MarkVar(!"mark-scope after: ")
 
   mark-match :
     Match(t) -> Match(t')
-    where !"bound" => anno
+    where //debug(!"mark-match: ");
+	!"bound" => anno
+	//; debug(!" anno: ")
         ; <alltd(
              MarkVar
-             ; where({x:?Var(x); override rules(MarkVar : Var(x) -> Var(x){anno})})
-           )> t => t'
+	     //; debug(!" marked: ")
+             ; where({x: ?Var(x)
+			//; debug(!"   generate: ")
+			; override rules(MarkVar : Var(x) -> Var(x){anno})
+			//; debug(!"   generated: ")
+		     })
+           )> t => t' 
+        //; debug-MarkVar(!"mark-match after: ")
 
 
   mark-build = 
     Build(alltd(MarkVar))
+    //; debug-MarkVar(!"mark-build after: ")
 
   mark-traversal =
     (?All(_) + ?One(_) + ?Some(_) + ?Thread(_))
@@ -74,7 +85,7 @@ strategies
 
   mark-let =
     Let(id, id)
-    ; where(
+    ; where( 
         where(save-MarkVar => bnd0)
         ; Let(map(mark-buv; where(<isect-MarkVar> bnd0))
 	     ,    mark-buv; where(<isect-MarkVar> bnd0))
@@ -125,6 +136,9 @@ strategies // Dynamic rule manipulation
 
   save-MarkVar =
     <table-getlist> "MarkVar"
+
+  debug-MarkVar(s) =
+    where(say(s); save-MarkVar; map(debug(!"  ")))
 
   clean-MarkVar =
     where(<table-destroy> "MarkVar";

@@ -80,8 +80,8 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 %.s7.opt3 : %.s7.opt2 ../opt/const-prop$(EXE)
 	../opt/const-prop -i $< -o $@ -b
 
-%.s7.opt4 : %.s7.opt3 ../c/bound-unbound-vars$(EXE)
-	../c/bound-unbound-vars -i $< -o $@ -b
+%.s7.opt4 : %.s7.opt3 ../opt/bound-unbound-vars$(EXE)
+	../opt/bound-unbound-vars -i $< -o $@ -b
 
 %.s7.opt5 : %.s7.opt4 ../opt/dead-var-elim$(EXE)
 	../opt/dead-var-elim -i $< -o $@ -b
@@ -107,14 +107,14 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 
 ## Second optimization
 
-%.s11.opt1 : %.s11 ../match/optimize2$(EXE)
+%.s11.opt1 : %.s9 ../match/optimize2$(EXE)
 	../match/optimize2 -i $< -o $@ -b
 
 %.s11.opt2 : %.s11.opt1 ../opt/const-prop$(EXE)
 	../opt/const-prop -i $< -o $@ -b
 
-%.s11.opt3 : %.s11.opt2 ../c/bound-unbound-vars$(EXE)
-	../c/bound-unbound-vars -i $< -o $@ -b
+%.s11.opt3 : %.s11.opt2 ../opt/bound-unbound-vars$(EXE)
+	../opt/bound-unbound-vars -i $< -o $@ -b
 
 %.s11.opt4 : %.s11.opt3 ../opt/dead-var-elim$(EXE)
 	../opt/dead-var-elim -i $< -o $@ -b
@@ -124,21 +124,14 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 
 # BACK-END ###########################################################
 
-#%.s13 : %.s12 ../c/canonicalize$(EXE)
-#	../c/canonicalize -i $< -o $@ -b
-#
-#%.s12 : %.s11.opt ../c/bound-unbound-vars$(EXE)
-#	../c/bound-unbound-vars -i $< -o $@ -b
-
-%.s12 : %.s11.opt ../c/canonicalize$(EXE)
-	../c/canonicalize -i $< -o $@ -b
+%.s12 : %.s11.opt ../opt/canonicalize$(EXE)
+	../opt/canonicalize -i $< -o $@ -b
 
 %.s12.lift : %.s12 ../opt/lift-definitions$(EXE)
 	../opt/lift-definitions -i $< -o $@ -b
 
-%.s13 : %.s12.lift ../c/bound-unbound-vars$(EXE)
-	time ../c/bound-unbound-vars -i $< -o $@ -b
-
+%.s13 : %.s12.lift ../opt/bound-unbound-vars$(EXE)
+	time ../opt/bound-unbound-vars -i $< -o $@ -b
 
 %.s13.check : %.s13 ../sig/Stratego-Canonical-Format$(EXE)
 	../sig/Stratego-Canonical-Format -i $< -o $@ -b
@@ -153,7 +146,7 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 	abox-format -i $< 
 
 %.c : %.c.abox 
-	time $(GPP)/bin/abox2text -i $< -o $@
+   	time $(GPP)/bin/abox2text -i $< -o $@
 
 # C COMPILATION #####################################################
 

@@ -169,17 +169,24 @@ strategies
         ; save-as2(!".opt5")
 
         ; olevel5(inline)
-	; olevel5(dead-def-elim)
         ; save-as5(!".opt6")
+	; olevel5(dead-def-elim)
+        ; save-as5(!".opt7")
 
         ; olevel3(optimize2)
-        ; olevel3(const-prop; bound-unbound-vars; dead-var-elim)
-        ; save-as3(!".opt7")
+        ; save-as3(!".opt8")
+        ; olevel3(const-prop
+		; save-as3(!".opt8a")
+		; bound-unbound-vars
+		; save-as3(!".opt8b")
+		; dead-var-elim
+	  )
+        ; save-as3(!".opt9")
         ; olevel1(optimize2)
-        ; save-as1(!".opt8")
+        ; save-as1(!".opt10")
 
         ; olevel1(stratego-of)
-        ; save-as1(!".opt")
+        ; save-as1(!".opt11")
     )
 
   optimize1 = 
@@ -235,8 +242,9 @@ strategies
       canonicalize
       ; save-as1(!".can")
       ; olevel1(lift-definitions)
-      ; save-as1(!".opt9")
+      ; save-as1(!".opt12")
       ; olevel3(bound-unbound-vars)
+      ; save-as1(!".opt13")
       ; stratego-cf
       ; s2c
       ; ac2abox

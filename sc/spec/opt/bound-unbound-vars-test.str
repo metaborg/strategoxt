@@ -1,0 +1,45 @@
+module bound-unbound-vars-test
+imports bound-unbound-vars sunit
+strategies
+
+  bound-unbound-vars-test-io =
+    test-suite(!"bound-unbound-vars-test",
+      test1
+      ; test2
+    )
+
+  test1 =    
+    apply-test(!"test1"
+	, mark-buv
+	, !|[ {h : ?h; !Cons(h, Nil())} ]|
+	, !Scope(["h"],
+	     Seq(Match(Var("h"){"unbound"}),
+		 Build(Op("Cons",[Var("h"){"bound"},Op("Nil",[])]))))
+	) 
+
+  test2 =
+    apply-test(!"test2"
+	, mark-buv
+	, !|[ F(|s_5 : Int) = 
+	      {h_0, i_0, j_0, k_0, l_0 :
+               !s_5
+               ; ?h_0
+               ; ?i_0
+               ; !stdout()
+               ; ?j_0 
+               ; !s_5 
+               ; ?k_0
+               ; !Cons(s_5, Nil())
+	      } 
+	   ]|
+	, !SDefT("F",[],[VarDec("s_5",ConstType(Var("Int")))],
+	     Scope(["h_0","i_0","j_0","k_0","l_0"],
+		Seq(Build(Var("s_5"){"bound"}),
+		Seq(Match(Var("h_0"){"unbound"}),
+		Seq(Match(Var("i_0"){"unbound"}),
+		Seq(Build(Op("stdout",[])),
+		Seq(Match(Var("j_0"){"unbound"}),
+		Seq(Build(Var("s_5"){"bound"}),
+		Seq(Match(Var("k_0"){"unbound"}),
+		    Build(Op("Cons",[Var("s_5"){"bound"},Op("Nil",[])])))))))))))
+	)

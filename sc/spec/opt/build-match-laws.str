@@ -12,7 +12,9 @@ rules // combinations of match and build
     where <BMF> (s1, s2) => s4
 
   BMF = MisMatch + BuildMatchFusion + BuildBuild + BuildPrim
-	+ MatchIdem + BuildMatchIdem + MatchBuildIdem
+	+ MatchIdem + BuildMatchIdem 
+	+ MatchBuildIdemVar
+	// + MatchBuildIdem
 
 
   MisMatch :
@@ -42,9 +44,13 @@ rules // combinations of match and build
   BuildMatchIdem :
     (Build(t), Match(t)) -> Build(t)
     
-  MatchBuildIdem :
-    (Match(t), Build(t)) -> Match(t)
+// not valid as long as annotations are not taken into account
+//  MatchBuildIdem :
+//    (Match(t), Build(t)) -> Match(t)
     
+  MatchBuildIdemVar :
+    (Match(Var(x)), Build(Var(x))) -> Match(Var(x))
+
 rules // other rules 
 
   MatchSimplify = 

@@ -1,5 +1,5 @@
 module canonicalize-main
 imports canonicalize
 strategies
-  main = canonicalize
+  main = canonicalize-io
 

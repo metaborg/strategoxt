@@ -1,4 +1,29 @@
+2003-08-06  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/sc/strc.str: Save more intermediate results
+
+	* spec/opt/lift-definitions.str: Remove debugging statements
+
+	* spec/opt/const-prop-test.str: Test constant propagation
+
+	* spec/opt/canonicalize.str: simplify after canonicalizing
+
+	* spec/opt/bound-unbound-vars-test.str: test bound-unbound-vars
+	analysis.
+
 2003-08-05  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/front/desugar.str: Remove optimized Bapp0 and Bapp1 rules;
+	these follow from the more general rule Bapp2. The overhead of
+	the additional variable is removed by optimizations.
+
+	* spec/opt/build-match-laws.str: MatchBuildIdem is not valid as
+	long as annotations are not explicitly represented in the abstract
+	syntax of terms. A match not mentioning annotations can match with
+	a term with annotations, while a build not mentioning annotations
+	will not add them. Therefore, ?t; !t is not the same as ?t, since
+	!t may strip annotations. The special case where t is a variable
+	is valid though, i.e., ?x; !x can be rewritten to ?x.
 
 	* spec/opt/lift-definitions.str: Declare _id and _fail as top-level
 	definitions. Also declare definitions that are being lifted as
