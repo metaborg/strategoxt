@@ -1,3 +1,8 @@
+2003-03-20  Martin Bravenboer <martin@mbravenboer.org>
+
+  * ssl/exec.[ch]: added SSL_kill
+  * ssl/exec.[h]:  let fork fail on fork failure
+
 2003-02-26  Martin Bravenboer <martin@mbravenboer.org>
 
   * ssl/cgi.[ch]: removed, cgi is part of stratego-net

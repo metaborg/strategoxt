@@ -39,15 +39,37 @@ ATerm SSL_exit(ATerm t)
   return(t);
 }
 
-ATerm SSL_get_pid(void)
-{
+ATerm SSL_get_pid(void) {
   return((ATerm)ATmakeInt(getpid()));
 }
 
-ATerm SSL_fork(void)
-{
+ATerm SSL_fork(void) {
   pid_t pid = fork();
-  return (ATerm)ATmakeInt((int)pid);
+  int result = (int) pid;
+  ATerm tresult = (ATerm) ATmakeInt(result);
+
+  if(result == -1) {
+    _fail(tresult);
+  }
+
+  return tresult;
+}
+
+ATerm SSL_kill(ATerm pid, ATerm sig) {
+  int result = -1;
+
+  if(ATisInt(pid) && ATisInt(sig)) {
+    result = kill(ATgetInt((ATermInt) pid), ATgetInt((ATermInt) sig));
+    
+    if(result == -1) {
+      _fail(pid);      
+    }
+  }
+  else {
+    _fail(pid);
+  }
+
+  return (ATerm) ATmakeInt(result);
 }
 
 ATerm SSL_execvp(ATerm file, ATerm argv)
@@ -355,3 +377,4 @@ ATerm SSL_pipe_term_to_child(ATerm t, ATerm prog, ATerm args0)
   }
   return((ATerm) ATempty);
 }
+
