@@ -244,7 +244,7 @@ STRUCTURE OF THE DISTRIBUTION
 
 Complete sources of StrategoXT
 
-  * http://www.stratego-language.org/ftp/StrategoXT-0.9.tar.gz
+ftp://ftp.stratego-language.org/pub/stratego/StrategoXT/StrategoXT-0.9.tar.gz
 
 StrategoXT is built using the ATermLibrary, the SDF syntax definition
 formalism and parser generator, and optionally the Nancy Choice Point
@@ -319,8 +319,8 @@ sdf2, and StrategoXT packages.
    make install
    cd ..
 
-   tar zxf StrategoXT-0.9beta9.tar.gz
-   cd StrategoXT-0.9beta9
+   tar zxf StrategoXT-0.9.tar.gz
+   cd StrategoXT-0.9
    ./configure --prefix=$DIR --with-aterm=$DIR --with-sdf=$DIR
    make
    cd ..
@@ -352,8 +352,7 @@ The StrategoXT distribution consists of the following packages
 
     * stratego-front -- Stratego syntax and support for concrete object syntax
     * sc -- Stratego compiler
-    * box-tools -- Pretty-printing tools based on box (gpp) replacement
-    * cgen -- Support for the generation of C code
+    * gpp -- Pretty-printing tools based on box
     * c-tools -- Improved support for the generation of C code
 
     * ssl -- Stratego Standard Library

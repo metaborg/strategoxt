@@ -14,21 +14,22 @@ News about Stratego releases
 
 ------------------------------------------------------------------------------
 
-StrategoXT 0.9 
+StrategoXT 0.9 -- released January 26, 2003
 
-  released January 26, 2003
-
-  This release completely integrates concrete object syntax into
-  Stratego.  The parser for modules is now only based on SDF/SGLR; the
-  LEX/YACC grammar has been retired. The XTC transformation tool
-  composition framework provides a setting for easily creating
-  transformation systems composed from transformation components.  The
-  AutoXT package provides support for autoconf/make packages using the
-  StrategoXT toolset. This has greatly simplified the configuration of
-  the StrategoXT packages. Several new tools and libraries have been
-  added, and existing packages have been refactored to use autoxt and
-  XTC. Also the distribution is available in binary form. Currently
-  only in the form of RedHat 8.0 RPMs.
+This release completely integrates concrete object syntax into
+Stratego. The extension of Stratego with concrete syntax implies a
+dependence of the compiler on several of the XT packages. Therefore,
+the new StrategoXT distribution integrates Stratego and XT. The parser
+for modules is now only based on SDF/SGLR; the LEX/YACC grammar has
+been retired. The XTC transformation tool composition framework
+provides a setting for easily creating transformation systems composed
+from transformation components.  The AutoXT package provides support
+for autoconf/make packages using the StrategoXT toolset. This has
+greatly simplified the configuration of the StrategoXT
+packages. Several new tools and libraries have been added, and
+existing packages have been refactored to use AutoXT and XTC. The
+distribution is available in binary form. Currently only in the form
+of RedHat 8.0 RPMs.
 
 DOWNLOAD AND INSTALLATION
 
