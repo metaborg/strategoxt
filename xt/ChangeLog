@@ -1,4 +1,5 @@
 2001-11-22 Merijn de Jonge <mdejonge@cwi.nl>
+   * Added missing but required packages to package.conf
    * configuration of xt package adapted to make use of AC_PACKAGE_REQUIRE
      macro in configure.in
 
