@@ -23,6 +23,7 @@ SCOMPILE 	= $(SC)/bin/sc
 PARSESTRATEGO 	= $(STRATEGO_FRONT)/bin/parse-stratego
 
 sdfdatadir	= ${datadir}/sdf/${PACKAGE}
+docdatadir  = ${datadir}/doc/${PACKAGE}
 
 ###########################################################
 #
