@@ -14,6 +14,8 @@ $(BUILD_SRTS_DEST)/srts.dummy :
 	cp -LRfp libraries/.libs $(BUILD_SRTS_DEST)/$(prefix)/lib/srts/ && \
 	cp -fp   ssl/*.la  $(BUILD_SRTS_DEST)/$(prefix)/lib/srts/ && \
 	cp -LRfp ssl/.libs $(BUILD_SRTS_DEST)/$(prefix)/lib/srts/ && \
+	cp -fp   src/*.la  $(BUILD_SRTS_DEST)/$(prefix)/lib/srts/ && \
+	cp -LRfp src/.libs $(BUILD_SRTS_DEST)/$(prefix)/lib/srts/ && \
 	touch $(BUILD_SRTS_DEST)/srts.dummy
 
 $(INSTALL_XTC_DEST)/xtc.dummy :
