@@ -1,3 +1,5 @@
+2000-04-17 <mdejonge@cwi.nl>
+        * added --with-aterm=${prefix} to configuration of asfix library
 2000-04-13 <mdejonge@cwi.nl>
         * released version 0.2
         * increased version number (0.3)
