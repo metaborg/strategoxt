@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Asfix-2-abox.r,v 1.4 2002/08/01 12:59:53 mdejonge Exp $
+% $Id: Asfix-2-abox.r,v 1.5 2002/08/01 15:05:08 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 % Changes: Eelco Visser <visser@acm.org> 19/5/20001
@@ -115,7 +115,7 @@ build-list:
          where
            <symbol2abox>(sym, t, new-path, number) => ab \
          } ) => aboxes;
-      <instantiate>(pp-entry, [aboxes]) => abox
+      <instantiate-list(!pp-entry)>aboxes => abox
 
 symbol2abox: 
    (iter-sep(sym,sep), lst, path, number) -> aboxes

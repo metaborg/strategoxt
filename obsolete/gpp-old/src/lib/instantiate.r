@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: instantiate.r,v 1.1 2001/12/18 11:25:31 mdejonge Exp $
+% $Id: instantiate.r,v 1.2 2002/08/01 15:05:10 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
@@ -30,7 +30,7 @@ rules
 instantiate: (t, args) -> instantiated
    where
       <bottomup( try(Instantiate(!args)+flat-list ) )>t => instantiated
-      
+
 Instantiate(args) : Arg(n) -> instantiated
    where
       <index>(n, <args>()) => instantiated
@@ -41,6 +41,16 @@ Instantiate(args) : Arg2(n, m) -> instantiated
       <index>(m, list)     => instantiated
 
 strategies
+
+instantiate-list(pp-entry) =
+   rec x(
+   {sym,xs:
+    []
+    <+
+    ?[sym|xs];
+    [<instantiate>(<pp-entry>(),[sym])|!xs;x]
+    })
+
 instantiate-sep-list(pp-entry) =
    rec x(
    {sym,sep,xs:

@@ -1,5 +1,8 @@
 2002-08-01  Merijn de Jonge <mdejonge@cwi.nl>
    * asfix2abox/Asfix2Abox.r: fatal-error when discovering ambiguities.
+   * asfix2abox/Asfix2Abox.r, lib/instantiate.r: fixed bug with list
+     instantiation
+
 
 2002-06-18  Merijn de Jonge <mdejonge@cwi.nl>
    * ppgen/data/ppgencheck1.in: added missing grammar identifier
