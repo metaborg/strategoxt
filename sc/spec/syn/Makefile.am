@@ -69,4 +69,4 @@ check1: parse-mod
 check2: pack-stratego 
 	./pack-stratego -I $(STRATEGOLIB)/share/ssl -I $(srcdir)/../sig -i syntax-test -o syntax-test.trm
 
-include $(srcdir)/../Makefile.stratego
+include $(srcdir)/../Makefile.common
