@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: pkg-list,v 1.21 2000/07/24 17:07:04 mdejonge Exp $
+# $Id: pkg-list,v 1.22 2000/07/26 16:46:00 mdejonge Exp $
 
 # This file lists name, version, and location of all components 
 # of an XT distribution.
@@ -26,8 +26,8 @@
 aterm,1.3.2,http://www.cwi.nl/projects/MetaEnv/aterm/
 asfix,0.1,http://www.cwi.nl/projects/MetaEnv/asfix/
 asc-support,0.3,http://www.cwi.nl/projects/MetaEnv/asc-runtime/
-pgen,0.4,http://www.cwi.nl/projects/MetaEnv/pgen/
-sglr,2.32,http://www.cwi.nl/projects/MetaEnv/sglr/
+pgen,0.3,http://www.cwi.nl/projects/MetaEnv/pgen/
+sglr,2.31,http://www.cwi.nl/projects/MetaEnv/sglr/
 stratego,0.4.16,http://www.cs.uu.nl/~visser/ftp/
 gb,0.3,cvs:gondel.cwi.nl:/ufs/gipe/CVS
 gt,0.3,cvs:gondel.cwi.nl:/ufs/gipe/CVS

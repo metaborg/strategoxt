@@ -1,4 +1,8 @@
 2000-07-25 <mdejonge@cwi.nl>
+        * returned to version 2.31 of sglr and version 0.3 of pgen because
+          of bugs in the most recent versions
+ 
+2000-07-25 <mdejonge@cwi.nl>
         * added subdirectory with top-level XT integration tests
         * added parseyacc-yacc2sdf-sdf2text-check.src integration test
 
