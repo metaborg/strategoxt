@@ -37,6 +37,7 @@ strategies
 	test4e;
   
 	test5;
+	test5b;
 	test6;
 	test7;
 	test8;
@@ -213,6 +214,13 @@ strategies
 	, collect-split(\ H(x,y) -> I(x) \, \ H(x,y) -> [H(x,y)] \ )
 	, !F(G(A,H(A,B)),H(B,C))
 	, !(F(G(A,I(A)), I(B)), [H(A,B),H(B,C)])
+	)
+
+  test5b = 
+    apply-test(!"test5b"
+	, collect-split(\ H(x,y) -> I(x) \, \ H(x,y) -> [H(x,y)] \ )
+	, !F(G(A,H(A{"Test1"},B)){"Test2"},H(B,C))
+	, !(F(G(A,I(A{"Test1"})){"Test2"}, I(B)), [H(A{"Test1"},B),H(B,C)])
 	)
 
   test6 = 
