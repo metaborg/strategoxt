@@ -23,6 +23,9 @@ strategies
 
   + Option("--asfix", where(<set-config>("--asfix", 1)), !"--asfix")
 
+  + ArgOption("--desugaring", where(<set-config>("--desugaring", <id>)),
+	      !"--desugaring on/off : turn desugaring on or off (default: on)")
+
   parse-stratego =
     xtc-iowrap(parse-stratego-options, 
       where(<extend-config> ("-I", ["./", <xtc-find-path> "StrategoRenamed.sdf"]))
@@ -44,7 +47,11 @@ strategies
     ; xtc-transform(!"meta-explode",     <concat> [<pass-verbose>,
                          <get-config < !["--asfix"] + ![]> "--asfix"])
     ; where( if-not-silent(read-from ; check-module-name(|base)) )
-    ; xtc-transform(!"stratego-desugar", pass-verbose)
+    ; if <get-config> "--desugaring" => off then
+	id 
+      else 
+        xtc-transform(!"stratego-desugar", pass-verbose)
+      end
 
   check-module-name(|base) =
     ?Module(n,_) 
