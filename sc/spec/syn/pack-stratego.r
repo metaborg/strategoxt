@@ -52,13 +52,16 @@ strategies
 
 
   get-module(mkpath) =
-    guarantee-extension(!"r"); //debug(!"looking for: ");
-    split(id, mkpath); find-in-path;
-    split(id, parse-mod)
-    <+ guarantee-extension(!"tree"); //debug(!"looking for: ");
-       split(id, mkpath); find-in-path;
-       split(id, ReadFromFile)
-    <+ <fatal-error> ["module ", <id>, " not found"]
+     guarantee-extension(!"r"); //debug(!"looking for: ");
+     split(id, mkpath); find-in-path;
+     (   split(id, parse-mod)
+      <+ <fatal-error> ["parse error in ", <id>])
+
+  <+ guarantee-extension(!"tree"); //debug(!"looking for: ");
+     split(id, mkpath); find-in-path;
+     split(id, ReadFromFile)
+
+  <+ <fatal-error> ["module ", <id>, " not found"]
 
   get-stratego-imports =
     \ (_, Specification(xs)) -> xs \;
