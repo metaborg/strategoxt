@@ -4,7 +4,7 @@ News about Stratego releases
 
 ------------------------------------------------------------------------------
 
-Version 0.6.2
+Version 0.6.3
 
  released: October 6, 2001
 
@@ -12,12 +12,24 @@ Version 0.6.2
 
  (with respect to release 0.6)
 
+ * BuildSplit generalizes split
+ * Tuple syntax supported by ATerm library, not yet by Stratego Compiler
+
  CONTRIBUTIONS
 
- * Bug reports by: Otto Skrove Bagge, Merijn de Jonge, Hedzer Westra
- * Bug repairs by: Merijn de Jonge
+ * Bug reports by: 
+    * Otto Skrove Bagge
+    * Robert Feldt (configuration)
+    * Merijn de Jonge
+    * Hedzer Westra
+ * Bug repairs by
+    * Merijn de Jonge
 
  LANGUAGE
+
+ * BuildSplit patterns simplify wrapping some complex constructor pattern
+   around a term. For instance, split(f,g) can now be written as
+   !(<f>,<g>), and this generalizes to arbitrary build patterns.
 
  COMPILER
 
@@ -26,14 +38,14 @@ Version 0.6.2
    - -t f: trace strategy f
 
  * Optimization is set to O2 by default (used to be O4). The higher
- optimization level (which comes down to inlining functions in addition
- to the O2 optimizations) seems to produce faulty code on some
- machine/compiler combinations. Optimization can be increased by
- passing the option -CI "O3" to SC. However, it seems appropriate to
- leave inlining decisions to SC.
+   optimization level (which comes down to inlining functions in addition
+   to the O2 optimizations) seems to produce faulty code on some
+   machine/compiler combinations. Optimization can be increased by
+   passing the option -CI "O3" to SC. However, it seems appropriate to
+   leave inlining decisions to SC.
 
  * Repair in implementation of dynamic rules; added rule stamp in order
- to record to which rule the information belongs.
+   to record to which rule the information belongs.
 
  * Repair of compilation of overlays
 

@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.3 2001/10/26 16:31:56 stratego Exp $
+# $Id: Makefile.am,v 1.4 2001/11/21 15:25:21 stratego Exp $
 
 #DIST_SUBDIRS = pre-checks emacs $(PKGS)
 
@@ -57,23 +57,25 @@ config:
 	cd sc-boot; stdconfig
 	cd sc; stdconfig
 
+WWWSTRATEGO=sunshine.cs.uu.nl:/users/www/research/projects/stratego/ftp
+
 upload:
-	scp *.tar.gz */*.tar.gz sunshine.cs.uu.nl:/users/visser/www/stratego/ftp
+	scp *.tar.gz */*.tar.gz $(WWWSTRATEGO)
 
 upload-stratego:
-	scp stratego-*.tar.gz sunshine.cs.uu.nl:/users/visser/www/stratego/ftp
+	scp stratego-*.tar.gz $(WWWSTRATEGO)
 
 upload-srts:
-	scp srts/srts-*.tar.gz sunshine.cs.uu.nl:/users/visser/www/stratego/ftp
+	scp srts/srts-*.tar.gz $(WWWSTRATEGO)
 
 upload-sc-boot:
-	scp sc-boot/sc-boot-*.tar.gz sunshine.cs.uu.nl:/users/visser/www/stratego/ftp
+	scp sc-boot/sc-boot-*.tar.gz $(WWWSTRATEGO)
 
 upload-gpp-boot:
-	scp gpp-boot/gpp-boot-*.tar.gz sunshine.cs.uu.nl:/users/visser/www/stratego/ftp
+	scp gpp-boot/gpp-boot-*.tar.gz $(WWWSTRATEGO)
 
 upload-sc:
-	scp sc/sc-*.tar.gz sunshine.cs.uu.nl:/users/visser/www/stratego/ftp
+	scp sc/sc-*.tar.gz $(WWWSTRATEGO)
 
 upload-ssl:
-	scp ssl/ssl-*.tar.gz sunshine.cs.uu.nl:/users/visser/www/stratego/ftp
+	scp ssl/ssl-*.tar.gz $(WWWSTRATEGO)

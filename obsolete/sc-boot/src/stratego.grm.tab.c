@@ -192,15 +192,15 @@ static const short yyprhs[] = {     0,
     54,    57,    59,    62,    63,    66,    69,    70,    74,    75,
     79,    81,    84,    86,    88,    89,    92,    96,   100,   102,
    106,   110,   112,   114,   116,   119,   121,   124,   126,   128,
-   130,   133,   137,   142,   147,   151,   157,   158,   161,   162,
-   168,   169,   173,   174,   178,   180,   184,   185,   187,   191,
-   192,   193,   196,   201,   206,   211,   216,   217,   220,   223,
-   228,   234,   237,   240,   245,   252,   256,   261,   265,   267,
-   269,   272,   277,   283,   288,   293,   298,   304,   310,   314,
-   318,   322,   326,   332,   337,   342,   347,   352,   356,   361,
-   363,   365,   367,   372,   373,   376,   377,   381,   382,   384,
-   388,   389,   392,   395,   400,   401,   405,   406,   408,   412,
-   414,   418,   419,   421,   425,   426,   429,   436
+   130,   133,   137,   142,   146,   151,   155,   161,   162,   165,
+   166,   172,   173,   177,   178,   182,   184,   188,   189,   191,
+   195,   196,   197,   200,   205,   210,   215,   220,   221,   224,
+   227,   232,   238,   241,   244,   249,   256,   260,   265,   269,
+   271,   273,   276,   281,   287,   292,   297,   302,   308,   314,
+   318,   322,   326,   330,   336,   341,   346,   351,   356,   360,
+   365,   367,   369,   371,   376,   377,   380,   381,   385,   386,
+   388,   392,   393,   396,   399,   404,   405,   409,   410,   412,
+   416,   418,   422,   423,   425,   429,   430,   433,   440
 };
 
 static const short yyrhs[] = {    34,
@@ -218,36 +218,37 @@ static const short yyrhs[] = {    34,
      0,     3,     0,     5,     0,    95,    98,     0,    51,     0,
     51,    96,     0,    80,     0,    79,     0,     4,     0,    95,
    100,     0,    95,    14,    96,     0,    29,   108,    30,    96,
-     0,    24,   101,    97,    69,     0,    28,   101,    43,     0,
-    96,    54,    28,    96,    43,     0,     0,    12,    96,     0,
-     0,    24,    96,   107,    69,    99,     0,     0,    28,    95,
-    43,     0,     0,    28,   101,    43,     0,    96,     0,    96,
-    18,   101,     0,     0,    95,     0,    95,    18,   102,     0,
-     0,     0,   103,   104,     0,    95,   114,    62,   105,     0,
-    95,   114,    63,   106,     0,    96,     7,    96,   107,     0,
-   108,     8,   108,   107,     0,     0,    71,   108,     0,    95,
-   110,     0,    95,    55,    95,   110,     0,   108,    54,    28,
-   108,    43,     0,    33,    96,     0,    17,    96,     0,    40,
-    28,     4,    43,     0,    40,    28,     4,    18,   101,    43,
-     0,    53,   105,    53,     0,    29,   108,    30,    96,     0,
-   108,    67,    96,     0,    20,     0,    50,     0,    80,   108,
-     0,    44,    28,   103,    43,     0,    56,    44,    28,   103,
-    43,     0,    70,    28,   108,    43,     0,    71,    28,   108,
-    43,     0,    72,    28,   108,    43,     0,    25,   102,    62,
-   108,    41,     0,    26,   102,    62,   108,    42,     0,    25,
-   108,    41,     0,   108,    66,   108,     0,   108,    64,   108,
-     0,   108,    65,   108,     0,    77,    95,    28,   108,    43,
-     0,    76,    28,   108,    43,     0,    73,    28,   108,    43,
-     0,    74,    28,   108,    43,     0,    75,    28,   108,    43,
-     0,    28,   111,    43,     0,    24,   111,   109,    69,     0,
-     4,     0,    80,     0,    79,     0,    78,   112,    61,   108,
-     0,     0,    12,   108,     0,     0,    28,   111,    43,     0,
-     0,   108,     0,   108,    18,   111,     0,     0,   112,   113,
-     0,   112,   104,     0,    95,   114,    19,   108,     0,     0,
-    28,   115,    43,     0,     0,   116,     0,   116,    18,   115,
-     0,    95,     0,    95,    62,    93,     0,     0,    95,     0,
-    95,    18,   117,     0,     0,   119,   118,     0,    95,    28,
-   117,    43,    19,    96,     0,    95,    19,    96,     0
+     0,    29,   108,    30,     0,    24,   101,    97,    69,     0,
+    28,   101,    43,     0,    96,    54,    28,    96,    43,     0,
+     0,    12,    96,     0,     0,    24,    96,   107,    69,    99,
+     0,     0,    28,    95,    43,     0,     0,    28,   101,    43,
+     0,    96,     0,    96,    18,   101,     0,     0,    95,     0,
+    95,    18,   102,     0,     0,     0,   103,   104,     0,    95,
+   114,    62,   105,     0,    95,   114,    63,   106,     0,    96,
+     7,    96,   107,     0,   108,     8,   108,   107,     0,     0,
+    71,   108,     0,    95,   110,     0,    95,    55,    95,   110,
+     0,   108,    54,    28,   108,    43,     0,    33,    96,     0,
+    17,    96,     0,    40,    28,     4,    43,     0,    40,    28,
+     4,    18,   101,    43,     0,    53,   105,    53,     0,    29,
+   108,    30,    96,     0,   108,    67,    96,     0,    20,     0,
+    50,     0,    80,   108,     0,    44,    28,   103,    43,     0,
+    56,    44,    28,   103,    43,     0,    70,    28,   108,    43,
+     0,    71,    28,   108,    43,     0,    72,    28,   108,    43,
+     0,    25,   102,    62,   108,    41,     0,    26,   102,    62,
+   108,    42,     0,    25,   108,    41,     0,   108,    66,   108,
+     0,   108,    64,   108,     0,   108,    65,   108,     0,    77,
+    95,    28,   108,    43,     0,    76,    28,   108,    43,     0,
+    73,    28,   108,    43,     0,    74,    28,   108,    43,     0,
+    75,    28,   108,    43,     0,    28,   111,    43,     0,    24,
+   111,   109,    69,     0,     4,     0,    80,     0,    79,     0,
+    78,   112,    61,   108,     0,     0,    12,   108,     0,     0,
+    28,   111,    43,     0,     0,   108,     0,   108,    18,   111,
+     0,     0,   112,   113,     0,   112,   104,     0,    95,   114,
+    19,   108,     0,     0,    28,   115,    43,     0,     0,   116,
+     0,   116,    18,   115,     0,    95,     0,    95,    62,    93,
+     0,     0,    95,     0,    95,    18,   117,     0,     0,   119,
+   118,     0,    95,    28,   117,    43,    19,    96,     0,    95,
+    19,    96,     0
 };
 
 #endif
@@ -259,15 +260,15 @@ static const short yyrline[] = { 0,
    200,   203,   204,   205,   208,   209,   212,   213,   215,   216,
    219,   220,   223,   224,   227,   228,   231,   234,   235,   236,
    240,   241,   244,   245,   250,   257,   259,   261,   262,   263,
-   264,   265,   266,   267,   268,   269,   273,   274,   277,   278,
-   282,   283,   286,   287,   290,   291,   292,   295,   296,   297,
-   302,   303,   307,   308,   312,   315,   319,   320,   326,   328,
-   332,   336,   337,   339,   340,   342,   344,   345,   347,   348,
-   349,   351,   352,   354,   355,   356,   358,   360,   362,   364,
-   365,   366,   367,   368,   369,   370,   371,   372,   373,   375,
-   376,   378,   380,   384,   385,   389,   390,   394,   395,   396,
-   402,   403,   404,   408,   412,   413,   416,   417,   418,   421,
-   422,   424,   425,   426,   429,   430,   433,   435
+   264,   265,   266,   267,   268,   269,   270,   274,   275,   278,
+   279,   283,   284,   287,   288,   291,   292,   293,   296,   297,
+   298,   303,   304,   308,   309,   313,   316,   320,   321,   327,
+   329,   333,   337,   338,   340,   341,   343,   345,   346,   348,
+   349,   350,   352,   353,   355,   356,   357,   359,   361,   363,
+   365,   366,   367,   368,   369,   370,   371,   372,   373,   374,
+   376,   377,   379,   381,   385,   386,   390,   391,   395,   396,
+   397,   403,   404,   405,   409,   413,   414,   417,   418,   419,
+   422,   423,   425,   426,   427,   430,   431,   434,   436
 };
 #endif
 
@@ -298,15 +299,15 @@ static const short yyr1[] = {     0,
     86,    87,    87,    87,    88,    88,    89,    89,    90,    90,
     -1,    -1,    -1,    -1,    91,    91,    92,    93,    93,    93,
     94,    94,    95,    95,    96,    96,    96,    96,    96,    96,
-    96,    96,    96,    96,    96,    96,    97,    97,    98,    98,
-    99,    99,   100,   100,   101,   101,   101,   102,   102,   102,
-   103,   103,   104,   104,   105,   106,   107,   107,   108,   108,
+    96,    96,    96,    96,    96,    96,    96,    97,    97,    98,
+    98,    99,    99,   100,   100,   101,   101,   101,   102,   102,
+   102,   103,   103,   104,   104,   105,   106,   107,   107,   108,
    108,   108,   108,   108,   108,   108,   108,   108,   108,   108,
    108,   108,   108,   108,   108,   108,   108,   108,   108,   108,
    108,   108,   108,   108,   108,   108,   108,   108,   108,   108,
-   108,   108,   108,   109,   109,   110,   110,   111,   111,   111,
-   112,   112,   112,   113,   114,   114,   115,   115,   115,   116,
-   116,   117,   117,   117,   118,   118,   119,   119
+   108,   108,   108,   108,   109,   109,   110,   110,   111,   111,
+   111,   112,   112,   112,   113,   114,   114,   115,   115,   115,
+   116,   116,   117,   117,   117,   118,   118,   119,   119
 };
 
 static const short yyr2[] = {     0,
@@ -315,45 +316,45 @@ static const short yyr2[] = {     0,
      2,     1,     2,     0,     2,     2,     0,     3,     0,     3,
      1,     2,     1,     1,     0,     2,     3,     3,     1,     3,
      3,     1,     1,     1,     2,     1,     2,     1,     1,     1,
-     2,     3,     4,     4,     3,     5,     0,     2,     0,     5,
-     0,     3,     0,     3,     1,     3,     0,     1,     3,     0,
-     0,     2,     4,     4,     4,     4,     0,     2,     2,     4,
-     5,     2,     2,     4,     6,     3,     4,     3,     1,     1,
-     2,     4,     5,     4,     4,     4,     5,     5,     3,     3,
-     3,     3,     5,     4,     4,     4,     4,     3,     4,     1,
-     1,     1,     4,     0,     2,     0,     3,     0,     1,     3,
-     0,     2,     2,     4,     0,     3,     0,     1,     3,     1,
-     3,     0,     1,     3,     0,     2,     6,     3
+     2,     3,     4,     3,     4,     3,     5,     0,     2,     0,
+     5,     0,     3,     0,     3,     1,     3,     0,     1,     3,
+     0,     0,     2,     4,     4,     4,     4,     0,     2,     2,
+     4,     5,     2,     2,     4,     6,     3,     4,     3,     1,
+     1,     2,     4,     5,     4,     4,     4,     5,     5,     3,
+     3,     3,     3,     5,     4,     4,     4,     4,     3,     4,
+     1,     1,     1,     4,     0,     2,     0,     3,     0,     1,
+     3,     0,     2,     2,     4,     0,     3,     0,     1,     3,
+     1,     3,     0,     1,     3,     0,     2,     6,     3
 };
 
 static const short yydefact[] = {     0,
-    43,   110,    44,     0,    89,   118,    70,    70,   118,     0,
-     0,     0,     0,     0,    90,     0,     0,     0,     0,     0,
-     0,     0,     0,     0,     0,     0,   121,   112,   111,   116,
-     4,    50,    67,    67,     0,    46,    49,    48,    59,    83,
-     0,   119,   114,   116,     0,     0,    68,     0,     0,     0,
-    82,    14,     0,    71,     0,     0,     0,     7,     0,     0,
-     0,     0,     0,     0,     0,     0,     0,    91,   118,     0,
-    79,     0,     0,     0,     0,     0,    65,    57,     0,     0,
-    47,     0,     0,    67,    45,    51,     0,     0,   118,     0,
-     0,    70,     0,    99,     0,   108,     0,    15,   135,   121,
-    24,   121,     1,    12,     0,     0,     0,    86,    71,     0,
+    43,   111,    44,     0,    90,   119,    71,    71,   119,     0,
+     0,     0,     0,     0,    91,     0,     0,     0,     0,     0,
+     0,     0,     0,     0,     0,     0,   122,   113,   112,   117,
+     4,    50,    68,    68,     0,    46,    49,    48,    60,    84,
+     0,   120,   115,   117,     0,     0,    69,     0,     0,     0,
+    83,    14,     0,    72,     0,     0,     0,     7,     0,     0,
+     0,     0,     0,     0,     0,     0,     0,    92,   119,     0,
+    80,     0,     0,     0,     0,     0,    66,    58,     0,     0,
+    47,     0,     0,    68,    45,    51,     0,     0,   119,     0,
+     0,    71,     0,   100,     0,   109,     0,    15,   136,   122,
+    24,   122,     1,    12,     0,     0,     0,    87,    72,     0,
      0,     0,     2,     5,    10,     0,     0,     0,     0,     0,
-     0,     0,     0,     0,   125,   123,   122,     0,   116,     0,
-   101,   102,   100,    88,    67,     0,     0,    55,     0,    52,
-    77,     0,     0,     0,   120,   115,   109,    69,     0,     0,
-    87,    17,     0,    21,   135,    18,    35,    27,    20,    22,
-    19,    13,    67,    84,    92,   125,    72,    77,     0,    11,
-     8,     9,     6,    94,    95,    96,   105,   106,   107,   104,
-     0,   113,   127,     0,   117,    80,     0,    66,    58,    54,
-    53,     0,     0,    64,     0,    87,    97,    98,    16,     0,
-   132,   136,    26,    25,    23,     0,     0,    75,    93,   103,
-   130,     0,   128,     0,     0,     0,    81,    78,    61,    56,
-   138,   133,     0,    36,     0,    29,    85,     0,   126,   127,
-   124,    73,    74,     0,     0,    60,   132,     0,     0,    67,
-    28,    67,    42,     0,    39,   129,     0,     0,   134,     0,
-    37,     0,    42,    39,     0,     0,    77,    62,   137,    30,
-    40,    38,    41,    76,     0,     0,     0
+     0,     0,     0,     0,   126,   124,   123,     0,   117,     0,
+   102,   103,   101,    89,    68,     0,     0,    56,    54,    52,
+    78,     0,     0,     0,   121,   116,   110,    70,     0,     0,
+    88,    17,     0,    21,   136,    18,    35,    27,    20,    22,
+    19,    13,    68,    85,    93,   126,    73,    78,     0,    11,
+     8,     9,     6,    95,    96,    97,   106,   107,   108,   105,
+     0,   114,   128,     0,   118,    81,     0,    67,    59,    55,
+    53,     0,     0,    65,     0,    88,    98,    99,    16,     0,
+   133,   137,    26,    25,    23,     0,     0,    76,    94,   104,
+   131,     0,   129,     0,     0,     0,    82,    79,    62,    57,
+   139,   134,     0,    36,     0,    29,    86,     0,   127,   128,
+   125,    74,    75,     0,     0,    61,   133,     0,     0,    68,
+    28,    68,    42,     0,    39,   130,     0,     0,   135,     0,
+    37,     0,    42,    39,     0,     0,    78,    63,   138,    30,
+    40,    38,    41,    77,     0,     0,     0
 };
 
 static const short yydefgoto[] = {   265,
@@ -407,16 +408,16 @@ static const short yypgoto[] = {-32768,
 static const short yytable[] = {    39,
    208,    48,    44,    47,   167,   104,    39,    52,    49,    -3,
     78,    39,    53,   107,     1,     1,     3,     3,     1,    69,
-     3,    66,     1,    32,     3,   163,  -131,    87,    39,    39,
+     3,    66,     1,    32,     3,   163,  -132,    87,    39,    39,
    220,    39,     1,    32,     3,     1,   156,     3,   161,   214,
     57,    87,    40,    33,   192,   135,    70,    34,    35,    51,
-   164,  -131,    54,    33,    55,   165,   162,   242,    35,   247,
+   164,  -132,    54,    33,    55,   165,   162,   242,    35,   247,
     87,   142,   125,    87,   200,   129,    92,   167,   128,    59,
     36,    39,   124,   201,    81,   209,    69,    39,    39,    39,
     36,    87,   215,   216,    60,   148,    82,    47,   145,   264,
    255,    58,    39,   256,   153,    61,    83,   157,    37,    38,
     84,   166,    39,    70,    62,    72,    89,   158,    37,    38,
-   -68,    72,   188,    63,   134,    73,    74,    75,    76,   -42,
+   -69,    72,   188,    63,   134,    73,    74,    75,    76,   -42,
    140,   141,   -42,    75,    76,    97,   215,   216,    64,    65,
     39,    39,    87,   139,    39,   151,    90,    93,    39,    39,
    206,    92,    72,    95,   105,   168,   108,   199,    96,    72,
@@ -1283,345 +1284,349 @@ case 53:
     break;}
 case 54:
 #line 267 "stratego.grm"
-{yyval.term = list_to_consnil_op_tl(yyvsp[-2].list, yyvsp[-1].term);;
+{yyval.term = App1("RootApp", yyvsp[-1].term);;
     break;}
 case 55:
 #line 268 "stratego.grm"
-{yyval.term = list_to_tconstnil_op(yyvsp[-1].list);;
+{yyval.term = list_to_consnil_op_tl(yyvsp[-2].list, yyvsp[-1].term);;
     break;}
 case 56:
-#line 270 "stratego.grm"
-{yyval.term = App2("Explode", yyvsp[-4].term, yyvsp[-1].term);
+#line 269 "stratego.grm"
+{yyval.term = list_to_tconstnil_op(yyvsp[-1].list);;
     break;}
 case 57:
-#line 273 "stratego.grm"
-{yyval.term = ATmake("Op(\"Nil\",[])");;
+#line 271 "stratego.grm"
+{yyval.term = App2("Explode", yyvsp[-4].term, yyvsp[-1].term);
     break;}
 case 58:
 #line 274 "stratego.grm"
-{yyval.term = yyvsp[0].term;;
+{yyval.term = ATmake("Op(\"Nil\",[])");;
     break;}
 case 59:
-#line 277 "stratego.grm"
-{yyval.list = ATmakeList0();;
+#line 275 "stratego.grm"
+{yyval.term = yyvsp[0].term;;
     break;}
 case 60:
-#line 279 "stratego.grm"
-{yyval.list = ATmakeList2(yyvsp[-3].term, App2("Call", yyvsp[0].term, (ATerm) ATmakeList0()));;
+#line 278 "stratego.grm"
+{yyval.list = ATmakeList0();;
     break;}
 case 61:
-#line 282 "stratego.grm"
-{yyval.term = ATmake("SVar(\"oncetd\")"); ;
+#line 280 "stratego.grm"
+{yyval.list = ATmakeList2(yyvsp[-3].term, App2("Call", yyvsp[0].term, (ATerm) ATmakeList0()));;
     break;}
 case 62:
 #line 283 "stratego.grm"
-{yyval.term = App1("SVar", yyvsp[-1].term);;
+{yyval.term = ATmake("SVar(\"oncetd\")"); ;
     break;}
 case 63:
-#line 286 "stratego.grm"
-{yyval.list = ATmakeList0();;
+#line 284 "stratego.grm"
+{yyval.term = App1("SVar", yyvsp[-1].term);;
     break;}
 case 64:
 #line 287 "stratego.grm"
-{yyval.list = yyvsp[-1].list;;
+{yyval.list = ATmakeList0();;
     break;}
 case 65:
-#line 290 "stratego.grm"
-{yyval.list = ATmakeList1(yyvsp[0].term);;
+#line 288 "stratego.grm"
+{yyval.list = yyvsp[-1].list;;
     break;}
 case 66:
 #line 291 "stratego.grm"
-{yyval.list = ATinsert(yyvsp[0].list, yyvsp[-2].term);;
+{yyval.list = ATmakeList1(yyvsp[0].term);;
     break;}
 case 67:
 #line 292 "stratego.grm"
-{yyval.list = ATmakeList0();;
+{yyval.list = ATinsert(yyvsp[0].list, yyvsp[-2].term);;
     break;}
 case 68:
-#line 295 "stratego.grm"
-{yyval.list = ATmakeList1(yyvsp[0].term);;
+#line 293 "stratego.grm"
+{yyval.list = ATmakeList0();;
     break;}
 case 69:
 #line 296 "stratego.grm"
-{yyval.list = ATinsert(yyvsp[0].list, yyvsp[-2].term);;
+{yyval.list = ATmakeList1(yyvsp[0].term);;
     break;}
 case 70:
 #line 297 "stratego.grm"
-{yyval.list = ATmakeList0();;
+{yyval.list = ATinsert(yyvsp[0].list, yyvsp[-2].term);;
     break;}
 case 71:
-#line 302 "stratego.grm"
+#line 298 "stratego.grm"
 {yyval.list = ATmakeList0();;
     break;}
 case 72:
 #line 303 "stratego.grm"
-{yyval.list = ATappend(yyvsp[-1].list, yyvsp[0].term);;
+{yyval.list = ATmakeList0();;
     break;}
 case 73:
-#line 307 "stratego.grm"
-{yyval.term = App3("RDef", yyvsp[-3].term, (ATerm) yyvsp[-2].list, (ATerm) yyvsp[0].term);;
+#line 304 "stratego.grm"
+{yyval.list = ATappend(yyvsp[-1].list, yyvsp[0].term);;
     break;}
 case 74:
-#line 309 "stratego.grm"
+#line 308 "stratego.grm"
 {yyval.term = App3("RDef", yyvsp[-3].term, (ATerm) yyvsp[-2].list, (ATerm) yyvsp[0].term);;
     break;}
 case 75:
-#line 312 "stratego.grm"
-{yyval.term = App3("Rule", yyvsp[-3].term, yyvsp[-1].term, yyvsp[0].term);	;
+#line 310 "stratego.grm"
+{yyval.term = App3("RDef", yyvsp[-3].term, (ATerm) yyvsp[-2].list, (ATerm) yyvsp[0].term);;
     break;}
 case 76:
-#line 316 "stratego.grm"
-{yyval.term = App3("StratRule", yyvsp[-3].term, yyvsp[-1].term, yyvsp[0].term);	;
+#line 313 "stratego.grm"
+{yyval.term = App3("Rule", yyvsp[-3].term, yyvsp[-1].term, yyvsp[0].term);	;
     break;}
 case 77:
-#line 319 "stratego.grm"
-{yyval.term = ATmake("Id");;
+#line 317 "stratego.grm"
+{yyval.term = App3("StratRule", yyvsp[-3].term, yyvsp[-1].term, yyvsp[0].term);	;
     break;}
 case 78:
 #line 320 "stratego.grm"
-{yyval.term = yyvsp[0].term;;
+{yyval.term = ATmake("Id");;
     break;}
 case 79:
-#line 326 "stratego.grm"
-{yyval.term = App2("Call", App1("SVar", yyvsp[-1].term), (ATerm) yyvsp[0].list);;
+#line 321 "stratego.grm"
+{yyval.term = yyvsp[0].term;;
     break;}
 case 80:
-#line 329 "stratego.grm"
+#line 327 "stratego.grm"
+{yyval.term = App2("Call", App1("SVar", yyvsp[-1].term), (ATerm) yyvsp[0].list);;
+    break;}
+case 81:
+#line 330 "stratego.grm"
 {yyval.term = App2("Call", App1("SVar", App2("Mod", yyvsp[-3].term, yyvsp[-1].term)), 
 							   (ATerm)yyvsp[0].list);;
     break;}
-case 81:
-#line 333 "stratego.grm"
-{yyval.term = App2("ExplodeCong", yyvsp[-4].term, yyvsp[-1].term);
-    break;}
 case 82:
-#line 336 "stratego.grm"
-{yyval.term = App1("Match", yyvsp[0].term);;
+#line 334 "stratego.grm"
+{yyval.term = App2("ExplodeCong", yyvsp[-4].term, yyvsp[-1].term);
     break;}
 case 83:
 #line 337 "stratego.grm"
-{yyval.term = App1("Build", yyvsp[0].term);;
+{yyval.term = App1("Match", yyvsp[0].term);;
     break;}
 case 84:
-#line 339 "stratego.grm"
-{yyval.term = App2("Prim", yyvsp[-1].term, (ATerm) ATempty);;
+#line 338 "stratego.grm"
+{yyval.term = App1("Build", yyvsp[0].term);;
     break;}
 case 85:
 #line 340 "stratego.grm"
-{yyval.term = App2("Prim", yyvsp[-3].term, (ATerm) yyvsp[-1].list);;
+{yyval.term = App2("Prim", yyvsp[-1].term, (ATerm) ATempty);;
     break;}
 case 86:
-#line 342 "stratego.grm"
-{yyval.term = App1("LRule", yyvsp[-1].term);;
+#line 341 "stratego.grm"
+{yyval.term = App2("Prim", yyvsp[-3].term, (ATerm) yyvsp[-1].list);;
     break;}
 case 87:
-#line 344 "stratego.grm"
-{yyval.term = App2("BA", yyvsp[-2].term, yyvsp[0].term);;
+#line 343 "stratego.grm"
+{yyval.term = App1("LRule", yyvsp[-1].term);;
     break;}
 case 88:
 #line 345 "stratego.grm"
-{yyval.term = App2("AM", yyvsp[-2].term, yyvsp[0].term);;
+{yyval.term = App2("BA", yyvsp[-2].term, yyvsp[0].term);;
     break;}
 case 89:
-#line 347 "stratego.grm"
-{yyval.term = ATmake("Fail");;
+#line 346 "stratego.grm"
+{yyval.term = App2("AM", yyvsp[-2].term, yyvsp[0].term);;
     break;}
 case 90:
 #line 348 "stratego.grm"
-{yyval.term = ATmake("Id");;
+{yyval.term = ATmake("Fail");;
     break;}
 case 91:
 #line 349 "stratego.grm"
-{yyval.term = App2("Path", (ATerm) ATmakeInt(yyvsp[-1].num), yyvsp[0].term); ;
+{yyval.term = ATmake("Id");;
     break;}
 case 92:
-#line 351 "stratego.grm"
-{yyval.term = App1("DynamicRules", (ATerm) yyvsp[-1].list);;
+#line 350 "stratego.grm"
+{yyval.term = App2("Path", (ATerm) ATmakeInt(yyvsp[-1].num), yyvsp[0].term); ;
     break;}
 case 93:
 #line 352 "stratego.grm"
-{yyval.term = App1("OverrideDynamicRules", (ATerm) yyvsp[-1].list);;
+{yyval.term = App1("DynamicRules", (ATerm) yyvsp[-1].list);;
     break;}
 case 94:
-#line 354 "stratego.grm"
-{yyval.term = App1("Not", yyvsp[-1].term);;
+#line 353 "stratego.grm"
+{yyval.term = App1("OverrideDynamicRules", (ATerm) yyvsp[-1].list);;
     break;}
 case 95:
 #line 355 "stratego.grm"
-{yyval.term = App1("Where", yyvsp[-1].term);;
+{yyval.term = App1("Not", yyvsp[-1].term);;
     break;}
 case 96:
 #line 356 "stratego.grm"
-{yyval.term = App1("Test", yyvsp[-1].term);;
+{yyval.term = App1("Where", yyvsp[-1].term);;
     break;}
 case 97:
-#line 359 "stratego.grm"
-{yyval.term = App2("Scope", (ATerm) yyvsp[-3].list, yyvsp[-1].term);;
+#line 357 "stratego.grm"
+{yyval.term = App1("Test", yyvsp[-1].term);;
     break;}
 case 98:
-#line 361 "stratego.grm"
-{yyval.term = App2("DynRuleScope", (ATerm) yyvsp[-3].list, yyvsp[-1].term);;
+#line 360 "stratego.grm"
+{yyval.term = App2("Scope", (ATerm) yyvsp[-3].list, yyvsp[-1].term);;
     break;}
 case 99:
 #line 362 "stratego.grm"
-{yyval.term = App1("ScopeDefault", yyvsp[-1].term);;
+{yyval.term = App2("DynRuleScope", (ATerm) yyvsp[-3].list, yyvsp[-1].term);;
     break;}
 case 100:
-#line 364 "stratego.grm"
-{yyval.term = App2("Seq", yyvsp[-2].term, yyvsp[0].term);;
+#line 363 "stratego.grm"
+{yyval.term = App1("ScopeDefault", yyvsp[-1].term);;
     break;}
 case 101:
 #line 365 "stratego.grm"
-{yyval.term = App2("Choice", yyvsp[-2].term, yyvsp[0].term);;
+{yyval.term = App2("Seq", yyvsp[-2].term, yyvsp[0].term);;
     break;}
 case 102:
 #line 366 "stratego.grm"
-{yyval.term = App2("LChoice", yyvsp[-2].term, yyvsp[0].term);;
+{yyval.term = App2("Choice", yyvsp[-2].term, yyvsp[0].term);;
     break;}
 case 103:
 #line 367 "stratego.grm"
-{yyval.term = App2("Rec", yyvsp[-3].term, yyvsp[-1].term);;
+{yyval.term = App2("LChoice", yyvsp[-2].term, yyvsp[0].term);;
     break;}
 case 104:
 #line 368 "stratego.grm"
-{yyval.term = App1("Some", yyvsp[-1].term);;
+{yyval.term = App2("Rec", yyvsp[-3].term, yyvsp[-1].term);;
     break;}
 case 105:
 #line 369 "stratego.grm"
-{yyval.term = App1("One", yyvsp[-1].term);;
+{yyval.term = App1("Some", yyvsp[-1].term);;
     break;}
 case 106:
 #line 370 "stratego.grm"
-{yyval.term = App1("All", yyvsp[-1].term);;
+{yyval.term = App1("One", yyvsp[-1].term);;
     break;}
 case 107:
 #line 371 "stratego.grm"
-{yyval.term = App1("Thread", yyvsp[-1].term);;
+{yyval.term = App1("All", yyvsp[-1].term);;
     break;}
 case 108:
 #line 372 "stratego.grm"
-{yyval.term = tuple_cong(yyvsp[-1].list);;
+{yyval.term = App1("Thread", yyvsp[-1].term);;
     break;}
 case 109:
-#line 374 "stratego.grm"
-{yyval.term = list_cong(yyvsp[-2].list, yyvsp[-1].term);;
+#line 373 "stratego.grm"
+{yyval.term = tuple_cong(yyvsp[-1].list);;
     break;}
 case 110:
 #line 375 "stratego.grm"
-{yyval.term = App1("Match", App1("Str", yyvsp[0].term));;
+{yyval.term = list_cong(yyvsp[-2].list, yyvsp[-1].term);;
     break;}
 case 111:
 #line 376 "stratego.grm"
+{yyval.term = App1("Match", App1("Str", yyvsp[0].term));;
+    break;}
+case 112:
+#line 377 "stratego.grm"
 {yyval.term = App1("Match", 
 					      App1("Int", (ATerm) ATmakeInt(yyvsp[0].num)));;
     break;}
-case 112:
-#line 378 "stratego.grm"
+case 113:
+#line 379 "stratego.grm"
 {yyval.term = App1("Match", 
 					      App1("Real", (ATerm) ATmakeReal(yyvsp[0].real)));;
     break;}
-case 113:
-#line 380 "stratego.grm"
-{yyval.term = App2("Let", (ATerm) yyvsp[-2].list, yyvsp[0].term);;
-    break;}
 case 114:
-#line 384 "stratego.grm"
-{yyval.term = ATmake("Call(SVar(\"Nil\"),[])");;
+#line 381 "stratego.grm"
+{yyval.term = App2("Let", (ATerm) yyvsp[-2].list, yyvsp[0].term);;
     break;}
 case 115:
 #line 385 "stratego.grm"
-{yyval.term = yyvsp[0].term;;
+{yyval.term = ATmake("Call(SVar(\"Nil\"),[])");;
     break;}
 case 116:
-#line 389 "stratego.grm"
-{yyval.list = ATmakeList0();;
+#line 386 "stratego.grm"
+{yyval.term = yyvsp[0].term;;
     break;}
 case 117:
 #line 390 "stratego.grm"
-{yyval.list = yyvsp[-1].list;;
+{yyval.list = ATmakeList0();;
     break;}
 case 118:
-#line 394 "stratego.grm"
-{yyval.list = ATmakeList0();;
+#line 391 "stratego.grm"
+{yyval.list = yyvsp[-1].list;;
     break;}
 case 119:
 #line 395 "stratego.grm"
-{yyval.list = ATmakeList1(yyvsp[0].term);;
+{yyval.list = ATmakeList0();;
     break;}
 case 120:
 #line 396 "stratego.grm"
-{yyval.list = ATinsert(yyvsp[0].list, yyvsp[-2].term);;
+{yyval.list = ATmakeList1(yyvsp[0].term);;
     break;}
 case 121:
-#line 402 "stratego.grm"
-{yyval.list = ATmakeList0();;
+#line 397 "stratego.grm"
+{yyval.list = ATinsert(yyvsp[0].list, yyvsp[-2].term);;
     break;}
 case 122:
 #line 403 "stratego.grm"
-{yyval.list = ATappend(yyvsp[-1].list, yyvsp[0].term);;
+{yyval.list = ATmakeList0();;
     break;}
 case 123:
 #line 404 "stratego.grm"
 {yyval.list = ATappend(yyvsp[-1].list, yyvsp[0].term);;
     break;}
 case 124:
-#line 408 "stratego.grm"
-{yyval.term = App3("SDef", yyvsp[-3].term, (ATerm) yyvsp[-2].list, yyvsp[0].term);;
+#line 405 "stratego.grm"
+{yyval.list = ATappend(yyvsp[-1].list, yyvsp[0].term);;
     break;}
 case 125:
-#line 412 "stratego.grm"
-{yyval.list = ATmakeList0();;
+#line 409 "stratego.grm"
+{yyval.term = App3("SDef", yyvsp[-3].term, (ATerm) yyvsp[-2].list, yyvsp[0].term);;
     break;}
 case 126:
 #line 413 "stratego.grm"
-{yyval.list = yyvsp[-1].list;;
+{yyval.list = ATmakeList0();;
     break;}
 case 127:
-#line 416 "stratego.grm"
-{yyval.list = ATmakeList0();;
+#line 414 "stratego.grm"
+{yyval.list = yyvsp[-1].list;;
     break;}
 case 128:
 #line 417 "stratego.grm"
-{yyval.list = ATmakeList1(yyvsp[0].term);;
+{yyval.list = ATmakeList0();;
     break;}
 case 129:
 #line 418 "stratego.grm"
-{yyval.list = ATinsert(yyvsp[0].list, yyvsp[-2].term);;
+{yyval.list = ATmakeList1(yyvsp[0].term);;
     break;}
 case 130:
-#line 421 "stratego.grm"
-{yyval.term = App1("DefaultVarDec", yyvsp[0].term);;
+#line 419 "stratego.grm"
+{yyval.list = ATinsert(yyvsp[0].list, yyvsp[-2].term);;
     break;}
 case 131:
 #line 422 "stratego.grm"
-{yyval.term = App2("VarDec", yyvsp[-2].term, yyvsp[0].term);;
+{yyval.term = App1("DefaultVarDec", yyvsp[0].term);;
     break;}
 case 132:
-#line 424 "stratego.grm"
-{yyval.list = ATmakeList0();;
+#line 423 "stratego.grm"
+{yyval.term = App2("VarDec", yyvsp[-2].term, yyvsp[0].term);;
     break;}
 case 133:
 #line 425 "stratego.grm"
-{yyval.list = ATmakeList1(yyvsp[0].term);;
+{yyval.list = ATmakeList0();;
     break;}
 case 134:
 #line 426 "stratego.grm"
-{yyval.list = ATinsert(yyvsp[0].list, yyvsp[-2].term);;
+{yyval.list = ATmakeList1(yyvsp[0].term);;
     break;}
 case 135:
-#line 429 "stratego.grm"
-{yyval.list = ATmakeList0();;
+#line 427 "stratego.grm"
+{yyval.list = ATinsert(yyvsp[0].list, yyvsp[-2].term);;
     break;}
 case 136:
 #line 430 "stratego.grm"
-{yyval.list = ATinsert(yyvsp[0].list, yyvsp[-1].term);;
+{yyval.list = ATmakeList0();;
     break;}
 case 137:
-#line 434 "stratego.grm"
-{yyval.term = App3("Overlay", yyvsp[-5].term, (ATerm) yyvsp[-3].list, yyvsp[0].term);;
+#line 431 "stratego.grm"
+{yyval.list = ATinsert(yyvsp[0].list, yyvsp[-1].term);;
     break;}
 case 138:
 #line 435 "stratego.grm"
+{yyval.term = App3("Overlay", yyvsp[-5].term, (ATerm) yyvsp[-3].list, yyvsp[0].term);;
+    break;}
+case 139:
+#line 436 "stratego.grm"
 {yyval.term = App3("Overlay", yyvsp[-2].term, (ATerm) ATmakeList0(), yyvsp[0].term);;
     break;}
 }
@@ -1846,4 +1851,4 @@ yyerrhandle:
     }
   return 1;
 }
-#line 440 "stratego.grm"
+#line 441 "stratego.grm"

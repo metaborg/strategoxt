@@ -264,6 +264,7 @@ term 	: id optcont		      	{if(ATisEmpty($2))
      	| id opttermlist 		{$$ = App2("Op", $1, (ATerm) $2);}
         | id AS term                    {$$ = App2("As", App1("Var", $1), $3);}
 	| LT strategy GT term 		{$$ = App2("App", $2, $4);}
+	| LT strategy GT 		{$$ = App1("RootApp", $2);}
 	| LBRACK termlist tail RBRACK   {$$ = list_to_consnil_op_tl($2, $3);}
 	| LPAREN termlist RPAREN	{$$ = list_to_tconstnil_op($2);}
 	| term EXPLODE LPAREN term RPAREN 

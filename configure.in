@@ -4,7 +4,14 @@ AM_INIT_AUTOMAKE(stratego,0.6.3)
 PKGS="srts ssl cgen sc-boot gpp-boot sc"
 AC_SUBST(PKGS)
 
-AC_ARG_WITH(aterm, [  --with-aterm            Location of external aterm package.])
+AC_ARG_WITH(aterm, 
+  [  --with-aterm            Location of external aterm package. [$prefix]], 
+  ATERM=$withval, 
+  ATERM="$prefix"
+)
+AC_SUBST(ATERM)
+
+top_srcdir=`pwd`
 
 AC_OUTPUT(
 	Makefile 
@@ -17,31 +24,32 @@ AB_CONFIG_PKG(aterm,
    --with-dbg
 )
 AB_CONFIG_PKG(srts,
-   --with-aterm=${prefix}
+   --with-aterm=${ATERM}
 )
 AB_CONFIG_PKG(ssl,
-   --with-aterm=${prefix}
+   --with-aterm=${ATERM}
    --with-srts=${prefix}
+   --with-stratego=${prefix}
 )
 AB_CONFIG_PKG(cgen,
-   --with-aterm=${prefix}
+   --with-aterm=${ATERM}
    --with-ssl=${prefix}
    --with-srts=${prefix}
 )
 AB_CONFIG_PKG(sc-boot,
-   --with-aterm=${prefix}
+   --with-aterm=${ATERM}
    --with-ssl=${prefix}
    --with-srts=${prefix}
 )
 AB_CONFIG_PKG(gpp-boot,
-   --with-aterm=${prefix}
+   --with-aterm=${ATERM}
    --with-ssl=${prefix}
 )
 AB_CONFIG_PKG(sc,
-   --with-aterm=${prefix}
+   --with-aterm=${ATERM}
    --with-ssl=${prefix}
    --with-srts=${prefix}
    --with-sc-boot=${top_srcdir}/sc-boot
    --with-cgen=${prefix}
-   --with-gpp-boot=${prefix}
+   --with-gpp=${prefix}
 )

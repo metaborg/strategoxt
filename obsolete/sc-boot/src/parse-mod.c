@@ -29,6 +29,7 @@ extern ATerm parse_tree;
 extern FILE *yyin;
 extern int yylineno;
 extern ATerm yylval;
+extern int line;
 
 extern int yydebug;
 
@@ -116,14 +117,20 @@ ATerm parse_file(char *name)
     if(!silent)
       fprintf(stderr, "parsing %s ...", file_name);
   }
-  if((res = parse()) == 0) {    
-    if(!silent)
-      ATfprintf(stderr, " succeeded\n", parse_tree);
-    return parse_tree;    
-  } else {    
-    ATfprintf(stderr, " parsing %s failed\n\n", name);
-    exit(1);
-  }
+  if((res = parse()) == 0) 
+    {    
+      if(!silent) 
+	{
+	  ATfprintf(stderr, " succeeded\n", parse_tree);
+	  // ATfprintf(stderr, " %d lines\n", line);
+	}
+      return parse_tree;    
+    } 
+  else 
+    {    
+      ATfprintf(stderr, " parsing %s failed\n\n", name);
+      exit(1);
+    }
 }
 
 void open_dependencies(char *name)

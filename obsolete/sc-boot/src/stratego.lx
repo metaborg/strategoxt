@@ -18,6 +18,8 @@ FILE *outfile;
 
 extern char file_name[256];
 
+int line = 0;
+
 /*
 lcid		{lcstart}{idchars}*
 ucid		{ucstart}{idchars}*
@@ -65,7 +67,7 @@ endliterate	{backslash}"endliterate"
 
 <INITIAL>{ws}		; /* ignore whitespace */
 <INITIAL>{shortcom} 	; /* ignore comments */
-<INITIAL>\n		; /* ignore newlines */
+<INITIAL>\n		line++; /* ignore newlines */
 
 		/* Comments (SML style) */
 
@@ -100,7 +102,7 @@ endliterate	{backslash}"endliterate"
 <MODNAME>{lcid} 		(*lvalp).term = ATmakeString(yytext); return LCID;
 <MODNAME>{ucid} 		(*lvalp).term = ATmakeString(yytext); return UCID;
 
-<MODNAME>[ \t\n]		; /* ignore whitespace */
+<MODNAME>[ \t\n]		line++; /* ignore whitespace */
 
  		/* keywords */
 
@@ -182,7 +184,9 @@ endliterate	{backslash}"endliterate"
 
 <INITIAL>.		lexerror ("ignoring illegal character", yytext);
 
-<<EOF>>		{BEGIN(INITIAL); yyterminate();}
+<<EOF>>		{BEGIN(INITIAL); 
+		 // ATfprintf(stderr, "%s: %d lines\n", file_name, line); 
+		 yyterminate();}
 
 %%
 
