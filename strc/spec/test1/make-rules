@@ -9,7 +9,7 @@ CINCLUDES = \
 CINCL = -I$(SRTS)/include \
 	-I$(ATERM)/include $(CHOICEINCLUDES)
 
-SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
+SCLibs = -L$(SRTS)/lib/srts -lstratego-lib -lstratego \
 	 -L$(ATERM)/lib -lATerm-gcc $(CHOICELDFLAGS) \
 	 -lm
 
