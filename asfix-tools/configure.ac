@@ -5,6 +5,7 @@ USE_XT_PACKAGES
 
 AC_PROG_CC
 AC_PROG_INSTALL
+AC_PROG_LIBTOOL
 
 TOOLS="templates implode asfix-yield visamb termid explode-asfix2me "
 UNRELEASED=""

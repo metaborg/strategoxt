@@ -2,5 +2,6 @@
 
 rm -f config.cache config.log acconfig.h aclocal.m4
 
-autoxt
-autoreconf -if
+autoxt || exit 1
+libtoolize --force || glibtoolize --force || exit 1
+autoreconf -if || exit 1

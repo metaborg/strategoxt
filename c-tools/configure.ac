@@ -5,15 +5,15 @@ USE_XT_PACKAGES
 
 AC_PROG_CC
 AC_PROG_INSTALL
+AC_PROG_LIBTOOL
 
 AC_CONFIG_FILES([
-	NEWS
-	Makefile
-	syn/Makefile
-	pp/Makefile
-	sig/Makefile
-	xtc-tools/Makefile
-	tests/Makefile
-	tests/translation-units/Makefile
+  Makefile
+  syn/Makefile
+  pp/Makefile
+  sig/Makefile
+  xtc-tools/Makefile
+  tests/Makefile
+  tests/translation-units/Makefile
 ])
 AC_OUTPUT
