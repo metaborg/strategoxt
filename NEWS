@@ -17,7 +17,30 @@ News about Stratego releases
 StrategoXT 0.9.1 -- released June 04, 2003
 
 This is bugfix and cleanup release. StrategoXT is now being tested on a daily
-base in the buildfarm of the st-lab at the University of Utrecht.
+base [4] in the buildfarm of the st-lab at the University of Utrecht. 
+
+Also we spend some time on improving the Stratego website. A fresh look (less 
+Wiki, more content), an improved structure and improved content should make the 
+Stratego website more accessible, especially to new users. Eelco Visser has 
+created an detailed tutorial on how to set up a Stratego package [1]. During 
+the month may the Stratego website had the largest number of edits ever!
+
+Eelco Dolstra has been experimenting with StrategoXT on Mac OS X [2]. Using a 
+patched GCC there don't seem to be any major problem, except the performance.
+The performance is unacceptable because of the choice point implementation
+Stratego is using, so this is something to think about for future releases.
+
+Martin Bravenboer has been working on using StrategoXT on Microsoft Windows
+with Cygwin [3]. For this platform there also doesn't seem to be any serious 
+problems. For now there is already a binary distribution of some tools of
+sdf2 + implode-asfix [5], in the near future we will offer full binary 
+distributions of the sdf2 bundle and StrategoXT for Microsoft Windows.
+
+[1] http://www.stratego-language.org/Stratego/HowToSetUpAStrategoPackage
+[2] http://www.stratego-language.org/Stratego/MacOSXSupport
+[3] http://www.stratego-language.org/Stratego/MicrosoftWindowsSupport
+[4] http://www.stratego-language.org/Stratego/DailyBuild 
+[5] http://losser.st-lab.cs.uu.nl/~mbravenb/software/sdf2-win/
 
 DOWNLOAD AND INSTALLATION
 
@@ -31,7 +54,7 @@ DOWNLOAD AND INSTALLATION
   * http://www.stratego-language.org/Stratego/InstallationInstructions
 
 SUMMARY OF CHANGES 
-
+ 
   * StrategoXT
     - StrategoXT repository moved from CVS to Subversion
     - StrategoXT is again part of a daily build system
