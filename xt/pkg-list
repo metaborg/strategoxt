@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 #
-# $Id: pkg-list,v 1.2 2000/03/27 15:57:25 mdejonge Exp $
+# $Id: pkg-list,v 1.3 2000/03/28 11:51:42 mdejonge Exp $
 #
 #
 # This file lists name, version, and location of all components 
@@ -25,6 +25,6 @@ aterm,0.23,cvs:/ufs/gipe/CVS
 asc-support,0.2,cvs:/ufs/gipe/CVS
 pgen,0.1,cvs:/ufs/gipe/CVS
 sglr,2.28,cvs:/ufs/gipe/CVS
-stratego,0.4.10,http://www.cs.uu.nl/~visser/ftp/stratego-0.4.10.tar.gz
+stratego,0.4.11,http://www.cs.uu.nl/~visser/ftp/stratego-0.4.11.tar.gz
 gb,0.1.1,cvs:/ufs/gipe/CVS
 gt,0.1.1,cvs:/ufs/gipe/CVS
