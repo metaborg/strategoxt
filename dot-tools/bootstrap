@@ -6,4 +6,4 @@ autoconf
 #autoheader
 automake -a
 
-touch syn/*.str
+# touch syn/*.str
