@@ -33,6 +33,17 @@ strategies
   stderr-stream = prim("SSL_stderr_stream"); !Stream(<id>)
 
 /**
+ * Terminal I/O
+ */
+strategies
+
+  /**
+   * Succeeds if file descriptor refers to a terminal device.
+   */
+  isatty =
+    ?filedes; prim("SSL_isatty", filedes) => 1
+
+/**
  * Stream operations
  */
 strategies
