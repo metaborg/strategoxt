@@ -86,6 +86,11 @@ AC_SUBST(INSTALL_XTC_DEST)
 XT_PKG_ATERM
 XT_PKG_SDF
 
+AC_PATH_PROG([getopt], [getopt])
+if test -z "$getopt"; then
+    AC_MSG_ERROR([getopt is required])
+fi
+
 AC_PROG_LIBTOOL
 
 ### OUTPUT #############################
