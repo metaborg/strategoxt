@@ -1,3 +1,6 @@
+2002-03-22  Merijn de Jonge <mdejonge@cwi.nl>
+   * Repaired package dependencies
+
 2002-03-21 Merijn de Jonge <mdejonge@cwi.nl>
    * src/stratego-imports/stratego-imports.r: no longer import gt-paths
      module from sdf-tools package

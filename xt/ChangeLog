@@ -1,3 +1,6 @@
+2002-03-22  Merijn de Jonge <mdejonge@cwi.nl>
+   * Repaired package dependencies
+
 2002-03-16  Eelco Visser  <visser@acm.org>
 
 	* Updated tests
