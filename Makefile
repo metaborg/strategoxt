@@ -30,7 +30,7 @@ xtdist:
 	   printf "XT version=" ;\
 	   read xt_version ;\
 	fi ;\
-	autobundle -s -n XT -v $${xt_version} -p xt-$${xt_version}\
+	autobundle -s -n XT -v $${xt_version} -p xt-$${xt_version} -db graphviz \
 	   | gunzip -c \
 	   | tar xvf - ;\
 	cd XT-$${xt_version} ;\
