@@ -1,4 +1,8 @@
-SC = $(STRATEGOBOOT)/bin/sc
+#SC = $(STRATEGOBOOT)/bin/sc
+SC = $(prefix)/bin/sc
+
+#.cr.c : 
+#	$(SC) $(SCFLAGS) -i $< -o $@ -CC
 
 % : %.r
 	$(SC) $(SCFLAGS) -i $*

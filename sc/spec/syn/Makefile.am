@@ -15,67 +15,69 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-CFLAGS	 	= -Wall
+bin_SCRIPTS 		= parse-mod
+libexec_PROGRAMS 	= parse-stratego pack-stratego parse-mod  
+pack_stratego_SOURCES 	= pack-stratego.c
+
+parse_mod_LDADD		= @LEXLIB@ $(STRATEGOLIBS)
+parse_stratego_LDADD 	= @LEXLIB@ $(STRATEGOLIBS)
+pack_stratego_LDADD 	= -lstratego.opt $(STRATEGOLIBS)
+
+parse_stratego_SOURCES 	= parse-stratego.c stratego-grm.y \
+			  stratego-lex.l options.h options.c util.h 
+
+parse_mod_SOURCES 	= parse-mod.c stratego-grm.y \
+			  stratego-lex.l options.h options.c util.h 
+
+#pkgdatadir 	= $(prefix)/pack-stratego-plugin
+pkgdata_DATA 	= pack-stratego.config
+
+
+CLEANFILES 	= pack-stratego pack-stratego.c pack-stratego.dep \
+		  stratego-grm.c stratego-grm.h stratego-lex.c
+
+EXTRA_DIST 	= $(wildcard *.r) $(wildcard *.config.src)
+
+BOOTSOURCES 	= $(SOURCES) pack-stratego.c stratego-grm.y stratego-grm.h \
+		  stratego-lex.l pack-stratego.config.src
+
+CFLAGS	 	= 
 DEBUGFLAGS	= -g
 PROFFLAGS	= -pg
+OPTFLAGS 	= -O4
 
 INCLUDES 	= -I$(STRATEGORTS)/include \
 		  -I$(STRATEGOLIB)/include \
-		  -I$(ATERM)/include
+		  -I$(ATERM)/include \
+		  -I$(srcdir)/..
 
 LDFLAGS		= -L$(STRATEGORTS)/lib \
 		  -L$(STRATEGOLIB)/lib \
 		  -L$(ATERM)/lib 
 
-LDADD		= -lstratego-lib.opt \
+STRATEGOLIBS    = -lstratego-lib.opt \
 		  -latermextension.opt \
 		  -lATerm-gcc \
-		  -lm
+		  -lm 
 
-%.dbg.o: %.c
-	$(CC) $(DEBUGFLAGS) $(CFLAGS) $(DEFS) $(INCLUDES) -c $< -o $@
+YFLAGS 		= -d -t -v
 
-%.opt.o: %.c
-	$(CC) $(OPTFLAGS) $(CFLAGS) $(DEFS) $(INCLUDES) -c $< -o $@
+## STRATEGO Compilation
 
-%.prof.o: %.c
-	$(CC) $(PROFFLAGS) $(CFLAGS) $(DEFS) $(INCLUDES) -c $< -o $@
+SUFFIXES 	= .str
+SC 		= $(prefix)/bin/sc
+SCFLAGS 	= -I $(srcdir)/../sig --C-include "\"conf.h\"" -CI "-I.."
 
+.str.c : 
+	$(SC) $(SCFLAGS) -i $< -c
 
-OPTFLAGS = -O4
+# BOOTINSTALL
 
-SCFLAGS = -I $(srcdir)/../sig \
-	  --C-include "\"conf.h\"" -CI "-I.."
+bootinstall: $(BOOTSOURCES)
+	$(mkinstalldirs) $(SCBOOT)/src
+	cp -f $(BOOTSOURCES) $(SCBOOT)/src
 
-bin_PROGRAMS = parse-mod
-
-libexec_PROGRAMS = parse-stratego parse-mod
-
-libexec_SCRIPTS = pack-stratego
-
-#pkgdatadir = $(prefix)/pack-stratego-plugin
-pkgdata_DATA = pack-stratego.config
-
-CLEANFILES = pack-stratego pack-stratego.c pack-stratego.dep
-
-BUILT_SOURCES = stratego.grm.tab.c stratego.grm.tab.h stratego.yy.c
-
-parse_stratego_SOURCES 	= \
-  parse-stratego.c stratego.grm stratego.lx options.h options.c util.h $(BUILT_SOURCES)
-
-parse_mod_SOURCES = \
-   parse-mod.c stratego.grm stratego.lx options.h options.c util.h $(BUILT_SOURCES)
-
-EXTRA_DIST = $(wildcard *.r) $(wildcard *.config.src)
-
-%.grm.tab.c: %.grm
-	bison -d -t -v $<
-
-%.yy.c: %.lx
-	flex $<
-	mv lex.yy.c $@
-
-BOOTSOURCES = $(SOURCES) pack-stratego.c stratego.grm stratego.lx pack-stratego.config.src
+## CHECK
 
 check: check1 check2
 
@@ -89,5 +91,4 @@ check2: pack-stratego
 	sed 's#__prefix__#$(prefix)#g;\
              s#__libexec__#$(libexecdir)#g' < $< > $@
 
-include $(srcdir)/../make-rules
-include $(wildcard *.dep)
+

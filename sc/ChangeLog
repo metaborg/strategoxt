@@ -1,3 +1,17 @@
+2002-11-16  Eelco Visser  <visser@acm.org>
+
+	* spec/syn/Makefile.am: automake suffix rules for compilation of
+	Stratego programs to C.
+
+	* spec/syn/pack-stratego.config.src: .str extension replaces .r
+	extension to avoid clash with extension of ratfor programs. .r is
+	still supported, but should be phased out.
+
+	* spec/sc/sc.r: -c option compiles Stratego program to C code
+
+	* spec/syn/Makefile.am: Using lex and yacc support by automake;
+	`automake suffix rules for compilation of Stratego programs to C.
+
 2002-11-13  Eelco Visser  <visser@acm.org>
 
 	* spec/opt/bind-laws.r: Using is-subterm instead of 'in

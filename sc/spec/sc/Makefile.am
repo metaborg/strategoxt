@@ -27,7 +27,7 @@ pkgdata_DATA = sc.config sc-manual.txt
 
 CLEANFILES = sc sc.c *.dep sc.config
 
-EXTRA_DIST = $(wildcard *.r) $(wildcard *.c) sc.src sc.config.src sc-manual.txt
+EXTRA_DIST = $(wildcard *.r) $(wildcard *.c) sc.config.src sc-manual.txt
 
 BOOTSOURCES = sc.c sc.config.src
 

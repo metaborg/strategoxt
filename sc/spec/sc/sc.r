@@ -9,11 +9,11 @@
 	\end{abstract}
 
 \begin{code}
-module proto-sc
+module sc
 imports lib sugar dynamic-rules config verbose
 strategies
 
-  proto-sc = 
+  sc = 
   ( command-line-options
     ; profile'( if-verbose1(<printnl>(stderr, ["-----\ncompilation succeeded:   " | <id>])), 
         compile
