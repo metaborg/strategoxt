@@ -11,7 +11,7 @@ imports Stratego-Amb liblib
 strategies
  
   stratego-ensugar =
-    iowrap(Stratego-Ensugar)
+    io-wrap(Stratego-Ensugar)
 
   Stratego-Ensugar =
       try(\ ""#([x]) -> x \ )
