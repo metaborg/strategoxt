@@ -63,31 +63,37 @@ strategies
     t -> FILE(name)
     where xtc-new-file => name
         ; <WriteToBinaryFile> (name, t)
-        ; <close-file> name
 
   write-to-text :
     t -> FILE(name)
     where xtc-new-file => name
         ; <WriteToTextFile> (name, t)
-        ; <close-file> name
 
   // :: [String] -> FILE
   print-to :
     strings -> FILE(name)
       where xtc-new-file => name
+          ; <open-file> name
           ; <print> (name, strings)
           ; <close-file> name
-
 
   xtc-find-file = 
     !FILE(<xtc-find>)
 
   // XTC-TEMP-FILES : scoped temporary files
 
+  /**
+   * Creates a new and unique scoped temporary file.
+   *
+   * @type _ -> String
+   */
   xtc-new-file =
-    new-file => f
-    ; where(<open-file>(f, "w")
-	    ; <assert(!TempFiles)> (f, ()))
+    new-temp-file => (f, fd)
+  ; where(
+      <assert(!TempFiles)> (f, ())
+    )
+  ; <close> fd
+  ; !f
 
   xtc-remove-temporaries =
     where(
@@ -202,7 +208,11 @@ strategies
     < xtc-transform-file(tool, args)
     + xtc-transform-term(tool, args)
 
-  // Transforming a file with an external process
+
+/**
+ * Transforms a file with an external process
+ */
+strategies
 
   xtc-transform-file =
     ?(tool, args, file)
@@ -214,23 +224,25 @@ strategies
     FILE(f) -> FILE(g)
     where <xtc-new-file> f => g
         ; <conc; xtc-command(tool)> (<args>, ["-i", f, "-o", g])
-        ; <close-file> g
 
   xtc-transform-file(tool, args) :
     stdin -> FILE(g)
     where xtc-new-file => g
         ; <conc; xtc-command(tool)> (<args>, ["-o", g])
-        ; <close-file> g
 
-  // Transforming a term with an external process
-
+  /**
+   * Transforms a term with an external process
+   */
   xtc-transform-term(tool, args) = 
     write-to
     ; xtc-transform-file(tool, args)
     ; read-from
 
-  // Transforming a file with an internal strategy
-
+  /**
+   * Transforms a file with an internal strategy
+   *
+   * @type  File -> File
+   */
   xtc-io-transform(s) =
     read-from; s; write-to
 
@@ -246,7 +258,7 @@ strategies
     _ -> FILE(g)
     where <xtc-new-file> () => g
         ; <conc; xtc-command(tool)> (<args>, ["-o", g])
-        ; <close-file> g
+
 
 strategies
 

@@ -1,7 +1,21 @@
+2003-12-25  Martin Bravenboer <martin@cs.uu.nl>
+
+	* src/xtc-proc.str: using mkstemp for the creation of temporary
+	files.
+
+	Temporary files of XTC are from now created in the default
+	directory for temporary files (usually /tmp).
+
+	Please clean up your working copy because the packages are using a
+	local XTC installation (pre-pkgs/install) that is not rebuild on
+	changes in XTC. If you do not clean up, you might break your
+	Stratego compiler installation because some problems in GPP
+	applications using XTC had to be fixed.
+
 2003-08-12  Martin Bravenboer <mbravenb@cs.uu.nl>
 
-  * tools/stratego-xt-xtc-tools: don't use t flag when
-    invoking sglr.
+	* tools/stratego-xt-xtc-tools: don't use t flag when invoking
+	sglr.
 
 2003-08-11  Eelco Visser  <visser@cs.uu.nl>
 
@@ -10,8 +24,8 @@
 
 2003-02-05  Martin Bravenboer <martin@mbravenboer.org>
 
-  * tools/stratego-xt-xtc-tools.str: Added xtc-stratego-ensugar
-  and xtc-pp-astratego.
+	* tools/stratego-xt-xtc-tools.str: Added xtc-stratego-ensugar and
+	xtc-pp-astratego.
 
 2003-01-18  Eelco Visser  <visser@cs.uu.nl>
 
@@ -29,12 +43,12 @@
 
 2003-01-07  Martin Bravenboer <martin@mbravenboer.org>
 
-  * tools/: directory for modules with xtc-transform calls 
-    to specific tools.
+	* tools/: directory for modules with xtc-transform calls to
+	specific tools.
 
-  * tools/stratego-xt-xtc-tools.str: easy to use xtc-transform 
-    strategies for tools in StrategoXT like abox2text, 
-    implode-asfix etc.
+	* tools/stratego-xt-xtc-tools.str: easy to use xtc-transform
+	strategies for tools in StrategoXT like abox2text, implode-asfix
+	etc.
 
 2003-01-05  Eelco Visser  <visser@cs.uu.nl>
 
