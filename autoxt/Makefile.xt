@@ -18,7 +18,7 @@ LDADD 		= -lstratego.opt -lstratego-lib.opt -lATerm-gcc -lm
 
 SUFFIXES 	= .str .cr .r .rtree .def .tbl .pp .sdf
 
-SCOMPILE 	= $(SC)/bin/strc
+SCOMPILE 	= $(STRC)/bin/strc
 PARSESTRATEGO 	= $(STRATEGO_FRONT)/bin/parse-stratego
 
 sdfdatadir	= ${datadir}/sdf/${PACKAGE}

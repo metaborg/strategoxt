@@ -136,7 +136,7 @@ AB_CONFIG_PKG(sdf-import,
    --with-repository=${REPOSITORY}
 )
 
-AB_CONFIG_PKG(sc,
+AB_CONFIG_PKG(strc,
    --with-aterm=${ATERM}
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}

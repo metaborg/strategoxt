@@ -79,10 +79,17 @@ AC_ARG_WITH(repository,
 )
 AC_SUBST(REPOSITORY)
 
+AC_ARG_WITH(strc, 
+  AC_HELP_STRING([--with-strc=DIR], [use Stratego Compiler at DIR @<:@STRATEGOXT@:>@]),
+  STRC="$withval" SC="$withval", 
+  STRC="$STRATEGOXT" SC="$STRATEGOXT"
+)
+AC_SUBST(STRC)
+
 AC_ARG_WITH(sc, 
   AC_HELP_STRING([--with-sc=DIR], [use Stratego Compiler at DIR @<:@STRATEGOXT@:>@]),
-  SC="$withval", 
-  SC="$STRATEGOXT"
+  STRC="$withval" SC="$withval", 
+  STRC="$STRATEGOXT" SC="$STRATEGOXT"
 )
 AC_SUBST(SC)
 
