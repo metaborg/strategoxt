@@ -171,16 +171,6 @@ strategies
 
   + stratego-warnings-options
 
-  + Option("--maybe-unbound-warnings",
-        where(<set-config> ("--maybe-unbound-warnings", 1)),
-        !"--maybe-unbound-warnings"
-    )
-
-  + Option("--no-maybe-unbound-warnings",
-        where(<set-config> ("--no-maybe-unbound-warnings", 0)),
-        !"--no-maybe-unbound-warnings"
-    )
-
   + Option("--asfix",
        where(<set-config>("--asfix",())); !(),
        !"--asfix            Concrete syntax parts are not imploded")
@@ -194,9 +184,10 @@ strategies
   pass-dr = !["--dr", <get-config> "--dr"]
 
   pass-maybe-unbound-warnings =
-    <get-config> "--maybe-unbound-warnings" => 1
-    ; !["--maybe-unbound-warnings"]
-   <+ !["--no-maybe-unbound-warnings"]
+    <get-config>"--warning"
+  ; fetch-elem("maybe-unbound-variables")
+  ; !["--maybe-unbound-warnings"]
+ <+ !["--no-maybe-unbound-warnings"]
 
 
   short-description(p) = 

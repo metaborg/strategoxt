@@ -13,10 +13,10 @@ signature
 overlays
 
   AllWarnings = [
-     ("debug-arguments", "        missing build operator"), 
-     ("obsolete-strategy-calls", "obsolete strategies"), 
-     ("maybe-unbound-variables", "unbound variables"),
-     ("lower-case-constructors", "lower-case constructors")
+     ("debug-arguments", "        missing build operator", "on"), 
+     ("obsolete-strategy-calls", "obsolete strategies", "on"), 
+     ("maybe-unbound-variables", "unbound variables", "off"),
+     ("lower-case-constructors", "lower-case constructors", "on")
      ]
 
 strategies
@@ -28,12 +28,13 @@ strategies
           <set-config> ("--warning", <map(Fst)> AllWarnings)
 
         case explode-string => ['n', 'o', '-' | wchars] :
-          <implode-string> wchars => wstring
-          ; <get-config> "--warning"
-          ; filter(?wstring)
+          <implode-string> wchars => wstring 
+	  ; warning-exists
+          ; <get-config <+ get-default-warnings> "--warning"
+          ; filter(not(?wstring))
           ; <set-config> ("--warning", <id>)
 
-        case <elem> (<id>,  <map(Fst)> AllWarnings) :
+        case <elem> (<id>,  <get-all-warnings>) :
           <extend-config> ("--warning", [<id>])
 
         otherwise :
@@ -41,13 +42,22 @@ strategies
       end
     , <concat-strings>
         [ "-W,--warning C   Report warnings falling in category C. Categories:\n",
-       "                      all                      all categories (default) \n",
+       "                      all                      all categories \n",
        "                      no-C                     no warnings in category C\n"
         | <Display-possible-warnings> AllWarnings() ]
     )
 
+  get-default-warnings =
+    <filter(\ (warning,_,"on") -> warning \)>AllWarnings
+
+  get-all-warnings =
+    <map(Fst)> AllWarnings
+    
+  warning-exists = 
+    ?warning ; <fetch-elem(?(warning,_,_))>AllWarnings
+
   Display-possible-warnings = 
-     map( \ (s,txt) -> <concat-strings> ["                      ",s, "  ", txt, "\n"] \ )
+     map( \ (s,txt,df) -> <concat-strings> ["                      ",s, "  ", txt, " [ ",df," ]\n"] \ )
 
   get-warnings =
     <get-config> "--warning" <+ !AllWarnings(); map(Fst)
