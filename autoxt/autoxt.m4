@@ -44,7 +44,7 @@ AC_DEFUN([XT_DARWIN],
 # Store the result in VAR, defaulting to $DEFAULT (note the $).
 AC_DEFUN([XT_ARG_WITH],
 [AC_ARG_WITH([$1],
-             [AS_HELP_STRING([--with-$1=$4], [use $5 at $4 @<:@$3@:>@])],
+             [AC_HELP_STRING([--with-$1=$4], [use $5 at $4 @<:@$3@:>@])],
 	     [$2=$withval],
 	     [$2=$$3])
 AC_SUBST([$2])
