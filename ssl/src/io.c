@@ -236,7 +236,7 @@ ATerm SSL_ReadFromFile(ATerm filename)
 
 ATerm SSL_WriteToFile(ATbool binary, ATerm filename, ATerm trm)
 {  
-  FILE *outfile;
+  FILE *outfile = NULL;
 
   if(ATmatch(filename, "stdout"))
     outfile = stdout;
@@ -274,7 +274,6 @@ ATerm SSL_WriteToTextFile(ATerm file, ATerm t)
 
 ATerm SSL_getchar(ATerm filename)
 {
-  ATerm in_term;
   FILE *infile;
 
   if((infile = _SSL_file_table_lookup(filename)) == NULL)
@@ -289,7 +288,7 @@ ATerm SSL_getchar(ATerm filename)
       if(c == EOF)
 	_fail(filename);
       else
-	return ATmakeInt(c);
+	return (ATerm) ATmakeInt(c);
     }
   return NULL;
 }

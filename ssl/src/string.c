@@ -31,6 +31,7 @@ ATerm SSL_is_string(ATerm t)
     return(t); 
   else 
     _fail(t);
+  return(t);
 }
 
 /* New: generating new strings */

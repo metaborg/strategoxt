@@ -1,4 +1,18 @@
+2001-09-22  Eelco Visser  <visser@acm.org>
+
+	* Release 0.6.1
+
+2001-09-17  Eelco Visser  <visser@acm.org>
+
+	* src/io.c (SSL_ReadFromFile): Reintroduced accidentically deleted in_term
+
 2001-09-16  Eelco Visser  <visser@acm.org>
+
+	* src/string.c (SSL_is_string): Casting ATmakeInt to ATerm
+
+	* src/Makefile.am: Using -O2 to compile C sources
+
+	* src/io.c: Removed unused variables. Cast ATmakeInts to ATerms.
 
 	* spec/pack-graph.r: Added yet another version of the packing
 	algorithm; this needs to be refactored.

@@ -1,3 +1,12 @@
+2001-09-22  Eelco Visser  <visser@acm.org>
+
+	* Release 0.6.1
+
+2001-09-16  Eelco Visser  <visser@acm.org>
+
+	* Use -02 to compile C sources; O4 does not exist, and O3 inlines
+	functions which does end up in wrong code on some machines.
+
 2001-08-27  Eelco Visser  <visser@acm.org>
 
 	* Use -04 to compile C sources

@@ -19,7 +19,7 @@ include $(srcdir)/make_rules.in
 
 CFLAGS	 	= -Wall 
 DEBUGFLAGS	= -g
-OPTFLAGS	= -O4
+OPTFLAGS	= -O2
 INCLUDES 	= -I$(STRATEGORTS)/include -I$(ATERM)/include
 
 EXTRA_DIST = make_rules.in

@@ -1,3 +1,7 @@
+2001-09-22  Eelco Visser  <visser@acm.org>
+
+	* Release 0.6.1
+
 2001-08-28  Eelco Visser  <visser@acm.org>
 
 	* src/mprotect.[ch] (set_segv_handler): The solution of Merijn to

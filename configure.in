@@ -1,0 +1,53 @@
+AC_INIT(Makefile.in)
+AM_INIT_AUTOMAKE(stratego,0.6.1)
+
+PKGS="aterm srts ssl cgen sc-boot gpp-boot sc"
+AC_SUBST(PKGS)
+
+AC_ARG_WITH(cc, [  --with-cc               create cc version (libATerm-cc.a)])
+AC_ARG_WITH(prof, [  --with-prof             create profiling version (libATerm-prof.a)])
+AC_ARG_WITH(all, [  --with-all              convenience alias for --with-{gcc,cc,dbg,prof} ])
+AC_ARG_WITH(64bit, [  --with-64bit            create 64 bit cc version (libATerm-cc64.a)])
+AC_ARG_WITH(java, [  --with-java             create Java "library" (jdk-1.2 and up).])
+AC_ARG_WITH(visitor-pkg, [  --with-visitor-pkg      change visitor package (default: aterm.visitor)])
+AC_ARG_WITH(texdoclet, [  --with-texdoclet        specify location of TexDoclet (default: unused)])
+
+AC_OUTPUT(
+	Makefile 
+	README
+	pre-checks/Makefile 
+)
+
+AB_CONFIG_PKG(aterm,
+   --with-gcc
+   --with-dbg
+)
+AB_CONFIG_PKG(srts,
+   --with-aterm=${prefix}
+)
+AB_CONFIG_PKG(ssl,
+   --with-aterm=${prefix}
+   --with-srts=${prefix}
+)
+AB_CONFIG_PKG(cgen,
+   --with-aterm=${prefix}
+   --with-ssl=${prefix}
+   --with-srts=${prefix}
+)
+AB_CONFIG_PKG(sc-boot,
+   --with-aterm=${prefix}
+   --with-ssl=${prefix}
+   --with-srts=${prefix}
+)
+AB_CONFIG_PKG(gpp-boot,
+   --with-aterm=${prefix}
+   --with-ssl=${prefix}
+)
+AB_CONFIG_PKG(sc,
+   --with-aterm=${prefix}
+   --with-ssl=${prefix}
+   --with-srts=${prefix}
+   --with-sc-boot=${prefix}
+   --with-cgen=${prefix}
+   --with-gpp-boot=${prefix}
+)

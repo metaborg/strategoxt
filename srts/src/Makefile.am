@@ -17,7 +17,7 @@
 
 include make_rules.in
 
-OPTFLAGS	= -O4
+OPTFLAGS	= -O2
 INCLUDES 	= -I$(ATERM)/include -I$(srcdir)
 LDFLAGS		= -L$(ATERM)/lib
 
