@@ -29,7 +29,9 @@ strategies
 
   record-failure = (id, \x -> <add>(x,1)\ )
 
-  check-for-failures = (id, 0); <exit> 0 <+ <exit> 1
+//  check-for-failures = (id, 0); <exit> 0 <+ <exit> 1
+
+  check-for-failures = (id, 0)
 
   report-test = (debug(!"successes: "), debug(!"failures: "))
 
@@ -43,8 +45,8 @@ strategies
 
   do-test(nr, s) =
     where(nr; debug)
-    ; (where(s)
-      ; record-success <+ record-failure)
+    ; (where(s); record-success 
+       <+ record-failure)
 
   testing(nr, s) =
     do-test(nr, s; debug(!"  succeeded: ") 

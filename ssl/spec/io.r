@@ -11,23 +11,6 @@
 
 	\end{abstract}
 
-% Copyright (C) 1998-2001 Eelco Visser <visser@acm.org>
-% 
-% This program is free software; you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation; either version 2, or (at your option)
-% any later version.
-% 
-% This program is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-% 
-% You should have received a copy of the GNU General Public License
-% along with this program; if not, write to the Free Software
-% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-% 02111-1307, USA.
-
 	A compiled Stratego specification applies the strategy
 	\verb|main| to the command line options that it gets. When
 	interpreting these it will probably be necessary to read in
@@ -83,51 +66,72 @@ strategies
 	doesn't exist.
 
 \begin{code}
-  // Text output
 
-  print             = ?(name, strs); where(prim("SSL_print", name, strs))
-  printnl           = ?(name, strs); where(prim("SSL_printnl", name, strs))
-  printascii        = ?(name, strs); where(prim("SSL_printascii", name, strs))
+  // Text output
 
   // <print> (file, [t1,...,tn])
   // Prints terms ti to file. Terms ti that are strings are printed without quotes
 
+  print = 
+    ?(name, strs); where(prim("SSL_print", name, strs))
+
   // <printnl> (file, [t1,...,tn])
   // Same as print, but prints a newline at the end
+
+  printnl = 
+    ?(name, strs); where(prim("SSL_printnl", name, strs))
 
   // <printascii> (file, [i1, ..., in])
   // Prints integers ij as characters to file (using ASCII encoding).
 
+  printascii = 
+    ?(name, strs); where(prim("SSL_printascii", name, strs))
+
   // Text input
 
-  getchar	    = ?file; prim("SSL_getchar", file)
-
-  // <getchar> file
+  // <getchar> file => Int
+  // 
   // Reads the next character from file. 
   // The file should have been opened; a warning is issued if this is not the case
   // Fails if EOF is reached.
   // Returns the ascii code of the character.
 
-  readline = ?file;
-    rec x(![<getchar; not(10)> file | <x>()] <+ ![])
+  getchar = 
+    ?file; prim("SSL_getchar", file)
 
+  // <readline> file => List(Int)
+  // 
   // Returns the next line in file.
   // Returns a list of ascii codes.
   // Line is ended by newline or EOF.
 
-  // Term input and output
+  readline = ?file;
+    rec x(![<getchar; not(10)> file | <x>()] <+ ![])
 
-  ReadFromFile      = ?file; prim("SSL_ReadFromFile", file)
-  WriteToBinaryFile = ?(file, t); prim("SSL_WriteToBinaryFile", file, t)
-  WriteToTextFile   = ?(file, t); prim("SSL_WriteToTextFile", file, t)
+
+  // Term input and output
 
   // <ReadFromFile> file reads the term in file. 
   // The file needs to be in textual or binary ATerm format.
 
-  // <WriteToTextFile> (file, term) writes term to file in textual ATerm format.
+  ReadFromFile = 
+    ?file; prim("SSL_ReadFromFile", file)
 
   // <WriteToBinaryFile> (file, term) writes term to file in BAF format.
 
+  WriteToBinaryFile = 
+    ?(file, t); prim("SSL_WriteToBinaryFile", file, t)
+
+  // <WriteToTextFile> (file, term) writes term to file in textual ATerm format.
+
+  WriteToTextFile = 
+    ?(file, t); prim("SSL_WriteToTextFile", file, t)
+
+  open(file) = 
+    file; ReadFromFile
+
+  save(file) = 
+    <WriteToTextFile> (<file>, <id>)
 \end{code}
 
  	The primitive \verb|print-stack| prints the top n elements of
@@ -148,17 +152,20 @@ strategies
 \begin{code}
 strategies
 
-  open(file) = file; ReadFromFile
+  debug = 
+    where(<printnl> (stderr, [<id>]))
 
-  save(file) = <WriteToTextFile> (<file>, <id>)
+  debug(msg) = 
+    where(<printnl> (stderr, [<msg>,<id>]))
 
-  debug      = where(<printnl> (stderr, [<id>]))
-  debug(msg) = where(<printnl> (stderr, [<msg>,<id>]))
+  say(msg) = 
+    where(msg; debug)
 
-  say(msg)   = where(msg; debug)
+  echo = 
+    where(<printnl> (stdout, [<id>]))
 
-  echo       = where(<printnl> (stdout, [<id>]))
-  echo(msg)  = where(<printnl> (stdout, [<msg>,<id>]))
+  echo(msg) = 
+    where(<printnl> (stdout, [<msg>,<id>]))
 
   debug-stdout(msg) = 
     obsolete(!"debug-stdout; use echo");
@@ -167,24 +174,32 @@ strategies
   trace(msg,s) =
     debug(msg); (s; debug(!"succeeded: ") <+ debug(!"failed: "))
 
-  error = where(<printnl> (stderr, <id>))
+  error = 
+    where(<printnl> (stderr, <id>))
 
-  fatal-error = where(error; <exit> 1)
+  fatal-error = 
+    where(error; <exit> 1)
 
-  giving-up   = <fatal-error>["giving-up"]
+  giving-up = 
+    <fatal-error>["giving-up"]
 
-  printchar   = where(<printascii> (stdout, [<id>]))
+  printchar = 
+    where(<printascii> (stdout, [<id>]))
 
-  printstring = where(<print> (stdout, [<id>]))
+  printstring = 
+    where(<print> (stdout, [<id>]))
 
-  print-strings-nl(out) = where(<printnl> (<out>, <id>))
+  print-strings-nl(out) =
+    where(<printnl> (<out>, <id>))
 
-  obsolete(msg) = where(msg; debug(!"obsolete library strategy: "))
+  obsolete(msg) = 
+    where(msg; debug(!"obsolete library strategy: "))
 
-  Assert(s, msg) = test(s) <+ debug(msg)
+  Assert(s, msg) = 
+    test(s) <+ debug(msg)
 
-  risky(msg, s) = restore(s, debug(msg))
-
+  risky(msg, s) = 
+    restore(s, debug(msg))
 \end{code}
 
 	The operator \verb|stdio| implements a simple user-interface
@@ -228,3 +243,20 @@ strategies
   ; (s; where(<rm-files> [f])
      <+ where(<rm-files> [f]); fail)
 \end{code}
+
+% Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
+% 
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+% 
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% 
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.

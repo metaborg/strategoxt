@@ -164,23 +164,27 @@ strategies
     split(id, <ext>());
     add-extension
 
+  // has-extension :: (_ -> String) -> String -> String
+  //
+  // has-extension(ext) checks whether the argument is a
+  // string that ends in <ext>.
+
+  has-extension(ext) =
+    where(ext; explode-string => echars);
+    where(explode-string; at-suffix(?echars))
+  
   // path from program name "/usr/local/bin/prog" -> "/usr/local/bin/"
   get-path = 
     explode-string;
     (rec x([id|x] <+ [47|![]]) <+ ![]);
     implode-string
 
-rules
-
-  add-extension : (name, ext) -> <concat-strings> [name, ".", ext]
+  add-extension : 
+    (name, ext) -> <concat-strings> [name, ".", ext]
 
   quote(c):
-    s
-  ->
-    <concat;implode-string>[[char],<explode-string>s,[char]]
+    s -> <concat;implode-string>[[char],<explode-string>s,[char]]
     where c => char
-
-strategies
 
   single-quote = quote(!39)
   double-quote = quote(!34)
