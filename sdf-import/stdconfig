@@ -1,0 +1,9 @@
+#! /bin/sh
+
+./bootstrap
+./configure \
+	--prefix=/usr/local/build/Boot \
+	--with-xt=/usr/local/build/Boot \
+	--with-aterm=/usr/local/build/ATerm \
+	--with-sdf=/usr/local/build/SDF2 \
+	--with-repository=/usr/local/build/Boot/share/StrategoXT/XTC-StrategoXT

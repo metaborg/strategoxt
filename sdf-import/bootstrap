@@ -1,0 +1,10 @@
+rm -f config.cache
+rm -f acconfig.h
+autoxt
+aclocal -I .
+autoconf
+#acconfig
+#autoheader
+automake -a
+
+
