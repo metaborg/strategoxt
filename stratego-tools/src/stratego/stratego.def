@@ -116,10 +116,14 @@ exports
 
   context-free syntax
     "imports" ModName* -> Decl {cons("Imports")}
-    "rules" ( A )* -> Decl {cons("Rules")}
-StrategyDef -> A
-RuleDef -> A
-    "strategies" ( A )* -> Decl {cons("Strategies")}
+    "rules" ( StrategyOrRuleDef )* -> Decl {cons("Rules")}
+
+%% This definition used to use StrategyDef | RuleDef instead of
+%% StrategyOrRuleDef. However, due to a bug in pgen, this yielded incorrect
+%% asfix.
+StrategyDef -> StrategyOrRuleDef
+RuleDef -> StrategyOrRuleDef
+    "strategies" ( StrategyOrRuleDef )* -> Decl {cons("Strategies")}
     "signature" Sdecl* -> Decl {cons("Signature")}
     "overlays" Overlay* -> Decl {cons("Overlays")}
 
@@ -172,11 +176,14 @@ RuleDef -> A
     "[" Term "where" Strategy "]" -> Context {cons("Con3")}
     "[" Term "where" Strategy "]" "(" Id ")" -> Context {cons("Con4")}
 
-Rule -> B
-Stratrule -> B
+%% This definition used to use Rule | Stratrule instead of
+%% RuleOrStratrule. However, due to a bug in pgen, this yielded incorrect
+%% asfix.
+Rule -> RuleOrStratrule
+Stratrule -> RuleOrStratrule
   context-free syntax
-    Id ":" ( B ) -> RuleDef {cons("RDefNoArgs")}
-    Id "(" {Typedid ","}* ")" ":" ( B ) -> RuleDef {cons("RDef")}
+    Id ":" ( RuleOrStratrule ) -> RuleDef {cons("RDefNoArgs")}
+    Id "(" {Typedid ","}* ")" ":" ( RuleOrStratrule ) -> RuleDef {cons("RDef")}
 
   context-free syntax
     Term "->" Term -> Rule {cons("RuleNoCond")}
@@ -190,7 +197,7 @@ Stratrule -> B
     "fail" -> Strategy {cons("Fail")}
     "id" -> Strategy {cons("Id")}
     Id -> SVar {cons("SVar")}
-    "let" ( A )* "in" Strategy -> Strategy {cons("Let")}
+    "let" ( StrategyOrRuleDef )* "in" Strategy -> Strategy {cons("Let")}
     SVar -> Strategy {cons("CallNoArgs")}
     SVar "(" {Strategy ","}* ")" -> Strategy {cons("Call")}
     "?" Term -> Strategy {cons("Match")}
