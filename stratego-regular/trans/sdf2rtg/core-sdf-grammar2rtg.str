@@ -129,6 +129,9 @@ strategies
     ?prod(_, start(), _)
 
   ignore-prod =
+    ?prod([start()], sort("SURROGATE-START"), _)
+
+  ignore-prod =
     ?prod(_, file-start(), _)
 
   /**
