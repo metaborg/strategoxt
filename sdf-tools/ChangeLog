@@ -1,3 +1,14 @@
+2005-02-13  Martin Bravenboer  <martin@cs.uu.nl>
+
+	* trans/sdf2parenthesize.str: the --lang and --omod are now
+	optional. The values default to the basenem of -i and -o. This
+	makes the tool much easier to invoke. The -m is still required.
+
+2005-02-13  Martin Bravenboer  <martin@cs.uu.nl>
+
+	* lib/*: started collecting generic SDF utils in an sdf library
+	for Stratego/XT.
+	
 2005-02-12  Martin Bravenboer  <martin@cs.uu.nl>
 
 	* analyse/parse-unit/tests/*: implemented a badly needed testsuite

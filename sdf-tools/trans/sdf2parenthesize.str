@@ -104,7 +104,7 @@ strategies
              io-wrap(id)
       ]|
     where
-        module-name => M1
+        guess-module-name => M1
       ; <conc-strings> ("io-", M1) => f
   
   innermost-module :
@@ -127,8 +127,8 @@ strategies
              Parenthetical : Unknown -> Unknown
       ]|
     where
-        module-name => M1
-      ; language-name => M2
+        guess-module-name => M1
+      ; guess-language-name => M2
       ; <conc-strings> ("io-", M1) => f
       ; <conc-strings> ("parenthesize-", M2) => g
       ; RuleName => l
@@ -146,23 +146,29 @@ strategies
   stratego-module-option =
     ArgOption("--omod"
     , ?s; rules(ModuleName : _ -> s)
-    , <concat-strings>   ["--omod mod       ", "Name of the resulting Stratego module (required)"]
+    , <concat-strings>   ["--omod mod       ", "Name of the resulting Stratego module (default: basename of output)"]
     )
 
   language-option =
     ArgOption("--lang"
     , ?s; rules(LanguageName : _ -> s)
-    , <concat-strings>   ["--lang name      ", "Name of the language (required)"]
+    , <concat-strings>   ["--lang name      ", "Name of the language (default: basename of input)"]
     )
 
   RuleName =
-    <conc-strings> (<language-name>, "Parenthesize") => l
+    <conc-strings> (<guess-language-name>, "Parenthesize") => l
 
-  module-name =
-    ModuleName <+ <fatal-error> ["sdf2parenthesize: error: you must specify name of the resulting Stratego module with --omod"]
+  guess-module-name =
+    ModuleName
+    <+ <get-config; basename> "-o"
+    <+ log(|Critical(), "No Stratego module name specified. Use the --omod option to specify a module name. See also --help.")
+       ; <exit> 1
 
-  language-name =
-    LanguageName <+ <fatal-error> ["sdf2parenthesize: error: you must specify the name of the language with --lang"]
+  guess-language-name =
+    LanguageName
+    <+ <get-config; basename> "-i"
+    <+ log(|Critical(), "No language name specified. You must specify the name of the language with --lang. See also --help.")
+       ; <exit> 1
 
 signature
   constructors

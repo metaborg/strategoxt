@@ -20,7 +20,7 @@ appendreport() {
 testgenfail() {
   echo "===================================================================="
   mod=check-parenthesize-$def
-  ${SDF2PARENTHESIZE} -i $def.def -o $mod.str -m $main --lang $def --omod $mod
+  ${SDF2PARENTHESIZE} -i $def.def -o $mod.str -m $main
   if test $? -eq 0; then
     incfail
     line="* FAIL: parenthesize generatin for $def succeeded (should fail)" appendreport
@@ -33,7 +33,7 @@ testgenfail() {
 testcompilesuccess() {
   echo "===================================================================="
   mod=check-parenthesize-$def
-  ${SDF2PARENTHESIZE} -i $def.def -o $mod.str -m $main --lang $def --omod $mod
+  ${SDF2PARENTHESIZE} -i $def.def -o $mod.str -m $main
   if test $? -eq 1; then
     incfail
     line="* FAIL: parenthesize generation for $def failed (should succeed)" appendreport
