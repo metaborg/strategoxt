@@ -59,6 +59,6 @@ strategies
   xtc-store =
     if-verbose1(say(!"  Saving repository "))
     ; <get-config> "-r"
-    ; can-write-file
+    ; ( can-write-file
       < <WriteToTextFile> (<id>, <table-getlist> XTC)
-      + debug(!"** WARNING: No write permission for repository: "); fail
+      + debug(!"** WARNING: No write permission for repository: "); fail)
