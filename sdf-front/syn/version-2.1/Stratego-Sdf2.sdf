@@ -62,6 +62,10 @@ exports
     "p" [0-9\']* "*" -> Production*
     "p" [0-9\']* "+" -> Production+
 
+  variables %% section 7.4.1
+
+    "S" [0-9\']* -> Sort
+
   variables %% section
 
     "L" -> Literal
