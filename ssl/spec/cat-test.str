@@ -1,0 +1,5 @@
+module cat-test
+imports pipe
+strategies
+
+  main = id
