@@ -169,20 +169,30 @@ ATerm SSL_kill(ATerm pid, ATerm sig) {
   return (ATerm) ATmakeInt(result);
 }
 
-ATerm SSL_execvp(ATerm file, ATerm argv)
-{
+ATerm SSL_execvp(ATerm file, ATerm argv) {
   char *str_args[256];
   int i = 0, res;
   ATermList args = (ATermList) argv;
   str_args[i++] = AT_getString(file);
-  while(!ATisEmpty(args))
-    {
-      ATerm arg;
-      if(i > 255) _fail((ATerm) ATempty);
-      arg = ATgetFirst(args);
-      args = ATgetNext(args);
-      str_args[i++] = AT_getString(arg);
+
+  while(!ATisEmpty(args)) {
+    ATerm arg;
+    if(i > 255) {
+      ATfprintf(stderr, "** ERROR in SSL_execvp: only 256 arguments are allowed.\n");
+      _fail((ATerm) ATempty);
     }
+
+    arg = ATgetFirst(args);
+    args = ATgetNext(args);
+
+    if(!ATisString(arg)) {
+      ATfprintf(stderr, "** ERROR in SSL_execvp: argument is not a string: %t \n", arg);
+      _fail((ATerm) ATempty);
+    }
+
+    str_args[i++] = AT_getString(arg);
+  }
+
   str_args[i] = NULL;
   res = execvp(AT_getString(file), str_args);
   return (ATerm)ATmakeInt(res);
