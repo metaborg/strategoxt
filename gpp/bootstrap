@@ -3,4 +3,4 @@
 rm -f config.cache config.log acconfig.h aclocal.m4
 
 autoxt
-autoreconf -i
+autoreconf -if
