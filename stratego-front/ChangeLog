@@ -1,3 +1,13 @@
+2003-05-28  Martin Bravenboer <martin@mbravenboer.org>
+
+  * syn/Stratego-Constants.sdf: allow newlines in String
+    literals. This allows you to use String literals spanning
+    multiple lines.
+
+  * syn/Stratego-Lex.sdf and Main.sdf: removed because they
+    are never used. Especially the Stratego-Lex module
+    was confusing.
+
 2003-05-12  Martin Bravenboer <martin@mbravenboer.org>
 
   * syn/Stratego-Strategies.sdf,
