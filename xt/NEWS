@@ -18,7 +18,14 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: NEWS,v 1.8 2000/08/31 13:59:41 mdejonge Exp $
+# $Id: NEWS,v 1.9 2000/11/09 18:27:07 jvisser Exp $
+
+Version 0.4
+  released: November 10, 2000
+	* XT now uses autobundle software.
+	* Support added for creating patches ("gmake diff") and for 
+          building packages ("gmake pkg").
+	* JJForester added to the package list.
 
 Version 0.3
   released: September 1, 2000
