@@ -1,3 +1,9 @@
+2003-06-12  Martin Bravenboer  <martin@mbravenboer.org>
+
+  * bootstrap: don't make check scripts executable. wget
+    is no longer used by the buildfarm to checkout the
+    sources.
+
 2003-05-22  Martin Bravenboer  <martin@mbravenboer.org>
 
   * stratego-util is now part of the StrategoXT distribution

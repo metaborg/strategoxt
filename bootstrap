@@ -26,24 +26,14 @@ echo "PWD"
 echo $PWD
 
 SRCROOT=`dirname $0`
-
 echo "SRCROOT"
 echo $SRCROOT
 
 MTIME=`date +%Y%m%d%H%M.%S`
-
 echo "MTIME"
 echo $MTIME
 
 find . -print | xargs touch -t $MTIME
-
-# Make some scripts executable, because we checkout with wget in the daily build system.
-
-CHECKSCRIPTS=`find $SRCROOT -name "*check"`
-chmod u+x $CHECKSCRIPTS
-
-echo "CHECKSCRIPTS"
-echo $CHECKSCRIPTS
 
 rm -f mkinstalldirs missing install-sh
 
