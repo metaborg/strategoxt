@@ -169,11 +169,11 @@ rules
     
     ; <dr-rename-vars> drd => stdrule
     ; if <DRAuxRuleGenerated> stdrule => stamp
-        then // An equivalent aux-Rule has already been lifted, do nothing now.
+      then // An equivalent aux-Rule has already been lifted, do nothing now.
           ![] => callees
         ; ![] => callers
         ; <debug(!"aux-Rule already generated: ")> (stamp, stdrule)
-        else // aux-Rule has not been lifted yet
+      else // aux-Rule has not been lifted yet
 
           <conc-strings>("aux-", f) => f'  // has to be the same such that + of aux-f works
         ; new => stamp
@@ -196,11 +196,12 @@ rules
         // Check whether Rule and bagof-Rule still need to be generated
         ; !(f, (<length> as1, <length> as2)) => rsig
         ; if <DRCallersGenerated> (rsig, t1')
-            then 
+          then 
               ![] => callers
             ; <debug(!"callers already generated: ")> (rsig, t1')
-            else
+          else
               <conc-strings>("bagof-", f) => g
+            ; <conc-strings>("once-", f) => h
 
             // Transform passed arguments of f into calling arguments for f'
             ; <map((?DefaultVarDec(<id>) + ?VarDec(<id>,_)); !Call(SVar(<id>),[]))> as1 => s1*
@@ -215,7 +216,11 @@ rules
             ; ![ |[ f(as1|as2) : x@t1 -> <fetch-elem(f'(s1*|t1'*))> closures
                       where dr-lookup-rule(|~str:f, t1'') => closures ]|,
                  |[ g(as1|as2) : x@t1 -> <filter(f'(s1*|t1'*))> closures
-                      where (dr-lookup-rule(|~str:f, t1'') <+ ![]) => closures ]|
+                      where (dr-lookup-rule(|~str:f, t1'') <+ ![]) => closures ]|,
+                 |[ h(as1|as2) : x@t1 -> res
+                      where dr-lookup-rule-pointer(|~str:f, t1'') => (closures, key, tbl)
+			  ; <split-fetch(f'(s1*|t1'*); ?res); conc> closures => closures'
+			  ; <hashtable-put(|key, closures')> tbl ]|
                ] => callers
             ; rules(DRCallersGenerated : (rsig, t1') -> ())
             ; <debug(!"freshly generating the DR callers: ")> (rsig, t1')
@@ -252,20 +257,5 @@ rules
 
 \end{code}
 
-% Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
-% 
-% This program is free software; you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation; either version 2, or (at your option)
-% any later version.
-% 
-% This program is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-% 
-% You should have received a copy of the GNU General Public License
-% along with this program; if not, write to the Free Software
-% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-% 02111-1307, USA.
+% Copyright (C) 2001-2004 Eelco Visser <visser@acm.org>
 
