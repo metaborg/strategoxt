@@ -1,0 +1,12 @@
+module pp-aterm
+imports xtc-lib string stratego-xt-xtc-tools pp-aterm-options
+
+strategies
+
+  io-pp-aterm =
+    xtc-io-wrap(max-term-size-option,
+      xtc-transform(!"PpTerm", <conc> (<pass-verbose>, <pass-max-term-size>))
+    ; xtc-abox-format
+    ; xtc-abox2text
+    )
+    

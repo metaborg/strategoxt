@@ -1,0 +1,18 @@
+module ATerms
+imports Literals IntCon RealCon
+signature
+  constructors
+    not-empty             : List(ATerm) -> ATermList
+    int                   : IntCon -> ACon
+    real                  : RealCon -> ACon
+    constant              : ACon -> ATerm
+    list                  : ATermList -> ATerm
+    fun                   : AFun -> ATerm
+    appl                  : AFun * List(ATerm) -> ATerm
+    placeholder           : ATerm -> ATerm
+    annotation            : List(ATerm) -> Ann
+    annotated-constant    : ACon * Ann -> ATerm
+    annotated-list        : ATermList * Ann -> ATerm
+    annotated-fun         : AFun * Ann -> ATerm
+    annotated-appl        : AFun * List(ATerm) * Ann -> ATerm
+    annotated-placeholder : ATerm * Ann -> ATerm

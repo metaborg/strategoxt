@@ -1,0 +1,12 @@
+/**
+ * @author  Martin Bravenboer
+ */
+module implode-aterm
+imports ATerms options explode-aterm
+
+strategies
+
+  io-implode-aterm =
+    io-wrap(implode-aterm)
+
+

@@ -1,0 +1,6 @@
+module Literals
+imports Whitespace
+signature
+  constructors
+    qlit  : QLiteral -> Literal
+    uqlit : UQLiteral -> Literal

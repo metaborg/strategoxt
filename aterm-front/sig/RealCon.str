@@ -1,0 +1,7 @@
+module RealCon
+imports IntCon
+signature
+  constructors
+    present  : IntCon -> OptExp
+    absent   : OptExp
+    real-con : IntCon * NatCon * OptExp -> RealCon
