@@ -1,0 +1,145 @@
+# GB -- Grammar Base
+# Copyright (C) 2001 Merijn de Jonge <mdejonge@cwi.nl>,
+#                    Eelco Visser <visser@acm.org>,
+#                    Joost Visser <jvisser@cwi.nl>
+# 
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+ 
+# $Id: make_rules.gb.in,v 1.1 2002/03/06 20:40:30 mdejonge Exp $
+
+# Variable definitions
+SDF_TOOLS       = @SDF_TOOLS@
+SGLR            = @SGLR@
+GPP             = @GPP@
+GBTOOLS_VERSION = @VERSION@
+
+# location of online grammar base and grammar distributions
+OGB             = @OGB@
+GB_DIST         = @GB_DIST@
+
+# default location for generated HTML files
+HTMLDEST = html
+
+# Location of tool to pack sdf modules to sdf definitions.
+pack_sdf    = $(SDF_TOOLS)/bin/pack-sdf
+
+# Where to look for included modules. Prepend `-I' to each directory in
+# the list of reused grammars $(reuses). First strip of version numbers from
+# these grammars
+reused = $(shell echo $(reuses) | sed 's/\([^\.]*\.[^-]*\)-[^ ]*/\1/g')
+GRAMMAR_SEARCH_PATH = -I $(srcdir) $(reused:%=-I $(prefix)/grammars/%)
+
+# Which "local" modules are part of the grammar and should be distributed.
+# An upperbound is to take all .sdf files in the current directory.
+grammar_modules = $(wildcard *.sdf)
+
+# This command is executed for each grammar during "make check"
+# it runs sglr for $(grammar) and parses each file in $(testset)
+TESTS_ENVIRONMENT = $(SHELL) -c \
+	'tests="$(testset:%=$(top_srcdir)/data/%)"; for grammar in $${tests} ;do \
+            PATH=$(SGLR)/bin:$${PATH} sglr -2 -v -p $(grammar).tbl -o /dev/null -i $${grammar} $(SGLR_FLAGS);\
+         done'
+
+# Construction of definition file by pretty-printing its abstract syntax tree
+# and generating a descriptive header (using defhead),
+$(grammar).def: $(grammar).af
+	( \
+	   $(GBTOOLS)/libexec/defhead ;\
+	   $(SDF_TOOLS)/bin/sdf2text -a -i $< \
+	) > $@
+
+# Construction of a definition file from a list of grammar modules  by
+# collecting the modules, 
+# and added constructor names when needed.
+$(grammar).af: $(grammar_modules) GB-Main.sdf Makefile
+	PATH=$(SGLR)/bin:$${PATH}; export PATH ;\
+	$(SDF_TOOLS)/bin/pack-sdf \
+	   -i GB-Main $(GRAMMAR_SEARCH_PATH) -dep $(grammar).def \
+	| $(SDF_TOOLS)/bin/implode-asfix \
+	| $(SDF_TOOLS)/bin/sdf-cons $(SDFCONSFLAGS) \
+	| $(SDF_TOOLS)/bin/sdf-bracket -o $@
+
+# Generation of a benchmark file. This file is used during a `make bench'
+# and lists all files defined in the benchmarks variable. All files are
+# assumed to be located in the 'data' subdirectory.
+%.rbm: Makefile
+	( \
+           echo "benchmark" ;\
+           echo "language syntax/$(grammar).tbl" ;\
+           echo "files" ;\
+           echo $(benchmarks:%=data/%) ;\
+           echo "statistics" ;\
+           echo "graph name time.plot" ;\
+           echo "x = tokens y = seconds" ;\
+           echo "sorted by tokens" ;\
+        ) > $@
+
+# Rule to build pretty-print table
+$(grammar).pp: 
+	$(GPP)/bin/ppgen -S -A -i $(grammar).af -o $@
+	
+# Rule to build GB-Main.sdf
+GB-Main.sdf : Makefile
+	$(GBTOOLS)/libexec/mkmain \
+	   --top $(top_module) --id $(grammar)-$(version) \
+	   > $@
+
+# Generation of html pages from a grammar.
+# usage:
+#   gmake html HTMLDEST=<dest dir>
+# where
+#   <dest dir> denotes the directory in which the html (and other) files
+#   should be generated.
+.PHONY: html
+html:
+	mkdir -p $(HTMLDEST)
+	$(GPP)/bin/tohtml-sdf -I ./syntax $(GRAMMAR_SEARCH_PATH) \
+	   -o $(HTMLDEST) -t "Language $(grammar).$(version)" $(top_module)
+
+# Generate a README file from README.src by adding a descriptive header
+# (using readhead).
+README: README.src Makefile
+	( \
+	   $(GBTOOLS)/libexec/readhead ;\
+	   cat README.src \
+	) > $@
+	
+# Use getvalue to obtain the value of a variable defined in the makefile
+#
+# usage: gmake getvalue NAME=<varname>
+#
+getvalue:
+	@echo $($(NAME))
+
+# Generation of a package definition file for the grammar.
+$(PACKAGE)-$(VERSION).pkg: grammar.spec
+	( \
+	  echo package ;\
+	  echo identification ;\
+	  echo " name=$(PACKAGE)" ;\
+	  echo " version=$(VERSION)" ;\
+	  echo " location=$(GB_DIST)" ;\
+	  echo " info=$(OGB)" ;\
+	  echo " description='"$(description)\' ;\
+	  echo " keywords=grammar base, grammar, language, $(grammar)" ;\
+	  echo interface ;\
+	  echo requires ;\
+	  echo " gbtools $(GBTOOLS_VERSION)" ;\
+	  reuses='$(reuses)' ; for d in $${reuses} ;\
+	  do \
+	     echo $$d | sed 's/\([^-]*\)-/ \1 /';\
+	  done ;\
+	) > $@

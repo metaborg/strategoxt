@@ -1,0 +1,173 @@
+#! /bin/sh
+# GB -- Grammar Base
+# Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>,
+#                    Eelco Visser <visser@acm.org>,
+#                    Joost Visser <jvisser@cwi.nl>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+# $Id: gbadd.sh.src,v 1.1 2002/03/06 20:40:37 mdejonge Exp $
+
+# This script simplifies the addition of new grammars to the Grammar Base by
+# providing a form with grammar parameters to the grammar engineer. After
+# editing the form, Makefiles and directories are automatically created and
+# the grammar is added to the developer build process.
+#
+# usage:
+#    gbadd [-h] [-o dir] [-u] -g <grammar> -v <version>
+#
+# where
+#   -g <grammar>   denotes the grammar to add.
+#   -h             displays usage information.
+#   -v <version>   denotes the version of the grammar.
+#   -o <dir>       in which directory to create the new grammar sub dir (defaults to pwd).
+#   -u             update gb build files.
+PREFIX=__PREFIX__
+MAKE=__MAKE__
+
+grammar=
+version=
+output_dir=`pwd`
+update_only=false
+
+usage() {
+cat <<ENDCAT
+usage:
+   gbadd [-h] [-o dir] [-u] -g <grammar> -v <version>
+
+where
+   -g <grammar>   denotes the grammar to add.
+   -h             displays usage information.
+   -v <version>   denotes the version of the grammar.
+   -o <dir>       in which directory to create the new grammar sub dir (defaults to pwd).
+   -u             update gb build files.
+
+This script simplifies the addition of new grammars to the Grammar Base by
+providing a form with grammar parameters to the grammar engineer. After
+editing the form, a tar file is generated containing a build environment
+including Makefiles, configure scripts etc.
+ENDCAT
+}
+
+# parse command lie options
+for arg in $*
+do
+   case $1 in
+      -g ) grammar=$2; shift; shift ;;
+      -h ) usage; exit 0 ;;
+      -v ) version=$2; shift; shift ;;
+      -o ) output_dir=$2; shift; shift ;;
+      -u ) update_only=true; shift ;;
+      -* ) echo "Invalid option specified: $1" >&2; exit 1;;
+   esac
+done
+
+update_file () {
+   src=$1
+   target=$2
+      
+   if [ -f ${target} ]; then
+   cmp -s ${src} ${target}
+   if [ $? -ne 0 ]; then
+   if /bin/test  ${src} -nt ${target} ; then
+      echo "A copy of `basename $target` has been saved in $target.bak." >&2
+      cp $target $target.bak
+      cp $src $target
+   else
+      echo "File $target can't be automatically updated because it was modified." >&2
+   fi
+   fi
+   else
+      echo "Updating $target" >&2
+      cp $src $target
+   fi
+}
+   
+# Copy files, backing up when they already exist
+update_files () {
+   location=$1
+
+   update_file ${PREFIX}/share/gbtools/Makefile.am.templ        ${location}/Makefile.am
+   update_file ${PREFIX}/share/gbtools/reconf                   ${location}/reconf
+   chmod +x ${location}/reconf
+   update_file ${PREFIX}/share/gbtools/program-check.m4         ${location}/program-check.m4
+   update_file ${PREFIX}/share/gbtools/syntax.Makefile.am.templ ${location}/syntax/Makefile.am
+   update_file ${PREFIX}/share/gbtools/syntax.make_rules.local  ${location}/syntax/make_rules.local
+   update_file ${PREFIX}/share/gbtools/data.Makefile.am.templ   ${location}/data/Makefile.am
+}
+
+if [ "a${update_only}" = "atrue" ]; then
+  update_files .
+  exit 0
+fi
+
+# Check that the required '-g'  parameter was specified
+if [ "a${grammar}" = "a" ]; then
+   echo "No grammar specified." >&2
+   exit 1
+fi
+
+# Check that the required '-v'  parameter was specified
+if [ "a${version}" = "a" ]; then
+   echo "No version specified." >&2
+   exit 1
+fi
+
+# we need some temporary storage, make sure everything will be cleaned up
+# after program termination. 
+tmp=/tmp/${grammar}.${version}.$$
+trap "rm -fr ${tmp}*;exit" 0 1 2 3 4 5 6 7 8 9 10
+
+
+# Create a copy of the grammar .spec template file and already fill out grammar name and version.
+sed "s/grammar[ ]*= /&${grammar}/;\
+     s/grammar_version[ ]*= /&${version}/" ${PREFIX}/share/gbtools/grammar.spec.templ > ${tmp}.spec
+
+# and open an edior with the template to let the user fill in all information.
+${EDITOR:-vi} ${tmp}.spec
+
+# Display the grammar paramaters to the user ...
+grep -v '#' ${tmp}.spec | grep -v '^$'
+
+# ... and make sure that he/she wants to continue.
+echo
+printf "Continue (y/n [y])"
+read ans
+
+if [ "a${ans}" != "a" -a  \
+     "a${ans}" != "ay" -a \
+     "a${ans}" != "aY" ]; then
+   exit 0
+fi
+
+# Make direcotories and copy Makefile.am's and the .spec file to their
+# correct locations..
+mkdir -p ${tmp}/${grammar}.${version}/syntax
+mkdir -p ${tmp}/${grammar}.${version}/data
+mv ${tmp}.spec ${tmp}/${grammar}.${version}/grammar.spec
+
+# copy file to newly created directory hierarchy
+update_files ${tmp}/${grammar}.${version}
+
+# generate configure.in from grammar.spec file
+( 
+ cd ${tmp}/${grammar}.${version}/
+ ${MAKE} -f ${PREFIX}/share/gbtools/make_rules.gbtools configure.in GBTOOLS=${PREFIX}
+)
+
+# generate tar file 
+mkdir -p ${output_dir}
+( cd ${tmp}; tar cf - ${grammar}.${version}) | ( cd ${output_dir}; tar xvf - )

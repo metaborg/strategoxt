@@ -1,0 +1,46 @@
+# GB -- Grammar Base
+# Copyright (C) 2001 Merijn de Jonge <mdejonge@cwi.nl>,
+#                    Eelco Visser <visser@acm.org>,
+#                    Joost Visser <jvisser@cwi.nl>
+# 
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+ 
+# $Id: make_rules.gbtools.in,v 1.1 2002/03/06 20:40:37 mdejonge Exp $
+
+
+configure.in : grammar.spec
+	(\
+	echo "dnl Generated file; do not edit by hand." ;\
+	echo "AC_INIT(configure.in)" ;\
+	grammar=`echo $(grammar).$(grammar_version)| tr [.] [_]`;\
+	echo "AM_INIT_AUTOMAKE($${grammar},0)" ;\
+	echo "ACLOCAL=\"\$${ACLOCAL} -I .\"" ;\
+	echo "AC_PACKAGE_REQUIRE(gbtools, gbadd," ;\
+	echo "   [  --with-gbtools          location of gbtools package ])" ;\
+	echo "AC_SUBST(GBTOOLS)" ;\
+	reuses='$(reuses)'; for d in $${reuses} ;\
+	do \
+           r=`echo $$d | sed 's/\([^-]*\)-.*/\1/' | tr [.] [_]`;\
+           echo "AC_ARG_WITH( $${r}, [  --with-$${r}   location of grammar $${r}.] )" ;\
+	done ;\
+	echo "AC_OUTPUT(";\
+	echo Makefile ;\
+	echo syntax/Makefile;\
+	echo data/Makefile ;\
+	echo ")" ;\
+	) > $@
+
+include grammar.spec
