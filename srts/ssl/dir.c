@@ -31,6 +31,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
 #include <sys/stat.h>
 #include <unistd.h>
 #include <srts/stratego.h>
+#include "exec.h"
 
 
 /* From Advanced Programming in the Unix Environment */
@@ -114,12 +115,12 @@ ATerm SSL_mkdtemp(ATerm template) {
   result = (char*) malloc(strlen(str) + 1);
   strcpy(result, str);
 
-  fd = mkdtemp(result);
-  if(fd == -1) {
+  result = mkdtemp(result);
+  if(result == NULL) {
     _fail(template);
   }
 
-  term_result = (ATerm) App2("", (ATerm) ATmakeString(result), (ATerm) ATmakeInt(fd));
+  term_result = (ATerm)ATmakeString(result);
   free(result);
 
   return term_result;
@@ -130,7 +131,7 @@ ATerm SSL_mkdtemp(ATerm template) {
  */
 ATerm SSL_mkdir(ATerm pathname, ATerm mode)
 {
-  int result = mkdir(AT_getString(pathname), AT_getString(mode));
+  int result = mkdir(AT_getString(pathname), permissions_from_term(mode));
   return (ATerm) ATmakeInt(result);
 }
 

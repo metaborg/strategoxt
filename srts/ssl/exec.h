@@ -104,3 +104,4 @@ ATerm SSL_isatty(ATerm filedes);
 #define SSL_STDERR_FILENO() ((ATerm)ATmakeInt(STDERR_FILENO))
 
 
+int permissions_from_term(ATerm perms_term);

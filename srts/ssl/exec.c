@@ -391,24 +391,23 @@ int permission_from_term(ATerm term) {
 }
 
 /**
- * access
+ * permissions
  */
-ATerm SSL_access(ATerm path_term, ATerm perms_term) {
-  const char* pathname  = AT_getString(path_term);
+int permissions_from_term(ATerm perms_term) 
+{
   int amode = 0;
-  int result = -1;
   ATermList todo;
 
   if(!ATisList(perms_term)) {
     ATfprintf(stderr, "** ERROR: access invoked with %t as access mode, which is not a list.\n", perms_term);
-    _fail(path_term);
+    _fail(perms_term);
   }
 
   todo = (ATermList) perms_term;
 
   if(todo == ATempty) {
     ATfprintf(stderr, "** ERROR: access requires at least one permission &t .\n", perms_term);
-    _fail(path_term);
+    _fail(perms_term);
   }
 
   while(todo != ATempty) {
@@ -416,13 +415,23 @@ ATerm SSL_access(ATerm path_term, ATerm perms_term) {
     todo = ATgetNext(todo);
   }
 
-  result = access(pathname, amode);
+  return amode;
+}
+
+/**
+ * access
+ */
+ATerm SSL_access(ATerm path_term, ATerm perms_term) {
+  const char* pathname  = AT_getString(path_term);
+  int result = -1;
+  result = access(pathname, permissions_from_term(perms_term));
   if(result != 0) {
     _fail(path_term);
   }
 
   return path_term;
 }
+
 
 /**
  * creat
