@@ -1,3 +1,7 @@
+2003-01-18  Eelco Visser  <visser@cs.uu.nl>
+
+	* ssl/dir.h (SSL_fdcopy): prototype
+
 2003-01-12  Eelco Visser  <visser@cs.uu.nl>
 
 	* ssl/ssl-time.h : SSL_epoch2utc -> SSL_epoch2UTC
