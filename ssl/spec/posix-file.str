@@ -1,4 +1,5 @@
 module posix-file
+imports string
 
 /**
  * Stream operations
@@ -32,6 +33,22 @@ strategies
     prim("SSL_STDERR_FILENO")
 
 /**
+ * Special directories
+ */
+strategies
+
+  temp-dir = P_tmpdir
+
+  P_tmpdir =
+    prim("SSL_P_tmpdir")
+
+//  getcwd =
+//    prim("SSL_getcwd")
+
+  home-dir =
+    <get-env> "HOME"
+
+/**
  * Primitive file operations
  */
 strategies
@@ -47,6 +64,16 @@ strategies
   // open a file and return a file descriptor
   open =
     ?pathname; prim("SSL_open", pathname)
+
+  /**
+   * Creates a unique temporary file
+   *
+   * returns a fd if succesful, fails on error
+   * mkstemp :: String -> Int
+   */
+  mkstemp =
+      <conc-strings> (<id>, "XXXXXX") => template
+    ; prim("SSL_mkstemp", template)
     
   /**
    * Closing a file
