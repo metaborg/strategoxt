@@ -45,7 +45,7 @@ strategies
     where <fdopen> (fd1, "r") => file
         ; <close> fd2
 
-  // connect the output side (fd2) of the pipe to stdin
+  // connect the output side (fd2) of the pipe to stdout
   stdout-to-pipe =
   where(
     ?Pipe(fd1, fd2)

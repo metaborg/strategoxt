@@ -59,6 +59,9 @@ strategies //primitives
   fork(child, parent) =
     ?t; fork; ?pid; (?0; <child> t <+ <parent>(pid, t))
 
+  fork-and-wait(child) =
+    ?t; fork; ?pid; (?0; <child> t <+ <waitpid>pid; !t)
+
   /*   The  execv  and  execvp functions provide an array of pointers to
        null-terminated strings that represent the argument  list  avail­
        able  to  the  new  program.   The first argument, by convention,
