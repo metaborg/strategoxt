@@ -1,0 +1,59 @@
+module parse-unit-test-results
+imports
+  aterm-eq
+
+signature
+  constructors
+    TestResults : List(Result) -> TestResults
+    Success     : Result
+    Failure     : Result
+
+  constructors
+    ParseResult : TestResult * File -> ParseResult
+
+    Failure : Trace -> TestResult
+    Success : File  -> TestResult
+
+    Parse   : ErrorReport -> Trace
+    Implode : File        -> Trace
+
+/**
+ * Determining the result.
+ */
+strategies
+
+  create-test-result =
+       create-test-result-simple
+    <+ create-test-compare
+    <+ !Failure()
+
+  /**
+   * failure & success -> failure
+   */
+  create-test-result-simple:
+    (ParseResult(_, Failure(_)), success()) -> Failure()
+
+  /**
+   * failure & pattern -> failure
+   */
+  create-test-result-simple:
+    (ParseResult(_, Failure(_)), pattern(_)) -> Failure()
+
+  /**
+   * success & success -> success
+   */
+  create-test-result-simple:
+    (ParseResult(_, Success(_)), success()) -> Success()
+
+  /**
+   * failure & failure -> success
+   */
+  create-test-result-simple:
+    (ParseResult(_, Failure(_)), failure()) -> Success()
+
+  /**
+   * success & pattern -> compare
+   */
+  create-test-compare:
+    (ParseResult(_, Success(f@FILE(_))), pattern(p)) -> Success()
+      where <aterm-eq> (<read-from; explode-aterm> f, p)

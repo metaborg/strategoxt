@@ -1,0 +1,76 @@
+/**
+ * Presentation of parse-unit results
+ */
+module parse-unit-present
+imports
+  error-reporting
+
+strategies
+
+  echo-start =
+    if-verbose1(
+      where(
+        ?parse-testsuite(name(name), _, tests)
+      ; <echo> "-----------------------------------------------------------------------"
+      ; <concat-strings; echo> ["executing testsuite ", name, " with ", <length; int-to-string> tests, " tests"]
+      ; <echo> "-----------------------------------------------------------------------"
+      )
+    )
+
+  echo-results =
+    if-verbose1(
+      where(	
+        ?(name, TestResults(results))
+      ; <echo> "-----------------------------------------------------------------------"
+      ; <conc-strings; echo> ("results testsuite ", name)
+      ; <conc-strings; echo> ("successes : ", <count-in-string(?Success())> results)
+      ; <conc-strings; echo> ("failures  : ", <count-in-string(?Failure())> results)
+      ; <echo> "-----------------------------------------------------------------------"
+      )
+    )
+
+  count-in-string(s) = 
+    filter(s); length; int-to-string
+
+  echo-report =
+    if-verbose1(
+      ?(i, parse-test(description(n), _, expected), result, <id>)
+    ; where(
+        try(
+          ?Success()
+        ; <concat-strings; echo> ["* OK   : test ", <int-to-string> i, " (", n, ")"]
+        )
+      )
+    ; where(
+        try(
+          ?Failure()
+        ; <concat-strings; echo> ["* ERROR: test ", <int-to-string> i, " (", n, ")"]
+        ; <echo-parse-result> result
+        ; <echo-expected> expected
+        )
+      )
+    )
+
+  echo-parse-result :
+    ParseResult(_, Failure(Parse(summary))) -> ()
+    where
+        <say(!"  - parsing failed")> ()
+      ; <echo> "......................................................................."
+      ; report-error-summary(|summary)
+      ; <echo> "......................................................................."
+
+  echo-parse-result :
+    ParseResult(_, Success(f)) -> <debug(!"  - succeeded: ")> t
+      where <read-from> f => t
+
+  echo-expected :
+    pattern(p) -> <implode-aterm; debug(!"  - expected:  ")> p
+
+  implode-appl :
+    wildcard() -> "_"
+
+  echo-expected :
+    success() ->  <say(!"  - should succeed")> ()
+
+  echo-expected :
+    failure() ->  <say(!"  - should fail")> ()

@@ -1,0 +1,79 @@
+/**
+ * Options for parse-unit
+ *
+ * @author Martin Bravenboer <martin@cs.uu.nl>
+ */
+module parse-unit-options
+strategies
+
+  parse-unit-options =
+       parse-table-option
+    <+ abstract-input-option
+    <+ sglr-filter-options
+    <+ single-option
+    <+ single-asfix2-option
+    <+ single-ast-option
+
+  init-parse-unit-options =
+    where(<set-verbosity> 1)
+
+  parse-table-option =
+    ArgOption("-p"
+    , where(<set-config> ("--parse-table", <id>))
+    , !"-p <file>         Use parse table <file> (required)"
+    )
+
+  single-option =
+    ArgOption("--single"
+    , where(<set-config> ("--single", <string-to-int>))
+    , !"--single <nr>     Parse test <nr> and output the result to the output"
+    )
+
+  get-single-test =
+    <get-config> "--single"
+
+  get-single-test-output =
+    <get-config> "--single-output"
+
+  is-single-test-output-asfix2 =
+    get-single-test-output => "asfix2"
+
+  single-asfix2-option =
+    Option("--asfix2"
+    , where(<set-config> ("--single-output", "asfix2"))
+    , !"--asfix2          Parse to AsFix2 (only applicable when --single is used)"
+    )
+
+  single-ast-option =
+    Option("--ast"
+    , where(<set-config> ("--single-output", "ast"))
+    , !"--ast             Parse to AST (only applicable when --single is used)"
+    )
+
+  sglr-filter-options =
+    Option("--no-heuristic-filters"
+    , where(<extend-config> ("--sglr-options", ["-fi", "-fe"]))
+    , !"--no-heuristic-filters  Don't use hearistic disambiguation filters (encouraged)"
+    )
+
+  abstract-input-option =
+    Option("--abstract-input"
+    , where(<set-config> ("--abstract-input", ()))
+    , !"--abstract-input  Testsuite is in abstract syntax."
+    )
+
+  is-abstract-input =
+    <get-config> "--abstract-input"
+
+  get-extra-sglr-options =
+    <get-config> "--sglr-options" <+ ![]
+
+  get-parse-table =
+    <get-config> "--parse-table" <+ <fatal-error> ["** ERROR: no parse table specified"]
+
+  abs-test-file =
+    <conc-strings> (<get-relative-prefix> "-i", <id>)
+
+  get-relative-prefix =
+       get-config; get-path
+    <+ <conc-strings> (<getcwd>, "/")
