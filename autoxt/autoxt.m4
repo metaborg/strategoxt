@@ -8,10 +8,34 @@
 # The macros are organized hierarchically such that packages that are included
 # in a larger bundle do not need to be provided explicitly.
 
+AC_DEFUN([XT_SETUP],
+[
+  AC_REQUIRE([XT_DARWIN])
+])
+
+# XT_DARWIN
+# ---------
+AC_DEFUN([XT_DARWIN],
+[
+  AC_REQUIRE([AC_CANONICAL_HOST])
+  AC_REQUIRE([AC_CANONICAL_BUILD])
+
+  AC_MSG_CHECKING([whether host operating system is Darwin])
+  xt_darwin="no"
+  case $host_os in
+    darwin*)
+      xt_darwin = "yes"
+      ;;
+  esac
+  AC_MSG_RESULT([$xt_darwin])
+  AM_CONDITIONAL([XT_DARWIN], [test "$xt_darwin" = "yes"])
+])
+
 # USE_XT_PACKAGES
 # ---------------
 AC_DEFUN([USE_XT_PACKAGES],
 [
+  AC_REQUIRE([XT_SETUP])
 
 ############ XT ###########################################################
 

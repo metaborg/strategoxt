@@ -1,5 +1,21 @@
 2004-06-27   Martin Bravenboer  <martin@cs.uu.nl>
 
+	* autoxt.m4: added XT_SETUP where all stuff can be invoked that
+	always has to be done in configure to be able to build a Stratego
+	package. USE_XT_PACKAGES requires XT_SETUP, so legacy packages
+	will always invoke this macro.
+
+	* autoxt.m4: XT_SETUP sets and Automake conditionel XT_DARWIN. It
+	would be useful to have an AC_DARWIN macro in Autoconf itself
+	(See UNIX Variants in manual).
+
+	* Makefile.xt: use the XT_DARWIN conditional to add the
+	build_at_load option to LDFLAGS. The is required since the linker
+	of Darwin use lazy invocation of initializers by default. This
+	does not work for Stratego programs that use separate compilation.
+
+2004-06-27   Martin Bravenboer  <martin@cs.uu.nl>
+
 	* autoxt.m4: added a set of macros for checking package
 	dependencies:
 	

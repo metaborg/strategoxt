@@ -15,6 +15,10 @@
 
 AM_CPPFLAGS = -I$(SRTS)/include -I$(ATERM)/include
 
+if XT_DARWIN
+  AM_LDFLAGS=-bind_at_load
+endif
+
 STRATEGORUNLIBS = \
   -lstratego_opt \
   -lstratego-choice_opt \
