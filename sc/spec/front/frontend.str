@@ -1,33 +1,24 @@
 \literate[{\tt FRONTEND}]
 \begin{code}
 module frontend
-imports normalize-spec 
-	spec-to-sdefs 
-	use-def 
-	check-constructors 
-	desugar
-
+imports normalize-spec spec-to-sdefs use-def check-constructors desugar
 strategies
  
-  frontend = iowrap(frontend-transformation)
+  frontend = 
+    iowrap(frontend-transformation)
 
-  frontend-transformation = 
-//  where(run-time; debug(!"  frontend initialization: "));
-    normalize-spec
-//; where(run-time; debug(!"  normalize-spec: "))
-  ; where(spec-use-def)
-//; where(run-time; debug(!"  spec-use-def: "))
-  ; ExpandOverlays
-//; where(run-time; debug(!"  ExpandOverlays: "))
-  ; CheckConstructors
-//; where(run-time; debug(!"  CheckConstructors: "))
-  ; RulesToSdefs
-//; where(run-time; debug(!"  RulesToSdefs: "))
-  ; DesugarListMatching
-//; where(run-time; debug(!"  DesugarListMatching: "))
-  ; strename
-//; where(run-time; debug(!"  strename: "))
-  ; Specification([id,Strategies(desugar-spec)])
+  frontend-transformation =	  timing(!"  frontend initialization: ")
+    ; normalize-spec		; timing(!"  normalize-spec: ")
+    ; where(spec-use-def)	; timing(!"  spec-use-def: ")
+    ; ExpandOverlays		; timing(!"  ExpandOverlays: ")
+    ; CheckConstructors		; timing(!"  CheckConstructors: ")
+    ; RulesToSdefs		; timing(!"  RulesToSdefs: ")
+    ; DesugarListMatching	; timing(!"  DesugarListMatching: ")
+    ; strename			; timing(!"  strename: ")
+    ; Specification([id,Strategies(desugar-spec)])
+
+  timing(msg) =
+    if-verbose5(where(run-time; debug(msg)))
 \end{code}
 
 % Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>

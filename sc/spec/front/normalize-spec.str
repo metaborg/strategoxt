@@ -2,7 +2,7 @@
 	
 \begin{code}
 module normalize-spec
-imports stratego lib
+imports stratego lib desugar
 \end{code}
 
 	The first phase of the front-end is the normalization of
@@ -22,60 +22,56 @@ imports stratego lib
 strategies
 
   normalize-sigs = 
-//debug(!"b1a1: "); 
     map(NormBSIG);
-//debug(!"b1a2: "); 
     concat
-//;debug(!"b1a3: ")
 
   normalize-specIO = 
     iowrap(normalize-spec)
 
   normalize-spec =
     DefineSugar
-//;debug(!"a: ")
   ; BSpecs
-//;debug(!"b: ")
-  ; map(//debug(!"b1: "); 
-        NormBSP
-        //; debug(!"b2: ")
-       )
-//;debug(!"c: ")
+  ; map(NormBSP)
   ; foldr(!([], [], []), Combine)
-//;debug(!"d: ")
   ; MkSpec
-//;debug(!"e: ")
   ; Specification(vars-to-consts)
-//;debug(!"f: ")
   ; define-lrules
-//;debug(!"g: ")
   ; LiftDynamicRules
-//;debug(!"h: ")
+  ; topdown(try(HL))
 
   DefineSugar = 
     topdown(try(\ DefaultVarDec(x) -> VarDec(x, DefaultStrat) \ ))
 
 rules
 
-  BSpecs : Specification(bspecs) -> bspecs
+  BSpecs : 
+    Specification(bspecs) -> bspecs
 
-  NormBSIG : Constructors(ods) -> ods
-  NormBSIG : Sorts(ss) -> []
+  NormBSIG : 
+    Constructors(ods) -> ods
+  NormBSIG : 
+    Sorts(ss) -> []
 
-  NormBSP : Signature(bsigs)  -> (<normalize-sigs> bsigs, [], [])
-  NormBSP : Strategies(sdefs) -> ([], [], sdefs)
-  NormBSP : Rules(rdefs)      -> ([], [], rdefs)
-  NormBSP : Overlays(ols)     -> ([], ols, [])
+  NormBSP : 
+    Signature(bsigs) -> (<normalize-sigs> bsigs, [], [])
+  NormBSP : 
+    Strategies(sdefs) -> ([], [], sdefs)
+  NormBSP : 
+    Rules(rdefs) -> ([], [], rdefs)
+  NormBSP : 
+    Overlays(ols) -> ([], ols, [])
 
-  Combine : ((ods1, ols1, sdefs1), (ods2, ols2, sdefs2)) ->
-	    (<conc> (ods1, ods2), 
-             <conc> (ols1, ols2), 
-             <conc> (sdefs1, sdefs2))
+  Combine : 
+    ((ods1, ols1, sdefs1), (ods2, ols2, sdefs2)) ->
+    (<conc> (ods1, ods2), 
+     <conc> (ols1, ols2), 
+     <conc> (sdefs1, sdefs2))
 
-  MkSpec : (ods, ols, sdefs) -> 
-           Specification([Signature([Constructors(ods)]),
-			  Overlays(ols),
-                          Strategies(sdefs)])
+  MkSpec : 
+    (ods, ols, sdefs) -> 
+    Specification([Signature([Constructors(ods)]),
+		   Overlays(ols),
+                   Strategies(sdefs)])
 \end{code}
 
 	Furthermore, the grammar cannot distighuish term variables
@@ -87,30 +83,34 @@ rules
 \begin{code}
 rules
 
-  Names   : Signature(bsigs) -> <filter(OpNames); concat> bsigs
-  OpNames : Constructors(ods)  -> <filter(OpName)> ods
-  OpName  : OpDecl(f, ConstType(_)) -> f
+  Names   : 
+    Signature(bsigs) -> <filter(OpNames); concat> bsigs
+  OpNames : 
+    Constructors(ods)  -> <filter(OpName)> ods
+  OpName  : 
+    OpDecl(f, ConstType(_)) -> f
 
-  Names   : Overlays(ols) -> <filter(OLName)> ols
-  OLName  : Overlay(x, [], t) -> x
+  Names : 
+    Overlays(ols) -> <filter(OLName)> ols
+  OLName : 
+    Overlay(x, [], t) -> x
 
 strategies
 
-  const-names = filter(Names); concat
+  const-names = 
+    filter(Names); concat
 
   vars-to-consts = 
     !(<const-names; map(!(<id>, Op(<id>,[])))>, <id>);
     tsubs
-\end{code}
 
-\begin{code}
 rules
 
-  UnaryConstructorName : OpDecl(f, ConstType(_)) -> f
-  UnaryConstructorName : Overlay(x, [], t) -> x
-\end{code}
+  UnaryConstructorName : 
+    OpDecl(f, ConstType(_)) -> f
+  UnaryConstructorName : 
+    Overlay(x, [], t) -> x
 
-\begin{code}
 rules
 
   DefLRule : 
@@ -122,13 +122,11 @@ rules
 
 strategies
 
-  define-lrules = bottomup(try(DefLRule + DefScopeDefault))
+  define-lrules = 
+    bottomup(try(DefLRule + DefScopeDefault))
 
-\end{code}
+// Normalizing dynamic rules
 
-	Normalizing dynamic rules
-
-\begin{code}
 strategies
 
   LiftDynamicRules =
@@ -145,11 +143,14 @@ rules
   lift-dynamic-rule :
     [def | defs] -> <conc> ([def' | rdefs], defs)
     where <tvars> def => vars
-        ; <rec x(env-oncetd(dist-scope(x) + split-dynamic-rules => (ss, rdefs); !Seqs(ss)))> 
-           (def,vars) => def'
+        ; <split-dynamic-rule(split-dynamic-rules => (ss, rdefs); !Seqs(ss))> 
+	    (def,vars) => def'
+
+  split-dynamic-rule(s) = 
+    rec x(env-oncetd(s <+ dist-scope(x)))
 
   dist-scope(x) :
-    (Scope(xs,s),vars) -> Scope(xs, <x>(s,<union>(xs,vars)))
+    (Scope(xs,s), vars) -> Scope(xs, <x>(s,<union>(xs,vars)))
 
   split-dynamic-rules :
     (DynamicRules(rs),vars) -> 

@@ -11,12 +11,13 @@ SCFLAGS 	 = -I $(srcdir)/../sig \
 	  	   --keep 1
 
 libexec_PROGRAMS = frontend extract extract-all rename-defs inline 
+check_PROGRAMS	 = use-def-test
 
 CLEANFILES 	 = $(wildcard *.dep)
 
 BOOTCLEANFILES   = extract-all.c extract.c frontend.c inline.c rename-defs.c
 
-#TESTS = 
+TESTS 		 = use-def-test
 #needed-defs-test 
 #frontend-test 
 #extract-test

@@ -20,7 +20,7 @@ rules
   HL : LChoices([])       -> Fail
   HL : LChoices([s | ss]) -> LChoice(s, LChoices(ss))
 
-  HL : Lets(sdefs,s) -> Let(sdefs,s)
+  HL : Lets(sdefs,s) -> Let(sdefs, s)
 
   //HL : Lets([], s) -> s
   //HL : Lets([sdef | sdefs], s) -> Let(sdef, Lets(sdefs, s))
