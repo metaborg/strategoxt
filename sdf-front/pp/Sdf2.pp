@@ -214,7 +214,7 @@
       
    empty-grammar -- KW["(/)"],
 
-   conc-grammars -- _1 _2,
+   conc-grammars -- V vs=1 [_1 _2],
 
    range -- _1 KW["-"] _2,
 
