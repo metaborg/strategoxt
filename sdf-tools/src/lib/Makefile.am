@@ -18,13 +18,12 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/05/31 14:20:51 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2001/06/01 09:12:09 mdejonge Exp $
 
 include ${srcdir}/../templates/make_rules
 
 
-EXTRA_DIST = Char-lib.r text.r README sglr.r \
-             graph-terms.r ppp-wrap.r gt-paths.r.src
+EXTRA_DIST = text.r README sglr.r graph-terms.r ppp-wrap.r gt-paths.r.src
 
 pkgdata_DATA = $(wildcard *.r) gt-paths.r
 
