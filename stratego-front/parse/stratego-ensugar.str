@@ -13,7 +13,7 @@ strategies
     iowrap(Stratego-Ensugar)
 
   Stratego-Ensugar =
-      try(\ _#([x]) -> x \ )
+      try(\ ""#([x]) -> x \ )
     ; topdown(
         repeat(Ensugar)
       ; try(EnsugarOnce)
@@ -42,9 +42,13 @@ rules
   EnsugarOnce : 
     Str(x) -> Str(y)
       where <string-as-chars(
-              not(is-double-quoted-chars)
+              debug(!"test 1 -- ")
+            ; not(is-double-quoted-chars)
+            ; debug(!"test 2 -- ")
             ; escape-chars
+            ; debug(!"test 3 -- ")            
             ; double-quote-chars
+            ; debug(!"test 4 -- ")            
             )> x => y
 
 strategies
@@ -89,4 +93,3 @@ overlays
     , "thread"
     , "where"
     ]
-
