@@ -3,7 +3,6 @@
      (no longer in <prefix>/share/doc/gpp
    * Makefile.am: added autoxt.m4 to EXTRA_DIST
    * Makefile.am: added line: ACLOCAL_AMFLAGS = -I .
-   * syn/box/Makefile.am: removed dependency on stratego_front
 
 2003-11-25   Merijn de Jonge  <M.de.Jonge@tue.nl>
    * pptable-diff: if --new switch is missing, standard input is used
