@@ -14,6 +14,95 @@ News about Stratego releases
 
 ------------------------------------------------------------------------------
 
+StrategoXT 0.9.3 -- under construction
+
+This is a refactoring release. 
+
+The name of the Stratego compiler was changed to strc. In this release
+sc is still available as a redirection to strc, but will no longer be
+available in the next release. The Stratego interpreter has been
+renamed to stri.  These changes where necessary because of name
+clashes with other programs on some platforms. Package based on autoxt
+do not need to make any changes; the renaming is reflected in
+Makefile.xt.
+
+Large parts of the Stratego Standard Library have been adapted to make
+use of the xDoc comment convention such that better documentation can
+be generated. Documentation for the SSL generated with xDoc will be
+distributed separately such that improvements in xDoc can be reflected
+in the generated documentation. An online version of the documentation
+is available via the stratego website.
+
+The syntax of primitive calls has been extended to allow passing
+strategies to primitives. Thus, in the call prim("foo", s1, s2 | t1,
+t2), primitive foo is called with strategy arguments s1 and s2 and
+term arguments t1 and t2.  Similarly, terms can be passed to strategy
+operators using the same syntax.  Thus, bar(s1, s2 | t1, t2) passes
+strategies s1 and s2 and terms t1 and t2 to strategy bar. Note the
+difference between foobar(!t), which passes a strategy that will build
+t, and foobar(|t), which will pass term t. The first can be considered
+as call be name, the second as call by value. The distinction becomes
+clear when considering side-effects; foobar(new), will generate a new
+unique string on each invocation of its argument strategy, while
+foobar(|<new>), will copy the same unique string to each use of its 
+term argument.
+
+The Stratego Compiler has been refactored to make use of the official
+signature from stratego-front. The Stratego Optimizer has been
+extended with a bunch of new optimizations, including
+
+   * Strategy inlining (also of local definitions)
+   * Dead definition elimination
+   * Avoid run time checks on variables
+   * Constant and copy propagation
+   * Dead variable elimination
+   * Build match fusion
+   * Lift local definitions to top level
+
+Although, a few preliminary tests suggest that the optimizations
+reduce code size and increase performance, more benchmarking is needed
+to establish the precise effects of the optimizations. Also further
+tuning, particularly of the inliner is needed to get better results.
+One noticeable effect of the optimizations is a slowdown of the
+compiler.  Therefore strc provides several optimization levels. No
+optimizations are performed at -O 0 increasing to all optimizations at
+-O 5. If compile time is more important than run-time of the generated
+code, then -O 1 is the prefferred setting.
+
+DOWNLOAD AND INSTALLATION
+
+  The release page contains the source distributions, binary RPMs, and
+  detailed instructions on how to install the distributions:
+
+  *  http://www.stratego-language.org/Stratego/StrategoRelease093
+
+SUMMARY OF CHANGES
+
+
+BUGS / KNOWN PROBLEMS
+
+  All the bugs and known problems for StrategXT distributions have
+  been solved in this release.
+
+  For a more detailed overview of problems and missing features please
+  visit:
+
+  * ReleasePlan: http://www.stratego-language.org/Stratego/ReleasePlan
+  * Todo: http://www.stratego-language.org/Stratego/ToDo
+
+  Please report any problems with installation or bugs in the
+  implementation to the stratego-bugs@cs.uu.nl mailing list. Please
+  check the archive of the list to see if a report about the problem 
+  was already submitted.
+
+CONTRIBUTIONS
+
+  * Bug reports and suggestions for improvements where submitted by:
+
+  * The major developments were carried out by:
+    Martin Bravenboer, Rob Vermaas, Eelco Visser.
+
+-----------------------------------------------------------------------------
 StrategoXT 0.9.2 -- released 2003-07-04
 
 This is a logistics release. The main purpose of the work done for
