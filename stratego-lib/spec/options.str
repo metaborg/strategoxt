@@ -182,10 +182,6 @@ strategies
       , where(<set-config> ("--verbose",<string-to-int>)); !Verbose(<id>)
       , !"--verbose i      Verbosity level i (default 1)"
       )
-    + Option("-s"
-      , where(<set-config> ("-s",())); !Statistics()
-      , !"-s               Turn on statistics"
-      )
 
 strategies
 
@@ -214,7 +210,8 @@ strategies
     ; <exit> 1
 
   /**
-   * Outputs the name of the program and the run time in seconds to stderr.
+   * Outputs the name of the program and the run time in seconds to
+   * stderr.
    */
   report-run-time = 
     if-verbose1(
@@ -238,7 +235,6 @@ signature
     Input       : String -> Option
     Output      : String -> Option
     Binary      : Option
-    Statistics  : Option
     Help        : Option
     Runtime     : Real   -> Option
     DeclVersion : String -> Option
@@ -372,63 +368,40 @@ strategies
    * @obsolete use input(s).
    */
   input-file' =
-	obsolete(!"input-file'; use input-file");
-	input-file
+    obsolete(!"input-file'; use input-file");
+    input-file
 
   /**
    * @obsolete use input(s).
    */
   input-file =
-	 where((option-defined(?Input(infile)) <+ !stdin => infile));
-  	 split(id, <ReadFromFile> infile)
+    obsolete(!"input-file; use input(s)");
+    where((option-defined(?Input(infile)) <+ !stdin => infile));
+    split(id, <ReadFromFile> infile)
 
   /**
    * @obsolete use profile(s).
    */
   apply-strategy(strat) =
-   	 where(dtime);
-   	 strat;
-   	 where(dtime => runtime);
-	 \(options, trm) -> ([Runtime(runtime) | options], trm)\
+    obsolete(!"input-file'; use input-file");
+    where(dtime);
+    strat;
+    where(dtime => runtime);
+    \(options, trm) -> ([Runtime(runtime) | options], trm)\
 
   /**
    * @obsolete use output(s).
    */
   output-file' =
-	obsolete(!"output-file'; use output-file");
-	output-file
+    obsolete(!"output-file'; use output-file");
+    output-file
 
   /**
    * @obsolete use output(s).
    */
   output-file =
-	 where((option-defined(?Output(outfile)) <+ !stdout => outfile, id)); 
-	 (id, split(!outfile, id));
-   	 ((option-defined(?Binary()), WriteToBinaryFile)
-	  <+ (id, WriteToTextFile))
-
-/*
-module option-demo
-imports options
-
-strategies
-
-main =
-   iowrap(id, 
-          Option("--option1",
-                 id, 
-                 !"--option1        This is a an example option")
-         +ArgOption("--arg1", 
-                 id, 
-                 !"--arg1           This is an example arg option"))
-
-// Optional short description
-short-description(p) = !["Usage: ", <p>(), " [options]"]   
-
-// Optional long description
-long-description(p) = !["This is a test program to demonstrate use of ",
-                        "parse-options and  generation of usage ",
-                        "info from option and switch specificatios. ",
-                        "These now contain usage info as additional ",
-                        "third argument."]
-*/
+    obsolete(!"output-file; use output(s)");
+    where((option-defined(?Output(outfile)) <+ !stdout => outfile, id)); 
+    (id, split(!outfile, id));
+    ((option-defined(?Binary()), WriteToBinaryFile)
+    <+ (id, WriteToTextFile))
