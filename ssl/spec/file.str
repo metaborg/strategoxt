@@ -3,7 +3,7 @@
  * operations in the module posix-file.
  */
 module file
-imports posix-file io
+imports posix-file io list-basic list-misc string
 
 /**
  * Abstractions for streams
@@ -38,9 +38,60 @@ strategies
   can-read-file =
     <access> (<id>, [R_OK()])
 
+  is-readable = can-read-file
+
   // :: String -> String
   can-write-file =
     <access> (<id>, [W_OK()])
+
+  is-writable = can-write-file
+
+  // :: String -> String
+  can-execute-file =
+    <access> (<id>, [X_OK()])
+
+  is-executable = can-exutable-file
+
+  // :: String -> String
+  can-create-file =
+    where(dirname; can-write-file)
+
+/**
+ * Components of a pathname
+ */
+strategies
+
+  /**
+   * returns directory portion of pathname in a POSIX compatible way
+   *
+   * :: String -> String
+   */
+  dirname =
+    string-as-chars(
+      /* (1) Strip trailing slashes */
+      try(split-init-last; ?(<id>, '/'))
+    ; /* (2) If string consists entirely of slash characters, string shall be
+             set to a single slash character.  In this case, skip steps (3)
+             through (8). */
+    ( ?[]
+      < !['/']
+      + ( /* (3) If there are any trailing slash characters in string, they
+                 shall be removed. */
+          init
+          /* (4) If there are no slash characters remaining in string, string
+                 shall be set to a single period character.  In this case, skip
+                 steps (5) through (8).
+
+             (5) If there are any trailing nonslash characters in string,
+                 they shall be removed. */
+
+        ; repeat(split-init-last; (id, not(?'/')); Fst)
+        ; (?[]
+          < !['.']
+          + ( /* (7) If there are any trailing slash characters in string, they
+                   shall be removed. */
+              repeat(split-init-last; ?(<id>, '/'))
+            ; (?[] < !['/'] + id))))))
 
 strategies
 

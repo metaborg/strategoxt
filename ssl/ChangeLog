@@ -1,5 +1,10 @@
 2003-03-25  Martin Bravenboer <martin@mbravenboer.org>
 
+  * spec/file.str: added POSIX compatible dirname and
+    some more file property checks.
+
+2003-03-25  Martin Bravenboer <martin@mbravenboer.org>
+
   * spec/file.str: added can-read-file and can-write-file.
 
   * spec/posix-file.str: added access.

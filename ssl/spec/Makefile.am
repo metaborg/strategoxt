@@ -14,7 +14,7 @@ list-zip-test          substitution-test  \
 migrate-tuples-test    tables-test  \
 dir-test               options-test         template-test  \
 env-traversal-test     option-test          term-zip-test  \
-exec-test              parallel-test        posix-file-test \
+exec-test              parallel-test        posix-file-test  file-test \
 time-test  \
 integers-test          parse-options-test   tuple-test  \
 int-list-test          reals-test           unification-test  \
