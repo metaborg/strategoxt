@@ -1,3 +1,15 @@
+2004-07-31  Martin Bravenboer  <martin@cs.uu.nl>
+
+	* parse/pack-sdf.str: yet another improvement of the include
+	mechanism. The first search option is from now the directory of
+	the input file, which is not always the current directory. So,
+	pack-sdf -i syn/Foo.sdf will search for module in the syn
+	directory.
+
+	* parse/pack-sdf.str: pack-sdf -i Foo.sdf now always packs
+	./Foo.sdf, not a Foo in the search path if ./Foo.sdf does not
+	exist.
+	
 2004-06-09  Valentin David  <valentin@lrde.epita.fr>
 
 	* pp/Sdf2.pp: Add a pp rule for a sdf-bracket extra constructor

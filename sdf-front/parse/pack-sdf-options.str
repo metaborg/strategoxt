@@ -56,7 +56,23 @@ strategies
     where(
       (<get-config> "-I" <+ ![])
     ; map(?IncludeDef(_) < process-Idef + id)
-    ; <set-config> ("-I", <conc> ([IncludeDir(".") | <id>], [IncludeXTC()]))
+
+      /**
+       * XTC is the final search option
+       */
+    ; <conc> (<id>, [IncludeXTC()])
+      
+      /**
+       * The first search option is the directory of the input
+       * file, or the current directory if the input is stdin.
+       */
+    ; if <get-config> "-i" => input then
+        ![IncludeDir(<dirname> input) | <id>]
+      else 
+        ![IncludeDir(".") | <id>]
+      end
+
+    ; <set-config> ("-I", <id>)
     )
 
   /**

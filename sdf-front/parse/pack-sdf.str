@@ -36,38 +36,75 @@ strategies
       )
     )
 
+signature
+  constructors
+    IncludePathName : String -> Include
+    IncludeFromPath : String -> Include
+
 /**
  * Main strategy
  */
 strategies
 
   pack-sdf(|mkpt) =
-      ?FILE(<id>)
+      \ FILE(s) -> IncludePathName(s) \
     ; !(<id>, mkpt, [])
-    ; graph-nodes-undef(parse-sdf', get-sdf-imports, \ (n,x,xs) -> [x|xs] \ )
-    ; (id, map(<fatal-error> ["pack-sdf: Error: module ", <id>, " not found\n"]); [])
+    ; graph-nodes-undef(
+        pack-sdf-parse-sdf
+      , get-sdf-imports
+        ; map(!IncludeFromPath(<id>))
+      , \ (n,x,xs) -> [x|xs] \
+      )
+    ; (id, map(<fatal-error> ["pack-sdf: error: module ", <id>, " not found\n"]); [])
     ; Fst
     ; unzip
     ; (id, ConcatModules)
 
   /**
-   * @type  (String, List(IncludeVal)) -> (String, AsFix(Module))
+   * @type  (Include, List(IncludeVal)) -> (String, AsFix(Module))
    */
-  parse-sdf' =
-      (guarantee-extension(!"sdf"); remove-extension, id)
-    ; ?(mod, includes)
+  pack-sdf-parse-sdf =
+    ?(<id>, includes)
+    ; ?IncludeFromPath(<id>)
+    ; guarantee-extension(!"sdf")
+    ; remove-extension
+    ; ?mod
     ; <fetch-elem(
          include-from-dir(|mod)
        + include-from-def(|mod)
        + include-from-xtc(|mod)
        )> includes
 
-  include-from-dir(|mod) :
-    IncludeDir(dir) -> (file, tree)
-      where <concat-strings; file-exists> [dir,"/", mod, ".sdf"] => file
-          ; if-verbose1(debug(!"  including "))
+  pack-sdf-parse-sdf =
+    let qualify-pathname =
+            where(explode-string => cs)
+          ; if <is-qualified> cs then
+              id
+            else
+              <implode-string> ['.', '/' | cs]
+            end
+  
+         is-qualified =
+           ?['/' | _] + ?['.' | _ ]
+
+     in ?(<id>, _)
+      ; ?IncludePathName(<qualify-pathname>)
+      ; if file-exists then
+          include-pathname
+        else
+          <fatal-error> ["pack-sdf: error: file ", <id>, " does not exist\n"]
+        end
+    end
+
+  include-pathname :
+    file -> (file, tree)
+      where if-verbose1(debug(!"  including "))
           ; ( <parse-sdf2-module-to-asfix> file => tree
             <+ <fatal-error> ["pack-sdf: Error: module ", <id>, " cannot be parsed\n"])
+
+  include-from-dir(|mod) :
+    IncludeDir(dir) -> <include-pathname> file
+      where <concat-strings; file-exists> [dir,"/", mod, ".sdf"] => file
 
   include-from-xtc(|mod) :
     IncludeXTC() -> (file, tree)
