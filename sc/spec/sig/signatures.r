@@ -38,7 +38,9 @@ signature
     Sort       : String * List(Kind) -> SortDecl
     OpDecl     : String * Type       -> OpDecl
     Sorts      : List(SortDecl)      -> BSig
-    Operations : List(OpDecl)        -> BSig
+    Constructors : List(OpDecl)        -> BSig
+
+    NoKind     : Kind
 
 overlays
 

@@ -147,7 +147,6 @@ int parse()
 %type <term> start
 %type <list> strategies 
 %type <term> strategy 
-%type <term> optapplication
 %type <term> strategy_def 
 %type <list> strategylist
 %type <term> strategytail 
@@ -207,14 +206,14 @@ sdecls	: sdecl				{$$ = ATmakeList1($1);}
         ;
 
 sdecl	: SORTS idlist			{$$ = App1("Sorts", (ATerm) $2);}
-	| CONSTRUCTORS opdecls		{$$ = App1("Operations", (ATerm) $2);}
+	| CONSTRUCTORS opdecls		{$$ = App1("Constructors", (ATerm) $2);}
         ; 
 
 idlist  :                   		{$$ = ATmakeList0();}
-        | idlist id optkind             {$$ = ATinsert($1, App2("Sort", $2, $3));}
+        | idlist id optkind             {$$ = ATappend($1, App2("Sort", $2, $3));}
 
-optkind : 				{$$ = ATmake("Nokind");}
-	| LPAREN termlist RPAREN 	{$$ = App1("Kinds", (ATerm) $2);}
+optkind : 				{$$ = ATempty;}
+	| LPAREN termlist RPAREN 	{$$ = $2;}
         ;
 
 kinds   : kind 				{$$ = ATmakeList1($1);}
@@ -318,14 +317,10 @@ stratrule : strategy LONGARROW strategy optcond
         ;
 
 optcond :				{$$ = ATmake("Id");}
-	| WHERE strategy		{$$ = App1("Where", $2);}
+	| WHERE strategy		{$$ = $2;}
         ;
 
 /* Strategies */
-
-optapplication 
-	: 				{$$ = ATmake("Id");}
-	| LEFTDOUBLEARROW strategy	{$$ = $2;}
 
 strategy
 	: id optstrategylist 		{$$ = App2("Call", App1("SVar", $1), (ATerm) $2);}

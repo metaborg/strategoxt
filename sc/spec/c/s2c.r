@@ -69,7 +69,7 @@ Signatures
 \begin{code}
 
   TranslateSig :
-    Signature([Operations(ops)]) ->
+    Signature([Constructors(ops)]) ->
     TranslationUnit(<conc>(decls, [fundef]))
     where <map(DeclareConstructor)> ops => decls
         ; <InitConstructors> ops => fundef

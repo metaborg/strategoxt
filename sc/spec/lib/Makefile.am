@@ -22,7 +22,7 @@ SCFLAGS	= -I $(srcdir)/../sig \
 
 bin_SCRIPTS = rename-vars
 
-CLEANFILES = *.dep
+CLEANFILES = *.dep $(bin_SCRIPTS)
 
 EXTRA_DIST = $(wildcard *.r)
 

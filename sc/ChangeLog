@@ -1,3 +1,7 @@
+2001-10-01  Eelco Visser  <visser@acm.org>
+
+	* Changed constructor Operations into Constructors
+
 2001-09-28  Eelco Visser  <visser@acm.org>
 
 	* spec/front/spec-to-sdefs.r: No type annotations were added for

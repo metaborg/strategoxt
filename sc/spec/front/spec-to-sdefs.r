@@ -1,6 +1,6 @@
 \literate[Specification to List of Definitions]
 
-% $Id: spec-to-sdefs.r,v 1.2 2001/09/28 10:33:49 visser Exp $
+% $Id: spec-to-sdefs.r,v 1.3 2001/10/01 19:45:35 visser Exp $
 
 % Copyright (C) 1998, 1999, 2000 Eelco Visser <visser@acm.org>
 % 
@@ -58,7 +58,7 @@ rules
   MkCongDefs : 
     Sorts(sds) -> []
   MkCongDefs : 
-    Operations(ods) -> <map(MkCongDef)> ods
+    Constructors(ods) -> <map(MkCongDef)> ods
 
 strategies
 

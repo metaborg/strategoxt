@@ -31,7 +31,7 @@ include $(srcdir)/../make-rules
 include proto-sc.dep
 
 # Generate srcipts
-%: %.src Makefile.am
+%: %.src Makefile
 	sed 's#__prefix__#$(prefix)#g;\
              s#__ATERM__#$(ATERM)#g;\
              s#__VERSION__#$(VERSION)#g;\

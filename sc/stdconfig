@@ -1,6 +1,12 @@
 #! /bin/sh
 
 ./reconf
+./configure \
+    --prefix=/home/xt/xt \
+    --with-sc-boot=`pwd`/../sc-boot
+
+exit 0
+
 ./configure --prefix=`pwd`/../sc-boot \
 	--with-aterm=`pwd`/../aterm \
 	--with-cgen=`pwd`/../cgen \

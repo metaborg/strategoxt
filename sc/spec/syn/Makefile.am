@@ -43,7 +43,7 @@ EXTRA_DIST = $(wildcard *.r)
 	flex $<
 	mv lex.yy.c $@
 
-BOOTSOURCES = $(SOURCES) pack-stratego.c
+BOOTSOURCES = $(SOURCES) pack-stratego.c stratego.grm stratego.lx
 
 check: check1 check2
 

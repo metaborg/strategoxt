@@ -40,7 +40,7 @@ TESTS = needed-defs-test
 
 EXTRA_DIST = $(wildcard *.r)
 
-BOOTSOURCES = frontend.c extract.c extract-all.c inline.c rename-defs.c 
+BOOTSOURCES = frontend.c extract.c extract-all.c inline.c rename-defs.c
 
 include $(srcdir)/../make-rules
 

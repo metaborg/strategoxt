@@ -9,11 +9,11 @@ rules
 
   CheckConstructors :
     Specification([
-      Signature([Operations(ods)]), 
+      Signature([Constructors(ods)]), 
       Strategies(sdefs)
     ]) -> 
     Specification([
-      Signature([Operations(ods)]), 
+      Signature([Constructors(ods)]), 
       Strategies(sdefs)
     ])
   where <filter(check-constructors(!ods))> sdefs => []

@@ -1,6 +1,6 @@
 \literate[{\tt NORMALIZE-SPEC}]
 	
-% $Id: normalize-spec.r,v 1.2 2001/09/15 22:30:17 visser Exp $
+% $Id: normalize-spec.r,v 1.3 2001/10/01 19:45:35 visser Exp $
 
 % Copyright (C) 1998, 1999, 2000 Eelco Visser <visser@acm.org>
 % 
@@ -64,7 +64,7 @@ rules
 
   BSpecs : Specification(bspecs) -> bspecs
 
-  NormBSIG : Operations(ods) -> ods
+  NormBSIG : Constructors(ods) -> ods
   NormBSIG : Sorts(ss) -> []
 
   NormBSP : Signature(bsigs)  -> (<normalize-sigs> bsigs, [], [])
@@ -78,7 +78,7 @@ rules
              <conc> (sdefs1, sdefs2))
 
   MkSpec : (ods, ols, sdefs) -> 
-           Specification([Signature([Operations(ods)]),
+           Specification([Signature([Constructors(ods)]),
 			  Overlays(ols),
                           Strategies(sdefs)])
 \end{code}
@@ -93,7 +93,7 @@ rules
 rules
 
   Names   : Signature(bsigs) -> <filter(OpNames); concat> bsigs
-  OpNames : Operations(ods)  -> <filter(OpName)> ods
+  OpNames : Constructors(ods)  -> <filter(OpName)> ods
   OpName  : OpDecl(f, ConstType(_)) -> f
 
   Names   : Overlays(ols) -> <filter(OLName)> ols
