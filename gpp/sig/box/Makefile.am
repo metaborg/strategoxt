@@ -1,13 +1,13 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-SIGS = Box.str Box-Atoms.str Box-Base.str \
-       Box-Disambiguation.str Box-Layout.str \
-       Box-Lists.str Box-Literal.str Box-Operators.str
+SIGS = Box.str
 
 pkgdata_DATA     = abox-ext.rtree $(subst .str,.rtree,$(SIGS))
 libexec_PROGRAMS = abox-format
+
 SCFLAGS          = --main io-$*
+SDF2RTG_FLAGS    = -m $*
 
 EXTRA_DIST       = abox-ext.str abox-format.str $(SIGS) $(pkgdata_DATA) 
 CLEANFILES       = Box.def $(wildcard *.dep)
@@ -18,4 +18,4 @@ Box.def :
 
 abox-format.c: Box.str
 
-$(SIGS) : Box.def
+

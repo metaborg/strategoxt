@@ -1,9 +1,54 @@
 module pp-table
-imports pp-table-PlaceHolder pp-table-IntCon
+imports list-cons option
 signature
   constructors
-    PP-Table : List(PP-Entry) -> PP-Table
-    PP-Entry : Path * BOX-LIST -> PP-Entry
-    Path1    : ConsName -> Path
-    Path     : ConsName * List(Selector) -> Path
     selector : NatCon * UQLiteral -> Selector
+    Path     : ConsName * List(Selector) -> Path
+    Path1    : ConsName -> Path
+    PP-Entry : Path * List(BOX) -> PP-Entry
+    PP-Table : List(PP-Entry) -> PP-Table
+             : String -> ConsName
+    CL       : FONT-PARAM
+    SZ       : FONT-PARAM
+    SH       : FONT-PARAM
+    SE       : FONT-PARAM
+    FM       : FONT-PARAM
+    FN       : FONT-PARAM
+    MATH     : FONT-OPERATOR
+    NUM      : FONT-OPERATOR
+    VAR      : FONT-OPERATOR
+    KW       : FONT-OPERATOR
+    F        : List(F-OPTION) -> FONT-OPERATOR
+    FFID     : FONT-PARAM * FID -> F-OPTION
+    FNAT     : FONT-PARAM * NatCon -> F-OPTION
+             : String -> FID
+    AOPTIONS : List(A-OPTION) -> A-OPTIONS
+    AR       : List(S-OPTION) -> A-OPTION
+    AC       : List(S-OPTION) -> A-OPTION
+    AL       : List(S-OPTION) -> A-OPTION
+    IS       : SPACE-SYMBOL
+    HS       : SPACE-SYMBOL
+    VS       : SPACE-SYMBOL
+    SOptB    : SPACE-SYMBOL * BOX -> S-OPTION
+    SOpt     : SPACE-SYMBOL * NatCon -> S-OPTION
+    Arg2     : NatCon * NatCon -> BOX
+    Arg      : NatCon -> BOX
+    LNAT     : NatCon * BOX -> BOX
+    L        : BOX * BOX -> BOX
+    C        : List(S-OPTION) * List(BOX) -> BOX
+    REF      : QLiteral * BOX -> BOX
+    LBL      : QLiteral * BOX -> BOX
+    FBOX     : FONT-OPERATOR * BOX -> BOX
+    R        : List(S-OPTION) * List(BOX) -> BOX
+    A        : A-OPTIONS * List(S-OPTION) * List(BOX) -> BOX
+    ALT      : BOX * BOX -> BOX
+    HV       : List(S-OPTION) * List(BOX) -> BOX
+    V        : List(S-OPTION) * List(BOX) -> BOX
+    H        : List(S-OPTION) * List(BOX) -> BOX
+    S        : QLiteral -> BOX
+    minus    : NatCon -> IntCon
+    plus     : NatCon -> IntCon
+    NatCon   : NatCon -> IntCon
+             : String -> NatCon
+             : String -> UQLiteral
+             : String -> QLiteral
