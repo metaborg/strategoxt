@@ -345,40 +345,44 @@ rules
     <prim("SSL_stderr_stream",)> to
 
   EvalPrim :
-    App(Prim("SSL_fopen", [ k_4 , l_4 ]), to) ->
-    <prim("SSL_fopen",<EvalTerm> k_4,<EvalTerm> l_4)> to
+    App(Prim("SSL_isatty", [ k_4 ]), to) ->
+    <prim("SSL_isatty",<EvalTerm> k_4)> to
 
   EvalPrim :
-    App(Prim("SSL_fclose", [ m_4 ]), to) ->
-    <prim("SSL_fclose",<EvalTerm> m_4)> to
+    App(Prim("SSL_fopen", [ l_4 , m_4 ]), to) ->
+    <prim("SSL_fopen",<EvalTerm> l_4,<EvalTerm> m_4)> to
 
   EvalPrim :
     App(Prim("SSL_fclose", [ n_4 ]), to) ->
     <prim("SSL_fclose",<EvalTerm> n_4)> to
 
   EvalPrim :
-    App(Prim("SSL_fflush", [ o_4 ]), to) ->
-    <prim("SSL_fflush",<EvalTerm> o_4)> to
+    App(Prim("SSL_fclose", [ o_4 ]), to) ->
+    <prim("SSL_fclose",<EvalTerm> o_4)> to
 
   EvalPrim :
     App(Prim("SSL_fflush", [ p_4 ]), to) ->
     <prim("SSL_fflush",<EvalTerm> p_4)> to
 
   EvalPrim :
-    App(Prim("SSL_fputs", [ q_4 , r_4 ]), to) ->
-    <prim("SSL_fputs",<EvalTerm> q_4,<EvalTerm> r_4)> to
+    App(Prim("SSL_fflush", [ q_4 ]), to) ->
+    <prim("SSL_fflush",<EvalTerm> q_4)> to
 
   EvalPrim :
-    App(Prim("SSL_puts", [ s_4 ]), to) ->
-    <prim("SSL_puts",<EvalTerm> s_4)> to
+    App(Prim("SSL_fputs", [ r_4 , s_4 ]), to) ->
+    <prim("SSL_fputs",<EvalTerm> r_4,<EvalTerm> s_4)> to
 
   EvalPrim :
-    App(Prim("SSL_fputc", [ t_4 , u_4 ]), to) ->
-    <prim("SSL_fputc",<EvalTerm> t_4,<EvalTerm> u_4)> to
+    App(Prim("SSL_puts", [ t_4 ]), to) ->
+    <prim("SSL_puts",<EvalTerm> t_4)> to
 
   EvalPrim :
-    App(Prim("SSL_fgetc", [ v_4 ]), to) ->
-    <prim("SSL_fgetc",<EvalTerm> v_4)> to
+    App(Prim("SSL_fputc", [ u_4 , v_4 ]), to) ->
+    <prim("SSL_fputc",<EvalTerm> u_4,<EvalTerm> v_4)> to
+
+  EvalPrim :
+    App(Prim("SSL_fgetc", [ w_4 ]), to) ->
+    <prim("SSL_fgetc",<EvalTerm> w_4)> to
 
   EvalPrim :
     App(Prim("SSL_STDIN_FILENO", [ ]), to) ->
@@ -401,105 +405,109 @@ rules
     <prim("SSL_getcwd",)> to
 
   EvalPrim :
-    App(Prim("SSL_creat", [ w_4 ]), to) ->
-    <prim("SSL_creat",<EvalTerm> w_4)> to
+    App(Prim("SSL_chdir", [ x_4 ]), to) ->
+    <prim("SSL_chdir",<EvalTerm> x_4)> to
 
   EvalPrim :
-    App(Prim("SSL_open", [ x_4 ]), to) ->
-    <prim("SSL_open",<EvalTerm> x_4)> to
+    App(Prim("SSL_creat", [ y_4 ]), to) ->
+    <prim("SSL_creat",<EvalTerm> y_4)> to
 
   EvalPrim :
-    App(Prim("SSL_mkstemp", [ y_4 ]), to) ->
-    <prim("SSL_mkstemp",<EvalTerm> y_4)> to
+    App(Prim("SSL_open", [ z_4 ]), to) ->
+    <prim("SSL_open",<EvalTerm> z_4)> to
 
   EvalPrim :
-    App(Prim("SSL_close", [ z_4 ]), to) ->
-    <prim("SSL_close",<EvalTerm> z_4)> to
+    App(Prim("SSL_mkstemp", [ a_5 ]), to) ->
+    <prim("SSL_mkstemp",<EvalTerm> a_5)> to
 
   EvalPrim :
-    App(Prim("SSL_dup", [ a_5 ]), to) ->
-    <prim("SSL_dup",<EvalTerm> a_5)> to
+    App(Prim("SSL_close", [ b_5 ]), to) ->
+    <prim("SSL_close",<EvalTerm> b_5)> to
 
   EvalPrim :
-    App(Prim("SSL_dup2", [ b_5 , c_5 ]), to) ->
-    <prim("SSL_dup2",<EvalTerm> b_5,<EvalTerm> c_5)> to
+    App(Prim("SSL_dup", [ c_5 ]), to) ->
+    <prim("SSL_dup",<EvalTerm> c_5)> to
 
   EvalPrim :
-    App(Prim("SSL_access", [ d_5 , e_5 ]), to) ->
-    <prim("SSL_access",<EvalTerm> d_5,<EvalTerm> e_5)> to
+    App(Prim("SSL_dup2", [ d_5 , e_5 ]), to) ->
+    <prim("SSL_dup2",<EvalTerm> d_5,<EvalTerm> e_5)> to
 
   EvalPrim :
-    App(Prim("SSL_fdopen", [ f_5 , g_5 ]), to) ->
-    <prim("SSL_fdopen",<EvalTerm> f_5,<EvalTerm> g_5)> to
+    App(Prim("SSL_access", [ f_5 , g_5 ]), to) ->
+    <prim("SSL_access",<EvalTerm> f_5,<EvalTerm> g_5)> to
 
   EvalPrim :
-    App(Prim("SSL_fileno", [ h_5 ]), to) ->
-    <prim("SSL_fileno",<EvalTerm> h_5)> to
+    App(Prim("SSL_fdopen", [ h_5 , i_5 ]), to) ->
+    <prim("SSL_fdopen",<EvalTerm> h_5,<EvalTerm> i_5)> to
+
+  EvalPrim :
+    App(Prim("SSL_fileno", [ j_5 ]), to) ->
+    <prim("SSL_fileno",<EvalTerm> j_5)> to
 
   EvalPrim :
     App(Prim("SSL_pipe", [ ]), to) ->
     <prim("SSL_pipe",)> to
 
   EvalPrim :
-    App(Prim("SSL_close_file", [ i_5 ]), to) ->
-    <prim("SSL_close_file",<EvalTerm> i_5)> to
+    App(Prim("SSL_close_file", [ k_5 ]), to) ->
+    <prim("SSL_close_file",<EvalTerm> k_5)> to
 
   EvalPrim :
-    App(Prim("SSL_open_file", [ j_5 , k_5 ]), to) ->
-    <prim("SSL_open_file",<EvalTerm> j_5,<EvalTerm> k_5)> to
+    App(Prim("SSL_open_file", [ l_5 , m_5 ]), to) ->
+    <prim("SSL_open_file",<EvalTerm> l_5,<EvalTerm> m_5)> to
 
   EvalPrim :
     App(Prim("SSL_new", [ ]), to) ->
     <prim("SSL_new",)> to
 
   EvalPrim :
-    App(Prim("SSL_is_string", [ l_5 ]), to) ->
-    <prim("SSL_is_string",<EvalTerm> l_5)> to
+    App(Prim("SSL_is_string", [ n_5 ]), to) ->
+    <prim("SSL_is_string",<EvalTerm> n_5)> to
 
   EvalPrim :
-    App(Prim("SSL_implode_string", [ m_5 ]), to) ->
-    <prim("SSL_implode_string",<EvalTerm> m_5)> to
+    App(Prim("SSL_implode_string", [ o_5 ]), to) ->
+    <prim("SSL_implode_string",<EvalTerm> o_5)> to
 
   EvalPrim :
-    App(Prim("SSL_explode_string", [ n_5 ]), to) ->
-    <prim("SSL_explode_string",<EvalTerm> n_5)> to
+    App(Prim("SSL_explode_string", [ p_5 ]), to) ->
+    <prim("SSL_explode_string",<EvalTerm> p_5)> to
 
   EvalPrim :
-    App(Prim("SSL_strcat", [ o_5 , p_5 ]), to) ->
-    <prim("SSL_strcat",<EvalTerm> o_5,<EvalTerm> p_5)> to
+    App(Prim("SSL_strcat", [ q_5 , r_5 ]), to) ->
+    <prim("SSL_strcat",<EvalTerm> q_5,<EvalTerm> r_5)> to
 
   EvalPrim :
-    App(Prim("SSL_concat_strings", [ q_5 ]), to) ->
-    <prim("SSL_concat_strings",<EvalTerm> q_5)> to
+    App(Prim("SSL_concat_strings", [ s_5 ]), to) ->
+    <prim("SSL_concat_strings",<EvalTerm> s_5)> to
 
   EvalPrim :
-    App(Prim("SSL_strlen", [ r_5 ]), to) ->
-    <prim("SSL_strlen",<EvalTerm> r_5)> to
+    App(Prim("SSL_strlen", [ t_5 ]), to) ->
+    <prim("SSL_strlen",<EvalTerm> t_5)> to
 
   EvalPrim :
-    App(Prim("SSL_write_term_to_stream_baf", [ s_5 , t_5 ]), to) ->
-    <prim("SSL_write_term_to_stream_baf",<EvalTerm> s_5,<EvalTerm> t_5)> to
+    App(Prim("SSL_write_term_to_stream_baf", [ u_5 , v_5 ]), to) ->
+    <prim("SSL_write_term_to_stream_baf",<EvalTerm> u_5,<EvalTerm> v_5)> to
 
   EvalPrim :
-    App(Prim("SSL_write_term_to_stream_taf", [ u_5 , v_5 ]), to) ->
-    <prim("SSL_write_term_to_stream_taf",<EvalTerm> u_5,<EvalTerm> v_5)> to
+    App(Prim("SSL_write_term_to_stream_taf", [ w_5 , x_5 ]), to) ->
+    <prim("SSL_write_term_to_stream_taf",<EvalTerm> w_5,<EvalTerm> x_5)> to
 
   EvalPrim :
-    App(Prim("SSL_write_term_to_stream_text", [ w_5 , x_5 ]), to) ->
-    <prim("SSL_write_term_to_stream_text",<EvalTerm> w_5,<EvalTerm> x_5)> to
+    App(Prim("SSL_write_term_to_stream_text", [ y_5 , z_5 ]), to) ->
+    <prim("SSL_write_term_to_stream_text",<EvalTerm> y_5,<EvalTerm> z_5)> to
 
   EvalPrim :
-    App(Prim("SSL_read_term_from_stream", [ y_5 ]), to) ->
-    <prim("SSL_read_term_from_stream",<EvalTerm> y_5)> to
+    App(Prim("SSL_read_term_from_stream", [ a_6 ]), to) ->
+    <prim("SSL_read_term_from_stream",<EvalTerm> a_6)> to
 
   EvalPrim :
-    App(Prim("SSL_print", [ z_5 , a_6 ]), to) ->
-    <prim("SSL_print",<EvalTerm> z_5,<EvalTerm> a_6)> to
+    App(Prim("SSL_print", [ b_6 , c_6 ]), to) ->
+    <prim("SSL_print",<EvalTerm> b_6,<EvalTerm> c_6)> to
 
   EvalPrim :
-    App(Prim("SSL_printnl", [ b_6 , c_6 ]), to) ->
-    <prim("SSL_printnl",<EvalTerm> b_6,<EvalTerm> c_6)> to
+    App(Prim("SSL_printnl", [ d_6 , e_6 ]), to) ->
+    <prim("SSL_printnl",<EvalTerm> d_6,<EvalTerm> e_6)> to
 
   EvalPrim :
-    App(Prim("_cpl_loaded", [ d_6 ]), to) ->
-    <prim("_cpl_loaded",<EvalTerm> d_6)> to
+    App(Prim("_cpl_loaded", [ f_6 ]), to) ->
+    <prim("_cpl_loaded",<EvalTerm> f_6)> to

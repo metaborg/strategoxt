@@ -297,15 +297,15 @@ specification
 
     external UndefinedOption( | )
 
-    external Arg2Option(v_2 : ATerm() -> ATerm() , w_2 : ATerm() -> ATerm() , x_2 : ATerm() -> ATerm() | )
+    external Arg2Option(y_2 : ATerm() -> ATerm() , z_2 : ATerm() -> ATerm() , a_3 : ATerm() -> ATerm() | )
 
     external Arg2Option(g_87 : ATerm() -> ATerm() , h_87 : ATerm() -> ATerm() | )
 
     external ArgOption(e_87 : ATerm() -> ATerm() , f_87 : ATerm() -> ATerm() | )
 
-    external ArgOption(s_2 : ATerm() -> ATerm() , t_2 : ATerm() -> ATerm() , u_2 : ATerm() -> ATerm() | )
+    external ArgOption(v_2 : ATerm() -> ATerm() , w_2 : ATerm() -> ATerm() , x_2 : ATerm() -> ATerm() | )
 
-    external Option(p_2 : ATerm() -> ATerm() , q_2 : ATerm() -> ATerm() , r_2 : ATerm() -> ATerm() | )
+    external Option(s_2 : ATerm() -> ATerm() , t_2 : ATerm() -> ATerm() , u_2 : ATerm() -> ATerm() | )
 
     external Option(q_86 : ATerm() -> ATerm() , r_86 : ATerm() -> ATerm() | )
 
@@ -937,11 +937,11 @@ specification
 
     external range( | )
 
-    external range( | o_2 : ATerm())
+    external range( | r_2 : ATerm() -> ATerm())
 
     external range-next(i_80 : ATerm() -> ATerm() | )
 
-    external range(n_2 : ATerm() -> ATerm() | )
+    external range(q_2 : ATerm() -> ATerm() | )
 
     external is-interval( | )
 
@@ -1259,7 +1259,7 @@ specification
 
     external UnCify1(r_77 : ATerm() -> ATerm() | )
 
-    external Cify(m_2 : ATerm() -> ATerm() | )
+    external Cify(p_2 : ATerm() -> ATerm() | )
 
     external double-quote( | )
 
@@ -1373,7 +1373,7 @@ specification
 
     external left-match( | )
 
-    external string-starts-with( | b_23 : ATerm())
+    external string-starts-with( | b_23 : ATerm() -> ATerm())
 
     external string-lt( | )
 
@@ -1471,7 +1471,7 @@ specification
 
     external Nil-T( | )
 
-    external Cons-T(r_0 : ATerm() -> ATerm() , u_0 : ATerm() -> ATerm() | )
+    external Cons-T(u_0 : ATerm() -> ATerm() , x_0 : ATerm() -> ATerm() | )
 
     external thread-map(a_75 : ATerm() -> ATerm() | )
 
@@ -1583,7 +1583,7 @@ specification
 
     external isect( | )
 
-    external qsort(l_0 : ATerm() -> ATerm() | )
+    external qsort(q_0 : ATerm() -> ATerm() | )
 
     external uniq( | )
 
@@ -1735,7 +1735,7 @@ specification
 
     external Hd( | )
 
-    external reverse-acc(i_0 : ATerm() -> ATerm() , k_0 : ATerm() -> ATerm() | )
+    external reverse-acc(n_0 : ATerm() -> ATerm() , p_0 : ATerm() -> ATerm() | )
 
     external reverse(w_69 : ATerm() -> ATerm() | )
 
@@ -2025,9 +2025,9 @@ specification
 
     external oncetd(y_62 : ATerm() -> ATerm() | )
 
-    external spinebu'(g_0 : ATerm() -> ATerm() | )
+    external spinebu'(k_0 : ATerm() -> ATerm() | )
 
-    external spinetd'(e_0 : ATerm() -> ATerm() | )
+    external spinetd'(i_0 : ATerm() -> ATerm() | )
 
     external somespinebu(s_62 : ATerm() -> ATerm() | )
 
@@ -2099,7 +2099,7 @@ specification
 
     external if(h_60 : ATerm() -> ATerm() , i_60 : ATerm() -> ATerm() | )
 
-    external maybe(c_0 : ATerm() -> ATerm() , d_0 : ATerm() -> ATerm() | )
+    external maybe(d_0 : ATerm() -> ATerm() , g_0 : ATerm() -> ATerm() | )
 
     external maybe(c_60 : ATerm() -> ATerm() | )
 

@@ -83,7 +83,7 @@ dynamic rule. */
 
   dummify =
     alltd(
-        \Term|[ x ]|     -> |[ Nil() ]| where not(ContextVar)\
+        \Term|[ x ]|     -> |[ Nil() ]| where not(Var(ContextVar))\
      <+ \Term|[ _ ]|     -> |[ Nil() ]|\
      <+ \Term|[ <s> ]|   -> |[ Keys( ~term*:<tvars; map(!Var(<id>))> s ) ]|\
      <+ \Term|[ <s> t ]| -> |[ Keys( ~term*:<tvars; map(!Var(<id>))> (s,t) ) ]|\
@@ -102,8 +102,6 @@ dynamic rule. */
       ; <dummify> t1 => t1'
       ; try(?t1; !Var(x)) => t1''
 
-//      ; <tvars; map(!Var(<id>)); debug(!"keys van lhs: ")> t1' => keys
-//      ; <tvars; debug(!"before filtering: "); filter(test(ListVar(ContextVar) <+ ContextVar); debug(!"test passed:"); !Var(<id>)); debug(!"filter result: ")> (t2, s) => vals1
       ; <tvars; map(!Var(<id>))> t1' => keys
       ; <tvars; filter(test(ListVar(ContextVar) <+ ContextVar); !Var(<id>))> (t2, s) => vals1
       ; <diff> (vals1, keys) => t*
