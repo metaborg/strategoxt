@@ -1,6 +1,6 @@
 EXTRA_DIST   = $(EXTRA_FILES)
 
-EXTRA_FILES  = README README.in bootstrap acinclude.m4 StrategoXT.spec
+EXTRA_FILES  = README README.in bootstrap acinclude.m4 StrategoXT.spec.in StrategoXT.spec
 
 SUBDIRS      = $(PKGS)
 
