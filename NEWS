@@ -87,8 +87,10 @@ STRATEGO COMPILER (SC, SC-BOOT)
 
  * Innermost fusion: an optimization that specializes applications of innermost
    to its argument, typically a choice of rules. This an elaboration
-   of the optimization described in the WRS'01 paper "Fusing Logic and Control".
-   See http://www.stratego-language.org/Stratego/FusingLogicAndControl
+   of the optimization described in the WRS'01 paper "Fusing Logic and
+   Control". See 
+
+        http://www.stratego-language.org/Stratego/FusingLogicAndControl
 
 STRATEGO STANDARD LIBRARY (SSL)
 
