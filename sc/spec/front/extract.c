@@ -567,9 +567,9 @@ void init_constant_terms (void)
   ATprotect(&(term_b_20));
   term_b_20 = (ATerm) ATmakeInt(0);
   ATprotect(&(term_q_20));
-  term_q_20 = (ATerm) ATmakeAppl(ATmakeSymbol("c_0", 0, ATtrue));
+  term_q_20 = (ATerm) ATmakeAppl(ATmakeSymbol("b_0", 0, ATtrue));
   ATprotect(&(term_u_20));
-  term_u_20 = (ATerm) ATmakeAppl(ATmakeSymbol("e_0", 0, ATtrue));
+  term_u_20 = (ATerm) ATmakeAppl(ATmakeSymbol("f_0", 0, ATtrue));
   ATprotect(&(term_v_20));
   term_v_20 = (ATerm) ATmakeAppl(ATmakeSymbol("main", 0, ATtrue));
   ATprotect(&(term_w_20));
@@ -827,7 +827,7 @@ ATerm verbose_option_0 (ATerm);
 ATerm general_options_0 (ATerm);
 ATerm output_option_0 (ATerm);
 ATerm aterm_output_option_0 (ATerm);
-ATerm ArgOption_3 (ATerm, ATerm m_0 (ATerm), ATerm n_0 (ATerm), ATerm p_0 (ATerm));
+ATerm ArgOption_3 (ATerm, ATerm l_0 (ATerm), ATerm n_0 (ATerm), ATerm o_0 (ATerm));
 ATerm input_option_0 (ATerm);
 ATerm io_options_0 (ATerm);
 ATerm report_failure_0 (ATerm);
@@ -990,7 +990,7 @@ ATerm MissingDefs_0 (ATerm t)
           {
             t = (ATerm) ATinsert(CheckATermList(not_null(n_7)), not_null(m_7));
             {
-              ATerm b_0 (ATerm t)
+              ATerm c_0 (ATerm t)
               {
                 ATerm d_6 = t;
                 int e_6 = stack_ptr;
@@ -1006,7 +1006,7 @@ ATerm MissingDefs_0 (ATerm t)
                   }
                 return(t);
               }
-              t = map_1(t, b_0);
+              t = map_1(t, c_0);
             }
             t = not_null(k_7);
           }
@@ -1123,7 +1123,7 @@ ATerm DefinitionExists_0 (ATerm t)
                             ATerm q_6 = t;
                             if((PushChoice() == 0))
                               {
-                                ATerm f_0 (ATerm t)
+                                ATerm e_0 (ATerm t)
                                 {
                                   ATerm y_8 = NULL;
                                   y_8 = t;
@@ -1134,7 +1134,7 @@ ATerm DefinitionExists_0 (ATerm t)
                                     }
                                   return(t);
                                 }
-                                t = fetch_1(t, f_0);
+                                t = fetch_1(t, e_0);
                                 PopChoice();
                                 _fail(t);
                               }
@@ -1580,7 +1580,7 @@ ATerm free_vars2_4 (ATerm t, ATerm a_99 (ATerm), ATerm b_99 (ATerm), ATerm c_99 
 {
   ATerm u_14 (ATerm t)
   {
-    ATerm l_0 (ATerm t)
+    ATerm m_0 (ATerm t)
     {
       ATerm d_7 = t;
       int e_7 = stack_ptr;
@@ -1596,7 +1596,7 @@ ATerm free_vars2_4 (ATerm t, ATerm a_99 (ATerm), ATerm b_99 (ATerm), ATerm c_99 
         }
       return(t);
     }
-    ATerm o_0 (ATerm t)
+    ATerm p_0 (ATerm t)
     {
       ATerm f_7 = t;
       int g_7 = stack_ptr;
@@ -1670,7 +1670,7 @@ ATerm free_vars2_4 (ATerm t, ATerm a_99 (ATerm), ATerm b_99 (ATerm), ATerm c_99 
         }
       return(t);
     }
-    t = split_2(t, l_0, o_0);
+    t = split_2(t, m_0, p_0);
     t = union_1(t, eq_0);
     return(t);
   }
@@ -7008,7 +7008,7 @@ ATerm Arities_0 (ATerm t)
             z_86 = ATgetArgument(y_86, 0);
             c_87 = ATgetArgument(y_86, 1);
             t_86 :
-            if(match_string(z_86, "e_0"))
+            if(match_string(z_86, "f_0"))
               {
                 if(((x_86 != NULL) && (x_86 != c_87)))
                   _fail(c_87);
@@ -7124,7 +7124,7 @@ ATerm Definitions_0 (ATerm t)
                 u_88 = ATgetArgument(s_88, 1);
                 v_88 = ATgetArgument(s_88, 2);
                 g_88 :
-                if(match_string(t_88, "c_0"))
+                if(match_string(t_88, "b_0"))
                   {
                     if(((q_88 != NULL) && (q_88 != u_88)))
                       _fail(u_88);
@@ -8749,14 +8749,14 @@ ATerm aterm_output_option_0 (ATerm t)
     }
   return(t);
 }
-ATerm ArgOption_3 (ATerm t, ATerm m_0 (ATerm), ATerm n_0 (ATerm), ATerm p_0 (ATerm))
+ATerm ArgOption_3 (ATerm t, ATerm l_0 (ATerm), ATerm n_0 (ATerm), ATerm o_0 (ATerm))
 {
   ATerm z_103 = NULL,a_104 = NULL,b_104 = NULL,c_104 = NULL,d_104 = NULL;
   z_103 = t;
   x_103 :
   if(match_string(z_103, "register-usage-info"))
     {
-      t = register_usage_1(t, p_0);
+      t = register_usage_1(t, o_0);
     }
   else
     {
@@ -8775,7 +8775,7 @@ ATerm ArgOption_3 (ATerm t, ATerm m_0 (ATerm), ATerm n_0 (ATerm), ATerm p_0 (ATe
                 b_27 = t;
                 {
                   t = not_null(a_104);
-                  t = m_0(t);
+                  t = l_0(t);
                 }
                 t = b_27;
                 {

@@ -18,12 +18,10 @@
 # 02111-1307, USA.
 
 include $(top_srcdir)/Makefile.xt
-
-BOOTCLEAN_SUBDIRS = $(SUBDIRS)
-
 include package.conf
 
 SUBDIRS	= . src
+BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 
 EXTRA_DIST = ADDING-TOOLS VERSION configure.in.src genconf.sh \
              package.conf reconf $(PACKAGE)-$(VERSION).pkg program-check.m4 \

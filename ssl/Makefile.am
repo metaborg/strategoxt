@@ -1,7 +1,7 @@
 include $(top_srcdir)/Makefile.xt
 
-BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 SUBDIRS 	  = . spec
+BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 EXTRA_DIST 	  = README README.in reconf stdconfig Makefile.xt
 
 RPMRELEASE=1

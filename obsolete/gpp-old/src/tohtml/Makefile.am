@@ -1,5 +1,6 @@
 include $(srcdir)/../templates/make_rules
 
+
 SUBDIRS       = data
 
 libexec_SCRIPTS = tohtml ismap2usemap
@@ -30,3 +31,5 @@ CLEANFILES      = tohtml ismap2usemap
 % : %.perl.src Makefile
 	@sed 's@__PERL__@$(PERL)@g;' < $< > $@
 	chmod 755 $@
+
+bootclean:

@@ -1,3 +1,8 @@
+2003-01-02  Eelco Visser  <visser@cs.uu.nl>
+
+	* sig/Makefile.am : .str file explicit target for sdf-to-sig, otherwise make
+	doesn't know they have been created
+
 2003-01-01  Eelco Visser  <visser@cs.uu.nl>
 
 	* syn/StrategoStratego.sdf: removed ~ StrategoTerm -> Id injection, since

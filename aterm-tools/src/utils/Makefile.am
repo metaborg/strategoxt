@@ -1,7 +1,7 @@
 include $(wildcard *.dep)
 include $(top_srcdir)/Makefile.xt
 
-SCFLAGS 	 = --main $@
+SCFLAGS 	 = --main $*
 SUBDIRS      	 = data
 bin_PROGRAMS 	 = PpTerm annos-to-term
 bin_SCRIPTS	 = pp-term annos-to-term

@@ -2063,13 +2063,16 @@ ATerm read_from_0 (ATerm t)
             ATerm d_12 = NULL;
             t = not_null(y_11);
             {
-              t = ReadFromFile_0(t);
+              t = file_exists_0(t);
               {
-                d_12 = t;
-                if(((c_12 != NULL) && (c_12 != d_12)))
-                  _fail(d_12);
-                else
-                  c_12 = d_12;
+                t = ReadFromFile_0(t);
+                {
+                  d_12 = t;
+                  if(((c_12 != NULL) && (c_12 != d_12)))
+                    _fail(d_12);
+                  else
+                    c_12 = d_12;
+                }
               }
             }
             t = not_null(c_12);

@@ -17,15 +17,13 @@
 
 include $(top_srcdir)/Makefile.xt
 
-BOOTCLEAN_SUBDIRS = $(SUBDIRS)
-
 SUBDIRS           = spec
+BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 
 EXTRA_DIST = README.in $(wilcard *.pkg) stdconfig reconf sc.spec Makefile.rpm \
 	     Makefile.xt
 
 RPMRELEASE = 1
-
 
 CONFIGURE = ./configure \
 		--prefix=/usr \

@@ -1,8 +1,8 @@
 include $(top_srcdir)/Makefile.xt
 
-BOOTCLEAN_SUBDIRS = $(SUBDIRS)
-
 SUBDIRS		  = syn sig pp xtc-tools
+
+BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 
 DIST_SUBDIRS	  = $(SUBDIRS)
 

@@ -5,7 +5,9 @@ sdfdata_DATA 	= Stratego.def StrategoStratego.def \
 	          Stratego.tbl StrategoStratego.tbl \
 	      	  $(wildcard *.sdf)				       
 
-CLEANFILES 	= $(wildcard *.tbl) $(wildcard *.def) $(TESTS)
+CLEANFILES 	= $(wildcard *.tbl) $(TESTS)
+
+BOOTCLEANFILES	= $(wildcard *.def) 
 
 EXTRA_DIST 	= Stratego.def StrategoStratego.def	      \
 		  Stratego.tbl StrategoStratego.tbl	      \

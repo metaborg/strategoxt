@@ -532,14 +532,14 @@ config:
 #	cd stratego-connect; stdconfig
 
 install-%: %
-	cp -f $< srts
-	cp -f $< ssl
-	cp -f $< cgen
-	cp -f $< gpp-boot
-	cp -f $< sc-boot
-	cp -f $< sc
-	cp -f $< stratego-front
-	cp -f $< stratego-connect
+	cp -f $< srts/$<.StrategoXT
+	cp -f $< ssl/$<.StrategoXT
+	cp -f $< cgen/$<.StrategoXT
+	cp -f $< gpp-boot/$<.StrategoXT
+	cp -f $< sc-boot/$<.StrategoXT
+	cp -f $< sc/$<.StrategoXT
+	cp -f $< stratego-front/$<.StrategoXT
+	cp -f $< stratego-connect/$<.StrategoXT
 
 upload:
 	scp *.tar.gz */*.tar.gz $(WWWSTRATEGO)
@@ -564,6 +564,11 @@ upload-ssl:
 
 upload-stratego-front:
 	scp stratego-front/stratego-front-*.tar.gz $(WWWSTRATEGO)
+
+bootclean :
+	@for dir in $(PKGS); do \
+	   (cd $$dir && $(MAKE) bootclean) ; \
+	done
 
 source-tree.txt : 
 	tree -d | grep -v CVS \

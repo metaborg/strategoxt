@@ -3454,13 +3454,16 @@ ATerm read_from_0 (ATerm t)
             ATerm p_17 = NULL;
             t = not_null(k_17);
             {
-              t = ReadFromFile_0(t);
+              t = file_exists_0(t);
               {
-                p_17 = t;
-                if(((o_17 != NULL) && (o_17 != p_17)))
-                  _fail(p_17);
-                else
-                  o_17 = p_17;
+                t = ReadFromFile_0(t);
+                {
+                  p_17 = t;
+                  if(((o_17 != NULL) && (o_17 != p_17)))
+                    _fail(p_17);
+                  else
+                    o_17 = p_17;
+                }
               }
             }
             t = not_null(o_17);

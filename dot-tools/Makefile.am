@@ -1,8 +1,6 @@
-
 include $(top_srcdir)/Makefile.xt
 
-BOOTCLEAN_SUBDIRS = $(SUBDIRS)
-
 SUBDIRS = syn
+BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 
 EXTRA_DIST = Makefile.xt

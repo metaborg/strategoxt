@@ -19,8 +19,6 @@ SUBDIRS = src ssl
 
 EXTRA_DIST = reconf mprotect.m4 Makefile.rpm Makefile.stratego.in
 
-pkgdata_DATA = Makefile.srts Makefile.stratego.in
-
 RPMRELEASE=1
 
 CONFIGURE = ./configure --prefix=/usr \
@@ -36,3 +34,6 @@ SUBST = s+__SRTS_VERSION__+$(VERSION)+g;\
 CLEANFILES = 
 
 #include Makefile.rpm
+
+bootclean :
+

@@ -1,6 +1,6 @@
 include $(top_srcdir)/Makefile.xt
-BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 SUBDIRS 	  = . syn pp sig parse test
+BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 
 EXTRA_DIST 	  = stdconfig reconf conf.h.src	     \
 		    stratego-front.spec Makefile.rpm \

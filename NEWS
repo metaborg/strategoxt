@@ -143,6 +143,14 @@ DETAILS
     Typical use of all this is to coerce programs that only read or
     write using stdio into using file io.
 
+* AutoXT
+
+  Added support for recursive bootclean target to Makefile.xt. To use
+  it Makefile.xt should be included in every Makefile.am in the
+  directory structure. The subdirectories that should be bootcleaned
+  should be declared in BOOTCLEAN_SUBDIRS variable. Leaf directories
+  that don't use Makefile.xt should declare the target bootclean.
+
 * Bug fixes and refactorings
 
   While fixing bugs and adding functionality, the compiler components
