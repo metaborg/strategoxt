@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/06/07 12:06:37 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2001/10/02 12:31:23 daybuild Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -40,6 +40,7 @@ CLEANFILES   += tohtml-sdf
 % : %.sh.src Makefile
 	sed 's@__PREFIX__@$(prefix)@g;\
 	     s@__GPP__@$(GPP)@g;\
-	     s@__SGLR__@$(SGLR)@g'\
+	     s@__SGLR__@$(SGLR)@g;\
+	     s@__VERSION__@$(VERSION)@g'\
 	   < $< > $@ && \
 	   chmod 755 $@
