@@ -605,7 +605,7 @@ ATerm xtc_transform_file_2 (ATerm, ATerm n_0 (ATerm), ATerm o_0 (ATerm));
 ATerm stdin_0 (ATerm);
 ATerm FILE_1 (ATerm, ATerm r_57 (ATerm));
 ATerm xtc_transform_2 (ATerm, ATerm w_77 (ATerm), ATerm x_77 (ATerm));
-ATerm xtc_sglr_2 (ATerm, ATerm d_87 (ATerm), ATerm e_87 (ATerm));
+ATerm xtc_sglr_2 (ATerm, ATerm c_87 (ATerm), ATerm d_87 (ATerm));
 ATerm copy_file_0 (ATerm);
 ATerm stderr_0 (ATerm);
 ATerm stdout_0 (ATerm);
@@ -2564,7 +2564,7 @@ ATerm xtc_transform_2 (ATerm t, ATerm w_77 (ATerm), ATerm x_77 (ATerm))
     }
   return(t);
 }
-ATerm xtc_sglr_2 (ATerm t, ATerm d_87 (ATerm), ATerm e_87 (ATerm))
+ATerm xtc_sglr_2 (ATerm t, ATerm c_87 (ATerm), ATerm d_87 (ATerm))
 {
   ATerm f_2 (ATerm t)
   {
@@ -2580,7 +2580,7 @@ ATerm xtc_sglr_2 (ATerm t, ATerm d_87 (ATerm), ATerm e_87 (ATerm))
       ATerm o_16 = NULL;
       t = term_d_13;
       {
-        t = d_87(t);
+        t = c_87(t);
         {
           t = xtc_find_0(t);
           {
@@ -2601,7 +2601,7 @@ ATerm xtc_sglr_2 (ATerm t, ATerm d_87 (ATerm), ATerm e_87 (ATerm))
         ATerm q_16 = NULL;
         t = term_d_13;
         {
-          t = e_87(t);
+          t = d_87(t);
           {
             q_16 = t;
             if(((p_16 != NULL) && (p_16 != q_16)))

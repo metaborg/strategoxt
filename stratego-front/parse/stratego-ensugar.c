@@ -854,7 +854,7 @@ ATerm is_double_quoted_chars_0 (ATerm);
 ATerm EnsugarOnce_0 (ATerm);
 ATerm quote_chars_0 (ATerm);
 ATerm double_quote_chars_0 (ATerm);
-ATerm string_as_chars_1 (ATerm, ATerm n_93 (ATerm));
+ATerm string_as_chars_1 (ATerm, ATerm m_93 (ATerm));
 ATerm double_quote_0 (ATerm);
 ATerm Tl_0 (ATerm);
 ATerm Last_0 (ATerm);
@@ -864,7 +864,7 @@ ATerm is_quoted_0 (ATerm);
 ATerm is_double_quoted_0 (ATerm);
 ATerm Ensugar_0 (ATerm);
 ATerm repeat_1 (ATerm, ATerm q_83 (ATerm));
-ATerm topdown_1 (ATerm, ATerm p_93 (ATerm));
+ATerm topdown_1 (ATerm, ATerm o_93 (ATerm));
 ATerm Stratego_Ensugar_0 (ATerm);
 ATerm _2 (ATerm, ATerm k_55 (ATerm), ATerm l_55 (ATerm));
 ATerm default_usage_0 (ATerm);
@@ -880,7 +880,7 @@ ATerm conc_strings_0 (ATerm);
 ATerm is_string_0 (ATerm);
 ATerm eval_config_0 (ATerm);
 ATerm get_config_0 (ATerm);
-ATerm if_verbose2_1 (ATerm, ATerm i_91 (ATerm));
+ATerm if_verbose2_1 (ATerm, ATerm h_91 (ATerm));
 ATerm WriteToTextFile_0 (ATerm);
 ATerm WriteToBinaryFile_0 (ATerm);
 ATerm output_file_0 (ATerm);
@@ -909,7 +909,7 @@ ATerm times_0 (ATerm);
 ATerm run_time_0 (ATerm);
 ATerm gt_0 (ATerm);
 ATerm geq_0 (ATerm);
-ATerm if_verbose1_1 (ATerm, ATerm h_91 (ATerm));
+ATerm if_verbose1_1 (ATerm, ATerm g_91 (ATerm));
 ATerm report_success_0 (ATerm);
 ATerm Version_0 (ATerm);
 ATerm need_help_1 (ATerm, ATerm z_68 (ATerm));
@@ -2002,11 +2002,11 @@ ATerm double_quote_chars_0 (ATerm t)
   }
   return(t);
 }
-ATerm string_as_chars_1 (ATerm t, ATerm n_93 (ATerm))
+ATerm string_as_chars_1 (ATerm t, ATerm m_93 (ATerm))
 {
   t = explode_string_0(t);
   {
-    t = n_93(t);
+    t = m_93(t);
     t = implode_string_0(t);
   }
   return(t);
@@ -2273,13 +2273,13 @@ ATerm repeat_1 (ATerm t, ATerm q_83 (ATerm))
   t = n_18(t);
   return(t);
 }
-ATerm topdown_1 (ATerm t, ATerm p_93 (ATerm))
+ATerm topdown_1 (ATerm t, ATerm o_93 (ATerm))
 {
-  t = p_93(t);
+  t = o_93(t);
   {
     ATerm s_0 (ATerm t)
     {
-      t = topdown_1(t, p_93);
+      t = topdown_1(t, o_93);
       return(t);
     }
     t = _all(t, s_0);
@@ -2830,7 +2830,7 @@ ATerm get_config_0 (ATerm t)
   }
   return(t);
 }
-ATerm if_verbose2_1 (ATerm t, ATerm i_91 (ATerm))
+ATerm if_verbose2_1 (ATerm t, ATerm h_91 (ATerm))
 {
   ATerm b_1 (ATerm t)
   {
@@ -2856,7 +2856,7 @@ ATerm if_verbose2_1 (ATerm t, ATerm i_91 (ATerm))
       }
     }
     t = k_8;
-    t = i_91(t);
+    t = h_91(t);
     return(t);
   }
   t = try_1(t, b_1);
@@ -3925,7 +3925,7 @@ ATerm geq_0 (ATerm t)
     }
   return(t);
 }
-ATerm if_verbose1_1 (ATerm t, ATerm h_91 (ATerm))
+ATerm if_verbose1_1 (ATerm t, ATerm g_91 (ATerm))
 {
   ATerm k_2 (ATerm t)
   {
@@ -3951,7 +3951,7 @@ ATerm if_verbose1_1 (ATerm t, ATerm h_91 (ATerm))
       }
     }
     t = b_13;
-    t = h_91(t);
+    t = g_91(t);
     return(t);
   }
   t = try_1(t, k_2);

@@ -772,7 +772,7 @@ ATerm instantiate_sep_list_1 (ATerm, ATerm d_94 (ATerm));
 ATerm length_0 (ATerm);
 ATerm foldr_3 (ATerm, ATerm n_84 (ATerm), ATerm o_84 (ATerm), ATerm p_84 (ATerm));
 ATerm crush_3 (ATerm, ATerm l_83 (ATerm), ATerm m_83 (ATerm), ATerm n_83 (ATerm));
-ATerm collect_p__1 (ATerm, ATerm j_100 (ATerm));
+ATerm collect_p__1 (ATerm, ATerm i_100 (ATerm));
 ATerm mod_0 (ATerm);
 ATerm even_0 (ATerm);
 ATerm BuildSepList_1 (ATerm, ATerm n_70 (ATerm));
@@ -868,7 +868,7 @@ ATerm type_failure_0 (ATerm);
 ATerm InId_1 (ATerm, ATerm r_93 (ATerm));
 ATerm termid_check_1 (ATerm, ATerm y_93 (ATerm));
 ATerm ReadFromFile_0 (ATerm);
-ATerm notify_1 (ATerm, ATerm o_100 (ATerm));
+ATerm notify_1 (ATerm, ATerm n_100 (ATerm));
 ATerm read_pp_tables_0 (ATerm);
 ATerm error_0 (ATerm);
 ATerm fatal_error_0 (ATerm);
@@ -1559,7 +1559,7 @@ ATerm crush_3 (ATerm t, ATerm l_83 (ATerm), ATerm m_83 (ATerm), ATerm n_83 (ATer
   }
   return(t);
 }
-ATerm collect_p__1 (ATerm t, ATerm j_100 (ATerm))
+ATerm collect_p__1 (ATerm t, ATerm i_100 (ATerm))
 {
   ATerm t_8 (ATerm t)
   {
@@ -1568,7 +1568,7 @@ ATerm collect_p__1 (ATerm t, ATerm j_100 (ATerm))
     if((PushChoice() == 0))
       {
         ATerm r_8 = NULL;
-        t = j_100(t);
+        t = i_100(t);
         {
           ATerm s_8 = NULL;
           s_8 = t;
@@ -5327,11 +5327,11 @@ ATerm ReadFromFile_0 (ATerm t)
     }
   return(t);
 }
-ATerm notify_1 (ATerm t, ATerm o_100 (ATerm))
+ATerm notify_1 (ATerm t, ATerm n_100 (ATerm))
 {
   ATerm h_2 (ATerm t)
   {
-    t = debug_1(t, o_100);
+    t = debug_1(t, n_100);
     return(t);
   }
   t = if_verbose1_1(t, h_2);

@@ -602,7 +602,7 @@ ATerm xtc_transform_file_2 (ATerm, ATerm n_0 (ATerm), ATerm o_0 (ATerm));
 ATerm stdin_0 (ATerm);
 ATerm FILE_1 (ATerm, ATerm r_57 (ATerm));
 ATerm xtc_transform_2 (ATerm, ATerm w_77 (ATerm), ATerm x_77 (ATerm));
-ATerm xtc_sglr_1 (ATerm, ATerm c_87 (ATerm));
+ATerm xtc_sglr_1 (ATerm, ATerm b_87 (ATerm));
 ATerm copy_file_0 (ATerm);
 ATerm stderr_0 (ATerm);
 ATerm stdout_0 (ATerm);
@@ -2561,7 +2561,7 @@ ATerm xtc_transform_2 (ATerm t, ATerm w_77 (ATerm), ATerm x_77 (ATerm))
     }
   return(t);
 }
-ATerm xtc_sglr_1 (ATerm t, ATerm c_87 (ATerm))
+ATerm xtc_sglr_1 (ATerm t, ATerm b_87 (ATerm))
 {
   ATerm f_2 (ATerm t)
   {
@@ -2577,7 +2577,7 @@ ATerm xtc_sglr_1 (ATerm t, ATerm c_87 (ATerm))
       ATerm n_16 = NULL;
       t = term_c_13;
       {
-        t = c_87(t);
+        t = b_87(t);
         {
           t = xtc_find_0(t);
           {

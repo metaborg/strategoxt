@@ -821,7 +821,7 @@ ATerm conc_strings_0 (ATerm);
 ATerm is_string_0 (ATerm);
 ATerm eval_config_0 (ATerm);
 ATerm get_config_0 (ATerm);
-ATerm if_verbose2_1 (ATerm, ATerm f_95 (ATerm));
+ATerm if_verbose2_1 (ATerm, ATerm e_95 (ATerm));
 ATerm WriteToTextFile_0 (ATerm);
 ATerm WriteToBinaryFile_0 (ATerm);
 ATerm output_file_0 (ATerm);
@@ -850,7 +850,7 @@ ATerm times_0 (ATerm);
 ATerm run_time_0 (ATerm);
 ATerm gt_0 (ATerm);
 ATerm geq_0 (ATerm);
-ATerm if_verbose1_1 (ATerm, ATerm e_95 (ATerm));
+ATerm if_verbose1_1 (ATerm, ATerm d_95 (ATerm));
 ATerm report_success_0 (ATerm);
 ATerm Version_0 (ATerm);
 ATerm need_help_1 (ATerm, ATerm e_70 (ATerm));
@@ -1572,7 +1572,7 @@ ATerm get_config_0 (ATerm t)
   }
   return(t);
 }
-ATerm if_verbose2_1 (ATerm t, ATerm f_95 (ATerm))
+ATerm if_verbose2_1 (ATerm t, ATerm e_95 (ATerm))
 {
   ATerm p_0 (ATerm t)
   {
@@ -1598,7 +1598,7 @@ ATerm if_verbose2_1 (ATerm t, ATerm f_95 (ATerm))
       }
     }
     t = f_6;
-    t = f_95(t);
+    t = e_95(t);
     return(t);
   }
   t = try_1(t, p_0);
@@ -2667,7 +2667,7 @@ ATerm geq_0 (ATerm t)
     }
   return(t);
 }
-ATerm if_verbose1_1 (ATerm t, ATerm e_95 (ATerm))
+ATerm if_verbose1_1 (ATerm t, ATerm d_95 (ATerm))
 {
   ATerm g_2 (ATerm t)
   {
@@ -2693,7 +2693,7 @@ ATerm if_verbose1_1 (ATerm t, ATerm e_95 (ATerm))
       }
     }
     t = u_11;
-    t = e_95(t);
+    t = d_95(t);
     return(t);
   }
   t = try_1(t, g_2);

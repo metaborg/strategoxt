@@ -564,7 +564,7 @@ ATerm elem_1 (ATerm, ATerm s_64 (ATerm));
 ATerm elem_0 (ATerm);
 ATerm at_suffix_1 (ATerm, ATerm d_65 (ATerm));
 ATerm split_fetch_1 (ATerm, ATerm w_64 (ATerm));
-ATerm list_tokenize_1 (ATerm, ATerm m_86 (ATerm));
+ATerm list_tokenize_1 (ATerm, ATerm l_86 (ATerm));
 ATerm string_tokenize_0 (ATerm);
 ATerm remove_extension_0 (ATerm);
 ATerm table_keys_0 (ATerm);
@@ -1013,14 +1013,14 @@ ATerm split_fetch_1 (ATerm t, ATerm w_64 (ATerm))
   }
   return(t);
 }
-ATerm list_tokenize_1 (ATerm t, ATerm m_86 (ATerm))
+ATerm list_tokenize_1 (ATerm t, ATerm l_86 (ATerm))
 {
   ATerm v_4 = NULL,w_4 = NULL,x_4 = NULL,y_4 = NULL,z_4 = NULL,a_5 = NULL,b_5 = NULL;
   ATerm k_8 = t;
   int p_8 = stack_ptr;
   if((PushChoice() == 0))
     {
-      t = split_fetch_1(t, m_86);
+      t = split_fetch_1(t, l_86);
       ;
       LocalPopChoice(p_8);
     }
@@ -1061,7 +1061,7 @@ ATerm list_tokenize_1 (ATerm t, ATerm m_86 (ATerm))
                     b_5 = (ATerm) ATgetNext((ATermList) z_4);
                     {
                       t = not_null(z_4);
-                      t = list_tokenize_1(t, m_86);
+                      t = list_tokenize_1(t, l_86);
                     }
                   }
                 else
@@ -1092,7 +1092,7 @@ ATerm list_tokenize_1 (ATerm t, ATerm m_86 (ATerm))
                           ATerm h_5 = NULL;
                           t = not_null(z_4);
                           {
-                            t = list_tokenize_1(t, m_86);
+                            t = list_tokenize_1(t, l_86);
                             {
                               h_5 = t;
                               if(((g_5 != NULL) && (g_5 != h_5)))
