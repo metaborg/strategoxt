@@ -29,3 +29,4 @@ liblib.c :
 	$(STRC)/bin/strc -c --library --verbose 2 \
         -I $(XTC)/share/xtc -I $(SSL)/share/ssl \
         -i ./library.str -o liblib.rtree
+
