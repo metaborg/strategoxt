@@ -46,11 +46,12 @@ strategies
     <conc-strings>("node", <int-to-string>)
     
   term-to-tree =
+    if-verbose5(debug(!"term-to-tree: ")); 
     !(<new>, <id>);
     rec x(
       (id, map(!(<new>, <id>)) <+ all(!(<new>, <id>)))
       ; ![<(id, map(Fst) <+ all(Fst))>
-         |<Snd; foldr(![],union,x) <+ crush(![],union,x)>]
+         |<Snd; (foldr(![],union,x) <+ crush(![],union,x))>]
     )
 
 /*

@@ -9,19 +9,19 @@ SUBDIRS     	 = data
 
 bin_PROGRAMS     = treeviz term-to-adot term-to-dot
 libexec_PROGRAMS = treeviz term-to-adot
+check_PROGRAMS	 = term-to-adot-test
 
-term-to-adot	 : xtc-conf.h
-treeviz	 	 : xtc-conf.h
-term-to-dot	 : xtc-conf.h
+term-to-adot.o	 : xtc-conf.h
+treeviz.o	 : xtc-conf.h
+term-to-dot.o	 : xtc-conf.h
+term-to-adot-test.o : xtc-conf.h
 
 CLEANFILES	 = $(wildcard *.dep)
 BOOTCLEANFILES 	 = treeviz.c term-to-adot.c term-to-dot.c
 
-# TESTS        	 = program-check
+TESTS        	 = term-to-adot-test
 
-EXTRA_DIST     	 = $(wildcard *.str)
-
-#$(wildcard *.sdf) $(wildcard *.pp)                    term-to-dot.sh.src
+EXTRA_DIST     	 = $(wildcard *.str) $(wildcard *.meta)
 
 % : %.sh.src Makefile
 	sed 's@__PREFIX__@$(prefix)@g;\

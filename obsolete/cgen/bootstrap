@@ -6,3 +6,4 @@ autoconf
 #autoheader
 automake -a
 
+touch pp/*.pp.af sig/*.rtree
