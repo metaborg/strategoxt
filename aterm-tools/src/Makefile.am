@@ -15,9 +15,9 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/05/30 11:49:17 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2001/05/31 14:10:22 mdejonge Exp $
 
 SUBDIRS = @TOOLS@
 
-DIST_SUBDIRS = @RELEASED@
+DIST_SUBDIRS = templates @RELEASED@
 
