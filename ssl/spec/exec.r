@@ -22,28 +22,79 @@
 
 \begin{code}
 module exec
-strategies
+strategies //primitives
 
-  exit       = ?n; prim("SSL_exit", n)
-  call       = ?(prog,args); prim("SSL_call",prog,args)
-  call-noisy = ?(prog,args); prim("SSL_call_noisy",prog,args)
+  // exit :: Int
+  // abort execution with exit value n
 
-  get-pid    = prim("SSL_get_pid")
+  exit = 
+    ?n; prim("SSL_exit", n)
 
-  rm-files = ?files; where(<call> ("rm", ["-f" | files]))
+  // call :: String * List(String) -> String * List(String)
+  // call prog with list of strings args
 
-  pipe(c, suf2) = pipe(c, suf2, ![])
+  call = 
+    ?(prog,args); prim("SSL_call",prog,args)
+
+  // call-noisy :: String * List(String) -> String * List(String)
+  // call prog with list of strings args and print information
+
+  call-noisy = 
+    ?(prog,args); prim("SSL_call_noisy",prog,args)
+
+  // get-pid :: a -> Int
+  // return process identifier of current process
+
+  get-pid = 
+    prim("SSL_get_pid")
+
+strategies // non-primitives
+
+  // rm-files :: List(String) -> List(String)
+  // remove files
+
+  rm-files = 
+    ?files; where(<call> ("rm", ["-f" | files]))
+
+  pipe(c, suf2) = 
+    pipe(c, suf2, ![])
 
   pipe(c, suf2, args) = 
     where(conc-strings => 'in);
     (id, suf2);
     where(conc-strings => out);
-    // where(<debug(!"calling : ")> [<c>(), 'in, out]);
-    where(<call> (<c>(), ["-i", 'in, "-o", out | <args>()]))
+    //where(<debug(!"calling : ")> [<c>, 'in, out | <args>]);
+    where(<call> (<c>, ["-i", 'in, "-o", out | <args>]))
 
   pipe'(c, suf2, args) = 
     obsolete(!"pipe'/3; use pipe/3");
     pipe(c, suf2, args)
+
+  // call-tmp :: (a -> String) * (b -> List(String)) * (String -> String) -> (String -> String)
+  //
+  // Apply command <comm> to input file (current term) and write the result to a temporary file
+  // which is then passed on to the continuation command cont. The temporary file is created
+  // and removed afterwards by temp-file.
+
+  call-tmp(comm, args, cont) = 
+    ?filein
+    ; temp-file(\ (fileout, _) -> <
+        <call>(<comm>, ["-i", filein, "-o", fileout | <args> ])
+        ; !fileout
+        ; cont
+      >\ )
+
+  // call-out :: (a -> String) * (b -> List(String)) * (c -> String) * (String -> d) -> (String -> d)
+  // 
+  // Apply command <comm> to the current file (current term) and write the result to 
+  // file <out>. <args> are additional arguments for the command. cont is the continuation
+  // which applies to the filename of the result
+
+  call-out(comm, args, out, cont) = 
+    ? filein
+    ; <call>(<comm>, ["-i", filein, "-o", <out>, | <args> ])
+    ; out
+    ; cont
 
   transform-file(s, suf) =
     where(conc-strings => 'in);
