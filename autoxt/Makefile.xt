@@ -18,7 +18,7 @@ LDADD 		= -L$(SRTS)/lib/srts -lstratego.opt -lstratego-lib.opt -L$(ATERM)/lib -l
 
 STRATEGORUNLIBS = -lstratego.opt -lstratego-lib.opt -lATerm-gcc -lm
 
-SUFFIXES 	= .str .cr .r .rtree .def .tbl .pp .sdf
+SUFFIXES 	= .str .cr .r .rtree .def .tbl .pp .sdf .rtg
 
 SCOMPILE 	= $(STRC)/bin/strc
 PARSESTRATEGO 	= $(STRATEGO_FRONT)/bin/parse-stratego
@@ -129,11 +129,14 @@ bootclean-recursive :
 
 ###########################################################
 #
-# Makerules for Stratego Tools
+# Makerules for Stratego Regular
 #
 
-.def.str :
-	$(STRATEGO_TOOLS)/bin/sdf-to-sig -i $<
+.def.rtg :
+	$(STRATEGO_REGULAR)/bin/sdf2rtg $(SDF2RTG_FLAGS) -i $< -o $@
+
+.rtg.str :
+	$(STRATEGO_REGULAR)/bin/rtg2sig --module $* -i $< -o $@
 
 ###########################################################
 #
