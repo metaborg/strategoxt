@@ -28,7 +28,7 @@ useful for implementing context-sensitive transformations. However,
 these applications also revealed some missing features in scoped
 dynamic rewrite rules.
 
-    *** Motivation for redesign ***
+---------+++ Motivation for Redesign
 
 First, there is a need for forking and merging sets of dynamic rules
 in data-flow optimizations and probably many other application
@@ -45,20 +45,124 @@ available in StrategoXT 0.9.4 (extend rules).
 Third, the 'override rules' facility for defining dynamic in rules in
 outer scopes proved to be insufficient. To this end we have added
 labeled scopes. Labeled scopes are based on an idea raised by Ganesh
-Sitampalam in a discussion at the Stratego User Days 2004.
+Sittampalam in a discussion at the Stratego User Days 2004.
 
-   *** More detailed discussion of new design ***
+---------+++ New Syntax and Semantics
+The new abstract syntax is introduced by comparing to the old syntax and
+and semantics, and is presented in BNF below. Some basic entities are:
+<verbatim>
+  s     strategy,
+  f     rule/strategy identifier, e.g. 'EvalBinOp', or 'innermost',
+  dsig  definition signature, identifier with optional strategy and term
+        arguments: =f(sd*|vd*)=.
+</verbatim>
 
 
-   *** Note an compiler flags and compatibility ***
+Generation of new rules always occurred within =override/extend rules(..)=
+constructs. Now, just one =rules(..)= construct is available. The dynamic
+rule definitions within determine the semantics.
 
+<verbatim>
+  s ::= rules(drd*)                       rule definition block
+</verbatim>
+
+---------++++ Labeling of Scopes
+To prevent rules from being undefined too early at the end of the current
+scopes, the =override rules(..)= could be used in the past. Rules were tied
+to some outer scope, instead of the current innermost.
+
+The new dynamic rules still support the same scoping syntax, but now
+*optional* labels maybe attached. These labels are term-patterns, and thus
+result in runtime scope-labeling.
+
+<verbatim>
+  s ::= {| f1(.p1)?, ... fn(.pn)? : s |}  dynamic rule scope
+</verbatim>
+
+Within a =rules(..)= block, the current scope may be assigned additional
+labels.
+<verbatim>
+  drd ::= f+p                             label current scope
+</verbatim>
+
+---------++++ Dynamic Rule Definitions
+Besides the mandatory rulename, dynamic rule definitions now may also
+contain a label, specifying in which scope this rule should be placed.
+No label naturaly means generation within the current inner scope.
+<verbatim>
+  drsig ::= sig                           relative to current scope
+            sig.p                         relative to labeled scope
+            sig+p                         relative to current scope, but add a
+                                          label to current scope simultaneously
+
+  drd ::= drsig : p1 -> p2 (where s)?     dynamic rule definition
+</verbatim>
+
+Instead of `extend rules' blocks, now the rule definitions specify themselves
+whether 'extend-behaviour' is intended:
+<verbatim>
+  drd ::= drsig :+ p1 -> p2 (where s)?    dynamic rule extension
+</verbatim>
+
+Undefining rules no longer uses the =Undefined= keyword, again it's the
+rule definition itself.
+<verbatim>
+  drd ::= drsig :- p                      dynamic rule undefining
+</verbatim>
+
+A new form of dynamic rule is the dynamic identity rule, that -when applied-
+tries to match against the left-hand side and leaves the current term
+untouched.
+<verbatim>
+  drd ::= drsig : p                       dynamic identity rule definition
+</verbatim>
+
+Within a nested scope-structure, multiple scopes may have identical labels.
+When (un-)defining dynamic rules in a labeled scope, the innermost scope with
+that label is selected.
+
+---------++++ Dynamic Rule Calling
+Dynamic rules are basically just runtime generated rewriting rules, so for a
+definition: =UsedInExp :+ |[ x ]| -> |[ e ]|= the basic call is:
+<verbatim>
+  <UsedInExp> |[ y ]| => |[ e' ]|         // Normal rewriting
+</verbatim>
+It tries to rewrite with the most recently generated instance of =UsedInExp=,
+and repeatedly tries older instances until rewriting succeeds or no more
+instances exist in the same generation scope (i.e. no inheritance from higher
+scopes than the one of latest generation).
+Not that the semantics of this simple rewriting has changed: in the old model,
+no older instances were available for rewriting if the youngest instance failed)
+
+Two special rules are automatically available for each dynamic rule:
+the =bagof-= and =once-= rule.
+<verbatim>
+  <bagof-UsedInExp> |[ y ]| => |[ e* ]|   // Multiple rewritings
+</verbatim>
+=bagof-RuleName= applies all available instances of =RuleName= (from one scope)
+and returns a list of succeeded result terms.
+
+<verbatim>
+  <once-UsedInExp> |[ y ]| => |[ e' ]|   // Rewriting once
+</verbatim>
+=once-RuleName= rewrites just like =RuleName= would do, but upon successfull
+rewriting that rule instance is removed. A generated rule thus is used for
+rewriting only once.
+
+---------++++ Branching and Meeting Rulesets
+When performing control-flow optimizations, rulesets had to be explicitly
+saved, intersected and restored. The new model now provides some variants for
+this at the language level (with generic functionality available in the API).
+
+TODO
+
+
+---------++++ Compatibility and Compiler Flags
 The new implementation of dynamic rules is not yet turned on by
-default. To turn it on, you need to pass the option --dr new to the
+default. To turn it on, you need to pass the option =--dr new= to the
 Stratego compiler. Although the new implementation is not yet used by
 default, all existing applications should work with the new
 implementation. That is, if they do not rely on weird semantics in the
 old dynamic rule implementation and do not manipulate the internal
 representation of dynamic rules. The new syntax for dynamic rules is
 supported as much as possible by the old dynamic rule implementation.
-
-
