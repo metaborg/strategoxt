@@ -207,7 +207,7 @@ rules
     Specification([
       Signature(bsigs),
       Strategies(<conc> (<congdefs> bsigs, 
-                           <map((RDtoSD + DeclareVariables); expand-calls)> [AnnoCongDef| sdefs]))
+                           <map(try(RDtoSD + DeclareVariables); expand-calls)> [AnnoCongDef| sdefs]))
     ])
 
   ExpandOverlays : 

@@ -49,14 +49,8 @@ strategies
   olevel6(s) = olevel(!6, s)
 
   sc-options =
-    ArgOption("-i",
-	where(<set-config>("-i", <id>)); !(),
-	!"-i file            Main module to compile (required)\n")
-
-  + ArgOption("-o" + "--output",  
-	where(<set-config> ("-o",<id>)); !(),      
-	!"-o f | --output f  Write output to f" )
-
+    input-option
+  + output-option
 
   + ArgOption("-I" + "--Include",        
 	where(<extend-config>("-I", ["-I", <id>])); !(),
@@ -65,6 +59,11 @@ strategies
   + ArgOption("--main" + "-m",
 	where(<set-config>("-m", <id>)); !(),
 	!"--main f | -m f    Main strategy to compile (default: main)\n")
+
+
+  + Option("--library" + "--lib",
+	where(<set-config>("--library", ())); !(),
+	!"--library | --lib    Build a library instead of an application\n")
 
 
   + ArgOption("--C-include",       
@@ -114,14 +113,7 @@ strategies
 //	where(<extend-config>("-t", [<id>])); !(),
 //	!"-t f               Instrument definition of f to print tracing information\n" )
 
-  + ArgOption("--verbose",         
-	where(<set-config> ("--verbose", <string-to-int>)); !(),         
-	!"--verbose i        Verbosity level i (default 1)")
-
-  + Option("-S"+"--silent",       
-	where(<set-config> ("--verbose",0)); !(),          
-	!"-S | --silent      Silent execution (same as --verbose 0)")
-
+  + verbose-option
 
   + Option("-h" + "--help",         
 	where(<set-config> ("--help",())); !(),         

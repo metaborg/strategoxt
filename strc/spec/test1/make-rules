@@ -188,8 +188,12 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 %.o: %.c
 	$(CC) $(DEFS) $(CINCL) -g -c $< -O4
 
-%.bin : %.o 
-	$(CC) -g $< -o $@ $(SCLibs)
+%.bla : %.c
+	echo $* : `basename $@ .bla`OBJECTS : $($*OBJECTS)
+
+%.bin : %.o $($*OBJECTS)
+	-$(MAKE) $< $($*OBJECTS)
+	$(CC) -g $< $($*OBJECTS) -o $@ $(SCLibs)
 
 # RUNNING ###########################################################
 
@@ -207,10 +211,13 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 %.trm: %.af
 	implode-asfix -i $< -o $@
 
-# USING INSTALLED SC ###############################################
+# USING INSTALLED STRC ###############################################
 
 %.ibin: %.r
 	../strc/strc $(SINCLUDES) $(SCFLAGS) -i $< -o $@ --verbose 3
+
+%.ilib: %.r
+	../strc/strc $(SINCLUDES) $(SCFLAGS) -i $< -o $@ --verbose 3 --library
 
 %.irun: %.ibin
 	./$<

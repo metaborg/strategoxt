@@ -33,7 +33,7 @@ strategies
       get-infile
       ; pack-stratego
       ; output-ast
-      ; add-main
+      ; if-not-lib(add-main)
       ; repair-types
       ; pre-desugar
       ; normalize-spec
@@ -43,7 +43,7 @@ strategies
       ; rename-vars
       ; desugar
       ; output-frontend
-      ; extract
+      ; if-lib(extract-all, extract)
       ; warnings
       ; stratego-nf 
       ; rename-defs
@@ -168,6 +168,15 @@ strategies // Compile generated C code
 
 strategies
 
+  // building a library
+
+  if-lib(s1, s2) = where(<get-config>"--library") < s1 + s2
+
+  if-lib(s)      = if-lib(s, id)
+  if-not-lib(s)  = if-lib(id, s)
+
+strategies
+
   // save intermediate results
 
   save-as(ext) = 
@@ -273,7 +282,7 @@ strategies // COMPILER COMPONENTS
 
   fusion 		= comp(|"fusion")
   inline 		= comp(|"inline")
-  dead-def-elim 	= comp(|"dead-def-elim")
+  dead-def-elim 	= comp(|"dead-def-elim", <if-lib(!["--only-local"],![])>)
   compile-match 	= comp(|"compile-match")
   desugar-case 		= comp(|"desugar-case")
   const-prop 		= comp(|"const-prop")
@@ -296,4 +305,7 @@ strategies // COMPILER COMPONENTS
   ac2abox 	= comp(|"ast2abox", ["-p", <xtc-find> "C-pretty.pp"])
   abox2text 	= comp-out(|"abox2text")
   s2c 		= comp(|"s2c",  
-	 		<get-config; mapconcat(!["--C-include", <id>])> "--C-include")
+	 		<concat>[
+			  <get-config; mapconcat(!["--C-include", <id>])> "--C-include",
+			  <if-lib(!["--library"], ![])>
+			])

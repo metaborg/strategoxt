@@ -1752,3 +1752,9 @@ Bootclean finished [Sat Jan 11 17:40:07 CET 2003]
 
 Bootstrapping version 0.9.3 [Sun Jul 27 22:06:35 CEST 2003 - Linux stratego.lan i686]
 Bootstrapping: phase 1 started [Sun Jul 27 22:06:35 CEST 2003]
+
+Bootstrapping version 0.9.4 [Fri Dec 12 16:59:14 Local time zone must be set--see zic manual page 2003 - Linux localhost.localdomain i686]
+Bootstrapping: phase 1 started [Fri Dec 12 16:59:14 Local time zone must be set--see zic manual page 2003]
+Bootstrapping: phase 2 started [Fri Dec 12 17:13:47 Local time zone must be set--see zic manual page 2003]
+Bootstrapping: phase 3 started [Fri Dec 12 17:28:34 Local time zone must be set--see zic manual page 2003]
+Bootstrapping: finished [Fri Dec 12 17:43:11 Local time zone must be set--see zic manual page 2003]

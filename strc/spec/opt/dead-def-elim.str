@@ -3,7 +3,24 @@ imports Stratego stratlib lib pack-graph
 strategies
 
   dead-def-elim-io = 
-    iowrap(Specification([id,Strategies(dead-def-elim; map(local-dead-def-elim))]))
+    io-wrap(only-local-option, dead-def-elim-spec)
+
+  only-local-option = 
+    Option("--only-local"
+	  ,<set-config>"--only-local"
+	  ,!"--only-local        do not eliminate top-level definitions")
+
+  if-only-local(s1, s2) =
+    where(<get-config>"--only-local") < s1 + s2
+   
+  dead-def-elim-spec = 
+    Specification(
+      [id,
+       Strategies(
+         if-only-local(id, dead-def-elim)
+         ; map(local-dead-def-elim))
+      ]
+    )
 
   dead-def-elim =
     !(["main_0_0"], <map(RegisterDefinition)>, [])
@@ -11,6 +28,18 @@ strategies
 
   RegisterDefinition =
     ?sdef@SDefT(f, xs, ys, s)
+    ; rules(
+        Definition : (f, _) -> sdef
+      )
+  
+  RegisterDefinition =
+    ?sdef@ExtSDefInl(f, xs, ys, s)
+    ; rules(
+        Definition : (f, _) -> sdef
+      )
+  
+  RegisterDefinition =
+    ?sdef@ExtSDef(f, xs, ys)
     ; rules(
         Definition : (f, _) -> sdef
       )

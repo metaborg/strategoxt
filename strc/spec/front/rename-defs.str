@@ -32,6 +32,24 @@ rules
         ; (<HoArg> x; rules(HoArg : x -> Undefined)
                    <+ rules(HoArg : x -> y))
 
+  RenameSDef : 
+    ExtSDef(x, args1, args2) -> ExtSDef(y, args1, args2)
+    where <length> args1 => n
+        ; <length> args2 => m
+        ; <concat-strings>[<try(NameMod); cify> x, "_", <int-to-string> n, "_", <int-to-string> m] => y
+        ; rules(RenameVar : (x, (n,m)) -> y)
+        ; (<HoArg> x; rules(HoArg : x -> Undefined)
+                   <+ rules(HoArg : x -> y))
+
+  RenameSDef : 
+    ExtSDefInl(x, args1, args2, s) -> ExtSDefInl(y, args1, args2, s)
+    where <length> args1 => n
+        ; <length> args2 => m
+        ; <concat-strings>[<try(NameMod); cify> x, "_", <int-to-string> n, "_", <int-to-string> m] => y
+        ; rules(RenameVar : (x, (n,m)) -> y)
+        ; (<HoArg> x; rules(HoArg : x -> Undefined)
+                   <+ rules(HoArg : x -> y))
+
   RenameCall : 
     Call(SVar(x), ss) -> Call(SVar(y), ss)
     where <length> ss => n

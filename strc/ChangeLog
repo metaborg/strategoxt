@@ -1,3 +1,22 @@
+2003-12-12  Eelco Visser  <visser@cs.uu.nl>
+
+	* External definitions are definitions of the form 'external
+	f(as1|as2)' or 'external f(as1|as2) = s' and indicate a strategy
+	that is implemented externally. It can be compiled with the normal
+	calling convention for strategies and will be renamed in the same
+	way to f_n_m with n the number of strategy parameters and m the
+	number of term parameters. The second form allows the
+	specification of a strategy body for the definition. This can be
+	used by the compiler to inline some applications of the strategy
+	operator, but no implementation is generated for such definitions.
+	External definitions can not be extended. 
+
+	External definitions generalize 'prim'itive strategies and can be
+	used to implement separate compilation. It was a small change to
+	the compiler. The only thing that is not completely finished is
+	the generation of a library from a specification, but the compiler
+	is functional without that addition.
+
 2003-11-20  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/front/desugar.str: Rule Mapp0 

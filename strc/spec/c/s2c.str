@@ -26,7 +26,7 @@ signature
 strategies
 
   s2c-options = 
-    Option("--trace-all   trace all strategies", 
+    Option("--trace-all", 
 	!TraceAll; debug(!"tracing all functions: ")
 	; rules(TraceAllFuns : x -> x))
 
@@ -38,6 +38,19 @@ strategies
 	where(<post-extend-config>("--C-include", [<id>]))
         ; !Include(<id>),
 	!"--C-include h   include header file h (\"file.h\" or <file.h>)")
+
+  + Option("--library" + "--lib"
+	  ,<set-config>"--library"
+	  ,!"--library | --lib    build library instead of application")
+
+strategies
+
+  // building a library
+
+  if-lib(s1, s2) = where(<get-config>"--library") < s1 + s2
+
+  if-lib(s)      = if-lib(s, id)
+  if-not-lib(s)  = if-lib(id, s)
 
 overlays
 
@@ -87,32 +100,30 @@ rules
     Specification([Signature(ops), Strategies(defs)]) -> 
     |[ 
        void init_constant_terms();
-       void __UnboundVarError(char *var) 
-       {
-         fprintf(stderr, "** compiler error: variable '%s' should be bound\n"
-			 "notify stratego-bugs@cs.uu.nl\n", x)
-       }
        ~dec: <TranslateSig> Signature(ops)
     ]|
     where <map(SDefToDeclaration)> defs => sigs
-        ; <get-config; map(!Include(<conc-strings> ("#include ", <id>))) <+ ![]> "--C-include" => incl
+        ; <get-config
+           ; map(!Include(<conc-strings> ("#include ", <id>))) <+ ![]> "--C-include" => incl
 
 */
 
   TranslateSpec :
     Specification([Signature(ops), Strategies(defs)]) -> 
     TranslationUnit(<concat> [incl, 
-	[Declaration2(TypeSpec([],TypeId("void"),[]),
+	[Declaration2(//DeclSpec([],Static,[],Void,[]),
+		      TypeSpec([],TypeId("void"),[]),
                        [IdDecl([],Id("init_constant_terms"),Some(ParamList([])))])
 	, Signature(ops)
-	, [UnboundVarErrorDefinition]
+//	, [UnboundVarErrorDefinition]
         , InitCachedTerms
         ]
         , sigs
         , [ SDefT("main_0", [], [], CallT(SVar("main_0_0"), [],[])) 
-          | defs ]
+          | defs' ]
     ])
     where <map(SDefToDeclaration)> defs => sigs
+	; <filter(?SDefT(_,_,_,_))> defs => defs'
         ; <get-config; map(!Include(<conc-strings> ("#include ", <id>))) 
            <+ ![]> "--C-include" => incl
 
@@ -124,9 +135,9 @@ Signatures
 
   TranslateSig :
     Signature([Constructors(ops)]) ->
-    TranslationUnit(<conc>(decls, [fundef]))
+    TranslationUnit(<conc>(decls, fundef))
     where <map(DeclareConstructor)> ops => decls
-        ; <InitConstructors> ops => fundef
+        ; if-lib(![], ![<InitConstructors> ops]) => fundef
 
   DeclareConstructor :
     OpDecl(c, t) ->
@@ -143,7 +154,8 @@ Signatures
 
   InitConstructors :
     ops ->
-    FunDef(TypeSpec([],Void,[]),
+    FunDef(//DeclSpec([],Static,[],Void,[]),
+	   TypeSpec([],Void,[]),
            IdDecl([],Id("init_constructors"),Some(ParamList([TypeSpec([],Void,[])]))),
            Compound([],<conc>(<map(InitConstructor); concat> ops, 
 			      [Stat(FunCall(Id("init_constant_terms"),[]))])))
@@ -162,6 +174,12 @@ Strategy definitions
 
 \begin{code}
   SDefToDeclaration :
+    Def|[ f(a*) = s ]| ->
+    dec|[ ATerm ~id:f (~param-dec*:params); ]|
+    where <map(TranslateVarDec)> a* => params
+ 	; <conc>(params, [TypeSpec([],TypeId("ATerm"),[])])
+
+  SDefToDeclaration :
     SDefT(f, as1, as2, s) ->
     //Def|[ f(a1* | a2*) = s ]| ->
     dec|[ ATerm ~id:f (~param-dec*:params); ]|
@@ -170,10 +188,18 @@ Strategy definitions
         ; <concat> [params1, params2, [TypeSpec([],TypeId("ATerm"),[])]] => params
 
   SDefToDeclaration :
-    Def|[ f(a*) = s ]| ->
+    ExtSDefInl(f, as1, as2, s) ->
     dec|[ ATerm ~id:f (~param-dec*:params); ]|
-    where <map(TranslateVarDec)> a* => params
- 	; <conc>(params, [TypeSpec([],TypeId("ATerm"),[])])
+    where <map(TranslateVarDec)> as1 => params1
+        ; <map(TranslateVarDec)> as2 => params2
+        ; <concat> [params1, params2, [TypeSpec([],TypeId("ATerm"),[])]] => params
+
+  SDefToDeclaration :
+    ExtSDef(f, as1, as2) ->
+    dec|[ ATerm ~id:f (~param-dec*:params); ]|
+    where <map(TranslateVarDec)> as1 => params1
+        ; <map(TranslateVarDec)> as2 => params2
+        ; <concat> [params1, params2, [TypeSpec([],TypeId("ATerm"),[])]] => params
 
 /*
   SDefToDeclaration :
@@ -731,7 +757,8 @@ rules
 
   InitTermIds :
     xs ->
-    FunDef(TypeSpec([],Void,[]),
+    FunDef(//DeclSpec([],Static,[],Void,[]),
+	   TypeSpec([],Void,[]),
            IdDecl([],Id("init_constant_terms"),Some(ParamList([TypeSpec([],Void,[])]))),
            Compound([],<map(InitTermId); concat; reverse> xs))
 

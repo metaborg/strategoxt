@@ -20,6 +20,7 @@ rules
   map1(s) = 
     [s | id]; [id | try(map1(s))] <+ [id | map1(s)]
 
+/*
   HL :
     SDefT(f, as1, as2, s) -> SDefT(f, as1', as2', s)
     where <map1(MkFunType)> as1 => as1' 
@@ -34,6 +35,7 @@ rules
     RDefT(f, as1, as2, s) -> RDefT(f, as1', as2', s)
     where <map1(MkFunType)> as1 => as1' 
         ; <map1(try(MkConstType))> as2 => as2'
+*/
 
   MkFunType :
     DefaultVarDec(x)-> VarDec(x, DefaultStrat)
@@ -325,7 +327,7 @@ strategies
 
   DesugarListMatching =
     topdown(try(ListVarScope + desugarRule); 
-            repeat((HL + ListMatch + ListBuild) <+ SingleListVar))
+            repeat((MkFunType + MkConstType + HL + ListMatch + ListBuild) <+ SingleListVar))
 
   desugar = 
     topdown(try(desugarRule); 
@@ -334,9 +336,22 @@ strategies
   desugar' = 
     topdown(try(desugarRule); repeat(HL))
 
+  /**
+   * Desugar all definnitions in specification
+   *
+   * Note that inline bodies of external definitions are _not_
+   * desugared. These are assumed to be in StrategoCore. This should
+   * be checked.
+   */
+
   desugar-spec = 
-    map(SDef(id, id, desugar) + SDefT(id, id, id, desugar) 
-	<+ debug(!"not a definition: "); fail)
+    map(
+      SDef(id, id, desugar) 
+      + SDefT(id, id, id, desugar)
+      + ExtSDef(id, id, id) 
+      + ExtSDefInl(id, id, id, id)
+      <+ debug(!"not a definition: "); fail
+    )
 \end{code}
  
 % Copyright (C) 1998-2003 Eelco Visser <visser@acm.org>

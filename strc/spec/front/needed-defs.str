@@ -23,7 +23,7 @@ imports Stratego DefaultStrat desugar stratlib list-set list-misc lib pack-graph
 strategies
 
   sort-defs = 
-    map(RegisterSDefT)
+    map(RegisterSDefT + RegisterExtSDef + RegisterExtSDefInl)
 
   RegisterSDef =
     ?def@SDef(f, xs, s);
@@ -50,6 +50,32 @@ strategies
         )
     )
 
+  RegisterExtSDef =
+    ?def@ExtSDef(f, xs, ys);
+    where(
+        <length> xs => n
+      ; <length> ys => m
+      ; ![def | <Definitions <+ ![]> (f, (n, m))] => defs
+      ; <union>([(n,m)], <Arities <+ ![]> f) => aris
+      ; rules(
+          Definitions : (f, (n, m)) -> defs
+          Arities : f -> aris
+        )
+    )
+
+  RegisterExtSDefInl =
+    ?def@ExtSDefInl(f, xs, ys, s);
+    where(
+        <length> xs => n
+      ; <length> ys => m
+      ; ![def | <Definitions <+ ![]> (f, (n, m))] => defs
+      ; <union>([(n,m)], <Arities <+ ![]> f) => aris
+      ; rules(
+          Definitions : (f, (n, m)) -> defs
+          Arities : f -> aris
+        )
+    )
+
 
 \end{code}
 
@@ -61,12 +87,17 @@ strategies
 \begin{code}
 strategies
 
-  joindefs = JoinDefs1 <+ JoinDefs2
+  joindefs = JoinDefs1 <+ JoinDefsExt <+ JoinDefs2
 
 rules
 
   JoinDefs1 : 
     [sdef] -> sdef
+
+  JoinDefsExt =
+    fetch(?ExtSDef(f,_,_) + ?ExtSDefInl(f,_,_,_))
+    ; <debug(!"overloading external definition: ")> f
+    ; giving-up
 
 /*
   JoinDefs2 : 
@@ -104,6 +135,12 @@ strategies
 
   DefinitionName :
     SDefT(f,xs,ys,_) -> [(f, (<length>xs, <length>ys))]
+
+  DefinitionName :
+    ExtSDef(f,xs,ys) -> [(f, (<length>xs, <length>ys))]
+
+  DefinitionName :
+    ExtSDefInl(f,xs,ys,_) -> [(f, (<length>xs, <length>ys))]
 
   all-defs = 
     !(<definition-names>, <sort-defs>, []);
@@ -256,19 +293,4 @@ rules
     where new => s; new => x; new => y
 \end{code}
 
-% Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
-% 
-% This program is free software; you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation; either version 2, or (at your option)
-% any later version.
-% 
-% This program is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-% 
-% You should have received a copy of the GNU General Public License
-% along with this program; if not, write to the Free Software
-% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-% 02111-1307, USA.
+% Copyright (C) 1998-2003 Eelco Visser <visser@acm.org>

@@ -7,7 +7,7 @@ strategies
 
   lift-definitions =
     declare-standard-strategies
-    ; Specification([id,Strategies(map(DeclareTopLevel); map(lift-sdefs); concat)])
+    ; Specification([id,Strategies(map(DeclareTopLevel); map(lift-sdefs <+ ![<id>]); concat)])
 
   declare-standard-strategies =
     where(
@@ -17,6 +17,14 @@ strategies
 
   DeclareTopLevel =
     ?SDefT(f, xs, ys, s)
+    ; rules(TopLevel : f -> ())
+
+  DeclareTopLevel =
+    ?ExtSDefInl(f, xs, ys, s)
+    ; rules(TopLevel : f -> ())
+
+  DeclareTopLevel =
+    ?ExtSDef(f, xs, ys)
     ; rules(TopLevel : f -> ())
 
   lift-sdefs :

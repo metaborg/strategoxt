@@ -68,6 +68,8 @@ CLEANFILES = \
 
 EXTRA_DIST = $(wildcard *.r) make-rules io-test*.in
 
+test50OBJECTS = bar.o
+
 include $(top_srcdir)/Makefile.xt
 
 include make-rules

@@ -22,6 +22,10 @@ strategies
     SDef(is-string, list(VarDec(is-string,id)), strategy-expression)
     <+ SDefT(is-string, list(VarDec(is-string,id))
 		      , list(VarDec(is-string,id)), strategy-expression)
+    <+ ExtSDefInl(is-string, list(VarDec(is-string,id))
+		      , list(VarDec(is-string,id)), strategy-expression)
+    <+ ExtSDef(is-string, list(VarDec(is-string,id))
+		        , list(VarDec(is-string,id)))
     <+ debug(!"not a strategy-definition: ")
 
   strategy-expression =
