@@ -1,4 +1,3 @@
-
 SINCLUDES	 = -I $(STRATEGO_FRONT)/share/stratego-front \
 	  	   -I $(STRATEGO_FRONT)/share/sdf/stratego-front \
 	  	   -I $(srcdir)/../front		     \
@@ -7,6 +6,7 @@ SINCLUDES	 = -I $(STRATEGO_FRONT)/share/stratego-front \
 	  	   -I $(srcdir)/../lib			     \
 		   -I $(SSL)/share/ssl
 
+AM_LDFLAGS	= -L$(SRTS)/lib/srts -L$(ATERM)/lib 
 
 check_PROGRAMS 	= arity-test as-pattern assignment backtrack-test2    \
 		  backtrack-test3 backtrack-test comment-test	      \
