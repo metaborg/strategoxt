@@ -28,7 +28,6 @@ signature
     LChoice        : Strategy * Strategy -> Strategy
     LGChoice       : Strategy * Strategy -> Strategy
     GuardedLChoice : Strategy * StrategyMid * Strategy -> Strategy
-    CondChoice     : Strategy * Strategy * StrategyElse -> Strategy
     Rec            : Id * Strategy -> Strategy
     Not            : Strategy -> Strategy
     Where          : Strategy -> Strategy
@@ -72,3 +71,6 @@ signature
     GChoice                    : Strategy * Strategy -> Strategy
     RGChoice                   : Strategy * Strategy -> Strategy
     AM                         : Strategy * Term -> Strategy
+signature
+  constructors
+    CondChoice : Strategy * Strategy * Strategy -> Strategy
