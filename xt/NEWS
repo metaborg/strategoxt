@@ -1,3 +1,7 @@
+Version 0.9 released: 2001-11-29
+	* integration-tests: test script generation fixed.
+	* Added support for grammar identifier checking.
+
 Version 0.8 released: 2001-09-20
 	* Package dependencies are no longer hard-wired in the package
           list files "pkg-list" and "dev-pkg-list". Instead, package 
