@@ -2,8 +2,6 @@ include $(srcdir)/../templates/make_rules
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-SUBDIRS      	 = data
-
 bin_PROGRAMS 	 = sdf-imports
 libexec_PROGRAMS = sdf-imports
 

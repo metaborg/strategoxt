@@ -2,7 +2,6 @@ include $(srcdir)/../templates/make_rules
 include $(top_srcdir)/Makefile.xt
 include 
 
-SUBDIRS       = data
 bin_PROGRAMS  = fdl2sdf
 LDADD        += $(SSL_LIBS)
 

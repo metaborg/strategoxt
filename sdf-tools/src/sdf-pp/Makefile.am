@@ -1,8 +1,6 @@
 include $(srcdir)/../templates/make_rules
 include $(top_srcdir)/Makefile.xt
 
-SUBDIRS      = data
-
 bin_SCRIPTS  = tohtml-sdf
 
 EXTRA_DIST   = tohtml-sdf.sh.src 
