@@ -1,5 +1,5 @@
 module parse-sdf-module
-imports xtc-lib stratego-xt-xtc-tools switch-options
+imports xtc-lib sdf-xtc-tools switch-options
 
 strategies
   
@@ -13,29 +13,4 @@ strategies
 
   parse-sdf-options =
     SwitchOption(!"use-id", !"specify whether to produce language id")
-
-// move to stratego-xt-xtc-tools      
-
-strategies      
     
-  xtc-parse-sdf2-module =
-    xtc-parse-sdf2(!"Module")
-
-  xtc-parse-sdf2-module-id =
-    xtc-parse-sdf2(!"Module-GrammarID")
-    
-  xtc-parse-sdf2-definition =
-    xtc-parse-sdf2(!"Module")
-
-  xtc-parse-sdf2-definition-id =
-    xtc-parse-sdf2(!"Definition-GrammarID")
-
-strategies
-    
-  xtc-parse-sdf2 =
-      xtc-sglr(!"Sdf2-Syntax.tbl")
-    ; xtc-implode-asfix
- 
-  xtc-parse-sdf2(sort) =
-      xtc-sglr(!"Sdf2-Syntax.tbl", sort)
-    ; xtc-implode-asfix

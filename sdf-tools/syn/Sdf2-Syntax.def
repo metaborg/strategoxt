@@ -18,8 +18,8 @@ exports
   
   context-free syntax
   
-    SDF     -> Definition-GrammarID {cons("\"sdf-2.1\"")}
-    Module  ->     Module-GrammarID {cons("\"sdf-2.1\"")}
+    SDF     -> Definition-GrammarID {prefer, cons("\"sdf-2.1\"")}
+    Module  ->     Module-GrammarID {prefer, cons("\"sdf-2.1\"")}
     
   context-free syntax
     "<START>"                                   -> Symbol	{cons("START")}
@@ -33,7 +33,6 @@ exports
   context-free priorities
     Symbol "|" Symbol  -> Symbol >
     Literal ":" Symbol -> Symbol
-
 
 module Sdf-Disamb
 imports Sdf2-Syntax
@@ -482,8 +481,8 @@ exports
   
   context-free syntax
   
-    SDF     -> Definition-GrammarID {cons("\"sdf-2.1\"")}
-    Module  ->     Module-GrammarID {cons("\"sdf-2.1\"")}
+    SDF     -> Definition-GrammarID {prefer, cons("\"sdf-2.1\"")}
+    Module  ->     Module-GrammarID {prefer, cons("\"sdf-2.1\"")}
     
   context-free syntax
     "<START>"                                   -> Symbol	{cons("START")}

@@ -4,8 +4,12 @@
     to Sdf2.pp
     
   * xtc/parse-sdf-module: XTC tool to parse SDF module
-
+  
   * syn/*.sdf using constructors (to be refactored)
+  
+  * xtc/pp-sdf.str: XTC tool to pp SDF AST to text
+  
+  * xtc/sdf2text.str: XTC part of sdf2text shell script
 
 2003-01-18  Eelco Visser  <visser@cs.uu.nl>
 

@@ -1,7 +1,7 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-bin_PROGRAMS   = parse-sdf-module
+bin_PROGRAMS   = parse-sdf-module pp-sdf sdf2text
 
 SCFLAGS        = --main io-$*
 STRINCLUDES    = -I $(XTC)/share/xtc

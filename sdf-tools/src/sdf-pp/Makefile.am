@@ -3,13 +3,9 @@ include $(top_srcdir)/Makefile.xt
 
 SUBDIRS      = data
 
-bin_SCRIPTS  = tohtml-sdf sdf2text
-
-# Tests to run
-# TESTS        = program-check
+bin_SCRIPTS  = tohtml-sdf
 
 EXTRA_DIST   = tohtml-sdf.sh.src sdf2text.sh.src
-
 CLEANFILES   = tohtml-sdf
 
 % : %.sh.src Makefile
