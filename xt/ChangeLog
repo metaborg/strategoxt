@@ -1,4 +1,6 @@
 2000-04-13 <mdejonge@cwi.nl>
+        * released version 0.2
+        * increased version number (0.3)
         * fixed unpacking of distributions: tar zxf is gnu tar specific!
 
 2000-04-12    <visser@loempia.cs.uu.nl>
