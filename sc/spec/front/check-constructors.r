@@ -51,13 +51,13 @@ rules
   CheckTuple =
     ?Op("", ts);
     try(where(
-      debug(!"CheckTuple a: ");
-      <length> ts => n; 
-      debug(!"CheckTuple b: ");
-      <not(TupleDeclared)> n);
-      debug(!"CheckTuple c: ");
-      ![OpDecl("", FunType(<copy>(n,Var("a")),Var("a"))) | <TupleDeclarations <+ ![]>] => decs;
-      debug(!"CheckTuple d: ");
+//debug(!"CheckTuple a: ");
+      <length> ts => n
+//; debug(!"CheckTuple b: ")
+      ; <not(TupleDeclared)> n)
+//; debug(!"CheckTuple c: ")
+      ; ![OpDecl("", FunType(<copy>(n,Var("a")),Var("a"))) | <TupleDeclarations <+ ![]>] => decs;
+//; debug(!"CheckTuple d: ")
       rules(
         TupleDeclared : n -> ()
         TupleDeclarations : _ -> decs
