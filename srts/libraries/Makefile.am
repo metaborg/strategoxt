@@ -19,13 +19,3 @@ bootclean :
 liblib.c : 
 	$(STRC)/bin/strc -I $(SSL)/share/ssl -i lib.str -o liblib.rtree -c --library --verbose 2
 
-
-#liblibpic.o : liblib.c
-#	gcc $(INCLUDES) -fPIC -c liblib.c -o liblibpic.o
-#
-#libliblib.so.$(VERSION) : liblibpic.o
-#	gcc -shared -Wl,-soname,libliblib.so.$(VERSION) -o libliblib.so.$(VERSION) liblibpic.o
-#
-#version:
-#	echo $(VERSION)
-
