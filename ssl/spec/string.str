@@ -149,6 +149,28 @@ strategies // for unquoting
   un-single-quote = string-as-chars(un-single-quote-chars)
   un-double-quote = string-as-chars(un-double-quote-chars)
 
+strategies 
+
+  // :: String -> String
+  is-double-quoted =  where(<is-quoted> ('"',  <id>))
+  is-single-quoted =  where(<is-quoted> ('\'', <id>))
+
+  // :: [Char] -> [Char]
+  is-double-quoted-chars = where(<is-quoted-chars> ('"',  <id>))
+  is-single-quoted-chars = where(<is-quoted-chars> ('\'', <id>))
+
+  // :: Char * String -> Char * String
+  is-quoted =
+      (id, explode-string)
+    ; is-quoted-chars
+
+  // :: Char * [Char] -> Char * [Char]
+  is-quoted-chars =
+      where(
+        ?(c, <id>)
+      ; [?c | last;?c]
+      )
+
 strategies
 
   string-to-num =
