@@ -5,7 +5,8 @@ signature
     A : Term
     B : Term
     F : Term * Term -> Term
-
+    g : Term
+    g: a -> Term
 strategies
 
   main = 
@@ -35,8 +36,8 @@ strategies
 	);
     apply-test(!"test2b"
 	, \ [(f,args)] -> [f#(args)] \
-	, ![("f",[])]
-	, !["f"]
+	, ![("g",[])]
+	, ![g]
 	);
     apply-test(!"test2b"
 	, \ [(f,args)] -> [f#(args)] \
