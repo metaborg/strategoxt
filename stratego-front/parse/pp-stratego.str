@@ -7,6 +7,8 @@ strategies
       xtc-io(
         (where(<get-config> "--abstract")
 	 <+ xtc-transform(!"parse-stratego"))
+	; (where(<get-config> "--annotations")
+           <+ xtc-transform(!"annos-to-term"))
         ; xtc-transform(!"ast2text", !["-p", <xtc-find> "Stratego-pretty.pp"])
       )
     )
@@ -14,3 +16,6 @@ strategies
   pp-stratego-options =
     Option("-a" + "--abstract", where(<set-config>("--abstract", ())),
               !"-a | --abstract  source is abstract syntax")
+
+  + Option("--annotations", where(<set-config>("--annotations", ())),
+              !"--annotations    print annotations on abstract syntax")

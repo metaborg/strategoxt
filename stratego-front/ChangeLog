@@ -1,3 +1,8 @@
+2003-07-11  Eelco Visser  <visser@cs.uu.nl>
+
+	* parse/pp-stratego.str: pretty-print annotations on ast with
+	--annotations option.
+
 2003-07-10  Eelco Visser  <visser@cs.uu.nl>
 
 	* Added module Stratego-Amb.sdf for productions that generate

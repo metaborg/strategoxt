@@ -85,7 +85,7 @@
    Id -- KW["id"],
    SVar -- _1,
    
-   Let -- KW["let"] _1 KW["in"] _2,
+   Let -- V[H[KW["let"] V[_1]] H[KW["in"] _2]],
    Let.1:iter-star -- _1,
    Let.1:iter-star.1:alt -- _1 _2,
    
@@ -97,7 +97,7 @@
    Build -- H hs=0[KW["!"] _1],
    
    ScopeDefault -- H hs=0[KW["{"] _1 KW["}"]],
-   Scope -- H hs=0[KW["{"] H[_1 KW[":"] _2] KW["}"]],
+   Scope -- H hs=0[KW["{"] V[H[_1 KW[":"]] _2] KW["}"]],
    Scope.1:iter-star-sep -- H hs=0[_1 KW[","]],
    BA -- H hs=1[H hs=0[KW["<"] _1 KW[">"]] _2],
    AM -- H[_1 KW["=>"] _2],
@@ -108,14 +108,14 @@
    LRule -- H[KW["\\"] _1 KW["\\"]],
    SRule -- H[KW["("]  _1 KW[")"]],
 
-   Seq      -- V[H[KW["("] _1] H[KW[";"]   _2 KW[")"]]],
-   Choice   -- V[H[KW["("] _1] H[KW["+"]   _2 KW[")"]]],
-   LChoice  -- V[H[KW["("] _1] H[KW["<+"]  _2 KW[")"]]],
-   RChoice  -- V[H[KW["("] _1] H[KW["+>"]  _2 KW[")"]]],
-   GChoice  -- V[H[KW["("] _1] H[KW["++"]  _2 KW[")"]]],
-   LGChoice -- V[H[KW["("] _1] H[KW["<++"] _2 KW[")"]]],
-   RGChoice -- V[H[KW["("] _1] H[KW["++>"] _2 KW[")"]]],
-   GuardedLChoice -- V[H[KW["("] _1] H[KW["<"] _2] H[KW["+"] _3 H[KW[")"]]]],
+   Seq      -- H hs=0[KW["("] V[_1 H[KW[";"] _2 ]] KW[")"]],
+   Choice   -- H hs=0[KW["("] V[_1 H[KW["+"]   _2 ]] KW[")"]],
+   LChoice  -- H hs=0[KW["("] V[_1 H[KW["<+"]  _2 ]] KW[")"]],
+   RChoice  -- H hs=0[KW["("] V[_1 H[KW["+>"]  _2 ]] KW[")"]],
+   GChoice  -- H hs=0[KW["("] V[_1 H[KW["++"]  _2 ]] KW[")"]],
+   LGChoice -- H hs=0[KW["("] V[_1 H[KW["<++"] _2 ]] KW[")"]],
+   RGChoice -- H hs=0[KW["("] V[_1 H[KW["++>"] _2 ]] KW[")"]],
+   GuardedLChoice -- V[H hs=0[KW["("] _1] H[KW["<"] _2] H[KW["+"] _3 ] KW[")"]],
 
    Rec -- H[KW["rec"] _1 KW["("] _2 KW[")"]],
    Not -- H hs=0 [KW["not"] KW["("] _1 KW[")"]],
@@ -155,7 +155,7 @@
    DynRuleScope.1:iter-star-sep -- _1 KW[","],
 
    SDefNoArgs -- V is=2[H[ _1 KW["="]] _2 ],
-   SDef -- V is=2[H[ _1 KW["("] _2 KW[")"] KW["="]] _3],
+   SDef -- V is=2[H[ H hs=0[_1 KW["("] H[_2] KW[")"]] KW["="]] _3],
    SDef.2:iter-star-sep -- H hs=0[_1 KW[","]],
 
    DefaultVarDec -- _1,
@@ -165,4 +165,5 @@
    Overlay.2:iter-star-sep -- H hs=0[_1 KW[","]],
 
    Mark -- "@mark@"
+
 ]
