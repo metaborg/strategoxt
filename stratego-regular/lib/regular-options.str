@@ -4,6 +4,16 @@
 module regular-options
 imports logging tool-doc
 
+
+strategies
+  input-to-rtg-nf =
+    (  get-rtg-nf-config
+    <+ get-rtg-config; xtc-rtg-front-end
+    <+ fatal-err(|"No tree grammar specified")
+     )
+   ; ?FILE(<id>)
+			    
+
 /**
  * rtg-nf options
  */

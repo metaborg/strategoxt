@@ -1,5 +1,5 @@
 module format-check
-imports aterm2irtg liblib strategoxt-xtc-tools tool-doc
+imports liblib strategoxt-xtc-tools tool-doc regular-options regular-xtc-tools
 
 /**
  * Main program

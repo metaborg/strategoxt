@@ -2,7 +2,6 @@ include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
 libexec_PROGRAMS = \
-  core-aterm2irtg \
   core-format-check \
   core-format-check-pp-aterm \
   core-format-check-to-xhtml 

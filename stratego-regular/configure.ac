@@ -21,8 +21,6 @@ AC_CONFIG_FILES([
   lib/Makefile
 
   trans/Makefile
-  trans/implode/Makefile
-  trans/asfix/Makefile
   trans/sig/Makefile
   trans/sdf2rtg/Makefile
   trans/interpret/Makefile
@@ -37,7 +35,6 @@ AC_CONFIG_FILES([
 
   tests/sdf2rtg/Makefile
   tests/sig2rtg/Makefile
-  tests/asfix2irtg/Makefile
   tests/format-check/Makefile
 ])
 AC_OUTPUT

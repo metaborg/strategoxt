@@ -1,5 +1,5 @@
 module rtg-util
-imports irtg rtg 
+imports rtg 
 
 strategies
 
@@ -57,37 +57,6 @@ strategies
     )
 
 strategies
-
-  all-irtg(s) =
-      Annotated(s, map(s))
-    + Anno(s, s)
-    + Prod(s, s)
-    + Conc(s, s)
-    + Appl(s, map(s))
-    + List(map(s))
-    + Opt(Some(s))
-    + Opt(None())
-    + String(id)
-    + Int(id)
-    + Nonterm(id)
-    + Term(id)
-
-  all-irtg-tree(s) =
-      Annotated(s, map(s))
-    + Appl(id, map(s))
-    + Conc(s, s)
-    + Prod(id, s)
-    + Anno(id, s)
-    + List(map(s))
-    + Opt(Some(s))
-    + Opt(None())
-    + Int(id)
-    + String(id)
-
-  bottomup-irtg(s) =
-    rec x(all-irtg(x); s)
-
-strategies 
 
   group-by(k, r, build) = 
       ?items

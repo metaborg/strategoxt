@@ -4,7 +4,6 @@ include $(wildcard *.dep)
 pkgdata_DATA= \
   rg-nonterm.rtree \
   rtg.rtree \
-  irtg.rtree \
   sdf-extra.rtree
 
 EXTRA_DIST     = $(wildcard *.str) $(pkgdata_DATA)

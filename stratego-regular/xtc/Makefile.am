@@ -3,7 +3,6 @@ include $(wildcard *.dep)
 
 bin_PROGRAMS=\
   format-check \
-  aterm2irtg \
   parse-rtg \
   pp-rtg \
   sdf2rtg \

@@ -1,7 +1,7 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-SUBDIRS           = . syn sdf2rtg sig2rtg asfix2irtg format-check
+SUBDIRS           = . syn sdf2rtg sig2rtg format-check
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 
 SCFLAGS        = --main main-$*

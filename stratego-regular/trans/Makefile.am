@@ -1,7 +1,7 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-SUBDIRS           = sig implode asfix sdf2rtg interpret
+SUBDIRS           = sig sdf2rtg interpret
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 
 libexec_PROGRAMS= \
