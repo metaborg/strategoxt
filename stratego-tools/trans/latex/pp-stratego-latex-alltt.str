@@ -1,0 +1,16 @@
+module pp-stratego-latex-alltt
+imports options parse-cs-lib
+
+strategies
+
+  io-pp-stratego-latex-alltt =
+    xtc-io-wrap(syntax-option, pp-stratego-latex-alltt)
+
+  pp-stratego-latex-alltt =
+      pcs-input-file
+    ; init-language-binding
+    ; pcs-parse-asfix2me
+    ; xtc-asfix2me-yield
+
+  xtc-asfix2me-yield =
+    xtc-transform(!"unparsePT")

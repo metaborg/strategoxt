@@ -18,7 +18,7 @@
 # 02111-1307, USA.
 
 include $(top_srcdir)/Makefile.xt
-SUBDIRS 	  = src
+SUBDIRS 	  = trans src
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 
 include package.conf
