@@ -841,7 +841,7 @@ ATerm filter_1_0 (ATerm j_141 (ATerm), ATerm t);
 static ATerm h_0 (ATerm t);
 static ATerm p_0 (ATerm t);
 ATerm DeclareConstructorNeeded_0_0 (ATerm t);
-static ATerm t_0 (ATerm t);
+static ATerm u_0 (ATerm t);
 static ATerm q_9 (ATerm b_95, ATerm a_95, ATerm t);
 static ATerm s_9 (ATerm b_73, ATerm c_73, ATerm d_73, ATerm t);
 static ATerm w_0 (ATerm t);
@@ -1009,7 +1009,7 @@ ATerm genzip_4_0 (ATerm j_124 (ATerm), ATerm k_124 (ATerm), ATerm l_124 (ATerm),
 static ATerm e_10 (ATerm t);
 static ATerm f_10 (ATerm t);
 static ATerm g_10 (ATerm t);
-static ATerm y_10 (ATerm d_817, ATerm i_817, ATerm b_83, ATerm t);
+static ATerm y_10 (ATerm v_816, ATerm a_817, ATerm b_83, ATerm t);
 static ATerm i_10 (ATerm t);
 static ATerm k_10 (ATerm t);
 static ATerm o_10 (ATerm t);
@@ -1116,7 +1116,7 @@ static ATerm k_14 (ATerm t);
 static ATerm l_14 (ATerm t);
 ATerm output_option_0_0 (ATerm t);
 static ATerm w_11 (ATerm i_45, ATerm j_45, ATerm h_45, ATerm t);
-ATerm ArgOption_3_0 (ATerm q_0 (ATerm), ATerm r_0 (ATerm), ATerm u_0 (ATerm), ATerm t);
+ATerm ArgOption_3_0 (ATerm q_0 (ATerm), ATerm r_0 (ATerm), ATerm t_0 (ATerm), ATerm t);
 static ATerm m_14 (ATerm t);
 static ATerm n_14 (ATerm t);
 static ATerm o_14 (ATerm t);
@@ -1372,7 +1372,7 @@ ATerm DeclareConstructorNeeded_0_0 (ATerm t)
   }
   return(t);
 }
-static ATerm t_0 (ATerm t)
+static ATerm u_0 (ATerm t)
 {
   ATerm j_17 = t;
   int k_17 = stack_ptr;
@@ -1391,7 +1391,7 @@ static ATerm q_9 (ATerm b_95, ATerm a_95, ATerm t)
 {
   ATerm k_3 = NULL,l_3 = NULL,m_3 = NULL,o_3 = NULL,q_3 = NULL,r_3 = NULL,s_3 = NULL,t_3 = NULL,u_3 = NULL,v_3 = NULL,w_3 = NULL,n_0 = NULL,m_0 = NULL,k_0 = NULL;
   t = a_95;
-  t = topdown_1_0(t_0, t);
+  t = topdown_1_0(u_0, t);
   t = b_95;
   if(match_cons(t, sym_Signature_1))
     {
@@ -6832,10 +6832,10 @@ static ATerm g_10 (ATerm t)
   t = (ATerm) ATinsert(CheckATermList(v_83), u_83);
   return(t);
 }
-static ATerm y_10 (ATerm d_817, ATerm i_817, ATerm b_83, ATerm t)
+static ATerm y_10 (ATerm v_816, ATerm a_817, ATerm b_83, ATerm t)
 {
   ATerm l_83 = NULL,m_83 = NULL,n_83 = NULL,o_83 = NULL;
-  t = SSL_explode_term(i_817);
+  t = SSL_explode_term(a_817);
   if(match_cons(t, sym__2))
     {
       l_83 = ATgetArgument(t, 0);
@@ -6843,7 +6843,7 @@ static ATerm y_10 (ATerm d_817, ATerm i_817, ATerm b_83, ATerm t)
     }
   else
     _fail(t);
-  t = SSL_explode_term(d_817);
+  t = SSL_explode_term(v_816);
   if(match_cons(t, sym__2))
     {
       if((l_83 != ATgetArgument(t, 0)))
@@ -8983,14 +8983,14 @@ static ATerm w_11 (ATerm i_45, ATerm j_45, ATerm h_45, ATerm t)
   t = j_108;
   return(t);
 }
-ATerm ArgOption_3_0 (ATerm q_0 (ATerm), ATerm r_0 (ATerm), ATerm u_0 (ATerm), ATerm t)
+ATerm ArgOption_3_0 (ATerm q_0 (ATerm), ATerm r_0 (ATerm), ATerm t_0 (ATerm), ATerm t)
 {
   ATerm u_108 = NULL,v_108 = NULL,w_108 = NULL,x_108 = NULL;
   if(match_string(t, "register-usage-info"))
     {
       ATerm y_108 = NULL,z_108 = NULL,a_109 = NULL;
       t = term_d_16;
-      t = u_0(t);
+      t = t_0(t);
       y_108 = t;
       t = term_m_45;
       z_108 = t;

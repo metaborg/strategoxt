@@ -808,7 +808,7 @@ ATerm DefinitionExists_0_0 (ATerm t);
 ATerm sboundin_3_0 (ATerm k_114 (ATerm), ATerm l_114 (ATerm), ATerm m_114 (ATerm), ATerm t);
 ATerm dynrule_sargs_1_0 (ATerm o_114 (ATerm), ATerm t);
 static ATerm e_0 (ATerm t);
-static ATerm t_0 (ATerm t);
+static ATerm u_0 (ATerm t);
 ATerm Bind7_0_0 (ATerm t);
 static ATerm x_0 (ATerm t);
 static ATerm q_9 (ATerm x_39, ATerm w_39, ATerm t);
@@ -1093,7 +1093,7 @@ static ATerm a_14 (ATerm t);
 static ATerm b_14 (ATerm t);
 ATerm output_option_0_0 (ATerm t);
 static ATerm o_11 (ATerm w_72, ATerm x_72, ATerm v_72, ATerm t);
-ATerm ArgOption_3_0 (ATerm q_0 (ATerm), ATerm r_0 (ATerm), ATerm u_0 (ATerm), ATerm t);
+ATerm ArgOption_3_0 (ATerm q_0 (ATerm), ATerm r_0 (ATerm), ATerm t_0 (ATerm), ATerm t);
 static ATerm e_14 (ATerm t);
 static ATerm f_14 (ATerm t);
 static ATerm h_14 (ATerm t);
@@ -1660,7 +1660,7 @@ static ATerm e_0 (ATerm t)
     }
   return(t);
 }
-static ATerm t_0 (ATerm t)
+static ATerm u_0 (ATerm t)
 {
   ATerm t_13 = NULL;
   ATerm k_18 = t;
@@ -1730,7 +1730,7 @@ ATerm Bind7_0_0 (ATerm t)
       else
         _fail(t);
       t = v_12;
-      t = map_1_0(t_0, t);
+      t = map_1_0(u_0, t);
     }
   return(t);
 }
@@ -8819,14 +8819,14 @@ static ATerm o_11 (ATerm w_72, ATerm x_72, ATerm v_72, ATerm t)
   t = g_103;
   return(t);
 }
-ATerm ArgOption_3_0 (ATerm q_0 (ATerm), ATerm r_0 (ATerm), ATerm u_0 (ATerm), ATerm t)
+ATerm ArgOption_3_0 (ATerm q_0 (ATerm), ATerm r_0 (ATerm), ATerm t_0 (ATerm), ATerm t)
 {
   ATerm r_103 = NULL,s_103 = NULL,t_103 = NULL,u_103 = NULL;
   if(match_string(t, "register-usage-info"))
     {
       ATerm v_103 = NULL,w_103 = NULL,x_103 = NULL;
       t = term_a_30;
-      t = u_0(t);
+      t = t_0(t);
       v_103 = t;
       t = term_w_43;
       w_103 = t;

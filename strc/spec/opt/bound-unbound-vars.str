@@ -11,7 +11,7 @@ strategies
     ; if-verbose4(say(!"marked bound-unbound-vars"))
 
 
-  /** 
+  /**
    * Annotate variables with one of the annotations "bound",
    * "unbound", or "(un)bound".
    * 
@@ -159,8 +159,8 @@ strategies
   mark-srule :
     SRule(Rule(t1, t2, s)) -> SRule(Rule(t1', t2', s'))
     where {| MarkVar : 
-	     <tvars> t1; map(DeclareUnbound)
-	     ; <mark-match-vars> t1 => t1'
+	     // <tvars> t1; map(DeclareUnbound)
+	     <mark-match-vars> t1 => t1'
              ; <mark-buv> s => s'
 	     ; <mark-build-vars> t2 => t2'
 	  |}

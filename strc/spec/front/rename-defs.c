@@ -443,7 +443,7 @@ ATerm topdown_1_0 (ATerm x_98 (ATerm), ATerm t);
 static ATerm c_6 (ATerm r_130 (ATerm), ATerm u_65, ATerm s_65, ATerm t);
 static ATerm e_6 (ATerm w_58, ATerm x_58, ATerm t);
 ATerm HoArg_0_0 (ATerm t);
-ATerm Cify_1_0 (ATerm s_0 (ATerm), ATerm t);
+ATerm Cify_1_0 (ATerm t_0 (ATerm), ATerm t);
 ATerm escape_1_0 (ATerm s_121 (ATerm (ATerm), ATerm), ATerm t);
 ATerm foldr_3_0 (ATerm p_116 (ATerm), ATerm q_116 (ATerm), ATerm r_116 (ATerm), ATerm t);
 static ATerm p_1 (ATerm t);
@@ -1075,7 +1075,7 @@ ATerm HoArg_0_0 (ATerm t)
   }
   return(t);
 }
-ATerm Cify_1_0 (ATerm s_0 (ATerm), ATerm t)
+ATerm Cify_1_0 (ATerm t_0 (ATerm), ATerm t)
 {
   ATerm k_8 = NULL,l_8 = NULL;
   if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
@@ -1090,7 +1090,7 @@ ATerm Cify_1_0 (ATerm s_0 (ATerm), ATerm t)
     {
       ATerm n_8 = NULL;
       t = l_8;
-      t = s_0(t);
+      t = t_0(t);
       n_8 = t;
       t = (ATerm) ATinsert(ATinsert(CheckATermList(n_8), term_w_8), term_w_8);
     }
@@ -1100,7 +1100,7 @@ ATerm Cify_1_0 (ATerm s_0 (ATerm), ATerm t)
         {
           ATerm x_8 = NULL;
           t = l_8;
-          t = s_0(t);
+          t = t_0(t);
           x_8 = t;
           t = (ATerm) ATinsert(CheckATermList(x_8), term_w_8);
         }
@@ -1110,7 +1110,7 @@ ATerm Cify_1_0 (ATerm s_0 (ATerm), ATerm t)
           if(((ATgetType(t) != AT_INT) || (ATgetInt((ATermInt) t) != 39)))
             _fail(t);
           t = l_8;
-          t = s_0(t);
+          t = t_0(t);
           z_8 = t;
           t = (ATerm) ATinsert(ATinsert(ATinsert(CheckATermList(z_8), term_w_8), term_y_8), term_w_8);
         }
@@ -1143,15 +1143,15 @@ ATerm escape_1_0 (ATerm s_121 (ATerm (ATerm), ATerm), ATerm t)
                 a_10 = ATgetFirst((ATermList) t);
                 c_10 = (ATerm) ATgetNext((ATermList) t);
                 {
-                  ATerm j_10 = NULL,o_10 = NULL,t_0 = NULL;
+                  ATerm j_10 = NULL,o_10 = NULL,s_0 = NULL;
                   t = SSLgetAnnotations(d_10);
                   j_10 = t;
                   t = c_10;
                   t = e_10(t);
                   o_10 = t;
                   t = (ATerm) ATinsert(CheckATermList(o_10), a_10);
-                  t_0 = t;
-                  t = SSLsetAnnotations(t_0, j_10);
+                  s_0 = t;
+                  t = SSLsetAnnotations(s_0, j_10);
                 }
               }
             else
