@@ -240,7 +240,7 @@ strategies
       )
 
     ; apply-test(!"hashtable-intersect"
-      , hashtable-intersect(|tbl2)
+      , hashtable-intersect-wempty(|tbl2, [])
       , !tbl1
       , !tbl1
       )

@@ -126,15 +126,16 @@ strategies
    * Changes tbl1; fails if no changes are made
    * Assumes that both hashtables contains lists as values, and intersects
    * the two listvalues for each key.
+   * Places a dummy value if key does not exist in one of the tables.
    */
-  hashtable-intersect(|tbl2) = ?tbl1;
+  hashtable-intersect-wempty(|tbl2, emptyElt) = ?tbl1;
     where(
 
       hashtable-keys
       ; filter({key, val1, val2: 
           ?key
           ; <hashtable-get(|key)> tbl1 => val1
-          ; <isect>(val1, <hashtable-get(|key) <+ ![]> tbl2) => val2
+          ; <isect>(val1, <hashtable-get(|key) <+ !emptyElt> tbl2) => val2
           ; not(?val1)
           ; <hashtable-put(|key, val2)> tbl1
         }) => changes1
@@ -143,11 +144,33 @@ strategies
       ; filter({key, val1, val2: 
           ?key
           ; not(<hashtable-get(|key)>tbl1)
-          ; <hashtable-put(|key, [])> tbl1
+          ; <hashtable-put(|key, emptyElt)> tbl1
         }) => changes2
 
       ; (<not([])> changes1 <+ <not([])> changes2)
 
+    )
+
+  /**
+   * Intersect hashtables
+   *
+   * Changes tbl1; fails if no changes are made
+   * Assumes that both hashtables contains lists as values, and intersects
+   * the two listvalues for each key.
+   * This is a 'pure' intersection: only keys that appear in both tables
+   * remain in the input table, rest is removed.
+   */
+  hashtable-intersect(|tbl2) = ?tbl1;
+    where(
+      hashtable-keys
+      ; filter({key, val1, val2: 
+          ?key
+          ; <hashtable-get(|key)> tbl1 => val1
+          ; (<isect>(val1, <hashtable-get(|key)> tbl2) => val2
+            < not(?val1); <hashtable-put(|key, val2)> tbl1
+            + <hashtable-remove(|key)> tbl1)
+        }) => changes
+      ; <not([])> changes
     )
 
   /**
