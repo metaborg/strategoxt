@@ -2,17 +2,23 @@ module Stratego-Sdf2
 imports Sdf2-Syntax StrategoRenamed
 
 %% The definition of Sdf2 in Stratego tries to stay as close to the ASF+SDF 
-%% specification of SDF2 in "Syntax Definition for Language Prototypig" by 
+%% specification of SDF2 in "Syntax Definition for Language Prototyping" by 
 %% Eelco Visser.
 
 exports
   context-free syntax
 
-        "|[" Section  "]|"   -> StrategoTerm {cons("ToTerm")}
-    "s" "|[" Section  "]|"   -> StrategoTerm {cons("ToTerm")}
+        "|[" SDF "]|" -> StrategoTerm {cons("ToTerm")}
+    "d" "|[" SDF "]|" -> StrategoTerm {cons("ToTerm")}
 
-        "|[" Grammar  "]|"   -> StrategoTerm {cons("ToTerm")}
-    "G" "|[" Grammar  "]|"   -> StrategoTerm {cons("ToTerm")}
+        "|[" Module "]|" -> StrategoTerm {cons("ToTerm")}
+    "m" "|[" Module "]|" -> StrategoTerm {cons("ToTerm")}
+
+        "|[" Section  "]|" -> StrategoTerm {cons("ToTerm")}
+    "s" "|[" Section  "]|" -> StrategoTerm {cons("ToTerm")}
+
+        "|[" Grammar  "]|" -> StrategoTerm {cons("ToTerm")}
+    "G" "|[" Grammar  "]|" -> StrategoTerm {cons("ToTerm")}
 
         "|[" Attributes "]|" -> StrategoTerm {cons("ToTerm")}
     "$" "|[" Attributes "]|" -> StrategoTerm {cons("ToTerm")}
@@ -74,8 +80,8 @@ exports
 
   variables %% section 9.3.1
 
-    "Mid" [0-9\']*     -> ModuleId
-    "M"   [0-9\']* "*" -> ModuleName
+    "Mid" [0-9\']* -> ModuleId
+    "M"   [0-9\']* -> ModuleName
     
     "s" [0-9\']*     -> Section
     "s" [0-9\']* "*" -> Section*
