@@ -77,8 +77,8 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 %.s7.opt1 : %.s7 ../opt/simplify1$(EXE)
 	../opt/simplify1 -i $< -o $@ -b
 
-%.s7.opt2 : %.s7.opt1 ../match/define-congruences$(EXE)
-	../match/define-congruences -i $< -o $@ -b
+%.s7.opt2 : %.s7.opt1 ../opt/define-congruences$(EXE)
+	../opt/define-congruences -i $< -o $@ -b
 
 %.s7.opt3 : %.s7.opt2 ../opt/const-prop$(EXE)
 	../opt/const-prop -i $< -o $@ -b
