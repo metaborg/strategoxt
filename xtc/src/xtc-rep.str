@@ -60,7 +60,7 @@ strategies
     if-verbose1(say(!"  Saving repository "))
     ; <get-config> "-r"
     ; ( can-write-repository
-      < <WriteToTextFile> (<id>, <table-getlist> XTC)
+      < <WriteToBinaryFile> (<id>, <table-getlist> XTC)
       + debug(!"** WARNING: No write permission for repository: "); fail)
 
   can-write-repository =

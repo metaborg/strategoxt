@@ -1,3 +1,8 @@
+2003-08-11  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/xtc-rep.str: Save repository in binary file to speed up
+	reading repository.
+
 2003-02-05  Martin Bravenboer <martin@mbravenboer.org>
 
   * tools/stratego-xt-xtc-tools.str: Added xtc-stratego-ensugar
