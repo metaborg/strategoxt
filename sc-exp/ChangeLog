@@ -1,5 +1,9 @@
 2003-07-18  Eelco Visser  <visser@cs.uu.nl>
 
+	* spec/front/needed-constructors.str: After extracting needed
+	definitions keep only constructor declarations for constructors
+	actually used.	
+
 	* spec/opt/const-prop.str: Constant propagation for term variables
 	replaces variables with terms to which they are matched. Should
 	be extended with dead variable elimination.
