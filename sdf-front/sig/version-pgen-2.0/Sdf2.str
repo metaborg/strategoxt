@@ -3,137 +3,242 @@ module Sdf2
 imports list-cons option
 signature
   constructors
-                              : String -> ModuleId
-                              : String -> NumChar
-                              : String -> ShortChar
-                              : String -> QLiteral
-                              : String -> UQLiteral
-                              : String -> NatCon
-                              : String -> Sort
-    renamings                 : List(Renaming) -> Renamings
-    symbol                    : Symbol * Symbol -> Renaming
-    production                : Production * Production -> Renaming
-                              : List(Module) -> Definition
-    'module                   : ModuleName * List(ImpSection) * Sections -> Module
-    exports                   : Grammar -> Section
-    hiddens                   : Grammar -> Section
-                              : List(Section) -> Sections
-    unparameterized           : ModuleId -> ModuleName
-    parameterized             : ModuleId * Symbols -> ModuleName
-    imports                   : Imports -> ImpSection
-                              : List(Import) -> Imports
-    'module                   : ModuleName -> Import
-    renamed-module            : ModuleName * Renamings -> Import
-    left                      : Associativity
-    right                     : Associativity
-    non-assoc                 : Associativity
-    assoc                     : Associativity
-    simple-group              : Production -> Group
-    prods-group               : Productions -> Group
-    assoc-group               : Associativity * Productions -> Group
-    chain                     : List(Group) -> Priority
-    assoc                     : Group * Associativity * Group -> Priority
-                              : List(Priority) -> Priorities
-    numeric                   : NumChar -> Character
-    short                     : ShortChar -> Character
-    top                       : Character
-    eof                       : Character
-    bot                       : Character
-    label_start               : Character
-                              : Character -> CharRange
-    range                     : Character * Character -> CharRange
-                              : CharRange -> CharRanges
-    conc                      : CharRanges * CharRanges -> CharRanges
-    absent                    : OptCharRanges
-    present                   : CharRanges -> OptCharRanges
-    simple-charclass          : OptCharRanges -> CharClass
-    comp                      : CharClass -> CharClass
-    diff                      : CharClass * CharClass -> CharClass
-    isect                     : CharClass * CharClass -> CharClass
-    union                     : CharClass * CharClass -> CharClass
-    char-class                : CharClass -> Lookahead
-    seq                       : CharClass * Lookaheads -> Lookahead
-    single                    : Lookahead -> Lookaheads
-    alt                       : Lookaheads * Lookaheads -> Lookaheads
-    list                      : List(Lookahead) -> Lookaheads
-    follow                    : Symbols * Lookaheads -> Restriction
-                              : List(Restriction) -> Restrictions
-    qlit                      : QLiteral -> Literal
-    uqlit                     : UQLiteral -> Literal
-    natural                   : NatCon -> IntCon
-    positive                  : NatCon -> IntCon
-    negative                  : NatCon -> IntCon
-    present                   : IntCon -> OptExp
-    absent                    : OptExp
-    real-con                  : IntCon * NatCon * OptExp -> RealCon
-    not-empty                 : List(ATerm) -> ATermList
-    int                       : IntCon -> ACon
-    real                      : RealCon -> ACon
-                              : Literal -> AFun
-    annotation                : List(ATerm) -> Ann
-    constant                  : ACon -> ATerm
-    list                      : ATermList -> ATerm
-    fun                       : AFun -> ATerm
-    appl                      : AFun * List(ATerm) -> ATerm
-    annotated-constant        : ACon * Ann -> ATerm
-    annotated-list            : ATermList * Ann -> ATerm
-    annotated-fun             : AFun * Ann -> ATerm
-    annotated-appl            : AFun * List(ATerm) * Ann -> ATerm
-                              : List(Symbol) -> Symbols
-    'id                       : ModuleName -> Attribute
-    bracket                   : Attribute
-    assoc                     : Associativity -> Attribute
-    reject                    : Attribute
-    prefer                    : Attribute
-    avoid                     : Attribute
-    term                      : ATerm -> Attribute
-    attrs                     : List(Attribute) -> Attributes
-    no-attrs                  : Attributes
-    prod-fun                  : Literal * List(Symbol) * Symbol * Attributes -> Production
-    prod                      : Symbols * Symbol * Attributes -> Production
-                              : List(Production) -> Productions
-    alias                     : Symbol * Symbol -> Alias
-                              : List(Alias) -> Aliases
-    cf                        : Symbol -> Symbol
-    lex                       : Symbol -> Symbol
-    varsym                    : Symbol -> Symbol
-    layout                    : Symbol
-    empty                     : Symbol
-    seq                       : Symbol * List(Symbol) -> Symbol
-    opt                       : Symbol -> Symbol
-    iter                      : Symbol -> Symbol
-    iter-star                 : Symbol -> Symbol
-    iter-sep                  : Symbol * Symbol -> Symbol
-    iter-star-sep             : Symbol * Symbol -> Symbol
-    iter-n                    : Symbol * NatCon -> Symbol
-    iter-sep-n                : Symbol * Symbol * NatCon -> Symbol
-    tuple                     : Symbol * List(Symbol) -> Symbol
-    pair                      : Symbol * Symbol -> Symbol
-    func                      : Symbols * Symbol -> Symbol
-    alt                       : Symbol * Symbol -> Symbol
-    strategy                  : Symbol * Symbol -> Symbol
-    lifting                   : Symbol -> Symbol
-    sort                      : Sort -> Symbol
-    parameterized-sort        : Sort * List(Symbol) -> Symbol
-    lit                       : Literal -> Symbol
-    label                     : Literal * Symbol -> Symbol
-    char-class                : CharClass -> Symbol
-    start                     : Symbol
-    file-start                : Symbol
-    lexical-syntax            : Productions -> Grammar
-    context-free-syntax       : Productions -> Grammar
-    variables                 : Productions -> Grammar
-    lexical-variables         : Productions -> Grammar
-    imp-section               : ImpSection -> Grammar
-    priorities                : Priorities -> Grammar
-    'sorts                    : Symbols -> Grammar
-    restrictions              : Restrictions -> Grammar
-    empty-grammar             : Grammar
-    conc-grammars             : Grammar * Grammar -> Grammar
-    syntax                    : Productions -> Grammar
-    aliases                   : Aliases -> Grammar
-    lexical-priorities        : Priorities -> Grammar
-    context-free-priorities   : Priorities -> Grammar
-    lexical-restrictions      : Restrictions -> Grammar
-    context-free-restrictions : Restrictions -> Grammar
+                              : a_0 -> b_0
+    Nil                       : b_0
+    Conc                      : b_0 * b_0 -> b_0
+    Conc                      : b_0 * a_0 -> a_0
+    Conc                      : a_0 * b_0 -> a_0
+    Conc                      : a_0 * a_0 -> a_0
+    Cons                      : Alias * b_0 -> a_0
+                              : c_0 -> d_0
+    Nil                       : d_0
+    Conc                      : d_0 * d_0 -> d_0
+    Conc                      : d_0 * c_0 -> c_0
+    Conc                      : c_0 * d_0 -> c_0
+    Conc                      : c_0 * c_0 -> c_0
+    Cons                      : Restriction * d_0 -> c_0
+                              : e_0 -> f_0
+    Nil                       : f_0
+    Conc                      : f_0 * f_0 -> f_0
+    Conc                      : f_0 * e_0 -> e_0
+    Conc                      : e_0 * f_0 -> e_0
+    Conc                      : e_0 * e_0 -> e_0
+    Cons                      : Lookahead * f_0 -> e_0
+                              : g_0 -> h_0
+    Nil                       : h_0
+    Conc                      : h_0 * h_0 -> h_0
+    Conc                      : h_0 * g_0 -> g_0
+    Conc                      : g_0 * h_0 -> g_0
+    Conc                      : g_0 * g_0 -> g_0
+    Cons                      : Symbol * h_0 -> g_0
+                              : i_0 -> j_0
+    Nil                       : j_0
+    Conc                      : j_0 * j_0 -> j_0
+    Conc                      : j_0 * i_0 -> i_0
+    Conc                      : i_0 * j_0 -> i_0
+    Conc                      : i_0 * i_0 -> i_0
+    Cons                      : Priority * j_0 -> i_0
+                              : k_0 -> l_0
+    Nil                       : l_0
+    Conc                      : l_0 * l_0 -> l_0
+    Conc                      : l_0 * k_0 -> k_0
+    Conc                      : k_0 * l_0 -> k_0
+    Conc                      : k_0 * k_0 -> k_0
+    Cons                      : Group * l_0 -> k_0
+                              : m_0 -> n_0
+    Nil                       : n_0
+    Conc                      : n_0 * n_0 -> n_0
+    Conc                      : n_0 * m_0 -> m_0
+    Conc                      : m_0 * n_0 -> m_0
+    Conc                      : m_0 * m_0 -> m_0
+    Cons                      : Import * n_0 -> m_0
+                              : o_0 -> p_0
+    Nil                       : p_0
+    Conc                      : p_0 * p_0 -> p_0
+    Conc                      : p_0 * o_0 -> o_0
+    Conc                      : o_0 * p_0 -> o_0
+    Conc                      : o_0 * o_0 -> o_0
+    Cons                      : Section * p_0 -> o_0
+                              : q_0 -> r_0
+    Nil                       : r_0
+    Conc                      : r_0 * r_0 -> r_0
+    Conc                      : r_0 * q_0 -> q_0
+    Conc                      : q_0 * r_0 -> q_0
+    Conc                      : q_0 * q_0 -> q_0
+    Cons                      : ImpSection * r_0 -> q_0
+                              : s_0 -> t_0
+    Nil                       : t_0
+    Conc                      : t_0 * t_0 -> t_0
+    Conc                      : t_0 * s_0 -> s_0
+    Conc                      : s_0 * t_0 -> s_0
+    Conc                      : s_0 * s_0 -> s_0
+    Cons                      : Module * t_0 -> s_0
+                              : u_0 -> v_0
+    Nil                       : v_0
+    Conc                      : v_0 * v_0 -> v_0
+    Conc                      : v_0 * u_0 -> u_0
+    Conc                      : u_0 * v_0 -> u_0
+    Conc                      : u_0 * u_0 -> u_0
+    Cons                      : Renaming * v_0 -> u_0
+                              : w_0 -> x_0
+    Nil                       : x_0
+    Conc                      : x_0 * x_0 -> x_0
+    Conc                      : x_0 * w_0 -> w_0
+    Conc                      : w_0 * x_0 -> w_0
+    Conc                      : w_0 * w_0 -> w_0
+    Cons                      : Production * x_0 -> w_0
+                              : y_0 -> z_0
+    Nil                       : z_0
+    Conc                      : z_0 * z_0 -> z_0
+    Conc                      : z_0 * y_0 -> y_0
+    Conc                      : y_0 * z_0 -> y_0
+    Conc                      : y_0 * y_0 -> y_0
+    Cons                      : Attribute * z_0 -> y_0
+                              : a_1 -> b_1
+    Nil                       : b_1
+    Conc                      : b_1 * b_1 -> b_1
+    Conc                      : b_1 * a_1 -> a_1
+    Conc                      : a_1 * b_1 -> a_1
+    Conc                      : a_1 * a_1 -> a_1
+    Cons                      : Symbol * b_1 -> a_1
+                              : c_1 -> d_1
+    Nil                       : d_1
+    Conc                      : d_1 * d_1 -> d_1
+    Conc                      : d_1 * c_1 -> c_1
+    Conc                      : c_1 * d_1 -> c_1
+    Conc                      : c_1 * c_1 -> c_1
+    Cons                      : ATerm * d_1 -> c_1
     definition                : Definition -> SDF
+                              : b_0 -> Aliases
+    alias                     : Symbol * Symbol -> Alias
+                              : d_0 -> Restrictions
+    follow                    : Symbols * Lookaheads -> Restriction
+    list                      : f_0 -> Lookaheads
+    alt                       : Lookaheads * Lookaheads -> Lookaheads
+    single                    : Lookahead -> Lookaheads
+    seq                       : CharClass * Lookaheads -> Lookahead
+    char-class                : CharClass -> Lookahead
+                              : String -> Sort
+    union                     : CharClass * CharClass -> CharClass
+    isect                     : CharClass * CharClass -> CharClass
+    diff                      : CharClass * CharClass -> CharClass
+    comp                      : CharClass -> CharClass
+    simple-charclass          : OptCharRanges -> CharClass
+    present                   : CharRanges -> OptCharRanges
+    absent                    : OptCharRanges
+    conc                      : CharRanges * CharRanges -> CharRanges
+                              : CharRange -> CharRanges
+    range                     : Character * Character -> CharRange
+                              : Character -> CharRange
+    label_start               : Character
+    bot                       : Character
+    eof                       : Character
+    top                       : Character
+    short                     : ShortChar -> Character
+    numeric                   : NumChar -> Character
+                              : String -> ShortChar
+                              : String -> NumChar
+                              : j_0 -> Priorities
+    assoc                     : Group * Associativity * Group -> Priority
+    chain                     : k_0 -> Priority
+    assoc-group               : Associativity * Productions -> Group
+    prods-group               : Productions -> Group
+    simple-group              : Production -> Group
+    assoc                     : Associativity
+    non-assoc                 : Associativity
+    right                     : Associativity
+    left                      : Associativity
+    renamed-module            : ModuleName * Renamings -> Import
+    'module                   : ModuleName -> Import
+                              : n_0 -> Imports
+    imports                   : Imports -> ImpSection
+    parameterized             : ModuleId * Symbols -> ModuleName
+    unparameterized           : ModuleId -> ModuleName
+                              : p_0 -> Sections
+    hiddens                   : Grammar -> Section
+    exports                   : Grammar -> Section
+    'module                   : ModuleName * r_0 * Sections -> Module
+                              : t_0 -> Definition
+                              : String -> ModuleId
+    production                : Production * Production -> Renaming
+    symbol                    : Symbol * Symbol -> Renaming
+    renamings                 : v_0 -> Renamings
+    file-start                : Symbol
+    start                     : Symbol
+    label                     : Literal * Symbol -> Symbol
+    lit                       : Literal -> Symbol
+    parameterized-sort        : Sort * g_0 -> Symbol
+    sort                      : Sort -> Symbol
+    char-class                : CharClass -> Symbol
+    lifting                   : Symbol -> Symbol
+    strategy                  : Symbol * Symbol -> Symbol
+    alt                       : Symbol * Symbol -> Symbol
+    func                      : Symbols * Symbol -> Symbol
+    pair                      : Symbol * Symbol -> Symbol
+    tuple                     : Symbol * g_0 -> Symbol
+    iter-sep-n                : Symbol * Symbol * NatCon -> Symbol
+    iter-n                    : Symbol * NatCon -> Symbol
+    iter-star-sep             : Symbol * Symbol -> Symbol
+    iter-sep                  : Symbol * Symbol -> Symbol
+    iter-star                 : Symbol -> Symbol
+    iter                      : Symbol -> Symbol
+    opt                       : Symbol -> Symbol
+    seq                       : Symbol * a_1 -> Symbol
+    empty                     : Symbol
+    layout                    : Symbol
+    varsym                    : Symbol -> Symbol
+    lex                       : Symbol -> Symbol
+    cf                        : Symbol -> Symbol
+                              : x_0 -> Productions
+    prod-fun                  : Literal * h_0 * Symbol * Attributes -> Production
+    prod                      : Symbols * Symbol * Attributes -> Production
+    no-attrs                  : Attributes
+    attrs                     : z_0 -> Attributes
+    avoid                     : Attribute
+    prefer                    : Attribute
+    reject                    : Attribute
+    assoc                     : Associativity -> Attribute
+    bracket                   : Attribute
+    'id                       : ModuleName -> Attribute
+    term                      : ATerm -> Attribute
+    context-free-restrictions : Restrictions -> Grammar
+    lexical-restrictions      : Restrictions -> Grammar
+    context-free-priorities   : Priorities -> Grammar
+    lexical-priorities        : Priorities -> Grammar
+    aliases                   : Aliases -> Grammar
+    restrictions              : Restrictions -> Grammar
+    'sorts                    : Symbols -> Grammar
+    priorities                : Priorities -> Grammar
+    imp-section               : ImpSection -> Grammar
+    lexical-variables         : Productions -> Grammar
+    variables                 : Productions -> Grammar
+    context-free-syntax       : Productions -> Grammar
+    lexical-syntax            : Productions -> Grammar
+    syntax                    : Productions -> Grammar
+    conc-grammars             : Grammar * Grammar -> Grammar
+    empty-grammar             : Grammar
+                              : b_1 -> Symbols
+    annotation                : c_1 -> Ann
+    annotated-appl            : AFun * c_1 * Ann -> ATerm
+    annotated-fun             : AFun * Ann -> ATerm
+    annotated-list            : ATermList * Ann -> ATerm
+    annotated-constant        : ACon * Ann -> ATerm
+    appl                      : AFun * c_1 -> ATerm
+    fun                       : AFun -> ATerm
+    list                      : ATermList -> ATerm
+    constant                  : ACon -> ATerm
+                              : Literal -> AFun
+    real                      : RealCon -> ACon
+    int                       : IntCon -> ACon
+    not-empty                 : d_1 -> ATermList
+    real-con                  : IntCon * NatCon * OptExp -> RealCon
+    absent                    : OptExp
+    present                   : IntCon -> OptExp
+    negative                  : NatCon -> IntCon
+    positive                  : NatCon -> IntCon
+    natural                   : NatCon -> IntCon
+                              : String -> NatCon
+    uqlit                     : UQLiteral -> Literal
+    qlit                      : QLiteral -> Literal
+                              : String -> UQLiteral
+                              : String -> QLiteral
