@@ -1,16 +1,11 @@
 include $(top_srcdir)/Makefile.xt
-include ${srcdir}/../templates/make_rules
+include $(wildcard *.dep)
 
-SUBDIRS      = data
+bin_PROGRAMS   = unpack-sdf
 
-EXTRA_DIST = unpack.src unpack-sdf.src
+SCFLAGS        = --main io-$*
+STRINCLUDES    = -I $(XTC)/share/xtc
 
-bin_SCRIPTS = unpack unpack-sdf
-
-CLEANFILES = $(bin_SCRIPTS)
-
-% : %.src
-	sed 's@__PERL__@$(PERL)@g' < $< > $@ && \
-	chmod +x $@
-
-
+EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) $(wildcard *.rtree) 
+CLEANFILES     = $(wildcard *.dep)
+BOOTCLEANFILES = $(wildcard *.c) $(wildcard *.rtree) 
