@@ -18,11 +18,13 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/06/06 09:48:34 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2001/08/17 10:10:53 jvisser Exp $
 
-EXTRA_DIST   = test1.pico.asfix test1.pico.norm.af.correct
-
-
-
+EXTRA_DIST   =\
+	test1.pico.asfix\
+	test1.pico.norm.af.correct\
+	pico.af\
+	pico.minimized.af.correct\
+	test1.pico.denorm.af.correct
 
 
