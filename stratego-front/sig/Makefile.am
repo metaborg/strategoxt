@@ -9,7 +9,7 @@ pkgdata_DATA 	= Stratego.rtree				   \
 		  Stratego-Signatures.rtree Stratego-Strategies.rtree
 
 CLEANFILES	= $(wildcard *.atree)
-BOOTCLEANFILES	= $(wildcard *.str) $(wildcard *.rtree)
+BOOTCLEANFILES	= $(wildcard *.str) $(wildcard *.rtree) Stratego.def
 
 Stratego.def: 
 	rm -f Stratego.def
