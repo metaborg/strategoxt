@@ -1,4 +1,12 @@
-2003-05-13  Martin Bravenboer <martin@mbravenboer.org>
+2003-12-05  Martin Bravenboer <martin@cs.uu.nl>
+
+	* configure.in: search for LaTeX if the location of the executable
+	program is not passed as an argument to configure.
+
+	* src/boxenv/Makefile.am: using the latex variable, which now
+	points directly to the executable program.
+
+2003-05-13  Martin Bravenboer <martin@cs.uu.nl>
 
    * Using AutoXT
    * Included boxenv.sty in distributions

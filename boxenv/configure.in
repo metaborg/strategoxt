@@ -4,11 +4,15 @@ AM_INIT_AUTOMAKE
 USE_XT_PACKAGES
 
 AC_ARG_WITH(latex, 
-  AC_HELP_STRING([--with-latex=DIR], [use LaTeX distribution at DIR @<:@/usr@:>@]),
-  LATEX="$withval", 
-  LATEX="/usr"
+  AC_HELP_STRING([--with-latex=FILE], [use LaTeX at FILE @<:@search@:>@]),
+  latex="$withval",
+  latex=""
 )
-AC_SUBST(LATEX)
+
+if test -z "$latex"; then
+  AC_PATH_PROG([latex],[latex])
+fi
+AC_SUBST(latex)
 
 AC_PROG_CC
 AC_PROG_INSTALL

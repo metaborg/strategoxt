@@ -56,9 +56,9 @@ AC_ARG_WITH(pgen,
 AC_SUBST(PGEN)
 
 AC_ARG_WITH(latex, 
-  AC_HELP_STRING([--with-latex=DIR], [use LaTeX distribution at DIR @<:@/usr@:>@]),
-  LATEX="$withval", 
-  LATEX="/usr"
+  AC_HELP_STRING([--with-latex=DIR], [use LaTeX distribution at DIR @<:@search@:>@]),
+  LATEX="$withval/bin/latex", 
+  LATEX=""
 )
 AC_SUBST(LATEX)
 

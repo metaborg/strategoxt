@@ -27,5 +27,5 @@ CLEANFILES     = boxenv.log
 BOOTCLEANFILES = boxenv.sty
 
 boxenv.sty: $(SRCS)
-	TEXINPUTS=$$TEXINPUTS:$(srcdir) $(LATEX)/bin/latex boxenv.ins > /dev/null
+	TEXINPUTS=$$TEXINPUTS:$(srcdir) $(latex) boxenv.ins > /dev/null
 
