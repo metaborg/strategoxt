@@ -13,7 +13,7 @@ BOOTCLEANFILES 	 = $(wildcard *.c)
 EXTRA_DIST       = $(wildcard *.str) $(wildcard *.meta)
 
 STRINCLUDES    	 = -I $(top_srcdir)/src/lib \
-                   -I $(ASFIX_TOOLS)/share/asfix-tools \
+                   -I $(SDF_FRONT)/share/sdf-front \
                    -I $(XTC)/share/xtc
 SCFLAGS          = --main $*
 
