@@ -1,3 +1,6 @@
+2001-12-21 Merijn de Jonge <mdejonge@cwi.nl> 
+   * configure.in.src: quoted ${prefix}
+
 2001-11-02 Merijn de Jonge <mdejonge@cwi.nl> 
    * gpp.Makefile: use $(pkgdatadir) to locate pp-tables.tbl
 
