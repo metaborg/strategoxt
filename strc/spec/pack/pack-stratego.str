@@ -39,6 +39,11 @@ strategies
 	where(<set-config> ("--imports", ())); !(),
 	!"--imports            Produce a list of imported modules only")
 
+    + Option("--slack",
+	where(<set-config> ("--slack", ())); !(),
+	!"--slack              Continue when module is not found")
+
+
   create-dep-file :
     files -> FILE(depfile)
     where <get-config> "-o" => outfile
@@ -71,8 +76,9 @@ strategies
     ; (fetch-elem(\ dir
 	 -> <fetch-elem(!(<id>, FILE(<concat-strings; file-exists> [dir, "/", mod, ".", <id>])))> exts 
        \ )
-     <+ <fetch-elem(!(<id>, FILE(<concat-strings; xtc-find-loc> [mod, ".", <id>])))> exts
-     <+ <fatal-error> ["*** module ", mod, " not found"])
+     <+ <fetch-elem(!(<id>, FILE(<concat-strings; xtc-find-loc> [mod, ".", <id>])))> exts 
+     <+ ( <get-config>"--slack" < say(<concat-strings>["*** module ", mod, " not found"]) ; fail + <fatal-error> ["*** module ", mod, " not found"] )
+      )
 
   parse-module =
     ?("rtree", <?name>); Snd
