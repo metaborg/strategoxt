@@ -168,7 +168,7 @@
    constant -- _1,
    list     -- _1,
    fun      -- _1,
-   appl     -- _1 KW["("] _2 KW[")"],
+   appl     -- H hs=0 [_1 KW["("] _2 KW[")"]],
    appl.2:iter-sep        -- _1 KW[","],
    annotation             -- KW["{"] _1 KW["}"],
    annotation.1:iter-sep  -- _1 KW[","],
