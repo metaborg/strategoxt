@@ -1,4 +1,7 @@
 2002-03-22  Merijn de Jonge <mdejonge@cwi.nl>
+   * gbquery: bug fix. Detection of grammar location was incorrect
+
+2002-03-22  Merijn de Jonge <mdejonge@cwi.nl>
    * Repaired package dependencies
 
 2002-03-16  Eelco Visser  <visser@acm.org>
