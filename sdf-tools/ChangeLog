@@ -1,6 +1,7 @@
 2001-09-03 Merijn de Jonge <mdejonge@cwi.nl>
    * sdf-wf/data/Makefile.am: Added missing files to EXTRA_DIST variable
    * sdf-normalize/data/Makefile.am: Added missing files to EXTRA_DIST variable
+   * sdf: pretty-print tables fixed
 
 2001-09-01 Merijn de Jonge <mdejonge@cwi.nl>
    * added missing constructors

@@ -6,10 +6,10 @@
    context-free-priorities -- 
       V is=2 [ H[KW["context-free"] KW["priorities"]] _1],
    lexical-restrictions -- 
-      V is=2 [ H[KW["lexical"] KW["restrictions"]] A(l,l,l)[_1]],
+      V is=2 [ H[KW["lexical"] KW["restrictions"]] _1],
       
    context-free-restrictions -- 
-      V is=2[ H[KW["context-free"] KW["restrictions"]] A(l,l,l)[_1]],
+      V is=2[ H[KW["context-free"] KW["restrictions"]] _1],
       
    Definition -- 
       V vs=1[ KW["definition"] V vs=1[_1]],

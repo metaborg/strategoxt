@@ -16,7 +16,7 @@
 %%% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 %%% 02111-1307, USA.
 
-%%% $Id: sdf.pp,v 1.1 2001/05/31 14:20:51 mdejonge Exp $
+%%% $Id: sdf.pp,v 1.2 2001/09/03 15:32:30 mdejonge Exp $
 
 [
 %% module Sdf2-Syntax
@@ -33,10 +33,10 @@
      V is=3 [ H[KW["context-free"] KW["priorities"]] _1],
      
   "lexical"      "restrictions" Restrictions  -> Grammar	 -- 
-      V is=3 [ H[KW["lexical"] KW["restrictions"]] A(l,l,l)[_1]],
+      V is=3 [ H[KW["lexical"] KW["restrictions"]] _1],
 
   "context-free" "restrictions" Restrictions  -> Grammar	 -- 
-      V is=3[ H[KW["context-free"] KW["restrictions"]] A(l,l,l)[_1]],
+      V is=3[ H[KW["context-free"] KW["restrictions"]] _1],
 
   "definition" Definition                     -> SDF		 -- 
       V is=3[ KW["definition"] V vs=1[_1]],
