@@ -22,7 +22,7 @@ strategies
         })
       )
     <+ say(!"error: An error occured, but the error summary cannot be presented in a nice way. Please report this as a bug.")
-       ; debug(!"       Structured error summary: ")
+       ; where(<debug(!"       Structured error summary: ")> summary)
 
   /**
    * @param error Error
