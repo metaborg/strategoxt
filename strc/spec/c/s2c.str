@@ -153,7 +153,7 @@ strategies
         ; if-lib(![], ![<InitConstructors> ops]) => fundef
 
   DeclareConstructor :
-    OpDecl(c, t) -> c:dec|[ Symbol ~id:csym; ]|
+    OpDecl(c, t) -> c:dec|[ static Symbol ~id:csym; ]|
     // Declaration2(TypeSpec([],TypeId("Symbol"),[]),[IdDecl([],Id(csym),None)])
     where <Arity> t => n
         ; <concat-strings>["sym_", <cify> c, "_", <int-to-string> n] => csym
@@ -727,7 +727,8 @@ rules
 
   DeclareTermId :
     (base, x, e) ->
-    Declaration2(TypeSpec([],TypeId("ATerm"),[]),[IdDecl([],Id(x),None)])
+    c:dec|[ static ATerm ~id:x; ]|
+    // Declaration2(TypeSpec([],TypeId("ATerm"),[]),[IdDecl([],Id(x),None)])
 
   InitTermIds :
     xs ->
