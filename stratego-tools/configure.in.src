@@ -17,92 +17,14 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 dnl 02111-1307, USA.
 
-dnl $Id: configure.in.src,v 1.11 2002/11/15 00:06:02 stratego Exp $
+dnl $Id: configure.in.src,v 1.12 2002/12/08 11:24:17 stratego Exp $
 
 AC_INIT(configure.in)
 AM_INIT_AUTOMAKE(__PACKAGE__,__VERSION__)
 
-dnl Package switches.
+USE_XT_PACKAGES
 
-AC_ARG_WITH(sc-boot, 
-  [  --with-sc-boot=DIR         Location of Stratego Compiler], 
-  SC_BOOT=$withval, 
-  SC_BOOT="$prefix"
-)
-AC_SUBST(SC_BOOT)
-
-AC_ARG_WITH(asfix-tools, 
-   [  --with-asfix-tools      Specify location of asfix-tools package], 
-  ASFIX_TOOLS=$withval, 
-  ASFIX_TOOLS="$prefix"
-)
-AC_SUBST(ASFIX_TOOLS)
-
-AC_ARG_WITH(graph-tools, 
-   [  --with-graph-tools      Specify location of graph-tools package], 
-  GRAPH_TOOLS=$withval, 
-  GRAPH_TOOLS="$prefix"
-)
-AC_SUBST(GRAPH_TOOLS)
-
-AC_ARG_WITH(pgen, 
-   [  --with-pgen             Specify location of parser generator package], 
-  PGEN=$withval, 
-  PGEN="$prefix"
-)
-AC_SUBST(PGEN)
-
-AC_ARG_WITH(gpp, 
-   [  --with-gpp             Specify location of GPP parser package], 
-  GPP=$withval, 
-  GPP="$prefix"
-)
-AC_SUBST(GPP)
-
-
-# The following is a run-time dependency, not a build-time one
-AC_ARG_WITH(gb, 
-  [  --with-gb=DIR         Location of parse], 
-  GB=$withval, 
-  GB="$prefix"
-)
-AC_SUBST(GB)
-
-# The following is a run-time dependency, not a build-time one
-AC_ARG_WITH(sglr, 
-  [  --with-sglr=DIR         Location of SGLR], 
-  SGLR=$withval, 
-  SGLR="$prefix"
-)
-AC_SUBST(SGLR)
-
-# The following is a run-time dependency, not a build-time one
-AC_ARG_WITH(stratego-front, 
-  [  --with-stratego-front=DIR         Location of parse], 
-  STRATEGO_FRONT=$withval, 
-  STRATEGO_FRONT="$prefix"
-)
-AC_SUBST(STRATEGO_FRONT)
-
-# The following is a run-time dependency, not a build-time one
-AC_ARG_WITH(stratego-tools, 
-  [  --with-stratego-tools=DIR         Location of parse], 
-  STRATEGO_TOOLS=$withval, 
-  STRATEGO_TOOLS="$prefix"
-)
-AC_SUBST(STRATEGO_TOOLS)
-
-# The following is a run-time dependency, not a build-time one
-AC_ARG_WITH(sdf-tools, 
-  [  --with-sdf-tools=DIR         Location of parse], 
-  SDF_TOOLS=$withval, 
-  SDF_TOOLS="$prefix"
-)
-AC_SUBST(SDF_TOOLS)
-
-
-
-AC_REVISION($Id: configure.in.src,v 1.11 2002/11/15 00:06:02 stratego Exp $)
+AC_REVISION($Id: configure.in.src,v 1.12 2002/12/08 11:24:17 stratego Exp $)
 
 AC_PROG_CC
 AC_PROG_INSTALL

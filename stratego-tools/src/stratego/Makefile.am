@@ -18,9 +18,10 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.4 2002/11/15 00:06:02 stratego Exp $
+# $Id: Makefile.am,v 1.5 2002/12/08 11:24:17 stratego Exp $
 
 include $(srcdir)/../templates/make_rules
+include $(top_srcdir)/Makefile.xt
 
 SUBDIRS = data
 
@@ -41,5 +42,5 @@ CLEANFILES       = stratego.pp.af stratego.tbl
 %.pp.af : %.pp
 	$(MAKE) -f $(GPP)/share/gpp/gpp.Makefile $@
 
-%.tbl : %.def
-	PATH=$(PGEN)/bin:$${PATH} sdf2table -m GB-Main $< -o $@
+#%.tbl : %.def
+#	PATH=$(PGEN)/bin/sdf2table -m GB-Main $< -o $@

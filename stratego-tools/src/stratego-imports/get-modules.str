@@ -17,7 +17,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: get-modules.r,v 1.6 2001/12/21 08:49:14 mdejonge Exp $
+% $Id: get-modules.str,v 1.1 2002/12/08 11:24:17 stratego Exp $
 
 \begin{code}
 module get-modules

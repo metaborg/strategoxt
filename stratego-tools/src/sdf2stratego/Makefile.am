@@ -1,54 +1,22 @@
-
-# Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2, or (at your option)
-# any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-# 02111-1307, USA.
-
-# $Id: Makefile.am,v 1.6 2002/05/23 09:39:08 daybuild Exp $
-
-# Always include general make rules
 include $(srcdir)/../templates/make_rules
-include $(srcdir)/../templates/make_rules.stratego
+include $(top_srcdir)/Makefile.xt
+include $(wildcard *.dep)
 
-include $(STRATEGO_PRG:%=%.dep)
+SUBDIRS      	 = data
 
-# define any subdir here
-SUBDIRS      = data
+bin_PROGRAMS  	 = sdf2stratego
+libexec_PROGRAMS = sdf2stratego
+BOOTCLEANFILES 	 = sdf2stratego.c
 
-# Which Stratego programs to build
-STRATEGO_PRG = sdf2stratego
+# TESTS        	 = sdf2stratego_check
 
-# What scipts to build
-bin_SCRIPTS	= $(STRATEGO_PRG)
-libexec_SCRIPTS	= $(STRATEGO_PRG)
+EXTRA_DIST  	 = $(wildcard *.str) README
 
-# Optional tests to run
-# TESTS        = sdf2stratego_check
+CLEANFILES  	 = sdf2stratego_check
 
-# List all files that should be distributed here
-EXTRA_DIST  += Prod2Oper.r Sdf2Overlays.r \
-               Sdf-2-Stratego.r README
-
-# What should be cleaned
-CLEANFILES  += sdf2stratego_check
-
-
-# Additional flags for the Stratego compiler
-SCFLAGS     += -I ${srcdir}/../stratego \
-	       -I $(ASFIX_TOOLS)/share/asfix-tools \
-	       --main $@
+SCFLAGS    	 = -I ${srcdir}/../stratego \
+	           -I $(ASFIX_TOOLS)/share/asfix-tools \
+	           --main $*
 
 sdf2stratego_check_prog     = sdf2stratego
 sdf2stratego_check_input    = data/prop.sdf.af

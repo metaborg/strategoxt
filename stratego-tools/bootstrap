@@ -20,14 +20,14 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: bootstrap,v 1.2 2002/11/23 11:30:46 stratego Exp $
+# $Id: bootstrap,v 1.3 2002/12/08 11:24:17 stratego Exp $
 
-rm -f config.cache
-rm -f acconfig.h
+rm -f config.cache acconfig.h aclocal.m4
 
 ./genconf.sh $* package.conf
 
-aclocal
+autoxt
+aclocal -I .
 autoconf
 #acconfig
 autoheader

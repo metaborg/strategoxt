@@ -1,57 +1,24 @@
-
-# Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2, or (at your option)
-# any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-# 02111-1307, USA.
-
-# $Id: Makefile.am,v 1.7 2002/11/15 00:06:02 stratego Exp $
-
-# Always include general make rules
 include $(srcdir)/../templates/make_rules
-include $(srcdir)/../templates/make_rules.stratego
+include $(top_srcdir)/Makefile.xt
+include $(wildcard *.dep)
 
-include $(STRATEGO_PRG:%=%.dep)
+SUBDIRS		 = data
 
-# define any subdir here
-SUBDIRS		= data
+bin_SCRIPTS	 = sdf-to-sig
+bin_PROGRAMS 	 = sdf2sig
+libexec_PROGRAMS = sdf2sig
 
-# Which Stratego programs to build
-STRATEGO_PRG = sdf2sig
+BOOTCLEANFILES 	 = sdf2sig.c
+CLEANFILES       = sdf2sig1_check sdf2sig2_check $(wildcard *.dep) 
 
-# What scipts to build
-bin_SCRIPTS	= $(STRATEGO_PRG) sdf-to-sig
-# Can't build sdf-to-sig glue script because it introduces a bootstrap
-# problem with the stratego-front pacakge
-# sdf-to-sig
+EXTRA_DIST 	 = sdf-to-sig.src $(wildcard *.str)
 
-EXTRA_DIST += sdf-to-sig.src
+TESTS        	 = sdf2sig1_check sdf2sig2_check
 
-libexec_SCRIPTS	= $(STRATEGO_PRG)
-
-# Optional tests to run
-TESTS        = sdf2sig1_check sdf2sig2_check
-
-# What should be cleaned
-CLEANFILES  += sdf2sig1_check sdf2sig2_check
-
-
-# Additional flags for the Stratego compiler
-SCFLAGS     += -I ${srcdir}/../stratego \
-               -I ${srcdir}/../sdf2stratego \
-	       -I $(ASFIX_TOOLS)/share/asfix-tools \
-	       --main $@
+SCFLAGS    	 = -I ${srcdir}/../stratego \
+                   -I ${srcdir}/../sdf2stratego \
+	           -I $(ASFIX_TOOLS)/share/asfix-tools \
+	           --main $*
 
 sdf2sig1_check_prog     = sdf2sig
 sdf2sig1_check_input    = data/prop.sdf.af
