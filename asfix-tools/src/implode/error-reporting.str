@@ -64,8 +64,27 @@ strategies
   report-specific-error(|producer, error) =
     where(!error => error("Parse Table error", [localized(descr, _)]))
     ; where(
-        <fprintnl> ( <stderr-stream> (), [<get-config> "-p", ": Parse table error: ", descr])
+        log(|Error(),<concat-strings> [<get-config> "-p", ": Parse table error: ", descr])
       )
+
+  /**
+   * If the err is an "Ambiguity" then we show the alternatives, 
+   * which are encoded in the description (separated 
+   * by a semicolon).  
+   * 
+   * @param error Error
+   * @type  a -> a
+   */
+  report-specific-error(|producer, error) =
+    where(!error => error("Ambiguity", [localized(descr, area-in-file(file, area))]))
+  ; report-area(|"", "Ambiguity found", file, area)
+  ; log(|Error(),"Alternatives are: ")
+  ; where( 
+      <string-tokenize>([';'],descr) 
+    ; map(log(|Error(),<concat-strings>["   ",<id>]))
+    )
+
+
 
 /**
  * Tools that can be used for reporting errors.
@@ -73,9 +92,7 @@ strategies
 strategies
 
   report-file(|err, descr, file) =
-    where(
-      <fprintnl> (<stderr-stream> (), [file, ": ", err, ": ", descr])
-    )
+    log(|Error(),<concat-strings>[file, ": ", err, ": ", descr])
 
   /**
    * Presents the 'area' in the file at stderr.
@@ -102,7 +119,8 @@ strategies
 
         print-location =
           where(
-            <fprintnl> (<stderr-stream> (), [
+	    log(|Error(),
+            <concat-strings> [
               <filename> (), ": ",  descr, " at line "
             , <int-to-string> begin-line, ", column "
             , <int-to-string> begin-column
@@ -127,13 +145,13 @@ strategies
           ; if ?[s1, s2 | _ ] then
               ![s1, s2]
             end
-          ; where(map(<fprintnl> (<stderr-stream> (), [<Snd>])))
+          ; map(log(|Error(),<Snd>))
 
           /**
            * Indicate the position in the file
            */
           ; <conc-strings> (<copy-char> (<x-pos> (), ' '), "^")
-          ; where(<fprintnl> (<stderr-stream> (), [<id>]))
+	  ; log(|Error(),<id>)
 
      in print-location
       ; if not(?FILE(_) + stdin()) then
