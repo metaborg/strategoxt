@@ -2,7 +2,7 @@
  * @author  Merijn de Jonge <mdjonge@cwi.nl>
  */
 module sdf-2-pp-lib
-imports pp-table Bracket-Symbol Sdf2-Syntax sdf-xtc-tools string-misc
+imports pp-table Bracket-Symbol Sdf2 AsFix sdf-xtc-tools string-misc
 strategies
 
   /**
