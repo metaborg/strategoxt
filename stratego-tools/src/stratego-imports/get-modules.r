@@ -17,7 +17,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: get-modules.r,v 1.5 2001/11/25 23:17:17 mdejonge Exp $
+% $Id: get-modules.r,v 1.6 2001/12/21 08:49:14 mdejonge Exp $
 
 \begin{code}
 module get-modules
@@ -40,11 +40,11 @@ strategies
 
    get-modules( get-imports: a * (a -> a) * (a -> a) -> a, def-ext ) =
    parse-options( 
-            ArgOption( "-I", \ x -> Include(x) \ ) +
-            ArgOption( "-e", \ x -> Ext(x) \ ) +
-               Option( "-g", !GraphOutput ) +
-               Option( "-l", !FullPathName ) +
-               Option( "--graphxml" , !GraphXMLOutput ) + 
+            ArgOption( "-I", \ x -> Include(x) \,      !"-I <path>        Specify search path" ) +
+            ArgOption( "-e", \ x -> Ext(x) \,          !"-e <ext>         Find modules with module extension <ext>" ) +
+               Option( "-g", !GraphOutput,             !"-g               Generate import graph as output" ) +
+               Option( "-l", !FullPathName,            !"-l               Produce full file names" ) +
+               Option( "--graphxml" , !GraphXMLOutput, !"--graphxml       Generate import graph in GraphXML format" ) + 
                io-options );
    ?options;
 
