@@ -17,14 +17,14 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 dnl 02111-1307, USA.
 
-dnl $Id: configure.in,v 1.1 2003/01/03 17:11:20 stratego Exp $
+dnl $Id: configure.in,v 1.2 2003/01/05 13:51:19 stratego Exp $
 
 AC_INIT([asfix-tools],[0.9beta8],[stratego-bugs@cs.uu.nl])
 AM_INIT_AUTOMAKE
 
 USE_XT_PACKAGES
 
-AC_REVISION($Id: configure.in,v 1.1 2003/01/03 17:11:20 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.2 2003/01/05 13:51:19 stratego Exp $)
 
 AC_PROG_CC
 AC_PROG_INSTALL
@@ -42,6 +42,13 @@ AC_OUTPUT(
 	VERSION 
 	src/Makefile 
 	
-                          src/templates/Makefile                  src/templates/data/Makefile                  src/asfix/Makefile                  src/asfix/data/Makefile                  src/implode/Makefile                  src/implode/data/Makefile                  src/asfix-yield/Makefile                  src/asfix-yield/data/Makefile                  src/visamb/Makefile                  src/visamb/data/Makefile                  src/termid/Makefile                  src/termid/data/Makefile                  src/explode-asfix2me/Makefile                  src/explode-asfix2me/data/Makefile
+        src/templates/Makefile src/templates/data/Makefile
+        src/asfix/Makefile src/asfix/data/Makefile
+        src/implode/Makefile src/implode/data/Makefile
+        src/asfix-yield/Makefile src/asfix-yield/data/Makefile
+        src/visamb/Makefile src/visamb/data/Makefile
+        src/termid/Makefile src/termid/data/Makefile
+        src/explode-asfix2me/Makefile
+        src/explode-asfix2me/data/Makefile
 
 )

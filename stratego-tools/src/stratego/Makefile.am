@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.6 2003/01/01 23:36:16 stratego Exp $
+# $Id: Makefile.am,v 1.7 2003/01/05 13:47:59 stratego Exp $
 
 include $(srcdir)/../templates/make_rules
 include $(top_srcdir)/Makefile.xt
@@ -33,7 +33,8 @@ STRATEGO_MODULES = Stratego-Layout.str Stratego-Rules.str	    \
 		   Stratego-Overlays.str Stratego-Strategies.str
 
 EXTRA_DIST       = $(STRATEGO_MODULES) \
-                   README stratego.pp stratego.def
+                   README stratego.pp stratego.def \
+		   stratego.pp stratego.pp.af stratego.tbl
 
 pkgdata_DATA     = $(STRATEGO_MODULES) stratego.pp stratego.pp.af stratego.tbl 
 

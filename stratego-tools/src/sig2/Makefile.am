@@ -13,7 +13,8 @@ STRINCLUDES      = -I $(STRATEGO_FRONT)/share/sdf/stratego-front \
 
 EXTRA_DIST       = $(wildcard *.str) $(wildcard *.meta)
 CLEANFILES       = $(wildcard *.dep)
-BOOTCLEANFILES   = $(wildcard *.c) tree-grammar-fc.str
+BOOTCLEANFILES   = $(wildcard *.c) 
+#tree-grammar-fc.str
 
 fc-tree-grammar.c: tree-grammar-fc.str
 

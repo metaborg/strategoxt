@@ -1,3 +1,8 @@
+2003-01-05  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/stratego-stats/Makefile.am: Replaced strat-count; problem
+	was in ssl
+
 2003-01-02  Eelco Visser  <visser@cs.uu.nl>
 
 	* src/stratego-stats/Makefile.am: Removed strat-count from build;
