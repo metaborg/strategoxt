@@ -12,6 +12,10 @@ strategies
       declare-inline-rules
       ; ( check-library-definitions
         ; alltd(innermost-fusion)
+
+// turn off outermost-fusion while it is not finished (EV)
+//        ; alltd(innermost-fusion + outermost-fusion)
+
         ) <+ if-verbose2(say(!"no innermost here"))
     )
 
@@ -185,3 +189,76 @@ strategies
   UnMark :
     Strategy|[ mark(|) ]| -> Strategy|[ id ]|
 
+  outermost-fusion :
+    |[ outermost_1_0(s1|) ]| -> 
+    |[ let f = repeat(rec x(s2 <+ s3)); all(f) in f end ]|
+    where if-verbose2(say(!"fusion: application of outermost found"))
+	; new => x
+	; new => f
+	; <inline-rules> s1 => s2
+        ; derive-hnf-traversal(|x) => s3
+
+  derive-hnf-traversal(|x) =
+    collect-guards
+    ; debug
+    ; map(merge-terms(|x))
+//    ; foldr1(?[<id>], \ (s1, s2) -> |[ s1 <+ s2 ]|\ ) => s3
+
+  collect-guards = 
+  {|Guard :
+    rec y(
+      Choice(y, y) 
+      <+ LChoice(y, y) 
+      <+ Scope(id, y)
+      <+ Seq(y, id)
+      <+ Match({
+           ?t@|[ c(t*) ]|
+	   ; if <fetch({?|[c2(t2*)]|})> t* then
+               rules(
+	         Guard :+ () -> c 
+	         Guard :+ c -> t
+               )
+	     end
+         })
+     )
+     ; <bagof-Guard> ()
+     ; make-set
+     ; map(bagof-Guard)
+  |}
+
+  merge-terms(|x) =
+    ?[ |[ c(t*) ]| | _]
+    ; debug
+    ; map({t* : (|[ c(t*) ]| -> t* )})
+    ; debug
+    ; transpose
+    ; debug(!"transposed: ")
+    ; map(merge-subterms(|x))
+    ; !Cong(c, <id>)
+
+  transpose = 
+    map([]); ![] <+ ![<map(Hd)> | <map(Tl); transpose>]
+
+  merge-subterms(|x) :
+    t* -> |[ x(|); (s <+ try(x(|))) ]|
+    where 
+      <foldr(!|[fail]|, \ (s1,s2) -> |[ s1 <+ s2 ]| \, term-to-cong)> t* => s
+ 
+  term-to-cong :
+    |[ c(t*) ]| -> Cong(c, <map(!|[id]|)> t*)
+    where <map(Var(id))> t*
+
+/*
+
+  derive-hnf-traversal(|x) :
+    Term|[ c(t*) ]| -> Cong(c, <map(norm-subterm(|x))> t*)
+    where <fetch(?|[ c2(t2*) ]|)> t*
+
+  norm-subterm(|x) :
+    Term|[ x ]| -> |[ id ]|
+
+  norm-subterm(|x) :
+    Term|[ c(t*) ]| -> |[ x; (c(s1*) <+ try(x)) <+ c(s2*) ]|
+    where <map(!|[ id ]|)> t* => s1*
+    
+*/
