@@ -1,4 +1,5 @@
 module tail
+imports list-cons tuple-cons
 rules
 
   RA : [x, y | z] -> [x, y, x | z]

@@ -1,4 +1,5 @@
 module mkterm
+imports list-cons tuple-cons
 signature
   constructors
     F : Term * Term * Term -> Term
