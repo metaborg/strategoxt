@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 
 #include <stdlib.h>
 #include <sys/types.h>
+#include <sys/mman.h>
+#include <fcntl.h>
 #include <dirent.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -61,6 +63,122 @@ ATerm SSL_rename(ATerm oldname, ATerm newname)
   if(rename(ATgetName(ATgetSymbol(oldname)),ATgetName(ATgetSymbol(newname))) != 0)
     _fail(oldname);
  
+  return newname;
+}
+
+#define SSL_COPY_BUFSIZE 8192
+
+ATerm SSL_copy(ATerm oldname, ATerm newname)
+// copy file oldname to file newname using read and write
+{
+  int fdin, fdout;
+  int n; 
+  char buf[SSL_COPY_BUFSIZE];
+
+  if(ATmatch(oldname, "stdin"))
+    fdin = STDIN_FILENO;
+  else if(!t_is_string(oldname))
+    _fail(oldname);
+  else if((fdin = open(ATgetName(ATgetSymbol(oldname)), O_RDONLY)) < 0 )
+    {
+      ATfprintf(stderr, "SSL_copy: cannot open inputfile %t\n", oldname);
+      _fail(oldname); 
+    }
+
+  if(ATmatch(newname, "stdout"))
+    fdout = STDOUT_FILENO;
+  else if(ATmatch(newname, "stderr"))
+    fdout =  STDERR_FILENO;
+  else if(!t_is_string(newname))
+    _fail(newname);
+  else if((fdout = open(ATgetName(ATgetSymbol(newname)), 
+			O_RDWR | O_CREAT | O_TRUNC, 
+			S_IRUSR | S_IWUSR)) < 0 )
+    {
+      ATfprintf(stderr, "SSL_copy: cannot create output file %t\n", newname);
+      _fail(newname);
+    }
+
+  while( (n = read(fdin, buf, SSL_COPY_BUFSIZE)) > 0 )
+    if(write(fdout, buf, n) != n)
+      { 
+	ATfprintf(stderr, "SSL_copy: write error\n");
+	_fail(newname);
+      }
+
+  if(n < 0)
+    {
+      ATfprintf(stderr, "SSL_copy: read error\n");
+      _fail(oldname);
+    }
+      
+  return newname;
+}
+
+ATerm SSL_copy_mmap(ATerm oldname, ATerm newname)
+// copy file oldname to file newname using memory mapped io
+{
+  int fdin, fdout;
+  char *src, *dst;
+  struct stat statbuf;
+
+  if(ATmatch(oldname, "stdin"))
+    fdin = STDIN_FILENO;
+  else if(!t_is_string(oldname))
+    _fail(oldname);
+  else if((fdin = open(ATgetName(ATgetSymbol(oldname)), O_RDONLY)) < 0 )
+    {
+      ATfprintf(stderr, "SSL_copy: cannot open inputfile %t\n", oldname);
+      _fail(oldname); 
+    }
+
+  if(ATmatch(newname, "stdout"))
+    fdout = STDOUT_FILENO;
+  else if(ATmatch(newname, "stderr"))
+    fdout =  STDERR_FILENO;
+  else if(!t_is_string(newname))
+    _fail(newname);
+  else if((fdout = open(ATgetName(ATgetSymbol(newname)), 
+			O_RDWR | O_CREAT | O_TRUNC, 
+			S_IRUSR | S_IWUSR)) < 0 )
+    {
+      ATfprintf(stderr, "SSL_copy: cannot create output file %t\n", newname);
+      _fail(newname);
+    }
+
+  if(fstat(fdin, &statbuf) < 0) /* need size of input file */
+    {
+      ATfprintf(stderr, "SSL_copy: need size of input file\n", newname);
+      _fail(oldname);
+    }
+
+  if(lseek(fdout, statbuf.st_size - 1, SEEK_SET) == -1)
+    {
+      ATfprintf(stderr, "SSL_copy: lseek error\n", newname);
+      _fail(oldname);
+    }
+  if(write(fdout, "", 1) != 1)
+    {
+      ATfprintf(stderr, "SSL_copy: write error\n", newname);
+      _fail(oldname);
+    }
+
+  if( (src = mmap(0, statbuf.st_size, PROT_READ, MAP_FILE | MAP_SHARED, fdin, 0))
+      == (caddr_t) - 1)
+    {
+      ATfprintf(stderr, "SSL_copy: mmap error for input\n", newname);
+      _fail(oldname);
+    }
+
+  if( (dst = mmap(0, statbuf.st_size, PROT_READ | PROT_WRITE, 
+		  MAP_FILE | MAP_SHARED, fdout, 0)) == (caddr_t) - 1)
+    {
+      ATfprintf(stderr, "SSL_copy: mmap error for output\n", newname);
+      _fail(oldname);
+    }
+
+  memcpy(dst, src, statbuf.st_size); /* copy the file */  
+
   return newname;
 }
 

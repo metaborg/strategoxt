@@ -67,7 +67,6 @@ libstratego_a_SOURCES = \
 	srts/stratego.h srts/aterm-extension.h srts/debug.h srts/mprotect.h \
 	srts/stratego-choice.h stratego-choice.c 
 
-#BUILT_SOURCES = stratego-choice.h
 
 libstratego_dbg_a_SOURCES = 
 libstratego_opt_a_SOURCES = 

@@ -25,5 +25,6 @@ ATerm SSL_modification_time(ATerm file);
 ATerm SSL_getenv(ATerm t);
 ATerm SSL_setenv(ATerm name, ATerm value, ATerm overwrite);
 ATerm SSL_rename(ATerm oldname, ATerm newname);
+ATerm SSL_copy(ATerm oldname, ATerm newname);
 ATerm SSL_link(ATerm existingpath, ATerm newpath);
 ATerm SSL_remove(ATerm pathname);
