@@ -1,3 +1,20 @@
+2004-06-25  Martin Bravenboer <martin@cs.uu.nl>
+
+	* srts/Makefile.am: build the choice point implementation in a
+	separate library stratego-choice. Choice point implementations
+	must implements the functions in srts/stratego-choice.h. The
+	implementation of choice points is now completely separated from
+	the runtime itself. Therefore it is now possible to plugin a
+	difference choice point implementation without recompiling the
+	entire runtime. The choice for a specific choice implementation is
+	delayed until link time.
+
+	Using the ++ with a choice point implementation that does not
+	support the global choice (the standard implementation does not)
+	will result in link error. The same holds for the bagof operator.
+
+	* configure.in: removed configuration stuff for cpl-stratego.
+
 2004-06-14  Martin Bravenboer <martin@cs.uu.nl>
 
 	* ssl/string.c: added missing list check in the implode-string

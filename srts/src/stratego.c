@@ -414,85 +414,31 @@ ATerm SRTS_pop_seqvar(ATermList* list) {
   return result;
 }
 
-// Bag
-
-#define BAGS 256
-static ATermList bag[BAGS];
-int bag_ptr=-1;
-
-ATerm _bagof(ATerm t, ATerm f(ATerm))
-{
-  bag_ptr++;
-  assert(bag_ptr < BAGS);
-  bag[bag_ptr] = ATempty;
-
-  if(GlobalPushChoice() == 0)
-    {
-      ATerm res = f(t);
-      bag[bag_ptr] = ATinsert(bag[bag_ptr], res);
-      _fail(t);
-    }
-  return (ATerm)ATreverse(bag[bag_ptr--]);
-}
-
-// Protection of CPL stack
-
-void *at_malloc_protect(int size) {
-  void *start = malloc(size);
-  ATprotectMemory(start,size);
-  return start;
-}
-
-void *at_realloc(char *old,int size) {
-  void *start = realloc(old,size);
-  if(!start) {
-    printf("at_realloc: out of memory\n");
-    exit(1);
+ATerm _cpl_loaded(ATerm t) {
+  if(!SRTSChoice_supportsGlobalChoice()) {
+    _fail(t);
   }
-  return start;
+
+  return t;
 }
 
-void *at_realloc_protect(char *old,int size) {
-  void *start = realloc(old,size);
-  if(!start) {
-    printf("at_realloc_protect: out of memory\n");
-    exit(1);
-  }
-  ATunprotectMemory(old);
-  ATprotectMemory(start,size);
-  return start;
-}
-
-// Main function to be used by compiled programs
-
+/**
+ * Main function in output of Stratego compiler.
+ */
 ATerm main_0(ATerm);
 
-int main(int argc, char *argv[])
-{
-
-#ifdef HAVE_CPL
+/**
+ * Main function to be used by compiled programs
+ */
+int main(int argc, char *argv[]) {
   long bp;
-#endif
-
   ATerm out_term; 
   ATermList in_term;
   int i; 
 
-  //ATfprintf(stderr, "main a\n");
-
-#ifdef HAVE_CPL
-  //ATfprintf(stderr, "using cpl\n");
-  CPL_init_malloc_protect(at_malloc_protect);
-  CPL_init_malloc(malloc);
-  CPL_init_realloc_protect(at_realloc_protect);
-  CPL_init_realloc(at_realloc);
-                                   
-  choice_init(&bp); 
-#endif
-
   ATinit(argc, argv, &out_term);
+  SRTSChoice_init(&bp);
 
-  ATprotectArray((ATerm*)bag, BAGS); 
   init_constructors_srts();
   init_constructors();
 
@@ -501,18 +447,14 @@ int main(int argc, char *argv[])
   set_segv_handler();
 #endif
 
-  //ATfprintf(stderr, "main b\n");
-
   in_term = ATempty; 
-  for(i = argc - 1; i >= 0; i--)
-    {
-      in_term = ATinsert(in_term, (ATerm) ATmakeAppl0(ATmakeSymbol(argv[i],0,ATtrue)));
-    }
+  for(i = argc - 1; i >= 0; i--) {
+    in_term = ATinsert(in_term, (ATerm) ATmakeAppl0(ATmakeSymbol(argv[i],0,ATtrue)));
+  }
 
   if(PushChoice() == 0) {
     out_term = main_0((ATerm)in_term); 
     ATfprintf(stdout, "%t\n", out_term);
-    //ATfprintf(stderr, "main c\n");
     exit(0);
   } else {
     ATfprintf(stderr, "%s: rewriting failed\n",  argv[0]);

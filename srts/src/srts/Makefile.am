@@ -1,11 +1,17 @@
 includedir = $(prefix)/include/srts
 
 include_HEADERS = \
-	stratego.h aterm-extension.h stratego-choice.h stratego-config.h \
-	init-stratego-module.h init-stratego-application.h $(CPL_HDR)
+  stratego.h \
+  aterm-extension.h \
+  stratego-choice.h \
+  stratego-config.h \
+  init-stratego-module.h \
+  init-stratego-application.h
 
 noinst_HEADERS = \
-	debug.h mprotect.h stratego-lib.h
+  debug.h \
+  mprotect.h \
+  stratego-lib.h
 
 stratego-config.h : $(top_srcdir)/config.h
 	echo "#ifndef SRTS_STRATEGO_CONFIG_H"  > $@
@@ -18,16 +24,3 @@ stratego-config.h : $(top_srcdir)/config.h
 
 stratego-lib.h :
 	ln -s $(top_srcdir)/ssl/stratego-lib.h .
-
-if USECPL
-
-choice-cpl.h: $(CPL)/include/choice.h
-	cp $< $@
-
-CPL_HDR = choice-cpl.h
-
-else
-
-CPL_HDR = 
-
-endif
