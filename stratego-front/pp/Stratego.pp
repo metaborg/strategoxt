@@ -81,6 +81,7 @@
    GChoice                                   -- _1 KW["++"] _2,
    RGChoice                                  -- _1 KW["++>"] _2,
    CondChoice                                -- KW["if"] _1 KW["then"] _2 KW["else"] _3 KW["end"],
+   IfThen                                    -- KW["if"] _1 KW["then"] _2 KW["end"],
    SwitchChoiceNoOtherwise                   -- KW["switch"] _1 _2 KW["end"],
    SwitchChoiceNoOtherwise.2:iter-star       -- _1,
    SwitchChoiceNoOtherwise.2:iter-star.1:seq -- KW["case"] _1 KW[":"] _2,

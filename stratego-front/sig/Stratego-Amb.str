@@ -1,6 +1,4 @@
-
 module Stratego-Amb
-imports list-cons option
 signature
   constructors
                                : Strategy * Strategy -> Strategy_Strategy_0
@@ -73,6 +71,7 @@ signature
     AM                         : Strategy * Term -> Strategy
     SwitchChoice               : Strategy * List(Strategy_Strategy_0) * Strategy -> Strategy
     SwitchChoiceNoOtherwise    : Strategy * List(Strategy_Strategy_0) -> Strategy
+    IfThen                     : Strategy * Strategy -> Strategy
     CondChoice                 : Strategy * Strategy * Strategy -> Strategy
     RGChoice                   : Strategy * Strategy -> Strategy
     GChoice                    : Strategy * Strategy -> Strategy
@@ -161,3 +160,12 @@ signature
                                : String -> LId
                                : String -> Id
                                : String -> ModName
+signature
+  constructors
+    Some : a -> Option(a)
+    None : Option(a)
+signature
+  constructors
+    Cons : a -> List(a)
+    Nil  : List(a)
+    Conc : List(a) * List(a) -> List(a)

@@ -1,6 +1,4 @@
-
 module Stratego-Sugar
-imports list-cons option
 signature
   constructors
                                : Strategy * Strategy -> Strategy_Strategy_0
@@ -167,3 +165,12 @@ signature
                                : String -> LId
                                : String -> Id
                                : String -> ModName
+signature
+  constructors
+    Some : a -> Option(a)
+    None : Option(a)
+signature
+  constructors
+    Cons : a -> List(a)
+    Nil  : List(a)
+    Conc : List(a) * List(a) -> List(a)

@@ -27,6 +27,8 @@ Symbol sym_Nil_0;
 Symbol sym_Cons_2;
 Symbol sym_Anno_2;
 Symbol sym_Parenthetical_1;
+Symbol sym_Cons_1;
+Symbol sym_Nil_0;
 Symbol sym_As_2;
 Symbol sym_Anno_2;
 Symbol sym_Explode_2;
@@ -49,8 +51,6 @@ Symbol sym_BA_2;
 Symbol sym_Build_1;
 Symbol sym_Match_1;
 Symbol sym_ParenStrat_1;
-Symbol sym_Nil_0;
-Symbol sym_Cons_2;
 static void init_module_constructors (void)
 {
   sym_Comment_2 = ATmakeSymbol("Comment", 2, ATfalse);
@@ -101,6 +101,10 @@ static void init_module_constructors (void)
   ATprotectSymbol(sym_Anno_2);
   sym_Parenthetical_1 = ATmakeSymbol("Parenthetical", 1, ATfalse);
   ATprotectSymbol(sym_Parenthetical_1);
+  sym_Cons_1 = ATmakeSymbol("Cons", 1, ATfalse);
+  ATprotectSymbol(sym_Cons_1);
+  sym_Nil_0 = ATmakeSymbol("Nil", 0, ATfalse);
+  ATprotectSymbol(sym_Nil_0);
   sym_As_2 = ATmakeSymbol("As", 2, ATfalse);
   ATprotectSymbol(sym_As_2);
   sym_Anno_2 = ATmakeSymbol("Anno", 2, ATfalse);
@@ -145,10 +149,6 @@ static void init_module_constructors (void)
   ATprotectSymbol(sym_Match_1);
   sym_ParenStrat_1 = ATmakeSymbol("ParenStrat", 1, ATfalse);
   ATprotectSymbol(sym_ParenStrat_1);
-  sym_Nil_0 = ATmakeSymbol("Nil", 0, ATfalse);
-  ATprotectSymbol(sym_Nil_0);
-  sym_Cons_2 = ATmakeSymbol("Cons", 2, ATfalse);
-  ATprotectSymbol(sym_Cons_2);
 }
 ATerm term_d_52;
 ATerm term_c_52;

@@ -201,6 +201,7 @@ regular tree grammar
     Strategy                      -> AM(Strategy,Term)
     Strategy                      -> SwitchChoice(Strategy,ListStarOfStrategy_Strategy_0,Strategy)
     Strategy                      -> SwitchChoiceNoOtherwise(Strategy,ListStarOfStrategy_Strategy_0)
+    Strategy                      -> IfThen(Strategy,Strategy)
     Strategy                      -> CondChoice(Strategy,Strategy,Strategy)
     Strategy                      -> RGChoice(Strategy,Strategy)
     Strategy                      -> GChoice(Strategy,Strategy)

@@ -140,6 +140,8 @@ exports
     Strategy "++" Strategy 		  -> Strategy {cons("GChoice"),right}
     Strategy "++>" Strategy 		  -> Strategy {cons("RGChoice"),right}
     "if" Strategy "then" Strategy "else" Strategy "end" -> Strategy {cons("CondChoice")}
+    "if" Strategy "then" Strategy "end"   -> Strategy {cons("IfThen")}
+
     "switch" Strategy ("case" Strategy ":" Strategy)* "end" -> Strategy {cons("SwitchChoiceNoOtherwise")}
     "switch" Strategy ("case" Strategy ":" Strategy)*
                        "otherwise" ":" Strategy "end" -> Strategy {cons("SwitchChoice")}
