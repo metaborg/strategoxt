@@ -1,3 +1,10 @@
+2003-03-28  Martin Bravenboer <martin@mbravenboer.org>
+
+  * spec/term-io.str: defined ReadFromFile, WriteToTextFile
+    and WriteToBinaryFile in terms of new POSIX
+    strategies. Behaviour should be exactly the same
+    as the native implementations.
+
 2003-03-27  Martin Bravenboer <martin@mbravenboer.org>
 
   * spec/term-io.str: added fprint: print implemented

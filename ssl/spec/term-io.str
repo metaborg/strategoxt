@@ -6,43 +6,38 @@ imports io list string integers conditional
  */
 strategies
 
-  // <ReadFromFile> file reads the term in file. 
-  // The file needs to be in textual or binary ATerm format.
-
-/*
+  /**
+   * <ReadFromFile> file reads the term in file. 
+   * The file needs to be in textual or binary ATerm format.
+   * :: File -> a
+   */
   ReadFromFile =
-      (?Stream(_) <+ <open-stream> (<id>, "r"))
+      (<open-stream> (<id>, "r") <+ debug(!"** WARNING: Cannot open file: "); fail)
     ; where(read-from-stream => trm)
     ; fclose
     ; !trm
-*/
 
-  ReadFromFile =
-      ?file; prim("SSL_ReadFromFile", file)      
-    <+ debug(!"** WARNING: file doesn't exist or doesn't contain a valid term: "); fail
-
-  // <WriteToBinaryFile> (file, term) writes term to file in BAF format.
-
-/*
+  /**
+   * <WriteToBinaryFile> (file, term) writes term to file in BAF format.
+   * :: File * a -> a
+   */
   WriteToBinaryFile = 
     WriteToFile(write-in-baf-to-stream)
-*/
 
-  WriteToBinaryFile = 
-    ?(file, t); prim("SSL_WriteToBinaryFile", file, t)
-
-  // <WriteToTextFile> (file, term) writes term to file in textual ATerm format.
-  /*
-    WriteToTextFile = 
-      WriteToFile(write-in-text-to-stream)
-  */
-
+  /**
+   * <WriteToTextFile> (file, term) writes term to file in textual ATerm format.
+   * :: File * a -> a
+   */
   WriteToTextFile = 
-    ?(file, t); prim("SSL_WriteToTextFile", file, t)
+    WriteToFile(write-in-text-to-stream; <fputc> ('\n', <id>))
 
+  /**
+   * <WriteToFile(s)> (file, term) writes term to file with the writer s.
+   * :: (Stream * a -> Stream) * File * a -> a
+   */
   WriteToFile(writer) =
       ?(<id>, trm)
-    ; (?Stream(_) <+ <open-stream> (<id>, "w"))
+    ; <open-stream> (<id>, "w")
     ; <writer> (<id>, trm)
     ; fclose
     ; !trm
