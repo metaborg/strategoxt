@@ -9,6 +9,5 @@ autoxt
 aclocal -I .
 autoconf -f 
 #--warnings=all
-automake -a -f  
+automake -a 
 #--warnings=all  --warnings=no-portability
-
