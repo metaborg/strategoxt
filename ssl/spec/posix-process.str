@@ -40,17 +40,20 @@ strategies
   /**
    * Replaces the current process image with a new  process image.
    *
-   * The execv  and  execvp functions provide an array of pointers to
-   * null-terminated strings that represent the argument  list  avail�
-   * able  to  the  new  program.   The first argument, by convention,
-   * should point to the file name associated with the file being exe�
-   * cuted.   The  array  of  pointers  must  be  terminated by a NULL
-   * pointer. 
-   *
-   * @warning The first arugment is added in the runtime.
+   * @see      man execvp
+   * @warning  The first arugment is added in the runtime.
    */
   execvp = 
     ?(file, argv); prim("SSL_execvp", file, argv)
+
+  /**
+   * Replaces the current process image with a new  process image.
+   *
+   * @see      man execv
+   * @warning  The first arugment is not added in the runtime.
+   */
+  execv = 
+    ?(file, argv); prim("SSL_execv", file, argv)
 
 /**
  * Process termination 

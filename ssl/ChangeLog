@@ -1,3 +1,12 @@
+2003-12-21  Martin Bravenboer <martin@cs.uu.nl>
+
+	* spec/posix-process.str: added execv.
+
+	Note that the implementation in the runtime does not add the
+	program to the list of argument. execvp does this, which is
+	horrible. I think this should be changed in the runtime part of
+	execvp and the invocations to execvp should be adapated.
+	
 2003-12-19  Eelco Visser  <visser@cs.uu.nl>
 
 	* Improvements for separate compilation
