@@ -1,4 +1,4 @@
-\literate[Abox2html]
+\literate[Abox-2-html]
 % GT -- Grammar Tools
 % Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
 %                    Eelco Visser <visser@acm.org>
@@ -19,12 +19,12 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Abox2html.r,v 1.2 2002/04/05 22:42:42 mdejonge Exp $
+% $Id: Abox-2-html.r,v 1.1 2002/05/08 07:49:13 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
 \begin{code}
-module Abox2html
+module Abox-2-html
 
 imports html pp-tables
 

@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: asfix2abox.sh.src,v 1.2 2001/12/19 12:04:35 mdejonge Exp $
+# $Id: asfix2abox.sh.src,v 1.3 2002/05/08 07:49:39 mdejonge Exp $
 
 # usage:
 #   asfix2abox [-c] [-h] [-i asfix] [-o abox] [-p table_1] ... [-p table_n] [-v]
@@ -81,7 +81,7 @@ done
 # Construct the a command line depending on specific switches
 cmd="cat ${INPUT} \
      | implode-asfix -S --lex --pt --list \
-     | ${PREFIX}/libexec/Asfix2abox -S ${CONSERVATIVE} ${VERBOSE} ${PP_AF_TABLES}"
+     | ${PREFIX}/libexec/Asfix-2-abox -S ${CONSERVATIVE} ${VERBOSE} ${PP_AF_TABLES}"
 
 # -o option has been specified
 if [ "a${OUTPUT}" != "a-" -a "a${OUTPUT}" != "a" ]; then

@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.3 2002/03/17 00:04:32 eelco Exp $
+# $Id: Makefile.am,v 1.4 2002/05/08 07:49:58 mdejonge Exp $
 
 TEST_SET = Opt-seq Opt-seq2 Opt-iter Opt-iter1 Iter-sep Iter-sep1 Iter-sep2 Iter-sep3 \
 	   Iter-sep-seq Iter-sep-seq2 Alt Alt2 Alt3 Seq Iter-seq Seq2 Seq3 Or
@@ -43,7 +43,7 @@ testsetclean:
 	(\
 	   echo 'set -e' ;\
 	   echo '$(MAKE) tests.tbl tests.pp.af $*-asfix.in' ;\
-	   echo '$(top_builddir)/src/asfix2abox/Asfix2abox -p tests.pp.af -i ${srcdir}/$*-asfix.in -o $*.tested' ;\
+	   echo '$(top_builddir)/src/asfix2abox/Asfix-2-abox -p tests.pp.af -i ${srcdir}/$*-asfix.in -o $*.tested' ;\
 	   echo 'diff $*.tested ${srcdir}/$*.out' ;\
 	) > $@ && chmod +x $@
 
@@ -51,7 +51,7 @@ testsetclean:
 	(\
 	   echo 'set -e' ;\
 	   echo '$(MAKE) tests.tbl tests.pp.af $*-af.in' ;\
-	   echo '$(top_builddir)/src/ast2abox/Ast2abox -p tests.pp.af -i ${srcdir}/$*-af.in -o $*.tested' ;\
+	   echo '$(top_builddir)/src/ast2abox/Ast-2-abox -p tests.pp.af -i ${srcdir}/$*-af.in -o $*.tested' ;\
 	   echo 'diff $*.tested ${srcdir}/$*.out' ;\
 	) > $@ && chmod +x $@
 
@@ -68,7 +68,7 @@ testsetclean:
 
 %.out :
 	$(MAKE) tests.pp.af
-	$(top_builddir)/src/asfix2abox/Asfix2abox -p tests.pp.af -i ${srcdir}/$*-asfix.in -o $@
+	$(top_builddir)/src/asfix2abox/Asfix-2-abox -p tests.pp.af -i ${srcdir}/$*-asfix.in -o $@
 
 %.pp.af : %.pp $(top_builddir)/src/lib/pp-tables.tbl
 	PATH=$(SGLR)/bin:$${PATH} sglr -2 -p $(top_builddir)/src/lib/pp-tables.tbl -i $< \

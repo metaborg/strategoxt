@@ -1,4 +1,4 @@
-\literate[Abox2text]
+\literate[Abox-2-text]
 % GT -- Grammar Tools
 % Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
 %                    Eelco Visser <visser@acm.org>
@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Abox2text.r,v 1.3 2002/03/16 15:23:45 eelco Exp $
+% $Id: Abox-2-text.r,v 1.1 2002/05/08 07:49:29 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
@@ -36,7 +36,7 @@ HV         -> H
 ALT(a1,a2) -> a1
 
 \begin{code}
-module Abox2text
+module Abox-2-text
 
 imports pp-tables lib Literal-lib
 

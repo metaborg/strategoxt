@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/12/18 11:25:33 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2002/05/08 07:49:50 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -27,7 +27,7 @@ include $(STRATEGO_PRG:%=%.dep)
 SUBDIRS      = data
 
 # Which Stratego programs to build
-STRATEGO_PRG = Ppgen
+STRATEGO_PRG = Pp-gen
 
 # What scipts to build
 libexec_SCRIPTS  = $(STRATEGO_PRG)
@@ -61,7 +61,7 @@ SCFLAGS     += -I $(srcdir)/../lib -I $(ASFIX_TOOLS)/share/asfix-tools --main $@
 %.tbl : %.def
 	PATH=$(PGEN)/bin:$${PATH} sdf2table -m GB-Main $< -o $@
 
-no_generation_for_bracket_function_check_prog    = Ppgen
+no_generation_for_bracket_function_check_prog    = Pp-gen
 no_generation_for_bracket_function_check_input   = data/ppgencheck1.in
 no_generation_for_bracket_function_check_output  = data/ppgencheck1.out
 no_generation_for_bracket_function_check_correct = data/ppgencheck1.correct

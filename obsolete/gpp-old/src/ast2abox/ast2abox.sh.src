@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: ast2abox.sh.src,v 1.1 2001/12/18 11:24:23 mdejonge Exp $
+# $Id: ast2abox.sh.src,v 1.2 2002/05/08 07:49:47 mdejonge Exp $
 
 # usage:
 #   ast2abox [-h] [-i ast] [-o abox] [-p table_1] ... [-p table_n] [-v]
@@ -77,7 +77,7 @@ done
 
 # Construct the a command line depending on specific switches
 cmd="cat ${INPUT} \
-     | ${PREFIX}/libexec/Ast2abox -S ${VERBOSE} ${PP_AF_TABLES}"
+     | ${PREFIX}/libexec/Ast-2-abox -S ${VERBOSE} ${PP_AF_TABLES}"
 
 # -o option has been specified
 if [ "a${OUTPUT}" != "a-" -a "a${OUTPUT}" != "a" ]; then

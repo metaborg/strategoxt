@@ -1,3 +1,7 @@
+2002-05-08  Merijn de Jonge <mdejonge@cwi.nl>
+   * Renamed modules in order to solve case insensitiveness on sygwin
+     platform
+
 2002-04-05  Merijn de Jonge <mdejonge@cwi.nl>
    * asfix2abox: fixes incorrect comment preservation
    * abox2latex,abox2html: remove empty boxes in H, V, and HV contexts

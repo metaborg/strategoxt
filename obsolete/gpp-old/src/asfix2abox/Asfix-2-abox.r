@@ -1,4 +1,4 @@
-\literate[Asfix2abox]
+\literate[Asfix-2-abox]
 % GT -- Grammar Tools
 % Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
 %                    Eelco Visser <visser@acm.org>
@@ -19,14 +19,14 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Asfix2abox.r,v 1.2 2001/12/19 12:04:35 mdejonge Exp $
+% $Id: Asfix-2-abox.r,v 1.1 2002/05/08 07:49:37 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 % Changes: Eelco Visser <visser@acm.org> 19/5/20001
 % - 
 
 \begin{code}
-module Asfix2abox
+module Asfix-2-abox
 imports
    lib make pp-tables-io asfix misc instantiate Literal-lib
    layout prodcons Bracket-Symbol

@@ -1,4 +1,4 @@
-\literate[Abox2latex]
+\literate[Abox-2-latex]
 % GT -- Grammar Tools
 % Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
 %                    Eelco Visser <visser@acm.org>
@@ -19,12 +19,12 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Abox2latex.r,v 1.2 2002/04/05 22:42:45 mdejonge Exp $
+% $Id: Abox-2-latex.r,v 1.1 2002/05/08 07:49:20 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
 \begin{code}
-module Abox2latex
+module Abox-2-latex
 
 imports pp-tables latex lib Literal-lib
 

@@ -1,4 +1,4 @@
-\literate[Ast2abox]
+\literate[Ast-2-abox]
 % GT -- Grammar Tools
 % Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
 %                    Eelco Visser <visser@acm.org>
@@ -19,12 +19,12 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Ast2abox.r,v 1.3 2002/03/14 16:47:21 eelco Exp $
+% $Id: Ast-2-abox.r,v 1.1 2002/05/08 07:49:44 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
 \begin{code}
-module Ast2abox
+module Ast-2-abox
 
 imports
    pp-tables-io instantiate lib misc asfix
