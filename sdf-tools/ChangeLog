@@ -1,6 +1,7 @@
 2001-06-08 Merijn de Jonge <mdejonge@cwi.nl> 
    * Removed obsolete calls to iowrapO
    * src/sdf2sdf/sdf2sdf.r: Changed sdfcons to sdf-cons
+   * src/sdf2sdf/data/Makefile.am: added test result file
 
 2001-06-07 Merijn de Jonge <mdejonge@cwi.nl> 
    * src/sdf: Imploded pretty-print tables are now again installed

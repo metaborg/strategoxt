@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/06/07 14:04:05 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2001/06/08 12:38:00 mdejonge Exp $
 
-EXTRA_DIST = Identifiers.sdf
+EXTRA_DIST = Identifiers.sdf Identifiers.sdf.out.correct
 
