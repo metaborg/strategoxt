@@ -63,6 +63,12 @@ rules
         CheckCons : Op(c, <length => n>) -> Op(c, []) 
       )
 
+  /**
+   * Just ignore injections: no check rule is required for them.
+   */
+  GenerateCheckRule =
+    ?OpDeclInj(_) 
+
   GenerateCheckRule =
     ?Overlay(c, xs, t)
     ; where(<length> xs => n)
