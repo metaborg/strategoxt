@@ -1,3 +1,8 @@
+2003-01-28   Martin Bravenboer  <martin@mbravenboer.org>
+
+  * xtc-tools/asfix2abox.str: Fixed pass-conservative. Reported by
+    Rob Vermaas.
+
 2002-12-11  Martin Bravenboer  <martin@mbravenboer.org>
 
   * trans/abox2/Abox-2-text.str: Do not print unnecessary whitespace
