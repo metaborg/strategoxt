@@ -11,7 +11,11 @@ imports
 strategies
 
   main-parse-unit =
-    xtc-io-wrap(parse-unit-options, parse-unit)
+    init-parse-unit-options
+    ; xtc-input-wrap(parse-unit-options, parse-unit)
+
+  init-parse-unit-options =
+    where(<set-verbosity> 1)
 
 strategies
 
@@ -22,6 +26,7 @@ strategies
       else
         do-full-testsuite
       end
+    ; <xtc-exit> 0
 
   do-full-testsuite =
     echo-start

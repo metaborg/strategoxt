@@ -1,3 +1,14 @@
+2005-01-22  Martin Bravenboer  <martin@cs.uu.nl>
+
+	* analyse/parse-unit/parse-unit.str: set the default verbosity to
+	1 in parse-unit. It will now by default show the test result. Use
+	--verbose 0 or silent if you don't want to see anything.
+
+	* analyse/parse-unit/parse-unit.str: parse-unit is now an input
+	only tool. Structured results could be added as an optional
+	feature, but they mess up the command-line if they are enabled by
+	default.
+	
 2004-09-25  Martin Bravenboer  <martin@cs.uu.nl>
 
 	* analyse/parse-unit/parse-unit.str: parse-unit now has an option
