@@ -1,39 +1,35 @@
 #! /bin/sh
-#
-# autobundle -- Make distributions by bundling separate software packages.
-#
-# Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2, or (at your option)
-# any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-# 02111-1307, USA.
 
-# Touch bootstrapped sources because Subversion doesn't sets the mtime of files to checkout time,
-# not to the last mtime in the repository.
+WORKINGDIR=`pwd`
 
-echo "PWD"
-echo $PWD
+echo "PWD: $PWD"
 
-SRCROOT=`dirname $0`
-echo "SRCROOT"
-echo $SRCROOT
+# touch bootstrapped sources because subversion doesn't sets the mtime of files
+# to checkout time, not to the last mtime in the repository.
 
 MTIME=`date +%Y%m%d%H%M.%S`
-echo "MTIME"
-echo $MTIME
+echo "MTIME: $MTIME"
 
 find . -print | xargs touch -t $MTIME
+
+# end of touch
+
+# install bootstrap time packages: autoxt
+
+mkdir -p pre-pkgs
+mkdir -p pre-pkgs/bootstrap
+cp -rf autoxt pre-pkgs/bootstrap/
+cd pre-pkgs/bootstrap/autoxt
+./configure --prefix=$WORKINGDIR/pre-pkgs/bootstrap
+make
+make install
+
+cd $WORKINGDIR
+export PATH=$WORKINGDIR/pre-pkgs/bootstrap/bin:$PATH
+
+echo `which autoxt`
+
+# proceed with applying the autotools
 
 rm -f mkinstalldirs missing install-sh
 
@@ -54,6 +50,25 @@ rm -f config.cache
 rm -f acconfig.h
 aclocal -I .
 autoconf
-#acconfig
 autoheader
 automake -a
+
+#
+# autobundle -- Make distributions by bundling separate software packages.
+#
+# Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
