@@ -265,52 +265,26 @@ translates into the following code if the switch operator is used:
   end
 </verbatim>
 
-The case conditions "txt", "ast", and "asfix", can in fact be
-arbitrary strategies. They are applied to the result of the subject of
-the switch, which is the result of invoking of-config in this case.
+The case conditions (="txt"=, ="ast"= and ="asfix"=) are not
+restricted to term patterns: arbitrary strategies are allowed. They
+are applied to the result of the subject of the switch, which is the
+result of invoking =of-config= in this case.
 
-The bodies are applied to the subject term of the switch
-strategy. That is, the switch subject and the conditions do not modify
-the subject term, which is comparable to the if statement.
+The bodies (=xtc-asfix-yield=, =xtc-implode-asfix=, =id= and the
+=fatal-error= invocation) are applied to the subject term of the
+switch strategy. That is, the switch subject and the conditions do not
+modify the subject term, which is comparable to the behaviour of the
+if operator.
 
-
-Syntax:
-
-<verbatim>
-  switch s0
-    case s1 : s1'
-    case s2 : s2'
-    ...
-    otherwise : s' // otherwise branch is optional
-  end
-</verbatim>
-
-s0 will be applied to the current term from right before the
-switch. Its result will be the input term for each case-condition
-strategy si.  The body strategies of the case branches, si', will be
-applied to the current term from right before the switch. The case
-branches will be applied in their normal order until a case condition
-succeeds. If a body strategy of a selected case branch fails, no
-backtracking to other (next) branches occurs, the entire switch then
-fails. Other branches will only be selected if all previous
-case-condition strategies failed. The optional default branch can only
-occur at the end and directly applies its body strategy s'.
-
-
-
-
-Not declared as keywords
-
-Example/Semantics of if
-
-Example/Semantics of switch
+The words used in these new operators (=if=, =then=, =else=, =end=,
+=switch=, =case= and =otherwise=) are not declared as
+keywords. Therefore they are still allowed as identifiers.
 
   (Arthur van Dam and Martin Bravenboer)
 
 ---------++ Stratego Regular
 
 Signature generation
-
 
 Generate just one signature file.
 
