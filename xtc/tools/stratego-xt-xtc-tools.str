@@ -1,0 +1,32 @@
+module stratego-xt-xtc-tools
+imports xtc-proc
+
+strategies
+
+  xtc-implode-asfix =
+    xtc-transform(!"implode-asfix", pass-verbose)
+
+  xtc-abox-format =
+    xtc-transform(!"abox-format", pass-verbose)
+
+  xtc-abox2text =
+    xtc-transform(!"abox2text", pass-verbose)
+
+  xtc-abox2text(width) =
+    xtc-transform(!"abox2text", <conc> (<width> (), <pass-verbose> ()))
+
+  xtc-parse-sdf =
+    xtc-transform(!"parse-sdf", pass-verbose)
+
+  xtc-parse-pp-table =
+    xtc-transform(!"parse-pp-table")
+
+  xtc-sglr(tbl) =
+    xtc-transform(!"sglr", !["-2tA", "-p", <tbl; xtc-find> () | <pass-v-verbose> ()])
+
+  xtc-sglr(tbl, sort) =
+    xtc-transform(!"sglr", !["-2tA", "-p", <tbl; xtc-find> (), "-s", <sort> () | <pass-v-verbose> ()])
+
+  pass-v-verbose =
+      ![]; if-verbose3(!["-v"])
+

@@ -23,7 +23,10 @@ USE_XT_PACKAGES
 AC_PROG_CC
 AC_PROG_INSTALL
 
-AC_OUTPUT(
+AC_CONFIG_FILES([
   Makefile
   src/Makefile
-)
+  tools/Makefile
+])
+AC_OUTPUT
+

@@ -1,3 +1,12 @@
+2003-01-07  Martin Bravenboer <martin@mbravenboer.org>
+
+  * tools/: directory for modules with xtc-transform calls 
+    to specific tools.
+
+  * tools/stratego-xt-xtc-tools.str: easy to use xtc-transform 
+    strategies for tools in StrategoXT like abox2text, 
+    implode-asfix etc.
+
 2003-01-05  Eelco Visser  <visser@cs.uu.nl>
 
 	* test for nested calls to tools to reproduce intermediate file
