@@ -67,7 +67,7 @@ strategies
          ; xtc-read
 	 ; xtc-import
     )
-  ; log(|Vomit(),<conc-strings>("Loaded repository ",repo))
+  ; log(|Vomit(),"Loaded repository ")
 
   xtc-store =
       log(|Debug(),<conc-strings>("Saving repository ",<id>))
