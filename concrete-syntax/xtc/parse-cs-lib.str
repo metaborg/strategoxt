@@ -105,7 +105,7 @@ strategies // obtain parse table
     ; <MetaData> "Syntax" => syntax
     ; if-verbose6(debug(!"Syntax: "))
     ; try(where(
-        <extend-config> ("-I", ["./", <conc-strings; xtc-find-path> (syntax, ".sdf")])
+        <extend-config> ("-I", ["./", <conc-strings; xtc-find-silent; get-path> (syntax, ".sdf")])
       ))
     ; guarantee-extension(!"tbl") => tbl
     ; (<resolve-file-name> FILE(tbl)
@@ -243,7 +243,7 @@ strategies
    <+ !Meta([])
 
   read-language-binding =
-    FILE(<concat-strings; xtc-find> [<get-extension>, ".meta"])
+    FILE(<concat-strings; xtc-find-silent> [<get-extension>, ".meta"])
     ; read-from
    <+ !Meta([])
 
