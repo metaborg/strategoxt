@@ -1,3 +1,7 @@
+2002-12-12  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/treeviz/term-to-adot.str: Implemented using concrete syntax of Dot
+
 2002-12-11  Eelco Visser  <visser@cs.uu.nl>
 
 	* src/treeviz/term-to-dot.str: Implemented composition of
