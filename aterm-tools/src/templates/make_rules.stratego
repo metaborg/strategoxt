@@ -18,18 +18,21 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: make_rules.stratego,v 1.6 2002/11/15 00:05:59 stratego Exp $
+# $Id: make_rules.stratego,v 1.7 2002/12/06 23:36:45 stratego Exp $
 
-SC = PATH=$(SC_BOOT)/bin:$${PATH} sc
+#SC = PATH=$(SC_BOOT)/bin:$${PATH} sc
+#
+#EXTRA_DIST   = $(STRATEGO_PRG:%=%.r)
+#
+#CLEANFILES   = $(STRATEGO_PRG) $(STRATEGO_PRG:%=%.c) $(STRATEGO_PRG:%=%.dep)
+#
+#SCFLAGS       = -I $(srcdir) -I .
+#
+#% : %.r
+#	$(SC) $(SCFLAGS) -i $< -o $@
+#
+#%.dep :
+#	touch $@
 
-EXTRA_DIST   = $(STRATEGO_PRG:%=%.r)
+include $(SC_BOOT)/share/sc/Makefile.stratego
 
-CLEANFILES   = $(STRATEGO_PRG) $(STRATEGO_PRG:%=%.c) $(STRATEGO_PRG:%=%.dep)
-
-SCFLAGS       = -I $(srcdir) -I .
-
-% : %.r
-	$(SC) $(SCFLAGS) -i $< -o $@
-
-%.dep :
-	touch $@

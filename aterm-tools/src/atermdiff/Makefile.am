@@ -1,36 +1,7 @@
-# GT -- Grammar Tools
-# Copyright (C) 2001 Merijn de Jonge <mdejonge@cwi.nl>
-#                    Eelco Visser <visser@acm.org>
-#                    Joost Visser <jvisser@cwi.nl>
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2, or (at your option)
-# any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-# 02111-1307, USA.
+include $(top_srcdir)/Makefile.stratego
 
-# $Id: Makefile.am,v 1.3 2002/03/14 22:53:01 eelco Exp $
-
-include $(srcdir)/../templates/make_rules 
-include $(srcdir)/../templates/make_rules.stratego
-
-include $(STRATEGO_PRG:%=%.dep)
-
-SUBDIRS      = data
-
-STRATEGO_PRG = atermdiff term-size
-
-bin_SCRIPTS  = $(STRATEGO_PRG)
-
-SCFLAGS     += -I $(srcdir)/../lib -I $(srcdir)/../asfix
-
-EXTRA_DIST  += apply.r term-size.r
+SUBDIRS      	= data
+bin_PROGRAMS 	= atermdiff term-size
+BOOTCLEANFILES 	= atermdiff.c term-size.c
+SCFLAGS     	= -I $(srcdir)/../lib -I $(srcdir)/../asfix
+EXTRA_DIST  	= apply.str term-size.str
