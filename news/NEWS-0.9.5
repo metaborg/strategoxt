@@ -2,19 +2,74 @@ StrategoXT 0.9.5 -- released March 26, 2004
 
 ---------++ Summary of Changes
 
+    * Stratego Documentation
+          o Update and minimize README files of subpackages (and toplevel!)
+          o Improve the descriptions of StrategoXT packages on the Stratego website
+
+---------++ Compiler
+
+    * Check that name of module is declared correctly
+
+    * pack-stratego always fails with a parse error in a .str if no -I
+      arguments are used.
+
 ---------++ Language Extensions
 
 ---------++ Run-Time System
 
 ---------++ Stratego Standard Library
 
+    * hash-tables
+
+    * SUnit: test strategies with term arguments. e.g. apply-test(foo
+      | "foo test", input, output)
+
 ---------++ Utilities
+
+    *  parse-unit:
+          o design a concrete syntax for testsuites
+          o allow partial specification of expected results (wildcards)
+
+    * Smart merge modified pp file with newly generated pp file after
+      grammar change
+
+    * Upgrade to sdf-front and sdf-tools to SDF2 as it appears in PGEN
+    2.0
+          o the PGEN 2.0 SDF sytax definition includes constructor declarations
+                + generate a stratego signature from this syntax
+                definition
+          o unpack-sdf:
+                + unpack does not obey the XT calling convention (-i -o)
+                + make directories of modules with pathnames
+          o pack-sdf:
+                + Cannot find modules with pathnames
+                + Make it work with new sdf syntax definition
+
+    * aterm-tools:
+          o upgrade to latest syntax definition of aterms in the asf-library 1.0
+
+    * Lang-Renamed.sdf generator. Generates an SDF module that renames
+      all sorts in a syntax definition by prefixing them with a given
+      prefix.
 
 ---------++ Configuration
 
+Stratego/XT 0.9.5 requires more recent versions of the SDF tools, PGEN
+2.0. The sdf2-bundle 2.0.1 includes the 
+
+    * Change --with-stratego-xt flag to --with-strategoxt.
+
 ---------++ Issue Tracking System
 
+We have finally adopted an issue tracking system. Arthur van Dam
+suggested to use JIRA. He has taken care of evaluating and installing
+it. We have just started to use the system, but it already looks very
+promosing. Please report issues to the JIRA issue tracking system from
+now on. New issues are reported to the stratego-bugs mailing list. Of
+course you are welcome to discuss issues at the stratego-dev mailing
+list first.
 
+(Arthur van Dam)
 
 ---------++ Download and Installation
 
