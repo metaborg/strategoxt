@@ -20,7 +20,6 @@ AC_PROG_CC
 AC_PROG_INSTALL
 
 AC_CONFIG_FILES([
-  VERSION 
   Makefile 
   src/Makefile 
   src/boxenv/Makefile
