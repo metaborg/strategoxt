@@ -2,21 +2,35 @@ StrategoXT 0.12 -- released August ..., 2004
 
 ---------++ Summary of Changes
 
-   * format-check: improved performance and error reporting
+Stratego Language
 
-   * pack-sdf: various improvements
+   * New `if then' construct
 
-   * ater2xml and xml2aterm: pragmatic xml support.
+   * Bigger bag of dynamic rules
 
-   * parse-unit: minor usability enhancements.
+Stratego Library
 
-   * sdf2parenthesize now fixes more conflicts.
+   * Improved newname in case of repeated application.
 
-   * Stratego language: new if then construct
+   * New mathematical operators: abs and gcd.
+
+Tools
+
+   * Improved performance and error-reporting of format-check, a tool
+     for checking the structure of an aterm,
+
+   * Various usability improvements in pack-sdf, a tool for collecting
+     SDF modules in a single SDF definition.
+
+   * Various usabily enhancements in parse-unit, a tool for unit
+     testing SDF syntax definitions.
+
+   * The parenthesize generator, sdf2parenthesize, now fixes much more
+     conflicts: transitive priorities are now supported.
 
    * Support for comment preserving transformations.
-  
-   * Improved newname.
+
+   * New XML tools provide pragmatic interoperability with XML tools.
 
 ---------++ Format Checking
 
@@ -79,52 +93,40 @@ StrategoXT 0.12 -- released August ..., 2004
 
 ---------++ Improved Pack SDF
 
+Several features have been added to pack-sdf to make it more
+user-friendly:
 
-	* parse/pack-sdf.str: pack-sdf now checks if module name in an SDF
-	module file, corresponds to the filename.
+   * pack-sdf now checks if the module name specified in an SDF module
+     file, corresponds to the actual filename. Having different names
+     can lead to very nasty problems.
 
+   * The order of include path entries has been improved to make it
+     more clear. The directory of the main module (specified with -i)
+     is now the first include option. This is not always the current
+     directory, in which case unexpected modules might be imported in
+     previous versions of StrategoXT. So, pack-sdf -i syn/Foo.sdf will
+     search for module in the syn directory.
 
-	* parse/pack-sdf.str: yet another improvement of the include
-	mechanism. The first search option is from now the directory of
-	the input file, which is not always the current directory. So,
-	pack-sdf -i syn/Foo.sdf will search for module in the syn
-	directory.
+   * The input file is no longer searched for in the include
+     path. That is, pack-sdf -i Foo.sdf now always packs ./Foo.sdf,
+     not a module Foo elsewhere in the include path if ./Foo.sdf does
+     not exist.
 
-	* parse/pack-sdf.str: pack-sdf -i Foo.sdf now always packs
-	./Foo.sdf, not a Foo in the search path if ./Foo.sdf does not
-	exist.
+   * A warning is printed a an include directory does not exist.
 
-	Improved error-reporting for invalid -I arguments.
+   * Improved error reporting for missing modules. Usually, the module
+     is not really missing, but the name of this import is
+     incorrect. Hence, it is useful to report the module(s) from where
+     the 'missing' module is imported. Pack SDF now prints a detailed
+     report of all missing modules and the module where these are
+     imported.
 
-	* parse/pack-sdf.str: improved error reporting for missing
-	modules. Usually, the module is not really missing, but the name
-	of this import is incorrect. Hence, it is useful to report the
-	module(s) from where the 'missing' module is imported.
+   * pack-sdf now reports all missing modules in a single execution.
 
-	Example (rather verbose because of the hierarchical SDF module names)
-	-----------------------------------------------------------------
-	/pkg/strategoxt/current/bin/pack-sdf  -i Java-15.sdf -o Java-15.def
-	pack-sdf: error: module languages/java-15/expressions/Main not found
-	  imported from module languages/java-15/classes/FieldDeclarations
-	    in file ./languages/java-15/classes/FieldDeclarations.sdf
-
-	pack-sdf: error: module languages/java-15/interfaces/MethodDeclarations not found
-          imported from module languages/java-15/interfaces/InterfaceDeclarations
-            in file
-	  ./languages/java-15/interfaces/InterfaceDeclarations.sdf
-	-----------------------------------------------------------------
-
-	* parse/pack-sdf.str: pack-sdf now reports *all* missing modules
-	in a single execution.
-
-	* parse/pack-sdf.str: fatal-error invokes "exit". Tools should
-	invoke xtc-exit to remove scoped temporary files. I've replace
-	some fatal-errors with printnl and xtc-exit, but not all yet.
-
-
-	* parse/pack-sdf.str: fixed the support for creating a dependency
-	file. Makefile.xt will instruct pack-sdf to do this, so there is
-	no longer a need to specify dependencies of SDF files.
+   * pack-sdf now (again) supports the creation of a dependency file
+     suitable for inclusion in a Makefile. Makefile.xt will instruct
+     pack-sdf to do this, so there is no longer a need to specify
+     dependencies of SDF files.
 
 ---------++ Improved Parse Unit
 
@@ -386,4 +388,5 @@ Developments, beta tests, and bug fixes were carried out by
    * Martin Bravenboer
    * Arthur van Dam
    * Akim Demaille
+   * Rob Vermaas
    * Eelco Visser
