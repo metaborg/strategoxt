@@ -36,7 +36,7 @@ strategies
        ; (id, flatten-stratego) 
       else
         if not(<get-config>"--slack") then
-          Snd ; debug
+          Snd 
           ; map(report-module-not-found)
           ; <xtc-exit> 1
         else 
