@@ -18,12 +18,12 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.6 2001/12/03 09:35:01 mdejonge Exp $
+# $Id: Makefile.am,v 1.7 2002/03/16 14:55:46 eelco Exp $
 
 TEST_SET = Iter Iter-sep Iter-star Iter-star-sep Nesting-iter-sep1 \
            Nesting-iter-sep2 Nesting-iter-star-sep Empty-iter-star-sep \
 	   Alt1a Alt1b Alt2a Alt2b Alt3a Alt3b Alt4a SeqOpt1 SeqOpt2 SeqOpt3 \
-	   Seq Var1 Var2
+	   Seq Var1 Var2 Or
 
 Iter_flags= --lex --layout --pt --list
 Iter_sep_flags= --lex --layout --pt --list
@@ -68,7 +68,7 @@ testsetclean:
 	) > $@ && chmod +x $@
 
 %.in :
-	PATH=$(SGLR)/bin:$${PATH} sglr -2 -s $* -p tests.tbl -i $*.trm -o $@
+	PATH=$(SGLR)/bin:$${PATH} sglr -t -2 -s $* -p tests.tbl -i $*.trm -o $@
 
 %.tbl : %.def
 	PATH=$(PGEN)/bin:$${PATH} sdf2table -i $< -o $@

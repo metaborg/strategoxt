@@ -1,1 +1,1 @@
-Alt1b(alt(2,["A"]))
+Alt1b(appl(prod([cf(sort("B"))],cf(pair(sort("A"),pair(sort("B"),lit("aap")))),no-attrs),["A"]))

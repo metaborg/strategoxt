@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: asfix.r,v 1.2 2002/03/13 21:50:35 eelco Exp $
+% $Id: asfix.r,v 1.3 2002/03/16 14:55:43 eelco Exp $
 
 
 	Abstract syntax for parse tree representation of SDF2 parsers.
@@ -49,7 +49,9 @@ signature
   sorts Attribute 
   constructors
     atr      : String -> Attribute
-    cons     : String -> Attribute
+    term     : Term -> Attribute
+    cons     : String -> Term
+    bracket  : Attribute
     no-attrs : List(Attribute)
     attrs    : List(Attribute) -> List(Attribute)
 \end{code}

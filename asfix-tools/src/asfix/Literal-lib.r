@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Literal-lib.r,v 1.1 2001/05/30 15:18:59 mdejonge Exp $
+% $Id: Literal-lib.r,v 1.2 2002/03/16 14:55:43 eelco Exp $
 
 \begin{code}
 module Literal-lib
@@ -59,17 +59,20 @@ strategies
     ; at-last(?[34];![]) (* last char is double-quote *)
     ; implode-string
     
-  de-escape
+  de-escape 
     = explode-string
     ; De-Escape
     ; implode-string
   
 rules
+
+  De-Escape = 
+    De-Escape1 <+ De-Escape2 <+ De-Escape3 <+ De-Escape4
     
-  De-Escape:    Cons(92,Cons(34,xs))    -> Cons(34,<De-Escape>xs)
-  De-Escape:    Cons(92,Cons(92,xs))    -> Cons(92,<De-Escape>xs)
-  De-Escape:    Cons(x,xs)              -> Cons(x,<De-Escape>xs)
-  De-Escape:    Nil                     -> Nil
+  De-Escape1:    [92,34 | xs]    -> [34 | <De-Escape>xs]
+  De-Escape2:    [92,92 | xs]    -> [92 | <De-Escape>xs]
+  De-Escape3:    [x | xs]        -> [x  | <De-Escape>xs]
+  De-Escape4:    []              -> []
   
 strategies
         
@@ -89,18 +92,21 @@ rules
   Quote:
     chars       -> <concat>[[34],chars,[34]]
 
-  Escape: (* double-quote *)
+  Escape =
+    Escape1 <+ Escape2 <+ Escape3
+
+  Escape1: (* double-quote *)
     34   -> [92,34]
-  Escape: (* back-slash *)
+  Escape2: (* back-slash *)
     92   -> [92,92]
-  Escape:
+  Escape3:
     char -> [char]
 
 strategies
 
   is-UQLiteral
     = test( explode-string
-          ; Cons(isLower,map(isAlphaNumHyphen))
+          ; [isLower | map(isAlphaNumHyphen)]
           ; at-last([isAlphaNum])
           )
 

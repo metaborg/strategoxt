@@ -4,7 +4,7 @@ exports
   sorts Iter Iter-sep Iter-star Iter-star-sep
         Nesting-iter-sep1 Nesting-iter-sep2 Nesting-iter-star-sep
         Empty-iter-star-sep Alt1a Alt1b Alt2a Alt2b Alt3a Alt3b Alt4a
-	Seq SeqOpt1 SeqOpt2 SeqOpt3 Var1 Var2
+	Seq SeqOpt1 SeqOpt2 SeqOpt3 Var1 Var2 Or
 
   lexical syntax
     [\ \t\n] -> LAYOUT
@@ -39,6 +39,8 @@ exports
     "f" A ((A B) | B) -> Alt2b {cons("Alt2b")}
 
     (A | B)      -> Alt4a {cons("Alt4a")}
+
+    A "\\/" B 	 -> Or {cons("or")}
 
 
   lexical syntax

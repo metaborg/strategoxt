@@ -1,5 +1,7 @@
 2002-03-16  Eelco Visser  <visser@acm.org>
 
+	* src/asfix/Literal-lib.r: Evaluation order bug in definition of De-Escape
+
 	* src/implode/implode-asfix.r: Implosion of lists with separators;
 	singleton sequences are not considered as injections.
 

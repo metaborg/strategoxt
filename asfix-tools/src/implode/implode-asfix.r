@@ -441,16 +441,16 @@ rules
 strategies
 
   injection = 
-    prod(id, ?sort("<START>"), no-attrs)
+    ?prod(_, sort("<START>"), no-attrs)
 
   injection = 
-    prod(id, id, oncetd("bracket"))
+    prod(id, id, oncetd("bracket" + bracket))
 
   injection = 
-    prod([cf(iter(?x))],cf(iter-star(?x)),no-attrs)
+    ?prod([cf(iter(x))],cf(iter-star(x)),no-attrs)
 
   injection = 
-    prod([cf(iter-sep(?x,?l))],cf(iter-star-sep(?x,?l)),no-attrs)
+    ?prod([cf(iter-sep(x,l))],cf(iter-star-sep(x,l)),no-attrs)
 
   injection = 
     prod([not(lit(id))]
@@ -461,7 +461,7 @@ strategies
 
   injection' = 
     prod(filter(not(cf(opt(layout)) + lit(id) )); [id], 
-         cf(seq(id)), id)
+         cf(seq(id)), not(oncetd(cons(id))))
 
   injection = 
     prod([sort(id) + cf(sort(id))]
