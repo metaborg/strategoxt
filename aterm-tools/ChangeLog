@@ -1,3 +1,8 @@
+2002-03-17  Eelco Visser  <visser@acm.org>
+
+	* src/treeviz/term-to-adot.r: Tree and DAG visualization of ATerms
+	using Dot.
+
 2002-03-16  Eelco Visser  <visser@acm.org>
 
 	* src/atermdiff/term-size.r: Make Stratego library strategy
