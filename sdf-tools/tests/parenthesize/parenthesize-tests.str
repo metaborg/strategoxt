@@ -30,6 +30,13 @@ strategies
     ; exp-test(|"(b - c) - d", "(b - c) - d")
     ; exp-test(|"b - (c - d)", "b - (c - d)")
 
+    ; exp-test(|"a * (b ? c : d)")
+    ; exp-test(|"a * (b || c)")
+    ; exp-test(|"a * (b && c)")
+    ; exp-test(|"a * (b == c)")
+    ; exp-test(|"a * (b < c)")
+    ; exp-test(|"a * (b - c)")
+
   /**
    * @param  txt  Expression to test
    */
