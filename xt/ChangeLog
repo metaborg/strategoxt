@@ -1,3 +1,6 @@
+2000-04-13 <mdejonge@cwi.nl>
+        * fixed unpacking of distributions: tar zxf is gnu tar specific!
+
 2000-04-12    <visser@loempia.cs.uu.nl>
 
 	* www/: Made the content bar prettier and added a counter.

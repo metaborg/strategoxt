@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: collect.sh,v 1.10 2000/04/12 16:04:54 eelco Exp $
+# $Id: collect.sh,v 1.11 2000/04/13 08:11:38 mdejonge Exp $
 
 
 # This script will collect all required packages for the XT distribution.
@@ -116,7 +116,7 @@ do
       cd ..
       rm -fr ${pkg}-${pkg_version}
       rm -fr ./${pkg}
-      tar -zxf ./pkgs/${pkg}-${pkg_version}.tar.gz
+      gunzip -c ./pkgs/${pkg}-${pkg_version}.tar.gz |  tar xf -
       if [ ! -f ./${pkg} ]
       then
         ln -s ${pkg}-${pkg_version} ${pkg}
