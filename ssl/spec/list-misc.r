@@ -76,6 +76,9 @@ strategies
   drop-until(s) = 
     at-suffix(([] + [s|id]);?xs); !xs
 
+  split-at(s) = 
+    at-suffix([s|id];[id|?tl];![]); !(<id>, tl)
+
   drop(isn) = 
     nzip0(id); drop-until((isn,id)); map(Snd)
 \end{code}
