@@ -95,34 +95,39 @@ that are declared in context using the dynamic rule ContextVar */
 
 
   // TODO: Introduce memoization!
+  //  * for bagof-RuleA and RuleA
+  //  * for lifted aux-RuleA (mapping from RDefs to stamp/label)
 
   SplitDynamicRule(saveclsr):
     DynRuleDef|[ f(as1|as2) : t1 -> t2 where s ]| ->
-    (|[ where(~<saveclsr> (t1', |[ Closure(~str:stamp, [t*]) ]| )) ]|,
-     [ |[ f'(as1|as2) : (Closure(~str:stamp, [t*]), t1) -> t2 
-                where Snd; s ]|,
-       |[ f(as1|as2) : x@t1 -> <fetch-elem({cl: ?cl; <f'(s1*|t1*)> (cl, t0) })> closures
+    (|[ where(~<saveclsr> (t1', |[ (~str:stamp, t*) ]| )) ]|,
+     [ |[ f'(as1|as2') : (~str:stamp, t*) -> t2 
+                where <s> t0 ]|,
+       |[ f(as1|as2) : x@t1 -> <fetch-elem(f'(s1*|t1'*))> closures
                 where dr-lookup-rule(|~str:f, t1'') => closures ]|,
-       |[ g(as1|as2) : x@t1 -> <filter({cl: ?cl; <f'(s1*|t1*)> (cl, t0) })> closures
+       |[ g(as1|as2) : x@t1 -> <filter(f'(s1*|t1'*))> closures
                 where (dr-lookup-rule(|~str:f, t1'') <+ ![]) => closures ]|
      ])
     where
         <conc-strings>("bagof-", f) => g
       ; <conc-strings>("aux-", f) => f'  // has to be the same such that + of aux-f works
       ; new => stamp
+      ; new => x
+      ; !Var(x) => t0
 
       // Transform passed arguments of f into calling arguments for f'
       ; <map((?DefaultVarDec(<id>) + ?VarDec(<id>,_)); !Call(SVar(<id>),[]))> as1 => s1*
       ; <map((?DefaultVarDec(<id>) + ?VarDec(<id>,_)); !Var(<id>))> as2 => t1*
 
 // We now pass the entire LHS to the aux- rule as well, no need for additional term-arguments.
-//      ; <tvars> t1 => t1vars                                     // *all* pattern variables in LHS t1
-//      ; <conc> (as2, <map(try(?ListVar(<id>)); !DefaultVarDec(<id>))> t1vars) => as2' // add them to term args as2 (for passing to aux- rule)
-//      ; <conc> (t1*, <map(!Var(<id>))> t1vars) => t1'*           // same for actual values at call-site
+      ; <tvars> t1 => t1vars // *all* pattern variables in LHS t1
+      ; <concat> [as2,
+                  <map(try(?ListVar(<id>)); !DefaultVarDec(<id>))> t1vars,
+                  [DefaultVarDec(x)]
+                 ] => as2' // add them to term args as2 (for passing to aux- rule)
+      ; <concat> [t1*, <map(!Var(<id>))> t1vars, [t0]] => t1'*           // same for actual values at call-site
 
       // Prepare LHS for use as a key
-      ; new => x
-      ; !Var(x) => t0
       ; <dummify> t1 => t1'
       ; try(?t1; !Var(x)) => t1'' // If dummified version is the same, just use x for lookup
 
