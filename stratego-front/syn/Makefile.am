@@ -9,6 +9,7 @@ sdfdata_DATA = \
   StrategoStratego.tbl \
   Stratego-Core.def \
   Stratego-Core.tbl \
+  StrategoForTesting.def \
   StrategoForTesting.tbl \
   StrategoStrategoForTesting.tbl \
   StrategoRenamed.sdf \
