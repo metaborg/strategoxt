@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Abox2text.r,v 1.1 2001/12/18 11:24:18 mdejonge Exp $
+% $Id: Abox2text.r,v 1.2 2001/12/20 15:16:39 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
@@ -121,7 +121,7 @@ Abox-2-text =
     )
 
   Abox-2-text =
-    \ (S(s), xpos) -> (s, <add>(xpos, <string-length>s)) \
+    \ (S(s), xpos) -> (s, <add>(xpos, <string-length'(!xpos)>s)) \
 
   Abox-2-text =
     \ (C(_,[S(s)]), xpos) -> (s, xpos) \
@@ -181,4 +181,40 @@ strategies
   Ispace =
     (fetch(SOpt(IS,?value)); !value; string-to-int <+ !0)
   ; \ n -> <copy-char>(n, 32) \
+
+
+// Calculate relative string length. That is, by taking new lines and
+// current horizontal position into account
+//
+// <string-length'(x)>"my_string" => 9
+// <string-length'(x)>"my\nstring" => 6 - x
+string-length'(xpos) =
+    split-at(10);
+    (
+       [id];
+       last;
+       string-length
+    <+
+       last;
+       string-length;
+       split(id,xpos);
+       subt
+    )
+    
+
+split-at(s) =
+   ?str;
+   !(<explode-string;reverse>str, [], []);
+   rec r ({x,xs,ys,zs:
+      ?([], ys, zs); 
+       ![ys|zs]
+      <+
+      ?([x|xs],ys,zs);
+      <s>x;
+      <r>(xs, [],[ys|zs])
+      <+
+      ?([x|xs],ys,zs);
+      <r>(xs, [x|ys], zs)
+   });
+   map(implode-string)
 \end{code}

@@ -1,4 +1,5 @@
-2001-12-19 Merijn de Jonge <mdejonge@cwi.nl>
+2001-12-20 Merijn de Jonge <mdejonge@cwi.nl>
+   * abox2text: Added support for conservative pretty-printing
    * asfix2box: Fixed insertion of initial and trailing layout in generated
      box terms
 
