@@ -43,7 +43,7 @@ strategies
         ; (<get-config> "--dep" <+ not(<get-config> "--nodep")) => dep-base
         ; <add-extension> (<id>, "dep") => depfile
         ; <open-file> (depfile, "w") => dep
-        ; <printnl> (dep, [dep-base | <separate-by(!" \\\n\t")> [" :" | files]])
+        ; <printnl> (dep, [dep-base | <separate-by>(" \\\n\t", [" :" | files])])
         ; <close-file> dep
 
   pack-stratego-modules =
@@ -58,14 +58,18 @@ strategies
 
   get-module(mkpath) :
     mod -> (name, tree)
-    where <find-module(mkpath)> (mod, ["rtree", "str", "cr", "r"]) => (ext, FILE(name))
+    where <find-module(mkpath)> (<basename> mod, ["rtree", "str", "cr", "r"]) 
+		=> (ext, FILE(name))
         ; if-verbose3(where(<debug(!" reading ")> name))
 	; parse-module => tree
 
   find-module(mkpath) =
-    ?(mod, <id>)
-    ; (fetch-elem(\ ext -> (ext, FILE(<find-file(!ext)> (mod, <mkpath>))) \ )
-       <+ <fatal-error> ["*** module ", mod, " not found"])
+    ?(mod, exts)
+    ; mkpath
+    ; (fetch-elem(\ dir
+	 -> <fetch-elem(!(<id>, FILE(<concat-strings; file-exists> [dir, "/", mod, ".", <id>])))> exts 
+       \ )
+     <+ <fatal-error> ["*** module ", mod, " not found"])
 
   parse-module =
     ?("rtree", <?name>); Snd
