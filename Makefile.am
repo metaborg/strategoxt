@@ -26,6 +26,8 @@ $(INSTALL_XTC_DEST)/xtc.dummy :
 	cd $(XTC_DIR) && \
 	$(MAKE) $(AM_MAKEFLAGS) && \
 	$(MAKE) $(AM_MAKEFLAGS) DESTDIR=$(INSTALL_XTC_DEST) install && \
+	cp -fp   libraries/*.la  $(INSTALL_XTC_DEST)/$(prefix)/lib/xtc/ && \
+	cp -LRfp libraries/.libs $(INSTALL_XTC_DEST)/$(prefix)/lib/xtc/ && \
 	touch $(INSTALL_XTC_DEST)/xtc.dummy
 
 fixeddist : dist
