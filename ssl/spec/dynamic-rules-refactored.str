@@ -218,7 +218,7 @@ strategies // change sets
 strategies // looking up
 
   /**
-   * Fetch the most recent definition for key
+   * Fetch the most recent definition for key.
    */
 
   dr-lookup-rule(|key) =
@@ -234,6 +234,26 @@ strategies // looking up
     ?[ChangeSet(tbl) | rs]
     ; let look2 = look1 <+ \ key' -> <hashtable-get(|key')> tbl \
        in <dr-lookup-rule(look2 | key)> rs
+      end
+
+  /**
+   * Fetch the most recent definition for key and return a pointer
+   * to the table that defines it.
+   */
+
+  dr-lookup-rule-pointer(|key) =
+    dr-lookup-rule-pointer(fail | key)
+
+  dr-lookup-rule-pointer(look | key) =
+    ?[RuleScope(lbls, tbl) | rs]
+    ; (<look>(lbls, key)
+       <+ <hashtable-get(|key)> tbl; !(<id>, key, tbl)
+       <+ <dr-lookup-rule-pointer(look | key)> rs)
+
+  dr-lookup-rule-pointer(look1 | key) =
+    ?[ChangeSet(tbl) | rs]
+    ; let look2 = look1 <+ \ key' -> <hashtable-get(|key'); !(<id>, key', tbl)> tbl \
+       in <dr-lookup-rule-pointer(look2 | key)> rs
       end
 
 strategies // setting a rule
