@@ -1,5 +1,5 @@
 module atermdiff
-imports lib LayoutPreserve
+imports  LayoutPreserve
 signature
   constructors
     Input2: String -> Option
