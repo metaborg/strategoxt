@@ -19,21 +19,23 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: gen-html.sh,v 1.5 2000/11/18 11:08:06 mdejonge Exp $
+# $Id: gen-html.sh,v 1.6 2000/11/25 20:04:18 mdejonge Exp $
 
 #
-# This script generates on standard output an XT download page. It consists
-# of a table of XT versions for different platforms. Both, the available
-# versions and platforms are determined from the available XT* files.
-# Their names should have the following format:
+# This script generates on standard output a download page for ${pkgname}.
+# It consists of a table of versions for different platforms. Both, the
+# available versions and platforms are determined from the available
+# ${pkg-name}-[0-9]* files. Their names should have the following format:
 #
-#   xt-<version>.<platform>.<pkg>,gz
+#   ${pkgname}-<version>.<platform>.<pkg><opt-ext>
 #
 #   <platform> is either 'src' or <os>_<arch>
-#   <pkg> can be anything like 'tar', 'rpm', 'pkg'.
-#
+#   <pkg>      can be anything like 'tar', 'rpm', 'pkg'.
+#   <opt-ext>  optional extension (.gz) for example
 
 pkgname=xt
+HEADER="./header.html"
+FOOTER="./footer.html"
 
 archs=`ls ${pkgname}-[0-9]* \
         | sed 's/\./ /g;s/-/ /g;s/src/aaasrc/' \
@@ -50,7 +52,7 @@ versions=`ls ${pkgname}-[0-9]* \
            | sed 's/xxx$//'`
 
 
-cat header.html
+cat ${HEADER}
 
 echo '<table border=0 cellspacing=1 cellpadding=5 bgcolor="#ffffff" width="100%">'
 echo '<tr>'
@@ -91,4 +93,4 @@ do
    echo '</tr>'
 done
 
-cat footer.html
+cat ${FOOTER}
