@@ -1,11 +1,11 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-# libexec_PROGRAMS = s2j
+libexec_PROGRAMS = s2j
 
 LDADD += $(SSL_LIBS)
 
-STRINCLUDES    = -I $(XTC)/share/xtc 
+STRINCLUDES    = -I $(XTC)/share/xtc -I $(JAVA_FRONT)/share/java-front -I $(STRATEGO_FRONT)/share/stratego-front
 
 SCFLAGS        = --main io-$* -O 2 --dr new
 
