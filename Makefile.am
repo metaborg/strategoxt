@@ -26,6 +26,9 @@ $(INSTALL_XTC_DEST)/xtc.dummy :
 fixeddist : dist
 	mv $(PACKAGE)-$(VERSION).tar.gz $(PACKAGE).tar.gz
 
+relname:
+	echo -n $(distdir) > relname
+
 revision-dist : dist
 	mv $(PACKAGE)-$(VERSION).tar.gz $(PACKAGE)-$(VERSION)-$(SVN_REVISION).tar.gz 
 
