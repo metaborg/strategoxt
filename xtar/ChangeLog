@@ -1,6 +1,10 @@
 2004-11-04  Karl Trygve Kalleberg <karltk@cs.uu.nl>
 	* bootstrap: Added WANT_AUTOMAKE and WANT_AUTOCONF to make bootstrap
 	more compatible with Gentoo, Mandrake, etc.
+	* xtc/*: moved to spec/
+	* spec/zip.str: Added high-level zip module
+	* srt/zip/{zip.{c,h},minizip-*{c,h}: native bindings for the zip
+	module.
 
 2004-10-17  Martin Bravenboer <martin@cs.uu.nl>
 

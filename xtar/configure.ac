@@ -12,6 +12,8 @@ AC_PROG_LIBTOOL
 
 AC_CONFIG_FILES([
   Makefile
-  xtc/Makefile
+  spec/Makefile
+  srt/Makefile
+  srt/zip/Makefile
 ])
 AC_OUTPUT
