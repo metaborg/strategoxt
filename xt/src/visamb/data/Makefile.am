@@ -15,10 +15,10 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/06/11 12:09:24 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2001/06/12 08:32:26 daybuild Exp $
 
-EXTRA_DIST = test.sdf input.test input.test.tree input.test.out.correct \
-             Exp.sdf input.exp input.exp.tree input.exp.out.correct
+EXTRA_DIST = test.sdf input.test input.test.tree input.test.tree.out.correct \
+             Exp.sdf input.exp input.exp.tree input.exp.tree.out.correct
 
 # Rules to generate testset (requires sdf2table and sglr)
 test.tbl : test.sdf
