@@ -3,7 +3,7 @@ imports Stratego-Sugar stratlib
 strategies
 
   rename-defs-io =
-    iowrap(Specification([id, id, Strategies(rename-sdefs)]))
+    io-wrap(Specification([id, id, Strategies(rename-sdefs)]))
 
   // Rename the names of all top-level strategy definitions; 
   // The Stratego syntax cannot be used for names of C functions.

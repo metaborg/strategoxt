@@ -2,7 +2,7 @@
  * Compilation of Stratego programs to C 
  */
 module s2c
-imports liblib Stratego-Sugar automaton C C-simplify pair-overlay
+imports liblib Stratego-Sugar automaton C C-simplify 
 strategies
 
   s2c = 
@@ -498,10 +498,10 @@ rules
           ,Compound([],match-args)
 	  ,CallFail)
     where <not("Nil" + "Cons")> c; 
-      <thread-map(\ Pair(t,i) -> 
-         Pair(<MatchArg1 <+ MatchArg2>(t, ATgetArgument(trm,IntConst(<int-to-string>i))), 
+      <thread-map(\ (t,i) -> 
+         (<MatchArg1 <+ MatchArg2>(t, ATgetArgument(trm,IntConst(<int-to-string>i))), 
               <add>(i,1)) \ )> 
-	     Pair(ts,0) => Pair(match-args,_)
+	     (ts,0) => (match-args,_)
 
   MatchArg1 : 
     (Var(x){t*}, trm) -> Match(Var(x){t*}, trm)
@@ -558,10 +558,10 @@ rules
           ,Compound([], <conc>(get-args, [s1]))
           ,Compound([],[s2]))
     where <not("Nil" + "Cons")> c; <map(Var(id))> xs; 
-      <thread-map(\ Pair(Var(x), i) -> 
-         Pair(Stat(Assign(Id(x), AssignEq, ATgetArgument(Id("t"),IntConst(<int-to-string>i))))
+      <thread-map(\ (Var(x), i) -> 
+         (Stat(Assign(Id(x), AssignEq, ATgetArgument(Id("t"),IntConst(<int-to-string>i))))
              , <add>(i,1)) \ )> 
-      Pair(xs,0) => Pair(get-args,_)
+      (xs,0) => (get-args,_)
 
   TranslateStratMatchGuard :
     GuardedLChoice(Match(Op("Nil", [])), s1, s2) ->
@@ -636,10 +636,10 @@ rules
           ,Compound([], <conc>(get-args,[s1]))
           ,Compound([],[Case(Var(t), alts, s2)]))
     where <not("Nil" + "Cons")> c;
-      <thread-map(\ Pair(Var(x), i) -> 
-         Pair(Stat(Assign(Id(x), AssignEq, ATgetArgument(Id(t),IntConst(<int-to-string>i))))
+      <thread-map(\ (Var(x), i) -> 
+         (Stat(Assign(Id(x), AssignEq, ATgetArgument(Id(t),IntConst(<int-to-string>i))))
              , <add>(i,1)) \ )> 
-      Pair(xs,0) => Pair(get-args,_)
+      (xs,0) => (get-args,_)
 
 
   TranslateStrat :

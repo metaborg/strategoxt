@@ -8,7 +8,7 @@
  */
 
 module stratlib
-imports liblib Stratego-Sugar pair-overlay
+imports liblib Stratego-Sugar
 
 signature
   constructors

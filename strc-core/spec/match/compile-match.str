@@ -3,7 +3,7 @@ imports match-to-matrix matrix-to-dfa opt-lib
 strategies
 
   compile-match-io = 
-    iowrap(apply-to-bodies(topdown(try(ExpandId)); match-to-dfa))
+    io-wrap(apply-to-bodies(topdown(try(ExpandId)); match-to-dfa))
 
   match-to-dfa = 
     match-to-matrix    

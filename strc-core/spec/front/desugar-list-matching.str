@@ -11,11 +11,12 @@ strategies
 
 strategies
 
-  desugar-list-matching =
+  desugar-list-matching = 
     rec dlm(
       alltd(
-        (ListVarScope + desugarRule); all(dlm)
+        (ListVarScope + RtoS); all(dlm)
         <+ Build(dlm-in-build(dlm))
+        <+ CallT(id, map(dlm), map(dlm-in-build(dlm)))
         <+ Match(dlm-in-match(dlm))
       )
     )
@@ -23,18 +24,18 @@ strategies
   dlm-in-build(dlm) =
     alltd(
       ListVarAsTail 
-      + ListVarInBuild
-      + SingleListVar
-      + App(dlm, dlm-in-build(dlm))
-      + RootApp(dlm)
+      <+ ListVarInBuild
+      <+ SingleListVar
+      <+ App(dlm, dlm-in-build(dlm))
+      <+ RootApp(dlm)
     )
 
-  dlm-in-match(dlm) =
+  dlm-in-match(dlm) = 
     alltd(
       ListVarAsTail 
-      + SingleListVar
-      + App(dlm, dlm-in-match(dlm))
-      + RootApp(dlm)
+      <+ SingleListVar
+      <+ App(dlm, dlm-in-match(dlm))
+      <+ RootApp(dlm)
     )
 
 rules

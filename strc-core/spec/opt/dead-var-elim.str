@@ -3,7 +3,7 @@ imports stratlib
 strategies
  
   dead-var-elim-io =
-    iowrap(dead-var-elim)
+    io-wrap(dead-var-elim)
 
   dead-var-elim =
     Specification(

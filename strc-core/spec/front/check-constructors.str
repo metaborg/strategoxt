@@ -1,5 +1,5 @@
 module check-constructors
-imports liblib Stratego-Sugar pair-overlay
+imports liblib Stratego-Sugar
 
 strategies
 

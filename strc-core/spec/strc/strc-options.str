@@ -1,5 +1,5 @@
 module strc-options
-imports liblib strc-version stratego-warnings-options
+imports strc-version stratego-warnings-options
 strategies
 
   command-line-options =
@@ -24,7 +24,7 @@ strategies
     ; <set-config> ("-O", 6)
     ; <set-config> ("-I", [])
     ; <set-config> ("--C-include", 
-		   ["<srts/stratego.h>", "<srts/stratego-lib.h>"])
+		   ["<srts/stratego.h>", "<stratego-lib/stratego-lib.h>"])
     ; <set-config> ("-CI", ["-I", <conc-strings>(<xtc-find-path> "SRTS", "/include"),
                            "-I", <conc-strings>(<xtc-find-path> "SRTS", "/include"),
                            "-I", <conc-strings>(<xtc-find-path> "ATERM", "/include")])
@@ -195,7 +195,7 @@ strategies
    <+ !["--no-maybe-unbound-warnings"]
 
 
-  short-description(p) = 
+  conflict-short-description(p) = 
       !["STRC compiles Stratego programs to C or executable code.\n",
 	"\n",
 	"Stratego is a language for program transformation based on the\n",
@@ -205,7 +205,7 @@ strategies
 	"\n",
 	"Usage: ", <p>(), " -i file [options]"]
 
-  long-description(p) = ![
+  conflict-long-description(p) = ![
 	"Examples:\n",
 	"Compile module M.str to an executable\n",
 	"  strc -i M\n",
@@ -226,7 +226,7 @@ strategies
   strc-version =
     where(<printnl>(stdout, 
 	  ["STRC ", <get-config> "VERSION", "\n\n",
-	   "Copyright (C) 1998-2003 Eelco Visser <visser@acm.org>\n",
+	   "Copyright (C) 1998-2005 Eelco Visser <visser@acm.org>\n",
 	   "\n",
 	   "This library is free software; you can redistribute it and/or\n",
 	   "modify it under the terms of the GNU Lesser General Public\n",

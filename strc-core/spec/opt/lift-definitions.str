@@ -3,7 +3,7 @@ imports stratlib stratego-laws
 strategies
 
   lift-definitions-io =
-    iowrap(lift-definitions)
+    io-wrap(lift-definitions)
 
   lift-definitions =
     declare-standard-strategies

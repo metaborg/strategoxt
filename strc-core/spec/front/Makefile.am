@@ -3,16 +3,26 @@ include $(wildcard *.dep)
 
 SUBDIRS 	 = data
 
-SCFLAGS 	 = -I $(STRATEGO_FRONT)/share/stratego-front	 \
-	   	   -I $(STRATEGO_FRONT)/share/sdf/stratego-front \
-	   	   -I $(srcdir)/../sig				 \
-	   	   -I $(srcdir)/../match			 \
-	  	   -I $(srcdir)/../lib				 \
-	  	   -I $(srcdir)/../opt				 \
-	           --dr new					 \
-	  	   --main $*-io
-#		   --verbose 10 
-#--keep 10
+STRINCLUDES 	 = -I $(top_srcdir)/../stratego-front/syn	  \
+	   	   -I $(STRATEGO_FRONT)/share/stratego-front	  \
+	   	   -I $(STRATEGO_FRONT)/share/sdf/stratego-front  \
+	   	   -I $(srcdir)/../sig				  \
+	   	   -I $(srcdir)/../match			  \
+	  	   -I $(srcdir)/../lib				  \
+	  	   -I $(srcdir)/../opt	
+
+SCFLAGS  	=  -I $(top_srcdir)/../stratego-front/syn	  \
+	   	   -I $(STRATEGO_FRONT)/share/stratego-front	  \
+	   	   -I $(STRATEGO_FRONT)/share/sdf/stratego-front  \
+	   	   -I $(srcdir)/../sig				  \
+	   	   -I $(srcdir)/../match			  \
+	  	   -I $(srcdir)/../lib				  \
+	  	   -I $(srcdir)/../opt	\
+		   --dr new			\
+	  	   --main $*-io			\
+		   --verbose 3
+# 		--keep 10
+
 
 libexec_PROGRAMS =				\
 	repair-types				\
@@ -77,3 +87,9 @@ EXTRA_DIST 	 = $(wildcard *.str) $(wildcard *.meta)
 nodist_lift_dynamic_rules_old_test_SOURCES = lift-dynamic-rules-old-test.c
 nodist_use_def_test_SOURCES = use-def-test.c
 nodist_raise_annotations_test_SOURCES = raise-annotations-test.c
+
+%.atree : %.str
+	parse-stratego $(STRINCLUDES) -i $< | pp-aterm -o $@
+
+%.itree : %.str
+	pack-stratego $(STRINCLUDES) -i $< | pp-aterm -o $@

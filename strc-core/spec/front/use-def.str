@@ -54,7 +54,7 @@ strategies
     ; where(
         rules(
 	  Context : msg -> ["** Error in definition ", f,  ":\n   " | msg]
-	  Warning : msg -> ["* Warning in definition ", f, ":\n  " | msg] 
+	  MakeWarning : msg -> ["* Warning in definition ", f, ":\n  " | msg] 
 	)
        ; <unbound-vars> s
       )
@@ -64,7 +64,7 @@ strategies
     ; where(
         rules(
 	  Context : msg -> ["** Error in definition ", f, ":\n   " | msg]
-	  Warning : msg -> ["* Warning in definition ", f, ":\n  " | msg] )
+	  MakeWarning : msg -> ["* Warning in definition ", f, ":\n  " | msg] )
         ; <unbound-vars> s
       )
 
@@ -73,7 +73,7 @@ strategies
     ; where(
         rules(
 	  Context : msg -> ["** Error in rule ", f, ":\n   " | msg]
-	  Warning : msg -> ["* Warning in rule ", f, ":\n  " | msg] 
+	  MakeWarning : msg -> ["* Warning in rule ", f, ":\n  " | msg] 
 	)
 	; or(<bind-vars> t1,
           or(<unbound-vars> s,
@@ -85,7 +85,7 @@ strategies
     ; where(
         rules( 
 	  Context : msg -> ["** Error in rule ", f, ":\n   " | msg] 
-	  Warning : msg -> ["* Warning in rule ", f, ":\n  " | msg] 
+	  MakeWarning : msg -> ["* Warning in rule ", f, ":\n  " | msg] 
 	)
 	; or(<bind-vars> t1,
           or(<unbound-vars> s,
@@ -97,7 +97,7 @@ strategies
     ; where(
         rules( 
 	  Context : msg -> ["** Error in rule ", f, ":\n   " | msg] 
-	  Warning : msg -> ["* Warning in rule ", f, ":\n  " | msg] 
+	  MakeWarning : msg -> ["* Warning in rule ", f, ":\n  " | msg] 
 	)
         ; <unbound-vars> (s1, s2, s3)
       )
@@ -107,7 +107,7 @@ strategies
     ; where(
         rules( 
 	  Context : msg -> ["** Error in overlay ", f, ":\n   " | msg] 
-	  Warning : msg -> ["* Warning in overlay ", f, ":\n  " | msg] 
+	  MakeWarning : msg -> ["* Warning in overlay ", f, ":\n  " | msg] 
 	)
         ; <use-vars> t
       )
@@ -146,5 +146,5 @@ strategies
   MaybeUnbound = 
     (?Var(ListVar(x)) <+ ?Var(x))
     ; if-maybe-unbound-warnings(
-	<Warning; error> ["variable '", x, "' used, but may not be bound"]
+	<MakeWarning; error> ["variable '", x, "' used, but may not be bound"]
       )

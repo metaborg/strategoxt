@@ -4,19 +4,21 @@
 
 CINCLUDES = \
 	--C-include "<srts/stratego.h>" \
-	--C-include "<srts/stratego-lib.h>" 
+	--C-include "<stratego-lib/stratego-lib.h>" 
 
-CINCL = -I$(SRTS)/include \
+CINCL = -I$(STRATEGO_LIB)/include -I$(SRTS)/include \
 	-I$(ATERM)/include $(CHOICEINCLUDES)
 
-AM_CFLAGS = -I$(SRTS)/include -I$(ATERM)/include -I /usr/include
+AM_CFLAGS = -I$(STRATEGO_LIB)/include -I$(SRTS)/include -I$(ATERM)/include -I/usr/include
 
-SCLibs = -L$(SRTS)/lib/srts -lstratego-lib -lstratego-choice -lstratego \
-	 -L$(ATERM)/lib -lATerm-gcc $(CHOICELDFLAGS)
+SCLibs = -L$(STRATEGO_LIB)/lib/stratego-lib -lstratego-lib-native \
+         -L$(SRTS)/lib/srts -lstratego-runtime-choice -lstratego-runtime \
+         -L$(ATERM)/lib -lATerm-gcc $(CHOICELDFLAGS) \
+         -lm
 
 # MAKE COPY OF SSL ####################################################
-	 
-stratego-lib : 
+
+stratego-lib :
 	mkdir stratego-lib
 	cp -r $(STRATEGO_LIB)/share/stratego-lib/doc/*.str stratego-lib
 
@@ -25,8 +27,8 @@ pre-parse :
 
 %.rtree : %.str
 	$(STRATEGO_FRONT)/bin/parse-stratego -i $< -o $@ \
-		--default-syntax Stratego-Sugar.tbl \
-		--desugaring off
+               --default-syntax Stratego-Sugar.tbl \
+               --desugaring off
 
 # PRETTY-PRINTING ####################################################
 
@@ -42,60 +44,67 @@ pre-parse :
 
 # FORMATS ###########################################################
 
+formatcheck = $(STRATEGO_REGULAR)/bin/format-check
+
+#STRATEGO_FRONT_SHARE = $(STRATEGO_FRONT)/share/stratego-front
+
+STRATEGO_FRONT_SHARE = $(top_srcdir)/../stratego-front/sig
+
+
 %.Stratego-Sugar : %
-	$(STRATEGO_REGULAR)/bin/format-check --fast -b --rtg-nf $(STRATEGO_FRONT)/share/stratego-front/Stratego-Sugar.rtg-nf -i $< -o $@  
+	$(formatcheck) --fast -b --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Sugar.rtg-nf -i $< -o $@  
 
 %.Stratego-Sugar-1 : %
-	$(STRATEGO_REGULAR)/bin/format-check --fast -b --rtg-nf $(STRATEGO_FRONT)/share/stratego-front/Stratego-Sugar-1.rtg-nf -i $< -o $@  
+	$(formatcheck) --fast -b --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Sugar-1.rtg-nf -i $< -o $@  
 
 %.Stratego-Sugar-2 : %
-	$(STRATEGO_REGULAR)/bin/format-check --fast -b --rtg-nf $(STRATEGO_FRONT)/share/stratego-front/Stratego-Sugar-2.rtg-nf -i $< -o $@  
+	$(formatcheck) --fast -b --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Sugar-2.rtg-nf -i $< -o $@  
 
 %.Stratego-Sugar-3 : %
-	$(STRATEGO_REGULAR)/bin/format-check --fast -b --rtg-nf $(STRATEGO_FRONT)/share/stratego-front/Stratego-Sugar-3.rtg-nf -i $< -o $@  
+	$(formatcheck) --fast -b --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Sugar-3.rtg-nf -i $< -o $@  
 
 %.Stratego-Sugar-4 : %
-	$(STRATEGO_REGULAR)/bin/format-check -b --rtg-nf $(STRATEGO_FRONT)/share/stratego-front/Stratego-Sugar-4.rtg-nf -i $< -o $@  
+	$(formatcheck) -b --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Sugar-4.rtg-nf -i $< -o $@  
 
 %.Stratego-Sugar-5 : %
-	$(STRATEGO_REGULAR)/bin/format-check --fast -b --rtg-nf $(STRATEGO_FRONT)/share/stratego-front/Stratego-Sugar-5.rtg-nf -i $< -o $@  
+	$(formatcheck) --fast -b --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Sugar-5.rtg-nf -i $< -o $@  
 
 %.Stratego-Sugar-Cong : %
-	$(STRATEGO_REGULAR)/bin/format-check --fast -b --rtg-nf $(STRATEGO_FRONT)/share/stratego-front/Stratego-Sugar-Cong.rtg-nf -i $< -o $@  
+	$(formatcheck) --fast -b --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Sugar-Cong.rtg-nf -i $< -o $@  
 
 %.Stratego-Sugar-HL : %
-	$(STRATEGO_REGULAR)/bin/format-check --fast -b --rtg-nf $(STRATEGO_FRONT)/share/stratego-front/Stratego-Sugar-HL.rtg-nf -i $< -o $@  
+	$(formatcheck) --fast -b --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Sugar-HL.rtg-nf -i $< -o $@  
 
 %.Stratego-Core : %
-	$(STRATEGO_REGULAR)/bin/format-check --fast -b --rtg-nf $(STRATEGO_FRONT)/share/stratego-front/Stratego-Core.rtg-nf -i $< -o $@
+	$(formatcheck) --fast -b --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Core.rtg-nf -i $< -o $@
 
 %.Stratego-Core-Cong : %
-	$(STRATEGO_REGULAR)/bin/format-check --fast -b --rtg-nf $(STRATEGO_FRONT)/share/stratego-front/Stratego-Core-Cong.rtg-nf -i $< -o $@
+	$(formatcheck) --fast -b --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Core-Cong.rtg-nf -i $< -o $@
 
 %.C : %
-	$(STRATEGO_REGULAR)/bin/format-check --fast -b --rtg-nf $(C_TOOLS)/share/c-tools/C.rtg-nf -i $< -o $@ 
+	$(formatcheck) --fast -b --rtg-nf $(C_TOOLS)/share/c-tools/C.rtg-nf -i $< -o $@ 
 
 
 %.Stratego-Sugar.xhtml : %
-	$(STRATEGO_REGULAR)/bin/format-check --rtg-nf $(STRATEGO_FRONT)/share/stratego-front/Stratego-Sugar.rtg-nf -i $< -o $@  --xhtml
+	$(formatcheck) --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Sugar.rtg-nf -i $< -o $@  --xhtml
 
 %.Stratego-Sugar-1.xhtml : %
-	$(STRATEGO_REGULAR)/bin/format-check --rtg-nf $(STRATEGO_FRONT)/share/stratego-front/Stratego-Sugar-1.rtg-nf -i $< -o $@  --xhtml
+	$(formatcheck) --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Sugar-1.rtg-nf -i $< -o $@  --xhtml
 
 %.Stratego-Sugar-Cong.xhtml : %
-	$(STRATEGO_REGULAR)/bin/format-check --rtg-nf $(STRATEGO_FRONT)/share/stratego-front/Stratego-Sugar-Cong.rtg-nf -i $< -o $@  --xhtml
+	$(formatcheck) --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Sugar-Cong.rtg-nf -i $< -o $@  --xhtml
 
 %.Stratego-Sugar-HL.xhtml : %
-	$(STRATEGO_REGULAR)/bin/format-check --rtg-nf $(STRATEGO_FRONT)/share/stratego-front/Stratego-Sugar-HL.rtg-nf -i $< -o $@  --xhtml
+	$(formatcheck) --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Sugar-HL.rtg-nf -i $< -o $@  --xhtml
 
 %.Stratego-Core.xhtml : %
-	$(STRATEGO_REGULAR)/bin/format-check --rtg-nf $(STRATEGO_FRONT)/share/stratego-front/Stratego-Core.rtg-nf -i $< -o $@ --xhtml
+	$(formatcheck) --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Core.rtg-nf -i $< -o $@ --xhtml
 
 %.Stratego-Core-Cong.xhtml : %
-	$(STRATEGO_REGULAR)/bin/format-check --rtg-nf $(STRATEGO_FRONT)/share/stratego-front/Stratego-Core-Cong.rtg-nf -i $< -o $@ --xhtml
+	$(formatcheck) --rtg-nf $(STRATEGO_FRONT_SHARE)/Stratego-Core-Cong.rtg-nf -i $< -o $@ --xhtml
 
 %.C.xhtml : %
-	$(STRATEGO_REGULAR)/bin/format-check --rtg-nf $(C_TOOLS)/share/c-tools/C.rtg-nf -i $< -o $@ --xhtml 
+	$(formatcheck) --rtg-nf $(C_TOOLS)/share/c-tools/C.rtg-nf -i $< -o $@ --xhtml 
 
 # FRONT-END ###########################################################
 

@@ -13,7 +13,7 @@ imports liblib Stratego-Sugar
 strategies
 
   pack-stratego = 
-    xtc-iowrap(pack-stratego-options,
+    xtc-io-wrap(pack-stratego-options,
       pack-stratego-modules => (files, spec)
       ; (<get-config> "--imports"
         ; <map(get-filename; basename); write-to-text> files
@@ -112,11 +112,14 @@ strategies
       <+ <fatal-error> ["parse error in ", name])
 
   get-stratego-imports =
-    (?(_, Specification(<id>)) + ?(_, Module(_,<id>)))
-    ; filter(?Imports(<id>))
-    ; concat
+    collect-om(?Import(<![<id>]>) + ?Strategies(<![]>) + ?Signature(<![]>) + ?Overlays(<![]>))
+
+//    (?(_, Specification(<id>)) + ?(_, Module(_,<id>)))
+//    ; filter(?Imports(<id>))
+//    ; concat
 
   flatten-stratego = 
-    map((?Specification(<id>) + ?Module(_,<id>)); filter(not(Imports(id))))
-    ; concat 
-    ; !Specification(<id>)
+    collect-om(
+      ?Specification(<filter(not(Imports(id)))>) 
+      + ?Module(_,<filter(not(Imports(id)))>)
+    )

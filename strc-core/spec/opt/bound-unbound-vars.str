@@ -3,7 +3,7 @@ imports stratlib
 strategies
 
   bound-unbound-vars-io =
-    iowrap(mark-bound-unbound-vars)
+    io-wrap(mark-bound-unbound-vars)
 
   mark-bound-unbound-vars =
     if-verbose4(say(!"marking bound-unbound-vars"))

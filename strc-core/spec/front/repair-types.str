@@ -3,7 +3,7 @@ imports Stratego-Sugar stratlib
 strategies
 
   repair-types-io =
-    iowrap(try(sometd(RepairDefinition); where(explanation)))
+    io-wrap(try(sometd(RepairDefinition); where(explanation)))
 
   RepairDefinition :
     SDef(f, xs, s) -> SDef(f, xs', s)

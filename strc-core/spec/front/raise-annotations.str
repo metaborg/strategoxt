@@ -7,7 +7,7 @@ strategies
       raise-annotations
     )
 
-  raise-annotations' =
+  raise-annotations =
     raise-annotations(raise-in-match, raise-in-build, raise-in-overlay)
 
   raise-annotations(mch, bld, ovl) = 
@@ -41,22 +41,22 @@ strategies
   raise-in-match =
     alltd(
       (annolist-to-anno + match-no-anno); raise-in-match
-      + App(raise-annotations, raise-in-build)
-      + RootApp(raise-annotations)
+      <+ App(raise-annotations, raise-in-build)
+      <+ RootApp(raise-annotations)
    )
 
   raise-in-build =
     alltd(
       (annolist-to-anno + build-no-anno); raise-in-build
-      + App(raise-annotations, raise-in-build)
-      + RootApp(raise-annotations)
+      <+ App(raise-annotations, raise-in-build)
+      <+ RootApp(raise-annotations)
     )
 
   raise-in-overlay =
     alltd(
       (annolist-to-anno + overlay-no-anno); raise-in-overlay
-      + App(raise-annotations, raise-in-overlay)
-      + RootApp(raise-annotations)
+      <+ App(raise-annotations, raise-in-overlay)
+      <+ RootApp(raise-annotations)
     )
 
   annolist-to-anno :
@@ -76,60 +76,58 @@ strategies
     |[ pt ]| -> |[ pt{^_ Nil()} ]|
 
 
-  raise-annotations = 
+/* another implementation */
+
+  raise-annotations' = 
     transform-mbo(annolist-to-anno + match-no-anno
 		 ,annolist-to-anno + build-no-anno
 		 ,annolist-to-anno + overlay-no-anno)
 
-  transform-mbo(mch, bld, ovl) = 
-  let
+  transform-mbo(mch, bld, ovl) = traverse(mch, bld, ovl)
 
-    in-match  =
+    in-match(mch, bld, ovl)  =
       alltd(
-        mch; in-match
-        + App(traverse, in-build)
-        + RootApp(traverse)
+        mch; in-match(mch, bld, ovl)
+        + App(traverse(mch, bld, ovl), in-build(mch, bld, ovl))
+        + RootApp(traverse(mch, bld, ovl))
       )
 
-    in-build =
+    in-build(mch, bld, ovl) =
       alltd(
-        bld; in-build
-        + App(traverse, in-build)
-        + RootApp(traverse)
+        bld; in-build(mch, bld, ovl)
+        + App(traverse(mch, bld, ovl), in-build(mch, bld, ovl))
+        + RootApp(traverse(mch, bld, ovl))
       )
 
-    in-overlay =
+    in-overlay(mch, bld, ovl) =
       alltd(
-        ovl; in-overlay
-        + App(traverse, in-overlay)
-        + RootApp(traverse)
+        ovl; in-overlay(mch, bld, ovl)
+        + App(traverse(mch, bld, ovl), in-overlay(mch, bld, ovl))
+        + RootApp(traverse(mch, bld, ovl))
       )
 
-    traverse =
+    traverse(mch, bld, ovl) =
       alltd(
-          LabeledDynRuleScopeId(id, in-build)
-        + AddLabelDynRuleId(traverse, in-build)
-        + LabeledDynRuleId(traverse, in-build)
-        + SetDynRuleMatch(traverse, in-build)
-        + UndefineDynRule(traverse, in-build)
-        + AddScopeLabel(id, in-build)
+          LabeledDynRuleScopeId(id, in-build(mch, bld, ovl))
+        + AddLabelDynRuleId(traverse(mch, bld, ovl), in-build(mch, bld, ovl))
+        + LabeledDynRuleId(traverse(mch, bld, ovl), in-build(mch, bld, ovl))
+        + SetDynRuleMatch(traverse(mch, bld, ovl), in-build(mch, bld, ovl))
+        + UndefineDynRule(traverse(mch, bld, ovl), in-build(mch, bld, ovl))
+        + AddScopeLabel(id, in-build(mch, bld, ovl))
 
-        + Rule(in-match, in-build, traverse)
-        + RuleNoCond(in-match, in-build)
+        + Rule(in-match(mch, bld, ovl), in-build(mch, bld, ovl), traverse(mch, bld, ovl))
+        + RuleNoCond(in-match(mch, bld, ovl), in-build(mch, bld, ovl))
       
-        + Overlay(id, id, in-overlay)
-        + OverlayNoArgs(id, in-overlay)
+        + Overlay(id, id, in-overlay(mch, bld, ovl))
+        + OverlayNoArgs(id, in-overlay(mch, bld, ovl))
 
-        + AM(traverse, in-match)
-        + Prim(id, map(in-build))
-        + BA(traverse, in-build)
-        + PrimT(id, map(traverse), map(in-build))
+        + AM(traverse(mch, bld, ovl), in-match(mch, bld, ovl))
+        + Prim(id, map(in-build(mch, bld, ovl)))
+        + BA(traverse(mch, bld, ovl), in-build(mch, bld, ovl))
+        + PrimT(id, map(traverse(mch, bld, ovl)), map(in-build(mch, bld, ovl)))
 
-        + Build(in-build)
-        + Match(in-match)
+        + Build(in-build(mch, bld, ovl))
+        + Match(in-match(mch, bld, ovl))
 
-        + CallT(id, map(traverse), map(in-build))
+        + CallT(id, map(traverse(mch, bld, ovl)), map(in-build(mch, bld, ovl)))
       )
-
-  in traverse end
-
