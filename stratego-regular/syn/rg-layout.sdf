@@ -5,3 +5,17 @@ exports
 
   context-free restrictions
     LAYOUT? -/- [\ \t\n]
+
+  sorts
+    LongCom
+    CommChar
+    Asterisk
+
+  lexical syntax
+    "/*" CommChar+ "*/" -> LAYOUT
+    ~[\*]    -> CommChar
+    "*"      -> Asterisk
+    Asterisk -> CommChar
+
+  lexical restrictions
+    Asterisk -/- [\/]

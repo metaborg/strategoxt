@@ -1,3 +1,7 @@
+2004-08-29  Martin Bravenboer <martin@cs.uu.nl>
+
+	* syn/rg-layout.sdf: added comments to RTG.
+	
 2004-07-28  Martin Bravenboer <martin@cs.uu.nl>
 
 	* xtc/format-check.str: new --fast option. This option will
