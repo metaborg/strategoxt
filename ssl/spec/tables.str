@@ -51,8 +51,8 @@ strategies
   table-keys = 
     ?table; prim("SSL_table_keys",table)
 
-  table-rename = ?(name1, name2);
-    prim("SSL_table_rename", name1, name2)
+  table-rename = ?(from-name, to-name);
+    prim("SSL_table_rename", from-name, to-name)
 
 
 strategies

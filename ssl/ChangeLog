@@ -1,3 +1,7 @@
+2003-09-23  Merijn de Jonge <m.de.jogne@cwi.nl>
+  * spec/tables.str: added more informative argument names to strategy
+    "table-rename"
+
 2003-09-19  Martin Bravenboer <mbravenb@cs.uu.nl>
   
   * spec/list-set.str: added nub as an alias of make-set.
