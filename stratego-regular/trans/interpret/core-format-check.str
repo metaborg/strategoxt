@@ -64,7 +64,7 @@ strategies
     <+ repeat1(Type)
        ; report-types
 
-    <+ debug(!"a ----------------- "); one-consnil(not(is-typed))
+    <+ one-consnil(not(is-typed))
 
     <+ report-type-failure(id)
     )
