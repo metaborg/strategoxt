@@ -1,0 +1,62 @@
+module placeholder-test
+imports sunit placeholder
+  
+strategies
+  main = 
+    test-suite(!"Placeholder test suite",
+      test-make-1
+    ; test-make-2
+    ; test-get-1
+    ; test-get-2
+    ; test-is-1
+    ; test-is-2
+    )
+
+  test-make-1 =
+    apply-and-check(!"make a placeholder"
+    , make-placeholder
+    , !1
+    , is-placeholder
+    )
+
+  test-make-2 =
+    apply-and-check(!"make a placeholder"
+    , make-placeholder
+    , !"a"
+    , is-placeholder
+    )
+
+  test-get-1 =
+    apply-and-check(!"get a placeholder"
+    , get-placeholder
+    , <make-placeholder> 1
+    , !1
+    )
+
+  test-get-2 =
+    apply-and-fail(!"get a placeholder of not a placeholder"
+    , get-placeholder
+    , !1
+    )
+
+  test-is-1 =
+    apply-and-check(!"is a placeholder"
+    , is-placeholder
+    , <make-placeholder> 1
+    , <make-placeholder> 1
+    )
+
+  test-is-2 =
+    apply-and-check(!"is a placeholder"
+    , is-placeholder; is-placeholder
+    , <make-placeholder> 1
+    , <make-placeholder> 1
+    )
+
+
+
+
+
+
+
+

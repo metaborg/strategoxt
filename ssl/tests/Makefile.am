@@ -33,6 +33,7 @@ check_PROGRAMS = \
   options-test \
   parallel-test \
   parse-options-test \
+  placeholder-test \
   posix-error-test \
   posix-file-test \
   posix-process-test \

@@ -1,3 +1,14 @@
+2004-04-28  Martin Bravenboer <martin@cs.uu.nl>
+
+	* spec/placeholder.str: new SSL module that adds library support
+	for ATerm placeholders to Stratego. 
+
+	get-placeholder -- Returns the placeholder of an ATerm placeholder.
+	make-placeholder -- Creates a placeholder.
+	is-placeholder -- Checks if the current term is a placeholder.
+
+	* test/placeholder-test.str: testsuite for placeholders.
+	
 2004-04-13  Arthur van Dam <adam@cs.uu.nl>
 
 	* dynamic-rules-refactored.str: moved from experimental into SSL.
