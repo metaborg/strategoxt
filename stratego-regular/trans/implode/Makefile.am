@@ -8,6 +8,6 @@ SCFLAGS       = --main main-$*
 STRINCLUDES   = -I $(top_srcdir)/sig \
                 -I $(top_srcdir)/lib
 
-EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta)
+EXTRA_DIST     = $(pkgdata_DATA) $(wildcard *.str) $(wildcard *.meta)
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c) $(wildcard *.rtree)
