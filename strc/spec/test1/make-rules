@@ -24,7 +24,7 @@ SCLibs = -L$(SRTS)/lib/srts -lstratego-lib -lstratego-choice -lstratego \
 	$(ATERM)/bin/baffle -wt -i $< -o $@
 
 %.ttxt : %
-	$(ATERM_TOOLS)/bin/pp-aterm -i $< -o $@ --verbose 0
+	$(ATERM_FRONT)/bin/pp-aterm -i $< -o $@ --verbose 0
 
 # FRONT-END ###########################################################
 
