@@ -197,6 +197,13 @@ strategies // high-level API with implicit rule set
       ; dr-set-rule-set(|name)
     )
 
+  dr-undefine-rule-vis(|name, label, key) =
+    where(
+      dr-get-rule-set(|name)
+      ; dr-set-in-rule-set-vis(|label, key, [])
+      ; dr-set-rule-set(|name)
+    )
+
   dr-add-rule(|name, key, value) =
     where(
       dr-get-rule-set(|name)
@@ -208,6 +215,13 @@ strategies // high-level API with implicit rule set
     where(
       dr-get-rule-set(|name)
       ; dr-add-to-rule-set(|label, key, value)
+      ; dr-set-rule-set(|name)
+    )
+
+  dr-add-rule-vis(|name, label, key, value) =
+    where(
+      dr-get-rule-set(|name)
+      ; dr-add-to-rule-set-vis(|label, key, value)
       ; dr-set-rule-set(|name)
     )
 
@@ -546,6 +560,9 @@ strategies // extending a rule
   dr-add-fail(|scpid, tbl, key, value) =
     fail
 
+  dr-rm-fail(|scpid, tbl, key) =
+    fail
+
   dr-add-to-rule-set(add : ATerm * Hashtable * ATerm * ATerm * ATerm -> ATerm 
 	     | label, key, value) =
     ?[RuleScope(labelset, tbl@Hashtable(hptr)) | rs]
@@ -571,6 +588,60 @@ strategies // extending a rule
             then <fetch-elem(?RuleScope(_,tbl@Hashtable(hptr)))> rs
                  ; add2(|hptr, tbl, key, value)
             else <dr-add-to-rule-set(add2 | label, key, value)> rs
+            end
+        end
+      )
+
+  /**
+   * add a rule to the scope for label such that it is visible afterwards
+   *
+   * @assert: dr-add-to-rule-set(|l, k, v) 
+   *               = set-rule(|l, k, [v | <lookup-rule(|l, k, v) <+ ![]>])
+   */
+  dr-add-to-rule-set-vis(|label, key, value) =
+    dr-add-to-rule-set-vis(dr-add-fail, dr-rm-fail | label, key, value)
+
+
+  dr-add-to-rule-set-vis(
+      add : ATerm * Hashtable * ATerm * ATerm * ATerm -> ATerm,
+      rm  : ATerm * Hashtable * ATerm * ATerm         -> ATerm 
+      | label, key, value)
+  = ?[RuleScope(labelset, tbl@Hashtable(hptr)) | rs]
+    ; where(
+        if <iset-contains(|label)> labelset then
+           add(|hptr, tbl, key, value)
+           <+ <hashtable-push(|key, value)> tbl
+        else
+	  (rm(|hptr, tbl, key) <+ try(<hashtable-remove(|key)> tbl))
+          ; <dr-add-to-rule-set-vis(add, rm| label, key, value)> rs
+        end
+      )
+
+  dr-add-to-rule-set-vis(
+      add1 : ATerm * Hashtable * ATerm * ATerm * ATerm -> ATerm,
+      rm1  : ATerm * Hashtable * ATerm * ATerm         -> ATerm 
+      | label, key, value) 
+  = ?[ChangeSet(labelset, tbl1) | rs]
+    ; where(
+        let add2(|scpid, tbl2, key, value) =
+              add1(|scpid, tbl2, key, value)
+              <+ (<hashtable-get(|(scpid, key))> tbl1
+                  <+ <hashtable-get(|key)> tbl2
+                  <+ ![]) 
+	         // check that value not yet member of this set????
+                 ; \ values -> <hashtable-put(|(scpid, key), [value | values])> tbl1 \
+
+            rm2(|scpid, tbl2, key) =
+              rm1(|scpid, tbl2, key)
+	      <+ if <hashtable-get(|key)> tbl2 then
+                   <hashtable-put(|(scpid, key), "removed")> tbl1
+	         else id end // no entry to remove                 
+
+         in if <iset-contains(|label)> labelset then
+              <fetch-elem(?RuleScope(_,tbl@Hashtable(hptr)))> rs
+              ; add2(|hptr, tbl, key, value)
+            else 
+              <dr-add-to-rule-set-vis(add2, rm2 | label, key, value)> rs
             end
         end
       )
