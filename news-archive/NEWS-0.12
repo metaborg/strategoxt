@@ -78,7 +78,7 @@ user-friendly:
      more clear. The directory of the main module (specified with -i)
      is now the first include option. This is not always the current
      directory, in which case unexpected modules might be imported in
-     previous versions of StrategoXT. So, pack-sdf -i syn/Foo.sdf will
+     previous versions of <nop>StrategoXT. So, pack-sdf -i syn/Foo.sdf will
      search for module in the syn directory.
 
    * The input file is no longer searched for in the include
@@ -111,7 +111,7 @@ More information on pack-sdf is available at the Tools Wiki:
 
 ---------++ Parse Unit
 
-In previous releases of StrategoXT, parse-unit testsuites had to be
+In previous releases of <nop>StrategoXT, parse-unit testsuites had to be
 parsed with a separate tool before passing it to parse-unit. This is
 obviously a bad idea, so parse-unit itself now parses the
 testsuite. It will fall back to abstract syntax, so this change should
@@ -138,7 +138,7 @@ More information and an example are available at the Tools Wiki:
 ---------++ Parenthesizer Generation
 
 A major bug in in the generation of rewrite rules for chain priorities
-has been fixed in this release of StrategoXT. In the previous version,
+has been fixed in this release of <nop>StrategoXT. In the previous version,
 the tool assumed that the SDF normalizer generates chain priorities
 for the transitive closure of the priorities that are defined in an
 SDF syntax definition. However, this is not the case and therefore the
@@ -157,7 +157,7 @@ More information and an example are available at the Tools Wiki:
 
 ---------++ Pragmatic XML Support
 
-In StrategoXT 0.12 some new tools are available that makes
+In <nop>StrategoXT 0.12 some new tools are available that makes
 interoperability with other programs and libraries that are based on
 XML seamless. The tools aterm2xml and xml2aterm support this
 conversion from aterm to XML and vice versa. Since applications have
@@ -191,7 +191,7 @@ An example is available at the Tools Wiki:
 
 ---------++ Language Enhancements
 
-In StrategoXT 0.10 the =bagof-R= strategy was introduced. This
+In <nop>StrategoXT 0.10 the =bagof-R= strategy was introduced. This
 strategy returns all applications of a dynamic rule. However,
 =bagof-R= only applies the dynamic rules that been defined in the
 innermost (most recent) scope where a rule =R= was defined. So, if
@@ -204,7 +204,7 @@ all the defined dynamic rules of name =R=.
 
 (Contributed by Eelco Visser)
 
-In StrategoXT 0.10 we added the if-then-else construct, which is
+In <nop>StrategoXT 0.10 we added the if-then-else construct, which is
 basically just an alternative syntax for the guarded left choice
 (=where(s1) < s2 + s3=). Since we found ourselves writing a lot =if s1
 then s2 else id end=, we have now also added an if-then
@@ -244,9 +244,9 @@ if there are undefined macros with the XT prefix. Furthermore,
 =autoxt.m4= now defines a macro =XT_ARG_WITH= for concisely adding
 =--with-PACKAGE= arguments to configure scripts in your own packages.
 
-If you are developing packages based on StrategoXT and AutoXT, then
+If you are developing packages based on <nop>StrategoXT and AutoXT, then
 you must have Autoconf 2.58 or newer. This does not affect users: the
-installation of a StrategoXT distribution doesn't require Autoconf.
+installation of a <nop>StrategoXT distribution doesn't require Autoconf.
 
 (Contributed by Akim Demaille)
 	
@@ -267,7 +267,7 @@ detailed instructions on how to install the distributions:
 
 See our issue tracking systems for reports about (open) bugs:
 
-   * https://catamaran.labs.cs.uu.nl/jira/browse/STR
+   * http://catamaran.labs.cs.uu.nl/jira/browse/STR
 
 Please report any problems with installation or bugs in the
 implementation to our issue tracking system. Please check the existing
