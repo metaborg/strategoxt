@@ -1,0 +1,1 @@
+Specification([Imports(["asfix-abstractions"]),Strategies([SDef("asfix-tc",[],Call(SVar("stdio"),[Call(SVar("isAsFixTerm"),[])])),SDef("isAsFixTerm",[],Rec("x",LChoice(Call(SVar("is-int"),[]),Call(SVar("appl"),[Call(SVar("prod"),[Call(SVar("list"),[Call(SVar("isAsFixSort"),[])]),Call(SVar("isAsFixSort"),[]),Id]),Call(SVar("list"),[Call(SVar("isAsFixTerm"),[])])]))))])])

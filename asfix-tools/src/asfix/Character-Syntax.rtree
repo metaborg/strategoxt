@@ -1,0 +1,1 @@
+Specification([Imports(["Layout"]),Signature([Constructors([OpDecl("NumChar",FunType([ConstType(Var("NumChar"))],ConstType(Var("Character")))),OpDecl("ShortChar",FunType([ConstType(Var("ShortChar"))],ConstType(Var("Character")))),OpDecl("Character-dunno-a_0",ConstType(Var("Character"))),OpDecl("Character-dunno-b_0",ConstType(Var("Character")))])])])

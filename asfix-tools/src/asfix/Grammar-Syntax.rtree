@@ -1,0 +1,1 @@
+Specification([Imports(["Layout"]),Signature([Constructors([OpDecl("empty-grammar",ConstType(Var("Grammar"))),OpDecl("conc-grammars",FunType([ConstType(Var("Grammar")),ConstType(Var("Grammar"))],ConstType(Var("Grammar"))))])])])

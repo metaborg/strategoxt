@@ -1,0 +1,1 @@
+Specification([Imports(["Layout"]),Signature([Constructors([OpDecl("qlit",FunType([ConstType(Var("QLiteral"))],ConstType(Var("Literal"))))])])])

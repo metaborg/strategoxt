@@ -1,0 +1,1 @@
+Specification([Imports(["Layout"]),Signature([Constructors([OpDecl("Symbol-s",FunType([ConstType(Op("List",[Var("Symbol")]))],ConstType(Var("Symbols"))))])])])

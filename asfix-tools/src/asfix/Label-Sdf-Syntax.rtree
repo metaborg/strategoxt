@@ -1,0 +1,1 @@
+Specification([Imports(["Kernel-Sdf-Syntax","Literals-Sdf-Syntax","ATerms"]),Signature([Constructors([OpDecl("label",FunType([ConstType(Var("Literal")),ConstType(Var("Symbol"))],ConstType(Var("Symbol")))),OpDecl("cons",FunType([ConstType(Var("ATerm"))],ConstType(Var("Attribute")))),OpDecl("constructor",ConstType(Var("Attribute"))),OpDecl("memo",ConstType(Var("Attribute")))])])])
