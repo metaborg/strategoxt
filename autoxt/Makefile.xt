@@ -135,7 +135,7 @@ DREPOSITORY = $(DESTDIR)$(REPOSITORY)
 xtc-conf.h :
 	echo "#define XTC_REPOSITORY() ATmakeString(\"$(REPOSITORY)\")" > $@
 
-install-data-local:
+install-data-local::
 	$(mkinstalldirs) `dirname $(DREPOSITORY)`
 	@$(XTC)/bin/xtc -r $(DREPOSITORY) register -l $(prefix) -V $(VERSION) -t $(PACKAGE); \
 	for file in fordummy $(XTC_IMPORT) ; do \
@@ -155,7 +155,7 @@ install-data-local:
         done; \
 	echo "Data registered in repository $(DREPOSITORY): $(pkgdata_DATA) $(sdfdata_DATA)"
 
-install-exec-local:
+install-exec-local::
 	$(mkinstalldirs) `dirname $(DREPOSITORY)`
 	@for file in fordummy $(bin_PROGRAMS) $(bin_SCRIPTS) ; do \
 	 	      if [ "$$file" = "fordummy" ]; then continue; fi; \
