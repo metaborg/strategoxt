@@ -78,11 +78,12 @@ strategies
   declare-plus-list =
     ?ProdRule(Nonterm(srtx1), alts)
     ; where(
-        <length> alts => 4
-      ; !alts
+        <make-set> alts => alts1
+      ; <length> alts1 => 4
+      ; !alts1
       ; filter(?Appl(ConcTerm(), [Ref(_), Ref(_)]))
       ; length => 3
-      ; !alts
+      ; !alts1
       ; fetch(?Appl(ConsTerm(), [Ref(Nonterm(srtx)), Ref(Nonterm(srtx2))]))
       ; rules(
           ListTree2Sort : Ref(Nonterm(srtx1)) -> Sort |[ List(srtx) ]|
