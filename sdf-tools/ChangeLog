@@ -1,3 +1,8 @@
+2003-02-28  Martin Bravenboer  <martin@mbravenboer.org
+
+  * Moved pretty-print table from src/sdf to pp. Renamed
+    to Sdf2.pp
+
 2003-01-18  Eelco Visser  <visser@cs.uu.nl>
 
 	* src/sdf2sdf/sdf2sdf.str: Reverse order of tools produced
