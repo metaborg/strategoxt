@@ -1,11 +1,11 @@
 module sglr
-imports exec 
+imports exec gt-paths
 
 rules
 
   sglr : (tbl, 'in, out) -> out
 	 where
-           <call> ("sglr", ["-p", tbl, "-i", 'in, "-o", out])
+           <call> (<concat-strings>[SGLR, "/bin/sglr"], ["-p", tbl, "-i", 'in, "-o", out])
 
 
   sglr : (tbl, 'in) -> tree
