@@ -167,7 +167,7 @@ strategies
     where(msg; debug)
 
   echo = 
-    where(<printnl> (stdout, [<id>]))
+    where(<printnl> (stdout, <is-list <+ ![<id>]>))
 
   echo(msg) = 
     where(<printnl> (stdout, [<msg>,<id>]))

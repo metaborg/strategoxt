@@ -1,3 +1,7 @@
+2002-12-17  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/: cosmetics
+
 2002-12-16  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/string.str: Removed calls to debug in unescape-chars

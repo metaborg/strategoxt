@@ -38,7 +38,7 @@
 
 \begin{code}
 module config
-imports dir verbose
+imports dir verbose keep
 
 signature
   constructors
@@ -81,7 +81,12 @@ strategies
   // read configuration files and add to table
 
   import-config-file(file) = 
-    where( file; if-verbose2(debug(!"importing: ")); ReadFromFile; <table-putlist> ("config", <id>) )
+    where( 
+      file
+      ; if-verbose2(debug(!"importing: "))
+      ; ReadFromFile
+      ; <table-putlist> ("config", <id>) 
+    )
 
   import-config-files(files) = 
     where( 
