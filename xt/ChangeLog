@@ -1,4 +1,6 @@
 2000-07-28  Merijn de Jonge  <mdejonge@cwi.nl>
+        * Changed url's to xt/gb/gt frp www.cs.uu.nl to
+          www.program-transformation.org
         * Integration tests adapted to new installation location of grammars
           in prefix/gb/share/agrammar.version
 
