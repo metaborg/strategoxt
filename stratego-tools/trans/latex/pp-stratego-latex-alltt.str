@@ -57,6 +57,9 @@ strategies
     appl(prod([varsym(id)], id, id), map(try(FancyVar)))
 
   CheerUp =
+    appl(prod(id, varsym(id), id), map(try(FancyVar)))
+
+  CheerUp =
     appl(
         check-cons-of-prod(?"Var")
       ; check-sort-of-prod(?"StrategoVar")
