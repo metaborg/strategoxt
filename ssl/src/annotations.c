@@ -27,7 +27,7 @@ ATerm SSLgetAnnotations(ATerm t)
 {
   ATerm annos = ATgetAnnotations(t);
   if(annos == NULL)
-    return ATempty;
+    return (ATerm) ATempty;
   else 
     return annos;
 }

@@ -44,7 +44,7 @@ ATerm SSL_mkterm(ATerm c, ATerm ts0)
     t = c;
     break;
   case AT_LIST :
-    t = CheckATermList(ts0);
+    t = (ATerm) CheckATermList(ts0);
     break;
   case AT_APPL:
     if(ATisString(c))

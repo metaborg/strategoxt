@@ -75,7 +75,7 @@ ATerm SSL_implode_string(ATerm chars)
   }
 
   /* ATfprintf(stderr, "chars = %t\n", chars); */
-  for(i = 0; chars != ATempty; 
+  for(i = 0; (ATermList) chars != ATempty; 
       chars = (ATerm) ATgetNext((ATermList) chars), i++)
     {
     
