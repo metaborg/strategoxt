@@ -1,3 +1,6 @@
+2002-01-18 Merijn de Jonge <mdejonge@cwi.nl>
+   * changed order of implosion to fix combination of --alt and --lit
+
 2001-11-29 Merijn de Jonge <mdejonge@cwi.nl>
     * Version 0.2 released
     * Increased version number

@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: implode-asfix.r,v 1.5 2001/10/18 19:42:03 mdejonge Exp $
+% $Id: implode-asfix.r,v 1.6 2002/01/18 13:42:56 daybuild Exp $
 
 
 	This module defines a transformation from AsFix terms produced
@@ -84,9 +84,9 @@ strategies
        try((option-defined(FlatLex),      flat-lex));
        try((option-defined(RemoveLayout), remove-layout));
        try((option-defined(FlatList),     flat-list));
-       try((option-defined(RemoveLit),    remove-lit));
        try((option-defined(FlatInj),      flat-injections));
        try((option-defined(FlatAlt),      flat-alt));
+       try((option-defined(RemoveLit),    remove-lit));
        try((option-defined(ReplaceAppl),  replace-appl));
        try((option-defined(RemoveSeq),    remove-seq));
        try((option-defined(RemovePT),     remove-pt));
