@@ -4,9 +4,8 @@ module Main
 exports
   context-free syntax
     A 		-> S
-    a   	-> S
     "a" 	-> S
-    "a" : B	-> S
+    "a" B	-> S
   context-free syntax
     ()  	-> S
     (A A)	-> S
@@ -33,13 +32,7 @@ exports
     {"." B}1+	-> S
     {"," B}1+	-> S
   context-free syntax
-    Set[A]	-> S
     A # B	-> S
     (A => B)	-> S
     A | B	-> S
-    <<A B C>>	-> S
-  context-free syntax
-    "Meneer" (van "Dalen")?
-    {(wacht | op) antwoord}+ -> S
 
-    ((To B) | Not => B)	-> S

@@ -1,3 +1,7 @@
+2004-04-23  Martin Bravenboer  <martin@cs.uu.nl>
+
+	* src/sdf-cons/sdf-cons.str: upgraded to new SDF syntax.
+	
 2004-04-20  Martin Bravenboer  <martin@cs.uu.nl>
 
 	* src/sdf-bracket/sdf-bracket.str:
