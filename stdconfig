@@ -1,9 +1,12 @@
+
+prefix=/usr/local/build/Boot
+sdf=/usr/local/build/SDF2
+aterm=/usr/local/build/ATerm
+
 ./bootstrap
-./configure --prefix=/home/xt/XT \
-	--with-sdf=/home/xt/XT \
-	--with-aterm=/home/xt/XT \
-	--enable-boot \
-	--enable-concrete
+./configure --prefix=$prefix \
+	--with-sdf=$sdf \
+	--with-aterm=$aterm
 
 exit 0
 

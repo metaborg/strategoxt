@@ -17,10 +17,6 @@ install-exec-local:
 	ln -sf asfix-yield ${bindir}/asource
 	ln -sf asfix-yield ${libexecdir}/asource
 
-install-data-local:
-	$(XTC)/bin/xtc-register -r $(REPOSITORY) -l $(libexecdir) -V $(VERSION) \
-		-t asfix-yield
-
 asfix_yield1_check_prog    = asfix-yield
 asfix_yield1_check_input   = data/tiny.tree
 asfix_yield1_check_output  = data/tiny.txt

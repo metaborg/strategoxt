@@ -42,6 +42,7 @@
    Int -- _1,
    Real -- _1,
    Str -- _1,
+   Char -- _1,
    BuildDefault -- KW["_"] _1,
    Inj -- _1,
    Con -- _1 _2,

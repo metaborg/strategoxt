@@ -20,7 +20,3 @@ SCFLAGS     	= -I $(srcdir)/../asfix --main $* $(XTCFLAGS)
 BOOTCLEANFILES 	= implode-asfix.c sglri.c
 
 CLEANFILES	= $(wildcard *.dep)
-
-install-data-local :
-	$(XTC)/bin/xtc-register -r $(REPOSITORY) -l $(bindir) -V $(VERSION) \
-		-t implode-asfix -t sglri

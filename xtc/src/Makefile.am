@@ -6,8 +6,7 @@ pkgdata_DATA 	= xtc-lib.str xtc-rep.str xtc-proc.str xtc-register.rtree
 SCFLAGS 	= --main $* $(XTCFLAGS)
 EXTRA_DIST	= $(pkgdata_DATA) $(wildcard *.str) $(wildcard *.meta) $(pkgdata_DATA)
 CLEANFILES	= $(wildcard *.dep)
-BOOTCLEANFILES	= xtc-register.c xtc-query.c
+BOOTCLEANFILES	= xtc.c 
 
-xtc-query.o	: xtc-conf.h
-xtc-register.o	: xtc-conf.h
+xtc.o		: xtc-conf.h
 

@@ -39,6 +39,23 @@ AC_ARG_WITH(cpl,
 AC_SUBST(CPL)
 AM_CONDITIONAL(USECPL, test x$usecpl = xtrue)
 
+############ XTC ##########################################################
+
+AC_ARG_WITH(xtc,
+  [  --with-xtc=DIR              Use XTC (XT Composition) [[prefix]]],
+  XTC="$withval",
+  XTC="$prefix"
+)
+AC_SUBST(XTC)
+
+AC_ARG_WITH(repository,
+  [  --with-repository=DIR       XTC repository [[pkgdatadir/XTC-$StrategoXT]]]
+,
+  REPOSITORY="$withval",
+  REPOSITORY="$prefix/share/$PACKAGE/XTC"
+)
+AC_SUBST(REPOSITORY)
+
 ### SDF ###############################
 
 AC_ARG_WITH(sdf, 
@@ -48,42 +65,28 @@ AC_ARG_WITH(sdf,
 )
 AC_SUBST(SDF)
 
+echo "SDF = $SDF"
+
 AC_ARG_WITH(sglr, 
-  [  --with-sglr=DIR             Specify location of SGLR], 
+  [  --with-sglr=DIR            Specify location of SGLR], 
   SGLR="$withval", 
   SGLR="$SDF"
 )
 AC_SUBST(SGLR)
 
+echo "SGLR = $SGLR"
+
 AC_ARG_WITH(pgen, 
-  [  --with-pgen=DIR             Specify location of SDF2 parser generator], 
+  [  --with-pgen=DIR            Specify location of SDF2 parser generator], 
   PGEN="$withval", 
   PGEN="$SDF"
 )
 AC_SUBST(PGEN)
 
-### Concrete Syntax ####################
-
-AC_ARG_ENABLE(concrete, 
-[  --enable-concrete           Enable concrete syntax (requires sglr, pgen, 
-                              asfix-tools, stratego-tools, sdf-tools)], 
-  CONCRETE="yes"; FRONTPKG="stratego-front"; STRATEGOFRONT="$prefix", 
-  CONCRETE="no" ; FRONTPKG=""
-)
-AC_SUBST(CONCRETE)
-AC_SUBST(FRONTPKG)
-
-AC_ARG_ENABLE(boot, 
-  [  --enable-boot               Enable bootstrapping (implies concrete syntax)], 
-  BOOT="yes" ; FRONTPKG="stratego-front" ; BOOTPKG="sc"; STRATEGOFRONT="$prefix", 
-  BOOT="no"  ; BOOTPKG=""
-)
-AC_SUBST(BOOT)
-AC_SUBST(BOOTPKG)
-AC_SUBST(STRATEGOFRONT)
+#AC_SUBST(STRATEGOFRONT)
 
 AC_ARG_ENABLE(exe,    
-  [  --enable-exe                Extension of executables], 
+  [  --enable-exe               Extension of executables], 
   EXE=".exe", 
   EXE=""
 )
@@ -94,7 +97,7 @@ AM_CONFIG_HEADER([config.h])
 
 ### PACKAGES ##########################
 
-PKGS="srts sc ssl gpp cgen stratego-front asfix-tools aterm-tools graph-tools sdf-tools stratego-tools xt boxenv"
+PKGS="autoxt srts xtc sdf-import sc ssl gpp cgen stratego-front asfix-tools aterm-tools graph-tools sdf-tools stratego-tools xt boxenv"
 
 #gbtools stratego-connect grammar-recovery
 
@@ -113,10 +116,12 @@ AC_OUTPUT(
 
 ### SUBPACKAGES ########################
 
-AB_CONFIG_PKG(aterm,
-   --with-gcc
-   --with-dbg
-)
+AB_CONFIG_PKG(autoxt, )
+
+#AB_CONFIG_PKG(aterm,
+#   --with-gcc
+#   --with-dbg
+#)
 
 if test x$usecpl = xtrue
 then
@@ -130,66 +135,38 @@ AB_CONFIG_PKG(srts,
 )
 fi
 
+AB_CONFIG_PKG(xtc,
+   --with-aterm=${ATERM}
+   --with-sglr=${SGLR}
+   --with-pgen=${PGEN}
+   --with-strategoxt=${prefix}
+   --with-repository=${REPOSITORY}
+)
+
+AB_CONFIG_PKG(sdf-import,
+   --with-aterm=${ATERM}
+   --with-sglr=${SGLR}
+   --with-pgen=${PGEN}
+   --with-xtc=${prefix}
+   --with-strategoxt=${prefix}
+   --with-repository=${REPOSITORY}
+)
+
+AB_CONFIG_PKG(sc,
+   --with-aterm=${ATERM}
+   --with-ssl=${prefix}
+   --with-srts=${prefix}
+   --with-sc-boot=${top_srcdir}/sc-boot
+   --with-cgen=${prefix}
+   --with-gpp=${prefix}
+)
+
 AB_CONFIG_PKG(cgen,
    --with-aterm=${ATERM}
    --with-ssl=${prefix}
    --with-srts=${prefix}
 )
-AB_CONFIG_PKG(sc-boot,
-   --with-aterm=${ATERM}
-   --with-ssl=${prefix}
-   --with-srts=${prefix}
-)
-AB_CONFIG_PKG(gpp-boot,
-   --with-aterm=${ATERM}
-   --with-ssl=${prefix}
-   --with-srts=${prefix}
-   --with-sglr=${SGLR}
-   --with-pgen=${PGEN}
-   --with-asfix-tools=${ASFIX_TOOLS}
-)
-AB_CONFIG_PKG(ssl,
-   --with-aterm=${ATERM}
-   --with-srts=${prefix}
-   --with-stratego=${prefix}
-)
-AB_CONFIG_PKG(aterm-tools,
-   --with-sc=${prefix} 
-)
-AB_CONFIG_PKG(asfix-tools,
-   --with-sc-boot=${prefix} 
-)
-AB_CONFIG_PKG(graph-tools,
-   --with-sc-boot=${prefix} 
-)
-AB_CONFIG_PKG(gpp,
-   --with-asfix-tools=${prefix}
-   --with-sglr=${SGLR}
-   --with-pgen=${PGEN}
-   --with-graphviz=${prefix}
-   --with-graph-tools=${prefix}
-   --with-stratego=${prefix}
-   --with-bundled-packages='${PKGS}'
-)
-AB_CONFIG_PKG(sdf-tools,
-   --with-stratego=${prefix}
-   --with-sglr=${SGLR}
-   --with-pgen=${PGEN}
-   --with-asfix-tools=${prefix}
-   --with-graph-tools=${prefix}
-   --with-gpp=${prefix}
-   --with-bundled-packages='${PKGS}'
-)
-AB_CONFIG_PKG(stratego-tools,
-   --with-sglr=${SGLR}
-   --with-pgen=${PGEN}
-   --with-stratego=${prefix}
-   --with-asfix-tools=${prefix}
-   --with-graph-tools=${prefix}
-   --with-sdf-tools=${prefix}
-   --with-gpp=${prefix}
-   --with-bundled-packages='${PKGS}'
-)
+
 AB_CONFIG_PKG(stratego-front,
    --with-stratego=${prefix} 
    --with-sglr=${SGLR}      
@@ -200,13 +177,58 @@ AB_CONFIG_PKG(stratego-front,
    --with-gpp=${prefix}
    --with-cgen=${prefix}
 )
-AB_CONFIG_PKG(sc,
+
+AB_CONFIG_PKG(ssl,
    --with-aterm=${ATERM}
-   --with-ssl=${prefix}
    --with-srts=${prefix}
-   --with-sc-boot=${top_srcdir}/sc-boot
-   --with-cgen=${prefix}
+   --with-stratego=${prefix}
+)
+
+AB_CONFIG_PKG(asfix-tools,
+   --with-sc-boot=${prefix}
+   --with-srts=${prefix}
+   --with-sglr=${SGLR}
+   --with-pgen=${PGEN}
+   --with-xtc=${prefix}
+   --with-repository=${REPOSITORY}
+)
+
+AB_CONFIG_PKG(gpp,
+   --with-asfix-tools=${prefix}
+   --with-sglr=${SGLR}
+   --with-pgen=${PGEN}
+   --with-graphviz=${prefix}
+   --with-graph-tools=${prefix}
+   --with-stratego=${prefix}
+   --with-bundled-packages='${PKGS}'
+)
+
+AB_CONFIG_PKG(aterm-tools,
+   --with-sc=${prefix} 
+)
+AB_CONFIG_PKG(graph-tools,
+   --with-sc-boot=${prefix} 
+)
+AB_CONFIG_PKG(sdf-tools,
+   --with-stratego=${prefix}
+   --with-sglr=${SGLR}
+   --with-pgen=${PGEN}
+   --with-asfix-tools=${prefix}
+   --with-graph-tools=${prefix}
    --with-gpp=${prefix}
+   --with-bundled-packages='${PKGS}'
+   --with-xtc=${prefix}
+   --with-repository=${REPOSITORY}
+)
+AB_CONFIG_PKG(stratego-tools,
+   --with-sglr=${SGLR}
+   --with-pgen=${PGEN}
+   --with-stratego=${prefix}
+   --with-asfix-tools=${prefix}
+   --with-graph-tools=${prefix}
+   --with-sdf-tools=${prefix}
+   --with-gpp=${prefix}
+   --with-bundled-packages='${PKGS}'
 )
 AB_CONFIG_PKG(xt,
   --with-pgen=${PGEN}           

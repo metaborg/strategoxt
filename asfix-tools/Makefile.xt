@@ -117,15 +117,15 @@ xtc-conf.h :
 
 install-data-local:
 	for file in $(pkgdata_DATA) ; do \
-          $(XTC)/bin/xtc-register -r $(REPOSITORY) -l $(pkgdatadir) -V $(VERSION) \
+          $(XTC)/bin/xtc -r $(REPOSITORY) register -l $(pkgdatadir) -V $(VERSION) \
 		-t $$file ; \
         done
 	for file in $(bin_PROGRAMS) ; do \
-          $(XTC)/bin/xtc-register -r $(REPOSITORY) -l $(bindir) -V $(VERSION) \
+          $(XTC)/bin/xtc -r $(REPOSITORY) register -l $(bindir) -V $(VERSION) \
 		-t $$file ; \
         done
 	for file in $(libexec_PROGRAMS) ; do \
-          $(XTC)/bin/xtc-register -r $(REPOSITORY) -l $(libexecdir) -V $(VERSION) \
+          $(XTC)/bin/xtc -r $(REPOSITORY) register -l $(libexecdir) -V $(VERSION) \
 		-t $$file ; \
         done
 

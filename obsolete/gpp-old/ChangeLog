@@ -1,3 +1,7 @@
+2002-12-08  Eelco Visser  <visser@cs.uu.nl>
+
+	* Using autoxt
+
 2002-11-24  Eelco Visser  <visser@acm.org>
 
 	* Package is now self-bootstrapping. 

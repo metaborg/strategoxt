@@ -141,5 +141,5 @@ SUBST = s+__SRTS_VERSION__+$(VERSION)+g;\
 
 CLEANFILES = 
 
-include Makefile.rpm
+#include Makefile.rpm
 
