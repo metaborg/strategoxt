@@ -71,10 +71,11 @@ strategies
 
   xtc-temp-files(s) = 
     begin-scope(!TempFiles)
-    ; s
-    ; where((<table-get>(TempFiles, Scopes) <+ ![[]]) => [scope | scopes]
+    ; restore-always(s,
+        where((<table-get>(TempFiles, Scopes) <+ ![[]]) => [scope | scopes]
             ; <map(try(remove-file))> scope)
-    ; end-scope(!TempFiles)
+        ; end-scope(!TempFiles)
+      )
 
 
   // XTC-IO : 'read' input file, transform, and 'write' to output file
@@ -95,7 +96,7 @@ strategies
   // iowrap for xtc tools: 'read' -i option, transform, and 'write' to -o option
 
   xtc-io-wrap(s) =
-      option-wrap(io-options, xtc-io(s))
+    option-wrap(io-options, xtc-io(s))
 
   // XTC-COMMAND
   // Executing an external process
@@ -111,8 +112,9 @@ strategies
     xtc-transform(tool, ![])
 
   xtc-transform(tool, args) =
-    xtc-transform-file(tool, args)
-    <+ xtc-transform-term(tool, args)
+    (FILE(id) + stdin)
+    < xtc-transform-file(tool, args)
+    + xtc-transform-term(tool, args)
   
   // Transforming a file with an external process
 
