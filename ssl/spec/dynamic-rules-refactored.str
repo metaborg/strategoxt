@@ -513,7 +513,7 @@ strategies // intersection
 
   dr-map-and-intersect(s | rulenames) = 
     let tl(s') = [id | s']
-     in dr-list-fork-and-intersect([], [s|_], tl | rulenames)
+     in dr-fold-and-intersect([], [s|id], tl | rulenames)
     end
 
   /** 
