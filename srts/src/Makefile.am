@@ -4,7 +4,7 @@ includedir = $(prefix)/include/srts
 
 AM_CPPFLAGS = -I. -I$(ATERM)/include -I$(srcdir) 
 AM_CFLAGS   = -Wall
-AM_LDFLAGS  = -avoid-version
+AM_LDFLAGS  = -avoid-version -no-undefined
 
 pkglib_LTLIBRARIES = \
   libstratego.la \

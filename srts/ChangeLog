@@ -1,3 +1,14 @@
+2004-07-11  Martin Bravenboer <martin@cs.uu.nl>
+
+	* src/Makefile.am, ssl/Makefile.am, libraries/Makefile.am: at
+	Cygwin no shared lirbaries were created until now. This is related
+	to the problem of undefined symbols. Microsoft Windows does not
+	allow undefined symbols in executables, but, if I understand it
+	all correctly, undefined symbols in a library is not a problem
+	since all required libraries will be available at link
+	time. Libtool takes a flag to ensure this: -no-undefined. Going to
+	test this at Cygwin after this commit ...
+
 2004-07-08  Martin Bravenboer <martin@cs.uu.nl>
 
 	* src/stratego.c: transformed counter should be volatile. GCC
