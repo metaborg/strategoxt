@@ -94,7 +94,7 @@ strategies // for escaping to C like escape sequences
 
 strategies
 
-  escape(esc : List(String) * (List(String) -> List(String)) -> List(String) ) = 
+  escape(esc : (List(String) -> List(String)) * List(String) -> List(String) ) = 
     explode-string;
     rec x(esc(x) <+ [id | x] <+ []);
     implode-string

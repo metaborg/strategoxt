@@ -97,10 +97,10 @@ strategies
   // for variables using the renaming strategy ren
 
   substitute(isvar
-            , varshape: name * (name -> env) -> term
+            , varshape: (name -> env) * name -> term
             , bndvars
-            , boundin: term * (term -> term) * (term -> term) * (term -> term) -> term
-            , paste: term * (term -> vars) -> term
+            , boundin: (term -> term) * (term -> term) * (term -> term) * term -> term
+            , paste: (term -> vars) * term -> term
             , ren) 
   = subs-args => (sbs,t); !(t, []);
     rec x(env-alltd(RnVar(varshape)
@@ -113,10 +113,10 @@ strategies
   // substituted terms
 
   substitute(isvar
-            , varshape: name * (name -> env) -> term
+            , varshape: (name -> env) * name -> term
             , bndvars
-            , boundin: term * (term -> term) * (term -> term) * (term -> term) -> term
-            , paste: term * (term -> vars) -> term ) 
+            , boundin: (term -> term) * (term -> term) * (term -> term) * term -> term
+            , paste: (term -> vars) * term -> term )
   = substitute(isvar, varshape, bndvars, boundin, paste, id)
 \end{code}
 

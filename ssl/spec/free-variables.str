@@ -67,7 +67,7 @@ strategies
           <+ split(crush(![],union,x), boundvars <+ ![]); diff)
 
   free-vars(getvars, boundvars
-           , boundin : term * (term -> term) * (term -> term) * (term -> term) -> term) = 
+           , boundin : (term -> term) * (term -> term) * (term -> term) * term -> term) = 
     rec x(getvars 
           <+ {vs: where(boundvars => vs); 
                   boundin(split(x, !vs); diff, x, ![])};
@@ -84,7 +84,7 @@ strategies
 *)
 
   free-vars(getvars, boundvars
-           , boundin : term * (term -> term) * (term -> term) * (term -> term) -> term
+           , boundin : (term -> term) * (term -> term) * (term -> term) * term -> term
            , eq) 
   = rec x(getvars 
           <+ {vs: where(boundvars => vs); 
@@ -108,7 +108,7 @@ strategies
           union)
 
   free-vars2(getvars, boundvars
-            , boundin : term * (term -> term) * (term -> term) * (term -> term) -> term) = 
+            , boundin : (term -> term) * (term -> term) * (term -> term) * term -> term) = 
     rec x(split(getvars <+ ![],
                 ({vs: where(boundvars => vs); 
                       boundin(split(x, !vs); diff, x, ![])};
@@ -117,7 +117,7 @@ strategies
           union)
 
   free-vars2(getvars, boundvars
-            , boundin : term * (term -> term) * (term -> term) * (term -> term) -> term
+            , boundin : (term -> term) * (term -> term) * (term -> term) * term -> term
             , eq)
   = rec x(split(getvars <+ ![]
                ,{vs: where(boundvars => vs);

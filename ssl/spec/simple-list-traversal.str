@@ -54,16 +54,16 @@ strategies
 	with a strategy operator \verb|stop| that 
 
 \begin{code}
-  topdownS-l(s, stop: a * (a -> a) -> a) = 
+  topdownS-l(s, stop: (a -> a) * a -> a) = 
     rec x(s; (stop(x) <+ all-l(x)))
 
-  bottomupS-l(s, stop: a * (a -> a) -> a) = 
+  bottomupS-l(s, stop: (a -> a) * a -> a) = 
     rec x((stop(x) <+ all-l(x)); s)
 
-  downupS-l(s, stop: a * (a -> a) -> a) = 
+  downupS-l(s, stop: (a -> a) * a -> a) = 
     rec x(s; (stop(x) <+ all-l(x)); s)
 
-  downupS-l(s1, s2, stop: a * (a -> a) -> a) = 
+  downupS-l(s1, s2, stop: (a -> a) * a -> a) = 
     rec x(s1; (stop(x) <+ all-l(x)); s2)
 \end{code} 
 

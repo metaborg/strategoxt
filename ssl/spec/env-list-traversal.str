@@ -20,7 +20,7 @@ strategies
   env-topdown-l(s) = 
     rec x(s; all-l-dist(x))
 
-  env-topdown-l(s, skip: term * (term -> term) -> term) = 
+  env-topdown-l(s, skip: (term -> term) * term -> term) = 
     rec x(s; (skip(x) <+ all-l-dist(x)))
 
   env-bottomup-l(s) = 

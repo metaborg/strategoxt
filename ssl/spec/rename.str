@@ -76,7 +76,7 @@ module rename
 imports simple-traversal tuple list env-traversal
 rules
 
-  RnVar(isvar : name * (name -> env) -> term) :
+  RnVar(isvar : (name -> env) * name -> term) :
     (t, env) -> <isvar(split(id, !env); lookup)> t
 
   RnBinding(bndvrs) :
@@ -94,7 +94,7 @@ strategies
   // variable declarations in binding constructs are assumed to
   // have the same shape as variable uses 
 
-  rename(isvar : name * (name -> env) -> term
+  rename(isvar : (name -> env) * name -> term
         , bndvars) = 
     \ t -> (t, []) \ ;
     rec x(env-alltd(RnVar(isvar)
@@ -103,7 +103,7 @@ strategies
 
 rules
 
-  DistBinding(s, boundin : term * (term -> term) * (term -> term) * (term -> term) -> term):
+  DistBinding(s, boundin : (term -> term) * (term -> term) * (term -> term) * term -> term):
     (t, env1, env2) -> <boundin(\x -> <s>(x, env2)\
                                ,\x -> <s>(x, env1)\
                                ,id)> t
@@ -115,9 +115,9 @@ strategies
   // variables at binding sites are assumed to have
   // the same shape as other variable occurences
 
-  rename(isvar : name * (name -> env) -> term
+  rename(isvar : (name -> env) * name -> term
         , bndvars
-        , boundin : term * (term -> term) * (term -> term) * (term -> term) -> term) = 
+        , boundin : (term -> term) * (term -> term) * (term -> term) * term -> term) = 
     \ t -> (t, []) \ ;
     rec x(env-alltd(RnVar(isvar)
                     <+ RnBinding(bndvars);
@@ -125,7 +125,7 @@ strategies
 
 rules
 
-  RnBinding(bndvrs, paste : term * (term -> vars) -> term) :
+  RnBinding(bndvrs, paste : (term -> vars) * term -> term) :
     (t, env1) -> (<paste(!ys)> t, env1, env2)
     where <bndvrs> t => xs; map(new) => ys; 
           <conc>(<zip(id)>(xs,ys), env1) => env2
@@ -133,15 +133,14 @@ rules
 
 strategies
 
-  rename(isvar : name * (name -> env) -> term
+  rename(isvar : (name -> env) * name -> term
         , bndvars
-        , boundin : term * (term -> term) * (term -> term) * (term -> term) -> term
-        , paste : term * (term -> vars) -> term
+        , boundin : (term -> term) * (term -> term) * (term -> term) * term -> term
+        , paste : (term -> vars) * term -> term
         )
   = \ t -> (t, []) \ ;
     rec x(env-alltd(RnVar(isvar)
                     <+ RnBinding(bndvars, paste);
                        DistBinding(x, boundin)))
 \end{code}
-
 
