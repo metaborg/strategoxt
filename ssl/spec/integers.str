@@ -1,39 +1,46 @@
 /**
- * Primitives for integer arithmetic and comparison.
+ * Integer arithmetic and comparison.
  */
 module integers
 strategies
 
   is-int = ?i; prim("SSL_is_int", i)
 
+  /**
+   * @obsolete use subt
+   */
   minus = obsolete(!"minus; use subt"); subt
+
+  /**
+   * @obsolete use add
+   */
   plus 	= obsolete(!"plus; use add"); add
 
-  add	= ?(x,y); (prim("SSL_addi",x,y) <+ prim("SSL_addr",x,y))
-  addi	= ?(x,y); prim("SSL_addi",x,y)
-  addr	= ?(x,y); prim("SSL_addr",x,y)
+  add  = ?(x,y); (prim("SSL_addi",x,y) <+ prim("SSL_addr",x,y))
+  addi = ?(x,y); prim("SSL_addi",x,y)
+  addr = ?(x,y); prim("SSL_addr",x,y)
 
-  subt	= ?(x,y); (prim("SSL_subti",x,y) <+ prim("SSL_subtr",x,y))
-  subti	= ?(x,y); prim("SSL_subti",x,y)
-  subtr	= ?(x,y); prim("SSL_subtr",x,y)
+  subt  = ?(x,y); (prim("SSL_subti",x,y) <+ prim("SSL_subtr",x,y))
+  subti = ?(x,y); prim("SSL_subti",x,y)
+  subtr = ?(x,y); prim("SSL_subtr",x,y)
 
-  mul	= ?(x,y); (prim("SSL_muli",x,y) <+ prim("SSL_mulr",x,y))
-  muli	= ?(x,y); prim("SSL_muli",x,y)
-  mulr	= ?(x,y); prim("SSL_mulr",x,y)
+  mul   = ?(x,y); (prim("SSL_muli",x,y) <+ prim("SSL_mulr",x,y))
+  muli  = ?(x,y); prim("SSL_muli",x,y)
+  mulr  = ?(x,y); prim("SSL_mulr",x,y)
 
-  div	= ?(x,y); (prim("SSL_divi",x,y) <+ prim("SSL_divr",x,y))
-  divi	= ?(x,y); prim("SSL_divi",x,y)
-  divr	= ?(x,y); prim("SSL_divr",x,y)
+  div   = ?(x,y); (prim("SSL_divi",x,y) <+ prim("SSL_divr",x,y))
+  divi  = ?(x,y); prim("SSL_divi",x,y)
+  divr  = ?(x,y); prim("SSL_divr",x,y)
 
-  mod	= ?(x,y); prim("SSL_mod",x,y)
+  mod = ?(x,y); prim("SSL_mod",x,y)
 
   gt	= ?(x,y); test(prim("SSL_gti",x,y) <+ prim("SSL_gtr",x,y))
   gti	= ?(x,y); test(prim("SSL_gti",x,y))
   gtr	= ?(x,y); test(prim("SSL_gtr",x,y))
 
-  geq   = ?(x,x) <+ gt
-  lt    = not(geq)
-  leq   = not(gt)
+  geq = ?(x,x) <+ gt
+  lt  = not(geq)
+  leq = not(gt)
 
 strategies
 
