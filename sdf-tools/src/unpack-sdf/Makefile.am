@@ -7,7 +7,7 @@ bin_SCRIPTS    = unpack
 SCFLAGS        = --main io-$*
 STRINCLUDES    = -I $(XTC)/share/xtc
 
-EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) $(wildcard *.rtree) 
+EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) $(wildcard *.rtree) unpack.src
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c) $(wildcard *.rtree) 
 
