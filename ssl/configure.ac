@@ -14,7 +14,6 @@ AC_SUBST(TOP_SRCDIR)
 AC_CONFIG_FILES([
   Makefile
   spec/Makefile
-  spec/data/Makefile
   tests/Makefile
 ])
 AC_OUTPUT
