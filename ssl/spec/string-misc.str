@@ -127,19 +127,19 @@ strategies
    *
    * Removes the longest substring for which all characters satisfy strategy s.
    * Examples:
-   *   <ltrim(?' ')> "   fred  " => "fred  "
-   *   <rtrim(?' ')> "   fred  " => "   fred"
-   *   <trim(?' ')>  "   fred  " => "fred"
+   *   <ltrim-chars(?' ')> "   fred  " => "fred  "
+   *   <rtrim-chars(?' ')> "   fred  " => "   fred"
+   *   <trim-chars(?' ')>  "   fred  " => "fred"
    * 
    * @param should succeed for all elements that have to be trimmed.
    * @since 0.9.5
    */
 
-  ltrim(s) = string-as-chars(ltrim(s))
+  ltrim-chars(s) = string-as-chars(ltrim(s))
 
-  rtrim(s) = string-as-chars(rtrim(s))
+  rtrim-chars(s) = string-as-chars(rtrim(s))
 
-  trim(s)  = string-as-chars(trim(s))
+  trim-chars(s)  = string-as-chars(trim(s))
 
   /**
    * Checks whether a character is whitespace.
@@ -156,7 +156,7 @@ strategies
    * @since 0.9.5
    */
   trim-trailing-whitespace =
-    rtrim(is-whitespace)
+    rtrim-chars(is-whitespace)
 
   /**
    * Trims all leading whitespace in a (single-line) string.
@@ -164,7 +164,7 @@ strategies
    * @since 0.9.5
    */
   trim-leading-whitespace =
-    ltrim(is-whitespace)
+    ltrim-chars(is-whitespace)
 
   /**
    * Trims all trailing *and* leading whitespace in a (single-line) string.
@@ -172,7 +172,7 @@ strategies
    * @since 0.9.5
    */
   trim-whitespace =
-    trim(is-whitespace)
+    trim-chars(is-whitespace)
 
 strategies
 /**
