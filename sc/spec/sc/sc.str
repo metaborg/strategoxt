@@ -74,9 +74,9 @@ strategies
 // Command line options
 
   command-line-options =
-    where([get-path => prefix | id])
-    ; where(prim("get_conf_pkgdatadir") => pkgdatadir)
-    ; where(prim("get_conf_datadir") => datadir)
+    where([get-path => prefix; debug(!"prefix: ") | id])
+    ; where(prim("get_conf_pkgdatadir") => pkgdatadir; debug(!"pkgdatadir: "))
+    ; where(prim("get_conf_datadir") => datadir; debug(!"datadir: "))
     ; import-config-file(
         find-config-file(![prefix, pkgdatadir], !"sc.config")
       )

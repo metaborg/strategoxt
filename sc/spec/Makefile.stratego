@@ -1,0 +1,20 @@
+INCLUDES 	= -I$(STRATEGORTS)/include \
+		  -I$(STRATEGOLIB)/include \
+		  -I$(ATERM)/include \
+		  -I$(srcdir)/..
+
+LDFLAGS		= -L$(STRATEGORTS)/lib \
+		  -L$(STRATEGOLIB)/lib \
+		  -L$(ATERM)/lib 
+
+STRATEGOLIBS    = -lstratego-lib.opt \
+		  -lATerm-gcc \
+		  -lm 
+
+LDADD		= -lstratego.opt $(STRATEGOLIBS)
+
+SUFFIXES 	= .str
+SC 		= $(prefix)/bin/sc
+
+.str.c : 
+	$(SC) $(STRINCLUDES) $(SCFLAGS) -i $< -o $@ -c

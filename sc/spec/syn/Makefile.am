@@ -19,8 +19,8 @@ bin_SCRIPTS 		= parse-mod
 libexec_PROGRAMS 	= parse-stratego pack-stratego parse-mod  
 pack_stratego_SOURCES 	= pack-stratego.c
 
-parse_mod_LDADD		= @LEXLIB@ $(STRATEGOLIBS)
-parse_stratego_LDADD 	= @LEXLIB@ $(STRATEGOLIBS)
+parse_mod_LDADD		= @LEXLIB@ -latermextension $(STRATEGOLIBS)
+parse_stratego_LDADD 	= @LEXLIB@ -latermextension $(STRATEGOLIBS)
 pack_stratego_LDADD 	= -lstratego.opt $(STRATEGOLIBS)
 
 parse_stratego_SOURCES 	= parse-stratego.c stratego-grm.y \
@@ -31,7 +31,6 @@ parse_mod_SOURCES 	= parse-mod.c stratego-grm.y \
 
 #pkgdatadir 	= $(prefix)/pack-stratego-plugin
 pkgdata_DATA 	= pack-stratego.config
-
 
 CLEANFILES 	= pack-stratego pack-stratego.c pack-stratego.dep \
 		  stratego-grm.c stratego-grm.h stratego-lex.c
@@ -48,31 +47,8 @@ OPTFLAGS 	= -O4
 
 YFLAGS 		= -d -t -v
 
-
-## STRATEGO Compilation
-
 STRINCLUDES 	= -I $(srcdir)/../sig -CI "-I.."
 SCFLAGS 	= --C-include "\"conf.h\""  
-
-INCLUDES 	= -I$(STRATEGORTS)/include \
-		  -I$(STRATEGOLIB)/include \
-		  -I$(ATERM)/include \
-		  -I$(srcdir)/..
-
-LDFLAGS		= -L$(STRATEGORTS)/lib \
-		  -L$(STRATEGOLIB)/lib \
-		  -L$(ATERM)/lib 
-
-STRATEGOLIBS    = -lstratego-lib.opt \
-		  -latermextension.opt \
-		  -lATerm-gcc \
-		  -lm 
-
-SUFFIXES 	= .str
-SC 		= $(prefix)/bin/sc
-
-.str.c : 
-	$(SC) $(STRINCLUDES) $(SCFLAGS) -i $< -c
 
 # BOOTINSTALL
 
@@ -95,3 +71,4 @@ check2: pack-stratego
              s#__libexec__#$(libexecdir)#g' < $< > $@
 
 
+include $(srcdir)/../Makefile.stratego

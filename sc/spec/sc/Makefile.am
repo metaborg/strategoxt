@@ -18,10 +18,10 @@
 SCFLAGS	= -I $(srcdir)/../sig \
 	  -I $(srcdir)/../match \
 	  -I $(srcdir)/../lib \
-	  --main $@ \
+	  --main $* \
 	  --C-include "\"conf.h\"" -CI "-I.."
 
-bin_SCRIPTS = sc
+bin_PROGRAMS = sc
 
 pkgdata_DATA = sc.config sc-manual.txt
 
@@ -31,7 +31,7 @@ EXTRA_DIST = $(wildcard *.r) $(wildcard *.c) sc.config.src sc-manual.txt
 
 BOOTSOURCES = sc.c sc.config.src
 
-include $(srcdir)/../make-rules
+include $(srcdir)/../Makefile.stratego
 include $(wildcard *.dep)
 
 # Generate srcipts

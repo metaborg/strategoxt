@@ -2,7 +2,7 @@
 
 #include <aterm2.h>
 #include <srts/stratego.h>
-#include "stratego.grm.tab.h"
+#include "stratego-grm.h"
 #include "options.h"
 
 static void eat_comment();

@@ -19,6 +19,10 @@ EXTRA_DIST = make_rules.in make-rules conf.h.src
 
 pkgdata_DATA = conf.h
 
+CLEANFILES = conf.h
+
+conf.h: Makefile
+
 SUBDIRS = \
   . syn c front lib match opt sc sig test1 test2 testlib testspec log
 

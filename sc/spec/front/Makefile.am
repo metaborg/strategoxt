@@ -21,30 +21,34 @@ SCFLAGS = -I $(srcdir)/../sig \
 	  -I $(srcdir)/../match \
 	  -I $(srcdir)/../lib \
 	  -I $(srcdir)/../opt \
-	  --main $@
+	  --main $*
 
-libexec_SCRIPTS = frontend extract extract-all rename-defs inline 
+libexec_PROGRAMS = frontend extract extract-all rename-defs inline 
 
-CLEANFILES = *.dep \
-	frontend frontend.c \
-	extract extract.c \
-	extract-all extract-all.c \
-	inline inline.c \
-	needed-defs-test needed-defs-test.c \
-	frontend-test \
-	rename-defs rename-defs.c
+frontend_SOURCES = frontend.str
+
+CLEANFILES = *.dep 
+
+MOSTLYCLEANFILES = extract-all.c  extract.c  frontend.c  inline.c  rename-defs.c
 
 #TESTS = 
 #needed-defs-test 
 #frontend-test 
 #extract-test
 
-EXTRA_DIST = $(wildcard *.r)
+EXTRA_DIST = \
+check-constructors.str       frontend.str       needed-defs-test.str \
+check-constructors-test.str  frontend-test.str  normalize-spec.str \
+desugar.str                  inline.str         rename-defs.str \
+extract-all.str              inlining.str       spec-to-sdefs.str \
+extract.str                  mul-contexts.str   use-def.str \
+extract-test.str             needed-defs.str
 
 BOOTSOURCES = frontend.c extract.c extract-all.c inline.c rename-defs.c
 
-include $(srcdir)/../make-rules
+#include $(srcdir)/../make-rules
+#include $(wildcard *.dep)
 
-include $(wildcard *.dep)
+include $(srcdir)/../Makefile.stratego
 
 

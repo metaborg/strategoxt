@@ -8,7 +8,7 @@ extern FILE *yyin;
 
 ATerm parse_tree;
 
-void yymessage(char *msg)
+void yymessage(char *msg)  
 {
   fprintf(stderr, "%s: line %d - %s\n", file_name, yylineno + 1, msg);
 }
@@ -16,12 +16,12 @@ void yymessage(char *msg)
 void yyerror(char *msg)
 {
   yymessage(msg);
-  exit(1);
+  exit(1); 
 }
 
 %}
 
-%union{
+%union{ 
    int    num;
    double real;
    char   *string;
