@@ -164,6 +164,9 @@ strategies
   canonicalize = 
     xtc-transform(!"canonicalize", !["-b" | <pass-verbose> ])
  
+  bound-unbound-vars = 
+    xtc-transform(!"bound-unbound-vars", !["-b" | <pass-verbose> ])
+ 
   output-optimized =
     try(where(
 	  debug(!"output-optimized: ");
@@ -190,6 +193,7 @@ strategies
     if-verbose2(debug(!"back-end: "));
     profile'(if-verbose1(<printnl>(stderr, ["back-end succeeded:      " | <id>])), 
       canonicalize
+      ; bound-unbound-vars
       ; stratego-cf
       ; output-canonical
       ; s2c

@@ -732,11 +732,11 @@ void init_constant_terms (void)
   ATprotect(&(term_y_13));
   term_y_13 = (ATerm) ATmakeAppl(ATmakeSymbol("i_0", 0, ATtrue));
   ATprotect(&(term_w_14));
-  term_w_14 = (ATerm) ATmakeAppl(ATmakeSymbol("l_0", 0, ATtrue));
+  term_w_14 = (ATerm) ATmakeAppl(ATmakeSymbol("m_0", 0, ATtrue));
   ATprotect(&(term_z_14));
   term_z_14 = (ATerm) ATmakeAppl(ATmakeSymbol("_", 0, ATtrue));
   ATprotect(&(term_p_15));
-  term_p_15 = (ATerm) ATmakeAppl(ATmakeSymbol("c_0", 0, ATtrue));
+  term_p_15 = (ATerm) ATmakeAppl(ATmakeSymbol("b_0", 0, ATtrue));
   ATprotect(&(term_u_15));
   term_u_15 = (ATerm) ATmakeAppl(ATmakeSymbol("g_0", 0, ATtrue));
   ATprotect(&(term_t_16));
@@ -865,7 +865,7 @@ ATerm rewrite_1_0 (ATerm l_109 (ATerm), ATerm);
 ATerm HoArg_0_0 (ATerm);
 ATerm concat_strings_0_0 (ATerm);
 ATerm int_to_string_0_0 (ATerm);
-ATerm Cify_1_0 (ATerm p_0 (ATerm), ATerm);
+ATerm Cify_1_0 (ATerm o_0 (ATerm), ATerm);
 ATerm escape_1_0 (ATerm m_97 (ATerm, ATerm (ATerm)), ATerm);
 ATerm cify_0_0 (ATerm);
 ATerm NameMod_0_0 (ATerm);
@@ -964,7 +964,7 @@ ATerm system_about_switch_0_0 (ATerm);
 ATerm table_get_0_0 (ATerm);
 ATerm table_push_0_0 (ATerm);
 ATerm register_usage_1_0 (ATerm t_108 (ATerm), ATerm);
-ATerm Option_3_0 (ATerm a_0 (ATerm), ATerm b_0 (ATerm), ATerm d_0 (ATerm), ATerm);
+ATerm Option_3_0 (ATerm a_0 (ATerm), ATerm c_0 (ATerm), ATerm d_0 (ATerm), ATerm);
 ATerm system_usage_switch_0_0 (ATerm);
 ATerm UndefinedOption_0_0 (ATerm);
 ATerm set_config_0_0 (ATerm);
@@ -1097,12 +1097,12 @@ ATerm RenameVar_0_0 (ATerm t)
       }
       t = not_null(g_3);
       {
-        ATerm m_0 (ATerm t)
+        ATerm l_0 (ATerm t)
         {
           t = term_a_9;
           return(t);
         }
-        t = rewrite_1_0(m_0, t);
+        t = rewrite_1_0(l_0, t);
         if(((l_3 != NULL) && (l_3 != t)))
           _fail(t);
         else
@@ -1164,12 +1164,12 @@ ATerm RenameVar_0_0 (ATerm t)
       }
       t = not_null(o_3);
       {
-        ATerm o_0 (ATerm t)
+        ATerm p_0 (ATerm t)
         {
           t = term_a_9;
           return(t);
         }
-        t = rewrite_1_0(o_0, t);
+        t = rewrite_1_0(p_0, t);
         if(((s_3 != NULL) && (s_3 != t)))
           _fail(t);
         else
@@ -1180,7 +1180,7 @@ ATerm RenameVar_0_0 (ATerm t)
             t_3 = ATgetArgument(t, 0);
             u_3 = ATgetArgument(t, 1);
             t = not_null(t_3);
-            if(match_string(t, "c_0"))
+            if(match_string(t, "b_0"))
               {
                 t = y_3(t);
               }
@@ -1814,7 +1814,7 @@ ATerm HoArg_0_0 (ATerm t)
             d_8 = ATgetArgument(t, 0);
             e_8 = ATgetArgument(t, 1);
             t = not_null(d_8);
-            if(match_string(t, "l_0"))
+            if(match_string(t, "m_0"))
               {
                 t = t_8(t);
               }
@@ -2020,7 +2020,7 @@ ATerm int_to_string_0_0 (ATerm t)
   t = z_8(t);
   return(t);
 }
-ATerm Cify_1_0 (ATerm p_0 (ATerm), ATerm t)
+ATerm Cify_1_0 (ATerm o_0 (ATerm), ATerm t)
 {
   ATerm i_9 = NULL,j_9 = NULL,k_9 = NULL;
   ATerm u_9 (ATerm t)
@@ -2045,7 +2045,7 @@ ATerm Cify_1_0 (ATerm p_0 (ATerm), ATerm t)
         return(t);
       }
       t = not_null(l_9);
-      t = p_0(t);
+      t = o_0(t);
       if(((n_9 != NULL) && (n_9 != t)))
         _fail(t);
       else
@@ -2077,7 +2077,7 @@ ATerm Cify_1_0 (ATerm p_0 (ATerm), ATerm t)
         return(t);
       }
       t = not_null(o_9);
-      t = p_0(t);
+      t = o_0(t);
       if(((q_9 != NULL) && (q_9 != t)))
         _fail(t);
       else
@@ -2109,7 +2109,7 @@ ATerm Cify_1_0 (ATerm p_0 (ATerm), ATerm t)
         return(t);
       }
       t = not_null(r_9);
-      t = p_0(t);
+      t = o_0(t);
       if(((t_9 != NULL) && (t_9 != t)))
         _fail(t);
       else
@@ -7300,7 +7300,7 @@ ATerm register_usage_1_0 (ATerm t_108 (ATerm), ATerm t)
   _fail(t);
   return(t);
 }
-ATerm Option_3_0 (ATerm a_0 (ATerm), ATerm b_0 (ATerm), ATerm d_0 (ATerm), ATerm t)
+ATerm Option_3_0 (ATerm a_0 (ATerm), ATerm c_0 (ATerm), ATerm d_0 (ATerm), ATerm t)
 {
   ATerm n_41 = NULL,o_41 = NULL,p_41 = NULL;
   ATerm u_41 (ATerm t)
@@ -7342,7 +7342,7 @@ ATerm Option_3_0 (ATerm a_0 (ATerm), ATerm b_0 (ATerm), ATerm d_0 (ATerm), ATerm
           return(t);
         }
         t = term_k_10;
-        t = b_0(t);
+        t = c_0(t);
         if(((t_41 != NULL) && (t_41 != t)))
           _fail(t);
         else

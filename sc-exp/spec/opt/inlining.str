@@ -107,7 +107,7 @@ strategies
 	+ Cong(id,id)
 	+ Choice(x, x)
 	+ LChoice(x, x)
-	+ GuardedLChoice(x, x)
+	+ GuardedLChoice(x, x, x)
     );
     where(<leq>(<term-size>, 50))
 

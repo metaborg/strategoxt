@@ -1,3 +1,22 @@
+2003-07-17  Eelco Visser  <visser@cs.uu.nl>
+
+	* Refined bound-unbound-vars analysis and use the analysis in the
+	back-end to avoid generating run-time checks on binding of variable.
+
+	* Refined strategy of pattern match compiler to only generate a matrix
+	in case there is a chance of actually merging with another matrix, i.e.,
+	in case the matches occur at the guarding position of a choice.
+
+	* Abstract over free term variables in continuations of rows in match
+	matrix. This allows narrowing the scope of the variables in the matrix
+	to the actual matching and improves boundness analysis. This required
+	an extension of the free variables analysis to deal with the Matrix
+	construct.
+
+	* In test programs these change produce a considerable reduction in
+	code size. This may be undone in larger programs because of the
+	agressive inlining strategy, which should be refined.
+	
 2003-07-16  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/opt/inlining.str: Tweaked the inliner and fixed a bug

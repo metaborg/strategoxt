@@ -7,7 +7,7 @@ strategies
     iowrap(
       downup2(repeat(Canon),repeat(Canon))
       ; mark-fresh-vars
-      ; mark-bound-unbound-vars
+      //; mark-bound-unbound-vars
     )
 
 rules

@@ -828,11 +828,11 @@ void init_constant_terms (void)
   ATprotect(&(term_x_14));
   term_x_14 = (ATerm) ATmakeAppl(ATmakeSymbol("test2b", 0, ATtrue));
   ATprotect(&(term_a_15));
-  term_a_15 = (ATerm) ATmakeAppl(ATmakeSymbol("o_0", 0, ATtrue));
+  term_a_15 = (ATerm) ATmakeAppl(ATmakeSymbol("p_0", 0, ATtrue));
   ATprotect(&(term_b_15));
   term_b_15 = (ATerm) ATmakeAppl(ATmakeSymbol("Context", 0, ATtrue));
   ATprotect(&(term_d_15));
-  term_d_15 = (ATerm) ATmakeAppl(ATmakeSymbol("l_0", 0, ATtrue));
+  term_d_15 = (ATerm) ATmakeAppl(ATmakeSymbol("m_0", 0, ATtrue));
   ATprotect(&(term_f_15));
   term_f_15 = (ATerm) ATmakeAppl(ATmakeSymbol("j_0", 0, ATtrue));
   ATprotect(&(term_e_17));
@@ -858,7 +858,7 @@ void init_constant_terms (void)
   ATprotect(&(term_i_21));
   term_i_21 = (ATerm) ATmakeAppl(sym__0);
   ATprotect(&(term_r_23));
-  term_r_23 = (ATerm) ATmakeAppl(ATmakeSymbol("r_0", 0, ATtrue));
+  term_r_23 = (ATerm) ATmakeAppl(ATmakeSymbol("s_0", 0, ATtrue));
   ATprotect(&(term_s_23));
   term_s_23 = (ATerm) ATmakeAppl(sym_Defined_1, term_r_23);
   ATprotect(&(term_b_25));
@@ -866,9 +866,9 @@ void init_constant_terms (void)
   ATprotect(&(term_c_25));
   term_c_25 = (ATerm) ATmakeAppl(sym_Defined_1, term_b_25);
   ATprotect(&(term_e_25));
-  term_e_25 = (ATerm) ATmakeAppl(ATmakeSymbol("e_0", 0, ATtrue));
+  term_e_25 = (ATerm) ATmakeAppl(ATmakeSymbol("f_0", 0, ATtrue));
   ATprotect(&(term_g_25));
-  term_g_25 = (ATerm) ATmakeAppl(ATmakeSymbol("c_0", 0, ATtrue));
+  term_g_25 = (ATerm) ATmakeAppl(ATmakeSymbol("b_0", 0, ATtrue));
   ATprotect(&(term_l_25));
   term_l_25 = (ATerm) ATmakeAppl(sym_Scopes_0);
   ATprotect(&(term_d_31));
@@ -1007,7 +1007,7 @@ ATerm main_0 (ATerm t)
 }
 ATerm test12_0_0 (ATerm t)
 {
-  ATerm b_0 (ATerm t)
+  ATerm c_0 (ATerm t)
   {
     t = term_r_4;
     return(t);
@@ -1017,12 +1017,12 @@ ATerm test12_0_0 (ATerm t)
     t = (ATerm) ATmakeAppl(sym_RDefT_4, term_s_4, (ATerm)ATempty, (ATerm)ATempty, (ATerm) ATmakeAppl(sym_StratRule_3, (ATerm)ATmakeAppl(sym_Call_2, term_u_4, (ATerm) ATinsert(ATempty, term_x_4)), (ATerm)ATmakeAppl(sym_Call_2, term_u_4, (ATerm) ATinsert(ATempty, term_y_4)), term_z_4));
     return(t);
   }
-  t = apply_test_3_0(b_0, def_use_def_0_0, d_0, t);
+  t = apply_test_3_0(c_0, def_use_def_0_0, d_0, t);
   return(t);
 }
 ATerm test11_0_0 (ATerm t)
 {
-  ATerm f_0 (ATerm t)
+  ATerm e_0 (ATerm t)
   {
     t = term_a_5;
     return(t);
@@ -1032,7 +1032,7 @@ ATerm test11_0_0 (ATerm t)
     t = (ATerm) ATmakeAppl(sym_SDefT_4, term_b_5, (ATerm)ATempty, (ATerm)ATempty, (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Match_1, (ATerm) ATmakeAppl(sym_Op_2, term_c_5, (ATerm) ATinsert(ATinsert(ATempty, term_g_5), term_e_5))), (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Scope_2, (ATerm)ATinsert(ATempty, term_h_5), (ATerm) ATmakeAppl(sym_Match_1, (ATerm) ATmakeAppl(sym_Op_2, term_c_5, (ATerm) ATinsert(ATinsert(ATempty, term_k_5), term_j_5)))), (ATerm) ATmakeAppl(sym_Build_1, (ATerm) ATmakeAppl(sym_Op_2, term_c_5, (ATerm) ATinsert(ATinsert(ATempty, (ATerm) ATmakeAppl(sym_Op_2, term_c_5, (ATerm) ATinsert(ATinsert(ATempty, term_g_5), term_e_5))), term_j_5))))));
     return(t);
   }
-  t = apply_test_3_0(f_0, def_use_def_0_0, g_0, t);
+  t = apply_test_3_0(e_0, def_use_def_0_0, g_0, t);
   {
     ATerm i_0 (ATerm t)
     {
@@ -1044,12 +1044,12 @@ ATerm test11_0_0 (ATerm t)
       t = Strategies_1_0(defs_use_def_0_0, t);
       return(t);
     }
-    ATerm m_0 (ATerm t)
+    ATerm l_0 (ATerm t)
     {
       t = (ATerm) ATmakeAppl(sym_Strategies_1, (ATerm) ATinsert(ATempty, (ATerm) ATmakeAppl(sym_RDef_3, term_m_5, (ATerm)ATinsert(ATempty, term_c_6), (ATerm) ATmakeAppl(sym_Rule_3, (ATerm)ATmakeAppl(sym_Op_2, term_c_5, (ATerm) ATinsert(ATinsert(ATempty, term_g_5), term_e_5)), (ATerm)ATmakeAppl(sym_Op_2, term_c_5, (ATerm) ATinsert(ATinsert(ATempty, (ATerm) ATmakeAppl(sym_Op_2, term_c_5, (ATerm) ATinsert(ATinsert(ATempty, term_e_6), term_e_5))), term_j_5)), (ATerm) ATmakeAppl(sym_Seq_2, term_f_6, (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Call_2, term_q_6, (ATerm) ATinsert(ATempty, (ATerm) ATmakeAppl(sym_Scope_2, (ATerm)ATinsert(ATempty, term_h_5), (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Match_1, (ATerm) ATmakeAppl(sym_Op_2, term_c_5, (ATerm) ATinsert(ATinsert(ATempty, term_k_5), term_j_5))), (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Where_1, (ATerm) ATmakeAppl(sym_BA_2, term_a_7, (ATerm) ATmakeAppl(sym_Op_2, term_b_7, (ATerm) ATinsert(ATinsert(ATempty, term_j_5), term_e_5)))), term_c_7))))), term_d_7))))));
       return(t);
     }
-    t = apply_test_3_0(i_0, k_0, m_0, t);
+    t = apply_test_3_0(i_0, k_0, l_0, t);
   }
   return(t);
 }
@@ -1152,7 +1152,7 @@ ATerm test10_0_0 (ATerm t)
     t = term_e_7;
     return(t);
   }
-  ATerm p_0 (ATerm t)
+  ATerm o_0 (ATerm t)
   {
     t = Overlays_1_0(defs_use_def_0_0, t);
     return(t);
@@ -1162,12 +1162,12 @@ ATerm test10_0_0 (ATerm t)
     t = (ATerm) ATmakeAppl(sym_Overlays_1, (ATerm) ATinsert(ATinsert(ATempty, (ATerm) ATmakeAppl(sym_Overlay_3, term_f_5, (ATerm)ATinsert(ATinsert(ATempty, term_l_8), term_v_4), (ATerm) ATmakeAppl(sym_Op_2, term_p_9, (ATerm) ATinsert(ATinsert(ATinsert(ATempty, term_t_9), term_r_9), term_w_4)))), (ATerm) ATmakeAppl(sym_Overlay_3, term_k_8, (ATerm)ATinsert(ATinsert(ATempty, term_l_8), term_v_4), (ATerm) ATmakeAppl(sym_Op_2, term_m_8, (ATerm) ATinsert(ATinsert(ATempty, term_q_8), (ATerm) ATmakeAppl(sym_Op_2, term_n_8, (ATerm) ATinsert(ATinsert(ATempty, term_p_8), term_w_4)))))));
     return(t);
   }
-  t = apply_and_fail_3_0(n_0, p_0, q_0, t);
+  t = apply_and_fail_3_0(n_0, o_0, q_0, t);
   return(t);
 }
 ATerm test9_0_0 (ATerm t)
 {
-  ATerm s_0 (ATerm t)
+  ATerm r_0 (ATerm t)
   {
     t = term_u_9;
     return(t);
@@ -1177,7 +1177,7 @@ ATerm test9_0_0 (ATerm t)
     t = (ATerm) ATmakeAppl(sym_SDefT_4, term_b_5, (ATerm)ATempty, (ATerm)ATempty, (ATerm) ATmakeAppl(sym_LRule_1, (ATerm) ATmakeAppl(sym_Rule_3, (ATerm)ATmakeAppl(sym_Op_2, term_k_8, (ATerm) ATinsert(ATinsert(ATempty, term_q_8), term_w_4)), (ATerm)ATmakeAppl(sym_Op_2, term_m_8, (ATerm) ATinsert(ATinsert(ATempty, term_t_9), term_q_8)), term_t_10)));
     return(t);
   }
-  t = apply_test_3_0(s_0, def_use_def_0_0, t_0, t);
+  t = apply_test_3_0(r_0, def_use_def_0_0, t_0, t);
   {
     ATerm u_0 (ATerm t)
     {
@@ -2737,7 +2737,7 @@ ATerm Context_0_0 (ATerm t)
             l_15 = ATgetArgument(t, 0);
             m_15 = ATgetArgument(t, 1);
             t = not_null(l_15);
-            if(match_string(t, "o_0"))
+            if(match_string(t, "p_0"))
               {
                 t = x_16(t);
               }
@@ -2799,7 +2799,7 @@ ATerm Context_0_0 (ATerm t)
             r_15 = ATgetArgument(t, 0);
             s_15 = ATgetArgument(t, 1);
             t = not_null(r_15);
-            if(match_string(t, "l_0"))
+            if(match_string(t, "m_0"))
               {
                 t = y_16(t);
               }
@@ -2985,7 +2985,7 @@ ATerm Context_0_0 (ATerm t)
             j_16 = ATgetArgument(t, 0);
             k_16 = ATgetArgument(t, 1);
             t = not_null(j_16);
-            if(match_string(t, "e_0"))
+            if(match_string(t, "f_0"))
               {
                 t = b_17(t);
               }
@@ -3047,7 +3047,7 @@ ATerm Context_0_0 (ATerm t)
             p_16 = ATgetArgument(t, 0);
             q_16 = ATgetArgument(t, 1);
             t = not_null(p_16);
-            if(match_string(t, "c_0"))
+            if(match_string(t, "b_0"))
               {
                 t = c_17(t);
               }
@@ -3421,7 +3421,7 @@ ATerm Bound_0_0 (ATerm t)
           {
             c_19 = ATgetArgument(t, 0);
             t = not_null(c_19);
-            if(match_string(t, "r_0"))
+            if(match_string(t, "s_0"))
               {
                 t = not_null(b_19);
               }

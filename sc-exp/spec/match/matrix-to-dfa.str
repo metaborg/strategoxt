@@ -2,6 +2,7 @@
 
 module matrix-to-dfa
 imports matrix stratego-laws desugar match-to-matrix dynamic-rules
+	DefaultStrat
 
 strategies
 
@@ -25,16 +26,32 @@ rules
 
   MatrixScope :
     Matrix(ps, rows) -> 
-    Scope(ps, Let(sdefs, Seq(Assign(Var([0])), Matrix(rows'))))
-    where <unzip((* Row(id,simplify-widen); *) RowLet); (concat,id)> rows => (sdefs, rows')
+    Let(sdefs, Scope(ps, Seq(Assign(Var([0])), Matrix(rows'))))
+    where <unzip((* Row(id,simplify-widen); *) RowLet(!ps)); (concat,id)> rows => (sdefs, rows')
 
-  RowLet :
+  RowLet(ps):
     Row(ts, s) -> ([], Row([], ts, s))
     where <simple-strategy> s
 
-  RowLet :
-    Row(ts, s) -> ([SDefT(f, [], [], s)], Row([], ts, CallT(SVar(f), [], [])))
+  RowLet(ps) :
+    Row(ts1, s) -> 
+    ([SDefT(f, [], as, s)], Row([], ts1, CallT(SVar(f), [], ts2)))
     where <not(simple-strategy)> s; new => f
+        //; <debug(!"RowLet: ")> Row(ts1, s)
+        ; < tvars-matrix
+          ; <isect>(<id>, <ps>)
+          ; unzip(!(VarDec(<id>,DefaultTerm), Var(<id>)))
+          > s => (as, ts2)
+        //; debug(!"Free variables: ")
+
+  tvars-matrix =
+    free-vars(Add1, Bind0 + Bind4 + Bind6 + Bind8 + MatrixBind, tvars-matrix-boundin)
+
+  tvars-matrix-boundin(bnd, ubnd, ignore) = 
+    tboundin(bnd, ubnd, ignore) + Matrix(ignore, bnd)
+
+  MatrixBind :
+    Matrix(ps, rows) -> ps
 
 strategies
 
@@ -43,11 +60,14 @@ strategies
     rec x(
       Id 
       + Fail 
-      + Seqs([]) 
-      + Build(Var(id) + Op(id,list(Var(id))) + Int(id) + Real(id) + Str(id))
+      + Build(rec trm(Var(id) + Int(id) + Real(id) + Str(id) + Op(id,list(trm))))
+      + Assign(Var(id),Var(id))
+      + Match(Var(id))
       + Prim(id,id) 
       + CallT(id,id,id)
-      + Seqs([x])
+      + Seq(x, x)
+      + Seqs(map(x))
+      + Scope(id, x)
     )
     //; debug(!"yes: ")
 
@@ -174,3 +194,23 @@ rules
     Row([As(_, Wld) | pats], pats', fin) -> Row(pats, pats', fin)
 
 
+/*
+    Pattern match compilation for Stratego
+
+    Copyright (C) 2003 Eelco Visser <visser@acm.org>
+
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 2 of the License, or (at your option) any later version.
+
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+
+*/

@@ -1,24 +1,4 @@
 \literate[Library for Strategies]
-	
-% $Id: stratlib.str,v 1.1 2002/11/23 10:06:17 stratego Exp $
-
-% Copyright (C) 1998-2001 Eelco Visser <visser@acm.org>
-% 
-% This program is free software; you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation; either version 2, or (at your option)
-% any later version.
-% 
-% This program is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-% 
-% You should have received a copy of the GNU General Public License
-% along with this program; if not, write to the Free Software
-% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-% 02111-1307, USA.
-
 
 	This module instantiates several language independent
 	functions to the strategy language.
@@ -108,7 +88,6 @@ strategies
     + SDef(ignore, ignore, bnd)
     + SDefT(ignore, ignore, ignore, bnd)
     + Rec(ignore, bnd)
-
 \end{code}
 
 	\paragraph{Free Variables and Renaming}
@@ -119,12 +98,17 @@ strategies
   declared-vars =
     map(?VarDec(<id>,_) + ?DefaultVarDec(<id>))
 
-  tvars = free-vars(Add1, Bind0 + Bind4 + Bind6 + Bind8, tboundin)
+  tvars = 
+    free-vars(Add1, Bind0 + Bind4 + Bind6 + Bind8, tboundin)
 
-  svars = free-vars(Add2, Bind1 + Bind2 + Bind3 + Bind5 + Bind7, sboundin)
+  svars = 
+    free-vars(Add2, Bind1 + Bind2 + Bind3 + Bind5 + Bind7, sboundin)
 
-  trename = rename(Var, Bind0 + Bind6 + Bind8, tboundin, tpaste)
-  srename = rename(SVar, Bind1 + Bind2 + Bind3 + Bind5 + Bind7, sboundin, spaste)
+  trename = 
+    rename(Var, Bind0 + Bind6 + Bind8, tboundin, tpaste)
+
+  srename = 
+    rename(SVar, Bind1 + Bind2 + Bind3 + Bind5 + Bind7, sboundin, spaste)
 
   svars-arity = 
     free-vars2(\CallT(SVar(f), as1, as2) -> [(f, (<length> as1, <length> as2))]\
@@ -132,16 +116,23 @@ strategies
               ,sboundin
               ,{f:?((f,_),f)})
 
-  tsubs = substitute(IsVar)
+  tsubs = 
+    substitute(IsVar)
 
-  ssubs = substitute(IsSVar)
+  ssubs = 
+    substitute(IsSVar)
 
-  tsubstitute = substitute(IsVar, Var, Bind0 + Bind4 + Bind6 + Bind8, tboundin, tpaste)
+  tsubstitute = 
+    substitute(IsVar, Var, Bind0 + Bind4 + Bind6 + Bind8, tboundin, tpaste)
 
-  strename = trename ; srename
+  strename = 
+    trename ; srename
 
-  is_var_list = map(Var(id))
-  is_svar_list = map(SVar(id))
+  is_var_list = 
+    map(Var(id))
+
+  is_svar_list = 
+    map(SVar(id))
 \end{code}
 
 	Context strategies for strategies
@@ -169,3 +160,20 @@ strategies
 
   lastInSeq(s) = Seq(id, rec x(s <+ Seq(not(oncetd(s)), x)))
 \end{code}
+
+% Copyright (C) 1998-2003 Eelco Visser <visser@acm.org>
+% 
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+% 
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% 
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.

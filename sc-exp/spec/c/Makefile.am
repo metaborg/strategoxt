@@ -3,7 +3,7 @@ include $(wildcard *.dep)
 
 EXTRA_DIST 	 = $(wildcard *.str) $(wildcard *.meta) 
 
-libexec_PROGRAMS = s2c canonicalize 
+libexec_PROGRAMS = s2c canonicalize bound-unbound-vars
 check_PROGRAMS 	 = C-simplify-test 
 
 BOOTCLEANFILES 	 = s2c.c canonicalize.c C-simplify-test.c

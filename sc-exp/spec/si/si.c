@@ -1475,7 +1475,7 @@ ATerm EvalCong_1_0 (ATerm x_155 (ATerm), ATerm);
 ATerm EvalOneFail_0_0 (ATerm);
 ATerm EvalOne_1_0 (ATerm w_155 (ATerm), ATerm);
 ATerm EvalAllFail_0_0 (ATerm);
-ATerm EvalAll_1_0 (ATerm l_0 (ATerm), ATerm);
+ATerm EvalAll_1_0 (ATerm m_0 (ATerm), ATerm);
 ATerm EvalRec_0_0 (ATerm);
 ATerm EvalLet_1_0 (ATerm g_156 (ATerm), ATerm);
 ATerm EvalCallFail_0_0 (ATerm);
@@ -1854,7 +1854,7 @@ ATerm eval_rules_0_0 (ATerm t)
       d_8 = t;
     t = not_null(d_8);
     {
-      ATerm m_0 (ATerm t)
+      ATerm l_0 (ATerm t)
       {
         ATerm n_0 (ATerm t)
         {
@@ -1864,7 +1864,7 @@ ATerm eval_rules_0_0 (ATerm t)
         t = debug_1_0(n_0, t);
         return(t);
       }
-      t = ifdebug_1_0(m_0, t);
+      t = ifdebug_1_0(l_0, t);
       {
         ATerm o_0 (ATerm t)
         {
@@ -18484,7 +18484,7 @@ ATerm EvalAllFail_0_0 (ATerm t)
     }
   return(t);
 }
-ATerm EvalAll_1_0 (ATerm l_0 (ATerm), ATerm t)
+ATerm EvalAll_1_0 (ATerm m_0 (ATerm), ATerm t)
 {
   ATerm l_144 = NULL,m_144 = NULL,n_144 = NULL,o_144 = NULL;
   ATerm k_145 (ATerm t)
@@ -18633,7 +18633,7 @@ ATerm EvalAll_1_0 (ATerm l_0 (ATerm), ATerm t)
                   else
                     g_145 = t;
                   t = (ATerm) ATmakeAppl(sym_App_2, not_null(s_144), not_null(g_145));
-                  t = l_0(t);
+                  t = m_0(t);
                   {
                     ATerm v_53 = t;
                     if((PushChoice() == 0))

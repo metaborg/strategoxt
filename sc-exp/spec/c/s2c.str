@@ -75,6 +75,15 @@ overlays
   CheckATermList(e) = 
     FunCall(Id("CheckATermList"), [e])
 
+overlays 
+
+  UnboundVarErrorDefinition = |[
+       void __UnboundVarError(char *var) 
+       {
+         fprintf(stderr, "\"** compiler error: variable '%s' should be bound\\nnotify stratego-bugs@cs.uu.nl\\n\"", var);
+       }
+  ]|
+
 rules
 
 /*
@@ -82,6 +91,11 @@ rules
     Specification([Signature(ops), Strategies(defs)]) -> 
     |[ 
        void init_constant_terms();
+       void __UnboundVarError(char *var) 
+       {
+         fprintf(stderr, "** compiler error: variable '%s' should be bound\n"
+			 "notify stratego-bugs@cs.uu.nl\n", x)
+       }
        ~dec: <TranslateSig> Signature(ops)
     ]|
     where <map(SDefToDeclaration)> defs => sigs
@@ -95,6 +109,7 @@ rules
 	[Declaration2(TypeSpec([],TypeId("void"),[]),
                        [IdDecl([],Id("init_constant_terms"),Some(ParamList([])))])
 	, Signature(ops)
+	, [UnboundVarErrorDefinition]
         , InitCachedTerms
         ]
         , sigs
@@ -398,17 +413,26 @@ rules
     Compound([],[Match(t1,trm),Match(t2,trm)])
 
   TranslateStrat :
-    Match(Var(x), trm) ->
+    Match(Var(x){"unbound"}, trm) ->
+    Stat(Assign(Id(x),AssignEq,trm))
+
+  TranslateStrat :
+    Match(Var(x){"bound"}, trm) ->
+    If(NotEqual(Id(x),trm)
+      , Compound([], [Stat(FunCall(Id("_fail"),[trm]))]))
+
+  TranslateStratInstr : // use this translation to detect errors in analysis
+    Match(Var(x){"bound"}, trm) ->
+    IfElse(Equal(Id(x),Id("NULL"))
+	  , Compound([], [Stat(FunCall(Id("__UnboundVarError"), [StringLit(<double-quote>x)]))])
+          , If(NotEqual(Id(x),trm)
+              , Compound([], [Stat(FunCall(Id("_fail"),[trm]))])))
+
+  TranslateStrat :
+    Match(Var(x){}, trm) ->
     IfElse(LAnd(NotEqual(Id(x),Id("NULL")), NotEqual(Id(x),trm)),
            Stat(FunCall(Id("_fail"),[trm])),
            Stat(Assign(Id(x),AssignEq,trm)))
-  //  where <not(Initialized)> x
-
-  //TranslateStrat :
-  //  Match(Var(x), trm) ->
-  //  Stat(Assign(Id(x),AssignEq,trm))
-  //  where <Initialized> x => "NULL"
-  //      ; rules(Initialized : x -> trm)
 
   // string constants should probably be cached, just like constructor names
 
@@ -630,7 +654,13 @@ rules
 			       [StringLit([<escape; double-quote>x]),IntConst("0"),Id("ATtrue")])]))
 
   ConstructTerm :
-    Var(x) -> FunCall(Id("not_null"),[Id(x)])
+    Var(x){"bound"} -> Id(x)
+
+  ConstructTerm :
+    Var(x){} -> FunCall(Id("not_null"),[Id(x)])
+
+  ConstructTerm :
+    Var(x){"unbound"} -> FunCall(Id("not_null"),[Id(x)])
 
   ConstructTerm :
     BuildDefault(t) -> t

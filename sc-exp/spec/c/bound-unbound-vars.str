@@ -1,6 +1,9 @@
 module bound-unbound-vars
-imports Stratego
+imports Stratego dynamic-rules lib
 strategies
+
+  bound-unbound-vars =
+    iowrap(mark-bound-unbound-vars)
 
   mark-bound-unbound-vars =
     say(!"marking bound-unbound-vars");
@@ -21,6 +24,19 @@ strategies
         ; <collect(?Var(<id>))> t
         ; map({?x; rules(MarkVar : Var(x) -> Var(x){"bound"})})
 
+  mark-buv =
+    mark-match 
+    <+ mark-build
+    <+ mark-scope
+    <+ mark-let
+    <+ mark-sdef 
+    <+ mark-call
+    <+ mark-rec
+    <+ mark-choice(mark-buv)
+    <+ mark-lchoice(mark-buv)
+    <+ mark-guardedlchoice(mark-buv)
+    <+ all(mark-buv)
+
   mark-build = 
     Build(alltd(MarkVar))
 
@@ -30,6 +46,13 @@ strategies
     ; Call(id, mark-buv)
     ; where(<isect-MarkVar> bnd)
 
+  mark-call =
+    CallT(id,id,id)
+    ; where(save-MarkVar => bnd)
+    ; CallT(id, id, map(alltd(MarkVar)))
+    ; CallT(id, mark-buv, id)
+    ; where(<isect-MarkVar> bnd)
+
   mark-let =
     Let(id, id)
     ; where(save-MarkVar => bnd0)
@@ -37,26 +60,33 @@ strategies
     ; where(<isect-MarkVar> bnd0; save-MarkVar => bnd1)
     ; Let(map(mark-buv; where(<restore-MarkVar> bnd1)), id)
 
-  mark-buv =
-    mark-match 
-    <+ mark-build
-    <+ mark-scope
-    <+ mark-let
-    <+ Choice(id, id); choice(mark-buv)
-    <+ LChoice(id, id); lchoice(mark-buv)
-    <+ GuardedLChoice(id, id, id); guardedlchoice(mark-buv)
-    <+ all(mark-buv)
+  mark-sdef =
+    ? SDefT(_, _, as, _)
+    ; SDefT(id, id, id,
+        {| MarkVar :
+             where(!as; map({?VarDec(x,_); rules(MarkVar : Var(x) -> Var(x){"bound"})}))
+             ; mark-buv
+        |})
 
-strategies // Choice
-   
-  choice(uv) =
-    abstract-choice(Choice(uv,id),Choice(id, uv))
+  mark-rec = 
+    ?Rec(_, _)
+    ; where(save-MarkVar => bnd0)
+    ; where(Rec(id, mark-buv))
+    ; where(<isect-MarkVar> bnd0)
+    ; Rec(id, mark-buv)
 
-  lchoice(uv) =
-    abstract-choice(LChoice(uv,id),LChoice(id, uv))
+  mark-choice(uv) =
+    Choice(id, id)
+    ; abstract-choice(Choice(uv,id),Choice(id, uv))
 
-  guardedlchoice(uv) =
-    abstract-choice(GuardedLChoice(uv,uv,id),GuardedLChoice(id,id,uv))
+  mark-lchoice(uv) =
+    LChoice(id, id)
+    ; abstract-choice(LChoice(uv,id),LChoice(id, uv))
+
+  mark-guardedlchoice(uv) =
+    GuardedLChoice(id, id, id)
+    ; abstract-choice(GuardedLChoice(uv,id,id);GuardedLChoice(id,uv,id)
+	           ,GuardedLChoice(id,id,uv))
 
   abstract-choice(left, right) =
     where(save-MarkVar => bnd0)
@@ -86,3 +116,25 @@ strategies // Dynamic rule manipulation
              <+ !(key, [Undefined]))
            }))
     ; restore-MarkVar
+
+
+/*
+    Bound/Unbound variable analysis for Stratego programs
+
+    Copyright (C) 2003 Eelco Visser <visser@acm.org>
+
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 2 of the License, or (at your option) any later version.
+
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+
+*/
