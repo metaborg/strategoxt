@@ -188,14 +188,14 @@ strategies // parsing
     xtc-transform(!"sglr",
         !["-2t", "-p", <file-exists <+ xtc-find> tbl | <pass-v-verbose> ])
 
-/******************************************************************
+/**
  * Include path -- file name resolution
  * 
  * File names are often specified in an incomplete manner relative to
  * an include path (or the current working directory)
  * The following strategies resolve file names with respect to
  * an include path.
- ******************************************************************/
+ */
 
 strategies // includes
 
@@ -217,13 +217,13 @@ strategies // includes
     <get-config> "-I"
     ; foldr(id, conc, !["-I", <id>])
 
-/******************************************************************
+/**
  * Meta data
  *
  * meta-data express properties about files (data)
  * meta-data is stored in a separate file (e.g., file.meta)
  * a FILE descriptor can be annotated with its meta-data
- ******************************************************************/
+ */
 
 signature // meta data
 
