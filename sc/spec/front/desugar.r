@@ -1,6 +1,6 @@
 \literate[Desugaring]
 
-% $Id: desugar.r,v 1.1 2001/08/22 09:34:58 visser Exp $
+% $Id: desugar.r,v 1.2 2001/11/21 15:21:31 stratego Exp $
 
 % Copyright (C) 1998, 1999, 2000 Eelco Visser <visser@acm.org>
 % 
@@ -82,9 +82,17 @@ rules
   Bapp1 : Build(App(s, t')) -> Seq(Build(t'), s)
 
   Bapp2 : Build(t[App(s, t')]) -> 
-          Scope([x], Seq(BAM(s, t', Var(x)), Build(t[Var(x)])))
+          Scope([x], Seq(Where(BAM(s, t', Var(x))), Build(t[Var(x)])))
           where new => x
-\end{code} 
+
+  Bapp0 : Build(t[RootApp(Build(t'))]) -> Build(t[t'])
+
+  Bapp1 : Build(RootApp(s)) -> s
+
+  Bapp2 : Build(t[RootApp(s)]) -> 
+          Scope([x], Seq(Where(Seq(s, Match(Var(x)))), Build(t[Var(x)])))
+          where new => x
+\end{code}
 
 \paragraph{Term Explosion an Construction}
 

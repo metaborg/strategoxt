@@ -63,6 +63,7 @@ signature
   constructors
     Con          : Var * Term * SVar   -> Term    (* x[t](f) *)
     App          : Strat * Term        -> Term    (* <s> t *)
+    RootApp      : Strat               -> Term    (* <s> *)
     InfixApp     : Term * Strat * Term -> Term    (* t1 .s. t2 *)
     Explode      : Term * Term         -> Term    (* t1 # (t2) *)
     ExplodeCong  : Strat * Strat       -> Strat   (* s1 # (s2) *)
