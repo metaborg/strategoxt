@@ -1,0 +1,12 @@
+#!/bin/sh
+
+rm -f config.cache config.log acconfig.h aclocal.m4
+
+autoxt
+aclocal -I .
+autoconf -f 
+#--warnings=all
+automake -a   
+#--warnings=all  --warnings=no-portability
+
+# touch src/sdf/*.pp pp/*.pp pp/*.pp.af syn/*.tbl sig/*.str sig/*.rtree
