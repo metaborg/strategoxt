@@ -24,7 +24,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
 ATerm SSL_table_hashtable();
 ATerm SSL_table_create(ATerm name);
 ATerm SSL_table_destroy(ATerm table);
-ATerm SSL_table_reset(ATerm table);
 ATerm SSL_table_put(ATerm table, ATerm key, ATerm value);
 ATerm SSL_table_get(ATerm table, ATerm key);
 ATerm SSL_table_remove(ATerm table, ATerm key);
@@ -33,6 +32,7 @@ ATerm SSL_table_rename(ATerm table1, ATerm table2);
 
 ATerm SSL_hashtable_create(ATerm initial_size_term, ATerm max_load_term);
 ATerm SSL_hashtable_destroy(ATerm table_term);
+ATerm SSL_hashtable_reset(ATerm table);
 ATerm SSL_hashtable_put(ATerm table_term, ATerm key, ATerm value);
 ATerm SSL_hashtable_get(ATerm table_term, ATerm key);
 ATerm SSL_hashtable_remove(ATerm table_term, ATerm key);
