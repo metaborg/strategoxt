@@ -91,6 +91,8 @@ exports
     "Overlay"  "|[" Overlay  "]|" -> StrategoTerm {cons("ToTerm")}
 
     "Typedid" "|[" Typedid   "]|" -> StrategoTerm {cons("ToTerm")}
+%%                 "|[" DynRuleDef   "]|" -> StrategoTerm {cons("ToTerm")}
+    "DynRuleDef" "|[" DynRuleDef   "]|" -> StrategoTerm {cons("ToTerm")}
 
   context-free syntax
 
@@ -167,9 +169,13 @@ exports
     "srt" [xyz] [0-9\']*  -> UCID         {prefer}
 
   variables
-    "sc" [0-9\']     -> DynRuleScopeId         {prefer}
-    "dr" [0-9\']     -> DynRuleId              {prefer}
-    "sc" [0-9\'] "*" -> {DynRuleScopeId ","}*  {prefer}
+    "sc" [0-9\']*         -> DynRuleScopeId        {prefer}
+    "sc" [0-9\']* "*"     -> {DynRuleScopeId ","}* {prefer}
+
+    "dr" [0-9\']*         -> DynRuleId {prefer}
+
+    "drd"[0-9\']*         -> DynRuleDef {prefer}
+    "drd"[0-9\']*  "*"    -> DynRuleDef+ {prefer}
 
   lexical syntax
     "xs"[0-9\']*          -> Id  {reject}
@@ -370,16 +376,17 @@ exports
 
   context-free syntax
 
-    "{|" {DynRuleScopeId ","}* ":" Strategy "|}" -> Strategy {cons("DynRuleScope"), prefer}
+    "{|" {DynRuleScopeId ","}* ":" Strategy "|}" -> Strategy {cons("DynRuleScope")}
     "{|" Id ":+" Term "|}"                       -> Strategy {cons("AddScopeLabel")}
 
   context-free syntax
 
-    "rules" "(" DynRuleDef+ ")" -> Strategy {cons("GenDynRules"), prefer}
+    "rules" "(" DynRuleDef+ ")" -> Strategy {cons("GenDynRules")}
 
-    DynRuleId ":-"  Term -> DynRuleDef {cons("UndefineDynRule")}
-    DynRuleId ":"   Rule -> DynRuleDef {cons("SetDynRule")}
-    DynRuleId ":+"  Rule -> DynRuleDef {cons("AddDynRule")}
+    DynRuleId ":-"  Term                  -> DynRuleDef {cons("UndefineDynRuleNoCond")}
+    DynRuleId ":-"  Term "where" Strategy -> DynRuleDef {cons("UndefineDynRule")}
+    DynRuleId ":"   Rule                  -> DynRuleDef {cons("SetDynRule")}
+    DynRuleId ":+"  Rule                  -> DynRuleDef {cons("AddDynRule")}
 
     RuleDec "." Term -> DynRuleId {cons("LabeledDynRuleId")}
     RuleDec          -> DynRuleId {cons("DynRuleId")}

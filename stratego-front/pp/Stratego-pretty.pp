@@ -198,9 +198,10 @@
    GenDynRules -- V[V is=2[H[KW["rules"] KW["("]] _1] KW[")"]],
    GenDynRules.1:iter-star -- _1,
 
-   UndefineDynRule  -- V is=2 [H hs=1 [_1 KW[":-"]] _2],
-   SetDynRule       -- V is=2 [H hs=1 [_1 KW[":"] ] _2],
-   AddDynRule       -- V is=2 [H hs=1 [_1 KW[":_"]] _2],
+   UndefineDynRuleNoCond  -- V is=2 [H hs=1 [_1 KW[":-"]] _2],
+   UndefineDynRule        -- V is=2 [H hs=1 [_1 KW[":-"]] _2 H[KW["where"] _3]],
+   SetDynRule             -- V is=2 [H hs=1 [_1 KW[":"] ] _2],
+   AddDynRule             -- V is=2 [H hs=1 [_1 KW[":+"]] _2],
 
    LabeledDynRuleId -- H hs=0 [_1 "." _2],
    DynRuleId        -- _1,

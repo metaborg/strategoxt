@@ -13,22 +13,116 @@ strategies
   DefDynRuleScope :
     |[ {| : s |} ]| -> s
 
-/*
   DefDynRuleScope :
     |[ {| x, sc* : s |} ]| -> |[ rule-scope({| sc* : s |} | x) ]|
 
   DefDynRuleScope :
     |[ {| x.t, sc* : s |} ]| -> |[ rule-scope( {| x :+ t |}; {| sc* : s |}
-                                                     | x ) ]|
-*/
+                                             | x ) ]|
 
-/*
   DefDynRuleScopeLabel :
     |[ {| x :+ t |} ]| -> |[ label-scope(|x, t) ]|
-*/
-  DefDynRuleScopeLabel = id
 
-  lift-dynamic-rules = id
+/* Lift dynamic rules from strategy definitions.  One dynamic rule set
+is lifted out at a time, after which the process repeats; a definition
+may contain multiple dynamic rules, and a dynamic rule itself may
+contain dynamic rules. */
+
+  lift-dynamic-rules = 
+    listtd(repeat(lift-dynamic-rule))
+
+  lift-dynamic-rule :
+    [def | defs] -> <conc> ([def' | rdefs], defs)
+    where {| ContextVar : 
+	     <def-tvars> def; DeclareContextVars
+           ; <split-dynamic-rule(split-dynamic-rules => (ss, rdefs); !Seqs(ss))> 
+	        def => def'
+	   |}
+
+  def-tvars =
+    <union> (<tvars>,
+	     <?SDefT(_,_,<map(?DefaultVarDec(<id>) + ?VarDec(<id>,_))>,_)
+	      <+ ?RDefT(_,_,<map(?DefaultVarDec(<id>) + ?VarDec(<id>,_))>,_)
+	      <+ ![]
+             >
+	    )
+
+/* Traverse to find dynamic rule definition.  Record all variables
+that are declared in context using the dynamic rule ContextVar */
+
+  split-dynamic-rule(s) = 
+    rec x(oncetd(s <+ split-under-scope(x)))
+
+  split-under-scope(f) :
+    |[ { x* : s } ]| -> |[ { x* : s' } ]|
+    where {| ContextVar : <DeclareContextVars> x*; <f> s => s' |}
+
+  DeclareContextVars =
+    map({(?ListVar(x) <+ ?x); rules(ContextVar : x -> x)})
+
+/* Split each rule in a dynamic rule set */
+
+  split-dynamic-rules :
+    |[ rules(drd*) ]| -> 
+    <map(SplitDynamicRule); unzip> rd*
+
+  SplitDynamicRule:
+    drd@DynRuleDef|[ f(as1|as2) : r ]| ->
+      <SplitDynamicRule(!|[ add-to-ruleset(|f, ~<Fst>, ~<Snd>) ]|)> drd
+
+  SplitDynamicRule:
+    DynRuleDef|[ f(as1|as2).t : r ]| ->
+      <SplitDynamicRule(!|[ add-to-ruleset(|f, t, ~<Fst>, ~<Snd>) ]|)> DynRuleDef|[ f(as1|as2) : r ]|
+
+  SplitDynamicRule:
+    DynRuleDef|[ f(as1|as2) :+ r ]| ->
+      <SplitDynamicRule(!|[ extend-ruleset(|f, ~<Fst>, ~<Snd>) ]|)> DynRuleDef|[ f(as1|as2) : r ]|
+
+  SplitDynamicRule:
+    DynRuleDef|[ f(as1|as2).t :+ r ]| ->
+      <SplitDynamicRule(!|[ extend-ruleset(|f, t, ~<Fst>, ~<Snd>) ]|)> DynRuleDef|[ f(as1|as2) : r ]|
+/*
+  SplitDynamicRule:
+    DynRuleDef|[ f(as1|as2) :- t ]| ->
+      <SplitUndefineDynamicRule(!|[ undefine-rule(|f, ~<id>) ]|)> DynRuleDef|[ f(as1|as2) :- t ]|
+
+  SplitDynamicRule:
+    DynRuleDef|[ f(as1|as2).t :- t1 ]| ->
+      <SplitUndefineDynamicRule(!|[ undefine-rule(|f, t, ~<id>) ]|)> DynRuleDef|[ f(as1|as2) :- t1 ]|
+*/
+  SplitDynamicRule(saveclsr): x -> x
+/*
+    |[ f(as1|as2) : t1 -> t2 where s ]| ->
+    (|[ where(~<saveclsr> (t1', Closure(~str:stamp, [t*])) ]|,
+     [ |[ f'(as1|as2') : Closure(~str:stamp, [t*]) -> t2 
+            where s ]|
+       |[ f(as1|as2) : x@t1 -> <fetch-elem(f'(as1|as2'))> closures
+            where lookup-rule(|~str:f, t1'') => closures ]|,
+       |[ g(as1|as2) : x@t1 -> <filter(f'(as1|as2'))> closures
+            where (lookup-rule(|~str:f, t1'') <+ ![]) => closures ]|
+     ])
+    where 
+      <not(eq)>(t2, |[ Undefined() ]|)
+
+      ; <conc-strings>("bagof-", f) => g
+      ; <conc-strings>("aux-", f) => f'  // has to be the same such that + of aux-f works
+      ; new => y
+      
+      ; <map((?DefaultVarDec(<id>) + ?VarDec(<id>,_)); !Call(SVar(<id>),[]))> as1 => s1*
+      ; <map((?DefaultVarDec(<id>) + ?VarDec(<id>,_)); !Var(<id>))> as2 => t1*
+
+      ; new => x
+      ; <dummify> t1 => t1'
+      ; try(?t1; !Var(x)) => t1''
+
+      ; <tvars; map(!Var(<id>))> t1' => keys
+      ; <conc> (as2, keys) => as2'
+      ; <tvars; filter(test(ListVar(ContextVar) <+ ContextVar); !Var(<id>))> (t2, s) => vals1
+      ; <diff> (vals1, keys) => t*
+
+      ; new => stamp
+
+*/
 \end{code}
 
 % Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>

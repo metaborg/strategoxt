@@ -37,6 +37,8 @@ exports
     "Overlay"  "|[" Overlay  "]|" -> StrategoTerm {cons("ToTerm")}
 
     "Typedid" "|[" Typedid   "]|" -> StrategoTerm {cons("ToTerm")}
+%%                 "|[" DynRuleDef   "]|" -> StrategoTerm {cons("ToTerm")}
+    "DynRuleDef" "|[" DynRuleDef   "]|" -> StrategoTerm {cons("ToTerm")}
 
   context-free syntax
 
@@ -113,9 +115,13 @@ exports
     "srt" [xyz] [0-9\']*  -> UCID         {prefer}
 
   variables
-    "sc" [0-9\']     -> DynRuleScopeId         {prefer}
-    "dr" [0-9\']     -> DynRuleId              {prefer}
-    "sc" [0-9\'] "*" -> {DynRuleScopeId ","}*  {prefer}
+    "sc" [0-9\']*         -> DynRuleScopeId        {prefer}
+    "sc" [0-9\']* "*"     -> {DynRuleScopeId ","}* {prefer}
+
+    "dr" [0-9\']*         -> DynRuleId {prefer}
+
+    "drd"[0-9\']*         -> DynRuleDef {prefer}
+    "drd"[0-9\']*  "*"    -> DynRuleDef+ {prefer}
 
   lexical syntax
     "xs"[0-9\']*          -> Id  {reject}
