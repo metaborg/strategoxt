@@ -1,0 +1,449 @@
+%%
+%% This is file `boxenv.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% boxenv.doc 
+%% 
+%%     boxenv.sty: A LaTeX Style File For Formatting Box Expressions
+%%       Copyright (C) 1998-2001, Merijn de Jonge (mdejonge@cwi.nl)
+%% 
+%%
+%%    boxenv -- A LaTeX Style File For Formatting Box Expressions
+%%    Copyright (C) 1998-2000  Merijn de Jonge (Merijn.de.Jonge@cwi.nl).
+%%
+%%    This program is free software; you can redistribute it and/or modify
+%%    it under the terms of the GNU General Public License as published by
+%%    the Free Software Foundation; either version 2 of the License, or
+%%    (at your option) any later version.
+%%
+%%    This program is distributed in the hope that it will be useful,
+%%    but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%%    GNU General Public License for more details.
+%%
+%%    You should have received a copy of the GNU General Public License
+%%    along with this program; if not, write to the Free Software
+%%    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+%%
+\def\@fileversion{1.7}
+\def\@filedate{2000/03/30}
+\def\@author{Merijn de Jonge (mdejonge@cwi.nl)}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{boxenv}
+
+\typeout{Package: `boxenv'
+   \@fileversion\space <\@filedate> (\@author)}
+\RequirePackage{keyval}
+\define@key{Boxenv}{refstyle}{%
+\refstyle{#1}%
+}
+\define@key{Boxenv}{visiblespace}{%
+\visiblespace{#1}%
+}
+
+\def\refstyle#1{%
+\def\@tmpa{#1}%
+\def\@normal{normal}%
+\def\@none{none}%
+\def\@hyperref{hyperref}%
+\ifx\@tmpa\@normal%
+   \def\boxlabel{\box@normallabel}%
+   \def\boxref{\box@normalref}%
+   \else%
+   \ifx\@tmpa\@none%
+   \def\boxlabel{\box@nonelabel}%
+   \def\boxref{\box@noneref}%
+      \else%
+      \ifx\@tmpa\@hyperref%
+         \def\boxlabel{\box@hyperreflabel}%
+         \def\boxref{\box@hyperrefref}%
+      \else%
+         \errmessage{Invalid refstyle option passed.}%
+      \fi%
+   \fi%
+\fi%
+}
+\def\boxspace{\box@hspaceskip{1}\spaceskip=\the\box@tmpskip~}%
+\def\visiblespace#1{%
+\def\@tmpa{#1}%
+\def\@true{true}%
+\def\@false{false}%
+\ifx\@tmpa\@true%
+\def\boxspace{\leavevmode\hbox{\tt\char`\ }}%
+\else%
+\def\boxspace{~}%
+\fi%
+}
+\def\ProcessOptionsWithKV#1{%
+  \let\@tempc\relax
+  \let\@tempa\@empty
+  \@for\CurrentOption:=\@classoptionslist\do{%
+     \@ifundefined{KV@#1@\CurrentOption}%
+       {}%
+       {\edef\@tempa{\@tempa,\CurrentOption,}}}%
+     \edef\@tempa{%
+
+   \noexpand\setkeys{#1}%
+      {\@tempa\@ptionlist{\@currname.\@currext}}}%
+       \@tempa
+     \AtEndOfPackage{\let\@unprocessedoptions\relax}%
+}
+\ProcessOptionsWithKV{Boxenv}
+
+\newdimen\box@leftmargin
+\newdimen\box@indentation
+
+\newdimen\box@xpos
+\newdimen\box@thewidth
+\newdimen\box@widthincalculation
+
+\newdimen\box@lastlinewidth
+
+\newdimen\box@linewidth
+\newdimen\box@rightskip
+\newdimen\box@parindent
+\newcount\box@hyphenpenalty
+
+\newif\ifbox@inboxenv
+
+\newbox\box@investigation
+\newbox\box@tester
+\newbox\box@widthcalculation
+
+\newskip\box@tmpskip
+
+\newcommand{\box@vspaceskip}[1]{\box@tmpskip=#1ex}%
+\newcommand{\box@hspaceskip}[1]{%
+\dimen0=#1em%
+\dimen0=.3333\dimen0%
+\box@tmpskip=\dimen0 plus \fontdimen3\font%
+}%
+
+\def\KWf#1{\textbf{#1}}%
+\def\VARf#1{\textit{#1}}%
+\def\NUMf#1{\textrm{#1}}%
+\def\MATHf#1{\ensuremath{#1}}%
+\def\COMMf#1{\textrm{#1}}%
+\IfFileExists{box-fonts.def}{%
+\input{box-fonts.def}%
+\typeout{Using box-font definitions
+   from ``box-fonts.def''}%
+}{%
+\typeout{Using default box-font definitions.}%
+}%
+
+\newenvironment{boxenv}[1][\linewidth]{%
+\box@linewidth=\linewidth%
+\box@rightskip=\rightskip%
+\box@hyphenpenalty=\hyphenpenalty%
+\box@parindent=\parindent%
+\linewidth=#1%
+\hsize=#1%
+\box@leftmargin=\z@%
+\box@indentation=\z@%
+\rightskip=0pt plus 1 fill%
+\parindent=0pt%
+\leavevmode%
+\box@inboxenvtrue%
+}{\par}%
+
+\newenvironment{HBOX}[1]{%
+\box@testforboxenv%
+\penalty10000%
+\linepenalty10000%
+\hyphenpenalty=10000%
+\box@hspaceskip{#1}\spaceskip=\the\box@tmpskip%
+}{}%
+
+\newenvironment{VBOX}[2]{%
+\box@testforboxenv%
+\begin{box@hangpar}{#1}{#2}%
+}{%
+\end{box@hangpar}%
+}%
+
+\newenvironment{HVBOX}[3]{%
+\box@testforboxenv%
+\box@hspaceskip{#1}\spaceskip=\the\box@tmpskip%
+\begin{box@hangpar}{#2}{#3}%
+}{%
+\end{box@hangpar}%
+}%
+
+\newenvironment{ALTBOX}[2]{%
+\box@testforboxenv%
+\ifhmode\null\fi%
+\parskip\z@%
+\box@currentxpos%
+\dimen0=\linewidth%
+\advance\dimen0-\box@xpos%
+\edef\remainingwidth{\the\dimen0}%
+\edef\saved@xpos{\the\box@xpos}%
+\begin{box@width}%
+#1%
+\end{box@width}%
+\hskip\saved@xpos%
+\hskip-\box@xpos%
+\ifdim\box@thewidth>\remainingwidth%
+#2%
+\else%
+#1%
+\fi%
+}{}%
+
+\newenvironment{ABOX}[1]{%
+\box@testforboxenv%
+\tabcolsep=0pt
+\box@hspaceskip{1}\spaceskip=\the\box@tmpskip%
+\begin{box@hangpar}{0}{0}%
+\halign\bgroup%
+\hskip\box@indentation\hskip\box@leftmargin#1%
+}{%
+\egroup%
+\end{box@hangpar}%
+}%
+
+\newenvironment{LBOX}[1]{%
+\box@testforboxenv%
+\def\char{#1}%
+\parskip\z@%
+\begin{box@width}%
+}{%
+\end{box@width}%
+\box@wcopies{\box@thewidth}{\char}%
+}%
+
+\newenvironment{latextext}{%
+\box@testforboxenv%
+\endgraf%
+\let\par\endgraf%
+\leftskip=0pt%
+\rightskip=0pt%
+\hsize=\box@linewidth%
+\advance\hsize-\box@leftmargin%
+\hangindent=0pt%
+\hyphenpenalty=50%
+\spaceskip=0pt%
+\parindent=\box@parindent%
+\ifhmode%
+\vbox%
+\fi%
+\bgroup%
+}{%
+\egroup%
+\ifhmode%
+\hidewidth%
+\fi%
+\par%
+}%
+
+\@ifundefined{boxlabel}{\def\boxlabel{\box@normallabel}}{}
+\@ifundefined{boxref}{\def\boxref{\box@normalref}{}}
+\long\def\box@nonelabel#1#2{#2}
+\long\def\box@noneref#1#2{#2}
+\long\def\box@normallabel#1#2{\label{#1}#2}
+\long\def\box@normalref#1#2{%
+#2%
+\@ifundefined{r@#1}{}{%
+$^{\mbox{\tiny\ref{#1}}}$}%
+}
+\long\def\box@hyperreflabel#1#2{\hypertarget{#1}{}#2}
+\long\def\box@hyperrefref#1#2{\hyperlink{#1}{#2}}
+\newenvironment{box@hangpar}[2]{%
+\box@testforboxenv%
+\ifhmode\null\fi%
+\box@currentxpos%
+\edef\box@savedxpos{\the\box@xpos}%
+\parskip=0pt%
+\parshape=0%
+\par%
+\global\box@xpos\box@savedxpos%
+\def\newpar{%
+\dimen0\hangindent%
+\oldpar%
+\box@indentation=\the\dimen0%
+\box@setpenalty%
+\leftskip=\box@leftmargin%
+\hangindent=\box@indentation%
+\hangafter=0%
+\global\box@xpos\box@leftmargin%
+\global\advance\box@xpos\box@indentation%
+}%
+\ifx\par\newpar%
+\else%
+\let\oldpar=\par%
+\fi%
+\let\par\newpar%
+\box@vspaceskip{#1}\parskip=\the\box@tmpskip%
+\vskip-\parskip%
+\box@hspaceskip{#2}\hangindent=\box@tmpskip%
+\box@indentation=\z@%
+\hangafter=1%
+\box@leftmargin=\box@xpos%
+\leftskip=\box@xpos%
+}
+{%
+\ifhmode%
+\box@currentxpos%
+\box@leftindent\box@xpos%
+\fi%
+}
+\newcommand{\box@currentxpos}{%
+\begingroup%
+\predisplaypenalty10000%
+\postdisplaypenalty10000%
+$$%
+\ifdim\predisplaysize=-\maxdimen%
+ \global\box@xpos=\z@%
+\else
+ \ifdim\predisplaysize=\maxdimen%
+  \global\box@xpos=\linewidth%
+ \else%
+  \global\box@xpos=\predisplaysize%
+  \global\advance\box@xpos-2em%
+ \fi%
+\fi%
+\abovedisplayskip-\baselineskip%
+\belowdisplayskip-\baselineskip%
+\abovedisplayshortskip-\baselineskip%
+\belowdisplayshortskip-\baselineskip%
+$$%
+\endgroup%
+}%
+
+
+\newenvironment{box@width}{%
+\box@testforboxenv%
+\edef\box@savedwidth{\the\box@widthincalculation}%
+\edef\box@savedlastlinewidth{\the\box@lastlinewidth}%
+\edef\box@savedxpos{\the\box@xpos}%
+\bgroup%
+\box@leftindent\box@xpos%
+\advance\hsize-\box@leftmargin%
+\linewidth\hsize%
+\box@leftmargin\z@%
+\leftskip\z@%
+\box@xpos\z@%
+\hangindent\z@%
+\par%
+\vskip-\parskip%
+\begin{lrbox}{\box@widthcalculation}%
+\box@widthincalculation=-\maxdimen%
+\dimen0=\linewidth%
+\advance\dimen0-\box@xpos%
+\begin{minipage}{\dimen0}%
+\rightskip=0pt plus 1fill%
+\def\newpar{%
+\theoldpar%
+\box@traverselines%
+}%
+\let\theoldpar=\par%
+\let\par=\newpar%
+\def\box@currentxpos{%
+\edef\savedindentation{\the\box@indentation}%
+\par%
+\ifdim\box@lastlinewidth=-\maxdimen%
+\global\box@xpos\savedindentation%
+\else%
+\global\box@xpos=\box@lastlinewidth%
+\fi%
+}%
+\let\box@investigateline\box@thelinewidth%
+}{%
+\par%
+\box@traverselines%
+\global\box@thewidth=\the\box@widthincalculation%
+\end{minipage}%
+\end{lrbox}%
+\global\box@xpos=\box@savedxpos%
+\global\box@lastlinewidth=\box@savedlastlinewidth%
+\global\box@widthincalculation=\box@savedwidth%
+\egroup%
+}%
+
+\newcommand\box@traverselines{%
+\global\box@lastlinewidth=-\maxdimen%
+\def\@box@traverselines{%
+\begingroup%
+\setbox\box@investigation=\lastbox%
+\ifvoid\box@investigation\else%
+\unskip%
+\count0=\lastpenalty%
+\unpenalty%
+\setbox\box@tester=\hbox{\unhcopy\box@investigation}%
+\ifdim\box@lastlinewidth=-\maxdimen%
+\global\box@lastlinewidth=\wd\box@tester%
+\global\advance\box@lastlinewidth\the\box@indentation%
+\fi%
+{\@box@traverselines}%
+\box@investigateline%
+\hbox{\box@indentation\dimen0\unhbox\box@investigation}%
+\penalty\count0%
+\fi%
+\endgroup%
+}%
+\@box@traverselines%
+}%
+
+\newcommand{\box@thelinewidth}{%
+\begingroup%
+\dimen0=\the\wd\box@tester%
+\advance\dimen0\box@indentation%
+\ifdim\dimen0>\box@widthincalculation%
+ \global\box@widthincalculation=\the\dimen0%
+\fi%
+\endgroup%
+}%
+
+\def\box@leftindent#1{%
+\aftergroup\insertindent%
+\gdef\insertindent{%
+\dimen0=#1%
+\advance\dimen0-\box@leftmargin%
+\advance\dimen0-\box@indentation%
+\makebox [\dimen0]{}%
+}%
+}
+\newcommand{\box@testforboxenv}{%
+\ifbox@inboxenv\else%
+\errmessage{Use of environment outside ``boxenv''
+   environment.}%
+\fi%
+}
+
+\newcommand{\box@setpenalty}{%
+\ifdim\parskip=\z@%
+\penalty10000%
+\else%
+\penalty50%
+\fi%
+\linepenalty10000%
+\interlinepenalty=10000%
+\hyphenpenalty=10000%
+}%
+
+\newcommand{\box@wcopies}[2]{%
+\if#2=%
+\vskip-1.5\baselineskip%
+\leavevmode\hbox to #1 {\leaders\hrule\hfill}%
+\else%
+ \newbox\tmp%
+ \setbox\tmp=\hbox{}%
+ \loop\ifdim#1>\wd\tmp%
+  \setbox\tmp\hbox{#2\box\tmp}%
+ \repeat%
+ \hbox{\hbox to \box@leftmargin{\box\tmp}}%
+\fi%
+}%
+
+\def\box@absval#1{\ifnum#1<\z@ -\fi#1}%
+\def\ifundefined#1{%
+\expandafter\ifx\csname #1\endcsname%
+\relax%
+}
+
+\endinput
+%%
+%% End of file `boxenv.sty'.
