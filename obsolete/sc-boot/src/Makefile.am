@@ -35,7 +35,9 @@ LDADD		= -lstratego-lib.opt \
 		  -lATerm-gcc \
 		  -lm
 
-bin_PROGRAMS = parse-mod
+bin_SCRIPTS = ac2c
+
+bin_PROGRAMS = sc parse-mod
 
 libexec_PROGRAMS = \
 	canonicalize \
@@ -57,40 +59,26 @@ libexec_PROGRAMS = \
 	Stratego-Optimized-Format \
 	fusion
 
-bin_PROGRAMS = \
-	proto-sc
-
-bin_SCRIPTS = sc ac2c
-
 pack-stratego.o: conf.h
 
-pack_stratego_SOURCES = conf.h pack-stratego.c
+pack_stratego_SOURCES 	= conf.h pack-stratego.c
 
-EXTRA_DIST = ac2c.src sc.src pack-stratego.config.src sc.config.src sc-manual.txt conf.h.src conf.h
+EXTRA_DIST 		= ac2c.src pack-stratego.config.src sc.config.src \
+			  sc-manual.txt conf.h.src conf.h
 
-pkgdatadir = $(datadir)/sc
+pkgdatadir 		= $(datadir)/sc
 
-pkgdata_DATA = sc.config sc-manual.txt pack-stratego.config conf.h
+pkgdata_DATA 		= sc.config sc-manual.txt pack-stratego.config conf.h
 
-CLEANFILES = $(bin_PROGRAMS)
+CLEANFILES 		= $(bin_PROGRAMS)
 
-BUILT_SOURCES = stratego.grm.tab.c stratego.grm.tab.h stratego.yy.c
+parse_stratego_SOURCES 	= parse-stratego.c stratego-grm.y \
+			  stratego-lex.l options.h options.c util.h 
 
-parse_stratego_SOURCES 	= \
-	parse-stratego.c stratego.grm \
-	stratego.lx options.h options.c util.h  \
-	$(BUILT_SOURCES)
+parse_mod_SOURCES 	= parse-mod.c stratego-grm.y \
+			  stratego-lex.l options.h options.c util.h 
 
-parse_mod_SOURCES = \
-	parse-mod.c stratego.grm stratego.lx \
-	options.h options.c util.h $(BUILT_SOURCES)
-
-%.grm.tab.c: %.grm
-	bison -d -t -v $<
-
-%.yy.c: %.lx
-	flex $<
-	mv lex.yy.c $@
+YFLAGS 			= -d -t -v
 
 # Generate scripts
 %: %.src Makefile
