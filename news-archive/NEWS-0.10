@@ -16,11 +16,45 @@ StrategoXT 0.10 is under construction
 
 ---------++ Dynamic Rules 
 
-StrategoXT 0.10 we have completely redesigned and reimplemented
-dynamic rules. Scoped dynamic rewrite rules have been introduced quite
-some time ago in
-Stratego 0.6 (August 2001).
+For StrategoXT 0.10 we have completely redesigned and reimplemented
+dynamic rules. Scoped dynamic rewrite rules have been introduced in
+Stratego 0.6 (August 2001). Dynamic rules have been applied
+extensively since then. In particular they have proven to be very
+useful for implementing context-sensitive transformations. However,
+these applications also revealed some missing features in scoped
+dynamic rewrite rules.
+
+    *** Motivation for redesign ***
+
+First, there is a need for forking and merging sets of dynamic rules
+in data-flow optimizations and probably many other application
+areas. At first we have implemented this at the implementation level
+of dynamic rules. In StrategoXT this functionality has been lifted to
+the language levels by allowing intersection and union operations on
+sets of rules.
+
+Second, many applications need to define a list of possible rewrite
+rules that can all be applied, possibly all at once to retrieve a list
+of possible rewrites. A first implementation of this idea was already
+available in StrategoXT 0.9.4 (extend rules).
+
+Third, the 'override rules' facility for defining dynamic in rules in
+outer scopes proved to be insufficient. To this end we have added
+labeled scopes. Labeled scopes are based on an idea raised by Ganesh
+Sitampalam in a discussion at the Stratego User Days 2004.
+
+   *** More detailed discussion of new design ***
 
 
+   *** Note an compiler flags and compatibility ***
 
- released: August 29, 2001
+The new implementation of dynamic rules is not yet turned on by
+default. To turn it on, you need to pass the option --dr new to the
+Stratego compiler. Although the new implementation is not yet used by
+default, all existing applications should work with the new
+implementation. That is, if they do not rely on weird semantics in the
+old dynamic rule implementation and do not manipulate the internal
+representation of dynamic rules. The new syntax for dynamic rules is
+supported as much as possible by the old dynamic rule implementation.
+
+
