@@ -1,6 +1,6 @@
 include $(top_srcdir)/Makefile.xt
 
-SUBDIRS 	  = . spec libraries tests 
+SUBDIRS 	  = . spec tests 
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 EXTRA_DIST 	  = README README.in bootstrap stdconfig Makefile.xt Makefile.subxt
 
