@@ -11,7 +11,7 @@ strategies
   /* Desugar dynamic rule scopes {| ... : ... |} */
 
   define-rule-scope-old =
-    topdown(try(DefDynamicRuleScope))
+    topdown(repeat(DefDynamicRuleScope))
 
   DefDynamicRuleScope :
     DynRuleScope([], s) -> s

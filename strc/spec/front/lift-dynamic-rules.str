@@ -10,7 +10,7 @@ strategies
 /* Desugar dynamic rule scopes {| ... : ... |} */
 
   define-rule-scope =
-    topdown(try(DefDynRuleScope))
+    topdown(repeat(DefDynRuleScope))
 
   DefDynRuleScope :
     |[ {| : s |} ]| -> s
