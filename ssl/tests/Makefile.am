@@ -13,6 +13,7 @@ check_PROGRAMS = \
   int-list-test \
   integers-test \
   io-test \
+  iteration-test \
   list-basic-test \
   list-filter-test \
   list-index-test \
