@@ -5,7 +5,7 @@ bin_PROGRAMS     = xtc xtc-migrate
 libexec_PROGRAMS = parse-xtd
 pkgdata_DATA     = strategoxt-xtc-tools.rtree stratego-xt-xtc-tools.rtree 
 
-SCFLAGS          = --main main-$* $(XTCFLAGS) -O 2
+SCFLAGS          = --main main-$* -O 2
 
 xtc_LDFLAGS         = $(AM_LDFLAGS) -static
 xtc_migrate_LDFLAGS = $(AM_LDFLAGS) -static
