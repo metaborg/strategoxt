@@ -1,7 +1,10 @@
 /**
- * metavar/1 : meta variable
- * lquote/1  : quotation symbol
- * rquote/1  : quotation symbol
+ * Replaces some constructs in a Stratego program by LaTeX macro invocations.
+ *
+ * Layout is preserved.
+ * The result is to be used in an alltt environment.
+ *
+ * @author  Martin Bravenboer <martin@cs.uu.nl>
  */
 module pp-stratego-latex-alltt
 imports options parse-cs-lib asfix
@@ -46,10 +49,20 @@ strategies
       check-cons-of-appl(?"DynRuleScope")
     ; appl(id, map(try(FancyDynRuleScope)))
 
+  /**
+   * Left choice
+   */
+  CheerUp =
+      check-cons-of-appl(?"LChoice")
+    ; appl(id, map(try(FancyLChoice)))
+
 rules
 
   FancyVar :
     lit(s) -> lit(<concat-strings> ["\\metavar{", s, "}"])
+
+  FancyLChoice :
+    lit("<+") -> lit("\\lchoice")
 
   FancyQuote :
     lit("|[") -> lit("\\lquote{|[}")

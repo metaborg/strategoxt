@@ -14,3 +14,9 @@ CLEANFILES     	= $(wildcard *.dep)
 BOOTCLEANFILES  = $(wildcard *.c)
 EXTRA_DIST 	= $(wildcard *.str) $(wildcard *.meta) sample-doc.ltx
 
+
+output.ltx : sample-input.str $(libexecdir)/pp-stratego-latex-alltt
+	$(libexecdir)/pp-stratego-latex-alltt -i $< -o $@
+
+sample-doc.pdf : output.ltx
+	pdflatex sample-doc.ltx

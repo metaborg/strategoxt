@@ -1,18 +1,26 @@
 \documentclass{article}
 
-  \usepackage{amsmath}
+  \usepackage{latexsym}
+  \usepackage{amsmath,amssymb}
   \usepackage{alltt}
 
   \newcommand{\lquote}[1]{|\!\![}
   \newcommand{\rquote}[1]{]\!\!|}
   \newcommand{\metavar}[1]{\emph{#1}}
 
-
   \newcommand{\ldrscope}{\{\!\!|}
   \newcommand{\rdrscope}{|\!\!\}}
 
+  \newcommand{\lchoice}{%
+    \ensuremath{%
+    \mathchoice{\mathbin{\texttt{<\kern-.2em+}}}%
+               {\mathbin{\texttt{<\kern-.2em+}}}%
+               {\mathbin{\texttt{<\kern-.2em+}}}%
+               {\mathbin{\texttt{<\kern-.2em+}}}%
+  }}
+
 \begin{document} 
 \begin{alltt}
-\input{foo.ltx}
+\input{output.ltx}
 \end{alltt}
 \end{document}
