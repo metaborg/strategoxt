@@ -21,6 +21,7 @@ strategies
   
   config-str-includes =
     <get-config> "-I" <+ ![] 
+  ; ![ <xtc-find-path> "lib.rtree" | <id> ]
 
   get-input-type =  <get-config> "--input-type"<+ !Module()
 
