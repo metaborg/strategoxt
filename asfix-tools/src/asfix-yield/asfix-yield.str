@@ -4,12 +4,8 @@ strategies
 
   main =
       parse-options(io-options, asfix-yield-usage, system-about)
-    ; where(
-        option-defined(?Output(outfile))
-      ; <open-file>(outfile, "w") <+ !stdout => outfile
-      )
-    ; input-file
-    ; (id, asfix-yield(!outfile))
+    ; (<open-file> (<get-config> "-o", "w") <+ !stdout) => outfile
+    ; input(asfix-yield(!outfile))
     ; <exit> 0
 
   asfix-yield-usage =
