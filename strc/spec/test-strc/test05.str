@@ -1,0 +1,5 @@
+module test05
+strategies
+
+  main =
+    prim("Macro"); ?2

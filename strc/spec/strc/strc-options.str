@@ -18,14 +18,14 @@ strategies
 
   init-strc-config = 
   where(
-    <set-config>("VERSION", strc-version-number)
-    ; <set-config>("--verbose", 1)
-    ; <set-config>("--keep", 0)
-    ; <set-config>("-O", 6)
-    ; <set-config>("-I", [])
-    ; <set-config>("--C-include", 
+    <set-config> ("VERSION", strc-version-number)
+    ; <set-config> ("--verbose", 1)
+    ; <set-config> ("--keep", 0)
+    ; <set-config> ("-O", 6)
+    ; <set-config> ("-I", [])
+    ; <set-config> ("--C-include", 
 		   ["<srts/stratego.h>", "<srts/stratego-lib.h>"])
-    ; <set-config>("-CI", ["-I", <conc-strings>(<xtc-find-path> "SRTS", "/include"),
+    ; <set-config> ("-CI", ["-I", <conc-strings>(<xtc-find-path> "SRTS", "/include"),
                            "-I", <conc-strings>(<xtc-find-path> "SRTS", "/include"),
                            "-I", <conc-strings>(<xtc-find-path> "ATERM", "/include")])
     ; <set-config> ("-CL",
@@ -36,8 +36,9 @@ strategies
         , <concat-strings> ["-L", <xtc-find-path> "ATERM", "/lib"]
         , "-lATerm-gcc"
         , "-lm"])
-    ; <set-config>("--dr", "old")
-    ; <set-config>("--warning", ["all"])
+    ; <set-config> ("-CD", [])
+    ; <set-config> ("--dr", "old")
+    ; <set-config> ("--warning", ["all"])
   )
 
   get-include-dirs =
@@ -69,10 +70,9 @@ strategies
 	where(<set-config>("-m", <id>)); !(),
 	!"--main f | -m f    Main strategy to compile (default: main)\n")
 
-
   + Option("--library" + "--lib",
 	where(<set-config>("--library", ())); !(),
-	!"--library | --lib    Build a library instead of an application\n")
+	!"--library | --lib  Build a library instead of an application\n")
 
 
   + ArgOption("--C-include",       
@@ -82,6 +82,10 @@ strategies
   + ArgOption("-CI",       
 	where(<extend-config>("-CI", [<id>])); !(),
 	!"-CI d              Include C headers from directory d")
+
+  + ArgOption("-CD",
+	where(<extend-config>("-CD", [<conc-strings> ("-D", <id>)])); !(),
+	!"-CD name=def       Predefine name as a macro, with definition def.")
 
   + ArgOption("-CL",
 	where(<extend-config>("-CL", [<conc-strings> ("-L", <id>)])); !(),
@@ -94,6 +98,10 @@ strategies
   + ArgOption("-la",
 	where(<extend-config>("-CL", [<file-exists <+ <concat-strings; xtc-find <+ <exit> 1> ["lib", <id>, ".la"]>])); !(),
 	!"-la lib            Search the libtool library liblib.la when linking.\n")
+
+  + ArgOption("--xtc-repo",
+	where(<extend-config>("-CD", [<concat-strings> ["-DXTC_REPOSITORY()=ATmakeString(\"", <id>, "\")"]])); !(),
+	!"--xtc-repo file    Set default XTC repository in output program to file (default: none).")
 
   + Option("-c",          
 	where(<set-config>("-c",())); !(),

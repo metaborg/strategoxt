@@ -183,8 +183,7 @@ strategies // Compile generated C code
     where if-verbose2(say(!"compiling C code"))
 	; get-outfile(!".o") => ofile
         ; <if-verbose3(debug); call> 
-	   ("gcc", <conc> (<get-config> "-CI", 
-			  ["-c", cfile,"-o", ofile]))
+	   ("gcc", <concat> [<get-config> "-CI", <get-config> "-CD", ["-c", cfile,"-o", ofile]])
 
   link-object-code :
     FILE(ofile) -> FILE(target)

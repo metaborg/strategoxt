@@ -1,4 +1,16 @@
 2004-06-27  Martin Bravenboer  <martin@cs.uu.nl>
+	
+	* spec/strc/strc-options.str: added the -CD option. This option
+	can be used to define macros.
+
+	* spec/strc/strc-option.str: added the --xtc-repo option to set
+	the default XTC repository of the output program. This option
+	might be useful for beginners that want to play XTC stuff: you
+	don't need to setup a complete package anymore. Just use the
+	stand-alone compiler (some holds for the separate compilation
+	options btw).
+	
+2004-06-27  Martin Bravenboer  <martin@cs.uu.nl>
 
 	* spec/strc/strc-options.str: added the -Cl option. This option
 	can be used to specify libraries to search during linking.

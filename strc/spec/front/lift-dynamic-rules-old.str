@@ -113,7 +113,7 @@ strategies
 
   SplitDynamicRule-old(assert) :
     |[ f(as1|as2) : t1 -> t2 where s ]| ->
-    (|[ where(<~<assert> f> Pair(t1', Defined(~str:stamp, t*))) ]|,
+    (|[ where(<~<assert> f> (t1', Defined(~str:stamp, t*))) ]|,
      |[ f(as1|as2) : x@t1 -> t2 
                 where where(<rewrite(!~str:f)> t1'' => Defined(~str:stamp, t*)); s ]|)
     where 
@@ -131,7 +131,7 @@ strategies
 
   SplitDynamicRule-old(assert) :
     |[ f(as1|as2) : t1 -> Undefined() where s ]| ->
-    (|[ where(<~<assert> f> Pair(t1', Undefined())) ]|,
+    (|[ where(<~<assert> f> (t1', Undefined())) ]|,
      |[ f(as1|as2) : x@t1 -> Undefined()
                 where where(<rewrite(!~str:f)> t1'' => Undefined()); s; fail ]|)
     where 
