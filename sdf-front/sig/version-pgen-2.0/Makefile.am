@@ -9,4 +9,4 @@ CLEANFILES       = $(wildcard *.dep)
 BOOTCLEANFILES   = $(pkgdata_DATA)
 
 regenerate:
-	sdf2rtg -i $(top_srcdir)/syn/version-pgen-2.0/Sdf2.def -m Main | rtg2sig -o Sdf2.str
+	sdf2rtg -i $(top_srcdir)/syn/version-pgen-2.0/Sdf2.def -m Sdf2 | rtg2sig -o Sdf2.str
