@@ -1,3 +1,8 @@
+2001-09-28  Eelco Visser  <visser@acm.org>
+
+	* spec/front/spec-to-sdefs.r: No type annotations were added for
+	congruences generated from overlays.
+
 2001-09-22  Eelco Visser  <visser@acm.org>
 
 	* Release 0.6.1

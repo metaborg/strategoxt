@@ -1,6 +1,6 @@
 \literate[Specification to List of Definitions]
 
-% $Id: spec-to-sdefs.r,v 1.1 2001/08/22 09:34:59 visser Exp $
+% $Id: spec-to-sdefs.r,v 1.2 2001/09/28 10:33:49 visser Exp $
 
 % Copyright (C) 1998, 1999, 2000 Eelco Visser <visser@acm.org>
 % 
@@ -46,15 +46,19 @@ imports strategy sugar stratlib list-sort
 \begin{code}
 rules
   
-  MkCongDef : OpDecl(f, ConstType(t)) -> SDef(f, [], Cong(f, []))
+  MkCongDef : 
+    OpDecl(f, ConstType(t)) -> SDef(f, [], Cong(f, []))
 
-  MkCongDef : OpDecl(f, FunType(ts, t)) -> 
-              SDef(f, xdecs, Cong(f, <map(MkCall)> xs))
-	      where <map(new; split(\ x -> VarDec(x, DefaultStrat) \, id));
-                     unzip> ts => (xdecs, xs)
+  MkCongDef : 
+    OpDecl(f, FunType(ts, t)) -> 
+    SDef(f, xdecs, Cong(f, <map(MkCall)> xs))
+    where <map(new; split(\ x -> VarDec(x, DefaultStrat) \, id));
+           unzip> ts => (xdecs, xs)
 
-  MkCongDefs : Sorts(sds)      -> []
-  MkCongDefs : Operations(ods) -> <map(MkCongDef)> ods
+  MkCongDefs : 
+    Sorts(sds) -> []
+  MkCongDefs : 
+    Operations(ods) -> <map(MkCongDef)> ods
 
 strategies
 
@@ -87,18 +91,24 @@ strategies
 rules
 
   Overlay-to-Congdef :
-    Overlay(f, xs, t) -> SDef(f, xs, <trm-to-cong> t)
+    Overlay(f, xs, t) -> SDef(f, xdecs, <trm-to-cong> t)
+    where <map(\ x -> VarDec(x, DefaultStrat) \ )> xs => xdecs
 
-  Trm-to-Cong : Var(x)          -> Call(SVar(x), [])
-  Trm-to-Cong : Op(f, ts)       -> Call(SVar(f), ts)
-  Trm-to-Cong : Str(x)          -> Match(Str(x))
-  Trm-to-Cong : Int(x)          -> Match(Int(x))
-  Trm-to-Cong : Real(x)         -> Match(Real(x))
-  Trm-to-Cong : BuildDefault(x) -> Id
+  trm-to-cong = 
+    rec x(try(Op(id, map(x))); Trm-to-Cong)
 
-strategies
-
-  trm-to-cong = rec x(try(Op(id, map(x))); Trm-to-Cong)
+  Trm-to-Cong : 
+    Var(x) -> Call(SVar(x), [])
+  Trm-to-Cong : 
+    Op(f, ts) -> Call(SVar(f), ts)
+  Trm-to-Cong : 
+    Str(x) -> Match(Str(x))
+  Trm-to-Cong : 
+    Int(x) -> Match(Int(x))
+  Trm-to-Cong : 
+    Real(x) -> Match(Real(x))
+  Trm-to-Cong : 
+    BuildDefault(x) -> Id
 \end{code}
 
 \paragraph{Expanding Overlays}   
@@ -136,10 +146,11 @@ strategies
 \begin{code}
 rules
 
-  RDtoSD : RDef(f, xs, r) -> SDef(f, xs, Scope(<tvars> r, SRule(r)))
+  RDtoSD : 
+    RDef(f, xs, r) -> SDef(f, xs, Scope(<tvars> r, SRule(r)))
 
   DeclareVariables :
-	SDef(f, xs, s) -> SDef(f, xs, Scope(<tvars> s, s))
+    SDef(f, xs, s) -> SDef(f, xs, Scope(<tvars> s, s))
 \end{code} 
 
 \paragraph{Specification to Definition List}
