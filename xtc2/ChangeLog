@@ -1,0 +1,176 @@
+2004-07-04  Martin Bravenboer <martin@cs.uu.nl>
+
+	* src/xtc-proc.str: xtc-io-wrap now has a variant that takes an
+	explicit usage and about argument. These strategies are used if
+	the users requests for help or information about the program. The
+	changes are backwards compatible.
+
+2003-05-27  Martin Bravenboer <martin@cs.uu.nl>
+
+	* src/xtc-register.str: added an xtc-register strategy that takes
+	arguments (not from config).
+
+	* src/xtc-register.str: load XTC repository in register.
+
+2003-05-01  Martin Bravenboer <martin@cs.uu.nl>
+
+	* tools/stratego-xt-xtc-tools: removed xtc-parse-sdf and
+	xtc-pack-sdf. xtc-parse-sdf is not used and applied the third
+	variant of SDF (yes, there are in fact 3 variants in StrategoXT,
+	not just 2). xtc-pack-sdf performs an implosion, which is
+	incorrect, so apparently it isn't used as well.
+
+2003-12-25  Martin Bravenboer <martin@cs.uu.nl>
+
+	* src/xtc-proc.str: updated xtc-io and xtc-output to invoke
+	xtc-write-output. xtc-write-output can also handle the stdin() as
+	current file.
+
+	* src/xtc-proc.str: added xtc-ensure-file. If the current file is
+	the stdin, then it will be written to a file. This is useful for
+	operations that require a filename, or if the current file will be
+	read multiple times, which is not possible with the stdin.
+	
+2004-02-22   Merijn de Jonge  <mdejonge@cs.uu.nl>
+
+	* Makefile.am: added autoxt.m4 to EXTRA_DIST
+
+	* Makefile.am: added line: ACLOCAL_AMFLAGS = -I . such that
+	autoreconf can find autoxt.m4
+
+2003-12-25  Martin Bravenboer <martin@cs.uu.nl>
+
+	* src/xtc-proc.str: using mkstemp for the creation of temporary
+	files.
+
+	Temporary files of XTC are from now created in the default
+	directory for temporary files (usually /tmp).
+
+	Please clean up your working copy because the packages are using a
+	local XTC installation (pre-pkgs/install) that is not rebuild on
+	changes in XTC. If you do not clean up, you might break your
+	Stratego compiler installation because some problems in GPP
+	applications using XTC had to be fixed.
+
+2003-08-12  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+	* tools/stratego-xt-xtc-tools: don't use t flag when invoking
+	sglr.
+
+2003-08-11  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/xtc-rep.str: Save repository in binary file to speed up
+	reading repository.
+
+2003-02-05  Martin Bravenboer <martin@mbravenboer.org>
+
+	* tools/stratego-xt-xtc-tools.str: Added xtc-stratego-ensugar and
+	xtc-pp-astratego.
+
+2003-01-18  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/xtc-query.str: do an xtc-import when performing a query
+
+2003-01-12  Eelco Visser  <visser@cs.uu.nl>
+
+	* xtc-call and xtc-get incorporated in xtc as "xtc call"
+	and "xtc get" subcommands.
+
+2003-01-11  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/xtc-call.str, src/xtc-get.str: command-line tools for
+	calling tools or finding files in the repository.
+
+2003-01-07  Martin Bravenboer <martin@mbravenboer.org>
+
+	* tools/: directory for modules with xtc-transform calls to
+	specific tools.
+
+	* tools/stratego-xt-xtc-tools.str: easy to use xtc-transform
+	strategies for tools in StrategoXT like abox2text, implode-asfix
+	etc.
+
+2003-01-05  Eelco Visser  <visser@cs.uu.nl>
+
+	* test for nested calls to tools to reproduce intermediate file
+	bug; so far not succesful to reproduce the bug.
+
+2003-01-04  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/xtc-rep.str: deal with recursive imports, not just one
+	level of import.
+
+2003-01-02  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/xtc-proc.str: read-from : Check that file exists before 
+	reading term from it; otherwise fail.
+
+2003-01-01  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/xtc-proc.str: 
+
+	- xtc-io-exit: stop in the middle of a transformation pipeline,
+	copying the current file to the output file indicated with the -o
+	option.
+
+	- rename-to and copy-to do nothing if the target file is the same
+	as the source file
+
+2002-12-30  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/xtc-proc.str: xtc-io --- don't use xtc-output since last
+	file will be temp and removed.
+
+2002-12-22  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/xtc-register.str: xtc-find-path --- find the path
+	of a tool by stripping of the file name from the location
+
+	* src/xtc-proc.str: xtc-transform -- no backtracking when
+	transform-file fails.
+
+2002-12-21  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/xtc-proc.str: xtc-temp-files: ensure that intermediate files
+	are removed even if strategy fails
+
+2002-12-18  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/xtc-proc.str: copy-to makes a copy of the current
+	file (e.g., in order to keep an intermediate file). xtc-io
+	also incorporates xtc-temp-files.
+
+2002-12-16  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/xtc-proc.str: xtc-transform-... : changed the order
+	of the -i/-o arguments and the other arguments to enable
+	calling Java tools.
+
+	* src/xtc-rep.str: All repository entries should be lists.
+
+	* src/cp-file.str: Copy input file to output file 
+
+	* src/xtc-proc.str: xtc-io and xtc-io-transform provide
+	further abstractions (thanks Martin)
+
+2002-12-15  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/xtc-rep.str: The entries of imported repositories are
+	appended to existing entries. This entails that importing
+	repositories can override entries of imported repositories.
+
+2002-12-08  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/xtc-register.str: xtc-find always complains when item not
+	found.
+
+2002-12-07  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/xtc-proc.str: Scoped introduction and automatic removal of 
+	temporary files.
+
+2002-12-03  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/xtc.str: Strategies for calling tools that are registered in
+	an XTC repository. Initializing the repository is done transparantly
+	when first retrieving a tool path.

@@ -1,0 +1,11 @@
+module test2
+imports xtc-lib
+strategies
+
+  test2 = 
+    xtc-io-wrap(
+      read-from
+      ; !(<id>,<id>)
+      ; write-to
+      ; xtc-transform(!"test3")
+    )

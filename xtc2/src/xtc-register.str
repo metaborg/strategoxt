@@ -1,0 +1,67 @@
+module xtc-register
+imports config xtc-rep string
+strategies
+
+  // Finding an entry in the repository
+
+  xtc-find-warning = 
+    xtc-find 
+
+  xtc-find = 
+    if-verbose5(debug(!"xtc-find: "))
+    ; xtc-load
+    ; (xtc-find-version-loc <+ xtc-find-loc)
+    ; if-verbose5(debug(!"xtc-find: "))
+   <+ <error> ["No XTC registration for ", <id>, " found"]
+    ; if-verbose5(<table-getlist; debug(!"XTC repository: ")> XTC)
+    ; fail
+
+  xtc-find-silent = 
+    xtc-load
+    ; (xtc-find-version-loc <+ xtc-find-loc)
+    ; if-verbose5(debug(!"xtc-find: "))
+ 
+  xtc-find-version-loc :
+    (tool, version) -> loc
+    where <table-get>(XTC, Tool(tool)); fetch(?(version, loc))
+
+  xtc-find-loc :
+    tool -> loc
+    where <table-get> (XTC, Tool(tool)) => [(version, loc) | _]
+
+  xtc-find-path =
+    xtc-find; get-path
+
+  // Registering an entry
+
+  xtc-register =
+    <get-config> "-t" => tools
+    ; if-verbose1(say(!"  Registering tool ")) 
+    ; if-verbose2(debug(!"    Tools:    "))
+    ; <get-config> "-V" => version
+    ; if-verbose2(debug(!"    Version:  "))
+    ; <get-config> "-l" => loc
+    ; if-verbose2(debug(!"    Location: "))
+    ; !tools
+    ; xtc-register(|tools, version, loc)
+
+  /**
+   * @param  tools    String or List(String)
+   * @param  version  String
+   * @param  loc      Directory of tools
+   */
+  xtc-register(|tools, version, loc) = 
+    where(
+      xtc-load
+    ; !tools
+    ; (is-list <+ ![<id>])
+    ; map(<table-union>(XTC, Tool(<id>), 
+	    [(version, <concat-strings>[loc,"/",<id>])]))
+    )
+
+  register-import =
+    <get-config> "import" => imports
+    ; if-verbose2(debug(!"  Registering imports: "))
+    ; <get-config> "import" => reps
+    ; if-verbose5(debug(!"importing: "))
+    ; <table-union> (XTC, Import, reps)
