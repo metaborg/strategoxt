@@ -3,15 +3,21 @@ include $(wildcard *.dep)
 
 pgkdatadocdir = ${pkgdatadir}/doc
 
-check_PROGRAMS = accept-test migrate-tuples-test annotation-props-test \
-options-test annotations-test option-test apply-test parallel-test     \
-char-test parse-options-test client-test reals-test connect-test       \
-rename-test dir-test scoped-finite-map-test env-traversal-test	       \
-server-test exec-test share-test integers-test simple-traversal-test   \
-int-list-test strcmp-test io-test string-test list-basic-test	       \
-substitution-test list-filter-test tables-test list-index-test	       \
-template-test list-misc-test term-zip-test list-set-test time-test     \
-list-sort-test tuple-test list-zip-test unification-test
+check_PROGRAMS =  \
+accept-test            list-basic-test      scoped-finite-map-test  \
+annotation-props-test  list-filter-test     server-test  \
+annotations-test       list-index-test      share-test  \
+apply-test             list-misc-test       simple-traversal-test  \
+            list-set-test        strcmp-test  \
+char-test              list-sort-test       string-test  \
+client-test            list-zip-test        substitution-test  \
+connect-test           migrate-tuples-test  tables-test  \
+dir-test               options-test         template-test  \
+env-traversal-test     option-test          term-zip-test  \
+exec-test              parallel-test        time-test  \
+integers-test          parse-options-test   tuple-test  \
+int-list-test          reals-test           unification-test  \
+io-test                rename-test
 
 SUBDIRS 	= data
 
