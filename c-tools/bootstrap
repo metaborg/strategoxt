@@ -12,6 +12,3 @@ autoconf -f
 automake -a -f  
 #--warnings=all  --warnings=no-portability
 
-#autoreconf --include=. --warnings=all --warnings=no-portability
-
-touch pp/*.pp.af sig/*.str sig/*.rtree
