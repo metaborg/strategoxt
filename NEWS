@@ -39,7 +39,7 @@ MORE INFORMATION
 
 CONTRIBUTIONS
 
- * Bug reports by Martin Bravenboer (<++), Dick Kieburtz
+ * Bug reports by Martin Bravenboer (<++, C simplify), Dick Kieburtz
    (configuration), Otto Skrove Bagge (mapping reverse)
  * Bug fixes: Eelco Dolstra & Eelco Visser (Sun/ATmap bug)
  * Library contributions: connect.r (Hedzer Westra), getopt.r (Otto

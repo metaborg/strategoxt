@@ -17,9 +17,9 @@ SUMMARY OF CHANGES
  * Global choice operators ++ and <++ support global backtracking
  * Bagof returns list of all possible results for ++ and <++
  * Guarded left choice s1 < s2 + s3 commits after s1 succeeds
- * Constant term caching in the compiler
  * Support for term annotations t1{t2}
  * Many new library strategies
+ * Constant term caching in the compiler
 
 DEPENDENCIES
 
@@ -39,11 +39,11 @@ MORE INFORMATION
 
 CONTRIBUTIONS
 
- * Bug reports by Martin Bravenboer (<++), Dick Kieburtz
+ * Bug reports by Martin Bravenboer (<++, C simplify), Dick Kieburtz
    (configuration), Otto Skrove Bagge (mapping reverse)
  * Bug fixes: Eelco Dolstra & Eelco Visser (Sun/ATmap bug)
  * Library contributions: connect.r (Hedzer Westra), getopt.r (Otto
-   Bagge), restore (Martin Bravenboer), 
+   Bagge), restore (Martin Bravenboer)
 
 LANGUAGE
 
@@ -75,7 +75,10 @@ LANGUAGE
 
  * Term annotations can be used to attach information to a term without
    affecting its structure, i.e., arities or names of constructors. Syntax:
-   t1 { t2 } denotes the annotation of term t1 with term t2.
+   t1 { t2 } denotes the annotation of term t1 with term t2. By making
+   the annotation into a list, many different annotations can be attached
+   to a term. Proposals for linguistic support for such annotation lists
+   are welcome.
 
 COMPILER
 
