@@ -18,30 +18,22 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.7 2003/01/05 13:47:59 stratego Exp $
+# $Id: Makefile.am,v 1.8 2003/01/13 20:53:21 stratego Exp $
 
 include $(srcdir)/../templates/make_rules
 include $(top_srcdir)/Makefile.xt
 
 SUBDIRS = data
 
-STRATEGO_MODULES = Stratego-Layout.str Stratego-Rules.str	    \
-	           Stratego-Sugar.str				    \
-		   Stratego-Lexicals.str Stratego-Signatures.str    \
-		   Stratego-Syntax.str Stratego-Modules.str	    \
-		   Stratego-Specifications.str Stratego-Terms.str   \
-		   Stratego-Overlays.str Stratego-Strategies.str
+MODS = Stratego-Layout.str Stratego-Rules.str	\
+       Stratego-Sugar.str \
+       Stratego-Lexicals.str Stratego-Signatures.str  \
+       Stratego-Syntax.str Stratego-Modules.str	 \
+       Stratego-Specifications.str Stratego-Terms.str \
+       Stratego-Overlays.str Stratego-Strategies.str
 
-EXTRA_DIST       = $(STRATEGO_MODULES) \
-                   README stratego.pp stratego.def \
-		   stratego.pp stratego.pp.af stratego.tbl
+EXTRA_DIST     = $(MODS) README stratego.pp stratego.def \
+                 stratego.pp stratego.pp.af stratego.tbl
+pkgdata_DATA   = $(MODS) stratego.pp stratego.pp.af stratego.tbl
+BOOTCLEANFILES = stratego.pp.af stratego.tbl
 
-pkgdata_DATA     = $(STRATEGO_MODULES) stratego.pp stratego.pp.af stratego.tbl 
-
-CLEANFILES       = stratego.pp.af stratego.tbl
-
-%.pp.af : %.pp
-	$(MAKE) -f $(GPP)/share/gpp/gpp.Makefile $@
-
-#%.tbl : %.def
-#	PATH=$(PGEN)/bin/sdf2table -m GB-Main $< -o $@
