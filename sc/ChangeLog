@@ -1,5 +1,7 @@
 2003-07-31  Eelco Visser  <visser@cs.uu.nl>
 
+	* spec/front/check-constructors.str: cater for longer tuples
+
 	* spec/sc/strc.str: Saving intermediate results in abstract
 	and concrete form on request with --keep option. 
 

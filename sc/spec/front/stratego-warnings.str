@@ -11,7 +11,7 @@
  */               
 module stratego-warnings
 
-imports lib stratego
+imports lib stratego-ext
 
 signature
 constructors

@@ -16,7 +16,14 @@ overlays
      OpDecl("", FunType([Var("a"),Var("a"),Var("a"),Var("a"),Var("a")],Var("a"))),
      OpDecl("", FunType([Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a")],Var("a"))),
      OpDecl("", FunType([Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a")],Var("a"))),
-     OpDecl("", FunType([Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a")],Var("a")))
+     OpDecl("", FunType([Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a")],Var("a"))),
+     OpDecl("", FunType([Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a")],Var("a"))),
+     OpDecl("", FunType([Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a")],Var("a"))),
+     OpDecl("", FunType([Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a")],Var("a"))),
+     OpDecl("", FunType([Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a")],Var("a"))),
+     OpDecl("", FunType([Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a")],Var("a"))),
+     OpDecl("", FunType([Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a")],Var("a"))),
+     OpDecl("", FunType([Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a")],Var("a")))
     | decs]
 
 
