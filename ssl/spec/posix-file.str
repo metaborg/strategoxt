@@ -19,29 +19,6 @@ signature
     */
 
 /**
- * Abstractions for streams
- */
-strategies
-
-  /**
-   * opens a Stream associated to a FileLoc
-   *
-   * :: FileLoc * String -> Stream
-   */
-  open-stream = ?(_, _);
-    (  Fst; stdio-stream
-    <+ (?Path(<id>), id); fopen
-    <+ (is-string,   id); fopen
-    )
-
-  /**
-   * :: FileLoc -> Stream
-   */
-  stdio-stream = ?stdin() ; stdin-stream
-  stdio-stream = ?stdout(); stdout-stream
-  stdio-stream = ?stderr(); stderr-stream
-
-/**
  * Standard streams
  */
 strategies
@@ -59,8 +36,6 @@ strategies
  * Stream operations
  */
 strategies
- 
-   
 
   /**
    * Opens the file whose name is the string pointed to by 
@@ -231,6 +206,29 @@ strategies
    */
   dup =
     ?fd; prim("SSL_dup", fd)
+
+  /**
+   * checks the accessibility of the specified file wrt to the
+   * specified permissions. Fails if the access is not allowed,
+   * returns the path otherwise.
+   *
+   * :: String * [AccessPermission] -> String
+   */
+  access =
+    ?(path, permissions); prim("SSL_access", path, permissions)
+
+signature
+  constructors
+    F_OK: AccessPermission
+    R_OK: AccessPermission
+    W_OK: AccessPermission
+    X_OK: AccessPermission
+
+overlays
+  Read      = R_OK
+  Write     = W_OK
+  Execute   = X_OK
+  Existence = F_OK
     
 /**
  * Connecting high and low level file operations

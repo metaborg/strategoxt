@@ -36,7 +36,6 @@ imports
  (* system *)
 
 	io
-	file
 	memo
 	options
 	parse-options

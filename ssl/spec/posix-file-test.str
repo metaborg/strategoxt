@@ -6,6 +6,7 @@ strategies
   main = 
     test-suite(!"posix-file-test",
       fileno-tests
+    ; access-tests
     ; aterm-io-tests
     ; char-output-tests 
     ; strcat-tests
@@ -32,6 +33,19 @@ strategies
       )
 
     ; where(<remove-file> tmp-name)
+
+  access-tests = 
+      apply-and-fail(!"access --  1", <access> (<id>, [Write]), !"/proc/uptime")
+    ; apply-test(    !"access --  2", <access> (<id>, [Existence]), !"/proc/uptime", !"/proc/uptime")
+    ; apply-test(    !"access --  3", <access> (<id>, [Read]),  !"/proc/uptime", !"/proc/uptime")
+    ; apply-and-fail(!"access --  4", <access> (<id>, [Read, Write]),  !"/proc/uptime", !"/proc/uptime")
+    ; apply-and-fail(!"access --  5", <access> (<id>, []), !"/proc/uptime")
+    ; apply-and-fail(!"access --  6", <access> (<id>, 1), !"/proc/uptime")
+    ; apply-and-fail(!"access --  7", <access> (<id>, [Read]), !"/root")
+    ; apply-test(    !"access --  8", <access> (<id>, [Existence]), !"/root", !"/root")
+    ; apply-and-fail(!"access --  9", <access> (<id>, [Existence]), !"blablabla.blabla")
+    ; apply-test(    !"access -- 10", <access> (<id>, [Execute, Read, Write]), !"posix-file-test", !"posix-file-test")
+    ; apply-test(    !"access -- 11", <access> (<id>, [Existence]), !"posix-file-test", !"posix-file-test")
 
   aterm-io-tests =
       aterm-io-tests(write-in-baf-to-stream)

@@ -1,3 +1,10 @@
+2003-03-25  Martin Bravenboer <martin@mbravenboer.org>
+
+  * spec/posix-file.str: added access.
+
+  * spec/file.str: started moving abstractions to file.
+    Same will happen for process, aterm-io and char-io.
+
 2003-03-24  Martin Bravenboer <martin@mbravenboer.org>
 
   * spec/io.str: defined ReadFromFile, WriteToTextFile

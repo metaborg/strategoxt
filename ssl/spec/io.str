@@ -21,7 +21,7 @@
 
 \begin{code}
 module io
-imports list string tuple integers time exec dir posix-file
+imports list string tuple integers time exec dir posix-file file
 \end{code}
 
 	A \verb|file| can be a string or one of the terms
@@ -37,10 +37,6 @@ signature
 strategies
 
   // File administration
-
-  file-exists = 
-    ?name; prim("SSL_open_file", name, "r"); 
-           prim("SSL_close_file", name)
 
   close-file = 
     ?name; prim("SSL_close_file", name)
