@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: DEVELOPERS-INFO,v 1.2 2000/04/07 12:48:46 mdejonge Exp $
+# $Id: DEVELOPERS-INFO,v 1.3 2000/04/07 13:55:33 jvisser Exp $
 
 Obtaining all Software Packages
 ===============================
@@ -26,7 +26,7 @@ The CVS repository of XT itself does not include the software packages which
 are distributed as part of XT. Therefore you should first obtain the
 packages yourself before compiling XT or building an XT distribution. 
 
-The software package scan be obtained by executing the command:
+The software packages can be obtained by executing the command:
 
    ./collect.sh configure.in pkg-list
 
