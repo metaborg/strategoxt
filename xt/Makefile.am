@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 #
-# $Id: Makefile.am,v 1.4 2000/03/29 10:20:33 mdejonge Exp $
+# $Id: Makefile.am,v 1.5 2000/03/29 10:24:19 mdejonge Exp $
 
 DIST_SUBDIRS = dummy aterm asc-support sglr pgen stratego gb gt #gpp
 EXTRA_DIST   = SOFTWARE
@@ -27,13 +27,13 @@ SUBDIRS=dummy
 
 
 all install:
-	PATH=$(prefix)/bin:$${PATH}; export PATH ;\
+	PATH=$(bindir):$${PATH}; export PATH ;\
 	for subdir in $(DIST_SUBDIRS); do \
 	   ( cd $$subdir && $(MAKE) install ) \
 	done
 
 check clean:
-	PATH=$(prefix)/bin:$${PATH}; export PATH ;\
+	PATH=$(bindir):$${PATH}; export PATH ;\
 	for subdir in $(DIST_SUBDIRS); do \
 	   ( cd $$subdir && $(MAKE) $@ ) \
 	done
