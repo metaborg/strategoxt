@@ -1,18 +1,16 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-SIGS = \
-  Dot.str \
-  Layout.str \
-  QuotedLiterals.str 
+SIGS             = Dot.str
+pkgdata_DATA     = Dot.rtree
 
-pkgdata_DATA     = $(subst .str,.rtree,$(SIGS))
+EXTRA_DIST       = $(SIGS) $(pkgdata_DATA)
+CLEANFILES       = $(wildcard *.dep)
+BOOTCLEANFILES   = $(SIGS) $(pkgdata_DATA)
 
-EXTRA_DIST       = $(SIGS) $(pkgdata_DATA) 
-CLEANFILES       = Dot.def $(wildcard *.dep)
-BOOTCLEANFILES   = $(wildcard *.c) $(SIGS) $(pkgdata_DATA)
+Dot.str : Dot.def
+	$(STRATEGO_REGULAR)/bin/sdf2rtg -i $< -m Dot | \
+	$(STRATEGO_REGULAR)/bin/rtg2sig -o $@
 
 Dot.def :
 	ln -s $(top_srcdir)/syn/Dot.def $@
-
-$(SIGS) : Dot.def
