@@ -193,6 +193,9 @@
    annotated-appl.2:iter-sep  -- _1 KW[","],
    term                       -- _1,
 
+   placeholder                   -- KW["<"] _1 KW[">"],
+   annotated-placeholder         -- KW["<"] _1 KW[">"] _2,
+
    context-free-start-symbols --
         V is=2 [H[KW["context-free"] KW["start-symbols"]] HV[_1]],
    kernel-start-symbols       -- V is=2 [KW["start-symbols"] HV[_1]],
