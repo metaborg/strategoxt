@@ -1,7 +1,7 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-pkgdata_DATA   = xml-doc.str xml-doc.rtree xml-doc.rtg
+pkgdata_DATA   = xml-doc.rtg xml-doc.str xml-doc.rtree 
 
 EXTRA_DIST     = $(pkgdata_DATA)
 BOOTCLEANFILES = $(pkgdata_DATA)
