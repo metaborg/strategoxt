@@ -154,17 +154,22 @@ strategies
   print-strings-nl(out) =
     where(<printnl> (<out>, <id>))
 
-/**
- * The strategy \verb|debug| prints the
- * current term to \verb|stderr| without changing it. This is
- * a useful strategy for debugging specifications (hence its
- * name).
- */
 strategies
 
+  /**
+   * Prints the current term to stderr without changing it.
+   * This is a useful strategy for debugging specifications (hence its name).
+   *
+   * @type  a -> a
+   */
   debug = 
     where(<printnl> (stderr, [<id>]))
 
+  /**
+   * Prints the term produced by applying msg followed by the current term to stderr.
+   *
+   * @type  a -> a
+   */
   debug(msg) = 
     where(<printnl> (stderr, [<msg>,<id>]))
 
@@ -184,18 +189,39 @@ strategies
     
 strategies
 
+  /**
+   * Prints the term produced by applying msg to stderr.
+   *
+   * @param  term to print to stderr
+   * @type   a -> a
+   */
   say(msg) = 
     where(msg; debug)
 
   trace(msg,s) =
     debug(msg); (s; debug(!"succeeded: ") <+ debug(!"failed: "))
 
+  /**
+   * Prints a list of terms to stderr using printnl.
+   *
+   * @type List(a) -> List(a)
+   */
   error = 
     where(<printnl> (stderr, <id>))
 
+  /**
+   * Prints a list of terms to stderr using printnl and exits with code 1.
+   *
+   * @type List(a) -> List(a)
+   */
   fatal-error = 
     where(error; <exit> 1)
 
+  /**
+   * Prints giving-up to stderr and exits with code 1.
+   *
+   * @type _ -> _
+   */
   giving-up = 
     <fatal-error>["giving-up"]
 
