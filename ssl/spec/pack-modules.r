@@ -36,7 +36,7 @@ strategies
 
   pack-modules(pack : term * (term -> term) -> term)
     = pack-modules(pack, fail)
-      <+ <fatal-error> ["  packing failed"]
+      <+ <fatal-error> ["Packing modules failed"]
 
   pack-modules(pack : term * (term -> term) -> term, dep-base) =
     pack-module-options => options;

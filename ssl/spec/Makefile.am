@@ -23,6 +23,8 @@ parsed = $(subst .r,.rtree,$(wildcard *.r))
 
 pkgdata_DATA = $(parsed)
 
+# install .r files in $(prefix)/share/ssl/spec/
+
 TESTS = $(subst .r,,$(wildcard *-test.r))
 
 EXTRA_DIST = $(wildcard *.r) $(pkgdata_DATA)

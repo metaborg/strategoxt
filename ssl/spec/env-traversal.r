@@ -41,6 +41,12 @@ strategies
   thread-alltd(s) = 
     rec x(s <+ thread(x))
 
+  thread-bottomup(s) = 
+    rec x(thread(x); s)
+
+  count-bottomup(s) = 
+    !(<id>,0); thread-bottomup(try((s, inc)))
+
   env-oncetd(s) = 
     rec x(s <+ one-dist(x))
 \end{code}
