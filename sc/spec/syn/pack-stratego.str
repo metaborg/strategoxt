@@ -15,73 +15,52 @@
 
 \begin{code}
 module pack-stratego
-imports lib pack-graph pack-modules sugar dynamic-rules config
-signature
-  constructors
-    Ext : String -> ConfigKey
-
+imports lib xtc-lib pack-graph pack-modules sugar config
 strategies
 
-  main = 
-    where([get-path => prefix | id])
-    ; where(prim("get_conf_datadir") => datadir)
-    ; where(prim("get_conf_pkgdatadir") => pkgdatadir)
-    ; import-config-file(
-        find-config-file(![prefix, pkgdatadir], !"pack-stratego.config")
-      )
-    ; import-config-files(
-        find-plugins(![prefix, <conc-strings>(datadir,"/pack-stratego-plugins")], 
-		     !".plugin") 
-      )
-    ; pack-modules(pack-stratego, basename)
+  pack-stratego = 
+    pack-modules(pack-stratego-modules, basename)
 
-  pack-stratego(mkpt) =
-    \ root -> (["list-cons","tuple-cons",root], (), []) \
+  pack-stratego-modules(mkpt) =
+    !(["list-cons","tuple-cons", <id>], (), [])
     ; graph-nodes-roots(Fst; get-module(!["." | <mkpt>()])
 		       , get-stratego-imports
 		       , \ (n,x,xs) -> [x|xs] \ )
     ; unzip
     ; (id, flatten-stratego)
 
-  get-module(mkpath) =
-    ? mod
-    ; get-config-keys(?Ext(<id>))
-    ; fetch-elem(!(<id>, mod); get-module-ext(mkpath))
-    <+ <fatal-error> ["*** module ", <id>, " not found"]
+  get-module(mkpath) :
+    mod -> (name, tree)
+    where <find-module(mkpath)> (mod, ["rtree", "str", "cr", "r"]) => (ext, FILE(name))
+        ; if-verbose3(where(<debug(!" reading ")> name))
+	; parse-module => tree
 
-  get-module-ext(mkpath) =
-    ?(ext, <id>)
-    ; guarantee-extension(!ext)
-    ; <find-in-path>(<id>, <mkpath>)
-    ; (  !(<id>
-           , <parse-file(mkpath)> (<id>
-			          ,<basename; guarantee-extension(!"mtree")>
-				  ,<if-verbose5(debug(!" extension: ")); get-config; if-verbose5(debug(!" tool: "))> Ext(ext)))
-       <+ <fatal-error> ["parse error in ", <id>] )
+  find-module(mkpath) =
+    ?(mod, <id>)
+    ; (fetch-elem(\ ext -> (ext, FILE(<find-file(!ext)> (mod, <mkpath>))) \ )
+       <+ <fatal-error> ["*** module ", mod, " not found"])
+
+  parse-module =
+    ?("rtree", <?name>); Snd
+    ; (read-from
+       <+ <fatal-error> ["parse error in ", name])
+
+  parse-module =
+    (not("rtree"), ?name); Snd
+    ; (xtc-transform(!"parse-stratego", 
+		     <concat>[<pass-verbose>, <pass-keep>, <get-config> "-I"])
+       ; read-from
+      <+ <fatal-error> ["parse error in ", name])
 
   get-stratego-imports =
-    \ (_, Specification(xs)) -> xs \;
-    filter(\Imports(xs) -> xs\ );
-    concat
+    ?(_, Specification(<id>))
+    ; filter(?Imports(<id>))
+    ; concat
 
   flatten-stratego = 
-    map(\Specification(xs) -> xs\; filter(not(Imports(id))));
-    concat; 
-    \ xs -> Specification(xs) \ 
-
-  parse-file(mkpath) : 
-    (filein, fileout, tool) -> trm
-    where <not(eq)> (None, tool)
-	; if-verbose2(<debug(!"parsing: ")> filein)
-        ; <if-verbose4(debug); call>
-		(tool, [ "-i", filein, "-o", fileout, "--verbose", <verbosity; int-to-string>,
-			 "--keep", <get-config; int-to-string> "--keep"
-		       | <conc>(<get-config> "-I", <!["-silent"]; if-verbose2(![])>) ])
-	; <ReadFromFile> fileout => trm
-	; try(<get-config> "--keep" => 0; <rm-files> [fileout])
-
-  parse-file(mkpath) : 
-    (filein, fileout, None) -> <if-verbose2(debug(!"reading ")); ReadFromFile> filein
+    map(?Specification(<id>); filter(not(Imports(id))))
+    ; concat 
+    ; !Specification(<id>)
 
 \end{code}
 % Copyright (C) 2000-2002 Eelco Visser <visser@acm.org>
