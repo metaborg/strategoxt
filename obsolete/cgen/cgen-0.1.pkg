@@ -1,0 +1,18 @@
+package 
+identification
+   name=cgen
+   version=0.1
+   location=http://www.stratego-language.org/ftp
+   info=http://www.stratego-language.org/
+   description='CGEN is a package with utitilities supporting the generation
+                of C source code from Stratego code.'
+
+
+   keywords=transformation, programming language, C, stratego
+interface
+
+requires
+  aterm 1.6.3
+  ssl	0.6a
+  srts	0.6a
+
