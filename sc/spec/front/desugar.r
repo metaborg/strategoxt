@@ -97,8 +97,8 @@ rules
           where new => x
 
   Bapp2 : Build(t[Anno(t1, t2)]) -> 
-          Scope([x], Seq(Where(Seq(Prim("ATsetAnnotations", [t1, t2]), Match(Var(x)))), 
-                         Build(t[Var(x)](pat-td))))
+          Scope([x], Seq(Where(Seq(Prim("SSLsetAnnotations", [t1, t2]), Match(Var(x)))), 
+                         Build(t[Var(x)](pat-td)))) 
           where new => x
 \end{code}
 
@@ -139,10 +139,36 @@ rules
 
   Mapp2 : Match(t[Anno(t1, t2)]) -> 
           Scope([x], Seq(Match(t[As(Var(x), t1)](pat-td)), 
-                         Where(Seq(Prim("ATgetAnnotations", [Var(x)]), Match(t2)))))
+                         Where(Seq(Prim("SSLgetAnnotations", [Var(x)]), Match(t2)))))
           where new => x
 \end{code}
 
+
+\paragraph{List Matching}
+
+\begin{code}
+rules
+
+  ListVarScope :
+    Scope(xs, s) -> Scope(ys, s)
+    where <map(try(?ListVar(<id>)))> xs => ys
+
+  ListMatch : 
+    Match(t[Op("Cons", [Var(ListVar(x)), Op("Nil", [])])]) -> 
+    Match(t[Var(x)])
+
+  ListBuild : 
+    Build(t[Op("Cons", [Var(ListVar(x)), Op("Nil", [])])]) -> 
+    Build(t[Var(x)])
+
+  ListMatch : 
+    Match(t[Op("Cons", [t, Op("Cons", [Var(ListVar(x)), Op("Nil", [])])])]) -> 
+    Match(t[Op("Cons", [t, Var(x)])])
+
+  ListMatch : 
+    Build(t[Op("Cons", [t, Op("Cons", [Var(ListVar(x)), Op("Nil", [])])])]) -> 
+    Build(t[Op("Cons", [t, Var(x)])])
+\end{code}
 
 \paragraph{Term Explosion and Construction}
 
@@ -260,6 +286,10 @@ strategies
 
 \begin{code}
 strategies
+
+  DesugarListMatching =
+    topdown(try(ListVarScope + desugarRule); 
+            repeat(HL + ListMatch + ListBuild))
 
   desugar = 
     topdown(try(desugarRule); 

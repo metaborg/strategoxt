@@ -1,8 +1,36 @@
 \literate[{\tt FRONTEND}]
-	
-% $Id: frontend.r,v 1.2 2002/03/07 23:21:40 stratego Exp $
+\begin{code}
+module frontend
+imports normalize-spec 
+	spec-to-sdefs 
+	use-def 
+	check-constructors 
+	desugar
 
-% Copyright (C) 1998, 1999, 2000 Eelco Visser <visser@acm.org>
+strategies
+ 
+  frontend = debug; iowrap(frontend-transformation)
+
+  frontend-transformation = 
+//  where(run-time; debug(!"  frontend initialization: "));
+    normalize-spec
+//; where(run-time; debug(!"  normalize-spec: "))
+  ; where(spec-use-def)
+//; where(run-time; debug(!"  spec-use-def: "))
+  ; ExpandOverlays
+//; where(run-time; debug(!"  ExpandOverlays: "))
+  ; CheckConstructors
+//; where(run-time; debug(!"  CheckConstructors: "))
+  ; RulesToSdefs
+//; where(run-time; debug(!"  RulesToSdefs: "))
+  ; DesugarListMatching
+//; where(run-time; debug(!"  DesugarListMatching: "))
+  ; strename
+//; where(run-time; debug(!"  strename: "))
+  ; Specification([id,Strategies(desugar-spec)])
+\end{code}
+
+% Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
 % 
 % This program is free software; you can redistribute it and/or modify
 % it under the terms of the GNU General Public License as published by
@@ -18,33 +46,3 @@
 % along with this program; if not, write to the Free Software
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
-
-
-\begin{code}
-module frontend
-imports normalize-spec 
-	spec-to-sdefs 
-	use-def 
-	check-constructors 
-	desugar
-
-strategies
- 
-  frontend = iowrap(frontend-transformation)
-
-  frontend-transformation = 
-//  where(dtime; debug(!"  frontend initialization: "));
-    normalize-spec
-//; where(dtime; debug(!"  normalize-spec: "))
-  ; where(spec-use-def)
-//; where(dtime; debug(!"  spec-use-def: "))
-  ; ExpandOverlays
-//; where(dtime; debug(!"  ExpandOverlays: "))
-  ; CheckConstructors
-//; where(dtime; debug(!"  CheckConstructors: "))
-  ; RulesToSdefs
-//; where(dtime; debug(!"  RulesToSdefs: "))
-  ; strename
-//; where(dtime; debug(!"  strename: "))
-  ; Specification([id,Strategies(desugar-spec)])
-\end{code}

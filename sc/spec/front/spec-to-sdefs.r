@@ -81,6 +81,8 @@ rules
   Trm-to-Cong : 
     Op(f, ts) -> Call(SVar(f), ts)
   Trm-to-Cong : 
+    Anno(t, ts) -> Call(SVar("Anno_Cong__"), [t, ts])
+  Trm-to-Cong : 
     Str(x) -> Match(Str(x))
   Trm-to-Cong : 
     Int(x) -> Match(Int(x))
