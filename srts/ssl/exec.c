@@ -156,10 +156,8 @@ ATerm SSL_strerror(ATerm errnum) {
 }
 
 ATerm SSL_perror(ATerm msg) {
-  char* s;
-  
   if(ATisString(msg)) {
-    s = AT_getString(msg);
+    char* s = AT_getString(msg);
     perror(s);
   } else {
     perror(NULL);

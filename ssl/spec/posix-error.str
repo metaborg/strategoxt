@@ -35,7 +35,7 @@ strategies
    * @since  0.9.4
    */
   perror =
-    ?s; prim("SSL_get_perror", s)
+    ?s; prim("SSL_perror", s)
 
   /**
    * Return string describing error code
