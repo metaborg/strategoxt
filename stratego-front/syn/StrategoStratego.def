@@ -482,6 +482,8 @@ exports
 
     %% From Term
 
+    "~"         StrategoTerm -> ModName          {cons("FromTerm")}
+
     "~"         StrategoTerm -> Term             {cons("FromTerm")}
     "~term:"    StrategoTerm -> Term             {cons("FromTerm")}
     "~term*:"   StrategoTerm -> {Term ","}*      {cons("FromTerm")}
