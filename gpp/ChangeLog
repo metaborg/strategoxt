@@ -1,4 +1,9 @@
 2003-09-23   Merijn de Jonge  <M.de.Jonge@tue.nl>
+ * Added pptable-diff tool, which reports about differences between
+   pretty-print tables, and which can patch an old pretty-print tableby
+   inserting newer pretty-print rules and removing obsolete ones
+
+2003-09-23   Merijn de Jonge  <M.de.Jonge@tue.nl>
  * tohtml: Replaced dependency on GRAPH_TOOLS by DOT_TOOLS
 
 2003-06-10   Merijn de Jonge  <M.de.Jonge@tue.nl>

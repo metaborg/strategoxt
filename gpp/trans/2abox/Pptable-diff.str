@@ -1,0 +1,108 @@
+\literate[Pptable-diff]
+% Copyright (C) 2003 Merijn de Jonge <m.de.jogne@tue.nl>
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.
+
+% $Id: Asfix-2-abox.str,v 1.1 2003/01/03 07:23:39 stratego Exp $
+
+% Author: Merijn de Jonge (m.de.jonge@tue.nl)
+% - 
+
+\begin{code}
+module Pptable-diff
+imports lib 
+imports pp-tables-io misc
+
+signature
+   constructors
+      Old-Table : String -> Option
+      New-Table : String -> Option
+      Verbose:	 Option    
+      Fix:       Option
+      Prune:     Option
+strategies
+
+   io-Pptable-diff = 
+     option-wrap(
+             Option( "-V", !Verbose(),               !"-V               verbose execution." )
+        +    Option( "--fix", !Fix(),                !"--fix            Bring old table up-o-date" )
+        +    Option( "--prune", !Prune(),            !"--fix            Remove obsolete pp entries" )
+        + ArgOption( "--old", \x -> Old-Table(x)\ ,  !"--old <table>    Old table" )
+        + ArgOption( "--new", \x -> New-Table(x)\ ,  !"--new <table>    New table" )
+        + output-options,
+        pptable-diff)
+
+   pptable-diff = 
+      option-value(Old-Table(?old),
+                  <fatal-error>["please specify old table with --old switch"] 
+                  );
+      ![old];read-pp-tables; !("pp-table", "old-table");table-rename;
+      option-value(New-Table(?new),
+                   <fatal-error>["please specify new table with --new switch"]
+                  );
+      ![new];read-pp-tables; !("pp-table", "new-table");table-rename;
+      
+      // Find keys of pp tables
+      <table-keys>"old-table" => keys-old;
+      <table-keys>"new-table" => keys-new;
+      
+      // Find obsolete pp entries by calculating the set difference:
+      // old-table \ new-table
+      <diff>(keys-old, keys-new) => obsolete-ones;
+      map(<table-get>("old-table", <id> );
+          Fst; path-to-string
+         );
+      <printnl>(stderr, ["Obsolete entries: ", <id>]);
+
+      // Find new pp entries by calculating the set difference:
+      // new-table \ old-table
+      <diff>(keys-new, keys-old) => new-ones;
+      map(<table-get>("new-table", <id> );
+          Fst; path-to-string
+         );
+      <printnl>(stderr, ["New entries: ", <id>]);
+
+
+      try(has-option(!Fix); <fix>new-ones);
+      try(has-option(!Prune); <prune>obsolete-ones);
+    
+      try((has-option(!Fix) + has-option(!Prune));
+          <table-getlist>"old-table";
+          map(\  (_, (path,box)) -> PP-Entry(path, box) \ );
+          !PP-Table(<id>);
+          termid-set(!"\"pp-tables-0\"");
+          output(id)
+      )
+
+
+// Construct new pretty-print table from "old-table" by inserting
+// new pp entries from "new-table"
+fix =
+   // Insert new entries in "old-table"
+   map(\ x -> 
+      <table-put>("old-table", x,<table-get>("new-table", x) )
+       \ )
+
+// Construct new pretty-print table from "old-table" by removing obsolete pp
+// entries  from "old-table"
+prune =
+   // Remove obsolete entries from "old-table"
+   map( <table-remove>("old-table", <id>) )
+   
+    
+      
+    
+\end{code}

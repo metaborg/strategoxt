@@ -1,0 +1,51 @@
+module pptable-diff
+imports xtc-lib lib-pp-table-args options
+
+
+strategies
+
+  io-pptable-diff = 
+    option-wrap(pptable-diff-options, pptable-diff)
+
+  short-description(p) = !["Usage: ", <p>(), " [options]"]
+  long-description(p)  = !["This program writes to standard error a list of\n",
+                           "pretty-print rules that are contained in\n",
+                           "pretty-print table \"old\" but not in \"new\"\n",
+                           "and, vice versa.\n\n",
+                           "If the \"--fix\" switch is specified, the table\n",
+                           "\"old\" is updated by adding pretty-print\n",
+                           "rules that are in \"new\" but not in\n",
+                           "\"old\".\n\n",
+                           "If the \"--prune\" switch is specified, the table\n",
+                           "\"old\" is returned from which obsolete entries\n",
+                           "have been removed\n"]
+
+  pptable-diff =
+    xtc-io(
+       xtc-transform(!"Pptable-diff", <build-impl-args> ())
+       ; try(where(<get-config>"--fix");
+         xtc-transform(!"pp-pp-table", pass-verbose)) 
+
+    )
+
+  pptable-diff-options =
+         Option( "--fix",   where(<set-config> ("--fix", <id>)),   !"--fix            Bring old table up-to-date" )
+    +    Option( "--prune", where(<set-config> ("--prune", <id>)), !"--prune          Remove obsolete pp entries" )
+    + ArgOption( "--old",   where(<set-config> ("--old", <id>)),   !"--old <table>    Old table" )
+    + ArgOption( "--new",   where(<set-config> ("--new", <id>)),   !"--new <table>    New table" )
+    + io-options
+
+  build-impl-args =
+    <concat> [<pass--fix> (), <pass--prune>(), <pass--new>(), <pass--old>()]
+
+  pass--fix =
+    <get-config> "--fix" < !["--fix"] + ![]
+
+  pass--prune =
+    <get-config> "--prune" < !["--prune"] + ![]
+
+  pass--old =
+    <get-config>"--old" < ensure-pp-table-parsed; !["--old", <id>] + ![]
+
+  pass--new =
+    <get-config>"--new" < ensure-pp-table-parsed; !["--new", <id>] + ![]
