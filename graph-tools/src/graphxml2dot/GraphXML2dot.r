@@ -19,12 +19,12 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
  02111-1307, USA.
 
- $Id: GraphXML2dot.r,v 1.7 2001/08/30 09:52:26 mdejonge Exp $
+ $Id: GraphXML2dot.r,v 1.8 2001/10/08 13:21:16 mdejonge Exp $
 *)
 
 module GraphXML2dot
 imports
-  lib Dot GraphXML Literal-lib
+  lib Dot GraphXML Literal-lib termid
 
 signature
   constructors
@@ -33,7 +33,8 @@ signature
 strategies
 
   main
-      = iowrap( (id, GraphXML2dot), options, usage )
+      = io-idwrap( ?"\"graphxml_1_1-0\"", 
+                   (id, GraphXML2dot), options, usage )
 
   options 
       = ArgOption( "-p",           \x -> UrlPrefix(x) \ )

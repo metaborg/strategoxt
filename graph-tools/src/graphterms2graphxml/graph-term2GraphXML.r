@@ -19,17 +19,17 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
  02111-1307, USA.
 
- $Id: graph-term2GraphXML.r,v 1.2 2001/08/09 12:22:27 mdejonge Exp $
+ $Id: graph-term2GraphXML.r,v 1.3 2001/10/08 13:21:15 mdejonge Exp $
 *)
 
 module graph-term2GraphXML
 imports
-  lib graph-terms GraphXML
+  lib graph-terms GraphXML termid
 
 strategies
 
   main
-    = iowrap(graph-term2graphXML)
+    = io-idwrap(?"\"graphterm-0\"", graph-term2graphXML)
 
   graph-term2graphXML
     = \graph(nodes(ns),edges(es)) -> GraphXML([],[graph([],<conc>(ns',es'))])

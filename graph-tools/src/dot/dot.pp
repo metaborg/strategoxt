@@ -1,4 +1,5 @@
 [
+   "dot-0" -- _1,
    dot-graph -- V [ Vis=2 [H[  _1 _2 _3 ]
                 KW["{"] _4] KW["}"]],
    dot-graph.1:opt -- KW["strict"],

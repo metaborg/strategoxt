@@ -1,11 +1,12 @@
 module GraphXML-analysis
 imports
-  GraphXML options Literal-lib list-basic
+  GraphXML options Literal-lib list-basic termid
 
 strategies
 
   main
-    = iowrap(get-sinks-and-origins;print-sinks-and-origins)
+    = io-idwrap(?"\"graphxml_1_1-0\"", 
+                get-sinks-and-origins;print-sinks-and-origins)
 
   get-targets
     = collect(\target(x)-><de-quote>x\)

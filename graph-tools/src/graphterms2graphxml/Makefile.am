@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.3 2001/09/18 15:45:39 jvisser Exp $
+# $Id: Makefile.am,v 1.4 2001/10/08 13:21:15 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -38,4 +38,5 @@ libexec_SCRIPTS	= $(STRATEGO_PRG)
 
 # Additional flags for the Stratego compiler
 SCFLAGS     += -I $(srcdir)/../graphxml \
-               -I $(srcdir)/../graphterms
+               -I $(srcdir)/../graphterms \
+	       -I $(ASFIXTOOLS)/share/asfix-tools
