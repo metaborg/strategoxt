@@ -12,5 +12,5 @@ parse-testsuite.str : parse-testsuite.def
 	$(STRATEGO_REGULAR)/bin/sdf2rtg -i $< -m parse-testsuite | \
 	$(STRATEGO_REGULAR)/bin/rtg2sig -o $@
 
-Dot.def :
-	ln -s $(top_srcdir)/syn/parse-testsuite.def $@
+parse-testsuite.def :
+	ln -s ../syn/parse-testsuite.def $@
