@@ -26,6 +26,13 @@ AC_ARG_WITH(aterm,
 )
 AC_SUBST(ATERM)
 
+AC_ARG_WITH(sglr, 
+  [  --with-sglr          Specify location of SGLR, default: \$prefix], 
+  SGLR=$withval, 
+  SGLR="$prefix"
+)
+AC_SUBST(SGLR)
+
 AC_ARG_WITH(ssl,   
   [  --with-ssl            Specify location of Stratego Library (SSL), default: \$prefix], 
   STRATEGOLIB=$withval, 
@@ -40,7 +47,7 @@ AC_ARG_WITH(srts,
 )
 AC_SUBST(STRATEGORTS)
 
-AC_REVISION($Id: configure.in,v 1.15 2002/05/16 09:45:13 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.16 2002/06/13 08:43:49 stratego Exp $)
 
 AC_PROG_CC
 AC_PROG_RANLIB
