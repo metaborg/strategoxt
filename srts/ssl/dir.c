@@ -115,6 +115,34 @@ ATerm SSL_copy(ATerm oldname, ATerm newname)
   return newname;
 }
 
+ATerm SSL_fdcopy(ATerm fdinA, ATerm fdoutA)
+{
+  int fdin, fdout;
+  int n; 
+  char buf[SSL_COPY_BUFSIZE];
+
+  if(ATgetType(fdinA) != AT_INT || ATgetType(fdinA) != AT_INT)
+    _fail(fdinA);
+
+  fdin = ATgetInt((ATermInt)fdinA);
+  fdout = ATgetInt((ATermInt)fdoutA);
+
+  while( (n = read(fdin, buf, SSL_COPY_BUFSIZE)) > 0 )
+    if(write(fdout, buf, n) != n)
+      { 
+	ATfprintf(stderr, "SSL_fdcopy: write error\n");
+	_fail((ATerm) ATempty);
+      }
+
+  if(n < 0)
+    {
+      ATfprintf(stderr, "SSL_fdcopy: read error\n");
+      _fail((ATerm) ATempty);
+    }
+
+  return (ATerm) ATempty;
+}
+
 ATerm SSL_copy_mmap(ATerm oldname, ATerm newname)
 // copy file oldname to file newname using memory mapped io
 {
