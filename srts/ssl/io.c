@@ -126,8 +126,10 @@ ATerm SSL_close_file(ATerm name)
     fclose(stderr);
   else if(ATmatch(name, "stdin"))
     fclose(stdin);
-  else if((file = _SSL_file_table_lookup(name)) != NULL)
+  else if((file = _SSL_file_table_lookup(name)) != NULL) {
+    ATtableRemove(SSL_file_table, name);
     fclose(file);
+  }
   else
     _fail(name);
 
