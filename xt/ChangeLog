@@ -1,5 +1,6 @@
 2000-08-28  Merijn de Jonge  <mdejonge@cwi.nl>
 	* added www/ to DIST_SUBDIRS variable
+        * XT now contains Stratego version 0.4.17
 
 2000-08-25  Eelco Visser  <visser@cs.uu.nl>
 
