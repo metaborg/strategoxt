@@ -20,15 +20,15 @@ strategies
  */
 strategies 
 
-  // Standard input
+  // Standard input, equal to <fileno> stdin
   STDIN_FILENO =
     prim("SSL_STDIN_FILENO")
     
-  // Standard output    
+  // Standard output, equal to <fileno> stdout
   STDOUT_FILENO =
     prim("SSL_STDOUT_FILENO")
     
-  // Standard error output
+  // Standard error output, equal to <fileno> stderr
   STDERR_FILENO =
     prim("SSL_STDERR_FILENO")
 
@@ -100,9 +100,22 @@ strategies
    * 
    * The mode of the stream ("r", "r+", "w", "w+",  "a", "a+") must be 
    * compatible with the mode of the file descriptor.  The file position 
+   *
+   * fdopen :: FileDescr * String -> Stream
    */
   fdopen = 
     ?(fd, mode); prim("SSL_fdopen", fd, mode)
+
+  /**
+   * The function fileno examines the argument stream and returns its 
+   * integer descriptor
+   *
+   * fileno :: Stream -> FileDescr
+   *    where Stream is currently a name or a pointer (integer)
+   *    where FileDescr is currently an Int.
+   */
+  fileno = 
+    ?stream; prim("SSL_fileno", stream)
 
 /**
  * Pipes (and FIFOs)

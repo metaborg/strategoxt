@@ -1,5 +1,10 @@
 2003-03-21  Martin Bravenboer <martin@mbravenboer.org>
 
+  * ssl/io.c: added stream_from_term
+  * ssl/io.[ch]: added SSL_fileno
+
+2003-03-21  Martin Bravenboer <martin@mbravenboer.org>
+
   * ssl/exec.h: added SSL_P_tmpdir
   * ssl/exec.[ch]: added SSL_mkstemp for creating
     temporary files

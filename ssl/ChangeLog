@@ -1,5 +1,9 @@
 2003-03-21  Martin Bravenboer <martin@mbravenboer.org>
 
+  * spec/posix-file.str: added fileno
+
+2003-03-21  Martin Bravenboer <martin@mbravenboer.org>
+
   * spec/posix-file.str: added P_tmpdir and temp-dir
   * spec/posix-file.str: added mkstemp for creating
     temporary files

@@ -177,6 +177,7 @@ ATerm SSL_fdopen(ATerm fd, ATerm mode)
   return (ATerm) ATmakeInt((int)fdopen(AT_getInt(fd), AT_getString(mode)));
 }
 
+
 ATerm SSL_fclose(ATerm stream)
 {
   ATfprintf(stderr, "SSL_fclose(%t)\n", stream);

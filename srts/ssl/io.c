@@ -115,6 +115,57 @@ FILE *_SSL_file_table_lookup(ATerm name)
     return (FILE *)ATgetInt((ATermInt)desc);
 }
 
+/**
+ * Returns a FILE* for a given ATerm
+ *
+ * It handles all possible representations of streams in Stratego.
+ */
+FILE* stream_from_term(ATerm stream) {
+  FILE* result = NULL;
+
+         if(ATmatch(stream, "stdout")) { // stdout
+    result = stdout;
+  } else if(ATmatch(stream, "stderr")) { // stderr
+    result = stderr;
+  } else if(ATmatch(stream, "stdin")) { // stdin
+    result = stdin;
+  } else if(ATisString(stream)) { // file name, lookup in table
+
+    if(SSL_file_table == NULL)
+      SSL_file_table_init();
+
+    result = _SSL_file_table_lookup(stream);
+
+    if(result != NULL) {
+      ATtableRemove(SSL_file_table, stream);
+    } else {
+      ATfprintf(stderr, "file %t not open\n", stream);
+      _fail(stream);
+    }
+
+  } else if(ATisInt(stream)) { // file pointer
+    result = (FILE*) AT_getInt(stream);
+  } else { // not a stream
+    _fail(stream);
+  }
+
+  return result;
+}
+
+/**
+ * fileno
+ */
+ATerm SSL_fileno(ATerm term) {
+  FILE* stream = stream_from_term(term);
+  int fd = fileno(stream);
+
+  if(fd == -1) {
+    _fail(term);
+  }
+
+  return (ATerm) ATmakeInt(fd);
+}
+
 ATerm SSL_close_file(ATerm name)
 {
   FILE *file;
