@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.2 2001/08/28 15:16:51 mdejonge Exp $
+# $Id: Makefile.am,v 1.3 2001/08/29 14:00:52 mdejonge Exp $
 
 TEST_SET = Opt-seq Opt-seq2 Opt-iter Opt-iter1 Iter-sep Iter-sep1 Iter-sep2 Iter-sep3 \
 	   Iter-sep-seq Iter-sep-seq2 Alt Alt2 Alt3 Seq Iter-seq Seq2 Seq3
@@ -26,7 +26,7 @@ TEST_SET = Opt-seq Opt-seq2 Opt-iter Opt-iter1 Iter-sep Iter-sep1 Iter-sep2 Iter
 EXTRA_DIST = tests.def tests.pp  \
 	     $(TEST_SET:%=%.trm) $(TEST_SET:%=%-asfix.in) $(TEST_SET:%=%-af.in)\
              $(TEST_SET:%=%.out) \
-	     ppgen1.def ppgen1.correct ppgen1.in
+	     ppgencheck1.def ppgencheck1.correct ppgencheck1.in
 
 TESTS = $(TEST_SET:%=%-asfix.sh) $(TEST_SET:%=%-af.sh)
 
@@ -75,5 +75,5 @@ testsetclean:
 	PATH=$(SGLR)/bin:$(PATH) sglr -p ../pp-tables.tbl -i $< \
 	   | $(ASFIXTOOLS)/bin/implode-asfix -o $@
 
-ppgen1.in:
-	parse -l sdf -v 2.1 -i ppgen1.def -I | sdf-bracket > $@
+ppgencheck1.in:
+	parse -l sdf -v 2.1 -i ppgencheck1.def -I | sdf-bracket > $@

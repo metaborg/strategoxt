@@ -1,3 +1,6 @@
+2001-08-29 Merijn de Jonge <mdejonge@cwi.nl> 
+   * src/gpp/data/Makefile.am: fixed incorrect file names
+
 2001-08-28 Merijn de Jonge <mdejonge@cwi.nl> 
    * src/gpp/make.r: bug fix: pp generator also incorrectly brackets in sdf
      productions
