@@ -9,8 +9,8 @@ exports
        "|" {Typedid ","}* ")" "=" Strategy -> StrategyDef {cons("SDefT")}
 
   context-free syntax
-    Id 				  	  -> Typedid {cons("DefaultVarDec")}
-    Id ":" Type 			  -> Typedid {cons("VarDec")}
+    ID 				  	  -> Typedid {cons("DefaultVarDec")}
+    ID ":" Type 			  -> Typedid {cons("VarDec")}
 
   context-free syntax
     "(" Strategy ")"			  -> StrategyParen {cons("ParenStrat")}
