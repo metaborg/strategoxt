@@ -11,7 +11,7 @@ install-exec-local: pre-pkgs/build/srts.dummy pre-pkgs/install/xtc.dummy
 pre-pkgs/build/srts.dummy :
 	mkdir -p pre-pkgs &&\
 	mkdir -p pre-pkgs/build &&\
-	cp -rf srts pre-pkgs/build/ &&\
+	cp -rfp srts pre-pkgs/build/ &&\
 	cd pre-pkgs/build/srts &&\
 	./configure --prefix=@abs_top_srcdir@/pre-pkgs/build --with-aterm=$(ATERM) &&\
 	$(MAKE) &&\
@@ -20,7 +20,7 @@ pre-pkgs/build/srts.dummy :
 
 pre-pkgs/install/xtc.dummy :
 	mkdir -p pre-pkgs/install &&\
-	cp -rf xtc pre-pkgs/install/ &&\
+	cp -rfp xtc pre-pkgs/install/ &&\
 	cd pre-pkgs/install/xtc &&\
 	./configure --prefix=@abs_top_srcdir@/pre-pkgs/install --with-srts=@abs_top_srcdir@/pre-pkgs/build --with-aterm=$(ATERM) --with-stratego-xt=$(STRATEGOXT) &&\
 	$(MAKE) &&\
