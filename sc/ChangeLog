@@ -1,0 +1,3439 @@
+2001-08-22  Eelco Visser  <visser@acm.org>
+
+	* Restructuring of the source tree, new CVS repository. The
+	Stratego library and the Stratego Run-time System have been split
+	off into separate packages. The bootstrapped sources are also
+	distributed in a separate package to avoid build dependency cycles
+	(the compiler is needed to compile some packages that are used by
+	the compiler itself, i.e., GPP).
+
+	* New implementation scheme. The compiler now produces idiomatic,
+	high-level C code instead of abstract machine code. The
+	implementation uses the CGEN package for pretty-printing the C
+	code.
+
+	* The optimizer has been extended a bit. 
+	
+	* The tests in the test/ directory have been cleaned up and moved
+	to spec/test1 and spec/test2. The tests have been extended while
+	developing the new compilation scheme to get a better coverage of
+	the language.
+
+	* Arguments of strategy definitions can now be given a type
+	annotation.  This is required for higher-order arguments. The
+	default type is (term -> term).
+
+2001-07-02  Eelco Visser  <visser@acm.org>
+
+	* spec/c/: New translation scheme
+
+2001-06-26  Eelco Visser  <visser@acm.org>
+
+	* spec/slib/spec/list-misc.r: Bug in drop-while, drop-until;
+	failed for empty list. (Thanks Alan and Paul)
+
+2001-06-25  Eelco Visser  <visser@acm.org>
+
+	* spec/slib/spec/list-filter-test.r: Tests
+
+	* configure.in: Incremented version number to 0.5.5
+
+	* spec/syn/stratego.lx: Scanner loops on comments with embedded
+	"*" characters. Repaired. (Thanks John Reppy)
+
+2001-06-22  Eelco Visser  <visser@acm.org>
+
+	* spec/slib/spec/list-filter.r: partition(s) splits a list
+	in a pair of lists.
+
+2001-06-20  Eelco Visser  <visser@acm.org>
+
+	* Release 0.5.4
+
+2001-06-18  Eelco Visser  <visser@acm.org>
+
+	* spec/front/frontend-test.r: updated tests, Undefined dynamic
+	rules can also have conditions.
+
+2001-06-17  Eelco Visser  <visser@acm.org>
+
+	* spec/front/normalize-spec.r: Added overriding dynamic rules that
+	change the definition for the currently active key without
+	introducing an entry in the local scope. This is needed to update
+	rules defined in outer scopes. (Application: dead code
+	elimination)
+	
+2001-06-17  Eelco Visser <visser@acm.org>
+
+	* spec/front/normalize-spec.r: Repaired bug in desugaring
+	of "Undefined" dynamic rules.
+
+2001-06-15  Eelco Visser  <visser@acm.org>
+
+	* spec/syn/stratego.lx: Allow \begin{code} to start file.
+
+2001-06-14  Eelco Visser  <visser@acm.org>
+
+	* spec/front/normalize-spec.r: Dynamic rules that have Undefined
+	as right-hand side will cause the invocation of the dynamic rule
+	(on the specific lhs pattern) to fail. This is needed in order to
+	shadow rules from outer scopes that might not be applicable.
+
+2001-06-13  Eelco Visser  <visser@acm.org>
+
+	* src/make_rules.in (CC): Declare as @CC@ instead of gcc.
+
+	* spec/slib/spec/string-test.r, string.r: get-path extracts the
+	path prefix from a command string.
+
+	* spec/syn/pack-stratego.r: Deduce path for parse-mod from path
+	for pack-stratego (from command-line option 0).
+
+2001-06-13 Hedzer Westra <hhwestra@cs.uu.nl>
+
+	* Added test for strcmp and such, and fixed string-gt
+
+2001-06-13  Eelco Visser  <visser@acm.org>
+
+	* spec/front/data/Makefile.am : Repaired EXTRA_DIST
+
+	* spec/slib/spec/scoped-finite-map-test.r: Added tests for
+	assert.
+
+	* spec/slib/spec/scoped-finite-map.r: Assert now also works
+	when without initialization of the table.
+
+	* test/syntax/dynamic-rules-test.r: Added test of overriding
+	behaviour of dynamic rules.
+
+2001-06-11  Eelco Visser  <visser@acm.org>
+
+	* spec/front/check-constructors.r: Rules and strategies are merged.
+
+	* bootinstall
+
+	* spec/syn/stratego.lx: Tokens {| and |} for delimiting dynamic
+	rule scopes.
+
+	* spec/lib/stratlib.r: Added binding by DynamicRules
+
+	* spec/front/extract.r, spec/front/inline.r, spec/front/inlining.r,
+	spec/front/needed-defs-test.r: main -> name of module
+
+	* spec/sig/sugar.r: Signatures for dynamic rules constructors.
+
+	* spec/front/frontend-test.r: Unit tests for desugaring of dynamic
+	rules
+
+	* spec/front/spec-to-sdefs.r, spec/front/use-def.r: Rules and strategies were merged.
+
+	* spec/front/frontend.r: layout
+
+	* spec/front/data/dynrules.r: Test for desugaring of dynamic rules
+
+2001-06-10  Eelco Visser  <visser@acm.org>
+
+	* spec/front/normalize-spec.r: Desugaring of dynamic rules. Rules
+	and strategies were merged into one list.
+
+	* test/syntax/dynamic-rules-test.r: Test for dynamic rule syntax
+
+	* spec/slib/spec/env-traversal.r: Traversals involving one.
+
+2001-06-10  Eelco Visser  <visser@acm.org>
+
+	* spec/slib/src/tables.c: Made table access more robust; there is
+	no need to create a table explicitly, it is always created when a
+	table-put or table-get is done.
+
+	* spec/slib/spec/tables-test.r: Tests for robustness of table
+	operations
+
+2001-06-09  Eelco Visser  <visser@acm.org>
+
+	* spec/syn/stratego.grm: Liberalized syntax: rule and strategy
+	definition can now be defined under both the rules and strategies
+	keywords. In effect, rules and strategy definitions can be mixed
+	in any order.
+
+2001-06-07  Eelco Visser  <visser@acm.org>
+
+	* spec/slib/spec/string.r: Repaired basename to correctly
+	handle slashes in names. (Merijn de Jonge)
+
+	* spec/slib/spec/string-test.r: Extra test for basename
+
+2001-06-01    <visser@acm.org>
+
+	* spec/slib/spec/template-test.r: Defined main
+
+2001-06-08    <hhwestra@cs.uu.nl>
+
+        * spec/slib/spec/string.r: Changed string.r to use -1, which wasn't parsed by parse-mod
+          when strcmp was defined.
+ 
+2001-05-31    <visser@acm.org>
+
+	* Redocumented all library modules; add literate program wrapper
+	and consistent naming of header.
+
+2001-05-24    <visser@acm.org>
+
+	* configure.in: Incremented version number to 0.5.4beta
+
+	* Release 0.5.3
+
+2001-05-22    <visser@acm.org>
+
+	* bootinstall
+	
+	* bootstrap
+
+	* spec/slib/spec/sunit.r: Replaced FAIL with fail. fail should be
+	safe, i.e., not eliminate actions with side-effects.
+
+	* spec/slib/spec/options.r: typo
+
+ 2001-05-20    <visser@acm.org>
+
+	* spec/slib/spec/iteration.r: Import conditional
+
+	* spec/slib/spec/conditional.r: Else branch of if is not
+	called when the then branch fails, only when the condition
+	fails. (Using cut construct from RhoStratego.)
+
+2001-05-18    <visser@acm.org>
+
+	* src/front/Makefile.am (inline_SOURCES): inline.c instead of
+	inlining.c. This caused bug in (not) renaming of let
+	expressions. (Thanks Arne de Bruijn)
+
+2001-05-12    <visser@acm.org>
+
+	* bootinstall
+
+2001-05-11    <visser@acm.org>
+
+	* spec/slib/spec/char.r,string.r: Typos, forgotten import 
+
+2001-05-11  Hedzer Westra <hhwestra@cs.uu.nl>
+
+	* added t1 .s. t2 ==> <s>(t1,t2) sugar
+
+	* added parsing of negative Integers
+
+	* fixed char.r and string.r (which Eelco did too..)
+
+	* bugfixed LayoutPreserve.r (not finished yet, though)
+
+2001-05-10  Hedzer Westra <hhwestra@cs.uu.nl>
+
+	* added inc and dec rules to integers.r (fix for apply-test.r)
+
+2001-05-08  Hedzer Westra <hhwestra@cs.uu.nl>
+
+	* added strategies to char.r, int-list.r, list-set, string.r
+
+	* added expect.r
+
+	* added SList.r, LList.r, LayoutPreserve.r
+
+	* added these files to doc/library/body.ltx
+
+	* re-added previous changes, hope I did it right now :-)
+
+2001-04-23  Hedzer Westra <hhwestra@cs.uu.nl>
+
+	* added apply.r and apply-test.r to library
+
+	* added is-interval and int-sort to int-list
+
+2001-04-16  Eelco Visser  <visser@acm.org>
+
+	* Release 0.5.2
+	
+	* doc/*/html: Added html directories to repository
+
+2001-04-13  Eelco Visser  <visser@acm.org>
+
+	* spec/slib/spec/Makefile.am: Simplified makefile for library
+
+	* spec/slib/spec/share-test.r: Defined test
+
+2001-04-12  Eelco Visser  <visser@acm.org>
+
+	* bootinstall
+
+	* resolved inconsistencies in repository
+
+	* spec/back/s2c.r: translation of strategies to (idiomatic) C
+
+	* spec/c: C signature and utitlities
+
+	* spec/sc/sc: removed, is generated from sc.in
+
+	* spec/slib/spec/scoped-finite-map.r: commented debugging code
+
+	* spec/slib/spec/io.r: new-file creates a new not existing file
+	name of the form c_n.tmp with c a character and n a number.
+
+	* /spec/si/si.r: Changed display- operations to table-
+	operations
+
+	* spec/sc/proto-sc.r: Built in support for translation to
+	idiomatic C code using s2c, PP-C and C-Format.
+
+	* spec/slib/spec/list-set.r: typo
+
+2001-04-05  Eelco Visser  <visser@acm.org>
+
+	* spec/slib/spec/string.r: <copy-char>(n,c) creates a string
+	consisting of n copies of character c, which should be represented
+	by its ascii code.
+
+2001-04-02  Hedzer Westra <hhwestra@cs.uu.nl>
+
+	* new module: char.r for character strategies. includes
+	  char-test.r
+
+2001-04-02  Eelco Visser  <visser@acm.org>
+
+	* spec/slib/spec/tables.r, display.r: Reorganized and documented
+	the tables modules. The strategies formerly in the display module
+	are now defined as normal "table" operations in the table module.
+	Names have been normalized. Many operators have become obsolete.
+	
+	* spec/slib/spec/term-zip.r: Generic definition of zipping
+	two term structures; can be used to implement pattern matching
+	for example. 
+
+	* spec/slib/spec/scoped-finite-map.r: Keeping track of scopes of
+	table entries. Removing entries from tables is done automatically
+	when the scope is exited. This is a candidate for support at the
+	language level.
+	
+2001-03-31  Eelco Visser  <visser@acm.org>
+
+	* spec/slib/spec/list-set.r: Repaired bug in nrofoccs (Arne de
+	Bruijn). foldr-kids is obsolete, use crush.
+
+	* spec/slib/spec/list-set-test.r: Added test for nrofoccs
+
+2001-03-29  Hedzer Westra <hhwestra@cs.uu.nl>
+
+        * extra library routines in options.r, list-basic.r and string.r
+	  (including tests)
+
+2001-03-28  Eelco Visser  <visser@acm.org>
+
+	* Release 0.5.1
+
+2001-03-27  Eelco Visser  <visser@acm.org>
+	
+	* spec/Makefile.am (SUBDIRS): Changed order of sub-directory
+	to avoid recompilation of pack-stratego after installing slib
+
+	* bootinstall
+	
+	* spec/*/*.c, *.h: Removed $Id annotations from .c and .h files to
+	prevent from spurious commits in src/* after bootinstall
+
+	* bootinstall
+
+	* src/*/Makefile.am, spec/*/Makefile.am: Optimized object files
+	where not used in libraries (rts and slib) by wrong use of
+	automake variables. (Arne de Bruijn)
+
+	* Makefile.am: Renamed boot.log to bootlog to avoid removal
+	by clean scripts.
+
+	* spec/slib/spec/options.r: Repaired some typos and refactored
+	several strategies
+
+2001-03-26  Eelco Visser  <visser@acm.org>
+
+	* spec/slib/spec/options.r: New strategy iowrapO/3 is also
+	parameterized with a strategy for printing usage
+	information. Other variants are implemented in terms of this
+	one. (Merijn de Jonge)
+
+	* bench/fib/: Using fib to test --fusion option of sc
+
+	* configure.in: increased version number to 0.5.1
+
+2001-03-25  Eelco Visser  <visser@acm.org>
+
+	* Release 0.5
+
+	* README.in: Updated the readme with a general description of
+	the language and updated the list of directories in the
+	distribution
+
+	* www/maillist/release-0-5.txt: Release announcement for wider
+	audience with overview of language.
+
+	* test/control/explode-test.r: Tests for f#(xs) construct.
+
+	* TODO: Emptied the todo list; planning is now done on the ToDo
+	page at the TWiki
+
+2001-03-24  Eelco Visser  <visser@acm.org>
+
+	* build/BuildFromCVS.in: All build files under autoconf.
+
+	* build/BuildFromSLO.in: Building on localhost (makes buildfile
+	portable)
+
+	* build/platforms: Platforms file for build that declares
+	localhost as platform.
+
+	* build/BuildLocalDist.in: Changed building of local distribution
+	to test the distribution of the current machine (localhost). This
+	requires a line localhost="localhost" in the platforms file.
+
+2001-03-23  Eelco Visser  <visser@acm.org>
+
+	* build/BuildLocalDist: Added FreeBSD platform such that cvs build
+	can use this buildfile to test the distribution
+
+	* doc/: Not making 2up versions of documentation; psnup is not
+	available everywhere apparently.
+
+2001-03-22  Eelco Visser  <visser@acm.org>
+
+	* doc/tutorial/exercises/pico/spec/Makefile.am
+	(TESTS_ENVIRONMENT): explicitly call stratego script for each
+	test.
+
+	* src/: bootinstall
+
+	* spec/: bootstrap
+
+	* doc/tutorial/exercises/pico/spec/*.ss: Added space after #!
+
+	* doc/tutorial/exercises/pico/spec/Makefile.am: Added
+	TESTS_ENVIRONMENT to extend PATH before executing tests.
+
+	* spec/slib/src/exec.c (ST_call_it): Replaced wait by waitpid to
+	make call POSIX compliant (Merijn de Jonge)
+
+2001-03-21  Eelco Visser  <visser@acm.org>
+
+	* spec/slib/spec/iteration.r: Definition of for required body of
+	loop to be executed at least once. Repaired by using while-not.
+
+2001-03-18  Eelco Visser  <visser@acm.org>
+
+	* spec/Makefile.am (EXTRA_DIST): make_rules.in
+
+	* doc/tutorial/exercises/pico/spec/Makefile.am (EXTRA_DIST):
+	distribute dump-lift-expr.ss
+
+	* src/: bootinstall
+
+	* spec/: bootstrapped
+
+	* spec/*/Makefile.am: Cleaned up makefiles. Use optimized
+	libraries instead of debug libraries.
+
+	* src/*/Makefile.am: Cleaned up makefiles. Use optimized
+	libraries instead of debug libraries.
+	
+	* spec/sc/sc.in: Include optimized libraries instead of debug
+	libraries.
+
+	* spec/slib/spec/pack-modules.r: Removed debug statement printing
+	dependency file
+
+	* spec/syn/stratego.grm: Coercion for list of strategies argument
+	of Let.
+
+	* build/: Targets for different buildfiles. Include making dist
+	early in process (dist should not depend on installation). Write
+	.stat files to build.log files to monitor performance.
+
+	* doc/tutorial/exercises/pico/spec: Distribution was dependent on
+	existence of si. Repaired by including dumping of modules as
+	tests.
+
+2001-03-17  Eelco Visser  <visser@acm.org>
+
+	* spec/front/data/Makefile.am (EXTRA_DIST): added module1.r and
+	module2.r to distribution
+
+	* build/BuildFromCVS: Added checkdist action
+
+	* build/build: Program for building software given script with
+	configurations (The program is written by Merijn de Jonge and is
+	distributed independently. It is added to stratego to keep
+	self-contained.)
+
+	* doc/*/Makefile.am: HTML documentation is not made automatically
+	and not included in the distribution.
+
+	* doc/Makefile.am: Documentation should be made three times to get
+	table of contents and references right
+
+	* share/tex/stop-article.cls: STOP style for articles
+
+	* spec/slib/spec/abox-ext.r: changed space options to strings
+	
+	* spec/slib/spec/reals-test.r: inclusion of real-test leads to
+	failure of extract (?); disable test for the time being
+
+	* build/Makefile.am: distribution of buildfiles
+
+	* spec/si/Makefile.am (si): si depends on eval-lib-primitives.tree
+
+	* spec/front/data/module*.r: tests for congruence generation
+
+	* test/options/Makefile.am (check2): test time independent
+
+2001-03-16  Eelco Visser  <visser@acm.org>
+
+	* src/si/si.c, primitives.c: compiled implementation of the
+	Stratego interpreter
+
+	* src/si/, www/*, www/*/*/Makefile.am: template for Makefile
+
+	* spec, src/si/stratego.in: template for stratego interpreter script
+
+	* build/*: Added buildfiles for building distribution from CVS and
+	building standard distribution from stratego-language.org
+
+2001-03-15  Eelco Visser  <visser@acm.org>
+
+	* src/front/extract-all.c: Generalization of extract that extracts
+	all strategy definitions.
+
+	* spec/sc/proto-sc.r: Pass top module name to pack-stratego as the
+	basename of the dependency file.
+
+	* doc/projects: overview of Stratego projects
+
+	* test/optimizations: tests for the innermost optimization
+
+	* moved repository to losser
+
+2001-03-15  Eelco Visser  <visser@cs.uu.nl>
+
+	* www/maillist/stratego-cvs.new: mailing list for cvs messages
+
+	* bootinstall
+
+	* spec/slib/spec/abox-ext.r: Undid quoting of integers in abox-ext
+	(should be turned back).
+
+	* spec/: The Let construct now takes a list of definitions.
+
+	* spec/back/bucket.r: obsolete module
+	
+	* bench/fib: Fibonacci benchmark
+
+	* doc/tutorial/exercises: directory with exercises for learning
+	Stratego
+	
+	* share/Makefile.am: Added newline after pkgdata_DATA definition;
+	was this blocking installation of Stratego.Make?
+
+2001-03-14  Eelco Visser  <visser@acm.org>
+
+	* README.in: improvements to the readme
+
+	* build/Makefile.am: Adding build directory to distribution
+
+	* doc/script: Report about StrategoScript
+
+	* test/parser/parser.r: operations -> constructors
+
+	* spec/slib/spec/pack-modules.r: Declaration of constructor
+	Include (Merijn de Jonge)	
+
+	* spec/back/specialized.r: Removed specialization rules for fetch
+	and oncetd; the rules optimized the behaviour of these strategies
+	in case the argument strategy was only a test. The test for
+	determining whether this is the case was not correct. This caused
+	bugs in some applications (CobolX in particular). Thanks to Hedzer
+	Westra for noting this bug. Effects analysis is needed to do this
+	correctly.
+	
+2001-03-13  Eelco Visser  <visser@acm.org>
+
+	* spec/front/needed-defs.r: Apply desugaring after generating
+	code for congruence.
+
+	* www/: Transition to website in TWiki
+
+	* doc/: Translating documentation to html with hevea
+
+	* log/boot.log: files keeps track of bootstrap attempts
+
+	* spec/slib/spec/share.r: refactoring
+
+	* spec/si/: improvements
+
+	* spec/slib/spec/list-sort.r: Changed implementation of uniq
+	strategy such it preserves the ordering of the elements in the
+	list. (Merijn de Jonge)
+
+	* spec/back/compiler.r, spec/back/pp/pp-instructions.: Caching of
+	constructor symbols used in building terms using same mechanism as
+	is used for caching symbols in matching patterns. (Arne de Bruijn)
+
+2001-03-12  Eelco Visser  <visser@acm.org>
+
+	* spec/slib/src/string.c: Bug in string-implode: no allocation of
+	nul characters at end of string for strings of length 1024.
+	Repaired by Arne.
+
+	* spec/slib: Patch of library by Arne adding string to real
+	conversion + some refactorings.
+
+2001-02-25  Eelco Visser  <visser@acm.org>
+
+	* doc/*/: Improved translation of manuals by HTML; it is possible
+	to go through entire document without going up.
+
+2001-02-03  Eelco Visser  <visser@acm.org>
+
+	* spec/slib/spec/tables.r: Changed create-table and destroy-table
+	to table-create and table-destroy for consistency with other table
+	strategies (suggested by Merijn).
+
+2001-02-02  Eelco Visser  <visser@acm.org>
+
+	* spec/si/stratego-eval.r: Failure was not caught in some
+	constructs such as where, congruence, all, one.
+
+2001-01-31  Eelco Visser  <visser@acm.org>
+
+	* release 0.5a
+
+	* bootstrap, bootinstall: testing changes in syntax and library.
+
+	* spec/si/*: Specification of interpreter for Stratego;
+	StrategoScript.
+
+	* spec/opt/bind-laws.r: in -> 'in
+
+	* spec/front/frontend.r: Moved frontend phases from extract to
+	frontend. Frontend now produces a list of core language strategy
+	definitions. Extract extracts needed definitions.  This means that
+	frontend can be used in other contexts to get all definitions for
+	a module.
+
+	* spec/sc/proto-sc.r: Strategy output-frontend extracts andjoins
+	all definitions and writes them to a .sdefs file for use by other
+	tools.
+
+	* spec/front/extract-all.r: Calls all-defs as separate component.
+
+	* spec/front/needed-defs.r: Added all-defs strategy that extracts
+	all definitions; this means that it joins definitions for the
+	same name/arity.
+
+2001-01-29  Eelco Visser  <visser@acm.org>
+
+	* spec/syn/pack-stratego.r: Adapted pack-stratego such that
+	it can also read generated modules in abstract syntax form.
+	If no .r file is found for a module, pack-stratego looks for
+	a .tree file and assumes that it contains an ATerm in the
+	form that would be produced by parse-mod.
+
+	* spec/slib/spec/substitution.r: Moved obsolete strategies to
+	subs-obsolete.r
+
+	* spec/si/primitives.r: The program primitives extracts the
+	definitions of primitives from a strategy specification in
+	abstract syntax form. It generates a module (in abstract syntax)
+	with evaluation rules for the interpreter, which interpret the
+	application of Prim(p) to a term for the primitive defined.
+
+	* configure.in: Bumped the version number to 0.5; the next release
+	will contain StrategoScript.
+
+2001-01-28  Eelco Visser  <visser@acm.org>
+
+	* spec/slib/spec/simple-traversal.r: Added strategy alltd-fold,
+	which is the same as alltd, but applies a second (folding)
+	strategy after each traversal to direct subterms.
+
+	* spec/slib/spec/fixpoint-traversal.r: Removed definition of
+	innermost''' (?) which was defined in terms of the annotation
+	operators @? and @!
+
+2001-01-26  Eelco Visser  <visser@acm.org>
+
+	* spec/syn/stratego.lx: Removed @?, @!, @/; they were meant for
+	annotation manipulation, but that has never been implemented.
+	Removed obsolete keywords match, build, operations.
+
+	* spec/slib/spec/sunit.r: No longer print "failed" or "succeeded"
+	messages when the test is succesful.
+
+	* spec/slib/spec/display.r: Handling of stacks of bindings for
+	variables by means of a hash-table. For each name a stack of
+	bindings is maintained. Thus it is not necessary to do variable
+	renaming.
+
+2001-01-25  Eelco Visser  <visser@acm.org>
+
+	* spec/syn/stratego.grm: Added syntax for local definition
+	of strategy definitions let f(s) = ... in s
+
+	* spec/syn/stratego.lx: Added keywords "in" and "let"
+
+2001-01-24  Eelco Visser  <visser@acm.org>
+
+	* spec/slib/spec/unification.r: Adaptation of syntax
+
+	* spec/slib/spec/free-variables.r: Adaptation of syntax
+
+	* spec/syn/stratego.grm: Removed the syntax ?t <= s
+	Too baroque. Go back to using s => t
+
+2001-01-21  Eelco Visser  <visser@node11794.a2000.nl>
+
+	* Release 0.4.22
+
+	* Prepared release 0.4.22
+
+2001-01-20  Eelco Visser  <visser@node11794.a2000.nl>
+
+	* test/optimizations/*: testing the new fusion optimization
+	component.
+
+	* bootstrap + bootinstall
+
+	* spec/sc/proto-sc.r: Added option --fusion to turn
+	on the new fusion component for optimizing the innermost
+	strategy.
+
+	* www/*: information about the second Stratego users day.
+	
+	* spec/slib/spec/unification.r: Added a new equality
+	strategy with an additional filter that can be used for
+	checking equality modulo alpha renaming. The filter applies
+	to the entire pair and can change something in one
+	term based on the other term.
+	
+	* spec/opt/bind-laws.r: Added inlining rules from module
+	../front/inlining.
+
+	* spec/front/inlining.r: Refactored specification of
+	inlining. Moved contextual inlining rules to ../opt/bind-laws.r.
+	Simplified the expansion strategy.
+	
+	* spec/opt/traversal-laws.r: empty module
+
+	* spec/opt/strategy-patterns.r: Overlays for often occuring
+	(abstract syntax) patterns in specifications such as Bottomup(s)
+
+	* spec/opt/fusion-rules.r: Rules for innermost optimization.
+
+	* spec/opt/fusion.r: Strategy for optimizing innermost strategy.
+
+	* spec/opt/stratego-laws.r: Renamed rules to get more
+	mnemonic names (AssociateR instead of Ass).
+
+2001-01-17  Eelco Visser  <visser@node11794.a2000.nl>
+
+	* test/io/typo.res: Forgot to add to repository
+
+2000-11-13  Eelco Visser  <visser@cs.uu.nl>
+
+	* www/documentation.html: References to
+	www.stratego-language.org/ftp
+
+	* www/download.html: Download distributions from
+	www.stratego-language.org/ftp
+
+	* spec/slib/spec/list-set.r: Renamed foldr-kids to crush,
+	following the paper by Joost and Ralf.
+
+2000-11-06  Eelco Visser  <visser@cs.uu.nl>
+
+	* Release 0.4.21
+
+2000-11-05  Eelco Visser  <visser@cs.uu.nl>
+
+	* bench/prop/*: Repaired bugs.
+	
+	* www/maillist/: started stratego-developers mailinglist
+
+	* distdiff: a shell script that computes the difference between
+	distributions; to make lightweight patches. Contributed by Otto
+	Bagge.
+
+	* build/Buildfile: Buildfile that describes how to build the
+	Stratego distribution and test it; script for the build program.
+
+2000-11-04  Eelco Visser  <visser@cs.uu.nl>
+
+	* test/overloading/Makefile.am (check2): Redirection &> xxx is not
+	portable. Changed to 2>&1 | tee > xxx, which apparently is
+	portable. Change by Merijn.
+
+	* spec/slib/spec/pack-modules.r: Bugs in option handling fixed
+	by Merijn de Jonge.
+
+2000-11-01  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/rts/aterm-extension.c: Added a few casts to make the type
+	system happy.
+
+	* spec/slib/spec/list-sort.r: Refactored some rules replacing Cons
+	notation with [ | ] notation.
+
+	* Makefile.am, configure.in: Removed the utils directory from the
+	distribution and the configuration because it was causing problems
+	in building the distribution; the stratego compiler is required to
+	make the utilities in the subdirectory. The utilities will now
+	probably be distributed in a separate package that requires sc for
+	building.
+
+	* spec/slib/spec/pack-modules.r: Patch by Joost Visser.
+
+2000-10-31  Eelco Visser  <visser@cs.uu.nl>
+
+	* bootstrap, bootinstall
+	
+	* spec/pp/pp-instructions.r: Print call to DOIT at the end of the
+	generated C files such that declarations of functions appear
+	before it.
+
+2000-10-30  Eelco Visser  <visser@cs.uu.nl>
+
+	* build/: Directory with BuildFile for building installations of
+	Stratego.
+
+	* spec/back/Makefile.am (EXTRA_DIST): ins_simplification.r no
+	longer used.
+
+	* spec, src: bootinstalled header files in stratego subdirectories.
+
+	* bootstrap, bootinstall
+	
+	* spec/back/compiler.r: Handled assignments of real constants
+	to variables.
+
+	* spec/slib/spec/data: directory for test data
+
+2000-10-29  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/slib/src/term.c (_mkterm): Replaced ATmatch with ATgetType.
+
+	* spec/slib/src/number.c: Using ATmatch with pattern <real> caused
+	a strange error in the calling procedure (value of variable
+	overwritten). Changed to using ATgetType, which should be faster
+	as well.
+
+	* spec/pp/pp-instructions.r: Added printing of real constants.
+
+	* spec/slib/spec/list-misc.r: thread-map threads an environment
+	through a list and applies a strategy to each element with the
+	environment.
+
+	* spec/front/needed-defs.r: Added congruence-thread definition
+	generation for constructors without arguments.
+
+	* spec/rts, spec/slib/src, src/rts, src/slib/src: Added stratego
+	subdirectories that contain the local include files that are
+	included by the main include files stratego.h, stratego-lib.h and
+	stratego-ext.h. These include files are installed at
+	$(prefix)/include/stratego, in order to avoid clashes with other
+	packages. (Thanks to Otto Bagge for the suggestion)
+	
+	* spec/back/compiler.r: Added support for building constructor
+	applications with more than 6 arguments. (Thanks to Otto Bagge for
+	the patch.)
+
+2000-10-27  Eelco Visser  <visser@cs.uu.nl>
+
+	* Release 0.4.20
+
+2000-10-26  Eelco Visser  <visser@cs.uu.nl>
+
+	* bootstrap, bootinstall
+	
+	* spec/back/compiler.r: Repaired bug: double quotes or escapes in
+	strings were reduced one escape level. Repaired by escaping such
+	strings.
+
+	* spec/pp/pp-instructions.r: Removed workaround for the above bug.
+
+2000-10-17  Eelco Visser  <visser@cs.uu.nl>
+
+	* Release 0.4.19
+	
+	* bootstrap, bootinstall
+
+2000-10-07  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/slib/src/tables.c (lookup_table): Store table pointers
+	directly in ST_table_table by coercing the pointer to an int. The
+	previous method used a fixed size array of size 100 to store table
+	pointers. Since table numbers were not garbage collected a program
+	could run out of tables. By storing the table pointers directly,
+	tables are garbage collected automatically (after destruction with
+	destroy-table).
+	
+2000-09-29  Eelco Visser  <visser@cs.uu.nl>
+
+	* Release 0.4.18
+	
+	* spec/slib/spec/tables.r: New operations for handling tables,
+	especially useful for symbol table management.
+
+2000-09-21  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/, src/: bootinstall
+	
+	* spec/match/: Improved algorithmics of the pattern match compiler.
+
+	* spec/, src/: bootinstall
+
+2000-09-20  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/match/match-to-matrix.r: Defined merging of matrices also
+	if not all elements of a choice or lchoice are matrices by merging
+	adjacent matrices.
+
+	* spec/opt/congruence-laws.r: Defined TransformingCongruence law
+	that defines congruence in terms of matching and building. Needs
+	to be improved before incorporation in the compiler.
+
+	* spec/back/compiler.r: Defined matching of function symbol
+	for congruence with TestFunTop that uses cached AFun. Removed
+	obsolete code.
+
+	* spec/slib/spec/options.r: Added strategy iowrapNoOutput that
+	does not write the result term to the output file, instead leaving
+	this to the wrapped strategy. This is useful for strategies that
+	produce output by means of printing.
+
+	* spec/pp/pp-instructions.r: Defined pretty-printing of
+	instructions in Stratego (was implemented in C). Now easier to
+	adapt.
+
+	* spec/, src/: bootinstall
+
+2000-09-18  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/back/, spec/rts/: Caching of AFuns: function matching is
+	now done by comparing the AFun number of a term instead of string
+	matching on its symbol. All function symbols occurring in a
+	program are cached in global variables. This should reduce
+	run-time of specifications.
+
+	* spec/back/, spec/rts/: Each (nullary) strategy definition is
+	compiled to its own C function. (This reduces C compile time and
+	memory usage.)
+
+2000-09-17  Eelco Visser  <visser@cs.uu.nl>
+
+	* www/style.css: Changed color of bold from blue to black.
+
+	* spec/slib/spec/ugly-print.r: Changed Quote' to Quote: outer "s
+	should not be escaped.
+
+	* spec/slib/spec/options.r: Removed obsolete code
+
+2000-09-04  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/, src/: bootinstall
+
+2000-09-03  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/: New implementation of pattern match compilation works.
+
+2000-09-02  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/: New implementation of pattern match compilation and term
+	building.
+
+2000-08-31  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/front/desugar.r: Defined desugaring of Lets
+
+	* spec/sig/sugar.r: Added constructor Lets that is sugar for
+	a chain of Let's.
+
+2000-08-30  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/slib/*: Added primitive is-real for testing if a term is
+	a real number.
+
+	* spec/match/matrix.r: New implementation of matching automaton
+	derivation based on the ideas of Mikael Pettersson in his paper "A
+	Term Pattern-Match Compiler Inspired by Finite Automat Theory".
+
+	* spec/slib/spec/list-basic.r: Changed upto such that it counts
+	from 0 (instead of 1) upto the given number.
+
+2000-08-29  Eelco Visser  <visser@cs.uu.nl>
+
+	* utils/metrics/Makefile.am (SCFLAGS): Utilities are compiled
+	before the library is installed
+
+2000-08-27  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/slib/spec/list-misc.r: Added mapfoldr1
+
+	* Release 0.4.17
+
+	* spec/, src/: bootinstall
+
+	* spec/slib/spec/string.r: Strategy escape puts \ before 
+	special characters such as \ and ".
+
+	* utils/metrics/: Added measurement of number of constructors.
+
+2000-08-26  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/slib/spec/ugly-print.r: Strategy ugly-print pretty-prints
+	an ATerm literally, but indents arguments such that it becomes
+	readable.
+
+2000-08-21  Eelco Visser  <visser@cs.uu.nl>
+
+	* utils/metrics/: Measuring simple metrics of Stratego
+	specifications.  Currently measures the number of rules and
+	strategies in each module in a list of modules.
+
+	* utils/: Directory for auxiliary tools for processing Stratego
+	specifications.
+
+	* spec/sc/proto-sc.r: Dependency file for the target executable
+	is generated (instead of for the default name for the executable,
+	which is the name of the main module). Achieved by passing -dep
+	option to pack-stratego.
+
+2000-08-20  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/slib/spec/list-zip.r: Added rest-zip which returns a
+	triple of the zipped list and the remainders of the two lists (one
+	of which is empty).
+
+	* spec/slib/spec/io.r: Added open and save for easier reading from
+	and writing to files.
+
+	* spec/slib/spec/abox-ext.r: Added post-commas to postfix commas
+	after each element in a list. Redefined hpost-sep-list to not postfix
+	a separator after the last element.
+
+2000-08-19  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/slib/spec/unification.r: Generic equality testing
+	parameterized with a filter that throws away parts of the terms
+	that can be ignored.
+
+2000-08-18  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/slib/spec/list-basic.r: New strategy split-fetch, splits
+	a list in two at the point where the argument strategy succeeds.
+
+	* spec/slib/spec/list-basic-test.r: Test of split-fetch
+
+	* spec/slib/spec/sunit.r: New tests: apply-test/3 only tests
+	whether application succeeds, apply-and-check applies a strategy
+	to the result of the application to verify it.
+
+	* spec/sc/proto-sc.r: Added new intermediate files to list of
+	files to be removed.
+
+	* spec/slib/spec/unification.r: Updated substitution strategy
+
+2000-08-17  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/opt/optimization.r: Repaired rule to correctly use
+	|tsubs|.
+
+	* spec/slib/spec/rename.r: Removed |boxedfigure| environment
+	from documentation. (Should add more documentation.)
+
+	* spec/front/spec-to-sdefs.r: Adapted |ExpOverlay| to new
+	definition substitution.
+
+	* spec/front/normalize-spec.r: Refactored definition of
+	|vars-to-consts| and removed obsolete code.
+
+	* spec/front/inlining.r: Changed Cons syntax to [|]. Changed
+	explicit use of library strategy subs to use of ssubs.
+
+	* spec/front/Makefile.am: Added extract and inline to CLEANFILES.
+
+	* spec/lib/stratlib.r: Removed obsolete code for renaming and
+	refactored definitions of |tsubs| and |ssubs| to use the
+	|substitute| strategy.
+
+	* spec/slib/spec/substitution.r: Refactored the definition of
+	substitution and marked all old definitions (subs etc.) as
+	obsolete. Wrote an explanation of the different versions of
+	the strategy. There are now two parameters for indicating
+	variable shape; one for that maps a variable to whatever	
+	the domain of the substitution is and another that indicates
+	the shape of a variable and the actual name of the variable
+	(for the purpose of renaming).
+
+2000-08-16  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/slib/spec/unification.r: Moved definition of |in|
+	(occurrence testing) to this module from substitution.r
+
+	* reconf: Now creates the dependency files that are included in
+	Makefile.am's, but that shouldn't be included in the CVS
+	repository because that would memoize wrong dependencies.
+
+2000-07-21  Eelco Visser  <visser@cs.uu.nl>
+
+	* Release 0.4.16
+
+	* spec/slib/spec/sunit.r: Added the apply-and-fail test
+	that succeeds if the test fails.
+
+2000-06-30  Eelco Visser  <visser@cs.uu.nl>
+
+	* www/*: Refreshed the web site layout.
+
+2000-06-25  Eelco Visser  <visser@cs.uu.nl>
+
+	* Removed sglr.r and gpp.r from the library. They should be
+	defined in a Stratego library (associated) with distributions
+	for these tools.
+
+2000-06-24  Eelco Visser  <visser@cs.uu.nl>
+
+	* Release 0.4.15
+
+	* spec/slib/spec/pack-modules.r: Changes by Joost Visser, adding
+	a commandline option to set the name of the dependency file.
+
+	* spec/slib/spec/io.r: trace(msg, s) prints msg before doing s and
+	reports success or failure afterwards.
+
+2000-06-23  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/slib/spec/list-index.r: Changed Cons into [|]
+
+2000-06-21  Eelco Visser  <visser@cs.uu.nl>
+
+	* share/emacs/Makefile.am (pkgdata_DATA): Install emacs configuration
+	file in share/stratego directory.
+
+2000-06-20  Eelco Visser  <visser@cs.uu.nl>
+
+	* rpm/*: Scripts for producing redhat package manager archives
+	(rpms)
+
+	* Changes for frontend split
+
+2000-06-19  Eelco Visser  <visser@cs.uu.nl>
+
+	* src: bootinstall
+
+	* spec/front/use-def.r: Added spec-use-defIO to make standalone
+	tool.
+
+	* spec/front/check-constructors.r: Added CheckConstructorsIO to
+	make standalone tool.
+
+	* spec/sc/proto-sc.r: Added the components extract and inline
+	that were split off from frontend.
+
+	* spec/front/inlining.r: Added inlineIO strategy to make
+	the inliner standalone.
+
+	* spec/front/frontend.r: Split the frontend into the proper
+	frontend that normalizes a specification and checks several
+	properties, the extractor that extracts needed definitions and the
+	inliner that inlines definitions. This was necessary because
+	frontend.c took to long to compile (using to much memory) on my
+	new Mandrake installing.
+
+	* spec/front/extract.r: Part of the frontend concerned with
+	extracting needed definitions and translating definitions into
+	core language.
+
+	* rpm/stratego.spec (Summary): 
+
+2000-06-12    <visser@loempia.cs.uu.nl>
+
+	* Release 0.4.14
+
+	* src/: bootinstall
+
+	* www/: release 0.4.14
+
+	* www/release/0.4.14.html: Description of changes in this release.
+
+	* spec/slib/src/term.c (_mkterm): Added arity argument of MatchFunFC
+
+	* spec/rts/svm.h (ThreadSetEnv): Added arity argument of MatchFun
+
+	* spec/sig/instructions.r: MatchFun and MatchFunFC have additional
+ 	arity argument.
+
+	* test/control/match-arity.r: Tests for matching against a pattern
+	with the same function symbol but with different arity.
+
+	* spec/rts/aterm-extension.c (consnil_to_list _shallow): Repaired
+ 	translation of Cons/Nil lists to ATerm lists. A Cons is produced
+ 	when the tail is not an ATerm list.
+
+	* test/io/improper-list-test.r: Test of improper lists, i.e.,
+ 	where second argument of Cons is not a list and can thus not be
+ 	translated to ATerm lists. This used to lead to a segmentation
+ 	fault.  Now it just returns the Cons.
+ 
+	* spec/pp/pp-instructions.c (pp): MatchFunFC has additional arity
+	argument.
+
+2000-06-11    <visser@loempia.cs.uu.nl>
+
+	* spec/opt/optimization.r: Changed << -> >> syntax into \ -> \ .
+
+	* spec/back/specialized.r: Use of MatchFun with additional arity
+ 	argument
+
+	* spec/front/check-constructors.r: Refined checking for
+ 	constructors such that another declaration is sought if the one
+ 	found has the wrong arity.
+
+	* spec/slib/src/tuples.c (MatchPair): Use of MatchFunFC with additional
+	arity argument
+
+	* spec/rts/svm.h (MatchFunFC): MatchFun and MatchFunFC with additional
+	arity argument
+
+	* spec/rts/stratego.c (_MatchFun): Implementation of MatchFun and
+	MatchFunFC with additional arity argument. Test if arity of term
+	constructor matches the given one.
+
+	* spec/opt/simplification.r: Generate MatchFunA with additional
+	arity argument
+
+	* spec/opt/match-build.r: Generate MatchFunA with additional
+	arity argument
+
+	* spec/match/automaton.r: Generate MatchFunA with additional
+	arity argument
+
+	* spec/back/compiler.r: Implementation of changed MatchFunA
+
+	* spec/match/matching-tree.r: Change MatchFunA so that it takes
+ 	the arity in addition to the name of the function.
+
+	* test/overloading/overloading-constructors-test.r: Test for
+ 	overloaded constructors. eval-test6 led to a segmentation fault in
+ 	the old implementation because no distinction is made between
+ 	constructors with the same name but different arity.
+	
+	* src: bootinstall
+
+	* ChangeLog, TODO, NEWS: Added build defaults in overlays
+
+	* spec/sig/sugar.r: Declaration of BuildDefault constructor
+
+	* spec/front/spec-to-sdefs.r: Definition of BuildDefault in 
+	congruences.
+
+	* spec/match/automaton.r: Definition of BuildDefault in matching
+	positions (same as wildcard).
+
+	* spec/back/compiler.r: Added rule to compile BuildDefault(t) in
+	building positions.
+	
+	* spec/syn/stratego.grm (term): Syntax for BuildDefault is _ term.
+
+	* test/syntax/overlay-test.r: Test of BuildDefault
+	
+	* TODO: Possible implementation scheme for dealing with unbound
+	variables under backtracking.
+
+2000-06-10    <visser@loempia.cs.uu.nl>
+
+	* spec/front/spec-to-sdefs.r: Support for overloaded
+ 	overlays. First overlays in overlay definitions are expanded.
+
+2000-06-09    <visser@loempia.cs.uu.nl>
+
+	* spec/slib/spec/substitution.r: Added import of rename
+
+	* spec/slib/spec/rename.r: Added import of env-traversal
+
+	* spec/lib/stratlib.r: Added tsubstitute, which instantiates
+ 	substitute.
+
+	* spec/lib/stratlib-test.r: Added test for new substitute algorithm.
+
+	* spec/sig/sugar.r: Added declaration for LRule
+
+	* test/syntax/overlay-test.r: Test for adding default build
+ 	patterns for overlays.
+
+	* src/: bootinstall
+
+	* spec/front/needed-defs.r: Used as pattern to shorten rule
+ 	JoinDefs2.
+
+	* doc/reference/rules.ltx (subsection{As Patterns}): Added
+	short explanation of as pattern; should be integrated.
+
+	* NEWS: Added announcement of as pattern
+
+	* spec/sdf/Stratego-Sugar.sdf: Added syntax of as pattern
+
+	* spec/syn/stratego.lx: Added syntax of as pattern
+
+	* spec/syn/stratego.grm (term): Added syntax of as pattern
+
+	* spec/opt/distribution.r: Changed Fold rule so that it doesn't
+ 	use condition that can also be expressed as rhs.
+
+	* spec/sig/sugar.r: Signature of as pattern
+
+	* spec/match/automaton.r: Added rule for translating as patterns
+	to matching automata.
+
+	* spec/match/matching-tree.r: Changed obsolete keywords operations
+	and build into constructors and match.
+
+	* test/syntax/as-pattern.r: Test for new as patterns that allow
+	binding a complex pattern also to a variable with x @ t.
+
+2000-06-07    <visser@loempia.cs.uu.nl>
+
+	* test/syntax/quoted-keywords.r: Test of identifier quoting
+ 	syntax.
+
+	* ChangeLog, News, TODO, configure.in: Description of changes
+
+	* doc/compiler/Makefile.am, doc/compiler/doc.ltx: Starting to
+	clean up the compiler.
+
+	* share/tex/stop-report.cls: Added definition for \part (creates bug
+	in toc)
+
+	* test/control/congruence-thread.r: Test for new language feature.
+
+	* share/emacs/stratego.el: Added keywords and symbols to coloring
+	lists.
+
+	* doc/tutorial/xmpl/ChangeLog: Removing local ChangeLog
+
+	* src: bootinstall
+
+	* spec/sdf/Stratego-Congruences.sdf: Syntax for congruences with
+	modifier syntax id^id(s1,...,sn)
+
+	* spec/*/[*]/*.P: Removed generated files.
+
+	* spec/syn/stratego.grm.*: Removed generated files.
+
+	* spec/slib/spec/sunit.r: Split the failure message of apply-test
+ 	in the obtained result and expected result.
+
+	* spec/slib/spec/list-zip.r: Added tuple-zip and tuple-unzip,
+ 	which do the same as zip and unzip, but for tuples of arbitrary
+ 	length instead of pairs.
+
+	* spec/slib/spec/io.r: Added error, which prints strings in list
+ 	to stderr. Difference with fatal-error is that it does not exit.
+
+	* spec/slib/spec/list-misc.r: Variant of copy with a strategy
+ 	argument that is applied to the copied term. Useful only if the
+ 	strategy has a side-effect. For example, generating n new
+ 	variables.
+
+	* spec/slib/spec/pack-graph.r: Added graph-nodes-undef that
+ 	returns a list of nodes *and* a list of names that are undefined.
+  	Can be used for error handling. For example, in needed definition
+ 	computation, all missing definitions can now be reported in one
+ 	run.
+
+	* spec/syn/stratego.lx: Added token ^ (MODIFIER). Added primeid
+ 	token, i.e., tokens with preceding ' to escape keywords of the
+ 	language. These identifiers are identical to the identifiers
+	without the '.
+
+	* spec/syn/stratego.grm: Added syntax for threading and
+ 	distributing congruences.
+
+	* doc/reference/strategies.ltx: Added sub section on Carrying
+ 	Information along a Traversal, i.e., threading and distributing
+ 	congruences.
+
+	* spec/front/needed-defs.r: Refactored the definition of needed
+ 	definition computation by using the graph-nodes strategy from the
+ 	library (which is also used for flattening modules). Added the
+ 	generation of distributing and threading congruence operators C^D
+ 	and C^T.
+
+2000-06-05    <visser@loempia.cs.uu.nl>
+
+	* Release 0.4.13
+
+	* spec/sc/proto-sc.r: Reimplemented remove-intermediates in terms
+	of rm-files
+
+	* spec/slib/spec/exec.r: Added strategy rm-files, which calls
+	the rm utility to remove a list of files.
+
+	* spec/slib/src/stratego-lib.h (_ST_get_pid): see below
+	
+	* spec/slib/src/exec.c (ST_get_pid): Added primitive get_pid for
+	obtaining the process identifier of the current process.
+
+	* spec/syn/pack-stratego.r: Use unique file name for writing parse
+ 	tree to, instead of the fixed file /tmp/aaabb. Thanks Danny van
+ 	Velzen and Eelco Dolstra for finding this bug.
+
+2000-06-04    <visser@loempia.cs.uu.nl>
+
+	* spec/slib/spec/string.r: Changed definition of basename such
+ 	that it removes the part after the last . in the name instead of
+ 	after the first. Also defined a variant that takes a strategy for
+ 	testing the extension as parameter. [This caused a bug in
+ 	pack-stratego if a module like ./file.r was compiled as Danny van
+ 	Velzen found out.]
+	
+	* xmpl/prop/: Example specification with transformation of
+ 	propositional formulae.
+
+	* doc/tutorial/slides/Makefile.am (doc_targets): Rules for
+	making and installing TutorialSlides
+
+	* share/tex/LaTeX.Make: Rules for producing pdf from latex.
+
+	* www/publications.html: Headers in bold.
+
+	* www/documentation.html: Added links to pdf documents.
+
+	* doc/*: Added rules for making PDF versions of the documentation.
+  	Note that the specials generated by gpic are not interpreted by
+ 	pdfelatex; therefore no pictures in PDF.
+
+	* spec/: bootstrap + bootinstall
+	
+	* spec/lib/stratlib-test.r: Simple tests for "tvars". It turned
+ 	out that collect-kids did not work properly because of error in
+ 	explode-term. The second test shows the case were it went wrong.
+
+	* spec/front/frontend.r: Commented out timings of sub-components of
+	frontend.
+
+	* spec/slib/spec/sunit.r: The test apply-and-show only applies a 
+	strategy and does not test the result.
+
+	* spec/slib/spec/Makefile.am (TESTS): Added reals-test
+
+	* spec/slib/spec/reals-test.r: Changed tests to apply-and-show, because
+	for some reason the comparison of real results does not work.
+
+	* spec/slib/spec/io.r: Added import of exec, because "exit" is used
+	in some strategies.
+
+	* spec/syn/stratego.grm: Repaired bug in REAL congruence.
+
+	* spec/rts/stratego.c (_MatchRealFC + _MatchReal): Implemented by 
+	copying from _MatchInt
+
+	* spec/rts/svm.h: Added MatchReal/FC
+
+	* spec/slib/spec/substitution.r: Added definition of strategy
+ 	substitute, which renames the bound variables it passes through
+ 	while substituting.
+
+	* spec/slib/spec/rename.r: Simplified definition of rename by 
+	inlining and removing rename-body.
+
+	* test/numbers/*: Testing of real numbers in rules and as congruence.
+
+	* spec/slib/src/term.c (_mkterm): Added cases for real and integer 
+	numbers.
+
+	* spec/: bootstrap + bootinstall
+	
+	* spec/slib/spec/string.r: Added new as primitive.
+
+	* spec/syn/stratego.lx: Removed new, kids and str_gt as keywords.
+
+	* spec/: bootstrap + bootinstall
+
+	* doc/tutorial/slides: Extended slides for lecture in Software
+	Generation course.
+
+	* configure.in: added xmpl/Makefile.am,
+ 	doc/tutorial/slides/Makefile.am
+
+	* xmpl/Makefile.am: New directory xmpl/ for example specifications
+
+2000-05-14    <visser@loempia.cs.uu.nl>
+
+	* spec/slib/spec/tables.r: table-putlist converts a list of pairs
+ 	to a table. (Contributed by Otto Bagge)
+
+2000-05-11    <visser@loempia.cs.uu.nl>
+
+	* doc/tutorial/slides: Adapted slides for INRIA talk
+
+	* doc/reference/: Reorganization of the reference manual.
+
+	* spec/sdf/: Syntax definition of Stratego in SDF2.
+
+2000-05-02    <visser@loempia.cs.uu.nl>
+
+	* spec/slib/*/io.[cr]: new primitive _ST_append_file; opens a file
+ 	in append mode, _ST_close_file is now declared in stratego-lib.h,
+ 	so that code using it will compile, added append-file strategy and
+ 	documentation for it to io.r (by Otto)
+
+	* spec/slib/spec/tables.r: table-list transforms a table into a list
+	of key/value pairs. (by Otto)
+
+2000-04-12    <visser@loempia.cs.uu.nl>
+
+	* Added a lot of forgotten files to the repository.
+
+2000-04-10    <Eelco Visser <visser@cs.uu.nl>>
+
+	* doc/library/body.ltx: Added list-filter
+
+2000-03-29    <Eelco Visser <visser@cs.uu.nl>>
+
+	* configure.in: bugs (thanks Merijn)
+
+2000-03-27    <Eelco Visser <visser@cs.uu.nl>>
+
+	* bootinstall
+
+	* spec/slib/spec/*: operations -> constructors
+	
+	* configure.in: default for ATerm library is $prefix. Now also
+	noted in the help string.
+
+	* spec/slib/spec/conditonal.r+iteration.r supersede basic.r:
+ 	Sequential control operators are split into modules conditional.r,
+ 	definining operators like try and if, and iteration.r defining
+ 	operators like repeat.
+
+2000-03-26    <Eelco Visser <visser@cs.uu.nl>>
+
+	* bootinstall
+
+	* TODO: organized the list into categories
+
+	* www/maillist/*.txt: Announcements of releases
+
+	* Release 0.4.11
+
+	* www/*: Edited the download page. Added slides of users day
+	tutorial to documentation page. Added "Language Independent
+	Traversals for Program Transformation" to publications page.
+	Description of the release 0.4.11 on news page.
+
+	* spec/slib/src/io.c: parentheses
+
+	* doc/tutorial/intro/overview.ltx: Changed my opinion on
+	the suitability of Stratego for program analysis.
+
+2000-03-25    <Eelco Visser <visser@cs.uu.nl>>
+
+	* spec/sc/proto-sc.r: -o option to indicate the target of
+ 	compilation. --ast option to indicate that abstract syntax tree
+ 	should be produced (interface to the parser).
+
+	* spec/slib/spec/env-traversal.r: More rules for
+	environment propagation through traversals.
+
+2000-03-20    <Eelco Visser <visser@cs.uu.nl>>
+
+	*  www/:  Vanity  operation on  the  appearance  of the web  page;
+ 	contents now in olive and without frame borders.
+
+2000-03-18    <Eelco Visser <visser@cs.uu.nl>>
+
+	* spec/slib/spec/substitution.r: Removed dead code.
+
+	* spec/slib/spec/free-variables.r: Removed dead code. Distinghuish
+	two classes of free variable extraction.
+
+	* spec/slib/spec/basic.r: New variants of repetition operators while,
+	for, etc.
+
+	* spec/*/*: operations -> constructors
+
+	* spec/sc/: Improved option handling. Show usage messages with
+ 	help option. Show version information. Usage information similar
+ 	to gcc. Removed dead code.
+
+	* spec/lib/stratlib.r: Adapted svars-arity to new free-vars
+	strategy
+
+	* spec/slib/env-traversal.r: Traversals that distribute or
+	thread an environment along the way.
+
+2000-03-15    <Eelco Visser <visser@cs.uu.nl>>
+
+	* test/control/*: Directory with tests for control structures,
+	including test of thread operator.
+
+	* spec/slib/spec/unification.r: Refactored the unification
+	algorithm using the new term decomposition notation f#(xs).
+
+	* spec/slib/spec/substitution.r: Renamed subs' to subs; the
+	overloading is resolved by arity.
+
+	* spec/slib/spec/basic.r: New loop strategies repeat-until and
+	for.
+	
+	* spec/slib/spec/list-misc.r: copy strategy creates list with
+	n copies of a term and a variant of foldr that applies a
+	strategy to the elements of the list.
+	
+	* spec/slib/spec/list-set.r: Refactored the collect strategies
+	using the new f#(xs) syntax. Kids has disappeared.
+
+	* spec/syn/stratego.lx: Added newlines to obsolete messages.
+
+2000-03-14    <Eelco Visser <visser@cs.uu.nl>>
+
+	* spec/slib/spec/*.r: Declared constructors and changed keyword
+	operations to constructors.
+
+2000-03-13    <Eelco Visser <visser@cs.uu.nl>>
+
+	* spec/syn/stratego.[lex,grm] + spec/sig/sugar.r: Extension of the
+ 	syntax with sugar for exploded terms with the following
+ 	equivalences:
+
+	  ?f#(xs) == ?(f, xs) <= explode-term
+	  !f#(xs) == <mkterm> (f, xs)
+	  s1#(s2) == explode-term; (s1, s2); mkterm
+
+	* test/syntax/mkterm.r: Syntax + semantics check of syntax
+	extension for exploded terms.
+	
+	* doc/tutorial/xmpl/disjnf.r: Import lib instead of io since io
+ 	depends also on exit + gives wrong example of typical usage. Added
+ 	regression test.
+
+2000-03-11    <Eelco Visser <visser@cs.uu.nl>>
+
+	* src/slib/src/stratego-lib.c: Removed because obsolete.
+
+	* spec/rts/svm.h: Reduced the sizes of all stacks considerably.
+  	This makes a difference in the amount of static memory that is
+ 	allocated by generated transformation systems.
+
+2000-03-09    <Eelco Visser <visser@cs.uu.nl>>
+
+	* Release 0.4.10
+
+	* spec/sc/proto-sc.r: Added a commandline option for passing the
+	name of the main strategy to compile:
+	    sc --main transform-it -i transform.r
+	or
+	    sc -m transform-it -i transform.r
+	makes "transform-it" into the main strategy. If the option is
+	not passed "main" is assumed to be the main strategy. 	
+
+	Note that the main strategy needs to handle its own IO as usual,
+	that is, it is should probably look like 
+	    transform-it = stdio(transform)
+	or
+	    transform-it = iowrap(transform)
+	
+	* spec/slib/spec/exec.r: The strategy <transform-file(s, suf)>
+ 	(base, ext) reads in the term from file "base.ext", applies
+ 	strategy | to it and write the result to the concatenation of the
+ 	strings (base, <suf>()).
+	
+	* test/*/*.[r|am] : added new test cases
+
+	* spec/slib/src/io.c : Closed filed after writing to or reading
+ 	from it. Failure to do so caused problems when reading in a file
+ 	that was written before or when reading many (different) files,
+ 	causing the to overflow the limit on open files (SunOS).
+
+2000-03-07    <Eelco Visser <visser@cs.uu.nl>>
+
+	* spec/front/spec-to-sdefs.r: Separated expansion of overlays
+	from desugaring of rules.
+
+	* spec/sc/proto-sc.r: Used new style of option handling for
+ 	proto-sc in preparation of adding new option to specify main
+ 	strategy on the command line.
+
+	* spec/front/frontend.r: Constructor checking + timing of
+ 	components.
+	
+	* spec/front/check-constructors.r: Added checking of
+ 	constructor declarations to the frontend. Currently only a warning
+ 	is generated and constructor declaration is not enforced. This
+ 	will change in the future. Note: only constructors that are
+ 	actually used in the specification need to be declared. Anonymous
+ 	constructors that are only traversed need not be declared.
+
+	* spec/syn/stratego.lx: Introduced // comment. Introduced
+ 	alternative keyword "constructors" for "operations" in signatures,
+ 	because that fits the use better. Use of "operations" should be
+ 	phased out.
+	
+2000-03-03    <Eelco Visser <visser@cs.uu.nl>>
+
+	* Release 0.4.9
+
+	* check-dist.in: Shell script for testing the distribution created
+ 	by 'make dist'.
+
+	* spec/slib/list-set.r: Repaired error in definition of union and
+ 	diff to migrating from Cons/Nil syntax to [|] syntax; the common
+ 	mistake to forget to replace the comma by a |.
+
+2000-03-01    <visser@cs.uu.nl> 
+
+	* spec/lib/stratlib.r: New renaming strategies
+
+	* spec/slib/spec/rename.r+free-variables.r: Split the
+ 	parameterization of renaming into two: paste defines how new
+ 	variables should be pasted back into the binding construct,
+ 	boundin declares which arms of the construct are binding, which
+ 	are not binding and which don't matter. By this separation of
+	concerns free variable extraction has been redefined reusing
+	the boundin notion.
+	
+	* spec/slib/spec/unification.r: Layout + new syntax.
+	
+	* spec/slib/spec/pack-graph.r: Using new ? <= syntax.
+	
+	* spec/slib/spec/io.r: New version of debug; debug(msg) prefixes
+	the printed term with msg (should be a building strategy).
+	
+	* spec/slib/spec/list-set.r: Redefined collect, now parameterized
+ 	with a strategy for stopping recursion.
+
+	* spec/slib/spec/simple-traversal.r: New traversals that are
+ 	parameterized with a stop operator that can be used to cut of
+ 	recursion. More documentation.
+	
+	* www/sud.html: Announcement of the first Stratego Users Day.
+
+2000-02-28    <visser@cs.uu.nl>
+
+	* spec/*/Makifile.am: Repaired bootinstall targets.
+
+	* src+spec/slib/spec/: Added sglr.r and gpp.r to Makefiles.
+
+	* spec/slib/spec/pack-modules.r + spec/syn/pack-stratego.r:
+ 	Parameterized pack-modules with a strategy for determining the
+ 	target of the generated dependency file.
+
+2000-02-27    <visser@cs.uu.nl>
+
+	* spec/front/spec-to-sdefs.r: Introduced scope for implicitly
+	declared variables in strategy definitions.
+	Removed obsolete code for adding definitions of primitives. 
+
+	* spec/front/use-def.r: Relaxed the requirement for declarations
+ 	of variables; variables that are not explicitly declared in a
+ 	strategy definition are implicitly declared.
+
+	* test/static/: Testing of implictly declared variables in
+	strategy definitions.
+
+	* spec/slib/spec/gpp.r + sglr.r: As yet empty files to contain
+ 	interfaces to the pretty-printing and parsing tools.
+
+	* spec/slib/spec/list-set.r: Improved the definition of
+	collect such that it does not have to concatenate empty
+	lists when nothing is found in a subtree. It should still
+	be determined whether this is actually more efficient.
+
+	* spec/slib/src/exec.c: Improved error messages given by
+	<call> on failure.
+
+	* spec/sc/proto-sc.r: Allow file extension for root module on
+	commandline by transforming file to basename.
+
+	* spec/*/Makefile.am: Added executables to CLEANFILES variables
+ 	because bin_SCRIPTS elements are not automatically thrown away.
+
+	* spec/slib/spec/options.r: iowrap prints "program (time secs)"
+	instead of "rewriting succeeded (time secs)".
+
+	* spec/slib/spec/pack-modules.r: General user-interface for
+	packing modules reachable from root module. Includes creation
+	of a dependency file for inclusion in makefiles.
+
+	* spec/syn/pack-stratego.r: Refactored the definiton of module
+ 	packing in order to extract a language independent formulation of
+ 	the algorithm.
+
+	* spec/syn/stratego.grm: Introduced new syntax for 'assignments';
+	the strategy expression ?t <= s is equivalent to s; ?t and to
+	s => t. The advantage of this new syntax is that it is clearer
+	than with the s => t syntax what the target of the assignment is.
+	If s is a large expression the t can be difficult to spot.
+
+2000-02-26    <visser@cs.uu.nl>
+
+	* doc/library/body.ltx: Changed the order of the modules in
+	the library to get better clustering.
+
+	* spec/slib/spec/pack-graph.r: The strategy previously called
+ 	'worklist' has been renamed to 'graph-nodes'. It is a generic
+ 	algorithm for mapping a graph to a collection of nodes reachable
+ 	from a given root node. The algorithm is parameterized with the
+ 	following notions: 'get-node' maps a node name and a graph to the
+ 	node itself, 'out-edges' maps a node to the names of its out
+ 	edges, 'add-node' that adds a name and its corresponding node to a
+ 	collection of nodes. It can be used to pack a collection of
+ 	modules into a single file.
+
+	* spec/slib/spec/string.r: Added 'basename' strategy that
+	removes the extension from a filename (also succeeds if
+	no extension available).
+
+	* spec/*/*.c: Removed generated C code from repository.
+
+	* share/Stratego.Make: Makerules for compiling Stratego
+	specifications.
+
+	* spec/sc/proto-sc.r: Integrated pack-stratego
+
+	* spec/syn/parse-mod.c: Removed path handling inherited from
+ 	parse-stratego that made it impossible to parse a file at an
+ 	absolute path.
+
+2000-02-25    <visser@cs.uu.nl>
+
+	* spec/syn/pack-stratego.r: The packing algorithm works. Next step
+ 	is integration into proto-sc.
+
+2000-02-24    <visser@cs.uu.nl>
+
+	* doc/compiler/intro/xmpl/*.r: Files contained GPL copyright
+ 	notices which were cluttering up the paper.
+
+	* share/bib/other.bib + pp.bib: bibliographies for pretty-printing
+ 	and other things with references that are used in the
+ 	documentation. This is not intended to be a complete bibliography
+ 	about anything.
+
+	* spec/sc/proto-sc.r: Added -f option to removal of intermediate
+ 	files such that no error message is displayed for non-existing
+ 	files.
+
+2000-02-23    <visser@cs.uu.nl>
+
+	* test/*: Added several regression tests
+
+	* spec/syn/pack-stratego.r: Instantiation of the module packing
+ 	algorithm for Stratego.
+
+	* spec/slib/src+spec/io.[cr]: Added file-exists primitive
+ 	strategy.
+
+	* spec/slib/spec/pack.r + test/pack/*: A generic framework for
+ 	packing and unpacking modules. Parameterized by the parser, the
+ 	shape of imports and modules and the way to construct the
+ 	result. Based on a worklist approach that repeatedly transforms a
+ 	configurations until done.
+	
+	* spec/syn/stratego.grm + test/syntax/*: The imports, sorts and
+ 	operations sections of a specification can now be empty. This
+ 	makes it easier to generate Stratego specifications.
+
+	* src/*/Makifile.am: Reinstalling Stratego gave some problems
+ 	because the installed include files are read before the local
+ 	include files. This is problematic when aterm and stratego
+ 	installation directories coincide. One solution is to uninstall
+ 	the stratego distribution before remaking. I have also changed the
+ 	order of the includes in the makefiles to prevent this problem in
+ 	the future.
+	
+2000-02-21    <visser@cs.uu.nl>
+
+	* Release 0.4.8
+	
+	* test/lists + tests/options: Added files missing in distribution
+
+	* src/slib/spec/: bootinstalled
+
+	* doc/Makefile.am: Added rules for making documentation.
+
+2000-02-20    <visser@cs.uu.nl>
+
+	* spec/sc/proto-sc.r: Repaired option handling by the compiler
+ 	(Thanks Merijn) and extended the usage information printed when
+ 	something is wrong or when requested.
+
+2000-02-19    <visser@cs.uu.nl>
+
+	* spec/syn/stratego.lx: Removed '|' from characters that can
+	start a lowercase identifier because of conflict with new
+	syntax for lists. (What was it there for in the first place?)
+
+	* spec/slib/spec/*.r: Randomly applied the new syntax for lists,
+	replacing Cons and Nil by [|] notation.
+
+	* spec/slib/spec/abox.r: Split into abox.r and abox-ext.r. The
+ 	former defines the interface to Box, the latter defines syntactic
+ 	abstractions and strategies for constructing boxes. On request
+ 	from Otto provided rudimentary documentation to the abox
+ 	interface.
+
+	* cvs commit (Sat Feb 19 13:10:31 GMT 2000)
+
+	* bootstrap + bootinstall
+	
+	* src/slib/spec/: Added forgotten files to the repository.
+
+	* spec/syn/stratego.grm Extending list syntax to allow for
+ 	specification of tail in Prolog style, i.e.,
+	[x, y | z], where x and y are the first two elements and z is the
+ 	tail. This is translated to Cons/Nil notation. [x, y | z] is
+ 	equivalent to Cons(x, Cons(y, z)).
+
+	* spec/rts/aterm-extension.[ch]: Changed list_to_cons_* and
+ 	list_to_cong* functions to deal with new list syntax; this
+ 	entailed parameterizing the functions with a tail argument.
+	
+2000-02-16    <visser@cs.uu.nl>
+
+	* spec/slib/spec/exec.r + io.r: Moved definition of exit from
+	io to exec.
+
+	* share/emacs/stratego.el: Commented out the tab-indent stuff
+	because it doesn't consider the context correctly.
+
+	* bootstrap + bootinstall
+
+	* spec/syn/stratego.lx: Changed the lexical syntax of comments
+	(can now contain *s) and strings (quotes in strings are handled
+	properly). (Thanks Merijn)
+
+2000-02-14    <visser@cs.uu.nl>
+
+	* spec/slib/spec/options.r: Completed change
+
+2000-02-11    <visser@cs.uu.nl>
+
+	* spec/slib/spec/options.r: Started to change the definition of
+ 	iowrap/1 using the option parser. Not yet completed, but the old
+ 	definition is still functional.
+
+	* spec/slib/spec/parse-options.r: Generic parser for lists of
+ 	options of the form ["-i", "file", "-silent", "-o", "outfile"] to
+ 	terms of the form [Input("file"), Silent(), Output("outfile")].
+
+	* spec/slib/*/exec.[rc]: Added call-noisy/0, which has the
+ 	function of the original call/0 (calling an external process) and
+ 	replaced call/0 by a silent version, which does not print out the
+ 	call.
+
+2000-02-10    <visser@cs.uu.nl>
+
+	* www/maillist/stratego: The list
+
+	* doc/tutorial/xmpl/Makefile.am: Added the missing files to the
+ 	distribution target. (Thanks Karina)
+
+	* spec/syn/stratego.lx: Changed lexerror to print newlines after
+ 	an error message. (Thanks Merijn)
+
+2000-02-08    <visser@cs.uu.nl>
+
+	* src/slib/spec/Makefile.am: Added memo.r to the installation
+ 	list.
+
+	* www/configurations.html: List of working and problematic
+ 	configurations for installation
+
+2000-02-07    <visser@cs.uu.nl>
+
+	* Release 0.4.7
+
+	* Completed Makefiles with respect to distribution
+
+2000-02-06    <visser@cs.uu.nl>
+	
+	* doc/library: added memo module
+
+	* Added install files: mkinstalldirs, missing, and install-sh
+	
+	* bootstrapped + bootinstall
+
+	* spec/syn/stratego.grm: Changed abstract syntax of call to
+ 	(default) traversal in a context rule to Call(SVar("..."), [])
+ 	such that needed def analysis does include these traversals.
+
+	* spec/front/needed-defs.r: Overloading of strategy operators is
+ 	allowed for operators of different arity. This required changing
+	the needed definitions computation and the inlining strategy.
+	
+	* spec/lib/StratLibTest.r: Added unit testing for elements of the
+ 	Stratego compiler library.
+
+	* spec/slib/spec/substitution.r: Refactored the definition of free
+ 	variables extraction; use of variables is replaced by applications
+ 	of split; variables containing variables are now supported; this
+ 	is useful if a variable from a call is extracted together with
+ 	some information from its arguments. A new version
+ 	vars-eq(vars,bnd,eq) supports an equality predicate to decide
+ 	equality of bound variables.
+
+	* share/emacs/stratego.el: Adapted indentation definitions to my
+ 	taste (only 2 from left margin instead of 4), but this creates a
+ 	problem for operator declarations, which should be indented more.
+  	Can a distinction between rules and operator declarations be made?
+	
+	* spec/slib/spec/simple-traversal.r: breadthfirst strategy a la
+ 	Muchnik; first process all children, then recursively process all
+ 	subtrees. This is only semi breadth-first.
+
+2000-02-01    <visser@cs.uu.nl>
+
+	* spec/slib/spec/memo.r: Memo operator based on table constructs
+
+	* spec/slib/src: Removed MatchPair from io.c, included of tables.h
+	in stratego-lib.h
+	
+2000-01-28    <visser@cs.uu.nl>
+
+	* share/emacs/stratego.el: emacs mode for stratego contributed by
+ 	Otto Bagge.
+
+2000-01-27    <visser@cs.uu.nl>
+
+	* Directory test/ is intentended for the collection of regression
+ 	tests. The first test is a simple shift-reduce parser in
+ 	test/parser.
+
+2000-01-24    <visser@cs.uu.nl>
+
+	* Changed documentation links back to .gz because of quota on www
+ 	server.
+
+2000-01-20    <visser@cs.uu.nl>
+
+	* Release 0.4.6
+
+	* Added a copy permission to the documentation.
+	
+	* bootstrap + bootinstall
+	
+	* spec/slib/src/term.c: the primitive <kids> is obsolete, but
+ 	still defined. It prints a warning about obsolesence. It is no
+ 	longer used in the compiler and will be removed in a couple of
+ 	releases.
+	
+	* spec/slib/src/term.c: new primitive <address> turns a term into
+ 	its address.
+	
+	* spec/slib/spec/share.r: introduction of explicit sharing by
+ 	turning term into its underlying graph and then inlining those
+ 	edges that occur only once or have to be inlined anyway. (Inspired
+ 	by a question from Oege de Moor)
+
+2000-01-19    <visser@cs.uu.nl>
+
+	* spec/slib/spec/bin-tree[-set].r: binary trees; one application
+ 	is the representation of sets
+
+	* spec/slib/src/term.c: _address_lt compares the addresses of two
+ 	terms; spans a unique ordering on terms that can be used for
+ 	sorting
+
+	- How does this behave under rehashing?
+	
+2000-01-15    <visser@cs.uu.nl>
+
+	* Added GPL copyright notice to all files
+
+2000-01-12    <visser@cs.uu.nl>
+
+	* spec/slib/spec/share.r: a first attempt at solving Oege's
+ 	explicit sharing introduction problem
+
+2000-01-05    <visser@cs.uu.nl>
+
+	* Updated NEWS file
+
+	* Release 0.4.5
+	
+	* bootstrap + bootinstall
+	
+	* spec/slib/spec/ + spec/: replaced renaming strategy rename by
+ 	new version with slightly different parameters, which make it
+ 	possible to define a shape context for the name of the variable to
+ 	be renamed.
+
+	* bootstrap + bootinstall
+
+	* spec/slib/: Added primitive print-stack that prints the top n
+ 	elements of the stack if applied as <print-stack> n or the entire
+ 	stack if applied to a non-integer term.
+	
+	* spec/slib/src: Split prim.c into separate modules corresponding
+	to the declaration of primitives in specification modules.
+
+	* doc/tutorial: Added illustration of application of single
+ 	transformation rule. Updated examples of error messages.
+
+	* www/: updated the information about the distribution
+
+1999-12-22    <visser@cs.uu.nl>
+
+	* spec/slib/spec/rename.r: simplified definition of rename
+	
+	* spec/slib/spec/substitution.r: refactored free variable
+ 	collection using collect-kids, avoiding stacked bindings.
+
+	* spec/slib/spec/list-set.r: Repaired collect-split; strings are
+ 	treated in the wrong way by mkterm. Redefined collect in terms of
+ 	collect-kids, which is defined in terms of explode-term.
+
+	* Introduced Kids as an alternative to kids; it produces a *list*
+	of arguments (as opposed to a tuple).
+	
+	* spec/slib/spec/abox.r: added some more useful abstractions
+	
+	* bootstrapped and bootinstalled
+	
+1999-12-21    <visser@cs.uu.nl>
+	
+	* spec/syn + front/: added syntax and desugaring for `lambda
+ 	rules' of the form \F(x, G(y)) -> H(x, y)\. Such rules declare a
+ 	new scope for the variables in the lhs of the rule but not for the
+ 	variables in the rhs and condition of the rule that do not appear
+ 	in the lhs.
+	
+	* spec/slib/spec/rename.r: new version of rename that can deal
+ 	better with typed variables without requiring tagging of the name
+ 	only.
+	
+	* spec/slib/spec/list-set.r: new strategy collect-split(f, g)
+	reduces terms with f and extracts information with g resulting
+	in a pair (t, xs) of a reduced term and the list of extracted
+	subterms.
+	
+	* doc/tutorial/xmpl/traversals.r: repaired an eternal typo in
+	the traversals example
+
+1999-12-15    <visser@cs.uu.nl>
+
+	* Release 0.4.4b
+	
+	* www/: anounced the new release and announced the mailing-list
+	stratego@cs.uu.nl
+
+	* bootstrapped and bootinstalled
+
+	* spec/*/*.r.dep: removed, don't belong in repository
+	
+	* spec/*/Makefile.am: removed builtsources definitions to prevent
+	double compilation of the generated C files
+
+1999-12-14    <visser@cs.uu.nl>
+
+	* spec/slib/src/stratego-lib.c: Incorporated fix of
+ 	_implode_string by Merijn de Jonge (thanks). Can now deal with any
+ 	size strings.
+	
+	* spec/syn/parse-stratego.c: Changed "module.comp" target in
+ 	generated module.r.dep file to a "module" target, since .comp is
+ 	no longer generated by sc.
+
+1999-12-07    <visser@cs.uu.nl>
+
+	* doc/tutorial: present rules for prop. formulae in separate
+	section
+
+1999-12-05    <visser@cs.uu.nl>
+
+	* Added README.in (parameterized with version number) now with 
+	updated installation information
+	* Changed titlepages style file for documentation; now: titlepage,
+	copyright page and summary page. So that table of contents can 
+	start at even page.
+	* Removed Makefiles, Makefile.ins and .depends from CVS repository
+	* Installed new documents at the web site. Added link to old tutorial.
+
+1999-12-04    <visser@cs.uu.nl>
+
+	* doc/tutorial:
+	* Finished the "Stratego by Example" section, which gives an overview
+	of developing Stratego Specifications.
+	* Extended the example of simplification of propositional formulae
+	with more laws and a module with truth rules. In addition the 
+	constructors Impl, Eq, False, True have been added. Allowing for
+	different normal forms (e.g., implicative normal form that only
+	uses implication and False).
+	* Added a debugging section (not yet finished)
+	* Improved the installation instructions (thanks Andrew)
+	* Updated the description of the structure of the distribution.
+	* New chapters on primitives and advanced features.
+	* Chapter "Concrete Syntax" renamed to "Connecting to Outside
+	Components" with sections on parsers and pretty-printers.
+
+1999-12-02    <visser@cs.uu.nl>
+
+	* Working on The Tutorial
+	* Revised and finished the introduction and installation chapters
+	* Started with the revision of the "Stratego by Example" chapter.
+	Not yet finished.
+
+	* proto-sc no longer produces .comp files but uses the basename
+	of the main module as name of the executable.
+	* Added (description of) new release to the web page
+
+1999-12-01    <visser@cs.uu.nl>
+
+	* Release 0.4.4a 
+	
+	* The attempt to treat aterm built-in lists as first-class
+ 	citizens has gone horribly wrong somewhere. I'm now reverting to
+ 	the previous working version and committing only those changes
+ 	(e.g., in the documentation) that do work. Then first release 0.5a
+ 	without built-in lists and then another attempt.
+
+	* Added some files from the attempt that are harmless and needed
+	in the future.
+
+	* Number of new ideas for improvements/extensions in TODO
+	* Creating version 0.4.4a for the time being
+	* Creating sc from sc.in during configuration
+
+	* All documents use standard titlepage
+	* Added rts sources to compiler document
+	
+	
+1999-11-15    <visser@cs.uu.nl>
+
+	* Titlepages for library and compiler documentation
+
+	* Cons/Nil also applies to ATerm lists:
+	  - added rule to automaton generation (ConsHead(), ConsTail())
+	  - compilation of Cons, Nil, and ConsHead, ConsTail in compiler.r
+	  -> only for matching; building and congruence still needs to be
+	     done
+	  -> also: rts needs to be extended
+
+1999-11-12    <visser@cs.uu.nl>
+
+	* Brought the documentation sources in doc/ up to date
+	* Got dist and distcheck to work
+	* Created a fresh CVS repository for the new setup of the 
+	implementation
+	* Checked that the repository is complete and that it can
+	make, bootstrap and distribute.
+	* Added previous release dates to this log
+	* The directory tree:
+	- doc/
+	  - doc/compiler/
+	  - doc/library/
+	  - doc/reference/
+	  - doc/tutorial/
+	- include/          : C include files
+	- lib/              : executable libraries
+	- share/
+	  - share/bib/
+	  - share/stratego/ : Stratego library
+	  - share/tex
+	- spec/             : Stratego sources of compiler
+	- src/              : generated C sources of compiler
+	- www/
+
+1999-11-11    <visser@cs.uu.nl>
+
+	* Got making, bootstrapping and bootinstallation to work with
+ 	autoconf/make. Directory src/ containts the bootstrapped source,
+ 	i.e., the C code generated from specifications (either Stratego,
+ 	LEX/YACC, or whatever). Directory spec/ contains the entire
+ 	specification of the compiler. This directory should be used to
+ 	develop a new version. After bootstrapping (with make target
+ 	bootstrap in spec/), the new version can be installed in the
+	src tree by means of bootinstall.
+
+	* Started using emacs supported ChangeLog instead of hand-made
+ 	CHANGES
+	
+Mon Nov  8 15:41:56 GMT 1999
+
+ * Starting to bring the stratego package under autoconf
+ * Added intermediate file removal to sc
+ * Put header files for the run-time system in a subdirectory
+   called stratego. The stratego.h header file includes these
+   files. To prevent file-name collisions when installing.
+ * Created a logo for Stratego that looks vaguely like this:
+
+	/|\
+       / | \
+      /  |  \
+     /   |   \
+   \/   \ /   \/
+   /\   / \   /\
+  /  \ /   \ /  \
+  ---------------
+
+  see lib/tex/logo
+
+Fri Nov  5 11:40:33 GMT 1999
+
+ * Separated implementation of primitives from the run-time system.
+   Primitives are now defined in the library. This makes the run-time
+   system more stable and the library easier to extend.
+ * New target docinstall to make all documentation and install PostScript
+   files in doc/; There are now four documents: The Stratego Tutorial, 
+   Reference Manual, Library and Compiler.
+
+Thu Nov  4 19:11:35 GMT 1999
+
+ * New setup of the Stratego webpage
+
+Tue Nov  2 18:39:47 GMT 1999
+
+ * New setup of the Stratego implementation completed
+ * Makefile for entire implementation
+   with bootstrap target 
+ * Changes in interface to sc:
+   - -i mod instead of just mod
+   - -IL "-Ldir" to pass include directories to gcc
+   - -CL "-Ldir -llib" to pass libraries to gcc
+ * Documentation in doc/
+
+Mon Nov  1 14:44:07 GMT 1999
+
+ * New setup of the Stratego implementation
+
+Mon Nov  1 14:27:36 GMT 1999
+
+ * Treatment of overlays as pseudo signature declarations.
+ * Simplified transformation of variables to constants (when they are)
+ * Added -CC (compile C code only) and -h, -?, --help flags to sc
+ * sc: Any number of -I options can now be specified
+ * Using new option processing mode: collect options of a kind
+
+Sat Oct 23 18:55:48 BST 1999
+
+ * Added table operations (interface to ATerm tables) to the primitives
+ * <explode-term> f(t1,...,tn) -> ("f", [t1,...,tn])
+ * terms.c: list_to_consnil_shallow
+ * Added identifier without parentheses as possible overlay in trs.grm
+
+Sun Oct  3 20:07:47 BST 1999
+
+	 * RELEASE 0.4.3a
+	
+ * Added stdio operator to lib/stratego/io.r
+ * Repaired int-to-string; was broken after extension of div to yield
+   real values
+ * Some useful abbreviations in lib/stratego/text.r
+
+Sep 7, 1999
+
+	* RELEASE 0.4.2a
+	
+Mon Aug 30 11:23:09 BST 1999
+
+ * Added real numbers as primitive datatype.
+ * Primitives for arithmetic have been extended (overloaded) to
+   real numbers. New primitive int maps a real to an integer.
+ * strategy averages in lib/stratego/int-list.r computes the averages
+   of the columns of a list of list of numbers.
+ * string-to-num extends string-to-int by recognizing real numbers of
+   the form [0-9]+[\.][0-9]+.
+ 
+Mon Aug 23 16:18:43 BST 1999
+
+ * Added module int-list (library) for common operation on lists of 
+   integers (e.g., sum, average).
+ * Applying explode-string to a non-string no longer leads to a warning.
+ * Added -pp option to invoke printing of pretty-printed text produced
+   by the box expression in lib/stratego/text.r. The option assumes that
+   the strategy produces text boxes in normal form.
+ * Inclusion of the library module text.r in io.r had several consequences
+   for naming in compiler modules; name-space is becoming full; is it
+   time for a hiding mechanism?
+ * Renamed the "sort" strategies in list-sort to "sort-list" to prevent
+   confusion.
+ * Corrected path to bin in INSTALL
+
+Sun Aug 22 23:50:47 BST 1999
+
+ * Added the "printascii" primitive in prim.[ch] that prints the integers
+   in a list as ascii characters.
+
+Fri Aug 20 17:43:26 BST 1999
+
+ * Adapted implode-asfix to deal with literals injected into alternatives
+   (should be removed by rm-layout)
+
+Tue Aug 17 10:08:00 BST 1999
+
+ * Improved utils/implode-asfix.r so that it can deal with ambiguities
+   in parse trees. This makes it possible to inspect ambiguities at the
+   abstract syntax level.
+
+Mon Aug 16 00:06:47 BST 1999
+
+ * It is no longer a fatal error to try to explode a non-string term;
+   it is just a failure.
+ * Bootstrapping only uses 4 phases now (this is sufficient, isn't it?)
+
+Aug 12 1999
+
+	* RELEASE 0.4.1a
+	
+Fri Jul 30 16:22:13 BST 1999
+
+ * Added primitives for opening files. Print looks up the file descriptor
+   for a file in a table.
+
+Thu Jul 29 15:41:05 BST 1999
+
+ * Introduced prim keyword in language that can be used to introduce
+   primitive strategy operators.
+
+   A prim("f") expression is translated to a call to the C function f.
+
+ * Moved the definitions of primitive operators from the compiler 
+   to the library. In this way it becomes much easier to add new
+   primitive operators. Instead of extending the language and
+   bootstrapping, just add a definition
+
+      f = prim("implementation_of_f")
+
+   in an appropriate module and provide the implementation of f in
+   C file that is linked with the strategy library.
+
+   see lib/stratego: integers.r string.r
+
+ * Added primitives for file IO in lib/stratego/io.r. This provides
+   a definition for iowrap(s) that does all the handling of options
+   that was previously done by the default main procedure. The new
+   main procedure provided in strategy-main.c only builds a term
+   consisting of a list of the command-line arguments. These are
+   then unpacked and interpreted by the wrapper. In this manner
+   it becomes much easier to make custom command-line option handling
+   and file IO.
+
+ * Added primitive "call" for execution of external processes. See
+   lib/stratego/exec.r
+
+ * Wrote sc.r; a specification of the Stratego compiler that glues
+   together the components of the compiler.
+
+Thu Jul  1 04:55:42 BST 1999
+
+ - Note: rules for Choice(s, id) -> s are wrong!
+ * Repaired error in needed-defs; MissingDef should be applied to result
+   of previous transformations.
+ * Binary input and output for generated transformers
+ * Changed the implementation of BuildVar[d] in strategy.h to fail in case
+   of an unbound variable instead of exiting.
+
+
+Jun 30, 1999
+
+	* RELEASE 0.3a
+	
+Wed Jun 16 10:26:33 BST 1999
+
+ * Added primitives is-int and is-string for testing whether a term
+   is an integer or a string constant.
+ * Forgot a case in merging of matching automata
+
+Wed Jun  9 11:44:23 GMT 1999
+
+ * New traversal operator: thread(s) with semantics
+
+      Pair(t1, e1) - s -> Pair(t1',e2) ... Pair(tn, en) - s -> Pair(tn',e')
+      ---------------------------------------------------------------------
+      Pair(f(t1,...,tn), e1) --- thread(s) ---> Pair(f(t1',...,tn'), e')
+
+   used to thread an environment through a traversal. 
+
+ * It is used in the definition of MakeLinear (automaton.r)
+
+ *  New matching automaton generator (automaton.r). Patterns in a choice
+    of strategies guarded by a match are first translated to a matching
+    automaton that defines a pre-order traversal of a tree to match the
+    pattern. The automaton uses the actions Down and Up to traverse the 
+    tree. The automata for a choice are then merged. This is very similar
+    in principle to the old way of doing it, but more elegant. New features:
+ 
+    - special matching instructions (not strictly necessary, but was
+      useful for getting insight
+    - continuation passing style of these instructions (instead of using
+      Seq)
+    - insight: if one automaton wants to do an Up and another a Down (or
+      MatchFun, ...) then the first should also do a Down step followed
+      by an Up step; the first automaton does not want to inspect the
+      subtree, but there is no harm in following the second automaton in
+      actually doing it.
+
+Mon May 31 12:17:34 CEST 1999
+
+ * Implemented the overlay mechanism. Affects: 
+   - syntax
+   - normalization
+   - use-def
+   - specs-to-sdef
+ * Implemented static link mechanism to correctly handle static
+   scopes under recursion. There is an extra stack that keeps track
+   of activation records and static links to enclosing activation
+   records. New operations are Epushd(i, o), Epopd(i, o) and BuildVard(x)
+   and MatchVard(x). The rcs variable in the compiler rules are used
+   to keep track of the static nesting level.
+ * Documented modules normalize-spec, use-def
+ * New module stratego has complete abstract syntax of the language
+
+Tue Mar  9 13:04:08 CET 1999
+
+ * Support for higher-order strategy arguments. Strategy operators can
+   be passed to strategy operators. Partial applications are not
+   supported.
+ * Enhanced handling of sequences in parse trees, these are mapped
+   to tuples (utils/implode-asfix)
+
+Tue Mar  2 09:49:52 CET 1999
+
+ * Created ./configure script in boot/ to configure the Makefile and sc
+   script
+
+	* RELEASE 0.2a
+
+Mon Mar  1 09:38:58 CET 1999
+
+ * boot/sc : a script for compiling Stratego specifications
+ * Moved transformation of variables that are unary constructors to
+   normalize-spec.r. Now use-def analysis works correctly. 
+ * Added translation to error messages with explanations.
+ * Documentation of library to lib/stratego
+
+Fri Feb 26 17:19:55 CET 1999
+
+ * design/use-def.r : use-def analysis for term variables in rules
+   and strategies. Purpose is to detect variables that are used in
+   build constructs without a previous match. 
+ - The analysis works,
+   but problem are unary constructors in terms that are parsed as
+   variables. Move the transformation of these variables to constructors
+   to the normalize-spec phase.
+
+Fri Feb 26 13:03:31 CET 1999
+
+ * Added a normalization phase to the frontend that gathers constructor
+   declarations, rule and strategy definitions. Result: triple of
+   constructors, rules and strategies.
+
+Fri Feb 26 11:15:25 CET 1999
+
+ * Better error reporting in case of unbound variables and recursion
+   stack overflow. Reduced the undefined strategy operator situation
+   to an error message.
+ * Introduced a FAIL operator in the library that does not get simplified
+   away.
+ * On final failure (no choice points left) a transformer returns the 
+   top of the stack. This term is printed (currently to the designated
+   output file, but maybe a special error target should be provided).
+   The transformer then exits with error code 1. This in order to
+   make components that indicate that something went wrong, but still
+   want to report what it was.
+ * Added vars.r to repository
+
+Wed Feb 24 17:36:36 CET 1999
+
+ * Improvement in handling of injections in implode-asfix
+
+Mon Feb 15 17:47:52 CET 1999
+
+ * Implemented explode-string primitive
+
+	
+ * Setup for introduction; needs simple first example
+ * Setup for examples chapter
+ * All examples/modules are read using input and should be in litstyle
+	
+Thu Feb 11 12:40:38 CET 1999
+
+ * new bootstrap
+ * extended makefiles to create distribution directory
+
+Tue Feb  9 15:16:38 CET 1999
+
+ * implode-asfix in utils/ works: translates trees over wflang.sdf to
+   terms complying to the signature of wflang.r.
+ * Documentation in utils/doc
+ * The recursive pattern in xmpl/fusion/wflang-check.r checks the output
+   of this conversion 
+
+ - Problems: 
+   - overloading of strategy operators: sort in list-sort and sort congruence
+     in asfix.r, there is no way to resolve this except actually renaming
+     of the operators (not the congruence).
+   - there seem to be bugs in the matching tree computation; see TODO
+
+Tue Feb  9 10:55:57 CET 1999
+
+ * Added a utils/ directory for general utitilities written in Stratego.
+ * Almost complete initial version of a tool to convert SDF2 parse trees
+   to corresponding abstract syntax trees.
+ * Added an includes mechanism to the parser such that an include
+   directory containing library modules can be specified using the
+   commandline option -include <dir>
+ * Changed syntax to ignore case in term constructors. This means that
+   lowercase and uppercase identifiers can be used as constructors and
+   variables. Unary constructors are distinghuised from variables by looking
+   at the signature declarations. This means that a constructor not declared
+   in the signature will be treated as a variable.
+ - Because of this several missing declarations were added.
+ * vars.r: all variables from a specification (special case of a general
+   collection strategy: make this)
+ * Moved library files in design to design/lib
+
+Thu Dec 31 14:48:38 CET 1998
+
+ * Command line option handling: see rts/option.[hc]. Uniform for
+   all tools. Options handled now are:
+           tool [-silent] [-i file] [-o file] [-stats] [-help|-h]
+ * Bug in rts/trs.lx: whitespace between imports was not ignored
+
+Thu Dec 24 15:09:39 CET 1998
+
+ * Adapted inlining approach to do less inlining, i.e., only operators
+   with arguments and nullary operators corresponding to rules are inlined.
+   As a consequence the frontend no longer produces a single strategy
+   expression, but a list of sdefs.
+ * Code generation for list of SDefs
+ * Repaired bug in code produced for Fail
+ * Updated todo list.
+
+ - There is a bug in MakeLinear
+
+Mon Nov  9 11:17:53 PST 1998
+
+ * Found bug in the transformation that computes the matching 
+   automaton; due to insufficient renormalization of branches,
+   variable cases would be skipped in the ChoiceMerge' phase.
+   Repaired by being more careful about reconstruction; mainly
+   maintain right-associativity of sequences.
+
+   Went from rules with contexts to rules with explicit traversals
+   in conditions; control over order of traversals is important.
+
+ * Discovered while developing numeric expression example. See
+   xmpl/numexp
+
+ * collect strategy creates list of all outermost redexes of a term
+   for some strategy
+
+Tue Nov  3 11:10:47 PST 1998
+
+ * Special implementation for fetch of a matching strategy. Translates
+   tail recursion into a loop. Does not use recursion stack to keep
+   track where it is. Once a matching element is found it jumps to
+   the end of the loop and is done.
+
+ * Special implementation for oncetd of a matching only (i.e., no
+   building) strategy. The specialization does not rebuild the term
+   after inspecting it, since a strategy without builds cannot change
+   the subject term. This should be generalized to arbitrary traversals
+   without builds; but this requires some analysis to determine that
+   the call to one, some or build (often to a recursion variable) does
+   not involve builds.
+
+ * Used pseudo-innermost3 in matching-tree. This strategy normalizes
+   reducts three levels deep, whereas innermost' re-normalizes the
+   reduct completely doing a lot of unnecessary work. Three levels deep
+   is enough for most rules; this fails if there is a rule with right-hand
+   side deeper than threel levels that creates new redices.
+
+ * Added syntax and desugaring for semi-rules. A rule
+   L :: s1 --> s2 where s3 abbreviates the strategy definition
+   L = {x1,...,xn: s1; where(s3); s2}. This is useful for rules
+   that use overlays instead of real patterns.
+
+ * Created new modules design/specialized.r for the specification of
+   exceptions to the normal straightforward translations.
+
+ * Used overlays for the Repeat(s1, s2) pattern in design/specialized.r
+
+Tue Oct 27 09:40:52 PST 1998
+
+ * New syntax: ?t for match(t), !t for build(t)
+ * Introduced term annotation operators @!(l, t) for add annotation with
+   label l and term t and @?(l, t) for match annotation with label
+   l against pattern t. Does work for small examples, but application
+   in innermost leads to garbage collection problems (annotations that
+   get collected while still referenced). The abstract syntax of these
+   operations is: AnnBuild, AnnGet, AnnRemove
+ * Use of innermost' instead of innermost in matching-tree leads to
+   reduction of 50%.
+ * Repaired bug in rts/terms.c; wrong recursive call in list_cong_aux
+ * Removed some dead comments from grammar
+ * Documentation of the compiler now in design/doc/
+
+Fri Oct 23 12:32:52 PDT 1998
+
+ * Renaming of some of the traversals in design/lib.r
+ * Experimenting with traversals in matching-tree to find out where the
+   complexity is. (Probably in the application of ChoiceMerge to merge
+   branches with the same prefix.)
+ * Added some new simplification rules for idempotent application of
+   Where, Not and Test.
+
+Wed Oct 21 14:56:40 PDT 1998
+
+ * Match trees are now working. It is instructive to study the performance
+   of the components with and without this feature. The optimizer and backend
+   do 2 to 3 times better, while the frontend is not affected at all. (The
+   addition of extra asserts may have added a small performance penalty.)
+   This becomes also clear by looking at the mt (for matching-tree) column:
+   it spends only 0.76 in the frontend, but 10.19 in the optimizer and 42.19 
+   in the backend.
+
+   Extend match trees technique to left choices, choices of congruences and
+   combinations of these.
+
+Wed Oct 21 14:01:14 PDT 1998
+
+ * Implemented matching trees (also known as discrimination nets).
+   See design/matching-tree.r. This is an extra component in the
+   compiler pipeline, which is now formed by:
+
+   frontend | optimizer | matching-tree | optimizer | backend | postprocess
+
+   The matching tree transformation improves on the previous Case
+   transformation. The idea of the latter was the following
+
+    Choice(Seq(MatchFun(f), s1), 
+    Choice(Seq(MatchFun(f), s2),
+           Seq(MatchFun(g), s3))) ->
+   
+    Case([(f, Choice(s1, s2)), (g, s3)])
+
+   that is, small matching prefixes are committing, i.e., once you
+   have seen an f you know you don't have to backtrack to try to
+   match it as a g.
+
+   The match tree transformation extends this to the arguments of
+   operators.
+
+ * This version does not yet use the discrimination net transformation.
+   But does use the new implementation of Matching. (With Arg(x))
+   With this feature stable, I can make another attempt at bootstrapping
+   the discrimination net addition.
+
+ * Don't mix up your units! I replaced branches of a choice by an
+   Id instead of fail while merging some branches, i.e.,
+
+	Choice(a, b) -> Choice(F(a, b), Id)
+
+   This is of course wrong, because this means the choice can now always
+   succeed. This took me a while and some peering in the generated abstract
+   machine code to realise. It is time for an automatic checker of the 
+   correctness of the rewrite rules;-)
+
+ * There were some bugs(?) in the abstract machine instructions. Put in
+   more asserts to detect violations. Strange that these problems didn't
+   show up before. For instance, MatchFun didn't distinghuish between strings
+   and constructors. Redefined the kids() instruction
+   by means of other instructions instead of by means of a recursive
+   C function. For some reason the old implementation triggered a problem
+   in the garbage collector.
+
+ * Numbered some of the simplification rules. It is instructive to see
+   in the profile counts which rules are actually used. Very few.
+
+ * Wrote term pretty-printer that deals with tuples. Tuples are internally
+   represented as TCons/TNil lists, but are printed as ( , ..., ).
+
+
+Fri Oct 16 16:43:26 PDT 1998
+
+ * Restricted the application of CongBuild to cases where the
+   branches of the build are only dependend on variables matched
+   in the same branch.
+
+   CongBuild did not work because the variables in MatchVar where
+   not recognisable as such. Solution: keep Var(x) tags around the
+   variable name. (Also necessary to keep renaming to work.)
+   Future: don't translate Match(Var(x)) -> MatchVar(Var(x)).
+
+   In order to make the CongBuild rule applicable at all it was
+   necessary to perform a fusion loop before the other simplifications
+   that lift MatchFuns out of scopes for the purpose of case merging.
+
+   The CongBuild rule does work, but does not seem to be very effective.
+   There are only a few places where it can be applied. 
+
+   This is a special case of traversal fusion. If two similar
+   traversals are applied sequentially, they can be merged into a
+   single traversal. (Basically the map fusion of functional
+   programming generalised to traverals of arbitray datastructures.)
+   However, this kind of fusion becomes problematic in the presence
+   of side-effects (Match). (Consider fusion for strategies without
+   free variables.)
+
+ * Implementation of abstract machine instructions as procedures does
+   not seem to impede the speed of generated components.
+
+Thu Oct 15 16:30:53 PDT 1998
+
+ * Restarted work on warm fusion specification.
+
+ * Reached the limit of capabilities of gcc with current #define approach.
+   Reimplemented abstract machine instructions as procedures instead
+   of as #defines. Seems to speed up C compilation time considerably.
+
+   Problem to be solved: jumping to (failure) continuations from within
+   an instruction. Global jumping seems to mess up the stack. Solution
+   is to have such instructions return the address to jump to or NULL.
+   A wrapper takes care of the jump.
+
+   (Discovery: linked libraries should be specified in reverse order,
+   i.e., library used by other libraries last.;-)
+
+ * Shorter rule for definition of contextual rules.
+
+ * Match-Build fusion: A match followed (with Seq) by a build
+   can be fused. Or, a congruence followed by a build can
+   be fused. Also the other way around. But Match-Build is more
+   common. This merges building up part of the original term in
+   the right-hand side of a rule with the matching of the left-hand
+   side.
+
+ * App(s, t) is no longer eliminated by the desugaring phase, but
+   handled directly by the backend. This creates more opportunities
+   for Match-Build fusion. 
+
+ ! Well, actually Match-Build fusion and keeping App turns out to
+   be more complicated. With Match-Build fusion the problem is that
+   before building the new term it is necessary to know all variables
+   from the match. For instance, consider
+
+      match(((x, y), (xs, ys))); build(Cons(x, xs), Cons(y, ys))
+
+   we cannot fuse these expressions into 
+
+      (match((x, y));   build(Cons(x, xs)), 
+       match((xs, ys)); build(Cons(y, ys)))
+
+   because xs will not be known at the time of building Cons(x, xs).
+
+   But the basic idea is still attractive: reuse the structure that
+   is already on the stack. 
+
+   In this version the fusion transformations are disabled.
+
+ * Tail recursion elimination: pattern repeat(s) (rec x((s; x) <+ s'))
+   can be treated specially. Created specialized compilation
+   rules in compiler.r to handle such exceptions. These are tried
+   before other rules of the compiler. 
+
+   (This optimization does not seem to produce a significant speed-up.
+   Nonetheless it has the benefit that it uses a constant depth term-
+   and choice stack as opposed to a stack that gets as deep as the
+   number of repetitions.)
+
+ * Case merging: Generalized the rules for transforming choices to
+   case statements such that a choice of cases is merged.
+
+ * Added rule counters for each rule. The desugaring phase adds an
+   invocation of the primitive CountRule(f) with f the label of
+   the rule in sequential composition *after* the rule has completely
+   succeeded. A postprocessing component is added to the compiler that
+   extracts the names of the counters and creates initialization code
+   for them. (See desing/postprocess.r)
+
+   Generated transformers print profiling information to stderr
+   including the application count for each rule. (Future work:
+   make this information optional.)
+
+Tue Oct 13 16:34:14 PDT 1998
+ 
+ * Found bug in transformations for Case introduction. Now we have
+   new stable compiler. This optimization gives 2 to 3 times faster
+   components. The bug was caused by applying the Identity elimination
+   rules (I) in the conChoice traversal without a default. Is now
+   try(I). This is tricky stuff.
+
+ * Refined the time measurements printing to include some decimals.
+
+Tue Oct 13 14:21:28 PDT 1998
+
+ * Bootstrapping protocol encoded in design/Makefile. Use make bootstrap
+   to propagate modifications to the compiler.
+
+ * Measuring performance and effects of optimizations on compiler itself.
+   (See design/PERFORMANCE)
+
+ * Extended peephole optimizer with rules for eliminating double labels
+   for the same statement. Is currently not used, because not completely
+   working. Does decrease code size, but probably not signicant for
+   run-time. The problem is interesting as a paradigm for distributing
+   information up and down the tree.
+
+ * Guarded choices. Choices of which all branches with a MatchFun can
+   be treated as a case statement. No need for using the choice stack
+   in these cases. Once one MatchFun has succeeded there is no need
+   to check the others. (Assuming the MatchFuns are disjunct.)
+   As part of this transformation congruences are translated to a sequence
+   of a function match and a congruence with wildcard function symbol.
+   For this purpose introduced Case, CongWld and MatchFunFC constructs.
+
+   (At this point there is some devious bootstrapping phenomenon that
+   keeps this from working.)
+
+ * Found a bug in definition of subs in subs.r. alltd(try(s)) is a vacuous
+   strategy. This turned up in strategy definitions with arguments and
+   multiple definitions. (The only place where substitution is used at
+   the moment.)
+
+ * Wrote a special purpose parser for ATerms. This works much better.
+   There is still a problem with the performance of the ATerm writer
+   that cause too many garbage collects. Probably wrong way of doing
+   output. (See sml/)
+
+ * There where some bugs in the run-time system. There were no asserts
+   for overflow of the recursion and choice stacks. This made it difficult
+   to detect these overflows, which showed up as overflows of the term
+   stack.
+
+ * Stack sensitive strategy for flattening a tree of nested block
+   instructions into a single list of instructions. 
+   (See design/ins-simplification.r)
+
+ * Traversal strategies for list in design/list-basic.r
+
+ * Renaming of SVars changed such that strategy macros with arguments are
+   renamed as well.
+
+Thu Oct  8 16:40:25 PDT 1998
+
+ * Wrote a combinator parser for ATerms. This turns out to be a bad idea. The
+   parser is terribly slow. Next experiment is to build an MLYacc parser.
+
+Wed Oct  7 16:55:18 PDT 1998
+
+ * Implementation of ATerms in SML. See sml/
+   Datatype, parser and pretty-printer done. To finish input and output
+   from file. Possible problem: maximum length of strings in ML. 
+
+Tue Oct  6 20:43:51 PDT 1998
+
+ * Combined the first four components into the frontend.
+   The last two of these, desugaring and inlining, can fail if the
+   the needed-defs transformation fails to find some strategy 
+   definition.
+ * Started experimenting with compilation of rules with multiple
+   interdependent contexts.
+
+Mon Sep 21 13:55:37 PDT 1998
+
+ * Ported instruction pretty-printer to new ATerm library.
+ * Described bootstrapping protocol in README
+
+Mon Sep 21 11:39:38 PDT 1998
+
+ * Created boot/ directory containing the generated C code for the
+   compiler components. To create a compiler on any platform it
+   is now sufficient to have gcc.
+
+Mon Sep 21 10:47:24 PDT 1998
+
+ * Bootstrapped the strategies compiler!
+
+ * Debugged port of run-time system in rts/ 
+ * Added a procedure to the parser that prints a makefile %.r.dep
+   with dependencies for a module %.r. This file can be included in
+   a makefile.
+ * The directory xmpl/test contains small test specifications testi.r 
+   that target various parts of the compiler. make test should succeed
+   if compiler is correct.
+ * Debugged specification of compiler.
+ * Split optimization into simplification rules and more complicated
+   rules. Only simplification rules are used currently.
+
+ * Created first rule for peephole optimization of generated
+   instructions.
+
+Thu Sep 17 17:34:08 PDT 1998
+ 
+ * Ported run-time system to work with new version of ATerm C library;
+   in rts/
+ * Adapted the trs-parser to the library rts/
+ * worked a bit on presentation of specification in design/
+
+(Some of the changes relating to the design before Sep 17 are logged
+in design/CHANGES)
+
+Mon Jul 13 14:09:57 PDT 1998
+
+ * generalized syntax for imports to have list of imported modules
+
+Wed Jul  8 23:28:50 PDT 1998
+
+ * Changed the syntax of the strategy languages as follows:
+   - sequential composition s1 . s2  is now  s1 ; s2
+   - recursion rec x . s   is now  rec x(s)
+   - rules and definitions no longer followed by a ;
+   - an imports can have a list of modules instead of a single
+     module
+
+Thu Jun 25 19:16:31 PDT 1998
+
+ * Almost bootstrapped the frontend component. 
+ * Made makefiles more portable
+
+Wed Jun 24 14:13:31 PDT 1998
+
+ * Split the compilers into components: frontend, inline, optimizer,
+   backend.
+ * seq (new abstract machine implementation)
+   Makefile creates libstrategy.a for use in gcc compiling generated
+   c files
+ * Extended contexts with optional name of traversal strategy to use.
+
+Tue Jun 23 10:28:09 PDT 1998
+
+ * Added literate programming convention to syntax of strategy language.
+   Pieces of code are embedded in \begin{code} \end{code} pairs. A
+   literate file should start with \literate. 
+
+ ! There is a bug in ML-LEX:  backslash cannot be specified as [\\] or as 
+   "\begin". This is apparentlyinterpreted as a control character. Solution: 
+   use [\092], the ascii code of \.
+
+Thu Jun 18 18:08:39 PDT 1998
+
+ * Implementation of new abstract machine in directory seq
+ - strategy.[ch] : implementation of the instructions
+ - strategy-main.c : provides shell around the implementation of a
+   strategy that reads a term from stdin, reduces it and prints the
+   result.
+ - terms.[ch] : some auxiliary functions on terms
+ - debug.[ch] : some functions and macros for debugging
+
+ * TODO
+ - Implementation of primitives for arithmetic etc.
+ - The environment is not saved before a choice. This means that some
+  variables can become instantiated in a failing alternative and then
+  not be restored to unitialized.
+ - The environment is accessed by counting from the top of the
+  stack. That is, a variable that is number n in the current scope is
+  represented by the n-th element from the top of the environment
+  stack. This schema breaks if the environment grows dynamically with
+  recursion and variables from a scope outside the recursion are
+  accessed inside it. For instance,
+   {x, y: match((x, y)) . build(y) . 
+          rec loop . ({t: ... . build(x) . ... . loop})}
+ - Make stack sizes dynamic or at least configurable from the
+  command-line.
+
+ * Repaired some bugs in SML implementation:
+   - added where around translation of application in build
+   - added compilation of primitives for integer arithmetic
+ 
+ * Repaired some bugs in old implementation in toc:
+   - floating point error in profiling when duration 0
+   - added implementation of primitives for integer arithmetic
+   - _op versions of list_to functions for use in parser: a list
+     usded in rewrite rule should be represented by means of
+     Op("Cons", ...) not by Cons(...).
+   - fixed a bug in the import mechanism of the parser
+
+Mon Jun  8 16:25:00 PDT 1998
+
+ * Started work on compiler from strategies to instructions. Based
+   on local backtracking semantics of +
+   The compiler embeds strategies (with some context information, i.e.
+   continuation labels) into instructions. This embedding is refined
+   by the compilation rules.
+
+Wed May  6 16:36:53 PDT 1998
+
+ * Todo: use direct calls to symbolic labels by &s1 instead of
+   using the jump table. According to Andrew this is possible
+   in gcc.
+ * Added counting code in the generated C code. Counted are: number
+   of matches, number of builds, number of rule application. Todo:
+   profiling of individual rules in specification.
+   This provides profiling information of the form:
+
+	rewriting succeeded
+	(11 seconds, 3949 steps, 359 steps/sec, 17721 bms, 1611 bms/sec
+
+   Here bms are builds and matches.
+ * Added garbage collection: After 10000 recursive calls the 
+   garbage collector is called. This can be improved.
+ * Function tuple_cong constructs a tuple congruences, but 
+   distinguishes a singleton tuple. 
+ * In encoding functions distinction is now made between TCons and "TCons".
+ * Changed the parser to %pure mode.
+ * Cleaned up the code for expanding imports. 
+
+Mon May  4 17:01:15 PDT 1998
+
+ * Solved the import problem. But not in LEX or YACC, this seems to
+   be impossible. Instead I simply check the parse tree for a module
+   and expand all Imports(file) structures by parsing file.
+
+Mon May  4 10:17:41 PDT 1998
+
+ * Parser for strategy specifications in LEX & YACC: trs.lx & trs.grm
+ - problem: implement import mechanism; recursive call to the parser
+   does not seem to work.
+ * Restructured C implementation:
+	strategy.h : macros & declarations for abstract machine
+	strategy.c : functions for abstract machine
+	main.c 	   : a main function for use with compiled specifications
+	trs_parser.c : main function for parser
+	debug.h/c  : macros for debugging
+	term_aux.c : some functions for terms (list to cons/nil, etc.)
+
+Thu Apr 30 18:06:28 PDT 1998
+
+ ! The first version of the desugar and optimize pipeline works !
+
+ * Implemented the primitive strategy str_gt for comparing strings.
+ * Found out how to distinguish strings from functions: solved "Cons"/Cons 
+   problem.
+
+Wed Apr 29 17:12:31 PDT 1998
+
+ * Debugged generation of new variables. Problem is not solved
+   but it is now diagnosed.
+
+Tue Apr 28 22:38:28 PDT 1998
+
+ * Introduced single operator Prim(x) for nullary primitives such
+   as new.
+ * Replaced SApp by Label. Label can have arguments.
+ * Removed term arguments to strategy operators (~t). Terms have
+   to be passed on the term stack, for instance by building a
+   tuple of all terms to be passed.
+ * Changed definition of contexts: a topdown pass is done that
+   replaces exactly one occurence of the context pattern.
+ * Added definition of strategy application in term building (TApp) and
+   translation of this to strategy (see contexts.sml)
+ * Removed definition of copy from copy.sml; Only new is a primitive.
+   Renaming of bound variables is done by a strategy. See the 
+   library subs.r
+ * Added merging of strategy definitions with the same label (and
+   thus also rule definitions with the same label).
+ * Added definition of kids: replace an application by a tuple consisting
+   of the arguments of the application.
+ * Updated grammar to the redesigned language: no term arguments of
+   strategies, strategy application in rhs, tuple notation, kinds,
+   rules in strategies now between << and >>, one, etc.
+ * Continued with the cleanup operation; renaming mml into sml etc.
+
+
+ * Implemented new and kids in C preamble: Kids translates the list
+   of arguments into a tuple represented by TCons/TNil.
+ * Implemented one like some
+
+Sun Apr 26 13:02:38 PDT 1998
+
+ * Starting to update the implementation to the new design according
+   to the specification in design/
+ * renamed all .mml files into .sml files
+ * moved all interface files (parsing and stuff) into src
+ * renamed fol.grm etc into trs.grm etc
+ * introduced directory xmpl for example specifications
+ * added ICFP paper to bibliography
+
+Mon Mar 23 11:23:31 PST 1998
+
+ ! I compiled the RML optimizer and ran it on the record example.
+   It seems to work!
+ * To do: we need a let construct to prevent code explosion.
+   Can simply be compiled in the same way as recursive calls.
+ * Fixed bugs caused by the transition to fall-through style;
+   At many positions an explicit goto to success continuation
+   is needed at the end of the code.
+ * S(x) matching: A term S(t) matches with an integer constant i
+   if i > 0 and t matches with i - 1.
+ * When failing in a recursive call the failure should be handled by
+   the caller in the same way as success is handled. Therefore, both
+   the success and the failure continuation are pushed onto the return
+   stack.
+ * A mechanism for synchronisation of the choice stack and lchoice
+   stacks was needed. The method now is as follows: on entering a
+   lchoice (like operation), first a mark (a unique integer) is pushed
+   both on the choice and on the lchoice stacks. When the lhs of the
+   lchoice succeeds, all choices until the mark are popped. This 
+   preempts backtracking under lchoice, where, test and negation. For
+   the latter two this is correct, but for the first to this does not
+   correspond to the operational semantics. But I don't know a better
+   way at this point.
+   An example is: where(A + B) . (fail <+ C)
+ * Generate comments as part of the C code, for ease of identification
+   of the results.
+ * Changed many operations in the preamble from defines to actual
+   procedures. To limit the amount of code presented to gcc.
+ * Made the state global again. This might be a problem if independent
+   strategies are compiled and need to be combined.
+ * Introduced a variable debugging that indicates the level of 
+   debugging desired.
+
+Fri Mar 20 16:43:41 PST 1998
+
+ * Cleaned up C preamble
+ * Improved compilation of matching
+ * Build is now done by calling individual Tmk functions for each subterm.
+ * By default a compiled piece of code continues with the next statement
+   on success 'fall through'.
+ * Started definining signature for lists using polymorphic types in the
+   style of ATLAS/MLS.
+
+Sun Mar 15 17:52:16 PST 1998
+ 
+ * Worked hard on implementation of compiler. Almost all constructs
+   are done now. Still struggling with some bugs. The compiler is
+   very straightforward and dumb at this point. There should be a
+   large number of optimizations made. But as a first prototype
+   it's ok.
+
+ * Renamed Push into Where
+ * Added new construct: Test
+ * Compilation of almost all constructs, including:
+   all, some, congruence, path.
+ * Improved translation of left choice; a separate stack is
+   needed to deal with it to get the commit effect; once the
+   left part has succeeded, the right part should never be
+   executed.
+ * New and copy are translated, but not yet implemented in the
+   C preamble.
+ * For several constructs I added a more abstract definition
+   of the translation. This is material for a paper.
+ * Added environments to the state
+ * Defined matching no longer by means of Tmatch, but by
+   means of generated code. Is very crude now. Should
+   be improved. But it does handle non-linear patterns
+   and variables defined earlier.
+ * Code for build reads values of variables from the environment.
+   Can not yet handle int and string arguments because of <appl>
+   placeholder, should be <term> but this is not provided by
+   ATermLib
+ * improved C datatype and its pretty-printer 
+   (added construct for representing comments)
+   am having troubles with the infix operators
+ * new list function: find_index
+
+Thu Mar 12 22:36:41 PST 1998
+
+ * Started implementation of strategy to C compiler (toc.sml).
+ * Got first strategy to compile and run in C.
+ - Todo: environments and scopes in C + translation of
+   several operators
+ * Improved Tim's C pretty-printer a bit.
+ * New list functions: split, iota
+
+Tue Mar 10 23:04:08 PST 1998
+
+ * Hand-compiled a small strategy expression to C with ATerms.
+ * Borrowed C datatype in SML and a library for pretty-printing.
+   This will be used to generate C code.
+  (Installed Aterm library)
+
+Mon Mar  2 12:31:53 PST 1998
+
+ * Strategy functions can now have term arguments, e.g. in(~v, ~e).
+   The constructor is Arg.
+ * Renamed Eps into Id
+ * Renamed Mu into Rec
+ * Push takes a strategy. No more pop. Push 'copies' the current term
+   applies the strategy to it and when successful throws away the
+   term. Only the environment is kept. This is to express temporary
+   computations, e.g. in conditions.
+ * The functions that build the SIn(C(...)) strategy terms are now
+   called C' instead of c.
+ * Strategy substitution is parameterized with a strategy substitution
+   -and- a term substitution. Implements instantiation of bodies of
+   strategy definitions.
+ * new list function: zipsplit.
+ * Changed use of td_cata into more explicit definition doing the
+   recursion explicitly. Less code.
+ * Repaired broken definition of scope. Now all local variables are
+   pushed on the environment stack before entering the scope and
+   are popped afterwards.
+ * Added wildcards in terms. Notation _ (underscore).
+ * Added syntax for signatures. Types are terms. allowing a two-level
+   (polymorphic) type system. No typechecking is done yet.
+ * Added typechecking rules and strategy for the RML terms in rml.r
+
+Fri Feb 27 00:19:34 PST 1998
+
+ * Started to add push and pop strategies, implementation not yet
+   ready.
+ * Removed the general Pd strategy, because the boolean operator
+   made strategies into an non-equality type.
+ * Finished implementation of conditions. (But they should start with
+   a push and end with a pop.)
+ * Context terms can have a where condition, i.e. e[f where ...]
+   in order to do some checking and intermediate computation in the
+   local rewrite implied by a context. This introduces the problem 
+   of strategies in terms. Therefore terms are parameterized with
+   the notion of condition which is instantiated with strategies.
+   Strategies are also parameterized with such a type variable. In
+   this way strategies and terms have become a mutually recursive
+   datatype. This complicates traversals: catamorphism-like functions
+   have been extended with an extra function argument to apply to
+   the condition parameter.
+ * Hack: strategy substitution has a boolean flag that determines whether
+   substitution should descend into terms embedded in strategies. This
+   is necessary to defined strategy macros that are parameterized with
+   terms. A better solution should be found, i.e. some kind of indication
+   whether the argument is a term or a strategy. This is the reason for
+   introducing the StratToTerm exception.
+ * Added new example: rewrite rules for optimizing strategy expressions.
+ * Changed the MakeStrMap function to deal with copies of the same
+   subterm that introduce the same binding variable. The boolean flag of 
+   the function tells it whether or not to look for the old new name for
+   a variable or whether to generate a new new name;-)
+ * Changed syntax of scope to {vars : strategy}, where vars is a list
+   of variables. It may be necessary to make these variables also
+   parameterizable.
+ * Changed syntax of rules in strategies to <t1 -> t2 where s>.
+ * Changed syntax of assignment in condition to s => t.
+ * The problem with the s/r conflicts produced by [] is now resolved.
+ * Adapted the RML example in rml.r to the new syntax. Still some bugs
+   in definition (Inl1), probably due to need for push and pop.
+ * The sources.cm files define which files the SML compile manager should
+   read.
+
+ (Working too late again)
+
+
+Tue Feb 24 18:28:16 PST 1998
+
+ * The file extension for specifications is .r because the language is
+   called R, for really right rewriting.
+ * Have added a simple syntactic inclusion mechanism for specifications.
+   A declaration "imports file" has the effect that file is read at
+   that position as a specification, i.e. a list of declarations.
+ - (This entailed calling the parser inside the definition of the parser;
+   to circumvent ML's module restrictions the parser is now parameterized
+   with a function to call on imports. This is filled by a call to the
+   final parse function itself, but because of recursion a fixed point
+   has to be used.)
+ * Introducing some new abbreviations:
+   apply a strategy to a term: [s] t means build(t) . s
+   match the result of applying a strategy: s -> t means s . match(t)
+ * Conditions seem unavoidable. I have started adding conditions to
+   rewrite rules. The idea is that a condition is nothing more than
+   strategy expression. This entails a couple of changes in the
+   syntax and in the interpretation functions. A rule is now written
+   as 
+
+		t1 -> t2 where c
+
+   Here c makes typically use of the constructs introduced above, e.g.
+
+   		t1 -> t2 where [s] t3 -> t4
+
+ ! The syntax does not work yet because of the many shift/reduce
+   conflicts caused by the overloading of [ and ]. So I'll probably
+   have to find some other notation for application
+
+
+Mon Feb 23 17:19:06 PST 1998
+
+ * Made usage of structures local in all structures
+ * Use = instead of streq
+ * Renamed structure List into MyList to avoid confusion with SML
+   library module
+ * All strategies are defined in the interpreter. If an unknown strategy
+   is encountered this is reported by printing a message.
+ * The file rml.trs contains the rules for RML optimization.
+   Contains notes about new features to add and alternative translations.
+
+
+Mon Feb 23 10:21:11 PST 1998
+
+ * Added strategy new(x) that binds the term variable x to a new string.
+ * Introduced copy strategy. It always succeeds and replaces the root
+   by a copy of the root in which all bound variables have been renamed
+   to new variables. The copy function is a parameter of the evaluation
+   function.
+ * Introduced congruence strategies. Cons(s1, s2) will succceed on
+   a Cons term if si succeeds on i-th argument. No new constructor has
+   been introduced, but the SApp constructor is reused. A congruence
+   strategy is a strategy function that is not defined.
+ * Changed the scope constructor: it now introduces a list of variable names
+   that are removed from the environment (undefined) when entering the
+   scope. This allows for local scopes that inherit some variables and
+   locally introduce some others. 
+ ->When generalizing this we will probably wind up with a proper scoping
+   mechanism using a stack with local variables. In the current scheme
+   previously existing bindings can be destroyed by a local scope.
+
+ * Changed constructor All into Alls to avoid confusion with the List.All
+   function.
+ * Changed use of @ for string concatenation to the standard ^.
+ * Using = to test term equality.
+ * Parser translates term lists [t1, ..., tn] to Cons/Nil lists to allow
+   writing rewrite rules over lists. (No list matching is provided yet, 
+   might not be necessary.) The function consnil_to_lst provides the
+   backward translation.
+ * Remove function on tables to remove all entries for some key.
+
+Thu Feb 19 19:46:17 PST 1998
+
+ * Added strings to the language and datatype of terms.
+ -> todo: remove double-quotes after parsing
+
+ * Added copy.sml for making copies of terms with new variables;
+   using the module gensym from the metasml implementation
+ * Added constructors All and Some for strategies. This allows
+   to pretty-print these operators (Pd(f,s) with f a function can
+   not be pretty-printed; it is also not possible to determine which
+   operator it was originally.) I will remove Pd from the abstract
+   syntax and only use it as an implementation notion.
+ * Added pretty-printer for strategies. (all pretty-printers are non
+   pretty, i.e. only generate a flat string)
+ * Fixed bug in foldr1
+ * Removed structure Absyn from parser; just open all modules needed
+   for abstract syntax
+ 
+ ! Warning: introduced function All in List and constructor All in
+   Strategies.
+
+Tue Feb 17 20:00:49 PST 1998
+
+ * updated documentation of the SML program. Make in src will give you
+   Doc.dvi
+ * Put all list functions in lists.mml
+ * Reorganized some functions, i.e. closer to definition of the main
+   datatype they work on.
+ * There is now a function |rewrite| that applies a strategy to a term
+   given the term, the strategy and a list of strategy definitions.
+ * Cleaned up the grammar files
+
+Tue Feb 17 17:31:37 PST 1998
+
+ * Added the following basic strategies:
+    Match(t) : succeeds if the term t is matched, it extends the substitution
+        for variables introduced in t
+    Build(t) : succeeds and replaces the term by the instantiation of term t
+    SRule(t1, t2) : anonymous rewrite rule, synonymous with Label(l), where
+        l is defined as l : t1 -> t2
+
+ * Added the following composite strategy combinator:
+    Neg(s) : succeed if s fails and vice versa
+
+ * The notion of top-down catamorphism replaces the problematic strat_x_map:
+   td_strat_cata (and similarly td_term_cata) takes a test and two functions
+   phi1 and phi2; the first is applied if test yields true the second if
+   test yields false; in the latter case the cata is applied recursively
+   to the children first.
+
+ * The file contexts.mml defines the replacement of contexts in rewrite
+   rules. See the file for an explanation.

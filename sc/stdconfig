@@ -1,0 +1,15 @@
+#! /bin/sh
+
+./reconf
+./configure --prefix=`pwd` \
+	--with-aterm=/home/visser/res/sandbox/aterm \
+	--with-cgen=`pwd`/../cgen \
+	--with-cpl=/home/visser/res/sandbox/cpl \
+	--with-gpp=/home/xt/xt \
+	--with-stratego-boot=`pwd` \
+	--with-stratego-lib=`pwd`/../stratego-lib \
+	--with-stratego-rts=`pwd`/../stratego-rts 
+
+#	--with-stratego-boot=`pwd` \
+#	--with-stratego-boot=/home/xt/xt \
+#	--with-stratego-boot=`pwd`/../stratego-boot \
