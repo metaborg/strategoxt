@@ -28,6 +28,13 @@ strategies
 
   try(s) = s <+ id
 
+  // a -> b :: a -> Option(b)
+  maybe(s) = !Some(<s>) + !None()
+
+  // a -> b, () -> b :: Option(a) -> b
+  maybe(s1, s2) : Some(a) -> <s1> a
+  maybe(s1, s2) : None()  -> <s2> ()
+
   if(c, b)      = c < b  + id
   if(c, b1, b2) = c < b1 + b2
 
