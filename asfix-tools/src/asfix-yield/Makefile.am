@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.6 2002/05/08 08:11:25 mdejonge Exp $
+# $Id: Makefile.am,v 1.7 2002/05/08 08:38:05 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -47,6 +47,7 @@ CLEANFILES   += asfix_yield1_check asfix_yield2_check
 SCFLAGS      += -I $(srcdir)/../asfix
 
 install-exec-local:
+	$(RM) ${bindir}/asource ${libexecdir}/asource
 	ln -sf asfix-yield ${bindir}/asource
 	ln -sf asfix-yield ${libexecdir}/asource
 
