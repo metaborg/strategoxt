@@ -1,4 +1,11 @@
+2004-05-02  Arthur van Dam  <adam@cs.uu.nl>
+
+	* nedit/stratego.pats: Updated keywords (if-then-else/switch-case).
+	Also some additional operator highlighting, and entirely updated for
+	the new dynamic rules syntax.
+
 2004-04-17  Shishir Ramam  <sramam@yahoo.com>
+
 	* vim/stratego.vim: Basic syntax highlighting for Stratego in the
 	vim editor is now available.
 
@@ -6,7 +13,9 @@
 	vim editor is now available.
 
 2004-02-22  Merijn de Jonge  <mdejonge@cs.uu.nl>
+
 	* Makefile.am: added autoxt.m4 to EXTRA_DIST
+
 	* Makefile.am: added line: ACLOCAL_AMFLAGS = -I . such that autoreconf
 	can find autoxt.m4
 

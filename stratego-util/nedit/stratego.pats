@@ -34,22 +34,32 @@ nedit.highlightPatterns: \
 		str LC:"/\\*":"\\*/"::Comment::\n\
 		str SC:"//":"$"::Comment::\n\
 		str LC B:"\\(\\*":"\\*\\)"::Comment::\n\
+		dynamic rules block:"rules[\\s]*\\(":"\\)"::Plain::\n\
+		dynamic rules block hl:"&":"&"::Keyword:dynamic rules block:C\n\
 		string:"L?""":"""":"$":String::\n\
 		character constant:"L?'.'":::Character Const::\n\
-		operators:"\\+|\\<\\+|\\+\\>|=\\>|\\-\\>|;|!|\\?|\\{\\||\\|\\}":::Keyword::\n\
-		str keyword:"<(?:all|constructors|end|fail|id|imports|in|let|module|not|one|overlays|prim|extend|override|rules|script|signature|some|sorts|strategies|stratego|test|thread|where)>":::Keyword::\n\
+		operators:"\\+|\\<\\+|\\+\\>|=\\>|\\-\\>|;|!|\\?|\\{\\||\\|\\}|:\\+|:\\-":::Keyword::\n\
+		str keyword:"<(?:all|case|constructors|end|fail|id|imports|in|let|module|not|one|overlays|prim|extend|otherwise|override|rules|script|signature|some|sorts|strategies|stratego|switch|test|thread|where)>":::Keyword::\n\
 		scopesSpec:"(\\{((\\s)*([\\l'\\-_][\\w'\\-\\*]*)(\\s)*,)*(\\s)*([\\l'\\-_][\\w'\\-\\*]*)(\\s)*:|\\})":::Label::\n\
 		str strategy def:"^[\\s]*([\\l'\\-_][\\w'\\-]*)[\\s\\n]*(\\([\\s\\n]*([\\l'\\-_][\\w'\\-\\*]*([\\s\\n]*,[\\s\\n]*[\\l'\\-_][\\w'\\-\\*]*)*)?([\\s\\n]*\\|[\\s\\n]*([\\l'\\-_][\\w'\\-\\*]*([\\s\\n]*,[\\s\\n]*[\\l'\\-_][\\w'\\-\\*]*)*))?[\\s\\n]*\\))?[\\n\\s]*=":::Identifier::\n\
 		str strategy def name:"\\1":""::Identifier:str strategy def:C\n\
 		str strategy def args:"\\2":""::Text Arg:str strategy def:C\n\
 		str strategy def term-args:"\\6":""::Text Arg1:str strategy def:C\n\
 		str rule def:"^[\\s]*([\\l'\\-_][\\w'\\-]*)[\\s\\n]*(\\([\\s\\n]*([\\l'\\-_][\\w'\\-]*([\\s\\n]*,[\\s\\n]*[\\l'\\-_][\\w'\\-]*)*)?([\\s\\n]*\\|[\\s\\n]*([\\l'\\-_][\\w'\\-]*([\\s\\n]*,[\\s\\n]*[\\l'\\-_][\\w'\\-]*)*))?[\\s\\n]*\\))?[\\n\\s]*:":::Plain::\n\
+		str dynrule def:"[\\s]*([\\l'\\-_][\\w'\\-]*)[\\s\\n]*(\\([\\s\\n]*([\\l'\\-_][\\w'\\-]*([\\s\\n]*,[\\s\\n]*[\\l'\\-_][\\w'\\-]*)*)?([\\s\\n]*\\|[\\s\\n]*([\\l'\\-_][\\w'\\-]*([\\s\\n]*,[\\s\\n]*[\\l'\\-_][\\w'\\-]*)*))?[\\s\\n]*\\))?([\\s\\n]*[\\+|\\.][\\w'\\-_]*)?[\\n\\s]*(:\\+|:\\-|:)":::Plain:dynamic rules block:\n\
 		str rule def name:"\\1":""::Identifier1:str rule def:C\n\
+		str dynrule def name:"\\1":""::Identifier1:str dynrule def:C\n\
 		str rule def args:"\\2":""::Text Arg:str rule def:C\n\
+		str dynrule def args:"\\2":""::Text Arg:str dynrule def:C\n\
 		str rule def term-args:"\\6":""::Text Arg1:str rule def:C\n\
+		str dynrule def term-args:"\\6":""::Text Arg1:str dynrule def:C\n\
+		str dynrule def label:"\\8":""::Text Key1:str dynrule def:C\n\
+		str dynrule def assignmentsym:"\\9":""::Keyword:str dynrule def:C\n\
 		str strat app:"\\<[^\\+\\s]":"\\>":"(//|/\\*)":Subroutine::\n\
 		str strat app nest1:"\\<[^\\+\\s]":"\\>"::Subroutine1:str strat app:\n\
 		string escape chars:"\\\\(?:.|\\n)":::String1:string:\n\
 		Concrete syntax:"\\|\\[[\\s\\n]":"[\\n\\s]\\]\\|"::String1::\n\
+		Debug-statements:"(output\\-nest[\\s\\n]*\\(|on\\-debug\\(\\|[\\w'][\\w\\-_']*(,[\\s]*""[\\s:\\w\\-_'.]*"")?\\)|on\\-say\\(\\|[\\w'][\\w\\-_']*(,[\\s]*""[\\s:\\w\\-_'.]*"")?\\))":::plaingray::\n\
 	}
 nedit.languageModes: 	Stratego:.str .r::::::
+nedit.styles:	plaingray:darkgray:Plain
