@@ -5,7 +5,7 @@ libexec_PROGRAMS = s2j
 
 LDADD += $(SSL_LIBS)
 
-STRINCLUDES    = -I $(XTC)/share/xtc -I $(JAVA_FRONT)/share/java-front -I $(STRATEGO_FRONT)/share/stratego-front
+STRINCLUDES    = -I $(XTC)/share/xtc -I $(JAVA_FRONT)/share/java-front -I $(STRATEGO_FRONT)/share/stratego-front -I ../syn
 
 SCFLAGS        = --main io-$* -O 2 --dr new
 
