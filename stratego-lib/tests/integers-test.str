@@ -24,7 +24,7 @@ strategies
   test1 =
     apply-test(!"test1"
 	, leq
-	, (5,5)
+	, !(5,5)
 	, !(5,5)
 	)
 

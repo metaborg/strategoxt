@@ -24,7 +24,7 @@ strategies
   apply-test(name, s, 'in, out) =
     do-test(name,
             (sunit-create-input('in); s <+ <debug> "  strategy failed"; fail) => tmp;
-  	    out => tmp'; 
+  	    sunit-create-output(out) => tmp'; 
 	    ((!tmp' => tmp)
                <+ (<debug(!"  result not equal : ")> tmp;
                    <debug(!"  expected         : ")> tmp'); fail))
@@ -84,6 +84,9 @@ strategies
 
   sunit-create-input(s) =
     s <+ say(!"error: input strategy for this test failed"); fail
+
+  sunit-create-output(s) =
+    s <+ say(!"error: output strategy for this test failed"); fail
 
   do-test(nr, s) =
     where(nr; debug)
