@@ -9,38 +9,92 @@
 module string
 imports list conditional iteration char
 
-rules
 
-  sect(op, arg) : x -> <op> (x, <arg>())
+strategies // primitives
 
-strategies
-  
-  // primitives
+  new = prim("SSL_new")
 
-  new		 = prim("SSL_new")
-  is-string	 = ?x; prim("SSL_is_string", x)
+  is-string	     = ?x; prim("SSL_is_string"     , x)
   implode-string = ?x; prim("SSL_implode_string", x)
   explode-string = ?x; prim("SSL_explode_string", x)   
 
-strategies
+strategies // concat
   
-  conc-strings = (explode-string, explode-string); conc; implode-string
+  // :: String * String -> String
+  conc-strings =
+      (explode-string, explode-string)
+    ; conc
+    ; implode-string
 
-  concat-strings = map(explode-string); concat; implode-string
+  // :: List(String) -> String
+  concat-strings =
+      map(explode-string)
+    ; concat
+    ; implode-string
 
-(*
-  int-to-string = 
-    rec x(split(sect(mod, !10); sect(add, !48), sect(div, !10); int);
-          (id, ?0; ![] <+ x); MkCons );
-    reverse;
-    implode-string
+strategies
 
-  string-to-int =
-    explode-string;
-    split(!0, id);
-    repeat(S2I2); 
-    S2I1
-*)
+  // :: String -> Int
+  string-length =
+      explode-string
+    ; length
+
+  // List(Char) -> List(Char) :: String -> String
+  string-as-chars(s) =
+      explode-string
+    ; s
+    ; implode-string
+
+strategies // for escaping to C like escape sequences
+
+  // :: String -> String
+  escape = string-as-chars(escape-chars)
+
+  // :: List(Char) -> List(Char)
+  escape-chars = 
+    rec x(
+       (Escape; [id, id | x])
+    <+ [id | x]
+    <+ []
+    )
+
+  // :: String -> String
+  unescape = string-as-chars(unescape-chars)
+
+  // :: List(Char) -> List(Char)
+  unescape-chars = 
+    rec x(
+      debug; try(UnEscape)
+    ; ([id | x] <+ [])
+    ; debug
+    )
+
+  // :: List(Char) -> List(Char)
+  Escape =
+      Escape-double-quote
+    + Escape-backslash
+    + Escape-linefeed
+
+  Escape-double-quote    : ['"'  | cs ] -> ['\', '"'  | cs ]
+  Escape-single-quote    : ['\'' | cs ] -> ['\', '\'' | cs ]
+  Escape-backslash       : ['\'  | cs ] -> ['\', '\'  | cs ]
+  Escape-linefeed        : ['\n' | cs ] -> ['\', 'n'  | cs ]
+  Escape-carriage-return : ['\r' | cs ] -> ['\', 'r'  | cs ]
+
+  UnEscape =
+      UnEscape-double-quote
+    + UnEscape-backslash
+    + UnEscape-linefeed
+    + UnEscape-tab
+
+  UnEscape-double-quote    : ['\', '"'  | cs ] -> ['"'  | cs ]
+  UnEscape-single-quote    : ['\', '\'' | cs ] -> ['\'' | cs ]
+  UnEscape-backslash       : ['\', '\'  | cs ] -> ['\'  | cs ]
+  UnEscape-carriage-return : ['\', 'r'  | cs ] -> ['\r' | cs ]
+  UnEscape-linefeed        : ['\', 'n'  | cs ] -> ['\n' | cs ]
+  UnEscape-tab             : ['\', 't'  | cs ] -> ['\t' | cs ]
+
+strategies
 
   escape(esc : List(String) * (List(String) -> List(String)) -> List(String) ) = 
     explode-string;
@@ -49,43 +103,67 @@ strategies
 
   cify = escape(Cify)
 
-  escape = 
-    explode-string;
-    rec x(Escape; [id, id | x] <+ [id | x] <+ []);
-    implode-string
-
-  bla(s) = 
-    where(\ x -> [x]\ ; debug(s))
-
-  unescape = 
-    //bla(!"unescape a: ");
-    explode-string;
-    //bla(!"unescape b: ");
-    rec x(try(UnEscape); ([id | x] <+ []));
-    //bla(!"unescape c: ");
-    implode-string
-    ///; bla(!"unescape d: ")
-
-  string-length =
-    explode-string;
-    length
-
 rules
 
   Cify(x) : [39 | cs] -> [95, 112, 95 | <x>cs]
   Cify(x) : [45 | cs] -> [95          | <x>cs]
   Cify(x) : [95 | cs] -> [95, 95      | <x>cs]
 
-  Escape : [34 | cs] -> [92, 34 | cs]	// " (double quote ")
-  // Escape : [39 | cs] -> [92, 39 | cs]	// ' (single quote)
-  Escape : [92 | cs] -> [92, 92 | cs]	// \ (backslash)
-  Escape : [10 | cs] -> [92, 110 | cs]  //   (newline)
+strategies // for quoting
 
-  UnEscape : [92, 34 | cs]  -> [34 | cs]
-  // UnEscape : [92, 39 | cs]  -> [39 | cs]
-  UnEscape : [92, 92 | cs]  -> [92 | cs]
-  UnEscape : [92, 110 | cs] -> [10 | cs]
-  UnEscape : [92, 116 | cs] -> [9 | cs]
+  // _ -> Char :: String -> String
+  quote(c) = string-as-chars(quote-chars(c))
+
+  // _ -> Char :: List(Char) -> List(Char)
+  quote-chars(c) = <quote-chars> (<c> (), <id>)
+
+  // :: Char * List(Char) -> List(Char)
+  quote-chars:
+    (c, chars) -> <conc> ([c | chars], [c])
+
+  // :: List(Char) -> List(Char)
+  single-quote-chars = <quote-chars> ('\'', <id>)
+  double-quote-chars = <quote-chars> ('"' , <id>)
+
+  // :: String -> String
+  single-quote = string-as-chars(single-quote-chars)
+  double-quote = string-as-chars(double-quote-chars)
+
+
+strategies // for unquoting
+
+  // Char -> fail? :: List(Char) -> List(Char)
+  unquote-chars(s) =
+      where(Hd;   s)
+    ; where(last; s)
+    ; Tl
+    ; init
+
+  // Char -> fail? :: String -> String
+  unquote(s) =
+    string-as-chars(unquote-chars(s))
+
+  // :: List(Char) -> List(Char)
+  un-single-quote-chars = unquote-chars(?'\'')
+  un-double-quote-chars = unquote-chars(?'"' )
+
+  // :: String -> String
+  un-single-quote = string-as-chars(un-single-quote-chars)
+  un-double-quote = string-as-chars(un-double-quote-chars)
+
+strategies
+
+  string-to-num =
+    explode-string;
+    split(!0, id);
+    repeat(S2I2);
+    ( S2I1
+    + S2D0;
+      repeat(S2D2);
+      S2D1
+    )
+
+rules
 
   S2I1 : (n, [])         -> n
 
@@ -100,56 +178,25 @@ rules
 	 (<add>(n, <div>(<subt>(m, 48), f)), <mul>(f, 10), ms)
          where <geq>(m, 48); <leq>(m, 57)
 
-strategies
+strategies 
 
-  string-to-num =
-    explode-string;
-    split(!0, id);
-    repeat(S2I2);
-    ( S2I1
-    + S2D0;
-      repeat(S2D2);
-      S2D1
-    )
+  // :: String -> String
+  lower-case = string-as-chars(lower-case-chars)
+  upper-case = string-as-chars(upper-case-chars)
+
+  // :: List(Char) -> List(Char)
+  lower-case-chars = map(to-lower)
+  upper-case-chars = map(to-upper)
 
 strategies
 
-  lower-case = 
-    explode-string;
-    map(lc);
-    implode-string
+  lc = obsolete(!"lc/0; use to-lower/0");
+    to-lower
 
-  lc = try(where(sect(geq, !65)); where(sect(leq, !90)); sect(add, !32))
-
-  upper-case = 
-    explode-string;
-    map(uc);
-    implode-string
-
-  uc = try(where(sect(geq, !97)); where(sect(leq, !122)); sect(subt, !32))
-
-rules
-
-  SplitInit : x -> ([], [], x)
-
-  SplitExit : 
-	(xs, cs, []) -> 
-	<reverse> [<reverse; implode-string> cs|xs]
-
-  SplitNext : 
-	(xs, cs, [32|ys]) -> 
-	([<reverse; implode-string> cs | xs], [], ys)
-
-  SplitNext : 
-	(xs, cs, [y|ys]) -> (xs, [y|cs], ys)
-	where <not(eq)> (y, 32)
+  uc = obsolete(!"uc/0; use to-upper/0");
+    to-upper
 
 strategies
-
-  split-at-space =
-    explode-string;
-    SplitInit;
-    rec x(SplitExit <+ SplitNext; x)  
 
   basename =
     basename(id)
@@ -182,22 +229,30 @@ strategies
   add-extension : 
     (name, ext) -> <concat-strings> [name, ".", ext]
 
-  quote(c):
-    s -> <concat;implode-string>[[char],<explode-string>s,[char]]
-    where c => char
+strategies
 
-  single-quote = quote(!39)
-  double-quote = quote(!34)
+  split-at-space =
+    explode-string;
+    SplitInit;
+    rec x(SplitExit <+ SplitNext; x)  
 
-  unquote(c) =
-	  explode-string => s
-        ; <Hd>s; c
-        ; <last>s; c
-	; <Tl;init>s
-	; implode-string
+rules
 
-  un-single-quote = unquote(?39)
-  un-double-quote = unquote(?34)
+  SplitInit : x -> ([], [], x)
+
+  SplitExit : 
+	(xs, cs, []) -> 
+	<reverse> [<reverse; implode-string> cs|xs]
+
+  SplitNext : 
+	(xs, cs, [32|ys]) -> 
+	([<reverse; implode-string> cs | xs], [], ys)
+
+  SplitNext : 
+	(xs, cs, [y|ys]) -> (xs, [y|cs], ys)
+	where <not(eq)> (y, 32)
+
+strategies
 
   split-at-dot =
 	  split(![],explode-string)
@@ -304,6 +359,12 @@ strategies
 	<+ \([],[_|_]) -> -1\
 	<+ !1
 	)
+
+strategies
+
+  sect(op, arg) = obsolete(!"sect/2; use term wrap patterns");
+    <op> (<id>, <arg> ())
+
 \end{code}
 
 % Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
