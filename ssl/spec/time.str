@@ -8,18 +8,128 @@
 
 \begin{code}
 module time
+
+signature
+  constructors
+    EpochTime     : Int -> EpochTime
+
+    ComponentTime : Date * DayTime * ComponentTimeDupl -> ComponentTime
+    DayTime       : Int * Int * Int -> DayTime // Hours, Minutes, Seconds
+    Date          : Int * Month * Int -> Date    // Year, DayOfMonth
+    Dupl          : Int * Int -> ComponentTimeDupl // DayOfWeek, DayOfYear
+   
+  constructors
+    January   : Month
+    February  : Month
+    March     : Month
+    April     : Month
+    May       : Month
+    June      : Month
+    July      : Month
+    August    : Month
+    September : Month
+    October   : Month
+    November  : Month
+    December  : Month
+
+  constructors
+    Sunday    : DayOfWeek
+    Monday    : DayOfWeek
+    Tuesday   : DayOfWeek
+    Wednesday : DayOfWeek
+    Thursday  : DayOfWeek
+    Friday    : DayOfWeek
+    Saturday  : DayOfWeek
+  
 strategies
 
-  // ABSOLUTE TIME
-
-  /*   time  returns the time since the Epoch (00:00:00 UTC, Jan­
+  /*   time  returns the time since the Epoch (00:00:00 UTC, JanÂ­
        uary 1, 1970), measured in seconds. */
-
   time = 
     prim("SSL_time")
 
-  // TODO: see localtime, gmtime, etc. to convert a time number to
-  // a broken down time.
+  // :: _ -> EpochTime
+  now-epoch-time =
+    prim("SSL_now_epoch_time"); !EpochTime(<id>)
+
+  // :: _ -> ComponentTime
+  now-local-time =
+      now-epoch-time; epoch2local-time
+
+  // :: _ -> ComponentTime
+  now-UTC =
+      now-epoch-time; epoch2UTC
+
+  // :: EpochTime -> ComponentTime
+  epoch2local-time =
+    ?EpochTime(t); prim("SSL_epoch2localtime", t); prim-tuple-to-ComponentTime
+
+  // :: EpochTime -> ComponentTime
+  epoch2utc =
+    ?EpochTime(t); prim("SSL_epoch2utc", t); prim-tuple-to-ComponentTime
+
+  // :: ComponentTime -> DayTime
+  just-day-time =
+    ?ComponentTime(_, <id>, _)
+
+  // :: ComponentTime -> Date
+  just-date =
+    ?ComponentTime(<id>, _, _)
+
+  prim-tuple-to-ComponentTime:
+    (s, mi, h, dm, mo, y, dw, dy)
+      ->
+    ComponentTime(Date(y, <index2month> mo, dm), DayTime(h, mi, s) , Dupl(<index2day-of-week> dw, dy))
+
+rules
+
+  // :: Int -> DayOfWeek
+  index2day-of-week : 0 -> Sunday()
+  index2day-of-week : 1 -> Monday()   
+  index2day-of-week : 2 -> Tuesday() 
+  index2day-of-week : 3 -> Wednesday()
+  index2day-of-week : 4 -> Thursday()
+  index2day-of-week : 5 -> Friday()
+  index2day-of-week : 6 -> Saturday()
+
+  // :: DayOfWeek -> Int
+  day-of-week2index : Sunday()    -> 0
+  day-of-week2index : Monday()    -> 1
+  day-of-week2index : Tuesday()   -> 2
+  day-of-week2index : Wednesday() -> 3
+  day-of-week2index : Thursday()  -> 4
+  day-of-week2index : Friday()    -> 5
+  day-of-week2index : Saturday()  -> 6
+
+rules
+
+  // :: Month -> Int
+  month2index : January()     ->  0
+  month2index : February()    ->  1
+  month2index : March()       ->  2
+  month2index : April()       ->  3
+  month2index : May()         ->  4
+  month2index : June()        ->  5
+  month2index : July()        ->  6
+  month2index : August()      ->  7
+  month2index : September()   ->  8
+  month2index : October()     ->  9
+  month2index : November()    -> 10
+  month2index : December()    -> 11
+
+  // :: Int -> Month
+  index2month : 0  -> January() 
+  index2month : 1  -> February()
+  index2month : 2  -> March()   
+  index2month : 3  -> April()   
+  index2month : 4  -> May()     
+  index2month : 5  -> June()    
+  index2month : 6  -> July()    
+  index2month : 7  -> August()  
+  index2month : 8  -> September() 
+  index2month : 9  -> October()   
+  index2month : 10 -> November()  
+  index2month : 11 -> December()
 
 strategies
 
