@@ -76,7 +76,7 @@ strategies
       )
 
   print-report-line
-    = value(Verbose(0);has-option(!WarningsAreErrors),
+    = option-value(Verbose(0);has-option(!WarningsAreErrors),
             ?ts; !(stderr,ts); printnl)
 
   obtain-wf-analyses
