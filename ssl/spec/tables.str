@@ -5,6 +5,47 @@
  */
 module tables
 imports list
+
+/**
+ * Hashtable representations
+ */
+signature
+  constructors
+    Hashtable : ImplDep -> Hashtable
+
+/**
+ * Hashtable construction and deconstruction
+ */
+strategies
+
+  new-hashtable =
+    new-hashtable(|117,75)
+
+  new-hashtable(|initial_size, max_load) =
+    prim("SSL_hashtable_create", initial_size, max_load); !Hashtable(<id>)
+
+  destroy-hashtable =
+    ?Hashtable(tbl); prim("SSL_hashtable_destroy", tbl); !Hashtable(<id>)
+
+/**
+ * Hashtable operations
+ */
+strategies
+  hashtable-put(|key, value) =
+    ?Hashtable(tbl); prim("SSL_hashtable_put", tbl, key, value); !Hashtable(<id>)
+
+  hashtable-get(|key) =
+    ?Hashtable(tbl); prim("SSL_hashtable_get", tbl, key)
+
+  hashtable-remove(|key) =
+    ?Hashtable(tbl); prim("SSL_hashtable_remove", tbl, key)
+  
+  hashtable-keys =
+    ?Hashtable(tbl); prim("SSL_hashtable_keys", tbl)
+
+/**
+ * Legacy table strategies
+ */
 strategies
 
  /**

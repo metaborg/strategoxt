@@ -1,3 +1,21 @@
+2004-03-22  Martin Bravenboer <martin@cs.uu.nl>
+
+	* ssl/table.str: 
+	- new-hashtable =
+	- new-hashtable(|initial_size, max_load)
+	- destroy-hashtable
+	- hashtable-put(|key, value)
+	- hashtable-get(|key)
+	- hashtable-remove(|key)
+	- hashtable-keys
+
+	Hashtable strategies that operate on an Hashtable representation
+	in een ATerm. These strategies require you to pass this
+	representation around in Stratego, not the name of a
+	hashtable. The internal structure of this representation should
+	not be used in any way and is subject to change (compare to Stream
+	as ATerm).
+
 2004-03-07  Arthur van Dam <adam@cs.uu.nl>
 
 	* ssl/list-set.str: Introduced a general subset checker.
