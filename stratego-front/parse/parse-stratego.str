@@ -15,6 +15,9 @@ strategies
   + ArgOption("--syntax", where(<set-config>("--syntax", <id>)),
 	      !"--syntax syn        use syntax syn")
 
+  + ArgOption("--default-syntax", where(<set-config>("--default-syntax", <id>)),
+	      !"--default-syntax syn        use syntax syn as default")
+
   + Option("-silent", where(<set-config>("--verbose", 0)),
 	      !"-silent ")
 
@@ -62,6 +65,7 @@ strategies
      <+ get-meta 
       ; (?Meta(<fetch-elem(?Syntax(<id>))>)
          <+ <error> ["Meta data ", <id>, " for module ", file, " not valid: "]; fail)
+     <+ <get-config> "--default-syntax"
      <+ !"Stratego"
       )
     ; if-verbose2(debug(!"using syntax: "))
