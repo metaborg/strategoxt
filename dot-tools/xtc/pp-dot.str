@@ -1,0 +1,12 @@
+module pp-dot
+imports xtc-lib stratego-xt-xtc-tools
+
+strategies
+  
+  io-pp-dot =
+    xtc-io-wrap(xtc-pp-dot)
+
+  xtc-pp-dot =
+    xtc-ast2abox(!["Dot-pretty.pp.af"])
+    ; xtc-abox2text
+    

@@ -1,3 +1,6 @@
+2003-09-24  Merijn de Jonge  <M.de.Jonge@tue.nl>
+   * xtc: added pp-dot pretty-print tool
+
 2003-08-07  Merijn de Jonge  <M.de.Jonge@tue.nl>
    * pp/Dot.pp: added version tag
    * pp/Dot-pretty.pp added version  tag
