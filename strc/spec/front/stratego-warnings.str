@@ -87,9 +87,6 @@ debug-with-incorrect-string =
    \   CallT(SVar("debug"),[arg],[]) -> DebugWarning(msg) 
        where
          <Match(Str(?msg))>arg
-/*       !arg;
-       not(Build(Str(id)));
-       oncetd(Str(?msg))*/
    \ }))
 
 // Create warning string for obsolete warning
