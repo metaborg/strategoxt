@@ -7,6 +7,8 @@ bin_PROGRAMS 	= xtc
 pkgdata_DATA 	= xtc-lib.rtree xtc-rep.rtree \
 		  xtc-proc.rtree xtc-register.rtree
 SCFLAGS 	= --main $* $(XTCFLAGS)
+xtc_LDFLAGS     = $(AM_LDFLAGS) -static
+
 EXTRA_DIST	= $(pkgdata_DATA) $(wildcard *.str) \
 		  $(wildcard *.meta) $(pkgdata_DATA)
 CLEANFILES	= $(wildcard *.dep)
