@@ -1,3 +1,6 @@
+2001-11-02 Merijn de Jonge <mdejonge@cwi.nl> 
+   * gpp.Makefile: use $(pkgdatadir) to locate pp-tables.tbl
+
 2001-10-30 Merijn de Jonge <mdejonge@cwi.nl> 
     * removed incorrect and obsolete entry from default.abbrevs.
 
@@ -20,6 +23,7 @@
    * pp-tables: Syntax of pp tables now accepts quoted strings as
      constructor names.
 
+>>>>>>> 1.28
 2001-10-06 Merijn de Jonge <mdejonge@cwi.nl> 
    * Due to a recent Stratego bug fix related to quoted constructor names,
      gpp now depends on version 0.6.2 of Stratego

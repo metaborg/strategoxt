@@ -15,7 +15,7 @@
 #    along with this program; if not, write to the Free Software
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 #
-# $Id: gpp.Makefile.src,v 1.7 2001/09/04 11:02:24 mdejonge Exp $
+# $Id: gpp.Makefile.src,v 1.8 2001/11/02 21:06:46 mdejonge Exp $
 #
 # GNU make specific generic make rules for the generation of pretty-printed
 # documents.
@@ -73,7 +73,7 @@ ABOX2LATEX    = PATH=__ABOX2LATEX__/bin:$${PATH} abox2latex
 ABOX2HTML     = PATH=__ABOX2HTML__/bin:$${PATH} abox2html
 SGLR          = PATH=__SGLR__/bin:$${PATH} sglr -2
 IMPLODE_ASFIX = PATH=__ASFIXTOOLS__/bin:$${PATH} implode-asfix
-PREFIX        = __PREFIX__
+PKGDATA       = __PKGDATA__
 
 .PRECIOUS: %.css
 

@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.7 2001/10/12 14:20:11 mdejonge Exp $
+# $Id: Makefile.am,v 1.8 2001/11/02 21:06:46 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -72,7 +72,7 @@ gpp.Makefile : gpp.Makefile.src Makefile
 	     s@__ABOX2HTML__@$(prefix)@g;\
 	     s@__SGLR__@$(SGLR)@g;\
 	     s@__ASFIXTOOLS__@$(ASFIXTOOLS)@g;\
-	     s@__PREFIX__@$(prefix)@g'\
+	     s@__PKGDATA__@$(pkgdatadir)@g'\
 	       < $< > $@
 %.tbl : %.def
 	PATH=$(PGEN)/bin:$${PATH} sdf2table -m GB-Main $< -o $@
