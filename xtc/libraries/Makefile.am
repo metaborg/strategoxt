@@ -26,7 +26,7 @@ bootclean :
 	rm -f $(BOOTCLEANFILES)
 
 libxtclib.c : 
-	$(STRC)/bin/strc -c --library --verbose 2 \
+	$(STRC)/bin/strc -c --library --verbose 2 --dr old \
         -I $(XTC)/share/xtc \
         -i ./xtclib.str -o libxtclib.rtree && \
         rm libxtclib.str
