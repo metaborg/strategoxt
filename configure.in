@@ -35,7 +35,7 @@ AC_SUBST(XTC)
 AC_ARG_WITH(repository,
   AC_HELP_STRING([--with-repository=FILE], [use XTC repository at FILE @<:@PREFIX/share/StrategoXT/XTC@:>@]),
   REPOSITORY="$withval",
-  REPOSITORY="$prefix/share/$PACKAGE/XTC"
+  REPOSITORY="$prefix/share/$PACKAGE_NAME/XTC"
 )
 AC_SUBST(REPOSITORY)
 
