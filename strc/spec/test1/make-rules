@@ -171,7 +171,7 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 	../sig/Stratego-Canonical-Format -i $< -o $@ -b
 
 %.ac : %.s13 %.s13.check ../c/s2c$(EXE)
-	../c/s2c -i $< -o $@  $(CINCLUDES)  -b
+	../c/s2c -i $< -o $@  $(CINCLUDES) -b
 
 %.c.abox : %.ac $(C_TOOLS)/share/c-tools/C-pretty.pp
 	$(GPP)/bin/ast2abox -p $(C_TOOLS)/share/c-tools/C-pretty.pp -i $< -o $@
@@ -193,7 +193,7 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 
 %.bin : %.o $($*OBJECTS)
 	-$(MAKE) $< $($*OBJECTS)
-	$(CC) -g $< $($*OBJECTS) -o $@ $(SCLibs)
+	$(CC) -g $< $($*OBJECTS) -o $@ $($*LDADD) $(SCLibs)
 
 # RUNNING ###########################################################
 
@@ -201,7 +201,7 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 	./$< 
 
 %.io-run : %.bin
-	$< -i $*.in -o $*.out 
+	./$< -i $*.in -o $*.out 
 
 # PARSING C PROGRAMS ###############################################
 
@@ -213,12 +213,30 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 
 # USING INSTALLED STRC ###############################################
 
-%.ibin: %.r
-	../strc/strc $(SINCLUDES) $(SCFLAGS) -i $< -o $@ --verbose 3
+%.ic: %.r
+	../strc/strc $(SINCLUDES) $(SCFLAGS) -i $< -c -o $@ --verbose 3
+	cp $*.c $@
+
+<<<<<<< .mine
+%.io: %.ic
+	$(CC) $(DEFS) $(CINCL) -g -c $*.c -O4
+	cp $*.o $@
+
+%.ibin : %.io $($*OBJECTS)
+	-$(MAKE) $< $($*OBJECTS)
+	$(CC) -o $@ -g $*.o $($*OBJECTS) $(SCLibs)
 
 %.ilib: %.r
 	../strc/strc $(SINCLUDES) $(SCFLAGS) -i $< -o $@ --verbose 3 --library
 
+lib%.c : %.r
+	../strc/strc $(SINCLUDES) $(SCFLAGS) -i $< -c -o $@ --verbose 3 --library
+
+=======
+%.ilib: %.r
+	../strc/strc $(SINCLUDES) $(SCFLAGS) -i $< -o $@ --verbose 3 --library
+
+>>>>>>> .r4683
 %.irun: %.ibin
 	./$<
 

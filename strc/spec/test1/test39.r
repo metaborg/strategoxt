@@ -1,4 +1,5 @@
-module lettest
+module test39
+imports tuple-cons list-cons
 strategies
 
    main =

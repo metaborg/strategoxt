@@ -1,4 +1,5 @@
 module test26
+imports list-cons tuple-cons
 imports cpl
 strategies
 

@@ -1,4 +1,5 @@
 module test50
+imports list-cons
 strategies
 
   main = foo

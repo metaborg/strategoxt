@@ -1,4 +1,5 @@
 module test36
+imports tuple-cons list-cons
 signature
   constructors
     Stream : a -> b

@@ -1,4 +1,5 @@
 module test35
+imports tuple-cons list-cons
 signature
   constructors
     Stream    : ImplDep -> Stream

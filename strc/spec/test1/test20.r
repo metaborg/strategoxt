@@ -1,4 +1,5 @@
 module test20
+imports list-cons tuple-cons
 strategies
 
   main =

@@ -1,20 +1,3 @@
-# Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
-# 
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2, or (at your option)
-# any later version.
-# 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-# 02111-1307, USA.
-
 ############# CPL ##################################################
 
 #if USECPL
@@ -53,9 +36,9 @@ ERRORTESTRUNS = $(subst .r,.error-run,$(ERRORTESTFILES))
 TESTIBINS = $(subst .r,.ibin,$(TESTFILES))
 TESTIRUNS = $(subst .r,.irun,$(TESTFILES))
 
-#check: $(TESTRUNS) $(IOTESTRUNS) 
+check: $(TESTRUNS) $(IOTESTRUNS) 
 
-TESTS = $(TESTBINS)
+#TESTS = $(TESTBINS)
 
 check-strc: $(TESTIRUNS)
 
@@ -64,11 +47,16 @@ CLEANFILES = \
 	$(TESTRUNS) $(IOTESTRUNS) \
 	$(TESTSRCS) $(IOTESTSRCS) \
 	$(TESTIBINS) $(TESTIRUNS) \
-	*.o *.ac *.s* *.ac *.c.abox *.tree *.mtree *.rtree *.txt *.s5fused
+	*.o *.ac *.s* *.ac *.c.abox *.tree *.mtree *.rtree *.txt *.s5fused \
+	libtest*.c 
 
-EXTRA_DIST = $(wildcard *.r) make-rules io-test*.in
+EXTRA_DIST = $(wildcard *.r) make-rules io-test*.in bar.c
 
 test50OBJECTS = bar.o
+
+test51LDADD = -L$(SSL)/lib/ssl -l liblib
+
+bar.o: bar.c
 
 include $(top_srcdir)/Makefile.xt
 
@@ -77,3 +65,4 @@ include make-rules
 include $(wildcard *.dep)
 
 bootinstall:
+

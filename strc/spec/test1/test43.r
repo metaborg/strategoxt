@@ -1,4 +1,5 @@
 module test43
+imports tuple-cons list-cons
 signature
   constructors
     Bar : a -> b

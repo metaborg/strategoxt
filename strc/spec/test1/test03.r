@@ -1,4 +1,5 @@
 module test3
+imports list-cons tuple-cons
 signature
   constructors
     Nil   : List(a)
