@@ -2,11 +2,12 @@ include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
 STRINCLUDES = \
+  -I $(SSL)/share/ssl \
   -I $(STRATEGO_FRONT)/share/stratego-front \
   -I $(STRATEGO_FRONT)/share/sdf/stratego-front \
   -I $(top_srcdir)/spec/sig \
   -I $(top_srcdir)/spec/front \
-  -I $(top_srcdir)/spec/lib
+  -I $(top_srcdir)/spec/lib 
 
 SUBDIRS 	 = data
 
