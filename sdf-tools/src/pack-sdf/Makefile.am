@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.4 2001/06/07 15:14:20 mdejonge Exp $
+# $Id: Makefile.am,v 1.5 2001/09/18 15:12:15 jvisser Exp $
 
 include $(srcdir)/../templates/make_rules
 include $(srcdir)/../templates/make_rules.stratego
@@ -28,6 +28,8 @@ SUBDIRS      = data
 STRATEGO_PRG = pack-sdf
 
 bin_SCRIPTS  = $(STRATEGO_PRG)
+
+libexec_SCRIPTS  = $(STRATEGO_PRG)
 
 TESTS        = pack_sdf_check
 
