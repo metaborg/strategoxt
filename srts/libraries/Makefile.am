@@ -1,28 +1,28 @@
 pkglib_LTLIBRARIES = \
-  libliblib.la \
-  libliblib_dbg.la \
-  libliblib_prof.la \
-  liblibxtc-lib.la \
-  liblibxtc-lib_dbg.la \
-  liblibxtc-lib_prof.la
+  liblibstrategolib.la \
+  liblibstrategolib_dbg.la \
+  liblibstrategolib_prof.la \
+  liblibxtclib.la \
+  liblibxtclib_dbg.la \
+  liblibxtclib_prof.la
 
 # lib
 
-libliblib_la_SOURCES      = liblib.c
-libliblib_dbg_la_SOURCES  = liblib.c
-libliblib_prof_la_SOURCES = liblib.c
+liblibstrategolib_la_SOURCES      = libstrategolib.c
+liblibstrategolib_dbg_la_SOURCES  = libstrategolib.c
+liblibstrategolib_prof_la_SOURCES = libstrategolib.c
 
-libliblib_dbg_la_CFLAGS  = -g  $(AM_CFLAGS)
-libliblib_prof_la_CFLAGS = -pg  $(AM_CFLAGS)
+liblibstrategolib_dbg_la_CFLAGS  = -g  $(AM_CFLAGS)
+liblibstrategolib_prof_la_CFLAGS = -pg  $(AM_CFLAGS)
 
-# xtc-lib
+# xtclib
 
-liblibxtc_lib_la_SOURCES      = libxtc-lib.c
-liblibxtc_lib_dbg_la_SOURCES  = libxtc-lib.c
-liblibxtc_lib_prof_la_SOURCES = libxtc-lib.c
+liblibxtclib_la_SOURCES      = libxtclib.c
+liblibxtclib_dbg_la_SOURCES  = libxtclib.c
+liblibxtclib_prof_la_SOURCES = libxtclib.c
 
-liblibxtc_lib_dbg_la_CFLAGS  = -g  $(AM_CFLAGS)
-liblibxtc_lib_prof_la_CFLAGS = -pg  $(AM_CFLAGS)
+liblibxtclib_dbg_la_CFLAGS  = -g  $(AM_CFLAGS)
+liblibxtclib_prof_la_CFLAGS = -pg  $(AM_CFLAGS)
 
 
 AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_srcdir)/ssl -I$(ATERM)/include -I$(srcdir)
@@ -30,22 +30,23 @@ AM_LDFLAGS  = -avoid-version
 
 pkgdocdatadir 	= $(pkgdatadir)/doc
 
-pkgdata_DATA   	= liblib.rtree libxtc-lib.rtree
-pkgdocdata_DATA = liblib.str libxtc-lib.str
+pkgdata_DATA   	= libstrategolib.rtree libxtclib.rtree liblib.str
+pkgdocdata_DATA = libstrategolib.str libxtclib.str liblib.str
 
 EXTRA_DIST	= $(wildcard *.str) $(wildcard *.rtree)
-BOOTCLEANFILES 	= liblib.str liblib.rtree liblib.c libxtc-lib.str libxtc-lib.rtree libxtc-lib.c
+BOOTCLEANFILES 	= libstrategolib.str libstrategolib.rtree libstrategolib.c \
+		  libxtclib.str libxtclib.rtree libxtclib.c
 
 bootclean :
 	rm -f $(BOOTCLEANFILES)
 
-liblib.c : 
+libstrategolib.c : 
 	$(STRC)/bin/strc -c --library --verbose 2 \
         -I $(SSL)/share/ssl \
-        -i ./lib.str -o liblib.rtree
+        -i ./strategolib.str -o libstrategolib.rtree
 
-libxtc-lib.c : 
+libxtclib.c : 
 	$(STRC)/bin/strc -c --library --verbose 2 \
         -I $(XTC)/share/xtc \
-        -i ./xtc-library.str -o libxtc-lib.rtree
+        -i ./xtclib.str -o libxtclib.rtree
 
