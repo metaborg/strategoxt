@@ -1,5 +1,5 @@
 module stratego-desugar
-imports lib stratego-ext
+imports lib Stratego-Amb
 signature
   constructors
     Con : Var * Term * SVar   -> Term
@@ -48,6 +48,9 @@ rules
 
   Desugar :
     RChoice(s1, s2) -> LChoice(s2, s1)
+
+  Desugar :
+    |[ if s1 then s2 else s3 ]| -> |[ where(s1) < s2 + s3 ]|
 
   Desugar :
     OverlayNoArgs(f, t) -> Overlay(f, [], t)

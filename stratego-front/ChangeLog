@@ -1,3 +1,18 @@
+2004-04-06  Martin Bravenboer <martin@cs.uu.nl>
+
+	* syn/Stratego-Strategies.sdf: add the if-then-else
+	strategy. Semantics:
+
+        |[ if s1 then s2 else s3 ]| -> |[ where(s1) < s2 + s3 ]|
+
+	The priority is somewhat ugly since we cannot define priorities
+	for specific arguments. "s1; if then else" was for example reject
+	if the if-then-else production was just given the lowest
+	priority. Workaround: separate sort StrategyElse. The injection of
+	Strategy to StrategyElse has the lowest priority.
+
+	* sig/stratego-ext.str: removed
+
 2004-03-22  Martin Bravenboer <martin@cs.uu.nl>
 
 	* syn/Stratego-Identifiers.sdf: removed lexical follow restriction

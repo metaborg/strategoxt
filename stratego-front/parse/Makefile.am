@@ -1,7 +1,10 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-SCFLAGS 	= -I ../syn -I ../sig --main $* -CI "-I.." $(XTCFLAGS)
+SCFLAGS 	= --main $*
+STRINCLUDES     = -I $(top_srcdir)/syn \
+                  -I $(top_srcdir)/sig \
+                  -I $(XTC)/share/xtc
 
 bin_PROGRAMS 	= meta-explode stratego-desugar parse-stratego \
 		  pp-stratego stratego-ensugar
@@ -13,5 +16,4 @@ BOOTCLEANFILES  = meta-explode.c stratego-desugar.c parse-stratego.c \
 
 EXTRA_DIST 	= $(wildcard *.str) $(wildcard *.meta) \
 		  $(wildcard *.rtree) $(wildcard *.src) \
-		  $(wildcard *.c)  $(wildcard *.h.in)
-
+		  $(wildcard *.c) 

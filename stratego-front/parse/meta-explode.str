@@ -1,6 +1,6 @@
 \begin{code}
 module meta-explode
-imports lib stratego-ext
+imports lib Stratego-Amb
 signature
   constructors
     AsFix        : Option

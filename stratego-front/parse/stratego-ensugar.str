@@ -6,7 +6,7 @@
  * problems when pretty-printing Stratego programs.
  */
 module stratego-ensugar
-imports stratego-ext options string simple-traversal parenthesize
+imports Stratego-Amb options string simple-traversal parenthesize
 
 strategies
  

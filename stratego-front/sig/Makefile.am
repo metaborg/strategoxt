@@ -8,7 +8,6 @@ pkgdata_DATA 	= Stratego.rtree				       \
 		  Stratego-Script.rtree Stratego-Modules.rtree	       \
 		  Stratego-Signatures.rtree Stratego-Strategies.rtree  \
 		  Stratego-Amb.rtree				       \
-	 	  stratego-ext.rtree				       \
 		  Stratego-Core.rtree Stratego-Core-Constants.rtree    \
 		  Stratego-Core-Terms.rtree Stratego-Core-Layout.rtree \
 		  Stratego-Core-Modules.rtree			       \
