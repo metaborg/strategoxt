@@ -40,14 +40,8 @@ ATerm ATmakeString(char *name)
 
 ATerm ATmakeStringQ(char *name)
 {
-  static char uq[1024];
-  int i;
-  sprintf(uq, "%s", name);
-  for(i=0; uq[i + 1] != '\0'; i++) {
-    uq[i] = uq[i + 1];
-  }
-  uq[i - 1] = '\0';
-  return (ATerm) ATmakeAppl0(ATmakeSymbol(uq, 0, ATtrue));
+  return 
+     ATmakeString(ATwriteToString((ATerm)ATmakeAppl0(ATmakeSymbol(name, 0 , ATtrue))));
 }
 
 ATbool ATisString(ATerm t)
