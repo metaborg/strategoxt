@@ -4,6 +4,9 @@ rm -f acconfig.h
 touch README
 touch NEWS
 
+WANT_AUTOMAKE="1.8"
+WANT_AUOCONF="2.59"
+
 libtoolize || glibtoolize
 
 autoxt
