@@ -120,8 +120,7 @@ $(RPMSPEC) : $(PACKAGE).spec $(RPMFILES)
 	     s#__PACKAGE__#$(PACKAGE)#g;' < $(PACKAGE).spec > $(RPMSPEC)
 	 cat $(RPMFILES) >> $(RPMSPEC)
 
-rpm: $(RPMSPEC)
-	$(MAKE) dist
+rpm: $(RPMSPEC) dist
 	cp $(PACKAGE)-$(VERSION).tar.gz $(RPMSOURCES)
 	rpm -ba $(RPMSPEC)
 

@@ -16,7 +16,7 @@
 # 02111-1307, USA.
 
 AC_INIT(Makefile.in)
-AM_INIT_AUTOMAKE(StrategoXT,0.9beta5)
+AM_INIT_AUTOMAKE(StrategoXT,0.9beta6)
 
 #AC_CONFIG_AUX_DIR([config])
 
@@ -94,7 +94,7 @@ AM_CONFIG_HEADER([config.h])
 
 ### PACKAGES ##########################
 
-PKGS="srts sc-boot gpp-boot cgen ssl aterm-tools asfix-tools graph-tools gpp sdf-tools stratego-tools $FRONTPKG $BOOTPKG xt boxenv"
+PKGS="srts sc ssl gpp-boot cgen aterm-tools asfix-tools graph-tools gpp sdf-tools stratego-tools $FRONTPKG $BOOTPKG xt boxenv"
 
 #gbtools stratego-connect grammar-recovery
 

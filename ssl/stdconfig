@@ -5,8 +5,7 @@
 	--with-aterm=/home/xt/XT \
 	--with-sc=/home/xt/XT \
 	--with-rpmdir=/home/visser/rpm \
-
-#	--enable-develop
+	--enable-develop
 
 exit 0
 

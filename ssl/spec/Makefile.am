@@ -34,17 +34,22 @@ CLEANFILES = $(TESTS) $(bin_SCRIPTS) $(parsed)
 SC = $(SC_BOOT)/bin/sc 
 #--verbose 2
 
-if DEVELOP
+SUFFIXES = .r .rtree
 
-%.rtree: %.r $(SC_BOOT)/bin/parse-mod
+.r.rtree:
 	$(SC_BOOT)/bin/parse-mod -i $< -o $@
 
-else
-
-%.rtree: 
-	$(SC_BOOT)/bin/parse-mod -i $*.r -o $@
-
-endif
+#if DEVELOP
+#
+#%.rtree: %.r $(SC_BOOT)/bin/parse-mod
+#	$(SC_BOOT)/bin/parse-mod -i $< -o $@
+#
+#else
+#
+#%.rtree: 
+#	$(SC_BOOT)/bin/parse-mod -i $*.r -o $@
+#
+#endif
 
 % : %.r
 	$(SC) $(SCFLAGS) -i $*
