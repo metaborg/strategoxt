@@ -23,3 +23,11 @@ STRINCLUDES	 = -I $(C_TOOLS)/share/sdf/c-tools	     \
 
 TESTS = C-simplify-test 
 #canonicalize-test
+
+
+%.str.ast : %.str
+	$(STRATEGO_FRONT)/bin/parse-stratego -i $< -o $@ $(STRINCLUDES) 
+
+%.str.txt : %.str.ast
+	$(STRATEGO_FRONT)/bin/pp-stratego -i $< -o $@ -a
+

@@ -1,3 +1,49 @@
+2003-12-19  Eelco Visser  <visser@cs.uu.nl>
+
+	* Generation of a library from a module file.str with the command
+	
+	    strc -i file.str -c -o libfile.c --library 
+
+	This produces 
+	
+	    - libfile.c
+	    - libfile.str
+	    - libfile.rtree
+	
+	The first is the C implementation of the closure of file.str.  It
+	provides C functions for all user-defined strategies, and static C
+	functions for strategies generated at compile-time.  The last two
+	are the concrete syntax and abstract syntax files for a Stratego
+	module with *external* definitions for all strategies defined in
+	file.str and imported modules. It is now possible to import
+	libfile in another Stratego program, instead of file. Note that
+	libfile.str is produced mainly for documentation, libfile.rtree
+	should be used to import. This is done automatically by the
+	compiler as long as the file is present.
+
+	Note that no modules from the 'library' should be imported in the
+	program via another path. This will lead to doubly defined
+	strategies; it is not allowed to extend external definitions.
+
+	The C program libfile.c can be compiled to an object file
+	libfile.o and to a library liblibfile.a. This should be done in a
+	makefile; strc does not deal with C compilation of libraries. Also
+	strc does not *find* imported object libraries; these should be
+	declared explicitly to the C compiler (for instance using LDADD
+	flag in makefile). This approach may actually lead to *larger*
+	executables since no unused-function-removal is performed on the
+	library (for obvious reasons). Dynamic linking is the solution
+	here to save diskspace (once I understand how to make dynamic
+	libraries), I don't know about the consequences for run-time
+	resources.
+
+	The current version does not produce implementations of
+	definitions for inlining in the importing program. This is catered
+	for in the implementation, though. Some more experience is needed
+	with this feature before making it available.
+
+	Currently, no *overlays* are exported to the library module.
+
 2003-12-12  Eelco Visser  <visser@cs.uu.nl>
 
 	* External definitions are definitions of the form 'external
@@ -4637,3 +4683,6 @@ Tue Feb 17 17:31:37 PST 1998
 
  * The file contexts.mml defines the replacement of contexts in rewrite
    rules. See the file for an explanation.
+<<<<<<< .mine
+=======
+>>>>>>> .r4681

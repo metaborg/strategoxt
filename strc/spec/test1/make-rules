@@ -217,7 +217,6 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 	../strc/strc $(SINCLUDES) $(SCFLAGS) -i $< -c -o $@ --verbose 3
 	cp $*.c $@
 
-<<<<<<< .mine
 %.io: %.ic
 	$(CC) $(DEFS) $(CINCL) -g -c $*.c -O4
 	cp $*.o $@
@@ -232,11 +231,6 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 lib%.c : %.r
 	../strc/strc $(SINCLUDES) $(SCFLAGS) -i $< -c -o $@ --verbose 3 --library
 
-=======
-%.ilib: %.r
-	../strc/strc $(SINCLUDES) $(SCFLAGS) -i $< -o $@ --verbose 3 --library
-
->>>>>>> .r4683
 %.irun: %.ibin
 	./$<
 

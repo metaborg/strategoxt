@@ -9,9 +9,10 @@ SCFLAGS	= -I $(STRATEGO_FRONT)/share/stratego-front \
 	  --main $*-io
 #	  --keep 10
 
-libexec_PROGRAMS = fusion inline dead-def-elim const-prop dead-var-elim \
-		   lift-definitions canonicalize bound-unbound-vars \
-		   worker-wrapper simplify1 simplify2 simplify3 define-congruences
+libexec_PROGRAMS = fusion inline dead-def-elim const-prop dead-var-elim	\
+		   lift-definitions canonicalize bound-unbound-vars	\
+		   worker-wrapper simplify1 simplify2 simplify3		\
+		   define-congruences defs-to-external-defs
 
 check_PROGRAMS 	 = build-match-laws-test bound-unbound-vars-test \
 		   const-prop-test
