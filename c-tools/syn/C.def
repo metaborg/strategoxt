@@ -483,9 +483,7 @@ exports
 
 module C-Keywords
 exports
-
-  context-free syntax
-
+  lexical syntax
     "auto"     -> Keyword
     "double"   -> Keyword
     "int"      -> Keyword

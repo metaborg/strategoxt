@@ -38,6 +38,8 @@ exports
     "Overlay"  "|[" Overlay  "]|" -> StrategoTerm {cons("ToTerm")}
 
     "Typedid" "|[" Typedid   "]|" -> StrategoTerm {cons("ToTerm")}
+%%                 "|[" DynRuleDef   "]|" -> StrategoTerm {cons("ToTerm")}
+    "DynRuleDef" "|[" DynRuleDef   "]|" -> StrategoTerm {cons("ToTerm")}
 
   context-free syntax
 
@@ -114,9 +116,13 @@ exports
     "srt" [xyz] [0-9\']*  -> UCID         {prefer}
 
   variables
-    "sc" [0-9\']     -> DynRuleScopeId         {prefer}
-    "dr" [0-9\']     -> DynRuleId              {prefer}
-    "sc" [0-9\'] "*" -> {DynRuleScopeId ","}*  {prefer}
+    "sc" [0-9\']*         -> DynRuleScopeId        {prefer}
+    "sc" [0-9\']* "*"     -> {DynRuleScopeId ","}* {prefer}
+
+    "dr" [0-9\']*         -> DynRuleId {prefer}
+
+    "drd"[0-9\']*         -> DynRuleDef {prefer}
+    "drd"[0-9\']*  "*"    -> DynRuleDef+ {prefer}
 
   lexical syntax
     "xs"[0-9\']*          -> Id  {reject}
@@ -131,6 +137,12 @@ exports
  
     "a"[0-9\']*           -> Id  {reject}
     "as"[0-9\']*          -> Id  {reject} 
+
+  lexical syntax
+    StrategoShortCom 	-> LAYOUT {prefer}
+    StrategoLongCom 	-> LAYOUT {prefer}
+    StrategoVeryLongCom -> LAYOUT {prefer}
+    StrategoWs 		-> LAYOUT {prefer}
 
   context-free syntax
 
@@ -284,6 +296,9 @@ exports
     Strategy "++" Strategy 		  -> Strategy {cons("GChoice"),right}
     Strategy "++>" Strategy 		  -> Strategy {cons("RGChoice"),right}
     "if" Strategy "then" Strategy "else" Strategy "end" -> Strategy {cons("CondChoice")}
+    "switch" Strategy ("case" Strategy ":" Strategy)* "end" -> Strategy {cons("SwitchChoiceNoOtherwise")}
+    "switch" Strategy ("case" Strategy ":" Strategy)*
+                       "otherwise" ":" Strategy "end" -> Strategy {cons("SwitchChoice")}
 
     Strategy "=>" Term 		  	  -> Strategy {cons("AM")}
 
@@ -314,32 +329,50 @@ exports
 
 module Stratego-DynamicRules
 exports
+  context-free syntax
+
+    "{|" {DynRuleScopeId ","}* ":" Strategy "|}" -> Strategy {cons("DynRuleScope")}
 
   context-free syntax
 
-    "{|" {DynRuleScopeId ","}* ":" Strategy "|}" -> Strategy {cons("DynRuleScope"), prefer}
-    "{|" Id ":+" Term "|}"                       -> Strategy {cons("AddScopeLabel")}
+    "rules" "(" DynRuleDef* ")" -> Strategy {cons("GenDynRules")}
+
+    Id "+" Term                 -> DynRuleDef {cons("AddScopeLabel")} 
+    DynRuleId ":-"  Term        -> DynRuleDef {cons("UndefineDynRule")}
+    DynRuleId ":"   Rule        -> DynRuleDef {cons("SetDynRule")}
+    DynRuleId ":+"  Rule        -> DynRuleDef {cons("AddDynRule")}
+    DynRuleId ":"   Term        -> DynRuleDef {cons("SetDynRuleMatch")}
+
+    RuleDec "." Term            -> DynRuleId {cons("LabeledDynRuleId")}
+    RuleDec "+" Term            -> DynRuleId {cons("AddLabelDynRuleId")}
+    RuleDec                     -> DynRuleId {cons("DynRuleId")}
+
+    Id "." Term                 -> DynRuleScopeId {cons("LabeledDynRuleScopeId")}
+    Id                          -> DynRuleScopeId {cons("DynRuleScopeId")}
 
   context-free syntax
 
-    "rules" "(" DynRuleDef+ ")" -> Strategy {cons("GenDynRules"), prefer}
-
-    DynRuleId ":-"  Term -> DynRuleDef {cons("UndefineDynRule")}
-    DynRuleId ":"   Rule -> DynRuleDef {cons("SetDynRule")}
-    DynRuleId ":+"  Rule -> DynRuleDef {cons("AddDynRule")}
-
-    RuleDec "." Term -> DynRuleId {cons("LabeledDynRuleId")}
-    RuleDec          -> DynRuleId {cons("DynRuleId")}
-
-    Id "." Term  -> DynRuleScopeId {cons("LabeledDynRuleScopeId")}
-    Id           -> DynRuleScopeId {cons("DynRuleScopeId")}
-
-  context-free syntax
-
-    Id                         -> RuleDec {cons("RDecNoArgs")}
-    Id "(" {Typedid ","}* ")"  -> RuleDec {cons("RDec")}
+    Id                          -> RuleDec {cons("RDecNoArgs")}
+    Id "(" {Typedid ","}* ")"   -> RuleDec {cons("RDec")}
     Id "(" {Typedid ","}* 
-       "|" {Typedid ","}* ")"  -> RuleDec {cons("RDecT")}
+       "|" {Typedid ","}* ")"   -> RuleDec {cons("RDecT")}
+
+  context-free syntax
+
+    "/" {Id ","}* "\\*" Strategy          -> Strategy {cons("DynRuleIntersectFix")}
+    "\\" {Id ","}* "/*" Strategy          -> Strategy {cons("DynRuleUnionFix")}
+    Strategy "/" {Id ","}* "\\" Strategy  -> Strategy {cons("DynRuleIntersect"),right}
+    Strategy "\\" {Id ","}* "/" Strategy  -> Strategy {cons("DynRuleUnion"),right}
+
+  context-free priorities
+    StrategyAngle Term 		          -> Strategy {cons("BA")}
+  > {"/" {Id ","}* "\\*" Strategy         -> Strategy {cons("DynRuleIntersectFix")}
+     "\\" {Id ","}* "/*" Strategy         -> Strategy {cons("DynRuleUnionFix")}
+    }
+  > Strategy "=>" Term 		  	  -> Strategy {cons("AM")}
+  > Strategy "/" {Id ","}* "\\" Strategy  -> Strategy {cons("DynRuleIntersect"),right}
+  > Strategy "\\" {Id ","}* "/" Strategy  -> Strategy {cons("DynRuleUnion"),right}
+  > Strategy ";" Strategy 		  -> Strategy {cons("Seq"),right}
 
   context-free syntax %% legacy Dynamic rules
 
@@ -531,15 +564,15 @@ exports
 
 module Stratego-Layout
 exports
-
   lexical syntax
-    [\t\ \n\13]		-> Ws
-    "//" ~[\n]* [\n] 	-> ShortCom
-    "/*" CommChar* "*/" -> LongCom
-    "(*" CommChar* "*)" -> LongCom
-    "*" 		-> Asterisk
-    ~[\*] 		-> CommChar
-    Asterisk 		-> CommChar
+    [\t\ \n\13]		 -> Ws
+    "//" ~[\n]* ([\n] | Eof) -> ShortCom
+    "/*" CommChar* "*/"  -> LongCom
+    "(*" CommChar* "*)"  -> LongCom
+    "*" 		 -> Asterisk
+    ~[\*] 		 -> CommChar
+    Asterisk 		 -> CommChar
+
   lexical restrictions
     Asterisk -/- [\/\)]
 
@@ -552,6 +585,7 @@ exports
     ~[\\] 				   -> VLCchar
     Backslash 				   -> VLCchar
     [\\] 				   -> Backslash
+
   lexical restrictions
     Backslash -/- [b].[e].[g].[i].[n].[\{].[c].[o].[d].[e].[\}]
     Eof -/- ~[]
@@ -561,6 +595,7 @@ exports
     LongCom 	-> LAYOUT
     VeryLongCom -> LAYOUT
     Ws 		-> LAYOUT
+
   context-free restrictions
     LAYOUT? -/- [\ \t\n\13]
 
@@ -1117,9 +1152,7 @@ exports
 
 module C-Keywords
 exports
-
-  context-free syntax
-
+  lexical syntax
     "auto"     -> Keyword
     "double"   -> Keyword
     "int"      -> Keyword

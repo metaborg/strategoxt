@@ -1,7 +1,19 @@
+2003-04-30  Martin Bravenboer <martin@cs.uu.nl>
+
+	* syn/C-Keywords.sdf: keyword productions must be lexical,
+	otherwise the Keyword -> Id {reject}, which is lexical, doesn't
+	work. This solves the bug that C keywords can be parsed as
+	identifiers.
+
+	* tests/*.testsuite: added keyword tests and use concrete syntax
+	for parse-unit testsuites.
+		
 2004-02-22   Merijn de Jonge  <mdejonge@cs.uu.nl>
-   * Makefile.am: added autoxt.m4 to EXTRA_DIST
-   * Makefile.am: added line: ACLOCAL_AMFLAGS = -I . such that autoreconf
-     can find autoxt.m4
+	
+	* Makefile.am: added autoxt.m4 to EXTRA_DIST
+
+	* Makefile.am: added line: ACLOCAL_AMFLAGS = -I . such that
+	autoreconf can find autoxt.m4
 
 2003-12-19  Eelco Visser  <visser@cs.uu.nl>
 
@@ -12,15 +24,13 @@
 	* Changed list antiquotation declarations to produce + lists
 	instead of *
 
-2003-03-12  Martin Bravenboer <martin@mbravenboer.org>
+2003-03-12  Martin Bravenboer <martin@cs.uu.nl>
 
-  * syn/C-Constants.sdf: corrected lexical syntax of Hex
-    and added suffixes to IntLiterals. All reported
-    by Stefaan Himpe.
-    
-  * syn/C-Expressions.sdf: fixed typo in AndExp.
+	* syn/C-Constants.sdf: corrected lexical syntax of Hex and added
+	suffixes to IntLiterals. All reported by Stefaan Himpe.
 
-2002-11-23  Martin Bravenboer <martin@mbravenboer.org>
+	* syn/C-Expressions.sdf: fixed typo in AndExp.
 
-  * Small changes to configure.in to profit from new
-    autotools.
+2002-11-23  Martin Bravenboer <martin@cs.uu.nl>
+
+	* Small changes to configure.in to profit from new autotools.

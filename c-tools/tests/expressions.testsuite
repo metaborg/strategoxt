@@ -28,6 +28,12 @@ test relational operators have higher priority than equational ones
 test simple name
   "x" -> Id("x")
 
+test keyword cannot be identifier
+  "case" fails
+
+test keyword cannot be identifier
+  "for" fails
+
 test simple comparison 1
   "2 == 3" -> Equal(IntConst("2"),IntConst("3"))
 
