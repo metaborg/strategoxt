@@ -1,3 +1,13 @@
+2003-01-03  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/sc/sc.str: Fixed bug in determining output file. Now sc
+	works again without -o argument. Reported by Martin Bravenboer
+
+	* spec/syn/pack-stratego.str: Looking for file with all extensions
+	in each directory in the path. (Instead of looking up a file with
+	some extension in all directories first.) Reported by Martin
+	Bravenboer
+
 2003-01-01  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/sc/sc.str: using xtc-io-exit to quit in the middle of the
