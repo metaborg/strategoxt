@@ -65,11 +65,13 @@ that are declared in context using the dynamic rule ContextVar */
 
   split-dynamic-rules :
     |[ extend rules(rd*) ]| -> 
-    <map(ExtendSplitDynamicRule(!|[ extend-assert(!~str:<id>) ]|)); unzip; (id, concat)> rd*
+    <map(ExtendSplitDynamicRule(!|[ extend-assert(!~str:<id>) ]|)
+	 + ExtendSplitDynamicRuleUndefined(!|[ extend-assert-undefined(!~str:<id>) ]|)); unzip; (id, concat)> rd*
 
   split-dynamic-rules :
     |[ extend override rules(rd*) ]| -> 
-    <map(ExtendSplitDynamicRule(!|[ extend-override-key(!~str:<id>) ]|)); unzip; (id, concat)> rd*
+    <map(ExtendSplitDynamicRule(!|[ extend-override-key(!~str:<id>) ]|)
+	 + ExtendSplitDynamicRuleUndefined(!|[ extend-override-key-undefined(!~str:<id>) ]|)); unzip; (id, concat)> rd*
 
 /* Split a dynamic rule into an call to assert which records a mapping
 from the left-hand side of the rule instantiated with the bindings to
@@ -91,7 +93,7 @@ dynamic rule. */
 
   dummify =
     alltd(
-        \Term|[ x ]|     -> |[ Nil() ]| where not(Var(ContextVar))\
+        \Term|[ x ]|     -> |[ Nil() ]| where not(Var(ContextVar + ListVar(ContextVar)))\
      <+ \Term|[ _ ]|     -> |[ Nil() ]|\
      <+ \Term|[ <s> ]|   -> |[ Keys( ~term*:<tvars; map(!Var(<id>))> s ) ]|\
      <+ \Term|[ <s> t ]| -> |[ Keys( ~term*:<tvars; map(!Var(<id>))> (s,t) ) ]|\
@@ -161,17 +163,16 @@ dynamic rule. */
 
       ; new => stamp
 
-/*
-  ExtendSplitDynamicRule(assert) :
+  ExtendSplitDynamicRuleUndefined(assert) :
     |[ f(as1|as2) : t1 -> Undefined() where s ]| ->
-    (|[ where(<~<assert> f> (t1', Undefined())) ]|,
-     |[ f(as1|as2) : x@t1 -> Undefined()
-                where where(<extend-rewrite(!~str:f)> t1'' => Undefined()); s; fail ]|)
+    (|[ where(<~<assert> f> t1') ]|,
+     [|[ f(as1|as2) : x@t1 -> Undefined()
+                where where(<extend-rewrite(!~str:f)> t1'' => []); s; fail ]| ])
     where 
        new => x
        ; <dummify> t1 => t1'
        ; try(?t1; !Var(x)) => t1''
-*/
+
 \end{code}
 
 % Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
