@@ -87,11 +87,9 @@ strategies
         }
       )  
   
-\end{code}
-
-	\paragraph{Occurence Counting}
-
-\begin{code}
+/**
+ * Occurence Counting.
+ */
 strategies
 
   nrofoccs(s) = 

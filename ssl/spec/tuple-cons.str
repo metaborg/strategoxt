@@ -4,7 +4,9 @@
 module tuple-cons
 
 overlays
-
+ /**
+  * Overlay for a pair, converts two terms to a 2-tuple.
+  */
   Pair(x, y) = (x, y)
 
 

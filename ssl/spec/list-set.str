@@ -1,14 +1,8 @@
-\literate[list-set]
-
-	\begin{abstract}
-
-	Lists can be used to represent sets of terms.  Using the
-	notion of sets we can define the collection of a set of
-	subterms corresponding to some criterion.
-
-	\end{abstract}
-
-\begin{code}
+/**
+ * Lists can be used to represent sets of terms.  Using the
+ * notion of sets we can define the collection of a set of
+ * subterms corresponding to some criterion.
+ */
 module list-set
 imports list-basic list-misc term collect
 // collect is imported for backwards compatibility
@@ -26,16 +20,15 @@ rules
   make-set =
     foldr(![], union, ![<id>])
 
-\end{code}
-
-	Union: Concatenation of two lists, only those elements in the
-	first list are added that are not already in the second list.
-
-\begin{code}
 strategies
 
-  // :: List(a) * List(a) -> List(a)
-  union = union(eq)
+/**
+ * Union: Concatenation of two lists, only those elements in the
+ * first list are added that are not already in the second list.
+ *
+ * @type List(a) * List(a) -> List(a)
+ */
+ union = union(eq)
 
   // a * a -> fail? :: List(a) * List(a) -> List(a)
   union(eq) : 
@@ -45,20 +38,20 @@ strategies
                 <+ [id | x]
                 )> l1
 
+strategies
+
   // :: List(List(a)) -> List(a)
   unions = unions(eq)
 
   // a * a -> fail? :: List(List(a)) -> List(a)
   unions(eq) = foldr(![], union(eq))
 
-\end{code}
-
-	Diff: Difference of two lists
-
-\begin{code}
 rules
-
-  // :: List(a) * List(a) -> List(a)
+ /**
+  * Difference of two lists.
+  *
+  * @type List(a) * List(a) -> List(a)
+  */ 
   diff = diff(eq) 
 
   // a * a -> fail? :: List(a) * List(a) -> List(a)
@@ -111,21 +104,3 @@ strategies
                 <+ ?[_ | <x>]
                 )> l1
 
-\end{code}
-	
-% Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
-% 
-% This program is free software; you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation; either version 2, or (at your option)
-% any later version.
-% 
-% This program is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-% 
-% You should have received a copy of the GNU General Public License
-% along with this program; if not, write to the Free Software
-% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-% 02111-1307, USA.

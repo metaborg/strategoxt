@@ -34,6 +34,9 @@ strategies
     
 overlays
 
+ /**
+  * Table containing all signals.
+  */
   AllSignals = 
     [ SIGHUP(),  SIGINT(),  SIGQUIT(), SIGABRT(), SIGKILL(),   SIGALRM(), SIGTERM()
     , SIGBUS(),  SIGCHLD(), SIGCONT(), SIGFPE(),  SIGILL(),    SIGPIPE(), SIGSEGV() 

@@ -1,37 +1,36 @@
+/**
+ * This module defines a generic strategy for placing parentheses in
+ * abstract syntax trees based on priority and associativity declarations. 
+ *
+ * Reference
+ *
+ * Eelco Visser. Syntax Definition for Language Prototyping. PhD Thesis,
+ * University of Amsterdam, 1997.
+ *
+ * Typical usage: (from module Tiger-Ensugar in the tiger/tiger-front
+ * package)
+ *
+ *  TigerParenthesize =
+ *    !Seq([<id>])
+ *
+ *  tiger-parenthesize =
+ *    parenthesize(TigerParenthesize, tiger-priorities)
+ *   
+ *  tiger-priorities =
+ *    ![(None,			["Uminus","FieldVar","Subscript"]),
+ *      (Some("left"),		["Power"]),
+ *      (Some("left"),		["Times","Divide"]),
+ *      (Some("left"),		["Plus","Minus"]),
+ *      (Some("non-assoc"),	["CPlus","CMinus","Eq","Neq","Gt","Lt","Geq","Leq"]),
+ *      (Some("left"),		["And"]),
+ *      (Some("left"),		["Or"]),
+ *      (None,			["Array"]),
+ *      (None,			["Assign"]),
+ *      (Some("right"),		["If","While","For"])]
+ *
+ */
 module parenthesize
 imports list-basic
-
-/**********************************************************************
-* This module defines a generic strategy for placing parentheses in
-* abstract syntax trees based on priority and associativity declarations. 
-*
-* Reference
-*
-* Eelco Visser. Syntax Definition for Language Prototyping. PhD Thesis,
-* University of Amsterdam, 1997.
-
-* Typical usage: (from module Tiger-Ensugar in the tiger/tiger-front
-* package)
-
-  TigerParenthesize =
-    !Seq([<id>])
-
-  tiger-parenthesize =
-    parenthesize(TigerParenthesize, tiger-priorities)
-   
-  tiger-priorities =
-    ![(None,			["Uminus","FieldVar","Subscript"]),
-      (Some("left"),		["Power"]),
-      (Some("left"),		["Times","Divide"]),
-      (Some("left"),		["Plus","Minus"]),
-      (Some("non-assoc"),	["CPlus","CMinus","Eq","Neq","Gt","Lt","Geq","Leq"]),
-      (Some("left"),		["And"]),
-      (Some("left"),		["Or"]),
-      (None,			["Array"]),
-      (None,			["Assign"]),
-      (Some("right"),		["If","While","For"])]
-
-*********************************************************************/
 
 strategies
 
@@ -51,9 +50,10 @@ strategies
 	; <map(test(<GreaterThan>(e,<id>)); paren)> mid => mid'
         ; <try(test(<LeftAssoc>  (e,<id>)); paren)> r => r'
 
+/**
+ * Generation of the parenthesation rules.
+ */
 strategies
-
-  // generation of the parenthesation rules
 
   init-parenthesation-rules =
     !([], <id>)

@@ -1,3 +1,6 @@
+/**
+ * Character based in-/output.
+ */
 module char-io
 imports io
 

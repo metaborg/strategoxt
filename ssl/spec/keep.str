@@ -1,17 +1,40 @@
-\literate[keep]
-\begin{code}
 module keep
 imports config
 strategies
 
+/**
+  * Sets the 'keep' level.
+  *
+  * E.g. <set-keep>4 sets the keep level to 4.
+  */
   set-keep = 
     <set-config> ("--keep", <id>)
 
+ /**
+  * Give the current 'keep' level. Default is 0.
+  */
   get-keep = 
     <get-config> "--keep" <+ !0
 
+ /**
+  * Builds command-line parameter for 'keep' levels for calling XT tools.
+  *
+  * E.g. xtc-transform(!"abox2text", pass-keep ) passes the 'keep' level
+  * to abox2text.
+  */
   pass-keep = 
     !["--keep", <subt; int-to-string>(<get-config <+ !1> "--keep", 1)]
+
+
+/**
+ * Apply the supplied strategy if the 'keep' level is set to a value greater
+ * than or equal to the number given in the strategy name.
+ *
+ * E.g. if-keep5(debug) calls the debug strategy if 'keep' level is > 5.
+ *
+ * @param strategy to be applied
+ */
+strategies
 
   if-keep1(s) = 
     try(where(<geq>(<get-config> "--keep", 1)); s)
@@ -34,6 +57,15 @@ strategies
   if-keep7(s) = 
     try(where(<geq>(<get-config> "--keep", 7)); s)
 
+/**
+ * Apply the supplied strategy if the 'keep' level is set to a value lesser
+ * than or equal to the number given in the strategy name.
+ *
+ * E.g. if-less-keep3(s) calls the s strategy if 'keep' level is < 3.
+ *
+ * @param strategy to be applied
+ */
+strategies
 
   if-less-keep1(s) = 
     try(where(<leq>(<get-config> "--keep", 1)); s)
@@ -56,22 +88,3 @@ strategies
   if-less-keep7(s) = 
     try(where(<leq>(<get-config> "--keep", 7)); s)
 
-\end{code}
-
-
-% Copyright (C) 2002 Eelco Visser <visser@acm.org>
-% 
-% This program is free software; you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation; either version 2, or (at your option)
-% any later version.
-% 
-% This program is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-% 
-% You should have received a copy of the GNU General Public License
-% along with this program; if not, write to the Free Software
-% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-% 02111-1307, USA.

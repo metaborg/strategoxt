@@ -1,5 +1,5 @@
 /**
- * Strategies for collecting of subterms.
+ * Strategies for collecting subterms.
  */
 module collect
 imports list-basic list-misc term

@@ -1,3 +1,6 @@
+/**
+ * Choice Point Library related strategies.
+ */
 module cpl
 strategies
 

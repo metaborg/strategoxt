@@ -1,3 +1,6 @@
+/**
+ * Constructors needed for dynamic rules. 
+ */
 module dynamic-rules
 imports scoped-finite-map
 signature

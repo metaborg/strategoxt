@@ -1,161 +1,147 @@
-\literate{getopt}
-
-
-	This module parses command line arguments and build an option table
-	for convenient retrieval.  Non-option arguments are returned to
-	the caller.  Traditional Unix / GNU option syntax is supported:
-
-	* Short options start with `-'.
-
-	* Two or more short options can be combined in a single word: `-abcd'
-
-	* Short options can take arguments: `-o FILE' or `-oFILE',
-	  or even `-abcoFILE' (where a, b, c don't take arguments), 
-	  but not `-oFILEabc'.
-
-	* Arguments can be optional: `-d', `-dARG', `-d NotAnArgument'.
-
-	* A single `-' is not an option.
-
-	* Long options start with `--': `--help', `--verbose'.
-
-	* Long options can take arguments: `--output=FILE' or `--output FILE'.
-
-	* Arguments can be optional: `--debug', `--debug=ARG',
-		`--debug NotAnArgument'.
-
-	* `--' ends option parsing; the rest of the argument list is considered
-	  non-option arguments.
-
-	
-	Unknown options, missing arguments and extraneous arguments are
-	detected and reported.  The behaviour of the option parser can be
-	modified by passing it extra arguments.
-
-	An option specifier looks like this:
-
-		(long, short, doc, opts, key)
-
-	where
-
-		long is the long option name (e.g. "help", "output")
-			(or a list of long option names)
-
-		short is the short option name (e.g. "h", "o")
-			(or a list of short option names)
-
-		doc is a short help text (35 chars or less)
-
-			(default: no help text)
-
-		opts is a list of options:
-
-		    OptArg        -- this option takes an argument
-		    OptMultiArg   -- option can be given several times,
-					the arguments are collected into a list
-		    OptOptArg     -- option takes an optional argument
-		    OptNoDoc      -- don't show help text for this option
-		    OptArgName(n) -- use n as argument name in help text
-
-			(default: [])
-
-		key is a string that identifies this option (e.g. "h", "o")
-
-			(default: first short option name, or first long
-			option name if no short options are given)
-
-	example:
-
-	  my-options = ![
-		("help", "h", "display help message"),
-		("version", "V", "display version and exit"),
-		(["quiet", "silent"], "q", "be quiet"),
-		"I/O options:",
-		("output", "o", "output to FILE", [OptArg, OptArgName("FILE")])
-		("input", "i", "read from FILE", [OptMultiArg, 
-				OptArgName("FILE")])]
-
-	Options are parsed using getopt-parse:
-	
-		main = 
-		  ?args;
-		  <getopt-parse(spec,usage,progver,progbug,s,g,f)> args 
-				=> args';
-		  doit
-
-	where
-		args is a list of command line arguments
-
-		args' is a list of non-option arguments
-
-		spec builds a list of option specifiers
-
-		usage builds a string (or a list of strings) with usage text
-
-		progver builds a string containing program name and version
-
-		progbug builds a string with the email address to send bugs to
-
-		s will be applied to each successfully parsed option:
-
-			<s> (key, arg)	(with argument)
-			<s> (key, [])	(without argument)
-
-			(default: getopt-help <+ setopt)
-
-			(getopt-help will print help or version message, and
-			exit when applied to ("h") or ("V"))
-
-		g retrieves the current value of a multi-value option:
-
-			<g> key => val
-
-			(default: getopt)
-
-		f will be applied to each unsuccessfully parsed option:
-
-			<f> (key, arglist-rest) => arglist-rest'
-
-			(default: getopt-fail -- prints message and exits)
-
-		args is a list containing 
-
-	example:
-
-		getopt-parse(my-options, !"myprogram [options] file1 ...",
-			!"myprogram v0.9", !"bugs@my.org")
-
-	
-	If setopt is used in s, processed options are stored in a table,
-	and can be retrieved later with getopt:
-
-		<getopt> "i" => filename
-
-		<getopt> "v"; print-verbose-message
-
-	getopt fails if the option has not been seen, otherwise it returns the
-	option's argument, if appropriate, or the number of times the option
-	was given (as an int).  A special version, getopt-arg, returns the
-	argument if one was given, or fails otherwise:
-
-		<getopt-arg <+ getopt; !"default"> "f"
-
-	The program name (zeroth argument) can be retrieved with:
-
-		<getopt> "program-name" => progname
-
-	The help text is stored in the option table, and can be displayed
-	at any time:
-
-		<getopt-display> "help"
-
-		<getopt-display> "usage"
-
-		<getopt-display> "version"
-	
-
-
-\begin{code}
+/**
+ * This module parses command line arguments and build an option table
+ * for convenient retrieval.  Non-option arguments are returned to
+ * the caller.  Traditional Unix / GNU option syntax is supported:
+ * 
+ * * Short options start with `-'.
+ * * Two or more short options can be combined in a single word: `-abcd'
+ * * Short options can take arguments: `-o FILE' or `-oFILE',
+ *   or even `-abcoFILE' (where a, b, c don't take arguments), 
+ *   but not `-oFILEabc'.
+ * * Arguments can be optional: `-d', `-dARG', `-d NotAnArgument'.
+ * * A single `-' is not an option.
+ * * Long options start with `--': `--help', `--verbose'.
+ * * Long options can take arguments: `--output=FILE' or `--output FILE'.
+ * * Arguments can be optional: `--debug', `--debug=ARG',
+ *   `--debug NotAnArgument'.
+ * * `--' ends option parsing; the rest of the argument list is considered
+ *    non-option arguments.
+ * 
+ * 	
+ * Unknown options, missing arguments and extraneous arguments are
+ * detected and reported.  The behaviour of the option parser can be
+ * modified by passing it extra arguments.
+ * 
+ * An option specifier looks like this:
+ * 		(long, short, doc, opts, key)
+ * 
+ * 	where
+ * 
+ * 		long is the long option name (e.g. "help", "output")
+ * 			(or a list of long option names)
+ * 
+ * 		short is the short option name (e.g. "h", "o")
+ * 			(or a list of short option names)
+ * 
+ * 		doc is a short help text (35 chars or less)
+ * 
+ * 			(default: no help text)
+ * 
+ * 		opts is a list of options:
+ * 
+ * 		    OptArg        -- this option takes an argument
+ * 		    OptMultiArg   -- option can be given several times,
+ * 					the arguments are collected into a list
+ * 		    OptOptArg     -- option takes an optional argument
+ * 		    OptNoDoc      -- don't show help text for this option
+ * 		    OptArgName(n) -- use n as argument name in help text
+ * 
+ * 			(default: [])
+ * 
+ * 		key is a string that identifies this option (e.g. "h", "o")
+ * 
+ * 			(default: first short option name, or first long
+ * 			option name if no short options are given)
+ * 
+ * 	example:
+ * 
+ * 	  my-options = ![
+ * 		("help", "h", "display help message"),
+ * 		("version", "V", "display version and exit"),
+ * 		(["quiet", "silent"], "q", "be quiet"),
+ * 		"I/O options:",
+ * 		("output", "o", "output to FILE", [OptArg, OptArgName("FILE")])
+ * 		("input", "i", "read from FILE", [OptMultiArg, 
+ * 				OptArgName("FILE")])]
+ * 
+ * 	Options are parsed using getopt-parse:
+ * 	
+ * 		main = 
+ * 		  ?args;
+ * 		  <getopt-parse(spec,usage,progver,progbug,s,g,f)> args 
+ * 				=> args';
+ * 		  doit
+ * 
+ * 	where
+ * 		args is a list of command line arguments
+ * 
+ * 		args' is a list of non-option arguments
+ * 
+ * 		spec builds a list of option specifiers
+ * 
+ * 		usage builds a string (or a list of strings) with usage text
+ * 
+ * 		progver builds a string containing program name and version
+ * 
+ * 		progbug builds a string with the email address to send bugs to
+ * 
+ * 		s will be applied to each successfully parsed option:
+ * 
+ * 			<s> (key, arg)	(with argument)
+ * 			<s> (key, [])	(without argument)
+ * 
+ * 			(default: getopt-help <+ setopt)
+ * 
+ * 			(getopt-help will print help or version message, and
+ * 			exit when applied to ("h") or ("V"))
+ * 
+ * 		g retrieves the current value of a multi-value option:
+ * 
+ * 			<g> key => val
+ * 
+ * 			(default: getopt)
+ * 
+ * 		f will be applied to each unsuccessfully parsed option:
+ * 
+ * 			<f> (key, arglist-rest) => arglist-rest'
+ * 
+ * 			(default: getopt-fail -- prints message and exits)
+ * 
+ * 		args is a list containing 
+ * 
+ * 	example:
+ * 
+ * 		getopt-parse(my-options, !"myprogram [options] file1 ...",
+ * 			!"myprogram v0.9", !"bugs@my.org")
+ * 
+ * 	
+ * 	If setopt is used in s, processed options are stored in a table,
+ * 	and can be retrieved later with getopt:
+ * 
+ * 		<getopt> "i" => filename
+ * 
+ * 		<getopt> "v"; print-verbose-message
+ * 
+ * 	getopt fails if the option has not been seen, otherwise it returns the
+ * 	option's argument, if appropriate, or the number of times the option
+ * 	was given (as an int).  A special version, getopt-arg, returns the
+ * 	argument if one was given, or fails otherwise:
+ * 
+ * 		<getopt-arg <+ getopt; !"default"> "f"
+ * 
+ * 	The program name (zeroth argument) can be retrieved with:
+ * 
+ * 		<getopt> "program-name" => progname
+ * 
+ * 	The help text is stored in the option table, and can be displayed
+ * 	at any time:
+ * 
+ * 		<getopt-display> "help"
+ * 
+ * 		<getopt-display> "usage"
+ * 
+ * 		<getopt-display> "version"
+ */
 module getopt
 imports dynamic-rules string list-basic tables
 signature
@@ -467,20 +453,3 @@ strategies
 	?"version";
 	<getopt; error> "getopt-version-string"
 
-\end{code}
-
-%    Copyright (C) 2002  Otto Skrove Bagge
-%
-%    This program is free software; you can redistribute it and/or modify
-%    it under the terms of the GNU General Public License as published by
-%    the Free Software Foundation; either version 2 of the License, or
-%    (at your option) any later version.
-%
-%    This program is distributed in the hope that it will be useful,
-%    but WITHOUT ANY WARRANTY; without even the implied warranty of
-%    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-%    GNU General Public License for more details.
-%
-%    You should have received a copy of the GNU General Public License
-%    along with this program; if not, write to the Free Software
-%    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA

@@ -1,3 +1,6 @@
+/**
+ * Bag related strategies, a bag is a set of elements with an attached occurrence number.
+ */
 module list-bag
 imports list-basic
 rules

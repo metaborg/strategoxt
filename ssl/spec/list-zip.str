@@ -1,16 +1,10 @@
-\literate[list-zip]
-
-	\begin{abstract}
-
-	Zipping two lists into a list of pairs is a useful operation
-	in many situations. There are many variants of zipping, for
-	instance in the way lists of unequal length are treated. This
-	module defines a collection of zip-like strategies for lists
-	based on one underlying control scheme.
-
-	\end{abstract}
-
-\begin{code}
+/**
+ * Zipping two lists into a list of pairs is a useful operation
+ * in many situations. There are many variants of zipping, for
+ * instance in the way lists of unequal length are treated. This
+ * module defines a collection of zip-like strategies for lists
+ * based on one underlying control scheme.
+ */
 module list-zip
 imports list-cons
 imports tuple
@@ -39,18 +33,20 @@ rules
   NZip2  : (n, [y|ys]) -> ((n, y), (<add> (n, 1), ys))
   NZip3  : (x, xs) -> [x| xs]
 
-  // cart(s): Create the cartesian product of two lists, i.e., combine
-  // each element of the first list which each element from the second
-  // list. The strategy s is used to combine the pairs of elements
-  // <s>(x,y).
-
+ /**
+  * Create the cartesian product of two lists, i.e., combine
+  * each element of the first list which each element from the second
+  * list. The strategy s is used to combine the pairs of elements
+  * <s>(x,y).
+  */
   cart(s) : 
     (xs, ys) -> 
     <foldr(![], conc, \ x -> <map(\y -> <s>(x, y)\ )> ys\ )> xs
 
-  // join(s): create the cartesian product of two lists and select only
-  // those combined elements <s>(x, y) that succeed
-
+ /**
+  * Creates the cartesian product of two lists and select only
+  * those combined elements <s>(x, y) that succeed.
+  */
   join(s) : 
     (xs, ys) -> 
     <foldr(![], union, \x -> <filter(\y -> <s>(x, y)\ )> ys\ )> xs
@@ -116,21 +112,3 @@ strategies
  
   zip-skip(pred, s) = 
     rec x(Zip1 + (Skip(pred); (id, x) <+ Zip2; (s, x)); Zip3)
-\end{code}
-
-% Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
-% 
-% This program is free software; you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation; either version 2, or (at your option)
-% any later version.
-% 
-% This program is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-% 
-% You should have received a copy of the GNU General Public License
-% along with this program; if not, write to the Free Software
-% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-% 02111-1307, USA.

@@ -13,7 +13,7 @@ strategies
   /**
    * opens a Stream associated to a FileLoc
    *
-   * :: FileLoc * String -> Stream
+   * @type FileLoc * String -> Stream
    */
   open-stream = ?(_, _);
     (  Fst; stdio-stream
@@ -22,7 +22,7 @@ strategies
     )
 
   /**
-   * :: FileLoc -> Stream
+   * @type FileLoc -> Stream
    */
   stdio-stream = ?stdin() ; stdin-stream
   stdio-stream = ?stdout(); stdout-stream
@@ -49,29 +49,29 @@ strategies
 
 strategies
 
-  // :: String -> String
+  // @type String -> String
   file-exists =
     <access> (<id>, [F_OK()])
 
-  // :: String -> String
+  // @type String -> String
   can-read-file =
     <access> (<id>, [R_OK()])
 
   is-readable = can-read-file
 
-  // :: String -> String
+  // @type String -> String
   can-write-file =
     <access> (<id>, [W_OK()])
 
   is-writable = can-write-file
 
-  // :: String -> String
+  // @type String -> String
   can-execute-file =
     <access> (<id>, [X_OK()])
 
   is-executable = can-exutable-file
 
-  // :: String -> String
+  // @type String -> String
   can-create-file =
     where(dirname; can-write-file)
 
@@ -156,21 +156,3 @@ strategies
     (guarantee-extension(ext), id)
     ; find-in-path
 
-/**
- * Copyright (C) 1998-2003 Eelco Visser <visser@acm.org>
- * 
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
- * 02111-1307, USA.
- */
