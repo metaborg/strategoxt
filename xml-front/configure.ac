@@ -18,10 +18,6 @@ AC_CONFIG_FILES([
   syn/Makefile
   syn/xml/Makefile
 
-  tg/Makefile
-  tg/xml/Makefile
-  tg/xml-info/Makefile
-
   sig/Makefile
   sig/xml/Makefile
   sig/xml-info/Makefile
@@ -29,17 +25,18 @@ AC_CONFIG_FILES([
   pp/Makefile
   pp/xml/Makefile
 
-  tests/Makefile
-  tests/syn/Makefile
-  tests/syn/xml/Makefile
-  tests/syn/xml/Document/Makefile
-  tests/str-xml/Makefile
-  tests/str-xml-info/Makefile
   trans/Makefile 
   trans/process/Makefile 
   trans/str-xml-doc/Makefile
   trans/str-xml-info/Makefile
 
   xtc/Makefile
+
+  tests/Makefile
+  tests/syn/Makefile
+  tests/syn/xml/Makefile
+  tests/syn/xml/Document/Makefile
+  tests/str-xml/Makefile
+  tests/str-xml-info/Makefile
 ])
 AC_OUTPUT

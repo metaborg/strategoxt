@@ -1,24 +1,10 @@
 module parse-xml-info
-imports xtc-lib xml-xtc-tools options xtc-java
+imports xtc-lib xml-xtc-tools options
 
 strategies
   
   main-parse-xml-info =
-    xtc-io-wrap(parse-xml-options,
-      use-jaxp < parse-jaxp + xtc-parse-xml-info
-    )
-
-  use-jaxp =
-    where(<get-config> "--parser"; ?"jaxp")
-
-  parse-jaxp =
-      <xtc-java-app-transform> ("nl.cwi.aterm.xml.XML2XMLATerm", [<xtc-find> "mb-aterm.jar"], <id>)
-
-  parse-xml-options =
-	  ArgOption("-p" + "--parser"
-    , where(<set-config> ("--parser", <id>)); !None()
-    , !"-p p|--parser p   Specify parser: sglr (default) or jaxp"
-    )
+    xtc-io-wrap(xtc-parse-xml-info)
 
 /*
 Usage:
