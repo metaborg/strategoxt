@@ -1,3 +1,8 @@
+2004-06-04  Martin Bravenboer  <martin@cs.uu.nl>
+
+	* pp/Sdf2-pgen2.1.pp: Rename as ...
+	* pp/Sdf2.pp: The one and only Sdf2 pretty print table.
+
 2004-06-04  Valentin David  <valentin@lrde.epita.fr>
 
 	* pp/Sdf2-pgen2.0.pp: Rename as...

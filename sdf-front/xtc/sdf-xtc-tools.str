@@ -26,7 +26,7 @@ strategies
   xtc-pp-sdf2 =
       xtc-transform(!"sdf-ensugar", pass-verbose)
     ; xtc-transform(!"sdf-bracket", pass-verbose)
-    ; xtc-ast2abox(!["Sdf2-pgen2.1.pp.af", "Sdf2.pp.af"])
+    ; xtc-ast2abox(!["Sdf2.pp.af"])
     ; xtc-abox2text
 
 strategies
