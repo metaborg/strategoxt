@@ -1,35 +1,19 @@
 /**
  * Removes all cons(...) attributes from the productions in an Sdf grammar.
  *
- * Usage:
- *   rm-cons -i <Imploded-AsFix> -o <Implode-AsFix>
- *
  * @author Joost Visser (Joost.Visser@cwi.nl)
  */
 module rm-cons
-imports lib Kernel-Sdf-Syntax Label-Sdf-Syntax termid
+imports lib Sdf2
 
 strategies
 
   io-rm-cons =
-    io-idwrap(InOutId("\"sdf-2.1\"", !"\"sdf-2.1\""), RmCons)
+    io-wrap(RmCons)
 
   RmCons =
-    rec x(
-       attrs(filter(not(?cons(_))))
-    <+ all(x)
-    <+ id
-    )
-    ; simplify-sdf
-
-  simplify-sdf =
-    reduce(Simplify-sdf)
-
-rules
-  Simplify-sdf:
-    attrs([]) -> no-attrs()
+    alltd(attrs(filter(not(?term(cons(_)) + ?cons(_)))))
 
 signature
   constructors
-    no-attrs: 					   Attributes
-    attrs: List(Attr)				-> Attributes
+    cons: ATerm -> Attribute
