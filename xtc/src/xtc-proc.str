@@ -1,5 +1,5 @@
 module xtc-proc
-imports xtc-rep config scoped-finite-map options
+imports xtc-rep config scoped-finite-map options io exec dir
 
 signature
   constructors
@@ -226,4 +226,56 @@ strategies
     where <xtc-new-file> () => g
         ; <conc; xtc-command(tool)> (<args>, ["-o", g])
         ; <close-file> g
+
+strategies
+
+  /**
+   * xtc-cat concatenates the content of a list 
+   * of Files (FILE or stdin) and stores the result 
+   * in a fresh File
+   *
+   * :: [File] -> File
+   */
+  xtc-cat:
+    in-files -> file
+      where xtc-new-file-name => file
+          ; <xtc-open-fd> file => fdout
+          ; <map(File-as-fd(<fdcopy> (<id>, fdout)))> in-files
+          ; <xtc-close-fd> fdout
+
+  /**
+   * File-as-fd applies the specified strategy to
+   * the openend file descriptor of the specified File.
+   * The fd is closed in all cases, also when s fails.
+   *
+   * Int -> b :: File -> b
+   */
+  File-as-fd(s) =
+      xtc-open-fd => fd
+    ; finally(s, where(try(<xtc-close-fd> fd)))
+
+  /**
+   * xtc-new-file-name is like xtc-new-file but doesn't open the file.
+   */
+  // :: _ -> File
+  xtc-new-file-name =
+      new-file => f
+    ; where(<assert(!TempFiles)> (f, ()))
+    ; !FILE(f)
+
+  // :: File -> Int
+  xtc-open-fd =
+      \ FILE(s)  -> <open> s \
+    + \ stdin()  -> < STDIN_FILENO> () \
+    + \ stdout() -> <STDOUT_FILENO> () \
+    + \ stderr() -> <STDERR_FILENO> () \
+
+  // :: Int -> ()
+  xtc-close-fd = 
+    finally(
+      ( where(<eq> (<id>, < STDIN_FILENO> ()))
+      + where(<eq> (<id>, <STDOUT_FILENO> ()))
+      + where(<eq> (<id>, <STDERR_FILENO> ()))
+      ) <+ close
+    , !())
 
