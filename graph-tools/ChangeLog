@@ -1,3 +1,7 @@
+2002-03-14  Eelco Visser  <visser@acm.org>
+
+	* src/graphxml2dot/GraphXML2dot.r: TNil/TCons -> (...)
+
 2002-01-28 Merijn de Jonge <mdejonge@cwi.nl>
    * graphxml2dot/GraphXML2dot.r: added color="black" to default node attributes
 

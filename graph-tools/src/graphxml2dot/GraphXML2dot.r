@@ -1,6 +1,7 @@
 (*
  GT -- Grammar Tools
- Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
+ Copyright (C) 2000-2002
+                    Merijn de Jonge <mdejonge@cwi.nl>
                     Eelco Visser <visser@acm.org>
                     Joost Visser <jvisser@cwi.nl>
 
@@ -19,7 +20,7 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
  02111-1307, USA.
 
- $Id: GraphXML2dot.r,v 1.14 2002/01/28 15:34:49 mdejonge Exp $
+ $Id: GraphXML2dot.r,v 1.15 2002/03/14 07:44:34 eelco Exp $
 *)
 
 module GraphXML2dot
@@ -49,7 +50,7 @@ strategies
           option-value(UrlPrefix(?p), !"" => p) ;
           option-value(UrlExt(?e),    !".html" => e);
           <concat-strings;quote>[p, "\\N", e] => url-string;
-          !TCons(Attr-Stmt(node(comma([attr-id("URL",url-string),attr-id("color", <quote>"black")]))),TCons(None,TNil)) => url;
+          !(Attr-Stmt(node(comma([attr-id("URL",url-string),attr-id("color", <quote>"black")]))),None) => url;
           <filter(node2dot<+edge2dot)>xs => ss
       \
 
