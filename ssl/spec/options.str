@@ -6,22 +6,33 @@ imports io parse-options config time verbose keep
 
 strategies
 
- /**
-  * Wraps a strategy into a strategy handling options and io of terms.
-  *
-  * @param  strategy to apply on the input term
-  */
+  /**
+   * Wraps a strategy into a strategy handling options and io of terms.
+   *
+   * @param  strategy to apply on the input term
+   */
   io-wrap(s) = 
     io-wrap(fail, s)
 
- /**
-  * Wraps a strategy into a strategy handling options and io of terms.
-  *
-  * @param  extra options besides the default io-options
-  * @param  strategy to apply on the input term
-  */
+  /**
+   * Wraps a strategy into a strategy handling options and io of terms.
+   *
+   * @param   extra options besides the default io-options
+   *          use fail if you have no additional options.
+   * @param   strategy to apply on the input term
+   */
   io-wrap(extra-opts, s) =
-    option-wrap(extra-opts <+ io-options,  io(s))
+    io-wrap(extra-opts, system-usage, system-about, s)
+
+  /**
+   *
+   * @param   extra options besides the default io-options.
+   *          use fail if you have no additional options.
+   *
+   * @param   strategy to apply on the input term
+   */
+  io-wrap(extra-opts, usage, about, s) =
+    option-wrap(extra-opts <+ io-options,  usage, about, id, io(s))
 
   output-wrap(s) =
     output-wrap(fail, s)
@@ -37,14 +48,14 @@ strategies
 
 strategies
 
- /**
-  * Wraps a strategy into a strategy that handles io options.
-  *
-  * Reads a term from the file specified by the -i option (or stdin).
-  * Writes to a file specified by the -o option (or stdout).
-  *
-  * @param   strategy to apply on the input term
-  */
+  /**
+   * Wraps a strategy into a strategy that handles io options.
+   *
+   * Reads a term from the file specified by the -i option (or stdin).
+   * Writes to a file specified by the -o option (or stdout).
+   *
+   * @param   strategy to apply on the input term
+   */
   io(s) =
     input(output(s))
 
@@ -70,21 +81,20 @@ strategies
 
 strategies
 
+  option-wrap(opts, s) =
+    option-wrap(opts, system-usage, id, s)
+
+  option-wrap(opts, usage, announce, s) =
+    option-wrap(opts, usage, system-about, announce, s)
+
   /**
    * Read options, display help, report success or failure, call strategy
-   *
-   * @todo parse-options already invokes need-help. Remove it from parse-options or remove it here.
    */
-  option-wrap(opts, usage, announce, s) =
-    parse-options(opts)
+  option-wrap(opts, usage, about, announce, s) =
+    parse-options(opts, usage, about)
     ; store-options
     ; announce
-    ; (  need-help(usage)
-      <+ s; report-success
-      <+ report-failure)
-
-  option-wrap(opts, s) =
-    option-wrap(opts, default-usage, id, s)
+    ; (s; report-success <+ report-failure)
 
 strategies
 
@@ -189,11 +199,11 @@ strategies
 
   need-help(u) =
     (  <get-config> "--help"
-    <+ option-defined(
-         Help()
-       + Undefined(id)
-       + Version()
-       )
+      <+ option-defined(
+           Help()
+         + Undefined(id)
+         + Version()
+         )
     ); u
 
   need-help =

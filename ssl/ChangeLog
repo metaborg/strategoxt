@@ -1,3 +1,10 @@
+2004-07-04  Martin Bravenboer <martin@cs.uu.nl>
+
+	* spec/options.str: io-wrap now has a variant that takes an
+	explicit usage and about argument. These strategies are used if
+	the users requests for help or information about the program. The
+	changes are backwards compatible.
+
 2004-06-15  Arthur van Dam <adam@cs.uu.nl>
 
 	* spec/sets.str:

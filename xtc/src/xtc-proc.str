@@ -181,7 +181,10 @@ strategies
     option-wrap(extra-opts <+ io-options, xtc-io(s))
 
   xtc-io-wrap(extra-opts, deps, s) = 
-    option-wrap(extra-opts <+ io-options <+ check-options(deps), 
+    xtc-io-wrap(extra-opts, system-usage, system-about, deps, s)
+
+  xtc-io-wrap(extra-opts, usage, about, deps, s) = 
+    option-wrap(extra-opts <+ io-options <+ check-options(deps), usage, about, id,
       xtc-check-dependencies
       ; xtc-io(s)
     )

@@ -1,23 +1,28 @@
 module sdf2rtg
-imports xtc-lib options regular-xtc-tools tool-doc sdf-options
+imports liblib regular-xtc-tools tool-doc sdf-options
 
 strategies
 
   main-sdf2rtg =
-    xtc-io-wrap(sdf-main-module-option + system-about-switch,
+    xtc-io-wrap(
+      sdf-main-module-option
+    , sdf2rtg-usage
+    , sdf2rtg-about
+    , !["sdf2table", "implodePT", "sdf-desugar", "core-sdf-grammar2rtg"]
+    , sdf2rtg
+    )
+
+  sdf2rtg = 
       xtc-transform(!"sdf2table", !["-n", "-m", <get-sdf-main-module> | <pass-v-verbose>])
     ; xtc-transform(!"implodePT")
     ; xtc-transform(!"sdf-desugar", pass-verbose)
     ; xtc-transform(!"core-sdf-grammar2rtg", pass-verbose)
     ; xtc-pp-rtg
-    )
 
-strategies
-
-  override-system-usage =
+  sdf2rtg-usage =
     <tool-doc> sdf2rtg-tool-doc
 
-  override-system-about = 
+  sdf2rtg-about =
     <tool-doc> sdf2rtg-tool-about
 
 overlays

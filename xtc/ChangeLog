@@ -1,3 +1,10 @@
+2004-07-04  Martin Bravenboer <martin@cs.uu.nl>
+
+	* src/xtc-proc.str: xtc-io-wrap now has a variant that takes an
+	explicit usage and about argument. These strategies are used if
+	the users requests for help or information about the program. The
+	changes are backwards compatible.
+
 2003-05-27  Martin Bravenboer <martin@cs.uu.nl>
 
 	* src/xtc-register.str: added an xtc-register strategy that takes
