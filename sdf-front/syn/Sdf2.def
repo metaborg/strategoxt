@@ -1,5 +1,6 @@
 definition
 module languages/sdf2/syntax/Aliases
+
 imports languages/sdf2/syntax/Kernel
 
 exports
@@ -12,67 +13,93 @@ exports
 
 
 module languages/sdf2/syntax/Restrictions
+
 imports languages/sdf2/syntax/CC
 
 exports
   sorts Lookahead Lookaheads Restriction Restrictions
+
   context-free syntax
-    CharClass                           -> Lookahead    {cons("char-class")}
-    head:CharClass "." tail:Lookaheads  -> Lookahead    {cons("seq")}
-    Lookahead                           -> Lookaheads   {cons("single")}
-    "left":Lookaheads "|" "right":Lookaheads
-                                        -> Lookaheads   {cons("alt"),right}
-    "(" Lookaheads ")"           -> Lookaheads          {bracket}
-    "[[" list:{Lookahead ","}* "]]"   -> Lookaheads             {cons("list")}
+    CharClass                          -> Lookahead  {cons("char-class")}
+    head:CharClass "." tail:Lookaheads -> Lookahead  {cons("seq")}
 
-    Symbols "-/-" Lookaheads     -> Restriction         {cons("follow")}
+    Lookahead                                -> Lookaheads  {cons("single")}
+    "left":Lookaheads "|" "right":Lookaheads -> Lookaheads  {cons("alt"),right}
+    "(" Lookaheads ")"                       -> Lookaheads  {bracket}
+    "[[" list:{Lookahead ","}* "]]"          -> Lookaheads  {cons("list")}
 
-    list:Restriction*                 -> Restrictions
-    "restrictions" Restrictions  -> Grammar             {cons("restrictions")}
-    "reject"                     -> Attribute           {cons("reject")}
-    "prefer"                     -> Attribute           {cons("prefer")}
-    "avoid"                      -> Attribute           {cons("avoid")}
+    Symbols "-/-" Lookaheads -> Restriction  {cons("follow")}
+
+    list:Restriction* -> Restrictions
+
+    "restrictions" Restrictions -> Grammar  {cons("restrictions")}
+
+    "reject" -> Attribute  {cons("reject")}
+    "prefer" -> Attribute  {cons("prefer")}
+    "avoid"  -> Attribute  {cons("avoid")}
 
   context-free priorities    
     CharClass "." Lookaheads    -> Lookahead >
     Lookaheads "|" Lookaheads   -> Lookaheads
 
 
-
 module languages/sdf2/syntax/Labels
+
 imports languages/sdf2/syntax/Kernel 
         languages/sdf2/syntax/Literals 
-         languages/aterm/syntax/ATerms
+        languages/aterm/syntax/ATerms
 
 exports
   context-free syntax
-    label:Literal ":" Symbol   -> Symbol        {cons("label")}
+    label:Literal ":" Symbol -> Symbol  {cons("label")}
 
 module languages/sdf2/syntax/Literals
+
 imports languages/sdf2/syntax/Kernel 
 imports languages/aterm/syntax/Literals
 
 exports
   context-free syntax
-    Literal                                              -> Symbol      {cons("lit")}
+    Literal  -> Symbol  {cons("lit")}
+
     function-symbol: Literal "(" arguments:{Symbol ","}* ")"
-      "->" result:Symbol Attributes                      -> Production
-  {avoid, cons("prod-fun")}
+      "->" result:Symbol Attributes -> Production  {avoid, cons("prod-fun")}
+
+module languages/sdf2/syntax/Start-Symbols
+
+imports languages/sdf2/syntax/Kernel
+
+exports
+  %% sorts StartSymbol
+
+  context-free syntax
+    %%Symbol Attribute -> StartSymbol
+  
+    "start-symbols" Symbols                -> Grammar {cons("kernel-start-symbols")} 
+    "lexical" "start-symbols" Symbols      -> Grammar {cons("lexical-start-symbols")}
+    "context-free" "start-symbols" Symbols -> Grammar {cons("context-free-start-symbols")}
 
 module languages/sdf2/syntax/Sorts
+
 imports languages/sdf2/syntax/Kernel
+
 exports
   sorts Sort
   lexical syntax
     [A-Z]                          -> Sort {cons("one-char")}
-    [A-Z][A-Za-z0-9\-]*[A-Za-z0-9] -> Sort{cons("more-chars")}
-  context-free syntax  
-    Sort                                    -> Symbol           {cons("sort")}
-    Sort "[[" parameters:{Symbol ","}+ "]]" -> Symbol           {cons("parameterized-sort")}
-    "sorts" Symbols                         -> Grammar
-    {cons("sorts")}
+    [A-Z][A-Za-z0-9\-]*[A-Za-z0-9] -> Sort {cons("more-chars")}
+
+  context-free syntax
+    Sort                                    -> Symbol  {cons("sort")}
+    Sort "[[" parameters:{Symbol ","}+ "]]" -> Symbol  {cons("parameterized-sort")}
+
+    "sorts" Symbols -> Grammar {cons("sorts")}
+
+  lexical restrictions
+    Sort -/- [A-Za-z0-9]
 
 module languages/sdf2/syntax/Character
+
 imports basic/Comments
 
 exports
@@ -90,6 +117,7 @@ exports
     "\\LABEL_START" -> Character {cons("label_start")}
 
 module languages/sdf2/syntax/Character-Class
+
 imports languages/sdf2/syntax/Character
 
 hiddens
@@ -103,14 +131,16 @@ exports
     CharRange                                   -> CharRanges
     "left":CharRanges "right":CharRanges        -> CharRanges   {cons("conc"),right,memo}
     "(" CharRanges ")"                          -> CharRanges   {bracket}
-                              -> OptCharRanges                  {cons("absent")}
-    CharRanges                -> OptCharRanges                  {cons("present")}
-    "[" OptCharRanges "]"     -> CharClass                      {cons("simple-charclass")}
-    "~" CharClass             -> CharClass                      {cons("comp")}
-    "left":CharClass "/" "right":CharClass   -> CharClass       {cons("diff"),left,memo}
-    "left":CharClass "/\\" "right":CharClass -> CharClass       {cons("isect"),left,memo}
-    "left":CharClass "\\/" "right":CharClass -> CharClass       {cons("union"),left}
-    "(" CharClass ")"          -> CharClass {bracket, avoid}
+
+                              -> OptCharRanges  {cons("absent")}
+    CharRanges                -> OptCharRanges  {cons("present")}
+
+    "[" OptCharRanges "]"                    -> CharClass  {cons("simple-charclass")}
+    "~" CharClass                            -> CharClass  {cons("comp")}
+    "left":CharClass "/" "right":CharClass   -> CharClass  {cons("diff"),left,memo}
+    "left":CharClass "/\\" "right":CharClass -> CharClass  {cons("isect"),left,memo}
+    "left":CharClass "\\/" "right":CharClass -> CharClass  {cons("union"),left}
+    "(" CharClass ")"                        -> CharClass  {bracket, avoid}
 
   context-free priorities
     "~" CharClass             -> CharClass >
@@ -119,43 +149,52 @@ exports
     CharClass "\\/" CharClass -> CharClass           
 
 
-
 module languages/sdf2/syntax/CC
+
 imports languages/sdf2/syntax/Character-Class 
         languages/sdf2/syntax/Kernel
+
 exports
   context-free syntax
     CharClass -> Symbol {cons("char-class")}
 
 module languages/sdf2/syntax/Priority
+
 imports languages/sdf2/syntax/Kernel
+
 exports
   sorts Associativity Group Priority Priorities
+
   context-free syntax
-    "left"                                    -> Associativity  {cons("left")}
-    "right"                                   -> Associativity  {cons("right")}
-    "non-assoc"                               -> Associativity  {cons("non-assoc")}
-    "assoc"                                   -> Associativity  {cons("assoc")}
-    "bracket"                                 -> Attribute      {cons("bracket")}
-    Associativity                             -> Attribute      {cons("assoc")}
-    Production                                -> Group          {cons("simple-group")}
-    "{" Productions "}"                       -> Group          {cons("prods-group")}
-    "{" Associativity ":" Productions "}"     -> Group          {cons("assoc-group")}
-    list:{Group ">"}+                         -> Priority       {cons("chain")}
-    "left":Group Associativity "right":Group  -> Priority       {cons("assoc")}
-    list:{Priority  ","}*                     -> Priorities
-    "priorities" Priorities                   -> Grammar
-    {cons("priorities")}
+    "left"      -> Associativity  {cons("left")}
+    "right"     -> Associativity  {cons("right")}
+    "non-assoc" -> Associativity  {cons("non-assoc")}
+    "assoc"     -> Associativity  {cons("assoc")}
+
+    "bracket"     -> Attribute  {cons("bracket")}
+    Associativity -> Attribute  {cons("assoc")}
+
+    Production                            -> Group  {cons("simple-group")}
+    "{" Productions "}"                   -> Group  {cons("prods-group")}
+    "{" Associativity ":" Productions "}" -> Group  {cons("assoc-group")}
+
+    list:{Group ">"}+                        -> Priority  {cons("chain")}
+    "left":Group Associativity "right":Group -> Priority  {cons("assoc")}
+
+    list:{Priority  ","}* -> Priorities
+
+    "priorities" Priorities  -> Grammar  {cons("priorities")}
 
 module languages/sdf2/syntax/Lifting
+
 imports languages/sdf2/syntax/Kernel
+
 exports
-
-context-free syntax
-
-left-quote:"`" Symbol right-quote:"`" -> Symbol {cons("lifting")}
+  context-free syntax
+    left-quote:"`" Symbol right-quote:"`" -> Symbol  {cons("lifting")}
 
 module languages/sdf2/syntax/Regular
+
 imports languages/sdf2/syntax/Kernel 
 imports languages/aterm/syntax/IntCon
 
@@ -185,78 +224,97 @@ exports
     Symbol "|" Symbol         -> Symbol       
 
 
-
 module languages/sdf2/syntax/Renaming
+
 imports languages/sdf2/syntax/Kernel
 
 exports
   sorts Renaming Renamings
   context-free syntax 
-    "[" list:Renaming* "]"              -> Renamings  {cons("renamings")}
-    from:Symbol     "=>" to:Symbol      -> Renaming   {cons("symbol")}
-    from-prod:Production "=>" to-prod:Production  -> Renaming
-  {cons("production")}
+    "[" list:Renaming* "]" -> Renamings  {cons("renamings")}
+
+    from:Symbol "=>" to:Symbol                   -> Renaming  {cons("symbol")}
+    from-prod:Production "=>" to-prod:Production -> Renaming  {cons("production")}
 
 module languages/sdf2/syntax/Modules
+
 imports languages/sdf2/syntax/Kernel 
         languages/sdf2/syntax/Renaming
+
 hiddens
   sorts ModuleWord
 exports
+  context-free start-symbols Module Definition
+
   sorts ModuleId ModuleName Import Imports
         Section Sections Module Definition ImpSection
+
   lexical syntax    
-    [A-Za-z0-9\_\-]+        -> ModuleWord                       {cons("word")}
-    ModuleWord              -> ModuleId                         {cons("word")}
-    "/" ModuleId            -> ModuleId                         {cons("slash-word")}
-    ModuleWord "/" ModuleId -> ModuleId                         {cons("word-slash-word")}         
+    [A-Za-z0-9\_\-]+ -> ModuleWord  {cons("word")}
+
+    ModuleWord              -> ModuleId  {cons("word")}
+    "/" ModuleId            -> ModuleId  {cons("slash-word")}
+    ModuleWord "/" ModuleId -> ModuleId  {cons("word-slash-word")}
+         
   context-free syntax
-    list:Module*                 -> Definition
-    "module" ModuleName list:ImpSection* Sections -> Module             {cons("module")}
-    "exports" Grammar            -> Section                     {cons("exports")}
-    "hiddens" Grammar            -> Section                     {cons("hiddens")}
+    list:Module* -> Definition
+
+    "module" ModuleName list:ImpSection* Sections -> Module  {cons("module")}
+
+    "exports" Grammar            -> Section  {cons("exports")}
+    "hiddens" Grammar            -> Section  {cons("hiddens")}
+
     list:Section*                -> Sections
-    ModuleId                     -> ModuleName                  {cons("unparameterized")}
-    ModuleId "[" params:Symbols "]"     -> ModuleName           {cons("parameterized")}
-    "id" "(" ModuleName ")"      -> Attribute                   {cons("id")}
-    "imports" list:Imports       -> ImpSection                  {cons("imports")}
-    ImpSection                   -> Grammar                     {cons("imp-section")}
-    list:Import*                 -> Imports
-    ModuleName                   -> Import                      {cons("module")}
-    ModuleName Renamings         -> Import                      {cons("renamed-module")}
-    "(" Import ")"               -> Import {bracket}
+
+    ModuleId                        -> ModuleName  {cons("unparameterized")}
+    ModuleId "[" params:Symbols "]" -> ModuleName  {cons("parameterized")}
+
+    "id" "(" ModuleName ")" -> Attribute  {cons("id")}
+
+    "imports" list:Imports -> ImpSection  {cons("imports")}
+
+    ImpSection -> Grammar  {cons("imp-section")}
+
+    list:Import* -> Imports
+
+    ModuleName            -> Import  {cons("module")}
+    ModuleName Renamings  -> Import  {cons("renamed-module")}
+    "(" Import ")"        -> Import  {bracket}
 
   lexical restrictions
     ModuleWord -/- [A-Za-z0-9\_\-]
     ModuleId -/- [\/]
 
 module languages/sdf2/syntax/Basic
+
 imports languages/sdf2/syntax/Kernel
+
 exports
   context-free syntax
-    "lexical" "syntax"      Productions -> Grammar              {cons("lexical-syntax")}
-    "context-free" "syntax" Productions -> Grammar              {cons("context-free-syntax")}
-    "variables"             Productions -> Grammar              {cons("variables")}
-    "lexical" "variables"   Productions -> Grammar              {cons("lexical-variables")}
+    "lexical" "syntax"      Productions -> Grammar  {cons("lexical-syntax")}
+    "context-free" "syntax" Productions -> Grammar  {cons("context-free-syntax")}
+    "variables"             Productions -> Grammar  {cons("variables")}
+    "lexical" "variables"   Productions -> Grammar  {cons("lexical-variables")}
 
-    "<" Symbol "-CF"  ">"               -> Symbol               {cons("cf")}
-    "<" Symbol "-LEX" ">"               -> Symbol               {cons("lex")}
-    "<" Symbol "-VAR" ">"               -> Symbol               {cons("varsym")}
+    "<" Symbol "-CF"  ">"               -> Symbol  {cons("cf")}
+    "<" Symbol "-LEX" ">"               -> Symbol  {cons("lex")}
+    "<" Symbol "-VAR" ">"               -> Symbol  {cons("varsym")}
 
-    "LAYOUT"                            -> Symbol
-    {cons("layout")}
+    "LAYOUT"                            -> Symbol  {cons("layout")}
 
 module languages/sdf2/syntax/Grammars
+
 imports basic/Comments
 
 exports
   sorts Grammar
   context-free syntax    
-    "(/)"                 -> Grammar                            {cons("empty-grammar")}
-    "left":Grammar "right":Grammar  -> Grammar                  {assoc,cons("conc-grammars")}
-    "(" Grammar ")"       -> Grammar {bracket}
+    "(/)"                          -> Grammar  {cons("empty-grammar")}
+    "left":Grammar "right":Grammar -> Grammar  {assoc,cons("conc-grammars")}
+    "(" Grammar ")"                -> Grammar  {bracket}
 
 module basic/Comments
+
 imports
   basic/Whitespace
 
@@ -268,38 +326,56 @@ exports
     LAYOUT? -/- [\%]
 
 module languages/sdf2/syntax/Symbols
+
 imports basic/Comments
 
 exports
   sorts Symbol Symbols
+
   context-free syntax
-    "(" Symbol ")"       -> Symbol {bracket}
-    list:Symbol*         -> Symbols
+    "(" Symbol ")" -> Symbol {bracket}
+
+    list:Symbol* -> Symbols
 
 
 
 module languages/aterm/syntax/RealCon
+
 imports languages/aterm/syntax/IntCon
+
+hiddens
+  context-free start-symbols 
+    RealCon
+
 exports
   sorts OptExp RealCon
+
   context-free syntax
-    "e" IntCon                -> OptExp {cons("present")}
-                              -> OptExp {cons("absent")}
+    "e" IntCon -> OptExp {cons("present")}
+               -> OptExp {cons("absent")}
+
     IntCon "." NatCon OptExp  -> RealCon {cons("real-con")}
 
 module languages/aterm/syntax/IntCon
+
 imports basic/Whitespace
 
+hiddens
+  context-free start-symbols 
+    IntCon
+
 exports
+
   sorts NatCon IntCon
   lexical syntax   
     [0-9]+ -> NatCon  {cons("digits")}
   context-free syntax
-    NatCon     -> IntCon {cons("natural")}
+    NatCon         -> IntCon {cons("natural")}
     pos:"+" NatCon -> IntCon {cons("positive")}
     neg:"-" NatCon -> IntCon {cons("negative")}
 
 module basic/Whitespace
+
 exports
   lexical syntax
     [\ \t\n\r]	-> LAYOUT
@@ -307,10 +383,13 @@ exports
     LAYOUT? -/- [\ \t\n\r]
 
 module languages/aterm/syntax/Literals
+
 imports basic/Whitespace
 
 hiddens
   sorts AlphaNumericalEscChar DecimalEscChar EscChar L-Char
+  context-free start-symbols
+    Literal
 
 exports
   sorts QLiteral
@@ -339,43 +418,61 @@ exports
     QLiteral  -> Literal {cons("qlit")}
     UQLiteral -> Literal {cons("uqlit")}
 
+  lexical restrictions
+    UQLiteral -/- [A-Za-z0-9]
+
 module languages/aterm/syntax/ATerms
+
 imports languages/aterm/syntax/Literals 
         languages/aterm/syntax/IntCon 
         languages/aterm/syntax/RealCon
+
+hiddens
+  context-free start-symbols 
+    ATerm
+
 exports
   sorts ATermList ACon AFun ATerm Ann
+
   context-free syntax
-    "[" elems:{ ATerm ","}* "]"       -> ATermList {cons("not-empty")}
-    IntCon                            -> ACon      {cons("int")}
-    RealCon                           -> ACon      {cons("real")}
-    Literal                           -> AFun
-    ACon                              -> ATerm     {cons("constant")}
-    list:ATermList                    -> ATerm     {cons("list")}
-    fun:AFun                          -> ATerm     {cons("fun")}
-    fun:AFun "(" args:{ ATerm ","}+ ")"      -> ATerm     {cons("appl")}
-    "{" annos:{ ATerm ","}+ "}"                    -> Ann       {cons("annotation")}
-    ACon Ann                          -> ATerm     {cons("annotated-constant")}
-    list:ATermList Ann                -> ATerm     {cons("annotated-list")}
-    fun:AFun Ann                      -> ATerm     {cons("annotated-fun")}
-    fun:AFun "(" args:{ ATerm ","}+ ")" Ann  -> ATerm    {cons("annotated-appl")}
+    "[" elems:{ ATerm ","}* "]"             -> ATermList {cons("not-empty")}
+    IntCon                                  -> ACon      {cons("int")}
+    RealCon                                 -> ACon      {cons("real")}
+    Literal                                 -> AFun
+    ACon                                    -> ATerm     {cons("constant")}
+    list:ATermList                          -> ATerm     {cons("list")}
+    fun:AFun                                -> ATerm     {cons("fun")}
+    fun:AFun "(" args:{ ATerm ","}+ ")"     -> ATerm     {cons("appl")}
+    "<" type:ATerm ">"                      -> ATerm {cons("placeholder")}
+    "{" annos:{ ATerm ","}+ "}"             -> Ann       {cons("annotation")}
+    ACon Ann                                -> ATerm     {cons("annotated-constant")}
+    list:ATermList Ann                      -> ATerm     {cons("annotated-list")}
+    fun:AFun Ann                            -> ATerm     {cons("annotated-fun")}
+    fun:AFun "(" args:{ ATerm ","}+ ")" Ann -> ATerm {cons("annotated-appl")}
+    "<" type:ATerm ">" Ann                  -> ATerm {cons("annotated-placeholder")}
 
 module languages/sdf2/syntax/Kernel
+
 imports languages/aterm/syntax/ATerms 
         languages/sdf2/syntax/Symbols 
         languages/sdf2/syntax/Grammars
+
 exports
   sorts Attribute Attributes Production Productions
   context-free syntax
-    aterm:ATerm                           -> Attribute      {cons("term"),avoid}
-    "{" list:{Attribute ","}* "}"         -> Attributes     {cons("attrs")}
-                                          -> Attributes     {cons("no-attrs")}
-    Symbols "->" result:Symbol Attributes -> Production     {cons("prod")}
-    list:Production*                      -> Productions
-    "syntax" Productions                  -> Grammar
-    {cons("syntax")}
+    aterm:ATerm -> Attribute  {cons("term"),avoid}
+
+    "{" list:{Attribute ","}* "}" -> Attributes  {cons("attrs")}
+                                  -> Attributes  {cons("no-attrs")}
+
+    Symbols "->" result:Symbol Attributes -> Production  {cons("prod")}
+
+    list:Production* -> Productions
+
+    "syntax" Productions -> Grammar {cons("syntax")}
 
 module languages/sdf2/syntax/Sdf2-Syntax
+
 imports languages/sdf2/syntax/Kernel
         languages/sdf2/syntax/Basic
         languages/sdf2/syntax/Modules
@@ -384,28 +481,35 @@ imports languages/sdf2/syntax/Kernel
         languages/sdf2/syntax/Priority
         languages/sdf2/syntax/CC
         languages/sdf2/syntax/Sorts
+        languages/sdf2/syntax/Start-Symbols
         languages/sdf2/syntax/Literals
         languages/sdf2/syntax/Labels
         languages/sdf2/syntax/Restrictions
         languages/sdf2/syntax/Aliases
+
 exports
   sorts SDF
+
   context-free syntax
-    "<START>"                                   -> Symbol {cons("start")}
-    "<Start>"                                   -> Symbol {cons("file-start")}
+    "<START>" -> Symbol {cons("start")}
+    "<Start>" -> Symbol {cons("file-start")}
+
     "lexical"      "priorities" Priorities      -> Grammar {cons("lexical-priorities")}
     "context-free" "priorities" Priorities      -> Grammar {cons("context-free-priorities")}
     "lexical"      "restrictions" Restrictions  -> Grammar {cons("lexical-restrictions")}
     "context-free" "restrictions" Restrictions  -> Grammar {cons("context-free-restrictions")}
-    "definition" Definition                     -> SDF {cons("definition")}
+
+    "definition" Definition -> SDF {cons("definition")}
+
   context-free priorities
     Symbol "|" Symbol  -> Symbol >
     Literal ":" Symbol -> Symbol                  
 
 
-
 module languages/sdf2/syntax/Sdf2
+
 imports languages/sdf2/syntax/Sdf2-Syntax
+
 exports
   lexical syntax
     "LAYOUT"            -> Sort    {reject}
@@ -452,6 +556,7 @@ exports
     "restrictions"      -> ModuleName {reject}
 
     Literal "(" {Symbol ","}* ")" -> Symbols {reject}
+
   restrictions
     <Sort -CF>
     <UQLiteral -CF>
@@ -476,6 +581,11 @@ exports
     <LAYOUT?-CF>        -/- [\ \t\n\%]
     <NumChar -CF>       -/- [0-9]
     <ModuleName -CF>    -/- [A-Za-z0-9\_\-]
+
+
+hiddens
+  context-free start-symbols
+    SDF Module
 
 module Sdf2
 imports languages/sdf2/syntax/Sdf2
