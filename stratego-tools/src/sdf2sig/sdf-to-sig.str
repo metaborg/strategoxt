@@ -6,7 +6,7 @@ strategies
   sdf-to-sig =
     option-wrap(input-options,
       xtc-input(
-        xtc-transform(!"sglr",	  !["-2", "-p", <xtc-find> "sdf.cons.tbl"])
+        xtc-transform(!"sglr",	  !["-2", "-p", <xtc-find> "Sdf2-Syntax.tbl"])
       ; xtc-transform(!"implode-asfix")
       ; xtc-transform(!"sdf2sig")
       ; xtc-transform(!"ast2abox", !["-p", <xtc-find> "Stratego-pretty.pp", "-p", <xtc-find> "dummy.pp"])
