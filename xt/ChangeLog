@@ -1,3 +1,7 @@
+2002-02-06 Merijn de Jonge <mdejonge@cwi.nl>
+   * pp/pp.sh.src: added -p switch to specify addition pretty-print tables
+     to use.
+
 2002-01-30 Merijn de Jonge <mdejonge@cwi.nl>
    * sdf-doc/data/incomplete.sdf.sg.dot.af.correct adapted to slightly
      changed output of GraphXML2dot.
