@@ -191,5 +191,11 @@
    annotated-fun          -- _1 _2,
    annotated-appl             -- _1 KW["("] _2 KW[")"] _3,
    annotated-appl.2:iter-sep  -- _1 KW[","],
-   term                       -- _1
+   term                       -- _1,
+
+   context-free-start-symbols --
+        V is=2 [H[KW["context-free"] KW["start-symbols"]] HV[_1]],
+   kernel-start-symbols       -- V is=2 [KW["start-symbols"] HV[_1]],
+   lexical-start-symbols      --
+        V is=2 [H[KW["lexical"] KW["start-symbols"]] HV[_1]]
 ]

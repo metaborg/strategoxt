@@ -1,3 +1,14 @@
+2004-06-04  Valentin David  <valentin@lrde.epita.fr>
+
+	* pp/Sdf2-pgen2.0.pp: Rename as...
+	* pp/Sdf2-pgen2.1.pp: this. Add pp entries for pgen2.1 extensions.
+	* pp/Makefile.am: Update. Change pp-table file name.
+	* xtc/sdf-xtc-tools.str: Use pgen2.1 SDF pp-table instead of the
+	pgen2.0 one.
+
+	* parse/unpack-sdf.str: Rename mkdir because it is defined into the
+	ssl too.
+
 2004-05-30  Martin Bravenboer  <martin@cs.uu.nl>
 
 	* syn/Makefile.am: removed the SDF syntax definition modules from

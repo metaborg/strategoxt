@@ -38,7 +38,7 @@ strategies
     ; where( 
         <concat-strings>[<get-destination-dir>, "/", basename, ".sdf"] => pathname
       ; dirname
-      ; mkdir
+      ; shell-mkdir
       )
     ; copy-to(!pathname)
     )
@@ -54,5 +54,5 @@ strategies
 
 strategies
 
-  mkdir = 
+  shell-mkdir = 
     where(readdir <+ <call> ("mkdir",["-p", <id>]))

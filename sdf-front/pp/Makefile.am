@@ -1,7 +1,7 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-pkgdata_DATA   = Sdf2.pp.af Sdf2-pgen2.0.pp.af
+pkgdata_DATA   = Sdf2.pp.af Sdf2-pgen2.1.pp.af
 
-EXTRA_DIST     = Sdf2.pp Sdf2-pgen2.0.pp $(pkgdata_DATA)
-BOOTCLEANFILES = $(pkgdata_DATA) 
+EXTRA_DIST     = Sdf2.pp Sdf2-pgen2.1.pp $(pkgdata_DATA)
+BOOTCLEANFILES = $(pkgdata_DATA)
