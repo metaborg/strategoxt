@@ -1,45 +1,66 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-noinst_DATA     = StrategoForTesting.tbl StrategoStrategoForTesting.tbl
-sdfdata_DATA 	= Stratego.def StrategoStratego.def Stratego-Amb.def \
-	          Stratego.tbl StrategoStratego.tbl \
-		  Stratego-Core.def Stratego-Core.tbl \
-	      	  $(wildcard *.sdf)				       
+sdfdata_DATA = \
+  Stratego.def \
+  StrategoStratego.def \
+  Stratego-Amb.def \
+  Stratego.tbl \
+  StrategoStratego.tbl \
+  Stratego-Core.def \
+  Stratego-Core.tbl \
+  StrategoForTesting.tbl \
+  StrategoStrategoForTesting.tbl \
+  StrategoRenamed.sdf \
+  $(wildcard *.sdf)				       
 
-CLEANFILES 	= $(wildcard *.tbl) $(TESTS)
+EXTRA_DIST     = $(sdfdata_DATA)
+CLEANFILES     = $(wildcard *.tbl)
+BOOTCLEANFILES = $(wildcard *.def) StrategoRenamed.sdf
 
-BOOTCLEANFILES	= $(wildcard *.def) 
+PGEN_FLAGS = -m $*
 
-EXTRA_DIST 	= Stratego.def StrategoStratego.def Stratego-Core.def \
-		  Stratego.tbl StrategoStratego.tbl Stratego-Core.tbl \
-                  StrategoForTesting.tbl StrategoForTesting.def \
-                  StrategoStrategoForTesting.tbl StrategoStrategoForTesting.def \
-		  $(wildcard *.def) $(wildcard *.sdf) 
+%Renamed.sdf: %.def
+	$(SDF_TOOLS)/bin/gen-renamed-sdf-module -i $< -o $@ --main $* --name $*Renamed --prefix Stratego
 
-StrategoForTesting.def : Stratego.def StrategoForTesting.sdf Stratego-DynamicRules.sdf
-StrategoStrategoForTesting.def : StrategoStratego.def StrategoStrategoForTesting.sdf Stratego-DynamicRules.sdf
+StrategoForTesting.def : \
+  StrategoForTesting.sdf \
+  Stratego.def \
+  Stratego-DynamicRules.sdf
 
-Stratego.def 	: Stratego.sdf Stratego-Signatures.sdf	       \
-		  Stratego-Modules.sdf Stratego-Strategies.sdf \
-		  Stratego-Overlays.sdf Stratego-Constants.sdf \
-		  StrategoRenamed.sdf Stratego-Terms.sdf       \
-		  Stratego-Identifiers.sdf Stratego-Rules.sdf  \
-		  Stratego-Layout.sdf Stratego-Script.sdf   
+StrategoStrategoForTesting.def : \
+  StrategoStrategoForTesting.sdf \
+  StrategoForTestingRenamed.sdf \
+  StrategoStratego.def \
+  Stratego-DynamicRules.sdf
 
-Stratego-Core.def :				 \
-		  Stratego-Core.sdf		 \
-		  Stratego-Core-Signatures.sdf	 \
-		  Stratego-Core-Modules.sdf	 \
-		  Stratego-Core-Strategies.sdf	 \
-		  Stratego-Core-Constants.sdf	 \
-		  Stratego-Core-Terms.sdf	 \
-		  Stratego-Core-Layout.sdf	 \
-		  Stratego-Identifiers.sdf	 
+Stratego.def : \
+  Stratego.sdf \
+  Stratego-Signatures.sdf \
+  Stratego-Modules.sdf \
+  Stratego-Strategies.sdf \
+  Stratego-Overlays.sdf \
+  Stratego-Constants.sdf \
+  Stratego-Terms.sdf \
+  Stratego-Identifiers.sdf \
+  Stratego-Rules.sdf \
+  Stratego-Layout.sdf
 
-StrategoStratego.def 	: StrategoStratego.sdf Stratego.def
+Stratego-Core.def : \
+  Stratego-Core.sdf \
+  Stratego-Core-Signatures.sdf \
+  Stratego-Core-Modules.sdf \
+  Stratego-Core-Strategies.sdf \
+  Stratego-Core-Constants.sdf \
+  Stratego-Core-Terms.sdf \
+  Stratego-Core-Layout.sdf \
+  Stratego-Identifiers.sdf	 
 
-Stratego-Amb.def : Stratego.def Stratego-Amb.sdf
+StrategoStratego.def : \
+  StrategoStratego.sdf \
+  StrategoRenamed.sdf \
+  Stratego.def
 
-PGEN_FLAGS	= -m $*
-
+Stratego-Amb.def : \
+  Stratego.def \
+  Stratego-Amb.sdf

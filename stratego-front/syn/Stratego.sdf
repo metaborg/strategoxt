@@ -4,7 +4,6 @@ imports
   Stratego-Identifiers
   Stratego-Constants 
   Stratego-Modules
-  Stratego-Script
   Stratego-Signatures
   Stratego-Terms
   Stratego-Rules

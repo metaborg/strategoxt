@@ -1,17 +1,6 @@
 module StrategoStrategoForTesting
-imports StrategoStratego
-        Stratego-DynamicRules [
-          Strategy => StrategoStrategy
-          DynRuleDef => StrategoDynRuleDef
-          DynRuleScopeId => StrategoDynRuleScopeId
-          RuleDec => StrategoRuleDec
-%%	Id 		=> StrategoId
-%%	Term 	=> StrategoTerm
-%%	Rule 		=> StrategoRule 
-%%	Typedid 	=> StrategoTypedid  
-        ]
+imports StrategoForTestingRenamed StrategoStratego
 
 exports
-
   context-free syntax
     "DRN:|[" DynRuleDef "]|" -> StrategoTerm {cons("ToTerm")}

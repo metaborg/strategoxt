@@ -258,17 +258,6 @@ exports
     {Type "*"}+ "->" Type 	-> Type {cons("FunType")}
     "(" Type ")" 		-> Type {bracket}
 
-module Stratego-Script
-exports
-
-  sorts Script
-  context-free syntax
-    "stratego" "script" Command* -> Script {cons("Script")}
-    Decl 			-> Command {cons("Command")}
-    ":dump" String 		-> Command {cons("Dump")}
-    ":load" String 		-> Command {cons("Load")}
-    ">" Strategy 		-> Command {cons("Eval")}
-
 module Stratego-Modules
 imports Stratego-Identifiers
 exports 
@@ -394,7 +383,6 @@ imports
   Stratego-Identifiers
   Stratego-Constants 
   Stratego-Modules
-  Stratego-Script
   Stratego-Signatures
   Stratego-Terms
   Stratego-Rules
