@@ -1,5 +1,7 @@
 2002-03-14  Eelco Visser  <visser@acm.org>
 
+	* Release 0.7 (fix2)
+
 	* spec/syn/meta-explode.r: Explosion of abstract syntax trees
 	for object language to Stratego term abstract syntax.
 

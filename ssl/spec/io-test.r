@@ -29,7 +29,8 @@ strategies
   main = 
     test-suite(!"io-test",
       test1;
-      test2
+      test2;
+      test3
     )
 
   test1 =
@@ -56,4 +57,12 @@ strategies
 	, !("","\t\\begin{abstract}")
 	);
     where(<close-file> "io-test.r")
+
+  test3 =
+    apply-test(!"test3"
+	, printnl
+	, !(stdout, ["\"\\\\/\""])
+	, !(stdout, ["\"\\\\/\""])
+	)
+
 \end{code}

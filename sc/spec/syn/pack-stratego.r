@@ -16,11 +16,14 @@
 \begin{code}
 module pack-stratego
 imports lib pack-graph pack-modules sugar dynamic-rules
+signature
+  constructors
+    Prefix : Option
 
 strategies
 
   main = 
-    where([get-path => prefix | id]; rules(Prefix : () -> prefix));
+    where([get-path => prefix | id]; rules(Option : Prefix -> prefix));
     pack-modules(pack-stratego, basename)
 
   pack-stratego(mkpt) =
@@ -66,7 +69,7 @@ rules
     where <conc-strings> ("pack-stratego", 
                           <get-pid; int-to-string>()) => fileout; 
 	  (* <printnl> (stderr, ["  parsing ", filein]); *)
-	  <call>(<conc-strings>(<Prefix>(),"parse-mod"), 
+	  <call>(<conc-strings>(<Option>Prefix,"parse-mod"), 
 		 ["-silent", "-i", filein, "-o", fileout]);
 	  <ReadFromFile> fileout => trm;
 	  <rm-files> [fileout]
@@ -89,7 +92,7 @@ rules
 	debug(!"parse-cmod e: ");
 	<call> ("implode-asfix",    ["-i", fileout1, "-o", fileout2]);
 	debug(!"parse-cmod f: ");
-	<call> ("/home/xt/xt/bin/meta-explode",     ["-i", fileout2, "-o", fileout3]);
+	<call> (<conc-strings>(<Option>Prefix,"meta-explode"), ["-i", fileout2, "-o", fileout3]);
 	debug(!"parse-cmod g: ");
 	<call> ("stratego-desugar", ["-i", fileout3, "-o", fileout4]);
 	debug(!"parse-cmod h: ");
