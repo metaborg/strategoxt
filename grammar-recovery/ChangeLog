@@ -1,3 +1,6 @@
+2001-09-18 Joost.Visser@cwi.nl
+   * All `unglued' tools are now also installed in libexec.
+	
 2001-09-04 Merijn de Jonge <mdejonge@cwi.nl>
    * dtd2sdf: Added XML.r module containing XML constructors.
 
