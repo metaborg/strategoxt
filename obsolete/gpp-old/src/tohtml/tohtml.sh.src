@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: tohtml.sh.src,v 1.1 2001/06/05 09:32:53 mdejonge Exp $
+# $Id: tohtml.sh.src,v 1.2 2001/06/05 09:40:22 mdejonge Exp $
 
 #
 #
@@ -52,7 +52,7 @@ MAKE=__MAKE__
 VERSION=__VERSION__
 
 # Extend PATH to include bin directories of additional tools
-PATH=${GRAPHVIZ}/bin:${BINDIR}:${PATH}
+PATH=${XMLTOOLS}/bin:${GRAPHVIZ}/bin:${BINDIR}:${PATH}
 export PATH
 
 # Programs
@@ -60,7 +60,7 @@ ASFIX2ABOX="${BINDIR}/asfix2abox"
 AST2ABOX="${BINDIR}/ast2abox"
 ABOX2TEXT="${BINDIR}/abox2text"
 ABOX2HTML="${BINDIR}/abox2html"
-GXML2DOT="${BINDIR}/GraphXML2dot"
+GXML2DOT="GraphXML2dot"
 DOT_PP_TABLE=${DATADIR}/dot.pp
 DOT="dot"
 ISMAP2USEMAP="${LIBEXEC}/ismap2usemap"
