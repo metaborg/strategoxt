@@ -336,10 +336,7 @@ ATerm concat_0_0 (ATerm t)
       }
       if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
         {
-          if(((c_0 != NULL) && (c_0 != ATgetFirst((ATermList) t))))
-            _fail(ATgetFirst((ATermList) t));
-          else
-            c_0 = ATgetFirst((ATermList) t);
+          c_0 = ATgetFirst((ATermList) t);
           if(((d_0 != NULL) && (d_0 != (ATerm) ATgetNext((ATermList) t))))
             _fail((ATerm) ATgetNext((ATermList) t));
           else
