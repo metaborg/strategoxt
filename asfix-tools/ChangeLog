@@ -1,3 +1,6 @@
+2002-01-18 Merijn de Jonge <mdejonge@cwi.nl> Jurgen Vinju <jurgenv@cwi.nl>
+   * added restore-asfix2 tool to convert (imploded) AsFix2ME back to asfix2
+
 2002-01-18 Merijn de Jonge <mdejonge@cwi.nl>
    * changed order of implosion to fix combination of --alt and --lit
 
