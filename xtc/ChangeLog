@@ -1,3 +1,11 @@
+2003-05-01  Martin Bravenboer <martin@cs.uu.nl>
+
+	* tools/stratego-xt-xtc-tools: removed xtc-parse-sdf and
+	xtc-pack-sdf. xtc-parse-sdf is not used and applied the third
+	variant of SDF (yes, there are in fact 3 variants in StrategoXT,
+	not just 2). xtc-pack-sdf performs an implosion, which is
+	incorrect, so apparently it isn't used as well.
+
 2003-12-25  Martin Bravenboer <martin@cs.uu.nl>
 
 	* src/xtc-proc.str: updated xtc-io and xtc-output to invoke

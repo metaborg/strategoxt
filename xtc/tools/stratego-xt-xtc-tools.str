@@ -39,29 +39,9 @@ strategies
     xtc-transform(!"parse-pp-table")
 
 /**
- * sdf
+ * sglr
  */
 strategies
-  xtc-parse-sdf =
-      xtc-sglr(!"sdf.cons.tbl")
-    ; xtc-implode-asfix
-
-  xtc-pp-sdf =
-      xtc-transform(!"sdf-bracket", pass-verbose)
-    ; xtc-ast2abox(!["sdf.cons.pp.af"])
-    ; xtc-abox2text
-
-  // watch out: does also implode-asfix
-  xtc-pack-sdf(includes) =
-      xtc-transform(!"pack-sdf",
-        <conc> (
-          <pass-verbose> ()
-        , <includes; <add-arg-flags> ("-I", <id>)> ()
-        )
-      )
-    ; xtc-implode-asfix
-
-  /* sglr */
 
   xtc-sglr(tbl) =
     xtc-transform(!"sglr", !["-2A", "-p", <tbl; xtc-find> () | <pass-v-verbose> ()])
