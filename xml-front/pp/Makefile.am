@@ -1,5 +1,5 @@
 include $(top_srcdir)/Makefile.xt
 
-SUBDIRS           = xml dtd
+SUBDIRS           = xml
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 

@@ -12,8 +12,6 @@ AC_PROG_LN_S
 DETECT_SVN_REVISION
 
 AC_CONFIG_FILES([
-  xml-tools.spec
-
   Makefile
   lib/Makefile
 

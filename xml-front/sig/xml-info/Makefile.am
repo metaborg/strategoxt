@@ -9,7 +9,7 @@ EXTRA_DIST     = $(METAMODS) $(pkgdata_DATA)
 BOOTCLEANFILES = $(pkgdata_DATA) $(METAMODS) $(wildcard *.dep) xml-info.rtg
 
 xml-info.rtg : 
-	$(LN_S) $(top_srcdir)/tg/xml-info/xml-info.rtg $@
+	$(LN_S) $(top_srcdir)/sig/xml-info.rtg $@
 
 # rtg -> typematch
 %-typematch.str : %.rtg

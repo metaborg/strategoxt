@@ -1,7 +1,7 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-SUBDIRS           = process schema interpret meta-explode str-xml-doc str-xml-info 
+SUBDIRS           = process str-xml-doc str-xml-info 
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 
 bin_PROGRAMS  = xml-info2data data2xml-doc
