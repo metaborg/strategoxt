@@ -1,20 +1,53 @@
 module parse-testsuite
-imports ATerms
+imports list-cons option
 signature
   constructors
-    parse-testsuite : Name * TopSort * List(Test) -> TestSuite
-    topsort         : Sort -> TopSort
-    parse-test      : Description * Input * Result -> Test
-    parse-test      : Input * Result -> Test
-    pattern         : ATerm -> Result
-    wildcard        : ATerm
-    failure         : Result
-    success         : Result
-    file            : PathName -> Input
-signature
-  constructors
-    fun : AFun -> ATerm
-signature
-  constructors
-    name        : EOLString -> Name
-    description : EOLString -> Description
+    description           : EOLString -> Description
+    name                  : EOLString -> Name
+                          : String -> PathName
+                          : String -> EOLString
+                          : String -> Sort
+    string                : String -> Input
+    string                : String -> Input
+    string                : String -> Input
+    string                : String -> Input
+    string                : String -> Input
+    string                : String -> Input
+    string                : String -> Input
+    string                : String -> Input
+    file                  : PathName -> Input
+    success               : Result
+    failure               : Result
+    pattern               : ATerm -> Result
+    parse-test            : Input * Result -> Test
+    parse-test            : Description * Input * Result -> Test
+    topsort               : Sort -> TopSort
+    parse-testsuite       : Name * TopSort * List(Test) -> TestSuite
+    annotation            : List(ATerm) -> Ann
+    fun                   : AFun -> ATerm
+    wildcard              : ATerm
+    annotated-placeholder : ATerm * Ann -> ATerm
+    annotated-appl        : AFun * List(ATerm) * Ann -> ATerm
+    annotated-fun         : AFun * Ann -> ATerm
+    annotated-list        : ATermList * Ann -> ATerm
+    annotated-constant    : ACon * Ann -> ATerm
+    placeholder           : ATerm -> ATerm
+    appl                  : AFun * List(ATerm) -> ATerm
+    fun                   : AFun -> ATerm
+    list                  : ATermList -> ATerm
+    constant              : ACon -> ATerm
+                          : Literal -> AFun
+    real                  : RealCon -> ACon
+    int                   : IntCon -> ACon
+    not-empty             : List(ATerm) -> ATermList
+    real-con              : IntCon * NatCon * OptExp -> RealCon
+    absent                : OptExp
+    present               : IntCon -> OptExp
+    negative              : NatCon -> IntCon
+    positive              : NatCon -> IntCon
+    natural               : NatCon -> IntCon
+                          : String -> NatCon
+    uqlit                 : UQLiteral -> Literal
+    qlit                  : QLiteral -> Literal
+                          : String -> UQLiteral
+                          : String -> QLiteral

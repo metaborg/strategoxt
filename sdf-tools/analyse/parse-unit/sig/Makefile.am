@@ -1,15 +1,16 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-SIGS = parse-testsuite.str ATerms.str IntCon.str Literals.str RealCon.str Whitespace.str 
+SIGS             = parse-testsuite.str
+pkgdata_DATA     = parse-testsuite.rtree
 
-pkgdata_DATA     = $(subst .str,.rtree,$(SIGS))
 EXTRA_DIST       = $(SIGS) $(pkgdata_DATA)
-CLEANFILES       = parse-testsuite.def $(wildcard *.dep)
+CLEANFILES       = $(wildcard *.dep) parse-testsuite.def
 BOOTCLEANFILES   = $(SIGS) $(pkgdata_DATA)
 
-parse-testsuite.def :
-	ln -s $(top_srcdir)/analyse/parse-unit/syn/parse-testsuite.def $@
+parse-testsuite.str : parse-testsuite.def
+	$(STRATEGO_REGULAR)/bin/sdf2rtg -i $< -m parse-testsuite | \
+	$(STRATEGO_REGULAR)/bin/rtg2sig -o $@
 
-$(SIGS) : parse-testsuite.def
-
+Dot.def :
+	ln -s $(top_srcdir)/syn/parse-testsuite.def $@
