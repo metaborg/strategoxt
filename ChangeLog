@@ -1,3 +1,8 @@
+2004-05-03 Merijn de Jonge <mdejonge@cs.uu.nl>
+   * bundlegen/graph-generator.str: since a package can be both a runtime
+     and a build time dependency, package dependencies occured twice in a
+     package dependency graph. Fixed.
+
 2004-04-28 Merijn de Jonge <mdejonge@cs.uu.nl>
    * pbsd/pkg-release: now saves a cvs checked-out version and checks-out a
      fresh version when uncomitted changes exist. After building the

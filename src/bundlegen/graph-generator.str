@@ -49,7 +49,7 @@ where
    !deps;
    map(
       (?RunTime(<id>) + ?BuildTime(<id>) );
-      \pkgid -> edge(target, <pkgid-to-string>pkgid) \ ) => edges
+      \pkgid -> edge(target, <pkgid-to-string>pkgid) \ );uniq => edges
 
 
 overlays
