@@ -1,5 +1,29 @@
 2004-02-15  Martin Bravenboer  <martin@cs.uu.nl>
 
+	* analyse/parse-unit/*: added [ ] delimiters for test input. This
+	is useful for testing typical string literals in programming
+	languages. Writing many double quotes is not very attractive in
+	this case.
+
+	* analyse/parse-unit/*: the test description is now optional. In
+	this case the test input will be shown as the description (or the
+	file name if the input is a file). 
+
+	Example of testsuite without descriptions:
+	----------------------------------------------------
+	testsuite Java Expressions
+	topsort Expr
+
+	test "1 + 2" -> Plus(Int("1), Int("2))
+	
+	test "1++2" fails
+	
+        test "6*7" succeeds
+	----------------------------------------------------
+
+
+2004-02-15  Martin Bravenboer  <martin@cs.uu.nl>
+
 	* analyse/parse-unit/*: designed a concrete syntax for parse-unit
 	testsuites. Parse-unit is now ready for the technology push.
 

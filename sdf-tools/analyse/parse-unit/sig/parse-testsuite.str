@@ -5,6 +5,7 @@ signature
     parse-testsuite : Name * TopSort * List(Test) -> TestSuite
     topsort         : Sort -> TopSort
     parse-test      : Description * Input * Result -> Test
+    parse-test      : Input * Result -> Test
     pattern         : ATerm -> Result
     wildcard        : ATerm
     failure         : Result

@@ -8,6 +8,7 @@ exports
     "topsort" Sort -> TopSort {cons("topsort")}
 
     "test" Description Input Result -> Test {cons("parse-test")}
+    "test"             Input Result -> Test {cons("parse-test")}
 
     "->" ATerm -> Result {cons("pattern")}
     "_" -> ATerm {cons("wildcard")}
@@ -31,6 +32,11 @@ exports
     "\"\"\""   <InputChars3-LEX> "\"\"\""   -> <Input-CF> {cons("string")}
     "\"\"\"\"" <InputChars4-LEX> "\"\"\"\"" -> <Input-CF> {cons("string")}
 
+    "["    <InputChars21-LEX> "]"    -> <Input-CF> {cons("string")}
+    "[["   <InputChars22-LEX> "]]"   -> <Input-CF> {cons("string")}
+    "[[["  <InputChars23-LEX> "]]]"  -> <Input-CF> {cons("string")}
+    "[[[[" <InputChars24-LEX> "]]]]" -> <Input-CF> {cons("string")}
+
   context-free syntax
     EOLString -> Name {cons("name")}
     EOLString -> Description {cons("description")}
@@ -40,17 +46,24 @@ exports
     [A-Z][A-Za-z0-9\-]*[A-Za-z0-9] -> Sort
 
     ~[\n]+ -> EOLString
-    ~[\"]* -> InputChars1
 
-    (~[\"]  | DQuote1) -> InputChars2
-    (~[\"]  | DQuote1 | DQuote2) -> InputChars3
-    (~[\"]  | DQuote1 | DQuote2 | DQuote3 ) -> InputChars4
+    ~[\"]* -> InputChars1
+    (~[\"]  | DQuote1)*                      -> InputChars2
+    (~[\"]  | DQuote1 | DQuote2)*            -> InputChars3
+    (~[\"]  | DQuote1 | DQuote2 | DQuote3 )* -> InputChars4
 
     "\""     -> DQuote1
     "\"\""   -> DQuote2
     "\"\"\"" -> DQuote3
 
-    ~[]*   -> InputChars2
+    ~[\[]* -> InputChars21
+    (~[\[]  | Bracket1)*                        -> InputChars22
+    (~[\[]  | Bracket1 | Bracket2)*             -> InputChars23
+    (~[\[]  | Bracket1 | Bracket2 | Bracket3 )* -> InputChars24
+
+    "["   -> Bracket1
+    "[["  -> Bracket2
+    "[[[" -> Barcket3
 
     [A-Za-z0-9\-\_\.\\\/]+ -> PathName
 
@@ -60,3 +73,15 @@ exports
     DQuote1   -/- [\"]
     DQuote2   -/- [\"]
     DQuote3   -/- [\"]
+
+    "\""      -/- [\"]
+    "\"\""    -/- [\"]
+    "\"\"\""  -/- [\"]
+
+    Bracket1   -/- [\[]
+    Bracket2   -/- [\[]
+    Bracket3   -/- [\[]
+
+    "["    -/- [\[]
+    "[["   -/- [\[]
+    "[[["  -/- [\[]

@@ -28,6 +28,7 @@ strategies
   parse-unit = 
     xtc-io-transform(
       try(upgrade-oldskool-testsuite)
+    ; parse-testsuite(id, id, map(try(add-description)))
     ; echo-start
     ; ?parse-testsuite(name(name), topsort(sort), <id>)
     ; map-with-index(execute-test(!sort, get-parse-table))
@@ -35,6 +36,12 @@ strategies
     ; where(<echo-results> (name, <id>))
     ; parse-unit-exit-on-failure
     )
+
+  add-description :
+    parse-test(string(s), output) -> parse-test(description(s), string(s), output)
+
+  add-description :
+    parse-test(file(f), output) -> parse-test(description(f), file(f), output)
 
   parse-unit-exit-on-failure =
     ?TestResults(<id>)
