@@ -11,7 +11,7 @@ signature
   constructors
     RuleScope : List(String) * HashTable -> RuleScope
     ChangeSet : HashTable -> RuleScope
-    Closure : String * a -> Closure
+    Closure   : String * List(a) -> Closure
 
 strategies // currently active rule set 
 
@@ -138,16 +138,21 @@ strategies // high-level API with implicit rule set
 
 
   /**
-   * Intersect live rule-set with given rule set
-   *
-   * Question: should the intersection update the live rule set
-   * or create a new one?
+   * Intersect live rule-set with given rule set changing the live rule set.
    */
 
   dr-intersect-with(|name) =
     <dr-intersect-rule-sets>(<dr-get-rule-set(|name)>, <id>)
     ; dr-set-rule-set(|name)
+
+  /**
+   * Intersect live rule-set with give rule set changing both.
+   */
     
+  dr-intersect-symm(|name) =
+    <dr-intersect-rule-sets-symm>(<id>, <dr-get-rule-set(|name)>)
+    ; dr-set-rule-set(|name)
+
 //  dr-extend-with(|name) =
 //    <dr-extend-rule-set>(<dr-get-rule-set(|name)>, <id>)
 //    ; dr-set-rule-set(|name)  
@@ -155,6 +160,12 @@ strategies // high-level API with implicit rule set
 //  dr-replace-by(|name) =
 //    <dr-replace-rule-set>(<dr-get-rule-set(|name)>, <id>)
 //    ; dr-set-rule-set(|name)
+
+  dr-print-rule-set(|name) =
+    where(
+      dr-get-rule-set(|name)
+      ; dr-print-rule-set
+    )
 
 // low-level API working directly on rule-set
 
@@ -292,7 +303,8 @@ strategies // extending a rule
   /**
    * add a rule to the scope for label
    *
-   * @assert: dr-add-to-rule-set(|l, k, v) = set-rule(|l, k, [v | <lookup-rule(|l, k, v) <+ ![]>])
+   * @assert: dr-add-to-rule-set(|l, k, v) 
+   *               = set-rule(|l, k, [v | <lookup-rule(|l, k, v) <+ ![]>])
    */
 
   dr-add-to-rule-set(|label, key, value) =
@@ -351,6 +363,30 @@ strategies // intersection
     where ior(<hashtable-intersect-wempty(|tbl2, [])> tbl1
   	     ,<dr-intersect-rule-sets> (rs1, rs2))
 
+
+  /**
+   * Symmetric intersection of two rule-sets
+   *
+   * assumption: the scope structure is the same
+   * intersection works scope by scope 
+   * note that labels are ignored
+   */
+
+  dr-intersect-rule-sets-symm =
+    eq < fail
+    + (dr-intersect-rule-sets-symm1  
+       <+ dr-intersect-rule-sets-symm2)
+
+  dr-intersect-rule-sets-symm1 :
+    ([RuleScope(labels1, tbl1) | rs1], rs@[RuleScope(labels2, tbl2) | rs2]) -> rs
+    where ior(<hashtable-intersect-symm-wempty(|[])> (tbl1, tbl2)
+  	     ,<dr-intersect-rule-sets> (rs1, rs2))
+
+  dr-intersect-rule-sets-symm2 :
+    ([ChangeSet(tbl1) | rs1], rs@[ChangeSet(tbl2) | rs2]) -> rs
+    where ior(<hashtable-intersect-symm-wempty(|[])> (tbl1, tbl2)
+  	     ,<dr-intersect-rule-sets> (rs1, rs2))
+
      /* Note:
 	First definition of intersection on rule-sets requires that
 	entries have exactly the same value. Interesting point here:
@@ -395,6 +431,7 @@ strategies // union
     ; error
 
 strategies // rule-set equality
+
   dr-eq-rule-sets =
   let rseq =
         ?(RuleScope(lbl1, tbl1), RuleScope(lbl2, tbl2))
@@ -404,3 +441,28 @@ strategies // rule-set equality
       ; <hashtable-eq> (tbl1, tbl2)
    in where(zip(rseq))
   end
+
+strategies // debugging
+
+  dr-print-rule-set =
+    where(map(dr-print-scope))
+
+  dr-print-scope =
+    ?RuleScope(labels, tbl)
+    ; where(
+        debug
+	; <hashtable-keys> tbl
+	; map(<printnl>(stderr, 
+		["  ", <id>, " -> ", <\ key -> <hashtable-get(|key)> tbl \> ])
+          )
+      )
+
+  dr-print-scope =
+    ?ChangeSet(tbl)
+    ; where(
+        debug
+	; <hashtable-keys> tbl
+	; map(<printnl>(stderr, 
+		["  ", <id>, " -> ", <\ key -> <hashtable-get(|key)> tbl \> ])
+          )
+      )
