@@ -1,5 +1,9 @@
 2003-03-24  Martin Bravenboer <martin@mbravenboer.org>
 
+  * ssl/exec.[ch]: added fgetc.
+
+2003-03-24  Martin Bravenboer <martin@mbravenboer.org>
+
   * ssl/exec.[ch]: split write_to_stream 
     in baf/taf/text.
 
