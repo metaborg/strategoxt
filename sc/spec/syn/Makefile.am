@@ -15,33 +15,39 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-bin_SCRIPTS 		= parse-mod
-libexec_PROGRAMS 	= parse-stratego pack-stratego parse-mod  
-pack_stratego_SOURCES 	= pack-stratego.c
+bin_SCRIPTS 		= 
+#parse-mod
+libexec_PROGRAMS 	= pack-stratego 
+#parse-mod  
+#pack_stratego_SOURCES 	= pack-stratego.c
 
 pack-stratego.o: ../conf.h
 
-parse_mod_LDADD		= @LEXLIB@ -latermextension $(STRATEGOLIBS)
-parse_stratego_LDADD 	= @LEXLIB@ -latermextension $(STRATEGOLIBS)
+#parse_mod_LDADD		= @LEXLIB@ -latermextension $(STRATEGOLIBS)
 pack_stratego_LDADD 	= -lstratego.opt $(STRATEGOLIBS)
 
-parse_stratego_SOURCES 	= parse-stratego.c stratego-grm.y \
-			  stratego-lex.l options.h options.c util.h 
+#parse_stratego_LDADD 	= @LEXLIB@ -latermextension $(STRATEGOLIBS)
+#parse_stratego_SOURCES 	= parse-stratego.c stratego-grm.y \
+#			  stratego-lex.l options.h options.c util.h 
 
-parse_mod_SOURCES 	= parse-mod.c stratego-grm.y \
-			  stratego-lex.l options.h options.c util.h 
+#parse_mod_SOURCES 	= parse-mod.c stratego-grm.y \
+#			  stratego-lex.l options.h options.c util.h 
 
 #pkgdatadir 	= $(prefix)/pack-stratego-plugin
 pkgdata_DATA 	= pack-stratego.config
 
 CLEANFILES 	= pack-stratego.dep
 
-EXTRA_DIST 	= pack-stratego.str syntax-test.r pack-stratego.config.src stratego-grm.h
+EXTRA_DIST 	= pack-stratego.str pack-stratego.config.src 
+#syntax-test.r 
 
-BOOTSOURCES 	= $(SOURCES) pack-stratego.c stratego-grm.y stratego-grm.h \
-		  stratego-lex.l pack-stratego.config.src
+#stratego-grm.h
 
-BOOTCLEANFILES 	= pack-stratego.c stratego-grm.c stratego-grm.h stratego-lex.c
+#BOOTSOURCES 	= $(SOURCES) pack-stratego.c stratego-grm.y stratego-grm.h \
+#		  stratego-lex.l pack-stratego.config.src
+
+BOOTCLEANFILES 	= pack-stratego.c 
+#stratego-grm.c stratego-grm.h stratego-lex.c
 
 CFLAGS	 	= 
 DEBUGFLAGS	= -g
@@ -55,18 +61,18 @@ SCFLAGS 	= --C-include "\"conf.h\""
 
 # BOOTINSTALL
 
-bootinstall: $(BOOTSOURCES)
-	$(mkinstalldirs) $(SCBOOT)/src
-	cp -f $(BOOTSOURCES) $(SCBOOT)/src
+#bootinstall: $(BOOTSOURCES)
+#	$(mkinstalldirs) $(SCBOOT)/src
+#	cp -f $(BOOTSOURCES) $(SCBOOT)/src
 
 ## CHECK
 
-check: check1 check2
+#check: check1 check2
 
-check1: parse-mod
-	./parse-mod -i syntax-test.r -o /dev/null
+#check1: parse-mod
+#	./parse-mod -i syntax-test.r -o /dev/null
 
-check2: pack-stratego 
-	./pack-stratego -I $(STRATEGOLIB)/share/ssl -I $(srcdir)/../sig -i syntax-test -o syntax-test.trm
+#check2: pack-stratego 
+#	./pack-stratego -I $(STRATEGOLIB)/share/ssl -I $(srcdir)/../sig -i syntax-test -o syntax-test.trm
 
 include $(srcdir)/../Makefile.common

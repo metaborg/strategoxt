@@ -1,5 +1,8 @@
 module stratego-desugar
 imports lib Stratego
+signature
+  constructors
+    Con : Var * Term * SVar   -> Term
 strategies
  
   stratego-desugar = 
@@ -103,11 +106,11 @@ rules
   Desugar :
     ListTail(ts,t) -> <foldr(!t,\ (t1, t2) -> Op("Cons",[t1,t2]) \ )> ts
 
-//  Desugar :
-//    Con(t1, Con1(t2)) -> Con(t1, t2, Call(SVar("oncetd"),[]))
+  Desugar :
+    Con(t1, Con1(t2)) -> Con(t1, t2, Call(SVar("oncetd"),[]))
 
-//  Desugar :
-//    Con(t1, Con2(t2, f)) -> Con(t1, t2, Call(SVar(f),[]))
+  Desugar :
+    Con(t1, Con2(t2, f)) -> Con(t1, t2, Call(SVar(f),[]))
 
   // Signatures
 

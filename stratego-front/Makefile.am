@@ -27,6 +27,11 @@ check_dist :
              s#__MAKE__#$(MAKE)#g' < $< > $@
 	chmod +x $@
 
+noinst_DATA = Makefile.stratego
+
+Makefile.stratego : $(SC)/share/sc/Makefile.stratego
+	cp $< $@
+
 RPMRELEASE = 1
 
 CLEANFILES =

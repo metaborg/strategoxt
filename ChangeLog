@@ -1,6 +1,18 @@
+2002-11-27  Eelco Visser  <visser@acm.org>
+
+	* asfix-tools and stratego-front packages are now bootstrapped
+	* retired the LEX/YACC grammar, Stratego parsers are now
+	  only parsed with the parse-stratego program which is calls
+	  SGLR. The program deals with modules with concrete syntax as
+	  well. Module meta-data should be declared in the .meta file.
+
+2002-11-24  Eelco Visser  <visser@acm.org>
+
+	* gpp is now self bootstrapping; gpp-boot is obsolete
+
 2002-11-15  Eelco Visser  <visser@acm.org>
 
-	* Release 0.9beta1
+	* Release StrategoXT-0.9beta1
 
 	* Upgraded to new autotools
 

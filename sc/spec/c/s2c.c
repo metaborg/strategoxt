@@ -1120,7 +1120,7 @@ void init_constant_terms (void)
   ATprotect(&(term_z_6));
   term_z_6 = (ATerm) ATmakeAppl(sym_Keys_0);
   ATprotect(&(term_a_7));
-  term_a_7 = (ATerm) ATmakeAppl(ATmakeSymbol("e_0", 0, ATtrue));
+  term_a_7 = (ATerm) ATmakeAppl(ATmakeSymbol("g_0", 0, ATtrue));
   ATprotect(&(term_g_7));
   term_g_7 = (ATerm) ATmakeAppl(sym_Defined_1, term_a_7);
   ATprotect(&(term_h_7));
@@ -1128,7 +1128,7 @@ void init_constant_terms (void)
   ATprotect(&(term_i_7));
   term_i_7 = (ATerm) ATmakeAppl(ATmakeSymbol("TraceAllFuns", 0, ATtrue));
   ATprotect(&(term_l_7));
-  term_l_7 = (ATerm) ATmakeAppl(ATmakeSymbol("f_0", 0, ATtrue));
+  term_l_7 = (ATerm) ATmakeAppl(ATmakeSymbol("h_0", 0, ATtrue));
   ATprotect(&(term_m_7));
   term_m_7 = (ATerm) ATmakeAppl(ATmakeSymbol("TraceFun", 0, ATtrue));
   ATprotect(&(term_t_7));
@@ -1684,7 +1684,7 @@ ATerm try_1 (ATerm, ATerm s_112 (ATerm));
 ATerm table_get_0 (ATerm);
 ATerm table_push_0 (ATerm);
 ATerm register_usage_1 (ATerm, ATerm a_92 (ATerm));
-ATerm Option_3 (ATerm, ATerm a_0 (ATerm), ATerm b_0 (ATerm), ATerm n_0 (ATerm));
+ATerm Option_3 (ATerm, ATerm c_0 (ATerm), ATerm d_0 (ATerm), ATerm n_0 (ATerm));
 ATerm system_usage_switch_0 (ATerm);
 ATerm UndefinedOption_0 (ATerm);
 ATerm Cons_2 (ATerm, ATerm p_86 (ATerm), ATerm q_86 (ATerm));
@@ -1760,12 +1760,12 @@ ATerm post_extend_config_0 (ATerm t)
 }
 ATerm Option_2 (ATerm t, ATerm e_92 (ATerm), ATerm f_92 (ATerm))
 {
-  ATerm c_0 (ATerm t)
+  ATerm a_0 (ATerm t)
   {
     t = term_q_6;
     return(t);
   }
-  t = Option_3(t, e_92, f_92, c_0);
+  t = Option_3(t, e_92, f_92, a_0);
   return(t);
 }
 ATerm s2c_options_0 (ATerm t)
@@ -1774,7 +1774,7 @@ ATerm s2c_options_0 (ATerm t)
   int s_6 = stack_ptr;
   if((PushChoice() == 0))
     {
-      ATerm d_0 (ATerm t)
+      ATerm b_0 (ATerm t)
       {
         ATerm w_5 = NULL;
         w_5 = t;
@@ -1785,16 +1785,16 @@ ATerm s2c_options_0 (ATerm t)
           }
         return(t);
       }
-      ATerm g_0 (ATerm t)
+      ATerm e_0 (ATerm t)
       {
         t = term_t_6;
         {
-          ATerm h_0 (ATerm t)
+          ATerm f_0 (ATerm t)
           {
             t = term_v_6;
             return(t);
           }
-          t = debug_1(t, h_0);
+          t = debug_1(t, f_0);
           {
             ATerm y_6;
             y_6 = t;
@@ -1814,7 +1814,7 @@ ATerm s2c_options_0 (ATerm t)
         }
         return(t);
       }
-      t = Option_2(t, d_0, g_0);
+      t = Option_2(t, b_0, e_0);
       LocalPopChoice(s_6);
     }
   else
@@ -5820,7 +5820,7 @@ ATerm TraceAllFuns_0 (ATerm t)
           {
             h_50 = ATgetArgument(g_50, 0);
             d_50 :
-            if(!(match_string(h_50, "e_0")))
+            if(!(match_string(h_50, "g_0")))
               {
                 _fail(t);
               }
@@ -5857,7 +5857,7 @@ ATerm TraceFun_0 (ATerm t)
             t_50 = ATgetArgument(s_50, 0);
             u_50 = ATgetArgument(s_50, 1);
             m_50 :
-            if(match_string(t_50, "f_0"))
+            if(match_string(t_50, "h_0"))
               {
                 if(((n_50 != NULL) && (n_50 != u_50)))
                   _fail(u_50);
@@ -9566,7 +9566,7 @@ ATerm register_usage_1 (ATerm t, ATerm a_92 (ATerm))
   }
   return(t);
 }
-ATerm Option_3 (ATerm t, ATerm a_0 (ATerm), ATerm b_0 (ATerm), ATerm n_0 (ATerm))
+ATerm Option_3 (ATerm t, ATerm c_0 (ATerm), ATerm d_0 (ATerm), ATerm n_0 (ATerm))
 {
   ATerm p_91 = NULL,q_91 = NULL,r_91 = NULL;
   p_91 = t;
@@ -9587,14 +9587,14 @@ ATerm Option_3 (ATerm t, ATerm a_0 (ATerm), ATerm b_0 (ATerm), ATerm n_0 (ATerm)
             n_37 = t;
             {
               t = not_null(q_91);
-              t = a_0(t);
+              t = c_0(t);
             }
             t = n_37;
             {
               ATerm b_92 = NULL;
               t = term_t_24;
               {
-                t = b_0(t);
+                t = d_0(t);
                 {
                   b_92 = t;
                   if(((u_91 != NULL) && (u_91 != b_92)))

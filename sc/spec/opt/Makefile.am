@@ -26,7 +26,7 @@ check_PROGRAMS = build-match-laws-test
 
 fusion_SOURCES = fusion.c
 
-fusion.c: fusion.cr
+#fusion.c: fusion.cr
 
 TESTS = build-match-laws-test
 
@@ -34,7 +34,7 @@ CLEANFILES = *.dep
 
 BOOTCLEANFILES = fusion.c
 
-EXTRA_DIST = $(wildcard *.str) $(wildcard *.cr) $(wildcard *.syn)
+EXTRA_DIST = $(wildcard *.str) $(wildcard *.meta) $(wildcard *.cr) $(wildcard *.syn)
 
 BOOTSOURCES = fusion.c
 

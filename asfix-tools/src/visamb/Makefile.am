@@ -1,39 +1,20 @@
-# Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2, or (at your option)
-# any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-# 02111-1307, USA.
+include $(top_srcdir)/Makefile.stratego
+include $(wildcard *.dep)
 
-# $Id: Makefile.am,v 1.6 2002/10/30 14:33:49 eelco Exp $
+SUBDIRS          = data
 
-include $(srcdir)/../templates/make_rules 
-include $(srcdir)/../templates/make_rules.stratego
+libexec_PROGRAMS = Vis-amb nonterminal-tree
+pkgdata_DATA     = Vis-amb.str
 
-include $(STRATEGO_PRG:%=%.dep)
+BOOTCLEANFILES   = Vis-amb.c nonterminal-tree.c
 
-SUBDIRS         = data
+TESTS            = visamb1_check visamb2_check
 
-STRATEGO_PRG    = Vis-amb nonterminal-tree
+SCFLAGS          = -I $(srcdir)/../asfix --main $*
 
-libexec_SCRIPTS = $(STRATEGO_PRG)
-pkgdata_DATA    = Vis-amb.r
+CLEANFILES      += visamb1_check visamb2_check
 
-TESTS           = visamb1_check visamb2_check
-
-SCFLAGS        += -I $(srcdir)/../asfix --main $*
-
-CLEANFILES     += visamb1_check visamb2_check
+EXTRA_DIST 	 = $(wildcard *.str)
 
 visamb1_check_prog    = Vis-amb
 visamb1_check_input   = data/input.test.tree

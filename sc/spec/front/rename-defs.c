@@ -513,11 +513,11 @@ void init_constant_terms (void)
   ATprotect(&(term_s_6));
   term_s_6 = (ATerm) ATmakeAppl(ATmakeSymbol("_", 0, ATtrue));
   ATprotect(&(term_u_6));
-  term_u_6 = (ATerm) ATmakeAppl(ATmakeSymbol("e_0", 0, ATtrue));
+  term_u_6 = (ATerm) ATmakeAppl(ATmakeSymbol("g_0", 0, ATtrue));
   ATprotect(&(term_j_7));
   term_j_7 = (ATerm) ATmakeAppl(sym_Undefined_0);
   ATprotect(&(term_l_7));
-  term_l_7 = (ATerm) ATmakeAppl(ATmakeSymbol("f_0", 0, ATtrue));
+  term_l_7 = (ATerm) ATmakeAppl(ATmakeSymbol("h_0", 0, ATtrue));
   ATprotect(&(term_n_7));
   term_n_7 = (ATerm) ATmakeAppl(sym_stderr_0);
   ATprotect(&(term_o_7));
@@ -690,7 +690,7 @@ ATerm try_1 (ATerm, ATerm i_83 (ATerm));
 ATerm table_get_0 (ATerm);
 ATerm table_push_0 (ATerm);
 ATerm register_usage_1 (ATerm, ATerm p_63 (ATerm));
-ATerm Option_3 (ATerm, ATerm a_0 (ATerm), ATerm b_0 (ATerm), ATerm i_0 (ATerm));
+ATerm Option_3 (ATerm, ATerm c_0 (ATerm), ATerm d_0 (ATerm), ATerm i_0 (ATerm));
 ATerm system_usage_switch_0 (ATerm);
 ATerm UndefinedOption_0 (ATerm);
 ATerm set_config_0 (ATerm);
@@ -760,12 +760,12 @@ ATerm RenameVar_0 (ATerm t)
         ATerm a_3 = NULL,b_3 = NULL,c_3 = NULL;
         t = (ATerm) ATmakeAppl(sym_Keys_2, not_null(w_2), not_null(v_2));
         {
-          ATerm c_0 (ATerm t)
+          ATerm a_0 (ATerm t)
           {
             t = term_h_5;
             return(t);
           }
-          t = rewrite_1(t, c_0);
+          t = rewrite_1(t, a_0);
           {
             a_3 = t;
             r_2 :
@@ -774,7 +774,7 @@ ATerm RenameVar_0 (ATerm t)
                 b_3 = ATgetArgument(a_3, 0);
                 c_3 = ATgetArgument(a_3, 1);
                 s_2 :
-                if(match_string(b_3, "e_0"))
+                if(match_string(b_3, "g_0"))
                   {
                     if(((z_2 != NULL) && (z_2 != c_3)))
                       _fail(c_3);
@@ -886,12 +886,12 @@ ATerm topdown_1 (ATerm t, ATerm x_83 (ATerm))
 {
   t = x_83(t);
   {
-    ATerm d_0 (ATerm t)
+    ATerm b_0 (ATerm t)
     {
       t = topdown_1(t, x_83);
       return(t);
     }
-    t = _all(t, d_0);
+    t = _all(t, b_0);
   }
   return(t);
 }
@@ -1058,12 +1058,12 @@ ATerm HoArg_0 (ATerm t)
         ATerm b_6 = NULL;
         t = (ATerm) ATmakeAppl(sym_Keys_1, not_null(z_5));
         {
-          ATerm g_0 (ATerm t)
+          ATerm e_0 (ATerm t)
           {
             t = term_u_5;
             return(t);
           }
-          t = rewrite_1(t, g_0);
+          t = rewrite_1(t, e_0);
           {
             b_6 = t;
             v_5 :
@@ -1088,12 +1088,12 @@ ATerm HoArg_0 (ATerm t)
           ATerm e_6 = NULL,f_6 = NULL,g_6 = NULL;
           t = (ATerm) ATmakeAppl(sym_Keys_1, not_null(z_5));
           {
-            ATerm h_0 (ATerm t)
+            ATerm f_0 (ATerm t)
             {
               t = term_u_5;
               return(t);
             }
-            t = rewrite_1(t, h_0);
+            t = rewrite_1(t, f_0);
             {
               e_6 = t;
               x_5 :
@@ -1102,7 +1102,7 @@ ATerm HoArg_0 (ATerm t)
                   f_6 = ATgetArgument(e_6, 0);
                   g_6 = ATgetArgument(e_6, 1);
                   y_5 :
-                  if(match_string(f_6, "f_0"))
+                  if(match_string(f_6, "h_0"))
                     {
                       if(((d_6 != NULL) && (d_6 != g_6)))
                         _fail(g_6);
@@ -3777,7 +3777,7 @@ ATerm register_usage_1 (ATerm t, ATerm p_63 (ATerm))
   }
   return(t);
 }
-ATerm Option_3 (ATerm t, ATerm a_0 (ATerm), ATerm b_0 (ATerm), ATerm i_0 (ATerm))
+ATerm Option_3 (ATerm t, ATerm c_0 (ATerm), ATerm d_0 (ATerm), ATerm i_0 (ATerm))
 {
   ATerm f_31 = NULL,g_31 = NULL,h_31 = NULL;
   f_31 = t;
@@ -3798,14 +3798,14 @@ ATerm Option_3 (ATerm t, ATerm a_0 (ATerm), ATerm b_0 (ATerm), ATerm i_0 (ATerm)
             i_15 = t;
             {
               t = not_null(g_31);
-              t = a_0(t);
+              t = c_0(t);
             }
             t = i_15;
             {
               ATerm l_31 = NULL;
               t = term_r_5;
               {
-                t = b_0(t);
+                t = d_0(t);
                 {
                   l_31 = t;
                   if(((k_31 != NULL) && (k_31 != l_31)))

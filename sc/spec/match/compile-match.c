@@ -550,7 +550,7 @@ void init_constant_terms (void)
   ATprotect(&(term_g_12));
   term_g_12 = (ATerm) ATmakeInt(1);
   ATprotect(&(term_d_13));
-  term_d_13 = (ATerm) ATmakeAppl(ATmakeSymbol("c_0", 0, ATtrue));
+  term_d_13 = (ATerm) ATmakeAppl(ATmakeSymbol("a_0", 0, ATtrue));
   ATprotect(&(term_g_13));
   term_g_13 = (ATerm) ATmakeAppl(ATmakeSymbol("MatrixSeenBefore", 0, ATtrue));
   ATprotect(&(term_c_15));
@@ -889,7 +889,7 @@ ATerm try_1 (ATerm, ATerm v_115 (ATerm));
 ATerm table_get_0 (ATerm);
 ATerm table_push_0 (ATerm);
 ATerm register_usage_1 (ATerm, ATerm q_95 (ATerm));
-ATerm Option_3 (ATerm, ATerm a_0 (ATerm), ATerm b_0 (ATerm), ATerm f_0 (ATerm));
+ATerm Option_3 (ATerm, ATerm c_0 (ATerm), ATerm d_0 (ATerm), ATerm h_0 (ATerm));
 ATerm system_usage_switch_0 (ATerm);
 ATerm UndefinedOption_0 (ATerm);
 ATerm Cons_2 (ATerm, ATerm g_93 (ATerm), ATerm h_93 (ATerm));
@@ -927,7 +927,7 @@ ATerm spaste_1 (ATerm t, ATerm k_120 (ATerm))
   int x_6 = stack_ptr;
   if((PushChoice() == 0))
     {
-      ATerm d_0 (ATerm t)
+      ATerm b_0 (ATerm t)
       {
         t = split_2(t, _id, k_120);
         {
@@ -963,7 +963,7 @@ ATerm spaste_1 (ATerm t, ATerm k_120 (ATerm))
         }
         return(t);
       }
-      t = Let_2(t, d_0, _id);
+      t = Let_2(t, b_0, _id);
       LocalPopChoice(x_6);
     }
   else
@@ -974,11 +974,11 @@ ATerm spaste_1 (ATerm t, ATerm k_120 (ATerm))
         int z_6 = stack_ptr;
         if((PushChoice() == 0))
           {
-            ATerm g_0 (ATerm t)
+            ATerm f_0 (ATerm t)
             {
               t = split_2(t, _id, k_120);
               {
-                ATerm h_0 (ATerm t)
+                ATerm g_0 (ATerm t)
                 {
                   ATerm s_8 = NULL,t_8 = NULL,u_8 = NULL,v_8 = NULL,w_8 = NULL;
                   s_8 = t;
@@ -1005,11 +1005,11 @@ ATerm spaste_1 (ATerm t, ATerm k_120 (ATerm))
                     }
                   return(t);
                 }
-                t = zip_1(t, h_0);
+                t = zip_1(t, g_0);
               }
               return(t);
             }
-            t = SDef_3(t, _id, g_0, _id);
+            t = SDef_3(t, _id, f_0, _id);
             LocalPopChoice(z_6);
           }
         else
@@ -11726,14 +11726,14 @@ ATerm register_usage_1 (ATerm t, ATerm q_95 (ATerm))
   }
   return(t);
 }
-ATerm Option_3 (ATerm t, ATerm a_0 (ATerm), ATerm b_0 (ATerm), ATerm f_0 (ATerm))
+ATerm Option_3 (ATerm t, ATerm c_0 (ATerm), ATerm d_0 (ATerm), ATerm h_0 (ATerm))
 {
   ATerm k_135 = NULL,l_135 = NULL,m_135 = NULL;
   k_135 = t;
   j_135 :
   if(match_string(k_135, "register-usage-info"))
     {
-      t = register_usage_1(t, f_0);
+      t = register_usage_1(t, h_0);
     }
   else
     {
@@ -11747,14 +11747,14 @@ ATerm Option_3 (ATerm t, ATerm a_0 (ATerm), ATerm b_0 (ATerm), ATerm f_0 (ATerm)
             s_31 = t;
             {
               t = not_null(l_135);
-              t = a_0(t);
+              t = c_0(t);
             }
             t = s_31;
             {
               ATerm q_135 = NULL;
               t = term_j_29;
               {
-                t = b_0(t);
+                t = d_0(t);
                 {
                   q_135 = t;
                   if(((p_135 != NULL) && (p_135 != q_135)))

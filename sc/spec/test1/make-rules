@@ -104,7 +104,7 @@ SCLibs = -L$(STRATEGOLIB)/lib -lstratego-lib \
 # USING INSTALLED SC ###############################################
 
 %.ibin: %.r
-	$(STRATEGOBOOT)/bin/sc -i $< -o $@
+	$(STRATEGOBOOT)/bin/sc -i $< -o $@ --verbose 5
 
 %.irun: %.ibin
 	$<

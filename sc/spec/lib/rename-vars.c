@@ -674,7 +674,7 @@ ATerm explode_string_0 (ATerm);
 ATerm concat_strings_0 (ATerm);
 ATerm long_description_1 (ATerm, ATerm x_64 (ATerm));
 ATerm map_1 (ATerm, ATerm g_78 (ATerm));
-ATerm reverse_acc_2 (ATerm, ATerm f_0 (ATerm), ATerm i_0 (ATerm));
+ATerm reverse_acc_2 (ATerm, ATerm h_0 (ATerm), ATerm i_0 (ATerm));
 ATerm reverse_0 (ATerm);
 ATerm short_description_1 (ATerm, ATerm w_64 (ATerm));
 ATerm Program_1 (ATerm, ATerm v_50 (ATerm));
@@ -687,7 +687,7 @@ ATerm try_1 (ATerm, ATerm j_82 (ATerm));
 ATerm table_get_0 (ATerm);
 ATerm table_push_0 (ATerm);
 ATerm register_usage_1 (ATerm, ATerm b_65 (ATerm));
-ATerm Option_3 (ATerm, ATerm a_0 (ATerm), ATerm b_0 (ATerm), ATerm e_0 (ATerm));
+ATerm Option_3 (ATerm, ATerm c_0 (ATerm), ATerm d_0 (ATerm), ATerm g_0 (ATerm));
 ATerm system_usage_switch_0 (ATerm);
 ATerm UndefinedOption_0 (ATerm);
 ATerm Cons_2 (ATerm, ATerm k_60 (ATerm), ATerm l_60 (ATerm));
@@ -725,11 +725,11 @@ ATerm spaste_1 (ATerm t, ATerm y_86 (ATerm))
   int l_4 = stack_ptr;
   if((PushChoice() == 0))
     {
-      ATerm c_0 (ATerm t)
+      ATerm a_0 (ATerm t)
       {
         t = split_2(t, _id, y_86);
         {
-          ATerm d_0 (ATerm t)
+          ATerm b_0 (ATerm t)
           {
             ATerm e_4 = NULL,f_4 = NULL,g_4 = NULL,h_4 = NULL,i_4 = NULL,j_4 = NULL;
             e_4 = t;
@@ -757,11 +757,11 @@ ATerm spaste_1 (ATerm t, ATerm y_86 (ATerm))
               }
             return(t);
           }
-          t = zip_1(t, d_0);
+          t = zip_1(t, b_0);
         }
         return(t);
       }
-      t = Let_2(t, c_0, _id);
+      t = Let_2(t, a_0, _id);
       LocalPopChoice(l_4);
     }
   else
@@ -772,11 +772,11 @@ ATerm spaste_1 (ATerm t, ATerm y_86 (ATerm))
         int s_4 = stack_ptr;
         if((PushChoice() == 0))
           {
-            ATerm g_0 (ATerm t)
+            ATerm e_0 (ATerm t)
             {
               t = split_2(t, _id, y_86);
               {
-                ATerm h_0 (ATerm t)
+                ATerm f_0 (ATerm t)
                 {
                   ATerm n_4 = NULL,o_4 = NULL,p_4 = NULL,q_4 = NULL,r_4 = NULL;
                   n_4 = t;
@@ -803,11 +803,11 @@ ATerm spaste_1 (ATerm t, ATerm y_86 (ATerm))
                     }
                   return(t);
                 }
-                t = zip_1(t, h_0);
+                t = zip_1(t, f_0);
               }
               return(t);
             }
-            t = SDef_3(t, _id, g_0, _id);
+            t = SDef_3(t, _id, e_0, _id);
             LocalPopChoice(s_4);
           }
         else
@@ -4265,7 +4265,7 @@ ATerm map_1 (ATerm t, ATerm g_78 (ATerm))
   t = s_40(t);
   return(t);
 }
-ATerm reverse_acc_2 (ATerm t, ATerm f_0 (ATerm), ATerm i_0 (ATerm))
+ATerm reverse_acc_2 (ATerm t, ATerm h_0 (ATerm), ATerm i_0 (ATerm))
 {
   ATerm f_41 = NULL,g_41 = NULL,h_41 = NULL;
   h_41 = t;
@@ -4300,7 +4300,7 @@ ATerm reverse_acc_2 (ATerm t, ATerm f_0 (ATerm), ATerm i_0 (ATerm))
               ATerm o_41 = NULL;
               t = not_null(f_41);
               {
-                t = f_0(t);
+                t = h_0(t);
                 {
                   o_41 = t;
                   if(((n_41 != NULL) && (n_41 != o_41)))
@@ -4328,7 +4328,7 @@ ATerm reverse_acc_2 (ATerm t, ATerm f_0 (ATerm), ATerm i_0 (ATerm))
               t = not_null(k_41);
               return(t);
             }
-            t = reverse_acc_2(t, f_0, z_2);
+            t = reverse_acc_2(t, h_0, z_2);
           }
         }
       }
@@ -4752,14 +4752,14 @@ ATerm register_usage_1 (ATerm t, ATerm b_65 (ATerm))
   }
   return(t);
 }
-ATerm Option_3 (ATerm t, ATerm a_0 (ATerm), ATerm b_0 (ATerm), ATerm e_0 (ATerm))
+ATerm Option_3 (ATerm t, ATerm c_0 (ATerm), ATerm d_0 (ATerm), ATerm g_0 (ATerm))
 {
   ATerm e_46 = NULL,f_46 = NULL,g_46 = NULL;
   e_46 = t;
   d_46 :
   if(match_string(e_46, "register-usage-info"))
     {
-      t = register_usage_1(t, e_0);
+      t = register_usage_1(t, g_0);
     }
   else
     {
@@ -4773,14 +4773,14 @@ ATerm Option_3 (ATerm t, ATerm a_0 (ATerm), ATerm b_0 (ATerm), ATerm e_0 (ATerm)
             w_16 = t;
             {
               t = not_null(f_46);
-              t = a_0(t);
+              t = c_0(t);
             }
             t = w_16;
             {
               ATerm k_46 = NULL;
               t = term_o_13;
               {
-                t = b_0(t);
+                t = d_0(t);
                 {
                   k_46 = t;
                   if(((j_46 != NULL) && (j_46 != k_46)))

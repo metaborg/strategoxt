@@ -1,6 +1,13 @@
+include $(top_srcdir)/Makefile.stratego
+include $(wildcard *.dep)
+
 default: test1.x.txt
 
-bin_SCRIPTS = astratego2text
+bin_PROGRAMS = astratego2text
+
+BOOTCLEANFILES = astratego2text.c
+
+SCFLAGS = --main $* --C-include "\"conf.h\"" -CI "-I.."
 
 pkgdata_DATA = \
 	Stratego.pp Stratego-pretty.pp StrategoStratego.pp \
@@ -8,8 +15,6 @@ pkgdata_DATA = \
 	astratego2text.config 
 
 #TESTS = 
-
-CLEANFILES = astratego2text
 
 EXTRA_DIST = \
 	$(wildcard *.pp) \
@@ -40,21 +45,11 @@ EXTRA_DIST = \
 
 # DEPENDENCIES ###############################################
 
-SCFLAGS = --main $@ --C-include "\"conf.h\"" -CI "-I.."
-
-SCcomp = $(SC)/bin/sc
-
-% : %.r
-	$(SCcomp) $(SCFLAGS) -i $*
-
 %.pp.af: %.pp dummy
 	$(GPP)/bin/ast2abox -i dummy -o /dev/null -p $< 
 
 dummy:
 	echo "All(Id)" > dummy
 
-%.dep:
-	touch $@
 
-include $(wilcard *.dep)
 

@@ -5,8 +5,6 @@
 
 ("parse-mod", 	Prefix(Var("libexec"), Path("/parse-mod"))),
 
-(Ext("r"), 	Var("parse-mod")),
-(Ext("str"), 	Var("parse-mod")),
 (Ext("rtree"),  None)
 
 ]

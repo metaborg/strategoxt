@@ -127,9 +127,9 @@ rpm: $(RPMSPEC) dist
 rpm-clean:
 	rm -f $(RPMSPEC)
 
-EXTRA_DIST += Makefile.rpm \
-	$(PACKAGE).spec $(PACKAGE)-$(VERSION)-$(RPMRELEASE).spec \
-	$(PACKAGE).pkg  $(PACKAGE)-$(VERSION).pkg
+EXTRA_DIST += Makefile.rpm 
+#	$(PACKAGE).spec $(PACKAGE)-$(VERSION)-$(RPMRELEASE).spec \
+#	$(PACKAGE).pkg  $(PACKAGE)-$(VERSION).pkg
 
 CLEANFILES += $(RPMSPEC) $(PACKAGE)-$(VERSION).pkg $(RPMFILES)
 

@@ -34,6 +34,91 @@
 
 #DIST_SUBDIRS = pre-checks emacs $(PKGS)
 
+
+####################################################################################
+# Copyright (C) 2002 Eelco Visser <visser@acm.org>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+####################################################################################
+# USAGE
+#
+# Include this file in the top Makefile of a package to automatically create
+# RPM distributions and AutoBundle .pkg files.
+#
+# The package is assumed to be under automake/autoconf 
+#
+# Create $(PACKAGE).spec and $(PACKAGE).pkg template files. (Copy
+# from where you found this Makefile.rpm.)
+#
+# Define the following variables:
+#
+# CONFIGURE 	: command to configure the package
+# SUBST 	: sed substitution commands
+# RPMRELEASE	: release number of rpm
+# RPMDIR	: directory in which rpm looks for SOURCES and BUILDs
+# RPMPREFIX	: prefix under which rpm should install files
+# RPMTMP	: temporary directory that is used as BUILD_ROOT by rpm
+#
+####################################################################################
+# 
+# AC_ARG_WITH(rpmdir, 
+#   [  --with-rpmdir          Specify location of rpm directory: /usr/src/redhat/], 
+#   RPMDIR=$withval, 
+#   RPMDIR="/usr/src/redhat/"
+# )
+# AC_SUBST(RPMDIR)
+# 
+# AC_ARG_WITH(rpmprefix, 
+#   [  --with-rpmprefix       Specify location of installation prefix for rpm: /usr], 
+#   RPMPREFIX=$withval, 
+#   RPMPREFIX="/usr"
+# )
+# AC_SUBST(RPMPREFIX)
+# 
+# AC_ARG_WITH(rpmtmp, 
+#   [  --with-rpmtmp          Specify location of rpm temporary directory: /tmp], 
+#   RPMTMP=$withval, 
+#   RPMTMP="/tmp"
+# )
+# AC_SUBST(RPMTMP)
+# 
+####################################################################################
+# RPMRELEASE = 1
+# 
+# CONFIGURE = ./configure \
+# 		--prefix=$(RPMPREFIX) \
+# 		--with-aterm=$(ATERM) \
+# 		--with-cgen=$(CGEN) \
+# 		--with-gpp=$(GPP) \
+# 		--with-ssl=$(STRATEGOLIB) \
+# 		--with-srts=$(STRATEGORTS) \
+# 		--with-rpmdir=$(RPMDIR)
+# 
+# SUBST = s+__SRTS_VERSION__+$(VERSION)+g;\
+#         s+__GPP_VERSION__+2.2.1+g;\
+#         s+__ATERM_VERSION__+1.6.7+g;\
+# 	s+__ATERM__+$(ATERM)+g;\
+# 	s+__MAKE__+$(MAKE)+g;
+# 
+# include Makefile.rpm
+# 
+####################################################################################
+#
+# Generic rules for creating RPMs
+
 SHELL = /bin/sh
 
 srcdir = .
@@ -91,7 +176,7 @@ INSTALL_STRIP_PROGRAM = ${SHELL} $(install_sh) -c -s
 OBJEXT = o
 PACKAGE = StrategoXT
 PGEN = /home/xt/XT
-PKGS = srts sc ssl gpp cgen aterm-tools asfix-tools graph-tools sdf-tools stratego-tools stratego-front sc xt boxenv
+PKGS = srts sc ssl gpp cgen stratego-front asfix-tools aterm-tools graph-tools sdf-tools stratego-tools xt boxenv
 SDF = /home/xt/XT
 SGLR = /home/xt/XT
 STRATEGOFRONT = /home/xt/XT
@@ -102,7 +187,7 @@ install_sh = /home/visser/res/StrategoXT/install-sh
 
 DIST_SUBDIRS = emacs $(PKGS)
 
-EXTRA_DIST = $(EXTRA_FILES)
+EXTRA_DIST = $(EXTRA_FILES) Makefile.rpm 
 EXTRA_FILES = README README.in bootstrap acinclude.m4
 
 # We need at least one subdir to be defined such that automake will generate
@@ -137,7 +222,15 @@ SUBST = s+__SRTS_VERSION__+$(VERSION)+g;\
         s+__ATERM__+$(ATERM)+g;
 
 
-CLEANFILES = 
+#	$(PACKAGE).spec $(PACKAGE)-$(VERSION)-$(RPMRELEASE).spec \
+#	$(PACKAGE).pkg  $(PACKAGE)-$(VERSION).pkg
+CLEANFILES = $(RPMSPEC) $(PACKAGE)-$(VERSION).pkg $(RPMFILES)
+
+RPMSOURCES = $(RPMDIR)/SOURCES
+
+rpmdest = $(RPMTMP)/$(PACKAGE)-$(VERSION)-root
+RPMSPEC = $(PACKAGE)-$(VERSION)-$(RPMRELEASE).spec
+RPMFILES = $(PACKAGE)-$(VERSION)-$(RPMRELEASE).files
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -157,7 +250,7 @@ all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
 .SUFFIXES:
-$(srcdir)/Makefile.in:  Makefile.am  $(top_srcdir)/configure.in $(ACLOCAL_M4)
+$(srcdir)/Makefile.in:  Makefile.am $(srcdir)/Makefile.rpm $(top_srcdir)/configure.in $(ACLOCAL_M4)
 	cd $(top_srcdir) && \
 	  $(AUTOMAKE) --gnu  Makefile
 Makefile:  $(srcdir)/Makefile.in  $(top_builddir)/config.status
@@ -544,7 +637,48 @@ upload-ssl:
 upload-stratego-front:
 	scp stratego-front/stratego-front-*.tar.gz $(WWWSTRATEGO)
 
-#include Makefile.rpm
+rpmspec: $(RPMSPEC)
+	echo $(RPMSPEC)
+
+$(RPMFILES) : 
+	$(CONFIGURE)
+	$(MAKE)
+	./configure --prefix=$(RPMPREFIX)
+	touch */*
+	rm -rf $(rpmdest)
+	$(MAKE) DESTDIR=$(rpmdest) install
+	find $(rpmdest) -type f -a -name \* -a -print | sed "s#$(rpmdest)##" > $(RPMFILES)
+
+$(RPMSPEC) : $(PACKAGE).spec $(RPMFILES)
+	./stdconfig
+	sed '$(SUBST)\
+             s+__MAKE__+$(MAKE)+g;\
+             s#__VERSION__#$(VERSION)#g;\
+	     s#__RELEASE__#$(RPMRELEASE)#g;\
+	     s#__CONFIGURE__#$(CONFIGURE)#g;\
+	     s#__PREFIX__#$(RPMPREFIX)#g;\
+	     s#__PACKAGE__#$(PACKAGE)#g;' < $(PACKAGE).spec > $(RPMSPEC)
+	 cat $(RPMFILES) >> $(RPMSPEC)
+
+rpm: $(RPMSPEC) dist
+	cp $(PACKAGE)-$(VERSION).tar.gz $(RPMSOURCES)
+	rpm -ba $(RPMSPEC)
+
+rpm-clean:
+	rm -f $(RPMSPEC)
+
+####################################################################################
+#
+# Generic rules for creating .pkg file for use with AutoBundle
+
+pkg : $(PACKAGE)-$(VERSION).pkg 
+
+$(PACKAGE)-$(VERSION).pkg : $(PACKAGE).pkg Makefile
+	sed '$(SUBST)\
+             s+__MAKE__+$(MAKE)+g;\
+             s#__VERSION__#$(VERSION)#g;' < $(PACKAGE).pkg > $@
+
+####################################################################################
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

@@ -56,7 +56,7 @@ strategies
     ; (  !(<id>
            , <parse-file(mkpath)> (<id>
 			          ,<basename; guarantee-extension(!"mtree")>
-				  ,<get-config> Ext(ext)))
+				  ,<if-verbose5(debug(!" extension: ")); get-config; if-verbose5(debug(!" tool: "))> Ext(ext)))
        <+ <fatal-error> ["parse error in ", <id>] )
 
   get-stratego-imports =
@@ -74,7 +74,7 @@ strategies
     where <not(eq)> (None, tool)
 	; if-verbose2(<debug(!"parsing: ")> filein)
         ; <if-verbose4(debug); call>
-		(tool, [ "-i", filein, "-o", fileout, "--verbose", <verbosity; int-to-string>,
+		(tool, [ "-i", filein, "-o", fileout, "--verbose", <verbosity; int-to-string>
 		       | <conc>(<get-config> "-I", <!["-silent"]; if-verbose2(![])>) ])
 	; <ReadFromFile> fileout => trm
 

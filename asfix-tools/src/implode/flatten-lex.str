@@ -19,51 +19,59 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: asfix-yield.r,v 1.1 2001/05/30 15:19:02 mdejonge Exp $
+% $Id: flatten-lex.str,v 1.1 2002/11/27 23:10:44 stratego Exp $
 
 \begin{code}
-module asfix-yield
+module flatten-lex
 (*
 	Author: Joost Visser (Joost.Visser@cwi.nl)
 
 	Usage:
-	  asfix-yield -i <AsFix> -o <String>
+	  flatten-lex -i <AsFix> -o <AsFix>
 
-	  Flattens an AsFix tree to its yield.
+	  Replaces all subtrees below context-free occurences
+	  of lexical terms by a "flatlex" node containing
+	  the yield of that subtree.
 *)
+
 imports
   lib
-  Sdf-ParseTree-Syntax
-  Sdf-FlatLex-Syntax
+  AsFix2-Syntax
 
 strategies
 
   main
-    = iowrap(asfix-yield)
-
-rules
-
-  Yield-parsetree:
-    parsetree(t,n) -> t
-
-  Yield-appl:
-    appl(p,ts) -> <concat> ts
-
-  Yield-flatlex:
-    flatlex(str) -> <explode-string> str
-
-  Yield-asfixchar:
-    c -> [c]
+    = iowrap(flatten-lex)
 
 strategies
 
-  asfix-yield
-    = Yield-parsetree
-    ; rec x( ( appl(id,map(x)) ; Yield-appl )
-          <+ Yield-flatlex
-          <+ Yield-asfixchar
-           )
-    ; implode-string
+  implode-lexical
+    = is-LEX-CF-injection
+    ; yield
+    ; insert-flatlex
 
-  
+  flatten-lex
+    = sometd(implode-lexical)
+
+rules
+
+  Kids  : appl(p, ts) -> <concat> ts
+  Kids' : x -> [x]
+
+strategies
+
+  is-LEX-CF-injection
+    = appl(prod([lex(id)],cf(id),id), id)
+
+  yield
+     = rec x( (appl(id, map(x)); Kids) 
+           <+ Kids'
+           )
+     ; implode-string
+
+rules
+
+  insert-flatlex:
+    str -> flatlex(str)
+
 \end{code}

@@ -2,13 +2,16 @@ include @STRATEGORTS@/share/srts/Makefile.srts
 
 SUFFIXES = .str .cr
 
-SC = @prefix@/bin/sc
+SCOMPILE = @prefix@/bin/sc
+
+.rtree.c : 
+	$(SCOMPILE) $(STRINCLUDES) $(SCFLAGS) -i $< -o $@ -c
 
 .str.c : 
-	$(SC) $(STRINCLUDES) $(SCFLAGS) -i $< -o $@ -c
+	$(SCOMPILE) $(STRINCLUDES) $(SCFLAGS) -i $< -o $@ -c
 
 .cr.c : 
-	$(SC) $(STRINCLUDES) $(SCFLAGS) -i $< -o $@ -c
+	$(SCOMPILE) $(STRINCLUDES) $(SCFLAGS) -i $< -o $@ -c
 
 %.c.dep : 
 	touch $@

@@ -1,34 +1,23 @@
-# Copyright (C) 2002 Eelco Visser <visser@acm.org>
-# 
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2, or (at your option)
-# any later version.
-# 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-# 02111-1307, USA.
+include $(top_srcdir)/Makefile.stratego
+include $(wildcard *.dep)
 
-SCFLAGS = -I ../sig --main $@ --C-include "\"conf.h\"" -CI "-I.."
+SCFLAGS 	= -I ../sig --main $* --C-include "\"conf.h\"" -CI "-I.."
 
+bin_PROGRAMS 	= meta-explode parse-cmod stratego-desugar parse-stratego 
 
-bin_SCRIPTS = meta-explode parse-cmod stratego-desugar
+pkgdata_DATA 	= parse-cmod.config parse-stratego.config
 
-pkgdata_DATA = parse-cmod.config
+plugindir 	= $(SC)/share/pack-stratego-plugins
+plugin_DATA	= parse-stratego.plugin
 
-plugindir = $(SC)/share/pack-stratego-plugins
-plugin_DATA = parse-cmod.plugin
+#parse-cmod.plugin 
 
-CLEANFILES = meta-explode parse-cmod stratego-desugar parse-cmod.config $(wildcard *.dep)
+CLEANFILES     += parse-cmod.config parse-stratego.config $(wildcard *.dep)
 
-EXTRA_DIST = $(wildcard *.r) $(wildcard *.cr) $(wildcard *.syn) \
-	$(wildcard *.rtree) $(wildcard *.src) $(wildcard *.c)  $(wildcard *.h.in)
+BOOTCLEANFILES = meta-explode.c parse-cmod.c stratego-desugar.c parse-stratego .c
+
+EXTRA_DIST 	= $(wildcard *.str) $(wildcard *.meta) \
+		  $(wildcard *.rtree) $(wildcard *.src) $(wildcard *.c)  $(wildcard *.h.in)
 
 %: %.src Makefile
 	sed 's#__prefix__#$(prefix)#g; \
@@ -44,16 +33,3 @@ EXTRA_DIST = $(wildcard *.r) $(wildcard *.cr) $(wildcard *.syn) \
 	     s#__GPP__#$(GPP)#g; \
 	     s#__PGEN__#$(PGEN)#g;' \
 	  < $< > $@
-
-SCcomp = $(SC)/bin/sc
-
-% : %.r
-	$(SCcomp) $(SCFLAGS) -i $*
-
-% : %.cr
-	$(SCcomp) $(SCFLAGS) -i $*
-
-%.dep:
-	touch $@
-
-include $(wildcard *.dep)
