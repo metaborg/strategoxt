@@ -22,7 +22,6 @@ strategies
   Thd = Fst
   Ttl : "" # ([x | xs]) -> "" # (xs)
 
-	
  /**
   * Get the nth element of a tuple.
   */
@@ -31,6 +30,10 @@ strategies
 
   is-tuple = 
     ?""#(_)
+
+  /**
+   * Applies a strategy to the switched arguments of a 2-tuple.
+  flip(s) = Swap; s
 
  /**
   * Apply a strategy to each element of a tuple.
