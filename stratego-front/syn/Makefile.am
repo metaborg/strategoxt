@@ -8,7 +8,9 @@ DEFS = \
   Stratego-Sugar.def \
   Stratego-Amb.def \
   StrategoForTesting.def \
-  StrategoStrategoForTesting.def
+  StrategoStrategoForTesting.def \
+  Stratego-Sugar-in-Stratego.def  \
+  Stratego-Core-in-Stratego.def 
 
 TBLS = \
   Stratego.tbl \
@@ -16,7 +18,9 @@ TBLS = \
   Stratego-Core.tbl \
   Stratego-Sugar.tbl \
   StrategoForTesting.tbl \
-  StrategoStrategoForTesting.tbl
+  StrategoStrategoForTesting.tbl \
+  Stratego-Sugar-in-Stratego.tbl \
+  Stratego-Core-in-Stratego.tbl
 
 sdfdata_DATA = \
   $(TBLS) \
