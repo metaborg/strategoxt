@@ -64,7 +64,7 @@ Tools web:
 
 (Contributed by Martin Bravenboer)
 
----------++ Improved Pack SDF
+---------++ Pack SDF
 
 Several features have been added to pack-sdf to make it more
 user-friendly:
@@ -104,7 +104,7 @@ user-friendly:
 
 (Contributed by Martin Bravenboer)
 
----------++ Improved Parse Unit
+---------++ Parse Unit
 
 In a previous releases of StrategoXT a parse-unit testsuite had to be
 parsed with a separate tool before passing it to parse-unit. This is
@@ -130,7 +130,7 @@ More information and an example are available at the Tools Wiki:
 
 (Contributed by Martin Bravenboer)
 
----------++ Improved Parenthesize Generation
+---------++ Parenthesizer Generation
 
 	* trans/sdf2ast-conflicts.str: separate tool for producing a list
 	of conflict information from an SDF syntax
@@ -169,10 +169,6 @@ More information and an example are available at the Tools Wiki:
 
 	sdf2parenthesize now takes the transitive closure itself, and
 	generates all the required rules for chain priorities.
-
-	This bug was revealed by pretty-printing the GNU Classpath source
-	code with the pretty-printer of java-front, which uses the
-	sdf2parenthesize tools for printing parentheses.
 
 (Contributed Martin Bravenboer)
 
