@@ -30,16 +30,16 @@ signature
    constructors
       Old-Table : String -> Option
       New-Table : String -> Option
-      Verbose:	 Option    
-      Fix:       Option
-      Prune:     Option
+      Verbose: 	  Option    
+      Patch:      Option
+      Prune:      Option
 strategies
 
    io-Pptable-diff = 
      option-wrap(
              Option( "-V", !Verbose(),               !"-V               verbose execution." )
-        +    Option( "--fix", !Fix(),                !"--fix            Bring old table up-o-date" )
-        +    Option( "--prune", !Prune(),            !"--fix            Remove obsolete pp entries" )
+        +    Option( "--patch", !Patch(),            !"--patch          Bring old table up-o-date" )
+        +    Option( "--prune", !Prune(),            !"--prune          Remove obsolete pp entries" )
         + ArgOption( "--old", \x -> Old-Table(x)\ ,  !"--old <table>    Old table" )
         + ArgOption( "--new", \x -> New-Table(x)\ ,  !"--new <table>    New table" )
         + output-options,
@@ -76,10 +76,10 @@ strategies
       <printnl>(stderr, ["New entries: ", <id>]);
 
 
-      try(has-option(!Fix); <fix>new-ones);
+      try(has-option(!Patch); <patch>new-ones);
       try(has-option(!Prune); <prune>obsolete-ones);
     
-      try((has-option(!Fix) + has-option(!Prune));
+      try((has-option(!Patch) + has-option(!Prune));
           <table-getlist>"old-table";
           map(\  (_, (path,box)) -> PP-Entry(path, box) \ );
           desugar;
@@ -91,7 +91,7 @@ strategies
 
 // Construct new pretty-print table from "old-table" by inserting
 // new pp entries from "new-table"
-fix =
+patch =
    // Insert new entries in "old-table"
    map(\ x -> 
       <table-put>("old-table", x,<table-get>("new-table", x) )
