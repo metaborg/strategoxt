@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Ast-2-abox.r,v 1.2 2002/05/08 07:54:38 mdejonge Exp $
+% $Id: Ast-2-abox.r,v 1.3 2002/06/06 15:24:29 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
@@ -55,18 +55,24 @@ strategies
     ; split(!options, id)
       
 trm2abox =
-  trm2abox1 <+ trm2abox2 <+ trm2abox3
+  trm2abox-string <+ trm2abox-int <+ trm2abox-list <+ trm2abox-appl
 
-trm2abox1 =
+trm2abox-string =
    ?s;
    is-string;
    !S(s)
 
-trm2abox2 =
+trm2abox-int =
+   ?s;
+   is-int;
+   !S(<int-to-string>)
+
+
+trm2abox-list =
    is-list;
    map( trm2abox )
    
-trm2abox3 =
+trm2abox-appl =
    // Obtain function symbol and a list of arguments. 
    ?f#( args )
 

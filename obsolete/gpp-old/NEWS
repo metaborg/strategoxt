@@ -1,8 +1,10 @@
-Version 2.2 released: 2002-06-04
+Version 2.2 released: 2002-06-08
 	* GPP now compiles and runs on Windows using Cygwin
 	* Added support for layout preserving pretty-printing. Use
           asfix2abox with -c switch
 	* Several bug fixes
+   	* ast2abox: integegers are now correctly pretty-printed (i.e.,
+	   echo 1 | ast2abox yields S("1") )
 
 Version 2.1 released: 2001-11-29
 	* Fixed error in default.abbrevs.

@@ -1,6 +1,8 @@
 2002-06-06  Merijn de Jonge <mdejonge@cwi.nl>
    * Repaired some syntax errors that were not detected by the parser of the
      stratego compiler.
+   * ast2abox: integegers are now correctly pretty-printed (i.e.,
+     echo 1 | ast2abox yields S("1") )
 
 2002-06-04  Merijn de Jonge <mdejonge@cwi.nl>
    * Repaired generation of package definition file
