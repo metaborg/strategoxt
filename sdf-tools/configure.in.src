@@ -17,7 +17,7 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 dnl 02111-1307, USA.
 
-dnl $Id: configure.in.src,v 1.5 2001/06/05 14:40:06 mdejonge Exp $
+dnl $Id: configure.in.src,v 1.6 2001/06/07 12:07:19 mdejonge Exp $
 
 AC_INIT(configure.in)
 AM_INIT_AUTOMAKE(__PACKAGE__,__VERSION__)
@@ -57,9 +57,15 @@ AC_ARG_WITH(asfix-tools,
    ASFIXTOOLS='${prefix}')
 AC_SUBST(ASFIXTOOLS)
 
+AC_ARG_WITH(graph-tools, 
+   [  --with-graph-tools      Specify location of graph-tools package],
+   GRAPHTOOLS=${withval},
+   GRAPHTOOLS='${prefix}')
+AC_SUBST(GRAPHTOOLS)
 
 
-AC_REVISION($Id: configure.in.src,v 1.5 2001/06/05 14:40:06 mdejonge Exp $)
+
+AC_REVISION($Id: configure.in.src,v 1.6 2001/06/07 12:07:19 mdejonge Exp $)
 
 AC_PROG_CC
 AC_PROG_INSTALL

@@ -2,6 +2,7 @@
    * src/sdf: Imploded pretty-print tables are now again installed
    * src/lib/graph-terms.r: moved to graph-tools package
    * src/sdf-pp: Sdf pretty-print tools added
+   * sdf-tools now depends on graph-tools package
 
 2001-06-06 Merijn de Jonge <mdejonge@cwi.nl> 
    * src/sdf-normalize/asfix2sdf* moved to new package grammar-recovery
