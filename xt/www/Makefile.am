@@ -30,9 +30,6 @@ EXTRA_DIST = \
 	editable.html \
 	editable-contents.html \
 	\
-	CHANGES \
-	Makefile \
-	Makefile.am \
 	frames.css \
 	logo-nb-small.gif \
 	logo-nb-small1.gif \
