@@ -4,23 +4,6 @@
 	Primitives for integer arithmetic and comparison.
 	\end{abstract}
 
-% Copyright (C) 1998-2001 Eelco Visser <visser@acm.org>
-% 
-% This program is free software; you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation; either version 2, or (at your option)
-% any later version.
-% 
-% This program is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-% 
-% You should have received a copy of the GNU General Public License
-% along with this program; if not, write to the Free Software
-% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-% 02111-1307, USA.
-
 \begin{code}
 module integers
 strategies
@@ -64,8 +47,46 @@ strategies
   int-to-string = ?x; prim("SSL_int_to_string",x)
   string-to-int = ?x; prim("SSL_string_to_int",x)
 
+  inc = !(<id>, 1); add
+
+  log2 = 
+    !(<id>, 0);
+    repeat((!(<divi>(<id>, 2), <mod; ?0>(<id>, 2)); Fst, inc));
+    ?(1, <id>)
+
+signature
+  sorts IntI
+  // subsorts Int < IntI
+  constructors
+    Infinite: IntI
+
+rules
+
+  add-inf1: (Infinite, _) -> Infinite
+  add-inf2: (_, Infinite) -> Infinite
+  add-inf = (add-inf1 + add-inf2) <+ add
+
+  lt-inf = ?(<is-int>, Infinite) <+ (is-int, is-int); lt
+
 rules
 
   inc: a -> <add>(a,1)
   dec: a -> <subt>(a,1)
 \end{code}
+
+% Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
+% 
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+% 
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% 
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.

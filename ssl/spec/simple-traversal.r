@@ -72,6 +72,15 @@ strategies
   don't-stop(s) = fail
 \end{code} 
 
+	A variation on bottomup is a traversal that also provides the
+	original term as well as the term in which the direct subterms
+	have been transformed. (also known as a paramorphism?)
+
+\begin{code}
+  bottomup-para(s) = 
+    rec x(!(<id>, <all(x)>); s)
+\end{code}
+
 	\paragraph{Along a Spine}
 
 	A spine of a term is a chain of nodes from the root to some

@@ -1,47 +1,53 @@
-\literate[integers-test]
-
-	\begin{abstract}
-	A integers module for definition of unit tests.
-	\end{abstract}
-
-
-\begin{code}
-module integers-test
-imports sunit integers
+module migrate-tuples-test
+imports migrate-tuples sunit
 strategies
 
   main = 
-    test-suite(!"integers-test",
+    test-suite(!"migrate-tuples-test",
       test1;
-      test2
+      test2;
+      test3;
+      test4;
+      test5
     )
 
   test1 =
-    apply-test(!"test1"
-	, leq
-	, !(5,5)
-	, !(5,5)
+    apply-and-check(!"test1"
+	, TNtoTuple
+	, !TCons("a", ())
+	, ?""#(["a"])
 	)
 
   test2 =
-    apply-test(!"test2a"
-	, !(<divi>(<id>, 2), <mod; ?0>(<id>, 2))
-	, !16
-	, !(8,0)
-	);
-    apply-test(!"test2b"
-	, log2
-	, !16
-	, !4
-	);
-    apply-and-fail(!"test2c"
-	, log2
-	, !6
+    apply-test(!"test2"
+	, ?TCons(x, ""#(xs)); !(x, xs)
+	, !TCons("a", ())
+	, !("a",[])       
 	)
 
+  test3 =
+    apply-test(!"test3"
+	, ?TCons(x, ""#(xs)); !("", [x | xs])
+	, !TCons("a", ())
+	, !("",["a"])
+	)
+
+  test4 =
+    apply-and-check(!"test4"
+	, ?TCons(x, ""#(xs)); !("", [x | xs]); mkterm
+	, !TCons("a", ())
+	, ?""#(["a"])
+	)
+
+  test5 =
+    apply-and-check(!"test5"
+	, !"" #(["a"])
+	, !()
+	, ?""#(["a"])
+	)
 \end{code}
 
-% Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
+% Copyright (C) 2002 Eelco Visser <visser@acm.org>
 % 
 % This program is free software; you can redistribute it and/or modify
 % it under the terms of the GNU General Public License as published by

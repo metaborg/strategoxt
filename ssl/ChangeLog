@@ -1,3 +1,24 @@
+2002-01-22  Eelco Visser  <visser@acm.org>
+
+	* src/io.c: Removed obsolete (commented out) code for consnil
+	conversions. Including stratego header file as <srts/stratego.h> 
+	
+	* spec/simple-traversal.r: Strategy bottomup-para(s) implements
+	paramorphism, which applies s at pair of orignal term and 
+	term in which the subterms have been transformed.
+
+	* spec/rename-test.r: Made tests insensitive to constant caching.
+	Don't use generated names in check; match instead.
+
+	* spec/parse-options.r: Cons/Nil -> [_|_]/[]
+
+	* spec/integers.r: Operator log2 takes the base 2
+	logarithm. Constructor Infinite represents infinity, operators
+	add-inf and lt-inf are aware of Infinite.
+
+	* spec/list-set.r: postorder-collect(s) selects all subterms for
+	which s succeeds and returns them in post-order.
+
 2002-01-10  Eelco Visser  <visser@acm.org>
 
 	* Release 0.7beta

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1998-2001 Eelco Visser <visser@acm.org>
+Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 */
 
 #include <stdlib.h>
-#include <stratego.h>
+#include <srts/stratego.h>
 
 /* IO */
 
@@ -102,7 +102,7 @@ FILE *_SSL_file_table_lookup(ATerm name)
 {
   ATerm desc;
 
-  /* ATfprintf(stderr, "_SSL_file_table_lookup(%t)\n", name); */
+  // ATfprintf(stderr, "_SSL_file_table_lookup(%t)\n", name);
 
   if(SSL_file_table == NULL)
     SSL_file_table_init();
@@ -159,12 +159,12 @@ ATerm SSL_printnl(ATerm file, ATerm str)
 {  
   FILE *outfile;
 
+  // ATfprintf(stderr, "SSL_printnl(%t, %t)\n", file, str);
   outfile = _SSL_file_table_lookup(file);
   if(outfile == NULL) {
     ATfprintf(stderr, "printnl: could not open file: %t\n", file);
     _fail(file);
   }
-  //str = consnil_to_list(str);
   if(!(ATgetType(str) == AT_LIST)) {
     ATfprintf(stderr, "SSL_printnl: argument not a list: %t\n", str);
     _fail(str);
@@ -187,12 +187,11 @@ ATerm SSL_printascii(ATerm file, ATerm str)
 {   
   FILE *outfile;
 
-  /* ATfprintf(stderr, "SSL_printascii(): top = %t\n", Ttop()); */
+  // ATfprintf(stderr, "SSL_printascii(): top = %t\n", Ttop());
 
   outfile = _SSL_file_table_lookup(file);
   if(outfile == NULL) 
     _fail(file);
-  // str = consnil_to_list(str);
   while(!ATisEmpty((ATermList)str))
     {
       if(ATisInt(ATgetFirst((ATermList)str)))
@@ -202,7 +201,7 @@ ATerm SSL_printascii(ATerm file, ATerm str)
 	ATfprintf(outfile, "%t", ATgetFirst((ATermList)str));
       str = (ATerm)ATgetNext((ATermList)str);
     }
-  /* ATfprintf(outfile, "\n"); */
+  // ATfprintf(outfile, "\n");
   return(str);
 }
 
@@ -231,7 +230,7 @@ ATerm SSL_ReadFromFile(ATerm filename)
 
   /* ATfprintf(stderr, "in_term = %t\n", in_term); */
   
-  return(in_term /* list_to_consnil(in_term) */);
+  return(in_term);
 }
 
 ATerm SSL_WriteToFile(ATbool binary, ATerm filename, ATerm trm)
@@ -250,10 +249,10 @@ ATerm SSL_WriteToFile(ATbool binary, ATerm filename, ATerm trm)
   if(outfile != NULL)
     {
       if(binary)
-	ATwriteToBinaryFile(trm /* consnil_to_list(trm) */, outfile);
+	ATwriteToBinaryFile(trm, outfile);
       else 
 	{
-	  ATwriteToTextFile(trm /* consnil_to_list(trm) */, outfile);
+	  ATwriteToTextFile(trm, outfile);
 	  fprintf(outfile, "\n");
 	}
       fclose(outfile);

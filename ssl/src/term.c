@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 
 */
 
-#include <stratego.h>
+#include <srts/stratego.h>
 #include <stdlib.h>
 
 ATerm SSL_mkterm(ATerm c, ATerm ts0)

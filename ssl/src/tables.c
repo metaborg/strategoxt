@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1998-2001 Eelco Visser <visser@acm.org>
+Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 
 */
 
-#include <stratego.h>
+#include <srts/stratego.h>
 
 ATermTable SSL_table_table = NULL;
 

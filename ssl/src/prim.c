@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 
 */
 
-#include "strategy.h"
+#include <srts/strategy.h>
 #include "terms.h"
 
 #include <stdlib.h>

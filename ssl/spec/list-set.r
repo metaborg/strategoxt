@@ -116,6 +116,21 @@ strategies
     rec x(![<s> | <crush(![],union,x)>]
           <+ crush(![],union,x))
 
+/* bug in Let?
+  postorder-collect-new(s) =
+  let f(acc) =
+        where(![<s> | <acc>] <+ acc => acc');
+        crush(!acc', \ (x, xs) -> <f(!xs)> x \ )
+   in f(![])
+*/
+
+  postorder-collect(s) =
+    postorder-collect(s, ![])
+
+  postorder-collect(s, acc) =
+    where((![<s> | <acc>] <+ acc) => ys);
+    crush(!ys, \ (x, xs) -> <postorder-collect(s, !xs)> x \ )
+
   collect-om(s) =
     rec x(![<s>] 
           <+ crush(![],union,x))
