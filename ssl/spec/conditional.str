@@ -23,19 +23,13 @@
 
 \begin{code}
 module conditional
-signature
-  constructors
-    CUT : Control
+
 strategies
 
   try(s) = s <+ id
 
-  if(c, b) = try(c; b)
-
-  cut(s) = s <+ !CUT()
-  cutchoice(s1,s2) = (s1 <+ s2); not(?CUT())
-
-  if(c, b1, b2) = cutchoice(c; cut(b1), b2)
+  if(c, b)      = c < b  + id
+  if(c, b1, b2) = c < b1 + b2
 
   ior(a, b) = (a; try(b)) <+ b
 
@@ -50,4 +44,15 @@ strategies
 
   restore-always(s, rest) = 
     (s; rest) <+ (rest; fail)
+
+  /**
+   * Applies s followed by f whether s failed or not.
+   *
+   * result : <s> input
+   * fail   : s or f failed (consider try(f))
+   * type   : a -> b, (a or b) -> _ :: a -> b
+   */
+  finally(s, f) = 
+    s < where(f) + (where(f); fail)
+
 \end{code}
