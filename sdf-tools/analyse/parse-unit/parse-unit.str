@@ -13,7 +13,13 @@ strategies
 
   main-parse-unit =
     init-parse-unit-options
-    ; xtc-io-wrap(parse-unit-options, parse-unit)
+    ; xtc-io-wrap(
+        parse-unit-options
+      , parse-unit-usage
+      , parse-unit-about
+      , ![]
+      , parse-unit
+    )
 
 strategies
 

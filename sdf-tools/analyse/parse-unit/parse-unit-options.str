@@ -4,6 +4,31 @@
  * @author Martin Bravenboer <martin@cs.uu.nl>
  */
 module parse-unit-options
+imports 
+  tool-doc
+
+strategies
+
+  parse-unit-usage =
+    <tool-doc>
+      [ Usage("parse-unit -p <file.tbl> -i <file.testsuite>")
+      , Summary(
+         "Performs the test cases in a testsuite for an SDF syntax definition")
+      , OptionUsage()
+      , AutoReportBugs()
+      ]
+
+  parse-unit-about =
+    <tool-doc>
+      [ AutoProgram()
+      , Author(Person("Martin Bravenboer", "martin@cs.uu.nl"))
+      , GNU_LGPL("2003-2005", "Eelco Visser <visser@acm.org>")
+      , Config([
+          DefaultXTCRepository()
+        , CurrentXTCRepository()
+        ])
+      ]
+
 strategies
 
   parse-unit-options =
@@ -53,7 +78,7 @@ strategies
   sglr-filter-options =
     Option("--no-heuristic-filters"
     , where(<extend-config> ("--sglr-options", ["-fi", "-fe"]))
-    , !"--no-heuristic-filters  Don't use hearistic disambiguation filters (encouraged)"
+    , !"--no-heuristic-filters  Don't use heuristic disambiguation filters (encouraged)"
     )
 
   abstract-input-option =

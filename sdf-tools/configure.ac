@@ -4,19 +4,11 @@ AC_CONFIG_AUX_DIR([../config])
 AM_INIT_AUTOMAKE
 
 XT_USE_XT_PACKAGES
+XT_TERM_DEFINE
 
 AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_LIBTOOL
-AC_PATH_PROGS(SH, sh)
-
-TOOLS="templates sdf-cons sdf-label sdf-bracket sdf2sdf"
-UNRELEASED=""
-RELEASED="templates sdf-cons sdf-label sdf-bracket sdf2sdf"
-
-AC_SUBST(TOOLS)
-AC_SUBST(RELEASED)
-AC_SUBST(UNRELEASED)
 
 AC_CONFIG_FILES([
   Makefile
