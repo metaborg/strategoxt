@@ -16,6 +16,18 @@ strategies
   ; apply-test(!"fileno on stderr -- 1", fileno, !stderr(), !2)
   ; apply-test(!"fileno on stderr -- 2", fileno, !stderr(), STDERR_FILENO)
 
+  ; where(new-temp-file => (tmp-name, tmp-fd))
+
+  ; apply-test(!"fileno on temp file"
+    ,   <fdopen> (tmp-fd, "w")
+      ; ?stream
+      ; <fileno> stream
+      ; where(<fclose> stream)
+    , !tmp-fd
+    )
+
+  ; where(<remove-file> tmp-name)
+
 /**
  * Copyright (C) 2003 Eelco Visser <visser@acm.org>
  * 

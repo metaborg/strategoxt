@@ -262,6 +262,15 @@ strategies
       where(new-file => f)
     ; <finally(s, try(<remove-file> f))> (f, <id>)
 
+  /**
+   * Safe, mkstemp based, creation of temporary file
+   * 
+   * :: _ -> (String, FileDescr)
+   */
+  new-temp-file =
+      <conc-strings> (<temp-dir>, "/StrategoXT")
+    ; mkstemp
+
 \end{code}
 
 % Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>

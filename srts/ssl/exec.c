@@ -153,14 +153,19 @@ ATerm SSL_open(ATerm pathname)
   return (ATerm)ATmakeInt(fd);
 }
 
+/**
+ * mkstemp
+ */
 ATerm SSL_mkstemp(ATerm template) {
-  int fd = mkstemp(AT_getString(template));
+  char* str = AT_getString(template);
+
+  int fd = mkstemp(str);
 
   if(fd == -1) {
     _fail(template);
   }
 
-  return (ATerm) ATmakeInt(fd);
+  return (ATerm) App2("", (ATerm) ATmakeString(str), (ATerm) ATmakeInt(fd));
 }
 
 ATerm SSL_close(ATerm fd)

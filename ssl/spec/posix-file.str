@@ -69,11 +69,12 @@ strategies
    * Creates a unique temporary file
    *
    * returns a fd if succesful, fails on error
-   * mkstemp :: String -> Int
+   * mkstemp :: String -> String * Int
    */
   mkstemp =
       <conc-strings> (<id>, "XXXXXX") => template
     ; prim("SSL_mkstemp", template)
+    // TODO: return file name. We cannot remove a fd (AFAIK)
     
   /**
    * Closing a file
