@@ -1,3 +1,8 @@
+2003-01-01  Eelco Visser  <visser@cs.uu.nl>
+
+	* syn/StrategoStratego.sdf: removed ~ StrategoTerm -> Id injection, since
+	it caused wrong parses; use ~id: instead.
+
 2002-12-30  Eelco Visser  <visser@cs.uu.nl>
 
 	* syn/meta-explode.str: presentation for use in book
