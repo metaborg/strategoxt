@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
 */
 
 #include <unistd.h>
+#include <sys/stat.h>
 
 // TODO: split exec.h in io, posix-file and posix-process.h
 
@@ -38,6 +39,16 @@ ATerm SSL_execv(ATerm file, ATerm argv);
 ATerm SSL_execvp(ATerm file, ATerm argv);
 ATerm SSL_pipe(void);
 ATerm SSL_kill(ATerm pid, ATerm sig);
+
+ATerm SSL_filemode(ATerm pathname);
+
+ATerm SSL_S_ISREG(ATerm mode);
+ATerm SSL_S_ISDIR(ATerm mode);
+ATerm SSL_S_ISCHR(ATerm mode);
+ATerm SSL_S_ISBLK(ATerm mode);
+ATerm SSL_S_ISFIFO(ATerm mode);
+ATerm SSL_S_ISLNK(ATerm mode);
+ATerm SSL_S_ISSOCK(ATerm mode);
 
 ATerm SSL_access(ATerm pathname, ATerm permissions);
 ATerm SSL_open(ATerm pathname);

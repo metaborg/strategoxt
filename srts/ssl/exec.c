@@ -312,10 +312,69 @@ ATerm SSL_pipe(void)
   return (ATerm) ATempty;
 }
 
+ATerm SSL_filemode(ATerm pathname)
+{
+  struct stat buffer;
+  int result;
+
+  result = stat(AT_getString(pathname), &buffer);
+
+  return (ATerm) App2("", (ATerm) ATmakeInt(buffer.st_mode), (ATerm) ATmakeInt(result));
+}
+
+ATerm SSL_S_ISREG(ATerm mode)
+{
+  if(!S_ISREG(ATgetInt((ATermInt)mode)))
+    _fail(mode);
+  return mode;
+}
+
+ATerm SSL_S_ISDIR(ATerm mode)
+{
+  if(!S_ISDIR(ATgetInt((ATermInt)mode)))
+    _fail(mode);
+  return mode;
+}
+
+ATerm SSL_S_ISCHR(ATerm mode)
+{
+  if(!S_ISCHR(ATgetInt((ATermInt)mode)))
+    _fail(mode);
+  return mode;
+}
+
+ATerm SSL_S_ISBLK(ATerm mode)
+{
+  if(!S_ISBLK(ATgetInt((ATermInt)mode)))
+    _fail(mode);
+  return mode;
+}
+
+ATerm SSL_S_ISFIFO(ATerm mode)
+{
+  if(!S_ISFIFO(ATgetInt((ATermInt)mode)))
+    _fail(mode);
+  return mode;
+}
+
+ATerm SSL_S_ISLNK(ATerm mode)
+{
+  if(!S_ISLNK(ATgetInt((ATermInt)mode)))
+    _fail(mode);
+  return mode;
+}
+
+ATerm SSL_S_ISSOCK(ATerm mode)
+{
+  if(!S_ISSOCK(ATgetInt((ATermInt)mode)))
+    _fail(mode);
+  return mode;
+}
+
 int permission_from_term(ATerm term) {
   int result;
 
-         if(ATmatch(term, "R_OK()")) {
+  if(ATmatch(term, "R_OK()")) {
     result = R_OK;
   } else if(ATmatch(term, "W_OK()")) {
     result = W_OK;
