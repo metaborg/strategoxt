@@ -1,3 +1,11 @@
+2001-10-01  Eelco Visser  <visser@acm.org>
+
+	* src/*/*.r: Added copyright headers to modules
+
+	* src/sdf-normalize/unfold-literal.r: Reimplemented (and improved)
+	unfolding of literals using dynamic rules. This produces a much
+	shorter specification.
+
 2001-09-29  Eelco Visser  <visser@acm.org>
 
 	* src/sdf2sdf/sdf-regularize.r: 

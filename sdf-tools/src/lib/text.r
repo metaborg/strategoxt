@@ -1,6 +1,6 @@
 \literate[{\tt TEXT}]
 % GT -- Grammar Tools
-% Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
+% Copyright (C) 2000-2001 Merijn de Jonge <mdejonge@cwi.nl>
 %                    Eelco Visser <visser@acm.org>
 %                    Joost Visser <jvisser@cwi.nl>
 %
@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: text.r,v 1.1 2001/05/31 14:20:51 mdejonge Exp $
+% $Id: text.r,v 1.2 2001/10/01 12:55:59 eelco Exp $
 
 
 	In this module we define a simple algebra of texts. Texts
