@@ -45,7 +45,7 @@ strategies
 
   check-module-name(|base) =
     ?Module(n,_) 
-  ; ( <eq>(n,base) <+ say(<concat-strings>[" ** Warning: Mismatch between basename of input file (",base,") and module name (",n,") specified"]) )
+  ; ( <eq>(n,<get-filename>base) <+ say(<concat-strings>[" ** Warning: Mismatch between basename of input file (",base,") and module name (",n,") specified"]) )
 
   check-module-name(|base) =
     ?Specification(_)
