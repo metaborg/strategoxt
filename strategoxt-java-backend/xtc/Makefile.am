@@ -1,7 +1,7 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-# bin_PROGRAMS = strc-java
+bin_PROGRAMS = strc-java
 
 LDADD += $(SSL_LIBS)
 

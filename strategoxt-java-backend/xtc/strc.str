@@ -5,7 +5,7 @@
  */
 
 module strc
-imports liblib strc-options sugar
+imports liblib strc-options 
 strategies
 
   strc = 
@@ -163,7 +163,7 @@ strategies
       					; save-as3(!".opt17")
 	)
       ; stratego-cf
-      ; s2c
+      ; s2j
       ; ac2abox
       ; abox2text
       ; rename-to(get-outfile(!".c"))
@@ -342,7 +342,7 @@ strategies // COMPILER COMPONENTS
   stratego-cf 	= comp(|"Stratego-Canonical-Format")
   ac2abox 	= comp(|"ast2abox", ["-p", <xtc-find> "C-pretty.pp"])
   abox2text 	= comp-out(|"abox2text")
-  s2c 		= comp(|"s2c",  
+  s2j 		= comp(|"s2j",  
 	 		<concat>[
 			  <get-config; mapconcat(!["--C-include", <id>])> "--C-include",
 			  <pass-library>
