@@ -16,9 +16,10 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.3 2001/11/22 08:27:47 mdejonge Exp $
+# $Id: Makefile.am,v 1.4 2001/11/25 22:27:45 mdejonge Exp $
 
-EXTRA_DIST = yacc2sdf-check.input yacc2sdf-check.reference
+EXTRA_DIST = yacc2sdf-check.input yacc2sdf-check.reference \
+             lex2sdf-check.input lex2sdf-check.reference
 
 # Generate a new input term for yacc2sdf and a new reference output term.
 # These terms are use to check the operation of yacc2sdf during "make check"

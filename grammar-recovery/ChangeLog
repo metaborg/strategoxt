@@ -1,5 +1,7 @@
 2001-11-25 Merijn de Jonge <mdejonge@cwi.nl>
    * yacc2sdf/Makefile.am: added lex.r to EXTRA_DIST
+   * yacc2sdf/data/Makefile.am: added lex2sdf-check.input and
+     lex2sdf-check.reference to EXTRA_DIST
    * renamed acinclude.m4 to program-check.m4
    * added new version of program-check.m4
 
