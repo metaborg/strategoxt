@@ -1,8 +1,6 @@
 
 rm -f config.cache acconfig.h config.status
 
-#./genconf.sh $* package.conf
-
 autoxt
 aclocal -I .
 autoconf
@@ -12,5 +10,3 @@ automake -a
 
 rm -f config.cache
 rm -f acconfig.h
-
-# touch src/*/*.c

@@ -1,6 +1,5 @@
 include $(top_srcdir)/Makefile.xt
 
-SUBDIRS		  = src
+SUBDIRS           = src xtc
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
-EXTRA_DIST 	  = bootstrap Makefile.xt
-
+EXTRA_DIST        = Makefile.xt

@@ -1,0 +1,14 @@
+module visamb
+imports xtc-lib
+
+strategies
+
+  main-visamb = 
+    xtc-io-wrap(
+      xtc-transform(!"Vis-amb")
+    ; xtc-transform(!"ast2abox", build-pp-tables)
+    ; xtc-transform(!"abox2text")
+    )
+
+  build-pp-tables = 
+    !["-p", <xtc-find> "visamb.pp.af", "-p", <xtc-find> "sdf.cons.pp.af"]
