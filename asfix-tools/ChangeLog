@@ -1,7 +1,17 @@
+2004-02-19  Martin Bravenboer <martin@cs.uu.nl>
+
+	* src/implode/implode-asfix.str: *not* funny: after checking
+	every possible mistake I could make I observed that implode-asfix
+	must do some obscure renaming on 'keywords' (whatever keywords are
+	to implode-asfix). This indeed appeared to be true: module,
+	exports, imports, etc. are *renamed* in implode-asfix! Well, not
+	anymore of course. 
+
 2004-02-13  Merijn de Jonge  <mdejonge@cs.uu.nl>
+	
 	* src/implode/implode-asfix.str: changed iowrap into io-wrap and
-          removed option-defined stuff since it caused a name clash between
-          constructor name and strategy name (FlatList)
+	  removed option-defined stuff since it caused a name clash
+	  between constructor name and strategy name (FlatList)
 
 2003-12-21  Eelco Visser  <visser@cs.uu.nl>
 

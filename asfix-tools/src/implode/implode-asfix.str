@@ -377,7 +377,7 @@ rules
 
   ReplNamedCons(impl) : 
     appl(p, ts) -> c#(<map(impl)>ts)
-    where <get-cons; try(Rename-Keyword)> p => c
+    where <get-cons> p => c
 
   get-cons : 
     prod(_, _, as) -> x
@@ -459,7 +459,7 @@ rules
 
   CnsGeneric : 
     appl(p, ts) -> c#(ts)
-    where <(Constr0 <+ Constr1); try(Rename-Keyword)> p => c 
+    where <Constr0 <+ Constr1> p => c 
 
   Constr0 : 
     prod(_, _, as) -> x
@@ -486,13 +486,6 @@ rules
   Constr23 : 
     prod(args, cf(iter-sep(x, y)), _) -> c
     where <(?[cf(x)]; !"Ins" <+ ?[_,_,_,_,_]; !"Conc")> args => c
-
-  Rename-Keyword: "module" 	-> "Module"
-  Rename-Keyword: "exports"	-> "Exports"
-  Rename-Keyword: "hiddens"	-> "Hiddens"
-  Rename-Keyword: "id"		-> "Id"
-  Rename-Keyword: "imports"	-> "Imports"
-  Rename-Keyword: "sorts"	-> "Sorts"
 
 rules
 
