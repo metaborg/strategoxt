@@ -34,16 +34,18 @@ nedit.highlightPatterns: Stratego:1:0{\n\
 		str LC B:"\\(\\*":"\\*\\)"::Comment::\n\
 		string:"L?""":"""":"$":String::\n\
 		character constant:"L?'.'":::Character Const::\n\
-		operators:"\\+|\\<\\+|\\+\\>|=\\>|\\-\\>|;|!|\\?":::Keyword::\n\
-		str keyword:"<(?:all|constructors|fail|id|imports|in|let|module|not|one|overlays|override|prim|rules|script|signature|some|sorts|strategies|stratego|test|thread|where)>":::Keyword::\n\
-		str strategy def:"^[\\s]*([a-zA-Z'\\-_][a-zA-Z0-9'\\-_]*)[\\s\\n]*(\\([a-zA-Z'\\-_][a-zA-Z0-9'\\-_]*(,[\\s]*[a-zA-Z'\\-_][a-zA-Z0-9'\\-_]*)*\\))?[\\n\\s]*=":::Plain::\n\
+		operators:"\\+|\\<\\+|\\+\\>|=\\>|\\-\\>|;|!|\\?|\\{\\||\\|\\}":::Keyword::\n\
+		str keyword:"<(?:all|constructors|end|fail|id|imports|in|let|module|not|one|overlays|override|prim|rules|script|signature|some|sorts|strategies|stratego|test|thread|where)>":::Keyword::\n\
+		str strategy def:"^[\\s]*([\\l'\\-_][\\w'\\-]*)[\\s\\n]*(\\([\\s\\n]*([\\l'\\-_][\\w'\\-]*([\\s\\n]*,[\\s\\n]*[\\l'\\-_][\\w'\\-]*)*)?([\\s\\n]*\\|[\\s\\n]*([\\l'\\-_][\\w'\\-]*([\\s\\n]*,[\\s\\n]*[\\l'\\-_][\\w'\\-]*)*))?[\\s\\n]*\\))?[\\n\\s]*=":::Identifier::\n\
 		str strategy def name:"\\1":""::Identifier:str strategy def:C\n\
 		str strategy def args:"\\2":""::Text Arg:str strategy def:C\n\
-		str rule def:"^[\\s]*([a-zA-Z'\\-_][a-zA-Z0-9'\\-_]*)[\\s\\n]*(\\([a-zA-Z'\\-_][a-zA-Z0-9'\\-_]*(,[\\s]*[a-zA-Z'\\-_][a-zA-Z0-9'\\-_]*)*\\))?[\\n\\s]*:":::Plain::\n\
+		str strategy def term-args:"\\6":""::Text Arg1:str strategy def:C\n\
+		str rule def:"^[\\s]*([\\l'\\-_][\\w'\\-]*)[\\s\\n]*(\\([\\s\\n]*([\\l'\\-_][\\w'\\-]*([\\s\\n]*,[\\s\\n]*[\\l'\\-_][\\w'\\-]*)*)?([\\s\\n]*\\|[\\s\\n]*([\\l'\\-_][\\w'\\-]*([\\s\\n]*,[\\s\\n]*[\\l'\\-_][\\w'\\-]*)*))?[\\s\\n]*\\))?[\\n\\s]*:":::Plain::\n\
 		str rule def name:"\\1":""::Identifier1:str rule def:C\n\
-		str rule def args:"\\2":""::Text Arg1:str rule def:C\n\
-		str strat app:"\\<[^\\+]":"\\>"::Subroutine::\n\
+		str rule def args:"\\2":""::Text Arg:str rule def:C\n\
+		str rule def term-args:"\\6":""::Text Arg1:str rule def:C\n\
+		str strat app:"\\<[^\\+]":"\\>":"(//|/\\*)":Subroutine::\n\
 		str strat app nest1:"\\<[^\\+]":"\\>"::Subroutine1:str strat app:\n\
 		string escape chars:"\\\\(?:.|\\n)":::String1:string:\n\
 	}
-nedit.languageModes:	Stratego:.str .r::::::
+nedit.languageModes:	Stratego:.str .r::::::".,/\\`'!|@#%^&*()=+{}[]"":;<>?~":
