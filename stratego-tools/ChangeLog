@@ -1,3 +1,6 @@
+2001-06-07 Merijn de Jonge <mdejonge@cwi.nl> 
+   * src/stratego-imports component added
+
 2001-06-06 Merijn de Jonge <mdejonge@cwi.nl> 
    * Extracted Stratego tools from Gramar Tools package 0.7 and created a
      separated Stratego Tools package for them.

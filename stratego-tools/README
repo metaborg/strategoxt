@@ -55,15 +55,19 @@ Stratego Tools
  - The AsFix Tools package which can be obtained from
    http://www.cwi.nl/~mdejonge/downloads
 
+ - The Graph Tools package which can be obtained from
+   http://www.cwi.nl/~mdejonge/downloads
+
 ----------------------------------------------------------------------
  CONFIGURATION
 
  Set prefix to any appropriate value when installing and specify
- location of the Stratego compiler and the asfix tools package e.g.,
+ location of the required packages e.g.,
 
  > ./configure --prefix=/usr/local \
                --with-stratego=/stratego/install/directory \
-               --with-asfix-tools=/asfix-tools/install/directory
+               --with-asfix-tools=/asfix-tools/install/directory \
+               --with-graph-tools=/graph-tools/install/directory
 
  This will cause executables to be installed in /usr/local/bin,
  libraries in /usr/local/lib, include files in /usr/local/include.
