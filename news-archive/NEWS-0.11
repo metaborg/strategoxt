@@ -144,11 +144,16 @@ constructs.
 
 ---------++ Support for XML Processing
 
-   * Parse XML
-
-   * Transform XML
-
-   * Generating well-formed XML in Stratego. XHTML.
+StrategoXT 0.11 has a new sub-package: =xml-front-. This package
+contains an SDF syntax definition for XML, a pretty-printer for a XML,
+an embedding of XML in Stratego, and various tools for XML
+processing. These tools can be used for the implementation of XML
+transformations, for generating XML (e.g. XHTML web pages) or for
+interoperability with external XML-baed tools. How you can use the
+tools of =xml-front= for XML applications will be explained in some
+HowTo's at the Stratego Wiki. The first one will explain the embedding
+of XML in Stratego, which is in particular useful for generating XML
+in Stratego programs.
 
    (Martin Bravenboer)
 
