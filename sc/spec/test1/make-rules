@@ -146,7 +146,7 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 	abox-format -i $< 
 
 %.c : %.c.abox 
-   	time $(GPP)/bin/abox2text -i $< -o $@
+	time $(GPP)/bin/abox2text -i $< -o $@
 
 # C COMPILATION #####################################################
 
@@ -183,4 +183,3 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 
 %.trm: %
 	$(ATERM)/bin/baffle -wt -i $< -o $@
-
