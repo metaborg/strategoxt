@@ -1,5 +1,5 @@
 module build-match-laws
-imports Stratego sugar
+imports Stratego Stratego-MetaTransition sugar
 
 rules // combinations of match and build
 

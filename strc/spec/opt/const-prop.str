@@ -1,5 +1,5 @@
 module const-prop
-imports Stratego-Amb lib stratlib unification
+imports Stratego-Amb lib stratlib unification Stratego-MetaTransition
 strategies
 
   const-prop-io =
