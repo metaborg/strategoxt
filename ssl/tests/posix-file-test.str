@@ -12,11 +12,15 @@ strategies
     ; cwd-tests
     )
 
+  /**
+   * @todo  Enable tmp-dir check, but compare canonical pathnames.
+   */
   cwd-tests =
       where(getcwd => cwd)
-    ; apply-test(!"chdir to tmpdir", chdir; getcwd, temp-dir, temp-dir)
-    //; apply-test(!"chdir to home dir", chdir; getcwd, home-dir, home-dir)
+    ; apply-and-check(!"chdir to tmpdir", chdir; getcwd, temp-dir, debug)
     ; apply-test(!"chdir to old cwd", chdir; getcwd, !cwd, !cwd)
+
+    //; apply-test(!"chdir to home dir", chdir; getcwd, home-dir, home-dir)
 
   fileno-tests =
       apply-test(!"fileno on stdin  -- 1", fileno, stdin-stream, !0)
