@@ -4,6 +4,8 @@ include $(wildcard *.dep)
 bin_PROGRAMS     = pack-sdf unpack-sdf
 libexec_PROGRAMS = sdf-desugar sdf-ensugar
 
+pkgdata_DATA     = pack-sdf-options.rtree
+
 SCFLAGS          = --main main-$* --dr new
 STRINCLUDES      = -I $(top_srcdir)/sig \
                    -I $(top_srcdir)/xtc \

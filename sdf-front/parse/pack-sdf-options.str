@@ -50,7 +50,7 @@ strategies
   include-from-def-option =
     ArgOption("-Idef"
     , where(<extend-config> ("-I", [IncludeDef(<id>)]))
-    , !"-Idef def            Include modules from SDF definition def"
+    , !"-Idef <lang.def>     Include modules from SDF definition <lang.def>"
     )
 
   /**
@@ -104,7 +104,7 @@ strategies
   include-from-dir-option =
     ArgOption("-I" + "--Include"
     , where(<extend-config>("-I", [IncludeDir(<ensure-directory>)]))
-    , !"-I d | --Include d   Include modules from directory d"
+    , !"-I|--Include <dir>   Include modules from directory <dir>"
     )
 
   ensure-directory =
@@ -117,9 +117,9 @@ strategies
     end
 
   dep-options = 
-    ArgOption("--dep" + "-d" + "-dep"
+    ArgOption("--dep"
     , where(<set-config> ("-dep", <id>))
-    , !"-d | --dep <file>    Write make dependencies to <file>"
+    , !"--dep <file>         Write make dependencies to <file>"
     )
 
   /**
