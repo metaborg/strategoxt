@@ -1,0 +1,4 @@
+module StrategoForTesting
+imports Stratego
+exports
+  sorts Strategy

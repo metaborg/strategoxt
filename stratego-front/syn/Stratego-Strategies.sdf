@@ -55,9 +55,6 @@ exports
              "+" Strategy 		  -> Strategy {cons("GuardedLChoice"),right}
     Strategy 				  -> StrategyMid
 
-    "if" Strategy "then" Strategy "else" StrategyElse -> Strategy  {cons("CondChoice")}
-    Strategy -> StrategyElse
-
     "rec" Id "(" Strategy ")" 		  -> Strategy {cons("Rec")}
 
     "not"   "(" Strategy ")" 		  -> Strategy {cons("Not")}
@@ -139,11 +136,11 @@ exports
   %% Priorities
 
   context-free priorities
-   {Strategy StrategyCurly		  -> Strategy {cons("AnnoCong")}
-    Strategy "#" StrategyParen	  	  -> Strategy {cons("ExplodeCong")}}
-  >
-    {"!" Term 				  -> Strategy {cons("Build")}
-     "?" Term 				  -> Strategy {cons("Match")}
+    { Strategy StrategyCurly		  -> Strategy {cons("AnnoCong")}
+      Strategy "#" StrategyParen          -> Strategy {cons("ExplodeCong")}
+    }
+  > { "!" Term 				  -> Strategy {cons("Build")}
+      "?" Term 				  -> Strategy {cons("Match")}
     }
   > StrategyAngle Term 		          -> Strategy {cons("BA")}
   > Strategy "=>" Term 		  	  -> Strategy {cons("AM")}
@@ -160,4 +157,16 @@ exports
      Strategy "<" StrategyMid 
               "+" Strategy 		  -> Strategy {cons("GuardedLChoice"),right}
     }
-  > Strategy -> StrategyElse
+
+  context-free priorities
+    {right:
+       Strategy "+"  Strategy -> Strategy
+       Strategy "<+" Strategy -> Strategy
+       Strategy "+>" Strategy -> Strategy
+       Strategy ";"  Strategy -> Strategy
+       Strategy "<" StrategyMid "+" Strategy -> Strategy
+      "if" Strategy "then" Strategy "else" Strategy -> Strategy
+    }
+
+  context-free syntax
+    "if" Strategy "then" Strategy "else" Strategy -> Strategy {cons("CondChoice")}

@@ -158,18 +158,19 @@ exports
      Strategy "<" StrategyMid 
               "+" Strategy 		  -> Strategy {cons("GuardedLChoice"),right}
     }
-  > "if" Strategy "then" Strategy "else" Strategy -> Strategy
+
+  context-free priorities
+    {right:
+       Strategy "+"  Strategy -> Strategy
+       Strategy "<+" Strategy -> Strategy
+       Strategy "+>" Strategy -> Strategy
+       Strategy ";"  Strategy -> Strategy
+       Strategy "<" StrategyMid "+" Strategy -> Strategy
+      "if" Strategy "then" Strategy "else" Strategy -> Strategy
+    }
 
   context-free syntax
-    %% this one for an if-then-else not under another strategy operator.
     "if" Strategy "then" Strategy "else" Strategy -> Strategy {cons("CondChoice")}
-
-    %% this one if for   "s" op "if then else"
-    StrategyCond -> Strategy {avoid}
-    "if" Strategy "then" Strategy "else" Strategy -> StrategyCond {cons("CondChoice")}
-
-    %% this one is to eat a child if-then-else as soon as possible
-    "if" Strategy "then" Strategy "else" StrategyCond -> Strategy {cons("CondChoice"), prefer}
 
 module Stratego-Overlays
 exports
@@ -414,8 +415,7 @@ imports Stratego-Layout Stratego-Identifiers Stratego-Constants
 
 
 
-module Stratego-Amb
+module StrategoForTesting
 imports Stratego
 exports
-  context-free syntax
-    Id "(" {Strat ","}* ")" -> Strat {cons("Cong")}
+  sorts Strategy

@@ -1,0 +1,72 @@
+testsuite Stratego Strategies
+topsort Strategy
+
+test Strategy variable
+  "s" -> CallNoArgs(SVar("s"))
+
+test Strategy variable
+  "<s> t" -> BA(_, Var("t"))
+
+test If then else 
+  "if s then s else s" -> CondChoice(_, _, _)
+
+test If then else in seq
+  "s; if s then s else s" -> Seq(_, CondChoice(_, _, _))
+
+test Seq in then branche of if then else
+  "if s
+     then s; s
+     else s"
+  -> CondChoice(_, Seq(_, _), _)
+
+test Seq in else branche of if then else
+  "if s
+     then s
+     else s; s"
+    -> CondChoice(_, _, Seq(_, _))
+
+test Seq of s and seq in else branche of if then else
+  "s; if s
+        then s
+        else s; s"
+    -> Seq(_, CondChoice(_, _, Seq(_, _)))
+
+test Seq of s and seq in else branche of if then else
+  "s; if s
+        then s
+        else s + s"
+    -> Seq(_, CondChoice(_, _, Choice(_, _)))
+
+test If then else in else branche of if then else
+  "if s
+     then s
+     else if s
+            then s
+            else s"
+    -> CondChoice(_, _, CondChoice(_, _, _))
+
+test If then else in then branche of if then else
+  "if s
+     then if s
+            then s
+            else s
+     else s"
+    -> CondChoice(_, CondChoice(_, _, _), _)
+
+test If then else in else branche of if then else
+  "if s
+     then s
+     else if s
+            then s
+            else s; s"
+    -> CondChoice(_, _, CondChoice(_, _, Seq(_, _)))
+
+test If then else in else branche of if then else
+  "if s
+     then s
+     else s; if s
+               then s
+               else s; s"
+    -> CondChoice(_, _, Seq(_, CondChoice(_, _, Seq(_, _))))
+
+

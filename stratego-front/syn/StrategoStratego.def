@@ -105,9 +105,6 @@ exports
              "+" Strategy 		  -> Strategy {cons("GuardedLChoice"),right}
     Strategy 				  -> StrategyMid
 
-    "if" Strategy "then" Strategy "else" StrategyElse -> Strategy  {cons("CondChoice")}
-    Strategy -> StrategyElse
-
     "rec" Id "(" Strategy ")" 		  -> Strategy {cons("Rec")}
 
     "not"   "(" Strategy ")" 		  -> Strategy {cons("Not")}
@@ -189,11 +186,11 @@ exports
   %% Priorities
 
   context-free priorities
-   {Strategy StrategyCurly		  -> Strategy {cons("AnnoCong")}
-    Strategy "#" StrategyParen	  	  -> Strategy {cons("ExplodeCong")}}
-  >
-    {"!" Term 				  -> Strategy {cons("Build")}
-     "?" Term 				  -> Strategy {cons("Match")}
+    { Strategy StrategyCurly		  -> Strategy {cons("AnnoCong")}
+      Strategy "#" StrategyParen          -> Strategy {cons("ExplodeCong")}
+    }
+  > { "!" Term 				  -> Strategy {cons("Build")}
+      "?" Term 				  -> Strategy {cons("Match")}
     }
   > StrategyAngle Term 		          -> Strategy {cons("BA")}
   > Strategy "=>" Term 		  	  -> Strategy {cons("AM")}
@@ -210,8 +207,18 @@ exports
      Strategy "<" StrategyMid 
               "+" Strategy 		  -> Strategy {cons("GuardedLChoice"),right}
     }
-  > Strategy -> StrategyElse
+  > "if" Strategy "then" Strategy "else" Strategy -> Strategy
 
+  context-free syntax
+    %% this one for an if-then-else not under another strategy operator.
+    "if" Strategy "then" Strategy "else" Strategy -> Strategy {cons("CondChoice")}
+
+    %% this one if for   "s" op "if then else"
+    StrategyCond -> Strategy {avoid}
+    "if" Strategy "then" Strategy "else" Strategy -> StrategyCond {cons("CondChoice")}
+
+    %% this one is to eat a child if-then-else as soon as possible
+    "if" Strategy "then" Strategy "else" StrategyCond -> Strategy {cons("CondChoice"), prefer}
 
 module Stratego-Overlays
 exports

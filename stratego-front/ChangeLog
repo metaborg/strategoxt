@@ -1,3 +1,18 @@
+2004-04-07  Martin Bravenboer <martin@cs.uu.nl>
+
+	* test/strategies.testsuite: ParseUnit testsuite for
+	Strategies. Especially the if-then-else construct is now
+	tested thoroughly.
+
+	* syn/Stratego-Strategies.sdf: Improved if-then-else: The first
+	implementation was wrong: if-then-else should not be in the
+	priority chain. It should be in a right-associativy group with all
+	strategy operators.
+
+	* syn/StrategoForTesting.sdf: SDF module for testing
+	Stratego. This module defines more sorts, which is required for
+	testing smaller parts of a syntax definition.
+	
 2004-04-06  Martin Bravenboer <martin@cs.uu.nl>
 
 	* syn/Stratego-Strategies.sdf: add the if-then-else

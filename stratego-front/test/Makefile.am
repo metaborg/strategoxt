@@ -1,17 +1,18 @@
 include $(top_srcdir)/Makefile.xt
+include Makefile.parse-unit
 
-SDFINCLUDES 	= -I $(STRATEGO_FRONT)/share/sdf/stratego-front
-
-SCFLAGS  	= --keep 10
-
+SDFINCLUDES     = -I $(STRATEGO_FRONT)/share/sdf/stratego-front
+SCFLAGS         = --keep 10
 PGEN_FLAGS      = -m $*
-
 check_PROGRAMS 	= prop1
+check_DATA      = PropStratego.tbl 
 
-check_DATA = PropStratego.tbl 
+TESTSUITES        = strategies.testsuite
+PARSE_UNIT_PTABLE = $(top_srcdir)/syn/StrategoForTesting.tbl
 
 TESTS = prop1
 
+installcheck-local: $(TESTSUITES:.testsuite=.runtestsuite)
 check: check1 check1-asfix check2 check3 check4
 
 check1 : Prop.str
@@ -39,5 +40,5 @@ check4 : Prop.str
 CLEANFILES = PropStratego.def PropStratego.tbl $(wildcard *.rtree)
 
 EXTRA_DIST = $(wildcard *.str) $(wildcard *.meta) $(wildcard *.sdf) \
-	     $(wildcard *.cr) $(wildcard *.syn)
+	     $(wildcard *.cr) $(wildcard *.syn) $(wildcard *.testsuite) Makefile.parse-unit
 
