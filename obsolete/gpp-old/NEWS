@@ -1,4 +1,4 @@
-Version 2.2 released: 2002-06-03
+Version 2.2 released: 2002-06-04
 	* GPP now compiles and runs on Windows using Cygwin
 	* Added support for layout preserving pretty-printing. Use
           asfix2abox with -c switch
