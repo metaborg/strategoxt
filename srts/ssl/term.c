@@ -124,20 +124,15 @@ ATerm SSL_explode_term(ATerm t)
   return(t);
 }
 
-ATerm SSL_address_lt(ATerm x, ATerm y)
-{
+ATerm SSL_address_lt(ATerm x, ATerm y) {
   ATfprintf(stderr, "<address-lt> (%t,%t) (%d,%d): ", x, y, x, y);
 
-  if((int)x < (int)y)
-    {
-      ATfprintf(stderr, "succeeds\n");
-      return((ATerm) ATempty);
-    }
-  else
-    {
-      ATfprintf(stderr, "fails\n");
-      _fail((ATerm) ATempty);
-    }
+  if((int)x < (int)y) {
+    return((ATerm) ATempty);
+  } else {
+    _fail((ATerm) ATempty);
+  }
+
   return((ATerm) ATempty);
 }
 

@@ -1,3 +1,9 @@
+2003-05-12  Martin Bravenboer <martin@mbravenboer.org>
+
+  * ssl/term.c: Removed debug statements in address_lt.
+    Maybe address-lt should even be defined in Stratego 
+    itself (using SSL_address and lt).
+
 2003-03-25  Martin Bravenboer <martin@mbravenboer.org>
 
   * ssl/exec.[ch]: added fputc.
