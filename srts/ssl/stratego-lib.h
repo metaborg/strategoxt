@@ -33,5 +33,4 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
 #include "term.h"        
 #include "annotations.h"
 #include "dir.h"
-#include "cgi.h"
 #endif

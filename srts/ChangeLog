@@ -1,3 +1,9 @@
+2003-02-26  Martin Bravenboer <martin@mbravenboer.org>
+
+  * ssl/cgi.[ch]: removed, cgi is part of stratego-net
+  * ssl/connect.[ch]: removed, connect code should be
+    improved and will be part of stratego-net.
+
 2003-01-28  Martin Bravenboer <martin@mbravenboer.org>
 
   * ssl/io.[ch]: SSL_fflush
@@ -176,4 +182,3 @@
 
 	* Stratego Run-time System separated from compiler to enable
 	stand-alone distributions
-
