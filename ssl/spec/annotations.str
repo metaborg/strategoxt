@@ -1,6 +1,7 @@
 /**
- * This module defines primitives for getting and setting term
- * annotations. The preferred way to access annotations, however,
+ * Primitives for getting and setting term annotations.
+ *
+ * The preferred way to access annotations, however,
  * is through the term syntax t1{t2}, which allows matching and
  * building terms with annotations.
  */
@@ -8,27 +9,45 @@ module annotations
 signature
   constructors
     Anno : a * b -> a
+
 strategies
 
-  get-annotations = 
-    ?t; prim("SSLgetAnnotations", t)
-
+  /**
+   * Alias of get-annotations.
+   *
+   * @inc test-get-1
+   * @inc test-get-2
+   * @inc test-get-3
+   * @inc test-get-4
+   */
   get-annos = 
     get-annotations
 
-  set-annotations = 
-    ?(t, a); prim("SSLsetAnnotations", t, a)
+  /**
+   * Returns the list of annotations of the current term.
+   */
+  get-annotations = 
+    ?t; prim("SSLgetAnnotations", t)
 
+  /**
+   * Alias of set-annotations.
+   */
   set-annos = 
     set-annotations
+
+  /**
+   * Sets the annotations of the given term t to the annotations a.
+   */
+  set-annotations = 
+    ?(t, a); prim("SSLsetAnnotations", t, a)
  
   set-anno = 
-    ?(t, a); !(t, [a]); set-annos
+    ?(t, a); <set-annos> (t, [a])
 
-  rm-annotations = 
+  rm-annotations =
     ?t; prim("ATremoveAnnotations", t)
 
-  has-annos = 
+  has-annos =
     ?_{_}
 
   has-annotation = 
@@ -43,9 +62,12 @@ strategies
   catch-annos = 
     rec x(has-annotation < !Anno(<rm-annotations; all(x)>, <get-annotations>) + all(x))
 
-  preserve-annotation(s) = preserve-annos(s)
+  /**
+   * Alias of preserve-annos
+   */
+  preserve-annotation(s) =
+    preserve-annos(s)
 
   preserve-annos(s):
     t{a*} -> r{a*}
       where <s> t => r
-
