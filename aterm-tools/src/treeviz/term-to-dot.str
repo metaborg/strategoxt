@@ -3,34 +3,12 @@ imports xtc-lib lib term-to-adot
 strategies
 
   term-to-dot =
-    parse-options(term-to-adot-options <+ io-options); 
-    (
-       need-help(default-usage)
-    <+ 
-       xtc-temp-files(
-	(!FILE(<get-config> "-i") <+ !stdin)
-	; if-verbose2(debug(!"Input: "))
-	; read-from
-	; if-verbose3(debug(!"Term read: "))
-	; to-adot
-	; if-verbose3(debug(!"Abstract dot: "))
-	; write-to
-	; if-verbose3(debug(!"Written to file: "))
-        //; xtc-transform(!"ast2text", !["-p", <xtc-find> "Dot-pretty.pp"])
-        ; xtc-transform(!"ast2abox", !["-p", <xtc-find> "Dot-pretty.pp"])
-	; if-verbose3(debug(!"Box in: "))
-        ; xtc-transform(!"abox2text")
-	; if-verbose3(debug(!"Pretty-printed to: "))
-        ; rename-to((<get-config> "-o" 
-		    <+ <conc-strings>(<get-config> "-i", ".dot")
-		    <+ new-file))
-	// Note: rename-to(!stdout) only works for ATerm files at the moment.
-	; if-verbose1(debug(!"Output in: "))
-       )
-        ; if-verbose1(<printnl>(stderr,
-			[<get-config> "program", " (", <run-time>, " secs)"]))
-	; <exit> 0
-    <+ 
-       report-failure
+    option-wrap(term-to-adot-options <+ io-options,
+      xtc-temp-files(
+        xtc-io(
+          xtc-io-transform(to-adot)
+          ; xtc-transform(!"ast2abox", !["-p", <xtc-find> "Dot-pretty.pp"])
+          ; xtc-transform(!"abox2text")
+        )
+      )
     )
-
