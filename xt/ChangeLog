@@ -1,3 +1,6 @@
+2000-08-30  Merijn de Jonge  <mdejonge@cwi.nl>
+        * added graph-tools to DIST_SUBDIRS variable in Makefile.am
+
 2000-08-28  Merijn de Jonge  <mdejonge@cwi.nl>
 	* added www/ to DIST_SUBDIRS variable
         * XT now contains Stratego version 0.4.17
