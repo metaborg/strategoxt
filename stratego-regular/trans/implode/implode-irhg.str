@@ -1,5 +1,5 @@
 module implode-irhg
-imports options irhg implode-iregexp logging
+imports liblib irhg implode-iregexp logging
 
 strategies
 

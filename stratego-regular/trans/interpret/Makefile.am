@@ -6,7 +6,10 @@ libexec_PROGRAMS = core-aterm2irtg
 SCFLAGS          = --main main-$*
 STRINCLUDES      = -I $(top_srcdir)/sig \
                    -I $(top_srcdir)/lib
+LDADD += $(SSL_LIBS)
 
 EXTRA_DIST       = $(wildcard *.str) $(wildcard *.meta)
 CLEANFILES       = $(wildcard *.dep)
 BOOTCLEANFILES   = $(wildcard *.c)
+
+

@@ -4,7 +4,7 @@
  * @author  Martin Bravenboer <martin@cs.uu.nl>
  */
 module core-sdf-grammar2rtg
-imports options rtg Sdf2 verbose logging sdf-extra
+imports rtg Sdf2 logging sdf-extra liblib
 
 strategies
 

@@ -1,5 +1,5 @@
 module module-option
-imports logging xtc-proc
+imports logging
 
 strategies
 
@@ -17,7 +17,6 @@ strategies
   guess-module-name =
     <get-config> "--module"
     <+ <get-config; basename> "-o"
-    <+ ?FILE(<basename; <conc-strings> (<id>, "-typmatch")>)
     <+ log(|Critical(), "No module name specified. Use the --module option to specify a module name. See also --help.")
        ; <exit> -1
 

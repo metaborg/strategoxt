@@ -1,5 +1,5 @@
 module char-match-test
-imports regexp-match sunit logging
+imports regexp-match liblib logging
 
 strategies 
 

@@ -2,10 +2,7 @@
  * @author  Martin Bravenboer <mbravenb@cs.uu.nl>
  */
 module regexp-match
-
 imports regexp iregexp
-imports tuple conditional iteration io
-
 strategies
 
   regexp-match-all(s) =

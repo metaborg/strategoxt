@@ -4,7 +4,7 @@
  * @author  Martin Bravenboer <martin@cs.uu.nl>
  */
 module core-sdf-mark-prods
-imports options Sdf2 verbose sdf-extra
+imports Sdf2 sdf-extra liblib
 
 strategies
 

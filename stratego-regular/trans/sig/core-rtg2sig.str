@@ -4,7 +4,7 @@
  * @author  Martin Bravenboer <martin@cs.uu.nl>
  */
 module core-rtg2sig 
-imports Stratego rtg options rtg-util module-option logging stratego-rtg
+imports Stratego rtg rtg-util module-option logging stratego-rtg liblib
 
 strategies
 

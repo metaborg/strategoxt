@@ -7,7 +7,7 @@
  * @author  Martin Bravenboer <martin@cs.uu.nl>
  */
 module asfix2irtg
-imports options irtg logging tuple-cons AsFix
+imports liblib irtg logging AsFix
 
 strategies
 

@@ -4,7 +4,7 @@
  * @author  Martin Bravenboer <martin@cs.uu.nl>
  */
 module aterm2irtg
-imports rtg rtg-util irtg logging 
+imports rtg rtg-util irtg logging
 strategies
 
   start-interpret(|rtg) =

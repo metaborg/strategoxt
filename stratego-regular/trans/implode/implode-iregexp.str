@@ -4,7 +4,6 @@
 module implode-iregexp
 imports iregexp
 
-
 /**
  * Abbreviations
  */

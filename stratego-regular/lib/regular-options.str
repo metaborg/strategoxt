@@ -2,7 +2,7 @@
  * @author  Martin Bravenboer <martin@cs.uu.nl>
  */
 module regular-options
-imports options logging
+imports logging
 
 /**
  * rhg-nf options
