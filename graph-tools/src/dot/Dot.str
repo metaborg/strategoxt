@@ -1,5 +1,5 @@
 module Dot
-imports Layout QuotedLiterals
+
 signature
   constructors
     DotGraph : Id * List(Stmt) -> Graph
