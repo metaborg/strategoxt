@@ -2,9 +2,13 @@ module stratego-desugar
 imports lib Stratego-Amb
 signature
   constructors
-    Con : Var * Term * SVar   -> Term
-    TupleCong : List(Strategy) -> Strategy
-    TupleCong : Strategy
+    Con        : Var * Term * SVar   -> Term
+    TupleCong  : List(Strategy) -> Strategy
+    TupleCong  : Strategy
+
+    RDecNoArgs : String -> RuleDec
+    RDec       : String * List(Typedid) -> RuleDec
+    RDecT      : String * List(Typedid) * List(Typedid) -> RuleDec
 
 strategies
  
@@ -18,8 +22,13 @@ rules
 
   Desugar :
     RDefNoArgs(f, r) 	-> RDef(f, [], r)
-//  Desugar :
-//    RDef(f, xs, r) 	-> RDef(f, xs, [], r)
+
+  Desugar :
+    RDecNoArgs(f) -> RDec(f, [])
+
+  Desugar :
+    RDec(f,ss) -> RDecT(f, ss, [])
+
   Desugar :
     SRDefNoArgs(f, r) 	-> SRDef(f, [], r)
   Desugar :
