@@ -10,25 +10,39 @@ rules
 treeviz:
    f#(args) -> GraphXML( [], [graph([], edges )] )
    where
-     <NewNodeName>f         => f';
-     <TreeViz>(f', f, args) => edges
+     <NodeName;NewNodeName>f  => f';
+     <TreeViz>(f', f, args)   => edges
 
 MkEdges( parent, x) :
    f#(args) -> [edge|edges]
    where
-     <NewNodeName>f                    => new-name;
+     <NodeName;NewNodeName>f           => new-name;
      <BuildEdge>(new-name, <parent>()) => edge;
      <x>(new-name, f, args)            => edges
 
 NewNodeName :
    f -> <concat-strings>[<new>(),  f]
+
+
+NodeName :
+   f -> f'
+   where
+   (
+     try(is-int; int-to-string)
+   ) => f'
+
    
 BuildNode :
-   (nm, lbl) -> node([name(<double-quote>nm)],[label([], <double-quote>lbl)])
+   (nm, lbl) -> node([name(nm')],[label([], lbl')])
+   where
+     <NodeName;double-quote>nm  => nm';
+     <NodeName;double-quote>lbl => lbl'
 
 BuildEdge :
-   (s, t) -> edge1([source(s), target(t)])
-
+   (s, t) -> edge1([source(s'), target(t')])
+   where
+     <NodeName;double-quote>s => s';
+     <NodeName;double-quote>t => t'
 strategies
 TreeViz =
    rec x ({name, label, args, node, edges:
