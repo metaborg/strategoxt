@@ -8,9 +8,6 @@ AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_LIBTOOL
 
-dnl Check for perl
-AC_PATH_PROG(PERL,perl)
-
 AC_CONFIG_FILES([
   Makefile 
   syn/Makefile
