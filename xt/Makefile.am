@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.17 2000/07/25 11:52:52 mdejonge Exp $
+# $Id: Makefile.am,v 1.18 2000/08/25 12:02:31 eelco Exp $
 
 DIST_SUBDIRS = pre-checks aterm asfix asc-support sglr pgen \
                stratego gpp gt gb  integration-tests
@@ -26,7 +26,7 @@ EXTRA_DIST   = SOFTWARE README
 
 # We need at least one subdir to be defined such that automake will generate
 # the code for traversing subdirectories
-SUBDIRS=pre-checks
+SUBDIRS=pre-checks www
 
 all: install
 

@@ -47,5 +47,6 @@ EXTRA_DIST = \
 	style.css
 
 www-install:
-	scp *.html *.css *.gif sunshine.cs.uu.nl:/users/visser/www/xt
+	scp *.html *.css *.gif \
+	  sunshine.cs.uu.nl:/users/visser/www/program-transformation/xt
 
