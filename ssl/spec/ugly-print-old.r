@@ -1,27 +1,17 @@
 \literate[ugly-print]
 \begin{code}
 module ugly-print
-imports abox-ext annotations
-
+imports abox-ext
 strategies
 
-  ugly-print =
-    has-annotation < ugly-print-with-anno + ugly-print-without-anno
-
-  ugly-print-without-anno =
-       UP-Int 
+  ugly-print = 
+  rec x(try(
+	UP-Int 
 	<+ UP-Str
 	<+ UP-Cnst	
-	<+ UP-Lst(ugly-print) 
-	<+ UP-App(ugly-print)
-
-  ugly-print-with-anno =
-    !V0( [ <ugly-print-without-anno>
-         , H1( [ S("   {")
-               , <get-annotations; ugly-print>
-               , S("}")
-               ])
-         ])
+	<+ UP-Lst(x) 
+	<+ UP-App(x)
+  ))
 
 rules
 
@@ -42,10 +32,9 @@ rules
 
   UP-Lst(s) :
     l @ [x | xs] -> H0([S("["), V0(<map(s); post-commas> l), S("]")])
-
 \end{code}
 
-% Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
+% Copyright (C) 1998-2001 Eelco Visser <visser@acm.org>
 % 
 % This program is free software; you can redistribute it and/or modify
 % it under the terms of the GNU General Public License as published by
