@@ -35,11 +35,14 @@ strategies
      * @todo  use start symbols of SDF
      */
   ; collect(?'sorts(<id>))
-
   ; concat
-  ; map(sym2tree; ?Ref(<id>) <+ err(!"Rewriting sort to nonterm failed"); fail)
-
-  ; !RTG(Start(<id>), ProdRules(prods))
+  ; if ?[] then
+      log(|Error(), "No start symbols found.")
+    ; fail
+    else
+      map(sym2tree; ?Ref(<id>) <+ err(!"Rewriting sort to nonterm failed"); fail)
+    ; !RTG(Start(<id>), ProdRules(prods))
+    end
 
 
 /**

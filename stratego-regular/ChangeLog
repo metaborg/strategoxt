@@ -1,3 +1,8 @@
+2004-07-03  Martin Bravenboer <martin@cs.uu.nl>
+
+	* trans/sdf2rt/gcore-sdf-grammar2rtg.str: fail if no start symbols
+	are available in the resulting RTG.
+
 2004-04-30  Martin Bravenboer <martin@cs.uu.nl>
 
 	* sdf2rtg: Improved support for non-trivial regular
