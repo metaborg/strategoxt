@@ -1,0 +1,4 @@
+module pair-overlay
+overlays
+  
+  Pair(x, y) = (x, y)

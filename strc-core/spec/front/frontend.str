@@ -1,0 +1,20 @@
+module frontend
+imports normalize-spec spec-to-sdefs use-def check-constructors desugar stratego-desugar
+strategies
+ 
+  frontend-io = 
+    io-wrap(frontend-transformation)
+
+  frontend-transformation =	  timing(!"  frontend initialization: ")
+    ; pre-desugar		; timing(!"  pre-desugar: ")
+    ; normalize-spec		; timing(!"  normalize-spec: ")
+    ; where(spec-use-def)	; timing(!"  spec-use-def: ")
+    ; CheckConstructors		; timing(!"  CheckConstructors: ")
+    ; ExpandOverlays		; timing(!"  ExpandOverlays: ")
+    ; RulesToSdefs		; timing(!"  RulesToSdefs: ")
+    ; DesugarListMatching	; timing(!"  DesugarListMatching: ")
+    ; strename			; timing(!"  strename: ")
+    ; Specification([id,Strategies(desugar-spec)])
+
+  timing(msg) =
+    if-verbose3(where(dtime; debug(msg)))

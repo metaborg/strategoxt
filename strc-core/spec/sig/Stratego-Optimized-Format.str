@@ -1,0 +1,103 @@
+module Stratego-Optimized-Format
+imports Stratego-Amb automaton liblib
+strategies
+
+  main = iowrap(stratego-specification) 
+
+  stratego-specification =
+    Specification([id, Strategies(list(strategy-definition))])
+    <+ debug(!"Not a strategy-specification: ")
+
+  strategy-definition =
+    SDef(is-string, list(VarDec(is-string,type-expression)), strategy-expression)
+
+    <+ SDefT(is-string
+	    , vardecs
+	    , vardecs
+	    , strategy-expression)
+
+    <+ ExtSDefInl(is-string
+	    , vardecs
+	    , vardecs
+	    , strategy-expression)
+
+    <+ ExtSDef(is-string
+	    , vardecs
+	    , vardecs)
+
+//    + SDef(list(DontInline), is-string, [], strategy-expression)
+    <+ debug(!"Not a strategy-definition: ")
+
+  vardecs =
+    list(VarDec(is-string,type-expression))
+
+  type-expression = 
+    ConstType(rec x(Sort(is-string,list(x)) + SortVar(is-string)))
+    + FunType(list(type-expression), type-expression)
+
+  strategy-expression =
+  rec exp(
+	Id
+	+ Fail
+	+ Not(exp)
+	+ Seq(exp, exp)
+	+ Choice(exp, exp)
+	+ LChoice(exp, exp)
+	+ GuardedLChoice(exp, exp, exp)
+	+ GChoice(exp, exp)
+	+ LGChoice(exp, exp)
+
+	+ CallT(SVar(is-string),list(exp), list(build-term-expression))
+	+ PrimT(is-string,list(exp),list(build-term-expression))
+
+	+ Rec(is-string, exp)
+	+ Path(is-int, exp)
+	+ One(exp)
+	+ Some(exp)
+	+ All(exp)
+	+ Thread(exp)
+
+	+ Match(match-term-expression)
+	+ Build(build-term-expression)
+
+	+ Scope(list(is-string + list(is-int)), exp)
+	+ Let(list(SDefT(is-string,vardecs,vardecs,exp)), exp)
+
+	<+ debug(!"Not a strategy-expression: ")
+	)
+
+  build-term-expression =
+  rec trm(
+	Var(is-string)
+	+ Int(is-int)
+	+ Real(is-real)
+	+ Str(is-string)
+	+ Op(is-string, list(trm))
+	+ BuildDefault(trm)
+	<+ debug(!"Not a term-expression: ")
+	)
+
+  match-term-expression =
+  rec trm(
+	Wld 
+	+ Var(is-string)
+	+ Int(is-int)
+	+ Real(is-real)
+	+ Str(is-string)
+	+ Op(is-string, list(trm))
+	+ As(trm, trm)
+	<+ debug(!"Not a term-expression: ")
+	)
+
+  shallow-term-expression =
+  rec trm(
+	Wld 
+	+ Var(is-string)
+	+ Int(is-int)
+	+ Real(is-real)
+	+ Str(is-string)
+	+ Op(is-string, list(Var(is-string) + Wld))
+	+ As(trm, trm)
+	<+ debug(!"Not a shallow term-expression: ")
+	)
+

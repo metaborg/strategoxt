@@ -1,0 +1,52 @@
+/*
+	Factoring out contexts; Contexts used in a rule are translated
+	to a local traversal that replaces the pattern occuring in the
+	context in the lhs by the pattern occurring in the context in
+	the rhs;
+
+	Note: The local traversal should be closed for variables not
+	occuring in the outer pattern; But this is more relevant for
+	multi-contexts which are not supported yet;
+
+	Other problems:
+
+	- local variables for inner rule; the inner SRule should be
+	enclosed in a \verb|Scope(xs, _)| where 
+\begin{verbatim}
+   <diff> (<tvars> (l', r'), <tvars> (l[Var(c)], r[Var(c')])) => xs
+\end{verbatim}
+	
+	- placement of derived strategy in where clause; option first
+	do a matching traversal at start of where, and at end of where
+	do a replacing traversal.
+
+	- multiple uses of context in rhs
+
+
+*/
+
+module desugar-context
+imports Stratego-Sugar
+rules
+
+  Rcon : 
+    SRule(Rule(l[Con(Var(c), l', f)], r[Con(Var(c), r', CallT(f', [], []))], s)) ->
+    Scope([c'],
+      SRule(Rule(l[Var(c)], r[Var(c')], 
+	         Seq(s, 
+	         Seq(Build(Var(c)),
+	         Seq(CallT(f', [SRule(Rule(l', r', Id))], []), 
+                     Match(Var(c'))))))))
+         where new => c'
+
+  Rcon' : 
+    SRule(Rule(l[Con(Var(c), l', f)], r[Con(Var(c), r', CallT(f', [], []))], s)) ->
+    SRule(Rule(l[Var(c)], 
+               r[App(CallT(f', [SRule(Rule(l', r', Id))], []), Var(c))],
+	       s))
+
+  Rcon'' : SRule(Rule(l[Con(Var(c), l', CallT(f, [], []))], r, s)) ->
+         SRule(Rule(l[Var(c)], r, 
+	       Seq(s, BA(CallT(f, [Match(l')], []), Var(c)))))
+	(* Con(Var(c), _, _) should not occur in r *)
+

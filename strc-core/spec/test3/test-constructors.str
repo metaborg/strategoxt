@@ -1,0 +1,10 @@
+module test-constructors
+
+signature
+   constructors
+     Foo : Int * Int -> Foo
+
+strategies
+
+   main =
+     ?Bar(_)

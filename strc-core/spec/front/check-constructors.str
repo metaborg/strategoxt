@@ -1,0 +1,117 @@
+module check-constructors
+imports liblib Stratego-Sugar pair-overlay
+
+strategies
+
+  check-constructors-io = 
+    io-wrap(CheckConstructors)
+
+rules
+
+  CheckConstructors :
+    Specification([
+      Signature([Constructors(ods1)]), 
+      Overlays(ols),
+      Strategies(sdefs)
+    ]) 
+  -> 
+    Specification([
+      Signature([Constructors(ods2)]), 
+      Overlays(ols),
+      Strategies(sdefs)
+    ])
+    where <map(try(TupleDecl))> ods1 => ods2
+        ; <map(GenerateCheckRule)> ods2
+        ; <map(GenerateCheckRule)> ols
+        ; <filter(check-constructors)> ols => []
+        ; <filter(check-constructors)> sdefs => []
+
+  TupleDecl :
+    OpDeclInj(tp@FunType(args,res)) -> OpDecl("", tp)
+    where <TupleType> args => res
+
+  TupleDecl :
+    OpDeclInj(ConstType(Sort("Tuple", [Sort("Nil", [])]))) ->
+    OpDecl("", ConstType(Sort("Tuple", [Sort("Nil", [])])))
+
+  TupleDecl :
+    OpDeclInj(FunType([ConstType(SortVar(x))],ConstType(SortVar(x)))) ->
+    OpDecl("", FunType([ConstType(SortVar(x))],
+		 ConstType(Sort("Tuple",[Sort("Cons", [SortVar(x), Sort("Nil", [])])]))))
+
+  TupleType =
+    !ConstType(Sort("Tuple", 
+               [<foldr(!Sort("Nil",[])
+		      , !Sort("Cons", [<Fst>, <Snd>])
+		      , ?ConstType(<id>))>]))
+
+  GenerateCheckRule =
+    ?OpDecl(c, ConstType(t))
+    ; where(!0 => n)
+    ; rules(
+        CheckCons : Op(c, <length => n>) -> Op(c, [])
+      )
+
+  GenerateCheckRule =
+    ?OpDecl(c, FunType(ts, t))
+    ; where(<length> ts => n)
+    ; rules(
+        CheckCons : Op(c, <length => n>) -> Op(c, []) 
+      )
+
+  /**
+   * Just ignore injections: no check rule is required for them.
+   */
+  GenerateCheckRule =
+    ?OpDeclInj(_) 
+
+  GenerateCheckRule =
+    ?Overlay(c, xs, t)
+    ; where(<length> xs => n)
+    ; rules(
+        CheckCons : Op(c, <length => n>) -> Op(c, [])
+      )
+
+/*
+  // CheckTuple implements generic checking of tuple constructors (for arbitrary arity)
+  // For some reason the generation of operator declarations for tuples does not work.
+
+  CheckTuple =
+    ?Op("", ts);
+    where(
+      <length> ts => n
+      ; !"" => c
+      ; !OpDecl("", FunType(<copy>(n,Var("a")),Var("a"))) => decl
+      ; GenerateCheckRule
+      ; ![decl | <TupleDeclarations <+ ![]>] => decs
+      ; rules(
+          TupleDeclarations : _ -> decs
+        )
+    )
+*/
+
+  check-constructors =
+    ?RDefT(f, xs, ys, <id>)
+    ; check-constructors'(!(f, <length> xs, <length> ys), !"rule")
+
+  check-constructors =
+    ?SDefT(f, xs, ys, <id>)
+    ; check-constructors'(!(f, <length> xs, <length> ys), !"definition")
+
+  check-constructors =
+    ?Overlay(f, xs, <id>)
+    ; check-constructors'(!(f, <length> xs), !"overlay")
+
+  check-constructors'(f, kind) =
+    {| CheckConsError :
+       where(f => fstr; kind => kindstr);
+       rules(
+         CheckConsError : 
+           Op(c, ts) -> Op(c, ts) 
+           where <printnl> (stderr, 
+		   ["error: in ", kindstr, " ", fstr, ": ", 
+		    "constructor ", c, "/", <length; int-to-string> ts,
+		    " not declared"])
+       );
+       manytd(not(CheckCons /* <+ CheckTuple */); CheckConsError)
+    |}

@@ -1,0 +1,59 @@
+module fusion-rules
+imports Stratego
+
+rules
+
+  // This set of rules is generally applicable
+
+  IntroduceApp :
+    |[ !t; s ]| -> |[ !<s> t  ]|
+
+  ApptoApp :
+    Term|[ <s1> <s2> t ]| -> Term|[ <s2; s1> t ]|
+ 
+  ExpandRec : 
+    |[ rec x(s) ]| -> <ssubs> ([x], [ |[ rec x(s) ]| ], s)  
+
+  UnrollRec : 
+    |[ rec x(s) ]| -> |[ rec x(~<ssubs> ([x], [s], s)) ]|
+
+  // Note: duplication of code and computation!
+
+  SeqOverChoiceL :
+    |[ s1 ; (s2 + s3) ]| -> |[ (s1; s2) + (s1; s3) ]|
+
+  SeqOverLChoiceL :
+    |[ s1 ; (s2 <+ s3) ]| -> |[ (s1; s2) <+ (s1; s3) ]| 
+
+  // The following rules are applicable under certain
+  // circumstances. 
+
+  // Note: the following rule is only valid if s3 is guaranteed
+  // to succeed; hence, generate it dynamically for s3s for which
+  // this is known to be the case
+
+  seq-over-choice = ?|[ s3 ]|; 
+    rules(
+      SeqOverChoiceR :
+        |[ (s1 + s2); s3 ]| -> |[ (s1; s3) + (s2; s3) ]|
+
+      SeqOverLChoiceR :
+        |[ (s1 <+ s2); s3 ]| -> |[ (s1; s3) <+ (s2; s3) ]|
+    )
+
+  // Note: watch out for free variable capture
+
+  SeqOverScopeR :
+    |[ {x* : s1}; s2 ]| -> |[ {x* : s1; s2} ]|
+
+  SeqOverScopeL :
+    |[ s1; {x* : s2} ]| -> |[ {x* : s1; s2} ]|
+
+
+  // Note: Code duplication
+  // Always valid?
+ 
+  BottomupOverConstructor :     
+    Term|[ <bottomup_1_0(s|)> c(t1*) ]| -> Term|[ <s> c(t2*) ]|
+    where <map(\ t -> Term|[ <bottomup_1_0(s|)> t ]| \ )> [t1*] => [t2*]
+

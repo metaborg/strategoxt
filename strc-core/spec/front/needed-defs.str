@@ -1,0 +1,284 @@
+/**
+ * Extract those definitions that are needed for the main strategy and
+ * join the bodies of operators with multiple definitions.
+ */
+
+module needed-defs
+imports Stratego DefaultStrat desugar stratlib
+
+strategies
+
+  /**
+   * Obtaining all definitions
+   */
+
+  all-defs = 
+    !(<definition-names>, <sort-defs>, [])
+    ; extract-needed-defs
+
+  /**
+   * Obtaining needed definitions
+   */
+  needed-defs = 
+    !([("main", (0,0))], <sort-defs>, [])
+    ; extract-needed-defs
+
+  extract-needed-defs =
+    graph-nodes-undef-roots-chgr(
+      get-definition
+      , svars-arity; map(try(DefinitionExists))
+      , \ (_,x,d) -> [x|d] \ 
+    )
+    // FilterNonMissingDefs; 
+    ; (NoMissingDefs <+ MissingDefs; <exit> 1)
+
+strategies
+
+  /**
+   * Obtain names of all definitions, where name is identifier
+   * plus arities.
+   */
+
+  definition-names =
+    foldr(![], union, DefinitionName)
+
+  DefinitionName :
+    SDefT(f,xs,ys,_) -> [(f, (<length>xs, <length>ys))]
+
+  DefinitionName :
+    ExtSDef(f,xs,ys) -> [(f, (<length>xs, <length>ys))]
+
+  DefinitionName :
+    ExtSDefInl(f,xs,ys,_) -> [(f, (<length>xs, <length>ys))]
+
+strategies
+
+  /**
+   * Sorting definitions
+   *
+   * Associate with the pair \verb|(f, n)| of strategy name and arity
+   * the list of its definitions. The dynamic rule \verb|Definitions|
+   * implements this association.
+   */
+
+  sort-defs = 
+    map(RegisterSDefT + RegisterExtSDef + RegisterExtSDefInl)
+
+  Definitions =
+    bagof-Definition
+
+  Arities = 
+    bagof-Arity; make-set
+
+  RegisterSDefT =
+    ?def@|[ f(a1* | a2*) = s ]|		
+    ; RegisterDef(|f, def, a1*, a2*)
+
+  RegisterExtSDef =
+    ?def@|[ external f(a1* | a2*) ]|	
+    ; RegisterDef(|f, def, a1*, a2*)
+
+  RegisterExtSDefInl =
+    ?def@|[ external f(a1* | a2*) = s ]|
+    ; RegisterDef(|f, def, a1*, a2*)
+
+  RegisterDef(|f, def, a1*, a2*) =
+    where(
+        <length> a1* => n
+      ; <length> a2* => m
+      ; rules(
+          Definition :+ (f, (n, m)) -> def
+          Arity      :+ f -> (n, m)
+        )
+    )
+
+strategies
+
+  /**
+   * Joining Definitions
+   *
+   * Join multiple definitions for the same strategy operator into one
+   * definition by unifying the list of formal strategy parameters.
+   */
+
+  joindefs = 
+    JoinDefs1 <+ JoinDefs2 <+ JoinDefsExt
+
+rules
+
+  JoinDefs1 : 
+    [sdef] -> sdef
+
+  JoinDefs2 : 
+    defs @ [SDefT(f, xs1, xs2, s) | _] -> SDefT(f, ys1, ys2, <choices> ss)
+    where <map(VarDec(new,id))> xs1 => ys1
+	; <map(VarDec(new,id))> xs2 => ys2
+	; <map(\ VarDec(y, t) -> SVar(y) \ )> ys1 => ys1'
+	; <map(\ VarDec(y, t) -> Var(y) \ )> ys2 => ys2'
+	; <map(RenameDefinition(|ys1', ys2'))> defs => ss
+
+  RenameDefinition(|ys1, ys2) :
+    SDefT(_, xs1, xs2, s1) -> s3
+    where <map(\ VarDec(x2,_) -> x2 \ )> xs2 => zs2
+	; <tsubs> (zs2, ys2, s1) => s2
+	; {| RenameSVar :
+             <zip({?(VarDec(x1,_), y1)
+                   ; rules( RenameSVar : SVar(x1) -> y1 ) }
+              )> (xs1, ys1)
+	     ; <alltd(RenameSVar)> s2 => s3
+          |}
+
+  JoinDefsExt =
+    where(map(?ExtSDef(f, <length => i>, <length => j>) 
+	    + ?ExtSDefInl(f, <length => i>, <length => j>, s)))
+    ; (fetch-elem(?ExtSDefInl(_,_,_,_)) <+ Hd)
+
+  JoinDefsExt =
+    fetch(?ExtSDef(f,_,_) + ?ExtSDefInl(f,_,_,_))
+    ; fetch(?SDefT(f,_,_,_))
+    ; <debug(!"redefining external definition: ")> f
+    ; giving-up
+
+  choices = 
+    foldr(!Fail, !Choice(<Fst>,<Snd>))
+
+rules
+
+  /**
+   * A strategy operator f with arity n is needed. All definitions for
+   * the operator are fetched and joined. Note that this entails
+   * that (1) operators can be overloaded and (2) there can be more
+   * than one definition of an operator.
+   */
+
+  get-definition = 
+    CongruenceDef <+ OverloadedDef; (joindefs, id)
+
+  DefinitionExists :
+    (f, (0,0)) -> (f, (n,m))
+    where <Arities> f => [(n,m)]; <Definitions> (f, (n,m))
+
+  DefinitionExists =
+    ?(f, (0,0))
+    ; <Arities> f => [_,_|_]
+    ; not(fetch(?(0,0)))
+    ; <error> ["passing name of overloaded definition: ", f]
+    ; giving-up
+
+  OverloadedDef :
+    ((f, n), defs) -> (<Definitions> (f, n), defs)
+
+  CongruenceDef :
+    ((Mod(c, mod), n), defs) -> (fdef, defs)
+    where <DefineCongruence; desugar> (c, mod, n) => fdef
+
+/*
+  FilterNonMissingDefs :
+    (defs, undefs) -> (defs, undefs')
+    where <filter(not(Definitions))> undefs => undefs'
+*/
+
+  NoMissingDefs : 
+    (defs, []) -> defs
+
+  MissingDefs : 
+    (defs, [f|fs]) -> defs
+    where <map(MissingDefMod <+ MissingDef)> [f|fs]
+
+  MissingDef : 
+    (f, n) -> <error> ["error: operator ", f, "/", n, " undefined "]
+
+  MissingDefMod : 
+    (Mod(c, m), n) -> 
+    <error> ["error: operator ", c, "^", m , "/", n, " undefined "]
+
+/*
+
+Distributing Congruences
+
+	For each constructor \verb|c|, there is a corresponding
+	distributing congruence \verb|c^D|, defined according to
+	the following scheme:
+
+\begin{verbatim}
+  c^D(s1,...,sn) : (c(x1,...,xn),env) -> c(y1,...,yn)
+  where <s1> (x1,env) => y1;
+        ...
+        <sn> (xn, envn) => yn
+\end{verbatim}
+	
+	This is implemented by the following rules.
+*/
+
+overlays
+  OpPair(t1, t2) = Anno(Op("", [t1,t2]), Op("Nil", []))
+
+rules
+  DefineCongruence :
+    (c, "D", (n,m)) -> 
+    SDefT(Mod(c, "D"), ss, [], Scope([env | <conc>(xs1, ys1)], 
+                                SRule(Rule(OpPair(Anno(Op(c, xs2), Wld), Var(env)), 
+                                           Anno(Op(c, ys2), Op("Nil", [])), 
+                                           <seqs> conds))))
+    where new => env;
+          <copy(MkDistApplication); tuple-unzip(id)> (n, Var(env)) 
+              => (conds, ss, xs1, xs2, ys1, ys2)
+
+  MkDistApplication : 
+    env -> (Seq(Build(OpPair(Var(x), env)), 
+		Seq(CallT(SVar(s),[],[]), Match(Var(y)))), 
+            VarDec(s,DefaultStrat), x, Var(x), y, Var(y))
+    where new => s; new => x; new => y
+
+  MkDistApplication : 
+    env -> (Seq(Build(OpPair(Var(x), env)), Seq(CallT(SVar(s),[],[]), Match(Var(y)))), 
+            VarDec(s,DefaultStrat), x, Var(x), y, Var(y))
+    where new => s; new => x; new => y
+
+/*
+
+Threading Congruences
+
+	For each constructor \verb|c|, there is a corresponding
+	threading congruence \verb|c^T|, defined according to
+	the following scheme:
+
+\begin{verbatim}
+  c^T(s1,...,sn) : (c(x1,...,xn),e-first) -> (c(y1,...,yn), e-last)
+  where <s1> (x1,e-first) => (y1,e2);
+              ...;
+        <sn> (xn, en) => (yn, e-last)
+\end{verbatim}
+
+	The following rules implement this scheme:
+
+*/
+
+  DefineCongruence :
+    (c, "T", (0,m)) -> 
+    SDefT(Mod(c, "T"), [], [], Match(OpPair(Anno(Op(c, []), Wld), Wld)))
+    where new => e
+
+  DefineCongruence :
+    (c, "T", (n,m)) -> 
+    SDefT(Mod(c, "T"), ss, [], Scope([e-first | <concat> [es, xs1, ys1]], 
+                                SRule(Rule(OpPair(Anno(Op(c, xs2), Wld), Var(e-first)), 
+                                           OpPair(Anno(Op(c, ys2), Op("Nil",[])), Var(e-last)), 
+                                           <seqs> as))))
+    where <copy(new)> (<add>(n,1), ()) => [e-first | es];
+          <last> es => e-last;
+          <zipr(MkThreadApplication); tuple-unzip(id)> ([e-first | es], es)
+	     => (as, ss, xs1, xs2, ys1, ys2)
+
+  MkThreadApplication : 
+    (e1,e2) -> (Seq(Build(OpPair(Var(x), Var(e1))), 
+		Seq(CallT(SVar(s),[],[]), 
+		    Match(OpPair(Var(y), Var(e2))))), 
+                VarDec(s, DefaultStrat), x, Var(x), y, Var(y))
+    where new => s; new => x; new => y
+
+/*
+
+Copyright (C) 1998-2003 Eelco Visser <visser@acm.org>
+
+*/

@@ -1,0 +1,112 @@
+module expand-overlays
+imports Stratego-Sugar DefaultStrat stratlib raise-annotations
+strategies
+  
+  expand-overlays-io = 
+    io-wrap(ExpandOverlays)
+
+  ExpandOverlays : 
+    |[ specification signature sdecl* overlays ol* strategies def1* ]| ->
+    |[ specification signature sdecl* overlays ol* strategies def3* ]|
+    where <map(DeclareExpandOverlay)> ol*
+	; <transform-mbo(
+	     ExpandOverlayInMatch; ElimBuildDefaultMatch,
+	     ExpandOverlayInBuild; ElimBuildDefaultBuild,
+	     fail)> def1* => def2*
+	; <conc>(<map(Overlay-to-Congdef)> ol*, def2*) => def3*
+
+  DeclareExpandOverlay =
+    (?Overlay|[ c(x*) = pt1{^_pt2} ]| <+ ?Overlay|[ c(x*) = pt1{^pt2} ]|)   
+    ; rules(
+
+        ExpandOverlayInMatch : 
+          |[ c(t*){^_} ]| -> <tsubstitute> (<zip> (x*, t*), |[ pt1{^_} ]|)
+
+        ExpandOverlayInMatch : 
+          |[ c(t*){^pt3} ]| -> |[ pt4{^pt3} ]|
+          where <not(?PreTerm|[ _ ]|)> pt3
+	      ; <tsubstitute> (<zip> (x*, t*), pt1) => pt4
+
+        ExpandOverlayInBuild : 
+          |[ c(t*){^[]} ]| -> <tsubstitute> (<zip> (x*, t*), |[ pt1{^pt2} ]|)
+
+        ExpandOverlayInBuild : 
+          |[ c(t*){^pt3} ]| -> |[ pt4{^pt3} ]|
+          where <not(?PreTerm|[ [] ]|)> pt3
+	      ; <tsubstitute> (<zip> (x*, t*), pt1) => pt4
+
+      )
+
+  DeclareExpandOverlay =
+    ?Overlay|[ c(x*) = pt1{^pt2} ]|
+    ; where(<not(?PreTerm|[ _ pt2' ]|)> pt2)
+    ; rules(
+
+        ExpandOverlayInMatch : 
+          |[ c(t*){^_} ]| -> <tsubstitute> (<zip> (x*, t*), |[ pt1{^pt2} ]|)
+
+        ExpandOverlayInMatch : 
+          |[ c(t*){^pt3} ]| -> |[ pt4{^pt3} ]|
+          where <not(?PreTerm|[ _ ]|)> pt3
+	      ; <tsubstitute> (<zip> (x*, t*), pt1) => pt4
+
+        ExpandOverlayInBuild : 
+          |[ c(t*){^Nil()} ]| -> <tsubstitute> (<zip> (x*, t*), |[ pt1{^pt2} ]|)
+
+        ExpandOverlayInBuild : 
+          |[ c(t*){^pt3} ]| -> |[ pt4{^pt3} ]|
+          where <not(?PreTerm|[ [] ]|)> pt3
+	      ; <tsubstitute> (<zip> (x*, t*), pt1) => pt4
+
+      )
+
+  ElimBuildDefaultMatch = 
+    topdown(try(\ PreTerm|[ _ pt ]| -> PreTerm|[ _ ]| \
+	        <+ \ Term|[ _ pt ]| -> Term|[ _ ]| \ ))
+
+  ElimBuildDefaultBuild = 
+    topdown(try(\ PreTerm|[ _ pt ]| -> PreTerm|[ pt ]| \
+	        <+ \ Term|[ _ t ]| -> Term|[ t ]| \ ))
+
+/**
+ * Congruences from Overlays. Each overlay defines a congruence
+ * operator as well as abstractions to be used in match and build
+ * operations.
+ */
+
+rules
+
+  Overlay-to-Congdef :
+    Overlay(f, xs, t) -> SDefT(f, xdecs, [], s)
+    where <map(!VarDec(<id>, DefaultStrat))> xs => xdecs
+	; <term-to-cong <+ debug(!"not a term: "); fatal-error> t => s
+
+  term-to-cong : 
+    Var(x) -> CallT(SVar(x), [], [])
+
+  term-to-cong : 
+    Anno(pt1, BuildDefaultPT(_)) -> <preterm-to-cong> pt1
+
+  term-to-cong : 
+    Anno(pt1, pt2) -> 
+    CallT(SVar("Anno_Cong__"), [<preterm-to-cong> pt1, <preterm-to-cong> pt2], [])
+    where <not(?BuildDefault(_))> pt2
+
+  term-to-cong : 
+    BuildDefault(x) -> Id
+
+  preterm-to-cong : 
+    Op(f, ts) -> CallT(SVar(f), <map(term-to-cong)> ts, [])
+
+  preterm-to-cong : 
+    Str(x) -> Match(Anno(Str(x), Wld))
+
+  preterm-to-cong : 
+    Int(x) -> Match(Anno(Int(x), Wld))
+
+  preterm-to-cong : 
+    Real(x) -> Match(Anno(Real(x), Wld))
+
+  preterm-to-cong : 
+    BuildDefaultPT(x) -> Id
+

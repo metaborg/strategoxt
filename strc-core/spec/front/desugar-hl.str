@@ -1,0 +1,19 @@
+/**
+ * Translating high-level constructs to low-level ones.
+ *
+ * @author Eelco Visser 1998 - 2004
+ */
+
+module desugar-hl
+
+imports 
+  Stratego-Sugar
+
+
+rules // varyadic operators
+
+  MkSeq : (s1, s2) -> Seq(s1, s2)
+
+  seqs = foldr(!Id, MkSeq)
+
+

@@ -1,0 +1,22 @@
+/**
+ * Define explicit variable scopes for \ ... \ rules.
+ */
+
+module define-lrules
+imports liblib Stratego-Sugar stratlib
+strategies
+
+  define-lrules-io = 
+    io-wrap(define-lrules)
+
+  define-lrules = 
+    bottomup(try(DefLRule + DefScopeDefault))
+
+  DefLRule : 
+    |[ \ t1 -> t2 where s \ ]| ->
+    |[ { ~<tvars> t1 : (t1 -> t2 where s) } ]|
+
+  DefScopeDefault :
+    |[ { s } ]| -> |[ { ~<tvars> s : s } ]|
+
+

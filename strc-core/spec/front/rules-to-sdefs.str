@@ -1,0 +1,31 @@
+/**
+ * Translate rewrite rules to strategy definitions.
+ */
+
+module rules-to-sdefs
+imports Stratego-Sugar stratlib
+strategies
+
+  rules-to-sdefs-io = 
+    io-wrap(rules-to-sdefs)
+
+  rules-to-sdefs =
+    alltd(Strategies(map(try(RDtoSD + DeclareVariables))))
+
+rules
+
+  RDtoSD : 
+    RDef(f, xs, r) -> SDefT(f, xs, [], Scope(<tvars> r, SRule(r)))
+
+  RDtoSD : 
+    RDefT(f, xs, ys, r) -> SDefT(f, xs, ys, Scope(<diff>(vs, ys'), SRule(r)))
+    where <declared-vars> ys => ys'
+        ; <tvars; map(try(?ListVar(<id>)))> r => vs
+
+  DeclareVariables :
+    SDef(f, xs, s) -> SDefT(f, xs, [], Scope(<tvars> s, s))
+
+  DeclareVariables :
+    SDefT(f, xs, ys, s) -> SDefT(f, xs, ys, Scope(<diff>(vs, ys'), s))
+    where <declared-vars> ys => ys'
+        ; <tvars; map(try(?ListVar(<id>)))> s => vs

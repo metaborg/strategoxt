@@ -1,0 +1,48 @@
+This is the online manual of the Stratego Compiler
+
+Usage: sc [options]
+
+Options:
+   -i file          main module to compiler (required)
+   -o f|--output f  Write output to f
+   -I p|--Include p include modules from directory p
+   -m file          main strategy to compile (main by default)
+   -CI path         include C headers from this directory
+   -CL path         include binary libraries from this directory
+   -CC              produce C code only (don't compile)
+   --ast            produce abstract syntax tree
+   -F               produce normalized specification
+   --norm           do not remove intermediate results
+   --fusion         toggle specialize applications of innermost (default: on)
+   --trace-all      instrument all definitions to print tracing information
+   -t f             instrument definition of f to print tracing information
+   --verbose        Verbose execution
+   -S | --silent    Silent execution
+   -h | --help      Show help
+   --man            Show manual page
+   -v|--version     Display prgram's version
+   -h|-?|--help     Display usage information
+
+Description:
+
+   The Stratego Compiler translates Stratego specifications to C code
+
+   Typical usage:
+     /home/visser/res/XT/bin/proto-sc -i mod
+   to compile module mod
+
+   Stratego is a language for program transformation based on the
+   paradigm of rewriting strategies. For documentation see
+
+                 http://www.stratego-language.org
+
+   Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
+
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2, or (at your option)
+   any later version.
+
+Options
+
+  -i 

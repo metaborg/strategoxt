@@ -1,0 +1,34 @@
+/** 
+ * The first phase of the front-end is the normalization of
+ * specifications. A specification consists of a list of basic
+ * specifications (signatures, overlays, rules and strategy
+ * definitions) in any order. Normalization collects the basic
+ * specifications of each kind and creates a specification of the
+ * form. 
+ */
+
+module normalize-spec
+imports liblib Stratego-Sugar desugar 
+strategies
+
+  normalize-spec-io = 
+    io-wrap(normalize-spec-options, normalize-spec)
+
+  normalize-spec =
+    define-lrules
+
+strategies
+
+// Define explicit variable scopes for \ ... \ rules 
+
+  define-lrules = 
+    bottomup(try(DefLRule + DefScopeDefault))
+
+  DefLRule : 
+    |[ \ t1 -> t2 where s \ ]| ->
+    |[ { ~<tvars> t1 : (t1 -> t2 where s) } ]|
+
+  DefScopeDefault :
+    |[ { s } ]| -> |[ { ~<tvars> s : s } ]|
+
+

@@ -1,0 +1,14 @@
+module matrix-test
+imports liblib matrix 
+
+strategies
+
+  main = 
+    test-suite(!"matrix-test",
+	id
+    )
+
+
+
+
+

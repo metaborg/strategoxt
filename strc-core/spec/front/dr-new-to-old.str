@@ -1,0 +1,95 @@
+module dr-new-to-old
+imports Stratego-Sugar
+
+  /**
+   * Old AST
+   */
+signature
+  constructors
+    DynamicRules    : List(RuleDef)    -> Strategy
+    DynRuleScope    : List(String) * Strategy -> Strategy
+
+/**
+ * Convert the new dynamic rule syntax to the old constructs.
+ *
+ * The implementation supports:
+ *   - simple scopes (without a label)
+ *   - ...
+ */
+strategies
+
+  downgrade-new-dr-syntax =
+    topdown(
+      if ?GenDynRules(_)
+        then Downgrade-Generator
+        else if ?DynRuleScope(_,_)
+          then Downgrade-Scope
+          else id
+        end
+      end
+    )
+
+  Downgrade-Generator =
+    Downgrade-SameTypeGenerator
+    <+ where(Downgrade-ExtendDynRules => s1)
+     ; where(Downgrade-SetDynRules    => s2)
+     ; !|[ s1; s2 ]|
+
+  /**
+   * Rewrites rules( defs ) where defs are only :- or :.
+   */
+  Downgrade-SameTypeGenerator :
+    GenDynRules(defs) -> DynamicRules(<map(Downgrade-DynRuleDef)> defs)
+      where <not(fetch(?AddDynRule(_, _)))> defs
+  
+  /**
+   * Rewrites :
+   */
+  Downgrade-DynRuleDef :
+    SetDynRule(DynRuleId(RDecT(x, ss, st)), rule) -> RDefT(x, ss, st, rule)
+
+  /**
+   * Rewrites : for dynamic matches (only LHS)
+   */
+  Downgrade-DynRuleDef :
+    SetDynRuleMatch(DynRuleId(RDecT(x, ss, st)), t) -> RDefT(x, ss, st, |[ t -> t where id ]| )
+
+  Downgrade-SetDynRules :
+    GenDynRules(defs) -> DynamicRules(<filter(Downgrade-DynRuleDef)> defs)
+
+  /**
+   * Rewrites :-
+   */
+  Downgrade-DynRuleDef :
+    UndefineDynRule(DynRuleId(RDecT(x, ss, st)), t) -> RDefT(x, ss, st, |[ t -> Undefined() where id ]|)
+
+  /**
+   * Rewrites :+
+   */
+  Downgrade-ExtendDynRuleDef :
+    AddDynRule(DynRuleId(RDecT(x, ss, st)), rule) -> RDefT(x, ss, st, rule)
+
+  Downgrade-ExtendDynRules :
+    GenDynRules(defs) -> ExtendDynamicRules(<filter(Downgrade-ExtendDynRuleDef)> defs)
+
+  /**
+   * Rewrites {|   |} to simple scope identifiers.
+   */
+  Downgrade-Scope :
+    DynRuleScope(ids, s) -> DynRuleScope(<map(Downgrade-ScopeId)> ids, s)
+
+  Downgrade-ScopeId =
+       is-string
+    <+ ?DynRuleScopeId(<id>)
+    <+     say(!"[normalize-spec | fatal error] Labeled dynamic rule scope not supported by old style dynamic rules")
+       ; debug(!"[normalize-spec | fatal error]    ")
+       ; <exit> 1
+
+  /**
+   * Checks if there are still unsupported constructs left in the input
+   */
+  check-for-too-new-constructs =
+    id
+
+
+

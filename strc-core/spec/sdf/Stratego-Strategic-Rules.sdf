@@ -1,0 +1,10 @@
+module Stratego-Strategic-Rules
+exports 
+  context-free syntax
+    %% rule with strategic patterns
+
+    Strat "-->" Strat ("where" Strat)? 
+                                -> SRule {cons("StratRule")}
+
+    Identifier ("(" {Identifier ","}* ")")? 
+      "::"  SRule -> RDef {cons("RDef")}
