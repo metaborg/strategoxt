@@ -1,21 +1,15 @@
 include $(top_srcdir)/Makefile.xt
+include $(wildcard *.dep)
 
-SDFINCLUDES	= -I $(STRATEGO_FRONT)/share/sdf/stratego-front
+TBLS_DEFS = Dot.tbl Dot.def StrategoDot.tbl StrategoDot.def 
 
-pkgdata_DATA 	= $(wildcard *.sdf) \
-		  Dot.def Dot.tbl Dot.rtree Dot.pp Dot.pp.af \
-	          Dot-pretty.pp Dot-pretty.pp.af \
-		  StrategoDot.def StrategoDot.tbl \
-		  Dot.rtree  Layout.rtree QuotedLiterals.rtree
+sdfdata_DATA   = $(TBLS_DEFS) $(wildcard *.sdf) 
+EXTRA_DIST     = $(sdfdata_DATA)
+BOOTCLEANFILES = $(TBLS_DEFS)
 
-EXTRA_DIST 	= Dot.str  Layout.str  QuotedLiterals.str \
-		  $(pkgdata_DATA)
-
-BOOTCLEANFILES 	= Dot.str Layout.str  QuotedLiterals.str \
-		  $(wildcard *.rtree) $(wildcard *.tbl) $(wildcard *.def) \
-		  Dot.pp $(wildcard *.pp.af)
+SDFINCLUDES    = -I $(STRATEGO_FRONT)/share/sdf/stratego-front
+PGEN_FLAGS     = -m $*
 
 Dot.def		: $(wildcard *.sdf)
 StrategoDot.def	: $(wildcard *.sdf)
 
-PGEN_FLAGS	= -m $*

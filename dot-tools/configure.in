@@ -12,4 +12,6 @@ AC_PROG_INSTALL
 AC_OUTPUT(
 	Makefile
 	syn/Makefile
+	pp/Makefile
+	sig/Makefile
 )
