@@ -1,3 +1,6 @@
+2001-03-23 Merijn de Jonge <mdejonge@cwi.nl>
+        * Removed graph-tools package from XT distribution
+
 2001-03-12 Merijn de Jonge <mdejonge@cwi.nl>
         * Don't generate README from README.in anymore because it turned out
           to be confusing for developers. Use separate VERSION file instead.
