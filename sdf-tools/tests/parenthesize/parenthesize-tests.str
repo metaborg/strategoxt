@@ -13,10 +13,22 @@ strategies
 
   exp-tests =
       exp-test(|"a + e")
+
     ; exp-test(|"b + (c + d)")
     ; exp-test(|"b * (c + d)")
+
     ; exp-test(|"(b * c) + d", "b * c + d")
     ; exp-test(|"(b + c) + d", "b + c + d")
+
+    ; exp-test(|"++ c ++", "++ c ++")
+    ; exp-test(|"(++ c) ++", "(++ c) ++")
+
+    ; exp-test(|"a ? b : c ? d : e")
+    ; exp-test(|"a ? b : (c ? d : e)", "a ? b : c ? d : e")
+    ; exp-test(|"(a ? b : c) ? d : e", "(a ? b : c) ? d : e")
+
+    ; exp-test(|"(b - c) - d", "(b - c) - d")
+    ; exp-test(|"b - (c - d)", "b - (c - d)")
 
   /**
    * @param  txt  Expression to test
@@ -25,7 +37,7 @@ strategies
     exp-test(|txt, txt)
 
   exp-test(|txt1, txt2) =
-    apply-test(<concat-strings> [txt1, "  ->  " , txt2],
+    apply-test(<concat-strings> ["test -- ", txt1, "  ->  " , txt2],
       xtc-temp-files(
         <print-to> [<id>]
       ; xtc-sglr(!"Exp.tbl")

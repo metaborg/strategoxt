@@ -75,6 +75,21 @@ strategies
       ->
     <AssocLeft2Patterns(|t1)> t2
 
+  Assoc2Patterns :
+    assoc(simple-group(t1), assoc(), simple-group(t2))
+      ->
+    <AssocLeft2Patterns(|t1)> t2
+
+  Assoc2Patterns :
+    assoc(simple-group(t1), right(), simple-group(t2))
+      ->
+    <AssocRight2Patterns(|t1)> t2
+
+  Assoc2Patterns :
+    assoc(simple-group(t1), non-assoc(), simple-group(t2))
+      ->
+    <PatternsOne(|t2)> t1
+
   Chain2Patterns :
     chain([simple-group(t1), simple-group(t2)])
       ->
@@ -109,6 +124,16 @@ strategies
       where let set-pattern = {t2* :
               \ (n, p) -> |[ x(t, t2*) ]| 
                   where <set-index> (<dec> n, Parenthetical(p2), t1*) => t2* \ }
+             in <map-with-index(set-pattern)> t1* => ps
+            end
+
+  AssocRight2Patterns(|p2) :
+    |[ x(t3*) ]| -> ps
+      where <split-init-last> t3* => (t1*, t) 
+          ; let set-pattern = {t2* :
+              \ (n, p) -> |[ x(t2*) ]| 
+                  where <set-index> (<dec> n, Parenthetical(p2), t1*)
+                      ; <conc> (<id>, [t]) => t2* \ }
              in <map-with-index(set-pattern)> t1* => ps
             end
 

@@ -1,5 +1,84 @@
 2004-05-25  Martin Bravenboer  <martin@cs.uu.nl>
 
+	* trans/sdf2parenthesize.str: new tool to generate a Stratego
+	transformation tool that adds the necessary parentheses to an
+	abstract syntax tree. The information is obtained from an SDF
+	syntax definition.
+
+	For example, if Plus is declared to left associative, then the
+	following rule will be generated:
+
+	----------------------------------------------------
+	ExpParenthesize :
+	  Plus(q_15, Plus(o_15, p_15))
+	    ->
+	  Plus(q_15, Parenthetical(Plus(o_15, p_15)))
+	----------------------------------------------------
+
+	A relative priority related example:
+	----------------------------------------------------
+	ExpParenthesize :
+          Mul(Plus(v_2, w_2), u_2)
+	    ->
+	  Mul(Parenthetical(Plus(v_2, w_2)), u_2)
+
+	ExpParenthesize :
+	  Mul(t_2, Plus(v_2, w_2))
+	    ->
+	  Mul(t_2, Parenthetical(Plus(v_2, w_2)))
+	----------------------------------------------------
+
+	The tool supports:
+	o relative priorities
+	  --------------------------------------------------
+	      Exp "&&"  Exp -> Exp
+	  >   Exp "||"  Exp -> Exp
+	  --------------------------------------------------
+	
+	o groups of associative productions
+	  --------------------------------------------------
+	    {left:
+	      Exp "*" Exp -> Exp
+	      Exp "/" Exp -> Exp
+	    } 
+	  > {left:
+	      Exp "+" Exp -> Exp
+	      Exp "-" Exp -> Exp
+	    }
+	  --------------------------------------------------
+
+	o Associativity attributes: non-assoc, assoc, left, right.
+	  --------------------------------------------------
+	    Exp "+"   Exp -> Exp  {left, cons("Plus")}
+	  --------------------------------------------------
+
+	o Kernel SDF associativities
+	  --------------------------------------------------
+	    prod1 assoc prod2
+	  --------------------------------------------------
+
+	To be honest, this is all support because the SDF normalizer is
+	applied ;) .
+
+	Does this solve all the parentheses related problems? No,
+	unfortunately not. The tool does not support {prefer} attributes,
+	which are for example used in the dangling else problem.
+
+	So, if you want to make sure that IfThenElse(_, IfThen(_, _, _),
+	_) is pretty-printed correctly as:
+
+	--------------------------------------------------
+	if a then (if b then c) else d
+	--------------------------------------------------
+
+	then you still need to implement this be hand. I don't have a clue
+	how I could automate this in the generator, since the {prefer}
+	attributes are not really declarative.
+
+	Bug reports are welcome.
+	
+2004-05-25  Martin Bravenboer  <martin@cs.uu.nl>
+
 	* trans/sdf-spread-cons.str: new tool to annotate all equivalent
 	productions with a constructor, if one of them has a
 	constructor. Not really monkey proof at the moment, but well,

@@ -18,7 +18,7 @@ exports
     Exp "*"   Exp -> Exp  {left, cons("Mul")}
     Exp "/"   Exp -> Exp  {left, cons("Div")}
     Exp "+"   Exp -> Exp  {left, cons("Plus")}
-    Exp "-"   Exp -> Exp  {left, cons("Minus")}
+    Exp "-"   Exp -> Exp  {non-assoc, cons("Minus")}
     Exp "<"   Exp -> Exp  {left, cons("Lt")}
     Exp ">"   Exp -> Exp  {left, cons("Gt")}
     Exp "=="  Exp -> Exp  {left, cons("Eq")}
