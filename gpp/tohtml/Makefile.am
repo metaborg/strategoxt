@@ -21,7 +21,9 @@
 # $Id: Makefile.am,v 1.6 2002/05/14 15:14:55 mdejonge Exp $
 
 # Always include general make rules
-#include $(srcdir)/../templates/make_rules
+
+include $(top_srcdir)/Makefile.xt
+
 #include $(srcdir)/../templates/make_rules.stratego
 
 # define any subdir here
