@@ -102,3 +102,16 @@ strategies
   xtc-command-silent(|tool) =
     where(<xtc-find-warning> tool => loc)
     ; where(<call(|None(), None(), Some(<open> "/dev/null"))> (loc, <id>))
+
+  /**
+   * Reports an sglri error summary to the stderr.
+   * Always fails.   
+   *
+   * @type  summary -> _
+   */
+  report-sglri-error-summary(|input) =
+    finally(
+      read-from
+      ; report-error-summary
+    , fail
+    )

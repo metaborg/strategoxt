@@ -1,48 +1,86 @@
 /**
- * Reporting syntax errors in commands to the user.
+ * Reporting error summaries to the user.
  */
 module sglri-error-reporting
 imports error-support
 strategies
 
   /**
-   * Reports an sglri error summary to the stderr.
+   * Reports an error summary to the stderr.
    *
-   * Always fails.   
-   *
-   * @type  summary -> _
+   * @type Summary -> Summary
    */
-  report-sglri-error-summary(|input) =
-    finally(
-      where(
-        read-from
-      ; ?summary(_, file, [error(err, [localized(descr, <id>)])])
-      ; switch id
-          case ?area-in-file(_, area) : <report-area(|file, descr, area)> input
-	  case ?file(error-file) : <report-file(|err,descr)>input
-        end
+  report-error-summary =
+    ?summary(producer, _, errors)
+    ; where(
+        !errors
+        ; map(
+             report-specific-error(|producer)
+          <+ report-error(|producer)
+          )
       )
-      <+ say(!"error: A parse error occured, but the cannot be presented in a nice way. Please report this as a bug.")
-         ; read-from
-         ; debug(!"       Structured parse error: ")
-    , fail)
+    <+ say(!"error: An error occured, but the error summary cannot be presented in a nice way. Please report this as a bug.")
+       ; debug(!"       Structured error summary: ")
 
   /**
-   * Presents file error message at stderr.
+   * @type Error -> Error
    */
-  report-file(|err,descr) =
-     if !err => "Parse Table error" then
-       <fprintnl> ( <stderr-stream> (), [<get-config> "-p", ": ", err, ", ", descr])
-     else
-       fail
-     end
+  report-error(|producer) =
+    ?error(err, [localized(descr, location)])
+    ; where(
+        <report-location(|err, descr)> location
+      )
 
   /**
-   * Presents the 'area' in the input file at stderr.
+   * @type Location -> Location
+   */
+  report-location(|err, descr) =
+    ?area-in-file(file, area)
+    ; where(
+        report-area(|err, descr, file, area)
+      )
+
+  /**
+   * @type Location -> Location
+   */
+  report-location(|err, descr) =
+    ?file(file)
+    ; where(
+        report-file(|err, descr, file)
+      )
+
+/**
+ * Specific cases
+ */
+strategies
+
+  /**
+   * If the err is a "Parse Table error", then the actual file that is
+   * a problem, is the parse table. So, we lookup the parse table from
+   * the -p config.
    *
-   * @type  FILE -> _
+   * @type Error -> Error
    */
-  report-area(|file, descr, area) =
+  report-specific-error(|producer) =
+    ?error("Parse Table error", [localized(descr, _)])
+    ; where(
+        <fprintnl> ( <stderr-stream> (), [<get-config> "-p", ": Parse table error: ", descr])
+      )
+
+/**
+ * Tools that can be used for reporting errors.
+ */
+strategies
+
+  report-file(|err, descr, file) =
+    where(
+      <fprintnl> (<stderr-stream> (), [file, ": ", err, ": ", descr])
+    )
+
+  /**
+   * Presents the 'area' in the file at stderr.
+   */
+  report-area(|err, descr, file, area) =
     where(
       !area => area(begin-line, begin-column, _, end-column, _, _)
     );
@@ -90,7 +128,18 @@ strategies
           ; where(<fprintnl> (<stderr-stream> (), [<id>]))
 
      in print-location
+      ; <error-filename-to-file> file
       ; if ?FILE(_) then
           print-context-in-file
         end
+    end
+
+  /**
+   * @type String -> FILE
+   */
+  error-filename-to-file =
+    if "-" then
+      !stdin()
+    else
+      !FILE(<id>)
     end
