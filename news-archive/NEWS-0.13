@@ -2,41 +2,12 @@ StrategoXT 0.13 -- released January ?, 2005
 
 ---------++ Summary of Changes
 
-Language:
-   * New dynamic rule features
-
-Compiler:
-   * Several bug fixes and new features
-
-Library:
-
-Tools:
-   * StrategoXT Utils
+Paragraph about dynamic rules, compiler features, library, improved
+tools and strategoxt-utils.
 
 ---------++ New Dynamic Rule Features
 
     (Eelco Visser)
-
----------++ Separate package for StrategoXT Utils
-
-Tools that are not essential to most Stratego users are now in a
-separate package, =strategoxt-utils=. This package consists of the
-ex-StrategoXT packages =aterm-tools=, =dot-tools=, =graph-tools=,
-=stratego-util= and =stratego-tools=. Obviously, the installation of
-this package is optional and most users will only need if you want to
-visualize ATerms with the Dot language and =Graphviz=.
-
-More concrete, the following tools are part of strategoxt-utils:
-=GraphXML2dot=, =pp-dot=, =sdf-wf=, =term-to-dot=, =tohtml-sdf=,
-=graph-term2GraphXML=, =GraphXML-analysis=, =pp-stratego-latex-alltt=,
-=sdf-doc=, =sdf-wf=, =tohtml=, =GraphXML2dot=, =ismap2usemap=,
-=sdf2sg=, =sdf-imports=, =term-to-adot=.
-
-Furthermore, the Emacs mode for Stratego is now part of StrategoXT
-Utils. In the future, release more utils might be moved to this
-package.
-
-    (Rob Vermaas)
 
 ---------++ Stratego Compiler
 
@@ -138,15 +109,16 @@ differnt arity. This has now been fixed, hence only =Cons/2= and
 
 ---------++ Stratego Standard Library
 
-----------++ Separate compilation
+----------+++ Separate compilation
 
 In the previous version of StrategoXT, the separately compiled
-=liblib= library imported the SSL as well as the XTC library. This librar
+=liblib= library imported the SSL as well as the XTC library. This
+library has now been split into =libstrategolib= (the SSL) and
+=libxtclib= (XTC). The module =liblib= is still available and imports
+the libraries above, in order to avoid having to patch zillions of
+Stratego modules.
 
-split into libstrategolib and libxtclib. The 
-module liblib is still available and imports the
-libraries above, in order to avoid having to patch
-zillions of Stratego modules.
+    (Eelco Visser)
 
 ---------+++ Obsolete Strategy: iowrap
 
@@ -206,13 +178,32 @@ is no need to close file descriptiors. =write-term-to-text-pipe= uses
 
     (Merijn de Jonge)
 
----------++ AutoXT
+---------++ Deployment and Build System
 
+---------+++ Separate package for StrategoXT Utils
 
+Tools that are not essential to most Stratego users are now in a
+separate package, =strategoxt-utils=. This package consists of the
+ex-StrategoXT packages =aterm-tools=, =dot-tools=, =graph-tools=,
+=stratego-util= and =stratego-tools=. Obviously, the installation of
+this package is optional and most users will only need if you want to
+visualize ATerms with the Dot language and =Graphviz=.
+
+More concrete, the following tools are part of strategoxt-utils:
+=GraphXML2dot=, =pp-dot=, =sdf-wf=, =term-to-dot=, =tohtml-sdf=,
+=graph-term2GraphXML=, =GraphXML-analysis=, =pp-stratego-latex-alltt=,
+=sdf-doc=, =sdf-wf=, =tohtml=, =GraphXML2dot=, =ismap2usemap=,
+=sdf2sg=, =sdf-imports=, =term-to-adot=.
+
+Furthermore, the Emacs mode for Stratego is now part of StrategoXT
+Utils. In the future, release more utils might be moved to this
+package.
+
+    (Rob Vermaas)
+
+---------+++ AutoXT
 
 All macros now use the XT prefix
-
-Use AC_CONFIG_AUX_DIR and fix in strc-core Makefile.am
 
 	* autoxt.m4: USE_XT_PACKAGES is obsolete and should be replaced by
 	in your configure.ac files by XT_USE_XT_PACKAGES. Thanks to Akim
@@ -223,52 +214,62 @@ Use AC_CONFIG_AUX_DIR and fix in strc-core Makefile.am
 
     (Akim Demaille and Martin Bravenboer)
 
----------++ ATerm to XML
+---------+++ AC_CONFIG_AUX_DIR
 
-	* trans/data2xml-doc.str, trans/xml-info2data.str: the --explicit
-	and the --very-explicit mode now use the XML namespace
-	http://aterm.org for the XML elements the represent ATerm
-	structures and types, such as list, tuple, int, string, anno
-	etc. In the explicit mode, this avoids conflicts with 'real'
-	ATerms of the same name. I'm using the namespace prefix 'at'.
+    (Akim Demaille and Martin Bravenboer)
 
-	* trans/data2xml-doc.str, trans/xml-info2data.str: all modes now
-	preserve all annotations by representing them as nested "anno"
-	elements in the XML namespace http://aterm.org.
+---------++ Tools
 
-	* xtc/xml2aterm.str: the explicity mode is no longer required for
-	this tool, since it is no longer ambiguous whether the xml is
-	implicit, explicit or very explicit.
+---------+++ sglri
+
+added error reporting of martin to sglri
+
+* src/implode/sglri.str: added the --no-heuristic-filters option
+to disable the heuristic filters of sglr.
+
+    (Rob Vermaas and Martin Bravenboer)
+
+---------+++ aterm2xml and xml2aterm
+
+* trans/data2xml-doc.str, trans/xml-info2data.str: the --explicit
+and the --very-explicit mode now use the XML namespace
+http://aterm.org for the XML elements the represent ATerm
+structures and types, such as list, tuple, int, string, anno
+etc. In the explicit mode, this avoids conflicts with 'real'
+ATerms of the same name. I'm using the namespace prefix 'at'.
+
+* trans/data2xml-doc.str, trans/xml-info2data.str: all modes now
+preserve all annotations by representing them as nested "anno"
+elements in the XML namespace http://aterm.org.
+
+* xtc/xml2aterm.str: the explicity mode is no longer required for
+this tool, since it is no longer ambiguous whether the xml is
+implicit, explicit or very explicit.
 
     (Martin Bravenboer)
 
----------++ Emacs Mode
+---------+++ pp-aterm
 
----------++ Misc. Fixes
+   * --max-depth flag for pp-aterm
 
-   * --max-depth flag for pp-aterm (Rob Vermaas)
+    (Rob Vermaas)
 
-   * Removed dep on Perl.
-
-gpp:
+---------+++ ppgen
 
    * fixed error reporting of ppgen
 
-asfix-tools:
+    (Martin Bravenboer)
 
-	* src/implode/sglri.str: added the --no-heuristic-filters option
-	to disable the heuristic filters of sglr.
+---------+++ sdf2rtg
 
-stratego-regular:
+* trans/sdf2rtg/core-sdf-grammar2rtg.str: nice names for character
+classes.
 
-	* trans/sdf2rtg/core-sdf-grammar2rtg.str: nice names for character
-	classes.
+sdf2rtg: Report productions and symbols in concrete syntax. Also,
+added some hints about how to solve problems.
 
-   sdf2rtg: Report productions and symbols in concrete syntax. Also,
-   added some hints about how to solve problems.
+    (Martin Bravenboer)
 
-added error reporting of martin to sglri
-	
 ---------++ Detailed List of Issues
 
 The full list of issues closed in this release is available at:
@@ -300,7 +301,7 @@ Developments, beta tests, and bug fixes were carried out by
    * Akim Demaille
    * Niels Janssen
    * Merijn de Jonge
+   * Karl Trygve Kalleberg
    * Rob van der Leek
    * Rob Vermaas
    * Eelco Visser
-   * Karl Trygve Kalleberg
