@@ -49,7 +49,8 @@
    FunType.1:iter-sep -- _1 KW["*"],
    Var -- _1,
    ListVar -- _1,
-  
+   SeqVar -- H hs=0 [KW[":"] _1],
+
    Int  -- _1,
    Real -- _1,
    Str  -- _1,

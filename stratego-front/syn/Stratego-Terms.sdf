@@ -11,6 +11,7 @@ exports
     LID				-> Var  {cons("Var")}
     Id				-> ID
     LId				-> ID
+    ":" Var                     -> Var  {cons("SeqVar")}
 
   sorts Term
   context-free syntax

@@ -52,6 +52,7 @@ signature
                                : LId -> ID
                                : Id -> ID
     ListVar                    : LId -> LID
+    SeqVar                     : Var -> Var
     Var                        : LID -> Var
     Var                        : Id -> Var
     Mod                        : Id * Id -> Mod
