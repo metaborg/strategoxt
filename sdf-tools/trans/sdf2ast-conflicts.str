@@ -12,6 +12,8 @@ imports
   strategoxt-xtc-tools
   sdf-spread-cons
   ast-conflicts
+
+  sdf/grammar/utils
   sdf/tool/options
   sdf/symbol/implode
 
@@ -21,6 +23,7 @@ strategies
     xtc-io-wrap(sdf-main-module-option,
       xtc-transform(!"sdf2table", !["-n", "-m", <get-sdf-main-module> | <pass-v-verbose>])
     ; xtc-transform(!"implodePT")
+    ; xtc-io-transform(error-if-empty-grammar(<xtc-exit> 1))
     ; xtc-transform(!"sdf-desugar", pass-verbose)
     ; xtc-io-transform(core-sdf2conflicts)
     )

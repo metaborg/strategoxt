@@ -1,0 +1,36 @@
+module sdf/grammar/utils
+strategies
+
+  /**
+   * Checks if an SDF grammar defines an empty language.
+   *
+   * Usually, this indicates that the original SDF syntax definition
+   * was not normalized correctly.
+   *
+   * @type  Grammar -> Grammar
+   */
+  is-empty-grammar =
+      collect-om(?syntax(_))
+    ; map(?syntax(<id>))
+    ; concat
+
+    ; let prod-of-empty-grammar =
+               ?prod(_, cf(layout), _)
+            <+ ?prod(_, file-start, _)
+
+       in map(prod-of-empty-grammar)
+      end
+
+  /**
+   * Logs an error if the current term is an empty grammar.
+   *
+   * If it is indeed an empty grammar, then c is applied.
+   *
+   * @type  Grammar -> Grammar
+   */
+  error-if-empty-grammar(c) =
+    if is-empty-grammar then
+      log(|Error(), "No production rules in RTG. Did you specify the right main module?")
+      ; c
+    end
+
