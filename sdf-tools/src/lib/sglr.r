@@ -19,14 +19,14 @@
 // 02111-1307, USA.
 
 module sglr
-imports exec gt-paths asfix
+imports exec gt-paths asfix verbose
 
 rules
 
   sglr : 
     (tbl, 'in, out) -> out
     where
-      <call> (<concat-strings>[SGLR, "/bin/sglr"], ["-2", "-p", tbl, "-i", 'in, "-o", out])
+      <if-verbose5(debug); call> (<concat-strings>[SGLR, "/bin/sglr"], ["-2", "-p", tbl, "-i", 'in, "-o", out])
 
 
   sglr : 

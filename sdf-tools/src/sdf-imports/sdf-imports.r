@@ -25,9 +25,9 @@ imports get-modules asfix
         sglr gt-paths
 
 signature
-sorts Node
-constructors
-   Node: X* X * X -> Z
+  sorts Node
+  constructors
+    Node: X * X * X -> Z
 
 strategies
 
