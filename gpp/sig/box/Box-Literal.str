@@ -1,0 +1,6 @@
+module Box-Literal
+signature
+  constructors
+    NatCon : NatCon -> IntCon
+    plus   : NatCon -> IntCon
+    minus  : NatCon -> IntCon

@@ -1,3 +1,8 @@
+2004-03-03   Merijn de Jonge  <mdejonge@cs.uu.nl>
+   * Readded *.str *.def, and *.c because gpp is part of StrategoXT
+     bootstrap procedure and these files (although generated) need to be
+     present in the subversion repository.
+
 2004-03-02   Merijn de Jonge  <mdejonge@cs.uu.nl>
    * Pptable-diff: if inconsistencies are detected and the --patch switch
      is not specified, the program terminates with an exit code of 1
