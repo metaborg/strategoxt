@@ -1,4 +1,4 @@
-module pp-not-xml
+module pp-c
 imports xtc-lib string
 
 strategies
