@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.9 2001/11/22 08:09:23 mdejonge Exp $
+# $Id: Makefile.am,v 1.10 2001/11/22 12:47:45 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -52,7 +52,7 @@ BOOTSOURCES  = $(EXTRA_DIST)
 
 # What should be cleaned
 CLEANFILES  += ast2abox asfix2abox ppgen abox2html abox2latex \
-               abox2text gpp.Makefile pp-tables.pp.af \
+               abox2text gpp.Makefile pp-tables.pp.af pp-tables.tbl \
                no_generation_for_bracket_function_check
 
 # Additional flags for the Stratego compiler
@@ -79,7 +79,7 @@ gpp.Makefile : gpp.Makefile.src Makefile
 
 # rule to generate imploded pretty-print tables
 %.pp.af : %.pp
-	@PATH=$(bindir):$(SGLR)/bin:$${PATH}; export PATH ;\
+	PATH=$(bindir):$(SGLR)/bin:$${PATH}; export PATH ;\
 	sglr -2 -p ./pp-tables.tbl -i $< \
 	   | implode-asfix -S -o $@ 
 
