@@ -24,11 +24,11 @@ strategies
                    Strategies(map(declare-inline-rule))])
 
   declare-inline-rule =
-    ?[[ f(as) = s ]];
+    ?[[ f(a1*) = s1 ]];
     rules(
       InlineStrat :
-        [[ f(ss) :S]] -> <ssubs> (<map(?VarDec(<id>,_))> as', ss, s')
-        where <strename> [[ f(as) = s ]] => [[ f(as') = s' ]]
+        [[ f(s*) :S]] -> <ssubs> (<map(?VarDec(<id>,_))> [a1*], [s*], s2)
+        where <strename> [[ f(a1*) = s1 ]] => [[ f(a2*) = s2 ]]
     )
 
 

@@ -1650,3 +1650,18 @@ Bootstrapping: finished [Mon Sep  9 19:42:41 CEST 2002]
 
 Bootinstall [Mon Sep  9 23:28:42 CEST 2002]
 Bootinstall finished [Mon Sep  9 23:28:43 CEST 2002]
+
+Bootstrapping version 0.8.1 [Wed Sep 18 15:54:37 CEST 2002 - Linux loempia.cs.uu.nl i686]
+Bootstrapping: phase 1 started [Wed Sep 18 15:54:37 CEST 2002]
+
+Bootstrapping version 0.8.1 [Wed Sep 18 17:18:23 CEST 2002 - Linux loempia.cs.uu.nl i686]
+Bootstrapping: phase 1 started [Wed Sep 18 17:18:23 CEST 2002]
+
+Bootstrapping version 0.8.1 [Wed Sep 18 20:29:34 CEST 2002 - Linux loempia.cs.uu.nl i686]
+Bootstrapping: phase 1 started [Wed Sep 18 20:29:34 CEST 2002]
+Bootstrapping: phase 2 started [Wed Sep 18 20:44:12 CEST 2002]
+Bootstrapping: phase 3 started [Wed Sep 18 20:58:47 CEST 2002]
+Bootstrapping: finished [Wed Sep 18 21:13:25 CEST 2002]
+
+Bootinstall [Wed Sep 18 21:25:47 CEST 2002]
+Bootinstall finished [Wed Sep 18 21:25:48 CEST 2002]

@@ -54,6 +54,6 @@ rules
   // Always valid?
  
   BottomupOverConstructor :     
-    [[ <bottomup_1(s)> c(ts1) :T]] -> [[ <s> c(ts2) :T]]
-    where <map(\ t -> [[ <bottomup_1(s)> t :T]] \ )> ts1 => ts2
+    [[ <bottomup_1(s)> c(t1*) :T]] -> [[ <s> c(t2*) :T]]
+    where <map(\ t -> [[ <bottomup_1(s)> t :T]] \ )> [t1*] => [t2*]
 

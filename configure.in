@@ -156,7 +156,7 @@ AB_CONFIG_PKG(stratego-front,
    --with-stratego-tools=${STRATEGO_TOOLS}
    --with-sdf-tools=${SDF_TOOLS}
    --with-gpp=${prefix}
-   --with-cgen=${CGEN}
+   --with-cgen=${prefix}
 )
 AB_CONFIG_PKG(sc,
    --with-aterm=${ATERM}

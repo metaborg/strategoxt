@@ -153,6 +153,9 @@ rules
     Scope(xs, s) -> Scope(ys, s)
     where <map(try(?ListVar(<id>)))> xs => ys
 
+  SingleListVar :
+    Var(ListVar(x)) -> Var(x)
+
   ListMatch : 
     Match(t[Op("Cons", [Var(ListVar(x)), Op("Nil", [])])]) -> 
     Match(t[Var(x)])
@@ -289,7 +292,7 @@ strategies
 
   DesugarListMatching =
     topdown(try(ListVarScope + desugarRule); 
-            repeat(HL + ListMatch + ListBuild))
+            repeat((HL + ListMatch + ListBuild) <+ SingleListVar))
 
   desugar = 
     topdown(try(desugarRule); 

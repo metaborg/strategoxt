@@ -4,17 +4,10 @@ AM_INIT_AUTOMAKE(stratego-front,0.8.1)
 ####################### 
 # XT
 
-AC_ARG_WITH(stratego, 
-   [  --with-stratego=DIR        Specify location of Stratego, [\$prefix]], 
-   STRATEGO="$withval", 
-   STRATEGO="$prefix"
-)
-AC_SUBST(STRATEGO)
-
 AC_ARG_WITH(sc, 
    [  --with-sc=DIR              Specify location of Stratego Compiler, [\$prefix]], 
    SC="$withval", 
-   SC="$STRATEGO"
+   SC="$prefix"
 )
 AC_SUBST(SC)
 
@@ -63,7 +56,7 @@ AC_SUBST(GPP)
 AC_ARG_WITH(cgen, 
   [  --with-cgen=DIR             Specify location of CGEN, [\$prefix]], 
   CGEN="$withval", 
-  CGEN="$STRATEGO"
+  CGEN="$prefix"
 )
 AC_SUBST(CGEN)
 
@@ -90,7 +83,7 @@ AC_SUBST(RPMTMP)
 
 ####################### 
 
-AC_REVISION($Id: configure.in,v 1.6 2002/09/17 21:56:43 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.7 2002/09/18 19:33:58 stratego Exp $)
 
 AC_PROG_CC
 

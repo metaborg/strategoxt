@@ -414,17 +414,19 @@ exports
 
   variables
     [xyzfglc][0-9\']*    	-> Id       {prefer}
-    [xyzfgl][0-9\']*"*" 	-> {Id ","}* {prefer}
+    [xyzfgl][0-9\']*	"*" 	-> {Id ","}* {prefer}
     "xs"[0-9\']*       		-> {Id ","}* {prefer}
 
     [t][0-9\']* 	  	-> Term     {prefer}
-    [t][0-9\']*"*"  		-> {Term ","}*     {prefer}
+    [t][0-9\']*   	"*"  	-> {Term ","}*     {prefer}
     "ts"[0-9\']*    		-> {Term ","}*     {prefer}  
 
     [s][0-9\']* 	  	-> Strategy {prefer}
     "ss"[0-9\']*	  	-> {Strategy ","}* {prefer}
+    "s"[0-9\']*	 	"*"  	-> {Strategy ","}* {prefer}
 
     [r][0-9\']* 	  	-> Rule     {prefer}
 
     "a"[0-9\']*   		-> Typedid        {prefer}
+    "a"[0-9\']* 	"*"   	-> {Typedid ","}+ {prefer}
     "as"[0-9\']*  		-> {Typedid ","}+ {prefer}

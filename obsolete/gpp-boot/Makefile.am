@@ -14,6 +14,7 @@ CONFIGURE = ./configure \
 RPMRELEASE=1
 
 SUBST = s+__SRTS_VERSION__+$(VERSION)+g;\
+        s+__SSL_VERSION__+0.8.1+g;\
         s+__GPP_VERSION__+2.2.1+g;\
         s+__ATERM_VERSION__+1.6.7+g;\
 	s+__ATERM__+$(ATERM)+g;

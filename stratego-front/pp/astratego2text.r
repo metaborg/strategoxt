@@ -11,7 +11,7 @@ strategies
     ; parse-options(io-options)
     ; <get-config> "-i"
     ; where((<get-config> "-o" <+ <conc-strings> (<id>, ".txt")) => outfile)
-    ; call-tmp(<get-config>"ast2abox", !["-p", <get-config> "Stratego.pp"],
+    ; call-tmp(<get-config>"ast2abox", !["-p", <get-config> "Stratego-pretty.pp"],
       call-out(<get-config>"abox2text", ![], !outfile, id))
     ; try(<get-config> "-S" <+ say(!program))
 

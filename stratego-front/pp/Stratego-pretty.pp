@@ -37,6 +37,7 @@
    FunType -- _1 KW["->"] _2,
    FunType.1:iter-sep -- _1 KW["*"],
    Var -- _1,
+   ListVar -- _1,
    Wld -- KW["_"],
    Int -- _1,
    Real -- _1,

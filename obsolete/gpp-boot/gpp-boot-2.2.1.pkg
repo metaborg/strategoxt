@@ -12,4 +12,4 @@ configuration interface
 
 requires
   aterm 1.6.7 with gcc=on
-  ssl	__SSL_VERSION__
+  ssl	0.8.1

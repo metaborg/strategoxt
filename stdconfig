@@ -1,4 +1,8 @@
 ./reconf
+./configure --prefix=/home/xt/xt --enable-boot --enable-concrete
+
+exit
+
 #./configure --prefix=/home/visser/res/XT --with-aterm=/home/xt/ATerm
 
 #./configure --prefix=`pwd` --with-aterm=/home/xt/ATerm
