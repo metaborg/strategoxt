@@ -8,7 +8,6 @@ AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_LIBTOOL
 AC_PATH_PROGS(SH, sh)
-AC_PATH_PROG(PERL,perl)
 
 TOOLS="templates sdf-cons sdf-label sdf-bracket sdf2sdf"
 UNRELEASED=""
