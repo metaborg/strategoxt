@@ -4,12 +4,13 @@ exports
 
   context-free syntax
 
-    "{|" {DynRuleScopeId ","}* ":" Strategy "|}" -> Strategy {cons("DynRuleScope")}
+    "{|" {DynRuleScopeId ","}* ":" Strategy "|}" -> Strategy {cons("DynRuleScope"), prefer}
     "{|" RuleDec ":+" Term                  "|}" -> Strategy {cons("AddScopeLabel")}
 
   context-free syntax
 
-    "rules" "(" DynRuleDef* ")" -> Strategy {cons("GenDynRules")}
+    "rules" "(" DynRuleDef+ ")" -> Strategy {cons("GenDynRules"), prefer}
+
     DynRuleId ":-"  Term -> DynRuleDef {cons("UndefineDynRule")}
     DynRuleId ":"   Rule -> DynRuleDef {cons("SetDynRule")}
     DynRuleId ":+"  Rule -> DynRuleDef {cons("AddDynRule")}
@@ -22,10 +23,10 @@ exports
 
   context-free syntax
 
-    Id                         -> RuleDec {cons("RuleDecNoArgs")}
-    Id "(" {Typedid ","}* ")"  -> RuleDec {cons("RuleDec")}
+    Id                         -> RuleDec {cons("RDecNoArgs")}
+    Id "(" {Typedid ","}* ")"  -> RuleDec {cons("RDec")}
     Id "(" {Typedid ","}* 
-       "|" {Typedid ","}* ")"  -> RuleDec {cons("RuleDecT")}
+       "|" {Typedid ","}* ")"  -> RuleDec {cons("RDecT")}
 
   context-free syntax %% legacy Dynamic rules
 

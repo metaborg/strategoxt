@@ -106,8 +106,8 @@
    SRDefT.2:iter-star-sep           -- _1 KW[","],
    SRDefT.3:iter-star-sep           -- _1 KW[","],
 
-   RuleNoCond -- V[H[_1 KW["->"]] _2],
-   Rule -- V[H[_1 KW["->"]] _2 H[KW["where"] _3]],
+   RuleNoCond -- H hs=1 [_1 KW["->"] _2],
+   Rule -- V[H hs=1 [_1 KW["->"] _2] H[KW["where"] _3]],
    StratRuleNoCond -- _1 KW["-->"] _2,
    StratRule -- _1 KW["-->"] _2 KW["where"] _3,
    Fail -- KW["fail"],
@@ -197,6 +197,16 @@
 
    GenDynRules -- V[V is=2[H[KW["rules"] KW["("]] _1] KW[")"]],
    GenDynRules.1:iter-star -- _1,
+
+   UndefineDynRule  -- V is=2 [H hs=1 [_1 KW[":-"]] _2],
+   SetDynRule       -- V is=2 [H hs=1 [_1 KW[":"] ] _2],
+   AddDynRule       -- V is=2 [H hs=1 [_1 KW[":_"]] _2],
+
+   LabeledDynRuleId -- H hs=0 [_1 "." _2],
+   DynRuleId        -- _1,
+
+   LabeledDynRuleScopeId -- H hs=0 [_1 "." _2],
+   DynRuleScopeId        -- _1,
 
    DynamicRules -- V[V is=2[H[KW["rules"] KW["("]] _1] KW[")"]],
    DynamicRules.1:iter-star -- _1,
