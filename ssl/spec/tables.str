@@ -84,6 +84,13 @@ strategies
     hashtable-put(|key, [value | <hashtable-get(|key) <+ ![]>])
 
   /**
+   * pushes values on top of the stack for key.
+   * Current term is the hashtable and remains untouched.
+   */
+  hashtable-pushlist(|key, value) =
+    hashtable-put(|key, <conc>(value, <hashtable-get(|key) <+ ![]>))
+
+  /**
    * pops off the top element of the stack for key.
    * Current term is the hashtable and remains untouched.
    */
