@@ -15,4 +15,4 @@ Stratego.def:
 	rm -f Stratego.def
 	ln -s ../syn/Stratego.def .
 
-EXTRA_DIST 	= $(wildcard *.str) $(pkgdata_DATA)
+EXTRA_DIST 	= $(wildcard *.str) $(pkgdata_DATA) Stratego.def
