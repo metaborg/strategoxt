@@ -1,3 +1,8 @@
+2001-11-22  Eelco Visser  <visser@acm.org>
+
+	* spec/list-index.r: insert strategy inserts an element at an
+	index position in the list (shifting the rest) (Otto Skrove Bagge)
+
 2001-11-21  Eelco Visser  <visser@acm.org>
 
 	* ssl/spec/list-set.r: collect-all and collect-om. Reformulated

@@ -28,7 +28,8 @@ strategies
 
   main = 
     test-suite(!"list-index-test",
-      test1
+      test1;
+      test2
     )
 
   test1 =
@@ -37,4 +38,11 @@ strategies
 	, !(3, "a", ["a", "b", "c", "d", "e"])
 	, !         ["a", "b", "c", "a", "e"]
 	) 
+
+  test2 =
+    apply-test(!"test1"
+	, insert
+	, !(3, "a", ["a", "b", "c", "d", "e"])
+	, !         ["a", "b", "c", "a", "d", "e"]
+	)
 \end{code}
