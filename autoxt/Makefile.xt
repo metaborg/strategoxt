@@ -83,7 +83,7 @@ bootclean:
 	| $(ASFIX_TOOLS)/bin/asfix-yield -o $@
 
 .def.tbl :
-	$(PGEN)/bin/sdf2table $(PGEN_FLAGS) -i $< -o $@
+	$(PGEN)/bin/sdf2table $(PGEN_FLAGS) -i $< -o $@ 
 
 ###########################################################
 #
@@ -91,7 +91,7 @@ bootclean:
 #
 
 %.pp.af : %.pp
-	@-echo "" | $(GPP)/bin/ast2abox -p $<
+	$(MAKE) -f $(GPP)/share/gpp/gpp.Makefile $@
 
 .def.pp :
 	$(GPP)/bin/ppgen -i $< -o $@
@@ -102,7 +102,7 @@ bootclean:
 #
 
 .def.str :
-	$(STRATEGO_TOOLS)/bin/sdf-to-sig $*
+	$(STRATEGO_TOOLS)/bin/sdf-to-sig -i $< -o $@
 
 ###########################################################
 #
@@ -120,7 +120,7 @@ install-data-local:
           $(XTC)/bin/xtc -r $(REPOSITORY) register -l $(pkgdatadir) -V $(VERSION) \
 		-t $$file ; \
         done
-	for file in $(bin_PROGRAMS) ; do \
+	for file in $(bin_PROGRAMS) $(bin_SCRIPTS) ; do \
           $(XTC)/bin/xtc -r $(REPOSITORY) register -l $(bindir) -V $(VERSION) \
 		-t $$file ; \
         done

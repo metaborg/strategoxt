@@ -156,4 +156,11 @@ AC_ARG_WITH(stratego-tools,
 )
 AC_SUBST(STRATEGO_TOOLS)
 
+AC_ARG_WITH(dot-tools,
+  [  --with-dot-tools=DIR        Use dot tools [[STRATEGOXT]]],
+  DOT_TOOLS="$withval",
+  DOT_TOOLS="$STRATEGOXT"
+)
+AC_SUBST(DOT_TOOLS)
+
 ])
