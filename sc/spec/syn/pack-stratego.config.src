@@ -1,5 +1,5 @@
 [
-
+("--keep",	0),
 ("prefix", 	Path("__prefix__")),
 ("libexec", 	Path("__libexecdir__")),
 

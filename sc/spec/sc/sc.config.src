@@ -11,6 +11,7 @@
 ("CGEN", 		Path("__CGEN__")),
 
 ("--verbose",		1),
+("--keep",		0),
 
 ("-I", 			["-I", Prefix(Var("STRATEGOLIB"),   "/share/ssl"),
 			 "-I", Prefix(Var("STRATEGOFRONT"), "/share/stratego-front")]),

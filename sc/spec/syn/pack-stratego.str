@@ -31,7 +31,7 @@ strategies
       )
     ; import-config-files(
         find-plugins(![prefix, <conc-strings>(datadir,"/pack-stratego-plugins")], 
-		     !".plugin")
+		     !".plugin") 
       )
     ; pack-modules(pack-stratego, basename)
 
@@ -74,9 +74,11 @@ strategies
     where <not(eq)> (None, tool)
 	; if-verbose2(<debug(!"parsing: ")> filein)
         ; <if-verbose4(debug); call>
-		(tool, [ "-i", filein, "-o", fileout, "--verbose", <verbosity; int-to-string>
+		(tool, [ "-i", filein, "-o", fileout, "--verbose", <verbosity; int-to-string>,
+			 "--keep", <get-config; int-to-string> "--keep"
 		       | <conc>(<get-config> "-I", <!["-silent"]; if-verbose2(![])>) ])
 	; <ReadFromFile> fileout => trm
+	; try(<get-config> "--keep" => 0; <rm-files> [fileout])
 
   parse-file(mkpath) : 
     (filein, fileout, None) -> <if-verbose2(debug(!"reading ")); ReadFromFile> filein

@@ -28,7 +28,7 @@ CLEANFILES = $(TESTS) *.o *.c *.ac *.s? *.s?.check *.trm *.tree *.tree? *.dep *.
 pkgdata_DATA = testlib.dummy
 
 testlib.dummy :
-	cp $(STRATEGOLIB)/share/ssl/*.rtree .
+	-cp $(STRATEGOLIB)/share/ssl/*.rtree .
 	touch $@
 
 bootinstall:

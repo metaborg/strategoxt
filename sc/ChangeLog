@@ -1,3 +1,8 @@
+2002-12-07  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/syn: Retiring the LEX/YACC definition of Stratego. An
+	SDF definition is used for all parsing.
+
 2002-11-24  Eelco Visser  <visser@acm.org>
 
 	* spec/Makefile.stratego.in: instructions for compiling Stratego

@@ -21,7 +21,8 @@ SCFLAGS = -I $(srcdir)/../sig \
 	  -I $(srcdir)/../match \
 	  -I $(srcdir)/../lib \
 	  -I $(srcdir)/../opt \
-	  --main $*
+	  --main $* \
+	  --keep 1
 
 libexec_PROGRAMS = frontend extract extract-all rename-defs inline 
 

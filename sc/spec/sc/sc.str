@@ -28,13 +28,13 @@ strategies
     ; optimize
     ; back-end
     ; c-compile
-    ; try(not(<get-config>"--norm"); remove-intermediates)
+    ; try(where(!(<get-config> "--keep", <id>); remove-intermediates))
 
   front =
     profile'(if-verbose1(<printnl>(stderr, ["front-end succeeded:     " | <id>])), 
       parse
       ; output-ast
-      ; add-main 
+      ; add-main
       ; frontend 
       ; output-frontend
       ; extract  
@@ -166,6 +166,10 @@ strategies
         where(<set-config>("--norm", ())); !NORM,
 	!"--norm             Do not remove intermediate results" )
 
+  + ArgOption("--keep",
+        where(<set-config>("--keep", <string-to-int>)),
+	!"--keep n           Keep intermediate results (0 = keep nothing)" )
+
   + Option("--fusion",     
 	where(<toggle-config>("--fusion",())); !FUSION,
 	!"--fusion           Toggle specialize applications of innermost (default: on)" )
@@ -180,7 +184,7 @@ strategies
 
 
   + ArgOption("--verbose",         
-	where(<set-config> ("--verbose",<string-to-int>)); !Verbose(<id>),         
+	where(<set-config> ("--verbose", <string-to-int>)); !Verbose(<id>),         
 	!"--verbose i       Verbosity level i (default 1)")
 
   + Option("-S"+"--silent",       
@@ -241,16 +245,26 @@ strategies
   parse-old = 
     pipe(<get-config> "pack-stratego", !".tree",
          <concat> [<!["-dep", <get-config> "-o"] <+ !["-dep", <get-config> "-i"]>,
+		   ["--keep", <get-config; string-to-int> "--keep"],
                    <get-config> "-I", <pass-verbose> ])
 
   parse =
     ?(file, suf)
-    ; where(conc-strings => infile)
-    ; where((<get-config; basename> "-o" <+ !file) => base)
-    ; where(<conc-strings> (base, ".tree") => outfile)
+    ; (<get-config; basename> "-o" <+ !file)	=> base
+
+    //; <conc-strings>(base, ".dir")		=> dir
+    //; <call>("mkdir", ["-p", dir])
+    //; <concat-strings> [dir, "/", base]	=> dirbase
+    //; <conc-strings> (dirbase, ".tree")	=> outfile
+
+    ; <conc-strings> (base, ".tree")		=> outfile
+    ; <concat-strings> [file, suf]		=> infile
+
     ; <call>(<get-config> "pack-stratego"
 	    ,<concat> [<!["-dep", <get-config> "-o"] <+ !["-dep", <get-config> "-i"]>
              ,<get-config> "-I", <pass-verbose>, ["-i", infile, "-o", outfile] ])
+
+    //; !(dirbase, ".tree")
     ; !(base, ".tree")
 
   output-ast =
@@ -360,7 +374,14 @@ strategies
 		("gcc", [ofile, "-o", target | <get-config> "-CL"]))
 
   remove-intermediates =
-    ?(base, _);
+    ?(0,(base, _));
+    where(<rzip(conc-strings); rm-files>
+            (base, [".tree", ".tree1", ".s1", ".s2", 
+		    ".s3", ".s4", ".s5", ".s6", ".s7", ".s8", ".s9", 
+		    ".ac", ".c.abox", ".o", ".mtree", ".atree"]))
+
+  remove-intermediates =
+    ?(1,(base, _));
     where(<rzip(conc-strings); rm-files>
             (base, [".tree", ".tree1", ".s1", ".s2", 
 		    ".s3", ".s4", ".s5", ".s6", ".s7", ".s8", ".s9", 

@@ -13,8 +13,11 @@ STRATEGOLIBS    = -lstratego-lib.opt \
 
 LDADD		= -lstratego.opt $(STRATEGOLIBS)
 
-SUFFIXES 	= .str .cr
+SUFFIXES 	= .str .cr .rtree
 SC 		= $(prefix)/bin/sc
+
+.rtree.c : 
+	$(SCOMPILE) $(STRINCLUDES) $(SCFLAGS) -i $< -o $@ -c
 
 .str.c : 
 	$(SC) $(STRINCLUDES) $(SCFLAGS) -i $< -o $@ -c
