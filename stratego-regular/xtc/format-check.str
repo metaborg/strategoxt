@@ -1,13 +1,56 @@
 module format-check
-imports aterm2irtg liblib strategoxt-xtc-tools
-
+imports aterm2irtg liblib strategoxt-xtc-tools tool-doc
 strategies
 
   main-format-check = 
-    xtc-io-wrap(aterm2irtg-option, 
-      xtc-ensure-file
+    xtc-io-wrap(
+      fc-options
+    , fc-usage
+    , fc-about 
+    , !["core-format-check"]
+    , format-check
+    ) 
+
+
+  format-check =
+    xtc-ensure-file
     ; where(
-        xtc-transform(!"core-format-check", !["--rtg-nf", <input-to-rtg-nf> | <pass-verbose> ()])
+        xtc-transform(!"core-format-check", 
+          <flatten-list> ["--rtg-nf", <input-to-rtg-nf>, <pass-verbose> (), <pass-start-nonterm>]
+        )
       )
     <+ <xtc-exit> 1
-    )
+
+  fc-options =
+         rtg-option(|"Format check against rtg in file")
+    + rtg-nf-option(|"Format check against normalized rtg in file")
+    + start-nonterm-option(|"Term must be of type s (default: start non-terms of rtg)")
+
+  fc-usage =
+    <tool-doc> fc-tool-doc()
+
+  fc-about =
+    <tool-doc> fc-tool-about()
+
+overlays
+
+  fc-tool-doc =
+    [ Usage("format-check --rtg file [OPTIONS]")
+    , Summary(
+       "Checks if a term is in the language defined by an
+        RTG. If it is, then the term is said to be in the right
+        format."
+      )
+    , OptionUsage()
+    , AutoReportBugs()
+    ]
+
+  fc-tool-about =
+    [ AutoProgram()
+    , Author(Person("Martin Bravenboer", "martin@cs.uu.nl"))
+    , GNU_LGPL("2002-2004", "Martin Bravenboer <martin@cs.uu.nl>")
+    , Config([
+        DefaultXTCRepository()
+      , CurrentXTCRepository()
+      ]) 
+    ]

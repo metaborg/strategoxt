@@ -4,16 +4,19 @@ imports liblib
 strategies 
 
   main-format-check-tests = 
-    xtc-temp-files(
-      test-suite(!"format-check",
-        int-list-tests
-      ; expression-tests(simple-inj)
-      ; expression-tests(quoted-exp)
-      ; string-star
-      ; string-plus
-      ; string-even
-      ; string-opt
-      ; tuple-stuff 
+    option-wrap(general-options,
+      xtc-temp-files(
+        test-suite(!"format-check",
+          int-list-tests
+        ; expression-tests(simple-inj)
+        ; expression-tests(quoted-exp)
+        ; string-star-tests
+        ; string-plus-tests
+        ; string-even-tests
+        ; string-opt-tests
+        ; tuple-stuff-tests
+        ; argument-tests
+        )
       )
     )
 
@@ -30,6 +33,14 @@ strategies
     ; apply-and-fail(!"test: Not an int-list f", fc-int-list, !Conc("foo", []))
     ; apply-and-fail(!"test: Not an int-list g", fc-int-list, !Conc([], "foo"))
 
+  argument-tests =
+          apply-test(!"test: Specify a start symbol a", simple-inj(|"Id"), !"Bla")
+    ; apply-and-fail(!"test: Specify a start symbol b", simple-inj(|"Id"), !1)
+    ;     apply-test(!"test: Specify a start symbol c", simple-inj(|"IntConst"), !1)
+    ;     apply-test(!"test: Specify a start symbol d", simple-inj(|"Exp"), !Plus(IntConst(2), IntConst(4)))
+    ; apply-and-fail(!"test: Specify a start symbol e", tuple-stuff(|"Int2"), !1)
+    ;     apply-test(!"test: Specify a start symbol f", tuple-stuff(|"Int2"), !(1, 2))
+
   expression-tests(s) = 
       apply-test(!"test: Simple injection 1", s, !"Bla")
     ; apply-test(!"test: Simple injection 2", s, !3)
@@ -42,11 +53,11 @@ strategies
     ; apply-and-fail(!"test: Incorrect plus expression 1", s, !Plus(2, Var("a")))
     ; apply-and-fail(!"test: Incorrect plus expression 2", s, !Plus(IntConst("2"), Var("a")))
 
-  tuple-stuff =
+  tuple-stuff-tests =
       apply-test(!"test: Tuple1, not head or last", tuple-stuff, !Tuple1(1, (2, 3), 4))
     ; apply-test(!"test: Tuple2, head", tuple-stuff, !Tuple2((1, 2), 3))
 
-    ; apply-and-fail(!"Incorrect Tuple1", tuple-stuff, !Tuple1(1, 2, 4))
+    ; apply-and-fail(! "Incorrect Tuple1", tuple-stuff, !Tuple1(1, 2, 4))
     ; apply-and-fail(!"Incorrect Tuple1", tuple-stuff, !Tuple1(1, 2, 3, 4))
     ; apply-and-fail(!"Incorrect Tuple2", tuple-stuff, !Tuple2(1, (2, 3)))
 
@@ -56,55 +67,71 @@ strategies
     ; apply-and-fail(!"Incorrect Tuple3", tuple-stuff, !Tuple3(1, 2, (3, 4, 5, 6)))
     ; apply-and-fail(!"Incorrect Tuple3", tuple-stuff, !Tuple3(1, 2, 3, 5))
 
-   string-star =
+   string-star-tests =
       apply-test(!"Empty list", StringStar, ![])
     ; apply-test(!"List with some elements", StringStar, !["Hello", "World"])
     ; apply-and-fail(!"List with element of illegal type", StringStar, ![1])
     ; apply-and-fail(!"List with element of illegal type", StringStar, !["Hello", 1, "World"])
 
-   string-plus =
+   string-plus-tests =
       apply-and-fail(!"Empty list", StringPlus, ![])
     ; apply-test(!"List with some elements", StringPlus, !["Hello"])
     ; apply-test(!"List with some elements", StringPlus, !["Hello", "World"])
     ; apply-and-fail(!"List with element of illegal type", StringPlus, ![1])
     ; apply-and-fail(!"List with element of illegal type", StringPlus, !["Hello", 1, "World"])
 
-   string-even =
+   string-even-tests =
           apply-test(!"Empty list", StringEven, ![])
     ; apply-and-fail(!"List with some elements", StringEven, !["Hello"])
     ;     apply-test(!"List with some elements", StringEven, !["Hello", "World"])
     ; apply-and-fail(!"List with element of illegal type", StringEven, ![1, 1])
     ; apply-and-fail(!"List with element of illegal type", StringEven, !["Hello", 1, "World"])
 
-   string-opt =
+   string-opt-tests =
       apply-test(!"Some String", StringOpt, !Some("String"))
     ; apply-test(!"No String", StringOpt, !None())
     ; apply-and-fail(!"Plain string", StringOpt, !"foo")
     ; apply-and-fail(!"Some no-string", StringOpt, !Some(1))
 
+strategies
+
   simple-inj =
-      write-to; xtc-transform(!"format-check", !["--rtg", "SimpleInj.rtg"]); read-from
+      write-to; xtc-format-check(|"SimpleInj.rtg"); read-from
+
+  simple-inj(|start) =
+      write-to; xtc-format-check(|"SimpleInj.rtg", start); read-from
 
   tuple-stuff =
-      write-to; xtc-transform(!"format-check", !["--rtg", "TupleStuff.rtg"]); read-from
+      write-to; xtc-format-check(|"TupleStuff.rtg"); read-from
+
+  tuple-stuff(|start) =
+      write-to; xtc-format-check(|"TupleStuff.rtg", start); read-from
 
   quoted-exp =
-      write-to; xtc-transform(!"format-check", !["--rtg", "QuotedExp.rtg"]); read-from
+      write-to; xtc-format-check(|"QuotedExp.rtg"); read-from
 
   StringStar =
-      write-to; xtc-transform(!"format-check", !["--rtg", "StringStar.rtg"]); read-from
+      write-to; xtc-format-check(|"StringStar.rtg"); read-from
 
   StringPlus =
-      write-to; xtc-transform(!"format-check", !["--rtg", "StringPlus.rtg"]); read-from
+      write-to; xtc-format-check(|"StringPlus.rtg"); read-from
 
   StringEven =
-      write-to; xtc-transform(!"format-check", !["--rtg", "StringEven.rtg"]); read-from
+      write-to; xtc-format-check(|"StringEven.rtg"); read-from
 
   StringOpt =
-      write-to; xtc-transform(!"format-check", !["--rtg", "StringOpt.rtg"]); read-from
+      write-to; xtc-format-check(|"StringOpt.rtg"); read-from
 
   fc-int-list =
-      write-to; xtc-transform(!"format-check", !["--rtg", "int-list.rtg"]); read-from
+      write-to; xtc-format-check(|"int-list.rtg"); read-from
+
+strategies
+
+  xtc-format-check(|rtg) =
+    xtc-transform(!"format-check", !["--rtg", rtg | <pass-verbose>])
+
+  xtc-format-check(|rtg, start) =
+    xtc-transform(!"format-check", !["--rtg", rtg, "--start", start | <pass-verbose>])
   
 signature
   constructors

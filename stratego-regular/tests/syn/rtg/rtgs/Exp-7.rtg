@@ -1,7 +1,7 @@
 regular tree grammar
   start Var Exp
   productions
-    Var -> Var   (<string>) .type (Type)
+    Var -> Var   (<string>) .type Type
 
     Exp -> Int   (<int>)
          | Times (Exp, Exp)

@@ -15,12 +15,16 @@ strategies
         ; generate-type-rules
       )
     ; format-check
-    ; format-check-report(|starts)
+    ; format-check-report(|<get-start-nonterms(!starts)>)
     <+ <exit> 1
     )
 
   core-format-check-options =
-    rtg-nf-option(|"Check against normalized RTG in file")
+      rtg-nf-option(|"Check against normalized RTG in file")
+    + start-nonterm-option(|"Term must be of type s (default: start non-terms of rtg)")
+
+  get-start-nonterms(default) =
+    get-start-nonterm; ![Nonterm(<id>)] <+ default
 
 strategies
 

@@ -1,5 +1,17 @@
 2004-07-17  Martin Bravenboer <martin@cs.uu.nl>
 
+	* xtc/format-check.str: improved --help documentation using
+	tool-doc.
+
+	* xtc/format-check.str: now accepts a -s|--start argument to
+	specify the start non-terminal. By default, the start
+	non-terminals of the RTG are used.
+
+	* tests/format-check/format-check-tests.str: lots of tests for the
+	format checker.
+
+2004-07-17  Martin Bravenboer <martin@cs.uu.nl>
+
 	* trans/interpret/core-format-check.str: new implementation of the
 	RTG format checker. The format checker now uses a bottom-up
 	algorithm, which was suggested by Eelco Visser. format-check now

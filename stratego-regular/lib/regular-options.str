@@ -2,7 +2,7 @@
  * @author  Martin Bravenboer <martin@cs.uu.nl>
  */
 module regular-options
-imports logging
+imports logging tool-doc
 
 /**
  * rtg-nf options
@@ -12,7 +12,7 @@ strategies
   rtg-nf-option(|descr) =
     ArgOption("--rtg-nf"
     , where(<set-config> ("--rtg-nf", <id>))
-    , <conc-strings> ("--rtg-nf file    ", descr)
+    , !HelpString("--rtg-nf file", descr)
     )
 
   /**
@@ -38,7 +38,7 @@ strategies
   rtg-option(|descr) =
     ArgOption("--rtg"
     , where(<set-config> ("--rtg", <id>))
-    , <conc-strings> ("--rtg file       ", descr)
+    , !HelpString("--rtg file", descr)
     )
 
   /**
@@ -49,6 +49,22 @@ strategies
   get-rtg-config =
     <get-config> "--rtg"; !FILE(<id>)
 
+strategies
+
+  start-nonterm-option(|msg) =
+    ArgOption("-s" + "--start"
+    , set-start-nonterm
+    , !HelpString("-s|--start s", msg)
+    )
+
+  set-start-nonterm =
+    <set-config> ("start-nonterm", <id>)
+
+  get-start-nonterm = 
+    <get-config> "start-nonterm"
+
+  pass-start-nonterm =
+    !["--start", <get-config> "start-nonterm"] <+ ![]
 
 /**
  * Workaround for tools that don't import xtc.
@@ -56,3 +72,6 @@ strategies
 signature
   constructors
     FILE : String -> FILE
+
+
+
