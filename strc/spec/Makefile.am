@@ -1,6 +1,6 @@
 include $(top_srcdir)/Makefile.xt 
 
-SUBDIRS = sig pack c front lib match opt strc test1 test2 testneg log
+SUBDIRS = sig pack c front lib match opt strc test1 test2 testneg test-strc log
 
 DIST_SUBDIRS = testlib test3 testspec $(SUBDIRS)
 
