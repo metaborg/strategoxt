@@ -18,6 +18,6 @@ TESTS 		 = build-match-laws-test
 CLEANFILES 	 = $(wildcard *.dep)
 
 BOOTCLEANFILES 	 = fusion.c dead-def-elim.c inline.c const-prop.c dead-var-elim.c \
-		   build-match-laws-test.c  
+		   build-match-laws-test.c  lift-definitions.c
 
 EXTRA_DIST 	 = $(wildcard *.str) $(wildcard *.meta)
