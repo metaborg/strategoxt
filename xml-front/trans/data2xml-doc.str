@@ -5,21 +5,69 @@ imports liblib
 strategies
 
   main-data2xml-doc =
-    io-wrap( data2xml )
+    io-wrap(explicit-option,
+      if <get-config> "--explicit" then
+        explicit-data2xml
+      else
+        if <get-config> "--very-explicit" then
+          very-explicit-data2xml
+        else
+          implicit-data2xml
+        end
+      end
+    )
+
+  explicit-option =
+    Option("--explicit"
+    , <set-config> ("--explicit", ())
+    , "--explicit       Use explicit XML elements for strings, lists, integers, and tuples"
+    )
+  + Option("--very-explicit"
+    , <set-config> ("--very-explicit", ())
+    , "--very-explicit  Use explicit XML elements for applications, strings, lists, integers, and tuples"
+    )
+
+  very-explicit-data2xml =
+    data2xml(
+      rec x(
+         ExplicitExplode-String
+      <+ ExplicitExplode-Int
+      <+ ExplicitExplode-List
+      <+ ExplicitExplode-Tuple
+      <+ ExplicitExplode-Appl(x)
+      )
+    )
+
+  explicit-data2xml =
+    data2xml(
+         ExplicitExplode-String
+      <+ ExplicitExplode-Int
+      <+ ExplicitExplode-List
+      <+ ExplicitExplode-Tuple
+      <+ Explode-Appl
+    )
+
+  implicit-data2xml =
+    data2xml(
+       Explode-String
+    <+ Explode-Int
+    <+ Explode-List
+    <+ Explode-Tuple
+    <+ Explode-Appl
+    )
 
   data2xml =
-      bottomup(
+    implicit-data2xml
+
+  data2xml(s) =
+    bottomup(
         try(
             \ None() -> [] \
          <+ ?Some(<id>)
-         <+ ( Explode-String
-           <+ Explode-Int
-           <+ Explode-List
-           <+ Explode-Tuple
-           <+ Explode-Appl
-            )
+         <+ s
         )
       )
+    ; bottomup(try( \ Conc(l1, l2) -> <conc> (l1, l2) \ ))
     ; !%>
         <?xml version="1.0"?>
 
@@ -39,23 +87,44 @@ strategies
       %>< ~n:s <@ !atts2 :: * @> ><% <flatten-list> children :: * %></ ~n:s ><%
       where <map(Explode-Attr)> atts* => atts2
 
+  Explode-Attr :
+    (s, v) -> @> ~n:s="<% <string2xml-attr-value> v %>" <@
+
   Explode-String :
     s -> %><% !s2 :: cdata %><%
       where <is-string; xml-escape> s => s2
 
-  Explode-Attr :
-    (s, v) -> @> ~n:s="<% <string2xml-attr-value> v %>" <@
-
-strategies // this construction can never occur in aterms resulting from xml2data
-
   Explode-List :
     xs -> %><% !xs :: * %><% :: *
-      where <is-list> xs
+    where
+      <is-list> xs
 
   Explode-Tuple :
     "" # (xs) -> %><% !xs :: * %><% :: *
 
   Explode-Int :
     i ->  %><% !s :: cdata %><%
-      where <is-int> i
-          ; <int-to-string> i => s
+    where
+      <is-int> i
+      ; <int-to-string> i => s
+
+strategies 
+
+  ExplicitExplode-Appl(x) :
+    s#(children){atts*} ->
+      %><appl cons="<% !s %>"><% <map(ExplicitExplode-Attr(x))> atts* :: * %> <% <flatten-list> children :: * %></appl><%
+
+  ExplicitExplode-Attr(x) =
+    !%><anno><% bottomup(x) %></anno><%
+
+  ExplicitExplode-List =
+    !%><list><% Explode-List :: * %></list><%
+
+  ExplicitExplode-Tuple =
+    !%><tuple><% Explode-Tuple :: * %></tuple><%
+
+  ExplicitExplode-Int =
+    !%><int><% Explode-Int %></int><%
+
+  ExplicitExplode-String =
+    !%><string><% Explode-String %></string><%

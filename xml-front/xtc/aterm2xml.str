@@ -1,0 +1,10 @@
+module aterm2xml
+imports liblib
+
+strategies
+
+  main-aterm2xml =
+    xtc-io-wrap(
+      xtc-transform(!"data2xml-doc", !["--explicit" | <pass-verbose>])
+    ; xtc-transform(!"pp-xml-doc", pass-verbose)
+    )

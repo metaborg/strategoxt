@@ -1,3 +1,20 @@
+2004-09-25  Martin Bravenboer <martin@cs.uu.nl>
+
+	* xtc/aterm2xml.str: composes data2xml-doc and pp-xml-doc into a
+	single aterm to xml tool. This tool uses the --explicit mode of
+	data2xml-doc.
+
+	* xtc/xml2aterm.str: composes parse-xml-info and xml-info2data
+	into a single xml to aterm tool. This tool uses the --explicit
+	mode of xml-info2data.
+
+	* trans/data2xml-doc.str: added an --explicit and --very-explicit
+	mode. The explicit mode uses XML elements for indicating string,
+	int, list and tuple constructs. The --very-explicit mode also use
+	an XML element for applications.
+
+	* trans/xml-info2data.str: added support for the --explicit mode.
+	
 2004-05-28  Martin Bravenboer <martin@cs.uu.nl>
 
 	* Moved into StrategoXT

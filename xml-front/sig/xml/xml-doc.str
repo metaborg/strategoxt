@@ -1,6 +1,4 @@
-
 module xml-doc
-imports list-cons option
 signature
   constructors
                      : CharData -> Content
@@ -58,3 +56,12 @@ signature
     QName            : Option(Qualifier) * NCName -> QName
                      : String -> NCName
                      : String -> Comment
+signature
+  constructors
+    Some : a -> Option(a)
+    None : Option(a)
+signature
+  constructors
+    Cons : a -> List(a)
+    Nil  : List(a)
+    Conc : List(a) * List(a) -> List(a)

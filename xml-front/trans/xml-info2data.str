@@ -4,11 +4,30 @@ imports xml-info liblib
 strategies
 
   main-xml-info2data =
-    iowrap( xml-info2data )
+    io-wrap(explicit-option,
+      if <get-config> "--explicit" then
+        explicit-xml-info2data
+      else
+        implicit-xml-info2data
+      end
+    )
+
+  explicit-option =
+    Option("--explicit"
+    , <set-config> ("--explicit", ())
+    , "--explicit       Use explicit XML elements for strings, lists, integers, and tuples"
+    )
+
+  explicit-xml-info2data =
+      ?Document(<id>)
+    ; topdown-wannos(repeat(ExplicitImplode <+ Implode))
 
   xml-info2data =
+    implicit-xml-info2data
+
+  implicit-xml-info2data =
       ?Document(<id>)
-    ; topdown-wannos( try(Implode) )
+    ; topdown-wannos(repeat(Implode))
 
 rules
 
@@ -20,7 +39,21 @@ rules
 
   Implode:
     Attribute(Name(_, s), value) -> (s, value)
-    
+
+rules
+
+  ExplicitImplode :
+    Element(Name(_, "int"), _, [Text(s)]) -> <trim-chars('\n' + '\t' + '\r' + ' '); string-to-int> s
+
+  ExplicitImplode :
+    Element(Name(_, "string"), _, [Text(s)]) -> s
+
+  ExplicitImplode :
+    Element(Name(_, "tuple"), _, children) -> ""#(children)
+
+  ExplicitImplode :
+    Element(Name(_, "list"), _, children) -> children
+
 strategies
 
   topdown-wannos(s) =

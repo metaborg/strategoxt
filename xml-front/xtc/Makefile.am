@@ -2,6 +2,8 @@ include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
 bin_PROGRAMS = \
+  aterm2xml \
+  xml2aterm \
   parse-xml-doc \
   pp-xml-doc \
   parse-xml-info \
