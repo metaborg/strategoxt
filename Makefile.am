@@ -47,11 +47,6 @@ make-%:
            (cd $$subdir; $(MAKE) $*) ; \
 	done
 
-config:
-	for subdir in $(PKGS) ; do \
-           (cd $$subdir; stdconfig) ; \
-	done
-
 install-%: %
 	for subdir in $(PKGS) ; do \
            cp -f $< $$subdir ; \
