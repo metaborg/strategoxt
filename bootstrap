@@ -7,7 +7,10 @@ echo "** INFO -- Working directory: $WORKINGDIR"
 BESTMAKE=
 GMAKE="`which gmake`"
 
-if [ "$GMAKE" = "" ]
+gmake -v
+
+#if [ "$GMAKE" = "" ]
+if [ "$?" != "0" ]
   then
     echo "** INFO -- gmake is not on the PATH. Assuming GNU Make is make!"
     BESTMAKE="`which make`"
