@@ -2,28 +2,21 @@ module ATerms
 imports list-cons option
 signature
   constructors
-                          : a_0 -> b_0
-    Nil                   : b_0
-    Conc                  : b_0 * b_0 -> b_0
-    Conc                  : b_0 * a_0 -> a_0
-    Conc                  : a_0 * b_0 -> a_0
-    Conc                  : a_0 * a_0 -> a_0
-    Cons                  : ATerm * b_0 -> a_0
-    annotation            : a_0 -> Ann
+    annotation            : List(ATerm) -> Ann
     annotated-placeholder : ATerm * Ann -> ATerm
-    annotated-appl        : AFun * a_0 * Ann -> ATerm
+    annotated-appl        : AFun * List(ATerm) * Ann -> ATerm
     annotated-fun         : AFun * Ann -> ATerm
     annotated-list        : ATermList * Ann -> ATerm
     annotated-constant    : ACon * Ann -> ATerm
     placeholder           : ATerm -> ATerm
-    appl                  : AFun * a_0 -> ATerm
+    appl                  : AFun * List(ATerm) -> ATerm
     fun                   : AFun -> ATerm
     list                  : ATermList -> ATerm
     constant              : ACon -> ATerm
                           : Literal -> AFun
     real                  : RealCon -> ACon
     int                   : IntCon -> ACon
-    not-empty             : b_0 -> ATermList
+    not-empty             : List(ATerm) -> ATermList
     real-con              : IntCon * NatCon * OptExp -> RealCon
     absent                : OptExp
     present               : IntCon -> OptExp
