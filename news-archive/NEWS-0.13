@@ -2,8 +2,15 @@ StrategoXT 0.13 -- released January ?, 2005
 
 ---------++ Summary of Changes
 
-Paragraph about dynamic rules, compiler features, library, improved
-tools and strategoxt-utils.
+StrategoXT 0.13, which represents over 3 months of development,
+features updates of the Stratego compiler, the Stratego language, and
+many transformation tools. Highlights include a new language feature
+for dynamic rules that depend on each other, several bug-fixes and
+usability improvements of the Stratego compiler, improved reporting of
+parse errors in sglri (and the Stratego compiler), more useful error
+reports in sdf2rtg, and much more!
+
+%TOC%
 
 ---------++ Stratego Language
 
@@ -192,7 +199,7 @@ descriptors. =write-term-to-text-pipe= uses =WriteToTextFile= but the
 
 ---------++ StrategoXT Deployment and Build System
 
----------+++ Separate package for StrategoXT Utils
+---------+++ Separate Package for StrategoXT Utils
 
 Tools that are not essential to most Stratego users are now in a
 separate package, =strategoxt-utils=. This package consists of the
