@@ -1,3 +1,8 @@
+2002-09-17  Eelco Visser  <visser@acm.org>
+
+	* src/utils/PpTerm.r: Ugly printer for terms; makes it easier
+	to inspect a term. pp-term is a glue script
+
 2002-06-11  Merijn de Jonge <mdejonge@cwi.nl>
    * treeviz/Makefile.am: added term-to-dot.sh.src to EXTRA_DIST
 

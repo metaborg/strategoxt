@@ -1,0 +1,66 @@
+#! /bin/sh
+# Copyright (C) 2002 Merijn de Jonge <mdejonge@cwi.nl>
+#                    Eelco Visser <visser@acm.org>
+#                    Joost Visser <jvisser@cwi.nl>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+# $Id: pp-term.sh.src,v 1.1 2002/09/17 16:38:02 eelco Exp $
+
+# usage:
+#   pp-term [-h] [-i aterm] [-o text]
+#
+# where
+#   -h          Displays usage information.
+#   -i aterm    Specifies the ATerm to pretty-print
+#   -o text     Specifies the file name of the resulting text term.
+
+PREFIX=__PREFIX__
+GPP=__GPP__
+PPTERM=${PREFIX}/libexec/PpTerm
+ABOX2TEXT=${GPP}/bin/abox2text
+
+# no core files
+ulimit -c 0
+
+usage () {
+cat <<ENDCAT
+ usage:
+   pp-term [-h] [-i aterm] [-o text]
+
+ where
+   -h          Displays usage information.
+   -i aterm    Specifies the ATerm to pretty-print
+   -o text     Specifies the file name of the resulting text term.
+
+This tool reads from standard input (or from the file specified with
+the -i option) an ATerm and writes to standard output (or to the file
+specified with the -o option) a pretty-printed version of the ATerm.
+
+ENDCAT 
+}
+
+for arg in $*
+do
+   case $1 in
+      -h ) usage; exit 0 ;;
+      -i ) INPUT="-i $2"; shift; shift ;;
+      -o ) OUTPUT="> $2"; shift ; shift ;;
+      -* ) usage; exit 1 ;;
+   esac
+done
+
+${PPTERM} ${INPUT} | ${ABOX2TEXT} ${OUTPUT}
