@@ -46,11 +46,11 @@ $(BASELINE_DESTDIR)/ssl.dummy :
 	$(MAKE) $(AM_MAKEFLAGS) DESTDIR=$(BASELINE_DESTDIR) install && \
 	cp -fp   libraries/*.la  $(BASELINE_DESTDIR)/$(prefix)/lib/ssl/ && \
 	cp -LRfp libraries/.libs $(BASELINE_DESTDIR)/$(prefix)/lib/ssl/ && \
-	cp -fp   native/*.la  $(BASELINE_DESTDIR)/$(prefix)/lib/ssl/ && \
-	cp -LRfp native/.libs $(BASELINE_DESTDIR)/$(prefix)/lib/ssl/ && \
+	cp -fp   native/ssl/*.la  $(BASELINE_DESTDIR)/$(prefix)/lib/ssl/ && \
+	cp -LRfp native/ssl/.libs $(BASELINE_DESTDIR)/$(prefix)/lib/ssl/ && \
 	touch $(BASELINE_DESTDIR)/ssl.dummy
 
-$(BASELINE_DEST)/xtc.dummy :
+$(BASELINE_DESTDIR)/xtc.dummy :
 	cd $(XTC_DIR) && \
 	$(MAKE) $(AM_MAKEFLAGS) && \
 	mkdir -p $(BASELINE_DESTDIR)/$(prefix)/lib/xtc/ && \

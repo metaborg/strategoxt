@@ -13,6 +13,7 @@ AC_CONFIG_FILES([
   Makefile
   spec/Makefile
   native/Makefile
+  native/ssl/Makefile
   libraries/Makefile
   tests/Makefile
 ])
