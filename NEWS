@@ -22,8 +22,8 @@ The name of the Stratego compiler was changed to strc. In this release
 sc is still available as a redirection to strc, but will no longer be
 available in the next release. The Stratego interpreter has been
 renamed to stri.  These changes where necessary because of name
-clashes with other programs on some platforms. Package based on autoxt
-do not need to make any changes; the renaming is reflected in
+clashes with other programs on some platforms. Packages based on
+autoxt do not need to make any changes; the renaming is reflected in
 Makefile.xt.
 
 Large parts of the Stratego Standard Library have been adapted to make
@@ -46,6 +46,26 @@ clear when considering side-effects; foobar(new), will generate a new
 unique string on each invocation of its argument strategy, while
 foobar(|<new>), will copy the same unique string to each use of its 
 term argument.
+
+Related to this extension is a change in the calling convention of
+generated C code. The current term is now the last argument of
+generated C functions, rather than the first. This has no effect on
+most Stratego programs, except for strategies with higher-order
+arguments which explicitly declare the type of those arguments. 
+Definitions of the form
+
+  foo(f : a * (b -> c) -> d) =  ... f(s) ...
+
+should be changed into
+
+  foo(f : (b -> c) * a -> d) =  ... f(s) ...
+
+Thus, the argument corresponding to the current term becomes the last
+argument of f. Currently the compiler automatically detects and
+repairs this in the internal representation, and emits a warning
+indicating the definitions that are effected; no programs should break
+because of the change. It is advised, however, to make the change in
+the source.
 
 The Stratego Compiler has been refactored to make use of the official
 signature from stratego-front. The Stratego Optimizer has been
@@ -102,7 +122,8 @@ CONTRIBUTIONS
   * The major developments were carried out by:
     Martin Bravenboer, Rob Vermaas, Eelco Visser.
 
------------------------------------------------------------------------------
+-----------------------------------------------------------------------
+
 StrategoXT 0.9.2 -- released 2003-07-04
 
 This is a logistics release. The main purpose of the work done for
