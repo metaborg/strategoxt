@@ -17,6 +17,8 @@ strategies
       ; <ReadFromFile>file => grammar
       ; try-debug(<concat-strings>["Minimizing grammar ",str])
       ; <collect-prods;de-normalize-productions>tree => prods
+      ; try-debug-list(!["Productions found in parse tree:" | prods])
+      ; try-debug(!"Productions found in grammar:")
       ; <topdown(try(mk-unused-prod-empty(!prods)))>grammar
       ; eliminate-empty-prods
       ; try-debug(!"Minimized grammar")
@@ -46,6 +48,7 @@ strategies
 
   mk-unused-prod-empty(prods)
     = prod(id,id,id) => p 
+    ; try-debug(!p)
     ; prods          => ps
     ; not(<getfirst(match-prod(!p))>ps)
     ; !empty-prod()
@@ -55,6 +58,9 @@ strategies
     ; p => p1
     ; ( <eq>(<remove-attrs>p1,<remove-attrs>p2) 
      <+ <eq>(<get-constr>p1,<get-constr>p2)
+     // Since character-classes may be non-normal we keep any 
+     //   production that contains a character-class
+     <+ <prod(oncetd(char-class(id)),id,id);debug(!"CC ")>p1
       )
   
   remove-attrs
@@ -124,7 +130,10 @@ strategies
              <exit> 1
            )
 
-  try-debug(s) = try(not(has-option(!Silent));where(s;debug))
+  try-debug(s)
+    = try(not(has-option(!Silent));where(s;debug))
+  try-debug-list(s)
+    = try(not(has-option(!Silent));where(s;map(debug)))
 
 signature
   constructors
@@ -134,7 +143,8 @@ signature
 strategies
 
   collect-prods
-    = collect(is-prod)
+    = collect(is-prod) => prods
+    //; try-debug-list(!["Productions found in parse tree:" | prods])
 
   is-prod
     = ?prod(_,_,_)

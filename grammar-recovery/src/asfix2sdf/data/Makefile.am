@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.2 2001/08/17 10:10:53 jvisser Exp $
+# $Id: Makefile.am,v 1.3 2001/08/20 15:50:12 jvisser Exp $
 
 EXTRA_DIST   =\
 	test1.pico.asfix\
@@ -27,4 +27,11 @@ EXTRA_DIST   =\
 	pico.minimized.af.correct\
 	test1.pico.denorm.af.correct
 
+generate-testset: pico.tbl test2.pico.asfix
+
+%.tbl: %.def
+	sdf2table -i $< -o $@
+
+%.pico.asfix: %.pico
+	sglr -p pico.tbl -i $< -o $@
 

@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.2 2001/08/16 21:48:00 jvisser Exp $
+# $Id: Makefile.am,v 1.3 2001/08/20 15:50:11 jvisser Exp $
 
 include $(srcdir)/../templates/make_rules
 include $(srcdir)/../templates/make_rules.stratego
@@ -33,8 +33,10 @@ bin_SCRIPTS  = $(STRATEGO_PRG)
 
 TESTS        =\
 	asfix2sdf_check\
+	test2_check\
 	asfix2sdf_d_check\
-	asfix2sdf_g_check
+	asfix2sdf_g_check\
+	test2_g_check
 
 
 CLEAN_FILES += asfix2sdf_check
@@ -48,6 +50,11 @@ asfix2sdf_check_input      = data/test1.pico.asfix
 asfix2sdf_check_output     = data/test1.pico.norm.af.out
 asfix2sdf_check_correct    = data/test1.pico.norm.af.correct
 
+test2_check_prog       = asfix2sdf
+test2_check_input      = data/test1.pico.cons.asfix
+test2_check_output     = data/test1.pico.cons.af.out
+test2_check_correct    = data/test1.pico.cons.af.correct
+
 asfix2sdf_d_check_prog       = asfix2sdf
 asfix2sdf_d_check_input      = data/test1.pico.asfix
 asfix2sdf_d_check_output     = data/test1.pico.denorm.af.out
@@ -59,4 +66,10 @@ asfix2sdf_g_check_input      = data/test1.pico.asfix
 asfix2sdf_g_check_output     = data/pico.minimized.af.out
 asfix2sdf_g_check_correct    = data/pico.minimized.af.correct
 asfix2sdf_g_check_switches   = -g data/pico.af
+
+test2_g_check_prog       = asfix2sdf
+test2_g_check_input      = data/test1.pico.cons.asfix
+test2_g_check_output     = data/pico.minimized.af.out2
+test2_g_check_correct    = data/pico.minimized.af.correct2
+test2_g_check_switches   = -g data/pico.af
 
