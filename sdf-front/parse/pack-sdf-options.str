@@ -103,9 +103,18 @@ strategies
 
   include-from-dir-option =
     ArgOption("-I" + "--Include"
-    , where(<extend-config>("-I", [IncludeDir(<id>)]))
+    , where(<extend-config>("-I", [IncludeDir(<ensure-directory>)]))
     , !"-I d | --Include d   Include modules from directory d"
     )
+
+  ensure-directory =
+    if not(file-exists) then
+      debug(!"pack-sdf: warning: directory specified with -I does not exist: ")
+    else
+      if not(filemode; isdir) then
+        debug(!"pack-sdf: warning: path specified with -I is a file, not a directory: ")
+      else id end
+    end
 
   dep-options = 
     Option("--nodep" + "-nodep"
@@ -124,7 +133,6 @@ strategies
    */
   include-path =
     <get-config> "-I" <+ ![]
-
 
   depfile-from-config =
     <get-config> "-dep"
