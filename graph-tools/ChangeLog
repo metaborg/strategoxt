@@ -1,3 +1,8 @@
+2001-08-08 Merijn de Jonge <mdejonge@cwi.nl> 
+   * src/graphxml2dot/GraphXML2dot.r: added support for label attribute.
+   * src/graphxml2dot/GraphXML2dot.r: fixed generated AST for node
+     attributes
+
 2001-06-08 Merijn de Jonge <mdejonge@cwi.nl> 
    * src/graphterms2graphxml/Makefile.am: removed garbage from Makefile.am
    * src/dot: dot.pp and dot.pp.af are also installed in share/graph-tools

@@ -19,7 +19,7 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
  02111-1307, USA.
 
- $Id: GraphXML2dot.r,v 1.1 2001/06/05 12:34:29 mdejonge Exp $
+ $Id: GraphXML2dot.r,v 1.2 2001/08/07 23:00:32 mdejonge Exp $
 *)
 
 module GraphXML2dot
@@ -37,10 +37,11 @@ strategies
       \
 
   node2dot
-    = \node(as) -> node-stmt(n,<conc>(shapes,styles))
+    = \node(as) -> node-stmt(n,Attr-List(<concat>[shapes,styles, labels]))
        where !as;oncetd(?name(n))
            ; <filter(attribute2shape)>as => shapes
            ; <filter(attribute2style)>as => styles
+           ; <filter(attribute2label)>as => labels
       \
 
   edge2dot
@@ -63,3 +64,6 @@ strategies
     = \class(c) -> attr-id("shape","record")
        where <de-quote>c => "declared"
       \ 
+  attribute2label
+    = \label(l) -> attr-id("label", l) 
+      \
