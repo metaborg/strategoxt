@@ -169,12 +169,12 @@ install-exec-local:
 	@for file in fordummy $(bin_PROGRAMS) $(bin_SCRIPTS) ; do \
 	 	      if [ "$$file" = "fordummy" ]; then continue; fi; \
           $(XTC)/bin/xtc -r $(DREPOSITORY) register -l $(bindir) -V $(VERSION) \
-		-t $$file ; \
+		-t `basename $$file $(EXEEXT)` ; \
         done ; \
 	for file in fordummy $(libexec_PROGRAMS) $(libexec_SCRIPTS) ; do \
 	 	      if [ "$$file" = "fordummy" ]; then continue; fi; \
           $(XTC)/bin/xtc -r $(DREPOSITORY) register -l $(libexecdir) -V $(VERSION) \
-		-t $$file ; \
+		-t `basename $$file $(EXEEXT)` ; \
         done; \
 	echo "Tools registered in repository $(DREPOSITORY): $(bin_PROGRAMS) $(bin_SCRIPTS) $(libexec_PROGRAMS) $(libexec_SCRIPTS)"
 
