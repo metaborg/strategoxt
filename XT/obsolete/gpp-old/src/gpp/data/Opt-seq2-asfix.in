@@ -1,0 +1,1 @@
+appl(prod([cf(opt(layout)),cf(sort("Opt-seq2")),cf(opt(layout))],sort("<START>"),no-attrs),[layout([]),appl(prod([cf(opt(seq([sort("A"),lit("noot"),sort("B")])))],cf(sort("Opt-seq2")),attrs([cons("opt-seq2"),id("Main")])),[appl(prod([],cf(opt(seq([sort("A"),lit("noot"),sort("B")]))),no-attrs),[])]),layout([])])
