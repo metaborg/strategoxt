@@ -25,7 +25,6 @@ AC_CONFIG_FILES([
   trans/abox2/data/Makefile 
   xtc-tools/Makefile 
   tohtml/Makefile
-  tohtml/data/Makefile
 ])
 
 AC_OUTPUT
