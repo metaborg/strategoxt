@@ -1,3 +1,11 @@
+2003-05-27  Martin Bravenboer  <martin@mbravenboer.org>
+
+  * parse/sdf-ensugar.str and desugar.str: added (de)sugaring of no-attrs
+    to attrs([]). 
+
+  * syn/Stratego-Sdf2.sdf: added variables for symbols, attributes and 
+    productions. Quotations for Grammar and Attributes.
+
 2003-05-26  Martin Bravenboer  <martin@mbravenboer.org>
 
   * Added quotation and anti-quotation of symbols to Stratego-Sdf2

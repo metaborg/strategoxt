@@ -5,6 +5,7 @@ imports Sdf2-Syntax options simple-traversal
  * sdf-desugar implements the following desugarings:
  *
  *   - remove double quotes in String literals: cons, lit
+ *   - replace no-attrs by attrs([])
  *
  * Author:
  *   Martin Bravenboer
@@ -16,7 +17,8 @@ strategies
       topdown(repeat(Desugar); try(DesugarOnce))
     )
 
-  Desugar = fail
+  Desugar :
+    no-attrs() -> attrs([])
 
 rules
  

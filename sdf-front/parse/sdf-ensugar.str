@@ -5,6 +5,7 @@ imports Sdf2-Syntax options simple-traversal
  * sdf-ensugar implements the following ensugarings:
  *
  *   - add double quotes in String literals: cons, lit
+ *   - replace attrs([]) by no-attrs
  *
  * Author:
  *   Martin Bravenboer
@@ -13,8 +14,11 @@ strategies
 
   main-sdf-ensugar =
     io-wrap(
-      topdown(try(EnsugarOnce))
+      topdown(repeat(Ensugar); try(EnsugarOnce))
     )
+
+  Ensugar :
+    attrs([]) -> no-attrs()
 
 strategies
  
