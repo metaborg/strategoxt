@@ -6,5 +6,6 @@
 	--with-gpp=/home/xt/xt \
 	--with-stratego=/home/xt/xt \
 	--with-srts=/home/xt/xt \
-	--with-rpmdir=/home/visser/rpm
+	--with-rpmdir=/home/visser/rpm \
+	--enable-develop
  

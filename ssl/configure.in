@@ -40,7 +40,7 @@ AC_ARG_WITH(stratego,
 AC_SUBST(STRATEGO)
 
 AC_ARG_WITH(rpmprefix,
-  [  --with-rpmprefix          Specify location of installation prefix for rpm: /usr],
+  [  --with-rpmprefix       Specify location of installation prefix for rpm: /usr],
   RPMPREFIX=$withval,
   RPMPREFIX="/usr"
 )
@@ -60,7 +60,12 @@ AC_ARG_WITH(rpmtmp,
 )
 AC_SUBST(RPMTMP)
 
-AC_REVISION($Id: configure.in,v 1.23 2002/09/17 22:17:21 stratego Exp $)
+AC_ARG_ENABLE(develop, 
+  [  --enable-develop       Enable development of libray modules (requires parse-mod)], 
+  develop="true",
+  develop="false"
+)
+AM_CONDITIONAL(DEVELOP, test "x$develop" = "xtrue")
 
 AC_PROG_CC
 AC_PROG_RANLIB

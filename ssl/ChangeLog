@@ -1,3 +1,10 @@
+2002-09-20  Eelco Visser  <visser@acm.org>
+
+	* configure.in: Added --enable-develop configuration flag to 
+	enable remaking .rtree files in spec/ after they have changed.
+	This is not needed when in distribution mode in which case the
+	files should just be installed.
+
 2002-09-18  Eelco Visser  <visser@acm.org>
 
 	* spec/list-misc.r: number(s) numbers the elements of a list

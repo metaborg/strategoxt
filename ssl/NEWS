@@ -1,22 +1,32 @@
 ------------------------------------------------------------------------------
+ __ __ __  __    _  __ __  __  __   __
+|__   |   |__|  /_\   |   |__ | _  |  |
+ __|  |   | \  /   \  |   |__ |__| |__|
+
+------------------------------------------------------------------------------
 
 News about Stratego releases
 
 ------------------------------------------------------------------------------
 
-Version 0.9beta1
+Version 0.8.1
 
- released: 
+ released: September 20, 2002
 
-SUMMARY OF CHANGES
+ This is a maintenance release, providing small improvements over version 0.8.
+ The concrete syntax extension requires new versions of the packages asfix-tools (0.4),
+ sdf-tools (0.4), stratego-tools (0.4), and gpp (2.4).
+
+ * List variables can now occur by themselves and in variable scopes
+ * Support for cgi programming
+ * Install compiler components in libexec
+ * Verbose mode for parse-cmod
+ * Include install-sh, missing, mkinstalldirs in all packages
+ * Make targets for creating RPM's
 
 MORE INFORMATION
 
- * http://www.stratego-language.org/Stratego/StrategoRelease08
-
-CONTRIBUTIONS
-
- * Martin Bravenboer: end of file in comments
+ * http://www.stratego-language.org/Stratego/StrategoRelease081
 
 ------------------------------------------------------------------------------
 
