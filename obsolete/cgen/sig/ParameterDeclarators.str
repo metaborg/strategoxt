@@ -1,8 +1,0 @@
-module ParameterDeclarators
-signature
-  constructors
-    ParamDecl : Either(DeclarationQualifierList, Either(TypeQualifiers, Either(DeclarationSpecifier, TypeSpecifier))) * Either(AbstractDeclarator, IdentifierDeclarator) -> ParameterDeclaration
-    ParamDeclTD : Either(DeclarationSpecifier, TypeSpecifier) * TypedefDeclarator -> ParameterDeclaration
-signature
-  constructors
-    TypeName : Either(TypeSpecifier, TypeQualifiers) * Option(AbstractDeclarator) -> TypeName

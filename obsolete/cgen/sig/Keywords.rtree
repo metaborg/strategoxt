@@ -1,1 +1,0 @@
-Specification([Signature([Constructors([OpDecl("return",ConstType(Var("RETURN"))),OpDecl("exit",ConstType(Var("RETURN")))])]),Signature([])])

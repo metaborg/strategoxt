@@ -1,1 +1,0 @@
-appl(prod([cf(opt(layout)),cf(sort("Alt3")),cf(opt(layout))],sort("<START>"),no-attrs),[layout([]),appl(prod([cf(alt(lit("aap"),alt(lit("noot"),lit("mies"))))],cf(sort("Alt3")),attrs([cons("alt3"),id("Main")])),[appl(prod([lit("noot")],cf(alt(lit("aap"),alt(lit("noot"),lit("mies")))),no-attrs),[lit("noot")])]),layout(["\n"])])

@@ -1,1 +1,0 @@
-appl(prod([cf(opt(layout)),cf(sort("Lit-Iter-Star")),cf(opt(layout))],sort("<START>"),no-attrs),[layout([]),appl(prod([cf(iter-star(lit("aap")))],cf(sort("Lit-Iter-Star")),attrs([term(cons("lit-iter-star"))])),[lit("aap"),layout([" "]),lit("aap"),layout([" "]),lit("aap")]),layout(["\n"])])

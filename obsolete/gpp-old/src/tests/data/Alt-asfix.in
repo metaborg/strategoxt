@@ -1,1 +1,0 @@
-appl(prod([cf(opt(layout)),cf(sort("Alt")),cf(opt(layout))],sort("<START>"),no-attrs),[layout([]),appl(prod([cf(alt(iter-sep(sort("A"),lit(",")),sort("B")))],cf(sort("Alt")),attrs([term(cons("alt"))])),[appl(prod([cf(iter-sep(sort("A"),lit(",")))],cf(alt(iter-sep(sort("A"),lit(",")),sort("B"))),no-attrs),[["a"]])]),layout(["\n"])])
