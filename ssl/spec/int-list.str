@@ -41,40 +41,62 @@ strategies
   )
 
 /**
- * If you do need to iterate over a sequence of numbers, the strategy range comes in handy. 
- * It generates lists containing arithmetic progressions:
+ * Generates lists of numbers.
  * 
- *   <range> 10 => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
- *
- * The given end point is never part of the generated list; range(10) generates a list of 10 values, 
+ * The given end point is never part of the generated list; <range> 10 generates a list of 10 values, 
  * exactly the legal indices for items of a sequence of length 10. It is possible to let the range 
- * start at another number, or to specify a different increment (even negative; sometimes this is 
- * called the `step'):
+ * start at another number.
  *
- *   <range>       (5, 10)     => [5, 6, 7, 8, 9]
- *   <range(|3)>   (0, 10)     => [0, 3, 6, 9]
- *   <range(|-30)> (-10, -100) => [-10, -40, -70]
- *
- *   <range(<mul> (<id>, 2))> 
- *
- * Type : Int -> [Int]
- * Type : Int * Int -> [Int]
+ * <range> 10 => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+ * <range> (5, 10)     => [5, 6, 7, 8, 9]
  *
  * The documentation of the range strategy is partly copied from the Python tutorial.
+ *
+ * @type Int       -> [Int]
+ * @type Int * Int -> [Int]
  */
 strategies
 
-  range        = is-int; <range> (0, <id>)
-  range        = (is-int, is-int); range(|1)
+  range = is-int; <range> (0, <id>)
+  range = (is-int, is-int); range(|1)
+
+/**
+ * Generates lists of numbers using a specified step size.
+ *
+ * These range variants use a specified increment. This step size is allowed
+ * to be negative.
+ *
+ * <range(|3)>   10          => [0, 3, 6, 9]
+ * <range(|3)>   (0, 10)     => [0, 3, 6, 9]
+ * <range(|-30)> (-10, -100) => [-10, -40, -70]
+ *
+ * @type step Int
+ * @type      Int       -> [Int]
+ * @type      Int * Int -> [Int]
+ */
+strategies
+
   range(|step) = is-int; <range(|step)> (0, <id>)
-  range(next)  = is-int; <range(next)> (0, <id>)
+  range(|step) = (is-int, is-int); range(<add> (<id>, step))
 
-  range(|step) =
-    range(<add> (<id>, step))
+/**
+ * Generates lists of numbers using a 'next' generator.
+ *
+ *  <range(<mul> (<id>, 2))> 
+ *
+ * @type next Int -> Int
+ *
+ * @type      Int       -> [Int]
+ * @type      Int * Int -> [Int]
+ */
+strategies
 
-  range(next) =
-    range-next(next) <+ ![]
+  range(next) = is-int; <range(next)> (0, <id>)
+  range(next) = (is-int, is-int); range-next(next) <+ ![]
 
+  /**
+   * @warning private helper strategy, do not use directly
+   */
   range-next(inc) :
       (start, end) -> [start | tail]
         where <inc> start => next
