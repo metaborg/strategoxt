@@ -1,0 +1,6 @@
+module foo
+imports list
+strategies
+
+   main =
+     rules(Foo: t@(1, 2) -> [1, 2])
