@@ -54,7 +54,8 @@ strategies
    * @type  starts  List(NonTerm)
    */
   format-check =
-    where(<repeat(Type)> "")
+    where(<set-config> ("typetable", <new-hashtable> ()))
+  ; where(<repeat(Type)> "")
   ; bottomup-consnil(
        where(get-types)
 
@@ -63,7 +64,7 @@ strategies
     <+ repeat1(Type)
        ; report-types
 
-    <+ one-consnil(not(is-typed))
+    <+ debug(!"a ----------------- "); one-consnil(not(is-typed))
 
     <+ report-type-failure(id)
     )
@@ -71,8 +72,11 @@ strategies
   type-string =
     is-string
     ; ?s
-    ; where(<get-types> "" => set)
-    ; rules(Types : s -> set)
+    ; where(
+        <get-types> "" => set
+      ; <get-config> "typetable"
+      ; hashtable-put(|s, set)
+      )
 
   is-typed =
     where(get-types; iset-elements => [_ | _])
@@ -113,9 +117,10 @@ strategies
     ?ProdRule(c, [Appl(ConsTerm(), [Ref(a), Ref(b)])])
     ; rules(
         UserType :+ t@[hd | tl] -> t
-          where <has-type(|a)> hd
+          where <not(has-type(|c))> t
               ; <has-type(|b)> tl
-              ; <new-type(|c)> t
+              ; <has-type(|a)> hd
+              ; <set-type(|c)> t
       )
 
   /**
@@ -136,7 +141,7 @@ strategies
   generate-type-rule =
     ?ProdRule(a, [Appl(NilTerm(), [])])
     ; rules(
-        UserType :+ t -> t
+        UserType :+ t@[] -> t
           where !t => []
               ; <new-type(|a)> []
       )
@@ -168,11 +173,10 @@ strategies
   generate-type-rule =
     ?ProdRule(a, [Appl(TupleTerm(_), as)])
     ; rules(
-        UserType :+ t -> t
-          where !t => ""#(args)
-              ; <not(has-type(|a))> t
+        UserType :+ t@""#(args) -> t
+          where <not(has-type(|a))> t
               ; <list-has-type(|<map(?Ref(<id>))> as)> args
-              ; <new-type(|a)> t
+              ; <set-type(|a)> t
       )
 
   /**
@@ -184,7 +188,7 @@ strategies
         UserType :+ t@f#(args) -> t
           where <not(has-type(|a))> t
               ; <list-has-type(|<map(?Ref(<id>))> as)> args
-              ; <new-type(|a)> t
+              ; <set-type(|a)> t
       )
 
   /**
@@ -205,19 +209,13 @@ strategies
 strategies
 
   Type =
-    UserType + StandardType
+    where(StandardType + UserType)
 
   StandardType =
-    where(
-      is-int
-    ; new-type(|Int())
-    )
+    is-int; new-type(|Int())
 
   StandardType =
-    where(
-      is-string
-    ; new-type(|String())
-    )
+    is-string; new-type(|String())
 
 strategies
 
@@ -230,6 +228,12 @@ strategies
     where(
       retrieve-types
     ; not(iset-contains(|a))
+    ; iset-add(|a)
+    )
+
+  set-type(|a) =
+    where(
+      retrieve-types
     ; iset-add(|a)
     )
 
@@ -250,13 +254,18 @@ strategies
    * A new set is created if this hasn't been done yet.
    */
   retrieve-types =
-    Types
+    get-types
     <+ ?t
-       ; new-iset(|4, 75) => set
-       ; rules(Types : t -> set)
+       ; new-iset(|8, 75) => set
+       ; where(
+           <get-config> "typetable"
+         ; hashtable-put(|t, set)
+         )
 
   get-types =
-    Types
+    ?t
+    ; <get-config> "typetable"
+    ; hashtable-get(|t)
 
 /**
  * Reporting
