@@ -2,7 +2,7 @@ TESTS = test1.sh test2.sh test3.sh test4.sh test5.sh test6.sh \
 	test7.sh test8.sh test9.sh test10.sh
 
 
-CLEANFILES      = $(TESTS:%.sh=%.out) tests.tbl
+CLEANFILES      = $(TESTS) $(TESTS:%.sh=%.out) tests.tbl
 
 TESTSET_IN      = $(TESTS:%.sh=%.in) 
 TESTSET_CORRECT = $(TESTS:%.sh=%.correct) 
