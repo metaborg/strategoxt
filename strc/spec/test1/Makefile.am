@@ -7,7 +7,7 @@ check_PROGRAMS 	= test02 test03 test04 test05			    \
 		  test20 test21 test22 test23 test24 test25 \
 		  test27 test28a test28 test29 test30 test31 test32 \
 		  test33 test34 test35 test36 test37 test38 test39  \
-		  test40 test41 test42 test43 test44 test45	    \
+		  test40 test41 test43 test44 test45	    \
 		  test46 test47 test48 test49 test50 test51 test52  \
 		  test53 test54 test55 test56 test57 test58 test59  \
 		  test60 \
@@ -75,7 +75,6 @@ nodist_test38_SOURCES = test38.c
 nodist_test39_SOURCES = test39.c
 nodist_test40_SOURCES = test40.c
 nodist_test41_SOURCES = test41.c
-nodist_test42_SOURCES = test42.c
 nodist_test43_SOURCES = test43.c
 nodist_test44_SOURCES = test44.c
 nodist_test45_SOURCES = test45.c
