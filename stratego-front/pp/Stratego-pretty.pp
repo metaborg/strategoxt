@@ -239,6 +239,8 @@
    AddDynRule             -- V is=2 [H hs=1 [_1 KW[":+"]] _2],
    SetDynRuleMatch        -- V is=2 [H hs=1 [_1 KW[":"] ] _2],
 
+   SetDynRuleDepends      -- V is=2 [H hs=1 [_1 KW[":"] ] _2 H[KW["depends"] KW["on"] _3]],
+
    LabeledDynRuleId  -- H hs=0 [_1 "." _2],
    AddLabelDynRuleId -- H hs=0 [_1 "+" _2],
    DynRuleId         -- _1,

@@ -10,6 +10,7 @@ signature
     DynRuleId                  : RuleDec -> DynRuleId
     AddLabelDynRuleId          : RuleDec * Term -> DynRuleId
     LabeledDynRuleId           : RuleDec * Term -> DynRuleId
+    SetDynRuleDepends          : DynRuleId * Rule * Term -> DynRuleDef
     SetDynRuleMatch            : DynRuleId * Term -> DynRuleDef
     AddDynRule                 : DynRuleId * Rule -> DynRuleDef
     SetDynRule                 : DynRuleId * Rule -> DynRuleDef
@@ -62,8 +63,10 @@ signature
     ExtendOverrideDynamicRules : List(RuleDef) -> Strategy
     ExtendDynamicRules         : List(RuleDef) -> Strategy
     OverrideDynamicRules       : List(RuleDef) -> Strategy
+    DynRuleIntersectUnion      : Strategy * List(Id) * List(Id) * Strategy -> Strategy
     DynRuleUnion               : Strategy * List(Id) * Strategy -> Strategy
     DynRuleIntersect           : Strategy * List(Id) * Strategy -> Strategy
+    DynRuleIntersectUnionFix   : List(Id) * List(Id) * Strategy -> Strategy
     DynRuleUnionFix            : List(Id) * Strategy -> Strategy
     DynRuleIntersectFix        : List(Id) * Strategy -> Strategy
     GenDynRules                : List(DynRuleDef) -> Strategy

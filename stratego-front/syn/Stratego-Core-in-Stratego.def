@@ -195,6 +195,8 @@ exports
     DynRuleId ":+"  Rule        -> DynRuleDef {cons("AddDynRule")}
     DynRuleId ":"   Term        -> DynRuleDef {cons("SetDynRuleMatch")}
 
+    DynRuleId ":"   Rule "depends" "on" Term -> DynRuleDef {cons("SetDynRuleDepends")}
+
     RuleDec "." Term            -> DynRuleId {cons("LabeledDynRuleId")}
     RuleDec "+" Term            -> DynRuleId {cons("AddLabelDynRuleId")}
     RuleDec                     -> DynRuleId {cons("DynRuleId")}
@@ -213,17 +215,28 @@ exports
 
     "/" {Id ","}* "\\*" Strategy          -> Strategy {cons("DynRuleIntersectFix")}
     "\\" {Id ","}* "/*" Strategy          -> Strategy {cons("DynRuleUnionFix")}
+
+    "/" {Id ","}* "\\" 
+        {Id ","}* "/*"  Strategy          -> Strategy {cons("DynRuleIntersectUnionFix")}
+
     Strategy "/" {Id ","}* "\\" Strategy  -> Strategy {cons("DynRuleIntersect"),right}
     Strategy "\\" {Id ","}* "/" Strategy  -> Strategy {cons("DynRuleUnion"),right}
+
+    Strategy "/" {Id ","}* "\\" 
+                 {Id ","}* "/"  Strategy  -> Strategy {cons("DynRuleIntersectUnion"),right}
 
   context-free priorities
     StrategyAngle Term 		          -> Strategy {cons("BA")}
   > {"/" {Id ","}* "\\*" Strategy         -> Strategy {cons("DynRuleIntersectFix")}
      "\\" {Id ","}* "/*" Strategy         -> Strategy {cons("DynRuleUnionFix")}
+     "/" {Id ","}* "\\" 
+         {Id ","}* "/*"  Strategy         -> Strategy {cons("DynRuleIntersectUnionFix")}
     }
   > Strategy "=>" Term 		  	  -> Strategy {cons("AM")}
   > Strategy "/" {Id ","}* "\\" Strategy  -> Strategy {cons("DynRuleIntersect"),right}
   > Strategy "\\" {Id ","}* "/" Strategy  -> Strategy {cons("DynRuleUnion"),right}
+  > Strategy "/" {Id ","}* "\\" 
+                 {Id ","}* "/"  Strategy  -> Strategy {cons("DynRuleIntersectUnion"),right}
   > Strategy ";" Strategy 		  -> Strategy {cons("Seq"),right}
 
   context-free syntax %% legacy Dynamic rules
