@@ -104,7 +104,8 @@ strategies
              <concat-strings>[GPP, "/bin/ast2abox"], ["-i", aout, "-o", abox | <pptbl>()]));
     (
     ( option-defined(?Output(outfile)), id );
-     <call-noisy>("abox2text", ["-i", abox, "-o", outfile])
+     <call-noisy>(
+        <concat-strings>[GPP, "/bin/abox2text"], ["-i", abox, "-o", outfile])
     <+
     ( id, <call-noisy>("abox2text", ["-i", abox]))
     ); 
