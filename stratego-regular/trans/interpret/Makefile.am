@@ -7,7 +7,9 @@ libexec_PROGRAMS = \
 
 SCFLAGS          = --main main-$* --dr new
 STRINCLUDES      = -I $(top_srcdir)/sig \
-                   -I $(top_srcdir)/lib
+                   -I $(top_srcdir)/lib \
+                   -I $(top_srcdir)/xtc
+
 LDADD += $(SSL_LIBS)
 
 EXTRA_DIST       = $(wildcard *.str) $(wildcard *.meta)
