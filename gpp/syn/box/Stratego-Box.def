@@ -75,13 +75,14 @@ exports
     String 				  -> Strategy {cons("StrCong")}
     Int 				  -> Strategy {cons("IntCong")}
     Real 				  -> Strategy {cons("RealCong")}
+    Char 			 	  -> Strategy {cons("CharCong")}
 
     %%"(" {Strategy ","}* ")" 		  -> Strategy {cons("TupleCong"),avoid}
 
     Strategy StrategyCurly		  -> Strategy {cons("AnnoCong")}
     "{" Strategy "}"		  	  -> StrategyCurly {cons("StrategyCurly")}
 
-    "("  ")" 		  		  -> Strategy {cons("TupleCong")}
+    "("  ")" 		  		  -> Strategy {cons("EmptyTupleCong")}
     "(" Strategy  ")" 		          -> Strategy {bracket}
     "(" Strategy "," {Strategy ","}+ ")"  -> Strategy {cons("TupleCong")}
 
@@ -273,7 +274,7 @@ exports
     [\-]? [0-9]+ 		-> Int
     [\-]? [0-9]+ [\.] [0-9]+ 	-> Real
     "\"" StrChar* "\"" 		-> String
-    ~[\"\n\\] 			-> StrChar
+    ~[\"\\] 			-> StrChar
     [\\] [\"tn\\] 		-> StrChar
     "\'" CharChar "\'"		-> Char
     ~[\']			-> CharChar
