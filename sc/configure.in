@@ -16,7 +16,7 @@
 # 02111-1307, USA.
 
 AC_INIT(spec/front/inlining.str)
-AM_INIT_AUTOMAKE(sc,0.9beta7)
+AM_INIT_AUTOMAKE(sc,0.9beta8)
 
 USE_XT_PACKAGES
 
@@ -31,7 +31,7 @@ AC_SUBST(EXE)
 libexecdir=\$\{exec_prefix\}/libexec/$PACKAGE
 AC_SUBST(libexecdir)
 
-AC_REVISION($Id: configure.in,v 1.33 2002/12/11 21:21:16 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.34 2002/12/16 23:29:33 stratego Exp $)
 
 AC_PROG_CC
 AC_PROG_RANLIB

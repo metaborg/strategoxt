@@ -102,10 +102,10 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 # USING INSTALLED SC ###############################################
 
 %.ibin: %.r
-	$(STRATEGOBOOT)/bin/sc -i $< -o $@ --verbose 5
+	../sc/sc -i $< -o $@ --verbose 1
 
 %.irun: %.ibin
-	$<
+	./$<
 
 %.trm: %
 	$(ATERM)/bin/baffle -wt -i $< -o $@

@@ -98,7 +98,7 @@ rules
 
   Bapp2 : Build(t[Anno(t1, t2)]) -> 
           Scope([x], Seq(Where(Seq(Prim("SSLsetAnnotations", [t1, t2]), Match(Var(x)))), 
-                         Build(t[Var(x)](pat-td)))) 
+                         Build(t[Var(x)](pat-td))))
           where new => x
 \end{code}
 
@@ -110,7 +110,8 @@ explosions. Avoid lifting an App from within another App or RootApp.
     s <+ (Op(id, fetch(pat-td(s)))
          + Explode(id, pat-td(s))
          + Explode(pat-td(s), id)
-         + Prim(id, fetch(pat-td(s))))
+         + Prim(id, fetch(pat-td(s)))
+	 + As(id, pat-td(s)))	 
 \end{code}
 
 \begin{code}

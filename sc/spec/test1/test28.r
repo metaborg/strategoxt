@@ -385,6 +385,7 @@ strategies
     ; test-rules-5
     ; test-rules-6
     ; test-rules-7
+    ; test-rules-8 
     )
 
 rules
@@ -457,6 +458,15 @@ strategies
 	, \ Var(s){ts*} -> Var(s){<length> [ts*]} \
 	, !Var("a")
 	, !Var("a"){0}
+	)
+
+  // Make sure an annotation is not bound 
+  // if matched on a term without annotation
+  test-rules-8 =
+    apply-test(!"test-rules-8"
+	, \ x@Var(s){ts*} -> (x, ts*) \
+	, !Var("a"){"b"}
+	, !(Var("a"){"b"}, ["b"])
 	)
 
   // ----------------------------------------------------------------
