@@ -1,5 +1,5 @@
 module Ast-2-abox
-imports lib-pp-table-args pp-tables-io instantiate lib misc asfix
+imports lib-pp-table-args pp-tables-io2 instantiate lib misc asfix
 
 /**
  * Author: Merijn de Jonge (mdjonge@cwi.nl)
@@ -45,7 +45,8 @@ strategies
 
   trm2abox-appl =
       ?f#( args )
-    ; <try-pp-table-get> [f] => (path, abox)
+    ; where(<length> args => arity)
+    ; <try-pp-table-get> (arity, [f]) => (path, abox)
     ; <nzip( \ (x, y) -> <arg2abox> (x, [f], y) \ )> args => aboxes
     ; <instantiate> (abox, aboxes)
 

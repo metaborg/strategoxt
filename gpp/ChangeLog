@@ -1,3 +1,21 @@
+2004-03-27  Martin Bravenboer <martin@cs.uu.nl>
+
+	* trans/2abox/pp-table-io2.str: alternative storage of pp entries
+	in a table. The key includes the arity of the constructor of the
+	pp-entry. This arity is determined by the number of arguments in
+	the pp-entry.
+
+	Note that:
+	- this allows overloading of constructors
+	- no more invalid box messages for Args
+	- the arity of the 'parent' is not used for getting the right
+	pp-entry for the children (typical :iter etc).
+	- you must include all arguments of an application in a pp-entry,
+	or the determined arity will be incorrect.
+
+	* trans/2abox/Ast-2-abox: use pp-table-io2 and include the number
+	of arguments in the key.
+
 2004-03-21   Merijn de Jonge  <mdejonge@cs.uu.nl>
    * Bug fix in sdf-2-pp-lib.str: pretty-print table generator now generates
      syntactically correct entries for all SDF2 constructs
