@@ -75,7 +75,9 @@ strategies
 
   //TrmAnno     =	Anno(trm-explode, MetaExplode)
 
-  TrmAnno     : WithAnno(t1, t2) -> Anno(<trm-explode> t1, <MetaExplode> t2)
+  TrmAnno     : WithAnno(t1, t2) -> Anno(<trm-explode> t1, <MetaExplode> t3)
+    where 
+      ( <is-list>t2 <+ ![t2] ) => t3 
 
   TrmNil      :	[] -> Op("Nil", [])
 
