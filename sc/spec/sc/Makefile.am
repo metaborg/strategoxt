@@ -23,9 +23,19 @@ bin_SCRIPTS = proto-sc sc
 
 CLEANFILES = proto-sc proto-sc.c *.dep
 
-EXTRA_DIST = $(wildcard *.r) sc.in sc
+EXTRA_DIST = $(wildcard *.r) sc.src
 
-BOOTSOURCES = proto-sc.c sc.in sc
+BOOTSOURCES = proto-sc.c sc.src
 
 include $(srcdir)/../make-rules
 include proto-sc.dep
+
+# Generate srcipts
+%: %.src Makefile.am
+	sed 's#__prefix__#$(prefix)#g;\
+             s#__ATERM__#$(ATERM)#g;\
+             s#__VERSION__#$(VERSION)#g;\
+             s#__STRATEGORTS__#$(STRATEGORTS)#g;\
+             s#__STRATEGOLIB__#$(STRATEGOLIB)#g;\
+             s#__MAKE__#$(MAKE)#g' < $< > $@
+	chmod +x $@                 

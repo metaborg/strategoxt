@@ -1,5 +1,8 @@
+#! /bin/sh
+
+
 # Copyright (C) 1998-2001 Eelco Visser <visser@acm.org>
-#
+# 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2, or (at your option)
@@ -15,26 +18,13 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-EXTRA_DIST = $(wildcard *.r)
+infile=$2
+outfile=$4
 
-bin_SCRIPTS = s2c canonicalize ac2c
+GPP=__GPP__
+CGEN=__CGEN__
 
-CLEANFILES = $(bin_SCRIPTS) *.dep
+echo $prog
 
-SCFLAGS = --main $@ -I ../sig \
-	  -I $(CGEN)/share/cgen \
-	  -I ../match
-
-TESTS = C-simplify-test canonicalize-test
-
-BOOTSOURCES = canonicalize.c s2c.c ac2c.src
-
-# Generate srcipts
-%: %.src Makefile.am
-	sed 's#__GPP__#$(GPP)#g;\
-             s#__CGEN__#$(CGEN)#g;' < $< > $@
-	chmod +x $@                 
-
-include $(srcdir)/../make-rules
-include s2c.dep
-include canonicalize-test.dep
+time $GPP/bin/ast2abox -p ${CGEN}/share/cgen/C.pp -i $infile -o $infile.abox
+time $GPP/bin/abox2text -i $infile.abox -o $outfile

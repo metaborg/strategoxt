@@ -1,5 +1,7 @@
+#! /bin/sh
+
 # Copyright (C) 1998-2001 Eelco Visser <visser@acm.org>
-#
+# 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2, or (at your option)
@@ -15,26 +17,27 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-EXTRA_DIST = $(wildcard *.r)
+prefix=__prefix__
+ATERM=__ATERM__
+VERSION=__VERSION__
+STRATEGORTS=__STRATEGORTS__
+STRATEGOLIB=__STRATEGOLIB__
+  
+${prefix}/bin/proto-sc \
+    $* \
+    -e ${prefix}/bin \
+    -I ${STRATEGOLIB}/share/ssl \
+    \
+    -CI "-I${STRATEGOLIB}/include" \
+    -CL "-L${STRATEGOLIB}/lib -lstratego-lib.opt" \
+    \
+    -CI "-I${STRATEGORTS}/include" \
+    -CL "-L${STRATEGORTS}/lib -lstratego.opt" \
+    \
+    -CI "-I${ATERM}/include" \
+    -CL "-L${ATERM}/lib -lATerm-gcc" \
+    \
+    -CL "-lm" \
+    -CI "-O4" \
+    @version ${VERSION}
 
-bin_SCRIPTS = s2c canonicalize ac2c
-
-CLEANFILES = $(bin_SCRIPTS) *.dep
-
-SCFLAGS = --main $@ -I ../sig \
-	  -I $(CGEN)/share/cgen \
-	  -I ../match
-
-TESTS = C-simplify-test canonicalize-test
-
-BOOTSOURCES = canonicalize.c s2c.c ac2c.src
-
-# Generate srcipts
-%: %.src Makefile.am
-	sed 's#__GPP__#$(GPP)#g;\
-             s#__CGEN__#$(CGEN)#g;' < $< > $@
-	chmod +x $@                 
-
-include $(srcdir)/../make-rules
-include s2c.dep
-include canonicalize-test.dep

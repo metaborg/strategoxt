@@ -9,7 +9,7 @@ check1 : ../frontend ../extract-all
 	../extract-all -i module1.fr -o module1.ea
 
 check2: 
-	sc -i module1 -F
+	$(SC) -i module1 -F
 
 check3 : ../frontend ../extract
 	$(top_builddir)/spec/syn/pack-stratego -I $(STRATEGOLIB)/share/ssl -i dynrules -o dynrules.tree

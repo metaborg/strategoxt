@@ -1,3 +1,7 @@
+2001-08-27  Eelco Visser  <visser@acm.org>
+
+	* Ensure that sc and ac2c are made executable before installation
+
 2001-08-23  Eelco Visser  <visser@acm.org>
 
 	* spec/sc/proto-sc.r: Removing intermediate files

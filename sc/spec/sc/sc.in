@@ -5,8 +5,7 @@ ATERM=@ATERM@
 VERSION=@VERSION@
 STRATEGORTS=@STRATEGORTS@
 STRATEGOLIB=@STRATEGOLIB@
-CPL=@CPL@
-
+  
 ${prefix}/bin/proto-sc \
     $* \
     -e ${prefix}/bin \
@@ -16,10 +15,8 @@ ${prefix}/bin/proto-sc \
     -CL "-L${STRATEGOLIB}/lib -lstratego-lib.opt" \
     -CL "-L${STRATEGORTS}/lib -lstratego.opt" \
     -CI "-I${ATERM}/include" \
-    -CI "-I${CPL}/include" \
     -CL "-L${ATERM}/lib -lATerm-gcc" \
     -CL "-lm" \
     -CI "-O4" \
     @version ${VERSION}
 
-#    -CL "-L${CPL}/lib -lchoice" \

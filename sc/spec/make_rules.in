@@ -24,10 +24,14 @@ INCLUDES 	= -I$(STRATEGORTS)/include \
 		  -I$(STRATEGOLIB)/include \
 		  -I$(ATERM)/include
 
-LDFLAGS		= -L/home/xt/xt/lib 
-LDADD		= $(STRATEGORTS)/lib/libstratego.opt.a \
-		  $(STRATEGOLIB)/lib/libstratego-lib.opt.a \
-		  -lATerm-gcc -lm
+LDFLAGS		= -L$(STRATEGORTS)/lib \
+		  -L$(STRATEGOLIB)/lib \
+		  -L$(ATERM)/lib 
+
+LDADD		= -lstratego-lib.opt \
+		  -lstratego.opt \
+		  -lATerm-gcc \
+		  -lm
 
 %.dbg.o: %.c
 	$(CC) $(DEBUGFLAGS) $(CFLAGS) $(DEFS) $(INCLUDES) -c $< -o $@
