@@ -93,18 +93,31 @@ strategies
       , !()
       )
     ; apply-test(!"read a text file with fgetc",
-        read-text-file
+        read-text-file-2
       , !"text-file.tmp"
       , !"This is a test file\nIt can be removed."
       )
     ; where(<remove-file> "text-file.tmp")
 
-    read-text-file =
+  read-text-file =
+    ?file
+    ; <fopen> (file,"r") => stream
+    ; read-text-from-stream
+    ; where(<fclose> stream)
+
+  read-text-file-2 =
+    ?file
+    ; <fopen> (file,"r") => stream
+    ; rec x(![<fgetc> stream | <x> ()] <+ ![])
+    ; where(<fclose> stream)
+    ; implode-string
+
+  read-text-file =
       ?file
-      ; <fopen> (file,"r") => stream
-      ; rec x(![<fgetc> stream | <x> ()] <+ ![])
-      ; where(<fclose> stream)
-      ; implode-string
+    ; <fopen> (file,"r") => stream
+    ; read-text-from-stream
+    ; where(<fclose> stream)
+
 
     write-text-file =
       ?(file, string)

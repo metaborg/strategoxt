@@ -1,5 +1,10 @@
 2003-03-28  Martin Bravenboer <martin@mbravenboer.org>
 
+  * spec/char-io.str: added read-text-from-stream, 
+    currently based on fgetc.
+
+2003-03-28  Martin Bravenboer <martin@mbravenboer.org>
+
   * spec/term-io.str: defined ReadFromFile, WriteToTextFile
     and WriteToBinaryFile in terms of new POSIX
     strategies. Behaviour should be exactly the same

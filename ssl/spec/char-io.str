@@ -37,6 +37,16 @@ strategies
   readline = ?file;
     rec x(![<getchar; not(10)> file | <x>()] <+ ![])
 
+  /**
+   * Reads all characters until EOF.
+   *
+   * :: Stream -> String
+   */
+  read-text-from-stream = 
+      ?stream
+    ; rec x(![<fgetc> stream | <x> ()] <+ ![])
+    ; implode-string
+
 /**
  * Copyright (C) 1998-2003 Eelco Visser <visser@acm.org>
  * 
