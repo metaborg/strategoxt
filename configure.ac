@@ -58,8 +58,7 @@ else
      stratego-regular xtar \
      boxenv"
 
-  DIST_PKGS="$PKGS" 
-  # DIST_PKGS="$PKGS xtc2" 
+  DIST_PKGS="$PKGS xtc2" 
 
   XTC_DIR="xtc"
 

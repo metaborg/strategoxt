@@ -25,6 +25,7 @@ $(BUILD_SRTS_DEST)/srts.dummy :
 $(INSTALL_XTC_DEST)/xtc.dummy :
 	cd $(XTC_DIR) && \
 	$(MAKE) $(AM_MAKEFLAGS) && \
+	mkdir -p $(INSTALL_XTC_DEST)/$(prefix)/lib/xtc/ && \
 	$(MAKE) $(AM_MAKEFLAGS) DESTDIR=$(INSTALL_XTC_DEST) install && \
 	cp -fp   libraries/*.la  $(INSTALL_XTC_DEST)/$(prefix)/lib/xtc/ && \
 	cp -LRfp libraries/.libs $(INSTALL_XTC_DEST)/$(prefix)/lib/xtc/ && \
@@ -87,9 +88,9 @@ install-xtc:
 	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t baffle -l $(ATERM)/bin -V X
 	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t ATERM -l $(ATERM) -V X
 	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t SRTS -l $(prefix) -V X
-	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t liblib.rtree -l $(prefix)/share/xtc -V $(VERSION)
 	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t libstrategolib.rtree -l $(prefix)/share/srts -V $(VERSION)
 	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t libxtclib.rtree -l $(prefix)/share/xtc -V $(VERSION)
+	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t liblib.rtree -l $(prefix)/share/xtc -V $(VERSION)
 	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t liblibstrategolib.la -l $(prefix)/lib/srts -V $(VERSION)
 	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t liblibxtclib.la -l $(prefix)/lib/xtc -V $(VERSION)
 
