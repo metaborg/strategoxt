@@ -56,7 +56,7 @@ strategies
     where ModuleName => M1
         ; LanguageName => M2
         ; <conc-strings> ("io-", M1) => f
-        ; <conc-strings> (M2, "-parenthesize") => g
+        ; <conc-strings> ("parenthesize-", M2) => g
         ; RuleName => l
 
   RuleName =
