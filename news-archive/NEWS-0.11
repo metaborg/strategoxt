@@ -159,9 +159,11 @@ in Stratego programs.
 
 ---------++ New and Improved Tools
 
-_pack-sdf_ now supports the "-Idef Foo.def" flag. This flag can be used
-to import SDF modules (.sdf) from an SDF syntax definition (.def). The
-order of mixed -I and -Idef arguments is respected.
+Many tools in StrategoXT have been improved. Some highlights:
+
+_pack-sdf_ now supports the "-Idef Foo.def" flag. This flag can
+be used to import SDF modules (.sdf) from an SDF syntax definition
+(.def). The order of mixed -I and -Idef arguments is respected.
 
 _sdf2parenthesize_ is a new tool that generates a Stratego
 transformation tool that adds the necessary parentheses to an abstract
@@ -174,20 +176,51 @@ Tools web:
 
    * http://www.program-transformation.org/Tools/SdfToParenthesize
 
-The _sdf2rtg_ tool, which is used for the generation of Stratego
+_sdf2rtg_, which is used for the generation of Stratego
 signatures, now uses the real start symbols of the SDF syntax
 definition and not the declared sorts. sdf2rtg also complains if the
 syntax definition contains no start symbols at all.
 
 ---------++ New strategies in the Stratego library
 
-   * generate unique names with a prefix (Arthur van Dam)
+The Stratego Standard Library has been extended with several useful
+strategies. 
 
-   * stateful sets (Martin Bravenboer)
+The =newname= strategy is a variant of the =new= strategy. It
+generates unqiue strings, just like new, but it also accepts an prefix
+that will be part of the generated string. By default, the numbering
+is also done per prefix. For example, if you apply newname three
+times to the string "foo", then the results will be ="foo_0"=, ="foo_1"=
+and ="foo_2"=. If the newname is applied to "bar" after this, then the
+result will be ="bar_0"=, not ="bar_4"=. Thus, The =newname= strategy
+is very useful for generating more user-friendly, unique names in a
+program transformation.
 
-   * make (temporary) directories (Eelco Visser)
+  (Arthur van Dam)
 
-   * filtering text files (Eelco Visser)
+The new =sets= module provides support for efficient, stateful sets,
+comparable to stateful hashtables in the =tables= module. Like
+hashtables, the set implementation is based on an implementation of
+this data structure in the ATerm library.
+
+  (Martin Bravenboer)
+
+The =posix-file= module has been extended with the directory
+primitives =mkdir= and =rmdir=. The strategy =filemode= returns the
+mode of a file. The strategy =mkdtemp= can be used to created
+temporary directories.
+
+  (Eelco Visser)
+
+The module =char-io= has been extended with the strategy
+=filter-text-file= for filtering characters sequences from text
+files. This strategy is especially useful if you need to filter a file
+in a way that that depend on multiple lines. =filter-text-file= is
+parameterized with two strategies: a strategy for transforming the
+current 'chunk' of characters and a strategy to commit the current
+chunk.
+
+  (Eelco Visser)
 
 ---------++ Various improvements of XTC:
 
@@ -217,6 +250,8 @@ syntax definition contains no start symbols at all.
    * fixed a bug that causes crashes in large XTC tools
 
    * improvements of new dynamic rules
+     performance of labels
+
 
    * mutual recursive lets
 
