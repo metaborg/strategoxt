@@ -1,3 +1,14 @@
+2004-07-20  Martin Bravenboer <martin@cs.uu.nl>
+
+	* xtc/format-check.str: format-check has a new feature to report
+	the results of format-checking in an HTML document. This document
+	is contains the input term, formatted in the same way as
+	pp-aterm. All innermost format errors in the ATerm are indicated
+	in red boxes. Moving over the ATerm with your mouse will show the
+	non-terminal of a term in an information box. Use --xhtml to
+	produce the HTML output. There is still some minor work to do: fix
+	a few bugs, and make some things more fancy.
+
 2004-07-17  Martin Bravenboer <martin@cs.uu.nl>
 
 	* xtc/format-check.str: improved --help documentation using

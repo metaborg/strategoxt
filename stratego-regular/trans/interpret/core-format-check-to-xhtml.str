@@ -1,4 +1,5 @@
 /**
+ * @todo    Support annotations
  * @author  Martin Bravenboer <martin@cs.uu.nl>
  */
 module core-format-check-to-xhtml
@@ -6,6 +7,7 @@ imports
   liblib 
   xml-doc
   core-format-check
+  xml-text-tools
 
 strategies
 
@@ -14,8 +16,20 @@ strategies
       format-check-to-xhtml
     )
 
+strategies
+
   format-check-to-xhtml =
-      print-to-xhtml-doc
+      format-check-init
+    ; try(my-format-check)
+    ; print-to-xhtml-doc
+
+  my-format-check =
+    bottomup-consnil(
+       where(get-types)
+    <+ repeat(Type)
+    )
+
+strategies
 
   print-to-xhtml-doc =
     !%>
@@ -25,9 +39,52 @@ strategies
       <html>
         <head>
           <title>format-check report</title>
+          <style type="text/css">
+
+            .typo {
+              padding: 2pt;
+              border-style: solid;
+              border-width: 1pt;
+              border-color: red;
+            }
+
+            .fixed-info {
+              position : fixed;
+              z-index  : 1;
+              width    : 125pt;
+              top      : 10pt;
+              right    : 10pt;
+              padding  : 5pt;
+              background-color : #E0E0E0;
+              border-style: solid;
+              border-width: 1pt;
+              border-color: black;
+            }
+          </style>
+
+          <script type="text/javascript">
+            function displayType(t) {
+              var info = document.getElementById('type-info');
+              info.firstChild.nodeValue = t;
+            }
+
+            function stopHandling(e) {
+              if (!e)
+                var e = window.event;
+
+              e.cancelBubble = true;
+
+              if (e.stopPropagation)
+                e.stopPropagation();
+            }
+          </script>
         </head>
         <body>
           <h1>format-check report</h1>
+
+          <p class="fixed-info">
+            Type info: <span id="type-info">no selection</span>
+          </p>
 
           <p>
             <% print-to-xhtml %>
@@ -38,26 +95,43 @@ strategies
     ; concat-content
 
   print-to-xhtml =
+    print-type(
        print-Int
     <+ print-Real
     <+ print-Str
-//    <+ print-List
-//    <+ print-Tuple
+    <+ print-List
+    <+ print-Tuple
     <+ print-Cnst
     <+ print-App
+    )
 
-(*
-  ugly-print-without-anno
-  // has-annotation < ugly-print-with-anno + ugly-print-without-anno
+  is-typed = 
+    where(get-types; iset-elements => [_ | _])
 
+  print-type(s) =
+    if is-typed <+ one-consnil(not(is-typed)) then
+      where(get-types-to-chardata => type)
+    ; s
+    ; wrap-in-attrs(| [@> class="typed" <@, @>onmouseover="displayType('<% !type %>'); stopHandling(event)"<@])
+    else
+      s
+    ; wrap-in-class(|"typo")
+    end
 
-  ugly-print-with-anno :
-    t -> |[  H hs=0 [  ~plain ~annos ] ]|
-      where <ugly-print-without-anno> t => plain
-          ; < get-annotations
-            ; pp-generic-list(ugly-print, !|[ "{}" ]|, !|[ "{" ]|, !|[ "}" ]|)
-            > t => annos
-*)
+  wrap-in-class(|class) =
+    wrap-in-attrs(| [@> class="<% !class %>" <@])
+
+  wrap-in-attrs(|att*) =
+    switch id
+      case ?%><div><%= children :: * %></div><% :
+        !%><div att*><% !children :: *%></div><%
+
+      case ?%><div @*><%= _ :: * %></div><% :
+        !%><div att*><% id %></div><%
+
+      otherwise:
+        !%><span att*><% id %></span><%
+    end
 
 rules
 
@@ -97,69 +171,100 @@ rules
     f#([x | xs]) ->
       %><span><% !f :: cdata %>(<% !children :: content* %>)</span><%
       where < map(print-to-xhtml)
-            ; <separate-by> (%>,<%, <id>)
+            ; <separate-by> (%>, <%, <id>)
             > [x | xs] => children
 
+  get-types-to-chardata =
+    retrieve-types
+  ; iset-elements
+  ; types-to-string
+  ; xml-escape
+
   print-App-worstcase:  
-    f#([x | xs]) ->
+    t@f#([x | xs]) ->
       %><div>
           <% !f :: cdata %>(
-            <div>
-              <div style="padding-left: 1em"><% <print-to-xhtml> x %></div>
-              <% <map(
-                   print-to-xhtml
-                 ; !%><div>
-                        <span style="position: absolute">,</span>
-                        <span style="padding-left: 1em"><% id %></span>
-                      </div><%
-                 )> xs
-               :: content* %>
-            </div>
+            <div style="padding-left: 1em"><% <print-to-xhtml> x %></div>
+            <% <map(
+                 print-to-xhtml
+               ; !%><div>
+                      <span style="position: absolute">,</span>
+                      <div style="padding-left: 1em"><% id %></div>
+                    </div><%
+               )> xs
+             :: content* %>
           )
         </div><%
 
-(*
-rules // tuples and list      
+rules
          
-  UP-Tuple(s) =
-    ?""#(<id>); pp-generic-list(s, !|[ "()" ]|, !|[ "(" ]|, !|[ ")" ]|)
+  print-Tuple =
+    ?""#(<id>); pp-generic-list(!%>()<%, !%>(<%, !%>)<%)
             
-  UP-List(s) =
-    pp-generic-list(s, !|[ "[]" ]|, !|[ "[" ]|, !|[ "]" ]|)
+  print-List =
+    pp-generic-list(!%>[]<%, !%>[<%, !%>]<%)
     
 strategies
       
-  pp-generic-list(s, empty, before, after) =
-      where(<gt> (<term-size>, 10))
-    < generic-list-worstcase(s, empty, before, after)
-    + generic-list-nicecase(s, empty, before, after)
+  pp-generic-list(empty, before, after) =
+    ?[_ | _];
+    if <gt> (<term-size>, 10) then
+      generic-list-worstcase(empty, before, after)
+    else
+      generic-list-nicecase(empty, before, after)
+    end
     
-  pp-generic-list(s, empty, before, after) :
+  pp-generic-list(empty, before, after) :
     [] -> <empty> ()
-    
-  generic-list-nicecase(s, empty, before, after) :
-    [x | xs] -> |[
-      H hs=0 [
-        ~<before> ()
-        ~<s> x ~*tail
-        ~<after> ()
-      ]
-    ]|
-      where <map(! |[ H hs=1 [ "," ~<s> ] ]| )> xs => tail
 
-  generic-list-worstcase(s, empty, before, after) :
-    [x | xs] -> |[
-      V vs=0 [
-        H hs=1 [
-          ~<before> ()
-          ~<s> x
-        ]
-        ~*tail
-        ~<after> ()
-      ]
-    ]|
-      where <map(! |[ H hs=1 [ "," ~<s> ] ]| )> xs => tail
-*)
+  generic-list-nicecase(empty, before, after) :
+    [x | xs] ->
+      %><span><%
+            before
+          %><%
+            <print-to-xhtml> x
+          %><%
+             <map-consnil(
+                print-type(
+                  ?[<id> | _]
+                ; print-to-xhtml
+                ; !%><span>, <% id %></span><%
+                )
+              )> xs
+           :: content*
+          %><%
+            after
+          %></span><%
+
+  /**
+   * @type  List(a) -> List(b)
+   * @type  s List(a) -> b
+   */
+  map-consnil(s) =
+    rec x({tail:
+      ?[_ | tail]
+    ; s
+    ; ![<id> | <x> tail]
+    <+ []
+    })
+
+  generic-list-worstcase(empty, before, after) :
+    [x | xs] -> 
+      %><div>
+          <div>
+            <span style="position: absolute"><% before %></span>
+            <div style="padding-left: 1em"><% <print-to-xhtml> x %></div>
+          </div>
+          <% <map(
+               print-to-xhtml
+             ; !%><div>
+                    <span style="position: absolute">,</span>
+                    <div style="padding-left: 1em"><% id %></div>
+                  </div><%
+             )> xs
+           :: content* %>
+          <div><% after %></div>
+        </div><%
 
 strategies 
 

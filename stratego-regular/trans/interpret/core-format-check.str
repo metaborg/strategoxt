@@ -19,6 +19,12 @@ strategies
     <+ <exit> 1
     )
 
+  format-check-init =
+    where(
+      read-rtg-nf-config => rtg@RTG(Start(starts), _)
+    ; generate-type-rules
+    )
+
   core-fc-options =
       rtg-nf-option(|"Check against normalized RTG in file")
     + start-nonterm-option(|"Term must be of type s (default: start non-terms of rtg)")
