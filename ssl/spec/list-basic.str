@@ -10,33 +10,48 @@ strategies
   Tl     : [_ | l] -> l
   Last   : [x] -> x
 
-  // :: a -> [a]
+  /**
+   * @type a -> [a]
+   */
   MkSingleton = ![<id>]
 
-  // :: [a] -> a * [a]
+  /**
+   * @type [a] -> a * [a]
+   */
   split-Cons : [x | xs] -> (x, xs)
 
-  // :: a * [a] -> [a]
+  /**
+   * @type a * [a] -> [a]
+   */ 
   MkCons : (x, xs) -> [x | xs]
 
 strategies
 
   is-list = ?[] + ?[_ | _]
 
- /**
-  * Apply strategy to each element of a list.
-  */
+  /**
+   * Apply strategy to each element of a list.
+   *
+   * @type s a -> b
+   * @type   [a] -> [b]
+   */
   map(s) = 
     rec x([] + [s | x]) 
 
   map1(s) = 
     [s | id]; [id | try(map1(s))] <+ [id | map1(s)]
 
+  /**
+   * In reverse order apply strategy to each element of a list.
+   */
   reverse-map(s) = 
     [id | reverse-map(s)]; [s | id] <+ []
 
+  /**
+   * Synonym of map
+   */
   list(s) = 
-    rec x([] + [s | x])
+    map(s)
 
   list-some(s) =
     rec x([s| id] < [id| list(try(s))] + [id| x])
@@ -62,12 +77,20 @@ strategies
   elem(eq) =
     ?(x, <id>); one(where(<eq> (x, <id>)))
 
- /**
-  * Find first list element for which s succeeds.
-  */
+  /**
+   * Find first list element for which s succeeds.
+   *
+   * @type s a -> b
+   * @type   [a] -> [a or b]
+   */
   fetch(s) = 
     rec x([s | id] <+ [id | x])
 
+  /**
+   * Return first list element for which s succeeds.
+   *
+   * @type   [a] -> a
+   */
   fetch-elem(s) = 
     fetch(s;?x);!x
 
@@ -95,21 +118,32 @@ strategies
   at-tail(s) = 
     [id | s]
 
+  /**
+   * @obsolete use at-tail
+   */
   at_tail(s) = 
     obsolete(!"at_tail -> at-tail");
     at-tail(s)
 
   at-end(s) = 
     rec x([id | x] + []; s)
+
+  /**
+   * @obsolete use at-end
+   */
   at_end(s) = 
     obsolete(!"at_end -> at-end");
     rec x([id | x] + []; s)
 
- /**
-  * Apply a strategy to some suffix of a list.
-  */
+  /**
+   * Apply a strategy to some suffix of a list.
+   */
   at-suffix(s) = 
     rec x(s <+ [id | x])
+
+  /**
+   * @obsolete use at-suffix
+   */
   at_suffix(s) = 
     obsolete(!"at_suffix -> at-suffix");
     rec x(s <+ [id | x])
@@ -117,6 +151,9 @@ strategies
   at-suffix-rev(s) = 
     rec x([id | x] <+ s)
 
+  /**
+   * @obsolete use at-last
+   */
   at_last(s) = 
     obsolete(!"at_last -> at-last");
     at-last(s)  
@@ -173,38 +210,56 @@ strategies
 
 strategies
 
-  // :: List(a) * -> List(a)
+  /**
+   * @type [a]* -> [a]
+   */
   conc =
-    conc-two-lists <+ conc-more-lists
+    \ (l1, l2) -> <at-end(!l2)> l1 \
+    <+ \ "" # (xs) -> <concat> xs \
 
-  // :: List(a) * List(a) -> List(a)
-  conc-two-lists :
-    (l1, l2) -> <at-end(!l2)> l1
+  /**
+   * @obsolete use conc
+   */
+  conc-two-lists  = conc
 
-  // :: List(a) * -> List(a)
-  conc-more-lists :
-    "" # (xs) -> <concat> xs
+  /**
+   * @obsolete use conc
+   */
+  conc-more-lists = conc
 
-  // :: List(List(a)) -> List(a)
+  /**
+   * @type [[a]] -> [a]
+   */
   concat =
     rec x([] + \ [l | ls] -> <at-end(<x> ls)> l\ )
 
 strategies
 
-  // :: a * List(b) -> List(a or b)
+  /**
+   * @type a * [b] -> [a or b]
+   */
   separate-by :
     (a, xs) -> <[] + [id | rec x( [] + [id | x]; ![a | <id>])]> xs
 
-  // _ -> a :: List(b) -> List(a or b)
-  separate-by(s) = dissuader(!"separate-by/1; Use separate-by/0 and term wrap patterns: <separate-by> (a, <id>)");
+  /**
+   * @type s _ -> a
+   * @type   [b] -> [a or b]
+   */
+  separate-by(s) =
     <separate-by> (<s> (), <id>)
 
+
+  /**
+   * @obsolete obsolete util rule of separate-by
+   */
   Sep(s) = obsolete(!"Sep/1; This is a private and obsolete util rule of separate-by");
     \ [x| xs] -> [<s>(), x | xs] \
 
 strategies
 
-  // :: [[a]] -> [[a]]
+  /**
+   * @type [[a]] -> [[a]]
+   */
   matrix-transpose =
       map(?[]); ![]
     +   map(split-Cons)
@@ -212,9 +267,10 @@ strategies
       ; (id, matrix-transpose)
       ; MkCons
 
-  // <for-each-pair(s)>(xs, ys) produces the list of pairs <s>(x,y) 
-  // for each pair of x from xs and y from ys.
 
+  /**
+   * <for-each-pair(s)> (xs, ys) produces the list of pairs <s> (x,y).
+   * for each pair of x from xs and y from ys.
+   */
   for-each-pair(s) =
     ?(xs, ys); <map(\ x -> <map(<s>(x,<id>))> ys \ )> xs
-

@@ -22,6 +22,9 @@ strategies
 
   eq = ?(x, x)
 
+ /**
+  * @obsolete use fail
+  */
   FAIL = 
     obsolete(!"FAIL: use fail"); 
     fail
@@ -41,4 +44,3 @@ strategies
    */
   finally(s, f) = 
     s < where(f) + (where(f); fail)
-
