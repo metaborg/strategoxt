@@ -1,4 +1,7 @@
 2002-12-07  Eelco Visser  <visser@cs.uu.nl>
 
+	* Makefile.am (install-xtc): using new version of xtc tool
+
 	* Package for importing the sdf tools into an XTC repository
+	
 
