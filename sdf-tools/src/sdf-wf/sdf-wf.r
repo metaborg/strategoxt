@@ -101,7 +101,7 @@ strategies
     + Option("-e",!WarningsAreErrors, !"-e          exit with error if grammar is ill-formed")
 
 
-  try-debug(s) = try(not(has-option(!Silent));where(s;debug))
+  try-debug(s)=option-value(Verbose(id),s;debug)
 
 signature
   constructors
