@@ -3,7 +3,7 @@ AM_INIT_AUTOMAKE(dot-tools,0.9beta7)
 
 USE_XT_PACKAGES
 
-AC_REVISION($Id: configure.in,v 1.1 2002/12/11 00:41:19 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.2 2002/12/11 21:24:18 stratego Exp $)
 
 AC_PROG_CC
 
@@ -12,6 +12,4 @@ AC_PROG_INSTALL
 AC_OUTPUT(
 	Makefile
 	syn/Makefile
-	pp/Makefile
-	sig/Makefile 
 )

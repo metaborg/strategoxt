@@ -1,3 +1,3 @@
-SUBDIRS = syn pp sig
+SUBDIRS = syn
 
 EXTRA_DIST = Makefile.xt
