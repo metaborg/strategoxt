@@ -1,6 +1,8 @@
 2001-11-15  Merijn de Jonge <mdejonge@cwi.nl>
+	* Released version 2.1.1
 	* Removed gpp.Makefile from CVS repository because it is generated
 	  from gpp.Makefile.src
+	* Updated gpp-boot distribution
 
 2001-10-06  Eelco Visser  <visser@acm.org>
 

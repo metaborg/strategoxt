@@ -48,7 +48,7 @@ bin_SCRIPTS = ast2abox asfix2abox ppgen abox2html abox2latex abox2text
 
 pkgdata_DATA = gpp.Makefile pp-tables.tbl boxstyle.css default.abbrevs \
                pp-tables.pp pp-tables.pp.af sdf.cons.tbl
-
+               
 CLEANFILES = $(libexec_PROGRAMS) $(bin_SCRIPTS)
 
 % : %.sh.src Makefile
@@ -60,7 +60,7 @@ CLEANFILES = $(libexec_PROGRAMS) $(bin_SCRIPTS)
 	     chmod +x $@
 
 gpp.Makefile : gpp.Makefile.src Makefile
-	sed 's@__PREFIX__@$(prefix)@g;\
+	sed 's@__PKGDATA__@$(pkgdatadir)@g;\
 	     s@__SGLR__@$(SGLR)@g' < $< > $@
 
 EXTRA_DIST = \
