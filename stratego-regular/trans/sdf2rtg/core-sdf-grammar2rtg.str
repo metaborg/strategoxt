@@ -22,7 +22,7 @@ strategies
     )
   ; where(
       collect(?syntax(_))
-    ; map(grammar2prodrules <+ err(!"Rewriting syntax section failed"); fail)
+    ; map(grammar2prodrules <+ log(|Error(), "Rewriting syntax section failed"); fail)
     ; concat => prods
     )
 
