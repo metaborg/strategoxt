@@ -1,7 +1,20 @@
+2003-12-25  Martin Bravenboer <martin@cs.uu.nl>
+
+	* src/xtc-proc.str: updated xtc-io and xtc-output to invoke
+	xtc-write-output. xtc-write-output can also handle the stdin() as
+	current file.
+
+	* src/xtc-proc.str: added xtc-ensure-file. If the current file is
+	the stdin, then it will be written to a file. This is useful for
+	operations that require a filename, or if the current file will be
+	read multiple times, which is not possible with the stdin.
+	
 2004-02-22   Merijn de Jonge  <mdejonge@cs.uu.nl>
-   * Makefile.am: added autoxt.m4 to EXTRA_DIST
-   * Makefile.am: added line: ACLOCAL_AMFLAGS = -I . such that autoreconf
-     can find autoxt.m4
+
+	* Makefile.am: added autoxt.m4 to EXTRA_DIST
+
+	* Makefile.am: added line: ACLOCAL_AMFLAGS = -I . such that
+	autoreconf can find autoxt.m4
 
 2003-12-25  Martin Bravenboer <martin@cs.uu.nl>
 

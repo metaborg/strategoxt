@@ -69,7 +69,9 @@ strategies
     where xtc-new-file => name
         ; <WriteToTextFile> (name, t)
 
-  // :: [String] -> FILE
+  /**
+   * @type  List(String) -> FILE
+   */
   print-to :
     strings -> FILE(name)
       where xtc-new-file => name
@@ -127,15 +129,29 @@ strategies
     xtc-temp-files( 
         (!FILE(<get-config> "-i") <+ !stdin)
       ; s
-      ; copy-to(<get-config> "-o" <+ !stdout)
+      ; xtc-write-output
     )
 
   // stop in the middle of a transformation pipeline, copying the
   // current file to the output file.
 
   xtc-io-exit =
-    copy-to(<get-config> "-o" <+ !stdout)
+    xtc-write-output
     ; <xtc-exit> 0
+
+  xtc-write-output =
+    ?FILE(_); copy-to(<get-config> "-o" <+ !stdout())
+
+  xtc-write-output =
+    ?stdin(); <copy-file> (stdin(), <get-config <+ !stdout()> "-o")
+
+  xtc-ensure-file =
+    ?FILE(_)
+
+  xtc-ensure-file =
+      where(<xtc-new-file> () => f)
+    ; <copy-file> (stdin(), f)
+    ; !FILE(f)
 
   // XTC-OUTPUT : transform, and 'write' to output file
 
