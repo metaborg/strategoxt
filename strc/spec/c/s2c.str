@@ -114,8 +114,8 @@ rules
 	~ext-def*:function-defs
     ]|
     where GenerateIncludes => incl
-	; <map(DeclareConstructor)> ops => cnstr-decls
-        ; <map(InitConstructor); concat> ops => cnstr-inits
+	; <filter(DeclareConstructor)> ops => cnstr-decls
+        ; <filter(InitConstructor); concat> ops => cnstr-inits
 	; <map(SDefToDeclaration)> defs => function-sigs
 	; <filter(?SDefT(_,_,_,_))
            ; map(TranslateDef)> defs => function-defs
@@ -149,7 +149,7 @@ strategies
   TranslateSig :
     Signature([Constructors(ops)]) ->
     TranslationUnit(<conc>(decls, fundef))
-    where <map(DeclareConstructor)> ops => decls
+    where <filter(DeclareConstructor)> ops => decls
         ; if-lib(![], ![<InitConstructors> ops]) => fundef
 
   DeclareConstructor :
@@ -170,7 +170,7 @@ strategies
     FunDef(//DeclSpec([],Static,[],Void,[]),
 	   TypeSpec([],Void,[]),
            IdDecl([],Id("init_constructors"),Some(ParamList([TypeSpec([],Void,[])]))),
-           Compound([],<map(InitConstructor); concat> ops))
+           Compound([],<filter(InitConstructor); concat> ops))
 
   InitConstructor :
     OpDecl(c, t) ->
