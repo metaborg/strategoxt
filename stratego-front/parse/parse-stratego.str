@@ -1,10 +1,19 @@
-module parse-stratego
-imports liblib Stratego
+ module parse-stratego
+imports
+  liblib
+  Stratego
+
+/**
+ * Structure of meta files.
+ */
 signature
   constructors
     Meta    : List(MetaProperty) -> MetaData
     Syntax  : String -> MetaProperty
     TopSort : String -> MetaProperty
+    HeuristicFilters : Switch -> MetaProperty
+    On  : Switch
+    Off : Switch
 
 strategies
 
@@ -35,64 +44,157 @@ strategies
   find-in-includes(msg) =
     <find-in-path; if-verbose2(debug(msg))> (<id>, <get-config> "-I")
 
+strategies
+
+  /**
+   * Parses a Stratego module.
+   *
+   * @type FILE -> FILE
+   */
   parse-module =
     if-verbose6(debug(!"parse-module: "))
+
+    ; ?file
     ; where( FILE(basename => base) )
-    ; where( get-syntax ; get-parse-table => FILE(tbl) )
-    ; where( pass-sort => sort )
-    ; xtc-transform(!"sglr", !["-2", "-p", tbl | <conc> (<if-verbose3(!["-v"])> [], sort)])
+    ; where( get-meta => meta )
+    ; where( <get-syntax ; get-parse-table> meta => FILE(tbl) )
+
+    ; xtc-transform(!"sglr",
+        !["-2", "-p", tbl | <concat>
+           [ <pass-sglr-verbose> ()
+           , <pass-filters> meta
+           , <pass-sort> meta
+           ]
+         ]
+       ; if-verbose6(debug(!"sglr arguments: "))
+       )
+ 
     ; xtc-transform(!"implode-asfix",
-        !["-b" | <concat> [<pass-verbose>, <get-config < !["--concrete"] + ![]> "--asfix"]])
+        !["-b" | <concat>
+           [ <pass-verbose>
+           , <if <get-config> "--asfix" then !["--concrete"] else ![] end>
+           ]
+         ])
+
     ; if-keep1(copy-to(<guarantee-extension(!"atree")> base))
-    ; xtc-transform(!"meta-explode",     <concat> [<pass-verbose>,
-                         <get-config < !["--asfix"] + ![]> "--asfix"])
-    ; where( if-not-silent(read-from ; check-module-name(|base)) )
+
+    ; xtc-transform(!"meta-explode",
+        !["-b" | <concat>
+           [ <pass-verbose>
+           , <if <get-config> "--asfix" then !["--asfix"] else ![] end>
+           ]
+         ])
+
+    ; where(if-not-silent(read-from ; check-module-name(|base)))
+
     ; if <get-config> "--desugaring" => off then
 	id 
       else 
-        xtc-transform(!"stratego-desugar", pass-verbose)
+        xtc-transform(!"stratego-desugar", !["-b" | <pass-verbose>])
       end
 
+strategies
+
   check-module-name(|base) =
-    ?Module(n,_) 
-  ; ( <eq>(n,<get-filename>base) <+ say(<concat-strings>[" ** Warning: Mismatch between basename of input file (",base,") and module name (",n,") specified"]) )
+    ?Module(n,_)
+    ; if not(<get-filename> base => n) then
+        say(<concat-strings>
+          [" ** Warning: Mismatch between basename of input file ("
+          , base
+          , ") and module name (", n,") specified"
+          ]
+        )
+      end
 
   check-module-name(|base) =
     ?Specification(_)
 
-  pass-sort =
-      get-meta => Meta(<fetch-elem(?TopSort(<id>))>)
-    ; !["-s", <is-string>]
-    <+ ![]
+strategies
 
+  /**
+   * @type _ -> List(String)
+   */  
+  pass-sglr-verbose =
+    ![]; if-verbose3(!["-v"])
+
+  /**
+   * @type MetaData -> List(String)
+   */  
+  pass-sort =
+    if ?Meta(<fetch-elem(?TopSort(s))>) then
+      !["-s", <!s; is-string>]
+    else
+      ![]
+    end
+
+  /**
+   * @type MetaData -> List(String)
+   */  
+  pass-filters =
+    if ?Meta(<fetch-elem(?HeuristicFilters(Off()))>) then
+      !["-fi", "-fe"]                                 
+    else
+      ![]
+    end
+
+strategies
+
+  /**
+   * Determines the syntax to be used.
+   *
+   * @type MetaData -> String
+   */
   get-syntax = 
     if-verbose6(debug(!"get-syntax: "))
-    ; ?FILE(file)
-    ; (<get-config> "--syntax"
-     <+ get-meta 
-      ; (?Meta(<fetch-elem(?Syntax(<id>))>)
-         <+ <error> ["Meta data ", <id>, " for module ", file, " not valid: "]; fail)
-     <+ <get-config> "--default-syntax"
-     <+ !"Stratego"
+    ; ( /* first option: --syntax argument
+        <get-config> "--syntax"
+
+     <+ /* second option: meta file */
+        ?Meta(<fetch-elem(?Syntax(<id>))>)
+
+     <+ /* third option: --default syntax */
+        <get-config> "--default-syntax"
+
+     <+ /* final option: plain Stratego */
+        !"Stratego"
       )
     ; if-verbose2(debug(!"using syntax: "))
 
+  /**
+   * Returns the MetaData for a file.
+   *
+   * @type FILE -> MetaData
+   */
   get-meta = 
    if-verbose6(debug(!"get-meta: "))
-   ; ( FILE(guarantee-extension(!"meta"))
+   ; ( /* first option: meta file */
+       ?FILE(file)
+     ; FILE(guarantee-extension(!"meta"))
      ; read-from
-    <+ FILE(guarantee-extension(!"syn"))
+     ; if not(Meta(is-list)) then
+         <error> ["** Warning: Meta data ", <id>, " for module ", file, " not valid."]; fail
+       end
+
+    <+ /* second option: legacy syn file */
+       FILE(guarantee-extension(!"syn"))
      ; read-from => syntax#(_)
      ; !Meta([Syntax(syntax)])
+
+    <+ /* final option: no metadata */
+       !Meta([])
      )
    ; if-verbose6(debug(!"get-meta: "))
 
+  /**
+   * @type String -> FILE
+   */
   get-parse-table =
     if-verbose6(debug(!"get-parse-table: "))
     ; ?syntax
     ; guarantee-extension(!"tbl") => tbl
     ; (find-in-includes(!"using parse table: ")
       ; !FILE(<id>)
+
      <+ if-verbose2(say(!"creating parse table"))
       ; <get-syntax-definition> syntax
       ; xtc-transform(!"sdf2table", !["-m", syntax])
@@ -100,11 +202,15 @@ strategies
       )
     ; if-verbose6(debug(!"using parse table: "))
 
+  /**
+   * @type String -> FILE
+   */
   get-syntax-definition =
     if-verbose6(debug(!"get-syntax-definition: "))
     ; where(guarantee-extension(!"def") => def)
     ; ( <find-in-includes(!"using syntax definition: ")> def
       ; !FILE(<id>)
+
      <+ if-verbose2(say(!"creating syntax definition"))
       ; !FILE(<guarantee-extension(!"sdf")>)
       ; xtc-transform(!"pack-sdf", <get-config; map(!["-I", <id>]); concat> "-I")

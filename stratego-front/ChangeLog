@@ -1,3 +1,17 @@
+2004-10-16  Martin Bravenboer <martin@cs.uu.nl>
+
+	* parse/parse-stratego.str: refactoring, documentation, etc.
+
+	* parse/parse-stratego.str: use binary output for meta-explode and
+	stratego-desugar.
+
+	* parse/parse-stratego.str: added support for HeuristicFilters
+	meta data: HeuristicFilters(Off) will enable the -fi and -fe
+	filters of sglr.
+
+	* parse/parse-stratego.str: no more warning of no Syntax is
+	available in a meta file.
+
 2004-09-25  Martin Bravenboer <martin@cs.uu.nl>
 
 	* syn/Stratego-Strategies.sdf: added the if-then construct: if s1
