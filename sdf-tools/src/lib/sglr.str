@@ -27,17 +27,19 @@ rules
     (infile, outfile) -> outfile
     where <sglr>(<xtc-find>"sdf.cons.tbl", infile, outfile) => outfile
 
+  parse-sdf :
+    infile -> tree
+    where <is-string> infile
+        ; <sglr>(<xtc-find>"sdf.cons.tbl", infile) => tree
+
   sglr :
     (tbl, infile, outfile) -> outfile
     where <xtc-transform(!"sglr", !["-2", "-p", tbl])> FILE(infile)
         ; rename-to(!outfile)
 
-/*
-  sglr : 
-    (tbl, 'in) -> tree
-    where
-      <conc-strings> ("/tmp/sglr", <get-pid; int-to-string>()) => out; 
-      <sglr> (tbl, 'in, out);
-      <ReadFromFile> out => parsetree(tree,_);
-      <rm-files> [out]
-*/
+  sglr :
+    (tbl, infile) -> tree
+    where xtc-temp-files(
+           <xtc-transform(!"sglr", !["-2", "-p", tbl])> FILE(infile)
+	   ; read-from => parsetree(tree,_))
+
