@@ -1,0 +1,8 @@
+module xtar
+imports
+  liblib
+
+strategies
+
+  main-xtar =
+    say(!"Nothing here yet")

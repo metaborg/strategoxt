@@ -30,7 +30,11 @@ AC_ARG_ENABLE([strc-core],
 )
 AC_SUBST([CORE_ENABLED])
 
-PKGS="autoxt srts xtc sdf-import stratego-front asfix-tools strc gpp c-tools ssl stratego-lib concrete-syntax xml-front aterm-front sdf-front dot-tools graph-tools sdf-tools aterm-tools stratego-regular xml-front stratego-tools boxenv stratego-util"
+PKGS="autoxt srts xtc sdf-import stratego-front asfix-tools \
+   strc gpp c-tools ssl stratego-lib concrete-syntax xml-front \
+   aterm-front sdf-front dot-tools graph-tools sdf-tools \
+   aterm-tools stratego-regular xtar \
+   stratego-tools boxenv stratego-util"
 
 if test "x$CORE_ENABLED" = "xyes"
 then
@@ -282,6 +286,17 @@ AB_CONFIG_PKG(stratego-regular,
 )
 
 AB_CONFIG_PKG(xml-front,
+   --with-aterm=${ATERM}
+   --with-sglr=${SGLR}
+   --with-pgen=${PGEN}
+   --with-asf-library=${ASF_LIBRARY}
+   --with-strategoxt=${STRATEGOXT}
+   --with-srts=${BUILD_SRTS}
+   --with-xtc=${INSTALL_XTC}
+   --with-repository=${REPOSITORY}
+)
+
+AB_CONFIG_PKG(xtar,
    --with-aterm=${ATERM}
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
