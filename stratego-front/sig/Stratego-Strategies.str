@@ -73,4 +73,4 @@ signature
     AM                         : Strategy * Term -> Strategy
 signature
   constructors
-    CondChoice : Strategy * Strategy * Strategy -> StrategyCond
+    CondChoice : Strategy * Strategy * Strategy -> Strategy

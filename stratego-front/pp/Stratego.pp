@@ -34,7 +34,7 @@
    LChoice                                -- _1 KW["<+"] _2,
    LGChoice                               -- _1 KW["<++"] _2,
    GuardedLChoice                         -- _1 KW["<"] _2 KW["+"] _3,
-   CondChoice                             -- KW["if"] _1 KW["then"] _2 KW["else"] _3,
+   CondChoice                             -- KW["if"] _1 KW["then"] _2 KW["else"] _3 KW["end"],
    Rec                                    -- KW["rec"] _1 KW["("] _2 KW[")"],
    Not                                    -- KW["not"] KW["("] _1 KW[")"],
    Where                                  -- KW["where"] KW["("] _1 KW[")"],

@@ -145,7 +145,11 @@
    LGChoice -- H hs=0[KW["("] V[_1 H[KW["<++"] _2 ]] KW[")"]],
    RGChoice -- H hs=0[KW["("] V[_1 H[KW["++>"] _2 ]] KW[")"]],
    GuardedLChoice -- V[H hs=0[KW["("] _1] H[KW["<"] _2] H[KW["+"] _3 ] KW[")"]],
-   CondChoice -- V vs=0 [H hs=1 [KW["if"] _1] H hs=1 [KW["then"] _2] H hs=1 [KW["else"] _3]],
+   CondChoice -- V vs=0 [
+     H hs=1 [KW["if"] _1]
+     H hs=1 [KW["then"] _2]
+     H hs=1 [KW["else"] _3] KW["end"]
+   ],
 
    Rec -- H[KW["rec"] _1 KW["("] _2 KW[")"]],
    Not -- H hs=0 [KW["not"] KW["("] _1 KW[")"]],

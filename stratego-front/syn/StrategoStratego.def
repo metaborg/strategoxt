@@ -226,7 +226,7 @@ exports
   %% context-free priorities
 
   context-free syntax
-    "if" Strategy "then" Strategy "else" Strategy -> StrategyCond {cons("CondChoice")}
+    "if" Strategy "then" Strategy "else" Strategy "end" -> Strategy {cons("CondChoice")}
 
 module Stratego-Overlays
 exports
