@@ -12,7 +12,7 @@ liblibxtclib_prof_la_SOURCES = libxtclib.c
 liblibxtclib_dbg_la_CFLAGS  = -g  $(AM_CFLAGS)
 liblibxtclib_prof_la_CFLAGS = -pg  $(AM_CFLAGS)
 
-AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_srcdir)/ssl -I$(ATERM)/include -I$(srcdir)
+AM_CPPFLAGS = -I$(SRTS)/include -I$(ATERM)/include -I$(srcdir)
 AM_LDFLAGS  = -avoid-version 
 
 pkgdocdatadir 	= $(pkgdatadir)/doc
@@ -28,6 +28,6 @@ bootclean :
 
 libxtclib.c : 
 	$(STRC)/bin/strc -c --library --verbose 2 \
-        -I $(XTC)/share/xtc \
-        -i ./xtclib.str -o libxtclib.rtree
+        -I $(top_srcdir)/src \
+        -i ./xtclib.str -o libxtclib.rtree 
 

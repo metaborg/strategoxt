@@ -1,5 +1,4 @@
 module xtc-get
-imports xtc-lib
 strategies
 
   xtc-get =

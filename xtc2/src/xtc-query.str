@@ -1,5 +1,4 @@
 module xtc-query
-imports xtc-lib config
 strategies
 
   xtc-query = 
@@ -26,10 +25,10 @@ strategies
 
   tool-query =
     <get-config> "-t"
-    ; xtc-import
+    //; xtc-import
     ; map({tool: ?tool;
            (if-verbose3(debug(!"Retrieving tool: "))
-            ; <table-get> (XTC, Tool(tool)) => entries
+            ; <xtc-find> Tool(tool) => entries
             ; <version-query <+ list-tool> (Tool(tool), entries)
             <+ <print>(stdout, [tool, " : no registration", "\n"]))})
 

@@ -1,5 +1,6 @@
 module xtc
-imports liblib libxtc-lib
+imports lib //strategolib 
+	xtc-lib
 	xtc-query xtc-call xtc-get
 strategies
 
@@ -10,9 +11,10 @@ strategies
 
   xtc-main = 
     parse-options(xtc-options)
-    ; xtc-location
-    ; if-verbose2(debug(!"Repository: "))
-    ; xtc-read
+    ; debug(!"options parsed: ")
+    ; xtc-push-default
+    ; xtc-show-stack
+    ; debug(!"default repository: ")
     ; ((<get-config> "register"; xtc-register
         <+ <get-config> "import"; register-import)
        ; xtc-store
@@ -75,7 +77,6 @@ strategies
     !["The xtc command supports the registration of tools in an XTC repository\n",
       "and querying XTC repositories"]
 
-
   xtc-register =
     <get-config> "-t" => tools
     ; if-verbose1(say(!"  Registering tool "))
@@ -92,11 +93,9 @@ strategies
     ; if-verbose2(debug(!"  Registering imports: "))
     ; <get-config> "import" => reps
     ; if-verbose5(debug(!"importing: "))
-    ; <table-union> (XTC, Import, reps)
+    ; xtc-extend(|[Import], reps)
 
   xtc-store =
     if-verbose1(say(!"  Saving repository "))
-    ; <get-config> "-r"
-    ; ( can-write-repository
-      < <WriteToBinaryFile> (<id>, <table-getlist> XTC)
-      + debug(!"** WARNING: No write permission for repository: "); fail)
+    ; (xtc-store-repository
+       <+ debug(!"** WARNING: No write permission for repository: "); fail)

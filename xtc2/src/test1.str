@@ -1,5 +1,5 @@
 module test1
-imports xtc-lib
+imports libstrategolib xtc-lib
 strategies
 
   test1 = 

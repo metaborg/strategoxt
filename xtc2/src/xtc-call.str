@@ -1,5 +1,4 @@
 module xtc-call
-imports xtc-lib
 strategies
 
   xtc-call =

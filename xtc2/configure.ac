@@ -10,6 +10,7 @@ AC_PROG_LIBTOOL
 
 AC_CONFIG_FILES([
   Makefile
+  libraries/Makefile
   src/Makefile
   tools/Makefile
 ])

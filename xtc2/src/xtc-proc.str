@@ -1,6 +1,5 @@
 module xtc-proc
-imports liblib xtc-rep 
-
+imports xtc-rep 
 signature
   constructors
     FILE : String -> File

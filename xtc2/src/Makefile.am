@@ -4,17 +4,22 @@ include $(wildcard *.dep)
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 
 bin_PROGRAMS 	= xtc
-pkgdata_DATA 	= xtc-lib.rtree xtc-rep.rtree \
-		  xtc-proc.rtree
-SCFLAGS 	= --main $* $(XTCFLAGS) --verbose 4
+pkgdata_DATA 	= xtc-lib.rtree xtc-rep.rtree xtc-proc.rtree 
+SCFLAGS 	= --main $* $(XTCFLAGS)
 xtc_LDFLAGS     = $(AM_LDFLAGS) -static
 
 EXTRA_DIST	= $(pkgdata_DATA) $(wildcard *.str) \
 		  $(wildcard *.meta) $(pkgdata_DATA)
 CLEANFILES	= $(wildcard *.dep)
-BOOTCLEANFILES	= $(wildcard *.c)
+BOOTCLEANFILES	= $(wildcard *.c)  $(wildcard *.rtree)
 
 check_PROGRAMS  = test1 test2 test3
+
+LDADD 	       += \
+  -L$(SRTS)/lib/srts \
+  -L$(ATERM)/lib \
+  -llibstrategolib \
+  $(STRATEGORUNLIBS)
 
 check: check1 check2
 
@@ -23,13 +28,13 @@ check1 :
 		-V $(VERSION) -l `pwd` --verbose 10
 	echo "A" > test1.inp
 	echo "(((A,A),(A,A)),((A,A),(A,A)))" > test1.exp
-	XTC_REPOSITORY=TEST_REPOSITORY ./test1 -i test1.inp -o test1.bo 
+	XTC_REPOSITORY=TEST_REPOSITORY ./test1 -i test1.inp -o test1.bo --verbose 10
 	$(ATERM)/bin/baffle -wt -i test1.bo -o test1.out
 	diff test1.exp test1.out
 
 check2 :
-	./xtc -r TEST_REPOSITORY2 import $(REPOSITORY)
-	./xtc -r TEST_REPOSITORY2 query -t sglr
+	./xtc -r TEST_REPOSITORY2 import $(REPOSITORY) --verbose 3
+	./xtc -r TEST_REPOSITORY2 query -t sglr --verbose 3
 
 nodist_test1_SOURCES = test1.c 
 nodist_test2_SOURCES = test2.c 
