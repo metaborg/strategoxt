@@ -26,12 +26,12 @@ strategies
   test2 =
     apply-and-check(!"test2a"
 	, modification-time
-	, !"dir-test.rtree"
+	, !"dir-test.str"
 	, debug; is-int
 	);
     apply-and-check(!"test2b"
 	, file-newer
-	, !("dir-test.c", "dir-test.rtree")
+	, !("dir-test.c", "dir-test.str")
 	, debug
 	)
 
