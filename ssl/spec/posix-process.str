@@ -46,28 +46,20 @@ strategies
    */
   execvp = 
     ?(file, argv)
-  ; if <file-exists>file then 
-      prim("SSL_execvp", file, argv)
-    else
-      say(<concat-strings>["execvp: ",file," does not exist."])
-    ; fail
-    end
+    ; prim("SSL_execvp", file, argv)
+    ; where(<conc-strings; perror; fail> ("SSL/execvp: Cannot execute file ", file))
 
   /**
    * Replaces the current process image with a new  process image.
    *
    * @see      man execv
    * @warning  The first arugment is not added in the runtime.
+   * @warning  If the
    */
   execv = 
     ?(file, argv)
-  ; if <file-exists>file then 
-      prim("SSL_execvp", file, argv)
-    else
-      say(<concat-strings>["execv: ",file," does not exist."])
-    ; fail
-    end
-
+    ; prim("SSL_execv", file, argv)
+    ; where(<conc-strings; perror; fail> ("SSL/execv: Cannot execute file ", file))
 
 /**
  * Process termination 

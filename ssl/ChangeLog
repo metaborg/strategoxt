@@ -1,3 +1,8 @@
+2005-01-26  Martin Bravenboer <martin@cs.uu.nl>
+
+	* spec/posix-process.str: use perror to report an error of execvp
+	or execv.
+
 2005-01-06  Martin Bravenboer <martin@cs.uu.nl>
 
 	* spec/list-basic.str: split-last and split-init-last are
