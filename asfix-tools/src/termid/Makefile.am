@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/10/01 13:51:20 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2001/10/08 13:06:20 mdejonge Exp $
 
 include $(srcdir)/../templates/make_rules
 include $(srcdir)/../templates/make_rules.stratego
@@ -28,8 +28,8 @@ include $(TESTS:%=%.dep)
 SUBDIRS      = data
 STRATEGO_PRG =
 
-pkgdata_DATA = io-idwrap.r
+pkgdata_DATA = termid.r
 
-EXTRA_DIST  += io-idwrap.r
+EXTRA_DIST  += termid.r
 
 
