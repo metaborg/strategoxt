@@ -20,6 +20,7 @@ StrategoXT 0.11 -- released July 16, 2004
       * pack-sdf can now include modules from syntax definitions
       * sdf2parenthesize improves the support for implementing
         pretty-printers
+      * sdf2rtg complains about missing start symbols
 
    * New strategies in the Stratego library:
       * generate unique names with a prefix (Arthur van Dam)
@@ -29,7 +30,7 @@ StrategoXT 0.11 -- released July 16, 2004
 
    * Various improvements of XTC:
       * Construction of build-time XTC repositories
-      * Compilatgion of XTC tools with stand-alone strc
+      * Compilation of XTC tools with stand-alone strc
 
    * Global choice operator is now much easier to use.
 
@@ -40,60 +41,104 @@ StrategoXT 0.11 -- released July 16, 2004
 
 ---------++ Separate Compilation
 
-   * Now actually works
-   * Also for XTC tools
-   * See HowTo at Wiki
+The basic implementation of sepate compilation of Stratego programs
+has been available from [[StrategoRelease094][StrategoXT 0.9.4]], but
+the feature has always been experimental. The open issues (mostly
+configuration related) have all been resolved in StrategoXT
+0.11. Therefore, separate compilation of Stratego is now ready to be
+used.
 
-   * Dynamic linking
-      * libtool
+In StrategoXT 0.11 AutoXT has been extended with support for separate
+compilation. Therefore, using separate compilation in your AutoXT
+based package is really easy. Separate compilation is now also
+supported for XTC tools, which drastically reduces the compile time of
+such tools. Furthermore, the stand-alone Stratego compiler =strc= now
+accepts flags for separate compilation. This is very convenient for
+small tests programs, or just for testing separate compilation.
 
-   * Size of distribution
-
-   * Can be used with stand-alone strc.
+The exact details are explained in an
+[[HowToUseSeparateCompilation][how to]] available at the Stratego
+website (documentation).
 
    (Eelco Visser and Martin Bravenboer)
 
 ---------++ Cygwin and Mac OS X Support
 
-   * Mac OS X: stand-alone strc can used
+For StrategoXT 0.10 we announced support for Mac OS X. Unfortunately
+this claim was obviously not verified very well, since we soon
+received several reports of failures at Mac OS X. For StrategoXT 0.11
+we have worked on solving these issues and we are sure that we can now
+safely re-announce support for Mac OS X. StrategoXT 0.11 has been
+compiled and checked at two different Mac OS X 10.3.4 systems with
+Apple's GCC 3.3 (unpatched). Moreover, binary distributions for Mac OS
+X are available at the release page.
 
-   * Fixed problem in the implementation of some
+Various problems had to be fixed at Mac OS X:
 
-   * Separate compilation works
+   * A very creepy issue with optimizations performed by GCC has been
+   fixed in the implementation of some
 
-   * Support has completely been verified (including check)
+   * The stand-alone Stratego compiler now passes more standard flags
+   to GCC.
 
-   * Binary distributions available
+   * Various issues with separate compilation at Mac OS X have been
+   fixed. For example, initializers of dynamic libraries are by
+   default invoked in a lazy way at Mac OS X. This issue has been
+   fixed in AutoXT by passing a flag to the linker at Darwin systems.
 
-   * Cygwin: separate compilation not supported
-
-   * Binary distributions available
+Cygwin support has also been verified. Separate compilation is
+currently not supported at Cygwin. As a result, static linking is used
+for the separately compiled SSL and executables are rather large. We
+hope to fix this issue in a future release. Binary releases for Cygwin
+are also available ath the release page.
 
    (Eelco Dolstra, Martin Bravenboer and Dick Eimers)
 
 ---------++ Various Deployment Improvements
 
-   * Reduced size of distributions
+The deployment of StrategoXT has been improved at several
+points. First, the distributions of StrategoXT 0.10 are much
+smaller. A source distribution is now about 9 MB, which used to be 14
+MB. This has been achieved by (1) not distributing bootstrapped
+sources of programs that are only used in a check, (2) not
+distributing parse tables, (3) reduction of the size of bootstrapped
+sources by heavy use of separate compilation in StrategoXT.
 
-   * No bootstrapped of check files
+Second, the dependencies of StrategoXT are now finally checked in the
+configure script. If the provided configuration is incorrect, then the
+configure will fail and explain where the tools were expected in the
+current configuration. The configure scripts checks for the ATerm-gcc
+library in the aterm package, which is constructed by passing the
+--with-gcc flag to the ATerm configure script. It also checks for
+several tools that are part of the packages of the sdf2-bundle.
 
-   * No parse tables
-
-   * Reduced size of C sources due to separate compilation
-
-   * Check dependencies at configure-time: aterm (ATerm-gcc) and
-     packages part of the sdf2-bundle.
-
-   * Implemented as macros in AutoXT. You can use them in your own
-     packages.
+The checks have been implemented as macros (=XT_PKG_ATERM= and
+=XT_PKG_SDF=) in AutoXT, so you can use them in your package as
+well. The macro =XT_PKG_STRATEGOXT= can be used if you want to verify
+in your packages that the provided configuration for StrategoXT is
+correct.
 
    (Martin Bravenboer)
 
 ---------++ Upgrade of SDF Packages
 
-   * New SDF2 Bundle, includes ASF Library.
+StrategoXT 0.11 uses a new version of the SDF language and its
+implementation. The SDF packages are collected in the sdf2-bundle 2.2,
+which is available from the release page of StrategoXT 0.11. 
 
-   * New SDF feature: declare context-free start-symbols.
+%RED%Important: %ENDCOLODR% the new version of SDF contains a new
+construct for declarating start symbols of the syntax definition. In
+older versions of SDF there was no way to declare start
+symbols. Instead, all declared sorts were implicitly added as start
+symbols. You must add this new explicit declaration of start-symbols
+to your syntax definition, otherwise the generated parse table will
+not parse anything. For example, if you want =Module= to be a start
+symbol of your syntax definition, then you should add a declaration
+=context-free start-symbols Module=. You can also declare complex
+start symbols. Declaring all sorts (in a =sorts= construct)is now
+encouraged, since the parse table generator is then able to do more
+static checking of the syntax definition and warn about suspicious
+constructs.
 
    (Martin Bravenboer)
 
@@ -118,6 +163,8 @@ StrategoXT 0.11 -- released July 16, 2004
       * pack-sdf can now include modules from syntax definitions
       * sdf2parenthesize improves the support for implementing
         pretty-printers
+
+      * sdf2rtg complains about missing start symbols
 
 ---------++ New strategies in the Stratego library:
 
