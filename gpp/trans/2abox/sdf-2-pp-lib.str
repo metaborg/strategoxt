@@ -35,7 +35,7 @@ strategies
     ; debug(!"[ppgen | warning]   ")
 
   ignore-prod =
-    ?prod([sort(_)], sort(_), no-attrs())
+    ?prod([sort(_)], sort(_), attrs([]))
 
   ignore-prod =
       ?prod(_, _, attrs(attrs))
@@ -307,4 +307,7 @@ strategies
    * @type  List(Attribute) -> String
    */
   get-cnstr-name =
-    fetch-elem(?term(appl(uqlit("cons"), [fun(qlit(<un-double-quote>))])))
+    fetch-elem(
+      ?term(appl(uqlit("cons"), [fun(qlit(<un-double-quote>))]))
+    + ?term(cons(<id>))
+    )
