@@ -5,7 +5,8 @@
 
 ----------------------------------------------------------------------
 
-STRATEGO : Specification of Program Transformation Systems
+STRATEGO : Strategies for Program Transformation
+XT 	 : A Bundle of Transformation Tools
 
 Version @VERSION@
 
@@ -99,29 +100,67 @@ such as pretty-printers from syntax definitions. See
 ----------------------------------------------------------------------
 
 STRUCTURE OF THE DISTRIBUTION
-.
-|-- cgen		: Support for generation of C code
-|   |-- data
+
+|-- asfix-tools
+|   `-- src
+|       |-- asfix
+|       |-- asfix-yield
+|       |-- explode-asfix2me
+|       |-- implode
+|       |-- templates
+|       |-- termid
+|       `-- visamb
+|-- aterm-tools
+|   `-- src
+|       |-- atermdiff
+|       |-- templates
+|       |-- treeviz
+|       `-- utils
+|-- autoxt
+|-- boxenv
+|   `-- src
+|       |-- boxenv
+|       `-- templates
+|-- cgen
 |   |-- pp
 |   |-- sig
 |   `-- syn
-|-- emacs		: Emacs syntax highlighting for Stratego
-|-- gpp-boot		: Bootstrapped sources of GPP (pretty-printing)
+|-- dot-tools
+|   `-- syn
+|-- emacs
+|-- gpp
 |   `-- src
-|-- sc			: Stratego sources of the Stratego Compiler
+|       |-- abox-format
+|       |-- abox2html
+|       |-- abox2latex
+|       |-- abox2text
+|       |-- asfix2abox
+|       |-- ast2abox
+|       |-- lib
+|       |-- ppgen
+|       |-- templates
+|       |-- tests
+|       `-- tohtml
+|-- graph-tools
+|   `-- src
+|       |-- dot
+|       |-- graphterms
+|       |-- graphterms2graphxml
+|       |-- graphxml
+|       |-- graphxml-analysis
+|       |-- graphxml2dot
+|       `-- templates
+|-- sc
 |   `-- spec
 |       |-- c
 |       |-- front
-|       |   `-- data
 |       |-- lib
 |       |-- log
 |       |-- match
-|       |   `-- data
 |       |-- opt
 |       |-- sc
 |       |-- sdf
 |       |-- si
-|       |   `-- data
 |       |-- sig
 |       |-- syn
 |       |-- test1
@@ -129,139 +168,205 @@ STRUCTURE OF THE DISTRIBUTION
 |       |-- test3
 |       |-- testlib
 |       `-- testspec
-|-- sc-boot		: Bootstrapped (C) sources of Stratego Compiler
+|-- sdf-import
+|-- sdf-tools
 |   `-- src
-|-- srts		: Stratego Run-Time System
+|       |-- fdl2sdf
+|       |-- lib
+|       |-- pack-sdf
+|       |-- sdf
+|       |-- sdf-bench
+|       |-- sdf-bracket
+|       |-- sdf-cons
+|       |-- sdf-doc
+|       |-- sdf-imports
+|       |-- sdf-label
+|       |-- sdf-normalize
+|       |-- sdf-pp
+|       |-- sdf-wf
+|       |-- sdf2asdf
+|       |-- sdf2sdf
+|       |-- templates
+|       `-- unpack-sdf
+|-- srts
+|   |-- src
+|   |   `-- srts
+|   `-- ssl
+|-- ssl
+|   `-- spec
+|-- stratego-front
+|   |-- parse
+|   |-- pp
+|   |-- sig
+|   |-- syn
+|   `-- test
+|-- stratego-tools
 |   `-- src
-`-- ssl			: Stratego Standard Library
-    |-- spec		: Stratego library modules
-    |   `-- data
-    `-- src		: C implementation of primitives
+|       |-- rsdf2sdf
+|       |-- sdf2sig
+|       |-- sdf2stratego
+|       |-- stratego
+|       |-- stratego-imports
+|       |-- stratego-stats
+|       `-- templates
+|-- xt
+|   |-- integration-tests
+|   |-- src
+|   |   |-- gbquery
+|   |   |-- lib
+|   |   |-- parse
+|   |   |-- pp
+|   |   |-- sdf-doc
+|   |   |-- templates
+|   |   `-- visamb
+|   `-- www
+`-- xtc
+    `-- src
 
 ----------------------------------------------------------------------
 
-ATERM LIBRARY
- 
-For the installation of Stratego, the ATerm library is required. The
-ATerm library can be obtained from
- 
-   http://www.cwi.nl/projects/MetaEnv/aterm/
- 
-For installation proceed as follows
- 
- > cd /path/to/aterm
- > tar zxf aterm-x.y.tar.gz
- > cd aterm-x.y
- > ./configure --prefix=/aterm/install/directory --with-all
- > gmake
- > gmake install
- 
-After installation with this configuration, the library is installed
-in /aterm/install/directory/lib, the executables in
-/aterm/install/directory/bin, and the include files in
-/aterm/install/directory/include.
- 
- For further information about installion see the aterm README.
- 
+Complete sources of StrategoXT
+
+  * http://www.stratego-language.org/ftp/StrategoXT-0.9beta7.tar.gz
+
+StrategoXT is built using the ATermLibrary, the SDF syntax definition
+formalism and parser generator, and optionally the Nancy Choice Point
+Library cpl (with some adaptations for Stratego).
+	
+  * http://www.stratego-language.org/ftp/aterm-1.6.7.tar.gz
+  * http://www.stratego-language.org/ftp/sdf2-1.5.tar.gz
+  * http://www.stratego-language.org/ftp/cpl-stratego-0.4.tar.gz
+
+The sources of the StrategoXT distribution are also available directly
+from the CVS repository. Use the release tag to get the released
+version, or ignore the tag to get the latest developments (at your own
+risk).
+
+cvs -d :pserver:anonymous@cvs.cs.uu.nl:/data/cvs-rep checkout StrategoXT
+
 ----------------------------------------------------------------------
+License
 
-USER CONFIGURATION
- 
-If you only intend to use the Stratego compiler and not work on its
-development set prefix to any appropriate value when installing, e.g.,
- 
- > ./configure --prefix=/usr/local \
-               --with-aterm=/aterm/install/directory
- 
-This will cause executables to be installed in /usr/local/bin,
-libraries in /usr/local/lib, include files in /usr/local/include and
-the Stratego library in /usr/local/share/stratego.
- 
-Note that the --with-aterm option should point to the directory
-containing the bin, lib and include directories with the aterm
-installation.
- 
+StrategoXT is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2, or (at your option)
+any later version.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
 ----------------------------------------------------------------------
+Bugs
 
-DEVELOPER CONFIGURATION
- 
-If you intend to change the compiler specification in spec/ and
-bootstrap the compiler, you need to set prefix to the local directory.
-Or at least a directory where you have write permissions such that it
-is easy to re-install the compiler. This is the what I usually do:
- 
- > ./configure --prefix=`pwd` \
-               --with-aterm=/aterm/install/directory
- 
-This entails that you need to include `pwd`/bin in your PATH.
- 
+Please report any problems with installation or bugs in the
+implementation to the stratego-bugs mailing list
+
+  * http://mail.cs.uu.nl/mailman/listinfo/stratego-bugs 
+
+Please check the archive of the list to see if a report about the
+problem was already submitted.
+
 ----------------------------------------------------------------------
+Dependencies
 
-INSTALLATION
- 
-For both kinds of configurations, make the compiler by
- 
- > gmake
- > gmake install
- 
+Besides the dependency on the aterm-1.6.7 and sdf2-1.5, StrategoXT has
+the following dependencies:
+
+The Stratego Compiler depends on 
+
+  * gcc (the extension of C with nested functions)
+
+The build of the source distribution depends on the following software
+packages
+
+  * gmake
+
+Developers who need to rebuild Makefiles and the configure scripts
+will need
+
+  * automake 1.5
+  * autoconf 2.53
+
+In addition the autoxt package that is part of the StrategoXT
+distribution should be installed prior to autobootstrapping such that
+the autoxt tool is visible from the path.
+
 ----------------------------------------------------------------------
+Installation
 
-BOOTSTRAPPING
- 
-To create a new version of the compiler, edit the appropriate files in
-the spec/* directories. Then compile the components by
- 
- > cd spec
- > gmake
- 
-Then use the generated compiler to compile some test specifications.
+The following sequence of commands takes care of installing the aterm,
+sdf2, and StrategoXT packages. 
 
- > gmake check
+	DIR=`pwd`
 
-If that seems to work, try to bootstrap by
- 
- > gmake bootstrap
- 
-This will compile the compiler components with itself.
- 
-If this goes wrong at some point, you'll have to reinstall the stable
-compiler in the src/ tree:
- 
- > cd ../..
- > gmake install
- 
-It can be useful to have two installations of the compiler, one of
-them the stable compiler from src. To achieve this do the following.
- 
- 1) Make a user configuration as described above and make and install
- the compiler with this configuration. This puts a stable version of
- the compiler in a standard place like /usr/local/bin.
- 
- 2) Make a developer configuration as described above.
- 
- 3) In one terminal use the stable compiler to compile the compiler
- components, i.e., PATH = /usr/local/bin:...
- 
- 4) In another terminal use the newly compiled compiler to test
- your changes i.e., PATH = /path/to/stratego/bin:...
- 
- Now if something goes wrong in 4) it is easier to recompile the
- compiler components.
+	tar zxf aterm-1.6.7.tar.gz
+	ln -s aterm-1.6.7 aterm
+	cd aterm 
+	./configure --prefix=$DIR --with-all  
+	make
+	make install
+	cd ..
 
- After you have succesfully bootstrapped the new compiler components
- you can issue a 
+	tar zxf sdf2-1.5.tar.gz
+	ln -s sdf2-1.5 sdf2
+	cd sdf2
+	./configure --prefix=$DIR --with-aterm=$DIR
+	make
+	make install
+	cd ..
 
- > gmake bootinstall
+	tar zxf StrategoXT-0.9beta7.tar.gz
+	ln -s StrategoXT-0.9beta7 StrategoXT
+	cd StrategoXT
+	./configure --prefix=$DIR --with-aterm=$DIR --with-sdf=$DIR
+	make
+	cd ..
 
- in the spec/ directory to install the bootstrapped C sources in the
- sc-boot tree.
- 
+Optionally you can install the choice point library prior to installation of StrategoXT:
+
+	tar zxf cpl-stratego-0.4.tar.gz
+	ln -s cpl-stratego-0.4 cpl-stratego
+	cd cpl-stratego
+	./configure --prefix=$DIR 
+	make
+	make install
+	cd ..
+
+To use the choice point library configure StrategoXT as follows:
+
+	./configure --prefix=$DIR --with-aterm=$DIR --with-sdf=$DIR --with-cpl=$DIR 
+
+
 ----------------------------------------------------------------------
+Packages
 
-CONTRIBUTIONS
+The StrategoXT distribution consists of the following packages
 
-If you have made a useful improvement or extension of the library,
-compiler, or language, please send a patch with respect to the
-latest release to visser@acm.org. 
+	* autoxt -- autoconf/make support for packages using XT
+
+	* srts -- Stratego run-time system
+
+	* xtc -- Transformation tool composition (component model)
+	* sdf-import -- XTC registration of SDF tools
+
+	* stratego-front -- Stratego syntax and support for concrete object syntax
+	* sc -- Stratego compiler
+	* gpp -- Generic pretty-printing
+	* cgen -- Support for the generation of C code
+
+	* ssl -- Stratego Standard Library
+
+	* aterm-tools -- Generic term operations
+	* asfix-tools -- Operations on concrete syntax trees
+	* sdf-tools -- Transformations on syntax definitions
+	* stratego-tools -- Generation of Stratego code
+	* dot-tools -- Support for processing Dot graph representations
+	* graph-tools 
+
+	* boxenv -- LaTeX run-time system for Box
+
+	* xt -- some tool compositions
 
 ----------------------------------------------------------------------

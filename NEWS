@@ -1,13 +1,208 @@
-------------------------------------------------------------------------------
- __ __ __  __    _  __ __  __  __   __
-|__   |   |__|  /_\   |   |__ | _  |  |
- __|  |   | \  /   \  |   |__ |__| |__|
+----------------------------------------------------------------------
+            __ __ __  __    _  __ __  __  __   __      _  _ _ _
+           |__   |   |__|  /_\   |   |__ | _  |  |  /   \/   |
+            __|  |   | \  /   \  |   |__ |__| |__| /   _/\_  |
+
+----------------------------------------------------------------------
+
+STRATEGO : Strategies for Program Transformation
+XT 	 : A Bundle of Transformation Tools
 
 ------------------------------------------------------------------------------
 
 News about Stratego releases
 
-Version 0.9beta2 
+------------------------------------------------------------------------------
+
+Version 0.9beta7 - released December 13, 2002
+
+DOWNLOAD AND INSTALLATION
+
+The download page contains the source distribution and instructions
+for installation
+
+  * http://www.stratego-language.org/Stratego/StrategoRelease09
+
+SUMMARY OF CHANGES
+
+  * AutoXT -- autoconf/make support for XT packages
+  * XTC -- Transformation tool composition
+  * Sdf-import -- XTC registration of sdf tools
+  * Dot-tools -- syntax of the dot language
+
+  * LEX/YACC grammar retired
+  * All StrategoXT packages use autoxt
+  * Building the distribution uses only the C compiler
+
+DETAILS
+
+* AutoXT
+ 
+  The autoxt package provides autoconf and automake support for packages
+  constructed with the XT toolset. The package provides the autoxt tool
+  which should be run as part of the autoconf/make bootstrapping process,
+  prior to running autoconf. A typical bootstrap script looks like:
+
+  ------------------------------------------------ bootstrap
+  #! /bin/sh
+  autoxt
+  aclocal -I .
+  autoconf
+  automake -a
+  ------------------------------------------------
+
+  Autoxt installs a set of m4 macros autoxt.m4 with support for
+  package configuration switches. By just including the macro call
+  USE_XT_PACKAGES a configure.in file can be parameterized with
+  switches for all the StrategoXT packages:
+
+  ------------------------------------------------ configure.in
+  AC_INIT(syn/Dot.sdf)
+  AM_INIT_AUTOMAKE(dot-tools,0.9beta7)
+  USE_XT_PACKAGES
+  AC_PROG_CC
+  AC_PROG_INSTALL
+  AC_OUTPUT(Makefile syn/Makefile)
+  ------------------------------------------------
+
+  Furthermore, autoxt installs Makefile.xt, a collection of automake
+  rules for compiling Stratego programs and applying other XT tools,
+  such as signature generation. Using this makefile, a makefile
+  reduces to a declaration of programs to be compiled. The makefile
+  automatically takes care of distributing the generated C code. The
+  specification will only be compiled when it is newer than the C
+  code. This means that packages using autoxt can be built using only
+  the Stratego Run-Time System (srts).
+
+  ------------------------------------------------ Makefile.am
+  include $(top_srcdir)/Makefile.xt
+  include $(wildcard *.dep)
+
+  bin_PROGRAMS    = xtc
+  pkgdata_DATA    = xtc-lib.rtree xtc-rep.rtree \
+                    xtc-proc.rtree xtc-register.rtree
+  SCFLAGS         = --main $* $(XTCFLAGS)
+  EXTRA_DIST      = $(pkgdata_DATA) $(wildcard *.str) \
+                    $(wildcard *.meta)
+  CLEANFILES      = $(wildcard *.dep)
+  BOOTCLEANFILES  = xtc.c
+
+  xtc.o           : xtc-conf.h
+  ------------------------------------------------ 
+
+* XTC -- Transformation Tool Composition
+
+  StrategoXT encourages a development model in which stand-alone
+  components are developed for separate aspects of program
+  transformation, instead of implementing integrated monolithic
+  transformation systems. A typical component reads a program
+  represented by means of an ATerm, transforms it, and writes out a
+  transformed ATerm. The advantage of this approach is that the
+  components can be reused in different transformation systems. The
+  composition mechanisms used to date include makefiles, shell
+  scripts, and Stratego programs. The problem with the approach is
+  keeping track of all available components and their installation
+  locations. As a consequence of making components available in small
+  packages (to increase reusability), compositions need to be
+  parameterized with a large number of installation paths. The XTC
+  component model and API supports the easy composition of XT
+  components using a repository to keep track of available components.
+
+  XTC implements the XT component model and provides support for creating
+  compositions of XT components. The xtc tool is used to register components
+  in an XTC repository. For example the command:
+
+    > xtc -r /usr/share/StrategoXT/XTC register -t sglr -l /bin -V 3.8
+  
+  registers version 3.8 of sglr which is installed in /bin in the XTC
+  repository located in /usr/share/StrategoXT. The generic Makefile.xt
+  provided by AutoXT automatically registers all installed tools with the
+  package repository.
+
+  XTC repositories can be used to find the installation location of a tool
+  without needing to know all the installation paths. For example, the
+  following query can be used to find out where sglr is installed:
+
+    > xtc -r /usr/share/StrategoXT/XTC query -t sglr 
+    sglr (3.8) : /bin/sglr
+
+  An existing repository can be inherited by importing it
+
+    > xtc -r /home/user/share/tiger/XTC import /usr/share/StrategoXT/XTC
+
+  In addition to the command-line tool for registration and querying of
+  repositories, XTC also provides a Stratego API for approaching XTC
+  repositories. All that is required to use this API is (1) importing
+  the xtc-lib module and (2) including an xtc-conf.h header file in
+  the generated C code. The details are supported by Makefile.xt. 
+  To use XTC add the following to your Makefile.am: 
+
+  ------------------------------------------------ 
+  bin_PROGRAMS  = term-to-dot
+  SCFLAGS       = --main $* $(XTCFLAGS)
+  term-to-dot.o : xtc-conf.h
+  ------------------------------------------------ 
+
+  The depedency of term-to-dot.o on xtc-conf.h is needed to ensure
+  that it is generated. The xtc-conf.h header file contains the name
+  of the XTC repository used by the package. 
+
+  The XTC API supports easy calling of external Stratego components
+  and mixing them with internally defined transformations. Here is an
+  example:
+
+  ------------------------------------------------ 
+  module term-to-dot
+  imports xtc-lib lib term-to-adot
+  strategies
+    term-to-dot =
+      parse-options(term-to-adot-options <+ io-options)
+      ; xtc-temp-files(
+          (!FILE(<get-config> "-i") <+ !stdin)
+          ; read-from
+          ; to-adot
+          ; write-to
+          ; xtc-transform(!"ast2abox", !["-p", <xtc-find> "Dot-pretty.pp"])
+          ; xtc-transform(!"abox2text")
+          ; rename-to(<get-config> "-o"))
+      ; <exit> 0
+  ------------------------------------------------ 
+
+  Note that no code is needed to load the repository. Whenever a query is
+  done (e.g., by xtc-transform to find "ast2abox"), and no repository is
+  loaded the XTC repository is loaded.
+
+  AutoXT provides support for XTC by means of a package switch --with-repository
+  that can be used to indicate the repository in which to register tools.
+  The default is $prefix/share/$PACKAGE/XTC, i.e., the XTC file in the package
+  data directory. In the StrategoXT distribution the sub-packages inherit the
+  repository location from the super-package, i.e., all StrategoXT tools are
+  registered in $prefix/share/StrategoXT/XTC.
+
+  Makefile.xt implements an automake install hook to install all programs,
+  scripts, and data. Thus it is not necessary to include make rules for
+  this purpose. The Makefile example above is sufficient to register
+  tools and data.
+
+* SDF-import
+
+  The sdf-import package registers the SDF tools sdf2table and sglr in
+  an XTC repository to make them available for XTC programs.
+
+* Dot-tools
+
+  This package provides a refactored syntax definition of the Dot language,
+  generated signature, pretty-printer, and Stratego embedding.
+
+* LEX/YACC Grammar Retired
+
+  Since SDF is starting to be used structurally in the Stratego
+  compiler, the LEX/YACC definition is no longer part of the distribution. It
+  is a pain to maintain and to keep the two definitions in synch. 
+
+------------------------------------------------------------------------------
+
+Version 0.9beta2
 
 * XT CVS repository from CWI to UU
 
@@ -94,8 +289,6 @@ Version 0.9beta2
     numbering scheme, except for the packages such as gpp, which
     were already past 1.0. I don't know what to do about that
     yet.
-
-
 
 So far the actions until now. In the (near) future further renovation
 should be conducted. Here are some ideas.
