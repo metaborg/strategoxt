@@ -27,9 +27,6 @@ AC_CONFIG_FILES([
   src/templates/Makefile
   src/templates/data/Makefile
 
-  src/asfix/Makefile
-  src/asfix/data/Makefile
-
   src/implode/Makefile
   src/implode/data/Makefile
 
