@@ -97,7 +97,7 @@ AM_CONFIG_HEADER([config.h])
 
 ### PACKAGES ##########################
 
-PKGS="autoxt srts xtc sdf-import sc ssl gpp cgen stratego-front asfix-tools aterm-tools graph-tools sdf-tools dot-tools stratego-tools xt boxenv"
+PKGS="autoxt srts xtc sdf-import sc ssl gpp cgen c-tools stratego-front asfix-tools aterm-tools graph-tools sdf-tools dot-tools stratego-tools xt boxenv"
 
 #gbtools stratego-connect grammar-recovery
 
@@ -162,6 +162,15 @@ AB_CONFIG_PKG(sc,
 )
 
 AB_CONFIG_PKG(cgen,
+   --with-aterm=${ATERM}
+   --with-sglr=${SGLR}
+   --with-pgen=${PGEN}
+   --with-xtc=${prefix}
+   --with-strategoxt=${prefix}
+   --with-repository=${REPOSITORY}
+)
+
+AB_CONFIG_PKG(c-tools,
    --with-aterm=${ATERM}
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}

@@ -10,8 +10,7 @@ astratego2text.o : xtc-conf.h
 SCFLAGS 	= --main $* $(XTCFLAGS)
 
 pkgdata_DATA 	= Stratego.pp Stratego-pretty.pp StrategoStratego.pp	      \
-		  Stratego.pp.af Stratego-pretty.pp.af StrategoStratego.pp.af \
-		  astratego2text.config
+		  Stratego.pp.af Stratego-pretty.pp.af StrategoStratego.pp.af 
 
 CLEANFILES 	= Stratego.pp StrategoStratego.pp	       \
 		Stratego.pp.af Stratego-pretty.pp.af	       \
@@ -21,12 +20,11 @@ CLEANFILES 	= Stratego.pp StrategoStratego.pp	       \
 EXTRA_DIST 	=				\
 		$(wildcard *.pp)		\
 		$(wildcard *.pp.af)		\
-		$(wildcard *.r)			\
-		$(wildcard *.config.src)	\
+		$(wildcard *.str)		\
 		$(wildcard *.c)			\
-		$(wildcard *.h.in)
+		$(wildcard *.h.in) 
 
-%.def : 
+Stratego.def : 
 	rm -f $@
 	ln -s ../syn/$@ .
 

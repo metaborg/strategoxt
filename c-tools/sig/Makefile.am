@@ -15,9 +15,10 @@ P_SIGS=C.rtree C-AbstractDeclarators.rtree C-Constants.rtree C-Declarators.rtree
    C-StructsAndUnions.rtree C-Types.rtree
 
 pkgdatadoc_DATA = $(SIGS)
-pkgdata_DATA 	  = $(P_SIGS)
+pkgdata_DATA 	= $(P_SIGS)
 EXTRA_DIST      = $(SIGS) $(P_SIGS) $(LANGUAGE).def
-CLEANFILES      = $(SIGS) $(P_SIGS) $(wildcard *.atree) $(LANGUAGE).def
+BOOTCLEANFILES	= $(SIGS) $(P_SIGS) $(LANGUAGE).def $(wildcard *.rtree)
+CLEANFILES	= $(wildcard *.atree)
 
 $(LANGUAGE).str : $(LANGUAGE).def
 $(LANGUAGE).def : $(top_srcdir)/syn/$(LANGUAGE).def

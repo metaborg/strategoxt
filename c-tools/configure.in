@@ -6,13 +6,13 @@ USE_XT_PACKAGES
 AC_PROG_CC
 AC_PROG_INSTALL
 
-AC_CONFIG_FILES([\
-	README NEWS \
-	Makefile \
-	syn/Makefile \
-	pp/Makefile \
-	sig/Makefile \
-	xtc-tools/Makefile \
+AC_CONFIG_FILES([
+	README NEWS
+	Makefile
+	syn/Makefile
+	pp/Makefile
+	sig/Makefile
+	xtc-tools/Makefile
 ])
 AC_OUTPUT
 

@@ -7,7 +7,9 @@ touch NEWS
 
 autoxt
 aclocal -I .
-autoconf -f --warnings=all
-automake -a -f  --warnings=all  --warnings=no-portability
+autoconf -f 
+#--warnings=all
+automake -a -f  
+#--warnings=all  --warnings=no-portability
 
 #autoreconf --include=. --warnings=all --warnings=no-portability

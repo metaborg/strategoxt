@@ -1734,3 +1734,8 @@ Bootclean finished [Sat Dec 21 21:18:43 CET 2002]
 Bootstrapping: phase 2 started [Sat Dec 21 21:37:18 CET 2002]
 Bootclean [Sat Dec 21 21:37:18 CET 2002]
 Bootclean finished [Sat Dec 21 21:37:18 CET 2002]
+
+Bootstrapping version 0.9beta8 [Sun Dec 22 14:44:20 CET 2002 - Linux node11794.a2000.nl i686]
+Bootstrapping: phase 1 started [Sun Dec 22 14:44:20 CET 2002]
+Bootclean [Sun Dec 22 14:44:57 CET 2002]
+Bootclean finished [Sun Dec 22 14:46:07 CET 2002]

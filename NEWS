@@ -14,6 +14,65 @@ News about Stratego releases
 
 ------------------------------------------------------------------------------
 
+Version 0.9beta8 - released December 23, 2002
+
+DOWNLOAD AND INSTALLATION
+
+The download page contains the source distribution and instructions
+for installation
+
+  * http://www.stratego-language.org/Stratego/StrategoRelease09
+
+SUMMARY OF CHANGES
+
+  * Bugfix: dynamic rules with overlapping left-hand sides 
+  * XTC -- polishing
+  * More tools based on XTC -- parse-stratego, sc, pack-stratego
+  * C-Tools -- support for C generation (and transformation)
+  * Bug fixes and refactorings
+
+DETAILS
+
+* Dynamic rules with overlapping left-hand sides 
+
+  The desugaring of dynamic rules has been changed to repair the
+  problems arising when two dynamic rules with the same name have
+  different left-hand sides, but the same number of context variables
+  in the left-hand side. The key that is used for a dynamic rule is
+  now the entire left-hand side, modulo non-context variables. The
+  new implementation will also make it easier to define (or even
+  generate) operations for saving, restoring, and intersecting sets
+  of dynamic rules, as used in data-flow optimizations.
+
+* XTC
+
+  The XTC support library is further polished. The xtc-iowrap(s) strategy
+  is the XTC variant of the traditional iowrap. It takes care of option 
+  parsing, setting up the input file, and writing to the output file. The
+  s strategy is typically a chain of xtc transformations. But it can also
+  be used as replacement for iowrap, by wrapping xtc-io-transform(..) around
+  a term transformation.
+
+* C-Tools
+
+  The c-tools package is a refactoring of the cgen package for C code
+  generation (by Martin Bravenboer). The package will replace cgen
+  in future releases; it is not yet used within StrategoXT.
+
+* Using XTC
+
+  The implementation of many composite tools is greatly simplified by
+  using XTC. Configuration files are now obsolete, at least the import
+  mechanism for configuration files. Any resources a component needs
+  should be obtained through an XTC repository.
+
+* Bug fixes and refactorings
+
+  While fixing bugs and adding functionality, the compiler components
+  are gradually refactored to use more modern Stratego techniques.
+
+------------------------------------------------------------------------------
+
 Version 0.9beta7 - released December 13, 2002
 
 DOWNLOAD AND INSTALLATION

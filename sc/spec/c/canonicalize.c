@@ -1124,7 +1124,7 @@ ATerm is_list_0 (ATerm);
 ATerm echo_0 (ATerm);
 ATerm long_description_1 (ATerm, ATerm r_101 (ATerm));
 ATerm map_1 (ATerm, ATerm d_86 (ATerm));
-ATerm reverse_acc_2 (ATerm, ATerm g_0 (ATerm), ATerm i_0 (ATerm));
+ATerm reverse_acc_2 (ATerm, ATerm h_0 (ATerm), ATerm i_0 (ATerm));
 ATerm reverse_0 (ATerm);
 ATerm short_description_1 (ATerm, ATerm q_101 (ATerm));
 ATerm Program_1 (ATerm, ATerm o_66 (ATerm));
@@ -1139,7 +1139,7 @@ ATerm try_1 (ATerm, ATerm l_78 (ATerm));
 ATerm table_get_0 (ATerm);
 ATerm table_push_0 (ATerm);
 ATerm register_usage_1 (ATerm, ATerm v_101 (ATerm));
-ATerm Option_3 (ATerm, ATerm a_0 (ATerm), ATerm c_0 (ATerm), ATerm e_0 (ATerm));
+ATerm Option_3 (ATerm, ATerm a_0 (ATerm), ATerm d_0 (ATerm), ATerm g_0 (ATerm));
 ATerm system_usage_switch_0 (ATerm);
 ATerm UndefinedOption_0 (ATerm);
 ATerm Cons_2 (ATerm, ATerm a_61 (ATerm), ATerm b_61 (ATerm));
@@ -1588,7 +1588,7 @@ ATerm Canon_0 (ATerm t)
                 }
               return(t);
             }
-            ATerm d_0 (ATerm t)
+            ATerm c_0 (ATerm t)
             {
               ATerm t_5 = t;
               int u_5 = stack_ptr;
@@ -1605,7 +1605,7 @@ ATerm Canon_0 (ATerm t)
                 }
               return(t);
             }
-            t = Cons_2(t, b_0, d_0);
+            t = Cons_2(t, b_0, c_0);
             LocalPopChoice(q_5);
           }
         else
@@ -1633,7 +1633,7 @@ ATerm Canon_0 (ATerm t)
     ATerm y_9 = NULL,z_9 = NULL,a_10 = NULL;
     t = not_null(i_8);
     {
-      ATerm f_0 (ATerm t)
+      ATerm e_0 (ATerm t)
       {
         ATerm z_5 = t;
         int a_6 = stack_ptr;
@@ -1678,12 +1678,12 @@ ATerm Canon_0 (ATerm t)
                     ATerm l_6 = t;
                     if((PushChoice() == 0))
                       {
-                        ATerm h_0 (ATerm t)
+                        ATerm f_0 (ATerm t)
                         {
                           t = SVar_1(t, _id);
                           return(t);
                         }
-                        t = Call_2(t, h_0, Nil_0);
+                        t = Call_2(t, f_0, Nil_0);
                         PopChoice();
                         _fail(t);
                       }
@@ -1711,7 +1711,7 @@ ATerm Canon_0 (ATerm t)
         }
         return(t);
       }
-      t = unzip_1(t, f_0);
+      t = unzip_1(t, e_0);
       {
         y_9 = t;
         h_7 :
@@ -4040,7 +4040,7 @@ ATerm map_1 (ATerm t, ATerm d_86 (ATerm))
   t = j_25(t);
   return(t);
 }
-ATerm reverse_acc_2 (ATerm t, ATerm g_0 (ATerm), ATerm i_0 (ATerm))
+ATerm reverse_acc_2 (ATerm t, ATerm h_0 (ATerm), ATerm i_0 (ATerm))
 {
   ATerm q_25 = NULL,r_25 = NULL,s_25 = NULL;
   s_25 = t;
@@ -4075,7 +4075,7 @@ ATerm reverse_acc_2 (ATerm t, ATerm g_0 (ATerm), ATerm i_0 (ATerm))
               ATerm z_25 = NULL;
               t = not_null(q_25);
               {
-                t = g_0(t);
+                t = h_0(t);
                 {
                   z_25 = t;
                   if(((y_25 != NULL) && (y_25 != z_25)))
@@ -4103,7 +4103,7 @@ ATerm reverse_acc_2 (ATerm t, ATerm g_0 (ATerm), ATerm i_0 (ATerm))
               t = not_null(v_25);
               return(t);
             }
-            t = reverse_acc_2(t, g_0, f_2);
+            t = reverse_acc_2(t, h_0, f_2);
           }
         }
       }
@@ -4528,14 +4528,14 @@ ATerm register_usage_1 (ATerm t, ATerm v_101 (ATerm))
   }
   return(t);
 }
-ATerm Option_3 (ATerm t, ATerm a_0 (ATerm), ATerm c_0 (ATerm), ATerm e_0 (ATerm))
+ATerm Option_3 (ATerm t, ATerm a_0 (ATerm), ATerm d_0 (ATerm), ATerm g_0 (ATerm))
 {
   ATerm j_31 = NULL,k_31 = NULL,l_31 = NULL;
   j_31 = t;
   i_31 :
   if(match_string(j_31, "register-usage-info"))
     {
-      t = register_usage_1(t, e_0);
+      t = register_usage_1(t, g_0);
     }
   else
     {
@@ -4556,7 +4556,7 @@ ATerm Option_3 (ATerm t, ATerm a_0 (ATerm), ATerm c_0 (ATerm), ATerm e_0 (ATerm)
               ATerm u_31 = NULL;
               t = term_b_13;
               {
-                t = c_0(t);
+                t = d_0(t);
                 {
                   u_31 = t;
                   if(((t_31 != NULL) && (t_31 != u_31)))

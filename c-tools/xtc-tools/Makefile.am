@@ -8,11 +8,7 @@ CLEANFILES       = $(wildcard *.c)   $(wildcard *.h)
 
 SCFLAGS          = --main io-$* $(XTCFLAGS) 
 
-parse-c.o : xtc-conf.h
-pp-c.o    : xtc-conf.h
-
-# MUSTDO: remove when c-tools is part of StrategoXT
-install-data-local:
-	$(XTC)/bin/xtc -r $(REPOSITORY) import $(STRATEGOXT)/share/StrategoXT/XTC
+parse-c.o 	 : xtc-conf.h
+pp-c.o    	 : xtc-conf.h
 
 

@@ -842,7 +842,7 @@ ATerm is_list_0 (ATerm);
 ATerm echo_0 (ATerm);
 ATerm long_description_1 (ATerm, ATerm t_92 (ATerm));
 ATerm map_1 (ATerm, ATerm w_76 (ATerm));
-ATerm reverse_acc_2 (ATerm, ATerm g_0 (ATerm), ATerm i_0 (ATerm));
+ATerm reverse_acc_2 (ATerm, ATerm h_0 (ATerm), ATerm i_0 (ATerm));
 ATerm reverse_0 (ATerm);
 ATerm short_description_1 (ATerm, ATerm s_92 (ATerm));
 ATerm Program_1 (ATerm, ATerm e_62 (ATerm));
@@ -856,7 +856,7 @@ ATerm Help_0 (ATerm);
 ATerm table_get_0 (ATerm);
 ATerm table_push_0 (ATerm);
 ATerm register_usage_1 (ATerm, ATerm x_92 (ATerm));
-ATerm Option_3 (ATerm, ATerm a_0 (ATerm), ATerm c_0 (ATerm), ATerm e_0 (ATerm));
+ATerm Option_3 (ATerm, ATerm a_0 (ATerm), ATerm d_0 (ATerm), ATerm g_0 (ATerm));
 ATerm system_usage_switch_0 (ATerm);
 ATerm UndefinedOption_0 (ATerm);
 ATerm Cons_2 (ATerm, ATerm g_57 (ATerm), ATerm h_57 (ATerm));
@@ -1759,7 +1759,7 @@ ATerm DesugarOnce_0 (ATerm t)
             {
               ATerm b_0 (ATerm t)
               {
-                ATerm d_0 (ATerm t)
+                ATerm c_0 (ATerm t)
                 {
                   ATerm h_16 = NULL;
                   h_16 = t;
@@ -1770,7 +1770,7 @@ ATerm DesugarOnce_0 (ATerm t)
                     }
                   return(t);
                 }
-                t = unquote_chars_1(t, d_0);
+                t = unquote_chars_1(t, c_0);
                 return(t);
               }
               t = string_as_chars_1(t, b_0);
@@ -2100,7 +2100,7 @@ ATerm unquote_chars_1 (ATerm t, ATerm k_86 (ATerm))
 }
 ATerm un_double_quote_chars_0 (ATerm t)
 {
-  ATerm f_0 (ATerm t)
+  ATerm e_0 (ATerm t)
   {
     ATerm a_18 = NULL;
     a_18 = t;
@@ -2111,7 +2111,7 @@ ATerm un_double_quote_chars_0 (ATerm t)
       }
     return(t);
   }
-  t = unquote_chars_1(t, f_0);
+  t = unquote_chars_1(t, e_0);
   return(t);
 }
 ATerm string_as_chars_1 (ATerm t, ATerm v_86 (ATerm))
@@ -2125,7 +2125,7 @@ ATerm string_as_chars_1 (ATerm t, ATerm v_86 (ATerm))
 }
 ATerm un_double_quote_0 (ATerm t)
 {
-  ATerm h_0 (ATerm t)
+  ATerm f_0 (ATerm t)
   {
     ATerm n_0 (ATerm t)
     {
@@ -2141,7 +2141,7 @@ ATerm un_double_quote_0 (ATerm t)
     t = unquote_chars_1(t, n_0);
     return(t);
   }
-  t = string_as_chars_1(t, h_0);
+  t = string_as_chars_1(t, f_0);
   return(t);
 }
 ATerm DesugarCharGeneric_0 (ATerm t)
@@ -5008,7 +5008,7 @@ ATerm map_1 (ATerm t, ATerm w_76 (ATerm))
   t = z_46(t);
   return(t);
 }
-ATerm reverse_acc_2 (ATerm t, ATerm g_0 (ATerm), ATerm i_0 (ATerm))
+ATerm reverse_acc_2 (ATerm t, ATerm h_0 (ATerm), ATerm i_0 (ATerm))
 {
   ATerm g_47 = NULL,h_47 = NULL,i_47 = NULL;
   i_47 = t;
@@ -5043,7 +5043,7 @@ ATerm reverse_acc_2 (ATerm t, ATerm g_0 (ATerm), ATerm i_0 (ATerm))
               ATerm w_47 = NULL;
               t = not_null(g_47);
               {
-                t = g_0(t);
+                t = h_0(t);
                 {
                   w_47 = t;
                   if(((o_47 != NULL) && (o_47 != w_47)))
@@ -5071,7 +5071,7 @@ ATerm reverse_acc_2 (ATerm t, ATerm g_0 (ATerm), ATerm i_0 (ATerm))
               t = not_null(l_47);
               return(t);
             }
-            t = reverse_acc_2(t, g_0, r_2);
+            t = reverse_acc_2(t, h_0, r_2);
           }
         }
       }
@@ -5479,14 +5479,14 @@ ATerm register_usage_1 (ATerm t, ATerm x_92 (ATerm))
   }
   return(t);
 }
-ATerm Option_3 (ATerm t, ATerm a_0 (ATerm), ATerm c_0 (ATerm), ATerm e_0 (ATerm))
+ATerm Option_3 (ATerm t, ATerm a_0 (ATerm), ATerm d_0 (ATerm), ATerm g_0 (ATerm))
 {
   ATerm q_52 = NULL,y_52 = NULL,z_52 = NULL;
   q_52 = t;
   p_52 :
   if(match_string(q_52, "register-usage-info"))
     {
-      t = register_usage_1(t, e_0);
+      t = register_usage_1(t, g_0);
     }
   else
     {
@@ -5507,7 +5507,7 @@ ATerm Option_3 (ATerm t, ATerm a_0 (ATerm), ATerm c_0 (ATerm), ATerm e_0 (ATerm)
               ATerm d_53 = NULL;
               t = term_n_12;
               {
-                t = c_0(t);
+                t = d_0(t);
                 {
                   d_53 = t;
                   if(((c_53 != NULL) && (c_53 != d_53)))
