@@ -14,6 +14,10 @@ StrategoXT 0.10 is under construction
       * Daily verified support for Cygwin
       * Support for Mac OS X
 
+   * Miscellaneous
+      * Many bug fixes and minor improvements
+      * Issue tracking is paying off
+
 ---------++ Dynamic Rules 
 
 For StrategoXT 0.10 we have completely redesigned and reimplemented
