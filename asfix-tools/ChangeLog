@@ -1,3 +1,8 @@
+2005-02-03  Valentin David  <valentin.david@gmail.com>
+
+	* src/implode/implode-asfix.str: Fix implosion skipping of
+	concrete syntax part when using a StrategoStrategy.
+
 2005-01-12  Martin Bravenboer <martin@cs.uu.nl>
 
 	* src/implode/sglri.str: don't report rewriting failed if parsing

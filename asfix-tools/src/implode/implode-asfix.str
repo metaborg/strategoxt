@@ -147,7 +147,7 @@ strategies
     ; !"WithAnno"#([<skip> x| <impl> xs])
 
   skip-concrete(impl) =
-    appl(prod(id, cf(sort("StrategoTerm")),
+    appl(prod(id, cf(sort("StrategoTerm" <+ "StrategoStrategy")),
       attrs(one(term(cons(?cons))))),
       oncetd(appl(prod(id,cf(oncetd(sort(id))),id),id); ?ap))
     ; !cons
