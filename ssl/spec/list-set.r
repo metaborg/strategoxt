@@ -211,9 +211,9 @@ strategies
 rules
 
   CollectSplit(s, splitter) :
-    c#(as) -> (t, <union> (ys, <unions> xs))
-    where <unzip(s)> as => (bs, xs);
-          <splitter> c#(bs) => (t, ys)
+    c#(as){annos*} -> (t, <union> (ys, <unions> xs))
+      where <unzip(s)> as => (bs, xs);
+      <splitter> c#(bs){annos*} => (t, ys)
 
   CollectSplit(s, f, g) = 
     CollectSplit(s, !(<try(f)>, <g <+ ![]>))
