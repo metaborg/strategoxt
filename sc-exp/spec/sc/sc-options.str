@@ -87,6 +87,10 @@ strategies
 	where(<set-config>("--output-optimized",())); !(),
 	!"--output-optimized Pretty-print AST after optimization" )
 
+  + Option("--output-canonical",           
+	where(<set-config>("--output-canonical",())); !(),
+	!"--output-canonical Pretty-print AST after canonicalization" )
+
   + ArgOption("--keep",
         where(<set-config>("--keep", <string-to-int>)); !(),
 	!"--keep n           Keep intermediate results (0 = keep nothing)" )

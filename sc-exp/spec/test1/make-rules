@@ -104,7 +104,7 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 # USING INSTALLED SC ###############################################
 
 %.ibin: %.r
-	../sc/sc -i $< -o $@ --verbose 3 --output-optimized
+	../sc/sc -i $< -o $@ --verbose 3 --output-optimized --output-canonical
 
 %.irun: %.ibin
 	./$<

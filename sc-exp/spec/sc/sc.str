@@ -170,6 +170,16 @@ strategies
           ; say(![" (after frontend) written to file"])
     ))
 
+  output-canonical =
+    try(where(
+	  debug(!"output-canonical: ");
+          where(<get-config> "--output-canonical")
+          ; copy-to(get-outfile(!".can") => file1)
+          ; xtc-transform(!"pp-stratego", !["--abstract", "--annotations" | <pass-verbose> ] )
+          ; copy-to(get-outfile(!".can.txt") => file2)
+          ; say(![" (after frontend) written to file"])
+    ))
+
 strategies
 
   back-end =
@@ -177,6 +187,7 @@ strategies
     profile'(if-verbose1(<printnl>(stderr, ["back-end succeeded:      " | <id>])), 
       canonicalize
       ; stratego-cf
+      ; output-canonical
       ; s2c
       ; ac2abox
       ; abox2text

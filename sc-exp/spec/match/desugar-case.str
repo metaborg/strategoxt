@@ -16,28 +16,28 @@ strategies
     Case(x, alts, s)
 
   DesugarCase :
-    Case(Var(t), [], s) -> s
+    Case(Var(x), alts, s) ->
+    Seq(Build(Var(x)), Case(alts, s))
 
   DesugarCase :
-    Case(Var(t), [Alt(Fun(c, n), xs, s1) | alts], s2) ->
-    GuardedLChoice(Seq(Build(Var(t)), Match(Op(c, xs)))
-                  , s1
-                  , Case(Var(t), alts, s2))
+    Case([], s) -> s
 
   DesugarCase :
-    Case(Var(t), [Alt(Str(str), xs, s1) | alts], s2) -> 
-    GuardedLChoice(Seq(Build(Var(t)), Match(Str(str)))
-                  , s1
-                  , Case(Var(t), alts, s2))
+    Case([Alt(Fun(c, n), xs, s1) | alts], s2) ->
+    GuardedLChoice(Match(Op(c, xs)), s1
+                  , Case(alts, s2))
+
+  DesugarCase :
+    Case([Alt(Str(str), xs, s1) | alts], s2) -> 
+    GuardedLChoice(Match(Str(str)), s1
+                  , Case(alts, s2))
 
   DesugarAlt :
-    Case(Var(t), [Alt(Int(i), xs, s1) | alts], s2) -> 
-    GuardedLChoice(Seq(Build(Var(t)), Match(Int(i)))
-                  , s1
-                  , Case(Var(t), alts, s2))
+    Case([Alt(Int(i), xs, s1) | alts], s2) -> 
+    GuardedLChoice(Match(Int(i)), s1
+                  , Case(alts, s2))
 
   DesugarAlt :
-    Case(Var(t), [Alt(Real(i), xs, s1) | alts], s2) -> 
-    GuardedLChoice(Seq(Build(Var(t)), Match(Real(i)))
-                  , s1
-                  , Case(Var(t), alts, s2))
+    Case([Alt(Real(i), xs, s1) | alts], s2) -> 
+    GuardedLChoice(Match(Real(i)), s1
+                  , Case(alts, s2))

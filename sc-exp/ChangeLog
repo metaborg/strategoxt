@@ -1,10 +1,20 @@
 2003-07-11  Eelco Visser  <visser@cs.uu.nl>
 
+	* spec/c/s2c.str: Special translation for guarded left choice
+	with match as guard can avoid choice point and directly generate
+	if-then-else. Replaces translation of Case construct.
+
+	* spec/c/canonicalize.str: invoke bound-unbound-vars analysis.
+
+	* spec/c/bound-unbound-vars.str: mark variables if we're sure they
+	are either bound our unbound. This can be used by back-end to
+	avoid run-time checks. Probably needs more testing.
+
 	* spec/sc/sc.str: Write pretty-printed Stratego code to file after
 	optimization when --output-optimized is specified. Useful for
 	inspection of result of optimization. Reintroduced format checking
 	for Stratego-Optimized-Format; arguments of match should be shallow,
-	i.e., no nested patterns.
+	i.e., no nested patterns. Same for result after canonicalization.
 
 	* spec/match/desugar-case.str: Eliminate the internal Case expression
 	using guarded left choice.

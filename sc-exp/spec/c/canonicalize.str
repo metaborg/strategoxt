@@ -1,12 +1,13 @@
 module canonicalize
-imports Stratego lib C C-simplify dynamic-rules
+imports Stratego lib C C-simplify dynamic-rules bound-unbound-vars
 
 strategies
 
   canonicalize =
     iowrap(
-      downup2(repeat(Canon),repeat(Canon));
-      mark-fresh-vars
+      downup2(repeat(Canon),repeat(Canon))
+      ; mark-fresh-vars
+      ; mark-bound-unbound-vars
     )
 
 rules
@@ -43,7 +44,8 @@ rules
 
   Canon :
     Call(f, args) -> Call(f, args')
-    where <rec x([(CallIdFun + CallFailFun)|try(x)] <+ [id|x])> args => args'
+    where //<map(try(CallIdFun + CallFailFun))> args => args'
+      <rec x([(CallIdFun + CallFailFun)|try(x)] <+ [id|x])> args => args'
 
   Canon :
     Bagof(s) -> Call(SVar("_bagof"),[s])
