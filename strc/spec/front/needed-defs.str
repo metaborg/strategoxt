@@ -14,7 +14,7 @@ strategies
    *
    * Associate with the pair \verb|(f, n)| of strategy name and arity
    * the list of its definitions. The dynamic rule \verb|Definitions|
-   * implements this 1association.
+   * implements this association.
    */
 
   sort-defs = 
@@ -79,12 +79,20 @@ rules
     defs @ [SDefT(f, xs1, xs2, s) | _] -> SDefT(f, ys1, ys2, <choices> ss)
     where <map(VarDec(new,id))> xs1 => ys1
 	; <map(VarDec(new,id))> xs2 => ys2
-	; <map(\ VarDec(y, t) -> CallT(SVar(y), [], []) \ )> ys1 => ys1'
+	; <map(\ VarDec(y, t) -> SVar(y) \ )> ys1 => ys1'
 	; <map(\ VarDec(y, t) -> Var(y) \ )> ys2 => ys2'
-	; <map(\ SDefT(_, zs1, zs2, s) -> 
-                 <tsubs> (<map(\ VarDec(z2,_) -> z2 \ )> zs2, ys2', 
-		   <ssubs> (<map(\ VarDec(z1,_) -> z1 \ )> zs1, ys1', s)
-                 ) \ )> defs => ss
+	; <map(RenameDefinition(|ys1', ys2'))> defs => ss
+
+  RenameDefinition(|ys1, ys2) :
+    SDefT(_, xs1, xs2, s1) -> s3
+    where <map(\ VarDec(x2,_) -> x2 \ )> xs2 => zs2
+	; <tsubs> (zs2, ys2, s1) => s2
+	; {| RenameSVar :
+             <zip({?(VarDec(x1,_), y1)
+                   ; rules( RenameSVar : SVar(x1) -> y1 ) }
+              )> (xs1, ys1)
+	     ; <alltd(RenameSVar)> s2 => s3
+          |}
 
   JoinDefsExt =
     where(map(?ExtSDef(f, <length => i>, <length => j>) 
