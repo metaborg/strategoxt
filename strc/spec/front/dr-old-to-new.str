@@ -88,6 +88,7 @@ add the dummified LHS as additional label to the scope upon each dynruledef. */
   DRDef-LHS(s) =
     ?UndefineDynRule(_, <s>)
   + ?SetDynRule(_, Rule(<s>, _, _))
+  + ?SetDynRuleMatch(_, <s>)
   + ?AddDynRule(_, Rule(<s>, _, _))
 
   DRDef-Labeled(|label) =

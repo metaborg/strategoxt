@@ -48,6 +48,12 @@ strategies
   Downgrade-DynRuleDef :
     SetDynRule(DynRuleId(RDecT(x, ss, st)), rule) -> RDefT(x, ss, st, rule)
 
+  /**
+   * Rewrites : for dynamic matches (only LHS)
+   */
+  Downgrade-DynRuleDef :
+    SetDynRuleMatch(DynRuleId(RDecT(x, ss, st)), t) -> RDefT(x, ss, st, |[ t -> t where id ]| )
+
   Downgrade-SetDynRules :
     GenDynRules(defs) -> DynamicRules(<filter(Downgrade-DynRuleDef)> defs)
 
