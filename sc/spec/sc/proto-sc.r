@@ -1,14 +1,78 @@
-\literate[{\tt PROTO-SC}: Stratego Compiler]
+\literate[{\tt PROTO-SC}: Stratego Compiler Driver]
 
-\begin{abstract}
-This module glues together the components that make up the Stratego
-compiler. It is usually run from a script that provides the default
-information about paths.
-\end{abstract}
+	\begin{abstract}
+
+	This module glues together the components that make up the
+	Stratego compiler. It is usually run from a script that
+	provides the default information about paths.
+
+	\end{abstract}
 
 \begin{code}
-module sc
-imports lib sugar dynamic-rules
+module proto-sc
+imports lib sugar dynamic-rules config
+strategies
+
+  proto-sc = 
+  ( where([get-path => prefix | id])
+    ; where(prim("get_conf_pkgdatadir") => pkgdatadir)
+    ; where(prim("get_conf_datadir") => datadir)
+    ; import-config-file(
+        find-config-file(![prefix, pkgdatadir], !"sc.config")
+      )
+    ; import-config-files(
+        find-plugins(![<conc-strings>(datadir,"/sc-plugins")], !".plugin")
+      )
+    ; parse-options(sc-options)
+    ; try(<get-config> "--man"
+          ; <call>("cat", [<get-config> "manual"])
+          ; <exit> 0)
+    ; try(<get-config> "-v"
+          ; sc-version 
+          ; <exit> 0)
+    ; (!(<get-config; basename> "-i", "")  
+       <+ <fatal-error> ["no main module specified"]) 
+    ; sc-announce
+    ; profile(!"compile time: ", 
+       profile(!"front-end time: ", 
+         parse
+         ; output-ast
+         ; add-main 
+         ; frontend 
+         ; output-frontend
+         ; extract  
+         ; stratego-nf 
+         ; rename-defs
+       );
+      profile(!"optimization time: ", 
+        optimize1 
+        ; try(where(not(<get-config> "--fusion")); fusion)
+        ; inline
+        ; compile-match 
+        ; optimize2
+        //  ; stratego-of
+      );
+      profile(!"back-end time: ", 
+        canonicalize
+        ; stratego-cf
+        ; s2c
+        //  ; c-format
+        ; ac2abox
+        ; abox2text
+      );
+      profile(!"C compile time: ", 
+        cc1
+        ; cc2
+      )
+    )
+    ; try(not(<get-config>"--norm"); remove-intermediates)
+    ; <printnl>(stderr, ["compilation succeeded (", <run-time>, " secs)"])
+    ; <exit> 0
+  ) <+ <printnl>(stderr, ["compilation failed (", <run-time>, " secs)"])
+       ; <exit> 1
+
+// Command line options
+
 signature
   sorts Option
   constructors
@@ -28,201 +92,190 @@ signature
     CSYNTAX  : Option
     TraceAll : Option
     Trace    : String -> Option
-\end{code}
+    Manual   : Option
 
-	Processing the command-line options
-
-\begin{code}
 strategies
-
-  main = sc
-
-  sc = (process-sc-options <+ sc-usage; <exit> 1);
-       ((need-help(sc-usage; <exit> 1), id)
-        <+ sc-announce;
-	   parse;
-	   output-ast;
-	   add-main;
-	   core;
-	   cc1; 
-           cc2;
-           try(not((option-defined(?NORM()), id)); 
-               (id, remove-intermediates));
-           <printnl>(stderr, ["compilation succeeded"]);
-	   <exit> 0
-        <+ <printnl>(stderr, ["compilation failed"]);
-	   <exit> 1
-       )
-       
-  process-sc-options =
-        where(filter-options(?"-I") => incl);
-        where(filter-option-args(?"-CI") => cincl);
-        where(filter-option-args(?"-CL") => clib);
-        parse-options(sc-options <+ io-options);
-        (option-defined(Input(?'in));
-        \ opts -> 
-	  ([InclDir(incl), CInclDir(cincl), CLibDir(clib) | opts], 
-	   ('in, ".r")) \
-        <+ \opts -> ([Help | opts], "")\ )
 
   sc-options =
-	ArgOption("-e",          \x -> ExecDir(x)\ )
-	+ ArgOption("-I",        !Ignore) // \x -> InclDir(x)\ )
-	+ ArgOption("--Include", !Ignore) // \x -> InclDir(x)\ ) 
-	+ ArgOption("-CI",       !Ignore) // \ (x,y) -> CInclDir(x)\ )
-	+ ArgOption("-CL",       !Ignore) // \ (x,y) -> CLibDir(x)\ )
-	+ Option("-CC",          !CC )
-	+ Option("--norm",        !NORM )
-	+ ArgOption("-i",        \x -> Input(<basename> x)\ )
-	+ ArgOption("--main",    \x -> Main(x)\ )
-	+ ArgOption("-m",        \x -> Main(x)\ ) 
-	+ Option("--ast",        !AST )
-	+ Option("-F",           !FRONTEND )
-	+ Option("--fusion",     !FUSION )
-	+ Option("--csyntax",	 !CSYNTAX )
-	+ Option("--trace-all",  !TraceAll; rules(TraceAllFuns : () -> ()))
-	+ ArgOption("-t",        \x -> Trace(x) where rules(TraceFun : x -> ()) \ )
+    ArgOption("-i",
+	where(<set-config>("-i", <id>)); !Input(<basename>),
+	!"-i file            Main module to compile (required)\n")
 
-strategies
 
-  sc-usage = 
-  sc-version;
-  <printnl>(stderr, 
-	    ["Usage: sc [options] -i file\n",
-	     "Options:\n",
-	     "  -i spec       Compile specification spec\n",
-	     "  -o target     Name executable target\n",
-	     "  --main s      Name main strategy [default: main]\n",
-	     "  -I dir        Look in dir for imported Stratego modules\n",
- 	     "  -CI opt       Pass opt to gcc object compilation phase\n",
-	     "  -CL opt       Pass opt to gcc linking phase\n",
-	     "  --trace-all   Trace all strategies in the specification\n",
-	     "  -t f	      Trace strategy f\n",
-	     "  --ast         Output abstract syntax of specification\n",
-	     "  --norm        Do not remove intermediate files\n",
-	     "  -F	      Produce all definitions pre-processed by frontend\n",
-	     "  -v	      Show version\n",
-	     "  -h|--help     Display this message"
-            ])
+  + ArgOption("-o" + "--output",  
+	where(<set-config> ("-o",<id>)); !Output(<id>),      
+	!"-o f|--output f    Write output to f" )
 
-  sc-version =   
-  (option-defined(DeclVersion(?version)) <+ !"" => version);
-  where(<printnl>(stderr, 
-	["The Stratego Compiler (version ", version, ")"]))
+  + ArgOption("-I" + "--Include",        
+	where(<extend-config>("-I", ["-I", <id>])); !Ignore,
+	!"-I d|--Include d   Include modules from directory d")
+
+  + ArgOption("--main" + "-m",
+	where(<set-config>("-m", <id>)); !Main(<id>),
+	!"--main f | -m f    Main strategy to compile (default: main)\n")
+
+
+
+  + ArgOption("--C-include",       
+	where(<post-extend-config>("--C-include", [<id>]));!Ignore, 
+	!"--C-include h      Include header file h (\"file.h\" or <file.h>)")
+
+  + ArgOption("-CI",       
+	where(<extend-config>("-CI", [<id>])); !Ignore,
+	!"-CI d              Include C headers from directory d")
+
+  + ArgOption("-CL",
+	where(<extend-config>("-CL", [<id>])); !Ignore,
+	!"-CL d              Include binary libraries from directory d\n")
+
+
+  + Option("-CC",          
+	where(<set-config>("-CC",())); !CC,
+	!"-CC                Produce C code only (don't compile)" )
+
+  + Option("--ast",
+	where(<set-config>("--ast",())); !AST,
+	!"--ast              Produce abstract syntax tree" )
+
+  + Option("-F",           
+	where(<set-config>("-F",())); !FRONTEND,
+	!"-F                 Produce normalized specification" )
+
+  + Option("--norm",
+        where(<set-config>("--norm", ())); !NORM,
+	!"--norm             Do not remove intermediate results" )
+
+  + Option("--fusion",     
+	where(<toggle-config>("--fusion",())); !FUSION,
+	!"--fusion           Toggle specialize applications of innermost (default: on)" )
+
+  + Option("--trace-all",  
+	where(<set-config>("--trace-all",())); !TraceAll,
+	!"--trace-all        Instrument all definitions to print tracing information" )
+
+  + ArgOption("-t",        
+	where(<extend-config>("-t", [<id>])); \ x -> Trace(x) \,
+	!"-t f               Instrument definition of f to print tracing information\n" )
+
+
+
+  + Option("--verbose",         
+	where(<set-config> ("--verbose",())); !Verbose(),         
+	!"--verbose          Verbose execution")
+
+  + Option("-S" + "--silent",         
+	where(<set-config> ("-S",())); !Silent(),         
+	!"-S | --silent      Silent execution")
+
+  + Option("-h" + "--help",         
+	where(<set-config> ("-h",())); !Help(),         
+	!"-h | --help        Show help")
+
+  + Option("--man",         
+	where(<set-config> ("--man",())); !Manual(),         
+	!"--man              Show manual page")
+
+  + Option("-v"+"--version",     
+	where(<set-config> ("-v",())); !Version(),         
+	!"-v|--version       Display program's version")
+
+
+
+  short-description(p) = 
+    !["Usage: ", <p>(), " [options]"] 
+
+  long-description(p) = ![	
+	"   \n",
+	"   The Stratego Compiler translates Stratego specifications to C code\n",
+	"   \n",
+	"   Typical usage:\n",
+	"     ", <p>, " -i mod\n",
+	"   to compile module mod\n",
+	"   \n",
+	"   Stratego is a language for program transformation based on the\n",
+        "   paradigm of rewriting strategies. For documentation see\n",
+	"   \n",
+	"                 http://www.stratego-language.org",
+	"   \n",
+	"   \n",
+	"   Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>\n",
+	"   \n",
+	"   This program is free software; you can redistribute it and/or modify\n",
+	"   it under the terms of the GNU General Public License as published by\n",
+	"   the Free Software Foundation; either version 2, or (at your option)\n",
+	"   any later version.\n"
+  ]
+
+  sc-version =
+    where(<printnl>(stderr, 
+	  ["The Stratego Compiler (version ", <get-config> "VERSION", ")"]))
 
   sc-announce =
-  try((option-defined(Verbose), id);
-      (sc-version, id))
-\end{code}
-
-	Parsing specifications
-
-\begin{code}
-strategies
+    try(where(<get-config> "--verbose"; sc-version))
+	
+  // Collect all modules into one abstract syntax tree
 
   parse = 
-    (option-defined(InclDir(?incl));
-     option-defined(ExecDir(?edir));
-     try(option-defined(Output(?out))), ?('in, _));
-    (id, pipe(<pref(!edir)> "/pack-stratego", !".tree", 
-	      <conc> (<!["-dep", out] <+ !["-dep", 'in]>(), ["--silent" | incl])));
-    try((id, copy-file(id, !out, !".tree")))
-\end{code}
-
-\begin{code}
-strategies
+    pipe(<get-config> "pack-stratego", !".tree",
+         <concat> [<!["-dep", <get-config> "-o"] <+ !["-dep", <get-config> "-i"]>, 
+                   ["--silent"],
+                   <get-config> "-I"])
 
   output-ast =
-    try((option-defined(AST), (?file, ?ext)); 
-        <printnl>(stderr, 
-                  ["abstract syntax (after parsing) written to ", file, ext]);
-        <exit> 0)
+    try(where(<get-config>"--ast")
+       ; (?file, ?ext)
+       ; <printnl>(stderr, ["abstract syntax (after parsing) written to ", file, ext])
+       ; <exit> 0)
 
-  output-frontend(dir) =
-    try((option-defined(FRONTEND),id); 
-        (id, extract-all(dir)
-             <+ <fatal-error> ["extracting all definitions failed"]);        
-        (id, (?file, ?ext)); 
-        <printnl>(stderr, 
-                  ["abstract syntax (after frontend) written to ", file, ext]);
-        <exit> 0)
-\end{code}
+  output-frontend =
+    try(where(<get-config> "-F")
+       ; (extract-all <+ <fatal-error> ["extracting all definitions failed"])
+       ; (?file, ?ext)
+       ; <printnl>(stderr, ["abstract syntax (after frontend) written to ", file, ext])
+       ; <exit> 0)
 
-	Adding main strategy
+  // Adding main strategy
+  // What happens if the specification already contains a main strategy? 
 
-	(*** What happens if the specification already contains a main
-	strategy? ***)
-
-\begin{code}
-
-rules
- 
   AddMain(m) : 
     Specification(sects) -> 
     Specification([Strategies([SDef("main", [], Call(SVar(<m>()), []))]) 
                   | sects])
 
-strategies
-
   add-main =
-    ((option-defined(Main(?m)), id);
-     (id, transform-file(AddMain(!m), !".tree1"))
-     <+ (id, transform-file(id, !".tree1")))
-
-\end{code}
-
-	The core of the compiler consists of the components that
-	transform a specification to abstract machine instructions.
-
-\begin{code}
-strategies
-
-  core = 
-    (list(try(ExecDir(?dir))), id);
-    (id, frontend(!dir));
-         output-frontend(!dir);
-
-    (id, extract(!dir);
-         stratego-nf(!dir);
-         rename-defs(!dir);
-         inline(!dir);
-         optimize1(!dir));
-
-    try((option-defined(FUSION), 
-         fusion(!dir)));
-
-    (id, compile-match(!dir);
-         optimize2(!dir)//;
-    //     stratego-of(!dir)
-    );
-
-    (id, canonicalize(!dir);
-         stratego-cf(!dir);
-         s2c(!dir);
-	 //c-format(!dir);
-	 pp-c(!dir))
-
-rules
-
-  pref(d) : x -> <conc-strings> (<d>(), x)
+    where(<get-config> "-m" => m)
+    ; transform-file(AddMain(!m), !".tree1")
+   <+ transform-file(id, !".tree1")
 
 strategies
 
-  frontend(d)        = pipe(<pref(d)> "/frontend",      !".s1")
-  extract(d)         = pipe(<pref(d)> "/extract",       !".s2")
-  extract-all(d)     = pipe(<pref(d)> "/extract-all",   !".sdefs")
 
-  rename-defs(d)     = pipe(<pref(d)> "/rename-defs",   !".s3")
+strategies
 
-  inline(d)          = pipe(<pref(d)> "/inline",        !".s4")
-  optimize1(d)       = pipe(<pref(d)> "/optimize1",     !".s5")
-  compile-match(d)   = pipe(<pref(d)> "/compile-match", !".s6")
-  optimize2(d)       = pipe(<pref(d)> "/optimize2",     !".s7")
+  frontend        = pipe(<get-config> "frontend",		!".s1", !["-b"])
+  extract         = pipe(<get-config> "extract",		!".s2", !["-b"])
+  extract-all     = pipe(<get-config> "extract-all",		!".sdefs", !["-b"])
+  rename-defs     = pipe(<get-config> "rename-defs",		!".s3", !["-b"])
+  stratego-nf     = pipe(<get-config> "Stratego-Normal-Format", id,     !["-b"])
+  optimize1       = pipe(<get-config> "optimize1",		!".s4", !["-b"])
+  fusion          = pipe(<get-config> "fusion",			!".s5", !["-b"])
+  inline          = pipe(<get-config> "inline",			!".s6", !["-b"])
+  compile-match   = pipe(<get-config> "compile-match",		!".s7", !["-b"])
+  optimize2       = pipe(<get-config> "optimize2",		!".s8", !["-b"])
+  stratego-of     = pipe(<get-config> "Stratego-Optimized-Format", id,  !["-b"])
+  canonicalize    = pipe(<get-config> "canonicalize",		!".s9", !["-b"])
+  stratego-cf     = pipe(<get-config> "Stratego-Canonical-Format", id,  !["-b"]) 
 
-  canonicalize(d)    = pipe(<pref(d)> "/canonicalize",  !".s8")
+  s2c             
+    = pipe(<get-config> "s2c", !".ac",
+	   !["-b" | <get-config; map(!["--C-include", <id>]); concat> "--C-include"])
+			  
+		  // <TraceAllFuns; !["--trace-all"] <+ get-traced-funs> () )
 
-  s2c(d)             = pipe(<pref(d)> "/s2c",		!".ac", 
-			<TraceAllFuns; !["--trace-all"] <+ get-traced-funs> () )
+  c-format        = pipe(<get-config> "C-Format",      !".ac", !["-b"])
+
+  ac2abox	  = pipe(<get-config> "ast2abox",      !".c.abox", !["-p", <get-config> "C.pp"])
+  abox2text	  = pipe(<get-config> "abox2text",     !".c")
 
   get-traced-funs =
     <table-getlist> "TraceFun";
@@ -230,69 +283,28 @@ strategies
     concat;
     ([] <+ debug(!"traced functions: "))
 
-  optimizer(d)       = pipe(<pref(d)> "/optimizer",     !".s6")
-  matching-tree(d)   = pipe(<pref(d)> "/matching-tree", !".s7")
-
-  fusion(d)          = pipe(<pref(d)> "/fusion",        !".so2")
-  backend(d)         = pipe(<pref(d)> "/backend",       !".i1")
-
-  new-backend(d)     = pipe(<pref(d)> "/newbackend",    !".i1")
-
-  postprocess(d)     = pipe(<pref(d)> "/postprocess",   !".i")
-
-  pp-instructions(d) = pipe(<pref(d)> "/pp-instructions", !".c")
-
-  pp-c(d)	     = where(dtime);
-		       pipe(<pref(d)> "/ac2c", !".c");
-		       where(dtime => t; <printnl> (stderr, [<pref(d)> "/ac2c", " (", t, ")"]))
-  c-format(d)        = pipe(<pref(d)> "/C-Format", !".ac")
-
-  stratego-nf(d)     = pipe(<pref(d)> "/Stratego-Normal-Format", id)
-  stratego-cf(d)     = pipe(<pref(d)> "/Stratego-Canonical-Format", id)
-  stratego-of(d)     = pipe(<pref(d)> "/Stratego-Optimized-Format", id)
-  abstract-mf(d)     = pipe(<pref(d)> "/Abstract-Machine-Format", id)
-\end{code}
-
-\begin{code}
-strategies
-
-rules
-
-  I-option : x -> <conc-strings>("-I", x)
-  L-option : x -> <conc-strings>("-L", x)
-
-strategies
-
-  lib(d)      = <conc-strings>(<d>(), "/lib")
-  liblib(d)   = <conc-strings>(<lib(d)>(), "/lib")
-  include(d)  = <conc-strings>(<lib(d)>(), "/include")
-  libstrat(d) = <conc-strings>(<lib(d)>(), "/stratego")
-  
-  gcc = \ args -> <call>("gcc", args) \
-
-  cc1 =		
-	where(<printnl>(stderr, ["compiling"]));
-	(list(try(CInclDir(?cincl))), id); 
-	(id, where(conc-strings => cfile);
-             (id, !".o");        
-             where(conc-strings => target);
-             where(<gcc> <conc> (cincl,["-c", cfile,"-o", target])))
+  cc1 =
+    if(not(<get-config>"-S"),
+       say(!"compiling C code"))
+    ;  where(conc-strings => cfile)
+    ; (id, !".o")       
+    ; where(conc-strings => target)
+    ; where(<call> ("gcc", <conc> (<get-config> "-CI", ["-c", cfile,"-o", target])))
 
   cc2 = 
-	where(<printnl>(stderr, ["linking"]));
-	(list(try(Dir(?dir) + CLibDir(?clib) + Output(?out))), id); 
-        (id, where(conc-strings => ofile);
-             (try(!out), !""); 
-             where(conc-strings => target);
-             where(<gcc> [ofile, "-o", target
-			 | <map(split-at-space); concat> clib]))
+    if(not(<get-config>"-S"),
+       say(!"linking object code"))
+    ; where(conc-strings => ofile)
+    ; (try(<get-config> "-o"), !"") 
+    ; where(conc-strings => target)
+    ; where(<call> ("gcc", [ofile, "-o", target | <get-config> "-CL"]))
 
   remove-intermediates =
     ?(base, _);
     where(<rzip(conc-strings); rm-files>
             (base, [".tree", ".tree1", ".s1", ".s2", 
 		    ".s3", ".s4", ".s5", ".s6", ".s7", ".s8", 
-		    ".ac", ".ac.abox", ".o"]))
+		    ".ac", ".c.abox", ".o"]))
 \end{code}
 
 % Copyright (C) 1999-2002 Eelco Visser <visser@acm.org>

@@ -17,15 +17,19 @@
 
 SCFLAGS	= -I $(srcdir)/../sig \
 	  -I $(srcdir)/../match \
-	  -I $(srcdir)/../lib
+	  -I $(srcdir)/../lib \
+	  --main $@ \
+	  --C-include "\"conf.h\"" -CI "-I.."
 
 bin_SCRIPTS = proto-sc sc
 
-CLEANFILES = proto-sc proto-sc.c *.dep
+pkgdata_DATA = sc.config sc-manual.txt
 
-EXTRA_DIST = $(wildcard *.r) sc.src
+CLEANFILES = proto-sc proto-sc.c *.dep sc.config
 
-BOOTSOURCES = proto-sc.c sc.src
+EXTRA_DIST = $(wildcard *.r) $(wildcard *.c) sc.src sc.config.src sc-manual.txt
+
+BOOTSOURCES = proto-sc.c sc.src sc.config.src
 
 include $(srcdir)/../make-rules
 include $(wildcard *.dep)
@@ -34,9 +38,11 @@ include $(wildcard *.dep)
 %: %.src Makefile
 	sed 's#__prefix__#$(prefix)#g;\
              s#__ATERM__#$(ATERM)#g;\
+             s#__CGEN__#$(CGEN)#g;\
+             s#__GPP__#$(GPP)#g;\
              s#__VERSION__#$(VERSION)#g;\
              s#__STRATEGORTS__#$(STRATEGORTS)#g;\
              s#__STRATEGOLIB__#$(STRATEGOLIB)#g;\
-             s#__GBSTRATEGO__#$(GBSTRATEGO)#g;\
+             s#__STRATEGOFRONT__#$(STRATEGOFRONT)#g;\
              s#__MAKE__#$(MAKE)#g' < $< > $@
-	chmod +x $@                 
+	chmod +x $@

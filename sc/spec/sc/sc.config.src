@@ -1,0 +1,57 @@
+[
+
+("prefix", 		Path("__prefix__")),
+("ATERM", 		Path("__ATERM__")),
+("VERSION", 		"__VERSION__"),
+("STRATEGORTS", 	Path("__STRATEGORTS__")),
+("STRATEGOLIB", 	Path("__STRATEGOLIB__")),
+("STRATEGOFRONT", 	Path("__STRATEGOFRONT__")),
+("GPP", 		Path("__GPP__")),
+("CGEN", 		Path("__CGEN__")),
+
+("-I", 			["-I", Prefix(Var("STRATEGOLIB"),   "/share/ssl"),
+			 "-I", Prefix(Var("STRATEGOFRONT"), "/share/stratego-front")]),
+
+("--C-include",		["<srts/stratego.h>", "<ssl/stratego-lib.h>"]),
+
+("-CI", 		[Prefix("-I", Prefix(Var("STRATEGOLIB"), "/include")),
+   			 Prefix("-I", Prefix(Var("STRATEGORTS"), "/include")),
+    			 Prefix("-I", Prefix(Var("ATERM"), 	 "/include"))
+		        ]),
+
+("-CL", 		[Prefix("-L", Prefix(Var("STRATEGOLIB"), "/lib")),
+                         "-lstratego-lib.opt",
+    			 Prefix("-L", Prefix(Var("STRATEGORTS"), "/lib")), 
+			 "-lstratego.opt",
+    		 	 Prefix("-L", Prefix(Var("ATERM"), 	 "/lib")),
+			 "-lATerm-gcc",
+			 "-lm"
+			]),
+
+("manual",		Prefix(Var("prefix"), "/share/sc/sc-manual.txt")),
+
+("pack-stratego", 	Prefix(Var("prefix"), "/bin/pack-stratego")),
+("frontend", 		Prefix(Var("prefix"), "/bin/frontend")),
+("extract", 		Prefix(Var("prefix"), "/bin/extract")),
+("extract-all", 	Prefix(Var("prefix"), "/bin/extract-all")),
+("rename-defs", 	Prefix(Var("prefix"), "/bin/rename-defs")),
+("inline", 		Prefix(Var("prefix"), "/bin/inline")),
+("optimize1", 		Prefix(Var("prefix"), "/bin/optimize1")),
+("fusion", 		Prefix(Var("prefix"), "/bin/fusion")),
+("compile-match", 	Prefix(Var("prefix"), "/bin/compile-match")),
+("optimize2", 		Prefix(Var("prefix"), "/bin/optimize2")),
+("canonicalize", 	Prefix(Var("prefix"), "/bin/canonicalize")),
+("s2c", 		Prefix(Var("prefix"), "/bin/s2c")),
+
+("abox2text", 		Prefix(Var("GPP"), "/bin/abox2text")),
+("ast2abox", 		Prefix(Var("GPP"), "/bin/ast2abox")),
+
+("C.pp", 		Prefix(Var("CGEN"), "/share/cgen/C.pp")),
+
+("Stratego-Normal-Format", 			Prefix(Var("prefix"), "/bin/Stratego-Normal-Format")),
+("Stratego-Optimized-Format", 			Prefix(Var("prefix"), "/bin/Stratego-Optimized-Format")),
+("Stratego-Canonical-Format", 			Prefix(Var("prefix"), "/bin/Stratego-Canonical-Format")),
+("C-Format", 			Prefix(Var("CGEN"), "/bin/C-Format")),
+("", 			Prefix(Var("prefix"), "/bin/"))
+
+]
