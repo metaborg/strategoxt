@@ -1,7 +1,7 @@
 #include <srts/stratego.h>
 
 ATerm SSL_isPlaceholder(ATerm t) {
-    int type = AtgetType(t);
+    int type = ATgetType(t);
 
     if(type == AT_PLACEHOLDER) {
 	return t;
@@ -11,7 +11,7 @@ ATerm SSL_isPlaceholder(ATerm t) {
 }
 
 ATerm SSL_getPlaceholder(ATerm t) {
-    int type = AtgetType(t);
+    int type = ATgetType(t);
     if(type != AT_PLACEHOLDER) {
       ATfprintf(stderr, "[error] SSL_getPlaceholder: not a placeholder: %t \n", t);
       _fail(t);
