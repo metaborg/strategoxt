@@ -3,13 +3,13 @@ imports stratlib sunit
 
 strategies
 
-  main = 
-  test-suite(!"stratlib-test",
+  stratlib-test = 
+    test-suite(!"stratlib-test",
 	tvars-test1;
 	tvars-test2;
 	tsubstitute-test1;
 	srename-test1
-  )
+    )
 
   tvars-test1 =
 	apply-test(!"tvars-test1", tvars, !Int(1), ![])

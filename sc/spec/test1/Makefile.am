@@ -31,7 +31,7 @@ check: $(TESTRUNS) $(IOTESTRUNS)
 
 CLEANFILES = $(TESTBINS) $(IOTESTBINS) $(TESTRUNS) $(IOTESTRUNS)  $(TESTSRCS) $(IOTESTSRCS) *.o *.ac *.s? *.ac *.c.abox *.tree
 
-EXTRA_DIST = $(wildcard *.r) make-rules
+EXTRA_DIST = $(wildcard *.r) make-rules io-test*.in
 
 #include $(top_srcdir)/share/Stratego.Make
 
