@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: pkg-list,v 1.29 2000/10/16 12:52:56 mdejonge Exp $
+# $Id: pkg-list,v 1.30 2000/10/16 20:56:09 mdejonge Exp $
 
 # This file lists name, version, and location of all components 
 # of an XT distribution.
@@ -32,4 +32,4 @@ gb,0.3,cvs:gondel.cwi.nl:/ufs/gipe/CVS
 gt,0.3,cvs:gondel.cwi.nl:/ufs/gipe/CVS
 gpp,1.30,http://www.cwi.nl/~mdejonge/gpp/download/
 graph-tools,0.1,cvs:gondel.cwi.nl:/ufs/leon/CVS
-JJForester,0.1,cvs:gondel.cwi.nl:/ufs/jvisser/CVS
+#JJForester,0.1,cvs:gondel.cwi.nl:/ufs/jvisser/CVS

@@ -18,10 +18,10 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.24 2000/10/16 12:52:56 mdejonge Exp $
+# $Id: Makefile.am,v 1.25 2000/10/16 20:56:09 mdejonge Exp $
 
 DIST_SUBDIRS = pre-checks aterm asfix asc-support sglr pgen graph-tools \
-               stratego gpp gt gb  JJForester integration-tests www
+               stratego gpp gt gb integration-tests www
 EXTRA_DIST   = SOFTWARE README
 
 # We need at least one subdir to be defined such that automake will generate
