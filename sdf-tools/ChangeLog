@@ -1,3 +1,6 @@
+2001-11-21 Merijn de Jonge <mdejonge@cwi.nl> 
+    * sdf/Makefile.am: added more generated files to CLEANFILES variable
+
 2001-10-12 Merijn de Jonge <mdejonge@cwi.nl> 
     * sdf-bench/runbm.r: re-added -n switch to sglr call because it is
       support again by sglr.
