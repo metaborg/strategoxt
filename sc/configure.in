@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-AC_INIT([sc],[0.9beta8],[stratego-bugs@cs.uu.nl])
+AC_INIT([sc],[0.9beta9],[stratego-bugs@cs.uu.nl])
 AM_INIT_AUTOMAKE
 
 USE_XT_PACKAGES
@@ -31,7 +31,7 @@ AC_SUBST(EXE)
 libexecdir=\$\{exec_prefix\}/libexec/$PACKAGE
 AC_SUBST(libexecdir)
 
-AC_REVISION($Id: configure.in,v 1.36 2003/01/01 14:24:55 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.37 2003/01/04 23:04:12 stratego Exp $)
 
 AC_PROG_CC
 AC_PROG_RANLIB

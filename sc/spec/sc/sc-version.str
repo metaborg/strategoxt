@@ -1,4 +1,4 @@
 module sc-version
 overlays
 
-  sc-version = "0.9beta8"
+  sc-version = "0.9beta9"

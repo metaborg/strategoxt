@@ -1,3 +1,11 @@
+2003-01-04  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/front/lift-dynamic-rules.str: use the empty list in
+	dummifying in order to deal with the situation x#(_), where the
+	wildcard stands for a list. In other circumstances it makes
+	no difference. Note that _#(x) will also cause a problem since
+	a string is expected at the wildcard. This is not solved yet.
+
 2003-01-03  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/sc/sc.str: Fixed bug in determining output file. Now sc

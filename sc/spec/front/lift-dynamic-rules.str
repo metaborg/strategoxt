@@ -75,8 +75,8 @@ dynamic rule. */
 
   dummify =
     alltd(
-        \Term|[ x ]|     -> |[ Dummy() ]| where not(ContextVar)\
-     <+ \Term|[ _ ]|     -> |[ Dummy() ]|\
+        \Term|[ x ]|     -> |[ Nil() ]| where not(ContextVar)\
+     <+ \Term|[ _ ]|     -> |[ Nil() ]|\
      <+ \Term|[ <s> ]|   -> |[ Keys( ~term*:<tvars; map(!Var(<id>))> s ) ]|\
      <+ \Term|[ <s> t ]| -> |[ Keys( ~term*:<tvars; map(!Var(<id>))> (s,t) ) ]|\
      <+ ?Con(_,_,_); <fatal-error> ["context in left-hand side of dynamic rule"]

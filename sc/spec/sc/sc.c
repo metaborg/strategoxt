@@ -1080,7 +1080,7 @@ void init_constant_terms (void)
   ATprotect(&(term_y_46));
   term_y_46 = (ATerm) ATmakeAppl(ATmakeSymbol("Invalid option: ", 0, ATtrue));
   ATprotect(&(term_x_47));
-  term_x_47 = (ATerm) ATmakeAppl(ATmakeSymbol("0.9beta8", 0, ATtrue));
+  term_x_47 = (ATerm) ATmakeAppl(ATmakeSymbol("0.9beta9", 0, ATtrue));
   ATprotect(&(term_y_47));
   term_y_47 = (ATerm) ATmakeAppl(sym__2, term_c_31, term_x_47);
   ATprotect(&(term_b_48));
@@ -5457,7 +5457,7 @@ ATerm sc_version_0 (ATerm t)
         ATerm z_32 = NULL;
         z_32 = t;
         w_32 :
-        if(!(match_string(z_32, "0.9beta8")))
+        if(!(match_string(z_32, "0.9beta9")))
           {
             _fail(t);
           }
