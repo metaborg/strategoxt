@@ -1,0 +1,183 @@
+module stratego-ensugar
+imports Stratego options simple-traversal
+strategies
+ 
+  io-stratego-ensugar = 
+      iowrap(stratego-ensugar)
+
+
+  stratego-ensugar =
+      try(\ _#([x]) -> x \ )
+    ; topdown(
+        repeat(Ensugar)
+      ; try(EnsugarOnce)
+      )
+
+rules
+
+//  Desugar :  Module(x, decls) -> Specification(decls)
+//  Desugar :  RDefNoArgs(f, r) -> RDef(f, [], r)
+//  Desugar :  SRDefNoArgs(f, r) -> RDef(f, [], r)
+//  Desugar :  SRDef(f, xs, r) -> RDef(f, xs, r)
+//  Desugar :  SDefNoArgs(f, s) -> SDef(f, [], s)
+//  Desugar :  CallNoArgs(f) -> Call(f, [])
+//  Desugar :  PrimNoArgs(f) -> Prim(<un-double-quote>f, [])
+
+  Ensugar :
+    Prim(f, xs) -> Prim(<double-quote> f, xs)
+      where <not(is-double-quoted)> f
+
+//  Desugar :  OverlayNoArgs(f, t) -> Overlay(f, [], t)
+
+  Ensugar :
+    Rule(l, r, Id()) -> RuleNoCond(l, r)
+
+  Ensugar :
+    StratRule(l, r, Id()) -> StratRuleNoCond(l, r)
+
+//  Desugar :
+//    StratRule(l, r, s) -> Rule(l, r, s)
+
+//  Desugar :
+//    Inj(x) -> x
+
+  //Desugar :
+  //  InjStrat(x) -> x
+ 
+//  Desugar :
+  //  ParenStrat(x) -> x
+
+//  Desugar :
+//    AngleStrat(x) -> x
+
+  // Congruences
+
+//  Desugar :
+//    TupleCong([x]) -> x
+
+//  Desugar :
+//    TupleCong(ts) -> Call(SVar(""), ts)
+//    where <not([id])> ts
+
+//  Desugar :
+//    ListCongNoTail(ts) -> <foldr(!Call(SVar("Nil"),[]),\ (t1, t2) -> Call(SVar("Cons"),[t1,t2]) \ )> ts
+
+  //Desugar :
+    //ListCong(ts,t) -> <foldr(!t,\ (t1, t2) -> Call(SVar("Cons"),[t1,t2]) \ )> ts
+
+//  Desugar :
+  //  ModCong(m, xs) -> Call(SVar(m), xs)
+
+//  Desugar :
+  //  ModCongNoArgs(m) -> Call(SVar(m), [])
+
+//  Desugar :
+  //  StrCong(x) -> Match(Str(x))
+
+//  Desugar :
+  //  IntCong(x) -> Match(Int(x))
+
+//  Desugar :
+  //  RealCong(x) -> Match(Real(x))
+
+  // Term sugar
+
+//  Desugar :
+  //  Tuple([t]) -> t
+
+//  Desugar :
+  //  Tuple(ts) -> Op("", ts)
+    //where <not([id])> ts
+
+//  Desugar :
+  //  List(ts) -> <foldr(!Op("Nil",[]),\ (t1, t2) -> Op("Cons",[t1,t2]) \ )> ts
+
+//  Desugar :
+//    ListTail(ts,t) -> <foldr(!t,\ (t1, t2) -> Op("Cons",[t1,t2]) \ )> ts
+
+//  Desugar :
+//    Con(t1, Con1(t2)) -> Con(t1, t2, Call(SVar("oncetd"),[]))
+
+//  Desugar :
+//    Con(t1, Con2(t2, f)) -> Con(t1, t2, Call(SVar(f),[]))
+
+  // Signatures
+
+//  Desugar : 
+  //  SortNoArgs(x) -> Sort(x, [])
+
+  // Constants
+
+  EnsugarOnce : 
+    Int(x) -> Int(y)
+      where <int-to-string> x => y
+
+  EnsugarOnce : 
+    Real(x) -> Real(y)
+      where <real-to-string> x => y
+
+  EnsugarOnce : 
+    Str(x) -> Str(y)
+      where <not(is-double-quoted)> x
+          ; < escape
+            ; double-quote
+            > x => y
+
+  is-double-quoted = 
+    is-quoted(?34)
+
+  is-quoted(c) =
+    where( explode-string; ?[<c> | <last; c>] )
+
+//  Desugar : 
+//    SortNoArgs(x) -> Sort(x, [])
+
+strategies
+
+  EnsugarOnce =
+      DefaultVarDec(AddLeadingPrime)
+    + RDef(AddLeadingPrime,id,id)
+    + SDef(AddLeadingPrime,id,id)
+    + VarDec(AddLeadingPrime,id)
+    + Var(AddLeadingPrime)
+    + SVar(AddLeadingPrime)
+    + OpDecl(AddLeadingPrime,id)
+    + Op(AddLeadingPrime,id)
+
+  AddLeadingPrime :
+    x -> x'
+    where <member> (x, StrategoKeywords())
+        ; <string-as-list(![39 | <id>])> x => x'
+
+  string-as-list(strat) =
+      explode-string
+    ; strat
+    ; implode-string
+
+overlays
+  StrategoKeywords = 
+    [ "all"
+    , "constructors"
+    , "fail"
+    , "id" 	
+    , "in" 	
+    , "let" 
+    , "module"
+    , "not" 	
+    , "one" 	
+    , "overlays"
+    , "override"
+    , "prim" 
+    , "rules"
+    , "script"
+    , "signature"
+    , "some" 
+    , "sorts"
+    , "strategies"
+    , "stratego"
+    , "test"
+    , "thread"
+    , "where"
+    ]
+
+

@@ -1,0 +1,63 @@
+module tg2fc
+imports Stratego tree-grammar options string
+
+/**
+ * Transforms a Stratego signature in TreeGrammar
+ * format to a format checker in Stratego for
+ * this signature.
+ *
+ * Author: Martin Bravenboer <martin@mbravenboer.org>
+ */
+strategies
+  
+  io-tg2fc =
+    iowrap(tg-to-format-checker)
+
+  tg-to-format-checker:
+    TreeGrammar(decs)
+      ->
+    |[
+      module TODO
+      imports integers string verbose
+
+      strategies
+        ~*fc-sdefs
+    ]|
+      where <map(to-fc-SDef)> decs => fc-sdefs
+
+  to-fc-SDef:
+    NonTermDec(Id(n), args, prods)
+      ->
+    Def |[
+      ~id:fc-name ( ~*sargs ) =
+        ~body <+ if-verbose2(debug(!~str:message))
+    ]|
+      where <fc-name> n => fc-name
+          ; <to-fc-Body> prods => body
+          ; <int-to-int-list; map(!DefaultVarDec(<param-name>))> args => sargs
+          ; <concat-strings> ["Not a ", n, ": "] => message
+
+  to-fc-Body: [prod] -> <create-call> prod
+  to-fc-Body: [prod1 | [prod2 | prods]] -> Strat |[ ~s1 + ~s2 ]|
+      where <create-call> prod1 => s1
+          ; <to-fc-Body> [prod2 | prods] => s2
+
+  create-call :
+    Prod(Id(nt), args) -> Strat |[ ~id:nt ( ~*fargs ) ]|
+      where <map(create-call)> args => fargs
+
+  create-call :
+    NonTermRef(Id(nt), args) -> Strat |[ ~id:fc-name ( ~*fargs ) ]|
+      where <fc-name> nt => fc-name
+          ; <map(create-call)> args => fargs
+
+  create-call: Int()    -> Strat |[ is-int    ]|
+  create-call: String() -> Strat |[ is-string ]|
+  create-call: Param(x) -> Strat |[ ~pname    ]|
+    where <param-name> x => pname
+
+  param-name = <conc-strings> ("fc-param", <int-to-string>)
+  fc-name    = <conc-strings> ("fc-", <id>)
+
+  int-to-int-list = <copy> (<id>, ()); map-with-index(Fst)
+

@@ -1,0 +1,8 @@
+module fc-tree-grammar
+imports tree-grammar tree-grammar-fc options
+
+strategies
+
+  io-fc-tree-grammar =
+    iowrap(where(fc-TreeGrammar))
+

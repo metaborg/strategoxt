@@ -1,0 +1,81 @@
+module astratego2tg
+imports options list-set list-misc dynamic-rules
+imports Stratego tree-grammar
+
+/**
+ * Transforms a Stratego AST with signatures (result of sc -- ast) 
+ * to a TreeGrammar of the signatures in the AST.
+ *
+ * Author: Martin Bravenboer <martin@mbravenboer.org>
+ */
+strategies
+  
+  io-astratego2tg =
+      iowrap( stratego-ast-to-tg )
+
+  stratego-ast-to-tg =
+      collect(?OpDecl(_, _))
+    ; map(to-NonTermDec)
+    ; group-by( \ NonTermDec(n, args, _)    -> (n, args) \
+              , \ NonTermDec(_, _, [prod])  -> prod \
+              , \ ((n, args), prods)        -> NonTermDec(n, args, prods) \ )
+    ; !TreeGrammar(<id>)
+
+  to-NonTermDec:
+    OpDecl(prod-name, type) -> NonTermDec(Id(nt-name), nt-params, [Prod(Id(prod-name), prod-items)])
+      where <get-nt> type => nt
+          ; <get-nt-name>   nt => nt-name
+          ; <get-nt-params> nt => nt-params
+          ; <to-prod-items> type => prod-items
+
+  get-nt: FunType(args, ConstType(nt)) -> nt
+  get-nt: ConstType(nt)                -> nt
+
+  get-nt-name:  Var(n)   -> n
+  get-nt-name:  Op(n, _) -> n
+
+  get-nt-params: Var(n)      -> 0
+  get-nt-params: Op(_, args) -> <length> args
+
+  to-prod-items: ConstType(Var(_))     -> []
+  to-prod-items: ConstType(Op(_, _))   -> []
+  to-prod-items: FunType(args, result) -> items
+    where {| Param:
+              <?ConstType(Op(_, <id>)) < map-with-index(add-param-rule) + id> result
+            ; <map(?ConstType(<id>); to-prod-item)> args => items
+          |}
+
+  add-param-rule = 
+      ?(i, Var(n))
+    ; rules( Param: Var(n) -> i)
+
+  to-prod-item = 
+      to-build-in-prod-item <+ to-dec-prod-item
+
+  to-build-in-prod-item: Var("Int")    -> Int
+  to-build-in-prod-item: Var("String") -> String
+
+  to-dec-prod-item:
+    Var(n) -> NonTermRef(Id(n))
+      where not(<Param> Var(n))
+
+  to-dec-prod-item:
+    Var(n) -> Param(i)
+      where <Param> Var(n) => i
+
+  to-dec-prod-item:
+    Op(n, args) -> NonTermRef(Id(n), <map(to-prod-item)> args)
+
+/* Tools */
+
+  group-by(k, r, build) = 
+      ?items
+    ; map(k)
+    ; make-set
+    ; map(build-group-by-pairs(k, r, build, !items))
+
+  build-group-by-pairs(k, r, build, items) = 
+      ?key
+    ; where(<items; filter(where(k; ?key)); map(r)> () => values)
+    ; <build> (key, values)
+

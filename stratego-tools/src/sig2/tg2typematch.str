@@ -1,0 +1,42 @@
+module tg2typematch
+imports Stratego tree-grammar options string
+
+/**
+ * Transforms a Stratego signature in TreeGrammar
+ * format to a type matching Strategies.
+ *
+ * Author: Martin Bravenboer <martin@mbravenboer.org>
+ */
+strategies
+  
+  io-tg2typematch =
+    iowrap( tg-to-stratego-typematch )
+
+  //TODO: import the module of the grammar
+  tg-to-stratego-typematch :
+    TreeGrammar(nts) ->
+    |[
+      module TODO
+
+      strategies
+        ~*defs
+    ]|
+      where <map(to-TypeMatch-SDef)> nts => defs
+
+  to-TypeMatch-SDef:
+    NonTermDec(Id(n), args, prods) -> Def |[ ~id:is-nt = ~body ]|
+      where <conc-strings> ("is-", n) => is-nt
+          ; <to-TypeMatch-Strat> prods => body
+
+  to-TypeMatch-Strat:
+    [prod] -> <create-call> prod
+
+  to-TypeMatch-Strat:
+    [prod1 | [prod2 | prods]] -> Strat |[ ~s1 + ~s2 ]|
+      where <create-call> prod1 => s1
+          ; <to-TypeMatch-Strat> [prod2 | prods] => s2
+      
+  create-call:
+    Prod(Id(n), args) -> Strat |[ ? ~id:n ( ~term*:any ) ]|
+      where <map(! Term |[ _ ]| )> args => any
+

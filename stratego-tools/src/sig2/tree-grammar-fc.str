@@ -1,0 +1,41 @@
+module TODO
+imports integers string verbose
+strategies
+  fc-TreeGrammar ( ) =
+    ( TreeGrammar(fc-List(fc-NonTermDec()))
+    <+ if-verbose2(debug(!"Not a TreeGrammar: ")) )
+
+  fc-NonTermRef ( ) =
+    ( NonTermRef(fc-Id(), fc-List(fc-Arg()))
+    <+ if-verbose2(debug(!"Not a NonTermRef: ")) )
+
+  fc-NonTermDec ( ) =
+    ( NonTermDec(fc-Id(), is-int, fc-List(fc-Prod()))
+    <+ if-verbose2(debug(!"Not a NonTermDec: ")) )
+
+  fc-Prod ( ) =
+    ( Prod(fc-Id(), fc-List(fc-ProdItem()))
+    <+ if-verbose2(debug(!"Not a Prod: ")) )
+
+  fc-ProdItem ( ) =
+    ( ( NonTermRef(fc-Id(), fc-List(fc-Arg()))
+      + ( Param(is-int)
+        + ( String()
+          + Int() ) ) )
+    <+ if-verbose2(debug(!"Not a ProdItem: ")) )
+
+  fc-Id ( ) =
+    ( Id(is-string)
+    <+ if-verbose2(debug(!"Not a Id: ")) )
+
+  fc-Arg ( ) =
+    ( ( NonTermRef(fc-Id(), fc-List(fc-Arg()))
+      + ( Param(is-int)
+        + ( String()
+          + Int() ) ) )
+    <+ if-verbose2(debug(!"Not a Arg: ")) )
+
+  fc-List ( fc-param1 ) =
+    ( ( Nil()
+      + Cons(fc-param1, fc-List(fc-param1)) )
+    <+ if-verbose2(debug(!"Not a List: ")) )

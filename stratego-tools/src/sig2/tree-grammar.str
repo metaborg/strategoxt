@@ -1,0 +1,40 @@
+module tree-grammar
+imports list-cons
+
+/**
+ * TreeGrammar is a Stratego signature like format
+ * for describing allowed trees. The productions of
+ * a non-terminal are grouped.
+ *
+ * Author: Martin Bravenboer <martin@mbravenboer.org>
+ */
+signature
+  constructors
+    //TODO: start symbols
+    TreeGrammar: List(NonTermDec) -> TreeGrammar
+
+    NonTermRef:  Id * List(Arg) -> NonTermRef
+    NonTermDec:  Id * Int * List(Prod) -> NonTermDec
+
+    Prod:        Id * List(ProdItem) -> Prod
+
+    // Injection:  NonTermRef -> ProdItem
+    NonTermRef:  Id * List(Arg) -> ProdItem
+    // end Injection
+
+    Param:       Int -> ProdItem
+    String:      ProdItem
+    Int:         ProdItem
+
+    Id:          String -> Id
+
+    // Injection: ProdItem -> Arg
+    NonTermRef:  Id * List(Arg) -> Arg
+    Param:       Int -> Arg
+    String:      Arg
+    Int:         Arg
+    // end Injection
+
+overlays
+  NonTermRef(n) = NonTermRef(n, [])
+

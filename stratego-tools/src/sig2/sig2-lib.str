@@ -1,0 +1,63 @@
+module sig2-args
+imports xtc-lib options
+
+strategies  // very abstract
+
+  str-tg-str-wrap(s) =
+    xtc-io-wrap(input-type-option,
+      pre-process-input
+    ; astratego2tg
+    ; xtc-transform(s, pass-verbose)
+    ; pp-astratego
+    )
+
+strategies
+
+  // TODO: Includes
+  input-type-option =
+      Option("--ast"
+      , where(<set-config> ("--input-type", AST()))
+      ,	!"--ast          Input is Stratego AST."
+      )
+    + Option("--mod"
+      , where(<set-config> ("--mod", Module()))
+      ,	!"--mod          Input is Stratego module (.str, .cr, .r or .rtree) (default)."
+      )
+
+  get-input-type =  <get-config> "--input-type"<+ !Module()
+
+  pre-process-input = <pre-process-helper> (<get-input-type> (), <id>)
+  pre-process-helper : (Module(), f)    -> <str2astratego> f
+  pre-process-helper : (AST()      , f) -> f
+
+signature
+  constructors
+    Module : InputType
+    AST    : InputType
+
+strategies
+
+  // :: FILE -> FILE
+  pp-astratego =
+      stratego-ensugar
+    ; ast2abox
+    ; abox2text
+
+  stratego-ensugar = 
+    xtc-transform(!"stratego-ensugar", pass-verbose)
+
+  ast2abox = 
+    xtc-transform(!"ast2abox", !["-p", <xtc-find> "Stratego-pretty.pp"])
+  // TODO: add | <pass-verbose> when box-tools is installed
+
+  abox2text =
+    xtc-transform(!"abox2text") //, pass-verbose)
+
+  astratego2tg =
+    xtc-transform(!"astratego2tg", pass-verbose)
+
+  str2astratego =
+    xtc-transform(!"sc", !["--ast" | <concat> [<pass-keep> (), <pass-verbose> (), <pass-includes> ()]])
+
+  pass-includes =
+    ![]
