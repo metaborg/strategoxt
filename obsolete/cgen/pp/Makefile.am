@@ -7,6 +7,7 @@ EXTRA_DIST = C.pp C.pp.af C-pretty.pp C-pretty.pp.af
 C.def: 
 	ln -s ../syn/C.def .
 
+BOOTCLEANFILES = C.def
 
 #C.pp.af: C.pp
 #	echo "[]" > bla.ac
