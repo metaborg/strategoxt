@@ -19,8 +19,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: parsesdf-yield-check.src,v 1.7 2001/02/15 16:25:28 mdejonge Exp $
-#
+# $Id: parsesdf-yield-check.src,v 1.8 2001/06/12 08:13:29 mdejonge Exp $
 
 # Exit immediately if a command exits with a non-zero status.
 set -e
@@ -28,22 +27,17 @@ set -e
 # Test parsing, and unparsing grammars.
 
 XT=__XT__
+ASFIXTOOLS=__ASFIXTOOLS__
 
-PATH=${XT}/bin:${PATH}
-GB=${XT}/share/gb
+PATH=${XT}/bin:${ASFIXTOOLS}/bin:${PATH}
 
-Sdf=${GB}/sdf.2.1/sdf.cons
-Pico=${GB}/pico.1/pico
-ATerms=${GB}/aterms.2/aterms
-Grammars="${Pico} ${ATerms} ${Sdf}"
+Languages="pico aterms sdf"
 
-asfix_yield=asfix-yield
-sglr=sglr
-
-for Grammar in ${Grammars}
+for lang in ${Languages}
 do
-    echo "Testing grammar \"${Grammar}\"." >&2
-    ${sglr} -p ${Sdf}.tbl -i ${Grammar}.def \
-      | ${asfix_yield} \
-      | ${sglr} -p ${Sdf}.tbl > /dev/null || exit 1
+    grammar=`gbquery -d -l ${lang}` || exit 1
+    echo "Testing grammar \"${lang}\"." >&2
+    parse -l sdf -v 2.1 -i ${grammar} \
+      | asfix-yield \
+      | parse -l sdf -v 2.1 -o /dev/null || exit 1
 done

@@ -1,5 +1,4 @@
-#! /bin/sh
-# XT -- Grammar Tools
+# GT -- Grammar Tools
 # Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
 #                    Eelco Visser <visser@acm.org>
 #                    Joost Visser <jvisser@cwi.nl>
@@ -19,26 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: parsesdf-implode-sdf2text-check.src,v 1.9 2001/06/12 08:13:29 mdejonge Exp $
+# $Id: Makefile.am,v 1.1 2001/06/12 08:13:34 mdejonge Exp $
 
-# Exit immediately if a command exits with a non-zero status.
-set -e
-
-# Test parsing, imploding and pretty-printing grammars.
-
-XT=__XT__
-GPP=__GPP__
-
-PATH=${XT}/bin:${GPP}/bin:${PATH}
-export PATH
-
-Languages="pico aterms sdf"
-
-for lang in ${Languages}
-do
-    grammar=`gbquery -d -l ${lang}` || exit 1
-    echo "Testing grammar \"${lang}\"." >&2
-    parse -l sdf -v 2.1 -I -i ${grammar} \
-      | sdf2text -a\
-      | parse -l sdf -v 2.1 -o /dev/null || exit 1
-done
+# List all files that should be distributed here
+EXTRA_DIST   = c5.2.y

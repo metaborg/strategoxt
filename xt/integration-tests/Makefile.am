@@ -18,12 +18,14 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.4 2001/06/08 16:25:41 mdejonge Exp $
+# $Id: Makefile.am,v 1.5 2001/06/12 08:13:28 mdejonge Exp $
+
+SUBDIRS      = data 
 
 # Optional tests to run
-#TESTS        = parsesdf-yield-check \
-# 	       parsesdf-implode-sdf2text-check \
-#               parseyacc-yacc2sdf-sdf2text-check
+TESTS        = parsesdf-yield-check \
+ 	       parsesdf-implode-sdf2text-check \
+               parseyacc-yacc2sdf-sdf2text-check
 
 
 # List all files that should be distributed here
@@ -39,5 +41,7 @@ CLEANFILES   = parsesdf-yield-check \
 # Generate test-tools
 %-check: %-check.src Makefile.am
 	sed 's#__XT__#$(prefix)#g;\
+             s#__GRAMMARRECOVERY__#$(GRAMMARRECOVERY)#g;\
+             s#__GPP__#$(GPP)#g;\
 	     s#__MAKE__#$(MAKE)#g' < $< > $@
 	chmod +x $@

@@ -19,35 +19,26 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
-#
-# $Id: parseyacc-yacc2sdf-sdf2text-check.src,v 1.3 2000/07/27 23:04:41 mdejonge Exp $
-#
+
+# $Id: parseyacc-yacc2sdf-sdf2text-check.src,v 1.4 2001/06/12 08:13:30 mdejonge Exp $
+
 
 # Exit immediately if a command exits with a non-zero status.
 set -e
 
 XT=__XT__
+GPP=__GPP__
+GRAMMARRECOVERY=__GRAMMARRECOVERY__
 
-PATH=${XT}/bin:${PATH}
+PATH=${XT}/bin:${GPP}/bin:${GRAMMARRECOVERY}/bin:${PATH}
 export PATH
 
-GB=${XT}/share/gb
-GBSRC=../gb/
-
-YACCTESTS=${GBSRC}/grammars/yacc.0/data/c5.2.y
-
-sglr=sglr
-implodeasfix=implode-asfix
-yacc2sdf=yacc2sdf
-sdf2text=sdf2text
-
+YACCTESTS=data/c5.2.y
 
 for yacc in ${YACCTESTS}
 do
    yaccspec=`basename ${yacc} .y`
-   ${sglr} -p ${GB}/yacc.0/yacc.tbl -i ${yacc} -o ${yaccspec}.tree
-   ${implodeasfix} -i ${yaccspec}.tree -o ${yaccspec}.ayacc
-   ${yacc2sdf} -i ${yaccspec}.ayacc -o ${yaccspec}.asdf
-   ${sdf2text} -a -i ${yaccspec}.asdf -o /dev/null
+   parse -l yacc -i ${yacc} -I -o ${yaccspec}.atree
+   yacc2sdf -i ${yaccspec}.atree -o ${yaccspec}.asdf
+   sdf2text -a -i ${yaccspec}.asdf -o /dev/null
 done
-
