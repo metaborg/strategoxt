@@ -1,7 +1,0 @@
-module wf-xml-info
-imports xtc-lib regular-xtc-tools xml-xtc-tools
-
-strategies
-
-  main-wf-xml-info =
-    xtc-io-wrap(xtc-wf-xml-info)

@@ -5,17 +5,11 @@ bin_PROGRAMS = \
   parse-xml-doc \
   pp-xml-doc \
   parse-xml-info \
-  pp-xml-info \
-  xml-interpret \
-  parse-dtd \
-  parse-dtdinst \
-  xslt-meta-explode \
-  xslt-meta-proc \
-  auto-xml-tools
+  pp-xml-info 
 
-pkgdata_DATA   = xml-xtc-tools.rtree dtdinst.jnlp
+pkgdata_DATA   = xml-xtc-tools.rtree
 
-EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) $(pkgdata_DATA)
+EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) $(wildcard *.c) $(pkgdata_DATA)
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c) xml-xtc-tools.rtree
 
@@ -25,4 +19,3 @@ STRINCLUDES  = -I $(XTC)/share/xtc \
                -I $(top_srcdir)/sig/xml-info \
                -I $(top_srcdir)/lib
 
-XTC_IMPORT = $(STRATEGOXT)/share/strategoxt/XTC

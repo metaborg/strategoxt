@@ -1,28 +1,12 @@
 AC_PREREQ(2.57)
-AC_INIT([xml-tools],[0.4.0pre],[martin@cs.uu.nl])
+AC_INIT([xml-front],[0.11pre],[stratego-bugs@cs.uu.nl])
 AM_INIT_AUTOMAKE([1.7.2 -Wall -Wno-portability])
 
 test "x$prefix" = xNONE && prefix=$ac_default_prefix
-XML_TOOLS="$prefix"
-AC_SUBST(XML_TOOLS)
+XML_FRONT="$prefix"
+AC_SUBST(XML_FRONT)
 
 USE_XT_PACKAGES
-
-AC_CHECK_PROG(XSLTPROC,xsltproc,xsltproc,)
-
-AC_ARG_WITH(j2re, 
-  AC_HELP_STRING([--with-j2re=DIR], [use Java 2 Runtime Environment at DIR]), 
-  J2RE="$withval"; usejava=true, 
-  usejava=false)
-AC_SUBST(J2RE)
-AM_CONDITIONAL(USEJAVA, test x$usejava = xtrue)
-
-AC_ARG_WITH(netx, 
-  AC_HELP_STRING([--with-netx=DIR], [use Netx at DIR]), 
-  NETX="$withval",
-  NETX="$prefix"
-)
-AC_SUBST(NETX)
 
 AC_PROG_CC
 AC_PROG_INSTALL

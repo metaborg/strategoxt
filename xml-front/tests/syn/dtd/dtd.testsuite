@@ -1,8 +1,0 @@
-TestSuite(
-  Name("DTDs")
-, Sort("ExternalDTD")
-, Tests(
-  [ Test(Descr("simple dtd"), File("author.dtd"), Success())
-  , Test(Descr("simple dtd"), File("pe-test2.dtd"), Success())
-  ])
-)

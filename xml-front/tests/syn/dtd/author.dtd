@@ -1,7 +1,0 @@
-<!ELEMENT author (first-name, middle-name?, surname)>
-
-<!ELEMENT first-name  (#PCDATA)>
-<!ELEMENT middle-name (#PCDATA)>
-<!ELEMENT surname     (#PCDATA)>
-
-

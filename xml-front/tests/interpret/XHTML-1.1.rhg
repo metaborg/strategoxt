@@ -1,7 +1,0 @@
-regular hedge grammar
-  start Dummy
-  productions
-    Dummy -> [{http://www.w3.org/1999/xhtml}br] (/)
-    Dummy -> [{http://www.w3.org/1999/xhtml}a]  (<string>)
-    Dummy -> [{http://www.w3.org/1999/xhtml}a]  (<string>) .href (<string>)
-    Dummy -> [{http://www.w3.org/1999/xhtml}a]  (<string>) .href (<string>) .title (<string>)
