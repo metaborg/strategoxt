@@ -1,6 +1,6 @@
 # Autobundle -- Tool suite for automated source tree composition
 #
-# Author: Merijn de Jonge (M.de.Jonge@tue.nl)
+# Author: Merijn de Jonge (mdejonge@cs.uu.nl)
 #
 # $Id$
 
@@ -49,7 +49,7 @@ TESTS_ENVIRONMENT = $(SHELL) -c \
             PATH=$(SGLR)/bin:$${PATH} sglr -2 -p $(srcdir)/Autobundle.tbl -o /dev/null -i $${grammar} $(SGLR_FLAGS);\
          done'
 
-# Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>
+# Copyright (C) 2002-2004 Merijn de Jonge <mdejonge@cs.uu.nl>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

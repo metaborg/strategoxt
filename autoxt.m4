@@ -1,5 +1,5 @@
 # Author: Eelco Visser <visser@cs.uu.nl>
-#    (changed by Merijn de Jonge <M.de.Jonge@tue.nl>
+#    (changed by Merijn de Jonge <mdejonge@cs.uu.nl>
 #
 # This autoconf macro file provides parameters for a package that is built
 # with the XT bundle of program transformation tools.

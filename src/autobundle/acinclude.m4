@@ -1,6 +1,6 @@
 dnl Autobundle -- Tool suite for automated source tree composition
 dnl
-dnl Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>
+dnl Copyright (C) 2002-2004 Merijn de Jonge <mdejonge@cs.uu.nl>
 dnl
 dnl This program is free software; you can redistribute it and/or modify
 dnl it under the terms of the GNU General Public License as published by
@@ -17,9 +17,9 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 dnl 02111-1307, USA.
 
-dnl $Id: acinclude.m4,v 1.3 2002/05/02 19:02:58 mdejonge Exp $
+dnl $Id$
 
-dnl Author: Merijn de Jonge (M.de.Jonge@tue.nl)
+dnl Author: Merijn de Jonge (mdejonge@cs.uu.nl)
 
 dnl Configure sub components with additional configure flags
 dnl usage:

@@ -21,7 +21,7 @@
 
 # $Id$
 
-# Author: Merijn de Jonge (M.de.Jonge@tue.nl)
+# Author: Merijn de Jonge (mdejonge@cs.uu.nl)
 
 
 # This script will collect all required packages for an autobundle

@@ -1,8 +1,8 @@
 dnl Autobundle -- Tool suite for automated source tree composition
 dnl
-dnl Author Merijn de Jonge (M.de.Jonge@tue.nl)
+dnl Author Merijn de Jonge (mdejonge@cs.uu.nl)
 dnl
-dnl $Id: program-check.m4,v 1.3 2002/05/02 19:02:51 mdejonge Exp $
+dnl $Id$
 
 dnl AC_PACKAGE_REQUIRE
 dnl Add --with-<pkg> switch. If this switch was not specified try to locate
@@ -99,7 +99,7 @@ AC_DEFUN(AC_PACKAGE_NOT_FOUND,
    AC_MSG_ERROR(Required package or program \"$1\" not found.)
 ])
 
-dnl Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>
+dnl Copyright (C) 2002-2004 Merijn de Jonge <mdejonge@cs.uu.nl>
 dnl
 dnl This program is free software; you can redistribute it and/or modify
 dnl it under the terms of the GNU General Public License as published by

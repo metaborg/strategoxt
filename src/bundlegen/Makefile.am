@@ -1,6 +1,6 @@
 # Autobundle -- Tool suite for automated source tree composition
 #
-# Author: Merijn de Jonge (M.de.Jonge@tue.nl)
+# Author: Merijn de Jonge (mdejonge@cs.uu.nl)
 #
 # $Id$
 
@@ -78,7 +78,7 @@ bundlegen6_check_switches = -I $(srcdir)/data -p test6-a-1 -g
 bundlegen6_check_output   = ./data/bundlegen6_check.out
 bundlegen6_check_correct  = $(srcdir)/data/bundlegen6_check.correct
 
-# Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>
+# Copyright (C) 2002-2004 Merijn de Jonge <mdejonge@cs.uu.nl>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

@@ -2,7 +2,7 @@
 
  Autobundle -- Tool suite for automated source tree composition
 
- Author: Merijn de Jonge (M.de.Jonge@tue.nl)
+ Author: Merijn de Jonge (mdejonge@cs.uu.nl)
 
  $Id: pkg-search.str 4566 2003-12-02 17:01:17Z merijn $
 
@@ -77,7 +77,7 @@ Pkg-set =
    termid-set(!"\"autobundle-0\"")
       
 \end{code}
-% Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>
+% Copyright (C) 2002-2004 Merijn de Jonge <mdejonge@cs.uu.nl>
 %
 % This program is free software; you can redistribute it and/or modify it
 % under the terms of the GNU General Public License as published by the Free

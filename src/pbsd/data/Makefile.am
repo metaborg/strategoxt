@@ -1,6 +1,6 @@
 # Autobundle -- Tool suite for automated source tree composition
 #
-# Author: Merijn de Jonge (M.de.Jonge@tue.nl)
+# Author: Merijn de Jonge (mdejonge@cs.uu.nl)
 #
 # $Id: Makefile.am 4515 2003-11-25 15:38:49Z merijn $
 
@@ -8,7 +8,7 @@ include $(top_srcdir)/Makefile.xt
 
 EXTRA_DIST = aterm-dev-1.4.4.pkg.af
 
-# Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>
+# Copyright (C) 2002-2004 Merijn de Jonge <mdejonge@cs.uu.nl>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

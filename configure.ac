@@ -1,10 +1,10 @@
 dnl Autobundle -- Tool suite for automated source tree composition
 dnl
-dnl Author: Merijn de Jonge (M.de.Jonge@tue.nl)
+dnl Author: Merijn de Jonge (mdejonge@cs.uu.nl)
 dnl
 dnl $Id$
 
-AC_INIT(autobundle,0.10, M.de.Jonge@tue.nl,)
+AC_INIT(autobundle,0.10, mdejonge@cs.uu.nl,)
 AM_INIT_AUTOMAKE
 
 AC_REVISION($Id$)
@@ -60,7 +60,7 @@ AC_CONFIG_FILES([
 
 AC_OUTPUT
 
-dnl Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>
+dnl Copyright (C) 2002-2004 Merijn de Jonge <mdejonge@cs.uu.nl>
 dnl
 dnl This program is free software; you can redistribute it and/or modify
 dnl it under the terms of the GNU General Public License as published by

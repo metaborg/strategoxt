@@ -1,8 +1,8 @@
 # Autobundle -- Tool suite for automated source tree composition
 #
-# Author: Merijn de Jonge (M.de.Jonge@tue.nl)
+# Author: Merijn de Jonge (mdejonge@cs.uu.nl)
 #
-# $Id: Makefile.am,v 1.8 2002/06/04 07:56:05 mdejonge Exp $
+# $Id$
 
 include $(top_srcdir)/Makefile.xt
 SUBDIRS           = syntax src
@@ -15,7 +15,7 @@ ACLOCAL_AMFLAGS = -I .
 # Configure flag needed for 'make distcheck'
 DISTCHECK_CONFIGURE_FLAGS = --with-xt=$(XT)
 
-# Copyright (C) 2002-2003 Merijn de Jonge <M.de.Jonge@tue.nl>
+# Copyright (C) 2002-2004 Merijn de Jonge <mdejonge@cs.uu.nl>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
