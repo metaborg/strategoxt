@@ -123,6 +123,7 @@ bootclean-recursive :
            $(GPP)/bin/ppgen -t -i $< \
            | $(GPP)/bin/pptable-diff --old $@.af 2>&1 || \
                      eval "echo '## pptable-diff error: $@ is not consistent with syntax definition' >&2; exit 1";\
+           touch $@ ;\
         fi
 
 ###########################################################

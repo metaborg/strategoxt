@@ -3,6 +3,8 @@
 	* Makefile.xt: integrated pptable-diff in build process of
 	  pretty-print tables. Build now fails when inconsistentent
 	  pretty-print tables are detected
+        * Makefile.xt: touch pretty-print table when grammar has changed
+          and pretty-print table is consistent
 
 2003-12-11  Martin Bravenboer  <martin@cs.uu.nl>
 
