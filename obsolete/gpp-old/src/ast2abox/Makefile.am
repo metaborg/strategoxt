@@ -5,10 +5,14 @@ SUBDIRS      	 = data
 
 SCFLAGS     	 = -I $(srcdir)/../lib \
 		   -I $(ASFIX_TOOLS)/share/asfix-tools \
-		   --main $*
+		   --main $* $(XTCFLAGS)
 
-libexec_PROGRAMS = Ast-2-abox
+libexec_PROGRAMS = Ast-2-abox 
+bin_PROGRAMS	 = ast2text
 bin_SCRIPTS 	 = ast2abox
+
+ast2text.o	 : xtc-conf.h
+Ast-2-abox	 : xtc-conf.h
 
 BOOTCLEANFILES 	 = Ast-2-abox.c
 CLEANFILES       = ast2abox $(wildcard *.dep)

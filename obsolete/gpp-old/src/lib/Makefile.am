@@ -1,3 +1,5 @@
+include $(top_srcdir)/Makefile.xt
+
 SUBDIRS      = data
 
 PGEN_FLAGS   = -m GB-Main
@@ -5,7 +7,8 @@ PGEN_FLAGS   = -m GB-Main
 pkgdata_DATA = gpp.Makefile pp-tables.tbl pp-tables.pp pp-tables.pp.af
 
 EXTRA_DIST   = $(wildcard *.str) gpp.Makefile.src \
-               pp-tables.def pp-tables.pp pp-tables.pp.af 
+               pp-tables.def pp-tables.pp pp-tables.pp.af \
+	       pp-tables.tbl
 
 CLEANFILES   = gpp.Makefile pp-tables.pp.af pp-tables.tbl
 

@@ -1,3 +1,8 @@
+2002-12-11  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/ast2abox/ast2text.str: composition of ast2abox and abox2text
+	using XTC
+
 2002-12-08  Eelco Visser  <visser@cs.uu.nl>
 
 	* Using autoxt
