@@ -8,7 +8,7 @@ signature
 strategies
 
   term-to-adot = 
-    iowrap(?(<id>,_); to-adot, term-to-adot-options)
+    io-wrap(term-to-adot-options, to-adot)
 
   term-to-adot-options =
     Option("--graph", 
