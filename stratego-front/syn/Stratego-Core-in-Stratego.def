@@ -390,6 +390,62 @@ exports
     [\\] [\'ntr\ ]		-> CharChar
     Char		 	-> Id {reject}
 
+module Stratego-Identifiers
+exports
+  sorts ModName
+  lexical syntax
+    [a-zA-Z\'\.\-\_] [a-zA-Z0-9\'\.\-\_]* -> ModName
+  lexical restrictions
+    ModName -/- [a-zA-Z0-9\'\.\-\_]
+  lexical syntax
+    "imports" 		-> ModName {reject}
+    "overlays" 		-> ModName {reject}
+    "rules" 		-> ModName {reject}
+    "signature" 	-> ModName {reject}
+    "strategies" 	-> ModName {reject}
+
+  sorts Id LId LCID UCID
+  lexical syntax
+    [a-zA-Z\'\-\_] [a-zA-Z0-9\'\-\_]*     -> Id
+    [a-zA-Z\'\-\_] [a-zA-Z0-9\'\-\_]* "*" -> LId
+
+    [a-z] [a-zA-Z0-9\'\-\_]*  -> LCID
+    [A-Z] [a-zA-Z0-9\'\-\_]*  -> UCID
+  lexical restrictions
+    Id   -/- [a-zA-Z0-9\'\-\_\*]
+    LId  -/- [a-zA-Z0-9\'\-\_]
+    LCID -/- [a-zA-Z0-9\'\-\_]
+    UCID -/- [a-zA-Z0-9\'\-\_]
+
+  lexical syntax
+    "all" 		-> Id {reject}
+    "constructors" 	-> Id {reject}
+    "fail" 		-> Id {reject}
+    "id" 		-> Id {reject}
+    "in" 		-> Id {reject}
+    "let" 		-> Id {reject}
+    "module" 		-> Id {reject}
+    "not" 		-> Id {reject}
+    "one" 		-> Id {reject}
+    "overlays" 		-> Id {reject}
+    "override" 		-> Id {reject}
+    "prim" 		-> Id {reject}
+    "rules" 		-> Id {reject}
+    "script" 		-> Id {reject}
+    "signature" 	-> Id {reject}
+    "some" 		-> Id {reject}
+    "sorts" 		-> Id {reject}
+    "strategies" 	-> Id {reject}
+    "stratego" 		-> Id {reject}
+    "test" 		-> Id {reject}
+    "thread" 		-> Id {reject}
+    "where" 		-> Id {reject}
+  lexical restrictions
+    "all" "constructors" "fail" "id" "in" "let" "module" "not" "one"
+    "overlays" "override" "prim" "rules" "script" "signature" "some"
+    "sorts" "strategies" "stratego" "test" "thread" "where" 
+    -/- [a-zA-Z0-9\'\-\_]
+
 module Stratego-Layout
 exports
   sorts Ws ShortCom LongCom CommChar1 CommChar2 Asterisk1 Asterisk2
@@ -509,7 +565,7 @@ imports Stratego
 
 module Stratego-Core-Modules
 imports
-  Stratego-Identifiers
+  Stratego-Core-Identifiers
   Stratego-Core-Strategies
   Stratego-Core-Signatures
 
@@ -609,7 +665,7 @@ exports
 
 module Stratego-Core-Terms
 imports
-  Stratego-Identifiers
+  Stratego-Core-Identifiers
   Stratego-Core-Constants
 
 exports
@@ -645,7 +701,7 @@ exports
 
 module Stratego-Core-Signatures
 imports
-  Stratego-Identifiers
+  Stratego-Core-Identifiers
   Stratego-Core-Constants
 exports
   sorts Sdecl
@@ -703,7 +759,7 @@ exports
   context-free restrictions
     LAYOUT? -/- [\ \t\n\r]
 
-module Stratego-Identifiers
+module Stratego-Core-Identifiers
 exports
   sorts ModName
   lexical syntax
@@ -719,8 +775,8 @@ exports
 
   sorts Id LId LCID UCID
   lexical syntax
-    [a-zA-Z\'\-\_] [a-zA-Z0-9\'\-\_]*     -> Id
-    [a-zA-Z\'\-\_] [a-zA-Z0-9\'\-\_]* "*" -> LId
+    [a-zA-Z\'\_] [a-zA-Z0-9\'\-\_]*     -> Id
+    [a-zA-Z\'\_] [a-zA-Z0-9\'\-\_]* "*" -> LId
 
     [a-z] [a-zA-Z0-9\'\-\_]*  -> LCID
     [A-Z] [a-zA-Z0-9\'\-\_]*  -> UCID
@@ -771,7 +827,7 @@ exports
 
 module Stratego-Core
 imports Stratego-Core-Constants 
-	Stratego-Identifiers 
+	Stratego-Core-Identifiers 
 	Stratego-Core-Layout
 	Stratego-Core-Signatures 
 	Stratego-Core-Terms
@@ -806,6 +862,8 @@ exports
 
               "|[" Term   "]|" -> StrategoTerm {cons("ToTerm")}
     "Term"    "|[" Term   "]|" -> StrategoTerm {cons("ToTerm")}
+
+    "PreTerm" "|[" PreTerm   "]|" -> StrategoTerm {cons("ToTerm")}
 
               "|[" Def    "]|" -> StrategoTerm {cons("ToTerm")}
     "Def"     "|[" Def    "]|" -> StrategoTerm {cons("ToTerm")}
