@@ -200,6 +200,18 @@ strategies
     repeat((!(<divi>(<id>, 2), <mod; ?0>(<id>, 2)); Fst, inc));
     ?(1, <id>)
 
+strategies
+
+  gcd =
+    (abs,abs) 
+  ; let gcd' = \ (x,0) -> x \ + \ (x,y) -> <gcd'>(y,<mod>(x,y)) \ 
+    in 
+      gcd' 
+    end
+
+  abs =
+    is-int ; try(<subt>(0,<neg>))
+
 signature
   sorts IntI
   // subsorts Int < IntI
