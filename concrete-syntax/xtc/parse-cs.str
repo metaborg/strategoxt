@@ -1,0 +1,295 @@
+module parse-cs
+imports lib xtc-lib stratego-xt-xtc-tools
+strategies
+
+/**
+ * Parsing with concrete object syntax
+ * 
+ * This program is a generic parser for meta-programs with concrete
+ * object syntax (embedded syntax). 
+ *
+ * The program is parameterized with components for handling the
+ * various parts of the parsing process. These components are
+ * 
+ * - a parse table
+ * - an pre-explode desugaring component
+ * - an exploder for exploding embedded abstract syntax
+ * - a post-explode desugaring component
+ * - a pretty-printer
+ * 
+ * These components do not have to be provided on the command line,
+ * but are provided via a meta-data file. A specific meta-data file
+ * can be defined for the file to be parsed. It should have the following
+ * components:
+ * 
+ * Meta([
+ *   Syntax(lang),			// name of language = main SDF module
+ *   ParseTable(tbl)			
+ *   PreExplodeDesugar(pre-explode),    
+ *   Explode(explode),
+ *   PostExplodeDesugar(post-expl),
+ *   PrettyPrintTable(pp)
+ * ])
+ *
+ * If the component names are not absolute paths to files, the components
+ * are looked up in the XTC repository.
+ * 
+ * Not all components need to be specified. The only one required is the
+ * syntax. 
+ */
+
+strategies // options
+
+  syntax-option =
+    ArgOption("--syntax", where(<set-config>("--syntax", <id>)),
+	      !"--syntax syn        use syntax syn")
+
+  ensugar-option =
+    ArgOption("--ensugar", where(<set-config>("--ensugar", <debug; string-to-int; debug>)),
+	      !"--ensugar n       ensugaring level")
+
+  pretty-print-option =
+    Option("--pretty-print" + "-pp", 
+	   where(<set-config>("-pp", ())),
+	   !"--pretty-print | -pp        pretty-print")
+
+  pass-ensugar =
+    !["--ensugar", <get-config; int-to-string> "--ensugar"]
+
+strategies 
+
+/**
+ * Parse a file, possibly containing concrete object syntax.
+ * Obtain parse table and other processors from meta data.
+ */
+
+  io-parse-cs =
+    where(<set-config> ("--ensugar", 5));
+    where(<set-config> ("--verbose", 1));
+    xtc-io-wrap(
+      include-options <+ syntax-option 
+                      <+ ensugar-option 
+                      <+ pretty-print-option
+    , if-verbose1(where(FILE(debug(!"preprocessing: "))))
+      ; where(<extend-config> ("-I", ["./"]))
+      ; resolve-file-name
+      ; if-verbose3(debug(!"file: "))
+      ; init-language-binding
+      ; where(?FILE(<basename => base>))
+
+      // parse the file and implode the parse tree
+
+      ; xtc-sglri(|<MetaData> "ParseTable")
+      ; try(xtc-transform(<MetaData> "PreExplodeDesugar", pass-ensugar))
+      ; try(xtc-transform(<MetaData> "Explode"))
+      ; try(xtc-transform(<MetaData> "PostExplodeDesugar", pass-ensugar))
+      ; try(
+	  where(<get-config> "-pp"; get-pp-table)
+	  ; xtc-transform(!"ast2abox", !["-p", <MetaData> "PrettyPrintTable"])
+	  ; xtc-transform(!"abox2text")
+        )
+    )
+
+  /*
+      ; if-verbose1(where(run-time; debug(!"exploding -- ")))
+      ; if-keep1(copy-to(<guarantee-extension(!"btree")> base))
+      ; if-keep1(copy-to(<guarantee-extension(!"atree")> base))
+  */
+
+  init-language-binding =
+    where(
+      fetch-meta-data(!Meta([]))
+      ; if-verbose3(debug(!"meta-data: "))
+      ; syntax-override
+      ; meta-data-to-rules
+      ; where(get-parse-table)
+    )
+
+  syntax-override = 
+    try(Meta(fetch(Syntax(<get-config> "--syntax"))))
+
+strategies // obtain parse table
+
+  get-parse-table =
+    if-verbose6(debug(!"get-parse-table: "))
+    ; <MetaData> "Syntax" => syntax
+    ; if-verbose6(debug(!"Syntax: "))
+    ; try(where(<extend-config> ("-I", ["./", <conc-strings; xtc-find-path> (syntax, ".sdf")])))
+    ; guarantee-extension(!"tbl") => tbl
+    ; (<resolve-file-name> FILE(tbl)
+       ; if-verbose2(debug(!"using parse table: "))
+      <+ if-verbose2(say(!"creating parse table"))
+       ; <get-syntax-definition> syntax
+       ; xtc-transform(!"sdf2table", !["-m", syntax])
+       ; rename-to(!tbl)
+      )
+    ; where(!ParseTable(<?FILE(<id>)>); meta-data-to-rule)
+    ; if-verbose6(debug(!"using parse table: "))
+
+strategies // obtain syntax definition 
+
+  get-syntax-definition =
+    if-verbose6(debug(!"get-syntax-definition: "))
+    ; where(guarantee-extension(!"def") => def)
+    ; ( <resolve-file-name> FILE(def)
+      ; if-verbose2(!"using syntax definition: ")
+     <+ if-verbose2(say(!"creating syntax definition"))
+      ; !FILE(<guarantee-extension(!"sdf")>)
+      ; xtc-transform(!"pack-sdf", get-includes)
+      ; xtc-transform(!"asfix-yield")
+      ; rename-to(!def)
+      )
+
+strategies // obtain pretty-print table
+
+  get-pp-table =
+    if-verbose6(debug(!"get-pp-table: "))
+    ; <MetaData> "PrettyPrintTable" => pptbl
+    ; if-verbose6(debug(!"PrettyPrintTable: "))
+    //; guarantee-extension(!"pp") => pptbl
+    ; (<resolve-file-name <+ FILE(xtc-find)> FILE(pptbl)
+       ; if-verbose2(debug(!"using pp table: "))
+      <+ if-verbose2(say(!"creating pp table"))
+       ; <MetaData; get-syntax-definition> "Syntax"
+       ; xtc-transform(!"ppgen")
+       ; rename-to(!pptbl)
+      )
+    ; where(!PrettyPrintTable(<?FILE(<id>)>); meta-data-to-rule)
+    ; if-verbose6(debug(!"using pp table: "))
+
+strategies // parsing
+
+  xtc-sglri(|tbl) =
+    xtc-sglr'(|tbl)
+    ; xtc-implode-asfix
+
+  xtc-sglr'(|tbl) =
+    xtc-transform(!"sglr",
+        !["-2t", "-p", <file-exists <+ xtc-find> tbl | <pass-v-verbose> ])
+
+/******************************************************************
+ * Include path -- file name resolution
+ * 
+ * File names are often specified in an incomplete manner relative to
+ * an include path (or the current working directory)
+ * The following strategies resolve file names with respect to
+ * an include path.
+ ******************************************************************/
+
+strategies // includes
+
+  include-options =
+    ArgOption("-I" + "--Include", where(<extend-config>("-I", [<id>])),
+	      !"-I p|--Include p   include modules from directory p")
+
+  resolve-file-name =
+    find-in-includes(!"")
+
+  find-in-includes(msg) =
+    !(<?FILE(<id>)>, <get-config> "-I")
+    ; if-verbose5(debug(!"find-in-includes: "))
+    ; find-in-path
+    ; if-verbose2(debug(msg))
+    ; !FILE(<id>)
+
+  get-includes =
+    <get-config> "-I"
+    ; foldr(id, conc, !["-I", <id>])
+
+/******************************************************************
+ * Meta data
+ *
+ * meta-data express properties about files (data)
+ * meta-data is stored in a separate file (e.g., file.meta)
+ * a FILE descriptor can be annotated with its meta-data
+ ******************************************************************/
+
+signature // meta data
+
+  constructors
+    Meta               : List(MetaProperty) -> MetaData
+    Syntax             : String -> MetaProperty
+    ParseTable         : String -> MetaProperty
+    PreExplodeDesugar  : String -> MetaProperty
+    PostExplodeDesugar : String -> MetaProperty
+    Explode            : String -> MetaProperty
+    PrettyPrintTable   : String -> MetaProperty
+
+strategies 
+
+  /** 
+   * fetching meta data
+   * 
+   * Meta data can be found in various places: a .meta file for the file being
+   * processed, a file bound to the extension of the file found in XTC.
+   */
+
+  fetch-meta-data(default) =
+    <merge-metas>[<read-meta-file>,<read-syn-file>,<read-language-binding>,<default>]
+
+  read-meta-file =
+    FILE(guarantee-extension(!"meta"))
+    ; read-from
+   <+ !Meta([])
+
+  read-syn-file =
+    FILE(guarantee-extension(!"syn"))
+    ; read-from => syntax#(_)
+    ; !Meta([Syntax(syntax)])
+   <+ !Meta([])
+
+  read-language-binding =
+    FILE(<concat-strings; xtc-find> [<get-extension>, ".meta"])
+    ; read-from
+   <+ !Meta([])
+
+  merge-metas = 
+    !Meta(<map(?Meta(<id>)); concat>)
+
+  /** 
+   * meta data in dynamic rules
+   * 
+   * Generate dynamic MetaData rules mapping the type to the value
+   */
+
+  meta-data-to-rules =
+    Meta(reverse-map(meta-data-to-rule))
+
+  meta-data-to-rule =
+    where(?x@(prop#([val])); rules(MetaData : prop -> val))
+
+  rules-to-meta-data = 
+    <table-get-list> "MetaData"
+    ; !Meta(<filter(\ (prop@<is-string>, vals) -> prop#(vals) \ )>)
+
+  // meta data as annotation
+
+  get-meta-data(default) = 
+    if-verbose6(debug(!"get-meta: "))
+    ; annotate-with-meta-data(default)
+    ; check-meta-data
+    ; if-verbose6(debug(!"get-meta: "))
+
+  annotate-with-meta-data(default) =
+    if-verbose6(debug(!"annotate-with-meta-data: "))
+    ; !<id>{<fetch-meta-data(default)>}
+    ; if-verbose6(debug(!"annotate-with-meta-data: "))
+
+  check-meta-data =
+    ?FILE(file){attr*}
+    ; (where(<fetch(Meta(map(?_#(_))))> attr*)
+       <+ <error> ["Meta data ", attr*, " for file ", file, " not valid: "]; fail)
+
+  fetch-meta-datum(s) =
+    FILE(id){fetch(Meta(fetch(s; ?x)))}; !x
+
+strategies // file extension
+
+  /**
+   * Get extension from filename (move to SSL)
+   *
+   * @type   String -> String
+   */
+  get-extension =
+    <string-tokenize> (['.'], <id>)
+    ; last

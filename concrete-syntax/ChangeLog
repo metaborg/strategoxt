@@ -1,0 +1,46 @@
+2003-11-16  Eelco Visser  <visser@cs.uu.nl>
+
+	* Generic program for parsing programs with embedded concrete
+	syntax. The program is parameterized with meta-data indicating
+	components for various aspects such as parsing, exploding,
+	desugaring, and pretty-printing. The meta data can be specified in
+	a .meta file specific for a program to be parsed, or it can be
+	associated with an extension and registered in an XTC repository.
+
+	For example, the following is the contents of pl.meta, the
+	meta-data for Prolog programs with embedded syntax. The assumption
+	(in this example) is that syntax embeddings use a standard
+	(ToTerm) convention for indicating the boundary between meta- and
+	object-syntax.
+
+	  Meta([
+	    Syntax("Prolog"),
+	    ParseTable("Prolog.tbl"),
+	    Explode("prolog-explode"),
+	    PrettyPrintTable("Prolog-pretty.pp.af")
+	  ])
+
+	This information can be overridden in a file specific .meta file
+	with the same extension. For example, the following indicates an
+	embedding of ABIR in Prolog and a specific desugaring tool for
+	this format:
+
+	  Meta([
+	    Syntax("PrologABIR"),
+	    PostExplodeDesugar("abir-in-prolog-implode")
+	  ])
+
+	It overrides the syntax component, and adds a desugaring component.
+
+	In order to define such meta-data for a whole class of programs,
+	it can be defined in a meta file associated with a new
+	extension. For example, the following is the contents plabir.meta,
+	which defines all meta-data for preprocessing Prolog with embedded
+	ABIR in files with extension .plabir.
+	
+	  Meta([
+	    Syntax("PrologABIR"),
+	    Explode("prolog-explode"),
+	    PostExplodeDesugar("abir-in-prolog-implode"),
+	    PrettyPrintTable("Prolog-pretty.pp.af")
+	  ])
