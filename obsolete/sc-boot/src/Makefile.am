@@ -20,6 +20,8 @@
 OPTFLAGS 	= -O4
 #PROFFLAGS	= -pg
 
+CFLAGS		= -O4
+
 INCLUDES 	= -I$(STRATEGORTS)/include \
 		  -I$(STRATEGOLIB)/include \
 		  -I$(ATERM)/include \
