@@ -101,7 +101,7 @@ rules
 	where
 	  <dep-base> outfile => out;  
 	  <add-extension; open-file> (out, "dep") => dep;
-	  <printnl>(dep, <separate-by(!" ")> [out, ":" | files])
+	  <printnl>(dep, [out | <separate-by(!" \\\n\t")> [" :" | files]])
 
 signature
   constructors
