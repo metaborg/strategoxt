@@ -19,6 +19,13 @@ strategies
     ( <fetch-elem(?Signal(_, i, _))> AllSignals
     <+ !UnknownSignal(i))
     
+  // :: Signal -> Int    
+  number-from-signal :
+    Signal(_, i, _) -> i   
+    
+  number-from-signal :    
+    UnknownSignal(i) -> i  
+    
   // :: Signal -> String
   signal-to-descr :
     Signal(n, i, s) -> <concat-strings> [n, " (", <int-to-string> i, "): ", s]

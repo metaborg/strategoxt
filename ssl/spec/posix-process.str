@@ -119,3 +119,16 @@ strategies
 /**
  * Terminating Another Process 
  */
+strategies
+ 
+  /**
+   * kill :: Int * Signal -> Int * Signal
+   *
+   * fails on failure, if succesful the current term will be left untouched
+   */
+  kill =
+    where(
+      ?(pid, <number-from-signal; ?sig>)
+    ; prim("SSL_kill", pid, sig)
+    )
+    

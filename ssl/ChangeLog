@@ -1,5 +1,9 @@
 2003-03-20  Martin Bravenboer <martin@mbravenboer.org>
 
+  * spec/posix-process.str: added kill
+
+2003-03-20  Martin Bravenboer <martin@mbravenboer.org>
+
   * spec/posix-signal.str: definition of 
     POSIX signals.
   
