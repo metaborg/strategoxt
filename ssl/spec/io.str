@@ -97,7 +97,7 @@ strategies
   // Returns the ascii code of the character.
 
   getchar = 
-      obsolete(!"getchar; use fgetc");
+      // obsolete(!"getchar; use fgetc");
     ?file; prim("SSL_getchar", file)
 
   // <readline> file => List(Int)
