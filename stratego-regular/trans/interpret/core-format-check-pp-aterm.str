@@ -1,0 +1,69 @@
+/**
+ * @author  Martin Bravenboer <martin@cs.uu.nl>
+ */
+module core-format-check-pp-aterm
+imports
+  liblib 
+  ugly-print
+  core-format-check
+
+strategies
+
+  main-core-format-check-pp-aterm =
+    io-wrap(core-fc-options,
+      format-check-pp-aterm
+    )
+
+strategies
+
+  format-check-pp-aterm =
+      format-check-init
+    ; try(my-format-check)
+    ; pp-aterm-types
+
+  my-format-check =
+    bottomup-consnil(
+       where(get-types)
+    <+ repeat(Type)
+    )
+
+strategies
+
+  pp-aterm-types =
+      ugly-print-type
+    ; concat-content
+
+strategies
+
+  my-ugly-print =
+       UP-Int
+    <+ UP-Real
+    <+ UP-Str
+    <+ UP-List(ugly-print-type)
+    <+ UP-Tuple(ugly-print-type)
+    <+ UP-Cnst	
+    <+ UP-App(ugly-print-type)
+
+  ugly-print-type =
+    if is-typed <+ one-consnil(not(is-typed)) then
+      my-ugly-print
+    else
+      my-ugly-print => b
+      ; where(code-red   => s1)
+      ; where(code-plain => s2)
+      ; !|[ H hs=0 [s1 b s2] ]|
+    end
+
+  code-red =
+    <conc-strings> (<implode-string> [27], "[00;31m")
+
+  code-plain =
+    <conc-strings> (<implode-string> [27], "[m")
+
+  is-typed = 
+    where(get-types; iset-elements => [_ | _])
+
+strategies
+
+  concat-content =
+    bottomup( try( \ Conc(l1, l2) -> <conc> (l1, l2) \ ))

@@ -44,7 +44,7 @@ strategies
             .typo {
               padding: 2pt;
               border-style: solid;
-              border-width: 1pt;
+              border-width: 2pt;
               border-color: red;
             }
 

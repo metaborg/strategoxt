@@ -1,3 +1,9 @@
+2004-07-22  Martin Bravenboer <martin@cs.uu.nl>
+
+	* xtc/format-check.str: new --vis option for showing the format
+	error in a pp-aterm at the command-line. Format-errors will be in
+	pretty-printed in red if the terminal supports colors.
+	
 2004-07-21  Martin Bravenboer <martin@cs.uu.nl>
 
 	* xtc/rtg-script.str: new tool for processing RTGs. The tool is

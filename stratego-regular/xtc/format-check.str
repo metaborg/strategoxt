@@ -15,7 +15,11 @@ strategies
     , if is-xhtml-mode then
         format-check-to-xhtml
       else
-        format-check
+        if is-vis-mode then
+          format-check-pp-aterm
+        else
+          format-check
+        end
       end
     )
 
@@ -34,6 +38,12 @@ strategies
       )
     ; xtc-transform(!"pp-xml-doc", pass-verbose)
 
+  format-check-pp-aterm =
+      xtc-transform(!"core-format-check-pp-aterm",
+          <flatten-list> ["--rtg-nf", <input-to-rtg-nf>, <pass-verbose> (), <pass-start-nonterm>]
+      )
+    ; xtc-abox2text
+
 /**
  * Options
  */
@@ -44,6 +54,7 @@ strategies
     + rtg-nf-option(|"Format check against normalized rtg in file")
     + start-nonterm-option(|"Term must be of type s (default: start non-terms of rtg)")
     + xhtml-option
+    + vis-option
 
   xhtml-option =
     Option("--xhtml"
@@ -56,6 +67,18 @@ strategies
 
   set-xhtml-mode =
     <set-config> ("--xhtml", ())
+
+  vis-option =
+    Option("--vis"
+    , set-vis-mode
+    , !HelpString("--vis", "Visualize in colored pp-aterm")
+    )
+
+  is-vis-mode =
+    <get-config> "--vis"
+
+  set-vis-mode =
+    <set-config> ("--vis", ())
 
   fc-usage =
     <tool-doc> fc-tool-doc()
