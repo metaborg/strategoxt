@@ -1,3 +1,8 @@
+2003-08-12  Eelco Visser  <visser@cs.uu.nl>
+
+	* syn/Stratego-Signatures.sdf: A constant type uses a Sort instead
+	of a Term.
+
 2003-07-31  Eelco Visser  <visser@cs.uu.nl>
 
 	* test/PropStratego.sdf: using WithAnno instead of Anno.

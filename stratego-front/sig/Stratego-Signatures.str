@@ -6,7 +6,7 @@ signature
 signature
   constructors
     SortNoArgs : Id -> Sort
-    Sort       : Id * List(Term) -> Sort
+    Sort       : Id * List(Sort) -> Sort
 signature
   constructors
     Star     : Kind
@@ -18,5 +18,5 @@ signature
     OpDeclInj : Type -> Opdecl
 signature
   constructors
-    ConstType : Term -> Type
+    ConstType : Sort -> Type
     FunType   : List(Type) * Type -> Type

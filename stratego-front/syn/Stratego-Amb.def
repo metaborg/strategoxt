@@ -233,7 +233,7 @@ exports
 
   context-free syntax
     Id 			   	-> Sort {cons("SortNoArgs")}
-    Id "(" {Term ","}* ")" 	-> Sort {cons("Sort")}
+    Id "(" {Sort ","}* ")" 	-> Sort {cons("Sort")}
 
   context-free syntax
     "*" 			-> Kind {cons("Star")}
@@ -245,7 +245,7 @@ exports
            ":" Type 		-> Opdecl {cons("OpDeclInj")}
 
   context-free syntax
-    Term 			-> Type {cons("ConstType")}
+    Sort			-> Type {cons("ConstType")}
     {Type "*"}+ "->" Type 	-> Type {cons("FunType")}
     "(" Type ")" 		-> Type {bracket}
 
