@@ -25,7 +25,7 @@ function pgen() {
   pkg="pgen" version="2.2" $@
 }
 function error_support() {
-  pkg="error-support" version="0.2.1" $@
+  pkg="error-support" version="0.1.1" $@
 }
 
 function all_pkgs() {
@@ -41,7 +41,7 @@ function all_pkgs() {
 }
 
 function get_dist() {
-  wget http://www.cwi.nl/projects/MetaEnv/daily-dist/${pkg}-${version}.tar.gz || exit 1
+  wget http://www.cwi.nl/projects/MetaEnv/${pkg}/${pkg}-${version}.tar.gz || exit 1
   tar zxvf ${pkg}-${version}.tar.gz || exit 1
   mv ${pkg}-${version} $pkg
 }

@@ -1,4 +1,4 @@
-AC_INIT([sdf2-bundle-dailydist],[2.1post],[sdf@cs.uu.nl])
+AC_INIT([sdf2-bundle],[2.2],[sdf@cs.uu.nl])
 AM_INIT_AUTOMAKE
 
 # set the prefix immediately to the default prefix
@@ -64,7 +64,6 @@ AB_CONFIG_PKG(asf-support,
    --with-error-support=${BUILD_ERR_SUPPORT}
 )
 AB_CONFIG_PKG(asc-support,
-   CFLAGS=${CFLAGS}
    --with-aterm=${ATERM}
    --with-toolbuslib=${BUILD_TB_LIB}
    --with-pt-support=${BUILD_PT_SUPPORT}
