@@ -236,5 +236,10 @@
       _1 KW["\\/"] _2,
 
    bracket-symbol --
-      KW["("] _1 KW[")"]
+      KW["("] _1 KW[")"],
+
+   unparameterized -- _1,
+   qlit -- _1,
+   uqlit -- _1,
+   term -- _1
 ]
