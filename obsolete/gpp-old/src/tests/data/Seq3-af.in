@@ -1,1 +1,1 @@
-seq3(Some(TCons("a",TNil)),Some(TCons("B",TNil)))
+seq3(Some(("a")),Some(("B")))

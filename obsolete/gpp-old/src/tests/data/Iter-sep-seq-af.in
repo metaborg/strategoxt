@@ -1,1 +1,1 @@
-iter-sep-seq([TCons("a",TCons("b",TCons("c",TNil))),TCons("d",TCons("e",TCons("f",TNil))),TCons("g",TCons("h",TCons("i",TNil)))])
+iter-sep-seq([("a","b","c"),("d","e","f"),("g","h","i")])

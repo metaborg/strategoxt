@@ -1,1 +1,1 @@
-seq2(TCons(Some("a"),TCons("B",TCons("c",TNil))))
+seq2((Some("a"),"B","c"))

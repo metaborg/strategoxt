@@ -1,1 +1,1 @@
-opt-seq(Some(TCons("a",TCons("B",TNil))))
+opt-seq(Some(("a","B")))
