@@ -21,3 +21,4 @@ exports
     [ABC][0-9\']* "+" -> NonTerm+
     [abc][0-9\']*     -> Term
     [xyz][0-9\']*     -> Id
+    [ij][0-9\']*      -> IntConst

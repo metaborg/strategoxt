@@ -122,6 +122,11 @@ strategies
   strid-to-term :
     "None" -> NoneTerm()
 
+  /**
+   * Tuple
+   */
+  term-to-strid :
+    Tuple(_) -> ""
 
 /**
  * Trees and terms

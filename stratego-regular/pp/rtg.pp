@@ -14,17 +14,13 @@
    Appl         -- H hs=0 [_1 "(" _2 ")"],
    Appl.2:iter-star-sep -- _1 KW[","],
 
-   List         -- H hs=0 ["{" _1 "}"],
-   Tuple        -- H hs=0 ["(" _1 ")"],
-   Tuple.1:iter-star-sep -- _1 KW[","],
-   Opt          -- H hs=0 [_1 "?"],
-
    Nonterm  -- _1,
    Plain    -- _1,
    Quoted   -- H hs=0 ["[" _1 "]"],
    Quoted.1:iter -- _1,
    Chars    -- _1,
 
+   Tuple    -- H hs=0 ["<(" _1 ")>"],
    String   -- KW["<string>"],
    Int      -- KW["<int>"],
    NilTerm  -- KW["<nil>"],

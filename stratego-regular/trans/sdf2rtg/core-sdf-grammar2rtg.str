@@ -47,6 +47,7 @@ strategies
       ; map({p:
           ?p
         ; (  listinj2prodrule
+          <+ seq2prodrule
           <+ prodfun2prodrule
           <+ var2prodrule
           <+ opt2prodrule
@@ -185,6 +186,21 @@ rules
           ; <syms2trees> syms => [ rtg |[ A ]| ]
 
 /**
+ * Sequence
+ */
+rules
+
+  /**
+   * syms -> (syms)
+   */
+  seq2prodrule :
+    prod(syms, nt, _) -> rtg |[ x -> <(i)> (t*) ]|
+      where <is-seq-symbol> nt
+          ; <get-nonterm-of> nt => x
+          ; <syms2trees> syms => t*
+          ; <length; int-to-string> t* => i
+
+/**
  * Iteration
  */
 rules
@@ -211,7 +227,7 @@ rules
    */
   listinj2prodrule :
     prod([cf(a)], cf(iter(a)), _) -> rtg |[ x1 -> <cons> (t, x2) ]|
-      where <sym2tree> a => t
+      where <sym2tree> cf(a) => t
           ; <get-nonterm-of> cf(iter(a)) => x1
           ; <get-nonterm-of> cf(iter-star(a)) => x2
 
@@ -254,7 +270,7 @@ rules
   listinj2prodrule :
     prod([cf(a)], nt@cf(iter-sep(a, sep)), _) -> rtg |[ x -> <cons> (t, x2) ]|
       where <is-empty-sym> sep
-          ; <sym2tree> a => t
+          ; <sym2tree> cf(a) => t
           ; <get-nonterm-of> nt => x
           ; <get-nonterm-of> cf(iter-star-sep(a, sep)) => x2
 
@@ -311,6 +327,10 @@ rules
      <+ new; where(<table-put> ("generated-nonterms", key, <id>))
      )
 
+  is-seq-symbol =
+      cf(is-seq-symbol)
+    + seq(id, is-list)
+     
   is-list-symbol = 
       cf(is-list-symbol)
     + iter-star-sep(id, id)
@@ -320,6 +340,7 @@ rules
 
   is-nonterm-generator = 
       is-list-symbol
+    + is-seq-symbol
     + cf(is-nonterm-generator)
     + opt(id)
     + varsym(id)
@@ -354,6 +375,7 @@ strategies
 
   sym2tree:
     cf(sym) -> <sym2tree> sym
+      where <not(is-nonterm-generator)> cf(sym)
 
   sym2tree:
     lex(sym) -> rtg |[ <string> ]|
@@ -364,10 +386,13 @@ strategies
   sym2tree:
     label(_,sym) -> <sym2tree> sym
 
+  /*
   sym2tree :
     seq(sym, syms) -> rtg |[ ( t, t* ) ]|
       where <sym2tree> sym => t
           ; <syms2trees> syms => t*
+  */
+
   sym2tree:
     sym -> rtg |[ x ]|
       where <get-nonterm-of> sym => x

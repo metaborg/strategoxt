@@ -1,3 +1,13 @@
+2004-04-29  Martin Bravenboer <martin@cs.uu.nl>
+
+	* trans/sdf2rtg/core-sdf-grammar2rtg.str: implemeted for
+	seq. Thanks to Arthur, who is fond of using less used
+	functionality ;) .
+
+	* pp/rtg.pp: pretty printing of tuple terms.
+
+	* trans/sig/stratego-rtg.str: mapping of RTG tuples to Stratego.
+	
 2004-04-21  Martin Bravenboer <martin@cs.uu.nl>
 
 	* trans/sig/core-sig-apply-param-sorts: a tool for removing
