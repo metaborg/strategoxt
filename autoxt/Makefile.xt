@@ -66,8 +66,8 @@ migrate :
 #
 #CLEANFILES = $(wildcard *.dep)
 
-bootclean-am: 
-	rm -f $(BOOTCLEANFILES)
+bootclean-am: clean-am
+	-test -z "$(BOOTCLEANFILES)" || rm -f $(BOOTCLEANFILES)
 
 bootclean : bootclean-recursive
 
@@ -152,7 +152,7 @@ install-exec-local:
           $(XTC)/bin/xtc -r $(REPOSITORY) register -l $(bindir) -V $(VERSION) \
 		-t $$file ; \
         done
-	for file in fordummy $(libexec_PROGRAMS) ; do \
+	for file in fordummy $(libexec_PROGRAMS) $(libexec_SCRIPTS) ; do \
 	 	      if [ "$$file" = "fordummy" ]; then continue; fi; \
           $(XTC)/bin/xtc -r $(REPOSITORY) register -l $(libexecdir) -V $(VERSION) \
 		-t $$file ; \
