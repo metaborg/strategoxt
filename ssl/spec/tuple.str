@@ -33,6 +33,7 @@ strategies
 
   /**
    * Applies a strategy to the switched arguments of a 2-tuple.
+   */
   flip(s) = Swap; s
 
  /**
