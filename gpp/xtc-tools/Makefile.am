@@ -6,7 +6,7 @@ bin_PROGRAMS = parse-pp-table parse-box \
        ast2text ast2abox asfix2abox abox2text abox2html abox2latex \
        gen-css-boxstyle gen-latex-boxstyle 
 
-SCFLAGS        = --main io-$* -O 2
+SCFLAGS        = --main io-$*
 STRINCLUDES    = -I $(XTC)/share/xtc
 
 EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta)
