@@ -12,11 +12,13 @@ strategies
  /**
   * Get the n-th element of a list.
   *
+  * The first element has index 1.
+  *
   * @type Int * List(a) -> a
   * @inc test-index
   */
   index =
-    at-index(?t); !t
+    (inc, id); at-index(?t); !t
 
 strategies
 
