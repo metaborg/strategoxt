@@ -61,7 +61,8 @@ rules
    * Tuple
    */
   Interpret(x|rtg) :
-    (""#(ts), Tuple(a*)) -> Tuple(<zip(x)> (ts, a*))
+    (""#(ts), Appl(TupleTerm(c), a*)) -> Appl(TupleTerm(c), <zip(x)> (ts, a*))
+      where <length> ts => c
 
   /**
    * Cons term application

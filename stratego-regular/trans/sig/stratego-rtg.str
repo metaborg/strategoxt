@@ -126,7 +126,7 @@ strategies
    * Tuple
    */
   term-to-strid :
-    Tuple(_) -> ""
+    TupleTerm(_) -> ""
 
 /**
  * Trees and terms

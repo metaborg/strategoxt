@@ -26,13 +26,17 @@ rules
  */
 rules
 
-  Implode : Appl(t, cs) -> t#(cs)
+  Implode : Appl(Term(t), cs) -> t#(cs)
+
+  Implode : Appl(ConcTerm(), [cs1, cs2]) -> Conc(cs1, cs2)
 
   Implode : Appl(ConsTerm(), [c, cs]) -> [c | cs]
 
   Implode : Appl(NilTerm(), []) -> []
 
-  Implode : Conc(cs1, cs2) -> <conc> (cs1, cs2)
+  Implode : Appl(ConsTerm(), [c, cs]) -> [c | cs]
+
+  Implode : Appl(TupleTerm(_), cs) -> ""#(cs)
 
   Implode : Term(s) -> s
 
@@ -40,12 +44,6 @@ rules
  * Built-in non-terminals
  */
 rules
-
-  Implode : Opt(ch) -> ch
-
-  Implode : List(xs) -> xs
-
-  Implode : Tuple(chs) -> ""#(chs)
 
   Implode : Int(x) -> x
 
