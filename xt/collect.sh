@@ -17,10 +17,10 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 #
-# $Id: collect.sh,v 1.5 2000/03/29 11:23:39 mdejonge Exp $
+# $Id: collect.sh,v 1.6 2000/03/29 21:11:28 mdejonge Exp $
 #
 #
-# This script will collect all required packages for the CT distribution.
+# This script will collect all required packages for the XT distribution.
 #
 # usage:
 #   collect configure.in pkg-list
