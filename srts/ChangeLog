@@ -1,3 +1,8 @@
+2002-03-31  Eelco Visser  <visser@acm.org>
+
+	* src/Makefile.am: Conditional configuration did not work very well.
+	Make sure to generate choice.h before compiling stratego.c
+
 2002-03-14  Eelco Visser  <visser@acm.org>
 
 	* Release 0.7 (fix2)

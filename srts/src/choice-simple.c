@@ -42,12 +42,6 @@ inline unsigned int allocJmpBuf()
     return nr_jmpbuf++;
 }
 
-ATerm _cpl_loaded(ATerm t)
-{
-  _fail(t);
-  return t;
-}
-
 ATerm _fail(ATerm t)
 {
   // using setjmp and longjmp
@@ -58,6 +52,12 @@ ATerm _fail(ATerm t)
   // localFail();
   //fail();
   return (ATerm)ATempty;
+}
+
+ATerm _cpl_loaded(ATerm t)
+{
+  _fail(t);
+  return t;
 }
 
 /* choice: s1 <+ s2

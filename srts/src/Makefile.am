@@ -69,7 +69,15 @@ CLEANFILES += test-choice choice.o choice.h stratego-choice.h
 stratego-choice.h: Makefile
 	cp $(srcdir)/choice-simple.h $@
 
-cpl-used: 
+choice.h: Makefile choice.c   
+	-rm -f $@
+	touch $@
+
+choice.c: Makefile
+	-rm -f $@
+	echo "#include \"choice.h\"" > $@ 
+
+cpl-used:   
 	@echo no
 
 TESTS = dummy-test
@@ -81,6 +89,8 @@ dummy-test:
 endif
 
 ##################################################################
+
+stratego.o: choice.h
 
 OPTFLAGS	= -O2
 INCLUDES 	= -I. -I$(ATERM)/include -I$(srcdir) $(CHOICEINCLUDES)
@@ -99,7 +109,7 @@ libstratego_a_SOURCES = \
 	stratego.h aterm-extension.h debug.h mprotect.h \
 	stratego-choice.h $(CHOICESOURCES)
 
-BUILT_SOURCES = stratego-choice.h
+#BUILT_SOURCES = stratego-choice.h
 
 libatermextension_a_SOURCES = \
 	aterm-extension.c debug.c mprotect.c\

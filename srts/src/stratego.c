@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 #include <aterm2.h> 
 #include "stratego.h"
 #include "mprotect.h"
+#include "choice.h"
 
 //static Symbol sym_Cons_2;
 //static Symbol sym_Nil_0;
