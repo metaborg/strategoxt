@@ -7,19 +7,19 @@ strategies
 
   RepairDefinition :
     SDef(f, xs, s) -> SDef(f, xs', s)
-    where <map(try(RepairVarDec(!"definition", !f)))> xs => xs'
+    where <map1(RepairVarDec(!"definition", !f))> xs => xs'
 
   RepairDefinition :
     SDefT(f, xs, ys, s) -> SDefT(f, xs', ys, s)
-    where <map(try(RepairVarDec(!"definition", !f)))> xs => xs'
+    where <map1(RepairVarDec(!"definition", !f))> xs => xs'
 
   RepairDefinition :
     RDef(f, xs, s) -> RDef(f, xs', s)
-    where <map(try(RepairVarDec(!"rule", !f)))> xs => xs'
+    where <map1(RepairVarDec(!"rule", !f))> xs => xs'
 
   RepairDefinition :
     RDefT(f, xs, ys, s) -> RDefT(f, xs', ys, s)
-    where <map(try(RepairVarDec(!"rule", !f)))> xs => xs'
+    where <map1(RepairVarDec(!"rule", !f))> xs => xs'
 
   RepairVarDec(def, op) :
     VarDec(x, FunType([ConstType(t1) | ts@[FunType(_,_) | _]], t2)) ->
