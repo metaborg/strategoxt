@@ -35,7 +35,7 @@
  */
 
 module parse-cs
-imports liblib strategoxt-xtc-tools parse-cs-lib
+imports liblib libxtc-lib strategoxt-xtc-tools parse-cs-lib
 strategies
 
   /**
