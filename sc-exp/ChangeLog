@@ -1,5 +1,8 @@
 2003-07-15  Eelco Visser  <visser@cs.uu.nl>
 
+	* Inlining is part of optimization; moving sources from spec/front
+	to spec/opt
+
 	* Bootstrapped the new compiler succesfully. There is still a
 	problem however with the extension. Strategy definitions that
 	explicitly declare the type of arguments, which is necessary
