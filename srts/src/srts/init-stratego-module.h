@@ -1,4 +1,4 @@
-void (* SRTS_stratego_initialize)(void);
+extern void (* SRTS_stratego_initialize)(void);
 static void (* SRTS_stratego_initialize_next)(void);
 
 static void SRTS_stratego_initialize_module()
