@@ -1,0 +1,516 @@
+definition
+module Sdf2-Syntax
+imports Kernel-Sdf-Syntax
+        Basic-Sdf-Syntax
+        Modular-Sdf-Syntax
+        Regular-Sdf-Syntax
+        Priority-Sdf-Syntax
+        CC-Sdf-Syntax
+        Sorts-Sdf-Syntax
+        Literals-Sdf-Syntax
+        Label-Sdf-Syntax
+        Restrictions-Sdf-Syntax
+        Alias-Sdf-Syntax
+        Sdf-Disamb
+        
+exports
+  sorts SDF Definition-GrammarID Module-GrammarID
+  context-free syntax
+  
+    SDF     -> Definition-GrammarID {cons("\"sdf-2.1\"")}
+    Module  ->     Module-GrammarID {cons("\"sdf-2.1\"")}
+    
+    "definition" Definition                     -> SDF
+    
+    "lexical"      "priorities" Priorities      -> Grammar
+    "context-free" "priorities" Priorities      -> Grammar
+    "lexical"      "restrictions" Restrictions  -> Grammar
+    "context-free" "restrictions" Restrictions  -> Grammar
+    
+    "<START>"                                   -> Symbol
+    "<Start>"                                   -> Symbol
+    
+  context-free priorities
+    Symbol "|" Symbol  -> Symbol >
+    Literal ":" Symbol -> Symbol
+
+
+module Sdf-Disamb
+imports Sdf2-Syntax
+exports
+  lexical syntax
+    "LAYOUT"            -> Sort      {reject}
+
+  context-free syntax
+    "aliases"           -> UQLiteral {reject}
+    "lexical"           -> UQLiteral {reject}
+    "priorities"        -> UQLiteral {reject}
+    "context-free"      -> UQLiteral {reject}
+    "definition"        -> UQLiteral {reject}
+    "syntax"            -> UQLiteral {reject}
+    "variables"         -> UQLiteral {reject}
+    "module"            -> UQLiteral {reject}
+    "exports"           -> UQLiteral {reject}
+    "hiddens"           -> UQLiteral {reject}
+    "left"              -> UQLiteral {reject}
+    "right"             -> UQLiteral {reject}
+    "assoc"             -> UQLiteral {reject}
+    "non-assoc"         -> UQLiteral {reject}
+    "bracket"           -> UQLiteral {reject}
+    "sorts"             -> UQLiteral {reject}
+    "restrictions"      -> UQLiteral {reject}
+    "constructor"       -> UQLiteral {reject}
+    "memo"              -> UQLiteral {reject}
+
+    "aliases"           -> ModuleName {reject}
+    "lexical"           -> ModuleName {reject}
+    "priorities"        -> ModuleName {reject}
+    "context-free"      -> ModuleName {reject}
+    "definition"        -> ModuleName {reject}
+    "syntax"            -> ModuleName {reject}
+    "variables"         -> ModuleName {reject}
+    "module"            -> ModuleName {reject}
+    "exports"           -> ModuleName {reject}
+    "hiddens"           -> ModuleName {reject}
+    "left"              -> ModuleName {reject}
+    "right"             -> ModuleName {reject}
+    "assoc"             -> ModuleName {reject}
+    "non-assoc"         -> ModuleName {reject}
+    "bracket"           -> ModuleName {reject}
+    "sorts"             -> ModuleName {reject}
+    "bracket"           -> ModuleName {reject}
+    "sorts"             -> ModuleName {reject}
+    "restrictions"      -> ModuleName {reject}
+    "constructor"       -> ModuleName {reject}
+    "memo"              -> ModuleName {reject}
+    Literal "(" {Symbol ","}* ")" -> Symbols {reject}
+  restrictions
+    <Sort -CF>
+    <UQLiteral -CF>
+    "aliases"
+    "lexical"
+    "priorities"
+    "context-free"
+    "definition"
+    "syntax"
+    "variables"
+    "module"
+    "exports"
+    "hiddens"
+    "left"
+    "right"
+    "assoc"
+    "non-assoc"
+    "bracket"
+    "sorts"             -/- [A-Za-z0-9]
+    <NatCon -CF>        -/- [0-9]
+    <LAYOUT?-CF>        -/- [\ \t\n\%]
+    <NumChar -CF>       -/- [0-9]
+    <ModuleName -CF>    -/- [A-Za-z0-9\_\-]
+
+module Alias-Sdf-Syntax
+imports Kernel-Sdf-Syntax
+exports
+  sorts Alias Aliases
+  context-free syntax
+    "aliases" Aliases  -> Grammar
+    Symbol "->" Symbol -> Alias
+    Alias*             -> Aliases
+
+
+
+
+
+module Restrictions-Sdf-Syntax
+imports CC-Sdf-Syntax
+exports
+  sorts Restriction Restrictions
+  context-free syntax
+    CharClass                    -> Lookahead
+    CharClass "." Lookaheads     -> Lookahead
+    Lookahead                    -> Lookaheads
+    Lookaheads "|" Lookaheads    -> Lookaheads {right}
+    "(" Lookaheads ")"           -> Lookaheads {bracket}
+    "[[" {Lookahead ","}* "]]"   -> Lookaheads
+
+    Symbols "-/-" Lookaheads     -> Restriction
+
+    Restriction*                 -> Restrictions
+    "restrictions" Restrictions  -> Grammar
+    "reject"                     -> Attribute
+    "prefer"                     -> Attribute
+    "avoid"                      -> Attribute
+  context-free priorities
+    CharClass "." Lookaheads     -> Lookahead
+  >  Lookaheads "|" Lookaheads   -> Lookaheads
+
+
+
+
+
+
+module RealCon
+imports IntCon
+exports
+  sorts OptExp RealCon
+  context-free syntax
+    "e" IntCon                -> OptExp
+                              -> OptExp
+    IntCon "." NatCon OptExp  -> RealCon
+
+
+
+module ATerms
+imports Literals IntCon RealCon
+exports
+  sorts ATerms ATermList ACon AFun ATerm Ann
+  context-free syntax
+    ATerm                     -> ATerms
+    ATerm "," ATerms          -> ATerms
+    "[" "]"                   -> ATermList
+    "[" ATerms "]"            -> ATermList
+    IntCon                    -> ACon
+    RealCon                   -> ACon
+    Literal                   -> AFun
+    ACon                      -> ATerm
+    ATermList                 -> ATerm
+    AFun                      -> ATerm
+    AFun "(" ATerms ")"       -> ATerm
+    "{" ATerms "}"            -> Ann
+    ACon                 Ann  -> ATerm
+    ATermList            Ann  -> ATerm
+    AFun                 Ann  -> ATerm
+    AFun "(" ATerms ")"  Ann  -> ATerm
+
+
+
+
+
+module Label-Sdf-Syntax
+imports Kernel-Sdf-Syntax Literals-Sdf-Syntax ATerms
+exports
+  context-free syntax
+    Literal ":" Symbol   -> Symbol
+    "cons" "(" ATerm ")" -> Attribute
+    "constructor"        -> Attribute
+    "memo"               -> Attribute
+
+
+
+
+
+module Literals
+imports Layout
+exports
+  sorts Literal
+  lexical syntax
+    "\\" ~ []                  -> AlphaNumericalEscChar
+    "\\" [01] [0-9] [0-9]      -> DecimalEscChar
+    "\\" "2" [0-4] [0-9]       -> DecimalEscChar
+    "\\" "2" "5" [0-5]         -> DecimalEscChar
+    AlphaNumericalEscChar      -> EscChar
+    DecimalEscChar             -> EscChar
+    ~ [\0-\31\"\\] \/ [\t\n]   -> L-Char
+    EscChar                    -> L-Char
+    "\"" L-Char* "\""          -> Literal
+  lexical restrictions
+    AlphaNumericalEscChar     -/- [0-9]
+
+module Literals-Sdf-Syntax
+imports Kernel-Sdf-Syntax Literals
+exports
+  sorts UQLiteral
+  lexical syntax
+    [a-z]                          -> UQLiteral
+    [a-z][A-Za-z0-9\-]*[A-Za-z0-9] -> UQLiteral
+  context-free syntax
+    UQLiteral                                            -> Literal
+    Literal                                              -> Symbol
+    Literal "(" {Symbol ","}* ")" "->" Symbol Attributes -> Production
+
+
+
+
+
+module Sorts-Sdf-Syntax
+imports Kernel-Sdf-Syntax
+exports
+  sorts Sort
+  lexical syntax
+    [A-Z]                          -> Sort
+    [A-Z][A-Za-z0-9\-]*[A-Za-z0-9] -> Sort
+  context-free syntax
+    Sort             -> Symbol
+    "sorts" Symbols  -> Grammar
+
+
+
+
+
+module Character-Syntax
+imports Layout
+exports
+  sorts Character NumChar ShortChar
+  lexical syntax
+    [\\] [0-9]+                    -> NumChar
+    [a-zA-Z0-9]                    -> ShortChar
+    [\\] ~[\0-\31A-Za-mo-su-z0-9]  -> ShortChar
+  context-free syntax
+    NumChar   -> Character
+    ShortChar -> Character
+    "\\TOP"   -> Character
+    "\\EOF"   -> Character
+
+
+
+
+
+module Character-Class-Syntax
+imports Character-Syntax
+exports
+  %%% sorts CharRange CharRanges OptCharRanges CharClass
+  context-free syntax
+    Character                 -> CharRange
+    Character "-" Character   -> CharRange           
+
+    CharRange                 -> CharRanges
+    CharRanges CharRanges     -> CharRanges {right,memo}
+    "(" CharRanges ")"        -> CharRanges {bracket}
+                              -> OptCharRanges
+    CharRanges                -> OptCharRanges
+    "[" OptCharRanges "]"     -> CharClass          
+    "~" CharClass             -> CharClass          
+    CharClass "/" CharClass   -> CharClass {left,memo}   
+    CharClass "/\\" CharClass -> CharClass {left,memo}   
+    CharClass "\\/" CharClass -> CharClass {left}   
+   "(" CharClass ")"          -> CharClass {bracket}
+  context-free priorities
+    "~" CharClass             -> CharClass >
+    CharClass "/" CharClass   -> CharClass >
+    CharClass "/\\" CharClass -> CharClass >
+    CharClass "\\/" CharClass -> CharClass
+
+
+
+
+
+module CC-Sdf-Syntax
+imports Character-Class-Syntax Kernel-Sdf-Syntax
+exports
+  context-free syntax
+    CharClass -> Symbol
+
+
+
+
+
+module Priority-Sdf-Syntax
+imports Kernel-Sdf-Syntax
+exports
+  sorts Associativity Group Priority Priorities
+  context-free syntax
+    "left"                                -> Associativity
+    "right"                               -> Associativity
+    "non-assoc"                           -> Associativity
+    "assoc"                               -> Associativity
+    "bracket"                             -> Attribute
+    Associativity                         -> Attribute
+    Production                            -> Group
+    "{" Productions "}"                   -> Group
+    "{" Associativity ":" Productions "}" -> Group
+    {Group ">"}+                          -> Priority
+    Group Associativity Group             -> Priority
+    {Priority  ","}*                      -> Priorities
+    "priorities"  Priorities              -> Grammar
+
+
+
+
+
+module IntCon
+imports Layout
+exports
+  sorts NatCon IntCon
+  lexical syntax
+    [0-9]+ -> NatCon
+  context-free syntax
+    NatCon     -> IntCon
+    "+" NatCon -> IntCon
+    "-" NatCon -> IntCon
+
+
+
+
+
+module Regular-Sdf-Syntax
+imports Kernel-Sdf-Syntax IntCon
+exports
+  context-free syntax
+    "(" ")"                          -> Symbol
+    "(" Symbol Symbol+ ")"           -> Symbol
+    Symbol "?"                       -> Symbol
+    Symbol "+"                       -> Symbol
+    Symbol "*"                       -> Symbol
+    "{" Symbol Symbol "}" "+"        -> Symbol
+    "{" Symbol Symbol "}" "*"        -> Symbol
+    Symbol  NatCon "+"               -> Symbol
+    "{" Symbol Symbol "}" NatCon "+" -> Symbol
+    "Set" "[" Symbol "]"             -> Symbol
+    Symbol "#" Symbol                -> Symbol {right}
+    "(" Symbols "=>" Symbol ")"      -> Symbol
+    Symbol "|" Symbol                -> Symbol {right}
+    "<<" Symbols ">>"                -> Symbol
+  context-free priorities
+    {Symbol "?"               -> Symbol
+    Symbol "*"                -> Symbol
+    Symbol "+"                -> Symbol
+    Symbol NatCon "+"         -> Symbol} >
+    Symbol "#" Symbol         -> Symbol  >
+    Symbol "|" Symbol         -> Symbol
+
+
+
+
+
+module Renaming-Sdf-Syntax
+imports Kernel-Sdf-Syntax
+exports
+  sorts Renaming Renamings
+  context-free syntax
+    "[" Renaming* "]"     -> Renamings
+    Symbol     "=>" Symbol      -> Renaming
+    Production "=>" Production  -> Renaming
+
+
+
+
+
+module Modular-Sdf-Syntax
+imports Kernel-Sdf-Syntax Renaming-Sdf-Syntax
+exports
+  sorts ModuleId ModuleName Import Imports
+        Section Sections Module Definition ImpSection
+  lexical syntax
+    [A-Za-z0-9\_\-]+        -> ModuleWord
+    ModuleWord              -> ModuleId
+    "/" ModuleId            -> ModuleId
+    ModuleWord "/" ModuleId -> ModuleId
+  context-free syntax
+    Module*                                  -> Definition
+    "module" ModuleName ImpSection* Sections -> Module
+    "exports" Grammar            -> Section
+    "hiddens" Grammar            -> Section
+    Section*                     -> Sections
+    ModuleId                     -> ModuleName
+    ModuleId "[" Symbols "]"     -> ModuleName
+    "id" "(" ModuleName ")"      -> Attribute
+    "imports" Imports            -> ImpSection
+    ImpSection                   -> Grammar
+    Import*                      -> Imports
+    ModuleName                   -> Import
+    ModuleName Renamings         -> Import
+    "(" Import ")"               -> Import {bracket}
+
+module Basic-Sdf-Syntax
+imports Kernel-Sdf-Syntax
+exports
+  context-free syntax
+    "lexical" "syntax"      Productions -> Grammar
+    "context-free" "syntax" Productions -> Grammar
+    "variables"             Productions -> Grammar
+    "lexical" "variables"   Productions -> Grammar
+
+    "<" Symbol "-CF"  ">"               -> Symbol
+    "<" Symbol "-LEX" ">"               -> Symbol
+    "<" Symbol "-VAR" ">"               -> Symbol
+
+    "LAYOUT"                            -> Symbol
+
+
+
+
+
+module Grammar-Syntax
+imports Layout
+exports
+  sorts Grammar
+  context-free syntax
+    "(/)"                 -> Grammar
+    Grammar Grammar       -> Grammar {assoc}
+    "(" Grammar ")"       -> Grammar {bracket}
+
+module Layout
+exports
+  lexical syntax
+    [\ \t\n]           -> LAYOUT
+    "%%" ~[\n]* [\n]   -> LAYOUT
+    "%" ~[\n\%]+ "%"   -> LAYOUT
+    "default-"         -> TagId
+  context-free syntax
+                       -> TagId
+
+
+
+
+
+module Symbols
+imports Layout
+exports
+  sorts Symbol Symbols
+  context-free syntax
+    "(" Symbol ")"       -> Symbol {bracket}
+    Symbol*              -> Symbols
+
+
+
+
+
+module Kernel-Sdf-Syntax
+imports Symbols Grammar-Syntax
+exports
+  sorts Attribute Attributes Production Productions
+  context-free syntax
+    "{" {Attribute ","}* "}"       -> Attributes
+                                   -> Attributes
+    Symbols "->" Symbol Attributes -> Production
+    Production*                    -> Productions
+    "syntax" Productions           -> Grammar
+
+
+
+
+
+module Sdf2-Syntax
+imports Kernel-Sdf-Syntax
+        Basic-Sdf-Syntax
+        Modular-Sdf-Syntax
+        Regular-Sdf-Syntax
+        Priority-Sdf-Syntax
+        CC-Sdf-Syntax
+        Sorts-Sdf-Syntax
+        Literals-Sdf-Syntax
+        Label-Sdf-Syntax
+        Restrictions-Sdf-Syntax
+        Alias-Sdf-Syntax
+        Sdf-Disamb
+        
+exports
+  sorts SDF Definition-GrammarID Module-GrammarID
+  context-free syntax
+  
+    SDF     -> Definition-GrammarID {cons("\"sdf-2.1\"")}
+    Module  ->     Module-GrammarID {cons("\"sdf-2.1\"")}
+    
+    "definition" Definition                     -> SDF
+    
+    "lexical"      "priorities" Priorities      -> Grammar
+    "context-free" "priorities" Priorities      -> Grammar
+    "lexical"      "restrictions" Restrictions  -> Grammar
+    "context-free" "restrictions" Restrictions  -> Grammar
+    
+    "<START>"                                   -> Symbol
+    "<Start>"                                   -> Symbol
+    
+  context-free priorities
+    Symbol "|" Symbol  -> Symbol >
+    Literal ":" Symbol -> Symbol

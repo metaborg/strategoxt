@@ -1,0 +1,3 @@
+module Sdf2-Syntax
+imports Kernel-Sdf-Syntax Basic-Sdf-Syntax Modular-Sdf-Syntax Regular-Sdf-Syntax Priority-Sdf-Syntax CC-Sdf-Syntax Sorts-Sdf-Syntax Literals-Sdf-Syntax Label-Sdf-Syntax Restrictions-Sdf-Syntax Alias-Sdf-Syntax Sdf-Disamb
+signature
