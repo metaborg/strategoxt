@@ -30,7 +30,7 @@ AC_ARG_ENABLE([strc-core],
 )
 AC_SUBST([CORE_ENABLED])
 
-PKGS="autoxt srts xtc sdf-import stratego-front asfix-tools \
+PKGS="autoxt srts xtc stratego-front asfix-tools \
    strc gpp c-tools ssl stratego-lib concrete-syntax xml-front \
    aterm-front sdf-front dot-tools graph-tools sdf-tools \
    aterm-tools stratego-regular xtar \
@@ -54,6 +54,7 @@ BUILD_SRTS="$BUILD_SRTS_DEST$prefix"
 INSTALL_XTC="$INSTALL_XTC_DEST$prefix"
 AC_SUBST([BUILD_SRTS_DEST])
 AC_SUBST([INSTALL_XTC_DEST])
+AC_SUBST([INSTALL_XTC])
 
 XT_PKG_ATERM
 XT_PKG_SDF
@@ -99,21 +100,6 @@ AB_CONFIG_PKG(xtc,
    --with-pgen=${PGEN}
    --with-strategoxt=${STRATEGOXT}
    --with-srts=${BUILD_SRTS}
-   --with-xtc=${INSTALL_XTC}
-   --with-repository=${REPOSITORY}
-)
-
-# sdf-import registers the location of the installed SRTS,
-# therefore we configure with this SRTS and not BUILD_SRTS
-
-AB_CONFIG_PKG(sdf-import,
-   --with-aterm=${ATERM}
-   --with-sglr=${SGLR}
-   --with-pgen=${PGEN}
-   --with-asf-library=${ASF_LIBRARY}
-   --with-pt-support=${PT_SUPPORT}
-   --with-strategoxt=${STRATEGOXT}
-   --with-srts=${prefix}  
    --with-xtc=${INSTALL_XTC}
    --with-repository=${REPOSITORY}
 )

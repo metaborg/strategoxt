@@ -71,3 +71,21 @@ source-tree.txt :
 		| grep -v data \
 		| grep -v config \
 		> $@
+
+install-data-local: install-xtc
+
+install-xtc: 
+	mkdir -p `dirname $(DESTDIR)$(REPOSITORY)`
+	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t sglr -l $(SGLR)/bin -V 3.11
+	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t sdf2table -l $(PGEN)/bin -V 2.1
+	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t Sdf2.baf -l $(PGEN)/share/pgen -V 2.1
+	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t implodePT -l $(PT_SUPPORT)/bin -V 1.1
+	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t unparsePT -l $(PT_SUPPORT)/bin -V 1.1
+	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t addPosInfo -l $(PT_SUPPORT)/bin -V 1.1
+	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t baffle -l $(ATERM)/bin -V X
+	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t ATERM -l $(ATERM) -V X
+	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t SRTS -l $(prefix) -V X
+	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t liblib.rtree -l $(prefix)/share/srts -V $(VERSION)
+	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t libliblib.la -l $(prefix)/lib/srts -V $(VERSION)
+
+
