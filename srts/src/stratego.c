@@ -25,12 +25,22 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 #include <setjmp.h>
 #include <assert.h>
 #include <aterm2.h> 
-#include <choice.h> 
+// #include <choice.h> 
 #include "stratego.h"
 
-extern Symbol sym_Cons_2;
-extern Symbol sym_Nil_0;
-extern Symbol sym_Pair_2;
+static Symbol sym_Cons_2;
+static Symbol sym_Nil_0;
+static Symbol sym_Pair_2;
+
+void init_constructors_srts()
+{
+  sym_Cons_2 = ATmakeSymbol("Cons", 2, ATfalse);
+  ATprotectSymbol(sym_Cons_2);     
+  sym_Nil_0 = ATmakeSymbol("Nil", 0, ATfalse);
+  ATprotectSymbol(sym_Nil_0); 
+  sym_Pair_2 = ATmakeSymbol("Pair", 2, ATfalse);
+  ATprotectSymbol(sym_Pair_2);                 
+}
 
 ATerm stratego__main(ATerm);
 void init_constructors(void);
@@ -213,11 +223,12 @@ ATerm main_0(ATerm);
 
 int main(int argc, char *argv[])
 {
-  long bp;
+  //long bp;
   ATerm in_term, out_term; 
   int i; 
-  choice_init(&bp); 
+  // choice_init(&bp); 
   ATinit(argc, argv, &in_term);
+  init_constructors_srts();
   init_constructors();
 
   in_term = (ATerm)ATmakeAppl0(sym_Nil_0);

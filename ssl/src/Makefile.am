@@ -22,6 +22,8 @@ DEBUGFLAGS	= -g
 OPTFLAGS	= -O4
 INCLUDES 	= -I$(STRATEGORTS)/include -I$(ATERM)/include -I$(CPL)/include 
 
+EXTRA_DIST = make_rules.in
+
 # TARGETS
 
 lib_LIBRARIES = \

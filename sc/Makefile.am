@@ -16,3 +16,5 @@
 # 02111-1307, USA.
 
 SUBDIRS = spec
+
+EXTRA_DIST = README.in $(wilcard *.pkg) stdconfig reconf

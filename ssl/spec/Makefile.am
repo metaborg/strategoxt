@@ -23,7 +23,7 @@ pkgdata_DATA = $(wildcard *.r)
 
 TESTS = $(subst .r,,$(wildcard *-test.r))
 
-EXTRA_DIST = $(pkgdata_DATA)
+EXTRA_DIST = $(pkgdata_DATA) make-rules
 
 bootdir	= $(top_srcdir)/src/slib/spec
 

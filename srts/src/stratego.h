@@ -4,7 +4,7 @@
 #include <setjmp.h>
 #include <assert.h>
 #include <aterm2.h>
-#include <choice.h>
+// #include <choice.h>
 #include "aterm-extension.h"
 
 ATerm _id(ATerm);

@@ -1,0 +1,17 @@
+package 
+identification
+   name=sc-boot
+   version=0.6a
+   location=http://www.stratego-language.org/ftp
+   info=http://www.stratego-language.org/
+   description='The bootstrapped C sources of the Stratego Compiler'
+
+
+   keywords=transformation, programming language, compiler, stratego
+interface
+
+requires
+  aterm 1.6.3 with gcc
+  ssl	0.6a
+  srts	0.6a
+
