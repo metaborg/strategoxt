@@ -21,15 +21,15 @@ strategolib = \
 
 pkgdocdatadir  = $(pkgdatadir)/doc
 
-pkgdata_DATA = $(subst .str,.rtree,$(wildcard *.str))
+pkgdata_DATA = $(wildcard *.str) $(subst .str,.rtree,$(wildcard *.str))
 
 nobase_pkgdata_DATA = $(strategolib:.str=.rtree)
-nobase_pkgdocdata_DATA = $(strategolib)
+nobase_pkgdocdata_DATA = $(wildcard *.str) $(strategolib)
 
 #pkgdata_DATA   = $(subst .str,.rtree,$(wildcard *.str))
 #pkgdocdata_DATA= $(wildcard *.str)
 
-EXTRA_DIST     = $(strategolib) $(pkgdata_DATA) $(nobase_pkgdata_DATA)
+EXTRA_DIST     = $(strategolib) $(pkgdata_DATA) $(nobase_pkgdata_DATA) $(nobase_pkgdocdata_DATA)
 BOOTCLEANFILES = $(pkgdata_DATA) $(nobase_pkgdata_DATA)
 
 #include $(wildcard *.dep)
