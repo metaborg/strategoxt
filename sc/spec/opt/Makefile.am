@@ -27,7 +27,7 @@ TESTS = build-match-laws-test
 
 CLEANFILES = fusion fusion.c *.dep
 
-EXTRA_DIST = $(wildcard *.r) 
+EXTRA_DIST = $(wildcard *.r) $(wildcard *.cr) $(wildcard *.syn)
 
 BOOTSOURCES = fusion.c
 

@@ -6,7 +6,7 @@ rules
   // This set of rules is generally applicable
 
   IntroduceApp :
-    [[ !t; s ]] -> [[ !<s> t ]]
+    [[ !t; s ]] -> [[ !<s> t  ]]
 
   ApptoApp :
     [[ <s1> <s2> t : T ]] -> [[ <s2; s1> t : T ]]
@@ -54,6 +54,6 @@ rules
   // Always valid?
  
   BottomupOverConstructor :     
-    [[ <bottomup_1(s)> c(ts1) : T ]] -> [[ <s> c(ts2) : T ]]
-    where <map(\ t -> [[ <bottomup_1(s)> t : T ]] \ )> ts1 => ts2
+    [[ <bottomup_1(s)> c(ts1) :T]] -> [[ <s> c(ts2) :T]]
+    where <map(\ t -> [[ <bottomup_1(s)> t :T]] \ )> ts1 => ts2
 
