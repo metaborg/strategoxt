@@ -127,6 +127,10 @@ LIBRARY
    - postorder-collect(s) selects all subterms for which s 
      succeeds and returns them in post-order.
 
+ * list-filter.r:
+   - partition(s): partitions list in a list with elements for
+     which s succeeds, and one for which s fails
+
  * integers.r: 
    - Operator log2 takes the base 2 logarithm. 
    - Constructor Infinite represents infinity, 
@@ -136,6 +140,23 @@ LIBRARY
    - Strategy bottomup-para(s) implements paramorphism, 
      which applies s at pair of orignal term and term in 
      which the subterms have been transformed.
+
+ * getopt.r:
+   - This module parses command line arguments and build an option table
+     for convenient retrieval. Non-option arguments are returned to
+     the caller. Traditional Unix / GNU option syntax is supported.
+     (Otto Skrove Bagge)
+
+ * connect.r:
+   - Inter process communication for Stratego programs. (Hedzer Westra)
+
+ * annotations.r:
+   - Support for annotations
+
+ * conditional.r:
+   - restore(s, rest): call restoring operation rest when s fails
+     and then still fail
+   - restore-always(s, rest): also call rest when s succeeds
 
 ------------------------------------------------------------------------------
 
