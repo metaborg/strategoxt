@@ -9,6 +9,3 @@ EXTRA_DIST	= $(pkgdata_DATA) $(wildcard *.str) \
 		  $(wildcard *.meta) $(pkgdata_DATA)
 CLEANFILES	= $(wildcard *.dep)
 BOOTCLEANFILES	= xtc.c 
-
-xtc.o		: xtc-conf.h
-

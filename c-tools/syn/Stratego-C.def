@@ -21,6 +21,7 @@ exports
     Id					  -> SVar {cons("SVar")}
     "let" Def* "in" Strategy 		  -> Strategy {cons("Let")}
     SVar "(" {Strategy ","}* ")" 	  -> Strategy {cons("Call")}
+    SVar "(" {Term ","}* "|" {Strategy ","}* ")" -> Strategy {cons("CallT")}
 
 
     %% Match and build
@@ -54,7 +55,10 @@ exports
 
     %% Primitives
 
-    "prim" "(" String "," {Term ","}* ")" -> Strategy {cons("Prim")}
+    "prim" "(" String ")" 		 	 -> Strategy {cons("PrimNoArgs")}
+    "prim" "(" String "," {Term ","}* ")"	 -> Strategy {cons("Prim")}
+    "prim" "(" String "," {Term ","}* "|" {Strategy ","}*")" 	-> Strategy {cons("PrimTS")}
+    "prim" "(" String "|" {Strategy ","}*")" 	-> Strategy {cons("PrimS")}
 
 
     %% Traversal
@@ -91,8 +95,6 @@ exports
 %%    Strategy "#" "(" Strategy ")" 	  -> Strategy {cons("ExplodeCong")}
     Strategy "#" StrategyParen	  	  -> Strategy {cons("ExplodeCong")}
 
-
-
   %% Syntactic sugar sugar
 
   context-free syntax
@@ -107,7 +109,7 @@ exports
 
     SVar  		  		  -> Strategy {cons("CallNoArgs")}
     "\\" Rule "\\" 			  -> Strategy {cons("LRule")}
-    "prim" "(" String ")" 		  -> Strategy {cons("PrimNoArgs")}
+    "(" Rule ")" 			  -> Strategy {cons("SRule")}
     Strategy "+" Strategy 		  -> Strategy {cons("Choice"),right} 
     Strategy "+>" Strategy 		  -> Strategy {cons("RChoice"),right}
     Strategy "++" Strategy 		  -> Strategy {cons("GChoice"),right}
@@ -161,7 +163,7 @@ exports
 
   context-free syntax
     Id "::" StratRule 				-> RuleDef {cons("SRDefNoArgs")}
-    Id "(" {Typedid ","}* ")" "::" StratRule 	-> RuleDef {cons("SRDef")} 
+    Id "(" {Typedid ","}* ")" "::" StratRule 	-> RuleDef {cons("SRDef")}
 
   context-free syntax
     Term "->" Term 		    		-> Rule {cons("RuleNoCond")}
@@ -209,6 +211,7 @@ exports
 
   context-free priorities
     Term "#" "(" Term ")" 	 -> Term {cons("Explode")}
+  > Term "{" {Term ","}* "}"	 -> Term {cons("Anno")}
   > Var "@" Term 		 -> Term {cons("As")}
 
 module Stratego-Signatures
@@ -290,8 +293,8 @@ exports
     "signature" 	-> ModName {reject}
     "strategies" 	-> ModName {reject}
   lexical syntax
-    [a-zA-Z\'\.\-\_] [a-zA-Z0-9\'\.\-\_]*     -> Id
-    [a-zA-Z\'\.\-\_] [a-zA-Z0-9\'\.\-\_]* "*" -> LId
+    [a-zA-Z\'\-\_] [a-zA-Z0-9\'\-\_]*     -> Id
+    [a-zA-Z\'\-\_] [a-zA-Z0-9\'\-\_]* "*" -> LId
   lexical restrictions
     Id -/- [a-zA-Z0-9\'\.\-\_\*]
     LId -/- [a-zA-Z0-9\'\.\-\_]
@@ -386,8 +389,8 @@ imports
 	Real 		=> StrategoReal
 	String 		=> StrategoString
 	StrChar 	=> StrategoStrChar	
-  Char => StrategoChar
-  CharChar => StrategoCharChar
+        Char 		=> StrategoChar
+        CharChar 	=> StrategoCharChar
 	Module 		=> StrategoModule
 	Script 		=> StrategoScript
 	Command 	=> StrategoCommand
