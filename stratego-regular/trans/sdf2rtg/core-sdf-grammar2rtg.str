@@ -23,7 +23,12 @@ strategies
   ; where(
       collect(?syntax(_))
     ; map(grammar2prodrules <+ log(|Error(), "Rewriting syntax section failed"); fail)
-    ; concat => prods
+    ; concat
+    ; if ?[] then
+        log(|Error(), "No production rules in RTG. Did you specify the right main module?"); fail
+      else
+        ?prods
+      end
     )
 
     /**
