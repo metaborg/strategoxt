@@ -18,12 +18,12 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 dnl 02111-1307, USA.
 
-dnl $Id: configure.in,v 1.20 2000/10/02 07:30:11 mdejonge Exp $
+dnl $Id: configure.in,v 1.21 2000/10/04 14:00:55 mdejonge Exp $
 
 AC_INIT(Makefile.in)
 AM_INIT_AUTOMAKE(xt,0.4beta)
 
-AC_REVISION($Id: configure.in,v 1.20 2000/10/02 07:30:11 mdejonge Exp $)
+AC_REVISION($Id: configure.in,v 1.21 2000/10/04 14:00:55 mdejonge Exp $)
 
 AC_ARG_WITH(pkginstalldir,
    [  --with-pkginstalldir    Specify location where softwere gets installed 
@@ -41,6 +41,7 @@ AC_OUTPUT(
         pre-checks/Makefile \
         integration-tests/Makefile \
 	www/Makefile \
+        www/xt-download/Makefile
 )
 
 dnl Configuration of sub-pacakages

@@ -1,3 +1,6 @@
+2000-10-04 Merijn de Jonge <mdejonge@cwi.nl>
+        * added stuff for the generation of the xt download page
+
 2000-09-28 Merijn de Jonge <mdejonge@cwi.nl>
         * README, COPYING, NEWS, and AUTHORS files are installed in ${prefix}
           during "make pkg"
