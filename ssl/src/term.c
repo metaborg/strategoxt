@@ -53,7 +53,6 @@ ATerm SSL_explode_term(ATerm t)
   case AT_APPL :
     {
       Symbol sym;
-      char*  s;
       ATerm t1;
       sym = ATgetSymbol(t);
       if(ATisQuoted(sym))
