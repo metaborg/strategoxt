@@ -6,4 +6,4 @@ autoconf
 #autoheader
 automake -a
 
-touch pp/C.def pp/*.pp pp/*.pp.af sig/*.rtree
+touch pp/C.def pp/*.pp pp/*.pp.af sig/*.str sig/*.rtree
