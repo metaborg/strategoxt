@@ -23,7 +23,7 @@ test Labeled scope with inline term application
   "{| A.<s> t : s |}" succeeds
 
 test Add a label to a scope
-  "{| A :+ f |}" succeeds
+  "rules(A + f )" succeeds
 
 test Generate a dynamic rule
   "rules( A : p -> p )" succeeds
@@ -36,6 +36,15 @@ test Generate a dynamic rule in the scope of some label
 
 test Generate a dynamic rule in the scope of some label
   "rules( A(s|t).f : p -> p )" succeeds
+
+test Generate a dynamic rule in the current scope and label it
+  "rules( A+f : p -> p )" succeeds
+
+test Generate a dynamic rule in the current scope and label it
+  "rules( A(s)+f : p -> p )" succeeds
+
+test Generate a dynamic rule in the current scope and label it
+  "rules( A(s|t)+f : p -> p )" succeeds
 
 test Extend the set of dynamic rules
   "rules( A :+ p -> p )" succeeds
