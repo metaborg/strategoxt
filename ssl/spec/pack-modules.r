@@ -1,27 +1,6 @@
 \literate[pack-modules]
 
-	\begin{abstract}
-
-	\end{abstract}
-
-% Copyright (C) 2000 Eelco Visser <visser@acm.org>
-% 
-% This program is free software; you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation; either version 2, or (at your option)
-% any later version.
-% 
-% This program is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-% 
-% You should have received a copy of the GNU General Public License
-% along with this program; if not, write to the Free Software
-% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-% 02111-1307, USA.
-
-CHANGES (by Joost Visser)
+  CHANGES (by Joost Visser)
   * Strategy pack-modules(pack, dep-base) now takes two additonal 
     options:
       -dep target
@@ -38,7 +17,7 @@ CHANGES (by Joost Visser)
 
 \begin{code}
 module pack-modules
-imports options pack-graph dynamic-rules
+imports options pack-graph dynamic-rules config verbose
 signature
   constructors
     Include: File -> Include
@@ -81,8 +60,7 @@ strategies
                       dep-base)) => depfile;
         <create-dep-file(!depfile)> (outfile, files)
     );
-    dtime => time;
-    <printnl>(stderr, [prog, " (", time, " secs)"]);
+    if-verbose1(<printnl>(stderr, [prog, " (", <run-time>, " secs)"]));
     <exit> 0
 
   pack-modules-usage =
@@ -108,3 +86,20 @@ signature
     NoDependency :         Option
     Dependency : String -> Option
 \end{code}
+
+% Copyright (C) 2000,2002 Eelco Visser <visser@acm.org>
+% 
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+% 
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% 
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.

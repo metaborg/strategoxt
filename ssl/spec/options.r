@@ -1,11 +1,11 @@
 \literate[options]
 \begin{code}
 module options
-imports io parse-options config time
+imports io parse-options config time verbose
 signature
   constructors
     Silent      : Option
-    Verbose     : Option
+    Verbose     : Int -> Option
     Version     : Option
     Input       : String -> Option
     Output      : String -> Option
@@ -24,7 +24,7 @@ signature
 strategies
 
   iowrap(strat) = 
-	iowrap((id, strat), fail)
+    iowrap((id, strat), fail)
 
   iowrapO(strat, extra-options) =
     obsolete(!"iowrapO/2: use iowrap/2");
@@ -33,13 +33,18 @@ strategies
   iowrap(strat, extra-options) = 
     iowrap(strat, extra-options, default-usage)
 
+  iowrap(strat, extra-options, usage) = 
+    iowrap(strat, extra-options, usage, 
+	   if-verbose2(where(<printnl>(stderr, [<get-config> "program"]))))
+
   iowrapO(strat, extra-options, usage) =
     obsolete(!"iowrapO/3: use iowrap/3");
     iowrap(strat, extra-options, usage)
 
-  iowrap(strat, extra-options, usage) =
+  iowrap(strat, extra-options, usage, announce) =
     parse-options(extra-options <+ io-options); 
     store-options;
+    announce;
     (
         need-help(usage)
      <+ 
@@ -98,29 +103,25 @@ strategies
 strategies
 
   io-options =
-	Option("-S"+"--silent",       
-		where(<set-config> ("-S",())); !Silent(),          
-		!"-S|--silent      Silent execution")
-
-	+ Option("--verbose",         
-		where(<set-config> ("--verbose",())); !Verbose(),         
-		!"--verbose        Verbose execution")
-
-	+ Option("-v"+"--version",    
-		where(<set-config> ("-v",())); !Version(),         
-		!"-v|--version     Display prgram's version")
-
-	+ ArgOption("@version",       
-		where(<set-config> ("version",<id>)); !DeclVersion(<id>), 
-		!"@version         Unknown" )
-
-	+ ArgOption("-i" + "--input", 
+	  ArgOption("-i" + "--input", 
 		where(<set-config> ("-i",<id>)); !Input(<id>),
 		!"-i f|--input f   Read input from f")
 
 	+ ArgOption("-o" + "--output",  
 		where(<set-config> ("-o",<id>)); !Output(<id>),      
 		!"-o f|--output f  Write output to f" )
+
+	+ Option("-S"+"--silent",       
+		where(<set-config> ("--verbose",0)); !Verbose(0),          
+		!"-S|--silent      Silent execution (same as --verbose 0)")
+
+	+ ArgOption("--verbose",         
+		where(<set-config> ("--verbose",<string-to-int>)); !Verbose(<id>),         
+		!"--verbose i      Verbosity level i (default 1)")
+
+	+ Option("-v"+"--version",    
+		where(<set-config> ("-v",())); !Version(),         
+		!"-v|--version     Display prgram's version")
 
 	+ Option("-b",                
 		where(<set-config> ("-b",())); !Binary(),          
@@ -175,12 +176,20 @@ strategies
 	  <+ (id, WriteToTextFile))
 
   report-success =
+    if-verbose1(
+      <printnl>(stderr,
+		[<get-config> "program", " (", <run-time>, " secs)"])
+    )
+    ; <exit> 0
+
+/*
    	 where(try((not(option-defined(?Silent())), id);
 		   (option-defined(?Runtime(runtime)), id);
 		   (option-defined(?Program(prog)), id);
 		   <printnl> (stderr,
 			      [prog, " (", <run-time>, " secs)"])));
 	 <exit> 0
+*/
 
   report-failure =
        	<printnl> (stderr, ["rewriting failed"]); 

@@ -34,13 +34,15 @@ strategies //primitives
   // call prog with list of strings args
 
   call = 
-    ?(prog,args); prim("SSL_call",prog,args)
+    ?(prog,args)
+    ; prim("SSL_call",prog,args)
 
   // call-noisy :: String * List(String) -> String * List(String)
   // call prog with list of strings args and print information
 
   call-noisy = 
-    ?(prog,args); prim("SSL_call_noisy",prog,args)
+    ?(prog,args)
+    ; prim("SSL_call_noisy",prog,args)
 
   // get-pid :: a -> Int
   // return process identifier of current process

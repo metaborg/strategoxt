@@ -49,7 +49,7 @@ strategies
 
   io-options =
 	Option("-S"+"--silent",       !Silent(),          !"-S|--silent      Silent execution")
-	+ Option("--verbose",         !Verbose(),         !"--verbose        Verbose execution")
+	+ ArgOption("--verbose",      !Verbose(<id>),     !"--verbose        Verbose execution")
 	+ Option("-v"+"--version",    !Version(),         !"-v|--version     Display prgram's version")
 	+ ArgOption("@version",       !DeclVersion(<id>), !"@version         Unknown" )
 	+ ArgOption("-i" + "--input", !Input(<id>),       !"-i f|--input f   Read input from f")

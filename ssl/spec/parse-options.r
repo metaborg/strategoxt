@@ -90,7 +90,7 @@ strategies
   // specified by the user.
   parse-options'(s)=
         where(try(<s>"register-usage-info"));
-	[\x -> Program(x)\ |
+	[where(<set-config> ("program", <id>)); !Program(<id>) |
 	     rec x(([] + s; [id|x]) <+ UndefinedOption)]
 
   // Register useage info 's' by storing 's' in the table "usage-table".

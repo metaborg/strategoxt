@@ -69,6 +69,17 @@ strategies
                              , " system ", <self-children-sys-time; ticks-to-seconds>
 			     , "\n"])> (<times>, start)
       )
+
+  profile'(msg, s) =
+    where(times => start)
+    ; s
+    ; where(
+	!(<times>, start)
+        ; diff-times
+        ; ![" user ",    <self-children-user-time; ticks-to-seconds>
+           , " system ", <self-children-sys-time;  ticks-to-seconds>]
+        ; msg
+      )
 \end{code}
 
 % Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
