@@ -8,7 +8,7 @@ imports
 strategies
 
   main-xml-doc2xml-info =
-      iowrap( xml-doc2xml-info )
+      io-wrap( xml-doc2xml-info )
 
   /**
    * @type  xml:Document -> xml-info:Document

@@ -5,7 +5,7 @@ imports liblib concrete-syntax
 strategies
 
   main-xml-info2xml-doc =
-      iowrap( xml-info2xml-doc )
+      io-wrap( xml-info2xml-doc )
 
   xml-info2xml-doc =
       xml-bottomup(
