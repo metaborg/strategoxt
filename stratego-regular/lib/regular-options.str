@@ -5,35 +5,6 @@ module regular-options
 imports logging
 
 /**
- * rhg-nf options
- */
-strategies
-
-  rhg-nf-option(|descr) =
-    ArgOption("--rhg-nf"
-    , where(<set-config> ("--rhg-nf", <id>))
-    , <conc-strings> ("--rhg-nf file    ", descr)
-    )
-
-  /**
-   * Returns the specified rhg-nf or terminates execution if there was not rhg specified.
-   *
-   * @type  _ -> RHG
-   */
-  read-rhg-nf-config =
-      (<get-config> "--rhg-nf" <+ fatal-err(|"no rhg specified. Use --rhg-nf to specify an rhg."))
-    ; ReadFromFile
-    <+ fatal-err(|<conc-strings> ("cannot read rhg-nf from specified file: ", <id>))
-
-  /**
-   * Returns the specified rhg-nf. Fails if there was not rhg specified.
-   *
-   * @type  _ -> FILE
-   */
-  get-rhg-nf-config =
-    <get-config> "--rhg-nf"; !FILE(<id>)
-
-/**
  * rtg-nf options
  */
 strategies
@@ -61,22 +32,6 @@ strategies
    */
   get-rtg-nf-config =
     <get-config> "--rtg-nf"; !FILE(<id>)
-
-strategies
-
-  rhg-option(|descr) =
-    ArgOption("--rhg"
-    , where(<set-config> ("--rhg", <id>))
-    , <conc-strings> ("--rhg file    ", descr)
-    )
-
-  /**
-   * Returns the specified rhg. Fails if there was not rhg specified.
-   *
-   * @type  _ -> FILE
-   */
-  get-rhg-config =
-    <get-config> "--rhg"; !FILE(<id>)
 
 strategies
 

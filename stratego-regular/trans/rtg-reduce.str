@@ -5,7 +5,7 @@
  * @author  Martin Bravenboer <martin@cs.uu.nl>
  */
 module rtg-reduce
-imports liblib rtg rtg-util rhg-reduce logging
+imports liblib rtg rtg-util logging
 
 strategies
 
@@ -75,3 +75,68 @@ strategies
 
        in reach-0; set-inc-repeat(reach-n)
       end
+
+strategies
+
+  /**
+   * Succeeds if all non-terminals in the production are in the specified
+   * set of non-terminals.
+   *
+   * @type ProdRule -> ProdRule
+   */
+  all-nonterms-in(|nts) =
+    where(collect-nonterms; all(<elem> (<id>, nts)))
+
+/**
+ * Productive
+ */
+strategies
+
+  /**
+   * Returns the set of productive non terminals in the rhg.
+   *
+   * @type RTG -> Set(NonTerm)
+   */
+  productive-nonterms =
+    ?rtg
+    ; <collect-nonterms> rtg => nts
+    ; let 
+          prod-0 = ![]
+    
+          prod-n = {productive: ?productive;
+                  <union> (productive, <filter(can-be-produced(|<id>, productive, rtg))> nts)
+            }
+
+       in prod-0; set-inc-repeat(prod-n)
+      end
+
+  /**
+   * Succeeds if the non-terminal can be produced by the rtg given the set of productive non-terminals.
+   */
+  can-be-produced(|nt : NonTerm, productive : Set(NonTerm), rhg : RHG) =
+    where(
+      <productions-of(|nt)> rhg
+    ; one(collect-nonterms; all(<elem> (<id>, productive)))
+    )
+
+strategies
+
+  /**
+   * Repeats s until the current set is no longer being extended.
+   *
+   * @type  Set(a) -> Set(a)
+   */
+  set-inc-repeat(s : Set(a) -> Set(a)) =
+    rec x( {l:
+        where(length => l)
+      ; s
+      ; (where(<gt> (<length>, l)) < x + id)
+    })
+
+  /**
+   * Collect all (not build in) non-terminals in a rhg (or anything else).
+   *
+   * @type RTG -> Set(NonTerm)
+   */
+  collect-nonterms =
+    collect(?Nonterm(_))

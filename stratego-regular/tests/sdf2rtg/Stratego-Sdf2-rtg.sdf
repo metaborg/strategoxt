@@ -1,2 +1,2 @@
 module Stratego-Sdf2-rtg
-imports Stratego-Sdf2 Stratego-rhg
+imports Stratego-Sdf2 Stratego-rtg

@@ -5,13 +5,9 @@ SUBDIRS           = sig implode asfix sdf2rtg interpret
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 
 libexec_PROGRAMS= \
-  rhg-parsefix \
-  rhg-reduce\
-  rhg-group \
   rtg-parsefix \
   rtg-reduce\
-  rtg-group \
-  irhg2irtg
+  rtg-group 
 
 SCFLAGS           = --main main-$* 
 STRINCLUDES       = -I $(top_srcdir)/sig \

@@ -4,9 +4,7 @@ include $(wildcard *.dep)
 bin_PROGRAMS=\
   format-check \
   aterm2irtg \
-  parse-rhg \
   parse-rtg \
-  pp-rhg \
   pp-rtg \
   sdf2rtg \
   sig2rtg \

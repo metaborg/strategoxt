@@ -8,21 +8,10 @@ strategies
     ; xtc-rtg-reduce
     ; xtc-rtg-group
 
-  xtc-rhg-front-end =
-      xtc-parse-rhg
-    ; xtc-rhg-reduce
-    ; xtc-rhg-group
-
 strategies
-
-  xtc-implode-irhg = 
-    xtc-transform(!"implode-irhg", pass-verbose)
 
   xtc-implode-irtg = 
     xtc-transform(!"implode-irtg", pass-verbose)
-
-  xtc-irhg2irtg = 
-    xtc-transform(!"irhg2irtg", pass-verbose)
 
 strategies
 
@@ -31,19 +20,9 @@ strategies
     ; xtc-implode-asfix
     ; xtc-transform(!"rtg-parsefix", pass-verbose)
 
-  xtc-parse-rhg =
-      xtc-sglr(!"rhg.tbl", !"RHG")
-    ; xtc-implode-asfix
-    ; xtc-transform(!"rhg-parsefix", pass-verbose)
-
   xtc-pp-rtg =
       xtc-transform(!"rtg-ppfix", pass-verbose)
     ; xtc-ast2abox(!["rtg.pp.af"])
-    ; xtc-abox2text
-
-  xtc-pp-rhg =
-      xtc-transform(!"rhg-ppfix", pass-verbose)
-    ; xtc-ast2abox(!["rhg.pp.af"])
     ; xtc-abox2text
 
   xtc-rtg-reduce = 
@@ -54,12 +33,6 @@ strategies
 
   xtc-rtg-group = 
     xtc-transform(!"rtg-group", pass-verbose)
-
-  xtc-rhg-reduce = 
-    xtc-transform(!"rhg-reduce", pass-verbose)
-
-  xtc-rhg-group = 
-    xtc-transform(!"rhg-group", pass-verbose)
 
 strategies
 

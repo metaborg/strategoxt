@@ -1,4 +1,4 @@
-SUFFIXES += .artg .rtg .rtg-nf .arhg .rhg .rhg-nf -typematch.str
+SUFFIXES += .artg .rtg .rtg-nf -typematch.str
 
 # rtg-nf -> str
 .rtg-nf.str :
@@ -7,15 +7,6 @@ SUFFIXES += .artg .rtg .rtg-nf .arhg .rhg .rhg-nf -typematch.str
 # rhg -> arhg
 .rtg.artg :
 	$(STRATEGO_REGULAR)/bin/parse-rtg -i $*.rtg -o $@
-
-# rhg -> arhg
-.rhg.arhg :
-	$(STRATEGO_REGULAR)/bin/parse-rhg -i $*.rhg -o $@
-
-# arhg -> rhg-nf
-.arhg.rhg-nf :
-	$(STRATEGO_REGULAR)/libexec/rhg-reduce -i $< | \
-	$(STRATEGO_REGULAR)/libexec/rhg-group -o $@
 
 # rtg -> rtg-nf
 .rtg.rtg-nf :

@@ -1,5 +1,5 @@
 module rtg-util
-imports irtg rtg rhg-util
+imports irtg rtg 
 
 strategies
 
@@ -88,3 +88,16 @@ strategies
 
   bottomup-irtg(s) =
     rec x(all-irtg(x); s)
+
+strategies 
+
+  group-by(k, r, build) = 
+      ?items
+    ; map(k)
+    ; make-set
+    ; map(build-group-by-pairs(k, r, build, !items))
+
+  build-group-by-pairs(k, r, build, items) = 
+      ?key
+    ; where(<items; filter(where(k; ?key)); map(r)> () => values)
+    ; <build> (key, values)

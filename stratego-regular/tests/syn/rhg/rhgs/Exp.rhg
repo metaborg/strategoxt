@@ -1,8 +1,0 @@
-regular hedge grammar
-  start Var Exp
-  productions
-    Var -> Var   (<string>)
-    Exp -> Int   (<int>)
-    Exp -> Times (Exp Exp)
-    Exp -> Plus  (Exp Exp)
-    Exp -> Call  (Var Exp*)

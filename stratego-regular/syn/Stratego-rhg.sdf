@@ -1,9 +1,0 @@
-module Stratego-rhg
-imports rhg StrategoRenamed
-
-exports
-  context-free start-symbols StrategoModule
-  context-free syntax
-
-    "|[" ProdRule "]|" -> StrategoTerm {cons("ToTerm")}
-

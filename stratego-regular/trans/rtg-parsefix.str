@@ -4,9 +4,24 @@
  * @author Martin Bravenboer
  */
 module rtg-parsefix
-imports liblib rhg-parsefix
+imports liblib rtg
 
 strategies
 
   main-rtg-parsefix =
     io-wrap(tg-parsefix)
+
+  /**
+   * @type  RHG -> RHG
+   */
+  tg-parsefix =
+    topdown(try(ParseFix))
+
+  ParseFix :
+    Plain(s) -> s
+
+  ParseFix :
+    Quoted(parts) ->
+      < map(?Chars(<id>) + ?EscapeSeq(<<implode-string> [<id>]>))
+      ; concat-strings
+      > parts

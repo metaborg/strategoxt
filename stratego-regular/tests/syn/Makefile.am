@@ -1,5 +1,5 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-SUBDIRS           = rtg rhg
+SUBDIRS           = rtg 
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)

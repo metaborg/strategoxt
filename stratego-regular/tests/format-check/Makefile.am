@@ -7,7 +7,7 @@ STRINCLUDES    = -I $(XTC)/share/xtc \
                  -I $(top_srcdir)/lib
 
 TESTS          = $(check_PROGRAMS)
-EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) $(wildcard *.rtg) $(wildcard *.rhg)
+EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) $(wildcard *.rtg)
 
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c)

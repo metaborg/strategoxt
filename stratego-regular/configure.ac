@@ -33,10 +33,7 @@ AC_CONFIG_FILES([
   tests/syn/Makefile
   tests/syn/rtg/Makefile
   tests/syn/rtg/rtgs/Makefile
-  tests/syn/rhg/Makefile
-  tests/syn/rhg/rhgs/Makefile
 
-  tests/match/Makefile
   tests/sdf2rtg/Makefile
   tests/sig2rtg/Makefile
   tests/asfix2irtg/Makefile
