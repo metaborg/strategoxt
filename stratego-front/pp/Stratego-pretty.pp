@@ -135,9 +135,11 @@
    OverrideDynamicRules.1:iter-star -- _1,
    DynRuleScope -- V[V is=3[H hs=0[KW["{|"] _1 KW[":"]] _2] KW["|}"]],
    DynRuleScope.1:iter-star-sep -- _1 KW[","],
-   SDefNoArgs -- H[ _1 KW["="] _2 ],
+
+   SDefNoArgs -- V is=2[H[ _1 KW["="]] _2 ],
    SDef -- V is=2[H[ _1 KW["("] _2 KW[")"] KW["="]] _3],
    SDef.2:iter-star-sep -- H hs=0[_1 KW[","]],
+
    DefaultVarDec -- _1,
    VarDec -- H[_1 KW[":"] _2],
    OverlayNoArgs -- _1 KW["="] _2,
