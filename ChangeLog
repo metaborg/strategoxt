@@ -1,9 +1,11 @@
 2004-05-04 Merijn de Jonge <mdejonge@cs.uu.nl>
-   * Changed version to 0.10
+   * Released 0.10
    * Updated NEWS file
    * Updated email address
    * Updated AUTHORS, src/autobundle/AUTHORS.templ
    * Updated Copyright dates
+   * Fixed distcheck target
+   * Changed version to 0.10
 
 2004-05-03 Merijn de Jonge <mdejonge@cs.uu.nl>
    * bundlegen/graph-generator.str: since a package can be both a runtime
