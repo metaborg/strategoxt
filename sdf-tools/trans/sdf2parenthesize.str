@@ -6,6 +6,7 @@
  */
 module sdf2parenthesize
 imports Stratego Sdf2 options xtc-lib stratego-xt-xtc-tools collect sdf-options
+imports sdf-spread-cons
 
 strategies
 
@@ -13,6 +14,8 @@ strategies
     xtc-io-wrap(parenthesize-options,
       xtc-transform(!"sdf2table", !["-n", "-m", <get-sdf-main-module> | <pass-v-verbose>])
     ; xtc-transform(!"implodePT")
+    ; xtc-transform(!"sdf-desugar")
+    ; sdf-spread-cons
     ; xtc-io-transform(
         innermost-module
 
@@ -27,21 +30,64 @@ strategies
   
   innermost-module :
     rs ->
-      |[ module M
-         imports options Expression
+      |[ module M1
+         imports options M2
          strategies
 
-           io-foo =
-             io-wrap(foo-parenthesize)
+           f =
+             io-wrap(g)
 
-           foo-parenthesize =
-             innermost(Foo)
+           g =
+             innermost(l)
 
          rules
-           foo-Bracket :
+           l : 
              Div(e1, Mul(e2, e3)) -> Div(e1, Bracket(Mul(e2, e3)))
       ]|
-    where ModuleName => M
+    where ModuleName => M1
+        ; LanguageName => M2
+        ; <conc-strings> ("io-", M1) => f
+        ; <conc-strings> (M2, "-parenthesize") => g
+        ; <conc-strings> (M2, "-Bracket") => l
+
+/*
+  AssocBracketRule :
+    assoc(simple-group(prod1), left(), simple-group(prod2)) ->
+
+  Prod2Pattern(f, ts) :
+    ?prod(syms, _, _)
+
+ -> |[ x(t* ) ]|
+      where < filter(not(is-empt-sym))
+            ; map(!|[ _ ]|)
+            > syms => t*
+
+  Prod2Pattern :
+    prod(syms, _, _) -> |[ x(t* ) ]|
+      where < filter(not(is-empt-sym))
+            ; map(!|[ _ ]|)
+            > syms => t*
+
+  ApplyAssoc(|t') ;
+     (left(), |[ x(t, t* ) ]|) -> |[ x(t', t* ) ]|
+*/
+
+/**
+ * Helper copied from sdf2rtg.
+ *
+ * @todo  Put in some SDF lib or whatever
+ */
+strategies
+
+  /**
+   * @type  Symbol -> Symbol
+   */
+  is-empty-sym = ?lit(_)
+  is-empty-sym = ?layout()
+  is-empty-sym = opt(is-empty-sym)
+  is-empty-sym = cf(is-empty-sym)
+  is-empty-sym = lex(is-empty-sym)
+  is-empty-sym = label(id, is-empty-sym)
 
 /**
  * Options

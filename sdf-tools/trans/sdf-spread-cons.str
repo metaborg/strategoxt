@@ -4,15 +4,16 @@
  * @author  Martin Bravenboer
  */
 module sdf-spread-cons
-imports Sdf2 sdf-extra options
+imports Sdf2 options
 
 strategies
 
   io-sdf-spread-cons =
-    io-wrap(
+    io-wrap(sdf-spread-cons)
+
+  sdf-spread-cons =
       topdown(try(DeclareProd))
     ; topdown(try(AddConstr))
-    )
 
   DeclareProd =
     ? p |[ A* -> A {attr*} ]|
@@ -26,3 +27,6 @@ strategies
   cons-of-prod :
     p |[ A* -> A {attr*} ]| -> <fetch-elem(?term(cons(<id>)))> attr*
 
+signature
+  constructors
+    cons : String -> Attribute
