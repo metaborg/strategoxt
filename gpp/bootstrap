@@ -9,4 +9,4 @@ autoconf -f
 automake -a 
 #--warnings=all  --warnings=no-portability
 
-touch sig/*/*.str sig/*/*.c sig/*/*.rtree
+# touch sig/*/*.str sig/*/*.c sig/*/*.rtree
