@@ -17,15 +17,10 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 dnl 02111-1307, USA.
 
-dnl $Id: configure.in.src,v 1.6 2001/11/25 11:39:58 mdejonge Exp $
+dnl $Id: configure.in.src,v 1.7 2001/11/25 18:07:59 mdejonge Exp $
 
 AC_INIT(configure.in)
 AM_INIT_AUTOMAKE(__PACKAGE__,__VERSION__)
-
-dnl Let aclocal use macros in ./config directory
-ACLOCAL="${ACLOCAL} -I ./ac-macros"
-
-
 
 dnl Package switches.
 
@@ -87,7 +82,7 @@ AC_SUBST(GRAPHVIZ)
 
 
 
-AC_REVISION($Id: configure.in.src,v 1.6 2001/11/25 11:39:58 mdejonge Exp $)
+AC_REVISION($Id: configure.in.src,v 1.7 2001/11/25 18:07:59 mdejonge Exp $)
 
 AC_PROG_CC
 AC_PROG_INSTALL
@@ -107,7 +102,6 @@ AC_OUTPUT(
    Makefile 
    VERSION 
 
-   ac-macros/Makefile
    www/Makefile
    integration-tests/Makefile
    integration-tests/data/Makefile

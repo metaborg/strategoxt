@@ -1,3 +1,7 @@
+2001-11-25 Merijn de Jonge <mdejonge@cwi.nl>
+   * renamed acinclude.m4 to program-check.m4
+   * added new version of program-check.m4
+
 2001-11-22 Merijn de Jonge <mdejonge@cwi.nl>
    * configuration of asfix-tools package adapted to make use of
      AC_PACKAGE_REQUIRE macro in configure.in
