@@ -5,7 +5,7 @@ check_DATA     = Exp-pretty.pp.af Exp.tbl
 check_PROGRAMS = parenthesize-tests
 
 TESTS          = $(check_PROGRAMS)
-EXTRA_DIST     = Exp1.def Exp1-pretty.pp
+EXTRA_DIST     = Exp.def Exp1-pretty.pp
 BOOTCLEANFILES = $(check_DATA)
 
 parenthesize-tests.c : parenthesize-Exp.str Exp.str
