@@ -1,65 +1,521 @@
-\literate[annotations-test]
-
-	\begin{abstract}
-	Testing of annotations
-	\end{abstract}
-
-\begin{code}
 module annotations-test
 imports sunit annotations
+
 signature
   sorts Exp Type
   constructors
-    Var  : String -> Exp
-    Plus : Exp * Exp -> Exp
-    Int  : Type
+    Var   : String -> Exp
+    Plus  : Exp * Exp -> Exp
+    Int   : Type
+    Float : Type
 
 strategies
 
+  test-success(s) = s < !Success + !Failure
+
+signature
+  sorts Result
+  constructors
+    Failure : Result
+    Success : Result 
+   
+strategies
+
   main = 
-    test-suite(!"annotations-test",
-      test1;
-      test2;
-      test3
+    test-suite(!"Annotations test suite",
+      do-test(!"", test-match-suite)
+    ; do-test(!"", test-set-suite)
+    ; do-test(!"", test-catch-suite)
+    ; do-test(!"", test-get-suite)
+    ; do-test(!"", test-all-some-one-suite)
+    ; do-test(!"", test-has-annos-suite)
+    ; do-test(!"", test-overlays-suite)
+    ; do-test(!"", test-rules-suite)
+    ; do-test(!"", test-congruences-suite)
+    ; do-test(!"", test-traversals-suite)
     )
 
-  test1 =
-    apply-test(!"test1"
-	, set-annotations
-	, !(Plus(Var("a"), Var("b")), Int)
-	, !Plus(Var("a"),Var("b")){Int}
+  // ----------------------------------------------------------------
+  // matching
+  // ----------------------------------------------------------------
+  test-match-suite = 
+    test-suite(!"Matching on terms with annotations",
+      test-match-1
+    ; test-match-2
+    ; test-match-3
+    ; test-match-4
+    ; test-match-5
+    ; test-match-6
+    ; test-match-7
+    ; test-match-8
+    ; test-match-9
+    ; test-match-10
+    ; test-match-11
+    )
+
+  // no annotation
+  test-match-1 =
+    apply-test(!"test-match-1"
+    , test-success( ?Plus(Var("a"), Var("b")){} )
+    , !Plus(Var("a"), Var("b"))
+    , !Success
+    )
+
+  test-match-2 =
+    apply-test(!"test-match-2"
+    , test-success( ?Plus(Var("a"), Var("b")) )
+    , !Plus(Var("a"), Var("b")){}
+    , !Success
+    )
+
+  // 1 annotation
+  test-match-3 =
+    apply-test(!"test-match-3"
+    , test-success( ?Plus(Var("a"), Var("b")){Int} )
+    , !Plus(Var("a"), Var("b")){Int}
+    , !Success
+    )
+
+  // 2 annotations
+  test-match-4 =
+    apply-test(!"test-match-4"
+    , test-success( ?Plus(Var("a"), Var("b")){Int, Float} )
+    , !Plus(Var("a"), Var("b")){Int, Float}
+    , !Success
+    )
+
+  // transparency of annotations
+  test-match-5 =
+    apply-test(!"test-match-5"
+    , test-success( ?Plus(Var("a"), Var("b")) )
+    , !Plus(Var("a"), Var("b")){Int, Float}
+    , !Success
+    )
+
+  test-match-6 =
+    apply-test(!"test-match-6"
+    , test-success( ?Plus(Var("a"), Var("b")){Int} )
+    , !Plus(Var("a"), Var("b"))
+    , !Failure
+    )
+
+  test-match-7 =
+    apply-test(!"test-match-7"
+    , test-success( ?Plus(Var("a"), Var("b")){} )
+    , !Plus(Var("a"), Var("b")){Int}
+    , !Failure
+    )
+
+  // {_} just matches an anno of 1 element
+  test-match-8 =
+    apply-test(!"test-match-8"
+	, test-success( ?_{_} )
+	, !Var("a")
+	, !Failure
 	)
 
-  test2 =
-    apply-test(!"test2"
-	, set-annotations; topdown(id)
-	, !(Plus(Var("a"), Var("b")), Int)
+  test-match-9 =
+    apply-test(!"test-match-9"
+	, test-success( ?_{_} )
+	, !Var("a"){Int}
+	, !Success
+	)
+
+  test-match-10 =
+    apply-test(!"test-match-10"
+	, test-success( ?_{_} )
+	, !Var("a"){Int, Float}
+	, !Failure
+	)
+
+  // Don't match a term without annotation
+  test-match-11 =
+    apply-test(!"test-match-11"
+	, test-success( ?Var("a"){Int} )
+	, !Var("a")
+	, !Failure
+	)
+
+  // ----------------------------------------------------------------
+  // attach annotations
+  // ----------------------------------------------------------------
+  test-set-suite = 
+    test-suite(!"Attach annotations to terms with set strategies",
+      test-set-1
+    ; test-set-2
+    ; test-set-3
+    ; test-set-4
+    )
+
+  // 0 with set-annos
+  test-set-1 =
+    apply-test(!"test-set-1"
+    , set-annos
+    , !(Plus(Var("a"), Var("b")), [])
+    ,  !Plus(Var("a"), Var("b")){}
+    )
+
+  // 1 with set-annos
+  test-set-2 =
+    apply-test(!"test-set-2"
+    , set-annos
+    , !(Plus(Var("a"), Var("b")), [Int])
+    ,  !Plus(Var("a"),Var("b")){Int}
+    )
+
+  // 2 with set-annos
+  test-set-3 =
+    apply-test(!"test-set-3"
+    , set-annos
+    , !(Plus(Var("a"), Var("b")), [Int, Float])
+    ,  !Plus(Var("a"), Var("b")){Int, Float}
+    )
+
+  // 1  with set-anno
+  test-set-4 =
+    apply-test(!"test-set-4"
+    , set-anno
+    , !(Plus(Var("a"), Var("b")), Int)
+    ,  !Plus(Var("a"), Var("b")){Int}
+    )
+
+  // ----------------------------------------------------------------
+  // catch
+  // ----------------------------------------------------------------
+  test-catch-suite = 
+    test-suite(!"Split a term with annotations",
+      test-catch-1
+    ; test-catch-2
+    ; test-catch-3
+    ; test-catch-4
+    )
+
+  test-catch-1 =
+    apply-test(!"test-catch-1"
+    , catch-annos
+    ,      !Plus(Var("a"), Var("b")){}
+    //, !Anno(Plus(Var("a"), Var("b")), [])
+    , !Plus(Var("a"), Var("b"))
+    )
+
+  test-catch-2 =
+    apply-test(!"test-catch-2"
+    , catch-annos
+    ,      !Plus(Var("a"), Var("b"))
+    //, !Anno(Plus(Var("a"), Var("b")), [])
+    , !Plus(Var("a"), Var("b"))
+    )
+
+  test-catch-3 =
+    apply-test(!"test-catch-3"
+    , catch-annos
+    ,      !Plus(Var("a"), Var("b")){Int}
+    , !Anno(Plus(Var("a"), Var("b")), [Int])
+    )
+
+  test-catch-4 =
+    apply-test(!"test-catch-4"
+    , catch-annos
+    ,      !Plus(Var("a"), Var("b")){Int, Float}
+    , !Anno(Plus(Var("a"), Var("b")), [Int, Float])
+    )
+
+
+  // ----------------------------------------------------------------
+  // get-annotations
+  // ----------------------------------------------------------------
+  test-get-suite = 
+    test-suite(!"Get the annotations of a term",
+      test-get-1
+    ; test-get-2
+    ; test-get-3
+    ; test-get-4
+    )
+
+  // without annotations
+  test-get-1 =
+    apply-test(!"test-get-1"
+	, get-annos
+	, !Var("a")
+	, ![]
+	)
+
+  // without annotations
+  test-get-2 =
+    apply-test(!"test-get-2"
+	, get-annos
+	, !Var("a"){}
+	, ![]
+	)
+
+  // with 1 annotation
+  test-get-3 =
+    apply-test(!"test-get-3"
+	, get-annos
+	, !Var("a"){Int}
+	, ![Int]
+	)
+
+  // with 2 annotations
+  test-get-4 =
+    apply-test(!"test-get-4"
+	, get-annos
+	, !Var("a"){Int, Float}
+	, ![Int, Float]
+	)
+
+  // ----------------------------------------------------------------
+  // all, some and one
+  // ----------------------------------------------------------------
+  test-all-some-one-suite =
+    test-suite(!"All, some and one primitives",
+      test-all
+    ; test-some
+    ; test-one
+    )
+
+  test-all =
+    apply-test(!"test-all(s)"
+	, all(id)
+	, !Var("a"){Int}
+	, !Var("a"){Int}
+	)
+
+  test-some =
+    apply-test(!"test-some(s)"
+	, some(id)
+	, !Var("a"){Int}
+	, !Var("a"){Int}
+	)
+
+  test-one =
+    apply-test(!"test-one(s)"
+	, one(id)
+	, !Var("a"){Int}
+	, !Var("a"){Int}
+	)
+
+  // ----------------------------------------------------------------
+  // has-annos
+  // ----------------------------------------------------------------
+  test-has-annos-suite =
+    test-suite(!"has-annos strategy",
+      test-has-annos-1
+    ; test-has-annos-2
+    ; test-has-annos-3
+    )
+
+  // without annotation
+  test-has-annos-1 =
+    apply-test(!"test-has-annos-1"
+	,  test-success(has-annos)
+	, !Var("a")
+	, !Failure
+	)
+
+  // without annotation
+  test-has-annos-2 =
+    apply-test(!"test-has-annos-1"
+	,  test-success(has-annos)
+	, !Var("a"){}
+	, !Failure
+	)
+
+  // with annotation
+  test-has-annos-3 =
+    apply-test(!"test-has-annos-3"
+	, test-success(has-annos)
+	, !Var("a"){Int}
+	, !Success
+	)
+
+  // ----------------------------------------------------------------
+  // overlays
+  // ----------------------------------------------------------------
+  test-overlays-suite =
+    test-suite(!"Overlays and annotations",
+      test-overlays-1
+    ; test-overlays-2
+    ; test-overlays-3
+    )
+
+overlays
+  VarA = Var("a")
+
+  VarAInt = Var("a"){Int}
+  VarAFloat = Var("a"){Float}
+
+strategies
+
+  test-overlays-1 =
+    apply-test(!"test-overlays-1"
+	, id
+	, !VarA{Int}
+	, !Var("a"){Int}
+	)
+
+  test-overlays-2 =
+    apply-test(!"test-overlays-2"
+	, id
+	, !VarAInt
+	, !Var("a"){Int}
+	)
+
+  test-overlays-3 =
+    apply-test(!"test-overlays-3"
+	, id
+	, !VarAFloat{Int}
+	, !Var("a"){Int}
+	)
+
+  // ----------------------------------------------------------------
+  // Rule application
+  // ----------------------------------------------------------------
+  test-rules-suite =
+    test-suite(!"Rules and annotations",
+      test-rules-1
+    ; test-rules-2
+    ; test-rules-3
+    ; test-rules-4
+    ; test-rules-5
+    ; test-rules-6
+    ; test-rules-7
+    )
+
+rules
+
+  TypeCheck :
+    Plus(e1{Int}, e2{Int}) -> Plus(e1, e2){Int}
+
+  TypeCheck :
+    Var(x) -> Var(x){Int}
+
+  CommPlus :
+    Plus(x, y) -> Plus(y, x)
+
+  Rename:
+    Var(_) -> Var("r")
+
+  Any-to-Float:
+    Var(s){_} -> Var(s){Float}
+
+strategies
+
+  test-rules-1 =
+    apply-test(!"test-rules-1"
+	, TypeCheck
+	, !Plus(Var("a"){Int}, Var("b"){Int})
+	, !Plus(Var("a"){Int}, Var("b"){Int}){Int}
+	)
+
+  test-rules-2 =
+    apply-test(!"test-rules-2"
+	, CommPlus
+	, !Plus(Var("a"){Int}, Var("b"){Int})
+	, !Plus(Var("b"){Int}, Var("a"){Int})
+	)
+
+  test-rules-3 =
+    apply-test(!"test-rules-3"
+	, Any-to-Float
+	, !Var("a"){Int}
+	, !Var("a"){Float}
+	)
+
+  test-rules-4 =
+    apply-test(!"test-rules-4"
+	, \ _{_} -> Var("a") \
+	, !Float{Int}
+	, !Var("a")
+	)
+
+  // don't apply rule on term without anno
+  test-rules-5 =
+    apply-test(!"test-rules-5"
+	, try(Any-to-Float)
+	, !Var("a")
+	, !Var("a")
+	)
+
+  // Make sure an annotation is really bounded
+  test-rules-6 =
+    apply-test(!"test-rules-6"
+	, try( \ Var(s){ts*} -> Var(s){<length> [ts*]} \ )
+	, !Var("a"){Int, Float}
+	, !Var("a"){2}
+	)
+
+  // Make sure an annotation is not bound 
+  // if matched on a term without annotation
+  test-rules-7 =
+    apply-test(!"test-rules-7"
+	, \ Var(s){ts*} -> Var(s){<length> [ts*]} \
+	, !Var("a")
+	, !Var("a"){0}
+	)
+
+  // ----------------------------------------------------------------
+  // Congruences
+  // ----------------------------------------------------------------
+  test-congruences-suite =
+    test-suite(!"Congruences and annotations",
+      test-congruences-1
+    ; test-congruences-2
+    ; test-congruences-3
+    ; test-congruences-4
+    )
+
+  // Annotation congruence
+  test-congruences-1 =
+    apply-test(!"test-congruences-1"
+	, id{[CommPlus]}
+	, !Var("c"){Plus(Var("a"){Int}, Var("b"){Int})}
+	, !Var("c"){Plus(Var("b"){Int}, Var("a"){Int})}
+	)
+
+  // Annotation congruence
+  test-congruences-2 = 
+    apply-test(!"test-congruences-2"
+	, id{[Rename]}
+	, !Var("c"){Var("a")}
+	, !Var("c"){Var("r")}
+	)
+
+  // congruence should preserve annotation
+  test-congruences-3 =
+    apply-test(!"test-congruences-3"
+	, Plus(Rename, Rename)
 	, !Plus(Var("a"), Var("b")){Int}
+	, !Plus(Var("r"), Var("r")){Int}
 	)
 
-  test3 =
-    apply-test(!"test3"
-	, set-annotations; catch-annos
-	, !(Plus(Var("a"), Var("b")), Int)
-	, !Anno(Plus(Var("a"),Var("b")),Int)
+  test-congruences-4 =
+    apply-test(!"test-congruences-4"
+	, Plus(Rename, Rename); test-success( ?Plus(Var("r"), Var("r")){} )
+	, !Plus(Var("a"), Var("b")){Int}
+	, !Failure
 	)
 
-\end{code}
+  // ----------------------------------------------------------------
+  // Traversals
+  // ----------------------------------------------------------------
+  test-traversals-suite =
+    test-suite(!"Traversals and annotations",
+      test-traversals-1
+    ; test-traversals-2
+    )
 
-% Copyright (C) 2002 Eelco Visser <visser@acm.org>
-% 
-% This program is free software; you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation; either version 2, or (at your option)
-% any later version.
-% 
-% This program is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-% 
-% You should have received a copy of the GNU General Public License
-% along with this program; if not, write to the Free Software
-% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-% 02111-1307, USA.
+  test-traversals-1 =
+    apply-test(!"test-traversals-1"
+	, bottomup(try(TypeCheck))
+	, !Plus(Var("c"), Plus(Var("a"), Var("b")))
+	, !Plus(Var("c"){Int},Plus(Var("a"){Int},Var("b"){Int}){Int}){Int}
+	)
+
+  test-traversals-2 =
+    apply-test(!"test-traversals-2"
+	, topdown(id)
+	, !Plus(Var("c"){Int},Plus(Var("a"){Int},Var("b"){Int}){Int}){Int}
+	, !Plus(Var("c"){Int},Plus(Var("a"){Int},Var("b"){Int}){Int}){Int}
+	)
 
