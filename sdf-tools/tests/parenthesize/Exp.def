@@ -2,8 +2,9 @@ definition
 module Main
 imports Identifier Layout 
 exports
-  sorts Exp Id
+  context-free start-symbols Exp
 
+  sorts Exp Id
   context-free syntax
     Id           -> Exp {cons("Var")}
     "(" Exp ")"  -> Exp {bracket}

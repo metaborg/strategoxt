@@ -268,5 +268,7 @@ module Box-Atoms
          BoxLiteral            -> BOX {cons("S")}
 
 module Box
-   exports
-      imports Box-Atoms Box-Operators Box-Lists Box-Layout Box-Disambiguation
+  hiddens
+    context-free start-symbols BOX
+  exports
+    imports Box-Atoms Box-Operators Box-Lists Box-Layout Box-Disambiguation

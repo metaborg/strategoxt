@@ -1,5 +1,7 @@
 module Stratego-C
 imports C StrategoRenamed
+hiddens
+  context-free start-symbols StrategoModule
 
 exports
   context-free syntax

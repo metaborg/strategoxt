@@ -1,5 +1,8 @@
 module PropStratego
 imports Prop StrategoRenamed
+hiddens
+  context-free start-symbols StrategoModule
+
 exports
   context-free syntax
     "|[" Prop "]|"                     -> StrategoTerm     {cons("ToTerm")}

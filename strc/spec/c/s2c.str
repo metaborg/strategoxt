@@ -46,7 +46,7 @@ strategies
 overlays
 
   CastATerm(e) = 
-    |[ (ATerm)~exp:e ]|
+    |[ (ATerm) ~exp:e ]|
     // TypeCast(TypeName(TypeSpec([],TypeId("ATerm"),[]),None),e)
 
   CastATermList(e) = 

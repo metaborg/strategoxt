@@ -1,5 +1,7 @@
 module StrategoDot
 imports StrategoRenamed Dot
+hiddens
+  context-free start-symbols StrategoModule
 exports
   context-free syntax
     "Graph" "|[" Graph "]|" 	-> StrategoTerm {cons("ToTerm")}

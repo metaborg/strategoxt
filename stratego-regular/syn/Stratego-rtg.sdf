@@ -2,6 +2,8 @@ module Stratego-rtg
 imports rtg StrategoRenamed
 
 exports
+  context-free start-symbols StrategoModule
+
   context-free syntax
 
     "rtg" "|[" ProdRule   "]|" -> StrategoTerm {cons("ToTerm")}

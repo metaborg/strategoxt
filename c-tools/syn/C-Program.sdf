@@ -1,6 +1,6 @@
 module C-Program
 exports
-  sorts TranslationUnit
+  sorts TranslationUnit ExternalDef FunDef FunDefTypeSpec NoTypeSpecifier FunDefDecl
 
   context-free syntax
     ExternalDef+ -> TranslationUnit {cons("TranslationUnit")}

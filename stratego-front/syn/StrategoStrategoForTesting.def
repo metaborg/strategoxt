@@ -56,6 +56,8 @@ imports Stratego
 
 module StrategoStratego
 imports Stratego StrategoRenamed
+hiddens
+  context-free start-symbols StrategoModule
 
 exports
 
@@ -235,6 +237,7 @@ exports
 
 module Stratego-Strategies
 exports
+  sorts StrategyDef Strategy Typedid SVar 
 
   context-free syntax
     Id  		      "=" Strategy -> StrategyDef {cons("SDefNoArgs")}
@@ -676,13 +679,13 @@ imports
   Stratego-Strategies
   Stratego-Overlays
 
-
-
+hiddens
+  context-free start-symbols Module
 
 module StrategoForTesting
 imports Stratego
-exports
-  sorts Strategy
+hiddens
+  context-free start-symbols Strategy
 
 module StrategoForTestingRenamed
 imports StrategoForTesting

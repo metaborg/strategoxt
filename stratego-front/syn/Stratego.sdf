@@ -11,4 +11,5 @@ imports
   Stratego-Strategies
   Stratego-Overlays
 
-
+hiddens
+  context-free start-symbols Module

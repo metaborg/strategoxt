@@ -1,5 +1,6 @@
 module C-Preprocessor
 exports
+  sorts TokenChar Slash Token TokWS WS TokenSeq FileName
   lexical syntax
     ~[\ \t\n\/]                           -> TokenChar
     [\/]                                  -> Slash
@@ -16,6 +17,7 @@ exports
     TokenSeq -/- ~[\ \t\n]
     WS       -/- [\ \t]
 
+  sorts ControlLine ControlLineNot IfLine ElifLine ElseLine
   lexical syntax
     "#" WS "define" WS ID WS ( "(" WS {( ID WS ) ( "," WS )}* ")" WS )? TokenSeq? WS [\n] -> ControlLine
 

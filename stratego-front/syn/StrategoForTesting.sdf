@@ -1,4 +1,4 @@
 module StrategoForTesting
 imports Stratego
-exports
-  sorts Strategy
+hiddens
+  context-free start-symbols Strategy

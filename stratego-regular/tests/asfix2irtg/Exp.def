@@ -1,12 +1,15 @@
 definition
 module Main
-  exports
-  sorts Exp
+exports
+  context-free start-symbols Exp
+
+  sorts Id IntConst
   lexical syntax
     [A-Za-z][A-Za-z0-9]* -> Id
     [0-9]+               -> IntConst
     [\r\n\t\ ]           -> LAYOUT
 
+  sorts Exp
   context-free syntax
     Id          -> Exp {cons("Var")}
     IntConst    -> Exp {cons("Int")}

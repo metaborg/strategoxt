@@ -1,4 +1,7 @@
 module C-Types
+imports
+  C-Expressions
+
 exports
   context-free syntax
     "typedef"  -> StorageClass {cons("Typedef")}

@@ -2,12 +2,12 @@ module pp-table
 imports list-cons option
 signature
   constructors
+             : String -> ConsName
     selector : NatCon * UQLiteral -> Selector
     Path     : ConsName * List(Selector) -> Path
     Path1    : ConsName -> Path
     PP-Entry : Path * List(BOX) -> PP-Entry
     PP-Table : List(PP-Entry) -> PP-Table
-             : String -> ConsName
     CL       : FONT-PARAM
     SZ       : FONT-PARAM
     SH       : FONT-PARAM

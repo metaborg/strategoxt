@@ -1,5 +1,7 @@
 module Stratego-Box
 imports Box StrategoRenamed
+hiddens
+  context-free start-symbols StrategoModule
 
 exports
   context-free syntax

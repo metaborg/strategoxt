@@ -61,6 +61,13 @@ AC_ARG_WITH([pt-support],
 )
 AC_SUBST([PT_SUPPORT])
 
+AC_ARG_WITH([asf-library],
+  AC_HELP_STRING([--with-asf-library=DIR], [use ASF library at DIR @<:@SDF@:>@]),
+  [ASF_LIBRARY=$withval],
+  [ASF_LIBRARY=$SDF]
+)
+AC_SUBST([ASF_LIBRARY])
+
 ############ StrategoXT ##################################################
 
 AC_ARG_WITH([strategoxt],

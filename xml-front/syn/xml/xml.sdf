@@ -1,5 +1,4 @@
 module xml
 imports xml-lexical xml-document
-
-exports
-  sorts Document Content Attribute
+hiddens
+  context-free start-symbols Document Content Attribute

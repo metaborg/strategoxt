@@ -1,5 +1,7 @@
 module StrategoStratego
 imports Stratego StrategoRenamed
+hiddens
+  context-free start-symbols StrategoModule
 
 exports
 

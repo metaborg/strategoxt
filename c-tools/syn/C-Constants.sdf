@@ -1,5 +1,6 @@
 module C-Constants
 exports
+  sorts Constant StringLiteralList
   context-free syntax
     IntLiteral   -> Constant {cons("IntConst")}
     HexLiteral   -> Constant {cons("HexConst")}
@@ -10,6 +11,8 @@ exports
     %%% TODO: Why a list??
     StringLiteral+ -> StringLiteralList {cons("StringLit")}
 
+  sorts StringLiteral CharLiteral IntLiteral HexLiteral OctLiteral FloatLiteral
+        Char StringChar OctalEsc IntFlags FloatFlags
   lexical syntax
     [L]? "\"" StringChar* "\"" -> StringLiteral
     [L]? "'" Char "'"          -> CharLiteral    

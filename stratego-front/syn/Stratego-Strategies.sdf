@@ -1,5 +1,6 @@
 module Stratego-Strategies
 exports
+  sorts StrategyDef Strategy Typedid SVar 
 
   context-free syntax
     Id  		      "=" Strategy -> StrategyDef {cons("SDefNoArgs")}

@@ -1,5 +1,7 @@
 module Stratego-xml
 imports xml StrategoRenamed
+hiddens
+  context-free start-symbols StrategoModule
 
 exports
 

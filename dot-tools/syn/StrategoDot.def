@@ -30,6 +30,8 @@ exports
 
 module Dot
 imports Layout QuotedLiterals
+hiddens
+  context-free start-symbols Graph
 exports
   sorts NumCon Id UnquotedId
   lexical syntax
@@ -53,9 +55,9 @@ exports
 
     Id "=" Id ";"                      	-> Stmt		{cons("Alias")}
 
-    graph "[" { Attr "," }* "]" ";"     -> Stmt    	{cons("GraphAttrs")}
-    node  "[" { Attr "," }* "]" ";"     -> Stmt		{cons("NodeAttrs")}
-    edge  "[" { Attr "," }* "]" ";"     -> Stmt		{cons("EdgeAttrs")}
+    "graph" "[" { Attr "," }* "]" ";"     -> Stmt    	{cons("GraphAttrs")}
+    "node"  "[" { Attr "," }* "]" ";"     -> Stmt		{cons("NodeAttrs")}
+    "edge"  "[" { Attr "," }* "]" ";"     -> Stmt		{cons("EdgeAttrs")}
 
     Id "=" Id                       	-> Attr		{cons("AttrId")}
     Id "=" NumCon                  	-> Attr		{cons("AttrNumCon")}
@@ -88,6 +90,7 @@ exports
 
 module Stratego-Strategies
 exports
+  sorts StrategyDef Strategy Typedid SVar 
 
   context-free syntax
     Id  		      "=" Strategy -> StrategyDef {cons("SDefNoArgs")}
@@ -476,15 +479,22 @@ module Stratego-Layout
 exports
   lexical syntax
     [\t\ \n\r]		 -> Ws
+
     "//" ~[\n]* ([\n] | Eof) -> ShortCom
-    "/*" CommChar* "*/"  -> LongCom
-    "(*" CommChar* "*)"  -> LongCom
-    "*" 		 -> Asterisk
-    ~[\*] 		 -> CommChar
-    Asterisk 		 -> CommChar
+    "/*" CommChar1* "*/"  -> LongCom
+    "(*" CommChar2* "*)"  -> LongCom
+
+    ~[\*]      -> CommChar1
+    ~[\*]      -> CommChar2
+
+    "*"        -> Asterisk1
+    "*"        -> Asterisk2
+    Asterisk1  -> CommChar1
+    Asterisk2  -> CommChar2
 
   lexical restrictions
-    Asterisk -/- [\/\)]
+    Asterisk1 -/- [\/]
+    Asterisk2 -/- [\)]
 
   lexical syntax
     "\\end{code}" VLCchar* "\\begin{code}" -> VeryLongCom
@@ -522,8 +532,8 @@ imports
   Stratego-Strategies
   Stratego-Overlays
 
-
-
+hiddens
+  context-free start-symbols Module
 
 module StrategoRenamed
 imports Stratego
@@ -569,8 +579,10 @@ imports Stratego
             VLCchar        => StrategoVLCchar
             Eof            => StrategoEof
             VeryLongCom    => StrategoVeryLongCom
-            CommChar       => StrategoCommChar
-            Asterisk       => StrategoAsterisk
+            Asterisk2      => StrategoAsterisk2
+            Asterisk1      => StrategoAsterisk1
+            CommChar2      => StrategoCommChar2
+            CommChar1      => StrategoCommChar1
             LongCom        => StrategoLongCom
             ShortCom       => StrategoShortCom
             Ws             => StrategoWs
@@ -580,6 +592,8 @@ imports Stratego
 
 module StrategoDot
 imports StrategoRenamed Dot
+hiddens
+  context-free start-symbols StrategoModule
 exports
   context-free syntax
     "Graph" "|[" Graph "]|" 	-> StrategoTerm {cons("ToTerm")}

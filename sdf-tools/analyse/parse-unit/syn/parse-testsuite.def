@@ -90,9 +90,11 @@ exports
 
 module parse-testsuite
 imports ATerms
-exports
-  sorts TestSuite
+hiddens
+  context-free start-symbols TestSuite
 
+exports
+  sorts TestSuite Test Result 
   context-free syntax
     "testsuite" Name TopSort Test+ -> TestSuite {cons("parse-testsuite")}
     "topsort" Sort -> TopSort {cons("topsort")}

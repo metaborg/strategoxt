@@ -30,6 +30,8 @@ exports
 
 module Dot
 imports Layout QuotedLiterals
+hiddens
+  context-free start-symbols Graph
 exports
   sorts NumCon Id UnquotedId
   lexical syntax
@@ -53,9 +55,9 @@ exports
 
     Id "=" Id ";"                      	-> Stmt		{cons("Alias")}
 
-    graph "[" { Attr "," }* "]" ";"     -> Stmt    	{cons("GraphAttrs")}
-    node  "[" { Attr "," }* "]" ";"     -> Stmt		{cons("NodeAttrs")}
-    edge  "[" { Attr "," }* "]" ";"     -> Stmt		{cons("EdgeAttrs")}
+    "graph" "[" { Attr "," }* "]" ";"     -> Stmt    	{cons("GraphAttrs")}
+    "node"  "[" { Attr "," }* "]" ";"     -> Stmt		{cons("NodeAttrs")}
+    "edge"  "[" { Attr "," }* "]" ";"     -> Stmt		{cons("EdgeAttrs")}
 
     Id "=" Id                       	-> Attr		{cons("AttrId")}
     Id "=" NumCon                  	-> Attr		{cons("AttrNumCon")}

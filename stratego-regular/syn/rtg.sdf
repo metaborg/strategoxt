@@ -1,15 +1,16 @@
 module rtg
 imports rg-term rg-nonterm rg-identifier rg-layout
-        regexp [NonTerm][ RegExp => RegExpNonTerm ]
+hiddens
+  context-free start-symbols RTG ProdRule TreeFN AnnoTreeFN NonTerm
+
 exports
-  sorts RTG Start ProdRules
+  sorts RTG Start ProdRule AnnoTreeFN TreeFN Labelled
   context-free syntax
+
     "regular" "tree" "grammar" Start ProdRules -> RTG {cons("RTG")}
     "start" NonTerm+ -> Start {cons("Start")}
     "productions" ProdRule+ -> ProdRules {cons("ProdRules")}
 
-  sorts ProdRule AnnoTreeFN TreeFN Labelled
-  context-free syntax
     NonTerm "->" {AnnoTreeFN "|"}+ -> ProdRule {cons("ProdRule")}
 
     TreeFN -> AnnoTreeFN

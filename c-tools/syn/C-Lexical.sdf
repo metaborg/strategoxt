@@ -1,4 +1,7 @@
 module C-Lexical
+hiddens
+  sorts Asterisk Comment
+
 exports
   lexical syntax
     [\ \t\n\12]                     -> LAYOUT

@@ -21,11 +21,9 @@
 
 module pp-table
 imports pp-table-PlaceHolder pp-table-IntCon
-
 exports
-  sorts PP-Entry PP-Table PP-Table-GrammarId PP-Tables PP-Identifier
+  context-free start-symbols PP-Table
 
-exports
   syntax
     <START> -> SURROGATE-START {cons("\"pp-tables-0\"")}
     SURROGATE-START [\256] -> <Start> {prefer, cons("SURROGATE-START")}
@@ -33,6 +31,7 @@ exports
   aliases
     PP-Table* -> PP-Tables 
 
+  sorts PP-Entry PP-Table Path Selector
   context-free syntax
     "[" {PP-Entry ","}* "]" -> PP-Table {cons("PP-Table")}
 
@@ -43,10 +42,10 @@ exports
 
     NatCon ":" UQLiteral -> Selector {cons("selector")}
 
+  sorts ConsName
   lexical syntax
     ~[\ \t\n\13\.]+      -> ConsName
     "\"" ~[\"]+ "\""  -> ConsName
 
   context-free restrictions
     ConsName -/- ~[\ \t\n\13\.]
-

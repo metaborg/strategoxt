@@ -2,6 +2,7 @@ module C-Identifiers
 imports C-Keywords
 
 exports
+  sorts ID
   lexical syntax
     [a-zA-Z\_] [a-zA-Z\_0-9]* -> ID
 
@@ -10,6 +11,7 @@ exports
   lexical restrictions
     ID -/- [a-zA-Z\_0-9]
 
+  sorts IDENTIFIER
   context-free syntax
     ID          -> IDENTIFIER {cons("Id")}
     ID          -> TypedefName {cons("TypeId"), avoid}

@@ -9,15 +9,15 @@ signature
                         : DeclarationSpecifier -> h_0
                         : IdDeclarator -> i_0
                         : AbstractDeclarator -> i_0
-                        : TypedefName -> x_0
-                        : ElaboratedTypeName -> x_0
-                        : BasicTypeName -> x_0
-                        : BasicTypeName -> y_0
-                        : DeclarationQualifier -> y_0
-                        : BasicTypeName -> d_1
-                        : TypeQualifier -> d_1
-                        : List(TypeQualifier) -> o_1
-                        : DeclarationQualifierList -> o_1
+                        : TypedefName -> v_0
+                        : ElaboratedTypeName -> v_0
+                        : BasicTypeName -> v_0
+                        : BasicTypeName -> w_0
+                        : DeclarationQualifier -> w_0
+                        : BasicTypeName -> b_1
+                        : TypeQualifier -> b_1
+                        : List(TypeQualifier) -> m_1
+                        : DeclarationQualifierList -> m_1
                         : ElseLine * List(ExternalDef) -> y_1
                         : ElifLine * List(ExternalDef) -> b_2
     FunType             : UnaryAbstractDeclarator * PostfixingAbstractDeclarator -> PostfixAbstractDeclarator
@@ -54,6 +54,59 @@ signature
                         : EnumSpecifier -> ElaboratedTypeName
                         : UnionSpecifier -> ElaboratedTypeName
                         : StructSpecifier -> ElaboratedTypeName
+                        : v_0 -> TypeOrDefName
+    DeclSpec            : List(TypeQualifier) * StorageClass * List(DeclarationQualifier) * TypeOrDefName * List(w_0) -> DeclarationSpecifier
+    DQualifiers         : List(TypeQualifier) * StorageClass * List(DeclarationQualifier) -> DeclarationQualifierList
+                        : TypeQualifier -> DeclarationQualifier
+                        : StorageClass -> DeclarationQualifier
+    TypeSpec            : List(TypeQualifier) * TypeOrDefName * List(b_1) -> TypeSpecifier
+    AssignInit          : AssignExp -> Initializer
+    ArrayInitIncomplete : List(Initializer) -> Initializer
+    ArrayInit           : List(Initializer) -> Initializer
+    DeclInit            : Declarator * Initializer -> VarDecl
+                        : Declarator -> VarDecl
+    IdDeclInit          : IdDeclarator * Initializer -> IdDecl
+                        : IdDeclarator -> IdDecl
+    Declaration2        : h_0 * List(VarDecl) -> Declaration
+    Declaration         : m_1 * List(IdDecl) -> Declaration
+    Volatile            : TypeQualifier
+    Const               : TypeQualifier
+    Void                : BasicTypeName
+    Unsigned            : BasicTypeName
+    Signed              : BasicTypeName
+    Double              : BasicTypeName
+    Float               : BasicTypeName
+    Long                : BasicTypeName
+    Short               : BasicTypeName
+    Char                : BasicTypeName
+    Int                 : BasicTypeName
+    Register            : StorageClass
+    Auto                : StorageClass
+    Static              : StorageClass
+    Extern              : StorageClass
+    Typedef             : StorageClass
+    Exit                : CommaExpOpt -> JumpStm
+    Return              : CommaExpOpt -> JumpStm
+    Break               : JumpStm
+    Continue            : JumpStm
+    Goto                : IdOrTypedefName -> JumpStm
+    For                 : CommaExpOpt * CommaExpOpt * CommaExpOpt * Stm -> IterationStm
+    DoWhile             : Stm * CommaExp -> IterationStm
+    While               : CommaExp * Stm -> IterationStm
+    Switch              : CommaExp * Stm -> SelectionStm
+    IfElse              : CommaExp * Stm * Stm -> SelectionStm
+    If                  : CommaExp * Stm -> SelectionStm
+    Stat                : CommaExpOpt -> ExpStm
+    Compound            : List(Declaration) * List(Stm) -> CompoundStm
+    Default             : Stm -> LabeledStm
+    Case                : ConstantExp * Stm -> LabeledStm
+    Label               : IdOrTypedefName * Stm -> LabeledStm
+                        : JumpStm -> Stm
+                        : IterationStm -> Stm
+                        : SelectionStm -> Stm
+                        : ExpStm -> Stm
+                        : CompoundStm -> Stm
+                        : LabeledStm -> Stm
                         : CondExp -> ConstantExp
                         : CommaExp -> CommaExpOpt
     EmptyExp            : CommaExpOpt
@@ -128,64 +181,6 @@ signature
                         : StringLiteralList -> PrimaryExp
                         : Constant -> PrimaryExp
                         : IDENTIFIER -> PrimaryExp
-                        : x_0 -> TypeOrDefName
-    DeclSpec            : List(TypeQualifier) * StorageClass * List(DeclarationQualifier) * TypeOrDefName * List(y_0) -> DeclarationSpecifier
-    DQualifiers         : List(TypeQualifier) * StorageClass * List(DeclarationQualifier) -> DeclarationQualifierList
-                        : TypeQualifier -> DeclarationQualifier
-                        : StorageClass -> DeclarationQualifier
-    TypeSpec            : List(TypeQualifier) * TypeOrDefName * List(d_1) -> TypeSpecifier
-    AssignInit          : AssignExp -> Initializer
-    ArrayInitIncomplete : List(Initializer) -> Initializer
-    ArrayInit           : List(Initializer) -> Initializer
-    DeclInit            : Declarator * Initializer -> VarDecl
-                        : Declarator -> VarDecl
-    IdDeclInit          : IdDeclarator * Initializer -> IdDecl
-                        : IdDeclarator -> IdDecl
-    Declaration2        : h_0 * List(VarDecl) -> Declaration
-    Declaration         : o_1 * List(IdDecl) -> Declaration
-    Volatile            : TypeQualifier
-    Const               : TypeQualifier
-    Void                : BasicTypeName
-    Unsigned            : BasicTypeName
-    Signed              : BasicTypeName
-    Double              : BasicTypeName
-    Float               : BasicTypeName
-    Long                : BasicTypeName
-    Short               : BasicTypeName
-    Char                : BasicTypeName
-    Int                 : BasicTypeName
-    Register            : StorageClass
-    Auto                : StorageClass
-    Static              : StorageClass
-    Extern              : StorageClass
-    Typedef             : StorageClass
-                        : TypedefName -> IdOrTypedefName
-                        : IDENTIFIER -> IdOrTypedefName
-    TypeId              : ID -> TypedefName
-    Id                  : ID -> IDENTIFIER
-    Exit                : CommaExpOpt -> JumpStm
-    Return              : CommaExpOpt -> JumpStm
-    Break               : JumpStm
-    Continue            : JumpStm
-    Goto                : IdOrTypedefName -> JumpStm
-    For                 : CommaExpOpt * CommaExpOpt * CommaExpOpt * Stm -> IterationStm
-    DoWhile             : Stm * CommaExp -> IterationStm
-    While               : CommaExp * Stm -> IterationStm
-    Switch              : CommaExp * Stm -> SelectionStm
-    IfElse              : CommaExp * Stm * Stm -> SelectionStm
-    If                  : CommaExp * Stm -> SelectionStm
-    Stat                : CommaExpOpt -> ExpStm
-    Compound            : List(Declaration) * List(Stm) -> CompoundStm
-    Default             : Stm -> LabeledStm
-    Case                : ConstantExp * Stm -> LabeledStm
-    Label               : IdOrTypedefName * Stm -> LabeledStm
-                        : JumpStm -> Stm
-                        : IterationStm -> Stm
-                        : SelectionStm -> Stm
-                        : ExpStm -> Stm
-                        : CompoundStm -> Stm
-                        : LabeledStm -> Stm
-                        : String -> ID
                         : IdDeclarator -> FunDefDecl
     NoTypeSpecifier     : NoTypeSpecifier
                         : List(TypeQualifier) -> FunDefTypeSpec
@@ -195,12 +190,20 @@ signature
                         : NoTypeSpecifier -> FunDefTypeSpec
     FunDef              : FunDefTypeSpec * FunDefDecl * CompoundStm -> FunDef
     TranslationUnit     : List(ExternalDef) -> TranslationUnit
+                        : IDENTIFIER -> ParenIdDeclarator
+    OldFunction2        : List(Pointer) * OldFunDeclarator * Option(PostfixingAbstractDeclarator) -> OldFunDeclarator
+    OldFunction1        : List(Pointer) * ParenIdDeclarator * List(IDENTIFIER) -> OldFunDeclarator
     TypedefDeclarator2  : List(Pointer) * TypedefDeclarator * Option(PostfixingAbstractDeclarator) -> TypedefDeclarator
     TypedefDeclarator1  : List(Pointer) * TypedefName * Option(PostfixingAbstractDeclarator) -> TypedefDeclarator
     FunDecl             : List(Pointer) * IdDeclarator * Option(PostfixingAbstractDeclarator) -> IdDeclarator
     IdDecl              : List(Pointer) * IDENTIFIER * Option(PostfixingAbstractDeclarator) -> IdDeclarator
                         : TypedefDeclarator -> Declarator
                         : IdDeclarator -> Declarator
+                        : TypedefName -> IdOrTypedefName
+                        : IDENTIFIER -> IdOrTypedefName
+    TypeId              : ID -> TypedefName
+    Id                  : ID -> IDENTIFIER
+                        : String -> ID
     MemDecl             : TypeSpecifier * List(MemberDeclarator) -> MemberDeclaration
                         : ControlLine -> MemberDeclaration
                         : Declaration -> ExternalDef
@@ -210,16 +213,29 @@ signature
                         : String -> ElseLine
                         : String -> ElifLine
                         : String -> IfLine
+                        : String -> ControlLineNot
                         : String -> ControlLine
-    StringLit           : List(StringLiteral) -> StringLiteralList
-    CharConst           : CharLiteral -> Constant
-    FloatConst          : FloatLiteral -> Constant
-    OctConst            : OctLiteral -> Constant
-    HexConst            : HexLiteral -> Constant
-    IntConst            : IntLiteral -> Constant
+                        : String -> FileName
+                        : String -> TokenSeq
+                        : String -> WS
+                        : String -> TokWS
+                        : String -> Token
+                        : String -> Slash
+                        : String -> TokenChar
+                        : String -> FloatFlags
+                        : String -> IntFlags
+                        : String -> OctalEsc
+                        : String -> StringChar
+                        : String -> Char
                         : String -> FloatLiteral
                         : String -> OctLiteral
                         : String -> HexLiteral
                         : String -> IntLiteral
                         : String -> CharLiteral
                         : String -> StringLiteral
+    StringLit           : List(StringLiteral) -> StringLiteralList
+    CharConst           : CharLiteral -> Constant
+    FloatConst          : FloatLiteral -> Constant
+    OctConst            : OctLiteral -> Constant
+    HexConst            : HexLiteral -> Constant
+    IntConst            : IntLiteral -> Constant

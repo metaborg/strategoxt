@@ -1,6 +1,9 @@
 module rhg
 imports rg-term rg-nonterm rg-identifier rg-layout
         regexp [NonTerm][ RegExp => RegExpNonTerm ]
+hiddens
+  context-free start-symbols RHG Start ProdRules ProdRule ProdRuleRHS Labelled Content NonTerm
+
 exports
   sorts RHG Start ProdRules
 

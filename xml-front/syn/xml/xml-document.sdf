@@ -2,6 +2,7 @@ module xml-document
 imports xml-prolog xml-whitespace xml-names xml-comments xml-text xml-attribute
 
 exports
+  sorts Document Element Content
   context-free syntax
 
     Prologue Element Epilogue -> Document {cons("Document")}

@@ -1,6 +1,8 @@
 definition
 module StrategoStratego
 imports Stratego StrategoRenamed
+hiddens
+  context-free start-symbols StrategoModule
 
 exports
 
@@ -115,6 +117,8 @@ exports
     "srt" [0-9\']* "*"    -> {Sort ","}*  {prefer}
     "srt" [xyz] [0-9\']*  -> UCID         {prefer}
 
+    "M"   [0-9\']*        -> ModName {prefer}
+
   variables
     "sc" [0-9\']*         -> DynRuleScopeId        {prefer}
     "sc" [0-9\']* "*"     -> {DynRuleScopeId ","}* {prefer}
@@ -178,6 +182,7 @@ exports
 
 module Stratego-Strategies
 exports
+  sorts StrategyDef Strategy Typedid SVar 
 
   context-free syntax
     Id  		      "=" Strategy -> StrategyDef {cons("SDefNoArgs")}
@@ -566,15 +571,22 @@ module Stratego-Layout
 exports
   lexical syntax
     [\t\ \n\r]		 -> Ws
+
     "//" ~[\n]* ([\n] | Eof) -> ShortCom
-    "/*" CommChar* "*/"  -> LongCom
-    "(*" CommChar* "*)"  -> LongCom
-    "*" 		 -> Asterisk
-    ~[\*] 		 -> CommChar
-    Asterisk 		 -> CommChar
+    "/*" CommChar1* "*/"  -> LongCom
+    "(*" CommChar2* "*)"  -> LongCom
+
+    ~[\*]      -> CommChar1
+    ~[\*]      -> CommChar2
+
+    "*"        -> Asterisk1
+    "*"        -> Asterisk2
+    Asterisk1  -> CommChar1
+    Asterisk2  -> CommChar2
 
   lexical restrictions
-    Asterisk -/- [\/\)]
+    Asterisk1 -/- [\/]
+    Asterisk2 -/- [\)]
 
   lexical syntax
     "\\end{code}" VLCchar* "\\begin{code}" -> VeryLongCom
@@ -612,8 +624,8 @@ imports
   Stratego-Strategies
   Stratego-Overlays
 
-
-
+hiddens
+  context-free start-symbols Module
 
 module StrategoRenamed
 imports Stratego
@@ -659,8 +671,10 @@ imports Stratego
             VLCchar        => StrategoVLCchar
             Eof            => StrategoEof
             VeryLongCom    => StrategoVeryLongCom
-            CommChar       => StrategoCommChar
-            Asterisk       => StrategoAsterisk
+            Asterisk2      => StrategoAsterisk2
+            Asterisk1      => StrategoAsterisk1
+            CommChar2      => StrategoCommChar2
+            CommChar1      => StrategoCommChar1
             LongCom        => StrategoLongCom
             ShortCom       => StrategoShortCom
             Ws             => StrategoWs
@@ -748,15 +762,18 @@ exports
     Declarator? ":" ConstantExp -> MemberDeclarator {cons("BitFieldSize")}
 
 module C-Expressions
-exports
-  sorts AssignExp
+imports
+  C-Identifiers
 
+exports
+  sorts PrimaryExp
   context-free syntax
     IDENTIFIER        -> PrimaryExp
     Constant          -> PrimaryExp
     StringLiteralList -> PrimaryExp
     "(" CommaExp ")"  -> PrimaryExp {bracket}
 
+  sorts PostfixExp
   context-free syntax
     PrimaryExp                           -> PostfixExp
     PostfixExp "[" CommaExp "]"          -> PostfixExp {cons("ArrayIndex")}
@@ -766,10 +783,12 @@ exports
     PostfixExp "++"                      -> PostfixExp {cons("PostIncr")}
     PostfixExp "--"                      -> PostfixExp {cons("PostDecr")}
 
+  sorts MemberName
   context-free syntax
     IDENTIFIER  -> MemberName
     TypedefName -> MemberName
 
+  sorts UnaryExp
   context-free syntax
     PostfixExp     -> UnaryExp
     "++" UnaryExp  -> UnaryExp {cons("PreIncr")}
@@ -784,26 +803,31 @@ exports
     "sizeof" UnaryExp         -> UnaryExp {cons("SizeofExp")}
     "sizeof" "(" TypeName ")" -> UnaryExp {cons("SizeofType")}
 
+  sorts CastExp
   context-free syntax
     UnaryExp                 -> CastExp
     "(" TypeName ")" CastExp -> CastExp {cons("TypeCast")}
 
+  sorts MulExp
   context-free syntax
     CastExp            -> MulExp
     MulExp "*" CastExp -> MulExp {cons("Mul")}
     MulExp "/" CastExp -> MulExp {cons("Div")}
     MulExp "%" CastExp -> MulExp {cons("Mod")}
 
+  sorts AddExp
   context-free syntax
     MulExp            -> AddExp
     AddExp "+" MulExp -> AddExp {cons("Add")}
     AddExp "-" MulExp -> AddExp {cons("Subt")}
 
+  sorts ShiftExp
   context-free syntax
     AddExp               -> ShiftExp
     ShiftExp "<<" AddExp -> ShiftExp {cons("ShiftLeft")}
     ShiftExp ">>" AddExp -> ShiftExp {cons("ShiftRight")}
 
+  sorts RelExp
   context-free syntax
     ShiftExp             -> RelExp
     RelExp "<" ShiftExp  -> RelExp {cons("Lt")}
@@ -811,39 +835,48 @@ exports
     RelExp "<=" ShiftExp -> RelExp {cons("Le")}
     RelExp ">=" ShiftExp -> RelExp {cons("Ge")}
 
+  sorts EqualityExp
   context-free syntax
     RelExp                  -> EqualityExp
     EqualityExp "==" RelExp -> EqualityExp {cons("Equal")}
     EqualityExp "!=" RelExp -> EqualityExp {cons("NotEqual")}
 
+  sorts ANDExp
   context-free syntax
     EqualityExp            -> ANDExp
     EqualityExp "&" ANDExp -> ANDExp {cons("And")}
 
+  sorts ExclORExp
   context-free syntax
     ANDExp               -> ExclORExp
     ANDExp "^" ExclORExp -> ExclORExp {cons("ExOr")}
 
+  sorts InclORExp
   context-free syntax
     ExclORExp               -> InclORExp
     ExclORExp "|" InclORExp -> InclORExp {cons("IncOr")}
 
+  sorts LogicalANDExp
   context-free syntax
     InclORExp                    -> LogicalANDExp
     LogicalANDExp "&&" InclORExp -> LogicalANDExp {cons("LAnd")}
 
+  sorts LogicalORExp
   context-free syntax
     LogicalANDExp                   -> LogicalORExp
     LogicalORExp "||" LogicalANDExp -> LogicalORExp {cons("LOr")}
 
+  sorts CondExp
   context-free syntax
     LogicalORExp                          -> CondExp
     LogicalORExp "?" CommaExp ":" CondExp -> CondExp {cons("IfExp")}
 
+  sorts AssignExp
   context-free syntax
     CondExp                     -> AssignExp
     UnaryExp AssignOp AssignExp -> AssignExp {cons("Assign")}
 
+  sorts AssignOp
   context-free syntax
     "="   -> AssignOp {cons("AssignEq")}
     "*="  -> AssignOp {cons("AssignMul")}
@@ -857,6 +890,7 @@ exports
     "^="  -> AssignOp {cons("AssignExp")}
     "|="  -> AssignOp {cons("AssignOr")}
 
+  sorts CommaExp CommaExpOpt
   context-free syntax
     AssignExp              -> CommaExp
     AssignExp "," CommaExp -> CommaExp    {cons("Comma")}
@@ -864,6 +898,7 @@ exports
               -> CommaExpOpt {cons("EmptyExp")}
     CommaExp  -> CommaExpOpt
 
+  sorts ConstantExp
   context-free syntax
     CondExp -> ConstantExp
 
@@ -872,6 +907,9 @@ exports
     "-" -/- [\-]
 
 module C-Types
+imports
+  C-Expressions
+
 exports
   context-free syntax
     "typedef"  -> StorageClass {cons("Typedef")}
@@ -931,6 +969,7 @@ module C-Identifiers
 imports C-Keywords
 
 exports
+  sorts ID
   lexical syntax
     [a-zA-Z\_] [a-zA-Z\_0-9]* -> ID
 
@@ -939,6 +978,7 @@ exports
   lexical restrictions
     ID -/- [a-zA-Z\_0-9]
 
+  sorts IDENTIFIER
   context-free syntax
     ID          -> IDENTIFIER {cons("Id")}
     ID          -> TypedefName {cons("TypeId"), avoid}
@@ -948,6 +988,9 @@ exports
 
 
 module C-Statements
+imports
+  C-Expressions
+
 exports
   sorts Stm
 
@@ -959,27 +1002,33 @@ exports
     IterationStm  -> Stm
     JumpStm       -> Stm
 
+  sorts LabeledStm
   context-free syntax
     IdOrTypedefName ":" Stm     -> LabeledStm {cons("Label")}
     "case" ConstantExp ":" Stm  -> LabeledStm {cons("Case")}
     "default" ":" Stm           -> LabeledStm {cons("Default")}
 
+  sorts CompoundStm
   context-free syntax
     "{" Declaration* Stm* "}" -> CompoundStm {cons("Compound")}
 
+  sorts ExpStm
   context-free syntax
     CommaExpOpt ";" -> ExpStm {cons("Stat")}
 
+  sorts SelectionStm
   context-free syntax
     "if" "(" CommaExp ")" Stm             -> SelectionStm {cons("If")}
     "if" "(" CommaExp ")" Stm "else" Stm  -> SelectionStm {cons("IfElse")}
     "switch" "(" CommaExp ")" Stm         -> SelectionStm {cons("Switch")}
 
+  sorts IterationStm
   context-free syntax
     "while" "(" CommaExp ")" Stm           -> IterationStm {cons("While")}
     "do" Stm "while" "(" CommaExp ")" ";"  -> IterationStm {cons("DoWhile")}
     "for" "(" CommaExpOpt ";" CommaExpOpt ";" CommaExpOpt ")" Stm -> IterationStm {cons("For")}
 
+  sorts JumpStm
   context-free syntax
     "goto" IdOrTypedefName ";" -> JumpStm {cons("Goto")}
     "continue" ";"             -> JumpStm {cons("Continue")}
@@ -989,7 +1038,7 @@ exports
 
 module C-Program
 exports
-  sorts TranslationUnit
+  sorts TranslationUnit ExternalDef FunDef FunDefTypeSpec NoTypeSpecifier FunDefDecl
 
   context-free syntax
     ExternalDef+ -> TranslationUnit {cons("TranslationUnit")}
@@ -1013,19 +1062,26 @@ exports
 
 
 module C-Declarators
+imports
+  C-Identifiers
+
 exports
+  sorts Declarator
   context-free syntax
     IdDeclarator      -> Declarator
     TypedefDeclarator -> Declarator
 
+  sorts IdDeclarator
   context-free syntax
     Pointer* IDENTIFIER PostfixingAbstractDeclarator?           -> IdDeclarator {cons("IdDecl")}
     Pointer* "(" IdDeclarator ")" PostfixingAbstractDeclarator? -> IdDeclarator {cons("FunDecl")}
 
+  sorts TypedefDeclarator
   context-free syntax
     Pointer* TypedefName PostfixingAbstractDeclarator?               -> TypedefDeclarator {cons("TypedefDeclarator1")}
     Pointer* "(" TypedefDeclarator ")" PostfixingAbstractDeclarator? -> TypedefDeclarator {cons("TypedefDeclarator2")}
 
+  sorts OldFunDeclarator ParenIdDeclarator 
   context-free syntax
     Pointer* ParenIdDeclarator "(" {IDENTIFIER ","}+ ")"         -> OldFunDeclarator     {cons("OldFunction1")}
     Pointer* "(" OldFunDeclarator ")" PostfixingAbstractDeclarator? -> OldFunDeclarator     {cons("OldFunction2")}
@@ -1034,6 +1090,7 @@ exports
 
 module C-Preprocessor
 exports
+  sorts TokenChar Slash Token TokWS WS TokenSeq FileName
   lexical syntax
     ~[\ \t\n\/]                           -> TokenChar
     [\/]                                  -> Slash
@@ -1050,6 +1107,7 @@ exports
     TokenSeq -/- ~[\ \t\n]
     WS       -/- [\ \t]
 
+  sorts ControlLine ControlLineNot IfLine ElifLine ElseLine
   lexical syntax
     "#" WS "define" WS ID WS ( "(" WS {( ID WS ) ( "," WS )}* ")" WS )? TokenSeq? WS [\n] -> ControlLine
 
@@ -1087,6 +1145,9 @@ exports
     "#" "endif" -> ExternalDef {cons("PpIf")}
 
 module C-Lexical
+hiddens
+  sorts Asterisk Comment
+
 exports
   lexical syntax
     [\ \t\n\12]                     -> LAYOUT
@@ -1103,6 +1164,7 @@ exports
 
 module C-Constants
 exports
+  sorts Constant StringLiteralList
   context-free syntax
     IntLiteral   -> Constant {cons("IntConst")}
     HexLiteral   -> Constant {cons("HexConst")}
@@ -1113,6 +1175,8 @@ exports
     %%% TODO: Why a list??
     StringLiteral+ -> StringLiteralList {cons("StringLit")}
 
+  sorts StringLiteral CharLiteral IntLiteral HexLiteral OctLiteral FloatLiteral
+        Char StringChar OctalEsc IntFlags FloatFlags
   lexical syntax
     [L]? "\"" StringChar* "\"" -> StringLiteral
     [L]? "'" Char "'"          -> CharLiteral    
@@ -1224,14 +1288,29 @@ exports
     "while"    -/- [a-zA-Z\_0-9]
 
 module C
-imports C-Keywords C-Constants C-Lexical C-Preprocessor C-Declarators C-Program C-Statements
-        C-Identifiers C-Types C-Expressions C-StructsAndUnions C-Enumerators
-        C-ParameterDeclarators C-AbstractDeclarators
+imports
+    C-Keywords
+    C-Constants
+    C-Lexical
+    C-Preprocessor
+    C-Declarators
+    C-Program
+    C-Statements
+    C-Identifiers
+    C-Types
+    C-Expressions
+    C-StructsAndUnions
+    C-Enumerators
+    C-ParameterDeclarators
+    C-AbstractDeclarators
 
-
+hiddens
+  context-free start-symbols TranslationUnit AssignExp Stm
 
 module Stratego-C
 imports C StrategoRenamed
+hiddens
+  context-free start-symbols StrategoModule
 
 exports
   context-free syntax
@@ -1310,4 +1389,5 @@ exports
 
 module Stratego-Stratego-C
 imports Stratego-C StrategoStratego
-
+hiddens
+  context-free start-symbols StrategoModule

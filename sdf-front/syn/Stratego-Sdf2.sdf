@@ -1,2 +1,4 @@
 module Stratego-Sdf2
 imports embeddings/stratego/Stratego-Sdf2
+hiddens
+  context-free start-symbols StrategoModule
