@@ -99,7 +99,7 @@ that are declared in context using the dynamic rule ContextVar */
   //  * for lifted aux-RuleA (mapping from RDefs to stamp/label)
 
   SplitDynamicRule(saveclsr):
-    DynRuleDef|[ f(as1|as2) : t1 -> t2 where s ]| ->
+    drd@DynRuleDef|[ f(as1|as2) : t1 -> t2 where s ]| ->
     (|[ where(~<saveclsr> (t1', |[ (~str:stamp, t*) ]| )) ]|,
      [ |[ f'(as1|as2') : (~str:stamp, t*) -> t2 
                 where <s> t0 ]|,
@@ -131,10 +131,41 @@ that are declared in context using the dynamic rule ContextVar */
       ; <dummify> t1 => t1'
       ; try(?t1; !Var(x)) => t1'' // If dummified version is the same, just use x for lookup
 
+/*
+      ; where(!(f, (<length> as1, <length> as2)) => rsig)
+      ; (<DRCallersGenerated> (rsig, t1')
+         < <debug(!"callers already generated: ")> (rsig, t1')
+         + rules(DRCallersGenerated : (rsig, t1') -> ())
+           ; <debug(!"freshly generating the DR callers: ")> (rsig, t1')
+        )
+
+      ;where(try(<debug(!"about to rename: ");
+                 dr-rename-vars
+                 ; debug(!"just renamed: ")> drd))
+*/
+
       // Determine the context variables to be stored in the Closure
       ; <tvars; map(!Var(<id>))> t1' => keys
       ; <tvars; filter(test(ListVar(ContextVar) <+ ContextVar); !Var(<id>))> (t2, s) => vals1
       ; <diff> (vals1, keys) => t*
+
+strategies
+  dr-rename-vars =
+    where(<reset-counter> "DRVarNumber")
+  ; rec x(alltd(RenameVarTerm(DRRenameVar <+ NewNumberedVar) <+ all(x)))
+
+  RenameVarTerm(s) =
+    Var(s)
+  + Var(ListVar(s; <strcat> (<id>, "*")))
+  + VarDec(s, id)
+  + DefaultVarDec(s)
+
+rules
+  NewNumberedVar :
+    x -> y
+    where <next-counter> "DRVarNumber" => n
+        ; <strcat> ("drvar_", n) => y
+        ; rules(DRRenameVar: x -> y)
 
 \end{code}
 
