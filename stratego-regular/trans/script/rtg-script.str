@@ -1,0 +1,13 @@
+module rtg-script
+signature
+  constructors
+    RTGScript     : List(RTGCommand) -> RTGScript
+    Include       : String -> RTGCommand
+
+    DeleteNonTerm : String -> RTGCommand
+    DeleteTerm    : String * String -> RTGCommand
+    DeleteTerm    : String -> RTGCommand
+
+    Reduce        : RTGCommand 
+    Group         : RTGCommand
+
