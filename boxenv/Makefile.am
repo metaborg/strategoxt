@@ -49,3 +49,6 @@ $(PACKAGE)-$(VERSION).pkg: package.conf
 	         | sed 's/^"/  /;s/" "/"  /g' \
 	         | tr '"' '\n' ;\
        ) > $@
+
+bootclean :
+
