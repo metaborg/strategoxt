@@ -217,6 +217,7 @@ rules
           else
               <conc-strings>("bagof-", f) => g
             ; <conc-strings>("once-", f) => g2
+            ; <conc-strings>("all-", f) => g3
 
             // Transform passed arguments of f into calling arguments for f'
             ; <map((?DefaultVarDec(<id>) + ?VarDec(<id>,_)); !Call(SVar(<id>),[]))> as1 => s1*
@@ -235,7 +236,9 @@ rules
                  |[ g2(as1|as2) : x@t1 -> res
                       where dr-lookup-rule-pointer(| ~str:f, t1'') => (closures, key, tbl)
                     ; <split-fetch(f'(s1*|t1'*); ?res); conc> closures => closures'
-                    ; <hashtable-put(|key, closures')> tbl ]|
+                    ; <hashtable-put(|key, closures')> tbl ]|,
+                 |[ g3(as1|as2) : x@t1 -> <filter(f'(s1*|t1'*))> closures
+                      where (dr-lookup-all-rules(|~str:f, t1'') <+ ![]) => closures ]|
                ] => callers
             ; rules(DRCallersGenerated : (rsig, t1') -> ())
           end
