@@ -17,7 +17,7 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 dnl 02111-1307, USA.
 
-dnl $Id: configure.in.src,v 1.4 2001/11/22 08:33:09 mdejonge Exp $
+dnl $Id: configure.in.src,v 1.5 2001/11/22 08:41:51 mdejonge Exp $
 
 AC_INIT(configure.in)
 AM_INIT_AUTOMAKE(__PACKAGE__,__VERSION__)
@@ -51,7 +51,7 @@ AC_PACKAGE_REQUIRE(graphviz, dot,
    [  --with-graphviz               Specify location of graphviz package])
 AC_SUBST(GRAPHVIZ)
 
-AC_PACKAGE_REQUIRE(grammar-recovery, yacc2sdf.
+AC_PACKAGE_REQUIRE(grammar-recovery, yacc2sdf,
    [  --with-grammar-recovery Specify location of grammar-recovery package])
 AC_SUBST(GRAMMAR_RECOVERY)
 
@@ -86,7 +86,7 @@ AC_SUBST(SDF_TOOLS)
 
 
 
-AC_REVISION($Id: configure.in.src,v 1.4 2001/11/22 08:33:09 mdejonge Exp $)
+AC_REVISION($Id: configure.in.src,v 1.5 2001/11/22 08:41:51 mdejonge Exp $)
 
 AC_PROG_CC
 AC_PROG_INSTALL

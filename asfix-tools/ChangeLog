@@ -1,6 +1,6 @@
 2001-11-22 Merijn de Jonge <mdejonge@cwi.nl>
-   * configuration of gpp package adapted to make use of AC_PACKAGE_REQUIRE
-     macro in configure.in
+   * configuration of asfix-tools package adapted to make use of
+     AC_PACKAGE_REQUIRE macro in configure.in
 
 2001-10-18 Merijn de Jonge <mdejonge@cwi.nl> 
    * Added usage info for all asfix tools.

@@ -1,5 +1,5 @@
 2001-11-22 Merijn de Jonge <mdejonge@cwi.nl>
-   * configuration of gpp package adapted to make use of AC_PACKAGE_REQUIRE
+   * configuration of xt package adapted to make use of AC_PACKAGE_REQUIRE
      macro in configure.in
 
 2001-11-02 Merijn de Jonge <mdejonge@cwi.nl> 

@@ -1,6 +1,6 @@
 2001-11-22 Merijn de Jonge <mdejonge@cwi.nl>
-   * configuration of gpp package adapted to make use of AC_PACKAGE_REQUIRE
-     macro in configure.in
+   * configuration of stratego-tools package adapted to make use of
+     AC_PACKAGE_REQUIRE macro in configure.in
 
 2001-10-10 Merijn de Jonge <mdejonge@cwi.nl> 
     * package.conf: type fixed and removed stratego-pp from package list

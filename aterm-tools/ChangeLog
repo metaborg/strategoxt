@@ -1,6 +1,6 @@
 2001-11-22 Merijn de Jonge <mdejonge@cwi.nl>
-   * configuration of gpp package adapted to make use of AC_PACKAGE_REQUIRE
-     macro in configure.in
+   * configuration of aterm-tools package adapted to make use of
+     AC_PACKAGE_REQUIRE macro in configure.in
 
 2001-11-21 Merijn de Jonge <mdejonge@cwi.nl> 
     * atermdiff/data/diff12.topmost, diff34.topmost: adapted for string bug
