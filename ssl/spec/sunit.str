@@ -12,8 +12,6 @@ strategies
 
   record-failure = (id, \x -> <add>(x,1)\ )
 
-//  check-for-failures = (id, 0); <exit> 0 <+ <exit> 1
-
   check-for-failures = (id, 0)
 
   report-test = (debug(!"successes: "), debug(!"failures: "))
@@ -67,4 +65,29 @@ strategies
 	   ,('in; s <+ <debug> "  failed"; fail)
             ; <debug> ["  succeeded; result: ", <id>]
            )
+
+// term arguments variants of the old sunit strategies
+strategies
+  apply-test(s | name, 'in, out) =
+    apply-test(!name, s, !'in, !out)
+
+  apply-test(s | name, 'in) =
+    apply-test(!name, s, !'in)
+
+  apply-and-check(s | name, 'in, check) =
+    apply-and-check(!name, s, !'in, !check)
+
+  apply-and-fail(s | name, 'in) =
+    apply-and-fail(!name, s, !'in)
+
+  apply-and-fail(s | name, 'in, out) =
+    apply-and-fail(!name, s, !'in, !out)
+
+  apply-and-show(s | name, 'in) =
+    apply-and-show(!name, s, !'in)
+
+
+  do-test(s | nr) =
+    where(< debug>nr )
+  ; ( where(s) ; record-success <+ record-failure )
 
