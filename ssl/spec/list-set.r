@@ -129,16 +129,23 @@ strategies
     obsolete(!"collect-kids(s); use crush(![],union,s)");
     crush(![],union,s)
 
-  collect(s) =
-    rec x(s; \y -> [y]\ 
+  collect-all(s) =
+    rec x(![<s> | <crush(![],union,x)>]
           <+ crush(![],union,x))
 
+  collect-om(s) =
+    rec x(![<s>] 
+          <+ crush(![],union,x))
+
+  collect(s) = 
+    collect-om(s)
+
   collect-set(s) =
-    rec x(s; \y -> [y]\
+    rec x(![<s>] 
           <+ crush(![],conc,x))
 
   collect(s, skip: a * (a -> a) * (a -> a) -> a) =
-    rec x(s; \y -> [y]\
+    rec x(![<s>]
           <+ skip(x,![]); crush(![],union,id)
           <+ crush(![],union,x))
 
@@ -151,7 +158,7 @@ strategies
 
   bu-collect(s) =
     rec x(some(x); crush(![],union,[s|id] <+ ![])
-          <+ s; \y -> [y]\ )
+          <+ ![<s>] )
     <+ ![]
 
   collect-split(splitter) = 

@@ -277,11 +277,20 @@ strategies
     ; sort-list(SortL(string-gt))
     ; map(implode-string)
 
+  string-sort-desc = 
+      map(explode-string)
+    ; sort-list(SortL(string-lt))
+    ; map(implode-string)
+
   // in: a binary tuple of exploded strings (==list of ASCII numbers)
   // but two strings can also be given.
   string-gt = 
     try((explode-string, explode-string));
     strcasecmp; ?1
+
+  string-lt = 
+    try((explode-string, explode-string));
+    strcasecmp; ?-1
 
   strcmp = rec r
 	(  \([x|xs],[x|ys]) -> <r>(xs,ys)\

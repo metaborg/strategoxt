@@ -1,3 +1,12 @@
+2001-11-21  Eelco Visser  <visser@acm.org>
+
+	* ssl/spec/list-set.r: collect-all and collect-om. Reformulated
+	several collect strategies to use build-split pattern ![<s>].
+
+	* spec/list-set-test.r: tests for collect-all and collect-om
+
+	* spec/string-test.r: tests for string sorting
+
 2001-11-15  Merijn de Jonge  <mdejonge@cwi.nl>
 	* updated dependencies in ssl-0.6.3.pkg
 	* term.c: mkterm fix: quoting is now correct.

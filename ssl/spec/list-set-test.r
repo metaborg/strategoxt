@@ -36,7 +36,8 @@ strategies
 	test5;
 	test6;
 	test7;
-	test8
+	test8;
+	test9
      )
 
   test1 = 
@@ -120,5 +121,17 @@ strategies
 	, term-size
 	, !F(G(A,H(A,3.0)),H(1,C))
 	, !9
+	)
+
+  test9 = 
+    apply-test(!"test9a"
+	, collect-om(G(id,id))
+	, !F(G(A,G(A,B)),G(B,C))
+	, ![G(A,G(A,B)),G(B,C)]
+	);
+    apply-test(!"test9b"
+	, collect-all(G(id,id))
+	, !F(G(A,G(A,B)),G(B,C))
+	, ![G(A,G(A,B)),G(A,B),G(B,C)]
 	)
 \end{code}

@@ -143,9 +143,19 @@ strategies
 	)
 
    string-sort-test =
-     apply-test(!"string-sort-test"
+     apply-test(!"string-sort-test-a"
 	, string-sort
 	, !["De", "db", "Cb", "ac"]
 	, !["ac", "Cb", "db", "De"]
+	);
+     apply-test(!"string-sort-test-b"
+	, string-sort
+	, !["2001", "2000", "1999", "1998"]
+	, !["1998","1999","2000","2001"]
+	);
+     apply-test(!"string-sort-test-c"
+	, string-sort-desc
+	, !["2001", "2000", "1999", "1998"]
+	, !["2001","2000","1999","1998"]
 	)
 \end{code}
