@@ -64,7 +64,7 @@ strategies
   reachable-nonterms =
     ?RTG(Start(starts), ProdRules(prods))
     ; let
-          reach-0 = !starts // TODO: collect non terminals in Start regexp
+          reach-0 = !starts
 
           reach-n = {reach: ?reach;
               <unions> [reach | <filter(\

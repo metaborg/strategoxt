@@ -9,27 +9,27 @@ imports Stratego rtg options rtg-util module-option logging stratego-rtg
 strategies
 
   main-core-rtg2sig =
-    io-wrap(module-option,
-      ungroup-productions
-    ; rtg2sig
-    )
+    io-wrap(module-option, rtg2sig)
 
 strategies
 
   /**
    * @type  RTG -> StrategoModule
    */ 
-  rtg2sig :
-    RTG(Start(starts), ProdRules(prods)) -> 
-      |[
+  rtg2sig =
+      group-productions
+    ; RTG(id, ProdRules(filter(not(ignore-prodrule))))
+    ; ungroup-productions
+
+    ; ?RTG(Start(starts), ProdRules(prods))
+    ; !|[
         module ~<get-module-name>
         imports list-cons option
 
         signature
           constructors
-            ~*constrs
+            ~*<map(prodrule-to-constr)> prods
       ]|
-        where <map(prodrule-to-constr)> prods => constrs
 
 /**
  * @todo  Create at least some constructors for labelled content models
@@ -45,3 +45,40 @@ strategies
     <+ not-empty-prodrule-to-constr
     <+ ref-prodrule-to-constr
     <+ log(|Error(), "Cannot rewrite production", <id>); fail
+
+/**
+ * This somewhat ad-hoc, but it works fine for sdf2rtg | rtg2sig 
+ */
+strategies
+
+  ignore-prodrule =
+       declare-plus-list
+    <+ is-list-prodrule
+
+  is-list-prodrule = 
+    where(
+      collect(?Appl(<id>, []))
+    ; ?[_|_]
+    ; map(ConcTerm() + ConsTerm() + NilTerm())
+    )
+
+  declare-plus-list =
+    ?ProdRule(Nonterm(srtx1), alts)
+    ; where(
+        <length> alts => 4
+      ; !alts
+      ; filter(?Appl(ConcTerm(), [Ref(_), Ref(_)]))
+      ; length => 3
+      ; !alts
+      ; fetch(?Appl(ConsTerm(), [Ref(Nonterm(srtx)), Ref(Nonterm(srtx2))]))
+      ; rules(
+          ListTree2Sort : Ref(Nonterm(srtx1)) -> Sort |[ List(srtx) ]|
+          ListTree2Sort : Ref(Nonterm(srtx2)) -> Sort |[ List(srtx) ]|
+        )
+      )
+
+
+
+
+
+

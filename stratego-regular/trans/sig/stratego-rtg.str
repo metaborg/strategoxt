@@ -140,7 +140,8 @@ strategies
       log(|Error(), "Cannot rewrite tree to sort", <id>); fail
     
   tree2sort =
-    ?Ref(<nonterm-to-sort>)
+    ListTree2Sort
+    <+ ?Ref(<nonterm-to-sort>)
 
   tree2sort:
     List(t) -> Sort |[ List(srtx) ]|
