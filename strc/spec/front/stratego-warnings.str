@@ -47,7 +47,7 @@ strategies
   filter( 
     \ x -> ConstructorWarning(<double-quote>x) 
       where lower-case => x
-          ; not("" + "stdin" + "stdout" + "stderr")
+          ; not("" + "stdin" + "stdout" + "stderr" + "meta-var" + "meta-listvar" + "amb")
      \ )
 
   MaybeUnboundVariables(spec) =
