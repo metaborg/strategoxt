@@ -15,13 +15,347 @@ StrategoXT 0.12 -- released August ..., 2004
    * Stratego language: new if then construct
 
    * Support for comment preserving transformations.
+  
+   * Improved newname.
 
 ---------++ Format Checking
 
-...
+	* trans/interpret/core-format-check.str: new implementation of the
+	RTG format checker. The format checker now uses a bottom-up
+	algorithm, which was suggested by Eelco Visser. format-check now
+	infers type in a bottom-up fashion and will complain at the
+	innermost term for which no type can be inferred. If this term has
+	subterms, then their types will be shown.
 
----------++ Item 2
+	This message can still be huge if the term is very large. I should
+	do something about that. The next plan is to implement a
+	format-check that produces XHTML/CSS output, which can be
+	inspected in an interactive way.
 
+	Notice that his bottom-up algorithm will not be able to say
+	something about 'expected' types.
+
+	* xtc/format-check.str: improved --help documentation using
+	tool-doc.
+
+	* xtc/format-check.str: now accepts a -s|--start argument to
+	specify the start non-terminal. By default, the start
+	non-terminals of the RTG are used.
+
+	* tests/format-check/format-check-tests.str: lots of tests for the
+	format checker.
+
+	* xtc/format-check.str: format-check has a new feature to report
+	the results of format-checking in an HTML document. This document
+	is contains the input term, formatted in the same way as
+	pp-aterm. All innermost format errors in the ATerm are indicated
+	in red boxes. Moving over the ATerm with your mouse will show the
+	non-terminal of a term in an information box. Use --xhtml to
+	produce the HTML output. There is still some minor work to do: fix
+	a few bugs, and make some things more fancy.
+
+	* xtc/rtg-script.str: new tool for processing RTGs. The tool is
+	subject to any change that you can imagine, but the basic
+	functionality is useful, so the features will probably always be
+	available in a certain way. Currently the tool supports: Read (no
+	-I yet), Reduce, Group, and DeleteNonterm. More functionanility is
+	on the way.
+
+	* xtc/format-check.str: new --vis option for showing the format
+	error in a pp-aterm at the command-line. Format-errors will be in
+	pretty-printed in red if the terminal supports colors.
+
+	* xtc/format-check.str: new --fast option. This option will
+	improve the speed of format checking, but will reduce the quality
+	of error messages.
+
+	* trans/interpret/core-format-check.str: complete redesign to
+	improve performance and memory usage. An ATerm of 32.000 nodes now
+	format-checks --fast in about 1.5 seconds (was 40 seconds). I
+	think the performance can still be improved at some points.
+
+	The --xhtml and --vis mode have not been updated yet. Will do this
+	tonight.
+
+---------++ Improved Pack SDF
+
+
+	* parse/pack-sdf.str: pack-sdf now checks if module name in an SDF
+	module file, corresponds to the filename.
+
+
+	* parse/pack-sdf.str: yet another improvement of the include
+	mechanism. The first search option is from now the directory of
+	the input file, which is not always the current directory. So,
+	pack-sdf -i syn/Foo.sdf will search for module in the syn
+	directory.
+
+	* parse/pack-sdf.str: pack-sdf -i Foo.sdf now always packs
+	./Foo.sdf, not a Foo in the search path if ./Foo.sdf does not
+	exist.
+
+	Improved error-reporting for invalid -I arguments.
+
+	* parse/pack-sdf.str: improved error reporting for missing
+	modules. Usually, the module is not really missing, but the name
+	of this import is incorrect. Hence, it is useful to report the
+	module(s) from where the 'missing' module is imported.
+
+	Example (rather verbose because of the hierarchical SDF module names)
+	-----------------------------------------------------------------
+	/pkg/strategoxt/current/bin/pack-sdf  -i Java-15.sdf -o Java-15.def
+	pack-sdf: error: module languages/java-15/expressions/Main not found
+	  imported from module languages/java-15/classes/FieldDeclarations
+	    in file ./languages/java-15/classes/FieldDeclarations.sdf
+
+	pack-sdf: error: module languages/java-15/interfaces/MethodDeclarations not found
+          imported from module languages/java-15/interfaces/InterfaceDeclarations
+            in file
+	  ./languages/java-15/interfaces/InterfaceDeclarations.sdf
+	-----------------------------------------------------------------
+
+	* parse/pack-sdf.str: pack-sdf now reports *all* missing modules
+	in a single execution.
+
+	* parse/pack-sdf.str: fatal-error invokes "exit". Tools should
+	invoke xtc-exit to remove scoped temporary files. I've replace
+	some fatal-errors with printnl and xtc-exit, but not all yet.
+
+
+	* parse/pack-sdf.str: fixed the support for creating a dependency
+	file. Makefile.xt will instruct pack-sdf to do this, so there is
+	no longer a need to specify dependencies of SDF files.
+
+---------++ Improved Parse Unit
+
+	* analyse/parse-unit/parse-unit.str: added the
+	--no-heuristic-filters flag to disable the heuristic -fi
+	(injection count) and -fe (eagerness) disambiguation filters of
+	sglr. Maybe this should be done by default, but it might break
+	stuff.
+
+	* analyse/parse-unit/parse-unit.str: parse-unit now parses the
+	testsuite, so it accepts testsuites concrete syntax. No more
+	parse-parse-testsuite! It will fall back to abstract syntax,
+	so this change should not break anything. The --abstract-input
+	option can be used to declare that you are passing a testsuite
+	in abstract syntax.
+
+	* analyse/parse-unit/parse-unit.str: parse-unit now has an option
+	to parse a single test and write the the result to the output. In
+	this mode ambiguities are accepted, which is useful for debugging.
+
+	The option for the 'single test mode' is --single <nr> where <nr>
+	is the number in the testsuite (printed when the testsuite is
+	executed).
+
+	The --asfix2 flag can be used to produce asfix2 instead of an AST.
+
+---------++ Improved Parenthesize Generation
+
+	* trans/sdf2ast-conflicts.str: separate tool for producing a list
+	of conflict information from an SDF syntax
+	definition. Currently, the only conflict information that is
+	produced is a SubtermConflict.
+
+	* trans/sdf2parenthesize.str: use the separate sdf2ast-conflicts
+	tool.
+
+	* trans/sdf2parenthesize.str: produce more Stratego compiler
+	friendly output: for every constructor/pos there is now only a
+	single rewrite rule. This rewrite rule checks for a conflicting
+	subterm in the where clause. This reduces the number of generated
+	rules, the LOC, and it doesn't blow up the compile-match
+	component.
+
+	* trans/sdf2ast-conflicts.str: fixed a major bug in the generation
+	of rewrite rules for chain priorities. I was assuming that the SDF
+	normalizer generates chain priorities for the transitive closure
+	of the priorities that are defined in an SDF syntax
+	definition. For example,
+
+	----------------------------------------------------
+	  context-free priorities
+	      Exp "*" Exp -> Exp
+            > Exp "+" Exp -> Exp
+            > Exp "<" Exp -> Exp 	
+	----------------------------------------------------
+
+	will not result in a chain priority 
+
+	----------------------------------------------------
+	  Exp "*" Exp -> Exp
+        > Exp "<" Exp -> Exp
+	----------------------------------------------------
+
+	sdf2parenthesize now takes the transitive closure itself, and
+	generates all the required rules for chain priorities.
+
+	This bug was revealed by pretty-printing the GNU Classpath source
+	code with the pretty-printer of java-front, which uses the
+	sdf2parenthesize tools for printing parentheses.
+
+---------++ Pragmatic XML Support
+
+	* xtc/aterm2xml.str: composes data2xml-doc and pp-xml-doc into a
+	single aterm to xml tool. This tool uses the --explicit mode of
+	data2xml-doc.
+
+	* xtc/xml2aterm.str: composes parse-xml-info and xml-info2data
+	into a single xml to aterm tool. This tool uses the --explicit
+	mode of xml-info2data.
+
+	* trans/data2xml-doc.str: added an --explicit and --very-explicit
+	mode. The explicit mode uses XML elements for indicating string,
+	int, list and tuple constructs. The --very-explicit mode also use
+	an XML element for applications.
+
+	* trans/xml-info2data.str: added support for the --explicit
+          mode.
+
+	* tests/xml-aterm-tests.str: aterm2xml | xml2aterm roundtrip
+	testsuite.
+
+	* trans/data2xml.str: in explicit mode, Some and None should be
+	explictly represented in XML.
+
+Added explicity argument to all tools. Default is explicit, but
+aterm2xml can now also be invoked with --implicit mode.
+
+xml-info2data now supports all explicity modes. The very explicit mode
+is now even more explicit to support annotations for every all aterm
+constructs
+
+RELAX NG schema for the very explicit representation of an ATerm in XML
+
+---------++ Support for Comment Preserving Transformations
+
+2004-09-02  Martin Bravenboer <martin@cs.uu.nl>
+
+	* src/anno/asfix-anno-comments.str: a new asfix to asfix tool that
+	preserves comments that were of the input source code by putting
+	them in annotations of the AST.
+
+	It is difficult to decide what a comment actually comments on. The
+	tool uses the heuristic that a comment is usually about the next
+	construct. Therefore, it adds the comment to the first term with a
+	constructor in the the subtree of the next symbol in the
+	production rule. If this next symbol is a literal, then the
+	comment will not be preserved.
+
+	This simple tool works remarkably well. Let me illustrate this
+	with an example input that I used during the development of this
+	tool.
+
+	---------------------------------------------------------------
+	/**
+	 * Voodoo
+	 */
+	class Voodoo
+	{
+	  /**
+	   * Bla bla
+	   */
+	  public void foo(/*let me explain this */ int x)
+	  {
+	    // just return
+	    return /* foo */ x;
+	  }
+	}
+	---------------------------------------------------------------
+
+	An example fragment of the AST:
+
+	---------------------------------------------------------------
+	Param([], Int, Id("x")){(Comment, "/*let me explain this */")}
+	---------------------------------------------------------------
+
+	The JavaFront pretty-printer has been extended to support these
+	Comment annotations. The following pipe:
+
+	---------------------------------------------------------------
+	sglr -2 -s CompilationUnit -p ~/wc/java-front/syn/v1.5/Java-15.tbl 
+	     -i ~/Foo.java
+	  | ./asfix-anno-comments
+	  | implode-asfix
+	  | pp-java
+	---------------------------------------------------------------
+
+	produces the following output:
+	
+	---------------------------------------------------------------
+	/**
+	 * Voodoo
+	 */
+	class Voodoo
+	{
+	  /**
+	   * Bla bla
+	   */
+	  public void foo(/*let me explain this */ int x)
+	  {
+	    // just return
+	    return /* foo */ x;
+	  }
+	}
+	---------------------------------------------------------------
+
+	This tool was inspired by pleasant discussions on source to source
+	transformations with Karl Trygve.
+
+
+	* src/implode/implode-asfix.str: implode-asfix now supports
+	preservation of annotations in AsFix trees. This means that
+	implode-asfix now supports the addPosInfo position annotation
+	tool, and the future comment annotation tool.
+
+	Currently, implode-asfix only preserves the annotations of
+	applications of lexical constructs and named
+	constructors. Annotation on other constructs, such as list, will
+	still be lost.
+
+	If you want full annotation preservation, use AsFix2ME output of
+	sglr (don't use -2 ) and implode the tree with implodePT.
+
+
+---------++ Language Enhancements
+
+   all-R with R a dynamic rule produces the values for R in all scopes.
+
+
+	* syn/Stratego-Strategies.sdf: added the if-then construct: if s1
+	then s2 end.
+
+---------++ Improved New Name
+
+        * ssl/string.c : SSL_newname - now trims any trailing digits up to
+        the rightmost '_'. This allows for feeding previously generated
+        new names as prefix into another call to SSL's newname:
+            <newname> "a"        // produces "a_0"
+          ; <newname> "b"        // produces "b_0"
+          ; newname              // produces "b_1"
+          ; <newname> "b_2"      // produces "b_3"
+          ; <newname> "b_1729"   // produces "b_4"
+          ; <newname> "b_a"      // produces "b_a_0"
+          ; <newname> "a_"       // produces "a_2"
+          ; <newname> "a_1"      // produces "a_3"
+        Note that the old, 2nd argument `countergroup' has been discarded:
+        ATerm SSL_newname(ATerm prefix)
+
+	abs/gcd
+
+----------++ AutoXT 
+	* autoxt.m4: applied the improved autoxt.m4, which was contributed
+	by Akim. The main improvement is a concise XT_ARG_WITH macro that
+	can be used to the define --with flags. Also, autoconf now fails
+	if there are undefined macros.
+
+	I've fixed several minor issues in the contributed autoxt.m4:
+	- Merged with recent changes.
+	- AC_DEFINES should have a (), since they are applied as
+	functions.
+
+	
 ---------++ Detailed List of Issues
 
 The full list of issues closed in this release is available at:
@@ -41,11 +375,6 @@ See our issue tracking systems for reports about (open) bugs:
 
    * https://catamaran.labs.cs.uu.nl/jira/
 
-For an overview of features planned for future releases:
-
-   * Release plan: http://www.stratego-language.org/Stratego/ReleasePlan
-   * To do: http://www.stratego-language.org/Stratego/ToDo
-
 Please report any problems with installation or bugs in the
 implementation to our issue tracking system. Please check the existing
 issues to see if a report about the problem was already submitted.
@@ -56,5 +385,5 @@ Developments, beta tests, and bug fixes were carried out by
 
    * Martin Bravenboer
    * Arthur van Dam
-   * Akim
+   * Akim Demaille
    * Eelco Visser
