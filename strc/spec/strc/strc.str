@@ -271,7 +271,7 @@ strategies
 strategies 
 
   get-infile :
-    FILE(file) -> FILE(basein)
+    FILE(file) -> FILE(file)
     where <basename> file => basein
 	; if-verbose3(debug(!"basein: "))
         ; <set-config> ("basein",  basein)
