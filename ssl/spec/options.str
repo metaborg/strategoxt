@@ -189,14 +189,6 @@ strategies
 
 strategies
 
-  default-usage =
-    where(
-      <printnl> (stderr, 
-        ["usage : ", <whoami> (), " [-S] [-i file] [-o file] [-b] [-s] [--help|-h|-?]" ]
-      )
-    ; <exit> 1
-    )
-
   need-help(u) =
     (  <get-config> "--help"
       <+ option-defined(
@@ -266,19 +258,19 @@ strategies
    * @obsolete use io-wrap.
    */
   iowrapO(strat, extra-options) =
-    obsolete(!"iowrapO/2: use iowrap/2");
-    iowrap(strat, extra-options)
+    obsolete(!"iowrapO/2: use io-wrap/2")
+    ; iowrap(strat, extra-options)
 
   /**
    * @obsolete use io-wrap.
    */
   iowrap(strat, extra-options) = 
-    iowrap(strat, extra-options, default-usage)
+    iowrap(strat, extra-options, system-usage)
 
   /**
    * @obsolete use io-wrap.
    */
-  iowrap(strat, extra-options, usage) = 
+  iowrap(strat, extra-options, usage) =
     iowrap(strat, extra-options, usage, 
 	   if-verbose2(where(<printnl>(stderr, [<get-config> "program"]))))
 
@@ -286,14 +278,14 @@ strategies
    * @obsolete use io-wrap.
    */
   iowrapO(strat, extra-options, usage) =
-    obsolete(!"iowrapO/3: use iowrap/3");
     iowrap(strat, extra-options, usage)
 
   /**
    * @obsolete use io-wrap.
    */
   iowrap(strat, extra-options, usage, announce) =
-    option-wrap(extra-options <+ io-options, usage, announce, 
+    obsolete(!"iowrap: use io-wrap")
+    ; option-wrap(extra-options <+ io-options, usage, announce, 
       input-file;
       apply-strategy(strat);
       output-file
@@ -303,15 +295,29 @@ strategies
    * @obsolete use input-wrap.
    */
   iowrapNoOutput(strat, extra-options) = 
-    iowrapNoOutput(strat, extra-options, default-usage)
+    obsolete(!"iowrapNoOutput/2: use input-wrap")
+    ; iowrapNoOutput(strat, extra-options, default-usage)
 
   /**
    * @obsolete use input-wrap.
    */
   iowrapNoOutput(strat, extra-options, usage) =
-    option-wrap(extra-options <+ io-options, usage, id, 
-      input-file;
-      apply-strategy(strat)
+    obsolete(!"iowrapNoOutput/3: use input-wrap")
+    ; option-wrap(extra-options <+ io-options, usage, id, 
+        input-file
+      ; apply-strategy(strat)
+      )
+
+  /**
+   * @obsolete  use io-wrap
+   */
+  default-usage =
+    obsolete(!"options:default-usage/(0,0): use io-wrap.")
+    ; where(
+      <printnl> (stderr, 
+        ["usage : ", <whoami> (), " [-S] [-i file] [-o file] [-b] [-s] [--help|-h|-?]" ]
+      )
+    ; <exit> 1
     )
 
 strategies
