@@ -1,5 +1,5 @@
 module strat-count
-imports options Stratego
+imports liblib Stratego
 strategies
 
   io-strat-count =

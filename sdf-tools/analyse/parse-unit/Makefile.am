@@ -14,4 +14,4 @@ EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta)
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c)
 
-
+LDADD += $(SSL_LIBS)

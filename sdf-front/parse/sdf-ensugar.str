@@ -1,5 +1,5 @@
 module sdf-ensugar
-imports Sdf2 options simple-traversal explode-aterm
+imports Sdf2 liblib explode-aterm
 
 /**
  * sdf-ensugar implements the following ensugarings:

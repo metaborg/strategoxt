@@ -11,7 +11,7 @@
  * @author  Merijn de Jonge
  */
 module strip-comments
-imports options
+imports liblib
 strategies
 
   io-strip-comments = 

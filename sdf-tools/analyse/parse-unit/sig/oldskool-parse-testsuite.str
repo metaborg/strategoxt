@@ -1,4 +1,4 @@
-module parse-unit-testsuite
+module oldskool-parse-testsuite
 
 signature
   constructors

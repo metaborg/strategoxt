@@ -1,5 +1,5 @@
 module parse-unit
-imports xtc-lib io list-filter string list-cons options config aterm-eq
+imports liblib aterm-eq
 imports oldskool-parse-testsuite parse-testsuite test-results testsuite-upgrade
 
 strategies

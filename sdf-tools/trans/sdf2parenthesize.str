@@ -5,7 +5,7 @@
  * @since   0.11
  */
 module sdf2parenthesize
-imports Stratego Sdf2 options xtc-lib stratego-xt-xtc-tools collect sdf-options
+imports Stratego Sdf2 liblib strategoxt-xtc-tools sdf-options
 imports sdf-spread-cons
 
 strategies

@@ -1,5 +1,5 @@
 module sdf-desugar
-imports Sdf2 options simple-traversal implode-aterm
+imports Sdf2 liblib implode-aterm
 
 /**
  * sdf-desugar implements the following desugarings:

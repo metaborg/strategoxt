@@ -9,3 +9,5 @@ SCFLAGS     	 = --main io-$*
 STRINCLUDES      = -I $(STRATEGO_FRONT)/share/stratego-front
 
 EXTRA_DIST 	 = $(wildcard *.str) 
+
+LDADD += $(SSL_LIBS)

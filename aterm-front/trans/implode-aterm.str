@@ -2,7 +2,7 @@
  * @author  Martin Bravenboer
  */
 module implode-aterm
-imports ATerms options explode-aterm
+imports ATerms liblib explode-aterm
 
 strategies
 

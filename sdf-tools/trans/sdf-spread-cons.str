@@ -4,7 +4,7 @@
  * @author  Martin Bravenboer
  */
 module sdf-spread-cons
-imports Sdf2 options
+imports Sdf2 liblib
 
 strategies
 

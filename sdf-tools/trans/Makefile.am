@@ -2,6 +2,7 @@ include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
 bin_PROGRAMS = gen-renamed-sdf-module sdf-spread-cons sdf2parenthesize
+LDADD       += $(SSL_LIBS)
 
 SCFLAGS       = --main io-$* --dr new
 STRINCLUDES   = -I $(XTC)/share/xtc \
