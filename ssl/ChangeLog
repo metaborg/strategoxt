@@ -1,5 +1,13 @@
 2003-05-28  Martin Bravenboer <martin@mbravenboer.org>
 
+  * spec/posix-signal.str: prefixed signal overlays with
+    SIG. Reported by Karina.
+
+  * test/posix-process-test.str: unit testing of 
+    posix-process primitives.
+
+2003-05-28  Martin Bravenboer <martin@mbravenboer.org>
+
   * spec/char-io.str: added read-text-file.
 
   * spec/list-misc.str: documented fold strategies

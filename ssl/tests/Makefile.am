@@ -26,6 +26,7 @@ check_PROGRAMS = \
   parallel-test \
   parse-options-test \
   posix-file-test \
+  posix-process-test \
   reals-test \
   rename-test \
   scoped-finite-map-test \
