@@ -22,7 +22,7 @@ USA
 /* The CHECK_FOR_MPROTECT function, tries to determine whether or not
    dynamic functions require the use of mprotect to make the stack executable.
  */
-AC_DEFUN(CHECK_FOR_MPROTECT,[
+AC_DEFUN([CHECK_FOR_MPROTECT],[
 AC_MSG_CHECKING([whether platform requires use of mprotect])
 AC_TRY_RUN(
 /* This test checks whether on (sun/sparc) platforms the use of mprotect is
