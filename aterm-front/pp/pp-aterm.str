@@ -1,5 +1,5 @@
 module pp-aterm
-imports xtc-lib string stratego-xt-xtc-tools pp-aterm-options
+imports liblib strategoxt-xtc-tools pp-aterm-options
 
 strategies
 

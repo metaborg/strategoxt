@@ -4,8 +4,9 @@ include $(wildcard *.dep)
 SUBDIRS           = tests
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 
-bin_PROGRAMS 	   = pp-aterm
+bin_PROGRAMS     = pp-aterm
 libexec_PROGRAMS = PpTerm
+LDADD += $(SSL_LIBS)
 
 EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta)
 CLEANFILES     = $(wildcard *.dep)

@@ -1,5 +1,5 @@
 module ugly-print
-imports Box annotations pp-aterm-options
+imports Box pp-aterm-options
 
 strategies
 

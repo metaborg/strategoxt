@@ -1,6 +1,4 @@
 module pp-aterm-options
-imports options
-
 strategies
 
   max-term-size-option =
