@@ -1,5 +1,10 @@
 2003-12-05  Martin Bravenboer <martin@cs.uu.nl>
 
+	* Makefile.am: pass CPL configuration to the build time ATerm
+	library.
+
+2003-12-05  Martin Bravenboer <martin@cs.uu.nl>
+
 	* configure.in: do not set a default location of LaTeX: boxenv
 	will search the PATH for it.
 	

@@ -6,14 +6,13 @@ all-local: pre-pkgs/build/srts.dummy pre-pkgs/install/xtc.dummy
 install-exec-local: pre-pkgs/build/srts.dummy pre-pkgs/install/xtc.dummy
 
 # installs a local srts for building the StrategoXT packages
-# TODO: configure srts with cpl if necessary
 # TODO: remove the dummy on a clean or whatever.
 pre-pkgs/build/srts.dummy :
 	mkdir -p pre-pkgs &&\
 	mkdir -p pre-pkgs/build &&\
 	cp -rfp srts pre-pkgs/build/ &&\
 	cd pre-pkgs/build/srts &&\
-	./configure --prefix=@abs_top_srcdir@/pre-pkgs/build --with-aterm=$(ATERM) &&\
+	./configure --prefix=@abs_top_srcdir@/pre-pkgs/build --with-aterm=$(ATERM) --with-cpl=$(CPL) &&\
 	$(MAKE) &&\
 	$(MAKE) install &&\
 	touch @abs_top_srcdir@/pre-pkgs/build/srts.dummy
