@@ -480,6 +480,10 @@ rules
     Op(c, ts) ->
     CastATerm(FunCall(Id("ATmakeAppl"),[Id(<ConstructorName> (c, <length> ts)) | ts]))
 
+  ConstructTerm :
+    Anno(t1, t2) ->
+    CastATerm(FunCall(Id("ATsetAnnotations"),[t1, t2]))
+
   ConstructList :
     Op("Nil", []) ->
     CastATerm(Id("ATempty"))
