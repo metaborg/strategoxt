@@ -1,4 +1,4 @@
-AC_INIT([strategoxt],[0.12],[stratego-bugs@cs.uu.nl])
+AC_INIT([strategoxt],[0.13],[stratego-bugs@cs.uu.nl])
 AM_INIT_AUTOMAKE
 
 XT_SVN_REVISION
@@ -74,8 +74,29 @@ AC_PROG_CC
 
 ### PACKAGES ##########################
 
-PKGS="autoxt srts xtc sdf-import stratego-front asfix-tools strc gpp c-tools ssl concrete-syntax xml-front aterm-front sdf-front dot-tools graph-tools sdf-tools aterm-tools stratego-regular xml-front stratego-tools boxenv stratego-util"
+AC_ARG_ENABLE(strc-core,
+  AC_HELP_STRING([--enable-strc-core], [build new Stratego compiler])
+  , CORE_ENABLED=$enable_strc_core
+  , CORE_ENABLED="no"
+)
+
+AC_SUBST(CORE_ENABLED)
+
+PKGS="autoxt srts xtc sdf-import stratego-front asfix-tools strc gpp c-tools ssl stratego-lib concrete-syntax xml-front aterm-front sdf-front dot-tools graph-tools sdf-tools aterm-tools stratego-regular xml-front stratego-tools boxenv stratego-util"
+
+
+if test "x$CORE_ENABLED" = "xyes"
+then
+  PKGS="$PKGS strc-core"
+  DIST_PKGS=$PKGS
+  STRC_CORE_PREFIX=${prefix}/strc-core
+else
+  DIST_PKGS="$PKGS strc-core" 
+  STRC_CORE_PREFIX=${prefix}/strc-core 
+fi
+
 AC_SUBST(PKGS)
+AC_SUBST(DIST_PKGS)
 
 BUILD_SRTS_DEST="`pwd`/pre-pkgs/build"
 INSTALL_XTC_DEST="`pwd`/pre-pkgs/install"
@@ -157,6 +178,16 @@ AB_CONFIG_PKG(strc,
    --with-repository=${REPOSITORY}
 )
 
+AB_CONFIG_PKG(strc-core,
+   --prefix=${STRC_CORE_PREFIX}
+   --with-aterm=${ATERM}
+   --with-sglr=${SGLR}
+   --with-pgen=${PGEN}
+   --with-strategoxt=${STRATEGOXT}
+   --with-srts=${BUILD_SRTS}
+   --with-xtc=${INSTALL_XTC}
+)
+
 AB_CONFIG_PKG(c-tools,
    --with-aterm=${ATERM}
    --with-sglr=${SGLR}
@@ -178,6 +209,16 @@ AB_CONFIG_PKG(stratego-front,
 )
 
 AB_CONFIG_PKG(ssl,
+   --with-aterm=${ATERM}
+   --with-sglr=${SGLR}
+   --with-pgen=${PGEN}
+   --with-strategoxt=${STRATEGOXT}
+   --with-srts=${BUILD_SRTS}
+   --with-xtc=${INSTALL_XTC}
+   --with-repository=${REPOSITORY}
+)
+
+AB_CONFIG_PKG(stratego-lib,
    --with-aterm=${ATERM}
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}

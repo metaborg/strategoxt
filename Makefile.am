@@ -1,4 +1,5 @@
 SUBDIRS      = . news-archive $(PKGS)
+DIST_SUBDIRS = $(DIST_PKGS)
 EXTRA_DIST   = $(EXTRA_FILES)
 EXTRA_FILES  = README README.in svn-revision bootstrap acinclude.m4 strategoxt.spec.in strategoxt.spec
 
