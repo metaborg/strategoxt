@@ -5,7 +5,7 @@ exports
   context-free syntax
 
     "{|" {DynRuleScopeId ","}* ":" Strategy "|}" -> Strategy {cons("DynRuleScope"), prefer}
-    "{|" RuleDec ":+" Term                  "|}" -> Strategy {cons("AddScopeLabel")}
+    "{|" Id ":+" Term "|}"                       -> Strategy {cons("AddScopeLabel")}
 
   context-free syntax
 
@@ -692,10 +692,11 @@ imports StrategoForTestingRenamed StrategoStratego Stratego-DynamicRules
 
 exports
   context-free syntax
-    "DRN:|[" Strategy "]|"   -> StrategoTerm {cons("ToTerm")}
-    "DRN:|[" DynRuleDef "]|" -> StrategoTerm {cons("ToTerm")}
+    "|[" Strategy "]|"   -> StrategoTerm {cons("ToTerm"),prefer}
+    "|[" DynRuleDef "]|" -> StrategoTerm {cons("ToTerm"),prefer}
 
   variables
-    "sc" [0-9\']             -> DynRuleScopeId {prefer}
-    "sc" [0-9\'] "*"         -> {DynRuleScopeId ","}* {prefer}
-    "dr" [0-9\']             -> DynRuleId {prefer}
+    "sc"[0-9\']*             -> DynRuleScopeId {prefer}
+    "sc"[0-9\']* "*"         -> {DynRuleScopeId ","}* {prefer}
+
+    "dr"[0-9\']*             -> DynRuleId {prefer}

@@ -4,7 +4,7 @@ exports
   context-free syntax
 
     "{|" {DynRuleScopeId ","}* ":" Strategy "|}" -> Strategy {cons("DynRuleScope"), prefer}
-    "{|" RuleDec ":+" Term                  "|}" -> Strategy {cons("AddScopeLabel")}
+    "{|" Id ":+" Term "|}"                       -> Strategy {cons("AddScopeLabel")}
 
   context-free syntax
 
