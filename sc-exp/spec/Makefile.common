@@ -1,0 +1,46 @@
+INCLUDES 	= -I$(STRATEGORTS)/include \
+		  -I$(STRATEGOLIB)/include \
+		  -I$(ATERM)/include \
+		  -I$(srcdir)/..
+
+LDFLAGS		= -L$(STRATEGORTS)/lib \
+		  -L$(STRATEGOLIB)/lib \
+		  -L$(ATERM)/lib 
+
+STRATEGOLIBS    = -lstratego-lib.opt \
+		  -lATerm-gcc \
+		  -lm 
+
+LDADD		= -lstratego.opt $(STRATEGOLIBS)
+
+SUFFIXES 	= .str .cr .rtree
+SC 		= $(prefix)/bin/sc
+
+.rtree.c : 
+	$(SCOMPILE) $(STRINCLUDES) $(SCFLAGS) -i $< -o $@ -c
+
+.str.c : 
+	$(SC) $(STRINCLUDES) $(SCFLAGS) -i $< -o $@ -c
+
+.cr.c : 
+	$(SC) $(STRINCLUDES) $(SCFLAGS) -i $< -o $@ -c
+
+bootclean:
+	rm -f $(BOOTCLEANFILES)
+
+# Generate scripts
+%: %.src Makefile
+	sed 's#__GPP__#$(GPP)#g;\
+             s#__CGEN__#$(CGEN)#g;\
+	     s#__prefix__#$(prefix)#g;\
+	     s#__libexecdir__#$(libexecdir)#g;\
+	     s#__datadir__#$(datadir)#g;\
+	     s#__pkgdatadir__#$(pkgdatadir)#g;\
+             s#__VERSION__#$(VERSION)#g;\
+	     s#__PACKAGE__#$(PACKAGE)#g;\
+             s#__ATERM__#$(ATERM)#g;\
+             s#__STRATEGORTS__#$(STRATEGORTS)#g;\
+             s#__STRATEGOFRONT__#$(STRATEGOFRONT)#g;\
+             s#__STRATEGOLIB__#$(STRATEGOLIB)#g;\
+             s#__MAKE__#$(MAKE)#g' < $< > $@
+	chmod +x $@

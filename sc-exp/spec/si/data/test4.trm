@@ -1,0 +1,13 @@
+<let 
+
+   repeat(s) = rec x(s; x <+ id)
+
+   A = {x: ?F(x); !x}
+
+ in
+
+   repeat(A)
+
+>
+
+F(F(F(B())))

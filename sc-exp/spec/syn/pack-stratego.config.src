@@ -1,0 +1,10 @@
+[
+("--keep",	0),
+("prefix", 	Path("__prefix__")),
+("libexec", 	Path("__libexecdir__")),
+
+("parse-mod", 	Prefix(Var("libexec"), Path("/parse-mod"))),
+
+(Ext("rtree"),  None)
+
+]

@@ -1,0 +1,36 @@
+# Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
+# 
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+.PRECIOUS: %.ac %.c
+
+TESTS 		= $(subst .rtree,.bin,$(wildcard *-test.rtree))
+
+EXTRA_DIST 	= $(wildcard *.rtree) testlib.dummy
+
+SINCLUDES 	= -I $(SSL)/share/ssl
+
+CLEANFILES 	= $(TESTS) *.o *.c *.ac *.s? *.s?.check *.trm \
+		  *.tree *.tree? *.dep *.c.abox *.r testlib.dummy
+
+pkgdata_DATA 	= testlib.dummy
+
+testlib.dummy :
+	-cp $(SSL)/share/ssl/*.rtree .
+	touch $@
+
+include $(srcdir)/../test1/make-rules
+include $(wildcard *.dep)

@@ -1,0 +1,130 @@
+module lift-dynamic-rules
+imports stratego lib desugar
+strategies
+
+  LiftDynamicRules =
+    Specification([id,id, Strategies(define-rule-scope; lift-dynamic-rules)])
+
+/* Desugar dynamic rule scopes {| ... : ... |} */
+
+  define-rule-scope =
+    topdown(try(DefDynamicRuleScope))
+
+  DefDynamicRuleScope :
+    |[ {| : s |} ]| -> s
+
+  DefDynamicRuleScope :
+    |[ {| x, x* : s |} ]| -> |[ scope(!~str:x, {| x* : s |}) ]|
+
+/* Lift dynamic rules from strategy definitions.  One dynamic rule set
+is lifted out at a time, after which the process repeats; a definition
+may contain multiple dynamic rules, and a dynamic rule itself may
+contain dynamic rules. */
+
+  lift-dynamic-rules =
+    listtd(repeat(lift-dynamic-rule))
+
+  lift-dynamic-rule :
+    [def | defs] -> <conc> ([def' | rdefs], defs)
+    where {| ContextVar : 
+	     <tvars> def; DeclareContextVars
+           ; <split-dynamic-rule(split-dynamic-rules => (ss, rdefs); !Seqs(ss))> 
+	        def => def'
+	   |}
+
+/* Traverse to find dynamic rule definition.  Record all variables
+that are declared in context using the dynamic rule ContextVar */
+
+  split-dynamic-rule(s) = 
+    rec x(oncetd(s <+ split-under-scope(x)))
+
+  split-under-scope(f) :
+    |[ { x* : s } ]| -> |[ { x* : s' } ]|
+    where {| ContextVar : <DeclareContextVars> x*; <f> s => s' |}
+
+  DeclareContextVars =
+    map({?x; rules(ContextVar : Var(x) -> Var(x))})
+
+/* Split each rule in a dynamic rule set */
+
+  split-dynamic-rules :
+    |[ rules(rd*) ]| -> 
+    <map(SplitDynamicRule(!|[ assert(!~str:<id>) ]|)); unzip> rd*
+
+  split-dynamic-rules :
+    |[ override rules(rd*) ]| -> 
+    <map(SplitDynamicRule(!|[ override-key(!~str:<id>) ]|)); unzip> rd*
+
+/* Split a dynamic rule into an call to assert which records a mapping
+from the left-hand side of the rule instantiated with the bindings to
+context variables to the set of bindings to the context variales not
+occurring in the left-hand side.
+
+Notes:
+ - the stamp identifies the rule that introduced the binding, in order
+   to distinguish between dynamic rules with the same left-hand side
+   but different right-hand sides
+ - non-context variables are replaced with 'Dummy()' in the term that
+   is used as key in the table (dummify)
+ - if all variables in the lhs are context-variables, the lookup in the
+   table can simply use a pointer to the term matched on the lhs (efficient!)
+
+Bug! Current translation scheme does not take extended match patterns
+into account. No contexts and term projects should be used in a
+dynamic rule. */
+
+  dummify =
+    alltd(
+        \Term|[ x ]|     -> |[ Nil() ]| where not(ContextVar)\
+     <+ \Term|[ _ ]|     -> |[ Nil() ]|\
+     <+ \Term|[ <s> ]|   -> |[ Keys( ~term*:<tvars; map(!Var(<id>))> s ) ]|\
+     <+ \Term|[ <s> t ]| -> |[ Keys( ~term*:<tvars; map(!Var(<id>))> (s,t) ) ]|\
+     <+ ?Con(_,_,_); <fatal-error> ["context in left-hand side of dynamic rule"]
+    )
+
+  SplitDynamicRule(assert) :
+    |[ f(as) : t1 -> t2 where s ]| ->
+    (|[ where(<~<assert> f> Pair(t1', Defined(~str:stamp, t*))) ]|,
+     |[ f(as) : x@t1 -> t2 
+                where <rewrite(!~str:f)> t1'' => Defined(~str:stamp, t*); s ]|)
+    where 
+      <not(eq)>(t2, |[ Undefined() ]|)
+
+      ; new => x
+      ; <dummify> t1 => t1'
+      ; try(?t1; !Var(x)) => t1''
+
+      ; <tvars; map(!Var(<id>))> t1' => keys
+      ; <tvars; filter(!Var(<id>); ContextVar)> (t2, s) => vals1
+      ; <diff> (vals1, keys) => t*
+
+      ; new => stamp
+
+  SplitDynamicRule(assert) :
+    |[ f(as) : t1 -> Undefined() where s ]| ->
+    (|[ where(<~<assert> f> Pair(t1', Undefined())) ]|,
+     |[ f(as) : x@t1 -> Undefined()
+                where <rewrite(!~str:f)> t1'' => Undefined(); s; fail ]|)
+    where 
+       new => x
+       ; <dummify> t1 => t1'
+       ; try(?t1; !Var(x)) => t1''
+\end{code}
+
+% Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
+% 
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+% 
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% 
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.
+

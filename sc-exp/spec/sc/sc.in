@@ -1,0 +1,23 @@
+#! /bin/sh
+
+prefix=@prefix@
+ATERM=@ATERM@
+VERSION=@VERSION@
+STRATEGORTS=@STRATEGORTS@
+STRATEGOLIB=@STRATEGOLIB@
+GBSTRATEGO=@GBSTRATEGO@
+  
+${prefix}/bin/proto-sc \
+    $* \
+    -e ${prefix}/bin \
+    -I ${STRATEGOLIB}/share/ssl \
+    -CI "-I${STRATEGORTS}/include/srts" \
+    -CI "-I${STRATEGOLIB}/include/ssl" \
+    -CL "-L${STRATEGOLIB}/lib -lstratego-lib.opt" \
+    -CL "-L${STRATEGORTS}/lib -lstratego.opt" \
+    -CI "-I${ATERM}/include" \
+    -CL "-L${ATERM}/lib -lATerm-gcc" \
+    -CL "-lm" \
+    -CI "-O4" \
+    @version ${VERSION}
+

@@ -1,0 +1,111 @@
+.PRECIOUS: %.c %.tree %.s1 %.s2 %.s3 %.s4 %.s5 %.s6 %.s7 %.s8 %.s9 %.ac %.c.abox %.bin
+
+CINCLUDES = \
+	--C-include "<srts/stratego.h>" \
+	--C-include "<srts/stratego-lib.h>" 
+
+CINCL = -I$(SRTS)/include \
+	-I$(ATERM)/include $(CHOICEINCLUDES)
+
+SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
+	 -L$(ATERM)/lib -lATerm-gcc $(CHOICELDFLAGS) \
+	 -lm
+
+# FRONT-END ###########################################################
+
+%.tree : %.r ../syn/pack-stratego$(EXE) 
+	../syn/pack-stratego $(SINCLUDES) -i $< -o $@ 
+
+%.tree : %.rtree ../syn/pack-stratego$(EXE) 
+	../syn/pack-stratego $(SINCLUDES) -i $< -o $@ 
+
+%.s1 : %.tree ../front/frontend$(EXE)
+	../front/frontend -i $< -o $@ -b
+
+%.s2 : %.s1 ../front/extract$(EXE)
+	../front/extract -i $< -o $@ -b
+
+%.s2.check: %.s2
+	../sig/Stratego-Normal-Format -i $< -o $@ -b
+
+%.s3 : %.s2 %.s2.check ../front/rename-defs$(EXE)
+	../front/rename-defs -i $< -o $@ -b
+
+# OPTIMIZE ###########################################################
+
+%.s4 : %.s3 ../front/inline$(EXE)
+	../front/inline -i $< -o $@ -b
+
+%.s5 : %.s4 ../match/optimize1$(EXE)
+	../match/optimize1 -i $< -o $@ -b
+
+%.s5fused: %.s5 ../opt/fusion$(EXE)
+	../opt/fusion  -i $< -o $@ -b --verbose 2
+
+%.s6 : %.s5fused ../match/compile-match$(EXE)
+	../match/compile-match -i $< -o $@ -b
+
+%.s7 : %.s6 ../match/optimize2$(EXE)
+	../match/optimize2 -i $< -o $@ -b
+
+# PRETTY-PRINTING ####################################################
+
+%.txt: % $(STRATEGOFRONT)/bin/astratego2text 
+	$(STRATEGOFRONT)/bin/astratego2text -i $< -o $@
+
+
+# BACK-END ###########################################################
+
+%.s8 : %.s7 ../c/canonicalize$(EXE)
+	../c/canonicalize -i $< -o $@ -b
+
+%.s8.check : %.s8 ../sig/Stratego-Canonical-Format$(EXE)
+	../sig/Stratego-Canonical-Format -i $< -o $@ -b
+
+%.ac : %.s8 %.s8.check ../c/s2c$(EXE)
+	../c/s2c -i $< -o $@  $(CINCLUDES)  -b
+
+%.c.abox : %.ac $(C_TOOLS)/share/c-tools/C-pretty.pp
+	time $(GPP)/bin/ast2abox -p $(C_TOOLS)/share/c-tools/C-pretty.pp -i $< -o $@
+
+%.c.abox.check : %.c.abox
+	abox-format -i $< 
+
+%.c : %.c.abox 
+	time $(GPP)/bin/abox2text -i $< -o $@
+
+# C COMPILATION #####################################################
+
+%.o: %.c
+	time $(CC) $(CINCL) -c $< -O4
+
+%.bin : %.o 
+	time $(CC) $< -o $@ $(SCLibs)
+
+# RUNNING ###########################################################
+
+%.run : %.bin
+	./$< 
+
+%.io-run : %.bin
+	$< -i $*.in -o $*.out 
+
+# PARSING C PROGRAMS ###############################################
+
+%.af: %.c
+	sglr -p $(C_TOOLS)/share/cgen/c.tbl -i $< -o $@ 
+
+%.trm: %.af
+	implode-asfix -i $< -o $@
+
+# USING INSTALLED SC ###############################################
+
+%.ibin: %.r
+	../sc/sc -i $< -o $@ --verbose 1
+
+%.irun: %.ibin
+	./$<
+
+%.trm: %
+	$(ATERM)/bin/baffle -wt -i $< -o $@
+

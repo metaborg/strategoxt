@@ -1,0 +1,112 @@
+/* Module flattening strategy for Stratego based on the generic graph
+flattening algorithm from the library.  The program handles
+command-line options for indicating paths to directories with library
+modules and finds modules based on such a path.  It writes
+dependencies for inclusion in a Makefile to the .r.dep file.
+Pack-stratego calls an external process (parse-mod) for parsing
+individual modules. */
+
+module pack-stratego
+imports lib xtc-lib pack-graph sugar config
+strategies
+
+  pack-stratego = 
+    xtc-iowrap(pack-stratego-options,
+      pack-stratego-modules => (files, spec)
+      ; (<get-config> "--imports"
+        ; <map(get-filename; basename); write-to-text> files
+       <+ <create-dep-file> files
+        ; <write-to> spec
+        )
+    )
+
+  pack-stratego-options =
+      ArgOption("-I" + "--Include",        
+	where(<extend-config>("-I", ["-I", <id>])); !(),
+	!"-I d | --Include d   Include modules from directory d")
+
+    + Option("--nodep" + "-nodep", 
+	where(<set-config> ("--nodep", "")); !(),
+	!"--nodep              Don't create dependency file")
+
+    + ArgOption("--dep" + "-d" + "-dep",
+	where(<set-config> ("--dep", <id>)); !(),
+	!"--dep f | -d f       Write dependency to file f")
+
+    + Option("--imports",
+	where(<set-config> ("--imports", ())); !(),
+	!"--imports            Produce a list of imported modules only")
+
+  create-dep-file :
+    files -> FILE(depfile)
+    where <get-config> "-o" => outfile
+        ; (<get-config> "--dep" <+ not(<get-config> "--nodep")) => dep-base
+        ; <add-extension> (<id>, "dep") => depfile
+        ; <open-file> (depfile, "w") => dep
+        ; <printnl> (dep, [dep-base | <separate-by>(" \\\n\t", [" :" | files])])
+        ; <close-file> dep
+
+  pack-stratego-modules =
+    ?FILE(infile)
+    ; where((<get-config; filter(not("-I"))> "-I" <+ ![]) => path)
+    ; !(["list-cons","tuple-cons", infile], (), [])
+    ; graph-nodes-roots(Fst; get-module(!["." | path])
+		       , get-stratego-imports
+		       , \ (n,x,xs) -> [x|xs] \ )
+    ; unzip
+    ; (id, flatten-stratego)
+
+  get-module(mkpath) :
+    mod -> (name, tree)
+    where <find-module(mkpath)> (<basename> mod, ["rtree", "str", "cr", "r"]) 
+		=> (ext, FILE(name))
+        ; if-verbose3(where(<debug(!" reading ")> name))
+	; parse-module => tree
+
+  find-module(mkpath) =
+    ?(mod, exts)
+    ; mkpath
+    ; (fetch-elem(\ dir
+	 -> <fetch-elem(!(<id>, FILE(<concat-strings; file-exists> [dir, "/", mod, ".", <id>])))> exts 
+       \ )
+     <+ <fatal-error> ["*** module ", mod, " not found"])
+
+  parse-module =
+    ?("rtree", <?name>); Snd
+    ; (read-from
+       <+ <fatal-error> ["parse error in ", name])
+
+  parse-module =
+    (not("rtree"), ?name); Snd
+    ; (xtc-transform(!"parse-stratego", 
+		     <concat>[<pass-verbose>, <pass-keep>, <get-config> "-I"])
+       ; read-from
+      <+ <fatal-error> ["parse error in ", name])
+
+  get-stratego-imports =
+    ?(_, Specification(<id>))
+    ; filter(?Imports(<id>))
+    ; concat
+
+  flatten-stratego = 
+    map(?Specification(<id>); filter(not(Imports(id))))
+    ; concat 
+    ; !Specification(<id>)
+
+\end{code}
+% Copyright (C) 2000-2002 Eelco Visser <visser@acm.org>
+% 
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+% 
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% 
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.

@@ -1,0 +1,8 @@
+module Stratego-Traversal
+exports
+  context-free syntax
+    Natural  "(" Strat ")"  -> Strat {cons("Path")}
+    "one"    "(" Strat ")"  -> Strat {cons("One")}
+    "some"   "(" Strat ")"  -> Strat {cons("Some")}
+    "all"    "(" Strat ")"  -> Strat {cons("All")}
+    "thread" "(" Strat ")"  -> Strat {cons("Thread")}

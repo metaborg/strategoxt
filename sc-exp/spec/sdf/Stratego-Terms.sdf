@@ -1,0 +1,11 @@
+module Stratego-Terms
+imports Stratego-Lexicals
+exports
+  %%sorts Term
+  context-free syntax
+    Identifier                      -> Term {cons("Var")}
+    Identifier "(" {Term ","}* ")"  -> Term {cons("Op")}
+    String                          -> Term {cons("Str")}
+    Natural                         -> Term {cons("Int")}
+    "[" {Term ","}* ("|" Term)? "]" -> Term {cons("List")}
+    "(" {Term ","}* ")"             -> Term {cons("Tuple")}
