@@ -1,12 +1,12 @@
-module parse-not-xml
-imports xtc-lib
+module parse-c
+imports xtc-lib stratego-xt-xtc-tools
 
 strategies
   
   io-parse-c =
       xtc-io-wrap(
-        xtc-transform(!"sglr", !["-2tA", "-p", <xtc-find> "C.tbl"])
-      ; xtc-transform(!"implode-asfix")
+        xtc-sglr(!"C.tbl")
+      ; xtc-implode-asfix
       )
 
 /*

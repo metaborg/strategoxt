@@ -1,13 +1,13 @@
 module pp-c
-imports xtc-lib string
+imports xtc-lib stratego-xt-xtc-tools string
 
 strategies
 
   io-pp-c =
     xtc-io-wrap(
       xtc-transform(!"ast2abox", !["-p", <xtc-find; remove-extension> "C.pp.af"])
-    ; xtc-transform(!"abox-format")
-    ; xtc-transform(!"abox2text")
+    ; xtc-abox-format
+    ; xtc-abox2text
     )
 
   // watch out: C.pp.af is in datadir. C.pp is in datadir/doc. We need
