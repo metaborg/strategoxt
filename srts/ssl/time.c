@@ -33,9 +33,64 @@ Boston, MA 02111-1307, USA.
 #include <time.h>
 #include <sys/times.h>
 
-ATerm SSL_time(void)
-{
-  return ATmakeInt(time(NULL));
+/* struct_tm conversion */
+ATerm struct_tm2ATerm(const struct tm *tp) {
+  return (ATerm) ATmakeAppl(
+    ATmakeSymbol("", 8, ATfalse)
+  , (ATerm) ATmakeInt(tp -> tm_sec)
+  , (ATerm) ATmakeInt(tp -> tm_min)
+  , (ATerm) ATmakeInt(tp -> tm_hour)
+  , (ATerm) ATmakeInt(tp -> tm_mday)
+  , (ATerm) ATmakeInt(tp -> tm_mon)
+  , (ATerm) ATmakeInt(tp -> tm_year + 1900)
+  , (ATerm) ATmakeInt(tp -> tm_wday)
+  , (ATerm) ATmakeInt(tp -> tm_yday)
+  );
+}
+
+/* time_t conversion */
+ATerm time_t2ATerm(time_t time) {
+  return (ATerm) ATmakeInt(time);
+}
+
+time_t ATerm2time_t(ATerm term) {
+  if(!ATisInt(term)) {
+     _fail(term);
+  }
+
+  return ATgetInt((ATermInt) term);
+}
+
+/* SSL functions */
+
+ATerm SSL_now_epoch_time(void) {
+  return time_t2ATerm(time(NULL));
+}
+
+ATerm SSL_time(void) {
+  return SSL_now_epoch_time();
+}
+
+ATerm SSL_epoch2localtime(ATerm term) {
+  struct tm *tp;
+  time_t t;
+
+  if(!ATisInt(term)) {
+     _fail(term);
+  }
+
+  t  = ATerm2time_t(term);
+  tp = localtime(&t);
+  return (ATerm) struct_tm2ATerm(tp);
+}
+
+ATerm SSL_epoch2UTC(ATerm term) {
+  struct tm *tp;
+  time_t t;
+
+  t  = ATerm2time_t(term);
+  tp = gmtime(&t);
+  return (ATerm) struct_tm2ATerm(tp);
 }
 
 struct rusage rusage;

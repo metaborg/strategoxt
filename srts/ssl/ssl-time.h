@@ -21,9 +21,14 @@ Boston, MA 02111-1307, USA.
 
 */
 
-ATerm SSL_time(void);
 ATerm SSL_dtime(void);
 ATerm SSL_ClockToSeconds(ATerm t);
 ATerm SSL_clock(void);
 ATerm SSL_times(void);
 ATerm SSL_TicksToSeconds(ATerm t);
+
+ATerm SSL_time(void);
+ATerm SSL_now_epoch_time(void);
+ATerm SSL_epoch2localtime(ATerm t);
+ATerm SSL_epoch2utc(ATerm t);
+
