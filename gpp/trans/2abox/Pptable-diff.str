@@ -60,6 +60,7 @@ strategies
       // Find keys of pp tables
       <table-keys>"old-table" => keys-old;
       <table-keys>"new-table" => keys-new;
+      <isect>(keys-old, keys-new) => keys-common;
       
       // Find obsolete pp entries by calculating the set difference:
       // old-table \ new-table
@@ -83,14 +84,14 @@ strategies
       // ignored. If a pp entry in both tables has different terminal
       // symbols or place holder symbols, the entries are considered
       // different. This way, we abstract over different BOX expressions.
-      !keys-old;
+      !keys-common;
       map({path,elems:\ key -> (key, path, elems)
       where
          <table-get>("old-table", <id>);
          (id, collect( S(id) + Arg(id) + \ Arg2(x,y) -> Arg(x) \  ));
          ?(path, elems)
       \ }) => old-elements;
-      !keys-new;
+      !keys-common;
       map({path,elems: \ key -> (key, path, elems)
       where
          <table-get>("new-table", <id>);

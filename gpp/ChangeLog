@@ -1,3 +1,7 @@
+2003-10-04   Merijn de Jonge  <M.de.Jonge@tue.nl>
+   * pptable-diff: Only compare pretty-print entries for differences that
+     are containd in both pp tables
+
 2003-09-24   Merijn de Jonge  <M.de.Jonge@tue.nl>
  * pptable-diff: also differences due to change production rules are
    reported. These cal also be patches, without loosing the originals ones.
