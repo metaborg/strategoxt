@@ -4,6 +4,7 @@ include $(wildcard *.dep)
 
 SUBDIRS      	 = data
 
+bin_PROGRAMS     = sdf-bracket
 libexec_PROGRAMS = sdf-bracket
 BOOTCLEANFILES 	 = sdf-bracket.c
 
