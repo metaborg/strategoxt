@@ -58,6 +58,8 @@ bin_PROGRAMS = \
 
 bin_SCRIPTS = sc ac2c
 
+pack_stratego_SOURCES = conf.h
+
 EXTRA_DIST = ac2c.src sc.src pack-stratego.config.src sc.config.src sc-manual.txt conf.h.src conf.h
 
 pkgdatadir = $(datadir)/sc
