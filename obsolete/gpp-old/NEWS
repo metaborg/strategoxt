@@ -1,3 +1,9 @@
+Version 2.3 released: 2002-08-02
+	* asfix2abox now produces an error message when it encounters an
+	  ambiguity.
+	* handling lists of the form "literal"* has been fixed.
+	* abox2text fixes a bug when a V box contains empty sub boxes.
+
 Version 2.2 released: 2002-06-14
 	* fixed handling of abbreviation tables passed to abox2latex
 	* fixed pretty-printing of integers in ast2abox

@@ -3,6 +3,7 @@
    * asfix2abox/Asfix-2-Abox.r, lib/instantiate.r: fixed bug with list
      instantiation
    * abox2text/Abox-2-text.r: bug fix with empty boxes in V context
+   * NEWS file updated
 
 
 2002-06-18  Merijn de Jonge <mdejonge@cwi.nl>
