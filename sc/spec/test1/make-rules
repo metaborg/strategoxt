@@ -53,8 +53,8 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 
 ## Simplification
 
-%.s4 : %.s3 ../match/optimize1$(EXE)
-	../match/optimize1 -i $< -o $@ -b
+%.s4 : %.s3 ../opt/simplify1$(EXE)
+	../opt/simplify1 -i $< -o $@ -b
 
 ## Innermost fusion
 
@@ -63,13 +63,10 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 
 # Inlining
 
-%.s5.opt1 : %.s5 ../match/optimize2$(EXE)
-	../match/optimize2 -i $< -o $@ -b
-
-%.s5.opt2 : %.s5.opt1 ../opt/worker-wrapper$(EXE)
+%.s5.opt1 : %.s5 ../opt/worker-wrapper$(EXE)
 	../opt/worker-wrapper -i $< -o $@ -b
 
-%.s6 : %.s5.opt2 ../opt/inline$(EXE)
+%.s6 : %.s5.opt1 ../opt/inline$(EXE)
 	../opt/inline -i $< -o $@ -b
 
 %.s7 : %.s6 ../opt/dead-def-elim$(EXE)
@@ -77,8 +74,8 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 
 ## First Optimization
 
-%.s7.opt1 : %.s7 ../match/optimize2$(EXE)
-	../match/optimize2 -i $< -o $@ -b
+%.s7.opt1 : %.s7 ../opt/simplify1$(EXE)
+	../opt/simplify1 -i $< -o $@ -b
 
 %.s7.opt2 : %.s7.opt1 ../match/define-congruences$(EXE)
 	../match/define-congruences -i $< -o $@ -b
@@ -92,8 +89,8 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 %.s7.opt5 : %.s7.opt4 ../opt/dead-var-elim$(EXE)
 	../opt/dead-var-elim -i $< -o $@ -b
 
-%.s7.opt : %.s7.opt5 ../match/optimize2$(EXE)
-	../match/optimize2 -i $< -o $@ -b
+%.s7.opt : %.s7.opt5 ../opt/simplify3$(EXE)
+	../opt/simplify3 -i $< -o $@ -b
 
 ## Pattern match compilation
 
@@ -113,8 +110,8 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 
 ## Second optimization
 
-%.s11.opt1 : %.s10 ../match/optimize2$(EXE)
-	../match/optimize2 -i $< -o $@ -b
+%.s11.opt1 : %.s10 ../opt/simplify1$(EXE)
+	../opt/simplify2 -i $< -o $@ -b
 
 %.s11.opt2 : %.s11.opt1 ../opt/const-prop$(EXE)
 	../opt/const-prop -i $< -o $@ -b
@@ -125,18 +122,24 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 %.s11.opt4 : %.s11.opt3 ../opt/dead-var-elim$(EXE)
 	../opt/dead-var-elim -i $< -o $@ -b
 
-%.s11.opt : %.s11.opt4 ../match/optimize2$(EXE)
-	../match/optimize2 -i $< -o $@ -b
+%.s11.opt : %.s11.opt4 ../opt/simplify3$(EXE)
+	../opt/simplify3 -i $< -o $@ -b
+
+%.s11.check: %.s11.opt ../sig/Stratego-Optimized-Format$(EXE)
+	../sig/Stratego-Optimized-Format -i $< -o $@ -b
 
 # BACK-END ###########################################################
 
-%.s12 : %.s11.opt ../opt/canonicalize$(EXE)
+%.s12 : %.s11.opt %.s11.check ../opt/canonicalize$(EXE)
 	../opt/canonicalize -i $< -o $@ -b
 
 %.s12.lift : %.s12 ../opt/lift-definitions$(EXE)
 	../opt/lift-definitions -i $< -o $@ -b
 
-%.s13 : %.s12.lift ../opt/bound-unbound-vars$(EXE)
+%.s12.opt : %.s12.lift ../opt/simplify2$(EXE)
+	../opt/simplify1 -i $< -o $@ -b
+
+%.s13 : %.s12.opt ../opt/bound-unbound-vars$(EXE)
 	time ../opt/bound-unbound-vars -i $< -o $@ -b
 
 %.s13.check : %.s13 ../sig/Stratego-Canonical-Format$(EXE)
@@ -182,7 +185,7 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 # USING INSTALLED SC ###############################################
 
 %.ibin: %.r
-	../sc/strc -O 4 -i $< -o $@ --verbose 3 --output-optimized --output-canonical
+	../sc/strc -i $< -o $@ --verbose 3
 
 %.irun: %.ibin
 	./$<
