@@ -51,6 +51,10 @@ strategies
    *
    * @warning  doesn't accept tuples with more than two string.
    * @type     String * String -> String
+   * @inc      strcat-1
+   * @inc      strcat-2
+   * @inc      strcat-3
+   * @inc      strcat-4
    */
   strcat =
     ?(str1, str2); prim("SSL_strcat", str1, str2)
@@ -59,6 +63,10 @@ strategies
    * Concats a list of Strings
    *
    * @type List(String) -> String
+   * @inc      concat-strings-1
+   * @inc      concat-strings-2
+   * @inc      concat-strings-3
+   * @inc      concat-strings-4
    */
   concat-strings =
     ?strings; prim("SSL_concat_strings", strings)
@@ -77,6 +85,9 @@ strategies
    * Returns the number of characters in a string.
    *
    * @type String -> Int
+   * @inc      strlen-1
+   * @inc      strlen-2
+   * @inc      strlen-3
    */
   strlen =
     ?str; prim("SSL_strlen", str)
@@ -87,6 +98,7 @@ strategies
    * Escapes double quotes, backslash and linefeed to C like escape sequences.
    *
    * @type String -> String
+   * @inc  escape-test1
    */
   escape = string-as-chars(escape-chars)
 
@@ -106,6 +118,10 @@ strategies
    * Unescapes double quotes, backslash, linefeed and tabs.
    *
    * @type String -> String
+   * @inc unescape-test1
+   * @inc unescape-test2
+   * @inc unescape-test3
+   * @inc unescape-test4
    */
   unescape = string-as-chars(unescape-chars)
 
@@ -169,6 +185,9 @@ strategies
     rec x(esc(x) <+ [id | x] <+ []);
     implode-string
 
+ /**
+  * @inc escape-test2
+  */
   cify = escape(Cify)
 
 rules
@@ -193,7 +212,9 @@ strategies // for quoting
   single-quote-chars = <quote-chars> ('\'', <id>)
   double-quote-chars = <quote-chars> ('"' , <id>)
 
-  // :: String -> String
+ /**
+  * @inc single-quote-test
+  */
   single-quote = string-as-chars(single-quote-chars)
   double-quote = string-as-chars(double-quote-chars)
 
@@ -257,11 +278,22 @@ strategies // for unquoting
    * @type  String -> String
    */
   un-single-quote = string-as-chars(un-single-quote-chars)
+
+ /**
+  * @inc un-double-quote-test
+  */
   un-double-quote = string-as-chars(un-double-quote-chars)
 
 strategies 
 
-  // :: String -> String
+ /**
+  * @inc is-double-quote 1
+  * @inc is-double-quote 2
+  * @inc is-double-quote 3
+  * @inc is-double-quote 4
+  * @inc is-double-quote 5
+  * @inc is-double-quote 6
+  */
   is-double-quoted =  where(<is-quoted> ('"',  <id>))
   is-single-quoted =  where(<is-quoted> ('\'', <id>))
 
@@ -310,10 +342,14 @@ rules
 
 strategies 
 
-  /**
-   * @type  String -> String
-   */
+ /**
+  * @type  String -> String
+  */
   lower-case = string-as-chars(lower-case-chars)
+
+ /**
+  * @inc upper-case-test
+  */
   upper-case = string-as-chars(upper-case-chars)
 
   /**
@@ -345,6 +381,11 @@ strategies
   * argument). See string-test for examples.
   *
   * @type  [Char] * String -> [String]
+  * @inc   tokenize-test1
+  * @inc   tokenize-test2
+  * @inc   tokenize-test3
+  * @inc   tokenize-test4
+  * @inc   tokenize-test5
   */
   string-tokenize =
       (id, explode-string)
@@ -364,6 +405,9 @@ strategies
 strategies
 
   // _ -> Char :: String * Int -> String
+ /**
+  * @inc padd-with-test
+  */
   padd-with(s) =
     <align-right> (<s> (), <Fst>, <Snd>)
 
@@ -422,6 +466,9 @@ strategies
     SplitInit;
     rec x(SplitExit <+ SplitNext; x)  
 
+ /**
+  * @inc split-at-dot-test
+  */
   split-at-dot =
 	  split(![],explode-string)
 	; rec r(   \(int,[46|frac]) -> (int,frac)\ 
@@ -430,6 +477,9 @@ strategies
 	; (implode-string,implode-string)
 
   // fails if sub isn't in l
+ /**
+  * @inc split-before-test
+  */
   split-before = ?(l,sub);
         <explode-string>sub => sub';
         <explode-string>l;
@@ -439,6 +489,9 @@ strategies
 	(implode-string,implode-string)
 
   // results in (l,"") if sub isn't in l
+ /**
+  * @inc split-after-test
+  */
   split-after = ?(l,sub);
         <explode-string>sub => sub';
         <explode-string>l;
@@ -460,9 +513,17 @@ strategies
     })>long)
 
   // <copy-char> (3, 32) -> "   "
+ /**
+  * @inc copy-char-test
+  */
   copy-char = 
     copy; implode-string
 
+ /**
+  * @inc string-sort-test-a
+  * @inc string-sort-test-b
+  * @inc string-sort-test-c
+  */
   string-sort = 
       map(explode-string)
     ; sort-list(SortL(string-gt))
