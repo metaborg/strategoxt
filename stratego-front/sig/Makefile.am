@@ -19,9 +19,9 @@ staticsignatures = \
   Stratego-Sugar-HL.rtg \
   Stratego-Sugar-HL.str \
   Stratego-Core-Cong.rtg \
-  Stratego-Core-Cong.str \
-  Stratego-Sugar-1.rtg \
-  Stratego-Sugar-1.str
+  Stratego-Core-Cong.str 
+#  Stratego-Sugar-1.rtg \
+#  Stratego-Sugar-1.str
 
 signatures = $(autogensignatures) $(staticsignatures)
 
