@@ -1,4 +1,4 @@
-AC_INIT([stratego-regular],[0.11],[stratego-bugs@cs.uu.nl])
+AC_INIT([stratego-regular],[0.12pre],[stratego-bugs@cs.uu.nl])
 AM_INIT_AUTOMAKE
 
 test "x$prefix" = xNONE && prefix=$ac_default_prefix
