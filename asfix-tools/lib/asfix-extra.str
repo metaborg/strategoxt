@@ -1,0 +1,9 @@
+module asfix-extra
+signature
+  constructors
+
+    /**
+     * No idea what this is. Some tools need it.
+     */
+    flatlex : Sort * String -> AsFixTerm
+

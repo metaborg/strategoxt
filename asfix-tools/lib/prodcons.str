@@ -35,7 +35,7 @@
  * Changes by : Merijn de Jonge, Eelco Visser, and Hedzer Westra.
  */
 module prodcons
-imports lib Sdf2 verbalize-sdf Literal-lib Char-lib
+imports lib Sdf2 verbalize-sdf Literal-lib Char-lib asfix-extra
 
 signature
   constructors
