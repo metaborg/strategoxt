@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/06/05 09:32:49 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2001/06/05 12:27:24 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -46,6 +46,7 @@ CLEANFILES      = tohtml ismap2usemap
 	@sed 's@__BINDIR__@$(bindir)@g;\
 	      s@__DATADIR__@$(pkgdatadir)@g;\
 	      s@__GRAPHVIZ__@$(GRAPHVIZ)@g;\
+              s@__GRAPHTOOLS__@$(GRAPHTOOLS)@g;\
 	      s@__LIBEXEC__@$(libexecdir)@g;\
 	      s@__MAKE__@$(MAKE)@g;\
 	      s@__VERSION__@$(VERSION)@g;' \

@@ -64,8 +64,8 @@ GPP
    the tohtml tool) available from 
    http://www.research.att.com/sw/tools/graphviz
 
- - The XML Tools package which can be obtaind from
-   http://www.cwi.nl/~mdejonge/downloads
+ - The Graph Tools package (when using the tohtml tool) which can be obtaind
+   from http://www.cwi.nl/~mdejonge/downloads
 ----------------------------------------------------------------------
  CONFIGURATION
 
@@ -78,6 +78,7 @@ GPP
                --with-asfix-tools=/asfix-tools/install/directory \
                --with-pgen=/pgen/install/directory \
                --with-sglr=/sglr/install/directory \
+               --with-graph-tools=/graph-tools/install/directory \
                --with-graphviz=/graphviz/install/directory
 
  This will cause executables to be installed in /usr/local/bin,
