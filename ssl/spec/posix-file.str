@@ -115,6 +115,7 @@ strategies
 
 /**
  * ATerm input and output with streams
+ * TODO: move to io module.
  */
 strategies
 
@@ -124,8 +125,16 @@ strategies
    * :: Stream * _ -> Stream
    */
   write-to-stream =
-    ?(Stream(stream), term); prim("SSL_write_term_to_stream", stream, term); !Stream(<id>)
-      //TODO: offer baf and taf variants.
+    write-in-baf-to-stream
+
+  write-in-baf-to-stream =
+    ?(Stream(stream), term); prim("SSL_write_term_to_stream_baf", stream, term); !Stream(<id>)
+
+  write-in-taf-to-stream =
+    ?(Stream(stream), term); prim("SSL_write_term_to_stream_taf", stream, term); !Stream(<id>)
+
+  write-in-text-to-stream =
+    ?(Stream(stream), term); prim("SSL_write_term_to_stream_text", stream, term); !Stream(<id>)
 
   /**
    * Reads an ATerm from a Stream
