@@ -63,6 +63,13 @@ AC_SUBST([PT_SUPPORT])
 
 ############ StrategoXT ##################################################
 
+AC_ARG_WITH([strategoxt],
+  AC_HELP_STRING([--with-strategoxt=STRATEGOXT],
+                 [use StrategoXT at STRATEGOXT @<:@XT@:>@]),
+  [STRATEGOXT=$withval],
+  [STRATEGOXT=$XT]
+)
+
 AC_ARG_WITH([stratego-xt],
   AC_HELP_STRING([--with-stratego-xt=STRATEGOXT],
                  [use StrategoXT at STRATEGOXT @<:@XT@:>@]),

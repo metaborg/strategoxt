@@ -61,6 +61,11 @@ AC_ARG_WITH(stratego-xt,
   STRATEGOXT="$withval", 
   STRATEGOXT="$prefix"
 )
+AC_ARG_WITH(strategoxt, 
+  AC_HELP_STRING([--with-strategoxt=DIR], [use StrategoXT at DIR (bootstrap only) @<:@PREFIX@:>@]),
+  STRATEGOXT="$withval", 
+  STRATEGOXT="$prefix"
+)
 AC_SUBST(STRATEGOXT)
 
 ### PROGRAMS ##########################
