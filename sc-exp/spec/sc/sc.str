@@ -129,6 +129,7 @@ strategies
         optimize1 
         ; try(where(not(<get-config> "--fusion")); fusion)
         ; inline
+	; dead-def-elim
         ; compile-match
 	; desugar-case
         ; optimize2
@@ -144,6 +145,9 @@ strategies
 
   inline = 
     xtc-transform(!"inline", !["-b" | <pass-verbose> ])
+
+  dead-def-elim = 
+    xtc-transform(!"dead-def-elim", !["-b" | <pass-verbose> ])
 
   compile-match = 
     xtc-transform(!"compile-match", !["-b" | <pass-verbose> ])

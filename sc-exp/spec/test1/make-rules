@@ -33,22 +33,25 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 
 # OPTIMIZE ###########################################################
 
-%.s4 : %.s3 ../front/inline$(EXE)
-	../front/inline -i $< -o $@ -b
-
-%.s5 : %.s4 ../match/optimize1$(EXE)
+%.s4 : %.s3 ../match/optimize1$(EXE)
 	../match/optimize1 -i $< -o $@ -b
 
-%.s5fused: %.s5 ../opt/fusion$(EXE)
+%.s5: %.s4 ../opt/fusion$(EXE)
 	../opt/fusion  -i $< -o $@ -b --verbose 2
 
-%.s6 : %.s5fused ../match/compile-match$(EXE)
+%.s6 : %.s5 ../opt/inline$(EXE)
+	../opt/inline -i $< -o $@ -b
+
+%.s6gc : %.s6 ../opt/dead-def-elim$(EXE)
+	../opt/dead-def-elim -i $< -o $@ -b
+
+%.s7 : %.s6gc ../match/compile-match$(EXE)
 	../match/compile-match -i $< -o $@ -b
 
-%.s6desugared : %.s6 ../match/desugar-case$(EXE)
+%.s8 : %.s7 ../match/desugar-case$(EXE)
 	../match/desugar-case -i $< -o $@ -b
 
-%.s7 : %.s6desugared ../match/optimize2$(EXE)
+%.s9 : %.s8 ../match/optimize2$(EXE)
 	../match/optimize2 -i $< -o $@ -b
 
 # PRETTY-PRINTING ####################################################
@@ -64,13 +67,13 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 
 # BACK-END ###########################################################
 
-%.s8 : %.s7 ../c/canonicalize$(EXE)
+%.s10 : %.s9 ../c/canonicalize$(EXE)
 	../c/canonicalize -i $< -o $@ -b
 
-%.s8.check : %.s8 ../sig/Stratego-Canonical-Format$(EXE)
+%.s10.check : %.s10 ../sig/Stratego-Canonical-Format$(EXE)
 	../sig/Stratego-Canonical-Format -i $< -o $@ -b
 
-%.ac : %.s8 %.s8.check ../c/s2c$(EXE)
+%.ac : %.s10 %.s10.check ../c/s2c$(EXE)
 	../c/s2c -i $< -o $@  $(CINCLUDES)  -b
 
 %.c.abox : %.ac $(C_TOOLS)/share/c-tools/C-pretty.pp
