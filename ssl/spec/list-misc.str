@@ -135,7 +135,8 @@ strategies
     at-suffix([] + ([s|id];![]))
 
   take(isn) = 
-    nzip0(id); take-until((isn,id)); map(Snd)
+    where(isn => n)
+    ; nzip0(id); take-until(?(n,_)); map(Snd)
 
   drop-while(s) = 
     at-suffix(([] + [not(s)|id]);?xs); !xs
