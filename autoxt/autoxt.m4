@@ -275,7 +275,9 @@ AC_DEFINE(XTC_REPOSITORY(),
           [Location of the XTC repository.])
 ])# USE_XT_PACKAGES
 
-AC_DEFUN([DETECT_SVN_REVISION],
+############ SVN REVISION ########################################################
+
+AC_DEFUN([XT_SVN_REVISION],
 [
 AC_MSG_CHECKING([for the SVN revision of the source tree])
 
@@ -295,6 +297,20 @@ fi
 AC_SUBST([SVN_REVISION])
 
 ])
+
+AC_DEFUN([DETECT_SVN_REVISION],
+[
+  XT_SVN_REVISION
+])
+
+############ Extended version numbers #############################################
+AC_DEFUN([XT_PRE_RELEASE],
+[
+  AC_REQUIRE([XT_SVN_REVISION])
+  VERSION="${VERSION}pre${SVN_REVISION}"
+])
+
+############ CPP defines of some common variables as ATerms #######################
 
 AC_DEFUN([XT_TERM_DEFINE],
 [

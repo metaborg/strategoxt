@@ -1,3 +1,8 @@
+2004-07-27   Martin Bravenboer  <martin@cs.uu.nl>
+
+	* autoxt.m3: added XT_PRE_RELEASE. This macro extends the VERSION
+	variable with pre${SVN_REVISION}.
+	
 2004-06-27   Martin Bravenboer  <martin@cs.uu.nl>
 
 	* autoxt.m4: added XT_PKG_STRATEGOXT, which checks if the
