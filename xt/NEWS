@@ -1,0 +1,14 @@
+$Id: NEWS,v 1.1 2000/01/27 11:07:41 eelco Exp $
+
+Version 0.1.1
+
+ released: January 24, 2000
+
+ * Added asource to the distribution
+
+Version 0.1
+
+ released: January 21, 2000
+
+ * This is the first (experimental) release of XT, a bundle of transformation
+   tools.

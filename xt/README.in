@@ -1,0 +1,37 @@
+-------------------------------------------------------------------------------
+
+ XT : A bundle of tools for program transformation
+
+ Version @VERSION@
+
+-------------------------------------------------------------------------------
+
+ Author: Eelco Visser <visser@acm.org>
+
+-------------------------------------------------------------------------------
+ 
+ This package bundles a collection of independent tools that help in creating
+ various components of program transformation systems. The contribution of this
+ package is the bundle configuration, not the individual components. The tools 
+ in this bundle are:
+
+ - aterm	: a library for the representation of terms
+ - gb 		: grammar base, a collection of SDF2 syntax definitions
+ - gt		: grammar tools, a collection of tools for grammar engineering
+ - sglr		: the scannerless, generalized-LR parser
+ - stratego	: a language for specification of program transformation 
+                  systems
+
+-------------------------------------------------------------------------------
+
+ INSTALLATION
+
+ 1) configure the package
+
+	./configure --prefix=`pwd`
+
+ 2) make and install
+
+	make install
+
+-------------------------------------------------------------------------------

@@ -1,0 +1,21 @@
+AC_INIT
+AM_INIT_AUTOMAKE(xt,0.1)
+
+AC_ARG_WITH(aterm, [  --with-aterm=DIR        ATerm-library is in DIR], ATERM=${withval},ATERM=${prefix})
+
+AC_REVISION($Id: configure.in,v 1.1 2000/01/27 11:07:43 eelco Exp $)
+
+AC_PROG_CC
+AC_PROG_RANLIB
+
+AC_SUBST(PRODUCT)
+AC_SUBST(VERSION)
+AC_SUBST(ATERM)
+
+AC_CONFIG_SUBDIRS(aterm-0.20 gb asc-support gpp-v1.0b20 gt sglr stratego)
+
+AC_OUTPUT(
+	Makefile \
+	README \
+	asource/Makefile \
+)
