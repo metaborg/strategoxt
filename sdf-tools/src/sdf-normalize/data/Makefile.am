@@ -18,11 +18,10 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.2 2001/06/06 00:55:17 mdejonge Exp $
+# $Id: Makefile.am,v 1.3 2001/06/06 09:05:03 mdejonge Exp $
 
 EXTRA_DIST   = Test1.def Test1.def.af.out.correct Test1.def.af \
-               test1.pico.asfix test1.pico.def.af.correct \
-               test1.pico.norm.af.correct
+               test1.pico.def.af.correct
 
 regenerate-tests:
 	parse -l sdf -v 2.1 -i ./Test1.def -I -o ./Test1.def.af

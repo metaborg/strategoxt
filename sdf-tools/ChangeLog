@@ -1,3 +1,6 @@
+2001-06-06 Merijn de Jonge <mdejonge@cwi.nl> 
+   * src/sdf-normalize/asfix2sdf* moved to new package grammar-recovery
+
 2001-06-01 Merijn de Jonge <mdejonge@cwi.nl> 
    * Most tests are now generated from generic rules in the make_rules file
 
