@@ -48,6 +48,10 @@ strategies
   try-abox2text = 
     abox2text <+ <fatal-error> ["** ERROR: invalid box: ", <id>]
 
+  // REMARK
+  // This encoding of HV boxes is exponential; not so bad for formatting
+  // paragraphs, but not tractable for formatting nested expressions.
+
   // HV
   // :: Box * Int -> Strs * Int
   abox2text :
