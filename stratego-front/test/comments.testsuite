@@ -1,0 +1,21 @@
+testsuite Stratego Comments
+topsort Strategy
+
+test Simple /* */ block comment
+  "1 /*   */ " succeeds
+
+test Simple (*  *) block comment
+  "1 (*   *) " succeeds
+
+test *) in /* */ comment
+  "1 /*  *)  */ " succeeds
+
+test */ in /* */ comment
+  "1 /*  */  */ " fails
+
+test */ in (*  *) comment
+  "1 (*  */  *) " succeeds
+
+test *) in (*  *) comment
+  "1 (*  *)  *) " fails
+

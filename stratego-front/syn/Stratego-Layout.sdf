@@ -2,15 +2,22 @@ module Stratego-Layout
 exports
   lexical syntax
     [\t\ \n\r]		 -> Ws
+
     "//" ~[\n]* ([\n] | Eof) -> ShortCom
-    "/*" CommChar* "*/"  -> LongCom
-    "(*" CommChar* "*)"  -> LongCom
-    "*" 		 -> Asterisk
-    ~[\*] 		 -> CommChar
-    Asterisk 		 -> CommChar
+    "/*" CommChar1* "*/"  -> LongCom
+    "(*" CommChar2* "*)"  -> LongCom
+
+    ~[\*]      -> CommChar1
+    ~[\*]      -> CommChar2
+
+    "*"        -> Asterisk1
+    "*"        -> Asterisk2
+    Asterisk1  -> CommChar1
+    Asterisk2  -> CommChar2
 
   lexical restrictions
-    Asterisk -/- [\/\)]
+    Asterisk1 -/- [\/]
+    Asterisk2 -/- [\)]
 
   lexical syntax
     "\\end{code}" VLCchar* "\\begin{code}" -> VeryLongCom

@@ -42,8 +42,10 @@ imports Stratego
             VLCchar        => StrategoVLCchar
             Eof            => StrategoEof
             VeryLongCom    => StrategoVeryLongCom
-            CommChar       => StrategoCommChar
-            Asterisk       => StrategoAsterisk
+            Asterisk2      => StrategoAsterisk2
+            Asterisk1      => StrategoAsterisk1
+            CommChar2      => StrategoCommChar2
+            CommChar1      => StrategoCommChar1
             LongCom        => StrategoLongCom
             ShortCom       => StrategoShortCom
             Ws             => StrategoWs

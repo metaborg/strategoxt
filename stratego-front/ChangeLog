@@ -1,3 +1,9 @@
+2004-05-26  Martin Bravenboer <martin@cs.uu.nl>
+
+	* syn/Stratego-Layout.sdf: *) in /* */ is now allowed and vice
+	versa. This allows commenting strategies that contain *), for
+	example in x(t*).
+
 2004-04-28  Arthur van Dam  <adam@cs.uu.nl>
 
 	* syn/Stratego-Strategies.sdf: Introduced the switch-case(-otherwise)

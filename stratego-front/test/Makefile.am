@@ -7,7 +7,7 @@ PGEN_FLAGS      = -m $*
 check_PROGRAMS 	= prop1 switch-semantics-test
 check_DATA      = PropStratego.tbl 
 
-TESTSUITES        = strategies.testsuite dynrules.testsuite
+TESTSUITES        = strategies.testsuite dynrules.testsuite comments.testsuite
 PARSE_UNIT_PTABLE = $(top_srcdir)/syn/StrategoForTesting.tbl
 
 TESTS = prop1 switch-semantics-test
