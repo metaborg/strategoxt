@@ -20,7 +20,9 @@ signatures =                   \
   Stratego-Core-Layout.str     \
   Stratego-Core-Modules.str    \
   Stratego-Core-Signatures.str \
-  Stratego-Core-Strategies.str   
+  Stratego-Core-Strategies.str \
+  \
+  Stratego-MetaTransition.str
 
 CLEANFILES	= $(wildcard *.atree)
 BOOTCLEANFILES	= $(signatures) $(wildcard *.rtree) Stratego.def Stratego-Amb.def

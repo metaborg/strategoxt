@@ -1,6 +1,5 @@
-\begin{code}
 module meta-explode
-imports lib Stratego-Amb
+imports lib Stratego-Amb Stratego-MetaTransition
 signature
   constructors
     AsFix        : Option
@@ -97,27 +96,3 @@ strategies
     <+ \ [t | ts] -> Cong("Cons", [<str-explode>t,<str-explode>ts]) \
     <+ is-string; !Match(Str(<id>))
     <+ \ op#(ts) -> Cong(op, <map(str-explode)> ts) \
-
-\end{code}
-\endinput
-\begin{code}
-signature
-  constructors
-    ToTerm       : a -> Term       // quotation
-    FromTerm     : Term -> a       // antiquotation
-
-    ToBuild	 : a -> Strategy   // quotation denoting !t
-
-    FromApp      : Strategy -> a   // antiquotation denoting <s>
-
-    ToStrategy   : a -> Strategy
-    FromStrategy : Strategy -> a
-
-    WithAnno     : a * ListTerm -> a
-
-    meta-var     : String -> a
-    meta-listvar : String -> a
-    Cong         : String * List(Strategy) -> Strategy
-    Conc	 : Term * Term -> Term
-    Ins		 : Term -> Term
-\end{code}
