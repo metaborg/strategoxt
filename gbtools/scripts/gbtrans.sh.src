@@ -1,6 +1,7 @@
 #! /bin/sh
 
 PREFIX=__PREFIX__
+MAKE=__MAKE__
 gbadd=${PREFIX}/bin/gbadd
 
 out=$1
@@ -14,7 +15,7 @@ trans ()
    version="`basename $1 | sed 's/^[^.]*\.//g'`"
 
    true \
-   | EDITOR=cat ${gbadd} -o ${out} -g ${grammar} -v ${version}
+   | EDITOR=true ${gbadd} -o ${out} -g ${grammar} -v ${version}
 
    # Copy sdf and pp files
    cp $1/*.sdf $1/*.pp  ${out}/${grammar}.${version}/syntax
@@ -42,6 +43,14 @@ trans ()
    | perl -p -e 's@(# \$Id.*\$\n)@\1\n# Specify name and version of the grammar\ngrammar         = _grammar_\ngrammar_version = _version_\n@' \
    | sed "s/_grammar_/${grammar}/;s/_version_/${version}/;s/search_path.*\$/reuses          = ${reuses}/" \
    > ${out}/${grammar}.${version}/grammar.spec
+
+
+   # re-generate configure.in from grammar.spec file
+   ( 
+    cd ${out}/${grammar}.${version}/
+    rm configure.in
+    ${MAKE} -f ${PREFIX}/share/gbtools/make_rules.gbtools configure.in GBTOOLS=${PREFIX}
+   )
 
    echo "Dummy README file, top make automake happy" > ${out}/${grammar}.${version}/README
 }

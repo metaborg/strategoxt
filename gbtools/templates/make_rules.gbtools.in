@@ -18,19 +18,31 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
  
-# $Id: make_rules.gbtools.in,v 1.1 2002/03/06 20:40:37 mdejonge Exp $
+# $Id: make_rules.gbtools.in,v 1.2 2002/08/09 16:36:18 mdejonge Exp $
 
 
 configure.in : grammar.spec
-	(\
+	@(\
 	echo "dnl Generated file; do not edit by hand." ;\
 	echo "AC_INIT(configure.in)" ;\
 	grammar=`echo $(grammar).$(grammar_version)| tr [.] [_]`;\
 	echo "AM_INIT_AUTOMAKE($${grammar},0)" ;\
 	echo "ACLOCAL=\"\$${ACLOCAL} -I .\"" ;\
-	echo "AC_PACKAGE_REQUIRE(gbtools, gbadd," ;\
-	echo "   [  --with-gbtools          location of gbtools package ])" ;\
-	echo "AC_SUBST(GBTOOLS)" ;\
+	echo "AC_ARG_WITH(gbtools,";\
+	echo "   [  --with-gbtools          location of gbtools package ],";\
+	echo "   [GBTOOLS=\$${withval}],";\
+	echo "   [AC_PATH_PROGS(GBTOOLS,gbadd,no)])";\
+	echo "AC_ARG_ENABLE(devel,";\
+	echo "   [  --enable-devel          Turn on development environment ],";\
+	echo "   [case "\$${enableval}" in";\
+	echo "     yes) devel=true ;;";\
+	echo "     no)  devel=false ;;";\
+	echo "    esac], [devel=false])";\
+	echo "AM_CONDITIONAL(DEVEL, test x\$${devel} = xtrue)";\
+	echo "if test x\$${devel} = xtrue -a x\$${GBTOOLS} = xno; then";\
+	echo "   AC_MSG_ERROR( Required gbtools package not found. )";\
+	echo "fi";\
+	echo "AC_SUBST(GBTOOLS)";\
 	reuses='$(reuses)'; for d in $${reuses} ;\
 	do \
            r=`echo $$d | sed 's/\([^-]*\)-.*/\1/' | tr [.] [_]`;\

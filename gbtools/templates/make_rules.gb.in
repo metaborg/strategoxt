@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
  
-# $Id: make_rules.gb.in,v 1.2 2002/03/06 21:05:32 mdejonge Exp $
+# $Id: make_rules.gb.in,v 1.3 2002/08/09 16:36:18 mdejonge Exp $
 
 # Variable definitions
 SDF_TOOLS       = @SDF_TOOLS@
@@ -40,18 +40,12 @@ pack_sdf    = $(SDF_TOOLS)/bin/pack-sdf
 # the list of reused grammars $(reuses). First strip of version numbers from
 # these grammars
 reused = $(shell echo $(reuses) | sed 's/\([^\.]*\.[^-]*\)-[^ ]*/\1/g')
-GRAMMAR_SEARCH_PATH = -I $(srcdir) $(reused:%=-I $(prefix)/grammars/%)
+GRAMMAR_SEARCH_PATH = -I $(srcdir) $(reused:%=-I $(datadir)/grammars/%)
 
 # Which "local" modules are part of the grammar and should be distributed.
 # An upperbound is to take all .sdf files in the current directory.
 grammar_modules = $(wildcard *.sdf)
 
-# This command is executed for each grammar during "make check"
-# it runs sglr for $(grammar) and parses each file in $(testset)
-TESTS_ENVIRONMENT = $(SHELL) -c \
-	'tests="$(testset:%=$(top_srcdir)/data/%)"; for grammar in $${tests} ;do \
-            PATH=$(SGLR)/bin:$${PATH} sglr -2 -v -p $(grammar).tbl -o /dev/null -i $${grammar} $(SGLR_FLAGS);\
-         done'
 
 # Construction of definition file by pretty-printing its abstract syntax tree
 # and generating a descriptive header (using defhead),
@@ -126,7 +120,7 @@ getvalue:
 
 # Generation of a package definition file for the grammar.
 $(PACKAGE)-$(VERSION).pkg: grammar.spec
-	( \
+	@( \
 	  echo package ;\
 	  echo identification ;\
 	  echo " name=$(PACKAGE)" ;\
@@ -135,9 +129,10 @@ $(PACKAGE)-$(VERSION).pkg: grammar.spec
 	  echo " info=$(OGB)" ;\
 	  echo " description='"$(description)\' ;\
 	  echo " keywords=grammar base, grammar, language, $(grammar)" ;\
-	  echo interface ;\
+	  echo "configuration interface" ;\
+	  echo " gbtools   'location of gbtools package'";\
+          echo " devel     'enable/disable support for grammar development (requires gbtools)'";\
 	  echo requires ;\
-	  echo " gbtools $(GBTOOLS_VERSION)" ;\
 	  reuses='$(reuses)' ; for d in $${reuses} ;\
 	  do \
 	     grammar=`echo $$d | sed 's/\([^-]*\)-.*/\1/'| tr [.] [_]` ;\

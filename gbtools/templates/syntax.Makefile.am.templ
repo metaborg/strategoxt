@@ -10,16 +10,26 @@ EXTRA_DIST      = $(SDF_MODULES) $(PP_TABLES) make_rules.local \
 CLEANFILES      = GB-Main.sdf $(grammar).tbl $(grammar).af $(grammar).def.dep $(grammar).def $(PP_TABLES:%=%.af)
 
 # Grammars are installed in $(prefix)/share/gb/$grammar.$version)
-grammardir=$(prefix)/grammars/$(grammar).$(grammar_version)
+grammardir=$(datadir)/grammars/$(grammar).$(grammar_version)
 grammar_DATA    = $(grammar).def $(grammar).tbl $(SDF_MODULES) $(PP_TABLES) $(PP_TABLES:%=%.af)
 
 TESTS           = $(grammar).tbl
 grammar_modules =
 
-sinclude $(GBTOOLS)/share/gbtools/make_rules
-sinclude $(GBTOOLS)/share/gbtools/make_rules.gb
-sinclude $(GBTOOLS)/share/gbtools/make_rules.sdf
-sinclude $(GBTOOLS)/share/gbtools/make_rules.gpp
+# This command is executed for each grammar during "make check"
+# it runs sglr for $(grammar) and parses each file in $(testset)
+TESTS_ENVIRONMENT = $(SHELL) -c \
+	'tests="$(testset:%=$(top_srcdir)/data/%)"; for grammar in $${tests} ;do \
+            PATH=$(SGLR)/bin:$${PATH} sglr -2 -v -p $(grammar).tbl -o /dev/null -i $${grammar} $(SGLR_FLAGS);\
+         done'
+
+
+if DEVEL
+include $(GBTOOLS)/share/gbtools/make_rules
+include $(GBTOOLS)/share/gbtools/make_rules.gb
+include $(GBTOOLS)/share/gbtools/make_rules.sdf
+include $(GBTOOLS)/share/gbtools/make_rules.gpp
+endif
 
 # inclusion of local make_rules file
 include ./make_rules.local

@@ -18,12 +18,12 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2002/03/06 20:40:30 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2002/08/09 16:36:18 mdejonge Exp $
 
 
 EXTRA_DIST   = Makefile.am.templ grammar.spec.templ data.Makefile.am.templ \
                syntax.Makefile.am.templ data.Makefile.am.templ reconf \
-               program-check.m4 syntax.make_rules.local
+               syntax.make_rules.local
 
 
 pkgdata_DATA = Makefile.am.templ grammar.spec.templ \
@@ -31,5 +31,5 @@ pkgdata_DATA = Makefile.am.templ grammar.spec.templ \
                make_rules.gb make_rules.gpp make_rules.sdf \
                make_rules.benchmarks \
                syntax.Makefile.am.templ data.Makefile.am.templ \
-               reconf program-check.m4 make_rules.gbtools \
+               reconf make_rules.gbtools \
 	       syntax.make_rules.local
