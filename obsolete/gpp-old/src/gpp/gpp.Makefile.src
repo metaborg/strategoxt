@@ -15,7 +15,7 @@
 #    along with this program; if not, write to the Free Software
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 #
-# $Id: gpp.Makefile.src,v 1.5 2001/09/03 16:02:53 mdejonge Exp $
+# $Id: gpp.Makefile.src,v 1.6 2001/09/03 16:06:53 mdejonge Exp $
 #
 # GNU make specific generic make rules for the generation of pretty-printed
 # documents.
@@ -83,21 +83,21 @@ PREFIX        = __PREFIX__
 # rule how to make an abox file from an AsFix file. It uses $^ do determine
 # which pretty-print tables should be used.
 %.abox : %.asfix 
-	@echo building $@ from $<. ;\
+	@echo "building $@ from $<."
 	@set -- $(^:%= -p %) ; shift ; shift;\
 	$(ASFIX2ABOX) -i $< -o $@ $$*
 
 # rule how to make a LaTeX file from an abox file. It uses $^ do determine
 # which abbreviations should be used.
 %.tex : %.abox
+	@echo "building $@ from $<."
 	@set $(^) ; shift ;\
-	@echo building $@ from $<. ;\
 	$(ABOX2LATEX) -i $< -o $@ $$*
 
 
 # rule how to make HTML from an abox file
 %.html : %.abox box2html.css
-	@echo building $@ from $<. ;\
+	@echo "building $@ from $<."
 	@if [ "a$($(*)_title)" != "a" ]; then \
 	   $(ABOX2HTML) -t "$($(*)_title)" -i $< -o $@ ;\
 	else \
