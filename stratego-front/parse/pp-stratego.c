@@ -200,20 +200,20 @@ static void init_module_constant_terms (void)
 }
 #include <srts/init-stratego-application.h>
 ATerm pass_verbose_0_0 (ATerm t);
-ATerm xtc_transform_2_0 (ATerm s_107 (ATerm), ATerm t_107 (ATerm), ATerm t);
+ATerm xtc_transform_2_0 (ATerm f_109 (ATerm), ATerm g_109 (ATerm), ATerm t);
 ATerm xtc_find_0_0 (ATerm t);
-ATerm try_1_0 (ATerm x_102 (ATerm), ATerm t);
-ATerm topdown_1_0 (ATerm o_84 (ATerm), ATerm t);
+ATerm try_1_0 (ATerm k_104 (ATerm), ATerm t);
+ATerm topdown_1_0 (ATerm b_86 (ATerm), ATerm t);
 ATerm StrategoParenthesize_0_0 (ATerm t);
-ATerm innermost_1_0 (ATerm t_111 (ATerm), ATerm t);
-ATerm xtc_io_transform_1_0 (ATerm j_106 (ATerm), ATerm t);
-ATerm xtc_transform_1_0 (ATerm r_107 (ATerm), ATerm t);
+ATerm innermost_1_0 (ATerm g_113 (ATerm), ATerm t);
+ATerm xtc_io_transform_1_0 (ATerm w_107 (ATerm), ATerm t);
+ATerm xtc_transform_1_0 (ATerm e_109 (ATerm), ATerm t);
 ATerm get_config_0_0 (ATerm t);
 ATerm conc_0_0 (ATerm t);
-ATerm foldr_3_0 (ATerm s_96 (ATerm), ATerm t_96 (ATerm), ATerm u_96 (ATerm), ATerm t);
+ATerm foldr_3_0 (ATerm f_98 (ATerm), ATerm g_98 (ATerm), ATerm h_98 (ATerm), ATerm t);
 static ATerm a_0 (ATerm t);
 ATerm pass_includes_0_0 (ATerm t);
-ATerm xtc_io_1_0 (ATerm v_106 (ATerm), ATerm t);
+ATerm xtc_io_1_0 (ATerm i_108 (ATerm), ATerm t);
 ATerm io_options_0_0 (ATerm t);
 ATerm extend_config_0_0 (ATerm t);
 ATerm ArgOption_3_0 (ATerm k_3 (ATerm), ATerm l_3 (ATerm), ATerm m_3 (ATerm), ATerm t);
@@ -229,7 +229,7 @@ static ATerm h_0 (ATerm t);
 static ATerm i_0 (ATerm t);
 static ATerm j_0 (ATerm t);
 ATerm pp_stratego_options_0_0 (ATerm t);
-ATerm option_wrap_2_0 (ATerm u_108 (ATerm), ATerm v_108 (ATerm), ATerm t);
+ATerm option_wrap_2_0 (ATerm h_110 (ATerm), ATerm i_110 (ATerm), ATerm t);
 static ATerm k_0 (ATerm t);
 static ATerm l_0 (ATerm t);
 static ATerm m_0 (ATerm t);

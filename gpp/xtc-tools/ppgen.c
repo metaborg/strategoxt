@@ -152,9 +152,9 @@ static void init_module_constant_terms (void)
 }
 #include <srts/init-stratego-application.h>
 ATerm pass_verbose_0_0 (ATerm t);
-ATerm xtc_transform_2_0 (ATerm s_107 (ATerm), ATerm t_107 (ATerm), ATerm t);
+ATerm xtc_transform_2_0 (ATerm f_109 (ATerm), ATerm g_109 (ATerm), ATerm t);
 ATerm get_config_0_0 (ATerm t);
-ATerm if_verbose3_1_0 (ATerm e_104 (ATerm), ATerm t);
+ATerm if_verbose3_1_0 (ATerm r_105 (ATerm), ATerm t);
 static ATerm a_0 (ATerm t);
 ATerm pass_v_verbose_0_0 (ATerm t);
 ATerm xtc_find_0_0 (ATerm t);
@@ -170,7 +170,7 @@ ATerm get_input_type_0_0 (ATerm t);
 static ATerm m_0 (ATerm t);
 static ATerm p_0 (ATerm t);
 ATerm ppgen_0_0 (ATerm t);
-ATerm xtc_io_1_0 (ATerm v_106 (ATerm), ATerm t);
+ATerm xtc_io_1_0 (ATerm i_108 (ATerm), ATerm t);
 ATerm io_options_0_0 (ATerm t);
 ATerm set_config_0_0 (ATerm t);
 ATerm Option_3_0 (ATerm h_3 (ATerm), ATerm i_3 (ATerm), ATerm j_3 (ATerm), ATerm t);
@@ -184,7 +184,7 @@ static ATerm y_0 (ATerm t);
 static ATerm z_0 (ATerm t);
 static ATerm b_1 (ATerm t);
 ATerm ppgen_options_0_0 (ATerm t);
-ATerm option_wrap_2_0 (ATerm u_108 (ATerm), ATerm v_108 (ATerm), ATerm t);
+ATerm option_wrap_2_0 (ATerm h_110 (ATerm), ATerm i_110 (ATerm), ATerm t);
 static ATerm e_1 (ATerm t);
 ATerm main_0_0 (ATerm t);
 ATerm main_0 (ATerm t)

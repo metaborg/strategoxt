@@ -419,27 +419,27 @@ static void init_module_constant_terms (void)
 }
 #include <srts/init-stratego-application.h>
 ATerm implode_string_0_0 (ATerm t);
-ATerm Var_1_0 (ATerm m_80 (ATerm), ATerm t);
+ATerm Var_1_0 (ATerm z_81 (ATerm), ATerm t);
 ATerm is_string_0_0 (ATerm t);
 ATerm string_to_int_0_0 (ATerm t);
 ATerm string_to_real_0_0 (ATerm t);
 ATerm unescape_0_0 (ATerm t);
 static ATerm a_0 (ATerm t);
 ATerm DesugarOnce_0_0 (ATerm t);
-ATerm try_1_0 (ATerm x_102 (ATerm), ATerm t);
+ATerm try_1_0 (ATerm k_104 (ATerm), ATerm t);
 ATerm un_double_quote_0_0 (ATerm t);
-ATerm foldr_2_0 (ATerm q_96 (ATerm), ATerm r_96 (ATerm), ATerm t);
+ATerm foldr_2_0 (ATerm d_98 (ATerm), ATerm e_98 (ATerm), ATerm t);
 ATerm new_0_0 (ATerm t);
 ATerm Snd_0_0 (ATerm t);
 ATerm Fst_0_0 (ATerm t);
-ATerm foldr_3_0 (ATerm s_96 (ATerm), ATerm t_96 (ATerm), ATerm u_96 (ATerm), ATerm t);
+ATerm foldr_3_0 (ATerm f_98 (ATerm), ATerm g_98 (ATerm), ATerm h_98 (ATerm), ATerm t);
 static ATerm b_0 (ATerm t);
 static ATerm e_0 (ATerm t);
 static ATerm i_0 (ATerm t);
 ATerm mk_rulenames_0_0 (ATerm t);
 ATerm explode_string_0_0 (ATerm t);
 ATerm Nil_0_0 (ATerm t);
-ATerm Cons_2_0 (ATerm r_75 (ATerm), ATerm s_75 (ATerm), ATerm t);
+ATerm Cons_2_0 (ATerm e_77 (ATerm), ATerm f_77 (ATerm), ATerm t);
 static ATerm u_15 (ATerm v_6, ATerm w_6, ATerm t);
 static ATerm v_15 (ATerm z_6, ATerm a_7, ATerm t);
 static ATerm j_0 (ATerm t);
@@ -456,9 +456,9 @@ static ATerm d_1 (ATerm t);
 static ATerm e_1 (ATerm t);
 static ATerm f_1 (ATerm t);
 ATerm Desugar_0_0 (ATerm t);
-ATerm repeat_1_0 (ATerm j_87 (ATerm), ATerm t);
-ATerm topdown_1_0 (ATerm o_84 (ATerm), ATerm t);
-ATerm iowrap_1_0 (ATerm y_107 (ATerm), ATerm t);
+ATerm repeat_1_0 (ATerm w_88 (ATerm), ATerm t);
+ATerm topdown_1_0 (ATerm b_86 (ATerm), ATerm t);
+ATerm io_wrap_1_0 (ATerm v_110 (ATerm), ATerm t);
 static ATerm i_1 (ATerm t);
 static ATerm j_1 (ATerm t);
 static ATerm k_1 (ATerm t);
@@ -1714,7 +1714,7 @@ static ATerm k_1 (ATerm t)
 }
 ATerm stratego_desugar_0_0 (ATerm t)
 {
-  t = iowrap_1_0(i_1, t);
+  t = io_wrap_1_0(i_1, t);
   return(t);
 }
 ATerm main_0_0 (ATerm t)
