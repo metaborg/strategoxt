@@ -1,3 +1,6 @@
+2001-02-14 Joost Visser <jvisser@cwi.nl>
+	* Increased version of JJForester to 0.5
+	
 2001-01-07 Merijn de Jonge <mdejonge@cwi.nl>
         * Removed second occurence of AC_CONFIG_PKG(gt, ...) in configure.in
         * New version of collect.sh
@@ -21,7 +24,7 @@
 
 2000-11-30 Merijn de Jonge <mdejonge@cwi.nl>
 	* Updated the NEWS file for version
- * Bundle verion 0.2 of JJForester.
+        * Bundle verion 0.2 of JJForester.
         * Preparing for release: changed version 0.5beta to 0.5
 
 2000-11-25 Merijn de Jonge <mdejonge@cwi.nl>
