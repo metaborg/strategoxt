@@ -86,13 +86,6 @@ migrate :
 	  echo "Meta([Syntax(\"`cat $$file`\")])" > `basename $$file .syn`.meta ; \
 	done
 
-# Dependencies
-
-#%.c.dep : 
-#	touch $@
-#
-#CLEANFILES = $(wildcard *.dep)
-
 bootclean-am: clean-am
 	-test -z "$(BOOTCLEANFILES)" || rm -f $(BOOTCLEANFILES)
 
