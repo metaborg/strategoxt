@@ -1,3 +1,7 @@
+2001-03-12 Merijn de Jonge <mdejonge@cwi.nl>
+        * Don't generate README from README.in anymore because it turned out
+          to be confusing for developers. Use separate VERSION file instead.
+
 2001-02-27 Merijn de Jonge <mdejonge@cwi.nl>
         * Small bug fix in Makefile.am
         * Changed cvs server from gondel to ssh.cwi.nl

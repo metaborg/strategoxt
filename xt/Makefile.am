@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.30 2001/02/27 23:29:44 mdejonge Exp $
+# $Id: Makefile.am,v 1.31 2001/03/12 14:30:02 mdejonge Exp $
 
 PKGS         = aterm asfix asc-support sglr pgen graph-tools \
                stratego gpp gt gb JJForester
@@ -27,7 +27,7 @@ DIST_SUBDIRS = pre-checks \
                $(PKGS) \
                integration-tests www
 
-EXTRA_DIST   = SOFTWARE README collect.sh pkg-list reconf
+EXTRA_DIST   = SOFTWARE VERSION collect.sh pkg-list reconf
 
 # We need at least one subdir to be defined such that automake will generate
 # the code for traversing subdirectories
