@@ -33,7 +33,7 @@ strategies
     xtc-temp-files(
       write-to
     ; xtc-pp-sdf2
-    ; ?FILE(<read-text-file; trim('\n' + '\r' + ' ' + '\t')>)
+    ; ?FILE(<read-text-file; trim-chars('\n' + '\r' + ' ' + '\t')>)
     )
     ;   say(!"[ppgen | warning] No constructor defined for production" )
     ; debug(!"[ppgen | warning]   ")

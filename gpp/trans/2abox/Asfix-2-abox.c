@@ -834,7 +834,7 @@ ATerm pp_table_get_0_0 (ATerm t);
 ATerm table_get_0_0 (ATerm t);
 static ATerm i_6 (ATerm s_22, ATerm r_22, ATerm t);
 ATerm say_1_0 (ATerm a_100 (ATerm), ATerm t);
-ATerm trim_1_0 (ATerm j_107 (ATerm), ATerm t);
+ATerm trim_chars_1_0 (ATerm l_112 (ATerm), ATerm t);
 ATerm read_text_file_0_0 (ATerm t);
 ATerm pass_verbose_0_0 (ATerm t);
 ATerm xtc_transform_2_0 (ATerm l_6 (ATerm), ATerm m_6 (ATerm), ATerm t);
@@ -3942,7 +3942,7 @@ static ATerm t_4 (ATerm t)
     _fail(t);
   t = n_48;
   t = read_text_file_0_0(t);
-  t = trim_1_0(u_4, t);
+  t = trim_chars_1_0(u_4, t);
   return(t);
 }
 static ATerm u_4 (ATerm t)
