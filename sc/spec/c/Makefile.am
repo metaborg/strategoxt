@@ -1,7 +1,7 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-EXTRA_DIST 	 = $(wildcard *.str) 
+EXTRA_DIST 	 = $(wildcard *.str) $(wildcard *.meta) 
 
 libexec_PROGRAMS = s2c canonicalize 
 check_PROGRAMS 	 = C-simplify-test 
