@@ -21,6 +21,7 @@ signature
     term                  : ATerm -> Attr
     'id                   : String -> Attr
     assoc                 : Associativity -> Attr
+    cons                  : String -> ATerm
 
     non-assoc             : Associativity
     assoc                 : Associativity
