@@ -57,7 +57,7 @@ FILE* stream_from_term(ATerm stream) {
  */
 show_stream(FILE* stream) {
   char* p = (char*) &stream;
-  printf("Stream pointer: %i %i %i %i \n", p[0], p[1], p[2], p[3]);
+  fprintf(stderr, "Stream pointer: %i %i %i %i \n", p[0], p[1], p[2], p[3]);
 }
 
 /**
@@ -91,7 +91,7 @@ ATerm stream_to_term(FILE* stream) {
   // TODO: free allocated space with Blob destructor?
 
   if(onheap == NULL) {
-    printf("** ERROR -- SSL/posix-file/stream_to_term: couldn't allocate memory");
+    fprintf(stderr, "** ERROR -- SSL/posix-file/stream_to_term: couldn't allocate memory");
     _fail(App0("")); 
   }
 
