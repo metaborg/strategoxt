@@ -14,7 +14,8 @@ STRINCLUDES = \
   -I $(top_srcdir)/sig/xml-info \
   -I $(top_srcdir)/sig/xml \
   -I $(top_srcdir)/syn/xml \
-  -I $(SRTS)/share/srts
+  -I $(SRTS)/share/srts \
+  -I $(XTC)/share/xtc
 
 LDADD += $(SSL_LIBS)
 
