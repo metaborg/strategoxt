@@ -208,6 +208,16 @@ AB_CONFIG_PKG(concrete-syntax,
    --with-repository=${REPOSITORY}
 )
 
+AB_CONFIG_PKG(aterm-front,
+   --with-aterm=${ATERM}
+   --with-sglr=${SGLR}
+   --with-pgen=${PGEN}
+   --with-stratego-xt=${STRATEGOXT}
+   --with-srts=${BUILD_SRTS}
+   --with-xtc=${INSTALL_XTC}
+   --with-repository=${REPOSITORY}
+)
+
 AB_CONFIG_PKG(aterm-tools,
    --with-aterm=${ATERM}
    --with-sglr=${SGLR}
