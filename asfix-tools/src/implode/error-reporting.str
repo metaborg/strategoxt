@@ -114,13 +114,17 @@ strategies
           ; get-lines
           ; add-indices
           ; where(y-pos => y)
-          ; at-suffix(?[(y, _) | _]; ?context)
+          ; if !y => 0 then
+              \ [line | _] -> [line] \
+            else
+              at-suffix(?[(y, _) | _]; ?context)
+              ; !context
+            end
 
           /**
            * If there are 2 or more elements, drop the rest.
            */
-          ; !context
-          ; if !context => [s1, s2 | _ ] then
+          ; if ?[s1, s2 | _ ] then
               ![s1, s2]
             end
           ; where(map(<fprintnl> (<stderr-stream> (), [<Snd>])))
