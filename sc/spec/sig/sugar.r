@@ -69,6 +69,8 @@ signature
     ExplodeCong  : Strat * Strat       -> Strat   (* s1 # (s2) *)
     As           : Var * Term          -> Term    (* x@t *)
     BuildDefault : Term                -> Term    (* _ t *)
+
+    Anno         : Term * Term         -> Term    (* t { t } *)
 \end{code}
 
 	\paragraph{Rules \& Rule Definitions}
