@@ -3,6 +3,7 @@ module StrategoRenamed
 imports 
   Stratego [
 	Id 		=> StrategoId 
+	ID 		=> StrategoID
 	ModName 	=> StrategoModName
 	Ws 		=> StrategoWs
 	ShortCom 	=> StrategoShortCom
@@ -337,8 +338,8 @@ exports
     "signature" 	-> ModName {reject}
     "strategies" 	-> ModName {reject}
   lexical syntax
-    [a-zA-Z\'\.\-\_] [a-zA-Z0-9\'\.\-\_]*     -> Id
-    [a-zA-Z\'\.\-\_] [a-zA-Z0-9\'\.\-\_]* "*" -> LId
+    [a-zA-Z\'\-\_] [a-zA-Z0-9\'\-\_]*     -> Id
+    [a-zA-Z\'\-\_] [a-zA-Z0-9\'\-\_]* "*" -> LId
   lexical restrictions
     Id -/- [a-zA-Z0-9\'\.\-\_\*]
     LId -/- [a-zA-Z0-9\'\.\-\_]
@@ -419,6 +420,29 @@ imports Stratego StrategoRenamed
 
 exports
   context-free syntax
+    "|[" Module      "]|" -> StrategoTerm {cons("ToTerm"),prefer}
+    "|[" Decl        "]|" -> StrategoTerm {cons("ToTerm")}
+    "|[" Sdecl       "]|" -> StrategoTerm {cons("ToTerm")}
+
+    "|[" Opdecl      "]|" -> StrategoTerm {cons("ToTerm")}
+    "|[" Type        "]|" -> StrategoTerm {cons("ToTerm")}
+
+
+    "|[" Term        "]|"  -> StrategoTerm {cons("ToTerm")}
+    "|[" Term        ":" "T" "]|" -> StrategoTerm {cons("ToTerm")}
+
+    "|[" StratRule   "]|" -> StrategoTerm {cons("ToTerm")}
+    "|[" Rule        "]|" -> StrategoTerm {cons("ToTerm")}
+    "|[" RuleDef     "]|" -> StrategoTerm {cons("ToTerm")}
+
+    "|[" Strategy    "]|"  -> StrategoTerm {cons("ToTerm")}
+    "|[" Strategy    ":" "S" "]|" -> StrategoTerm {cons("ToTerm")}
+    "|[" StrategyDef "]|"  -> StrategoTerm {cons("ToTerm")}
+
+    "|[" Overlay     ":" "O" "]|" -> StrategoTerm {cons("ToTerm")}
+    "Overlay" "|[" Overlay"]|" -> StrategoTerm {cons("ToTerm")}
+
+
     "[[" Module      "]]" -> StrategoTerm {cons("ToTerm"),prefer}
     "[[" Decl        "]]" -> StrategoTerm {cons("ToTerm")}
     "[[" Sdecl       "]]" -> StrategoTerm {cons("ToTerm")}

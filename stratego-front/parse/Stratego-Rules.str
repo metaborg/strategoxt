@@ -1,0 +1,17 @@
+module Stratego-Rules
+signature
+  constructors
+    RDefNoArgs : Id * Rule -> RuleDef
+    RDef : Id * List(Typedid) * Rule -> RuleDef
+signature
+  constructors
+    SRDefNoArgs : Id * StratRule -> RuleDef
+    SRDef : Id * List(Typedid) * StratRule -> RuleDef
+signature
+  constructors
+    RuleNoCond : Term * Term -> Rule
+    Rule : Term * Term * Strategy -> Rule
+signature
+  constructors
+    StratRuleNoCond : Strategy * Strategy -> StratRule
+    StratRule : Strategy * Strategy * Strategy -> StratRule

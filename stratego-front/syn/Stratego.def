@@ -291,8 +291,8 @@ exports
     "signature" 	-> ModName {reject}
     "strategies" 	-> ModName {reject}
   lexical syntax
-    [a-zA-Z\'\.\-\_] [a-zA-Z0-9\'\.\-\_]*     -> Id
-    [a-zA-Z\'\.\-\_] [a-zA-Z0-9\'\.\-\_]* "*" -> LId
+    [a-zA-Z\'\-\_] [a-zA-Z0-9\'\-\_]*     -> Id
+    [a-zA-Z\'\-\_] [a-zA-Z0-9\'\-\_]* "*" -> LId
   lexical restrictions
     Id -/- [a-zA-Z0-9\'\.\-\_\*]
     LId -/- [a-zA-Z0-9\'\.\-\_]

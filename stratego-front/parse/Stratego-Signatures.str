@@ -1,0 +1,20 @@
+module Stratego-Signatures
+signature
+  constructors
+    Sorts : List(Sort) -> Sdecl
+    Constructors : List(Opdecl) -> Sdecl
+signature
+  constructors
+    SortNoArgs : Id -> Sort
+    Sort : Id * List(Term) -> Sort
+signature
+  constructors
+    Star : Kind
+    StarStar : Kind
+signature
+  constructors
+    OpDecl : Id * Type -> Opdecl
+signature
+  constructors
+    ConstType : Term -> Type
+    FunType : List(Type) * Type -> Type

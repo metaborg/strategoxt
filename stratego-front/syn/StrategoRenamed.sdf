@@ -2,6 +2,7 @@ module StrategoRenamed
 imports 
   Stratego [
 	Id 		=> StrategoId 
+	ID 		=> StrategoID
 	ModName 	=> StrategoModName
 	Ws 		=> StrategoWs
 	ShortCom 	=> StrategoShortCom
