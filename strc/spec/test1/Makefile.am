@@ -10,7 +10,7 @@ check_PROGRAMS 	= test02 test03 test04 test05			    \
 		  test40 test41 test43 test44 test45	    \
 		  test46 test47 test48 test49 test50 test51 test52  \
 		  test53 test54 test55 test56 test57 test58 test59  \
-		  test60 \
+		  test60 test61 test62 test63 test64 test65 \
 		  io-test10 io-test11 io-test1 io-test2 io-test3 \
                   qcons-test01 qcons-test02 qcons-test03 qcons-test04
 
@@ -94,6 +94,11 @@ nodist_test57_SOURCES = test57.c
 nodist_test58_SOURCES = test58.c
 nodist_test59_SOURCES = test59.c
 nodist_test60_SOURCES = test60.c
+nodist_test61_SOURCES = test61.c
+nodist_test62_SOURCES = test62.c
+nodist_test63_SOURCES = test63.c
+nodist_test64_SOURCES = test64.c
+nodist_test65_SOURCES = test65.c
 
 nodist_io_test10_SOURCES = io-test10.c
 nodist_io_test11_SOURCES = io-test11.c

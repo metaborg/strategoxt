@@ -1,3 +1,18 @@
+2004-11-26  Martin Bravenboer <martin@cs.uu.nl>
+
+	* spec/c/s2c.str: fixed STR-201, STR-205 and STR-25 by making some
+	checks more precise. The match and build translation strategies
+	checked for the string "Cons" and "Nil", where they should
+	actually also check the arity of these Ops. The Cons and Nil rules
+	where not applicable. Hence, the compilation failed.
+
+	* spec/test/test6[1:5].str: tests for STR-201, STR-205 and STR-25.
+
+	* spec/front/stratego-desugar.str: desugarings for quoted
+	constructors.
+
+	* spec/test/qcons-test-??.str: tests for quoted constructors.
+
 2004-10-16  Martin Bravenboer <martin@cs.uu.nl>
 
 	* spec/sig/Stratego-Normal-Format.str: report (all) ambs. Also,

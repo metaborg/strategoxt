@@ -1,0 +1,14 @@
+/**
+ * Cons/1 is a valid constructor name.
+ */
+module test62
+strategies
+
+  main =
+    !Cons(1)
+    ; Cons(\ 1 -> 2 \)
+    ; ?Cons(2)
+
+signature
+  constructors
+    Cons : Int -> Term

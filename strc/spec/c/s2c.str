@@ -465,16 +465,26 @@ rules
            NotEqual(FunCall(Id("ATgetReal"),[CastATermReal(trm)]),FloatConst(<real-to-string>i)))
       ,CallFail)
 
+  /**
+   * Translate a match of an Op, but not a Cons/2 or Nil/0.
+   */
   TranslateStrat :
-    Match(Op(c, ts), trm) ->
-    IfElse(FunCall(Id("match_cons"),[trm, Id(<ConstructorName> (c, <length> ts))])
-          ,Compound([],match-args)
-	  ,CallFail)
-    where <not("Nil" + "Cons")> c; 
-      <thread-map(\ Pair(t,i) -> 
-         Pair(<MatchArg1 <+ MatchArg2>(t, ATgetArgument(trm,IntConst(<int-to-string>i))), 
-              <add>(i,1)) \ )> 
-	     Pair(ts,0) => Pair(match-args,_)
+    Match(op@Op(c, ts), trm)
+      ->
+    IfElse(
+      FunCall(Id("match_cons"),[trm, Id(<ConstructorName> (c, <length> ts))])
+    , Compound([],match-args)
+    , CallFail
+    )
+    where
+      <not(is-ListOp)> op
+    ; <thread-map(
+         \ Pair(t,i) ->
+             Pair(
+               <MatchArg1 <+ MatchArg2> (t, ATgetArgument(trm,IntConst(<int-to-string>i)))
+             , <add>(i, 1)
+             )
+         \ )> Pair(ts,0) => Pair(match-args,_)
 
   MatchArg1 : 
     (Var(x){t*}, trm) -> Match(Var(x){t*}, trm)
@@ -526,15 +536,19 @@ rules
           ,Compound([],[s2]))
 
   TranslateStratMatchGuard :
-    GuardedLChoice(Match(Op(c, xs)), s1, s2) ->
+    GuardedLChoice(Match(op@Op(c, xs)), s1, s2) ->
     IfElse(FunCall(Id("match_cons"),[Id("t"), Id(<ConstructorName> (c, <length>xs))])
           ,Compound([], <conc>(get-args, [s1]))
           ,Compound([],[s2]))
-    where <not("Nil" + "Cons")> c; <map(Var(id))> xs; 
-      <thread-map(\ Pair(Var(x), i) -> 
+    where
+      <not(is-ListOp)> op
+    ; <thread-map(\ Pair(Var(x), i) -> 
          Pair(Stat(Assign(Id(x), AssignEq, ATgetArgument(Id("t"),IntConst(<int-to-string>i))))
              , <add>(i,1)) \ )> 
       Pair(xs,0) => Pair(get-args,_)
+
+  is-ListOp =
+    ?Op("Nil", []) + ?Op("Cons", [_, _])
 
   TranslateStratMatchGuard :
     GuardedLChoice(Match(Op("Nil", [])), s1, s2) ->
@@ -604,12 +618,13 @@ rules
           ,Compound([],[Case(Var(t), alts, s2)]))
 
   TranslateStrat :
-    Case(Var(t), [Alt(Fun(c, n), xs, s1) | alts], s2) ->
+    Case(Var(t), [Alt(fun@Fun(c, n), xs, s1) | alts], s2) ->
     IfElse(FunCall(Id("match_cons"),[Id(t), Id(<ConstructorName> (c, n))])
           ,Compound([], <conc>(get-args,[s1]))
           ,Compound([],[Case(Var(t), alts, s2)]))
-    where <not("Nil" + "Cons")> c;
-      <thread-map(\ Pair(Var(x), i) -> 
+    where
+      <not(?Fun("Nil", 0) + ?Fun("Cons", 2))> fun
+    ; <thread-map(\ Pair(Var(x), i) -> 
          Pair(Stat(Assign(Id(x), AssignEq, ATgetArgument(Id(t),IntConst(<int-to-string>i))))
              , <add>(i,1)) \ )> 
       Pair(xs,0) => Pair(get-args,_)
@@ -633,7 +648,10 @@ rules
                         ,s1])
           ,Compound([],[Case(Var(t), alts, s2)]))
 
-rules // Building
+/**
+ * Building
+ */
+rules
 
   TranslateStrat :
     Build(t) -> |[ t = ~exp:<construct-term-caching> t; ]|
@@ -689,9 +707,12 @@ rules // Building
 
   ConstructList' :
     Op("Cons", [hd, tl]) -> c:exp|[ (ATerm)ATinsert(~exp:tl', ~exp:hd) ]|
-    where (<(Op("Nil", []) + Op("Cons", [id, id])); ConstructList> tl 
-           <+ !CheckATermList(tl)) => tl'
-
+    where
+     if is-ListOp then
+       <ConstructList> tl 
+     else
+       !CheckATermList(tl)
+     end => tl'
 
 /**
  * Term construction with constant term caching
@@ -719,7 +740,9 @@ rules
         ; rules( CachedTerms : _ -> xs )
 
   proper-list =
-    Op("Nil", []) + Op("Cons", [id, proper-list]) + Op(not("Nil" + "Cons"), id)
+    Op("Nil", [])
+    + Op("Cons", [id, proper-list])
+    + not(is-ListOp)
 
   init-cached-terms =
     (CachedTerms <+ ![]);
