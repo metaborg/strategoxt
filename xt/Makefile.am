@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.20 2000/08/30 17:12:35 mdejonge Exp $
+# $Id: Makefile.am,v 1.21 2000/09/27 15:56:19 mdejonge Exp $
 
 DIST_SUBDIRS = pre-checks aterm asfix asc-support sglr pgen graph-tools \
                stratego gpp gt gb  integration-tests www
@@ -36,3 +36,35 @@ check clean install install-strip uninstall:
 	for subdir in $(DIST_SUBDIRS); do \
 	   ( cd $$subdir && $(MAKE) $@ ) || exit 1 ;\
 	done
+
+# Build a package installation:
+#   -first build the completa package (software uses ${prefix} to refer to
+#    other files/programs in the distribution
+#   -then install in the directory as specified with the
+#    --with-pkginstalldir option (which may differ from ${prefix}).
+#
+# This way we can configure and build the software for installion in a
+# directory we don't have write access to (/opt for instance), install these
+# files in a separate directory (as specified with --with-pkginstalldir) and
+# make a binary distribution from it.
+#
+# This procedure requires an already installed XT distribution during
+# compilation. You can specify the location of this installation using the
+# --with-xt switch during configure.
+
+pkg :
+	PATH=$(PKG_XT)/bin:$${PATH}; export PATH ;\
+	ulimit -s 20000 ;\
+	for subdir in $(DIST_SUBDIRS); do \
+	   ( cd $$subdir && $(MAKE)  ) || exit 1 ;\
+	done ;\
+	$(MAKE) install prefix=$(PKG_INSTALL_DIR)
+
+
+diff :
+	@echo "Updating sources" >&2
+	cvs -Q upd -d 
+	@echo "Determine differences" >&2
+	cvs -Q diff  > $(PACKAGE)-$(VERSION)`date +'_%m_%d_%Y'`.patch || true
+	@echo "Patch is saved in \"$(PACKAGE)-$(VERSION)`date +'_%m_%d_%Y'`.patch\".\
+	 Please send this patchfile to the maintainers of $(PACKAGE)." | fmt >&2

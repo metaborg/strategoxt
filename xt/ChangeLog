@@ -1,3 +1,9 @@
+2000-09-27 Merijn de Jonge <mdejonge@cwi.nl>
+        * added patch support to Makefile: "gmake diff" generates a patch file
+          which can be sent to the maintainers of xt
+        * Added support for package building (gmake pkg); no documentation
+          yet
+
 2000-09-19  Merijn de Jonge  <mdejonge@cwi.nl>
         * bug fix: configure script now specifies asfix location for its
           sub-packages using the --with-asfix switch
