@@ -26,7 +26,7 @@ strategies
   /**
    * opens a Stream associated to a FileLoc
    *
-   * :: FileLoc -> Stream
+   * :: FileLoc * String -> Stream
    */
   open-stream = ?(_, _);
     (  Fst; stdio-stream
