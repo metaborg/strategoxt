@@ -17,7 +17,7 @@
 # 02111-1307, USA.
 
 AC_INIT(src/abox-format.c)
-AM_INIT_AUTOMAKE(gpp-boot,0.9beta1)
+AM_INIT_AUTOMAKE(gpp-boot,0.9beta2)
 
 ##AC_CONFIG_AUX_DIR([config])
 
@@ -77,7 +77,7 @@ AC_ARG_WITH(rpmtmp,
 )
 AC_SUBST(RPMTMP)
 
-AC_REVISION($Id: configure.in,v 1.19 2002/11/15 00:06:00 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.20 2002/11/16 15:15:00 stratego Exp $)
 
 AC_PROG_CC
 AC_PROG_RANLIB

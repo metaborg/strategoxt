@@ -36,7 +36,7 @@ pkgdata_DATA 	= pack-stratego.config
 CLEANFILES 	= pack-stratego pack-stratego.c pack-stratego.dep \
 		  stratego-grm.c stratego-grm.h stratego-lex.c
 
-EXTRA_DIST 	= $(wildcard *.r) $(wildcard *.config.src)
+EXTRA_DIST 	= pack-stratego.str syntax-test.r pack-stratego.config.src stratego-grm.h
 
 BOOTSOURCES 	= $(SOURCES) pack-stratego.c stratego-grm.y stratego-grm.h \
 		  stratego-lex.l pack-stratego.config.src
@@ -45,6 +45,14 @@ CFLAGS	 	=
 DEBUGFLAGS	= -g
 PROFFLAGS	= -pg
 OPTFLAGS 	= -O4
+
+YFLAGS 		= -d -t -v
+
+
+## STRATEGO Compilation
+
+STRINCLUDES 	= -I $(srcdir)/../sig -CI "-I.."
+SCFLAGS 	= --C-include "\"conf.h\""  
 
 INCLUDES 	= -I$(STRATEGORTS)/include \
 		  -I$(STRATEGOLIB)/include \
@@ -60,16 +68,11 @@ STRATEGOLIBS    = -lstratego-lib.opt \
 		  -lATerm-gcc \
 		  -lm 
 
-YFLAGS 		= -d -t -v
-
-## STRATEGO Compilation
-
 SUFFIXES 	= .str
 SC 		= $(prefix)/bin/sc
-SCFLAGS 	= -I $(srcdir)/../sig --C-include "\"conf.h\"" -CI "-I.."
 
 .str.c : 
-	$(SC) $(SCFLAGS) -i $< -c
+	$(SC) $(STRINCLUDES) $(SCFLAGS) -i $< -c
 
 # BOOTINSTALL
 

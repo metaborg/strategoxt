@@ -1,5 +1,5 @@
 AC_INIT(syn/Stratego.sdf)
-AM_INIT_AUTOMAKE(stratego-front,0.9beta1)
+AM_INIT_AUTOMAKE(stratego-front,0.9beta2)
 
 ####################### 
 # XT
@@ -83,7 +83,7 @@ AC_SUBST(RPMTMP)
 
 ####################### 
 
-AC_REVISION($Id: configure.in,v 1.8 2002/11/15 00:06:01 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.9 2002/11/16 15:15:01 stratego Exp $)
 
 AM_CONFIG_HEADER([config.h])
 

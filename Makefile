@@ -91,11 +91,11 @@ INSTALL_STRIP_PROGRAM = ${SHELL} $(install_sh) -c -s
 OBJEXT = o
 PACKAGE = StrategoXT
 PGEN = /home/xt/XT
-PKGS = srts ssl sc-boot gpp-boot cgen aterm-tools asfix-tools sdf-tools stratego-tools stratego-front sc gpp xt graph-tools boxenv
+PKGS = srts ssl sc-boot gpp-boot cgen aterm-tools asfix-tools graph-tools gpp sdf-tools stratego-tools stratego-front sc xt boxenv
 SDF = /home/xt/XT
 SGLR = /home/xt/XT
 STRATEGOFRONT = /home/xt/XT
-VERSION = 0.9beta1
+VERSION = 0.9beta2
 am__include = @am__include@
 am__quote = @am__quote@
 install_sh = /home/visser/res/StrategoXT/install-sh
@@ -524,7 +524,7 @@ upload:
 	scp *.tar.gz */*.tar.gz $(WWWSTRATEGO)
 
 upload-stratego:
-	scp stratego-*.tar.gz $(WWWSTRATEGO)
+	scp StrategoXT-$(VERSION).tar.gz $(WWWSTRATEGO)
 
 upload-srts:
 	scp srts/srts-*.tar.gz $(WWWSTRATEGO)

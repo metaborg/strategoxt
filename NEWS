@@ -7,6 +7,140 @@
 
 News about Stratego releases
 
+Version 0.9beta2 
+
+* XT CVS repository from CWI to UU
+
+  Only Merijn, Joost, and I had access to the CVS repository at
+  CWI. This was fine at first, but really hampered development in the
+  last year or so. Now developers can get an account at the CVS server
+  at UU to contribute directly to the source tree instead of via
+  patches, which requires a lot of work from our side.
+
+* Autotools
+
+  Akim Demaille pointed out that the use of autoconf and automake in
+  Stratego and XT is antiquated, and badly needs to be updated to more
+  modern versions of these tools. I had already encountered this
+  problem when trying to build on a FreeBSD machine. The first fix is
+  to renovate the current scripts and makefiles such that they will
+  pass through newer versions of the autotools.
+
+  This turned out not to be such a problem. The issues were:
+
+  Automake enforces consistent usage of = and += 
+
+  The AC_OUTPUT_SUBDIRS macro used in the Autobundle macro
+  AB_CONFIG_PKG is no longer used. I found a simple fix for this
+  problem using google. The fix defines the old style macro in terms
+  of the new one, if it was not defined yet:
+
+  ifdef([AC_OUTPUT_SUBDIRS],[],
+    [AC_DEFUN([AC_OUTPUT_SUBDIRS],[subdirs=$1; _AC_OUTPUT_SUBDIRS])])
+
+  (I noticed only later that Akim is one of the authors of the new
+  autotools, and was pushing his own work;-)
+
+  The 0.9beta1 release is generated using autoconf 2.53 and automake 1.5
+
+* StrategoXT
+
+  The development of most Stratego applications involves tools from XT
+  for parsing, imploding, pretty-printing, generating signatures, and
+  so on. The introduction of concrete syntax in Stratego made this
+  link even more important.  The slow development this year made it
+  very hard to get a distribution of XT out with good support for
+  concrete syntax. Since several of the XT tools are used in the
+  compilation of .cr modules (implode-asfix in particular), and some
+  others in the build of stratego-front, bootstrapping the compiler
+  now involves these XT packages. In order to get a quick development
+  and release cycle for Stratego, the XT packages should evolve at the
+  same pace. (Recently some changes where needed to implode-asfix to
+  support list variables used in list matching.)
+
+  To make this easier I have merged the CVS repositories of Stratego
+  and XT into a single new repository StrategoXT, which will also
+  be the name of the distribution. There are a few changes with
+  respect to the old XT bundle:
+
+  - The repository itself has a main level package structure
+    (inherited from Stratego). This makes it possible to build
+    StrategoXT directly from the repository without having to go through
+    autobundle. The sub-packages should still be distributed separately,
+    and be subject to bundling in other packages, but development of
+    StrategoXT should be smooth.
+
+  - External packages (aterm, sdf, cpl-stratego) have been factored
+    out since they are, well, external, and relatively stable with
+    respect to StrategoXT development. In this way we can develop
+    StrategoXT against a stable baseline of aterm and sdf2, and 
+    every now and then upgrade to newer versions.
+
+  - A separate bundle for sdf2-1.5 is available from the stratego site
+
+  - The grammar base has been factored out of the bundle since
+    development and distribution of grammars should not be directed
+    by tool distribution. Grammars evolve much faster 
+
+  - Application packages such as autobundle have been factored out,
+    since they are, well, applications. I propose to create a new
+    repository xtapp (better name?) in which such packages live
+    as modules. (There exists already a repository sp [stratego
+    projects] with projects such as tiger.)
+
+  - Grammar-recovery is not included presently; should it be?
+
+  - Version numbering: I have promoted all packages to the Stratego
+    numbering scheme, except for the packages such as gpp, which
+    were already past 1.0. I don't know what to do about that
+    yet.
+
+
+
+So far the actions until now. In the (near) future further renovation
+should be conducted. Here are some ideas.
+
+* Automake support for Stratego
+
+Makefiles should be friendlier for Stratego programmers (as they are
+for C programmers). I hope that Akim can help us to tell automake how
+to that, and how to integrate that in the packages. (Should there be a
+separate package providing automake macros?)
+
+* Bootstrapped packages
+
+There should be autoconf/make support for different roles of a package
+(boot vs developer mode) as I explained in an earlier email.
+
+* GrammarBase
+
+The grammar base should be split into separate packages supported by a
+set of gb-tools.
+
+* Application repository?
+
+There should be CVS repository for StrategoXT applications such as
+autobundle. They could be added to the sp/ repository.
+
+* Phase out lex and yacc 
+
+Since SDF is starting to be used structurally in the Stratego
+compiler, I am considering phasing out the lex and yacc grammar. It is
+a pain to maintain and to keep the two definitions in synch.
+
+* Reorganize package structure
+
+Which library/tool should live in which package? For one, I would like
+to create a single package which combines the C code in srts and ssl.
+This package would in effect create an extension of the ATerm library
+to support the Stratego run-time system.
+
+* Improvements
+
+These are all engineering matters. Once we get these done, the real
+work on improving the language and compiler can be continued.
+
+
 ------------------------------------------------------------------------------
 
 Version 0.8.1

@@ -16,7 +16,7 @@
 # 02111-1307, USA.
 
 AC_INIT(Makefile.in)
-AM_INIT_AUTOMAKE(StrategoXT,0.9beta1)
+AM_INIT_AUTOMAKE(StrategoXT,0.9beta2)
 
 #AC_CONFIG_AUX_DIR([config])
 
@@ -94,11 +94,10 @@ AM_CONFIG_HEADER([config.h])
 
 ### PACKAGES ##########################
 
-PKGS="srts ssl sc-boot gpp-boot cgen aterm-tools asfix-tools sdf-tools stratego-tools stratego-front sc gpp xt graph-tools boxenv"
+PKGS="srts ssl sc-boot gpp-boot cgen aterm-tools asfix-tools graph-tools gpp sdf-tools stratego-tools $FRONTPKG $BOOTPKG xt boxenv"
 
 #gbtools stratego-connect grammar-recovery
 
-#PKGS="srts ssl cgen sc-boot gpp-boot $FRONTPKG $BOOTPKG"
 AC_SUBST(PKGS)
 
 top_srcdir=`pwd`
@@ -224,16 +223,16 @@ AB_CONFIG_PKG(sc,
 AB_CONFIG_PKG(xt,
   --with-pgen=${PGEN}           
   --with-sglr=${SGLR}                  
-  --with-gpp=${prefix}              
+  --with-gpp=${prefix}                
   --with-gb=${GB}               
-  --with-grammar-recovery=${GRAMMAR_RECOVERY} 
+  --with-grammar-recovery=${GRAMMAR_RECOVERY}          
+  --with-sc-boot=${prefix}    
   --with-stratego-tools=${prefix}   
   --with-asfix-tools=${prefix}      
   --with-aterm-tools=${prefix}      
   --with-graph-tools=${prefix}      
   --with-sdf-tools=${prefix}        
-  --with-graphviz=${GRAPHVIZ}         
-
+  --with-graphviz=${GRAPHVIZ}
 )
 
 AB_CONFIG_PKG(boxenv,

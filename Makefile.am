@@ -94,7 +94,7 @@ upload:
 	scp *.tar.gz */*.tar.gz $(WWWSTRATEGO)
 
 upload-stratego:
-	scp stratego-*.tar.gz $(WWWSTRATEGO)
+	scp StrategoXT-$(VERSION).tar.gz $(WWWSTRATEGO)
 
 upload-srts:
 	scp srts/srts-*.tar.gz $(WWWSTRATEGO)

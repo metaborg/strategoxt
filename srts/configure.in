@@ -16,7 +16,7 @@
 # 02111-1307, USA.
 
 AC_INIT(src/stratego.c)
-AM_INIT_AUTOMAKE(srts,0.9beta1)
+AM_INIT_AUTOMAKE(srts,0.9beta2)
 
 AC_CONFIG_AUX_DIR(config)
 
@@ -59,7 +59,7 @@ AC_ARG_WITH(rpmtmp,
 )
 AC_SUBST(RPMTMP)
 
-AC_REVISION($Id: configure.in,v 1.22 2002/11/15 00:06:01 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.23 2002/11/16 15:15:00 stratego Exp $)
 
 AC_CHECK_FUNCS([getpagesize])
 AC_CHECK_HEADERS([stdlib.h])
