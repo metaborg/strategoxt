@@ -2,31 +2,77 @@ StrategoXT 0.9.5 -- released March 26, 2004
 
 ---------++ Summary of Changes
 
+   * JIRA Issue Tracking System
+   * Improved documentation of tools
+   * Many bug fixes
+   * New hash-table strategies
+   * Concise syntax for ParseUnit test-suites
+   * Upgrade of the SDF language
+
+---------++ Configuration
+
+*Important:* StrategoXT 0.9.5 requires a more recent versions of the
+SDF implementation in PGEN (2.0) and SGLR. The sdf2-bundle 2.0.1
+provides all required SDF packages and is available from the release
+page.
+
+Packages that require StrategoXT usually apply the USE_XT_PACKAGES
+macro of =autoxt= to add =--with-x= configuration flags to the
+configure script. This macro now provides also adds an
+=--with-strategoxt= arguments, which is an alternative to the
+=--with-stratego-xt= flag. The additional flags corresponds with the
+package name of Stratego/XT, which is =strategoxt=.
+
+---------++ JIRA Issue Tracking System
+
+We have finally adopted an issue tracking system. Arthur van Dam
+suggested to use JIRA, which is free (not Free) for open-source
+projects. Fortunately he has taken care of evaluating and installing
+it as well. We have just started to use the system, but it already
+looks very promosing. The user-interface is very attractive compared
+to Bugzilla and JIRA provides many useful overviews for
+developers. without having to struggle with a generic query interface.
+
+Our JIRA installation is public and everyone can submit issues. Please
+report issues to the JIRA issue tracking system from now on. New
+issues reported in JIRA will be send to the stratego-bugs mailing list
+for notification. The issue in JIRA is however the prefered place to
+for comments. Of course you are welcome to discuss issues at the
+stratego-dev mailing list first.
+
+   * https://catamaran.labs.cs.uu.nl/jira/
+
+(Arthur van Dam)
+
 ---------++ Documentation
 
-Document for Stratego/XT users has been improved in several areas.
+Documentation for Stratego/XT users has been improved in several
+areas.
 
 Rob Vermaas, who is now a scientific programmer at our institute, is
 working on updating the completely out-of-date README files in the
-distribution.
+distribution. Many sub-packages have already been updated, but some
+work remains to be done at this point.
 
 (Rob Vermaas)
 
 Feedback by new users inspired us to revive the Tools web and start
 working on a comprehensive reference for the tools in Stratego/XT. The
 reference is still far from being complete, but it is a start. The
-tools of GPP are already documented pretty thorough in the tool
-reference.
+documentation for all tools should provide an introduction,
+explanation of the command-line arguments and usage examples, The tool
+reference is a Wiki, so you are all welcome to improve and extend the
+available documentation. The tools of GPP are already documented
+pretty thorough in the tool reference.
 
    * http://www.program-transformation.org/Tools/ToolReference
 
 (Martin Bravenboer and Merijn de Jonge)
 
 We have started to develop a central website for all information
-related to SDF, the Syntax Definition Formalism, at the
-program-transformation Wiki. Again this action was inspired by new
-users having difficulty to find documentation and guidance. The new
-website is available at 
+related to SDF at the program-transformation Wiki. Also in this case
+we were inspired by new users having difficulty to find documentation
+and pointers to relevant information. The new website is available at
 
    * http://www.syntax-definition.org
 
@@ -36,50 +82,56 @@ website is available at
 
 The name of a module declared in file did not really matter in the
 past. This was rather frustrating for xDoc. From Stratego/XT 0.9.5 the
-compiler shows a warning message if the declared module name does not
-correspond with the name of the file.
+compiler outputs a warning message if the declared module name does
+not correspond with the name of the file.
 
 Stratego/XT 0.9.5 fixes several annoying problems in the
 user-interface of the Stratego compiler and tools of stratego-front
-such as =parse-stratego= and =pp-stratego=. =pp-stratego= for example
-accepts an -I flag now, which can be used to give a search path for
-parse tables used for concrete object syntax.
+such as =parse-stratego= and =pp-stratego=. From this release
+=pp-stratego= for example accepts an =-I= flag, which can be used to
+provide a search path for parse tables used for concrete object
+syntax.
 
 (Rob Vermaas)
 
 In Stratego/XT 0.9.4 compiling programs that use term arguments
-resulted in loads of warnings from the C compiler. The type of the
-arguments where not declared correctly in the C code produced by the C
-compiler. This problem has been fixed in this release. The declared
-types of the argument are now correct for term arguments.
+resulted in loads of warnings from the C compiler. These warnings are
+caused by the types of the term argument, which are not declared
+correctly in the C code produced by the Stratego compiler. This
+problem has been fixed in this release. The declared types of the
+argument are now correct for term arguments.
 
 (Martin Bravenboer)
 
 ---------++ Stratego Standard Library
 
-The SSL in 0.9.5 features a new hashtable implementation. Hashtables
-used to be handled by name. In the Stratego runtime, SSL, and Stratego
-programs.  In the spirit passing Streams around in Stratego programs,
-it is now possible to pass hashtables around as well. A hashtable
-created in this way will not affect other parts of the program, unless
-the hashtable is passed to the code. The old table mechanism is of
-course still available and is still useful. The new strategies
+The Stratego Standard Library (SSL) in 0.9.5 features a new hashtable
+implementation. Hashtables used to be handled by a name in the
+Stratego runtime, SSL, and custom Stratego code. It is now possible to
+pass hashtables around directly, not by a name. This feature is
+comparable to the Stratego =Stream= representation of native
+streams. Hashtables that are created in this way will not affect other
+parts of the program, unless the hashtable is passed to the code. The
+old table mechanism is of course still available and is still useful
+to implictly pass information around. The new hashtale strategies
 include: =new-hashtable(|initial_size, max_load)=,
 =hashtable-put(|key, value)=, =hashtable-get(|key)=. We are
 considering to lift hashtables from the API to the language level by
-providing syntax for constructing and accessing hashtables.
+providing syntax for constructing and accessing hashtables. The old
+hashtable strategies (=table-get=, =table-put= etc.) will be expressed
+in terms of the new strategies in the next release.
 
 (Martin Bravenboer)
 
 A common frustration in the SUnit unit-testing framework is forgetting
-a =!= before a input or output term. SUnit now provides a variants of
+a =!= before an input or output term. SUnit now provides a variant of
 the unit-testing strategies that accept term arguments for the
 description, input, and expected output of a test e.g.
 =apply-test(foo | "foo test", input, output)=
 
 (Rob Vermaas)
 
-The module =term-io= in the SSL features new strategies for writing
+The SSL module =term-io= in the SSL features new strategies for writing
 ATerms to strings (=write-to-string=) and vice versa
 (=read-from-string=). These strategies have been added to accept ATerm
 values as command-line arguments, but they should be useful in
@@ -87,7 +139,7 @@ general.
 
 (Martin Bravenboer)
 
-The module list-set provides a general subset checker (=set-eq=,
+The SSL module list-set provides a general subset checker (=set-eq=,
 =subset=, =subseteq=). All these strategies are parameterizable with a
 user-defined compare/eq strategy.
 
@@ -97,10 +149,10 @@ user-defined compare/eq strategy.
 
 ---------+++ Pretty-Printing
 
-The pp-table-diff utility checks from now on fails if the output
-should be be used as a path (=--patch=), but the existing pp-table is
-not complete. This is useful for signaling incompleteness of the
-pp-table during a build, especially in the buildfarm.
+The pp-table-diff utility from now on fails if the output should not
+be used as a patch (=--patch=), but the existing pp-table is not
+complete. This is useful for signaling incompleteness of the
+pretty-print table during a build, especially in the buildfarm.
 
 More information:
   http://www.program-transformation.org/Tools/PrettyPrintTableDiff
@@ -108,70 +160,55 @@ More information:
 The pretty-print table generator =ppgen= has been extended to handle a
 wider range of SDF constructs.
 
-More information:
-  http://www.program-transformation.org/Tools/PrettyPrintTableGenerator
-
 (Merijn de Jonge)
 
 ---------+++ Syntax Definition and Parsing
 
-Stratego/XT 0.9.4 was still using SDF version 2.1, which is quite
-out-of-date. We are working on updating our SDF tools to support the
-most recent version of SDF as found in pgen 2.x. As a first step in
-this direction sdf-front now includes both versions of SDF. The
-drawback is that not all tools are using the same syntax
-definition. For example =pack-sdf= use the new one, but =sdf-to-sig=
+SDF related tools in Stratego/XT 0.9.4 are using a rather old version
+of SDF, 2.1. The difference between this SDF version and the most
+recent one used in PGEN 2.0 are not large, but since SDF undergo more
+heavy changes in the near future, it is important to be up-to-date. We
+are working on updating our SDF tools to support the most recent
+version of SDF as found in pgen 2.0. As a first step in this direction
+the sdf-front package now includes both versions of SDF. In the next
+release we will no longer distribute an SDF syntax definition, but
+directly work on the definition provided in the SDF distribution.
+
+Unfortunately some tools are still using the new syntax
+definition. For example =pack-sdf= uses the new one, but =sdf-to-sig=
 still uses the old one. This situation will be solved in the next
 release, where SDF 2.1 will be completely removed, except for its
 syntax, signatures and pretty-printer.
 
 ---------+++ Parse-Unit
 
-Parse-unit, a tool for unit-testing syntax definitions, has been
-extended with a concise, concrete syntax for testsuites. It also
-allows partial specification of expected outcomes using wildcards. The
-concrete syntax for parse unit testsuites does not require escaping of
-special charachters in the test input. This makes the inputs much more
-readable, because special characters are in practice not special in
-parse testsuites.
+ParseUnit, a tool for unit-testing syntax definitions, has been
+extended with a concise, concrete syntax for testsuites. The new
+testsuite syntax also allows partial specification of expected
+outcomes by using wildcards. The concrete syntax for ParseUnit
+testsuites does not require escaping of special charachters in the
+test input. This makes the inputs much more readable, because special
+characters are in practice not special in parse testsuites.
 
 More information:
    http://www.program-transformation.org/Tools/ParseUnit
+
+(Martin Bravenboer)
 
 ---------+++ SDF Renamed Module Generator
 
 Syntax definitions of concrete object syntax embeddings require
 renamings of the sorts of the imported syntax definitions. Defining
-these renaming modules by hand is annoying and error-prone. sdf-tools
-now features =gen-renamed-sdf-module= a tool that automates this
-task. It takes an SDF syntax definition and produces an SDF module
-that renames the sorts in some user-definable way by prefixing it with
-the language name for example.
+these renaming modules by hand is annoying and error-prone. The
+sdf-tools package of Stratego/XT now features =gen-renamed-sdf-module=
+a tool that automates this task. It takes an SDF syntax definition and
+produces an SDF module that renames the sorts in some user-definable
+way, by prefixing it with the language name for example.
 
 More information:
-
+   http://www.program-transformation.org/Tools/GenRenamedSdfModule
 
 (Martin Bravenboer)
-
----------++ Configuration
-
-Stratego/XT 0.9.5 requires more recent versions of the SDF tools, PGEN
-2.0. The sdf2-bundle 2.0.1 all required SDF related packages and is
-available from the release page.
-
-    * Change --with-stratego-xt flag to --with-strategoxt.
-
----------++ Issue Tracking System
-
-We have finally adopted an issue tracking system. Arthur van Dam
-suggested to use JIRA. He has taken care of evaluating and installing
-it. We have just started to use the system, but it already looks very
-promosing. Please report issues to the JIRA issue tracking system from
-now on. New issues are reported to the stratego-bugs mailing list. Of
-course you are welcome to discuss issues at the stratego-dev mailing
-list first.
-
-(Arthur van Dam)
 
 ---------++ Download and Installation
 
@@ -182,12 +219,11 @@ detailed instructions on how to install the distributions:
 
 ---------++ Bugs and Known Problems
 
-Not all the bugs and known problems for StrategXT distributions have
-been solved in this release. See our Issue Tracking systems and the
-stratego-bugs list for reports about (open) bugs:
+Not all the bugs and known problems for Strateg/XT have been solved in
+this release, otherwise this would release 1.0. See our issue tracking
+systems for reports about (open) bugs:
 
    * https://catamaran.labs.cs.uu.nl/jira/
-   * https://mail.cs.uu.nl/pipermail/stratego-bugs/
 
 For an overview of features planned for future releases:
 
@@ -195,7 +231,7 @@ For an overview of features planned for future releases:
    * Todo: http://www.stratego-language.org/Stratego/ToDo
 
 Please report any problems with installation or bugs in the
-implementation to our Issue Tracking system. Please check the exisintg
+implementation to our issue tracking system. Please check the existing
 issues to see if a report about the problem was already submitted.
 
 -----------------------++ Contributions
