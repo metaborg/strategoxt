@@ -97,6 +97,7 @@ ATerm SSL_newname(ATerm prefix)
         /* All trailing chars checked, now use trimmed prefix as base */
         prefix_base = (char*)malloc((n + 1) * sizeof(char));
         strncpy(prefix_base, prefix_string, n);
+	prefix_base[n] = 0;
         break;
       } else if(!isdigit(*last_delim)) {
         /* Invalid char, do not trim at all */
