@@ -1,5 +1,7 @@
 2001-08-22  Eelco Visser  <visser@acm.org>
 
+	* Correction of paths to library
+
 	* SCBOOT dependency in configure specifies where to install
 	bootstrapped C sources.	
 
