@@ -54,6 +54,13 @@ AC_ARG_WITH([pgen],
 )
 AC_SUBST([PGEN])
 
+AC_ARG_WITH([pt-support],
+  AC_HELP_STRING([--with-pt-support=DIR], [use pt-support at DIR @<:@SDF@:>@]),
+  [PT_SUPPORT=$withval],
+  [PT_SUPPORT=$SDF]
+)
+AC_SUBST([PT_SUPPORT])
+
 ############ StrategoXT ##################################################
 
 AC_ARG_WITH([stratego-xt],
