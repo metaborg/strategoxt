@@ -1,5 +1,7 @@
 2001-12-21 Merijn de Jonge <mdejonge@cwi.nl>
     * stratego-imports: added usage information
+    * stratego: added stratego sdf definition and stratego pretty-print
+      table
 
 2001-11-29 Merijn de Jonge <mdejonge@cwi.nl>
     * Version 0.2 released
