@@ -124,7 +124,16 @@
 
    simple-group -- _1,
    prods-group  -- H[KW["{"] V[_1] KW["}"]],
-   assoc-group  -- V vs=0 is=2 [ H hs=0 [KW["{"] _1 KW[":"]] H hs=0 [_2 KW["}"]]],
+   assoc-group  --
+     V vs=0 [
+       V vs=0 is=2 [
+         H hs=0 [KW["{"] _1 KW[":"]]
+         V vs=0 [_2]
+       ]
+       KW["}"]
+     ],
+
+   assoc-group.2:iter-star -- _1,
 
    chain                         -- _1,
    chain.1:iter-sep              -- H [_1 KW[">"]],
