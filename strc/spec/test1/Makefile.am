@@ -11,6 +11,8 @@ check_PROGRAMS 	= test02 test03 test04 test05			    \
 		  test46 test47 test48 test49 test50 test51	    \
 		  io-test10 io-test11 io-test1 io-test2 io-test3   
 
+TESTS 		= $(check_PROGRAMS)
+
 STRATEGORUNLIBS = -lstratego.opt -lstratego-lib.opt -lATerm-gcc -lm
 LDADD 		= $(STRATEGORUNLIBS)
 test50_LDADD 	= bar.o $(STRATEGORUNLIBS)

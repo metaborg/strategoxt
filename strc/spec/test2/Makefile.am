@@ -20,6 +20,7 @@ check_PROGRAMS 	= arity-test as-pattern assignment backtrack-test2    \
 		  prop quoted-keywords rename-test stratlib-test tail \
 		  thread-test traversal-test twice unification-test 
 
+TESTS 		= $(check_PROGRAMS)
 
 STRATEGORUNLIBS = -lstratego.opt -lstratego-lib.opt -lATerm-gcc -lm
 LDADD 		= $(STRATEGORUNLIBS)
