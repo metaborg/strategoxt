@@ -38,8 +38,8 @@ strategies
             ('in; s <+ <debug> "  failed"; fail) => tmp;
   	    out => tmp'; 
 	    ((!tmp' => tmp)
-               <+ (<debug(!"  result not equal: ")> tmp;
-                   <debug(!"  expected: ")> tmp'); fail))
+               <+ (<debug(!"  result not equal : ")> tmp;
+                   <debug(!"  expected         : ")> tmp'); fail))
 
   apply-test(name, s, 'in) =
     do-test(name,
