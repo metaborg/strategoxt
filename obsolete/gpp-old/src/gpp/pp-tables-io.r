@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: pp-tables-io.r,v 1.3 2001/10/08 13:47:57 mdejonge Exp $
+% $Id: pp-tables-io.r,v 1.4 2001/10/08 15:10:04 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
@@ -37,7 +37,7 @@ read-pp-tables =
    <table-create>"pp-table";
    <map(notify(!"Reading table: "); 
                ReadFromFile;
-               termid-check(?"\"pp-tables-0\"");
+               termid-check("\"pp-tables-0\"");
                build-pp-table)>names
 
 // Add entries to table. Reverse the list of entries to get correct ordering
