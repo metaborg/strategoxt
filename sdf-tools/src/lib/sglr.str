@@ -19,21 +19,20 @@
 // 02111-1307, USA.
 
 module sglr
-imports exec gt-paths asfix verbose xtc
+imports exec gt-paths asfix verbose xtc-lib
 
 rules
 
   parse-sdf :
     (infile, outfile) -> outfile
-    where <sglr>(<xtc-file>"sdf.cons.tbl", infile, outfile) => outfile
+    where <sglr>(<xtc-find>"sdf.cons.tbl", infile, outfile) => outfile
 
   sglr :
     (tbl, infile, outfile) -> outfile
-    where <xtc-call(!"sglr")> ["-2", "-p", tbl, "-i", infile, "-o", outfile]
+    where <xtc-transform(!"sglr", !["-2", "-p", tbl])> FILE(infile)
+        ; rename-to(!outfile)
 
-//      <if-verbose5(debug); call> (<concat-strings>[SGLR, "/bin/sglr"], ["-2", "-p", tbl, "-i", 'in, "-o", out])
-
-
+/*
   sglr : 
     (tbl, 'in) -> tree
     where
@@ -41,3 +40,4 @@ rules
       <sglr> (tbl, 'in, out);
       <ReadFromFile> out => parsetree(tree,_);
       <rm-files> [out]
+*/
