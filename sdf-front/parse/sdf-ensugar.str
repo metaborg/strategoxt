@@ -1,0 +1,25 @@
+module sdf-ensugar
+imports Sdf2-Syntax options simple-traversal
+
+/**
+ * sdf-ensugar implements the following ensugarings:
+ *
+ *   - add double quotes in String literals: cons, lit
+ *
+ * Author:
+ *   Martin Bravenboer
+ */
+strategies
+
+  main-sdf-ensugar =
+    io-wrap(
+      topdown(try(EnsugarOnce))
+    )
+
+strategies
+ 
+  EnsugarOnce =
+    cons(double-quote)
+
+  EnsugarOnce =
+    lit(double-quote)
