@@ -1,4 +1,4 @@
-StrategoXT 0.13 -- released December ?, 2004
+StrategoXT 0.13 -- released January ?, 2005
 
 ---------++ Summary of Changes
 
@@ -17,30 +17,54 @@ Tools:
 
     (Eelco Visser)
 
----------++ Separate package for StrategoXT utils
+---------++ Separate package for StrategoXT Utils
+
+Tools that are not essential to most Stratego users are now in a
+separate package, =strategoxt-utils=. This package consists of the
+ex-StrategoXT packages =aterm-tools=, =dot-tools=, =graph-tools=,
+=stratego-util= and =stratego-tools=. Obviously, the installation of
+this package is optional and most users will only need if you want to
+visualize ATerms with the Dot language and =Graphviz=.
+
+More concrete, the following tools are part of strategoxt-utils:
+=GraphXML2dot=, =pp-dot=, =sdf-wf=, =term-to-dot=, =tohtml-sdf=,
+=graph-term2GraphXML=, =GraphXML-analysis=, =pp-stratego-latex-alltt=,
+=sdf-doc=, =sdf-wf=, =tohtml=, =GraphXML2dot=, =ismap2usemap=,
+=sdf2sg=, =sdf-imports=, =term-to-adot=.
+
+Furthermore, the Emacs mode for Stratego is now part of StrategoXT
+Utils. In the future, release more utils might be moved to this
+package.
 
     (Rob Vermaas)
 
 ---------++ Stratego Compiler
 
-   * Dynamic rules use a more special dummy
+---------+++ Compilation of Pattern-Matching in Dynamic Rules
 
-	* spec/front/lift-dynamic-rules.str: changed the dummy used in
-	dynamic rule keys from [] to DR_DUMMY. This conflicts with dynamic
-	rules that contain []. Note, that these rules now also have a
-	different key. If you want them to have the same key, then for
-	example move the [] pattern to the where condition.
+Pattern matching in dynamic rules is implemented by replacing
+non-context variables in the left-hand side of the rule by dummy
+terms. This term used to be the empty lists, which caused some
+problems when if a the left-hand side itself already contains an empty
+list. The dynamic rule dummy is now a =DR_DUMMY=, which solves these
+issues.
 
-	* spec/front/lift-dynamic-rules-old.str: use your own dummify. The
-	dummifies in the old and new lifter where overloaded, leading to
-	conflicts.
+Note, that two rules that have the same left-hand side pattern, except
+for an empty list in the first and a non-context variable in the
+second, now also have a different key. If you want them to have the
+same key, then you can for example move the [] pattern to the where
+condition.
 
-   * Redefinition of external s
+---------+++ Redefinition of External Strategies
 
-	* spec/front/needed-defs.str: check for external redefinitions
-	before removing definitions that are not invoked from the code in
-	the program that is currently being compiled. This solves issue
-	STR-193.
+In program that use separate compilation, redefinition of external
+strategies was not always detected in the previous release. If a
+redefined strategy was only invoked from the code that was separately
+compiled, then the redefinition was not noticed by the compiler. This
+has now been fixed.
+
+---------+++ Redefinition of External Strategies
+
 
    * Only Cons/2 and Nil/0 are now reserved.
 
@@ -100,7 +124,6 @@ Use AC_CONFIG_AUX_DIR and fix in strc-core Makefile.am
 
     (Akim Demaille and Martin Bravenboer)
 
-
 ---------++ ATerm to XML
 
 	* trans/data2xml-doc.str, trans/xml-info2data.str: the --explicit
@@ -126,6 +149,8 @@ liblib split into libstrategolib and libxtclib. The
 module liblib is still available and imports the
 libraries above, in order to avoid having to patch
 zillions of Stratego modules.
+
+---------++ Emacs Mode
 
 ---------++ Misc. Fixes
 
