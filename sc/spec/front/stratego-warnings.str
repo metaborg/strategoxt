@@ -10,61 +10,70 @@
         stratego-warnings -i <your_spec>.ast.2 -o /dev/null
  */               
 module stratego-warnings
-
 imports lib stratego-ext
 
 signature
-constructors
-//   Call: Name * Args -> Call
-//   SVar: Name  -> SVar
-//   SDef: Name * x * Def -> SDef
-//   Build: Strat -> Build
-//   Str: list(Char) -> Str
+  constructors
+    ObsoleteWarning: Str -> Warning
+    DebugWarning   : Str -> Warning 
 
-   ObsoleteWarning: Str -> Warning
-   DebugWarning : Str -> Warning      
+overlays
+
+  AllWarnings = ["debug-arguments", "obsolete-strategy-calls"]
+
 strategies
 
-stratego-warnings = iowrap(Stratego-warnings, stratego-warnings-options)
+  stratego-warnings-io = 
+    io-wrap(stratego-warnings-options, Stratego-warnings)
 
-stratego-warnings-options = 
+  stratego-warnings-options = 
     ArgOption("--warning" + "-W",
         where(<extend-config> ("--warning", [<id>])); !(),
-        !"-W | --warning     Set warning level (-W all to switch all warnings on)")
+        !"-W | --warning     Set warning level (-W all to switch all warnings on)"
+    )
 
-Stratego-warnings =
-   (id,
-         where(
-         ?spec;
-         (<get-config>"--warning"; uniq <+ ![]);
-         // If -W all was given, create a list of all availabel checks  
-         try(fetch-elem("all");!["debug-arguments", "obsolete-strategy-calls"]);
-         
-         filter(Warning(!spec));
-         concat;
-         print-warnings
-   )
-)
+  Stratego-warnings =
+   where(
+     ?spec
+     ; (<get-config>"--warning"; uniq <+ ![])
+     // If -W all was given, create a list of all available checks  
+     ; try(fetch-elem("all"); !AllWarnings)
+     ; filter(Warning(!spec))
+     ; concat
+     ; print-warnings
+    )
 
-Warning(spec)=
-   (
-     "debug-arguments";
-        spec; debug-with-incorrect-string
-   +
-     "obsolete-strategy-calls";
-        spec;obsolete-def
-   )
-   <+
-      <printnl> (stderr, ["** WARNING incorrect parameter passed to -W switch: ", <id>]);
-      ![]
+  Warning(spec) =
+    WarningDebugArguments(spec)
+    <+ WarningObsolete(spec)
+    <+ <printnl> (stderr, ["** WARNING incorrect parameter passed to -W switch: ", <id>]);
+       ![]
 
+strategies
 
-// Strategy to find calls to the "obsolete" strategy
-obsolete-def = 
-   strategy-invokation-warning(
-   sdef-with-property( 
-     \  CallT(SVar("obsolete"),[Build(Str(msg))],[]) -> ObsoleteWarning(msg) \ )
-   )
+  // debug arguments
+
+  WarningDebugArguments(spec) =
+    ?"debug-arguments"
+    ; spec
+    ; debug-with-incorrect-string
+
+strategies
+
+  // obsolete strategy definitions
+
+  WarningObsolete(spec) =
+    ?"obsolete-strategy-calls"
+    ; spec
+    ; obsolete-def
+
+  // Strategy to find calls to the "obsolete" strategy
+  obsolete-def = 
+    strategy-invokation-warning(
+      sdef-with-property( 
+        \  CallT(SVar("obsolete"),[Build(Str(msg))],[]) -> ObsoleteWarning(msg) \ 
+      )
+    )
 
 // Strategy to find calls to "debug" strategy with incorrect argument
 debug-with-incorrect-string =

@@ -1,6 +1,5 @@
 module fusion
-imports Stratego stratego-laws lib strategy-patterns desugar
-	fusion-rules verbose
+imports Stratego stratego-laws lib desugar fusion-rules verbose
 
 signature
   constructors

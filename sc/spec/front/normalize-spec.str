@@ -1,16 +1,18 @@
+/** 
+ * The first phase of the front-end is the normalization of
+ * specifications. A specification consists of a list of basic
+ * specifications (signatures, overlays, rules and strategy
+ * definitions) in any order. Normalization collects the basic
+ * specifications of each kind and creates a specification of the
+ * form. 
+ */
+
 module normalize-spec
 imports Stratego lib desugar lift-dynamic-rules
-
-/* The first phase of the front-end is the normalization of
-specifications. A specification consists of a list of basic
-specifications (signatures, overlays, rules and strategy definitions)
-in any order. Normalization collects the basic specifications of each
-kind and creates a specification of the form. */
-
 strategies
 
-  normalize-specIO = 
-    iowrap(normalize-spec)
+  normalize-spec-io = 
+    io-wrap(normalize-spec)
 
   normalize-spec =
     CombineSections
@@ -45,7 +47,7 @@ strategies
 
   vars-to-consts =
     {| VarToConst :
-       Specification(map(try(Constructors(map(try(DeclareVarToConst))) 
+       Specification(map(try(Constructors(map(try(DeclareVarToConst)))
 			     + Overlays(map(try(DeclareVarToConst))))))
      ; alltd(VarToConst)
      |}
@@ -69,22 +71,5 @@ strategies
 
   DefScopeDefault :
     |[ { s } ]| -> |[ { ~<tvars> s : s } ]|
-\end{code}
 
-% Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
-% 
-% This program is free software; you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation; either version 2, or (at your option)
-% any later version.
-% 
-% This program is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-% 
-% You should have received a copy of the GNU General Public License
-% along with this program; if not, write to the Free Software
-% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-% 02111-1307, USA.
 

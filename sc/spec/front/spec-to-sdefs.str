@@ -7,6 +7,15 @@
 \begin{code}
 module spec-to-sdefs
 imports Stratego desugar stratlib list-sort
+strategies
+
+  spec-to-sdefs-io = 
+    io-wrap(
+      ExpandOverlays
+      ; RulesToSdefs
+      ; DesugarListMatching
+    )
+
 \end{code}
 
 \paragraph{Congruences from Signature}

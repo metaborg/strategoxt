@@ -417,6 +417,13 @@ rules
     If(NotEqual(Id(x),trm)
       , Compound([], [Stat(FunCall(Id("_fail"),[trm]))]))
 
+  TranslateStrat :
+    Match(Var(x){"(un)bound"}, trm) ->
+    IfElse(LAnd(NotEqual(Id(x),Id("NULL")), NotEqual(Id(x),trm)),
+           Stat(FunCall(Id("_fail"),[trm])),
+           Stat(Assign(Id(x),AssignEq,trm)))
+
+
   TranslateStratInstr : // use this translation to detect errors in analysis
     Match(Var(x){"bound"}, trm) ->
     IfElse(Equal(Id(x),Id("NULL"))
@@ -656,6 +663,9 @@ rules
 
   ConstructTerm :
     Var(x){"unbound"} -> FunCall(Id("not_null"),[Id(x)])
+
+  ConstructTerm :
+    Var(x){"(un)bound"} -> FunCall(Id("not_null"),[Id(x)])
 
   ConstructTerm :
     BuildDefault(t) -> t

@@ -108,6 +108,8 @@ strategies
 	where(<toggle-config>("--fusion",())); !(),
 	!"--fusion           Toggle specialize applications of innermost (default: on)" )
 
+/****
+
   + Option("--trace-all",  
 	where(<set-config>("--trace-all",())); !(),
 	!"--trace-all        Instrument all definitions to print tracing information" )
@@ -116,6 +118,7 @@ strategies
 	where(<extend-config>("-t", [<id>])); !(),
 	!"-t f               Instrument definition of f to print tracing information\n" )
 
+***/
 
   + ArgOption("--verbose",         
 	where(<set-config> ("--verbose", <string-to-int>)); !(),         

@@ -1,9 +1,10 @@
 module check-constructors
-imports Stratego dynamic-rules
+imports Stratego dynamic-rules lib
 
 strategies
 
-  CheckConstructorsIO = iowrap(CheckConstructors)
+  check-constructors-io = 
+    io-wrap(CheckConstructors <+ debug(!"barf: "); fail)
 
 overlays
 
@@ -30,26 +31,44 @@ overlays
 rules
 
   CheckConstructors :
-    Specification([Signature([Constructors(ods1)]), Strategies(sdefs)]) -> 
-    Specification([Signature([Constructors(<conc>(ods3,ods2))]), Strategies(sdefs)])
+    Specification([
+      Signature([Constructors(ods1)]), 
+      Overlays(ols),
+      Strategies(sdefs)
+    ]) 
+  -> 
+    Specification([
+      Signature([Constructors(<conc>(ods3,ods2))]), 
+      Overlays(ols),
+      Strategies(sdefs)
+    ])
     where !TupleDeclarations(ods1) => ods2
         ; <map(GenerateCheckRule)> ods2
+        ; <map(GenerateCheckRule)> ols
+        ; <filter(check-constructors)> ols => []
         ; <filter(check-constructors)> sdefs => []
         ; (TupleDeclarations <+ ![]) => ods3
  
   GenerateCheckRule =
-    ?OpDecl(c, ConstType(t));
-    where(!0 => n);
-    rules(
-      CheckCons : Op(c, <length => n>) -> Op(c, [])
-    )
+    ?OpDecl(c, ConstType(t))
+    ; where(!0 => n)
+    ; rules(
+        CheckCons : Op(c, <length => n>) -> Op(c, [])
+      )
 
   GenerateCheckRule =
-    ?OpDecl(c, FunType(ts, t));
-    where(<length> ts => n);
-    rules(
-      CheckCons : Op(c, <length => n>) -> Op(c, []) 
-    )
+    ?OpDecl(c, FunType(ts, t))
+    ; where(<length> ts => n)
+    ; rules(
+        CheckCons : Op(c, <length => n>) -> Op(c, []) 
+      )
+
+  GenerateCheckRule =
+    ?Overlay(c, xs, t)
+    ; where(<length> xs => n)
+    ; rules(
+        CheckCons : Op(c, <length => n>) -> Op(c, [])
+      )
 
   // CheckTuple implements generic checking of tuple constructors (for arbitrary arity)
   // For some reason the generation of operator declarations for tuples does not work.
@@ -74,6 +93,10 @@ rules
   check-constructors =
     ?SDefT(f, xs, ys, <id>)
     ; check-constructors'(!(f, <length> xs, <length> ys), !"definition")
+
+  check-constructors =
+    ?Overlay(f, xs, <id>)
+    ; check-constructors'(!(f, <length> xs), !"overlay")
 
   check-constructors'(f, kind) =
     {| CheckConsError :

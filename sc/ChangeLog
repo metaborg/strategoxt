@@ -1,3 +1,38 @@
+2003-08-17  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/opt/fusion.str: don't import strategy-patterns; not used
+	anymore.
+
+	* spec/front/use-def.str, spec/opt/bound-unbound-vars.str,
+	spec/front/use-def-test.str: Based use-def analysis (unbound
+	variables) on bound-unbound-vars analysis. This required extension
+	of the analysis to the language *with* sugar. Prompted by need to
+	check variables introduced in local definitions. The analysis
+	now detects cases where it is not certain that a variable
+	will be bound in a build. Only a warning is generated in these
+	cases.
+
+	* spec/sc/strc.str, spec/test1/make-rules: Split the frontend
+	component into separate components to ease maintenance.
+	
+	* spec/front/check-constructors.str: Perform check-constructors 
+	before expanding overlays, implying that constructors should
+	be checked in overlay definitions.
+
+	* spec/opt/build-match-laws.str: BuildAlwaysSucceed only if all
+	variables are "bound"
+
+	* spec/front/desugar.str: Remove unused imports
+
+	* spec/opt/dead-var-elim.str, spec/c/s2c.str: Recognize
+	"(un)bound" annotation on variables.
+
+	* spec/sc/strc-options.str: Remove tracing options since they are
+	not currently supported. This should be done by an instrumentation
+	of the Stratego code, rather than instrumentation of generated C
+	code. Especially after optimization, the structure of the
+	generated code is quite different from the source.
+	
 2003-08-13  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/sc/strc.str: Reorganized specification; more compact

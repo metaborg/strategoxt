@@ -1,5 +1,5 @@
 module bound-unbound-vars
-imports Stratego dynamic-rules lib verbose
+imports Stratego dynamic-rules lib verbose stratlib
 strategies
 
   bound-unbound-vars-io =
@@ -10,6 +10,17 @@ strategies
     ; Specification([id, Strategies(map(mark-buv))])
     ; if-verbose4(say(!"marked bound-unbound-vars"))
 
+
+  /** 
+   * Annotate variables with one of the annotations "bound",
+   * "unbound", or "(un)bound".
+   * 
+   * Variables are bound in matches, used in builds, and
+   * refreshed in scopes. Choice operators may lead to 
+   * a variable being bound in one path, but not in the
+   * other. Such variables are annotated with "(un)bound".
+   */
+
   mark-buv =
     mark-match 
     <+ mark-build
@@ -17,6 +28,10 @@ strategies
     <+ mark-let
     <+ mark-traversal
     <+ mark-sdef 
+    <+ mark-rdef
+    <+ mark-lrule
+    <+ mark-srule
+    <+ mark-overlay
     <+ mark-call
     <+ mark-prim
     <+ mark-rec
@@ -25,37 +40,45 @@ strategies
     <+ mark-guardedlchoice(mark-buv)
     <+ all(mark-buv)
 
+  DeclareUnbound =
+    where(!"unbound" => anno)
+    ; ?x
+    ; rules(MarkVar : Var(x) -> Var(x){anno})
+
+  IntroduceBound =
+    where(!"bound" => anno)
+    ; ?x
+    ; rules(MarkVar : Var(x) -> Var(x){anno})
+
+  DeclareBound =
+    where(!"bound" => anno)
+    ; ?x
+    ; override rules(MarkVar : Var(x) -> Var(x){anno})
+
   mark-scope =
-    ? Scope(xs, _)
-    //; debug(!"mark-scope: ")
-    ; where(!"unbound" => anno)
-    ; Scope(id,
-        {| MarkVar : 
-           where(!xs; map({?x; rules(MarkVar : Var(x) -> Var(x){anno})}))
-           ; mark-buv
-        |})
-    //; debug-MarkVar(!"mark-scope after: ")
+    Scope(?xs, {| MarkVar : where(!xs; map(DeclareUnbound)); mark-buv|})
 
-  mark-match :
-    Match(t) -> Match(t')
-    where //debug(!"mark-match: ");
-	!"bound" => anno
-	//; debug(!" anno: ")
-        ; <alltd(
-             MarkVar
-	     //; debug(!" marked: ")
-             ; where({x: ?Var(x)
-			//; debug(!"   generate: ")
-			; override rules(MarkVar : Var(x) -> Var(x){anno})
-			//; debug(!"   generated: ")
-		     })
-           )> t => t' 
-        //; debug-MarkVar(!"mark-match after: ")
+  mark-match =
+    Match(mark-match-vars)
 
+  mark-match-vars = 
+      Var(id)     < MarkAndBind
+    + App(id,id)  < App(mark-buv, mark-build-vars)
+    + RootApp(id) < RootApp(mark-buv)
+    + all(mark-match-vars)
+
+  MarkAndBind =
+    try(MarkVar)
+    ; Var(DeclareBound)
 
   mark-build = 
-    Build(alltd(MarkVar))
-    //; debug-MarkVar(!"mark-build after: ")
+    Build(mark-build-vars)
+
+  mark-build-vars =
+      Var(id)     < MarkVar
+    + App(id,id)  < App(mark-buv, mark-build-vars)
+    + RootApp(id) < RootApp(mark-buv)
+    + all(mark-build-vars)
 
   mark-traversal =
     (?All(_) + ?One(_) + ?Some(_) + ?Thread(_))
@@ -83,31 +106,68 @@ strategies
     ; PrimT(id, mark-buv, id)
     ; where(<isect-MarkVar> bnd)
 
-  mark-let-old =
-    Let(id, id)
-    ; where( 
-        where(save-MarkVar => bnd0)
-        ; Let(map(mark-buv; where(<isect-MarkVar> bnd0))
-	     ,    mark-buv; where(<isect-MarkVar> bnd0))
-      )
-    ; where(save-MarkVar => bnd1)
-    ; Let(map(where(<restore-MarkVar> bnd1); mark-buv)
-         ,    where(<restore-MarkVar> bnd1); mark-buv)
-
   mark-let =
     Let(id, id)
     ; where(undefine-unbound-MarkVar => bnd0)
     ; Let(map(where(<restore-MarkVar> bnd0); mark-buv)
          ,    where(<restore-MarkVar> bnd0); mark-buv)
 
-  mark-sdef =
-    ? SDefT(_, _, as, _)
-    ; where(!"bound" => anno)
-    ; SDefT(id, id, id,
-        {| MarkVar :
-             where(!as; map({?VarDec(x,_); rules(MarkVar : Var(x) -> Var(x){anno})}))
-             ; mark-buv
-        |})
+  mark-sdef :
+    SDefT(f, as1, as2, s) -> SDefT(f, as1, as2, s')
+    where <map(?VarDec(<id>,_) + ?DefaultVarDec(<id>))> as2 => as2'
+	; {| MarkVar :
+             <map(IntroduceBound)> as2'
+             ; <mark-buv> s => s'
+          |}
+
+  mark-rdef : 
+    RDefT(f, as1, as2, r@Rule(t1, t2, s)) ->
+    RDefT(f, as1, as2, Rule(t1', t2', s'))
+    where <map(?VarDec(<id>,_) + ?DefaultVarDec(<id>))> as2 => as2'
+	; <diff>(<tvars> r, as2') => xs
+	; {| MarkVar :
+             <map(IntroduceBound)> as2'
+	     ; <map(DeclareUnbound)> xs
+	     ; <mark-match-vars> t1 => t1'
+             ; <mark-buv> s => s'
+	     ; <mark-build-vars> t2 => t2'
+          |}
+
+  mark-rdef : 
+    RDef(f, as1, r@Rule(t1, t2, s)) ->
+    RDef(f, as1, Rule(t1', t2', s'))
+    where <tvars> r => xs
+	; {| MarkVar :
+	     <map(DeclareUnbound)> xs
+	     ; <mark-match-vars> t1 => t1'
+             ; <mark-buv> s => s'
+	     ; <mark-build-vars> t2 => t2'
+          |}
+
+  mark-lrule :
+    LRule(Rule(t1, t2, s)) -> LRule(Rule(t1', t2', s'))
+    where {| MarkVar : 
+	     <tvars> t1; map(DeclareUnbound)
+	     ; <mark-match-vars> t1 => t1'
+             ; <mark-buv> s => s'
+	     ; <mark-build-vars> t2 => t2'
+	  |}
+
+  mark-srule :
+    SRule(Rule(t1, t2, s)) -> SRule(Rule(t1', t2', s'))
+    where {| MarkVar : 
+	     <tvars> t1; map(DeclareUnbound)
+	     ; <mark-match-vars> t1 => t1'
+             ; <mark-buv> s => s'
+	     ; <mark-build-vars> t2 => t2'
+	  |}
+
+  mark-overlay : 
+    Overlay(f, xs, t) -> Overlay(f, xs, t')
+    where {| MarkVar :
+	     <map(IntroduceBound)> xs
+	     ; <mark-build-vars> t => t'
+          |}
 
   mark-rec = 
     ?Rec(_, _)
@@ -126,8 +186,8 @@ strategies
 
   mark-guardedlchoice(uv) =
     GuardedLChoice(id, id, id)
-    ; abstract-choice(GuardedLChoice(uv,id,id);GuardedLChoice(id,uv,id)
-	           ,GuardedLChoice(id,id,uv))
+    ; abstract-choice(GuardedLChoice(uv,id,id); GuardedLChoice(id,uv,id)
+	             ,GuardedLChoice(id,id,uv))
 
   abstract-choice(left, right) =
     where(save-MarkVar => bnd0)
@@ -135,7 +195,6 @@ strategies
     ; where(save-MarkVar => bndL; <restore-MarkVar> bnd0)
     ; right
     ; where(<isect-MarkVar> bndL)
-
 
 strategies // Dynamic rule manipulation
 
@@ -154,21 +213,33 @@ strategies // Dynamic rule manipulation
           <table-putlist>("MarkVar", tbl))
 
   isect-MarkVar = 
-     map(try(?(Scopes,_)
-        <+ {key, xs, x : ?(key, [Defined(_,x)|xs]); 
-            (where(<table-get> ("MarkVar", key) => [Defined(_,x)|_])
-             <+ !(key, [Undefined|xs]))
-           }))
+     map(try(?(Scopes,_) <+ isect-MarkVar-Rule))
     ; restore-MarkVar
 
+  isect-MarkVar-Rule :
+    (key, [val1@Defined(_,_) | xs]) -> (key, [val3 | xs])
+    where <table-get> ("MarkVar", key) => [val2|_]
+          ; <CompareEntries> (val1, val2) => val3
+
+  CompareEntries :
+    (val@Defined(rl1, x), Defined(rl2, x)) -> val
+       
+  CompareEntries :
+    (val@Defined(rl1, x), Defined(rl2, y)) -> Defined(rl1, "(un)bound")
+    where <not(eq)> (x, y)
+
+  CompareEntries :
+    (Undefined, _) -> Undefined
+    
+  CompareEntries :
+    (_, Undefined) -> Undefined
+
   undefine-unbound-MarkVar =
-    where(
-      save-MarkVar
-      ; map(try(?(Scopes, _)
-		<+ \ (key, [Defined(_,"unbound") | xs]) -> 
-		     (key, [Undefined | xs]) \ ))
-      ; restore-MarkVar
-    )
+    save-MarkVar
+    ; map(try(?(Scopes, _)
+		<+ \ (key, [Defined(rl,"unbound") | xs]) -> 
+		     (key, [Defined(rl,"(un)bound") | xs]) \ ))
+    ; restore-MarkVar
 
 /*
     Bound/Unbound variable analysis for Stratego programs

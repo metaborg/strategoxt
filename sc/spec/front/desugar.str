@@ -5,7 +5,11 @@
 
 \begin{code}
 module desugar
-imports Stratego-Amb DefaultStrat sugar stratlib list-sort use-def lib
+imports Stratego-Amb DefaultStrat sugar stratlib lib
+strategies
+
+  desugar-io =
+    io-wrap(Specification([id,Strategies(desugar-spec)]))
 \end{code} 
 
 	\paragraph{Varyadic operators}

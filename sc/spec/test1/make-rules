@@ -1,4 +1,5 @@
 .PRECIOUS: %.c %.tree %.ac %.c.abox %.bin \
+	   %.f1 %.f2 %.f3 %.f4 %.f5 %.f6 %.f7 %.f8 %.f9 %.f10 %.f11 %.f12 %.f13 \
 	   %.s1 %.s2 %.s3 %.s4 %.s5 %.s6 %.s7 %.s8 %.s9 %.s10 %.s11 %.s12 %.s13 
 
 CINCLUDES = \
@@ -34,19 +35,43 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 %.tree : %.rtree ../pack/pack-stratego$(EXE) 
 	../pack/pack-stratego $(SINCLUDES) -i $< -o $@ 
 
-%.s0 : %.tree ../front/repair-types$(EXE)
+%.f0 : %.tree ../front/repair-types$(EXE)
 	../front/repair-types -i $< -o $@
 
-%.s1 : %.s0 ../front/frontend$(EXE)
-	../front/frontend -i $< -o $@ -b --verbose 1
+#%.s1 : %.s0 ../front/frontend$(EXE)
+#	../front/frontend -i $< -o $@ -b --verbose 3
 
-%.s2 : %.s1 ../front/extract$(EXE)
+%.f1 : %.f0 ../front/pre-desugar$(EXE)
+	../front/pre-desugar -i $< -o $@ -b 
+
+%.f2 : %.f1 ../front/normalize-spec$(EXE)
+	../front/normalize-spec -i $< -o $@ -b 
+
+%.f4 : %.f2 ../front/use-def$(EXE)
+	../front/use-def -i $< -o $@ -b 
+
+%.f5 : %.f4 ../front/check-constructors$(EXE)
+	../front/check-constructors -i $< -o $@ -b 
+
+%.f6 : %.f5 ../front/spec-to-sdefs$(EXE)
+	../front/spec-to-sdefs -i $< -o $@ -b 
+
+%.f7 : %.f6 ../lib/rename-vars$(EXE)
+	../lib/rename-vars -i $< -o $@ -b 
+
+%.f8 : %.f7 ../front/desugar$(EXE)
+	../front/desugar -i $< -o $@ -b 
+
+%.f9 : %.f8 ../front/extract$(EXE)
 	../front/extract -i $< -o $@ -b
 
-%.s2.check: %.s2
+%.f10 : %.f9 ../front/stratego-warnings$(EXE)
+	../front/stratego-warnings -i $< -o $@ -b
+
+%.s2.check: %.f10 ../sig/Stratego-Normal-Format$(EXE)
 	../sig/Stratego-Normal-Format -i $< -o $@ -b
 
-%.s3 : %.s2 %.s2.check ../front/rename-defs$(EXE)
+%.s3 : %.f10 %.s2.check ../front/rename-defs$(EXE)
 	../front/rename-defs -i $< -o $@ -b
 
 # OPTIMIZE ###########################################################
@@ -110,7 +135,7 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 
 ## Second optimization
 
-%.s11.opt1 : %.s10 ../opt/simplify1$(EXE)
+%.s11.opt1 : %.s11 ../opt/simplify1$(EXE)
 	../opt/simplify2 -i $< -o $@ -b
 
 %.s11.opt2 : %.s11.opt1 ../opt/const-prop$(EXE)
@@ -185,7 +210,7 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 # USING INSTALLED SC ###############################################
 
 %.ibin: %.r
-	../sc/strc -i $< -o $@ --verbose 3
+	../sc/strc $(SINCLUDES) $(SCFLAGS) -i $< -o $@ --verbose 3
 
 %.irun: %.ibin
 	./$<

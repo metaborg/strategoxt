@@ -2,7 +2,7 @@ module repair-types
 imports Stratego stratlib lib
 strategies
 
-  repair-types =
+  repair-types-io =
     iowrap(try(sometd(RepairDefinition); where(explanation)))
 
   RepairDefinition :

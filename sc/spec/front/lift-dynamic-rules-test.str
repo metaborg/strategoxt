@@ -2,7 +2,7 @@ module lift-dynamic-rules-test
 imports sunit lift-dynamic-rules
 strategies
 
-  lift-dynamic-rules-test =
+  lift-dynamic-rules-test-io =
     test-suite(!"lift-dynamic-rules-test",
       test1;
       test2;

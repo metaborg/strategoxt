@@ -1,6 +1,15 @@
 module use-def
-imports Stratego list-set stratlib
+imports Stratego list-set stratlib lib bound-unbound-vars 
 strategies
+
+  use-def-io =
+    io-wrap(where(spec-use-def))
+
+  /**
+   * Test whether all variables used in builds are matched before.
+   *
+   * This analysis makes use of bound-unbound-vars to the real work.
+   */
 
   spec-use-def = 
     Specification([Signature(id),
@@ -8,167 +17,116 @@ strategies
 		   Strategies(defs-use-def)])
 
   defs-use-def =
-    [] <+ where(filter(not(def-use-def)); [])
+    [] <+ where(filter(def-use-def); [])
 
   def-use-def = 
-    {| Context, Bound : 
-       where(tvars; DefineUnbound)
-       ; (sdef-ud <+ rdef-ud <+ overlay-ud)
-    |} 
+  where(
+    {| Context, MarkVar :
+      !Scope(<tvars>, <id>)
+      ; mark-scope
+      ; ?Scope(_, <id>)
+      ; (sdef-ud <+ rdef-ud <+ overlay-ud)
+      ; debug(!"Error: ")
+    |}
+  )
 
   sdef-ud =
     ?|[ f(as) = s ]|
     ; where(
-        rules( Context : msg -> ["Error in definition ", f, ": " | msg] )
+        rules(
+	  Context : msg -> ["** Error in definition ", f, ": " | msg]
+	  Warning : msg -> ["* Warning in definition ", f, ": " | msg] 
+	)
        ; <unbound-vars> s
-    )
+      )
 
   sdef-ud =
     ?|[ f(a1* | a2*) = s ]|
     ; where(
-        rules( Context : msg -> ["Error in definition ", f, ": " | msg] )
-	; <declared-vars; DefineBound> a2*
+        rules(
+	  Context : msg -> ["** Error in definition ", f, ": " | msg]
+	  Warning : msg -> ["* Warning in definition ", f, ": " | msg] )
         ; <unbound-vars> s
-    )
+      )
 
   rdef-ud =
     ?|[ f(as) : t1 -> t2 where s ]|
     ; where(
-        rules( Context : msg -> ["Error in rule ", f, ": " | msg] )
+        rules(
+	  Context : msg -> ["** Error in rule ", f, ": " | msg]
+	  Warning : msg -> ["* Warning in rule ", f, ": " | msg] 
+	)
 	; <bind-vars> t1
-        ; <unbound-vars> s
-        ; <use-vars> t2
+        + <unbound-vars> s
+        + <use-vars> t2
       )
 
   rdef-ud =
     ?|[ f(a1* | a2*) : t1 -> t2 where s ]|
     ; where(
-        rules( Context : msg -> ["Error in rule ", f, ": " | msg] )
-	; <declared-vars; DefineBound> a2*
+        rules( 
+	  Context : msg -> ["** Error in rule ", f, ": " | msg] 
+	  Warning : msg -> ["* Warning in rule ", f, ": " | msg] 
+	)
 	; <bind-vars> t1
-        ; <unbound-vars> s
-        ; <use-vars> t2
+        + <unbound-vars> s
+        + <use-vars> t2
       )
 
   rdef-ud =
     ?RDefT(f, as1, as2, StratRule(s1, s2, s3))
     ; where(
-        rules( Context : msg -> ["Error in rule ", f, ": " | msg] )
-	; <declared-vars; DefineBound> as2
-        ; <unbound-vars> s1
-        ; <unbound-vars> s2
-        ; <unbound-vars> s3
+        rules( 
+	  Context : msg -> ["** Error in rule ", f, ": " | msg] 
+	  Warning : msg -> ["* Warning in rule ", f, ": " | msg] 
+	)
+        ; <unbound-vars> (s1, s2, s3)
       )
 
   overlay-ud =
     ?Overlay|[ f(x*) = t ]|
     ; where(
-        rules( Context : msg -> ["Error in overlay ", f, ": " | msg] )
-	; <DefineBound> x*
+        rules( 
+	  Context : msg -> ["** Error in overlay ", f, ": " | msg] 
+	  Warning : msg -> ["* Warning in overlay ", f, ": " | msg] 
+	)
         ; <use-vars> t
       )
 
-  // Find unbound variables in a strategy expresssion
-  // Variables are bound in matches, used in builds, and
-  // refreshed in scopes. Choice operators may lead to 
-  // a variable being bound in one path, but not in the
-  // other. Note that matches occurring as arguments to
-  // calls or inside a recursion are counted as 'binding'
-  // even though they might not actually be bound. 
-  // A more precise/conservative analysis could flag such
-  // bindings. 
-
-  unbound-vars =
-      Scope(id,id)    < VarScope(unbound-vars)
-    + Build(id)       < Build(use-vars)
+  unbound-vars = 
+    Build(id)         < Build(use-vars)
     + Match(id)	      < Match(bind-vars)
-    + Rule(id,id,id)  < Rule(bind-vars,id,id)
-			; Rule(id,id,unbound-vars)
-			; Rule(id,use-vars,id)
-    + Choice(id,id)   < choice(unbound-vars)
-    + LChoice(id,id)  < lchoice(unbound-vars)
-    + GuardedLChoice(id,id,id) 
-		      < guardedlchoice(unbound-vars)
-    + all(unbound-vars)
+    + Rule(id,id,id)  < (Rule(bind-vars,id,id)
+			 + Rule(id,id,unbound-vars)
+			 + Rule(id,use-vars,id))
+    + some(unbound-vars)
 
-  // find variables in match context 
-  // and record them as being bound
   bind-vars = 
-      Var(id)     < Binding
+      Var(id)     < fail
     + App(id,id)  < App(unbound-vars, use-vars)
     + RootApp(id) < RootApp(unbound-vars)
-    + all(bind-vars)
+    + some(bind-vars)
 
-  // check variables in a build context 
-  // and fail if an unbound variable is found
-  use-vars =
-      Var(id)     < (Bound <+ Unbound; fail)
+  use-vars = 
+      ?Var(x){a*} < where(!a*; ( ?["bound"]     < fail
+		               + ?["(un)bound"] < <MaybeUnbound> Var(x); fail
+		               + ?["unbound"]   < <Unbound> Var(x)
+		               + ?[]            ; <Unbound> Var(x)))
     + App(id,id)  < App(unbound-vars, use-vars)
     + RootApp(id) < RootApp(unbound-vars)
-    + all(use-vars)
-
-  Binding = 
-    ?Var(x); override rules(Bound : Var(x) -> Var(x))
+    + some(use-vars)
 
   Unbound = 
-    ?Var(x); <Context; error> ["variable ", x, ": used, but not bound"]
+    ?Var(x)
+    ; <Context; error> ["variable '", x, "' used, but not bound"]
 
-  VarScope(check) =
-    {| Bound : Scope(DefineUnbound, check) |}
-
-  DefineUnbound =
-    map({?x; rules(Bound : Var(x) -> Undefined)})
-
-  DefineBound =
-    map({?x; rules(Bound : Var(x) -> Var(x))})
-
-  // Choice operators split the data-flow and have
-  // to be treated specially. The following abstract-choice
-  // strategy computes the bindings for both branches and
-  // keeps their intersection, thus ensuring that only
-  // variables bound in both branches are counted.
-
-  abstract-choice(left, right) =
-    where(save-Bound => bnd0)
-    ; left
-    ; where(save-Bound => bndL; <restore-Bound> bnd0)
-    ; right
-    ; where(<isect-Bound> bndL)
-   
-  choice(uv) =
-    abstract-choice(Choice(uv,id),Choice(id, uv))
-
-  lchoice(uv) =
-    abstract-choice(LChoice(uv,id),LChoice(id, uv))
-
-  guardedlchoice(uv) =
-    abstract-choice(GuardedLChoice(uv,uv,id),GuardedLChoice(id,id,uv))
-
-
-  // Dynamic rule manipulation
-
-  save-Bound =
-    <table-getlist> "Bound"
-
-  clean-Bound = 
-    where(<table-destroy> "Bound"; 
-	  <table-putlist>("Bound", []))
-
-  restore-Bound = ?tbl;
-    where(<table-destroy> "Bound"; 
-	  <table-putlist>("Bound", tbl))
-
-  isect-Bound = 
-     map(try(?(Scopes,_)
-        <+ {?(key, [Defined(_)|_]); 
-            (where(<table-get> ("Bound", key) => [Defined(_)|_])
-             <+ !(key, [Undefined]))
-           }))
-    ; restore-Bound
+  MaybeUnbound = 
+    ?Var(x)
+    ; <Warning; error> ["variable '", x, "' used, but may not be bound"]
 
 \end{code}
 
-% Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
+% Copyright (C) 1998-2003 Eelco Visser <visser@acm.org>
 % 
 % This program is free software; you can redistribute it and/or modify
 % it under the terms of the GNU General Public License as published by

@@ -65,7 +65,7 @@ strategies
   EliminateFromMatch =
     Match(
       alltd(
-        {x : (?Var(x){"bound"} + ?Var(x){})
+        {x : (?Var(x){"bound"} + ?Var(x){"(un)bound"} + ?Var(x){})
          ; override rules(ElimVar : Var(x) -> Undefined)}
       )
       ; alltd(?Var(<!Var(<id>)>){_}; ElimVar)

@@ -87,9 +87,10 @@ rules // other rules
     Test(s) -> Scope([x], Seq(Match(Var(x)), Seq(s, Build(Var(x)))))
     where new => x
 
-
 rules
 
   BuildAlwaysSucceeds :
     LChoice(Build(t), s) -> Build(t)
-    where <not(oncetd(Op("Cons", id) + Var(id){[] + ["unbound"]}))> t
+    where <topdown(?Var(_) < ?Var(_){"bound"} 
+           + ?Op("Cons", _) < fail 
+           + id)> t

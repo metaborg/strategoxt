@@ -30,11 +30,18 @@ strategies
   front-end =
     if-verbose2(debug(!"front-end: "));
     profile'(if-verbose1(<printnl>(stderr, ["front-end succeeded:     " | <id>])), 
-      parse
+      get-infile
+      ; pack-stratego
       ; output-ast
       ; add-main
       ; repair-types
-      ; frontend
+      ; pre-desugar
+      ; normalize-spec
+      ; use-def
+      ; check-constructors
+      ; spec-to-sdefs
+      ; rename-vars
+      ; desugar
       ; output-frontend
       ; extract
       ; warnings
@@ -195,23 +202,24 @@ strategies
        ; xtc-io-exit
     )
 
+strategies
+
+  /**
+   * Adding main strategy
+   * 
+   * What happens if the specification already contains a main strategy? 
+   */
+
+  add-main =
+    try(where(<get-config> "-m" => m; if-verbose2(debug(!"main strategy is: ")))
+        ; xtc-io-transform(AddMain(!m)))
+    ; save-as3(!".with-main")
+
+  AddMain(m) : 
+    Specification(sects) -> 
+    Specification([Strategies([SDef("main", [], Call(SVar(<m>()), []))])
+                  | sects])
 strategies 
-
-  comp(|f) =
-    xtc-transform(!f, !["-b" | <pass-verbose> ])
-
-  comp(|f,args) =
-    xtc-transform(!f, <concat>[["-b"], <pass-verbose>, args])
-
-strategies // COMPILER COMPONENTS
-
-// PARSER
-
-  parse =
-    get-infile
-    ; comp(|"pack-stratego", <concat> [<dep-name>, <get-config> "-I", <pass-keep>])
-
-  // Collect all modules into one abstract syntax tree
 
   get-infile :
     FILE(file) -> FILE(basein)
@@ -228,33 +236,35 @@ strategies // COMPILER COMPONENTS
   dep-name =
     !["--dep", <<get-config> "-o" <+ <get-config> "baseout">]
 
+strategies // COMPILER COMPONENTS
+
+  comp-out(|f) =
+    xtc-transform(!f, pass-verbose)
+
+  comp(|f) =
+    xtc-transform(!f, !["-b" | <pass-verbose> ])
+
+  comp(|f,args) =
+    xtc-transform(!f, <concat>[["-b"], <pass-verbose>, args])
+
 // FRONTEND
 
-  // Adding main strategy
-  // What happens if the specification already contains a main strategy? 
-
-  AddMain(m) : 
-    Specification(sects) -> 
-    Specification([Strategies([SDef("main", [], Call(SVar(<m>()), []))])
-                  | sects])
-
-  add-main =
-    try(where(<get-config> "-m" => m; if-verbose2(debug(!"main strategy is: ")))
-        ; xtc-io-transform(AddMain(!m)))
-    ; save-as3(!".with-main")
-
-  warnings = 
-    xtc-transform(!"stratego-warnings", 
-       <concat>[<pass-verbose>, ["-b"]|
-	        <get-config; map(!["--warning", <id>])> "--warning"])
-
+  pack-stratego 	= comp(|"pack-stratego", 
+				<concat> [<dep-name>, <get-config> "-I", <pass-keep>])
+  pre-desugar 		= comp(|"pre-desugar")
+  normalize-spec 	= comp(|"normalize-spec")
+  use-def 		= comp(|"use-def")
+  check-constructors 	= comp(|"check-constructors")
+  spec-to-sdefs 	= comp(|"spec-to-sdefs")
+  rename-vars 		= comp(|"rename-vars")
+  desugar 		= comp(|"desugar")
+  warnings 		= comp(|"stratego-warnings", 
+				<get-config; mapconcat(!["--warning", <id>])> "--warning")
   repair-types 		= comp(|"repair-types")
-  frontend 		= comp(|"frontend"); save-as2(!".fro")
   extract 		= comp(|"extract"); save-as2(!".ext")
   extract-all 		= comp(|"extract-all")
   rename-defs 		= comp(|"rename-defs"); save-as2(!".rn")
   stratego-nf 		= comp(|"Stratego-Normal-Format")
-
 
 // OPTIMIZER
 
@@ -279,26 +289,8 @@ strategies // COMPILER COMPONENTS
 
 // BACK-END
 
-  stratego-cf 		= comp(|"Stratego-Canonical-Format")
-
-  s2c =
-    xtc-transform(!"s2c",  
-	 <concat>[<pass-verbose>, ["-b" ]
-	         |<get-config; map(!["--C-include", <id>])> "--C-include"])
-			  
-		  // <TraceAllFuns; !["--trace-all"] <+ get-traced-funs> () )
-
-  get-traced-funs =
-    <table-getlist> "TraceFun";
-    map(\ (f, _) -> ["-t", f] \ );
-    concat;
-    if-verbose1([] <+ debug(!"traced functions: "))
-
-
-  // Pretty-printing generated code
-
-  ac2abox = 
-    xtc-transform(!"ast2abox", !["-p", <xtc-find> "C-pretty.pp"])
-
-  abox2text = 
-    xtc-transform(!"abox2text")
+  stratego-cf 	= comp(|"Stratego-Canonical-Format")
+  ac2abox 	= comp(|"ast2abox", ["-p", <xtc-find> "C-pretty.pp"])
+  abox2text 	= comp-out(|"abox2text")
+  s2c 		= comp(|"s2c",  
+	 		<get-config; mapconcat(!["--C-include", <id>])> "--C-include")

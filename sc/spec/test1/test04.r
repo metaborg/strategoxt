@@ -1,4 +1,4 @@
-module test3
+module test04
 signature
   constructors
     Nil   : List(a)

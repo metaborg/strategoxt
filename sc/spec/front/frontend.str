@@ -2,17 +2,18 @@
 \begin{code}
 module frontend
 imports normalize-spec spec-to-sdefs use-def check-constructors desugar stratego-desugar
+        xtc-lib
 strategies
  
-  frontend = 
-    iowrap(frontend-transformation)
+  frontend-io = 
+    io-wrap(frontend-transformation)
 
   frontend-transformation =	  timing(!"  frontend initialization: ")
     ; pre-desugar		; timing(!"  pre-desugar: ")
     ; normalize-spec		; timing(!"  normalize-spec: ")
     ; where(spec-use-def)	; timing(!"  spec-use-def: ")
+    ; CheckConstructors		; timing(!"  CheckConstructors: ")
     ; ExpandOverlays		; timing(!"  ExpandOverlays: ")
-    ; CheckConstructors		; timing(!"  CheckConstructors: ") 
     ; RulesToSdefs		; timing(!"  RulesToSdefs: ")
     ; DesugarListMatching	; timing(!"  DesugarListMatching: ")
     ; strename			; timing(!"  strename: ")
