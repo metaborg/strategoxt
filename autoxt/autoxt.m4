@@ -308,6 +308,7 @@ AC_DEFUN([XT_PRE_RELEASE],
 [
   AC_REQUIRE([XT_SVN_REVISION])
   VERSION="${VERSION}pre${SVN_REVISION}"
+  PACKAGE_VERSION="${PACKAGE_VERSION}pre${SVN_REVISION}"
 ])
 
 ############ CPP defines of some common variables as ATerms #######################
