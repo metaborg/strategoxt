@@ -1,0 +1,135 @@
+\literate[collect]
+
+	\begin{abstract}
+	\end{abstract}
+
+\begin{code}
+
+module collect
+imports list-basic list-misc term collect
+
+\end{code}
+
+	\paragraph{Collection}
+
+	Strategy \verb|collect(s)| produces a collection of all
+	\emph{outermost} subterms for which \verb|s| succeeds.
+
+	Strategy \verb|collect-split(f, g)| reduces terms with
+	\verb|f| and extracts information with \verb|g| resulting in a
+	pair \verb|(t, xs)| of a reduced term and the list of
+	extracted subterms.
+
+\begin{code}
+
+strategies
+
+  // collect all subtrees for which s succeeds
+
+  collect-all(s) =
+    ![<s> | <crush(![],union,collect-all(s))>]
+    <+ crush(![],union,collect-all(s))
+
+  // collect with user-defined union operator
+
+  collect-all(s,un) =
+    rec x(![<s> | <crush(![],un,x)>]
+          <+ crush(![],un,x))
+          
+  postorder-collect(s) =
+    postorder-collect(s, ![])
+
+  postorder-collect(s, acc) =
+    where((![<s> | <acc>] <+ acc) => ys);
+    crush(!ys, \ (x, xs) -> <postorder-collect(s, !xs)> x \ )
+
+  collect-om(s) =
+    ![<s>] 
+    <+ crush(![],union,collect-om(s))
+
+  collect(s) = 
+    collect-om(s)
+
+  collect-set(s) =
+    ![<s>] 
+    <+ crush(![],conc,collect-set(s))
+
+  collect(s, skip: a * (a -> a) * (a -> a) -> a) =
+    ![<s>]
+    <+ skip(collect(s,skip), ![]); crush(![],union,id)
+    <+ crush(![],union,collect(s,skip))
+
+  collect-exc(base, special : a * (a -> b) -> b) = 
+    rec coll(
+      (base 
+      <+ special(coll))
+      <+ crush(![], union, coll)
+    )
+
+  bu-collect(s) =
+    rec x(some(x); crush(![],union,[s|id] <+ ![])
+          <+ ![<s>] )
+    <+ ![]
+
+  collect-split(splitter) = 
+    rec x(CollectSplit(x, splitter <+ !(<id>,[])))
+
+  collect-split'(splitter) = 
+    rec x((is-string + is-int); splitter
+          <+ CollectSplit(x, splitter))
+
+  collect-split(f, g) = 
+    rec x(CollectSplit(x, !(<try(f)>, <g <+ ![]>)))
+    
+strategies
+
+  collect-kids(s) = 
+    obsolete(!"collect-kids(s); use crush(![],union,s)");
+    crush(![],union,s)
+
+strategies
+
+  CollectSplit(s, splitter) :
+    c#(as){annos*} -> (t, <union> (ys, <unions> xs))
+      where <unzip(s)> as => (bs, xs);
+      <splitter> c#(bs){annos*} => (t, ys)
+
+  CollectSplit(s, f, g) = 
+    CollectSplit(s, !(<try(f)>, <g <+ ![]>))
+
+strategies // TODO: where should we put this?
+
+  twicetd(s) = oncetd(explode-term; 
+                      (id, at-suffix(Cons(oncetd(s), oncetd(s))));
+                      mkterm)
+
+  atmostonce(s) = not(twicetd(s))
+
+  atmostonce'(s) = {n : nrofoccs(s) => n; <leq> (n, 1)}
+  
+/* bug in Let?
+  postorder-collect-new(s) =
+  let f(acc) =
+        where(![<s> | <acc>] <+ acc => acc');
+        crush(!acc', \ (x, xs) -> <f(!xs)> x \ )
+   in f(![])
+*/
+  
+\end{code}
+	
+% Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
+% 
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+% 
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% 
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.

@@ -10,7 +10,8 @@
 
 \begin{code}
 module list-set
-imports list-basic list-misc term
+imports list-basic list-misc term collect
+// collect is imported for backwards compatibility
 
 rules
  
@@ -98,149 +99,6 @@ strategies
                 <+ ?[_ | <x>]
                 )> l1
 
-\end{code}
-
-	\paragraph{Collection}
-
-	Strategy \verb|collect(s)| produces a collection of all
-	\emph{outermost} subterms for which \verb|s| succeeds.
-
-	Strategy \verb|collect-split(f, g)| reduces terms with
-	\verb|f| and extracts information with \verb|g| resulting in a
-	pair \verb|(t, xs)| of a reduced term and the list of
-	extracted subterms.
-
-\begin{code}
-imports tuple
-
-rules
-
-  crush(nul, sum) : 
-    _#(xs) -> <foldr(nul,sum)> xs
-
-  crush(nul, sum, s) : 
-    _#(xs) -> <foldr(nul,sum, s)> xs
-
-strategies
-
-  foldr-kids(nul,sum) =
-    obsolete(!"foldr-kids/2; use crush/2");
-    crush(nul, sum)
-
-  foldr-kids(nul,sum,s) =
-    obsolete(!"foldr-kids/3; use crush/3");
-    crush(nul, sum, s)
-
-  node-size =
-    crush(!0, add, !1)
-
-  term-size =
-    crush(!1, add, term-size)
-
-strategies
-
-  collect-kids(s) = 
-    obsolete(!"collect-kids(s); use crush(![],union,s)");
-    crush(![],union,s)
-
-  // collect all subtrees for which s succeeds
-
-  collect-all(s) =
-    ![<s> | <crush(![],union,collect-all(s))>]
-    <+ crush(![],union,collect-all(s))
-
-  // collect with user-defined union operator
-
-  collect-all(s,un) =
-    rec x(![<s> | <crush(![],un,x)>]
-          <+ crush(![],un,x))
-
-/* bug in Let?
-  postorder-collect-new(s) =
-  let f(acc) =
-        where(![<s> | <acc>] <+ acc => acc');
-        crush(!acc', \ (x, xs) -> <f(!xs)> x \ )
-   in f(![])
-*/
-
-  postorder-collect(s) =
-    postorder-collect(s, ![])
-
-  postorder-collect(s, acc) =
-    where((![<s> | <acc>] <+ acc) => ys);
-    crush(!ys, \ (x, xs) -> <postorder-collect(s, !xs)> x \ )
-
-  collect-om(s) =
-    ![<s>] 
-    <+ crush(![],union,collect-om(s))
-
-  collect(s) = 
-    collect-om(s)
-
-  collect-set(s) =
-    ![<s>] 
-    <+ crush(![],conc,collect-set(s))
-
-  collect(s, skip: a * (a -> a) * (a -> a) -> a) =
-    ![<s>]
-    <+ skip(collect(s,skip), ![]); crush(![],union,id)
-    <+ crush(![],union,collect(s,skip))
-
-  collect-exc(base, special : a * (a -> b) -> b) = 
-    rec coll(
-      (base 
-      <+ special(coll))
-      <+ crush(![], union, coll)
-    )
-
-  bu-collect(s) =
-    rec x(some(x); crush(![],union,[s|id] <+ ![])
-          <+ ![<s>] )
-    <+ ![]
-
-  collect-split(splitter) = 
-    rec x(CollectSplit(x, splitter <+ !(<id>,[])))
-
-  collect-split'(splitter) = 
-    rec x((is-string + is-int); splitter
-          <+ CollectSplit(x, splitter))
-
-  collect-split(f, g) = 
-    rec x(CollectSplit(x, !(<try(f)>, <g <+ ![]>)))
-
-rules
-
-  CollectSplit(s, splitter) :
-    c#(as){annos*} -> (t, <union> (ys, <unions> xs))
-      where <unzip(s)> as => (bs, xs);
-      <splitter> c#(bs){annos*} => (t, ys)
-
-  CollectSplit(s, f, g) = 
-    CollectSplit(s, !(<try(f)>, <g <+ ![]>))
-\end{code}
-
-	\paragraph{Occurence Counting}
-
-\begin{code}
-strategies
-
-  nrofoccs(s) = 
-    obsolete(!"nrofoccs/1; use occurrences/1");
-    occurrences(s)
-
-  om-occurrences(s) = 
-    s; !1 <+ crush(!0, add, occurrences(s))
-
-  occurrences(s) = 
-    split(s; !1 <+ !0, crush(!0, add, occurrences(s))); add
-
-  twicetd(s) = oncetd(explode-term; 
-                      (id, at-suffix(Cons(oncetd(s), oncetd(s))));
-                      mkterm)
-
-  atmostonce(s) = not(twicetd(s))
-
-  atmostonce'(s) = {n : nrofoccs(s) => n; <leq> (n, 1)}
 \end{code}
 	
 % Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>

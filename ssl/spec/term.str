@@ -6,12 +6,66 @@
 
 \begin{code}
 module term
+imports simple-traversal list-misc list-set
+
 strategies
 
   mkterm       = ?(c,ts); prim("SSL_mkterm",c,ts)
   explode-term = ?t; prim("SSL_explode_term",t)
   address-lt   = ?(t1,t2); prim("SSL_address_lt",t1,t2)
   address      = ?t; prim("SSL_address",t)
+  
+strategies 
+
+  crush(nul, sum) : 
+    _#(xs) -> <foldr(nul,sum)> xs
+
+  crush(nul, sum, s) : 
+    _#(xs) -> <foldr(nul,sum, s)> xs
+
+  foldr-kids(nul,sum) =
+    obsolete(!"foldr-kids/2; use crush/2");
+    crush(nul, sum)
+
+  foldr-kids(nul,sum,s) =
+    obsolete(!"foldr-kids/3; use crush/3");
+    crush(nul, sum, s)
+    
+strategies      
+
+  node-size =
+    crush(!0, add, !1)
+
+  term-size =
+    crush(!1, add, term-size)
+  
+strategies
+
+  at-depth(depth, s) =
+      !(<depth> (), <id>)
+    ; topdown(
+        {d :
+           ?(0, <s> )
+        <+ ?(d, <id>); all(!(<dec> d, <id>))
+        }
+      )  
+  
+\end{code}
+
+	\paragraph{Occurence Counting}
+
+\begin{code}
+strategies
+
+  nrofoccs(s) = 
+    obsolete(!"nrofoccs/1; use occurrences/1");
+    occurrences(s)
+
+  om-occurrences(s) = 
+    s; !1 <+ crush(!0, add, occurrences(s))
+
+  occurrences(s) = 
+    split(s; !1 <+ !0, crush(!0, add, occurrences(s))); add
 \end{code}
 
 \paragraph{Documentation}

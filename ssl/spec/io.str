@@ -165,7 +165,19 @@ strategies
 
   debug(msg) = 
     where(<printnl> (stderr, [<msg>,<id>]))
+    
+  debug-depth = 
+    debug-depth(!4, !"")
 
+  debug-depth(depth) = 
+    debug-depth(depth, !"")
+    
+  debug-depth(depth, s) = 
+    where(  
+      at-depth(depth, !"...")
+    ; debug(s)
+    )
+    
   say(msg) = 
     where(msg; debug)
 

@@ -1,3 +1,15 @@
+2003-03-19  Martin Bravenboer <martin@mbravenboer.org>
+
+  * spec/list-set.str: moved the collect strategies to
+    a new module "collect". TODO: better naming of
+    collection strategies
+    
+  * spec/list-set.str: moved term operations like crush
+    to term.str module
+    
+  * spec/io.str: introduced debug-depth for debugging
+    with big ATerms.
+    
 2003-02-26  Martin Bravenboer <martin@mbravenboer.org>
 
   * spec/abox.str: removed, use Box signature of GPP.
