@@ -128,8 +128,8 @@ strategies
    *
    * split-fetch-keep fails if s cannot be applied to any of the elements.
    *
-   * @type s  a ->? _
-   * @type    [a] -> [a] * a * [a]
+   * @type s  a -> b
+   * @type    [a] -> [a] * b * [a]
    */
   split-fetch-keep(s) =
     at-suffix([s|id];[?el|?tl];![]); !(<id>, el, tl)
