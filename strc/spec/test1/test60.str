@@ -4,10 +4,10 @@ strategies
 
   main = 
     {| CSE 
-     : where(<new-A(|"a")> "a")
+     : new-A(|"a","a")
      ; where(<Assign> ("a", ("b", "c")))
      ; <A> ("b", "c")
-     ; where(<undefine-A> "b")
+     ; undefine-A(|"b")
      ; !(<id>, <try(A)> ("b", "c"))
      |} => ("a",("b","c"))
 	
