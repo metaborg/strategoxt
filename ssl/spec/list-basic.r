@@ -108,7 +108,7 @@ strategies
     [] -> <acc>()
 
   reverse-acc(s, acc) : 
-    [x | xs] -> <where(![<s>x | <acc>] => ys); reverse-acc(!ys)> xs
+    [x | xs] -> <{ys:where(![<s>x | <acc>] => ys); reverse-acc(s, !ys)}> xs
 
 rules
 
