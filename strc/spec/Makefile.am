@@ -1,9 +1,6 @@
 include $(top_srcdir)/Makefile.xt 
 
 SUBDIRS = sig pack c front lib match opt strc test1 test2 testneg test-strc log
-
-DIST_SUBDIRS = testlib test3 testspec $(SUBDIRS)
-
 BOOTCLEAN_SUBDIRS = sig c front lib match opt strc pack
 
 bootstep :
@@ -17,9 +14,6 @@ bootcheck :
 	cd test1 	&& $(MAKE) clean && $(MAKE) check
 	cd test2 	&& $(MAKE) clean && $(MAKE) check
 	cd testneg 	&& $(MAKE) clean && $(MAKE) check
-
-#	cd testlib 	&& $(MAKE) clean && $(MAKE) check
-#	cd testspec 	&& $(MAKE) clean && $(MAKE) check
 
 boot0 :
 	$(MAKE) bootstep

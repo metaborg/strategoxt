@@ -5,7 +5,8 @@ SCFLAGS		 = -I $(STRATEGO_FRONT)/share/stratego-front \
 	  	   -I $(srcdir)/../front \
 	  	   -I $(srcdir)/../match \
 	  	   -I $(srcdir)/../opt \
-	 	   --main $*
+	 	   --main $* \
+                   --dr old
 
 libexec_PROGRAMS = rename-vars
 check_PROGRAMS 	 = stratlib-test

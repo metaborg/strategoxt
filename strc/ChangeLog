@@ -1,7 +1,17 @@
+2005-02-06  Martin Bravenboer <martin@cs.uu.nl>
+
+	* spec/strc/strc-options.str: changed the default value of --dr to
+	--dr new. Applications that need the old behaviour of dynamic
+	rules should use --dr old.
+
+	* spec/testlib: removed.
+	* spec/test3: removed.
+	* **/Makefile.am: added --dr old flags
+
 2005-01-29  Martin Bravenboer <martin@cs.uu.nl>
 
-	* spec/test-strc/*.sh: changed the strc test to use the shared Stratego
-	Library in the SSL instead of the SRTS.
+	* spec/test-strc/*.sh: changed the strc test to use the shared
+	Stratego Library in the SSL instead of the SRTS.
 
 	* spec/strc/strc-options.str: changed the include of
 	"srts/stratego-lib.h" to "ssl/stratego-lib.h". Changed the names

@@ -8,6 +8,7 @@ SCFLAGS	= -I $(STRATEGO_FRONT)/share/stratego-front \
 	  -I $(srcdir)/../opt \
 	  -I $(srcdir)/../lib \
 	  -I $(srcdir)/../front \
+          --dr old \
 	  --main $*-io
 
 libexec_PROGRAMS = compile-match desugar-case 

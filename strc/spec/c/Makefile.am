@@ -11,7 +11,7 @@ BOOTCLEANFILES 	 = s2c.c C-simplify-test.c
 
 CLEANFILES 	 = $(wildcard *.dep) $(TESTS)
 
-SCFLAGS 	 = --main $* --keep 0
+SCFLAGS 	 = --main $* --keep 0 --dr old
 
 STRINCLUDES	 = -I $(C_TOOLS)/share/sdf/c-tools	     \
 		   -I $(C_TOOLS)/share/c-tools		     \

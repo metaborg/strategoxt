@@ -44,11 +44,8 @@ AC_CONFIG_FILES([
 
   spec/test1/Makefile 
   spec/test2/Makefile 
-  spec/test3/Makefile 
   spec/testneg/Makefile
   spec/test-strc/Makefile
-  spec/testlib/Makefile 
-  spec/testspec/Makefile 
 ])
 
 AC_OUTPUT

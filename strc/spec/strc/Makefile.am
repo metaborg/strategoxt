@@ -7,7 +7,8 @@ SCFLAGS		= -I $(STRATEGO_FRONT)/share/stratego-front \
 	  	  -I $(srcdir)/../match			    \
 	  	  -I $(srcdir)/../lib			    \
 	  	  -I $(srcdir)/../front			    \
-	  	  --main $*	
+	  	  --main $* \
+                  --dr old
 
 bin_PROGRAMS 	= strc
 pkgdata_DATA 	= strc-manual.txt

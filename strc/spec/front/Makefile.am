@@ -3,13 +3,15 @@ include $(wildcard *.dep)
 
 SUBDIRS 	 = data
 
-SCFLAGS 	 = -I $(STRATEGO_FRONT)/share/stratego-front	 \
-	   	   -I $(STRATEGO_FRONT)/share/sdf/stratego-front \
-	   	   -I $(srcdir)/../sig				 \
-	   	   -I $(srcdir)/../match			 \
-	  	   -I $(srcdir)/../lib				 \
-	  	   -I $(srcdir)/../opt				 \
-	  	   --main $*-io
+STRINCLUDES = \
+  -I $(STRATEGO_FRONT)/share/stratego-front \
+  -I $(STRATEGO_FRONT)/share/sdf/stratego-front \
+  -I $(srcdir)/../sig \
+  -I $(srcdir)/../match\
+  -I $(srcdir)/../lib \
+  -I $(srcdir)/../opt
+
+SCFLAGS = --main $*-io --dr old
 
 libexec_PROGRAMS = extract extract-all rename-defs stratego-warnings \
 		   repair-types desugar pre-desugar normalize-spec use-def \

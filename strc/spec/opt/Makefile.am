@@ -6,8 +6,8 @@ SCFLAGS	= -I $(STRATEGO_FRONT)/share/stratego-front \
 	  -I $(srcdir)/../match \
 	  -I $(srcdir)/../lib \
 	  -I $(srcdir)/../front \
-	  --main $*-io
-#	  --keep 10
+	  --main $*-io \
+          --dr old
 
 libexec_PROGRAMS = fusion inline dead-def-elim const-prop dead-var-elim	\
 		   lift-definitions canonicalize bound-unbound-vars	\
