@@ -1,13 +1,12 @@
+/**
+ * Compilation of Stratego programs to C 
+ */
 module s2c
 imports Stratego automaton lib C C-simplify dynamic-rules config
 signature
   constructors
-    Conc : List(a) * List(a) -> List(a)
     Include : String -> ExternalDef
 
-/**
- * Compilation of Stratego programs to C 
- */
 strategies
 
   s2c = 
@@ -142,7 +141,10 @@ strategies
 	}
     ]|
 
-strategies // Signatures
+/**
+ * Signatures
+ */
+strategies 
 
   TranslateSig :
     Signature([Constructors(ops)]) ->
@@ -253,7 +255,15 @@ strategies
 strategies
 
   translate-body =
-    topdown(repeat(TranslateDef <+ TranslateStratMatchGuard <+ TranslateStrat))
+      merge-SeqVar
+    ; topdown(repeat(TranslateDef <+ TranslateStratMatchGuard <+ TranslateStrat))
+
+  /**
+   * @todo Necessary because the build transformation to C performs a bottomup traversal.
+   *       Remove as soon as SeqVar is a real Var and not a Var wrapper: SeqVar(Var(_))
+   */
+  merge-SeqVar =
+    topdown(try(SeqVar(?Var(<id>))))
 
   TranslateVarDec :
     VarDec(x, ConstType(_)) -> param-dec|[ ATerm ~id:x ]|
@@ -269,8 +279,10 @@ strategies
     FunType(ts, _) -> 
     ParamDecl(TypeSpec([],TypeId("ATerm"),[]),ParamList(<map(TranslateType)> ts))
 
-
-rules // Strategy expressions
+/**
+ * Strategy expressions
+ */
+rules 
 
   TranslateStrat :
     Id -> stm|[ { } ]|
@@ -375,7 +387,10 @@ signature
   constructors
     Match : Term * Exp -> Exp
 
-rules // Matching
+/**
+ * Matching
+ */
+rules
 
   TranslateStrat :
     Match(t) ->
@@ -414,8 +429,23 @@ rules // Matching
            Stat(FunCall(Id("_fail"),[trm])),
            Stat(Assign(Id(x),AssignEq,trm)))
 
-  // string constants should probably be cached, just like constructor names
 
+  /**
+   * @todo  Check the cast to a list.
+   */
+  TranslateStrat :
+    Match(SeqVar(x), y) ->
+      |[ { if(x == NULL) {
+             x = (ATerm) ATempty;
+           }
+
+           x = (ATerm) ATappend((ATermList) x, y);
+         }
+      ]|
+
+  /**
+   * @todo  String constants should probably be cached, just like constructor names
+   */
   TranslateStrat :
     Match(Str(x), trm) -> 
     If(NotEqual(SymOfAppl(trm), 
@@ -472,7 +502,10 @@ rules // Matching
 	   [(hd, FunCall(Id("ATgetFirst"),[CastATermList(trm)])), 
             (tl, CastATerm(FunCall(Id("ATgetNext"),[CastATermList(trm)])))] => match-args
 
-rules // Matching automaton with guarded left choice
+/**
+ * Matching automaton with guarded left choice
+ */
+rules 
 
   TranslateStratMatchGuard :
     GuardedLChoice(Match(Str(str)), s1, s2) ->
@@ -521,7 +554,10 @@ rules // Matching automaton with guarded left choice
                         ,s1])
           ,Compound([],[s2]))
 
-rules // Matching automaton with case (obsolete)
+/**
+ * Matching automaton with case (obsolete)
+ */
+rules 
 
   TranslateStrat :
     Assign(Var(x)) ->
@@ -627,6 +663,13 @@ rules // Building
   ConstructTerm :
     Var(x){"(un)bound"} -> c:exp|[ not_null(~id:x) ]| 
 
+  /**
+   * @todo  I need expression blocks. Using a call to a runtime function for now.
+   * @todo  Check the cast.
+   */
+  ConstructTerm:
+    SeqVar(x) -> c:exp |[ x == ATempty || x == NULL ? _fail(x) : SRTS_pop_seqvar(&x) ]|
+
   ConstructTerm :
     BuildDefault(t) -> t
 
@@ -650,7 +693,10 @@ rules // Building
            <+ !CheckATermList(tl)) => tl'
 
 
-rules // Term construction with constant term caching
+/**
+ * Term construction with constant term caching
+ */
+rules 
 
   init-term-caching =
     where(!Op("Nil", []) => t; !CastATerm(Id("ATempty")) => e);
