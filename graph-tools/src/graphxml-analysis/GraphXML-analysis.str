@@ -1,11 +1,14 @@
 module GraphXML-analysis
 imports
-  GraphXML options Literal-lib list-basic termid
+  liblib
+  GraphXML
+  Literal-lib 
+  termid
 
 strategies
 
-  main
-    = io-idwrap(InId("\"graphxml_1_1-0\""), 
+  main =
+    io-idwrap(InId("\"graphxml_1_1-0\""), 
                 get-sinks-and-origins;print-sinks-and-origins)
 
   get-targets

@@ -1,49 +1,35 @@
-(*
- GT -- Grammar Tools
- Copyright (C) 2000-2002
-                    Merijn de Jonge <mdejonge@cwi.nl>
-                    Eelco Visser <visser@acm.org>
-                    Joost Visser <jvisser@cwi.nl>
-
- This program is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2, or (at your option)
- any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program; if not, write to the Free Software
- Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
- 02111-1307, USA.
-
- $Id: GraphXML2dot.str,v 1.1 2002/12/08 13:20:22 stratego Exp $
-*)
-
 module GraphXML2dot
 imports
-  lib Dot GraphXML Literal-lib termid
+  liblib
+  Dot
+  GraphXML
+  Literal-lib
 
 signature
   constructors
-     UrlPrefix : X -> Option
-     UrlExt :    X -> Option
+    UrlPrefix : X -> Option
+    UrlExt :    X -> Option
+
 strategies
 
-  main
-      = io-idwrap( InOutId("\"graphxml_1_1-0\"", !"\"dot-1\""), 
-                   (id, GraphXML2dot), options )
+  main =
+    io-wrap(GraphXML2dot-options, GraphXML2dot-usage, system-about,
+      try(?"\"graphxml_1_1-0\""#([<id>]))
+    ; GraphXML2dot
+    ; !"\"dot-1\""#([<id>])
+    )
 
-  options 
-      = ArgOption( "-p" + "--url-prefix", \x -> UrlPrefix(x) \, !"-p|--url-prefix <prefix>    generate url's with given prefix" )
-      + ArgOption( "-e" + "--url-ext",    \x -> UrlExt(x) \,    !"-e|--url-ext <ext>          give url extension 'ext' (default .html)" )
+  GraphXML2dot-options =
+      ArgOption( "-p" + "--url-prefix", \x -> UrlPrefix(x) \, !"-p|--url-prefix <prefix>    generate url's with given prefix" )
+    + ArgOption( "-e" + "--url-ext",    \x -> UrlExt(x) \,    !"-e|--url-ext <ext>          give url extension 'ext' (default .html)" )
 
-  short-description(p) = ![<p>(), " -- Converts a GraphXML term to DOT."]
-  long-description(p)  = !["Input is a GraphXML term (in AST form).\n",
-                           "Output is a DOT term (in AST form).\n"]
+  GraphXML2dot-usage =
+    default-system-usage(
+      !["GraphXML2dot -- Converts a GraphXML term to DOT."]
+    , !["Input is a GraphXML term (in AST form).\n",
+        "Output is a DOT term (in AST form).\n"]
+    )
+
   GraphXML2dot
     = \GraphXML(_,[graph(_,xs)]) -> DotDigraph("GraphXML",[url|ss])
        where 

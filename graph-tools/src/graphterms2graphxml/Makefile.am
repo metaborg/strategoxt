@@ -6,10 +6,12 @@ SUBDIRS      	 = data
 
 bin_PROGRAMS     = graph-term2GraphXML
 libexec_PROGRAMS = graph-term2GraphXML
+LDADD           += $(SSL_LIBS)
 
 BOOTCLEANFILES	 = graph-term2GraphXML.c
 CLEANFILES	 = $(wildcard *.dep)
 
-SCFLAGS      	 = -I $(srcdir)/../graphxml \
-                   -I $(srcdir)/../graphterms \
-	       	   -I $(ASFIX_TOOLS)/share/asfix-tools
+STRINCLUDES = \
+  -I $(srcdir)/../graphxml \
+  -I $(srcdir)/../graphterms \
+  -I $(ASFIX_TOOLS)/share/asfix-tools

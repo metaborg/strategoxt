@@ -7,6 +7,7 @@ SUBDIRS      	 = data
 
 bin_PROGRAMS     = GraphXML-analysis
 libexec_PROGRAMS = GraphXML-analysis
+LDADD           += $(SSL_LIBS)
 
 BOOTCLEANFILES 	 = GraphXML-analysis.c
 CLEANFILES	 = $(wildcard *.dep)

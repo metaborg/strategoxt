@@ -7,15 +7,17 @@ SUBDIRS      	 = data
 
 bin_PROGRAMS 	 = GraphXML2dot
 libexec_PROGRAMS = GraphXML2dot
+LDADD           += $(SSL_LIBS)
 
 TESTS        	 = graphxml2dot_check
 
 BOOTCLEANFILES   = graphxml2dot_check.c GraphXML2dot.c
 CLEANFILES	 = $(wildcard *.dep)
 
-SCFLAGS      	 = -I $(srcdir)/../graphxml \
-		   -I $(DOT_TOOLS)/share/dot-tools \
-		   -I $(ASFIX_TOOLS)/share/asfix-tools
+STRINCLUDES = \
+  -I $(srcdir)/../graphxml \
+  -I $(DOT_TOOLS)/share/dot-tools \
+  -I $(ASFIX_TOOLS)/share/asfix-tools
 
 graphxml2dot_check_prog    = GraphXML2dot
 graphxml2dot_check_input   = data/incomplete.sdf.gxml.af 
