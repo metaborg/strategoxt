@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Abox2text.r,v 1.6 2001/09/19 09:34:45 mdejonge Exp $
+% $Id: Abox2text.r,v 1.7 2001/09/19 09:44:36 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
@@ -159,10 +159,10 @@ strategies
         ?( [], ys, zs ) ; <conc>(zs, [R([], ys)])
      <+
         ?( [R(a1, a2)| xs], [], zs ) ;
-         <s>(xs, [], [R(a1,a2)|zs] )
+         <s>(xs, [], <conc>(zs, [R(a1,a2)]) )
      <+
         ?( [R(a1, a2)| xs], ys, zs ) ;
-        <s>( xs, [], [R([], ys), R(a1, a2)| zs])
+        <s>( xs, [], <conc>(zs, [R([], ys), R(a1, a2)]))
      <+
         ?( [x|xs], ys, zs );
         <s>( xs, <conc>(ys, [x]), zs )
