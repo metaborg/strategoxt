@@ -1,0 +1,28 @@
+module sdf/production/attributes
+strategies
+
+  /**
+   * @type  List(Attribute) ->? _
+   */
+  contains-bracket =
+    fetch(?bracket())
+
+  /**
+   * @type  List(Attribute) ->? _
+   */
+  contains-reject =
+    fetch(?reject())
+
+  /**
+   * @type  List(Attribute) -> String
+   */
+  get-cnstr-name =
+    fetch-elem(
+      ?term(appl(uqlit("cons"), [fun(qlit(<un-double-quote>))]))
+    + ?term(cons(<id>))
+    + ?cons(<id>)
+    )
+
+signature
+  constructors
+    cons : String -> Attribute

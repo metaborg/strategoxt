@@ -4,7 +4,10 @@
  * @author  Martin Bravenboer
  */
 module sdf-spread-cons
-imports Sdf2 liblib
+imports
+  Sdf2
+  liblib
+  sdf/production/attributes
 
 strategies
 
@@ -25,8 +28,4 @@ strategies
       )
 
   cons-of-prod :
-    p |[ A* -> A {attr*} ]| -> <fetch-elem(?term(cons(<id>)))> attr*
-
-signature
-  constructors
-    cons : String -> Attribute
+    p |[ A* -> A {attr*} ]| -> <get-cnstr-name> attr*

@@ -15,17 +15,18 @@ imports
 
   sdf/grammar/utils
   sdf/tool/options
+  sdf/tool/xtc
   sdf/symbol/implode
 
 strategies
 
   io-sdf2ast-conflicts =
     xtc-io-wrap(sdf-main-module-option,
-      xtc-transform(!"sdf2table", !["-n", "-m", <get-sdf-main-module> | <pass-v-verbose>])
-    ; xtc-transform(!"implodePT")
-    ; xtc-io-transform(error-if-empty-grammar(<xtc-exit> 1))
-    ; xtc-transform(!"sdf-desugar", pass-verbose)
-    ; xtc-io-transform(core-sdf2conflicts)
+      xtc-sdf2-normalize(|<get-sdf-main-module>)
+    ; xtc-io-transform(
+        error-if-empty-grammar(<xtc-exit> 1)
+      ; core-sdf2conflicts
+      )
     )
 
   core-sdf2conflicts =

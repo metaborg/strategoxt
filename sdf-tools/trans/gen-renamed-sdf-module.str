@@ -5,16 +5,21 @@
  * @since   0.9.5
  */
 module gen-renamed-sdf-module
-imports Sdf2 liblib sdf-xtc-tools sdf-options
+imports
+  Sdf2
+  liblib
+  sdf/tool/xtc
+  sdf/tool/options
+  sdf/grammar/utils
 
 strategies
 
   io-gen-renamed-sdf-module =
     xtc-io-wrap(renaming-options,
-      xtc-transform(!"sdf2table", !["-n", "-m", <get-sdf-main-module> | <pass-v-verbose>])
-    ; xtc-transform(!"implodePT")
+      xtc-sdf2-normalize(|<get-sdf-main-module>)
     ; xtc-io-transform(
-        collect-sorts
+        error-if-empty-grammar(<xtc-exit> 1)
+      ; collect-sorts
       ; map(rename-sort)
       ; create-module
       )

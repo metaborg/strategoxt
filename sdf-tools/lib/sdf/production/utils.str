@@ -1,0 +1,13 @@
+module sdf/production/utils
+strategies
+
+  is-inject-prod =
+    ?prod([sort(_)], sort(_), attrs([]))
+
+  is-bracket-prod = 
+    ?prod(_, _, attrs(attrs))
+    ; where(<contains-bracket> attrs)
+
+  is-reject-prod =
+      ?prod(_, _, attrs(attrs))
+    ; where(<contains-reject> attrs)
