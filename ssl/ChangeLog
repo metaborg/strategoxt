@@ -1,16 +1,51 @@
+2004-04-06  Eelco Visser <visser@cs.uu.nl>
+
+	* tables.str: hashtable-intersect and hashtable-union
+	- change the argument table
+	- fail if no changes are made
+	- assume that values are lists
+
+	- hashtable-pushlist
+	- hashtable-pushunion
+
+2004-04-04  Arthur van Dam <adam@cs.uu.nl>
+
+	* tables.str :
+	All primitive calls to the legacy table functions are now replaced
+	by (non-primitive) hashtable-* calls. Behaviour is of course still
+	the same.
+
+	- table-hashtable() makes the legacy table-table available as a
+	Hashtable.
+
+2004-04-02  Arthur van Dam <adam@cs.uu.nl>
+
+	* tables.str: Added bulk operations
+	- hashtable-putlist(|kv*)
+	- hashtable-getlist
+	- hashtable-copy
+
+2004-04-01  Arthur van Dam <adam@cs.uu.nl>
+
+	* tables.str: Added stack-operations for stacks stored in hashtables.
+	- hashtable-push(|key, value)
+	- hashtable-pop(|key)
+	- hashtable-peek(|key)
+	- hashtable-peekpop(|key)
+
 2004-03-22  Martin Bravenboer <martin@cs.uu.nl>
 
 	* ssl/table.str: 
 	- new-hashtable =
 	- new-hashtable(|initial_size, max_load)
-	- destroy-hashtable
+	- hashtable-destroy
 	- hashtable-put(|key, value)
 	- hashtable-get(|key)
 	- hashtable-remove(|key)
 	- hashtable-keys
 
 	Hashtable strategies that operate on an Hashtable representation
-	in een ATerm. These strategies require you to pass this
+	in an ATerm. These strategies require you to pass this
 	representation around in Stratego, not the name of a
 	hashtable. The internal structure of this representation should
 	not be used in any way and is subject to change (compare to Stream

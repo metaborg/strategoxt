@@ -25,6 +25,9 @@ strategies
 
     ; test-intersect
     ; test-union
+
+    ; test-eq
+
     )
 
 strategies
@@ -257,6 +260,8 @@ strategies
       , !tbl1
       , ![]
       )
+    ; where(<hashtable-destroy> tbl1)
+    ; where(<hashtable-destroy> tbl2)
 
   test-union = 
     where(new-hashtable => tbl1)
@@ -323,3 +328,50 @@ strategies
       , !tbl1
       , !["value6"]
       )
+    ; where(<hashtable-destroy> tbl1)
+    ; where(<hashtable-destroy> tbl2)
+
+  test-eq =
+    where(new-hashtable => tbl1)
+    ; where(new-hashtable => tbl2)
+    ; apply-test(!"hashtable-eq both-empty"
+      , hashtable-eq
+      , !(tbl1, tbl2)
+      )
+    ; where(<hashtable-put(|"KeyA", "ValueA")> tbl2)
+    ; apply-and-fail(!"hashtable-eq 1st empty"
+      , hashtable-eq
+      , !(tbl1, tbl2)
+      )
+    ; where(<hashtable-remove(|"KeyA")> tbl2)
+    ; where(<hashtable-put(|"KeyA", "ValueA")> tbl1)
+    ; apply-and-fail(!"hashtable-eq 2nd empty"
+      , hashtable-eq
+      , !(tbl1, tbl2)
+      )
+    ; where(<hashtable-put(|"KeyA", "ValueA")> tbl2)
+    ; apply-test(!"hashtable-eq singletons"
+      , hashtable-eq
+      , !(tbl1, tbl2)
+      )
+    ; where(<hashtable-put(|"KeyB", "ValueB")> tbl1)
+    ; where(<hashtable-put(|"KeyC", "ValueC")> tbl1)
+    ; apply-and-fail(!"hashtable-eq keys inequal"
+      , hashtable-eq
+      , !(tbl1, tbl2)
+      )
+    ; where(<hashtable-put(|"KeyC", "ValueC'")> tbl2)
+    ; where(<hashtable-put(|"KeyB", "ValueB'")> tbl2)
+    ; apply-and-fail(!"hashtable-eq values inequal"
+      , hashtable-eq
+      , !(tbl1, tbl2)
+      )
+    ; where(<hashtable-put(|"KeyC", "ValueC")> tbl2)
+    ; where(<hashtable-put(|"KeyB", "ValueB")> tbl2)
+    ; apply-test(!"hashtable-eq equal"
+      , hashtable-eq
+      , !(tbl1, tbl2)
+      )
+    ; where(<hashtable-destroy> tbl1)
+    ; where(<hashtable-destroy> tbl2)
+

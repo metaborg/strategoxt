@@ -127,7 +127,6 @@ strategies
    * Assumes that both hashtables contains lists as values, and intersects
    * the two listvalues for each key.
    */
-
   hashtable-intersect(|tbl2) = ?tbl1;
     where(
 
@@ -156,7 +155,6 @@ strategies
    *
    * Changes tbl1; fails if no changes are made
    */
-
   hashtable-union(|tbl2) = ?tbl1;
     where(
       <hashtable-keys> tbl2
@@ -169,6 +167,23 @@ strategies
         })
       ; not([])
     )
+
+  /**
+   * Checks whether two hashtables have equal contents.
+   * This strategy uses the basic `eq` to compare the elements.
+   */
+  hashtable-eq = hashtable-eq(eq)
+
+  /**
+   * Checks whether two tables have the same keys, and for each key whether
+   * the associated values are the same (order of keys thus doesn't matter)
+   *
+   * @param test strategy that will compare two elements upon their equality.
+   * @inc hashtable-eq
+   */
+  hashtable-eq(eq) = ?(tbl1, tbl2);
+    where((hashtable-keys => k*, hashtable-keys); set-eq)
+  ; where(<map( \ key -> <eq> (<hashtable-get(|key)> tbl1, <hashtable-get(|key)> tbl2) \ )> k*)
 
 /**
  * Legacy table strategies
