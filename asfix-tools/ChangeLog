@@ -1,3 +1,7 @@
+2004-02-22   Merijn de Jonge  <mdejonge@cs.uu.nl>
+	* Makefile.am: added autoxt.m4 to EXTRA_DIST
+	* Makefile.am: added line: ACLOCAL_AMFLAGS = -I .
+
 2004-02-19  Martin Bravenboer <martin@cs.uu.nl>
 
 	* src/implode/implode-asfix.str: *not* funny: after checking
