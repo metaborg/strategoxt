@@ -11,10 +11,10 @@ strategies
         where(<set-config> ("-p", <id>)),
         !"-p f             Use parse table |f| (required)")
     + ArgOption("--sglr", 
-        where(<extend-config> ("--sglr", <id>)),
+        where(<extend-config> ("--sglr", [<id>])),
         !"--sglr opt       Pass option to sglr")
     + ArgOption("--impl", 
-        where(<extend-config> ("--impl", <id>)),
+        where(<extend-config> ("--impl", [<id>])),
         !"--impl opt       Pass option to implode asfix")
 
   short-description(p) = 

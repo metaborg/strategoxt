@@ -1,3 +1,9 @@
+2003-011-30  Martin Bravenboer  <martin@cs.uu.nl>
+
+	* src/implode/sglri.str: fixed the --sglr and --impl
+	arguments. extend-config should be invoked with of the new value
+	to extend the config with.
+	
 2003-09-29  Valentin David  <valentin@lrde.epita.fr>
 
 	* src/implode/implode-asfix.str: skip concrete syntax parts with
