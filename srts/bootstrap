@@ -2,7 +2,6 @@
 rm -f config.cache
 rm -f acconfig.h
 
-autoxt || exit 1
 aclocal -I . || exit 1
 libtoolize --force || glibtoolize --force || exit 1
 autoconf || exit 1
