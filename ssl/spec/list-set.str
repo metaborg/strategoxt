@@ -95,10 +95,10 @@ strategies
   /**
    * Take the intersection of two sets.
    *
-   * The results of the first list, without the elements
+   * The result is the first list, without the elements
    * that are not in the second list. If the first list is not
-   * a set (it contains duplicates), the result will contain
-   * contain duplicates. Note that because of this <isect> (l1, l2) is 
+   * a set (it has duplicates), the result will
+   * have duplicates. Note that because of this <isect> (l1, l2) is 
    * not always equal to <isect> (l2, l1).
    *
    * @type eq  a * a ->? _ 
