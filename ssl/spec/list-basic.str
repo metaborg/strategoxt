@@ -148,6 +148,13 @@ strategies
     obsolete(!"at_tail -> at-tail");
     at-tail(s)
 
+  /**
+   * Apply s to the Nil of a list. 
+   *
+   * @param s  Is applied to Nil and must return a list.
+   * @type  s  List(a) -> List(a)
+   * @type     List(a) -> List(a)
+   */
   at-end(s) = 
     rec x([id | x] + []; s)
 
@@ -160,6 +167,9 @@ strategies
 
   /**
    * Apply a strategy to some suffix of a list.
+   *
+   * The longest suffix (that is, the first application in a list)
+   * is preferred.
    */
   at-suffix(s) = 
     rec x(s <+ [id | x])
@@ -181,6 +191,13 @@ strategies
     obsolete(!"at_last -> at-last");
     at-last(s)  
 
+  /**
+   * Apply s to the last Cons ([_]) of a list.
+   *
+   * @param s  Is applied to the [x] and must return a list.
+   * @type  s  List(a) -> List(a)
+   * @type     List(a) -> List(a)
+   */
   at-last(s) = 
     rec x([id]; s <+ [id | x])
 
@@ -213,11 +230,20 @@ strategies
   RevExit : ([], ys) -> ys
 
  /**
+  * Reverses a list.
+  *
   * @inc reverse-test
+  * @type List(a) -> List(a)
   */
   reverse = 
     reverse-acc(id, ![])
 
+  /**
+   * Reverses a list and applies s to all the elements.
+   *
+   * @type s  a -> b
+   * @type    List(a) -> List(b)
+   */
   reverse(s) = 
     reverse-acc(s, ![])
 
@@ -238,27 +264,20 @@ strategies
  /**
   * @inc upto-test
   */
-  upto = UptoInit; rec x(UptoExit <+ UptoStep; x)
+  upto =
+    UptoInit; rec x(UptoExit <+ UptoStep; x)
 
 strategies
 
   /**
-   * @type [a]* -> [a]
+   * Concatenates all lists of a tuple.
+   *
+   * @type (List(a), List(a), ...) -> List(a)
    * @inc  conc-test
    */
   conc =
     \ (l1, l2) -> <at-end(!l2)> l1 \
     <+ \ "" # (xs) -> <concat> xs \
-
-  /**
-   * @obsolete use conc
-   */
-  conc-two-lists  = conc
-
-  /**
-   * @obsolete use conc
-   */
-  conc-more-lists = conc
 
   /**
    * @type List(List(a)) -> List(a)
@@ -307,7 +326,7 @@ strategies
 strategies
 
   /**
-   * @type [[a]] -> [[a]]
+   * @type List(List(a)) -> List(List(a))
    */
   matrix-transpose =
       map(?[]); ![]

@@ -214,5 +214,5 @@ strategies
    * @inc flatten-test
    */
   flatten-list =
-    foldr(![], (is-list, id) < conc-two-lists + MkCons, is-list < flatten-list + id)
+    foldr(![], (is-list, id) < conc + MkCons, is-list < flatten-list + id)
 
