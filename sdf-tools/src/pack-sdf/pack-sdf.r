@@ -18,7 +18,7 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 // 02111-1307, USA.
 
-(* $Id: pack-sdf.r,v 1.2 2001/10/01 12:55:59 eelco Exp $
+(* $Id: pack-sdf.r,v 1.3 2001/10/09 09:13:07 mdejonge Exp $
 
 	Pack-sdf creates an SDF definition file containing all modules
 	imported from the given top module.
@@ -38,13 +38,15 @@ overlays
 
 // Module -> <START>
 Module_START(w1, t, w2) =
+   appl(prod([sort("<START>")],sort("SURROGATE-START"),attrs([cons("\"sdf-2.1\""),'id("GB-Main")])),[
    appl(prod([cf(opt(layout)),cf(sort("Module")),cf(opt(layout))],sort("<START>"),no-attrs)
-   ,[w1,t,w2])
+   ,[w1,t,w2])])
 
 // SDF -> <START>
 SDF_START(w1, t, w2) =
+   appl(prod([sort("<START>")],sort("SURROGATE-START"),attrs([cons("\"sdf-2.1\""),'id("GB-Main")])),[
    appl(prod([cf(opt(layout)),cf(sort("SDF")),cf(opt(layout))],sort("<START>"),no-attrs)
-   ,[w1,t,w2])
+   ,[w1,t,w2])])
 
 //   -> M*
 EmptyModuleIterStar =

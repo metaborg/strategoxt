@@ -1,4 +1,5 @@
 2001-10-09 Merijn de Jonge <mdejonge@cwi.nl> 
+    * pack-sdf/pack-sdf.r: Adapted overlays for grammar identifier
     * sdf/Makefile.am: fixed rule to generate parse table
 
 2001-10-08 Merijn de Jonge <mdejonge@cwi.nl> 
