@@ -1,4 +1,7 @@
 2001-09-21 Merijn de Jonge <mdejonge@cwi.nl> 
+   * Fixed boxenv version number (was 0.7, should be 1.7)
+
+2001-09-21 Merijn de Jonge <mdejonge@cwi.nl> 
     * Version 0.8 released
     * Increased version number
 
