@@ -135,6 +135,13 @@ AC_ARG_WITH(graph-tools,
 )
 AC_SUBST(GRAPH_TOOLS)
 
+AC_ARG_WITH(sdf-front,
+  AC_HELP_STRING([--with-sdf-front=DIR], [use SDF Front at DIR @<:@STRATEGOXT@:>@]),
+  SDF_FRONT="$withval",
+  SDF_FRONT="$STRATEGOXT"
+)
+AC_SUBST(SDF_FRONT)
+
 AC_ARG_WITH(sdf-tools,
   AC_HELP_STRING([--with-sdf-tools=DIR], [use SDF Tools at DIR @<:@STRATEGOXT@:>@]),
   SDF_TOOLS="$withval",
