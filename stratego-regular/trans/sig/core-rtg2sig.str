@@ -36,7 +36,7 @@ strategies
 
         signature
           constructors
-            Cons : a -> List(a)
+            Cons : a * List(a) -> List(a)
             Nil  : List(a)
             Conc : List(a) * List(a) -> List(a)
       ]|
