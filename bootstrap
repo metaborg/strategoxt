@@ -1,4 +1,4 @@
-#! /bin/sh -e
+#! /bin/sh
 
 # Environment variables for our Gentoo friends.
 export WANT_AUTOMAKE="1.8"
@@ -15,23 +15,23 @@ if test -z "$STRATEGOXT_BASELINE"; then
   echo "assume that the baseline you want to use is on the path."
   echo "***********************************************************"
   AUTOXT="autoxt"
-elif test !-x "$STRATEGOXT_BASELINE/bin/autoxt"; then
-  echo "error: $STRATEGOXT_BASELINE/bin/autoxt does not exist."
-  echo "Please check your STRATEGOXT_BASELINE environment variable"
-  exit 1
-elif test -x "$STRATEGOXT_BASELINE/bin/autoxt"; then
-  AUTOXT="$STRATEGOXT_BASELINE/bin/autoxt"
 else
-  echo "This is impossible in theory and practice."
-  exit 1
+  test -x "$STRATEGOXT_BASELINE/bin/autoxt"
+  if test $? -eq 0; then
+    AUTOXT="$STRATEGOXT_BASELINE/bin/autoxt"
+  else
+    echo "error: $STRATEGOXT_BASELINE/bin/autoxt does not exist."
+    echo "Please check your STRATEGOXT_BASELINE environment variable"
+    exit 1
+  fi
 fi
 
 echo "bootstrap: using autoxt at $AUTOXT"
 
 # Apply the autotools
-$AUTOXT
-cp ./autoxt.m4 ./config/
-autoreconf -ifv
+$AUTOXT || exit 1
+cp ./autoxt.m4 ./config/  || exit 1
+autoreconf -ifv  || exit 1
 
 # Bootstrap the subpackages
 PKGS="autoxt srts xtc xtc2 xtc3 strc ssl gpp c-tools concrete-syntax \
@@ -46,8 +46,8 @@ do
   cd $dir
   if test "$dir" != "autoxt"
   then
-    cp ../Makefile.xt .
+    cp ../Makefile.xt . 
   fi
-  autoreconf -ifv
+  autoreconf -ifv || exit 1
   cd ..
 done
