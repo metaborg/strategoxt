@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Abox2latex.r,v 1.1 2001/12/18 11:24:15 mdejonge Exp $
+% $Id: Abox2latex.r,v 1.2 2002/04/05 22:42:45 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
@@ -120,7 +120,7 @@ Abox-2-latex:
    where
       <Vspace>so => vs;
       <Ispace>so => is;
-      <separate-by(!"\n\n")>b => b'
+      <filter(not([]));separate-by(!"\n\n")>b => b'
 
 Abox-2-latex:
    HV(so, b ) -> HVBOX( hs, vs, is, b' )
@@ -128,7 +128,7 @@ Abox-2-latex:
       <Hspace>so => hs;
       <Vspace>so => vs;
       <Ispace>so => is;
-      <separate-by(!"\\ ")>b => b'
+      <filter(not([]));separate-by(!"\\ ")>b => b'
 
 Abox-2-latex:
    A(aos, so, b ) -> ABOX( tdef, bs' )
@@ -168,7 +168,7 @@ strategies
 // separator between horzontal boxes whenever the rightmost or left most box
 // contains comments. 
 toh =
-   separate-by( !"~" )
+   filter(not([]));separate-by( !"~" )
 
 Hspace =
    (

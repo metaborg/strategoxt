@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Abox2html.r,v 1.1 2001/12/18 11:24:13 mdejonge Exp $
+% $Id: Abox2html.r,v 1.2 2002/04/05 22:42:42 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
@@ -104,7 +104,7 @@ Abox-2-html:
    H(so, b ) -> s
    where
       <Hspace> so => hs;
-      <sep-by(!hs)>b => s
+      <filter(not([]));sep-by(!hs)>b => s
 
 // Box V operator
 Abox-2-html:
@@ -112,7 +112,7 @@ Abox-2-html:
    where
       <Vspace>so => vs;
       <Ispace>so => is;
-      !b;
+      <filter(not([]))>b;
       [tov(!"")|map(tov(!is))];
       separate-by(!vs) => s
 
@@ -122,10 +122,10 @@ Abox-2-html:
    where
       <Hspace>so => hs;
       (
-         ?[];!b
+         ?[];<filter(not([]))>b
       <+
          at-last(![" "]) => sep;
-         ![TDTD, <separate-by( !sep )>b]
+         ![TDTD, <filter(not([]));separate-by( !sep )>b]
       ) => s
 
 // Box A operator
