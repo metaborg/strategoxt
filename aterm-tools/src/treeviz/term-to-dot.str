@@ -1,5 +1,5 @@
 module term-to-dot
-imports xtc-lib lib term-to-adot
+imports liblib term-to-adot
 
 strategies
 

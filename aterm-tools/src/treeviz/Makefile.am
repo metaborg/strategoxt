@@ -7,6 +7,7 @@ SCFLAGS     = --main $*
 STRINCLUDES = -I $(DOT_TOOLS)/share/sdf/dot-tools \
               -I $(DOT_TOOLS)/share/dot-tools \
               -I $(XTC)/share/xtc
+LDADD      += $(SSL_LIBS)
 
 bin_PROGRAMS     = treeviz term-to-adot term-to-dot
 libexec_PROGRAMS = treeviz term-to-adot

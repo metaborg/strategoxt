@@ -1,7 +1,11 @@
 include $(top_srcdir)/Makefile.xt
 
-SUBDIRS      	= data
+SUBDIRS = data
+
 bin_PROGRAMS 	= atermdiff term-size
-BOOTCLEANFILES 	= atermdiff.c term-size.c
-SCFLAGS     	= -O 4
-EXTRA_DIST  	= term-size.str
+term_size_LDADD = $(SSL_LIBS)
+
+CLEANFILES     = atermdiff.c.dep term-size.c.dep
+BOOTCLEANFILES = atermdiff.c term-size.c
+
+EXTRA_DIST = aterm-diff.str term-size.str

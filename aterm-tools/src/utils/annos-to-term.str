@@ -1,6 +1,6 @@
 module annos-to-term
-imports lib annotations
+imports liblib
 strategies
 
   annos-to-term =
-    iowrap(catch-annos)
+    io-wrap(catch-annos)

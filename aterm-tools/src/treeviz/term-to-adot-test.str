@@ -1,5 +1,6 @@
 module term-to-adot-test
-imports sunit term-to-adot
+imports liblib term-to-adot
+
 signature
   constructors
     F : a * a -> a

@@ -1,5 +1,5 @@
 module term-to-adot
-imports Dot lib
+imports Dot liblib
 signature
   constructors
     Graph : Option

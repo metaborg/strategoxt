@@ -1,6 +1,6 @@
 module term-size
-imports lib
+imports liblib
 strategies
 
   main = 
-    iowrap(term-size)
+    io-wrap(term-size)

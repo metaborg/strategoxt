@@ -1,14 +1,18 @@
 module treeviz
-
-imports GraphXML lib
+imports
+  GraphXML
+  liblib
 
 strategies
 
-short-description(p) = !["Usage: ", <p>(), " [options]"]
-long-description(p)  = !["This program outputs a term in abstract GraphXML format."]
+  treeviz =
+    io-wrap(fail, treeviz-usage, system-about, Treeviz)
 
-treeviz = iowrap( Treeviz )
-
+  treeviz-usage =
+    default-system-usage(
+      !["Usage: GraphXML [options]"] 
+    , !["This program outputs a term in abstract GraphXML format."]
+    )
 
 rules
 Treeviz:
