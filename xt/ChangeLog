@@ -1,3 +1,6 @@
+2000-08-28  Merijn de Jonge  <mdejonge@cwi.nl>
+	* added www/ to DIST_SUBDIRS variable
+
 2000-08-25  Eelco Visser  <visser@cs.uu.nl>
 
 	* www/: Added link to Merijn's daily build page.
