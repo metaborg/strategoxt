@@ -4,9 +4,14 @@ imports liblib ugly-print pp-aterm-options
 strategies
 
   io-PpTerm =
-    io-wrap(max-term-size-option+max-depth-option,
-      if <get-config>"--max-depth" => depth then
+    io-wrap( max-term-size-option
+           + max-depth-option
+           + unescaped-strings-option,
+      if get-max-depth-config => depth then
         at-depth(!depth, !"...")
+      end
+    ; if not(get-unescaped-strings-config) then
+        escape-strings
       end
     ; ugly-print
     ; concat-content
@@ -16,3 +21,23 @@ strategies
 
   concat-content = 
     bottomup( try( \ Conc(l1, l2) -> <conc> (l1, l2) \ ))
+
+/*
+ *  Escaping special characters in strings
+ *  model after 
+ *  'static int symbolTextSize(Symbol sym)'
+ *  in aterm.c (aterm-2.3.1)
+ * 
+ */
+  escape-strings = topdown(try(escape-aterm-strings))
+  
+  escape-aterm-strings =
+    string-as-chars(
+      escape-chars( Escape-backslash
+                  + Escape-double-quote
+                  + Escape-linefeed 
+                  + \['\t' | cs ] -> ['\', 't'  | cs ]\
+                  + Escape-carriage-return
+                  )
+      ) 
+

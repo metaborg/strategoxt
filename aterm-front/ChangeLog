@@ -1,3 +1,7 @@
+2005-02-28   Rene de Groot <rcgroot@cs.uu.nl>
+	* pp/*.str : pretty-printed aterms by default escape special 
+	characters so pp-aterm output is an aterm again.
+
 2004-05-30   Martin Bravenboer <martin@cs.uu.nl>
 
 	* syn/Makefile.am: ATerm syntax definition is now directly
