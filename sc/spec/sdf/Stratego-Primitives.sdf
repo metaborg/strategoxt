@@ -1,0 +1,4 @@
+module Stratego-Primitives.sdf
+exports
+  context-free syntax
+    "prim" "(" String ")" -> Strat

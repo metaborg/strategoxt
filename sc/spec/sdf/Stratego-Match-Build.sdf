@@ -1,0 +1,8 @@
+module Stratego-Match-Build
+exports
+  context-free syntax
+    "?" Term                            -> Strat {cons("Match")}
+    "!" Term                            -> Strat {cons("Build")}
+    "{" {Identifier ","}+ ":" Strat "}" -> Strat {cons("Scope")}
+    "where" "(" Strat ")"               -> Strat {cons("Where")}
+    "_"                                 -> Term {cons("Wld")}

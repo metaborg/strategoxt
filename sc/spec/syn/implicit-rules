@@ -1,0 +1,92 @@
+# -- DIRECTORIES  ------------------------------------------------------
+
+metadir  = $(impldir)/../lib/
+tooldir  = $(impldir)/toc
+seqdir   = $(impldir)/rts
+distdir  = $(impldir)/../dist
+bootdir = $(impldir)/boot
+
+#CC       = /usr/bin/time gcc
+CC       = gcc
+#CFLAGS	 = -g -pedantic -Wall 
+CFLAGS	 = -g -Wall 
+LFLAGS   = -L$(seqdir) -lstrategy-dbg \
+	   -L$(metadir)/lib -lATerm-dbg 
+INCLUDES = -I$(metadir)/include \
+           -I$(seqdir)
+
+frontend = $(bootdir)/frontend.comp -silent
+neededdefs = $(bootdir)/needed-defs.comp -silent
+desugar = $(bootdir)/desugar.comp -silent
+inline = $(bootdir)/inline.comp -silent
+optimizer = $(bootdir)/optimizer.comp -silent
+backend = $(bootdir)/backend.comp -silent
+postprocess = $(bootdir)/postprocess.comp -silent
+matchingtree = $(bootdir)/matching-tree.comp -silent
+
+trsparser = $(seqdir)/trs-parser -silent
+ppinstructions = $(seqdir)/pp-instructions -silent
+pptext = $(seqdir)/pp-text -silent
+
+# -- STRATEGIES --------------------------------------------------------
+
+.PRECIOUS: %.r %.s %.so %.i %.c %.tree %.sdefs %.nsdefs %.ds
+
+%.tree: %.r
+	$(trsparser) $(RINCLUDES) -i $< -o $@
+
+%.s: %.tree
+	$(frontend) -i $< -o $*.s
+
+#%.nsdefs: %.tree
+#	$(frontend) -i $< -o $*.sdefs
+#	$(neededdefs) -i $*.sdefs -o $@
+
+#%.s: %.nsdefs
+#	$(desugar) -i $< -o $*.ds
+#	$(inline) -i $*.ds -o $@
+
+%.so: %.s
+	$(optimizer) -i $< -o $*.so1
+	$(matchingtree) -i $*.so1 -o $*.so2
+	$(optimizer) -i $*.so2 -o $*.so
+
+%.i: %.so
+	$(backend) -i $< -o $@
+
+%.c: %.i
+	$(postprocess) -i $< | $(ppinstructions) -o $@
+
+%.o: %.c
+	$(CC) $(OPTCFLAGS) $(CFLAGS) $(DEFS) $(INCLUDES) -c $<
+
+%.dbg.o: %.c
+	$(CC) $(DEBUGFLAGS) $(OPTCFLAGS) $(CFLAGS) $(DEFS) $(INCLUDES) -c $< -o $@
+
+%.comp: %.o %.i %.tree
+	$(CC) $(CFLAGS) $< -o $@ $(LFLAGS) $(LIBS)
+
+%.tree.baf: %.tree
+	trm2baf < $< -o $@
+
+%.dep:
+	touch $@
+
+# -- BISON -------------------------------------------------------------
+
+%.grm.tab.h: %.grm
+	bison -d -t -v $<
+
+%.grm.tab.c: %.grm
+	bison -d -t -v $<
+
+%.lx.c: %.lx %.grm.tab.h
+	flex $< 
+	cp lex.yy.c $@
+
+# -- CLEAN -------------------------------------------------------------
+
+sclean:
+	rm -f *.tree *.tree.baf *.i *.s *.so *.so1 *.so2
+	rm -f *.o core *~
+

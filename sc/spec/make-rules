@@ -1,0 +1,20 @@
+SC = $(STRATEGOBOOT)/bin/sc
+
+% : %.r
+	$(SC) $(SCFLAGS) -i $*
+
+%.dep:
+	touch $@
+
+bootinstall: $(BOOTSOURCES)
+	$(mkinstalldirs) $(bootdir)
+	cp -f $(BOOTSOURCES) $(bootdir)
+
+%.comp: %.c
+	$(CC) -g $< -o $@ \
+		-I${prefix}/include \
+		-L${prefix}/lib -lstratego.dbg \
+		-L${prefix}/lib -lstratego-lib.dbg \
+    		-I${ATERM}/include \
+    		-L${ATERM}/lib -lATerm-dbg \
+		-lm

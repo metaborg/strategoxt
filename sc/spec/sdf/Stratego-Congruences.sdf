@@ -1,0 +1,23 @@
+module Stratego-Congruences
+exports
+  context-free syntax
+    String			   -> Strat {cons("StrCong")}
+    Natural			   -> Strat {cons("IntCong")}
+    "(" Strat "," {Strat ","}+ ")" -> Strat {cons("TupleCong")}
+    "[" {Strat ","}* "]"           -> Strat {cons("ListCong")}
+
+    SVar "^" Id "("(" {Strat ","}* ")")? -> Strat {cons("CallModified")}
+
+    %% Note: for each constructor there is a corresponding 
+    %% congruence operator with the following syntax:
+    %%
+    %% Identifier "(" {Strat ","}* ")" -> Strat {cons("Cong")}
+    %%
+    %% since this syntax overlaps with the syntax for strategy
+    %% operator applications, congruences are defined implicitly
+    %% by means of strategy definitions:
+    %%
+    %% strategies
+    %%   C(s1,...,sn) = Cong(C)(s1,...,sn)
+    %% 
+    %% where Cong(S) is a construct in the abstract syntax only.
