@@ -6,8 +6,7 @@ strategies
   term-to-dot =
     xtc-io-wrap(term-to-adot-options,
       xtc-io-transform(to-adot)
-    ; xtc-transform(!"ast2abox", !["-p", <xtc-find> "Dot-pretty.pp"])
-    ; xtc-transform(!"abox2text")
+    ; xtc-transform(!"pp-dot")
     )
 
   // Insert "where(try(set-undefined-output))" in term-to-dot to output to .dot by default.
