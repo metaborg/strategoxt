@@ -100,7 +100,7 @@ strategies
   ; prod(id, id, at-cons(<table-get>("prods", prod(srts,res,no-attrs))))
 
   uniquify-constr =
-    (id, reverse; [id | \ps -> <thread-map(prime-prod)> Pair(ps, 1) \ ])
+    (id, reverse; [id | \ps -> <thread-map(prime-prod); Fst> (ps, 1) \ ])
 
 rules
 

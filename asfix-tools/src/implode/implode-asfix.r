@@ -104,7 +104,7 @@ strategies
   flat-alt = topdown( try(FlatAlt) )
 
   // 5) Replace appl nodes with their cons attribute if available.
-  replace-appl = topdown(try(appl(id,id);Cns));conc-to-cons
+  replace-appl = topdown(try(appl(id,id);Cns)); conc-to-cons
 
   // 6) Flatten injections in a parse tree
   flat-injections = bottomup(try(Inj))
@@ -119,15 +119,30 @@ strategies
   remove-pt = PT
   
   // Apply all previous filters together
-  implodeAsfix = 
+  implodeAsfix' = 
     PT
   ; rec x(try(
        implode-lexical
-    <+ appl(id, filter(not(is-layout);x))
+    <+ appl(id, filter(not(is-layout); x))
        ; (OptList <+ Cns <+ Inj <+ Tuple <+ FlatAlt)
     <+ amb(list(x))
     ))
   ; conc-to-cons
+
+  // Apply all previous filters together
+  implodeAsfix = 
+    PT
+  ; rec impl(
+       implode-lexical
+    <+ appl(id, filter(not(is-layout)))
+       ; (OptList; impl 
+          <+ ReplCons(impl) 
+          <+ Inj; impl 
+          <+ Tuple; impl 
+          <+ FlatAlt; impl)
+    <+ amb(list(impl))
+    <+ all(impl)
+    )
 
 rules
 
@@ -147,8 +162,8 @@ strategies
     + \ appl(prod(_,cf(opt(layout)),_),[xs]) -> layout([xs]) \
 
   FlatAlt =
-   (  appl(prod([cf(?s)<+?s], cf(?alt(a1,a2)), id), ?args)
-   <+ appl(prod([?s], lex(?alt(a1,a2)), id), ?args)
+   (  appl(prod([cf(?s)<+?s], cf(?alt(a1,a2)),  id), ?args)
+   <+ appl(prod([?s],         lex(?alt(a1,a2)), id), ?args)
    );  
    !(alt(a1, a2), 1);
    rec x({n, ai, aj:
@@ -252,39 +267,115 @@ strategies
 	should be some derived production for regular expressions.
 
 \begin{code}
+strategies
+
+  ReplCons(impl) =
+    ReplNamedCons(impl)
+    <+ ReplConsNil(impl)
+    <+ ReplConsNone(impl)
+    <+ ReplConsIns(impl)
+    <+ ReplConsSome(impl)
+    <+ ReplConsConc(impl)
+
 rules
 
-  Position : t -> position(t, p)
-	     where <get-annotation>(t, "position") => p
+  ReplNamedCons(impl) : 
+    appl(p, ts) -> c#(<map(impl)>ts)
+    where <get-cons; try(Rename-Keyword)> p => c
 
-  Cns : appl(p, ts) -> <mkterm> (c, ts)
-        where <(Constr0 <+ Constr1);try(Rename-Keyword)> p => c 
+  get-cons : 
+    prod(_, _, as) -> x
+    where <oncetd(?cons(x))> as
 
-  Constr0 : prod(_, _, as) -> x
-           where <oncetd(?cons(x))> as
+  ReplConsNil(impl) : 
+    appl(p, []) -> []
+    where <is-nil> p
 
-  Constr1 : prod([],cf(iter-star-sep(_,_)),_)     -> "Nil"
-  Constr1 : prod([],cf(iter-star(_)),_)           -> "Nil"
+  ReplConsNone(impl) : 
+    appl(p, []) -> None
+    where <is-none> p
+
+  ReplConsIns(impl) : 
+    appl(p, [t]) -> [<impl>t]
+    where <is-ins> p
+
+  ReplConsSome(impl) : 
+    appl(p, [t]) -> Some(<impl>t)
+    where <is-some> p
+
+  ReplConsConc(impl) : 
+    appl(p, [t1,t2]) -> <conc>(<impl>t1, <impl>t2)
+    where <is-conc> p
+
+  is-nil  = ?prod([],cf(iter-star-sep(_,_)),_)
+  is-nil  = ?prod([],cf(iter-star(_)),_)
+  is-nil  = ?prod([],iter-star-sep(_,_),_)
+  is-nil  = ?prod([],iter-star(_),_)
+
+  is-ins  = ?prod([cf(x)], cf(iter-sep(x,_)), _)
+  is-ins  = ?prod([cf(x)], cf(iter(x)), _)
+  is-ins  = ?prod([x], iter-sep(x,_), _)
+  is-ins  = ?prod([x], iter(x), _)
+
+  is-conc = ?prod([_,_,_,_,_],cf(iter-sep(_,_)),_)
+  is-conc = ?prod([_,_,_],cf(iter(_)),_)
+  is-conc = ?prod([_,_,_],iter-sep(_,_),_)
+  is-conc = ?prod([_,_],iter(_),_)
+
+  is-none = ?prod([], cf(opt(_)), _)
+  is-none = ?prod([], opt(_), _)
+
+  is-some = ?prod([cf(x)], cf(opt(x)), _)
+  is-some = ?prod([x], opt(x), _)
+\end{code}
+
+\begin{code}
+strategies
+
+  Cns = CnsNil <+ CnsGeneric
+
+rules
+
+  Position : 
+    t -> position(t, p)
+    where <get-annotation>(t, "position") => p
+
+  CnsNil : 
+    appl(p, ts) -> []
+    where <ConstrNil> p => c 
+
+  ConstrNil : prod([],cf(iter-star-sep(_,_)),_)     -> "Nil"
+  ConstrNil : prod([],cf(iter-star(_)),_)           -> "Nil"
+  ConstrNil : prod([],iter-star-sep(_,_),_)         -> "Nil"
+  ConstrNil : prod([],iter-star(_),_)               -> "Nil"
+
+  CnsGeneric : 
+    appl(p, ts) -> c#(ts)
+    where <(Constr0 <+ Constr1);try(Rename-Keyword)> p => c 
+
+  Constr0 : 
+    prod(_, _, as) -> x
+    where <oncetd(?cons(x))> as
+
   Constr1 : prod([cf(x)], cf(iter-sep(x,_)), _)   -> "Ins"
   Constr1 : prod([cf(x)], cf(iter(x)), _)         -> "Ins"
+  Constr1 : prod([x], iter-sep(x,_), _)           -> "Ins"
+  Constr1 : prod([x], iter(x), _)                 -> "Ins"
+
   Constr1 : prod([_,_,_,_,_],cf(iter-sep(_,_)),_) -> "Conc"
   Constr1 : prod([_,_,_],cf(iter(_)),_)           -> "Conc"
+  Constr1 : prod([_,_,_],iter-sep(_,_),_)	  -> "Conc"
+  Constr1 : prod([_,_],iter(_),_)                 -> "Conc"
 
-  Constr1 : prod([], cf(opt(_)), _)      -> "None"
-  Constr1 : prod([cf(x)], cf(opt(x)), _) -> "Some"
+  Constr1 : prod([], cf(opt(_)), _)		  -> "None"
+  Constr1 : prod([], opt(_), _)			  -> "None"
 
-  Constr1 : prod([],iter-star-sep(_,_),_)     -> "Nil"
-  Constr1 : prod([],iter-star(_),_)           -> "Nil"
-  Constr1 : prod([x], iter-sep(x,_), _)	      -> "Ins"
-  Constr1 : prod([x], iter(x), _)             -> "Ins"
-  Constr1 : prod([_,_,_],iter-sep(_,_),_)     -> "Conc"
-  Constr1 : prod([_,_],iter(_),_)             -> "Conc"
+  Constr1 : prod([cf(x)], cf(opt(x)), _)          -> "Some"
+  Constr1 : prod([x], opt(x), _)                  -> "Some"
 
-  Constr1 : prod([], opt(_), _)      -> "None"
-  Constr1 : prod([x], opt(x), _)     -> "Some"
-
-  Constr23 : prod(args, cf(iter-sep(x, y)), _) -> c
-             where <(?[cf(x)]; !"Ins" <+ ?[_,_,_,_,_]; !"Conc")> args => c
+  Constr23 : 
+    prod(args, cf(iter-sep(x, y)), _) -> c
+    where <(?[cf(x)]; !"Ins" <+ ?[_,_,_,_,_]; !"Conc")> args => c
 
   Rename-Keyword: "module" 	-> "Module"
   Rename-Keyword: "exports"	-> "Exports"
@@ -295,28 +386,33 @@ rules
 
 rules
 
-  OptList : appl(prod([], cf(opt(s)), _), []) -> Nil
-	    where <is-list> s
+  OptList : 
+    appl(prod([], cf(opt(s)), _), []) -> []
+    where <is-list> s
 
-  OptList : appl(prod([cf(s)], cf(opt(s)), _), [x]) -> x
-	    where <is-list> s
+  OptList : 
+    appl(prod([cf(s)], cf(opt(s)), _), [x]) -> x
+    where <is-list> s
 
-  OptList : appl(prod([], opt(s), _), []) -> Nil
-	    where <is-list> s
+  OptList : 
+    appl(prod([], opt(s), _), []) -> []
+    where <is-list> s
 
-  OptList : appl(prod([s], opt(s), _), [x]) -> x
-	    where <is-list> s
+  OptList : 
+    appl(prod([s], opt(s), _), [x]) -> x
+    where <is-list> s
 
 strategies
 
   list-sort =  
-	iter(id) +
-	iter-sep(id, id) +
-	iter-star(id) + 
-	iter-star-sep(id, id)
+    iter(id) +
+    iter-sep(id, id) +
+    iter-star(id) + 
+    iter-star-sep(id, id)
 
-  is-list = rec x(list-sort; where(new=>y) +
-                      seq(list(lit(id) + layout + x)))
+  is-list = 
+    rec x(list-sort +
+          seq(list(lit(id) + layout + x)))
 \end{code}
 
 	\paragraph{Injections}
@@ -330,41 +426,51 @@ strategies
 	\verb|sort| is also defined as a strategy operator that sorts
 	lists.
 \begin{code}
+rules
+
+  Inj : 
+    appl(p, [t]) -> t
+    where <injection> p
+
 strategies
 
-  injection = prod(id, ?sort("<START>"), no-attrs)
+  injection = 
+    prod(id, ?sort("<START>"), no-attrs)
 
-  injection = prod(id, id, oncetd("bracket"))
+  injection = 
+    prod(id, id, oncetd("bracket"))
 
-  injection = prod([cf(iter(?x))],cf(iter-star(?x)),no-attrs)
+  injection = 
+    prod([cf(iter(?x))],cf(iter-star(?x)),no-attrs)
 
-  injection = prod([cf(iter-sep(?x,?l))],cf(iter-star-sep(?x,?l)),no-attrs)
+  injection = 
+    prod([cf(iter-sep(?x,?l))],cf(iter-star-sep(?x,?l)),no-attrs)
 
-  injection = prod([not(lit(id))]
-		  ,rec x(sort(id) + cf(x) + lex(x) 
-			 + iter(x) + iter-star(x) 
-			 + iter-sep(x,lit(id)) + iter-star-sep(x,lit(id)))
-		  ,not(oncetd(cons(id))))
+  injection = 
+    prod([not(lit(id))]
+	 ,rec x(sort(id) + cf(x) + lex(x) 
+		+ iter(x) + iter-star(x) 
+		+ iter-sep(x,lit(id)) + iter-star-sep(x,lit(id)))
+	,not(oncetd(cons(id))))
 
-  injection = prod(filter(not(cf(opt(layout)) + lit(id) )); [id], 
-                   cf(seq(id)), id)
+  injection = 
+    prod(filter(not(cf(opt(layout)) + lit(id) )); [id], 
+         cf(seq(id)), id)
 
-  injection = prod(filter(not(cf(opt(layout)) + lit(id) )); [id], 
-                   seq(id), id)
+  injection = 
+    prod(filter(not(cf(opt(layout)) + lit(id) )); [id], 
+         seq(id), id)
 
-  injection = prod([sort(id) + cf(sort(id))]
-                  ,injective-alt
-                  ,not(oncetd(cons(id))))
+  injection = 
+    prod([sort(id) + cf(sort(id))]
+        ,injective-alt
+        ,not(oncetd(cons(id))))
 
-  injection = prod([varsym(id)],id,not(oncetd(cons(id))))
+  injection = 
+    prod([varsym(id)],id,not(oncetd(cons(id))))
 
   injective-alt = 
     rec x(sort(id) + cf(x) + alt(x,x))
-
-rules
-
-  Inj : appl(p, [t]) -> t
-        where <injection> p
 \end{code}
 
 	\paragraph{Tuples}
@@ -372,10 +478,11 @@ rules
 \begin{code}
 rules
 
-  Tuple : appl(prod(_, cf(seq(_)), _), args) ->
-	  "" # (args)
-  Tuple : appl(prod(_, seq(_), _), args) ->
-	  "" # (args)          
+  Tuple : 
+    appl(prod(_, cf(seq(_)), _), args) -> ""#(args)
+
+  Tuple : 
+    appl(prod(_, seq(_), _), args) -> ""#(args)         
 \end{code}
 	
 	\paragraph{Conc to Cons}
@@ -421,8 +528,9 @@ signature
 
 strategies
 
-  conc-to-cons = rec x(repeat(CTC0 + CTC1 + Conc(CTC0, id)); 
-                       (Conc(id, x) <+ all(x)); 
-                       try(CTC2; Cons(x, id) + CTC3))
+  conc-to-cons = 
+    rec x(repeat(CTC0 + CTC1 + Conc(CTC0, id)); 
+          (Conc(id, x) <+ all(x)); 
+          try(CTC2; Cons(x, id) + CTC3))
 \end{code}
 

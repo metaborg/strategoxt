@@ -165,9 +165,10 @@ strategies
 
 rules
 
-  tuple2list : TNil -> Nil
-  tuple2list : TCons(x,xs) -> Cons(x,<tuple2list>xs)
+  tuple2list = ?""#(<id>)
 
   Singleton : x -> [x]  
 
-  tTl : TCons(x,tp) -> tp
+  tTl : ""#([x, tp]) -> ""#(tp)
+
+

@@ -1,6 +1,8 @@
 2002-03-14  Eelco Visser  <visser@acm.org>
 
-	* src/implode/data/: Fixed test outcomes
+	* src/asfix/verbalize-sdf.r: TCons/TNil -> (...)
+
+	* src/implode/data/: Fixed tests and test outcomes
 
 2002-03-13  Eelco Visser  <visser@acm.org>
 

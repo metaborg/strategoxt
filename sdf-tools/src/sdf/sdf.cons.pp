@@ -57,6 +57,8 @@
       V [ H [KW["module"] _1] V vs=1[_2 _3]],
       
    Module.2:iter-star -- _1,
+
+   Module.3:iter-star -- _1,
    
    Exports -- 
       V is=2 [KW["exports"] V vs=1[_1]],

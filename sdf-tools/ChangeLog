@@ -1,3 +1,10 @@
+2002-03-14  Eelco Visser  <visser@acm.org>
+
+	* src/sdf-cons/sdf-cons.r: Upgraded definition of uniquify-constr
+	to tuples
+
+	* src/sdf/sdf.cons.pp: Added pp rule for third argument of Module
+
 2002-02-13 Merijn de Jonge <mdejonge@cwi.nl>
     * sdf-bracket: Generalized and improved  bracket insertion algorithm.
     * sdf-bracket/data: Extended testset and added rules to generate test

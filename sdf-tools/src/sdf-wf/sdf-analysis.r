@@ -47,7 +47,8 @@ strategies
     = \appl(_,ts) -> <x>ts\
 
   collect-sorts
-    = collect(\sort(s)->s\)signature
+    = collect(\sort(s)->s\)
 
+signature
   constructors
     appl : Production * List(AsFixTerm) -> AsFixTerm

@@ -1,5 +1,6 @@
 // SDF Tools
-// Copyright (C) 2001 Merijn de Jonge <mdejonge@cwi.nl>
+// Copyright (C) 2001-2002
+//                    Merijn de Jonge <mdejonge@cwi.nl>
 //                    Eelco Visser <visser@acm.org>
 //                    Joost Visser <jvisser@cwi.nl>
 //
@@ -18,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 // 02111-1307, USA.
 
-(* $Id: pack-sdf.r,v 1.3 2001/10/09 09:13:07 mdejonge Exp $
+(* $Id: pack-sdf.r,v 1.4 2002/03/14 22:50:06 eelco Exp $
 
 	Pack-sdf creates an SDF definition file containing all modules
 	imported from the given top module.
@@ -101,7 +102,7 @@ strategies
     (guarantee-extension(!"sdf"), id);
     find-in-path;
     debug(!"  including ");
-    split(id, \'in -> <sglr> (<concat-strings>[SDFTOOLS, "/share/sdf-tools/sdf.cons.tbl"], 'in)\ )
+    !(<id>, <\'in -> <sglr> (<concat-strings>[SDFTOOLS, "/share/sdf-tools/sdf.cons.tbl"], 'in)\>)
 
   get-sdf-imports = 
     collect(?appl(prod(_,cf(sort("Import")),_),_); get-module-name, 

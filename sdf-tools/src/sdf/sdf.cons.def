@@ -17,7 +17,7 @@
 %%% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 %%% 02111-1307, USA.
 
-%%% $Id: sdf.cons.def,v 1.2 2001/10/08 15:42:13 mdejonge Exp $
+%%% $Id: sdf.cons.def,v 1.3 2002/03/14 22:50:07 eelco Exp $
 
 definition
 module GB-Main
@@ -168,7 +168,7 @@ exports
     ModuleWord "/" ModuleId -> ModuleId
   context-free syntax
     Module*                                  -> Definition	
-    "module" ModuleName ImpSection* Sections -> Module		{cons("Module")}
+    "module" ModuleName ImpSection* Section* -> Module		{cons("Module")}
     "exports" Grammar            -> Section			{cons("Exports")}
     "hiddens" Grammar            -> Section			{cons("Hiddens")}
     Section*                     -> Sections
