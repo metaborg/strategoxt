@@ -4,6 +4,7 @@ specification
     constructors
       Nil           : List(a)
       Cons          : a * List(a) -> List(a)
+      Conc          : List(a) * List(a) -> List(a)
                     : Tuple(Nil())
                     : a -> Tuple(Cons(a,Nil()))
                     : a * b -> Tuple(Cons(a,Cons(b,Nil())))
@@ -62,6 +63,8 @@ specification
       Undefined     : Vals()
       Dummy         : a
       Scopes        : Key()
+      RuleScope     : List(String()) * HashTable() -> RuleScope()
+      ChangeSet     : HashTable() -> RuleScope()
       ErrorNumber   : Int() -> Error()
       Var           : String() -> Config()
       Path          : String() -> Config()
@@ -108,23 +111,23 @@ specification
       Hashtable     : ImplDep() -> Hashtable()
 
   strategies
-    external apply-and-show(o_96 : ATerm() -> ATerm() , p_96 : ATerm() -> ATerm() , q_96 : ATerm() -> ATerm() | )
+    external apply-and-show(y_107 : ATerm() -> ATerm() , z_107 : ATerm() -> ATerm() , a_108 : ATerm() -> ATerm() | )
 
-    external apply-and-fail(k_96 : ATerm() -> ATerm() , l_96 : ATerm() -> ATerm() , m_96 : ATerm() -> ATerm() , n_96 : ATerm() -> ATerm() | )
+    external apply-and-fail(u_107 : ATerm() -> ATerm() , v_107 : ATerm() -> ATerm() , w_107 : ATerm() -> ATerm() , x_107 : ATerm() -> ATerm() | )
 
-    external apply-and-fail(h_96 : ATerm() -> ATerm() , i_96 : ATerm() -> ATerm() , j_96 : ATerm() -> ATerm() | )
+    external apply-and-fail(r_107 : ATerm() -> ATerm() , s_107 : ATerm() -> ATerm() , t_107 : ATerm() -> ATerm() | )
 
-    external apply-and-check(d_96 : ATerm() -> ATerm() , e_96 : ATerm() -> ATerm() , f_96 : ATerm() -> ATerm() , g_96 : ATerm() -> ATerm() | )
+    external apply-and-check(n_107 : ATerm() -> ATerm() , o_107 : ATerm() -> ATerm() , p_107 : ATerm() -> ATerm() , q_107 : ATerm() -> ATerm() | )
 
-    external apply-test(a_96 : ATerm() -> ATerm() , b_96 : ATerm() -> ATerm() , c_96 : ATerm() -> ATerm() | )
+    external apply-test(k_107 : ATerm() -> ATerm() , l_107 : ATerm() -> ATerm() , m_107 : ATerm() -> ATerm() | )
 
-    external apply-test(w_95 : ATerm() -> ATerm() , x_95 : ATerm() -> ATerm() , y_95 : ATerm() -> ATerm() , z_95 : ATerm() -> ATerm() | )
+    external apply-test(g_107 : ATerm() -> ATerm() , h_107 : ATerm() -> ATerm() , i_107 : ATerm() -> ATerm() , j_107 : ATerm() -> ATerm() | )
 
-    external testing(u_95 : ATerm() -> ATerm() , v_95 : ATerm() -> ATerm() | )
+    external testing(e_107 : ATerm() -> ATerm() , f_107 : ATerm() -> ATerm() | )
 
-    external do-test(s_95 : ATerm() -> ATerm() , t_95 : ATerm() -> ATerm() | )
+    external do-test(c_107 : ATerm() -> ATerm() , d_107 : ATerm() -> ATerm() | )
 
-    external test-suite(q_95 : ATerm() -> ATerm() , r_95 : ATerm() -> ATerm() | )
+    external test-suite(a_107 : ATerm() -> ATerm() , b_107 : ATerm() -> ATerm() | )
 
     external report-test( | )
 
@@ -136,31 +139,31 @@ specification
 
     external init-record( | )
 
-    external do-test(p_95 : ATerm() -> ATerm() | i_51 : ATerm())
+    external do-test(z_106 : ATerm() -> ATerm() | c_61 : ATerm())
 
-    external apply-and-show(o_95 : ATerm() -> ATerm() | g_51 : ATerm() , h_51 : ATerm())
+    external apply-and-show(y_106 : ATerm() -> ATerm() | a_61 : ATerm() , b_61 : ATerm())
 
-    external apply-and-fail(n_95 : ATerm() -> ATerm() | d_51 : ATerm() , e_51 : ATerm() , f_51 : ATerm())
+    external apply-and-fail(x_106 : ATerm() -> ATerm() | x_60 : ATerm() , y_60 : ATerm() , z_60 : ATerm())
 
-    external apply-and-fail(m_95 : ATerm() -> ATerm() | b_51 : ATerm() , c_51 : ATerm())
+    external apply-and-fail(w_106 : ATerm() -> ATerm() | v_60 : ATerm() , w_60 : ATerm())
 
-    external apply-and-check(l_95 : ATerm() -> ATerm() | y_50 : ATerm() , z_50 : ATerm() , a_51 : ATerm())
+    external apply-and-check(v_106 : ATerm() -> ATerm() | s_60 : ATerm() , t_60 : ATerm() , u_60 : ATerm())
 
-    external apply-test(k_95 : ATerm() -> ATerm() | w_50 : ATerm() , x_50 : ATerm())
+    external apply-test(u_106 : ATerm() -> ATerm() | q_60 : ATerm() , r_60 : ATerm())
 
-    external apply-test(j_95 : ATerm() -> ATerm() | t_50 : ATerm() , u_50 : ATerm() , v_50 : ATerm())
+    external apply-test(t_106 : ATerm() -> ATerm() | n_60 : ATerm() , o_60 : ATerm() , p_60 : ATerm())
 
-    external free-vars(e_95 : ATerm() -> ATerm() , f_95 : ATerm() -> ATerm() , g_95 : term -> term * term -> term * term -> term * term -> term , h_95 : ATerm() -> ATerm() | )
+    external free-vars(o_106 : ATerm() -> ATerm() , p_106 : ATerm() -> ATerm() , q_106 : term -> term * term -> term * term -> term * term -> term , r_106 : ATerm() -> ATerm() | )
 
-    external free-vars(a_95 : ATerm() -> ATerm() , b_95 : ATerm() -> ATerm() , c_95 : term -> term * term -> term * term -> term * term -> term | )
+    external free-vars(k_106 : ATerm() -> ATerm() , l_106 : ATerm() -> ATerm() , m_106 : term -> term * term -> term * term -> term * term -> term | )
 
-    external free-vars(x_94 : ATerm() -> ATerm() , y_94 : ATerm() -> ATerm() | )
+    external free-vars(h_106 : ATerm() -> ATerm() , i_106 : ATerm() -> ATerm() | )
 
-    external free-vars2(s_94 : ATerm() -> ATerm() , t_94 : ATerm() -> ATerm() , u_94 : term -> term * term -> term * term -> term * term -> term , v_94 : ATerm() -> ATerm() | )
+    external free-vars2(c_106 : ATerm() -> ATerm() , d_106 : ATerm() -> ATerm() , e_106 : term -> term * term -> term * term -> term * term -> term , f_106 : ATerm() -> ATerm() | )
 
-    external free-vars2(o_94 : ATerm() -> ATerm() , p_94 : ATerm() -> ATerm() , q_94 : term -> term * term -> term * term -> term * term -> term | )
+    external free-vars2(y_105 : ATerm() -> ATerm() , z_105 : ATerm() -> ATerm() , a_106 : term -> term * term -> term * term -> term * term -> term | )
 
-    external free-vars2(l_94 : ATerm() -> ATerm() , m_94 : ATerm() -> ATerm() | )
+    external free-vars2(v_105 : ATerm() -> ATerm() , w_105 : ATerm() -> ATerm() | )
 
     external equal( | )
 
@@ -172,91 +175,95 @@ specification
 
     external UfShift( | )
 
-    external pattern-match(k_94 : ATerm() -> ATerm() | )
+    external pattern-match(u_105 : ATerm() -> ATerm() | )
 
-    external MatchVar(j_94 : ATerm() -> ATerm() | )
+    external MatchVar(t_105 : ATerm() -> ATerm() | )
 
-    external unify(i_94 : ATerm() -> ATerm() | )
+    external unify(s_105 : ATerm() -> ATerm() | )
 
-    external UfSwap(h_94 : ATerm() -> ATerm() | )
+    external UfSwap(r_105 : ATerm() -> ATerm() | )
 
-    external UfVar(g_94 : ATerm() -> ATerm() | )
+    external UfVar(q_105 : ATerm() -> ATerm() | )
 
     external in( | )
 
-    external equal(f_94 : ATerm() -> ATerm() | )
+    external equal(p_105 : ATerm() -> ATerm() | )
 
-    external equal(d_94 : ATerm() -> ATerm() , e_94 : ATerm() -> ATerm() | )
+    external equal(n_105 : ATerm() -> ATerm() , o_105 : ATerm() -> ATerm() | )
 
-    external DistBinding(c_94 : ATerm() -> ATerm() | )
+    external DistBinding(m_105 : ATerm() -> ATerm() | )
 
-    external RnBinding(b_94 : ATerm() -> ATerm() | )
+    external RnBinding(l_105 : ATerm() -> ATerm() | )
 
-    external RnVar(a_94 : name -> env * name -> term | )
+    external RnVar(k_105 : name -> env * name -> term | )
 
-    external rename(x_93 : name -> env * name -> term , y_93 : ATerm() -> ATerm() | )
+    external rename(h_105 : name -> env * name -> term , i_105 : ATerm() -> ATerm() | )
 
-    external DistBinding(v_93 : ATerm() -> ATerm() , w_93 : term -> term * term -> term * term -> term * term -> term | )
+    external DistBinding(f_105 : ATerm() -> ATerm() , g_105 : term -> term * term -> term * term -> term * term -> term | )
 
-    external rename(r_93 : name -> env * name -> term , s_93 : ATerm() -> ATerm() , t_93 : term -> term * term -> term * term -> term * term -> term | )
+    external rename(b_105 : name -> env * name -> term , c_105 : ATerm() -> ATerm() , d_105 : term -> term * term -> term * term -> term * term -> term | )
 
-    external RnBinding(p_93 : ATerm() -> ATerm() , q_93 : term -> vars * term -> term | )
+    external RnBinding(z_104 : ATerm() -> ATerm() , a_105 : term -> vars * term -> term | )
 
-    external rename(k_93 : name -> env * name -> term , l_93 : ATerm() -> ATerm() , m_93 : term -> term * term -> term * term -> term * term -> term , n_93 : term -> vars * term -> term | )
+    external rename(u_104 : name -> env * name -> term , v_104 : ATerm() -> ATerm() , w_104 : term -> term * term -> term * term -> term * term -> term , x_104 : term -> vars * term -> term | )
 
     external subs-args( | )
 
-    external SubsVar(i_93 : ATerm() -> ATerm() , j_93 : ATerm() -> ATerm() | )
+    external SubsVar(s_104 : ATerm() -> ATerm() , t_104 : ATerm() -> ATerm() | )
 
-    external substitute(d_93 : ATerm() -> ATerm() , e_93 : name -> env * name -> term , f_93 : ATerm() -> ATerm() , g_93 : term -> term * term -> term * term -> term * term -> term , h_93 : term -> vars * term -> term | )
+    external substitute(n_104 : ATerm() -> ATerm() , o_104 : name -> env * name -> term , p_104 : ATerm() -> ATerm() , q_104 : term -> term * term -> term * term -> term * term -> term , r_104 : term -> vars * term -> term | )
 
-    external substitute(w_92 : ATerm() -> ATerm() , x_92 : name -> env * name -> term , y_92 : ATerm() -> ATerm() , z_92 : term -> term * term -> term * term -> term * term -> term , a_93 : term -> vars * term -> term , b_93 : ATerm() -> ATerm() | )
+    external substitute(g_104 : ATerm() -> ATerm() , h_104 : name -> env * name -> term , i_104 : ATerm() -> ATerm() , j_104 : term -> term * term -> term * term -> term * term -> term , k_104 : term -> vars * term -> term , l_104 : ATerm() -> ATerm() | )
 
-    external substitute(v_92 : ATerm() -> ATerm() | )
+    external substitute(f_104 : ATerm() -> ATerm() | )
 
-    external substitute(t_92 : ATerm() -> ATerm() , u_92 : ATerm() -> ATerm() | )
+    external substitute(d_104 : ATerm() -> ATerm() , e_104 : ATerm() -> ATerm() | )
 
     external hashtable-destroy( | )
 
-    external new-hashtable( | x_47 : ATerm() , y_47 : ATerm())
+    external new-hashtable( | r_57 : ATerm() , s_57 : ATerm())
 
     external new-hashtable( | )
 
     external hashtable-keys( | )
 
-    external hashtable-remove( | u_47 : ATerm())
+    external hashtable-remove( | o_57 : ATerm())
 
-    external hashtable-get( | s_47 : ATerm())
+    external hashtable-get( | m_57 : ATerm())
 
-    external hashtable-put( | p_47 : ATerm() , q_47 : ATerm())
+    external hashtable-put( | j_57 : ATerm() , k_57 : ATerm())
 
     external hashtable-copy( | )
 
-    external hashtable-putlist( | k_47 : ATerm())
+    external hashtable-putlist( | e_57 : ATerm())
 
     external hashtable-getlist( | )
 
-    external hashtable-eq(s_92 : ATerm() -> ATerm() | )
+    external hashtable-eq(c_104 : ATerm() -> ATerm() | )
 
     external hashtable-eq( | )
 
-    external hashtable-union( | z_46 : ATerm())
+    external hashtable-union-symm-wempty( | l_56 : ATerm())
 
-    external hashtable-intersect( | t_46 : ATerm())
+    external hashtable-union( | g_56 : ATerm())
 
-    external hashtable-intersect-wempty( | i_46 : ATerm() , j_46 : ATerm())
+    external hashtable-intersect-symm-wempty( | t_55 : ATerm())
 
-    external hashtable-peekpop( | g_46 : ATerm())
+    external hashtable-intersect-wempty( | i_55 : ATerm() , j_55 : ATerm())
 
-    external hashtable-peek( | f_46 : ATerm())
+    external hashtable-intersect( | c_55 : ATerm())
 
-    external hashtable-pop( | e_46 : ATerm())
+    external hashtable-peekpop( | a_55 : ATerm())
 
-    external hashtable-pushunion( | c_46 : ATerm() , d_46 : ATerm())
+    external hashtable-peek( | z_54 : ATerm())
 
-    external hashtable-pushlist( | a_46 : ATerm() , b_46 : ATerm())
+    external hashtable-pop( | y_54 : ATerm())
 
-    external hashtable-push( | y_45 : ATerm() , z_45 : ATerm())
+    external hashtable-pushunion( | w_54 : ATerm() , x_54 : ATerm())
+
+    external hashtable-pushlist( | u_54 : ATerm() , v_54 : ATerm())
+
+    external hashtable-push( | s_54 : ATerm() , t_54 : ATerm())
 
     external table-rename( | )
 
@@ -272,13 +279,13 @@ specification
 
     external table-create( | )
 
-    external lookup-table( | j_45 : ATerm())
+    external lookup-table( | d_54 : ATerm())
 
     external table-hashtable( | )
 
     external table-copy( | )
 
-    external table-putlist(r_92 : ATerm() -> ATerm() | )
+    external table-putlist(b_104 : ATerm() -> ATerm() | )
 
     external table-putlist( | )
 
@@ -342,15 +349,15 @@ specification
 
     external system-usage( | )
 
-    external register-usage(q_92 : ATerm() -> ATerm() | )
+    external register-usage(a_104 : ATerm() -> ATerm() | )
 
-    external parse-options'(o_92 : ATerm() -> ATerm() | )
+    external parse-options'(y_103 : ATerm() -> ATerm() | )
 
-    external parse-options(n_92 : ATerm() -> ATerm() | )
+    external parse-options(x_103 : ATerm() -> ATerm() | )
 
-    external long-description(m_92 : ATerm() -> ATerm() | )
+    external long-description(w_103 : ATerm() -> ATerm() | )
 
-    external short-description(l_92 : ATerm() -> ATerm() | )
+    external short-description(v_103 : ATerm() -> ATerm() | )
 
     external system-about-switch( | )
 
@@ -358,23 +365,23 @@ specification
 
     external UndefinedOption( | )
 
-    external Arg2Option(v_2 : ATerm() -> ATerm() , w_2 : ATerm() -> ATerm() , x_2 : ATerm() -> ATerm() | )
+    external Arg2Option(k_3 : ATerm() -> ATerm() , l_3 : ATerm() -> ATerm() , m_3 : ATerm() -> ATerm() | )
 
-    external Arg2Option(g_92 : ATerm() -> ATerm() , h_92 : ATerm() -> ATerm() | )
+    external Arg2Option(q_103 : ATerm() -> ATerm() , r_103 : ATerm() -> ATerm() | )
 
-    external ArgOption(e_92 : ATerm() -> ATerm() , f_92 : ATerm() -> ATerm() | )
+    external ArgOption(o_103 : ATerm() -> ATerm() , p_103 : ATerm() -> ATerm() | )
 
-    external ArgOption(s_2 : ATerm() -> ATerm() , t_2 : ATerm() -> ATerm() , u_2 : ATerm() -> ATerm() | )
+    external ArgOption(h_3 : ATerm() -> ATerm() , i_3 : ATerm() -> ATerm() , j_3 : ATerm() -> ATerm() | )
 
-    external Option(p_2 : ATerm() -> ATerm() , q_2 : ATerm() -> ATerm() , r_2 : ATerm() -> ATerm() | )
+    external Option(e_3 : ATerm() -> ATerm() , f_3 : ATerm() -> ATerm() , g_3 : ATerm() -> ATerm() | )
 
-    external Option(q_91 : ATerm() -> ATerm() , r_91 : ATerm() -> ATerm() | )
+    external Option(a_103 : ATerm() -> ATerm() , b_103 : ATerm() -> ATerm() | )
 
-    external arg-option-value(m_91 : ATerm() -> ATerm() | )
+    external arg-option-value(w_102 : ATerm() -> ATerm() | )
 
-    external option-defined(l_91 : ATerm() -> ATerm() | )
+    external option-defined(v_102 : ATerm() -> ATerm() | )
 
-    external defined-option(k_91 : ATerm() -> ATerm() | )
+    external defined-option(u_102 : ATerm() -> ATerm() | )
 
     external prim-tuple-to-ComponentTime( | )
 
@@ -404,11 +411,11 @@ specification
 
     external index2month( | )
 
-    external profile'(i_91 : ATerm() -> ATerm() , j_91 : ATerm() -> ATerm() | )
+    external profile'(s_102 : ATerm() -> ATerm() , t_102 : ATerm() -> ATerm() | )
 
-    external profile(g_91 : ATerm() -> ATerm() , h_91 : ATerm() -> ATerm() | )
+    external profile(q_102 : ATerm() -> ATerm() , r_102 : ATerm() -> ATerm() | )
 
-    external profile(f_91 : ATerm() -> ATerm() | )
+    external profile(p_102 : ATerm() -> ATerm() | )
 
     external run-time( | )
 
@@ -440,27 +447,27 @@ specification
 
     external dtime( | )
 
-    external input-wrap(d_91 : ATerm() -> ATerm() , e_91 : ATerm() -> ATerm() | )
+    external input-wrap(n_102 : ATerm() -> ATerm() , o_102 : ATerm() -> ATerm() | )
 
-    external input-wrap(c_91 : ATerm() -> ATerm() | )
+    external input-wrap(m_102 : ATerm() -> ATerm() | )
 
-    external output-wrap(a_91 : ATerm() -> ATerm() , b_91 : ATerm() -> ATerm() | )
+    external output-wrap(k_102 : ATerm() -> ATerm() , l_102 : ATerm() -> ATerm() | )
 
-    external output-wrap(z_90 : ATerm() -> ATerm() | )
+    external output-wrap(j_102 : ATerm() -> ATerm() | )
 
-    external io-wrap(x_90 : ATerm() -> ATerm() , y_90 : ATerm() -> ATerm() | )
+    external io-wrap(h_102 : ATerm() -> ATerm() , i_102 : ATerm() -> ATerm() | )
 
-    external io-wrap(w_90 : ATerm() -> ATerm() | )
+    external io-wrap(g_102 : ATerm() -> ATerm() | )
 
-    external input(v_90 : ATerm() -> ATerm() | )
+    external input(f_102 : ATerm() -> ATerm() | )
 
-    external output(u_90 : ATerm() -> ATerm() | )
+    external output(e_102 : ATerm() -> ATerm() | )
 
-    external io(t_90 : ATerm() -> ATerm() | )
+    external io(d_102 : ATerm() -> ATerm() | )
 
-    external option-wrap(r_90 : ATerm() -> ATerm() , s_90 : ATerm() -> ATerm() | )
+    external option-wrap(b_102 : ATerm() -> ATerm() , c_102 : ATerm() -> ATerm() | )
 
-    external option-wrap(n_90 : ATerm() -> ATerm() , o_90 : ATerm() -> ATerm() , p_90 : ATerm() -> ATerm() , q_90 : ATerm() -> ATerm() | )
+    external option-wrap(x_101 : ATerm() -> ATerm() , y_101 : ATerm() -> ATerm() , z_101 : ATerm() -> ATerm() , a_102 : ATerm() -> ATerm() | )
 
     external verbose-option( | )
 
@@ -490,37 +497,37 @@ specification
 
     external report-success( | )
 
-    external if-not-silent(m_90 : ATerm() -> ATerm() | )
+    external if-not-silent(w_101 : ATerm() -> ATerm() | )
 
     external need-help( | )
 
-    external need-help(l_90 : ATerm() -> ATerm() | )
+    external need-help(v_101 : ATerm() -> ATerm() | )
 
     external default-usage( | )
 
-    external iowrapNoOutput(i_90 : ATerm() -> ATerm() , j_90 : ATerm() -> ATerm() , k_90 : ATerm() -> ATerm() | )
+    external iowrapNoOutput(s_101 : ATerm() -> ATerm() , t_101 : ATerm() -> ATerm() , u_101 : ATerm() -> ATerm() | )
 
-    external iowrapNoOutput(g_90 : ATerm() -> ATerm() , h_90 : ATerm() -> ATerm() | )
+    external iowrapNoOutput(q_101 : ATerm() -> ATerm() , r_101 : ATerm() -> ATerm() | )
 
-    external iowrap(c_90 : ATerm() -> ATerm() , d_90 : ATerm() -> ATerm() , e_90 : ATerm() -> ATerm() , f_90 : ATerm() -> ATerm() | )
+    external iowrap(m_101 : ATerm() -> ATerm() , n_101 : ATerm() -> ATerm() , o_101 : ATerm() -> ATerm() , p_101 : ATerm() -> ATerm() | )
 
-    external iowrapO(z_89 : ATerm() -> ATerm() , a_90 : ATerm() -> ATerm() , b_90 : ATerm() -> ATerm() | )
+    external iowrapO(j_101 : ATerm() -> ATerm() , k_101 : ATerm() -> ATerm() , l_101 : ATerm() -> ATerm() | )
 
-    external iowrap(w_89 : ATerm() -> ATerm() , x_89 : ATerm() -> ATerm() , y_89 : ATerm() -> ATerm() | )
+    external iowrap(g_101 : ATerm() -> ATerm() , h_101 : ATerm() -> ATerm() , i_101 : ATerm() -> ATerm() | )
 
-    external iowrap(u_89 : ATerm() -> ATerm() , v_89 : ATerm() -> ATerm() | )
+    external iowrap(e_101 : ATerm() -> ATerm() , f_101 : ATerm() -> ATerm() | )
 
-    external iowrapO(s_89 : ATerm() -> ATerm() , t_89 : ATerm() -> ATerm() | )
+    external iowrapO(c_101 : ATerm() -> ATerm() , d_101 : ATerm() -> ATerm() | )
 
-    external iowrap(r_89 : ATerm() -> ATerm() | )
+    external iowrap(b_101 : ATerm() -> ATerm() | )
 
     external usage'( | )
 
     external check-option( | )
 
-    external option-value(p_89 : ATerm() -> ATerm() , q_89 : ATerm() -> ATerm() | )
+    external option-value(z_100 : ATerm() -> ATerm() , a_101 : ATerm() -> ATerm() | )
 
-    external has-option(o_89 : ATerm() -> ATerm() | )
+    external has-option(y_100 : ATerm() -> ATerm() | )
 
     external get-options( | )
 
@@ -530,13 +537,13 @@ specification
 
     external output-file'( | )
 
-    external apply-strategy(n_89 : ATerm() -> ATerm() | )
+    external apply-strategy(x_100 : ATerm() -> ATerm() | )
 
     external input-file( | )
 
     external input-file'( | )
 
-    external memo(l_89 : ATerm() -> ATerm() , m_89 : ATerm() -> ATerm() | )
+    external memo(v_100 : ATerm() -> ATerm() , w_100 : ATerm() -> ATerm() | )
 
     external memo-purge( | )
 
@@ -544,9 +551,9 @@ specification
 
     external Memo( | )
 
-    external memo(k_89 : ATerm() -> ATerm() | )
+    external memo(u_100 : ATerm() -> ATerm() | )
 
-    external memo-scope(j_89 : ATerm() -> ATerm() | )
+    external memo-scope(t_100 : ATerm() -> ATerm() | )
 
     external signal-to-descr( | )
 
@@ -568,15 +575,15 @@ specification
 
     external kill( | )
 
-    external fork-and-wait(i_89 : ATerm() -> ATerm() | )
+    external fork-and-wait(s_100 : ATerm() -> ATerm() | )
 
-    external fork(g_89 : ATerm() -> ATerm() , h_89 : ATerm() -> ATerm() | )
+    external fork(q_100 : ATerm() -> ATerm() , r_100 : ATerm() -> ATerm() | )
 
-    external fork(f_89 : ATerm() -> ATerm() | )
+    external fork(p_100 : ATerm() -> ATerm() | )
 
     external call-noisy( | )
 
-    external call(e_89 : ATerm() -> ATerm() | )
+    external call(o_100 : ATerm() -> ATerm() | )
 
     external call( | )
 
@@ -594,37 +601,37 @@ specification
 
     external set-keep( | )
 
-    external if-keep7(d_89 : ATerm() -> ATerm() | )
+    external if-keep7(n_100 : ATerm() -> ATerm() | )
 
-    external if-keep6(c_89 : ATerm() -> ATerm() | )
+    external if-keep6(m_100 : ATerm() -> ATerm() | )
 
-    external if-keep5(b_89 : ATerm() -> ATerm() | )
+    external if-keep5(l_100 : ATerm() -> ATerm() | )
 
-    external if-keep4(a_89 : ATerm() -> ATerm() | )
+    external if-keep4(k_100 : ATerm() -> ATerm() | )
 
-    external if-keep3(z_88 : ATerm() -> ATerm() | )
+    external if-keep3(j_100 : ATerm() -> ATerm() | )
 
-    external if-keep2(y_88 : ATerm() -> ATerm() | )
+    external if-keep2(i_100 : ATerm() -> ATerm() | )
 
-    external if-keep1(x_88 : ATerm() -> ATerm() | )
+    external if-keep1(h_100 : ATerm() -> ATerm() | )
 
-    external if-less-keep7(w_88 : ATerm() -> ATerm() | )
+    external if-less-keep7(g_100 : ATerm() -> ATerm() | )
 
-    external if-less-keep6(v_88 : ATerm() -> ATerm() | )
+    external if-less-keep6(f_100 : ATerm() -> ATerm() | )
 
-    external if-less-keep5(u_88 : ATerm() -> ATerm() | )
+    external if-less-keep5(e_100 : ATerm() -> ATerm() | )
 
-    external if-less-keep4(t_88 : ATerm() -> ATerm() | )
+    external if-less-keep4(d_100 : ATerm() -> ATerm() | )
 
-    external if-less-keep3(s_88 : ATerm() -> ATerm() | )
+    external if-less-keep3(c_100 : ATerm() -> ATerm() | )
 
-    external if-less-keep2(r_88 : ATerm() -> ATerm() | )
+    external if-less-keep2(b_100 : ATerm() -> ATerm() | )
 
-    external if-less-keep1(q_88 : ATerm() -> ATerm() | )
+    external if-less-keep1(a_100 : ATerm() -> ATerm() | )
 
-    external get-config-keys(p_88 : ATerm() -> ATerm() | )
+    external get-config-keys(z_99 : ATerm() -> ATerm() | )
 
-    external get-configs(o_88 : ATerm() -> ATerm() | )
+    external get-configs(y_99 : ATerm() -> ATerm() | )
 
     external get-config( | )
 
@@ -642,17 +649,17 @@ specification
 
     external export-config( | )
 
-    external import-config-files(n_88 : ATerm() -> ATerm() | )
+    external import-config-files(x_99 : ATerm() -> ATerm() | )
 
-    external import-config-file(m_88 : ATerm() -> ATerm() | )
+    external import-config-file(w_99 : ATerm() -> ATerm() | )
 
-    external find-plugins(k_88 : ATerm() -> ATerm() , l_88 : ATerm() -> ATerm() | )
+    external find-plugins(u_99 : ATerm() -> ATerm() , v_99 : ATerm() -> ATerm() | )
 
-    external find-plugins(h_88 : ATerm() -> ATerm() , i_88 : ATerm() -> ATerm() , j_88 : ATerm() -> ATerm() | )
+    external find-plugins(r_99 : ATerm() -> ATerm() , s_99 : ATerm() -> ATerm() , t_99 : ATerm() -> ATerm() | )
 
-    external find-config-file(e_88 : ATerm() -> ATerm() , f_88 : ATerm() -> ATerm() , g_88 : ATerm() -> ATerm() | )
+    external find-config-file(o_99 : ATerm() -> ATerm() , p_99 : ATerm() -> ATerm() , q_99 : ATerm() -> ATerm() | )
 
-    external find-config-file(c_88 : ATerm() -> ATerm() , d_88 : ATerm() -> ATerm() | )
+    external find-config-file(m_99 : ATerm() -> ATerm() , n_99 : ATerm() -> ATerm() | )
 
     external pass-verbose( | )
 
@@ -660,59 +667,59 @@ specification
 
     external set-verbosity( | )
 
-    external if-verbose7(b_88 : ATerm() -> ATerm() | )
+    external if-verbose7(l_99 : ATerm() -> ATerm() | )
 
-    external if-verbose6(a_88 : ATerm() -> ATerm() | )
+    external if-verbose6(k_99 : ATerm() -> ATerm() | )
 
-    external if-verbose5(z_87 : ATerm() -> ATerm() | )
+    external if-verbose5(j_99 : ATerm() -> ATerm() | )
 
-    external if-verbose4(y_87 : ATerm() -> ATerm() | )
+    external if-verbose4(i_99 : ATerm() -> ATerm() | )
 
-    external if-verbose3(x_87 : ATerm() -> ATerm() | )
+    external if-verbose3(h_99 : ATerm() -> ATerm() | )
 
-    external if-verbose2(w_87 : ATerm() -> ATerm() | )
+    external if-verbose2(g_99 : ATerm() -> ATerm() | )
 
-    external if-verbose1(v_87 : ATerm() -> ATerm() | )
+    external if-verbose1(f_99 : ATerm() -> ATerm() | )
 
-    external if-less-verbose7(u_87 : ATerm() -> ATerm() | )
+    external if-less-verbose7(e_99 : ATerm() -> ATerm() | )
 
-    external if-less-verbose6(t_87 : ATerm() -> ATerm() | )
+    external if-less-verbose6(d_99 : ATerm() -> ATerm() | )
 
-    external if-less-verbose5(s_87 : ATerm() -> ATerm() | )
+    external if-less-verbose5(c_99 : ATerm() -> ATerm() | )
 
-    external if-less-verbose4(r_87 : ATerm() -> ATerm() | )
+    external if-less-verbose4(b_99 : ATerm() -> ATerm() | )
 
-    external if-less-verbose3(q_87 : ATerm() -> ATerm() | )
+    external if-less-verbose3(a_99 : ATerm() -> ATerm() | )
 
-    external if-less-verbose2(p_87 : ATerm() -> ATerm() | )
+    external if-less-verbose2(z_98 : ATerm() -> ATerm() | )
 
-    external if-less-verbose1(o_87 : ATerm() -> ATerm() | )
+    external if-less-verbose1(y_98 : ATerm() -> ATerm() | )
 
-    external pipe-term-to-child(m_87 : ATerm() -> ATerm() , n_87 : ATerm() -> ATerm() | )
+    external pipe-term-to-child(w_98 : ATerm() -> ATerm() , x_98 : ATerm() -> ATerm() | )
 
     external redirect-stdin-from-file( | )
 
     external redirect-stdout-to-file( | )
 
-    external apply-program(k_87 : ATerm() -> ATerm() , l_87 : ATerm() -> ATerm() | )
+    external apply-program(u_98 : ATerm() -> ATerm() , v_98 : ATerm() -> ATerm() | )
 
-    external apply-program(j_87 : ATerm() -> ATerm() | )
+    external apply-program(t_98 : ATerm() -> ATerm() | )
 
-    external copy-file(g_87 : ATerm() -> ATerm() , h_87 : ATerm() -> ATerm() , i_87 : ATerm() -> ATerm() | )
+    external copy-file(q_98 : ATerm() -> ATerm() , r_98 : ATerm() -> ATerm() , s_98 : ATerm() -> ATerm() | )
 
-    external apply-to-file(f_87 : ATerm() -> ATerm() | )
+    external apply-to-file(p_98 : ATerm() -> ATerm() | )
 
-    external transform-file(d_87 : ATerm() -> ATerm() , e_87 : ATerm() -> ATerm() | )
+    external transform-file(n_98 : ATerm() -> ATerm() , o_98 : ATerm() -> ATerm() | )
 
-    external call-out(z_86 : ATerm() -> ATerm() , a_87 : ATerm() -> ATerm() , b_87 : ATerm() -> ATerm() , c_87 : ATerm() -> ATerm() | )
+    external call-out(j_98 : ATerm() -> ATerm() , k_98 : ATerm() -> ATerm() , l_98 : ATerm() -> ATerm() , m_98 : ATerm() -> ATerm() | )
 
-    external call-tmp(w_86 : ATerm() -> ATerm() , x_86 : ATerm() -> ATerm() , y_86 : ATerm() -> ATerm() | )
+    external call-tmp(g_98 : ATerm() -> ATerm() , h_98 : ATerm() -> ATerm() , i_98 : ATerm() -> ATerm() | )
 
-    external pipe'(t_86 : ATerm() -> ATerm() , u_86 : ATerm() -> ATerm() , v_86 : ATerm() -> ATerm() | )
+    external pipe'(d_98 : ATerm() -> ATerm() , e_98 : ATerm() -> ATerm() , f_98 : ATerm() -> ATerm() | )
 
-    external pipe(q_86 : ATerm() -> ATerm() , r_86 : ATerm() -> ATerm() , s_86 : ATerm() -> ATerm() | )
+    external pipe(a_98 : ATerm() -> ATerm() , b_98 : ATerm() -> ATerm() , c_98 : ATerm() -> ATerm() | )
 
-    external pipe(o_86 : ATerm() -> ATerm() , p_86 : ATerm() -> ATerm() | )
+    external pipe(y_97 : ATerm() -> ATerm() , z_97 : ATerm() -> ATerm() | )
 
     external rm-files( | )
 
@@ -742,23 +749,23 @@ specification
 
     external close-pipe( | )
 
-    external read-from-prog'(k_86 : ATerm() -> ATerm() , l_86 : ATerm() -> ATerm() | )
+    external read-from-prog'(u_97 : ATerm() -> ATerm() , v_97 : ATerm() -> ATerm() | )
 
-    external read-from-prog(i_86 : ATerm() -> ATerm() , j_86 : ATerm() -> ATerm() | )
+    external read-from-prog(s_97 : ATerm() -> ATerm() , t_97 : ATerm() -> ATerm() | )
 
-    external write-to-prog'(g_86 : ATerm() -> ATerm() , h_86 : ATerm() -> ATerm() | )
+    external write-to-prog'(q_97 : ATerm() -> ATerm() , r_97 : ATerm() -> ATerm() | )
 
-    external write-to-prog(e_86 : ATerm() -> ATerm() , f_86 : ATerm() -> ATerm() | )
+    external write-to-prog(o_97 : ATerm() -> ATerm() , p_97 : ATerm() -> ATerm() | )
 
-    external spawn-filter-with-prog(c_86 : ATerm() -> ATerm() , d_86 : ATerm() -> ATerm() | )
+    external spawn-filter-with-prog(m_97 : ATerm() -> ATerm() , n_97 : ATerm() -> ATerm() | )
 
-    external exec-filter-pipe(b_86 : ATerm() -> ATerm() | )
+    external exec-filter-pipe(l_97 : ATerm() -> ATerm() | )
 
-    external close-filter-pipe(a_86 : ATerm() -> ATerm() | )
+    external close-filter-pipe(k_97 : ATerm() -> ATerm() | )
 
-    external pipe-sink(y_85 : ATerm() -> ATerm() , z_85 : ATerm() -> ATerm() | )
+    external pipe-sink(i_97 : ATerm() -> ATerm() , j_97 : ATerm() -> ATerm() | )
 
-    external pipe-source(w_85 : ATerm() -> ATerm() , x_85 : ATerm() -> ATerm() | )
+    external pipe-source(g_97 : ATerm() -> ATerm() , h_97 : ATerm() -> ATerm() | )
 
     external setup-filter-pipe( | )
 
@@ -808,31 +815,175 @@ specification
 
     external is-real( | )
 
-    external extend-rewrite(v_85 : ATerm() -> ATerm() | )
+    external dr-switch-rule-set( | o_43 : ATerm())
 
-    external extend-override-key-undefined(u_85 : ATerm() -> ATerm() | )
+    external dr-set-rule-set( | n_43 : ATerm())
 
-    external extend-assert-undefined(t_85 : ATerm() -> ATerm() | )
+    external dr-get-rule-set( | m_43 : ATerm())
 
-    external extend-override-key(s_85 : ATerm() -> ATerm() | )
+    external dr-union-symm( | l_43 : ATerm())
 
-    external extend-assert(r_85 : ATerm() -> ATerm() | )
+    external dr-union-with( | k_43 : ATerm())
 
-    external rewrite(q_85 : ATerm() -> ATerm() | )
+    external dr-intersect-symm( | j_43 : ATerm())
 
-    external override-key(p_85 : ATerm() -> ATerm() | )
+    external dr-intersect-with( | i_43 : ATerm())
 
-    external assert(o_85 : ATerm() -> ATerm() | )
+    external dr-add-rule( | e_43 : ATerm() , f_43 : ATerm() , g_43 : ATerm() , h_43 : ATerm())
 
-    external scope(m_85 : ATerm() -> ATerm() , n_85 : ATerm() -> ATerm() | )
+    external dr-add-rule( | b_43 : ATerm() , c_43 : ATerm() , d_43 : ATerm())
 
-    external end-scope(l_85 : ATerm() -> ATerm() | )
+    external dr-undefine-rule( | y_42 : ATerm() , z_42 : ATerm() , a_43 : ATerm())
 
-    external begin-scope(k_85 : ATerm() -> ATerm() | )
+    external dr-undefine-rule( | w_42 : ATerm() , x_42 : ATerm())
 
-    external exit-name-space(j_85 : ATerm() -> ATerm() | )
+    external dr-set-rule( | s_42 : ATerm() , t_42 : ATerm() , u_42 : ATerm() , v_42 : ATerm())
 
-    external init-name-space(i_85 : ATerm() -> ATerm() | )
+    external dr-set-rule( | p_42 : ATerm() , q_42 : ATerm() , r_42 : ATerm())
+
+    external dr-lookup-rule( | n_42 : ATerm() , o_42 : ATerm())
+
+    external dr-ignore-state(f_97 : ATerm() -> ATerm() | l_42 : ATerm())
+
+    external dr-label-scope( | j_42 : ATerm() , k_42 : ATerm())
+
+    external dr-commit-change-set( | i_42 : ATerm())
+
+    external dr-start-change-set( | h_42 : ATerm())
+
+    external dr-end-scope( | g_42 : ATerm())
+
+    external dr-begin-scope( | f_42 : ATerm())
+
+    external dr-scope(e_97 : ATerm() -> ATerm() | e_42 : ATerm())
+
+    external dr-save-rule-set( | )
+
+    external dr-label-scope( | a_42 : ATerm())
+
+    external dr-get-inner-scope( | )
+
+    external dr-leave-scope( | )
+
+    external dr-destroy-scope( | )
+
+    external dr-add-scope( | )
+
+    external dr-new-rule-set( | )
+
+    external dr-new-scope( | )
+
+    external dr-apply-change( | r_41 : ATerm())
+
+    external dr-commit-change-set( | )
+
+    external dr-start-change-set( | )
+
+    external dr-new-change-set( | )
+
+    external dr-lookup-rule-pointer(c_3 : ATerm() -> ATerm() | d_3 : ATerm())
+
+    external dr-lookup-rule-pointer( | f_41 : ATerm())
+
+    external dr-lookup-rule(a_3 : ATerm() -> ATerm() | b_3 : ATerm())
+
+    external dr-lookup-rule( | w_40 : ATerm())
+
+    external dr-set-in-rule-set(w_2 : List(ATerm()) * HashTable() * ATerm() * ATerm() * ATerm() -> ATerm() | x_2 : ATerm() , y_2 : ATerm() , z_2 : ATerm())
+
+    external dr-set-fail( | d_40 : ATerm() , e_40 : ATerm() , f_40 : ATerm() , g_40 : ATerm())
+
+    external dr-set-in-rule-set( | a_40 : ATerm() , b_40 : ATerm() , c_40 : ATerm())
+
+    external dr-set-in-rule-set( | y_39 : ATerm() , z_39 : ATerm())
+
+    external dr-add-to-rule-set(s_2 : List(ATerm()) * HashTable() * ATerm() * ATerm() * ATerm() -> ATerm() | t_2 : ATerm() , u_2 : ATerm() , v_2 : ATerm())
+
+    external dr-add-fail( | e_39 : ATerm() , f_39 : ATerm() , g_39 : ATerm() , h_39 : ATerm())
+
+    external dr-add-to-rule-set( | b_39 : ATerm() , c_39 : ATerm() , d_39 : ATerm())
+
+    external dr-add-to-rule-set( | z_38 : ATerm() , a_39 : ATerm())
+
+    external dr-fix-and-intersect(r_96 : ATerm() -> ATerm() | u_38 : ATerm())
+
+    external dr-map-and-intersect(o_96 : ATerm() -> ATerm() | t_38 : ATerm())
+
+    external dr-fold-and-intersect(l_96 : ATerm() -> ATerm() , m_96 : ATerm() -> ATerm() , n_96 : a -> a * a -> a | o_38 : ATerm() , p_38 : ATerm())
+
+    external dr-fold-and-intersect(i_96 : ATerm() -> ATerm() , j_96 : ATerm() -> ATerm() , k_96 : a -> a * a -> a | m_38 : ATerm())
+
+    external dr-fork-and-intersect(g_96 : ATerm() -> ATerm() , h_96 : ATerm() -> ATerm() | g_38 : ATerm())
+
+    external dr-intersect-rule-sets-symm2( | )
+
+    external dr-intersect-rule-sets-symm1( | )
+
+    external dr-intersect-rule-sets-symm( | )
+
+    external dr-intersect-rule-sets2( | )
+
+    external dr-intersect-rule-sets1( | )
+
+    external dr-intersect-rule-sets( | )
+
+    external dr-fix-and-union(f_96 : ATerm() -> ATerm() | d_37 : ATerm())
+
+    external dr-fork-and-union(d_96 : ATerm() -> ATerm() , e_96 : ATerm() -> ATerm() | x_36 : ATerm())
+
+    external dr-union-rule-sets-symm2( | )
+
+    external dr-union-rule-sets-symm1( | )
+
+    external dr-union-rule-sets-symm( | )
+
+    external dr-union-rule-sets3( | )
+
+    external dr-union-rule-sets2( | )
+
+    external dr-union-rule-sets1( | )
+
+    external dr-union-rule-sets( | )
+
+    external dr-eq-rule-sets( | )
+
+    external dr-print-scope( | )
+
+    external dr-print-rule-set( | )
+
+    external dr-print-rule-sets( | f_35 : ATerm())
+
+    external dr-print-rule-set( | e_35 : ATerm())
+
+    external dr-debug-rule-set( | c_35 : ATerm() , d_35 : ATerm())
+
+    external dr-debug-rule-set( | b_35 : ATerm())
+
+    external extend-rewrite(b_96 : ATerm() -> ATerm() | )
+
+    external extend-override-key-undefined(a_96 : ATerm() -> ATerm() | )
+
+    external extend-assert-undefined(z_95 : ATerm() -> ATerm() | )
+
+    external extend-override-key(y_95 : ATerm() -> ATerm() | )
+
+    external extend-assert(x_95 : ATerm() -> ATerm() | )
+
+    external rewrite(w_95 : ATerm() -> ATerm() | )
+
+    external override-key(v_95 : ATerm() -> ATerm() | )
+
+    external assert(u_95 : ATerm() -> ATerm() | )
+
+    external scope(s_95 : ATerm() -> ATerm() , t_95 : ATerm() -> ATerm() | )
+
+    external end-scope(r_95 : ATerm() -> ATerm() | )
+
+    external begin-scope(q_95 : ATerm() -> ATerm() | )
+
+    external exit-name-space(p_95 : ATerm() -> ATerm() | )
+
+    external init-name-space(o_95 : ATerm() -> ATerm() | )
 
     external leq( | )
 
@@ -878,7 +1029,7 @@ specification
 
     external is-int( | )
 
-    external comp-comp(g_85 : ATerm() -> ATerm() , h_85 : ATerm() -> ATerm() | )
+    external comp-comp(m_95 : ATerm() -> ATerm() , n_95 : ATerm() -> ATerm() | )
 
     external lt-lt( | )
 
@@ -994,7 +1145,7 @@ specification
 
     external add-lists( | )
 
-    external list-accum(e_85 : ATerm() -> ATerm() | )
+    external list-accum(k_95 : ATerm() -> ATerm() | )
 
     external list-max( | )
 
@@ -1006,31 +1157,31 @@ specification
 
     external range( | )
 
-    external range( | o_2 : ATerm())
+    external range( | r_2 : ATerm())
 
-    external range-next(d_85 : ATerm() -> ATerm() | )
+    external range-next(j_95 : ATerm() -> ATerm() | )
 
-    external range(n_2 : ATerm() -> ATerm() | )
+    external range(q_2 : ATerm() -> ATerm() | )
 
     external is-interval( | )
 
-    external set-prop(z_84 : ATerm() -> ATerm() , a_85 : ATerm() -> ATerm() | )
+    external set-prop(f_95 : ATerm() -> ATerm() , g_95 : ATerm() -> ATerm() | )
 
-    external add-prop(x_84 : ATerm() -> ATerm() , y_84 : ATerm() -> ATerm() | )
+    external add-prop(d_95 : ATerm() -> ATerm() , e_95 : ATerm() -> ATerm() | )
 
-    external replace-prop(v_84 : ATerm() -> ATerm() , w_84 : ATerm() -> ATerm() | )
+    external replace-prop(b_95 : ATerm() -> ATerm() , c_95 : ATerm() -> ATerm() | )
 
-    external apply-prop(t_84 : ATerm() -> ATerm() , u_84 : ATerm() -> ATerm() | )
+    external apply-prop(z_94 : ATerm() -> ATerm() , a_95 : ATerm() -> ATerm() | )
 
-    external get-prop(s_84 : ATerm() -> ATerm() | )
+    external get-prop(y_94 : ATerm() -> ATerm() | )
 
-    external has-prop(q_84 : ATerm() -> ATerm() , r_84 : ATerm() -> ATerm() | )
+    external has-prop(w_94 : ATerm() -> ATerm() , x_94 : ATerm() -> ATerm() | )
 
-    external has-prop(p_84 : ATerm() -> ATerm() | )
+    external has-prop(v_94 : ATerm() -> ATerm() | )
 
-    external merge-props(o_84 : ATerm() -> ATerm() | )
+    external merge-props(u_94 : ATerm() -> ATerm() | )
 
-    external preserve-props(n_84 : ATerm() -> ATerm() | )
+    external preserve-props(t_94 : ATerm() -> ATerm() | )
 
     external get-props( | )
 
@@ -1040,31 +1191,31 @@ specification
 
     external props-union( | )
 
-    external add-prop-empty(l_84 : ATerm() -> ATerm() , m_84 : ATerm() -> ATerm() | )
+    external add-prop-empty(r_94 : ATerm() -> ATerm() , s_94 : ATerm() -> ATerm() | )
 
-    external add-prop-existing(j_84 : ATerm() -> ATerm() , k_84 : ATerm() -> ATerm() | )
+    external add-prop-existing(p_94 : ATerm() -> ATerm() , q_94 : ATerm() -> ATerm() | )
 
-    external apply-2-prop(i_84 : ATerm() -> ATerm() | )
+    external apply-2-prop(o_94 : ATerm() -> ATerm() | )
 
-    external apply-2-prop(g_84 : ATerm() -> ATerm() , h_84 : ATerm() -> ATerm() | )
+    external apply-2-prop(m_94 : ATerm() -> ATerm() , n_94 : ATerm() -> ATerm() | )
 
-    external apply-prop-existing(e_84 : ATerm() -> ATerm() , f_84 : ATerm() -> ATerm() | )
+    external apply-prop-existing(k_94 : ATerm() -> ATerm() , l_94 : ATerm() -> ATerm() | )
 
-    external is-prop(d_84 : ATerm() -> ATerm() | )
+    external is-prop(j_94 : ATerm() -> ATerm() | )
 
     external is-same-prop( | )
 
-    external Merge-Props(c_84 : ATerm() -> ATerm() | )
+    external Merge-Props(i_94 : ATerm() -> ATerm() | )
 
-    external preserve-annos(b_84 : ATerm() -> ATerm() | )
+    external preserve-annos(h_94 : ATerm() -> ATerm() | )
 
-    external preserve-annotation(a_84 : ATerm() -> ATerm() | )
+    external preserve-annotation(g_94 : ATerm() -> ATerm() | )
 
     external catch-annos( | )
 
     external strip-annos( | )
 
-    external if-annotation(x_83 : ATerm() -> ATerm() , y_83 : ATerm() -> ATerm() | )
+    external if-annotation(d_94 : ATerm() -> ATerm() , e_94 : ATerm() -> ATerm() | )
 
     external has-annotation( | )
 
@@ -1090,25 +1241,25 @@ specification
 
     external mkterm( | )
 
-    external foldr-kids(u_83 : ATerm() -> ATerm() , v_83 : ATerm() -> ATerm() , w_83 : ATerm() -> ATerm() | )
+    external foldr-kids(a_94 : ATerm() -> ATerm() , b_94 : ATerm() -> ATerm() , c_94 : ATerm() -> ATerm() | )
 
-    external foldr-kids(s_83 : ATerm() -> ATerm() , t_83 : ATerm() -> ATerm() | )
+    external foldr-kids(y_93 : ATerm() -> ATerm() , z_93 : ATerm() -> ATerm() | )
 
-    external crush(p_83 : ATerm() -> ATerm() , q_83 : ATerm() -> ATerm() , r_83 : ATerm() -> ATerm() | )
+    external crush(v_93 : ATerm() -> ATerm() , w_93 : ATerm() -> ATerm() , x_93 : ATerm() -> ATerm() | )
 
-    external crush(n_83 : ATerm() -> ATerm() , o_83 : ATerm() -> ATerm() | )
+    external crush(t_93 : ATerm() -> ATerm() , u_93 : ATerm() -> ATerm() | )
 
     external term-size( | )
 
     external node-size( | )
 
-    external at-depth(l_83 : ATerm() -> ATerm() , m_83 : ATerm() -> ATerm() | )
+    external at-depth(r_93 : ATerm() -> ATerm() , s_93 : ATerm() -> ATerm() | )
 
-    external occurrences(k_83 : ATerm() -> ATerm() | )
+    external occurrences(q_93 : ATerm() -> ATerm() | )
 
-    external om-occurrences(j_83 : ATerm() -> ATerm() | )
+    external om-occurrences(p_93 : ATerm() -> ATerm() | )
 
-    external nrofoccs(i_83 : ATerm() -> ATerm() | )
+    external nrofoccs(o_93 : ATerm() -> ATerm() | )
 
     external stderr-stream( | )
 
@@ -1214,25 +1365,25 @@ specification
 
     external get-path( | )
 
-    external has-extension(g_83 : ATerm() -> ATerm() | )
+    external has-extension(m_93 : ATerm() -> ATerm() | )
 
-    external guarantee-extension(f_83 : ATerm() -> ATerm() | )
+    external guarantee-extension(l_93 : ATerm() -> ATerm() | )
 
-    external basename(d_83 : ATerm() -> ATerm() | )
+    external basename(j_93 : ATerm() -> ATerm() | )
 
     external basename( | )
 
     external new-temp-file( | )
 
-    external temp-file(c_83 : ATerm() -> ATerm() | )
+    external temp-file(i_93 : ATerm() -> ATerm() | )
 
     external new-file( | )
 
-    external find-file(z_82 : ATerm() -> ATerm() , a_83 : ATerm() -> ATerm() | )
+    external find-file(f_93 : ATerm() -> ATerm() , g_93 : ATerm() -> ATerm() | )
 
-    external find-file(y_82 : ATerm() -> ATerm() | )
+    external find-file(e_93 : ATerm() -> ATerm() | )
 
-    external find-in-path(x_82 : ATerm() -> ATerm() | )
+    external find-in-path(d_93 : ATerm() -> ATerm() | )
 
     external find-in-path( | )
 
@@ -1240,7 +1391,7 @@ specification
 
     external to-upper( | )
 
-    external case-char(w_82 : ATerm() -> ATerm() | )
+    external case-char(c_93 : ATerm() -> ATerm() | )
 
     external is-ascii( | )
 
@@ -1256,7 +1407,7 @@ specification
 
     external is-alphanum( | )
 
-    external string-as-chars(v_82 : ATerm() -> ATerm() | )
+    external string-as-chars(b_93 : ATerm() -> ATerm() | )
 
     external explode-string( | )
 
@@ -1276,7 +1427,7 @@ specification
 
     external string-length( | )
 
-    external UnEscape( | z_27 : ATerm())
+    external UnEscape( | e_28 : ATerm())
 
     external UnEscape-tab( | )
 
@@ -1306,29 +1457,31 @@ specification
 
     external unescape-chars( | )
 
-    external unescape-chars(t_82 : ATerm() -> ATerm() | )
+    external unescape-chars(z_92 : ATerm() -> ATerm() | )
 
     external unescape( | )
+
+    external escape-chars(x_92 : ATerm() -> ATerm() | )
 
     external escape-chars( | )
 
     external escape( | )
 
-    external UnCify(r_82 : ATerm() -> ATerm() | )
+    external UnCify(w_92 : ATerm() -> ATerm() | )
 
     external uncify( | )
 
     external cify( | )
 
-    external escape(p_82 : List(String()) -> List(String()) * List(String()) -> List(String()) | )
+    external escape(u_92 : List(String()) -> List(String()) * List(String()) -> List(String()) | )
 
-    external UnCify3(o_82 : ATerm() -> ATerm() | )
+    external UnCify3(t_92 : ATerm() -> ATerm() | )
 
-    external UnCify2(n_82 : ATerm() -> ATerm() | )
+    external UnCify2(s_92 : ATerm() -> ATerm() | )
 
-    external UnCify1(m_82 : ATerm() -> ATerm() | )
+    external UnCify1(r_92 : ATerm() -> ATerm() | )
 
-    external Cify(m_2 : ATerm() -> ATerm() | )
+    external Cify(p_2 : ATerm() -> ATerm() | )
 
     external double-quote( | )
 
@@ -1340,9 +1493,9 @@ specification
 
     external quote-chars( | )
 
-    external quote-chars(i_82 : ATerm() -> ATerm() | )
+    external quote-chars(n_92 : ATerm() -> ATerm() | )
 
-    external quote(h_82 : ATerm() -> ATerm() | )
+    external quote(m_92 : ATerm() -> ATerm() | )
 
     external un-double-quote( | )
 
@@ -1352,13 +1505,13 @@ specification
 
     external un-single-quote-chars( | )
 
-    external unquote-chars(f_82 : ATerm() -> ATerm() , g_82 : ATerm() -> ATerm() | )
+    external unquote-chars(k_92 : ATerm() -> ATerm() , l_92 : ATerm() -> ATerm() | )
 
-    external unquote-chars(e_82 : ATerm() -> ATerm() | )
+    external unquote-chars(j_92 : ATerm() -> ATerm() | )
 
-    external unquote(c_82 : ATerm() -> ATerm() , d_82 : ATerm() -> ATerm() | )
+    external unquote(h_92 : ATerm() -> ATerm() , i_92 : ATerm() -> ATerm() | )
 
-    external unquote(b_82 : ATerm() -> ATerm() | )
+    external unquote(g_92 : ATerm() -> ATerm() | )
 
     external is-quoted-chars( | )
 
@@ -1396,7 +1549,7 @@ specification
 
     external lc( | )
 
-    external list-tokenize(a_82 : ATerm() -> ATerm() | )
+    external list-tokenize(f_92 : ATerm() -> ATerm() | )
 
     external string-tokenize( | )
 
@@ -1410,7 +1563,7 @@ specification
 
     external align-right( | )
 
-    external padd-with(z_81 : ATerm() -> ATerm() | )
+    external padd-with(e_92 : ATerm() -> ATerm() | )
 
     external SplitNext( | )
 
@@ -1424,7 +1577,7 @@ specification
 
     external copy-char( | )
 
-    external is-substring(x_81 : ATerm() -> ATerm() | )
+    external is-substring(c_92 : ATerm() -> ATerm() | )
 
     external split-after( | )
 
@@ -1442,31 +1595,33 @@ specification
 
     external left-match( | )
 
-    external string-starts-with( | n_23 : ATerm())
+    external string-starts-with( | s_23 : ATerm())
 
     external string-lt( | )
 
     external string-gt( | )
 
-    external sect(n_81 : ATerm() -> ATerm() , o_81 : ATerm() -> ATerm() | )
+    external sect(s_91 : ATerm() -> ATerm() , t_91 : ATerm() -> ATerm() | )
 
-    external option(m_81 : ATerm() -> ATerm() | )
+    external option(r_91 : ATerm() -> ATerm() | )
 
-    external tuple-unzip(k_81 : ATerm() -> ATerm() | )
+    external tuple-unzip(p_91 : ATerm() -> ATerm() | )
 
-    external tuple-zip(i_81 : ATerm() -> ATerm() | )
+    external tuple-zip(n_91 : ATerm() -> ATerm() | )
 
-    external tzip(h_81 : ATerm() -> ATerm() | )
+    external tzip(m_91 : ATerm() -> ATerm() | )
 
-    external tfoldr(f_81 : ATerm() -> ATerm() , g_81 : ATerm() -> ATerm() | )
+    external tfoldr(k_91 : ATerm() -> ATerm() , l_91 : ATerm() -> ATerm() | )
 
-    external tcata(d_81 : ATerm() -> ATerm() , e_81 : ATerm() -> ATerm() | )
+    external tcata(i_91 : ATerm() -> ATerm() , j_91 : ATerm() -> ATerm() | )
 
-    external tconcat'(b_81 : ATerm() -> ATerm() , c_81 : ATerm() -> ATerm() | )
+    external tconcat'(g_91 : ATerm() -> ATerm() , h_91 : ATerm() -> ATerm() | )
 
-    external tconcat(a_81 : ATerm() -> ATerm() | )
+    external tconcat(f_91 : ATerm() -> ATerm() | )
 
-    external tmap(z_80 : ATerm() -> ATerm() | )
+    external tmap(e_91 : ATerm() -> ATerm() | )
+
+    external flip(d_91 : ATerm() -> ATerm() | )
 
     external is-tuple( | )
 
@@ -1478,9 +1633,9 @@ specification
 
     external Swap( | )
 
-    external split3(w_80 : ATerm() -> ATerm() , x_80 : ATerm() -> ATerm() , y_80 : ATerm() -> ATerm() | )
+    external split3(a_91 : ATerm() -> ATerm() , b_91 : ATerm() -> ATerm() , c_91 : ATerm() -> ATerm() | )
 
-    external split(u_80 : ATerm() -> ATerm() , v_80 : ATerm() -> ATerm() | )
+    external split(y_90 : ATerm() -> ATerm() , z_90 : ATerm() -> ATerm() | )
 
     external Dupl( | )
 
@@ -1494,55 +1649,57 @@ specification
 
     external TupleToList( | )
 
-    external partition'(s_80 : ATerm() -> ATerm() | )
+    external partition'(w_90 : ATerm() -> ATerm() | )
 
-    external partition(q_80 : ATerm() -> ATerm() | )
+    external partition(u_90 : ATerm() -> ATerm() | )
 
-    external filter-options(p_80 : ATerm() -> ATerm() | )
+    external filter-options(t_90 : ATerm() -> ATerm() | )
 
-    external filter-option-args(o_80 : ATerm() -> ATerm() | )
+    external filter-option-args(s_90 : ATerm() -> ATerm() | )
 
-    external skip2(n_80 : ATerm() -> ATerm() | )
+    external skip2(r_90 : ATerm() -> ATerm() | )
 
-    external skip1(m_80 : ATerm() -> ATerm() | )
+    external skip1(q_90 : ATerm() -> ATerm() | )
 
-    external filter-gen(j_80 : ATerm() -> ATerm() , k_80 : term -> term * term -> term | )
+    external filter-gen(n_90 : ATerm() -> ATerm() , o_90 : term -> term * term -> term | )
 
-    external filter(i_80 : ATerm() -> ATerm() | )
+    external reverse-filter(m_90 : ATerm() -> ATerm() | )
+
+    external filter(l_90 : ATerm() -> ATerm() | )
 
     external member( | )
 
-    external lsplit(g_80 : ATerm() -> ATerm() , h_80 : ATerm() -> ATerm() | )
+    external lsplit(j_90 : ATerm() -> ATerm() , k_90 : ATerm() -> ATerm() | )
 
-    external FoldL(f_80 : ATerm() -> ATerm() | )
+    external FoldL(i_90 : ATerm() -> ATerm() | )
 
     external FoldR( | )
 
     external FoldR1( | )
 
-    external drop(e_80 : ATerm() -> ATerm() | )
+    external drop(h_90 : ATerm() -> ATerm() | )
 
-    external split-at(d_80 : ATerm() -> ATerm() | )
+    external split-at(g_90 : ATerm() -> ATerm() | )
 
-    external drop-until(c_80 : ATerm() -> ATerm() | )
+    external drop-until(f_90 : ATerm() -> ATerm() | )
 
-    external drop-while(b_80 : ATerm() -> ATerm() | )
+    external drop-while(e_90 : ATerm() -> ATerm() | )
 
-    external take(a_80 : ATerm() -> ATerm() | )
+    external take(d_90 : ATerm() -> ATerm() | )
 
-    external take-until(z_79 : ATerm() -> ATerm() | )
+    external take-until(c_90 : ATerm() -> ATerm() | )
 
-    external take-while(y_79 : ATerm() -> ATerm() | )
+    external take-while(b_90 : ATerm() -> ATerm() | )
 
-    external number(x_79 : ATerm() -> ATerm() | )
+    external number(a_90 : ATerm() -> ATerm() | )
 
     external Nil-T( | )
 
-    external Cons-T(s_0 : ATerm() -> ATerm() , v_0 : ATerm() -> ATerm() | )
+    external Cons-T(u_0 : ATerm() -> ATerm() , x_0 : ATerm() -> ATerm() | )
 
-    external thread-map(v_79 : ATerm() -> ATerm() | )
+    external thread-map(y_89 : ATerm() -> ATerm() | )
 
-    external copy(u_79 : ATerm() -> ATerm() | )
+    external copy(x_89 : ATerm() -> ATerm() | )
 
     external copy( | )
 
@@ -1552,155 +1709,155 @@ specification
 
     external last( | )
 
-    external mapconcat(s_79 : ATerm() -> ATerm() | )
+    external mapconcat(v_89 : ATerm() -> ATerm() | )
 
-    external mapfoldr1(o_79 : ATerm() -> ATerm() , p_79 : ATerm() -> ATerm() , q_79 : ATerm() -> ATerm() | )
+    external mapfoldr1(r_89 : ATerm() -> ATerm() , s_89 : ATerm() -> ATerm() , t_89 : ATerm() -> ATerm() | )
 
-    external mapfoldr(l_79 : ATerm() -> ATerm() , m_79 : ATerm() -> ATerm() , n_79 : ATerm() -> ATerm() | )
+    external mapfoldr(o_89 : ATerm() -> ATerm() , p_89 : ATerm() -> ATerm() , q_89 : ATerm() -> ATerm() | )
 
-    external foldl(j_79 : ATerm() -> ATerm() | )
+    external foldl(m_89 : ATerm() -> ATerm() | )
 
-    external foldr(g_79 : ATerm() -> ATerm() , h_79 : ATerm() -> ATerm() , i_79 : ATerm() -> ATerm() | )
+    external foldr(j_89 : ATerm() -> ATerm() , k_89 : ATerm() -> ATerm() , l_89 : ATerm() -> ATerm() | )
 
-    external foldr(e_79 : ATerm() -> ATerm() , f_79 : ATerm() -> ATerm() | )
+    external foldr(h_89 : ATerm() -> ATerm() , i_89 : ATerm() -> ATerm() | )
 
-    external foldr1(c_79 : ATerm() -> ATerm() | )
+    external foldr1(f_89 : ATerm() -> ATerm() | )
 
-    external foldr1(y_78 : ATerm() -> ATerm() , z_78 : ATerm() -> ATerm() , a_79 : ATerm() -> ATerm() | )
+    external foldr1(b_89 : ATerm() -> ATerm() , c_89 : ATerm() -> ATerm() , d_89 : ATerm() -> ATerm() | )
 
-    external foldr1(v_78 : ATerm() -> ATerm() , w_78 : ATerm() -> ATerm() | )
+    external foldr1(y_88 : ATerm() -> ATerm() , z_88 : ATerm() -> ATerm() | )
 
-    external trim(u_78 : ATerm() -> ATerm() | )
+    external trim(x_88 : ATerm() -> ATerm() | )
 
-    external ltrim(t_78 : ATerm() -> ATerm() | )
+    external ltrim(w_88 : ATerm() -> ATerm() | )
 
-    external rtrim(s_78 : ATerm() -> ATerm() | )
+    external rtrim(v_88 : ATerm() -> ATerm() | )
 
     external flatten-list( | )
 
-    external lookup(q_78 : ATerm() -> ATerm() | )
+    external lookup(t_88 : ATerm() -> ATerm() | )
 
     external lookup'( | )
 
-    external getfirst(o_78 : ATerm() -> ATerm() | )
+    external getfirst(r_88 : ATerm() -> ATerm() | )
 
     external lookup( | )
 
-    external Look1'(m_78 : ATerm() -> ATerm() | )
+    external Look1'(p_88 : ATerm() -> ATerm() | )
 
     external Look2( | )
 
     external Look1( | )
 
-    external collect-all(i_78 : ATerm() -> ATerm() , j_78 : ATerm() -> ATerm() , k_78 : ATerm() -> ATerm() | )
+    external collect-all(l_88 : ATerm() -> ATerm() , m_88 : ATerm() -> ATerm() , n_88 : ATerm() -> ATerm() | )
 
-    external collect-all(f_78 : ATerm() -> ATerm() , g_78 : ATerm() -> ATerm() | )
+    external collect-all(i_88 : ATerm() -> ATerm() , j_88 : ATerm() -> ATerm() | )
 
-    external collect-all(e_78 : ATerm() -> ATerm() | )
+    external collect-all(h_88 : ATerm() -> ATerm() | )
 
-    external collect-om(a_78 : ATerm() -> ATerm() , b_78 : ATerm() -> ATerm() , c_78 : ATerm() -> ATerm() | )
+    external collect-om(d_88 : ATerm() -> ATerm() , e_88 : ATerm() -> ATerm() , f_88 : ATerm() -> ATerm() | )
 
-    external collect-om(y_77 : ATerm() -> ATerm() , z_77 : ATerm() -> ATerm() | )
+    external collect-om(b_88 : ATerm() -> ATerm() , c_88 : ATerm() -> ATerm() | )
 
-    external collect(x_77 : ATerm() -> ATerm() | )
+    external collect(a_88 : ATerm() -> ATerm() | )
 
-    external collect-om(w_77 : ATerm() -> ATerm() | )
+    external collect-om(z_87 : ATerm() -> ATerm() | )
 
-    external collect-split'(u_77 : ATerm() -> ATerm() | )
+    external collect-split'(x_87 : ATerm() -> ATerm() | )
 
-    external CollectSplit(r_77 : ATerm() -> ATerm() , s_77 : ATerm() -> ATerm() , t_77 : ATerm() -> ATerm() | )
+    external CollectSplit(u_87 : ATerm() -> ATerm() , v_87 : ATerm() -> ATerm() , w_87 : ATerm() -> ATerm() | )
 
-    external CollectSplit(p_77 : ATerm() -> ATerm() , q_77 : ATerm() -> ATerm() | )
+    external CollectSplit(s_87 : ATerm() -> ATerm() , t_87 : ATerm() -> ATerm() | )
 
-    external collect-split(n_77 : ATerm() -> ATerm() | )
+    external collect-split(q_87 : ATerm() -> ATerm() | )
 
-    external collect-split(k_77 : ATerm() -> ATerm() , l_77 : ATerm() -> ATerm() | )
+    external collect-split(n_87 : ATerm() -> ATerm() , o_87 : ATerm() -> ATerm() | )
 
-    external postorder-collect(i_77 : ATerm() -> ATerm() , j_77 : ATerm() -> ATerm() | )
+    external postorder-collect(l_87 : ATerm() -> ATerm() , m_87 : ATerm() -> ATerm() | )
 
-    external postorder-collect(h_77 : ATerm() -> ATerm() | )
+    external postorder-collect(k_87 : ATerm() -> ATerm() | )
 
-    external bu-collect(f_77 : ATerm() -> ATerm() | )
+    external bu-collect(i_87 : ATerm() -> ATerm() | )
 
-    external collect-exc(c_77 : ATerm() -> ATerm() , d_77 : a -> b * a -> b | )
+    external collect-exc(f_87 : ATerm() -> ATerm() , g_87 : a -> b * a -> b | )
 
-    external collect(a_77 : ATerm() -> ATerm() , b_77 : a -> a * a -> a * a -> a | )
+    external collect(d_87 : ATerm() -> ATerm() , e_87 : a -> a * a -> a * a -> a | )
 
-    external collect-set(z_76 : ATerm() -> ATerm() | )
+    external collect-set(c_87 : ATerm() -> ATerm() | )
 
-    external collect-kids(y_76 : ATerm() -> ATerm() | )
+    external collect-kids(b_87 : ATerm() -> ATerm() | )
 
-    external atmostonce'(x_76 : ATerm() -> ATerm() | )
+    external atmostonce'(a_87 : ATerm() -> ATerm() | )
 
-    external atmostonce(w_76 : ATerm() -> ATerm() | )
+    external atmostonce(z_86 : ATerm() -> ATerm() | )
 
-    external twicetd(v_76 : ATerm() -> ATerm() | )
+    external twicetd(y_86 : ATerm() -> ATerm() | )
 
-    external HdMember'(t_76 : ATerm() -> ATerm() , u_76 : ATerm() -> ATerm() | )
+    external HdMember'(w_86 : ATerm() -> ATerm() , x_86 : ATerm() -> ATerm() | )
 
-    external HdMember(s_76 : ATerm() -> ATerm() | )
+    external HdMember(v_86 : ATerm() -> ATerm() | )
 
     external nub( | )
 
     external make-set( | )
 
-    external union(q_76 : ATerm() -> ATerm() | )
+    external union(t_86 : ATerm() -> ATerm() | )
 
     external union( | )
 
-    external unions(p_76 : ATerm() -> ATerm() | )
+    external unions(s_86 : ATerm() -> ATerm() | )
 
     external unions( | )
 
-    external sym-diff(o_76 : ATerm() -> ATerm() | )
+    external sym-diff(r_86 : ATerm() -> ATerm() | )
 
     external sym-diff( | )
 
-    external diff'(n_76 : ATerm() -> ATerm() | )
+    external diff'(q_86 : ATerm() -> ATerm() | )
 
-    external diff(l_76 : ATerm() -> ATerm() | )
+    external diff(o_86 : ATerm() -> ATerm() | )
 
-    external isect(j_76 : ATerm() -> ATerm() | )
+    external isect(m_86 : ATerm() -> ATerm() | )
 
     external isect( | )
 
-    external subset-gen(g_76 : ATerm() -> ATerm() , h_76 : ATerm() -> ATerm() | )
+    external subset-gen(j_86 : ATerm() -> ATerm() , k_86 : ATerm() -> ATerm() | )
 
-    external subseteq(f_76 : ATerm() -> ATerm() | )
+    external subseteq(i_86 : ATerm() -> ATerm() | )
 
     external subseteq( | )
 
-    external subset(e_76 : ATerm() -> ATerm() | )
+    external subset(h_86 : ATerm() -> ATerm() | )
 
     external subset( | )
 
-    external set-eq(d_76 : ATerm() -> ATerm() | )
+    external set-eq(g_86 : ATerm() -> ATerm() | )
 
     external set-eq( | )
 
-    external qsort(l_0 : ATerm() -> ATerm() | )
+    external qsort(o_0 : ATerm() -> ATerm() | )
 
     external uniq( | )
 
     external Uniq( | )
 
-    external jsort-list(z_75 : ATerm() -> ATerm() | )
+    external jsort-list(c_86 : ATerm() -> ATerm() | )
 
-    external isort-list(x_75 : ATerm() -> ATerm() | )
+    external isort-list(a_86 : ATerm() -> ATerm() | )
 
-    external sort-list(v_75 : ATerm() -> ATerm() | )
+    external sort-list(y_85 : ATerm() -> ATerm() | )
 
-    external LMerge(u_75 : ATerm() -> ATerm() | )
+    external LMerge(x_85 : ATerm() -> ATerm() | )
 
-    external LSort(t_75 : ATerm() -> ATerm() | )
+    external LSort(w_85 : ATerm() -> ATerm() | )
 
-    external SortL(s_75 : ATerm() -> ATerm() | )
+    external SortL(v_85 : ATerm() -> ATerm() | )
 
-    external Skip(r_75 : ATerm() -> ATerm() | )
+    external Skip(u_85 : ATerm() -> ATerm() | )
 
-    external join(q_75 : ATerm() -> ATerm() | )
+    external join(t_85 : ATerm() -> ATerm() | )
 
-    external cart(p_75 : ATerm() -> ATerm() | )
+    external cart(s_85 : ATerm() -> ATerm() | )
 
     external NZip3( | )
 
@@ -1738,47 +1895,47 @@ specification
 
     external Zip1( | )
 
-    external zip-skip(m_75 : ATerm() -> ATerm() , n_75 : ATerm() -> ATerm() | )
+    external zip-skip(p_85 : ATerm() -> ATerm() , q_85 : ATerm() -> ATerm() | )
 
-    external zipr-tail-match(k_75 : ATerm() -> ATerm() | )
+    external zipr-tail-match(n_85 : ATerm() -> ATerm() | )
 
-    external zipl-tail-match(i_75 : ATerm() -> ATerm() | )
+    external zipl-tail-match(l_85 : ATerm() -> ATerm() | )
 
     external zip-tail( | )
 
-    external zipPad(e_75 : ATerm() -> ATerm() , f_75 : ATerm() -> ATerm() | )
+    external zipPad(h_85 : ATerm() -> ATerm() , i_85 : ATerm() -> ATerm() | )
 
-    external rzipFetch(c_75 : ATerm() -> ATerm() | )
+    external rzipFetch(f_85 : ATerm() -> ATerm() | )
 
-    external lzipFetch(a_75 : ATerm() -> ATerm() | )
+    external lzipFetch(d_85 : ATerm() -> ATerm() | )
 
-    external zipFetch(y_74 : ATerm() -> ATerm() | )
+    external zipFetch(b_85 : ATerm() -> ATerm() | )
 
-    external rzip(x_74 : ATerm() -> ATerm() | )
+    external rzip(a_85 : ATerm() -> ATerm() | )
 
-    external lzip(w_74 : ATerm() -> ATerm() | )
+    external lzip(z_84 : ATerm() -> ATerm() | )
 
-    external nzip(v_74 : ATerm() -> ATerm() | )
+    external nzip(y_84 : ATerm() -> ATerm() | )
 
-    external nzip0(u_74 : ATerm() -> ATerm() | )
+    external nzip0(x_84 : ATerm() -> ATerm() | )
 
-    external unzip(t_74 : ATerm() -> ATerm() | )
+    external unzip(w_84 : ATerm() -> ATerm() | )
 
     external unzip( | )
 
-    external rest-zip(s_74 : ATerm() -> ATerm() | )
+    external rest-zip(v_84 : ATerm() -> ATerm() | )
 
-    external zipr(r_74 : ATerm() -> ATerm() | )
+    external zipr(u_84 : ATerm() -> ATerm() | )
 
-    external zipl(q_74 : ATerm() -> ATerm() | )
+    external zipl(t_84 : ATerm() -> ATerm() | )
 
-    external zip'(p_74 : ATerm() -> ATerm() | )
+    external zip'(s_84 : ATerm() -> ATerm() | )
 
-    external zip(o_74 : ATerm() -> ATerm() | )
+    external zip(r_84 : ATerm() -> ATerm() | )
 
     external zip( | )
 
-    external genzip(j_74 : ATerm() -> ATerm() , k_74 : ATerm() -> ATerm() , l_74 : ATerm() -> ATerm() , m_74 : ATerm() -> ATerm() | )
+    external genzip(m_84 : ATerm() -> ATerm() , n_84 : ATerm() -> ATerm() , o_84 : ATerm() -> ATerm() , p_84 : ATerm() -> ATerm() | )
 
     external Ind2( | )
 
@@ -1786,7 +1943,7 @@ specification
 
     external index( | )
 
-    external get-index0(i_74 : ATerm() -> ATerm() | )
+    external get-index0(l_84 : ATerm() -> ATerm() | )
 
     external get_index( | )
 
@@ -1798,7 +1955,7 @@ specification
 
     external get-index( | )
 
-    external Sind2(g_74 : ATerm() -> ATerm() | )
+    external Sind2(j_84 : ATerm() -> ATerm() | )
 
     external Sind1( | )
 
@@ -1808,9 +1965,9 @@ specification
 
     external add-indices( | )
 
-    external map-with-index(d_74 : ATerm() -> ATerm() | )
+    external map-with-index(g_84 : ATerm() -> ATerm() | )
 
-    external Ins2(c_74 : ATerm() -> ATerm() | )
+    external Ins2(f_84 : ATerm() -> ATerm() | )
 
     external Ins1( | )
 
@@ -1830,9 +1987,9 @@ specification
 
     external Hd( | )
 
-    external reverse-acc(i_0 : ATerm() -> ATerm() , k_0 : ATerm() -> ATerm() | )
+    external reverse-acc(l_0 : ATerm() -> ATerm() , m_0 : ATerm() -> ATerm() | )
 
-    external reverse(w_73 : ATerm() -> ATerm() | )
+    external reverse(z_83 : ATerm() -> ATerm() | )
 
     external reverse( | )
 
@@ -1842,63 +1999,63 @@ specification
 
     external RevInit( | )
 
-    external listdu2(t_73 : ATerm() -> ATerm() , u_73 : ATerm() -> ATerm() | )
+    external listdu2(w_83 : ATerm() -> ATerm() , x_83 : ATerm() -> ATerm() | )
 
-    external listdu(r_73 : ATerm() -> ATerm() | )
+    external listdu(u_83 : ATerm() -> ATerm() | )
 
-    external listtd(p_73 : ATerm() -> ATerm() | )
+    external listtd(s_83 : ATerm() -> ATerm() | )
 
-    external listbu1(o_73 : ATerm() -> ATerm() | )
+    external listbu1(r_83 : ATerm() -> ATerm() | )
 
-    external listbu(m_73 : ATerm() -> ATerm() | )
+    external listbu(p_83 : ATerm() -> ATerm() | )
 
-    external at-init(j_73 : ATerm() -> ATerm() , k_73 : ATerm() -> ATerm() | )
+    external at-init(m_83 : ATerm() -> ATerm() , n_83 : ATerm() -> ATerm() | )
 
     external split-init-last( | )
 
-    external at-last(h_73 : ATerm() -> ATerm() | )
+    external at-last(k_83 : ATerm() -> ATerm() | )
 
-    external at_last(g_73 : ATerm() -> ATerm() | )
+    external at_last(j_83 : ATerm() -> ATerm() | )
 
-    external at-suffix-rev(e_73 : ATerm() -> ATerm() | )
+    external at-suffix-rev(h_83 : ATerm() -> ATerm() | )
 
-    external at_suffix(c_73 : ATerm() -> ATerm() | )
+    external at_suffix(f_83 : ATerm() -> ATerm() | )
 
-    external at-suffix(a_73 : ATerm() -> ATerm() | )
+    external at-suffix(d_83 : ATerm() -> ATerm() | )
 
-    external at_end(y_72 : ATerm() -> ATerm() | )
+    external at_end(b_83 : ATerm() -> ATerm() | )
 
-    external at-end(w_72 : ATerm() -> ATerm() | )
+    external at-end(z_82 : ATerm() -> ATerm() | )
 
-    external at_tail(v_72 : ATerm() -> ATerm() | )
+    external at_tail(y_82 : ATerm() -> ATerm() | )
 
-    external at-tail(u_72 : ATerm() -> ATerm() | )
+    external at-tail(x_82 : ATerm() -> ATerm() | )
 
-    external split-fetch-keep(t_72 : ATerm() -> ATerm() | )
+    external split-fetch-keep(w_82 : ATerm() -> ATerm() | )
 
-    external split-fetch(s_72 : ATerm() -> ATerm() | )
+    external split-fetch(v_82 : ATerm() -> ATerm() | )
 
-    external fetch-elem(r_72 : ATerm() -> ATerm() | )
+    external fetch-elem(u_82 : ATerm() -> ATerm() | )
 
-    external fetch(p_72 : ATerm() -> ATerm() | )
+    external fetch(s_82 : ATerm() -> ATerm() | )
 
-    external elem(o_72 : ATerm() -> ATerm() | )
+    external elem(r_82 : ATerm() -> ATerm() | )
 
     external elem( | )
 
     external length( | )
 
-    external list-some-filter(m_72 : ATerm() -> ATerm() | )
+    external list-some-filter(p_82 : ATerm() -> ATerm() | )
 
-    external list-some(k_72 : ATerm() -> ATerm() | )
+    external list-some(n_82 : ATerm() -> ATerm() | )
 
-    external list(j_72 : ATerm() -> ATerm() | )
+    external list(m_82 : ATerm() -> ATerm() | )
 
-    external reverse-map(i_72 : ATerm() -> ATerm() | )
+    external reverse-map(l_82 : ATerm() -> ATerm() | )
 
-    external map1(h_72 : ATerm() -> ATerm() | )
+    external map1(k_82 : ATerm() -> ATerm() | )
 
-    external map(f_72 : ATerm() -> ATerm() | )
+    external map(i_82 : ATerm() -> ATerm() | )
 
     external is-list( | )
 
@@ -1918,21 +2075,21 @@ specification
 
     external conc( | )
 
-    external Sep(c_72 : ATerm() -> ATerm() | )
+    external Sep(f_82 : ATerm() -> ATerm() | )
 
-    external separate-by(b_72 : ATerm() -> ATerm() | )
+    external separate-by(e_82 : ATerm() -> ATerm() | )
 
     external separate-by( | )
 
-    external for-each-pair(z_71 : ATerm() -> ATerm() | )
+    external for-each-pair(c_82 : ATerm() -> ATerm() | )
 
     external matrix-transpose( | )
 
-    external save(y_71 : ATerm() -> ATerm() | )
+    external save(b_82 : ATerm() -> ATerm() | )
 
-    external open(x_71 : ATerm() -> ATerm() | )
+    external open(a_82 : ATerm() -> ATerm() | )
 
-    external WriteToFile(w_71 : ATerm() -> ATerm() | )
+    external WriteToFile(z_81 : ATerm() -> ATerm() | )
 
     external WriteToTextFile( | )
 
@@ -1962,25 +2119,25 @@ specification
 
     external fprint( | )
 
-    external print-strings-nl(v_71 : ATerm() -> ATerm() | )
+    external print-strings-nl(y_81 : ATerm() -> ATerm() | )
 
-    external debug(u_71 : ATerm() -> ATerm() | )
+    external debug(x_81 : ATerm() -> ATerm() | )
 
     external debug( | )
 
-    external debug-depth(s_71 : ATerm() -> ATerm() , t_71 : ATerm() -> ATerm() | )
+    external debug-depth(v_81 : ATerm() -> ATerm() , w_81 : ATerm() -> ATerm() | )
 
-    external debug-depth(r_71 : ATerm() -> ATerm() | )
+    external debug-depth(u_81 : ATerm() -> ATerm() | )
 
     external debug-depth( | )
 
-    external risky(p_71 : ATerm() -> ATerm() , q_71 : ATerm() -> ATerm() | )
+    external risky(s_81 : ATerm() -> ATerm() , t_81 : ATerm() -> ATerm() | )
 
-    external Assert(n_71 : ATerm() -> ATerm() , o_71 : ATerm() -> ATerm() | )
+    external Assert(q_81 : ATerm() -> ATerm() , r_81 : ATerm() -> ATerm() | )
 
-    external dissuader(m_71 : ATerm() -> ATerm() | )
+    external dissuader(p_81 : ATerm() -> ATerm() | )
 
-    external obsolete(l_71 : ATerm() -> ATerm() | )
+    external obsolete(o_81 : ATerm() -> ATerm() | )
 
     external giving-up( | )
 
@@ -1988,93 +2145,93 @@ specification
 
     external error( | )
 
-    external trace(j_71 : ATerm() -> ATerm() , k_71 : ATerm() -> ATerm() | )
+    external trace(m_81 : ATerm() -> ATerm() , n_81 : ATerm() -> ATerm() | )
 
-    external say(i_71 : ATerm() -> ATerm() | )
+    external say(l_81 : ATerm() -> ATerm() | )
 
-    external debug-stdout(h_71 : ATerm() -> ATerm() | )
+    external debug-stdout(k_81 : ATerm() -> ATerm() | )
 
     external printstring( | )
 
     external printchar( | )
 
-    external echo(g_71 : ATerm() -> ATerm() | )
+    external echo(j_81 : ATerm() -> ATerm() | )
 
     external echo( | )
 
-    external stdio(f_71 : ATerm() -> ATerm() | )
+    external stdio(i_81 : ATerm() -> ATerm() | )
 
-    external stdioO(e_71 : ATerm() -> ATerm() | )
+    external stdioO(h_81 : ATerm() -> ATerm() | )
 
-    external coll(d_71 : ATerm() -> ATerm() | )
+    external coll(g_81 : ATerm() -> ATerm() | )
 
-    external t(c_71 : ATerm() -> ATerm() | )
+    external t(f_81 : ATerm() -> ATerm() | )
 
-    external d(b_71 : ATerm() -> ATerm() | )
+    external d(e_81 : ATerm() -> ATerm() | )
 
-    external one-dist(a_71 : ATerm() -> ATerm() | )
+    external one-dist(d_81 : ATerm() -> ATerm() | )
 
-    external all-dist(z_70 : ATerm() -> ATerm() | )
+    external all-dist(c_81 : ATerm() -> ATerm() | )
 
-    external env-oncetd(x_70 : ATerm() -> ATerm() | )
+    external env-oncetd(a_81 : ATerm() -> ATerm() | )
 
-    external count-bottomup(w_70 : ATerm() -> ATerm() | )
+    external count-bottomup(z_80 : ATerm() -> ATerm() | )
 
-    external thread-bottomup(u_70 : ATerm() -> ATerm() | )
+    external thread-bottomup(x_80 : ATerm() -> ATerm() | )
 
-    external thread-alltd(s_70 : ATerm() -> ATerm() | )
+    external thread-alltd(v_80 : ATerm() -> ATerm() | )
 
-    external env-bottomup(q_70 : ATerm() -> ATerm() | )
+    external env-bottomup(t_80 : ATerm() -> ATerm() | )
 
-    external env-topdown(n_70 : ATerm() -> ATerm() , o_70 : term -> term * term -> term | )
+    external env-topdown(q_80 : ATerm() -> ATerm() , r_80 : term -> term * term -> term | )
 
-    external env-topdown(l_70 : ATerm() -> ATerm() | )
+    external env-topdown(o_80 : ATerm() -> ATerm() | )
 
-    external env-alltd(j_70 : ATerm() -> ATerm() | )
+    external env-alltd(m_80 : ATerm() -> ATerm() | )
 
-    external innermost-tagged(h_70 : a -> a | )
+    external innermost-tagged(k_80 : a -> a | )
 
-    external innermost-memo(f_70 : ATerm() -> ATerm() | )
+    external innermost-memo(i_80 : ATerm() -> ATerm() | )
 
-    external pseudo-innermost3(c_70 : ATerm() -> ATerm() | )
+    external pseudo-innermost3(f_80 : ATerm() -> ATerm() | )
 
-    external innermost-old(a_70 : ATerm() -> ATerm() | )
+    external innermost-old(d_80 : ATerm() -> ATerm() | )
 
-    external innermost(z_69 : ATerm() -> ATerm() | )
+    external innermost(c_80 : ATerm() -> ATerm() | )
 
-    external innermost'(y_69 : ATerm() -> ATerm() | )
+    external innermost'(b_80 : ATerm() -> ATerm() | )
 
-    external outermost(x_69 : ATerm() -> ATerm() | )
+    external outermost(a_80 : ATerm() -> ATerm() | )
 
-    external reduce(v_69 : ATerm() -> ATerm() | )
+    external reduce(y_79 : ATerm() -> ATerm() | )
 
-    external alltd-fold-l(s_69 : ATerm() -> ATerm() , t_69 : ATerm() -> ATerm() | )
+    external alltd-fold-l(v_79 : ATerm() -> ATerm() , w_79 : ATerm() -> ATerm() | )
 
-    external alldownup2-l(p_69 : ATerm() -> ATerm() , q_69 : ATerm() -> ATerm() | )
+    external alldownup2-l(s_79 : ATerm() -> ATerm() , t_79 : ATerm() -> ATerm() | )
 
-    external alltd-l(n_69 : ATerm() -> ATerm() | )
+    external alltd-l(q_79 : ATerm() -> ATerm() | )
 
-    external bottomup-para-l(l_69 : ATerm() -> ATerm() | )
+    external bottomup-para-l(o_79 : ATerm() -> ATerm() | )
 
-    external downupS-l(h_69 : ATerm() -> ATerm() , i_69 : ATerm() -> ATerm() , j_69 : a -> a * a -> a | )
+    external downupS-l(k_79 : ATerm() -> ATerm() , l_79 : ATerm() -> ATerm() , m_79 : a -> a * a -> a | )
 
-    external downupS-l(e_69 : ATerm() -> ATerm() , f_69 : a -> a * a -> a | )
+    external downupS-l(h_79 : ATerm() -> ATerm() , i_79 : a -> a * a -> a | )
 
-    external bottomupS-l(b_69 : ATerm() -> ATerm() , c_69 : a -> a * a -> a | )
+    external bottomupS-l(e_79 : ATerm() -> ATerm() , f_79 : a -> a * a -> a | )
 
-    external topdownS-l(y_68 : ATerm() -> ATerm() , z_68 : a -> a * a -> a | )
+    external topdownS-l(b_79 : ATerm() -> ATerm() , c_79 : a -> a * a -> a | )
 
-    external downup2-l(v_68 : ATerm() -> ATerm() , w_68 : ATerm() -> ATerm() | )
+    external downup2-l(y_78 : ATerm() -> ATerm() , z_78 : ATerm() -> ATerm() | )
 
-    external downup-l(s_68 : ATerm() -> ATerm() , t_68 : ATerm() -> ATerm() | )
+    external downup-l(v_78 : ATerm() -> ATerm() , w_78 : ATerm() -> ATerm() | )
 
-    external downup-l(q_68 : ATerm() -> ATerm() | )
+    external downup-l(t_78 : ATerm() -> ATerm() | )
 
-    external bottomup-l(o_68 : ATerm() -> ATerm() | )
+    external bottomup-l(r_78 : ATerm() -> ATerm() | )
 
-    external topdown-l(m_68 : ATerm() -> ATerm() | )
+    external topdown-l(p_78 : ATerm() -> ATerm() | )
 
-    external all-l(l_68 : ATerm() -> ATerm() | )
+    external all-l(o_78 : ATerm() -> ATerm() | )
 
     external is-proper-subterm( | )
 
@@ -2092,117 +2249,121 @@ specification
 
     external is-leaf( | )
 
-    external breadthfirst(j_68 : ATerm() -> ATerm() | )
+    external breadthfirst(m_78 : ATerm() -> ATerm() | )
 
-    external somedownup(h_68 : ATerm() -> ATerm() | )
+    external somedownup(k_78 : ATerm() -> ATerm() | )
 
-    external manytd(f_68 : ATerm() -> ATerm() | )
+    external manytd(i_78 : ATerm() -> ATerm() | )
 
-    external manybu(d_68 : ATerm() -> ATerm() | )
+    external manybu(g_78 : ATerm() -> ATerm() | )
 
-    external leaves(a_68 : ATerm() -> ATerm() , b_68 : ATerm() -> ATerm() | )
+    external leaves(d_78 : ATerm() -> ATerm() , e_78 : ATerm() -> ATerm() | )
 
-    external leaves(w_67 : ATerm() -> ATerm() , x_67 : ATerm() -> ATerm() , y_67 : a -> a * a -> a | )
+    external leaves(z_77 : ATerm() -> ATerm() , a_78 : ATerm() -> ATerm() , b_78 : a -> a * a -> a | )
 
-    external alltd-fold(t_67 : ATerm() -> ATerm() , u_67 : ATerm() -> ATerm() | )
+    external alltd-fold(w_77 : ATerm() -> ATerm() , x_77 : ATerm() -> ATerm() | )
 
-    external downup2'-obsolete(q_67 : ATerm() -> ATerm() , r_67 : ATerm() -> ATerm() | )
+    external downup2'-obsolete(t_77 : ATerm() -> ATerm() , u_77 : ATerm() -> ATerm() | )
 
-    external alldownup2(n_67 : ATerm() -> ATerm() , o_67 : ATerm() -> ATerm() | )
+    external alldownup2(q_77 : ATerm() -> ATerm() , r_77 : ATerm() -> ATerm() | )
 
-    external alltd(l_67 : ATerm() -> ATerm() | )
+    external alltd(o_77 : ATerm() -> ATerm() | )
 
-    external somebu(j_67 : ATerm() -> ATerm() | )
+    external somebu(m_77 : ATerm() -> ATerm() | )
 
-    external sometd(h_67 : ATerm() -> ATerm() | )
+    external sometd(k_77 : ATerm() -> ATerm() | )
 
-    external oncetd-stop(e_67 : ATerm() -> ATerm() , f_67 : a -> a * a -> a | )
+    external oncetd-stop(h_77 : ATerm() -> ATerm() , i_77 : a -> a * a -> a | )
 
-    external oncetd-skip(b_67 : ATerm() -> ATerm() , c_67 : a -> a * a -> a | )
+    external oncetd-skip(e_77 : ATerm() -> ATerm() , f_77 : a -> a * a -> a | )
 
-    external oncebu(z_66 : ATerm() -> ATerm() | )
+    external oncebu(c_77 : ATerm() -> ATerm() | )
 
-    external oncetd(x_66 : ATerm() -> ATerm() | )
+    external oncetd(a_77 : ATerm() -> ATerm() | )
 
-    external spinebu'(g_0 : ATerm() -> ATerm() | )
+    external spinebu'(j_0 : ATerm() -> ATerm() | )
 
-    external spinetd'(e_0 : ATerm() -> ATerm() | )
+    external spinetd'(h_0 : ATerm() -> ATerm() | )
 
-    external somespinebu(r_66 : ATerm() -> ATerm() | )
+    external somespinebu(u_76 : ATerm() -> ATerm() | )
 
-    external somespinetd(p_66 : ATerm() -> ATerm() | )
+    external somespinetd(s_76 : ATerm() -> ATerm() | )
 
-    external spinebu(m_66 : ATerm() -> ATerm() | )
+    external spinebu(p_76 : ATerm() -> ATerm() | )
 
-    external spinetd(l_66 : ATerm() -> ATerm() | )
+    external spinetd(o_76 : ATerm() -> ATerm() | )
 
-    external bottomup-para(k_66 : ATerm() -> ATerm() | )
+    external bottomup-para(n_76 : ATerm() -> ATerm() | )
 
-    external don't-stop(j_66 : ATerm() -> ATerm() | )
+    external don't-stop(m_76 : ATerm() -> ATerm() | )
 
-    external downupS(g_66 : ATerm() -> ATerm() , h_66 : ATerm() -> ATerm() , i_66 : a -> a * a -> a | )
+    external downupS(j_76 : ATerm() -> ATerm() , k_76 : ATerm() -> ATerm() , l_76 : a -> a * a -> a | )
 
-    external downupS(e_66 : ATerm() -> ATerm() , f_66 : a -> a * a -> a | )
+    external downupS(h_76 : ATerm() -> ATerm() , i_76 : a -> a * a -> a | )
 
-    external bottomupS(c_66 : ATerm() -> ATerm() , d_66 : a -> a * a -> a | )
+    external bottomupS(f_76 : ATerm() -> ATerm() , g_76 : a -> a * a -> a | )
 
-    external topdownS(a_66 : ATerm() -> ATerm() , b_66 : a -> a * a -> a | )
+    external topdownS(d_76 : ATerm() -> ATerm() , e_76 : a -> a * a -> a | )
 
-    external downup2(y_65 : ATerm() -> ATerm() , z_65 : ATerm() -> ATerm() | )
+    external downup2(b_76 : ATerm() -> ATerm() , c_76 : ATerm() -> ATerm() | )
 
-    external downup(w_65 : ATerm() -> ATerm() , x_65 : ATerm() -> ATerm() | )
+    external downup(z_75 : ATerm() -> ATerm() , a_76 : ATerm() -> ATerm() | )
 
-    external downup(v_65 : ATerm() -> ATerm() | )
+    external downup(y_75 : ATerm() -> ATerm() | )
 
-    external bottomup(u_65 : ATerm() -> ATerm() | )
+    external bottomup(x_75 : ATerm() -> ATerm() | )
 
-    external topdown(t_65 : ATerm() -> ATerm() | )
+    external topdown(w_75 : ATerm() -> ATerm() | )
 
-    external if-cpl-loaded(s_65 : ATerm() -> ATerm() | )
+    external if-cpl-loaded(v_75 : ATerm() -> ATerm() | )
 
-    external if-cpl-loaded(q_65 : ATerm() -> ATerm() , r_65 : ATerm() -> ATerm() | )
+    external if-cpl-loaded(t_75 : ATerm() -> ATerm() , u_75 : ATerm() -> ATerm() | )
 
     external cpl-loaded( | )
 
-    external for(n_65 : ATerm() -> ATerm() , o_65 : ATerm() -> ATerm() , p_65 : ATerm() -> ATerm() | )
+    external for(q_75 : ATerm() -> ATerm() , r_75 : ATerm() -> ATerm() , s_75 : ATerm() -> ATerm() | )
 
-    external while-not(k_65 : ATerm() -> ATerm() , l_65 : ATerm() -> ATerm() | )
+    external while-not(n_75 : ATerm() -> ATerm() , o_75 : ATerm() -> ATerm() | )
 
-    external do-while(h_65 : ATerm() -> ATerm() , i_65 : ATerm() -> ATerm() | )
+    external do-while(k_75 : ATerm() -> ATerm() , l_75 : ATerm() -> ATerm() | )
 
-    external while(e_65 : ATerm() -> ATerm() , f_65 : ATerm() -> ATerm() | )
+    external while(h_75 : ATerm() -> ATerm() , i_75 : ATerm() -> ATerm() | )
 
-    external repeat-until(b_65 : ATerm() -> ATerm() , c_65 : ATerm() -> ATerm() | )
+    external repeat-until(e_75 : ATerm() -> ATerm() , f_75 : ATerm() -> ATerm() | )
 
-    external repeat1(a_65 : ATerm() -> ATerm() | )
+    external repeat1(d_75 : ATerm() -> ATerm() | )
 
-    external repeat1(x_64 : ATerm() -> ATerm() , y_64 : ATerm() -> ATerm() | )
+    external repeat1(a_75 : ATerm() -> ATerm() , b_75 : ATerm() -> ATerm() | )
 
-    external repeat(w_64 : ATerm() -> ATerm() | )
+    external repeat(z_74 : ATerm() -> ATerm() | )
 
-    external repeat(t_64 : ATerm() -> ATerm() , u_64 : ATerm() -> ATerm() | )
+    external repeat(w_74 : ATerm() -> ATerm() , x_74 : ATerm() -> ATerm() | )
 
-    external finally(r_64 : ATerm() -> ATerm() , s_64 : ATerm() -> ATerm() | )
+    external finally(u_74 : ATerm() -> ATerm() , v_74 : ATerm() -> ATerm() | )
 
-    external restore-always(p_64 : ATerm() -> ATerm() , q_64 : ATerm() -> ATerm() | )
+    external restore-always(s_74 : ATerm() -> ATerm() , t_74 : ATerm() -> ATerm() | )
 
-    external restore(n_64 : ATerm() -> ATerm() , o_64 : ATerm() -> ATerm() | )
+    external restore(q_74 : ATerm() -> ATerm() , r_74 : ATerm() -> ATerm() | )
 
     external FAIL( | )
 
     external eq( | )
 
-    external ior(l_64 : ATerm() -> ATerm() , m_64 : ATerm() -> ATerm() | )
+    external and(o_74 : ATerm() -> ATerm() , p_74 : ATerm() -> ATerm() | )
 
-    external if(i_64 : ATerm() -> ATerm() , j_64 : ATerm() -> ATerm() , k_64 : ATerm() -> ATerm() | )
+    external or(m_74 : ATerm() -> ATerm() , n_74 : ATerm() -> ATerm() | )
 
-    external if(g_64 : ATerm() -> ATerm() , h_64 : ATerm() -> ATerm() | )
+    external ior(k_74 : ATerm() -> ATerm() , l_74 : ATerm() -> ATerm() | )
 
-    external maybe(c_0 : ATerm() -> ATerm() , d_0 : ATerm() -> ATerm() | )
+    external if(h_74 : ATerm() -> ATerm() , i_74 : ATerm() -> ATerm() , j_74 : ATerm() -> ATerm() | )
 
-    external maybe(b_64 : ATerm() -> ATerm() | )
+    external if(f_74 : ATerm() -> ATerm() , g_74 : ATerm() -> ATerm() | )
 
-    external try(a_64 : ATerm() -> ATerm() | )
+    external maybe(d_0 : ATerm() -> ATerm() , g_0 : ATerm() -> ATerm() | )
+
+    external maybe(a_74 : ATerm() -> ATerm() | )
+
+    external try(z_73 : ATerm() -> ATerm() | )
 
     external AllSignals( | )
 
@@ -2270,15 +2431,15 @@ specification
 
     external Read( | )
 
-    external Pair(y_63 : ATerm() -> ATerm() , z_63 : ATerm() -> ATerm() | )
+    external Pair(x_73 : ATerm() -> ATerm() , y_73 : ATerm() -> ATerm() | )
 
-    external Anno_Cong__(w_63 : ATerm() -> ATerm() , x_63 : ATerm() -> ATerm() | )
+    external Anno_Cong__(v_73 : ATerm() -> ATerm() , w_73 : ATerm() -> ATerm() | )
 
-    external Hashtable(v_63 : ATerm() -> ATerm() | )
+    external Hashtable(u_73 : ATerm() -> ATerm() | )
 
-    external Undefined(u_63 : ATerm() -> ATerm() | )
+    external Undefined(t_73 : ATerm() -> ATerm() | )
 
-    external Program(t_63 : ATerm() -> ATerm() | )
+    external Program(s_73 : ATerm() -> ATerm() | )
 
     external Saturday( | )
 
@@ -2318,19 +2479,19 @@ specification
 
     external January( | )
 
-    external Dupl(r_63 : ATerm() -> ATerm() , s_63 : ATerm() -> ATerm() | )
+    external Dupl(q_73 : ATerm() -> ATerm() , r_73 : ATerm() -> ATerm() | )
 
-    external Date(o_63 : ATerm() -> ATerm() , p_63 : ATerm() -> ATerm() , q_63 : ATerm() -> ATerm() | )
+    external Date(n_73 : ATerm() -> ATerm() , o_73 : ATerm() -> ATerm() , p_73 : ATerm() -> ATerm() | )
 
-    external DayTime(l_63 : ATerm() -> ATerm() , m_63 : ATerm() -> ATerm() , n_63 : ATerm() -> ATerm() | )
+    external DayTime(k_73 : ATerm() -> ATerm() , l_73 : ATerm() -> ATerm() , m_73 : ATerm() -> ATerm() | )
 
-    external ComponentTime(i_63 : ATerm() -> ATerm() , j_63 : ATerm() -> ATerm() , k_63 : ATerm() -> ATerm() | )
+    external ComponentTime(h_73 : ATerm() -> ATerm() , i_73 : ATerm() -> ATerm() , j_73 : ATerm() -> ATerm() | )
 
-    external EpochTime(h_63 : ATerm() -> ATerm() | )
+    external EpochTime(g_73 : ATerm() -> ATerm() | )
 
-    external DeclVersion(g_63 : ATerm() -> ATerm() | )
+    external DeclVersion(f_73 : ATerm() -> ATerm() | )
 
-    external Runtime(f_63 : ATerm() -> ATerm() | )
+    external Runtime(e_73 : ATerm() -> ATerm() | )
 
     external Help( | )
 
@@ -2338,27 +2499,31 @@ specification
 
     external Binary( | )
 
-    external Output(e_63 : ATerm() -> ATerm() | )
+    external Output(d_73 : ATerm() -> ATerm() | )
 
-    external Input(d_63 : ATerm() -> ATerm() | )
+    external Input(c_73 : ATerm() -> ATerm() | )
 
     external Version( | )
 
-    external Verbose(c_63 : ATerm() -> ATerm() | )
+    external Verbose(b_73 : ATerm() -> ATerm() | )
 
     external Silent( | )
 
-    external UnknownSignal(b_63 : ATerm() -> ATerm() | )
+    external UnknownSignal(a_73 : ATerm() -> ATerm() | )
 
-    external Signal(y_62 : ATerm() -> ATerm() , z_62 : ATerm() -> ATerm() , a_63 : ATerm() -> ATerm() | )
+    external Signal(x_72 : ATerm() -> ATerm() , y_72 : ATerm() -> ATerm() , z_72 : ATerm() -> ATerm() | )
 
-    external WaitStatus(v_62 : ATerm() -> ATerm() , w_62 : ATerm() -> ATerm() , x_62 : ATerm() -> ATerm() | )
+    external WaitStatus(u_72 : ATerm() -> ATerm() , v_72 : ATerm() -> ATerm() , w_72 : ATerm() -> ATerm() | )
 
-    external Prefix(t_62 : ATerm() -> ATerm() , u_62 : ATerm() -> ATerm() | )
+    external Prefix(s_72 : ATerm() -> ATerm() , t_72 : ATerm() -> ATerm() | )
 
-    external Var(s_62 : ATerm() -> ATerm() | )
+    external Var(r_72 : ATerm() -> ATerm() | )
 
-    external ErrorNumber(r_62 : ATerm() -> ATerm() | )
+    external ErrorNumber(q_72 : ATerm() -> ATerm() | )
+
+    external ChangeSet(p_72 : ATerm() -> ATerm() | )
+
+    external RuleScope(n_72 : ATerm() -> ATerm() , o_72 : ATerm() -> ATerm() | )
 
     external Scopes( | )
 
@@ -2366,53 +2531,53 @@ specification
 
     external Undefined( | )
 
-    external Defined(h_62 : ATerm() -> ATerm() , i_62 : ATerm() -> ATerm() , j_62 : ATerm() -> ATerm() , k_62 : ATerm() -> ATerm() , l_62 : ATerm() -> ATerm() , m_62 : ATerm() -> ATerm() , n_62 : ATerm() -> ATerm() , o_62 : ATerm() -> ATerm() , p_62 : ATerm() -> ATerm() , q_62 : ATerm() -> ATerm() | )
+    external Defined(d_72 : ATerm() -> ATerm() , e_72 : ATerm() -> ATerm() , f_72 : ATerm() -> ATerm() , g_72 : ATerm() -> ATerm() , h_72 : ATerm() -> ATerm() , i_72 : ATerm() -> ATerm() , j_72 : ATerm() -> ATerm() , k_72 : ATerm() -> ATerm() , l_72 : ATerm() -> ATerm() , m_72 : ATerm() -> ATerm() | )
 
-    external Defined(y_61 : ATerm() -> ATerm() , z_61 : ATerm() -> ATerm() , a_62 : ATerm() -> ATerm() , b_62 : ATerm() -> ATerm() , c_62 : ATerm() -> ATerm() , d_62 : ATerm() -> ATerm() , e_62 : ATerm() -> ATerm() , f_62 : ATerm() -> ATerm() , g_62 : ATerm() -> ATerm() | )
+    external Defined(u_71 : ATerm() -> ATerm() , v_71 : ATerm() -> ATerm() , w_71 : ATerm() -> ATerm() , x_71 : ATerm() -> ATerm() , y_71 : ATerm() -> ATerm() , z_71 : ATerm() -> ATerm() , a_72 : ATerm() -> ATerm() , b_72 : ATerm() -> ATerm() , c_72 : ATerm() -> ATerm() | )
 
-    external Defined(q_61 : ATerm() -> ATerm() , r_61 : ATerm() -> ATerm() , s_61 : ATerm() -> ATerm() , t_61 : ATerm() -> ATerm() , u_61 : ATerm() -> ATerm() , v_61 : ATerm() -> ATerm() , w_61 : ATerm() -> ATerm() , x_61 : ATerm() -> ATerm() | )
+    external Defined(m_71 : ATerm() -> ATerm() , n_71 : ATerm() -> ATerm() , o_71 : ATerm() -> ATerm() , p_71 : ATerm() -> ATerm() , q_71 : ATerm() -> ATerm() , r_71 : ATerm() -> ATerm() , s_71 : ATerm() -> ATerm() , t_71 : ATerm() -> ATerm() | )
 
-    external Defined(j_61 : ATerm() -> ATerm() , k_61 : ATerm() -> ATerm() , l_61 : ATerm() -> ATerm() , m_61 : ATerm() -> ATerm() , n_61 : ATerm() -> ATerm() , o_61 : ATerm() -> ATerm() , p_61 : ATerm() -> ATerm() | )
+    external Defined(f_71 : ATerm() -> ATerm() , g_71 : ATerm() -> ATerm() , h_71 : ATerm() -> ATerm() , i_71 : ATerm() -> ATerm() , j_71 : ATerm() -> ATerm() , k_71 : ATerm() -> ATerm() , l_71 : ATerm() -> ATerm() | )
 
-    external Defined(d_61 : ATerm() -> ATerm() , e_61 : ATerm() -> ATerm() , f_61 : ATerm() -> ATerm() , g_61 : ATerm() -> ATerm() , h_61 : ATerm() -> ATerm() , i_61 : ATerm() -> ATerm() | )
+    external Defined(z_70 : ATerm() -> ATerm() , a_71 : ATerm() -> ATerm() , b_71 : ATerm() -> ATerm() , c_71 : ATerm() -> ATerm() , d_71 : ATerm() -> ATerm() , e_71 : ATerm() -> ATerm() | )
 
-    external Defined(y_60 : ATerm() -> ATerm() , z_60 : ATerm() -> ATerm() , a_61 : ATerm() -> ATerm() , b_61 : ATerm() -> ATerm() , c_61 : ATerm() -> ATerm() | )
+    external Defined(u_70 : ATerm() -> ATerm() , v_70 : ATerm() -> ATerm() , w_70 : ATerm() -> ATerm() , x_70 : ATerm() -> ATerm() , y_70 : ATerm() -> ATerm() | )
 
-    external Defined(u_60 : ATerm() -> ATerm() , v_60 : ATerm() -> ATerm() , w_60 : ATerm() -> ATerm() , x_60 : ATerm() -> ATerm() | )
+    external Defined(q_70 : ATerm() -> ATerm() , r_70 : ATerm() -> ATerm() , s_70 : ATerm() -> ATerm() , t_70 : ATerm() -> ATerm() | )
 
-    external Defined(r_60 : ATerm() -> ATerm() , s_60 : ATerm() -> ATerm() , t_60 : ATerm() -> ATerm() | )
+    external Defined(n_70 : ATerm() -> ATerm() , o_70 : ATerm() -> ATerm() , p_70 : ATerm() -> ATerm() | )
 
-    external Defined(p_60 : ATerm() -> ATerm() , q_60 : ATerm() -> ATerm() | )
+    external Defined(l_70 : ATerm() -> ATerm() , m_70 : ATerm() -> ATerm() | )
 
-    external Defined(o_60 : ATerm() -> ATerm() | )
+    external Defined(k_70 : ATerm() -> ATerm() | )
 
     external Defined( | )
 
-    external Keys(e_60 : ATerm() -> ATerm() , f_60 : ATerm() -> ATerm() , g_60 : ATerm() -> ATerm() , h_60 : ATerm() -> ATerm() , i_60 : ATerm() -> ATerm() , j_60 : ATerm() -> ATerm() , k_60 : ATerm() -> ATerm() , l_60 : ATerm() -> ATerm() , m_60 : ATerm() -> ATerm() , n_60 : ATerm() -> ATerm() | )
+    external Keys(a_70 : ATerm() -> ATerm() , b_70 : ATerm() -> ATerm() , c_70 : ATerm() -> ATerm() , d_70 : ATerm() -> ATerm() , e_70 : ATerm() -> ATerm() , f_70 : ATerm() -> ATerm() , g_70 : ATerm() -> ATerm() , h_70 : ATerm() -> ATerm() , i_70 : ATerm() -> ATerm() , j_70 : ATerm() -> ATerm() | )
 
-    external Keys(v_59 : ATerm() -> ATerm() , w_59 : ATerm() -> ATerm() , x_59 : ATerm() -> ATerm() , y_59 : ATerm() -> ATerm() , z_59 : ATerm() -> ATerm() , a_60 : ATerm() -> ATerm() , b_60 : ATerm() -> ATerm() , c_60 : ATerm() -> ATerm() , d_60 : ATerm() -> ATerm() | )
+    external Keys(r_69 : ATerm() -> ATerm() , s_69 : ATerm() -> ATerm() , t_69 : ATerm() -> ATerm() , u_69 : ATerm() -> ATerm() , v_69 : ATerm() -> ATerm() , w_69 : ATerm() -> ATerm() , x_69 : ATerm() -> ATerm() , y_69 : ATerm() -> ATerm() , z_69 : ATerm() -> ATerm() | )
 
-    external Keys(n_59 : ATerm() -> ATerm() , o_59 : ATerm() -> ATerm() , p_59 : ATerm() -> ATerm() , q_59 : ATerm() -> ATerm() , r_59 : ATerm() -> ATerm() , s_59 : ATerm() -> ATerm() , t_59 : ATerm() -> ATerm() , u_59 : ATerm() -> ATerm() | )
+    external Keys(j_69 : ATerm() -> ATerm() , k_69 : ATerm() -> ATerm() , l_69 : ATerm() -> ATerm() , m_69 : ATerm() -> ATerm() , n_69 : ATerm() -> ATerm() , o_69 : ATerm() -> ATerm() , p_69 : ATerm() -> ATerm() , q_69 : ATerm() -> ATerm() | )
 
-    external Keys(g_59 : ATerm() -> ATerm() , h_59 : ATerm() -> ATerm() , i_59 : ATerm() -> ATerm() , j_59 : ATerm() -> ATerm() , k_59 : ATerm() -> ATerm() , l_59 : ATerm() -> ATerm() , m_59 : ATerm() -> ATerm() | )
+    external Keys(c_69 : ATerm() -> ATerm() , d_69 : ATerm() -> ATerm() , e_69 : ATerm() -> ATerm() , f_69 : ATerm() -> ATerm() , g_69 : ATerm() -> ATerm() , h_69 : ATerm() -> ATerm() , i_69 : ATerm() -> ATerm() | )
 
-    external Keys(a_59 : ATerm() -> ATerm() , b_59 : ATerm() -> ATerm() , c_59 : ATerm() -> ATerm() , d_59 : ATerm() -> ATerm() , e_59 : ATerm() -> ATerm() , f_59 : ATerm() -> ATerm() | )
+    external Keys(w_68 : ATerm() -> ATerm() , x_68 : ATerm() -> ATerm() , y_68 : ATerm() -> ATerm() , z_68 : ATerm() -> ATerm() , a_69 : ATerm() -> ATerm() , b_69 : ATerm() -> ATerm() | )
 
-    external Keys(v_58 : ATerm() -> ATerm() , w_58 : ATerm() -> ATerm() , x_58 : ATerm() -> ATerm() , y_58 : ATerm() -> ATerm() , z_58 : ATerm() -> ATerm() | )
+    external Keys(r_68 : ATerm() -> ATerm() , s_68 : ATerm() -> ATerm() , t_68 : ATerm() -> ATerm() , u_68 : ATerm() -> ATerm() , v_68 : ATerm() -> ATerm() | )
 
-    external Keys(r_58 : ATerm() -> ATerm() , s_58 : ATerm() -> ATerm() , t_58 : ATerm() -> ATerm() , u_58 : ATerm() -> ATerm() | )
+    external Keys(n_68 : ATerm() -> ATerm() , o_68 : ATerm() -> ATerm() , p_68 : ATerm() -> ATerm() , q_68 : ATerm() -> ATerm() | )
 
-    external Keys(o_58 : ATerm() -> ATerm() , p_58 : ATerm() -> ATerm() , q_58 : ATerm() -> ATerm() | )
+    external Keys(k_68 : ATerm() -> ATerm() , l_68 : ATerm() -> ATerm() , m_68 : ATerm() -> ATerm() | )
 
-    external Keys(m_58 : ATerm() -> ATerm() , n_58 : ATerm() -> ATerm() | )
+    external Keys(i_68 : ATerm() -> ATerm() , j_68 : ATerm() -> ATerm() | )
 
-    external Keys(l_58 : ATerm() -> ATerm() | )
+    external Keys(h_68 : ATerm() -> ATerm() | )
 
     external Keys( | )
 
     external Infinite( | )
 
-    external Anno(j_58 : ATerm() -> ATerm() , k_58 : ATerm() -> ATerm() | )
+    external Anno(f_68 : ATerm() -> ATerm() , g_68 : ATerm() -> ATerm() | )
 
     external stderr( | )
 
@@ -2420,9 +2585,9 @@ specification
 
     external stdin( | )
 
-    external Path(i_58 : ATerm() -> ATerm() | )
+    external Path(e_68 : ATerm() -> ATerm() | )
 
-    external Stream(h_58 : ATerm() -> ATerm() | )
+    external Stream(d_68 : ATerm() -> ATerm() | )
 
     external X_OK( | )
 
@@ -2432,50 +2597,52 @@ specification
 
     external F_OK( | )
 
-    external Pipe(f_58 : ATerm() -> ATerm() , g_58 : ATerm() -> ATerm() | )
+    external Pipe(b_68 : ATerm() -> ATerm() , c_68 : ATerm() -> ATerm() | )
 
-    external Some(e_58 : ATerm() -> ATerm() | )
+    external Some(a_68 : ATerm() -> ATerm() | )
 
     external None( | )
 
-    external (m_57 : ATerm() -> ATerm() , n_57 : ATerm() -> ATerm() , o_57 : ATerm() -> ATerm() , p_57 : ATerm() -> ATerm() , q_57 : ATerm() -> ATerm() , r_57 : ATerm() -> ATerm() , s_57 : ATerm() -> ATerm() , t_57 : ATerm() -> ATerm() , u_57 : ATerm() -> ATerm() , v_57 : ATerm() -> ATerm() , w_57 : ATerm() -> ATerm() , x_57 : ATerm() -> ATerm() , y_57 : ATerm() -> ATerm() , z_57 : ATerm() -> ATerm() , a_58 : ATerm() -> ATerm() , b_58 : ATerm() -> ATerm() , c_58 : ATerm() -> ATerm() , d_58 : ATerm() -> ATerm() | )
+    external (i_67 : ATerm() -> ATerm() , j_67 : ATerm() -> ATerm() , k_67 : ATerm() -> ATerm() , l_67 : ATerm() -> ATerm() , m_67 : ATerm() -> ATerm() , n_67 : ATerm() -> ATerm() , o_67 : ATerm() -> ATerm() , p_67 : ATerm() -> ATerm() , q_67 : ATerm() -> ATerm() , r_67 : ATerm() -> ATerm() , s_67 : ATerm() -> ATerm() , t_67 : ATerm() -> ATerm() , u_67 : ATerm() -> ATerm() , v_67 : ATerm() -> ATerm() , w_67 : ATerm() -> ATerm() , x_67 : ATerm() -> ATerm() , y_67 : ATerm() -> ATerm() , z_67 : ATerm() -> ATerm() | )
 
-    external (v_56 : ATerm() -> ATerm() , w_56 : ATerm() -> ATerm() , x_56 : ATerm() -> ATerm() , y_56 : ATerm() -> ATerm() , z_56 : ATerm() -> ATerm() , a_57 : ATerm() -> ATerm() , b_57 : ATerm() -> ATerm() , c_57 : ATerm() -> ATerm() , d_57 : ATerm() -> ATerm() , e_57 : ATerm() -> ATerm() , f_57 : ATerm() -> ATerm() , g_57 : ATerm() -> ATerm() , h_57 : ATerm() -> ATerm() , i_57 : ATerm() -> ATerm() , j_57 : ATerm() -> ATerm() , k_57 : ATerm() -> ATerm() , l_57 : ATerm() -> ATerm() | )
+    external (r_66 : ATerm() -> ATerm() , s_66 : ATerm() -> ATerm() , t_66 : ATerm() -> ATerm() , u_66 : ATerm() -> ATerm() , v_66 : ATerm() -> ATerm() , w_66 : ATerm() -> ATerm() , x_66 : ATerm() -> ATerm() , y_66 : ATerm() -> ATerm() , z_66 : ATerm() -> ATerm() , a_67 : ATerm() -> ATerm() , b_67 : ATerm() -> ATerm() , c_67 : ATerm() -> ATerm() , d_67 : ATerm() -> ATerm() , e_67 : ATerm() -> ATerm() , f_67 : ATerm() -> ATerm() , g_67 : ATerm() -> ATerm() , h_67 : ATerm() -> ATerm() | )
 
-    external (f_56 : ATerm() -> ATerm() , g_56 : ATerm() -> ATerm() , h_56 : ATerm() -> ATerm() , i_56 : ATerm() -> ATerm() , j_56 : ATerm() -> ATerm() , k_56 : ATerm() -> ATerm() , l_56 : ATerm() -> ATerm() , m_56 : ATerm() -> ATerm() , n_56 : ATerm() -> ATerm() , o_56 : ATerm() -> ATerm() , p_56 : ATerm() -> ATerm() , q_56 : ATerm() -> ATerm() , r_56 : ATerm() -> ATerm() , s_56 : ATerm() -> ATerm() , t_56 : ATerm() -> ATerm() , u_56 : ATerm() -> ATerm() | )
+    external (b_66 : ATerm() -> ATerm() , c_66 : ATerm() -> ATerm() , d_66 : ATerm() -> ATerm() , e_66 : ATerm() -> ATerm() , f_66 : ATerm() -> ATerm() , g_66 : ATerm() -> ATerm() , h_66 : ATerm() -> ATerm() , i_66 : ATerm() -> ATerm() , j_66 : ATerm() -> ATerm() , k_66 : ATerm() -> ATerm() , l_66 : ATerm() -> ATerm() , m_66 : ATerm() -> ATerm() , n_66 : ATerm() -> ATerm() , o_66 : ATerm() -> ATerm() , p_66 : ATerm() -> ATerm() , q_66 : ATerm() -> ATerm() | )
 
-    external (q_55 : ATerm() -> ATerm() , r_55 : ATerm() -> ATerm() , s_55 : ATerm() -> ATerm() , t_55 : ATerm() -> ATerm() , u_55 : ATerm() -> ATerm() , v_55 : ATerm() -> ATerm() , w_55 : ATerm() -> ATerm() , x_55 : ATerm() -> ATerm() , y_55 : ATerm() -> ATerm() , z_55 : ATerm() -> ATerm() , a_56 : ATerm() -> ATerm() , b_56 : ATerm() -> ATerm() , c_56 : ATerm() -> ATerm() , d_56 : ATerm() -> ATerm() , e_56 : ATerm() -> ATerm() | )
+    external (m_65 : ATerm() -> ATerm() , n_65 : ATerm() -> ATerm() , o_65 : ATerm() -> ATerm() , p_65 : ATerm() -> ATerm() , q_65 : ATerm() -> ATerm() , r_65 : ATerm() -> ATerm() , s_65 : ATerm() -> ATerm() , t_65 : ATerm() -> ATerm() , u_65 : ATerm() -> ATerm() , v_65 : ATerm() -> ATerm() , w_65 : ATerm() -> ATerm() , x_65 : ATerm() -> ATerm() , y_65 : ATerm() -> ATerm() , z_65 : ATerm() -> ATerm() , a_66 : ATerm() -> ATerm() | )
 
-    external (c_55 : ATerm() -> ATerm() , d_55 : ATerm() -> ATerm() , e_55 : ATerm() -> ATerm() , f_55 : ATerm() -> ATerm() , g_55 : ATerm() -> ATerm() , h_55 : ATerm() -> ATerm() , i_55 : ATerm() -> ATerm() , j_55 : ATerm() -> ATerm() , k_55 : ATerm() -> ATerm() , l_55 : ATerm() -> ATerm() , m_55 : ATerm() -> ATerm() , n_55 : ATerm() -> ATerm() , o_55 : ATerm() -> ATerm() , p_55 : ATerm() -> ATerm() | )
+    external (y_64 : ATerm() -> ATerm() , z_64 : ATerm() -> ATerm() , a_65 : ATerm() -> ATerm() , b_65 : ATerm() -> ATerm() , c_65 : ATerm() -> ATerm() , d_65 : ATerm() -> ATerm() , e_65 : ATerm() -> ATerm() , f_65 : ATerm() -> ATerm() , g_65 : ATerm() -> ATerm() , h_65 : ATerm() -> ATerm() , i_65 : ATerm() -> ATerm() , j_65 : ATerm() -> ATerm() , k_65 : ATerm() -> ATerm() , l_65 : ATerm() -> ATerm() | )
 
-    external (p_54 : ATerm() -> ATerm() , q_54 : ATerm() -> ATerm() , r_54 : ATerm() -> ATerm() , s_54 : ATerm() -> ATerm() , t_54 : ATerm() -> ATerm() , u_54 : ATerm() -> ATerm() , v_54 : ATerm() -> ATerm() , w_54 : ATerm() -> ATerm() , x_54 : ATerm() -> ATerm() , y_54 : ATerm() -> ATerm() , z_54 : ATerm() -> ATerm() , a_55 : ATerm() -> ATerm() , b_55 : ATerm() -> ATerm() | )
+    external (l_64 : ATerm() -> ATerm() , m_64 : ATerm() -> ATerm() , n_64 : ATerm() -> ATerm() , o_64 : ATerm() -> ATerm() , p_64 : ATerm() -> ATerm() , q_64 : ATerm() -> ATerm() , r_64 : ATerm() -> ATerm() , s_64 : ATerm() -> ATerm() , t_64 : ATerm() -> ATerm() , u_64 : ATerm() -> ATerm() , v_64 : ATerm() -> ATerm() , w_64 : ATerm() -> ATerm() , x_64 : ATerm() -> ATerm() | )
 
-    external (d_54 : ATerm() -> ATerm() , e_54 : ATerm() -> ATerm() , f_54 : ATerm() -> ATerm() , g_54 : ATerm() -> ATerm() , h_54 : ATerm() -> ATerm() , i_54 : ATerm() -> ATerm() , j_54 : ATerm() -> ATerm() , k_54 : ATerm() -> ATerm() , l_54 : ATerm() -> ATerm() , m_54 : ATerm() -> ATerm() , n_54 : ATerm() -> ATerm() , o_54 : ATerm() -> ATerm() | )
+    external (z_63 : ATerm() -> ATerm() , a_64 : ATerm() -> ATerm() , b_64 : ATerm() -> ATerm() , c_64 : ATerm() -> ATerm() , d_64 : ATerm() -> ATerm() , e_64 : ATerm() -> ATerm() , f_64 : ATerm() -> ATerm() , g_64 : ATerm() -> ATerm() , h_64 : ATerm() -> ATerm() , i_64 : ATerm() -> ATerm() , j_64 : ATerm() -> ATerm() , k_64 : ATerm() -> ATerm() | )
 
-    external (s_53 : ATerm() -> ATerm() , t_53 : ATerm() -> ATerm() , u_53 : ATerm() -> ATerm() , v_53 : ATerm() -> ATerm() , w_53 : ATerm() -> ATerm() , x_53 : ATerm() -> ATerm() , y_53 : ATerm() -> ATerm() , z_53 : ATerm() -> ATerm() , a_54 : ATerm() -> ATerm() , b_54 : ATerm() -> ATerm() , c_54 : ATerm() -> ATerm() | )
+    external (o_63 : ATerm() -> ATerm() , p_63 : ATerm() -> ATerm() , q_63 : ATerm() -> ATerm() , r_63 : ATerm() -> ATerm() , s_63 : ATerm() -> ATerm() , t_63 : ATerm() -> ATerm() , u_63 : ATerm() -> ATerm() , v_63 : ATerm() -> ATerm() , w_63 : ATerm() -> ATerm() , x_63 : ATerm() -> ATerm() , y_63 : ATerm() -> ATerm() | )
 
-    external (i_53 : ATerm() -> ATerm() , j_53 : ATerm() -> ATerm() , k_53 : ATerm() -> ATerm() , l_53 : ATerm() -> ATerm() , m_53 : ATerm() -> ATerm() , n_53 : ATerm() -> ATerm() , o_53 : ATerm() -> ATerm() , p_53 : ATerm() -> ATerm() , q_53 : ATerm() -> ATerm() , r_53 : ATerm() -> ATerm() | )
+    external (e_63 : ATerm() -> ATerm() , f_63 : ATerm() -> ATerm() , g_63 : ATerm() -> ATerm() , h_63 : ATerm() -> ATerm() , i_63 : ATerm() -> ATerm() , j_63 : ATerm() -> ATerm() , k_63 : ATerm() -> ATerm() , l_63 : ATerm() -> ATerm() , m_63 : ATerm() -> ATerm() , n_63 : ATerm() -> ATerm() | )
 
-    external (z_52 : ATerm() -> ATerm() , a_53 : ATerm() -> ATerm() , b_53 : ATerm() -> ATerm() , c_53 : ATerm() -> ATerm() , d_53 : ATerm() -> ATerm() , e_53 : ATerm() -> ATerm() , f_53 : ATerm() -> ATerm() , g_53 : ATerm() -> ATerm() , h_53 : ATerm() -> ATerm() | )
+    external (v_62 : ATerm() -> ATerm() , w_62 : ATerm() -> ATerm() , x_62 : ATerm() -> ATerm() , y_62 : ATerm() -> ATerm() , z_62 : ATerm() -> ATerm() , a_63 : ATerm() -> ATerm() , b_63 : ATerm() -> ATerm() , c_63 : ATerm() -> ATerm() , d_63 : ATerm() -> ATerm() | )
 
-    external (r_52 : ATerm() -> ATerm() , s_52 : ATerm() -> ATerm() , t_52 : ATerm() -> ATerm() , u_52 : ATerm() -> ATerm() , v_52 : ATerm() -> ATerm() , w_52 : ATerm() -> ATerm() , x_52 : ATerm() -> ATerm() , y_52 : ATerm() -> ATerm() | )
+    external (n_62 : ATerm() -> ATerm() , o_62 : ATerm() -> ATerm() , p_62 : ATerm() -> ATerm() , q_62 : ATerm() -> ATerm() , r_62 : ATerm() -> ATerm() , s_62 : ATerm() -> ATerm() , t_62 : ATerm() -> ATerm() , u_62 : ATerm() -> ATerm() | )
 
-    external (k_52 : ATerm() -> ATerm() , l_52 : ATerm() -> ATerm() , m_52 : ATerm() -> ATerm() , n_52 : ATerm() -> ATerm() , o_52 : ATerm() -> ATerm() , p_52 : ATerm() -> ATerm() , q_52 : ATerm() -> ATerm() | )
+    external (g_62 : ATerm() -> ATerm() , h_62 : ATerm() -> ATerm() , i_62 : ATerm() -> ATerm() , j_62 : ATerm() -> ATerm() , k_62 : ATerm() -> ATerm() , l_62 : ATerm() -> ATerm() , m_62 : ATerm() -> ATerm() | )
 
-    external (e_52 : ATerm() -> ATerm() , f_52 : ATerm() -> ATerm() , g_52 : ATerm() -> ATerm() , h_52 : ATerm() -> ATerm() , i_52 : ATerm() -> ATerm() , j_52 : ATerm() -> ATerm() | )
+    external (a_62 : ATerm() -> ATerm() , b_62 : ATerm() -> ATerm() , c_62 : ATerm() -> ATerm() , d_62 : ATerm() -> ATerm() , e_62 : ATerm() -> ATerm() , f_62 : ATerm() -> ATerm() | )
 
-    external (z_51 : ATerm() -> ATerm() , a_52 : ATerm() -> ATerm() , b_52 : ATerm() -> ATerm() , c_52 : ATerm() -> ATerm() , d_52 : ATerm() -> ATerm() | )
+    external (v_61 : ATerm() -> ATerm() , w_61 : ATerm() -> ATerm() , x_61 : ATerm() -> ATerm() , y_61 : ATerm() -> ATerm() , z_61 : ATerm() -> ATerm() | )
 
-    external (v_51 : ATerm() -> ATerm() , w_51 : ATerm() -> ATerm() , x_51 : ATerm() -> ATerm() , y_51 : ATerm() -> ATerm() | )
+    external (r_61 : ATerm() -> ATerm() , s_61 : ATerm() -> ATerm() , t_61 : ATerm() -> ATerm() , u_61 : ATerm() -> ATerm() | )
 
-    external (s_51 : ATerm() -> ATerm() , t_51 : ATerm() -> ATerm() , u_51 : ATerm() -> ATerm() | )
+    external (o_61 : ATerm() -> ATerm() , p_61 : ATerm() -> ATerm() , q_61 : ATerm() -> ATerm() | )
 
-    external (q_51 : ATerm() -> ATerm() , r_51 : ATerm() -> ATerm() | )
+    external (m_61 : ATerm() -> ATerm() , n_61 : ATerm() -> ATerm() | )
 
-    external (p_51 : ATerm() -> ATerm() | )
+    external (l_61 : ATerm() -> ATerm() | )
 
     external ( | )
 
-    external Cons(n_51 : ATerm() -> ATerm() , o_51 : ATerm() -> ATerm() | )
+    external Conc(j_61 : ATerm() -> ATerm() , k_61 : ATerm() -> ATerm() | )
+
+    external Cons(h_61 : ATerm() -> ATerm() , i_61 : ATerm() -> ATerm() | )
 
     external Nil( | )

@@ -229,8 +229,75 @@ releases of the Stratego compiler will have this flag switched on by default.
 
 ---------++ If then else and switch operators
 
-Sometimes more wordy language constructs make the code more easy to
-read.
+StrategoXT 0.10 introduces a if-then-else and switch operators. Both
+operators are defined in terms of the guarded left-choice. Thus, they
+are just a more wordy syntax that can be clearer in some case.
+
+The if operator is translated into Stratego-Core by the following
+rewrite rule:
+
+<verbatim>
+  |[ if s1 then s2 else s3 end ]| -> |[ where(s1) < s2 + s3 ]|
+</verbatim>
+
+Note that the application of s1 does not change the subject term. s2
+and s3 are applied to the subject term of the if-then-else operator.
+
+The translation of the switch statement is somewhat more complex. It
+is best introduced with an example.
+
+The following code fragment from pack-sdf:
+<verbatim>
+  (  where(of-config => "txt")   < xtc-asfix-yield
+  +  where(of-config => "ast")   < xtc-implode-asfix
+  +  where(of-config => "asfix")
+     <+ <fatal-error> ["pack-sdf: ", <id>, " is not a valid output format."]
+  )
+</verbatim>
+translates into the following code if the switch operator is used:
+<verbatim>
+  switch of-config
+    case "txt"   : xtc-asfix-yield
+    case "ast"   : xtc-implode-asfix
+    case "asfix" : id
+    otherwise    :
+      <fatal-error> ["pack-sdf: ", <id>, " is not a valid output format."]
+  end
+</verbatim>
+
+The case conditions "txt", "ast", and "asfix", can in fact be
+arbitrary strategies. They are applied to the result of the subject of
+the switch, which is the result of invoking of-config in this case.
+
+The bodies are applied to the subject term of the switch
+strategy. That is, the switch subject and the conditions do not modify
+the subject term, which is comparable to the if statement.
+
+
+Syntax:
+
+<verbatim>
+  switch s0
+    case s1 : s1'
+    case s2 : s2'
+    ...
+    otherwise : s' // otherwise branch is optional
+  end
+</verbatim>
+
+s0 will be applied to the current term from right before the
+switch. Its result will be the input term for each case-condition
+strategy si.  The body strategies of the case branches, si', will be
+applied to the current term from right before the switch. The case
+branches will be applied in their normal order until a case condition
+succeeds. If a body strategy of a selected case branch fails, no
+backtracking to other (next) branches occurs, the entire switch then
+fails. Other branches will only be selected if all previous
+case-condition strategies failed. The optional default branch can only
+occur at the end and directly applies its body strategy s'.
+
+
+
 
 Not declared as keywords
 
