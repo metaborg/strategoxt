@@ -77,8 +77,6 @@ exports
     "thread" 		-> Id {reject}
     "where" 		-> Id {reject}
 
-    
-
   lexical restrictions
     "all" 		
     "constructors" 	
@@ -152,6 +150,11 @@ exports
     "\"" StrChar* "\"" 		-> String
     ~[\"\n\\] 			-> StrChar
     [\\] [\"tn\\] 		-> StrChar
+  lexical syntax
+    "\'" CharChar "\'"		-> Char
+    ~[\']			-> CharChar
+    [\\] [\'ntr\ ]		-> CharChar
+    Char		 	-> Id {reject}
 
   sorts Module
   context-free syntax
@@ -212,6 +215,7 @@ exports
     Int 			 -> Term {cons("Int")}
     Real 			 -> Term {cons("Real")}
     String 			 -> Term {cons("Str")}
+    Char 			 -> Term {cons("Char")}
     "_" Term 			 -> Term {cons("BuildDefault")}
     Var 			 -> Term %% {cons("Inj")}
     Var Context 		 -> Term {cons("Con")}

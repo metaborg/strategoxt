@@ -47,6 +47,7 @@ signature
     Int : Int -> Term
     Real : Real -> Term
     Str : String -> Term
+    Char : Char -> Term
     BuildDefault : Term -> Term
     Con : Var * Context -> Term
     Op : Id * List(Term) -> Term

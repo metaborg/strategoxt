@@ -76,10 +76,12 @@ rules
     TupleCong(t,ts) -> Call(SVar(""), [t|ts])
 
   Desugar :
-    ListCongNoTail(ts) -> <foldr(!Call(SVar("Nil"),[]),\ (t1, t2) -> Call(SVar("Cons"),[t1,t2]) \ )> ts
+    ListCongNoTail(ts) -> 
+    <foldr(!Call(SVar("Nil"),[]),\ (t1, t2) -> Call(SVar("Cons"),[t1,t2]) \ )> ts
 
   Desugar :
-    ListCong(ts,t) -> <foldr(!t,\ (t1, t2) -> Call(SVar("Cons"),[t1,t2]) \ )> ts
+    ListCong(ts,t) -> 
+    <foldr(!t,\ (t1, t2) -> Call(SVar("Cons"),[t1,t2]) \ )> ts
 
   Desugar :
     ModCong(m, xs) -> Call(SVar(m), xs)
@@ -121,6 +123,23 @@ rules
 
   Desugar : 
     SortNoArgs(x) -> Sort(x, [])
+
+  Desugar :
+    Char(c) -> Int(i)
+    where <DesugarChar <+ explode-string; DesugarCharGeneric> c => i
+
+  DesugarCharGeneric :
+    [39, i, 39] -> i
+  DesugarChar :
+    "'\\''" -> 39
+  DesugarChar :
+    "'\\n'" -> 10
+  DesugarChar :
+    "'\\t'" -> 9
+  DesugarChar : // carriage return
+    "'\\r'" -> 13
+  DesugarChar : // space
+    "'\\ '" -> 32
 
   // Constants
 

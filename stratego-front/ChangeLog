@@ -1,3 +1,14 @@
+2002-12-08  Eelco Visser  <visser@cs.uu.nl>
+
+	* parse/stratego-desugar.str: Desugaring character constants
+
+	* syn/Stratego.sdf: Syntax of character constants
+
+2002-12-07  Eelco Visser  <visser@cs.uu.nl>
+
+	* Renamed parse-cmod into parse-stratego, which now also deals
+	with non-concrete syntax modules. Completed stratego-desugar.
+
 2002-12-01  Eelco Visser  <visser@cs.uu.nl>
 
 	* syn/Stratego.sdf: Annotation congruences, list of terms as annotation
@@ -28,3 +39,5 @@
 
 	* stratego-front is a new package that extends the Stratego
 	Compiler with support for concrete syntax.
+
+	
