@@ -33,7 +33,7 @@ strategies
   
   call(init-child) = 
     ?(prog,args)
-    ; fork-and-wait(init-child; <execvp> (prog, args); <exit> -1)
+    ; fork-and-wait(init-child; <execvp> (prog, args); <exit> 1)
 
   // call-noisy :: String * List(String) -> String * List(String)
   // call prog with list of strings args and print information
