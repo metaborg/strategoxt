@@ -38,11 +38,15 @@ strategies
        !"--asfix          treat concrete syntax parts as AsFix trees")
 
   meta-explode =
-    iowrap(try((option-defined(AsFix), ImplodeLayout(fail)));
-           (id, MetaExplode);
-           try((option-defined(AsFix), topdown(try(Clean))))
-          , asfix-option)
-
+    io-wrap(
+      asfix-option
+    , if <get-config>"--asfix" then
+        ImplodeLayout(fail) ; MetaExplode ; topdown(try(Clean))
+      else
+        MetaExplode
+      end
+    )
+    
   MetaExplode =
     alltd( ?ToTerm(<trm-explode>) 
          + ?ToMetaExpr(<trm-explode>)
