@@ -3,6 +3,10 @@ module treeviz
 imports GraphXML lib
 
 strategies
+
+short-description(p) = !["Usage: ", <p>(), " [options]"]
+long-description(p)  = !["This program outputs a term in abstract GraphXML format."]
+
 main = iowrap( treeviz )
 
 
@@ -21,15 +25,14 @@ MkEdges( parent, x) :
      <x>(new-name, f, args)            => edges
 
 NewNodeName :
-   f -> <concat-strings>[<new>(),  <explode-string;map( try(\10
-->32\));implode-string>f]
+   f -> <concat-strings>[<new>(),  <explode-string;map( try(\10->32\));implode-string>f]
 
 
 NodeName :
    f -> f'
    where
    (
-     try(is-int; int-to-string)
+     try(is-int; int-to-string <+ [];!"[ ]")
    ) => f'
 
    
