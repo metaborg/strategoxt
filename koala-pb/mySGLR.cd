@@ -1,0 +1,35 @@
+component mySGLR {
+specials
+   file "file:///home/mdejonge/pkgs";
+
+   provides
+   IbinSGLR sglr;
+
+   requires
+   IlibATERM aterm;
+
+   contains
+     module sglr-1_0;
+     module pt-support-1_0;
+     module toolbus-lib-1_0;
+
+     interface IlibPT-SUPPORT pt-support;
+     interface IlibTOOLBUS-LIB toolbus-lib;
+     interface IlibATERM aterm;
+
+     connects
+     sglr=sglr-1_0;
+
+
+      sglr-1_0 = pt-support;
+      sglr-1_0 = toolbus-lib;
+      sglr-1_0 = aterm;
+
+      pt-support = pt-support-1_0;
+      toolbus-lib = toolbus-lib-1_0;
+
+      pt-support-1_0 = toolbus-lib;
+      pt-support-1_0 = aterm;
+
+      toolbus-lib-1_0 = aterm;
+ }

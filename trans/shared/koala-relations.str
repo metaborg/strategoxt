@@ -1,0 +1,228 @@
+\literate[koala-relations]
+
+ KoalaTools -- Tool suite for Koala component model
+
+ Author: Merijn de Jonge (mdejonge@cs.uu.nl)
+
+ $Id: bundlegen.str 5017 2004-01-27 11:53:48Z merijn $
+
+\begin{code}
+module koala-relations
+
+imports lib koala-access
+
+
+signature
+constructors
+   /* Constructors for Koala relations */
+    
+      RequiredInterface:  Path * Interface * varName -> RequiredInterface
+   RequiredOptInterface: Path * Interface * varName -> RequiredOptInterface
+
+      ProvidedInterface:  Path * Interface * varName -> ProvidedInterface
+   ProvidedOptInterface: Path * Interface * varName -> ProvidedOptInterface
+
+         ContainedModule: Path * varName -> ContainedModule
+      ContainedComponent: Path * Compdefname * Specials * varName -> ContainedModule
+      ContainedInterface:  Path * Interface * varName -> ContainedInterface
+   ContainedOptInterface: Path * Interface * varName -> ContainedOptInterface
+
+   TopComponent: Path * Compdefname * Specials -> TopComponent
+
+   IIConnection: Interface * Interface * InterfaceNamesTuple -> Cable
+   IMConnection: Interface * Module * InterfaceName -> Cable
+   MIConnection: Module * Interface * InterfaceName -> Cable
+
+strategies
+
+koala-relations =
+   iowrap(Koala-relations)
+
+Koala-relations =
+   allComponentDefs => comps;
+   top-module;
+   ?Componentdef(name,sections);
+   where(
+     <oncetd(Specials(?specials)) <+ ![] => specials>sections
+   );
+   Componentrelations(![name], !comps);
+//   ;filter(IIConnection(id,id,id))
+   ![TopComponent([name], name,specials)|<id>]
+
+
+Componentrelations(path, comps): Componentdef(_, content) -> relations
+   where
+   !content;
+   where(requires-relations(path)=>req);
+   where(provides-relations(path) => provides);
+   where(contains-relations(path, comps) => contains);
+   where(fibres-relations(path) => fibres);
+   where(![req, provides, contains, fibres];
+   flatten-list => objects);
+   where(wire-relations(path, !objects) => wires);
+   
+   <conc>(objects, wires) => relations
+
+requires-relations(path) =
+   collectSections(Requires(id));
+   map( { xs': \ Externalinterface(i, xs ) -> xs'
+          where
+             !xs;
+             map( \ (x, None) ->    RequiredInterface(<path>(), i, x) \
+                  <+
+                  \ (x, _)    -> RequiredOptInterface(<path>(), i, x) \
+                 ) => xs'
+         \ } )
+
+provides-relations(path) =
+   collectSections(Provides(id));
+   map( { xs': \ Externalinterface(i, xs ) -> xs'
+          where
+             !xs;
+             map( \ (x, None) ->    ProvidedInterface(<path>(), i, x) \
+                  <+
+                  \ (x, _)    -> ProvidedOptInterface(<path>(), i, x) \
+                ) => xs'
+         \ } )
+
+contains-relations(path, comps) =
+   collectSections(Contains(id));
+   collect( {i,m,x,xs,xs':
+   \ Componentdecl( m, xs ) -> xs'
+     where
+        !xs;
+        map({cname, c1, c2, sections, specials: ?cname;
+           <comps>();
+           fetch-elem(Componentdef(?m,?sections));
+           Componentrelations(<conc>(<path>(),[cname]),comps) => c2;
+           <oncetd(Specials(?specials)) <+ ![] => specials>sections;
+           !ContainedComponent( <path>(), m, specials, cname ) => c1;
+           ![c1|c2]
+         });flatten-list  => xs'
+   \
+   +
+   \ Module(x,_) -> ContainedModule( <path>(), x ) \
+   +
+   \ Interfacedecl(i, xs ) -> xs'
+          where
+             !xs;
+             map( \ (x, None) -> ContainedInterface(<path>(), i, x) \
+                  <+
+                  \ (x, _)    -> ContainedOptInterface(<path>(), i, x) \
+                ) => xs'
+   \ } ) => cntns
+
+fibres-relations(path) =
+   collectSections(Connects(id));
+   collect(
+      \ Fibres( m, _ ) -> ContainedModule(<path>(), m) \
+   )
+                            
+wire-relations(path, objects) =
+   collectSections(Connects(id));
+   // As for now we don't interpret Fibres as connection but as
+   // contained modules
+   filter( not(Fibres(id,id) ) );
+
+   // Switches are currently ignored
+   filter( not(Switch(id,id,id) ) );
+   map(Cable(id,id);<lookupCable>(<id>, <path>(), <objects>()))
+
+/* Lookup module/interface declarations for connections */
+lookupCable =
+   ?(c, p,_);
+   (
+      lookupMICable
+   <+ lookupIMCable
+   <+ lookupIICable
+   <+ <fatal-error>["** No declared interfaces or components for: ", c, " in ", p]
+   )
+
+lookupMICable: (Cable(m, i), path, objects) -> MIConnection(mod, int, n)
+where
+   <lookupModule>(m, path, objects) => mod;
+   <lookupInterface>(i, path, objects) => (int, n)
+   
+lookupIMCable: (Cable(i,m), path, objects) -> IMConnection(int, mod, n)
+where
+   <lookupInterface>(i, path, objects) => (int, n);
+   <lookupModule>(m, path, objects) => mod
+
+
+lookupIICable: (Cable(i1,i2), path, objects) -> IIConnection(int1, int2, (n1,n2))
+where
+   <lookupInterface>(i1, path, objects) => (int1, n1);
+   <lookupInterface>(i2, path, objects) => (int2, n2)
+
+lookupModule: (Interface2(varname), path, objects) -> i
+   where
+      <fetch-elem(ContainedModule(?path, ?varname))>objects => i
+
+lookupInterface: (Interface1(varname, interface), path, objects) -> (i, interface)
+   where
+     !objects;
+     where(
+       fetch-elem({v:
+          ContainedComponent(?path, ?v,id,?varname)
+       })
+       );
+     where(<conc>(path, [varname]) => npath);
+       where(fetch-elem(
+       interface(?npath, id, ?interface)) => i)
+
+lookupInterface: (Interface1(varname, interface), path, objects) -> (i, interface)
+   where
+     !objects;
+       fetch-elem({v:
+          ContainedInterface(?path,id,?interface) => i
+       })
+
+lookupInterface: (Interface2(varname), path, objects) -> (i, varname)
+   where
+      <fetch-elem(interface(id,id,?varname)=>i)>objects
+
+
+// Retrieve `contains' relations
+contains = 
+   map( { cntns:
+    \ Componentdef( name, def ) -> cntns
+      where
+        collectSections(Contains(id));
+        collect( {i,m,x,xs,xs': 
+        \ Componentdecl( m, xs ) -> xs'
+          where
+             !xs;
+             map( \ x -> ContainedComponent( name, m, "", x ) \ ) => xs'
+        \
+        +
+        \ Module(x,_) -> ContainedModule( name, x ) \
+        +
+        \ Interfacedecl(i, xs ) -> xs' 
+               where
+                  !xs;
+                  map( \ (x, None) -> ContainedInterface(name, i, x) \ 
+                       <+
+                       \ (x, _)    -> ContainedOptInterface(name, i, x) \
+                     ) => xs'
+        \ } ) => cntns
+     \ } ); flatten-list
+
+
+\end{code}
+% Copyright (C) 2004 Merijn de Jonge <mdejonge@cs.uu.nl>
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.
+

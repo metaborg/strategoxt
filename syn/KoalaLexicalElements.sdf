@@ -1,0 +1,25 @@
+module KoalaLexicalElements
+exports
+  lexical syntax
+    "/**" [\t\ ] "koala"                       -> KoalaPragmaOpen
+    [\ \t\n\13]                                   -> LAYOUT             
+    [a-zA-Z] [a-zA-Z0-9\_\-]*                    -> Identifier         
+    "0" [xX] [0-9a-fA-F]+                      -> Hexliteral         
+    "0" [0-7]+                                 -> Octalliteral       
+    [0-9]+ [uUlL]?                       -> Decimalliteral     
+    Hexliteral | Octalliteral | Decimalliteral -> Integer            
+    "\"" ~[\'\n]* "\""                         -> String             
+    "@" ~[\@]* "@"                             -> String             
+    "//" ~[\n]* "\n"                           -> Endoflinecomment   
+    "/*" (~[\*] | ([\*] ~[\/]))* "*/"        -> Traditionalcomment 
+    "/*" (~[\*] | ([\*] ~[\/]))* "**/"        -> Traditionalcomment 
+    [\*]                            -> Asterisk
+
+    Traditionalcomment                         -> LAYOUT             
+    Endoflinecomment                           -> LAYOUT             
+
+  lexical restrictions
+    Identifier -/- [a-zA-Z0-9\_\-]
+    Hexliteral -/- [0-9a-fA-F]
+    Octalliteral -/- [0-7]
+    Decimalliteral -/- [0-9]

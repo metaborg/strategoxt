@@ -1,0 +1,188 @@
+\literate[koala-trans]
+
+ KoalaTools -- Tool suite for Koala component model
+
+ Author: Merijn de Jonge (mdejonge@cs.uu.nl)
+
+ $Id: bundlegen.str 5017 2004-01-27 11:53:48Z merijn $
+
+\begin{code}
+module koala-trans
+imports 
+   lib koala-transformation koala-access xtc-lib stratego-xt-xtc-tools
+
+strategies
+koala-trans = iowrap(Koala-trans, koala-trans-options)
+
+koala-trans-options = 
+   ArgOption("-I" + "--Include",
+      where(<extend-config>("-I", ["-I", <id>])); !(),
+      !"-I d | --Include d   Include modules from directory d")
+
+Koala-trans =
+   topdown( try(TransformModule) )
+
+short-description(p) =
+   !["Usage: ", <p>(), " -i file [options]"]
+
+long-description(p) =
+   ![<p>(), " transforms the modules in a Koala specifiction. For each ",
+    "module 'm', for which the transformation module 'm.trans.af' exists ",
+    "the transformations defined in that module are applied.  The following ",
+    "transformations are supported:\n\n",
+    "   Add/Del Constituent   add or remove a module/component/private interface\n",
+    "   Add/Del Cable         add or remove a cable\n",
+    "   Add/Del Interface     add or remove a requires/provides interface\n",
+    "   Symbol renaming\n\n",
+    "Input to ", <p>(), " is an AST of a Koala sepcification."]
+   
+Adder(x) = AddConstituent(x) + AddCable(x) + AddIntf(x)
+
+Remover(x) = DelConstituent(x) + DelCable(x) + DelIntf(x)
+   
+DeclSection(x) = Provides(x) + Requires(x)+ Contains(x)
+
+DeclOrConnectSection(x) = DeclSection(x) + Connects(x)
+
+TransformModule:
+   Componentdef(cname, sections ) -> Componentdef(cname', sections')
+   where
+      <getTransformationModule>cname => 
+         Componentdef(name-renaming, section-renamings);
+      <print>(stderr, ["Transforming ", cname, ".\n"]);
+      <transform-name>(cname, name-renaming) => cname';
+      <transform-sections>(sections, section-renamings) =>sections'
+
+transform-name =
+   // Component name renaming
+     (is-string; ?name, ?Renaming(name, new-name) ); 
+     !new-name
+   <+
+     (is-string, is-string); 
+     Fst
+
+transform-sections =
+   map-apply(section-transformation;Fst)
+
+section-transformation
+   = section-renamings;
+     try(adder);
+     try(remover)
+
+section-renamings: (sections, trans) -> (sections', trans)
+   where
+   <collect(Renaming(id,id))>trans => r;
+   !(sections, r);
+   map-apply(Rename) => sections'
+
+Rename: (term, renaming) -> term'
+where
+   !term;
+   topdown(try( \name -> new-name
+      where
+         !renaming;
+         ?Renaming(name, new-name) \ 
+         ) ) => term'
+
+adder: (sections, trans) -> (sections', trans)
+where
+   !trans;
+   DeclOrConnectSection(collect( {x:Adder(?x);!x } ) ) => additions; 
+   !sections;
+   at-end(![additions]) => sections'
+
+remover: (sections, trans) -> (sections', trans)
+where
+   !trans;
+   DeclOrConnectSection(collect({x:Remover(?x); !x});
+   map({x: ?x;!trans;DeclOrConnectSection(![x])}) => removals);
+   !removals;
+
+   !(sections, removals);
+   map-apply(remove) => sections'
+   
+remove:(sections, subject-to-remove) -> sections'
+where
+   !subject-to-remove;
+   ?section-name#([member]);
+   !sections;
+   map(try({xs:
+      ?section-name#([xs]);
+      !section-name#([<diff>(xs, member)])
+      }));
+
+   // For Decl removals we have to remove any attached cables 
+   // For cable removals this is not necessary
+   try(
+    where(
+      !subject-to-remove;
+      DeclSection(id);
+      decl-name => name);
+    // Remove cables
+    map(try(Connects(
+     filter(
+      not(Cable(Interface2(?name), id)
+      +
+      Cable(id, Interface2(?name))
+     ))))));
+   // remove empty sections
+   filter(not(DeclOrConnectSection([]))) => sections'
+
+decl-name =
+   ( 
+     (Provides(id) + Requires(id));
+     oncetd(Externalinterface(id, [(?name, id)]))
+   <+
+     Contains(id);
+     oncetd(is-string;?name)
+   );
+   !name
+
+getTransformationModule =
+      ?cname;
+      (<get-config; filter(not("-I"))> "-I" <+ ![]) => path;
+      !(cname, path);
+      ( // If a parser version exists, read it
+         (guarantee-extension(!"trans.af"), id);
+         find-in-path;
+         ReadFromFile
+      <+ // otherwise parse the source file
+         (guarantee-extension(!"trans"), id);
+         find-in-path;
+         xtc-temp-files(
+          !FILE(<id>);
+          xtc-sglr(!"koala-transformation.tbl");
+          xtc-implode-asfix;
+          read-from
+         )
+      )
+
+// map-apply(s) : (t,l) -> t'
+// Transform t by subsequently applying strategy s with argument a1...an
+// from the list l
+map-apply(s) =
+   rec x ({a,as,t:
+      (id,[]); Fst
+   <+
+      ?(t, [a|as]);
+      <x>(<s>(t,a), as)
+   })
+
+\end{code}
+% Copyright (C) 2004 Merijn de Jonge <mdejonge@cs.uu.nl>
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.
+

@@ -1,0 +1,30 @@
+/*
+ * Copyright (c) 1999,2000 by Philips Electronics N.V.
+ * All rights reserved.
+ *
+ *          %name: CEduInit.cd %
+ *       %version: %
+ * %date_modified: %
+ *    %derived_by: %
+ *          Owner: Maarten Pennings
+ */
+
+
+component CEduInit
+{
+    specials
+        prefix "eduini";
+
+    requires
+        IInit start;
+
+    uses
+        ASSERT,Bool; // for ASSERT(FALSE);
+
+    contains
+        module m present; // implements (console) main!
+
+    connects // m
+        m = start;
+}
+

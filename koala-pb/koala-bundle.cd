@@ -1,0 +1,10 @@
+component koala-bundle {
+contains
+component   ASFIX-TOOLS asfix-tools;
+component   ATerm aterm;
+component   GPP gpp;
+component   GRAPH-TOOLS graph-tools;
+component   mySGLR sglr;
+component   Stratego stratego;
+component KOALA koala;
+}

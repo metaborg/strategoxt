@@ -1,0 +1,106 @@
+\literate[pnet2dot]
+
+ KoalaTools -- Tool suite for Koala component model
+
+ Author: Merijn de Jonge (mdejonge@cs.uu.nl)
+
+ $Id: bundlegen.str 5017 2004-01-27 11:53:48Z merijn $
+
+\begin{code}
+module pnet2dot
+
+imports lib xml-tools pnet-tools Dot
+
+strategies
+   pnet2dot = xmliowrap(Pnet2dot)
+
+short-description(p) =
+   !["Usage: ", <p>(), " -i file [options]"]
+
+long-description(p) =
+   ![<p>(), " generates a DOT representation of a Petri net, as produced by",
+            " `koala-pnet-composer'\n\n",
+            "See 'koala-compiler', 'koala-pnet-composer'."]
+
+Arc =
+   where(
+   ?%> <arc <% id ::* %> > <% id ::* %> </arc> <%
+   +
+   ?%> <arc <% id ::* %> /> <%
+   )
+   
+
+Pnet2dot = 
+   ?pnet ;
+   collect(
+      Arc2Edge(!pnet)
+      +
+      Transition2Node
+      +
+      Place2Node
+   ) => content;
+   !Graph |[ 
+      digraph "Pnet2Dot"
+      {
+         ~stmt*: content
+      }
+   ]|
+
+
+Arc2Edge(pnet) =
+   Arc;
+   where( oncetd( ?attr |[ source = <% ?source %> ]| ) );
+   where( oncetd( ?attr |[ target=  <% ?target %> ]| ) );
+   !Stmt |[ ~id: <pnet;name-lookup(!source);double-quote>() -> 
+            ~id: <pnet;name-lookup(!target);double-quote>() ; ]|
+
+Transition2Node = 
+   where(?%> <transition <% id ::* %> >
+         <% id :: * %>
+      </transition>
+     <%);
+     (
+     oncetd(
+        ?%> <name><value> <% ?name :: cdata %> </value></name> <%
+     )
+     <+
+     oncetd(
+       ?attr |[ id = <% ?name %> ]| 
+     )
+     );
+     !Stmt |[ ~id: <double-quote>name [shape="box"]; ]|
+
+Place2Node = 
+   where(?%> <place <% id ::* %> >
+         <% id :: * %>
+      </place>
+     <%);
+     (
+     oncetd(
+        ?%> <name><value> <% ?name :: cdata %> </value></name> <%
+     )
+     <+
+     oncetd(
+       ?attr |[ id = <% ?name %> ]| 
+     )
+     );
+     !Stmt |[ ~id: name [shape="circle"]; ]|
+
+\end{code}
+% Copyright (C) 2004 Merijn de Jonge <mdejonge@cs.uu.nl>
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.
+

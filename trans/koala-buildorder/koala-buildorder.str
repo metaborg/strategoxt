@@ -1,0 +1,71 @@
+\literate[koala-buildorder]
+
+ KoalaTools -- Tool suite for Koala component model
+
+ Author: Merijn de Jonge (mdejonge@cs.uu.nl)
+
+ $Id: bundlegen.str 5017 2004-01-27 11:53:48Z merijn $
+
+\begin{code}
+module koala-buildorder
+imports lib CompositeSystem
+
+strategies
+
+koala-buildorder = iowrap(Koala-buildorder)
+
+short-descriptio(p) = 
+   !["Usage: ", <p>(), " -i file [options]"]
+
+long-description(p) = 
+   ![<p>()," rearranges the ingredients of a Koala product description\n",
+    "as produced by koala-compiler such that components don't have forward ",
+    "references (i.e., if a component A refers to a component B, then ",
+    "component B occurs before A in the product description.\n\n",
+    "See 'koala-compiler', 'koala-build-composer'."]
+
+// Arrange components such that components don't have forward references.
+// i.e: if a refers to b, then b comes before a in the component list
+Koala-buildorder = 
+   Composition(?components);
+   !components;
+   repeat(
+   rec x({e, es, ys, path, s:
+      [];fail
+    <+
+      ?[e|es];
+      !e;
+      // Find forward reference from e to s
+      oncetd({path:
+         Target(?path);
+         <fetch-elem((Component(id,id,Path(?path),id,id)
+                     +
+                     Module(id,Path(?path),id,id)
+                     )=>s)>es
+         });
+      // reverse order in list such that s comes before e
+      ![s|<fetch(?s;!e)>es]
+    <+
+      [id|x]
+    })
+   );
+   !Composition(<id>)
+
+\end{code}
+% Copyright (C) 2004 Merijn de Jonge <mdejonge@cs.uu.nl>
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.
+

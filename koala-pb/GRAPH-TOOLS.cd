@@ -1,0 +1,20 @@
+component GRAPH-TOOLS {
+specials
+   file "file:///home/mdejonge/pkgs";
+   provides
+   IbinGRAPH-TOOLS graph-tools;
+   
+   requires
+   IlibATERM aterm;
+   IlibSRTS srts;
+   IlibXTC xtc;
+   
+   contains
+   module graph-tools-1_0;
+   
+   connects
+   graph-tools-1_0 = aterm;
+   graph-tools-1_0 = xtc;
+   graph-tools-1_0 = srts;
+   graph-tools = graph-tools-1_0;
+}

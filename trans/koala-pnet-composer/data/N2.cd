@@ -1,0 +1,12 @@
+component N2
+{
+specials
+   file "data";
+
+   provides B b;
+
+   contains
+   module n2;
+
+   connects b = n2;
+}

@@ -1,0 +1,31 @@
+/*
+ * Copyright (c) 1999,2000 by Philips Electronics N.V.
+ * All rights reserved.
+ *
+ *          %name: CEduHelloYou.cd %
+ *       %version: %
+ * %date_modified: %
+ *    %derived_by: %
+ *          Owner: Maarten Pennings
+ */
+
+
+component CEduHelloYou
+{
+    specials
+        prefix "eduyou";
+        
+    contains
+        component CEduInit   eduini;
+        component CEduInput  eduinp;
+        component CEduOutput eduout;
+        module    m;
+
+    connects // eduini
+        eduini.start = m;
+
+    connects // m
+        m = eduout.write;
+        m = eduinp.read;
+}
+

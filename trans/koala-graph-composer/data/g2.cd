@@ -1,0 +1,16 @@
+component g2{
+specials
+   file "./data";
+provides
+   B b;
+
+requires
+   C c;
+
+contains
+module g2;
+
+connects
+b = g2;
+g2 = c;
+}

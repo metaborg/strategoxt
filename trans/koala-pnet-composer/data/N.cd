@@ -1,0 +1,9 @@
+component N
+{
+   contains
+      component N1 n1;
+      component N2 n2;
+
+   connects
+      n1.b = n2.b;
+}

@@ -1,0 +1,21 @@
+component ASFIX-TOOLS {
+specials
+   file "file:///home/mdejonge/pkgs";
+   provides
+   IbinASFIX-TOOLS asfix-tools;
+   
+   requires
+   IlibATERM aterm;
+   IlibXTC  xtc;
+   IlibSRTS srts;
+   
+   contains
+   module asfix-tools-1_0;
+   
+   connects
+   asfix-tools-1_0 = aterm;
+   asfix-tools-1_0 = xtc;
+   asfix-tools-1_0 = srts;
+   asfix-tools = asfix-tools-1_0;
+   
+}

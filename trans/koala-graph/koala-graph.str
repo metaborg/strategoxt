@@ -1,0 +1,289 @@
+\literate[koala-graph]
+
+ KoalaTools -- Tool suite for Koala component model
+
+ Author: Merijn de Jonge (mdejonge@cs.uu.nl)
+
+ $Id: bundlegen.str 5017 2004-01-27 11:53:48Z merijn $
+
+\begin{code}
+module koala-graph
+
+imports koala-access lib koala-relations dot-access
+
+signature
+constructors
+   VisDepth: Int -> ArgOption
+   
+strategies
+koala-graph =
+   iowrap(Koala-graph, koala-graph-options)
+
+short-description(p) =
+   !["Usage: ", <p>(), " -i file [options]"]
+
+long-description(p) =
+   ![<p>(), " generates a graphical representation of a Koala ",
+     "specification as a Dot graph. The generated output is an AST which ",
+     "that can be pretty-printed and passed to dot as follows:\n\n",
+     " ... | koala-graph | pp -l dot -a | dot -Tps > output.ps\n\n",
+     "See 'pp'."]
+
+koala-graph-options = 
+   ArgOption( "-l" + "--level",
+              where(<set-config>("--level", <string-to-int><id>)),
+              !"-l|--level int    Level of detail")
+   
+Koala-graph =
+   (id,
+   allComponentDefs => comps;
+   top-module;
+   ?Componentdef(name,_);
+   where(component2dot(!comps, ![name]) => g);
+   connects2dot(!comps, ![name]) => conn;
+   !dot-digraph( <dot-str>name, <conc>([g],conn) ))
+
+   
+requires2dot(path): Componentdef(name, _) -> nodes
+   where
+   collectSections(Requires(id));
+   map( {xs, i,t:
+      (?Externalinterface(i, xs )+Roundinterface(escape;?i,?xs))=>t;
+      !xs;
+      map(
+         Fst;
+         <requiresNode(!t)>(<conc;dot-str>(<path>(), [<id>]), i,<path;level>())
+         )
+       } ) => nodes
+
+
+provides2dot(path): Componentdef(cname,_) -> nodes
+   where
+   collectSections(Provides(id));
+   map( {xs, i, t:
+      (?Externalinterface(i, xs )+ Roundinterface(escape;?i,?xs))=>t;
+      !xs;
+      map(
+         Fst;
+         <providesNode(!t)>(<conc;dot-str>(<path>(), [<id>]), i,<path;level>())
+         )
+       } ) => nodes
+
+
+contains2dot(comps, path): Componentdef(cname,_) -> nodes
+   where
+   collectSections(Contains(id));
+   collect({i,m,x,xs:
+       ?Componentdecl(m,[x]);
+       comps;
+       fetch-elem(?Componentdef(m,_));
+       component2dot(comps, <conc>(<path>(), [x]))
+      +
+       ?Module(x, _);
+       <moduleNode>(<conc;dot-str>(<path>(),[x]), x, <path;level>())
+      +
+       ?Interfacedecl(i, xs);
+       !xs;
+       map(
+          Fst;
+          <interfaceNode>(<conc;dot-str>(<path>(), [<id>]), i,<path;level>())
+          )
+       }
+   ) => nodes
+
+connects2dot(comps, path): Componentdef(name, _) -> nodes
+   where
+   Componentrelations(![name], comps);
+   filter(connection(id,id,id));
+   map({i,i1,i2, left, right, visability:
+     // Interface->Interface connection (interfaces are the same) 
+     connection(?left,?right,?(i,i));
+     connection-level;external-edge-visability => visability;
+     !dot-edge(<connector(!i, path)>left, <connector(!i, path)>right, visability)
+     <+
+     // Interface -> Interface connection with different interfaces (i1 != i2)
+     connection(?left,?right,?(i1,i2));
+     connection-level;external-edge-visability => visability;
+     !dot-edge(<connector(!i1, path)>left, <connector(!i2, path)>right,visability)
+     <+
+     connection(?left,?right,?i);
+     connection-level;internal-edge-visability => visability;
+     !dot-edge(<connector(!i, path)>left, <connector(!i, path)>right,visability)
+     
+     <+ 
+     debug(!"Error\n")
+   }) => nodes
+
+   
+   
+   
+component2dot(comps, path ): Componentdef(cname, _) -> dot
+   where
+   where(<table-put>("level", "level", <path;level>()));
+   where(requires2dot(path) => req);
+   where(provides2dot(path) => prov);
+   where(contains2dot(comps, path) => cont);
+   ![dot-alias("label", <dot-str>cname),
+     dot-alias("fillcolor", <path;level;color-name>()),
+     dot-alias("URL", <concat-strings;dot-str>[cname, ".html"]),
+     dot-node-attrs([dot-attr-id("style", "filled")]),
+     dot-graph-attrs([dot-attr-id("style", "filled")]),
+     dot-graph-attrs(<path;level;component-visability>())] => stms;
+   !dot-subgraph(<conc;dot-str>(["cluster"], <conc>(<path>(), [cname])),
+      <concat>[stms, req, prov, cont]) => dot
+
+   
+connector(i, path): c ->  <concat;dot-str>[name,[v]]
+   where
+     interface(?name, id, ?v)
+     +
+     ContainedModule(?name, ?v )
+     +
+     ContainedComponent(id, ?name, id, id); <i>() => v
+
+dot-str =
+   try(separate-by(!"_");concat-strings); double-quote
+
+color-name: level -> color-name
+   where
+    (
+      ?1; !"white"
+    <+
+      ?2; !"pink"
+    <+
+      !"pink2"
+    ) => color-name
+
+   
+requiresNode(n): (name, lbl, level) -> 
+   <dotNode>(name, lbl, 
+            [<dot-shape>"invtriangle", <n;color;dot-color>(),<dot-url>lbl|
+             <interface-visability>level])
+
+providesNode(n): (name, lbl, level) -> 
+   <dotNode>(name, lbl, 
+            [<dot-shape>"triangle", <n;color;dot-color>(), <dot-url>lbl|
+            <interface-visability>level])
+
+color =
+     Externalinterface(id,id);
+     !"lightblue"
+   +
+     Roundinterface(id,id);
+     !"yellow"
+
+moduleNode: (name, lbl, level) -> 
+   <dotNode>(name, lbl, 
+            [<dot-shape>"ellipse", <dot-color>"cyan4"|
+             <module-visability>level])
+
+interfaceNode: (name, lbl, level) -> 
+   <dotNode>(name, lbl, 
+            [<dot-shape>"diamond", <dot-color>"lightblue", <dot-url>lbl|
+            <interface-visability>level])
+
+dot-label: label -> 
+          dot-attr-id("label", <dot-str>label)
+dot-color: color ->
+          dot-attr-id("fillcolor", color)
+dot-shape: shape ->
+          dot-attr-id("shape", shape)
+dot-fontsize: size ->
+          dot-attr-num-con("fontsize", <int-to-string>size)
+
+dot-url: url ->
+          dot-attr-id("URL", <concat-strings;dot-str>[url, ".html"])
+
+dotNode: (name, label, attrs) -> node
+   where
+     ![
+       <dot-label>label,<dot-fontsize>10|attrs] => node-attrs;
+     !dot-node( name, node-attrs ) => node
+
+level: path -> int
+   where
+      length => int
+
+// Strategies dealing with visability of nodes and edges
+                        
+max-level = 
+  (
+    <get-config>"--level"
+  <+
+    !0 
+  )
+
+connection-level = 
+   (
+   IMConnection(interface(?path1, id,id),
+                ContainedModule(?path2, id),
+                id )
+   +
+   MIConnection(ContainedModule(?path1, id),
+                interface(?path2, id, id ),
+                id )
+   +
+   IIConnection(interface(?path1, id, id),
+                interface(?path2, id, id),
+                id )
+   ); <max>(<level>path1, <level>path2)
+
+visability: (level, max-level) -> visability
+where
+   ( // Display all details when level equals 0
+     !max-level;?0;![]
+   <+
+     <lt>(level, max-level);
+     ![]
+   <+
+     ![dot-attr-id("style", "invis")]
+   ) => visability
+
+// Visability of edges within a component
+internal-edge-visability: level -> visability
+where
+   <max-level>() => mlevel;
+   <visability>(level, mlevel) => visability
+
+// Visability of edges between components
+external-edge-visability: level -> visability
+where
+   <max-level>();
+   try(not(0);<add>(<id>,1)) => mlevel;
+   <visability>(level, mlevel) => visability
+
+interface-visability: level -> visability
+where
+   <max-level>();
+   try(not(0);<add>(<id>,1)) => mlevel;
+   <visability>(level, mlevel) => visability
+
+module-visability: level -> visability
+  where
+   <max-level>() => mlevel;
+   <visability>(level, mlevel) => visability
+
+component-visability: level -> visability
+where
+   <max-level>();
+   try(not(0);<add>(<id>,1)) => mlevel;
+   <visability>(level, mlevel) => visability
+
+\end{code}
+% Copyright (C) 2004 Merijn de Jonge <mdejonge@cs.uu.nl>
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.
+

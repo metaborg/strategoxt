@@ -1,0 +1,20 @@
+
+module KoalaInterfaceGrammar
+exports
+  sorts Interfacedef
+
+  context-free syntax
+    Identifier -> Intfdefname      
+    Identifier -> Typename         
+    Identifier -> Storagequalifier 
+
+  context-free syntax
+    "interface" Intfdefname "{" (Prototype | ( "using" Usingclause ))* "}"                      -> Interfacedef {cons("Interfacedef")}
+    {Typename ","}+ ";"                                                                         -> Usingclause  {cons("Usingclause")}
+    "const" -> Const {cons("const")}
+    Const? Type Declarator ( "(" Void | {Parameterdef ","}* ")" )? ( "=" Expression )? ";" -> Prototype    {cons("Prototype")}
+    Type Declarator                                                                             -> Parameterdef {cons("Parameterdef")}
+    Typename | Void                                                                           -> Type         {cons("Type")}
+    "void" -> Void {cons("void")}
+    Storagequalifier? Pointer? Identifier                                                           -> Declarator   {cons("Declarator")}
+    "*" -> Pointer {cons("Pointer")}

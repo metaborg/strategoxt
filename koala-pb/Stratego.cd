@@ -1,0 +1,21 @@
+component Stratego{
+   provides 
+   IlibSRTS srts;
+   IlibXTC xtc;
+
+   requires
+   IlibATERM aterm;
+   
+   contains
+   component XTC my_xtc;
+   component SRTS my_srts;
+
+   connects
+   my_xtc.aterm = aterm;
+   my_srts.aterm = aterm;
+
+   srts = my_srts.srts;
+   xtc = my_xtc.xtc;
+   
+
+}

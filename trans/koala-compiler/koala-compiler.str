@@ -1,0 +1,111 @@
+\literate[koala-compiler]
+
+ KoalaTools -- Tool suite for Koala component model
+
+ Author: Merijn de Jonge (mdejonge@cs.uu.nl)
+
+ $Id: bundlegen.str 5017 2004-01-27 11:53:48Z merijn $
+
+\begin{code}
+module koala-compiler
+
+imports koala-access lib koala-relations CompositeSystem
+
+strategies
+koala-compiler =
+   iowrap(Koala-compiler)
+
+Koala-compiler =
+   Koala-relations => relations;
+   component-module-finder;
+   map(composer(!relations));
+   !Composition(<id>)
+
+short-description(p) =
+   !["Usage: ", <p>(), " -i file [options]"]
+
+long-description(p) =
+   ![<p>(), " constructs a product description from a packed Koala ",
+    "specification. This description lists the components of the product, ",
+    "references to other components, pointers to component origins, and ",
+    "it describes the relative location of components in the product.\n\n",
+    "The result of ", <p>(), " can be passed to different Koala backends, ",
+    "such as 'koala-graph-composer' :\n",
+    "   ... | koala-compiler | koala-graph-composer\n\n",
+    "or to 'koala-tree-composer'/koala-build-composer':\n",
+    "   ... | koala-compiler\\\n",
+    "       | koala-build-order\\\n",
+    "       | koala-tred\\\n",
+    "       | koala-tree-composer\n\n",
+    "See 'koala-wire', 'koala-graph-composer', 'koala-build-order', ",
+    "'koala-tred', 'koala-tree-composer', 'koala-build-composer'."]
+
+composer(ingredients): ContainedComponent(path, type, specials, name) -> composition
+where
+   <at-end(![name])>path => new-path;
+   ingredients;
+   collect({interface, intf-name, p1, p2:
+     (IMConnection(interface(?new-path,?interface,?intf-name),ContainedModule(?p1,?p2),id);
+      !Wire(Interface(interface),Name(intf-name),Target(PathName(<at-end(![p2])>p1)))
+     + 
+      IIConnection(interface(?new-path,?interface,?intf-name),interface(?p1,id,?p2),id);
+      !Wire(Interface(interface),Name(intf-name),Target(PathName(p1)))
+     )
+   }) => links;
+   <oncetd(Filespecial(un-double-quote;?location)) <+ ![] => location>specials;
+   !Component(Name(type),
+              Name(name),
+              Path(PathName(new-path)),
+              <[];!None <+ !Some(Url(location))>location,
+              links
+              ) => composition
+
+composer(ingredients): ContainedModule(path, name) -> composition
+where
+   <at-end(![name])>path => new-path;
+   ingredients;
+   collect({interface, intf-name, p1, p2:
+     MIConnection(ContainedModule(?path,?name), interface(?p1,?interface,?p2),?intf-name);
+     !Wire(Interface(interface),Name(intf-name),Target(PathName(p1)))
+   }) => links;
+   // Find component that contains this module
+   ingredients;
+   fetch-elem({n:ContainedComponent(<at-last([?n];![])>path,id,id,?n)});
+   ContainedComponent(id,id,?specials,id);
+   <oncetd(Filespecial(un-double-quote;?location)) <+ ![] => location>specials;
+   !Module(Name(name),
+           Path(PathName(new-path)),
+           <[];!None <+ !Some(Url(location))>location,
+           links
+           ) => composition
+
+
+component-module-finder =
+    filter( 
+      ContainedModule(id,id) 
+    + ContainedComponent(id,id,id,id) 
+    + 
+      // Generate a ContainedComponent term for the top component. We use
+      // "BUNDLE" as component type and 'name' as instance name.
+      TopComponent(id,?name, ?specials);
+      !ContainedComponent([], "BUNDLE", specials, name)
+    )
+
+\end{code}
+% Copyright (C) 2004 Merijn de Jonge <mdejonge@cs.uu.nl>
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.
+

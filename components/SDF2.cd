@@ -1,0 +1,103 @@
+component SDF2
+{
+   provides
+      iSGLR sglr;
+      iPGEN pgen;
+      iATerm aterm;
+
+   contains
+      component ASC-SUPPORT asc-support;
+      component ATerm aterm;
+      component PT-SUPPORT pt-support;
+      component SGLR sglr;
+      component ASF-SUPPORT asf-support;
+      component PGEN pgen;
+      component SDF-SUPPORT sdf-support;
+      component TOOLBUS-LIB toolbuslib;
+
+   connects
+      asc-support.aterm = aterm.aterm;
+      asc-support.toolbuslib = toolbuslib.toolbuslib;
+      asc-support.pt-support = pt-support.pt-support;
+      asc-support.asf-support = asf-support.asf-support;
+      pt-support.aterm = aterm.aterm;
+      pt-support.toolbuslib = toolbuslib.toolbuslib;
+      pt-support.aterm = aterm.aterm;
+      pt-support.toolbuslib = toolbuslib.toolbuslib;
+      sglr.aterm = aterm.aterm;
+      sglr.pt-support = pt-support.pt-support;
+      sglr.toolbuslib = toolbuslib.toolbuslib;
+      asf-support.aterm = aterm.aterm;
+      asf-support.pt-support = pt-support.pt-support;
+      pgen.asc-support = asc-support.asc-support;
+      pgen.asf-support = asf-support.asf-support;
+      pgen.sdf-support = sdf-support.sdf-support;
+      pgen.pt-support = pt-support.pt-support;
+      pgen.sglr = sglr.sglr;
+      pgen.aterm = aterm.aterm;
+      pgen.toolbuslib = toolbuslib.toolbuslib;
+      sdf-support.aterm = aterm.aterm;
+      sdf-support.pt-support = pt-support.pt-support;
+      toolbuslib.aterm = aterm.aterm;
+      sglr = sglr.sglr;
+      pgen = pgen.pgen;
+      aterm = aterm.aterm;
+}
+/*
+component SDF2 {
+provides
+   SGLR sglr;
+   PGEN pgen;
+   ATerm aterm;
+
+contains
+   component ASC-SUPPORT asc-support;
+   component ATerm aterm;
+   component PT-SUPPORT pt-support;
+   component SGLR sglr;
+   component ASF-SUPPORT asf-support;
+   component PGEN pgen;
+   component SDF-SUPPORT sdf-support;
+   component TOOLBUS-LIB toolbuslib;
+
+
+
+connects
+   asc-support.aterm = aterm.aterm;
+   asc-support.toolbuslib = toolbuslib.toolbuslib;
+   asc-support.pt-support = pt-support.pt-support;
+   asc-support.asf-support = asf-support.asf-support;
+   
+   pt-support.aterm = aterm.aterm;
+   pt-support.toolbuslib = toolbuslib.toolbuslib;
+   
+   pt-support.aterm = aterm.aterm;
+   pt-support.toolbuslib = toolbuslib.toolbuslib;
+   
+   sglr.aterm = aterm.aterm;
+   sglr.pt-support = pt-support.pt-support;
+   sglr.toolbuslib = toolbuslib.toolbuslib;
+   
+   asf-support.aterm = aterm.aterm;
+   asf-support.pt-support = pt-support.pt-support;
+   
+   pgen.asc-support = asc-support.asc-support;
+   pgen.asf-support = asf-support.asf-support;
+   pgen.sdf-support = sdf-support.sdf-support;
+   pgen.pt-support = pt-support.pt-support;
+   pgen.sglr = sglr.sglr;
+   pgen.aterm = aterm.aterm;
+   pgen.toolbuslib = toolbuslib.toolbuslib;
+   
+   sdf-support.aterm = aterm.aterm;
+   sdf-support.pt-support = pt-support.pt-support;
+   
+   toolbuslib.aterm = aterm.aterm;
+
+   sglr = sglr.sglr;
+   pgen = pgen.pgen;
+   aterm = aterm.aterm;
+
+
+}
+*/

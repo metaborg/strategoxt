@@ -1,0 +1,27 @@
+/*
+ * Copyright (c) 1999,2000 by Philips Electronics N.V.
+ * All rights reserved.
+ *
+ *          %name: CEduInput.cd %
+ *       %version: %
+ * %date_modified: %
+ *    %derived_by: %
+ *          Owner: Maarten Pennings
+ */
+
+
+component CEduInput
+{
+    specials
+        prefix "eduinp";
+
+    provides
+        IEduRead read;
+
+    contains
+        module m;
+
+    connects // m
+        read = m;
+}
+

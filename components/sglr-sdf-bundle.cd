@@ -1,0 +1,16 @@
+component sglr-sdf-bundle
+{
+   contains
+      component SDF2 sdf2;
+      component SGLR sglr;
+      component TOOLBUS-LIB toolbuslib;
+      component PT-SUPPORT pt-support;
+
+   connects
+      sglr.pt-support = pt-support.pt-support;
+      sglr.aterm = sdf2.aterm;
+      sglr.toolbuslib = toolbuslib.toolbuslib;
+      toolbuslib.aterm = sdf2.aterm;
+      pt-support.aterm = sdf2.aterm;
+      pt-support.toolbuslib = toolbuslib.toolbuslib;
+}

@@ -1,0 +1,408 @@
+<?xml version="1.0"?>
+
+<pnml>
+    <net type="EPNML 1.0" id="n3">
+        <name>
+            <value>Page-1</value>
+        </name>
+        <description>
+            <value>an example Petri netfrom: Free choice Petri nets, by Desel &amp; EsparzaISBN 0521465192figure 4.7,p. 81</value>
+        </description>
+        <graphics>
+            <dimension x="496" y="702"/>
+        </graphics>
+        <transition id="tr15" type="AND">
+            <name>
+                <value>x1</value>
+            </name>
+            <graphics>
+                <position x="23" y="158"/>
+                <dimension x="24" y="24"/>
+            </graphics>
+        </transition>
+        <place id="pl17" type="channel">
+            <name>
+                <value>A1</value>
+            </name>
+            <graphics>
+                <position x="47" y="111"/>
+                <dimension x="24" y="24"/>
+            </graphics>
+            <initialMarking>
+                <value>1</value>
+            </initialMarking>
+        </place>
+        <transition id="tr16" type="AND">
+            <name>
+                <value>~x1</value>
+            </name>
+            <graphics>
+                <position x="71" y="158"/>
+                <dimension x="24" y="24"/>
+            </graphics>
+        </transition>
+        <transition id="tr17" type="AND">
+            <name>
+                <value>x2</value>
+            </name>
+            <graphics>
+                <position x="165" y="158"/>
+                <dimension x="24" y="24"/>
+            </graphics>
+        </transition>
+        <place id="pl18" type="channel">
+            <name>
+                <value>A2</value>
+            </name>
+            <graphics>
+                <position x="189" y="111"/>
+                <dimension x="24" y="24"/>
+            </graphics>
+            <initialMarking>
+                <value>1</value>
+            </initialMarking>
+        </place>
+        <transition id="tr18" type="AND">
+            <name>
+                <value>~x2</value>
+            </name>
+            <graphics>
+                <position x="212" y="159"/>
+                <dimension x="24" y="24"/>
+            </graphics>
+        </transition>
+        <transition id="tr19" type="AND">
+            <name>
+                <value>x3</value>
+            </name>
+            <graphics>
+                <position x="307" y="158"/>
+                <dimension x="24" y="24"/>
+            </graphics>
+        </transition>
+        <transition id="tr20" type="AND">
+            <name>
+                <value>~x3</value>
+            </name>
+            <graphics>
+                <position x="354" y="158"/>
+                <dimension x="24" y="24"/>
+            </graphics>
+        </transition>
+        <transition id="tr21" type="AND">
+            <name>
+                <value>~C1</value>
+            </name>
+            <graphics>
+                <position x="59" y="276"/>
+                <dimension x="24" y="24"/>
+            </graphics>
+        </transition>
+        <place id="pl19" type="channel">
+            <name>
+                <value>
+                </value>
+            </name>
+            <graphics>
+                <position x="35" y="229"/>
+                <dimension x="24" y="24"/>
+            </graphics>
+            <initialMarking>
+                <value>
+                </value>
+            </initialMarking>
+        </place>
+        <place id="pl20" type="channel">
+            <name>
+                <value>
+                </value>
+            </name>
+            <graphics>
+                <position x="82" y="229"/>
+                <dimension x="24" y="24"/>
+            </graphics>
+            <initialMarking>
+                <value>
+                </value>
+            </initialMarking>
+        </place>
+        <transition id="tr22" type="AND">
+            <name>
+                <value>~C2</value>
+            </name>
+            <graphics>
+                <position x="189" y="277"/>
+                <dimension x="24" y="24"/>
+            </graphics>
+        </transition>
+        <place id="pl21" type="channel">
+            <name>
+                <value>
+                </value>
+            </name>
+            <graphics>
+                <position x="153" y="229"/>
+                <dimension x="24" y="24"/>
+            </graphics>
+            <initialMarking>
+                <value>
+                </value>
+            </initialMarking>
+        </place>
+        <place id="pl22" type="channel">
+            <name>
+                <value>
+                </value>
+            </name>
+            <graphics>
+                <position x="224" y="229"/>
+                <dimension x="24" y="24"/>
+            </graphics>
+            <initialMarking>
+                <value>
+                </value>
+            </initialMarking>
+        </place>
+        <transition id="tr23" type="AND">
+            <name>
+                <value>~C3</value>
+            </name>
+            <graphics>
+                <position x="319" y="276"/>
+                <dimension x="24" y="24"/>
+            </graphics>
+        </transition>
+        <place id="pl23" type="channel">
+            <name>
+                <value>
+                </value>
+            </name>
+            <graphics>
+                <position x="295" y="229"/>
+                <dimension x="24" y="24"/>
+            </graphics>
+            <initialMarking>
+                <value>
+                </value>
+            </initialMarking>
+        </place>
+        <place id="pl24" type="channel">
+            <name>
+                <value>
+                </value>
+            </name>
+            <graphics>
+                <position x="343" y="229"/>
+                <dimension x="24" y="24"/>
+            </graphics>
+            <initialMarking>
+                <value>
+                </value>
+            </initialMarking>
+        </place>
+        <place id="pl25" type="channel">
+            <name>
+                <value>
+                </value>
+            </name>
+            <graphics>
+                <position x="189" y="229"/>
+                <dimension x="24" y="24"/>
+            </graphics>
+            <initialMarking>
+                <value>
+                </value>
+            </initialMarking>
+        </place>
+        <transition id="tr24" type="AND">
+            <name>
+                <value>Back</value>
+            </name>
+            <graphics>
+                <position x="413" y="52"/>
+                <dimension x="24" y="24"/>
+            </graphics>
+        </transition>
+        <place id="pl26" type="channel">
+            <name>
+                <value>A3</value>
+            </name>
+            <graphics>
+                <position x="330" y="111"/>
+                <dimension x="24" y="24"/>
+            </graphics>
+            <initialMarking>
+                <value>1</value>
+            </initialMarking>
+        </place>
+        <place id="pl27" type="channel">
+            <name>
+                <value>False</value>
+            </name>
+            <graphics>
+                <position x="413" y="323"/>
+                <dimension x="24" y="24"/>
+            </graphics>
+            <initialMarking>
+                <value>
+                </value>
+            </initialMarking>
+        </place>
+        <arc id="ar43" type="outflow" target="tr15" source="pl17">
+            <name>
+                <value>
+                </value>
+            </name>
+        </arc>
+        <arc id="ar44" type="outflow" source="tr16" target="pl19">
+            <name>
+                <value>
+                </value>
+            </name>
+        </arc>
+        <arc id="ar45" type="outflow" target="tr16" source="pl17">
+            <name>
+                <value>
+                </value>
+            </name>
+        </arc>
+        <arc id="ar46" type="outflow" source="tr16" target="pl21">
+            <name>
+                <value>
+                </value>
+            </name>
+        </arc>
+        <arc id="ar47" type="outflow" target="tr17" source="pl18">
+            <name>
+                <value>
+                </value>
+            </name>
+        </arc>
+        <arc id="ar48" type="outflow" source="tr18" target="pl23">
+            <name>
+                <value>
+                </value>
+            </name>
+        </arc>
+        <arc id="ar49" type="outflow" source="tr17" target="pl25">
+            <name>
+                <value>
+                </value>
+            </name>
+        </arc>
+        <arc id="ar50" type="outflow" target="tr18" source="pl18">
+            <name>
+                <value>
+                </value>
+            </name>
+        </arc>
+        <arc id="ar51" type="outflow" target="tr19" source="pl26">
+            <name>
+                <value>
+                </value>
+            </name>
+        </arc>
+        <arc id="ar52" type="outflow" target="tr20" source="pl26">
+            <name>
+                <value>
+                </value>
+            </name>
+        </arc>
+        <arc id="ar53" type="outflow" target="tr21" source="pl19">
+            <name>
+                <value>
+                </value>
+            </name>
+        </arc>
+        <arc id="ar54" type="outflow" target="tr21" source="pl20">
+            <name>
+                <value>
+                </value>
+            </name>
+        </arc>
+        <arc id="ar55" type="outflow" target="tr22" source="pl21">
+            <name>
+                <value>
+                </value>
+            </name>
+        </arc>
+        <arc id="ar56" type="outflow" target="tr22" source="pl22">
+            <name>
+                <value>
+                </value>
+            </name>
+        </arc>
+        <arc id="ar57" type="outflow" target="tr22" source="pl25">
+            <name>
+                <value>
+                </value>
+            </name>
+        </arc>
+        <arc id="ar58" type="outflow" source="tr21" target="pl27">
+            <name>
+                <value>
+                </value>
+            </name>
+        </arc>
+        <arc id="ar59" type="outflow" source="tr22" target="pl27">
+            <name>
+                <value>
+                </value>
+            </name>
+        </arc>
+        <arc id="ar60" type="outflow" source="tr23" target="pl27">
+            <name>
+                <value>
+                </value>
+            </name>
+        </arc>
+        <arc id="ar61" type="outflow" source="tr19" target="pl24">
+            <name>
+                <value>
+                </value>
+            </name>
+        </arc>
+        <arc id="ar62" type="outflow" source="tr20" target="pl22">
+            <name>
+                <value>
+                </value>
+            </name>
+        </arc>
+        <arc id="ar63" type="outflow" target="tr23" source="pl23">
+            <name>
+                <value>
+                </value>
+            </name>
+        </arc>
+        <arc id="ar64" type="outflow" target="tr23" source="pl24">
+            <name>
+                <value>
+                </value>
+            </name>
+        </arc>
+        <arc id="ar65" type="outflow" source="tr24" target="pl17">
+            <name>
+                <value>
+                </value>
+            </name>
+        </arc>
+        <arc id="ar66" type="outflow" source="tr24" target="pl18">
+            <name>
+                <value>
+                </value>
+            </name>
+        </arc>
+        <arc id="ar67" type="outflow" source="tr24" target="pl26">
+            <name>
+                <value>
+                </value>
+            </name>
+        </arc>
+        <arc id="ar68" type="outflow" target="tr24" source="pl27">
+            <name>
+                <value>
+                </value>
+            </name>
+        </arc>
+    </net>
+</pnml>

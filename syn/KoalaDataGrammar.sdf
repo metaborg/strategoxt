@@ -1,0 +1,9 @@
+
+module KoalaDataGrammar
+exports
+  context-free syntax
+    Datadefinition*                                             -> Datadefinitions {cons("Datadefinitions")}
+    Koalapragmaopen Pragma Identifier "**/" -> Datadefinition {cons("Datadefinition")}
+    "type" -> Pragma {cons("Type")}
+    "group" -> Pragma {cons("Group")}
+    "using" -> Pragma {cons("Using")}

@@ -1,0 +1,51 @@
+#! /bin/sh
+#
+# KT -- Koala Tools
+# Copyright (C) 2003 Merijn de Jonge <mdejonge@cwi.nl>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+# $Id: tohtml-koala.sh.src,v 1.3 2003/06/10 13:37:59 mdejonge Exp $
+
+
+# The following define Sdf specific paramters for the generic html
+# generaction
+
+PREFIX=__PREFIX__
+GPP=__GPP__
+
+# default module extension; can be changed using the -e option
+
+MOD_EXTENSION1="cd"
+MOD_EXTENSION2="id"
+
+IMPORTS="${PREFIX}/bin/koala-imports"
+PPTABLES="${PREFIX}/share/koala/koala.pp"
+PARSETABLE="${PREFIX}/share/koala/koala.tbl"
+
+# Function to generate dot graph (as AST) for koala definition
+spec2adot () {
+   SEARCHPATH=$1
+   MODULE=$2
+   MOD_EXTENSION=$3
+   output=$4
+   ${PREFIX}/bin/pack-koala ${SEARCHPATH} -i ${MODULE} \
+   | implode-asfix \
+   | ${PREFIX}/bin/koala-wire \
+   | ${PREFIX}/bin/koala-graph -o ${output}
+}
+
+. ${GPP}/libexec/tohtml

@@ -1,0 +1,16 @@
+component TOOLBUS-LIB {
+specials
+   file "file:///home/mdejonge/pkgs";
+
+requires 
+   iATerm aterm;
+provides 
+   iTOOLBUS-LIB toolbuslib;
+
+contains 
+   module m;
+
+connects
+   toolbuslib = m;
+   m = aterm;    
+}

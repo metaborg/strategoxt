@@ -1,0 +1,78 @@
+\literate[koala-tred]
+
+ KoalaTools -- Tool suite for Koala component model
+
+ Author: Merijn de Jonge (mdejonge@cs.uu.nl)
+
+ $Id: bundlegen.str 5017 2004-01-27 11:53:48Z merijn $
+
+ Transitive reduction of koala composites
+
+ Source-2-source transformation of Koala CompositeSystem
+\begin{code}
+module koala-tred
+imports lib CompositeSystem
+
+
+strategies
+koala-tred = 
+   iowrap( Koala-tred )
+
+short-description(p) =
+   !["Usage: ", <p>(), " -i file [options]"]
+
+long-description(p) =
+   ![<p>(), " performs a source-to-source transformation of a Koala ",
+    "composite system as produced by koala-compiler in which non-transitive ",
+    "dependencies to interfaces are replaced by transitive dependencies to ",
+    "modules. That is, if m1 -> C and C -> m2 are dependencies, C ",
+    "a component and m1, m2 modules, than the result would be m1 -> m2\n\n",
+    "See 'koala-compiler'."]
+    
+Koala-tred: Composition(spec) -> Composition(spec')
+where
+ !spec;
+ map(transitive-reduction(!spec)) => spec' 
+
+transitive-reduction(spec) =
+   (
+   Component(id,id,id,id,map(repeat(wire-reduction(spec))))
+   +
+   Module(id,id,id,map(repeat(wire-reduction(spec))))
+   )
+
+// Link to module or to interface
+// In case of a link to an interface, we have to find the components that
+// provides the interface and replace target by the end-point of the wire
+// within that component
+wire-reduction(spec): Wire(interface, name, Target(target)) -> Wire(interface, name,Target(target'))
+   where
+   spec;
+   fetch-elem({wires:
+      (
+       Module(id,Path(?target),id,?wires)
+      +
+       Component(id,id,Path(?target),id,?wires)
+      );
+      !wires 
+   });
+   fetch-elem(Wire(?interface, ?name, Target(?target')))
+
+\end{code}
+% Copyright (C) 2004 Merijn de Jonge <mdejonge@cs.uu.nl>
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.
+

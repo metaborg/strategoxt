@@ -1,0 +1,12 @@
+component ATerm {
+specials
+   file "file:///home/mdejonge/pkgs";
+   provides
+   IlibATERM aterm;
+
+   contains
+   module aterm-1_0;
+   
+   connects
+   aterm = aterm-1_0;
+}

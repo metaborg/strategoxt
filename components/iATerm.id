@@ -1,0 +1,11 @@
+interface ATerm {
+   lib libATerm;
+   lib libATerm-cc;
+   lib libATerm-gcc;
+   lib libATerm-prof;
+   lib libATerm-dbg;
+   
+   bin baffle;
+   bin term2baf;
+   bin baf2trm;
+}

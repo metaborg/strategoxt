@@ -1,0 +1,11 @@
+#! /bin/sh
+
+exec >/dev/null
+
+pack-koala -I ./data -i N.cd \
+| implode-asfix \
+| koala-wire \
+| koala-compiler \
+| koala-tred \
+| ./koala-pnet-composer
+

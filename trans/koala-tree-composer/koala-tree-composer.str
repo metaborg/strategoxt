@@ -1,0 +1,77 @@
+\literate[koala-tree-composer]
+
+ KoalaTools -- Tool suite for Koala component model
+
+ Author: Merijn de Jonge (mdejonge@cs.uu.nl)
+
+ $Id: bundlegen.str 5017 2004-01-27 11:53:48Z merijn $
+
+\begin{code}
+module koala-tree-composer
+imports lib CompositeSystem
+
+strategies
+
+koala-tree-composer = iowrapNoOutput((id,Koala-tree-composer),fail)
+
+short-description(p) =
+   !["Usage: ", <p>(), " -i file [options]"]
+
+long-description(p) =
+   ![<p>(), " generates a source tree according to the information in a ",
+    "Koala composite definition as generated bu koala-compiler.\n\n",
+    "See 'koala-compiler', 'koala-build-composer'."]
+
+Koala-tree-composer = 
+   Composition(?components);
+   <print>(stdout, ["mkdir -p ",<prefix>(),"\n"]);
+   <print>(stdout, ["cd ", <prefix>(),"\n"]);
+   !components;
+   map(
+      component2tree
+   )
+
+prefix =
+   option-value(Output(?output);!output, !".")
+
+component2tree =
+      Component(id,id,Path(?path),id,id)
+   <+
+      Module(Name(?name),Path(PathName(?path1)),Some(Url(?url)),id);
+      !PathName(<reverse;Tl;reverse>path1) => parentdir;
+      <print>(stdout, ["mkdir -p ",<path2string>parentdir,"\n"]);
+      <print>(stdout, ["mkdir tmp\n"]);
+      <print>(stdout, ["(\\\n"]);
+      <print>(stdout, ["cd tmp\n"]);
+      
+      <print>(stdout, ["curl -s -S -O ", url, "/", name, ".tar.gz", "\n"]);
+      <print>(stdout, ["gunzip ", name, ".tar.gz\n"]);
+      <print>(stdout, ["tar xvf ", name, ".tar\n"]);
+      <print>(stdout, [")\n"]);
+      <print>(stdout, ["rm tmp/", name, ".tar\n"]);
+      <print>(stdout, ["mv tmp/* ", <path2string>PathName(path1), "\n"]);
+      <print>(stdout, ["rmdir tmp\n"])
+
+path2string: PathName(p) -> s
+   where
+   <separate-by;concat-strings>("/", p) => s
+
+
+\end{code}
+% Copyright (C) 2004 Merijn de Jonge <mdejonge@cs.uu.nl>
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.
+

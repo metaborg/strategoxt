@@ -1,0 +1,6 @@
+AC_INIT([CATerm],[0.1],[stratego-bugs@cs.uu.nl])
+AM_INIT_AUTOMAKE
+PACKAGE=CATerm
+AC_OUTPUT(Makefile)
+
+

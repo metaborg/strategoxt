@@ -1,0 +1,40 @@
+module CompositeSystem
+exports
+   sorts
+      Composition
+
+   lexical syntax
+      ~[\n]*     -> String
+      [\ \t\n]   -> LAYOUT
+
+     "path"      -> String {reject}
+     "component" -> String {reject}
+     "url"       -> String {reject}
+
+   lexical restrictions
+      String -/- ~[\n]
+
+   context-free restrictions
+      LAYOUT -/- [\ \t\n]
+
+   context-free syntax
+
+      Constituent*          -> Composition {cons("Composition")}
+
+      "component" Name Name "{" Path Url? "}" "{" Wires "}" -> Component {cons("Component")}
+      "module"    Name      "{" Path Url? "}" "{" Wires "}" -> Module {cons("Module")}
+
+      "path" "=" PathName -> Path {cons("Path")}
+      "url" "=" String    -> Url {cons("Url")}
+
+      Interface ":" Name "->" Target -> Wire {cons("Wire")}
+
+      String              -> Interface {cons("Interface")}
+      String              -> Name {cons("Name")}
+      PathName            -> Target {cons("Target")}
+
+      {String "/"}+       -> PathName {cons("PathName")}
+
+   aliases
+      Wire* -> Wires
+      Component | Module -> Constituent

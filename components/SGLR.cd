@@ -1,0 +1,19 @@
+component SGLR {
+specials
+   file "file:///home/mdejonge/pkgs";
+
+provides iSGLR sglr;
+
+requires
+   iPT-SUPPORT pt-support;
+   iATerm aterm;
+   iTOOLBUS-LIB toolbuslib ;
+contains
+   module m;
+
+connects
+   sglr = m;
+   m = pt-support;
+   m = aterm;
+   m = toolbuslib;
+}

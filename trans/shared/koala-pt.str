@@ -1,0 +1,214 @@
+\literate[koala-pt]
+
+ KoalaTools -- Tool suite for Koala component model
+
+ Author: Merijn de Jonge (mdejonge@cs.uu.nl)
+
+ $Id: bundlegen.str 5017 2004-01-27 11:53:48Z merijn $
+
+\begin{code}
+module koala-pt
+imports lib 
+	asfix-abstractions 
+	stratego-xt-xtc-tools
+
+signature
+constructors
+   Component: a -> a
+   Interface: a -> a
+   
+   Requires: a * a -> a
+   Contains: a * a -> a
+
+strategies
+  parse-koala = 
+       parse-koala-component 
+    <+ parse-koala-interface 
+    <+ add-koala-extension;
+       parse-koala-component
+
+  koala-parse-table = !"koala.tbl"
+
+    // If file names doesn't have an extension .cd or .id, we add .cd as
+    // default extension
+add-koala-extension = 
+    ( not(has-extension(!"cd"));
+      not(has-extension(!"id"));
+      guarantee-extension(!"cd"), id)
+  
+  parse-koala-component =
+    (has-extension(!"cd"), id);
+    find-in-path;
+    debug(!"  including component ");
+    !(<id>, <koala-parser> <id>)
+
+  parse-koala-interface =
+    (has-extension(!"id"), id);
+    find-in-path;
+    debug(!"  including interface ");
+    !(<id>, <koala-parser> <id>)
+
+  koala-parser :
+    infile -> tree
+    where <is-string> infile;
+    xtc-temp-files(
+    <xtc-sglr(koala-parse-table)>FILE(infile);
+    read-from => parsetree(tree,_)
+    )
+//        ; <sglr>(<koala-parse-table>(), infile) => tree
+
+Contains(c) = 
+   appl(prod(id, id, attrs([term(cons("Contains"))])), id);
+   collect(
+     {x:  appl(prod(id, cf(sort("Components")), id), id);
+          get-component-name => x;
+          !Contains(<c>(), Component(x))
+      } )
+
+Requires(c) = 
+   appl(prod(id, id, attrs([term(cons("Requires"))])), id);
+   collect(
+     {x: appl(prod(id, cf(sort("Intdefname")), id), id);
+         get-intf-name => x;
+         !Requires(<c>(), Interface(x))
+     } )
+
+// Obtain a list of import relations (i.e., contains modules and
+// requires interfaces.
+ImportRelations(comp) = 
+   collect( Contains(comp) + Requires(comp) ); concat
+
+// Map a list of import relations to a list of file names
+ImportRelationsToFileNames =
+   filter(
+      \ Requires(_,Interface(f)) -> <concat-strings>[f, ".id"] \
+      +
+      \ Contains(_,Component(c)) -> <concat-strings>[c, ".cd"] \
+   )
+
+// Obtain interface name
+get-intf-name: trm -> intf-name
+   where
+   oncetd(
+     appl(prod(id, cf(sort("Intdefname")), id), id); 
+     yield => intf-name 
+   )
+
+// Obtain component name
+get-component-name: trm -> component-name
+   where
+   oncetd(
+      appl(prod(id, cf(sort("Compdefname")), id), id); 
+      yield => component-name
+   )
+
+
+
+
+// Composing AsFix; The parser produces an AsFix term for each module. These
+// have to be merged into a list of modules. This entails merging the layout
+// at the end and start of subsequent trees. Note that the prefer longets
+// match of laout is not considered here. This means that the layout nodes
+// may not be equavalent to the layout nodes when parsing the resulting
+// definition file:
+// 
+//   parse( unparse(pack(m))) != pack(m) 
+//
+ConcatComponents =
+   rec x(
+   {w1, w2, t, t1, t2, xs:
+      []; 
+      !(NoCfLayout, EmptyKoalamoduleStar, NoCfLayout)
+   <+ 
+      ?[ComponentdefStart(w1, t, w2)]; 
+      !(NoCfLayout, KoalamoduleKoalamodulePlus(ComponentdefKoalamodule(t)), NoCfLayout)
+   <+ 
+      ?[InterfacedefStart(w1, t, w2)];
+      !(NoCfLayout, KoalamoduleKoalamodulePlus(InterfacedefKoalamodule(t)), NoCfLayout)
+   <+
+      ?[t1,t2|xs];
+      <concat-components>( <x>[t1], <x>[t2|xs])
+   }) => (w1, components, w2);   
+   (
+      (NoCfLayout, EmptyKoalamoduleStar, NoCfLayout);
+      !parsetree(Koalaspec(NoCfLayout, KoalamoduleStarKoalaspec(components), NoCfLayout),0)
+   <+
+      !parsetree(Koalaspec(NoCfLayout, KoalamoduleStarKoalaspec(KoalamodulePlusKoalamoduleStar(components)), NoCfLayout),0)
+   )
+
+concat-components =
+   ?( (w1, c1, w2), (w3, c2, w4) );
+   !(w1, KoalamodulePlusKoalamodulePlus( 
+            c1, 
+            <concat-layout>[w2, OptNewLine, OptNewLine, w3], 
+            c2), w4)
+
+overlays 
+
+
+// Componentdef -> <START>
+ComponentdefStart(w1,t,w2) = 
+   appl(prod([cf(opt(layout)),cf(sort("Componentdef")),cf(opt(layout))],sort("<START>"),no-attrs),[w1,t,w2])
+
+// Interfacedef -> <START>
+InterfacedefStart(w1,t,w2) = 
+   appl(prod([cf(opt(layout)),cf(sort("Interfacedef")),cf(opt(layout))],sort("<START>"),no-attrs),[w1,t,w2])
+
+// Componentdef -> Koalamodule
+ComponentdefKoalamodule(t) =
+   appl(prod([cf(sort("Componentdef"))],cf(sort("Koalamodule")),no-attrs), [t])
+
+// Interfacedef -> Koalamodule
+InterfacedefKoalamodule(t) =
+   appl(prod([cf(sort("Interfacedef"))],cf(sort("Koalamodule")),no-attrs), [t])
+
+//Koalaspec -> <START>
+Koalaspec(w1,t,w2) = 
+   appl(prod([cf(opt(layout)),cf(sort("Koalaspec")),cf(opt(layout))],sort("<START>"),attrs([term(cons("Koalaspec"))])),[w1,t,w2])
+
+// Koalamodule* -> Koalaspec
+KoalamoduleStarKoalaspec(t) = 
+   appl(prod([cf(iter-star(sort("Koalamodule")))],cf(sort("Koalaspec")),no-attrs),[t])
+
+// Koalamodule+ -> Koalamodule*
+KoalamodulePlusKoalamoduleStar(t) =
+   appl(prod([cf(iter(sort("Koalamodule")))],cf(iter-star(sort("Koalamodule"))),no-attrs), [t])
+
+// -> Koalamodule*
+EmptyKoalamoduleStar =
+   appl(prod([],cf(iter-star(sort("Koalamodule"))),no-attrs), [])
+
+// Koalamodule* Koalamodule* -> Koalamodule*
+KoalamoduleStarKoalamoduleStar( t1, w, t2 ) = 
+
+appl(prod([cf(iter-star(sort("Koalamodule"))),cf(opt(layout)),cf(iter-star(sort("Koalamodule")))],cf(iter-star(sort("Koalamodule"))),attrs([assoc(left())])),
+   [t1,w,t2])
+
+// Koalamodule -> Koalamodule+
+KoalamoduleKoalamodulePlus(t) =
+   appl(prod([cf(sort("Koalamodule"))],cf(iter(sort("Koalamodule"))),no-attrs),[t])
+
+// Koalamodule+ Koalamodule+ -> Koalamodule+
+KoalamodulePlusKoalamodulePlus(t1, w, t2)  =
+
+appl(prod([cf(iter(sort("Koalamodule"))),cf(opt(layout)),cf(iter(sort("Koalamodule")))],cf(iter(sort("Koalamodule"))),attrs([assoc(left())])),
+   [t1, w, t2])
+
+\end{code}
+% Copyright (C) 2004 Merijn de Jonge <mdejonge@cs.uu.nl>
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.
+

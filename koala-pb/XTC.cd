@@ -1,0 +1,18 @@
+component XTC{
+specials
+   file "file:///home/mdejonge/pkgs";
+   provides 
+   IlibXTC xtc;
+   
+   requires
+      IlibATERM aterm;
+      IlibSRTS  srts;
+   
+   contains
+   module xtc-1_0;
+   
+   connects
+      xtc-1_0 = aterm;
+      xtc-1_0 = srts;
+      xtc = xtc-1_0;
+}

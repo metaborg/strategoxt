@@ -1,0 +1,9 @@
+#!/bin/sh
+
+rm -f config.cache config.log acconfig.h aclocal.m4
+
+aclocal -I .
+autoconf -f 
+#--warnings=all
+automake -a -f  
+#--warnings=all  --warnings=no-portability

@@ -1,0 +1,3 @@
+interface ASC-SUPPORT {
+   lib libasc-support;
+}

@@ -1,0 +1,16 @@
+component PT-SUPPORT {
+specials
+   file "file:///home/mdejonge/pkgs";
+
+provides iPT-SUPPORT pt-support;
+requires iATerm aterm;
+         iTOOLBUS-LIB toolbuslib;
+
+contains
+   module m;
+
+connects
+   pt-support = m;
+   m = aterm;
+   m = toolbuslib;
+}

@@ -1,0 +1,112 @@
+\literate[koala-imports]
+
+ KoalaTools -- Tool suite for Koala component model
+
+ Author: Merijn de Jonge (mdejonge@cs.uu.nl)
+
+ $Id: bundlegen.str 5017 2004-01-27 11:53:48Z merijn $
+
+\begin{code}
+module koala-imports
+imports koala-pt pack-modules GraphXML
+
+signature
+constructors
+   Ext            : String -> Option
+   FullPathName   : Option
+               
+strategies
+
+// Parsing Koala  files and chasing imports
+
+  koala-imports = 
+    pack-modules(Koala-imports)
+
+short-description(p) =
+   !["Usage: ", <p>(), " -i file [options]"]
+
+long-description(p) =
+   ![<p>(), " generates an import graph in GXML format from a Koala ",
+    "definition. The graph contains 'requires' and 'contains' relations. ",
+    "The graph can be displayed using GraphXML2dot and dot:\n\n",
+    "   koala-imports -i m.cd | \\\n",
+    "      GraphXML2dot | \\\n",
+    "      pp -l dot -a | \\\n",
+    "      dot -Tps >m.ps\n\n",
+    "See 'GraphXML2dot', 'pp'."]
+
+  pack-options = 
+     ArgOption( "-e", !(), !"-e arg  Option available for backward compatibility.")
+     +
+     Option( "--graphxml", !(), !"--graphxml  Option available for backward compatibility.")
+     +
+     Option( 
+        "-l" + "--pathnames", where(<set-config>("--pathnames", ""));!(),
+         !"--pathnames   full path as output." )
+                                
+  Koala-imports(mkpt) =
+    !(<id>, ["." | <mkpt>], [])
+    ; graph-nodes-undef(
+        parse-koala', 
+        Snd; ImportRelationsToFileNames, 
+        \ (n,x,xs) -> [x|xs] \ 
+        )
+    ; (id, map(<print>(stderr, ["*** Component ", <id>, " not found\n"])); [])
+    ; Fst
+    ; unzip
+    ;
+    (  // Create GraphXML output
+       where(not(<get-config>"--pathnames"));
+       (id, concat;makeGraphXML)
+    <+ 
+       // Create a list of included file names (which is available in the
+       // first argument of the input tuple resulting from  unzip.
+       Fst;
+       split(id,id)
+    )
+
+makeGraphXML =
+  map(
+    \ Contains(x,Component(y)) -> 
+      [node1([name(<double-quote>x), class(<double-quote>"declared")]),
+       node1([name(<double-quote>y), class(<double-quote>"declared")]),
+       edge1([source(<double-quote>y), target(<double-quote>x)])] 
+    \
+   +
+    \ Requires(x, Interface(y)) -> 
+      [node1([name(<double-quote>y)]),
+       edge1([source(<double-quote>y), target(<double-quote>x)])]
+    \
+  ) ; flatten-list => edges;
+  <mkterm>("\"graphxml_1_1-0\"", [GraphXML( [], [graph([], edges)])])
+
+
+  parse-koala' =
+    ?(comp, _);
+    try(add-koala-extension);
+    (
+      parse-koala-component;
+      (id, collect( Contains(!comp) + Requires(!comp) ); concat )
+    +
+      parse-koala-interface;
+      (id, ![] )
+    )
+
+\end{code}
+% Copyright (C) 2004 Merijn de Jonge <mdejonge@cs.uu.nl>
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.
+

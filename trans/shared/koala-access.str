@@ -1,0 +1,86 @@
+\literate[koala-access]
+
+ KoalaTools -- Tool suite for Koala component model
+
+ Author: Merijn de Jonge (mdejonge@cs.uu.nl)
+
+ $Id: bundlegen.str 5017 2004-01-27 11:53:48Z merijn $
+
+\begin{code}
+module koala-access
+
+imports koala koala-relations
+
+strategies
+allComponentDefs = collect( Componentdef(id, id) )
+
+collectSections( section ) = collect({xs: section;?_#(xs);!xs}); flatten-list
+
+interface(i,j,k) = 
+   requiredInterface(i,j,k)
+   +
+   providedInterface(i,j,k)
+   +
+   containedInterface(i,j,k)
+   +
+   ContainedOptInterface(i,j,k)
+   
+
+requiredInterface(i,j,k) =
+   RequiredInterface(i,j,k)
+   +
+   RequiredOptInterface(i,j,k)
+
+providedInterface(i,j,k) =
+      ProvidedInterface(i,j,k)
+   +
+      ProvidedOptInterface(i,j,k)
+
+containedInterface(i,j,k) =
+      ContainedInterface(i,j,k)
+   +
+      ContainedOptInterface(i,j,k)
+   
+interface = interface(id,id,id)
+
+requiredInterface = requiredInterface(id,id,id)
+         
+providedInterface = providedInterface(id,id,id)
+
+connection(left, right, interface) =
+   IIConnection(left, right, interface)
+   +
+   IMConnection(left, right, interface)
+   +
+   MIConnection(left, right, interface)
+
+// Return top component of a Koala definition
+//
+// This is the component definition of a component that is not contained in
+// in another component 
+top-module =
+   where(contains => Contained);
+   filter( {name:
+      ?Componentdef(name, _);
+      where(<not(fetch-elem(ContainedComponent(id,?name,id,id)))>Contained)
+      });
+   Hd
+
+\end{code}
+% Copyright (C) 2004 Merijn de Jonge <mdejonge@cs.uu.nl>
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.
+

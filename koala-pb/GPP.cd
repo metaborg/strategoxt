@@ -1,0 +1,28 @@
+component GPP{
+specials
+   file "file:///home/mdejonge/pkgs";
+   provides
+   IbinGPP gpp;
+   
+   requires
+   IlibATERM aterm;
+   IbinASFIX-TOOLS asfix-tools;
+   IbinSGLR sglr;
+   IbinGRAPH-TOOLS graph-tools;
+   IlibSRTS srts;
+   IlibXTC xtc;
+   
+   contains
+   module gpp-1_0;
+   
+   connects
+   
+   gpp-1_0 = aterm;
+   gpp-1_0 = asfix-tools;
+   gpp-1_0 = sglr;
+   gpp-1_0 = graph-tools;
+   gpp-1_0 = srts;
+   gpp-1_0 = xtc;
+   
+   gpp = gpp-1_0;
+}

@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<pnml>
+  <net type="EPNML 1.0" id="n4">
+    <graphics>
+      <dimension x="143" y="73"/>
+    </graphics>
+    <place id="pl7" type="channel">
+      <graphics>
+        <position x="60" y="1"/>
+        <dimension x="24" y="24"/>
+      </graphics>
+      <initialMarking>
+        <value>0</value>
+      </initialMarking>
+    </place>
+    <place id="pl8" type="channel">
+      <graphics>
+        <position x="60" y="48"/>
+        <dimension x="24" y="24"/>
+      </graphics>
+      <initialMarking>
+        <value>0</value>
+      </initialMarking>
+    </place>
+    <transition id="tr7" type="AND">
+      <graphics>
+        <position x="107" y="48"/>
+        <dimension x="24" y="24"/>
+      </graphics>
+    </transition>
+    <transition id="tr8" type="AND">
+      <graphics>
+        <position x="12" y="48"/>
+        <dimension x="24" y="24"/>
+      </graphics>
+    </transition>
+    <arc type="inflow" source="tr7" target="pl7"/>
+    <arc type="outflow" source="tr7" target="pl8"/>
+    <arc type="outflow" source="tr7" target="pl8"/>
+    <arc type="outflow" source="tr8" target="pl7"/>
+    <arc type="biflow" source="tr8" target="pl8"/>
+  </net>
+</pnml>

@@ -1,0 +1,124 @@
+\literate[koala-wire]
+
+ KoalaTools -- Tool suite for Koala component model
+
+ Author: Merijn de Jonge (mdejonge@cs.uu.nl)
+
+ $Id: bundlegen.str 5017 2004-01-27 11:53:48Z merijn $
+
+\begin{code}
+module koala-wire
+imports lib koala-access koala-relations
+
+
+strategies
+   koala-wire = iowrap(Koala-wire)
+
+short-description(p) =
+   !["Usage: ", <p>(), " -i file [options]"]
+
+long-description(p) =
+   ![<p>(), " connects requires interfaces to provides interfaces whenever ",
+    "possible."]
+
+Koala-wire = 
+   where(allComponentDefs => defs);
+   Koalaspec(map(try(wire(!defs))))
+
+
+wire(defs) =
+   ?Componentdef(name,def);
+   where(<contained-components>def => contained);
+   where(<map(requires(defs));flatten-list>contained => required);
+   where(<map(provides(defs));flatten-list>contained => provided);
+   where(collectSections(Connects(id)) => wires );
+
+   // Collect the interfaces that the embedding component provides
+   where(
+     !def;
+     collectSections(Provides(id));
+     map(\Externalinterface(i,[xs]) -> (name, (i,<Fst>xs)) \)
+     => self-provided);
+   // and the interfaces that it requires
+   where(
+     !def;
+     collectSections(Requires(id));
+     map(\Externalinterface(i,[xs]) -> (name, (i,<Fst>xs)) \)
+     => self-required);
+   
+   // Create wires for those required interfaces that can be connected 
+   // to an available provided interface
+   <conc;filter(add-wire(
+   !<concat>[self-provided, self-required,provided]))>(self-provided, required) => all-wires;
+
+   <diff>(all-wires, wires) => new-wires;
+   (
+      []; !Componentdef(name, def)
+   <+
+      !Componentdef( name, <at-end(![Connects(new-wires)])>def)
+   )   
+   
+
+add-wire(provided) = add-requires-to-provides-wire(provided) <+ add-provides-to-provides-wire(provided)
+
+add-requires-to-provides-wire(provided) =
+   ?((comp1, cname1), (intf, iname1));
+   provided;
+   (
+      fetch-elem({comp2, cname2, iname2:
+         ?((comp2, cname2), (intf, iname2));
+         !Cable(Interface1( cname1, iname1), Interface1(cname2,iname2))
+         +
+         ?(comp2, (intf, iname2));
+         !Cable(Interface1( cname1, iname1), Interface2(iname2))
+      })
+   <+
+      <print>(stderr, ["Unable to connect required interface \"", cname1, ".", iname1, "\".\n"]);
+      fail
+   )
+
+add-provides-to-provides-wire(provided) =
+   ?(cname1, (intf, iname1));
+   provided;
+   fetch-elem({comp2, cname2, iname2:
+      ?((comp2, cname2), (intf, iname2));
+      !Cable(Interface2( iname1), Interface1(cname2,iname2))
+   })
+      
+requires(def) = 
+   ?(comp, name);
+   def;
+   fetch-elem(Componentdef(?comp, id));
+   collectSections(Requires(id));
+   map(\Externalinterface(i,[xs]) -> ((comp,name), (i,<Fst>xs)) \)
+
+provides(def) = 
+   ?(comp, name);
+   def;
+   fetch-elem(Componentdef(?comp, id));
+   collectSections(Provides(id));
+   map(\Externalinterface(i,[xs]) -> ((comp,name), (i,<Fst>xs)) \)
+
+contained-components = 
+   collectSections(Contains(id));
+   collect(\Componentdecl(c, [name]) -> (c, name) \ )
+
+
+\end{code}
+% Copyright (C) 2004 Merijn de Jonge <mdejonge@cs.uu.nl>
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.
+

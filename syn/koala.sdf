@@ -1,0 +1,18 @@
+module koala
+
+imports
+
+   KoalaLexicalElements KoalaComponentGrammar KoalaDataGrammar
+   KoalaInterfaceGrammar
+
+exports
+   sorts Koalaspec
+context-free restrictions
+   LAYOUT? -/- [\ \t\n\13] | [\/] . [\/]  | [\/] . [\*]
+
+context-free syntax
+   Interfacedef -> Koalamodule
+   Componentdef -> Koalamodule
+   Datadefinition -> Koalamodule
+   Koalamodule* -> Koalaspec {cons("Koalaspec")}
+

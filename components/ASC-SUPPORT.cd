@@ -1,0 +1,21 @@
+component ASC-SUPPORT {
+specials
+   file "file:///home/mdejonge/pkgs";
+
+provides
+   iASC-SUPPORT asc-support;
+requires
+   iATerm aterm;
+   iTOOLBUS-LIB toolbuslib;
+   iPT-SUPPORT pt-support;
+   iASF-SUPPORT asf-support;
+
+contains
+   module m;
+connects
+   asc-support = m;
+   m = aterm;
+   m = toolbuslib;
+   m = pt-support;
+   m = asf-support;
+}

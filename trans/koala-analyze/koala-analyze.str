@@ -1,0 +1,123 @@
+\literate[koala-analyze]
+
+ KoalaTools -- Tool suite for Koala component model
+
+ Author: Merijn de Jonge (mdejonge@cs.uu.nl)
+
+ $Id: bundlegen.str 5017 2004-01-27 11:53:48Z merijn $
+
+\begin{code}
+module koala-analyze
+
+imports lib koala-relations
+
+
+strategies
+koala-analyze = iowrap(KoalaAnalyze)
+
+short-description(p) = 
+   !["Usage: ", <p>(), " -i file [options]"]
+
+long-description(p) =
+   ![<p>()," performs a analysis of a Koala specification. ",
+     "It requires an AST of a packed Koala specification.\n\n",
+     "See 'pack-koala', 'implode-asfix', 'koala-wire'.\n"]
+
+KoalaAnalyze =
+//   allComponentDefs;
+//   where(requires => Required);
+//   where(provides => Provided);
+//   where(contains => Contained);
+//   where(fibres => Fibres);
+//   where(<concat>[Required, Provided, Contained, Fibres] => Objects);
+//   where(connects(!Objects) => Connections);
+    Koala-relations => Objects;
+
+   where(unconnectedRequiresInterfaces(!Objects) => a);
+   where(unusedProvidesInterfaces(!Objects) => b );
+   where(unprovidedUsedInterfaces(!Objects) => c);
+
+   !(stdout, [
+     "Required interfaces that are not connected:\n", a, "\n\n",
+     "Provided interfaces that are not used:\n", b, "\n\n",
+     "Connected interfaces that are not provided:\n", c, "\n\n"]);
+    print;
+    ![a,b,c];
+    concat;
+    length;
+    int-to-string;
+    ![<id>, " warning(s)."];
+    concat-strings
+
+   
+check(what) =  filter( what )
+
+// Which connected interfaces are not provided
+unprovidedUsedInterfaces(Objects) =
+   filter(connection(id,id,id));
+   check(not(usedInterfaceIsProvided(Objects)));
+   map({name: connection(id,id,?name); !name})
+
+usedInterfaceIsProvided(Objects) =
+   ?IIConnection(i1, i2, (int1, int2));
+   <checkUsedInterfaceIsProvided(Objects)>(i1,int1);
+   <checkUsedInterfaceIsProvided(Objects)>(i2, int2)
+   +
+   ?IMConnection(i,_, int);
+   <checkUsedInterfaceIsProvided(Objects)>(i, int)
+   +
+   ?MIConnection(_,i, int);
+   <checkUsedInterfaceIsProvided(Objects)>(i,int)
+  
+checkUsedInterfaceIsProvided(Objects) =
+   (interface(?m, ?m', ?i), ?int)
+   +
+   ?(ContainedComponent(m, m', _, i), int);
+   Objects;
+   fetch-elem( providedInterface(id,id,?int))
+
+
+
+// Which provided interfaces are not used
+unusedProvidesInterfaces(Objects) =
+   filter(providedInterface(id,id,id));
+   check(not(usedProvidesInterface(Objects)))
+
+// Check whether a provided interfaces is also used. i.e., 
+// it has a Module -> Interface cable
+usedProvidesInterface(Objects) =
+   ?interface ;//providedInterface(?m,?i,?v);
+   Objects;
+   where(fetch-elem( connection(id, ?interface, id)))
+
+
+// Check whether a required interface is connected:
+unconnectedRequiresInterfaces(Objects) =
+   filter(requiredInterface(id,id,id));
+   check(not(requiredIsConnected(Objects)))
+
+// Check whether a required interface is connected by checkking whether it
+// is contained in a connection relation
+requiredIsConnected(Objects) =
+    ?interface;
+    Objects;
+    fetch-elem(connection(?interface, id, id))
+
+\end{code}
+% Copyright (C) 2004 Merijn de Jonge <mdejonge@cs.uu.nl>
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.
+

@@ -1,0 +1,95 @@
+\literate[koala-configure]
+
+ KoalaTools -- Tool suite for Koala component model
+
+ Author: Merijn de Jonge (mdejonge@cs.uu.nl)
+
+ $Id: bundlegen.str 5017 2004-01-27 11:53:48Z merijn $
+
+\begin{code}
+module koala-configure
+imports lib CompositeSystem
+
+strategies
+
+koala-configure = iowrap(Koala-configure)
+
+Koala-configure = Koala-configure(!".")
+
+Koala-configure(bundle-prefix) = 
+   Composition(?components);
+   <concat-strings> [
+      "AC_INIT([koala-system], [0.1], [])\n",
+      "AM_INIT_AUTOMAKE\n\n",
+// Experiment 1
+      "AC_PREFIX_DEFAULT(\"'\\$(shell cd \\${top_builddir};pwd)/build'\")\n\n",
+
+      "bundle_prefix=",<bundle-prefix>(), "\n\n",
+// Experiment 2
+//      "AC_PREFIX_DEFAULT(\\${top_builddir}/build)\n\n",
+      "AC_OUTPUT(\n",
+         <filter-containers;map(makefileEntry);concat-strings>components,
+      ")\n\n",
+      <filter(
+         Module(id,id,Some(id),id);
+         module2Configuration
+      );concat-strings>components]
+
+filter-containers =
+   filter({path:
+   Component(id,id,Path(PathName(Tl);?path),id,id);
+   !path
+   });
+   uniq
+
+makefileEntry =
+   <concat-strings>["./", <path2string><id>, "/", "Makefile\n"]
+
+module2Configuration =
+   ?Module(_, Path(<PathName(Tl);?path>), _,references);
+   <rel-path>path => rel-path;
+   <concat-strings> ["AB_CONFIG_PKG(",<path2string>path,",\n",
+// Experiment 1
+   <map(wire2Configuration);concat-strings>references,
+// Experiment 2
+//   <map(wire2Configuration(!rel-path));concat-strings>references,
+   ")\n"]
+   
+
+// Experiment 1: with absolute path references
+wire2Configuration =
+   ?Wire(_,Name(vname), Target(<PathName(Tl);?path>));
+   <concat-strings>["   --with-", vname,"=${bundle_prefix}/",<path2string>path,"/build\n"]
+
+// Experiment 2: with relative path references
+wire2Configuration(rel-path) =
+   ?Wire(_,Name(vname), Target(<PathName(Tl);?path>));
+   <concat-strings>["   --with-", vname,"='\\${top_srcdir}/",<rel-path>(),"/",<path2string>path,"/build'\n"]
+
+rel-path : path -> rel-path
+where
+  PathName(map(!".." ));
+  path2string => rel-path 
+
+path2string: PathName(p) -> s
+   where
+   <separate-by;concat-strings>("/", p) => s
+
+\end{code}
+% Copyright (C) 2004 Merijn de Jonge <mdejonge@cs.uu.nl>
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.
+

@@ -1,0 +1,79 @@
+\literate[koala-build-composer]
+
+ KoalaTools -- Tool suite for Koala component model
+
+ Author: Merijn de Jonge (mdejonge@cs.uu.nl)
+
+ $Id: bundlegen.str 5017 2004-01-27 11:53:48Z merijn $
+
+\begin{code}
+module koala-build-composer 
+
+imports lib koala-configure koala-make install-prefix
+
+strategies
+koala-build-composer = iowrapNoOutput((id, Koala-build-composer), fail)
+
+short-description(p) = 
+   !["Usage: ", <p>(), " -i file -o output-dir"]
+
+long-description(p) =
+   ![<p>(), " creates a build environment for a Koala product. The ",
+     "build environment consists of Automake makefiles for each composite ", 
+     "Koala component, an Autoconf configure script, and a script ",
+     "to boostrap the build environment.\n\n",
+     <p>(), " should be executed after koala-tree-composer and should be ",
+     "passed the same argument to the '-o' switch.\n\n",
+     "See 'koala-compiler', 'koala-build-order', 'koala-tree-composer'.\n"]
+
+
+Koala-build-composer =
+   where(oncetd(PathName(Hd=>root)));
+   where(<concat-strings>[<prefix>(), "/", root] => bundle-prefix);
+   where(Koala-configure(!bundle-prefix) => configure);
+   where(Koala-make => make-files);
+   <concat-strings>[bundle-prefix, "/", "configure.in"] => file-name;
+   <print>(stderr, ["generating ", file-name, "\n"]);
+
+   <open-file>(file-name, "w") => configure-handle;
+   <print>(configure-handle, [configure]);
+   <close-file>configure-handle;
+   
+   !make-files;
+   map(writeToAutomakefile);
+   
+   !["bootstrap", "acinclude.m4"];
+   map( 
+      <copy-file>( <concat-strings>[<pkgdatadir>(), "/", <id>],
+                   <concat-strings>[<prefix>(), "/", root, "/", <id>])
+   )
+
+prefix = 
+   option-value(Output(?output);!output, !".")
+
+writeToAutomakefile =
+   ?(path, contents);
+   <concat-strings>[<prefix>(),"/", path] => file-name;
+   <print>(stderr, ["generating ", file-name, "\n"]);
+   <open-file>(file-name, "w") => file-handle;
+   <print>(file-handle, [contents]);
+   <close-file>file-handle
+
+\end{code}
+% Copyright (C) 2004 Merijn de Jonge <mdejonge@cs.uu.nl>
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.
+

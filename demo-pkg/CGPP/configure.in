@@ -1,0 +1,6 @@
+AC_INIT([CGPP],[0.1],[stratego-bugs@cs.uu.nl])
+AM_INIT_AUTOMAKE
+PACKAGE=CGPP
+AC_OUTPUT(Makefile)
+
+

@@ -1,0 +1,29 @@
+component PGEN {
+specials
+   file "file:///home/mdejonge/pkgs";
+
+provides
+   iPGEN pgen;
+
+requires 
+   iASC-SUPPORT asc-support;
+   iASF-SUPPORT asf-support;
+   iSDF-SUPPORT sdf-support;
+   iPT-SUPPORT pt-support;
+   iSGLR sglr;
+   iATerm aterm;
+   iTOOLBUS-LIB toolbuslib;
+
+contains
+   module m;
+
+connects
+   pgen = m;
+   m = asc-support;
+   m = asf-support;
+   m = sdf-support;
+   m = pt-support;
+   m = sglr;
+   m = aterm;
+   m = toolbuslib;
+}

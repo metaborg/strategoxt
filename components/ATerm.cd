@@ -1,0 +1,11 @@
+component ATerm{
+specials
+   file "file:///home/mdejonge/pkgs";
+
+provides 
+   iATerm aterm;
+
+contains
+   module m;
+connects aterm = m;
+}

@@ -1,0 +1,25 @@
+component KOALA{
+   specials
+   file "file:///home/mdejonge/pkgs";
+
+   provides
+   IbinKOALA koala;
+   
+   requires
+   IbinGPP gpp;
+   IbinSGLR sglr;
+   IlibSRTS srts;
+   IlibXTC  xtc;
+   IlibATERM aterm;
+   contains
+   module koala-1_0;
+   
+   connects
+   koala-1_0 = gpp;
+   koala-1_0 = sglr;
+   koala-1_0 = srts;
+   koala-1_0 = xtc;
+   koala-1_0 = aterm;
+   
+   koala = koala-1_0;
+}

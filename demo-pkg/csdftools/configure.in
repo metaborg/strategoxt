@@ -1,0 +1,6 @@
+AC_INIT([csdftools],[0.1],[stratego-bugs@cs.uu.nl])
+AM_INIT_AUTOMAKE
+
+AC_OUTPUT(Makefile)
+
+

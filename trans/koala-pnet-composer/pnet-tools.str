@@ -1,0 +1,145 @@
+\literate[pnet-tools]
+
+ KoalaTools -- Tool suite for Koala component model
+
+ Author: Merijn de Jonge (mdejonge@cs.uu.nl)
+
+ $Id: bundlegen.str 5017 2004-01-27 11:53:48Z merijn $
+
+\begin{code}
+module pnet-tools
+
+imports xml lib
+
+strategies 
+
+// Lookup Identifier that belongs to an elemant with a given name
+id-lookup(name) =
+   oncetd({Id:
+   ?%>
+      <transition id=<% ?Id %> >
+      <%
+         oncetd(name)
+       :: * %>
+      </transition>
+     <%;
+     !Id => s
+    +
+     ?%>
+      <place id=<% ?Id %>>
+      <%
+         oncetd(name)
+      %>
+      </place>
+     <%;
+     !Id =>s
+     });
+     !s
+
+name-lookup(Id) =
+(
+   where(<Id>() => the_id);
+   (
+   oncetd(
+   where(
+   ?%>
+      <transition <% id ::* %> >
+       <% id :: * %>
+      </transition>
+    <%
+   +
+   ?%>
+      <place <% id ::* %> >
+       <% id :: * %>
+      </place>
+    <%
+    );
+    where( oncetd( ?attr |[ id = <% ?the_id %> ]| ) );
+    oncetd( 
+       ?%> <name><value> <% ?name :: cdata %> </value></name> <%
+      )
+     )
+)
+   <+
+   <Id>() => name
+
+);!name
+
+
+// Build new Petri net 
+build-graph-content =
+   ?elements;
+   ! %>
+   <?xml version="1.0"?>
+   
+   <pnml>
+      <net type="Visio" id="n2">
+      <%
+       ![ 
+         %> 
+          <name>
+             <value>Koala composition</value>
+          </name>
+         <% 
+         | elements
+       ]
+      %>
+      </net>
+   </pnml>
+   <%
+
+// Return all transition nodes, place nodes, and arcs of a Petri net
+collect-graph-content =
+   collect(
+   where(?%>
+      <transition <% id :: * %>>
+         <% id :: content*%>
+      </transition>
+   <%)
+   +
+   where(?%>
+      <place <% id :: * %> >
+         <% id :: content*%>
+      </place>
+   <%)
+   +
+   where(?%>
+      <arc <% id :: * %> >
+         <% id :: content*%>
+      </arc>
+   <%)
+   
+   )
+   
+
+// Add a new arc from id_src to id_tgt
+build-arc: (id_src,id_tgt) -> arc
+where
+   !%>
+    <arc id=<% <concat-strings>[id_src,"-",id_tgt] %>
+         source=<% !id_src %>
+         target=<% !id_tgt %> 
+         type="outflow">
+     </arc>
+         
+    <% => arc
+
+
+\end{code}
+% Copyright (C) 2004 Merijn de Jonge <mdejonge@cs.uu.nl>
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.
+

@@ -1,0 +1,18 @@
+component SDF-SUPPORT {
+specials
+   file "file:///home/mdejonge/pkgs";
+provides 
+   iSDF-SUPPORT sdf-support;
+
+requires 
+   iPT-SUPPORT pt-support;
+   iATerm aterm;
+
+contains
+   module m;
+connects
+   sdf-support = m;
+   m = aterm;
+   m = pt-support;
+
+}

@@ -1,0 +1,14 @@
+module koala-transformation
+imports koala
+
+exports
+   
+   context-free syntax
+      Identifier "/" Identifier -> Identifier {cons("Renaming")}
+      "-" Externalinterface -> Externalinterface {cons("DelIntf")}
+      "+" Externalinterface -> Externalinterface {cons("AddIntf")}
+      "-" Cable -> Cable {cons("DelCable")}
+      "+" Cable -> Cable {cons("AddCable")}
+      "-" Constituent -> Constituent {cons("DelConstituent")}
+      "+" Constituent -> Constituent {cons("AddConstituent")}
+      

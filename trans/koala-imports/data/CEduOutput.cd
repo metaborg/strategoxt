@@ -1,0 +1,27 @@
+/*
+ * Copyright (c) 1999,2000 by Philips Electronics N.V.
+ * All rights reserved.
+ *
+ *          %name: CEduOutput.cd%
+ *       %version: %
+ * %date_modified: %
+ *    %derived_by: %
+ *          Owner: Maarten Pennings
+ */
+
+
+component CEduOutput
+{
+    specials
+        prefix "eduout";
+
+    provides
+        IEduWrite write;
+
+    contains
+        module m;
+
+    connects // m
+        write = m;
+}
+

@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<pnml>
+    <net type="Visio" id="n1">
+        <name>
+            <value>net 1</value>
+        </name>
+        <transition id="tr_1">
+        <name><value>A</value></name>
+<graphics>
+<position x="100.0" y="100.0"/>
+</graphics>
+        </transition>
+
+        <transition id="tr_2">
+        <name><value>B</value></name>
+<graphics>
+<position x="200.0" y="100.0"/>
+</graphics>
+        </transition>
+
+
+        <arc id="arc_1" type="outflow" source="tr_1" target="tr_2">
+       </arc> </net>
+</pnml>

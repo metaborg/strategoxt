@@ -1,0 +1,209 @@
+
+module KoalaComponentGrammar
+exports
+  sorts Componentdef
+
+  lexical syntax
+    "specials" -> Identifier {reject} 
+    "provides" -> Identifier {reject} 
+    "requires" -> Identifier {reject} 
+    "contains" -> Identifier {reject} 
+    "connects" -> Identifier {reject} 
+    "uses"     -> Identifier {reject} 
+    "module"   -> Identifier {reject}
+    "component" -> Identifier {reject}
+    "interface" -> Identifier {reject}
+
+context-free syntax
+    String     -> Inline      
+    String     -> Declaration 
+    String     -> Prefix      
+    String     -> Basename    
+    Identifier -> Parameter   
+    Identifier -> Compname    
+    Identifier -> Compdefname 
+    Identifier -> Intfname    
+    Identifier -> Modlname    
+    Identifier -> Intdefname  
+    Identifier -> Funcname    
+    Identifier -> Typename    
+
+  context-free syntax
+    "optional" -> Optional {cons("Optional")}
+    "component" Compdefname "{" Componentsection* "}" -> Componentdef         {cons("Componentdef")}
+    "specials" Componentspecial*                      -> Componentsection     {cons("Specials")}
+    "provides" Externalinterface*                     -> Componentsection     {cons("Provides")}
+    "requires" Externalinterface*                     -> Componentsection     {cons("Requires")}
+    "contains" Constituent*                           -> Componentsection     {cons("Contains")}
+    "connects" Connection*                            -> Componentsection     {cons("Connects")}
+    "uses" Usessection*                                -> Componentsection     {cons("Uses")}
+    {Typename ","}+ ";"                               -> Usessection          {cons("Usessection")}
+    "prefix" Prefix ";"                               -> Componentspecial     {cons("Prefixspecial")}
+    "file" Basename ";"                               -> Componentspecial     {cons("Filespecial")}
+    Intdefname {(Intfname Optional? ) ","}+  ";"    -> Externalinterface   {cons("Externalinterface")}
+    String {(Intfname Optional? ) ","}+ ";" -> Externalinterface{cons("Roundinterface")}
+    Modules | Components | Privateinterfaces          -> Constituent         {cons("Constituent")}
+    "module" Module+                                  -> Modules {cons("Modules")}
+    Modlname {Modattr","}*  ";"                       -> Module {cons("Module")}
+    "file" Basename                                   -> Modattr {cons("Fileattr")}
+    "present"                                         -> Modattr {cons("Presentattr")}
+    "legacy"                                          -> Modattr {cons("Legacyattr")}
+    "no_prefix"                                       -> Modattr {cons("Noprefixattr")}
+
+    "component" Componentdecl+ ->  Components {cons("Components")}
+    Compdefname {Compname ","}+ ";" -> Componentdecl {cons("Componentdecl")}
+    
+    "interface" Interfacedecl+     -> Privateinterfaces {cons("Privateinterfaces")}
+    Intfdefname {( Intfname Optional? ) ","}+  ";"                                       -> Interfacedecl {cons("Interfacedecl")}
+    Cable                                                                                 -> Connection
+    Fibres                                                                                 -> Connection
+    Switch                                                                                 -> Connection
+
+    Interface "=" Interface ";"                                                                              -> Cable                {cons("Cable")}
+
+%%% Highly ambiguous
+%%%    Interface "=" Modlname ";"                                                                               -> Cable                {cons("Interface-Modlname")}
+%%%    Modlname "=" Interface ";"                                                                               -> Cable                {cons("Modlname-Interface")}
+    "within" Modlname "{" Modlitem* "}"                                                                       -> Fibres               {cons("Fibres")}
+
+    Exceptcable                                      -> Modlitem
+    Requiredconstants                                      -> Modlitem
+    Addressablefunctions                                      -> Modlitem
+    Functiondef                                      -> Modlitem
+    
+    "interface" Interface "=" Interface "except" {Funcname ","}+ ";"  -> Exceptcable          {cons("Exceptcable")}
+    "const" {Function ","}+ ";"                                       -> Requiredconstants    {cons("Requiredconstants")}
+     "addressable" {Function ","}+ ";"                                 -> Addressablefunctions {cons("Addressablefunctions")}
+    "switch" Expression Inswitches Outswitches ";"                    -> Switch {cons("Switch")}
+    "in" "{" Switchlist "}"                                           -> Inswitches {cons("Inswitches")}
+    "out" { Outswitchlist "," }+                                      -> Outswitches {cons("Outswitches")}
+    "{" Switchlist "}" Trigger?                                               -> Outswitchlist {cons("Outswitchlist")}
+    "on" Onexpression                                                 -> Trigger {cons("Ontrigger")}
+    "otherwise"                                                       -> Trigger {cons("Otherwisetrigger")}
+    
+
+    Funcsig "=" Expression ";"         -> Functiondef {cons("Functiondef")}
+    Functionname                           -> Funcsig {cons("Constantsig")}
+    Functionname "(" { Parameter ","}* ")"   -> Funcsig {cons("Functionsig")}    
+    Compname "." Intfname "." Funcname -> Functionname {cons("Functionname1")}
+    Intfname "." Funcname              -> Functionname {cons("Functionname2")}
+
+    Functionname "(" {Argument ","}* ")" -> Functioncall {cons("Functioncall1")}
+    Functionname -> Functioncall {cons("Functioncall2")}
+    
+
+    Compname "."  Intfname             -> Interface            {cons("Interface1")}
+    Intfname                           -> Interface            {cons("Interface2")}
+
+    Expr                               -> Onexpression
+    Exprlist                           -> Expression
+    Expr                               -> Argument
+ 
+    {Expr ","}+                        -> Exprlist {cons("Exprlist")}
+    Expr "?" Expr ":" Expr -> Expr { cons("If")}
+    Expr "||" Expr         -> Expr                 {left, cons("Lor")}
+    Expr "&&" Expr         -> Expr                 {left, cons("Land")}
+    Expr "|" Expr          -> Expr                 {left, cons("Incor")}
+    Expr "^" Expr          -> Expr                 {left, cons("Exor")}
+    Expr "&" Expr          -> Expr                 {left, cons("And")}
+    Expr "==" Expr         -> Expr                 {left, cons("Eq")}
+    Expr "!=" Expr         -> Expr                 {left, cons("Neq")}
+    Expr "<=" Expr         -> Expr                 {left, cons("Lte")}
+    Expr "<" Expr          -> Expr                 {left, cons("Lt")}
+    Expr ">" Expr          -> Expr                 {left, cons("Gt")}
+    Expr ">=" Expr         -> Expr                 {left, cons("Gte")}
+    Expr "<<" Expr         -> Expr                 {left, cons("Shifhtleft")}
+    Expr ">>" Expr         -> Expr                 {left, cons("Shiftright")}
+    Expr "+" Expr          -> Expr                 {left, cons("Plus")}
+    Expr "-" Expr          -> Expr                 {left, cons("Min")}
+    Expr "*" Expr          -> Expr                 {left, cons("Mult")}
+    Expr "/" Expr          -> Expr                 {left, cons("Div")}
+    Expr "%" Expr          -> Expr                 {left, cons("Mod")}
+    "!" Expr               -> Expr                 {cons("Neqation")}
+    "-" Expr               -> Expr                 {cons("Negative")}
+    "+" Expr               -> Expr                 {cons("Positive")}
+    "~" Expr               -> Expr                 {cons("Tilde")}
+    "const" Expr           -> Expr                 {cons("Const")}
+    "(" Expr ")"     -> Expr                 {bracket}
+    Integer -> Expr {cons("Integer")}
+    "true"                 -> Expr                 {cons("true")}
+    "false"                -> Expr                 {cons("false")}
+    "void"                 -> Expr                 {cons("void")}
+    "null"                 -> Expr                 {cons("null")}
+    Identifier             -> Expr                 {cons("Identifier")}
+    Parameter              -> Expr                 {cons("Parameter")}
+    Inlinefunction         -> Expr
+    Functioncall           -> Expr
+    
+    "inline" Inline  -> Inlinefunction {cons("Inlinefunction1")}
+    "inline" Inline "using" {Using ","}+ -> Inlinefunction {cons("Inlinefunction2")}
+    
+    Functionname -> Using
+    Typename -> Using
+    Declaration -> Using
+
+aliases
+   {Interface ","}+                -> Switchlist
+
+
+context-free priorities
+   {
+    Integer -> Expr {cons("Integer")}
+    "true"                 -> Expr                 {cons("true")}
+    "false"                -> Expr                 {cons("false")}
+    "void"                 -> Expr                 {cons("void")}
+    "null"                 -> Expr                 {cons("null")}
+    Identifier             -> Expr                 {cons("Identifier")}
+    Parameter              -> Expr                 {cons("Parameter")}
+    Inlinefunction         -> Expr
+    Functioncall           -> Expr
+   } >
+    "const" Expr           -> Expr                 {cons("Const")}
+   >
+   {
+    "!" Expr               -> Expr                 {cons("Neqation")}
+    "-" Expr               -> Expr                 {cons("Negative")}
+    "+" Expr               -> Expr                 {cons("Positive")}
+    "~" Expr               -> Expr                 {cons("Tilde")}
+   }
+   >
+    Expr "*" Expr          -> Expr                 {left, cons("Mult")}
+   >
+    Expr "/" Expr          -> Expr                 {left, cons("Div")}
+   >
+    Expr "%" Expr          -> Expr                 {left, cons("Mod")}
+   >
+    Expr "+" Expr          -> Expr                 {left, cons("Plus")}
+   >
+    Expr "-" Expr          -> Expr                 {left, cons("Min")}
+   >         
+    Expr "<<" Expr         -> Expr                 {left, cons("Shifhtleft")}
+   >
+    Expr ">>" Expr         -> Expr                 {left, cons("Shiftright")}
+   >
+   {
+    Expr "<=" Expr         -> Expr                 {left, cons("Lte")}
+    Expr "<" Expr          -> Expr                 {left, cons("Lt")}
+    Expr ">" Expr          -> Expr                 {left, cons("Gt")}
+    Expr ">=" Expr         -> Expr                 {left, cons("Gte")}
+   }
+   >   
+   {
+    Expr "==" Expr         -> Expr                 {left, cons("Eq")}
+    Expr "!=" Expr         -> Expr                 {left, cons("Neq")}
+   }
+   >
+    Expr "&" Expr          -> Expr                 {left, cons("And")}
+   >
+    Expr "^" Expr          -> Expr                 {left, cons("Exor")}
+   >
+    Expr "|" Expr          -> Expr                 {left, cons("Incor")}
+   >
+    Expr "&&" Expr         -> Expr                 {left, cons("Land")}
+   >
+    Expr "||" Expr         -> Expr                 {left, cons("Lor")}
+   >
+    Expr "?" Expr ":" Expr -> Expr {cons("If")}
+
+    
+    

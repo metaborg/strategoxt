@@ -1,0 +1,66 @@
+\literate[koala-tred]
+
+ KoalaTools -- Tool suite for Koala component model
+
+ Author: Merijn de Jonge (mdejonge@cs.uu.nl)
+
+ $Id: bundlegen.str 5017 2004-01-27 11:53:48Z merijn $
+
+ Pack-koala creates a koala specification file containing all components
+ imported from the given top component.
+
+ Pack-koala is an instantiation of pack-modules implemented with
+ graph-nodes. 	
+\begin{code}
+module pack-koala
+imports koala-pt pack-modules
+
+
+strategies
+
+// Parsing Koala  files and chasing imports
+
+  pack-koala = 
+    pack-modules(Pack-koala)
+
+short-description(p) =
+   !["Usage: ", <p>(), " -i file [options]"]
+
+long-description(p) =
+   ![<p>(), " packs the koala component and interface definitions and ",
+    "produces a parse tree for the complete Koala specification."]
+
+  Pack-koala(mkpt) =
+    !(<id>, ["." | <mkpt>], [])
+    ; graph-nodes-undef(parse-koala, getIncludes, \ (n,x,xs) -> [x|xs] \ )
+    ; (id, map(<print>(stderr, ["*** Component ", <id>, " not found\n"])); [])
+    ; Fst
+    ; unzip
+    ; (id, ConcatComponents)
+
+
+getIncludes: (compName, trm ) -> fileNames
+   where
+    Snd;
+    ImportRelations(!compName);
+    ImportRelationsToFileNames => fileNames
+
+
+\end{code}
+% Copyright (C) 2004 Merijn de Jonge <mdejonge@cs.uu.nl>
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.
+

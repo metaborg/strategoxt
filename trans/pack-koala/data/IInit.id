@@ -1,0 +1,16 @@
+/*
+ * Copyright (c) 1999 by Philips Electronics N.V.
+ * All rights reserved.
+ *
+ *          %name: %
+ *       %version: %
+ * %date_modified: %
+ *    %derived_by: %
+ *          Owner: Maarten Pennings
+ */
+
+
+interface IInit // init
+{
+    void Init( void ) ;
+}

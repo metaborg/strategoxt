@@ -1,0 +1,24 @@
+component MySGLR {
+   provides
+   IbinSGLR sglr;
+   
+   requires
+   IlibATERM aterm;
+   
+   contains
+     component SGLR my_sglr;
+     component PT-SUPPORT pt-support;
+     component TOOLBUS-LIB toolbus-lib;
+     
+     connects
+     sglr=my_sglr.sglr;
+
+
+      my_sglr.pt-support = pt-support.pt-support;
+      my_sglr.toolbuslib = toolbus-lib.toolbuslib;
+      my_sglr.aterm = aterm;
+      pt-support.toolbuslib = toolbus-lib.toolbuslib;
+      pt-support.aterm = aterm;
+      toolbus-lib.aterm = aterm;
+ }
+  

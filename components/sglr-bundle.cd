@@ -1,0 +1,17 @@
+component sglr-bundle {
+   contains 
+      component SGLR sglr;
+      component PT-SUPPORT pt-support;
+      component TOOLBUS-LIB toolbuslib;
+      component ATerm aterm;
+   connects
+      sglr.pt-support = pt-support.pt-support;
+      sglr.toolbuslib = toolbuslib.toolbuslib;
+      sglr.aterm = aterm.aterm;
+      
+      pt-support.toolbuslib = toolbuslib.toolbuslib;
+      pt-support.aterm = aterm.aterm;
+      
+      toolbuslib.aterm = aterm.aterm;
+
+}

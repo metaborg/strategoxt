@@ -1,0 +1,16 @@
+component SRTS {
+  specials
+      file "file:///home/mdejonge/pkgs";
+  provides
+  IlibSRTS srts;
+  
+  requires
+  IlibATERM aterm;
+  
+  contains
+  module srts-1_0;
+  
+  connects
+  srts-1_0 = aterm;
+  srts = srts-1_0;
+}

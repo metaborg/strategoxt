@@ -1,0 +1,4 @@
+module install-prefix
+
+strategies
+   pkgdatadir = !"__PKGDATADIR__"

@@ -1,0 +1,7 @@
+module Stratego-xml-dot
+imports Stratego-xml StrategoDot
+
+exports
+context-free syntax
+
+"<%"  StrategoStrategy "::" "att"        "%>" -> Attribute {cons("FromApp")}

@@ -1,0 +1,12 @@
+
+"graphxml_1_1-0"(GraphXML([],[graph([],[
+node1([name("C")]),
+node1([name("C1")]),
+node1([name("C2")]),
+node1([name("D")]),
+edge1([source("C1"),target("C")]),
+edge1([source("C2"),target("C")]),
+edge1([source("D"),target("C2")]),
+edge1([source("D"),target("C1")])])]))
+
+

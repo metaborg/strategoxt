@@ -1,0 +1,17 @@
+component ASF-SUPPORT {
+specials
+   file "file:///home/mdejonge/pkgs";
+
+provides
+   iASF-SUPPORT asf-support;
+requires
+   iATerm aterm;
+   iPT-SUPPORT pt-support;
+
+contains
+   module m;
+connects
+   asf-support = m;
+   m = aterm;
+   m = pt-support;
+}

@@ -1,0 +1,6 @@
+component c{
+contains
+component g1 a;
+component g2 b ;
+component g3 c; 
+}
