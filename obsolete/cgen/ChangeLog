@@ -1,3 +1,8 @@
+2001-08-22  Eelco Visser  <visser@acm.org>
+
+	* Distribute and install C.pp.af such that the compiler
+	distribution does not have to depend on sglr/pgen.
+
 2001-09-17  Eelco Visser  <visser@acm.org>
 
 	* CGEN is a package with utitilities supporting the generation of
