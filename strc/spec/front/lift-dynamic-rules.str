@@ -178,7 +178,7 @@ strategies
       where(
 	  <concat-strings> ["new-",   f] => f2
 	; <concat-strings> ["bagof-", f] => f4
-        ; !|[ f2(|scope) = ?dep;
+        ; !|[ f2(|scope, dep) = 
               where(
 		rules( f+scope )
 		; <f4> DR_UNDEFINE(dep)
@@ -188,7 +188,7 @@ strategies
 		; rules( f(|).scope :- DR_UNDEFINE(dep) )
 	      )
            ]| => newdef
-        ; !|[ dr-new(|scope, dep) = ?~str:f; <f2(|scope)> dep ]| => newgendef
+        ; !|[ dr-new(|scope, dep) = ?~str:f; f2(|scope, dep) ]| => newgendef
 	; rules( LiftedRules :+ () -> newdef )
 	; rules( LiftedRules :+ () -> newgendef )
         ; rules( NewStrategy : f )
@@ -201,7 +201,7 @@ strategies
 	  <concat-strings> ["undefine-",  f] => f3
 	; <concat-strings> ["bagof-", f] => f4
 	; <concat-strings> ["aux-",   f] => f5
-	; !|[ f3(|) = ?dep;
+	; !|[ f3(|dep) = 
 	      where(
 
 		// find all rules that depend on dep
@@ -237,7 +237,7 @@ strategies
 	           })
 	       )
 	    ]| => undefinedef
-        ; !|[ dr-undefine(|dep) = ?~str:f; <f3(|)> dep ]| => undefinegendef
+        ; !|[ dr-undefine(|dep) = ?~str:f; f3(|dep) ]| => undefinegendef
 	; rules( LiftedRules :+ () -> undefinedef )
 	; rules( LiftedRules :+ () -> undefinegendef )
         ; rules( UndefineStrategy : f )
