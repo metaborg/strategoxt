@@ -15,7 +15,8 @@ strategies
       fetch-elem-test;
       reverse-test;
       conc-test;
-      concat-test  
+      concat-test;
+      split-init-last-test
     )
 
   map-test =
@@ -92,6 +93,13 @@ strategies
 		,![[1,2,3,4,5], [1,2,3,4,5]]
 		,![1,2,3,4,5,1,2,3,4,5]
 		)
+
+  split-init-last-test =
+    apply-test(!"split-init-last-test"
+	, split-init-last
+	, ![1, 2, 3, 4, 5]
+	, !([1, 2, 3, 4], 5)
+	)
 \end{code}
 
 % Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>

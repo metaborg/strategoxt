@@ -54,7 +54,7 @@ strategies
   // where the argument strategy succeeds.
 
   split-fetch(s) =
-    at-suffix([s|id];[id|?tl];![]); split(id, !tl)
+    at-suffix([s|id];[id|?tl];![]); !(<id>, tl)
 
   at-tail(s) = 
     [id | s]
@@ -77,10 +77,16 @@ strategies
 
   at_last(s) = 
     obsolete(!"at_last -> at-last");
-    rec x([id]; s <+ [id | x])
+    at-last(s)  
 
   at-last(s) = 
     rec x([id]; s <+ [id | x])
+
+  split-init-last = 
+    at-last(?[x]; ![]); !(<id>, x)
+
+  at-init(s1, s2) =
+    rec x([s2] <+ [s1 | x])
 
   listbu(s) = 
     rec x(([] + [id| x]); s)
