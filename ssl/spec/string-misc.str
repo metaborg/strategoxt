@@ -1,0 +1,177 @@
+// $Id: string-misc.str 26 2003-09-17 14:48:58Z adam $
+/**
+ * Contains miscellaneous strategies for processing strings,
+ * e.g. trailing-space-trimming, line-splitting, etc.
+ */
+module string-misc
+imports string
+
+strategies
+
+/**
+ * Splits a string into a list of tokens, including the empty ones.
+ *
+ * This strategy differs from string-tokenize in that it produces an empty ("")
+ * token when two separator chars are encountered, or after a final separator.
+ *
+ * Example:
+ *  <string-tokenize-with-empty(|['\n'])> "fu\n\nbar\n" => ["fu","","bar",""]
+ *
+ * @param ws The 'whitespace' characters, or in fact any separator characters you like.
+ * @type ws [char]
+ * @type    string -> [string]
+ */
+string-tokenize-with-empty(|ws) =
+  explode-string
+  ; rec x( ( split-fetch(<elem> (<id>, ws))
+           ; \ (tchars, cs) -> [tchars|<x> cs] \ )
+        <+ ![<id>])
+  ; map(implode-string)
+
+
+string-tokenize-leave(|ws) =
+  explode-string
+  ; rec x( ( split-fetch-leave(where(<elem> (<id>, ws)))
+           ; \ (tchars, s, cs) -> [tchars|[s|<x> cs]] \ )
+        <+ ![<id>])
+  ; map(implode-string)
+
+
+split-fetch-leave(s) =
+    at-suffix([s|id];[?el|?tl];![]); !(<id>, [el], tl)
+//    at-suffix([s|id];[?el|?tl];![]); !(<id>, el, tl)
+
+
+/**
+ * Gets all newline('\n')-separated lines in a string.
+ * If the string is ended by a newline, the last element of the returned list
+ * is the empty string.
+ *
+ * @type string -> [string]
+ */
+get-lines =
+  string-tokenize-with-empty(|['\n'])
+
+
+/**
+ * Applies a strategy to all lines in a string.
+ *
+ * Lines are expected to be separated by a single '\n'.
+ * The last line may be ended by a newline, or not. In the former case, the last
+ * line in the resulting string will also be ended by a newline, otherwise not.
+ * Initial or intermediate newlines are preserved.
+ * The strategy is applied to each line (even the empty ones), *excluding* the
+ * newline character. The newline is appended again after application of s.
+ *
+ * @param s The strategy that should be applied to each line.
+ * @type s string -> string
+ * @type   string -> string
+ */
+all-lines(s) =
+  is-string
+; string-tokenize-with-empty(|['\n'])
+; at-last( \ [""] -> [] \  // Do not run s on a final empty line.
+         < where(!["\n"] => laststring) // ... but remember that the second last line was delimited by a newline
+         + where(![] => laststring))    // ... or not.
+; map(s)
+; <separate-by> ("\n", <id>)
+; <conc> (<id>, laststring) // Restore the final newline, if there was one.
+; concat-strings
+
+
+/**
+ * Makes one newline-separated string out of a list of strings
+ */
+lines =
+  separate-by(!"\n")
+; <conc> (<id>, ["\n"])
+; concat-strings
+
+
+/**
+ * Indents every line in a string with spaces.
+ *
+ * @param n The number of spaces to be put in front of every line.
+ * @type n int
+ * @type   string -> string
+ */
+indent-text(|n) =
+  where(<copy-char> (n, ' ') => prefix)
+; prefix-lines(|prefix)
+
+
+/**
+ * Prefixes all lines in a string with a string.
+ *
+ * @param p The prefix.
+ * @type p string
+ * @type   string -> string
+ */
+prefix-lines(|p) =
+  all-lines(<conc-strings> (p, <id>))
+
+/**
+ * Trims all suffix-characters until s fails, separately for each line in the input term.
+ *
+ * @param s Strategy that determines whether a character should be trimmed or not.
+ * @type s char ->? _
+ * @type   string -> string
+ */
+trim-trailing(s) =
+  all-lines( explode-string
+           ; !['f'|<id>] // Add dummy element, or at-suffix-rev will fail at empty lists
+           ; at-suffix-rev( where( not(?[])
+                                 ; not([s|id])) // This only succeeds if we're not at list-end, and s fails at the head of the current suffix
+                          ; ![<Hd>]) // If so, succeed and only leave the head element as a singleton list.
+           ; Tl // Strip off dummy head element.
+           ; implode-string)
+
+/**
+ * Trims all trailing whitespace in every line in the input string.
+ *
+ * @type string -> string
+ */
+trim-trailing-whitespace =
+  where(<explode-string> " \t" => whitespace-chars)
+; trim-trailing(<elem> (<id>, whitespace-chars))
+
+trim-empty-strings = trim(?"")
+
+
+/**
+ * Trims elements from a list
+ *
+ * Removes all tail elements from a list until an element is encountered that
+ * does not satisfy s.
+ *
+ * @param s Strategy that  determines which elements are to be trimmed off.
+ */
+trim(s) = reverse; drop-while(s); reverse
+//at-suffix(all(s);![])
+
+shuffle-forced =
+   where(length; <gt> (<id>, 1))
+   ; where(at-suffix(?[x,y|xs]; where(not(<eq> (x, y)))))
+   ; rec x({orig: ?orig; shuffle; (where(<eq> (orig, <id>)) < x + id)})
+<+ id
+
+shuffle =
+  where(is-list)
+; map(!(<next-random> (), <id>))
+; sort-list(SortL((Fst, Fst); gt))
+; map(Snd)
+
+shuffle-word-mids =
+  string-tokenize-leave(|[' ', '.', ','])
+; map(shuffle-word-mid)
+; concat-strings
+
+shuffle-word-mid =
+  where(is-string)
+; (where(strlen; <lt> (<id>, 3))
+<+ explode-string
+ ; ?[i|cs]
+ ; <reverse> cs
+ ; ?[l|mid]
+ ; where(<shuffle-forced; reverse> mid => shuffledmid)
+ ; <concat; implode-string> [[i],shuffledmid, [l]])
