@@ -23,10 +23,16 @@ strategies
     <+ debug(!"warning: not a stratego-specification: ")
 
   strategy-definition =
-      SDefT(is-string + Mod(is-string,is-string)
-	    , list(VarDec(is-string,id))
-	    , list(VarDec(is-string,id))
-	    , strategy-expression)
+      ?SDefT(name, _, _, _)
+      ; {| CurrentSDef :
+          rules(CurrentSDef : () -> name)
+        ; SDefT(
+            is-string + Mod(is-string,is-string)
+          , list(VarDec(is-string,id))
+	  , list(VarDec(is-string,id))
+	  , strategy-expression
+          )
+        |}
     + ExtSDefInl(is-string + Mod(is-string,is-string)
 	    , list(VarDec(is-string,id))
 	    , list(VarDec(is-string,id))
@@ -94,7 +100,11 @@ strategies
   amb-error =
     amb(id)
     ; where(
-        say(!"error: ambiguity in ast. Alternatives: ")
+        if <CurrentSDef; is-string> () => sdef then
+          say(<concat-strings> ["error: ambiguity in the definition of ", sdef, ". Alternatives: "])
+        else
+          say(<concat-strings> ["error: ambiguity in specification. Alternatives: "])
+        end
       ; ?amb(<id>)
       ; map(debug(!"    - "))
       ; <set-config> ("amb-error", 1)
