@@ -6,10 +6,12 @@ signature
 signature
   constructors
     GenDynRules           : List(DynRuleDef) -> Strategy
+    LabelDynRule          : DynRuleId -> DynRuleDef
     UndefineDynRule       : DynRuleId * Term -> DynRuleDef
     SetDynRule            : DynRuleId * Rule -> DynRuleDef
     AddDynRule            : DynRuleId * Rule -> DynRuleDef
     LabeledDynRuleId      : RuleDec * Term -> DynRuleId
+    AddLabelDynRuleId     : RuleDec * Term -> DynRuleId
     DynRuleId             : RuleDec -> DynRuleId
     LabeledDynRuleScopeId : Id * Term -> DynRuleScopeId
     DynRuleScopeId        : Id -> DynRuleScopeId
