@@ -1,4 +1,6 @@
 
+EXTRA_DIST = bootstrap
+
 install-data-local: install-xtc
 
 install-xtc: 
@@ -14,3 +16,4 @@ install-xtc:
 	$(XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t libliblib.la -l $(SRTS)/lib/srts -V $(VERSION)
 
 bootclean:
+
