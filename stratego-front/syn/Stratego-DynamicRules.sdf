@@ -21,3 +21,5 @@ exports
 
     Id                         -> RuleDec {cons("RuleDecNoArgs")}
     Id "(" {Typedid ","}* ")"  -> RuleDec {cons("RuleDec")}
+    Id "(" {Typedid ","}* 
+       "|" {Typedid ","}* ")"  -> RuleDec {cons("RuleDecT")}

@@ -15,3 +15,29 @@ test Add a label to a scope
 
 test Branch the dynamic rules of the current scope
   "branch( A : s )" succeeds
+
+test Union of two branches
+  " union(
+      branch( A : s1 )
+      branch( A : s2 )
+    )
+  " succeeds
+
+test Generate a dynamic rule
+  "rules( A : p -> p )" succeeds
+
+test Generate a dynamic rule in the scope of some label
+  "rules( A.f : p -> p )" succeeds
+
+test Generate a dynamic rule in the scope of some label
+  "rules( A(s).f : p -> p )" succeeds
+
+test Generate a dynamic rule in the scope of some label
+  "rules( A(s|t).f : p -> p )" succeeds
+
+test Extend the set of dynamic rules
+  "rules( A :+ p -> p )" succeeds
+
+test Undefine dynamic rules
+  "rules( A :- p )" succeeds
+
