@@ -3,11 +3,13 @@ include $(wildcard *.dep)
 
 SUBDIRS      	= data
 
-EXTRA_DIST  	= explode-asfix2me.str asfix2me.str
-
 bin_PROGRAMS 	= explode-asfix2me
+SCFLAGS          = --main $*
+STRINCLUDES = \
+  -I $(top_srcdir)/lib \
+  -I $(top_srcdir)/sig \
+  -I $(SDF_FRONT)/share/sdf-front
 
-SCFLAGS      	= -I $(srcdir)/../asfix --main $*
-
+EXTRA_DIST  	= explode-asfix2me.str asfix2me.str
 BOOTCLEANFILES 	= explode-asfix2me.c
 CLEANFILES	= $(wildcard *.dep)

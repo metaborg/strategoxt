@@ -35,8 +35,7 @@ notes:
 \begin{code}
        
 module explode-asfix2me
-
-imports lib Sdf-Syntax asfix2me
+imports lib Sdf2 asfix2me
 
 overlays 
    CfIterStarEmpty(s)     = appl(prod([],cf(iter-star(s)),no-attrs),[])
