@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/06/06 09:48:37 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2001/06/06 09:56:43 mdejonge Exp $
 
 include $(srcdir)/../templates/make_rules
 include $(srcdir)/../templates/make_rules.stratego
@@ -29,7 +29,5 @@ SUBDIRS      = data
 STRATEGO_PRG = happy2yacc
 
 bin_SCRIPTS  = $(STRATEGO_PRG)
-
-EXTRA_DIST  += yacc.r
 
 SCFLAGS     += -I $(srcdir)/../yacc2sdf
