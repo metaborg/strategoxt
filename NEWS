@@ -93,6 +93,7 @@ SUMMARY OF CHANGES with respect to 0.9beta8
   * stratego-tools: format checker generation
   * ssl: for-each-pair
   * sc: bugfixes
+  * xtc: recursive imports
   * binary distribution with RPM (StrategoXT.spec)
 
 DETAILS

@@ -17,14 +17,14 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 dnl 02111-1307, USA.
 
-dnl $Id: configure.in,v 1.2 2003/01/05 13:51:19 stratego Exp $
+dnl $Id: configure.in,v 1.3 2003/01/05 19:49:29 stratego Exp $
 
-AC_INIT([asfix-tools],[0.9beta8],[stratego-bugs@cs.uu.nl])
+AC_INIT([asfix-tools],[0.9beta10],[stratego-bugs@cs.uu.nl])
 AM_INIT_AUTOMAKE
 
 USE_XT_PACKAGES
 
-AC_REVISION($Id: configure.in,v 1.2 2003/01/05 13:51:19 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.3 2003/01/05 19:49:29 stratego Exp $)
 
 AC_PROG_CC
 AC_PROG_INSTALL

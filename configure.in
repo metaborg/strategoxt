@@ -15,10 +15,8 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-AC_INIT(Makefile.in)
-AM_INIT_AUTOMAKE(StrategoXT,0.9beta9)
-
-#AC_CONFIG_AUX_DIR([config])
+AC_INIT([StrategoXT],[0.9beta10],[stratego-bugs@cs.uu.nl])
+AM_INIT_AUTOMAKE
 
 ### ATerm Library #####################
 
@@ -204,14 +202,6 @@ AB_CONFIG_PKG(asfix-tools,
    --with-xtc=${prefix}
    --with-repository=${REPOSITORY}
 )
-
-#AB_CONFIG_PKG(gpp,
-#   --with-srts=${prefix}
-#   --with-sglr=${SGLR}
-#   --with-pgen=${PGEN}
-#   --with-xtc=${prefix}
-#   --with-repository=${REPOSITORY}
-#)
 
 AB_CONFIG_PKG(box-tools,
    --with-srts=${prefix}

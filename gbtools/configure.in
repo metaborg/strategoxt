@@ -18,14 +18,14 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 dnl 02111-1307, USA.
 
-dnl $Id: configure.in,v 1.5 2002/12/19 01:08:31 stratego Exp $
+dnl $Id: configure.in,v 1.6 2003/01/05 19:49:30 stratego Exp $
 
 AC_INIT(configure.in)
-AM_INIT_AUTOMAKE(gbtools,0.9beta8)
+AM_INIT_AUTOMAKE(gbtools,0.9beta10)
 
 ACLOCAL="${ACLOCAL} -I ."
 
-AC_REVISION($Id: configure.in,v 1.5 2002/12/19 01:08:31 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.6 2003/01/05 19:49:30 stratego Exp $)
 
 AC_PACKAGE_REQUIRE(pgen, sdf2table,
    [  --with-pgen             Specify location of parser generator package])

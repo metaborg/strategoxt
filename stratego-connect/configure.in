@@ -16,7 +16,7 @@
 # 02111-1307, USA.
 
 AC_INIT(src/connect.c)
-AM_INIT_AUTOMAKE(stratego-connect,0.9beta8)
+AM_INIT_AUTOMAKE(stratego-connect,0.9beta10)
 
 AC_ARG_WITH(aterm, 
  [  --with-aterm          Specify location of ATerm library, default: \$prefix], 
@@ -67,7 +67,7 @@ AC_ARG_WITH(rpmtmp,
 )
 AC_SUBST(RPMTMP)
 
-AC_REVISION($Id: configure.in,v 1.9 2002/12/19 01:08:32 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.10 2003/01/05 19:49:30 stratego Exp $)
 
 AC_PROG_CC
 AC_PROG_RANLIB
