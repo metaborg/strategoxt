@@ -23,6 +23,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
 
 #include <srts/stratego.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 /* Strings */
 
