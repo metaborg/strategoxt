@@ -26,9 +26,6 @@ strategies
 
   /**
    * @todo  must the temp dir be removed? Could xtc temp files handle that?
-   * @todo  add .rtg and .rtg-nf
-   * @todo  add .rtree
-   * @todo  add .pp.af
    *
    * @type  FILE -> FILE
    */
@@ -64,8 +61,6 @@ strategies
 
   /**
    * Creates an SDF definition by invoking pack-sdf.
-   *
-   * @todo  pass the include options
    *
    * @type  FILE -> FILE
    */  
