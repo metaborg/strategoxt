@@ -13,7 +13,8 @@ strategies
   main = 
     test-suite(!"integers-test",
       test1;
-      test2
+      test2;
+      test3
     )
 
   test1 =
@@ -37,6 +38,13 @@ strategies
     apply-and-fail(!"test2c"
 	, log2
 	, !6
+	)
+
+  test3 =
+    apply-test(!"test3"
+	, addS
+	, !("5","3")
+	, !"8"
 	)
 
 \end{code}
