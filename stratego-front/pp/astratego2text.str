@@ -1,8 +1,0 @@
-module astratego2text
-imports liblib
-strategies
-
-  astratego2text =
-    xtc-io-wrap(
-      xtc-transform(!"pp-stratego", !["--abstract" | <pass-verbose>])
-    )
