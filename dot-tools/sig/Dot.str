@@ -1,0 +1,25 @@
+module Dot
+imports Layout QuotedLiterals
+signature
+  constructors
+    DotGraph         : Id * List(Stmt) -> Graph
+    StrictDotGraph   : Id * List(Stmt) -> Graph
+    DotDigraph       : Id * List(Stmt) -> Graph
+    StrictDotDigraph : Id * List(Stmt) -> Graph
+    Alias            : Id * Id -> Stmt
+    GraphAttrs       : List(Attr) -> Stmt
+    NodeAttrs        : List(Attr) -> Stmt
+    EdgeAttrs        : List(Attr) -> Stmt
+    AttrId           : Id * Id -> Attr
+    AttrNumCon       : Id * NumCon -> Attr
+    Node             : NodeId * Option(Attrs) -> Stmt
+    Id               : Id -> NodeId
+    QualId           : Id * Id -> NodeId
+    QualId           : Id * NumCon -> NodeId
+    Attrs            : List(Attr) -> Attrs
+    EdgeNoAttrs      : Node * List(EdgeOp) -> Stmt
+    Edge             : Node * List(EdgeOp) * Attrs -> Stmt
+    SubGraph         : Id * List(Stmt) -> SubGraph
+    SubGraphNoArgs   : Id -> SubGraph
+    Arrow            : Node -> EdgeOp
+    Line             : Node -> EdgeOp

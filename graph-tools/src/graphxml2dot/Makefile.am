@@ -14,7 +14,7 @@ BOOTCLEANFILES   = graphxml2dot_check.c GraphXML2dot.c
 CLEANFILES	 = $(wildcard *.dep)
 
 SCFLAGS      	 = -I $(srcdir)/../graphxml \
-		   -I $(srcdir)/../dot \
+		   -I $(DOT_TOOLS)/share/dot-tools \
 		   -I $(ASFIX_TOOLS)/share/asfix-tools
 
 graphxml2dot_check_prog    = GraphXML2dot
