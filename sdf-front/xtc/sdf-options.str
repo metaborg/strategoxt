@@ -1,3 +1,6 @@
+/**
+ * @todo Import sdf/tool/options and remove definitions.
+ */
 module sdf-options
 strategies
 

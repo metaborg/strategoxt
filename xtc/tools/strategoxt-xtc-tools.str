@@ -11,7 +11,6 @@ strategies
   xtc-asfix-yield =
     xtc-transform(!"asfix-yield", pass-verbose)
 
-
 /**
  * gpp/box
  */
@@ -47,6 +46,17 @@ strategies
 
   xtc-sglr(tbl, sort) =
     xtc-transform(!"sglr", !["-2A", "-p", <tbl; xtc-find> (), "-s", <sort> () | <pass-v-verbose> ()])
+
+/**
+ * sglri
+ */
+strategies
+
+  xtc-sglri(|tbl) =
+    xtc-transform(!"sglri", !["-p", <xtc-find> tbl | <pass-verbose> ()])
+
+  xtc-sglri(|tbl, sort) =
+    xtc-transform(!"sglri", !["-p", <xtc-find> tbl, "--start", sort | <pass-verbose> ()])
 
 /**
  * stratego

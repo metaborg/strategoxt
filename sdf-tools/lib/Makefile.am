@@ -2,6 +2,7 @@ include $(top_srcdir)/Makefile.xt
 
 sdflib = \
   sdf/tool/options.str \
+  sdf/tool/xtc.str \
   sdf/symbol/implode.str
 
 nobase_pkgdata_DATA = $(sdflib:.str=.rtree)

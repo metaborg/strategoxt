@@ -1,3 +1,7 @@
+2005-02-13  Martin Bravenboer <martin@cs.uu.nl>
+
+	* tools/stratego-xt-xtc-tools.str: added xtc-sglri.
+	
 2004-07-04  Martin Bravenboer <martin@cs.uu.nl>
 
 	* src/xtc-proc.str: xtc-io-wrap now has a variant that takes an
