@@ -1,3 +1,6 @@
+2003-06-10   Merijn de Jonge  <M.de.Jonge@tue.nl>
+ * added XTC_IMPORT(asfix-tools) to toplevel Makefile.am
+
 2003-06-02   Merijn de Jonge  <M.de.Jonge@tue.nl>
  * slightly generalized tohtml script
 

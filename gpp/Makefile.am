@@ -5,3 +5,6 @@ BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 DIST_SUBDIRS      = $(SUBDIRS)
 EXTRA_DIST        = bootstrap Makefile.xt make_rules.tests
 
+# Run-time dependencies
+XTC_IMPORT = $(ASFIX_TOOLS)/share/asfix-tools/XTC
+# graphviz
