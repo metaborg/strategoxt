@@ -22,6 +22,7 @@ echo "** INFO -- Make is: $BOOTSTRAP_MAKE"
 
 # touch bootstrapped sources because subversion doesn't sets the mtime of files
 # to checkout time, not to the last mtime in the repository.
+# @todo might not be necessary anymore
 MTIME=`date +%Y%m%d%H%M.%S`
 echo "** INFO -- Modification time: $MTIME"
 find . -print | xargs touch -t $MTIME
