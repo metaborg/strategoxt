@@ -1,3 +1,9 @@
+2002-12-18  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/xtc-proc.str: copy-to makes a copy of the current
+	file (e.g., in order to keep an intermediate file). xtc-io
+	also incorporates xtc-temp-files.
+
 2002-12-16  Eelco Visser  <visser@cs.uu.nl>
 
 	* src/xtc-proc.str: xtc-transform-... : changed the order

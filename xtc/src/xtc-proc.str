@@ -1,5 +1,5 @@
 module xtc-proc
-imports xtc-rep scoped-finite-map
+imports xtc-rep config scoped-finite-map
 
 signature
   constructors
@@ -24,8 +24,18 @@ strategies
     where name => stdout
 	; <copy-file> (oldname, stdout)
 	; <remove-file> oldname
-        //; <ReadFromFile> oldname => term
-	//; <WriteToTextFile> (stdout, term)
+
+  copy-to(name) :
+    FILE(oldname) -> FILE(oldname)
+    where name => newname
+	; not(stdout + stderr)
+        ; <copy-file>(oldname, newname)
+
+  copy-to(name) :
+    FILE(oldname) -> FILE(oldname)
+    where name => file
+        ; (stdout + stderr)
+	; <copy-file> (oldname, file)
 
   read-from :
     FILE(name) -> t
@@ -38,27 +48,20 @@ strategies
   write-to :
     t -> FILE(name)
     where xtc-new-file => name
+        ; <WriteToBinaryFile> (name, t)
+
+  write-to-text :
+    t -> FILE(name)
+    where xtc-new-file => name
         ; <WriteToTextFile> (name, t)
 
 
-  // XTC-IO
-
-  // 'read' input file, transform, and 'write' to output file
-
-  xtc-io(s) =
-    (!FILE(<get-config> "-i") <+ !stdin)
-    ; s
-    ; rename-to(<get-config> "-o" <+ !stdout)
-
-
-  // XTC-TEMP-FILES
-
-  // scoped temporary files
+  // XTC-TEMP-FILES : scoped temporary files
 
   xtc-new-file =
     new-file => f
-    ; where(<assert(!TempFiles)> (f, ()))
-    //; where(<table-push>(XTC, TEMP, f))
+    ; where(<open-file>(f, "w")
+	    ; <assert(!TempFiles)> (f, ()))
 
   xtc-remove-temporaries =
     where(
@@ -72,6 +75,15 @@ strategies
     ; where((<table-get>(TempFiles, Scopes) <+ ![[]]) => [scope | scopes]
             ; <map(try(remove-file))> scope)
     ; end-scope(!TempFiles)
+
+  // XTC-IO : 'read' input file, transform, and 'write' to output file
+
+  xtc-io(s) =
+    xtc-temp-files(
+      (!FILE(<get-config> "-i") <+ !stdin)
+      ; s
+      ; rename-to(<get-config> "-o" <+ !stdout)
+    )
 
 
   // XTC-COMMAND
@@ -92,6 +104,9 @@ strategies
     <+ xtc-transform-term(tool, args)
   
   // Transforming a file with an external process
+
+  xtc-transform-file =
+    ?(tool, args, file)
 
   xtc-transform-file(tool) =
     xtc-transform-file(tool, ![])
