@@ -1,3 +1,18 @@
+2004-01-20  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/front/lift-dynamic-rules.str: First implementation of
+	'extend rules' variant of dynamic rules. Defining a dynamic
+	rule as 
+
+		extend rules(
+	 	  A : lhs -> rhs where s
+		)
+
+	creates a dynamic rule A, which as usual returns the rhs of the
+	rule last created. In addition, a rule bagof-A is generated, which
+	rewrites lhs to all rhss in the current scope, i.e., produces a
+	list of all 'values' of lhs.
+
 2003-12-28  Martin Bravenboer  <martin@cs.uu.nl>
 
 	* spec/si/primitives.str: abstract syntax of the generated rules

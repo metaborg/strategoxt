@@ -5,7 +5,7 @@
 
 \begin{code}
 module desugar
-imports Stratego-Amb DefaultStrat sugar stratlib lib
+imports Stratego-Amb DefaultStrat sugar stratlib lib stratego-desugar
 strategies
 
   desugar-io =
@@ -72,6 +72,7 @@ rules
   HL : AM(s, t)            -> Seq(s, Match(t))
   HL : BAM(s, t1, t2)      -> Seqs([Build(t1), s, Match(t2)])
   HL : InfixApp(t1, s, t2) -> App(s, Op("",[t1,t2]))
+
 \end{code} 
 
 \paragraph{Primitives}
@@ -331,7 +332,7 @@ strategies
 
   desugar = 
     topdown(try(desugarRule); 
-            repeat(LiftPrimArgs + LiftCallArgs + HL + Bapp + Mapp + Expl))
+            repeat(LiftPrimArgs + LiftCallArgs + HL + Bapp + Mapp + Expl + Desugar))
 
   desugar' = 
     topdown(try(desugarRule); repeat(HL))

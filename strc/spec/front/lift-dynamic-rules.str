@@ -63,6 +63,14 @@ that are declared in context using the dynamic rule ContextVar */
     |[ override rules(rd*) ]| -> 
     <map(SplitDynamicRule(!|[ override-key(!~str:<id>) ]|)); unzip> rd*
 
+  split-dynamic-rules :
+    |[ extend rules(rd*) ]| -> 
+    <map(ExtendSplitDynamicRule(!|[ extend-assert(!~str:<id>) ]|)); unzip; (id, concat)> rd*
+
+  split-dynamic-rules :
+    |[ extend override rules(rd*) ]| -> 
+    <map(ExtendSplitDynamicRule(!|[ extend-override-key(!~str:<id>) ]|)); unzip; (id, concat)> rd*
+
 /* Split a dynamic rule into an call to assert which records a mapping
 from the left-hand side of the rule instantiated with the bindings to
 context variables to the set of bindings to the context variales not
@@ -117,6 +125,53 @@ dynamic rule. */
        new => x
        ; <dummify> t1 => t1'
        ; try(?t1; !Var(x)) => t1''
+
+
+  ExtendSplitDynamicRule(assert) :
+    |[ f(as1|as2) : t1 -> t2 where s ]| -> <desugar>
+    (|[ where(<~<assert> f> (t1', Defined(~str:stamp, t*))) ]|,
+     [
+       |[ f(as1|as2) : x@t1 -> t2 
+            where where(<extend-rewrite(!~str:f)> t1'' => [Defined(~str:stamp, t*) | _]); s ]|,
+
+       |[ g(as1|as2) : x@t1 -> y
+            where <extend-rewrite(!~str:f)> t1''
+		; filter(<f'(s1*|t1*)>(x,<id>)) => y ]|,
+
+       |[ f'(as1|as2) : (t1, Defined(~str:stamp, t*)) -> t2 where s ]|
+
+     ])
+    where 
+      <not(eq)>(t2, |[ Undefined() ]|)
+
+      ; <conc-strings>("bagof-", f) => g
+      ; <conc-strings>("aux-", f) => f'  // has to be the same such that + of aux-f works
+      ; new => y
+      
+      ; <map((?DefaultVarDec(<id>) + ?VarDec(<id>,_)); !Call(SVar(<id>),[]))> as1 => s1*
+      ; <map((?DefaultVarDec(<id>) + ?VarDec(<id>,_)); !Var(<id>))> as2 => t1*
+
+      ; new => x
+      ; <dummify> t1 => t1'
+      ; try(?t1; !Var(x)) => t1''
+
+      ; <tvars; map(!Var(<id>))> t1' => keys
+      ; <tvars; filter(test(ListVar(ContextVar) <+ ContextVar); !Var(<id>))> (t2, s) => vals1
+      ; <diff> (vals1, keys) => t*
+
+      ; new => stamp
+
+/*
+  ExtendSplitDynamicRule(assert) :
+    |[ f(as1|as2) : t1 -> Undefined() where s ]| ->
+    (|[ where(<~<assert> f> (t1', Undefined())) ]|,
+     |[ f(as1|as2) : x@t1 -> Undefined()
+                where where(<extend-rewrite(!~str:f)> t1'' => Undefined()); s; fail ]|)
+    where 
+       new => x
+       ; <dummify> t1 => t1'
+       ; try(?t1; !Var(x)) => t1''
+*/
 \end{code}
 
 % Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
