@@ -1,0 +1,79 @@
+The choice operator allows us to write
+\begin{verbatim}
+f = (A -> ...) <+ (B -> ...) <+ (C x -> ...) <+ ...;
+\end{verbatim}
+whereas in a more conventional
+% Is Haskell a conventional language? :-)
+language, such as Haskell we might write
+\begin{verbatim}
+f y = case y of { A -> ...; B -> ...; C x -> ...; ... }
+\end{verbatim}
+As we have seen in section \ref{sec:patterns}, the former is more
+powerful and convenient; on the other hand, the latter leads more
+naturally to efficient code.  For example, the latter function would
+be compiled to something like this:
+\begin{verbatim}
+f: ENTER y
+   if (constructor of y == A) then ...
+   else if (constructor of y == B) then ...
+   else if (constructor of y == C) then 
+     bind x to the first field of y in ...
+   else ...
+\end{verbatim}
+
+The RhoStratego compiler, on the other hand, produces inefficient
+code, involving lots of \code{setjmp()}s, etc.:
+\begin{verbatim}
+f: 
+  if (setjmp(...) == 0) {
+    enter g [being the code for A -> ...]
+  else
+    enter f' [being the code for (B -> ...) <+ ...]
+
+g:
+  return a function g':
+
+g'(arg):
+  enter arg
+  if (constructor of arg == A) then ... else FAIL()
+
+f':
+  if (setjmp(...) == 0) {
+    enter h [being the code for B -> ...]
+  else
+    enter f'' [being the code for (C x -> ... <+ ...]
+etc.
+\end{verbatim}
+
+We conclude that \code{case}-statements, while redundant in the source
+language, {\em are} useful in the intermediate language.  Assuming
+that we have a Haskell-like \code{case}-construct in the intermediate
+language, we can optimise the code by combining pattern matches in
+choices together \code{case}s.
+
+The optimisation rules are:
+\[
+\mbox{\sc{Func2Case}}:
+p \ra e 
+\; \Ra \;
+x \ra \term{case} \; x \; \term{of} \; 
+\term{\{} \; p \ra e \term{;} \; \term{\}}
+\]
+\[
+\mbox{\sc{Choice2Case}}:
+\begin{array}{l}
+p \ra e \; \plus \;
+x \ra \term{case} \; x \; \term{of} \; 
+\term{\{} \; pats \; \term{\}}
+\; \Ra \; \\
+x \ra \term{case} \; x \; \term{of} \; 
+\term{\{} \; p \ra e \term{;} \; pats \; \term{\}}
+\end{array}
+\]
+% TODO: what about cuts?
+
+Once we have rewritten appropriate choices into case-expressions, many
+well-known case-optimisations become available to us, such as the {\em
+  case-of-known-constructor} (\code{case C of ... C -> ...}).  These
+optimisations are especially useful in conjunction with inlining
+\cite{transhaskell}.

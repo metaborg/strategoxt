@@ -1,0 +1,69 @@
+2001-05-02  Eelco Dolstra  <eelco@hagbard.local>
+
+	* syn/rho.def: tuple syntax.
+
+2001-04-25  Eelco Dolstra  <eelco@hagbard.local>
+
+	* utrecht/rho-compiler.r: separate compilation of rho files.
+
+2001-04-22  Eelco Dolstra  <eelco@hagbard.local>
+
+	* utrecht/rho-compiler.r: almost working compiler.
+
+2001-03-28  Eelco Dolstra  <eelco@hagbard.local>
+
+	* syn/rho.def: Prefix notation for operators and infix notations
+	for arbitrary terms (see xmpl/fix.rho).
+
+2001-03-27  Eelco Visser  <visser@acm.org>
+
+	* several ideas for further work
+
+2001-03-20  Eelco Dolstra  <eelco@hagbard.local>
+
+	* utrecht/rho-laws.r: Views.
+
+2001-03-19  Eelco Dolstra  <eelco@losser.st-lab.cs.uu.nl>
+
+	* xmpl/Makefile: `make test' to run all tests and check the
+	output.
+
+	* Makefile: Added top-level Makefile
+
+	* utrecht/rho-laws.r: Use `force' operator to force
+	hyperstrictness of the result.  Added views/overlays.
+
+2001-03-12  Eelco Visser  <visser@acm.org>
+
+	* xmpl/stdlib.rho: force et al.
+
+	* syn/rho.def: syntax of hash comments; should only be recognized
+	at start of line; problem with first line of file
+
+	* TODO: ideas for further work
+
+	* utrecht/rho-laws.r: Removed LetVar
+
+2001-03-05  Eelco Visser  <visser@acm.org>
+
+	* utrecht/rho-laws.r: rho-rename used to make variables unique,
+	  rho-substitute used to rename local variables
+
+2001-02-26  Eelco Visser  <visser@acm.org>
+
+	* */.cvsignore: Added .cvsignore files to get better indications
+	from cvs about files missing in the repository.
+
+2001-02-19  Eelco Visser  <visser@acm.org>
+
+	* syn/rho.def: Added syntax for // style comments
+
+	* utrecht/rho-laws.r: ForceArgument did not force enough; all
+	patterns except single variables should cause the argument to be
+	evaluated to head normal form.
+
+2001-02-12  Eelco Visser  <visser@losser.st-lab.cs.uu.nl>
+
+	* Initial version of Rho language prototype
+
+

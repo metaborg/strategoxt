@@ -1,0 +1,157 @@
+/** In this chapter we present an application of RhoStratego: an
+    inliner for RhoStratego.  This chapter {\em is} in fact the
+    RhoStratego program; the \LaTeX{} source was generated from the
+    annotated program text.
+
+    Note that inlining {\em in itself} is not a particularly useful
+    optimisation for lazy languages; due to laziness, many definitions
+    will end up as separate closures even when they are inlined.  The
+    real usefulness is in combination with other optimisations, such
+    as $\beta$-reduction \cite{transhaskell}.
+
+    The first thing most RhoStratego programs do is include the header
+    file to the standard library. */
+
+#include "stdlib.rh"
+
+/** The header file \code{rhosyntax.rh} defines the abstract data type
+    of RhoStratego. */
+
+#include "rhosyntax.rh"
+
+
+/** Definitions should not be inlined indiscriminately, since that will
+    result in code bloat.  Only definitions below a certain size
+    should be inlined.  \code{termSize} implements a simple heuristic
+    --- the number of syntax nodes --- to determine whether to inline. */
+
+termSize :: a . a -> Int;
+termSize = c x -> termSize c + termSize x <+ x -> 1;
+
+
+/** $\beta$-reduction is a form of inlining, and inlining often
+    creates opportunities for $\beta$-reduction.  Rather than treating
+    it separately, we use explicit substitution to rewrite an
+    application of a $\lambda$-abstraction into a let-expression, and
+    let the general inliner take care of it. 
+
+    \begin{sloppypar}
+    The rule \code{appInwards} is used to float applications into
+    let-expressions, in order to expose more opportunities for
+    inlining.  For example, \code{(x -> y -> x) 1 2} will be rewritten
+    using \code{betaReduce'} into \code{(let x = 1; in y -> x) 2},
+    then using \code{appInwards} into \code{let x = 1; in (y -> x) 2},
+    and finally using another application of \code{betaReduce'} into
+    \code{let x = 1; y = 1; in y -> x}. 
+    \end{sloppypar}
+*/
+
+betaReduce = repeat (oncetd (betaReduce' <+ appInwards));
+
+betaReduce' = Term?App (Rule (Var x) e1) e2 -> Let [Def x e2] e1;
+
+appInwards = Term?App (Let ds e1) e2 -> Let ds (App e1 e2);
+
+
+/** \code{fvars} returns the list of free variables occurring in an
+    expression. */
+
+fvars :: a . a -> [Id];
+fvars =
+  Term?Var x -> [x] <+
+  Term?Rule p e -> diff (fvars e) (fvars p) <+
+  Term?Let ds e -> diff (map (Def x _ -> x) ds) (letVars ds e) <+
+  unions . (mapkids fvars);
+
+letVars = ds -> e -> 
+  concat ((fvars e) : (map (Def _ e -> fvars e) ds));
+
+
+/** \code{filterVars} filters variables from a list of bindings.  A
+binding is a (name, term) tuple. */
+
+filterVars = vars -> filter (<x, _> -> not (x `elem` vars));
+
+
+/** The function \code{inline} performs inlining of let-bindings.  We
+traverse the term in a top-down fashion, passing down the set of
+let-bindings currently in scope. */
+
+inline = inline' [];
+
+inline' :: a . [<Id, Term>] -> a -> a;
+inline' = defs -> (
+  let
+
+    doProgram, doLet, doRule, doVar :: a . a -> a;
+
+/** Treat programs as let-expressions for the purpose of inlining. */
+    doProgram = Program?Program ds -> 
+      (Let ds' _ -> Program ds') (doLet (Let ds Fail));
+
+/** Let-expressions add bindings to the set. */
+    doLet = Term?Let ds e -> (
+      let newdefs = map (Def x e'' -> <x, e''>) ds;
+/** We only add those that are smaller than a certain size that should
+be determined empirically. */
+          newdefs' = filter (<x, e> -> termSize e < 10) newdefs;
+          defs' = conc newdefs' defs;
+/** When performing inlining inside a let-binding \code{x = e}, we should
+remove \code{x} from the set of bindings; otherwise, an infinite
+expansion could occur if \code{x} is recursive. */
+          ds' = map (Def x e -> inline' 
+            (filterVars [x] defs') (Def x e)) ds;
+          e' = inline' defs' e;
+      in Let ds' e');
+
+    doRule = Term?Rule p e -> 
+      Rule p (inline' (filterVars (fvars p) defs) e);
+
+/** This is where the actual inlining happens.  We look up \code{x} in
+the set of bindings and replace it with its definition.  Then we
+recursively inline the expansion, since there may be further
+opportunities for inlining.  Note that \code{lookup}, and therefore
+\code{doVar}, fails if \code{x} is not in the set of bindings. */
+    doVar = Term?Var x -> st (inline' defs) (lookup x defs);
+
+/** Try all the rules above; if they all fail, perform inlining on the
+subterms. */
+  in doProgram <+ doLet <+ doRule <+ doVar <+ all (inline' defs));
+
+
+/** \code{removeDead} removes dead let-bindings, i.e., definitions not
+used anywhere in the let-expression.  This could be a bit smarter;
+what we really care about is reachability of a definition from the
+body of the let (cf. the garbage collector in
+\ref{sec:rhointerpreter}). */
+
+removeDead, removeDead' :: a . a -> a;
+removeDead =
+  (Term?Let ds e -> removeDead' (
+    let vars = letVars ds e;
+        ds2 = filter (Def x _ -> x `elem` vars) ds;
+    in Let ds2 e)) :: (a -> a)
+  <+ removeDead';
+removeDead' = 
+  all removeDead;
+
+
+/** \code{emptyLet} removes all empty let-expressions (i.e., it's the
+opposite of the {\sc LetLift} rule in section \ref{sec:semantics}). */
+
+emptyLet = bottomup (try (Term?Let [] e -> e));
+
+
+/** \code{optimise} is a pipeline consisting of the transformations
+defined above. */
+
+optimise = betaReduce | (inline | (removeDead | emptyLet));
+
+
+/** The function \code{main} performs I/O.  It reads a program in ATerm
+    format, transforms it, and writes it out as an ATerm. */
+
+main = 
+  let a1 = readTerm "inlinertest.trm";
+      a2 = writeTerm "" ATFmtText;
+  in a1 >>= (x -> a2 (optimise x));

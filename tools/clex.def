@@ -1,0 +1,149 @@
+definition
+
+module Main
+exports
+  sorts Module
+
+  context-free syntax
+    Token*     -> Module {cons("Module")}
+    Space      -> Token  {cons("Space")}
+    NewLine    -> Token  {cons("NewLine")}
+    Comment    -> Token  {cons("Comment")}
+    LComment   -> Token  {cons("LComment")}
+    Keyword    -> Token  {cons("Keyword")}
+    Special    -> Token  {cons("Special")}
+    Operator   -> Token  {cons("Operator")}
+    Id         -> Token  {cons("Id")}
+    Int        -> Token  {cons("Int")}
+    String     -> Token  {cons("String")}
+    Directive  -> Token  {cons("Directive")}
+
+  lexical syntax
+
+    [\ \t]+    -> Space
+    [\n]       -> NewLine
+
+    "/**" ~[\*]* "*/" -> LComment
+    "/*" ~[\*]* "*/" -> Comment
+
+    "auto"     -> Keyword
+    "double"   -> Keyword
+    "int"      -> Keyword
+    "struct"   -> Keyword
+    "break"    -> Keyword
+    "else"     -> Keyword
+    "long"     -> Keyword
+    "switch"   -> Keyword
+    "case"     -> Keyword
+    "enum"     -> Keyword
+    "register" -> Keyword
+    "typedef"  -> Keyword
+    "char"     -> Keyword
+    "extern"   -> Keyword
+    "return"   -> Keyword
+    "exit"     -> Keyword
+    "union"    -> Keyword
+    "const"    -> Keyword
+    "float"    -> Keyword
+    "short"    -> Keyword
+    "unsigned" -> Keyword
+    "continue" -> Keyword
+    "for"      -> Keyword
+    "signed"   -> Keyword
+    "void"     -> Keyword
+    "default"  -> Keyword
+    "goto"     -> Keyword
+    "sizeof"   -> Keyword
+    "volatile" -> Keyword
+    "do"       -> Keyword
+    "if"       -> Keyword
+    "static"   -> Keyword
+    "while"    -> Keyword
+
+    "->"      -> Operator
+    "||"      -> Operator
+    "|"       -> Operator
+    "&&"      -> Operator
+    "&"       -> Operator
+    "++"      -> Operator
+    "+"       -> Operator
+    "--"      -> Operator
+    "-"       -> Operator
+    "*"       -> Operator
+    "/"       -> Operator
+    "~"       -> Operator
+    "=="      -> Operator
+    "!="      -> Operator
+    "!"       -> Operator
+    "<="      -> Operator
+    "<"       -> Operator
+    ">="      -> Operator
+    ">"       -> Operator
+
+    "("       -> Special
+    ")"       -> Special
+    "{"       -> Special
+    "}"       -> Special
+    ";"       -> Special
+    ":"       -> Special
+    "."       -> Special
+    ","       -> Special
+    "="       -> Special
+    "?"       -> Special
+    "\\"      -> Special
+    "["       -> Special
+    "]"       -> Special
+    "##"      -> Special
+
+    [a-zA-Z\_][a-zA-Z\_0-9]* -> Id
+
+    "auto"     -> Id {reject}
+    "double"   -> Id {reject}
+    "int"      -> Id {reject}
+    "struct"   -> Id {reject}
+    "break"    -> Id {reject}
+    "else"     -> Id {reject}
+    "long"     -> Id {reject}
+    "switch"   -> Id {reject}
+    "case"     -> Id {reject}
+    "enum"     -> Id {reject}
+    "register" -> Id {reject}
+    "typedef"  -> Id {reject}
+    "char"     -> Id {reject}
+    "extern"   -> Id {reject}
+    "return"   -> Id {reject}
+    "exit"     -> Id {reject}
+    "union"    -> Id {reject}
+    "const"    -> Id {reject}
+    "float"    -> Id {reject}
+    "short"    -> Id {reject}
+    "unsigned" -> Id {reject}
+    "continue" -> Id {reject}
+    "for"      -> Id {reject}
+    "signed"   -> Id {reject}
+    "void"     -> Id {reject}
+    "default"  -> Id {reject}
+    "goto"     -> Id {reject}
+    "sizeof"   -> Id {reject}
+    "volatile" -> Id {reject}
+    "do"       -> Id {reject}
+    "if"       -> Id {reject}
+    "static"   -> Id {reject}
+    "while"    -> Id {reject}
+
+    "\"" StringChar* "\""      -> String
+    ~[\\\"\n]                  -> StringChar
+    [\\] [ntvbrfa\\\?\"]       -> StringChar
+    [\\] [x] [0-9A-E] [0-9A-E] -> StringChar
+    Octal                      -> StringChar
+    [\\] [0-7] [0-7]? [0-7]?   -> Octal
+
+    [0-9]+    -> Int
+
+    "#" [a-z]+ -> Directive
+
+  lexical restrictions
+    Space -/- [\ ]
+    Id -/- [a-zA-Z0-9\']
+    Int -/- [0-9]
+    Directive -/- [a-z]

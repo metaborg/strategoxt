@@ -1,0 +1,17 @@
+Stratego is a domain-specific language intended for the construction
+of program transformation systems.  To that end, the language has a
+number of interesting features; notably, first class pattern matching
+and generic traversal mechanisms.  The question arises whether and how such
+features can be implemented in functional programming languages and
+Haskell in particular.  In a rewrite system it is essential that one
+can easily recover from pattern match failure, so that alternative
+rewrite rules can be tried.  Typical functional languages do not
+support this very well since local pattern match
+failure leads to global divergence.  This article shows how to solve
+this problem by adding a choice operator to a simple functional
+language.  It seems that this approach is not only useful to strategic
+programming, but is also more powerful than previous
+proposals to extend Haskell's pattern matching, such as views,
+patterns guards, and transformational patterns.  Furthermore, we
+discuss how the generic programming techniques can be employed to
+implement generic traversals.

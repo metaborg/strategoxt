@@ -1,0 +1,40 @@
+# Default targets.
+
+VERSION = 0.1
+
+.PRECIOUS: %.c %.o %.exe %.out
+
+.PHONY: default all clean-default clean-extra clean install depend dist test
+
+default: all
+
+clean-default:
+	$(RM) *.d *.o *.s *.a *~ *.dep *.tree core
+
+clean-extra:
+
+clean: clean-default clean-extra
+
+install: all
+
+depend:
+
+dist:
+	-mkdir $(distdir)
+	cp -p $(MANIFEST) $(distdir)
+	s="$(SUBDIRS)"; \
+	if test "$$s"; then \
+	  for subdir in $$s; do \
+	    (cd $$subdir && $(MAKE) -w $@ distdir=$(distdir)/$$subdir) || exit 1; \
+	  done \
+	fi\
+
+test:
+
+%.ltx: %.rho
+	sglr -p $(BASE)/tools/rholex.def.tbl -s Module < $< | implode-asfix \
+	 | $(BASE)/tools/latexify | abox2text > $@
+
+%.ltx: %.r
+	sglr -p $(BASE)/tools/strategolex.def.tbl -s Module < $< | implode-asfix \
+	 | $(BASE)/tools/latexify | abox2text > $@

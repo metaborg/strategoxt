@@ -1,0 +1,91 @@
+definition
+
+module Main
+exports
+  sorts Module
+
+  context-free syntax
+    Token*     -> Module {cons("Module")}
+    Space      -> Token  {cons("Space")}
+    NewLine    -> Token  {cons("NewLine")}
+    Comment    -> Token  {cons("Comment")}
+    Hide       -> Token  {cons("Hide")}
+    Show       -> Token  {cons("Show")}
+    LComment   -> Token  {cons("LComment")}
+    Keyword    -> Token  {cons("Keyword")}
+    Special    -> Token  {cons("Special")}
+    Operator   -> Token  {cons("Operator")}
+    Id         -> Token  {cons("Id")}
+    Int        -> Token  {cons("Int")}
+    String     -> Token  {cons("String")}
+    Directive  -> Token  {cons("Directive")}
+
+  lexical syntax
+
+    [\ \t]+     -> Space
+    [\n]        -> NewLine
+
+    ~[\*]                       -> CommentChar
+    "*" ~[\)]                   -> CommentChar
+    "(*off*)"                   -> Hide
+    "(*on*)"                    -> Show
+    "(*" CommentChar* "*)"      -> LComment
+    "//" ~[\n]*                 -> Comment
+
+  lexical syntax
+    [A-Za-z] [A-Za-z0-9\_\'\-]* -> Id
+ 
+    [0-9]+                      -> Int
+    ~[\"\n]                     -> StringChar
+    "\\" ~[\n]                  -> StringChar
+    "\"" StringChar* "\""       -> String
+ 
+  lexical restrictions
+    Int             -/- [0-9]
+ 
+  lexical syntax
+    "module"            -> Id {reject}
+    "signature"         -> Id {reject}
+    "sorts"             -> Id {reject}
+    "operations"        -> Id {reject}
+    "rules"             -> Id {reject}
+    "strategies"        -> Id {reject}
+    "id"                -> Id {reject}
+    "fail"              -> Id {reject}
+    "all"               -> Id {reject}
+    "some"              -> Id {reject}
+    "one"               -> Id {reject}
+    "thread"            -> Id {reject}
+    "not"               -> Id {reject}
+    "test"              -> Id {reject}
+    "where"             -> Id {reject}
+    "rec"               -> Id {reject}
+    "let"               -> Id {reject}
+    %%"in"              -> Id {reject}
+    "imports"           -> Id {reject}
+
+    "=>" -> Special
+    "->" -> Special
+    "<+" -> Operator
+
+    ":"  -> Special
+    "["  -> Special
+    "]"  -> Special
+    "("  -> Special
+    ")"  -> Special
+    "{"  -> Special
+    "}"  -> Special
+    ","  -> Special
+    "<"  -> Special
+    ">"  -> Special
+    "_"  -> Special
+    "="  -> Special
+    "\\" -> Special
+    "@"  -> Special
+
+    "!"  -> Operator
+    "?"  -> Operator
+    ";"  -> Operator
+    "+"  -> Operator
+    "|"  -> Operator
+    "*"  -> Operator

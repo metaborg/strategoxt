@@ -1,0 +1,10 @@
+#! /bin/sh ../utrecht/rho-run
+
+#include "stdlib.rh"
+
+x = (+) 123 456;
+plus = (+);
+y = 1 `plus` 2;
+z = 3 ` (x -> y -> x - y) ` 4;
+
+main = print ((x + y) + z);

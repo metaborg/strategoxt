@@ -1,0 +1,48 @@
+Program transformation systems transform a computer program, typically
+represented as an abstract syntax tree, from one language to
+(possibly) another language.  Examples of such systems are code
+generators, optimizers, and application generators (translating a
+high-level specification into a program in a general purpose
+language).
+
+There are a number of features that seem to be especially important to
+the implementation of program transformations systems:
+\begin{itemize}
+\item Pattern matching, so that we can easily deconstruct and inspect
+  values.  More importantly, we need to have {\em first class}
+    pattern matching: if a pattern fails to match, it should be easy
+    to try alternatives.
+\item Traversal mechanisms.  Transformations often need to applied at
+  many points in the abstract syntax tree.  We should have
+  generic  operations that can traverse arbitrary data structures,
+  applying arbitrary transformations.
+\end{itemize}
+
+Stratego \cite{optrewritestrat} is a domain-specific language intended
+for the construction of program transformation systems, and as such has
+extensive matching and traversal features.
+
+The question arises whether and how such features can be implemented
+in functional programming languages.  After all, functional languages
+like ML and Haskell \cite{haskell98}
+are well-appreciated for their pattern matching
+facilities, and recursion makes it relatively easy to traverse a
+structured value.  Unfortunately, pattern matching is not first class:
+pattern match failure leads to divergence (i.e., a crash) of the
+entire program.  Also, Stratego is untyped, which makes generic
+traversal primitives like \ve{all} possible; but in typed functional
+languages, this becomes problematic.
+
+This article proposes a solution to the first problem by means of a
+choice operator which evaluates to its left argument, unless
+it fails; otherwise it evaluates to its right argument.
+
+
+\paragraph*{Outline}
+
+Section \ref{sec:purehaskell} explores the problem space of
+implementing Stratego-like constructs in Haskell.  The addition of a
+choice operator is discussed in section \ref{sec:choice}, which also
+compares this to other proposals to extend pattern matching.  Finally,
+section \ref{sec:gentraverse} briefly discusses generic traversals.
+The reader should be familiar with Stratego and Haskell.

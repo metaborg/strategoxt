@@ -1,0 +1,13 @@
+#! /bin/sh ../utrecht/rho-run
+
+#include "stdlib.rh"
+
+main = 
+ let a2 = if (0 == 0) (putStr "World") (putStr "Utrecht");
+     a1 = putStr "Hello ";
+     a3 = putStr "Foo";
+     a4 = return 123;
+     a5 = readFile "dummy";
+ in a1 >> (a4 >> ((a5 >>= (s -> putStr s)) >> a4));
+
+//  1 + (unsafePerformIO (putStr "foo" >> return 123))

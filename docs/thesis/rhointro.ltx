@@ -1,0 +1,511 @@
+\subsection{The basics}
+
+RhoStratego is a non-strict purely functional programming language.
+It consists essentially of the \lcalc{} extended with constructors,
+pattern matching, and let-bindings.
+
+\begin{example}[Simple values]
+  A RhoStratego program is a list of {\em definitions}.  A definition
+  binds a name to a value.  Here are some straight-forward
+  definitions:
+\begin{verbatim}
+id = x -> x;
+const = x -> y -> x;
+x = id 123; // evaluates to 123
+. = f -> g -> x -> f (g x);
+\end{verbatim}
+  Note that there is no symbol that syntactically starts the
+  $\lambda$-abstraction (such as a $\lambda$ or Haskell's backslash).
+  This follows the notation used in term rewriting.
+\end{example}
+
+\begin{example}[Constructors]
+  The language has constructors that can be deconstructed using a
+  pattern match:
+\begin{verbatim}
+f = (Foo Bar x -> x) (Foo Bar Fnord); // evaluates to Fnord
+\end{verbatim}
+Following Haskell's tradition, constructor names start with capitals.
+\end{example}
+
+
+\subsection{Choice}
+
+RhoStratego inherits Stratego's left choice operator (\plus).  The
+intended semantics is that this operator evaluates its left argument,
+and if it `fails', returns its right argument.  An expression is
+said to fail when a pattern match failure occurs somewhere in the
+evaluation of the expression.
+
+\begin{example}[Left choice]
+  The choice operator allows us to distinguish between different
+  constructors, and to write first class transformation rules.  The
+  Peano rules from chapter \ref{ch:stratego} can be expressed as
+  follows:
+\begin{verbatim}
+plus0 = Plus Zero x -> x;
+plusN = Plus (Succ x) y -> Plus x (Succ y);
+onestep = plus0 <+ plusN;
+\end{verbatim}
+  Note that the choice operator binds weaker than
+  $\lambda$-abstraction.  This allows us to omit parentheses in the
+  most common cases.
+\end{example}
+
+\begin{sloppypar}
+  One may not be convinced that the \code{onestep} function in the
+  previous example works, and in fact it does not without the addition
+  of some semantic machinery.  After all, if we apply \code{onestep}
+  to, say, \code{Plus (Succ Zero) Zero}, the choice operator will
+  evaluate its left argument, namely \code{Plus Zero x -> x}, which is
+  immediately in normal form and hence does not fail.  Therefore
+  \code{(Plus Zero x -> x <+ ...) (Plus (Succ Zero) Zero)} will
+  evaluate to \code{(Plus Zero x -> x) (Plus (Succ Zero) Zero)}, which
+  will yield a pattern match failure.
+\end{sloppypar}
+
+One solution is to write \code{onestep} as follows:
+\begin{verbatim}
+onestep = x -> (plus0 x <+ plusN x);
+\end{verbatim}
+That is, it pushes the argument into the choice alternatives to ensure
+that the pattern match (and the pattern match failure) occurs at the
+right time, namely in the scope of the choice operator.
+
+While this approach works, it is not quite satisfactory.  After all,
+the choice operator in Stratego is used to choose between strategies,
+which are functions from terms to terms; so we do not want to choose
+between functions but between functions {\em applied to terms}.
+
+The solution, then, is rather simple: automate the transformation from
+the first definition of \code{onestep} to the second.  We do this by
+adding the following rule, which {\em distributes} the argument to a
+choice over the choice alternatives:
+\[
+\mbox{\sc{Distrib}}:
+(e_1 \; \plus \; e_2) \; e_3
+\goesto
+e_1 \; e_3 \; \plus \; e_2 \; e_3
+\]
+It is easy to see that this does in fact transform the first \code{onestep}
+into the second (after $\eta$-expanding the body of \code{onestep}).
+
+\begin{example}[More choices]
+Here are definitions of some popular functions:
+\begin{verbatim}
+foldr = op -> nul -> 
+  (Nil -> nul <+ Cons x xs -> op x (foldr op nul xs));
+
+map = f -> foldr (x -> xs -> Cons (f x) xs) Nil;
+
+if = True  -> e1 -> e2 -> e1 <+ 
+     False -> e1 -> e2 -> e2;
+\end{verbatim}
+\end{example}
+
+\paragraph{Cuts}
+Of course, adding the {\sc Distrib} rule just gives us the opposite
+problem: what if we actually want to choose between functions?  For
+example, suppose that we write \code{if} like this:
+\begin{verbatim}
+if = True -> e1 -> e2 -> e1 <+ 
+     _    -> e1 -> e2 -> e2;
+\end{verbatim}
+which seems reasonable, since if a boolean value is not true then it
+must be false.  Now suppose we wrote the following code to choose
+between two functions:
+\begin{verbatim}
+x = (if (condition) (A -> B) (C -> D)) C;
+\end{verbatim}
+Presumably, if the condition evaluates to \code{True}, then \code{A
+  \ra B} will be selected, which will fail to match against \code{C},
+and \code{x} will evaluate to \code{fail}.  What {\em really} happens,
+however, is that since \code{A \ra B} is a function, \code{C} (as well
+as the direct arguments to \code{if}) will be pushed into the choice,
+and we get:
+\begin{verbatim}
+x = (True -> e1 -> e2 -> e1) True (A -> B) (C -> D) C <+ 
+    (_    -> e1 -> e2 -> e2) True (A -> B) (C -> D) C;
+\end{verbatim}
+This subsequently reduces to:
+\begin{verbatim}
+x = (A -> B) C <+ 
+    (_ -> e1 -> e2 -> e2) True (A -> B) (C -> D) C;
+\end{verbatim}
+and:
+\begin{verbatim}
+x = fail <+ 
+    (_ -> e1 -> e2 -> e2) True (A -> B) (C -> D) C;
+\end{verbatim}
+so we incorrectly end up choosing the \code{False} clause:
+\begin{verbatim}
+x = (_ -> e1 -> e2 -> e2) True (A -> B) (C -> D) C;
+\end{verbatim}
+which ultimately evaluates to \code{x = D}.
+
+A related problem is the {\em scope} of the choice operator over its
+left argument.  For example, suppose we want to distinguish a term
+between two alternatives, say the constructor \code{C}, and everything
+else, and do something different depending on that.  We could write
+something like \code{(C -> e1) <+ (x -> e2)}.  However, if \code{e1}
+fails, RhoStratego will backtrack to \code{x -> e2}; this may be what
+we want, but very often it is not, and we just want to choose between
+some alternatives and not backtrack.  In other words, the scope of the
+backtracking should, in this case, be limited to the pattern match,
+and failure in \code{e1} should not be caught (at this level; we may
+want to deal with it in some outer choice).  This problem also
+manifests itself in Stratego; it concerns the {\em scope} of the
+choice operator over its left argument.  We want a way to specify, for
+example, that failure in the pattern match \code{C} should be caught,
+but not failure in the body of the function.
+
+The connection between the above two problems is that in both cases we
+want to return a value `as is', without ever going to the right-hand
+side choice alternative; but the choice operator happens to treat
+functions and \code{fail} values specially.  Both of the above
+problems can be solved by wrapping the values that we want to leave
+untouched by the choice operator inside a dummy constructor.  The
+first example, for example, would become:
+\begin{verbatim}
+x = (S x -> x) ((if (condition) (S (A -> B)) (S (C -> D))) C);
+\end{verbatim}
+Since the choice operator does not touch the value \code{S (A \ra B)},
+it escapes out of the choice, and is finally unpacked by \code{S x \ra
+  x}.  The second example becomes 
+\begin{verbatim}
+f = y -> (S x -> x) ((C -> S e1 <+ x -> S e2) y);
+\end{verbatim}
+
+This wrapping and unwrapping is rather inconvenient.  Furthermore, in
+the spirit of the separation of rewrite rules and strategies, one
+should be able to write the second example as
+\begin{verbatim}
+a = C -> e1;
+b = x -> e2;
+f = a <+ b;
+\end{verbatim}
+so that \code{a} and \code{b} can be used independently.  But when we
+wrap \code{e1} and \code{e2} into a dummy constructor, every calling
+site must be adapted to handle this.  This hampers reuse.
+
+RhoStratego solves these problems through the {\em cut}
+mechanism\footnote{The name comes from Prolog, where cuts are used to
+  limit backtracking}.  The unary operator \code{\cut} indicates that
+a function or failure result in the left-hand side of the choice
+should be left as-is.  Using the cut operator the examples above can
+be written as:
+\begin{verbatim}
+x = (if (condition) ^(A -> B) (C -> D)) C;
+f = C -> ^e1 <+ x -> e2;
+\end{verbatim}
+Note that the cut only needs to be applied to the left-hand side.
+
+For the exact semantics of a cut there are two alternatives.  The
+first is that a cut is just sugar for the constructor wrapper hack
+described above, except that the choice operator is modified to remove
+cuts automatically.  In that case, however, we cannot write something
+like \code{\cut{}1 + \cut{}2}; that is, we still have the problem that
+rules and strategies cannot be separated cleanly.  Furthermore, if
+\code{\cut{}e} is distinguishable from \code{e}, then this fact should
+be reflected in the type system.
+
+The second alternative is that cuts are {\em transparent}; in any
+context except the left-hand side of a cut they `disappear'
+automatically, meaning that \code{\cut{}1 + \cut{}2} will evaluate to
+\code{3}, and the pattern match \code{(A \ra B) \cut{}A} will succeed.
+This is the approach taken in RhoStratego.
+
+
+\paragraph{Failure}
+
+The constant \code{fail} can be used to created failure outside of a
+pattern match.  Furthermore, \code{fail} can occur in pattern matches.
+A function with such a pattern will return the body of the function if
+the argument evaluates to \code{fail}; otherwise \code{fail} will be
+returned.
+
+\begin{example}[Strict application]
+The function \code{st} applies a function to an argument, evaluating
+the argument first:
+\begin{verbatim}
+st = f -> ((fail -> ^fail) <+ f);
+\end{verbatim}
+Note that we must write \code{\cut{}fail} in order to prevent
+\code{fail} from being `caught' by the choice operator.
+\end{example}
+
+\begin{example}[Strategy operators]
+  \begin{sloppypar}
+    Several of Stratego's non-generic strategy operators can now be
+    defined:
+  \end{sloppypar}
+\begin{verbatim}
+| = f -> g -> t -> st g (f t);
+try = s -> (s <+ id);
+repeat = s -> try (s | repeat s);
+\end{verbatim}
+The first function, \code{|} (`pipe'), performs strict sequential
+composition; this is Stratego's \code{;} strategy operator.  We cannot
+use regular sequential composition in \code{repeat}, i.e.,
+\begin{verbatim}
+| = f -> g -> t -> g (f t);
+\end{verbatim}
+as this will cause \code{repeat} to get stuck in an infinite
+recursion: \code{repeat s} expands into \code{try (s | repeat s)},
+which is \code{(s | repeat s) <+ id}.  Since \code{s | repeat s} is
+equal to \code{t -> (repeat s) (s t)}, and since a lazy language first
+evaluates the left-hand side of this application --- namely
+\code{repeat s} --- we have a loop.  We must have some strictness to
+ensure that progress is made.
+
+Using \code{repeat}, we can of course write:
+\begin{verbatim}
+eval = repeat (plus0 <+ plusN);
+\end{verbatim}
+\end{example}
+
+
+\subsection{Generic traversals}
+
+Stratego accomplishes generic traversals over terms by means of the
+\code{all} and \code{one} traversal primitives.  RhoStratego does not
+have these primitives.  Instead, generic traversals are obtained
+through {\em application pattern matches}.  This is a pattern of the
+form \code{c x}, where \code{c} and \code{x} are both variables.  This
+will match with a constructor application, and \code{x} will be bound
+with the last argument of the constructor (the {\em suffix}) and
+\code{c} will be bound to the constructor applied to the other
+arguments (the {\em prefix}).
+
+\begin{example}[Application match]
+The following definitions show the use of application match patterns:
+\begin{verbatim}
+f = (c x -> c) (Foo Bar Fnord); // evaluates to Foo Bar
+g = (c x -> x) (Foo Bar Fnord); // evaluates to Fnord
+\end{verbatim}
+\end{example}
+
+The application match pattern allows us to look at the immediate
+subterms of a term in a linear fashion, just like traversing a
+nil/cons-list: the \code{c x} pattern corresponds to matching a cons.
+Then what corresponds to matching with nil?  The answer is that that
+is simply the pattern \code{x}: if the match \code{c x} fails, then
+the argument is either a constructor (without arguments) or another
+normal form (such as a function or an integer literal).
+
+\begin{example}[Getting the immediate subterms]
+  The following function returns the subterms of the argument as a
+  list:
+\begin{verbatim}
+kids = c x -> Cons x (terms c) <+ x -> Nil;
+\end{verbatim}
+  Note that this function is untypeable in the type system given in
+  chapter \ref{ch:typesystem}.
+\end{example}
+
+\begin{example}[Term size]
+  This function determines the size of a term (i.e., the number of
+  constructor nodes and base values):
+\begin{verbatim}
+termSize = c x -> termSize c + termSize x <+ x -> 1;
+\end{verbatim}
+\end{example}
+
+With this single traversal primitive, we can formulate Stratego's
+\code{one} and \code{all} primitives.
+
+\begin{example}[\code{all} strategy operator]
+  Stratego's \code{all} operator, which applies a function \code{f} to
+  all immediate subterms of some term, can be implemented as follows:
+\begin{verbatim}
+all = f -> (c x -> ^(st (all f c) (f x)) <+ id);
+\end{verbatim}
+  Here is how it works.  We first check whether the argument is a
+  constructor application.  If it is not, and the argument is either a
+  constructor or some other value (e.g., an integer), we do nothing
+  (i.e., identity, \code{c \ra c}).  If it is, we recursively apply
+  \code{f} to the subterms in the left-hand side of the constructor
+  application (in \code{all f c}).  The result of this will be \code{C
+    (f $e_1$) .... (f $e_{n-1}$)}, where $n$ is the number of
+  arguments to the constructor.  Applying this expression to \code{f
+    x} will complete the construction of the new term \code{C (f
+    $e_1$) .... (f $e_n$)}.  Since the semantics of \code{all} in
+  Stratego is that the strategy \code{f} must be {\em successfully}
+  applied to all subterms, we decree that this must be a {\em strict}
+  application.  Finally, the result must be cut in order to prevent
+  failure in \code{f} from warping us into \code{c \ra c}.
+\end{example}
+
+\begin{example}[\code{one} strategy operator]
+  Stratego's \code{one} operator, which applies a function \code{f} to
+  exactly one immediate subterm of some term and fails if \code{f}
+  cannot be applied to at least one such term, can be implemented as
+  follows:
+\begin{verbatim}
+one = f -> c x -> (st c (f x) <+ one f c x);
+\end{verbatim}
+  The idea is that we deconstruct the value, going from right to left,
+  until we find a subterm to which \code{f} can be successfully
+  applied.  If that is the case, then we apply the unmodified
+  left-hand side \code{c} to \code{f x}.  We do this by means of the
+  strict application \code{st c (f x)}.  If \code{f x} fails (i.e., if
+  the strict application fails), we must look in \code{c} for some
+  other subterm to which \code{f} can be applied (in \code{one f c}).
+  If we reach the constructor (that is, if the application pattern
+  match \code{c x} fails), then there is no subterm to which \code{f}
+  applies, and \code{one} fails.
+  
+  As an example, consider \code{one (A \ra B) (C A A B)}.  Since the
+  term \code{C A A B} can be deconstructed into \code{c = C A A} and
+  \code{x = B}, we end up in the left-hand side of the outer choice,
+  and we try \code{f x $\equiv$ (A \ra B) B}.  This fails, so we
+  recursively evaluate \code{one (A \ra B) (C A A)}.  Here the
+  argument can also be deconstructed (into \code{c = C A} and \code{x
+    = A}), but now \code{f x $\equiv$ (A \ra B) A}, which is successful
+  and yields \code{B}.  Therefore, the result of \code{one (A \ra B)
+    (C A A)} is \code{C A B}, and the result of \code{one (A \ra B) (C
+    A A B)} is \code{C A B B}.
+
+  Now consider \code{one (A \ra B) (C B)}.  Applying \code{A \ra B} to
+  \code{B} fails, so we recurse into \code{one (A \ra B) C}.  \code{C}
+  is not an application, however, and we end up in the clause \code{c
+    \ra fail}.  Consequently, \code{one (A \ra B) (C B) $\equiv$
+    fail}.
+\end{example}
+
+\begin{example}[Hyperstrictness]
+The following function enforces hyperstrictness of its argument,
+i.e., evaluates it entirely:
+\begin{verbatim}
+force = all force;
+\end{verbatim}
+This works because \code{all} evaluates the constructor application
+spine.  Note that even leaf terms like integer literals are evaluated
+since they too are matched against the \code{c x} pattern.
+\end{example}
+
+\begin{example}[Generic strategy operators]
+  Since we can write \code{all} and \code{one}, we can also write the
+  Stratego strategy operators that are expressed in terms of
+  \code{all} and \code{one}.  For example:
+\begin{verbatim}
+topdown = s -> s | all (topdown s);
+bottomup = s -> all (bottomup s) | s;
+oncetd = s -> (s <+ one (oncetd s));
+\end{verbatim}
+  Of course, we can use these functions.  For example, the following
+  functions succeeds only if the variable \code{x} occurs in a term:
+\begin{verbatim}
+occurs = x -> oncetd (Var y -> if x == y then Var y else fail);
+\end{verbatim}
+\end{example}
+
+
+\subsection{Syntactic sugar}
+
+RhoStratego provides syntactic sugar for congruences, lists, and
+tuples.
+
+\begin{example}[Congruences]
+  Congruences are a very useful feature in Stratego, and RhoStratego
+  has them as well.  The following example applies a function to all the
+  values in the leaves of a binary tree.
+\begin{verbatim}
+f = g -> (@BinTreeNode(f g, f g) <+ @BinTreeLeaf(g));
+\end{verbatim}
+  This is syntactic sugar for
+\begin{verbatim}
+f = g -> (BinTreeNode l r -> BinTreeNode (f g l) (f g r)
+       <+ BinTreeLeaf x -> g x);
+\end{verbatim}
+\end{example}
+
+\begin{example}[Lists and tuples]
+RhoStratego has sugar for lists and tuples.
+\begin{verbatim}
+numbers = [1, 2, 3];
+stuff = <42, "Foo", C 23>;
+\end{verbatim}
+Note that the use of angle brackets, instead of parentheses, allows
+the unambiguous notation of unary tuples.
+\end{example}
+
+
+\subsection{Input and output}
+
+RhoStratego has a monadic I/O system \cite{impfuncprog}.  An I/O
+action is a function of type \code{IO a}, which is just a synonym for
+\code{World -> <World, a>} (World is just a dummy value representing
+the state of the world; it ensures proper sequencing of I/O actions).
+The operator \code{(>>=)} (`bind') is used to sequence two I/O
+actions.  Note that RhoStratego as yet has no concept of data hiding,
+so it is possible to `cheat' (i.e., perform unsafe I/O).
+
+A RhoStratego program is executed by performing the I/O action
+returned by a function called \code{main} of type \code{IO <>}. 
+
+\begin{example}[Hello World]
+  This complete RhoStratego program print `Hello World!' on standard
+  output.
+\begin{verbatim}
+main = (putStr "Hello ") >> (putStr "World!");
+\end{verbatim}
+Note that \code{a >> b = a >>= x -> b}.
+\end{example}
+
+The runtime system provides functions to read and write ATerms.  This
+is essential for integration into XT.  Function symbols appearing in
+the ATerm are mapped at runtime to constructors.  For example, the
+ATerm \code{Foo(Bar("x"), 123)} is mapped to \code{Foo (Bar "x") 123}.
+Constructors must be declared using the syntax given in chapter
+\ref{ch:typesystem}; otherwise they will not be known to the runtime
+system.
+
+\begin{example}[ATerms]
+  This program reads an ATerm, modifies it slightly, and writes it out
+  as a textual ATerm.
+\begin{verbatim}
+main = 
+  let a1 = readTerm "in.trm";
+      a2 = Foo x -> writeTerm "out.trm" ATFmtText (Bar x);
+  in a1 >>= a2;
+\end{verbatim}
+\end{example}
+
+
+\subsection{Module system}
+
+The `module system' (such as it is) is identical to that of
+C/\cplusplus{}.  Source files can be compiled separately into object
+files; the object files are then linked together to form the complete
+program.  One source file can refer to functions defined in another
+source file by declaring its type signature (see chapter
+\ref{ch:typesystem}) but not its definition.  Modularity is achieved
+through a simple textual file inclusion facility provided by a {\em
+  preprocessor} that is applied to the source file before it is fed
+into the compiler; public function definitions are placed in {\em
+  header files} that can be {\em included} by other files.  Inlining
+can be accomplished by putting a function's definition in a header
+file.
+
+\begin{example}[Standard library]
+RhoStratego provides a standard library which provides a number of
+useful functions.  The standard library is compiled separately; user
+programs can use its functionality by including the file
+\code{stdlib.rh}.  For example, the file \code{stdlib.rh} contains the
+following type signature (among others):
+\begin{verbatim}
+id :: a . a -> a; // i.e., id is polymorphic
+\end{verbatim}
+The file \code{stdlib.rho}, which is compiled separately, contains:
+\begin{verbatim}
+id = x -> x;
+\end{verbatim}
+Finally, a user program can then use \code{id} in the following way:
+\begin{verbatim}
+#include "stdlib.rh"
+x = id 123;
+\end{verbatim}
+\end{example}
+
+

@@ -1,0 +1,583 @@
+\documentclass[fleqn]{article}
+\usepackage{moreverb}
+\usepackage{amstext}
+\usepackage{url}
+
+
+\newcommand{\ve}[1]{\ensuremath{\text{\tt #1}}}
+\newcommand{\vve}[1]{{\tt #1}}
+\newcommand{\ra}{\ensuremath{\rightarrow} }
+\newcommand{\Ra}{\ensuremath{\Rightarrow} }
+\newcommand{\n}[1]{\text{#1}}
+\newcommand{\sugt}[1]{\[ \begin{array}{l} #1 \end{array} \]}
+\newcommand{\lcalc}{$\lambda$-calculus }
+\newcommand{\rcalc}{$\rho$-calculus }
+\newcommand{\plus}{\ve{ <+ } }
+\newcommand{\fail}{\ensuremath{\delta }}
+\newcommand{\alt}{\ensuremath{\; | \;}}
+\newcommand{\NF}{\ensuremath{\text{NF}}}
+
+\newtheorem{definition}{Definition}
+
+
+\begin{document}
+
+%\sloppy
+
+\title{Functional Stratego\footnote{Talk given at the Second Stratego
+    Users Day, February 8, 2001.}}
+\author{Eelco Dolstra \\
+\ve{edolstra@students.cs.uu.nl}}
+\maketitle
+
+
+\begin{abstract}
+Stratego is a domain-specific language intended for the construction
+of program transformation systems.  To that end, the language has a
+number of interesting features; notably, first class pattern matching
+and generic traversal mechanisms.  The question arises whether and how such
+features can be implemented in functional programming languages and
+Haskell in particular.  In a rewrite system it is essential that one
+can easily recover from pattern match failure, so that alternative
+rewrite rules can be tried.  Typical functional languages do not
+support this very well since local pattern match
+failure leads to global divergence.  This article shows how to solve
+this problem by adding a choice operator to a simple functional
+language.  It seems that this approach is not only useful to strategic
+programming, but is also more powerful than previous
+proposals to extend Haskell's pattern matching, such as views,
+patterns guards, and transformational patterns.  Furthermore, we
+discuss how the generic programming techniques can be employed to
+implement generic traversals.
+\end{abstract}
+
+
+\section{Introduction}
+
+Program transformation systems transform a computer program, typically
+represented as an abstract syntax tree, from one language to
+(possibly) another language.  Examples of such systems are code
+generators, optimizers, and application generators (translating a
+high-level specification into a program in a general purpose
+language).
+
+There are a number of features that seem to be especially important to
+the implementation of program transformations systems:
+\begin{itemize}
+\item Pattern matching, so that we can easily deconstruct and inspect
+  values.  More importantly, we need to have {\em first class}
+    pattern matching: if a pattern fails to match, it should be easy
+    to try alternatives.
+\item Traversal mechanisms.  Transformations often need to applied at
+  many points in the abstract syntax tree.  We should have
+  generic  operations that can traverse arbitrary data structures,
+  applying arbitrary transformations.
+\end{itemize}
+
+Stratego \cite{optrewritestrat} is a domain-specific language intended
+for the construction of program transformation systems, and as such has
+extensive matching and traversal features.
+
+The question arises whether and how such features can be implemented
+in functional programming languages.  After all, functional languages
+like ML and Haskell \cite{haskell98}
+are well-appreciated for their pattern matching
+facilities, and recursion makes it relatively easy to traverse a
+structured value.  Unfortunately, pattern matching is not first class:
+pattern match failure leads to divergence (i.e., a crash) of the
+entire program.  Also, Stratego is untyped, which makes generic
+traversal primitives like \ve{all} possible; but in typed functional
+languages, this becomes problematic.
+
+This article proposes a solution to the first problem by means of a
+choice operator which evaluates to its left argument, unless
+it fails; otherwise it evaluates to its right argument.
+
+
+\paragraph{Outline.}
+
+Section \ref{sec:purehaskell} explores the problem space of
+implementing Stratego-like constructs in Haskell.  The addition of a
+choice operator is discussed in section \ref{sec:choice}, which also
+compares this to other proposals to extend pattern matching.  Finally,
+section \ref{sec:gentraverse} briefly discusses generic traversals.
+The reader should be familiar with Stratego and Haskell.
+
+
+\section{Strategic programming in Haskell}
+\label{sec:purehaskell}
+
+It is not difficult to implement Stratego-like functionality.  It
+would be
+nice if we could write a Stratego rewrite rule like:
+\[
+\begin{array}{l}
+\ve{PlusZero: Plus(x, Const(0)) \ra x} \\
+\end{array}
+\]
+as
+\begin{equation}
+\label{ex:haskellzero}
+\begin{array}{l}
+\ve{plusZero = $\lambda$(Plus x (Const 0)) \ra x} \\
+\end{array}
+\end{equation}
+
+Of course, this will not work because we cannot handle pattern match
+failure in $\lambda$-abstractions.  So we wrap the result in a
+\ve{Maybe} type:
+\[
+\begin{array}{l}
+\ve{plusZero (Plus x (Const 0)) = Just x} \\
+\ve{plusZero \_ = Nothing} \\
+\end{array}
+\]
+
+In general, then, a strategy has the following type: 
+\[
+\begin{array}{l}
+\ve{type Strat $\alpha$ $\beta$ = $\alpha$ \ra Maybe $\beta$}
+\end{array}
+\]
+
+Stratego's left choice and composition operators (here written as
+\ve{<*}) are trivial:
+\[
+\begin{array}{l}
+\ve{(<+) :: Strat $\alpha$ $\beta$ \ra Strat $\alpha$ $\beta$ \ra Strat $\alpha$ $\beta$} \\
+\ve{s1 <+ s2 = $\lambda$t \ra maybe (s2 t) Just (s1 t)} \\
+\\
+\ve{(<*) :: Strat $\alpha$ $\beta$ \ra Strat $\beta$ $\gamma$ \ra Strat $\alpha$ $\gamma$} \\
+\ve{s1 <* s2 = $\lambda$t \ra maybe Nothing s2 (s1 t)}
+\end{array}
+\]
+
+Combining strategies is just as easy as in Stratego.  Writing the
+basic rewrite rules, however, is tiresome because we spend a lot of
+time packing and unpacking the \ve{Maybe} wrapper.  For example, the
+congruence over a constructor \ve{Add Expr Expr} would look like this:
+\[
+\begin{array}{l}
+\ve{cgrAdd s1 s2 (Add e1 e2) = maybe Nothing ($\lambda$e1' \ra} \\
+\ve{\quad maybe Nothing ($\lambda$e2' \ra Just \$ Add e1' e2') (s2 e2)) (s1 e1)}
+\end{array}
+\]
+
+Another issue is how to implement generic traversals.  We have to
+describe explicitly for each data type how to traverse over it.  Type
+classes can be used to make this generic:
+\[
+\begin{array}{l}
+\ve{class Trav $\alpha$ where} \\
+\ve{\quad allS :: Strat $\alpha$ $\alpha$ \ra Strat $\alpha$ $\alpha$}
+\end{array}
+\]
+
+Functions like \ve{bottomup} can then be defined in the usual way:
+\[
+\begin{array}{l}
+\ve{bottomupS :: Trav $\alpha$ \Ra Strat $\alpha$ $\alpha$ \ra Strat $\alpha$ $\alpha$} \\
+\ve{bottomupS s = allS (bottomupS s) <* s}
+\end{array}
+\]
+
+An instance might look like this:
+\[
+\begin{array}{l}
+\ve{instance Trav Expr where} \\
+\quad \ve{allS s (Const n) = Just \$ Const n} \\
+\quad \ve{allS s (Add e1 e2) =} \\
+\quad \quad \ve{case s e1 of} \\
+\quad \quad \quad \ve{Just e1' \ra} \\
+\quad \quad \quad \quad \ve{case s e2 of} \\
+\quad \quad \quad \quad \quad \ve{Just e2' \ra Just \$ Add e1' e2'} \\
+\quad \quad \quad \quad \quad \ve{Nothing \ra Nothing} \\
+\quad \quad \quad \ve{Nothing \ra Nothing} 
+\end{array}
+\]
+
+There are more refined (and complex) approaches (see
+\cite{typesafefuncstrat}), but these also suffer from the fact that a
+lot of code must be written for each data type over which we want to
+traverse.
+
+
+\section{Extending the \lcalc with a choice operator}
+\label{sec:choice}
+
+\subsection{Semantics}
+
+In the previous section, example \ref{ex:haskellzero}
+did not work because it is not
+possible to deal with pattern match failure in the left-hand side of
+$\lambda$-abstractions.  In this section I shall give the semantics of
+a simple (untyped) functional language extended with a choice operator
+which first tries to evaluate its left argument, and if that fails,
+evaluates its right argument.
+
+The syntax is the \lcalc extended with constructed
+values, pattern matching $\lambda$-abstraction, and a choice operator:
+\[
+\begin{array}{l}
+e ::= x \alt e e \alt C \alt \lambda p \ra e 
+% \alt \ve{let} \; (x = e)^* \; \ve{in} \; e
+ \alt e \plus e \alt \fail\\
+p ::= x \alt p p \alt C \\
+\end{array}
+\]
+where $x$ ranges over the variables, and $C$ over the constructors.
+The constant \fail\ denotes pattern match failure.  The choice
+operator \ve{<+} binds weaker than $\lambda$-abstraction and function
+application. 
+
+The semantics is given by the following rewrite rules:
+\[
+\begin{array}{rcll}
+(\lambda x \ra e_1) e_2 & \Ra & [x := e_2] e_1 
+  & \text{($\beta$-reduction)} \\
+
+(\lambda C \ra e_1) C & \Ra & e_1
+  & \text{(pos. constr. match)} \\
+
+(\lambda C_1 \ra e_1) C_2 \;  & \Ra & \fail \; (\text{if} \; (C_1 \neq C_2))
+  & \text{(neg. constr. match)} \\
+
+(\lambda (p_1 p_2) \ra e_1) (e_2 e_3) & \Ra 
+  & ((\lambda p_1 \ra \lambda p_2 . e_1) e_2) e_3
+  & \text{(application match)} \\
+
+e_1 \plus e_2 & \Ra & e_1 \; (\text{if} \; \NF(e_1) \neq \fail)
+  & \text{(left choice)} \\
+
+\fail \plus e & \Ra & e
+  & \text{(right choice)} \\
+
+\fail e & \Ra & \fail
+  & \text{(failure propagation)} \\
+
+%\ve{let} \; d \; \ve{in} \; x & \Ra 
+%  & e \; (\text{if} \; x = e \in d)
+%  & \text{(variable expansion)} \\
+%
+%\ve{let} \; d_1 \; \ve{in} \; \ve{let} \; d_2 \; \ve{in} \; e & \Ra
+%  & \ve{let} \; d_1 \; d_2 \; \ve{in} \; e 
+%  & \text{(let-flattening)} \\
+%
+%\ve{[...]}
+\end{array}
+\]
+where $\NF(e)$ denotes the normal form of term $e$.  These rules
+suffice to implement a lazy evaluator (we have done so in Stratego 
+for a system extended with let-bindings).
+
+The semantics is given as a set of rewrite rules from the language to
+the language, i.e., as source transformations.  The advantage is that
+no additional syntax or notation is required.  Furthermore, such rules
+can be employed directly in e.g. an optimizer.
+
+Unfortunately, something seems to be missing.  For example, we would
+like to define the \ve{if} function as follows:
+\begin{equation}
+\label{ex:ifgood}
+\begin{array}{l}
+\ve{if = $\lambda$True e1 e2 \ra e1 <+ $\lambda$False e1 e2 \ra e2}
+\end{array}
+\end{equation}
+expecting that \ve{if False 1 2 $\Rightarrow$ 2}.  This is, after all,
+the behaviour expected from Stratego.  However, this
+obviously will not work, since in the evaluation of \ve{if} the choice
+operator will immediately pick the {\em left} side, since
+\vve{$\lambda$True e1 e2 \ra e1 $\ne$ \fail}.
+
+We can get around this by writing instead:
+\begin{equation}
+\label{ex:ifbad}
+\begin{array}{l}
+\ve{if = $\lambda$c e1 e2 \ra (} \\
+\ve{\quad \quad ($\lambda$True e1 e2 \ra e1) c e1 e2 <+} \\
+\ve{\quad \quad ($\lambda$False e1 e2 \ra e2) c e1 e2)}
+\end{array}
+\end{equation}
+This will enforce that \ve{c} is matched against the
+pattern \ve{True}, and so the left side will fail and the right side
+will be evaluated instead.
+
+A nicer solution (which is admittedly somewhat {\em ad hoc}) is to add
+the following rule:
+\[
+\begin{array}{rcll}
+(\lambda p \ra e_1) \plus e_2 & \Ra 
+  & \lambda x \ra ((\lambda p \ra e_1) x \plus e_2 x)
+  & \text{(distr. arguments)}
+\end{array}
+\]
+and to add the restriction to the left choice rule that $e_1$ must not
+be a $\lambda$-abstraction.
+
+In other words, this rule pushes arguments into the choice operands
+until we have a base type (a constructed value).  It is easy to see
+that this rule automatically transforms example \ref{ex:ifgood} into
+example \ref{ex:ifbad}.
+
+We don't lose any expressive power here.  Even if we actually want to
+choose between functions and not results of functions (e.g. in \vve{(if
+  b then f else g) <+ h}), where \ve{b} may fail, we can do
+this by wrapping the function in a constructor (e.g. \vve{(if b then F
+  f else F g) <+ (F h)}) and unpacking the result later, outside of
+the scope of the choice operator.
+
+%We can now also easily add congruences as syntactic
+%sugar. [... e.g. (Foo f g) == $\lambda$(Foo x y) \ra let \{ x' = f x;
+%y' = g y \} in Foo x' y' ]
+
+A problem with the choice operator is that we do not have control over
+the scope of the failure handling, e.g. in \ve{($\lambda$Foo \ra e)
+  <+ ...} we might want the choice operator to catch failure in
+the \ve{Foo}-match but not in \ve{e}.  This problem also confronts
+Stratego programmers.  For example, if we want to rewrite
+\ve{Foo}-terms and nothing else, we might write in Stratego
+\ve{try(?Foo; s)}.  Unfortunately, any rewrite failure in \ve{s}
+(including those due to programming errors) will be caught
+indiscriminately by \ve{try}.
+
+
+
+\subsection{Comparison to other approaches}
+
+The question is what the choice operator gains us, apart from nicer
+strategic programming.  It is well known that regular pattern matching
+is not perfect \cite{firstclasspatterns, patternguards}.
+It turns out that the choice operator
+eliminates the need for many of the proposals to extends Haskell's
+pattern matching, such as {\em views}, {\em pattern guards}, and {\em
+  transformational patterns}.
+Furthermore, it makes Haskell's ``equational style'' (writing a
+function definition as a number of pattern-guarded equations which
+must be tried one after another) unnecessary, as well as
+\ve{case}-expressions.
+
+
+\paragraph{Equational style unnecessary.}
+
+Haskell allows us to write patterns not just in $\lambda$-abstractors
+but also in function definitions: 
+\[
+\begin{array}{l}
+\ve{f $p_{11}$ \ldots\ $p_{1n}$ = $e_1$} \\
+\ve{f $p_{21}$ \ldots\ $p_{2n}$ = $e_2$} \\
+\ve{\ldots} \\
+\ve{f $p_{m1}$ \ldots\ $p_{mn}$ = $e_m$}
+\end{array}
+\]
+The semantics here are different than in $\lambda$-abstractions: if a
+pattern match fails, the program does not diverge, but instead the
+next equation is tried.  This is an {\em ad hoc} mechanism that
+becomes redundant if we have a choice operator:
+\[
+\begin{array}{l}
+\ve{f = } \\
+\quad \ve{$\lambda p_{11}$ \ldots\ $p_{1n}$ \ra $e_1$ <+} \\
+\quad \ve{$\lambda p_{21}$ \ldots\ $p_{2n}$ \ra $e_2$ <+} \\
+\quad \ve{\ldots} \\
+\quad \ve{$\lambda p_{m1}$ \ldots\ $p_{mn}$ \ra $e_m$}
+\end{array}
+\]
+
+In fact, a major advantage is that pattern matching
+$\lambda$-abstractors are now first class, so we can write:
+\[
+\begin{array}{l}
+\ve{$\ve{f}_1$ = $\lambda p_{11}$ \ldots\ $p_{1n}$ \ra $e_1$} \\
+\ve{$\ve{f}_2$ = $\lambda p_{21}$ \ldots\ $p_{2n}$ \ra $e_2$} \\
+\ve{\ldots} \\
+\ve{$\ve{f}_m$ = $\lambda p_{m1}$ \ldots\ $p_{mn}$ \ra $e_m$} \\
+\ve{f = $\ve{f}_1$ <+ $\ve{f}_2$ <+ \ldots\ <+ $\ve{f}_m$}
+\end{array}
+\]
+and we can combine the $f_i$ arbitrarily.
+
+Case-expressions can be eliminated from the language in a similar way.
+
+
+\paragraph{Views.}  
+
+Views \cite{views87} were proposed to address the problem that regular
+pattern matching is rather limited since we can only match with actual
+constructors.  As a consequence we cannot match against e.g. the end
+of a list instead of the head, nor can we match against abstract data
+types since there is simply nothing to match against.  For example,
+using the proposed views for Haskell \cite{views96} we can write the
+following view to match against the end of a list:
+\[
+\begin{array}{l}
+\ve{view Tsil a of [a] = Lin | Snoc y ys where} \\
+\ve{\quad tsil xs =} \\
+\ve{\quad \quad case reverse xs of} \\
+\ve{\quad \quad \quad [] \ra Lin} \\
+\ve{\quad \quad \quad (y:ys) \ra Snoc y ys}
+\end{array}
+\]
+where matching against a \ve{Snoc}-constructor causes the function
+\ve{tsil} to be applied to the value:
+\[
+\begin{array}{l}
+\ve{f (Snoc y \_) = y} \\
+\ve{f Lin = 0}
+\end{array}
+\]
+
+It is worth pointing out why views (and transformational
+patterns) are useful.  The reason is that the equational style can
+only be used if the non-applicability of an equation can be discovered
+in the pattern.  When that is not possible, the equational style falls
+apart, and we have to explicitly write the traversal through the
+alternatives (the equations) as a series of ever deeper nested
+\ve{case}-expressions.
+The choice operator liberates us from this regime, hence the main
+motivation for views and transformational patterns disappears.  With
+it, the
+previous example becomes:
+\[
+\begin{array}{l}
+\ve{f = ($\lambda$(y:\_) \ra y <+ $\lambda$[] \ra 0) . reverse}
+\end{array}
+\]
+
+Views still have the advantage that the transformation to be applied
+(e.g. \ve{tsil}) is implicit in the name of the patterns
+(e.g. \ve{Snoc}), but this seems only a minor advantage.
+
+
+\paragraph{Pattern guards.}
+
+In Haskell's equational notation, we can use boolean guards to further
+restrict the applicability of an equation, e.g. \ve{f x | x > 3 =
+  123}.  However, there is a disparity between patterns and guards:
+patterns can bind variables, whereas guards cannot.  For example, if
+we want to return a variable from an environment, or 0 if it is
+undefined, we would write:
+\[
+\begin{array}{lll}
+\ve{f env var} & \ve{|} & \ve{isJust (lookup env var)} \\
+               & \ve{=} & \ve{fromJust (lookup env var)} \\
+\ve{f env var} & \ve{=} & \ve{0}
+\end{array}
+\]
+where \ve{lookup} has type \ve{[($\alpha$, $\beta$)] \ra $\alpha$ \ra
+  Maybe $\beta$}.
+This is awkward because we now inspect the result of \ve{lookup}
+twice.  Pattern guards \cite{patternguards} redefine a guard as a
+list of qualifiers, just like in a list comprehension, so that binding
+can occur:
+\begin{equation}
+\label{ex:lookuppg}
+\begin{array}{l}
+\ve{f env var | Just x $\leftarrow$ lookup env var = x} \\
+\ve{f env var = 0}
+\end{array}
+\end{equation}
+But when we have a choice operator, we can just write:
+\[
+\begin{array}{l}
+\ve{f env var = let (Just x) = lookup env var in x <+ 0} \\
+\end{array}
+\]
+Alternatively, we could just get rid of the \ve{Maybe} result of \ve{lookup}
+altogether, making it of type 
+\ve{[($\alpha$, $\beta$)] \ra $\alpha$ \ra $\beta$}, and then we
+get:
+\[
+\begin{array}{l}
+\ve{f env var = lookup env var <+ 0} \\
+\end{array}
+\]
+
+
+\paragraph{Transformational patterns.}
+
+Transformational patterns \cite{patternguards} provide a cheap
+alternative to views, allowing us to write example \ref{ex:lookuppg} as:
+\[
+\begin{array}{l}
+\ve{f env (Just x)!(lookup env) = x} \\
+\ve{f env var = 0}
+\end{array}
+\]
+Hence, transformational patterns are just view transformations made
+explicit.  
+The choice operator allows a similar notation:
+\[
+\begin{array}{l}
+\ve{f env = ($\lambda$(Just x) \ra x) . (lookup env)} \\
+\quad \ve{<+ $\lambda$\_ \ra 0}
+\end{array}
+\]
+In general, a definition \ve{f pat!fun = e} can be written as \vve{f =
+  ($\lambda$pat \ra e) . fun}.
+
+
+%\paragraph{First class patterns.}
+
+%In \cite{firstclasspatterns} patterns are sugar for functions of type 
+%\ve{$\alpha$ -> Maybe $\beta$}.
+
+
+\section{Generic traversals}
+\label{sec:gentraverse}
+
+Given the untyped calculus given in the previous section, it is not
+hard to define the \ve{all} primitive (which applies a function to
+each subterm of a term):
+\[
+\begin{array}{ll}
+\ve{all} & \ve{= $\lambda$f \ra} \\
+         & \ve{( $\lambda$(c x) \ra (all f c) (f x)} \\
+         & \ve{<+ $\lambda$c \ra c} \\
+         & \ve{)}
+\end{array}
+\]
+
+But it would be hard to type this function.  Previous work on generic
+programming, such as Generic Haskell \cite{genhaskell}, seems not to
+help us here.  For example, in Generic Haskell, we write a generic
+function by giving a clause for binary sums, binary products, and
+primitive types, since all data types can be decomposed into a
+combination of these.  Unfortunately, this moves us below the
+level of constructors.  For example, 
+it is not hard to give the primitive clause for an implementation of
+\ve{bottomup}:
+\[
+\begin{array}{ll}
+\ve{bottomup(t) :: (t \ra t) \ra t \ra t} \\
+\ve{bottomup(1) f x = f x}
+\end{array}
+\]
+But we cannot give a clause for e.g. binary products: it is clear that
+we should apply \ve{bottomup} to the arguments, but then what?  At
+some point \ve{f} should be applied, but only if the binary product is
+in fact of type \ve{t}, and not just part of something of type \ve{t}.
+\[
+\begin{array}{ll}
+\ve{bottomup(a * b) f (x, y) =} \\
+\quad \ve{??? \$ (bottomup(a) f x, bottomup(b) f y)}
+\end{array}
+\]
+
+It  also seems impossible to implement \ve{all}, since a generic function
+traverses the entire value, not just the top-level subterms.
+
+
+\section{Conclusion}
+
+We have discussed two features that seem to be useful to strategic
+programming in a functional language.  First, there is the proposed
+mechanism to handle pattern match failure, which has the additional
+advantage of making some proposed extensions to pattern matching
+redundant.  Second, generic traversals are important, but it is not
+currently clear how these can be implemented elegantly.
+
+
+\bibliographystyle{plain}
+\bibliography{../refs}
+
+\end{document}?

@@ -1,0 +1,11 @@
+##include "stdlib.rh"
+
+id = x -> x;
+
+z = (x -> y -> id (x + y)) 123 456;
+
+h = 123;
+
+g = h;
+
+i = i;

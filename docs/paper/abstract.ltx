@@ -1,0 +1,16 @@
+In this paper we present a functional language supporting first-class
+rules and generic traversal.  This is achieved by generalizing the
+pattern matching constructs of standard functional languages.  The
+case construct that ties rules together and prevents their reuse, is
+replaced by separate, first-class, pattern matching rules and a choice
+combinator that deals with pattern match failure.  Generic traversal
+is achieved through application pattern matching in which a
+constructor application is generically divided into a prefix and a
+suffix, thus giving generic access to the subterms of a constructor
+term. Many highly generic term traversals can be defined in a
+type-safe way using this feature.
+
+These features support a direct and natural encoding of program
+transformation rules and strategies.  The generalization of pattern
+matching subsumes several proposals for extensions of pattern matching
+such as views, guarded patterns, and transformational patterns.

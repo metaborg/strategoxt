@@ -1,0 +1,64 @@
+
+
+case xs of
+  Nil ->
+  Cons { x = head, y = tail } -> 
+
+x.y
+
+\Cons _ _  -> 
+
+\{cons = 
+
+type List a;
+data Nil a : List a;
+data Cons a : a -> List a -> List a;
+
+type LayoutList a;
+data LCons a : a -> LayoutList a -> layout : Layout -> LayoutList a
+
+
+x { y = 123}
+
+map = f -> (x@Nil -> x) <+ (x@Cons -> x
+
+ {hd = f x.hd, tl = map f x.tl})
+
+signature
+  constructors
+    LCons : a * Layout * LList(a) -> LList(a)
+overlays
+  LCons(x,xs) = LCons(x,_ L(" "),xs)
+
+data List a;
+data Nil a extends List a;
+data Cons a extends List a with 
+
+
+123 -> e
+t1 -> CHECKINT 123 t1 e
+
+C -> e
+t1 -> CHECKCON C e
+
+(C (D 1 x)) y -> x + y
+t1 -> let t2 = APP_LHS t1;
+          t3 = APP_RHS t1;
+      in (C (D 1 x) -> y -> x + y) t2 t3
+
+C -> D -> 1 -> x -> y -> 
+
+x -> (C -> (D 1 x) -> y -> x + y) (decompose x)
+C ->
+
+p1 p2 -> e
+
+t3 -> CHECKAPP (let t1 - LHS t3
+          t2 = RHS t3
+      in (p1 -> p2 -> e) t1 t2)
+
+p1 p2 -> e
+x -> (p1 -> p2 -> e) x1 x2
+
+
+BUG: files eindigend op #... commentaar worden niet geparst.>

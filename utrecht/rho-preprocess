@@ -1,0 +1,23 @@
+#! /usr/bin/perl -w
+
+sub include;
+
+sub include {
+  my $FILE = shift;
+  while (<$FILE>) {
+    if (/^#include\s+\"([^\"]+)\"\s*$/) {
+      # Hack: also search in ../lib.
+      open FILE2, $1 or open FILE2, "../lib/" . $1 
+        or die "$0: cannot find include file $1\n";
+      include(FILE2);
+      close FILE2;
+      print "\n";
+    } elsif (/^#end\s*$/) {
+      exit 0;
+    } else {
+      print $_;
+    }
+  }
+}
+
+include(STDIN);

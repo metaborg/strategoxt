@@ -1,0 +1,170 @@
+/** The file \code{stdlib.rho} contains the implementation of the
+ RhoStratego standard library.  Type signatures and data types are
+ defined in the header file \code{stdlib.rh}. */
+
+
+#include "stdlib.rh"
+
+
+/** \subsection*{Simple functions} */
+
+id = x -> x;
+
+const = x -> y -> x;
+
+if = (True -> e1 -> e2 -> ^e1) <+ 
+     (False -> e1 -> e2 -> e2);
+
+. = f -> g -> x -> f (g x);
+
+
+/** \subsection*{List operations} */
+
+foldr = op -> nul -> 
+  ([] -> nul <+
+   x : xs -> op x (foldr op nul xs));
+
+map = f -> 
+  foldr (x -> xs -> (f x) : xs) [];
+
+filter = f -> foldr (x -> xs -> if (f x) (x : xs) xs) [];
+
+elem = x -> foldr (y -> b -> (x == y) || b) False;
+
+union = xs -> ys -> (
+  let f = z -> zs -> if (z `elem` zs) zs (z : zs);
+  in foldr f ys xs);
+
+conc = xs -> ys -> foldr (x -> y -> x : y) ys xs;
+
+concat = xss -> foldr conc [] xss;
+
+unions = xss -> foldr union [] xss;
+
+diff = xs -> ys -> filter (x -> not (x `elem` ys)) xs;
+
+lookup = x -> foldr (<x', e> -> e' -> if (x == x') e e') fail;
+
+
+/** \subsection*{Strict application} */
+
+st = f -> ((fail -> ^fail) <+ (a -> f a));
+
+
+/** \subsection*{Strategy operators} */
+
+| = f -> g -> t -> st g (f t);
+
+try = s -> (s <+ id);
+
+repeat = s -> try (s | repeat s);
+
+
+/** \subsection*{Hyperstrictness} */
+
+force = all force;
+
+
+/** \subsection*{Traversal primitives} */
+
+all = (f :: (a . a -> a)) ->
+  (c x -> ^(st (all f c) (f x)) <+ id);
+
+one = (f :: (a . a -> a)) -> c x -> (st c (f x) <+ one f c x);
+
+
+/** \subsection*{Traversal} */
+
+topdown = (s :: (a . a -> a)) -> s | all (topdown s);
+
+bottomup = (s :: (a . a -> a)) -> all (bottomup s) | s;
+
+oncetd = (s :: (a . a -> a)) -> (s <+ one (oncetd s));
+
+mapkids = (s :: (c . c -> a)) -> 
+  (c x -> (s x) : (mapkids s c) <+ x -> []);
+
+crush = op -> nul -> (s :: (a . a -> b)) -> x -> 
+  foldr op nul (mapkids s x);
+
+collect = (s :: (c . c -> a)) -> (
+  (s | (y -> [y])) <+ crush union [] (collect s)
+  );
+
+
+/** \subsection*{Tuples} */
+
+fst = <a, b> -> a;
+
+snd = <a, b> -> b;
+
+
+/** \subsection*{Booleans} */
+
+not = True -> False <+ False -> True;
+&& = True -> True -> True <+ x -> y -> False;
+|| = False -> False -> False <+ x -> y -> True;
+
+b2f = True -> True <+ x -> fail;
+f2b = fail -> False <+ x -> True;
+
+
+/** \subsection*{Equality} 
+ The function \code{==} defines equality generically over all terms.
+*/
+
+== = c x -> d y -> ^((c == d) && (x == y)) 
+     <+ x -> y -> primOp "p_primeq";
+!= = x -> y -> not (x == y);
+
+
+/** \subsection*{Arithmetic} */
+
++ = x -> y -> primOp "p_add";
+- = x -> y -> primOp "p_sub";
+* = x -> y -> primOp "p_mul";
+/ = x -> y -> primOp "p_div";
+> = x -> y -> primOp "p_gt";
+< = x -> y -> (y > x);
+
+
+/** \subsection*{Monadic I/O} */
+
+stdin = 0;
+stdout = 1;
+stderr = 2;
+
+hPutStr = handle -> s -> w -> primOp "p_putstr";
+
+hPrint = handle -> term -> w -> primOp "p_print";
+
+putStr = hPutStr stdout;
+
+print = hPrint stdout;
+
+readFile = filename -> w -> primOp "p_readfile";
+
+writeFile = filename -> s -> w -> primOp "p_writefile";
+
+/**off*/
+// Perhaps (<w, x> -> ...) should be a lazy (irrefutable) match?
+// Now evaluation happens as a side effect of this match.
+/**on*/
+>>= = m1 -> (m2 :: (a -> IO b)) -> w -> 
+  (<w, x> -> m2 x w) (m1 w);
+
+>> = m1 -> (m2 :: IO b) -> m1 >>= (_ -> m2);
+
+return = x -> w -> <w, x>;
+
+unsafePerformIO = m -> (<w, x> -> x) (m World);
+
+debug = x -> unsafePerformIO (hPrint stderr x >> return x);
+
+
+/** \subsection*{ATerm interface} */
+
+readTerm = filename -> w -> primOp "p_readterm" :: <World, a>;
+
+writeTerm = filename -> fmt -> term -> w -> 
+  primOp "p_writeterm";

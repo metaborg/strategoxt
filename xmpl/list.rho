@@ -1,0 +1,12 @@
+#! /bin/sh ../utrecht/rho-run
+
+#include "stdlib.rh"
+
+list :: [Int];
+list = [1, 2, 3];
+
+list' = map (x -> x + 1) list;
+
+x = ([x, y, z] -> y) [1, 2, 3];
+
+main = (print list') >> (print x);

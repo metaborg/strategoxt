@@ -1,0 +1,51 @@
+\section{Implementation}
+	\label{Sec:implementation}
+
+	The implementation of RhoStratego consists of a parser, type
+	inferencer, interpreter, compiler and standard library.
+
+	The interpreter is written in Stratego and based directly on
+	the semantic rewrite rules given in
+	Section~\ref{sec:semantics}. Using the same set of rules, but
+	different strategies a lazy and a strict semantics are
+	provided.
+
+	The compiler is also implemented in Stratego and translates
+	RhoStratego programs to C. C's \code{setjmp}/\code{longjmp}
+	exception handling mechanism is used to implement failure and
+	choices.  The compiler supports separate compilation of
+	RhoStratego modules.
+
+	The compiler and runtime system support the full untyped
+	semantics of the language.  This implies that constructors can
+	be applied to an arbitrary number of arguments of any type.
+	We implement this by means of a binary application
+	constructor.  For example, the application \code{C 1 2} is
+	stored in the runtime system as \code{App (App C 1) 2}.  This
+	representation is somewhat wasteful in terms of memory and
+	time usage.  However, it makes the efficient implementation of
+	application pattern matches very easy: a pattern \code{c x}
+	binds \code{c} and \code{x} to the left and right arguments of
+	the application constructor, respectively.  Note that if all
+	arguments to a constructor were to be stored in the same
+	memory object, an application pattern match would need to make
+	a copy of its argument due to sharing issues.
+
+	A type inferencer based on the typing rules in the previous
+	section has also been implemented and integrated with the
+	compiler (the details of the inference algorithm are given in
+	\cite{Dol01}).  All types are inferred automatically, except
+	that the programmer must provide type signatures for functions
+	with rank-2 types.  A program that passes the type checker is
+	guaranteed not to create non-wellformed terms.
+
+	The standard library of RhoStratego contains a range of
+	generic functions including the ones discussed in
+	Sections~\ref{Sec:rules} and \ref{Sec:traversal}.  An
+	important feature of the library is the ability to read and
+	write {\em ATerms} \cite{aterm}, a standardised representation
+	for terms used by Stratego and the XT bundle of program
+	transformation tools \cite{xt}, amongst others.  This ensures
+	easy integration of tools such as parsers, pretty-printers,
+	and Stratego specifications.
+

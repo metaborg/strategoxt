@@ -1,0 +1,2 @@
+#! /bin/sh
+../utrecht/ri 2>&1 | perl -e "while (<>) { chomp; system \"echo '\$_' | ../pp/rho-show\"; }"

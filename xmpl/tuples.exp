@@ -1,0 +1,2 @@
+((Tup 1) ((Tup "foo") ((Tup ((Foo 123) 456)) ((Tup Void) ((Tup ((Tup 1) Void)) Void)))))
+

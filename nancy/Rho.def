@@ -1,0 +1,28 @@
+definition
+
+module Main
+imports Rho Layout
+
+module Layout
+exports
+  lexical syntax
+    [\ \t\n] -> LAYOUT
+
+module Rho
+exports
+  sorts Con Var Term
+
+  lexical syntax
+    [a-z][a-zA-Z0-9]* -> Con
+    [A-Z][a-zA-Z0-9]* -> Var
+
+  context-free syntax
+    Con            -> Term {cons("Con")}
+    Var            -> Term {cons("Var")}
+    "null"         -> Term {cons("Null")}
+    "(" Term ")"   -> Term {bracket}
+
+  context-free priorities
+    Term "."  Term -> Term {left,cons("App")}
+  > Term "->" Term -> Term {right,cons("Rule")}
+  > Term ","  Term -> Term {right,cons("Pair")}

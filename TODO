@@ -1,0 +1,40 @@
+DISTRIBUTION
+
+* automake etc.
+
+LANGUAGE
+
+* read and write aterms
+* overlays
+* non-distributing choice operator?
+
+INTERPRETER
+
+* put primops back into the interpreter so that it supports the same
+  programs as the compiler.
+* garbage collection (list of roots, other solutions?)
+
+MODULES
+
+* syntax for imports 
+* module flattening
+
+APPLICATION
+
+* transformation
+* compiler
+
+OPTIMISATION
+
+* optimisation 
+* derive optimiser by make interpreter less strict
+* pattern match optimisation (merging patterns)
+
+COMPILER
+
+* compilation to Tiger back-end
+* more stuff in the run-time system
+* bootstrapped
+* bug fix: let-bindings defined in different scopes shouldn't clash,
+  but they do now (C compiler error; multiple definitions) (=>
+  generate unique names)

@@ -1,0 +1,231 @@
+\section{Type System}
+\label{sec:typesystem}
+
+	In this section we describe a type system for RhoStratego,
+	which is based on the Hindley-Milner type system
+	\cite{typepolymorphism}.  The main issue is how to type
+	generic traversals.  To this end, we add rank-2 types and
+	rules for typing application pattern matches and generic
+	traversals.
+
+\subsection{Data Type Declarations}
+
+	Constructors are defined separately from the data types they
+	construct.  This allows data types to be extended, possibly in
+	separately compiled modules.  For example, lists can be
+	defined as follows:
+\begin{verbatim}
+  data List a;
+  Nil :: List a;
+  Cons :: a -> List a -> List a;
+\end{verbatim}
+
+\subsection{Application Pattern Matches} 
+
+	Generic traversal functions such as \code{all} and \code{one}
+	are implemented using application pattern matches.  How should
+	this this language construct be typed?
+
+	We should first consider what the intended type of a function
+	such as \code{all} is. We can then try to find typing rules to
+	obtain the desired types.  \code{All} applies a function to
+	all subterms of a term. Since the subterms can have any type,
+	the type of the function should be $\forall \alpha . \alpha
+	\ra \alpha$.  Therefore \code{all} should have type $\forall
+	\beta . (\forall \alpha . \alpha \ra \alpha) \ra \beta \ra
+	\beta$.  This is a rank-2 type and hence not supported by the
+	Hindley-Milner type system, which universally quantifies type
+	variables only at the `top' of a type.  As a result
+	RhoStratego needs a rank-$n$ (where $n \ge 2$) type system.
+
+	Recall the definition of \code{all}:
+\begin{verbatim}
+  all = f -> (c x -> ^(st (all f c) (f x)) <+ id);
+\end{verbatim}
+	The type of \code{id} after instantiation is of course $\tau_0
+	\ra \tau_0$ (we use $\tau_i$ to denote fresh type variables).
+	The left and right arguments to a choice must have the same
+	type.  The left-hand choice, \code{c x \ra \cut{}(st (all f c)
+	(f x))}, must therefore also have this type.
+
+In order to derive the type of this expression, we must assign types
+to the variables \code{c} and \code{x}.  Since the pattern match only
+succeeds for a pattern match against a constructed value of some type
+$\tau_1$, \code{c} must be a constructor function which expects an
+argument of some type $\tau_2$ and returns a value of type $\tau_1$,
+i.e., \code{c} has type $\tau_2 \ra \tau_1$ and \code{x} has type
+$\tau_2$.  Hence, the type of \code{c x} is $\tau_1$.  (Things are
+actually a bit more complicated than that; the exact typing rules for
+application pattern matches are given below).
+
+	Now we can assign a type to the body of the rule,
+	\code{\cut{}(st (all f c) (f x))}.  Cuts are irrelevant to the
+	type and \code{st} (strict application) has the uninteresting
+	type $\forall \alpha . \forall \beta . (\alpha \ra \beta) \ra
+	\alpha \ra \beta$, so we are left with \code{all f c (f x)}.
+	Assuming that we have the following type judgments:
+\[
+\begin{array}{lcl}
+  \text{\code{all}} & \text{\code{::}} &
+  \forall \beta . (\forall \alpha . \alpha \ra \alpha)
+  \ra \beta \ra \beta
+  \\
+  \text{\code{f}} & \text{\code{::}} &
+  \forall \alpha . \alpha \ra \alpha
+  \\
+  \text{\code{c}} & \text{\code{::}} &
+  \tau_2 \ra \tau_1
+  \\
+  \text{\code{x}} & \text{\code{::}} &
+  \tau_2
+\end{array}
+\]
+we can derive:
+\[
+\begin{array}{lcll}
+  \text{\code{all f}} & \text{\code{::}} &
+  \tau_3 \ra \tau_3
+  & \text{(after instant. $\forall \beta$ with $\tau_3$)}
+  \\
+  \text{\code{all f c}} & \text{\code{::}} &
+  \tau_2 \ra \tau_1
+  & \text{(i.e., $\tau_3 ::= \tau_2 \ra \tau_1$)}
+  \\
+  \text{\code{f x}} & \text{\code{::}} &
+  \tau_2
+  & \text{(after instant. $\forall \alpha$)}
+  \\
+  \text{\code{all f c (f x)}} & \text{\code{::}} &
+  \tau_1
+  &
+\end{array}
+\]
+
+We conclude that the type of the left choice argument is $\tau_1 \ra
+\tau_1$, which matches neatly with the right argument.
+
+
+\subsection{Genericity}
+
+We have now seen that \code{all} can be typed, and that it has the
+type $\forall \beta . (\forall \alpha . \alpha \ra \alpha) \ra \beta
+\ra \beta$, and so applies a function of type $\forall \alpha . \alpha
+\ra \alpha$ to the subterms.  Unfortunately, in most pure languages
+essentially the only function with that type is \code{id} (i.e.,
+$\lambda x .  x$).  Hence, we cannot write the following:
+\begin{verbatim}
+  rename = all(try(Var "x" -> Var "y"));
+\end{verbatim}
+	which attempts to rename direct subterms, since the argument
+	to \code{all} has type \code{Exp \ra Exp} which is not
+	polymorphic.  Therefore RhoStratego provides a {\em runtime
+	type check mechanism}. We write:
+\begin{verbatim}
+  rename = all(try(Exp?Var "x" -> Var "y"));
+\end{verbatim}
+	The meaning of a pattern $t?p$ (where $t$ is a type and $p$ a
+	pattern) is that the argument is first checked --- at runtime
+	--- to be of type $t$.  If it is, we proceed as usual,
+	matching against $p$. Otherwise, the result is \code{fail}.
+
+	We type a pattern $t?p$ by adding {\em guarded types}.  A
+	guarded type is a type prefixed by a question mark, e.g.,
+	\code{?Exp}.  We also define the type of a runtime type check
+	pattern $t?p$ to be $?t$.  The type of \code{Exp?Var "x" \ra
+	Var "y"} therefore is \code{?Exp \ra Exp} (i.e., \code{(?Exp)
+	\ra Exp}).  The trick is that a type match between a function
+	type $\alpha \ra \tau_1$ and $?\tau_2 \ra \tau_3$ is performed
+	by matching $\alpha \ra \tau_1$ against $\tau_2 \ra \tau_3$,
+	but all substitutions found for $\alpha$ are filtered out and
+	are not applied to the type environment.  The rationale is
+	that a function with a runtime type check pattern really does
+	match anything (i.e., the pattern $?\tau_2$ should match with
+	$\alpha$ without a substitution $\alpha := \tau_2$ taking
+	place), but since the body of the function is only reached
+	when the argument is of type $\tau_2$, the type of the body
+	$\tau_3$ is irrelevant when the argument is {\em not} of type
+	$\tau_2$, and we can just pretend that it is polymorphic.
+
+	In the example above, then, we can successfully match $\alpha
+	\ra \alpha$ against \code{?Exp \ra Exp} (with the substitution
+	$\alpha := \text{\code{Exp}}$ filtered out), which can be
+	generalized so that it is a valid argument to \code{all}.  On
+	the other hand $\alpha \ra \alpha$ does not match against
+	\code{?Exp \ra String}.
+
+	The function \code{all} is an example of a {\em type
+	preserving} function, in which the type of the output is the
+	same as the type of the input.  We also encounter {\em type
+	unifying} functions, which map everything to the same type.
+	An example is \code{collect}, which has type $\forall \alpha
+	. \forall \beta . (\forall \gamma .  \gamma \ra \beta) \ra
+	\alpha \ra [\beta]$ (the argument function maps everything to
+	$\beta$).  For example:
+\begin{verbatim}
+  varNames = collect (Exp?Var x -> x);
+\end{verbatim}
+	The type of \code{Var x -> x}, \code{?Exp \ra String}, is an
+	instance of $\forall \gamma . \gamma \ra \beta$, with
+	\code{String} substituted for $\beta$.
+
+	The RhoStratego type system restricts guarded types to
+	constructed types only; they cannot be functions.
+	Furthermore, the types must be general (\code{[Int]} is not
+	allowed; \code{[a]} is).  The reason for this is that we do
+	not want to carry runtime type information for all values.
+	For constructed values, this information must be carried
+	around in any case, since we must be able to distinguish
+	between constructors.
+
+\subsection{Typing rules}
+
+\input{typerules.ltx}
+
+The inference rules of the type system are given in Figures
+\ref{fig:infrules} and \ref{fig:infrules2}, for terms and patterns
+respectively (the rule {\sc Abs} requires that we can assign a type to
+a pattern).
+
+Type assignments for constructor functions are part of the environment
+$\Gamma$, as expressed by {\sc Con} and {\sc PCon} rules.
+
+In the {\sc Abs} and {\sc Let} rules, $\Gamma_p$ and $\Gamma_{ds}$
+refer to an environment that contains type assignments for all
+variables defined in the pattern or let-binding, respectively.
+
+The {\sc Rttc} pattern typing rule (for `runtime type check')
+introduces guarded types.  They can be eliminated through the {\sc
+  Widen} rule.  For example, the type \code{?Id \ra String} can be
+`widened' to \code{$\alpha$ \ra String}, and \code{?Id \ra Id} can be
+widened to \code{$\alpha$ \ra $\alpha$}.
+
+The {\sc Generic} rule assigns a type to an application pattern match
+$x_0 \; x_1 \; \dots \; x_n$.  We assign $x_1 \dots x_n$ types
+$\alpha_1 \dots \alpha_n$, being fresh type variables.  Then $x_0$ has
+type $\alpha_1 \ra \dots \ra \alpha_n \ra \alpha_0$, where $\alpha_0$
+is a fresh type variable.  In principle, the type of the entire
+pattern is $\alpha_0$.  However, we must restrict the substitutions
+that can be made against these type variables; otherwise, the result
+will not be generic.  For example, consider the following definitions:
+\begin{verbatim}
+  prefix = c x -> c;
+  suffix = c x -> x;
+  f = c x -> c (x + 1);
+\end{verbatim}
+If application pattern matches are implemented naively, then
+\code{prefix} will have type $\forall \alpha . \forall \beta . \alpha
+\ra (\beta \ra \alpha)$, \code{suffix} will have type $\forall \alpha
+. \forall \beta . \alpha \ra \beta$, and \code{f} will have type
+$\forall \alpha . \alpha \ra \alpha$.  All those types are too
+general.
+
+We solve this problem by assigning $x_0 \; x_1 \; \dots \; x_n$ the
+type $\term{Gen}(\alpha_0, \alpha_1, \dots, \alpha_n)$.  $\term{Gen}$
+is an intermediate construct that must eventually be {\em contracted}
+into $\alpha_0$ if and only if the $\alpha$s do not occur in the
+environment and $\alpha_1 \dots \alpha_n$ do not occur free in the
+rest of the type.  This is expressed by the {\sc Contract} rule.
+This, and the fact that the $\alpha$s are variables, implies that no
+constraints to the resulting type can be found later on, and that
+therefore genericity is ensured.  We use the notation $\tau[\sigma]$
+to refer to a hole in $\tau$.

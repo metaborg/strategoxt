@@ -1,0 +1,4 @@
+data Expr;
+Zero :: Expr;
+Succ :: Expr -> Expr;
+Plus :: Expr -> Expr -> Expr;

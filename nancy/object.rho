@@ -1,0 +1,10 @@
+
+Pair(
+  Rule(Con("val"), 
+       Rule(Var("S"), 
+            App(App(Con("v"), Con("1")), Con("1")))),
+Pair(
+  Rule(Con("get"), 
+       Rule(Var("S"), 
+            App(App(Con("v"), Con("1")), Con("1")))),
+ 

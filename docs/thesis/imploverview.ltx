@@ -1,0 +1,48 @@
+We have implemented an interpreter and compiler for the RhoStratego
+language described in chapter \ref{ch:rhostratego}, as well as an
+implementation of the type checker given in chapter
+\ref{ch:typesystem}.  
+
+The RhoStratego implementation consists of the following components:
+\begin{itemize}
+\item A parser for the RhoStratego language, generated from a grammar
+  specified using the Syntax Definition Formalism (SDF2)
+  \cite{syntaxdefinition}.  The grammar is translated to a parse table
+  using the \code{sdf2table} program, which is part of XT.  This table
+  can then be used with the \code{sglr} and \code{implode-asfix}
+  programs --- also part of XT --- to parse a file into an ATerm.
+\item A desugarer that takes the output of the parser and simplifies
+  it.
+\item A pretty-printer, to transform RhoStratego abstract syntax to
+  concrete syntax.
+\item An interpreter written in Stratego, implementing both the lazy
+  and strict evaluation strategies.  The interpreter is quite limited
+  --- it does not implement most I/O functions, for example --- and is
+  primarily useful for language experiments.  The source code of the
+  interpreter is given in appendix \ref{ap:interpreter}.
+\item A type checker written in Stratego.  It reads a desugared
+  RhoStratego module in ATerm format, infers (as far as possible) and
+  checks types, and produces a desugared RhoStratego module in ATerm
+  format in which every expression has been decorated with its type.
+\item A compiler written in Stratego.  It translates desugared
+  RhoStratego modules in ATerm format to C code.
+\item A runtime system and standard library against which RhoStratego
+  programs must be linked.
+\item A set of test cases (i.e., RhoStratego programs along with their
+  expected outputs) to test the compiler against automatically.
+\end{itemize}
+
+The source code of the RhoStratego implementation can be obtained
+through anonymous CVS.  On Unix systems this can be accomplished using
+the following commands:
+\begin{verbatim}
+% export CVSROOT=\
+ :pserver:anoncvs@losser.st-lab.cs.uu.nl:/home/cvsrepo
+% cvs login
+[Password: anon]
+% cvs -z9 checkout rho
+\end{verbatim}
+A web interface to the CVS repository is available at
+\url{http://losser.st-lab.cs.uu.nl/services/cvsweb/rho/}.  Further
+information can be obtained at
+\url{http://www.stratego-language.org/rho/}.

@@ -1,0 +1,202 @@
+In this section we take a closer look at the choice operator, and its
+impact on programming in RhoStratego.  It is well known that regular
+pattern matching is not perfect \cite{firstclasspatterns,
+  patternguards}.  It turns out that the choice operator eliminates
+the need for many of the proposals to extend pattern matching in
+functional languages such as Haskell, including {\em views}, {\em
+  pattern guards}, and {\em transformational patterns}.  Furthermore,
+it makes existing sugar, such as Haskell's `equational style'
+unnecessary (writing a function definition as a number of
+pattern-guarded equations which must be tried one after another), as
+well as \code{case}-expressions.
+
+
+\paragraph{Case unnecessary}
+
+Case-expressions, present in most functional languages, are
+unnecessary when we have a choice operator, and consequently they do
+not exist in RhoStratego.  After all, the following Haskell-like
+construct
+\begin{verbatim}
+f = x -> case x of
+           A       -> 123;
+           B "foo" -> 456;
+           _       -> 0;
+\end{verbatim}
+can be written in RhoStratego as
+\begin{verbatim}
+f =    A       -> 123
+    <+ B "foo" -> 456
+    <+ _       -> 0;
+\end{verbatim}
+
+
+\paragraph{Equational style unnecessary}
+
+Haskell allows us to write patterns not just in $\lambda$-abstractors
+but also in function definitions: 
+\[
+\begin{array}{l}
+\text{\code{f $p_{11}$ \ldots\ $p_{1n}$ = $e_1$}} \\
+\text{\code{f $p_{21}$ \ldots\ $p_{2n}$ = $e_2$}} \\
+\text{\code{\ldots}} \\
+\text{\code{f $p_{m1}$ \ldots\ $p_{mn}$ = $e_m$}}
+\end{array}
+\]
+The semantics of these patterns is different from
+$\lambda$-abstraction: if a pattern match fails, the program does not
+diverge, but instead the next equation is tried.  This is sugar for
+case-expressions that becomes redundant if we have a choice operator:
+\[
+\begin{array}{l}
+\text{\code{f = }} \\
+\quad \text{\code{$p_{11}$ \ldots\ $p_{1n}$ \ra $e_1$ <+}} \\
+\quad \text{\code{$p_{21}$ \ldots\ $p_{2n}$ \ra $e_2$ <+}} \\
+\quad \text{\code{\ldots}} \\
+\quad \text{\code{$p_{m1}$ \ldots\ $p_{mn}$ \ra $e_m$}}
+\end{array}
+\]
+
+In fact, a major advantage is that pattern matching
+$\lambda$-abstractors are now first class, so we can write:
+\[
+\begin{array}{l}
+\text{\code{f$_1$ = $p_{11}$ \ldots\ $p_{1n}$ \ra $e_1$}} \\
+\text{\code{f$_2$ = $p_{21}$ \ldots\ $p_{2n}$ \ra $e_2$}} \\
+\text{\code{\ldots}} \\
+\text{\code{f$_m$ = $p_{m1}$ \ldots\ $p_{mn}$ \ra $e_m$}} \\
+\text{\code{f = f$_1$ <+ f$_2$ <+ \ldots\ <+ f$_m$}}
+\end{array}
+\]
+and we can combine the $f_i$ arbitrarily.
+
+
+\paragraph{Views}
+
+Views \cite{views87} were proposed to address the problem that regular
+pattern matching is rather limited since we can only match with actual
+constructors.  As a consequence we cannot match against, e.g., the end
+of a list instead of the head, nor can we match against abstract data
+types since there is simply nothing to match against.  Using the views
+proposal for Haskell \cite{views96} we can write the following view to
+match against the end of a list:
+\begin{verbatim}
+view Tsil a of [a] = Lin | Snoc y ys where
+  tsil xs =
+    case reverse xs of
+      [] -> Lin
+      (y:ys) -> Snoc y ys
+\end{verbatim}
+where matching against a \code{Snoc}-constructor causes the function
+\code{tsil} to be applied to the value:
+\begin{verbatim}
+f (Snoc y _) = y
+f Lin = 0
+\end{verbatim}
+
+It is worth pointing out why views (and transformational patterns) are
+useful.  The reason is that the equational style can only be used if
+the non-applicability of an equation can be discovered in the pattern.
+When that is not possible, the equational style falls apart, and we
+have to explicitly write the traversal through the alternatives (the
+equations) as a series of ever more deeply nested
+\code{case}-expressions.  The choice operator liberates us from this
+regime, hence the main motivation for views and transformational
+patterns disappears.  With it, the previous example becomes (in
+RhoStratego):
+\begin{verbatim}
+f = reverse | ((y:_) -> y <+ [] -> 0);
+\end{verbatim}
+
+Views still have the advantage that the transformation to be applied
+(e.g., \code{tsil}) is implicit in the name of the patterns (e.g.,
+\code{Snoc}), but this seems only a minor advantage.
+
+
+\paragraph{Pattern guards}
+
+In Haskell's equational notation, we can use boolean guards to further
+restrict the applicability of an equation, e.g., \code{f x | x > 3 =
+  123}.  However, there is a disparity between patterns and guards:
+patterns can bind variables, whereas guards cannot.  For example, if
+we want to return a variable from an environment, or 0 if it is
+undefined, we would write:
+\begin{verbatim}
+f env var | isJust (lookup env var)
+          = fromJust (lookup env var)
+f env var = 0
+\end{verbatim}
+where \code{lookup} has type \code{[($\alpha$, $\beta$)] \ra $\alpha$
+  \ra Maybe $\beta$}.  This is awkward because we now inspect the
+result of \code{lookup} twice.  Pattern guards \cite{patternguards}
+redefine a guard as a list of qualifiers, just like in a list
+comprehension, so that binding can occur:
+\begin{verbatim}
+f env var | Just x <- lookup env var = x
+f env var = 0
+\end{verbatim}
+But when we have a choice operator, we can just write (in
+RhoStratego):
+\begin{verbatim}
+f = env -> var -> ((Just x -> x) (lookup env var) <+ 0);
+\end{verbatim}
+Alternatively, we could just get rid of the \code{Maybe} result of
+\code{lookup} altogether, making it of type \code{[($\alpha$,
+  $\beta$)] \ra $\alpha$ \ra $\beta$}, and we arrive at:
+\begin{verbatim}
+f = env -> var -> lookup env var <+ 0;
+\end{verbatim}
+
+
+\paragraph{Transformational patterns}
+
+Transformational patterns \cite{patternguards} provide a cheap
+alternative to views, allowing us to write the previous example as:
+\begin{verbatim}
+f env (Just x)!(lookup env) = x
+f env var = 0
+\end{verbatim}
+Hence, transformational patterns are just view transformations made
+explicit.  The choice operator allows a similar notation:
+\begin{verbatim}
+f = env -> ((lookup env) | (Just x -> x) <+ _ -> 0);
+\end{verbatim}
+
+In general, a definition \code{f pat!fun = e} can be written as
+\code{f = fun | (pat \ra e)}.
+
+However, it is still desirable to have some mechanism like views or
+transformational patterns, if only for reasons of symmetry; it is ugly
+if patterns can only be used to match against concrete data types.
+For this reason RhoStratego offers a syntactic sugar similar to, but
+slightly simpler than, transformational patterns.  
+
+The snoc-list example given above can be written in RhoStratego as
+follows:
+\begin{verbatim}
+snoc = reverse | ((x:xs) -> <x, xs>);
+lin = [] -> <>;
+
+f = {snoc} x _ -> x <+ {lin} -> 0;
+\end{verbatim}
+
+A pattern \verb|{...}| with $n$ pattern arguments specifies an
+expression which is applied to the argument.  The expression should
+return a tuple of arity $n$.  The pattern arguments are then matched
+against the elements of the tuple.  Therefore, \code{f} is desugared
+into:
+\begin{verbatim}
+f =  y -> (<x, _> -> x) (snoc y) 
+  <+ y -> (<> -> 0) (lin y);
+\end{verbatim}
+
+
+\paragraph{First class patterns}
+
+Tullsen \cite{firstclasspatterns} treats patterns as functions of type
+\code{$\alpha$ \ra Maybe $\beta$}, and combinators are provided to
+combine basic patterns into complex ones.  Although conceptually
+elegant, this approach suffers from the fact that the syntax is not
+very attractive.  Furthermore, every function that can fail must have
+the \code{Maybe} type; in our approach, failure is propagated
+implicitly.

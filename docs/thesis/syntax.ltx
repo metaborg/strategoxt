@@ -1,0 +1,50 @@
+This section presents the syntax of the RhoStratego language.  Figure
+\ref{fig:syntax} shows the syntax in BNF notation.  Boldface and
+italics are used to denote terminals and non-terminals, respectively.
+
+\begin{figure}
+\[
+\begin{array}{lcll}
+\nt{program} & \ra & \nt{decl}^* & \text{(top level)}
+\\
+\nt{term} & \ra & \nt{var} & \text{(variable)}
+\\
+& \alt & \nt{constr} & \text{(constructor)}
+\\
+& \alt & \nt{term} \; \nt{term} & \text{(application)}
+\\
+& \alt & \term{let} \; \nt{decl}^* \; \term{in} \; \nt{term} & \text{(let-bindings)}
+\\
+& \alt & \term{\cut} \nt{term} & \text{(cut)}
+\\
+& \alt & \nt{pat} \; \ra \; \nt{term} & \text{(abstraction)}
+\\
+& \alt & \term{fail} & \text{(failure)}
+\\
+& \alt & \nt{term} \; \plus \; \nt{term} & \text{(choice)}
+\\
+& \alt & \term{(} \nt{term} \term{)} & \text{(parentheses)}
+\\
+
+\nt{pat} & \ra & \nt{var} & \text{variable}
+\\
+& \alt & \nt{constr} & \text{(constructor)}
+\\
+& \alt & \nt{pat} \; \nt{pat} & \text{(application)}
+\\
+
+\nt{decl} & \ra & \nt{var} \; \term{=} \; \nt{term} \term{;} & \text{(binding)}
+\end{array}
+\]
+\caption{\label{fig:syntax}
+  RhoStratego abstract syntax}
+\end{figure}
+
+The language presented here is a subset of the actual RhoStratego
+language.  Syntactic sugar such as infix and prefix notation for
+operators, infix notation for function application, and
+transformational patterns are left out.  Also left out are primitive
+types (integers and strings) and primitive operations (`primops',
+such as addition of integers and I/O).  Treatment of the syntax and
+semantics for data type declarations and type annotations is postponed
+until chapter \ref{ch:typesystem}.

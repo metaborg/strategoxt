@@ -1,0 +1,34 @@
+#! /bin/sh ../utrecht/rho-run
+
+#include "stdlib.rh"
+
+/* Views aren't desugared by the typechecker yet. */
+#pragma notypecheck
+
+data Expr;
+Var :: String -> Expr;
+App :: Expr -> Expr -> Expr;
+Const :: Int -> Expr;
+
+plus = x -> y -> App (App (Var "+") x) y;
+plus' = App (App (Var "+") x) y -> <x, y>;
+
+zero = Const 0;
+zero' = Const 0 -> <>;
+
+main = print (({plus'} x {zero'} -> x) (plus zero zero));
+
+// equivalent to (?)
+// main = (Tup x {zeroM} -> x) (plusM (plus zero zero))
+
+#AppC = f -> g -> App x y -> App (f x) (g y)
+
+#rec = f -> f (rec f)
+
+// App (App c x1) x2 -> Tup c [x2, x1]
+
+#appnM = (AppC(appn, id) | App(Tup c xs) x -> Tup c (c : xs))
+#        <+ (c -> Tup c [])
+
+#Beta = {appnM} c xs -> 
+

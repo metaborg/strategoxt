@@ -1,0 +1,73 @@
+\documentclass[pdftex, leqno, fleqn]{report}
+\usepackage{amstext, amsfonts}
+\usepackage{latexsym}
+\usepackage{url}
+\usepackage{longtable}
+\usepackage{a4}
+\usepackage{theorem}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{ccaption}
+\usepackage{natded}
+\usepackage{indent}
+
+\newif\ifpdf
+\ifx\pdfoutput\undefined
+  \pdffalse
+\else
+  \pdfoutput=1
+  \pdftrue
+\fi
+
+\ifpdf
+  \usepackage[pdftex]{hyperref}
+  \pdfcompresslevel=9
+\else
+\fi
+
+\input{../macros.ltx}
+
+\theorembodyfont{\normalfont}
+\newtheorem{example}{Example}
+\newtheorem{definition}{Definition}
+
+\let\oldverbatim=\verbatim
+\let\oldendverbatim=\endverbatim
+\renewenvironment{verbatim}{\quote\oldverbatim}{\oldendverbatim\endquote}
+\newenvironment{cverbatim}{\indentation{0.5cm}{0cm}\oldverbatim}{\oldendverbatim\endindentation}
+
+\floatstyle{boxed}
+\restylefloat{figure}
+
+
+%\sloppy
+
+\title{First Class Rules and Generic Traversals for Program
+  Transformation Languages}
+\author{Eelco Dolstra\\ \code{edolstra@students.cs.uu.nl}}
+
+\begin{document}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.2 \baselineskip}
+
+\pagenumbering{roman}
+
+\maketitle
+
+\begin{abstract}
+\input{abstract.ltx}
+\end{abstract}
+
+\tableofcontents
+
+\newpage
+
+\pagenumbering{arabic}
+
+\input{body.ltx}
+
+\bibliographystyle{alpha}
+\bibliography{../refs}
+
+\end{document}

@@ -1,0 +1,211 @@
+To implement the choice operator, we must first decide how to
+represent failure values.  Since any expression can evaluate to
+failure, a simple way to implement failure is to extend every value
+domain with a special value indicating failure.  For example, in a
+function application, we would first evaluate the left-hand side and
+check whether it is a failure value; if so, we would return failure.
+In a left choice, we would evaluate the left-hand side, and if it
+returns failure, evaluate the right-hand side.  This explicit tagging
+is wasteful in both space (the failure must be stored somewhere in the
+value) and time (we must constantly check for failure, even when
+failure has not occurred).
+
+A much better method is to use the exception-handling techniques used
+in imperative languages (the choice operator is an exception-handling
+facility, after all).  When an expression \code{x <+ y} is evaluated
+(entered), we set an exception handler and enter \code{x}.  If
+\code{x} completes successfully, we remove the handler.  If \code{x}
+does not complete successfully, on the other hand, i.e., if failure
+occurs, the handler is called, which then proceeds to enter \code{y}.
+The difficulty is that when failure occurs, we must restore the
+execution context that existed before we entered \code{x}, i.e., we
+must unwind the stack.
+
+The machinery to do this exists in all C implementations through the
+\code{setjmp()} and \code{longjmp()} functions..  The function
+\code{setjmp()} saves the execution context in a structure; the
+function \code{longjmp()} restores the execution context saved in that
+structure.  The context is restored so that it is exactly the same as
+at the time that \code{setjmp()} returned, {\em except} that the
+return value of \code{setjmp()} is non-zero.  Here is an example:
+\begin{verbatim}
+jmp_buf context; /* execution context */
+
+f()
+{
+  if (setjmp(&context) == 0) {
+    /* Normal code path. */
+    g(...);
+    /* g() returned normally. */
+  } else {
+    /* g() called longjmp()! */
+  }
+}
+
+g(...)
+{
+   ...
+   if (...) longjmp(g, 1);
+   ...
+}
+\end{verbatim}
+
+Using \code{setjmp()}/\code{longjmp()} we can implement the choice
+operator as follows:
+\begin{itemize}
+\item We maintain a stack of saved execution contexts.  This is
+  because choices may be nested.  This stack is maintained separately
+  from the call stack; this allows the execution context to be
+  restored in $O(1)$ time in case of a failure.
+\item When a failure occurs, we pop the top execution context and
+  restore it.
+\item When we enter \code{x <+ y}, we save the execution context on
+  the top of the stack and enter \code{x}.  If \code{x} completes
+  successfully, we remove the saved execution context from the stack.
+  If \code{x} fails, on the other hand, we enter \code{y}.  The code
+  for the left choice operator and fail therefore looks like this:
+\begin{verbatim}
+jmp_buf jmpbufs[...]; /* the stack */
+unsigned int stacktop; 
+
+void LCHOICE(Closure * res, Closure * x, Closure * y)
+{
+  if (setjmp(jmpbufs[stacktop++] == 0)) {
+    ENTER(x);     /* try x */
+    stacktop--;   /* went okay */
+    COPY(res, x);
+  } else {
+    /* x failed */
+    ENTER(y);     /* try y instead */
+    COPY(res, y);
+  }
+}
+
+void FAIL()
+{
+  longjmp(jmpbufs[--stacktop], 1);
+}
+\end{verbatim}
+\end{itemize}
+
+
+\paragraph{Distribution}
+The above is not sufficient to implement RhoStratego's choice
+operator, however; if the left-hand side \code{x} returns a function,
+then, by the {\sc Distrib} rule (section \ref{sec:semantics}),
+\code{x} must be applied to the argument to \code{x <+ y}, {\em which
+  we do not directly have access to}, and if that fails, \code{y} must
+be called and applied to the argument.  Of course, \code{x} may be a
+function of arbitrary arity, so we may need to accumulate any number
+of arguments.
+
+We do this in the `success' branch of \code{LCHOICE} (right after
+\code{stacktop--}).  We check the result of \code{x}, and if it is a
+function, we create a `fake' function (the {\em propagator}) which
+has a pointer to a special structure\footnote{It is a fake function
+  because the pointer to the special structure masquerades as its
+  environment pointer.} that contains pointers to \code{x}, \code{y},
+and all the arguments that have been applied so far (initially none).
+
+Then, when the propagator is called with some argument \code{z}, it
+first calls the result of \code{x} with argument \code{z}.  If that
+fails, we compute \code{y z}.  If it is successful and the result is
+again a function, we create a new propagator that contains pointers to
+\code{x z}, \code{y}, and the arguments applied so far, namely
+\code{z}.  This process repeats until the left-hand side fails or does
+not return a function.
+
+
+\paragraph{Cuts}
+The implementation of the choice operator must also deal with cuts.
+First, there is the issue of the representation of cuts.  By the
+semantics, \code{\cut{}e} is transparent; that is, it automatically
+`degrades' into \code{e} in all contexts where \code{e} is used, i.e.,
+in pattern matches, primops, and applications of \code{e}.
+
+One way to implement the cut is to wrap a dummy constructor around the
+value being cut; in other words, \code{\cut{}e} is translated to
+\code{C e} where \code{C} is a fixed, anonymous constructor known to
+the runtime system.  This is very annoying, however, since it requires
+the cut(s) to be checked for and removed in all the aforementioned
+contexts.  Since there may be any number of cuts, this requires a loop
+consisting of the steps (1) enter the closure; (2) if it is a \code{C
+  e}, then go back to step (1) using closure \code{e}.  The runtime
+cost of this is unacceptable.  If, however, cuts were defined {\em
+  not} to be transparent, then this approach would be sufficient.
+
+A better solution, and the one used by the RhoStratego compiler, is to
+add to every function value a natural number indicating how many cuts
+have been applied to it.  After all, cuts are only relevant to
+function values; all other values in the left-hand side of a choice
+cause the choice to return with that value, as is.  So what we do is:
+\begin{itemize}
+\item When a function value is constructed, its counter is set to 0.
+\item The code for \code{\cut{}e} will enter \code{e} and make a
+  copy of the resulting closure, and, if the result is a function, the
+  counter in the copy will be increased by 1.
+\item The code for \code{x <+ y} will enter \code{x} and make a copy
+  of the resulting closure, and, if the result is a function and its
+  counter is greater than 0, will decrease the counter in the copy by
+  1.
+\end{itemize}
+
+In addition, failures can be cut, which is unrelated to functions
+being cut since failure is not a value in the runtime system.  For
+example, \code{(\cut{}fail <+ 1) <+ 2} will evaluate to 2.  To
+implement this properly, we do the following:
+\begin{itemize}
+\item Every time a failure is raised, we pass along a number
+  indicating the number of cuts already applied to the failure.  The
+  expression \code{fail} has zero cuts applied to it, so the code for
+  \code{fail} passes the value 0.
+\item The code for cut installs a failure handles and then evaluates
+  its argument, removing the handler from the stack after successful
+  completion of the argument.  The failure handler will call the next
+  failure handler {\em with the number of cuts increased by 1}.
+\item The failure handler for a choice will inspect the number of
+  cuts, and if it is greater than 0, will call the next failure
+  handler with the number of cuts decreased by 1.  If the number of
+  cuts is 0, processing proceeds normally, i.e., the right-hand side
+  of the choice is called.
+\end{itemize}
+
+This solution is still not complete.  Consider, for example, the
+expression \code{((C -> 0) \cut{}fail <+ 1) <+ 2}.  By the semantics
+of the language, this should evaluate to \code{((C -> 0) fail <+ 1) <+
+  2} $\goesto$ \code{(fail <+ 1) <+ 2} $\goesto$ \code{1 <+ 2}
+$\goesto$ \code{1}.  With the scheme described above, however,
+\code{fail} will throw a failure with cut count 0, which will be
+caught by the cut, which will increase the cut count to 1 and re-raise
+the failure, which will be caught by the failure handler of the
+inner choice.  Since the cut count is 1, the right-hand side of the
+inner choice will not entered, but instead the failure will be
+re-raised, only to be caught by the failure handler of the outer
+choice; and the result will be \code{2}.
+
+The problem here is that the cut has an effect only for values
+directly in the left-hand side of a choice.  In the above example,
+\code{\cut{}fail} is merely an argument to the pattern match against
+\code{C -> 0}; and so \code{\cut{}fail} should degrade into
+\code{fail}, which will give a normal exception.
+
+The solution is not very pleasant.  We should ensure that an entered
+closure knows if its directly in the left-hand side of a choice.  We
+can accomplish this by passing along a boolean value to that effect
+when we enter a closure.  For example:
+\begin{itemize}
+\item The choice operator would call its left-hand argument with the
+  flag set to \code{true}.
+\item In a copy expression of the form \code{x = y;} the closure for
+  \code{y} is entered with the flag equal to the flag given to
+  \code{x}.
+\item In an application, the left-hand side is entered with the flag
+  set to \code{false}, but the actual call is made with the flag equal
+  to the flag given to the application itself.  For example, in
+  \code{f x <+ y}, \code{f} is not directly under the choice, but the
+  call \code{f x} {\em is}.
+\item Pattern matches and primops enter their arguments with the flag
+  set to \code{false}. This ensures that e.g. \code{((C -> 0)
+    \cut{}fail <+ 1) <+ 2} works correctly.
+\end{itemize}
+

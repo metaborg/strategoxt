@@ -1,0 +1,162 @@
+%Stylefile for Natural Deduction by Paul Harrenstein (14th September 1999)
+%example:
+%   $\begin{ndproof}{7cm}
+%       \Prem{p\vee q}\\
+%       \Prem{\neg q}\\
+%       \begin{ass}{p\to q}\\
+%               \begin{ass}{p}\\
+%                   \Eimp{q}{3,4}\\
+%                   \Eneg{2,5}\\
+%               \end{ass}\\
+%           \Iimp{p\to\bot}\\
+%               \begin{ass}{q}\\
+%                   \Eneg{8,2}\\
+%               \end{ass}\\
+%           \Iimp{q\to \bot}\\
+%           \Edis{\bot}{1,7,10}\\
+%       \end{ass}\\
+%       \Ineg{\neg(p\to q)}
+%   \end{ndproof}$
+%
+%
+% 0) This stylefile does not make natural deductions itself. It is merely used to write them down in a neat
+%   and uniform way.
+% 1) A natural deduction proof only starts up in mathematical environment
+% 2) The argument #1 in \begin{ndproof}{#1} sets the width of the derivation sequence
+% 3) Each rule has its own command, which are which should be easy to find out
+% 4) Most of the rules have two arguments. The first specifies the formula to be derived with the rule.
+%   The second argument is to fill in the numbers on the lines on which the application of the rule
+%   depends. There are tree exceptions to this:
+%       (i) the introduction rule of the arrow ($\to$: \Iimp{#1}) and the introduction rule for 
+%           negation ($\neg$: \Ineg{#1}),
+%           the application of which does only depend on retracted assumptions, only require a formula
+%           as an argument.
+%       (ii) the elimination rule for negation ($\neg$: Eneg{#1}) or, by another name, the 
+%            introduction rule for falsum ($\bot$: Ifals{#1}), which applications always result in
+%            falsum being derived, only requires the line numbers of the formulae on which its
+%            application depends
+% 5) Assumptions are introduced by means of an environment \begin{ass}{#1}...\end{ass}. 
+%   The argument #1 is reserved for
+%   the formula assumed. No special rules apply to writing down derivations within this environment. When
+%   the assumption environment is closed (\end{ass}) it will automatically put a `hook' around the
+%   derivation depending on the assumption.
+% 6) Assumption environments (\begin{ass}{#1}...\end{ass}) may be nested any number of times you like and LaTeX allows it.
+% 7) Important: After every line, also after $\begin{ass}{#1}$ and $\end{ass}$ put \\, except for the very
+%   last line.
+
+
+
+
+
+\newcounter{ndnum}
+
+
+
+\newenvironment{ndproof}[1]{\newcommand{\ndwdth}{#1}
+\setcounter{ndnum}{1}\begin{array}[t]{c}}{\end{array}\setcounter{ndnum}{0}}
+\newenvironment{ndsubproof}{
+\begin{array}[t]{c}}{\end{array}}
+
+%commands - automatic numbering:
+
+%% propositional logic:
+
+\def\Icon#1#2{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{\thendnum\stepcounter{ndnum}.}\quad\makebox[0pt][l]{$#1$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{$I\wedge,#2$}}}
+\def\Econ#1#2{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{\thendnum\stepcounter{ndnum}.}\quad\makebox[0pt][l]{$#1$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{$E\wedge,#2$}}}
+\def\Idis#1#2{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{\thendnum\stepcounter{ndnum}.}\quad\makebox[0pt][l]{$#1$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{$I\vee,#2$}}}
+\def\Edis#1#2{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{\thendnum\stepcounter{ndnum}.}\quad\makebox[0pt][l]{$#1$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{$E\vee,#2$}}}
+\def\Iimp#1{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{\thendnum\stepcounter{ndnum}.}\quad\makebox[0pt][l]{$#1$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{$I\to$}}}
+\def\Eimp#1#2{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{\thendnum\stepcounter{ndnum}.}\quad\makebox[0pt][l]{$#1$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{$E\to,#2$}}}
+\def\Ineg#1{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{\thendnum\stepcounter{ndnum}.}\quad\makebox[0pt][l]{$#1$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{$I\neg$}}}
+\def\Eneg#1{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{\thendnum\stepcounter{ndnum}.}\quad\makebox[0pt][l]{$\bot$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{$E\neg,#1$}}}
+\def\Ifals#1{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{\thendnum\stepcounter{ndnum}.}\quad\makebox[0pt][l]{$\bot$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{$I\bot,#1$}}}
+
+\def\EFQL#1#2{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{\thendnum\stepcounter{ndnum}.}\quad\makebox[0pt][l]{$#1$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{$EFQL,#2$}}}
+\def\rfals#1#2{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{\thendnum\stepcounter{ndnum}.}\quad\makebox[0pt][l]{$#1$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{$\bot{-\mbox{rule}},#2$}}}
+
+\def\Rep#1#2{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{\thendnum\stepcounter{ndnum}.}\quad\makebox[0pt][l]{$#1$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{$\mbox{rep.},#2$}}}
+\def\Dneg#1#2{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{\thendnum\stepcounter{ndnum}.}\quad\makebox[0pt][l]{$#1$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{$\neg\neg\mbox{-rule},#2$}}}
+\def\Prem#1{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{\thendnum\stepcounter{ndnum}.}\quad\makebox[0pt][l]{$#1$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{prem.}}}
+\def\assumption#1{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{\thendnum\stepcounter{ndnum}.}\quad\makebox[0pt][l]{$#1$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{ass.}}}
+
+%% predicate logic:
+
+\def\Iid#1{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{\thendnum\stepcounter{ndnum}.}\quad\makebox[0pt][l]{$#1$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{I=}}}
+\def\Gid#1#2{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{\thendnum\stepcounter{ndnum}.}\quad\makebox[0pt][l]{$#1$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{$E=,#2$}}}
+
+\def\Iunq#1#2{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{\thendnum\stepcounter{ndnum}.}\quad\makebox[0pt][l]{$#1$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{$I\forall,#2$}}}
+\def\Eunq#1#2{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{\thendnum\stepcounter{ndnum}.}\quad\makebox[0pt][l]{$#1$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{$E\forall,#2$}}}
+
+\def\Iexq#1#2{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{\thendnum\stepcounter{ndnum}.}\quad\makebox[0pt][l]{$#1$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{$I\exists,#2$}}}
+\def\Eexq#1#2{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{\thendnum\stepcounter{ndnum}.}\quad\makebox[0pt][l]{$#1$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{$E\exists,#2$}}}
+
+
+%commands - no automatic numbering (merely add nn (for `no number') and a first argument for the linenumber ):
+
+%% propositional logic:
+
+\def\Iconnn#1#2#3{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{$#1$}\quad\makebox[0pt][l]{$#2$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{$I\wedge,#3$}}}
+\def\Econnn#1#2#3{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{$#1$}\quad\makebox[0pt][l]{$#2$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{$E\wedge,#3$}}}
+\def\Idisnn#1#2#3{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{$#1$}\quad\makebox[0pt][l]{$#2$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{$I\vee,#3$}}}
+\def\Edisnn#1#2#3{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{$#1$}\quad\makebox[0pt][l]{$#2$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{$E\vee,#3$}}}
+\def\Iimpnn#1#2{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{$#1$}\quad\makebox[0pt][l]{$#2$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{$I\to$}}}
+\def\Eimpnn#1#2#3{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{$#1$}\quad\makebox[0pt][l]{$#2$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{$E\to,#3$}}}
+\def\Inegnn#1#2{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{$#1$}\quad\makebox[0pt][l]{$#2$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{$I\neg$}}}
+\def\Enegnn#1#2{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{$#1$}\quad\makebox[0pt][l]{$\bot$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{$E\neg,#2$}}}
+\def\Ifalsnn#1#2{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{$#1$}\quad\makebox[0pt][l]{$\bot$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{$I\bot,#2$}}}
+
+\def\EFQLnn#1#2#3{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{$#1$}\quad\makebox[0pt][l]{$#2$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{$EFQL,#3$}}}
+\def\rfalsnn#1#2#3{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{$#1$}\quad\makebox[0pt][l]{$#2$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{$\bot{-\mbox{rule}},#3$}}}
+
+\def\Repnn#1#2#3{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{$#1$}\quad\makebox[0pt][l]{$#2$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{$\mbox{rep.},#3$}}}
+\def\Dnegnn#1#2#3{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{$#1$}\quad\makebox[0pt][l]{$#2$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{$\neg\neg-\mbox{rule},#3$}}}
+\def\Premnn#1#2{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{$#1$}\quad\makebox[0pt][l]{$#2$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{prem.}}}
+\def\assumptionnn#1#2{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{$#1$}\quad\makebox[0pt][l]{$#2$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{ass.}}}
+
+
+\newenvironment{assnn}[2]{\begin{array}{|@{\overline{\mbox{\protect\rule{0pt}{1.7ex} }}}c}
+\begin{ndsubproof}
+\assumptionnn{#1}{#2}}{\end{ndsubproof}\\
+\hline\end{array}}
+
+
+
+%% predicate logic:
+
+\def\Iidnn#1#2{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{$#1$}\quad\makebox[0pt][l]{$#2$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{I=}}}
+\def\Eidnn#1#2#3{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{$#1$}\quad\makebox[0pt][l]{$#2$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{$E=,#3$}}}
+
+\def\Iunqnn#1#2#3{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{$#1$}\quad\makebox[0pt][l]{$#2$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{$I\forall,#3$}}}
+\def\Eunqnn#1#2#3{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{$#1$}\quad\makebox[0pt][l]{$#2$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{$E\forall,#3$}}}
+
+\def\Iexqnn#1#2#3{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{$#1$}\quad\makebox[0pt][l]{$#2$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{$I\exists,#3$}}}
+\def\Eexqnn#1#2#3{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{$#1$}\quad\makebox[0pt][l]{$#2$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{$E\exists,#3$}}}
+
+
+
+%% (added by Eelco)
+
+\def\tpderiv#1#2{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{\thendnum\stepcounter{ndnum}.}\quad\makebox[0pt][l]{$#1$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{#2}}}
+
+
+
+%Some additional commands:
+
+
+\def\ndline#1#2#3{\makebox[\ndwdth][c]{\mbox{}\hfill\makebox[0pt][r]{$#1$}\quad\makebox[0pt][l]{$#2$}\hfill\hfill\hfill\hfill\hfill\hfill\hfill\makebox[0pt][r]{#3}}}
+
+\def\formxtoyformz#1#2#3#4{\ndline{#1}{#2}{}\\
+            \ndline{}{\vdots}{}\\
+            \ndline{#3.}{#4}{}}
+\def\formxtoy#1#2#3{\ndline{#2.}{#1_{#2}}{}\\
+            \ndline{}{\vdots}{}\\
+            \ndline{#3.}{#1_{#3}}{}}
+\def\formonetox#1#2{\formxtoy{#1}{1}{#2}}
+\def\formoneton#1{\formxtoy{#1}{1}{n}}
+
+
+
+\newenvironment{ass}[1]{\begin{array}{|@{\overline{\mbox{\protect\rule{0pt}{1.7ex} }}}c}
+\begin{ndsubproof}
+\assumption{#1}}{\end{ndsubproof}\\
+\hline\end{array}}

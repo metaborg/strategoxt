@@ -1,0 +1,17 @@
+#! /bin/sh ../utrecht/rho-run
+
+#include "stdlib.rh"
+
+#include "rhosyntax.rh"
+
+main :: IO <>;
+main = 
+  let a1 = readTerm "bigterm";
+
+      a2 = x -> writeTerm "" ATFmtText x;
+
+      f = collect (Id?Id nm _ -> nm);
+
+      f' = topdown (try (Id?Id "main" nr -> Id "mainRENAMED" nr));
+
+  in a1 >>= (x -> a2 (f (f' x)));

@@ -1,0 +1,55 @@
+\begin{itemize}
+
+\item
+  It might be interesting to retarget the compiler from C to
+  \cminusminus \cite{cminusminus, multipleexceptions}.  At the very
+  least this will give us tail jumps, without which many computations
+  cannot be done in bounded space.
+
+\item
+  The ability to read/write ATerms from certain Haskell implementations
+  (e.g. GHC), i.e., integration into XT, could be useful for program
+  transformation applications.
+  
+\item Better control over the scope of the choice operator, i.e., more
+  powerful exception handling primitives.  One way to do this is to
+  have several kinds of exceptions, but this destroys the confluence
+  of the language unless the evaluation order is fixed
+  \cite{imprecise-exceptions}.  This is because different
+  subexpressions may raise different exceptions, and so the exception
+  that is actually raised depends on which subexpression is evaluated
+  first.
+  
+\item {\bf Non-local variable bindings}.  In Stratego we can write
+  things like:
+\begin{verbatim}
+fetch(?Foo(x)); !x
+\end{verbatim}
+ 
+  That is, walk over a list until an element is encountered that
+  matches with the pattern \code{Foo(x)}; then replace the current
+  term with \code{x}.  The interesting thing is that \code{x} is
+  (implicitly) declared in the scope of the entire strategy, but it is
+  defined (given a value) as a side-effect of executing \code{fetch}.
+  Is something similar possible in a function language such as
+  RhoStratego?  Note that if \code{x} is defined (i.e., matched)
+  multiple times, the various definitions must be equal (such as in
+  \code{map(?Foo(x))} or \code{?Foo(x, x)}.  A possible functional
+  implementation would be:
+  \begin{itemize}
+  \item A variable \code{x} is initially said to be {\em undefined}.
+  \item When a definition occurs and \code{x} is undefined, \code{x}
+    gets the value of the definition.
+  \item When a definition occurs and \code{x} is defined, the new
+    definition is evaluated and must be equal to the current one.
+  \item When a currently undefined variable \code{x} is evaluated, all
+    expressions that contain definitions are evaluated.  If \code{x} is
+    still undefined afterwards, failure occurs.
+  \end{itemize}
+  
+\item Is there a more elegant and/or efficient way to implement the
+  cut operator than described in section \ref{sec:compilechoice}?
+  Likewise, is there a better implementation for RhoStratego's generic
+  traversals than described in section \ref{sec:compilegen}?
+
+\end{itemize}

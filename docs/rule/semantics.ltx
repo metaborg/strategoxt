@@ -1,0 +1,132 @@
+In the previous section, example \ref{ex:haskellzero}
+did not work because it is not
+possible to deal with pattern match failure in the left-hand side of
+$\lambda$-abstractions.  In this section I shall give the semantics of
+a simple (untyped) functional language extended with a choice operator
+which first tries to evaluate its left argument, and if that fails,
+evaluates its right argument.
+
+The syntax is the \lcalc extended with constructed
+values, pattern matching $\lambda$-abstraction, and a choice operator:
+\[
+\begin{array}{l}
+e ::= x \alt e e \alt C \alt \lambda p \ra e 
+% \alt \ve{let} \; (x = e)^* \; \ve{in} \; e
+ \alt e \plus e \alt \fail\\
+p ::= x \alt p p \alt C \\
+\end{array}
+\]
+where $x$ ranges over the variables, and $C$ over the constructors.
+The constant \fail\ denotes pattern match failure.  The choice
+operator \ve{<+} binds weaker than $\lambda$-abstraction and function
+application. 
+
+The semantics is given by the following rewrite rules:
+\[
+\begin{array}{rcll}
+(\lambda x \ra e_1) e_2 & \Ra & [x := e_2] e_1 
+  & \text{($\beta$-reduction)} \\
+
+(\lambda C \ra e_1) C & \Ra & e_1
+  & \text{(pos. constr. match)} \\
+
+(\lambda C_1 \ra e_1) C_2 \;  & \Ra & \fail \; (\text{if} \; (C_1 \neq C_2))
+  & \text{(neg. constr. match)} \\
+
+(\lambda (p_1 p_2) \ra e_1) (e_2 e_3) & \Ra 
+  & ((\lambda p_1 \ra \lambda p_2 . e_1) e_2) e_3
+  & \text{(application match)} \\
+
+e_1 \plus e_2 & \Ra & e_1 \; (\text{if} \; \NF(e_1) \neq \fail)
+  & \text{(left choice)} \\
+
+\fail \plus e & \Ra & e
+  & \text{(right choice)} \\
+
+\fail e & \Ra & \fail
+  & \text{(failure propagation)} \\
+
+%\ve{let} \; d \; \ve{in} \; x & \Ra 
+%  & e \; (\text{if} \; x = e \in d)
+%  & \text{(variable expansion)} \\
+%
+%\ve{let} \; d_1 \; \ve{in} \; \ve{let} \; d_2 \; \ve{in} \; e & \Ra
+%  & \ve{let} \; d_1 \; d_2 \; \ve{in} \; e 
+%  & \text{(let-flattening)} \\
+%
+%\ve{[...]}
+\end{array}
+\]
+where $\NF(e)$ denotes the normal form of term $e$.  These rules
+suffice to implement a lazy evaluator (we have done so in Stratego 
+for a system extended with let-bindings).
+
+The semantics is given as a set of rewrite rules from the language to
+the language, i.e., as source transformations.  The advantage is that
+no additional syntax or notation is required.  Furthermore, such rules
+can be employed directly in e.g. an optimizer.
+
+Unfortunately, something seems to be missing.  For example, we would
+like to define the \ve{if} function as follows:
+\begin{equation}
+\label{ex:ifgood}
+\begin{array}{l}
+\ve{if = $\lambda$True e1 e2 \ra e1 <+ $\lambda$False e1 e2 \ra e2}
+\end{array}
+\end{equation}
+expecting that \ve{if False 1 2 $\Rightarrow$ 2}.  This is, after all,
+the behaviour expected from Stratego.  However, this
+obviously will not work, since in the evaluation of \ve{if} the choice
+operator will immediately pick the {\em left} side, since
+\vve{$\lambda$True e1 e2 \ra e1 $\ne$ \fail}.
+
+We can get around this by writing instead:
+\begin{equation}
+\label{ex:ifbad}
+\begin{array}{l}
+\ve{if = $\lambda$c e1 e2 \ra (} \\
+\ve{\quad \quad ($\lambda$True e1 e2 \ra e1) c e1 e2 <+} \\
+\ve{\quad \quad ($\lambda$False e1 e2 \ra e2) c e1 e2)}
+\end{array}
+\end{equation}
+This will enforce that \ve{c} is matched against the
+pattern \ve{True}, and so the left side will fail and the right side
+will be evaluated instead.
+
+A nicer solution (which is admittedly somewhat {\em ad hoc}) is to add
+the following rule:
+\[
+\begin{array}{rcll}
+(\lambda p \ra e_1) \plus e_2 & \Ra 
+  & \lambda x \ra ((\lambda p \ra e_1) x \plus e_2 x)
+  & \text{(distr. arguments)}
+\end{array}
+\]
+and to add the restriction to the left choice rule that $e_1$ must not
+be a $\lambda$-abstraction.
+
+In other words, this rule pushes arguments into the choice operands
+until we have a base type (a constructed value).  It is easy to see
+that this rule automatically transforms example \ref{ex:ifgood} into
+example \ref{ex:ifbad}.
+
+We don't lose any expressive power here.  Even if we actually want to
+choose between functions and not results of functions (e.g. in \vve{(if
+  b then f else g) <+ h}), where \ve{b} may fail, we can do
+this by wrapping the function in a constructor (e.g. \vve{(if b then F
+  f else F g) <+ (F h)}) and unpacking the result later, outside of
+the scope of the choice operator.
+
+%We can now also easily add congruences as syntactic
+%sugar. [... e.g. (Foo f g) == $\lambda$(Foo x y) \ra let \{ x' = f x;
+%y' = g y \} in Foo x' y' ]
+
+A problem with the choice operator is that we do not have control over
+the scope of the failure handling, e.g. in \ve{($\lambda$Foo \ra e)
+  <+ ...} we might want the choice operator to catch failure in
+the \ve{Foo}-match but not in \ve{e}.  This problem also confronts
+Stratego programmers.  For example, if we want to rewrite
+\ve{Foo}-terms and nothing else, we might write in Stratego
+\ve{try(?Foo; s)}.  Unfortunately, any rewrite failure in \ve{s}
+(including those due to programming errors) will be caught
+indiscriminately by \ve{try}.

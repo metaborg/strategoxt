@@ -1,0 +1,13 @@
+#! /bin/sh ../utrecht/rho-run
+
+#include "stdlib.rh"
+
+data C;
+C :: C;
+data D;
+D :: Int -> D;
+
+x = (1 == 1) && ((C == C) && ((D 123 == D 123) && 
+  ((D 123 != D 456) && ("foo" == "foo"))));
+
+main = print x;

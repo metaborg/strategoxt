@@ -1,0 +1,39 @@
+\begin{figure}[tb]
+\begin{boxedminipage}{\hsize}
+$
+\begin{array}{lcll}
+\nt{program} & \ra & \nt{decl}^* & \text{(top level)}
+\\
+\nt{term} & \ra & \nt{var} & \text{(variable)}
+\\
+& \alt & \nt{constr} & \text{(constructor)}
+\\
+& \alt & \term{fail} & \text{(failure)}
+\\
+& \alt & \nt{term} \; \nt{term} & \text{(application)}
+\\
+& \alt & \term{\cut} \nt{term} & \text{(cut)}
+\\
+& \alt & \nt{pat} \; \text{\code{->}} \; \nt{term} & \text{(rule)}
+\\
+& \alt & \nt{term} \; \plus \; \nt{term} & \text{(choice)}
+\\
+& \alt & \term{let} \; \nt{decl}^* \; \term{in} \; \nt{term} & \text{(let-bindings)}
+\\
+& \alt & \term{(} \nt{term} \term{)} & \text{(parentheses)}
+\\
+\nt{pat} & \ra & \nt{var} & \text{(variable)}
+\\
+& \alt & \nt{constr} & \text{(constructor)}
+\\
+& \alt & \nt{pat} \; \nt{pat} & \text{(application)}
+\\
+
+\nt{decl} & \ra & \nt{var} \; \term{=} \; \nt{term} \term{;} & \text{(binding)}
+\end{array}
+$
+\end{boxedminipage}
+\caption{RhoStratego abstract syntax}
+\label{fig:syntax}
+\end{figure}
+

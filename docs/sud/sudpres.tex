@@ -1,0 +1,401 @@
+\documentclass[leqno, fleqn]{foils}
+\usepackage{color}
+\usepackage{latexsym}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amstext}
+\usepackage{graphicx}
+
+\newcommand{\ve}[1]{\ensuremath{\text{\tt #1}}}
+\newcommand{\vve}[1]{{\tt #1}}
+\newcommand{\ra}{\ensuremath{\rightarrow} }
+\newcommand{\Ra}{\ensuremath{\Rightarrow} }
+\newcommand{\n}[1]{\text{#1}}
+\newcommand{\sugt}[1]{\[ \begin{array}{l} #1 \end{array} \]}
+\newcommand{\lcalc}{$\lambda$-calculus }
+\newcommand{\rcalc}{$\rho$-calculus }
+\newcommand{\plus}{\ve{ <+ } }
+\newcommand{\fail}{\ensuremath{\delta }}
+\newcommand{\alt}{\ensuremath{\; | \;}}
+\newcommand{\NF}{\ensuremath{\text{NF}}}
+
+
+\title{Functional Stratego}
+\author{Eelco Dolstra\\edolstra@students.cs.uu.nl}
+\MyLogo{Second Stratego Users Day, February 8, 2001}
+
+
+
+\begin{document}
+
+\maketitle
+
+
+\foilhead{Introduction}
+
+\begin{itemize}
+\item Goal: program transformation
+\item How to implement strategic features in functional languages?
+\item What features?
+  \begin{itemize}
+  \item First class pattern matching
+  \item Generic traversals
+  \end{itemize}
+\end{itemize}
+
+
+\foilhead{Pattern matching}
+
+\begin{itemize}
+\item Important for rewrite rules:
+  \[
+  \begin{array}{l}
+    \ve{PlusZero: Plus(x, Const(0)) \ra x} \\
+  \end{array}
+  \]
+\item Must be first-class (i.e., you can pass it around, combine it
+  arbitrarily, etc.)
+\end{itemize}
+
+
+\foilhead{Generic traversals}
+
+\begin{itemize}
+\item \ve{all}, \ve{bottomup}, \ve{topdown}, etc.
+\item How to type?
+\end{itemize}
+
+
+\foilhead{Strategies in Haskell}
+
+\begin{itemize}
+\item Doesn't work:
+\[
+\begin{array}{l}
+\ve{PlusZero: Plus(x, Const(0)) \ra x}\\
+\end{array}
+\]
+$\Ra$
+\[
+\begin{array}{l}
+\ve{plusZero = $\lambda$(Plus x (Const 0)) \ra x}\\
+\end{array}
+\]
+\item Use \ve{Maybe}:
+\[
+\begin{array}{l}
+\ve{type Strat $\alpha$ $\beta$ = $\alpha$ \ra Maybe $\beta$} \\
+\\
+\ve{plusZero (Plus x (Const 0)) = Just x} \\
+\ve{plusZero \_ = Nothing} \\
+\end{array}
+\]
+\end{itemize}
+
+
+
+\foilhead{Strategies in Haskell (combinators)}
+
+\[
+\begin{array}{l}
+\ve{(<+) :: Strat $\alpha$ $\beta$ \ra Strat $\alpha$ $\beta$ \ra Strat $\alpha$ $\beta$} \\
+\ve{s1 <+ s2 = $\lambda$t \ra} \\
+\quad \ve{case s1 t of} \\
+\quad \quad \ve{Just t' \ra Just t'} \\
+\quad \quad \ve{Nothing \ra} \\
+\quad \quad \quad \ve{case s2 t of} \\
+\quad \quad \quad \quad \ve{Just t' \ra Just t'} \\
+\quad \quad \quad \quad \ve{Nothing \ra Nothing} \\
+\\
+\ve{(<*) :: Strat $\alpha$ $\beta$ \ra Strat $\beta$ $\gamma$ \ra Strat $\alpha$ $\gamma$} \\
+\ve{s1 <* s2 = $\lambda$t \ra} \\
+\quad \ve{case s1 t of} \\
+\quad \quad \ve{Just t' \ra} \\
+\quad \quad \quad \ve{case s2 t' of} \\
+\quad \quad \quad \quad \ve{Just t'' \ra Just t''} \\
+\quad \quad \quad \quad \ve{Nothing \ra Nothing} \\
+\quad \quad \ve{Nothing \ra Nothing} \\
+\end{array}
+\]
+
+
+
+\foilhead{Strategies in Haskell (traversals)}
+
+\[
+\begin{array}{l}
+\ve{class Trav $\alpha$ where} \\
+\ve{\quad allS :: Strat $\alpha$ $\alpha$ \ra Strat $\alpha$ $\alpha$}
+\\
+\\
+\ve{bottomupS :: Trav $\alpha$ \Ra} \\
+\quad \ve{Strat $\alpha$ $\alpha$ \ra Strat $\alpha$ $\alpha$} \\
+\ve{bottomupS s = allS (bottomupS s) <* s}
+\end{array}
+\]
+Example:
+\[
+\begin{array}{l}
+\ve{instance Trav Expr where} \\
+\quad \ve{allS s (Const n) = Just \$ Const n} \\
+\quad \ve{allS s (Add e1 e2) =} \\
+\quad \quad \ve{case s e1 of} \\
+\quad \quad \quad \ve{Just e1' \ra} \\
+\quad \quad \quad \quad \ve{case s e2 of} \\
+\quad \quad \quad \quad \quad \ve{Just e2' \ra Just \$ Add e1' e2'} \\
+\quad \quad \quad \quad \quad \ve{Nothing \ra Nothing} \\
+\quad \quad \quad \ve{Nothing \ra Nothing} 
+\end{array}
+\]
+
+
+
+\foilhead{Choice operator}
+
+\begin{itemize}
+\item
+Add a choice operator \ve{f <+ g} such that if \ve{f} applied to the
+arguments fails (due to pattern match failure), \ve{g} is tried.
+\item
+Examples:
+\[
+\begin{array}{l}
+\ve{if =} \\
+\quad \ve{$\lambda$True e1 e2 \ra e1 <+} \\
+\quad \ve{$\lambda$False e1 e2 \ra e2} \\
+\\
+\ve{map = $\lambda$f \ra} \\
+\quad \ve{$\lambda$[] \ra [] <+} \\
+\quad \ve{$\lambda$(x:xs) \ra f x : (map f xs)} \\
+\end{array}
+\]
+\end{itemize}
+
+
+\foilhead{Syntax and semantics}
+
+Syntax:
+\[
+\begin{array}{l}
+e ::= x \alt e e \alt C \alt \lambda p \ra e 
+% \alt \ve{let} \; (x = e)^* \; \ve{in} \; e
+ \alt e \plus e \alt \fail\\
+p ::= x \alt p p \alt C \\
+\end{array}
+\]
+
+Semantics:
+\[
+\begin{array}{rcl}
+(\lambda x \ra e_1) e_2 & \Ra & [x := e_2] e_1  \\
+
+(\lambda C \ra e_1) C & \Ra & e_1 \\
+
+(\lambda C_1 \ra e_1) C_2 \;  & \Ra & \fail \; (\text{if} \; (C_1 \neq
+C_2)) \\
+
+(\lambda (p_1 p_2) \ra e_1) (e_2 e_3) & \Ra 
+  & (\lambda p_1 \ra (\lambda p_2 . e_1) e_3)) e_2
+  \\
+
+e_1 \plus e_2 & \Ra & e_1 \; (\text{if} \; \NF(e_1) \neq \fail) \\
+
+\fail \plus e & \Ra & e \\
+
+\fail e & \Ra & \fail 
+\end{array}
+\]
+
+
+\foilhead{A problem}
+
+\[
+\begin{array}{l}
+\ve{if =} \\
+\quad \ve{$\lambda$True e1 e2 \ra e1 <+} \\
+\quad \ve{$\lambda$False e1 e2 \ra e2}
+\end{array}
+\]
+
+But \ve{(if False 1 2) $\not \Rightarrow$ 2}, but \ve{\Ra $\delta$},
+since \vve{$\lambda$True e1 e2 \ra e1 $\ne$ \fail}.
+
+Workaround:
+\[
+\begin{array}{l}
+\ve{if = $\lambda$c e1 e2 \ra (} \\
+\ve{\quad \quad ($\lambda$True e1 e2 \ra e1) c e1 e2 <+} \\
+\ve{\quad \quad ($\lambda$False e1 e2 \ra e2) c e1 e2)}
+\end{array}
+\]
+
+Solution:
+\[
+\begin{array}{rcll}
+(\lambda p \ra e_1) \plus e_2 & \Ra 
+  & \lambda x \ra ((\lambda p \ra e_1) x \plus e_2 x)
+\end{array}
+\]
+i.e. saturate a function.
+
+
+\foilhead{Problems}
+
+\begin{itemize}
+\item How to return functions?
+\[
+\begin{array}{l}
+\ve{(if b then f else g) <+ h}
+\end{array}
+\]
+Solution: wrap the result in a constructor:
+\[
+\begin{array}{l}
+\ve{(if b then F f else F g) <+ (F h)}
+\end{array}
+\]
+\item Scope of failure handling, 
+  e.g. in e.g. in \ve{($\lambda$Foo \ra e) <+ ...}
+\end{itemize}
+
+
+
+
+\foilhead{Comparison to other extensions}
+
+\begin{itemize}
+\item Views
+\item Pattern guards
+\item Transformational patterns
+\end{itemize}
+
+
+\foilhead{Equational style}
+
+\[
+\begin{array}{l}
+\ve{f $p_{11}$ \ldots $p_{1n}$ = $e_1$} \\
+\ve{f $p_{21}$ \ldots $p_{2n}$ = $e_2$} \\
+\ve{\ldots} \\
+\ve{f $p_{m1}$ \ldots $p_{mn}$ = $e_m$} \\
+\Ra \\
+\ve{f = } \\
+\quad \ve{$\lambda p_{11}$ \ldots $p_{1n}$ \ra $e_1$ <+} \\
+\quad \ve{$\lambda p_{21}$ \ldots $p_{2n}$ \ra $e_2$ <+} \\
+\quad \ve{\ldots} \\
+\quad \ve{$\lambda p_{m1}$ \ldots $p_{mn}$ \ra $e_m$}
+\end{array}
+\]
+
+
+
+\foilhead{Views}
+
+Views: match against something other than constructors (e.g. ADTs).
+\[
+\begin{array}{l}
+\ve{view Tsil a of [a] = Lin | Snoc y ys where} \\
+\ve{\quad tsil xs =} \\
+\ve{\quad \quad case reverse xs of} \\
+\ve{\quad \quad \quad [] \ra Lin} \\
+\ve{\quad \quad \quad (y:ys) \ra Snoc y ys} \\
+\\
+\ve{f (Snoc y \_) = y} \\
+\ve{f Lin = 0}
+\end{array}
+\]
+
+With choice operator:
+\[
+\begin{array}{l}
+\ve{f = ($\lambda$(y:\_) \ra y <+ $\lambda$[] \ra 0) . reverse}
+\end{array}
+\]
+
+
+\foilhead{Pattern guards}
+
+Allows variable bindings in guards
+\[
+\begin{array}{lll}
+\ve{f env var} & \ve{|} & \ve{isJust (lookup env var)} \\
+               & \ve{=} & \ve{fromJust (lookup env var)} \\
+\ve{f env var} & \ve{=} & \ve{0}
+\end{array}
+\]
+becomes:
+\[
+\begin{array}{l}
+\ve{f env var | Just x $\leftarrow$ lookup env var = x} \\
+\ve{f env var = 0}
+\end{array}
+\]
+
+With choice operator:
+\[
+\begin{array}{l}
+\ve{f env var = } \\
+\quad \ve{let (Just x) = lookup env var in x <+ 0} \\
+\end{array}
+\]
+
+
+\foilhead{Transformational patterns}
+
+Cheap alternative to views:
+\[
+\begin{array}{l}
+\ve{f env (Just x)!(lookup env) = x} \\
+\ve{f env var = 0}
+\end{array}
+\]
+
+With choice operator:
+\[
+\begin{array}{l}
+\ve{f env = ($\lambda$(Just x) \ra x) . (lookup env)} \\
+\quad \ve{<+ $\lambda$\_ \ra 0}
+\end{array}
+\]
+
+
+\foilhead{Generic traversals}
+
+In the untyped calculus:
+\[
+\begin{array}{ll}
+\ve{all} & \ve{= $\lambda$f \ra} \\
+         & \ve{( $\lambda$(c x) \ra (all f c) (f x)} \\
+         & \ve{<+ $\lambda$c \ra c} \\
+         & \ve{)}
+\end{array}
+\]
+
+\foilhead{Generic Haskell?}
+
+\begin{itemize}
+\item Decomposes types into binary sums, binary products, and
+  primitive types.
+\item Problem: below constructor level.  E.g. in
+  \ve{bottomup(?Foo(...) ...)} the function should only be applied to
+  constructors.
+\[
+\begin{array}{ll}
+\ve{bottomup(t) :: (t \ra t) \ra t \ra t} \\
+\ve{bottomup(1) f x = f x} \\
+\ve{bottomup(a * b) f (x, y) =} \\
+\quad \ve{??? \$ (bottomup(a) f x, bottomup(b) f y)}
+\end{array}
+\]
+\end{itemize}
+
+
+\foilhead{Conclusion}
+
+\begin{itemize}
+\item Choice operator: nice for strategic programming \& pattern
+  matching in general.
+\item Unclear how to implement generic traversals.
+\end{itemize}
+
+\end{document}

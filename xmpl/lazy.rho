@@ -1,0 +1,10 @@
+#! /bin/sh ../utrecht/rho-run
+#include "stdlib.rh"
+data C;
+C :: Int -> Int -> C;
+main = print (
+  let
+    y = 1;
+    z = 2;
+    x = C y z;
+  in x);

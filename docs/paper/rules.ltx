@@ -1,0 +1,243 @@
+\section{First-Class Rules}
+	\label{Sec:rules}
+
+	RhoStratego is a non-strict purely functional programming
+	language.  It consists essentially of the \lcalc{} extended
+	with constructors, pattern matching, let-bindings, and pattern
+	match failure handling.  In this section we introduce the
+	syntax of the language and show how it supports first-class
+	rules.  In the next section we show how the language admits
+	generic traversal.
+
+	The syntax of the language, shown in figure~\ref{fig:syntax}
+	in BNF notation, is similar to that of Haskell.  Boldface and
+	italics denote terminals and non-terminals, respectively.  The
+	productions are listed in order of decreasing priority.  For
+	example, \code{A -> B <+ C -> D} means \code{(A -> B) <+ (C ->
+	D)}.
+	
+	\input{syntax.ltx}
+
+\subsection{Lambda Rules}
+
+	A rule \code{$x$ -> $t$} abstracts a variable \code{$x$} from
+	a term $t$. Inspired by the notation used in term rewriting,
+	there is no symbol that syntactically starts the abstraction
+	(such as a $\lambda$ or Haskell's backslash).  An application
+	\code{($x$ -> $t_1$) $t_2$} of a rule \code{$x$ -> $t_1$} to a
+	term $t_2$ amounts to the body \code{$t_1$} in which the
+	variable $x$ is bound to the argument $t_2$.  Thus, familiar
+	functions such as the identity and constant functions are
+	defined as follows:
+\begin{verbatim}
+  id = x -> x;
+  const = x -> y -> x;
+\end{verbatim}
+	Naturally, arguments of rules can be other rules, allowing the
+	definition of higher-order functions such as the composition
+	operator:
+\begin{verbatim}
+  . = f -> g -> x -> f (g x);
+\end{verbatim}
+
+\subsection{Pattern Matching Rules}
+
+	\input{ast.ltx}
+
+	The abstract syntax of programs and other symbolic data can be
+	represented by means of algebraic data types.  For example,
+	Figure~\ref{Fig:ast} defines constructors for the abstract
+	syntax of a simple functional language.  Following Haskell's
+	tradition, constructor names start with capitals. The details
+	of the type system will be discussed in
+	Section~\ref{sec:typesystem}.
+
+	Values built with constructors can be deconstructed using
+	pattern matching rules.  An application \code{(($p$ -> $t_1$)
+	$t_2$)} of a pattern matching rule \code{($p$ -> $t_1$)}
+	matches the argument \code{$t_2$} against the pattern
+	\code{$p$}, binding the variables in the pattern to the
+	corresponding terms in \code{$t_2$}.  As examples of pattern
+	matching rules consider the simplification rules for
+	expressions in Figure~\ref{Fig:simplification}.  Using these
+	definitions, the term
+\code{plusZero (App (App (Prim "+") (Num 0)) (Var "z"))}
+	reduces to
+\code{(Var "z")}.
+
+\subsection{Choosing between Values}
+
+	An application \code{(($p$ -> $t_1$) $t_2$)} of a matching
+	rule fails if the pattern \code{$p$} does not match the
+	argument \code{$t_2$}.  For example, the application
+	\code{plusZero (Var "z")} fails.  In general, an expression
+	fails when a pattern match failure occurs somewhere in the
+	evaluation of the expression.
+
+	In functional languages pattern match failure is handled by
+	means of a case construct in which all alternative rules are
+	combined. Alternatives are tried one by one until a successful
+	match is found. It is generally a fatal error if there is no
+	alternative that matches the subject value. The case construct
+	ties rules together and makes it impossible to reuse rules in
+	different contexts or to pass them on to a function.
+
+	RhoStratego inherits Stratego's left choice operator (\plus)
+	to handle pattern match failure. The term \code{($t_1$ <+
+	$t_2$)} evaluates to the value of \code{$t_1$} unless its
+	evaluation fails, in which case \code{$t_2$} is chosen.  For
+	instance, if \code{$t$} stands for \code{(App (App (Prim "+")
+	(Num 17)) (Num 42))}, the term \code{(plusZero $t$ <+ plusFold
+	$t$)} will first consider the application \code{(plusZero
+	$t$)}. Since that fails the application \code{(plusFold $t$)}
+	is evaluated, which results in \code{(Num 59)}.
+
+	Using the choice operator, individual rules can be combined in
+	various ways to form composite transformations.  For example,
+	the function \code{foldOne} performs one simplification
+	step:
+\begin{verbatim}
+  foldOne = x -> (plusZero x <+ plusFold x);
+\end{verbatim}
+	Note that this function fails if neither rule succeeds.
+
+\subsection{Choosing between Rules}
+
+	Rules are first-class values.  Therefore, it is also possible
+	to choose between rules. Extending the semantics of choice
+	suggested above, the choice \code{($r_1$ <+ $r_2$)} between
+	two rules trivially evaluates to \code{$r_1$} since
+	\code{$r_1$} is a normal form and does not fail.  However, in
+	RhoStratego a choice between two rules is automatically lifted
+	into a rule.  That is, in the term \code{(($t_1$ <+ $t_2$)
+	$t_3$)}, the application is distributed over the choice,
+	yielding \code{($t_1$ $t_3$ <+ $t_2$ $t_3$)}. Thus, the choice
+	is made \emph{after} evaluating \code{($t_1$ $t_3$)}. If the
+	application \code{($t_1$ $t_3$)} evaluates to a rule, the
+	process is repeated. That is, the choice is only consumed when
+	the left-hand side of the choice is a constructed value or
+	failure.
+
+	Thus, we can reformulate the one-step simplification function
+	by taking the choice between the rules \code{plusZero} and
+	\code{plusFold}:
+\begin{verbatim}
+  foldOne = plusZero <+ plusFold;
+\end{verbatim}
+	It is clear that the application-over-choice distribution rule
+	transforms the second definition of \code{foldOne}, after
+	$\eta$-expanding its body, into the first definition.
+
+	\input{simplification.ltx}
+
+\subsection{Cutting Choice}
+
+	A choice catches failure anywhere in its left-hand side
+	alternative.  This is not always desirable.  For example,
+	suppose that we want to distinguish terms representing
+	applications (constructed with \code{App}) from other terms,
+	and take a different action in each case. The formulation
+\begin{quote}
+  \code{App x y -> $t_1$ <+ $t_2$}
+\end{quote}
+	is not adequate, because if $t_1$ fails, after an \code{App}
+	term has been matched, the alternative $t_2$ is still
+	evaluated.  Thus, after the pattern match succeeds we want to
+	commit to the left alternative of the choice and cut off
+	backtracking to its right alternative. This is achieved using
+	the unary {\em cut} operator (\code{\cut}), which indicates
+	that a function or failure result in the left-hand side of the
+	choice should be left as-is.  Using the cut operator the
+	example above can be reformulated as
+\begin{quote}
+  \code{App x y -> \cut$t_1$ <+ $t_2$}
+\end{quote}
+	Now, after matching an \code{App} term, the result of $t_1$
+	is produced, even if that is failure.
+
+\subsection{Creating and Matching Failure}
+
+	Since failure is a value that can be produced by a term, it is
+	also possible to match against it.  Although choice allows
+	catching of failure, explicit matching and creation of failure
+	are needed in a few cases.  An application \code{((fail ->
+	$t_1$) $t_2$)} forces the evaluation of $t_2$. If the result
+	is failure, the body $t_1$ is returned, otherwise the
+	application fails.  The main applications of matching against
+	failure are strict function application and negation by
+	failure.
+
+	Since RhoStratego is a lazy language, the argument of a
+	function is not evaluated before the function is
+	called. Sometimes it necessary to force the evaluation of an
+	argument in order to know whether or not it fails.  Strict
+	function application is achieved with the function \code{st},
+	defined as:
+\begin{verbatim}
+  st = f -> ((fail -> ^fail) <+ f);
+\end{verbatim}
+	It applies a function strictly to its argument. That is, in
+	the application \code{st $t_1$ $t_2$} the evaluation of the
+	argument $t_2$ of the function $t_1$ is forced by matching it
+	against the pattern \code{fail}. In case the evaluation of
+	$t_2$ does not fail the right-hand side of the choice is
+	taken, and $t_1$ is applied to the value of $t_2$.  Note that
+	we must write \code{\cut{}fail} in order to prevent
+	\code{fail} from being caught immediately by the choice.
+	
+	An application of \code{st} is the strict sequential
+	composition function \code{|} (`pipe'), defined as
+\begin{verbatim}
+  | = f -> g -> t -> st g (f t);
+\end{verbatim}
+	which allows us to write transformation pipelines \code{$s_1$
+	| $s_2$ |...| $s_n$}.  Note that this composition operator
+	applies its \emph{left} argument first.
+
+	The constant \code{fail} can be used to create failure outside
+	of a pattern match. This can be used to turn a value into a
+	failure. In the following definition of negation by failure,
+	\code{fail} is used to force failure when a computation
+	succeeds:
+\begin{verbatim}
+  neg = f -> x -> (fail -> x <+ fail) (f x)
+\end{verbatim}
+	An application \code{neg $t_1$ $t_2$} returns the value of
+	$t_2$ if \code{($t_1$ $t_2$)} evaluates to failure, and fails
+	otherwise.
+
+\subsection{Strategy operators}
+
+	Using this machinery we can define higher-order operators for
+	combining transformations. The combinator \code{try}
+\begin{verbatim}
+  try = s -> (s <+ id);
+\end{verbatim}
+	tries the application of a transformation \code{s}, but
+	returns the original term if \code{s} fails. The fixpoint
+	combinator \code{repeat}, defined as
+\begin{verbatim}
+  repeat = s -> try (s | repeat s);
+\end{verbatim}
+	applies a transformation \code{s} repeatedly until it fails.
+	As an application of \code{repeat} consider the strategy
+\begin{verbatim}
+  simplifyMany = 
+    repeat(plusZero <+ (plusComm | plusZero)
+           <+ plusFold);
+\end{verbatim}
+	which repeatedly applies some simplification rules until none
+	applies anymore.
+	
+	Note that we cannot use regular sequential composition in
+	the definition of \code{repeat}, i.e.,
+\begin{verbatim}
+  repeat = s -> try ((repeat s) . s);
+\end{verbatim}
+	as this will cause \code{repeat} to get stuck in an infinite
+	recursion: \code{repeat s} expands into \code{try (repeat s
+	. s)}, which is \code{(repeat s . s) <+ id}.  Since
+	\code{repeat s . s} is equal to \code{t -> repeat s (s t)},
+	and a lazy language first evaluates the left-hand side of this
+	application --- namely \code{repeat s} --- we have a loop.  We
+	must have some strictness to ensure that progress is made.

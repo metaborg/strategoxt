@@ -1,0 +1,45 @@
+\documentclass{article}
+
+\usepackage{latexsym}
+\usepackage{url}
+\usepackage{longtable}
+\usepackage{theorem}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{boxedminipage}
+\usepackage{ccaption}
+\usepackage{amsmath,amstext,amsfonts}
+
+%\let\oldverbatim=\verbatim
+%\let\oldendverbatim=\endverbatim
+%\renewenvironment{verbatim}{\quote\oldverbatim}{\oldendverbatim\endquote}
+
+%\floatstyle{ruled}
+%\restylefloat{figure}
+
+
+\input{../macros.ltx}
+
+  \title{First-class Rules and Generic Traversal}
+  
+  \author{Eelco Dolstra \and Eelco Visser}
+
+%  \affiliation{\small Institute of Information and Computing Science,
+%  Utrecht University, \\ P.O. Box 80089, 3508 TB Utrecht, The
+%  Netherlands. \\ edolstra@cs.uu.nl, visser@acm.org}
+
+\begin{document}
+
+  %\parindent0pt
+  %\parskip.2\baselineskip
+
+  \maketitle
+  
+%  \toappear{}
+
+  \input{body.ltx}
+
+  \bibliographystyle{abbrv}
+  \bibliography{../refs,../wrs-survey}
+
+\end{document}

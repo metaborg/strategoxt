@@ -1,0 +1,415 @@
+Since programs are naturally encoded as {\em terms}, {\em term
+rewriting} \cite{termrewritingandallthat} provides a natural means of
+expressing transformations on programs.  A term rewriting system (TRS)
+consists of a number of {\em rewrite rules} $l \ra r$, where $l$ and
+$r$ are terms containing variables.  A {\em term} is a function symbol
+applied to zero or more terms.  For example, the following two rewrite
+rules express simple transformations over numerical expressions:
+\[
+\begin{array}{rcl}
+  \text{\code{Plus}}(x, y) & \ra & \text{\code{Plus}}(y, x) \\
+  \text{\code{Plus}}(x, \text{\code{Zero}}) & \ra & x
+\end{array}
+\]
+We can {\em apply} a rewrite rule $l \ra r$ to a term $t$ by {\em
+  matching} $t$ against the pattern $l$.  If the match succeeds, we
+replace $t$ by $r$, applying any substitutions found in the match.  A
+rewrite rule can also be applied to a subterm of a term.  A term $t_1$
+{\em reduces} to $t_2$ if there is a sequence of applications of
+rewrite rules that transforms $t_1$ to $t_2$.  A term is in {\em
+  normal form} when no rules apply.  For example, the term
+\code{Plus(Zero, Succ(Zero))} can be normalised to
+\code{Succ(Zero)} by applying the first and then the second rule.
+
+A TRS is {\em confluent} when no term has more than one normal form,
+it is {\em terminating} if there are no infinite sequences of rewrite
+rules, and it is {\em convergent} if it is both confluent and
+convergent, i.e., if every term has a unique normal form.  Clearly,
+the TRS given above is not terminating, since the first rule is always
+applicable to a \code{Plus} term.
+
+Since most interesting rewrite systems (e.g., optimisers) are not
+confluent and/or terminating, simply applying rules randomly is
+insufficient.  We need to {\em control} the rewriting process by
+specifying how and when the rewrite rules are to be applied; we need
+to specify a {\em rewriting strategy}.  Since no particular strategy
+is suitable for all purposes, we need a rewriting language that allows
+the specification of rewrite rules along with the strategies
+controlling how the rewrite rules are applied.  This is precisely the
+concept underlying Stratego \cite{optrewritestrat}.  It also supports
+generic traversals: the ability to apply transformations in arbitrary
+terms according to some traversal strategy.  In the remainder of this
+chapter we give an overview of Stratego.  Complete information can be
+found in \cite{stratego, strategosysdescr05}.
+
+
+\section{Terms and rewriting}
+
+\paragraph{Terms}
+Unsurprisingly for a system based on term rewriting, Stratego programs
+operate on {\em terms}.  A Stratego term is either an integer or string
+constant, or a {\em constructor} (or {\em function symbol}, as they
+are called in rewriting literature) applied to zero or more terms
+(called {\em subterms}).
+
+\begin{example}[Terms]
+  The following are terms:
+\begin{verbatim}
+Plus(Succ(Zero), Succ(Succ(Zero)))
+Def("id", Lambda("x", Var("x")))
+\end{verbatim}
+\end{example}
+
+
+\paragraph{Strategies}
+A Stratego program (or {\em specification}) consists of a set of named
+{\em strategies}.  A strategy rewrites an unnamed term called the {\em
+  current term}.  Stratego provides the following primitive
+strategies:
+\begin{itemize}
+\item The {\bf match} primitive, written as \code{?$pat$}, matches the
+  current term against a {\em pattern}.  A pattern is a term that may
+  contain variables.  If a match is successful, the current term is
+  unaffected and the variables (if any) become bound in the current
+  scope (see below) to the matching (sub)terms of the current term.
+  If a match fails, the current term is replaced by the special symbol
+  \fail{} (`fail').
+\item The {\bf build} primitive, written as \code{!$term$}, replaces
+  the current term with the specified term.
+\end{itemize}
+
+\begin{example}[Match and build]
+  The following strategy will match successfully against
+  \code{Plus(Zero, Succ(Succ(Zero)))} (the number 2 in Peano-style),
+  with \code{x} becoming bound to \code{Succ(Succ(Zero))}:
+\begin{verbatim}
+s = ?Plus(Zero, x)
+\end{verbatim}
+  \begin{sloppypar}
+  On the other hand, the same match applied to the term
+  \code{Plus(Succ(Zero), Succ(Succ(Zero)))} will yield \fail.
+  \end{sloppypar}
+
+  The following strategy builds a term:
+\begin{verbatim}
+s = !Plus(Succ(Zero), Succ(Succ(Zero)))
+\end{verbatim}
+\end{example}
+
+\paragraph{Combining strategies}
+Strategies can be combined using the following primitive strategy
+operators:
+\begin{itemize}
+  
+\item {\bf Sequential composition}, written as \code{$s_1$ ; $s_2$},
+  applies $s_1$ to the current term, and if it is successful (i.e.,
+  does not yield \fail), then $s_2$ is applied to the result of $s_1$.
+  If $s_1$ yields \fail, then the result of the composition is \fail.
+  In pseudo-notation, making the current term explicit and viewing
+  strategies as functions from terms to terms, its semantics is as
+  follows:
+  \[
+  (s_1 \; \text{\code{;}} \; s_2) \; t = 
+  \left\{
+    \begin{array}{ll}
+      s_2 \; (s_1 \; t) & \text{if $s_1 \; t \ne \fail$} \\
+      \fail & \text{otherwise}
+    \end{array}
+  \right.
+  \]
+  
+\item {\bf Left choice} (also referred to as {\em left-biased
+    choice}), written as \code{$s_1$ <+ $s_2$}, applies $s_1$ to the
+  current term, and if that is {\em unsuccessful}, applies $s_2$ to
+  the (original) current term.  In pseudo-notation:
+  \[
+  (s_1 \; \text{\code{<+}} \; s_2) \; t = 
+  \left\{
+    \begin{array}{ll}
+      s_1 \; t & \text{if $s_1 \; t \ne \fail$} \\
+      s_2 \; t & \text{otherwise} 
+    \end{array}
+  \right.
+  \]
+  
+\item {\bf Indeterministic choice}, written as \code{$s_1$ + $s_2$},
+  is like left choice, except that it {\em may} reverse the arguments,
+  i.e., try $s_2$ first and do $s_1$ if $s_2$ fails.  The order in
+  which the arguments are tried is left undefined\footnote{In the
+    current implementation of Stratego the left argument is tried
+    first, so indeterministic choice is identical to left choice.
+    This behaviour should not be relied on, however, as it is
+    implementation dependent.}.  The advantage of indeterministic
+  choice is that it gives the compiler the freedom to rearrange
+  matches to achieve greater efficiency.  In pseudo-notation:
+  \[
+  (s_1 \; \text{\code{+}} \; s_2) \; t = 
+  \left\{
+    \begin{array}{ll}
+      s_1 \; t & \text{if $s_1 \; t \ne \fail$} \\
+      s_2 \; t & \text{if $s_2 \; t \ne \fail$} \\
+      \fail & \text{otherwise}
+    \end{array}
+  \right.
+  \]
+  Note that the conditions in the right-hand side of the first two
+  clauses are not mutually exclusive.
+
+\end{itemize}
+
+
+\begin{example}[Peano axioms]
+  The Peano axioms for addition can be expressed as follows:
+\begin{verbatim}
+plus0 = ?Plus(Zero, x); !x 
+plusN = ?Plus(Succ(x), y); !Plus(x, Succ(y))
+\end{verbatim}
+\end{example}
+
+
+
+\paragraph{Rules}
+
+{\em Rules} are strategies written in a notation that is more
+conventional in term rewriting.  A rule has the form $pat \ra term$
+where the current term is matched against the pattern and replaced by
+the right-hand side, if the match is successful.  It is syntactic sugar
+for the sequential composition \code{?$pat$ ; !$term$}.
+
+\begin{example}[Rules]
+  The previous example can also be written as
+\begin{verbatim}
+plus0: Plus(Zero, x) -> x
+plusN: Plus(Succ(x), y) -> Plus(x, Succ(y))
+\end{verbatim}
+\end{example}
+
+As said before, strategies are named, and they can therefore invoke
+each other.  In addition, strategies are {\em higher-order}: they can
+be passed to other strategies as {\em strategy parameters}.  
+
+\begin{example}
+The standard strategy operator \code{try} applies a strategy \code{s}
+to the current term, leaving the current term unmodified if \code{s}
+fails:
+\begin{verbatim}
+try(s) = s <+ id
+\end{verbatim}
+where \code{id} is the identity strategy.
+\end{example}
+
+It should be noted that while strategies can be passed as arguments to
+other strategies, terms can only be passed to strategies as the
+current term or as a build strategy (e.g., \code{f(!t)}).
+
+
+\paragraph{Strategy application and where-clauses}
+
+While strategies are usually applied to the current term, they can
+also be applied to subterms.  Stratego also has {\em where-clauses} that
+allow terms to be computed and named separately from the current term.
+
+\begin{example}
+The following strategy:
+\begin{verbatim}
+s = where (<plusN> Plus(Succ(Zero), Zero) => x);
+    !Plus(<plus0> Plus(Zero, Zero), x)
+\end{verbatim}
+will result in the term \code{Plus(Zero, Plus(Zero, Succ(Zero)))}.
+\end{example}
+
+
+\paragraph{Recursion}
+
+Stratego currently only support {\em explicit} recursion.  A strategy
+$s$ is allowed to call itself neither directly nor indirectly.
+Rather, recursion must be specified through the {\em recursion
+  operator} \code{rec}.
+
+\begin{example}[Recursion]
+The function \code{map} that applies a strategy to all elements of a
+list can be expressed as follows:
+\begin{verbatim}
+map(s) = rec x(\[] -> []\ + \[y | ys] -> [<s> y | <x> ys]\)
+\end{verbatim}
+\code{[]} and \code{[x|xs]} are the constructors of a regular
+nil/cons-list.  A rule between backslashes (e.g., \code{\backsl{}[] ->
+[]\backsl{}}) is an {\em anonymous} rule.
+
+The standard strategy \code{repeat} applies a strategy until it no
+longer succeeds.
+\begin{verbatim}
+repeat(s) = rec x(s; x <+ id)
+\end{verbatim}
+Note that sequential composition binds stronger than the choice
+operators.  We can use \code{repeat} to do Peano-style addition:
+\begin{verbatim}
+eval = repeat(plus0 + plusN)
+\end{verbatim}
+\end{example}
+
+
+\paragraph{Scope}
+By default, the match operator will bind variables throughout the
+entire strategy.  This means that for example \code{map(?Foo(x);
+  !Bar(x))} will probably not do what is expected, i.e., transform all
+\code{Foo}s into \code{Bar}s; all the \code{x}s in the list have to be
+equal as well.  We can write \code{map(\symbol{123}x: ?Foo(x);
+  !Bar(x)\symbol{125})} to restrict the scope of \code{x} to the
+strategy argument of \code{map}.  Alternatively, we can use an
+anonymous rule \code{map(\backsl{}Foo(x) -> Bar(x)\backsl{})}; the
+variables occurring in the left-hand side of
+the rule are only in scope in the rule itself.
+
+
+\paragraph{Congruences}
+
+Congruences are syntactic sugar for a common transformational pattern.
+A congruence \code{C($s_1$, ..., $s_n$)} is equivalent to the rule
+\code{C($x_1$, ..., $x_n$) \ra C(<$s_1$> $x_1$, ..., <$s_n$> $x_n$)};
+that is, we specify the $n$ strategies to be applied to the subterms
+of an $n$-ary term.
+
+\begin{example}
+The previous example can be written more succinctly as:
+\begin{verbatim}
+map(s) = rec x([] + [s | x]);
+\end{verbatim}
+The following strategy applies a strategy \code{s} to all the values
+in the leaves of a binary tree:
+\begin{verbatim}
+t(s) = rec x(BinTreeNode(x, x) + BinTreeLeaf(s))
+\end{verbatim}
+\end{example}
+
+Note that there is no collision between \code{C(...)} used as a
+congruence, a build, or a match, since the latter two must be
+prefixed by a \code{!} or \code{?} operator, respectively.
+
+
+
+\section{Generic traversals}
+
+Generic traversals are constructed from two primitive strategy
+operators: \code{all} and \code{one}.  \code{all} applies a strategy
+to all children of a term; it fails if the strategy fails to apply to
+at least one child.  \code{one} applies a strategy to exactly one
+child of a term; it fails if there is no term to which the strategy
+applies.
+
+\begin{example}
+  \code{all} and \code{one} allow more complex traversals to be
+  constructed.
+\begin{verbatim}
+topdown(s)  = rec x(s; all(x))
+bottomup(s) = rec x(all(x); s)
+oncetd(s)   = rec x(s <+ one(x))
+oncebu(s)   = rec x(one(x) <+ s)
+\end{verbatim}
+  \code{topdown} and \code{bottomup} apply a strategy to all subterms
+  in a top-down or bottom-up fashion, respectively; \code{oncetd} and
+  \code{oncebu} apply a strategy to exactly one subterm.  Simple
+  examples of the use of these strategy operators include:
+\begin{verbatim}
+rename = topdown(try(Var("x") -> Var("y")))
+simplify = topdown(repeat(plus0))
+occurs_x = oncetd(?Var("x"))
+\end{verbatim}
+  The latter strategy fails if a variable named \code{x} does not
+  occur in the current term.  
+\end{example}
+
+
+\paragraph{Generic algorithms}
+
+Using generic traversals it is possible to specify generic algorithms.
+Some classes of transformations appear very often, no matter what the
+language being transformed is.  Examples are renaming, performing
+substitutions, and inlining.  Rather than write specific code for each
+language, it is possible to write these transformations generically;
+then they only have to be parameterised with the specifics of each
+language.  Generic implementations of renaming and substitution are
+described in \cite{langindtrav} (these are used in section
+\ref{sec:rhobindings}).
+
+
+\section{XT}
+
+Stratego is part of XT, the Program Transformation Tools \cite{xt}.
+XT bundles a large number of tools for program transformation,
+including:
+\begin{itemize}
+\item The {\bf ATerm} library \cite{aterm} is a C library for working
+  efficiently with tree-structured terms, and is used by Stratego.  It
+  can read and write terms in textual and binary formats.  The ATerm
+  file format is the glue that holds the XT tools together.  An
+  interesting aspect of the ATerm library is its {\em maximal
+    sharing}: if two terms are equal, then they have the same memory
+  address.  This often reduces memory usage substantially and may
+  increase performance (because equality tests are very cheap).
+\item {\bf sglr} is a Scannerless Generalised LR parser.  The fact
+  that it is scannerless means that the lexical syntax is specified in
+  the same language as the context-free syntax; there is no need to
+  use a separate lexical analyser generator.
+\item {\bf Grammar Base} is a large collection of ready-to-use
+  grammars for \code{sglr}.  It includes grammars for C, Cobol,
+  Haskell, Java, XML, and many others.
+\end{itemize} 
+
+
+\section{Conclusion}
+
+Stratego has the following advantages:
+
+\begin{itemize}
+  
+\item Genericity.  Stratego makes it very easy to traverse a term and
+  transform it.
+
+\item It is untyped.  This is sometimes nice because:
+  \begin{itemize}
+  \item It allows rapid development of transformations.  Sometimes,
+    for example, we want to write transformations that apply to only a
+    small part of the abstract syntax (say, in a desugarer).  Not
+    having to specify data types for the entire abstract syntax saves
+    time.
+  \item It allows terms of different types to be mixed freely.
+  \end{itemize}
+  
+\item Congruences make it very it easy to express certain kinds of
+  transformations on terms (namely, those that are sort-preserving).
+
+\item It is smoothly integrated (through the ATerm interface) into the
+  XT toolbox.
+
+\end{itemize}
+
+On the other hand, it has a number of disadvantages:
+
+\begin{itemize}
+  
+\item It is untyped.  A substantial amount of development time is lost
+  finding trivial bugs that could have been detected by a type
+  checker.  Type checking gives a proof of a certain kind of
+  correctness of a program; the lack of a type discipline means that
+  there are very few static guarantees with regard to correctness.
+  Unfortunately, typing Stratego is not very easy, but there is
+  progress in this area \cite{typedgenerictraversals}.
+  
+\item The language has two kinds of objects, namely, terms and
+  strategies; the strategies operate on the terms.  These are strictly
+  separated; and so it is not possible, for example, to pass a
+  strategy to another strategy as part of a term; strategy arguments
+  are required to obtain higher-order strategies.
+
+\end{itemize}
+
+These two disadvantages are solved in modern functional languages.
+After all, such languages are strongly typed and are founded upon the
+\lcalc{} \cite{lambdacalculus}.  The main feature of the \lcalc{} is
+precisely that it unifies terms and the things operating on terms
+(i.e., data and code).  Functional languages also typically have
+extensive pattern matching facilities.  In the next chapter we look at
+whether strategic programming is easily possible in one particular
+functional language.
+

@@ -1,0 +1,27 @@
+The machine representation used here for constructed values is simple
+to implement, but inefficient: a constructor with $n$ arguments will
+require $2n + 1$ closures (one closure for the constructor, $n$
+closures for the arguments, and $n$ closures for the constructor
+applications)!  In more conventional representations, the pointers to
+argument closures are stored in the constructor closure itself, so
+that only $n + 1$ closures are required (one for the constructor, and
+$n$ for the arguments).  There are two reasons why we cannot do that:
+\begin{itemize}
+\item In the untyped RhoStratego language, the arity of constructors
+  is neither known at compile-time neither fixed at runtime (we can
+  write a function that applies a constructor to an arbitrary number
+  of arguments).
+\item In a application pattern match the left-hand side may be bound
+  to a variable and applied to something else; hence, the left-hand
+  side cannot be shared.  This is also the case in the typed
+  RhoStratego language.
+\end{itemize}
+Note that the space-complexity is the same: $\Theta(n)$.
+
+If we want to use the conventional representation in the typed variant
+of the language, we can do so by making a copy of the closure in the
+application pattern match.  But this is very inefficient, since
+deconstructing a term completely (as it happens in \code{all}, for
+example), will require $\Theta(n^2)$ space and time complexity
+(although the space will be garbage-collected).
+

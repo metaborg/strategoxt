@@ -1,0 +1,171 @@
+all, one :: (a . a -> a) -> (b . b -> b);
+all = f ->
+  (c x -> ^(all f c (f x)) <+ c -> c);
+
+one = f -> (c x -> ^((fail -> ^((one f c) x) <+ c) (f x)) <+ (c -> fail));
+
+data Bool;
+True :: Bool;
+False :: Bool;
+
+==, != :: a . a -> a -> Bool;
+&&, || :: Bool -> Bool -> Bool;
+&& = True -> True -> True <+ x -> y -> False;
+== = c x -> d y -> ^((c == d) && (x == y)) 
+     <+ x -> y -> primOp "p_primeq";
+#end
+prefix :: a . b . a -> (b -> a);
+prefix = c x -> c;
+#end
+postfix :: a . b . a -> b;
+postfix = c x -> x;
+x = postfix True;
+#end
+
+id' :: a . a -> a;
+id' = c x -> c x;
+#end
+#f = x -> x;
+
+#z = f 123;
+#z' = f "foo";
+
+const :: a . a -> (b . b -> a);
+const = x -> (y -> x);
+
+id :: a . a -> a;
+id = x -> x;
+
+f = id 123;
+g = const "foo" 456;
+
+xx :: Int;
+
+z :: Int;
+z = 
+  let
+    x :: Int;
+    x = 123;
+    y = "x";
+  in xx;
+
+h :: a . b . (a -> b) -> a -> b;
+h = f -> x -> f x;
+
+main :: Int;
+main = twice id 123;
+
+#z :: Int;
+#z = 456;
+
+#f :: a . a -> a;
+#f = (x :: a) -> x;
+
+#g :: Int;
+#g = 
+#  let 
+#    x :: Int;
+#    x = let in 3; 
+#  in x;
+
+#h :: String -> String;
+#h = (x :: String) -> x;
+
+
+twice :: a . (a -> a) -> a -> a;
+twice = f -> x -> f (f x);
+
+#twice' :: a . (a -> a) -> a -> a;
+#twice' = f -> x -> f x;
+
+foo :: Int -> Int;
+foo = 123 -> 456;
+
+data C a;
+C :: a -> a -> C a;
+bar :: Int -> C Int;
+bar = x -> C x 123;
+
+bar' :: C Int -> C Int;
+bar' = C x 123 -> bar x;
+
+data Fork a;
+Fork :: a -> a -> Fork a;
+bar'' :: a . Fork a -> Fork a;
+bar'' = Fork x y -> Fork y x;
+
+data Tup a b;
+Tup :: a -> b -> Tup a b;
+f2 :: b . c . (a . a -> a) -> b -> c -> Tup b c;
+f2 = f :: (a . a -> a) -> x -> y -> Tup (f x) (f y);
+
+prefix :: a . b . a -> (b -> a);
+prefix = c x -> c;
+
+#end
+
+postfix :: a . b . ((a -> b) a) -> a;
+postfix = ((c :: (a -> b)) x) -> x;
+
+nop :: b . a . ((a -> b) a) -> b;
+nop = ((c :: (a -> b)) x) -> c x;
+
+data Foo = Int;
+
+# FIXME
+#nop' :: Foo;
+#nop' = nop (Foo 123);
+
+data Nil;
+data Cons a = a, (List a);
+syn List a = Nil + (Cons a);
+data Tup a b = a, b;
+
+f :: Int;
+f = (Tup 0 "bla" -> 456) (Tup 123 "foo");
+
+fst :: g . h . Tup g h -> g;
+fst = Tup x y -> x;
+
+try :: a . (a -> a) -> (a -> a);
+try = (s :: (a -> a)) -> (s <+ id);
+
+bla :: Int -> Int;
+bla = try (123 -> 456);
+
+# Equational reasoning problem: in "id <+ (0 -> 0)" id has type
+# a . a -> a.  But if we substitute id's definition, we get
+# ((x :: a) -> x) <+ (0 -> 0) where the rhs has type a -> a which
+# is not polymorphic.  When should we generalize/specialize?
+
+data True;
+data False;
+data Bliep;
+syn Bool = True + False;
+xyzzy :: Int;
+xyzzy = ((x :: True + False + Bliep) -> 0) False;
+
+not :: Bool -> Bool;
+not = (True  :: Bool) -> (False :: Bool) <+ 
+      (False :: Bool) -> (True  :: Bool);
+
+q :: (a . a -> a) -> Bool -> Bool;
+q = (f :: (a . a -> a)) -> x -> f x;
+
+r :: Bool;
+r = q id True;
+
+q' :: ((a . a -> a) -> Bool) -> Bool;
+q' = (f :: ((a . a -> a) -> Bool)) -> f id;
+
+r' :: Bool;
+r' = q' s';
+
+s' :: (Int -> Int) -> Bool;
+s' = (f :: (Int -> Int)) -> True;
+
+lettest :: Int;
+lettest = 
+  let x :: Int;
+      x = 123;
+  in x;

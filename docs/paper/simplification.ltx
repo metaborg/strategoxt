@@ -1,0 +1,33 @@
+\begin{figure}[tb]
+\begin{boxedminipage}{\hsize}
+\begin{verbatim}
+plusZero = 
+  App (App (Prim "+") (Num 0)) x -> x;
+plusComm = 
+  App (App (Prim "+") x) y -> 
+  App (App (Prim "+") y) x;
+plusFold = 
+  App (App (Prim "+") (Num i)) (Num j) -> 
+  Num (i + j);
+mulFold = 
+  App (App (Prim "*") (Num i)) (Num j) -> 
+  Num (i * j);
+beta = 
+  App (Abs x e1) e2 -> Let x e2 e1;
+letVar =
+  Let x e (Var x) -> e;
+letApp =
+  Let x e1 (App e2 e3) ->
+  App (Let x e1 e2) (Let x e1 e3);
+letHoist =
+  Let x (Let y e1 e2) e3 -> 
+  Let y e1 (Let x e2) e3;
+appLetL = 
+  App (Let x e1 e2) e3 -> Let x e1 (App e1 e2);
+appLetR = 
+  App e1 (Let x e2 e3) -> Let x e2 (App e1 e2);
+\end{verbatim}
+\end{boxedminipage}
+\caption{Simplification rules}
+\label{Fig:simplification}
+\end{figure}

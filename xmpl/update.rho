@@ -1,0 +1,12 @@
+#! /bin/sh ../utrecht/rho-run
+
+#include "stdlib.rh"
+
+sum = foldr (x -> y -> x + y) 0;
+
+fromTo = start -> end -> 
+  if (start > end) [] (start : (fromTo (start+1) end));
+
+x = sum (fromTo 1 10000);
+
+main = print (x + x);

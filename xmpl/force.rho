@@ -1,0 +1,7 @@
+#! /bin/sh ../utrecht/rho-run
+
+#include "stdlib.rh"
+
+x = x;
+test1 = C x;
+main = (C y -> 123) (force test1);

@@ -1,0 +1,452 @@
+\documentclass[pdftex, leqno, fleqn]{foils}
+\usepackage{color}
+\usepackage{latexsym}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amstext}
+\usepackage{graphicx}
+
+\newif\ifpdf
+\ifx\pdfoutput\undefined
+  \pdffalse
+\else
+  \pdfoutput=1
+  \pdftrue
+\fi
+
+\ifpdf
+  \usepackage[pdftex]{hyperref}
+  \pdfcompresslevel=9
+\else
+\fi
+
+
+\input{../macros.ltx}
+
+\setlength{\parindent}{0pt}
+
+
+\title{First Class Rules and Generic Traversals for Program
+  Transformation Languages}
+\author{Eelco Dolstra\\ \code{edolstra@students.cs.uu.nl}}
+\date{August 10, 2001}
+\MyLogo{August 10, 2001}
+
+
+
+\begin{document}
+
+\maketitle
+
+
+\foilhead{Introduction}
+
+\begin{itemize}
+\item Goal: languages for writing program transformations (compilers,
+  migration, desugarers, optimisers)
+\item What features?
+  \begin{itemize}
+  \item First class rules
+  (separation of rules and strategies \Ra strategic programming)
+  \item Generic traversals
+  \end{itemize}
+\item How to implement strategic features in functional languages?
+\end{itemize}
+
+
+\foilhead{Stratego (1)}
+
+{\bf Stratego}: program transformation language based on separation of
+rules and strategies
+
+Rules:
+
+\begin{verbatim}
+plus0: App(App(Var("+"), e), Num(0)) -> e
+comm: App(App(Var("+"), e1), e2) ->
+      App(App(Var("+"), e2), e1)
+beta: App(Lam(x, e1), e2) -> Let(x, e2, e1)
+\end{verbatim}
+
+Strategy:
+
+\begin{verbatim}
+optimise = bottomup(repeat(
+    plus0 + (comm; plus0) + beta
+))
+\end{verbatim}
+
+
+\foilhead{Stratego (2)}
+
+\begin{verbatim}
+try(s)      = s <+ id
+repeat(s)   = rec x(s; x <+ id)
+bottomup(s) = rec x(all(x); s)
+topdown(s)  = rec x(s; all(x))
+oncetd(s)   = rec x(s <+ one(x))
+\end{verbatim}
+
+Generic traversal primitives: 
+\begin{itemize}
+\item \code{all(s)}: Apply \code{s} successfully to all subterms
+\item \code{one(s)}: Apply \code{s} successfully to exactly one subterm
+\end{itemize}
+
+
+\foilhead{RhoStratego}
+
+RhoStratego is a non-strict pure functional language with:
+\begin{itemize}
+\item Constructors and pattern matching, e.g.
+\begin{verbatim}
+plus0 = App (App (Var "+") e) (Num 0) -> e;
+comm  = App (App (Var "+") e1) e2 ->
+        App (App (Var "+") e2) e1;
+beta  = App (Lam x e1) e2 -> Let x e2 e1;
+\end{verbatim}
+\item Failure and a choice operator
+\item A generic traversal primitive
+\end{itemize}
+
+
+\foilhead{Choice}
+
+If a pattern match fails, the result is \code{fail}, e.g.
+\\
+\code{beta (Var "foo")} \Ra \code{fail}
+
+The choice operator \code{<+} first tries its left alternative, and
+then its right alternative if the left one fails.
+
+\begin{verbatim}
+f = plus0 <+ (comm | plus0);
+\end{verbatim}
+(\code{|} = sequential composition, left-to-right)
+
+
+\foilhead{Distribution}
+
+We choose between functions {\bf applied to values}.  The distribution
+rule pushes arguments into choice alternatives:
+\[
+\mbox{\sc{Distrib}}:
+(e_1 \; \plus \; e_2) \; e_3
+\goesto
+e_1 \; e_3 \; \plus \; e_2 \; e_3
+\]
+
+Alternative would be to do this manually:
+\begin{verbatim}
+f = x -> (plus0 x <+ (comm | plus0) x);
+\end{verbatim}
+
+
+\foilhead{Failure / cuts}
+
+We can pattern match against failure:
+
+\begin{tabular}{ll}
+\code{x = (fail -> 123) fail;} & \Ra \code{123} \\
+\code{x = (fail -> 123) 456;} & \Ra \code{fail} \\
+\end{tabular}
+
+Sometimes we want to let failure or a function ``escape'' out of a
+left alternative \Ra cuts
+
+Example: strict application
+\begin{verbatim}
+st = f -> ((fail -> ^fail) <+ f);
+\end{verbatim}
+
+
+
+\foilhead{Pattern matching (1)}
+
+Redundant:
+\begin{itemize}
+\item Case
+\begin{verbatim}
+f = x -> case x of
+           A       -> 123;
+           B "foo" -> 456;
+           _       -> 0;
+\end{verbatim}
+\Ra
+\begin{verbatim}
+a = A       -> 123;
+b = B "foo" -> 456;
+c = y       -> 0;
+f = a <+ b <+ c;
+\end{verbatim}
+\item Equational style
+\item Pattern guards
+\item Views / transformational patterns (somewhat)
+\end{itemize}
+
+
+\foilhead{Pattern matching (2)}
+
+{\bf Pattern guards}: instead of
+\begin{verbatim}
+f env var | isJust (lookup env var)
+          = fromJust (lookup env var)
+f env var = 0
+\end{verbatim}
+\begin{verbatim}
+f env var | Just x <- lookup env var = x
+f env var = 0
+\end{verbatim}
+
+In RhoStratego
+\begin{verbatim}
+f = env -> var -> (lookup env var <+ 0);
+\end{verbatim}
+
+
+\foilhead{Pattern matching (3)}
+
+{\bf Transformational patterns}:
+\begin{verbatim}
+f (x:xs)!reverse = x
+f []    !reverse = 0
+\end{verbatim}
+
+In RhoStratego, given
+\begin{verbatim}
+snoc = reverse | ((x:xs) -> <x, xs>);
+lin = [] -> <>;
+\end{verbatim}
+we can write 
+\begin{verbatim}
+f = {snoc} x xs -> x <+ {lin} -> 0;
+\end{verbatim}
+
+Compare this with
+\begin{verbatim}
+f = Cons   x xs -> x <+ Nil   -> 0;
+\end{verbatim}
+\code{f} is desugared into:
+\begin{verbatim}
+f =  y -> (<x, xs> -> x) (snoc y) 
+  <+ y -> (<>      -> 0) (lin y);
+\end{verbatim}
+
+
+\foilhead{Generic traversals (1)}
+
+\begin{itemize}
+\item Generic traversals are implemented using {\bf application
+    pattern matches}.
+\item Allows deconstruction of construction applications:
+\begin{verbatim}
+f = (c x -> c) (A B C); // = A B
+g = (c x -> x) (A B C); // = C
+\end{verbatim}
+\item Traverse arguments linearly, e.g.:
+\begin{verbatim}
+termSize = c x -> termSize c + termSize x
+        <+   x -> 1;
+\end{verbatim}
+\end{itemize}
+
+
+\foilhead{Generic traversals (2)}
+
+We can now write \code{all} and \code{one}:
+
+\begin{verbatim}
+all = f -> 
+  (c x -> ^(st (all f c) (f x)) <+ id);
+\end{verbatim}
+
+\begin{verbatim}
+one = f -> 
+  c x -> (st c (f x) <+ one f c x);
+\end{verbatim}
+
+And more complex traversals:
+\begin{verbatim}
+topdown  = s -> s | all (topdown s);
+bottomup = s -> all (bottomup s) | s;
+oncetd   = s -> (s <+ one (oncetd s));
+force    = all force;
+\end{verbatim}
+
+
+\foilhead{Type system (1)}
+
+{\bf Type preserving}: e.g., \code{all}, \code{one},
+\code{topdown}
+\[
+\forall \beta . (\forall \alpha . \alpha \ra \alpha)
+\ra \beta \ra \beta
+\]
+
+{\bf Type unifying}: e.g., \code{collect}
+\begin{verbatim}
+varNames = collect (Var x -> x);
+\end{verbatim}
+\[
+\forall \alpha . \forall \beta . (\forall \gamma .  \gamma \ra
+\beta) \ra \alpha \ra [\beta]
+\]
+
+
+\foilhead{Type system (2)}
+
+How to type \code{all}?
+\begin{verbatim}
+all = f -> 
+  (c x -> ^(st (all f c) (f x)) <+ id);
+\end{verbatim}
+From the assumptions
+\[
+\begin{array}{lcl}
+  \text{\code{all}} & \text{\code{::}} &
+  \forall \beta . (\forall \alpha . \alpha \ra \alpha)
+  \ra \beta \ra \beta
+  \\
+  \text{\code{f}} & \text{\code{::}} &
+  \forall \alpha . \alpha \ra \alpha
+  \\
+  \text{\code{c}} & \text{\code{::}} &
+  \tau_2 \ra \tau_1
+  \\
+  \text{\code{x}} & \text{\code{::}} &
+  \tau_2
+\end{array}
+\]
+we can derive:
+\[
+\begin{array}{lcl}
+  \text{\code{all f}} & \text{\code{::}} &
+  \tau_3 \ra \tau_3
+  \\
+  \text{\code{all f c}} & \text{\code{::}} &
+  \tau_2 \ra \tau_1
+  \\
+  \text{\code{f x}} & \text{\code{::}} &
+  \tau_2
+  \\
+  \text{\code{all f c (f x)}} & \text{\code{::}} &
+  \tau_1
+\end{array}
+\]
+
+
+But we should be careful; consider \code{c x -> x} (with type $\forall \alpha
+. \forall \beta . \alpha \ra \beta$)
+
+
+\foilhead{Type system (3)}
+
+
+{\sc Generic}:
+\[
+{
+\begin{array}{l}
+n \ge 1
+\; \wedge \;
+x_0 : (\alpha_1 \ra \dots \ra \alpha_n \ra \alpha_0) \in \Gamma
+\; \wedge \; \\
+x_1 : \alpha_1 \in \Gamma
+\dots
+\; \wedge \;
+x_n : \alpha_n \in \Gamma
+\end{array}
+\over
+\Gamma \vdash_p (x_0 \; x_1 \; \dots \; x_n) : 
+\term{Gen}(\alpha_0, \alpha_1, \dots, \alpha_n)
+}
+\]
+
+{\sc Contract}:
+\[
+{
+\begin{array}{l}
+\Gamma \vdash e : \tau [\term{Gen}(\alpha_0, \alpha_1, \dots, \alpha_n)] 
+\; \wedge \;  \\
+(\forall i, 0 \le i \le n: \alpha_i \not\in \text{fv}(\Gamma))
+\; \wedge \; \\
+(\forall i, 1 \le i \le n: \alpha_i \not\in \text{fv}(\tau))
+\end{array}
+\over
+\Gamma \vdash e : \tau [\alpha_0]
+}
+\]
+
+Now \code{c x -> all f c (f x)} gets type \\
+$\term{Gen}(\tau_0, \tau_1)
+\ra \tau_0$ (using {\sc Generic}) which becomes $\tau_0 \ra \tau_0$
+(using {\sc Contract}).
+
+
+\foilhead{Type system (4)}
+
+How do we use \code{all} et al.?  Argument has type $\forall \alpha
+. \alpha \ra \alpha$.
+
+\Ra {\bf runtime mechanism}
+
+\begin{verbatim}
+rename = 
+  topdown (try (Exp?Var "x" -> Var "y"));
+\end{verbatim}
+Type of \code{Exp?Var "x" -> Var "y"} is \code{(?Exp) \ra Exp}, which
+can be {\bf widened} into $\alpha \ra \alpha$ (and then generalised
+into $\forall \alpha . \alpha \ra \alpha$).
+
+\begin{verbatim}
+varNames = collect (Exp?Var x -> x);
+\end{verbatim}
+Type of \code{Exp?Var x -> x} is \code{(?Exp) \ra String}, which
+becomes $\forall \gamma . \gamma \ra \text{\code{String}}$.
+
+
+\foilhead{Type system (5)}
+
+{\sc Rttc}:
+\[
+{
+\Gamma \vdash_p p : \sigma
+\over
+\Gamma \vdash (\sigma \term{?} p) : \term{?} \sigma
+}
+\]
+
+{\sc Widen}:
+\[
+{
+\Gamma \vdash e : \term{?} \sigma \ra ([\alpha := \sigma] \tau)
+\over
+\Gamma \vdash e : \alpha \ra \tau
+}
+\]
+
+
+
+\foilhead{Implementation}
+
+\begin{itemize}
+\item Interpreter (lazy and strict variants)
+\item Compiler (to C)
+\item Type inferencer
+\item Standard library; reads and writes ATerms, and so can be easily
+  interfaced with XT
+\end{itemize}
+
+
+\foilhead{Conclusion}
+
+\begin{itemize}
+\item Application pattern matches are a simple but quite powerful
+  primitive for constructing generic traversals
+\item Application pattern matches can be typed; type safety of type
+  unifying and type preserving functions is guaranteed
+\item Allows notation very similar to Stratego (and rewriting)
+\item Choices liberate pattern matching
+\end{itemize}
+
+
+\end{document}

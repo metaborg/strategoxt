@@ -1,0 +1,9 @@
+#! /bin/sh ../utrecht/rho-run
+
+#include "stdlib.rh"
+
+list :: [Int];
+list = [1, 2, 3];
+
+main :: IO <>;
+main = print (map (const 42) list);

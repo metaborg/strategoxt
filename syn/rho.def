@@ -1,0 +1,143 @@
+definition
+
+
+module Main
+imports Rho
+
+
+module Rho
+imports Rho-Layout Rho-Defs
+exports
+  sorts Program
+  context-free syntax
+    Defs	              -> Program {cons("Program")}
+
+
+module Rho-Defs
+imports Rho-Layout Rho-Terms Rho-Types
+exports
+  sorts Def Defs
+  context-free syntax
+    Def*	              -> Defs
+    Id "=" Term  ";"          -> Def {cons("Def")}
+    Ids "::" Type ";"         -> Def {cons("Sig")}
+    ConIds "::" Type ";"      -> Def {cons("TSig")}
+    "data" ConId Var* ";"     -> Def {cons("Data")}
+    "syn" ConId Var* "=" Type ";"   -> Def {cons("Syn")}
+  context-free priorities
+    Id                        -> Ids {cons("IdN")}
+  > Id "," Ids                -> Ids {cons("IdC")}
+  context-free priorities
+    ConId                     -> ConIds {cons("ConIdN")}
+  > ConId "," ConIds          -> ConIds {cons("ConIdC")}
+
+
+
+module Rho-Terms
+imports Rho-Layout Rho-Defs Rho-Constants
+exports
+  sorts Term
+  context-free syntax
+    "fail"                    -> Term {cons("Fail")}
+    Var 	              -> Term {cons("Var")}
+    Con 	              -> Term {cons("Con")}
+    "_"                       -> Term {cons("Any")}
+    "(" BinOp ")"             -> Term {cons("Var")}
+    "(" ConOp ")"             -> Term {cons("Con")}
+    "(" Term ")"              -> Term {bracket}
+    "@" Con "(" Terms ")"     -> Term {cons("Congr")}
+    "{" Term "}"              -> Term {cons("XPat")}
+    "<" Terms ">"             -> Term {cons("Prod")}
+    "[" Terms "]"             -> Term {cons("List")}
+    Const  	              -> Term {cons("Const")}
+                              -> Terms {cons("TermE")}
+    Term                      -> Terms {cons("TermN")}
+    Term "," Terms            -> Terms {cons("TermC")}
+  context-free priorities
+    Term Term                 -> Term {cons("App"),left}
+  > Term BinOp Term           -> Term {cons("BinOp"),non-assoc}
+  > Term ConOp Term           -> Term {cons("ConOp"),non-assoc}
+  > Term "`" Term "`" Term    -> Term {cons("Infix"),non-assoc}
+  > "primOp" String           -> Term {cons("PrimOp"),non-assoc}
+  > "^" Term                  -> Term {cons("Cut")}
+  > Term "::" Type            -> Term {cons("HasType")}
+  > Type "?" Term             -> Term {cons("RTTC")}
+  > Term "->" Term            -> Term {cons("Rule"),right}
+  > Term "<+" Term            -> Term {cons("LChoice"),right}
+  > "let" Defs "in" Term      -> Term {cons("Let")}
+
+
+module Rho-Types
+imports Rho-Layout Rho-Lexicals
+exports
+  sorts Type
+  context-free syntax
+    Var                       -> Type {cons("TVar")}
+    Con                       -> Type {cons("TCon")}
+    "(" ConOp ")"             -> Type {cons("TCon")}
+    "(" Type ")"              -> Type {bracket}
+    "<" Types ">"             -> Type {cons("TProd")}
+    "[" Type "]"              -> Type {cons("TList")}
+    "?" Type                  -> Type {cons("TRTTC")}
+                              -> Types {cons("TypeE")}
+    Type                      -> Types {cons("TypeN")}
+    Type "," Types            -> Types {cons("TypeC")}
+  context-free priorities
+    Type Type                 -> Type {cons("TApp"),left}
+  > Type "->" Type            -> Type {cons("TFun"),right}
+  > Var "." Type              -> Type {cons("TForAll")}
+
+
+module Rho-Constants
+imports Rho-Layout Rho-Lexicals
+exports
+  sorts Const
+  context-free syntax
+    Int                       -> Const {cons("Int")}
+    String 	              -> Const {cons("Str")}
+
+
+module Rho-Lexicals
+imports Rho-Layout 
+exports
+  sorts Var Con Int String BinOp ConOp Id ConId
+  lexical syntax
+    [a-z][a-zA-Z0-9\']*       -> Var
+    [A-Z][a-zA-Z0-9\']*       -> Con
+    [0-9]+                    -> Int
+    "\"" ~[\n\"]* "\""        -> String
+    [\+\-\*\<\>\|\=\&\!\/\.]+ -> BinOp
+    [\:\[\]]+                 -> ConOp
+  lexical restrictions
+    Var Con -/- [a-zA-Z0-9\']
+  context-free syntax
+    Var                       -> Id
+    BinOp                     -> Id
+    Con                       -> ConId
+    ConOp                     -> ConId    
+    "let"                     -> Var {reject}
+    "in"                      -> Var {reject}
+    "primOp"                  -> Var {reject}
+    "->"                      -> BinOp {reject}
+    "<+"                      -> BinOp {reject}
+    "="                       -> BinOp {reject}
+    "::"                      -> ConOp {reject}
+
+
+module Rho-Layout
+exports
+  lexical syntax
+    [\ \t\n]                  -> LAYOUT
+    "//" ~[\n]*[\n]           -> LAYOUT
+    %%[\n] HashComment        -> LAYOUT
+    HashComment               -> LAYOUT
+    Comment                   -> LAYOUT
+    "#" ~[\n]* [\n]           -> HashComment
+    "/*" ( ~[\*] | Asterisk )* "*/" -> Comment
+    [\*]                      -> Asterisk
+  lexical restrictions
+    Asterisk -/- [\/]
+  context-free restrictions
+    LAYOUT? -/- [\ \t\n] | [\/].[\/] | [\#]
+  syntax
+    HashComment <START>       -> <START>

@@ -1,0 +1,93 @@
+It is not difficult to implement Stratego-like functionality.  It
+would be
+nice if we could write a Stratego rewrite rule like:
+\[
+\begin{array}{l}
+\ve{PlusZero: Plus(x, Const(0)) \ra x} \\
+\end{array}
+\]
+as
+\begin{equation}
+\label{ex:haskellzero}
+\begin{array}{l}
+\ve{plusZero = $\lambda$(Plus x (Const 0)) \ra x} \\
+\end{array}
+\end{equation}
+
+Of course, this will not work because we cannot handle pattern match
+failure in $\lambda$-abstractions.  So we wrap the result in a
+\ve{Maybe} type:
+\[
+\begin{array}{l}
+\ve{plusZero (Plus x (Const 0)) = Just x} \\
+\ve{plusZero \_ = Nothing} \\
+\end{array}
+\]
+
+In general, then, a strategy has the following type: 
+\[
+\begin{array}{l}
+\ve{type Strat $\alpha$ $\beta$ = $\alpha$ \ra Maybe $\beta$}
+\end{array}
+\]
+
+Stratego's left choice and composition operators (here written as
+\ve{<*}) are trivial:
+\[
+\begin{array}{l}
+\ve{(<+) :: Strat $\alpha$ $\beta$ \ra Strat $\alpha$ $\beta$ \ra Strat $\alpha$ $\beta$} \\
+\ve{s1 <+ s2 = $\lambda$t \ra maybe (s2 t) Just (s1 t)} \\
+\\
+\ve{(<*) :: Strat $\alpha$ $\beta$ \ra Strat $\beta$ $\gamma$ \ra Strat $\alpha$ $\gamma$} \\
+\ve{s1 <* s2 = $\lambda$t \ra maybe Nothing s2 (s1 t)}
+\end{array}
+\]
+
+Combining strategies is just as easy as in Stratego.  Writing the
+basic rewrite rules, however, is tiresome because we spend a lot of
+time packing and unpacking the \ve{Maybe} wrapper.  For example, the
+congruence over a constructor \ve{Add Expr Expr} would look like this:
+\[
+\begin{array}{l}
+\ve{cgrAdd s1 s2 (Add e1 e2) = maybe Nothing ($\lambda$e1' \ra} \\
+\ve{\quad maybe Nothing ($\lambda$e2' \ra Just \$ Add e1' e2') (s2 e2)) (s1 e1)}
+\end{array}
+\]
+
+Another issue is how to implement generic traversals.  We have to
+describe explicitly for each data type how to traverse over it.  Type
+classes can be used to make this generic:
+\[
+\begin{array}{l}
+\ve{class Trav $\alpha$ where} \\
+\ve{\quad allS :: Strat $\alpha$ $\alpha$ \ra Strat $\alpha$ $\alpha$}
+\end{array}
+\]
+
+Functions like \ve{bottomup} can then be defined in the usual way:
+\[
+\begin{array}{l}
+\ve{bottomupS :: Trav $\alpha$ \Ra Strat $\alpha$ $\alpha$ \ra Strat $\alpha$ $\alpha$} \\
+\ve{bottomupS s = allS (bottomupS s) <* s}
+\end{array}
+\]
+
+An instance might look like this:
+\[
+\begin{array}{l}
+\ve{instance Trav Expr where} \\
+\quad \ve{allS s (Const n) = Just \$ Const n} \\
+\quad \ve{allS s (Add e1 e2) =} \\
+\quad \quad \ve{case s e1 of} \\
+\quad \quad \quad \ve{Just e1' \ra} \\
+\quad \quad \quad \quad \ve{case s e2 of} \\
+\quad \quad \quad \quad \quad \ve{Just e2' \ra Just \$ Add e1' e2'} \\
+\quad \quad \quad \quad \quad \ve{Nothing \ra Nothing} \\
+\quad \quad \quad \ve{Nothing \ra Nothing} 
+\end{array}
+\]
+
+There are more refined (and complex) approaches (see
+\cite{typesafefuncstrat}), but these also suffer from the fact that a
+lot of code must be written for each data type over which we want to
+traverse.

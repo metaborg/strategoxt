@@ -1,0 +1,12 @@
+#! /bin/sh ../utrecht/rho-run
+
+#include "stdlib.rh"
+
+data C;
+C :: C;
+
+main = print (
+  let
+    x = C -> y; 
+    y = x -> x; 
+  in (x C) 123);

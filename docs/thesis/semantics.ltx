@@ -1,0 +1,729 @@
+This section presents the semantics of the RhoStratego language.  We
+first present a set of rewrite rules on the language.  By taking
+different subsets of these rules, we obtain lazy or strict semantics.
+Note that all set of rules as a whole gives a non-confluent calculus.
+For example, in a lazy semantics, \code{const 123 fail} will evaluate
+to \code{123}, but in a strict semantics, it evaluates to \code{fail}
+since arguments are evaluated first.  However, the lazy and strict
+subsets themselves {\em are} confluent.  For example, in the lazy
+semantics \code{const 123 fail} cannot evaluate to \code{fail}, even
+if we reduce the argument first, because the {\sc PropArg} rule (given
+below) required here simply is not part of lazy semantics.  So, unlike
+in the pure \lcalc, lazy and strict versions of the language are not
+simply different reduction strategies; they are different calculi.
+
+The fact that the semantics is given as a set of rewrite rules from
+the language to the language, i.e., as source-to-source
+transformation, means that they can be used directly in, e.g., an
+optimiser or an interpreter for the language.  In fact, an interpreter
+based directly on these rewrite rules is given in appendix
+\ref{ap:interpreter}.
+
+We write $e_1 \goesto e_2$ to denote that there is a sequence of
+rewrite steps that transforms $e_1$ into $e_2$.  A term $e$ is in {\em
+  normal form} if no rewrite rules are applicable to $e$.  What
+constitutes a normal form depends on the set of rewrite rules, i.e.,
+whether we are using a lazy or strict semantics.
+
+
+%\subsection{{$\alpha$}-renaming}
+
+%Blah blah... we need a notion of $\alpha$-renaming in order to implement
+%{\sc LetLift}.
+
+
+\subsection{The rewrite rules}
+
+\newcommand{\LetLift}{
+  \[
+  \mbox{\sc{LetLift}}:
+  e \goesto \term{let} \; \term{in} \; e
+  \]
+  }
+
+\newcommand{\LetLet}{
+  \[
+  \mbox{\sc{LetLet}}:
+  {
+    \textrm{defs}({ds}_1) \cap \textrm{defs}({ds}_2) = \emptyset
+    \over
+    \term{let} \; {ds}_1 \; \term{in} \; \term{let} \; {ds}_2 \; \term{in} \; e
+    \goesto
+    \term{let} \; {ds}_1 {ds}_2 \; \term{in} \; e
+    }
+  \]
+  }
+
+\newcommand{\LetLetP}{
+  \[
+  \mbox{\sc{LetLet$^+$}}:
+  {
+    \begin{array}{l}
+      \textrm{defs}({ds}_1) \cap \textrm{defs}({ds}_2) = \emptyset \\
+      \wedge \;
+      \forall (x \; \term{=} \; e_2 \term{;}) \in {ds}_2: \;
+      \term{let} \; {ds}_1 {ds}_2 \; \term{in} \; e_2
+      \goesto
+      \term{let} \; {ds}' \; \term{in} \; e'_2 \\
+      \quad \wedge \; \text{$e'_2$ is a normal form} \wedge e'_2 \not= \term{fail} 
+    \end{array}
+    \over
+    \term{let} \; {ds}_1 \; \term{in} \; \term{let} \; {ds}_2 \; \term{in} \; e
+    \goesto
+    \term{let} \; {ds}_1 {ds}_2 \; \term{in} \; e
+    }
+  \]
+  }
+
+\newcommand{\LetLetN}{
+  \[
+  \mbox{\sc{LetLet$^-$}}:
+  {
+    \begin{array}{l}
+      \textrm{defs}({ds}_1) \cap \textrm{defs}({ds}_2) = \emptyset \\
+      \wedge \;
+      \exists (x \; \term{=} \; e_2 \term{;}) \in {ds}_2: \;
+      \term{let} \; {ds}_1 {ds}_2 \; \term{in} \; e_2
+      \goesto
+      \term{let} \; {ds}' \; \term{in} \; \term{fail} \\
+    \end{array}
+    \over
+    \term{let} \; {ds}_1 \; \term{in} \; \term{let} \; {ds}_2 \; \term{in} \; e
+    \goesto
+    \term{let} \; {ds}_1 {ds}_2 \; \term{in} \; \term{fail}
+    }
+  \]
+  }
+
+\newcommand{\Var}{
+  \[
+  \mbox{\sc{Var}}:
+  {
+    x \term{=} e \term{;} \in ds
+    \over
+    \term{let} \; ds \; \term{in} \; x
+    \goesto
+    \term{let} \; ds \; \term{in} \; e
+    }
+  \]
+  }
+
+\newcommand{\Beta}{
+  \[
+  \mbox{\sc{Beta}}:
+  {
+    x \not\in \textrm{defs}(ds)
+    \over
+    \term{let} \; ds \; \term{in} \; (x \; \ra \; e_1) \; e_2
+    \goesto
+    \term{let} \; ds \; \term{in} \; \term{let} \; x \term{=} e_2
+    \term{;} \; \term{in} \; e_1
+    }
+  \]
+  }
+
+\newcommand{\ConMatchP}{
+  \[
+  \mbox{\sc{ConMatch}$^+$}:
+  {
+    \term{let} \; ds \; \term{in} \; (C \; \ra \; e) \; C \\
+    \goesto
+    \term{let} \; ds \; \term{in} \; e \\
+    }
+  \]
+  }
+
+\newcommand{\ConMatchN}{
+  \[
+  \mbox{\sc{ConMatch}$^-$}:
+  {
+    C_1 \neq C_2
+    \over
+    \term{let} \; ds \; \term{in} \; (C_1 \; \ra \; e) \; C_2 \\
+    \goesto
+    \term{let} \; ds \; \term{in} \; \term{fail} \\
+    }
+  \]
+  }
+
+\newcommand{\AppMatchP}{
+  \[
+  \mbox{\sc{AppMatch}$^+$}:
+  {
+    \text{$(e_1 \; e_2)$ is a normal form}
+    \over
+    \begin{array}{l}
+      \term{let} \; ds \; \term{in} \; (p_1 \; p_2 \; \ra \; e_3) \;
+      (e_1 \; e_2) \\
+      \goesto
+      \term{let} \; ds \; \term{in} \; (p_1 \; \ra \; p_2 \ra \; e_3) \;
+      e_1 \; e_2
+    \end{array}
+    }
+  \]
+  }
+
+\newcommand{\AppMatchN}{
+  \[
+  \mbox{\sc{AppMatch}$^-$}:
+  {
+    \text{$e_1$ is a normal form but not an application}
+    \over
+    \term{let} \; ds \; \term{in} \; (p_1 \; p_2 \; \ra \; e_3) \;
+    e_1
+    \goesto
+    \term{let} \; ds \; \term{in} \; \term{fail}
+    }
+  \]
+  }
+
+\newcommand{\FailMatchP}{
+  \[
+  \mbox{\sc{FailMatch}$^+$}:
+  \term{let} \; ds \; \term{in} \; (\term{fail} \; \ra \; e) \; \term{fail}
+  \goesto
+  \term{let} \; ds \; \term{in} \; e \;
+  \]
+  }
+
+\newcommand{\FailMatchN}{
+  \[
+  \mbox{\sc{FailMatch}$^-$}:
+  {
+    \text{$e_2$ is a normal form}
+    \; \wedge \;
+    e_2 \neq \term{fail}
+    \over
+    \term{let} \; ds \; \term{in} \; (\term{fail} \; \ra \; e_1) \; e_2
+    \goesto
+    \term{let} \; ds \; \term{in} \; \term{fail}
+    }
+  \]
+  }
+
+\newcommand{\EvalFunc}{
+  \[
+  \mbox{\sc{EvalFunc}}:
+  {
+    \term{let} \; ds \; \term{in} \; e_1
+    \goesto
+    \term{let} \; {ds}' \; \term{in} \; e'_1
+    \over
+    \term{let} \; ds \; \term{in} \; e_1 \; e_2
+    \goesto
+    \term{let} \; {ds}' \; \term{in} \; e'_1 \; e_2
+    }
+  \]
+  }
+
+\newcommand{\EvalArg}{
+  \[
+  \mbox{\sc{EvalArg}}:
+  {
+    \term{let} \; ds \; \term{in} \; e_2
+    \goesto
+    \term{let} \; {ds}' \; \term{in} \; e'_2
+    \over
+    \term{let} \; ds \; \term{in} \; e_1 \; e_2
+    \goesto
+    \term{let} \; {ds}' \; \term{in} \; e_1 \; e'_2
+    }
+  \]
+  }
+
+\newcommand{\EvalLeft}{
+  \[
+  \mbox{\sc{EvalLeft}}:
+  {
+    \term{let} \; ds \; \term{in} \; e_1
+    \goesto
+    \term{let} \; {ds}' \; \term{in} \; e'_1
+    \over
+    \term{let} \; ds \; \term{in} \; e_1 \; \plus \; e_2
+    \goesto
+    \term{let} \; {ds}' \; \term{in} \; e'_1 \; \plus \; e_2
+    }
+  \]
+  }
+
+\newcommand{\EvalRight}{
+  \[
+  \mbox{\sc{EvalRight}}:
+  {
+    \term{let} \; ds \; \term{in} \; e_2
+    \goesto
+    \term{let} \; {ds}' \; \term{in} \; e'_2
+    \over
+    \term{let} \; ds \; \term{in} \; e_1 \; \plus \; e_2
+    \goesto
+    \term{let} \; {ds}' \; \term{in} \; e_1 \; \plus \; e'_2
+    }
+  \]
+  }
+
+\newcommand{\LChoice}{
+  \[
+  \mbox{\sc{LChoice}}:
+  {
+    \begin{array}{l}
+    \text{$e_1$ is a normal form}
+    \; \wedge \;
+    e_1 \neq \term{fail} 
+    \; \wedge \; \\
+    e_1 \; \text{is not a cut or a function}
+    \end{array}
+    \over
+    \term{let} \; ds \; \term{in} \; e_1 \; \plus \; e_2
+    \goesto
+    \term{let} \; ds \; \term{in} \; e_1
+    }
+  \]
+  }
+
+\newcommand{\LChoiceCut}{
+  \[
+  \mbox{\sc{LChoiceCut}}:
+  \term{let} \; ds \; \term{in} \; \term{\cut{}} e_1 \; \plus \; e_2
+  \goesto
+  \term{let} \; ds \; \term{in} \; e_1
+  \]
+  }
+
+\newcommand{\RChoice}{
+  \[
+  \mbox{\sc{RChoice}}:
+  {
+    \term{let} \; ds \; \term{in} \; \term{fail} \; \plus \; e
+    \goesto
+    \term{let} \; ds \; \term{in} \; e
+    }
+  \]
+  }
+
+\newcommand{\PropFunc}{
+  \[
+  \mbox{\sc{PropFunc}}:
+  \term{let} \; ds \; \term{in} \; \term{fail} \; e
+  \goesto
+  \term{let} \; ds \; \term{in} \; \term{fail}
+  \]
+  }
+
+\newcommand{\PropArg}{
+  \[
+  \mbox{\sc{PropArg}}:
+  \term{let} \; ds \; \term{in} \; e \; \term{fail}
+  \goesto
+  \term{let} \; ds \; \term{in} \; \term{fail}
+  \]
+  }
+
+\newcommand{\UncutLeft}{
+  \[
+  \mbox{\sc{UncutLeft}}:
+  \term{let} \; ds \; \term{in} \; \term{\cut{}} e_1 \; e_2
+  \goesto
+  \term{let} \; ds \; \term{in} \; e_1 \; e_2
+  \]
+  }
+
+\newcommand{\UncutRight}{
+  \[
+  \mbox{\sc{UncutRight}}:
+  {
+    \text{$p$ is a strict pattern}
+    \over
+    \term{let} \; ds \; \term{in} \; (p \ra e_1) \; \term{\cut{}} e_2
+    \goesto
+    \term{let} \; ds \; \term{in} \; (p \ra e_1) \; e_2
+    }
+  \]
+  }
+
+\newcommand{\Distrib}{
+  \[
+  \mbox{\sc{Distrib}}:
+  \term{let} \; ds \; \term{in} \; (e_1 \; \plus \; e_2) \; e_3
+  \goesto
+  \term{let} \; ds \; \term{in} \; e_1 \; e_3 \; \plus \; e_2 \; e_3
+  \]
+  }
+
+
+In the following, we let $x$ range over the variables and $C$ over the
+constructors.
+
+\begin{itemize}
+  
+\item All the rewrite rules below assume that the left-hand side term
+  has the form $\term{let} \; ds \; \term{in} \; e$.  The idea is that
+  the let-environment represents the memory, the heap, of the abstract
+  machine.  This allows us to express certain aspects of the
+  operational semantics, such as garbage collection and sharing.
+  Since not all RhoStratego terms are \code{let}s, we need the
+  following trivial rule to lift these into the canonical form:
+  \LetLift
+  
+  Note that a RhoStratego program is a set of declarations;
+  declarations are variable definitions, data type declarations, and
+  type signatures (the latter two not being discussed here).  The
+  semantics of the whole program is obtained by lifting the set of
+  declarations $ds$ into a \term{let} and evaluating the variable
+  \term{main}, i.e.  $\term{let} \; ds \; \term{in} \; \term{main}$.
+  
+\item In a lazy semantics, if the body of a let is a let, we can merge
+  the definitions, provided that there are no name clashes: 
+  \LetLet
+  %TODO: a rule expressing $\alpha$-renaming.
+  
+\item In a strict semantics, things are not quite so simple.  We have
+  to verify that none of the definitions evaluates to \code{fail}.
+  This is expressed by the following monstrosity.
+  \LetLetP
+  \LetLetN
+
+\item The following simple rule expresses that a variable may be
+  substituted by its definition:
+  \Var
+  
+  As stated above, we can use the let-environment to express aspects
+  of the operational semantics.  Here is an alternative {\sc Var}
+  rule:
+\[
+\mbox{\sc{Var}}:
+{
+x \term{=} e \term{;} \in ds
+\; \wedge \;
+\term{let} \; ds \; \term{in} \; e
+\goesto
+\term{let} \; {ds}' \; \term{in} \; e'
+\over
+\term{let} \; ds \; \term{in} \; x
+\goesto
+\term{let} \; {ds}' \; \wr \; (x, \; e') \; \term{in} \; e'
+}
+\]
+where ${ds}' \; \wr \; (x, \; e')$ denotes $ds'$ with the definition
+for $x$ replaced by $x \; \term{=} \; e'\term{;}$.  The idea is that a
+variable is evaluated (presumably to normal form), and the result is
+written back into the `heap' (removing the old definition for $x$).
+Then, if $x$ is needed again, we do not need to evaluate it again; it
+is already `done'.  So the alternative {\sc Var} rule nicely
+captures the operational notion of {\em sharing}; it corresponds with
+the implementation technique of preventing work duplication by
+updating a closure with its result.
+
+  There are even more elaborate variations:
+\[
+\mbox{\sc{Var}}:
+{
+\begin{array}{l}
+x \term{=} e \term{;} \in ds
+\; \wedge \;
+e \; \not=  \; \term{blackhole} 
+\; \wedge \; \\
+\term{let} \; ds \; \wr \; (x, \; \term{blackhole}) \;
+\term{in} \; e
+\goesto
+\term{let} \; {ds}' \; \term{in} \; e'
+\end{array}
+\over
+\term{let} \; ds \; \term{in} \; x
+\goesto
+\term{let} \; {ds}' \; \wr \; (x, \; e') \; \term{in} \; e'
+}
+\]
+This rule implements a technique called {\em blackholing} \cite{stg} to
+detect certain kinds of infinite recursion.  Operationally, it means
+that when a closure is evaluated, it is updated with a special value
+called a black hole.  Once evaluation of the closure is complete, it
+is updated again with the final result and the black hole disappears.
+If a black hole is ever entered, therefore, it necessarily means that
+we are trying to evaluate a closure that is already being evaluated
+--- a non-terminating computation.
+
+\item The fundamental axiom of the \lcalc{}, $\beta$-reduction, is
+  expressed by means of {\em explicit substitution}: rather than
+  having a substitution operation, substitutions are expressed in the
+  language itself.  We do this by adding the argument to the
+  let-environment, and then evaluating the body of the function.
+
+  \Beta
+  All initial terms are assumed to be {\em closed}, i.e., contain no
+  free variables; as a consequence there is no need to add the
+  restriction that $x$ should not occur free in $e_2$, since the fact
+  that it does not occur in $ds$ implies it cannot occur free in
+  $e_2$.
+
+\item Applying a function with a constructor pattern $C$ to the
+  constructor $C$ will succeed:
+  \ConMatchP
+  With this and the following match rules, it should be noted that the
+  {\sc EvalArg} rule (see below) can be used to bring the argument
+  into the required normal form.
+  
+\item On the other hand, applying a function with a constructor
+  pattern $C_1$ to a different constructor $C_2$ will fail:
+  \ConMatchN
+  
+\item For an application pattern match to succeed, the argument should
+  be in normal form and an application.  This implies that it is a
+  constructed value.  
+  \AppMatchP
+
+\item
+  Otherwise, the application pattern match fails:
+  \AppMatchN
+
+\item
+  Likewise, we can match against failure.
+  \FailMatchP
+  \FailMatchN
+  
+\item The rules for matching against literals (e.g., integer
+  constants) are omitted; they are very similar to the previous
+  matching rules.
+
+\item If the left-hand side $e_1$ of a function application rewrites
+  to $e'_1$, we can replace $e_1$ by $e'_1$:
+  \EvalFunc
+
+\item Likewise for the right-hand side of an application and the
+  left-hand and right-hand sides of a choice:
+  \EvalArg
+  \EvalLeft
+  \EvalRight
+  
+  It should be noted that the {\sc EvalRight} rule is not actually
+  used in the lazy and strict evaluation strategies, since we only
+  need to evaluate the right-hand side if the left-hand side fails,
+  and in that case, the {\sc RChoice} rule (given below) is
+  applicable.
+  
+\item We can choose the left-hand side of a choice if it not a
+  failure, a rule or a cut; this implies that it should have been
+  evaluated to normal form, since otherwise we cannot know that it is
+  not a failure.  
+  \LChoice
+  
+\item If the left-hand side of a choice is a cut expression, then the
+  cut is removed.  Note that only one cut is removed; this allows an
+  expression to escape several choices by applying several cuts.
+  \LChoiceCut
+
+\item We can choose the right-hand side of a choice if the left-hand
+  side failed:
+  \RChoice
+
+\item Applying failure to an expression yields failure; the following
+  rule propagates failure in the function side of an application.
+  \PropFunc
+
+\item Under a strict evaluation regime, the arguments to a function
+  are evaluated first, so we need the following rule to propagate
+  failure in the argument side of an application.
+  \PropArg
+
+\item In certain contexts, we need to remove cuts from an expression;
+  namely, cuts appearing in the function or argument sides of an
+  application.
+  \UncutLeft
+  \UncutRight
+  A strict pattern is a pattern that forces evaluation of the
+  argument, i.e., anything other than a variable.
+
+\item Finally, the following rule pushes arguments into a choice, as
+  discussed in the previous section.
+  \Distrib
+
+  The following alternative {\sc Distrib} rule is preferable from an
+  operational point of view, since it is more efficient:
+  \[
+  \mbox{\sc{Distrib}}:
+  {
+    x \not\in \textrm{defs}(ds)
+    \over
+    \term{let} \; ds \; \term{in} \; (e_1 \; \plus \; e_2) \; e_3
+    \goesto
+    \term{let} \; ds \; \term{in} \; 
+    \term{let} \; x \term{=} e_3 \term{;} \; \term{in} \;
+    e_1 \; x \; \plus \; e_2 \; x
+    }
+  \]
+  Together with the alternative {\sc Var} rule, this prevents $e_3$
+  from being evaluated more than once.  Again, the fact that $x$ does
+  not occur in $ds$ implies that it does not occur free in $e_{\{1, 2,
+    3\}}$.
+
+\end{itemize}
+
+The rules are summarised in figure \ref{fig:semantics}. 
+
+\begin{figure}
+
+\LetLift
+
+\LetLet
+
+\LetLetP
+
+\LetLetN
+
+\Var
+
+\Beta
+
+\ConMatchP
+
+\ConMatchN
+
+\AppMatchP
+
+\AppMatchN
+
+\FailMatchP
+
+\FailMatchN
+
+\EvalFunc
+
+\EvalArg
+
+\EvalLeft
+
+\EvalRight
+
+\caption{\label{fig:semantics}
+  RhoStratego evaluation rules}
+\end{figure}
+
+
+\begin{figure}
+
+\LChoice
+
+\LChoiceCut
+
+\RChoice
+
+\PropFunc
+
+\PropArg
+
+\UncutLeft
+
+\UncutRight
+
+\Distrib
+
+\contcaption{Continued}
+\end{figure}
+
+
+
+\subsection{Lazy evaluation strategy}
+\label{ssec:lazy}
+
+We now give a lazy evaluation strategy for RhoStratego.  Lazy
+languages are in some ways preferable to strict languages: just as
+languages with garbage collection free the programmer from the burden
+of having to specify explicitly the deallocation of objects, lazy
+evaluation frees the programmer from having to specify the evaluation
+order of values.
+
+Reduction involves applying the rules in the previous subsection to
+the term to be reduced.  We first need to make precise what applying a
+rule to a term means.  For simple rules such as {\sc Beta} or {\sc
+  ConMatch}$^+$ that have no or only simple conditions, this is
+unambiguous: we can apply the rules if the conditions are satisfied.
+
+However, the {\em evaluation rules} (e.g. {\sc EvalFunc}) are
+conditional upon some term $e_1$ being rewritable into $e_2$.  This
+means that such a rule must be parameterised with some strategy that
+reduces $e_1$.
+
+The following strategy $E$ evaluates a term $e$ lazily:
+\begin{itemize}
+\item If $e$ is in normal form, we are done.  A let-expression is in
+  normal form if its body is a literal, a function, a constructor
+  applied to zero or more (possibly unnormalised) arguments, a
+  failure, a cut, or a choice, if the left-hand side of the choice is
+  a function.  
+\item Otherwise, do one of the following:
+  \begin{itemize}
+  \item Apply the {\sc LetLet} or {\sc Var} rules.
+  \item Apply the {\sc EvalLeft} rule with strategy $E$ to normalise
+    the left-hand side of a choice.  It is vital that we now make some
+    more progress, in order to prevent infinite loops (since {\sc
+      EvalLeft} will continue to be applicable): we have to get rid of
+    the choice.  We do this by applying the {\sc LChoice}, {\sc
+      LChoiceCut}, or {\sc RChoice} rules; exactly one should
+    be applicable.
+  \item If none of the above applied, we are dealing with an
+    application.  In a lazy semantics we have to evaluate the
+    left-hand side first.  This means that we have get rid of any
+    cuts, so we first apply the {\sc UncutLeft} rule until it becomes
+    inapplicable.  Then we can apply the {\sc EvalFunc} rule with
+    strategy $E$ to normalise the left-hand side.  Just as with
+    choices, we must apply some other rule next to get rid of the
+    application, {\em unless} the application is a constructor
+    application (\code{C $e_1 \; \dots \; e_n$}), which is a normal
+    form.  There are now two possibilities:
+    \begin{itemize}
+    \item We can apply exactly one of the {\sc Beta}, {\sc Distrib},
+      or {\sc PropFunc} rules.
+    \item Otherwise, we are looking at a strict pattern match: a match
+      against a constructor, application, failure, or literal.  This
+      requires that we remove cuts from the argument, so {\sc
+        UncutRight} should be applied until it becomes inapplicable.
+      Then we can apply the {\sc EvalArg} rule with strategy $E$ to
+      normalise the argument, followed by one of the {\sc
+        ConMatch}$^+$ etc. rules to perform the actual reduction.
+    \end{itemize}
+  \end{itemize}
+  We can now apply the strategy again (i.e., iteratively) to complete
+  the evaluation of $e$.
+\end{itemize}
+
+This evaluation strategy is formalised in appendix
+\ref{ap:interpreter}.
+
+
+\subsection{Strict evaluation strategy}
+\label{ssec:strict}
+
+Strict evaluation differs from lazy evaluation in the following ways:
+
+\begin{itemize}
+\item The stop condition is the same, except that the notion of normal
+  form is extended slightly: if the term is a constructor application,
+  then all the arguments must also be in normal form.
+\item Instead of the {\sc LetLet} rule we use {\sc LetLet$^+$} and
+  {\sc LetLet$^-$}, to evaluate all the definitions after adding
+  them to the global let-environment.
+\item Evaluation of an application proceeds as follows:
+  \begin{itemize}
+  \item Remove all cuts from the argument through use of the {\sc
+      UncutRight} rule.  Then apply the {\sc EvalArg} rule to evaluate
+    the argument.
+  \item Remove all cuts from the function through use of the {\sc
+      UncutLeft} rule and evaluate it using the {\sc EvalFunc} rule.
+  \item 
+    Try the following in order:
+    \begin{itemize}
+    \item Use the {\sc FailMatch}$^+$ or {\sc FailMatch}$^-$ rules to
+      perform a pattern match against \code{fail}.  The only reason
+      why we have to evaluate the function side at all is to expose
+      \code{fail}-matches.
+    \item Use {\sc PropArg} to propagate failure of the argument.
+    \item Otherwise the term is either a constructor application, in
+      which case we are done (since its argument will have been
+      evaluated by {\sc EvalArg}), or we can apply one of the {\sc
+        Beta}, {\sc Distrib}, {\sc PropFunc}, or strict pattern match
+      reduction rules.
+    \end{itemize}
+  \end{itemize}
+\end{itemize}
+
+The formal presentation of this strategy is given in appendix
+\ref{ap:interpreter} as well.

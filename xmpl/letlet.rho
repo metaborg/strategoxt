@@ -1,0 +1,14 @@
+#! /bin/sh ../utrecht/rho-run
+
+#include "stdlib.rh"
+
+fac = 
+  0 -> 1 <+ 
+  n -> (
+    let
+      n' = n - 1; 
+      x = fac n'; 
+    in x * n
+  );
+
+main = print (fac 10);

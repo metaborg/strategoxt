@@ -1,0 +1,112 @@
+% The grand, optimistic opening sentence.
+The subject of this thesis is the construction of programming
+languages suitable for the implementation of program transformation
+systems.
+
+Program transformation is the act of automatically transforming a
+program in one language into another program in a possibly different
+language.  A recent survey of the field \cite{stratsurvey} presents a
+taxonomy of program transformations, the main types of which are {\em
+  translations} and {\em rephrasings}.
+
+In a {\bf translation} a program is transformed to another language.
+Examples of translations include:
+\begin{itemize}
+\item {\bf Synthesis}, where a program is transformed from a
+  high-level specification to a lower-level specification.  The point
+  here is to increase programmer productivity (and program quality) by
+  hiding progressively more details of the machine model, i.e., by
+  going to a higher level of abstraction.  The most important form of
+  synthesis is of course {\bf compilation}, where a program is
+  transformed to machine code or some other low-level language.
+  Compilers are a nice example of how program transformation
+  techniques can be used to make the construction of program
+  transformers (in this case, compilers) easier: in the early 1960's,
+  writing a compiler involved many work-years, but due to the
+  emergence of parser generators, code generator generators, etc.,
+  nowadays an equivalent compiler can be constructed in a few weeks or
+  months \cite{dragonbook}.  In {\bf refinement}, a program is derived
+  that implements some domain-specific specification.  An example is
+  generating a parser from a grammar.
+\item {\bf Migration}, where a program is transformed into another
+  language at more-or-less the same level of abstraction; for example,
+  translating Pascal to C.
+\item {\bf Reverse engineering} is the converse of compilation.  Here
+  the goal is to recover (part of) a high-level specification from a
+  lower-level specification.  An obvious example is translating
+  machine code back to C.
+\item {\bf Analysis}, where information about some aspect of a program
+  is extracted, such as control-flow.
+\end{itemize}
+
+In a {\bf rephrasing} a program is transformed into another
+program in the {\em same} language.  This includes:
+\begin{itemize}
+\item {\bf Normalisation}, where a program is transformed into a
+  program in a sublanguage of the original language.  The most common
+  example is {\bf desugaring}, where certain constructs (`syntactic
+  sugar') of the language are eliminated by rewriting them into
+  semantically equivalent fragments of the sublanguage.
+\item {\bf Optimisation}, which aims to rewrite a program into a more
+  efficient program.
+\item {\bf Refactoring}, which attempts to improve the design of a
+  program, making it easier to understand and maintain.  The converse
+  is {\bf obfuscation}, which makes the program harder to understand.
+\item {\bf Renovation}, where a certain aspect of a program is
+  improved; an example is (semi-)automatically fixing a Y2K bug.
+\end{itemize}
+
+Program transformation applications can be written in any language;
+but some make it easier than others.  Apart from regular high-level
+features that make programming easier by allowing specification at a
+higher level of abstraction (e.g., garbage collection), it turns out
+that some features are particularly important for program
+transformation, namely {\em first class rules} and {\em generic
+  traversals}.  The support for these features in (functional)
+programming languages is the main subject of this thesis.
+
+Pattern matching gives us the ability to easily deconstruct and
+inspect values.  In a program transformation system programs are
+typically encoded as tree structures ({\em terms}) representing the
+abstract syntax, where the tree nodes are labelled to indicate their
+meaning (e.g., `function call', `variable declaration'); different
+actions need to be taken based on the shape and kind of the
+(sub)trees.  Pattern matching provides a convenient notation for
+matching against those trees, and decomposing them into their
+constituent parts.
+
+We want to be able to write pattern matching code in such a way that
+we can {\em separate transformation rules and strategies}.  It is a
+good idea, for reasons of reuse and clarity, to separate the code that
+actually transforms terms (the {\em rules}) from the code that
+specifies how, when, and in what order those rules should be applied
+(the {\em strategies}).  For example, in an optimiser, we may have a
+rule expressing commutativity of addition ($x + y = y + x$) or a rule
+that performs inlining of a function definition.  However, such rules,
+while meaning-preserving, cannot be applied arbitrarily: we may end up
+with a non-terminating optimiser if we keep applying the commutativity
+rule, and careless use of inlining may result in a slower and bloated
+resulting program.
+
+The separation of transformation rules and strategies requires that
+the rules are {\em first class}.  For example, in Haskell we can write
+transformation rules using pattern matching $\lambda$-abstractions,
+i.e., $\lambda pat \ra expr$.  However, if the pattern fails to match,
+the program {\em diverges} (fails entirely).  Hence, pattern matching
+$\lambda$-abstractions are not first class in Haskell.  Alternatively,
+we could use case-expressions, but these bind different transformation
+rules together, and so are not first class either.
+  
+Generic traversals are the other major feature.  Transformations often
+need to be applied at many points in the abstract syntax tree.  We
+should have generic operations that can traverse arbitrary data
+structures, applying arbitrary transformations in some predefined way
+(such as bottom-up or top-down).
+  
+In this thesis, we first take a look at two languages that are
+particularly useful for program transformation: Stratego and Haskell.
+Because these languages both have certain pros and cons with regard to
+this subject, we then develop a new pure, non-strict, strongly typed
+functional language called RhoStratego that attempts to combine their
+advantages.
+

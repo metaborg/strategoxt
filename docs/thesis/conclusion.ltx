@@ -1,0 +1,33 @@
+We have implemented a lazy functional language integrating a number of
+interesting features from Stratego.  From this project we can conclude
+the following:
+
+\begin{itemize}
+  
+\item Application pattern matches are a simple but quite powerful
+  primitive for constructing generic traversals (section
+  \ref{sec:rhooverview}).
+  
+\item Choices liberate pattern matching; they subsume a large number
+  of existing language constructs, including cases, the equational
+  style, and views (section \ref{sec:patterns}).
+  
+\item Cuts are hard to implement if they are type-transparent, but
+  easy if they are not (section \ref{sec:compilechoice}).
+  
+\item There is a tension between rewriting and laziness; a term
+  \code{C fail <+ ...} will always succeed and never go to the
+  right-hand side choice, since \code{fail} is evaluated lazily.
+  Since in rewriting terms are usually consumed (and therefore
+  produced) in their entirety, a good solution is to keep the language
+  lazy, but make constructor applications strict.  The (severe)
+  disadvantage is that we lose the ability to make infinite or cyclic
+  data structures; we keep the advantage of laziness of let-bindings
+  and function arguments (which implies the ability to define control
+  structures such as \code{if}).  A better alternative might be to
+  allow the programmer to indicate that certain constructor arguments
+  are strict (as is possible in Haskell).
+
+\end{itemize}
+
+% TODO: more conclusions?

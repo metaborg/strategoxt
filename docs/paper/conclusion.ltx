@@ -1,0 +1,73 @@
+\section{Future Work}
+	\label{Sec:future}
+
+	There are several ideas for further development.  Stratego has
+	been used to build transformation systems that process real
+	programs (e.g., the Stratego compiler, a Cobol renovation
+	system, a C++ transformation system \cite{BHV01}, grammar
+	engineering tools). We still have to test the scalability of
+	RhoStratego.  For performance reasons, it would be interesting
+	to retarget the compiler to use an existing high-quality
+	back-end.  \cminusminus \cite{cminusminus} is a possibility,
+	since it has substantial support for exceptions
+	\cite{multipleexceptions}.
+
+	Better control over the scope of the choice operator is
+	desirable, i.e., more powerful exception handling primitives.
+	One way to do this is to have several kinds of exceptions, but
+	this destroys the confluence of the language unless the
+	evaluation order is fixed \cite{imprecise-exceptions}.  This
+	is because different subexpressions may raise different
+	exceptions, and so the exception that is actually raised
+	depends on which subexpression is evaluated first.
+
+	There is a tension between rewriting and laziness. A
+	term \code{C fail <+ ...} will always succeed and never go to
+	the right-hand side choice, since \code{fail} is evaluated
+	lazily.  Since in rewriting terms are usually consumed (and
+	therefore produced) in their entirety, a solution is to keep
+	the language lazy, but make constructor application strict.
+	This means that we lose the ability to make infinite or cyclic
+	data structures, but we keep the other advantages of laziness
+	(e.g., the ability to define control structures).
+
+	It would be interesting to explore several other Stratego
+	features in a functional context, such as dynamic rules
+	\cite{Vis01.dynamic} and an explicit match operator.  The
+	latter would give us first-class patterns, i.e., the ability
+	to name and abstract over patterns. We are also interested in
+	{\em non-local variable bindings}.  For example, we can write
+	\code{\symbol{123}x:~fetch(?Foo(x)); !x\symbol{125}} in Stratego. That is, walk
+	over a list until an element is encountered that matches with
+	the pattern \code{Foo(x)}; then replace the term with
+	\code{x}.  Note that \code{x} is declared in the scope of the
+	entire strategy, but it is defined (given a value) as a
+	side-effect of executing \code{fetch}.  It is not clear how to
+	implement this cleanly in a pure functional language.
+
+\section{Conclusion}
+	\label{Sec:conclusion}
+
+	We have presented the design of a lazy functional language
+	integrating features from the paradigm of rewriting
+	strategies.
+
+	Application pattern matches are a simple but quite powerful
+	primitive for constructing generic traversals.  They can be
+	typed using the {\sc Generic} and {\sc Contract} typing rules,
+	and be put to use with the runtime type check mechanism
+	embodied in the {\sc Rttc} and {\sc Widen} rules. Together
+	they allow type unifying and type preserving functions to be
+	written safely.
+  
+	The choice operator liberates pattern matching from the
+	harness of the case construct. The combination of rules and
+	choice subsumes language constructs such as cases, the
+	equational style, views, pattern guards, and transformational
+	patterns.  The cut operator allows fine control over the
+	backtracking behavior of the choice operator.
+  
+	The implementation of RhoStratego is available under the terms
+	of the GNU General Public License for experimentation at
+	\url{http://www.stratego-language.org/rho/}.
+

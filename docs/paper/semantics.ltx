@@ -1,0 +1,202 @@
+\section{Semantics}
+\label{sec:semantics}
+
+In this section we present the semantics of the RhoStratego language
+as a set of rewrite rules on the language, together with a lazy
+evaluation strategy for reducing terms to normal form.  Integer and
+string constants have been omitted for brevity.
+  
+\subsection{Evaluation Rules}
+
+\input{semrules.ltx}
+
+The rewrite rules defining the semantics of RhoStratego are given in
+Figure~\ref{fig:semantics}.  We write $e_1 \goesto e_2$ to denote that
+there is a sequence of rewrite steps that transforms $e_1$ into $e_2$.
+A let-expression is in {\em normal form} if no rules apply; that is,
+if its body is a rule, a constructor applied to zero or more
+(possibly unnormalised) arguments, a failure, a cut, or a choice, if
+the left-hand side of the choice is a rule.
+
+It is assumed that the left-hand side term has the form $\term{let} \;
+ds \; \term{in} \; e$.  The idea is that the let-environment
+represents the memory, or heap, of the abstract machine.  This allows
+us to express certain aspects of the operational semantics, such as
+garbage collection and sharing.  Since not all Rho\-Stratego terms are
+\code{let}s, we have the trivial rule {\sc LetLift} to lift these into
+the canonical form.  Note that a RhoStratego program is a set of
+declarations; declarations are variable definitions, data type
+declarations, and type signatures (the latter two not being discussed
+here).  The semantics of a whole program is obtained by lifting the
+set of declarations $ds$ into a \term{let} and evaluating the variable
+\term{main}, i.e.,  $\term{let} \; ds \; \term{in} \; \term{main}$.
+  
+\paragraph{Lets} 
+
+If the body of a let is a let, we can merge the definitions, provided
+that there are no name clashes (the {\sc LetLet} rule).  This rule can
+be interpreted as allocating closures for the values defined in the
+let-expression.  We implicitly assume that $\alpha$-renaming takes
+place as required.
+  
+\paragraph{Variables} 
+
+The {\sc Var} rule expresses that a variable may be substituted by its
+definition.  As stated above, we can use the let-environment to
+express aspects of the operational semantics.  Here is an alternative
+{\sc Var} rule:
+\[
+\mbox{\sc{Var}}:
+{
+x \term{=} e \term{;} \in ds
+\; \wedge \;
+\term{let} \; ds \; \term{in} \; e
+\goesto
+\term{let} \; {ds}' \; \term{in} \; e'
+\over
+\term{let} \; ds \; \term{in} \; x
+\goesto
+\term{let} \; {ds}' \; \wr \; (x, \; e') \; \term{in} \; e'
+}
+\]
+where ${ds}' \; \wr \; (x, \; e')$ denotes $ds'$ with the definition
+for $x$ replaced by $x \; \term{=} \; e'\term{;}$.  The idea is that a
+variable is evaluated (presumably to normal form), and the result is
+written back into the `heap' (removing the old definition for $x$).
+Then, if $x$ is needed again, we do not need to evaluate it again; it
+is already done.  So the alternative {\sc Var} rule nicely
+captures the operational notion of {\em sharing}; it corresponds with
+the implementation technique of preventing work duplication by
+updating a closure with its result.
+
+\paragraph{Applications} 
+
+The {\sc Beta} rule expresses the fundamental axiom of the \lcalc{},
+$\beta$-reduction, by means of {\em explicit
+substitution}~\cite{expsubs}: rather than having a substitution
+operation, substitutions are expressed in the language itself.  We do
+this by adding the argument to the let-environment, and then
+evaluating the body of the rule.  All initial terms are assumed to be
+{\em closed}, i.e., contain no free variables. As a consequence there
+is no need to add the restriction that $x$ should not occur free in
+$e_2$, since the fact that it does not occur in $ds$ implies it cannot
+occur free in $e_2$.
+
+We can evaluate the left and right sides of a function application
+using the {\sc EvalFunc} and {\sc EvalArg} rules.  {\sc EvalArg} is
+necessary in strict pattern matches, i.e., matches against
+constructors, applications, or failure ({\sc ConMatch}$^+$ to {\sc
+  FailMatch}$^-$).  Note that for an application pattern match to
+succeed, the argument should be in normal form and an application.
+This implies that it is a constructed value.  Applying failure to an
+expression yields failure ({\sc PropFunc}).
+
+From the definition of {\sc AppMatch}$^+$ the exact semantics of the
+application pattern match follows.  For example, \code{(c x -> c) (A B
+  C)} evaluates to \code{A B}, and \code{(c x -> x) (A B C)} evaluates
+to \code{C}.  In essence, it allows us to look at the immediate
+subterms of a term in a linear fashion, just like traversing a
+\code{Cons}/\code{Nil} list. The \code{c x} pattern corresponds to
+matching a \code{Cons}, and the pattern \code{x} (anything else)
+corresponds to matching with \code{Nil}.  That is, if the match
+\code{c x} fails, the argument is either a constructor (without
+arguments) or another normal form (such as a function or an integer
+literal).
+
+\paragraph{Choices} 
+
+The remaining rules deal with the evaluation of choices.  We evaluate
+choices by first evaluating the left alternative (using {\sc
+  EvalLeft}).  We can choose using {\sc LChoice} the left alternative
+if it is not a failure, a rule or a cut; this implies that it should have
+been evaluated to normal form, since otherwise we cannot know that it
+is not a failure.  If it is a cut, we can choose the left alternative
+using {\sc LChoiceCut} which removes the cut.  Note that only one cut
+is removed; this allows an expression to escape several choices by
+applying several cuts.  If it is a function, we can use the {\sc
+  Distrib} rule to distribute arguments over the alternatives.  If it
+is a failure, we can choose the right alternative using {\sc RChoice}.
+
+Finally, cuts not occurring as the left argument of a choice
+`disappear' (the {\sc UncutFunc} and {\sc UncutArg} rules; a strict
+pattern is a pattern that forces evaluation of the argument, i.e.,
+anything other than a variable).  This is to ensure that for example
+\code{(\cut{}id) C} or \code{(C -> D) \cut{}C} works.  This makes it
+easier to reuse functions returning cuts.
+  
+The following alternative {\sc Distrib} rule is preferable from an
+operational point of view, since it is more efficient:
+\[
+\mbox{\sc{Distrib}}:
+{
+  x \not\in \textrm{defs}(ds)
+  \over
+  \begin{array}{l}
+  \term{let} \; ds \; \term{in} \; (e_1 \; \plus \; e_2) \; e_3
+  \goesto \\
+  \term{let} \; ds \; \term{in} \; 
+  \term{let} \; x \term{=} e_3 \term{;} \; \term{in} \;
+  e_1 \; x \; \plus \; e_2 \; x
+  \end{array}
+  }
+\]
+Together with the alternative {\sc Var} rule, this prevents $e_3$ from
+being evaluated more than once.
+
+
+\subsection{Evaluation Strategy}
+
+	The rules discussed above define one-step reductions of terms.
+	A complete evaluation of a term requires repeated application
+	of rules. Depending on the strategy that is chosen, different
+	effects can be achieved. Bot lazy and strict interpretations
+	can be achieved using the rules.  Lazy and strict evaluation
+	based on the same set of rules has been implemented in
+	Stratego and is presented in \cite{Dol01}. Below we give an
+	informal account of the lazy strategy that is the basis for
+	the compiler.
+
+	Reducing a term to normal form involves applying the rules in
+	Figure~\ref{fig:semantics} to the term to be reduced.  We
+	first need to make precise what applying a rule to a term
+	means.  For simple rules such as {\sc Beta} or {\sc
+	ConMatch}$^+$ that have no or only simple conditions, this is
+	unambiguous: we can apply the rules if the conditions are
+	satisfied. However, the {\em evaluation rules} (e.g. {\sc
+	EvalFunc}) are conditional upon some term $e_1$ being
+	rewritable into $e_2$.  This means that such a rule must be
+	parameterised with some strategy that reduces $e_1$.
+
+The strategy $E$ evaluates a term $e$ lazily as follows.  If $e$ is in
+normal form, we are done.  Otherwise, we must apply one or more rules.
+We must be careful that we always make some progress; for example, the
+{\sc EvalLeft} rule is always applicable if $e$ is an application.
+The {\sc LetLet} or {\sc Var} are always safe to apply.
+
+If $e$ is a choice, we must first apply the {\sc EvalLeft} rule with
+strategy $E$ to normalise the left-hand side of the choice.  It is
+vital that we now make some more progress, in order to prevent
+infinite loops (since {\sc EvalLeft} will continue to be applicable):
+we have to get rid of the choice.  We do this by applying the {\sc
+  LChoice}, {\sc LChoiceCut}, or {\sc RChoice} rules; exactly one
+should be applicable.
+
+If none of the above applied, we are dealing with an application.  In
+a lazy semantics we have to evaluate the left-hand side first.  This
+means that we have to get rid of any cuts, so we first apply the {\sc
+  UncutFunc} rule until it becomes inapplicable.  Then we can apply
+the {\sc EvalFunc} rule with strategy $E$ to normalise the left-hand
+side.  Just as with choices, we must apply some other rule next to get
+rid of the application, {\em unless} the application is a constructor
+application (\code{C $e_1 \; \dots \; e_n$}), which is a normal form.
+We can now try one of the {\sc Beta}, {\sc Distrib}, or {\sc PropFunc}
+rules; otherwise, we are looking at a strict pattern match: a match
+against a constructor, application, or failure.  This requires that we
+remove cuts from the argument, so {\sc UncutArg} should be applied
+until it becomes inapplicable.  Then we can apply the {\sc EvalArg}
+rule with strategy $E$ to normalise the argument, followed by one of
+the {\sc ConMatch}$^+$ etc.~rules to perform the actual reduction.
+  
+Afterwards, we can apply the strategy again (i.e., iteratively) to
+complete the evaluation of $e$.
+

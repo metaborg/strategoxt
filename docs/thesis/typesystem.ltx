@@ -1,0 +1,673 @@
+In this section we give a formal presentation of the type system of
+RhoStratego.
+
+
+\subsection{Syntax}
+
+The abstract syntax of types is giving in figure \ref{fig:typesyntax},
+which extends the grammar for RhoStratego given in \ref{fig:syntax}.
+Syntactic sugar for lists, tuples, and type synonyms has been omitted.
+
+\begin{figure}
+\[
+\begin{array}{lcll}
+\nt{t} & \ra & \nt{var} & \text{(type variable)}
+\\
+& \alt & \forall \nt{var} \; . \; \nt{t} & \text{(universal
+quantification)}
+\\
+& \alt & \nt{constr} & \text{(constructor)}
+\\
+& \alt & \nt{t} \; \nt{t} & \text{(application)}
+\\
+& \alt & \nt{t} \term{\ra} \nt{t}  & \text{(function)}
+\\
+& \alt & \term{?} \nt{t}  & \text{(guarded type)}
+\\
+& \alt & \term{Gen}(t^{+}) & \text{(genericity)}
+\\
+\nt{decl} & \ra & \term{data} \; \nt{constr} \; \nt{var}^* \term{;}
+& \text{(data type declaration)}
+\\
+& \alt & \nt{constr} \; \term{::} \; t \term{;}
+& \text{(constructor declaration)}
+\end{array}
+\]
+\caption{\label{fig:typesyntax}
+  RhoStratego abstract type syntax}
+\end{figure}
+
+
+\subsection{Preliminaries}
+
+\begin{definition}[Notation]
+  In this section, we use $x$ to indicate variables, $\alpha$ to
+  indicate type variables, $C$ to indicate constructors, $e$ to
+  indicate expressions, and $\tau$ and $\sigma$ to indicate types.
+\end{definition}
+
+\begin{definition}[Environments]
+  An environment (or {\em context}) $\Gamma$ is a set of {\em type
+    assignments} $x : \tau$, where $x$ is a variable and $\tau$ a
+  type.
+\end{definition}
+
+\begin{definition}[Free variables]
+  The function $\textrm{fv}$ that returns the set of type variables
+  that occur free in a type $\tau$ is defined inductively as follows:
+\[
+\begin{array}{lcl}
+\textrm{fv}(\alpha) & = & \{\alpha\} \\
+\textrm{fv}(\forall \alpha . \tau) & = & \textrm{fv}(\tau) -
+\{\alpha\} \\
+\textrm{fv}(C) & = & \emptyset \\
+\textrm{fv}(\tau_1 \; \tau_2) & = & \textrm{fv}(\tau_1) \cup
+\textrm{fv}(\tau_2) \\
+\textrm{fv}(\tau_1 \ra \tau_2) & = & \textrm{fv}(\tau_1) \cup
+\textrm{fv}(\tau_2) \\
+\textrm{fv}(?\tau) & = & \textrm{fv}(\tau) \\
+\textrm{fv}(\term{Gen}(\tau, \dots)) & = & \textrm{fv}(\tau) \\
+\end{array}
+\]
+  We also overload $\textrm{fv}$ by defining $\textrm{fv}(\Gamma)$ as
+  the union of the sets of free variables occurring in the right-hand
+  sides of the type assignments in $\Gamma$.
+\end{definition}
+
+\begin{definition}[Substitutions]
+  The substitution $[\alpha := \sigma]$ applied to a type
+  $\tau$ (notation $[\alpha := \sigma] \tau$) is defined inductively
+  as follows:
+\[
+\begin{array}{lcl}
+{[\alpha := \sigma]} \alpha & = & \sigma \\
+{[\alpha := \sigma]} \alpha'  & = & \alpha' \; \text{if $\alpha \not=
+  \alpha'$} \\
+{[\alpha := \sigma]} C & = & C \\
+{[\alpha := \sigma]} (\tau_1 \; \tau_2) & = & 
+({[\alpha := \sigma]} \tau_1) ({[\alpha := \sigma]} \tau_2) \\
+{[\alpha := \sigma]} (\tau_1 \ra \tau_2) & = & 
+({[\alpha := \sigma]} \tau_1) \ra ({[\alpha := \sigma]} \tau_2) \\
+{[\alpha := \sigma]} (?\tau)  & = & ?({[\alpha := \sigma]} \tau) \\
+{[\alpha := \sigma]} \term{Gen}(\tau_0, \dots, \tau_n) & = & 
+\term{Gen}({[\alpha := \sigma]} \tau_0, \dots, {[\alpha := \sigma]} \tau_n)
+\end{array}
+\]
+\end{definition}
+
+
+\subsection{Typing rules}
+
+The inference rules of the type system are given in figures
+\ref{fig:infrules} and \ref{fig:infrules2}, for terms and patterns
+respectively (the rule {\sc Abs} requires that we can assign a type to
+a pattern).  The trivial typing rules for integer and string literals
+have been omitted.
+
+Type assignments for constructor functions are part of the environment
+$\Gamma$, as expressed by {\sc Con} and {\sc PCon} rules.
+
+In the {\sc Abs} and {\sc Let} rules, $\Gamma_p$ and $\Gamma_{ds}$
+refer to a environment that contains type assignments for all
+variables defined in the pattern or let-binding, respectively.
+
+The {\sc Rttc} pattern typing rule (for `runtime type check')
+introduces guarded types.  They can be eliminated through the {\sc
+  Widen} rule.  For example, the type \code{?Id \ra String} can be
+`widened' to \code{$\alpha$ \ra String}, and \code{?Id \ra Id} can be
+widened to \code{$\alpha$ \ra $\alpha$}.
+
+\paragraph{Application pattern matches}
+
+The {\sc Generic} rule assigns a type to an application pattern match
+$x_0 \; x_1 \; \dots \; x_n$.  We assign $x_1 \dots x_n$ types
+$\alpha_1 \dots \alpha_n$, being fresh type variables.  Then $x_0$ has
+type $\alpha_1 \ra \dots \ra \alpha_n \ra \alpha_0$, where $\alpha_0$
+is a fresh type variable.  In principle, the type of the entire
+pattern is $\alpha_0$.  However, we must ensure that no substitutions
+are ever made to $\alpha_0 \dots \alpha_n$; otherwise, the result will
+not be generic.  For example, consider the following:
+\begin{verbatim}
+prefix = c x -> c;
+suffix = c x -> x;
+f = c x -> c (x + 1);
+\end{verbatim}
+
+If application pattern matches are implemented naively, then
+\code{prefix} will have type $\forall \alpha . \forall \beta . \alpha
+\ra (\beta \ra \alpha)$, \code{suffix} will have type $\forall \alpha
+. \forall \beta . \alpha \ra \beta$, and \code{f} will have type
+$\forall \alpha . \alpha \ra \alpha$.  All those types are too
+general.
+
+We solve this problem by assigning $x_0 \; x_1 \; \dots \; x_n$ the
+type $\term{Gen}(\alpha_0, \alpha_1, \dots, \alpha_n)$.  $\term{Gen}$
+is an intermediate construct that must eventually be {\em contracted}
+into $\alpha_0$ if and only if the $\alpha$s do not occur in the
+environment and $\alpha_1 \dots \alpha_n$ do not occur free in the
+rest of the type.  This is expressed by the {\sc Contract} rule.
+This, and the fact that the $\alpha$s are variables, implies that no
+constraints to the resulting type can be found later on, and that
+therefore genericity is ensured.  We use the notation $\tau[\sigma]$
+to refer to a hole in $\tau$.
+
+
+\begin{figure}
+
+\[
+\mbox{\sc{Var}}:
+{
+x : \tau \in \Gamma
+\over
+\Gamma \vdash x : \tau
+}
+\]
+
+\[
+\mbox{\sc{Con}}:
+{
+C : \tau \in \Gamma
+\over
+\Gamma \vdash C : \tau
+}
+\]
+
+\[
+\mbox{\sc{Abs}}:
+{
+\Gamma' = \Gamma \cup \Gamma_p
+\; \wedge \;
+\Gamma' \vdash p : \sigma
+\; \wedge \;
+\Gamma' \vdash e : \tau
+\over
+\Gamma \vdash (p \ra e) : \sigma \ra \tau
+}
+\]
+
+\[
+\mbox{\sc{App}}:
+{
+\Gamma \vdash e_1 : \sigma \ra \tau 
+\; \wedge \;
+\Gamma \vdash e_2 : \sigma
+\over
+\Gamma \vdash (e_1 e_2) : \tau
+}
+\]
+
+\[
+\mbox{\sc{Inst}}:
+{
+\Gamma \vdash e : \forall \alpha . \tau
+\over
+\Gamma \vdash e : [\alpha := \sigma] \tau
+}
+\]
+
+\[
+\mbox{\sc{Gen}}:
+{
+\Gamma \vdash e : \tau \; \wedge \; \alpha \not\in \textrm{fv}(\Gamma)
+\over
+\Gamma \vdash e : \forall \alpha . \tau
+}
+\]
+
+\[
+\mbox{\sc{Let}}:
+{
+\begin{array}{l}
+\Gamma' = \Gamma \cup \Gamma_{ds}
+\; \wedge \;
+\Gamma' \vdash e : \tau
+\; \wedge \; \\
+\forall (x \; \term{=} \; e_2 \term{;}) \in ds: (
+\Gamma' \vdash e_2 : \tau_2
+\; \wedge \;
+x : \tau_2 \in \Gamma')
+\end{array}
+\over
+\Gamma \vdash (\term{let} \; ds \; \term{in} \; e) : \tau
+}
+\]
+
+\[
+\mbox{\sc{Fail}}:
+\Gamma \vdash \text{\code{fail}} : \tau
+\]
+
+\[
+\mbox{\sc{Cut}}:
+{
+\Gamma \vdash e : \tau
+\over
+\Gamma \vdash \term{\cut{}}e : \tau
+}
+\]
+
+\[
+\mbox{\sc{Choice}}:
+{
+\Gamma \vdash e_1 : \tau \wedge \Gamma \vdash e_2 : \tau
+\over
+\Gamma \vdash e_1 \plus e_2: \tau
+}
+\]
+
+\[
+\mbox{\sc{Widen}}:
+{
+\Gamma \vdash e : \term{?} \sigma \ra ([\alpha := \sigma] \tau)
+\over
+\Gamma \vdash e : \alpha \ra \tau
+}
+\]
+
+\[
+\mbox{\sc{Contract}}:
+{
+\begin{array}{l}
+\Gamma \vdash e : \tau [\term{Gen}(\alpha_0, \alpha_1, \dots, \alpha_n)] 
+\; \wedge \;  \\
+(\forall i, 0 \le i \le n: \alpha_i \not\in \text{fv}(\Gamma))
+\; \wedge \; \\
+(\forall i, 1 \le i \le n: \alpha_i \not\in \text{fv}(\tau))
+\end{array}
+\over
+\Gamma \vdash e : \tau [\alpha_0]
+}
+\]
+
+\caption{\label{fig:infrules}
+  Typing rules for terms}
+\end{figure}
+
+
+\begin{figure}
+
+\[
+\mbox{\sc{PVar}}:
+{
+x : \tau \in \Gamma
+\over
+\Gamma \vdash x : \tau
+}
+\]
+
+\[
+\mbox{\sc{PCon}}:
+{
+\begin{array}{l}
+n \ge 0
+\; \wedge \;
+C : (\sigma_1 \ra \dots \ra \sigma_n \ra \tau) \in \Gamma
+\; \wedge \; \\
+\Gamma \vdash p_1 : \sigma_1
+\; \wedge \;
+\dots
+\; \wedge \;
+\Gamma \vdash p_n : \sigma_n
+\end{array}
+\over
+\Gamma \vdash (C \; p_1 \; \dots \; p_n) : \tau
+}
+\]
+
+\[
+\mbox{\sc{Generic}}:
+{
+\begin{array}{l}
+n \ge 1
+\; \wedge \;
+x_0 : (\alpha_1 \ra \dots \ra \alpha_n \ra \alpha_0) \in \Gamma
+\; \wedge \; \\
+x_1 : \alpha_1 \in \Gamma
+\dots
+\; \wedge \;
+x_n : \alpha_n \in \Gamma
+\end{array}
+\over
+\Gamma \vdash (x_0 \; x_1 \; \dots \; x_n) : 
+\term{Gen}(\alpha_0, \alpha_1, \dots, \alpha_n)
+}
+\]
+
+\[
+\mbox{\sc{Rttc}}:
+{
+\Gamma \vdash p : \sigma
+\over
+\Gamma \vdash (\sigma \term{?} p) : \term{?} \sigma
+}
+\]
+
+\caption{\label{fig:infrules2}
+  Typing rules for patterns}
+\end{figure}
+
+
+\begin{example}[Application pattern matches]
+  \begin{sloppypar}
+    Below is a natural deduction proof that the type of
+  \end{sloppypar}
+\begin{verbatim}
+all = f -> (c x -> ^(st (all f c) (f x)) <+ id);
+\end{verbatim}
+  is $\forall \beta . (\forall \alpha . \alpha \ra \alpha) \ra \beta
+  \ra \beta$.  Ellipses are used to save space where necessary.
+\[
+\begin{ndproof}{10cm}
+  \tpderiv{\codem{st} : \forall \alpha . \forall \beta . (\alpha \ra
+    \beta) \ra \alpha \ra \beta}{ass.}\\
+  \tpderiv{\codem{id} : \forall \alpha . \alpha \ra \alpha}{ass.}\\
+  \tpderiv{\codem{all} : \forall \beta . (\forall \alpha . \alpha
+    \ra \alpha) \ra \beta \ra \beta}{ass.}\\
+  \begin{ass}{\codem{f} : \forall \alpha . \alpha \ra \alpha}\\
+    \begin{ass}{\codem{c} : \tau_1 \ra \tau_0, \codem{x} : \tau_1}\\
+      \tpderiv{\codem{c x} : \term{Gen}(\tau_0, \tau_1)}{{\sc Generic}, 5}\\
+      \tpderiv{\codem{all} : (\forall \alpha . \alpha \ra \alpha) \ra
+        (\tau_1 \ra \tau_0) \ra \tau_1 \ra \tau_0}{{\sc Inst}, 3}\\
+      \tpderiv{\codem{all f} : (\tau_1 \ra \tau_0) \ra \tau_1 \ra
+        \tau_0}{{\sc App}, 4, 7}\\
+      \tpderiv{\codem{all f c} : \tau_1 \ra \tau_0}{{\sc App}, 5, 8}\\
+      \tpderiv{\codem{st} : \forall \beta . (\tau_1 \ra \beta) \ra
+        \tau_1 \ra \beta}{{\sc Inst}, 1}\\
+      \tpderiv{\codem{st} : (\tau_1 \ra \tau_0) \ra \tau_1 \ra
+        \tau_0}{{\sc Inst}, 10}\\
+      \tpderiv{\codem{st (all f c)} : \tau_1 \ra \tau_0}{{\sc App}, 9, 11}\\
+      \tpderiv{\codem{f} : \tau_1 \ra \tau_1}{{\sc Inst}, 4}\\
+      \tpderiv{\codem{f x} : \tau_1}{{\sc App}, 5, 13}\\
+      \tpderiv{\codem{st (all f c) (f x)} : \tau_0}{{\sc App}, 12, 14}\\
+      \tpderiv{\codem{\cut{}(st (all f c) (f x))} : \tau_0}{{\sc Cut}, 15}\\
+    \end{ass}\\
+    \tpderiv{\codem{c x -> ...} :
+      \term{Gen}(\tau_0, \tau_1) \ra \tau_0}{{\sc Abs}, 5, 6, 16}\\
+    \tpderiv{\codem{c x -> ...} : \tau_0 \ra
+      \tau_0}{{\sc Contract}, 17}\\
+    \tpderiv{\codem{id} : \tau_0 \ra \tau_0}{{\sc Inst}, 2}\\
+    \tpderiv{\codem{c x -> ...~<+ id} : \tau_0 \ra
+      \tau_0}{{\sc Choice}, 18, 19}\\
+  \end{ass}\\
+  \tpderiv{\codem{f -> ...} : (\forall \alpha . \alpha \ra \alpha) \ra
+    \tau_0 \ra \tau_0}{{\sc Abs}, 4, 20}\\
+  \tpderiv{\codem{f -> ...} : \forall \beta . (\forall \alpha . \alpha
+    \ra \alpha) \ra \beta \ra \beta}{{\sc Gen}, 21}\\
+\end{ndproof}
+\]
+\end{example}
+
+
+\begin{example}[Runtime type check]
+  Here is a proof that the type of
+\begin{verbatim}
+rename = topdown (try (Exp?Var "x" -> Var "y"));
+\end{verbatim}
+  is $\forall \alpha . \alpha \ra \alpha$.  We assume the existence of
+  the trivial {\sc String} and {\sc PString} rules to type string
+  literals in terms and patterns.
+\[
+\begin{ndproof}{10cm}
+  \tpderiv{\codem{topdown} : \forall \beta . (\forall \alpha . \alpha
+    \ra \alpha) \ra \beta \ra \beta}{ass.}\\
+  \tpderiv{\codem{try} : \forall \alpha . (\alpha \ra \alpha) \ra
+    \alpha \ra \alpha}{ass.}\\
+  \tpderiv{\codem{Var} : \codem{String} \ra \codem{Exp}}{ass.}\\
+  \tpderiv{\codem{"x"} : \codem{String}}{{\sc PString}}\\
+  \tpderiv{\codem{Var "x"} : \codem{Exp}}{{\sc PCon}, 3, 4}\\
+  \tpderiv{\codem{Exp?Var "x"} : \codem{?Exp}}{{\sc Rttc}, 5}\\
+  \tpderiv{\codem{"y"} : \codem{String}}{{\sc String}}\\
+  \tpderiv{\codem{Var "y"} : \codem{Exp}}{{\sc App}, 3, 7}\\
+  \tpderiv{\codem{Exp?Var "x" -> Var "y"} : \codem{?Exp} \ra
+    \codem{Exp}}{{\sc Abs}, 6, 8}\\
+  \tpderiv{\codem{Exp?Var "x" -> Var "y"} : \tau_0 \ra \tau_0}{{\sc
+      Widen}, 9}\\
+  \tpderiv{\codem{try} : (\tau_0 \ra \tau_0) \ra \tau_0 \ra
+    \tau_0}{{\sc Inst}, 2}\\
+  \tpderiv{\codem{try (Exp?Var "x" -> ...)} : \tau_0 \ra
+    \tau_0}{{\sc App}, 10, 11}\\
+  \tpderiv{\codem{try (Exp?Var "x" -> ...)} : \forall \alpha
+    . \alpha \ra \alpha}{{\sc Gen}, 12}\\
+  \tpderiv{\codem{topdown} : (\forall \alpha . \alpha
+    \ra \alpha) \ra \tau_1 \ra \tau_1}{{\sc Inst}, 1}\\
+  \tpderiv{\codem{topdown (try (...))} : \tau_1 \ra \tau_1}{{\sc App}, 13,
+    14}\\
+  \tpderiv{\codem{topdown (try (...))} : \forall \alpha . \alpha \ra
+    \alpha}{{\sc Gen}, 15}\\
+\end{ndproof}
+\]
+\end{example}
+
+
+
+
+\subsection{Type inference algorithm}
+\label{ssec:typeinf}
+
+Below we describe a type inference algorithm for RhoStratego.  The
+inferencer does not infer all types: we must give type annotations for
+universally quantified function arguments (i.e., the variables that
+lead to types of rank 2 or higher).  For example, we write \code{all}
+as follows:
+\begin{verbatim}
+all = (f :: (a . a -> a)) ->
+  (c x -> ^(st (all f c) (f x)) <+ id);
+\end{verbatim}
+
+
+\paragraph{Supertyping}
+
+The notion of {\em supertyping} will be useful in the formulation of
+the inferencer.  We often need to determine whether two types `match'
+in a certain sense; for example, if a function has a formal argument
+of type $\tau$, can we apply it to a value of type $\sigma$?  This is
+slightly broader than syntactic unification.  For example, a function
+accepting an argument of type $\forall \alpha . \alpha \ra \alpha$ can
+be given a value of type \code{?Id -> Id}.  Other places where this is
+useful is in verifying type signatures and type annotations (e.g., a
+function with inferred type $\forall \alpha . \alpha \ra \alpha$ may
+be given a type signature \code{Int \ra Int}).
+
+If we view a type as a set of values, then the {\em supertype
+  function} determines, given two types $t_1$ and $t_2$, whether $t_2
+\subseteq t_1$.  Since supertyping takes the place of unification, it
+can discover substitutions to be applied to the global type
+environment.  We therefore say that a type $\tau_1$ is a supertype of
+$\tau_2$ with substitution $s$, notation $\tau_1 \ge \tau_2 \Ra s$.
+
+\begin{example}
+Examples of supertyping are:
+\[
+\begin{array}{lcll}
+\text{\code{Int \ra Int}} & \ge & \alpha \ra \alpha 
+& \Ra \; s = [ \alpha := Int ]
+\\
+\text{\code{Int \ra String}} & \ge & \alpha \ra \alpha 
+& \text{is rejected}
+\\
+\text{\code{Int \ra Int}} & \ge & \forall \alpha . \alpha \ra \alpha 
+& \Ra \; s = [ ]
+\\
+\alpha \ra \alpha & \ge & \forall \alpha . \alpha \ra \alpha
+& \Ra \; s = [ \alpha := \tau_1 ]
+\\
+\forall \alpha . \alpha \ra \alpha & \ge & \text{?Id \ra Id}
+& \Ra \; s = [ ]
+\end{array}
+\]
+In the above, $\tau_1$ represents a fresh type variable.
+\end{example}
+
+We determine whether a type $\tau_1$ is a supertype of $\tau_2$ using
+the following tests, to be applied from top to bottom.  If none of
+them apply, then $\tau_1$ is not a supertype of $\tau_2$.  We write $s
+\tau$ to denote the substitution $s$ applied to $\tau$, and
+$\textrm{concat}(s_1, \dots, s_i)$ to denote concatenation of
+substitutions.
+
+The first few rules describe plain matching.
+\[
+\begin{array}{lcl}
+  C \ge C & \Ra & [] \\
+  \alpha \ge \alpha & \Ra & [] \\
+  \alpha \ge \beta & \Ra & [\alpha := \beta, \beta := \alpha] \\
+  \alpha \ge \tau & \Ra & [\alpha := \tau] \\
+  \tau \ge \alpha & \Ra & [\alpha := \tau] \\
+
+  \tau_1 \tau_2 \ge \tau_3 \tau_4 & \Ra & \textrm{concat}(s_l, s_r) \\
+  & & \text{where} \; \tau_1 \ge \tau_3 \Ra s_l \\
+  & & \wedge \; s_l \tau_2 \ge s_l \tau_4 \Ra s_r 
+\end{array}
+\]
+
+The {\sc Widen} typing rule is integrated into the supertype clauses
+for function types.
+\[
+\begin{array}{lcl}
+  \alpha \ra \tau_2 \ge ?\tau_3 \ra \tau_4 & \Ra & s' \\
+  & & \text{where} \; \alpha \ra \tau_2 \ge \tau_3 \ra \tau_4 \Ra s \\
+  & & \wedge \; s' = s \; \text{with subst. for $\alpha$ removed} \\
+
+  \tau_1 \ra \tau_2 \ge ?\tau_3 \ra \tau_4 & \Ra & s' \\
+  & & \text{where} \; \tau_2 \ge \tau_4 \Ra s \\
+
+  \tau_1 \ra \tau_2 \ge \tau_3 \ra \tau_4 & \Ra & \textrm{concat}(s_l, s_r) \\
+  & & \text{where} \; \tau_3 \ge \tau_1 \Ra s_l \\
+  & & \wedge \; s_l \tau_2 \ge s_l \tau_4 \Ra s_r \\
+\end{array}
+\]
+
+The final clauses deal with universal quantification.
+\[
+\begin{array}{lcl}
+  \forall \alpha . \tau_1 \ge \forall \beta . \tau_2 & \Ra & s \\
+  & & \text{where} \; \tau_1 \ge [\beta := \alpha] \tau_2 \Ra s_l \\
+  & & \wedge \; $s$ \; \text{has no subst. for $\alpha$} \\
+
+  \tau_1 \ge \forall \alpha . \tau_2 & \Ra & s \\
+  & & \text{where} \; \tau_1 \ge \textrm{rename}(\tau_2) \Ra s \\
+
+  \forall \alpha . \tau_1 \ge \tau_2 & \Ra & s \\
+  & & \text{where} \; \tau_1 \ge \tau_2 \Ra s \\
+  & & \wedge \; $s$ \; \text{has no subst. for $\alpha$}
+\end{array}
+\]
+
+The supertype function can easily be extended to support sum types.
+This was in fact the primary reason to implement type matching in this
+way, since we have to deal with the fact that, e.g., a function of
+type \code{A + B + C -> D} can be given an argument of type \code{A +
+  C}, but not \code{A + E}.  Sum types were subsequently removed, but
+the supertype function is still useful to such things as verifying
+type signatures and dealing with runtime type checks (i.e., the {\sc
+  Widen} rule).
+\[
+\begin{array}{lcl}
+  \sum_{1 \le i \le n} \tau_{1,i} \ge \sum_{1 \le j \le m} \tau_{2,j}
+  & \Ra & \textrm{concat}(s_j) \\
+  & & \text{where} \; \forall j . \exists i . \tau_{1,i} \ge \tau_{2,j}
+  \Ra s_j
+\end{array}
+\]
+That is, each type in the right-hand sum should be a subtype of some
+type in the left-hand sum; for example, \code{(Int \ra Int) + B + C}
+$\ge$ \code{C + $\forall \alpha . \alpha \ra \alpha$}, but not vice
+versa.
+
+
+\paragraph{Inference algorithm}
+
+For each kind of term in the language, the type is computed as follows:
+\begin{itemize}
+\item For {\bf literals} (integers and strings) the type is fixed,
+  e.g. \code{Int}.
+  
+\item For a {\bf failure}, return $\tau$, where $\tau$ is a fresh type
+  variable (the {\sc Fail} rule).
+  
+\item For a {\bf variable} $x$, take the type $\tau$ of $x$ as
+  specified in the environment (the {\sc Var} rule) and specialise it.
+  Idem for constructors (the {\sc Con} rule).
+
+\item For a {\bf cut} \code{\cut{}e}, return the type of \code{e};
+  cuts do not affect the type of their argument (the {\sc Cut} rule).
+  
+\item For an {\bf application} \code{($e_1$ $e_2$)}, do the following:
+  \begin{itemize}
+  \item Compute the type $\tau_1$ of $e_1$.
+  \item Add to $\Gamma$ the bindings $x := \alpha$ and $y := \beta$,
+    where $x$ and $y$ are fresh variables (the names are
+    irrelevant in any case) and $\alpha$ and $\beta$ are fresh type
+    variables.
+  \item Determine whether $\alpha \ra \beta$ is a supertype of
+    $\tau_1$, and apply the resulting substitution to $\Gamma$.  This
+    tells us whether $\tau_1$ is a function; if so, the type of its
+    formal argument and result are bound to $x$ and $y$ in $\Gamma$,
+    respectively.
+  \item Compute the type $\tau_2$ of $e_2$.
+  \item Check that the type bound to $\alpha$ (i.e., the type of the
+    formal argument) is a supertype of $\tau_2$.  If this fails,
+    generalise the argument type $\tau_2$ and try again.  This is
+    necessary to support rank-2 polymorphism.  Apply substitutions to
+    $\Gamma$.
+  \item Remove $x$ and $y$ from the environment and return the type
+    bound to $y$ (the type of the result, after substitutions).
+  \end{itemize}
+  
+\item For a {\bf choice} \code{$e_1$ <+ $e_2$}, compute the types
+  $\tau_1$ and $\tau_2$ of $e_1$ and $e_2$ respectively.  Then either
+  $\tau_1$ should be a supertype of $\tau_2$ or $\tau_2$ a supertype
+  of $\tau_1$.  The resulting type is the {\em largest} (or {\em most
+    specific}) of the two, after substitutions.  For example, the type
+  of both \code{(1 -> 2) <+ id} and \code{id <+ (1 -> 2)} is \code{Int
+    \ra Int}, not $\forall \alpha . \alpha \ra \alpha$.
+  
+\item For a {\bf type annotation} \code{$e$ ::~$\tau$}, compute the
+  type $\sigma$ of \code{e} and determine whether $\tau$ is a
+  supertype of $\sigma$ (since a type annotation can widen the type of
+  a value; we can write \code{id ::~(Int -> Int)} but not \code{(1 ::~(Int -> Int)) ::~$\forall \alpha . \alpha$}.  Apply the resulting
+  substitution to $\Gamma$ and $\tau$ and return $\tau$.
+
+\item For a {\bf rule} $p \ra e$, do the following:
+  \begin{itemize}
+  \item Compute the type $\sigma$ of $p$, and the variables occurring
+    therein.  This can be done straight-forwardly using the pattern
+    typing rules.  Add the pattern variables to the environment, as
+    well as a dummy binding \code{x := $\sigma$}, so that
+    substitutions discovered along the way are also applied to
+    $\sigma$.
+  \item Compute the type $\tau$ of $e$.
+  \item Restore the environment.  The type of $p \ra e$ is $\sigma \ra
+    \tau$ (with substitutions applied).
+  \end{itemize}
+
+\item For a {\bf let-expression}, do the following:
+  \begin{itemize}
+  \item Formulate the {\em local environment}.  This is the set of all
+    locally declared type signatures, added to which is, for each
+    definition $x = e$ that does not have a type signature, a
+    signature $x :: \alpha$, where $\alpha$ is a fresh type variable.
+    Add the local environment to $\Gamma$.
+  \item Compute the type of each definition, threading $\Gamma$
+    through each type computation.  For each definition:
+    \begin{itemize}
+    \item Compute the type $\tau$ of the body.
+    \item Generalise $\tau$ and verify that it is a subtype of the
+      type signature.  For example, the definition \code{f = x \ra x}
+      may be given a signature \code{f ::~Int \ra Int}.
+    \end{itemize}
+  \item Compute the type of the body.  This is the type of the entire
+    let-expression.
+  \item Remove the local environment from $\Gamma$.
+  \end{itemize}
+
+\item Finally, {\bf primops} are assigned an arbitrary type $\alpha$,
+  where $\alpha$ is a fresh type variable.  After all, we can say
+  nothing about the types of values produced externally.  The result
+  of a primop can be constrained using a type annotation.  
+
+\end{itemize}
+
+An implementation of this algorithm is given in appendix
+\ref{sec:rhotypechecker}.
+

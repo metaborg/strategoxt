@@ -1,0 +1,34 @@
+data Program;
+Program :: [Decl] -> Program;
+
+data Decl;
+Def :: Id -> Term -> Decl;
+Sig :: Id -> Type -> Decl;
+Data :: String -> [String] -> [Type] -> Decl;
+Syn :: String -> [String] -> Type -> Decl;
+
+data Term;
+Con :: String -> Term;
+Var :: Id -> Term;
+Const :: Const -> Term;
+Rule :: Term -> Term -> Term;
+App :: Term -> Term -> Term;
+Fail :: Term;
+LChoice :: Term -> Term -> Term;
+Let :: [Decl] -> Term -> Term;
+Cut :: Term -> Term;
+PrimOp :: String -> Term;
+XPat :: Term -> Term;
+HasType :: Term -> Type -> Term;
+
+data Const;
+Int :: Int -> Const; /* !!! */
+Str :: String -> Const;
+
+data Id;
+Id :: String -> Int -> Id;
+
+data Type;
+TCon, TVar :: String -> Type;
+TApp, TSum, TFun :: Type -> Type -> Type;
+TForAll :: String -> Type -> Type;

@@ -1,0 +1,251 @@
+\section{Generic Traversal}
+	\label{Sec:traversal}
+
+	First-class rules and the choice operator enable the
+	specification of a library of transformation rules that can be
+	combined in many ways.  In order to apply transformation rules
+	to an abstract syntax tree it is necessary to traverse that
+	tree, i.e., apply rules below the root constructor.  Traversal
+	can be accomplished using pattern matching and recursion.
+	However, this induces overhead: all constructors that are
+	traversed must be mentioned explicitly.  It is desirable to
+	define traversals generically, using default behavior for
+	most constructors.
+
+	Stratego introduced generic traversal primitives such as
+	\code{all} and \code{one} that capture schemas for traversing
+	from a constructor application to its
+	arguments~\cite{optrewritestrat}.  Using a few of such
+	primitives, a wide range of highly generic term traversals can
+	be defined, avoiding the overhead normally associated with the
+	definition of traversals.
+
+	In RhoStratego the built-in primitive traversal schemas of
+	Stratego can be defined using one single construct: {\em
+	application pattern matching}.  An application pattern is a
+	pattern of the form \code{c x}, where \code{c} and \code{x}
+	are both variables.  An application pattern \code{c x} matches
+	a constructor application, binding \code{x} to the last
+	argument of the constructor (the {\em suffix}), and binding
+	\code{c} to the constructor applied to the other arguments
+	(the {\em prefix}).
+
+	As an example consider the definition of the generic function
+	\code{termSize}, which counts the number of constructor nodes
+	(including basic values) in its argument term:
+\begin{verbatim}
+  termSize = 
+    c x -> termSize c + termSize x <+ x -> 1;
+\end{verbatim}
+	The left alternative is a rule that matches a
+	constructor application and computes the size of the prefix
+	\code{c} and the suffix \code{x}. The right alternative
+	matches all terms that are not applications, i.e.,
+	constructors and constants.  Thus, \code{termSize (Num 1)}
+	equals \code{(termSize Num) + (termSize 1)} which equals 2 and
+	\code{termSize (App (Num 1) (Var "x"))} equals \code{(termSize
+	(App (Num 1))) + (termSize (Var "x"))}, which eventually
+	evaluates to \code{5}.
+
+	In the rest of this section we consider the implementation of
+	the basic traversals \code{all}, \code{one}, and \code{crush}
+	and their application in the definition of generic traversals.
+
+\subsection{All}
+
+	The \code{all} operator applies a function \code{f} to all
+	direct subterms of a term. That is, \code{all f (C
+	$t_1$...$t_n$)} evaluates to \code{C (f $t_1$)...(f $t_n$)}.
+	It can be implemented as follows:
+\begin{verbatim}
+  all = f -> (c x -> ^(st (all f c) (f x)) <+ id);
+\end{verbatim}
+	The left-hand side of the choice matches the argument term
+	against the application pattern \code{c x}.  If the match
+	fails, the argument is either a constructor or some other
+	value (e.g., an integer) without subterms.  In this case the
+	term is left unchanged by applying the identity, \code{id}.
+	If the match succeeds, the term is of the form \code{C
+	$t_1$...$t_n$}, i.e., a constructor applied to $n$ arguments
+	and \code{c} is bound to its prefix \code{C
+	$t_1$...$t_{n-1}$}, and \code{x} is bound to its suffix $t_n$.
+	The function \code{f} is applied to the suffix $t_n$, and,
+	through the recursive call \code{all f c}, it is applied to
+	the subterms in the prefix, resulting in \code{C (f
+	$t_1$)...(f $t_{n-1}$)}. Applying the transformed prefix to
+	the transformed suffix completes the construction of the new
+	term \code{C (f $t_1$)...(f $t_n$)}.  Since the function
+	\code{f} must be {\em successfully} applied to all subterms,
+	this must be a {\em strict} application.  Finally, the result
+	must be cut in order to prevent failure in \code{f} from
+	warping us into \code{id}.
+
+	Note that \code{all f} succeeds on constants, i.e., terms
+	without subterms. Thus, we can define the generic function
+	\code{isConstant} that succeeds on constants and fails on
+	non-constants as
+\begin{verbatim}
+  isConstant = all fail;
+\end{verbatim}
+	Furthermore, note that \code{all} forces the evaluation of the
+	arguments of a constructor. Thus \code{(all id)} has the effect
+	of forcing the evaluation of the direct subterms of a
+	constructor, and \code{force}, defined as
+\begin{verbatim}
+  force = all force;
+\end{verbatim}
+	forces the complete evaluation of a constructed value.
+
+	Using \code{all}, a wide range of full term traversals can be
+	defined. For example, the function \code{topdown} defines a
+	full traversal of a term that applies a transformation
+	\code{s} at every subterm before visiting its children.
+\begin{verbatim}
+  topdown = s -> s | all (topdown s);
+\end{verbatim}
+	Its dual is \code{bottomup}; it visits the subterms of a term
+	before applying a transformation to it.
+\begin{verbatim}
+  bottomup = s -> all (bottomup s) | s;
+\end{verbatim}
+	An application of \code{bottomup} is the following constant
+	folding strategy \code{foldConst} for expressions:
+\begin{verbatim}
+  foldOne   = plusFold <+ plusZero <+ mulFold;
+  foldConst = bottomup(repeat(foldOne));
+\end{verbatim}
+	The transformation makes a single pass over a term, repeatedly
+	applying folding rules after transforming the subterms of a
+	term.
+
+	Finally, the function \code{alltd} tries to apply a
+	transformation \code{s} to a term. If that fails it
+	recursively descends into the subterms.
+\begin{verbatim}
+  alltd = s -> s <+ all(alltd s);
+\end{verbatim}
+	This function applies a transformation along an internal
+	frontier of a term, while \code{topdown} and \code{bottomup}
+	apply a transformation to all subterms.  An application of
+	\code{alltd} is the substitution function \code{subst}
+\begin{verbatim}
+  subst env = alltd(Var x -> lookup x env);
+\end{verbatim}
+	which replaces all \code{(Var x)} subterms by the value of
+	\code{x} in the environment \code{env}. If the lookup in the
+	environment fails, a variable is not replaced. Note that no
+	substitution takes place in the expression that a variable is
+	replaced with.
+
+\subsection{One}
+
+	The \code{one} operator applies a function \code{f} to exactly
+	one immediate subterm of a term and fails if \code{f} cannot
+	be applied to at least one such term. Thus, \code{one f (C
+	$t_1$...$t_n$)} evaluates to \code{C $t_1$...(f
+	$t_i$)...$t_n$}, if \code{f $t_i$} succeeds and \code{f $t_j$}
+	fails for $j>i$.  It can be implemented as follows:
+\begin{verbatim}
+  one = f -> c x -> (st c (f x) <+ one f c x);
+\end{verbatim}
+	The left alternative of the choice tries to apply \code{f} to
+	the suffix \code{x}. If that succeeds the term is
+	reconstructed with the original prefix and the transformed
+	suffix. Otherwise the right alternative tries to find a
+	subterm in the prefix to apply \code{f} to using the recursive
+	call \code{one f c}.  If the function hits the constructor,
+	the application match fails and thus no subterm to apply
+	\code{f} to has been found.  For example, the result of
+	\code{one (A -> B) (C A A B)} is \code{C A B B}, and the
+	result of \code{one (A -> B) (C B)} is \code{fail}.  Note that
+	\code{one} fails for constructors without (direct) subterms.
+	Thus, the definition
+\begin{verbatim}
+  hasArgs = one id;
+\end{verbatim}
+	defines the generic function \code{hasArgs} that succeeds
+	for terms with subterms.
+
+	An example application of \code{one} is the traversal
+	\code{oncetd} that searches a term for a subterm to which a
+	transformation \code{s} can be applied.
+\begin{verbatim}
+  oncetd = s -> (s <+ one (oncetd s));
+\end{verbatim}
+	This traversal fails if \code{s} cannot be applied to any
+	subterm.  An application of \code{oncetd} is the following
+	simple beta reduction strategy.
+\begin{verbatim}
+  betaReduce = 
+    repeat(oncetd(beta <+ appLetL <+ appLetR)); 
+\end{verbatim}
+	Another use of \code{oncetd} is the function \code{occurs},
+	which checks the occurrence of a variable in an expression.
+\begin{verbatim}
+  occurs = x -> oncetd(Var x -> Var x);
+\end{verbatim}
+
+\subsection{Crush}
+
+	The traversal primitives \code{all} and \code{one} preserve
+	term structure (although traversals such as \code{topdown} can
+	change the structure of a term).  It can also be useful to
+	reduce a constructor application to a value.  The \code{crush}
+	operator is a one-level reduction operator that reduces a
+	constructor application by combining the reductions of the
+	direct subterms in a uniform way. The \code{crush} operator is
+	implemented as follows:
+\begin{verbatim}
+  crush = op -> nul -> f -> 
+    (c x -> op (crush op nul f c) (f x) 
+    <+ x -> nul);
+\end{verbatim}
+	That is, \code{crush op nul f (C $t_1$...$t_n$)} evaluates to
+	\code{(op ...~(op (op nul $t_1$) (f $t_2$)) ...~(f
+	$t_n$))}. The function \code{f} is a generic reduction
+	operator and functions \code{op} and \code{nul} combine its
+	results.
+
+	The generic node counting function \code{termSize} can be
+	redefined in terms of \code{crush} as
+\begin{verbatim}
+  termSize = crush (+) 1 termSize;
+\end{verbatim}
+	Note that the function is used recursively to reduce the
+	direct subterms of a term.
+
+	A more general application of \code{crush} is the function
+	\code{collect}, which collects all outermost subterms on which
+	\code{s} succeeds.
+\begin{verbatim}
+  collect = s -> ((s | (y -> [y]))
+                  <+ crush union [] (collect s));
+\end{verbatim}
+	For example, to collect all variables in an expression,
+	\code{collect} is instantiated with a rule that recognizes
+	variables: \code{collect(Var x -> x)}. This function produces
+	the set of all variables occurring in an expression. If we
+	want to collect only the \emph{free} variables in an
+	expression we need a refined version of collect in which the
+	user-defined base case is parameterized with the collect
+	algorithm itself:
+\begin{verbatim}
+  collectR = coll -> 
+    (let c = collectR coll;
+      in coll c <+ crush union [] c);
+\end{verbatim}
+	A free variable collection function collects all variables,
+	just as in the instantiation above, but filters out variables
+	bound by the \code{Abs} and \code{Let} constructs.  
+\begin{verbatim}
+  freeVars = collectR (fv -> 
+    (  Var x -> [x]
+    <+ Abs x e -> diff (fv e) [x]
+    <+ Let x e1 e2 -> union (fv e1) 
+                            (diff (fv e2) [x])));
+\end{verbatim}
+	Thus, a specialized collection algorithm is defined that only
+	needs to mention the constructors that are relevant for the
+	problem at hand. All other constructors are handled by the
+	generic default case. 
+

@@ -1,0 +1,154 @@
+\chapter{Introduction}
+
+\paragraph{Motivation}
+\input{intromotivation.ltx}
+
+\paragraph{Outline}
+\input{introoutline.ltx}
+
+\paragraph{Acknowledgements}
+\input{ack.ltx}
+
+
+\chapter{Program transformation in Stratego}
+\label{ch:stratego}
+\input{stratego.ltx}
+
+
+
+\chapter{Strategic programming in Haskell}
+\label{ch:haskell}
+
+\input{haskell.ltx}
+
+%\section{Generic Haskell}
+%\cite{genhaskell}
+
+
+\chapter{The RhoStratego programming language}
+\label{ch:rhostratego}
+
+\input{rhorealintro.ltx}
+
+\section{Overview}
+\label{sec:rhooverview}
+\input{rhointro.ltx}
+
+\section{Syntax}
+\input{syntax.ltx}
+
+\section{Semantics}
+\label{sec:semantics}
+\input{semantics.ltx}
+
+\section{Choice and pattern matching}
+\label{sec:patterns}
+\input{choice.ltx}
+
+\section{Comparison to the \rcalc{}}
+\input{rhocalc.ltx}
+
+
+\chapter{Compilation}
+\label{ch:compilation}
+
+\section{Overview}
+\input{compileoverview.ltx}
+
+\section{Implementation of the choice operator}
+\label{sec:compilechoice}
+\input{compilechoice.ltx}
+
+\section{Optimising choices}
+\input{compileoptchoice.ltx}
+
+\section{Implementation of generic traversals}
+\label{sec:compilegen}
+\input{compilegen.ltx}
+
+%\section{Maximal sharing}
+%\input{maxsharing.ltx}
+
+
+\chapter{A type system for RhoStratego}
+\label{ch:typesystem}
+
+\section{Requirements}
+\input{typerequirements.ltx}
+
+\section{Overview}
+\input{typeoverview.ltx}
+
+\section{The type system}
+\input{typesystem.ltx}
+
+
+\chapter{Applications}
+\label{ch:app}
+\input{../../xmpl/inliner.ltx}
+
+
+\chapter{Conclusion}
+\input{conclusion.ltx}
+
+\paragraph{Future work}
+\input{futurework.ltx}
+
+
+
+\appendix
+
+
+\chapter{Overview of the implementation of RhoStratego}
+\input{imploverview.ltx}
+
+
+%\chapter{Concrete syntax}
+%\label{ch:concretesyntax}
+
+%\listfile{../../syn/rho.def}
+
+
+\chapter{The RhoStratego interpreter}
+\label{ap:interpreter}
+
+\section{\code{rho-laws.r}}
+\input{../../utrecht/rho-laws.ltx}
+
+\section{\code{rho-bindings.r}}
+\label{sec:rhobindings}
+\input{../../utrecht/rho-bindings.ltx}
+
+\section{\code{rho-interpreter.r}}
+\label{sec:rhointerpreter}
+\input{../../utrecht/rho-interpreter.ltx}
+
+
+\chapter{The RhoStratego type checker}
+\label{sec:rhotypechecker}
+\input{../../utrecht/rho-typecheck.ltx}
+
+
+%\chapter{The RhoStratego compiler}
+%\input{../../utrecht/rho-compiler.ltx}
+
+%Support header for the generated code:
+
+%\listfile{../../lib/rho.h}
+
+%Runtime system:
+
+%\listfile{../../lib/rho.c}
+
+
+\chapter{The RhoStratego standard library}
+\label{ch:stdlib}
+\input{../../lib/stdlib.ltx}
+
+%Header:
+
+%\listfile{../../lib/stdlib.rh}
+
+%The standard library:
+
+%\listfile{../../lib/stdlib.rho}

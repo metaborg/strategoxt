@@ -1,0 +1,56 @@
+RhoStratego's name derives from its origin as an experimental
+implementation of the {\em \rcalc{}}.  The \rcalc{}, or {\em rewriting
+  calculus}, developed in \cite{rhocalc, reecriture} and simplified in
+\cite{matchingpower}, aims to integrate first-order rewriting, the
+\lcalc{}, and non-determinism.  Although we have diverged from that
+goal and Rho\-Stratego has become a conventional functional language
+extended with first-class rules and generic traversals, it is still
+interesting to compare Rho\-Stratego to the \rcalc{}.
+
+The syntax of the \rcalc{} is defined in \cite{matchingpower} as
+follows:
+\[
+t ::= var \alt constant \alt t \ra t \alt t \bullet t \alt null \alt
+t, t
+\]
+where $x$ ranges over the variables and $C$ ranges over the
+constants\footnote{This is slightly different from the convention in
+  \cite{matchingpower}, where the variables are $X, Y, Z, \dots$ and
+  the constants are $a, b, c, \dots$.}.  $t \ra t$ represents
+abstraction, $t \bullet t$ stands for application, $t, t$ builds a
+structure, and $null$ denotes the empty structure.  It is easy to see
+that the \lcalc{} and term rewriting can be encoded in the \rcalc{}.
+For example, $x \ra y \ra x$ is exactly the $\lambda$-term $\lambda x
+. \lambda y .  x$, and $(F(x) \ra x) \bullet F(A)$ is the rewrite rule
+$F(x) \ra x$ applied to the term $F(A)$.
+
+The principal semantic rule of the calculus is the {\sc Fire} rule,
+which is essentially a generalized form of $\beta$-reduction:
+\[
+(t_1 \ra t_2) \bullet t_3 
+\goesto \left\{
+\begin{array}{ll}
+null & \text{if} \; \textrm{Sol}(t_1 \match_\mathbb{T} t_3) =
+\emptyset  \\
+\sigma_1 t_2, \dots, \sigma_n t_2 & 
+\text{where} \; \sigma_i \in \textrm{Sol}(t_1 \match_\mathbb{T} t_3)
+\end{array}
+\right.
+\]
+The matching theory $\mathbb{T}$, which is a parameter of the
+calculus, determines the solutions and substitutions arising out of a
+match ($\textrm{Sol}(t_1 \match_\mathbb{T} t_3)$ returns the set of
+substitutions).  In addition, the calculus has the {\em distribution
+  rules} $(t_1, t_2) \bullet t_3 \goesto t_1 \bullet t_3, t_2 \bullet
+t_3$ and $null \bullet t \goesto null$.
+
+If we view the structure-building operator ($,$) as a choice operator
+and $null$ as failure, then the distribution rules correspond to the
+{\sc Distrib} and {\sc PropFunc} rules of RhoStratego.  Furthermore,
+if we take as the matching theory $\mathbb{T}$ the theory of equality
+modulo $\alpha$-renaming, then the {\sc Fire} rule corresponds to our
+choice rules, except that there are no cuts.  A rule either succeeds
+and has exactly one solution, or it fails and yields failure.
+Finally, the proper choice semantics is obtained by defining
+$\mathbb{T}$ such that $t_1, t_2$ is equivalent to $t_1$ if $t_1$ is
+not $null$, or to $t_2$ otherwise.

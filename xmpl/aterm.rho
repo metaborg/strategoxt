@@ -1,0 +1,14 @@
+#! /bin/sh ../utrecht/rho-run
+
+#include "stdlib.rh"
+
+data Xyzzy a;
+Foo :: a -> Xyzzy a;
+Bar :: a -> Xyzzy a;
+
+main = 
+  let a1 = readTerm "test.trm";
+      a2 = Foo x -> writeTerm "out.trm" ATFmtText (Bar x);
+      a3 = readFile "out.trm";
+      a4 = putStr;
+  in (a1 >>= a2) >> (a3 >>= a4);

@@ -1,0 +1,12 @@
+#! /bin/sh ../utrecht/rho-run
+
+#include "stdlib.rh"
+
+data C;
+C :: Int -> Int -> C;
+data D;
+D :: Int -> Int -> D;
+
+test1 = (C x y -> D x y) (C 1 2);
+
+main = print (repeat fail 123);

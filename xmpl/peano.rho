@@ -1,0 +1,13 @@
+#! /bin/sh ../utrecht/rho-run
+
+#include "stdlib.rh"
+
+#include "expr.rh"
+
+a = Plus Zero x -> x;
+
+b = Plus (Succ x) y -> Plus x (Succ y);
+
+reduce = repeat (a <+ b);
+
+main = print (reduce (Plus (Succ (Succ (Succ Zero))) (Succ (Succ Zero))));

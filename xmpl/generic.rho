@@ -1,0 +1,37 @@
+#! /bin/sh ../utrecht/rho-run
+
+#include "stdlib.rh"
+
+#pragma notypecheck
+
+X :: X;
+Y :: Y;
+Z :: Z;
+A :: A;
+B :: B;
+C :: C;
+D :: D;
+E :: E;
+YY :: YY;
+
+i1 = C X Y Z;
+
+i2 = C X X X;
+
+i3 = C Y Y Y;
+
+i4 = C (C X X) (C Y X) (C 123 456 (C A B X));
+
+t1 = all (try (X -> A)) i1;
+
+t2 = one (X -> A) i1;
+
+t3 = topdown (try (C x x -> D <+ X -> E)) i4;
+
+t4 = topdown ((Y -> ^fail) <+ try (C x x -> D)) i4;
+
+t5 = bottomup ((Y -> ^fail) <+ try (C x x -> D)) i4;
+
+t6 = bottomup ((YY -> ^fail) <+ (try (C x x -> D))) i4;
+
+main = print t2;

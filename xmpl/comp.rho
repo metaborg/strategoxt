@@ -1,0 +1,22 @@
+#! /bin/sh ../utrecht/rho-run
+
+id = x -> x;
+
+const = x -> y -> x;
+
+flip = f -> x -> id (y -> f y x);
+
+twice = f -> x -> f (f x);
+
++ = x -> y -> primOp "p_add";
+- = x -> y -> primOp "p_sub";
+* = x -> y -> primOp "p_mul";
+/ = x -> y -> primOp "p_div";
+
+f = C 123 456;
+
+main = 
+  let x = x;
+      y = twice (twice (x -> x + 100)) 10;
+      z = twice (x -> x / 5) 125;
+  in ((id ((flip const) x y)) + y) + z;

@@ -1,0 +1,59 @@
+#! /bin/sh
+
+# !!! security bug (/tmp races).
+
+base=".."
+
+# Process arguments.
+
+infile=$1; shift;
+
+if test -z $infile; then
+    echo "Syntax: $0 <filename>"
+    exit 1
+fi
+
+# Preprocess.
+
+preproc="/tmp/rho-run.$$.1"
+if ! (cat $base/lib/stdlib.rho ; ($base/utrecht/rho-preprocess < $infile)) > $preproc; then
+    rm -f $preproc
+    echo "$0: preprocessor error"
+    exit 1
+fi
+
+# Parse.
+
+parsed="/tmp/rho-run.$$.2"
+if ! sglr -p $base/syn/rho.def.tbl -s Program < $preproc > $parsed; then
+    rm -f $parsed
+    echo "$0: parse error"
+    exit 1
+fi
+rm -f $preproc
+
+# Implode and clean-up.
+
+cleaned="/tmp/rho-run.$$.3"
+if ! implode-asfix -S < $parsed | $base/syn/rho-cleanup -S > $cleaned; then
+    rm -f $parsed $cleaned
+    echo "$0: error in clean-up"
+    exit 1
+fi
+rm -f $parsed
+
+# Run the interpreter.
+
+output="/tmp/rho-run.$$.4"
+if ! $base/utrecht/ris -i $cleaned -o $output; then
+    rm -f $cleaned $output
+    echo "$0: interpreter error"
+    exit 1
+fi
+rm -f $cleaned
+
+# Show the output.
+
+$base/pp/rho-show < $output
+
+rm $output

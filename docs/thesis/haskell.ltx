@@ -1,0 +1,256 @@
+Functional programming languages are popular for program
+transformation applications for several reasons:
+\begin{itemize}
+\item They typically have extensive pattern matching facilities.
+\item They usually have type systems that make it easy to declare
+  complex data types.
+\item Recursion and a `cheap' function syntax make it easy to write
+  code to traverse through data values.
+\end{itemize}
+
+In the previous chapter we looked at the features that Stratego offers
+to support program transformation.  In this chapter we turn to the
+question of whether such features can be implemented elegantly in a
+typical modern functional language, namely Haskell.
+
+Haskell 98 \cite{haskell98} is a pure non-strict functional language.
+It has algebraic data types, an extended Hindley-Milner type system
+with parametric polymorphism and type classes, along with many other
+features.  In particular, it has pattern matching facilities.
+
+
+\section{Rewriting}
+
+It is not difficult to implement Stratego-like functionality in
+Haskell.  It would be nice if we could write a Stratego rewrite rule
+such as:
+\begin{verbatim}
+plus0: Plus(Zero, x) -> x
+\end{verbatim}
+as 
+\begin{verbatim}
+plus0 = \(Plus Zero x) -> x
+\end{verbatim}
+assuming a data type
+\begin{verbatim}
+data Exp = Zero | Succ Exp | Plus Exp Exp 
+\end{verbatim}
+
+Of course, this will not work because we cannot handle pattern match
+failure in $\lambda$-abstractions: if a pattern fails to match, the
+program is said to {\em diverge}; in other words, the program crashes.
+This fact points out that pattern matches are not `first class' in
+Haskell.  The solution is to make failure explicit by lifting the
+result into a \code{Maybe} type\footnote{The data type \code{Maybe} is
+  defined as \code{data Maybe a = Nothing | Just a} where
+  \code{Nothing} denotes failure and \code{Just a} denotes success
+  with a value \code{a}.}:
+\begin{verbatim}
+plus0 (Plus Zero x) = Just x
+plus0 _ = Nothing
+\end{verbatim}
+
+In general, then, a strategy has the following type: 
+\begin{verbatim}
+type St a b = a -> Maybe b
+\end{verbatim}
+
+\paragraph{Strategy operators}
+Stratego's left choice and composition operators (here written as
+\code{<*} and \code{<+}, respectively) are easy to define:
+\begin{verbatim}
+(<+) :: St a b -> St a b -> St a b
+(s1 <+ s2) t = maybe (s2 t) Just (s1 t)
+
+(<*) :: St a b -> St b c -> St a c
+s1 <* s2 = \t -> maybe Nothing s2 (s1 t)
+\end{verbatim}
+Indeterministic choice can be accomplished by returning a list of
+results, but we will not do so here.
+
+Combining strategies is just as easy as in Stratego:
+\begin{verbatim}
+idS :: St a a
+idS t = Just t // identity strategy
+
+tryS :: St a a -> St a a
+tryS s = s <+ idS
+
+repeatS :: St a a -> St a a
+repeatS s = tryS (s <* repeatS s)
+\end{verbatim}
+
+Writing the basic rewrite rules, however, is tiresome because we spend
+a lot of time packing and unpacking the \code{Maybe} wrapper.  For
+example, the congruence over a constructor \code{Plus Exp Exp} would
+look like this:
+\begin{verbatim}
+cgrPlus :: St Exp Exp -> St Exp Exp -> St Exp Exp
+cgrPlus s1 s2 (Plus e1 e2) = maybe Nothing (\e1' -> 
+  maybe Nothing (\e2' -> Just (Plus e1' e2')) (s2 e2)) (s1 e1)
+cgrPlus s1 s2 _ = Nothing
+\end{verbatim}
+
+Fortunately, Haskell's {\em do-notation} provides us with a much nicer
+way to write the above.  The \code{Maybe} type forms a monad
+\cite{essencefuncprog}, with the monadic {\em bind}, {\em unit}
+(`return') and {\em fail} operators defined as follows:
+\begin{verbatim}
+Just x  >>= k = k x
+Nothing >>= k = Nothing
+return        = Just
+fail s        = Nothing
+\end{verbatim}
+
+Therefore we can write \code{cgrPlus} as:
+\begin{verbatim}
+cgrPlus s1 s2 t
+  = return t >>= \t' ->
+    case t' of 
+      Plus e1 e2 ->
+        s1 e1 >>= \e1' ->
+        s2 e2 >>= \e2' ->
+        return (Plus e1' e2')
+      _ -> fail ""
+\end{verbatim}
+
+Using the do-notation gives us the following, equivalent code:
+\begin{verbatim}
+cgrPlus s1 s2 t 
+  = do Plus e1 e2 <- return t
+       e1' <- s1 e1
+       e2' <- s2 e2
+       return (Plus e1' e2')
+\end{verbatim}
+This is quite a bit more readable than the original.  This code works
+by virtue of the fact that pattern match failure in the left-hand side
+of do-bindings (\code{Plus e1 e2 <- ...}) will not lead to global
+divergence but will instead invoke the \code{fail} method of the
+\code{Maybe} type.  This is because the \code{pat <- ...}  construct
+in the do-notation is sugar for \code{case ... of pat -> ...; \under{}
+  -> fail}.
+
+
+\section{Generic traversals}
+
+Another issue is how to implement generic traversals.  Since Haskell
+lacks generic features, we have to describe explicitly for each data
+type how to traverse it.  This can be done using type classes.  In
+Stratego, the strategy \code{all(s)} applies \code{s} to {\em all}
+subterms of the current term.  This poses a problem in Haskell since
+not all subterms will have the same type.  We will therefore restrict
+\code{all} to operate only on subterms of the same term as the root.
+\begin{verbatim}
+class Trav a where
+  allS :: St a a -> St a a
+\end{verbatim}
+
+Such functions as \code{bottomup} can then be defined in the expected
+way:
+\begin{verbatim}
+bottomupS :: Trav a => St a a -> St a a
+bottomupS s = allS (bottomupS s) <* s
+\end{verbatim}
+
+An instance might look like this:
+\begin{verbatim}
+instance Trav Exp where
+  allS s t@Zero = return Zero
+  allS s t@(Succ _) = cgrSucc s t
+  allS s t@(Plus _ _) = cgrPlus s s t
+\end{verbatim}
+
+\begin{example}[Evaluation]
+The following code evaluates an expression by rewriting it bottom-up:
+\begin{verbatim}
+plus0 t = do Plus Zero x <- return t
+             return x
+
+plusN t = do Plus (Succ x) y <- return t
+             return (Plus x (Succ y))
+
+eval = bottomupS (repeatS (plus0 <+ plusN))
+\end{verbatim}
+\end{example}
+
+% TODO
+There are more refined (and complex) approaches
+\cite{typesafefuncstrat}, but these also suffer from the fact that a
+lot of code must be written for each data type over which we want to
+traverse.
+
+
+\section{Derivable type classes} 
+
+Generic or polytypic programming makes it possible to write functions
+that operate on different data types.  Derivable type classes
+\cite{derivabletypeclasses} make it possible to write functions such
+as \code{show} or \code{(==)} once for all data types.  In standard
+Haskell, such functions must be written explicitly for all data types
+for which we want to support them.  For this reason Haskell provides
+the {\em ad-hoc} \code{deriving} mechanism, which only works for a
+number of standard classes (such as \code{Show} or \code{Eq}).
+Derivable type classes allow the programmer to provide a {\em default}
+method that operates on a universal data type.  The default method is
+used for all types for which no specific method is given.
+
+For example, consider the following abstract syntax:
+\begin{verbatim}
+data Exp = Var Id | Plus Exp Exp | Min Exp Exp
+data Id = Id String
+\end{verbatim}
+Suppose that we want to traverse a term and replace every identifier
+\code{x} by \code{y}.  In Stratego we would write:
+\begin{verbatim}
+rename = topdown (try (Id("x") -> Id("y")))
+\end{verbatim}
+and this works for all data types.  Using derivable type classes we
+can accomplish the same:
+\begin{verbatim}
+class Rename a where
+  rename :: a -> a
+  
+  rename {| Unit |}    Unit      = Unit
+  rename {| a :+: b |} (Inl x)   = Inl $ rename x
+  rename {| a :+: b |} (Inr y)   = Inr $ rename y
+  rename {| a :*: b |} (x :*: y) = (rename x) :*: (rename y)
+
+instance Rename Exp
+
+instance Rename Id where
+  rename = \(Id x) -> Id (if x == "x" then "y" else x)
+\end{verbatim}
+The default definition for \code{rename} works as follows.  We can
+view each data type as a combination of sums and products of other
+types.  For example, \code{Exp} can be seen as \code{(Id + Exp * Exp)
+  + Exp * Exp}.  By providing clauses for units (types that are not
+instances of the class), the left and right alternatives of a sum, and
+products, we completely cover any data type.
+
+Hence, the generic definition of \code{rename} traverses the term,
+applying \code{rename} to all children that are instances of the class
+\code{Rename}.  To actually accomplish the desired result of replacing
+\code{x} by \code{y}, we {\em override} the default definition of
+\code{rename} with a specific definition for the type \code{Id}.
+
+The problem with this approach is that the class \code{Rename} is tied
+to a particular transformation, namely renaming \code{Id}s.  If we
+want to do a different type of generic transformation, we have to
+define a new class, providing different instances for the appropriate
+types.  We cannot write a general class \code{Topdown} containing a
+method that is parameterised with a function applying the
+transformation, since such a function would necessarily have type
+$\alpha \ra \alpha$ (it must operate on all types), i.e., we can only
+pass down the function \code{id}.  Therefore derivable type classes do
+not make it easy to write many of the kinds of generic traversals that
+occur in program transformation systems.
+
+
+\section{Conclusion}
+
+In this chapter we have seen that while Haskell gives us some of the
+things we need in a language for program transformation, it is not
+enough.  In particular, some of Stratego's features --- first class
+pattern matching and generic traversals --- are missing.  In the next
+chapter we develop a functional language that does have these things.
+

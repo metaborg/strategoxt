@@ -1,0 +1,352 @@
+The RhoStratego compiler translates a RhoStratego program to C code.
+The machine model is a tagless architecture \cite{stg}.  `Tagless'
+means that all values (called closures), evaluated and unevaluated,
+have the same basic form, namely a code pointer that is {\em entered}
+to obtain its value.  Once a closure has been evaluated, it is
+overwritten by a closure that contains the computed value and has a
+code pointer to a function that does nothing.  Therefore a closure can
+be entered arbitrarily many times.  In a tagged architecture, on the
+other hand, values are tagged to distinguish evaluated and unevaluated
+ones.  Tagless architectures are advantageous because they can easily
+be adapted to support concurrency or distributed memory.
+
+
+\subsection{Machine model}
+
+The machine model has a garbage-collected {\bf heap}.  The heap
+consists of several kinds of objects:
+
+\begin{itemize}
+  
+\item
+  
+  {\bf Closures}.  Following \cite{stg}, the term `closure' is used
+  here to refer to all values on the heap, evaluated or not.  In other
+  literature, `closure' refers to suspensions and function values.
+  There are two kinds of closures:
+  
+  \begin{itemize}
+  \item {\bf Suspensions} (a.k.a. {\bf thunks}).  Suspensions contain
+    all the information necessary to compute an expression into a
+    value: namely, a code pointer and a way to access all the free
+    variables occurring in the expression, through means of an
+    environment (see below).
+  \item {\bf Values}.  Values are expressions that have been evaluated
+    to normal form.  The following kinds of values exist:
+    \begin{itemize}
+    \item {\bf Integer literals}.  These store an integer in the
+      machine's native form.
+    \item {\bf String literals}.  These contain a pointer to a
+      null-terminated string.
+    \item {\bf Constructors}.  These contain a pointer to a statically
+      allocated structure which is unique for each constructor.  This
+      is primarily so that its unique address can be used to
+      distinguish constructors in pattern matches, but the structure
+      can also store e.g. run-time type information.
+    \item {\bf Constructor applications}.  These contain two pointers
+      to other closures; namely the left and right arguments of the
+      application.
+    \item {\bf Functions}.  These contain a pointer to the code of the
+      function and a pointer to the environment corresponding to the
+      lexical scope of the function.  A function value can be {\em
+        called} by jumping to the function code, passing along the
+      environment pointer and a pointer to the closure representing
+      the argument.
+    \end{itemize}
+  \end{itemize}
+  
+\item
+  
+  {\bf Environments}.  An environment corresponds to a lexical level
+  in the (desugared and optimised) source program and contains
+  pointers to all the closures added in the corresponding lexical
+  level as well as a pointer to the enclosing environment (the {\em
+    static link}).  Each $\lambda$-abstraction that defines variables
+  and each let-expression creates an environment.  These must be on
+  the heap, and not on the stack, since in a functional language a
+  function may return a suspension, which contains a pointer to the
+  environment; i.e.  environments can outlive the function activation
+  that created them.  A smarter compiler can put some variables on the
+  stack if it can prove that they are never used after the function
+  that created them returns; but see the note below on the relative
+  usefulness of stacks.
+
+\end{itemize}
+
+The machine also has a {\bf stack}, which contains {\bf activation
+  records}.  An activation record is created when a suspension is
+entered and when a function is called.  It contains the return address
+of the caller, a pointer to the environment, and a pointer to the
+closure being evaluated (the one that should be updated with its
+normal form).
+
+An alternative is to store activation records on the heap as well, and
+not use a call stack at all.  Counterintuitively, systems that are
+entirely heap-based can be about as efficient as stack-based systems
+\cite{stackvsheap}.  Putting activation records on the heap simplifies
+the implementation of choices, as discussed in section
+\ref{sec:compilechoice}.  Furthermore, garbage collection is greatly
+simplified; the only roots of the collector are the activation record
+of the caller that causes the garbage collection and the static
+closures (in the data segment).  It may be advantageous to convert to
+continuation-passing style \cite{rabbit} to simplify code generation
+in such a compiler.
+
+The reason that we have not implemented this yet is that the C code
+generator becomes more complex since all details of setting up the
+activation records must be written out, whereas in the stack-based
+compiler this is done by the C compiler.  This means, for example,
+that if function $f$ makes a call to $g$, we must split $f$ into two
+functions $f_1$ and $f_2$, where $f_1$ creates an activation record,
+using the address of $f_2$ as the return address, and jumps to $g$.
+When $g$ completes, it will jump to the return address specified in
+its activation record, i.e., $f_2$.  A complication is that all calls
+are tail calls, and it is not guaranteed that the C compiler will
+optimise those into tail jumps\footnote{For example, \code{gcc}
+  version 2.95 will not; the recently released version 3.0 will.}.  If
+the compiler does not do that, then the stack will never be contracted
+and we will very quickly run out of memory.
+
+
+\subsection{Compiler stages}
+
+The compiler accepts an ATerm representing the program.  All
+expressions in the program have been decorated with their types as
+inferred by the type checker.  The compiler produces a C
+file\footnote{To be precise, it produces an {\em Abox} term, which
+  is a ATerm that can be fed into the pretty-printer \code{abox2text}
+  to produce the actual C program text.}.  The compiler currently does
+not actually use any type information, so all type annotations are
+thrown out.  In the future, the compiler could use this information to
+generate more efficient code.
+
+These are the phases of the compiler:
+
+\begin{itemize}
+
+\item
+
+  {\bf Pattern simplification}.  In this phase, application match
+  patterns and transformational patterns are removed.  A simple
+  pattern is:
+  \begin{itemize}
+  \item A variable; or
+  \item A string or integer literal; or
+  \item A constructor; or
+  \item A \code{Decomp}-pattern.  These are of the form
+    \code{Decomp(x, y) -> e} where \code{x} and \code{y} are variables
+    that are bound in \code{e}.  The intended meaning is that such a
+    function evaluates its argument to weak head-normal form and
+    checks whether it is a constructor application.  If so, \code{x}
+    and \code{y} are bound to the left and right arguments of the
+    application. 
+
+    \code{Decomp}-patterns are used to desugar application match
+    patterns, using the following rule:
+\[
+p_1 \; p_2  \; \ra \; e
+\goesto
+\codem{Decomp}(x_1, x_2) \; \ra \; (p_1 \; \ra p_2 \; \ra e) \; x_1 \; x_2
+\]
+  \end{itemize}
+
+  Transformational patterns are just sugar for function application
+  and matching against tuples (section \ref{sec:patterns}).
+      
+
+\item
+
+  {\bf Canonicalisation}.  In this phase, the program is transformed
+  so that each top-level definition is {\em simple}.  A simple
+  definition is either:
+  \begin{itemize}
+    \item A $\lambda$-abstraction of which the left-hand side is a
+      simple pattern; or
+    \item A let-expression in which all the definitions are simple
+      {\em and} the body is an {\em atomised} expression.
+  \end{itemize}
+
+  An atomised expression is:
+  \begin{itemize}
+  \item A literal; or
+  \item A \code{fail}-expression; or
+  \item A primop; or
+  \item A choice operator, where both arguments are variables; or
+  \item A variable or constructor applied to zero or more variables; or
+  \item A cut of a variable.
+  \end{itemize}
+  
+\item
+  
+  {\bf Code generation}.  Once all expressions are in canonical form,
+  it is easy to generate code for them.  The output of the compiler is
+  C code, where the functions consist of calls to `instructions'
+  (actually macros or inlineable functions defined in a header file)
+  of the abstract machine.
+
+\end{itemize}
+
+
+\subsection{Abstract machine instructions}
+
+The operations of the abstract machine are listed below, with their
+semantics:
+
+\begin{itemize}
+\item \code{VARPAT()}.  The initialiser for a function with a
+  variable pattern, i.e., $x \ra e$.  Since such a function introduces
+  a new variable $x$, a new environment must be created with a pointer
+  to the closure of \code{x}.
+\item \code{DECOMPPAT()}.  The initialiser for a function with a
+  variable pattern, i.e., $\codem{Decomp}(x, y) \ra e$.  Enter the
+  argument and then check that it is an application.  If so, create a
+  new environment with two pointers to the left and right hand side of
+  the application.  If not, raise a failure.
+\item \code{INTPAT(n)}.  The initialiser for a function with an
+  integer pattern, i.e., $n \ra e$.  Enter the argument and check that
+  it is an integer value equal to $n$.  If that is not the case, raise
+  a failure.
+\item \code{STRPAT(s)}.  Idem for string patterns.
+\item \code{CONSTRPAT(constr)}.  Idem for constructor patterns.
+\item \code{FAILPAT()}.  The initialiser for a function with an
+  failure pattern, i.e., $\textrm{\code{fail}} \ra e$.  Install a
+  failure handler and enter the argument.  If failure does not occur,
+  raise a failure.  If failure does occur, catch it and proceed.
+\item \code{MKENV(size)}.  Make a new current environment with the
+  specified number of closure pointers.  Set its static link to the
+  previous current environment.
+\item \code{MKSUSP(disp, code)}.  Allocate a new closure representing
+  a suspension and store its pointer at slot \code{disp} in the
+  current environment.  This is used to initialise lets.
+\item \code{MKINT(res, n)} and \code{MKSTR(closure, s)}.  Store an
+  integer or string value in closure \code{res}, initialising it from
+  an integer or string constant.
+\item \code{MKFUNC(res, env, funcptr)}. Store a function value in
+  closure \code{res}, namely the function with the specified
+  environment and function pointer.
+\item \code{MKCONSTR(res, constr)}.  Store a constructor value in
+  closure \code{res}; \code{constr} is the unique address of the
+  constructor structure.
+\item \code{FAIL()}.  Raise a failure (see section
+  \ref{sec:compilechoice}).
+\item \code{ENTER(closure)}.  Enter the closure.  When it returns, it
+  has been updated with its normal form.
+\item \code{CALL(closure, arg)}.  Call the closure, giving the closure
+  \code{arg} as the argument.
+\item \code{COPY(dst, src)}.  Copy the closure \code{src} to
+  \code{dst}.
+\item \code{LCHOICE(res, left, right)}.  Make a left-choice
+  between closures \code{left} and \code{right}, storing the result in
+  closure \code{res}.
+\item \code{CUT(res, arg)}.  Evaluate closure \code{arg} and apply a
+  cut to it (see section \ref{sec:compilechoice}).
+\item \code{PRIMOP(name, res, env)}.  Call the C function \code{name},
+  giving it the closure \code{res} where it should store its result,
+  and the environment \code{env} that it can use to access its
+  arguments.
+\end{itemize}
+
+
+\subsection{Code generation}
+
+As stated above, it is very simple to generate code for canonicalised
+expressions.  We generate code for a simple definition as follows.
+Compiling a function is very simple, since a function is a normal
+form; we emit one \code{MKFUNC()} instruction.  The body is compiled
+into a separate function, the code of which is prefixed with the code
+for the simple pattern of the function.  The other kind of simple
+definition, let-expressions, is also easy: the code consists of a
+\code{MKENV()}, a \code{MKSUSP()} for each definition, and the code
+for the body, which is an atomised expression.  Each definition is
+compiled into a separate function.
+
+Literals, \code{fail}-expressions, primops, choices, and cuts are
+trivial to compile.  The only remaining kind of atomised expression,
+namely a variable or constructor applied to zero or more variables, is
+compiled as follows.  We emit a \code{ENTER()} or \code{MKCONSTR()}
+instruction for the left-most variable of constructor, and then
+produce a \code{CALL()} instructor for each argument.
+
+The compiler also emits text to produce closures in the initialised
+data segment for top-level definitions, as well as constructor
+structures for all declared constructors\footnote{Since these may
+  appear in all object files, they are declared as {\em weak} objects
+  so that the linker collapses them into one.}.
+
+
+\subsection{Example}
+
+For example, the function
+\begin{verbatim}
+const = x -> y -> x;
+\end{verbatim}
+is compiled to
+\begin{verbatim}
+void const(Closure * res, Env * env) {
+  MKFUNC(res, env, const_);
+}
+void const_(Closure * res, Env * env, Closure * arg) {
+  VARPAT();
+  MKFUNC(res, env, const__);
+}
+void const__(Closure * res, Env * env, Closure * arg) {
+  VARPAT();
+  ENTER(env->up->thks[0]);
+  COPY(res, env->up->thks[0]);
+}
+\end{verbatim}
+Note that \code{const} itself is a normal form, so it just returns a
+function closure pointing to \code{const\under{}}, which contains the
+actual code for \code{x -> y -> x}.  \code{const\under{}} is called
+when an argument is applied to the result of \code{const}.
+\code{const\under{}} creates a new environment which a pointer to the
+argument and returns a function closure pointing to
+\code{const\under{}\under{}}, which is the code for \code{y -> x}.
+When called, \code{const\under{}\under{}}, adds {\em its} argument to
+the environment (redundantly, since \code{y} is never used), enters
+\code{x}, and copies the evaluated \code{x} into the result closure
+\code{res}.  The expression \code{env->up->thks[0]} refers to the
+variable \code{x}.
+
+The function
+\begin{verbatim}
+foo = C 123 -> "foo";
+\end{verbatim}
+is first desugared into
+\begin{verbatim}
+foo = Decomp(x, y) -> (C -> 123 -> "foo") x y;
+\end{verbatim}
+which is canonicalised into
+\begin{verbatim}
+foo = 
+  Decomp(x, y) -> 
+  let
+    f = C -> 123 -> "foo";
+  in f x y;
+\end{verbatim}
+which is finally compiled to
+\begin{verbatim}
+void foo(Closure * res, Env * env) {
+  MKFUNC(res, env, foo_);
+}
+void foo_(Closure * res, Env * env, Closure * arg) {
+  DECOMPPAT();
+  MKENV(1);
+  MKSUSP(env, 0, c_0_2);
+  ENTER(env->thks[0]);
+  COPY(res, env->thks[0]);
+  CALL(res, env->up->thks[0]);
+  CALL(res, env->up->thks[1]);
+} 
+void c_0_2(Closure * res, Env * env) {
+  MKFUNC(res, env, c_0_2_);
+} 
+void c_0_2_(Closure * res, Env * env, Closure * arg) {
+  CONSTRPAT(c);
+  MKFUNC(res, env, c_0_2__);
+}
+void c_0_2__(Closure * res, Env * env, Closure * arg) {
+  INTPAT(123);
+  MKSTR(res, "foo");
+}
+\end{verbatim}

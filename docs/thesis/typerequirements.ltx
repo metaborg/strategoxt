@@ -1,0 +1,26 @@
+We place the following requirements on a type system for RhoStratego:
+
+\begin{itemize}
+  
+\item The purpose of having a type system is that the programmer can
+  express certain constraints about the values that can be passed to
+  functions and the values than can be returned by functions, and have
+  those constraints statically enforced by the compiler; i.e., we can
+  guarantee at compile-time that the constraints will not be violated
+  at runtime.
+
+\item Generic traversals such as \code{all} and \code{one} should be
+  typeable.  This entails typing application pattern matches.
+
+\item Flexibility.  We want to be able to say things like
+\begin{verbatim}
+f = collect (Var x -> x);
+\end{verbatim}
+  to collect all the variables occurring in a term, regardless of term
+  or type structure.  In particular, we want to be able to express {\em
+    type unifying} and {\em type preserving} generic transformations,
+  i.e., those transformations that map an arbitrary term to some fixed
+  type (like \code{collect} does) or the same type (like \code{all}
+  does).
+
+\end{itemize}

@@ -1,0 +1,3 @@
+#! /bin/sh ../utrecht/rho-run
+
+main = (x -> y -> 0 -> x <+ x -> y -> 1 -> y) 100 200 1;

@@ -1,0 +1,30 @@
+The subject of this thesis is the construction of programming
+languages suitable for the implementation of program transformation
+systems.  First class rules and generic traversals are especially
+useful in such languages.  Stratego, a language specifically intended
+for program transformations, supports these features, but is untyped
+and impure.
+
+In this thesis we develop a pure non-strict functional language called
+RhoStratego, incorporating features from Stratego.  First class rules
+are obtained through the equivalent of Stratego's left-biased choice
+operator.  This approach is not only useful to strategic programming,
+but is also more powerful than existing proposals to extend pattern
+matching, such as views and pattern guards.  Stratego's generic
+traversal primitives are implemented through a more fundamental
+mechanism, the application pattern match, whereby constructed values
+can be deconstructed in a generic and typeable fashion.  We present
+the syntax and semantics of the language, as well as the semantics of
+a strict variant.
+
+Furthermore, we have developed a type system for RhoStratego, which
+consists of the Hindley-Milner type system extended with rank-2
+polymorphism and typing rules to support generic traversals.  The type
+system is powerful enough to allow, and ensure the safety of, type
+unifying and type preserving generic transformations.  We have
+implemented a type checker that infers all types, except rank-2 types
+for which annotations must be given.
+
+We also discuss the results of the implementation of a compiler for
+RhoStratego, and in particular how generic traversals and the choice
+operator can be implemented.

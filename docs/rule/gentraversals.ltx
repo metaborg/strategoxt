@@ -1,0 +1,40 @@
+Given the untyped calculus given in the previous section, it is not
+hard to define the \ve{all} primitive (which applies a function to
+each subterm of a term):
+\[
+\begin{array}{ll}
+\ve{all} & \ve{= $\lambda$f \ra} \\
+         & \ve{( $\lambda$(c x) \ra (all f c) (f x)} \\
+         & \ve{<+ $\lambda$c \ra c} \\
+         & \ve{)}
+\end{array}
+\]
+
+But it would be hard to type this function.  Previous work on generic
+programming, such as Generic Haskell \cite{genhaskell}, seems not to
+help us here.  For example, in Generic Haskell, we write a generic
+function by giving a clause for binary sums, binary products, and
+primitive types, since all data types can be decomposed into a
+combination of these.  Unfortunately, this moves us below the
+level of constructors.  For example, 
+it is not hard to give the primitive clause for an implementation of
+\ve{bottomup}:
+\[
+\begin{array}{ll}
+\ve{bottomup(t) :: (t \ra t) \ra t \ra t} \\
+\ve{bottomup(1) f x = f x}
+\end{array}
+\]
+But we cannot give a clause for e.g. binary products: it is clear that
+we should apply \ve{bottomup} to the arguments, but then what?  At
+some point \ve{f} should be applied, but only if the binary product is
+in fact of type \ve{t}, and not just part of something of type \ve{t}.
+\[
+\begin{array}{ll}
+\ve{bottomup(a * b) f (x, y) =} \\
+\quad \ve{??? \$ (bottomup(a) f x, bottomup(b) f y)}
+\end{array}
+\]
+
+It  also seems impossible to implement \ve{all}, since a generic function
+traverses the entire value, not just the top-level subterms.

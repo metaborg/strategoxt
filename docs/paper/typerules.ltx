@@ -1,0 +1,169 @@
+\begin{figure}[tbp]
+\begin{boxedminipage}{\hsize}
+\[
+\begin{array}[t]{lc}
+\mbox{\sc\small{}Var:} & \displaystyle
+{
+x : \tau \in \Gamma
+\over
+\Gamma \vdash x : \tau
+}
+\\[15pt]
+\mbox{\sc\small{}Con:} & \displaystyle
+{
+C : \tau \in \Gamma
+\over
+\Gamma \vdash C : \tau
+}
+\\[15pt]
+\mbox{\sc\small{}Fail:} & \displaystyle
+\Gamma \vdash \text{\code{fail}} : \tau
+\\[5pt]
+\mbox{\sc\small{}Cut:} & \displaystyle
+{
+\Gamma \vdash e : \tau
+\over
+\Gamma \vdash \term{\cut{}}e : \tau
+}
+\\[15pt]
+\mbox{\sc\small{}Abs:} & \displaystyle
+{
+\Gamma' = \Gamma \cup \Gamma_p
+\; \wedge \;
+\Gamma' \vdash p : \sigma
+\; \wedge \;
+\Gamma' \vdash e : \tau
+\over
+\Gamma \vdash (p \ra e) : \sigma \ra \tau
+}
+\\[15pt]
+\mbox{\sc\small{}App:} & \displaystyle
+{
+\Gamma \vdash e_1 : \sigma \ra \tau 
+\; \wedge \;
+\Gamma \vdash e_2 : \sigma
+\over
+\Gamma \vdash (e_1 e_2) : \tau
+}
+\\[15pt]
+\mbox{\sc\small{}Inst:} & \displaystyle
+{
+\Gamma \vdash e : \forall \alpha . \tau
+\over
+\Gamma \vdash e : [\alpha := \sigma] \tau
+}
+\\[15pt]
+\mbox{\sc\small{}Gen:} & \displaystyle
+{
+\Gamma \vdash e : \tau \; \wedge \; \alpha \not\in \textrm{fv}(\Gamma)
+\over
+\Gamma \vdash e : \forall \alpha . \tau
+}
+\\[15pt]
+\mbox{\sc\small{}Let:} & \displaystyle
+{
+\begin{array}{l}
+\Gamma' = \Gamma \cup \Gamma_{ds}
+\; \wedge \;
+\Gamma' \vdash e : \tau
+\; \wedge \; \\
+\forall (x \; \term{=} \; e' \term{;}) \in ds: (
+\Gamma' \vdash e_2 : \tau_2
+\; \wedge \;
+x : \tau_2 \in \Gamma')
+\end{array}
+\over
+\Gamma \vdash (\term{let} \; ds \; \term{in} \; e) : \tau
+}
+\\[15pt]
+\mbox{\sc\small{}Choice:} & \displaystyle
+{
+\Gamma \vdash e_1 : \tau \wedge \Gamma \vdash e_2 : \tau
+\over
+\Gamma \vdash e_1 \plus e_2: \tau
+}
+\\[15pt]
+\mbox{\sc\small{}Widen:} & \displaystyle
+{
+\Gamma \vdash e : \term{?} \sigma \ra ([\alpha := \sigma] \tau)
+\over
+\Gamma \vdash e : \alpha \ra \tau
+}
+\\[15pt]
+\mbox{\sc\small{}Contract:} & \displaystyle
+{
+\begin{array}{l}
+\Gamma \vdash e : \tau [\term{Gen}(\alpha_0, \alpha_1, \dots, \alpha_n)] 
+\; \wedge \;  \\
+(\forall i, 0 \le i \le n: \alpha_i \not\in \text{fv}(\Gamma))
+\; \wedge \; \\
+(\forall i, 1 \le i \le n: \alpha_i \not\in \text{fv}(\tau))
+\end{array}
+\over
+\Gamma \vdash e : \tau [\alpha_0]
+}
+\end{array}
+\]
+\end{boxedminipage}
+\caption{\label{fig:infrules}
+  Typing rules for terms}
+\end{figure}
+
+
+\begin{figure}[tbp]
+\begin{boxedminipage}{\hsize}
+\[
+\begin{array}[t]{lc}
+\mbox{\sc\small{}PVar:} & \displaystyle
+{
+x : \tau \in \Gamma
+\over
+\Gamma \vdash x : \tau
+}
+\\[15pt]
+\mbox{\sc\small{}PCon:} & \displaystyle
+{
+\begin{array}{l}
+n \ge 0
+\; \wedge \;
+C : (\sigma_1 \ra \dots \ra \sigma_n \ra \tau) \in \Gamma
+\; \wedge \; \\
+\Gamma \vdash p_1 : \sigma_1
+\; \wedge \;
+\dots
+\; \wedge \;
+\Gamma \vdash p_n : \sigma_n
+\end{array}
+\over
+\Gamma \vdash (C \; p_1 \; \dots \; p_n) : \tau
+}
+\\[15pt]
+\mbox{\sc\small{}Rttc:} & \displaystyle
+{
+\Gamma \vdash p : \sigma
+\over
+\Gamma \vdash (\sigma \term{?} p) : \term{?} \sigma
+}
+\\[15pt]
+\mbox{\sc\small{}Generic:} & \displaystyle
+{
+\begin{array}{l}
+n \ge 1
+\; \wedge \;
+x_0 : (\alpha_1 \ra \dots \ra \alpha_n \ra \alpha_0) \in \Gamma
+\; \wedge \; \\
+x_1 : \alpha_1 \in \Gamma
+\dots
+\; \wedge \;
+x_n : \alpha_n \in \Gamma
+\end{array}
+\over
+\Gamma \vdash (x_0 \; x_1 \; \dots \; x_n) : 
+\term{Gen}(\alpha_0, \alpha_1, \dots, \alpha_n)
+}
+\end{array}
+\]
+\end{boxedminipage}
+\caption{\label{fig:infrules2}
+  Typing rules for patterns}
+\end{figure}

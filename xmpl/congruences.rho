@@ -1,0 +1,15 @@
+#! /bin/sh ../utrecht/rho-run
+
+#include "stdlib.rh"
+
+data CD;
+C :: CD;
+D :: CD;
+data A;
+A :: CD -> A;
+data Foo;
+Foo :: Int -> String -> A -> Foo;
+
+x = @Foo(x -> x * 2, const "foo", try (A C -> A D));
+
+main = print (x (Foo 123 "bar" (A D)));

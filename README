@@ -1,0 +1,46 @@
+This is RhoStratego version 0.1.
+
+
+Requirements:
+  * gcc
+  * gmake
+  * xt-0.7
+  * Stratego 0.5.4 with the following patch applied to list-misc.r:
+
+*** list-misc-old.r     Sat Jul  7 21:51:17 2001
+--- list-misc.r Sat Jul  7 21:55:30 2001
+***************
+*** 31,37 ****
+    TFoldR   : TCons(x, xs) -> (x, xs)
+ 
+    FoldL(s) : ([x | xs], y) -> (xs, <s> (x, y))
+-   FoldL(s) : ([], y) -> y
+ 
+    lsplit(f, g) : x -> [<f> x, <g> x]
+ 
+--- 31,36 ----
+***************
+*** 49,55 ****
+ 
+    tfoldr(s1, s2)    = rec x(TNil; s1 + TFoldR; (id, x); s2)
+ 
+!   foldl(s) = repeat(FoldL(s))
+ 
+    mapfoldr(s1, s2, s3) =
+      rec x([]; s1 <+ [s2|x]; \ [a|b]->(a,b)\; s3)
+--- 48,54 ----
+ 
+    tfoldr(s1, s2)    = rec x(TNil; s1 + TFoldR; (id, x); s2)
+ 
+!   foldl(s) = rec x( \ ([], y) -> y \ + FoldL(s); x)
+ 
+    mapfoldr(s1, s2, s3) =
+      rec x([]; s1 <+ [s2|x]; \ [a|b]->(a,b)\; s3)
+
+
+To build:
+  make
+
+
+To test that the compiler works correctly:
+  cd xmpl; make test

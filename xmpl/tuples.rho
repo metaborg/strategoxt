@@ -1,0 +1,8 @@
+#! /bin/sh ../utrecht/rho-run
+
+#include "stdlib.rh"
+
+data Foo; 
+Foo :: Int -> Int -> Foo;
+
+main = print ((<1> -> (<1, "foo", Foo 123 456, <>, <1>>)) <1>);

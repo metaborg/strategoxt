@@ -1,0 +1,51 @@
+Separating Patterns from Failure
+
+
+INTRODUCTION
+
+- pattern match failure is not explicit
+- no separation of concerns between rules and strategies
+
+APPLICATION
+
+- transformation
+
+- primitives of data traversal: all, one
+- define using pattern matching
+- generic traversals
+- renaming, substitution, free-vars
+
+- views
+- pattern guards
+- transformational patterns
+
+SEMANTICS
+
+- axioms 
+- evaluation strategy (lazy/strict)
+- confluence
+- termination
+
+TYPE SYSTEM
+
+- type checking
+- interesting: typing of <+
+
+- see work of Peter Mosses (BRICS, Arhus, Denmark) Action Semantics
+
+COMPILATION
+
+- optimization
+- inlining
+- pattern fusion
+
+
+CONCLUSIONS
+
+- fusion: undoing separation to achieve efficiency
+
+REFERENCES
+
+- Haskell pattern matching papers
+- Stratego papers
+- ELAN/rho calculus

@@ -1,0 +1,72 @@
+definition
+
+module Main
+exports
+  sorts Module
+
+  context-free syntax
+    Token*     -> Module {cons("Module")}
+    Space      -> Token  {cons("Space")}
+    NewLine    -> Token  {cons("NewLine")}
+    Comment    -> Token  {cons("Comment")}
+    Hide       -> Token  {cons("Hide")}
+    Show       -> Token  {cons("Show")}
+    LComment   -> Token  {cons("LComment")}
+    Keyword    -> Token  {cons("Keyword")}
+    Special    -> Token  {cons("Special")}
+    Operator   -> Token  {cons("Operator")}
+    Id         -> Token  {cons("Id")}
+    Int        -> Token  {cons("Int")}
+    String     -> Token  {cons("String")}
+    Directive  -> Token  {cons("Directive")}
+
+  lexical syntax
+
+    [\ \t]+     -> Space
+    [\n]        -> NewLine
+
+    ~[\*]                       -> CommentChar
+    "*" ~[\/]                   -> CommentChar
+    "//" ~[\n]*                 -> Comment
+    "/**off*/"                  -> Hide
+    "/**on*/"                   -> Show
+    "/**" CommentChar* "*/"     -> LComment
+    "/*" ~[\*] CommentChar* "*/" -> Comment
+
+    "#" [a-z]+ -> Directive
+
+    [a-z][a-zA-Z0-9\']*       -> Id
+    [A-Z][a-zA-Z0-9\']*       -> Id
+ 
+    [0-9]+                    -> Int
+    "\"" ~[\"\n]* "\""        -> String
+ 
+    [\+\-\*\<\>\|\=\&\!\/\.]+ -> Operator
+    [\:\[\]]+                 -> Operator
+    "->"                      -> Operator {reject}
+    "="                       -> Operator {reject}
+    "::"                      -> Operator {reject}
+
+    "->"     -> Special
+    "::"     -> Special
+    "="      -> Special
+    ","      -> Special
+    ";"      -> Special
+    "("      -> Special
+    ")"      -> Special
+    "["      -> Special
+    "]"      -> Special
+    "<"      -> Special
+    ">"      -> Special
+    "_"      -> Special
+    "@"      -> Special
+    "`"      -> Special
+    "?"      -> Special
+
+    "^"      -> Operator
+
+  lexical restrictions
+    Id -/- [a-zA-Z0-9\']
+    Int -/- [0-9]
+    Operator -/- [\+\-\*\<\>\|\=\&\!\/\.]
+    Operator -/- [\:\[\]]

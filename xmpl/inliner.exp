@@ -1,0 +1,2 @@
+Program([Def(Id("id",0),Rule(Var(Id("x",0)),Var(Id("x",0)))),Def(Id("z",0),App(Rule(Var(Id("x",0)),Var(Id("x",0))),App(App(Var(Id("+",0)),Const(Int(123))),Const(Int(456))))),Def(Id("h",0),Const(Int(123))),Def(Id("g",0),Const(Int(123))),Def(Id("i",0),Var(Id("i",0)))])
+

@@ -1,0 +1,120 @@
+%%% Save file as: INDENT.STY                 Source: FILESERV@SHSU.BITNET
+%%% The following checksum includes all SHSU-generated topmatter.
+%%% checksum = "65425 120 759 5150"
+%
+% \subsection{Environments for Indented Text}
+%
+% \DescribeEnv{indentation}
+% The indentation environment allows us to temporarily reset the margins.
+% This environment takes two arguments, which are the left and right indents.
+% Usually either both will be the same (for a centered indent) or else
+% the right indent will be 0pt (for left indent only).
+%
+% Examples:
+%
+% \begin{verbatim}
+%   \begin{indentation}{1.5em}{1.5em}
+%   This text will be set in a justified paragraph with narrower
+%   margins than usual.  The paragraph will be indented 1.5em on
+%   each side from the surrounding margins.
+%   \end{indentation}
+%
+%   \begin{indentation}{.5in}{0pt}
+%   This text will be set in a justified paragraph indented at
+%   the left but not the right.
+%   \end{indentation}
+%
+%
+%   \begin{indentation}{1.5em}{1.5em}
+%   This text will be indented.
+%   \begin{indentation}{1.5em}{1.5em}
+%   The indentation environment can be nested, giving indents
+%   within indents, so this text will be indented some more.
+%   \end{indentation}
+%   Now we return to the first indentation level.
+%   \end{indentation}
+% \end{verbatim}
+%
+% The method of margin-changing implemented here is identical to that
+% used by \LaTeX's "list" environment.  Indeed, this code was written
+% by making a copy of the "list" environment's code, studying it closely,
+% and carefully paring out everything that didn't relate to setting margins.
+% This means that if another
+% environment (such as "center" or "quote") that uses the "list" environment
+% is nested inside the "indentation" environment, or if an "indentation"
+% environment is used inside a "list" environment, everything should
+% work just fine.
+%
+% \begin{macro}{\indentation}
+% The "indentation" environment begins and ends by executing "\par".
+% The first one guarantees that a paragraph that began before the
+% environment will not be affected by the new margins the environment
+% sets up, and that the last paragraph inside the environment will be.
+% The code for resetting the margins uses "\parshape" to maintain the
+% modified margin settings, rather than using "\leftskip" and "\rightskip".
+% This is rather clever, since it leaves us free to use the skip values
+% to produce other special effects (such as centering or ragged right).
+% But because \TeX\ normally resets "\parshape" declarations at the
+% end of each paragraph, we redefine "\par" to perform its usual
+% actions {\em inside a group}.  The group is opened, "\@@par" ends
+% the paragraph, the "\parshape" setting is canceled {\em within the
+% group}, and the group ends, restoring the "\parshape" setting.
+%    \begin{macrocode}
+\newenvironment{indentation}[2]%
+{%
+  \par
+  \setlength{\leftmargin}{#1}%
+  \setlength{\rightmargin}{#2}%
+  \advance\linewidth -\leftmargin
+  \advance\linewidth -\rightmargin
+  \advance\@totalleftmargin\leftmargin
+  \@setpar{{\@@par}}%
+  \parshape 1 \@totalleftmargin \linewidth
+  \ignorespaces
+}%
+{\par}
+%    \end{macrocode}
+% An earlier version of this code used the "list" environment directly.
+% Using the "indentation" environment actually caused a "list" environment
+% with one item to be created.  The formatting parameters for the "list"
+% environment were set to make the list appear just like the surrounding
+% text, except for the margin change.  That is, "\topsep" was given
+% the value "0pt", "\parsep" was set to "\parskip", and "\listparindent"
+% and "\itemindent" were both set to "\parindent".  This worked tolerably
+% well as a first approximation, but ultimately it was unsatisfactory for
+% several reasons, the most important being that an empty "list" environment
+% generates a \LaTeX\ error ("\@noitemerr", to be specific).  Instead of
+% choosing special values and writing extra code to overcome the setup
+% that the "list" environment performs that isn't needed for our purposes,
+% I finally decided to simply figure out how the "list" environment resets
+% margins and re-implement just that part in the "indentation" environment.
+% \end{macro}
+%
+% \DescribeEnv{ctrindent}
+% The ctrindent environment uses the indentation environment
+% (defined above) and the standard "\centering" declaration to typeset
+% centered text in reduced margins.  This environment takes two
+% arguments, which are the left and right indents.  Usually
+% both will be the same, but in principle you could have a paragraph
+% whose lines were centered around a point that was off-center with
+% respect to the surrounding column of text.
+%
+% Example:
+%
+% \begin{verbatim}
+%   \begin{ctrindent}{.5in}{.5in}
+%   This text will be set in a centered paragraph with narrower
+%   margins than usual.
+%   \end{ctrindent}
+% \end{verbatim}
+%
+% \begin{macro}{\ctrindent}
+% The "\ctrindent" environment is just an "indentation" environment
+% inside which a "\centering" declaration is in effect.
+%    \begin{macrocode}
+\newenvironment{ctrindent}[2]%
+{\begin{indentation}{#1}{#2}\centering}%
+{\end{indentation}}
+%    \end{macrocode}
+% \end{macro}
+%

@@ -1,0 +1,151 @@
+\section{Introduction}
+
+	Program transformation techniques are used in a wide variety
+	of applications including optimizing compilers, program
+	normalizers, aspect weavers, obfuscation engines, refactoring
+	browsers, and software renovation tools.  The basic
+	architecture of a transformation system is the same across all
+	these applications.  Parsers translate program text to an
+	internal representation (abstract syntax) and unparsers
+	translate abstract syntax back to text. In between, a
+	transformation component modifies the abstract syntax tree to
+	achieve the transformation.  As with all programming, it is
+	desirable to implement transformations at a high level of
+	abstraction, reusing standard components or generating
+	components from specifications. Where parsers and
+	pretty-printers are generated from specifications,
+	transformation components are usually implemented in general
+	purpose languages without special support for transformation.
+
+	\paragraph{Term Rewriting}
+
+	Term rewrite systems~\cite{termrewritingandallthat} offer a
+	good basis for the declarative specification and
+	implementation of transformation systems.  Algebraic terms are
+	adequate representations for abstract syntax trees.  Term
+	rewrite rules directly encode single transformation steps on
+	abstract syntax trees using term pattern matching to concisely
+	characterize the subexpressions to transform.  Term rewriting
+	consists of exhaustively applying rewrite rules to a term
+	until it is in normal form, i.e., does not contain any
+	subterms to which a rule can be applied.  Term rewriting
+	systems such as ASF+SDF~\cite{DHK96}, ELAN~\cite{BKKMV96}, and
+	Maude~\cite{CELM96} implement this operation efficiently,
+	usually employing an innermost strategy.
+ 
+	The advantage of rewrite systems is that transformation rules
+	can be defined independently and that their application is
+	automatic, i.e., no traversal over syntax trees has to be
+	defined.  However, sets of transformation rules for a
+	programming language are usually non-confluent, i.e.,
+	different normal forms can be reached, and/or non-terminating,
+	i.e., infinite reduction chains exist. This is usually solved
+	by encoding control in auxiliary operators that control the
+	application of transformation rules. This results in a style
+	of term rewriting that can be characterized as first-order
+	functional programming in which the advantages of rewriting
+	are lost, i.e., rules are no longer independent, but tied to a
+	particular transformation function, and the definition of
+	transformation functions involves a considerable overhead due
+	to the explicit definition of tree traversals.
+
+	\paragraph{Functional Programming}
+
+	Functional languages such as Haskell \cite{haskell98} and
+	ML~\cite{ML} offer some of the same ingredients as term
+	rewriting systems, i.e., algebraic data types and pattern
+	matching.  In addition, higher-order functions and
+	polymorphism allow the definition of traversal schemas such as
+	folds for specific data types.  However, transformation rules
+	cannot be defined as first-class entities, but have to be
+	combined using the case construct, thus limiting their
+	reuse. The existence of several proposals for extensions of
+	pattern matching such as views~\cite{views87,views96}, guarded
+	patterns and transformational patterns~\cite{patternguards},
+	is an indication of the limitations imposed by the case
+	construct.  Furthermore, traversals cannot be defined
+	generically across data types, since polymorphism restricts
+	reuse to one shape.  Polytypic extensions of functional
+	languages~\cite{derivabletypeclasses,polyp}, allow the generic
+	definition of functionality across data types, but do not
+	support the definition of traversals that cross type
+	boundaries {\em and} can be instantiated with different
+	functions.
+
+	\paragraph{Rewriting Strategies}
+
+	Several extensions to rewriting have been proposed that try to
+	combine the independent rules of rewriting with the need for
+	control over the application of rewrite rules.  In
+	TAMPR~\cite{BoyleEtAl97} a transformation is divided into a
+	sequence of normal form computations with respect to different
+	sets of rewrite rules. In ASF+SDF traversal functions
+	\cite{BKV01} reduce the overhead of the definition of
+	traversals over syntax trees.  
+
+	Rewriting strategies generalize such approaches by making the
+	control over the application of rewrite rules programmable by
+	means of a language of strategy combinators.  Rewriting
+	strategies were introduced in the language
+	ELAN~\cite{BKKMV96}. Strategies were extended with primitives
+	for term traversal in the program transformation language
+	Stratego~\cite{optrewritestrat}. A few primitives allow the
+	definition of a wide range of generic traversals.  Rules are
+	first-class and can be reused in different transformations and
+	in different combinations. This paradigm supports concise
+	formulation of transformation systems. Stratego has a few
+	shortcomings, however.  Even though there is a typeful way of
+	defining and using strategies, the language is untyped, since
+	typing generic traversals is beyond existing type systems.
+	Although recent work addresses the typing of strategies in a
+	many-sorted monomorphic setting~\cite{typedgenerictraversals},
+	no type system for a polymorphic setting exists.  Furthermore,
+	the built-in traversal primitives are ad-hoc; a more
+	fundamental way of defining traversal primitives is desirable.
+	Finally, strategies in Stratego are not fully higher-order,
+	but only second-order.
+
+	\paragraph{RhoStratego}
+
+	In this paper we present RhoStratego, a functional language
+	supporting first-class rules and generic traversal. The
+	language admits a direct and natural encoding of
+	transformation rules and strategies. It combines the
+	advantages of strategic programming (separation of rules and
+	strategies) with the advantages of lazy higher-order
+	functional programming (abstraction, definition of control
+	constructs).
+	
+	This is achieved by generalizing the pattern matching
+	constructs of standard functional languages such as Haskell
+	and ML.  The case construct that ties rules together and
+	prevents their reuse, is replaced by separate (first-class)
+	pattern matching rules and a choice combinator that deals with
+	pattern match failure.  Generic traversal is achieved through
+	application pattern matching in which a constructor
+	application is generically divided into a prefix and a suffix,
+	thus giving generic access to the subterms of a constructor
+	term. Many highly generic term traversals can be defined using
+	this feature.  The generalization of pattern matching presented
+	in this paper subsumes several proposals for extensions of
+	pattern matching such as views~\cite{views87,views96}, guarded
+	patterns, and transformational patterns~\cite{patternguards}.
+
+	The language is fully typed and has a type system in which
+	type preserving and type unifying traversals can be typed. A
+	prototype compiler for the language has been built and is
+	available for experimentation.
+
+ \paragraph{Outline}
+
+	We start with an informal account of RhoStratego introducing
+	first-class rules in Section~\ref{Sec:rules} and generic
+	traversal in Section~\ref{Sec:traversal}.  In
+	Section~\ref{sec:semantics} we present a rewriting semantics
+	and a lazy evaluation strategy.  The type system is described
+	in Section~\ref{sec:typesystem}. A brief overview of the
+	implementation is given in Section~\ref{Sec:implementation}.
+	In Section~\ref{Sec:related} we discuss related work; in
+	particular the encoding of extensions to pattern matching. We
+	discuss future work in Section~\ref{Sec:future} and conclude
+	in Section~\ref{Sec:conclusion}.

@@ -1,0 +1,14 @@
+#! /bin/sh ../utrecht/rho-run
+
+#include "stdlib.rh"
+
+#include "expr.rh"
+
+main :: IO <>;
+main = print (
+  (
+    Plus Zero x -> x
+  <+ 
+    Plus (Succ x) y -> Succ (Plus x y)
+  )
+  (Plus (Succ Zero) Zero));

@@ -1,0 +1,2 @@
+#! /bin/sh
+../pp/rho-pp -S | abox2text

@@ -1,0 +1,124 @@
+// The RhoStratego standard library.
+// $Id: stdlib.rh,v 1.19 2001/07/09 21:23:54 eelco Exp $
+
+
+// Simple functions.
+
+id :: a . a -> a;
+const :: a . b . a -> b -> a;
+if :: b . Bool -> b -> b -> b;
+. :: b . c . a . (b -> c) -> (a -> b) -> a -> c;
+
+
+// List operations.
+
+data [] a;
+[] :: [a];
+: :: a -> [a] -> [a];
+
+foldr :: a . b . (a -> b -> b) -> b -> [a] -> b;
+map :: a . b . (a -> b) -> [a] -> [b];
+filter :: a . (a -> Bool) -> [a] -> [a];
+elem :: a . a -> [a] -> Bool;
+conc :: a . [a] -> [a] -> [a];
+union :: a . [a] -> [a] -> [a];
+concat :: a . [[a]] -> [a];
+unions :: a . [[a]] -> [a];
+diff :: a . [a] -> [a] -> [a];
+lookup :: a . b . a -> [<a, b>] -> b;
+
+
+// Strict application.
+
+st :: a . b . (a -> b) -> a -> b;
+
+
+// Strategy operators.
+
+//<+ :: a . b . (a -> b) -> (a -> b) -> (a -> b);
+| :: a . b . c . (a -> b) -> (b -> c) -> a -> c;
+try :: a . (a -> a) -> (a -> a);
+repeat :: a . (a -> a) -> (a -> a);
+
+
+// Hyperstrictness.
+
+force :: a . a -> a;
+
+
+// Traversal primitives.
+
+all, one :: (a . a -> a) -> (b . b -> b);
+
+
+// Traversals.
+
+topdown, bottomup, oncetd :: (a . a -> a) -> (b . b -> b);
+mapkids :: a . b . (c . c -> a) -> b -> [a];
+crush :: a . b . c . (a -> b -> b) -> b -> (d . d -> a) -> c -> b;
+collect :: b . a . (c . c -> b) -> a -> [b];
+
+
+// Tuples.
+
+data Tup a b;
+Tup :: a -> b -> Tup a b;
+data Void;
+Void :: Void;
+fst :: a . b . <a, b> -> a;
+snd :: a . b . <a, b> -> b;
+
+
+// Booleans.
+
+data Bool;
+True :: Bool;
+False :: Bool;
+
+not :: Bool -> Bool;
+&&, || :: Bool -> Bool -> Bool;
+b2f :: Bool -> Bool;
+f2b :: a . a -> Bool;
+
+
+// Equality.
+
+==, != :: a . a -> a -> Bool;
+
+
+// Arithmetic primitives.
+
++, -, *, / :: Int -> Int -> Int;
+>, <, !=, == :: Int -> Int -> Bool;
+
+
+// Monadic I/O.
+
+data World;
+World :: World;
+syn IO a = World -> <World, a>;
+
+syn Handle = Int;
+
+stdin, stdout, stderr :: Handle;
+
+hPutStr :: Handle -> String -> IO <>;
+hPrint :: a . Handle -> a -> IO <>;
+putStr :: String -> IO <>;
+print :: a . a -> IO <>;
+readFile :: String -> IO String;
+writeFile :: String -> String -> IO <>;
+>>= :: a . b . IO a -> (a -> IO b) -> IO b;
+>> :: a . b . IO a -> IO b -> IO b;
+return :: a . a -> IO a;
+unsafePerformIO :: a . IO a -> a;
+debug :: a . a -> a;
+
+
+// ATerm stuff.
+
+data ATFmt;
+ATFmtText, ATFmtBinary, ATFmtShared :: ATFmt;
+
+readTerm :: a . String -> IO a;
+writeTerm :: a . String -> ATFmt -> a -> IO <>;

@@ -1,0 +1,80 @@
+#! /bin/sh
+
+# !!! security bug (/tmp races).
+
+base=".."
+
+# Process arguments.
+
+infile=$1; shift;
+
+if test -z $infile; then
+    echo "Syntax: $0 <filename>"
+    exit 1
+fi
+
+remove=rm
+if test "x$keep" != "x"; then
+    remove=true
+fi
+
+# Preprocess.
+
+preproc="/tmp/rho-compile.$$.prep"
+if ! $base/utrecht/rho-preprocess < $infile > $preproc; then
+    $remove $preproc
+    echo "$0: preprocessor error"
+    exit 1
+fi
+notypecheck=""
+if grep -q '^#pragma notypecheck' $preproc; then
+    notypecheck="1"
+fi
+
+# Parse.
+
+parsed="/tmp/rho-compile.$$.tree"
+if ! sglr -p $base/syn/rho.def.tbl -s Program < $preproc > $parsed; then
+    $remove $parsed
+    echo "$0: parse error"
+    exit 1
+fi
+$remove $preproc
+
+# Implode and clean-up.
+
+cleaned="/tmp/rho-compile.$$.cleaned"
+if ! implode-asfix -S < $parsed | $base/syn/rho-cleanup -S > $cleaned; then
+    $remove $parsed $cleaned
+    echo "$0: error in clean-up"
+    exit 1
+fi
+$remove $parsed
+
+# Typecheck.
+
+tchecked="/tmp/rho-compile.$$.typed"
+if test -z "$notypecheck"; then
+    echo 'Typechecking...'
+    if ! $base/utrecht/rtc -i $cleaned > $tchecked; then
+	$remove $cleaned $tchecked
+	echo "$0: type error"
+	exit 1
+    fi
+else
+    echo 'Not typechecking...'
+    cat < $cleaned > $tchecked
+fi
+$remove $cleaned
+
+# Compile.
+
+#ccode="/tmp/rho-compile.$$.c"
+# !!! fix this: if the file name doesn't contain .rho, then the input will be overwritten!
+ccode=`echo $infile | sed s/\\.rho$/\\.c/`;
+if ! $base/utrecht/rc -i $tchecked | abox2text > $ccode; then
+    $remove $tchecked $ccode
+    echo "$0: compile error"
+    exit 1
+fi
+$remove $tchecked
