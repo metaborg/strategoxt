@@ -59,7 +59,9 @@ strategies
   maxS  = where((string-to-int, string-to-int); max)
   minS  = where((string-to-int, string-to-int); min)
 
-  inc = !(<id>, 1); add
+  // :: Int -> Int
+  inc = <add>  (<id>, 1)
+  dec = <subt> (<id>, 1)
 
   log2 = 
     !(<id>, 0);
@@ -79,11 +81,6 @@ rules
   add-inf = (add-inf1 + add-inf2) <+ add
 
   lt-inf = ?(<is-int>, Infinite) <+ (is-int, is-int); lt
-
-rules
-
-  inc: a -> <add>(a,1)
-  dec: a -> <subt>(a,1)
 
 imports dynamic-rules
 strategies
