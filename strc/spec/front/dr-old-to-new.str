@@ -1,0 +1,37 @@
+module dr-old-to-new
+imports Stratego lib
+
+strategies
+
+  dr-old-to-new-io = 
+    io-wrap(dr-old-to-new)
+
+  dr-old-to-new = bottomup(DROldToNew)
+
+rules
+
+  DROldToNew :
+   |[ rules(rd*) ]| -> GenDynRules(drd*)
+   where <map(RDefToDRDef)> rd* => drd*
+
+  DROldToNew :
+   |[ extend rules(rd*) ]| -> GenDynRules(drd*)
+   where <map(RDefToDRDef-extend)> rd* => drd*
+
+  RDefToDRDef :
+    |[ f : r ]| -> DRN:|[ f : r ]|
+
+  RDefToDRDef :
+    |[ f(as) : r ]| -> DRN:|[ f(as) : r ]|
+
+  RDefToDRDef :
+    |[ f(as1|as2) : r ]| -> DRN:|[ f(as1|as2) : r ]|
+
+  RDefToDRDef-extend :
+    |[ f : r ]| -> DRN:|[ f :+ r ]|
+
+  RDefToDRDef-extend :
+    |[ f(as) : r ]| -> DRN:|[ f(as) :+ r ]|
+
+  RDefToDRDef-extend :
+    |[ f(as1|as2) : r ]| -> DRN:|[ f(as1|as2) :+ r ]|
