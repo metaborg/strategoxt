@@ -79,7 +79,7 @@ ATerm term_q_3;
 ATerm term_p_3;
 ATerm term_o_3;
 ATerm term_n_3;
-ATerm term_g_3;
+ATerm term_m_3;
 ATerm term_f_3;
 ATerm term_e_3;
 ATerm term_d_3;
@@ -154,8 +154,8 @@ static void init_module_constant_terms (void)
   term_e_3 = (ATerm) ATmakeAppl(ATmakeSymbol("\"old\" is updated by adding pretty-print\n", 0, ATtrue));
   ATprotect(&(term_f_3));
   term_f_3 = (ATerm) ATmakeAppl(ATmakeSymbol("rules that are in \"new\" but not in\n", 0, ATtrue));
-  ATprotect(&(term_g_3));
-  term_g_3 = (ATerm) ATmakeAppl(ATmakeSymbol("\"old\".\n\n", 0, ATtrue));
+  ATprotect(&(term_m_3));
+  term_m_3 = (ATerm) ATmakeAppl(ATmakeSymbol("\"old\".\n\n", 0, ATtrue));
   ATprotect(&(term_n_3));
   term_n_3 = (ATerm) ATmakeAppl(ATmakeSymbol("If the \"--prune\" switch is specified, the table\n", 0, ATtrue));
   ATprotect(&(term_o_3));
@@ -174,25 +174,25 @@ static void init_module_constant_terms (void)
 #include <srts/init-stratego-application.h>
 ATerm exit_0_0 (ATerm t);
 ATerm pass_verbose_0_0 (ATerm t);
-ATerm xtc_transform_2_0 (ATerm f_109 (ATerm), ATerm g_109 (ATerm), ATerm t);
+ATerm xtc_transform_2_0 (ATerm i_109 (ATerm), ATerm j_109 (ATerm), ATerm t);
 ATerm get_config_0_0 (ATerm t);
-ATerm try_1_0 (ATerm k_104 (ATerm), ATerm t);
+ATerm try_1_0 (ATerm y_103 (ATerm), ATerm t);
 ATerm concat_0_0 (ATerm t);
 ATerm pass__old_0_0 (ATerm t);
-ATerm debug_1_0 (ATerm w_85 (ATerm), ATerm t);
-ATerm if_verbose2_1_0 (ATerm q_105 (ATerm), ATerm t);
-ATerm xtc_transform_1_0 (ATerm e_109 (ATerm), ATerm t);
+ATerm debug_1_0 (ATerm y_84 (ATerm), ATerm t);
+ATerm if_verbose2_1_0 (ATerm e_105 (ATerm), ATerm t);
+ATerm xtc_transform_1_0 (ATerm h_109 (ATerm), ATerm t);
 ATerm Fst_0_0 (ATerm t);
 ATerm geq_0_0 (ATerm t);
 ATerm modification_time_0_0 (ATerm t);
-ATerm _2_0 (ATerm q_70 (ATerm), ATerm r_70 (ATerm), ATerm t);
+ATerm _2_0 (ATerm s_69 (ATerm), ATerm t_69 (ATerm), ATerm t);
 ATerm file_exists_0_0 (ATerm t);
 ATerm add_extension_0_0 (ATerm t);
 static ATerm a_0 (ATerm t);
 static ATerm f_0 (ATerm t);
 ATerm lookup_pp_af_0_0 (ATerm t);
 ATerm fatal_error_0_0 (ATerm t);
-ATerm has_extension_1_0 (ATerm j_107 (ATerm), ATerm t);
+ATerm has_extension_1_0 (ATerm m_107 (ATerm), ATerm t);
 static ATerm h_0 (ATerm t);
 static ATerm i_0 (ATerm t);
 static ATerm j_0 (ATerm t);
@@ -203,7 +203,7 @@ ATerm pass__new_0_0 (ATerm t);
 ATerm pass__prune_0_0 (ATerm t);
 ATerm pass__patch_0_0 (ATerm t);
 ATerm build_impl_args_0_0 (ATerm t);
-ATerm xtc_io_1_0 (ATerm i_108 (ATerm), ATerm t);
+ATerm xtc_io_1_0 (ATerm l_108 (ATerm), ATerm t);
 static ATerm m_0 (ATerm t);
 static ATerm o_0 (ATerm t);
 static ATerm p_0 (ATerm t);
@@ -211,14 +211,14 @@ static ATerm q_0 (ATerm t);
 static ATerm s_0 (ATerm t);
 ATerm pptable_diff_0_0 (ATerm t);
 ATerm system_about_0_0 (ATerm t);
-ATerm default_system_usage_2_0 (ATerm s_112 (ATerm), ATerm t_112 (ATerm), ATerm t);
+ATerm default_system_usage_2_0 (ATerm v_112 (ATerm), ATerm w_112 (ATerm), ATerm t);
 static ATerm u_0 (ATerm t);
 static ATerm y_0 (ATerm t);
 ATerm pp_table_diff_usage_0_0 (ATerm t);
 ATerm io_options_0_0 (ATerm t);
 ATerm set_config_0_0 (ATerm t);
-ATerm ArgOption_3_0 (ATerm k_3 (ATerm), ATerm l_3 (ATerm), ATerm m_3 (ATerm), ATerm t);
-ATerm Option_3_0 (ATerm h_3 (ATerm), ATerm i_3 (ATerm), ATerm j_3 (ATerm), ATerm t);
+ATerm ArgOption_3_0 (ATerm j_3 (ATerm), ATerm k_3 (ATerm), ATerm l_3 (ATerm), ATerm t);
+ATerm Option_3_0 (ATerm g_3 (ATerm), ATerm h_3 (ATerm), ATerm i_3 (ATerm), ATerm t);
 static ATerm z_0 (ATerm t);
 static ATerm a_1 (ATerm t);
 static ATerm c_1 (ATerm t);
@@ -232,7 +232,7 @@ static ATerm n_1 (ATerm t);
 static ATerm o_1 (ATerm t);
 static ATerm p_1 (ATerm t);
 ATerm pptable_diff_options_0_0 (ATerm t);
-ATerm option_wrap_4_0 (ATerm j_110 (ATerm), ATerm k_110 (ATerm), ATerm l_110 (ATerm), ATerm m_110 (ATerm), ATerm t);
+ATerm option_wrap_4_0 (ATerm m_110 (ATerm), ATerm n_110 (ATerm), ATerm o_110 (ATerm), ATerm p_110 (ATerm), ATerm t);
 ATerm main_0_0 (ATerm t);
 ATerm main_0 (ATerm t)
 {
@@ -523,7 +523,7 @@ static ATerm u_0 (ATerm t)
 }
 static ATerm y_0 (ATerm t)
 {
-  t = (ATerm) ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATempty, term_p_3), term_o_3), term_n_3), term_g_3), term_f_3), term_e_3), term_d_3), term_c_3), term_b_3), term_a_3), term_z_2), term_y_2);
+  t = (ATerm) ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATinsert(ATempty, term_p_3), term_o_3), term_n_3), term_m_3), term_f_3), term_e_3), term_d_3), term_c_3), term_b_3), term_a_3), term_z_2), term_y_2);
   return(t);
 }
 ATerm pp_table_diff_usage_0_0 (ATerm t)

@@ -251,25 +251,25 @@ static void init_module_constant_terms (void)
 }
 #include <srts/init-stratego-application.h>
 ATerm pass_verbose_0_0 (ATerm t);
-ATerm xtc_transform_2_0 (ATerm f_109 (ATerm), ATerm g_109 (ATerm), ATerm t);
+ATerm xtc_transform_2_0 (ATerm i_109 (ATerm), ATerm j_109 (ATerm), ATerm t);
 ATerm concat_strings_0_0 (ATerm t);
 ATerm eq_0_0 (ATerm t);
 ATerm get_filename_0_0 (ATerm t);
 ATerm check_module_name_0_1 (ATerm a_0, ATerm t);
 ATerm read_from_0_0 (ATerm t);
-ATerm if_not_silent_1_0 (ATerm g_110 (ATerm), ATerm t);
+ATerm if_not_silent_1_0 (ATerm j_110 (ATerm), ATerm t);
 ATerm concat_0_0 (ATerm t);
 ATerm get_config_0_0 (ATerm t);
-ATerm guarantee_extension_1_0 (ATerm i_107 (ATerm), ATerm t);
-ATerm copy_to_1_0 (ATerm g_3 (ATerm), ATerm t);
-ATerm if_keep1_1_0 (ATerm t_106 (ATerm), ATerm t);
+ATerm guarantee_extension_1_0 (ATerm l_107 (ATerm), ATerm t);
+ATerm copy_to_1_0 (ATerm f_3 (ATerm), ATerm t);
+ATerm if_keep1_1_0 (ATerm w_106 (ATerm), ATerm t);
 ATerm conc_0_0 (ATerm t);
-ATerm if_verbose3_1_0 (ATerm r_105 (ATerm), ATerm t);
+ATerm if_verbose3_1_0 (ATerm f_105 (ATerm), ATerm t);
 ATerm is_string_0_0 (ATerm t);
 static ATerm c_0 (ATerm t);
 ATerm pass_sort_0_0 (ATerm t);
-ATerm rename_to_1_0 (ATerm f_3 (ATerm), ATerm t);
-ATerm map_1_0 (ATerm p_90 (ATerm), ATerm t);
+ATerm rename_to_1_0 (ATerm e_3 (ATerm), ATerm t);
+ATerm map_1_0 (ATerm r_89 (ATerm), ATerm t);
 static ATerm d_0 (ATerm t);
 static ATerm e_0 (ATerm t);
 static ATerm g_0 (ATerm t);
@@ -281,7 +281,7 @@ static ATerm l_0 (ATerm t);
 static ATerm m_0 (ATerm t);
 static ATerm n_0 (ATerm t);
 ATerm get_syntax_definition_0_0 (ATerm t);
-ATerm say_1_0 (ATerm k_85 (ATerm), ATerm t);
+ATerm say_1_0 (ATerm m_84 (ATerm), ATerm t);
 ATerm find_in_path_0_0 (ATerm t);
 ATerm find_in_includes_1_0 (ATerm k_20 (ATerm), ATerm t);
 static ATerm q_0 (ATerm t);
@@ -294,9 +294,9 @@ static ATerm z_0 (ATerm t);
 static ATerm f_1 (ATerm t);
 static ATerm h_1 (ATerm t);
 ATerm get_parse_table_0_0 (ATerm t);
-ATerm if_verbose2_1_0 (ATerm q_105 (ATerm), ATerm t);
+ATerm if_verbose2_1_0 (ATerm e_105 (ATerm), ATerm t);
 ATerm error_0_0 (ATerm t);
-ATerm fetch_elem_1_0 (ATerm b_91 (ATerm), ATerm t);
+ATerm fetch_elem_1_0 (ATerm d_90 (ATerm), ATerm t);
 static ATerm i_1 (ATerm t);
 static ATerm j_1 (ATerm t);
 static ATerm l_1 (ATerm t);
@@ -313,11 +313,11 @@ static ATerm b_3 (ATerm t);
 static ATerm c_3 (ATerm t);
 ATerm get_syntax_0_0 (ATerm t);
 ATerm basename_0_0 (ATerm t);
-ATerm FILE_1_0 (ATerm g_82 (ATerm), ATerm t);
-ATerm debug_1_0 (ATerm w_85 (ATerm), ATerm t);
-ATerm if_verbose6_1_0 (ATerm u_105 (ATerm), ATerm t);
+ATerm FILE_1_0 (ATerm i_81 (ATerm), ATerm t);
+ATerm debug_1_0 (ATerm y_84 (ATerm), ATerm t);
+ATerm if_verbose6_1_0 (ATerm i_105 (ATerm), ATerm t);
 static ATerm d_3 (ATerm t);
-static ATerm e_3 (ATerm t);
+static ATerm m_3 (ATerm t);
 static ATerm o_3 (ATerm t);
 static ATerm q_3 (ATerm t);
 static ATerm r_3 (ATerm t);
@@ -330,8 +330,8 @@ ATerm parse_module_0_0 (ATerm t);
 ATerm extend_config_0_0 (ATerm t);
 ATerm xtc_find_path_0_0 (ATerm t);
 ATerm set_config_0_0 (ATerm t);
-ATerm Option_3_0 (ATerm h_3 (ATerm), ATerm i_3 (ATerm), ATerm j_3 (ATerm), ATerm t);
-ATerm ArgOption_3_0 (ATerm k_3 (ATerm), ATerm l_3 (ATerm), ATerm m_3 (ATerm), ATerm t);
+ATerm Option_3_0 (ATerm g_3 (ATerm), ATerm h_3 (ATerm), ATerm i_3 (ATerm), ATerm t);
+ATerm ArgOption_3_0 (ATerm j_3 (ATerm), ATerm k_3 (ATerm), ATerm l_3 (ATerm), ATerm t);
 static ATerm a_4 (ATerm t);
 static ATerm b_4 (ATerm t);
 static ATerm c_4 (ATerm t);
@@ -348,7 +348,7 @@ static ATerm m_4 (ATerm t);
 static ATerm n_4 (ATerm t);
 static ATerm o_4 (ATerm t);
 ATerm parse_stratego_options_0_0 (ATerm t);
-ATerm xtc_iowrap_2_0 (ATerm x_108 (ATerm), ATerm y_108 (ATerm), ATerm t);
+ATerm xtc_iowrap_2_0 (ATerm a_109 (ATerm), ATerm b_109 (ATerm), ATerm t);
 static ATerm p_4 (ATerm t);
 ATerm parse_stratego_0_0 (ATerm t);
 ATerm main_0_0 (ATerm t);
@@ -864,10 +864,10 @@ ATerm get_syntax_0_0 (ATerm t)
 }
 static ATerm d_3 (ATerm t)
 {
-  t = debug_1_0(e_3, t);
+  t = debug_1_0(m_3, t);
   return(t);
 }
-static ATerm e_3 (ATerm t)
+static ATerm m_3 (ATerm t)
 {
   t = term_p_6;
   return(t);

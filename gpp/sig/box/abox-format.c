@@ -112,9 +112,9 @@ static void init_module_constant_terms (void)
   term_o_1 = (ATerm) ATmakeAppl(ATmakeSymbol("Not a Box: ", 0, ATtrue));
 }
 #include <srts/init-stratego-application.h>
-ATerm debug_1_0 (ATerm w_85 (ATerm), ATerm t);
+ATerm debug_1_0 (ATerm y_84 (ATerm), ATerm t);
 ATerm Nil_0_0 (ATerm t);
-ATerm list_1_0 (ATerm t_90 (ATerm), ATerm t);
+ATerm list_1_0 (ATerm v_89 (ATerm), ATerm t);
 ATerm is_string_0_0 (ATerm t);
 static ATerm c_1 (ATerm t);
 static ATerm d_1 (ATerm t);
@@ -129,7 +129,7 @@ static ATerm l_1 (ATerm t);
 static ATerm m_1 (ATerm t);
 static ATerm n_1 (ATerm t);
 ATerm Box_0_0 (ATerm t);
-ATerm io_wrap_1_0 (ATerm v_110 (ATerm), ATerm t);
+ATerm io_wrap_1_0 (ATerm y_110 (ATerm), ATerm t);
 ATerm main_0_0 (ATerm t);
 ATerm main_0 (ATerm t)
 {

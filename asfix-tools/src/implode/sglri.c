@@ -113,7 +113,7 @@ static void init_module_constant_terms (void)
 }
 #include <srts/init-stratego-application.h>
 ATerm get_config_0_0 (ATerm t);
-ATerm xtc_transform_2_0 (ATerm f_109 (ATerm), ATerm g_109 (ATerm), ATerm t);
+ATerm xtc_transform_2_0 (ATerm i_109 (ATerm), ATerm j_109 (ATerm), ATerm t);
 ATerm concat_0_0 (ATerm t);
 ATerm pass_sglri_args_0_0 (ATerm t);
 ATerm fatal_error_0_0 (ATerm t);
@@ -124,7 +124,7 @@ static ATerm d_0 (ATerm t);
 static ATerm j_0 (ATerm t);
 ATerm parse_and_implode_0_0 (ATerm t);
 ATerm set_config_0_0 (ATerm t);
-ATerm ArgOption_3_0 (ATerm k_3 (ATerm), ATerm l_3 (ATerm), ATerm m_3 (ATerm), ATerm t);
+ATerm ArgOption_3_0 (ATerm j_3 (ATerm), ATerm k_3 (ATerm), ATerm l_3 (ATerm), ATerm t);
 ATerm extend_config_0_0 (ATerm t);
 static ATerm l_0 (ATerm t);
 static ATerm n_0 (ATerm t);
@@ -139,7 +139,7 @@ static ATerm z_0 (ATerm t);
 static ATerm a_1 (ATerm t);
 static ATerm b_1 (ATerm t);
 ATerm sglri_options_0_0 (ATerm t);
-ATerm xtc_io_wrap_2_0 (ATerm m_108 (ATerm), ATerm n_108 (ATerm), ATerm t);
+ATerm xtc_io_wrap_2_0 (ATerm p_108 (ATerm), ATerm q_108 (ATerm), ATerm t);
 ATerm main_0_0 (ATerm t);
 ATerm main_0 (ATerm t)
 {

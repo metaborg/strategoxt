@@ -1,50 +1,61 @@
-StrategoXT 0.11 -- released July ..., 2004
+StrategoXT 0.11 -- released July 16, 2004
 
 ---------++ Summary of Changes
 
-   * Faster installation
+   * Separate compilation ready for use
 
-   * Smaller distribution
+   * Many deployment improvements
+     * Cygwin and Mac OS X Support (really!)
+     * Reduced size of distributions
+     * Check dependencies at configure-time
 
-   * Using new version of SDF (PGEN 2.1)
+   * XML Support
+
+   * Upgrade of SDF packages
+
+   * New tool: parenthesize generator, improves the support for the
+     implementation of pretty-printers.
+
+   * Global choice operator is now much easier to use. You won't need
+     a separate StrategoXT installation to use the global choice.
+
+   * New strategies in the Stratego library:
+      * stateful sets
+      * filtering text files
+      * new-name: generate unique names with a prefix
+
+   * Many bug-fixes, e.g.
+      * fixed a bug that causes crashes in large XTC tools
+      * improvements of new dynamic rules
+      * mutual recursive lets
+
+   * Related releases:
+      * JavaFront
+      * StrategoShell (interpreter!)
+      * Tiger
+
+---------++ Separate Compilation
+
+   * Now actually works
+   * Also for XTC tools
+   * See HowTo at Wiki
 
    * Dynamic linking
       * libtool
 
-   * Separate compilation
-      * Now actually works
-      * Also for XTC tools
-      * See HowTo at Wiki
+   * Size of distribution
 
-   * Global choice operator
+---------++ Cygwin and Mac OS X Support
+
+---------++ XML Support
+
+---------++ Upgrade of SDF Packages
+
+---------++ Global choice operator
+
+   * Improved support for the global choice operator
       * See howto
       * Supported by strc
-
-   * Tools
-      * Parenthesize generator
-      * Idef for pack-sdf
-
-   * Strategies
-      * filter text files
-      * Stateful sets
-      * new-name
-
-   * New packages
-      * xml-front
-
-   * Major bug-fixes
-      * mkstemp
-      * mutual recursive lets
-      * new dynamic rules   
-
-   * Portability
-      * Cygwin tested
-      * Mac OS X tested
-
-   * Other releases
-      * JavaFront
-      * StrategoShell (interpreter!)
-      * Tiger
 
 ---------++ Download and Installation
 
@@ -55,9 +66,7 @@ detailed instructions on how to install the distributions:
 
 ---------++ Bugs and Known Problems
 
-Not all bugs and known problems for StrategoXT have been solved in
-this release, otherwise this would release 1.0 ;). See our issue
-tracking systems for reports about (open) bugs:
+See our issue tracking systems for reports about (open) bugs:
 
    * https://catamaran.labs.cs.uu.nl/jira/
 

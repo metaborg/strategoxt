@@ -237,7 +237,7 @@ static void init_module_constructors (void)
   sym_RuleNoCond_2 = ATmakeSymbol("RuleNoCond", 2, ATfalse);
   ATprotectSymbol(sym_RuleNoCond_2);
 }
-ATerm term_g_3;
+ATerm term_j_3;
 ATerm term_d_3;
 ATerm term_n_2;
 ATerm term_e_2;
@@ -258,24 +258,24 @@ static void init_module_constant_terms (void)
   term_n_2 = (ATerm) ATmakeAppl(sym_Op_2, term_z_1, (ATerm) ATempty);
   ATprotect(&(term_d_3));
   term_d_3 = (ATerm) ATmakeAppl(sym_AsFix_0);
-  ATprotect(&(term_g_3));
-  term_g_3 = (ATerm) ATmakeAppl(ATmakeSymbol("--asfix          treat concrete syntax parts as AsFix trees", 0, ATtrue));
+  ATprotect(&(term_j_3));
+  term_j_3 = (ATerm) ATmakeAppl(ATmakeSymbol("--asfix          treat concrete syntax parts as AsFix trees", 0, ATtrue));
 }
 #include <srts/init-stratego-application.h>
-ATerm Option_3_0 (ATerm h_3 (ATerm), ATerm i_3 (ATerm), ATerm j_3 (ATerm), ATerm t);
+ATerm Option_3_0 (ATerm g_3 (ATerm), ATerm h_3 (ATerm), ATerm i_3 (ATerm), ATerm t);
 ATerm int_to_string_0_0 (ATerm t);
 ATerm Clean_0_0 (ATerm t);
-ATerm try_1_0 (ATerm k_104 (ATerm), ATerm t);
-ATerm topdown_1_0 (ATerm b_86 (ATerm), ATerm t);
-ATerm option_defined_1_0 (ATerm j_111 (ATerm), ATerm t);
-ATerm _2_0 (ATerm q_70 (ATerm), ATerm r_70 (ATerm), ATerm t);
+ATerm try_1_0 (ATerm y_103 (ATerm), ATerm t);
+ATerm topdown_1_0 (ATerm d_85 (ATerm), ATerm t);
+ATerm option_defined_1_0 (ATerm m_111 (ATerm), ATerm t);
+ATerm _2_0 (ATerm s_69 (ATerm), ATerm t_69 (ATerm), ATerm t);
 ATerm str_explode_0_0 (ATerm t);
-ATerm map_1_0 (ATerm p_90 (ATerm), ATerm t);
+ATerm map_1_0 (ATerm r_89 (ATerm), ATerm t);
 ATerm TrmOp_0_0 (ATerm t);
 static ATerm b_1 (ATerm u_11, ATerm v_11, ATerm t);
 ATerm Snd_0_0 (ATerm t);
 ATerm Fst_0_0 (ATerm t);
-ATerm foldr_3_0 (ATerm f_98 (ATerm), ATerm g_98 (ATerm), ATerm h_98 (ATerm), ATerm t);
+ATerm foldr_3_0 (ATerm h_97 (ATerm), ATerm i_97 (ATerm), ATerm j_97 (ATerm), ATerm t);
 static ATerm a_0 (ATerm t);
 static ATerm h_0 (ATerm t);
 static ATerm e_1 (ATerm x_11, ATerm w_11, ATerm t);
@@ -288,13 +288,13 @@ ATerm is_int_0_0 (ATerm t);
 ATerm trm_explode_0_0 (ATerm t);
 static ATerm i_0 (ATerm t);
 ATerm MetaExplode_0_0 (ATerm t);
-ATerm oncetd_1_0 (ATerm f_87 (ATerm), ATerm t);
+ATerm oncetd_1_0 (ATerm h_86 (ATerm), ATerm t);
 ATerm Nil_0_0 (ATerm t);
-ATerm Cons_2_0 (ATerm e_77 (ATerm), ATerm f_77 (ATerm), ATerm t);
-ATerm alltd_1_0 (ATerm t_87 (ATerm), ATerm t);
+ATerm Cons_2_0 (ATerm g_76 (ATerm), ATerm h_76 (ATerm), ATerm t);
+ATerm alltd_1_0 (ATerm v_86 (ATerm), ATerm t);
 static ATerm m_0 (ATerm t);
 ATerm ImplodeLayout_1_0 (ATerm a_22 (ATerm), ATerm t);
-ATerm iowrap_2_0 (ATerm o_109 (ATerm), ATerm p_109 (ATerm), ATerm t);
+ATerm iowrap_2_0 (ATerm r_109 (ATerm), ATerm s_109 (ATerm), ATerm t);
 static ATerm u_0 (ATerm t);
 static ATerm v_0 (ATerm t);
 static ATerm y_0 (ATerm t);
@@ -1162,7 +1162,7 @@ static ATerm s_1 (ATerm t)
 }
 static ATerm t_1 (ATerm t)
 {
-  t = term_g_3;
+  t = term_j_3;
   return(t);
 }
 ATerm meta_explode_0_0 (ATerm t)
