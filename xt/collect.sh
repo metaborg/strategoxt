@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: collect.sh,v 1.16 2000/11/24 18:49:25 mdejonge Exp $
+# $Id: collect.sh,v 1.17 2000/11/24 19:11:03 mdejonge Exp $
 
 
 # This script will collect all required packages for an autobundle distribution.
@@ -111,7 +111,6 @@ fi
 
 configure=$1
 pkg_file=$2
-set -x 
 
 tmp=/tmp/autobundle-$$
 trap "rm -f ${tmp}*" 0 1 2 3 4 5 6 7 8 9 10
