@@ -1,5 +1,5 @@
 module asfix-abstractions
-imports asfix list tuple Character-Class-Syntax
+imports asfix list tuple Character-Class-Syntax Sdf2
 
 signature
 constructors
