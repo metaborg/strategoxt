@@ -111,7 +111,7 @@ bootclean-recursive :
 	$(MAKE) -f $(GPP)/share/gpp/gpp.Makefile $@
 
 .def.pp :
-	$(GPP)/bin/ppgen -i $< -o $@
+	$(BOX_TOOLS)/bin/ppgen -i $< -o $@
 
 ###########################################################
 #
