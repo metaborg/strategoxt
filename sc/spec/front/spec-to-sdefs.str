@@ -101,8 +101,8 @@ overlays
 
   AnnoCongDef =
     RDefT("Anno_Cong__", 
-         [VarDec("s1",FunType([ConstType(Op("ATerm",[]))],ConstType(Op("ATerm",[])))), 
-          VarDec("s2",FunType([ConstType(Op("ATerm",[]))],ConstType(Op("ATerm",[]))))],
+         [VarDec("s1",FunType([ConstType(Sort("ATerm",[]))],ConstType(Sort("ATerm",[])))), 
+          VarDec("s2",FunType([ConstType(Sort("ATerm",[]))],ConstType(Sort("ATerm",[]))))],
 	 [],
          Rule(Anno(Var("x"), Var("y")), 
               Anno(Var("x'"), Var("y'")),
