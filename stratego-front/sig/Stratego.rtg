@@ -131,6 +131,8 @@ regular tree grammar
     ListPlusOfSort_1              -> <cons>(Sort,ListStarOfSort_1)
     ListStarOfStrChar_0           -> <string>
     ListPlusOfStrChar_0           -> <string>
+    ListStarOfModNamePart_0       -> <string>
+    ListPlusOfModNamePart_0       -> <string>
     ListStarOfVLCchar_0           -> <string>
     ListPlusOfVLCchar_0           -> <string>
     ListStarOfCommChar2_0         -> <string>
@@ -305,6 +307,7 @@ regular tree grammar
     LCID                          -> <string>
     LId                           -> <string>
     Id                            -> <string>
+    ModNamePart                   -> <string>
     ModName                       -> <string>
     Backslash                     -> <string>
     VLCchar                       -> <string>

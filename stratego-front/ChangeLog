@@ -1,3 +1,10 @@
+2005-01-02  Martin Bravenboer <martin@cs.uu.nl>
+
+	* syn/Stratego-Identifiers.sdf: allow a / separator between parts
+	of a ModName. Allowing the / provides basic support for
+	hierarchical module names, e.g. 'module jls/conversions/Boxing'
+	and 'imports jls/conversions/Boxing'.
+	
 2004-10-16  Martin Bravenboer <martin@cs.uu.nl>
 
 	* syn/Stratego-Identifiers.sdf: disabling the heurstic filters

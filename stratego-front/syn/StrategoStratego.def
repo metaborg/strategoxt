@@ -40,6 +40,7 @@ imports Stratego
             LCID           => StrategoLCID
             LId            => StrategoLId
             Id             => StrategoId
+            ModNamePart    => StrategoModNamePart
             ModName        => StrategoModName
             Backslash      => StrategoBackslash
             VLCchar        => StrategoVLCchar
@@ -474,11 +475,13 @@ exports
 
 module Stratego-Identifiers
 exports
-  sorts ModName
+  sorts ModName ModNamePart
+
   lexical syntax
-    [a-zA-Z\'\.\-\_] [a-zA-Z0-9\'\.\-\_]* -> ModName
+    {ModNamePart "/"}+ -> ModName
+    [a-zA-Z\'\.\-\_] [a-zA-Z0-9\'\.\-\_]* -> ModNamePart
   lexical restrictions
-    ModName -/- [a-zA-Z0-9\'\.\-\_]
+    ModName -/- [a-zA-Z0-9\'\.\-\_\/]
   lexical syntax
     "imports" 		-> ModName {reject}
     "overlays" 		-> ModName {reject}

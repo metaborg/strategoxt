@@ -39,6 +39,7 @@ imports StrategoForTesting
             LCID           => StrategoLCID
             LId            => StrategoLId
             Id             => StrategoId
+            ModNamePart    => StrategoModNamePart
             ModName        => StrategoModName
             Backslash      => StrategoBackslash
             VLCchar        => StrategoVLCchar
