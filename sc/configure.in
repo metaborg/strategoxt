@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
+ # Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
 # 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ AC_SUBST(EXE)
 libexecdir=\$\{exec_prefix\}/libexec/$PACKAGE
 AC_SUBST(libexecdir)
 
-AC_REVISION($Id: configure.in,v 1.32 2002/12/11 10:29:59 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.33 2002/12/11 21:21:16 stratego Exp $)
 
 AC_PROG_CC
 AC_PROG_RANLIB
@@ -60,7 +60,6 @@ AC_OUTPUT( \
 	README \
 	spec/config.h \
 	spec/Makefile \
-	spec/Makefile.stratego \
 	spec/make_rules \
 	spec/c/Makefile \
 	spec/front/Makefile \
