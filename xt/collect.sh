@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: collect.sh,v 1.19 2000/12/12 21:11:52 mdejonge Exp $
+# $Id: collect.sh,v 1.20 2000/12/12 21:13:07 mdejonge Exp $
 
 
 # This script will collect all required packages for an autobundle distribution.
@@ -180,7 +180,7 @@ done
 
 echo
 echo "${pkg_name} is bundled on `date '+%C`' with"
-echo "autobundle (http://www.cwinl/~mdejonge/autobundle/)."
+echo "autobundle (http://www.cwi.nl/~mdejonge/autobundle/)."
 
 ) > SOFTWARE
 
