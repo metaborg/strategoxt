@@ -1,3 +1,8 @@
+2003-02-05  Eelco Visser  <visser@cs.uu.nl>
+
+	* parse/parse-stratego.str: Shifted name of default syntax from
+	get-meta to get-syntax.
+
 2003-01-14  Eelco Visser  <visser@cs.uu.nl>
 
 	* parse/meta-explode.str: Support for ToBuild and FromApp to write

@@ -42,6 +42,7 @@ strategies
      <+ get-meta
       ; (?Meta(<fetch-elem(?Syntax(<id>))>)
          <+ <error> ["Meta data ", <id>, " for module ", file, " not valid: "]; fail)
+     <+ !"Stratego"
       )
     ; if-verbose2(debug(!"using syntax: "))
 
@@ -52,7 +53,6 @@ strategies
     <+ FILE(guarantee-extension(!"syn"))
      ; read-from => syntax#(_)
      ; !Meta([Syntax(syntax)])
-    <+ !Meta([Syntax("Stratego")])
      )
    ; if-verbose6(debug(!"get-meta: "))
 
