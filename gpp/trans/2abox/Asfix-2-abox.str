@@ -1,31 +1,6 @@
-\literate[Asfix-2-abox]
-% GT -- Grammar Tools
-% Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
-%                    Eelco Visser <visser@acm.org>
-%                    Joost Visser <jvisser@cwi.nl>
-%
-% This program is free software; you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation; either version 2, or (at your option)
-% any later version.
-%
-% This program is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-%
-% You should have received a copy of the GNU General Public License
-% along with this program; if not, write to the Free Software
-% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-% 02111-1307, USA.
-
-% $Id: Asfix-2-abox.str,v 1.1 2003/01/03 07:23:39 stratego Exp $
-
-% Author: Merijn de Jonge (mdjonge@cwi.nl)
-% Changes: Eelco Visser <visser@acm.org> 19/5/20001
-% - 
-
-\begin{code}
+/**
+ * @author Merijn de Jonge (mdjonge@cwi.nl)
+ */
 module Asfix-2-abox
 imports
   liblib
@@ -126,7 +101,7 @@ build-list:
          where
            <symbol2abox>(sym, t, new-path, 1) => ab \
          } ) => aboxes;
-      <instantiate-list(!pp-entry)>aboxes => abox
+      <instantiate-list(|pp-entry)>aboxes => abox
 
 symbol2abox: 
    (iter-sep(sym,sep), lst, path, number) -> aboxes
@@ -145,7 +120,7 @@ build-sep-list:
       !s;(iter-sep(?sym, ?sep)+iter-star-sep(?sym, ?sep) );
       <get-pp-entry>(s, new-path) => pp-entry;
       <nzip( BuildSepList(!sym, !sep, !new-path, !number) )>lst => aboxes;
-      <instantiate-sep-list(!pp-entry)>aboxes
+      <instantiate-sep-list(|pp-entry)>aboxes
        => abox
 
 BuildSepList(sym, sep, path, number):
@@ -221,30 +196,24 @@ seq2abox =
 
 
 rules
-\end{code}
 
-  Obtain or create a box template from an appl. Two following cases have to
-  be considered:
-  
-\begin{enumerate}
-\item 
-     A constructor attribute exists for the term and the pretty-print table 
-     contains an entry. Obtain the entry and return.
 
-\item
-     A constructor attribute exists for the term and the pretty-print table
-     does not contain an entry. Create a new template and store it in the
-     table.
-
-\item
-     No constructor exists for the term. Create a new template and store it
-     in the table. Generate a constructor name form the
-     symbols+literals+result sort of the production. If that fails for some
-     reason, use "no-cons-name" as constructor name.
-\end{enumerate}
-
-\begin{code}
-
+/**
+ * Obtain or create a box template from an appl. Two following cases have to
+ * be considered:
+ *  
+ * A constructor attribute exists for the term and the pretty-print table 
+ * contains an entry. Obtain the entry and return.
+ *
+ * A constructor attribute exists for the term and the pretty-print table
+ * does not contain an entry. Create a new template and store it in the
+ * table.
+ *
+ * No constructor exists for the term. Create a new template and store it
+ * in the table. Generate a constructor name form the
+ * symbols+literals+result sort of the production. If that fails for some
+ * reason, use "no-cons-name" as constructor name.
+ */
 get-templ: 
    appl(prod(syms, sym, attrs), args) -> (cons-name, abox)
    where
@@ -342,43 +311,41 @@ fatal-ambiguity =
    amb(id);
    <fatal-error>["Unable to pretty-print term due to ambiguities."]
   
-\end{code}
-  This strategy traverse a box template and the corresponding argument
-boxes, and removes any abox from the argument list that does not correspond
-to a box place holder.
-
-example:
-
-\begin{verbatim}
-<filter-literals>([S("aap"), Arg(i), S("mies")],
-                  [S("aap"), S("noot"), S("mies")]0
-yields
-   ([S("aap"), Arg(i), S("mies")],
-    [S("noot")])
-\end{verbatim}
-
-The result tuple is suitable for instantiation.
-\begin{code}
-filter-literals: (templ, args) -> (templ, args')
-   where
-   (collect'(Arg(id) + Arg2(id,id) + S(id)), id );
-      rec x ( { i, xs, xs', ys, ys', s, a:
-     ([], [])
-     <+
-     ?([Arg(i)|xs], [s|ys]);
-     <x>(xs, ys);
-     ?(xs',ys');
-     !([Arg(i)|xs'], [s|ys'])
-     <+
-     ?([Arg2(i,j)|xs], [s|ys]);
-     <x>(xs, ys);
-     ?(xs',ys');
-     !([Arg2(i,j)|xs'], [s|ys'])
-     <+
-      ?([a|xs], [s|ys]);
-      <x>(xs,ys);
+/**
+ * This strategy traverse a box template and the corresponding argument
+ * boxes, and removes any abox from the argument list that does not correspond
+ * to a box place holder.
+ * 
+ * example:
+ * 
+ * <filter-literals>([S("aap"), Arg(i), S("mies")],
+ *                   [S("aap"), S("noot"), S("mies")]0
+ * yields
+ *    ([S("aap"), Arg(i), S("mies")],
+ *     [S("noot")])
+ * 
+ * The result tuple is suitable for instantiation
+ */
+filter-literals:
+  (templ, args) -> (templ, args')
+  where
+    (collect'(Arg(id) + Arg2(id,id) + S(id)), id );
+       rec x ( { i, xs, xs', ys, ys', s, a:
+      ([], [])
+      <+
+      ?([Arg(i)|xs], [s|ys]);
+      <x>(xs, ys);
       ?(xs',ys');
-      !([a|xs'], ys')
-   }     
-   ) => (_, args')
-\end{code}
+      !([Arg(i)|xs'], [s|ys'])
+      <+
+      ?([Arg2(i,j)|xs], [s|ys]);
+      <x>(xs, ys);
+      ?(xs',ys');
+      !([Arg2(i,j)|xs'], [s|ys'])
+      <+
+       ?([a|xs], [s|ys]);
+       <x>(xs,ys);
+       ?(xs',ys');
+       !([a|xs'], ys')
+    }     
+    ) => (_, args')

@@ -5,7 +5,7 @@ strategies
 
   io-ast2abox =
     xtc-io-wrap(ast2abox-options, 
-      xtc-transform(!"Ast-2-abox", create-pp-table-args)
+      xtc-transform(!"Ast-2-abox", <conc> (<pass-verbose> (), <create-pp-table-args> ()))
     )
 
   ast2abox-options =

@@ -1,4 +1,18 @@
+2005-01-30  Martin Bravenboer <martin@cs.uu.nl>
+
+	* xtc-tools/ast2abox.str: pass the verbose option to ast2abox.
+
+	* trans/2abox/Ast-2-abox.str: added lots of comments and indenting
+	to make the code more clear for outsiders.
+
+	* trans/2abox/Ast-2-abox.str: fixed an issue with tuples (or any
+	selector) in separated lists. This fixes STR-82.
+
+	* tests/ast2text-tests.str: added a (badly needed) testsuite for
+	the combination of ast2abox and abox2text.
+
 2004-06-03   Merijn de Jonge  <mdejonge@cs.uu.nl>
+	
 	* Bug fix: abox2latex didn't process the '-t' command line switch
 	correctly.
 
@@ -55,8 +69,9 @@
 	of arguments in the key.
 
 2004-03-21   Merijn de Jonge  <mdejonge@cs.uu.nl>
-   * Bug fix in sdf-2-pp-lib.str: pretty-print table generator now generates
-     syntactically correct entries for all SDF2 constructs
+	
+	* Bug fix in sdf-2-pp-lib.str: pretty-print table generator now
+	generates syntactically correct entries for all SDF2 constructs
 
 2004-03-05  Martin Bravenboer <martin@cs.uu.nl>
 

@@ -22,6 +22,6 @@ AC_CONFIG_FILES([
   trans/abox2/Makefile 
   trans/abox2/data/Makefile 
   xtc-tools/Makefile 
+  tests/Makefile 
 ])
-
 AC_OUTPUT

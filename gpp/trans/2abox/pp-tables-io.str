@@ -1,30 +1,10 @@
-\literate[pp-tables]
-% GT -- Grammar Tools
-% Copyright (C) 2000-2001 Merijn de Jonge <mdejonge@cwi.nl>
-%                         Eelco Visser <visser@acm.org>
-%                         Joost Visser <jvisser@cwi.nl>
-%
-% This program is free software; you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation; either version 2, or (at your option)
-% any later version.
-%
-% This program is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-%
-% You should have received a copy of the GNU General Public License
-% along with this program; if not, write to the Free Software
-% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-% 02111-1307, USA.
-
-% $Id: pp-tables-io.str,v 1.1 2003/01/03 07:23:39 stratego Exp $
-
-% Author: Merijn de Jonge (mdjonge@cwi.nl)
-
-\begin{code}
-
+/**
+ * @author  Merijn de Jonge
+ *
+ * Martin Bravenboer: This module has been cloned to
+ * pp-table-io2. Ast-to-abox uses the new module, Asfix-to-abox still
+ * uses this old one.
+ */
 module pp-tables-io
 imports pp-table termid
 
@@ -97,5 +77,3 @@ strategies
      !key;
      where(path-to-string; notify( !"storing: "));
      <table-put>("pp-table", key, value )
-
-\end{code}

@@ -9,7 +9,7 @@ imports
   instantiate
   misc
   AsFix
-      
+
 strategies
 
   io-Ast-2-abox =
@@ -18,18 +18,21 @@ strategies
   ast2abox-options =
       io-options
     + pp-options
-    
+    + verbose-option
+
   ast2abox =
       where(get-config-p; reverse; read-pp-tables)
     ; xtc-io(
         xtc-io-transform(
           trm2abox
-        ; if(is-list, !HV([], <id>))
+        ; if is-list then
+            !HV([], <id>)
+          end
         )
       )
 
 strategies
-      
+
   trm2abox =
        trm2abox-string
     <+ trm2abox-int
@@ -39,35 +42,49 @@ strategies
     <+ <fatal-error> ["** ERROR: cannot rewrite to box: ", <id>]
 
   trm2abox-string =
-      is-string; !S(<id>)
+    is-string
+    ; !S(<id>)
 
   trm2abox-real =
-      is-real ; !S(<real-to-string>)
+    is-real
+    ; !S(<real-to-string>)
 
   trm2abox-int =
-      is-int; !S(<int-to-string>)
+    is-int
+    ; !S(<int-to-string>)
 
   trm2abox-list =
-      ?f#( args )
-    ; is-list
+    is-list
     ; map(trm2abox)
 
   trm2abox-appl =
-      ?f#( args )
+    ?f#( args )
     ; where(<length> args => arity)
     ; <try-pp-table-get> (arity, [f]) => (path, abox)
     ; <nzip( \ (x, y) -> <arg2abox> (x, [f], y) \ )> args => aboxes
     ; <instantiate> (abox, aboxes)
 
+/**
+ * Path is a list.
+ * First element is the constructor name (string)
+ * 
+ */
 strategies
 
+  /**
+   * @param n     Integer: Argument index
+   * @param path  Path of the parent node
+   * @param arg   Any term
+   */
   arg2abox =
       ?(n, path, arg)
     ; <conc> (path, [n]) => new_path
-    ; (    pp-table-get => (full_path, template)
-         ; <symbol2abox> (<get-symbol> full_path, new_path, template, arg)
-      <+   <trm2abox> arg
+    ; ( pp-table-get => (full_path, template)
+        ; <symbol2abox> (<get-symbol> full_path, new_path, template, arg)
+      <+ <trm2abox> arg
       )
+
+strategies
 
   symbol2abox =
        symbol2abox1
@@ -78,35 +95,47 @@ strategies
     <+ symbol2abox6
     <+ symbol2abox7
 
-  // Rule to format alt(n,[]), with empty list of arguments
+  /**
+   * Rule to format alt(n,[]), with empty list of arguments
+   */
   symbol2abox1 =
       ?( alt, path, template, alt(n, []))
-    ; <instantiate> ([<index>(n, template)], [])
+    ; <instantiate> ([<index> (n, template)], [])
 
-  // Rule to format alt(n,[arg]), with non-empty list of arguments
+  /**
+   * Rule to format alt(n,[arg]), with non-empty list of arguments
+   */
   symbol2abox2 =
       ?( alt, path, template, alt(n, [arg]))
     ; <arg2abox>(n, path, arg)
     ; <instantiate> ([<index> (n, template)], [<id>])
 
-  // Rule to format optional: Some(x)
+  /**
+   * Rule to format optional: Some(x)
+   */
   symbol2abox3 =
       ?( opt, path, template, Some(x) )
     ; <arg2abox> (1, path, x)
     ; <instantiate> (template, [<id>])
 
-  // Rule to format optinal: None
+  /**
+   * Rule to format optinal: None
+   */
   symbol2abox4 =
       ?( opt, path, template, None())
     ; ![]
 
-  // Rule to format iter and iter-star list
+  /**
+   * Rule to format iter and iter-star list
+   */
   symbol2abox5 =
       ( ?( "iter", path, template, lst ) + ?( "iter-star", path, template, lst ))
-    ; <map( { t, ab: \ t -> <arg2abox> (1, path, t) \ } )> lst
+    ; <map(<arg2abox> (1, path, <id>))> lst
     ; <instantiate> (template, [<id>])
 
-  // Rule to format iter-sep and iter-star-sep list
+  /**
+   * Rule to format iter-sep and iter-star-sep list
+   */
   symbol2abox6 :
     ("iter-sep", path, template, lst) -> <symbol2abox6-helper> (path, template, lst)
 
@@ -115,47 +144,52 @@ strategies
 
       symbol2abox6-helper =
           ?(path, template, lst)
-        ; <nzip(BuildSepList(!path))> lst => aboxes
+        ; <map(<arg2abox> (1, path, <id>))> lst => aboxes
         ; ( // For correct instantiation, we have to make sure that the 
             // list of elements contains separators. In case the box template
             //  contains only a single placeholder, we extend the listof elements
             //  with "dummy" separators.
-            <collect'(S(id)); length> template
+            <collect'(?S(_)); length> template
           ; ?1
           ; !aboxes
-          ; rec x({e, xs:
+          ; rec x(
                 \ []     -> []  \
              <+ \ [e]    -> [e] \
              <+ \ [e | xs] -> [e, e|<x> xs] \
-            })
+            )
           <+
             !aboxes
           )
-        ; instantiate-sep-list(!template)
+        ; instantiate-sep-list(|template)
 
-  // Rule ro format sequences
+  /**
+   * Rule ro format sequences
+   */
   symbol2abox7 =
       ?( "seq", path, template, lst )
     ; <TupleToList> lst
-    ; nzip({n, t: \ (n,t) -> <arg2abox> (n, path, t) \ })
+    ; nzip( \ (n,t) -> <arg2abox> (n, path, t) \ )
     ; <instantiate> (template, <id>)
 
 rules
 
-  // Build a sepator list by formatting its elements which are numbered
-  // tuples. Odd entries denote symbols and are formatted using the path
-  // <path>.1; even entries denote separators and are formatted using the path
-  // <path>.2
-  BuildSepList(path) :
+  /**
+   * Build a sepator list by formatting its elements which are numbered
+   * tuples. Odd entries denote symbols and are formatted using the path
+   * <path>.1; even entries denote separators and are formatted using the path
+   * <path>.2
+  BuildSepList(|path) :
     (n, s) -> abox
-      where  <even> n
-           ; <arg2abox> (2, <path> (), s) => abox
-          <+ <arg2abox> (1, <path> (), s) => abox
+    where
+      if <even> n then !1 else !1 end
+      ; <arg2abox> (<id>, path, s) => abox
+   */
 
-
-  // The symbol of the SDF production is contained in the path of pretty-print
-  // rules. Get-symbol returns the last symbol of a path.
+  /**
+   * The symbol of the SDF production is contained in the path of
+   * pretty-print rules. Get-symbol returns the last symbol of a path.
+   */
   get-symbol :
     Path(cons-name, selectors) -> symbol
-      where <at-last([selector(id, ?symbol)])> selectors
-
+    where
+      <at-last([selector(id, ?symbol)])> selectors

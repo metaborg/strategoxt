@@ -1,27 +1,6 @@
-\literate[Pptable-diff]
-% Copyright (C) 2004 Merijn de Jonge <mdejonge@cs.uu.nl>
-%
-% This program is free software; you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation; either version 2, or (at your option)
-% any later version.
-%
-% This program is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-%
-% You should have received a copy of the GNU General Public License
-% along with this program; if not, write to the Free Software
-% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-% 02111-1307, USA.
-
-% $Id: Asfix-2-abox.str,v 1.1 2003/01/03 07:23:39 stratego Exp $
-
-% Author: Merijn de Jonge (m.de.jonge@tue.nl)
-% 
-
-\begin{code}
+/**
+ * @author Merijn de Jonge (m.de.jonge@tue.nl)
+ */
 module Pptable-diff
 imports
   liblib
@@ -174,6 +153,3 @@ desugar =
           + \ Patched(Path(x,y)) -> Path(<concat-strings>["--saved-entry--", x],y) \
           + \ Patched(Path1(x)) -> Path1(<concat-strings>["--saved-entry--", x]) \
         ))
-      
-    
-\end{code}
