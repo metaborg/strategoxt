@@ -19,26 +19,25 @@ SUBDIRS = data
 
 SCFLAGS = -I $(srcdir)
 
-# bin_SCRIPTS = migrate-tuples
+parsed = $(subst .r,.rtree,$(wildcard *.r))
 
-pkgdata_DATA = $(wildcard *.r)
+pkgdata_DATA = $(parsed)
 
 TESTS = $(subst .r,,$(wildcard *-test.r))
 
-EXTRA_DIST = $(pkgdata_DATA) make-rules
+EXTRA_DIST = $(wildcard *.r) $(pkgdata_DATA)
 
-bootdir	= $(top_srcdir)/src/slib/spec
+CLEANFILES = $(TESTS) $(bin_SCRIPTS) $(parsed)
 
-BOOTSOURCES = $(pkgdata_DATA)
+SC = $(STRATEGO)/bin/sc
 
-CLEANFILES = $(TESTS) $(bin_SCRIPTS)
+%.rtree: %.r
+	$(STRATEGO)/bin/parse-mod -i $< -o $@
 
-include $(srcdir)/make-rules
+% : %.r
+	$(SC) $(SCFLAGS) -i $*
+
+%.dep:
+	touch $@
 
 include $(wildcard *.dep)
-
-all:
-
-www-install:
-	scp $(wildcard *.r) \
-		sunshine.cs.uu.nl:/users/www/research/projects/stratego/lib
