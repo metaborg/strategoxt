@@ -1,11 +1,13 @@
+2001-08-28 Merijn de Jonge <mdejonge@cwi.nl> 
+   * src/gpp/make.r: bug fix: pp generator also incorrectly brackets in sdf
+     productions
+
 2001-08-22  Eelco Visser  <visser@acm.org>
-
-	* src/gpp/Ppgen.r: Added imports of Label-Sdf-Syntax and
-	Basic-Sdf-Syntax; constructor declarations are now required
-	in Stratego.
-
-	* configure.in.src: Added configure switch to specify the Stratego
-	compiler to use.
+   * src/gpp/Ppgen.r: Added imports of Label-Sdf-Syntax and
+     Basic-Sdf-Syntax; constructor declarations are now required in
+     Stratego.
+   * configure.in.src: Added configure switch to specify the Stratego
+     compiler to use.
 
 2001-06-08 Merijn de Jonge <mdejonge@cwi.nl> 
    * src/gpp: bug fix: --main switch interfered with implementation strategies.

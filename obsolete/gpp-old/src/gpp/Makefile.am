@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/06/05 09:11:46 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2001/08/28 15:16:48 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -39,7 +39,7 @@ pkgdata_DATA = gpp.Makefile pp-tables.tbl boxstyle.css default.abbrevs \
                pp-tables.pp pp-tables.pp.af sdf.cons.tbl
 
 # Optional tests to run
-# TESTS        = program-check
+TESTS        = no_generation_for_bracket_function_check
 
 # List all files that should be distributed here
 EXTRA_DIST   = $(wildcard *.r) gpp.Makefile.src \
@@ -50,7 +50,8 @@ EXTRA_DIST   = $(wildcard *.r) gpp.Makefile.src \
 
 # What should be cleaned
 CLEANFILES  += ast2abox asfix2abox ppgen abox2html abox2latex \
-               abox2text gpp.Makefile pp-tables.pp.af
+               abox2text gpp.Makefile pp-tables.pp.af \
+               no_generation_for_bracket_function_check
 
 # Additional flags for the Stratego compiler
 SCFLAGS     += -I ${ASFIXTOOLS}/share/asfix-tools --main $@
@@ -74,3 +75,9 @@ gpp.Makefile : gpp.Makefile.src Makefile
 	@PATH=$(bindir):$(SGLR)/bin:$${PATH}; export PATH ;\
 	sglr -p ./pp-tables.tbl -i $< \
 	   | implode-asfix -S -o $@ 
+
+no_generation_for_bracket_function_check_prog    = Ppgen
+no_generation_for_bracket_function_check_input   = data/ppgencheck1.in
+no_generation_for_bracket_function_check_output  = data/ppgencheck1.out
+no_generation_for_bracket_function_check_correct = data/ppgencheck1.correct
+

@@ -1,0 +1,1 @@
+Definition([Module("Main",[],[Exports(context-free-syntax([prod([opt(lit("\"strict\"")),bracket-symbol(alt(lit("\"graph\""),lit("\"digraph\""))),sort("Id")],sort("S"),attrs([cons("\"ppgencheck1\"")]))]))])])

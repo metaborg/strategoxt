@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: make.r,v 1.1 2001/06/05 09:11:48 mdejonge Exp $
+% $Id: make.r,v 1.2 2001/08/28 15:16:48 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
@@ -102,6 +102,12 @@ symbol2abox(path) =
       // Therefore, we replace the place holder symbols (which are numberd
       // increasingly by default) by Arg(1)
       [topdown(try( Arg(id);!Arg(1)))|id]
+      }
+   <+
+      {constr, selectors, n, s:
+      
+      ?((constr, selectors), (n, bracket-symbol(s)));
+      <x>((constr, selectors), (n, s ))
       }
    <+
       // For all other SDF symbols (opt, seq, etc), we recursively generate

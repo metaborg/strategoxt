@@ -1,0 +1,5 @@
+definition
+module Main
+exports
+context-free syntax
+ "strict"? ("graph"|"digraph") Id -> S {cons("ppgencheck1")} 
