@@ -16,7 +16,7 @@
 # 02111-1307, USA.
 
 AC_INIT(src/stratego-lib.h)
-AM_INIT_AUTOMAKE(ssl,0.7beta3)
+AM_INIT_AUTOMAKE(ssl,0.7)
 
 AC_ARG_WITH(aterm, 
  [  --with-aterm          Specify location of ATerm library, default: \$prefix], 
@@ -39,7 +39,7 @@ AC_ARG_WITH(stratego,
 )
 AC_SUBST(STRATEGO)
 
-AC_REVISION($Id: configure.in,v 1.16 2002/02/26 21:53:34 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.17 2002/03/10 21:24:03 stratego Exp $)
 
 AC_PROG_CC
 AC_PROG_RANLIB

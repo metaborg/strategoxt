@@ -4,9 +4,9 @@ News about Stratego releases
 
 ------------------------------------------------------------------------------
 
-Version 0.7beta3
+Version 0.7
 
- released: 
+ released: March 11, 2002
 
 SUMMARY OF CHANGES
 
@@ -18,7 +18,7 @@ SUMMARY OF CHANGES
  * Bagof returns list of all possible results for ++ and <++
  * Guarded left choice s1 < s2 + s3 commits after s1 succeeds
  * Constant term caching in the compiler
- * Support for term annotations
+ * Support for term annotations t1{t2}
  * Many new library strategies
 
 DEPENDENCIES
@@ -26,12 +26,12 @@ DEPENDENCIES
  * aterm-1.6.6: aterm library with support for tuples
  
  * cpl-stratego-0.4: choice point library from INRIA (Nancy) with
-   some modifications
+   some modifications (optional)
 
 MIGRATION
 
- * Might break existing code based on generic tuples (TCons/TNil)
- * XT needs to be updated
+ * Existing code based on generic tuples (TCons/TNil) should be
+   rewritten
 
 MORE INFORMATION
 
@@ -41,8 +41,9 @@ CONTRIBUTIONS
 
  * Bug reports by Martin Bravenboer (<++), Dick Kieburtz
    (configuration), Otto Skrove Bagge (mapping reverse)
-
  * Bug fixes: Eelco Dolstra & Eelco Visser (Sun/ATmap bug)
+ * Library contributions: connect.r (Hedzer Westra), getopt.r (Otto
+   Bagge), restore (Martin Bravenboer), 
 
 LANGUAGE
 
