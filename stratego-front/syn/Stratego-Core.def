@@ -7,6 +7,7 @@ exports
     "module" ModName Decl* 	-> Module {cons("Module")}
     "specification" Decl*	-> Module {cons("Specification")}
 
+  sorts Decl Def
   context-free syntax
     "imports" ModName* 		-> Decl {cons("Imports")}
     "strategies" Def* 		-> Decl {cons("Strategies")}
@@ -114,21 +115,24 @@ exports
 
 module Stratego-Core-Signatures
 exports
-
+  sorts Sdecl
   context-free syntax
     "sorts" Sort* 		-> Sdecl {cons("Sorts")}
     "constructors" Opdecl* 	-> Sdecl {cons("Constructors")}
 
+  sorts Sort
   context-free syntax
     LCID 			 -> Sort {cons("SortVar")}
     UCID 			 -> Sort {cons("SortNoArgs")}
     Id "(" {Sort ","}* ")" 	 -> Sort {cons("Sort")}
 
+  sorts Opdecl
   context-free syntax
     Id     ":" Type 		-> Opdecl {cons("OpDecl")}
     String ":" Type 		-> Opdecl {cons("OpDeclQ")}
            ":" Type 		-> Opdecl {cons("OpDeclInj")}
 
+  sorts Type
   context-free syntax
     Sort			-> Type {cons("ConstType")}
     {Type "*"}+ "->" Type 	-> Type {cons("FunType")}
@@ -156,6 +160,7 @@ exports
 
 module Stratego-Identifiers
 exports
+  sorts ModName
   lexical syntax
     [a-zA-Z\'\.\-\_] [a-zA-Z0-9\'\.\-\_]* -> ModName
   lexical restrictions
@@ -166,6 +171,8 @@ exports
     "rules" 		-> ModName {reject}
     "signature" 	-> ModName {reject}
     "strategies" 	-> ModName {reject}
+
+  sorts Id LId LCID UCID
   lexical syntax
     [a-zA-Z\'\-\_] [a-zA-Z0-9\'\-\_]*     -> Id
     [a-zA-Z\'\-\_] [a-zA-Z0-9\'\-\_]* "*" -> LId
@@ -177,6 +184,7 @@ exports
     LId  -/- [a-zA-Z0-9\'\-\_]
     LCID -/- [a-zA-Z0-9\'\-\_]
     UCID -/- [a-zA-Z0-9\'\-\_]
+
   lexical syntax
     "all" 		-> Id {reject}
     "constructors" 	-> Id {reject}
@@ -208,6 +216,7 @@ exports
 
 module Stratego-Core-Constants
 exports
+  sorts Int Real String StrChar
   lexical syntax
     [\-]? [0-9]+ 		-> Int
     [\-]? [0-9]+ [\.] [0-9]+ 	-> Real

@@ -1,20 +1,23 @@
 module Stratego-Core-Signatures
 exports
-
+  sorts Sdecl
   context-free syntax
     "sorts" Sort* 		-> Sdecl {cons("Sorts")}
     "constructors" Opdecl* 	-> Sdecl {cons("Constructors")}
 
+  sorts Sort
   context-free syntax
     LCID 			 -> Sort {cons("SortVar")}
     UCID 			 -> Sort {cons("SortNoArgs")}
     Id "(" {Sort ","}* ")" 	 -> Sort {cons("Sort")}
 
+  sorts Opdecl
   context-free syntax
     Id     ":" Type 		-> Opdecl {cons("OpDecl")}
     String ":" Type 		-> Opdecl {cons("OpDeclQ")}
            ":" Type 		-> Opdecl {cons("OpDeclInj")}
 
+  sorts Type
   context-free syntax
     Sort			-> Type {cons("ConstType")}
     {Type "*"}+ "->" Type 	-> Type {cons("FunType")}

@@ -56,8 +56,10 @@ signature
     Sorts          : List(Sort) -> Sdecl
                    : String -> UCID
                    : String -> LCID
+                   : String -> LId
                    : String -> Id
                    : String -> ModName
+                   : String -> StrChar
                    : String -> String
                    : String -> Real
                    : String -> Int

@@ -1,11 +1,18 @@
 module Stratego-Modules
-imports Stratego-Identifiers
+imports
+  Stratego-Identifiers
+  Stratego-Overlays
+  Stratego-Strategies
+  Stratego-Rules
+  Stratego-Signatures
+
 exports 
   sorts Module
   context-free syntax
     "module" ModName Decl* 	 -> Module {cons("Module")}
     "specification" Decl*	 -> Module {cons("Specification")}
 
+  sorts Decl Def
   context-free syntax
     "imports" ModName* 		-> Decl {cons("Imports")}
     "rules" Def* 		-> Decl {cons("Rules")}

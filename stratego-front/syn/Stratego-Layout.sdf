@@ -1,5 +1,6 @@
 module Stratego-Layout
 exports
+  sorts Ws ShortCom LongCom CommChar1 CommChar2 Asterisk1 Asterisk2
   lexical syntax
     [\t\ \n\r]		 -> Ws
 
@@ -19,6 +20,7 @@ exports
     Asterisk1 -/- [\/]
     Asterisk2 -/- [\)]
 
+  sorts VeryLongCom Eof VLCchar Backslash
   lexical syntax
     "\\end{code}" VLCchar* "\\begin{code}" -> VeryLongCom
     "\\begin{code}" 			   -> VeryLongCom

@@ -1,7 +1,17 @@
 definition
 module StrategoRenamed
 imports Stratego
-          [ Overlay        => StrategoOverlay
+          [ RuleDec        => StrategoRuleDec
+            DynRuleScopeId => StrategoDynRuleScopeId
+            DynRuleId      => StrategoDynRuleId
+            DynRuleDef     => StrategoDynRuleDef
+            Def            => StrategoDef
+            Decl           => StrategoDecl
+            Module         => StrategoModule
+            Overlay        => StrategoOverlay
+            ID             => StrategoID
+            LID            => StrategoLID
+            Var            => StrategoVar
             Mod            => StrategoMod
             StrategyCurly  => StrategoStrategyCurly
             StrategyMid    => StrategoStrategyMid
@@ -10,24 +20,14 @@ imports Stratego
             StrategyParen  => StrategoStrategyParen
             Typedid        => StrategoTypedid
             StrategyDef    => StrategoStrategyDef
-            RuleDec        => StrategoRuleDec
-            DynRuleScopeId => StrategoDynRuleScopeId
-            DynRuleId      => StrategoDynRuleId
-            DynRuleDef     => StrategoDynRuleDef
-            StratRule      => StrategoStratRule
-            Rule           => StrategoRule
-            RuleDef        => StrategoRuleDef
-            ID             => StrategoID
-            LID            => StrategoLID
-            Var            => StrategoVar
             Type           => StrategoType
             Opdecl         => StrategoOpdecl
             Kind           => StrategoKind
             Sort           => StrategoSort
             Sdecl          => StrategoSdecl
-            Def            => StrategoDef
-            Decl           => StrategoDecl
-            Module         => StrategoModule
+            StratRule      => StrategoStratRule
+            Rule           => StrategoRule
+            RuleDef        => StrategoRuleDef
             CharChar       => StrategoCharChar
             Char           => StrategoChar
             StrChar        => StrategoStrChar
@@ -55,15 +55,26 @@ imports Stratego
 
 
 module Stratego-Overlays
-exports
+imports
+  Stratego-Terms
+  Stratego-Identifiers
 
+exports
+  sorts Overlay
   context-free syntax
     Id 			 "=" Term 	-> Overlay {cons("OverlayNoArgs")}
     Id "(" {Id ","}* ")" "=" Term 	-> Overlay {cons("Overlay")}
 
 module Stratego-Strategies
+imports
+  Stratego-Terms
+  Stratego-Constants
+  Stratego-Rules
+  Stratego-Modules
+  Stratego-Signatures
+
 exports
-  sorts StrategyDef Strategy Typedid SVar 
+  sorts StrategyDef
 
   context-free syntax
     Id  		      "=" Strategy -> StrategyDef {cons("SDefNoArgs")}
@@ -79,10 +90,12 @@ exports
     Id "(" {Typedid ","}* 
        "|" {Typedid ","}* ")"		   -> StrategyDef {cons("ExtSDef")}
 
+  sorts Typedid
   context-free syntax
     ID 				  	  -> Typedid {cons("DefaultVarDec")}
     ID ":" Type 			  -> Typedid {cons("VarDec")}
 
+  sorts StrategyParen Strategy SVar StrategyMid StrategyCurly StrategyAngle Mod
   context-free syntax
     "(" Strategy ")"			  -> StrategyParen {cons("ParenStrat")}
 
@@ -214,11 +227,17 @@ exports
     }
 
 module Stratego-DynamicRules
+imports
+  Stratego-Identifiers
+  Stratego-Strategies
+  Stratego-Rules
+
 exports
   context-free syntax
 
     "{|" {DynRuleScopeId ","}* ":" Strategy "|}" -> Strategy {cons("DynRuleScope")}
 
+  sorts DynRuleDef DynRuleId DynRuleScopeId RuleDec
   context-free syntax
 
     "rules" "(" DynRuleDef* ")" -> Strategy {cons("GenDynRules")}
@@ -267,12 +286,14 @@ exports
     "extend" "override" "rules" "(" RuleDef* ")" -> Strategy {cons("ExtendOverrideDynamicRules")}
 
 module Stratego-Rules
+imports Stratego-Strategies
 exports
 
 %%  context-free syntax
 %%    Id 			      ":" (Rule | Stratrule) -> RuleDef {cons("RDefNoArgs")}
 %%    Id "(" {Typedid ","}* ")" ":" (Rule | Stratrule) -> RuleDef {cons("RDef")}
 
+  sorts RuleDef
   context-free syntax
     Id ":" Rule 				-> RuleDef {cons("RDefNoArgs")}
     Id "(" {Typedid ","}* ")" ":" Rule 		-> RuleDef {cons("RDef")}
@@ -285,16 +306,23 @@ exports
     Id "(" {Typedid ","}* 
        "|" {Typedid ","}*")" "::" StratRule 	-> RuleDef {cons("SRDefT")}
 
+  sorts Rule
   context-free syntax
     Term "->" Term 		    		-> Rule {cons("RuleNoCond")}
     Term "->" Term "where" Strategy 		-> Rule {cons("Rule")}
 
+  sorts StratRule
   context-free syntax
     Strategy "-->" Strategy 			-> StratRule {cons("StratRuleNoCond")}
     Strategy "-->" Strategy "where" Strategy 	-> StratRule {cons("StratRule")}
 
 module Stratego-Terms
+imports
+  Stratego-Identifiers
+  Stratego-Strategies
+
 exports
+  sorts ID LID Var
   context-free syntax
     Id 				-> Var  {cons("Var")}
     LId 			-> LID  {cons("ListVar")}
@@ -302,6 +330,8 @@ exports
     Id				-> ID
     LId				-> ID
 
+  sorts Term
+  context-free syntax
     Int 			 -> Term {cons("Int")}
     Real 			 -> Term {cons("Real")}
     String 			 -> Term {cons("Str")}
@@ -336,12 +366,18 @@ exports
   > Var "@" Term 		 -> Term {cons("As")}
 
 module Stratego-Signatures
+imports
+  Stratego-Identifiers
+  Stratego-Constants
+
 exports
 
+  sorts Sdecl
   context-free syntax
     "sorts" Sort* 		-> Sdecl {cons("Sorts")}
     "constructors" Opdecl* 	-> Sdecl {cons("Constructors")}
 
+  sorts Sort
   context-free syntax
     LCID 			 -> Sort {cons("SortVar")}
     UCID 			 -> Sort {cons("SortNoArgs")}
@@ -350,28 +386,38 @@ exports
     "[" {Sort ","}* "|" Sort "]" -> Sort {cons("SortListTl")}
     "(" {Sort ","}* ")"		 -> Sort {cons("SortTuple")}
 
+  sorts Kind
   context-free syntax
     "*" 			-> Kind {cons("Star")}
     "**" 			-> Kind {cons("StarStar")}
 
+  sorts Opdecl
   context-free syntax
     Id     ":" Type 		-> Opdecl {cons("OpDecl")}
     String ":" Type 		-> Opdecl {cons("OpDeclQ")}
            ":" Type 		-> Opdecl {cons("OpDeclInj")}
 
+  sorts Type
   context-free syntax
     Sort			-> Type {cons("ConstType")}
     {Type "*"}+ "->" Type 	-> Type {cons("FunType")}
     "(" Type ")" 		-> Type {bracket}
 
 module Stratego-Modules
-imports Stratego-Identifiers
+imports
+  Stratego-Identifiers
+  Stratego-Overlays
+  Stratego-Strategies
+  Stratego-Rules
+  Stratego-Signatures
+
 exports 
   sorts Module
   context-free syntax
     "module" ModName Decl* 	 -> Module {cons("Module")}
     "specification" Decl*	 -> Module {cons("Specification")}
 
+  sorts Decl Def
   context-free syntax
     "imports" ModName* 		-> Decl {cons("Imports")}
     "rules" Def* 		-> Decl {cons("Rules")}
@@ -384,7 +430,9 @@ exports
 
 
 module Stratego-Constants
+imports Stratego-Identifiers
 exports
+  sorts Int Real String StrChar Char CharChar
   lexical syntax
     [\-]? [0-9]+ 		-> Int
     [\-]? [0-9]+ [\.] [0-9]+ 	-> Real
@@ -398,6 +446,7 @@ exports
 
 module Stratego-Identifiers
 exports
+  sorts ModName
   lexical syntax
     [a-zA-Z\'\.\-\_] [a-zA-Z0-9\'\.\-\_]* -> ModName
   lexical restrictions
@@ -408,6 +457,8 @@ exports
     "rules" 		-> ModName {reject}
     "signature" 	-> ModName {reject}
     "strategies" 	-> ModName {reject}
+
+  sorts Id LId LCID UCID
   lexical syntax
     [a-zA-Z\'\-\_] [a-zA-Z0-9\'\-\_]*     -> Id
     [a-zA-Z\'\-\_] [a-zA-Z0-9\'\-\_]* "*" -> LId
@@ -419,6 +470,7 @@ exports
     LId  -/- [a-zA-Z0-9\'\-\_]
     LCID -/- [a-zA-Z0-9\'\-\_]
     UCID -/- [a-zA-Z0-9\'\-\_]
+
   lexical syntax
     "all" 		-> Id {reject}
     "constructors" 	-> Id {reject}
@@ -450,6 +502,7 @@ exports
 
 module Stratego-Layout
 exports
+  sorts Ws ShortCom LongCom CommChar1 CommChar2 Asterisk1 Asterisk2
   lexical syntax
     [\t\ \n\r]		 -> Ws
 
@@ -469,6 +522,7 @@ exports
     Asterisk1 -/- [\/]
     Asterisk2 -/- [\)]
 
+  sorts VeryLongCom Eof VLCchar Backslash
   lexical syntax
     "\\end{code}" VLCchar* "\\begin{code}" -> VeryLongCom
     "\\begin{code}" 			   -> VeryLongCom

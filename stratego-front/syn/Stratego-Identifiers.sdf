@@ -1,5 +1,6 @@
 module Stratego-Identifiers
 exports
+  sorts ModName
   lexical syntax
     [a-zA-Z\'\.\-\_] [a-zA-Z0-9\'\.\-\_]* -> ModName
   lexical restrictions
@@ -10,6 +11,8 @@ exports
     "rules" 		-> ModName {reject}
     "signature" 	-> ModName {reject}
     "strategies" 	-> ModName {reject}
+
+  sorts Id LId LCID UCID
   lexical syntax
     [a-zA-Z\'\-\_] [a-zA-Z0-9\'\-\_]*     -> Id
     [a-zA-Z\'\-\_] [a-zA-Z0-9\'\-\_]* "*" -> LId
@@ -21,6 +24,7 @@ exports
     LId  -/- [a-zA-Z0-9\'\-\_]
     LCID -/- [a-zA-Z0-9\'\-\_]
     UCID -/- [a-zA-Z0-9\'\-\_]
+
   lexical syntax
     "all" 		-> Id {reject}
     "constructors" 	-> Id {reject}

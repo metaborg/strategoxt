@@ -1,6 +1,13 @@
 module Stratego-Strategies
+imports
+  Stratego-Terms
+  Stratego-Constants
+  Stratego-Rules
+  Stratego-Modules
+  Stratego-Signatures
+
 exports
-  sorts StrategyDef Strategy Typedid SVar 
+  sorts StrategyDef
 
   context-free syntax
     Id  		      "=" Strategy -> StrategyDef {cons("SDefNoArgs")}
@@ -16,10 +23,12 @@ exports
     Id "(" {Typedid ","}* 
        "|" {Typedid ","}* ")"		   -> StrategyDef {cons("ExtSDef")}
 
+  sorts Typedid
   context-free syntax
     ID 				  	  -> Typedid {cons("DefaultVarDec")}
     ID ":" Type 			  -> Typedid {cons("VarDec")}
 
+  sorts StrategyParen Strategy SVar StrategyMid StrategyCurly StrategyAngle Mod
   context-free syntax
     "(" Strategy ")"			  -> StrategyParen {cons("ParenStrat")}
 

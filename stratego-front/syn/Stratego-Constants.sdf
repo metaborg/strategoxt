@@ -1,5 +1,7 @@
 module Stratego-Constants
+imports Stratego-Identifiers
 exports
+  sorts Int Real String StrChar Char CharChar
   lexical syntax
     [\-]? [0-9]+ 		-> Int
     [\-]? [0-9]+ [\.] [0-9]+ 	-> Real

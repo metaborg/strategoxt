@@ -1,5 +1,10 @@
 module Stratego-Terms
+imports
+  Stratego-Identifiers
+  Stratego-Strategies
+
 exports
+  sorts ID LID Var
   context-free syntax
     Id 				-> Var  {cons("Var")}
     LId 			-> LID  {cons("ListVar")}
@@ -7,6 +12,8 @@ exports
     Id				-> ID
     LId				-> ID
 
+  sorts Term
+  context-free syntax
     Int 			 -> Term {cons("Int")}
     Real 			 -> Term {cons("Real")}
     String 			 -> Term {cons("Str")}

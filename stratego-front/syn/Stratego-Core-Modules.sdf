@@ -6,6 +6,7 @@ exports
     "module" ModName Decl* 	-> Module {cons("Module")}
     "specification" Decl*	-> Module {cons("Specification")}
 
+  sorts Decl Def
   context-free syntax
     "imports" ModName* 		-> Decl {cons("Imports")}
     "strategies" Def* 		-> Decl {cons("Strategies")}

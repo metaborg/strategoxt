@@ -1,9 +1,15 @@
 module Stratego-DynamicRules
+imports
+  Stratego-Identifiers
+  Stratego-Strategies
+  Stratego-Rules
+
 exports
   context-free syntax
 
     "{|" {DynRuleScopeId ","}* ":" Strategy "|}" -> Strategy {cons("DynRuleScope")}
 
+  sorts DynRuleDef DynRuleId DynRuleScopeId RuleDec
   context-free syntax
 
     "rules" "(" DynRuleDef* ")" -> Strategy {cons("GenDynRules")}

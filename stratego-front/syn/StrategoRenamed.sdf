@@ -1,6 +1,16 @@
 module StrategoRenamed
 imports Stratego
-          [ Overlay        => StrategoOverlay
+          [ RuleDec        => StrategoRuleDec
+            DynRuleScopeId => StrategoDynRuleScopeId
+            DynRuleId      => StrategoDynRuleId
+            DynRuleDef     => StrategoDynRuleDef
+            Def            => StrategoDef
+            Decl           => StrategoDecl
+            Module         => StrategoModule
+            Overlay        => StrategoOverlay
+            ID             => StrategoID
+            LID            => StrategoLID
+            Var            => StrategoVar
             Mod            => StrategoMod
             StrategyCurly  => StrategoStrategyCurly
             StrategyMid    => StrategoStrategyMid
@@ -9,24 +19,14 @@ imports Stratego
             StrategyParen  => StrategoStrategyParen
             Typedid        => StrategoTypedid
             StrategyDef    => StrategoStrategyDef
-            RuleDec        => StrategoRuleDec
-            DynRuleScopeId => StrategoDynRuleScopeId
-            DynRuleId      => StrategoDynRuleId
-            DynRuleDef     => StrategoDynRuleDef
-            StratRule      => StrategoStratRule
-            Rule           => StrategoRule
-            RuleDef        => StrategoRuleDef
-            ID             => StrategoID
-            LID            => StrategoLID
-            Var            => StrategoVar
             Type           => StrategoType
             Opdecl         => StrategoOpdecl
             Kind           => StrategoKind
             Sort           => StrategoSort
             Sdecl          => StrategoSdecl
-            Def            => StrategoDef
-            Decl           => StrategoDecl
-            Module         => StrategoModule
+            StratRule      => StrategoStratRule
+            Rule           => StrategoRule
+            RuleDef        => StrategoRuleDef
             CharChar       => StrategoCharChar
             Char           => StrategoChar
             StrChar        => StrategoStrChar
