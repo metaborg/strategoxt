@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: asfix2abox.sh.src,v 1.1 2001/06/05 09:11:47 mdejonge Exp $
+# $Id: asfix2abox.sh.src,v 1.2 2001/06/08 07:56:31 mdejonge Exp $
 
 # usage:
 #   asfix2abox [-h] [-i asfix] [-o abox] [-p table_1] ... [-p table_n] [-v]
@@ -30,7 +30,7 @@
 #   -p table    Specifies a pretty-print table
 #   -v          Run verbosely.
 
-OREFIX=__PREFIX__
+PREFIX=__PREFIX__
 MAKE=__MAKE__
 
 # no core files
