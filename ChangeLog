@@ -1,3 +1,6 @@
+2004-03-29 Merijn de Jonge <mdejonge@cs.uu.nl>
+   * Created a branch of autobundle that supportd timed dependencies
+
 2004-03-05 Merijn de Jonge <mdejonge@cs.uu.nl>
    * autobundle/Makefile.am.templ: improved makefile templates such that
      packages _and_ documentation files gets installed/uninstalled
