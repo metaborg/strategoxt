@@ -13,7 +13,9 @@ short-description(p) = !["Usage: ", <p>(), " [options]"]
 
 long-description(p)  = ![ "This program generates an SDF syntax definition from a Feature Description\n",
                           "written in the Feature Description Language (FDL). Feature constraints\n",
-                          "are discarded."]
+                          "are discarded.\n\n",
+                          "The program takes as input a parsed and imploded feature description. It\n",
+                          "produces an AST of an SDF module as output."]
 
 
 Fdl2Sdf :
