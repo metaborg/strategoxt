@@ -3,9 +3,14 @@ imports xtc-lib options
 strategies
 
   pp-stratego =
-    option-wrap(io-options,
+    option-wrap(pp-stratego-options <+ io-options,
       xtc-io(
-	xtc-transform(!"parse-stratego")
+        (where(<get-config> "--abstract")
+	 <+ xtc-transform(!"parse-stratego"))
         ; xtc-transform(!"ast2text", !["-p", <xtc-find> "Stratego-pretty.pp"])
       )
     )
+
+  pp-stratego-options =
+    Option("-a" + "--abstract", where(<set-config>("--abstract", ())),
+              !"-a | --abstract  source is abstract syntax")

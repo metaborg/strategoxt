@@ -1,3 +1,16 @@
+2003-07-10  Eelco Visser  <visser@cs.uu.nl>
+
+	* Added module Stratego-Amb.sdf for productions that generate
+	abstract syntax, but which should not actually be used for
+	parsing because of ambiguities. In particular: Cong(x, [...])
+	which is actually parsed as a Call(x, [...]). The distinction
+	between actual calls and congruences is made in the front-end.
+
+2003-06-01  Eelco Visser  <visser@cs.uu.nl>
+
+	* parse/pp-stratego.str: Added abstract syntax interface to
+	pp-stratego.
+
 2003-05-28  Eelco Visser  <visser@cs.uu.nl>
 
 	* parse/stratego-desugar.str, syn/Stratego-Strategies.sdf: characters
