@@ -18,7 +18,7 @@ rules
 
   Desugar :
     SRDef(f, xs, r) -> RDef(f, xs, r)
-
+ 
   Desugar :
     SDefNoArgs(f, s) -> SDef(f, [], s)
 

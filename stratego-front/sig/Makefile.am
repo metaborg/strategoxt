@@ -15,7 +15,7 @@ PPSTRATEGO = $(top_srcdir)/pp/stratego.pp
 SDFTBL = $(SDF_TOOLS)/share/sdf-tools/sdf.cons.tbl
 
 %.def.asfix: $(top_srcdir)/syn/%.def $(SDFTBL)
-	$(SDF)/bin/sglr -2 -p $(SDFTBL) -i $< -o $@
+	$(SGLR)/bin/sglr -2 -p $(SDFTBL) -i $< -o $@
 
 %.def.af: %.def.asfix
 	$(ASFIX_TOOLS)/bin/implode-asfix -i $< -o $@
