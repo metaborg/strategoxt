@@ -15,31 +15,28 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-SCFLAGS = -I $(top_srcdir)/spec/sig \
-	  -I $(top_srcdir)/spec/front \
-	  -I $(top_srcdir)/spec/lib
+ATERM = @ATERM@
 
-SUBDIRS = data
+CC       	= gcc
+CFLAGS	 	= -Wall
+DEBUGFLAGS	= -g
+OPTFLAGS	= -O
+PROFFLAGS	= -pg
+INCLUDES 	= -I$(top_srcdir)/spec/rts \
+		  -I$(top_srcdir)/spec/slib/src \
+		  -I$(ATERM)/include \
+		  -I$(CPL)/include
 
-bin_SCRIPTS = si primitives stratego
+LDFLAGS		= -L$(ATERM)/lib 
+LDADD		= $(top_builddir)/spec/rts/libstratego.opt.a \
+		  $(top_builddir)/spec/slib/src/libstratego-lib.opt.a \
+		  -lATerm-gcc -lm
 
-CLEANFILES = si primitives eval-lib-primitives.tree
+%.dbg.o: %.c
+	$(CC) $(DEBUGFLAGS) $(CFLAGS) $(DEFS) $(INCLUDES) -c $< -o $@
 
-EXTRA_DIST = $(wildcard *.r)
+%.opt.o: %.c
+	$(CC) $(OPTFLAGS) $(CFLAGS) $(DEFS) $(INCLUDES) -c $< -o $@
 
-si : stratego-eval.r si.r eval-lib-primitives.tree
-
-primitives: primitives.r
-
-TESTS = stratego-eval-test
-
-eval-lib-primitives.tree: primitives
-	$(top_builddir)/spec/syn/pack-stratego -I $(srcdir)/../slib/spec -i lib \
-		-dep eval-lib-primitives \
-	| ./primitives > $@
-
-BOOTSOURCES = si.c primitives.c stratego.in stratego
-
-include $(srcdir)/../make-rules
-include $(wildcard *.dep)
-
+%.prof.o: %.c
+	$(CC) $(PROFFLAGS) $(CFLAGS) $(DEFS) $(INCLUDES) -c $< -o $@

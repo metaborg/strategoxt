@@ -1,0 +1,7 @@
+SC = $(STRATEGO)/bin/sc
+
+% : %.r
+	$(SC) $(SCFLAGS) -i $*
+
+%.dep:
+	touch $@

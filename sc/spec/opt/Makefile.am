@@ -37,5 +37,5 @@ dummy:
 	touch $@
 
 include $(srcdir)/../make-rules
-include fusion.dep
-include build-match-laws-test.dep
+include $(wildcard *.dep)
+

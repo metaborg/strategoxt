@@ -9,7 +9,6 @@ AC_ARG_WITH(aterm, [  --with-aterm            Location of external aterm package
 AC_OUTPUT(
 	Makefile 
 	README
-	pre-checks/Makefile 
 	emacs/Makefile
 )
 

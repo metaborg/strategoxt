@@ -34,5 +34,5 @@ dummy:
 	touch $@
 
 include $(srcdir)/../make-rules
-#include StratLibTest.dep
-include stratlib-test.dep
+include $(wildcard *.dep)
+

@@ -28,7 +28,7 @@ EXTRA_DIST = $(wildcard *.r) sc.src
 BOOTSOURCES = proto-sc.c sc.src
 
 include $(srcdir)/../make-rules
-include proto-sc.dep
+include $(wildcard *.dep)
 
 # Generate srcipts
 %: %.src Makefile

@@ -17,17 +17,19 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.2 2001/10/01 20:11:45 visser Exp $
+# $Id: Makefile.am,v 1.3 2001/10/26 16:31:56 stratego Exp $
 
-DIST_SUBDIRS = pre-checks emacs \
-               $(PKGS)
+#DIST_SUBDIRS = pre-checks emacs $(PKGS)
+
+DIST_SUBDIRS = emacs $(PKGS)
 
 EXTRA_DIST   = $(EXTRA_FILES)
 EXTRA_FILES  = README README.in reconf acinclude.m4
 
 # We need at least one subdir to be defined such that automake will generate
 # the code for traversing subdirectories
-SUBDIRS      = pre-checks
+SUBDIRS      = emacs
+#pre-checks
 
 all: install
 

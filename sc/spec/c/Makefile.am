@@ -36,5 +36,5 @@ BOOTSOURCES = canonicalize.c s2c.c ac2c.src
 	chmod +x $@                 
 
 include $(srcdir)/../make-rules
-include s2c.dep
-include canonicalize-test.dep
+
+include $(wildcard *.dep)

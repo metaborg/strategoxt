@@ -44,12 +44,6 @@ BOOTSOURCES = frontend.c extract.c extract-all.c inline.c rename-defs.c
 
 include $(srcdir)/../make-rules
 
-include frontend.dep
-include extract.dep
-include extract-all.dep
-include inline.dep
-include extract-test.dep
-include needed-defs-test.dep
-include frontend-test.dep
-include rename-defs.dep
+include $(wildcard *.dep)
+
 

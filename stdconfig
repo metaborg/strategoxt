@@ -1,0 +1,2 @@
+./reconf
+./configure --prefix=`pwd` --with-aterm=/home/xt/aterm

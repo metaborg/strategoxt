@@ -45,9 +45,5 @@ optimize2: compile-match.r
 	$(SC) $(SCFLAGS) -i $< --main optimize2-comp -o optimize2
 
 include $(srcdir)/../make-rules
-include optimize1.dep
-include optimize2.dep
-include compile-match.dep
-include matrix-test.dep
-#include match-to-matrix-test.dep
+include $(wildcard *.dep)
 

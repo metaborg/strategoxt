@@ -54,4 +54,4 @@ check2: pack-stratego
 	./pack-stratego -I $(STRATEGOLIB)/share/ssl -i syntax-test -o syntax-test.trm
 
 include $(srcdir)/../make-rules
-include pack-stratego.dep
+include $(wildcard *.dep)

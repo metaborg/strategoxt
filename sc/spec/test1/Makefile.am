@@ -37,4 +37,6 @@ EXTRA_DIST = $(wildcard *.r) make-rules io-test*.in
 
 include make-rules
 
+include $(wildcard *.dep)
+
 bootinstall:

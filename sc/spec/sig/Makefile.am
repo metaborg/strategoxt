@@ -30,6 +30,4 @@ BOOTSOURCES = \
 	Stratego-Optimized-Format.c
 
 include $(srcdir)/../make-rules
-include Stratego-Normal-Format.dep
-include Stratego-Optimized-Format.dep
-include Stratego-Canonical-Format.dep
+include $(wildcard *.dep)
