@@ -1,28 +1,12 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-autogensignatures =            \
-  Stratego-Amb.str             \
-  Stratego-Modules.str         \
-  Stratego.str                 \
-  Stratego-Constants.str       \
-  Stratego-Overlays.str	       \
-  Stratego-Strategies.str      \
-  Stratego-DynamicRules.str    \
-  Stratego-Rules.str           \
-  Stratego-Terms.str           \
-  Stratego-Identifiers.str     \
-  Stratego-Layout.str          \
-  Stratego-Signatures.str      \
-  Stratego-Core.str            \
-  Stratego-Core-Constants.str  \
-  Stratego-Core-Terms.str      \
-  Stratego-Core-Layout.str     \
-  Stratego-Core-Modules.str    \
-  Stratego-Core-Signatures.str \
-  Stratego-Core-Strategies.str
+autogensignatures = \
+  Stratego.str      \
+  Stratego-Amb.str  \
+  Stratego-Core.str
 
-staticsignatures =             \
+staticsignatures = \
   Stratego-MetaTransition.str
 
 signatures = $(autogensignatures) $(staticsignatures)
@@ -46,3 +30,7 @@ Stratego-Amb.def:
 	ln -s ../syn/Stratego-Amb.def .
 
 $(autogensignatures) : Stratego.def Stratego-Core.def Stratego-Amb.def
+
+%.str : %.def
+	$(STRATEGO_REGULAR)/bin/sdf2rtg -i $< -m $* | \
+	$(STRATEGO_REGULAR)/bin/rtg2sig -o $@
