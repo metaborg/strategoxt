@@ -7,8 +7,8 @@ signature
       Module : String -> Option
       Include: File -> Include
       Main:    String -> Option
-      Specification: list(Module) -> Specification
-      Imports: list(Module) -> Imports
+      Specification: List(Module) -> Specification
+      Imports: List(Module) -> Imports
 
 strategies
 conc-modules = parse-options( io-options

@@ -5,7 +5,7 @@ signature
    constructors
       Main:    String -> Option
 
-      Specification: list(Module) -> Specification
+      Specification: List(Module) -> Specification
       Strategies: a -> b
       SDef: a * b * c -> d
       Call: a * b -> c
