@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: README.in,v 1.5 2000/04/07 12:48:47 mdejonge Exp $
+# $Id: README.in,v 1.6 2000/04/07 13:45:00 jvisser Exp $
 
 -------------------------------------------------------------------------------
 
@@ -42,10 +42,21 @@
  - aterm	: a library for the representation of terms
  - gb 		: grammar base, a collection of SDF2 syntax definitions
  - gt		: grammar tools, a collection of tools for grammar engineering
- - pgen         : the SDF2 parseer generator
+ - pgen         : the SDF2 parser generator
  - sglr		: the scannerless, generalized-LR parser
  - stratego	: a language for specification of program transformation 
                   systems
+ - gpp		: generic pretty-printer, a collection of tools for 
+                  pretty-printing
+
+-------------------------------------------------------------------------------
+
+ DOCUMENTATION
+
+ Documentation for the XT distribution and the packages it bundles can be found
+ via the following site:
+
+   http://www.cwi.nl/~mdejonge/xt-wiki/
 
 -------------------------------------------------------------------------------
 
