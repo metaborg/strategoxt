@@ -614,6 +614,8 @@ exports
     "srt" [0-9\']* "*"    -> {Sort ","}*  {prefer}
     "srt" [xyz] [0-9\']*  -> UCID         {prefer}
 
+    "M"   [0-9\']*        -> ModName {prefer}
+
   variables
     "sc" [0-9\']*         -> DynRuleScopeId        {prefer}
     "sc" [0-9\']* "*"     -> {DynRuleScopeId ","}* {prefer}
