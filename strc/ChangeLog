@@ -1,3 +1,8 @@
+2004-04-06   Martin Bravenboer  <martin@cs.uu.nl>
+
+	* spec/pack/pack-stratego.str: (STR-43) pack-stratego now starts
+	searching for files to include at the first -I, not the last one.
+
 2004-03-22   Martin Bravenboer  <martin@cs.uu.nl>
 
 	* spec/front/spec-to-sdefs.str: more controlled application of

@@ -24,7 +24,7 @@ strategies
 
   pack-stratego-options =
       ArgOption("-I" + "--Include",        
-	where(<extend-config>("-I", ["-I", <id>])); !(),
+	where(<post-extend-config>("-I", ["-I", <id>])); !(),
 	!"-I d | --Include d   Include modules from directory d")
 
     + Option("--nodep" + "-nodep", 
