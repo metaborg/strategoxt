@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: runbm.r,v 1.1 2001/05/31 14:20:52 mdejonge Exp $
+% $Id: runbm.r,v 1.2 2001/06/08 09:41:55 mdejonge Exp $
 
  	usage
 
@@ -43,7 +43,7 @@ signature
 \begin{code}
 strategies
 
-  main = iowrapO(run, ArgOption("-st", \x -> StatTbl(x)\ ))
+  main = iowrap(run, ArgOption("-st", \x -> StatTbl(x)\ ))
 
 rules
 

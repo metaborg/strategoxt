@@ -22,7 +22,7 @@ signature
 strategies
 
   sdf-cons = 
-    iowrapO(sdf-cons
+    iowrap(sdf-cons
            ,Option("--modular",!Modular)
             + Option("--injections",!Injections)
            ,sdf-cons-usage)

@@ -1,3 +1,6 @@
+2001-06-08 Merijn de Jonge <mdejonge@cwi.nl> 
+   * Removed obsolete calls to iowrapO
+
 2001-06-07 Merijn de Jonge <mdejonge@cwi.nl> 
    * src/sdf: Imploded pretty-print tables are now again installed
    * src/lib/graph-terms.r: moved to graph-tools package
