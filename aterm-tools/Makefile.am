@@ -37,6 +37,9 @@ $(PACKAGE)-$(VERSION).pkg: package.conf
 	   echo "  info=$(info)" ;\
 	   echo "  description='$(description)'" ;\
 	   echo "  keywords=$(keywords)" ;\
+	   echo "" ;\
+           echo "interface" ;\
+           echo $(patsubst %",%\n", $(interface)) | sed 's/"//g;s/^ */  /g' ;\
            echo "requires" ;\
            echo $(patsubst %",%\n", $(requires)) | sed 's/"//g;s/^ */  /g' ;\
        ) > $@
