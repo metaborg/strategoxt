@@ -82,12 +82,11 @@ strategies
     Explode-EmptyAppl <+ Explode-NotEmptyAppl
 
   Explode-EmptyAppl :
-    s#([]){atts*} -> %>< ~n:s <@ <map(Explode-Attr)> atts* :: * @> /><%
+    s#([]) -> %>< ~n:s /><%
 
   Explode-NotEmptyAppl :
-    s#(children){atts*} ->
-      %>< ~n:s <@ !atts2 :: * @> ><% <flatten-list> children :: * %></ ~n:s ><%
-      where <filter(Explode-Attr)> atts* => atts2
+    s#(children) ->
+      %>< ~n:s ><% <flatten-list> children :: * %></ ~n:s ><%
 
   Explode-Attr :
     (s, v) -> @> ~n:s="<% <string2xml-attr-value> v %>" <@
@@ -144,10 +143,38 @@ rules
 strategies
 
   data2xml-doc-anno-wrap(x, s) =
-    ?_{anno*}
-    ; s
-    ; if ?Element(n, atts, content, n); ![anno*] => [_ | _]then
-        <map(!%><at:anno><% x %></at:anno><%)> [anno*]
-        ; !Element(n, atts, <conc> (<id>, content), n)
-      end
-    
+    let /**
+         * Recursive call to an annotation. This might result in a single element
+         * or a list, which is normalized by flatten-list and list construction.
+         */
+        anno-rec =
+          x
+          ; if is-list then
+              flatten-list
+            else
+              ![<id>]
+            end
+
+        /**
+         * Add the specified annos represented in XML to an XML element.
+         */
+        add-to-elem(|annos) =
+          add-to-nonempty-elem(|annos)
+          <+ add-to-empty-elem(|annos)
+
+        add-to-nonempty-elem(|annos) =
+          \ Element(n, atts, content, n) -> Element(n, atts, <conc> (anno-content, content), n) \
+
+        add-to-empty-elem(|annos) =
+          \ EmptyElement(n, atts) -> Element(n, atts, anno-content, n) \
+
+     in 
+        ?_{anno*}
+      ; s
+      ; if ![anno*] => [_ | _] then
+          where(
+            <map(!%><at:anno><% anno-rec :: * %></at:anno><%)> [anno*] => anno-content
+          )
+        ; add-to-elem(|anno-content)
+        end
+   end
