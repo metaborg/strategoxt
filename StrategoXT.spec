@@ -1,7 +1,7 @@
 Summary: The StrategoXT tools for constructing program transformation systems
 Name: StrategoXT
 Version: 0.9
-Release: 2
+Release: 3
 License: LGPL
 Group: Development/Languages/Stratego
 URL: http://www.stratego-language.org
