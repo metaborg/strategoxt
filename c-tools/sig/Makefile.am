@@ -21,6 +21,6 @@ BOOTCLEANFILES	= $(SIGS) $(P_SIGS) $(LANGUAGE).def $(wildcard *.rtree)
 CLEANFILES	= $(wildcard *.atree)
 
 $(LANGUAGE).str : $(LANGUAGE).def
-$(LANGUAGE).def : $(top_srcdir)/syn/$(LANGUAGE).def
-	cp $< $@
+$(LANGUAGE).def : 
+	cp $(top_srcdir)/syn/$(LANGUAGE).def $@
 
