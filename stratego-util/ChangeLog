@@ -1,14 +1,26 @@
-2004-02-22   Merijn de Jonge  <mdejonge@cs.uu.nl>
-   * Makefile.am: added autoxt.m4 to EXTRA_DIST
-   * Makefile.am: added line: ACLOCAL_AMFLAGS = -I . such that autoreconf
-     can find autoxt.m4
+2004-04-17  Shishir Ramam  <sramam@yahoo.com>
+	* vim/stratego.vim: Basic syntax highlighting for Stratego in the
+	vim editor is now available.
 
-2003-08-18 Arthur van Dam <adam@cs.uu.nl>
+	* vim/sdf.vim: Basic syntax highlighting for SDF in the
+	vim editor is now available.
 
-   * nedit/stratego.pats: Basic syntax highlighting for Stratego in the 'Nedit'
-     editor is now available.
+2004-02-22  Merijn de Jonge  <mdejonge@cs.uu.nl>
+	* Makefile.am: added autoxt.m4 to EXTRA_DIST
+	* Makefile.am: added line: ACLOCAL_AMFLAGS = -I . such that autoreconf
+	can find autoxt.m4
 
-2003-05-22 Martin Bravenboer <martin@mbravenboer.org>
+2003-12-04  Arthur van Dam  <adam@cs.uu.nl>
 
-   * Starting a ChangeLog
+	* nedit/SDF2.pats: Basic syntax highlighting for SDF2 in the 'Nedit'
+	editor is now available.
+
+2003-08-18  Arthur van Dam  <adam@cs.uu.nl>
+
+	* nedit/stratego.pats: Basic syntax highlighting for Stratego in the 'Nedit'
+	editor is now available.
+
+2003-05-22  Martin Bravenboer  <martin@mbravenboer.org>
+
+	* Starting a ChangeLog
 
