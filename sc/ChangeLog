@@ -1,5 +1,8 @@
 2001-11-22  Eelco Visser  <visser@acm.org>
 
+	* configure.in: undone: quoted $prefix with '' to include
+	literally.
+
 	* spec/front/desugar.r: Added Match-Project pattern support, i.e.,
 	an interpretation of <s> in match patterns.
 
