@@ -1,4 +1,10 @@
+2003-24-07  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+  * pp/ugly-print.str: fixed pretty printing of terms
+    with annotations.
+
 2003-06-11  Merijn de Jonge <m.de.jonge@tue.nl>
+
   * treeviz/treeviz.str: bug fix. Tool was compiled with incorrect main
     strategy.
 

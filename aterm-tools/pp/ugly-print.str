@@ -14,12 +14,12 @@ strategies
 	<+ UP-Cnst	
 	<+ UP-App(ugly-print)
 
-  ugly-print-with-anno =
-    ! |[
-        V vs=0 [ ~<ugly-print-without-anno>
-          H hs=1 ["{" ~<get-annotations; ugly-print> "}"]
-        ]
-      ]|
+  ugly-print-with-anno :
+    t -> |[  H hs=0 [  ~plain ~annos ] ]|
+      where <ugly-print-without-anno> t => plain
+          ; < get-annotations
+            ; pp-generic-list(ugly-print, !|[ "{}" ]|, !|[ "{" ]|, !|[ "}" ]|)
+            > t => annos
 
 rules // string & int
 
