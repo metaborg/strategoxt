@@ -192,6 +192,8 @@ strategies
    * returns the path otherwise.
    *
    * :: String * [AccessPermission] -> String
+   *
+   * @inc access
    */
   access =
     ?(path, permissions); prim("SSL_access", path, permissions)
@@ -233,6 +235,8 @@ strategies
    * fileno :: Stream -> FileDescr
    *    where Stream is currently a name or a pointer (integer)
    *    where FileDescr is currently an Int.
+   *
+   * @inc fileno
    */
   fileno = 
     ?Stream(stream); prim("SSL_fileno", stream)

@@ -87,9 +87,21 @@ strategies
 strategies
 
   // :: String -> Int
+ /**
+  * @inc hex-string-test
+  */
   hex-string-to-int = <generic-string-to-int> (<id>, 16)
+
+ /**
+  * @inc dec-string-test
+  */
   dec-string-to-int = <generic-string-to-int> (<id>, 10)
+
   oct-string-to-int = <generic-string-to-int> (<id>, 8)
+
+ /**
+  * @inc bin-string-test
+  */
   bin-string-to-int = <generic-string-to-int> (<id>, 2)
 
   // :: List(Char) -> Int

@@ -576,6 +576,9 @@ strategies
       )
     ; Fst
 
+ /**
+  * @inc strcmp
+  */
   strcmp = rec r(
        \([x|xs],[x|ys]) -> <r>(xs,ys)\
 	  <+ \([],[]) -> 0\

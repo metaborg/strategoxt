@@ -60,10 +60,16 @@ strategies
   tzip(s)  = 
     (TupleToList, TupleToList); zip(s)
 
+ /**
+  * @inc tuple-zip-test
+  */
   tuple-zip(s) = 
     rec x(![<tmap(Hd); s> | <tmap(Tl); x>]
           <+ tmap([]); ![])
 
+ /**
+  * @inc tuple-unzip-test
+  */
   tuple-unzip(s) =
     rec x(![<map(Thd); s> | <map(Ttl); x>] <+ map(()); ![])
   ; !"" #(<id>)
