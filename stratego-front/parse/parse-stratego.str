@@ -4,7 +4,7 @@ imports lib config verbose
 signature
   constructors
     Include : File -> Include
-
+ 
 signature
   constructors
     Meta    : List(MetaProperty) -> MetaData
@@ -46,6 +46,7 @@ strategies
       call-out(<get-config> "implode-asfix",    ![]; if-less-verbose1(!["-S"]), !fileout2,
       call-tmp(<get-config> "meta-explode",     !["--verbose", <verbosity; int-to-string>],
       call-out(<get-config> "stratego-desugar", !["--verbose", <verbosity; int-to-string>], !fileout, id))))
+    ; try(<get-config> "--keep" => 0; <rm-files> [fileout2])
 
   get-syntax = 
     if-verbose6(debug(!"get-syntax: "))

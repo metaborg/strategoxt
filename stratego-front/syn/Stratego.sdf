@@ -179,7 +179,7 @@ exports
     "[" {Term ","}* "|" Term "]" -> Term {cons("ListTail")}
     Term "#" "(" Term ")" 	 -> Term {cons("Explode")}
     StrategyAngle		 -> Term {cons("RootApp")}
-    Term "{" Term "}"		 -> Term {cons("Anno")}
+    Term "{" {Term ","}* "}"	 -> Term {cons("Anno")}
 
   context-free priorities
     Term "#" "(" Term ")" 	 -> Term {cons("Explode")}
@@ -239,6 +239,9 @@ exports
 
     "\\" Rule "\\" 			  -> Strategy {cons("LRule")}
 
+    Strategy StrategyCurly		  -> Strategy {cons("AnnoCong")}
+    "{" Strategy "}"		  	  -> StrategyCurly {cons("StrategyCurly")}
+
     Strategy ";" Strategy 		  -> Strategy {cons("Seq"),right}
 
     Strategy "+" Strategy 		  -> Strategy {cons("Choice"),right} 
@@ -261,7 +264,8 @@ exports
     "bagof" "(" Strategy ")" 		  -> Strategy {cons("Bagof")}
 
   context-free priorities
-    Strategy "#" StrategyParen	  	  -> Strategy {cons("ExplodeCong")}
+   {Strategy StrategyCurly		  -> Strategy {cons("AnnoCong")}
+    Strategy "#" StrategyParen	  	  -> Strategy {cons("ExplodeCong")}}
   >
     {"!" Term 				  -> Strategy {cons("Build")}
      "?" Term 				  -> Strategy {cons("Match")}

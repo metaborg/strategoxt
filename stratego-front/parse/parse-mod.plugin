@@ -1,4 +1,0 @@
-[ 
-  ("prefix",  Path("__prefix__")),
-  (Ext("cr"), Prefix(Var("prefix"), Path("/bin/parse-cmod")))
-]

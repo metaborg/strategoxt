@@ -57,7 +57,7 @@ signature
     ListTail : List(Term) * Term -> Term
     Explode : Term * Term -> Term
     RootApp : StrategyAngle -> Term
-    Anno : Term * Term -> Term
+    Anno : Term * List(Term) -> Term
 signature
   constructors
     Con1 : Term -> Context
@@ -96,6 +96,8 @@ signature
     AM : Strategy * Term -> Strategy
     ParenStrat : Strategy -> StrategyParen
     LRule : Rule -> Strategy
+    AnnoCong : Strategy * StrategyCurly -> Strategy
+    StrategyCurly : Strategy -> StrategyCurly
     Seq : Strategy * Strategy -> Strategy
     Choice : Strategy * Strategy -> Strategy
     LChoice : Strategy * Strategy -> Strategy

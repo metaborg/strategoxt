@@ -14,10 +14,15 @@ pkgdata_DATA = \
 	Stratego.pp.af Stratego-pretty.pp.af StrategoStratego.pp.af \
 	astratego2text.config 
 
+CLEANFILES += Stratego.pp StrategoStratego.pp \
+	Stratego.pp.af Stratego-pretty.pp.af StrategoStratego.pp.af \
+	astratego2text.config 
+
 #TESTS = 
 
 EXTRA_DIST = \
 	$(wildcard *.pp) \
+	$(wildcard *.pp.af) \
 	$(wildcard *.r) \
 	$(wildcard *.config.src) \
 	$(wildcard *.c) \

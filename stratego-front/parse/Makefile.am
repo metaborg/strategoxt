@@ -3,9 +3,11 @@ include $(wildcard *.dep)
 
 SCFLAGS 	= -I ../sig --main $* --C-include "\"conf.h\"" -CI "-I.."
 
-bin_PROGRAMS 	= meta-explode parse-cmod stratego-desugar parse-stratego 
+bin_PROGRAMS 	= meta-explode stratego-desugar parse-stratego 
+#parse-cmod
 
-pkgdata_DATA 	= parse-cmod.config parse-stratego.config
+pkgdata_DATA 	= parse-stratego.config
+#parse-cmod.config 
 
 plugindir 	= $(SC)/share/pack-stratego-plugins
 plugin_DATA	= parse-stratego.plugin

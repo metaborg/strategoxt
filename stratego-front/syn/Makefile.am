@@ -16,7 +16,7 @@ EXTRA_DIST = Stratego.def StrategoStratego.def \
 
 %.def: %.sdf $(wildcard *.sdf)
 	$(SDF_TOOLS)/bin/pack-sdf -I $(CGEN)/share/cgen -i $< -o $ $*.adef
-	asource -i $*.adef -o $@ 
+	$(ASFIX_TOOLS)/bin/asource -i $*.adef -o $@ 
 
 %.tbl: %.def
 	$(PGEN)/bin/sdf2table -i $< -o $@ -m $*

@@ -1,3 +1,7 @@
+2002-12-01  Eelco Visser  <visser@cs.uu.nl>
+
+	* syn/Stratego.sdf: Annotation congruences, list of terms as annotation
+
 2002-09-19  Eelco Visser  <visser@acm.org>
 
 	* syn/Stratego.sdf: Added sort ID as the combination of Id and LId

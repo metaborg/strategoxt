@@ -3,6 +3,8 @@ imports lib Stratego
 signature
   constructors
     Con : Var * Term * SVar   -> Term
+    TupleCong : List(Strategy) -> Strategy
+    TupleCong : Strategy
 strategies
  
   stratego-desugar = 
@@ -60,12 +62,15 @@ rules
 
   // Congruences
 
-//  Desugar :
-//    TupleCong([x]) -> x
+  Desugar :
+    TupleCong -> Call(SVar(""), [])
 
-//  Desugar :
-//    TupleCong(ts) -> Call(SVar(""), ts)
-//    where <not([id])> ts
+  Desugar :
+    TupleCong([x]) -> x
+
+  Desugar :
+    TupleCong(ts) -> Call(SVar(""), ts)
+    where <not([id])> ts
 
   Desugar :
     TupleCong(t,ts) -> Call(SVar(""), [t|ts])
