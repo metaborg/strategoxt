@@ -1,0 +1,56 @@
+module C-fold-strategy
+imports C C-TypeMatch
+
+strategies
+
+  fold-strategy(cond, transform, children) =
+    ( cond < id  + transform )
+    ; children
+
+strategies
+
+  to-TranslationUnit =
+    fold-strategy(is-C-TranslationUnit, T2-C-TranslationUnit,
+      TranslationUnit(to-List(to-TranslationUnitItem ))
+    )
+
+  to-TranslationUnitItem = 
+    fold-strategy(is-C-TranslationUnitItem, T2-C-TranslationUnitItem,
+        is-String
+      + Declaration2(id, to-List(to-IdentifierDeclarator))
+      /* first transfo replaced by id */
+    )
+
+strategies // Declarators
+
+  to-IdentifierDeclarator =
+    fold-strategy(is-C-IdentifierDeclarator, T2-C-IdentifierDeclarator,
+      IdDecl(id, to-Identifier, id)
+      // first and last transfo replaced by id */
+    )
+
+  to-Identifier = 
+    fold-strategy(is-C-Identifier, T2-C-Identifier,
+      Id(to-String)
+    )
+
+strategies // dummies
+
+  T2-C-TranslationUnitItem  = undefined
+  T2-C-TranslationUnit      = undefined
+  T2-C-Identifier           = undefined
+  T2-C-IdentifierDeclarator = undefined
+
+strategies // default
+
+  to-String =
+    fold-strategy(is-String, T2-String, id)
+
+  to-List(s) =
+    fold-strategy(is-list + ?Conc(_, _), T2-List, map(s) + Conc(to-List(s), to-List(s)))
+
+  T2-String     = undefined
+  T2-List       = undefined
+
+  undefined = fail
+  

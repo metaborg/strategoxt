@@ -10,6 +10,21 @@ strategies
     ; Specification([id, Strategies(map(mark-buv))])
     ; if-verbose4(say(!"marked bound-unbound-vars"))
 
+  mark-buv =
+    mark-match 
+    <+ mark-build
+    <+ mark-scope
+    <+ mark-let
+    <+ mark-traversal
+    <+ mark-sdef 
+    <+ mark-call
+    <+ mark-prim
+    <+ mark-rec
+    <+ mark-choice(mark-buv)
+    <+ mark-lchoice(mark-buv)
+    <+ mark-guardedlchoice(mark-buv)
+    <+ all(mark-buv)
+
   mark-scope =
     ? Scope(xs, _)
     ; where(!"unbound" => anno)
@@ -27,20 +42,6 @@ strategies
              ; where({x:?Var(x); override rules(MarkVar : Var(x) -> Var(x){anno})})
            )> t => t'
 
-  mark-buv =
-    mark-match 
-    <+ mark-build
-    <+ mark-scope
-    <+ mark-let
-    <+ mark-traversal
-    <+ mark-sdef 
-    <+ mark-call
-    <+ mark-prim
-    <+ mark-rec
-    <+ mark-choice(mark-buv)
-    <+ mark-lchoice(mark-buv)
-    <+ mark-guardedlchoice(mark-buv)
-    <+ all(mark-buv)
 
   mark-build = 
     Build(alltd(MarkVar))

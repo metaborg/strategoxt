@@ -137,7 +137,7 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 	../opt/lift-definitions -i $< -o $@ -b
 
 %.s13 : %.s12.lift ../c/bound-unbound-vars$(EXE)
-	../c/bound-unbound-vars -i $< -o $@ -b
+	time ../c/bound-unbound-vars -i $< -o $@ -b
 
 
 %.s13.check : %.s13 ../sig/Stratego-Canonical-Format$(EXE)

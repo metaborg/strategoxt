@@ -236,8 +236,6 @@ strategies
       ; save-as1(!".can")
       ; olevel1(lift-definitions)
       ; save-as1(!".opt9")
-      ; olevel1(lift-definitions)
-      ; save-as1(!".opt10")
       ; olevel3(bound-unbound-vars)
       ; stratego-cf
       ; s2c

@@ -1,3 +1,11 @@
+2003-08-05  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/opt/lift-definitions.str: Declare _id and _fail as top-level
+	definitions. Also declare definitions that are being lifted as
+	top-level defintinions such that definitions using them can be
+	lifted as well. Now only definitions really using local variables
+	are not lifted.
+
 2003-08-04  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/opt/fusion.str: Use new syntax for calls f(s|) even if no term

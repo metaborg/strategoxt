@@ -6,7 +6,14 @@ strategies
     iowrap(lift-definitions)
 
   lift-definitions =
-    Specification([id,Strategies(map(DeclareTopLevel); map(lift-sdefs); concat)])
+    declare-standard-strategies
+    ; Specification([id,Strategies(map(DeclareTopLevel); map(lift-sdefs); concat)])
+
+  declare-standard-strategies =
+    where(
+      <map({?f; rules(TopLevel : f -> ())})> 
+      ["_id", "_fail"]
+    )
 
   DeclareTopLevel =
     ?SDefT(f, xs, ys, s)
@@ -19,10 +26,13 @@ strategies
   LiftFromLet :
     Let(defs, s) -> <simplify> (Let(defs2, s), defs1)
     where <partition(SuperCombinator)> defs => (defs1, defs2)
+	; <map(DeclareTopLevel)> defs1
 
   SuperCombinator =
     ?def@SDefT(f, xs, ys, s)
     ; where(
-        <tvars> def => []
-        ; <svars; filter(not(TopLevel))> def => []
+ 	<debug(!"SuperCombinator? ")> f
+        ; <tvars; debug(!"  tvars: ")> def => []
+        ; <svars; filter(not(TopLevel)); debug(!"  svars: ")> def => []
+ 	; <debug(!"  SuperCombinator: ")> f
       )

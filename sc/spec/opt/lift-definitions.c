@@ -309,143 +309,155 @@ void __UnboundVarError (char * var)
 {
   fprintf(stderr, "** compiler error: variable '%s' should be bound\nnotify stratego-bugs@cs.uu.nl\n", var);
 }
-ATerm term_r_37;
-ATerm term_e_37;
-ATerm term_d_37;
-ATerm term_k_36;
-ATerm term_g_35;
-ATerm term_d_35;
+ATerm term_l_38;
+ATerm term_q_37;
+ATerm term_m_37;
+ATerm term_g_37;
+ATerm term_t_35;
+ATerm term_s_35;
+ATerm term_l_35;
 ATerm term_r_34;
-ATerm term_o_34;
-ATerm term_n_34;
-ATerm term_m_34;
-ATerm term_u_33;
-ATerm term_t_33;
-ATerm term_j_33;
-ATerm term_f_32;
-ATerm term_l_31;
-ATerm term_e_30;
-ATerm term_d_30;
-ATerm term_c_30;
-ATerm term_y_29;
+ATerm term_q_34;
+ATerm term_d_34;
+ATerm term_c_34;
+ATerm term_x_33;
+ATerm term_w_33;
+ATerm term_g_32;
+ATerm term_v_31;
+ATerm term_r_30;
+ATerm term_q_30;
+ATerm term_p_30;
+ATerm term_o_30;
+ATerm term_w_29;
+ATerm term_q_29;
+ATerm term_p_29;
+ATerm term_o_29;
+ATerm term_g_29;
+ATerm term_f_29;
 ATerm term_e_29;
+ATerm term_d_29;
+ATerm term_b_29;
+ATerm term_a_29;
 ATerm term_z_28;
 ATerm term_y_28;
-ATerm term_x_28;
-ATerm term_w_28;
-ATerm term_u_28;
-ATerm term_t_28;
-ATerm term_q_28;
-ATerm term_n_28;
-ATerm term_m_28;
-ATerm term_i_28;
-ATerm term_h_28;
-ATerm term_b_27;
-ATerm term_h_26;
-ATerm term_e_26;
-ATerm term_d_26;
-ATerm term_b_26;
-ATerm term_a_26;
-ATerm term_l_22;
-ATerm term_x_12;
-ATerm term_k_12;
-ATerm term_j_12;
-ATerm term_i_12;
-ATerm term_h_12;
-ATerm term_l_9;
+ATerm term_s_27;
+ATerm term_a_27;
+ATerm term_t_26;
+ATerm term_r_26;
+ATerm term_p_26;
+ATerm term_o_26;
+ATerm term_n_26;
+ATerm term_v_24;
+ATerm term_t_24;
+ATerm term_f_24;
+ATerm term_y_22;
+ATerm term_e_13;
+ATerm term_b_13;
+ATerm term_p_12;
+ATerm term_o_12;
+ATerm term_n_12;
+ATerm term_s_9;
 ATerm term_m_8;
 void init_constant_terms (void)
 {
   ATprotect(&(term_m_8));
   term_m_8 = (ATerm) ATmakeAppl(sym__0);
-  ATprotect(&(term_l_9));
-  term_l_9 = (ATerm) ATmakeAppl(sym_Fail_0);
-  ATprotect(&(term_h_12));
-  term_h_12 = (ATerm) ATmakeAppl(sym_Id_0);
-  ATprotect(&(term_i_12));
-  term_i_12 = (ATerm) ATmakeAppl(ATmakeSymbol("ATerm", 0, ATtrue));
-  ATprotect(&(term_j_12));
-  term_j_12 = (ATerm) ATmakeAppl(sym_Op_2, term_i_12, (ATerm) ATempty);
-  ATprotect(&(term_k_12));
-  term_k_12 = (ATerm) ATmakeAppl(sym_ConstType_1, term_j_12);
-  ATprotect(&(term_x_12));
-  term_x_12 = (ATerm) ATmakeAppl(ATmakeSymbol("", 0, ATtrue));
-  ATprotect(&(term_l_22));
-  term_l_22 = (ATerm) ATmakeAppl(sym__2, (ATerm)ATempty, (ATerm) ATempty);
-  ATprotect(&(term_a_26));
-  term_a_26 = (ATerm) ATmakeAppl(ATmakeSymbol("b_0", 0, ATtrue));
-  ATprotect(&(term_b_26));
-  term_b_26 = (ATerm) ATmakeAppl(sym_Defined_1, term_a_26);
-  ATprotect(&(term_d_26));
-  term_d_26 = (ATerm) ATmakeAppl(ATmakeSymbol("TopLevel", 0, ATtrue));
-  ATprotect(&(term_e_26));
-  term_e_26 = (ATerm) ATmakeAppl(ATmakeSymbol("w", 0, ATtrue));
-  ATprotect(&(term_h_26));
-  term_h_26 = (ATerm) ATmakeAppl(sym_stdout_0);
-  ATprotect(&(term_b_27));
-  term_b_27 = (ATerm) ATmakeAppl(ATmakeSymbol("r", 0, ATtrue));
-  ATprotect(&(term_h_28));
-  term_h_28 = (ATerm) ATmakeInt(2);
-  ATprotect(&(term_i_28));
-  term_i_28 = (ATerm) ATmakeAppl(ATmakeSymbol("--keep i | -k i  Keep intermediates (default 0)", 0, ATtrue));
-  ATprotect(&(term_m_28));
-  term_m_28 = (ATerm) ATmakeInt(0);
-  ATprotect(&(term_n_28));
-  term_n_28 = (ATerm) ATmakeAppl(sym_Verbose_1, term_m_28);
-  ATprotect(&(term_q_28));
-  term_q_28 = (ATerm) ATmakeAppl(ATmakeSymbol("-S|--silent      Silent execution (same as --verbose 0)", 0, ATtrue));
-  ATprotect(&(term_t_28));
-  term_t_28 = (ATerm) ATmakeAppl(ATmakeSymbol("--verbose i      Verbosity level i (default 1)", 0, ATtrue));
-  ATprotect(&(term_u_28));
-  term_u_28 = (ATerm) ATmakeAppl(sym_Statistics_0);
-  ATprotect(&(term_w_28));
-  term_w_28 = (ATerm) ATmakeAppl(ATmakeSymbol("-s               Turn on statistics", 0, ATtrue));
-  ATprotect(&(term_x_28));
-  term_x_28 = (ATerm) ATmakeAppl(ATmakeSymbol("usage-table", 0, ATtrue));
+  ATprotect(&(term_s_9));
+  term_s_9 = (ATerm) ATmakeAppl(sym_Fail_0);
+  ATprotect(&(term_n_12));
+  term_n_12 = (ATerm) ATmakeAppl(ATmakeSymbol("ATerm", 0, ATtrue));
+  ATprotect(&(term_o_12));
+  term_o_12 = (ATerm) ATmakeAppl(sym_Op_2, term_n_12, (ATerm) ATempty);
+  ATprotect(&(term_p_12));
+  term_p_12 = (ATerm) ATmakeAppl(sym_ConstType_1, term_o_12);
+  ATprotect(&(term_b_13));
+  term_b_13 = (ATerm) ATmakeAppl(sym_Id_0);
+  ATprotect(&(term_e_13));
+  term_e_13 = (ATerm) ATmakeAppl(ATmakeSymbol("", 0, ATtrue));
+  ATprotect(&(term_y_22));
+  term_y_22 = (ATerm) ATmakeAppl(sym__2, (ATerm)ATempty, (ATerm) ATempty);
+  ATprotect(&(term_f_24));
+  term_f_24 = (ATerm) ATmakeAppl(ATmakeSymbol("TopLevel", 0, ATtrue));
+  ATprotect(&(term_t_24));
+  term_t_24 = (ATerm) ATmakeAppl(ATmakeSymbol("f_0", 0, ATtrue));
+  ATprotect(&(term_v_24));
+  term_v_24 = (ATerm) ATmakeAppl(sym_Defined_1, term_t_24);
+  ATprotect(&(term_n_26));
+  term_n_26 = (ATerm) ATmakeAppl(ATmakeSymbol("b_0", 0, ATtrue));
+  ATprotect(&(term_o_26));
+  term_o_26 = (ATerm) ATmakeAppl(sym_Defined_1, term_n_26);
+  ATprotect(&(term_p_26));
+  term_p_26 = (ATerm) ATmakeAppl(ATmakeSymbol("_id", 0, ATtrue));
+  ATprotect(&(term_r_26));
+  term_r_26 = (ATerm) ATmakeAppl(ATmakeSymbol("_fail", 0, ATtrue));
+  ATprotect(&(term_t_26));
+  term_t_26 = (ATerm) ATmakeAppl(ATmakeSymbol("w", 0, ATtrue));
+  ATprotect(&(term_a_27));
+  term_a_27 = (ATerm) ATmakeAppl(sym_stdout_0);
+  ATprotect(&(term_s_27));
+  term_s_27 = (ATerm) ATmakeAppl(ATmakeSymbol("r", 0, ATtrue));
   ATprotect(&(term_y_28));
-  term_y_28 = (ATerm) ATmakeAppl(ATmakeSymbol("usage", 0, ATtrue));
+  term_y_28 = (ATerm) ATmakeInt(2);
   ATprotect(&(term_z_28));
-  term_z_28 = (ATerm) ATmakeAppl(ATmakeSymbol("-o f|--output f  Write output to f", 0, ATtrue));
+  term_z_28 = (ATerm) ATmakeAppl(ATmakeSymbol("--keep i | -k i  Keep intermediates (default 0)", 0, ATtrue));
+  ATprotect(&(term_a_29));
+  term_a_29 = (ATerm) ATmakeInt(0);
+  ATprotect(&(term_b_29));
+  term_b_29 = (ATerm) ATmakeAppl(sym_Verbose_1, term_a_29);
+  ATprotect(&(term_d_29));
+  term_d_29 = (ATerm) ATmakeAppl(ATmakeSymbol("-S|--silent      Silent execution (same as --verbose 0)", 0, ATtrue));
   ATprotect(&(term_e_29));
-  term_e_29 = (ATerm) ATmakeAppl(ATmakeSymbol("-i f|--input f   Read input from f", 0, ATtrue));
-  ATprotect(&(term_y_29));
-  term_y_29 = (ATerm) ATmakeInt(1);
-  ATprotect(&(term_c_30));
-  term_c_30 = (ATerm) ATmakeAppl(sym_stderr_0);
-  ATprotect(&(term_d_30));
-  term_d_30 = (ATerm) ATmakeAppl(ATmakeSymbol(" (", 0, ATtrue));
-  ATprotect(&(term_e_30));
-  term_e_30 = (ATerm) ATmakeAppl(ATmakeSymbol(" secs)", 0, ATtrue));
-  ATprotect(&(term_l_31));
-  term_l_31 = (ATerm) ATmakeAppl(ATmakeSymbol("\nOptions:", 0, ATtrue));
-  ATprotect(&(term_f_32));
-  term_f_32 = (ATerm) ATmakeAppl(ATmakeSymbol("   ", 0, ATtrue));
-  ATprotect(&(term_j_33));
-  term_j_33 = (ATerm) ATmakeAppl(ATmakeSymbol("config", 0, ATtrue));
-  ATprotect(&(term_t_33));
-  term_t_33 = (ATerm) ATmakeAppl(ATmakeSymbol("--about", 0, ATtrue));
-  ATprotect(&(term_u_33));
-  term_u_33 = (ATerm) ATmakeAppl(sym__3, term_j_33, term_t_33, term_m_8);
-  ATprotect(&(term_m_34));
-  term_m_34 = (ATerm) ATmakeAppl(ATmakeSymbol("--about          Display information about this program", 0, ATtrue));
-  ATprotect(&(term_n_34));
-  term_n_34 = (ATerm) ATmakeAppl(sym_Version_0);
-  ATprotect(&(term_o_34));
-  term_o_34 = (ATerm) ATmakeAppl(ATmakeSymbol("--version        Same as --about", 0, ATtrue));
+  term_e_29 = (ATerm) ATmakeAppl(ATmakeSymbol("--verbose i      Verbosity level i (default 1)", 0, ATtrue));
+  ATprotect(&(term_f_29));
+  term_f_29 = (ATerm) ATmakeAppl(sym_Statistics_0);
+  ATprotect(&(term_g_29));
+  term_g_29 = (ATerm) ATmakeAppl(ATmakeSymbol("-s               Turn on statistics", 0, ATtrue));
+  ATprotect(&(term_o_29));
+  term_o_29 = (ATerm) ATmakeAppl(ATmakeSymbol("usage-table", 0, ATtrue));
+  ATprotect(&(term_p_29));
+  term_p_29 = (ATerm) ATmakeAppl(ATmakeSymbol("usage", 0, ATtrue));
+  ATprotect(&(term_q_29));
+  term_q_29 = (ATerm) ATmakeAppl(ATmakeSymbol("-o f|--output f  Write output to f", 0, ATtrue));
+  ATprotect(&(term_w_29));
+  term_w_29 = (ATerm) ATmakeAppl(ATmakeSymbol("-i f|--input f   Read input from f", 0, ATtrue));
+  ATprotect(&(term_o_30));
+  term_o_30 = (ATerm) ATmakeInt(1);
+  ATprotect(&(term_p_30));
+  term_p_30 = (ATerm) ATmakeAppl(sym_stderr_0);
+  ATprotect(&(term_q_30));
+  term_q_30 = (ATerm) ATmakeAppl(ATmakeSymbol(" (", 0, ATtrue));
+  ATprotect(&(term_r_30));
+  term_r_30 = (ATerm) ATmakeAppl(ATmakeSymbol(" secs)", 0, ATtrue));
+  ATprotect(&(term_v_31));
+  term_v_31 = (ATerm) ATmakeAppl(ATmakeSymbol("   ", 0, ATtrue));
+  ATprotect(&(term_g_32));
+  term_g_32 = (ATerm) ATmakeAppl(ATmakeSymbol("\nOptions:", 0, ATtrue));
+  ATprotect(&(term_w_33));
+  term_w_33 = (ATerm) ATmakeAppl(ATmakeSymbol("config", 0, ATtrue));
+  ATprotect(&(term_x_33));
+  term_x_33 = (ATerm) ATmakeAppl(ATmakeSymbol("--about", 0, ATtrue));
+  ATprotect(&(term_c_34));
+  term_c_34 = (ATerm) ATmakeAppl(sym__3, term_w_33, term_x_33, term_m_8);
+  ATprotect(&(term_d_34));
+  term_d_34 = (ATerm) ATmakeAppl(ATmakeSymbol("--about          Display information about this program", 0, ATtrue));
+  ATprotect(&(term_q_34));
+  term_q_34 = (ATerm) ATmakeAppl(sym_Version_0);
   ATprotect(&(term_r_34));
-  term_r_34 = (ATerm) ATmakeAppl(ATmakeSymbol("register-usage-info", 0, ATtrue));
-  ATprotect(&(term_d_35));
-  term_d_35 = (ATerm) ATmakeAppl(sym_Help_0);
-  ATprotect(&(term_g_35));
-  term_g_35 = (ATerm) ATmakeAppl(ATmakeSymbol("-h|-?|--help     Display usage information", 0, ATtrue));
-  ATprotect(&(term_k_36));
-  term_k_36 = (ATerm) ATmakeAppl(ATmakeSymbol("Invalid option: ", 0, ATtrue));
-  ATprotect(&(term_d_37));
-  term_d_37 = (ATerm) ATmakeAppl(sym_Binary_0);
-  ATprotect(&(term_e_37));
-  term_e_37 = (ATerm) ATmakeAppl(ATmakeSymbol("-b               Write binary output", 0, ATtrue));
-  ATprotect(&(term_r_37));
-  term_r_37 = (ATerm) ATmakeAppl(sym_stdin_0);
+  term_r_34 = (ATerm) ATmakeAppl(ATmakeSymbol("--version        Same as --about", 0, ATtrue));
+  ATprotect(&(term_l_35));
+  term_l_35 = (ATerm) ATmakeAppl(ATmakeSymbol("register-usage-info", 0, ATtrue));
+  ATprotect(&(term_s_35));
+  term_s_35 = (ATerm) ATmakeAppl(sym_Help_0);
+  ATprotect(&(term_t_35));
+  term_t_35 = (ATerm) ATmakeAppl(ATmakeSymbol("-h|-?|--help     Display usage information", 0, ATtrue));
+  ATprotect(&(term_g_37));
+  term_g_37 = (ATerm) ATmakeAppl(ATmakeSymbol("Invalid option: ", 0, ATtrue));
+  ATprotect(&(term_m_37));
+  term_m_37 = (ATerm) ATmakeAppl(sym_Binary_0);
+  ATprotect(&(term_q_37));
+  term_q_37 = (ATerm) ATmakeAppl(ATmakeSymbol("-b               Write binary output", 0, ATtrue));
+  ATprotect(&(term_l_38));
+  term_l_38 = (ATerm) ATmakeAppl(sym_stdin_0);
 }
 ATerm default_usage_0_0 (ATerm);
 ATerm TestSavesCurrentTerm_0_0 (ATerm);
@@ -453,98 +465,208 @@ ATerm new_0_0 (ATerm);
 ATerm WhereSavesCurrentTerm_0_0 (ATerm);
 ATerm FuseScope_0_0 (ATerm);
 ATerm BuildPrim_0_0 (ATerm);
+ATerm w_0 (ATerm);
+ATerm x_0 (ATerm);
+ATerm y_0 (ATerm);
+ATerm z_0 (ATerm);
 ATerm BuildMatchFusion_0_0 (ATerm);
 ATerm MisMatch_0_0 (ATerm);
+ATerm k_11 (ATerm g_9, ATerm r_9, ATerm y_9, ATerm);
 ATerm BuildMatch_0_0 (ATerm);
-ATerm oncetd_1_0 (ATerm z_114 (ATerm), ATerm);
+ATerm oncetd_1_0 (ATerm e_115 (ATerm), ATerm);
 ATerm LetHoist_0_0 (ATerm);
 ATerm Idempotency_0_0 (ATerm);
 ATerm AssociateR_0_0 (ATerm);
 ATerm map1_1_0 (ATerm n_0 (ATerm), ATerm);
+ATerm e_1 (ATerm);
+ATerm f_1 (ATerm);
+ATerm g_1 (ATerm);
+ATerm h_1 (ATerm);
+ATerm j_1 (ATerm);
+ATerm m_1 (ATerm);
 ATerm HL_0_0 (ATerm);
+ATerm o_1 (ATerm);
 ATerm ElimFail_0_0 (ATerm);
 ATerm ElimId_0_0 (ATerm);
 ATerm Simplify_0_0 (ATerm);
-ATerm repeat_1_0 (ATerm r_130 (ATerm), ATerm);
-ATerm downup_1_0 (ATerm x_113 (ATerm), ATerm);
-ATerm filter_1_0 (ATerm l_126 (ATerm), ATerm);
-ATerm Rec_2_0 (ATerm h_103 (ATerm), ATerm i_103 (ATerm), ATerm);
-ATerm SDef_3_0 (ATerm z_104 (ATerm), ATerm a_105 (ATerm), ATerm b_105 (ATerm), ATerm);
-ATerm Let_2_0 (ATerm k_102 (ATerm), ATerm l_102 (ATerm), ATerm);
-ATerm sboundin_3_0 (ATerm a_113 (ATerm), ATerm b_113 (ATerm), ATerm c_113 (ATerm), ATerm);
+ATerm repeat_1_0 (ATerm w_130 (ATerm), ATerm);
+ATerm downup_1_0 (ATerm c_114 (ATerm), ATerm);
+ATerm TopLevel_0_0 (ATerm);
+ATerm filter_1_0 (ATerm q_126 (ATerm), ATerm);
+ATerm Rec_2_0 (ATerm m_103 (ATerm), ATerm n_103 (ATerm), ATerm);
+ATerm SDef_3_0 (ATerm e_105 (ATerm), ATerm f_105 (ATerm), ATerm g_105 (ATerm), ATerm);
+ATerm Let_2_0 (ATerm p_102 (ATerm), ATerm q_102 (ATerm), ATerm);
+ATerm sboundin_3_0 (ATerm f_113 (ATerm), ATerm g_113 (ATerm), ATerm h_113 (ATerm), ATerm);
+ATerm v_1 (ATerm);
 ATerm Bind1_0_0 (ATerm);
-ATerm foldr_3_0 (ATerm y_124 (ATerm), ATerm z_124 (ATerm), ATerm a_125 (ATerm), ATerm);
-ATerm diff_1_0 (ATerm f_122 (ATerm), ATerm);
+ATerm foldr_3_0 (ATerm d_125 (ATerm), ATerm e_125 (ATerm), ATerm f_125 (ATerm), ATerm);
+ATerm diff_1_0 (ATerm k_122 (ATerm), ATerm);
+ATerm x_1 (ATerm);
+ATerm y_1 (ATerm);
+ATerm z_1 (ATerm);
 ATerm UfDecompose_0_0 (ATerm);
-ATerm while_not_2_0 (ATerm g_131 (ATerm), ATerm h_131 (ATerm), ATerm);
-ATerm for_3_0 (ATerm j_131 (ATerm), ATerm k_131 (ATerm), ATerm l_131 (ATerm), ATerm);
+ATerm while_not_2_0 (ATerm l_131 (ATerm), ATerm m_131 (ATerm), ATerm);
+ATerm for_3_0 (ATerm o_131 (ATerm), ATerm p_131 (ATerm), ATerm q_131 (ATerm), ATerm);
+ATerm b_2 (ATerm);
+ATerm f_2 (ATerm);
+ATerm i_2 (ATerm);
+ATerm j_2 (ATerm);
 ATerm diff_0_0 (ATerm);
-ATerm free_vars_3_0 (ATerm a_129 (ATerm), ATerm b_129 (ATerm), ATerm c_129 (ATerm (ATerm), ATerm (ATerm), ATerm (ATerm), ATerm), ATerm);
-ATerm DynamicRules_1_0 (ATerm r_101 (ATerm), ATerm);
-ATerm RDefT_4_0 (ATerm i_101 (ATerm), ATerm j_101 (ATerm), ATerm k_101 (ATerm), ATerm l_101 (ATerm), ATerm);
-ATerm SDefT_4_0 (ATerm c_105 (ATerm), ATerm d_105 (ATerm), ATerm e_105 (ATerm), ATerm f_105 (ATerm), ATerm);
-ATerm Scope_2_0 (ATerm u_102 (ATerm), ATerm v_102 (ATerm), ATerm);
-ATerm tboundin_3_0 (ATerm w_112 (ATerm), ATerm x_112 (ATerm), ATerm y_112 (ATerm), ATerm);
+ATerm o_2 (ATerm);
+ATerm p_2 (ATerm);
+ATerm s_2 (ATerm);
+ATerm t_2 (ATerm);
+ATerm v_2 (ATerm);
+ATerm r_2 (ATerm);
+ATerm u_2 (ATerm);
+ATerm free_vars_3_0 (ATerm f_129 (ATerm), ATerm g_129 (ATerm), ATerm h_129 (ATerm (ATerm), ATerm (ATerm), ATerm (ATerm), ATerm), ATerm);
+ATerm DynamicRules_1_0 (ATerm w_101 (ATerm), ATerm);
+ATerm RDefT_4_0 (ATerm n_101 (ATerm), ATerm o_101 (ATerm), ATerm p_101 (ATerm), ATerm q_101 (ATerm), ATerm);
+ATerm SDefT_4_0 (ATerm h_105 (ATerm), ATerm i_105 (ATerm), ATerm j_105 (ATerm), ATerm k_105 (ATerm), ATerm);
+ATerm Scope_2_0 (ATerm z_102 (ATerm), ATerm a_103 (ATerm), ATerm);
+ATerm tboundin_3_0 (ATerm b_113 (ATerm), ATerm c_113 (ATerm), ATerm d_113 (ATerm), ATerm);
+ATerm y_2 (ATerm);
+ATerm b_3 (ATerm);
+ATerm d_3 (ATerm);
+ATerm z_2 (ATerm);
 ATerm tvars_0_0 (ATerm);
+ATerm e_3 (ATerm);
+ATerm s_3 (ATerm);
+ATerm t_3 (ATerm);
+ATerm u_3 (ATerm);
+ATerm w_3 (ATerm);
+ATerm y_3 (ATerm);
+ATerm a_4 (ATerm);
+ATerm b_4 (ATerm);
+ATerm h_3 (ATerm);
+ATerm v_3 (ATerm);
 ATerm SuperCombinator_0_0 (ATerm);
-ATerm partition_1_0 (ATerm t_126 (ATerm), ATerm);
+ATerm partition_1_0 (ATerm y_126 (ATerm), ATerm);
+ATerm h_4 (ATerm);
+ATerm m_4 (ATerm);
+ATerm g_4 (ATerm);
+ATerm l_4 (ATerm);
 ATerm LiftFromLet_0_0 (ATerm);
-ATerm union_1_0 (ATerm j_122 (ATerm), ATerm);
-ATerm genzip_4_0 (ATerm h_118 (ATerm), ATerm i_118 (ATerm), ATerm j_118 (ATerm), ATerm k_118 (ATerm), ATerm);
-ATerm CollectSplit_2_0 (ATerm h_123 (ATerm), ATerm i_123 (ATerm), ATerm);
-ATerm collect_split_1_0 (ATerm e_124 (ATerm), ATerm);
+ATerm union_1_0 (ATerm p_122 (ATerm), ATerm);
+ATerm genzip_4_0 (ATerm m_118 (ATerm), ATerm n_118 (ATerm), ATerm o_118 (ATerm), ATerm p_118 (ATerm), ATerm);
+ATerm p_4 (ATerm);
+ATerm q_4 (ATerm);
+ATerm r_4 (ATerm);
+ATerm t_4 (ATerm);
+ATerm v_4 (ATerm);
+ATerm x_4 (ATerm);
+ATerm u_4 (ATerm);
+ATerm CollectSplit_2_0 (ATerm m_123 (ATerm), ATerm n_123 (ATerm), ATerm);
+ATerm collect_split_1_0 (ATerm j_124 (ATerm), ATerm);
 ATerm lift_sdefs_0_0 (ATerm);
-ATerm assert_1_0 (ATerm h_126 (ATerm), ATerm);
-ATerm Strategies_1_0 (ATerm c_98 (ATerm), ATerm);
-ATerm Specification_1_0 (ATerm h_98 (ATerm), ATerm);
+ATerm assert_1_0 (ATerm m_126 (ATerm), ATerm);
+ATerm Strategies_1_0 (ATerm h_98 (ATerm), ATerm);
+ATerm Specification_1_0 (ATerm m_98 (ATerm), ATerm);
+ATerm b_5 (ATerm);
+ATerm a_5 (ATerm);
+ATerm declare_standard_strategies_0_0 (ATerm);
+ATerm f_5 (ATerm);
+ATerm j_5 (ATerm);
+ATerm i_5 (ATerm);
 ATerm lift_definitions_0_0 (ATerm);
-ATerm _2_0 (ATerm j_93 (ATerm), ATerm k_93 (ATerm), ATerm);
-ATerm WriteToFile_1_0 (ATerm o_135 (ATerm), ATerm);
+ATerm _2_0 (ATerm o_93 (ATerm), ATerm p_93 (ATerm), ATerm);
+ATerm WriteToFile_1_0 (ATerm t_135 (ATerm), ATerm);
+ATerm q_5 (ATerm);
+ATerm r_5 (ATerm);
+ATerm u_5 (ATerm);
+ATerm n_5 (ATerm);
+ATerm p_5 (ATerm);
+ATerm t_5 (ATerm);
 ATerm output_file_0_0 (ATerm);
 ATerm dtime_0_0 (ATerm);
-ATerm apply_strategy_1_0 (ATerm q_138 (ATerm), ATerm);
+ATerm apply_strategy_1_0 (ATerm v_138 (ATerm), ATerm);
+ATerm d_36 (ATerm x_35, ATerm);
 ATerm fclose_0_0 (ATerm);
 ATerm stdin_stream_0_0 (ATerm);
 ATerm stdout_stream_0_0 (ATerm);
 ATerm stderr_stream_0_0 (ATerm);
+ATerm v_5 (ATerm);
+ATerm x_5 (ATerm);
 ATerm open_stream_0_0 (ATerm);
 ATerm ReadFromFile_0_0 (ATerm);
-ATerm fetch_1_0 (ATerm h_120 (ATerm), ATerm);
+ATerm fetch_1_0 (ATerm m_120 (ATerm), ATerm);
 ATerm concat_0_0 (ATerm);
-ATerm at_end_1_0 (ATerm n_120 (ATerm), ATerm);
+ATerm at_end_1_0 (ATerm s_120 (ATerm), ATerm);
+ATerm c_6 (ATerm);
+ATerm d_6 (ATerm);
 ATerm conc_strings_0_0 (ATerm);
+ATerm f_6 (ATerm);
 ATerm eval_config_0_0 (ATerm);
-ATerm if_verbose2_1_0 (ATerm s_136 (ATerm), ATerm);
+ATerm if_verbose2_1_0 (ATerm e_137 (ATerm), ATerm);
+ATerm i_6 (ATerm);
+ATerm j_6 (ATerm);
+ATerm k_6 (ATerm);
 ATerm keep_option_0_0 (ATerm);
+ATerm l_6 (ATerm);
+ATerm m_6 (ATerm);
+ATerm n_6 (ATerm);
+ATerm o_6 (ATerm);
+ATerm p_6 (ATerm);
+ATerm q_6 (ATerm);
+ATerm r_6 (ATerm);
+ATerm s_6 (ATerm);
+ATerm t_6 (ATerm);
 ATerm verbose_option_0_0 (ATerm);
 ATerm Option_3_0 (ATerm a_0 (ATerm), ATerm c_0 (ATerm), ATerm d_0 (ATerm), ATerm);
+ATerm u_6 (ATerm);
+ATerm v_6 (ATerm);
+ATerm z_6 (ATerm);
 ATerm output_option_0_0 (ATerm);
 ATerm table_push_0_0 (ATerm);
 ATerm ArgOption_3_0 (ATerm i_0 (ATerm), ATerm k_0 (ATerm), ATerm l_0 (ATerm), ATerm);
+ATerm a_7 (ATerm);
+ATerm b_7 (ATerm);
+ATerm c_7 (ATerm);
 ATerm input_option_0_0 (ATerm);
 ATerm report_failure_0_0 (ATerm);
 ATerm whoami_0_0 (ATerm);
-ATerm foldr_2_0 (ATerm w_124 (ATerm), ATerm x_124 (ATerm), ATerm);
+ATerm foldr_2_0 (ATerm b_125 (ATerm), ATerm c_125 (ATerm), ATerm);
 ATerm times_0_0 (ATerm);
+ATerm d_7 (ATerm);
+ATerm g_7 (ATerm);
 ATerm run_time_0_0 (ATerm);
 ATerm geq_0_0 (ATerm);
-ATerm if_verbose1_1_0 (ATerm r_136 (ATerm), ATerm);
+ATerm if_verbose1_1_0 (ATerm d_137 (ATerm), ATerm);
+ATerm h_7 (ATerm);
 ATerm report_run_time_0_0 (ATerm);
 ATerm report_success_0_0 (ATerm);
-ATerm need_help_1_0 (ATerm o_139 (ATerm), ATerm);
-ATerm map_1_0 (ATerm w_119 (ATerm), ATerm);
+ATerm need_help_1_0 (ATerm t_139 (ATerm), ATerm);
+ATerm map_1_0 (ATerm b_120 (ATerm), ATerm);
 ATerm reverse_acc_2_0 (ATerm e_0 (ATerm), ATerm g_0 (ATerm), ATerm);
-ATerm Program_1_0 (ATerm q_110 (ATerm), ATerm);
+ATerm Program_1_0 (ATerm v_110 (ATerm), ATerm);
+ATerm l_7 (ATerm);
+ATerm m_7 (ATerm);
 ATerm default_system_usage_0_0 (ATerm);
-ATerm Undefined_1_0 (ATerm r_110 (ATerm), ATerm);
+ATerm Undefined_1_0 (ATerm w_110 (ATerm), ATerm);
 ATerm echo_0_0 (ATerm);
 ATerm default_system_about_0_0 (ATerm);
+ATerm n_7 (ATerm);
+ATerm o_7 (ATerm);
+ATerm p_7 (ATerm);
+ATerm q_7 (ATerm);
+ATerm r_7 (ATerm);
+ATerm s_7 (ATerm);
 ATerm system_about_switch_0_0 (ATerm);
-ATerm Cons_2_0 (ATerm y_97 (ATerm), ATerm z_97 (ATerm), ATerm);
-ATerm parse_options_p__1_0 (ATerm r_141 (ATerm), ATerm);
-ATerm parse_options_1_0 (ATerm q_141 (ATerm), ATerm);
-ATerm option_wrap_4_0 (ATerm q_139 (ATerm), ATerm r_139 (ATerm), ATerm s_139 (ATerm), ATerm t_139 (ATerm), ATerm);
-ATerm iowrap_3_0 (ATerm z_138 (ATerm), ATerm a_139 (ATerm), ATerm b_139 (ATerm), ATerm);
+ATerm Cons_2_0 (ATerm d_98 (ATerm), ATerm e_98 (ATerm), ATerm);
+ATerm t_7 (ATerm);
+ATerm parse_options_p__1_0 (ATerm w_141 (ATerm), ATerm);
+ATerm w_7 (ATerm);
+ATerm x_7 (ATerm);
+ATerm y_7 (ATerm);
+ATerm z_7 (ATerm);
+ATerm parse_options_1_0 (ATerm v_141 (ATerm), ATerm);
+ATerm option_wrap_4_0 (ATerm v_139 (ATerm), ATerm w_139 (ATerm), ATerm x_139 (ATerm), ATerm y_139 (ATerm), ATerm);
+ATerm g_8 (ATerm);
+ATerm h_8 (ATerm);
+ATerm i_8 (ATerm);
+ATerm j_8 (ATerm);
+ATerm e_8 (ATerm);
+ATerm iowrap_3_0 (ATerm e_139 (ATerm), ATerm f_139 (ATerm), ATerm g_139 (ATerm), ATerm);
 ATerm main_0_0 (ATerm);
 ATerm main_0 (ATerm t)
 {
@@ -553,28 +675,28 @@ ATerm main_0 (ATerm t)
 }
 ATerm default_usage_0_0 (ATerm t)
 {
-  ATerm f_0 = NULL,h_0 = NULL;
-  f_0 = t;
+  ATerm h_0 = NULL,j_0 = NULL;
+  h_0 = t;
   t = term_m_8;
   t = whoami_0_0(t);
-  h_0 = t;
-  t = SSL_printnl((ATerm)ATmakeAppl(sym_stderr_0), (ATerm) ATinsert(ATinsert(ATinsert(ATempty, (ATerm) ATmakeAppl(ATmakeSymbol(" [-S] [-i file] [-o file] [-b] [-s] [--help|-h|-?]", 0, ATtrue))), h_0), (ATerm) ATmakeAppl(ATmakeSymbol("usage : ", 0, ATtrue))));
+  j_0 = t;
+  t = SSL_printnl((ATerm)ATmakeAppl(sym_stderr_0), (ATerm) ATinsert(ATinsert(ATinsert(ATempty, (ATerm) ATmakeAppl(ATmakeSymbol(" [-S] [-i file] [-o file] [-b] [-s] [--help|-h|-?]", 0, ATtrue))), j_0), (ATerm) ATmakeAppl(ATmakeSymbol("usage : ", 0, ATtrue))));
   t = SSL_exit((ATerm) ATmakeInt(1));
-  t = f_0;
+  t = h_0;
   return(t);
 }
 ATerm TestSavesCurrentTerm_0_0 (ATerm t)
 {
-  ATerm j_0 = NULL,m_0 = NULL;
+  ATerm m_0 = NULL,o_0 = NULL;
   if(match_cons(t, sym_Test_1))
     {
-      j_0 = ATgetArgument(t, 0);
+      m_0 = ATgetArgument(t, 0);
     }
   else
     _fail(t);
   t = new_0_0(t);
-  m_0 = t;
-  t = (ATerm) ATmakeAppl(sym_Scope_2, (ATerm)ATinsert(ATempty, m_0), (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Match_1, (ATerm) ATmakeAppl(sym_Var_1, m_0)), (ATerm) ATmakeAppl(sym_Seq_2, j_0, (ATerm) ATmakeAppl(sym_Build_1, (ATerm) ATmakeAppl(sym_Var_1, m_0)))));
+  o_0 = t;
+  t = (ATerm) ATmakeAppl(sym_Scope_2, (ATerm)ATinsert(ATempty, o_0), (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Match_1, (ATerm) ATmakeAppl(sym_Var_1, o_0)), (ATerm) ATmakeAppl(sym_Seq_2, m_0, (ATerm) ATmakeAppl(sym_Build_1, (ATerm) ATmakeAppl(sym_Var_1, o_0)))));
   return(t);
 }
 ATerm new_0_0 (ATerm t)
@@ -584,30 +706,30 @@ ATerm new_0_0 (ATerm t)
 }
 ATerm WhereSavesCurrentTerm_0_0 (ATerm t)
 {
-  ATerm o_0 = NULL,p_0 = NULL;
+  ATerm p_0 = NULL,q_0 = NULL;
   if(match_cons(t, sym_Where_1))
     {
-      o_0 = ATgetArgument(t, 0);
+      p_0 = ATgetArgument(t, 0);
     }
   else
     _fail(t);
   t = new_0_0(t);
-  p_0 = t;
-  t = (ATerm) ATmakeAppl(sym_Scope_2, (ATerm)ATinsert(ATempty, p_0), (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Match_1, (ATerm) ATmakeAppl(sym_Var_1, p_0)), (ATerm) ATmakeAppl(sym_Seq_2, o_0, (ATerm) ATmakeAppl(sym_Build_1, (ATerm) ATmakeAppl(sym_Var_1, p_0)))));
+  q_0 = t;
+  t = (ATerm) ATmakeAppl(sym_Scope_2, (ATerm)ATinsert(ATempty, q_0), (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Match_1, (ATerm) ATmakeAppl(sym_Var_1, q_0)), (ATerm) ATmakeAppl(sym_Seq_2, p_0, (ATerm) ATmakeAppl(sym_Build_1, (ATerm) ATmakeAppl(sym_Var_1, q_0)))));
   return(t);
 }
 ATerm FuseScope_0_0 (ATerm t)
 {
-  ATerm r_0 = NULL,s_0 = NULL,t_0 = NULL,u_0 = NULL;
+  ATerm s_0 = NULL,t_0 = NULL,u_0 = NULL,v_0 = NULL;
   if(match_cons(t, sym_Scope_2))
     {
-      r_0 = ATgetArgument(t, 0);
+      s_0 = ATgetArgument(t, 0);
       {
-        ATerm n_8 = ATgetArgument(t, 1);
-        if(match_cons(n_8, sym_Scope_2))
+        ATerm o_8 = ATgetArgument(t, 1);
+        if(match_cons(o_8, sym_Scope_2))
           {
-            s_0 = ATgetArgument(n_8, 0);
-            t_0 = ATgetArgument(n_8, 1);
+            t_0 = ATgetArgument(o_8, 0);
+            u_0 = ATgetArgument(o_8, 1);
           }
         else
           _fail(t);
@@ -615,7 +737,7 @@ ATerm FuseScope_0_0 (ATerm t)
     }
   else
     _fail(t);
-  t = (ATerm) ATmakeAppl(sym__2, r_0, s_0);
+  t = (ATerm) ATmakeAppl(sym__2, s_0, t_0);
   {
     ATerm p_8 = t;
     int q_8 = stack_ptr;
@@ -624,18 +746,18 @@ ATerm FuseScope_0_0 (ATerm t)
         if(match_cons(t, sym__2))
           {
             ATerm r_8 = ATgetArgument(t, 0);
-            ATerm s_8 = ATgetArgument(t, 1);
+            ATerm v_8 = ATgetArgument(t, 1);
           }
         else
           _fail(t);
-        t = r_0;
+        t = s_0;
         {
-          ATerm q_0 (ATerm t)
+          ATerm r_0 (ATerm t)
           {
-            t = s_0;
+            t = t_0;
             return(t);
           }
-          t = at_end_1_0(q_0, t);
+          t = at_end_1_0(r_0, t);
         }
         ;
         LocalPopChoice(q_8);
@@ -644,48 +766,48 @@ ATerm FuseScope_0_0 (ATerm t)
       {
         t = p_8;
         {
-          ATerm x_0 = NULL;
-          t = SSL_explode_term((ATerm) ATmakeAppl(sym__2, r_0, s_0));
+          ATerm b_1 = NULL;
+          t = SSL_explode_term((ATerm) ATmakeAppl(sym__2, s_0, t_0));
           if(match_cons(t, sym__2))
             {
-              ATerm t_8 = ATgetArgument(t, 0);
-              if((ATgetSymbol((ATermAppl) t_8) != ATmakeSymbol("", 0, ATtrue)))
+              ATerm w_8 = ATgetArgument(t, 0);
+              if((ATgetSymbol((ATermAppl) w_8) != ATmakeSymbol("", 0, ATtrue)))
                 _fail(t);
-              x_0 = ATgetArgument(t, 1);
+              b_1 = ATgetArgument(t, 1);
             }
           else
             _fail(t);
-          t = x_0;
+          t = b_1;
           t = concat_0_0(t);
         }
       }
-    u_0 = t;
-    t = (ATerm) ATmakeAppl(sym_Scope_2, u_0, t_0);
+    v_0 = t;
+    t = (ATerm) ATmakeAppl(sym_Scope_2, v_0, u_0);
   }
   return(t);
 }
 ATerm BuildPrim_0_0 (ATerm t)
 {
-  ATerm i_1 = NULL,k_1 = NULL,m_1 = NULL,p_1 = NULL,q_1 = NULL,r_1 = NULL,s_1 = NULL;
+  ATerm i_1 = NULL,k_1 = NULL,n_1 = NULL,q_1 = NULL,r_1 = NULL,s_1 = NULL,t_1 = NULL;
   if(match_cons(t, sym__2))
     {
-      m_1 = ATgetArgument(t, 0);
-      p_1 = ATgetArgument(t, 1);
+      n_1 = ATgetArgument(t, 0);
+      q_1 = ATgetArgument(t, 1);
     }
   else
     _fail(t);
-  t = m_1;
+  t = n_1;
   if(match_cons(t, sym_Build_1))
     {
-      ATerm u_8 = ATgetArgument(t, 0);
+      ATerm z_8 = ATgetArgument(t, 0);
     }
   else
     _fail(t);
-  t = p_1;
+  t = q_1;
   if(match_cons(t, sym_Where_1))
     {
-      q_1 = ATgetArgument(t, 0);
-      t = q_1;
+      r_1 = ATgetArgument(t, 0);
+      t = r_1;
       if(match_cons(t, sym_Prim_2))
         {
           i_1 = ATgetArgument(t, 0);
@@ -698,17 +820,17 @@ ATerm BuildPrim_0_0 (ATerm t)
     {
       if(match_cons(t, sym_Prim_2))
         {
-          q_1 = ATgetArgument(t, 0);
-          r_1 = ATgetArgument(t, 1);
-          t = (ATerm) ATmakeAppl(sym_Prim_2, q_1, r_1);
+          r_1 = ATgetArgument(t, 0);
+          s_1 = ATgetArgument(t, 1);
+          t = (ATerm) ATmakeAppl(sym_Prim_2, r_1, s_1);
         }
       else
         {
           if(match_cons(t, sym_PrimT_3))
             {
-              q_1 = ATgetArgument(t, 0);
-              r_1 = ATgetArgument(t, 1);
-              s_1 = ATgetArgument(t, 2);
+              r_1 = ATgetArgument(t, 0);
+              s_1 = ATgetArgument(t, 1);
+              t_1 = ATgetArgument(t, 2);
             }
           else
             _fail(t);
@@ -716,19 +838,92 @@ ATerm BuildPrim_0_0 (ATerm t)
     }
   return(t);
 }
-ATerm BuildMatchFusion_0_0 (ATerm t)
+ATerm w_0 (ATerm t)
 {
-  ATerm h_2 = NULL,m_2 = NULL,s_2 = NULL,t_2 = NULL;
   if(match_cons(t, sym__2))
     {
-      ATerm v_8 = ATgetArgument(t, 0);
-      if(match_cons(v_8, sym_Build_1))
+      ATerm a_9 = ATgetArgument(t, 0);
+      if(((ATgetType(a_9) != AT_LIST) || !(ATisEmpty(a_9))))
+        _fail(t);
+      {
+        ATerm b_9 = ATgetArgument(t, 1);
+        if(((ATgetType(b_9) != AT_LIST) || !(ATisEmpty(b_9))))
+          _fail(t);
+      }
+    }
+  else
+    _fail(t);
+  t = (ATerm) ATempty;
+  return(t);
+}
+ATerm x_0 (ATerm t)
+{
+  ATerm w_2 = NULL,x_2 = NULL,c_3 = NULL,g_3 = NULL;
+  if(match_cons(t, sym__2))
+    {
+      ATerm c_9 = ATgetArgument(t, 0);
+      if(((ATgetType(c_9) == AT_LIST) && !(ATisEmpty(c_9))))
         {
-          ATerm x_8 = ATgetArgument(v_8, 0);
-          if(match_cons(x_8, sym_Op_2))
+          w_2 = ATgetFirst((ATermList) c_9);
+          c_3 = (ATerm) ATgetNext((ATermList) c_9);
+        }
+      else
+        _fail(t);
+      {
+        ATerm d_9 = ATgetArgument(t, 1);
+        if(((ATgetType(d_9) == AT_LIST) && !(ATisEmpty(d_9))))
+          {
+            x_2 = ATgetFirst((ATermList) d_9);
+            g_3 = (ATerm) ATgetNext((ATermList) d_9);
+          }
+        else
+          _fail(t);
+      }
+    }
+  else
+    _fail(t);
+  t = (ATerm) ATmakeAppl(sym__2, (ATerm)ATmakeAppl(sym__2, w_2, x_2), (ATerm) ATmakeAppl(sym__2, c_3, g_3));
+  return(t);
+}
+ATerm y_0 (ATerm t)
+{
+  ATerm j_3 = NULL,k_3 = NULL;
+  if(match_cons(t, sym__2))
+    {
+      j_3 = ATgetArgument(t, 0);
+      k_3 = ATgetArgument(t, 1);
+    }
+  else
+    _fail(t);
+  t = (ATerm) ATinsert(CheckATermList(k_3), j_3);
+  return(t);
+}
+ATerm z_0 (ATerm t)
+{
+  ATerm m_3 = NULL,n_3 = NULL;
+  if(match_cons(t, sym__2))
+    {
+      m_3 = ATgetArgument(t, 0);
+      n_3 = ATgetArgument(t, 1);
+    }
+  else
+    _fail(t);
+  t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Build_1, m_3), (ATerm) ATmakeAppl(sym_Match_1, n_3));
+  return(t);
+}
+ATerm BuildMatchFusion_0_0 (ATerm t)
+{
+  ATerm g_2 = NULL,h_2 = NULL,m_2 = NULL,q_2 = NULL;
+  if(match_cons(t, sym__2))
+    {
+      ATerm e_9 = ATgetArgument(t, 0);
+      if(match_cons(e_9, sym_Build_1))
+        {
+          ATerm h_9 = ATgetArgument(e_9, 0);
+          if(match_cons(h_9, sym_Op_2))
             {
-              m_2 = ATgetArgument(x_8, 0);
-              h_2 = ATgetArgument(x_8, 1);
+              h_2 = ATgetArgument(h_9, 0);
+              g_2 = ATgetArgument(h_9, 1);
             }
           else
             _fail(t);
@@ -736,17 +931,17 @@ ATerm BuildMatchFusion_0_0 (ATerm t)
       else
         _fail(t);
       {
-        ATerm w_8 = ATgetArgument(t, 1);
-        if(match_cons(w_8, sym_Match_1))
+        ATerm f_9 = ATgetArgument(t, 1);
+        if(match_cons(f_9, sym_Match_1))
           {
-            ATerm y_8 = ATgetArgument(w_8, 0);
-            if(match_cons(y_8, sym_Op_2))
+            ATerm i_9 = ATgetArgument(f_9, 0);
+            if(match_cons(i_9, sym_Op_2))
               {
-                if((m_2 != ATgetArgument(y_8, 0)))
+                if((h_2 != ATgetArgument(i_9, 0)))
                   {
-                    _fail(ATgetArgument(y_8, 0));
+                    _fail(ATgetArgument(i_9, 0));
                   }
-                s_2 = ATgetArgument(y_8, 1);
+                m_2 = ATgetArgument(i_9, 1);
               }
             else
               _fail(t);
@@ -757,101 +952,26 @@ ATerm BuildMatchFusion_0_0 (ATerm t)
     }
   else
     _fail(t);
-  t = (ATerm) ATmakeAppl(sym__2, h_2, s_2);
-  {
-    ATerm v_0 (ATerm t)
-    {
-      if(match_cons(t, sym__2))
-        {
-          ATerm z_8 = ATgetArgument(t, 0);
-          if(((ATgetType(z_8) != AT_LIST) || !(ATisEmpty(z_8))))
-            _fail(t);
-          {
-            ATerm a_9 = ATgetArgument(t, 1);
-            if(((ATgetType(a_9) != AT_LIST) || !(ATisEmpty(a_9))))
-              _fail(t);
-          }
-        }
-      else
-        _fail(t);
-      t = (ATerm) ATempty;
-      return(t);
-    }
-    ATerm w_0 (ATerm t)
-    {
-      ATerm y_2 = NULL,c_3 = NULL,f_3 = NULL,g_3 = NULL;
-      if(match_cons(t, sym__2))
-        {
-          ATerm b_9 = ATgetArgument(t, 0);
-          if(((ATgetType(b_9) == AT_LIST) && !(ATisEmpty(b_9))))
-            {
-              y_2 = ATgetFirst((ATermList) b_9);
-              f_3 = (ATerm) ATgetNext((ATermList) b_9);
-            }
-          else
-            _fail(t);
-          {
-            ATerm c_9 = ATgetArgument(t, 1);
-            if(((ATgetType(c_9) == AT_LIST) && !(ATisEmpty(c_9))))
-              {
-                c_3 = ATgetFirst((ATermList) c_9);
-                g_3 = (ATerm) ATgetNext((ATermList) c_9);
-              }
-            else
-              _fail(t);
-          }
-        }
-      else
-        _fail(t);
-      t = (ATerm) ATmakeAppl(sym__2, (ATerm)ATmakeAppl(sym__2, y_2, c_3), (ATerm) ATmakeAppl(sym__2, f_3, g_3));
-      return(t);
-    }
-    ATerm y_0 (ATerm t)
-    {
-      ATerm i_3 = NULL,j_3 = NULL;
-      if(match_cons(t, sym__2))
-        {
-          i_3 = ATgetArgument(t, 0);
-          j_3 = ATgetArgument(t, 1);
-        }
-      else
-        _fail(t);
-      t = (ATerm) ATinsert(CheckATermList(j_3), i_3);
-      return(t);
-    }
-    ATerm z_0 (ATerm t)
-    {
-      ATerm k_3 = NULL,m_3 = NULL;
-      if(match_cons(t, sym__2))
-        {
-          k_3 = ATgetArgument(t, 0);
-          m_3 = ATgetArgument(t, 1);
-        }
-      else
-        _fail(t);
-      t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Build_1, k_3), (ATerm) ATmakeAppl(sym_Match_1, m_3));
-      return(t);
-    }
-    t = genzip_4_0(v_0, w_0, y_0, z_0, t);
-    t_2 = t;
-    t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Seqs_1, t_2), (ATerm) ATmakeAppl(sym_Build_1, (ATerm) ATmakeAppl(sym_Op_2, m_2, h_2)));
-  }
+  t = (ATerm) ATmakeAppl(sym__2, g_2, m_2);
+  t = genzip_4_0(w_0, x_0, y_0, z_0, t);
+  q_2 = t;
+  t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Seqs_1, q_2), (ATerm) ATmakeAppl(sym_Build_1, (ATerm) ATmakeAppl(sym_Op_2, h_2, g_2)));
   return(t);
 }
 ATerm MisMatch_0_0 (ATerm t)
 {
-  ATerm n_3 = NULL,p_3 = NULL;
+  ATerm o_3 = NULL,q_3 = NULL;
   if(match_cons(t, sym__2))
     {
-      ATerm d_9 = ATgetArgument(t, 0);
-      if(match_cons(d_9, sym_Build_1))
+      ATerm j_9 = ATgetArgument(t, 0);
+      if(match_cons(j_9, sym_Build_1))
         {
-          ATerm f_9 = ATgetArgument(d_9, 0);
-          if(match_cons(f_9, sym_Op_2))
+          ATerm l_9 = ATgetArgument(j_9, 0);
+          if(match_cons(l_9, sym_Op_2))
             {
-              n_3 = ATgetArgument(f_9, 0);
+              o_3 = ATgetArgument(l_9, 0);
               {
-                ATerm h_9 = ATgetArgument(f_9, 1);
+                ATerm m_9 = ATgetArgument(l_9, 1);
               }
             }
           else
@@ -860,15 +980,15 @@ ATerm MisMatch_0_0 (ATerm t)
       else
         _fail(t);
       {
-        ATerm e_9 = ATgetArgument(t, 1);
-        if(match_cons(e_9, sym_Match_1))
+        ATerm k_9 = ATgetArgument(t, 1);
+        if(match_cons(k_9, sym_Match_1))
           {
-            ATerm i_9 = ATgetArgument(e_9, 0);
-            if(match_cons(i_9, sym_Op_2))
+            ATerm n_9 = ATgetArgument(k_9, 0);
+            if(match_cons(n_9, sym_Op_2))
               {
-                p_3 = ATgetArgument(i_9, 0);
+                q_3 = ATgetArgument(n_9, 0);
                 {
-                  ATerm j_9 = ATgetArgument(i_9, 1);
+                  ATerm o_9 = ATgetArgument(n_9, 1);
                 }
               }
             else
@@ -880,16 +1000,16 @@ ATerm MisMatch_0_0 (ATerm t)
     }
   else
     _fail(t);
-  t = (ATerm) ATmakeAppl(sym__2, n_3, p_3);
+  t = (ATerm) ATmakeAppl(sym__2, o_3, q_3);
   {
-    ATerm k_9 = t;
+    ATerm q_9 = t;
     if((PushChoice() == 0))
       {
-        ATerm q_3 = NULL;
+        ATerm r_3 = NULL;
         if(match_cons(t, sym__2))
           {
-            q_3 = ATgetArgument(t, 0);
-            if((q_3 != ATgetArgument(t, 1)))
+            r_3 = ATgetArgument(t, 0);
+            if((r_3 != ATgetArgument(t, 1)))
               {
                 _fail(ATgetArgument(t, 1));
               }
@@ -901,310 +1021,310 @@ ATerm MisMatch_0_0 (ATerm t)
       }
     else
       {
-        t = k_9;
+        t = q_9;
       }
-    t = term_l_9;
+    t = term_s_9;
+  }
+  return(t);
+}
+ATerm k_11 (ATerm g_9, ATerm r_9, ATerm y_9, ATerm t)
+{
+  t = (ATerm) ATmakeAppl(sym__2, g_9, r_9);
+  {
+    ATerm t_9 = t;
+    int v_9 = stack_ptr;
+    if((PushChoice() == 0))
+      {
+        t = MisMatch_0_0(t);
+        ;
+        LocalPopChoice(v_9);
+      }
+    else
+      {
+        t = t_9;
+        {
+          ATerm w_9 = t;
+          int x_9 = stack_ptr;
+          if((PushChoice() == 0))
+            {
+              t = BuildMatchFusion_0_0(t);
+              ;
+              LocalPopChoice(x_9);
+            }
+          else
+            {
+              t = w_9;
+              {
+                ATerm a_10 = t;
+                int b_10 = stack_ptr;
+                if((PushChoice() == 0))
+                  {
+                    ATerm t_10 = NULL;
+                    if(match_cons(t, sym__2))
+                      {
+                        ATerm c_10 = ATgetArgument(t, 0);
+                        ATerm e_10 = ATgetArgument(t, 1);
+                      }
+                    else
+                      _fail(t);
+                    t = g_9;
+                    if(match_cons(t, sym_Build_1))
+                      {
+                        ATerm f_10 = ATgetArgument(t, 0);
+                      }
+                    else
+                      _fail(t);
+                    t = r_9;
+                    if(match_cons(t, sym_Build_1))
+                      {
+                        t_10 = ATgetArgument(t, 0);
+                      }
+                    else
+                      _fail(t);
+                    ;
+                    LocalPopChoice(b_10);
+                  }
+                else
+                  {
+                    t = a_10;
+                    {
+                      ATerm g_10 = t;
+                      int h_10 = stack_ptr;
+                      if((PushChoice() == 0))
+                        {
+                          t = BuildPrim_0_0(t);
+                          ;
+                          LocalPopChoice(h_10);
+                        }
+                      else
+                        {
+                          t = g_10;
+                          {
+                            ATerm x_10 = NULL,z_10 = NULL;
+                            if(match_cons(t, sym__2))
+                              {
+                                ATerm i_10 = ATgetArgument(t, 0);
+                                ATerm j_10 = ATgetArgument(t, 1);
+                              }
+                            else
+                              _fail(t);
+                            t = g_9;
+                            if(match_cons(t, sym_Match_1))
+                              {
+                                x_10 = ATgetArgument(t, 0);
+                                t = r_9;
+                                if(match_cons(t, sym_Match_1))
+                                  {
+                                    z_10 = ATgetArgument(t, 0);
+                                    t = z_10;
+                                    if((x_10 != t))
+                                      {
+                                        _fail(t);
+                                      }
+                                    t = (ATerm) ATmakeAppl(sym_Match_1, x_10);
+                                  }
+                                else
+                                  {
+                                    if(match_cons(t, sym_Build_1))
+                                      {
+                                        z_10 = ATgetArgument(t, 0);
+                                      }
+                                    else
+                                      _fail(t);
+                                    t = z_10;
+                                    if((x_10 != t))
+                                      {
+                                        _fail(t);
+                                      }
+                                    t = (ATerm) ATmakeAppl(sym_Match_1, x_10);
+                                  }
+                              }
+                            else
+                              {
+                                if(match_cons(t, sym_Build_1))
+                                  {
+                                    x_10 = ATgetArgument(t, 0);
+                                  }
+                                else
+                                  _fail(t);
+                                t = r_9;
+                                if(match_cons(t, sym_Match_1))
+                                  {
+                                    z_10 = ATgetArgument(t, 0);
+                                  }
+                                else
+                                  _fail(t);
+                                t = z_10;
+                                if((x_10 != t))
+                                  {
+                                    _fail(t);
+                                  }
+                                t = (ATerm) ATmakeAppl(sym_Build_1, x_10);
+                              }
+                          }
+                        }
+                    }
+                  }
+              }
+            }
+        }
+      }
   }
   return(t);
 }
 ATerm BuildMatch_0_0 (ATerm t)
 {
-  ATerm g_11 (ATerm t_9, ATerm a_10, ATerm j_10, ATerm t)
-  {
-    t = (ATerm) ATmakeAppl(sym__2, t_9, a_10);
-    {
-      ATerm m_9 = t;
-      int o_9 = stack_ptr;
-      if((PushChoice() == 0))
-        {
-          t = MisMatch_0_0(t);
-          ;
-          LocalPopChoice(o_9);
-        }
-      else
-        {
-          t = m_9;
-          {
-            ATerm p_9 = t;
-            int q_9 = stack_ptr;
-            if((PushChoice() == 0))
-              {
-                t = BuildMatchFusion_0_0(t);
-                ;
-                LocalPopChoice(q_9);
-              }
-            else
-              {
-                t = p_9;
-                {
-                  ATerm s_9 = t;
-                  int u_9 = stack_ptr;
-                  if((PushChoice() == 0))
-                    {
-                      ATerm q_10 = NULL;
-                      if(match_cons(t, sym__2))
-                        {
-                          ATerm w_9 = ATgetArgument(t, 0);
-                          ATerm x_9 = ATgetArgument(t, 1);
-                        }
-                      else
-                        _fail(t);
-                      t = t_9;
-                      if(match_cons(t, sym_Build_1))
-                        {
-                          ATerm y_9 = ATgetArgument(t, 0);
-                        }
-                      else
-                        _fail(t);
-                      t = a_10;
-                      if(match_cons(t, sym_Build_1))
-                        {
-                          q_10 = ATgetArgument(t, 0);
-                        }
-                      else
-                        _fail(t);
-                      ;
-                      LocalPopChoice(u_9);
-                    }
-                  else
-                    {
-                      t = s_9;
-                      {
-                        ATerm z_9 = t;
-                        int b_10 = stack_ptr;
-                        if((PushChoice() == 0))
-                          {
-                            t = BuildPrim_0_0(t);
-                            ;
-                            LocalPopChoice(b_10);
-                          }
-                        else
-                          {
-                            t = z_9;
-                            {
-                              ATerm u_10 = NULL,w_10 = NULL;
-                              if(match_cons(t, sym__2))
-                                {
-                                  ATerm c_10 = ATgetArgument(t, 0);
-                                  ATerm d_10 = ATgetArgument(t, 1);
-                                }
-                              else
-                                _fail(t);
-                              t = t_9;
-                              if(match_cons(t, sym_Match_1))
-                                {
-                                  u_10 = ATgetArgument(t, 0);
-                                  t = a_10;
-                                  if(match_cons(t, sym_Match_1))
-                                    {
-                                      w_10 = ATgetArgument(t, 0);
-                                      t = w_10;
-                                      if((u_10 != t))
-                                        {
-                                          _fail(t);
-                                        }
-                                      t = (ATerm) ATmakeAppl(sym_Match_1, u_10);
-                                    }
-                                  else
-                                    {
-                                      if(match_cons(t, sym_Build_1))
-                                        {
-                                          w_10 = ATgetArgument(t, 0);
-                                        }
-                                      else
-                                        _fail(t);
-                                      t = w_10;
-                                      if((u_10 != t))
-                                        {
-                                          _fail(t);
-                                        }
-                                      t = (ATerm) ATmakeAppl(sym_Match_1, u_10);
-                                    }
-                                }
-                              else
-                                {
-                                  if(match_cons(t, sym_Build_1))
-                                    {
-                                      u_10 = ATgetArgument(t, 0);
-                                    }
-                                  else
-                                    _fail(t);
-                                  t = a_10;
-                                  if(match_cons(t, sym_Match_1))
-                                    {
-                                      w_10 = ATgetArgument(t, 0);
-                                    }
-                                  else
-                                    _fail(t);
-                                  t = w_10;
-                                  if((u_10 != t))
-                                    {
-                                      _fail(t);
-                                    }
-                                  t = (ATerm) ATmakeAppl(sym_Build_1, u_10);
-                                }
-                            }
-                          }
-                      }
-                    }
-                }
-              }
-          }
-        }
-    }
-    return(t);
-  }
-  ATerm a_11 = NULL,b_11 = NULL,c_11 = NULL,d_11 = NULL,e_11 = NULL;
-  c_11 = t;
+  ATerm e_11 = NULL,f_11 = NULL,g_11 = NULL,h_11 = NULL,i_11 = NULL;
+  g_11 = t;
   if(match_cons(t, sym_Seq_2))
     {
-      d_11 = ATgetArgument(t, 0);
-      e_11 = ATgetArgument(t, 1);
+      h_11 = ATgetArgument(t, 0);
+      i_11 = ATgetArgument(t, 1);
     }
   else
     _fail(t);
-  t = e_11;
+  t = i_11;
   if(match_cons(t, sym_Seq_2))
     {
-      a_11 = ATgetArgument(t, 0);
-      b_11 = ATgetArgument(t, 1);
+      e_11 = ATgetArgument(t, 0);
+      f_11 = ATgetArgument(t, 1);
       {
-        ATerm e_10 = t;
-        int f_10 = stack_ptr;
+        ATerm k_10 = t;
+        int l_10 = stack_ptr;
         if((PushChoice() == 0))
           {
-            ATerm j_1 = NULL;
-            t = (ATerm) ATmakeAppl(sym__2, d_11, a_11);
+            ATerm l_1 = NULL;
+            t = (ATerm) ATmakeAppl(sym__2, h_11, e_11);
             {
-              ATerm g_10 = t;
-              int h_10 = stack_ptr;
+              ATerm m_10 = t;
+              int n_10 = stack_ptr;
               if((PushChoice() == 0))
                 {
                   t = MisMatch_0_0(t);
                   ;
-                  LocalPopChoice(h_10);
+                  LocalPopChoice(n_10);
                 }
               else
                 {
-                  t = g_10;
+                  t = m_10;
                   {
-                    ATerm i_10 = t;
-                    int k_10 = stack_ptr;
+                    ATerm o_10 = t;
+                    int p_10 = stack_ptr;
                     if((PushChoice() == 0))
                       {
                         t = BuildMatchFusion_0_0(t);
                         ;
-                        LocalPopChoice(k_10);
+                        LocalPopChoice(p_10);
                       }
                     else
                       {
-                        t = i_10;
+                        t = o_10;
                         {
-                          ATerm l_10 = t;
-                          int m_10 = stack_ptr;
+                          ATerm q_10 = t;
+                          int r_10 = stack_ptr;
                           if((PushChoice() == 0))
                             {
-                              ATerm a_2 = NULL;
+                              ATerm c_2 = NULL;
                               if(match_cons(t, sym__2))
                                 {
-                                  ATerm n_10 = ATgetArgument(t, 0);
-                                  ATerm o_10 = ATgetArgument(t, 1);
+                                  ATerm s_10 = ATgetArgument(t, 0);
+                                  ATerm u_10 = ATgetArgument(t, 1);
                                 }
                               else
                                 _fail(t);
-                              t = d_11;
+                              t = h_11;
                               if(match_cons(t, sym_Build_1))
                                 {
-                                  ATerm p_10 = ATgetArgument(t, 0);
+                                  ATerm v_10 = ATgetArgument(t, 0);
                                 }
                               else
                                 _fail(t);
-                              t = a_11;
+                              t = e_11;
                               if(match_cons(t, sym_Build_1))
                                 {
-                                  a_2 = ATgetArgument(t, 0);
+                                  c_2 = ATgetArgument(t, 0);
                                 }
                               else
                                 _fail(t);
                               ;
-                              LocalPopChoice(m_10);
+                              LocalPopChoice(r_10);
                             }
                           else
                             {
-                              t = l_10;
+                              t = q_10;
                               {
-                                ATerm r_10 = t;
-                                int s_10 = stack_ptr;
+                                ATerm w_10 = t;
+                                int y_10 = stack_ptr;
                                 if((PushChoice() == 0))
                                   {
                                     t = BuildPrim_0_0(t);
                                     ;
-                                    LocalPopChoice(s_10);
+                                    LocalPopChoice(y_10);
                                   }
                                 else
                                   {
-                                    t = r_10;
+                                    t = w_10;
                                     {
-                                      ATerm i_2 = NULL,k_2 = NULL;
+                                      ATerm k_2 = NULL,n_2 = NULL;
                                       if(match_cons(t, sym__2))
                                         {
-                                          ATerm t_10 = ATgetArgument(t, 0);
-                                          ATerm v_10 = ATgetArgument(t, 1);
+                                          ATerm a_11 = ATgetArgument(t, 0);
+                                          ATerm b_11 = ATgetArgument(t, 1);
                                         }
                                       else
                                         _fail(t);
-                                      t = d_11;
+                                      t = h_11;
                                       if(match_cons(t, sym_Match_1))
                                         {
-                                          i_2 = ATgetArgument(t, 0);
-                                          t = a_11;
+                                          k_2 = ATgetArgument(t, 0);
+                                          t = e_11;
                                           if(match_cons(t, sym_Match_1))
                                             {
-                                              k_2 = ATgetArgument(t, 0);
-                                              t = k_2;
-                                              if((i_2 != t))
+                                              n_2 = ATgetArgument(t, 0);
+                                              t = n_2;
+                                              if((k_2 != t))
                                                 {
                                                   _fail(t);
                                                 }
-                                              t = (ATerm) ATmakeAppl(sym_Match_1, i_2);
+                                              t = (ATerm) ATmakeAppl(sym_Match_1, k_2);
                                             }
                                           else
                                             {
                                               if(match_cons(t, sym_Build_1))
                                                 {
-                                                  k_2 = ATgetArgument(t, 0);
+                                                  n_2 = ATgetArgument(t, 0);
                                                 }
                                               else
                                                 _fail(t);
-                                              t = k_2;
-                                              if((i_2 != t))
+                                              t = n_2;
+                                              if((k_2 != t))
                                                 {
                                                   _fail(t);
                                                 }
-                                              t = (ATerm) ATmakeAppl(sym_Match_1, i_2);
+                                              t = (ATerm) ATmakeAppl(sym_Match_1, k_2);
                                             }
                                         }
                                       else
                                         {
                                           if(match_cons(t, sym_Build_1))
                                             {
-                                              i_2 = ATgetArgument(t, 0);
-                                            }
-                                          else
-                                            _fail(t);
-                                          t = a_11;
-                                          if(match_cons(t, sym_Match_1))
-                                            {
                                               k_2 = ATgetArgument(t, 0);
                                             }
                                           else
                                             _fail(t);
-                                          t = k_2;
-                                          if((i_2 != t))
+                                          t = e_11;
+                                          if(match_cons(t, sym_Match_1))
+                                            {
+                                              n_2 = ATgetArgument(t, 0);
+                                            }
+                                          else
+                                            _fail(t);
+                                          t = n_2;
+                                          if((k_2 != t))
                                             {
                                               _fail(t);
                                             }
-                                          t = (ATerm) ATmakeAppl(sym_Build_1, i_2);
+                                          t = (ATerm) ATmakeAppl(sym_Build_1, k_2);
                                         }
                                     }
                                   }
@@ -1214,103 +1334,103 @@ ATerm BuildMatch_0_0 (ATerm t)
                       }
                   }
                 }
-              j_1 = t;
-              t = (ATerm) ATmakeAppl(sym_Seq_2, j_1, b_11);
+              l_1 = t;
+              t = (ATerm) ATmakeAppl(sym_Seq_2, l_1, f_11);
             }
             ;
-            LocalPopChoice(f_10);
+            LocalPopChoice(l_10);
           }
         else
           {
-            t = e_10;
-            t = g_11(d_11, e_11, c_11, t);
+            t = k_10;
+            t = k_11(h_11, i_11, g_11, t);
           }
       }
     }
   else
     {
-      t = g_11(d_11, e_11, c_11, t);
+      t = k_11(h_11, i_11, g_11, t);
     }
   return(t);
 }
-ATerm oncetd_1_0 (ATerm z_114 (ATerm), ATerm t)
+ATerm oncetd_1_0 (ATerm e_115 (ATerm), ATerm t)
 {
-  ATerm h_11 (ATerm t)
+  ATerm l_11 (ATerm t)
   {
-    ATerm x_10 = t;
-    int y_10 = stack_ptr;
+    ATerm c_11 = t;
+    int d_11 = stack_ptr;
     if((PushChoice() == 0))
       {
-        t = z_114(t);
+        t = e_115(t);
         ;
-        LocalPopChoice(y_10);
+        LocalPopChoice(d_11);
       }
     else
       {
-        t = x_10;
-        t = SRTS_one(h_11, t);
+        t = c_11;
+        t = SRTS_one(l_11, t);
       }
     return(t);
   }
-  t = h_11(t);
+  t = l_11(t);
   return(t);
 }
 ATerm LetHoist_0_0 (ATerm t)
 {
-  ATerm i_11 = NULL,j_11 = NULL;
+  ATerm m_11 = NULL,n_11 = NULL;
   if(match_cons(t, sym_Let_2))
     {
-      ATerm z_10 = ATgetArgument(t, 0);
-      if(((ATgetType(z_10) == AT_LIST) && !(ATisEmpty(z_10))))
+      ATerm j_11 = ATgetArgument(t, 0);
+      if(((ATgetType(j_11) == AT_LIST) && !(ATisEmpty(j_11))))
         {
-          ATerm k_11 = ATgetFirst((ATermList) z_10);
-          if(match_cons(k_11, sym_SDefT_4))
+          ATerm p_11 = ATgetFirst((ATermList) j_11);
+          if(match_cons(p_11, sym_SDefT_4))
             {
-              j_11 = ATgetArgument(k_11, 0);
+              n_11 = ATgetArgument(p_11, 0);
               {
-                ATerm m_11 = ATgetArgument(k_11, 1);
-                if(((ATgetType(m_11) != AT_LIST) || !(ATisEmpty(m_11))))
+                ATerm r_11 = ATgetArgument(p_11, 1);
+                if(((ATgetType(r_11) != AT_LIST) || !(ATisEmpty(r_11))))
                   _fail(t);
               }
               {
-                ATerm n_11 = ATgetArgument(k_11, 2);
-                if(((ATgetType(n_11) != AT_LIST) || !(ATisEmpty(n_11))))
+                ATerm t_11 = ATgetArgument(p_11, 2);
+                if(((ATgetType(t_11) != AT_LIST) || !(ATisEmpty(t_11))))
                   _fail(t);
               }
-              i_11 = ATgetArgument(k_11, 3);
+              m_11 = ATgetArgument(p_11, 3);
             }
           else
             _fail(t);
           {
-            ATerm l_11 = (ATerm) ATgetNext((ATermList) z_10);
-            if(((ATgetType(l_11) != AT_LIST) || !(ATisEmpty(l_11))))
+            ATerm q_11 = (ATerm) ATgetNext((ATermList) j_11);
+            if(((ATgetType(q_11) != AT_LIST) || !(ATisEmpty(q_11))))
               _fail(t);
           }
         }
       else
         _fail(t);
       {
-        ATerm f_11 = ATgetArgument(t, 1);
-        if(match_cons(f_11, sym_CallT_3))
+        ATerm o_11 = ATgetArgument(t, 1);
+        if(match_cons(o_11, sym_CallT_3))
           {
-            ATerm o_11 = ATgetArgument(f_11, 0);
-            if(match_cons(o_11, sym_SVar_1))
+            ATerm u_11 = ATgetArgument(o_11, 0);
+            if(match_cons(u_11, sym_SVar_1))
               {
-                if((j_11 != ATgetArgument(o_11, 0)))
+                if((n_11 != ATgetArgument(u_11, 0)))
                   {
-                    _fail(ATgetArgument(o_11, 0));
+                    _fail(ATgetArgument(u_11, 0));
                   }
               }
             else
               _fail(t);
             {
-              ATerm p_11 = ATgetArgument(f_11, 1);
-              if(((ATgetType(p_11) != AT_LIST) || !(ATisEmpty(p_11))))
+              ATerm v_11 = ATgetArgument(o_11, 1);
+              if(((ATgetType(v_11) != AT_LIST) || !(ATisEmpty(v_11))))
                 _fail(t);
             }
             {
-              ATerm q_11 = ATgetArgument(f_11, 2);
-              if(((ATgetType(q_11) != AT_LIST) || !(ATisEmpty(q_11))))
+              ATerm c_12 = ATgetArgument(o_11, 2);
+              if(((ATgetType(c_12) != AT_LIST) || !(ATisEmpty(c_12))))
                 _fail(t);
             }
           }
@@ -1320,33 +1440,33 @@ ATerm LetHoist_0_0 (ATerm t)
     }
   else
     _fail(t);
-  t = i_11;
+  t = m_11;
   {
-    ATerm x_11 = t;
+    ATerm f_12 = t;
     if((PushChoice() == 0))
       {
         ATerm a_1 (ATerm t)
         {
           if(match_cons(t, sym_CallT_3))
             {
-              ATerm a_12 = ATgetArgument(t, 0);
-              if(match_cons(a_12, sym_SVar_1))
+              ATerm g_12 = ATgetArgument(t, 0);
+              if(match_cons(g_12, sym_SVar_1))
                 {
-                  if((j_11 != ATgetArgument(a_12, 0)))
+                  if((n_11 != ATgetArgument(g_12, 0)))
                     {
-                      _fail(ATgetArgument(a_12, 0));
+                      _fail(ATgetArgument(g_12, 0));
                     }
                 }
               else
                 _fail(t);
               {
-                ATerm b_12 = ATgetArgument(t, 1);
-                if(((ATgetType(b_12) != AT_LIST) || !(ATisEmpty(b_12))))
+                ATerm h_12 = ATgetArgument(t, 1);
+                if(((ATgetType(h_12) != AT_LIST) || !(ATisEmpty(h_12))))
                   _fail(t);
               }
               {
-                ATerm c_12 = ATgetArgument(t, 2);
-                if(((ATgetType(c_12) != AT_LIST) || !(ATisEmpty(c_12))))
+                ATerm i_12 = ATgetArgument(t, 2);
+                if(((ATgetType(i_12) != AT_LIST) || !(ATisEmpty(i_12))))
                   _fail(t);
               }
             }
@@ -1360,52 +1480,52 @@ ATerm LetHoist_0_0 (ATerm t)
       }
     else
       {
-        t = x_11;
+        t = f_12;
       }
-    t = i_11;
+    t = m_11;
   }
   return(t);
 }
 ATerm Idempotency_0_0 (ATerm t)
 {
-  ATerm r_11 = NULL,s_11 = NULL,t_11 = NULL,u_11 = NULL,v_11 = NULL,w_11 = NULL,y_11 = NULL,z_11 = NULL;
+  ATerm w_11 = NULL,x_11 = NULL,y_11 = NULL,z_11 = NULL,a_12 = NULL,b_12 = NULL,d_12 = NULL,e_12 = NULL;
   if(match_cons(t, sym_Where_1))
     {
-      y_11 = ATgetArgument(t, 0);
-      t = y_11;
+      d_12 = ATgetArgument(t, 0);
+      t = d_12;
       if(match_cons(t, sym_Seq_2))
         {
-          w_11 = ATgetArgument(t, 0);
-          s_11 = ATgetArgument(t, 1);
-          t = w_11;
+          b_12 = ATgetArgument(t, 0);
+          x_11 = ATgetArgument(t, 1);
+          t = b_12;
           if(match_cons(t, sym_Where_1))
             {
-              r_11 = ATgetArgument(t, 0);
+              w_11 = ATgetArgument(t, 0);
             }
           else
             _fail(t);
-          t = s_11;
+          t = x_11;
           if(match_cons(t, sym_Seq_2))
             {
-              t_11 = ATgetArgument(t, 0);
-              v_11 = ATgetArgument(t, 1);
+              y_11 = ATgetArgument(t, 0);
+              a_12 = ATgetArgument(t, 1);
             }
           else
             _fail(t);
-          t = t_11;
+          t = y_11;
           if(match_cons(t, sym_Build_1))
             {
-              u_11 = ATgetArgument(t, 0);
+              z_11 = ATgetArgument(t, 0);
             }
           else
             _fail(t);
-          t = (ATerm) ATmakeAppl(sym_Where_1, (ATerm) ATmakeAppl(sym_Seq_2, r_11, (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Build_1, u_11), v_11)));
+          t = (ATerm) ATmakeAppl(sym_Where_1, (ATerm) ATmakeAppl(sym_Seq_2, w_11, (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Build_1, z_11), a_12)));
         }
       else
         {
           if(match_cons(t, sym_Where_1))
             {
-              w_11 = ATgetArgument(t, 0);
+              b_12 = ATgetArgument(t, 0);
             }
           else
             _fail(t);
@@ -1415,11 +1535,11 @@ ATerm Idempotency_0_0 (ATerm t)
     {
       if(match_cons(t, sym_Test_1))
         {
-          y_11 = ATgetArgument(t, 0);
-          t = y_11;
+          d_12 = ATgetArgument(t, 0);
+          t = d_12;
           if(match_cons(t, sym_Test_1))
             {
-              w_11 = ATgetArgument(t, 0);
+              b_12 = ATgetArgument(t, 0);
             }
           else
             _fail(t);
@@ -1428,24 +1548,24 @@ ATerm Idempotency_0_0 (ATerm t)
         {
           if(match_cons(t, sym_Not_1))
             {
-              y_11 = ATgetArgument(t, 0);
-              t = y_11;
+              d_12 = ATgetArgument(t, 0);
+              t = d_12;
               if(match_cons(t, sym_Not_1))
                 {
-                  w_11 = ATgetArgument(t, 0);
+                  b_12 = ATgetArgument(t, 0);
                 }
               else
                 _fail(t);
-              t = (ATerm) ATmakeAppl(sym_Test_1, w_11);
+              t = (ATerm) ATmakeAppl(sym_Test_1, b_12);
             }
           else
             {
               if(match_cons(t, sym_LChoice_2))
                 {
-                  y_11 = ATgetArgument(t, 0);
-                  z_11 = ATgetArgument(t, 1);
-                  t = z_11;
-                  if((y_11 != t))
+                  d_12 = ATgetArgument(t, 0);
+                  e_12 = ATgetArgument(t, 1);
+                  t = e_12;
+                  if((d_12 != t))
                     {
                       _fail(t);
                     }
@@ -1454,13 +1574,13 @@ ATerm Idempotency_0_0 (ATerm t)
                 {
                   if(match_cons(t, sym_Choice_2))
                     {
-                      y_11 = ATgetArgument(t, 0);
-                      z_11 = ATgetArgument(t, 1);
+                      d_12 = ATgetArgument(t, 0);
+                      e_12 = ATgetArgument(t, 1);
                     }
                   else
                     _fail(t);
-                  t = z_11;
-                  if((y_11 != t))
+                  t = e_12;
+                  if((d_12 != t))
                     {
                       _fail(t);
                     }
@@ -1472,340 +1592,328 @@ ATerm Idempotency_0_0 (ATerm t)
 }
 ATerm AssociateR_0_0 (ATerm t)
 {
-  ATerm n_12 = NULL,o_12 = NULL,p_12 = NULL,q_12 = NULL;
+  ATerm s_12 = NULL,t_12 = NULL,u_12 = NULL,v_12 = NULL;
   if(match_cons(t, sym_LChoice_2))
     {
-      n_12 = ATgetArgument(t, 0);
-      q_12 = ATgetArgument(t, 1);
-      t = n_12;
+      s_12 = ATgetArgument(t, 0);
+      v_12 = ATgetArgument(t, 1);
+      t = s_12;
       if(match_cons(t, sym_LChoice_2))
         {
-          o_12 = ATgetArgument(t, 0);
-          p_12 = ATgetArgument(t, 1);
+          t_12 = ATgetArgument(t, 0);
+          u_12 = ATgetArgument(t, 1);
         }
       else
         _fail(t);
-      t = (ATerm) ATmakeAppl(sym_LChoice_2, o_12, (ATerm) ATmakeAppl(sym_LChoice_2, p_12, q_12));
+      t = (ATerm) ATmakeAppl(sym_LChoice_2, t_12, (ATerm) ATmakeAppl(sym_LChoice_2, u_12, v_12));
     }
   else
     {
       if(match_cons(t, sym_Seq_2))
         {
-          n_12 = ATgetArgument(t, 0);
-          q_12 = ATgetArgument(t, 1);
-          t = n_12;
+          s_12 = ATgetArgument(t, 0);
+          v_12 = ATgetArgument(t, 1);
+          t = s_12;
           if(match_cons(t, sym_Seq_2))
             {
-              o_12 = ATgetArgument(t, 0);
-              p_12 = ATgetArgument(t, 1);
+              t_12 = ATgetArgument(t, 0);
+              u_12 = ATgetArgument(t, 1);
             }
           else
             _fail(t);
-          t = (ATerm) ATmakeAppl(sym_Seq_2, o_12, (ATerm) ATmakeAppl(sym_Seq_2, p_12, q_12));
+          t = (ATerm) ATmakeAppl(sym_Seq_2, t_12, (ATerm) ATmakeAppl(sym_Seq_2, u_12, v_12));
         }
       else
         {
           if(match_cons(t, sym_Choice_2))
             {
-              n_12 = ATgetArgument(t, 0);
-              q_12 = ATgetArgument(t, 1);
+              s_12 = ATgetArgument(t, 0);
+              v_12 = ATgetArgument(t, 1);
             }
           else
             _fail(t);
-          t = n_12;
+          t = s_12;
           if(match_cons(t, sym_Choice_2))
             {
-              o_12 = ATgetArgument(t, 0);
-              p_12 = ATgetArgument(t, 1);
+              t_12 = ATgetArgument(t, 0);
+              u_12 = ATgetArgument(t, 1);
             }
           else
             _fail(t);
-          t = (ATerm) ATmakeAppl(sym_Choice_2, o_12, (ATerm) ATmakeAppl(sym_Choice_2, p_12, q_12));
+          t = (ATerm) ATmakeAppl(sym_Choice_2, t_12, (ATerm) ATmakeAppl(sym_Choice_2, u_12, v_12));
         }
     }
   return(t);
 }
 ATerm map1_1_0 (ATerm n_0 (ATerm), ATerm t)
 {
-  ATerm d_12 = t;
-  int e_12 = stack_ptr;
+  ATerm j_12 = t;
+  int k_12 = stack_ptr;
   if((PushChoice() == 0))
     {
       t = Cons_2_0(n_0, _id, t);
       {
-        ATerm b_1 (ATerm t)
+        ATerm c_1 (ATerm t)
         {
-          ATerm f_12 = t;
-          int g_12 = stack_ptr;
+          ATerm l_12 = t;
+          int m_12 = stack_ptr;
           if((PushChoice() == 0))
             {
               t = map1_1_0(n_0, t);
               ;
-              LocalPopChoice(g_12);
+              LocalPopChoice(m_12);
             }
           else
             {
-              t = f_12;
+              t = l_12;
             }
-          return(t);
-        }
-        t = Cons_2_0(_id, b_1, t);
-      }
-      ;
-      LocalPopChoice(e_12);
-    }
-  else
-    {
-      t = d_12;
-      {
-        ATerm c_1 (ATerm t)
-        {
-          t = map1_1_0(n_0, t);
           return(t);
         }
         t = Cons_2_0(_id, c_1, t);
       }
+      ;
+      LocalPopChoice(k_12);
+    }
+  else
+    {
+      t = j_12;
+      {
+        ATerm d_1 (ATerm t)
+        {
+          t = map1_1_0(n_0, t);
+          return(t);
+        }
+        t = Cons_2_0(_id, d_1, t);
+      }
+    }
+  return(t);
+}
+ATerm e_1 (ATerm t)
+{
+  ATerm h_14 = NULL;
+  if(match_cons(t, sym_DefaultVarDec_1))
+    {
+      h_14 = ATgetArgument(t, 0);
+    }
+  else
+    _fail(t);
+  t = (ATerm) ATmakeAppl(sym_VarDec_2, h_14, (ATerm) ATmakeAppl(sym_FunType_2, (ATerm)ATinsert(ATempty, term_p_12), term_p_12));
+  return(t);
+}
+ATerm f_1 (ATerm t)
+{
+  ATerm r_12 = t;
+  int w_12 = stack_ptr;
+  if((PushChoice() == 0))
+    {
+      ATerm j_14 = NULL;
+      if(match_cons(t, sym_DefaultVarDec_1))
+        {
+          j_14 = ATgetArgument(t, 0);
+        }
+      else
+        _fail(t);
+      t = (ATerm) ATmakeAppl(sym_VarDec_2, j_14, term_p_12);
+      ;
+      LocalPopChoice(w_12);
+    }
+  else
+    {
+      t = r_12;
+    }
+  return(t);
+}
+ATerm g_1 (ATerm t)
+{
+  ATerm r_14 = NULL;
+  if(match_cons(t, sym_DefaultVarDec_1))
+    {
+      r_14 = ATgetArgument(t, 0);
+    }
+  else
+    _fail(t);
+  t = (ATerm) ATmakeAppl(sym_VarDec_2, r_14, term_p_12);
+  return(t);
+}
+ATerm h_1 (ATerm t)
+{
+  ATerm x_12 = t;
+  int y_12 = stack_ptr;
+  if((PushChoice() == 0))
+    {
+      ATerm t_14 = NULL;
+      if(match_cons(t, sym_DefaultVarDec_1))
+        {
+          t_14 = ATgetArgument(t, 0);
+        }
+      else
+        _fail(t);
+      t = (ATerm) ATmakeAppl(sym_VarDec_2, t_14, (ATerm) ATmakeAppl(sym_FunType_2, (ATerm)ATinsert(ATempty, term_p_12), term_p_12));
+      ;
+      LocalPopChoice(y_12);
+    }
+  else
+    {
+      t = x_12;
+    }
+  return(t);
+}
+ATerm j_1 (ATerm t)
+{
+  ATerm b_15 = NULL;
+  if(match_cons(t, sym_DefaultVarDec_1))
+    {
+      b_15 = ATgetArgument(t, 0);
+    }
+  else
+    _fail(t);
+  t = (ATerm) ATmakeAppl(sym_VarDec_2, b_15, (ATerm) ATmakeAppl(sym_FunType_2, (ATerm)ATinsert(ATempty, term_p_12), term_p_12));
+  return(t);
+}
+ATerm m_1 (ATerm t)
+{
+  ATerm z_12 = t;
+  int a_13 = stack_ptr;
+  if((PushChoice() == 0))
+    {
+      ATerm d_15 = NULL;
+      if(match_cons(t, sym_DefaultVarDec_1))
+        {
+          d_15 = ATgetArgument(t, 0);
+        }
+      else
+        _fail(t);
+      t = (ATerm) ATmakeAppl(sym_VarDec_2, d_15, term_p_12);
+      ;
+      LocalPopChoice(a_13);
+    }
+  else
+    {
+      t = z_12;
     }
   return(t);
 }
 ATerm HL_0_0 (ATerm t)
 {
-  ATerm h_13 = NULL,i_13 = NULL,j_13 = NULL,k_13 = NULL,m_13 = NULL,n_13 = NULL;
+  ATerm m_13 = NULL,n_13 = NULL,o_13 = NULL,p_13 = NULL,r_13 = NULL,s_13 = NULL;
   if(match_cons(t, sym_Lets_2))
     {
-      m_13 = ATgetArgument(t, 0);
-      n_13 = ATgetArgument(t, 1);
-      t = (ATerm) ATmakeAppl(sym_Let_2, m_13, n_13);
+      r_13 = ATgetArgument(t, 0);
+      s_13 = ATgetArgument(t, 1);
+      t = (ATerm) ATmakeAppl(sym_Let_2, r_13, s_13);
     }
   else
     {
       if(match_cons(t, sym_LChoices_1))
         {
-          m_13 = ATgetArgument(t, 0);
-          t = m_13;
+          r_13 = ATgetArgument(t, 0);
+          t = r_13;
           if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
             {
-              h_13 = ATgetFirst((ATermList) t);
-              i_13 = (ATerm) ATgetNext((ATermList) t);
-              t = (ATerm) ATmakeAppl(sym_LChoice_2, h_13, (ATerm) ATmakeAppl(sym_LChoices_1, i_13));
+              m_13 = ATgetFirst((ATermList) t);
+              n_13 = (ATerm) ATgetNext((ATermList) t);
+              t = (ATerm) ATmakeAppl(sym_LChoice_2, m_13, (ATerm) ATmakeAppl(sym_LChoices_1, n_13));
             }
           else
             {
               if(((ATgetType(t) != AT_LIST) || !(ATisEmpty(t))))
                 _fail(t);
-              t = term_l_9;
+              t = term_s_9;
             }
         }
       else
         {
           if(match_cons(t, sym_Choices_1))
             {
-              m_13 = ATgetArgument(t, 0);
-              t = m_13;
+              r_13 = ATgetArgument(t, 0);
+              t = r_13;
               if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
                 {
-                  h_13 = ATgetFirst((ATermList) t);
-                  i_13 = (ATerm) ATgetNext((ATermList) t);
-                  t = (ATerm) ATmakeAppl(sym_Choice_2, h_13, (ATerm) ATmakeAppl(sym_Choices_1, i_13));
+                  m_13 = ATgetFirst((ATermList) t);
+                  n_13 = (ATerm) ATgetNext((ATermList) t);
+                  t = (ATerm) ATmakeAppl(sym_Choice_2, m_13, (ATerm) ATmakeAppl(sym_Choices_1, n_13));
                 }
               else
                 {
                   if(((ATgetType(t) != AT_LIST) || !(ATisEmpty(t))))
                     _fail(t);
-                  t = term_l_9;
+                  t = term_s_9;
                 }
             }
           else
             {
               if(match_cons(t, sym_Seqs_1))
                 {
-                  m_13 = ATgetArgument(t, 0);
-                  t = m_13;
+                  r_13 = ATgetArgument(t, 0);
+                  t = r_13;
                   if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
                     {
-                      h_13 = ATgetFirst((ATermList) t);
-                      i_13 = (ATerm) ATgetNext((ATermList) t);
-                      t = (ATerm) ATmakeAppl(sym_Seq_2, h_13, (ATerm) ATmakeAppl(sym_Seqs_1, i_13));
+                      m_13 = ATgetFirst((ATermList) t);
+                      n_13 = (ATerm) ATgetNext((ATermList) t);
+                      t = (ATerm) ATmakeAppl(sym_Seq_2, m_13, (ATerm) ATmakeAppl(sym_Seqs_1, n_13));
                     }
                   else
                     {
                       if(((ATgetType(t) != AT_LIST) || !(ATisEmpty(t))))
                         _fail(t);
-                      t = term_h_12;
+                      t = term_b_13;
                     }
                 }
               else
                 {
                   if(match_cons(t, sym_RDefT_4))
                     {
-                      m_13 = ATgetArgument(t, 0);
-                      n_13 = ATgetArgument(t, 1);
-                      k_13 = ATgetArgument(t, 2);
-                      j_13 = ATgetArgument(t, 3);
+                      r_13 = ATgetArgument(t, 0);
+                      s_13 = ATgetArgument(t, 1);
+                      p_13 = ATgetArgument(t, 2);
+                      o_13 = ATgetArgument(t, 3);
                       {
-                        ATerm a_14 = NULL,b_14 = NULL;
-                        t = n_13;
-                        {
-                          ATerm d_1 (ATerm t)
-                          {
-                            ATerm c_14 = NULL;
-                            if(match_cons(t, sym_DefaultVarDec_1))
-                              {
-                                c_14 = ATgetArgument(t, 0);
-                              }
-                            else
-                              _fail(t);
-                            t = (ATerm) ATmakeAppl(sym_VarDec_2, c_14, (ATerm) ATmakeAppl(sym_FunType_2, (ATerm)ATinsert(ATempty, term_k_12), term_k_12));
-                            return(t);
-                          }
-                          t = map1_1_0(d_1, t);
-                          a_14 = t;
-                          t = k_13;
-                          {
-                            ATerm e_1 (ATerm t)
-                            {
-                              ATerm l_12 = t;
-                              int m_12 = stack_ptr;
-                              if((PushChoice() == 0))
-                                {
-                                  ATerm e_14 = NULL;
-                                  if(match_cons(t, sym_DefaultVarDec_1))
-                                    {
-                                      e_14 = ATgetArgument(t, 0);
-                                    }
-                                  else
-                                    _fail(t);
-                                  t = (ATerm) ATmakeAppl(sym_VarDec_2, e_14, term_k_12);
-                                  ;
-                                  LocalPopChoice(m_12);
-                                }
-                              else
-                                {
-                                  t = l_12;
-                                }
-                              return(t);
-                            }
-                            t = map1_1_0(e_1, t);
-                            b_14 = t;
-                            t = (ATerm) ATmakeAppl(sym_RDefT_4, m_13, a_14, b_14, j_13);
-                          }
-                        }
+                        ATerm f_14 = NULL,g_14 = NULL;
+                        t = s_13;
+                        t = map1_1_0(e_1, t);
+                        f_14 = t;
+                        t = p_13;
+                        t = map1_1_0(f_1, t);
+                        g_14 = t;
+                        t = (ATerm) ATmakeAppl(sym_RDefT_4, r_13, f_14, g_14, o_13);
                       }
                     }
                   else
                     {
                       if(match_cons(t, sym_SDefT_4))
                         {
-                          m_13 = ATgetArgument(t, 0);
-                          n_13 = ATgetArgument(t, 1);
-                          k_13 = ATgetArgument(t, 2);
-                          j_13 = ATgetArgument(t, 3);
+                          r_13 = ATgetArgument(t, 0);
+                          s_13 = ATgetArgument(t, 1);
+                          p_13 = ATgetArgument(t, 2);
+                          o_13 = ATgetArgument(t, 3);
                           {
-                            ATerm r_12 = t;
-                            int s_12 = stack_ptr;
+                            ATerm c_13 = t;
+                            int d_13 = stack_ptr;
                             if((PushChoice() == 0))
                               {
-                                ATerm k_14 = NULL,l_14 = NULL;
-                                t = k_13;
-                                {
-                                  ATerm f_1 (ATerm t)
-                                  {
-                                    ATerm m_14 = NULL;
-                                    if(match_cons(t, sym_DefaultVarDec_1))
-                                      {
-                                        m_14 = ATgetArgument(t, 0);
-                                      }
-                                    else
-                                      _fail(t);
-                                    t = (ATerm) ATmakeAppl(sym_VarDec_2, m_14, term_k_12);
-                                    return(t);
-                                  }
-                                  t = map1_1_0(f_1, t);
-                                  k_14 = t;
-                                  t = n_13;
-                                  {
-                                    ATerm g_1 (ATerm t)
-                                    {
-                                      ATerm t_12 = t;
-                                      int u_12 = stack_ptr;
-                                      if((PushChoice() == 0))
-                                        {
-                                          ATerm o_14 = NULL;
-                                          if(match_cons(t, sym_DefaultVarDec_1))
-                                            {
-                                              o_14 = ATgetArgument(t, 0);
-                                            }
-                                          else
-                                            _fail(t);
-                                          t = (ATerm) ATmakeAppl(sym_VarDec_2, o_14, (ATerm) ATmakeAppl(sym_FunType_2, (ATerm)ATinsert(ATempty, term_k_12), term_k_12));
-                                          ;
-                                          LocalPopChoice(u_12);
-                                        }
-                                      else
-                                        {
-                                          t = t_12;
-                                        }
-                                      return(t);
-                                    }
-                                    t = map_1_0(g_1, t);
-                                    l_14 = t;
-                                    t = (ATerm) ATmakeAppl(sym_SDefT_4, m_13, l_14, k_14, j_13);
-                                  }
-                                }
+                                ATerm p_14 = NULL,q_14 = NULL;
+                                t = p_13;
+                                t = map1_1_0(g_1, t);
+                                p_14 = t;
+                                t = s_13;
+                                t = map_1_0(h_1, t);
+                                q_14 = t;
+                                t = (ATerm) ATmakeAppl(sym_SDefT_4, r_13, q_14, p_14, o_13);
                                 ;
-                                LocalPopChoice(s_12);
+                                LocalPopChoice(d_13);
                               }
                             else
                               {
-                                t = r_12;
+                                t = c_13;
                                 {
-                                  ATerm u_14 = NULL,v_14 = NULL;
-                                  t = n_13;
-                                  {
-                                    ATerm h_1 (ATerm t)
-                                    {
-                                      ATerm w_14 = NULL;
-                                      if(match_cons(t, sym_DefaultVarDec_1))
-                                        {
-                                          w_14 = ATgetArgument(t, 0);
-                                        }
-                                      else
-                                        _fail(t);
-                                      t = (ATerm) ATmakeAppl(sym_VarDec_2, w_14, (ATerm) ATmakeAppl(sym_FunType_2, (ATerm)ATinsert(ATempty, term_k_12), term_k_12));
-                                      return(t);
-                                    }
-                                    t = map1_1_0(h_1, t);
-                                    u_14 = t;
-                                    t = k_13;
-                                    {
-                                      ATerm l_1 (ATerm t)
-                                      {
-                                        ATerm v_12 = t;
-                                        int w_12 = stack_ptr;
-                                        if((PushChoice() == 0))
-                                          {
-                                            ATerm y_14 = NULL;
-                                            if(match_cons(t, sym_DefaultVarDec_1))
-                                              {
-                                                y_14 = ATgetArgument(t, 0);
-                                              }
-                                            else
-                                              _fail(t);
-                                            t = (ATerm) ATmakeAppl(sym_VarDec_2, y_14, term_k_12);
-                                            ;
-                                            LocalPopChoice(w_12);
-                                          }
-                                        else
-                                          {
-                                            t = v_12;
-                                          }
-                                        return(t);
-                                      }
-                                      t = map_1_0(l_1, t);
-                                      v_14 = t;
-                                      t = (ATerm) ATmakeAppl(sym_SDefT_4, m_13, u_14, v_14, j_13);
-                                    }
-                                  }
+                                  ATerm z_14 = NULL,a_15 = NULL;
+                                  t = s_13;
+                                  t = map1_1_0(j_1, t);
+                                  z_14 = t;
+                                  t = p_13;
+                                  t = map_1_0(m_1, t);
+                                  a_15 = t;
+                                  t = (ATerm) ATmakeAppl(sym_SDefT_4, r_13, z_14, a_15, o_13);
                                 }
                               }
                           }
@@ -1814,46 +1922,46 @@ ATerm HL_0_0 (ATerm t)
                         {
                           if(match_cons(t, sym_InfixApp_3))
                             {
-                              m_13 = ATgetArgument(t, 0);
-                              n_13 = ATgetArgument(t, 1);
-                              k_13 = ATgetArgument(t, 2);
-                              t = (ATerm) ATmakeAppl(sym_App_2, n_13, (ATerm) ATmakeAppl(sym_Op_2, term_x_12, (ATerm) ATinsert(ATinsert(ATempty, k_13), m_13)));
+                              r_13 = ATgetArgument(t, 0);
+                              s_13 = ATgetArgument(t, 1);
+                              p_13 = ATgetArgument(t, 2);
+                              t = (ATerm) ATmakeAppl(sym_App_2, s_13, (ATerm) ATmakeAppl(sym_Op_2, term_e_13, (ATerm) ATinsert(ATinsert(ATempty, p_13), r_13)));
                             }
                           else
                             {
                               if(match_cons(t, sym_BAM_3))
                                 {
-                                  m_13 = ATgetArgument(t, 0);
-                                  n_13 = ATgetArgument(t, 1);
-                                  k_13 = ATgetArgument(t, 2);
-                                  t = (ATerm) ATmakeAppl(sym_Seqs_1, (ATerm) ATinsert(ATinsert(ATinsert(ATempty, (ATerm) ATmakeAppl(sym_Match_1, k_13)), m_13), (ATerm) ATmakeAppl(sym_Build_1, n_13)));
+                                  r_13 = ATgetArgument(t, 0);
+                                  s_13 = ATgetArgument(t, 1);
+                                  p_13 = ATgetArgument(t, 2);
+                                  t = (ATerm) ATmakeAppl(sym_Seqs_1, (ATerm) ATinsert(ATinsert(ATinsert(ATempty, (ATerm) ATmakeAppl(sym_Match_1, p_13)), r_13), (ATerm) ATmakeAppl(sym_Build_1, s_13)));
                                 }
                               else
                                 {
                                   if(match_cons(t, sym_AM_2))
                                     {
-                                      m_13 = ATgetArgument(t, 0);
-                                      n_13 = ATgetArgument(t, 1);
-                                      t = (ATerm) ATmakeAppl(sym_Seq_2, m_13, (ATerm) ATmakeAppl(sym_Match_1, n_13));
+                                      r_13 = ATgetArgument(t, 0);
+                                      s_13 = ATgetArgument(t, 1);
+                                      t = (ATerm) ATmakeAppl(sym_Seq_2, r_13, (ATerm) ATmakeAppl(sym_Match_1, s_13));
                                     }
                                   else
                                     {
                                       if(match_cons(t, sym_MA_2))
                                         {
-                                          m_13 = ATgetArgument(t, 0);
-                                          n_13 = ATgetArgument(t, 1);
-                                          t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Match_1, m_13), n_13);
+                                          r_13 = ATgetArgument(t, 0);
+                                          s_13 = ATgetArgument(t, 1);
+                                          t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Match_1, r_13), s_13);
                                         }
                                       else
                                         {
                                           if(match_cons(t, sym_BA_2))
                                             {
-                                              m_13 = ATgetArgument(t, 0);
-                                              n_13 = ATgetArgument(t, 1);
+                                              r_13 = ATgetArgument(t, 0);
+                                              s_13 = ATgetArgument(t, 1);
                                             }
                                           else
                                             _fail(t);
-                                          t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Build_1, n_13), m_13);
+                                          t = (ATerm) ATmakeAppl(sym_Seq_2, (ATerm)ATmakeAppl(sym_Build_1, s_13), r_13);
                                         }
                                     }
                                 }
@@ -1866,13 +1974,19 @@ ATerm HL_0_0 (ATerm t)
     }
   return(t);
 }
+ATerm o_1 (ATerm t)
+{
+  if(!(match_cons(t, sym_Fail_0)))
+    _fail(t);
+  return(t);
+}
 ATerm ElimFail_0_0 (ATerm t)
 {
-  ATerm e_16 = NULL,f_16 = NULL,g_16 = NULL;
+  ATerm j_16 = NULL,k_16 = NULL,l_16 = NULL;
   if(match_cons(t, sym_Test_1))
     {
-      e_16 = ATgetArgument(t, 0);
-      t = e_16;
+      j_16 = ATgetArgument(t, 0);
+      t = j_16;
       if(!(match_cons(t, sym_Fail_0)))
         _fail(t);
     }
@@ -1880,79 +1994,79 @@ ATerm ElimFail_0_0 (ATerm t)
     {
       if(match_cons(t, sym_Not_1))
         {
-          e_16 = ATgetArgument(t, 0);
-          t = e_16;
+          j_16 = ATgetArgument(t, 0);
+          t = j_16;
           if(!(match_cons(t, sym_Fail_0)))
             _fail(t);
-          t = term_h_12;
+          t = term_b_13;
         }
       else
         {
-          ATerm y_12 = t;
-          int z_12 = stack_ptr;
+          ATerm f_13 = t;
+          int g_13 = stack_ptr;
           if((PushChoice() == 0))
             {
               if(match_cons(t, sym_Seq_2))
                 {
-                  e_16 = ATgetArgument(t, 0);
+                  j_16 = ATgetArgument(t, 0);
                   {
-                    ATerm a_13 = ATgetArgument(t, 1);
+                    ATerm h_13 = ATgetArgument(t, 1);
                   }
                 }
               else
                 _fail(t);
-              LocalPopChoice(z_12);
-              t = e_16;
+              LocalPopChoice(g_13);
+              t = j_16;
               if(!(match_cons(t, sym_Fail_0)))
                 _fail(t);
             }
           else
             {
-              t = y_12;
+              t = f_13;
               {
-                ATerm b_13 = t;
-                int c_13 = stack_ptr;
+                ATerm j_13 = t;
+                int k_13 = stack_ptr;
                 if((PushChoice() == 0))
                   {
                     if(match_cons(t, sym_Scope_2))
                       {
-                        ATerm d_13 = ATgetArgument(t, 0);
-                        f_16 = ATgetArgument(t, 1);
+                        ATerm q_13 = ATgetArgument(t, 0);
+                        k_16 = ATgetArgument(t, 1);
                       }
                     else
                       _fail(t);
-                    LocalPopChoice(c_13);
-                    t = f_16;
+                    LocalPopChoice(k_13);
+                    t = k_16;
                     if(!(match_cons(t, sym_Fail_0)))
                       _fail(t);
                   }
                 else
                   {
-                    t = b_13;
+                    t = j_13;
                     {
-                      ATerm e_13 = t;
-                      int f_13 = stack_ptr;
+                      ATerm t_13 = t;
+                      int u_13 = stack_ptr;
                       if((PushChoice() == 0))
                         {
                           if(match_cons(t, sym_Rec_2))
                             {
-                              ATerm g_13 = ATgetArgument(t, 0);
-                              f_16 = ATgetArgument(t, 1);
+                              ATerm v_13 = ATgetArgument(t, 0);
+                              k_16 = ATgetArgument(t, 1);
                             }
                           else
                             _fail(t);
-                          LocalPopChoice(f_13);
-                          t = f_16;
+                          LocalPopChoice(u_13);
+                          t = k_16;
                           if(!(match_cons(t, sym_Fail_0)))
                             _fail(t);
                         }
                       else
                         {
-                          t = e_13;
+                          t = t_13;
                           if(match_cons(t, sym_Some_1))
                             {
-                              e_16 = ATgetArgument(t, 0);
-                              t = e_16;
+                              j_16 = ATgetArgument(t, 0);
+                              t = j_16;
                               if(!(match_cons(t, sym_Fail_0)))
                                 _fail(t);
                             }
@@ -1960,142 +2074,134 @@ ATerm ElimFail_0_0 (ATerm t)
                             {
                               if(match_cons(t, sym_One_1))
                                 {
-                                  e_16 = ATgetArgument(t, 0);
-                                  t = e_16;
+                                  j_16 = ATgetArgument(t, 0);
+                                  t = j_16;
                                   if(!(match_cons(t, sym_Fail_0)))
                                     _fail(t);
                                 }
                               else
                                 {
-                                  ATerm l_13 = t;
-                                  int o_13 = stack_ptr;
+                                  ATerm w_13 = t;
+                                  int x_13 = stack_ptr;
                                   if((PushChoice() == 0))
                                     {
                                       if(match_cons(t, sym_Path_2))
                                         {
-                                          ATerm p_13 = ATgetArgument(t, 0);
-                                          f_16 = ATgetArgument(t, 1);
+                                          ATerm y_13 = ATgetArgument(t, 0);
+                                          k_16 = ATgetArgument(t, 1);
                                         }
                                       else
                                         _fail(t);
-                                      LocalPopChoice(o_13);
-                                      t = f_16;
+                                      LocalPopChoice(x_13);
+                                      t = k_16;
                                       if(!(match_cons(t, sym_Fail_0)))
                                         _fail(t);
                                     }
                                   else
                                     {
-                                      t = l_13;
+                                      t = w_13;
                                       {
-                                        ATerm q_13 = t;
-                                        int r_13 = stack_ptr;
+                                        ATerm z_13 = t;
+                                        int a_14 = stack_ptr;
                                         if((PushChoice() == 0))
                                           {
                                             if(match_cons(t, sym_Cong_2))
                                               {
-                                                ATerm s_13 = ATgetArgument(t, 0);
-                                                f_16 = ATgetArgument(t, 1);
+                                                ATerm b_14 = ATgetArgument(t, 0);
+                                                k_16 = ATgetArgument(t, 1);
                                               }
                                             else
                                               _fail(t);
-                                            LocalPopChoice(r_13);
-                                            t = f_16;
-                                            {
-                                              ATerm n_1 (ATerm t)
-                                              {
-                                                if(!(match_cons(t, sym_Fail_0)))
-                                                  _fail(t);
-                                                return(t);
-                                              }
-                                              t = fetch_1_0(n_1, t);
-                                              t = term_l_9;
-                                            }
+                                            LocalPopChoice(a_14);
+                                            t = k_16;
+                                            t = fetch_1_0(o_1, t);
+                                            t = term_s_9;
                                           }
                                         else
                                           {
-                                            t = q_13;
+                                            t = z_13;
                                             if(match_cons(t, sym_Choice_2))
                                               {
-                                                e_16 = ATgetArgument(t, 0);
-                                                f_16 = ATgetArgument(t, 1);
-                                                t = f_16;
+                                                j_16 = ATgetArgument(t, 0);
+                                                k_16 = ATgetArgument(t, 1);
+                                                t = k_16;
                                                 if(match_cons(t, sym_Fail_0))
                                                   {
-                                                    t = e_16;
+                                                    t = j_16;
                                                     if(match_cons(t, sym_Fail_0))
                                                       {
-                                                        ATerm t_13 = t;
-                                                        int u_13 = stack_ptr;
+                                                        ATerm c_14 = t;
+                                                        int d_14 = stack_ptr;
                                                         if((PushChoice() == 0))
                                                           {
-                                                            t = f_16;
+                                                            t = k_16;
                                                             ;
-                                                            LocalPopChoice(u_13);
+                                                            LocalPopChoice(d_14);
                                                           }
                                                         else
                                                           {
-                                                            t = t_13;
-                                                            t = e_16;
+                                                            t = c_14;
+                                                            t = j_16;
                                                           }
                                                       }
                                                     else
                                                       {
-                                                        t = e_16;
+                                                        t = j_16;
                                                       }
                                                   }
                                                 else
                                                   {
-                                                    t = e_16;
+                                                    t = j_16;
                                                     if(!(match_cons(t, sym_Fail_0)))
                                                       _fail(t);
-                                                    t = f_16;
+                                                    t = k_16;
                                                   }
                                               }
                                             else
                                               {
                                                 if(match_cons(t, sym_LChoice_2))
                                                   {
-                                                    e_16 = ATgetArgument(t, 0);
-                                                    f_16 = ATgetArgument(t, 1);
-                                                    t = f_16;
+                                                    j_16 = ATgetArgument(t, 0);
+                                                    k_16 = ATgetArgument(t, 1);
+                                                    t = k_16;
                                                     if(match_cons(t, sym_Fail_0))
                                                       {
-                                                        t = e_16;
+                                                        t = j_16;
                                                         if(match_cons(t, sym_Fail_0))
                                                           {
-                                                            ATerm v_13 = t;
-                                                            int w_13 = stack_ptr;
+                                                            ATerm e_14 = t;
+                                                            int i_14 = stack_ptr;
                                                             if((PushChoice() == 0))
                                                               {
-                                                                t = f_16;
+                                                                t = k_16;
                                                                 ;
-                                                                LocalPopChoice(w_13);
+                                                                LocalPopChoice(i_14);
                                                               }
                                                             else
                                                               {
-                                                                t = v_13;
-                                                                t = e_16;
+                                                                t = e_14;
+                                                                t = j_16;
                                                               }
                                                           }
                                                         else
                                                           {
-                                                            t = e_16;
+                                                            t = j_16;
                                                           }
                                                       }
                                                     else
                                                       {
-                                                        t = e_16;
+                                                        t = j_16;
                                                         if(!(match_cons(t, sym_Fail_0)))
                                                           _fail(t);
-                                                        t = f_16;
+                                                        t = k_16;
                                                       }
                                                   }
                                                 else
                                                   {
                                                     if(match_cons(t, sym_Where_1))
                                                       {
-                                                        e_16 = ATgetArgument(t, 0);
-                                                        t = e_16;
+                                                        j_16 = ATgetArgument(t, 0);
+                                                        t = j_16;
                                                         if(!(match_cons(t, sym_Fail_0)))
                                                           _fail(t);
                                                       }
@@ -2103,16 +2209,16 @@ ATerm ElimFail_0_0 (ATerm t)
                                                       {
                                                         if(match_cons(t, sym_GuardedLChoice_3))
                                                           {
-                                                            e_16 = ATgetArgument(t, 0);
-                                                            f_16 = ATgetArgument(t, 1);
-                                                            g_16 = ATgetArgument(t, 2);
+                                                            j_16 = ATgetArgument(t, 0);
+                                                            k_16 = ATgetArgument(t, 1);
+                                                            l_16 = ATgetArgument(t, 2);
                                                           }
                                                         else
                                                           _fail(t);
-                                                        t = g_16;
+                                                        t = l_16;
                                                         if(!(match_cons(t, sym_Fail_0)))
                                                           _fail(t);
-                                                        t = (ATerm) ATmakeAppl(sym_Seq_2, e_16, f_16);
+                                                        t = (ATerm) ATmakeAppl(sym_Seq_2, j_16, k_16);
                                                       }
                                                   }
                                               }
@@ -2132,11 +2238,11 @@ ATerm ElimFail_0_0 (ATerm t)
 }
 ATerm ElimId_0_0 (ATerm t)
 {
-  ATerm r_17 = NULL,v_17 = NULL;
+  ATerm n_17 = NULL,r_17 = NULL;
   if(match_cons(t, sym_Test_1))
     {
-      v_17 = ATgetArgument(t, 0);
-      t = v_17;
+      r_17 = ATgetArgument(t, 0);
+      t = r_17;
       if(!(match_cons(t, sym_Id_0)))
         _fail(t);
     }
@@ -2144,118 +2250,118 @@ ATerm ElimId_0_0 (ATerm t)
     {
       if(match_cons(t, sym_Not_1))
         {
-          v_17 = ATgetArgument(t, 0);
-          t = v_17;
+          r_17 = ATgetArgument(t, 0);
+          t = r_17;
           if(!(match_cons(t, sym_Id_0)))
             _fail(t);
-          t = term_l_9;
+          t = term_s_9;
         }
       else
         {
           if(match_cons(t, sym_Seq_2))
             {
-              v_17 = ATgetArgument(t, 0);
-              r_17 = ATgetArgument(t, 1);
-              t = r_17;
+              r_17 = ATgetArgument(t, 0);
+              n_17 = ATgetArgument(t, 1);
+              t = n_17;
               if(match_cons(t, sym_Id_0))
                 {
-                  t = v_17;
+                  t = r_17;
                   if(match_cons(t, sym_Id_0))
                     {
-                      ATerm x_13 = t;
-                      int y_13 = stack_ptr;
+                      ATerm k_14 = t;
+                      int l_14 = stack_ptr;
                       if((PushChoice() == 0))
                         {
-                          t = r_17;
+                          t = n_17;
                           ;
-                          LocalPopChoice(y_13);
+                          LocalPopChoice(l_14);
                         }
                       else
                         {
-                          t = x_13;
-                          t = v_17;
+                          t = k_14;
+                          t = r_17;
                         }
                     }
                   else
                     {
-                      t = v_17;
+                      t = r_17;
                     }
                 }
               else
                 {
-                  t = v_17;
+                  t = r_17;
                   if(!(match_cons(t, sym_Id_0)))
                     _fail(t);
-                  t = r_17;
+                  t = n_17;
                 }
             }
           else
             {
-              ATerm z_13 = t;
-              int d_14 = stack_ptr;
+              ATerm m_14 = t;
+              int n_14 = stack_ptr;
               if((PushChoice() == 0))
                 {
                   if(match_cons(t, sym_LChoice_2))
                     {
-                      v_17 = ATgetArgument(t, 0);
+                      r_17 = ATgetArgument(t, 0);
                       {
-                        ATerm f_14 = ATgetArgument(t, 1);
+                        ATerm o_14 = ATgetArgument(t, 1);
                       }
                     }
                   else
                     _fail(t);
-                  LocalPopChoice(d_14);
-                  t = v_17;
+                  LocalPopChoice(n_14);
+                  t = r_17;
                   if(!(match_cons(t, sym_Id_0)))
                     _fail(t);
                 }
               else
                 {
-                  t = z_13;
+                  t = m_14;
                   {
-                    ATerm g_14 = t;
-                    int h_14 = stack_ptr;
+                    ATerm s_14 = t;
+                    int u_14 = stack_ptr;
                     if((PushChoice() == 0))
                       {
                         if(match_cons(t, sym_Scope_2))
                           {
-                            ATerm i_14 = ATgetArgument(t, 0);
-                            r_17 = ATgetArgument(t, 1);
+                            ATerm v_14 = ATgetArgument(t, 0);
+                            n_17 = ATgetArgument(t, 1);
                           }
                         else
                           _fail(t);
-                        LocalPopChoice(h_14);
-                        t = r_17;
+                        LocalPopChoice(u_14);
+                        t = n_17;
                         if(!(match_cons(t, sym_Id_0)))
                           _fail(t);
                       }
                     else
                       {
-                        t = g_14;
+                        t = s_14;
                         {
-                          ATerm j_14 = t;
-                          int n_14 = stack_ptr;
+                          ATerm w_14 = t;
+                          int x_14 = stack_ptr;
                           if((PushChoice() == 0))
                             {
                               if(match_cons(t, sym_Rec_2))
                                 {
-                                  ATerm p_14 = ATgetArgument(t, 0);
-                                  r_17 = ATgetArgument(t, 1);
+                                  ATerm y_14 = ATgetArgument(t, 0);
+                                  n_17 = ATgetArgument(t, 1);
                                 }
                               else
                                 _fail(t);
-                              LocalPopChoice(n_14);
-                              t = r_17;
+                              LocalPopChoice(x_14);
+                              t = n_17;
                               if(!(match_cons(t, sym_Id_0)))
                                 _fail(t);
                             }
                           else
                             {
-                              t = j_14;
+                              t = w_14;
                               if(match_cons(t, sym_All_1))
                                 {
-                                  v_17 = ATgetArgument(t, 0);
-                                  t = v_17;
+                                  r_17 = ATgetArgument(t, 0);
+                                  t = r_17;
                                   if(!(match_cons(t, sym_Id_0)))
                                     _fail(t);
                                 }
@@ -2263,8 +2369,8 @@ ATerm ElimId_0_0 (ATerm t)
                                 {
                                   if(match_cons(t, sym_Where_1))
                                     {
-                                      v_17 = ATgetArgument(t, 0);
-                                      t = v_17;
+                                      r_17 = ATgetArgument(t, 0);
+                                      t = r_17;
                                       if(!(match_cons(t, sym_Id_0)))
                                         _fail(t);
                                     }
@@ -2272,14 +2378,14 @@ ATerm ElimId_0_0 (ATerm t)
                                     {
                                       if(match_cons(t, sym_Match_1))
                                         {
-                                          v_17 = ATgetArgument(t, 0);
+                                          r_17 = ATgetArgument(t, 0);
                                         }
                                       else
                                         _fail(t);
-                                      t = v_17;
+                                      t = r_17;
                                       if(!(match_cons(t, sym_Wld_0)))
                                         _fail(t);
-                                      t = term_h_12;
+                                      t = term_b_13;
                                     }
                                 }
                             }
@@ -2294,137 +2400,137 @@ ATerm ElimId_0_0 (ATerm t)
 }
 ATerm Simplify_0_0 (ATerm t)
 {
-  ATerm q_14 = t;
-  int r_14 = stack_ptr;
+  ATerm c_15 = t;
+  int e_15 = stack_ptr;
   if((PushChoice() == 0))
     {
       t = ElimId_0_0(t);
       ;
-      LocalPopChoice(r_14);
+      LocalPopChoice(e_15);
     }
   else
     {
-      t = q_14;
+      t = c_15;
       {
-        ATerm s_14 = t;
-        int t_14 = stack_ptr;
+        ATerm f_15 = t;
+        int g_15 = stack_ptr;
         if((PushChoice() == 0))
           {
             t = ElimFail_0_0(t);
             ;
-            LocalPopChoice(t_14);
+            LocalPopChoice(g_15);
           }
         else
           {
-            t = s_14;
+            t = f_15;
             {
-              ATerm x_14 = t;
-              int z_14 = stack_ptr;
+              ATerm h_15 = t;
+              int i_15 = stack_ptr;
               if((PushChoice() == 0))
                 {
                   t = HL_0_0(t);
                   ;
-                  LocalPopChoice(z_14);
+                  LocalPopChoice(i_15);
                 }
               else
                 {
-                  t = x_14;
+                  t = h_15;
                   {
-                    ATerm a_15 = t;
-                    int b_15 = stack_ptr;
+                    ATerm j_15 = t;
+                    int k_15 = stack_ptr;
                     if((PushChoice() == 0))
                       {
                         t = AssociateR_0_0(t);
                         ;
-                        LocalPopChoice(b_15);
+                        LocalPopChoice(k_15);
                       }
                     else
                       {
-                        t = a_15;
+                        t = j_15;
                         {
-                          ATerm c_15 = t;
-                          int d_15 = stack_ptr;
+                          ATerm l_15 = t;
+                          int m_15 = stack_ptr;
                           if((PushChoice() == 0))
                             {
                               t = Idempotency_0_0(t);
                               ;
-                              LocalPopChoice(d_15);
+                              LocalPopChoice(m_15);
                             }
                           else
                             {
-                              t = c_15;
+                              t = l_15;
                               {
-                                ATerm e_15 = t;
-                                int f_15 = stack_ptr;
+                                ATerm n_15 = t;
+                                int o_15 = stack_ptr;
                                 if((PushChoice() == 0))
                                   {
-                                    ATerm j_18 = NULL,k_18 = NULL;
+                                    ATerm j_18 = NULL,l_18 = NULL;
                                     if(match_cons(t, sym_Scope_2))
                                       {
                                         j_18 = ATgetArgument(t, 0);
-                                        k_18 = ATgetArgument(t, 1);
+                                        l_18 = ATgetArgument(t, 1);
                                         t = j_18;
                                         if(((ATgetType(t) != AT_LIST) || !(ATisEmpty(t))))
                                           _fail(t);
-                                        t = k_18;
+                                        t = l_18;
                                       }
                                     else
                                       {
                                         if(match_cons(t, sym_Let_2))
                                           {
                                             j_18 = ATgetArgument(t, 0);
-                                            k_18 = ATgetArgument(t, 1);
+                                            l_18 = ATgetArgument(t, 1);
                                           }
                                         else
                                           _fail(t);
                                         t = j_18;
                                         if(((ATgetType(t) != AT_LIST) || !(ATisEmpty(t))))
                                           _fail(t);
-                                        t = k_18;
+                                        t = l_18;
                                       }
                                     ;
-                                    LocalPopChoice(f_15);
+                                    LocalPopChoice(o_15);
                                   }
                                 else
                                   {
-                                    t = e_15;
+                                    t = n_15;
                                     {
-                                      ATerm g_15 = t;
-                                      int h_15 = stack_ptr;
+                                      ATerm p_15 = t;
+                                      int q_15 = stack_ptr;
                                       if((PushChoice() == 0))
                                         {
                                           t = LetHoist_0_0(t);
                                           ;
-                                          LocalPopChoice(h_15);
+                                          LocalPopChoice(q_15);
                                         }
                                       else
                                         {
-                                          t = g_15;
+                                          t = p_15;
                                           {
-                                            ATerm i_15 = t;
-                                            int j_15 = stack_ptr;
+                                            ATerm r_15 = t;
+                                            int s_15 = stack_ptr;
                                             if((PushChoice() == 0))
                                               {
                                                 t = BuildMatch_0_0(t);
                                                 ;
-                                                LocalPopChoice(j_15);
+                                                LocalPopChoice(s_15);
                                               }
                                             else
                                               {
-                                                t = i_15;
+                                                t = r_15;
                                                 {
-                                                  ATerm p_18 = NULL,q_18 = NULL;
+                                                  ATerm q_18 = NULL,r_18 = NULL;
                                                   if(match_cons(t, sym_As_2))
                                                     {
-                                                      p_18 = ATgetArgument(t, 0);
-                                                      q_18 = ATgetArgument(t, 1);
+                                                      q_18 = ATgetArgument(t, 0);
+                                                      r_18 = ATgetArgument(t, 1);
                                                     }
                                                   else
                                                     _fail(t);
-                                                  t = p_18;
+                                                  t = q_18;
                                                   if(!(match_cons(t, sym_Wld_0)))
                                                     _fail(t);
-                                                  t = q_18;
+                                                  t = r_18;
                                                 }
                                               }
                                           }
@@ -2443,1646 +2549,1672 @@ ATerm Simplify_0_0 (ATerm t)
     }
   return(t);
 }
-ATerm repeat_1_0 (ATerm r_130 (ATerm), ATerm t)
+ATerm repeat_1_0 (ATerm w_130 (ATerm), ATerm t)
 {
-  ATerm u_18 (ATerm t)
+  ATerm t_18 (ATerm t)
   {
-    ATerm k_15 = t;
-    int l_15 = stack_ptr;
+    ATerm t_15 = t;
+    int u_15 = stack_ptr;
     if((PushChoice() == 0))
       {
-        t = r_130(t);
-        t = u_18(t);
+        t = w_130(t);
+        t = t_18(t);
         ;
-        LocalPopChoice(l_15);
+        LocalPopChoice(u_15);
       }
     else
       {
-        t = k_15;
+        t = t_15;
       }
     return(t);
   }
-  t = u_18(t);
+  t = t_18(t);
   return(t);
 }
-ATerm downup_1_0 (ATerm x_113 (ATerm), ATerm t)
+ATerm downup_1_0 (ATerm c_114 (ATerm), ATerm t)
 {
-  t = x_113(t);
+  t = c_114(t);
   {
-    ATerm o_1 (ATerm t)
+    ATerm p_1 (ATerm t)
     {
-      t = downup_1_0(x_113, t);
+      t = downup_1_0(c_114, t);
       return(t);
     }
-    t = SRTS_all(o_1, t);
-    t = x_113(t);
+    t = SRTS_all(p_1, t);
+    t = c_114(t);
   }
   return(t);
 }
-ATerm filter_1_0 (ATerm l_126 (ATerm), ATerm t)
+ATerm TopLevel_0_0 (ATerm t)
 {
-  ATerm m_15 = t;
-  int n_15 = stack_ptr;
+  ATerm f_19 = NULL;
+  f_19 = t;
+  {
+    ATerm v_15 = t;
+    int w_15 = stack_ptr;
+    if((PushChoice() == 0))
+      {
+        ATerm a_3 = NULL;
+        t = SSL_table_get((ATerm)ATmakeAppl(ATmakeSymbol("TopLevel", 0, ATtrue)), f_19);
+        if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
+          {
+            a_3 = ATgetFirst((ATermList) t);
+            {
+              ATerm x_15 = (ATerm) ATgetNext((ATermList) t);
+            }
+          }
+        else
+          _fail(t);
+        t = a_3;
+        if(match_cons(t, sym_Defined_1))
+          {
+            ATerm y_15 = ATgetArgument(t, 0);
+            if((ATgetSymbol((ATermAppl) y_15) != ATmakeSymbol("f_0", 0, ATtrue)))
+              _fail(t);
+          }
+        else
+          _fail(t);
+        t = term_m_8;
+        ;
+        LocalPopChoice(w_15);
+      }
+    else
+      {
+        t = v_15;
+        {
+          ATerm f_3 = NULL;
+          t = SSL_table_get((ATerm)ATmakeAppl(ATmakeSymbol("TopLevel", 0, ATtrue)), f_19);
+          if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
+            {
+              f_3 = ATgetFirst((ATermList) t);
+              {
+                ATerm z_15 = (ATerm) ATgetNext((ATermList) t);
+              }
+            }
+          else
+            _fail(t);
+          t = f_3;
+          if(match_cons(t, sym_Defined_1))
+            {
+              ATerm a_16 = ATgetArgument(t, 0);
+              if((ATgetSymbol((ATermAppl) a_16) != ATmakeSymbol("b_0", 0, ATtrue)))
+                _fail(t);
+            }
+          else
+            _fail(t);
+          t = term_m_8;
+        }
+      }
+  }
+  return(t);
+}
+ATerm filter_1_0 (ATerm q_126 (ATerm), ATerm t)
+{
+  ATerm b_16 = t;
+  int c_16 = stack_ptr;
   if((PushChoice() == 0))
     {
       if(((ATgetType(t) != AT_LIST) || !(ATisEmpty(t))))
         _fail(t);
       ;
-      LocalPopChoice(n_15);
+      LocalPopChoice(c_16);
     }
   else
     {
-      t = m_15;
+      t = b_16;
       {
-        ATerm o_15 = t;
-        int p_15 = stack_ptr;
+        ATerm d_16 = t;
+        int e_16 = stack_ptr;
         if((PushChoice() == 0))
           {
-            ATerm t_1 (ATerm t)
+            ATerm u_1 (ATerm t)
             {
-              t = filter_1_0(l_126, t);
+              t = filter_1_0(q_126, t);
               return(t);
             }
-            t = Cons_2_0(l_126, t_1, t);
+            t = Cons_2_0(q_126, u_1, t);
             ;
-            LocalPopChoice(p_15);
+            LocalPopChoice(e_16);
           }
         else
           {
-            t = o_15;
+            t = d_16;
             {
-              ATerm y_18 = NULL;
+              ATerm o_19 = NULL;
               if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
                 {
-                  ATerm q_15 = ATgetFirst((ATermList) t);
-                  y_18 = (ATerm) ATgetNext((ATermList) t);
+                  ATerm f_16 = ATgetFirst((ATermList) t);
+                  o_19 = (ATerm) ATgetNext((ATermList) t);
                 }
               else
                 _fail(t);
-              t = y_18;
-              t = filter_1_0(l_126, t);
+              t = o_19;
+              t = filter_1_0(q_126, t);
             }
           }
       }
     }
   return(t);
 }
-ATerm Rec_2_0 (ATerm h_103 (ATerm), ATerm i_103 (ATerm), ATerm t)
+ATerm Rec_2_0 (ATerm m_103 (ATerm), ATerm n_103 (ATerm), ATerm t)
 {
-  ATerm b_19 = NULL,c_19 = NULL,f_19 = NULL,h_19 = NULL,i_19 = NULL,j_19 = NULL;
-  j_19 = t;
+  ATerm q_19 = NULL,r_19 = NULL,t_19 = NULL,u_19 = NULL,x_19 = NULL,z_19 = NULL;
+  z_19 = t;
   if(match_cons(t, sym_Rec_2))
     {
-      c_19 = ATgetArgument(t, 0);
-      f_19 = ATgetArgument(t, 1);
+      r_19 = ATgetArgument(t, 0);
+      t_19 = ATgetArgument(t, 1);
     }
   else
     _fail(t);
-  t = SSLgetAnnotations(j_19);
-  b_19 = t;
-  t = c_19;
-  t = h_103(t);
-  h_19 = t;
-  t = f_19;
-  t = i_103(t);
-  i_19 = t;
-  t = SSLsetAnnotations((ATerm)ATmakeAppl(sym_Rec_2, h_19, i_19), b_19);
+  t = SSLgetAnnotations(z_19);
+  q_19 = t;
+  t = r_19;
+  t = m_103(t);
+  u_19 = t;
+  t = t_19;
+  t = n_103(t);
+  x_19 = t;
+  t = SSLsetAnnotations((ATerm)ATmakeAppl(sym_Rec_2, u_19, x_19), q_19);
   return(t);
 }
-ATerm SDef_3_0 (ATerm z_104 (ATerm), ATerm a_105 (ATerm), ATerm b_105 (ATerm), ATerm t)
+ATerm SDef_3_0 (ATerm e_105 (ATerm), ATerm f_105 (ATerm), ATerm g_105 (ATerm), ATerm t)
 {
-  ATerm m_19 = NULL,n_19 = NULL,p_19 = NULL,r_19 = NULL,t_19 = NULL,u_19 = NULL,v_19 = NULL,w_19 = NULL;
-  w_19 = t;
+  ATerm c_20 = NULL,d_20 = NULL,e_20 = NULL,f_20 = NULL,h_20 = NULL,j_20 = NULL,l_20 = NULL,m_20 = NULL;
+  m_20 = t;
   if(match_cons(t, sym_SDef_3))
     {
-      n_19 = ATgetArgument(t, 0);
-      p_19 = ATgetArgument(t, 1);
-      r_19 = ATgetArgument(t, 2);
+      d_20 = ATgetArgument(t, 0);
+      e_20 = ATgetArgument(t, 1);
+      f_20 = ATgetArgument(t, 2);
     }
   else
     _fail(t);
-  t = SSLgetAnnotations(w_19);
-  m_19 = t;
-  t = n_19;
-  t = z_104(t);
-  t_19 = t;
-  t = p_19;
-  t = a_105(t);
-  u_19 = t;
-  t = r_19;
-  t = b_105(t);
-  v_19 = t;
-  t = SSLsetAnnotations((ATerm)ATmakeAppl(sym_SDef_3, t_19, u_19, v_19), m_19);
+  t = SSLgetAnnotations(m_20);
+  c_20 = t;
+  t = d_20;
+  t = e_105(t);
+  h_20 = t;
+  t = e_20;
+  t = f_105(t);
+  j_20 = t;
+  t = f_20;
+  t = g_105(t);
+  l_20 = t;
+  t = SSLsetAnnotations((ATerm)ATmakeAppl(sym_SDef_3, h_20, j_20, l_20), c_20);
   return(t);
 }
-ATerm Let_2_0 (ATerm k_102 (ATerm), ATerm l_102 (ATerm), ATerm t)
+ATerm Let_2_0 (ATerm p_102 (ATerm), ATerm q_102 (ATerm), ATerm t)
 {
-  ATerm z_19 = NULL,b_20 = NULL,c_20 = NULL,f_20 = NULL,g_20 = NULL,h_20 = NULL;
-  h_20 = t;
+  ATerm p_20 = NULL,q_20 = NULL,r_20 = NULL,t_20 = NULL,u_20 = NULL,x_20 = NULL;
+  x_20 = t;
   if(match_cons(t, sym_Let_2))
     {
-      b_20 = ATgetArgument(t, 0);
-      c_20 = ATgetArgument(t, 1);
+      q_20 = ATgetArgument(t, 0);
+      r_20 = ATgetArgument(t, 1);
     }
   else
     _fail(t);
-  t = SSLgetAnnotations(h_20);
-  z_19 = t;
-  t = b_20;
-  t = k_102(t);
-  f_20 = t;
-  t = c_20;
-  t = l_102(t);
-  g_20 = t;
-  t = SSLsetAnnotations((ATerm)ATmakeAppl(sym_Let_2, f_20, g_20), z_19);
+  t = SSLgetAnnotations(x_20);
+  p_20 = t;
+  t = q_20;
+  t = p_102(t);
+  t_20 = t;
+  t = r_20;
+  t = q_102(t);
+  u_20 = t;
+  t = SSLsetAnnotations((ATerm)ATmakeAppl(sym_Let_2, t_20, u_20), p_20);
   return(t);
 }
-ATerm sboundin_3_0 (ATerm a_113 (ATerm), ATerm b_113 (ATerm), ATerm c_113 (ATerm), ATerm t)
+ATerm sboundin_3_0 (ATerm f_113 (ATerm), ATerm g_113 (ATerm), ATerm h_113 (ATerm), ATerm t)
 {
-  ATerm r_15 = t;
-  int s_15 = stack_ptr;
+  ATerm g_16 = t;
+  int h_16 = stack_ptr;
   if((PushChoice() == 0))
     {
-      t = Let_2_0(a_113, a_113, t);
+      t = Let_2_0(f_113, f_113, t);
       ;
-      LocalPopChoice(s_15);
+      LocalPopChoice(h_16);
     }
   else
     {
-      t = r_15;
+      t = g_16;
       {
-        ATerm t_15 = t;
-        int u_15 = stack_ptr;
+        ATerm i_16 = t;
+        int m_16 = stack_ptr;
         if((PushChoice() == 0))
           {
-            t = SDef_3_0(c_113, c_113, a_113, t);
+            t = SDef_3_0(h_113, h_113, f_113, t);
             ;
-            LocalPopChoice(u_15);
+            LocalPopChoice(m_16);
           }
         else
           {
-            t = t_15;
+            t = i_16;
             {
-              ATerm v_15 = t;
-              int w_15 = stack_ptr;
+              ATerm n_16 = t;
+              int o_16 = stack_ptr;
               if((PushChoice() == 0))
                 {
-                  t = SDefT_4_0(c_113, c_113, c_113, a_113, t);
+                  t = SDefT_4_0(h_113, h_113, h_113, f_113, t);
                   ;
-                  LocalPopChoice(w_15);
+                  LocalPopChoice(o_16);
                 }
               else
                 {
-                  t = v_15;
-                  t = Rec_2_0(c_113, a_113, t);
+                  t = n_16;
+                  t = Rec_2_0(h_113, f_113, t);
                 }
             }
           }
       }
+    }
+  return(t);
+}
+ATerm v_1 (ATerm t)
+{
+  ATerm d_21 = NULL;
+  ATerm p_16 = t;
+  int q_16 = stack_ptr;
+  if((PushChoice() == 0))
+    {
+      if(match_cons(t, sym_SDef_3))
+        {
+          d_21 = ATgetArgument(t, 0);
+          {
+            ATerm r_16 = ATgetArgument(t, 1);
+          }
+          {
+            ATerm s_16 = ATgetArgument(t, 2);
+          }
+        }
+      else
+        _fail(t);
+      LocalPopChoice(q_16);
+      t = d_21;
+    }
+  else
+    {
+      t = p_16;
+      if(match_cons(t, sym_SDefT_4))
+        {
+          d_21 = ATgetArgument(t, 0);
+          {
+            ATerm t_16 = ATgetArgument(t, 1);
+          }
+          {
+            ATerm u_16 = ATgetArgument(t, 2);
+          }
+          {
+            ATerm v_16 = ATgetArgument(t, 3);
+          }
+        }
+      else
+        _fail(t);
+      t = d_21;
     }
   return(t);
 }
 ATerm Bind1_0_0 (ATerm t)
 {
-  ATerm l_20 = NULL;
+  ATerm b_21 = NULL;
   if(match_cons(t, sym_Let_2))
     {
-      l_20 = ATgetArgument(t, 0);
+      b_21 = ATgetArgument(t, 0);
       {
-        ATerm x_15 = ATgetArgument(t, 1);
+        ATerm w_16 = ATgetArgument(t, 1);
       }
     }
   else
     _fail(t);
-  t = l_20;
-  {
-    ATerm u_1 (ATerm t)
-    {
-      ATerm o_20 = NULL;
-      ATerm y_15 = t;
-      int z_15 = stack_ptr;
-      if((PushChoice() == 0))
-        {
-          if(match_cons(t, sym_SDef_3))
-            {
-              o_20 = ATgetArgument(t, 0);
-              {
-                ATerm a_16 = ATgetArgument(t, 1);
-              }
-              {
-                ATerm b_16 = ATgetArgument(t, 2);
-              }
-            }
-          else
-            _fail(t);
-          LocalPopChoice(z_15);
-          t = o_20;
-        }
-      else
-        {
-          t = y_15;
-          if(match_cons(t, sym_SDefT_4))
-            {
-              o_20 = ATgetArgument(t, 0);
-              {
-                ATerm c_16 = ATgetArgument(t, 1);
-              }
-              {
-                ATerm d_16 = ATgetArgument(t, 2);
-              }
-              {
-                ATerm h_16 = ATgetArgument(t, 3);
-              }
-            }
-          else
-            _fail(t);
-          t = o_20;
-        }
-      return(t);
-    }
-    t = map_1_0(u_1, t);
-  }
+  t = b_21;
+  t = map_1_0(v_1, t);
   return(t);
 }
-ATerm foldr_3_0 (ATerm y_124 (ATerm), ATerm z_124 (ATerm), ATerm a_125 (ATerm), ATerm t)
+ATerm foldr_3_0 (ATerm d_125 (ATerm), ATerm e_125 (ATerm), ATerm f_125 (ATerm), ATerm t)
 {
-  ATerm i_16 = t;
-  int j_16 = stack_ptr;
+  ATerm x_16 = t;
+  int y_16 = stack_ptr;
   if((PushChoice() == 0))
     {
       if(((ATgetType(t) != AT_LIST) || !(ATisEmpty(t))))
         _fail(t);
-      t = y_124(t);
+      t = d_125(t);
       ;
-      LocalPopChoice(j_16);
+      LocalPopChoice(y_16);
     }
   else
     {
-      t = i_16;
+      t = x_16;
       {
-        ATerm a_21 = NULL,d_21 = NULL,h_21 = NULL,i_21 = NULL;
+        ATerm p_21 = NULL,r_21 = NULL,w_21 = NULL,x_21 = NULL;
         if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
           {
-            a_21 = ATgetFirst((ATermList) t);
-            d_21 = (ATerm) ATgetNext((ATermList) t);
+            p_21 = ATgetFirst((ATermList) t);
+            r_21 = (ATerm) ATgetNext((ATermList) t);
           }
         else
           _fail(t);
-        t = a_21;
-        t = a_125(t);
-        h_21 = t;
-        t = d_21;
-        t = foldr_3_0(y_124, z_124, a_125, t);
-        i_21 = t;
-        t = (ATerm) ATmakeAppl(sym__2, h_21, i_21);
-        t = z_124(t);
+        t = p_21;
+        t = f_125(t);
+        w_21 = t;
+        t = r_21;
+        t = foldr_3_0(d_125, e_125, f_125, t);
+        x_21 = t;
+        t = (ATerm) ATmakeAppl(sym__2, w_21, x_21);
+        t = e_125(t);
       }
     }
   return(t);
 }
-ATerm diff_1_0 (ATerm f_122 (ATerm), ATerm t)
+ATerm diff_1_0 (ATerm k_122 (ATerm), ATerm t)
 {
-  ATerm l_21 = NULL,m_21 = NULL;
+  ATerm b_22 = NULL,c_22 = NULL;
   if(match_cons(t, sym__2))
     {
-      m_21 = ATgetArgument(t, 0);
-      l_21 = ATgetArgument(t, 1);
+      c_22 = ATgetArgument(t, 0);
+      b_22 = ATgetArgument(t, 1);
     }
   else
     _fail(t);
-  t = m_21;
+  t = c_22;
   {
-    ATerm n_21 (ATerm t)
+    ATerm d_22 (ATerm t)
     {
-      ATerm k_16 = t;
-      int l_16 = stack_ptr;
+      ATerm z_16 = t;
+      int a_17 = stack_ptr;
       if((PushChoice() == 0))
         {
           if(((ATgetType(t) != AT_LIST) || !(ATisEmpty(t))))
             _fail(t);
           ;
-          LocalPopChoice(l_16);
+          LocalPopChoice(a_17);
         }
       else
         {
-          t = k_16;
+          t = z_16;
           {
-            ATerm m_16 = t;
-            int n_16 = stack_ptr;
+            ATerm b_17 = t;
+            int c_17 = stack_ptr;
             if((PushChoice() == 0))
               {
-                ATerm p_2 = NULL,q_2 = NULL;
+                ATerm i_3 = NULL,l_3 = NULL;
                 if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
                   {
-                    p_2 = ATgetFirst((ATermList) t);
-                    q_2 = (ATerm) ATgetNext((ATermList) t);
+                    i_3 = ATgetFirst((ATermList) t);
+                    l_3 = (ATerm) ATgetNext((ATermList) t);
                   }
                 else
                   _fail(t);
-                t = l_21;
+                t = b_22;
                 {
-                  ATerm v_1 (ATerm t)
+                  ATerm w_1 (ATerm t)
                   {
-                    ATerm r_2 = NULL;
-                    r_2 = t;
-                    t = (ATerm) ATmakeAppl(sym__2, p_2, r_2);
-                    t = f_122(t);
+                    ATerm p_3 = NULL;
+                    p_3 = t;
+                    t = (ATerm) ATmakeAppl(sym__2, i_3, p_3);
+                    t = k_122(t);
                     return(t);
                   }
-                  t = fetch_1_0(v_1, t);
-                  t = q_2;
-                  t = n_21(t);
+                  t = fetch_1_0(w_1, t);
+                  t = l_3;
+                  t = d_22(t);
                 }
                 ;
-                LocalPopChoice(n_16);
+                LocalPopChoice(c_17);
               }
             else
               {
-                t = m_16;
-                t = Cons_2_0(_id, n_21, t);
+                t = b_17;
+                t = Cons_2_0(_id, d_22, t);
               }
           }
         }
       return(t);
     }
-    t = n_21(t);
+    t = d_22(t);
   }
+  return(t);
+}
+ATerm x_1 (ATerm t)
+{
+  if(match_cons(t, sym__2))
+    {
+      ATerm d_17 = ATgetArgument(t, 0);
+      if(((ATgetType(d_17) != AT_LIST) || !(ATisEmpty(d_17))))
+        _fail(t);
+      {
+        ATerm e_17 = ATgetArgument(t, 1);
+        if(((ATgetType(e_17) != AT_LIST) || !(ATisEmpty(e_17))))
+          _fail(t);
+      }
+    }
+  else
+    _fail(t);
+  t = (ATerm) ATempty;
+  return(t);
+}
+ATerm y_1 (ATerm t)
+{
+  ATerm p_22 = NULL,q_22 = NULL,r_22 = NULL,t_22 = NULL;
+  if(match_cons(t, sym__2))
+    {
+      ATerm f_17 = ATgetArgument(t, 0);
+      if(((ATgetType(f_17) == AT_LIST) && !(ATisEmpty(f_17))))
+        {
+          p_22 = ATgetFirst((ATermList) f_17);
+          r_22 = (ATerm) ATgetNext((ATermList) f_17);
+        }
+      else
+        _fail(t);
+      {
+        ATerm g_17 = ATgetArgument(t, 1);
+        if(((ATgetType(g_17) == AT_LIST) && !(ATisEmpty(g_17))))
+          {
+            q_22 = ATgetFirst((ATermList) g_17);
+            t_22 = (ATerm) ATgetNext((ATermList) g_17);
+          }
+        else
+          _fail(t);
+      }
+    }
+  else
+    _fail(t);
+  t = (ATerm) ATmakeAppl(sym__2, (ATerm)ATmakeAppl(sym__2, p_22, q_22), (ATerm) ATmakeAppl(sym__2, r_22, t_22));
+  return(t);
+}
+ATerm z_1 (ATerm t)
+{
+  ATerm u_22 = NULL,x_22 = NULL;
+  if(match_cons(t, sym__2))
+    {
+      u_22 = ATgetArgument(t, 0);
+      x_22 = ATgetArgument(t, 1);
+    }
+  else
+    _fail(t);
+  t = (ATerm) ATinsert(CheckATermList(x_22), u_22);
   return(t);
 }
 ATerm UfDecompose_0_0 (ATerm t)
 {
-  ATerm q_21 = NULL,t_21 = NULL,u_21 = NULL,v_21 = NULL,w_21 = NULL,x_21 = NULL,y_21 = NULL;
+  ATerm f_22 = NULL,h_22 = NULL,i_22 = NULL,l_22 = NULL,m_22 = NULL,n_22 = NULL,o_22 = NULL;
   if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
     {
-      ATerm o_16 = ATgetFirst((ATermList) t);
-      if(match_cons(o_16, sym__2))
+      ATerm h_17 = ATgetFirst((ATermList) t);
+      if(match_cons(h_17, sym__2))
         {
-          q_21 = ATgetArgument(o_16, 0);
-          t_21 = ATgetArgument(o_16, 1);
+          f_22 = ATgetArgument(h_17, 0);
+          h_22 = ATgetArgument(h_17, 1);
         }
       else
         _fail(t);
-      u_21 = (ATerm) ATgetNext((ATermList) t);
+      i_22 = (ATerm) ATgetNext((ATermList) t);
     }
   else
     _fail(t);
-  t = SSL_explode_term(t_21);
+  t = SSL_explode_term(h_22);
   if(match_cons(t, sym__2))
     {
-      v_21 = ATgetArgument(t, 0);
-      w_21 = ATgetArgument(t, 1);
+      l_22 = ATgetArgument(t, 0);
+      m_22 = ATgetArgument(t, 1);
     }
   else
     _fail(t);
-  t = SSL_explode_term(q_21);
+  t = SSL_explode_term(f_22);
   if(match_cons(t, sym__2))
     {
-      if((v_21 != ATgetArgument(t, 0)))
+      if((l_22 != ATgetArgument(t, 0)))
         {
           _fail(ATgetArgument(t, 0));
         }
-      x_21 = ATgetArgument(t, 1);
+      n_22 = ATgetArgument(t, 1);
     }
   else
     _fail(t);
-  t = (ATerm) ATmakeAppl(sym__2, x_21, w_21);
+  t = (ATerm) ATmakeAppl(sym__2, n_22, m_22);
+  t = genzip_4_0(x_1, y_1, z_1, _id, t);
+  o_22 = t;
+  t = (ATerm) ATmakeAppl(sym__2, o_22, i_22);
   {
-    ATerm w_1 (ATerm t)
-    {
-      if(match_cons(t, sym__2))
-        {
-          ATerm p_16 = ATgetArgument(t, 0);
-          if(((ATgetType(p_16) != AT_LIST) || !(ATisEmpty(p_16))))
-            _fail(t);
-          {
-            ATerm q_16 = ATgetArgument(t, 1);
-            if(((ATgetType(q_16) != AT_LIST) || !(ATisEmpty(q_16))))
-              _fail(t);
-          }
-        }
-      else
-        _fail(t);
-      t = (ATerm) ATempty;
-      return(t);
-    }
-    ATerm x_1 (ATerm t)
-    {
-      ATerm z_21 = NULL,b_22 = NULL,c_22 = NULL,f_22 = NULL;
-      if(match_cons(t, sym__2))
-        {
-          ATerm r_16 = ATgetArgument(t, 0);
-          if(((ATgetType(r_16) == AT_LIST) && !(ATisEmpty(r_16))))
-            {
-              z_21 = ATgetFirst((ATermList) r_16);
-              c_22 = (ATerm) ATgetNext((ATermList) r_16);
-            }
-          else
-            _fail(t);
-          {
-            ATerm s_16 = ATgetArgument(t, 1);
-            if(((ATgetType(s_16) == AT_LIST) && !(ATisEmpty(s_16))))
-              {
-                b_22 = ATgetFirst((ATermList) s_16);
-                f_22 = (ATerm) ATgetNext((ATermList) s_16);
-              }
-            else
-              _fail(t);
-          }
-        }
-      else
-        _fail(t);
-      t = (ATerm) ATmakeAppl(sym__2, (ATerm)ATmakeAppl(sym__2, z_21, b_22), (ATerm) ATmakeAppl(sym__2, c_22, f_22));
-      return(t);
-    }
-    ATerm y_1 (ATerm t)
-    {
-      ATerm g_22 = NULL,h_22 = NULL;
-      if(match_cons(t, sym__2))
-        {
-          g_22 = ATgetArgument(t, 0);
-          h_22 = ATgetArgument(t, 1);
-        }
-      else
-        _fail(t);
-      t = (ATerm) ATinsert(CheckATermList(h_22), g_22);
-      return(t);
-    }
-    t = genzip_4_0(w_1, x_1, y_1, _id, t);
-    y_21 = t;
-    t = (ATerm) ATmakeAppl(sym__2, y_21, u_21);
-    {
-      ATerm t_16 = t;
-      int u_16 = stack_ptr;
-      if((PushChoice() == 0))
-        {
-          if(match_cons(t, sym__2))
-            {
-              ATerm v_16 = ATgetArgument(t, 0);
-              ATerm w_16 = ATgetArgument(t, 1);
-            }
-          else
-            _fail(t);
-          t = y_21;
-          {
-            ATerm z_1 (ATerm t)
-            {
-              t = u_21;
-              return(t);
-            }
-            t = at_end_1_0(z_1, t);
-          }
-          ;
-          LocalPopChoice(u_16);
-        }
-      else
-        {
-          t = t_16;
-          {
-            ATerm a_3 = NULL;
-            t = SSL_explode_term((ATerm) ATmakeAppl(sym__2, y_21, u_21));
-            if(match_cons(t, sym__2))
-              {
-                ATerm x_16 = ATgetArgument(t, 0);
-                if((ATgetSymbol((ATermAppl) x_16) != ATmakeSymbol("", 0, ATtrue)))
-                  _fail(t);
-                a_3 = ATgetArgument(t, 1);
-              }
-            else
-              _fail(t);
-            t = a_3;
-            t = concat_0_0(t);
-          }
-        }
-    }
-  }
-  return(t);
-}
-ATerm while_not_2_0 (ATerm g_131 (ATerm), ATerm h_131 (ATerm), ATerm t)
-{
-  ATerm m_22 (ATerm t)
-  {
-    ATerm y_16 = t;
-    int z_16 = stack_ptr;
+    ATerm i_17 = t;
+    int j_17 = stack_ptr;
     if((PushChoice() == 0))
       {
-        t = g_131(t);
+        if(match_cons(t, sym__2))
+          {
+            ATerm k_17 = ATgetArgument(t, 0);
+            ATerm l_17 = ATgetArgument(t, 1);
+          }
+        else
+          _fail(t);
+        t = o_22;
+        {
+          ATerm a_2 (ATerm t)
+          {
+            t = i_22;
+            return(t);
+          }
+          t = at_end_1_0(a_2, t);
+        }
         ;
-        LocalPopChoice(z_16);
+        LocalPopChoice(j_17);
       }
     else
       {
-        t = y_16;
-        t = h_131(t);
-        t = m_22(t);
+        t = i_17;
+        {
+          ATerm x_3 = NULL;
+          t = SSL_explode_term((ATerm) ATmakeAppl(sym__2, o_22, i_22));
+          if(match_cons(t, sym__2))
+            {
+              ATerm m_17 = ATgetArgument(t, 0);
+              if((ATgetSymbol((ATermAppl) m_17) != ATmakeSymbol("", 0, ATtrue)))
+                _fail(t);
+              x_3 = ATgetArgument(t, 1);
+            }
+          else
+            _fail(t);
+          t = x_3;
+          t = concat_0_0(t);
+        }
+      }
+  }
+  return(t);
+}
+ATerm while_not_2_0 (ATerm l_131 (ATerm), ATerm m_131 (ATerm), ATerm t)
+{
+  ATerm b_23 (ATerm t)
+  {
+    ATerm o_17 = t;
+    int p_17 = stack_ptr;
+    if((PushChoice() == 0))
+      {
+        t = l_131(t);
+        ;
+        LocalPopChoice(p_17);
+      }
+    else
+      {
+        t = o_17;
+        t = m_131(t);
+        t = b_23(t);
       }
     return(t);
   }
-  t = m_22(t);
+  t = b_23(t);
   return(t);
 }
-ATerm for_3_0 (ATerm j_131 (ATerm), ATerm k_131 (ATerm), ATerm l_131 (ATerm), ATerm t)
+ATerm for_3_0 (ATerm o_131 (ATerm), ATerm p_131 (ATerm), ATerm q_131 (ATerm), ATerm t)
 {
-  t = j_131(t);
-  t = while_not_2_0(k_131, l_131, t);
+  t = o_131(t);
+  t = while_not_2_0(p_131, q_131, t);
+  return(t);
+}
+ATerm b_2 (ATerm t)
+{
+  ATerm n_23 = NULL;
+  n_23 = t;
+  t = (ATerm) ATmakeAppl(sym__2, (ATerm)ATempty, n_23);
+  return(t);
+}
+ATerm f_2 (ATerm t)
+{
+  if(((ATgetType(t) != AT_LIST) || !(ATisEmpty(t))))
+    _fail(t);
+  return(t);
+}
+ATerm i_2 (ATerm t)
+{
+  ATerm q_17 = t;
+  int s_17 = stack_ptr;
+  if((PushChoice() == 0))
+    {
+      ATerm p_23 = NULL,q_23 = NULL,r_23 = NULL,s_23 = NULL;
+      if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
+        {
+          p_23 = ATgetFirst((ATermList) t);
+          s_23 = (ATerm) ATgetNext((ATermList) t);
+        }
+      else
+        _fail(t);
+      t = p_23;
+      if(match_cons(t, sym__2))
+        {
+          q_23 = ATgetArgument(t, 0);
+          r_23 = ATgetArgument(t, 1);
+        }
+      else
+        _fail(t);
+      t = r_23;
+      if((q_23 != t))
+        {
+          _fail(t);
+        }
+      t = s_23;
+      ;
+      LocalPopChoice(s_17);
+    }
+  else
+    {
+      t = q_17;
+      t = UfDecompose_0_0(t);
+    }
+  return(t);
+}
+ATerm j_2 (ATerm t)
+{
+  ATerm d_24 = NULL;
+  if(match_cons(t, sym__2))
+    {
+      d_24 = ATgetArgument(t, 0);
+      if((d_24 != ATgetArgument(t, 1)))
+        {
+          _fail(ATgetArgument(t, 1));
+        }
+    }
+  else
+    _fail(t);
   return(t);
 }
 ATerm diff_0_0 (ATerm t)
 {
-  ATerm a_17 = t;
-  int b_17 = stack_ptr;
+  ATerm t_17 = t;
+  int u_17 = stack_ptr;
   if((PushChoice() == 0))
     {
-      ATerm b_2 (ATerm t)
-      {
-        ATerm r_22 = NULL;
-        r_22 = t;
-        t = (ATerm) ATmakeAppl(sym__2, (ATerm)ATempty, r_22);
-        return(t);
-      }
-      ATerm c_2 (ATerm t)
-      {
-        ATerm e_2 (ATerm t)
-        {
-          if(((ATgetType(t) != AT_LIST) || !(ATisEmpty(t))))
-            _fail(t);
-          return(t);
-        }
-        t = _2_0(_id, e_2, t);
-        return(t);
-      }
       ATerm d_2 (ATerm t)
       {
-        ATerm c_17 = t;
-        int d_17 = stack_ptr;
+        t = _2_0(_id, f_2, t);
+        return(t);
+      }
+      ATerm e_2 (ATerm t)
+      {
+        ATerm v_17 = t;
+        int w_17 = stack_ptr;
         if((PushChoice() == 0))
           {
-            ATerm f_2 (ATerm t)
-            {
-              ATerm e_17 = t;
-              int f_17 = stack_ptr;
-              if((PushChoice() == 0))
-                {
-                  ATerm t_22 = NULL,u_22 = NULL,v_22 = NULL,w_22 = NULL;
-                  if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
-                    {
-                      t_22 = ATgetFirst((ATermList) t);
-                      w_22 = (ATerm) ATgetNext((ATermList) t);
-                    }
-                  else
-                    _fail(t);
-                  t = t_22;
-                  if(match_cons(t, sym__2))
-                    {
-                      u_22 = ATgetArgument(t, 0);
-                      v_22 = ATgetArgument(t, 1);
-                    }
-                  else
-                    _fail(t);
-                  t = v_22;
-                  if((u_22 != t))
-                    {
-                      _fail(t);
-                    }
-                  t = w_22;
-                  ;
-                  LocalPopChoice(f_17);
-                }
-              else
-                {
-                  t = e_17;
-                  t = UfDecompose_0_0(t);
-                }
-              return(t);
-            }
-            t = _2_0(_id, f_2, t);
+            t = _2_0(_id, i_2, t);
             ;
-            LocalPopChoice(d_17);
+            LocalPopChoice(w_17);
           }
         else
           {
-            t = c_17;
+            t = v_17;
             {
-              ATerm b_23 = NULL,f_23 = NULL,g_23 = NULL,h_23 = NULL;
+              ATerm w_23 = NULL,x_23 = NULL,y_23 = NULL,z_23 = NULL;
               if(match_cons(t, sym__2))
                 {
-                  b_23 = ATgetArgument(t, 0);
-                  f_23 = ATgetArgument(t, 1);
+                  w_23 = ATgetArgument(t, 0);
+                  x_23 = ATgetArgument(t, 1);
                 }
               else
                 _fail(t);
-              t = f_23;
+              t = x_23;
               if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
                 {
-                  g_23 = ATgetFirst((ATermList) t);
-                  h_23 = (ATerm) ATgetNext((ATermList) t);
+                  y_23 = ATgetFirst((ATermList) t);
+                  z_23 = (ATerm) ATgetNext((ATermList) t);
                 }
               else
                 _fail(t);
-              t = (ATerm) ATmakeAppl(sym__2, (ATerm)ATinsert(CheckATermList(b_23), g_23), h_23);
+              t = (ATerm) ATmakeAppl(sym__2, (ATerm)ATinsert(CheckATermList(w_23), y_23), z_23);
             }
           }
         return(t);
       }
-      t = for_3_0(b_2, c_2, d_2, t);
+      t = for_3_0(b_2, d_2, e_2, t);
       ;
-      LocalPopChoice(b_17);
+      LocalPopChoice(u_17);
     }
   else
     {
-      t = a_17;
-      {
-        ATerm g_2 (ATerm t)
-        {
-          ATerm l_23 = NULL;
-          if(match_cons(t, sym__2))
-            {
-              l_23 = ATgetArgument(t, 0);
-              if((l_23 != ATgetArgument(t, 1)))
-                {
-                  _fail(ATgetArgument(t, 1));
-                }
-            }
-          else
-            _fail(t);
-          return(t);
-        }
-        t = diff_1_0(g_2, t);
-      }
+      t = t_17;
+      t = diff_1_0(j_2, t);
     }
   return(t);
 }
-ATerm free_vars_3_0 (ATerm a_129 (ATerm), ATerm b_129 (ATerm), ATerm c_129 (ATerm (ATerm), ATerm (ATerm), ATerm (ATerm), ATerm), ATerm t)
+ATerm o_2 (ATerm t)
 {
-  ATerm r_23 (ATerm t)
+  t = (ATerm) ATempty;
+  return(t);
+}
+ATerm p_2 (ATerm t)
+{
+  t = (ATerm) ATempty;
+  return(t);
+}
+ATerm s_2 (ATerm t)
+{
+  ATerm i_4 = NULL;
+  if(match_cons(t, sym__2))
+    {
+      i_4 = ATgetArgument(t, 0);
+      if((i_4 != ATgetArgument(t, 1)))
+        {
+          _fail(ATgetArgument(t, 1));
+        }
+    }
+  else
+    _fail(t);
+  return(t);
+}
+ATerm t_2 (ATerm t)
+{
+  t = (ATerm) ATempty;
+  return(t);
+}
+ATerm v_2 (ATerm t)
+{
+  ATerm o_4 = NULL;
+  if(match_cons(t, sym__2))
+    {
+      o_4 = ATgetArgument(t, 0);
+      if((o_4 != ATgetArgument(t, 1)))
+        {
+          _fail(ATgetArgument(t, 1));
+        }
+    }
+  else
+    _fail(t);
+  return(t);
+}
+ATerm r_2 (ATerm t)
+{
+  t = union_1_0(s_2, t);
+  return(t);
+}
+ATerm u_2 (ATerm t)
+{
+  t = union_1_0(v_2, t);
+  return(t);
+}
+ATerm free_vars_3_0 (ATerm f_129 (ATerm), ATerm g_129 (ATerm), ATerm h_129 (ATerm (ATerm), ATerm (ATerm), ATerm (ATerm), ATerm), ATerm t)
+{
+  ATerm l_24 (ATerm t)
   {
-    ATerm g_17 = t;
-    int h_17 = stack_ptr;
+    ATerm x_17 = t;
+    int y_17 = stack_ptr;
     if((PushChoice() == 0))
       {
-        t = a_129(t);
+        t = f_129(t);
         ;
-        LocalPopChoice(h_17);
+        LocalPopChoice(y_17);
       }
     else
       {
-        t = g_17;
+        t = x_17;
         {
-          ATerm i_17 = t;
-          int j_17 = stack_ptr;
+          ATerm z_17 = t;
+          int a_18 = stack_ptr;
           if((PushChoice() == 0))
             {
-              ATerm m_23 = NULL,o_23 = NULL,o_3 = NULL,r_3 = NULL;
-              m_23 = t;
-              t = b_129(t);
-              o_23 = t;
-              t = m_23;
+              ATerm e_24 = NULL,g_24 = NULL,d_4 = NULL,e_4 = NULL;
+              e_24 = t;
+              t = g_129(t);
+              g_24 = t;
+              t = e_24;
               {
-                ATerm j_2 (ATerm t)
+                ATerm l_2 (ATerm t)
                 {
-                  ATerm d_3 = NULL;
-                  t = r_23(t);
-                  d_3 = t;
-                  t = (ATerm) ATmakeAppl(sym__2, d_3, o_23);
+                  ATerm z_3 = NULL;
+                  t = l_24(t);
+                  z_3 = t;
+                  t = (ATerm) ATmakeAppl(sym__2, z_3, g_24);
                   t = diff_0_0(t);
                   return(t);
                 }
-                ATerm l_2 (ATerm t)
-                {
-                  t = (ATerm) ATempty;
-                  return(t);
-                }
-                t = c_129(j_2, r_23, l_2, t);
-                o_3 = t;
-                t = SSL_explode_term(o_3);
+                t = h_129(l_2, l_24, o_2, t);
+                d_4 = t;
+                t = SSL_explode_term(d_4);
                 if(match_cons(t, sym__2))
                   {
-                    ATerm k_17 = ATgetArgument(t, 0);
-                    r_3 = ATgetArgument(t, 1);
+                    ATerm b_18 = ATgetArgument(t, 0);
+                    e_4 = ATgetArgument(t, 1);
                   }
                 else
                   _fail(t);
-                t = r_3;
-                {
-                  ATerm n_2 (ATerm t)
-                  {
-                    t = (ATerm) ATempty;
-                    return(t);
-                  }
-                  ATerm o_2 (ATerm t)
-                  {
-                    ATerm u_2 (ATerm t)
-                    {
-                      ATerm v_3 = NULL;
-                      if(match_cons(t, sym__2))
-                        {
-                          v_3 = ATgetArgument(t, 0);
-                          if((v_3 != ATgetArgument(t, 1)))
-                            {
-                              _fail(ATgetArgument(t, 1));
-                            }
-                        }
-                      else
-                        _fail(t);
-                      return(t);
-                    }
-                    t = union_1_0(u_2, t);
-                    return(t);
-                  }
-                  t = foldr_3_0(n_2, o_2, _id, t);
-                }
+                t = e_4;
+                t = foldr_3_0(p_2, r_2, _id, t);
               }
               ;
-              LocalPopChoice(j_17);
+              LocalPopChoice(a_18);
             }
           else
             {
-              t = i_17;
+              t = z_17;
               {
-                ATerm w_3 = NULL,x_3 = NULL;
-                w_3 = t;
-                t = SSL_explode_term(w_3);
+                ATerm j_4 = NULL,k_4 = NULL;
+                j_4 = t;
+                t = SSL_explode_term(j_4);
                 if(match_cons(t, sym__2))
                   {
-                    ATerm l_17 = ATgetArgument(t, 0);
-                    x_3 = ATgetArgument(t, 1);
+                    ATerm c_18 = ATgetArgument(t, 0);
+                    k_4 = ATgetArgument(t, 1);
                   }
                 else
                   _fail(t);
-                t = x_3;
-                {
-                  ATerm v_2 (ATerm t)
-                  {
-                    t = (ATerm) ATempty;
-                    return(t);
-                  }
-                  ATerm w_2 (ATerm t)
-                  {
-                    ATerm x_2 (ATerm t)
-                    {
-                      ATerm b_4 = NULL;
-                      if(match_cons(t, sym__2))
-                        {
-                          b_4 = ATgetArgument(t, 0);
-                          if((b_4 != ATgetArgument(t, 1)))
-                            {
-                              _fail(ATgetArgument(t, 1));
-                            }
-                        }
-                      else
-                        _fail(t);
-                      return(t);
-                    }
-                    t = union_1_0(x_2, t);
-                    return(t);
-                  }
-                  t = foldr_3_0(v_2, w_2, r_23, t);
-                }
+                t = k_4;
+                t = foldr_3_0(t_2, u_2, l_24, t);
               }
             }
         }
       }
     return(t);
   }
-  t = r_23(t);
+  t = l_24(t);
   return(t);
 }
-ATerm DynamicRules_1_0 (ATerm r_101 (ATerm), ATerm t)
+ATerm DynamicRules_1_0 (ATerm w_101 (ATerm), ATerm t)
 {
-  ATerm s_23 = NULL,t_23 = NULL,u_23 = NULL,v_23 = NULL;
-  v_23 = t;
+  ATerm m_24 = NULL,r_24 = NULL,s_24 = NULL,u_24 = NULL;
+  u_24 = t;
   if(match_cons(t, sym_DynamicRules_1))
     {
-      t_23 = ATgetArgument(t, 0);
+      r_24 = ATgetArgument(t, 0);
     }
   else
     _fail(t);
-  t = SSLgetAnnotations(v_23);
-  s_23 = t;
-  t = t_23;
-  t = r_101(t);
-  u_23 = t;
-  t = SSLsetAnnotations((ATerm)ATmakeAppl(sym_DynamicRules_1, u_23), s_23);
+  t = SSLgetAnnotations(u_24);
+  m_24 = t;
+  t = r_24;
+  t = w_101(t);
+  s_24 = t;
+  t = SSLsetAnnotations((ATerm)ATmakeAppl(sym_DynamicRules_1, s_24), m_24);
   return(t);
 }
-ATerm RDefT_4_0 (ATerm i_101 (ATerm), ATerm j_101 (ATerm), ATerm k_101 (ATerm), ATerm l_101 (ATerm), ATerm t)
+ATerm RDefT_4_0 (ATerm n_101 (ATerm), ATerm o_101 (ATerm), ATerm p_101 (ATerm), ATerm q_101 (ATerm), ATerm t)
 {
-  ATerm y_23 = NULL,b_24 = NULL,c_24 = NULL,d_24 = NULL,e_24 = NULL,j_24 = NULL,k_24 = NULL,m_24 = NULL,o_24 = NULL,p_24 = NULL;
-  p_24 = t;
+  ATerm y_24 = NULL,z_24 = NULL,a_25 = NULL,b_25 = NULL,c_25 = NULL,d_25 = NULL,e_25 = NULL,f_25 = NULL,g_25 = NULL,h_25 = NULL;
+  h_25 = t;
   if(match_cons(t, sym_RDefT_4))
     {
-      b_24 = ATgetArgument(t, 0);
-      c_24 = ATgetArgument(t, 1);
-      d_24 = ATgetArgument(t, 2);
-      e_24 = ATgetArgument(t, 3);
+      z_24 = ATgetArgument(t, 0);
+      a_25 = ATgetArgument(t, 1);
+      b_25 = ATgetArgument(t, 2);
+      c_25 = ATgetArgument(t, 3);
     }
   else
     _fail(t);
-  t = SSLgetAnnotations(p_24);
-  y_23 = t;
-  t = b_24;
-  t = i_101(t);
-  j_24 = t;
-  t = c_24;
-  t = j_101(t);
-  k_24 = t;
-  t = d_24;
-  t = k_101(t);
-  m_24 = t;
-  t = e_24;
-  t = l_101(t);
-  o_24 = t;
-  t = SSLsetAnnotations((ATerm)ATmakeAppl(sym_RDefT_4, j_24, k_24, m_24, o_24), y_23);
+  t = SSLgetAnnotations(h_25);
+  y_24 = t;
+  t = z_24;
+  t = n_101(t);
+  d_25 = t;
+  t = a_25;
+  t = o_101(t);
+  e_25 = t;
+  t = b_25;
+  t = p_101(t);
+  f_25 = t;
+  t = c_25;
+  t = q_101(t);
+  g_25 = t;
+  t = SSLsetAnnotations((ATerm)ATmakeAppl(sym_RDefT_4, d_25, e_25, f_25, g_25), y_24);
   return(t);
 }
-ATerm SDefT_4_0 (ATerm c_105 (ATerm), ATerm d_105 (ATerm), ATerm e_105 (ATerm), ATerm f_105 (ATerm), ATerm t)
+ATerm SDefT_4_0 (ATerm h_105 (ATerm), ATerm i_105 (ATerm), ATerm j_105 (ATerm), ATerm k_105 (ATerm), ATerm t)
 {
-  ATerm s_24 = NULL,t_24 = NULL,u_24 = NULL,v_24 = NULL,w_24 = NULL,x_24 = NULL,y_24 = NULL,z_24 = NULL,a_25 = NULL,b_25 = NULL;
-  b_25 = t;
+  ATerm k_25 = NULL,l_25 = NULL,m_25 = NULL,n_25 = NULL,o_25 = NULL,p_25 = NULL,q_25 = NULL,v_25 = NULL,w_25 = NULL,x_25 = NULL;
+  x_25 = t;
   if(match_cons(t, sym_SDefT_4))
     {
-      t_24 = ATgetArgument(t, 0);
-      u_24 = ATgetArgument(t, 1);
-      v_24 = ATgetArgument(t, 2);
-      w_24 = ATgetArgument(t, 3);
+      l_25 = ATgetArgument(t, 0);
+      m_25 = ATgetArgument(t, 1);
+      n_25 = ATgetArgument(t, 2);
+      o_25 = ATgetArgument(t, 3);
     }
   else
     _fail(t);
-  t = SSLgetAnnotations(b_25);
-  s_24 = t;
-  t = t_24;
-  t = c_105(t);
-  x_24 = t;
-  t = u_24;
-  t = d_105(t);
-  y_24 = t;
-  t = v_24;
-  t = e_105(t);
-  z_24 = t;
-  t = w_24;
-  t = f_105(t);
-  a_25 = t;
-  t = SSLsetAnnotations((ATerm)ATmakeAppl(sym_SDefT_4, x_24, y_24, z_24, a_25), s_24);
+  t = SSLgetAnnotations(x_25);
+  k_25 = t;
+  t = l_25;
+  t = h_105(t);
+  p_25 = t;
+  t = m_25;
+  t = i_105(t);
+  q_25 = t;
+  t = n_25;
+  t = j_105(t);
+  v_25 = t;
+  t = o_25;
+  t = k_105(t);
+  w_25 = t;
+  t = SSLsetAnnotations((ATerm)ATmakeAppl(sym_SDefT_4, p_25, q_25, v_25, w_25), k_25);
   return(t);
 }
-ATerm Scope_2_0 (ATerm u_102 (ATerm), ATerm v_102 (ATerm), ATerm t)
+ATerm Scope_2_0 (ATerm z_102 (ATerm), ATerm a_103 (ATerm), ATerm t)
 {
-  ATerm e_25 = NULL,f_25 = NULL,g_25 = NULL,h_25 = NULL,i_25 = NULL,n_25 = NULL;
-  n_25 = t;
+  ATerm a_26 = NULL,b_26 = NULL,c_26 = NULL,d_26 = NULL,e_26 = NULL,f_26 = NULL;
+  f_26 = t;
   if(match_cons(t, sym_Scope_2))
     {
-      f_25 = ATgetArgument(t, 0);
-      g_25 = ATgetArgument(t, 1);
+      b_26 = ATgetArgument(t, 0);
+      c_26 = ATgetArgument(t, 1);
     }
   else
     _fail(t);
-  t = SSLgetAnnotations(n_25);
-  e_25 = t;
-  t = f_25;
-  t = u_102(t);
-  h_25 = t;
-  t = g_25;
-  t = v_102(t);
-  i_25 = t;
-  t = SSLsetAnnotations((ATerm)ATmakeAppl(sym_Scope_2, h_25, i_25), e_25);
+  t = SSLgetAnnotations(f_26);
+  a_26 = t;
+  t = b_26;
+  t = z_102(t);
+  d_26 = t;
+  t = c_26;
+  t = a_103(t);
+  e_26 = t;
+  t = SSLsetAnnotations((ATerm)ATmakeAppl(sym_Scope_2, d_26, e_26), a_26);
   return(t);
 }
-ATerm tboundin_3_0 (ATerm w_112 (ATerm), ATerm x_112 (ATerm), ATerm y_112 (ATerm), ATerm t)
+ATerm tboundin_3_0 (ATerm b_113 (ATerm), ATerm c_113 (ATerm), ATerm d_113 (ATerm), ATerm t)
 {
-  ATerm m_17 = t;
-  int n_17 = stack_ptr;
+  ATerm d_18 = t;
+  int e_18 = stack_ptr;
   if((PushChoice() == 0))
     {
-      t = Scope_2_0(y_112, w_112, t);
+      t = Scope_2_0(d_113, b_113, t);
       ;
-      LocalPopChoice(n_17);
+      LocalPopChoice(e_18);
     }
   else
     {
-      t = m_17;
+      t = d_18;
       {
-        ATerm o_17 = t;
-        int p_17 = stack_ptr;
+        ATerm f_18 = t;
+        int g_18 = stack_ptr;
         if((PushChoice() == 0))
           {
-            t = SDefT_4_0(y_112, y_112, y_112, w_112, t);
+            t = SDefT_4_0(d_113, d_113, d_113, b_113, t);
             ;
-            LocalPopChoice(p_17);
+            LocalPopChoice(g_18);
           }
         else
           {
-            t = o_17;
+            t = f_18;
             {
-              ATerm q_17 = t;
-              int s_17 = stack_ptr;
+              ATerm h_18 = t;
+              int i_18 = stack_ptr;
               if((PushChoice() == 0))
                 {
-                  t = RDefT_4_0(y_112, y_112, y_112, w_112, t);
+                  t = RDefT_4_0(d_113, d_113, d_113, b_113, t);
                   ;
-                  LocalPopChoice(s_17);
+                  LocalPopChoice(i_18);
                 }
               else
                 {
-                  t = q_17;
-                  t = DynamicRules_1_0(w_112, t);
+                  t = h_18;
+                  t = DynamicRules_1_0(b_113, t);
                 }
             }
           }
       }
+    }
+  return(t);
+}
+ATerm y_2 (ATerm t)
+{
+  ATerm q_26 = NULL;
+  if(match_cons(t, sym_Var_1))
+    {
+      q_26 = ATgetArgument(t, 0);
+    }
+  else
+    _fail(t);
+  t = (ATerm) ATinsert(ATempty, q_26);
+  return(t);
+}
+ATerm b_3 (ATerm t)
+{
+  ATerm i_27 = NULL;
+  ATerm k_18 = t;
+  int m_18 = stack_ptr;
+  if((PushChoice() == 0))
+    {
+      if(match_cons(t, sym_VarDec_2))
+        {
+          i_27 = ATgetArgument(t, 0);
+          {
+            ATerm n_18 = ATgetArgument(t, 1);
+          }
+        }
+      else
+        _fail(t);
+      LocalPopChoice(m_18);
+      t = i_27;
+    }
+  else
+    {
+      t = k_18;
+      if(match_cons(t, sym_DefaultVarDec_1))
+        {
+          i_27 = ATgetArgument(t, 0);
+        }
+      else
+        _fail(t);
+      t = i_27;
+    }
+  return(t);
+}
+ATerm d_3 (ATerm t)
+{
+  ATerm q_27 = NULL;
+  ATerm o_18 = t;
+  int p_18 = stack_ptr;
+  if((PushChoice() == 0))
+    {
+      if(match_cons(t, sym_VarDec_2))
+        {
+          q_27 = ATgetArgument(t, 0);
+          {
+            ATerm s_18 = ATgetArgument(t, 1);
+          }
+        }
+      else
+        _fail(t);
+      LocalPopChoice(p_18);
+      t = q_27;
+    }
+  else
+    {
+      t = o_18;
+      if(match_cons(t, sym_DefaultVarDec_1))
+        {
+          q_27 = ATgetArgument(t, 0);
+        }
+      else
+        _fail(t);
+      t = q_27;
+    }
+  return(t);
+}
+ATerm z_2 (ATerm t)
+{
+  ATerm s_26 = NULL,x_26 = NULL,z_26 = NULL;
+  if(match_cons(t, sym_LRule_1))
+    {
+      x_26 = ATgetArgument(t, 0);
+      t = x_26;
+      if(match_cons(t, sym_Rule_3))
+        {
+          s_26 = ATgetArgument(t, 0);
+          {
+            ATerm u_18 = ATgetArgument(t, 1);
+          }
+          {
+            ATerm v_18 = ATgetArgument(t, 2);
+          }
+        }
+      else
+        _fail(t);
+      t = s_26;
+      t = tvars_0_0(t);
+    }
+  else
+    {
+      ATerm w_18 = t;
+      int x_18 = stack_ptr;
+      if((PushChoice() == 0))
+        {
+          if(match_cons(t, sym_Scope_2))
+            {
+              x_26 = ATgetArgument(t, 0);
+              {
+                ATerm y_18 = ATgetArgument(t, 1);
+              }
+            }
+          else
+            _fail(t);
+          LocalPopChoice(x_18);
+          t = x_26;
+        }
+      else
+        {
+          t = w_18;
+          if(match_cons(t, sym_DynamicRules_1))
+            {
+              x_26 = ATgetArgument(t, 0);
+              t = x_26;
+              t = tvars_0_0(t);
+            }
+          else
+            {
+              ATerm z_18 = t;
+              int a_19 = stack_ptr;
+              if((PushChoice() == 0))
+                {
+                  if(match_cons(t, sym_SDefT_4))
+                    {
+                      ATerm b_19 = ATgetArgument(t, 0);
+                      ATerm c_19 = ATgetArgument(t, 1);
+                      z_26 = ATgetArgument(t, 2);
+                      {
+                        ATerm d_19 = ATgetArgument(t, 3);
+                      }
+                    }
+                  else
+                    _fail(t);
+                  LocalPopChoice(a_19);
+                  t = z_26;
+                  t = map_1_0(b_3, t);
+                }
+              else
+                {
+                  t = z_18;
+                  if(match_cons(t, sym_RDefT_4))
+                    {
+                      ATerm e_19 = ATgetArgument(t, 0);
+                      ATerm g_19 = ATgetArgument(t, 1);
+                      z_26 = ATgetArgument(t, 2);
+                      {
+                        ATerm h_19 = ATgetArgument(t, 3);
+                      }
+                    }
+                  else
+                    _fail(t);
+                  t = z_26;
+                  t = map_1_0(d_3, t);
+                }
+            }
+        }
     }
   return(t);
 }
 ATerm tvars_0_0 (ATerm t)
 {
-  ATerm z_2 (ATerm t)
-  {
-    ATerm u_25 = NULL;
-    if(match_cons(t, sym_Var_1))
-      {
-        u_25 = ATgetArgument(t, 0);
-      }
-    else
-      _fail(t);
-    t = (ATerm) ATinsert(ATempty, u_25);
-    return(t);
-  }
-  ATerm b_3 (ATerm t)
-  {
-    ATerm v_25 = NULL,z_25 = NULL,c_26 = NULL;
-    if(match_cons(t, sym_LRule_1))
-      {
-        z_25 = ATgetArgument(t, 0);
-        t = z_25;
-        if(match_cons(t, sym_Rule_3))
+  t = free_vars_3_0(y_2, z_2, tboundin_3_0, t);
+  return(t);
+}
+ATerm e_3 (ATerm t)
+{
+  ATerm e_28 = NULL;
+  if(match_cons(t, sym_Var_1))
+    {
+      e_28 = ATgetArgument(t, 0);
+    }
+  else
+    _fail(t);
+  t = (ATerm) ATinsert(ATempty, e_28);
+  return(t);
+}
+ATerm s_3 (ATerm t)
+{
+  ATerm w_28 = NULL;
+  ATerm i_19 = t;
+  int j_19 = stack_ptr;
+  if((PushChoice() == 0))
+    {
+      if(match_cons(t, sym_VarDec_2))
+        {
+          w_28 = ATgetArgument(t, 0);
           {
-            v_25 = ATgetArgument(t, 0);
-            {
-              ATerm t_17 = ATgetArgument(t, 1);
-            }
-            {
-              ATerm u_17 = ATgetArgument(t, 2);
-            }
+            ATerm k_19 = ATgetArgument(t, 1);
           }
-        else
-          _fail(t);
-        t = v_25;
-        t = tvars_0_0(t);
-      }
-    else
+        }
+      else
+        _fail(t);
+      LocalPopChoice(j_19);
+      t = w_28;
+    }
+  else
+    {
+      t = i_19;
+      if(match_cons(t, sym_DefaultVarDec_1))
+        {
+          w_28 = ATgetArgument(t, 0);
+        }
+      else
+        _fail(t);
+      t = w_28;
+    }
+  return(t);
+}
+ATerm t_3 (ATerm t)
+{
+  ATerm c_29 = NULL;
+  ATerm l_19 = t;
+  int m_19 = stack_ptr;
+  if((PushChoice() == 0))
+    {
+      if(match_cons(t, sym_VarDec_2))
+        {
+          c_29 = ATgetArgument(t, 0);
+          {
+            ATerm n_19 = ATgetArgument(t, 1);
+          }
+        }
+      else
+        _fail(t);
+      LocalPopChoice(m_19);
+      t = c_29;
+    }
+  else
+    {
+      t = l_19;
+      if(match_cons(t, sym_DefaultVarDec_1))
+        {
+          c_29 = ATgetArgument(t, 0);
+        }
+      else
+        _fail(t);
+      t = c_29;
+    }
+  return(t);
+}
+ATerm u_3 (ATerm t)
+{
+  ATerm i_29 = NULL;
+  if(match_cons(t, sym_SVar_1))
+    {
+      i_29 = ATgetArgument(t, 0);
+    }
+  else
+    _fail(t);
+  t = (ATerm) ATinsert(ATempty, i_29);
+  return(t);
+}
+ATerm w_3 (ATerm t)
+{
+  ATerm s_29 = NULL;
+  ATerm p_19 = t;
+  int s_19 = stack_ptr;
+  if((PushChoice() == 0))
+    {
+      if(match_cons(t, sym_VarDec_2))
+        {
+          s_29 = ATgetArgument(t, 0);
+          {
+            ATerm v_19 = ATgetArgument(t, 1);
+          }
+        }
+      else
+        _fail(t);
+      LocalPopChoice(s_19);
+      t = s_29;
+    }
+  else
+    {
+      t = p_19;
+      if(match_cons(t, sym_DefaultVarDec_1))
+        {
+          s_29 = ATgetArgument(t, 0);
+        }
+      else
+        _fail(t);
+      t = s_29;
+    }
+  return(t);
+}
+ATerm y_3 (ATerm t)
+{
+  ATerm z_29 = NULL;
+  ATerm w_19 = t;
+  int y_19 = stack_ptr;
+  if((PushChoice() == 0))
+    {
+      if(match_cons(t, sym_VarDec_2))
+        {
+          z_29 = ATgetArgument(t, 0);
+          {
+            ATerm a_20 = ATgetArgument(t, 1);
+          }
+        }
+      else
+        _fail(t);
+      LocalPopChoice(y_19);
+      t = z_29;
+    }
+  else
+    {
+      t = w_19;
+      if(match_cons(t, sym_DefaultVarDec_1))
+        {
+          z_29 = ATgetArgument(t, 0);
+        }
+      else
+        _fail(t);
+      t = z_29;
+    }
+  return(t);
+}
+ATerm a_4 (ATerm t)
+{
+  ATerm j_30 = NULL;
+  ATerm b_20 = t;
+  int g_20 = stack_ptr;
+  if((PushChoice() == 0))
+    {
+      if(match_cons(t, sym_VarDec_2))
+        {
+          j_30 = ATgetArgument(t, 0);
+          {
+            ATerm i_20 = ATgetArgument(t, 1);
+          }
+        }
+      else
+        _fail(t);
+      LocalPopChoice(g_20);
+      t = j_30;
+    }
+  else
+    {
+      t = b_20;
+      if(match_cons(t, sym_DefaultVarDec_1))
+        {
+          j_30 = ATgetArgument(t, 0);
+        }
+      else
+        _fail(t);
+      t = j_30;
+    }
+  return(t);
+}
+ATerm b_4 (ATerm t)
+{
+  ATerm k_20 = t;
+  if((PushChoice() == 0))
+    {
+      t = TopLevel_0_0(t);
+      PopChoice();
+      _fail(t);
+    }
+  else
+    {
+      t = k_20;
+    }
+  return(t);
+}
+ATerm h_3 (ATerm t)
+{
+  ATerm f_28 = NULL,j_28 = NULL,l_28 = NULL;
+  if(match_cons(t, sym_LRule_1))
+    {
+      j_28 = ATgetArgument(t, 0);
+      t = j_28;
+      if(match_cons(t, sym_Rule_3))
+        {
+          f_28 = ATgetArgument(t, 0);
+          {
+            ATerm n_20 = ATgetArgument(t, 1);
+          }
+          {
+            ATerm o_20 = ATgetArgument(t, 2);
+          }
+        }
+      else
+        _fail(t);
+      t = f_28;
+      t = tvars_0_0(t);
+    }
+  else
+    {
+      ATerm s_20 = t;
+      int v_20 = stack_ptr;
+      if((PushChoice() == 0))
+        {
+          if(match_cons(t, sym_Scope_2))
+            {
+              j_28 = ATgetArgument(t, 0);
+              {
+                ATerm w_20 = ATgetArgument(t, 1);
+              }
+            }
+          else
+            _fail(t);
+          LocalPopChoice(v_20);
+          t = j_28;
+        }
+      else
+        {
+          t = s_20;
+          if(match_cons(t, sym_DynamicRules_1))
+            {
+              j_28 = ATgetArgument(t, 0);
+              t = j_28;
+              t = tvars_0_0(t);
+            }
+          else
+            {
+              ATerm y_20 = t;
+              int z_20 = stack_ptr;
+              if((PushChoice() == 0))
+                {
+                  if(match_cons(t, sym_SDefT_4))
+                    {
+                      ATerm a_21 = ATgetArgument(t, 0);
+                      ATerm c_21 = ATgetArgument(t, 1);
+                      l_28 = ATgetArgument(t, 2);
+                      {
+                        ATerm e_21 = ATgetArgument(t, 3);
+                      }
+                    }
+                  else
+                    _fail(t);
+                  LocalPopChoice(z_20);
+                  t = l_28;
+                  t = map_1_0(s_3, t);
+                }
+              else
+                {
+                  t = y_20;
+                  if(match_cons(t, sym_RDefT_4))
+                    {
+                      ATerm f_21 = ATgetArgument(t, 0);
+                      ATerm g_21 = ATgetArgument(t, 1);
+                      l_28 = ATgetArgument(t, 2);
+                      {
+                        ATerm h_21 = ATgetArgument(t, 3);
+                      }
+                    }
+                  else
+                    _fail(t);
+                  t = l_28;
+                  t = map_1_0(t_3, t);
+                }
+            }
+        }
+    }
+  return(t);
+}
+ATerm v_3 (ATerm t)
+{
+  ATerm i_21 = t;
+  int j_21 = stack_ptr;
+  if((PushChoice() == 0))
+    {
+      t = Bind1_0_0(t);
+      ;
+      LocalPopChoice(j_21);
+    }
+  else
+    {
+      t = i_21;
       {
-        ATerm w_17 = t;
-        int x_17 = stack_ptr;
+        ATerm k_29 = NULL,l_29 = NULL;
+        ATerm k_21 = t;
+        int l_21 = stack_ptr;
         if((PushChoice() == 0))
           {
-            if(match_cons(t, sym_Scope_2))
+            if(match_cons(t, sym_SDef_3))
               {
-                z_25 = ATgetArgument(t, 0);
+                ATerm m_21 = ATgetArgument(t, 0);
+                l_29 = ATgetArgument(t, 1);
                 {
-                  ATerm y_17 = ATgetArgument(t, 1);
+                  ATerm n_21 = ATgetArgument(t, 2);
                 }
               }
             else
               _fail(t);
-            LocalPopChoice(x_17);
-            t = z_25;
+            LocalPopChoice(l_21);
+            t = l_29;
+            t = map_1_0(w_3, t);
           }
         else
           {
-            t = w_17;
-            if(match_cons(t, sym_DynamicRules_1))
-              {
-                z_25 = ATgetArgument(t, 0);
-                t = z_25;
-                t = tvars_0_0(t);
-              }
-            else
-              {
-                ATerm z_17 = t;
-                int a_18 = stack_ptr;
-                if((PushChoice() == 0))
-                  {
-                    if(match_cons(t, sym_SDefT_4))
-                      {
-                        ATerm b_18 = ATgetArgument(t, 0);
-                        ATerm c_18 = ATgetArgument(t, 1);
-                        c_26 = ATgetArgument(t, 2);
-                        {
-                          ATerm d_18 = ATgetArgument(t, 3);
-                        }
-                      }
-                    else
-                      _fail(t);
-                    LocalPopChoice(a_18);
-                    t = c_26;
+            t = k_21;
+            {
+              ATerm o_21 = t;
+              int q_21 = stack_ptr;
+              if((PushChoice() == 0))
+                {
+                  if(match_cons(t, sym_Rec_2))
                     {
-                      ATerm e_3 (ATerm t)
+                      k_29 = ATgetArgument(t, 0);
                       {
-                        ATerm p_26 = NULL;
-                        ATerm e_18 = t;
-                        int f_18 = stack_ptr;
-                        if((PushChoice() == 0))
+                        ATerm s_21 = ATgetArgument(t, 1);
+                      }
+                    }
+                  else
+                    _fail(t);
+                  LocalPopChoice(q_21);
+                  t = (ATerm) ATinsert(ATempty, k_29);
+                }
+              else
+                {
+                  t = o_21;
+                  {
+                    ATerm t_21 = t;
+                    int u_21 = stack_ptr;
+                    if((PushChoice() == 0))
+                      {
+                        if(match_cons(t, sym_SDefT_4))
                           {
-                            if(match_cons(t, sym_VarDec_2))
-                              {
-                                p_26 = ATgetArgument(t, 0);
-                                {
-                                  ATerm g_18 = ATgetArgument(t, 1);
-                                }
-                              }
-                            else
-                              _fail(t);
-                            LocalPopChoice(f_18);
-                            t = p_26;
+                            ATerm v_21 = ATgetArgument(t, 0);
+                            l_29 = ATgetArgument(t, 1);
+                            {
+                              ATerm y_21 = ATgetArgument(t, 2);
+                            }
+                            {
+                              ATerm z_21 = ATgetArgument(t, 3);
+                            }
                           }
                         else
-                          {
-                            t = e_18;
-                            if(match_cons(t, sym_DefaultVarDec_1))
-                              {
-                                p_26 = ATgetArgument(t, 0);
-                              }
-                            else
-                              _fail(t);
-                            t = p_26;
-                          }
-                        return(t);
-                      }
-                      t = map_1_0(e_3, t);
-                    }
-                  }
-                else
-                  {
-                    t = z_17;
-                    if(match_cons(t, sym_RDefT_4))
-                      {
-                        ATerm h_18 = ATgetArgument(t, 0);
-                        ATerm i_18 = ATgetArgument(t, 1);
-                        c_26 = ATgetArgument(t, 2);
-                        {
-                          ATerm l_18 = ATgetArgument(t, 3);
-                        }
+                          _fail(t);
+                        LocalPopChoice(u_21);
+                        t = l_29;
+                        t = map_1_0(y_3, t);
                       }
                     else
-                      _fail(t);
-                    t = c_26;
-                    {
-                      ATerm h_3 (ATerm t)
                       {
-                        ATerm w_26 = NULL;
-                        ATerm m_18 = t;
-                        int n_18 = stack_ptr;
-                        if((PushChoice() == 0))
+                        t = t_21;
+                        if(match_cons(t, sym_RDefT_4))
                           {
-                            if(match_cons(t, sym_VarDec_2))
-                              {
-                                w_26 = ATgetArgument(t, 0);
-                                {
-                                  ATerm o_18 = ATgetArgument(t, 1);
-                                }
-                              }
-                            else
-                              _fail(t);
-                            LocalPopChoice(n_18);
-                            t = w_26;
+                            ATerm a_22 = ATgetArgument(t, 0);
+                            l_29 = ATgetArgument(t, 1);
+                            {
+                              ATerm e_22 = ATgetArgument(t, 2);
+                            }
+                            {
+                              ATerm g_22 = ATgetArgument(t, 3);
+                            }
                           }
                         else
-                          {
-                            t = m_18;
-                            if(match_cons(t, sym_DefaultVarDec_1))
-                              {
-                                w_26 = ATgetArgument(t, 0);
-                              }
-                            else
-                              _fail(t);
-                            t = w_26;
-                          }
-                        return(t);
+                          _fail(t);
+                        t = l_29;
+                        t = map_1_0(a_4, t);
                       }
-                      t = map_1_0(h_3, t);
-                    }
                   }
-              }
+                }
+            }
           }
       }
-    return(t);
-  }
-  t = free_vars_3_0(z_2, b_3, tboundin_3_0, t);
+    }
   return(t);
 }
 ATerm SuperCombinator_0_0 (ATerm t)
 {
-  ATerm j_27 = NULL,k_27 = NULL;
-  j_27 = t;
+  ATerm b_28 = NULL,c_28 = NULL,d_28 = NULL,s_4 = NULL,w_4 = NULL;
+  b_28 = t;
   if(match_cons(t, sym_SDefT_4))
     {
-      ATerm r_18 = ATgetArgument(t, 0);
-      ATerm s_18 = ATgetArgument(t, 1);
-      ATerm t_18 = ATgetArgument(t, 2);
-      ATerm v_18 = ATgetArgument(t, 3);
+      c_28 = ATgetArgument(t, 0);
+      {
+        ATerm j_22 = ATgetArgument(t, 1);
+      }
+      {
+        ATerm k_22 = ATgetArgument(t, 2);
+      }
+      {
+        ATerm s_22 = ATgetArgument(t, 3);
+      }
     }
   else
     _fail(t);
-  k_27 = t;
-  t = j_27;
-  {
-    ATerm l_3 (ATerm t)
-    {
-      ATerm l_27 = NULL;
-      if(match_cons(t, sym_Var_1))
-        {
-          l_27 = ATgetArgument(t, 0);
-        }
-      else
-        _fail(t);
-      t = (ATerm) ATinsert(ATempty, l_27);
-      return(t);
-    }
-    ATerm s_3 (ATerm t)
-    {
-      ATerm m_27 = NULL,q_27 = NULL,s_27 = NULL;
-      if(match_cons(t, sym_LRule_1))
-        {
-          q_27 = ATgetArgument(t, 0);
-          t = q_27;
-          if(match_cons(t, sym_Rule_3))
-            {
-              m_27 = ATgetArgument(t, 0);
-              {
-                ATerm w_18 = ATgetArgument(t, 1);
-              }
-              {
-                ATerm x_18 = ATgetArgument(t, 2);
-              }
-            }
-          else
-            _fail(t);
-          t = m_27;
-          t = tvars_0_0(t);
-        }
-      else
-        {
-          ATerm z_18 = t;
-          int a_19 = stack_ptr;
-          if((PushChoice() == 0))
-            {
-              if(match_cons(t, sym_Scope_2))
-                {
-                  q_27 = ATgetArgument(t, 0);
-                  {
-                    ATerm d_19 = ATgetArgument(t, 1);
-                  }
-                }
-              else
-                _fail(t);
-              LocalPopChoice(a_19);
-              t = q_27;
-            }
-          else
-            {
-              t = z_18;
-              if(match_cons(t, sym_DynamicRules_1))
-                {
-                  q_27 = ATgetArgument(t, 0);
-                  t = q_27;
-                  t = tvars_0_0(t);
-                }
-              else
-                {
-                  ATerm e_19 = t;
-                  int g_19 = stack_ptr;
-                  if((PushChoice() == 0))
-                    {
-                      if(match_cons(t, sym_SDefT_4))
-                        {
-                          ATerm k_19 = ATgetArgument(t, 0);
-                          ATerm l_19 = ATgetArgument(t, 1);
-                          s_27 = ATgetArgument(t, 2);
-                          {
-                            ATerm o_19 = ATgetArgument(t, 3);
-                          }
-                        }
-                      else
-                        _fail(t);
-                      LocalPopChoice(g_19);
-                      t = s_27;
-                      {
-                        ATerm t_3 (ATerm t)
-                        {
-                          ATerm a_28 = NULL;
-                          ATerm q_19 = t;
-                          int s_19 = stack_ptr;
-                          if((PushChoice() == 0))
-                            {
-                              if(match_cons(t, sym_VarDec_2))
-                                {
-                                  a_28 = ATgetArgument(t, 0);
-                                  {
-                                    ATerm x_19 = ATgetArgument(t, 1);
-                                  }
-                                }
-                              else
-                                _fail(t);
-                              LocalPopChoice(s_19);
-                              t = a_28;
-                            }
-                          else
-                            {
-                              t = q_19;
-                              if(match_cons(t, sym_DefaultVarDec_1))
-                                {
-                                  a_28 = ATgetArgument(t, 0);
-                                }
-                              else
-                                _fail(t);
-                              t = a_28;
-                            }
-                          return(t);
-                        }
-                        t = map_1_0(t_3, t);
-                      }
-                    }
-                  else
-                    {
-                      t = e_19;
-                      if(match_cons(t, sym_RDefT_4))
-                        {
-                          ATerm y_19 = ATgetArgument(t, 0);
-                          ATerm a_20 = ATgetArgument(t, 1);
-                          s_27 = ATgetArgument(t, 2);
-                          {
-                            ATerm d_20 = ATgetArgument(t, 3);
-                          }
-                        }
-                      else
-                        _fail(t);
-                      t = s_27;
-                      {
-                        ATerm u_3 (ATerm t)
-                        {
-                          ATerm g_28 = NULL;
-                          ATerm e_20 = t;
-                          int i_20 = stack_ptr;
-                          if((PushChoice() == 0))
-                            {
-                              if(match_cons(t, sym_VarDec_2))
-                                {
-                                  g_28 = ATgetArgument(t, 0);
-                                  {
-                                    ATerm j_20 = ATgetArgument(t, 1);
-                                  }
-                                }
-                              else
-                                _fail(t);
-                              LocalPopChoice(i_20);
-                              t = g_28;
-                            }
-                          else
-                            {
-                              t = e_20;
-                              if(match_cons(t, sym_DefaultVarDec_1))
-                                {
-                                  g_28 = ATgetArgument(t, 0);
-                                }
-                              else
-                                _fail(t);
-                              t = g_28;
-                            }
-                          return(t);
-                        }
-                        t = map_1_0(u_3, t);
-                      }
-                    }
-                }
-            }
-        }
-      return(t);
-    }
-    t = free_vars_3_0(l_3, s_3, tboundin_3_0, t);
-    if(((ATgetType(t) != AT_LIST) || !(ATisEmpty(t))))
-      _fail(t);
-    t = j_27;
-    {
-      ATerm y_3 (ATerm t)
-      {
-        ATerm j_28 = NULL;
-        if(match_cons(t, sym_SVar_1))
-          {
-            j_28 = ATgetArgument(t, 0);
-          }
-        else
-          _fail(t);
-        t = (ATerm) ATinsert(ATempty, j_28);
-        return(t);
-      }
-      ATerm z_3 (ATerm t)
-      {
-        ATerm k_20 = t;
-        int m_20 = stack_ptr;
-        if((PushChoice() == 0))
-          {
-            t = Bind1_0_0(t);
-            ;
-            LocalPopChoice(m_20);
-          }
-        else
-          {
-            t = k_20;
-            {
-              ATerm o_28 = NULL,p_28 = NULL;
-              ATerm n_20 = t;
-              int p_20 = stack_ptr;
-              if((PushChoice() == 0))
-                {
-                  if(match_cons(t, sym_SDef_3))
-                    {
-                      ATerm q_20 = ATgetArgument(t, 0);
-                      p_28 = ATgetArgument(t, 1);
-                      {
-                        ATerm r_20 = ATgetArgument(t, 2);
-                      }
-                    }
-                  else
-                    _fail(t);
-                  LocalPopChoice(p_20);
-                  t = p_28;
-                  {
-                    ATerm a_4 (ATerm t)
-                    {
-                      ATerm v_28 = NULL;
-                      ATerm s_20 = t;
-                      int t_20 = stack_ptr;
-                      if((PushChoice() == 0))
-                        {
-                          if(match_cons(t, sym_VarDec_2))
-                            {
-                              v_28 = ATgetArgument(t, 0);
-                              {
-                                ATerm u_20 = ATgetArgument(t, 1);
-                              }
-                            }
-                          else
-                            _fail(t);
-                          LocalPopChoice(t_20);
-                          t = v_28;
-                        }
-                      else
-                        {
-                          t = s_20;
-                          if(match_cons(t, sym_DefaultVarDec_1))
-                            {
-                              v_28 = ATgetArgument(t, 0);
-                            }
-                          else
-                            _fail(t);
-                          t = v_28;
-                        }
-                      return(t);
-                    }
-                    t = map_1_0(a_4, t);
-                  }
-                }
-              else
-                {
-                  t = n_20;
-                  {
-                    ATerm v_20 = t;
-                    int w_20 = stack_ptr;
-                    if((PushChoice() == 0))
-                      {
-                        if(match_cons(t, sym_Rec_2))
-                          {
-                            o_28 = ATgetArgument(t, 0);
-                            {
-                              ATerm x_20 = ATgetArgument(t, 1);
-                            }
-                          }
-                        else
-                          _fail(t);
-                        LocalPopChoice(w_20);
-                        t = (ATerm) ATinsert(ATempty, o_28);
-                      }
-                    else
-                      {
-                        t = v_20;
-                        {
-                          ATerm y_20 = t;
-                          int z_20 = stack_ptr;
-                          if((PushChoice() == 0))
-                            {
-                              if(match_cons(t, sym_SDefT_4))
-                                {
-                                  ATerm b_21 = ATgetArgument(t, 0);
-                                  p_28 = ATgetArgument(t, 1);
-                                  {
-                                    ATerm c_21 = ATgetArgument(t, 2);
-                                  }
-                                  {
-                                    ATerm e_21 = ATgetArgument(t, 3);
-                                  }
-                                }
-                              else
-                                _fail(t);
-                              LocalPopChoice(z_20);
-                              t = p_28;
-                              {
-                                ATerm c_4 (ATerm t)
-                                {
-                                  ATerm f_29 = NULL;
-                                  ATerm f_21 = t;
-                                  int g_21 = stack_ptr;
-                                  if((PushChoice() == 0))
-                                    {
-                                      if(match_cons(t, sym_VarDec_2))
-                                        {
-                                          f_29 = ATgetArgument(t, 0);
-                                          {
-                                            ATerm j_21 = ATgetArgument(t, 1);
-                                          }
-                                        }
-                                      else
-                                        _fail(t);
-                                      LocalPopChoice(g_21);
-                                      t = f_29;
-                                    }
-                                  else
-                                    {
-                                      t = f_21;
-                                      if(match_cons(t, sym_DefaultVarDec_1))
-                                        {
-                                          f_29 = ATgetArgument(t, 0);
-                                        }
-                                      else
-                                        _fail(t);
-                                      t = f_29;
-                                    }
-                                  return(t);
-                                }
-                                t = map_1_0(c_4, t);
-                              }
-                            }
-                          else
-                            {
-                              t = y_20;
-                              if(match_cons(t, sym_RDefT_4))
-                                {
-                                  ATerm k_21 = ATgetArgument(t, 0);
-                                  p_28 = ATgetArgument(t, 1);
-                                  {
-                                    ATerm o_21 = ATgetArgument(t, 2);
-                                  }
-                                  {
-                                    ATerm p_21 = ATgetArgument(t, 3);
-                                  }
-                                }
-                              else
-                                _fail(t);
-                              t = p_28;
-                              {
-                                ATerm d_4 (ATerm t)
-                                {
-                                  ATerm m_29 = NULL;
-                                  ATerm r_21 = t;
-                                  int s_21 = stack_ptr;
-                                  if((PushChoice() == 0))
-                                    {
-                                      if(match_cons(t, sym_VarDec_2))
-                                        {
-                                          m_29 = ATgetArgument(t, 0);
-                                          {
-                                            ATerm a_22 = ATgetArgument(t, 1);
-                                          }
-                                        }
-                                      else
-                                        _fail(t);
-                                      LocalPopChoice(s_21);
-                                      t = m_29;
-                                    }
-                                  else
-                                    {
-                                      t = r_21;
-                                      if(match_cons(t, sym_DefaultVarDec_1))
-                                        {
-                                          m_29 = ATgetArgument(t, 0);
-                                        }
-                                      else
-                                        _fail(t);
-                                      t = m_29;
-                                    }
-                                  return(t);
-                                }
-                                t = map_1_0(d_4, t);
-                              }
-                            }
-                        }
-                      }
-                  }
-                }
-            }
-          }
-        return(t);
-      }
-      t = free_vars_3_0(y_3, z_3, sboundin_3_0, t);
-      {
-        ATerm e_4 (ATerm t)
-        {
-          ATerm d_22 = t;
-          if((PushChoice() == 0))
-            {
-              ATerm p_29 = NULL,q_29 = NULL;
-              p_29 = t;
-              t = SSL_table_get((ATerm)ATmakeAppl(ATmakeSymbol("TopLevel", 0, ATtrue)), p_29);
-              if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
-                {
-                  q_29 = ATgetFirst((ATermList) t);
-                  {
-                    ATerm e_22 = (ATerm) ATgetNext((ATermList) t);
-                  }
-                }
-              else
-                _fail(t);
-              t = q_29;
-              if(match_cons(t, sym_Defined_1))
-                {
-                  ATerm i_22 = ATgetArgument(t, 0);
-                  if((ATgetSymbol((ATermAppl) i_22) != ATmakeSymbol("b_0", 0, ATtrue)))
-                    _fail(t);
-                }
-              else
-                _fail(t);
-              t = term_m_8;
-              PopChoice();
-              _fail(t);
-            }
-          else
-            {
-              t = d_22;
-            }
-          return(t);
-        }
-        t = filter_1_0(e_4, t);
-        if(((ATgetType(t) != AT_LIST) || !(ATisEmpty(t))))
-          _fail(t);
-        t = k_27;
-      }
-    }
-  }
+  d_28 = t;
+  t = SSL_printnl((ATerm)ATmakeAppl(sym_stderr_0), (ATerm) ATinsert(ATinsert(ATempty, c_28), (ATerm) ATmakeAppl(ATmakeSymbol("SuperCombinator? ", 0, ATtrue))));
+  t = b_28;
+  t = free_vars_3_0(e_3, h_3, tboundin_3_0, t);
+  s_4 = t;
+  t = SSL_printnl((ATerm)ATmakeAppl(sym_stderr_0), (ATerm) ATinsert(ATinsert(ATempty, s_4), (ATerm) ATmakeAppl(ATmakeSymbol("  tvars: ", 0, ATtrue))));
+  t = s_4;
+  if(((ATgetType(t) != AT_LIST) || !(ATisEmpty(t))))
+    _fail(t);
+  t = b_28;
+  t = free_vars_3_0(u_3, v_3, sboundin_3_0, t);
+  t = filter_1_0(b_4, t);
+  w_4 = t;
+  t = SSL_printnl((ATerm)ATmakeAppl(sym_stderr_0), (ATerm) ATinsert(ATinsert(ATempty, w_4), (ATerm) ATmakeAppl(ATmakeSymbol("  svars: ", 0, ATtrue))));
+  t = w_4;
+  if(((ATgetType(t) != AT_LIST) || !(ATisEmpty(t))))
+    _fail(t);
+  t = SSL_printnl((ATerm)ATmakeAppl(sym_stderr_0), (ATerm) ATinsert(ATinsert(ATempty, c_28), (ATerm) ATmakeAppl(ATmakeSymbol("  SuperCombinator: ", 0, ATtrue))));
+  t = d_28;
   return(t);
 }
-ATerm partition_1_0 (ATerm t_126 (ATerm), ATerm t)
+ATerm partition_1_0 (ATerm y_126 (ATerm), ATerm t)
 {
-  ATerm n_30 (ATerm t)
+  ATerm e_31 (ATerm t)
   {
-    ATerm j_22 = t;
-    int k_22 = stack_ptr;
+    ATerm v_22 = t;
+    int w_22 = stack_ptr;
     if((PushChoice() == 0))
       {
         if(((ATgetType(t) != AT_LIST) || !(ATisEmpty(t))))
           _fail(t);
-        t = term_l_22;
+        t = term_y_22;
         ;
-        LocalPopChoice(k_22);
+        LocalPopChoice(w_22);
       }
     else
       {
-        t = j_22;
+        t = v_22;
         {
-          ATerm n_22 = t;
-          int o_22 = stack_ptr;
+          ATerm z_22 = t;
+          int a_23 = stack_ptr;
           if((PushChoice() == 0))
             {
-              ATerm z_29 = NULL,a_30 = NULL,b_30 = NULL,f_4 = NULL,j_4 = NULL;
-              ATerm g_4 (ATerm t)
+              ATerm u_30 = NULL,v_30 = NULL,w_30 = NULL,h_5 = NULL,o_5 = NULL;
+              ATerm c_4 (ATerm t)
               {
-                t = t_126(t);
-                if(((z_29 != NULL) && (z_29 != t)))
+                t = y_126(t);
+                if(((u_30 != NULL) && (u_30 != t)))
                   _fail(t);
                 else
-                  z_29 = t;
+                  u_30 = t;
                 return(t);
               }
-              t = Cons_2_0(g_4, _id, t);
+              t = Cons_2_0(c_4, _id, t);
               if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
                 {
-                  ATerm p_22 = ATgetFirst((ATermList) t);
-                  a_30 = (ATerm) ATgetNext((ATermList) t);
+                  ATerm c_23 = ATgetFirst((ATermList) t);
+                  v_30 = (ATerm) ATgetNext((ATermList) t);
                 }
               else
                 _fail(t);
-              t = a_30;
-              t = n_30(t);
-              b_30 = t;
-              t = SSL_explode_term(b_30);
+              t = v_30;
+              t = e_31(t);
+              w_30 = t;
+              t = SSL_explode_term(w_30);
               if(match_cons(t, sym__2))
                 {
-                  ATerm q_22 = ATgetArgument(t, 0);
-                  if((ATgetSymbol((ATermAppl) q_22) != ATmakeSymbol("", 0, ATtrue)))
+                  ATerm d_23 = ATgetArgument(t, 0);
+                  if((ATgetSymbol((ATermAppl) d_23) != ATmakeSymbol("", 0, ATtrue)))
                     _fail(t);
                   {
-                    ATerm s_22 = ATgetArgument(t, 1);
-                    if(((ATgetType(s_22) == AT_LIST) && !(ATisEmpty(s_22))))
+                    ATerm e_23 = ATgetArgument(t, 1);
+                    if(((ATgetType(e_23) == AT_LIST) && !(ATisEmpty(e_23))))
                       {
-                        f_4 = ATgetFirst((ATermList) s_22);
+                        h_5 = ATgetFirst((ATermList) e_23);
                         {
-                          ATerm x_22 = (ATerm) ATgetNext((ATermList) s_22);
+                          ATerm f_23 = (ATerm) ATgetNext((ATermList) e_23);
                         }
                       }
                     else
@@ -4091,23 +4223,23 @@ ATerm partition_1_0 (ATerm t_126 (ATerm), ATerm t)
                 }
               else
                 _fail(t);
-              t = SSL_explode_term(b_30);
+              t = SSL_explode_term(w_30);
               if(match_cons(t, sym__2))
                 {
-                  ATerm y_22 = ATgetArgument(t, 0);
-                  if((ATgetSymbol((ATermAppl) y_22) != ATmakeSymbol("", 0, ATtrue)))
+                  ATerm g_23 = ATgetArgument(t, 0);
+                  if((ATgetSymbol((ATermAppl) g_23) != ATmakeSymbol("", 0, ATtrue)))
                     _fail(t);
                   {
-                    ATerm z_22 = ATgetArgument(t, 1);
-                    if(((ATgetType(z_22) == AT_LIST) && !(ATisEmpty(z_22))))
+                    ATerm h_23 = ATgetArgument(t, 1);
+                    if(((ATgetType(h_23) == AT_LIST) && !(ATisEmpty(h_23))))
                       {
-                        ATerm a_23 = ATgetFirst((ATermList) z_22);
-                        ATerm c_23 = (ATerm) ATgetNext((ATermList) z_22);
-                        if(((ATgetType(c_23) == AT_LIST) && !(ATisEmpty(c_23))))
+                        ATerm i_23 = ATgetFirst((ATermList) h_23);
+                        ATerm j_23 = (ATerm) ATgetNext((ATermList) h_23);
+                        if(((ATgetType(j_23) == AT_LIST) && !(ATisEmpty(j_23))))
                           {
-                            j_4 = ATgetFirst((ATermList) c_23);
+                            o_5 = ATgetFirst((ATermList) j_23);
                             {
-                              ATerm d_23 = (ATerm) ATgetNext((ATermList) c_23);
+                              ATerm k_23 = (ATerm) ATgetNext((ATermList) j_23);
                             }
                           }
                         else
@@ -4119,47 +4251,47 @@ ATerm partition_1_0 (ATerm t_126 (ATerm), ATerm t)
                 }
               else
                 _fail(t);
-              t = (ATerm) ATmakeAppl(sym__2, (ATerm)ATinsert(CheckATermList(f_4), not_null(z_29)), j_4);
+              t = (ATerm) ATmakeAppl(sym__2, (ATerm)ATinsert(CheckATermList(h_5), not_null(u_30)), o_5);
               ;
-              LocalPopChoice(o_22);
+              LocalPopChoice(a_23);
             }
           else
             {
-              t = n_22;
+              t = z_22;
               {
-                ATerm h_30 = NULL,j_30 = NULL,k_30 = NULL,n_4 = NULL,r_4 = NULL;
-                ATerm h_4 (ATerm t)
+                ATerm z_30 = NULL,a_31 = NULL,b_31 = NULL,s_5 = NULL,w_5 = NULL;
+                ATerm f_4 (ATerm t)
                 {
-                  if(((h_30 != NULL) && (h_30 != t)))
+                  if(((z_30 != NULL) && (z_30 != t)))
                     _fail(t);
                   else
-                    h_30 = t;
+                    z_30 = t;
                   return(t);
                 }
-                t = Cons_2_0(h_4, _id, t);
+                t = Cons_2_0(f_4, _id, t);
                 if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
                   {
-                    ATerm e_23 = ATgetFirst((ATermList) t);
-                    j_30 = (ATerm) ATgetNext((ATermList) t);
+                    ATerm l_23 = ATgetFirst((ATermList) t);
+                    a_31 = (ATerm) ATgetNext((ATermList) t);
                   }
                 else
                   _fail(t);
-                t = j_30;
-                t = n_30(t);
-                k_30 = t;
-                t = SSL_explode_term(k_30);
+                t = a_31;
+                t = e_31(t);
+                b_31 = t;
+                t = SSL_explode_term(b_31);
                 if(match_cons(t, sym__2))
                   {
-                    ATerm i_23 = ATgetArgument(t, 0);
-                    if((ATgetSymbol((ATermAppl) i_23) != ATmakeSymbol("", 0, ATtrue)))
+                    ATerm m_23 = ATgetArgument(t, 0);
+                    if((ATgetSymbol((ATermAppl) m_23) != ATmakeSymbol("", 0, ATtrue)))
                       _fail(t);
                     {
-                      ATerm j_23 = ATgetArgument(t, 1);
-                      if(((ATgetType(j_23) == AT_LIST) && !(ATisEmpty(j_23))))
+                      ATerm o_23 = ATgetArgument(t, 1);
+                      if(((ATgetType(o_23) == AT_LIST) && !(ATisEmpty(o_23))))
                         {
-                          n_4 = ATgetFirst((ATermList) j_23);
+                          s_5 = ATgetFirst((ATermList) o_23);
                           {
-                            ATerm k_23 = (ATerm) ATgetNext((ATermList) j_23);
+                            ATerm t_23 = (ATerm) ATgetNext((ATermList) o_23);
                           }
                         }
                       else
@@ -4168,23 +4300,23 @@ ATerm partition_1_0 (ATerm t_126 (ATerm), ATerm t)
                   }
                 else
                   _fail(t);
-                t = SSL_explode_term(k_30);
+                t = SSL_explode_term(b_31);
                 if(match_cons(t, sym__2))
                   {
-                    ATerm n_23 = ATgetArgument(t, 0);
-                    if((ATgetSymbol((ATermAppl) n_23) != ATmakeSymbol("", 0, ATtrue)))
+                    ATerm u_23 = ATgetArgument(t, 0);
+                    if((ATgetSymbol((ATermAppl) u_23) != ATmakeSymbol("", 0, ATtrue)))
                       _fail(t);
                     {
-                      ATerm p_23 = ATgetArgument(t, 1);
-                      if(((ATgetType(p_23) == AT_LIST) && !(ATisEmpty(p_23))))
+                      ATerm v_23 = ATgetArgument(t, 1);
+                      if(((ATgetType(v_23) == AT_LIST) && !(ATisEmpty(v_23))))
                         {
-                          ATerm q_23 = ATgetFirst((ATermList) p_23);
-                          ATerm w_23 = (ATerm) ATgetNext((ATermList) p_23);
-                          if(((ATgetType(w_23) == AT_LIST) && !(ATisEmpty(w_23))))
+                          ATerm a_24 = ATgetFirst((ATermList) v_23);
+                          ATerm b_24 = (ATerm) ATgetNext((ATermList) v_23);
+                          if(((ATgetType(b_24) == AT_LIST) && !(ATisEmpty(b_24))))
                             {
-                              r_4 = ATgetFirst((ATermList) w_23);
+                              w_5 = ATgetFirst((ATermList) b_24);
                               {
-                                ATerm x_23 = (ATerm) ATgetNext((ATermList) w_23);
+                                ATerm c_24 = (ATerm) ATgetNext((ATermList) b_24);
                               }
                             }
                           else
@@ -4196,757 +4328,795 @@ ATerm partition_1_0 (ATerm t_126 (ATerm), ATerm t)
                   }
                 else
                   _fail(t);
-                t = (ATerm) ATmakeAppl(sym__2, n_4, (ATerm) ATinsert(CheckATermList(r_4), not_null(h_30)));
+                t = (ATerm) ATmakeAppl(sym__2, s_5, (ATerm) ATinsert(CheckATermList(w_5), not_null(z_30)));
               }
             }
         }
       }
     return(t);
   }
-  t = n_30(t);
+  t = e_31(t);
+  return(t);
+}
+ATerm h_4 (ATerm t)
+{
+  t = term_f_24;
+  return(t);
+}
+ATerm m_4 (ATerm t)
+{
+  ATerm h_24 = t;
+  int i_24 = stack_ptr;
+  if((PushChoice() == 0))
+    {
+      t = Simplify_0_0(t);
+      ;
+      LocalPopChoice(i_24);
+    }
+  else
+    {
+      t = h_24;
+      {
+        ATerm j_24 = t;
+        int k_24 = stack_ptr;
+        if((PushChoice() == 0))
+          {
+            ATerm q_31 = NULL,r_31 = NULL,s_31 = NULL,t_31 = NULL;
+            if(match_cons(t, sym_Seq_2))
+              {
+                q_31 = ATgetArgument(t, 0);
+                r_31 = ATgetArgument(t, 1);
+              }
+            else
+              _fail(t);
+            t = r_31;
+            if(match_cons(t, sym_Let_2))
+              {
+                s_31 = ATgetArgument(t, 0);
+                t_31 = ATgetArgument(t, 1);
+              }
+            else
+              _fail(t);
+            t = (ATerm) ATmakeAppl(sym_Let_2, s_31, (ATerm) ATmakeAppl(sym_Seq_2, q_31, t_31));
+            ;
+            LocalPopChoice(k_24);
+          }
+        else
+          {
+            t = j_24;
+            {
+              ATerm n_24 = t;
+              int o_24 = stack_ptr;
+              if((PushChoice() == 0))
+                {
+                  t = FuseScope_0_0(t);
+                  ;
+                  LocalPopChoice(o_24);
+                }
+              else
+                {
+                  t = n_24;
+                  {
+                    ATerm p_24 = t;
+                    int q_24 = stack_ptr;
+                    if((PushChoice() == 0))
+                      {
+                        t = WhereSavesCurrentTerm_0_0(t);
+                        ;
+                        LocalPopChoice(q_24);
+                      }
+                    else
+                      {
+                        t = p_24;
+                        t = TestSavesCurrentTerm_0_0(t);
+                      }
+                  }
+                }
+            }
+          }
+      }
+    }
+  return(t);
+}
+ATerm g_4 (ATerm t)
+{
+  ATerm l_31 = NULL,m_31 = NULL,n_31 = NULL,o_31 = NULL;
+  if(match_cons(t, sym_SDefT_4))
+    {
+      l_31 = ATgetArgument(t, 0);
+      m_31 = ATgetArgument(t, 1);
+      n_31 = ATgetArgument(t, 2);
+      o_31 = ATgetArgument(t, 3);
+    }
+  else
+    _fail(t);
+  t = (ATerm) ATmakeAppl(sym__2, l_31, term_v_24);
+  t = assert_1_0(h_4, t);
+  t = (ATerm) ATmakeAppl(sym_SDefT_4, l_31, m_31, n_31, o_31);
+  return(t);
+}
+ATerm l_4 (ATerm t)
+{
+  t = repeat_1_0(m_4, t);
   return(t);
 }
 ATerm LiftFromLet_0_0 (ATerm t)
 {
-  ATerm q_30 = NULL,r_30 = NULL,s_30 = NULL,t_30 = NULL;
+  ATerm h_31 = NULL,i_31 = NULL,j_31 = NULL,k_31 = NULL;
   if(match_cons(t, sym_Let_2))
     {
-      q_30 = ATgetArgument(t, 0);
-      r_30 = ATgetArgument(t, 1);
+      h_31 = ATgetArgument(t, 0);
+      i_31 = ATgetArgument(t, 1);
     }
   else
     _fail(t);
-  t = q_30;
+  t = h_31;
   t = partition_1_0(SuperCombinator_0_0, t);
   if(match_cons(t, sym__2))
     {
-      s_30 = ATgetArgument(t, 0);
-      t_30 = ATgetArgument(t, 1);
+      k_31 = ATgetArgument(t, 0);
+      j_31 = ATgetArgument(t, 1);
     }
   else
     _fail(t);
-  t = (ATerm) ATmakeAppl(sym__2, (ATerm)ATmakeAppl(sym_Let_2, t_30, r_30), s_30);
-  {
-    ATerm i_4 (ATerm t)
-    {
-      ATerm k_4 (ATerm t)
-      {
-        ATerm z_23 = t;
-        int a_24 = stack_ptr;
-        if((PushChoice() == 0))
-          {
-            t = Simplify_0_0(t);
-            ;
-            LocalPopChoice(a_24);
-          }
-        else
-          {
-            t = z_23;
-            {
-              ATerm f_24 = t;
-              int g_24 = stack_ptr;
-              if((PushChoice() == 0))
-                {
-                  ATerm v_30 = NULL,w_30 = NULL,x_30 = NULL,y_30 = NULL;
-                  if(match_cons(t, sym_Seq_2))
-                    {
-                      v_30 = ATgetArgument(t, 0);
-                      w_30 = ATgetArgument(t, 1);
-                    }
-                  else
-                    _fail(t);
-                  t = w_30;
-                  if(match_cons(t, sym_Let_2))
-                    {
-                      x_30 = ATgetArgument(t, 0);
-                      y_30 = ATgetArgument(t, 1);
-                    }
-                  else
-                    _fail(t);
-                  t = (ATerm) ATmakeAppl(sym_Let_2, x_30, (ATerm) ATmakeAppl(sym_Seq_2, v_30, y_30));
-                  ;
-                  LocalPopChoice(g_24);
-                }
-              else
-                {
-                  t = f_24;
-                  {
-                    ATerm h_24 = t;
-                    int i_24 = stack_ptr;
-                    if((PushChoice() == 0))
-                      {
-                        t = FuseScope_0_0(t);
-                        ;
-                        LocalPopChoice(i_24);
-                      }
-                    else
-                      {
-                        t = h_24;
-                        {
-                          ATerm l_24 = t;
-                          int n_24 = stack_ptr;
-                          if((PushChoice() == 0))
-                            {
-                              t = WhereSavesCurrentTerm_0_0(t);
-                              ;
-                              LocalPopChoice(n_24);
-                            }
-                          else
-                            {
-                              t = l_24;
-                              t = TestSavesCurrentTerm_0_0(t);
-                            }
-                        }
-                      }
-                  }
-                }
-            }
-          }
-        return(t);
-      }
-      t = repeat_1_0(k_4, t);
-      return(t);
-    }
-    t = downup_1_0(i_4, t);
-  }
+  t = k_31;
+  t = map_1_0(g_4, t);
+  t = (ATerm) ATmakeAppl(sym__2, (ATerm)ATmakeAppl(sym_Let_2, j_31, i_31), k_31);
+  t = downup_1_0(l_4, t);
   return(t);
 }
-ATerm union_1_0 (ATerm j_122 (ATerm), ATerm t)
+ATerm union_1_0 (ATerm p_122 (ATerm), ATerm t)
 {
-  ATerm f_31 = NULL,g_31 = NULL;
+  ATerm a_32 = NULL,b_32 = NULL;
   if(match_cons(t, sym__2))
     {
-      g_31 = ATgetArgument(t, 0);
-      f_31 = ATgetArgument(t, 1);
+      b_32 = ATgetArgument(t, 0);
+      a_32 = ATgetArgument(t, 1);
     }
   else
     _fail(t);
-  t = g_31;
+  t = b_32;
   {
-    ATerm h_31 (ATerm t)
+    ATerm c_32 (ATerm t)
     {
-      ATerm q_24 = t;
-      int r_24 = stack_ptr;
+      ATerm w_24 = t;
+      int x_24 = stack_ptr;
       if((PushChoice() == 0))
         {
           if(((ATgetType(t) != AT_LIST) || !(ATisEmpty(t))))
             _fail(t);
-          t = f_31;
+          t = a_32;
           ;
-          LocalPopChoice(r_24);
+          LocalPopChoice(x_24);
         }
       else
         {
-          t = q_24;
+          t = w_24;
           {
-            ATerm c_25 = t;
-            int d_25 = stack_ptr;
+            ATerm i_25 = t;
+            int j_25 = stack_ptr;
             if((PushChoice() == 0))
               {
-                ATerm s_4 = NULL,t_4 = NULL;
+                ATerm y_5 = NULL,z_5 = NULL;
                 if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
                   {
-                    s_4 = ATgetFirst((ATermList) t);
-                    t_4 = (ATerm) ATgetNext((ATermList) t);
+                    y_5 = ATgetFirst((ATermList) t);
+                    z_5 = (ATerm) ATgetNext((ATermList) t);
                   }
                 else
                   _fail(t);
-                t = f_31;
+                t = a_32;
                 {
-                  ATerm l_4 (ATerm t)
+                  ATerm n_4 (ATerm t)
                   {
-                    ATerm v_4 = NULL;
-                    v_4 = t;
-                    t = (ATerm) ATmakeAppl(sym__2, s_4, v_4);
-                    t = j_122(t);
+                    ATerm a_6 = NULL;
+                    a_6 = t;
+                    t = (ATerm) ATmakeAppl(sym__2, y_5, a_6);
+                    t = p_122(t);
                     return(t);
                   }
-                  t = fetch_1_0(l_4, t);
-                  t = t_4;
-                  t = h_31(t);
+                  t = fetch_1_0(n_4, t);
+                  t = z_5;
+                  t = c_32(t);
                 }
                 ;
-                LocalPopChoice(d_25);
+                LocalPopChoice(j_25);
               }
             else
               {
-                t = c_25;
-                t = Cons_2_0(_id, h_31, t);
+                t = i_25;
+                t = Cons_2_0(_id, c_32, t);
               }
           }
         }
       return(t);
     }
-    t = h_31(t);
+    t = c_32(t);
   }
   return(t);
 }
-ATerm genzip_4_0 (ATerm h_118 (ATerm), ATerm i_118 (ATerm), ATerm j_118 (ATerm), ATerm k_118 (ATerm), ATerm t)
+ATerm genzip_4_0 (ATerm m_118 (ATerm), ATerm n_118 (ATerm), ATerm o_118 (ATerm), ATerm p_118 (ATerm), ATerm t)
 {
-  ATerm i_31 (ATerm t)
+  ATerm d_32 (ATerm t)
   {
-    ATerm j_25 = t;
-    int k_25 = stack_ptr;
+    ATerm r_25 = t;
+    int s_25 = stack_ptr;
     if((PushChoice() == 0))
       {
-        t = h_118(t);
+        t = m_118(t);
         ;
-        LocalPopChoice(k_25);
+        LocalPopChoice(s_25);
       }
     else
       {
-        t = j_25;
-        t = i_118(t);
-        t = _2_0(k_118, i_31, t);
-        t = j_118(t);
+        t = r_25;
+        t = n_118(t);
+        t = _2_0(p_118, d_32, t);
+        t = o_118(t);
       }
     return(t);
   }
-  t = i_31(t);
+  t = d_32(t);
   return(t);
 }
-ATerm CollectSplit_2_0 (ATerm h_123 (ATerm), ATerm i_123 (ATerm), ATerm t)
+ATerm p_4 (ATerm t)
 {
-  ATerm j_31 = NULL,k_31 = NULL,m_31 = NULL,n_31 = NULL,o_31 = NULL,p_31 = NULL,q_31 = NULL,r_31 = NULL,s_31 = NULL,t_31 = NULL,u_31 = NULL,v_31 = NULL;
-  j_31 = t;
-  k_31 = t;
-  t = SSL_explode_term(k_31);
-  if(match_cons(t, sym__2))
+  if(((ATgetType(t) != AT_LIST) || !(ATisEmpty(t))))
+    _fail(t);
+  t = term_y_22;
+  return(t);
+}
+ATerm q_4 (ATerm t)
+{
+  ATerm r_32 = NULL,s_32 = NULL;
+  if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
     {
-      m_31 = ATgetArgument(t, 0);
-      n_31 = ATgetArgument(t, 1);
+      r_32 = ATgetFirst((ATermList) t);
+      s_32 = (ATerm) ATgetNext((ATermList) t);
     }
   else
     _fail(t);
-  t = SSLgetAnnotations(j_31);
-  o_31 = t;
-  t = n_31;
-  {
-    ATerm m_4 (ATerm t)
-    {
-      if(((ATgetType(t) != AT_LIST) || !(ATisEmpty(t))))
-        _fail(t);
-      t = term_l_22;
-      return(t);
-    }
-    ATerm o_4 (ATerm t)
-    {
-      ATerm w_31 = NULL,x_31 = NULL;
-      if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
-        {
-          w_31 = ATgetFirst((ATermList) t);
-          x_31 = (ATerm) ATgetNext((ATermList) t);
-        }
-      else
-        _fail(t);
-      t = (ATerm) ATmakeAppl(sym__2, w_31, x_31);
-      return(t);
-    }
-    ATerm p_4 (ATerm t)
-    {
-      ATerm y_31 = NULL,z_31 = NULL,a_32 = NULL,b_32 = NULL;
-      if(match_cons(t, sym__2))
-        {
-          ATerm l_25 = ATgetArgument(t, 0);
-          if(match_cons(l_25, sym__2))
-            {
-              y_31 = ATgetArgument(l_25, 0);
-              a_32 = ATgetArgument(l_25, 1);
-            }
-          else
-            _fail(t);
-          {
-            ATerm m_25 = ATgetArgument(t, 1);
-            if(match_cons(m_25, sym__2))
-              {
-                z_31 = ATgetArgument(m_25, 0);
-                b_32 = ATgetArgument(m_25, 1);
-              }
-            else
-              _fail(t);
-          }
-        }
-      else
-        _fail(t);
-      t = (ATerm) ATmakeAppl(sym__2, (ATerm)ATinsert(CheckATermList(z_31), y_31), (ATerm) ATinsert(CheckATermList(b_32), a_32));
-      return(t);
-    }
-    t = genzip_4_0(m_4, o_4, p_4, h_123, t);
-    if(match_cons(t, sym__2))
-      {
-        p_31 = ATgetArgument(t, 0);
-        q_31 = ATgetArgument(t, 1);
-      }
-    else
-      _fail(t);
-    t = SSL_mkterm(m_31, p_31);
-    r_31 = t;
-    t = SSLsetAnnotations(r_31, o_31);
-    t = i_123(t);
-    if(match_cons(t, sym__2))
-      {
-        s_31 = ATgetArgument(t, 0);
-        t_31 = ATgetArgument(t, 1);
-      }
-    else
-      _fail(t);
-    t = q_31;
-    {
-      ATerm q_4 (ATerm t)
-      {
-        t = (ATerm) ATempty;
-        return(t);
-      }
-      ATerm u_4 (ATerm t)
-      {
-        ATerm w_4 (ATerm t)
-        {
-          ATerm c_32 = NULL;
-          if(match_cons(t, sym__2))
-            {
-              c_32 = ATgetArgument(t, 0);
-              if((c_32 != ATgetArgument(t, 1)))
-                {
-                  _fail(ATgetArgument(t, 1));
-                }
-            }
-          else
-            _fail(t);
-          return(t);
-        }
-        t = union_1_0(w_4, t);
-        return(t);
-      }
-      t = foldr_2_0(q_4, u_4, t);
-      u_31 = t;
-      t = (ATerm) ATmakeAppl(sym__2, t_31, u_31);
-      {
-        ATerm x_4 (ATerm t)
-        {
-          ATerm d_32 = NULL;
-          if(match_cons(t, sym__2))
-            {
-              d_32 = ATgetArgument(t, 0);
-              if((d_32 != ATgetArgument(t, 1)))
-                {
-                  _fail(ATgetArgument(t, 1));
-                }
-            }
-          else
-            _fail(t);
-          return(t);
-        }
-        t = union_1_0(x_4, t);
-        v_31 = t;
-        t = (ATerm) ATmakeAppl(sym__2, s_31, v_31);
-      }
-    }
-  }
+  t = (ATerm) ATmakeAppl(sym__2, r_32, s_32);
   return(t);
 }
-ATerm collect_split_1_0 (ATerm e_124 (ATerm), ATerm t)
+ATerm r_4 (ATerm t)
 {
-  ATerm g_32 (ATerm t)
-  {
-    ATerm y_4 (ATerm t)
+  ATerm t_32 = NULL,u_32 = NULL,v_32 = NULL,w_32 = NULL;
+  if(match_cons(t, sym__2))
     {
-      ATerm o_25 = t;
-      int p_25 = stack_ptr;
-      if((PushChoice() == 0))
+      ATerm t_25 = ATgetArgument(t, 0);
+      if(match_cons(t_25, sym__2))
         {
-          t = e_124(t);
-          ;
-          LocalPopChoice(p_25);
+          t_32 = ATgetArgument(t_25, 0);
+          v_32 = ATgetArgument(t_25, 1);
         }
       else
-        {
-          t = o_25;
+        _fail(t);
+      {
+        ATerm u_25 = ATgetArgument(t, 1);
+        if(match_cons(u_25, sym__2))
           {
-            ATerm e_32 = NULL;
-            e_32 = t;
-            t = (ATerm) ATmakeAppl(sym__2, e_32, (ATerm) ATempty);
+            u_32 = ATgetArgument(u_25, 0);
+            w_32 = ATgetArgument(u_25, 1);
           }
-        }
-      return(t);
+        else
+          _fail(t);
+      }
     }
-    t = CollectSplit_2_0(g_32, y_4, t);
-    return(t);
-  }
-  t = g_32(t);
+  else
+    _fail(t);
+  t = (ATerm) ATmakeAppl(sym__2, (ATerm)ATinsert(CheckATermList(u_32), t_32), (ATerm) ATinsert(CheckATermList(w_32), v_32));
   return(t);
 }
-ATerm lift_sdefs_0_0 (ATerm t)
+ATerm t_4 (ATerm t)
 {
-  ATerm i_32 = NULL,j_32 = NULL,k_32 = NULL,l_32 = NULL,m_32 = NULL,n_32 = NULL;
-  if(match_cons(t, sym_SDefT_4))
+  t = (ATerm) ATempty;
+  return(t);
+}
+ATerm v_4 (ATerm t)
+{
+  ATerm x_32 = NULL;
+  if(match_cons(t, sym__2))
     {
-      i_32 = ATgetArgument(t, 0);
-      j_32 = ATgetArgument(t, 1);
-      k_32 = ATgetArgument(t, 2);
-      l_32 = ATgetArgument(t, 3);
+      x_32 = ATgetArgument(t, 0);
+      if((x_32 != ATgetArgument(t, 1)))
+        {
+          _fail(ATgetArgument(t, 1));
+        }
+    }
+  else
+    _fail(t);
+  return(t);
+}
+ATerm x_4 (ATerm t)
+{
+  ATerm y_32 = NULL;
+  if(match_cons(t, sym__2))
+    {
+      y_32 = ATgetArgument(t, 0);
+      if((y_32 != ATgetArgument(t, 1)))
+        {
+          _fail(ATgetArgument(t, 1));
+        }
+    }
+  else
+    _fail(t);
+  return(t);
+}
+ATerm u_4 (ATerm t)
+{
+  t = union_1_0(v_4, t);
+  return(t);
+}
+ATerm CollectSplit_2_0 (ATerm m_123 (ATerm), ATerm n_123 (ATerm), ATerm t)
+{
+  ATerm e_32 = NULL,f_32 = NULL,h_32 = NULL,i_32 = NULL,j_32 = NULL,k_32 = NULL,l_32 = NULL,m_32 = NULL,n_32 = NULL,o_32 = NULL,p_32 = NULL,q_32 = NULL;
+  e_32 = t;
+  f_32 = t;
+  t = SSL_explode_term(f_32);
+  if(match_cons(t, sym__2))
+    {
+      h_32 = ATgetArgument(t, 0);
+      i_32 = ATgetArgument(t, 1);
+    }
+  else
+    _fail(t);
+  t = SSLgetAnnotations(e_32);
+  j_32 = t;
+  t = i_32;
+  t = genzip_4_0(p_4, q_4, r_4, m_123, t);
+  if(match_cons(t, sym__2))
+    {
+      k_32 = ATgetArgument(t, 0);
+      l_32 = ATgetArgument(t, 1);
+    }
+  else
+    _fail(t);
+  t = SSL_mkterm(h_32, k_32);
+  m_32 = t;
+  t = SSLsetAnnotations(m_32, j_32);
+  t = n_123(t);
+  if(match_cons(t, sym__2))
+    {
+      n_32 = ATgetArgument(t, 0);
+      o_32 = ATgetArgument(t, 1);
     }
   else
     _fail(t);
   t = l_32;
-  t = collect_split_1_0(LiftFromLet_0_0, t);
-  if(match_cons(t, sym__2))
+  t = foldr_2_0(t_4, u_4, t);
+  p_32 = t;
+  t = (ATerm) ATmakeAppl(sym__2, o_32, p_32);
+  t = union_1_0(x_4, t);
+  q_32 = t;
+  t = (ATerm) ATmakeAppl(sym__2, n_32, q_32);
+  return(t);
+}
+ATerm collect_split_1_0 (ATerm j_124 (ATerm), ATerm t)
+{
+  ATerm b_33 (ATerm t)
+  {
+    ATerm y_4 (ATerm t)
     {
-      m_32 = ATgetArgument(t, 0);
-      n_32 = ATgetArgument(t, 1);
+      ATerm y_25 = t;
+      int z_25 = stack_ptr;
+      if((PushChoice() == 0))
+        {
+          t = j_124(t);
+          ;
+          LocalPopChoice(z_25);
+        }
+      else
+        {
+          t = y_25;
+          {
+            ATerm z_32 = NULL;
+            z_32 = t;
+            t = (ATerm) ATmakeAppl(sym__2, z_32, (ATerm) ATempty);
+          }
+        }
+      return(t);
+    }
+    t = CollectSplit_2_0(b_33, y_4, t);
+    return(t);
+  }
+  t = b_33(t);
+  return(t);
+}
+ATerm lift_sdefs_0_0 (ATerm t)
+{
+  ATerm d_33 = NULL,e_33 = NULL,f_33 = NULL,g_33 = NULL,h_33 = NULL,i_33 = NULL;
+  if(match_cons(t, sym_SDefT_4))
+    {
+      d_33 = ATgetArgument(t, 0);
+      e_33 = ATgetArgument(t, 1);
+      f_33 = ATgetArgument(t, 2);
+      g_33 = ATgetArgument(t, 3);
     }
   else
     _fail(t);
-  t = (ATerm) ATmakeAppl(sym__2, n_32, (ATerm) ATinsert(ATempty, (ATerm) ATmakeAppl(sym_SDefT_4, i_32, j_32, k_32, m_32)));
+  t = g_33;
+  t = collect_split_1_0(LiftFromLet_0_0, t);
+  if(match_cons(t, sym__2))
+    {
+      h_33 = ATgetArgument(t, 0);
+      i_33 = ATgetArgument(t, 1);
+    }
+  else
+    _fail(t);
+  t = (ATerm) ATmakeAppl(sym__2, i_33, (ATerm) ATinsert(ATempty, (ATerm) ATmakeAppl(sym_SDefT_4, d_33, e_33, f_33, h_33)));
   {
-    ATerm q_25 = t;
-    int r_25 = stack_ptr;
+    ATerm g_26 = t;
+    int h_26 = stack_ptr;
     if((PushChoice() == 0))
       {
         if(match_cons(t, sym__2))
           {
-            ATerm s_25 = ATgetArgument(t, 0);
-            ATerm t_25 = ATgetArgument(t, 1);
+            ATerm i_26 = ATgetArgument(t, 0);
+            ATerm j_26 = ATgetArgument(t, 1);
           }
         else
           _fail(t);
-        t = n_32;
+        t = i_33;
         {
           ATerm z_4 (ATerm t)
           {
-            t = (ATerm) ATinsert(ATempty, (ATerm) ATmakeAppl(sym_SDefT_4, i_32, j_32, k_32, m_32));
+            t = (ATerm) ATinsert(ATempty, (ATerm) ATmakeAppl(sym_SDefT_4, d_33, e_33, f_33, h_33));
             return(t);
           }
           t = at_end_1_0(z_4, t);
         }
         ;
-        LocalPopChoice(r_25);
+        LocalPopChoice(h_26);
       }
     else
       {
-        t = q_25;
+        t = g_26;
         {
-          ATerm b_5 = NULL;
-          t = SSL_explode_term((ATerm) ATmakeAppl(sym__2, n_32, (ATerm) ATinsert(ATempty, (ATerm) ATmakeAppl(sym_SDefT_4, i_32, j_32, k_32, m_32))));
+          ATerm g_6 = NULL;
+          t = SSL_explode_term((ATerm) ATmakeAppl(sym__2, i_33, (ATerm) ATinsert(ATempty, (ATerm) ATmakeAppl(sym_SDefT_4, d_33, e_33, f_33, h_33))));
           if(match_cons(t, sym__2))
             {
-              ATerm w_25 = ATgetArgument(t, 0);
-              if((ATgetSymbol((ATermAppl) w_25) != ATmakeSymbol("", 0, ATtrue)))
+              ATerm k_26 = ATgetArgument(t, 0);
+              if((ATgetSymbol((ATermAppl) k_26) != ATmakeSymbol("", 0, ATtrue)))
                 _fail(t);
-              b_5 = ATgetArgument(t, 1);
+              g_6 = ATgetArgument(t, 1);
             }
           else
             _fail(t);
-          t = b_5;
+          t = g_6;
           t = concat_0_0(t);
         }
       }
   }
   return(t);
 }
-ATerm assert_1_0 (ATerm h_126 (ATerm), ATerm t)
+ATerm assert_1_0 (ATerm m_126 (ATerm), ATerm t)
 {
-  ATerm r_32 = NULL,s_32 = NULL,t_32 = NULL,u_32 = NULL,v_32 = NULL;
+  ATerm m_33 = NULL,n_33 = NULL,o_33 = NULL,p_33 = NULL,q_33 = NULL;
   if(match_cons(t, sym__2))
     {
-      r_32 = ATgetArgument(t, 0);
-      s_32 = ATgetArgument(t, 1);
+      m_33 = ATgetArgument(t, 0);
+      n_33 = ATgetArgument(t, 1);
     }
   else
     _fail(t);
-  t = h_126(t);
-  t_32 = t;
-  t = (ATerm) ATmakeAppl(sym__3, t_32, r_32, s_32);
+  t = m_126(t);
+  o_33 = t;
+  t = (ATerm) ATmakeAppl(sym__3, o_33, m_33, n_33);
   t = table_push_0_0(t);
   {
-    ATerm x_25 = t;
-    int y_25 = stack_ptr;
+    ATerm l_26 = t;
+    int m_26 = stack_ptr;
     if((PushChoice() == 0))
       {
-        t = SSL_table_get(t_32, (ATerm) ATmakeAppl(sym_Scopes_0));
+        t = SSL_table_get(o_33, (ATerm) ATmakeAppl(sym_Scopes_0));
         ;
-        LocalPopChoice(y_25);
+        LocalPopChoice(m_26);
       }
     else
       {
-        t = x_25;
+        t = l_26;
         t = (ATerm) ATinsert(ATempty, (ATerm) ATempty);
       }
     if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
       {
-        u_32 = ATgetFirst((ATermList) t);
-        v_32 = (ATerm) ATgetNext((ATermList) t);
+        p_33 = ATgetFirst((ATermList) t);
+        q_33 = (ATerm) ATgetNext((ATermList) t);
       }
     else
       _fail(t);
-    t = SSL_table_put(t_32, (ATerm)ATmakeAppl(sym_Scopes_0), (ATerm) ATinsert(CheckATermList(v_32), (ATerm) ATinsert(CheckATermList(u_32), r_32)));
-    t = (ATerm) ATmakeAppl(sym__2, r_32, s_32);
+    t = SSL_table_put(o_33, (ATerm)ATmakeAppl(sym_Scopes_0), (ATerm) ATinsert(CheckATermList(q_33), (ATerm) ATinsert(CheckATermList(p_33), m_33)));
+    t = (ATerm) ATmakeAppl(sym__2, m_33, n_33);
   }
   return(t);
 }
-ATerm Strategies_1_0 (ATerm c_98 (ATerm), ATerm t)
+ATerm Strategies_1_0 (ATerm h_98 (ATerm), ATerm t)
 {
-  ATerm w_32 = NULL,x_32 = NULL,y_32 = NULL,z_32 = NULL;
-  z_32 = t;
+  ATerm s_33 = NULL,t_33 = NULL,u_33 = NULL,v_33 = NULL;
+  v_33 = t;
   if(match_cons(t, sym_Strategies_1))
     {
-      x_32 = ATgetArgument(t, 0);
+      t_33 = ATgetArgument(t, 0);
     }
   else
     _fail(t);
-  t = SSLgetAnnotations(z_32);
-  w_32 = t;
-  t = x_32;
-  t = c_98(t);
-  y_32 = t;
-  t = SSLsetAnnotations((ATerm)ATmakeAppl(sym_Strategies_1, y_32), w_32);
+  t = SSLgetAnnotations(v_33);
+  s_33 = t;
+  t = t_33;
+  t = h_98(t);
+  u_33 = t;
+  t = SSLsetAnnotations((ATerm)ATmakeAppl(sym_Strategies_1, u_33), s_33);
   return(t);
 }
-ATerm Specification_1_0 (ATerm h_98 (ATerm), ATerm t)
+ATerm Specification_1_0 (ATerm m_98 (ATerm), ATerm t)
 {
-  ATerm c_33 = NULL,d_33 = NULL,e_33 = NULL,f_33 = NULL;
-  f_33 = t;
+  ATerm y_33 = NULL,z_33 = NULL,a_34 = NULL,b_34 = NULL;
+  b_34 = t;
   if(match_cons(t, sym_Specification_1))
     {
-      d_33 = ATgetArgument(t, 0);
+      z_33 = ATgetArgument(t, 0);
     }
   else
     _fail(t);
-  t = SSLgetAnnotations(f_33);
-  c_33 = t;
-  t = d_33;
-  t = h_98(t);
-  e_33 = t;
-  t = SSLsetAnnotations((ATerm)ATmakeAppl(sym_Specification_1, e_33), c_33);
+  t = SSLgetAnnotations(b_34);
+  y_33 = t;
+  t = z_33;
+  t = m_98(t);
+  a_34 = t;
+  t = SSLsetAnnotations((ATerm)ATmakeAppl(sym_Specification_1, a_34), y_33);
+  return(t);
+}
+ATerm b_5 (ATerm t)
+{
+  t = term_f_24;
+  return(t);
+}
+ATerm a_5 (ATerm t)
+{
+  ATerm f_34 = NULL;
+  f_34 = t;
+  t = (ATerm) ATmakeAppl(sym__2, f_34, term_o_26);
+  t = assert_1_0(b_5, t);
+  t = f_34;
+  return(t);
+}
+ATerm declare_standard_strategies_0_0 (ATerm t)
+{
+  ATerm e_34 = NULL;
+  e_34 = t;
+  t = (ATerm) ATinsert(ATinsert(ATempty, term_r_26), term_p_26);
+  t = map_1_0(a_5, t);
+  t = e_34;
+  return(t);
+}
+ATerm f_5 (ATerm t)
+{
+  if(((ATgetType(t) != AT_LIST) || !(ATisEmpty(t))))
+    _fail(t);
+  return(t);
+}
+ATerm j_5 (ATerm t)
+{
+  t = term_f_24;
+  return(t);
+}
+ATerm i_5 (ATerm t)
+{
+  ATerm g_34 = NULL,h_34 = NULL,i_34 = NULL,j_34 = NULL;
+  if(match_cons(t, sym_SDefT_4))
+    {
+      g_34 = ATgetArgument(t, 0);
+      h_34 = ATgetArgument(t, 1);
+      i_34 = ATgetArgument(t, 2);
+      j_34 = ATgetArgument(t, 3);
+    }
+  else
+    _fail(t);
+  t = (ATerm) ATmakeAppl(sym__2, g_34, term_v_24);
+  t = assert_1_0(j_5, t);
+  t = (ATerm) ATmakeAppl(sym_SDefT_4, g_34, h_34, i_34, j_34);
   return(t);
 }
 ATerm lift_definitions_0_0 (ATerm t)
 {
-  ATerm a_5 (ATerm t)
+  t = declare_standard_strategies_0_0(t);
   {
-    ATerm d_5 (ATerm t)
+    ATerm c_5 (ATerm t)
     {
-      ATerm e_5 (ATerm t)
+      ATerm d_5 (ATerm t)
       {
-        ATerm g_5 (ATerm t)
+        ATerm e_5 (ATerm t)
         {
-          ATerm h_5 (ATerm t)
+          ATerm g_5 (ATerm t)
           {
-            ATerm i_33 = NULL,k_33 = NULL,l_33 = NULL,m_33 = NULL;
-            if(match_cons(t, sym_SDefT_4))
-              {
-                i_33 = ATgetArgument(t, 0);
-                k_33 = ATgetArgument(t, 1);
-                l_33 = ATgetArgument(t, 2);
-                m_33 = ATgetArgument(t, 3);
-              }
-            else
-              _fail(t);
-            t = (ATerm) ATmakeAppl(sym__2, i_33, term_b_26);
-            {
-              ATerm i_5 (ATerm t)
-              {
-                t = term_d_26;
-                return(t);
-              }
-              t = assert_1_0(i_5, t);
-              t = (ATerm) ATmakeAppl(sym_SDefT_4, i_33, k_33, l_33, m_33);
-            }
+            t = map_1_0(i_5, t);
+            t = map_1_0(lift_sdefs_0_0, t);
+            t = concat_0_0(t);
             return(t);
           }
-          t = map_1_0(h_5, t);
-          t = map_1_0(lift_sdefs_0_0, t);
-          t = concat_0_0(t);
+          t = Strategies_1_0(g_5, t);
           return(t);
         }
-        t = Strategies_1_0(g_5, t);
+        t = Cons_2_0(e_5, f_5, t);
         return(t);
       }
-      ATerm f_5 (ATerm t)
-      {
-        if(((ATgetType(t) != AT_LIST) || !(ATisEmpty(t))))
-          _fail(t);
-        return(t);
-      }
-      t = Cons_2_0(e_5, f_5, t);
+      t = Cons_2_0(_id, d_5, t);
       return(t);
     }
-    t = Cons_2_0(_id, d_5, t);
-    return(t);
+    t = Specification_1_0(c_5, t);
   }
-  t = Specification_1_0(a_5, t);
   return(t);
 }
-ATerm _2_0 (ATerm j_93 (ATerm), ATerm k_93 (ATerm), ATerm t)
+ATerm _2_0 (ATerm o_93 (ATerm), ATerm p_93 (ATerm), ATerm t)
 {
-  ATerm n_33 = NULL,o_33 = NULL,p_33 = NULL,q_33 = NULL,r_33 = NULL,s_33 = NULL;
-  s_33 = t;
+  ATerm k_34 = NULL,l_34 = NULL,m_34 = NULL,n_34 = NULL,o_34 = NULL,p_34 = NULL;
+  p_34 = t;
   if(match_cons(t, sym__2))
     {
-      o_33 = ATgetArgument(t, 0);
-      p_33 = ATgetArgument(t, 1);
+      l_34 = ATgetArgument(t, 0);
+      m_34 = ATgetArgument(t, 1);
     }
   else
     _fail(t);
-  t = SSLgetAnnotations(s_33);
-  n_33 = t;
-  t = o_33;
-  t = j_93(t);
-  q_33 = t;
-  t = p_33;
-  t = k_93(t);
-  r_33 = t;
-  t = SSLsetAnnotations((ATerm)ATmakeAppl(sym__2, q_33, r_33), n_33);
+  t = SSLgetAnnotations(p_34);
+  k_34 = t;
+  t = l_34;
+  t = o_93(t);
+  n_34 = t;
+  t = m_34;
+  t = p_93(t);
+  o_34 = t;
+  t = SSLsetAnnotations((ATerm)ATmakeAppl(sym__2, n_34, o_34), k_34);
   return(t);
 }
-ATerm WriteToFile_1_0 (ATerm o_135 (ATerm), ATerm t)
+ATerm WriteToFile_1_0 (ATerm t_135 (ATerm), ATerm t)
 {
-  ATerm v_33 = NULL,w_33 = NULL,x_33 = NULL;
+  ATerm s_34 = NULL,t_34 = NULL,u_34 = NULL;
   if(match_cons(t, sym__2))
     {
-      v_33 = ATgetArgument(t, 0);
-      w_33 = ATgetArgument(t, 1);
+      s_34 = ATgetArgument(t, 0);
+      t_34 = ATgetArgument(t, 1);
     }
   else
     _fail(t);
-  t = (ATerm) ATmakeAppl(sym__2, v_33, term_e_26);
+  t = (ATerm) ATmakeAppl(sym__2, s_34, term_t_26);
   t = open_stream_0_0(t);
-  x_33 = t;
-  t = (ATerm) ATmakeAppl(sym__2, x_33, w_33);
-  t = o_135(t);
+  u_34 = t;
+  t = (ATerm) ATmakeAppl(sym__2, u_34, t_34);
+  t = t_135(t);
   t = fclose_0_0(t);
-  t = w_33;
+  t = t_34;
+  return(t);
+}
+ATerm q_5 (ATerm t)
+{
+  if(!(match_cons(t, sym_Binary_0)))
+    _fail(t);
+  return(t);
+}
+ATerm r_5 (ATerm t)
+{
+  ATerm x_34 = NULL,y_34 = NULL,z_34 = NULL;
+  if(match_cons(t, sym__2))
+    {
+      ATerm u_26 = ATgetArgument(t, 0);
+      if(match_cons(u_26, sym_Stream_1))
+        {
+          x_34 = ATgetArgument(u_26, 0);
+        }
+      else
+        _fail(t);
+      y_34 = ATgetArgument(t, 1);
+    }
+  else
+    _fail(t);
+  t = SSL_write_term_to_stream_baf(x_34, y_34);
+  z_34 = t;
+  t = (ATerm) ATmakeAppl(sym_Stream_1, z_34);
+  return(t);
+}
+ATerm u_5 (ATerm t)
+{
+  ATerm a_35 = NULL,b_35 = NULL,c_35 = NULL,f_35 = NULL;
+  if(match_cons(t, sym__2))
+    {
+      ATerm v_26 = ATgetArgument(t, 0);
+      if(match_cons(v_26, sym_Stream_1))
+        {
+          a_35 = ATgetArgument(v_26, 0);
+        }
+      else
+        _fail(t);
+      b_35 = ATgetArgument(t, 1);
+    }
+  else
+    _fail(t);
+  t = SSL_write_term_to_stream_text(a_35, b_35);
+  c_35 = t;
+  t = SSL_fputc((ATerm)ATmakeInt(10), c_35);
+  f_35 = t;
+  t = (ATerm) ATmakeAppl(sym_Stream_1, f_35);
+  return(t);
+}
+ATerm n_5 (ATerm t)
+{
+  t = fetch_1_0(q_5, t);
+  return(t);
+}
+ATerm p_5 (ATerm t)
+{
+  t = WriteToFile_1_0(r_5, t);
+  return(t);
+}
+ATerm t_5 (ATerm t)
+{
+  t = WriteToFile_1_0(u_5, t);
   return(t);
 }
 ATerm output_file_0_0 (ATerm t)
 {
-  ATerm y_33 = NULL,z_33 = NULL;
-  y_33 = t;
+  ATerm v_34 = NULL,w_34 = NULL;
+  v_34 = t;
   {
-    ATerm j_5 (ATerm t)
+    ATerm k_5 (ATerm t)
     {
-      ATerm f_26 = t;
-      int g_26 = stack_ptr;
+      ATerm w_26 = t;
+      int y_26 = stack_ptr;
       if((PushChoice() == 0))
         {
-          ATerm k_5 (ATerm t)
+          ATerm l_5 (ATerm t)
           {
             if(match_cons(t, sym_Output_1))
               {
-                if(((z_33 != NULL) && (z_33 != ATgetArgument(t, 0))))
+                if(((w_34 != NULL) && (w_34 != ATgetArgument(t, 0))))
                   _fail(ATgetArgument(t, 0));
                 else
-                  z_33 = ATgetArgument(t, 0);
+                  w_34 = ATgetArgument(t, 0);
               }
             else
               _fail(t);
             return(t);
           }
-          t = fetch_1_0(k_5, t);
+          t = fetch_1_0(l_5, t);
           ;
-          LocalPopChoice(g_26);
+          LocalPopChoice(y_26);
         }
       else
         {
-          t = f_26;
-          t = term_h_26;
-          if(((z_33 != NULL) && (z_33 != t)))
+          t = w_26;
+          t = term_a_27;
+          if(((w_34 != NULL) && (w_34 != t)))
             _fail(t);
           else
-            z_33 = t;
+            w_34 = t;
         }
       return(t);
     }
-    t = _2_0(j_5, _id, t);
-    t = y_33;
+    t = _2_0(k_5, _id, t);
+    t = v_34;
     {
-      ATerm l_5 (ATerm t)
+      ATerm m_5 (ATerm t)
       {
-        ATerm c_5 = NULL;
-        c_5 = t;
-        t = (ATerm) ATmakeAppl(sym__2, not_null(z_33), c_5);
+        ATerm h_6 = NULL;
+        h_6 = t;
+        t = (ATerm) ATmakeAppl(sym__2, not_null(w_34), h_6);
         return(t);
       }
-      t = _2_0(_id, l_5, t);
+      t = _2_0(_id, m_5, t);
       {
-        ATerm i_26 = t;
-        int j_26 = stack_ptr;
+        ATerm b_27 = t;
+        int c_27 = stack_ptr;
         if((PushChoice() == 0))
           {
-            ATerm m_5 (ATerm t)
-            {
-              ATerm o_5 (ATerm t)
-              {
-                if(!(match_cons(t, sym_Binary_0)))
-                  _fail(t);
-                return(t);
-              }
-              t = fetch_1_0(o_5, t);
-              return(t);
-            }
-            ATerm n_5 (ATerm t)
-            {
-              ATerm p_5 (ATerm t)
-              {
-                ATerm a_34 = NULL,b_34 = NULL,c_34 = NULL;
-                if(match_cons(t, sym__2))
-                  {
-                    ATerm k_26 = ATgetArgument(t, 0);
-                    if(match_cons(k_26, sym_Stream_1))
-                      {
-                        a_34 = ATgetArgument(k_26, 0);
-                      }
-                    else
-                      _fail(t);
-                    b_34 = ATgetArgument(t, 1);
-                  }
-                else
-                  _fail(t);
-                t = SSL_write_term_to_stream_baf(a_34, b_34);
-                c_34 = t;
-                t = (ATerm) ATmakeAppl(sym_Stream_1, c_34);
-                return(t);
-              }
-              t = WriteToFile_1_0(p_5, t);
-              return(t);
-            }
-            t = _2_0(m_5, n_5, t);
+            t = _2_0(n_5, p_5, t);
             ;
-            LocalPopChoice(j_26);
+            LocalPopChoice(c_27);
           }
         else
           {
-            t = i_26;
-            {
-              ATerm q_5 (ATerm t)
-              {
-                ATerm u_5 (ATerm t)
-                {
-                  ATerm d_34 = NULL,e_34 = NULL,f_34 = NULL,g_34 = NULL;
-                  if(match_cons(t, sym__2))
-                    {
-                      ATerm l_26 = ATgetArgument(t, 0);
-                      if(match_cons(l_26, sym_Stream_1))
-                        {
-                          d_34 = ATgetArgument(l_26, 0);
-                        }
-                      else
-                        _fail(t);
-                      e_34 = ATgetArgument(t, 1);
-                    }
-                  else
-                    _fail(t);
-                  t = SSL_write_term_to_stream_text(d_34, e_34);
-                  f_34 = t;
-                  t = SSL_fputc((ATerm)ATmakeInt(10), f_34);
-                  g_34 = t;
-                  t = (ATerm) ATmakeAppl(sym_Stream_1, g_34);
-                  return(t);
-                }
-                t = WriteToFile_1_0(u_5, t);
-                return(t);
-              }
-              t = _2_0(_id, q_5, t);
-            }
+            t = b_27;
+            t = _2_0(_id, t_5, t);
           }
       }
     }
@@ -4958,114 +5128,133 @@ ATerm dtime_0_0 (ATerm t)
   t = SSL_dtime();
   return(t);
 }
-ATerm apply_strategy_1_0 (ATerm q_138 (ATerm), ATerm t)
+ATerm apply_strategy_1_0 (ATerm v_138 (ATerm), ATerm t)
 {
-  ATerm h_34 = NULL,i_34 = NULL,j_34 = NULL,k_34 = NULL,l_34 = NULL;
-  h_34 = t;
+  ATerm h_35 = NULL,i_35 = NULL,j_35 = NULL,m_35 = NULL,n_35 = NULL;
+  h_35 = t;
   t = dtime_0_0(t);
-  t = h_34;
-  t = q_138(t);
-  i_34 = t;
+  t = h_35;
+  t = v_138(t);
+  i_35 = t;
   t = dtime_0_0(t);
-  j_34 = t;
-  t = i_34;
+  j_35 = t;
+  t = i_35;
   if(match_cons(t, sym__2))
     {
-      k_34 = ATgetArgument(t, 0);
-      l_34 = ATgetArgument(t, 1);
+      m_35 = ATgetArgument(t, 0);
+      n_35 = ATgetArgument(t, 1);
     }
   else
     _fail(t);
-  t = (ATerm) ATmakeAppl(sym__2, (ATerm)ATinsert(CheckATermList(k_34), (ATerm) ATmakeAppl(sym_Runtime_1, j_34)), l_34);
+  t = (ATerm) ATmakeAppl(sym__2, (ATerm)ATinsert(CheckATermList(m_35), (ATerm) ATmakeAppl(sym_Runtime_1, j_35)), n_35);
+  return(t);
+}
+ATerm d_36 (ATerm x_35, ATerm t)
+{
+  t = SSL_fclose(x_35);
   return(t);
 }
 ATerm fclose_0_0 (ATerm t)
 {
-  ATerm e_35 (ATerm t_34, ATerm t)
-  {
-    t = SSL_fclose(t_34);
-    return(t);
-  }
-  ATerm z_34 = NULL,a_35 = NULL;
-  a_35 = t;
+  ATerm a_36 = NULL,b_36 = NULL;
+  b_36 = t;
   if(match_cons(t, sym_Stream_1))
     {
-      z_34 = ATgetArgument(t, 0);
+      a_36 = ATgetArgument(t, 0);
       {
-        ATerm m_26 = t;
-        int n_26 = stack_ptr;
+        ATerm d_27 = t;
+        int e_27 = stack_ptr;
         if((PushChoice() == 0))
           {
-            t = SSL_fclose(z_34);
+            t = SSL_fclose(a_36);
             ;
-            LocalPopChoice(n_26);
+            LocalPopChoice(e_27);
           }
         else
           {
-            t = m_26;
-            t = e_35(a_35, t);
+            t = d_27;
+            t = d_36(b_36, t);
           }
       }
     }
   else
     {
-      t = e_35(a_35, t);
+      t = d_36(b_36, t);
     }
   return(t);
 }
 ATerm stdin_stream_0_0 (ATerm t)
 {
-  ATerm f_35 = NULL;
+  ATerm e_36 = NULL;
   t = SSL_stdin_stream();
-  f_35 = t;
-  t = (ATerm) ATmakeAppl(sym_Stream_1, f_35);
+  e_36 = t;
+  t = (ATerm) ATmakeAppl(sym_Stream_1, e_36);
   return(t);
 }
 ATerm stdout_stream_0_0 (ATerm t)
 {
-  ATerm h_35 = NULL;
+  ATerm f_36 = NULL;
   t = SSL_stdout_stream();
-  h_35 = t;
-  t = (ATerm) ATmakeAppl(sym_Stream_1, h_35);
+  f_36 = t;
+  t = (ATerm) ATmakeAppl(sym_Stream_1, f_36);
   return(t);
 }
 ATerm stderr_stream_0_0 (ATerm t)
 {
-  ATerm j_35 = NULL;
+  ATerm g_36 = NULL;
   t = SSL_stderr_stream();
-  j_35 = t;
-  t = (ATerm) ATmakeAppl(sym_Stream_1, j_35);
+  g_36 = t;
+  t = (ATerm) ATmakeAppl(sym_Stream_1, g_36);
+  return(t);
+}
+ATerm v_5 (ATerm t)
+{
+  ATerm o_36 = NULL;
+  if(match_cons(t, sym_Path_1))
+    {
+      o_36 = ATgetArgument(t, 0);
+    }
+  else
+    _fail(t);
+  t = o_36;
+  return(t);
+}
+ATerm x_5 (ATerm t)
+{
+  ATerm s_36 = NULL;
+  s_36 = t;
+  t = SSL_is_string(s_36);
   return(t);
 }
 ATerm open_stream_0_0 (ATerm t)
 {
   if(match_cons(t, sym__2))
     {
-      ATerm o_26 = ATgetArgument(t, 0);
-      ATerm q_26 = ATgetArgument(t, 1);
+      ATerm f_27 = ATgetArgument(t, 0);
+      ATerm g_27 = ATgetArgument(t, 1);
     }
   else
     _fail(t);
   {
-    ATerm r_26 = t;
-    int s_26 = stack_ptr;
+    ATerm h_27 = t;
+    int j_27 = stack_ptr;
     if((PushChoice() == 0))
       {
-        ATerm r_5 = NULL,s_5 = NULL;
-        r_5 = t;
-        t = SSL_explode_term(r_5);
+        ATerm w_6 = NULL,x_6 = NULL;
+        w_6 = t;
+        t = SSL_explode_term(w_6);
         if(match_cons(t, sym__2))
           {
-            ATerm t_26 = ATgetArgument(t, 0);
-            if((ATgetSymbol((ATermAppl) t_26) != ATmakeSymbol("", 0, ATtrue)))
+            ATerm k_27 = ATgetArgument(t, 0);
+            if((ATgetSymbol((ATermAppl) k_27) != ATmakeSymbol("", 0, ATtrue)))
               _fail(t);
             {
-              ATerm u_26 = ATgetArgument(t, 1);
-              if(((ATgetType(u_26) == AT_LIST) && !(ATisEmpty(u_26))))
+              ATerm l_27 = ATgetArgument(t, 1);
+              if(((ATgetType(l_27) == AT_LIST) && !(ATisEmpty(l_27))))
                 {
-                  s_5 = ATgetFirst((ATermList) u_26);
+                  x_6 = ATgetFirst((ATermList) l_27);
                   {
-                    ATerm v_26 = (ATerm) ATgetNext((ATermList) u_26);
+                    ATerm m_27 = (ATerm) ATgetNext((ATermList) l_27);
                   }
                 }
               else
@@ -5074,88 +5263,69 @@ ATerm open_stream_0_0 (ATerm t)
           }
         else
           _fail(t);
-        t = s_5;
+        t = x_6;
         if(match_cons(t, sym_stderr_0))
           {
-            t = s_5;
+            t = x_6;
             t = stderr_stream_0_0(t);
           }
         else
           {
             if(match_cons(t, sym_stdout_0))
               {
-                t = s_5;
+                t = x_6;
                 t = stdout_stream_0_0(t);
               }
             else
               {
                 if(!(match_cons(t, sym_stdin_0)))
                   _fail(t);
-                t = s_5;
+                t = x_6;
                 t = stdin_stream_0_0(t);
               }
           }
         ;
-        LocalPopChoice(s_26);
+        LocalPopChoice(j_27);
       }
     else
       {
-        t = r_26;
+        t = h_27;
         {
-          ATerm x_26 = t;
-          int y_26 = stack_ptr;
+          ATerm n_27 = t;
+          int o_27 = stack_ptr;
           if((PushChoice() == 0))
             {
-              ATerm o_35 = NULL,p_35 = NULL,q_35 = NULL;
-              ATerm v_5 (ATerm t)
-              {
-                ATerm r_35 = NULL;
-                if(match_cons(t, sym_Path_1))
-                  {
-                    r_35 = ATgetArgument(t, 0);
-                  }
-                else
-                  _fail(t);
-                t = r_35;
-                return(t);
-              }
+              ATerm l_36 = NULL,m_36 = NULL,n_36 = NULL;
               t = _2_0(v_5, _id, t);
               if(match_cons(t, sym__2))
                 {
-                  o_35 = ATgetArgument(t, 0);
-                  p_35 = ATgetArgument(t, 1);
+                  l_36 = ATgetArgument(t, 0);
+                  m_36 = ATgetArgument(t, 1);
                 }
               else
                 _fail(t);
-              t = SSL_fopen(o_35, p_35);
-              q_35 = t;
-              t = (ATerm) ATmakeAppl(sym_Stream_1, q_35);
+              t = SSL_fopen(l_36, m_36);
+              n_36 = t;
+              t = (ATerm) ATmakeAppl(sym_Stream_1, n_36);
               ;
-              LocalPopChoice(y_26);
+              LocalPopChoice(o_27);
             }
           else
             {
-              t = x_26;
+              t = n_27;
               {
-                ATerm s_35 = NULL,t_35 = NULL,u_35 = NULL;
-                ATerm w_5 (ATerm t)
-                {
-                  ATerm v_35 = NULL;
-                  v_35 = t;
-                  t = SSL_is_string(v_35);
-                  return(t);
-                }
-                t = _2_0(w_5, _id, t);
+                ATerm p_36 = NULL,q_36 = NULL,r_36 = NULL;
+                t = _2_0(x_5, _id, t);
                 if(match_cons(t, sym__2))
                   {
-                    s_35 = ATgetArgument(t, 0);
-                    t_35 = ATgetArgument(t, 1);
+                    p_36 = ATgetArgument(t, 0);
+                    q_36 = ATgetArgument(t, 1);
                   }
                 else
                   _fail(t);
-                t = SSL_fopen(s_35, t_35);
-                u_35 = t;
-                t = (ATerm) ATmakeAppl(sym_Stream_1, u_35);
+                t = SSL_fopen(p_36, q_36);
+                r_36 = t;
+                t = (ATerm) ATmakeAppl(sym_Stream_1, r_36);
               }
             }
         }
@@ -5165,203 +5335,15 @@ ATerm open_stream_0_0 (ATerm t)
 }
 ATerm ReadFromFile_0_0 (ATerm t)
 {
-  ATerm w_35 = NULL,x_35 = NULL,y_35 = NULL;
-  ATerm z_26 = t;
-  int a_27 = stack_ptr;
-  if((PushChoice() == 0))
-    {
-      ATerm z_35 = NULL;
-      z_35 = t;
-      t = (ATerm) ATmakeAppl(sym__2, z_35, term_b_27);
-      t = open_stream_0_0(t);
-      ;
-      LocalPopChoice(a_27);
-    }
-  else
-    {
-      t = z_26;
-      {
-        ATerm t_5 = NULL;
-        t_5 = t;
-        t = SSL_printnl((ATerm)ATmakeAppl(sym_stderr_0), (ATerm) ATinsert(ATinsert(ATempty, t_5), (ATerm) ATmakeAppl(ATmakeSymbol("** WARNING: Cannot open file: ", 0, ATtrue))));
-        t = t_5;
-        _fail(t);
-      }
-    }
-  w_35 = t;
-  if(match_cons(t, sym_Stream_1))
-    {
-      y_35 = ATgetArgument(t, 0);
-    }
-  else
-    _fail(t);
-  t = SSL_read_term_from_stream(y_35);
-  x_35 = t;
-  t = w_35;
-  t = fclose_0_0(t);
-  t = x_35;
-  return(t);
-}
-ATerm fetch_1_0 (ATerm h_120 (ATerm), ATerm t)
-{
-  ATerm e_36 (ATerm t)
-  {
-    ATerm c_27 = t;
-    int d_27 = stack_ptr;
-    if((PushChoice() == 0))
-      {
-        t = Cons_2_0(h_120, _id, t);
-        ;
-        LocalPopChoice(d_27);
-      }
-    else
-      {
-        t = c_27;
-        t = Cons_2_0(_id, e_36, t);
-      }
-    return(t);
-  }
-  t = e_36(t);
-  return(t);
-}
-ATerm concat_0_0 (ATerm t)
-{
-  ATerm e_27 = t;
-  int f_27 = stack_ptr;
-  if((PushChoice() == 0))
-    {
-      if(((ATgetType(t) != AT_LIST) || !(ATisEmpty(t))))
-        _fail(t);
-      ;
-      LocalPopChoice(f_27);
-    }
-  else
-    {
-      t = e_27;
-      {
-        ATerm h_36 = NULL,i_36 = NULL;
-        if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
-          {
-            h_36 = ATgetFirst((ATermList) t);
-            i_36 = (ATerm) ATgetNext((ATermList) t);
-          }
-        else
-          _fail(t);
-        t = h_36;
-        {
-          ATerm x_5 (ATerm t)
-          {
-            t = i_36;
-            t = concat_0_0(t);
-            return(t);
-          }
-          t = at_end_1_0(x_5, t);
-        }
-      }
-    }
-  return(t);
-}
-ATerm at_end_1_0 (ATerm n_120 (ATerm), ATerm t)
-{
-  ATerm o_36 (ATerm t)
-  {
-    ATerm g_27 = t;
-    int h_27 = stack_ptr;
-    if((PushChoice() == 0))
-      {
-        t = Cons_2_0(_id, o_36, t);
-        ;
-        LocalPopChoice(h_27);
-      }
-    else
-      {
-        t = g_27;
-        if(((ATgetType(t) != AT_LIST) || !(ATisEmpty(t))))
-          _fail(t);
-        t = n_120(t);
-      }
-    return(t);
-  }
-  t = o_36(t);
-  return(t);
-}
-ATerm conc_strings_0_0 (ATerm t)
-{
-  ATerm q_36 = NULL;
-  ATerm a_6 (ATerm t)
-  {
-    ATerm r_36 = NULL;
-    r_36 = t;
-    t = SSL_explode_string(r_36);
-    return(t);
-  }
-  ATerm b_6 (ATerm t)
-  {
-    ATerm s_36 = NULL;
-    s_36 = t;
-    t = SSL_explode_string(s_36);
-    return(t);
-  }
-  t = _2_0(a_6, b_6, t);
-  {
-    ATerm i_27 = t;
-    int n_27 = stack_ptr;
-    if((PushChoice() == 0))
-      {
-        ATerm u_36 = NULL,v_36 = NULL;
-        if(match_cons(t, sym__2))
-          {
-            u_36 = ATgetArgument(t, 0);
-            v_36 = ATgetArgument(t, 1);
-          }
-        else
-          _fail(t);
-        t = u_36;
-        {
-          ATerm c_6 (ATerm t)
-          {
-            t = v_36;
-            return(t);
-          }
-          t = at_end_1_0(c_6, t);
-        }
-        ;
-        LocalPopChoice(n_27);
-      }
-    else
-      {
-        t = i_27;
-        {
-          ATerm y_5 = NULL,z_5 = NULL;
-          y_5 = t;
-          t = SSL_explode_term(y_5);
-          if(match_cons(t, sym__2))
-            {
-              ATerm o_27 = ATgetArgument(t, 0);
-              if((ATgetSymbol((ATermAppl) o_27) != ATmakeSymbol("", 0, ATtrue)))
-                _fail(t);
-              z_5 = ATgetArgument(t, 1);
-            }
-          else
-            _fail(t);
-          t = z_5;
-          t = concat_0_0(t);
-        }
-      }
-    q_36 = t;
-    t = SSL_implode_string(q_36);
-  }
-  return(t);
-}
-ATerm eval_config_0_0 (ATerm t)
-{
+  ATerm t_36 = NULL,u_36 = NULL,v_36 = NULL;
   ATerm p_27 = t;
   int r_27 = stack_ptr;
   if((PushChoice() == 0))
     {
-      ATerm f_37 = NULL;
-      f_37 = t;
-      t = SSL_is_string(f_37);
+      ATerm w_36 = NULL;
+      w_36 = t;
+      t = (ATerm) ATmakeAppl(sym__2, w_36, term_s_27);
+      t = open_stream_0_0(t);
       ;
       LocalPopChoice(r_27);
     }
@@ -5369,100 +5351,288 @@ ATerm eval_config_0_0 (ATerm t)
     {
       t = p_27;
       {
-        ATerm t_27 = t;
-        int u_27 = stack_ptr;
+        ATerm y_6 = NULL;
+        y_6 = t;
+        t = SSL_printnl((ATerm)ATmakeAppl(sym_stderr_0), (ATerm) ATinsert(ATinsert(ATempty, y_6), (ATerm) ATmakeAppl(ATmakeSymbol("** WARNING: Cannot open file: ", 0, ATtrue))));
+        t = y_6;
+        _fail(t);
+      }
+    }
+  t_36 = t;
+  if(match_cons(t, sym_Stream_1))
+    {
+      v_36 = ATgetArgument(t, 0);
+    }
+  else
+    _fail(t);
+  t = SSL_read_term_from_stream(v_36);
+  u_36 = t;
+  t = t_36;
+  t = fclose_0_0(t);
+  t = u_36;
+  return(t);
+}
+ATerm fetch_1_0 (ATerm m_120 (ATerm), ATerm t)
+{
+  ATerm b_37 (ATerm t)
+  {
+    ATerm t_27 = t;
+    int u_27 = stack_ptr;
+    if((PushChoice() == 0))
+      {
+        t = Cons_2_0(m_120, _id, t);
+        ;
+        LocalPopChoice(u_27);
+      }
+    else
+      {
+        t = t_27;
+        t = Cons_2_0(_id, b_37, t);
+      }
+    return(t);
+  }
+  t = b_37(t);
+  return(t);
+}
+ATerm concat_0_0 (ATerm t)
+{
+  ATerm v_27 = t;
+  int w_27 = stack_ptr;
+  if((PushChoice() == 0))
+    {
+      if(((ATgetType(t) != AT_LIST) || !(ATisEmpty(t))))
+        _fail(t);
+      ;
+      LocalPopChoice(w_27);
+    }
+  else
+    {
+      t = v_27;
+      {
+        ATerm e_37 = NULL,f_37 = NULL;
+        if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
+          {
+            e_37 = ATgetFirst((ATermList) t);
+            f_37 = (ATerm) ATgetNext((ATermList) t);
+          }
+        else
+          _fail(t);
+        t = e_37;
+        {
+          ATerm b_6 (ATerm t)
+          {
+            t = f_37;
+            t = concat_0_0(t);
+            return(t);
+          }
+          t = at_end_1_0(b_6, t);
+        }
+      }
+    }
+  return(t);
+}
+ATerm at_end_1_0 (ATerm s_120 (ATerm), ATerm t)
+{
+  ATerm l_37 (ATerm t)
+  {
+    ATerm x_27 = t;
+    int y_27 = stack_ptr;
+    if((PushChoice() == 0))
+      {
+        t = Cons_2_0(_id, l_37, t);
+        ;
+        LocalPopChoice(y_27);
+      }
+    else
+      {
+        t = x_27;
+        if(((ATgetType(t) != AT_LIST) || !(ATisEmpty(t))))
+          _fail(t);
+        t = s_120(t);
+      }
+    return(t);
+  }
+  t = l_37(t);
+  return(t);
+}
+ATerm c_6 (ATerm t)
+{
+  ATerm o_37 = NULL;
+  o_37 = t;
+  t = SSL_explode_string(o_37);
+  return(t);
+}
+ATerm d_6 (ATerm t)
+{
+  ATerm p_37 = NULL;
+  p_37 = t;
+  t = SSL_explode_string(p_37);
+  return(t);
+}
+ATerm conc_strings_0_0 (ATerm t)
+{
+  ATerm n_37 = NULL;
+  t = _2_0(c_6, d_6, t);
+  {
+    ATerm z_27 = t;
+    int a_28 = stack_ptr;
+    if((PushChoice() == 0))
+      {
+        ATerm r_37 = NULL,s_37 = NULL;
+        if(match_cons(t, sym__2))
+          {
+            r_37 = ATgetArgument(t, 0);
+            s_37 = ATgetArgument(t, 1);
+          }
+        else
+          _fail(t);
+        t = r_37;
+        {
+          ATerm e_6 (ATerm t)
+          {
+            t = s_37;
+            return(t);
+          }
+          t = at_end_1_0(e_6, t);
+        }
+        ;
+        LocalPopChoice(a_28);
+      }
+    else
+      {
+        t = z_27;
+        {
+          ATerm e_7 = NULL,f_7 = NULL;
+          e_7 = t;
+          t = SSL_explode_term(e_7);
+          if(match_cons(t, sym__2))
+            {
+              ATerm g_28 = ATgetArgument(t, 0);
+              if((ATgetSymbol((ATermAppl) g_28) != ATmakeSymbol("", 0, ATtrue)))
+                _fail(t);
+              f_7 = ATgetArgument(t, 1);
+            }
+          else
+            _fail(t);
+          t = f_7;
+          t = concat_0_0(t);
+        }
+      }
+    n_37 = t;
+    t = SSL_implode_string(n_37);
+  }
+  return(t);
+}
+ATerm f_6 (ATerm t)
+{
+  ATerm h_28 = t;
+  int i_28 = stack_ptr;
+  if((PushChoice() == 0))
+    {
+      t = eval_config_0_0(t);
+      ;
+      LocalPopChoice(i_28);
+    }
+  else
+    {
+      t = h_28;
+    }
+  return(t);
+}
+ATerm eval_config_0_0 (ATerm t)
+{
+  ATerm k_28 = t;
+  int m_28 = stack_ptr;
+  if((PushChoice() == 0))
+    {
+      ATerm c_38 = NULL;
+      c_38 = t;
+      t = SSL_is_string(c_38);
+      ;
+      LocalPopChoice(m_28);
+    }
+  else
+    {
+      t = k_28;
+      {
+        ATerm n_28 = t;
+        int o_28 = stack_ptr;
         if((PushChoice() == 0))
           {
-            ATerm d_6 (ATerm t)
-            {
-              ATerm v_27 = t;
-              int w_27 = stack_ptr;
-              if((PushChoice() == 0))
-                {
-                  t = eval_config_0_0(t);
-                  ;
-                  LocalPopChoice(w_27);
-                }
-              else
-                {
-                  t = v_27;
-                }
-              return(t);
-            }
-            t = map_1_0(d_6, t);
+            t = map_1_0(f_6, t);
             ;
-            LocalPopChoice(u_27);
+            LocalPopChoice(o_28);
           }
         else
           {
-            t = t_27;
+            t = n_28;
             {
-              ATerm j_37 = NULL,k_37 = NULL,l_37 = NULL;
-              j_37 = t;
+              ATerm g_38 = NULL,h_38 = NULL,i_38 = NULL;
+              g_38 = t;
               if(match_cons(t, sym_Path_1))
                 {
-                  k_37 = ATgetArgument(t, 0);
-                  t = k_37;
+                  h_38 = ATgetArgument(t, 0);
+                  t = h_38;
                 }
               else
                 {
                   if(match_cons(t, sym_Var_1))
                     {
-                      k_37 = ATgetArgument(t, 0);
-                      t = k_37;
+                      h_38 = ATgetArgument(t, 0);
+                      t = h_38;
                       {
-                        ATerm x_27 = t;
-                        int y_27 = stack_ptr;
+                        ATerm p_28 = t;
+                        int q_28 = stack_ptr;
                         if((PushChoice() == 0))
                           {
-                            t = SSL_table_get((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), k_37);
+                            t = SSL_table_get((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), h_38);
                             {
-                              ATerm z_27 = t;
-                              int b_28 = stack_ptr;
+                              ATerm r_28 = t;
+                              int s_28 = stack_ptr;
                               if((PushChoice() == 0))
                                 {
-                                  ATerm r_6 = NULL;
+                                  ATerm d_8 = NULL;
                                   t = eval_config_0_0(t);
-                                  r_6 = t;
-                                  t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), k_37, r_6);
-                                  t = r_6;
+                                  d_8 = t;
+                                  t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), h_38, d_8);
+                                  t = d_8;
                                   ;
-                                  LocalPopChoice(b_28);
+                                  LocalPopChoice(s_28);
                                 }
                               else
                                 {
-                                  t = z_27;
+                                  t = r_28;
                                 }
                             }
                             ;
-                            LocalPopChoice(y_27);
+                            LocalPopChoice(q_28);
                           }
                         else
                           {
-                            t = x_27;
-                            t = SSL_printnl((ATerm)ATmakeAppl(sym_stderr_0), (ATerm) ATinsert(ATinsert(ATempty, k_37), (ATerm) ATmakeAppl(ATmakeSymbol("No configuration for variable: ", 0, ATtrue))));
-                            t = k_37;
+                            t = p_28;
+                            t = SSL_printnl((ATerm)ATmakeAppl(sym_stderr_0), (ATerm) ATinsert(ATinsert(ATempty, h_38), (ATerm) ATmakeAppl(ATmakeSymbol("No configuration for variable: ", 0, ATtrue))));
+                            t = h_38;
                             _fail(t);
                           }
                       }
                     }
                   else
                     {
-                      ATerm p_37 = NULL,q_37 = NULL;
+                      ATerm m_38 = NULL,n_38 = NULL;
                       if(match_cons(t, sym_Prefix_2))
                         {
-                          k_37 = ATgetArgument(t, 0);
-                          l_37 = ATgetArgument(t, 1);
+                          h_38 = ATgetArgument(t, 0);
+                          i_38 = ATgetArgument(t, 1);
                         }
                       else
                         _fail(t);
-                      t = k_37;
+                      t = h_38;
                       t = eval_config_0_0(t);
-                      p_37 = t;
-                      t = l_37;
+                      m_38 = t;
+                      t = i_38;
                       t = eval_config_0_0(t);
-                      q_37 = t;
-                      t = (ATerm) ATmakeAppl(sym__2, p_37, q_37);
+                      n_38 = t;
+                      t = (ATerm) ATmakeAppl(sym__2, m_38, n_38);
                       t = conc_strings_0_0(t);
                     }
                 }
@@ -5472,176 +5642,174 @@ ATerm eval_config_0_0 (ATerm t)
     }
   return(t);
 }
-ATerm if_verbose2_1_0 (ATerm s_136 (ATerm), ATerm t)
+ATerm if_verbose2_1_0 (ATerm e_137 (ATerm), ATerm t)
 {
-  ATerm c_28 = t;
-  int d_28 = stack_ptr;
+  ATerm t_28 = t;
+  int u_28 = stack_ptr;
   if((PushChoice() == 0))
     {
-      ATerm v_37 = NULL,x_37 = NULL;
-      v_37 = t;
+      ATerm s_38 = NULL,u_38 = NULL;
+      s_38 = t;
       t = SSL_table_get((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm) ATmakeAppl(ATmakeSymbol("--verbose", 0, ATtrue)));
       {
-        ATerm e_28 = t;
-        int f_28 = stack_ptr;
+        ATerm v_28 = t;
+        int x_28 = stack_ptr;
         if((PushChoice() == 0))
           {
-            ATerm z_6 = NULL;
+            ATerm n_8 = NULL;
             t = eval_config_0_0(t);
-            z_6 = t;
-            t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("--verbose", 0, ATtrue)), z_6);
-            t = z_6;
+            n_8 = t;
+            t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("--verbose", 0, ATtrue)), n_8);
+            t = n_8;
             ;
-            LocalPopChoice(f_28);
+            LocalPopChoice(x_28);
           }
         else
           {
-            t = e_28;
+            t = v_28;
           }
-        x_37 = t;
-        t = (ATerm) ATmakeAppl(sym__2, x_37, term_h_28);
+        u_38 = t;
+        t = (ATerm) ATmakeAppl(sym__2, u_38, term_y_28);
         t = geq_0_0(t);
-        t = v_37;
-        t = s_136(t);
+        t = s_38;
+        t = e_137(t);
       }
       ;
-      LocalPopChoice(d_28);
+      LocalPopChoice(u_28);
     }
   else
     {
-      t = c_28;
+      t = t_28;
     }
+  return(t);
+}
+ATerm i_6 (ATerm t)
+{
+  ATerm w_38 = NULL;
+  w_38 = t;
+  if(match_string(t, "-k"))
+    {
+      t = w_38;
+    }
+  else
+    {
+      if((ATgetSymbol((ATermAppl) t) != ATmakeSymbol("--keep", 0, ATtrue)))
+        _fail(t);
+      t = w_38;
+    }
+  return(t);
+}
+ATerm j_6 (ATerm t)
+{
+  ATerm x_38 = NULL,z_38 = NULL;
+  x_38 = t;
+  t = SSL_string_to_int(x_38);
+  z_38 = t;
+  t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("--keep", 0, ATtrue)), z_38);
+  t = x_38;
+  return(t);
+}
+ATerm k_6 (ATerm t)
+{
+  t = term_z_28;
   return(t);
 }
 ATerm keep_option_0_0 (ATerm t)
 {
-  ATerm e_6 (ATerm t)
-  {
-    ATerm z_37 = NULL;
-    z_37 = t;
-    if(match_string(t, "-k"))
-      {
-        t = z_37;
-      }
-    else
-      {
-        if((ATgetSymbol((ATermAppl) t) != ATmakeSymbol("--keep", 0, ATtrue)))
-          _fail(t);
-        t = z_37;
-      }
-    return(t);
-  }
-  ATerm f_6 (ATerm t)
-  {
-    ATerm a_38 = NULL,b_38 = NULL;
-    a_38 = t;
-    t = SSL_string_to_int(a_38);
-    b_38 = t;
-    t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("--keep", 0, ATtrue)), b_38);
-    t = a_38;
-    return(t);
-  }
-  ATerm g_6 (ATerm t)
-  {
-    t = term_i_28;
-    return(t);
-  }
-  t = ArgOption_3_0(e_6, f_6, g_6, t);
+  t = ArgOption_3_0(i_6, j_6, k_6, t);
+  return(t);
+}
+ATerm l_6 (ATerm t)
+{
+  ATerm b_39 = NULL;
+  b_39 = t;
+  if(match_string(t, "-S"))
+    {
+      t = b_39;
+    }
+  else
+    {
+      if((ATgetSymbol((ATermAppl) t) != ATmakeSymbol("--silent", 0, ATtrue)))
+        _fail(t);
+      t = b_39;
+    }
+  return(t);
+}
+ATerm m_6 (ATerm t)
+{
+  t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("--verbose", 0, ATtrue)), (ATerm) ATmakeInt(0));
+  t = term_b_29;
+  return(t);
+}
+ATerm n_6 (ATerm t)
+{
+  t = term_d_29;
+  return(t);
+}
+ATerm o_6 (ATerm t)
+{
+  if((ATgetSymbol((ATermAppl) t) != ATmakeSymbol("--verbose", 0, ATtrue)))
+    _fail(t);
+  return(t);
+}
+ATerm p_6 (ATerm t)
+{
+  ATerm c_39 = NULL,d_39 = NULL;
+  c_39 = t;
+  t = SSL_string_to_int(c_39);
+  d_39 = t;
+  t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("--verbose", 0, ATtrue)), d_39);
+  t = (ATerm) ATmakeAppl(sym_Verbose_1, c_39);
+  return(t);
+}
+ATerm q_6 (ATerm t)
+{
+  t = term_e_29;
+  return(t);
+}
+ATerm r_6 (ATerm t)
+{
+  if((ATgetSymbol((ATermAppl) t) != ATmakeSymbol("-s", 0, ATtrue)))
+    _fail(t);
+  return(t);
+}
+ATerm s_6 (ATerm t)
+{
+  t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("-s", 0, ATtrue)), (ATerm) ATmakeAppl(sym__0));
+  t = term_f_29;
+  return(t);
+}
+ATerm t_6 (ATerm t)
+{
+  t = term_g_29;
   return(t);
 }
 ATerm verbose_option_0_0 (ATerm t)
 {
-  ATerm k_28 = t;
-  int l_28 = stack_ptr;
+  ATerm h_29 = t;
+  int j_29 = stack_ptr;
   if((PushChoice() == 0))
     {
-      ATerm h_6 (ATerm t)
-      {
-        ATerm d_38 = NULL;
-        d_38 = t;
-        if(match_string(t, "-S"))
-          {
-            t = d_38;
-          }
-        else
-          {
-            if((ATgetSymbol((ATermAppl) t) != ATmakeSymbol("--silent", 0, ATtrue)))
-              _fail(t);
-            t = d_38;
-          }
-        return(t);
-      }
-      ATerm i_6 (ATerm t)
-      {
-        t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("--verbose", 0, ATtrue)), (ATerm) ATmakeInt(0));
-        t = term_n_28;
-        return(t);
-      }
-      ATerm j_6 (ATerm t)
-      {
-        t = term_q_28;
-        return(t);
-      }
-      t = Option_3_0(h_6, i_6, j_6, t);
+      t = Option_3_0(l_6, m_6, n_6, t);
       ;
-      LocalPopChoice(l_28);
+      LocalPopChoice(j_29);
     }
   else
     {
-      t = k_28;
+      t = h_29;
       {
-        ATerm r_28 = t;
-        int s_28 = stack_ptr;
+        ATerm m_29 = t;
+        int n_29 = stack_ptr;
         if((PushChoice() == 0))
           {
-            ATerm k_6 (ATerm t)
-            {
-              if((ATgetSymbol((ATermAppl) t) != ATmakeSymbol("--verbose", 0, ATtrue)))
-                _fail(t);
-              return(t);
-            }
-            ATerm l_6 (ATerm t)
-            {
-              ATerm e_38 = NULL,f_38 = NULL;
-              e_38 = t;
-              t = SSL_string_to_int(e_38);
-              f_38 = t;
-              t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("--verbose", 0, ATtrue)), f_38);
-              t = (ATerm) ATmakeAppl(sym_Verbose_1, e_38);
-              return(t);
-            }
-            ATerm m_6 (ATerm t)
-            {
-              t = term_t_28;
-              return(t);
-            }
-            t = ArgOption_3_0(k_6, l_6, m_6, t);
+            t = ArgOption_3_0(o_6, p_6, q_6, t);
             ;
-            LocalPopChoice(s_28);
+            LocalPopChoice(n_29);
           }
         else
           {
-            t = r_28;
-            {
-              ATerm n_6 (ATerm t)
-              {
-                if((ATgetSymbol((ATermAppl) t) != ATmakeSymbol("-s", 0, ATtrue)))
-                  _fail(t);
-                return(t);
-              }
-              ATerm o_6 (ATerm t)
-              {
-                t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("-s", 0, ATtrue)), (ATerm) ATmakeAppl(sym__0));
-                t = term_u_28;
-                return(t);
-              }
-              ATerm p_6 (ATerm t)
-              {
-                t = term_w_28;
-                return(t);
-              }
-              t = Option_3_0(n_6, o_6, p_6, t);
-            }
+            t = m_29;
+            t = Option_3_0(r_6, s_6, t_6, t);
           }
       }
     }
@@ -5649,191 +5817,191 @@ ATerm verbose_option_0_0 (ATerm t)
 }
 ATerm Option_3_0 (ATerm a_0 (ATerm), ATerm c_0 (ATerm), ATerm d_0 (ATerm), ATerm t)
 {
-  ATerm i_38 = NULL,j_38 = NULL;
+  ATerm g_39 = NULL,h_39 = NULL;
   if(match_string(t, "register-usage-info"))
     {
-      ATerm k_38 = NULL;
+      ATerm i_39 = NULL;
       t = term_m_8;
       t = d_0(t);
-      k_38 = t;
-      t = (ATerm) ATmakeAppl(sym__3, term_x_28, term_y_28, k_38);
+      i_39 = t;
+      t = (ATerm) ATmakeAppl(sym__3, term_o_29, term_p_29, i_39);
       t = table_push_0_0(t);
       _fail(t);
     }
   else
     {
-      ATerm n_38 = NULL;
+      ATerm l_39 = NULL;
       if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
         {
-          i_38 = ATgetFirst((ATermList) t);
-          j_38 = (ATerm) ATgetNext((ATermList) t);
+          g_39 = ATgetFirst((ATermList) t);
+          h_39 = (ATerm) ATgetNext((ATermList) t);
         }
       else
         _fail(t);
-      t = i_38;
+      t = g_39;
       t = a_0(t);
       t = term_m_8;
       t = c_0(t);
-      n_38 = t;
-      t = (ATerm) ATinsert(CheckATermList(j_38), n_38);
+      l_39 = t;
+      t = (ATerm) ATinsert(CheckATermList(h_39), l_39);
     }
+  return(t);
+}
+ATerm u_6 (ATerm t)
+{
+  ATerm n_39 = NULL;
+  n_39 = t;
+  if(match_string(t, "-o"))
+    {
+      t = n_39;
+    }
+  else
+    {
+      if((ATgetSymbol((ATermAppl) t) != ATmakeSymbol("--output", 0, ATtrue)))
+        _fail(t);
+      t = n_39;
+    }
+  return(t);
+}
+ATerm v_6 (ATerm t)
+{
+  ATerm o_39 = NULL;
+  o_39 = t;
+  t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("-o", 0, ATtrue)), o_39);
+  t = (ATerm) ATmakeAppl(sym_Output_1, o_39);
+  return(t);
+}
+ATerm z_6 (ATerm t)
+{
+  t = term_q_29;
   return(t);
 }
 ATerm output_option_0_0 (ATerm t)
 {
-  ATerm q_6 (ATerm t)
-  {
-    ATerm p_38 = NULL;
-    p_38 = t;
-    if(match_string(t, "-o"))
-      {
-        t = p_38;
-      }
-    else
-      {
-        if((ATgetSymbol((ATermAppl) t) != ATmakeSymbol("--output", 0, ATtrue)))
-          _fail(t);
-        t = p_38;
-      }
-    return(t);
-  }
-  ATerm s_6 (ATerm t)
-  {
-    ATerm r_38 = NULL;
-    r_38 = t;
-    t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("-o", 0, ATtrue)), r_38);
-    t = (ATerm) ATmakeAppl(sym_Output_1, r_38);
-    return(t);
-  }
-  ATerm t_6 (ATerm t)
-  {
-    t = term_z_28;
-    return(t);
-  }
-  t = ArgOption_3_0(q_6, s_6, t_6, t);
+  t = ArgOption_3_0(u_6, v_6, z_6, t);
   return(t);
 }
 ATerm table_push_0_0 (ATerm t)
 {
-  ATerm u_38 = NULL,v_38 = NULL,w_38 = NULL,x_38 = NULL;
+  ATerm r_39 = NULL,s_39 = NULL,t_39 = NULL,v_39 = NULL;
   if(match_cons(t, sym__3))
     {
-      u_38 = ATgetArgument(t, 0);
-      v_38 = ATgetArgument(t, 1);
-      w_38 = ATgetArgument(t, 2);
+      r_39 = ATgetArgument(t, 0);
+      s_39 = ATgetArgument(t, 1);
+      t_39 = ATgetArgument(t, 2);
     }
   else
     _fail(t);
-  t = (ATerm) ATmakeAppl(sym__2, u_38, v_38);
+  t = (ATerm) ATmakeAppl(sym__2, r_39, s_39);
   {
-    ATerm a_29 = t;
-    int b_29 = stack_ptr;
+    ATerm r_29 = t;
+    int t_29 = stack_ptr;
     if((PushChoice() == 0))
       {
         if(match_cons(t, sym__2))
           {
-            ATerm c_29 = ATgetArgument(t, 0);
-            ATerm d_29 = ATgetArgument(t, 1);
+            ATerm u_29 = ATgetArgument(t, 0);
+            ATerm v_29 = ATgetArgument(t, 1);
           }
         else
           _fail(t);
-        t = SSL_table_get(u_38, v_38);
+        t = SSL_table_get(r_39, s_39);
         ;
-        LocalPopChoice(b_29);
+        LocalPopChoice(t_29);
       }
     else
       {
-        t = a_29;
+        t = r_29;
         t = (ATerm) ATempty;
       }
-    x_38 = t;
-    t = SSL_table_put(u_38, v_38, (ATerm) ATinsert(CheckATermList(x_38), w_38));
-    t = (ATerm) ATmakeAppl(sym__3, u_38, v_38, w_38);
+    v_39 = t;
+    t = SSL_table_put(r_39, s_39, (ATerm) ATinsert(CheckATermList(v_39), t_39));
+    t = (ATerm) ATmakeAppl(sym__3, r_39, s_39, t_39);
   }
   return(t);
 }
 ATerm ArgOption_3_0 (ATerm i_0 (ATerm), ATerm k_0 (ATerm), ATerm l_0 (ATerm), ATerm t)
 {
-  ATerm f_39 = NULL,g_39 = NULL,h_39 = NULL,i_39 = NULL;
+  ATerm p_40 = NULL,s_40 = NULL,t_40 = NULL,u_40 = NULL;
   if(match_string(t, "register-usage-info"))
     {
-      ATerm j_39 = NULL;
+      ATerm v_40 = NULL;
       t = term_m_8;
       t = l_0(t);
-      j_39 = t;
-      t = (ATerm) ATmakeAppl(sym__3, term_x_28, term_y_28, j_39);
+      v_40 = t;
+      t = (ATerm) ATmakeAppl(sym__3, term_o_29, term_p_29, v_40);
       t = table_push_0_0(t);
       _fail(t);
     }
   else
     {
-      ATerm n_39 = NULL;
+      ATerm z_40 = NULL;
       if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
         {
-          f_39 = ATgetFirst((ATermList) t);
-          g_39 = (ATerm) ATgetNext((ATermList) t);
+          p_40 = ATgetFirst((ATermList) t);
+          s_40 = (ATerm) ATgetNext((ATermList) t);
         }
       else
         _fail(t);
-      t = g_39;
+      t = s_40;
       if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
         {
-          h_39 = ATgetFirst((ATermList) t);
-          i_39 = (ATerm) ATgetNext((ATermList) t);
+          t_40 = ATgetFirst((ATermList) t);
+          u_40 = (ATerm) ATgetNext((ATermList) t);
         }
       else
         _fail(t);
-      t = f_39;
+      t = p_40;
       t = i_0(t);
-      t = h_39;
+      t = t_40;
       t = k_0(t);
-      n_39 = t;
-      t = (ATerm) ATinsert(CheckATermList(i_39), n_39);
+      z_40 = t;
+      t = (ATerm) ATinsert(CheckATermList(u_40), z_40);
     }
+  return(t);
+}
+ATerm a_7 (ATerm t)
+{
+  ATerm b_41 = NULL;
+  b_41 = t;
+  if(match_string(t, "-i"))
+    {
+      t = b_41;
+    }
+  else
+    {
+      if((ATgetSymbol((ATermAppl) t) != ATmakeSymbol("--input", 0, ATtrue)))
+        _fail(t);
+      t = b_41;
+    }
+  return(t);
+}
+ATerm b_7 (ATerm t)
+{
+  ATerm c_41 = NULL;
+  c_41 = t;
+  t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("-i", 0, ATtrue)), c_41);
+  t = (ATerm) ATmakeAppl(sym_Input_1, c_41);
+  return(t);
+}
+ATerm c_7 (ATerm t)
+{
+  t = term_w_29;
   return(t);
 }
 ATerm input_option_0_0 (ATerm t)
 {
-  ATerm u_6 (ATerm t)
-  {
-    ATerm p_39 = NULL;
-    p_39 = t;
-    if(match_string(t, "-i"))
-      {
-        t = p_39;
-      }
-    else
-      {
-        if((ATgetSymbol((ATermAppl) t) != ATmakeSymbol("--input", 0, ATtrue)))
-          _fail(t);
-        t = p_39;
-      }
-    return(t);
-  }
-  ATerm v_6 (ATerm t)
-  {
-    ATerm q_39 = NULL;
-    q_39 = t;
-    t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("-i", 0, ATtrue)), q_39);
-    t = (ATerm) ATmakeAppl(sym_Input_1, q_39);
-    return(t);
-  }
-  ATerm w_6 (ATerm t)
-  {
-    t = term_e_29;
-    return(t);
-  }
-  t = ArgOption_3_0(u_6, v_6, w_6, t);
+  t = ArgOption_3_0(a_7, b_7, c_7, t);
   return(t);
 }
 ATerm report_failure_0_0 (ATerm t)
 {
-  ATerm r_39 = NULL;
+  ATerm d_41 = NULL;
   t = report_run_time_0_0(t);
   t = term_m_8;
   t = whoami_0_0(t);
-  r_39 = t;
-  t = SSL_printnl((ATerm)ATmakeAppl(sym_stderr_0), (ATerm) ATinsert(ATinsert(ATempty, (ATerm) ATmakeAppl(ATmakeSymbol(": rewriting failed", 0, ATtrue))), r_39));
+  d_41 = t;
+  t = SSL_printnl((ATerm)ATmakeAppl(sym_stderr_0), (ATerm) ATinsert(ATinsert(ATempty, (ATerm) ATmakeAppl(ATmakeSymbol(": rewriting failed", 0, ATtrue))), d_41));
   t = SSL_exit((ATerm) ATmakeInt(1));
   return(t);
 }
@@ -5841,54 +6009,54 @@ ATerm whoami_0_0 (ATerm t)
 {
   t = SSL_table_get((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm) ATmakeAppl(ATmakeSymbol("program", 0, ATtrue)));
   {
-    ATerm g_29 = t;
-    int h_29 = stack_ptr;
+    ATerm x_29 = t;
+    int y_29 = stack_ptr;
     if((PushChoice() == 0))
       {
-        ATerm d_7 = NULL;
+        ATerm s_8 = NULL;
         t = eval_config_0_0(t);
-        d_7 = t;
-        t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("program", 0, ATtrue)), d_7);
-        t = d_7;
+        s_8 = t;
+        t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("program", 0, ATtrue)), s_8);
+        t = s_8;
         ;
-        LocalPopChoice(h_29);
+        LocalPopChoice(y_29);
       }
     else
       {
-        t = g_29;
+        t = x_29;
       }
   }
   return(t);
 }
-ATerm foldr_2_0 (ATerm w_124 (ATerm), ATerm x_124 (ATerm), ATerm t)
+ATerm foldr_2_0 (ATerm b_125 (ATerm), ATerm c_125 (ATerm), ATerm t)
 {
-  ATerm i_29 = t;
-  int j_29 = stack_ptr;
+  ATerm a_30 = t;
+  int b_30 = stack_ptr;
   if((PushChoice() == 0))
     {
       if(((ATgetType(t) != AT_LIST) || !(ATisEmpty(t))))
         _fail(t);
-      t = w_124(t);
+      t = b_125(t);
       ;
-      LocalPopChoice(j_29);
+      LocalPopChoice(b_30);
     }
   else
     {
-      t = i_29;
+      t = a_30;
       {
-        ATerm u_39 = NULL,v_39 = NULL,i_40 = NULL;
+        ATerm g_41 = NULL,i_41 = NULL,l_41 = NULL;
         if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
           {
-            u_39 = ATgetFirst((ATermList) t);
-            v_39 = (ATerm) ATgetNext((ATermList) t);
+            g_41 = ATgetFirst((ATermList) t);
+            i_41 = (ATerm) ATgetNext((ATermList) t);
           }
         else
           _fail(t);
-        t = v_39;
-        t = foldr_2_0(w_124, x_124, t);
-        i_40 = t;
-        t = (ATerm) ATmakeAppl(sym__2, u_39, i_40);
-        t = x_124(t);
+        t = i_41;
+        t = foldr_2_0(b_125, c_125, t);
+        l_41 = t;
+        t = (ATerm) ATmakeAppl(sym__2, g_41, l_41);
+        t = c_125(t);
       }
     }
   return(t);
@@ -5898,164 +6066,162 @@ ATerm times_0_0 (ATerm t)
   t = SSL_times();
   return(t);
 }
-ATerm run_time_0_0 (ATerm t)
+ATerm d_7 (ATerm t)
 {
-  ATerm m_40 = NULL,e_7 = NULL,f_7 = NULL;
-  t = times_0_0(t);
-  e_7 = t;
-  t = SSL_explode_term(e_7);
+  t = term_a_29;
+  return(t);
+}
+ATerm g_7 (ATerm t)
+{
+  ATerm x_8 = NULL,y_8 = NULL;
   if(match_cons(t, sym__2))
     {
-      ATerm k_29 = ATgetArgument(t, 0);
-      f_7 = ATgetArgument(t, 1);
+      x_8 = ATgetArgument(t, 0);
+      y_8 = ATgetArgument(t, 1);
     }
   else
     _fail(t);
-  t = f_7;
   {
-    ATerm x_6 (ATerm t)
-    {
-      t = term_m_28;
-      return(t);
-    }
-    ATerm y_6 (ATerm t)
-    {
-      ATerm j_7 = NULL,k_7 = NULL;
-      if(match_cons(t, sym__2))
-        {
-          j_7 = ATgetArgument(t, 0);
-          k_7 = ATgetArgument(t, 1);
-        }
-      else
-        _fail(t);
+    ATerm c_30 = t;
+    int d_30 = stack_ptr;
+    if((PushChoice() == 0))
       {
-        ATerm l_29 = t;
-        int n_29 = stack_ptr;
-        if((PushChoice() == 0))
-          {
-            t = SSL_addi(j_7, k_7);
-            ;
-            LocalPopChoice(n_29);
-          }
-        else
-          {
-            t = l_29;
-            t = SSL_addr(j_7, k_7);
-          }
+        t = SSL_addi(x_8, y_8);
+        ;
+        LocalPopChoice(d_30);
       }
-      return(t);
-    }
-    t = foldr_2_0(x_6, y_6, t);
-    m_40 = t;
-    t = SSL_TicksToSeconds(m_40);
+    else
+      {
+        t = c_30;
+        t = SSL_addr(x_8, y_8);
+      }
   }
+  return(t);
+}
+ATerm run_time_0_0 (ATerm t)
+{
+  ATerm p_41 = NULL,t_8 = NULL,u_8 = NULL;
+  t = times_0_0(t);
+  t_8 = t;
+  t = SSL_explode_term(t_8);
+  if(match_cons(t, sym__2))
+    {
+      ATerm e_30 = ATgetArgument(t, 0);
+      u_8 = ATgetArgument(t, 1);
+    }
+  else
+    _fail(t);
+  t = u_8;
+  t = foldr_2_0(d_7, g_7, t);
+  p_41 = t;
+  t = SSL_TicksToSeconds(p_41);
   return(t);
 }
 ATerm geq_0_0 (ATerm t)
 {
-  ATerm z_40 = NULL,a_41 = NULL,b_41 = NULL;
-  z_40 = t;
+  ATerm a_42 = NULL,b_42 = NULL,c_42 = NULL;
+  a_42 = t;
   if(match_cons(t, sym__2))
     {
-      a_41 = ATgetArgument(t, 0);
-      b_41 = ATgetArgument(t, 1);
+      b_42 = ATgetArgument(t, 0);
+      c_42 = ATgetArgument(t, 1);
     }
   else
     _fail(t);
   {
-    ATerm o_29 = t;
-    int r_29 = stack_ptr;
+    ATerm f_30 = t;
+    int g_30 = stack_ptr;
     if((PushChoice() == 0))
       {
-        t = b_41;
-        if((a_41 != t))
+        t = c_42;
+        if((b_42 != t))
           {
             _fail(t);
           }
-        t = z_40;
+        t = a_42;
         ;
-        LocalPopChoice(r_29);
+        LocalPopChoice(g_30);
       }
     else
       {
-        t = o_29;
-        t = z_40;
+        t = f_30;
+        t = a_42;
         {
-          ATerm s_29 = t;
-          int t_29 = stack_ptr;
+          ATerm h_30 = t;
+          int i_30 = stack_ptr;
           if((PushChoice() == 0))
             {
-              t = SSL_gti(a_41, b_41);
+              t = SSL_gti(b_42, c_42);
               ;
-              LocalPopChoice(t_29);
+              LocalPopChoice(i_30);
             }
           else
             {
-              t = s_29;
-              t = SSL_gtr(a_41, b_41);
+              t = h_30;
+              t = SSL_gtr(b_42, c_42);
             }
-          t = (ATerm) ATmakeAppl(sym__2, a_41, b_41);
+          t = (ATerm) ATmakeAppl(sym__2, b_42, c_42);
         }
       }
   }
   return(t);
 }
-ATerm if_verbose1_1_0 (ATerm r_136 (ATerm), ATerm t)
+ATerm if_verbose1_1_0 (ATerm d_137 (ATerm), ATerm t)
 {
-  ATerm u_29 = t;
-  int v_29 = stack_ptr;
+  ATerm k_30 = t;
+  int l_30 = stack_ptr;
   if((PushChoice() == 0))
     {
-      ATerm e_41 = NULL,g_41 = NULL;
-      e_41 = t;
+      ATerm f_42 = NULL,h_42 = NULL;
+      f_42 = t;
       t = SSL_table_get((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm) ATmakeAppl(ATmakeSymbol("--verbose", 0, ATtrue)));
       {
-        ATerm w_29 = t;
-        int x_29 = stack_ptr;
+        ATerm m_30 = t;
+        int n_30 = stack_ptr;
         if((PushChoice() == 0))
           {
-            ATerm x_7 = NULL;
+            ATerm p_9 = NULL;
             t = eval_config_0_0(t);
-            x_7 = t;
-            t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("--verbose", 0, ATtrue)), x_7);
-            t = x_7;
+            p_9 = t;
+            t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("--verbose", 0, ATtrue)), p_9);
+            t = p_9;
             ;
-            LocalPopChoice(x_29);
+            LocalPopChoice(n_30);
           }
         else
           {
-            t = w_29;
+            t = m_30;
           }
-        g_41 = t;
-        t = (ATerm) ATmakeAppl(sym__2, g_41, term_y_29);
+        h_42 = t;
+        t = (ATerm) ATmakeAppl(sym__2, h_42, term_o_30);
         t = geq_0_0(t);
-        t = e_41;
-        t = r_136(t);
+        t = f_42;
+        t = d_137(t);
       }
       ;
-      LocalPopChoice(v_29);
+      LocalPopChoice(l_30);
     }
   else
     {
-      t = u_29;
+      t = k_30;
     }
+  return(t);
+}
+ATerm h_7 (ATerm t)
+{
+  ATerm j_42 = NULL,k_42 = NULL;
+  t = run_time_0_0(t);
+  j_42 = t;
+  t = term_m_8;
+  t = whoami_0_0(t);
+  k_42 = t;
+  t = SSL_printnl((ATerm)ATmakeAppl(sym_stderr_0), (ATerm) ATinsert(ATinsert(ATinsert(ATinsert(ATempty, (ATerm) ATmakeAppl(ATmakeSymbol(" secs)", 0, ATtrue))), j_42), (ATerm) ATmakeAppl(ATmakeSymbol(" (", 0, ATtrue))), k_42));
+  t = (ATerm) ATmakeAppl(sym__2, term_p_30, (ATerm) ATinsert(ATinsert(ATinsert(ATinsert(ATempty, term_r_30), j_42), term_q_30), k_42));
   return(t);
 }
 ATerm report_run_time_0_0 (ATerm t)
 {
-  ATerm a_7 (ATerm t)
-  {
-    ATerm j_41 = NULL,k_41 = NULL;
-    t = run_time_0_0(t);
-    j_41 = t;
-    t = term_m_8;
-    t = whoami_0_0(t);
-    k_41 = t;
-    t = SSL_printnl((ATerm)ATmakeAppl(sym_stderr_0), (ATerm) ATinsert(ATinsert(ATinsert(ATinsert(ATempty, (ATerm) ATmakeAppl(ATmakeSymbol(" secs)", 0, ATtrue))), j_41), (ATerm) ATmakeAppl(ATmakeSymbol(" (", 0, ATtrue))), k_41));
-    t = (ATerm) ATmakeAppl(sym__2, term_c_30, (ATerm) ATinsert(ATinsert(ATinsert(ATinsert(ATempty, term_e_30), j_41), term_d_30), k_41));
-    return(t);
-  }
-  t = if_verbose1_1_0(a_7, t);
+  t = if_verbose1_1_0(h_7, t);
   return(t);
 }
 ATerm report_success_0_0 (ATerm t)
@@ -6064,64 +6230,64 @@ ATerm report_success_0_0 (ATerm t)
   t = SSL_exit((ATerm) ATmakeInt(0));
   return(t);
 }
-ATerm need_help_1_0 (ATerm o_139 (ATerm), ATerm t)
+ATerm need_help_1_0 (ATerm t_139 (ATerm), ATerm t)
 {
-  ATerm f_30 = t;
-  int g_30 = stack_ptr;
+  ATerm s_30 = t;
+  int t_30 = stack_ptr;
   if((PushChoice() == 0))
     {
       t = SSL_table_get((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm) ATmakeAppl(ATmakeSymbol("--help", 0, ATtrue)));
       {
-        ATerm i_30 = t;
-        int l_30 = stack_ptr;
+        ATerm x_30 = t;
+        int y_30 = stack_ptr;
         if((PushChoice() == 0))
           {
-            ATerm d_8 = NULL;
+            ATerm u_9 = NULL;
             t = eval_config_0_0(t);
-            d_8 = t;
-            t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("--help", 0, ATtrue)), d_8);
-            t = d_8;
+            u_9 = t;
+            t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("--help", 0, ATtrue)), u_9);
+            t = u_9;
             ;
-            LocalPopChoice(l_30);
+            LocalPopChoice(y_30);
           }
         else
           {
-            t = i_30;
+            t = x_30;
           }
       }
       ;
-      LocalPopChoice(g_30);
+      LocalPopChoice(t_30);
     }
   else
     {
-      t = f_30;
+      t = s_30;
       {
-        ATerm b_7 (ATerm t)
+        ATerm i_7 (ATerm t)
         {
-          ATerm m_30 = t;
-          int o_30 = stack_ptr;
+          ATerm c_31 = t;
+          int d_31 = stack_ptr;
           if((PushChoice() == 0))
             {
               if(!(match_cons(t, sym_Help_0)))
                 _fail(t);
               ;
-              LocalPopChoice(o_30);
+              LocalPopChoice(d_31);
             }
           else
             {
-              t = m_30;
+              t = c_31;
               {
-                ATerm p_30 = t;
-                int u_30 = stack_ptr;
+                ATerm f_31 = t;
+                int g_31 = stack_ptr;
                 if((PushChoice() == 0))
                   {
                     t = Undefined_1_0(_id, t);
                     ;
-                    LocalPopChoice(u_30);
+                    LocalPopChoice(g_31);
                   }
                 else
                   {
-                    t = p_30;
+                    t = f_31;
                     if(!(match_cons(t, sym_Version_0)))
                       _fail(t);
                   }
@@ -6129,58 +6295,58 @@ ATerm need_help_1_0 (ATerm o_139 (ATerm), ATerm t)
             }
           return(t);
         }
-        t = fetch_1_0(b_7, t);
+        t = fetch_1_0(i_7, t);
       }
     }
-  t = o_139(t);
+  t = t_139(t);
   return(t);
 }
-ATerm map_1_0 (ATerm w_119 (ATerm), ATerm t)
+ATerm map_1_0 (ATerm b_120 (ATerm), ATerm t)
 {
-  ATerm l_41 (ATerm t)
+  ATerm l_42 (ATerm t)
   {
-    ATerm z_30 = t;
-    int a_31 = stack_ptr;
+    ATerm p_31 = t;
+    int u_31 = stack_ptr;
     if((PushChoice() == 0))
       {
         if(((ATgetType(t) != AT_LIST) || !(ATisEmpty(t))))
           _fail(t);
         ;
-        LocalPopChoice(a_31);
+        LocalPopChoice(u_31);
       }
     else
       {
-        t = z_30;
-        t = Cons_2_0(w_119, l_41, t);
+        t = p_31;
+        t = Cons_2_0(b_120, l_42, t);
       }
     return(t);
   }
-  t = l_41(t);
+  t = l_42(t);
   return(t);
 }
 ATerm reverse_acc_2_0 (ATerm e_0 (ATerm), ATerm g_0 (ATerm), ATerm t)
 {
-  ATerm n_41 = NULL,o_41 = NULL;
+  ATerm o_42 = NULL,p_42 = NULL;
   if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
     {
-      n_41 = ATgetFirst((ATermList) t);
-      o_41 = (ATerm) ATgetNext((ATermList) t);
+      o_42 = ATgetFirst((ATermList) t);
+      p_42 = (ATerm) ATgetNext((ATermList) t);
       {
-        ATerm s_41 = NULL,t_41 = NULL;
-        t = o_41;
+        ATerm t_42 = NULL,u_42 = NULL;
+        t = p_42;
         t = g_0(t);
-        s_41 = t;
-        t = n_41;
+        t_42 = t;
+        t = o_42;
         t = e_0(t);
-        t_41 = t;
-        t = o_41;
+        u_42 = t;
+        t = p_42;
         {
-          ATerm c_7 (ATerm t)
+          ATerm j_7 (ATerm t)
           {
-            t = (ATerm) ATinsert(CheckATermList(s_41), t_41);
+            t = (ATerm) ATinsert(CheckATermList(t_42), u_42);
             return(t);
           }
-          t = reverse_acc_2_0(e_0, c_7, t);
+          t = reverse_acc_2_0(e_0, j_7, t);
         }
       }
     }
@@ -6193,141 +6359,137 @@ ATerm reverse_acc_2_0 (ATerm e_0 (ATerm), ATerm g_0 (ATerm), ATerm t)
     }
   return(t);
 }
-ATerm Program_1_0 (ATerm q_110 (ATerm), ATerm t)
+ATerm Program_1_0 (ATerm v_110 (ATerm), ATerm t)
 {
-  ATerm u_41 = NULL,v_41 = NULL,w_41 = NULL,x_41 = NULL;
-  x_41 = t;
+  ATerm v_42 = NULL,w_42 = NULL,x_42 = NULL,y_42 = NULL;
+  y_42 = t;
   if(match_cons(t, sym_Program_1))
     {
-      v_41 = ATgetArgument(t, 0);
+      w_42 = ATgetArgument(t, 0);
     }
   else
     _fail(t);
-  t = SSLgetAnnotations(x_41);
-  u_41 = t;
-  t = v_41;
-  t = q_110(t);
-  w_41 = t;
-  t = SSLsetAnnotations((ATerm)ATmakeAppl(sym_Program_1, w_41), u_41);
+  t = SSLgetAnnotations(y_42);
+  v_42 = t;
+  t = w_42;
+  t = v_110(t);
+  x_42 = t;
+  t = SSLsetAnnotations((ATerm)ATmakeAppl(sym_Program_1, x_42), v_42);
+  return(t);
+}
+ATerm l_7 (ATerm t)
+{
+  t = (ATerm) ATempty;
+  return(t);
+}
+ATerm m_7 (ATerm t)
+{
+  ATerm b_43 = NULL;
+  b_43 = t;
+  t = (ATerm) ATinsert(ATinsert(ATempty, b_43), term_v_31);
+  t = echo_0_0(t);
   return(t);
 }
 ATerm default_system_usage_0_0 (ATerm t)
 {
-  ATerm b_31 = t;
-  int c_31 = stack_ptr;
+  ATerm w_31 = t;
+  int x_31 = stack_ptr;
   if((PushChoice() == 0))
     {
       t = SSL_table_get((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm) ATmakeAppl(ATmakeSymbol("program", 0, ATtrue)));
       {
-        ATerm d_31 = t;
-        int e_31 = stack_ptr;
+        ATerm y_31 = t;
+        int z_31 = stack_ptr;
         if((PushChoice() == 0))
           {
-            ATerm k_8 = NULL;
+            ATerm z_9 = NULL;
             t = eval_config_0_0(t);
-            k_8 = t;
-            t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("program", 0, ATtrue)), k_8);
-            t = k_8;
+            z_9 = t;
+            t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("program", 0, ATtrue)), z_9);
+            t = z_9;
             ;
-            LocalPopChoice(e_31);
+            LocalPopChoice(z_31);
           }
         else
           {
-            t = d_31;
+            t = y_31;
           }
       }
       ;
-      LocalPopChoice(c_31);
+      LocalPopChoice(x_31);
     }
   else
     {
-      t = b_31;
+      t = w_31;
       {
-        ATerm g_7 (ATerm t)
+        ATerm k_7 (ATerm t)
         {
           t = Program_1_0(_id, t);
           return(t);
         }
-        t = fetch_1_0(g_7, t);
+        t = fetch_1_0(k_7, t);
       }
     }
-  t = term_l_31;
+  t = term_g_32;
   t = echo_0_0(t);
   t = SSL_table_get((ATerm)ATmakeAppl(ATmakeSymbol("usage-table", 0, ATtrue)), (ATerm) ATmakeAppl(ATmakeSymbol("usage", 0, ATtrue)));
-  {
-    ATerm h_7 (ATerm t)
-    {
-      t = (ATerm) ATempty;
-      return(t);
-    }
-    t = reverse_acc_2_0(_id, h_7, t);
-    {
-      ATerm i_7 (ATerm t)
-      {
-        ATerm a_42 = NULL;
-        a_42 = t;
-        t = (ATerm) ATinsert(ATinsert(ATempty, a_42), term_f_32);
-        t = echo_0_0(t);
-        return(t);
-      }
-      t = map_1_0(i_7, t);
-    }
-  }
+  t = reverse_acc_2_0(_id, l_7, t);
+  t = map_1_0(m_7, t);
   return(t);
 }
-ATerm Undefined_1_0 (ATerm r_110 (ATerm), ATerm t)
+ATerm Undefined_1_0 (ATerm w_110 (ATerm), ATerm t)
 {
-  ATerm b_42 = NULL,c_42 = NULL,d_42 = NULL,e_42 = NULL;
-  e_42 = t;
+  ATerm c_43 = NULL,d_43 = NULL,e_43 = NULL,f_43 = NULL;
+  f_43 = t;
   if(match_cons(t, sym_Undefined_1))
     {
-      c_42 = ATgetArgument(t, 0);
+      d_43 = ATgetArgument(t, 0);
     }
   else
     _fail(t);
-  t = SSLgetAnnotations(e_42);
-  b_42 = t;
-  t = c_42;
-  t = r_110(t);
-  d_42 = t;
-  t = SSLsetAnnotations((ATerm)ATmakeAppl(sym_Undefined_1, d_42), b_42);
+  t = SSLgetAnnotations(f_43);
+  c_43 = t;
+  t = d_43;
+  t = w_110(t);
+  e_43 = t;
+  t = SSLsetAnnotations((ATerm)ATmakeAppl(sym_Undefined_1, e_43), c_43);
   return(t);
 }
 ATerm echo_0_0 (ATerm t)
 {
-  ATerm i_42 = NULL,j_42 = NULL;
-  i_42 = t;
+  ATerm j_43 = NULL,m_43 = NULL;
+  j_43 = t;
   {
-    ATerm h_32 = t;
-    int o_32 = stack_ptr;
+    ATerm a_33 = t;
+    int c_33 = stack_ptr;
     if((PushChoice() == 0))
       {
         if(((ATgetType(t) == AT_LIST) && ATisEmpty(t)))
           {
-            t = i_42;
+            t = j_43;
           }
         else
           {
             if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
               {
-                ATerm p_32 = ATgetFirst((ATermList) t);
-                ATerm q_32 = (ATerm) ATgetNext((ATermList) t);
+                ATerm j_33 = ATgetFirst((ATermList) t);
+                ATerm k_33 = (ATerm) ATgetNext((ATermList) t);
               }
             else
               _fail(t);
-            t = i_42;
+            t = j_43;
           }
         ;
-        LocalPopChoice(o_32);
+        LocalPopChoice(c_33);
       }
     else
       {
-        t = h_32;
-        t = (ATerm) ATinsert(ATempty, i_42);
+        t = a_33;
+        t = (ATerm) ATinsert(ATempty, j_43);
       }
-    j_42 = t;
-    t = SSL_printnl((ATerm)ATmakeAppl(sym_stdout_0), j_42);
-    t = i_42;
+    m_43 = t;
+    t = SSL_printnl((ATerm)ATmakeAppl(sym_stdout_0), m_43);
+    t = j_43;
   }
   return(t);
 }
@@ -6335,415 +6497,411 @@ ATerm default_system_about_0_0 (ATerm t)
 {
   t = SSL_table_get((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm) ATmakeAppl(ATmakeSymbol("program", 0, ATtrue)));
   {
-    ATerm a_33 = t;
-    int b_33 = stack_ptr;
+    ATerm l_33 = t;
+    int r_33 = stack_ptr;
     if((PushChoice() == 0))
       {
-        ATerm o_8 = NULL;
+        ATerm d_10 = NULL;
         t = eval_config_0_0(t);
-        o_8 = t;
-        t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("program", 0, ATtrue)), o_8);
-        t = o_8;
+        d_10 = t;
+        t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("program", 0, ATtrue)), d_10);
+        t = d_10;
         ;
-        LocalPopChoice(b_33);
+        LocalPopChoice(r_33);
       }
     else
       {
-        t = a_33;
+        t = l_33;
       }
     t = echo_0_0(t);
   }
   return(t);
 }
+ATerm n_7 (ATerm t)
+{
+  if((ATgetSymbol((ATermAppl) t) != ATmakeSymbol("--about", 0, ATtrue)))
+    _fail(t);
+  return(t);
+}
+ATerm o_7 (ATerm t)
+{
+  t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("--about", 0, ATtrue)), (ATerm) ATmakeAppl(sym__0));
+  t = term_c_34;
+  return(t);
+}
+ATerm p_7 (ATerm t)
+{
+  t = term_d_34;
+  return(t);
+}
+ATerm q_7 (ATerm t)
+{
+  if((ATgetSymbol((ATermAppl) t) != ATmakeSymbol("--version", 0, ATtrue)))
+    _fail(t);
+  return(t);
+}
+ATerm r_7 (ATerm t)
+{
+  t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("--about", 0, ATtrue)), (ATerm) ATmakeAppl(sym__0));
+  t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("-v", 0, ATtrue)), (ATerm) ATmakeAppl(sym__0));
+  t = term_q_34;
+  return(t);
+}
+ATerm s_7 (ATerm t)
+{
+  t = term_r_34;
+  return(t);
+}
 ATerm system_about_switch_0_0 (ATerm t)
 {
-  ATerm g_33 = t;
-  int h_33 = stack_ptr;
+  ATerm d_35 = t;
+  int e_35 = stack_ptr;
   if((PushChoice() == 0))
     {
-      ATerm l_7 (ATerm t)
-      {
-        if((ATgetSymbol((ATermAppl) t) != ATmakeSymbol("--about", 0, ATtrue)))
-          _fail(t);
-        return(t);
-      }
-      ATerm m_7 (ATerm t)
-      {
-        t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("--about", 0, ATtrue)), (ATerm) ATmakeAppl(sym__0));
-        t = term_u_33;
-        return(t);
-      }
-      ATerm n_7 (ATerm t)
-      {
-        t = term_m_34;
-        return(t);
-      }
-      t = Option_3_0(l_7, m_7, n_7, t);
+      t = Option_3_0(n_7, o_7, p_7, t);
       ;
-      LocalPopChoice(h_33);
+      LocalPopChoice(e_35);
     }
   else
     {
-      t = g_33;
-      {
-        ATerm o_7 (ATerm t)
-        {
-          if((ATgetSymbol((ATermAppl) t) != ATmakeSymbol("--version", 0, ATtrue)))
-            _fail(t);
-          return(t);
-        }
-        ATerm p_7 (ATerm t)
-        {
-          t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("--about", 0, ATtrue)), (ATerm) ATmakeAppl(sym__0));
-          t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("-v", 0, ATtrue)), (ATerm) ATmakeAppl(sym__0));
-          t = term_n_34;
-          return(t);
-        }
-        ATerm q_7 (ATerm t)
-        {
-          t = term_o_34;
-          return(t);
-        }
-        t = Option_3_0(o_7, p_7, q_7, t);
-      }
+      t = d_35;
+      t = Option_3_0(q_7, r_7, s_7, t);
     }
   return(t);
 }
-ATerm Cons_2_0 (ATerm y_97 (ATerm), ATerm z_97 (ATerm), ATerm t)
+ATerm Cons_2_0 (ATerm d_98 (ATerm), ATerm e_98 (ATerm), ATerm t)
 {
-  ATerm n_42 = NULL,o_42 = NULL,p_42 = NULL,q_42 = NULL,r_42 = NULL,s_42 = NULL;
-  s_42 = t;
+  ATerm q_43 = NULL,r_43 = NULL,s_43 = NULL,t_43 = NULL,u_43 = NULL,v_43 = NULL;
+  v_43 = t;
   if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
     {
-      o_42 = ATgetFirst((ATermList) t);
-      p_42 = (ATerm) ATgetNext((ATermList) t);
+      r_43 = ATgetFirst((ATermList) t);
+      s_43 = (ATerm) ATgetNext((ATermList) t);
     }
   else
     _fail(t);
-  t = SSLgetAnnotations(s_42);
-  n_42 = t;
-  t = o_42;
-  t = y_97(t);
-  q_42 = t;
-  t = p_42;
-  t = z_97(t);
-  r_42 = t;
-  t = SSLsetAnnotations((ATerm)ATinsert(CheckATermList(r_42), q_42), n_42);
+  t = SSLgetAnnotations(v_43);
+  q_43 = t;
+  t = r_43;
+  t = d_98(t);
+  t_43 = t;
+  t = s_43;
+  t = e_98(t);
+  u_43 = t;
+  t = SSLsetAnnotations((ATerm)ATinsert(CheckATermList(u_43), t_43), q_43);
   return(t);
 }
-ATerm parse_options_p__1_0 (ATerm r_141 (ATerm), ATerm t)
+ATerm t_7 (ATerm t)
 {
-  ATerm w_42 = NULL;
-  w_42 = t;
+  ATerm c_44 = NULL;
+  c_44 = t;
+  t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("program", 0, ATtrue)), c_44);
+  t = (ATerm) ATmakeAppl(sym_Program_1, c_44);
+  return(t);
+}
+ATerm parse_options_p__1_0 (ATerm w_141 (ATerm), ATerm t)
+{
+  ATerm b_44 = NULL;
+  b_44 = t;
   {
-    ATerm p_34 = t;
-    int q_34 = stack_ptr;
+    ATerm g_35 = t;
+    int k_35 = stack_ptr;
     if((PushChoice() == 0))
       {
-        t = term_r_34;
-        t = r_141(t);
+        t = term_l_35;
+        t = w_141(t);
         ;
-        LocalPopChoice(q_34);
+        LocalPopChoice(k_35);
       }
     else
       {
-        t = p_34;
+        t = g_35;
       }
-    t = w_42;
+    t = b_44;
     {
-      ATerm r_7 (ATerm t)
+      ATerm u_7 (ATerm t)
       {
-        ATerm x_42 = NULL;
-        x_42 = t;
-        t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("program", 0, ATtrue)), x_42);
-        t = (ATerm) ATmakeAppl(sym_Program_1, x_42);
-        return(t);
-      }
-      ATerm s_7 (ATerm t)
-      {
-        ATerm s_34 = t;
-        int u_34 = stack_ptr;
+        ATerm o_35 = t;
+        int p_35 = stack_ptr;
         if((PushChoice() == 0))
           {
-            ATerm v_34 = t;
-            int w_34 = stack_ptr;
+            ATerm q_35 = t;
+            int r_35 = stack_ptr;
             if((PushChoice() == 0))
               {
                 if(((ATgetType(t) != AT_LIST) || !(ATisEmpty(t))))
                   _fail(t);
                 ;
-                LocalPopChoice(w_34);
+                LocalPopChoice(r_35);
               }
             else
               {
-                t = v_34;
-                t = r_141(t);
-                t = Cons_2_0(_id, s_7, t);
+                t = q_35;
+                t = w_141(t);
+                t = Cons_2_0(_id, u_7, t);
               }
             ;
-            LocalPopChoice(u_34);
+            LocalPopChoice(p_35);
           }
         else
           {
-            t = s_34;
+            t = o_35;
             {
-              ATerm b_43 = NULL,c_43 = NULL;
+              ATerm e_44 = NULL,f_44 = NULL;
               if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
                 {
-                  b_43 = ATgetFirst((ATermList) t);
-                  c_43 = (ATerm) ATgetNext((ATermList) t);
+                  e_44 = ATgetFirst((ATermList) t);
+                  f_44 = (ATerm) ATgetNext((ATermList) t);
                 }
               else
                 _fail(t);
-              t = (ATerm) ATinsert(CheckATermList(c_43), (ATerm) ATmakeAppl(sym_Undefined_1, b_43));
+              t = (ATerm) ATinsert(CheckATermList(f_44), (ATerm) ATmakeAppl(sym_Undefined_1, e_44));
             }
           }
         return(t);
       }
-      t = Cons_2_0(r_7, s_7, t);
+      t = Cons_2_0(t_7, u_7, t);
     }
   }
   return(t);
 }
-ATerm parse_options_1_0 (ATerm q_141 (ATerm), ATerm t)
+ATerm w_7 (ATerm t)
 {
-  ATerm j_43 = NULL,k_43 = NULL,l_43 = NULL;
-  j_43 = t;
-  t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("usage-table", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("usage", 0, ATtrue)), (ATerm) ATempty);
-  t = j_43;
-  {
-    ATerm t_7 (ATerm t)
+  ATerm q_44 = NULL;
+  q_44 = t;
+  if(match_string(t, "--help"))
     {
-      ATerm x_34 = t;
-      int y_34 = stack_ptr;
-      if((PushChoice() == 0))
+      t = q_44;
+    }
+  else
+    {
+      if(match_string(t, "-h"))
         {
-          t = q_141(t);
-          ;
-          LocalPopChoice(y_34);
+          t = q_44;
         }
       else
         {
-          t = x_34;
+          if((ATgetSymbol((ATermAppl) t) != ATmakeSymbol("-?", 0, ATtrue)))
+            _fail(t);
+          t = q_44;
+        }
+    }
+  return(t);
+}
+ATerm x_7 (ATerm t)
+{
+  t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("--help", 0, ATtrue)), (ATerm) ATmakeAppl(sym__0));
+  t = term_s_35;
+  return(t);
+}
+ATerm y_7 (ATerm t)
+{
+  t = term_t_35;
+  return(t);
+}
+ATerm z_7 (ATerm t)
+{
+  if(!(match_cons(t, sym_Help_0)))
+    _fail(t);
+  return(t);
+}
+ATerm parse_options_1_0 (ATerm v_141 (ATerm), ATerm t)
+{
+  ATerm n_44 = NULL,o_44 = NULL,p_44 = NULL;
+  n_44 = t;
+  t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("usage-table", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("usage", 0, ATtrue)), (ATerm) ATempty);
+  t = n_44;
+  {
+    ATerm v_7 (ATerm t)
+    {
+      ATerm u_35 = t;
+      int v_35 = stack_ptr;
+      if((PushChoice() == 0))
+        {
+          t = v_141(t);
+          ;
+          LocalPopChoice(v_35);
+        }
+      else
+        {
+          t = u_35;
           {
-            ATerm b_35 = t;
-            int c_35 = stack_ptr;
+            ATerm w_35 = t;
+            int y_35 = stack_ptr;
             if((PushChoice() == 0))
               {
-                ATerm u_7 (ATerm t)
-                {
-                  ATerm m_43 = NULL;
-                  m_43 = t;
-                  if(match_string(t, "--help"))
-                    {
-                      t = m_43;
-                    }
-                  else
-                    {
-                      if(match_string(t, "-h"))
-                        {
-                          t = m_43;
-                        }
-                      else
-                        {
-                          if((ATgetSymbol((ATermAppl) t) != ATmakeSymbol("-?", 0, ATtrue)))
-                            _fail(t);
-                          t = m_43;
-                        }
-                    }
-                  return(t);
-                }
-                ATerm v_7 (ATerm t)
-                {
-                  t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("--help", 0, ATtrue)), (ATerm) ATmakeAppl(sym__0));
-                  t = term_d_35;
-                  return(t);
-                }
-                ATerm w_7 (ATerm t)
-                {
-                  t = term_g_35;
-                  return(t);
-                }
-                t = Option_3_0(u_7, v_7, w_7, t);
+                t = Option_3_0(w_7, x_7, y_7, t);
                 ;
-                LocalPopChoice(c_35);
+                LocalPopChoice(y_35);
               }
             else
               {
-                t = b_35;
+                t = w_35;
                 t = system_about_switch_0_0(t);
               }
           }
         }
       return(t);
     }
-    t = parse_options_p__1_0(t_7, t);
+    t = parse_options_p__1_0(v_7, t);
     {
-      ATerm i_35 = t;
-      int k_35 = stack_ptr;
+      ATerm z_35 = t;
+      int c_36 = stack_ptr;
       if((PushChoice() == 0))
         {
-          ATerm s_43 = NULL;
-          s_43 = t;
+          ATerm v_44 = NULL;
+          v_44 = t;
           {
-            ATerm l_35 = t;
-            int m_35 = stack_ptr;
+            ATerm h_36 = t;
+            int i_36 = stack_ptr;
             if((PushChoice() == 0))
               {
-                t = s_43;
+                t = v_44;
                 {
-                  ATerm n_35 = t;
-                  int a_36 = stack_ptr;
+                  ATerm j_36 = t;
+                  int k_36 = stack_ptr;
                   if((PushChoice() == 0))
                     {
                       t = SSL_table_get((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm) ATmakeAppl(ATmakeSymbol("--help", 0, ATtrue)));
                       {
-                        ATerm b_36 = t;
-                        int c_36 = stack_ptr;
+                        ATerm x_36 = t;
+                        int y_36 = stack_ptr;
                         if((PushChoice() == 0))
                           {
-                            ATerm g_9 = NULL;
+                            ATerm s_11 = NULL;
                             t = eval_config_0_0(t);
-                            g_9 = t;
-                            t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("--help", 0, ATtrue)), g_9);
-                            t = g_9;
+                            s_11 = t;
+                            t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("--help", 0, ATtrue)), s_11);
+                            t = s_11;
                             ;
-                            LocalPopChoice(c_36);
+                            LocalPopChoice(y_36);
                           }
                         else
                           {
-                            t = b_36;
+                            t = x_36;
                           }
                       }
                       ;
-                      LocalPopChoice(a_36);
+                      LocalPopChoice(k_36);
                     }
                   else
                     {
-                      t = n_35;
-                      {
-                        ATerm y_7 (ATerm t)
-                        {
-                          if(!(match_cons(t, sym_Help_0)))
-                            _fail(t);
-                          return(t);
-                        }
-                        t = fetch_1_0(y_7, t);
-                      }
+                      t = j_36;
+                      t = fetch_1_0(z_7, t);
                     }
-                  t = s_43;
+                  t = v_44;
                   t = default_system_usage_0_0(t);
                   t = SSL_exit((ATerm) ATmakeInt(0));
                 }
                 ;
-                LocalPopChoice(m_35);
+                LocalPopChoice(i_36);
               }
             else
               {
-                t = l_35;
+                t = h_36;
                 t = SSL_table_get((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm) ATmakeAppl(ATmakeSymbol("--about", 0, ATtrue)));
                 {
-                  ATerm d_36 = t;
-                  int f_36 = stack_ptr;
+                  ATerm z_36 = t;
+                  int a_37 = stack_ptr;
                   if((PushChoice() == 0))
                     {
-                      ATerm n_9 = NULL;
+                      ATerm q_12 = NULL;
                       t = eval_config_0_0(t);
-                      n_9 = t;
-                      t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("--about", 0, ATtrue)), n_9);
-                      t = n_9;
+                      q_12 = t;
+                      t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("--about", 0, ATtrue)), q_12);
+                      t = q_12;
                       ;
-                      LocalPopChoice(f_36);
+                      LocalPopChoice(a_37);
                     }
                   else
                     {
-                      t = d_36;
+                      t = z_36;
                     }
-                  t = s_43;
+                  t = v_44;
                   t = default_system_about_0_0(t);
                   t = SSL_exit((ATerm) ATmakeInt(0));
                 }
               }
           }
           ;
-          LocalPopChoice(k_35);
+          LocalPopChoice(c_36);
         }
       else
         {
-          t = i_35;
+          t = z_35;
           {
-            ATerm g_36 = t;
-            int j_36 = stack_ptr;
+            ATerm c_37 = t;
+            int d_37 = stack_ptr;
             if((PushChoice() == 0))
               {
-                ATerm z_7 (ATerm t)
+                ATerm a_8 (ATerm t)
                 {
-                  ATerm a_8 (ATerm t)
+                  ATerm b_8 (ATerm t)
                   {
-                    if(((k_43 != NULL) && (k_43 != t)))
+                    if(((o_44 != NULL) && (o_44 != t)))
                       _fail(t);
                     else
-                      k_43 = t;
+                      o_44 = t;
                     return(t);
                   }
-                  t = Undefined_1_0(a_8, t);
+                  t = Undefined_1_0(b_8, t);
                   return(t);
                 }
-                t = fetch_1_0(z_7, t);
-                t = SSL_printnl((ATerm)ATmakeAppl(sym_stderr_0), (ATerm) ATinsert(ATinsert(ATempty, not_null(k_43)), (ATerm) ATmakeAppl(ATmakeSymbol("Invalid option: ", 0, ATtrue))));
-                t = (ATerm) ATmakeAppl(sym__2, term_c_30, (ATerm) ATinsert(ATinsert(ATempty, not_null(k_43)), term_k_36));
+                t = fetch_1_0(a_8, t);
+                t = SSL_printnl((ATerm)ATmakeAppl(sym_stderr_0), (ATerm) ATinsert(ATinsert(ATempty, not_null(o_44)), (ATerm) ATmakeAppl(ATmakeSymbol("Invalid option: ", 0, ATtrue))));
+                t = (ATerm) ATmakeAppl(sym__2, term_p_30, (ATerm) ATinsert(ATinsert(ATempty, not_null(o_44)), term_g_37));
                 t = default_system_usage_0_0(t);
                 t = SSL_exit((ATerm) ATmakeInt(1));
                 ;
-                LocalPopChoice(j_36);
+                LocalPopChoice(d_37);
               }
             else
               {
-                t = g_36;
+                t = c_37;
               }
           }
         }
-      l_43 = t;
+      p_44 = t;
       t = SSL_table_destroy((ATerm) ATmakeAppl(ATmakeSymbol("usage-table", 0, ATtrue)));
-      t = l_43;
+      t = p_44;
     }
   }
   return(t);
 }
-ATerm option_wrap_4_0 (ATerm q_139 (ATerm), ATerm r_139 (ATerm), ATerm s_139 (ATerm), ATerm t_139 (ATerm), ATerm t)
+ATerm option_wrap_4_0 (ATerm v_139 (ATerm), ATerm w_139 (ATerm), ATerm x_139 (ATerm), ATerm y_139 (ATerm), ATerm t)
 {
-  ATerm w_43 = NULL;
-  t = parse_options_1_0(q_139, t);
-  w_43 = t;
+  ATerm y_44 = NULL;
+  t = parse_options_1_0(v_139, t);
+  y_44 = t;
   t = SSL_table_create((ATerm) ATmakeAppl(ATmakeSymbol("option-table", 0, ATtrue)));
-  t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("option-table", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("options", 0, ATtrue)), w_43);
-  t = w_43;
-  t = s_139(t);
+  t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("option-table", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("options", 0, ATtrue)), y_44);
+  t = y_44;
+  t = x_139(t);
   {
-    ATerm l_36 = t;
-    int m_36 = stack_ptr;
+    ATerm h_37 = t;
+    int i_37 = stack_ptr;
     if((PushChoice() == 0))
       {
-        t = need_help_1_0(r_139, t);
+        t = need_help_1_0(w_139, t);
         ;
-        LocalPopChoice(m_36);
+        LocalPopChoice(i_37);
       }
     else
       {
-        t = l_36;
+        t = h_37;
         {
-          ATerm n_36 = t;
-          int p_36 = stack_ptr;
+          ATerm j_37 = t;
+          int k_37 = stack_ptr;
           if((PushChoice() == 0))
             {
-              t = t_139(t);
+              t = y_139(t);
               t = report_success_0_0(t);
               ;
-              LocalPopChoice(p_36);
+              LocalPopChoice(k_37);
             }
           else
             {
-              t = n_36;
+              t = j_37;
               t = report_failure_0_0(t);
             }
         }
@@ -6751,86 +6909,119 @@ ATerm option_wrap_4_0 (ATerm q_139 (ATerm), ATerm r_139 (ATerm), ATerm s_139 (AT
   }
   return(t);
 }
-ATerm iowrap_3_0 (ATerm z_138 (ATerm), ATerm a_139 (ATerm), ATerm b_139 (ATerm), ATerm t)
+ATerm g_8 (ATerm t)
 {
-  ATerm b_8 (ATerm t)
+  if((ATgetSymbol((ATermAppl) t) != ATmakeSymbol("-b", 0, ATtrue)))
+    _fail(t);
+  return(t);
+}
+ATerm h_8 (ATerm t)
+{
+  t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("-b", 0, ATtrue)), (ATerm) ATmakeAppl(sym__0));
+  t = term_m_37;
+  return(t);
+}
+ATerm i_8 (ATerm t)
+{
+  t = term_q_37;
+  return(t);
+}
+ATerm j_8 (ATerm t)
+{
+  ATerm z_44 = NULL,a_45 = NULL;
+  z_44 = t;
+  t = SSL_table_get((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm) ATmakeAppl(ATmakeSymbol("program", 0, ATtrue)));
   {
-    ATerm t_36 = t;
-    int w_36 = stack_ptr;
+    ATerm t_37 = t;
+    int u_37 = stack_ptr;
     if((PushChoice() == 0))
       {
-        t = a_139(t);
+        ATerm i_13 = NULL;
+        t = eval_config_0_0(t);
+        i_13 = t;
+        t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("program", 0, ATtrue)), i_13);
+        t = i_13;
         ;
-        LocalPopChoice(w_36);
+        LocalPopChoice(u_37);
       }
     else
       {
-        t = t_36;
+        t = t_37;
+      }
+    a_45 = t;
+    t = SSL_printnl((ATerm)ATmakeAppl(sym_stderr_0), (ATerm) ATinsert(ATempty, a_45));
+    t = z_44;
+  }
+  return(t);
+}
+ATerm e_8 (ATerm t)
+{
+  t = if_verbose2_1_0(j_8, t);
+  return(t);
+}
+ATerm iowrap_3_0 (ATerm e_139 (ATerm), ATerm f_139 (ATerm), ATerm g_139 (ATerm), ATerm t)
+{
+  ATerm c_8 (ATerm t)
+  {
+    ATerm v_37 = t;
+    int w_37 = stack_ptr;
+    if((PushChoice() == 0))
+      {
+        t = f_139(t);
+        ;
+        LocalPopChoice(w_37);
+      }
+    else
+      {
+        t = v_37;
         {
-          ATerm x_36 = t;
-          int y_36 = stack_ptr;
+          ATerm x_37 = t;
+          int y_37 = stack_ptr;
           if((PushChoice() == 0))
             {
               t = input_option_0_0(t);
               ;
-              LocalPopChoice(y_36);
+              LocalPopChoice(y_37);
             }
           else
             {
-              t = x_36;
+              t = x_37;
               {
-                ATerm z_36 = t;
-                int a_37 = stack_ptr;
+                ATerm z_37 = t;
+                int a_38 = stack_ptr;
                 if((PushChoice() == 0))
                   {
                     t = output_option_0_0(t);
                     ;
-                    LocalPopChoice(a_37);
+                    LocalPopChoice(a_38);
                   }
                 else
                   {
-                    t = z_36;
+                    t = z_37;
                     {
-                      ATerm b_37 = t;
-                      int c_37 = stack_ptr;
+                      ATerm b_38 = t;
+                      int d_38 = stack_ptr;
                       if((PushChoice() == 0))
                         {
-                          ATerm f_8 (ATerm t)
-                          {
-                            if((ATgetSymbol((ATermAppl) t) != ATmakeSymbol("-b", 0, ATtrue)))
-                              _fail(t);
-                            return(t);
-                          }
-                          ATerm g_8 (ATerm t)
-                          {
-                            t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("-b", 0, ATtrue)), (ATerm) ATmakeAppl(sym__0));
-                            t = term_d_37;
-                            return(t);
-                          }
-                          ATerm h_8 (ATerm t)
-                          {
-                            t = term_e_37;
-                            return(t);
-                          }
-                          t = Option_3_0(f_8, g_8, h_8, t);
+                          t = Option_3_0(g_8, h_8, i_8, t);
                           ;
-                          LocalPopChoice(c_37);
+                          LocalPopChoice(d_38);
                         }
                       else
                         {
-                          t = b_37;
+                          t = b_38;
                           {
-                            ATerm g_37 = t;
-                            int h_37 = stack_ptr;
+                            ATerm e_38 = t;
+                            int f_38 = stack_ptr;
                             if((PushChoice() == 0))
                               {
                                 t = verbose_option_0_0(t);
                                 ;
-                                LocalPopChoice(h_37);
+                                LocalPopChoice(f_38);
                               }
                             else
                               {
-                                t = g_37;
+                                t = e_38;
                                 t = keep_option_0_0(t);
                               }
                           }
@@ -6843,81 +7034,48 @@ ATerm iowrap_3_0 (ATerm z_138 (ATerm), ATerm a_139 (ATerm), ATerm b_139 (ATerm),
       }
     return(t);
   }
-  ATerm c_8 (ATerm t)
+  ATerm f_8 (ATerm t)
   {
-    ATerm i_8 (ATerm t)
+    ATerm b_45 = NULL,c_45 = NULL,l_13 = NULL;
+    b_45 = t;
     {
-      ATerm x_43 = NULL,z_43 = NULL;
-      x_43 = t;
-      t = SSL_table_get((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm) ATmakeAppl(ATmakeSymbol("program", 0, ATtrue)));
-      {
-        ATerm i_37 = t;
-        int m_37 = stack_ptr;
-        if((PushChoice() == 0))
-          {
-            ATerm r_9 = NULL;
-            t = eval_config_0_0(t);
-            r_9 = t;
-            t = SSL_table_put((ATerm)ATmakeAppl(ATmakeSymbol("config", 0, ATtrue)), (ATerm)ATmakeAppl(ATmakeSymbol("program", 0, ATtrue)), r_9);
-            t = r_9;
-            ;
-            LocalPopChoice(m_37);
-          }
-        else
-          {
-            t = i_37;
-          }
-        z_43 = t;
-        t = SSL_printnl((ATerm)ATmakeAppl(sym_stderr_0), (ATerm) ATinsert(ATempty, z_43));
-        t = x_43;
-      }
-      return(t);
-    }
-    t = if_verbose2_1_0(i_8, t);
-    return(t);
-  }
-  ATerm e_8 (ATerm t)
-  {
-    ATerm a_44 = NULL,b_44 = NULL,v_9 = NULL;
-    a_44 = t;
-    {
-      ATerm n_37 = t;
-      int o_37 = stack_ptr;
+      ATerm j_38 = t;
+      int k_38 = stack_ptr;
       if((PushChoice() == 0))
         {
-          ATerm j_8 (ATerm t)
+          ATerm k_8 (ATerm t)
           {
             if(match_cons(t, sym_Input_1))
               {
-                if(((b_44 != NULL) && (b_44 != ATgetArgument(t, 0))))
+                if(((c_45 != NULL) && (c_45 != ATgetArgument(t, 0))))
                   _fail(ATgetArgument(t, 0));
                 else
-                  b_44 = ATgetArgument(t, 0);
+                  c_45 = ATgetArgument(t, 0);
               }
             else
               _fail(t);
             return(t);
           }
-          t = fetch_1_0(j_8, t);
+          t = fetch_1_0(k_8, t);
           ;
-          LocalPopChoice(o_37);
+          LocalPopChoice(k_38);
         }
       else
         {
-          t = n_37;
-          t = term_r_37;
-          b_44 = t;
+          t = j_38;
+          t = term_l_38;
+          c_45 = t;
         }
-      t = not_null(b_44);
+      t = not_null(c_45);
       t = ReadFromFile_0_0(t);
-      v_9 = t;
-      t = (ATerm) ATmakeAppl(sym__2, a_44, v_9);
-      t = apply_strategy_1_0(z_138, t);
+      l_13 = t;
+      t = (ATerm) ATmakeAppl(sym__2, b_45, l_13);
+      t = apply_strategy_1_0(e_139, t);
       t = output_file_0_0(t);
     }
     return(t);
   }
-  t = option_wrap_4_0(b_8, b_139, c_8, e_8, t);
+  t = option_wrap_4_0(c_8, g_139, e_8, f_8, t);
   return(t);
 }
 ATerm main_0_0 (ATerm t)
