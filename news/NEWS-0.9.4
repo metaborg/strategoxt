@@ -1,11 +1,15 @@
-StrategoXT 0.9.4 -- under construction
-
+StrategoXT 0.9.4 -- released January 22, 2004
 
 ---------++ Summary of Changes
 
    * External definitions for separate compilation
    * Parsing programs with concrete syntax
    * Improvements in the run-time system
+   * Injections in signatures
+   * Extend dynamic rules
+   * Drastic reduction of resources in run-time system
+   * Upgrading pretty-print tables
+   * Lots of improvements and fixes
 
 ---------++ Separate Compilation
 
@@ -166,21 +170,25 @@ for Prolog programs with embedded syntax. The assumption (in this
 example) is that syntax embeddings use a standard (ToTerm) convention
 for indicating the boundary between meta- and object-syntax.
 
+<verbatim>
   Meta([
     Syntax("Prolog"),
     ParseTable("Prolog.tbl"),
     Explode("prolog-explode"),
     PrettyPrintTable("Prolog-pretty.pp.af")
   ])
+</verbatim>
 
 This information can be overridden in a file specific .meta file with
 the same extension. For example, the following indicates an embedding
 of ABIR in Prolog and a specific desugaring tool for this format:
 
+<verbatim>
   Meta([
     Syntax("PrologABIR"),
     PostExplodeDesugar("abir-in-prolog-implode")
   ])
+</verbatim>
 
 It overrides the syntax component, and adds a desugaring component.
 
@@ -190,12 +198,14 @@ example, the following is the contents plabir.meta, which defines all
 meta-data for preprocessing Prolog with embedded ABIR in files with
 extension .plabir.
 
+<verbatim>
   Meta([
     Syntax("PrologABIR"),
     Explode("prolog-explode"),
     PostExplodeDesugar("abir-in-prolog-implode"),
     PrettyPrintTable("Prolog-pretty.pp.af")
   ])
+</verbatim>
 
 (Eelco Visser)
 
