@@ -1,5 +1,5 @@
 module parenthesize-tests
-imports parenthesize-Exp xtc-register options
+imports parenthesize-Exp xtc-register options xtc-lib stratego-xt-xtc-tools string-misc
 
 strategies
 
@@ -7,10 +7,37 @@ strategies
     option-wrap(io-options,
       test-suite(!"sdf2parenthesize generator tests",
         where(register-test-data)
-      ; id
+      ; exp-tests
       )
     )
 
+  exp-tests =
+      exp-test(|"a + e")
+    ; exp-test(|"b + (c + d)")
+
+  /**
+   * @param  s  Expression to test
+   */
+  exp-test(|txt) =
+    apply-test(!txt, 
+      xtc-temp-files(
+        <print-to> [<id>]
+      ; xtc-sglr(!"Exp.tbl")
+      ; xtc-implode-asfix
+      ; xtc-io-transform(parenthesize-Exp)
+      ; xtc-ast2abox(!["Exp-pretty.pp.af"])
+      ; xtc-abox2text
+      ; ?FILE(<read-text-file>)
+      ; trim-whitespace
+      )
+    , !txt
+    , !txt
+    )
+
   register-test-data =
-      xtc-register(|"Exp.pp.af", "Foo", ".")
+      xtc-register(|"Exp-pretty.pp.af", "Foo", ".")
     ; xtc-register(|"Exp.tbl", "Foo", ".")
+
+
+  is-whitespace = ?'\r'
+  is-whitespace = ?'\n'
