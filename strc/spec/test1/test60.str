@@ -5,24 +5,18 @@ strategies
   main = 
     {| CSE 
      : where(<new-A(|"a")> "a")
-     //; dr-print-rule-set(|"A")
      ; where(<Assign> ("a", ("b", "c")))
-     //; dr-print-rule-set(|"A")
      ; <A> ("b", "c")
      ; where(<kill-A(|"a")> "b")
-     //; dr-print-rule-set(|"A")
      ; !(<id>, <try(A)> ("b", "c"))
      |} => ("a",("b","c"))
 	
   innermost-scope-A =
     collect(is-string) => ids
-    ; innermost-scope(where(<elem>(<id>, ids)) | "A")
-
-  innermost-scope(s|rule) =
-    dr-get-first-scope-label(s | rule)
-									
+    ; innermost-scope-A(where(<elem>(<id>, ids)))
+			
   Assign =
     ? (x, e)
-    ; where( collect(is-string) => xs )
+    ; where( collect(is-string; !("a",<id>)) => xs )
     ; where( innermost-scope-A => z )
     ; rules( A.z : e -> x depends on xs )

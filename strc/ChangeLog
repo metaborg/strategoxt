@@ -1,3 +1,108 @@
+2004-10-07  Eelco Visser  <visser@cs.uu.nl>
+
+	Now I think I've got it right (the kill- and new- strategies for
+	'dependent dynamic rewrite rules that is). The generation of the
+	strategies was moved to seperate strategies since the binding to
+	desugaring rule is minimal. (Thus reducing the 'lines of code per
+	strategy definition' metric, although the create-kill-strategy is
+	still 45 lines, 35 of which comprise the template for the
+	generated strategy. Anyway, this module would already trigger the
+	metric with 77 lines for the SplitDynamicRule rule.) 
+
+	The kill-f strategy actually has to filter the list of closures to
+	avoid throwing away too many rules. That is, the rule that
+	rewrites a dependency to the list of rules that it is used in, is
+	constructed using rule extension (:+). However, with the current
+	constructs it is not possible to selectively undefine some of
+	those dynamic rules.  The kill-f strategy is now implemented using
+	the following pattern to achieve this:
+
+		dr-lookup-rule(|...)
+		; filter(where(
+		    f-aux(|...)
+	 	    ; test the output of the rule
+		  )) => closures // the ones that should be preserved)
+		; dr-set-rules-vis(|...., closures)
+
+	Probably this is pattern is useful in other applications as
+	well and should be lifted into the library (which occurs to me
+	as I write this). (That would also reduce the line count for
+	the generator.) Not clear whether that can be done in general
+	though since the call to f-aux depends on the definition of the
+	dynamic rule. So may this should be generated as well.
+
+2004-10-06  Eelco Visser  <visser@cs.uu.nl>
+
+	The initial implementation of the kill-A and new-A strategies
+	was not correct. First of all, the new-A strategy should only
+	undefine the kill rule for the local variable in the current
+	scope. Otherwise changes to rules in outer scopes don't register
+	through kill-A. In general, it turns out (at least it seems) that
+	kill rules should be defined in the scope of the affected
+	dependency (say variable). Furthermore, when killing a dependency
+	all rules involving that dependency should be killed. Also all
+	the kill rules for those rules should be killed. But not necessarily
+	all the kill rules of the dependencies of the affected variable. 
+	That is, the kill rules should be filtered and only the ones that
+	involve the affected variable should be removed. 
+
+2004-10-04  Eelco Visser  <visser@cs.uu.nl>
+
+	Implementation of 'depends on' annotation of dynamic
+	rules. The implementation is experimental and needs further
+	testing. The translation scheme was tested manually on two
+	Tiger transformations, and it should not interfere with normal
+	dynamic rules.
+
+	The implementation is achieved by means of a desugaring in the
+	dynamic rule lifter. For this purpose dynamic rule lifting has
+	been refactored:
+
+	- lifted strategy defs are collected using a dynamic rule
+	instead of returning a pair of strategy and lifted strategy
+	definitions
+
+	- rules(...) sections with multiple rules are reduced to
+	sequences of rules(...) with single rule definitions (This
+	allows use of |[ rules( ... ) ]| syntax everywhere instead of
+	DynRuleDef|[ ... ]| making spec more readable.)
+
+	- other desugarings are defined in 'cascading' style
+
+	A dynamic rule (A.t0 : t1 -> t2 depends on t3) is translated
+	to a normal dynamic rule (A : t1 -> t2) and series of dynamic
+	rules
+
+	  A : DR_KILL(x) -> (t1, t3, t0)
+
+	one for each term x in the list t3. These rules serve to reach
+	the declared rule from any of the dependent terms in t3.
+
+	To kill the rule when one of the dependend terms changes
+	meaning the desugaring also generates the strategies new-A and
+	kill-A, which serve to locally shadow the rule and kill the
+	rule, respectively.
+
+	These strategies take the <bagof-A> DR_KILL(x) and for each
+	triple (t1, t3, t0) in the result kill the rule with the
+	left-hand side t1, i.e., (A :- t1) and kill the kill rules (to
+	avoid needless killing later on) by undefining (A :-
+	DR_KILL(y)) for each y in t3.
+
+	There are some subtleties involved in the scoping of these
+	rules, which makes things interesting. That is, this allows
+	the correct treatment of dynamic rules entering a local scope
+	shadowing some variables used in dynamic rules. Or shorter:
+	this solves the problem of free variable capture in dynamic
+	rules.
+
+	The nice aspect of this implementation is that there is only
+	one dynamic rule used both for the actual rules and the kill
+	rules. This means that intersection and union work directly on
+	the kill rules as well; no need for the programmer to be aware
+	of the extra rules.
+
+
 2004-07-06  Martin Bravenboer  <martin@cs.uu.nl>
 
 	* spec/front/stratego-warnings.str: use separate options module.

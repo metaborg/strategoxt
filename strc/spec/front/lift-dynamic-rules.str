@@ -149,47 +149,94 @@ strategies
     |[ rules( f(as1|as2).t1 : t2 -> t3          depends on t4 ) ]| ->
     |[ rules( f(as1|as2).t1 : t2 -> t3 where id depends on t4 ) ]|
 
-  // TODO: caching
-  // make sure that kill- and gen- rules are only generated once
+  // TODO
+  // left-hand side should be dummified 
 
   DesugarDynRuleDef :
     |[ rules( f(as1|as2).t1 : t2 -> t3 where s depends on t4 ) ]| ->
     |[ rules( f(as1|as2).t1 : t2 -> t3 where s )
        ; where( 
-           !t4 => y
-           ; map({x: ?x
+	     !t1 => y0 // scope
+	   ; !t2 => y1 // left-hand side (should be the key)
+           ; !t4 => y2 // dependencies
+           ; map({x1, x2: ?(x1,x2)
                    ; rules( 
-                       f(as1|as2).t1 :+ DR_KILL(x) -> (t2, y, t1) where id 
+                       f(|).x1 :+ DR_KILL(x2) -> (y0, y1, y2) where id 
                      )
                  })
          )
     ]|
-    where new => x; new => y; new => y2; new => z
-	; <concat-strings> ["new-",  f] => f2
-	; <concat-strings> ["kill-", f] => f3
+    where new => x; new => x1; new => x2
+	; new => y0; new => y1; new => y2; new => z
+	; <try(create-new-strategy)> f
+	; <try(create-kill-strategy)> f
+
+    // new-f : locally undefine all rules that depend on x
+
+    create-new-strategy = ?f; not(NewStrategy);
+      where(
+	  <concat-strings> ["new-",   f] => f2
 	; <concat-strings> ["bagof-", f] => f4
-	; <tvars> t2 => x*
-        ; !|[ f2(|z) = ?x
-		; rules( f+z )
-		; <f4> DR_KILL(x)
-		; map({y2, x* : 
-                      ? (t2, y2, _ )
-		      ; rules( f(|).z :- t2 )
-		      ; !y2
-		      ; map({y: ?y; rules( f(|).z :- DR_KILL(y) ) })
-                      })
+        ; !|[ f2(|scope) = ?dep;
+              where(
+		rules( f+scope )
+		; <f4> DR_KILL(dep)
+		; map({lhs, deps : 
+                       ?(_, lhs, _)
+                       ; rules( f(|).scope :- lhs ) })
+		; rules( f(|).scope :- DR_KILL(dep) )
+	      )
            ]| => newdef
 	; rules( LiftedRules :+ () -> newdef )
-	; !|[ f3(|z) = ?x
-		; <f4> DR_KILL(x)
-		; map({z, y2, x* : 
-                      ? (t2, y2, z)
-		      ; rules( f(|).z :- t2 )
-		      ; !y2
-		      ; map({y: ?y; rules( f(|).z :- DR_KILL(y) )})
-                      })
-	   ]| => killdef
+        ; rules( NewStrategy : f )
+      )
+
+    // kill-f : undefine all rules that depend on x
+
+    create-kill-strategy = ?f; not(KillStrategy);
+      where(
+	  <concat-strings> ["kill-",  f] => f3
+	; <concat-strings> ["bagof-", f] => f4
+	; <concat-strings> ["aux-",   f] => f5
+	; !|[ f3(|) = ?dep;
+	      where(
+
+		// find all rules that depend on dep
+		<f4> DR_KILL(dep)
+
+		// remove each rule and related dependencies
+		; map({scope, lhs, deps: 
+                      ? (scope, lhs, deps)
+
+		      // kill the rule with left-hand side lhs
+		      ; rules( f(|).scope :- lhs )
+
+		      // kill each kill rule related to dep for this dependency
+		      ; !deps
+		      ; map({scope2, dep2, kill-dep2, closures: 
+			    ?(scope2, dep2)
+
+			    // find all kill rules for dependency y2
+			    ; !DR_KILL(dep2) => kill-dep2
+			    ; <dr-lookup-rule(|~str:f, kill-dep2)> kill-dep2
+
+			    // keep those closures that do not depend on dep
+			    ; filter(where({deps2:
+				f5(|dep2, kill-dep2)
+				; ?(_,_,deps2)
+				; !deps2
+				; not(fetch(?(_,dep)))
+			      })) => closures
+	
+			    // put remaing closures back
+			    ; dr-set-rules-vis(|~str:f, scope2, kill-dep2, closures)
+                        })
+	           })
+	       )
+	    ]| => killdef
 	; rules( LiftedRules :+ () -> killdef )
+        ; rules( KillStrategy : f )
+     )
 
 strategies
 
@@ -340,6 +387,7 @@ rules
               <conc-strings>("bagof-", f) => g
             ; <conc-strings>("once-", f) => g2
             ; <conc-strings>("bigbagof-", f) => g3
+	    ; <concat-strings> ["innermost-scope-", f] => g4
 
             // Transform passed arguments of f into calling arguments for f'
             ; <map((?DefaultVarDec(<id>) + ?VarDec(<id>,_)); !Call(SVar(<id>),[]))> as1 => s1*
@@ -360,7 +408,8 @@ rules
                     ; <split-fetch(f'(s1*|t1'*); ?res); conc> closures => closures'
                     ; <hashtable-put(|key, closures')> tbl ]|,
                  |[ g3(as1|as2) : x@t1 -> <filter(f'(s1*|t1'*))> closures
-                      where (dr-lookup-all-rules(|~str:f, t1'') <+ ![]) => closures ]|
+                      where (dr-lookup-all-rules(|~str:f, t1'') <+ ![]) => closures ]|,
+                 |[ g4(x | ) = dr-get-first-scope-label(x | ~str:f) ]|
                ] => callers
             ; rules(DRCallersGenerated : (rsig, t1') -> ())
           end
