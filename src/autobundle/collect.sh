@@ -96,8 +96,27 @@ save_vcs () {
    fi
 }
 
-# Restore a previously saved checked-out version
-restore_vcs () {
+# Restore a previously checked-out version
+restore_vcs() {
+   pkg=$1
+   pkg_version=$2
+   # If we have already a saved CVS copy; rename it to
+   # ${pkg}-${pkg_version} such that a cvs update command can be
+   # performed.
+   if [ -d ${pkg}-${pkg_version}-cvs -a -d ${pkg}-${pkg_version}-cvs/CVS ]; then
+      rm -fr ./${pkg}-${pkg_version}
+      mv ${pkg}-${pkg_version}-cvs ${pkg}-${pkg_version}
+   # If we have already a saved SubVersion copy; rename it to
+   # ${pkg}-${pkg_version} such that a svn update command can be
+   # performed.
+   elif [ -d ${pkg}-${pkg_version}-svn -a -d ${pkg}-${pkg_version}-svn/.svn ]; then
+      rm -fr ./${pkg}-${pkg_version}
+      mv ${pkg}-${pkg_version}-svn ${pkg}-${pkg_version}
+   fi
+}
+
+# Update, if we already have a checked-out version
+update_vcs () {
    pkg=$1
    pkg_version=$2
    
@@ -137,6 +156,9 @@ vcs_init() {
   
    # restore (if possible) a previously checked-out version
    restore_vcs ${pkg} ${pkg_version}
+
+   # update if we already have a checked-out version
+   update_vcs ${pkg} ${pkg_version}
 }
 
 # create configure script and Makefile.in's 
