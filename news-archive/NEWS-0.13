@@ -59,7 +59,7 @@ example.
 
 If you are using concrete object syntax in Stratego, then you might
 encounter ambiguities in your Stratego program, in particular if you
-disable the heuristic filters of SGLR. Ambiguites in the Stratego code
+disable the heuristic filters of SGLR. Ambiguities in the Stratego code
 (not in the object code) caused the compiler to fail in a horrible way
 during C compilation. This has now been fixed by detecting these
 ambiguities and reporting them in a more user-friendly way.
@@ -94,7 +94,9 @@ error: ambiguity in the definition of main. Alternatives:
 </verbatim>
 
 This report uses abstract syntax for Stratego, which might be improved
-to concrete syntax in the future.
+to concrete syntax in the future, although this should be combined
+with abstract syntax and/or types, since it would otherwise defeat the
+purpose of the report.
 
     (Martin Bravenboer)
 
@@ -205,18 +207,22 @@ package.
 
 ---------+++ AutoXT
 
-All macros now use the XT prefix
-
-	* autoxt.m4: USE_XT_PACKAGES is obsolete and should be replaced by
-	in your configure.ac files by XT_USE_XT_PACKAGES. Thanks to Akim
-	for suggesting to use autoupdate macros.
-
-	* autoxt.m4: DETECT_SVN_REVISION was already obsolete, but now
-	also used an autoupdate macro.
+All the Autoconf macros of AutoXT now use the =XT_= prefix. Using such
+a prefix is adviced by the Autoconf guidelines and makes it easier to
+detect errors (i.e. missing macro definitions). =USE_XT_PACKAGES= has
+now been replaced by =XT_USE_XT_PACKAGES=. The old macro is still
+available as =autoupdate= alias. You can run =autoupdate= to upgrade
+your =configure.ac= files. =DETECT_SVN_REVISION= is now defined as an
+autoupdate alias as well (Use =XT_SVN_REVISION=).
 
     (Akim Demaille and Martin Bravenboer)
 
 ---------+++ AC_CONFIG_AUX_DIR
+
+The subpackages of StrategoXT now share a single directory for
+auxiliary files use by autoconf, automake and libtool (such as
+=ltmain.sh=, =config.guess=). The =configure.ac= files in StrategoXT
+define an =AC_CONFIG_AUX_DIR= to achieve this.
 
     (Akim Demaille and Martin Bravenboer)
 
@@ -224,29 +230,58 @@ All macros now use the XT prefix
 
 ---------+++ sglri
 
-added error reporting of martin to sglri
+Sglri, which combines =sglr= and =implode-asfix= into a single tool,
+now supports error reporting with a quote of the code from the input
+source file.
 
-* src/implode/sglri.str: added the --no-heuristic-filters option
-to disable the heuristic filters of sglr.
+For example, consider this module:
+<verbatim>
+module foo
+strategies
+
+  main =
+   Foo
+
+  Foo =
+   1 -> 2
+</verbatim>
+
+The error report of sglri is now:
+<verbatim>
+martin@logistico:~/tmp> sglri -p Stratego.tbl -i foo.str
+character '>' unexpected
+   1 -> 2
+      ^
+sglri: rewriting failed
+</verbatim>
+
+Unfortunately, the Stratego compiler will not yet report syntax errors
+in this way, since =parse-stratego= does not use =sglri= at the
+moment.
+
+Another new feature of =sglri= is an option to disable the heuristic
+filters of =sglr= by passing =--no-heuristic-filters=. You don't have
+to know all the details of heuristic filters to use this
+option. Disabling heuristic filters is stronlgy encouraged.
 
     (Rob Vermaas and Martin Bravenboer)
 
 ---------+++ aterm2xml and xml2aterm
 
-* trans/data2xml-doc.str, trans/xml-info2data.str: the --explicit
-and the --very-explicit mode now use the XML namespace
-http://aterm.org for the XML elements the represent ATerm
-structures and types, such as list, tuple, int, string, anno
-etc. In the explicit mode, this avoids conflicts with 'real'
-ATerms of the same name. I'm using the namespace prefix 'at'.
+The --explicit and the --very-explicit mode of these ATerm and XML
+interoperability tools now use the XML namespace =http://aterm.org=
+for the XML elements that represent ATerm structures and types, such
+as list, tuple, int, string, anno etc. In the explicit mode, this
+avoids conflicts with 'real' ATerms of the same name. The tools use
+the namespace prefix 'at'.
 
-* trans/data2xml-doc.str, trans/xml-info2data.str: all modes now
-preserve all annotations by representing them as nested "anno"
-elements in the XML namespace http://aterm.org.
+Furtermore, all modes now preserve all ATerm annotations by
+representing them as nested "anno" elements in the XML namespace
+=http://aterm.org=.
 
-* xtc/xml2aterm.str: the explicity mode is no longer required for
-this tool, since it is no longer ambiguous whether the xml is
-implicit, explicit or very explicit.
+The xml2aterm tool nog longer needs an explicity argument, since it is
+no longer ambiguous whether the XML input is implicit, explicit or
+very explicit.
 
     (Martin Bravenboer)
 
@@ -256,19 +291,33 @@ implicit, explicit or very explicit.
 
     (Rob Vermaas)
 
----------+++ ppgen
-
-   * fixed error reporting of ppgen
-
-    (Martin Bravenboer)
-
 ---------+++ sdf2rtg
 
-* trans/sdf2rtg/core-sdf-grammar2rtg.str: nice names for character
-classes.
+The =sdf2rtg= tool, which is used to produce RTGs (and indireclty
+Stratego Signatures) from SDF syntax definitions, now reports errors
+in concrete syntax and gives some hints on solutions of the problem
 
-sdf2rtg: Report productions and symbols in concrete syntax. Also,
-added some hints about how to solve problems.
+Example:
+<verbatim>
+definition
+module Main
+exports
+  context-free start-symbols Exp
+  sorts Exp IntConst
+  context-free syntax
+    Exp "+" Exp -> Exp
+    IntConst -> Exp
+
+  lexical syntax
+    [0-9]+ -> IntConst
+</verbatim>
+
+<verbatim>
+martin@logistico:~/tmp> sdf2rtg -i Foo.def
+[error | core-sdf-grammar2rtg] No constructor name specified in production:
+[error | core-sdf-grammar2rtg]   <Exp-CF> <LAYOUT?-CF> "+" <LAYOUT?-CF> <Exp-CF> -> <Exp-CF>
+[error | core-sdf-grammar2rtg] Resolution: please add a cons attribute to this production.
+</verbatim>
 
     (Martin Bravenboer)
 
