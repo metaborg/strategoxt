@@ -297,7 +297,7 @@ strategies // COMPILER COMPONENTS
 // FRONTEND
 
   pack-stratego 	= comp(|"pack-stratego", 
-				<concat> [<dep-name>, <get-config> "-I", <pass-keep>,
+				<concat> [<dep-name>, <get-include-dirs>, <pass-keep>,
 				  <get-config < !["--asfix"] + ![]> "--asfix"])
   pre-desugar 		= comp(|"pre-desugar")
   normalize-spec 	= comp(|"normalize-spec")

@@ -22,9 +22,7 @@ strategies
     ; <set-config>("--verbose", 1)
     ; <set-config>("--keep", 0)
     ; <set-config>("-O", 6)
-    ; <set-config>("-I", ["-I", <xtc-find-path> "lib.rtree",
-                          "-I", <xtc-find-path> "Stratego.rtree",
-                          "-I", <xtc-find-path> "StrategoRenamed.sdf"])
+    ; <set-config>("-I", [])
     ; <set-config>("--C-include", 
 		   ["<srts/stratego.h>", "<srts/stratego-lib.h>"])
     ; <set-config>("-CI", ["-I", <conc-strings>(<xtc-find-path> "SRTS", "/include"),
@@ -37,6 +35,13 @@ strategies
                            "-lm"])
     ; <set-config>("--warning", ["all"])
   )
+
+  get-include-dirs =
+    <conc> (<get-config> "-I"
+           , ["-I", <xtc-find-path> "lib.rtree",
+              "-I", <xtc-find-path> "Stratego.rtree",
+              "-I", <xtc-find-path> "StrategoRenamed.sdf"]
+           )
 
   olevel(n, s) =
     try(where(<geq>(<get-config> "-O", <n>)); s)
