@@ -1,5 +1,5 @@
-include $(top_srcdir)/Makefile.stratego
-include $(libexec_PROGRAMS:%=%.c.dep)
+include $(top_srcdir)/Makefile.xt
+include $(wildcard *.dep)
 
 SUBDIRS      	 = data
 
@@ -7,11 +7,15 @@ SCFLAGS     	 = -I $(srcdir)/../lib \
 		   -I $(ASFIX_TOOLS)/share/asfix-tools \
 		   --main $*
 
+PGEN_FLAGS	 = -m GB-Main
+
 libexec_PROGRAMS = Pp-gen
 bin_SCRIPTS 	 = ppgen
 
 BOOTCLEANFILES 	 = Pp-gen.c
-CLEANFILES      += ppgen no_generation_for_bracket_function_check sdf.cons.tbl
+CLEANFILES       = ppgen no_generation_for_bracket_function_check sdf.cons.tbl $(wildcard *.dep)
+
+pkgdata_DATA	 = sdf.cons.def sdf.cons.tbl 
 
 TESTS        	 = no_generation_for_bracket_function_check
 
@@ -25,8 +29,8 @@ EXTRA_DIST  	 = $(wildcard *.str) ppgen.sh.src sdf.cons.def sdf.cons.tbl
 	        < $< > $@ && \
 	     chmod +x $@
 
-%.tbl : %.def
-	PATH=$(PGEN)/bin:$${PATH} sdf2table -m GB-Main $< -o $@
+#%.tbl : %.def
+#	PATH=$(PGEN)/bin:$${PATH} sdf2table -m GB-Main $< -o $@
 
 no_generation_for_bracket_function_check_prog    = Pp-gen
 no_generation_for_bracket_function_check_input   = data/ppgencheck1.in

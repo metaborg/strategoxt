@@ -1,5 +1,5 @@
-include $(top_srcdir)/Makefile.stratego
-include $(libexec_PROGRAMS:%=%.c.dep)
+include $(top_srcdir)/Makefile.xt
+include $(wildcard *.dep)
 
 SUBDIRS      	 = data
 
@@ -12,7 +12,7 @@ bin_SCRIPTS 	 = abox2html
 pkgdata_DATA     = boxstyle.css
 
 BOOTCLEANFILES 	 = Abox-2-html.c
-CLEANFILES      += abox2html
+CLEANFILES       = abox2html $(wildcard *.dep)
 
 EXTRA_DIST  	 = $(wildcard *.str) abox2html.sh.src boxstyle.css
 

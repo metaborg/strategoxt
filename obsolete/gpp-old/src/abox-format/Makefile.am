@@ -1,7 +1,7 @@
-include $(top_srcdir)/Makefile.stratego
-include $(libexec_PROGRAMS:%=%.c.dep)
+include $(top_srcdir)/Makefile.xt
+include $(wildcard *.dep)
 
-SUBDIRS = data
+SUBDIRS 	 = data
 
 SCFLAGS 	 = -I $(srcdir)/../lib \
 		   -I $(ASFIX_TOOLS)/share/asfix-tools \
@@ -10,4 +10,4 @@ SCFLAGS 	 = -I $(srcdir)/../lib \
 libexec_PROGRAMS = abox-format
 
 BOOTCLEANFILES 	 = abox-format.c
-
+CLEANFILES 	 = $(wildcard *.dep)

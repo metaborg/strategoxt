@@ -22,12 +22,8 @@ include package.conf
 SUBDIRS	= . src
 
 EXTRA_DIST = ADDING-TOOLS configure.in.src genconf.sh \
-             package.conf reconf $(PACKAGE)-$(VERSION).pkg program-check.m4
-
-noinst_DATA = Makefile.stratego
-
-Makefile.stratego : $(SC_BOOT)/share/sc/Makefile.stratego
-	cp $< $@
+             package.conf reconf $(PACKAGE)-$(VERSION).pkg program-check.m4 \
+	     Makefile.xt
 
 # Generation of a package defintion file from the package.conf file. This
 # file in combination with autobundle enables integration of the package

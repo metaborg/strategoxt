@@ -1,5 +1,5 @@
-include $(top_srcdir)/Makefile.stratego
-include $(libexec_PROGRAMS:%=%.c.dep)
+include $(top_srcdir)/Makefile.xt
+include $(wildcard *.dep)
 
 SUBDIRS      	 = data
 
@@ -11,7 +11,7 @@ libexec_PROGRAMS = Ast-2-abox
 bin_SCRIPTS 	 = ast2abox
 
 BOOTCLEANFILES 	 = Ast-2-abox.c
-CLEANFILES      += ast2abox
+CLEANFILES       = ast2abox $(wildcard *.dep)
 
 EXTRA_DIST  	 = $(wildcard *.str) ast2abox.sh.src 
 

@@ -1,4 +1,4 @@
-include $(srcdir)/../templates/make_rules.stratego
+include $(srcdir)/../templates/make_rules.xt
 
 SUBDIRS = data
 

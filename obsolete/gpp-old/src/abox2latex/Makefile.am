@@ -1,5 +1,5 @@
-include $(top_srcdir)/Makefile.stratego
-include $(libexec_PROGRAMS:%=%.c.dep)
+include $(top_srcdir)/Makefile.xt
+include $(wildcard *.dep)
 
 SUBDIRS      	 = data
 
@@ -12,7 +12,7 @@ bin_SCRIPTS 	 = abox2latex
 pkgdata_DATA     = default.abbrevs
 
 BOOTCLEANFILES 	 = Abox-2-latex.c
-CLEANFILES      += abox2latex
+CLEANFILES       = abox2latex $(wildcard *.dep)
 
 EXTRA_DIST  	 = $(wildcard *.str) abox2latex.sh.src default.abbrevs
 

@@ -17,63 +17,16 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 dnl 02111-1307, USA.
 
-dnl $Id: configure.in.src,v 1.21 2002/11/24 17:02:36 stratego Exp $
+dnl $Id: configure.in.src,v 1.22 2002/12/08 11:33:55 stratego Exp $
 
 AC_INIT(configure.in)
 AM_INIT_AUTOMAKE(__PACKAGE__,__VERSION__)
 
 AM_CONFIG_HEADER(config.h)
 
-dnl Package switches.
+USE_XT_PACKAGES
 
-AC_ARG_WITH(asfix-tools, 
-   [  --with-asfix-tools      Specify location of asfix-tools package], 
-  ASFIX_TOOLS=$withval, 
-  ASFIX_TOOLS="$prefix"
-)
-AC_SUBST(ASFIX_TOOLS)
-
-AC_ARG_WITH(sc-boot, 
-  [  --with-sc-boot=DIR       Location of Stratego Compiler], 
-  SC_BOOT=$withval, 
-  SC_BOOT="$prefix"
-)
-AC_SUBST(SC_BOOT)
-
-AC_ARG_WITH(pgen, 
-   [  --with-pgen             Specify location of parser generator package], 
-  PGEN=$withval, 
-  PGEN="$prefix"
-)
-AC_SUBST(PGEN)
-
-AC_ARG_WITH(sglr, 
-   [  --with-sglr             Specify location of SGLR parser package], 
-  SGLR=$withval, 
-  SGLR="$prefix"
-)
-AC_SUBST(SGLR)
-
-AC_ARG_WITH(graph-tools, 
-   [  --with-graph-tools      Specify location of graph-tools package], 
-  GRAPH_TOOLS=$withval, 
-  GRAPH_TOOLS="$prefix"
-)
-AC_SUBST(GRAPH_TOOLS)
-
-AC_ARG_WITH(graphviz,
-   [  --with-graphviz         Specify location of graphviz package.],
-   GRAPHVIZ=${withval},
-   GRAPHVIZ=${prefix})
-AC_SUBST(GRAPHVIZ)
-
-AC_ARG_WITH(gpp-boot, 
-   [  --with-gpp-boot         Specify where to install bootstrapped C sources],
-   GPPBOOT=${withval},
-   GPPBOOT='${prefix}')
-AC_SUBST(GPPBOOT)
-
-AC_REVISION($Id: configure.in.src,v 1.21 2002/11/24 17:02:36 stratego Exp $)
+AC_REVISION($Id: configure.in.src,v 1.22 2002/12/08 11:33:55 stratego Exp $)
 
 AC_PROG_CC
 AC_PROG_INSTALL

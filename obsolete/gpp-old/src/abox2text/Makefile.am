@@ -1,5 +1,5 @@
-include $(top_srcdir)/Makefile.stratego
-include $(libexec_PROGRAMS:%=%.c.dep)
+include $(top_srcdir)/Makefile.xt
+include $(wildcard *.dep)
 
 SUBDIRS      	 = data
 
@@ -11,7 +11,7 @@ libexec_PROGRAMS = Abox-2-text
 bin_SCRIPTS 	 = abox2text
 
 BOOTCLEANFILES 	 = Abox-2-text.c
-CLEANFILES      += abox2text
+CLEANFILES       = abox2text $(wildcard *.dep)
 
 EXTRA_DIST  	 = $(wildcard *.str) abox2text.sh.src
 
