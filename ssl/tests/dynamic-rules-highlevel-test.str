@@ -38,7 +38,7 @@ strategies
 
   Gen1 = 
     ?FooGen(x, z)
-    ; dr-set-rule(|"A1", Foo(x, []), Closure("a1", z))
+    ; dr-set-rule(|"A1", Foo(x, []), ("a1", z))
 
   Hide1 = 
     ?FooKill(x)
@@ -46,7 +46,7 @@ strategies
 
   A1 : 
     Foo(x, y) -> Bar(y, z)
-    where dr-lookup-rule(|"A1", Foo(x, [])) => [Closure("a1", z)|_]
+    where dr-lookup-rule(|"A1", Foo(x, [])) => [("a1", z)|_]
         
 
   test-plain-1 =
@@ -82,11 +82,11 @@ strategies
 
   Gen2 = 
     ?FooGen(f,x, z)
-    ; dr-set-rule(|"A2", f, Foo(x, []), Closure("b", z))
+    ; dr-set-rule(|"A2", f, Foo(x, []), ("b", z))
 
   Gen2 = 
     ?FooGen(x, z)
-    ; dr-set-rule(|"A2", Foo(x, []), Closure("b", z))
+    ; dr-set-rule(|"A2", Foo(x, []), ("b", z))
 
   Hide2 = 
     ?FooKill(x)
@@ -98,7 +98,7 @@ strategies
 
   A2 : 
     Foo(x, y) -> Bar(y, z)
-    where dr-lookup-rule(|"A2", Foo(x, [])) => [Closure("b", z)|_]
+    where dr-lookup-rule(|"A2", Foo(x, [])) => [("b", z)|_]
   
       // note that application (lookup) is exactly the same
 
@@ -133,11 +133,11 @@ strategies
 
   Gen3 = 
     ?FooGen(x, z)
-    ; dr-add-rule(|"A3", Foo(x, []), Closure("c", z))
+    ; dr-add-rule(|"A3", Foo(x, []), ("c", z))
 
   Gen3 = 
     ?FooGen(f, x, z)
-    ; dr-add-rule(|"A3", f, Foo(x, []), Closure("c", z))
+    ; dr-add-rule(|"A3", f, Foo(x, []), ("c", z))
 
   Hide3 = 
     ?FooKill(x)
@@ -148,7 +148,7 @@ strategies
     ; dr-undefine-rule(|"A3", f, Foo(x, []))
 
   A3-aux(|x,y) : 
-    Closure("c", z) -> Bar(y, z) where <lt>(y, z)
+    ("c", z) -> Bar(y, z) where <lt>(y, z)
 
   // note there is such an -aux rule for each A3 dynamic rule.
 
