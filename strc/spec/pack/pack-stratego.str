@@ -70,7 +70,7 @@ strategies
     mod -> (name, tree)
     where <find-module(mkpath)> (<basename> mod, ["rtree", "str", "cr", "r"]) 
 		=> (ext, FILE(name))
-        ; if-verbose3(where(<debug(!" reading ")> name))
+        ; if-verbose3(where(<debug(!" reading ")> name)) 
 	; parse-module => tree
 	
 
@@ -102,7 +102,7 @@ strategies
     (not("rtree"), ?name); Snd
     ; (xtc-transform(!"parse-stratego", 
 		     <concat>[<get-config < !["--asfix"] + ![]> "--asfix",
-                              <pass-verbose>, <pass-keep>, <get-config> "-I"])
+                              <pass-verbose>, <pass-keep>, <get-config <+ ![]> "-I"])
        ; read-from
       <+ <fatal-error> ["parse error in ", name])
 
