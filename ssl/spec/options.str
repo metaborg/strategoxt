@@ -45,7 +45,7 @@ strategies
   output(s) =
       s
     ; !(<<get-config> "-o" <+ !stdout()>, <id>)
-    ; ( <get-config> "-b" < WriteToBinaryFile + WriteToTextFile )
+    ; ( where(<get-config> "-b") < WriteToBinaryFile + WriteToTextFile )
 
   input(s) =
       ( <get-config> "-i" <+ !stdin() )
