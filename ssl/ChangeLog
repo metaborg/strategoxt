@@ -1,3 +1,14 @@
+2003-02-26  Martin Bravenboer <martin@mbravenboer.org>
+
+  * spec/client-test.str: removed
+	* spec/communication.str: removed
+	* spec/connect-test.str: removed  
+	* spec/connect.str: removed
+	* spec/server-test.str: removed
+  
+  * Removed socket modules. Might go into stratego-net 
+    in the future
+
 2003-02-16  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/list-sort.str: quick sort by Rob Vermaas
@@ -626,4 +637,3 @@
 
 	* Stratego Standard Library separated from the compiler to enable
 	stand-alone distributions
-

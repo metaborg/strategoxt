@@ -5,13 +5,13 @@ pgkdatadocdir = ${pkgdatadir}/doc
 
 check_PROGRAMS =  \
 accept-test            list-basic-test      scoped-finite-map-test  \
-annotation-props-test  list-filter-test     server-test  \
+annotation-props-test  list-filter-test\
 annotations-test       list-index-test      share-test  \
 apply-test             list-misc-test       simple-traversal-test  \
-            list-set-test        strcmp-test  \
+list-set-test          strcmp-test  \
 char-test              list-sort-test       string-test  \
-client-test            list-zip-test        substitution-test  \
-connect-test           migrate-tuples-test  tables-test  \
+list-zip-test          substitution-test  \
+migrate-tuples-test    tables-test  \
 dir-test               options-test         template-test  \
 env-traversal-test     option-test          term-zip-test  \
 exec-test              parallel-test        time-test  \
