@@ -16,31 +16,35 @@ News about Stratego releases
 
 StrategoXT 0.9.1 -- released June 04, 2003
 
-This is bugfix and cleanup release. StrategoXT is now being tested on a daily
-base [4] in the buildfarm of the st-lab at the University of Utrecht. 
+This is a bugfix and cleanup release. Many packages were thoroughly
+refactored, mainly by Martin Bravenboer. StrategoXT is now being
+tested on a daily basis [4] in the buildfarm of the st-lab at Utrecht
+University.
 
-Also we spend some time on improving the Stratego website. A fresh look (less 
-Wiki, more content), an improved structure and improved content should make the 
-Stratego website more accessible, especially to new users. Eelco Visser has 
-created an detailed tutorial on how to set up a Stratego package [1]. During 
-the month may the Stratego website had the largest number of edits ever!
+Also we spent some time on improving the Stratego website. A fresh
+look (less Wiki, more content), an improved structure and improved
+content should make the Stratego website more accessible, especially
+to new users. Eelco Visser has created a detailed tutorial on how to
+set up a Stratego package [1]. During the month May the Stratego
+website had the largest number of edits ever!
 
-Eelco Dolstra has been experimenting with StrategoXT on Mac OS X [2]. Using a 
-patched GCC there don't seem to be any major problem, except the performance.
-The performance is unacceptable because of the choice point implementation
-Stratego is using, so this is something to think about for future releases.
+Eelco Dolstra has been experimenting with StrategoXT on Mac OS X
+[2]. With a patched GCC there seem to be no major problems left,
+except for performance. Performance is unacceptable since the current
+choice point implementation does not behave very well on the Mac
+architecture. Something to think about for future releases.
 
-Martin Bravenboer has been working on using StrategoXT on Microsoft Windows
-with Cygwin [3]. For this platform there also doesn't seem to be any serious 
-problems. For now there is already a binary distribution of some tools of
-sdf2 + implode-asfix [5], in the near future we will offer full binary 
-distributions of the sdf2 bundle and StrategoXT for Microsoft Windows.
+Martin Bravenboer has worked on porting StrategoXT to Microsoft
+Windows with Cygwin [3]. For this platform there also does not seem to
+be any serious problems. For now there is a binary distribution of
+some tools of sdf2 + implode-asfix, in the near future we hope to
+offer full binary distributions of the sdf2 bundle and StrategoXT for
+Microsoft Windows.
 
 [1] http://www.stratego-language.org/Stratego/HowToSetUpAStrategoPackage
 [2] http://www.stratego-language.org/Stratego/MacOSXSupport
 [3] http://www.stratego-language.org/Stratego/MicrosoftWindowsSupport
-[4] http://www.stratego-language.org/Stratego/DailyBuild 
-[5] http://losser.st-lab.cs.uu.nl/~mbravenb/software/sdf2-win/
+[4] http://www.stratego-language.org/Stratego/DailyBuild
 
 DOWNLOAD AND INSTALLATION
 
@@ -113,7 +117,7 @@ SUMMARY OF CHANGES
       result of his work on StrategoDoc)
 
   * stratego-util
-    - package readded to distribution. Contains a Stratego mode for emacs
+    - package re-added to distribution. Contains a Stratego mode for emacs
 
 BUGS / KNOWN PROBLEMS
 
