@@ -1,3 +1,14 @@
+2003-01-01  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/xtc-proc.str: 
+
+	- xtc-io-exit: stop in the middle of a transformation pipeline,
+	copying the current file to the output file indicated with the -o
+	option.
+
+	- rename-to and copy-to do nothing if the target file is the same
+	as the source file
+
 2002-12-30  Eelco Visser  <visser@cs.uu.nl>
 
 	* src/xtc-proc.str: xtc-io --- don't use xtc-output since last

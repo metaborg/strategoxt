@@ -11,12 +11,16 @@ signature
 
 strategies
 
-  // reading and writing files
+  // renaming files
+
+  rename-to(name) :
+    FILE(oldname) -> FILE(oldname)
+    where name => oldname
 
   rename-to(name) :
     FILE(oldname) -> FILE(newname)
     where name => newname
-	; not(stdout)
+	; not(stdout + ?oldname)
         ; <rename-file>(oldname, newname)
 
   rename-to(name) :
@@ -25,10 +29,16 @@ strategies
 	; <copy-file> (oldname, stdout)
 	; <remove-file> oldname
 
+  // copying files
+
+  copy-to(name) :
+    FILE(oldname) -> FILE(oldname)
+    where name => oldname
+
   copy-to(name) :
     FILE(oldname) -> FILE(oldname)
     where name => newname
-	; not(stdout + stderr)
+	; not(stdout + stderr + ?oldname)
         ; <copy-file>(oldname, newname)
 
   copy-to(name) :
@@ -37,6 +47,8 @@ strategies
         ; (stdout + stderr)
 	; <copy-file> (oldname, file)
 
+  // read term from file
+
   read-from :
     FILE(name) -> t
     where <ReadFromFile> name => t
@@ -44,6 +56,8 @@ strategies
   read-from :
     stdin -> t
     where <ReadFromFile> stdin => t
+
+  // write term to file
 
   write-to :
     t -> FILE(name)
@@ -64,8 +78,9 @@ strategies
           ; <print> (name, strings)
           ; <close-file> name
 
-  xtc-find-file = !FILE(<xtc-find>)
 
+  xtc-find-file = 
+    !FILE(<xtc-find>)
 
   // XTC-TEMP-FILES : scoped temporary files
 
@@ -88,8 +103,20 @@ strategies
         ; end-scope(!TempFiles)
       )
 
+  // exit after removing temp files
+
+  xtc-exit =
+    ?status
+    ; repeat( 
+        where(<table-get>(TempFiles, Scopes) => [scope | scopes]
+            ; <map(try(remove-file))> scope)
+        ; end-scope(!TempFiles)
+      )
+    ; exit
+
 
   // XTC-IO : 'read' input file, transform, and 'write' to output file
+
   xtc-io(s) =
     xtc-temp-files( 
         (!FILE(<get-config> "-i") <+ !stdin)
@@ -97,7 +124,15 @@ strategies
       ; copy-to(<get-config> "-o" <+ !stdout)
     )
 
+  // stop in the middle of a transformation pipeline, copying the
+  // current file to the output file.
+
+  xtc-io-exit =
+    copy-to(<get-config> "-o" <+ !stdout)
+    ; <xtc-exit> 0
+
   // XTC-OUTPUT : transform, and 'write' to output file
+
   xtc-output(s) =
     xtc-temp-files(
         s
@@ -105,18 +140,28 @@ strategies
     )
 
   // XTC-INPUT : 'read' input file, transform
+
   xtc-input(s) =
     xtc-temp-files(
         (!FILE(<get-config> "-i") <+ !stdin)
       ; s
     )
 
-  // io-wrap for xtc tools: 'read' -i option, transform, and 'write' to -o option
-  xtc-io-wrap(s)             = xtc-io-wrap(fail, s)
-  xtc-io-wrap(extra-opts, s) = option-wrap(extra-opts <+ io-options, xtc-io(s))
 
-  xtc-iowrap(s)              = xtc-io-wrap(s)
-  xtc-iowrap(extra-opts, s)  = xtc-io-wrap(extra-opts, s)
+  // io-wrap for xtc tools: 'read' -i option, transform, and 'write' to -o option
+
+  xtc-io-wrap(s) = 
+    xtc-io-wrap(fail, s)
+
+  xtc-io-wrap(extra-opts, s) = 
+    option-wrap(extra-opts <+ io-options, xtc-io(s))
+
+  xtc-iowrap(s) = 
+    xtc-io-wrap(s)
+
+  xtc-iowrap(extra-opts, s) = 
+    xtc-io-wrap(extra-opts, s)
+
 
   // XTC-COMMAND
   // Executing an external process
