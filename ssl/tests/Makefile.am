@@ -40,6 +40,7 @@ check_PROGRAMS = \
   reals-test \
   rename-test \
   scoped-finite-map-test \
+  sets-test  \
   share-test  \
   simple-traversal-test \
   strcmp-test \

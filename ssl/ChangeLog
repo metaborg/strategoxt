@@ -1,3 +1,11 @@
+2004-06-14  Martin Bravenboer <martin@cs.uu.nl>
+
+	* spec/sets.str: new module providing an interface to ATerm's
+	IndexedSets (stateful sets). Main strategies: new-iset,
+	iset-add(|elem), iset-contains(|elem), iset-remove(|elem),
+	iset-elements(|elem), iset-clear(|elem). For examples, see the
+	sets-test module in the SSL tests directory.
+
 2004-06-09  Valentin David  <valentin@lrde.epita.fr>
 
 	* spec/file.str (remove-extension): Do not use string-tokenize any

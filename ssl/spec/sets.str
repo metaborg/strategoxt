@@ -1,0 +1,131 @@
+/**
+ * Interface to ATerm's IndexedSets.
+ *
+ * @since   0.11
+ * @author  Martin Bravenboer <martin@cs.uu.nl>
+ */
+module sets
+
+/**
+ * IndexedSet representations
+ */
+signature
+  constructors
+    IndexedSet : ImplDep -> IndexedSet
+
+/**
+ * IndexedSet construction and deconstruction
+ */
+strategies
+
+  /**
+   * Creates a new set with default initial size and maximum load.
+   *
+   * @type  _ -> IndexedSet
+   */
+  new-iset =
+    new-iset(|117,75)
+
+  /**
+   * Creates a new set with specified initial size and maximum load.
+   *
+   * @param  initial_size   Int, Initial size of internal storage
+   * @param  max_load       Int, 0-100.
+   * @type   _ -> IndexedSet
+   */
+  new-iset(|initial_size, max_load) =
+    prim("SSL_indexedSet_create", initial_size, max_load); !IndexedSet(<id>)
+
+  /**
+   * Releases all memory occupied by the set.
+   * A destroyed set can no longer be used.
+   *
+   * @type  IndexedSet -> IndexedSet
+   */
+  iset-destroy =
+    ?IndexedSet(set); prim("SSL_indexedSet_destroy", set); !IndexedSet(<id>)
+
+  /**
+   * Removes all elements from the set.
+   *
+   * @type  IndexedSet -> IndexedSet
+   */
+  iset-clear =
+    ?IndexedSet(set); prim("SSL_indexedSet_reset", set); !IndexedSet(<id>)
+
+/**
+ * IndexedSet operations
+ */
+strategies
+
+  /**
+   * Adds elem to the set.
+   *
+   * If the elem is already in the set, then on_old is applied to
+   * its index.
+   *
+   * @param  on_old  Int -> a
+   * @type           IndexedSet -> (Int | a )
+   */
+  iset-add(on_old|elem) =
+    ?IndexedSet(set); prim("SSL_indexedSet_put", on_old | set, elem)
+
+  /**
+   * Ensures that elem is in the set.
+   *
+   * @type IndexedSet -> IndexedSet
+   */
+  iset-add(|elem) =
+    ?set; iset-add(id|elem); !set
+
+  /**
+   * Fails if elem is not in the set.
+   *
+   * @type  IndexedSet -> IndexedSet
+   */
+  iset-contains(|elem) =
+    where(iset-get-index(|elem))
+
+  /**
+   * Removes elem from set.
+   *
+   * Not sure what happens if the element is not there.
+   *
+   * @type  IndexedSet -> IndexedSet
+   */
+  iset-remove(|elem) =
+    ?IndexedSet(set); prim("SSL_indexedSet_remove", set, elem); !IndexedSet(<id>)
+  
+  /**
+   * Returns all elements of the set.
+   *
+   * @type  IndexedSet(a) -> List(a)
+   */
+  iset-elements =
+    ?IndexedSet(set); prim("SSL_indexedSet_elements", set)
+
+/**
+ * Low-level set strategies (having knowledge of an index)
+ */
+strategies
+
+  /**
+   * Gets the index of elem in the set.
+   *
+   * Fails if elem is not in the set.
+   *
+   * @type  IndexedSet -> Int
+   */
+  iset-get-index(|elem) =
+    ?IndexedSet(set); prim("SSL_indexedSet_getIndex", set, elem)
+
+  /**
+   * Gets the element at index in the set.
+   *
+   * Always provide a valid index: behaviour is undefined if the index
+   * is not in the set.
+   *
+   * @type  IndexedSet -> Int
+   */
+  iset-get-elem(|index) =
+    ?IndexedSet(set); prim("SSL_indexedSet_getElem", set, index)
