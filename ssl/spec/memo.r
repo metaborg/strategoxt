@@ -7,6 +7,33 @@
    	term is not found.
 \end{abstract}
 
+\begin{code}
+module memo
+imports dynamic-rules
+strategies
+
+  memo-scope(s) = {| Memo: s |}
+
+  memo(s) :
+    t -> t'
+    where ( <Memo> t => t' )
+       <+ ( <s> t => t'; rules(Memo: t -> t') )
+
+  memo-init  = obsolete(!"memo-init; use memo-scope")
+  memo-purge = obsolete(!"memo-purge; use memo-scope")
+
+\end{code}
+
+\paragraph{Usage}
+
+\begin{itemize}
+
+\item \verb|<memo(tbl, s)> t| first looks up the term \verb|t| in the
+memo table. If present the association in the table is produced, else
+the result of \verb|<s> t| is computed and stored in the table.
+
+\end{itemize}
+
 % Copyright (C) 1999-2001 Eelco Visser <visser@acm.org>
 % 
 % This program is free software; you can redistribute it and/or modify
@@ -23,33 +50,3 @@
 % along with this program; if not, write to the Free Software
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
-
-\begin{code}
-module memo
-imports tables
-
-strategies
-
-  memo-init  = table-create
-  memo-purge = table-destroy
-
-rules
-
-  memo(name, s) :
-    t -> t'
-    where <table-get> (<name>(), t) => t'
-       <+ <s> t => t'; <table-put> (<name>(), t, t')
-\end{code}
-
-\paragraph{Usage}
-
-\begin{itemize}
-
-\item \verb|<memo-init> tbl| creates a new memo table and
-\verb|<memo-purge> tbl| destroys it.
-
-\item \verb|<memo(tbl, s)> t| first looks up the term \verb|t| in the
-memo table. If present the association in the table is produced, else
-the result of \verb|<s> t| is computed and stored in the table.
-
-\end{itemize}

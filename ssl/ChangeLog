@@ -1,3 +1,10 @@
+2001-12-18  Eelco Visser  <visser@acm.org>
+
+	* spec/memo.r: Refactored definition of memoization strategy
+	using dynamic rules.
+
+	* spec/fixpoint-traversal.r: Added definition of innermost-memo
+
 2001-12-17  Eelco Visser  <visser@acm.org>
 
 	* spec/scoped-finite-map.r: Refactored definition of scope using

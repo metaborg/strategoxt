@@ -27,20 +27,27 @@
 
 \begin{code}
 module fixpoint-traversal
-imports iteration simple-traversal
+imports iteration simple-traversal memo
 strategies
 
-  // reduce(s)     = repeat(rec x(s + one(x)))
+  // reduce(s) = repeat(rec x(s + one(x)))
 
-  reduce(s)     = repeat(rec x(some(x) + s))
+  reduce(s) = 
+    repeat(rec x(some(x) + s))
 
-  outermost(s)  = repeat(oncetd(s))
+  outermost(s) = 
+    repeat(oncetd(s))
 
-  innermost'(s) = repeat(oncebu(s))
+  innermost'(s) = 
+    repeat(oncebu(s))
 
-  innermost(s)  = rec x(all(x); (s; x <+ id))
+  innermost(s)  = 
+    rec x(all(x); (s; x <+ id))
 
   pseudo-innermost3(s) =
-	rec x(all(x); rec y(try(s; all(all(all(y); y); y); y)))
+    rec x(all(x); rec y(try(s; all(all(all(y); y); y); y)))
+
+  innermost-memo(s) =
+    rec x(memo(all(x); (s; x <+ id)))
 \end{code}
 
