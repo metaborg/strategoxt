@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.2 2001/06/01 14:12:36 mdejonge Exp $
+# $Id: Makefile.am,v 1.3 2001/10/10 23:00:56 mdejonge Exp $
 
 include $(srcdir)/../templates/make_rules
 include $(srcdir)/../templates/make_rules.stratego
@@ -43,4 +43,4 @@ sdf-bench: sdf-bench.src Makefile
 	sed 's#__PREFIX__#$(prefix)#g' < ${srcdir}/sdf-bench.src > sdf-bench
 
 %.tbl: %.sdf
-	PATH=$(PGEN)/bin:$(PATH) sdf2table -i $< -o $@
+	PATH=$(PGEN)/bin:$${PATH} sdf2table -i $< -o $@
