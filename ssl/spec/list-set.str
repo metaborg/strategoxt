@@ -148,3 +148,33 @@ strategies
                 <+ ( where(HdMember'(eq, !l2)); [id | x] )
                 <+ ?[_ | <x>]
                 )> l1
+
+strategies
+
+
+  /**
+   * Check equality of two list sets.
+   *
+   * This strategy uses the basic `eq` to compare the elements.
+   */
+  set-eq = set-eq(eq)
+
+  /**
+   * Check equality of two list sets.
+   *
+   * The input remains untouched, set-eq just succeeds or fails.
+   *
+   * @param test strategy that will compare two elements upon their equality.
+   * @inc set-eq-test1
+   * @inc set-eq-test2
+   * @inc set-eq-test3
+   * @inc set-eq-test4
+   * @inc set-eq-test5
+   */
+  set-eq(eq) =
+  rec r ( {x, xs, y, ys, y*:
+    ?([],[])
+  + ?([x|xs], y* )
+  ; <split-fetch(\ y -> <eq> (x, y)\); conc> y* => ys
+  ; <r> (xs, ys)
+  })

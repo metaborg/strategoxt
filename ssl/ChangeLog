@@ -1,14 +1,19 @@
-2004-02-22   Merijn de Jonge  <mdejonge@cs.uu.nl>
-   * Makefile.am: added autoxt.m4 to EXTRA_DIST
-   * Makefile.am: added line: ACLOCAL_AMFLAGS = -I . such that autoreconf
-     can find autoxt.m4
+2004-03-07  Arthur van Dam <adam@cs.uu.nl>
 
-2003-02-12  Martin Bravenboer <martin@cs.uu.nl>
+	* ssl/list-set.str: set-eq(eq) checks equality of two list sets.
+
+2004-02-22  Merijn de Jonge <mdejonge@cs.uu.nl>
+
+	* Makefile.am: added autoxt.m4 to EXTRA_DIST
+	* Makefile.am: added line: ACLOCAL_AMFLAGS = -I . such that autoreconf
+	can find autoxt.m4
+
+2004-02-12  Martin Bravenboer <martin@cs.uu.nl>
 
 	* ssl/term-io.str: added write-to-string. This strategies takes an
 	ATerm and returns the ATerm in a String.
 
-2003-02-12  Martin Bravenboer <martin@cs.uu.nl>
+2004-02-12  Martin Bravenboer <martin@cs.uu.nl>
 
 	* ssl/term-io.str: add read-from-string. This strategies takes a
 	String and returns the ATerm in this String.
