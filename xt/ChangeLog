@@ -1,9 +1,10 @@
 2000-07-24 <mdejonge@cwi.nl>
-        * Upgraded to new version (0.4.16) of Stratego
         * Removed sub directory dummy
         * Added pre-checks sub directory in which runtime checks are
           performed prior to the build process of XT.
+        * Upgraded to new version (0.4.16) of Stratego
         * Upgraded to version 1.30 of GPP
+        * Upgraded to 1.3.2 of aterm library
         * simplified format of package files
 
 2000-07-17 <mdejonge@cwi.nl>
