@@ -10,7 +10,7 @@ sdfdata_DATA   = $(TBLS_DEFS) XtdPrefixed.sdf
 
 EXTRA_DIST     = $(sdfdata_DATA) $(pkgdata_DATA) $(wildcard *.sdf)
 CLEANFILES     = 
-BOOTCLEANFILES = $(sdfdata_DATA) $(pkgdata_DATA) $(wildcard *.dep)
+BOOTCLEANFILES = $(sdfdata_DATA) $(pkgdata_DATA) $(wildcard *.dep) Xtd.def StrategoXtd.def 
 
 SDFINCLUDES    = -I $(STRATEGO_FRONT)/share/sdf/stratego-front
 PGEN_FLAGS     = -m $*
