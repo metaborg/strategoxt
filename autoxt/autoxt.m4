@@ -114,6 +114,13 @@ AC_ARG_WITH(cgen,
 )
 AC_SUBST(CGEN)
 
+AC_ARG_WITH(c-tools,
+  AC_HELP_STRING([--with-c-tools=DIR], [use C_TOOLS at DIR @<:@STRATEGOXT@:>@]),
+  C_TOOLS="$withval",
+  C_TOOLS="$STRATEGOXT"
+)
+AC_SUBST(C_TOOLS)
+
 AC_ARG_WITH(stratego-front,
   AC_HELP_STRING([--with-stratego-front=DIR], [use Stratego Front at DIR @<:@STRATEGOXT@:>@]),
   STRATEGO_FRONT="$withval",
