@@ -1,0 +1,24 @@
+module dynamic-rules-utils
+imports liblib
+strategies
+
+  /**
+   * Enter scope for a set of dynamic rules, locally undefining dynamic
+   * rules depending on the new local entitity.
+   */
+
+  new-dynamic-rules(|Rs, scope) = 
+    ?dep
+    ; <map(dr-new(|scope, dep))> Rs
+
+  dr-new(|scope, dep) = fail
+
+  /**
+   * Kill all dynamic rules dependent on the subject term.
+   */
+
+  kill-dynamic-rules(|Rs) = 
+    ?dep
+    ; <map(dr-kill(|dep))> Rs
+
+  dr-kill(|dep) = fail

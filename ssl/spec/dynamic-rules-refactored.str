@@ -85,6 +85,35 @@ strategies // high-level API with implicit rule set
       ; dr-set-rule-set(|name)
     )
 
+  dr-scopes(s | names) = 
+    dr-begin-scopes(|names)
+    ; (s < dr-end-scopes(|names)
+         + dr-end-scopes(|names); fail)
+
+  /**
+   * @type  t -> t
+   */
+  dr-begin-scopes(|names) =
+    where(
+      !names
+      ; map({?name
+	     ; dr-get-rule-set(|name)
+             ; dr-add-scope
+             ; dr-set-rule-set(|name)})
+    )
+
+  /**
+   * @type  t -> t
+   */
+  dr-end-scopes(|names) =
+    where(
+      !names
+      ; map({?name
+             ; dr-get-rule-set(|name)
+             ; dr-leave-scope
+             ; dr-set-rule-set(|name)})
+    )
+
   /**
    * @type  t -> t
    */
@@ -797,7 +826,17 @@ strategies // intersection and union of rule-sets
 	}
     )
 
-strategies 
+strategies // generic fork-and-merge strategies
+
+  fork-rule-sets :
+    rulename -> (rulename, rs)
+    where dr-get-rule-set(|rulename); dr-start-change-set => rs
+	; dr-start-change-set(|rulename)
+
+  merge-rule-sets(merge) =
+    ?(rulename, <id>)
+    ; try(<merge>(rulename, <id>))
+    ; dr-commit-change-set(|rulename)
 
   /**
    * Fork and merge two rule-sets.
@@ -806,19 +845,29 @@ strategies
    */
 
   dr-fork-and-merge(merge, s1, s2 | rulenames) = 
-    where(
-      <map({?rulename
-            ; !(rulename, <dr-get-rule-set(|rulename); dr-start-change-set>)
-            ; dr-start-change-set(|rulename)})> rulenames => rs1
-    )
+    where(<map(fork-rule-sets)> rulenames => rs1)
     ; s1
     ; where(<map({(?rulename,dr-switch-rule-set(|rulename))})> rs1 => rs2)
     ; s2
+    ; where(<map(merge-rule-sets(merge))> rs2)
+
+  dr-fork-and-merge(merge1, merge2, s1, s2 | rulenames1, rulenames2) = 
+    where(
+      <map(fork-rule-sets)> rulenames1 => rs1a;
+      <map(fork-rule-sets)> rulenames2 => rs1b
+    )
+    ; s1
     ; where(
-        <map({?(rulename, <id>)
-	      ; try(<merge>(rulename, <id>))
-              ; dr-commit-change-set(|rulename)})> rs2
+        <map({(?rulename,dr-switch-rule-set(|rulename))})> rs1a => rs2a;
+        <map({(?rulename,dr-switch-rule-set(|rulename))})> rs1b => rs2b
       )
+    ; s2
+    ; where(
+        <map(merge-rule-sets(merge1))> rs2a;
+        <map(merge-rule-sets(merge2))> rs2b
+      )
+
+strategies // generic fix-point strategies
 
   /**
    * Iterate and merge two rule-sets.
@@ -827,24 +876,39 @@ strategies
    */
 
   dr-fix-and-merge(merge, s | rulenames) =
-    where(
-      <map({?rulename
-            ; !(rulename, <dr-get-rule-set(|rulename); dr-start-change-set>)
-            ; dr-start-change-set(|rulename)})> rulenames => rs
-    ); 
-    repeat(
-      where(
-	s 
-        ; if <filter({?(rulename,<id>); <merge>(rulename, <id>)})> rs; [] 
-          then ?e; fail // no changes in any of the rules
-          else id       // some rule changed; continue
-          end
+    where(<map(fork-rule-sets)> rulenames => rs)
+    ; repeat(
+        where(
+	  s 
+          ; if <filter({?(rulename,<id>); <merge>(rulename, <id>)})> rs; [] 
+            then 
+	      ?e; fail // no changes in any of the rules
+            else 
+	      id       // some rule changed; continue
+            end
+        )
       )
-    )
     ; where(<map(dr-commit-change-set(|<id>))> rulenames)
     ; !e
 
-strategies // intersection
+  dr-fix-and-merge(merge1, merge2, s | rulenames1, rulenames2) =
+    where(<map(fork-rule-sets)> rulenames1 => rs1;
+	  <map(fork-rule-sets)> rulenames2 => rs2)
+    ; repeat(
+        where(
+	  s 
+          ; if <filter({?(rulename,<id>); <merge1>(rulename, <id>)})> rs1; []
+	     ; <filter({?(rulename,<id>); <merge2>(rulename, <id>)})> rs2; [] 
+            then 
+	      ?e; fail // no changes in any of the rules
+            end
+        )
+      )
+    ; where(<map(dr-commit-change-set(|<id>))> rulenames1
+	   ;<map(dr-commit-change-set(|<id>))> rulenames2)
+    ; !e
+
+strategies // fork with intersection and union
 
   /**
    * two-way split in data-flow (if-then-else) for list of rules
@@ -854,9 +918,47 @@ strategies // intersection
     dr-fork-and-merge(\ (rulename, rs) -> <dr-intersect-with(|rulename)> rs \
 		     , s1, s2 | rulenames)
 
-//  dr-fork-and-intersect-union(s1, s2 | rulenames1, rulenames2) = 
-//    dr-fork-and-merge(\ (rulename, rs) -> <dr-intersect-with(|rulename)> rs \
-//		     , s1, s2 | rulenames)
+  /**
+   * Fork and union of two rule-sets
+   */
+
+  dr-fork-and-union(s1, s2 | rulenames) = 
+    dr-fork-and-merge(\ (rulename, rs) -> <dr-union-with(|rulename)> rs \
+		     , s1, s2 | rulenames)
+
+  /**
+   * Fork and combined union and intersection of two rule-sets
+   */
+
+  dr-fork-and-intersect-union(s1, s2 | rulenames1, rulenames2) = 
+    dr-fork-and-merge(\ (rulename, rs) -> <dr-intersect-with(|rulename)> rs \
+		     ,\ (rulename, rs) -> <dr-union-with(|rulename)> rs \
+		     , s1, s2 | rulenames1, rulenames2)
+
+strategies // fix-point with intersection and union
+
+  /** 
+   * loop in data-flow (while)
+   */
+
+  dr-fix-and-intersect(s | rulenames) =
+    dr-fix-and-merge(\ (rulename, rs) -> <dr-intersect-symm(|rulename)> rs \
+		    , s | rulenames)
+
+  /**
+   * Iterate union of two rule-sets
+   */
+
+  dr-fix-and-union(s | rulenames) =
+    dr-fix-and-merge(\ (rulename, rs) -> <dr-union-symm(|rulename)> rs \
+		    , s | rulenames)
+
+  dr-fix-and-intersect-union(s | rulenames1, rulenames2) =
+    dr-fix-and-merge( \ (rulename, rs) -> <dr-intersect-symm(|rulename)> rs \
+		    , \ (rulename, rs) -> <dr-union-symm(|rulename)> rs \
+		    , s | rulenames1, rulenames2)
+
+strategies // n-way split
 
   /**
    * n-way split in data-flow (case)
@@ -900,32 +1002,6 @@ strategies // intersection
     let tl(s') = [id | s']
      in dr-fold-and-intersect([], [s|id], tl | rulenames)
     end
-
-  /** 
-   * loop in data-flow (while)
-   */
-
-  dr-fix-and-intersect(s | rulenames) =
-    dr-fix-and-merge(\ (rulename, rs) -> <dr-intersect-symm(|rulename)> rs \
-		    , s | rulenames)
-
-strategies
-
-  /**
-   * Fork and union of two rule-sets
-   */
-
-  dr-fork-and-union(s1, s2 | rulenames) = 
-    dr-fork-and-merge(\ (rulename, rs) -> <dr-union-with(|rulename)> rs \
-		     , s1, s2 | rulenames)
-
-  /**
-   * Iterate union of two rule-sets
-   */
-
-  dr-fix-and-union(s | rulenames) =
-    dr-fix-and-merge(\ (rulename, rs) -> <dr-union-symm(|rulename)> rs \
-		    , s | rulenames)
 
 strategies // rule-set equality
 
