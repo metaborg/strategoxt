@@ -1,0 +1,15 @@
+rm -f config.cache
+rm -f acconfig.h
+
+touch README
+touch NEWS
+
+libtoolize || glibtoolize
+
+autoxt
+aclocal -I .
+autoconf
+#acconfig
+#autoheader
+automake -a
+

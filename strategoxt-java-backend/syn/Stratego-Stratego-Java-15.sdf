@@ -1,0 +1,8 @@
+module Stratego-Stratego-Java-15
+imports
+  StrategoStratego
+  StrategoRenamed
+  Embedded-Java-15 [StrategoTerm]
+
+exports
+  context-free start-symbols StrategoModule
