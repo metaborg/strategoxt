@@ -34,6 +34,7 @@ strategies
     //; !(es,[]);conc
     //; !es
     ; graph-from-edges
+    ; termid(!"\"graphxml_1_1.0\"")
 
   collect-edges
     = collect( \prod    (  ss,s,_) -> <build-edges>(ss ,<get-sortname>s)\
@@ -95,7 +96,7 @@ strategies
 
   graph-from-edges
     = ?es;
-      <mkterm>("\"graphxml_1_1.0\"", [(GraphXML([],[graph([],es)]))])
+      !GraphXML([],[graph([],es)])
 
   build-edges
     = \(ss,s) -> <filter(collect(\x -> <mk-edge>(<get-sortname>x,s)\));concat>ss\
