@@ -90,6 +90,21 @@ rules
     BuildDefault(x) -> Id
 \end{code}
 
+\paragraph{Congruence over Annotations}
+
+\begin{code}
+overlays
+
+  AnnoCongDef =
+    RDef("Anno_Cong__", 
+         [VarDec("s1",FunType([ConstType(Op("ATerm",[]))],ConstType(Op("ATerm",[])))), 
+          VarDec("s2",FunType([ConstType(Op("ATerm",[]))],ConstType(Op("ATerm",[]))))],
+         Rule(Anno(Var("x"), Var("y")), 
+              Anno(Var("x'"), Var("y'")),
+              Seqs([BAM(Call(SVar("s1"),[]), Var("x"), Var("x'")), 
+                    BAM(Call(SVar("s2"),[]), Var("y"), Var("y'"))])))
+\end{code}
+
 \paragraph{Expanding Overlays}   
 
 \begin{code}
@@ -154,7 +169,7 @@ rules
     Specification([
       Signature(bsigs),
       Strategies(<conc> (<congdefs> bsigs, 
-                         <map(RDtoSD + DeclareVariables)> sdefs))
+                           <map(RDtoSD + DeclareVariables)> [AnnoCongDef| sdefs]))
     ])
 
   ExpandOverlays : 
