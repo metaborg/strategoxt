@@ -1,7 +1,9 @@
 2002-10-09  Eelco Visser  <visser@acm.org>
 
 	* src/abox2text/Abox-2-text.r: Notify the user if a box is encountered
-	that cannot be rewritten.
+	that cannot be rewritten. Implement ALT box by comparing xpos to
+	width; if xpos greater than WIDTH choose the second box. Not perfect,
+	but necessary to be able to pretty-print large expressions.
 
 2002-10-02  Merijn de Jonge <mdejonge@cwi.nl>
    * ppgen/make.r: renamed number to number-node to solve name clash

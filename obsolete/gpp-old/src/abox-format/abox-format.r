@@ -22,6 +22,7 @@ strategies
     + LINT  ( is-int , box )
     + Arg   ( is-int )
     + Arg2  ( is-int , is-int )
+    + []
     <+ debug(!"Not a Box: ")
   )
 

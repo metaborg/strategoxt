@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Abox-2-text.r,v 1.5 2002/10/08 21:13:54 eelco Exp $
+% $Id: Abox-2-text.r,v 1.6 2002/10/08 21:58:43 eelco Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
@@ -39,6 +39,10 @@ ALT(a1,a2) -> a1
 module Abox-2-text
 
 imports pp-tables lib Literal-lib
+
+overlays 
+
+   WIDTH = 80
 
 strategies
 
@@ -148,8 +152,9 @@ Abox2text' =
     (A(_,sopt, bs), xpos) -> <Abox2text> (V(sopt, <map-to-r-box>bs), xpos) 
       
   Abox2text' :
-    (ALT( a1, a2), xpos) -> <Abox2text> (a1, xpos)
-
+    (ALT( a1, a2), xpos) -> <<leq>(xpos2, WIDTH) < !r + <Abox2text> (a2, xpos)>
+    where <Abox2text> (a1, xpos) => r@(s, xpos2)
+         
   Abox2text' :
     ([x], xpos) -> <Abox2text> (x, xpos)
 
