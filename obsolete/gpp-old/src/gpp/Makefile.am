@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.3 2001/09/03 15:40:17 mdejonge Exp $
+# $Id: Makefile.am,v 1.4 2001/09/04 10:58:52 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -68,7 +68,6 @@ gpp.Makefile : gpp.Makefile.src Makefile
 	     s@__ABOX2LATEX__@$(prefix)@g;\
 	     s@__ABOX2HTML__@$(prefix)@g;\
 	     s@__SGLR__@$(SGLR)@g;\
-	     s@__PGEN__@$(PGEN)@g;\
 	     s@__ASFIXTOOLS__@$(ASFIXTOOLS)@g;\
 	     s@__PREFIX__@$(prefix)@g'\
 	       < $< > $@
