@@ -1,5 +1,5 @@
 module stratego-desugar
-imports lib stratego-ext
+imports lib Stratego-Amb
 signature
   constructors
     Con : Var * Term * SVar   -> Term

@@ -10,7 +10,7 @@
         stratego-warnings -i <your_spec>.ast.2 -o /dev/null
  */
 module stratego-warnings
-imports lib stratego-ext
+imports lib Stratego
 
 signature
   constructors
