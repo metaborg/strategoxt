@@ -12,15 +12,6 @@ AC_ARG_WITH(aterm,
 )
 AC_SUBST(ATERM)
 
-### Choice Point Library #############
-AC_ARG_WITH(cpl, 
-  AC_HELP_STRING([--with-cpl=DIR], [use Choice Point Library at DIR (optional)]),
-  CPL=$withval usecpl=true, 
-  usecpl=false
-)
-AC_SUBST(CPL)
-AM_CONDITIONAL(USECPL, test x$usecpl = xtrue)
-
 ### XTC #########################
 AC_ARG_WITH(repository,
   AC_HELP_STRING([--with-repository=FILE], [use XTC repository at FILE @<:@PREFIX/share/strategoxt/XTC@:>@]),
@@ -113,7 +104,6 @@ AB_CONFIG_PKG(srts,
    --with-aterm=${ATERM}
    --with-strc=${STRATEGOXT}
    --with-ssl=${STRATEGOXT}
-   --with-cpl=${CPL}
 )
 else
 AB_CONFIG_PKG(srts,
