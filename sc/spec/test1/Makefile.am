@@ -59,7 +59,7 @@ CLEANFILES = \
 	$(TESTRUNS) $(IOTESTRUNS) \
 	$(TESTSRCS) $(IOTESTSRCS) \
 	$(TESTIBINS) $(TESTIRUNS) \
-	*.o *.ac *.s? *.ac *.c.abox *.tree
+	*.o *.ac *.s? *.ac *.c.abox *.tree *.mtree *.rtree *.txt *.s5fused
 
 EXTRA_DIST = $(wildcard *.r) make-rules io-test*.in
 

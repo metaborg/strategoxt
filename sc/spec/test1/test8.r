@@ -15,14 +15,20 @@ rules
 
 strategies
 
-  try(s) = s <+ id
+  try(s) = 
+    s <+ id
  
-  repeat(s)	= rec x(try(s; x))
-  topdown(s)	= rec x(s; all(x))
-  bottomup(s)	= rec x(all(x); s)
-  downup(s)	= rec x(s; all(x); s)
-  downup(s1,s2) = rec x(s1; all(x); s2)
-  innermost(s)	= rec x(all(x); rec y(s; bottomup(y) <+ id))
+  topdown(s) = 
+    s; all(topdown(s))
+
+  bottomup(s) = 
+    all(bottomup(s)); s
+ 
+  repeat(s) = 
+    try(s; repeat(s))
+  
+  innermost(s)  = 
+    bottomup(rec x(try(s; bottomup(x))))
 
   eval = 
     innermost(A + B)
