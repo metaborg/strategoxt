@@ -136,13 +136,12 @@
    prods-group -- 
       H[KW["{"] V[_1] KW["}"]],
       
-   assoc-group -- 
-      HV[KW["{"] _1 KW[":"] _2 KW["}"]],
+   assoc-group -- V vs=0 is=2 [ H hs=0 [KW["{"] _1 KW[":"]] H hs=0 [_2 KW["}"]]],
       
    priority-chain -- _1,
 
    priority-chain.1:iter-sep -- 
-      HV[_1 KW[">"]],
+      H [_1 KW[">"]],
       
    priority-assoc --
       HV[_1 _2 _3],
