@@ -36,6 +36,7 @@ strategies
     where xtc-new-file => name
         ; <WriteToTextFile> (name, t)
 
+
   // scoped temporary files
 
   xtc-new-file =
@@ -61,6 +62,7 @@ strategies
   xtc-command(tool) = 
     where(tool; xtc-find-warning => loc)
     ; where(<call> (loc, <id>))
+
 
   // Transparent transformation of terms and files by external processes
 
