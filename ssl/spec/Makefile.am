@@ -11,7 +11,7 @@ pkgdocdata_DATA= $(wildcard *.str)
 EXTRA_DIST     = $(wildcard *.str) $(pkgdata_DATA)
 BOOTCLEANFILES = $(pkgdata_DATA) liblib.str liblib.rtree liblib.c
 
-lib%.str, lib%.c, lib%.rtree : %.rtree
+lib%.str, lib%.c, lib%.rtree : %.str
 	$(STRC)/bin/strc -i $< -o lib$*.rtree -c --library --verbose 2 
 
 
