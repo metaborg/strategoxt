@@ -1,6 +1,6 @@
 include $(top_srcdir)/Makefile.xt
 
-pkgdata_DATA = logging.rtree xtc-debug.rtree regular-options.rtree
+pkgdata_DATA = xtc-debug.rtree regular-options.rtree
 EXTRA_DIST   = $(pkgdata_DATA) $(wildcard *.str) $(wildcard *.meta)
 
 BOOTCLEANFILES = $(pkgdata_DATA)

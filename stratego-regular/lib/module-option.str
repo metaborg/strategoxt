@@ -1,5 +1,4 @@
 module module-option
-imports logging
 
 strategies
 

@@ -1,3 +1,6 @@
+/**
+ * Strategies for logging 
+ */
 module logging
 signature
   constructors
@@ -102,6 +105,18 @@ strategies
    */
   err(|msg : String) =
     log(|Error(), msg, <id>)
+
+  /**
+   * Logs the specified message as a warning.
+   */
+  warn(|msg : String) =
+    log(|Warning(), msg, <id>)
+
+  /**
+   * Logs the specified message as a notice.
+   */
+  notice(|msg : String) =
+    log(|Notice(), msg, <id>)
 
   /**
    * Logs the specified message as a debug.

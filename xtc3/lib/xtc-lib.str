@@ -5,7 +5,6 @@
  * @author Niels Janssen (njanssen@cs.uu.nl)
  */
 module xtc-lib
-imports logging
 imports Repository Runtime
 imports xtc-repository xtc-register xtc-search 
 imports xtc-convert xtc-defaults xtc-desugar

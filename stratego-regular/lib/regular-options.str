@@ -2,7 +2,7 @@
  * @author  Martin Bravenboer <martin@cs.uu.nl>
  */
 module regular-options
-imports logging tool-doc
+imports tool-doc
 
 
 strategies

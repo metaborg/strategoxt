@@ -44,6 +44,7 @@ imports
 	memo
 	options
 	parse-options
+	logging
 
 
  // object variables

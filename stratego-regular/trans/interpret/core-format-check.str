@@ -4,7 +4,7 @@
  * @author  Martin Bravenboer <martin@cs.uu.nl>
  */
 module core-format-check
-imports liblib logging regular-options rtg rtg-util
+imports liblib regular-options rtg rtg-util
 
 strategies
 
