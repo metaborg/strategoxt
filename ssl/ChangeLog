@@ -1,3 +1,11 @@
+2002-06-11  Eelco Visser  <visser@acm.org>
+
+	* spec/verbose.r, spec/exec.r, spec/config.r, spec/exec.r,
+	spec/options.r, spec/pack-modules.r, spec/parse-options.r,
+	spec/parse-options-test.r, spec/time.r: Strategies to support
+	integer verbosity levels; declared using command line option
+	--verbose, or config entry "--verbose".
+
 2002-06-09  Eelco Visser  <visser@acm.org>
 
 	* spec/*.rtree: Add parsed modules to CVS repository to enable
