@@ -17,7 +17,7 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 dnl 02111-1307, USA.
 
-dnl $Id: configure.in.src,v 1.10 2001/10/22 08:35:50 mdejonge Exp $
+dnl $Id: configure.in.src,v 1.11 2001/10/22 08:53:10 mdejonge Exp $
 
 AC_INIT(configure.in)
 AM_INIT_AUTOMAKE(__PACKAGE__,__VERSION__)
@@ -34,7 +34,7 @@ AC_ARG_WITH(asfix-tools,
 AC_SUBST(ASFIXTOOLS)
 
 AC_ARG_WITH(stratego, 
-   [  --with-stratego      Specify location of stratego package],
+   [  --with-stratego         Specify location of stratego package],
    STRATEGO=${withval},
    STRATEGO='${prefix}')
 AC_SUBST(STRATEGO)
@@ -58,18 +58,18 @@ AC_ARG_WITH(sglr,
 AC_SUBST(SGLR)
 
 AC_ARG_WITH(graph-tools, 
-   [  --with-graph-tools        Specify location of XML-Tools package],
+   [  --with-graph-tools      Specify location of XML-Tools package],
    GRAPHTOOLS=${withval},
    GRAPHTOOLS='${prefix}')
 AC_SUBST(GRAPHTOOLS)
 
 AC_ARG_WITH(gpp-boot, 
-   [  --with-gpp-boot        Specify where to install bootstrapped C sources],
+   [  --with-gpp-boot         Specify where to install bootstrapped C sources],
    GPPBOOT=${withval},
    GPPBOOT='${prefix}')
 AC_SUBST(GPPBOOT)
 
-AC_REVISION($Id: configure.in.src,v 1.10 2001/10/22 08:35:50 mdejonge Exp $)
+AC_REVISION($Id: configure.in.src,v 1.11 2001/10/22 08:53:10 mdejonge Exp $)
 
 AC_PROG_CC
 AC_PROG_INSTALL
