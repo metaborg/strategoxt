@@ -12,7 +12,6 @@ CLEANFILES 	 = $(wildcard *.dep) $(TESTS)
 
 SCFLAGS 	 = --main $* -I ../sig			    \
 	  	   -I $(CGEN)/share/cgen		    \
-	  	   -I $(STRATEGOFRONT)/share/stratego-front \
 	  	   -I ../match				    \
 	  	   -CI -g				    \
 	  	   -CL -g				    
