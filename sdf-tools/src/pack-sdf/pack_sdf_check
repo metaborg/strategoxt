@@ -1,0 +1,4 @@
+set -e
+./pack-sdf -I data -dep data/syntax-test.def -i ./data/syntax-test.sdf -o /dev/null
+diff data/syntax-test.def.dep ./data/syntax-test.def.dep.correct
+rm data/syntax-test.def.dep
