@@ -21,6 +21,7 @@
 ! This version has been verified with the following versions on NEdit
 !  - 5.2
 !  - 5.3
+!  - 5.4
 ! It was verified *not* to work with
 !  - 5.02
 
@@ -36,6 +37,7 @@ nedit.highlightPatterns: Stratego:1:0{\n\
 		character constant:"L?'.'":::Character Const::\n\
 		operators:"\\+|\\<\\+|\\+\\>|=\\>|\\-\\>|;|!|\\?|\\{\\||\\|\\}":::Keyword::\n\
 		str keyword:"<(?:all|constructors|end|fail|id|imports|in|let|module|not|one|overlays|override|prim|rules|script|signature|some|sorts|strategies|stratego|test|thread|where)>":::Keyword::\n\
+		scopesSpec:"(\\{((\\s)*([\\l'\\-_][\\w'\\-]*)(\\s)*,)*(\\s)*([\\l'\\-_][\\w'\\-]*)(\\s)*:|\\})":::Label::\n\
 		str strategy def:"^[\\s]*([\\l'\\-_][\\w'\\-]*)[\\s\\n]*(\\([\\s\\n]*([\\l'\\-_][\\w'\\-]*([\\s\\n]*,[\\s\\n]*[\\l'\\-_][\\w'\\-]*)*)?([\\s\\n]*\\|[\\s\\n]*([\\l'\\-_][\\w'\\-]*([\\s\\n]*,[\\s\\n]*[\\l'\\-_][\\w'\\-]*)*))?[\\s\\n]*\\))?[\\n\\s]*=":::Identifier::\n\
 		str strategy def name:"\\1":""::Identifier:str strategy def:C\n\
 		str strategy def args:"\\2":""::Text Arg:str strategy def:C\n\
@@ -48,4 +50,4 @@ nedit.highlightPatterns: Stratego:1:0{\n\
 		str strat app nest1:"\\<[^\\+]":"\\>"::Subroutine1:str strat app:\n\
 		string escape chars:"\\\\(?:.|\\n)":::String1:string:\n\
 	}
-nedit.languageModes:	Stratego:.str .r::::::".,/\\`'!|@#%^&*()=+{}[]"":;<>?~":
+nedit.languageModes:	Stratego:.str .r::::::

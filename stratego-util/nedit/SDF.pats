@@ -1,0 +1,37 @@
+! $Id$
+!
+! SDF (http://www.stratego-language.org/Sdf) syntax highlighting pattern
+! for NEdit
+! by Arthur van Dam <adam@cs.uu.nl>
+!
+! This file is just a quick-and-dirty setup for SDF syntax highlighting.
+! Feel free to make improvements yourself, or contact me.
+!
+! Configuring NEdit to use a new pattern set: 
+! 
+! * Close your NEdit sessions 
+! * Start an NEdit session using the import command line option with the pattern you downloaded: 
+! 
+!   # nedit -import pats-file
+! 
+!   (replace pats-file with the correct file name) 
+! * Go into the recognition patterns dialog (Preferences>Default Settings>Syntax Highlighting>Recognition Patterns...) and verify that the patterns are imported 
+! * Use Preferences>Save Defaults... to store the modifications. 
+! 
+! This version has been verified with the following versions on NEdit
+!  - 5.2
+!  - 5.3
+!  - 5.4
+! It was verified *not* to work with
+!  - 5.02
+
+nedit.highlightPatterns: SDF:1:0{\n\
+		String:"L?""":"""":"$":String::\n\
+		Keywords:"<(?:module|imports|exports|hiddens|equations|sorts|variables|context-free|syntax|cons|bracket|left|right|assoc|non-assoc|lexical|syntax|priorities|restrictions|LAYOUT)>":::Keyword::\n\
+		Line comment:"%":"$"::Comment::\n\
+		Constructor:"[A-Z][\\w'\\-]*":::Identifier::\n\
+		right arrow:"\\-\\>":::Preprocessor::\n\
+		operator characters:"[\\*\\?\\+\\(\\){}\\>\\|]":::Preprocessor1::\n\
+		character set:"L?\\[":"\\]"::String1::\n\
+	}
+nedit.languageModes:	SDF:.sdf:::::::
