@@ -1,7 +1,7 @@
 \literate[options]
 \begin{code}
 module options
-imports io parse-options
+imports io parse-options config time
 signature
   constructors
     Silent      : Option
@@ -49,7 +49,7 @@ strategies
 	report-success
      <+ 
 	report-failure
-   )
+    )
 
   iowrapNoOutput(strat, extra-options) = 
   iowrapNoOutput(strat, extra-options, default-usage)
@@ -67,11 +67,16 @@ strategies
    	    report-failure
 	)
 
+strategies
+
+  // storing and retrieving options in a table
+  // obsolete; use config for this purpose
+
   store-options = ?options;
-  where( 
-    <table-create>"option-table";
-    <table-put>("option-table", "options", options)
-  )
+    where( 
+      <table-create>"option-table";
+      <table-put>("option-table", "options", options)
+    )
 
   get-options =
     <table-get>("option-table", "options")
@@ -81,8 +86,6 @@ strategies
 
   option-value(s,default) =
     get-options; fetch-elem(s) <+ default
-
-rules
 
   check-option: option -> ()
     where get-options => ops
@@ -95,14 +98,37 @@ rules
 strategies
 
   io-options =
-	Option("-S"+"--silent",       !Silent(),          !"-S|--silent      Silent execution")
-	+ Option("--verbose",         !Verbose(),         !"--verbose        Verbose execution")
-	+ Option("-v"+"--version",    !Version(),         !"-v|--version     Display prgram's version")
-	+ ArgOption("@version",       !DeclVersion(<id>), !"@version         Unknown" )
-	+ ArgOption("-i" + "--input", !Input(<id>),       !"-i f|--input f   Read input from f")
-	+ ArgOption("-o"+"--uotput",  !Output(<id>),      !"-o f|--output f  Write output to f" )
-	+ Option("-b",                !Binary(),          !"-b               Write binary output")
-	+ Option("-s",                !Statistics(),      !"-s               Turn on statisctics")
+	Option("-S"+"--silent",       
+		where(<set-config> ("-S",())); !Silent(),          
+		!"-S|--silent      Silent execution")
+
+	+ Option("--verbose",         
+		where(<set-config> ("--verbose",())); !Verbose(),         
+		!"--verbose        Verbose execution")
+
+	+ Option("-v"+"--version",    
+		where(<set-config> ("-v",())); !Version(),         
+		!"-v|--version     Display prgram's version")
+
+	+ ArgOption("@version",       
+		where(<set-config> ("version",<id>)); !DeclVersion(<id>), 
+		!"@version         Unknown" )
+
+	+ ArgOption("-i" + "--input", 
+		where(<set-config> ("-i",<id>)); !Input(<id>),
+		!"-i f|--input f   Read input from f")
+
+	+ ArgOption("-o" + "--output",  
+		where(<set-config> ("-o",<id>)); !Output(<id>),      
+		!"-o f|--output f  Write output to f" )
+
+	+ Option("-b",                
+		where(<set-config> ("-b",())); !Binary(),          
+		!"-b               Write binary output")
+
+	+ Option("-s",                
+		where(<set-config> ("-s",())); !Statistics(),
+		!"-s               Turn on statisctics")
 
   usage' = 
     obsolete(!"usage': use default-usage")
@@ -119,11 +145,11 @@ strategies
 	option-defined(Help + Undefined(id) + Version); u
 
   need-help = need-help(default-usage)
-\end{code}
 
-	Input, strategy application and output
+  if-not-silent(s) = test(<get-config> "-S") <+ s
 
-\begin{code}
+  // Input, strategy application and output
+
   input-file' =
 	obsolete(!"input-file'; use input-file");
 	input-file
@@ -153,7 +179,7 @@ strategies
 		   (option-defined(?Runtime(runtime)), id);
 		   (option-defined(?Program(prog)), id);
 		   <printnl> (stderr,
-			      [prog, " (", runtime, " secs)"])));
+			      [prog, " (", <run-time>, " secs)"])));
 	 <exit> 0
 
   report-failure =
