@@ -16,7 +16,7 @@
 # 02111-1307, USA.
 
 AC_INIT(autoxt.src)
-AM_INIT_AUTOMAKE(autoxt,0.9beta7)
+AM_INIT_AUTOMAKE(autoxt,0.9beta8)
 
 AC_OUTPUT(
   Makefile

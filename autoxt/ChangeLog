@@ -1,3 +1,7 @@
+2002-12-16  Eelco Visser  <visser@cs.uu.nl>
+
+	* Makefile.xt: Fix for shells that cannot deal with empty variables (Martin)
+
 2002-12-06  Eelco Visser  <visser@cs.uu.nl>
 
 	* Autoconf/automake support for packages developed with StrategoXT.
