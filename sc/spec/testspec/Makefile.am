@@ -36,7 +36,8 @@ SINCLUDES = \
 	-I $(srcdir)/../syn \
 	-I $(srcdir)/../sc \
 	-I $(srcdir)/../c \
-	-I $(CGEN)/share/cgen \
+	-I $(C_TOOLS)/share/c-tools \
+	-I $(C_TOOLS)/share/sdf/c-tools \
 	-I $(XTC)/share/xtc
 
 xtc-conf.h :
