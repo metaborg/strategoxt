@@ -16,7 +16,7 @@ s# Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
 # 02111-1307, USA.
 
 AC_INIT(Makefile.in)
-AM_INIT_AUTOMAKE(stratego,0.8)
+AM_INIT_AUTOMAKE(stratego,0.9beta1)
 
 AC_ARG_WITH(aterm, 
   [  --with-aterm=DIR            Location of external aterm package.], 

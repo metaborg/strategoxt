@@ -1,8 +1,12 @@
+2002-07-14  Eelco Visser  <visser@acm.org>
+
+	* spec/syn/stratego.lx: Detect end of file while scanning comments.
+	(Observed by Martin Bravenboer)
+
 2002-06-11  Eelco Visser  <visser@acm.org>
 
-	* spec/syn/pack-stratego.r: Refactored to get different verbosity levels.
-
-	* spec/sc/proto-sc.r: Refactored to get different verbosity levels.
+	* spec/opt/fusion.cr, spec/syn/pack-stratego.r,
+	spec/sc/proto-sc.r: Refactored to get different verbosity levels.
 
 2002-06-09  Eelco Visser  <visser@acm.org>
 

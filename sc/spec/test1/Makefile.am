@@ -45,6 +45,11 @@ IOTESTSRCS = $(subst .r,.c,$(IOTESTFILES))
 IOTESTBINS = $(subst .r,.bin,$(IOTESTFILES))
 IOTESTRUNS = $(subst .r,.io-run,$(IOTESTFILES))
 
+ERRORTESTFILES = $(wildcard error-test*.r)
+ERRORTESTSRCS = $(subst .r,.c,$(ERRORTESTFILES))
+ERRORTESTBINS = $(subst .r,.bin,$(ERRORTESTFILES))
+ERRORTESTRUNS = $(subst .r,.error-run,$(ERRORTESTFILES))
+
 TESTIBINS = $(subst .r,.ibin,$(TESTFILES))
 TESTIRUNS = $(subst .r,.irun,$(TESTFILES))
 

@@ -1,5 +1,5 @@
 AC_INIT(syn/Stratego.sdf)
-AM_INIT_AUTOMAKE(stratego-front,0.8)
+AM_INIT_AUTOMAKE(stratego-front,0.9beta1)
 
 ####################### 
 # XT
@@ -69,7 +69,7 @@ AC_SUBST(CGEN)
 
 ####################### 
 
-AC_REVISION($Id: configure.in,v 1.4 2002/06/24 19:44:46 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.5 2002/07/14 19:59:10 stratego Exp $)
 
 AC_PROG_CC
 
