@@ -128,7 +128,7 @@ AB_CONFIG_PKG(sdf-import,
    --with-pgen=${PGEN}
    --with-xtc=${prefix}
    --with-stratego-xt=${STRATEGOXT}
-   --with-srts=${STRATEGOXT}  
+   --with-srts=${prefix}  
    --with-repository=${REPOSITORY}
 )
 
