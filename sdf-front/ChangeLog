@@ -1,3 +1,23 @@
+2004-02-13  Martin Bravenboer  <martin@cs.uu.nl>
+
+	* xtc/sdf-options.str: moved common sdf related command line
+	options and utils from stratego-regular to sdf-front.
+
+2004-02-13  Martin Bravenboer  <martin@cs.uu.nl>
+	
+	* pp/Sdf2.pp: improved the pretty printing of renamings using
+	those sexy A/R boxes. Result:
+	
+        module JavaRenamed
+        imports Java
+                  [ PackageImportDec     => JavaPackageImportDec
+                    TypeImportDec        => JavaTypeImportDec
+                    ImportDec            => JavaImportDec
+                    PackageDec           => JavaPackageDec
+                    CompilationUnit      => JavaCompilationUnit
+                    TypeDec              => JavaTypeDec
+	            ....
+	
 2004-02-12  Martin Bravenboer  <martin@cs.uu.nl>
 
 	* syn/version-2.1/Module-Sdf-Syntax.sdf: missing constructor for

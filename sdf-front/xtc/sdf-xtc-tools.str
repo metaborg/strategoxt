@@ -1,21 +1,19 @@
 module sdf-xtc-tools
 imports xtc-lib stratego-xt-xtc-tools
 
-// MUSTDO: move to xtc/tools
-
 strategies      
     
   xtc-parse-sdf2-module =
-    xtc-parse-sdf2(!"Module")
+    xtc-parse-sdf2(|"Module")
 
   xtc-parse-sdf2-module-id =
-    xtc-parse-sdf2(!"Module-GrammarID")
+    xtc-parse-sdf2(|"Module-GrammarID")
     
   xtc-parse-sdf2-definition =
-    xtc-parse-sdf2(!"SDF")
+    xtc-parse-sdf2(|"SDF")
 
   xtc-parse-sdf2-definition-id =
-    xtc-parse-sdf2(!"SDF-GrammarID")
+    xtc-parse-sdf2(|"SDF-GrammarID")
 
 strategies
     
@@ -23,8 +21,8 @@ strategies
       xtc-sglr(!"Sdf2-Syntax.tbl")
     ; xtc-implode-asfix
  
-  xtc-parse-sdf2(sort) =
-      xtc-sglr(!"Sdf2-Syntax.tbl", sort)
+  xtc-parse-sdf2(|sort) =
+      xtc-sglr(!"Sdf2-Syntax.tbl", !sort)
     ; xtc-implode-asfix
     
 strategies    
@@ -34,7 +32,9 @@ strategies
     ; xtc-ast2abox(!["Sdf2.pp.af"])
     ; xtc-abox2text
 
-  
-  
-  
+strategies
+
+  xtc-sdf2-normalize(|main) =
+      xtc-transform(!"sdf2table", !["-n", "-m", main | <pass-v-verbose>])
+    ; xtc-asfix-yield
   

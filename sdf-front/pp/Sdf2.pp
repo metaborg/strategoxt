@@ -2,10 +2,13 @@
    "sdf-2.1" -- _1,
    START -- KW["<START>"],
    Start -- KW["<Start>"],
+
    lexical-priorities -- 
-     V is=2[ H[KW["lexical"] KW["priorities"]] _1],
+      V is=2[ H[KW["lexical"] KW["priorities"]] _1],
+
    context-free-priorities -- 
       V is=2 [ H[KW["context-free"] KW["priorities"]] _1],
+
    lexical-restrictions -- 
       V is=2 [ H[KW["lexical"] KW["restrictions"]] _1],
       
@@ -18,7 +21,7 @@
    Definition.1:iter-star -- _1,
 
    attrs -- 
-      Hhs=0[ "{" H[_1] "}"],
+      H hs=0[ "{" H[_1] "}"],
       
    attrs.1:iter-star-sep -- 
       H hs=0 [_1 KW[","]],
@@ -72,16 +75,16 @@
       H hs=0 [ _1 KW["["] H[_2] KW["]"]],
 
    RenamedModule --
-      H hs=1 [ _1 _2 ],
+      V vs=0 is=2 [ _1 _2 ],
 
    renamings --
-      H hs=1 [ KW["["] _1 KW["]"]],
+      H hs=1 [KW["["] V vs=0 [A(l,l,l) [_1]] KW["]"]],
+
+   renamings.1:iter-star -- _1,
 
    renaming --
-      H hs=1 [ _1 KW["=>"] _2],
-
-   renaming.1:iter-star -- _1,
-     
+      R [ _1 "=>" _2],
+    
    Id --
       KW["id"] H hs=0["(" _1 ")"],
       
