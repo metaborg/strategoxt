@@ -1,4 +1,4 @@
-SUBDIRS 	= src ssl libraries
+SUBDIRS 	= src
 EXTRA_DIST 	= mprotect.m4
 CLEANFILES      = XTC
 pkgdata_DATA 	= README

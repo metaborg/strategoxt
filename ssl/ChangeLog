@@ -1,3 +1,11 @@
+2005-01-29  Martin Bravenboer <martin@cs.uu.nl>
+
+	* native/*: moved the native part of the SSL implementation from
+	the SRTS to the SSL itself.
+
+	* libraries/*: moved the shared library compilation of the SSL
+	from the SRTS to the SSL itself.
+
 2005-01-26  Martin Bravenboer <martin@cs.uu.nl>
 
 	* spec/posix-process.str: use perror to report an error of execvp

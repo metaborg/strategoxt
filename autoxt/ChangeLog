@@ -1,3 +1,26 @@
+2005-01-29   Martin Bravenboer  <martin@cs.uu.nl>
+
+	* Makefile.xt: changed the name and location of shared
+	libraries.
+
+	'stratego-runtime': the runtime library, required for all
+	Stratego programs.
+
+	'stratego-runtime-choice': the choicepoint part of the runtime
+	library, required for all Stratego programs.
+
+	'stratego-lib-native': the native part of the Stratego Library,
+	required for all Stratego programs that use the Stratego Library.
+
+	'stratego-lib': the separately compiled Stratego Library, required
+	for all Stratego programs that use the separately compiled
+	Stratego Library (liblib or libstrategolib).
+
+	'stratego-xtc': the separately compiled XTC library.
+
+	stratego-lib-native and stratego-lib are now located in the SSL
+	instead of the SRTS.
+	
 2004-12-25   Martin Bravenboer  <martin@cs.uu.nl>
 
 	* autoxt.m4: USE_XT_PACKAGES is obsolete and should be replaced by

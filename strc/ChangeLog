@@ -1,3 +1,13 @@
+2005-01-29  Martin Bravenboer <martin@cs.uu.nl>
+
+	* spec/test-strc/*.sh: changed the strc test to use the shared Stratego
+	Library in the SSL instead of the SRTS.
+
+	* spec/strc/strc-options.str: changed the include of
+	"srts/stratego-lib.h" to "ssl/stratego-lib.h". Changed the names
+	of all the libraries (see the ChangeLog of AutoXT for an overview
+	of the new names).
+
 2004-12-10  Martin Bravenboer <martin@cs.uu.nl>
 
 	* spec/front/needed-defs.str: check for external redefinitions

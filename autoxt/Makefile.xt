@@ -13,7 +13,7 @@
 # Variables
 #
 
-AM_CPPFLAGS = -I$(SRTS)/include -I$(ATERM)/include
+AM_CPPFLAGS = -I$(SSL)/include -I$(SRTS)/include -I$(ATERM)/include
 
 if XT_DARWIN
   AM_LDFLAGS=-bind_at_load
@@ -22,21 +22,23 @@ else
 endif
 
 STRATEGORUNLIBS = \
-  -lstratego_opt \
-  -lstratego-choice_opt \
-  -lstratego-lib_opt \
+  -lstratego-runtime-opt \
+  -lstratego-runtime-choice-opt \
+  -lstratego-lib-native-opt \
   -lATerm-gcc \
   -lm
 
 SSL_LIBS = \
+  -L$(SSL)/lib/ssl \
   -L$(SRTS)/lib/srts \
   -L$(XTC)/lib/xtc \
   -L$(ATERM)/lib \
-  -llibxtclib \
-  -llibstrategolib \
+  -lstratego-xtc \
+  -lstratego-lib \
   $(STRATEGORUNLIBS)
 
 LDADD = \
+  -L$(SSL)/lib/ssL \
   -L$(SRTS)/lib/srts \
   -L$(ATERM)/lib \
   $(STRATEGORUNLIBS)

@@ -10,8 +10,7 @@ include_HEADERS = \
 
 noinst_HEADERS = \
   debug.h \
-  mprotect.h \
-  stratego-lib.h
+  mprotect.h
 
 stratego-config.h : $(top_srcdir)/config.h
 	echo "#ifndef SRTS_STRATEGO_CONFIG_H"  > $@
@@ -21,6 +20,3 @@ stratego-config.h : $(top_srcdir)/config.h
 	   | grep -v VERSION 		      >> $@
 	echo "#endif" 			      >> $@
 	echo "" 			      >> $@
-
-stratego-lib.h :
-	ln -s $(top_srcdir)/ssl/stratego-lib.h .

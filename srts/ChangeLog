@@ -1,3 +1,15 @@
+2005-01-29  Martin Bravenboer <martin@cs.uu.nl>
+	
+	* native/*: moved the native part of the SSL implementation from
+	the SRTS to the SSL itself.
+
+	* libraries/*: moved the shared library compilation of the SSL
+	from the SRTS to the SSL itself.
+
+	* configure.ac: removed the configuration of strc, xtc and ssl. It
+	is no longer required now the srts is a simple collection of
+	hand-written C files.
+
 2004-08-12  Arthur van Dam <adam@cs.uu.nl>
 
 	* ssl/string.c : SSL_newname - now trims any trailing digits up to

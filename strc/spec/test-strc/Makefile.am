@@ -11,6 +11,6 @@ TESTS = \
 
 TESTS_ENVIRONMENT =\
   STRC="$(bindir)/strc" \
-  SRTS="$(SRTS)"
+  SSL="$(prefix)"
 
 EXTRA_DIST  = $(TESTS) $(STRPROGS)

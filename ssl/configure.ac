@@ -9,12 +9,11 @@ AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_LIBTOOL
 
-TOP_SRCDIR=`pwd`
-AC_SUBST(TOP_SRCDIR)
-
 AC_CONFIG_FILES([
   Makefile
   spec/Makefile
+  native/Makefile
+  libraries/Makefile
   tests/Makefile
 ])
 AC_OUTPUT

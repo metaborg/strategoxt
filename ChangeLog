@@ -1,3 +1,19 @@
+2005-01-29  Martin Bravenboer <martin@cs.uu.nl>
+
+	* configure.ac, Makefile.am: more clear naming scheme for the
+	local installions that are used for installing from a tarball. The
+	packages are now called BASELINE_SRTS, BASELINE_XTC,
+	BASELINE_SSL. The packages are now all installed in
+	BASELINE_DESTDIR, which is the directory 'local-baseline' (was
+	pre-pkgs).
+
+	* configure.ac: configure the subpackages with a locally installed
+	baseline SSL if there is no baseline StrategoXT. This local
+	installation is required now we have moved the native and
+	separately compiled SSL sources from the SRTS to the SSL.
+
+	* Makefile.am: install the baseline SSL.
+
 2005-01-28  Martin Bravenboer <martin@cs.uu.nl>
 
 	* bootstrap: use autoxt in STRATEGOXT_BASELINE, fall-back with a

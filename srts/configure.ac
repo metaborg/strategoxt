@@ -5,36 +5,12 @@ AM_INIT_AUTOMAKE
 
 AM_CONFIG_HEADER(config.h)
 
-ACLOCAL="${ACLOCAL} -I ."
-
-AC_ARG_WITH(aterm, 
-  AC_HELP_STRING([--with-aterm],[Specify location of aterm library, default: \$prefix]), 
-  ATERM=$withval, 
-  ATERM="$prefix"
+AC_ARG_WITH([aterm], 
+  AS_HELP_STRING([--with-aterm],[Specify location of aterm library, default: \$prefix]), 
+  [ATERM=$withval], 
+  [ATERM="$prefix"]
 )
-AC_SUBST(ATERM)
-
-AC_ARG_WITH(strc, 
-  AC_HELP_STRING([--with-strc],[Specify location of Stratego compiler (bootstrapping only), default: \$prefix]), 
-  STRC=$withval, 
-  STRC="$prefix"
-)
-AC_SUBST(STRC)
-
-AC_ARG_WITH(ssl, 
-  AC_HELP_STRING([--with-ssl],[Specify location of ssl library (bootstrapping only), default: \$prefix]),
-  SSL=$withval, 
-  SSL="$prefix"
-)
-AC_SUBST(SSL)
-
-AC_ARG_WITH([xtc],
-  AC_HELP_STRING([--with-xtc=DIR],
-                 [use XTC (XT Composition) at DIR (bootstrapping only) @<:@prefix@:>@]),
-  [XTC=$withval],
-  [XTC=$prefix]
-)
-AC_SUBST([XTC])
+AC_SUBST([ATERM])
 
 AC_CHECK_FUNCS([getpagesize mkdtemp])
 AC_CHECK_HEADERS([stdlib.h])
@@ -49,9 +25,6 @@ AC_PROG_LIBTOOL
 AC_PROG_CC
 AC_PROG_INSTALL
 
-TOP_SRCDIR=`pwd`
-AC_SUBST(TOP_SRCDIR)
-
 CHECK_FOR_MPROTECT
 
 AC_SUBST(CC)
@@ -61,7 +34,5 @@ AC_CONFIG_FILES([
   Makefile
   src/Makefile
   src/srts/Makefile
-  ssl/Makefile
-  libraries/Makefile
 ])
 AC_OUTPUT

@@ -1,6 +1,6 @@
 include $(top_srcdir)/Makefile.xt
 
-SUBDIRS 	  = . spec tests 
+SUBDIRS 	  = . spec native libraries tests 
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 CLEANFILES        = XTC
 EXTRA_DIST 	  = README Makefile.xt

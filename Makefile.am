@@ -9,49 +9,55 @@ install-data-local: install-xtc
 
 install-xtc: 
 	mkdir -p `dirname $(DESTDIR)$(REPOSITORY)`
-	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t sglr -l $(SGLR)/bin -V 3.11
-	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t sdf2table -l $(PGEN)/bin -V 2.1
-	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t Sdf2.baf -l $(PGEN)/share/pgen -V 2.1
-	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t implodePT -l $(PT_SUPPORT)/bin -V 1.1
-	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t unparsePT -l $(PT_SUPPORT)/bin -V 1.1
-	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t addPosInfo -l $(PT_SUPPORT)/bin -V 1.1
-	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t baffle -l $(ATERM)/bin -V X
-	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t ATERM -l $(ATERM) -V X
-	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t SRTS -l $(prefix) -V X
-	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t libstrategolib.rtree -l $(prefix)/share/srts -V $(VERSION)
-	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t libxtclib.rtree -l $(prefix)/share/xtc -V $(VERSION)
-	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t liblib.rtree -l $(prefix)/share/xtc -V $(VERSION)
-	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t liblibstrategolib.la -l $(prefix)/lib/srts -V $(VERSION)
-	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t liblibxtclib.la -l $(prefix)/lib/xtc -V $(VERSION)
+	$(BASELINE_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t sglr -l $(SGLR)/bin -V 3.11
+	$(BASELINE_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t sdf2table -l $(PGEN)/bin -V 2.1
+	$(BASELINE_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t Sdf2.baf -l $(PGEN)/share/pgen -V 2.1
+	$(BASELINE_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t implodePT -l $(PT_SUPPORT)/bin -V 1.1
+	$(BASELINE_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t unparsePT -l $(PT_SUPPORT)/bin -V 1.1
+	$(BASELINE_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t addPosInfo -l $(PT_SUPPORT)/bin -V 1.1
+	$(BASELINE_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t baffle -l $(ATERM)/bin -V X
+	$(BASELINE_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t ATERM -l $(ATERM) -V X
+	$(BASELINE_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t SRTS -l $(prefix) -V X
+	$(BASELINE_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t SSL -l $(prefix) -V X
+	$(BASELINE_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t libstrategolib.rtree -l $(prefix)/share/ssl -V $(VERSION)
+	$(BASELINE_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t libxtclib.rtree -l $(prefix)/share/xtc -V $(VERSION)
+	$(BASELINE_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t liblib.rtree -l $(prefix)/share/xtc -V $(VERSION)
+	$(BASELINE_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t libstratego-lib.la -l $(prefix)/lib/ssl -V $(VERSION)
+	$(BASELINE_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t libstratego-xtc.la -l $(prefix)/lib/xtc -V $(VERSION)
 
 if !XT_USING_BASELINE
-all-local: $(BUILD_SRTS_DEST)/srts.dummy $(INSTALL_XTC_DEST)/xtc.dummy
-install-exec-local: $(BUILD_SRTS_DEST)/srts.dummy $(INSTALL_XTC_DEST)/xtc.dummy
+all-local: $(BASELINE_DESTDIR)/srts.dummy $(BASELINE_DESTDIR)/ssl.dummy $(BASELINE_DESTDIR)/xtc.dummy
+install-exec-local: $(BASELINE_DESTDIR)/srts.dummy $(BASELINE_DESTDIR)/ssl.dummy $(BASELINE_DESTDIR)/xtc.dummy
 
 clean-local:
-	rm -rf $(BUILD_SRTS_DEST)
-	rm -rf $(INSTALL_XTC_DEST)
+	rm -rf $(BASELINE_DESTDIR)
 
-$(BUILD_SRTS_DEST)/srts.dummy :
+$(BASELINE_DESTDIR)/srts.dummy :
 	cd srts && \
 	$(MAKE) $(AM_MAKEFLAGS) && \
-	$(MAKE) $(AM_MAKEFLAGS) DESTDIR=$(BUILD_SRTS_DEST) install && \
-	cp -fp   libraries/*.la  $(BUILD_SRTS_DEST)/$(prefix)/lib/srts/ && \
-	cp -LRfp libraries/.libs $(BUILD_SRTS_DEST)/$(prefix)/lib/srts/ && \
-	cp -fp   ssl/*.la  $(BUILD_SRTS_DEST)/$(prefix)/lib/srts/ && \
-	cp -LRfp ssl/.libs $(BUILD_SRTS_DEST)/$(prefix)/lib/srts/ && \
-	cp -fp   src/*.la  $(BUILD_SRTS_DEST)/$(prefix)/lib/srts/ && \
-	cp -LRfp src/.libs $(BUILD_SRTS_DEST)/$(prefix)/lib/srts/ && \
-	touch $(BUILD_SRTS_DEST)/srts.dummy
+	$(MAKE) $(AM_MAKEFLAGS) DESTDIR=$(BASELINE_DESTDIR) install && \
+	cp -fp   src/*.la  $(BASELINE_DESTDIR)/$(prefix)/lib/srts/ && \
+	cp -LRfp src/.libs $(BASELINE_DESTDIR)/$(prefix)/lib/srts/ && \
+	touch $(BASELINE_DESTDIR)/srts.dummy
 
-$(INSTALL_XTC_DEST)/xtc.dummy :
+$(BASELINE_DESTDIR)/ssl.dummy :
+	cd ssl && \
+	$(MAKE) $(AM_MAKEFLAGS) && \
+	$(MAKE) $(AM_MAKEFLAGS) DESTDIR=$(BASELINE_DESTDIR) install && \
+	cp -fp   libraries/*.la  $(BASELINE_DESTDIR)/$(prefix)/lib/ssl/ && \
+	cp -LRfp libraries/.libs $(BASELINE_DESTDIR)/$(prefix)/lib/ssl/ && \
+	cp -fp   native/*.la  $(BASELINE_DESTDIR)/$(prefix)/lib/ssl/ && \
+	cp -LRfp native/.libs $(BASELINE_DESTDIR)/$(prefix)/lib/ssl/ && \
+	touch $(BASELINE_DESTDIR)/ssl.dummy
+
+$(BASELINE_DEST)/xtc.dummy :
 	cd $(XTC_DIR) && \
 	$(MAKE) $(AM_MAKEFLAGS) && \
-	mkdir -p $(INSTALL_XTC_DEST)/$(prefix)/lib/xtc/ && \
-	$(MAKE) $(AM_MAKEFLAGS) DESTDIR=$(INSTALL_XTC_DEST) install && \
-	cp -fp   libraries/*.la  $(INSTALL_XTC_DEST)/$(prefix)/lib/xtc/ && \
-	cp -LRfp libraries/.libs $(INSTALL_XTC_DEST)/$(prefix)/lib/xtc/ && \
-	touch $(INSTALL_XTC_DEST)/xtc.dummy
+	mkdir -p $(BASELINE_DESTDIR)/$(prefix)/lib/xtc/ && \
+	$(MAKE) $(AM_MAKEFLAGS) DESTDIR=$(BASELINE_DESTDIR) install && \
+	cp -fp   libraries/*.la  $(BASELINE_DESTDIR)/$(prefix)/lib/xtc/ && \
+	cp -LRfp libraries/.libs $(BASELINE_DESTDIR)/$(prefix)/lib/xtc/ && \
+	touch $(BASELINE_DESTDIR)/xtc.dummy
 endif
 
 relname:

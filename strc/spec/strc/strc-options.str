@@ -28,15 +28,16 @@ strategies
     ; <set-config> ("-O", 6)
     ; <set-config> ("-I", [])
     ; <set-config> ("--C-include", 
-		   ["<srts/stratego.h>", "<srts/stratego-lib.h>"])
+		   ["<srts/stratego.h>", "<ssl/stratego-lib.h>"])
     ; <set-config> ("-CI", ["-I", <conc-strings>(<xtc-find-path> "SRTS", "/include"),
-                           "-I", <conc-strings>(<xtc-find-path> "SRTS", "/include"),
-                           "-I", <conc-strings>(<xtc-find-path> "ATERM", "/include")])
+                            "-I", <conc-strings>(<xtc-find-path> "SSL", "/include"),
+                            "-I", <conc-strings>(<xtc-find-path> "ATERM", "/include")])
     ; <set-config> ("-CL",
-        [ <concat-strings> ["-L", <xtc-find-path> "SRTS", "/lib/srts"]
-        , "-lstratego-lib_opt"
-        , "-lstratego-choice"
-        , "-lstratego_opt"
+        [  <concat-strings> ["-L", <xtc-find-path> "SSL", "/lib/ssl"]
+        , "-lstratego-lib-native-opt"
+        , <concat-strings> ["-L", <xtc-find-path> "SRTS", "/lib/srts"]
+        , "-lstratego-runtime-choice-opt"
+        , "-lstratego-runtime-opt"
         , <concat-strings> ["-L", <xtc-find-path> "ATERM", "/lib"]
         , "-lATerm-gcc"
         , "-lm"])
@@ -96,11 +97,11 @@ strategies
 
   + ArgOption("-Cl",
 	where(<extend-config>("-CL", [<conc-strings> ("-l", <id>)])); !(),
-	!"-Cl lib            Search the library named lib when linking.")
+	!"-Cl <lib>          Search the library named <lib> when linking.")
 
   + ArgOption("-la",
 	where(<extend-config>("-CL", [<file-exists <+ <concat-strings; xtc-find <+ <exit> 1> ["lib", <id>, ".la"]>])); !(),
-	!"-la lib            Search the libtool library liblib.la when linking.\n")
+	!"-la <name>         Search the libtool library lib<name>.la when linking.\n")
 
   + ArgOption("--xtc-repo",
 	where(<extend-config>("-CD", [<concat-strings> ["-DXTC_REPOSITORY()=ATmakeString(\"", <id>, "\")"]])); !(),
