@@ -31,18 +31,18 @@ EXTRA_DIST = $(wildcard *.r) $(pkgdata_DATA)
 
 CLEANFILES = $(TESTS) $(bin_SCRIPTS) $(parsed)
 
-SC = $(STRATEGO)/bin/sc 
+SC = $(SC_BOOT)/bin/sc 
 #--verbose 2
 
 if DEVELOP
 
-%.rtree: %.r $(SC_BOOT)/libexec/sc-0.8.1/parse-mod
-	$(SC_BOOT)/libexec/sc-0.8.1/parse-mod -i $< -o $@
+%.rtree: %.r $(SC_BOOT)/bin/parse-mod
+	$(SC_BOOT)/bin/parse-mod -i $< -o $@
 
 else
 
 %.rtree: 
-	$(SC_BOOT)/libexec/sc-0.8.1/parse-mod -i $*.r -o $@
+	$(SC_BOOT)/bin/parse-mod -i $*.r -o $@
 
 endif
 

@@ -45,6 +45,11 @@ strategies
 	, addS
 	, !("5","3")
 	, !"8"
+	);
+    apply-test(!"test3"
+	, ltS
+	, !("5","3")
+	, !("5","3")
 	)
 
 \end{code}

@@ -52,12 +52,12 @@ strategies
   mulS  = (string-to-int, string-to-int); mul; int-to-string
   divS  = (string-to-int, string-to-int); div; int-to-string
   modS  = (string-to-int, string-to-int); mod; int-to-string
-  gtS   = (string-to-int, string-to-int); gt; int-to-string
-  geqS  = (string-to-int, string-to-int); geq; int-to-string
-  ltS   = (string-to-int, string-to-int); lt; int-to-string
-  leqS  = (string-to-int, string-to-int); leq; int-to-string
-  maxS  = (string-to-int, string-to-int); max; int-to-string
-  minS  = (string-to-int, string-to-int); min; int-to-string
+  gtS   = where((string-to-int, string-to-int); gt)
+  geqS  = where((string-to-int, string-to-int); geq)
+  ltS   = where((string-to-int, string-to-int); lt)
+  leqS  = where((string-to-int, string-to-int); leq)
+  maxS  = where((string-to-int, string-to-int); max)
+  minS  = where((string-to-int, string-to-int); min)
 
   inc = !(<id>, 1); add
 
