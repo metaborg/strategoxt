@@ -1,5 +1,15 @@
 2003-06-12  Martin Bravenboer  <martin@mbravenboer.org>
 
+  * Changed versions to 0.9.2
+  * removed srts/Makefile.rpm
+  * removed sdf-tools/ADDING_TOOLS
+  * removed graph-tools/configure.in.src: confusing
+  * do not include .spec files of subpackages in distribution:
+    causes problems.
+
+
+2003-06-12  Martin Bravenboer  <martin@mbravenboer.org>
+
   * StrategoXT.spec.in: PACKAGE_NAME should be PACKAGE_TARNAME
     (SuSE problem).
 

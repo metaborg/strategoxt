@@ -7,7 +7,7 @@ SUBDIRS      = $(PKGS)
 all: install
 
 rpm : dist
-	$(RPMBUILD) -ta strategoxt-$(VERSION).tar.gz
+	$(RPMBUILD) -ta $(PACKAGE_TARNAME)-$(VERSION).tar.gz
 
 dailydist : dist
 	mv $(PACKAGE)-$(VERSION).tar.gz $(PACKAGE)-dailydist.tar.gz 
