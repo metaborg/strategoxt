@@ -121,6 +121,15 @@ bootclean-recursive :
 .def.str :
 	$(STRATEGO_TOOLS)/bin/sdf-to-sig -i $<
 
+%-fc.str : %.str
+	$(STRATEGO_TOOLS)/bin/sig2fc $(STRINCLUDES) -i $< -o $@
+
+%-typematch.str : %.str
+	$(STRATEGO_TOOLS)/bin/sig2typematch $(STRINCLUDES) -i $< -o $@
+
+%-fold-strategy.str : %.str
+	$(STRATEGO_TOOLS)/bin/sig2fold-strategy $(STRINCLUDES) -i $< -o $@
+
 ###########################################################
 #
 # Makerules for XTC
