@@ -4,7 +4,7 @@
  * @author  Martin Bravenboer <martin@cs.uu.nl>
  */
 module core-rtg2typematch
-imports options Stratego rtg module-option stratego-rtg
+imports options Stratego rtg module-option stratego-rtg logging
 
 strategies
 
@@ -19,7 +19,10 @@ strategies
         strategies
           ~*defs
       ]|
-        where <map(prodrule-to-sdef)> prods => defs
+        where <map(
+                prodrule-to-sdef
+                <+ log(|Error(), "Cannot rewrite prodrule", <id>); fail
+              )> prods => defs
 
   /**
    * @type  ProdRule -> SDef

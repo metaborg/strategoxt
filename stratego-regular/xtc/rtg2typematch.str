@@ -1,5 +1,5 @@
 /**
- * Rewrites RTG-NF to Typematching strategies
+ * Rewrites RTG to Typematching strategies
  *
  * @author  Martin Bravenboer <martin@cs.uu.nl>
  */
@@ -10,9 +10,7 @@ strategies
   
   main-rtg2typematch =
     xtc-io-wrap(module-option,
-      xtc-core-rtg2typematch(|<guess-module-name>)
+      xtc-rtg-front-end
+    ; xtc-core-rtg2typematch(|<guess-module-name>)
     ; xtc-pp-abstract-stratego
     )
-
-
-    
