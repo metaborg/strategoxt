@@ -1,5 +1,5 @@
 module asfix-abstractions-test
-imports sunit asfix-abstractions
+imports sunit asfix-abstractions Sdf2
 
 strategies
 
