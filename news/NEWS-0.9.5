@@ -39,6 +39,12 @@ past. This was rather frustrating for xDoc. From Stratego/XT 0.9.5 the
 compiler shows a warning message if the declared module name does not
 correspond with the name of the file.
 
+Stratego/XT 0.9.5 fixes several annoying problems in the
+user-interface of the Stratego compiler and tools of stratego-front
+such as =parse-stratego= and =pp-stratego=. =pp-stratego= for example
+accepts an -I flag now, which can be used to give a search path for
+parse tables used for concrete object syntax.
+
 (Rob Vermaas)
 
 In Stratego/XT 0.9.4 compiling programs that use term arguments
@@ -123,94 +129,16 @@ syntax, signatures and pretty-printer.
 
 Parse-unit, a tool for unit-testing syntax definitions, has been
 extended with a concise, concrete syntax for testsuites. It also
-allows partial specification of expected outcomes using wildcards.
+allows partial specification of expected outcomes using wildcards. The
+concrete syntax for parse unit testsuites does not require escaping of
+special charachters in the test input. This makes the inputs much more
+readable, because special characters are in practice not special in
+parse testsuites.
 
 More information:
    http://www.program-transformation.org/Tools/ParseUnit
 
-
-
-
-
-    *  parse-unit:
-          o design a concrete syntax for testsuites
-          o allow partial specification of expected results
-          (wildcards)
-
-
-	* analyse/parse-unit/*: added [ ] delimiters for test input. This
-	is useful for testing typical string literals in programming
-	languages. Writing many double quotes is not very attractive in
-	this case.
-
-	* analyse/parse-unit/*: the test description is now optional. In
-	this case the test input will be shown as the description (or the
-	file name if the input is a file). 
-
-	Example of testsuite without descriptions:
-	----------------------------------------------------
-	testsuite Java Expressions
-	topsort Expr
-
-	test "1 + 2" -> Plus(Int("1), Int("2))
-	
-	test "1++2" fails
-	
-        test "6*7" succeeds
-	----------------------------------------------------
-
-	* analyse/parse-unit/*: designed a concrete syntax for parse-unit
-	testsuites. Parse-unit is now ready for the technology push.
-
-	Example:
-	----------------------------------------------------
-	testsuite RTG nonterminals
-	topsort NonTerm
-
-	test Primitive string
-	  "<string>" -> string
-
-	test Primitive string
-	  "String" -> plain("String")
-
-	test Quoted non terminal 1
-	  "[Bla]"  -> nonterm(quoted([chars("Bla")]))
-
-	test Quoted non terminal 1
-	  "[Bl]a]" fails
-
-	test Quoted non terminal 1
-	  "[Bl]a]" succeeds
-	----------------------------------------------------
-
-	The concrete syntax does not require escaping and that's very
-	convenient in typical parse-testsuites. Instead of escaping
-	special characters you just write more double quotes if your test
-	involves double quotes. Descriptions of tests and testsuite are
-	terminated by an newline. Wildcards are allowed in the syntax, but
-	are not supported in the implementation. Implementing wildcards in
-	parse-unit is a to do.
-
-(Martin Bravenboer)
-
-    * sglri should accept an -s argument and pass this to sglr.
-    * pack stratego command line options -o and --nodep (report)
-    * \r in string literals (report)
-    * parse-stratego does not use the meta file when there is a dot in the filename (report)
-    * Remove eval-config feature from the config module (report)
-    * strc doesn't accept --input (report)
-    * Various strc --main problems (report)
-    * pp-table syntax definition does not support CR LF (\r \n)
-    * (report)
-
-  (Rob Vermaas)
-
-	* src/sig2: removed all the sig2 tools. They are not used in
-	practice and are replaced by much better tools in
-	stratego-regular.
-
-  (Martin Bravenboer)
-
+---------+++ SDF Renamed Module Generator
 
 Syntax definitions of concrete object syntax embeddings require
 renamings of the sorts of the imported syntax definitions. Defining
@@ -223,27 +151,7 @@ the language name for example.
 More information:
 
 
-    * Lang-Renamed.sdf generator. Generates an SDF module that renames
-      all sorts in a syntax definition by prefixing them with a given
-      prefix.
-
- trans/gen-renamed-sdf-module.str: since we are now using the
-constructors of the SDF2 syntax definition in PGEN 2.0 it is
-possible to implode the AsFix result of the sdf normalizer instead
-of a yield followed by a parse. This is major performance
-improvement. implodePT is used because the output of the
-normalizer is AsFix2ME.
-
-  (Martin Bravenboer)
-
-	* src/implode/implode-asfix.str: *not* funny: after checking
-	every possible mistake I could make I observed that implode-asfix
-	must do some obscure renaming on 'keywords' (whatever keywords are
-	to implode-asfix). This indeed appeared to be true: module,
-	exports, imports, etc. are *renamed* in implode-asfix! Well, not
-	anymore of course. 
-
-  (Martin Bravenboer)
+(Martin Bravenboer)
 
 ---------++ Configuration
 
@@ -263,7 +171,7 @@ now on. New issues are reported to the stratego-bugs mailing list. Of
 course you are welcome to discuss issues at the stratego-dev mailing
 list first.
 
-  (Arthur van Dam)
+(Arthur van Dam)
 
 ---------++ Download and Installation
 
