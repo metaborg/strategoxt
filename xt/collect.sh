@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: collect.sh,v 1.12 2000/06/25 06:55:31 eelco Exp $
+# $Id: collect.sh,v 1.13 2000/07/24 15:44:29 mdejonge Exp $
 
 
 # This script will collect all required packages for the XT distribution.
@@ -87,7 +87,8 @@ do_collect () {
                   
       http*)
          echo "Obtaining a distribution of \"${pkg}\" via HTTP." >&2
-         lynx -dump ${pkg_url} > ${pkg}-${pkg_version}.tar.gz ;;
+         lynx -dump ${pkg_url}/${pkg}-${pkg_version}.tar.gz > \
+                    ${pkg}-${pkg_version}.tar.gz ;;
       * ) "echo unrecognized url: \"$pkg_url\"" >&2; exit 1 ;;
    esac
 }
