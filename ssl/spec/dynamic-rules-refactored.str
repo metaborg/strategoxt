@@ -167,16 +167,6 @@ strategies // high-level API with implicit rule set
     <dr-union-rule-sets-symm>(<id>, <dr-get-rule-set(|name)>)
     ; dr-set-rule-set(|name)
 
-  dr-print-rule-set(|name) =
-    where(
-      dr-get-rule-set(|name)
-      ; dr-print-rule-set
-    )
-
-  dr-print-rule-sets(|names) =
-    where(
-      <map(debug; dr-print-rule-set(|<id>))> names
-    )
 
 // low-level API working directly on rule-set
 
@@ -642,25 +632,48 @@ strategies // rule-set equality
 
 strategies // debugging
 
+  dr-debug-rule-set(|name) = dr-debug-rule-set(|name, "")
+
+  dr-debug-rule-set(|name, msg) =
+    where(
+        (!msg => "" <+ say(!msg))
+      ; <debug(!"Ruleset for: ")> name
+      ; dr-print-rule-set(|name)
+    )
+
+  dr-print-rule-set(|name) =
+    where(
+      dr-get-rule-set(|name)
+      ; dr-print-rule-set
+    )
+
+  dr-print-rule-sets(|names) =
+    where(
+      <map(debug; dr-print-rule-set(|<id>))> names
+    )
+
   dr-print-rule-set =
     where(map(dr-print-scope))
 
   dr-print-scope =
     ?RuleScope(labels, tbl)
-    ; where(
-        debug
-	; <hashtable-keys> tbl
-	; map(<printnl>(stderr, 
-		["  ", <id>, " -> ", <\ key -> <hashtable-get(|key)> tbl \> ])
-          )
-      )
+  ; where(
+      debug
+    ; <hashtable-keys> tbl
+	  ; map(where(<printnl>(stderr, ["  ", <id>, " -> " ]))
+          ; where(\ key -> <hashtable-get(|key)> tbl \
+                  ; map(<printnl>(stderr, ["    ", <id>]))
+                 )
+         )
+    )
 
   dr-print-scope =
     ?ChangeSet(tbl)
-    ; where(
-        debug
-	; <hashtable-keys> tbl
-	; map(<printnl>(stderr, 
-		["  ", <id>, " -> ", <\ key -> <hashtable-get(|key)> tbl \> ])
-          )
-      )
+  ; where(
+      debug
+    ; <hashtable-keys> tbl
+    ; map(where(<printnl>(stderr, ["  ", <id>, " -> "]))
+          ; where(\ key -> <hashtable-get(|key)> tbl \
+                  ; <printnl>(stderr, ["    ", <id>]))
+         )
+    )
