@@ -1,4 +1,5 @@
 2001-02-27 Merijn de Jonge <mdejonge@cwi.nl>
+        * Small bug fix in Makefile.am
         * Changed cvs server from gondel to ssh.cwi.nl
 
 2001-02-22 Merijn de Jonge <mdejonge@cwi.nl>
