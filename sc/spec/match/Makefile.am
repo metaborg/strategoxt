@@ -36,7 +36,7 @@ EXTRA_DIST = $(wildcard *.r)
 BOOTSOURCES = compile-match.c optimize1.c optimize2.c
 
 compile-match: compile-match.r
-	$(SC) $(SCFLAGS) -i $< --main compile-match-comp
+	$(SC) $(SCFLAGS) -i $< --main compile-match-comp -o $@
 
 optimize1: compile-match.r
 	$(SC) $(SCFLAGS) -i $< --main optimize1-comp -o optimize1

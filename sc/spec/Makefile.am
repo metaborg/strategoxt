@@ -27,16 +27,16 @@ DIST_SUBDIRS = si sdf test3 $(SUBDIRS)
 BOOTSOURCES = conf.h.src
 
 bootstep :
-	$(MAKE) clean 		2>  log/bootsteplog
-	$(MAKE) 		2>> log/bootsteplog
-	$(MAKE) bootcheck	2>> log/bootsteplog
-	$(MAKE) install		2>> log/bootsteplog
+	$(MAKE) clean
+	$(MAKE)
+	$(MAKE) bootcheck
+	$(MAKE) install
 
 bootcheck :
-	cd test1 && $(MAKE) clean && $(MAKE) check
-	cd test2 && $(MAKE) clean && $(MAKE) check
-	cd testlib && $(MAKE) clean && $(MAKE) check
-	cd testspec && $(MAKE) clean && $(MAKE) check
+	cd test1 	&& $(MAKE) clean && $(MAKE) check
+	cd test2 	&& $(MAKE) clean && $(MAKE) check
+	cd testlib 	&& $(MAKE) clean && $(MAKE) check
+	cd testspec 	&& $(MAKE) clean && $(MAKE) check
 
 boot0 :
 	$(MAKE) bootstep

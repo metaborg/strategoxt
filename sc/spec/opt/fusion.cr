@@ -1,6 +1,6 @@
 module fusion
 imports stratego stratego-laws lib strategy-patterns desugar
-	fusion-rules
+	fusion-rules verbose
 
 signature
   constructors
@@ -13,7 +13,7 @@ strategies
       declare-inline-rules
       ; ( check-library-definitions
         ; alltd(innermost-fusion)
-        ) <+ say(!"no innermost here")
+        ) <+ if-verbose2(say(!"no innermost here"))
     )
 
 
@@ -52,38 +52,38 @@ strategies
     where(
       new => x
       ; (<InlineStrat> [[ try_1(x()) : S ]]
-         <+ say(!"no definition of try_1: "); fail)
+         <+ if-verbose2(say(!"no definition of try_1: ")); fail)
       ; (?[[ x() <+ id ]]
-         <+ debug(!"try is not try: "); fail)
-      ; say(!"try is try ")
+         <+ if-verbose1(debug(!"try is not try: ")); fail)
+      ; if-verbose2(say(!"try is try "))
     )
 
   check-that-innermost-is-innermost =
     where(
       new => x
       ; (<InlineStrat> [[ innermost_1(x()) : S ]]
-         <+ say(!"no definition of innermost_1: "); fail)
+         <+ if-verbose2(say(!"no definition of innermost_1: ")); fail)
       ; (?[[ bottomup_1(rec z(try_1(x(); bottomup_1(z())))) ]]
-         <+ debug(!"innermost is not innermost: "); fail)
-      ; say(!"innermost is innermost ")
+         <+ if-verbose1(debug(!"innermost is not innermost: ")); fail)
+      ; if-verbose2(say(!"innermost is innermost "))
     )
 
   check-that-bottomup-is-bottomup =
     where(
       new => x
       ; (<InlineStrat> [[ bottomup_1(x()) : S ]]
-         <+ say(!"no definition of bottomup_1: "); fail)
+         <+ if-verbose2(say(!"no definition of bottomup_1: ")); fail)
    // ; ?[[ rec y(all(y()); x()) ]]
       ; (?[[ all(bottomup_1(x())); x() ]]
-         <+ debug(!"bottomup is not bottomup: "); fail)
-      ; say(!"bottomup is bottomup")
+         <+ if-verbose1(debug(!"bottomup is not bottomup: ")); fail)
+      ; if-verbose2(say(!"bottomup is bottomup"))
     )
 
   // The fusion strategy
 
   innermost-fusion = 
     ?[[ innermost_1(s1) ]] 
-    ; say(!"this looks like an innermost")
+    ; if-verbose2(say(!"fusion: application of innermost found"))
 
     ; where(new => x)
     ; where(<seq-over-choice> [[ bottomup_1(x()) :S]])
@@ -98,7 +98,7 @@ strategies
 
     ; desugar
     // ; alltd(UnMark)
-    ; say(!"fused application of innermost")
+    ; if-verbose1(say(!"fused application of innermost"))
 
   // Propagate mark over choice
 
