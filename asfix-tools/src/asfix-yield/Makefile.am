@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.2 2001/05/30 16:02:21 mdejonge Exp $
+# $Id: Makefile.am,v 1.3 2001/06/07 14:45:53 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -36,26 +36,28 @@ STRATEGO_PRG = asfix-yield
 bin_SCRIPTS  = $(STRATEGO_PRG) asource
 
 # Optional tests to run
-TESTS        = asfix-yield-check
+TESTS        = asfix_yield1_check \
+               asfix_yield2_check
 
 # List all files that should be distributed here
-EXTRA_DIST  += asfix-yield-check.src aterms.sdf aterms.tree tiny.sil tiny.tree
+EXTRA_DIST  += aterms.sdf aterms.tree tiny.sil tiny.tree
 
 # What should be cleaned
-CLEANFILES   += tiny.txt aterms.txt aterms.tree asfix-yield-check asource
+CLEANFILES   += asource \
+                asfix_yield1_check asfix_yield2_check
 
 # Additional flags for the Stratego compiler
 SCFLAGS      += -I $(srcdir)/../asfix
 
-% : %.src
-	sed 's#__SRCDIR__#$(srcdir)#g;\
-	     s#__SGLR__#$(SGLR)#g' < $< > $@
-	chmod +x $@
-
 asource:
 	ln -s asfix-yield asource
 
-aterms.tree : aterms.sdf
-	sglr -1 -t -p sdf.tbl -i $< -o $@
+asfix_yield1_check_prog    = asfix-yield
+asfix_yield1_check_input   = data/tiny.tree
+asfix_yield1_check_output  = data/tiny.txt
+asfix_yield1_check_correct = data/tiny.sil
 
-
+asfix_yield2_check_prog    = asfix-yield
+asfix_yield2_check_input   = data/aterms.tree
+asfix_yield2_check_output  = data/aterms.txt
+asfix_yield2_check_correct = data/aterms.sdf

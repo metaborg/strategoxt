@@ -19,25 +19,31 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: asfix-yield.r,v 1.1 2001/05/30 15:19:01 mdejonge Exp $
+% $Id: asfix-yield.r,v 1.2 2001/06/07 14:45:53 mdejonge Exp $
 
 \begin{code}
 module asfix-yield
 imports lib Sdf-ParseTree-Syntax asfix1
 strategies
 
-  main = 
-	<ReadFromFile> stdin;
-	asfix-yield
+  main = parse-options( io-options );
+         (
+            need-help(default-usage)
+         <+
+            where(option-defined(?Output(outfile));<open-file>outfile <+ !stdout => outfile);
+            input-file;
+            (id, asfix-yield(!outfile))
+         )
 
-  asfix-yield = 
-	is-asfix1; asfix-yield1 
-    	<+ is-asfix2; asfix-yield2 	
-	<+ literal
+  asfix-yield(outfile) = 
+	is-asfix1; asfix-yield1(outfile)
+    	<+ is-asfix2; asfix-yield2(outfile) 	
+	<+ literal(outfile)
     	<+ <fatal-error> ["not in AsFix format"]
 
-  asfix-yield2 = 
-	leaves(is-string; printstring <+ printchar, is-leaf, skip2)
+  asfix-yield2(outfile) = 
+	leaves(is-string;split(outfile, \x -> [x]\); print <+ 
+	                 split(outfile, \x -> [x] \);printascii, is-leaf, skip2)
 
   skip2(x) = 
 	appl(id, list(x))
@@ -45,10 +51,10 @@ strategies
 	+ parsetree(x,id)
         + flatlex(id,x)
 
-  asfix-yield1 = 
-	leaves(printstring, is-string, skip1)
+  asfix-yield1(outfile) = 
+	leaves(split(outfile, \x -> [x]\); print, is-string, skip1)
 
-  literal = is-string; printstring
+  literal(outfile) = is-string; split(outfile, \x -> [x]\); print
 
   skip1(x) = 
 	term(id,id,id,id,id,x,x,x,id)

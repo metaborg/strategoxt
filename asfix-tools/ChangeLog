@@ -1,3 +1,7 @@
+2001-06-07 Merijn de Jonge <mdejonge@cwi.nl> 
+   * src/asfix-yield: asfix-yield now accepts the standard -i and -o options
+   * src/asfix-yield: moved data files to data directory
+
 2001-06-06 Merijn de Jonge <mdejonge@cwi.nl> 
    * src/implode/Makefile.am: implode-asfix.r gets also installed
    * added templates to package.conf
