@@ -59,8 +59,11 @@ strategies
   ; <map( \ key -> <table-pop>(ns, key) \ )> scope
   )
 
+//  scope(ns, s) =
+//    begin-scope(ns); (s; end-scope(ns) <+ end-scope(ns); fail)
+
   scope(ns, s) =
-    begin-scope(ns); (s; end-scope(ns) <+ end-scope(ns); fail)
+    begin-scope(ns); restore-always(s, end-scope(ns))
 
   assert(ns) = ?(key, val); //debug(!"assert: ");
   where(ns => ns

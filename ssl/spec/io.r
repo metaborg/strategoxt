@@ -150,38 +150,41 @@ strategies
 
   open(file) = file; ReadFromFile
 
-  save(file) = split(file, id); WriteToTextFile
+  save(file) = <WriteToTextFile> (<file>, <id>)
 
-  debug      = where(split(!stderr, \x -> [x]\); printnl)
-  debug(msg) = where(split(!stderr, \x -> [<msg>(),x]\); printnl)
+  debug      = where(<printnl> (stderr, [<id>]))
+  debug(msg) = where(<printnl> (stderr, [<msg>,<id>]))
 
   say(msg)   = where(msg; debug)
 
-  echo       = where(split(!stdout, \x -> [x]\); printnl)
-  echo(msg)  = where(split(!stdout, \x -> [<msg>(),x]\); printnl)
+  echo       = where(<printnl> (stdout, [<id>]))
+  echo(msg)  = where(<printnl> (stdout, [<msg>,<id>]))
 
   debug-stdout(msg) = 
     obsolete(!"debug-stdout; use echo");
-    where(split(!stdout, \x -> [<msg>(),x]\); printnl)
+    where(<printnl> (stdout, [<msg>,<id>]))
 
   trace(msg,s) =
     debug(msg); (s; debug(!"succeeded: ") <+ debug(!"failed: "))
 
-  error = where(split(!stderr, id); printnl)
+  error = where(<printnl> (stderr, <id>))
 
   fatal-error = where(error; <exit> 1)
 
   giving-up   = <fatal-error>["giving-up"]
 
-  printchar   = where(split(!stdout, \x -> [x]\ ); printascii)
+  printchar   = where(<printascii> (stdout, [<id>]))
 
-  printstring = where(split(!stdout, \x -> [x]\ ); print)
+  printstring = where(<print> (stdout, [<id>]))
 
-  print-strings-nl(out) = where(split(out, id); printnl)
+  print-strings-nl(out) = where(<printnl> (<out>, <id>))
 
   obsolete(msg) = where(msg; debug(!"obsolete library strategy: "))
 
   Assert(s, msg) = test(s) <+ debug(msg)
+
+  risky(msg, s) = restore(s, debug(msg))
+
 \end{code}
 
 	The operator \verb|stdio| implements a simple user-interface

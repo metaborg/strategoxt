@@ -117,14 +117,14 @@ rules
 strategies
 
   io-options =
-	Option("-S"+"--silent",            !Silent(),           !"-S|--silent      Silent execution")
-	+ Option("--verbose",   !Verbose(),                     !"--verbose        Verbose execution")
-	+ Option("-v"+"--version",          !Version(),         !"-v|--version     Display prgram's version")
-	+ ArgOption("@version",  \x -> DeclVersion(x)\,         !"@version         Unknown" )
-	+ ArgOption("-i" + "--input",       \x -> Input(x)\ ,   !"-i f|--input f   Read input from f")
-	+ ArgOption("-o"+"--uotput",       \x -> Output(x)\,    !"-o f|--output f  Write output to f" )
-	+ Option("-b",          !Binary(),                      !"-b               Write binary output")
-	+ Option("-s",          !Statistics(),                  !"-s               Turn on statisctics")
+	Option("-S"+"--silent",       !Silent(),          !"-S|--silent      Silent execution")
+	+ Option("--verbose",         !Verbose(),         !"--verbose        Verbose execution")
+	+ Option("-v"+"--version",    !Version(),         !"-v|--version     Display prgram's version")
+	+ ArgOption("@version",       !DeclVersion(<id>), !"@version         Unknown" )
+	+ ArgOption("-i" + "--input", !Input(<id>),       !"-i f|--input f   Read input from f")
+	+ ArgOption("-o"+"--uotput",  !Output(<id>),      !"-o f|--output f  Write output to f" )
+	+ Option("-b",                !Binary(),          !"-b               Write binary output")
+	+ Option("-s",                !Statistics(),      !"-s               Turn on statisctics")
 
   usage' = 
     obsolete(!"usage': use default-usage")

@@ -35,3 +35,8 @@ include $(srcdir)/make-rules
 
 include $(wildcard *.dep)
 
+all:
+
+www-install:
+	scp $(wildcard *.r) \
+		sunshine.cs.uu.nl:/users/www/research/projects/stratego/lib

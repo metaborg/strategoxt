@@ -30,6 +30,8 @@ module fixpoint-traversal
 imports iteration simple-traversal
 strategies
 
+  // reduce(s)     = repeat(rec x(s + one(x)))
+
   reduce(s)     = repeat(rec x(some(x) + s))
 
   outermost(s)  = repeat(oncetd(s))

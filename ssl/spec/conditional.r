@@ -44,4 +44,10 @@ strategies
   FAIL = 
     obsolete(!"FAIL: use fail"); 
     fail
+
+  restore(s, rest) = 
+    s <+ (rest; fail)
+
+  restore-always(s, rest) = 
+    (s; rest) <+ (rest; fail)
 \end{code}
