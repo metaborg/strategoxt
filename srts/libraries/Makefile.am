@@ -19,7 +19,7 @@ pkgdocdatadir 	= $(pkgdatadir)/doc
 pkgdata_DATA   	= liblib.rtree
 pkgdocdata_DATA = liblib.str
 
-EXTRA_DIST	= liblib.rtree liblib.str
+EXTRA_DIST	= liblib.rtree liblib.str library.str
 BOOTCLEANFILES 	= liblib.str liblib.rtree liblib.c
 
 bootclean :
@@ -29,4 +29,3 @@ liblib.c :
 	$(STRC)/bin/strc -c --library --verbose 2 \
         -I $(XTC)/share/xtc -I $(SSL)/share/ssl \
         -i ./library.str -o liblib.rtree
-
