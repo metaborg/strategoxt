@@ -1,4 +1,28 @@
 definition
+module Stratego-DynamicRules
+exports
+  context-free syntax
+    "{|" {DynRuleScopeId ","}* ":" Strategy "|}" -> Strategy {cons("DynRuleScope")}
+    "{|" RuleDec ":+" Term                  "|}" -> Strategy {cons("AddScopeLabel")}
+
+    "branch"    "(" RuleDec ":" Strategy  ")" -> DynRuleSet {cons("BranchDynRules")}
+    "union"     "(" DynRuleSet DynRuleSet ")" -> DynRuleSet {cons("UnionDynRules")}
+    "intersect" "(" DynRuleSet DynRuleSet ")" -> DynRuleSet {cons("IntersectDynRules")}
+    "commit"    "(" DynRuleSet            ")" -> Strategy   {cons("CommitDynRules")}
+    DynRuleSet -> Strategy
+
+    "rules" "(" DynRuleDef* ")" -> Strategy {cons("GenDynRules")}
+
+    DynRuleScopeId ":-"  Term -> DynRuleDef {cons("UndefineDynRule")}
+    DynRuleScopeId ":"   Rule -> DynRuleDef {cons("SetDynRule")}
+    DynRuleScopeId ":+"  Rule -> DynRuleDef {cons("AddDynRule")}
+
+    RuleDec "." Term -> DynRuleScopeId {cons("LabeledScope")}
+    RuleDec          -> DynRuleScopeId {cons("CurrentScope")}
+
+    Id                         -> RuleDec {cons("RuleDecNoArgs")}
+    Id "(" {Typedid ","}* ")"  -> RuleDec {cons("RuleDec")}
+
 module Stratego-Strategies
 exports
 
@@ -423,6 +447,6 @@ imports Stratego-Layout Stratego-Identifiers Stratego-Constants
 
 
 module StrategoForTesting
-imports Stratego
+imports Stratego Stratego-DynamicRules
 exports
   sorts Strategy
