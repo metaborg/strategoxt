@@ -67,8 +67,8 @@ exports
     EqualityExp "!=" RelExp -> EqualityExp {cons("NotEqual")}
 
   context-free syntax
-    EqualityExp             -> ANDExp
-    EqualityExp "&" ANDExpn -> ANDExp {cons("And")}
+    EqualityExp            -> ANDExp
+    EqualityExp "&" ANDExp -> ANDExp {cons("And")}
 
   context-free syntax
     ANDExp               -> ExclORExp
@@ -116,4 +116,3 @@ exports
 
   context-free syntax
     CondExp -> ConstantExp
-

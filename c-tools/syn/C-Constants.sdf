@@ -15,7 +15,7 @@ exports
   lexical syntax
     [L]? "\"" StringChar* "\"" -> StringLiteral
     [0-9]+                     -> IntLiteral
-    "0" [xX] [0-9]+            -> HexLiteral
+    "0" [xX] [0-9a-fA-F]+      -> HexLiteral
     [L]? "'" Char "'"          -> CharLiteral
 
     "." [0-9]+ ( [eE] "-"? [0-9]+ )? [fFlL]?        -> FloatLiteral
@@ -36,4 +36,3 @@ exports
 
   lexical restrictions
     IntLiteral HexLiteral FloatLiteral -/- [0-9]
-

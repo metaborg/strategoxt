@@ -47,7 +47,7 @@ signature
     NotEqual : EqualityExp * RelExp -> EqualityExp
 signature
   constructors
-    And : EqualityExp * ANDExpn -> ANDExp
+    And : EqualityExp * ANDExp -> ANDExp
 signature
   constructors
     ExOr : ANDExp * ExclORExp -> ExclORExp

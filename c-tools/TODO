@@ -1,0 +1,28 @@
+Stefaan Himpe reported:
+----------------------------------------------------------
+2) In the C-Preprocessor module,
+
+Some of the line info produced by the GCC preprocessor isn't recognized:
+
+I think it suffices to replace the line
+
+"#" WS Constant ( "\"" WS Filename WS "\"" )? WS [\n] -> ControlLine
+
+by
+
+"#" WS IntLiteral ( "\"" WS Filename WS "\"")? WS
+( (IntLiteral WS IntLiteral) ? IntLiteral ) -> ControlLine
+
+----------------------------------------------------------
+3b) Related to (3a), the following program parses wrongly (and no 
+ambiguities are reported):
+
+int main()
+{
+   int z,v;
+   return (z) & (v);
+}
+
+This is parsed as a typecast to type z of the result of taking
+the address of v. Shouldn't this at least be ambiguous with an
+ANDExpr ?

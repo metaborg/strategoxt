@@ -567,8 +567,8 @@ exports
     EqualityExp "!=" RelExp -> EqualityExp {cons("NotEqual")}
 
   context-free syntax
-    EqualityExp             -> ANDExp
-    EqualityExp "&" ANDExpn -> ANDExp {cons("And")}
+    EqualityExp            -> ANDExp
+    EqualityExp "&" ANDExp -> ANDExp {cons("And")}
 
   context-free syntax
     ANDExp               -> ExclORExp
@@ -616,7 +616,6 @@ exports
 
   context-free syntax
     CondExp -> ConstantExp
-
 
 
 module C-Types
@@ -829,7 +828,7 @@ exports
 module C-Lexical
 exports
   lexical syntax
-    [\ \t\n]                        -> LAYOUT
+    [\ \t\n\12]                     -> LAYOUT
     "/*" ( ~[\*] | Asterisk )* "*/" -> Comment
     Comment                         -> LAYOUT
     [\*]                            -> Asterisk
@@ -858,7 +857,7 @@ exports
   lexical syntax
     [L]? "\"" StringChar* "\"" -> StringLiteral
     [0-9]+                     -> IntLiteral
-    "0" [xX] [0-9]+            -> HexLiteral
+    "0" [xX] [0-9a-fA-F]+      -> HexLiteral
     [L]? "'" Char "'"          -> CharLiteral
 
     "." [0-9]+ ( [eE] "-"? [0-9]+ )? [fFlL]?        -> FloatLiteral

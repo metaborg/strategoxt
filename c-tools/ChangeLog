@@ -1,5 +1,9 @@
+2003-03-12  Martin Bravenboer <martin@mbravenboer.org>
+
+  * syn/C-Constants.sdf: corrected lexical syntax of Hex.
+  * syn/C-Expressions.sdf: fixed typo in AndExp.
+
 2002-11-23  Martin Bravenboer <martin@mbravenboer.org>
 
   * Small changes to configure.in to profit from new
     autotools.
-

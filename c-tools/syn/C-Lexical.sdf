@@ -1,7 +1,7 @@
 module C-Lexical
 exports
   lexical syntax
-    [\ \t\n]                        -> LAYOUT
+    [\ \t\n\12]                     -> LAYOUT
     "/*" ( ~[\*] | Asterisk )* "*/" -> Comment
     Comment                         -> LAYOUT
     [\*]                            -> Asterisk
