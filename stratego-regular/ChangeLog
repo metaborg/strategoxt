@@ -1,3 +1,17 @@
+2004-07-28  Martin Bravenboer <martin@cs.uu.nl>
+
+	* xtc/format-check.str: new --fast option. This option will
+	improve the speed of format checking, but will reduce the quality
+	of error messages.
+
+	* trans/interpret/core-format-check.str: complete redesign to
+	improve performance and memory usage. An ATerm of 32.000 nodes now
+	format-checks --fast in about 1.5 seconds (was 40 seconds). I
+	think the performance can still be improved at some points.
+
+	The --xhtml and --vis mode have not been updated yet. Will do this
+	tonight.
+
 2004-07-22  Martin Bravenboer <martin@cs.uu.nl>
 
 	* xtc/format-check.str: new --vis option for showing the format

@@ -9,6 +9,7 @@ imports liblib logging regular-options rtg rtg-util
 strategies
 
   main-core-format-check =
+    filter(not(?"-at-verbose"));
     io-wrap(core-fc-options,
       main-format-check
     ; where(output(id))
@@ -33,6 +34,7 @@ strategies
   core-fc-options =
       rtg-nf-option(|"Check against normalized RTG in file")
     + start-nonterm-option(|"Term must be of type s (default: start non-terms of rtg)")
+    + fast-option(|"Run as fast as possible. Might reduce quality of error messages.")
 
   get-start-nonterms(default) =
     get-start-nonterm; ![Nonterm(<id>)] <+ default
@@ -54,8 +56,16 @@ strategies
    * @type  starts  List(NonTerm)
    */
   format-check =
-    where(<set-config> ("typetable", <new-hashtable> ()))
-  ; where(<repeat(Type)> "")
+      where(<set-config> ("typetable", <new-hashtable> ()))
+    ; where(<set-config> ("typeset",   <new-iset> ()))
+    ; where(<repeat(Type)> "")
+
+    ; if-fast-mode(
+        topdown(
+          try(is-string; !"")
+        ; try(is-int; !0)
+        )
+      )
 
   ; bottomup-consnil(
        where(get-types)
@@ -107,7 +117,8 @@ strategies
     ; rules(
         UserType :+ t -> t
           where <has-type(|a)> t
-              ; <new-type(|b)> t
+              ; <not(has-type(|b))> t
+              ; <set-type(|b)> t
       )
 
   /**
@@ -177,9 +188,8 @@ strategies
     ?ProdRule(a, [Appl(TupleTerm(_), as)])
     ; where(<map(?Ref(<id>))> as => arg-types)
     ; rules(
-        UserType :+ ""#(args) -> t
-          where ?t
-              ; <not(has-type(|a))> t
+        UserTypeExploded :+ t@("", args) -> t
+          where <not(has-type(|a))> t
               ; <list-has-type(|arg-types)> args
               ; <set-type(|a)> t
       )
@@ -191,9 +201,8 @@ strategies
     ?ProdRule(a, [Appl(Term(f), as)])
     ; where(<map(?Ref(<id>))> as => arg-types)
     ; rules(
-        UserType :+ f#(args) -> t
-          where ?t
-              ; <not(has-type(|a))> t
+        UserType :+ t@f#(args) -> t
+          where <not(has-type(|a))> t
               ; <list-has-type(|arg-types)> args
               ; <set-type(|a)> t
       )
@@ -203,14 +212,16 @@ strategies
    * @type  as  List(NonTerm)
    */
   list-has-type(|as) =
-    where(
-      where(!as => [a | bs])
-    ; ?[hd | tl]
-    ; <has-type(|a)> hd
-    ; <list-has-type(|bs)> tl
-    <+ ?[]
-     ; !as => []
-    )
+    if ?[] then
+      !as => []
+    else
+      ?[hd | tl]
+    ; where(
+        !as => [a | bs]
+      ; <has-type(|a)> hd
+      ; <list-has-type(|bs)> tl
+      )
+    end
 
 /**
  * Type types a term.
@@ -233,43 +244,45 @@ strategies
    *
    * @type  t -> t
    */
-  new-type(|a) =
-    where(
-      retrieve-types
-    ; not(iset-contains(|a))
-    ; iset-add(|a)
-    )
+  new-type(|nt) =
+    ?term
+    ; where(
+        not(has-type(|nt))
+      ; <get-config> "typetable"
+      ; hashtable-push(|term, nt)
+      ; <get-config> "typeset"
+      ; iset-add(|(term, nt))
+      )
 
-  set-type(|a) =
-    where(
-      retrieve-types
-    ; iset-add(|a)
-    )
-
+  set-type(|nt) =
+    ?term
+    ; where(
+        <get-config> "typetable"
+      ; hashtable-push(|term, nt)
+      ; <get-config> "typeset"
+      ; iset-add(|(term, nt))
+      )
+    
   /**
    * Succeeds if t has type nt
    *
    * @type  t -> t
    */
-  has-type(|a) =
-    where(
-      retrieve-types
-    ; iset-contains(|a)
-    )
+  has-type(|nt) =
+    ?term
+    ; where(
+        <get-config> "typeset"
+      ; iset-contains(|(term, nt))
+      )
 
-  /**
-   * Returns an IndexedSet of types for a term.
-   *
-   * A new set is created if this hasn't been done yet.
-   */
   retrieve-types =
     get-types
     <+ ?t
-       ; new-iset(|8, 75) => set
        ; where(
            <get-config> "typetable"
-         ; hashtable-put(|t, set)
+         ; hashtable-put(|t, [])
          )
+       ; ![]
 
   get-types =
     ?t
@@ -327,7 +340,7 @@ strategies
         <fprintnl> (<stderr-stream>, ["    inferred types of subterms: "])
       ; <all-consnil(
           where(
-            <fprintnl> (<stderr-stream>, ["    typed ", <write-to-string>, " as ", <retrieve-types; iset-elements; types-to-string>])
+            <fprintnl> (<stderr-stream>, ["    typed ", <write-to-string>, " as ", <retrieve-types; types-to-string>])
           )
         )> t
       else id end

@@ -66,6 +66,24 @@ strategies
   pass-start-nonterm =
     !["--start", <get-config> "start-nonterm"] <+ ![]
 
+strategies
+
+  fast-option(|msg) =
+    Option("--fast"
+    , enable-fast-mode
+    , !HelpString("--fast", msg)
+    )
+
+  enable-fast-mode =
+    <set-config> ("--fast", "true")
+
+  if-fast-mode(s) =
+    if <get-config> "--fast" => "true" then s else id end
+
+  pass-fast-mode =
+    ![]
+    ; if-fast-mode(!["--fast"])
+
 /**
  * Workaround for tools that don't import xtc.
  */

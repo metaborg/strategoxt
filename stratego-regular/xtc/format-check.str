@@ -29,7 +29,7 @@ strategies
   format-check =
     xtc-ensure-file
     ; xtc-transform(!"core-format-check", 
-          <flatten-list> ["--rtg-nf", <input-to-rtg-nf>, <pass-verbose> (), <pass-start-nonterm>]
+          <flatten-list> ["--rtg-nf", <input-to-rtg-nf>, <pass-verbose> (), <pass-start-nonterm>, <pass-fast-mode>]
       )
     <+ <xtc-exit> 1
 
@@ -71,6 +71,7 @@ strategies
     + start-nonterm-option(|"Term must be of type s (default: start non-terms of rtg)")
     + xhtml-option
     + vis-option
+    + fast-option(|"Run as fast as possible. Might reduce quality of error messages.")
 
   xhtml-option =
     Option("--xhtml"
