@@ -17,14 +17,14 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: stratego-imports.r,v 1.2 2001/09/02 15:50:41 mdejonge Exp $
+% $Id: stratego-imports.r,v 1.3 2002/03/19 12:39:00 eelco Exp $
 
 \begin{code}
 module stratego-stratego
 imports
   lib pack-graph file
   get-modules
-  Stratego-Specifications Stratego-Modules
+  Stratego-Specifications Stratego-Modules gt-paths
 
 strategies
 

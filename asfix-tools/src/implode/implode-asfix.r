@@ -304,8 +304,12 @@ rules
     where <is-some> p
 
   ReplConsConc(impl) : 
-    appl(p, [t1,t2]) -> <conc>(<impl>t1, <impl>t2)
+    appl(p, [t1,t2]) -> t
     where <is-conc> p
+        ; <impl>t1 => ts1
+        ; <impl>t2 => ts2
+        ; (<[] + [id|id]> ts2; <conc>(ts1, ts2)
+          <+ !Conc(ts1, ts2)) => t
 
   ReplConsConc(impl) : 
     appl(p, [t1,t2,t3]) -> <conc>(<impl>t1, [<impl>t2 | <impl>t3])
