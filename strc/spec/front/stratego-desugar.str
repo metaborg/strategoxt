@@ -9,7 +9,7 @@ signature
 strategies
  
   stratego-desugar = 
-    io-wrap(try(\ _#([x]) -> x \ ) ; topdown(repeat(Desugar); try(DesugarOnce)))
+    io-wrap(topdown(repeat(Desugar); try(DesugarOnce)))
 
   pre-desugar =
     topdown(repeat(Desugar); try(DesugarOnce))

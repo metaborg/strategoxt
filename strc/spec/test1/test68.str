@@ -1,0 +1,5 @@
+module test68
+imports spec
+strategies
+
+  main = !Fred("test")
