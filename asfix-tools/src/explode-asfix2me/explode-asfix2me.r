@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: explode-asfix2me.r,v 1.2 2002/02/10 20:20:55 mdejonge Exp $
+% $Id: explode-asfix2me.r,v 1.3 2002/02/10 23:50:12 mdejonge Exp $
 
 notes:
    inconsistencies:
@@ -41,7 +41,7 @@ imports lib Sdf-Syntax asfix2me
 overlays 
    CfIterStarEmpty(s)     = appl(prod([],cf(iter-star(s)),no-attrs),[])
    CfIter2IterStar(s,es)  = appl(prod([cf(iter(s))],cf(iter-star(s)),no-attrs),es)
-   CfIterSingleton(s,e)   = appl(prod([s], cf(iter(s)), no-attrs),[e])
+   CfIterSingleton(s,e)   = appl(prod([cf(s)], cf(iter(s)), no-attrs),[e])
    CfIterCons(s,e1,ws,e2) = appl(prod([cf(iter(s)),cf(opt(layout)),cf(iter(s))],cf(iter(s)),attrs([assoc(left)])),[e1,ws,e2])
 
 
@@ -126,11 +126,12 @@ unflatten-list:
 
 
 MkCfConsList(s) =
+      [?e;!CfIterSingleton(<s>(),e)|id];
       rec x ({e1,e2,e,ws1,ws2,es:
          ?[e]; !e
       <+
          ?[e1,ws1,e2|es]
-         ;<x>[CfIterCons(<s>(),e1,ws1,e2)|es]
+         ;<x>[CfIterCons(<s>(),e1,ws1,CfIterSingleton(<s>(),e2))|es]
       })
 
 // For separator lists, an extra injection has to be inserted (see notes at the top)

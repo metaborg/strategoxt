@@ -6,7 +6,7 @@ sorts S S1
 lexical syntax
    [\ \t\n] -> LAYOUT
    "%%" ~[\n]* "\n" -> LAYOUT
-
+"c" -> C
 context-free restrictions
    LAYOUT? -/- [\ \t\n\%]
 
@@ -14,7 +14,7 @@ context-free syntax
    "a" -> S {cons("a")}
    "b" -> S {cons("b")}
 
-   "c"* -> S {cons("c")}
+   C* -> S {cons("c")}
    
    {"d" ","}+ -> S1{cons("d")}
 
