@@ -1,3 +1,15 @@
+2004-06-30  Martin Bravenboer <martin@cs.uu.nl>
+
+	* src/srts/stratego-config.h: generated. Don't think this file
+	needs to be in the repository.
+
+	* ssl/dir.c: implemented a quick, dirty, and insecure fallback for
+	a missing mkdtemp. Implementation is based on a mktemp followed by
+	a mkdir. This is a security risk, but I don't like to copying the
+	huge implementations that other packages are using as a
+	fallback. Note that the poor implementation is only used if
+	mkdtemp is not available.
+	
 2004-06-26  Martin Bravenboer <martin@cs.uu.nl>
 
 	Many changes to enable separate compilation of XTC tools.

@@ -34,7 +34,7 @@ AC_ARG_WITH([xtc],
 )
 AC_SUBST([XTC])
 
-AC_CHECK_FUNCS([getpagesize])
+AC_CHECK_FUNCS([getpagesize mkdtemp])
 AC_CHECK_HEADERS([stdlib.h])
 AC_CHECK_HEADERS([string.h])
 AC_CHECK_HEADERS([unistd.h])

@@ -102,7 +102,6 @@ ATerm SSL_getcwd(void) {
  * permissions 0700.  Since it will be modified, template must not be
  * a string constant, but should be declared as a character array.
  */
-
 ATerm SSL_mkdtemp(ATerm template) {
   char* result;
   ATerm term_result;
@@ -115,10 +114,21 @@ ATerm SSL_mkdtemp(ATerm template) {
   result = (char*) malloc(strlen(str) + 1);
   strcpy(result, str);
 
+#ifdef HAVE_MKDTEMP
   result = mkdtemp(result);
+#else
+  result = mktemp(result);
+#endif
+
   if(result == NULL) {
     _fail(template);
   }
+
+#ifndef HAVE_MKDTEMP
+  if(mkdir(result, S_IRWXU) == -1) {
+    _fail(template);
+  }
+#endif
 
   term_result = (ATerm)ATmakeString(result);
   free(result);
