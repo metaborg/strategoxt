@@ -24,7 +24,7 @@ Fdl2Sdf :
 
 
 Fdl2Sdf :
-   'all( x ) -> x
+   'all( x ) -> bracket-symbol( x )
 
 Fdl2Sdf :
    more-of(xs) -> iter(bracket-symbol(xs'))

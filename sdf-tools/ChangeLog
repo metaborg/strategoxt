@@ -1,3 +1,7 @@
+2002-02-12 Merijn de Jonge <mdejonge@cwi.nl>
+    * fdl2sdf: Added bracket-symbol around symbol sequences according to all
+       construct
+
 2002-01-17 Merijn de Jonge <mdejonge@cwi.nl>
     * Added fdl2sdf which transforms a feature description written in the
       Feature Description Language (FDL) to SDF.
