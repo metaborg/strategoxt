@@ -59,6 +59,9 @@ strategies
     rec x(a + b; (s, x); c)
 
   // :: [a] * [b] -> [a * b]
+ /**
+  * @inc zip-test1
+  */
   zip  = zip(id)
 
   // a * b -> c :: [a] * [b] -> [c]
@@ -81,6 +84,9 @@ strategies
   unzip(s) = 
     genzip(UnZip1, UnZip3, UnZip2, s)
 
+ /**
+  * @inc nzip0-test
+  */
   nzip0(s) = 
     NZip00 ; genzip(NZip1,  NZip2,  NZip3,  s)
   nzip(s) = 

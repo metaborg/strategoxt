@@ -11,6 +11,10 @@ strategies
   * Get the n-th element of a list.
   *
   * @type Int * List(a) -> a
+  * @inc test3a
+  * @inc test3b
+  * @inc test3c
+  * @inc test3d
   */
   index =
     repeat(Ind2) ; Ind1
@@ -47,6 +51,7 @@ strategies
   * Change element in list.
   *
   * @type Int * a * List(a) -> List(a)
+  * @inc  test2
   */
   set-index =
     Sind0; rec x(Sind1 <+ Sind2(x))
@@ -61,6 +66,7 @@ strategies
   * Insert element in list.
   *
   * @type Int * a * List(a) -> List(a)
+  * @inc test2
   */
   insert =
     Ins0; rec x(Ins1 <+ Ins2(x))
@@ -74,6 +80,8 @@ strategies
   * to the elements of the list.
   *
   * @type Int * a -> b :: List(a) -> List(b)
+  * @inc  test4a
+  * @inc  test4b
   */
   map-with-index(s) = 
       !(1, <id>)
@@ -83,5 +91,8 @@ strategies
       )
 
   // :: List(a) -> List(Int * a)
+ /**
+  * @inc test5
+  */
   add-indices = 
     map-with-index(id)

@@ -2,6 +2,9 @@ module list-filter
 imports list
 strategies
 
+ /**
+  * @inc test1
+  */
   filter(s) = 
     [] + [s | filter(s)] <+ ?[_ | <filter(s)> ]
 
@@ -19,6 +22,9 @@ strategies
 
   // partition(s) = split(filter(s), filter(not(s)))
 
+ /**
+  * @inc test2
+  */
   partition(s) = rec part(
     \ [] -> ([],[]) \
     + ({[s => x | id]; ?[_|<part>]; !([x | <Fst>], <Snd>)} <+

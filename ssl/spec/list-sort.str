@@ -29,6 +29,9 @@ strategies
   Uniq = 
     \ [x|xs] -> [x|l] where <filter(not(?x))> xs => l \
 
+ /**
+  * @inc tuple-uniq-test
+  */
   uniq = 
     listtd(try(Uniq))
 

@@ -41,6 +41,11 @@ strategies
    * first list are added that are not already in the second list.
    *
    * @type List(a) * List(a) -> List(a)
+   * @inc  test1a
+   * @inc  test1b
+   * @inc  test1c
+   * @inc  test1d
+   * @inc  test1e
    */
   union = union(eq)
 
@@ -68,6 +73,11 @@ rules
    * Difference of two lists.
    *
    * @type  (List(a), List(a)) -> List(a)
+   * @inc  test3a
+   * @inc  test3b
+   * @inc  test3c
+   * @inc  test3d
+   * @inc  test3e
    */ 
   diff = diff(eq) 
 
@@ -88,6 +98,11 @@ rules
 
   /**
    * @type  (List(a), List(a)) -> List(a)
+   * @inc  test4a
+   * @inc  test4b
+   * @inc  test4c
+   * @inc  test4d
+   * @inc  test4e
    */
   sym-diff = sym-diff(eq)
 
@@ -106,6 +121,11 @@ strategies
    * Elements are compared using the eq strategy.
    *
    * @type [a] * [a] -> [a]
+   * @inc  test2a
+   * @inc  test2b
+   * @inc  test2c
+   * @inc  test2d
+   * @inc  test2e
    */
   isect = isect(eq)
 

@@ -84,6 +84,10 @@ strategies
   last = 
     rec x(Last <+ Tl; x)
 
+ /**
+  * @inc init
+  * @inc empty init
+  */
   init = 
     at-last(Tl)
 
@@ -96,11 +100,15 @@ strategies
    *
    * @since  0.9.4
    * @type   List(a) -> (List(a), a)
+   * @inc    split-last
    */
   split-last =
       at-last(?[x]; ![])
     ; !(<id>, x)
 
+ /**
+  * @inc copy-test
+  */
   copy = 
     for(\ (n,t) -> (n,t,[]) \
        ,\ (0,t,ts) -> ts \
@@ -114,6 +122,9 @@ strategies
   thread-map(s) = 
     rec x(Cons^T(s, x) + Nil^T)
 
+ /**
+  * @inc number-test
+  */
   number(s) =
     !(<id>, 0); thread-map(!(<s>,<Snd;inc>)); ?(<id>,_)
 
@@ -147,6 +158,12 @@ strategies
    * 
    * type in = a or [in]
    * flatten-list :: [in] -> [a]
+   *
+   * @inc flatten-test 1
+   * @inc flatten-test 2
+   * @inc flatten-test 3
+   * @inc flatten-test 4
+   * @inc flatten-test 5
    */
   flatten-list =
     foldr(![], (is-list, id) < conc-two-lists + MkCons, is-list < flatten-list + id)
