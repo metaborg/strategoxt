@@ -21,7 +21,12 @@ strategies
     <get-config> "--parse-table" <+ <fatal-error> ["** ERROR: no parse table specified"]
 
   abs-test-file =
-    <conc-strings> (<get-config; get-path> "-i", <id>)
+    <conc-strings> (<get-relative-prefix> "-i", <id>)
+
+  get-relative-prefix =
+       get-config; get-path
+    <+ <conc-strings> (<getcwd>, "/")
+
 
 strategies
 
