@@ -23,10 +23,10 @@ BOOTCLEANFILES 	 = compile-match.c optimize1.c optimize2.c
 
 
 compile-match.c: compile-match.str
-	$(SC) $(SCFLAGS) -i $< --main compile-match-comp -o $@ -c
+	$(SCOMPILE) $(SCFLAGS) -i $< --main compile-match-comp -o $@ -c
 
 optimize1.c: compile-match.str
-	$(SC) $(SCFLAGS) -i $< --main optimize1-comp -o optimize1.c -c
+	$(SCOMPILE) $(SCFLAGS) -i $< --main optimize1-comp -o optimize1.c -c
 
 optimize2.c: compile-match.str
-	$(SC) $(SCFLAGS) -i $< --main optimize2-comp -o optimize2.c -c
+	$(SCOMPILE) $(SCFLAGS) -i $< --main optimize2-comp -o optimize2.c -c

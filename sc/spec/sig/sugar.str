@@ -69,6 +69,7 @@ signature
     LRule     : Rule                         -> Strat   (* \ t1 -> t2 where \ *)
     SRule     : Rule                         -> Strat
     RDef      : String * List(String) * Rule -> RDef    (* f(xs) : r *)
+    SRDef     : String * List(String) * Rule -> RDef
 
     DynamicRules : List(RDef) -> Strat
     OverrideDynamicRules : List(RDef) -> Strat

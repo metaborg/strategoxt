@@ -2,8 +2,7 @@
 
 CINCLUDES = \
 	--C-include "<srts/stratego.h>" \
-	--C-include "<ssl/stratego-lib.h>" \
-	--C-include "\"../conf.h\""
+	--C-include "<ssl/stratego-lib.h>" 
 
 CINCL = -I$(SRTS)/include \
 	-I$(ATERM)/include $(CHOICEINCLUDES)
@@ -15,10 +14,10 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 # FRONT-END ###########################################################
 
 %.tree : %.r ../syn/pack-stratego$(EXE) 
-	../syn/pack-stratego $(SINCLUDES) -i $< -o $@
+	../syn/pack-stratego $(SINCLUDES) -i $< -o $@ 
 
 %.tree : %.rtree ../syn/pack-stratego$(EXE) 
-	../syn/pack-stratego $(SINCLUDES) -i $< -o $@
+	../syn/pack-stratego $(SINCLUDES) -i $< -o $@ 
 
 %.s1 : %.tree ../front/frontend$(EXE)
 	../front/frontend -i $< -o $@ -b
@@ -66,8 +65,8 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 %.ac : %.s8 %.s8.check ../c/s2c$(EXE)
 	../c/s2c -i $< -o $@  $(CINCLUDES)  -b
 
-%.c.abox : %.ac $(CGEN)/share/cgen/C.pp
-	time $(GPP)/bin/ast2abox -p $(CGEN)/share/cgen/C.pp -i $< -o $@
+%.c.abox : %.ac $(CGEN)/share/cgen/C-pretty.pp
+	time $(GPP)/bin/ast2abox -p $(CGEN)/share/cgen/C-pretty.pp -i $< -o $@
 
 %.c.abox.check : %.c.abox
 	abox-format -i $< 

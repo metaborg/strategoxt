@@ -15,12 +15,19 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
+include $(srcdir)/../test1/make-rules
+include $(wildcard *.dep)
+
 .PRECIOUS: %.ac %.c
 
-SCFLAGS = --main $@ --C-include "\"../conf.h\""
+noinst_DATA = xtc-conf.h
+
+SCFLAGS = --main $@ 
+
+CINCLUDES += --C-include "\"xtc-conf.h\""
 
 SINCLUDES = \
-	-I $(STRATEGOLIB)/share/ssl \
+	-I $(SSL)/share/ssl \
 	-I $(srcdir)/../sig \
 	-I $(srcdir)/../match \
 	-I $(srcdir)/../opt \
@@ -29,14 +36,17 @@ SINCLUDES = \
 	-I $(srcdir)/../syn \
 	-I $(srcdir)/../sc \
 	-I $(srcdir)/../c \
-	-I $(CGEN)/share/cgen 
+	-I $(CGEN)/share/cgen \
+	-I $(XTC)/share/xtc
+
+xtc-conf.h :
+	echo "#define XTC_REPOSITORY() ATmakeString(\"$(REPOSITORY)\")" > $@
+
 
 CLEANFILES = $(TESTS) *.o *.c *.ac *.s? *.tree *.c.abox
 
 EXTRA_DIST = $(wildcard *.r) $(wildcard *.res)
 
-include $(srcdir)/../test1/make-rules
-include $(wildcard *.dep)
 
 check: $(subst .r,.bin,$(wildcard *-main.r))
 

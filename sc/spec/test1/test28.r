@@ -51,6 +51,8 @@ strategies
     ; test-match-9
     ; test-match-10
     ; test-match-11
+    ; test-match-12
+    ; test-match-13
     )
 
   // no annotation
@@ -134,6 +136,21 @@ strategies
 	, test-success( ?Var("a"){Int} )
 	, !Var("a")
 	, !Failure
+	)
+
+  // annotation of empty list
+  test-match-12 =
+    apply-test(!"test-match-12"
+	, test-success( [] )
+	, ![]{"hi"}
+	, !Success
+	)
+
+  test-match-13 =
+    apply-test(!"test-match-13"
+	, test-success( [id] )
+	, !["a"]{"hi"} 
+	, !Success
 	)
 
   // ----------------------------------------------------------------
