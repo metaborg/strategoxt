@@ -33,14 +33,18 @@ strategies
   init-language-binding =
     where(
       fetch-meta-data(!Meta([]))
-      ; if-verbose2(debug(!"meta-data: "))
       ; syntax-override
+      ; if-verbose2(debug(!"meta-data: "))
       ; meta-data-to-rules
       ; where(get-parse-table)
     )
 
   syntax-override = 
-    try(Meta(fetch(Syntax(<get-config> "--syntax"))))
+    if <get-config> "--syntax" => syn then
+      Meta(fetch(Syntax(!syn)) <+ ![Syntax(syn) | <id>])
+    else
+      id
+    end
 
   pcs-parse-asfix2 =
     if <MetaData> "TopSort" then

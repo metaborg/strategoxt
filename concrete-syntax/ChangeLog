@@ -1,3 +1,9 @@
+2004-07-26   Martin Bravenboer  <martin@cs.uu.nl>
+
+	* xtc/parse-cs-lib.str: syntax override (--syntax option) now also
+	handles the case where other methods of meta data (e.g. meta file)
+	have not defined a Syntax.
+		
 2004-04-22   Martin Bravenboer  <martin@cs.uu.nl>
 
 	* xtc/parse-cs-lib.str: provide reuseful parse-cs strategies in a
