@@ -44,7 +44,7 @@ rules
     ; (  \ (elems, Op("Nil",[])) -> List(elems) \
       <+ \ (elems, last)         -> ListTail(elems, last) \
       )
-  
+
   /**
    * @type List(a) -> (List(a), a)
    */
@@ -60,6 +60,10 @@ rules
     Seq(s1, Seq(s2, s3)) -> Seq(Seq(s1, s2), s3)
 
 rules
+
+  EnsugarOnce :
+    Anno(t, ls) -> Anno(t, ts)
+      where <Ensugar> ls => List(ts)
 
   EnsugarOnce : 
     Int(x) -> Int(<int-to-string> x)

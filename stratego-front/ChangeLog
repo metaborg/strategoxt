@@ -1,3 +1,12 @@
+2003-12-13  Martin Bravenboer <martin@cs.uu.nl>
+
+	* parse/stratego-ensugar.str: added ensugaring of
+	annotations. stratego-desugar desugars annotations to one
+	annotation, which is a list of annotations. This desugaring must
+	be undone by strateg-ensugar. We should have a testsuite that
+	compares the execution of Stratego programs and the program after
+	applying pp-stratego.
+	
 2003-12-12  Eelco Visser  <visser@cs.uu.nl>
 
 	* syn/Stratego-Strategies.sdf: Support 'external' strategy
