@@ -1,0 +1,7 @@
+module Stratego-Sdf2
+imports Sdf2-Syntax StrategoRenamed
+
+exports
+  context-free syntax
+
+    "|[" Production "]|" -> StrategoTerm {cons("ToTerm")}

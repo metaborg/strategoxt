@@ -1,4 +1,9 @@
-2003-05-23  Martin Bravenboer  <martin@mbravenboer.org
+2003-05-26  Martin Bravenboer  <martin@mbravenboer.org>
+
+  * Added initial Sdf2 in Stratego syntax definition. Useful
+    for generation of Sdf2 and unit-testing of sdf-tools.
+
+2003-05-23  Martin Bravenboer  <martin@mbravenboer.org>
 
   * Creation of sdf-front. This is a collection of material
     from sdf-tools that hasn't yet been distributed.
