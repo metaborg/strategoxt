@@ -1,0 +1,62 @@
+/**
+ * Generates a Stratego that puts Bracket constructors at the right place.
+ *
+ * @author  Martin Bravenboer <martin@cs.uu.nl>
+ * @since   0.11
+ */
+module sdf2parenthesize
+imports Stratego Sdf2 options xtc-lib stratego-xt-xtc-tools collect sdf-options
+
+strategies
+
+  io-sdf2parenthesize =
+    xtc-io-wrap(parenthesize-options,
+      xtc-transform(!"sdf2table", !["-n", "-m", <get-sdf-main-module> | <pass-v-verbose>])
+    ; xtc-transform(!"implodePT")
+    ; xtc-io-transform(
+      
+
+      )
+    ; xtc-pp-stratego
+    )
+
+/**
+ * Transformation
+ */
+strategies
+  
+  innermost-module :
+    rs ->
+      |[ module foo
+         imports options Expression
+         strategies
+
+           io-foo =
+             io-wrap(foo-parenthesize)
+
+           foo-parenthesize =
+             innermost(Foo)
+
+         rules
+           foo-Bracket :
+             Div(e1, Mul(e2, e3)) -> Div(e1, Bracket(Mul(e2, e3)))
+      ]|
+
+/**
+ * Options
+ */
+strategies
+
+  parenthesize-options =
+    sdf-main-module-option
+  + stratego-module-option
+
+  stratego-module-option =
+    ArgOption("--name"
+    , where(<set-config> (StrategoModuleFlag(), <id>))
+    , <concat-strings>   ["--name mod       ", "Name of the resulting Stratego (required)"]
+    )
+
+signature
+  constructors
+    StrategoModuleFlag : Flag
