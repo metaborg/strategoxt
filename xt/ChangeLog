@@ -1,24 +1,14 @@
-# XT -- Program Transformation Tools
-# Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
-#                    Eelco Visser <visser@acm.org>
-#                    Joost Visser <jvisser@cwi.nl>
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2, or (at your option)
-# any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-# 02111-1307, USA.
+2000-04-12    <visser@loempia.cs.uu.nl>
 
-# $Id: ChangeLog,v 1.9 2000/04/12 09:05:23 mdejonge Exp $
+	* collect.sh: Added support for checking out development packages
+ 	such that one can work on one of the packages in XT and commit
+ 	changes via cvs. (It might be necessary to clean this up. I did it
+ 	using the mechanism currently installed, but it could be done more
+ 	directly by immediately checking out the directory in the main
+ 	directory.)
+
+	* dev-pkg-list: A configuration in which stratego, gb, and gt are
+ 	developer directories.
 
 2000-04-12    <mdejonge@cwi.nl>
         * NEWS file updated

@@ -1,0 +1,40 @@
+# XT -- Program Transformation Tools
+# Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
+#                    Eelco Visser <visser@acm.org>
+#                    Joost Visser <jvisser@cwi.nl>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+# $Id: dev-pkg-list,v 1.1 2000/04/12 16:04:54 eelco Exp $
+
+# This file lists name, version, and location of all components 
+# of an XT distribution.
+
+aterm,0.24,http://www.cwi.nl/projects/MetaEnv/aterm/aterm-0.24.tar.gz
+
+asc-support,0.2,http://www.cwi.nl/projects/MetaEnv/asc-runtime/asc-support-0.2.tar.gz
+
+pgen,0.2,http://www.cwi.nl/projects/MetaEnv/pgen/pgen-0.2.tar.gz
+
+sglr,2.28,http://www.cwi.nl/projects/MetaEnv/sglr/sglr-2.28.tar.gz
+
+stratego,0.4.12,cvsdev:sunshine.cs.uu.nl:/users/visser/CVSREP
+#stratego,0.4.12,http://www.cs.uu.nl/~visser/ftp/stratego-0.4.12.tar.gz
+
+gb,0.2,cvsdev:eelco@gondel.cwi.nl:/ufs/gipe/CVS
+gt,0.2,cvsdev:eelco@gondel.cwi.nl:/ufs/gipe/CVS
+
+gpp,1.23,http://www.cwi.nl/~mdejonge/gpp/download/gpp-1.23.tar.gz

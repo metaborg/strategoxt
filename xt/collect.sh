@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: collect.sh,v 1.9 2000/04/07 15:05:42 mdejonge Exp $
+# $Id: collect.sh,v 1.10 2000/04/12 16:04:54 eelco Exp $
 
 
 # This script will collect all required packages for the XT distribution.
@@ -54,6 +54,20 @@ do_collect () {
    pkg_url=$3
    
    case ${pkg_url} in
+      cvsdev* )
+         echo "Building a developer installation for \"${pkg}\" from CVS.">&2
+         cvsroot=`echo ${pkg_url} | sed 's/cvsdev://g'`
+         (
+            mkdir -p /tmp/xt-$$
+            cd /tmp/xt-$$
+            cvs -d ${cvsroot} checkout ${pkg}
+            tar cf ${pkg}-${pkg_version}.tar ${pkg}
+	    gzip ${pkg}-${pkg_version}.tar
+         )
+         cp /tmp/xt-$$/${pkg}-${pkg_version}.tar.gz .
+         rm -fr /tmp/xt-$$/
+         ;;
+                  
       cvs* )
          echo "Building a distribution for \"${pkg}\" from CVS.">&2
          cvsroot=`echo ${pkg_url} | sed 's/cvs://g'`
@@ -101,9 +115,12 @@ do
       do_collect ${pkg} ${pkg_version} ${pkg_url} || exit 1
       cd ..
       rm -fr ${pkg}-${pkg_version}
-      gunzip -c ./pkgs/${pkg}-${pkg_version}.tar.gz | tar xf -
-      rm -f ./${pkg}
-      ln -s ${pkg}-${pkg_version} ${pkg}
+      rm -fr ./${pkg}
+      tar -zxf ./pkgs/${pkg}-${pkg_version}.tar.gz
+      if [ ! -f ./${pkg} ]
+      then
+        ln -s ${pkg}-${pkg_version} ${pkg}
+      fi
    fi
 
 done
