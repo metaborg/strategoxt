@@ -164,9 +164,6 @@ relname:
 
 DREPOSITORY = $(DESTDIR)$(REPOSITORY)
 
-xtc-conf.h :
-	echo "#define XTC_REPOSITORY() ATmakeString(\"$(REPOSITORY)\")" > $@
-
 install-data-local::
 	$(mkinstalldirs) `dirname $(DREPOSITORY)`
 	@$(XTC)/bin/xtc -r $(DREPOSITORY) register -l $(prefix) -V $(VERSION) -t $(PACKAGE); \
@@ -200,5 +197,37 @@ install-exec-local::
 		-t `basename $$file $(EXEEXT)` ; \
         done; \
 	echo "Tools registered in repository $(DREPOSITORY): $(bin_PROGRAMS) $(bin_SCRIPTS) $(libexec_PROGRAMS) $(libexec_SCRIPTS)"
+
+
+all-local::
+	@for file in fordummy $(XTC_IMPORT) ; do \
+	  if [ "$$file" = "fordummy" ]; then continue; fi; \
+	  $(XTC)/bin/xtc -r $(BUILD_REPOSITORY) import $$file ; \
+	  echo $(XTC)/bin/xtc -r $(BUILD_REPOSITORY) import $$file ; \
+        done ; \
+	for file in fordummy $(pkgdata_DATA) ; do \
+ 	  if [ "$$file" = "fordummy" ]; then continue; fi; \
+          if test -f "$$file"; then d="`pwd`"; else d="@abs_srcdir@"; fi; \
+          $(XTC)/bin/xtc -r $(BUILD_REPOSITORY) register -l "$$d" -V $(VERSION) \
+		-t $$file ; \
+        done ; \
+	for file in fordummy $(sdfdata_DATA) ; do \
+	  if [ "$$file" = "fordummy" ]; then continue; fi; \
+          if test -f "$$file"; then d="`pwd`"; else d="@abs_srcdir@"; fi; \
+          $(XTC)/bin/xtc -r $(BUILD_REPOSITORY) register -l "$$d" -V $(VERSION) \
+		-t $$file ; \
+        done; \
+	for file in fordummy $(bin_PROGRAMS) $(bin_SCRIPTS) ; do \
+	  if [ "$$file" = "fordummy" ]; then continue; fi; \
+          $(XTC)/bin/xtc -r $(BUILD_REPOSITORY) register -l `pwd` -V $(VERSION) \
+		-t `basename $$file $(EXEEXT)` ; \
+        done ; \
+	for file in fordummy $(libexec_PROGRAMS) $(libexec_SCRIPTS) ; do \
+	  if [ "$$file" = "fordummy" ]; then continue; fi; \
+          $(XTC)/bin/xtc -r $(BUILD_REPOSITORY) register -l `pwd` -V $(VERSION) \
+		-t `basename $$file $(EXEEXT)` ; \
+        done; \
+	echo "Tools registered in repository $(BUILD_REPOSITORY): $(bin_PROGRAMS) $(bin_SCRIPTS) $(libexec_PROGRAMS) $(libexec_SCRIPTS)" ; \
+	echo "Data registered in repository $(BUILD_REPOSITORY): $(pkgdata_DATA) $(sdfdata_DATA)"
 
 ###########################################################

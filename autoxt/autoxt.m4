@@ -102,6 +102,14 @@ AC_ARG_WITH([repository],
 )
 AC_SUBST([REPOSITORY])
 
+AC_ARG_WITH([build-repository],
+  AC_HELP_STRING([--with-build-repository=FILE],
+                 [use build-time XTC repository at FILE @<:@pkgdatadir/XTC@:>@]),
+  [BUILD_REPOSITORY=$withval],
+  [BUILD_REPOSITORY=`pwd`/XTC]
+)
+AC_SUBST([BUILD_REPOSITORY])
+
 AC_ARG_WITH([strc],
   AC_HELP_STRING([--with-strc=DIR],
                  [use Stratego Compiler at DIR @<:@STRATEGOXT@:>@]),
