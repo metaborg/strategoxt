@@ -53,6 +53,7 @@ strategies
            Let(Var(var1076162872),F(Var(var1077895264),Var(var1077895264)),
                F(Var(var1076162872),F(Var(var1076162872),Var(var1076162872)))))
 	)     
+
 \end{code}
 
 % Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>

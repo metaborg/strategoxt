@@ -69,6 +69,18 @@ strategies
   mapfoldr1(s1, s2, s3) = 
     rec x([id]; s1 <+ [s2|x]; \ [a|b]->(a,b)\; s3)
 
+  /** 
+   * Transform the elements of a list into lists (map)
+   * and concatenate into a single list (concat).
+   * 
+   * Note: equivalent to map(s); concat
+   *
+   * @type s :: a -> List(b) 
+   * @type   :: List(a) -> List(b)
+   */
+  mapconcat(s) =
+    foldr([], conc, s)
+
   last = 
     rec x(Last <+ Tl; x)
 
