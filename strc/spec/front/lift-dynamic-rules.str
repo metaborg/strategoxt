@@ -10,20 +10,21 @@ strategies
 /* Desugar dynamic rule scopes {| ... : ... |} */
 
   define-rule-scope =
-    topdown(try(DefDynRuleScope + DefDynRuleScopeLabel))
+    topdown(try(DefDynRuleScope))
 
   DefDynRuleScope :
     |[ {| : s |} ]| -> s
 
   DefDynRuleScope :
     |[ {| x, sc* : s |} ]| -> |[ dr-scope({| sc* : s |} | ~str:x) ]|
+// wip...
+//    |[ {| x, sc* : s |} ]| -> |[ dr-scope({| sc2* : s |} | ~str:x) ]|
+//    where <partitition(?LabeledDynRuleScopeId(x,_) + ?LabeledDynRuleScopeId(x))> sc* => (sc1*, sc2*)
+    
 
   DefDynRuleScope :
-    |[ {| x.t, sc* : s |} ]| -> |[ dr-scope( {| x :+ t |}; {| sc* : s |}
+    |[ {| x.t, sc* : s |} ]| -> |[ dr-scope( rules(x + t); {| sc* : s |}
                                            | ~str:x ) ]|
-
-  DefDynRuleScopeLabel :
-    |[ {| x :+ t |} ]| -> |[ dr-label-scope(|~str:x, t) ]|
 
 /* Lift dynamic rules from strategy definitions.  One dynamic rule set
 is lifted out at a time, after which the process repeats; a definition
@@ -66,7 +67,27 @@ that are declared in context using the dynamic rule ContextVar */
 
   split-dynamic-rules :
     |[ rules(drd*) ]| -> 
-    <map(SplitDynamicRule); unzip; (id, concat)> drd*
+    <map(split-dynamic-rule); flatten-list; unzip; (id, concat)> drd*
+
+  split-dynamic-rule =
+    (DesugarDynRuleDef <+ ![<id>])
+  ; map(SplitDynamicRule)
+
+  DesugarDynRuleDef :
+    DynRuleDef|[ f(as1|as2)+t : r ]| ->
+      [ DynRuleDef|[ f(as1|as2) : r ]|, DynRuleDef|[ f + t ]| ]
+
+  DesugarDynRuleDef :
+    DynRuleDef|[ f(as1|as2)+t :+ r ]| ->
+      [ DynRuleDef|[ f(as1|as2) :+ r ]|, DynRuleDef|[ f + t ]| ]
+
+  DesugarDynRuleDef :
+    DynRuleDef|[ f(as1|as2)+t :- t1 ]| ->
+      [ DynRuleDef|[ f(as1|as2) :- t1 ]|, DynRuleDef|[ f + t ]| ]
+
+
+  SplitDynamicRule :
+    DynRuleDef|[ f + t ]| -> (|[ dr-label-scope(|~str:f, t) ]|, [])
 
   SplitDynamicRule:
     drd@DynRuleDef|[ f(as1|as2) : r ]| ->
@@ -92,11 +113,6 @@ that are declared in context using the dynamic rule ContextVar */
     DynRuleDef|[ f(as1|as2).t :- t1 ]| ->
       <SplitDynamicRule(!|[ dr-undefine-rule(|~str:f, t, ~<Fst>) ]|)> DynRuleDef|[ f(as1|as2) : t1 -> () where id ]|
 
-
-
-  // TODO: Introduce memoization!
-  //  * for bagof-RuleA and RuleA
-  //  * for lifted aux-RuleA (mapping from RDefs to stamp/label)
 
   SplitDynamicRule(saveclsr):
     drd@DynRuleDef|[ f(as1|as2) : t1 -> t2 where s ]| ->
