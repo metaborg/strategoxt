@@ -2,7 +2,7 @@
 
 \begin{code}
 module Stratego-Canonical-Format
-imports Stratego-Amb lib automaton
+imports Stratego-Amb lib automaton Stratego-MetaTransition
 signature
   constructors
     MatchOp : String * List(String) -> Term
