@@ -1,0 +1,8 @@
+module Stratego-Core
+imports Stratego-Core-Constants 
+	Stratego-Identifiers 
+	Stratego-Core-Layout
+	Stratego-Core-Signatures 
+	Stratego-Core-Terms
+	Stratego-Core-Strategies 
+	Stratego-Core-Modules
