@@ -1,3 +1,7 @@
+2002-01-30 Merijn de Jonge <mdejonge@cwi.nl>
+   * sdf-doc/data/incomplete.sdf.sg.dot.af.correct adapted to slightly
+     changed output of GraphXML2dot.
+
 2001-12-05 Merijn de Jonge <mdejonge@cwi.nl>
    * Updated graphviz package requirement
 
