@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.3 2002/05/14 15:14:41 mdejonge Exp $
+# $Id: Makefile.am,v 1.4 2002/05/14 15:21:46 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -39,7 +39,7 @@ pkgdata_DATA =
 # List all files that should be distributed here
 EXTRA_DIST   = $(wildcard *.r) ast2abox.sh.src 
 
-BOOTSOURCES  = $(STRATEGO_PRG:%=%.c) $(wildcard *.c)
+BOOTSOURCES  = $(STRATEGO_PRG:%=%.c) $(wildcard *.src)
 
 # What should be cleaned
 CLEANFILES  += ast2abox
