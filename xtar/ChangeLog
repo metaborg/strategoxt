@@ -1,3 +1,9 @@
 2004-10-17  Martin Bravenboer <martin@cs.uu.nl>
 
+	* xtc/xtar.str: Implemented very basic version of xtar. It creates
+	an SDF definition, and SGLR parse table and stores them in a zip
+	archive by invoking the command-line zip tool.
+
+2004-10-17  Martin Bravenboer <martin@cs.uu.nl>
+
 	* Creation of package

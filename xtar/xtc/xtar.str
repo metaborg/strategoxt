@@ -11,14 +11,57 @@ imports
 
 strategies
 
+  /**
+   * Entry point
+   */
   main-xtar =
     option-wrap(xtar-options,  xtar-usage, xtar-about, id, 
       xtar-init-options
     ; xtc-io(create-xtar)
     )
 
+  /**
+   * @todo  must the temp dir be removed? Could xtc temp files handle that?
+   *
+   * @type  FILE -> FILE
+   */
   create-xtar =
-    say(!"Nothing here yet")
+    where(new-temp-dir => dir)
+    ; ?mod
+    ; <create-syntax-def(|dir)> mod => def
+    ; <create-parse-table(|dir)> def => tbl
+    ; <xtc-zip> [def, tbl]
+
+  /**
+   * Creates a zip archive.
+   *
+   * The basenames of the files must be unique. Only the basename
+   * will be stored.
+   *
+   * @todo  use a zip library instead of the command-line zip tool
+   * @todo  register the zip file in the xtc temp files.
+   *
+   * @type  List(FILE) -> FILE
+   */
+  xtc-zip =
+    where(<xtc-new-file> () => zip)
+    ; <call> ("zip", ["-j", zip | <map(?FILE(<id>))>])
+    ; !FILE(<conc-strings> (zip, ".zip"))
+
+  /**
+   * Creates an SDF definition by invoking pack-sdf.
+   *
+   * @todo  pass the include options
+   *
+   * @type  FILE -> FILE
+   */  
+  create-syntax-def(|dir) =
+    xtc-transform(!"pack-sdf", pass-verbose)
+    ; rename-to(<concat-strings> [dir, "/", <get-language-name> (), ".def"])
+
+  create-parse-table(|dir) =
+    xtc-transform(!"sdf2table", !["-m", <get-language-name> ()])
+    ; rename-to(<concat-strings> [dir, "/", <get-language-name> (), ".tbl"])
 
 /**
  * Options
@@ -37,15 +80,38 @@ strategies
     <+ Option(fail, fail, !"     ")
     <+ xtar-verbose-option
 
+  get-language-name =
+    <get-config> "language-name"
+
   xtar-init-options =
     where(
+      /* check if there is any input */
       if not(<get-config> "-i") then
         say(!"error: no input specified")
-        ; <exit> 1
+        ; <xtc-exit> 1
       end
 
+      /* fetch language name from SDF module filename */
+    ; <get-config> "-i"
+    ; base-filename
+    ; explode-string
+    ; if at-suffix( \ ['.', 's', 'd', 'f'] -> [] \ ); ?lang then
+        <implode-string> lang
+        ; debug(!"info: language name is ")
+        ; <set-config> ("language-name", <id>)
+      else
+        say(!"error: input file must have the extension .sdf")
+        ; <xtc-exit> 1
+      end
+
+      /* set the default output file */
+    ; if not(<get-config> "-o") then
+        <set-config> ("-o", <conc-strings> (<get-language-name> (), ".xtar"))
+      end
+
+      /* Set the default verbosity level */
     ; if not(<get-config> "--verbose") then
-        <set-config> ("--verbose", 1)
+        <set-config> ("--verbose", 0)
       end
     )
 
@@ -64,7 +130,7 @@ strategies
   xtar-verbose-option =
     ArgOption("--verbose"
     , where(<set-config> ("--verbose", <string-to-int>))
-    , !"--verbose <i>    Verbosity level <i> (default: 1)"
+    , !"--verbose <i>    Verbosity level <i> (default: 0)"
     )
 
 /**
