@@ -18,16 +18,13 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.2 2001/06/05 12:27:24 mdejonge Exp $
+# $Id: Makefile.am,v 1.3 2001/06/07 11:18:31 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
 
 # define any subdir here
 SUBDIRS       = data
-
-# What scipts to build
-#bin_SCRIPTS     = tohtml-sdf
 
 libexec_SCRIPTS = tohtml ismap2usemap
 pkgdata_DATA    = tohtml.css
@@ -36,14 +33,14 @@ pkgdata_DATA    = tohtml.css
 # TESTS         = program-check
 
 # List all files that should be distributed here
-EXTRA_DIST      = tohtml-sdf.sh.src tohtml.sh.src ismap2usemap.perl.src \
+EXTRA_DIST      = tohtml.sh.src ismap2usemap.perl.src \
                   tohtml.css
 
 # What should be cleaned
 CLEANFILES      = tohtml ismap2usemap
 
 % : %.sh.src Makefile
-	@sed 's@__BINDIR__@$(bindir)@g;\
+	sed 's@__BINDIR__@$(bindir)@g;\
 	      s@__DATADIR__@$(pkgdatadir)@g;\
 	      s@__GRAPHVIZ__@$(GRAPHVIZ)@g;\
               s@__GRAPHTOOLS__@$(GRAPHTOOLS)@g;\
