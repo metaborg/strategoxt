@@ -51,14 +51,14 @@ ATerm SSL_explode_term(ATerm t)
       ATerm t1;
       sym = ATgetSymbol(t);
       if(ATisQuoted(sym))
-	t = ATmakeStringQ(ATgetName(sym));
+        t1 = ATmakeStringQ(ATgetName(sym));
       else
-	t = ATmakeString(ATgetName(sym));
-      return(App2("TCons", t, 
-		  App2("TCons",
-		       (ATerm) 
+        t1 = ATmakeString(ATgetName(sym));
+      return(App2("TCons", t1,
+                  App2("TCons",
+                       (ATerm)
 		       list_to_consnil_shallow((ATerm)ATgetArguments((ATermAppl)t)),
-		       App0("TNil"))));
+                       App0("TNil"))));
     }
   case AT_INT :
     return(ATmake("TCons(<int>,TCons(Nil,TNil))", ATgetInt((ATermInt)t)));

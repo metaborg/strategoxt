@@ -1,4 +1,13 @@
+2001-10-06  Eelco Visser  <visser@acm.org>
+
+	* src/term.c (SSL_explode_term): Fix of the bug in the previou fix
+	(Merijn de Jonge)
+
 2001-10-05  Eelco Visser  <visser@acm.org>
+
+	* spec/parse-options.r, spec/options.r, spec/option-demo.r:
+	Extension of options that prints usage information. (Merijn de
+	Jonge)
 
 	* src/term.c (SSL_explode_term): Repair string handling (Merijn de Jonge)
 

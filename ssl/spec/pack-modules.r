@@ -52,7 +52,7 @@ strategies
                  + Option   ("-nodep",     !NoDependency )
                  + ArgOption("-dep", \x -> Dependency(x)\ )
                  + ArgOption("--prefix", \x -> Prefix(x)
-			     where rules(Prefix : () -> x) \ )
+					  where rules(Prefix : () -> x) \ )
                  )
 
   pack-modules(pack : term * (term -> term) -> term)
