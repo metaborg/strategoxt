@@ -15,7 +15,7 @@ strategies
   skip1(s) = at-tail(s)
   skip2(s) = at-tail(at-tail(s))
 
-  filter-option-args(flag) = filter-gen([flag | id];Tl, skip1)
+  filter-option-args(flag) = filter-gen([flag | id]; Tl, skip1)
 
   filter-options(flag) = filter-gen([flag | id], skip2)
 
