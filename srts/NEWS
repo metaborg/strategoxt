@@ -1,1 +1,1301 @@
-See NEWS file in the SC package.
+------------------------------------------------------------------------------
+
+News about Stratego releases
+
+------------------------------------------------------------------------------
+
+Version 0.6.3
+
+ released: November 26, 2001
+
+SUMMARY OF CHANGES
+
+ (with respect to release 0.6)
+
+ * BuildSplit syntax generalizes split
+ * MatchProject syntax generalizes projection
+ * New library strategies
+ * Tracing of evaluation
+ * CGEN package adapted to grammar identifiers
+ * New version of gpp
+ * Several bug repairs
+ * Anonymous CVS checkout is possible again
+ * Website runs new twiki
+
+CONTRIBUTIONS
+
+ * Bug reports by Otto Skrove Bagge, Robert Feldt (configuration),
+   Merijn de Jonge (strings & #), Hedzer Westra
+ * Bug repairs by Merijn de Jonge (strings & #)
+ * Library contributions by Otto Skrove Bagge (insert)
+ * CVS support by Henk van Lingen
+ * Web hosting by Henk Penning
+
+LANGUAGE
+
+ * Term patterns can contain strategy applications <s>. 
+
+ * Build-Split patterns simplify wrapping some complex constructor pattern
+   around a term. For instance, split(f,g) can now be written as
+   !(<f>,<g>), and this generalizes to arbitrary build patterns.
+
+ * Match-Project patterns simplify projection of sub-terms. A strategy
+   application <s> inside a match pattern selects the corresponding sub-term
+   and applies s to it. For example, instead of writing 
+   \ Typed(Var(x),_) -> x \ it is now possible to write ?Typed(Var(<id>),_)
+   This feature can also be used to perform tests on subterm in a
+   match pattern, e.g., the pattern ?[x | <not([])>] binds the head of a list
+   to x, checks that the tail is not empty and produces the tail as
+   result.
+
+COMPILER
+
+ * Added compile time option to generate code to trace strategies
+   - --trace-all: trace all strategies
+   - -t f: trace strategy f
+   - Note: -t option does not work properly yet.
+
+ * Optimization is set to O2 by default (used to be O4). The higher
+   optimization level (which comes down to inlining functions in addition
+   to the O2 optimizations) seems to produce faulty code on some
+   machine/compiler combinations. Optimization can be increased by
+   passing the option -CI "O3" to SC. However, it seems appropriate to
+   leave inlining decisions to SC.
+
+ * Repair in implementation of dynamic rules; added rule stamp in order
+   to record to which rule the information belongs.
+
+ * Repair of compilation of overlays
+
+ * New version of GPP in GPP-BOOT
+
+ * CGEN now supports GB grammar identifiers
+
+LIBRARY
+
+ * Repair of term explosion for strings (Merijn de Jonge). Quoted
+   identifiers (strings) can now be used as constructor symbols.
+   Not yet supported in signatures.
+ * Type annotations added to strategy operators with higher-order
+   arguments.
+ * Numerous small refactorings.
+ * Some new tests
+ * New
+    - occurrences(s): all occurrence for which s succeeds
+    - om-occurrences(s): outermost occurrences only
+    - collect-all(s): collect all occurrences
+    - collect-om(s): collect outermost occurrences only
+ * Obsolete: 
+    - collect-kids/1 -> crush/3
+
+DISTRIBUTION
+
+ * The Stratego CVS repository is accessible again. To check out the contents
+   of the repository type:
+
+      cvs -d :pserver:anonymous@cvs.cs.uu.nl:/data/cvs-rep checkout Stratego
+
+   Thanks to Henk van Lingen for setting up the cvs server.
+
+ * If you would like to get involved in development of the compiler or library,
+   it is also possible to obtain write access to the repository. Contact me
+   if you're interested.
+
+WEBSITE
+
+ * The twiki running the website has moved from losser to the production server
+   of the Utrecht University CS department. Thanks to Henk Penning for making 
+   this possible. Individual pages are now bookmarkable under the 
+   stratego-language.org URL. Access control has been improved. Users need to 
+   re-register to enter a password.
+
+------------------------------------------------------------------------------
+
+Version 0.6
+
+ released: August 29, 2001
+
+ Stratego version 0.6 is available from www.stratego-language.org
+
+ SUMMARY OF CHANGES
+
+ (with respect to release 0.5)
+
+ * A new compilation scheme has been implemented. The compiler
+   now compiles to C with nested functions (a GCC extension). Choices 
+   are handled using setjmp/longjmp. The new scheme makes it very easy
+   to write foreign functions that can be used in Stratego programs,
+   or to call Stratego strategies from C functions. Both compilation
+   and generated code are much faster.
+
+ * Dynamic rules make it possible to generate context-specific rules
+   at run-time. This is useful for many transformations, including
+   inlining, dead code elimination, and variable renaming. A rule
+   is generated at the place where the information (e.g., a function
+   declaration) is available, and can be used at any other place (e.g.
+   a function call site). See the paper "Scoped Dynamic Rewrite Rules" 
+   to be presented at the RULE'01 workshop for examples.
+
+ * The distribution has been split up into a distribution of the
+   run-time system, the library, and the compiler. In addition a
+   package for generation of C code is used. Thus to install Stratego 
+   you now need the following packages:
+	
+	- srts	   : Stratego Run-Time System
+	- ssl	   : Stratego Standard Library
+	- sc-boot  : Stratego Compiler (bootstrapped C sources)
+	- gpp-boot : Generic Pretty-Printing utilities (bootstrapped C sources)
+	- cgen	   : C generation utilities
+	- sc	   : Stratego Compiler (Stratego sources)
+
+   In addition the following external packages are required
+
+	- aterm : ATerm library
+	- gpp	: generic pretty-printing 
+
+   These packages are also available as a single integrated package produced
+   with autobundle:
+
+	- stratego-0.6
+
+ * The documentation of Stratego is not part of any of these packages at
+   the moment. New documentation is in the making.
+
+ CONTRIBUTIONS
+
+ * Eelco Dolstra pointed out the solution to the problem of using nested
+   functions on Sun machines that have no_exec_user_stack set. Merijn
+   de Jonge implemented an extension of the run-time system to call
+   mprotect. 
+
+ * Arne de Bruijn, Merijn de Jonge, and Hedzer Westra contributed various
+   strategies to the library.
+
+ LANGUAGE
+
+ * Dynamic rules: a new feature that allows generation of rules a run-time. 
+   Dynamic rules are explained in the paper "Scoped Dynamic Rewrite Rules" 
+   to be presented at the RULE'01 workshop.
+
+ * Recursive strategy definitions are now fully supported.
+
+ * The syntax has been liberalized: rule and strategy definition can 
+   now be defined under both the rules and strategies keywords. In effect, 
+   rules and strategy definitions can be mixed in any order.
+
+ * Constructor declarations are required for all constructors used in a 
+   specification. A term that is transformed can still contain other 
+   constructors, though.
+
+ * Type annotations for higher-order arguments of strategy operators. 
+   Strategy operators (instead of strategies) can now be passed to strategy 
+   operators. This requires that the argument of the strategy operator is 
+   given a proper type annotation.
+
+ * Primitive strategies that are implemented in C should be called with 
+   all their arguments: ?n; prim("SSL_exit", n) instead of prim("SSL_exit")
+
+ COMPILER
+  
+ * The Stratego Compiler is distributed separately in the SC package
+
+ * The compiler uses a new translation scheme producing idiomatic,
+   high-level C code. The C stack is used instead of dedicated stacks.
+   Setjmp and longjmp are used to implement choice. The GCC extension 
+   of C with nested functions is used to represent strategies to be 
+   passed to strategies (using function pointers). As a result of these 
+   changes, C compilation time has been reduced drastically. Also
+   generated code is much faster than before.
+
+ * The CGEN package supports generation (pretty-printing) of C code. 
+   It is available as a separate package and could be used in other 
+   projects.
+
+ * The names of the generated C functions are the same as the original 
+   names in the specification, making inspection of the generated code 
+   possible. Also the new compilation scheme makes it easy to link
+   generated code with other C code. For example, to use external
+   C functions in Stratego programs, or to call Stratego transformations
+   from C code.
+
+ * Because of the new implementation scheme, much less inlining has
+   to be done. This is beneficial for code size, and thus compilation
+   time, but a number of optimizations opportunities are thereby missed.
+   More aggresive optimization and separate compilation are issues for
+   a future version. Also the fusion of the innermost strategy with
+   rules is not yet integrated with the new compiler.
+
+ RUN-TIME SYSTEM
+
+ * The Stratego Run-Time System is distributed separately in the SRTS package.
+
+ * The run-time system has been reduced to the definition of the 
+   generic traversal operators and an interface to the choice mechanism 
+   (setjmp/longjmp currently). Most of the work is done by the ATerm library.
+
+ LIBRARY
+
+ * The Stratego Standard Library is now distributed separately in the
+   SSL package. Lots of new library strategies have been added since 
+   Version 0.5. Many strategies are now documented by means of executable 
+   tests in the -test.r modules. All library modules were redocumented.
+
+ * scoped-finite-map.r:  Keeping track of scopes of table entries. Removing 
+   entries from tables is done automatically when the scope is exited. This
+   module provides the basis for the implementation of dynamic rules.
+
+ * tables.r: Reorganized and documented the tables modules. The strategies 
+   formerly in the display module are now defined as normal "table" operations 
+   in the table module. Names have been normalized. Many operators have become 
+   obsolete.
+
+ * tables.c: primitive operations more robust; no need to initialize
+   tables
+
+ * char.r: utilities for character manipulation
+
+ * term-zip.r:  Generic definition of zipping two term structures; can be 
+   used to implement pattern matching, for example. 
+
+ * io.r: new-file
+
+ * string.r: string comparison (Hedzer), repaired basename (Merijn)
+
+ * env-traversal.r: traversals involving one
+
+ * apply.r
+
+ * LayoutPreserve.r, SList.r, LList.r: abstract syntax with layout
+
+ * options.r: New strategy iowrap/3 is also parameterized with a 
+   strategy for printing usage information. Other variants are 
+   implemented in terms of this one. (Merijn de Jonge) 
+   The iowrapO operators have been renamed to iowrap.
+
+ * list-set.r: Repaired bug in nrofoccs (Arne de Bruijn). 
+
+ * list-filter.r: partition
+
+ * foldr-kids is obsolete, use crush.
+
+ CVS DISTRIBUTION and DAILY BUILD
+
+ * A new CVS repository has been created for the new set-up of the compiler.
+   The CVS repository is not yet publicly accessible. Also no automatic daily
+   builds are performed at the moment.
+
+------------------------------------------------------------------------------
+
+Version 0.5
+
+ released: March 26, 2001
+
+ SUMMARY OF CHANGES 
+ 
+ (with respect to release 0.4.22)
+
+ * StrategoScript an interpreter for Stratego
+ * Syntax clean up
+ * Compiler and library maintenance
+ * Website under TWiki
+ * Online documentation
+ * Stratego alpha release with anonymous CVS
+ * Daily build
+
+ INTERPRETER
+
+ * StrategoScript is an interpreted language for strategic rewriting. 
+   The interpreter has been designed for fast turn around time and
+   not for performance; it will not replace the compiler. Possible
+   applications are
+  
+   - learning Stratego
+   - rapid prototyping
+   - unit testing
+   - glueing transformation components
+
+ * A StrategoScript has the form
+
+   #!/bin/sh stratego
+   stratego script
+   <commands and declarations>
+
+   A script evaluates the commands and declarations sequentially. 
+   Commands are strategy expressions that are applied to the current
+   subject term. The starting term is the list of command-line options.
+   Declarations are the usual declarations of signatures, overlays, rules, 
+   strategies and imports that a normal Stratego module contains. In 
+   addition a script can dump the current state of the intepreter and load 
+   a previously dumped state. Thus, it is possible to load a previously 
+   pre-compiled version of the library.
+
+ * The implementation of the interpreter still lacks some features:
+   - signatures and overlay declarations in scripts are not interpreted
+   - nullary variables are not recognized without parentheses, i.e.,
+     instead of Nil write Nil()
+   - loading and precompiling modules should be more incremental
+
+ * See doc/tutorial/exercises/pico for some example scripts
+
+ LANGUAGE
+
+ * Local strategy definitions 
+
+     let f1(...) = s1 ... fn(...) = sn in s
+
+   This means that the identifier "in" has become a reserved word. Use
+   'in to indicate the identifier. Note that only strategy operators
+   without arguments are supported in this release.
+
+ * Syntax ?t <= s has been removed
+
+ * Syntax << l -> r >> has been removed. For local rules of the form
+   {x1,...,xn: <<l -> r>>} use \ l -> r \, if the xi correspond to the
+   variables in l. Otherwise use {x1,...,xn: ?l; !r}.
+
+ * Formerly reserved words are no longer reserved: match, build
+
+ * operations keyword in signatures has been removed; use constructors
+
+ COMPILER
+
+ * Caching of symbols used when building terms (Arne de Bruijn)
+ * Repaired bug in optimization rule for oncetd (Thanks Hedzer Westra)
+ * Compiled specifications are now linked with optimized libraries.
+
+ LIBRARY
+  
+ * uniq strategy now preserves order (Merijn de Jonge)
+ * string-to-real and real-to-string conversion (Arne de Bruijn)
+ * call now waits for all sub-processes to terminate (Merijn de Jonge)
+
+ WEBSITE
+
+ * The wiki server running the www.stratego-language.org website has been
+   replaced by TWiki, a much more powerful wiki system. All pages from
+   the old website (including pages that were not under wiki) have been
+   moved to the new TWiki. Pages can be edited and new pages can be
+   created by registered users; anyone can register.
+
+ * The Stratego documentation (Tutorial, Reference Manual and Library)
+   is now readable online at www.stratego-language.org; follow the
+   links at StrategoDocumentation. The HTML is generated from LaTeX using
+   HeVeA.
+
+ CVS DISTRIBUTION
+
+ * The latest developments in the Stratego system are now available
+   via anonymous CVS. (Thanks Eelco Dolstra)
+
+   To checkout the repository proceed as follows:
+
+   % export CVSROOT=:pserver:anoncvs@losser.st-lab.cs.uu.nl:/home/cvsrepo
+   % cvs login
+   Password: anon
+   % cvs checkout stratego
+
+   Note that this distribution is very unstable.
+
+ DAILY BUILD
+
+ * The Stratego CVS distribution is now included in the daily build process
+   at CWI (http://www.cwi.nl/~daybuild/dbs/). This will make it easier to
+   release minor releases more often. Minor releases will now be made
+   whenever relevant changes have been made and the daily build succeeds. 
+   Minor releases will only be announced to the stratego-developers mailing
+   list. Major releases will be made when enough significant changes have
+   accumulated.
+
+------------------------------------------------------------------------------
+Version 0.4.22
+
+ released: January 20, 2001
+
+COMPILER 
+
+ * A new experimental optimization component has been added to the
+   compiler. The commandline option --fusion of sc invokes the new
+   component, which optimizes the innermost strategy. It works fine for
+   invocations of innermost with a choice of rules. More coordination
+   with the inliner is needed to get it to work for all cases. The
+   optimization is joint work with Patty Johann. A paper about it is in
+   preparation.
+
+   If you are using innermost in any of your specifications let me know
+   how the optimization behaves.
+
+ * The implementation of the inliner has been refactored in preparation
+   of better coordination with other optimizations and is now much
+   simpler. The functionality is still the same.
+
+LIBRARY 
+
+ * list-set.r: Renamed foldr-kids to crush, following the paper by
+   Joost and Ralf.
+
+------------------------------------------------------------------------------
+Version 0.4.21
+
+ released: November 6, 2000
+
+ COMPILER
+
+ * Handling of real constants in compiler was not correct because of
+   erroneous use of ATmatch; replacedby ATgetType.
+
+ * Threading congruences were not defined for 0-ary constructors.
+
+ * Since version 0.4.18 building of constructor applications with more
+   than 6 arguments was broken. (Thanks Otto Bagge for solving this.)
+
+ * The header files in the Stratego run-time system and the library
+   that are not directly included by programs are now installed at
+   $(prefix)/include/stratego in order to avoid name clashes with other
+   packages. (Thanks Otto Bagge for the suggestion)
+
+ LIBRARY
+
+ * list-misc: thread-map threads an environment through a list and
+   applies a strategy to each element paired with the environment.
+
+ * pack-modules: Bugs in option handling fixed by Merijn de Jonge.
+
+ * list-basic: Strategies at_last, at_tail, at_suffix, and at_end have
+   been renamed to at-last, at-tail, at-suffix and at-end. The old
+   version are still available, but print a message that the strategy
+   is obsolete.
+
+ UTILITIES
+
+ * The utilities directory utils/ in the distribution has been removed
+   because it was causing problems in building the distribution. The
+   utilities will possibly be distributed as a separate package.
+
+------------------------------------------------------------------------------
+
+Version 0.4.20
+
+ released: October 27, 2000
+
+ COMPILER
+
+ * bug fix: handling of quotes in strings
+
+------------------------------------------------------------------------------
+
+Version 0.4.19
+
+ released: October 27, 2000
+
+ LIBRARY
+
+ * bug fix: distribution of new table modules
+
+------------------------------------------------------------------------------
+
+Version 0.4.18
+
+ released: September 29, 2000
+
+ This release features several refactorings of the compiler. 
+
+ COMPILER
+
+ * Format checkers are used to describe and guard the interfaces
+   between components.
+
+ * A new implementation of pattern matching based on the ideas of
+   Mikael Pettersson in his paper "A Term Pattern-Match Compiler
+   Inspired by Finite Automat Theory". This new implementation is
+   not fundamentally different, but it is much simpler and solves
+   an obscure bug that went unnoticed for a long time. It is also 
+   a nice example of compilation by transformation; patterns from
+   different strategies that are combined with + or <+ are merged
+   into a single automaton.
+
+ * Strategy definitions are compiled to separate C functions. In 
+   previous versions one function with internal labels for each
+   definition were used. Surprisingly gcc has managed to compile
+   these long lists of instructions until now, but it started to
+   give scaling problems. This change makes gcc much less memory
+   hungry.
+
+ * Constructor symbols are cached in global variables. In previous
+   versions constructor symbols were matched by string comparison.
+   This is now replaced with a comparison of the AFun, an integer.
+   This should reduce run-time of specifications.
+
+ * The SDF2 definition of Stratego can be found in spec/sdf
+
+ LIBRARY
+
+ * The tables modules has been extended with a number of useful 
+   strategies for table management that can be used for instance 
+   in symbol tables.
+
+------------------------------------------------------------------------------
+
+Version 0.4.17
+
+ released: August 27, 2000
+
+ TOOLS
+
+ * A new directory utils/ has been added to the Stratego distribution,
+   which is intended for Stratego programming utilities. The first utility
+   stratego-metrics.sh computes some simple metrics of Stratego modules.
+   Currently it measures number of constructors, rules and strategies in
+   each of a list of modules and adds these figures together. Ideas for
+   other metrics are welcome.
+
+ LIBRARY
+
+ * SUnit, the Stratego Unit testing framework, has been extended with 
+   several new testing modes, including apply-and-fail and
+   apply-and-check.
+
+ * In addition to the generic unification strategy there is now also
+   a generic equality testing strategy that is parameterized with
+   a filter indicating parts of the structure that should be ignored
+   in the equality comparison. (For pure syntactic equality a non-linear
+   match is of course still sufficient.)
+
+ * The strategy ugly-print in module ugly-print.r maps an ATerm to a
+   Box expression such that sub-terms are indented with respect to
+   their parent, for better readability. Can be used as a generic,
+   dumb pretty-printer. (This should be combined with specific
+   pretty-printers to provide defaults.)
+
+ * Several library modules provide new strategies: string (escape),
+   list-zip (rest-zip), io (open, save), abox-ext (post-commas,
+   hpost-sep-list changed!), list-basic (split-fetch).
+
+ COMPILER
+
+ * The compiler has been refactored to use the new versions of the
+   generic substitution and renaming algorithms.
+
+------------------------------------------------------------------------------
+
+Version 0.4.15
+
+ released: June 24, 2000
+
+ COMPILER
+
+ * The frontend component of the compiler has been split into the
+   components frontend, extract and inline. Compiling the C code
+   under my new installation of Mandrake 7.1 took too long.
+
+ DISTRIBUTION
+
+ * Marco van Eck contributed scripts for creating RPMs for the aterm
+   and stratego distributions. I have produced RPMs for the my Pentium
+   II run Mandrake Linux 7.1. These may not work for other Linux
+   version.
+
+------------------------------------------------------------------------------
+
+Version 0.4.14
+
+ released: June 12, 2000
+
+ SUMMARY of CHANGES
+
+ * In this version the language is extended with a couple of new language
+   constructs and some existing constructs have been generalized and made
+   more robust.
+
+   - keyword quoting ('id, 'module)
+   - overloading of constructors
+   - as patterns (x @ t)
+   - overloading of overlays and default build terms in overlays (_ t)
+   - distributing and threading congruences (C^D(s1,...,sn) and C^T(s1,...,sn))
+   - several new strategies in the library
+   - translation Cons/Nil lists to ATerm lists more robust
+
+ LANGUAGE
+
+ * Keywords (and all other identifiers) of the language can be used by quoting
+   them. For example, to use the constructors module and id in a specification
+   write 'module and 'id. These correspond to module and id in ATerms.
+
+ * Constructors can now be overloaded. For example,
+
+   signature
+     constructors
+       True   : Exp
+       False  : Exp
+       Var    : String -> Exp
+       Assign : String * Exp -> Stat
+       Skip   : Stat
+       If     : Exp * Stat -> Stat
+       If     : Exp * Stat * Stat -> Stat
+   rules
+     Eval1 : If(True,  x) -> x
+     Eval2 : If(False, x) -> Skip
+     Eval3 : If(True,  x, y) -> x
+     Eval4 : If(False, x, y) -> y
+
+ * As patterns of the form x @ t can be used to deconstruct a term using
+   pattern matching and at the same time bind the entire term to the variable 
+   x. For example, given the rule
+
+       rules
+         R : F(x, y @ G(A, z)) -> H(x, y, z)
+
+   we have that
+
+       <R> F(B, G(A, C)) => H(B, G(A, C), C)
+
+ * Recall that overlays can be used to abstract from complex term patterns.
+   For example, the following overlays define a term language on top of
+   AsFixTerms:
+
+   overlays
+
+     DefaultLayout = " "
+
+     BinOp(o) = 
+       prod([sort("E"), layout, lit(o), layout, sort("E")], sort("E"), [])
+
+     BinExp(x, l1, o, l2, y) = 
+       appl(BinOp(o), [x, l1, lit(o), l2, y])
+
+     Add(x, l1, l2, y) = BinExp(x, l1, "+", l2, y) 
+     Mul(x, l1, l2, y) = BinExp(x, l1, "*", l2, y) 
+     Var(x) = appl(prod([lex(sort("Id"))], sort("E"), []), [x])
+
+   This makes it possible to write rules over AsFixTerms in terms of
+   these higher level pseudo constructors:
+
+   rules
+
+     Dist : Mul(x, l1, l2, Add(y, l3, l4, z)) -> 
+            Add(Mul(x, l1, l2, y), l3, l4, Mul(x, z))
+
+   Note that AsFixTerms preserve layout from the source code and that
+   the rule Dist defines how to preserve layout through transformations.
+
+   Two limitations of overlays have been resolved:
+
+ * Overlays can be overloaded and can define default build terms. In the
+   example above, we would like to further abstract and also provide
+   pseudo constructors that do not care about layout:
+
+   overlays 
+     Add(x, y) = BinExp(x, "+", y)
+     Mul(x, y) = BinExp(x, "*", y)
+
+   So that we can write
+
+   rules
+
+     Dist : Mul(x, Add(y, z)) -> Add(Mul(x, y), Mul(x, z))
+
+   This is now possible because overlays can be overloaded, i.e., overlays
+   with the same name but different arity can be defined.
+
+   To define BinExp/3 it is necessary to do something with the layout,
+   for example:
+
+   overlays
+     BinExp(x, o, y) =   
+       appl(BinOp(o), [x, DefaultLayout, lit(o), DefaultLayout, y])
+
+   This requires that all layout has the form DefaultLayout (i.e., " ")
+   when matching and traversing the term with a congruence. 
+
+ * Overlays can use build default terms to indicate subterms that can be
+   ignored during matching and in traversal, but need a default value
+   when constructing an instance. 
+
+     BinExp(x, o, y) =   
+       appl(BinOp(o), [x, _ DefaultLayout, lit(o), _ DefaultLayout, y])
+
+   The last definition uses the pattern _ DefaultLayout to indicate that
+   the terms at those positions can be ignored during matching and during
+   congruence traversal. That is, the overlay definition has the following
+   meaning
+	
+      ?BinExp(x, o, y) -> 
+         ?appl(BinOp(o), [x, _, lit(o), _, y])
+
+      !BinExp(x, o, y) -> 
+         !appl(BinOp(o), [x, DefaultLayout, lit(o), DefaultLayout, y])
+
+      BinExp(x, o, y) -> // as congruence
+         appl(BinOp(o), [x, id, lit(o), id, y])
+
+
+ * Distributing congruences: for each constructor c there is a corresponding 
+   distributing congruence operator c^D defined according to the following 
+   scheme:
+
+   c^D(s1,...,sn) : Pair(c(x1,...,xn),env) -> c(y1,...,yn)
+                    where <s1> Pair(x1,env) => y1;
+                          ...
+                          <sn> Pair(xn, envn) => yn
+
+   For example,
+
+	<If^D(id,id,id)> Pair(If(Id,Id,Id),[]) 
+	              => If(Pair(Id,[]),Pair(Id,[]),Pair(Id,[]))
+
+ * Threading congruences: for each constructor c there is a corresponding 
+   threading congruence operator c^T defined according to the following 
+   scheme:
+
+   c^T(s1,...,sn) : Pair(c(x1,...,xn),e1) -> Pair(c(y1,...,yn), e-last)
+                    where <s1> Pair(x1,e1) => Pair(y1,e2);
+                    ...
+                    <sn> Pair(xn, en) => Pair(yn, e-last)
+
+   For example, if we have
+
+      rules
+  	add-one : Pair(Id,x) -> Pair(Id,Succ(x))
+
+   then
+
+        <If^T(add-one,add-one,add-one)> Pair(If(Id,Id,Id),Zero)
+	             => Pair(If(Id,Id,Id),Succ(Succ(Succ(Zero))))
+
+ LIBRARY
+
+ * tuple-zip and tuple-unzip are generalizations of zipping and
+   unzipping tuples of arbitrary length.
+
+ * copy with argument can be used to apply a strategy to each copy
+   that is produced. This can be useful when generating a fresh list
+   of variables: <copy(new)> (n, ())
+
+ * error prints an error message (without exiting such as fatal-error does)
+
+ * graph-nodes-undef is a generalization of graph-nodes that also returns
+   the list of nodes that are not defined.
+
+ COMPILER
+
+ * ATerm lists of the form [a,b,c] are represented internally by means
+   of Cons/Nil lists. The translation of Cons/Nil lists back to ATerm lists
+   ([...]) is now more robust and does not cause a segmentation fault on 
+   improper Cons/Nil lists. This means that if there is a bug in the
+   specification that causes a list of the form Cons("a", "b") to be 
+   constructed, it will just output that term and will not try to 
+   translate it.
+
+------------------------------------------------------------------------------
+
+Version 0.4.13
+
+  released: June 6, 2000
+
+  LANGUAGE
+
+  * Real numbers have been added to the language.
+
+  * The identifiers new, kids and str_gt are no longer reserved
+    words. new has been defined as a primitive in the library module 
+    string.r.
+
+  LIBRARY
+
+  * New modules conditional.r and iteration.r with many new operators.
+
+  * Two strategies for mapping a table into a list of pairs and the other way
+    around (by Otto Bagge)
+
+  * Module substitution.r contains the definition of operator "substitute" 
+    which substitutes terms for (object) variables and renames bound
+    variables on the way to prevent free-variable capture. It is a
+    generalization of the generic renaming operator. These generic strategies 
+    are documented in the WGP2000 paper on "Language Independent
+    Traversals for Program Transformation". See www.stratego-language.org.
+
+  * Primitive append-file opens a file in append mode (by Otto Bagge)
+
+  COMPILER
+
+  * Repaired two bugs that caused strange behaviour:-( (1) Filenames with
+    a . (e.g., ../bla.r) where cut in the wrong way (i.e., to .) (2) The
+    module packer wrote files to the fixed file /tmp/aaabb, which causes
+    problems with more people working on the same machine. Thanks to
+    Danny van Velzen and Eelco Dolstra for discovering these bugs.
+
+  DOCUMENTATION
+
+  * The directory doc/tutorial/slides contains the LaTeX source of the Stratego
+    tutorial on slides with an introduction about
+    The slides are also available from www.stratego-language.org in PostScript.
+
+  * The reference manual has been reorganized and contains a definition of the
+    syntax of Stratego in SDF2. 
+
+  * The xmpl/ directory is intended for examples. It now contains the 
+    propositional formula transformation example.
+
+  * The documentation is now also available in pdf. Note that due to
+    some problem with unsupported specials for gpic the pictures are 
+    not present in the pdf version. Anyone know how to solve this?
+  
+  TODO
+
+  * There is a long list of improvements to make to the language and
+    implementation has been structured. See the TODO file in the
+    distributions.
+
+------------------------------------------------------------------------------
+
+Version 0.4.11
+
+ released: March 25, 2000
+
+ LANGUAGE
+
+ * Generic term construction and deconstruction is now captured in syntax
+   in the form f#(xs). This denotes a constructor application of f to
+   the list of arguments xs. This can be used for example in the decomposition
+   rule of a generic syntacticy unification algorithm (see module unification.r
+   in the library):
+   
+     UfDecompose : 
+        ([(f#(xs), f#(ys)) | ps], sbs) -> 
+        (<conc>(<zip(id)>(xs, ys), ps), sbs)
+
+   The syntax is currently implemented as follows:
+
+	?f#(xs)  ==  ?(f, xs) <= explode-term
+	!f#(xs)  ==  <mkterm> (f, xs)
+	s1#(s2)  ==  explode-term; (s1, s2); mkterm
+
+ LIBRARY
+
+ * Declared constructors in the library. There should be
+   no more warnings.
+
+ * Module env-traversal/r defines several traversals that propagate
+   environments through a traversal.
+
+ * Module basic.r defines many new loop constructs (while-do, for, 
+   repeat-until, etc.)
+
+ * Module substitution: strategy subs' has been renamed to subs.
+
+ COMPILER
+
+ * Use the -o option to name the target to compile to.
+
+     sc -i spec -o target
+
+   This is especially useful in case the -m option is used as well to
+   name the executable after the strategy:
+
+     sc -i spec -m strat -o strat
+
+ * Use the --ast option to let the compiler produce the abstract syntax
+   tree of the specification. This could be useful for other tools.
+
+ RUN-TIME SYSTEM
+
+ * For some obscure reason the run-time system allocated a lot of static
+   memory for stacks. This has been greatly reduced.
+
+------------------------------------------------------------------------------
+
+Version 0.4.10
+
+ released: March 9, 2000
+
+ LANGUAGE
+
+ * In addition to the (* ... *) multiline comments, you can now also write
+   a // comments.
+
+ * Signatures currently use the keyword "operations" as in 
+
+     signature
+       sorts Exp
+       operations
+         Var : String -> Exp
+
+   Since operations are really constructors in Stratego, the keyword has
+   been changed to "constructors":
+
+     signature
+       sorts Exp
+       constructors
+         Var : String -> Exp
+
+   The old syntax will still be supported for a while, but it is advised
+   to change to the new syntax.
+
+ COMPILER
+
+ * As Joost Visser complained, the requirement to define a "main" strategy
+   to indicate the strategy to apply impedes reuse of specifications. The
+   commandline option -m or --main can now be used to pass the name of the 
+   main strategy to compile:
+
+	    sc --main transform-it -i transform.r
+
+   or
+	    sc -m transform-it -i transform.r
+
+   makes "transform-it" into the main strategy. If the option is not passed 
+   "main" is assumed to be the main strategy. 	
+
+   Note that the main strategy needs to handle its own IO as usual, that is, 
+   it should probably look like 
+
+	    transform-it = stdio(transform)
+   or
+
+	    transform-it = iowrap(transform)
+
+  * Constructors used in rules and strategies are now matched against
+    the signature. Currently only a warning is generated if a constructor
+    is not declared. In the future constructor declaration will be
+    enforced. Therefore it is advised to act on the warnings generated
+    by the compiler and declare all constructors.
+
+    Note that only constructors that are actually used in the specification 
+    need to be declared. Anonymous constructors that are only traversed 
+    need not be declared.
+
+    Note that the library has not yet been cleaned up. Therefore the
+    compiler can generated quite a few warnings for which you are not
+    to blame. This will be repaired as soon as possible.
+
+ LIBRARY
+
+ * The strategy <transform-file(s, suf)> (base, ext) reads in the term 
+   from file "base.ext", applies strategy | to it and writes the result 
+   to the concatenation of the strings (base, <suf>()).
+
+ * There was a glitch in the io library module that caused the 0.4.9
+   version of the compiler to leave to many files open giving problems
+   on some systems. This should now have been repaired.
+
+------------------------------------------------------------------------------
+
+Version 0.4.9
+
+ released: March 3, 2000
+
+ LANGUAGE
+
+   All sections of a specification can be empty. This was not the case
+   for the 'sorts' and 'operations' sections of a specification. This
+   makes it easier to generate Stratego specifications.
+
+   Introduced new syntax for 'assignments'; the strategy expression 
+   ?t <= s is equivalent to s; ?t and to s => t. The advantage of this
+   new syntax is that it is clearer than with the s => t syntax what the
+   target of the assignment is. If s is a large expression the t can be
+   difficult to spot in s => t.
+ 
+   Jus as for rules, the scope of term variables used in the body of 
+   a strategy definition is declared implicitly. That means that instead of 
+
+  	f(s) = {x, y : ?(x, y); ...; s}
+
+    you can now write
+
+         f(s) = ?(x, y); ...; s
+
+ COMPILER
+
+   The front-end of the compiler that combines the imported modules
+   of a specification into a single module has been specified in
+   Stratego by means of the pack-stratego component.
+
+   Changes in the interface: the name of the specification to be
+   compiled can be given with or without extension. So "sc -i bla.r" 
+   is now supported. The compiler no longer generates a %.r.dep file
+   but a %.dep files containing dependency rules for the module
+   being compiled for inclusion in Makefiles.
+
+ LIBRARY
+
+   Packing a module entails creating a list of all modules reachable
+   from some root module. This problem is defined generically and
+   is parameterized with the shape of module headers and imports.
+
+   The renaming strategy has been redefined. It is now parameterized
+   with a strategy indicating in which arguments variables are bound
+   and another that defines how new variables replace the renamed
+   variables. The first parameter can also be used to instantiate
+   the new version of the free variable extraction algorithm. See The
+   Library for more details.
+
+   Several of the traversal operators now have versions that have an
+   extra parameter for passing a skip strategy. It indicates for which
+   arguments recursion stops. See simple-traversal.r and list-set.r
+
+ INSTALLATION
+
+   Reinstalling Stratego gave some problems in 0.4.8 because the
+   installed include files are read before the local include files. 
+   This is problematic when aterm and stratego installation directories 
+   coincide. One solution is to uninstall the stratego distribution before 
+   remaking. I have also changed the order of the includes in the makefiles 
+   to prevent this problem in the future.
+
+   Succesful installation of 0.4.8 on a NetBSD machine was reported by
+   Jeroen Scheerder. This brings the list of supported platforms to:
+   Linux/x86, Sun/Solaris, HP-Unix, NetBSD. Please report problematic
+   or successful installation on other platforms.
+
+ MAKE
+   
+   The file share/Stratego.Make contains generic makerules for compiling
+   Stratego specifications. Include it in Makefiles as follows
+
+     include $(stratego)/share/Stratego.Make
+
+   where $(stratego) points to the prefix directory declared on 
+   configuration. 
+
+ AUTOMAKE
+
+   Makefiles generated by automake think that .r files contain Fortran
+   source. This problem occurs when declaring
+
+     bin_PROGRAMS = spec
+ 
+   where spec.r is a Stratego module. Otto Bagge pointed out that
+   the solution is to use the bin_SCRIPTS variable and include the 
+   dependency file generated by sc:
+
+     bin_SCRIPTS = spec
+     EXTRA_DIST = spec.r
+     CLEANFILES = spec
+     include spec.dep
+     include $(stratego)/share/Stratego.Make
+
+   where $(stratego) points to the prefix directory declared on 
+   configuration of the stratego distribution. This will install 
+   the executable created by sc on 'make install' and will include 
+   spec.r in the distribution of your package on 'make dist'.
+
+------------------------------------------------------------------------------
+
+Version 0.4.8
+
+ released: February 21, 2000
+
+ LANGUAGE
+	
+   The syntax of lists has been extended with notation for list tails,
+   i.e., [x, y | z], where x and y are the first two elements and z is
+   the tail. This is translated to Cons/Nil notation. [x, y | z] is
+   equivalent to Cons(x, Cons(y, z)).
+
+   This entails the following equivalences:
+
+      Nil <-> []
+      Cons(x, xs) <-> [x | xs]
+      [a, b, c] <-> [a, b, c | []] <-> Cons(a, Cons(b, Cons(c, Nil)))
+
+   Of course, this syntax applies to terms as well as to congruences,
+   that is, [s1, s2 | s3] is the congruence strategy that applies s1 and
+   s2 to the first two elements of the list and s3 to the tail.
+
+   (Thanks to Otto Bagge for the suggestion)
+
+   The lexical syntax is changed such that comment can now contain *s
+   and quotes in strings are handled properly. (Thanks Merijn de Jonge
+   for the code)
+
+ LIBRARY
+
+   The io (file input/output operations) and abox (pretty-printing
+   interface) modules are now documented (see The Library). The abox
+   module has been split into abox.r for the kernel interface and 
+   abox-ext.r for extensions to the interface.
+
+   The implementation of command line option handling has been improved.
+   Instead of combining option parsing and handling, a separate option
+   parser can be used to transform the list of command line options
+   into a list of terms that can be propagated through the transformation
+   process. Module parse-options.r defines a generic parser for lists
+   of options of the form ["-i", "file", "-silent", "-o", "outfile"] to
+   terms of the form [Input("file"), Silent(), Output("outfile")].
+
+   Added call-noisy/0, which has the function of the original call/0
+   (calling an external process) and replaced call/0 by a silent version,
+   which does not print out the call.
+
+ DOCUMENTATION
+
+   Added the missing files to the distribution. (Thanks Karina)
+
+ EMACS SUPPORT
+
+   The indent on tab has been turned off because it didn't care enough
+   about the context. This part needs to be improved.
+
+ INSTALLATION
+
+   The www directory contains a list of working and problematic 
+   configurations for installation. If you (try to) install Stratego
+   on a configuration not in the list please let me know whether
+   it succeeded and what the parameters of the configuration are.
+
+------------------------------------------------------------------------------
+
+Version 0.4.7
+
+ released: February 6, 2000
+ 
+ LIBRARY
+
+   The memo operator in library module memo makes a strategy
+   into a memoizing strategy that looks up the term to be transformed
+   in a memo table and only computes the transformation if the
+   term is not found.
+
+ EMACS SUPPORT
+
+   Otto Bagge contributed an emacs mode for Stratego. Now you can
+   edit your Stratego modules with syntax highlighting. See 
+   share/emacs/stratego.el
+
+ LANGUAGE
+
+   Overloading of strategy operators is now supported. This means
+   that the same name can be used for two strategy operators with
+   different arity.
+
+   Recall that multiple definitions for an operator with the same
+   arity are equal to the choice of the bodies of the definitions.
+
+   Note that operators that are passed to an operator unapplied can
+   still not be overloaded.
+
+ TESTING
+
+   The directory stratego/test contains regression tests for the
+   compiler. Contributions are welcome.
+
+------------------------------------------------------------------------------
+
+Version 0.4.6
+
+ released: January 20, 2000
+
+ * Starting with this version, the Stratego is under the GNU General
+   Public Licence (GPL). This means that you can redistribute the 
+   compiler and make your own modifications to it, as long as you keep
+   the copyright notices in the source intact. See COPYING for more
+   information. Although the license does not force you to do so, I
+   would appreciate hearing about modifications you make to Stratego.
+
+ * share.r (library): introduction of explicit sharing by turning
+   term into its underlying graph and then inlining those edges that
+   occur only once or have to be inlined anyway. (Inspired by a
+   question from Oege de Moor)
+
+ * bin-tree[-set].r (library): binary trees for the representation
+   of sets with operations. (needs elaboration)
+
+ * term.[cr] (library): getting and comparing the memory addresses of
+   terms
+
+------------------------------------------------------------------------------
+
+Version 0.4.5
+
+ released: January 5, 2000
+
+ * New language construct
+
+   Added syntax and desugaring for `lambda rules' of the form 
+
+	\F(x, G(y)) -> H(x, y)\
+
+   Such rules declare a new scope for the variables in the lhs of the
+   rule but not for the variables in the rhs and condition of the rule
+   that do not appear in the lhs.
+
+ * Refactoring of the library
+
+   - The C implementation of the primitives in stratego-lib.c has now
+     been split into several files: time.c, exec.c, io.c, etc.
+
+   - new formulation of rename (now in module rename) with new interface
+
+   - refactored strategy: vars
+
+   - new strategy: collect-split(f, g)
+     reduces terms with f and extracts information with g resulting
+     in a pair (t, xs) of a reduced term and the list of extracted
+     subterms.
+
+   - new primitive: print-stack that prints the top n elements of the 
+     stack if applied as <print-stack> n or the entire stack if applied 
+     to a non-integer term.
+
+   - spec/slib/spec/abox.r: added some more useful abstractions
+
+  * Improvement of the tutorial
+
+    I deleted a number of empty sections that will have to wait for 
+    more time.
+
+------------------------------------------------------------------------------
+
+Version 0.4.4b
+
+ released: December 15, 1999
+
+ * Extended the tutorial
+
+ * Fixed the implode-string primitive strategy (thanks Merijn)
+
+ * sc produces an f executable for a f.r module (instead of f.comp as
+   it used to be)
+
+Version 0.4.4a
+  
+ released: December 1, 1999
+
+ * Complete configurable source distribution.
+
+ * Includes the Stratego sources of the compiler components.
+   This makes it possible to make new versions of the language.
+
+ * Separation of the library primitives from the run-time system.
+   The library primitives are in lib/stratego/src
+
+ * Documentation in four parts (drafts):
+   - The Stratego Tutorial
+   - The Stratego Reference Manual
+   - The Stratego Library
+   - The Stratego Compiler
+
+   These are still in draft form in this release; suggestions for
+   improvements are welcome.
+
+ * New web page: see www/index.html or
+   http://www.cs.uu.nl/~visser/stratego/
+
+ * Logo
+
+ Summary of changes to language/implementation
+
+ * Changes in interface to sc:
+   - -i mod instead of just mod
+   - -IL "-Ldir" to pass include directories to gcc
+   - -CL "-Ldir -llib" to pass libraries to gcc
+
+ * New features in the library
+   - tables; an interface to aterm tables
+   - explode-term; inverse of mkterm
+
+ * Treatment of ATerm built-in lists as first-class
+   citizens is not yet in this release. Therefore, it
+   can still not deal with annotations.
+
+------------------------------------------------------------------------------

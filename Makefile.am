@@ -17,8 +17,6 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.4 2001/11/21 15:25:21 stratego Exp $
-
 #DIST_SUBDIRS = pre-checks emacs $(PKGS)
 
 DIST_SUBDIRS = emacs $(PKGS)
@@ -47,7 +45,6 @@ package-dist:
 	cd gpp-boot; $(MAKE) dist
 	cd sc-boot; $(MAKE) dist
 	cd sc; $(MAKE) dist
-	cd gpp; $(MAKE) dist
 
 config:
 	cd srts; stdconfig
@@ -56,6 +53,14 @@ config:
 	cd gpp-boot; stdconfig
 	cd sc-boot; stdconfig
 	cd sc; stdconfig
+
+install-NEWS:
+	cp -f NEWS srts
+	cp -f NEWS ssl
+	cp -f NEWS cgen
+	cp -f NEWS gpp-boot
+	cp -f NEWS sc-boot
+	cp -f NEWS sc
 
 WWWSTRATEGO=sunshine.cs.uu.nl:/users/www/research/projects/stratego/ftp
 

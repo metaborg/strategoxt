@@ -4,41 +4,112 @@ News about Stratego releases
 
 ------------------------------------------------------------------------------
 
-Version 0.7
+Version 0.6.3
 
- released: 
+ released: November 26, 2001
 
- Note: Version 0.7 has not been released yet. The following notes describe
- changes in minor releases since release 0.6.
-
- SUMMARY OF CHANGES
+SUMMARY OF CHANGES
 
  (with respect to release 0.6)
 
- CONTRIBUTIONS
+ * BuildSplit syntax generalizes split
+ * MatchProject syntax generalizes projection
+ * New library strategies
+ * Tracing of evaluation
+ * CGEN package adapted to grammar identifiers
+ * New version of gpp
+ * Several bug repairs
+ * Anonymous CVS checkout is possible again
+ * Website runs new twiki
 
- LANGUAGE
+CONTRIBUTIONS
 
- COMPILER
+ * Bug reports by Otto Skrove Bagge, Robert Feldt (configuration),
+   Merijn de Jonge (strings & #), Hedzer Westra
+ * Bug repairs by Merijn de Jonge (strings & #)
+ * Library contributions by Otto Skrove Bagge (insert)
+ * CVS support by Henk van Lingen
+ * Web hosting by Henk Penning
+
+LANGUAGE
+
+ * Term patterns can contain strategy applications <s>. 
+
+ * Build-Split patterns simplify wrapping some complex constructor pattern
+   around a term. For instance, split(f,g) can now be written as
+   !(<f>,<g>), and this generalizes to arbitrary build patterns.
+
+ * Match-Project patterns simplify projection of sub-terms. A strategy
+   application <s> inside a match pattern selects the corresponding sub-term
+   and applies s to it. For example, instead of writing 
+   \ Typed(Var(x),_) -> x \ it is now possible to write ?Typed(Var(<id>),_)
+   This feature can also be used to perform tests on subterm in a
+   match pattern, e.g., the pattern ?[x | <not([])>] binds the head of a list
+   to x, checks that the tail is not empty and produces the tail as
+   result.
+
+COMPILER
 
  * Added compile time option to generate code to trace strategies
    - --trace-all: trace all strategies
    - -t f: trace strategy f
-
- * Repair in implementation of dynamic rules; added rule stamp in order
- to record to which rule the information belongs.
+   - Note: -t option does not work properly yet.
 
  * Optimization is set to O2 by default (used to be O4). The higher
- optimization level (which comes down to inlining functions in addition
- to the O2 optimizations) seems to produce faulty code on some
- machine/compiler combinations. Optimization can be increased by
- passing the option -CI "O3" to SC. However, it seems appropriate to
- leave inlining decisions to SC.
+   optimization level (which comes down to inlining functions in addition
+   to the O2 optimizations) seems to produce faulty code on some
+   machine/compiler combinations. Optimization can be increased by
+   passing the option -CI "O3" to SC. However, it seems appropriate to
+   leave inlining decisions to SC.
 
- LIBRARY
+ * Repair in implementation of dynamic rules; added rule stamp in order
+   to record to which rule the information belongs.
 
+ * Repair of compilation of overlays
+
+ * New version of GPP in GPP-BOOT
+
+ * CGEN now supports GB grammar identifiers
+
+LIBRARY
+
+ * Repair of term explosion for strings (Merijn de Jonge). Quoted
+   identifiers (strings) can now be used as constructor symbols.
+   Not yet supported in signatures.
  * Type annotations added to strategy operators with higher-order
- arguments.
+   arguments.
+ * Numerous small refactorings.
+ * Some new tests
+ * New
+    - occurrences(s): all occurrence for which s succeeds
+    - om-occurrences(s): outermost occurrences only
+    - collect-all(s): collect all occurrences
+    - collect-om(s): collect outermost occurrences only
+ * Obsolete: 
+    - collect-kids/1 -> crush/3
+
+DISTRIBUTION
+
+ * The Stratego CVS repository is accessible again. To check out the contents
+   of the repository type:
+
+      cvs -d :pserver:anonymous@cvs.cs.uu.nl:/data/cvs-rep checkout Stratego
+
+   Thanks to Henk van Lingen for setting up the cvs server.
+
+ * If you would like to get involved in development of the compiler or library,
+   it is also possible to obtain write access to the repository. Contact me
+   if you're interested.
+
+WEBSITE
+
+ * The twiki running the website has moved from losser to the production server
+   of the Utrecht University CS department. Thanks to Henk Penning for making 
+   this possible. Individual pages are now bookmarkable under the 
+   stratego-language.org URL. Access control has been improved. Users need to 
+   re-register to enter a password.
+
+------------------------------------------------------------------------------
 
 Version 0.6
 

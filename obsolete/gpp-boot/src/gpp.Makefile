@@ -15,7 +15,7 @@
 #    along with this program; if not, write to the Free Software
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 #
-# $Id: gpp.Makefile,v 1.13 2001/11/21 15:25:21 stratego Exp $
+# $Id: gpp.Makefile,v 1.14 2001/11/26 09:39:12 stratego Exp $
 #
 # GNU make specific generic make rules for the generation of pretty-printed
 # documents.
@@ -23,7 +23,7 @@
 # usage:
 #   -include "gpp.makefile" in your Makefile
 #    example:
-#       include /home/visser/res/Stratego/share/gpp-boot/share/gpp/gpp.makefile
+#       include /usr/local/share/gpp-boot/share/gpp/gpp.makefile
 #
 #   -define which pretty-print tables are used for the generation of
 #    a box representation of your .asfix files.
@@ -73,7 +73,7 @@ ABOX2LATEX    = PATH=__ABOX2LATEX__/bin:$${PATH} abox2latex
 ABOX2HTML     = PATH=__ABOX2HTML__/bin:$${PATH} abox2html
 SGLR          = PATH=/bin:$${PATH} sglr -2
 IMPLODE_ASFIX = PATH=__ASFIXTOOLS__/bin:$${PATH} implode-asfix
-PKGDATA       = /home/visser/res/Stratego/share/gpp-boot
+PKGDATA       = /usr/local/share/gpp-boot
 
 .PRECIOUS: %.css
 
