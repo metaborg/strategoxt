@@ -1,3 +1,8 @@
+/**
+ * metavar/1 : meta variable
+ * lquote/1  : quotation symbol
+ * rquote/1  : quotation symbol
+ */
 module pp-stratego-latex-alltt
 imports options parse-cs-lib asfix
 
@@ -11,7 +16,7 @@ strategies
     ; init-language-binding
     ; pcs-parse-asfix2me
     ; xtc-io-transform(to-latex-alltt)
-//    ; xtc-asfix2me-yield
+    ; xtc-asfix2me-yield
 
   xtc-asfix2me-yield =
     xtc-transform(!"unparsePT")
@@ -19,10 +24,39 @@ strategies
   to-latex-alltt =
     topdown(try(CheerUp))
 
-rules
+strategies
 
   CheerUp =
     appl(prod([varsym(id)], id, id), map(try(FancyVar)))
 
+  CheerUp =
+    where(
+      ?appl(prod(_, _, attrs(<id>)), _)
+    ; fetch(term(cons(is-Quote)))
+    )
+    ; appl(id, map(try(FancyQuote)))
+
+rules
+
   FancyVar :
     lit(s) -> lit(<concat-strings> ["\\metavar{", s, "}"])
+
+  FancyQuote :
+    lit("|[") -> lit("\\lquote{|[}")
+    // lit("|\\!\\![")
+
+  FancyQuote :
+    lit("]|") -> lit("\\rquote{]|}")
+    // lit("]\\!\\!|")
+
+strategies
+
+  is-Quote =
+      "ToTerm"
+    + "ToStrategy"
+    + "ToBuild"
+
+  is-AntiQuote =
+      "FromTerm"
+    + "FromApp"
+    + "FromStrategy"
