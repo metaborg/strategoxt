@@ -1,5 +1,6 @@
 2001-06-07 Merijn de Jonge <mdejonge@cwi.nl> 
    * graphterms component added
+   * graphterms2graphxml component added
 
 2001-06-05 Merijn de Jonge <mdejonge@cwi.nl> 
    * Extracted graph tools from Grammar Tools package version 0.7 and
