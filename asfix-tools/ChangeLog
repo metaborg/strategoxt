@@ -1,5 +1,6 @@
 2002-06-04  Merijn de Jonge <mdejonge@cwi.nl>
    * Repaired generation of package definition file
+   * Repaired dist target in explode-asfix2me
 
 2002-05-28  Merijn de Jonge <mdejonge@cwi.nl>
    * Updated NEWS file

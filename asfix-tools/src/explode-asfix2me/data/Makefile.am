@@ -15,7 +15,8 @@ testset: $(TESTSET_IN) $(TESTSET_CORRECT)
 %.tbl : %.def
 	sdf2table -i $< -o $@
 
-%.in: %.trm tests.tbl
+%.in: %.trm tests.def
+	$(MAKE) tests.tbl
 	sglr -p tests.tbl -i $< -o $@
 
 %.correct : %.in
