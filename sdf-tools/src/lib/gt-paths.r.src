@@ -14,5 +14,5 @@ overlays
   SGLR 		= "__SGLR__"
   STRATEGO 	= "__STRATEGO__"
   GRAPHTOOLS    = "__GRAPHTOOLS__"
-  ASFIXTOOLS    = "__ASFIXTOOLS__""
+  ASFIXTOOLS    = "__ASFIXTOOLS__"
 \end{code}
