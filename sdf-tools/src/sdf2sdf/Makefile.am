@@ -11,7 +11,7 @@ sdf2sdf.o	 : xtc-conf.h
 sdf-regularize.o : xtc-conf.h
 
 TESTS        	 = sdf2sdf_check
-CLEANFILES       = sdf2sdf_check $(wildcard *.dep)
+CLEANFILES       = sdf2sdf_check $(wildcard *.dep) xtc-conf.h
 
 BOOTCLEANFILES 	 = sdf2sdf.c sdf-regularize.c
 
