@@ -1,5 +1,5 @@
 module xtc-proc
-imports xtc-rep config scoped-finite-map
+imports xtc-rep config scoped-finite-map options
 
 signature
   constructors
@@ -85,6 +85,10 @@ strategies
       ; rename-to(<get-config> "-o" <+ !stdout)
     )
 
+  // iowrap for xtc tools: 'read' -i option, transform, and 'write' to -o option
+
+  xtc-io-wrap(s) =
+      option-wrap(io-options, xtc-io(s))
 
   // XTC-COMMAND
   // Executing an external process
