@@ -1,5 +1,5 @@
 module C-simplify-test
-imports C-simplify sunit
+imports C-simplify sunit lib
 strategies
 
   C-simplify-test = 

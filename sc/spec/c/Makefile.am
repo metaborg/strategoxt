@@ -6,7 +6,7 @@ EXTRA_DIST 	 = $(wildcard *.str)
 libexec_PROGRAMS = s2c canonicalize 
 check_PROGRAMS 	 = C-simplify-test 
 
-BOOTCLEANFILES 	 = s2c.c canonicalize.c 
+BOOTCLEANFILES 	 = s2c.c canonicalize.c C-simplify-test.c
 
 CLEANFILES 	 = $(wildcard *.dep) $(TESTS)
 
