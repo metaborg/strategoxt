@@ -9,112 +9,149 @@
  */
 
 module pack-stratego
-imports lib xtc-lib pack-graph sugar config
+imports lib xtc-lib pack-graph sugar config pack-stratego-options
 strategies
 
   pack-stratego = 
-    xtc-iowrap(pack-stratego-options,
-      pack-stratego-modules => (files, spec)
-      ; (<get-config> "--imports"
-        ; <map(get-filename; basename); write-to-text> files
-       <+ try(<create-dep-file> files)
-        ; <write-to> spec
-        )
+    xtc-iowrap(
+      pack-stratego-options
+    , process-options
+    ; pack-stratego(|<include-path>) => (files, spec)
+    ; <maybe-create-depfile> files
+    ; <write-to> spec
     )
 
-  pack-stratego-options =
-      ArgOption("-I" + "--Include",        
-	where(<post-extend-config>("-I", ["-I", <id>])); !(),
-	!"-I d | --Include d   Include modules from directory d")
-
-    + Option("--nodep" + "-nodep", 
-	where(<set-config> ("--nodep", "")); !(),
-	!"--nodep              Don't create dependency file")
-
-    + ArgOption("--dep" + "-d" + "-dep",
-	where(<set-config> ("--dep", <id>)); !(),
-	!"--dep f | -d f       Write dependency to file f")
-
-    + Option("--imports",
-	where(<set-config> ("--imports", ())); !(),
-	!"--imports            Produce a list of imported modules only")
-
-    + Option("--slack",
-	where(<set-config> ("--slack", ())); !(),
-	!"--slack              Continue when module is not found")
-
-    + Option("--asfix",
-        where(<set-config> ("--asfix", "")); !(),
-        !"--asfix              Do not implode the concrete syntax parts")
-
-  create-dep-file :
-    files -> FILE(depfile)
-    where <get-config> "-o" => outfile
-        ; (<get-config> "--dep" <+ not(<get-config> "--nodep")) => dep-base
-        ; <add-extension> (<id>, "dep") => depfile
-        ; <open-file> (depfile, "w") => dep
-        ; <printnl> (dep, [dep-base | <separate-by>(" \\\n\t", [" :" | files])])
-        ; <close-file> dep
-
-  pack-stratego-modules =
-    ?FILE(infile)
-    ; where((<get-config; filter(not("-I"))> "-I" <+ ![]) => path)
-    ; !([infile], (), [])
-    ; graph-nodes-roots(Fst; get-module(!["." | path])
-		       , get-stratego-imports
-		       , \ (n,x,xs) -> [x|xs] \ )
-    ; unzip
-    ; (id, flatten-stratego)
-
-  get-search-path =
-    (<get-config> "-I" <+ ![])
-  ; filter(not("-I"))
-  ; !["."|<id>]
-
-  get-module(mkpath) :
-    mod -> (name, tree)
-    where <find-module(mkpath)> (<basename> mod, ["rtree", "str", "cr", "r"]) 
-		=> (ext, FILE(name))
-        ; if-verbose3(where(<debug(!" reading ")> name)) 
-	; parse-module => tree
-	
-
-  find-module(mkpath) =
-    ?(mod, exts)
-    ; mkpath
-    ; (fetch-elem(
-	\ dir -> 
-	  <fetch-elem(!(<id>, FILE(<concat-strings; file-exists> [dir, "/", mod, ".", <id>])))> exts 
-	  where <is-relpath> mod \
-        +  
-        \ dir -> 
-	  <fetch-elem(!(<id>, FILE(<concat-strings; file-exists> [mod, ".", <id>])))> exts 
-	  where <is-abspath> mod \
-	)
-     <+ <fetch-elem(!(<id>, FILE(<concat-strings; xtc-find-loc> [mod, ".", <id>])))> exts 
-     <+ ( <get-config>"--slack" 
-          < say(<concat-strings>["*** module ", mod, " not found"]) 
-            ; fail 
-          + <fatal-error> ["*** module ", mod, " not found"] )
+  pack-stratego(|mkpt) =
+      \ FILE(s) -> IncludePathName(s) \
+    ; !(<id>, mkpt, [])
+    ; graph-nodes-undef(
+        pack-stratego-parse-stratego
+      , get-stratego-imports
+        ; map(!IncludeFromPath(<id>))
+      , \ (n,x,xs) -> [x|xs] \
       )
+    ; if ?(_, []) then
+       Fst
+       ; unzip
+       ; (id, flatten-stratego) 
+      else
+        if not(<get-config>"--slack") then
+          Snd ; debug
+          ; map(report-module-not-found)
+          ; <xtc-exit> 1
+        else 
+          Fst
+        ; unzip
+        ; (id, flatten-stratego) 
+        end
+      end
 
-  parse-module =
-    ?("rtree", name); Snd
-    ; (read-from
-       <+ <fatal-error> ["parse error in ", name])
+  report-module-not-found =
+    let get-module-name =
+          ?IncludeFromPath(<id>) + ?IncludePathName(<id>)
 
-  parse-module =
-    (not("rtree"), ?name); Snd
-    ; (xtc-transform(!"parse-stratego", 
-		     <concat>[<get-config < !["--asfix"] + ![]> "--asfix",
-                              <pass-verbose>, <pass-keep>, <get-config <+ ![]> "-I"])
-       ; read-from
-      <+ <fatal-error> ["parse error in ", name])
+     in get-module-name => module-name
+      ; <printnl> (stderr(), ["pack-stratego: error: module ", module-name, " not found"])
+      ; <bagof-ImportedFrom> module-name
+      ; if [] then
+          id
+        else if ?[mod] then
+            <printnl> (stderr(), ["    imported from file ", mod])
+        else
+            where(<printnl> (stderr(), ["    imported from:"]))
+          ; map({mod1 :
+              ?mod1
+            ; <printnl> (stderr(),   ["      file ", mod1 ])
+            })
+          end
+        end
+      ; <printnl> (stderr(),   [""])
+    end
+
+
+  pack-stratego-parse-stratego =
+    let qualify-pathname =
+            where(explode-string => cs)
+          ; if <is-qualified> cs then
+              id
+            else
+              <implode-string> ['.', '/' | cs]
+            end
+  
+         is-qualified =
+           ?['/' | _] + ?['.' | _ ]
+
+     in ?(<id>, _)
+      ; ?IncludePathName(<qualify-pathname>)
+      ; if file-exists then
+          include-pathname
+        else
+          <fatal-error> ["pack-stratego: error: file ", <id>, " does not exist\n"]
+        end
+    end
+
+  pack-stratego-parse-stratego =
+      ?(<id>, includes)
+    ; ?IncludeFromPath(<id>)
+    ; guarantee-extension(!"str")
+    ; remove-extension => mod
+    ; <fetch-elem(
+          include-from-dir-cached(|mod)
+       <+ include-from-dir(|mod)
+       <+ include-from-xtc(|mod)
+       )> includes
+
+  include-pathname :
+    file -> (file, tree)
+      where if-verbose1(debug(!"  including "))
+          ; <parse-stratego> file => tree
+
+  include-from-dir-cached(|mod) :
+    IncludeDir(dir) -> (file,<ReadFromFile> file)
+      where <concat-strings; file-exists> [dir,"/", mod, ".rtree"] => file
+          ; if-verbose1(debug(!"  including "))
+
+  include-from-dir(|mod) :
+    IncludeDir(dir) -> <include-pathname> file
+      where 
+        ( <concat-strings; file-exists> [dir,"/", mod, ".str"] => file
+        + <concat-strings; file-exists> [dir,"/", mod, ".cr"] => file
+        + <concat-strings; file-exists> [dir,"/", mod, ".r"] => file
+        ) => file
+
+  include-from-xtc(|mod) :
+    IncludeXTC() -> (file, tree)
+      where <conc-strings; xtc-find-loc> (mod, ".str") => file
+          ; if-verbose1(say(<concat-strings> ["  including ", mod, " from XTC repository"]))
+          ; <parse-stratego> file => tree
+
+strategies
+
+  include-dirs =
+    (<get-config> "-I" <+ ![])
+  ; filter(?IncludeDir(<id>))
+
+  pass-include-dirs =
+    include-dirs ; mapconcat(!["-I",<id>])
+
+  parse-stratego =
+     ?file
+   ; <xtc-transform(!"parse-stratego",
+	 	     <concat>[<get-config < !["--asfix"] + ![]> "--asfix",
+                               <pass-verbose>, <pass-keep>, <pass-include-dirs>])>FILE(file)
+   ; read-from
+  <+ <fatal-error> ["parse error in ", <id>]
 
   get-stratego-imports =
-    ?(_, Specification(<id>))
+    ?(file, Specification(<id>))
     ; filter(?Imports(<id>) ; mapconcat(expand-import))
     ; concat
+    ; where(
+        map({import:
+            ?import
+          ; rules(ImportedFrom :+ import -> file)
+        })
+      )
 
   flatten-stratego = 
     map(?Specification(<id>); filter(not(Imports(id))))
@@ -125,7 +162,7 @@ strategies
     ![<is-string>]
   + \ Import(i) -> [i] \ 
   + ?ImportWildcard(<id>) => path
-  ; get-search-path
+  ; include-dirs
   ; mapconcat(
       {dir:
         ?dir 

@@ -11,7 +11,7 @@ EXTRA_DIST     = pack-stratego.str
 CLEANFILES     = pack-stratego.dep $(wildcard *.dep) pack-stratego.tst
 BOOTCLEANFILES = pack-stratego.c 
 
-check : pack-stratego.tst1 pack-stratego.tst2 pack-stratego.imp
+check : pack-stratego.tst1 pack-stratego.tst2 
 
 packincludes =  \
 	-I $(XTC)/share/xtc \
@@ -25,5 +25,3 @@ pack-stratego.tst1 : pack-stratego
 pack-stratego.tst2 : pack-stratego
 	./pack-stratego -i pack-stratego.str -o $@ $(packincludes)
 
-pack-stratego.imp : pack-stratego
-	./pack-stratego -i pack-stratego.str -o $@ --imports $(packincludes)
