@@ -7,40 +7,53 @@ signature
 
 strategies
 
-  main = term-to-adot
-
   term-to-adot = 
-    iowrap(to-adot, Option("--graph", !Graph()) + Option("--tree",  !Tree()))
+    iowrap(?(<id>,_); to-adot, term-to-adot-options)
+
+  term-to-adot-options =
+    Option("--graph", 
+	where(<set-config>("--graph", ())); !Graph(), 
+	!"--graph           visualize term keeping graph structure") 
+
+  + Option("--tree",  
+	where(<set-config>("--tree", ())); !Tree(), 
+	!"--tree            visualize as tree ")
 
   to-adot =
-    ((option-defined(?Tree), term-to-tree) 
-     <+ (option-defined(?Graph), term-to-graph))
-  ; (id, graph-to-adot)
+    (test(<get-config> "--tree"); term-to-tree
+     <+ test(<get-config> "--graph"); term-to-graph)
+    ; graph-to-adot
 
-strategies
-
+/*
   term-to-graph = 
     rec x(
       split(split(address; NodeId, map(address; NodeId) <+ all(address; NodeId))
            , (foldr(![], union, x) <+ crush(![],union,x)))
       ; MkCons
     )
+*/
 
-(*
-  term-to-graph = 
+  term-to-graph =
     rec x(
-      ![(<address; NodeId>
-         , <map(address; NodeId) <+ all(address; NodeId)>)
-       | <foldr(![], union, x) <+ crush(![],union,x)>]
+      ![(<address; NodeId>, <map(address; NodeId) <+ all(address; NodeId)>)
+       | <foldr(![],union,x) <+ crush(![],union,x)>]
     )
-*)
       
   //term-to-tree =
   //  term-to-graph 
 
   NodeId = 
-    split(!"node", int-to-string); conc-strings 
+    <conc-strings>("node", <int-to-string>)
     
+  term-to-tree =
+    !(<new>, <id>);
+    rec x(
+      (id, map(!(<new>, <id>)) <+ all(!(<new>, <id>)))
+      ; ![<(id, map(Fst) <+ all(Fst))>
+         |<Snd; foldr(![],union,x) <+ crush(![],union,x)>]
+    )
+
+/*
   term-to-tree = 
     split(new, id);
     rec x(
@@ -48,25 +61,40 @@ strategies
       ; split((id, map(Fst) <+ all(Fst)), Snd; (foldr(![], union, x) <+ crush(![],union,x)))
       ; MkCons
     )
+*/
 
 rules
 
   graph-to-adot :
-    edges -> dot-digraph(None,"term", stms)
+    edges -> Graph|[ graph Term { ~stmt*:stms } ]|
     where <map(ListEdgeToDot <+ EdgeToDot); concat> edges => stms
 
+    // DotDigraph("Term", stms) 
+
   ListEdgeToDot :
-    (n0, ns) -> 
-    [node(Id(n0),Some(attrs([attr-id("label",<concat-strings>["\"", "[]", "\""])]))) 
-    | <map( \ n1 -> edge(Id(n0),arrow,[Id(n1)],None) \ )> ns]
+    (n0, ns) ->  
+    Stmt* |[ ~id:n0 [label = "[]"] ; 
+             ~stmt*:<map(\ n1 -> Stmt|[ ~id:n0 -> ~id:n1 ; ]|\ )> ns ]|
     where <is-list> ns
+
+    //[Node(Id(n0),Some(Attrs([AttrId("label",<concat-strings>["\"", "[]", "\""])])))
+    //| <map( \ n1 -> Edge(Id(n0),Arrow(Id(n1)), None) \ )> ns]
+    //where <is-list> ns
 
   EdgeToDot :
     (n0, i) -> 
-    [node(Id(n0),Some(attrs([attr-id("label",<concat-strings>["\"", <int-to-string; escape> i, "\""])])))]
+    Stmt* |[ ~id:n0 [label = ~id:s] ; ]|
     where <is-int> i
+        ; <concat-strings>["\"", <int-to-string; escape> i, "\""] => s
+	
+    //[node(Id(n0),Some(Attrs([AttrId("label",
+    //			     <concat-strings>["\"", <int-to-string; escape> i, "\""])])))]
+    //where <is-int> i
 
   EdgeToDot :
     (n0, f#(ns)) -> 
-    [node(Id(n0),Some(attrs([attr-id("label",<concat-strings>["\"", <escape> f, "\""])]))) 
-    | <map( \ n1 -> edge(Id(n0),arrow,[Id(n1)],None) \ )> ns]
+    Stmt* |[ ~id:n0 [label = s] ; 
+             ~stmt*:<map( \ n1 -> Stmt|[ ~id:n0 -> ~id:n1 ; ]| \ )> ns ]|
+
+    //[node(Id(n0),Some(Attrs([AttrId("label",<concat-strings>["\"", <escape> f, "\""])]))) 
+    //| <map( \ n1 -> edge(Id(n0),arrow,[Id(n1)],None) \ )> ns]

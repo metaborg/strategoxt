@@ -1,4 +1,4 @@
-include $(top_srcdir)/Makefile.stratego
+include $(top_srcdir)/Makefile.xt
 
 SUBDIRS      	= data
 bin_PROGRAMS 	= atermdiff term-size

@@ -1,5 +1,5 @@
 include $(wildcard *.dep)
-include $(top_srcdir)/Makefile.stratego
+include $(top_srcdir)/Makefile.xt
 
 SCFLAGS 	 = --main $@
 SUBDIRS      	 = data
@@ -7,7 +7,9 @@ bin_PROGRAMS 	 = PpTerm annos-to-term
 bin_SCRIPTS	 = pp-term annos-to-term
 libexec_PROGRAMS = PpTerm 
 BOOTCLEANFILES	 = PpTerm.c annos-to-term.c
-EXTRA_DIST	 = $(wildcard *.str) $(wildcard *.sdf) $(wildcard *.pp) pp-term.sh.src
+CLEANFILES	 = $(wildcard *.dep)
+EXTRA_DIST	 = $(wildcard *.str) $(wildcard *.sdf) \
+		   $(wildcard *.pp) pp-term.sh.src
 
 % : %.sh.src Makefile
 	sed 's@__PREFIX__@$(prefix)@g;\

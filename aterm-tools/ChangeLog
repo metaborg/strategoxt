@@ -1,3 +1,13 @@
+2002-12-11  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/treeviz/term-to-dot.str: Implemented composition of
+	term-to-adot with Dot pretty-printer in Stratego using XTC. Moved
+	Dot syntax, signature and pretty-printer to dot-tools package.
+
+2002-12-08  Eelco Visser  <visser@cs.uu.nl>
+
+	* using autoxt
+
 2002-09-26  Merijn de Jonge <mdejonge@cwi.nl>
    * Replaced dependency on stratego package by a dependency on sc-boot
      package
