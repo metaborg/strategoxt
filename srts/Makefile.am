@@ -1,10 +1,11 @@
-SUBDIRS = src ssl
+SUBDIRS 	= src ssl libraries
 
-EXTRA_DIST = bootstrap mprotect.m4
+EXTRA_DIST 	= bootstrap mprotect.m4
 
-pkgdata_DATA = README
+pkgdata_DATA 	= README
 
 rpm : dist 
 	rpmbuild -ta $(PACKAGE)-$(VERSION).tar.gz
 
 bootclean :
+	cd libraries; $(MAKE) bootclean
