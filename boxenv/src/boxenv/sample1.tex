@@ -1,0 +1,114 @@
+%%
+%%    boxenv -- A LaTeX Style File For Formatting Box Expressions
+%%    Copyright (C) 1998-2000  Merijn de Jonge (Merijn.de.Jonge@cwi.nl). 
+%%
+%%    This program is free software; you can redistribute it and/or modify
+%%    it under the terms of the GNU General Public License as published by
+%%    the Free Software Foundation; either version 2 of the License, or
+%%    (at your option) any later version.
+%%
+%%    This program is distributed in the hope that it will be useful,
+%%    but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%%    GNU General Public License for more details.
+%%
+%%    You should have received a copy of the GNU General Public License
+%%    along with this program; if not, write to the Free Software
+%%    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+%%
+%% $Id: sample1.tex,v 1.1 2001/08/06 11:56:57 mdejonge Exp $
+
+\documentclass{article}
+\usepackage{boxenv}-
+
+
+\def\laa{%
+\begin{VBOX}{0}{6}%
+line1%
+\end{VBOX}%
+}
+
+\long\def\la{%
+\begin{VBOX}{0}{0}%
+\laa%
+
+\begin{LBOX}{=}%
+\laa%
+\end{LBOX}%
+\end{VBOX}%
+}
+
+
+\def\lba{%
+\begin{VBOX}{0}{6}%
+\la%
+
+line2%
+\end{VBOX}%
+}
+
+\long\def\lb{%
+\begin{VBOX}{0}{0}%
+\lba%
+
+\begin{LBOX}{=}%
+\lba%
+\end{LBOX}%
+\end{VBOX}%
+}
+
+\long\def\lca{%
+\begin{VBOX}{0}{12}%
+\lb%
+
+line3%
+\end{VBOX}%
+}
+
+\long\def\lc{%
+\begin{VBOX}{0}{0}%
+\lca%
+
+\begin{LBOX}{=}%
+\lca%
+\end{LBOX}%
+\end{VBOX}%
+}
+
+
+
+\long\def\y{%
+\begin{HBOX}{0}
+\begin{ALTBOX}%
+{\begin{HBOX}{0}%
+helemaalgekgejgjgjgjgjg%jgjgjgjgvwordenenzovossortenzovoort0123456789012345678901234567890123456789
+\end{HBOX}}%
+{\begin{VBOX}{0}{0}%
+line2%
+
+hokilhalloenzoline%
+\end{VBOX}%
+}%
+\end{ALTBOX}\penalty10000
+\end{HBOX}
+}
+
+\begin{document}
+This sample tests the nested width calculation. It displays the string
+``line0'', ``line1'', ``line2'', and ``line3''. Horizontal bars are drawn
+under the last three strings starting at the horizontal position of
+``line1''. The last three strings are all indented to the left. The first
+string starts at the left margin.
+\vspace{2cm}
+
+\begin{boxenv}
+\begin{VBOX}{0}{3}
+line0 
+
+\lc
+\end{VBOX}
+
+\end{boxenv}
+
+
+\end{document}

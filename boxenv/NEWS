@@ -1,0 +1,33 @@
+#
+#    boxenv -- A LaTeX Style File For Formatting Box Expressions
+#    Copyright (C) 1998-2000  Merijn de Jonge (Merijn.de.Jonge@cwi.nl). 
+#
+#    This program is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation; either version 2 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program; if not, write to the Free Software
+#    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+#
+# $Id: NEWS,v 1.1 2001/08/06 11:56:57 mdejonge Exp $
+
+Version 1.0b8
+
+    released: February 21, 2000
+
+    * Starting with this version, boxenv.sty is under the GNU General
+      Public Licence (GPL). This means that you can redistribute the
+      style file and make your own modifications to it, as long as
+      you keep the copyright notices in the source intact. See
+      COPYING for more information. Although the license does not
+      force you to do so, I would appreciate hearing about
+      modifications you make to boxenv.sty.
+
+    * boxenv.sty is now build using automake
