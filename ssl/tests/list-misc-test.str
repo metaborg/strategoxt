@@ -10,7 +10,8 @@ strategies
 	number-test;
 	flatten-test;
 	init-last-test;
-	take-test
+	take-test;
+	drop-test
     )
 
   test1 =
@@ -91,4 +92,11 @@ strategies
         , take(!3)
 	, !["a","b","c","d","e"]
 	, !["a","b","c"]
+    )
+
+  drop-test =
+    apply-test(!"drop-test"
+        , drop(!3)
+	, !["a","b","c","d","e"]
+	, !["d","e"]
     )

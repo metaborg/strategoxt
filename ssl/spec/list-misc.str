@@ -151,7 +151,8 @@ strategies
     split-fetch(s)
 
   drop(isn) = 
-    nzip0(id); drop-until((isn,id)); map(Snd)
+    where(isn => n)
+    ; nzip0(id); drop-until(?(n,_)); map(Snd)
 
   /** 
    * flatten-list completely flattens a list.
