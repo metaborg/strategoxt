@@ -8,6 +8,8 @@ bin_PROGRAMS     = pp-aterm
 libexec_PROGRAMS = PpTerm
 LDADD += $(SSL_LIBS)
 
+pkgdata_DATA = pp-aterm-options.rtree ugly-print.rtree
+
 EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta)
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c)
