@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Asfix-2-abox.r,v 1.2 2002/05/08 07:54:36 mdejonge Exp $
+% $Id: Asfix-2-abox.r,v 1.3 2002/06/05 20:00:07 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 % Changes: Eelco Visser <visser@acm.org> 19/5/20001
@@ -41,8 +41,7 @@ strategies
    Asfix-2-abox = 
      iowrap(asfix2abox,
              Option( "-V", !Verbose(),           !"-V               verbose execution." )
-        +    Option( "-c", !Conservative(),      !"-c               Ck
-nservative pretty-printing (only format where needed).")
+        +    Option( "-c", !Conservative(),      !"-c               Conservative pretty-printing (only format where needed).")
         + ArgOption( "-p", \x -> PP-Table(x)\ ,  !"-p <table>       Use pretty-print entries from <table>" ))
 
    asfix2abox = 

@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: layout.r,v 1.5 2002/04/05 16:55:06 mdejonge Exp $
+% $Id: layout.r,v 1.6 2002/06/05 20:00:07 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdejonge@cwi.nl)
 
@@ -48,7 +48,7 @@ insert-layout =
       <InsLayout(x)>(b, w) => (b',w');
       !(V(a, b'), w')
    <+
-      ?(A(a, a', b,), w);
+      ?(A(a, a', b), w);
       <InsLayout(x)>(b, w) => (b',w');
       !(A(a, a', b'), w')
    <+
