@@ -120,6 +120,24 @@ better by this feature.
 
 (Martin Bravenboer)
 
+---------+++ Extend Rules
+
+First implementation of 'extend rules' variant of dynamic
+rules. Defining a dynamic rule as
+
+<verbatim>
+  extend rules(
+    A : lhs -> rhs where s
+  )
+</verbatim>
+
+creates a dynamic rule A, which as usual returns the rhs of the rule
+last created. In addition, a rule bagof-A is generated, which rewrites
+lhs to all rhss in the current scope, i.e., produces a list of all
+'values' of lhs.
+
+(Eelco Visser and Arthur van Dam)
+
 ---------++ Concrete-Syntax
 
 ---------+++ Parsing Programs with Concrete-Syntax
