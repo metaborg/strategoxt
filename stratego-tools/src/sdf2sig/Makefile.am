@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.5 2002/09/17 16:06:24 eelco Exp $
+# $Id: Makefile.am,v 1.6 2002/10/02 09:13:31 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -31,7 +31,11 @@ SUBDIRS		= data
 STRATEGO_PRG = sdf2sig
 
 # What scipts to build
-bin_SCRIPTS	= $(STRATEGO_PRG) sdf-to-sig
+bin_SCRIPTS	= $(STRATEGO_PRG) 
+# Can't build sdf-to-sig glue script because it introduces a bootstrap
+# problem with the stratego-front pacakge
+# sdf-to-sig
+
 libexec_SCRIPTS	= $(STRATEGO_PRG)
 
 # Optional tests to run
