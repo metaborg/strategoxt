@@ -42,7 +42,7 @@ AB_CONFIG_PKG(sc,
    --with-aterm=${prefix}
    --with-ssl=${prefix}
    --with-srts=${prefix}
-   --with-sc-boot=${prefix}
+   --with-sc-boot=${top_srcdir}/sc-boot
    --with-cgen=${prefix}
    --with-gpp-boot=${prefix}
 )

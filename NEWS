@@ -4,15 +4,17 @@ News about Stratego releases
 
 ------------------------------------------------------------------------------
 
-Version 0.6.1
+Version 0.6.2
 
- released: September 19, 2001
+ released: September 28, 2001
 
  SUMMARY OF CHANGES
 
  (with respect to release 0.6)
 
  CONTRIBUTIONS
+
+ * Bug reports by: Otto Skrove Bagge, Merijn de Jonge, Hedzer Westra
 
  LANGUAGE
 
@@ -32,10 +34,23 @@ Version 0.6.1
  passing the option -CI "O3" to SC. However, it seems appropriate to
  leave inlining decisions to SC.
 
+ * Repaired bug in compilation of overlays.
+
  LIBRARY
 
  * Type annotations added to strategy operators with higher-order
  arguments.
+
+ * Numerous small refactorings.
+	
+ * Some new tests
+
+ * New
+    - occurrences(s): all occurrence for which s succeeds
+    - om-occurrences(s): outermost occurrences only
+
+ * Obsolete: 
+    - collect-kids/1 -> crush/3
 
 ------------------------------------------------------------------------------
 

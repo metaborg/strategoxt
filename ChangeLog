@@ -1,3 +1,7 @@
+2001-09-28  Eelco Visser  <visser@acm.org>
+
+	* configure.in: aterm package is no longer included in distribution
+
 2001-09-22  Eelco Visser  <visser@acm.org>
 
 	* Release 0.6.1

@@ -17,9 +17,9 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/09/22 09:32:44 visser Exp $
+# $Id: Makefile.am,v 1.2 2001/10/01 20:11:45 visser Exp $
 
-DIST_SUBDIRS = pre-checks \
+DIST_SUBDIRS = pre-checks emacs \
                $(PKGS)
 
 EXTRA_DIST   = $(EXTRA_FILES)

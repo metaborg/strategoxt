@@ -18,9 +18,9 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: gpp.Makefile,v 1.7 2001/09/22 09:32:46 visser Exp $
+# $Id: gpp.Makefile,v 1.8 2001/10/01 20:11:46 visser Exp $
 
-PREFIX=/home/visser/res/Stratego
+PREFIX=/home/xt/xt
 SGLR=
 
 # rule to generate imploded pretty-print tables
