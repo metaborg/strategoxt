@@ -1,19 +1,19 @@
 pkglib_LTLIBRARIES = \
-  liblibxtclib.la \
-  liblibxtclib_dbg.la \
-  liblibxtclib_prof.la
+  libstratego-xtc.la \
+  libstratego-xtc-dbg.la \
+  libstratego-xtc-prof.la
 
-liblibxtclib_la_SOURCES      = libxtclib.c
-liblibxtclib_dbg_la_SOURCES  = libxtclib.c
-liblibxtclib_prof_la_SOURCES = libxtclib.c
+libstratego_xtc_la_SOURCES      = libxtclib.c
+libstratego_xtc_dbg_la_SOURCES  = libxtclib.c
+libstratego_xtc_prof_la_SOURCES = libxtclib.c
 
-liblibxtclib_dbg_la_CFLAGS  = -g  $(AM_CFLAGS)
-liblibxtclib_prof_la_CFLAGS = -pg  $(AM_CFLAGS)
+libstratego_xtc_dbg_la_CFLAGS  = -g  $(AM_CFLAGS)
+libstratego_xtc_prof_la_CFLAGS = -pg  $(AM_CFLAGS)
 
 AM_CPPFLAGS = -I$(SRTS)/include -I$(ATERM)/include
 AM_LDFLAGS  = -avoid-version 
 
-pkgdata_DATA   	= libxtclib.rtree liblib.rtree
+pkgdata_DATA = libxtclib.rtree liblib.rtree
 
 # pkgdocdatadir = $(pkgdatadir)/doc
 # pkgdocdata_DATA = libxtclib.str   liblib.str
@@ -32,6 +32,5 @@ libxtclib.c :
         rm libxtclib.str
 
 PARSESTRATEGO = $(STRATEGO_FRONT)/bin/parse-stratego
-
 .str.rtree :
 	$(PARSESTRATEGO) $(STRINCLUDES) -i $< -o $@ --verbose 0
