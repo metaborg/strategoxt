@@ -1,5 +1,7 @@
 2003-01-04  Eelco Visser  <visser@cs.uu.nl>
 
+	* spec/iteration.str: don't define repeat/1 in terms of repeat/2
+
 	* spec/list-basic.str: <for-each-pair(s)>(xs, ys) produces
 	the list of pairs <s>(x,y) for each pair of x from xs and
 	y from ys.
