@@ -90,7 +90,6 @@ DETECT_SVN_REVISION
 
 AC_OUTPUT(
 	Makefile 
-	README
    	news-archive/Makefile
   	strategoxt.spec
 )
