@@ -72,7 +72,7 @@
 	are not bound;
 
 \begin{code}
-module rename
+module rename-dyn
 imports simple-traversal tuple list dynamic-rules
 rules
 
@@ -122,5 +122,4 @@ strategies
                 <+ {| RenameVar: RnBinding(bndvars, paste); boundin(x,id,id) |}
                    ; boundin(id,x,id)))
 \end{code}
-
 
