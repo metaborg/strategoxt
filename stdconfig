@@ -1,11 +1,12 @@
 ./reconf
-./configure --prefix=/home/visser/res/XT --with-aterm=/home/xt/ATerm
+#./configure --prefix=/home/visser/res/XT --with-aterm=/home/xt/ATerm
 
 #./configure --prefix=`pwd` --with-aterm=/home/xt/ATerm
 
-#./configure --prefix=`pwd` 
-# 	--with-sdf=/home/xt/SDF/ 
-# 	--with-aterm=/home/xt/ATerm 
-#	--with-asfix-tools=/home/xt/xt  
-#	--with-stratego-tools=/home/xt/xt  
-#	--with-sdf-tools=/home/xt/xt 
+./configure --prefix=`pwd` \
+ 	--with-aterm=/home/xt/XT-1.0 \
+ 	--with-sglr=/home/xt/XT-1.0 \
+ 	--with-pgen=/home/xt/XT-1.0 \
+	--with-asfix-tools=/home/xt/XT-1.0 \
+	--with-stratego-tools=/home/xt/XT-1.0 \
+	--with-sdf-tools=/home/xt/XT-1.0

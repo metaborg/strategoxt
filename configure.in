@@ -50,6 +50,13 @@ AC_ARG_WITH(sglr,
 )
 AC_SUBST(SGLR)
 
+AC_ARG_WITH(pgen, 
+  [  --with-pgen=DIR             Specify location of SDF2 parser generator, [\$SDF]], 
+  PGEN="$withval", 
+  PGEN="$SDF"
+)
+AC_SUBST(PGEN)
+
 AC_ARG_WITH(asfix-tools, 
   [  --with-asfix-tools=DIR      Specify location of ASFIX-TOOLS, [\$SDF]], 
   ASFIX_TOOLS="$withval", 
@@ -125,11 +132,15 @@ AB_CONFIG_PKG(sc-boot,
 AB_CONFIG_PKG(gpp-boot,
    --with-aterm=${ATERM}
    --with-ssl=${prefix}
+   --with-srts=${prefix}
    --with-sglr=${SGLR}
+   --with-pgen=${PGEN}
+   --with-asfix-tools=${ASFIX_TOOLS}
 )
 AB_CONFIG_PKG(stratego-front,
    --with-stratego=${prefix} 
-   --with-sglr=${SGLR}             
+   --with-sglr=${SGLR}      
+   --with-pgen=${PGEN}                
    --with-asfix-tools=${ASFIX_TOOLS}    
    --with-stratego-tools=${STRATEGO_TOOLS}
    --with-sdf-tools=${SDF_TOOLS}
