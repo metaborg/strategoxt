@@ -1,5 +1,5 @@
 module parse-unit
-imports xtc-lib io list-filter string list-cons options config
+imports xtc-lib io list-filter string list-cons options config aterm-eq
 imports oldskool-parse-testsuite parse-testsuite test-results testsuite-upgrade
 
 strategies
@@ -109,6 +109,9 @@ strategies
   echo-expected :
     pattern(p) -> <implode-aterm; debug(!"  - expected:  ")> p
 
+  implode-appl :
+    wildcard() -> "_"
+
   echo-expected :
     success() ->  <say(!"  - should succeed")> ()
 
@@ -151,7 +154,7 @@ strategies
    */
   create-test-compare:
     (ParseResult(Success(), f@FILE(_)), pattern(p)) -> Success()
-      where <eq> (<read-from> f, <implode-aterm> p)
+      where <aterm-eq> (<read-from; explode-aterm> f, p)
 
 strategies
 

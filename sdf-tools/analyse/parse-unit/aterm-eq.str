@@ -1,0 +1,72 @@
+/**
+ * Tests explodes ATerms for equivalence with wildcards.
+ *
+ * @author  Martin Bravenboer <martin@cs.uu.nl>
+ */
+module aterm-eq
+imports ATerms
+
+strategies
+
+  aterm-eq =
+    rec x(
+      list-term-eq(x)
+    +  int-term-eq(x)
+    +  fun-term-eq(x)
+    + appl-term-eq(x)
+    +      afun-eq(x)
+    +  wildcard-eq(x)
+    )
+
+rules
+
+  /**
+   * Wildcard
+   */
+  wildcard-eq(x) =
+    (id, wildcard())
+
+  wildcard-eq(x) =
+    (wildcard(), id)
+
+rules
+
+  /**
+   * list
+   */
+  list-term-eq(x) =
+    ?(list(not-empty(xs1)), list(not-empty(xs2)))
+    ; where(<zip(x)> (xs1, xs2))
+ 
+  /**
+   * integer
+   */
+  int-term-eq(x) =
+    ?(constant(int(natural(s))), constant(int(natural(s))))
+
+  /**
+   * just fun
+   */
+  fun-term-eq(x) =
+    ?(fun(a1), fun(a2))
+    ; where(<x> (a1, a2))
+
+  /**
+   * appl
+   */
+  appl-term-eq(x) =
+    ?(appl(s1, x1*), appl(s2, x2*))
+    ; where(<x> (s1, s2))
+    ; where(<zip(x)> (x1*, x2*))
+
+rules
+
+  /**
+   * afun
+   */
+  afun-eq(x) = 
+    ?(uqlit(s), uqlit(s))
+
+  afun-eq(x) = 
+    ?(qlit(s), qlit(s))
+
