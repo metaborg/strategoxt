@@ -3,6 +3,7 @@
    * src/lib/graph-terms.r: moved to graph-tools package
    * src/sdf-pp: Sdf pretty-print tools added
    * sdf-tools now depends on graph-tools package
+   * extended gt-paths.r.src
 
 2001-06-06 Merijn de Jonge <mdejonge@cwi.nl> 
    * src/sdf-normalize/asfix2sdf* moved to new package grammar-recovery
