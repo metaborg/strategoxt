@@ -23,7 +23,7 @@ $(BUILD_SRTS_DEST)/srts.dummy :
 	touch $(BUILD_SRTS_DEST)/srts.dummy
 
 $(INSTALL_XTC_DEST)/xtc.dummy :
-	cd xtc && \
+	cd $(XTC_DIR) && \
 	$(MAKE) $(AM_MAKEFLAGS) && \
 	$(MAKE) $(AM_MAKEFLAGS) DESTDIR=$(INSTALL_XTC_DEST) install && \
 	touch $(INSTALL_XTC_DEST)/xtc.dummy
