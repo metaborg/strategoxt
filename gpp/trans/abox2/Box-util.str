@@ -61,7 +61,7 @@ strategies
   // <string-length'(x)>"my\nstring" => 6 - x
 rel-string-length:
     (str, xpos) -> length
-      where <string-tokenize> ('\n', str)
+      where <string-tokenize> (['\n'], str)
           ; (
                ?[]; !0
             <+
