@@ -1,3 +1,8 @@
+2002-11-24  Eelco Visser  <visser@acm.org>
+
+	* spec/Makefile.stratego.in: instructions for compiling Stratego
+	programs to C
+
 2002-11-23  Eelco Visser  <visser@acm.org>
 
 	* complete bootstrap
