@@ -12,7 +12,8 @@ autogensignatures = \
   Stratego-Sugar.str
 
 staticsignatures = \
-  Stratego-MetaTransition.str
+  Stratego-MetaTransition.str \
+  Stratego-Sugar-MetaTransition.str
 
 signatures = $(autogensignatures) $(staticsignatures)
 

@@ -1,0 +1,20 @@
+module Stratego-Sugar-MetaTransition
+imports Stratego-Sugar
+signature
+  constructors
+    ToTerm       : a -> Term       // quotation
+    FromTerm     : Term -> a       // antiquotation
+
+    ToBuild	 : a -> Strategy   // quotation denoting !t
+
+    FromApp      : Strategy -> a   // antiquotation denoting <s>
+
+    ToStrategy   : a -> Strategy
+    FromStrategy : Strategy -> a
+
+    WithAnno     : a * ListTerm -> a
+
+    meta-var     : String -> a
+    meta-listvar : String -> a
+    Cong         : String * List(Strategy) -> Strategy
+    Ins		 : Term -> Term

@@ -121,16 +121,18 @@ regular tree grammar
     Strategy      -> Let(f_0,Strategy)
     SVar          -> SVar(Id)
     Def           -> StrategyDef
-    Term          -> Anno(PreTerm,Term)
+    Term          -> As(Var,Term)
+    Term          -> Anno(PreTerm,PreTerm)
     PreTerm       -> Explode(Term,Term)
     PreTerm       -> OpQ(String,l_0)
     PreTerm       -> Op(Id,l_0)
     PreTerm       -> Str(String)
     PreTerm       -> Real(Real)
     PreTerm       -> Int(Int)
-    Term          -> As(Var,Term)
-    Term          -> Var
     Term          -> Wld()
+    PreTerm       -> Wld()
+    Term          -> Var
+    PreTerm       -> Var
     Var           -> SeqVar(Var)
     ID            -> Id
     Var           -> Var(Id)
