@@ -11,6 +11,8 @@
  	developer directories.
 
 2000-04-12    <mdejonge@cwi.nl>
+        * XT now also includes the asfix distribution because it no longer
+          belongs to the aterm library.
         * NEWS file updated
         * increased version number to 0.2 (this should have been done a long  
           ago, after releasing version 0.1)
