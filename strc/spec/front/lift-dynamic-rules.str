@@ -16,14 +16,14 @@ strategies
     |[ {| : s |} ]| -> s
 
   DefDynRuleScope :
-    |[ {| x, sc* : s |} ]| -> |[ rule-scope({| sc* : s |} | ~str:x) ]|
+    |[ {| x, sc* : s |} ]| -> |[ dr-scope({| sc* : s |} | ~str:x) ]|
 
   DefDynRuleScope :
-    |[ {| x.t, sc* : s |} ]| -> |[ rule-scope( {| x :+ t |}; {| sc* : s |}
-                                             | ~str:x ) ]|
+    |[ {| x.t, sc* : s |} ]| -> |[ dr-scope( {| x :+ t |}; {| sc* : s |}
+                                           | ~str:x ) ]|
 
   DefDynRuleScopeLabel :
-    |[ {| x :+ t |} ]| -> |[ label-scope(|~str:x, t) ]|
+    |[ {| x :+ t |} ]| -> |[ dr-label-scope(|~str:x, t) ]|
 
 /* Lift dynamic rules from strategy definitions.  One dynamic rule set
 is lifted out at a time, after which the process repeats; a definition
@@ -86,7 +86,7 @@ that are declared in context using the dynamic rule ContextVar */
 
   SplitDynamicRule:
     DynRuleDef|[ f(as1|as2) :- t ]| ->
-      <SplitDynamicRule(!|[ dr-undefine-rule(|~str:f, ~<Fst>) ]|)> DynRuleDef|[ f(as1|as2) : t1 -> () where id ]|
+      <SplitDynamicRule(!|[ dr-undefine-rule(|~str:f, ~<Fst>) ]|)> DynRuleDef|[ f(as1|as2) : t -> () where id ]|
 
   SplitDynamicRule:
     DynRuleDef|[ f(as1|as2).t :- t1 ]| ->
@@ -102,11 +102,11 @@ that are declared in context using the dynamic rule ContextVar */
      [ |[ f'(as1|as2') : Closure(~str:stamp, [t*]) -> t2 
                 where s ]|,
        |[ f(as1|as2) : x@t1 -> <fetch-elem(f'(s1*|t1'* ))> closures
-                where lookup-rule(|~str:f, t1'') => closures ]|,
+                where dr-lookup-rule(|~str:f, t1'') => closures ]|,
        |[ g(as1|as2) : x@t1 -> <filter(f'(s1*|t1'* ))> closures
-                where (lookup-rule(|~str:f, t1'') <+ ![]) => closures ]|
+                where (dr-lookup-rule(|~str:f, t1'') <+ ![]) => closures ]|
      ])
-    where 
+    where
         <conc-strings>("bagof-", f) => g
       ; <conc-strings>("aux-", f) => f'  // has to be the same such that + of aux-f works
       ; new => stamp
@@ -115,9 +115,9 @@ that are declared in context using the dynamic rule ContextVar */
       ; <map((?DefaultVarDec(<id>) + ?VarDec(<id>,_)); !Call(SVar(<id>),[]))> as1 => s1*
       ; <map((?DefaultVarDec(<id>) + ?VarDec(<id>,_)); !Var(<id>))> as2 => t1*
 
-      ; <tvars> t1 => t1vars                            // *all* pattern variables in LHS t1
-      ; <conc> (as2, t1vars) => as2'                    // add them to term args as2 (for passing to aux- rule)
-      ; <conc> (t1*, <map(!Var(<id>))> t1vars) => t1'*  // same for actual values at call-site
+      ; <tvars> t1 => t1vars                                     // *all* pattern variables in LHS t1
+      ; <conc> (as2, <map(!DefaultVarDec(<id>))> t1vars) => as2' // add them to term args as2 (for passing to aux- rule)
+      ; <conc> (t1*, <map(!Var(<id>))> t1vars) => t1'*           // same for actual values at call-site
 
       // Prepare LHS for use as a key
       ; new => x

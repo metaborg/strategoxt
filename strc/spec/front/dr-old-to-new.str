@@ -5,13 +5,16 @@ strategies
 
   upgrade-old-dr-constructs =
     topdown(
-      if ?|[ extend rules(rd*) ]|
-        then UpgradeExtendDynamicRules
-        else if ?|[ override rules(rd*) ]|
-          then UpgradeOverrideDynamicRules
-          else if ?|[ extend override rules(rd*) ]|
-            then UpgradeExtendOverrideDynamicRules
-            else id
+      if ?|[ rules(drd*) ]|
+        then UpgradeGenDynRules
+        else if ?|[ extend rules(rd*) ]|
+          then UpgradeExtendDynamicRules
+          else if ?|[ override rules(rd*) ]|
+            then UpgradeOverrideDynamicRules
+            else if ?|[ extend override rules(rd*) ]|
+              then UpgradeExtendOverrideDynamicRules
+              else id
+            end
           end
         end
       end
@@ -19,21 +22,29 @@ strategies
 
 rules
 
+  UpgradeGenDynRules :
+   |[ rules(drd*) ]| -> |[ rules(drd'*) ]|
+   where <map(try(UpgradeUndefine))> drd* => drd'*
+
+  UpgradeUndefine :
+    rd@DynRuleDef|[ f(as1|as2) : t1 -> Undefined() where s ]| -> DynRuleDef|[ f(as1|as2) :- t1 ]|
+    where !s => Strategy|[ id ]|
+          <+      say(!"[normalize-spec | warning] rule undefining doesn't allow a condition strategy anymore")
+             ; <debug(!"[normalize-spec | warning] Your condition has been removed from the original dynamic rule: ")> rd
+
   UpgradeExtendDynamicRules :
    |[ extend rules(rd*) ]| -> |[ rules(drd*) ]|
    where <map(RDefToDRDef-extend)> rd* => drd*
 
   RDefToDRDef-extend :
     |[ f(as1|as2) : t1 -> t2 where s ]| -> DynRuleDef|[ f(as1|as2) :+ t1 -> t2 where s ]|
-    where not(!t2 => Term|[ Undefined ]|)
+    where not(!t2 => Term|[ Undefined() ]|)
 
   RDefToDRDef-extend :
-    rd@|[ f(as1|as2) : t1 -> Undefined where s ]| -> DynRuleDef|[ f(as1|as2) :- t1 ]|
-    where id//!t2 => Term|[ Undefined ]|
-        ; (!s => |[ id ]|
-           <+      say(!"[normalize-spec | warning] rule undefining doesn't allow a condition strategy anymore")
-              ; <debug(!"[normalize-spec | warning] Your condition has been removed from the original dynamic rule:")> rd
-          )
+    rd@|[ f(as1|as2) : t1 -> Undefined() where s ]| -> DynRuleDef|[ f(as1|as2) :- t1 ]|
+    where !s => Strategy|[ id ]|
+          <+      say(!"[normalize-spec | warning] rule undefining doesn't allow a condition strategy anymore")
+             ; <debug(!"[normalize-spec | warning] Your condition has been removed from the original dynamic rule: ")> rd
 
   UpgradeOverrideDynamicRules =
     say(!"[normalize-spec | fatal error] `override rules' not yet supported in conversion to new style.")
