@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.8 2001/11/22 08:15:58 mdejonge Exp $
+# $Id: Makefile.am,v 1.9 2002/09/26 13:43:26 mdejonge Exp $
 
 include ${srcdir}/../templates/make_rules
 
@@ -33,7 +33,7 @@ pkgdata_DATA = $(wildcard *.r) gt-paths.r
 	sed 's@__SGLR__@$(SGLR)@g;\
              s@__GPP__@$(GPP)@g;\
              s@__PGEN__@$(PGEN)@g;\
-             s@__STRATEGO__@$(STRATEGO)@g;\
+             s@__STRATEGO__@$(SC_BOOT)@g;\
              s@__GRAPHTOOLS__@$(GRAPH_TOOLS)@g;\
              s@__ASFIXTOOLS__@$(ASFIX_TOOLS)@g;\
              s@__SDFTOOLS__@$(prefix)@g'\

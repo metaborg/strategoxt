@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.5 2001/11/22 08:33:10 mdejonge Exp $
+# $Id: Makefile.am,v 1.6 2002/09/26 13:43:27 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -51,7 +51,7 @@ pkgdata_DATA = xt-paths.r
 	     s@__SGLR__@$(SGLR)@g;\
 	     s@__GPP__@$(GPP)@g;\
 	     s@__PGEN__@$(PGEN)@g;\
-	     s@__STRATEGO__@$(STRATEGO)@g;\
+	     s@__STRATEGO__@$(SC_BOOT)@g;\
 	     s@__XT__@$(prefix)@g'\
 	< $< > ${srcdir}/$@
 

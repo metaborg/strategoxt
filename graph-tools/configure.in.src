@@ -17,7 +17,7 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 dnl 02111-1307, USA.
 
-dnl $Id: configure.in.src,v 1.6 2001/11/26 08:42:27 mdejonge Exp $
+dnl $Id: configure.in.src,v 1.7 2002/09/26 13:43:26 mdejonge Exp $
 
 AC_INIT(configure.in)
 AM_INIT_AUTOMAKE(__PACKAGE__,__VERSION__)
@@ -32,12 +32,12 @@ AC_PACKAGE_REQUIRE(asfix-tools, implode-asfix,
    [  --with-asfix-tools      Specify location of asfix-tools package])
 AC_SUBST(ASFIX_TOOLS)
 
-AC_PACKAGE_REQUIRE(stratego, sc,
-   [  --with-stratego         Specify location of stratego library])
-AC_SUBST(STRATEGO)
+AC_PACKAGE_REQUIRE(sc-boot, sc,
+   [  --with-sc-boot          Specify location of stratego compiler])
+AC_SUBST(SC_BOOT)
 
 
-AC_REVISION($Id: configure.in.src,v 1.6 2001/11/26 08:42:27 mdejonge Exp $)
+AC_REVISION($Id: configure.in.src,v 1.7 2002/09/26 13:43:26 mdejonge Exp $)
 
 AC_PROG_CC
 AC_PROG_INSTALL

@@ -1,3 +1,7 @@
+2002-09-26  Merijn de Jonge <mdejonge@cwi.nl>
+   * Replaced dependency on stratego package by a dependency on sc-boot
+     package
+
 2002-09-25  Eelco Visser  <visser@acm.org>
 
 	* src/abox2latex/Abox-2-latex.r: Separate boxes in a VBOX by means
