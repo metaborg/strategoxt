@@ -223,7 +223,7 @@ strategies
 
   basename(ext) =
     explode-string;
-    try(rec x([id|x] <+ [47|id] <+ [46 | ext]; ![]));
+    try(rec x([id|x] <+ ['/' | id] <+ ['.' | ext]; ![]));
     implode-string
 
   guarantee-extension(ext) =
