@@ -234,6 +234,16 @@ Strategy expressions
 
   TranslateStrat :
     LGChoice(s1, s2) ->
+/*
+    |[ { ATerm x = t;
+         if(GlobalPushChoice() == 0)
+	   { s1 }
+	 else 
+	   { t = x; s2 }
+       }
+    |]
+    where new => x
+*/
     Compound([Declaration2(TypeSpec([],TypeId("ATerm"),[]),
                            [DeclInit(IdDecl([],Id(x),None),AssignInit(Id("t")))])],
              [IfElse(Equal(FunCall(Id("GlobalPushChoice"),[]),IntConst("0")),

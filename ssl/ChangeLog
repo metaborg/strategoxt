@@ -1,3 +1,8 @@
+2003-01-11  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/parenthesize.str: place parentheses based
+	on priority and associativity information
+
 2003-01-09  Martin Bravenboer <martin@mbravenboer.org>
 
   * spec/list-misc.str: introduced flatten-list. flatten-list

@@ -3,19 +3,16 @@ include $(wildcard *.dep)
 
 bin_PROGRAMS 	= astratego2text
 
-BOOTCLEANFILES 	= astratego2text.c
-
-astratego2text.o : xtc-conf.h
+CLEANFILES 	=  $(wildcard *.dep)
 
 SCFLAGS 	= --main $* $(XTCFLAGS)
 
 pkgdata_DATA 	= Stratego.pp Stratego-pretty.pp      \
 		  Stratego.pp.af Stratego-pretty.pp.af 
 
-CLEANFILES 	= Stratego.pp StrategoStratego.pp	       \
-		Stratego.pp.af Stratego-pretty.pp.af	       \
-		StrategoStratego.pp.af			       \
-		astratego2text.config $(wildcard *.dep)			     
+BOOTCLEANFILES  = astratego2text.c Stratego.pp StrategoStratego.pp		\
+		  Stratego.pp.af Stratego-pretty.pp.af				\
+		  StrategoStratego.pp.af	      
 
 EXTRA_DIST 	=				\
 		$(wildcard *.pp)		\

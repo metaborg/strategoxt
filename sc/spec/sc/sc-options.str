@@ -25,7 +25,7 @@ strategies
                           "-I", <xtc-find-path> "Stratego.rtree",
                           "-I", <xtc-find-path> "StrategoRenamed.sdf"])
     ; <set-config>("--C-include", 
-		   ["<srts/stratego.h>", "<ssl/stratego-lib.h>"])
+		   ["<srts/stratego.h>", "<srts/stratego-lib.h>"])
     ; <set-config>("-CI", ["-I", <conc-strings>(<xtc-find-path> "SRTS", "/include"),
                            "-I", <conc-strings>(<xtc-find-path> "SRTS", "/include"),
                            "-I", <conc-strings>(<xtc-find-path> "ATERM", "/include")])

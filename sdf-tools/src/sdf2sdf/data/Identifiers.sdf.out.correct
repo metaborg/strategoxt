@@ -1,4 +1,4 @@
 module Identifiers
 exports
   syntax
-    "IDENTIFIER" ( IDENTIFIER ) -> TypedefName
+    "IDENTIFIER" ( IDENTIFIER ) -> TypedefName  
