@@ -233,7 +233,7 @@ rules
                  |[ g(as1|as2) : x@t1 -> <filter(f'(s1*|t1'*))> closures
                       where (dr-lookup-rule(|~str:f, t1'') <+ ![]) => closures ]|,
                  |[ g2(as1|as2) : x@t1 -> res
-                      where dr-lookup-rule-pointer(~str:f | t1'') => (closures, key, tbl)
+                      where dr-lookup-rule-pointer(| ~str:f, t1'') => (closures, key, tbl)
                     ; <split-fetch(f'(s1*|t1'*); ?res); conc> closures => closures'
                     ; <hashtable-put(|key, closures')> tbl ]|
                ] => callers
