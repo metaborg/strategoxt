@@ -17,14 +17,17 @@
 
 .PRECIOUS: %.ac %.c
 
-TESTS = $(subst .r,.bin,$(wildcard *-test.r))
+TESTS = $(subst .rtree,.bin,$(wildcard *-test.rtree))
 
 SINCLUDES = -I $(STRATEGOLIB)/share/ssl
 
-CLEANFILES = $(TESTS) *.o *.c *.ac *.s? *.tree *.c.abox *.r
+CLEANFILES = $(TESTS) *.o *.c *.ac *.s? *.s?.check *.trm *.tree *.tree? *.dep *.c.abox *.r testlib.dummy
 
-all, install:
-	cp $(STRATEGOLIB)/share/ssl/*.r .
+pkgdata_DATA = testlib.dummy
+
+testlib.dummy :
+	cp $(STRATEGOLIB)/share/ssl/*.rtree .
+	touch $@
 
 bootinstall:
 

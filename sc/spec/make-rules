@@ -3,6 +3,9 @@ SC = $(STRATEGOBOOT)/bin/sc
 % : %.r
 	$(SC) $(SCFLAGS) -i $*
 
+% : %.cr
+	$(SC) $(SCFLAGS) -i $*
+
 %.dep:
 	touch $@
 

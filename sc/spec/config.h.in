@@ -1,0 +1,22 @@
+/* config.h.in.  Generated automatically from configure.in by autoheader.  */
+
+/* Define if lex declares yytext as a char * by default, not a char[].  */
+#undef YYTEXT_POINTER
+
+/* Name of package */
+#define PACKAGE "@PACKAGE@"
+
+/* Version number of package */
+#define VERSION "@VERSION@"
+
+/* Installation prefix of package */
+
+#define prefix "@prefix@"
+
+#define datadir "@datadir@"
+
+#define get_conf_version(t) 	ATmakeString("@VERSION@")
+#define get_conf_package(t) 	ATmakeString("@PACKAGE@")
+#define get_conf_prefix(t) 	ATmakeString("@prefix@")
+#define get_conf_datadir(t) 	ATmakeString("@datadir@")
+

@@ -733,3 +733,127 @@ Bootstrapping: finished [Thu Mar 14 14:08:03 CET 2002]
 
 Bootinstall [Thu Mar 14 15:15:50 CET 2002]
 Bootinstall finished [Thu Mar 14 15:15:51 CET 2002]
+
+Bootstrapping version 0.8beta1 [Sun May 12 21:49:13 CEST 2002 - Linux node11794.a2000.nl i686]
+Bootstrapping: phase 1 started [Sun May 12 21:49:13 CEST 2002]
+
+Bootstrapping version 0.8beta1 [Sun May 12 22:58:39 CEST 2002 - Linux node11794.a2000.nl i686]
+Bootstrapping: phase 1 started [Sun May 12 22:58:39 CEST 2002]
+
+Bootstrapping version 0.8beta1 [Mon May 13 01:00:57 CEST 2002 - Linux node11794.a2000.nl i686]
+Bootstrapping: phase 1 started [Mon May 13 01:00:57 CEST 2002]
+
+Bootstrapping version 0.8beta1 [Tue May 14 04:00:28 CEST 2002 - Linux node11794.a2000.nl i686]
+Bootstrapping: phase 1 started [Tue May 14 04:00:28 CEST 2002]
+
+Bootstrapping version 0.8alpha1 [Tue May 14 04:46:13 CEST 2002 - Linux node11794.a2000.nl i686]
+Bootstrapping: phase 1 started [Tue May 14 04:46:13 CEST 2002]
+Bootstrapping: phase 2 started [Tue May 14 05:02:10 CEST 2002]
+Bootstrapping: phase 3 started [Tue May 14 05:16:08 CEST 2002]
+Bootstrapping: finished [Tue May 14 05:30:02 CEST 2002]
+
+Bootinstall [Tue May 14 05:37:39 CEST 2002]
+Bootinstall finished [Tue May 14 05:37:42 CEST 2002]
+
+Bootstrapping version 0.8alpha1 [Sun May 19 21:40:53 CEST 2002 - Linux loempia.cs.uu.nl i686]
+Bootstrapping: phase 1 started [Sun May 19 21:40:53 CEST 2002]
+
+Bootstrapping version 0.8alpha1 [Sun May 19 22:25:14 CEST 2002 - Linux loempia.cs.uu.nl i686]
+Bootstrapping: phase 1 started [Sun May 19 22:25:14 CEST 2002]
+
+Bootstrapping version 0.8alpha1 [Sun May 19 22:45:49 CEST 2002 - Linux loempia.cs.uu.nl i686]
+Bootstrapping: phase 1 started [Sun May 19 22:45:49 CEST 2002]
+
+Bootstrapping version 0.8alpha1 [Sun May 19 22:46:18 CEST 2002 - Linux loempia.cs.uu.nl i686]
+Bootstrapping: phase 1 started [Sun May 19 22:46:18 CEST 2002]
+Bootstrapping: phase 2 started [Sun May 19 23:01:47 CEST 2002]
+Bootstrapping: phase 3 started [Sun May 19 23:17:30 CEST 2002]
+Bootstrapping: finished [Sun May 19 23:33:14 CEST 2002]
+
+Bootstrapping version 0.8alpha1 [Sun May 19 23:48:54 CEST 2002 - Linux loempia.cs.uu.nl i686]
+Bootstrapping: phase 1 started [Sun May 19 23:48:54 CEST 2002]
+Bootstrapping: phase 2 started [Mon May 20 00:04:19 CEST 2002]
+Bootstrapping: phase 3 started [Mon May 20 00:19:49 CEST 2002]
+Bootstrapping: finished [Mon May 20 00:36:19 CEST 2002]
+
+Bootstrapping version 0.8alpha1 [Sat May 25 00:59:09 CEST 2002 - Linux node11794.a2000.nl i686]
+Bootstrapping: phase 1 started [Sat May 25 00:59:09 CEST 2002]
+
+Bootstrapping version 0.8alpha1 [Sat May 25 10:30:35 CEST 2002 - Linux node11794.a2000.nl i686]
+Bootstrapping: phase 1 started [Sat May 25 10:30:35 CEST 2002]
+Bootstrapping: phase 2 started [Sat May 25 10:42:59 CEST 2002]
+Bootstrapping: phase 3 started [Sat May 25 10:55:30 CEST 2002]
+Bootstrapping: finished [Sat May 25 11:09:40 CEST 2002]
+
+Bootinstall [Sat May 25 11:10:09 CEST 2002]
+Bootinstall finished [Sat May 25 11:10:11 CEST 2002]
+
+Bootstrapping version 0.8alpha2 [Tue May 28 19:35:18 CEST 2002 - Linux node11794.a2000.nl i686]
+Bootstrapping: phase 1 started [Tue May 28 19:35:18 CEST 2002]
+Bootstrapping: phase 2 started [Tue May 28 19:48:34 CEST 2002]
+
+Bootstrapping version 0.8alpha2 [Tue May 28 21:01:26 CEST 2002 - Linux node11794.a2000.nl i686]
+Bootstrapping: phase 1 started [Tue May 28 21:01:26 CEST 2002]
+Bootstrapping: phase 2 started [Tue May 28 13:20:01 CEST 2002]
+Bootstrapping: phase 3 started [Tue May 28 13:41:06 CEST 2002]
+Bootstrapping: finished [Tue May 28 14:01:26 CEST 2002]
+
+Bootinstall [Tue May 28 14:03:30 CEST 2002]
+Bootinstall finished [Tue May 28 14:03:31 CEST 2002]
+
+Bootstrapping version 0.8alpha3 [Sun Jun  2 00:35:48 CEST 2002 - Linux node11794.a2000.nl i686]
+Bootstrapping: phase 1 started [Sun Jun  2 00:35:48 CEST 2002]
+Bootstrapping: phase 2 started [Sun Jun  2 00:48:55 CEST 2002]
+Bootstrapping: phase 3 started [Sun Jun  2 01:02:07 CEST 2002]
+Bootstrapping: finished [Sun Jun  2 01:15:20 CEST 2002]
+
+Bootinstall [Sun Jun  2 01:15:57 CEST 2002]
+Bootinstall finished [Sun Jun  2 01:15:58 CEST 2002]
+
+Bootstrapping version 0.8alpha3 [Sun Jun  2 16:29:40 CEST 2002 - Linux node11794.a2000.nl i686]
+Bootstrapping: phase 1 started [Sun Jun  2 16:29:40 CEST 2002]
+Bootstrapping: phase 2 started [Sun Jun  2 16:42:22 CEST 2002]
+Bootstrapping: phase 3 started [Sun Jun  2 16:55:19 CEST 2002]
+Bootstrapping: finished [Sun Jun  2 17:08:19 CEST 2002]
+
+Bootinstall [Sun Jun  2 17:33:51 CEST 2002]
+Bootinstall finished [Sun Jun  2 17:33:52 CEST 2002]
+
+Bootstrapping version 0.8alpha3 [Sun Jun  2 17:49:26 CEST 2002 - Linux node11794.a2000.nl i686]
+Bootstrapping: phase 1 started [Sun Jun  2 17:49:26 CEST 2002]
+Bootstrapping: phase 2 started [Sun Jun  2 18:02:22 CEST 2002]
+Bootstrapping: phase 3 started [Sun Jun  2 18:15:35 CEST 2002]
+Bootstrapping: finished [Sun Jun  2 18:29:46 CEST 2002]
+
+Bootinstall [Mon Jun  3 00:04:22 CEST 2002]
+Bootinstall finished [Mon Jun  3 00:04:23 CEST 2002]
+
+Bootstrapping version 0.8alpha3 [Thu Jun  6 00:11:54 CEST 2002 - Linux node11794.a2000.nl i686]
+Bootstrapping: phase 1 started [Thu Jun  6 00:11:54 CEST 2002]
+
+Bootstrapping version 0.8alpha3 [Thu Jun  6 09:53:25 CEST 2002 - Linux node11794.a2000.nl i686]
+Bootstrapping: phase 1 started [Thu Jun  6 09:53:25 CEST 2002]
+Bootstrapping: phase 2 started [Thu Jun  6 10:05:28 CEST 2002]
+Bootstrapping: phase 3 started [Thu Jun  6 10:17:20 CEST 2002]
+Bootstrapping: finished [Thu Jun  6 10:29:42 CEST 2002]
+
+Bootinstall [Thu Jun  6 11:11:10 CEST 2002]
+Bootinstall finished [Thu Jun  6 11:11:11 CEST 2002]
+
+Bootstrapping version 0.8alpha3 [Sat Jun  8 22:34:25 CEST 2002 - Linux node11794.a2000.nl i686]
+Bootstrapping: phase 1 started [Sat Jun  8 22:34:25 CEST 2002]
+Bootstrapping: phase 2 started [Sat Jun  8 22:47:06 CEST 2002]
+Bootstrapping: phase 3 started [Sat Jun  8 22:59:31 CEST 2002]
+Bootstrapping: finished [Sat Jun  8 23:12:21 CEST 2002]
+
+Bootinstall [Sat Jun  8 23:12:57 CEST 2002]
+Bootinstall finished [Sat Jun  8 23:12:57 CEST 2002]
+
+Bootstrapping version 0.8alpha3 [Sun Jun  9 10:10:33 CEST 2002 - Linux node11794.a2000.nl i686]
+Bootstrapping: phase 1 started [Sun Jun  9 10:10:33 CEST 2002]
+Bootstrapping: phase 2 started [Sun Jun  9 10:23:37 CEST 2002]
+Bootstrapping: phase 3 started [Sun Jun  9 10:36:17 CEST 2002]
+Bootstrapping: finished [Sun Jun  9 10:49:00 CEST 2002]
+
+Bootinstall [Sun Jun  9 11:41:26 CEST 2002]
+Bootinstall finished [Sun Jun  9 11:41:27 CEST 2002]

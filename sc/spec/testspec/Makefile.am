@@ -17,7 +17,7 @@
 
 .PRECIOUS: %.ac %.c
 
-SCFLAGS = --main $@
+SCFLAGS = --main $@ --C-include "\"../conf.h\""
 
 SINCLUDES = \
 	-I $(STRATEGOLIB)/share/ssl \

@@ -15,17 +15,22 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-EXTRA_DIST = make_rules.in make-rules
+EXTRA_DIST = make_rules.in make-rules conf.h.src
+
+pkgdata_DATA = conf.h
 
 SUBDIRS = \
   syn c front lib match opt sc sig test1 test2 testlib testspec log
 
 DIST_SUBDIRS = si sdf test3 $(SUBDIRS)
 
+BOOTSOURCES = conf.h.src
+
 bootstep :
-	$(MAKE) clean
-	$(MAKE)
-	$(MAKE) install
+	$(MAKE) clean 		2>  log/bootsteplog
+	$(MAKE) 		2>> log/bootsteplog
+	$(MAKE) bootcheck	2>> log/bootsteplog
+	$(MAKE) install		2>> log/bootsteplog
 
 bootcheck :
 	cd test1 && $(MAKE) clean && $(MAKE) check
@@ -67,8 +72,25 @@ bootstrap :
 bootinstall :
 	@echo "" >> log/bootlog
 	@echo "Bootinstall [`date`]" >> log/bootlog
+	cp -f $(BOOTSOURCES) $(SCBOOT)/src
 	list='$(SUBDIRS)'; for subdir in $$list; do \
 	   (cd $$subdir ; $(MAKE) $@ ;) \
 	done
 	@echo "Bootinstall finished [`date`]" >> log/bootlog
+
+# Generate scripts
+%: %.src Makefile
+	sed 's#__GPP__#$(GPP)#g;\
+             s#__CGEN__#$(CGEN)#g;\
+	     s#__prefix__#$(prefix)#g;\
+	     s#__datadir__#$(datadir)#g;\
+	     s#__pkgdatadir__#$(pkgdatadir)#g;\
+             s#__VERSION__#$(VERSION)#g;\
+	     s#__PACKAGE__#$(PACKAGE)#g;\
+             s#__ATERM__#$(ATERM)#g;\
+             s#__STRATEGORTS__#$(STRATEGORTS)#g;\
+             s#__STRATEGOLIB__#$(STRATEGOLIB)#g;\
+             s#__MAKE__#$(MAKE)#g' < $< > $@
+	chmod +x $@
+
 
