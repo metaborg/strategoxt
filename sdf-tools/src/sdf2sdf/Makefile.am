@@ -5,7 +5,6 @@ include $(wildcard *.dep)
 SUBDIRS          = data
 
 bin_PROGRAMS     = sdf2sdf 
-libexec_PROGRAMS = sdf2sdf
 
 TESTS            = sdf2sdf_check
 CLEANFILES       = sdf2sdf_check $(wildcard *.dep)
