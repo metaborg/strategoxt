@@ -23,6 +23,14 @@ strategies
   Ensugar :
     lit(s) -> lit(qlit(<double-quote> s))
 
+  Ensugar :
+    seq(a,b) -> otherseq(a,b)
+      where <not(is-list)>b
+
+signature
+  constructors
+    otherseq : Term * Term -> Term
+
 strategies
  
   EnsugarOnce =

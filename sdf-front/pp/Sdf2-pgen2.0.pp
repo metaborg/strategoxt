@@ -71,7 +71,7 @@
    bracket    -- KW["bracket"],
 
    char-class                    -- _1,
-   seq                           -- _1 KW["."] _2,
+   otherseq                      -- _1 KW["."] _2,
    single                        -- _1,
    alt                           -- _1 KW["|"] _2,
    list                          -- KW["[["] _1 KW["]]"],
