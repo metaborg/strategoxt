@@ -43,7 +43,7 @@ Options:
 
 Description:
 This is a test program to demonstrate use of parse-options and  generation
-of usage info from option and switch specificatios. These now contain usage
+of usage info from option and switch specifications. These now contain usage
 info as additional third argument.
 
       
@@ -68,7 +68,7 @@ strategies
   // usage info.
   short-description(s) = fail
 
-  // No dfault short description. Overrule to include in usage info.
+  // No default short description. Overrule to include in usage info.
   long-description(s) = fail
 
   // Parse options. Add system-usage switch and display usage info when user
@@ -105,7 +105,8 @@ strategies
   // descrition of the program is displayed when it is defined.
   system-usage  = 
      option-defined(Program(?p));
-     try(
+     try
+(
        <printnl>(stderr, [<short-description(!p);concat-strings>() ])
      );
      
