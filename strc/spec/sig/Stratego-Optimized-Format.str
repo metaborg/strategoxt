@@ -19,6 +19,15 @@ strategies
 	    , vardecs
 	    , strategy-expression)
 
+    <+ ExtSDefInl(is-string
+	    , vardecs
+	    , vardecs
+	    , strategy-expression)
+
+    <+ ExtSDef(is-string
+	    , vardecs
+	    , vardecs)
+
 //    + SDef(list(DontInline), is-string, [], strategy-expression)
     <+ debug(!"Not a strategy-definition: ")
 

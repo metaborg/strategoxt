@@ -23,6 +23,7 @@ strategies
     xtc-input(
       front-end
       ; optimize
+      ; export-external-defs
       ; back-end
       ; c-compile
     )
@@ -117,6 +118,25 @@ strategies
             				; save-as1(!".opt14")
           )
     )
+strategies
+
+  export-external-defs =
+    if-lib(where(
+      if-verbose2(say(!"export-external-defs"));
+      profile'(if-verbose1(<printnl>(stderr, ["export-external-defs succeeded:      " | <id>])), 
+        defs-to-external-defs
+	; where(
+	    <not(eq)>(<get-config>"baseout",<get-config>"basein")
+	    <+ <get-config>"baseout"
+	       ; debug(!"name for library same as name for base file: ")
+	       ; fail
+          )
+        ; copy-to(get-outfile(!".rtree") => file1)
+        ; xtc-transform(!"pp-stratego", !["--abstract" | <pass-verbose> ] )
+        ; copy-to(get-outfile(!".str") => file2)
+        ; say(!["abstract syntax in", file1, " concrete syntax in ", file2])
+      )
+    ))
 
 strategies
 
@@ -171,9 +191,9 @@ strategies
   // building a library
 
   if-lib(s1, s2) = where(<get-config>"--library") < s1 + s2
-
   if-lib(s)      = if-lib(s, id)
   if-not-lib(s)  = if-lib(id, s)
+  pass-library   = if-lib(!["--library"], ![])
 
 strategies
 
@@ -221,7 +241,7 @@ strategies
 
   add-main =
     try(where(<get-config> "-m" => m; if-verbose2(debug(!"main strategy is: ")))
-        ; xtc-io-transform(AddMain(!m)))
+        ; if-not-lib(xtc-io-transform(AddMain(!m))))
     ; save-as3(!".with-main")
 
   AddMain(m) : 
@@ -298,6 +318,9 @@ strategies // COMPILER COMPONENTS
   lift-definitions 	= comp(|"lift-definitions")
   bound-unbound-vars 	= comp(|"bound-unbound-vars")
 
+// EXPORT
+
+  defs-to-external-defs = comp(|"defs-to-external-defs", ["--no-inlining"])
 
 // BACK-END
 
@@ -307,5 +330,6 @@ strategies // COMPILER COMPONENTS
   s2c 		= comp(|"s2c",  
 	 		<concat>[
 			  <get-config; mapconcat(!["--C-include", <id>])> "--C-include",
-			  <if-lib(!["--library"], ![])>
+			  <pass-library>
 			])
+

@@ -1,5 +1,19 @@
 module C-simplify
 imports C
+strategies
+
+  c-simplify =
+    listbottomup(repeat(Csimplify))
+    
+  listdownup(s) =
+    rec x(s; (Cons(x,x) <+ all(x)); s)
+
+  listbottomup(s) =
+    rec x(s; (Cons(x,x) <+ all(x)); s)
+
+  listtopdown(s) =
+    rec x(s; (Cons(x,x) <+ all(x)); s)
+
 rules
 
   Csimplify :
@@ -22,6 +36,9 @@ rules
 
   Csimplify :
     [Compound([], stats) | stats'] -> <conc>(stats, stats')
+
+  Csimplify :
+    [Stat(EmptyExp) | stats] -> stats
 
   Csimplify :
     IfElse(e, s, Compound([],[])) -> If(e, s)

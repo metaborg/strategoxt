@@ -12,7 +12,9 @@ strategies
   spec-to-sdefs-io = 
     io-wrap(
       ExpandOverlays
+      ; try(AddAnnoCongDef)
       ; RulesToSdefs
+      ; AddCongruenceDefinitions
       ; DesugarListMatching
     )
 
@@ -49,6 +51,21 @@ rules
 
   MkCongDefs : 
     Constructors(ods) -> <filter(MkCongDef)> ods
+
+  RegisterCongDef =
+    ?ExtSDef(f, xs, []) 
+    ; where(<length> xs => n)
+    ; rules(CongDefined : (f, n) -> ())
+
+  RegisterCongDef =
+    ?ExtSDefInl(f, xs, [], _)
+    ; where(<length> xs => n)
+    ; rules(CongDefined : (f, n) -> ())
+
+  RegisterCongDef =
+    ?SDefT(f, xs, [], _)
+    ; where(<length> xs => n)
+    ; rules(CongDefined : (f, n) -> ())
 
 strategies
 
@@ -206,9 +223,34 @@ rules
     ]) ->
     Specification([
       Signature(bsigs),
-      Strategies(<conc> (<congdefs> bsigs, 
-                           <map(try(RDtoSD + DeclareVariables); expand-calls)> [AnnoCongDef| sdefs]))
+      Strategies(<map(try(RDtoSD + DeclareVariables); expand-calls)> sdefs)
     ])
+
+  AddCongruenceDefinitions : 
+    Specification([
+      Signature(bsigs), 
+      Strategies(sdefs)
+    ]) ->
+    Specification([
+      Signature(bsigs),
+      Strategies(<conc> (<congdefs> bsigs, sdefs))
+    ])
+    where <map(try(RegisterCongDef))> sdefs
+
+
+  AddAnnoCongDef :
+    Specification([
+      Signature(bsigs), 
+      Strategies(sdefs)
+    ]) ->
+    Specification([
+      Signature(bsigs), 
+      Strategies([AnnoCongDef | sdefs])
+    ])
+    where <not(fetch(  ?SDefT("Anno_Cong__",_,_,_) 
+		     + ?RDefT("Anno_Cong__",_,_,_)
+		     + ?ExtSDef("Anno_Cong__",_,_)
+		     + ?ExtSDefInl("Anno_Cong__",_,_,_)))> sdefs
 
   ExpandOverlays : 
     Specification([

@@ -1,61 +1,53 @@
 module s2c
 imports Stratego automaton lib C C-simplify dynamic-rules config
+signature
+  constructors
+    Conc : List(a) * List(a) -> List(a)
+    Include : String -> ExternalDef
 
+/**
+ * Compilation of Stratego programs to C 
+ */
 strategies
 
   s2c = 
-    iowrap(compile, s2c-options)
-
+    io-wrap(s2c-options, compile)
+ 
   compile = 
-    init-term-caching;
-    downup2(repeat(TranslateSpec 
-                   <+ TranslateSig 
-                   <+ TranslateDef 
-                   <+ TranslateStratMatchGuard 
-                   <+ TranslateStrat)
-	   ,repeat(Csimplify))
-    ; try(oncetd(?InitCachedTerms; init-cached-terms))
-
-signature
-  constructors
-    TraceAll        : Option
-    Trace           : String -> Option
-    Include         : String -> Option
-    InitCachedTerms : Stat
+    init-term-caching
+    ; TranslateSpec
+    ; c-simplify
 
 strategies
 
+  /**
+   * Command line options
+   */
+
   s2c-options = 
-    Option("--trace-all", 
-	!TraceAll; debug(!"tracing all functions: ")
-	; rules(TraceAllFuns : x -> x))
-
-  + ArgOption("-t",     
-	\x -> Trace(x) where rules(TraceFun : x -> x) \,
-	!"-t f            trace strategy operator f" )
-
-  + ArgOption("--C-include",       
-	where(<post-extend-config>("--C-include", [<id>]))
-        ; !Include(<id>),
+    ArgOption("--C-include",       
+	where(<post-extend-config>("--C-include", [<id>])),
 	!"--C-include h   include header file h (\"file.h\" or <file.h>)")
 
   + Option("--library" + "--lib"
-	  ,<set-config>"--library"
+	  ,where(<set-config> ("--library", ()))
 	  ,!"--library | --lib    build library instead of application")
 
 strategies
 
-  // building a library
+  /**
+   * Building a library
+   */
 
   if-lib(s1, s2) = where(<get-config>"--library") < s1 + s2
-
   if-lib(s)      = if-lib(s, id)
   if-not-lib(s)  = if-lib(id, s)
 
 overlays
 
   CastATerm(e) = 
-    TypeCast(TypeName(TypeSpec([],TypeId("ATerm"),[]),None),e)
+    |[ (ATerm)~exp:e ]|
+    // TypeCast(TypeName(TypeSpec([],TypeId("ATerm"),[]),None),e)
 
   CastATermList(e) = 
     TypeCast(TypeName(TypeSpec([],TypeId("ATermList"),[]),None),e)
@@ -69,9 +61,6 @@ overlays
   CastATermAppl(e) = 
     TypeCast(TypeName(TypeSpec([],TypeId("ATermAppl"),[]),None),e)
 
-//  Assign(x,e) = 
-//    Assign(x,AssignEq,e)
-
   ATgetArgument(t, i) = 
     FunCall(Id("ATgetArgument"),[t,i])
 
@@ -84,54 +73,76 @@ overlays
   CheckATermList(e) = 
     FunCall(Id("CheckATermList"), [e])
 
-overlays 
-
-  UnboundVarErrorDefinition = |[
-       void __UnboundVarError(char *var) 
-       {
-         fprintf(stderr, "\"** compiler error: variable '%s' should be bound\\nnotify stratego-bugs@cs.uu.nl\\n\"", var);
-       }
-  ]|
-
 rules
 
-/*
   TranslateSpec :
-    Specification([Signature(ops), Strategies(defs)]) -> 
-    |[ 
-       void init_constant_terms();
-       ~dec: <TranslateSig> Signature(ops)
+    Specification([Signature([Constructors(ops)]), Strategies(defs)]) -> <concatenate-lists>
+    |[
+	// C includes specified on command-line or by default configuration
+	~ext-def*:incl
+
+        // legacy
+	~ext-def*: <if-lib(![],
+           ![fun-def|[ void init_constructors(void){} ]|]
+	)>
+
+	// initialize variables denoting constructor symbols
+	~ext-def*:cnstr-decls
+	static void init_module_constructors (void)
+	{
+	  ~stm*:cnstr-inits
+	}
+
+	// initialize cached constant terms
+	~ext-def*:cnst-decls
+	static void init_module_constant_terms (void)
+	{
+	  ~stm*:cnst-inits
+	}
+
+	// include functions for calling the initialization functions
+	~ext-def*:
+	  <if-lib(
+	     ![Include("#include <srts/init-stratego-module.h>")],
+	     ![Include("#include <srts/init-stratego-application.h>")]
+	   )>	
+
+	// signatures of all generated functions
+	~ext-def*:function-sigs
+
+	// function definitions themselves
+	~ext-def*:<if-lib(![], ![<MainDef>])>
+	~ext-def*:function-defs
     ]|
-    where <map(SDefToDeclaration)> defs => sigs
-        ; <get-config
-           ; map(!Include(<conc-strings> ("#include ", <id>))) <+ ![]> "--C-include" => incl
+    where GenerateIncludes => incl
+	; <map(DeclareConstructor)> ops => cnstr-decls
+        ; <map(InitConstructor); concat> ops => cnstr-inits
+	; <map(SDefToDeclaration)> defs => function-sigs
+	; <filter(?SDefT(_,_,_,_))
+           ; map(TranslateDef)> defs => function-defs
+	; (CachedTerms <+ ![])
+	; !(<map(DeclareTermId)>, <map(InitTermId); concat; reverse>) 
+	  => (cnst-decls, cnst-inits)
 
-*/
+strategies
 
-  TranslateSpec :
-    Specification([Signature(ops), Strategies(defs)]) -> 
-    TranslationUnit(<concat> [incl, 
-	[Declaration2(//DeclSpec([],Static,[],Void,[]),
-		      TypeSpec([],TypeId("void"),[]),
-                       [IdDecl([],Id("init_constant_terms"),Some(ParamList([])))])
-	, Signature(ops)
-//	, [UnboundVarErrorDefinition]
-        , InitCachedTerms
-        ]
-        , sigs
-        , [ SDefT("main_0", [], [], CallT(SVar("main_0_0"), [],[])) 
-          | defs' ]
-    ])
-    where <map(SDefToDeclaration)> defs => sigs
-	; <filter(?SDefT(_,_,_,_))> defs => defs'
-        ; <get-config; map(!Include(<conc-strings> ("#include ", <id>))) 
-           <+ ![]> "--C-include" => incl
+  concatenate-lists =
+    bottomup(try(\ Conc(xs, ys) -> <conc>(xs, ys) \ ))
 
-\end{code}
+  GenerateIncludes =
+    <get-config; map(!Include(<conc-strings> ("#include ", <id>))) <+ ![]> "--C-include"
 
-Signatures
+  MainDef = 
+    !c:fun-def|[ 
+	ATerm main_0(ATerm t) 
+	{
+	  SRTS_stratego_initialize();
+	  t = main_0_0(t);
+	  return(t);
+	}
+    ]|
 
-\begin{code}
+strategies // Signatures
 
   TranslateSig :
     Signature([Constructors(ops)]) ->
@@ -140,8 +151,8 @@ Signatures
         ; if-lib(![], ![<InitConstructors> ops]) => fundef
 
   DeclareConstructor :
-    OpDecl(c, t) ->
-    Declaration2(TypeSpec([],TypeId("Symbol"),[]),[IdDecl([],Id(csym),None)])
+    OpDecl(c, t) -> c:dec|[ Symbol ~id:csym; ]|
+    // Declaration2(TypeSpec([],TypeId("Symbol"),[]),[IdDecl([],Id(csym),None)])
     where <Arity> t => n
         ; <concat-strings>["sym_", <cify> c, "_", <int-to-string> n] => csym
         ; rules(ConstructorName : (c, n) -> csym)
@@ -157,8 +168,7 @@ Signatures
     FunDef(//DeclSpec([],Static,[],Void,[]),
 	   TypeSpec([],Void,[]),
            IdDecl([],Id("init_constructors"),Some(ParamList([TypeSpec([],Void,[])]))),
-           Compound([],<conc>(<map(InitConstructor); concat> ops, 
-			      [Stat(FunCall(Id("init_constant_terms"),[]))])))
+           Compound([],<map(InitConstructor); concat> ops))
 
   InitConstructor :
     OpDecl(c, t) ->
@@ -168,95 +178,88 @@ Signatures
     where <Arity> t => ar; int-to-string => n
         ; <ConstructorName> (c, ar) => csym
 
-\end{code}
-
-Strategy definitions
-
-\begin{code}
-  SDefToDeclaration :
-    Def|[ f(a*) = s ]| ->
-    dec|[ ATerm ~id:f (~param-dec*:params); ]|
-    where <map(TranslateVarDec)> a* => params
- 	; <conc>(params, [TypeSpec([],TypeId("ATerm"),[])])
+/**
+ * Prototypes for strategy definitions
+ */
+strategies 
 
   SDefToDeclaration :
-    SDefT(f, as1, as2, s) ->
-    //Def|[ f(a1* | a2*) = s ]| ->
-    dec|[ ATerm ~id:f (~param-dec*:params); ]|
-    where <map(TranslateVarDec)> as1 => params1
-        ; <map(TranslateVarDec)> as2 => params2
-        ; <concat> [params1, params2, [TypeSpec([],TypeId("ATerm"),[])]] => params
+    Def|[ f(a1* | a2*) = s ]| ->
+    dec|[ ATerm ~id:f (~param-dec*:ps, ATerm t); ]|
+    where <not(is-local-function)> f
+	; <map(TranslateVarDec)> a1* => ps1
+        ; <map(TranslateVarDec)> a2* => ps2
+	; <conc>(ps1, ps2) => ps
 
   SDefToDeclaration :
-    ExtSDefInl(f, as1, as2, s) ->
-    dec|[ ATerm ~id:f (~param-dec*:params); ]|
-    where <map(TranslateVarDec)> as1 => params1
-        ; <map(TranslateVarDec)> as2 => params2
-        ; <concat> [params1, params2, [TypeSpec([],TypeId("ATerm"),[])]] => params
+    Def|[ f(a1* | a2*) = s ]| ->
+    dec|[ static ATerm ~id:f (~param-dec*:ps, ATerm t); ]|
+    where <is-local-function> f
+	; <map(TranslateVarDec)> a1* => ps1
+        ; <map(TranslateVarDec)> a2* => ps2
+	; <conc>(ps1, ps2) => ps
 
   SDefToDeclaration :
-    ExtSDef(f, as1, as2) ->
-    dec|[ ATerm ~id:f (~param-dec*:params); ]|
-    where <map(TranslateVarDec)> as1 => params1
-        ; <map(TranslateVarDec)> as2 => params2
-        ; <concat> [params1, params2, [TypeSpec([],TypeId("ATerm"),[])]] => params
+    Def|[ external f(a1* | a2*) = s ]| ->
+    dec|[ ATerm ~id:f (~param-dec*:ps, ATerm t); ]|
+    where <map(TranslateVarDec)> a1* => ps1
+        ; <map(TranslateVarDec)> a2* => ps2
+	; <conc>(ps1, ps2) => ps
 
-/*
   SDefToDeclaration :
-    SDef(f, args, s) -> 
-    Declaration2(TypeSpec([],TypeId("ATerm"),[]),
-                 [IdDecl([],Id(f),Some(ParamList([TypeSpec([],TypeId("ATerm"),[]) | params])))])
-    where
-      <map(TranslateVarDec)> args => params
-*/
+    Def|[ external f(a1* | a2*) ]| ->
+    dec|[ ATerm ~id:f (~param-dec*:ps, ATerm t); ]|
+    where <map(TranslateVarDec)> a1* => ps1
+        ; <map(TranslateVarDec)> a2* => ps2
+	; <conc>(ps1, ps2) => ps
+
+
+/**
+ * Translation of strategy definition to C function
+ */
+strategies 
 
   TranslateDef :
-    SDef(f, args, s) -> 
-    FunDef(TypeSpec([],TypeId("ATerm"),[]),
-           IdDecl([],Id(f),Some(ParamList(<conc>(args',
-					         [ParamDecl(TypeSpec([],TypeId("ATerm"),[]),
-                                                     IdDecl([],Id("t"),None))])))),
-	   body)
-    where <map(TranslateVarDec)> args => args'
-        ; <(TraceFun <+ TraceAllFuns, id); TracedBody <+ PlainBody> (f, s) => body
+    Def|[ f(a1*|a2*) = s ]| ->
+    |[ 
+       ATerm ~id:f(~param-dec*:args, ATerm t)
+       {
+         ~stm:<translate-body>s;
+	 return(t);
+       }
+    ]|
+    where <not(is-local-function)> f
+	; <map(TranslateVarDec)> a1* => args1
+        ; <map(TranslateVarDec)> a2* => args2
+	; <conc>(args1, args2) => args
 
   TranslateDef :
-    SDefT(f, args1, args2, s) -> 
-    FunDef(TypeSpec([],TypeId("ATerm"),[]),
-           IdDecl([],Id(f),Some(ParamList(<conc>(args',
-					         [ParamDecl(TypeSpec([],TypeId("ATerm"),[]),
-                                                     IdDecl([],Id("t"),None))])))),
-	   body)
-    where <map(TranslateVarDec)> args1 => args1'
-        ; <map(TranslateVarDec)> args2 => args2'
-	; <conc> (args1', args2') => args'
-        ; <(TraceFun <+ TraceAllFuns, id); TracedBody <+ PlainBody> (f, s) => body
+    Def|[ f(a1*|a2*) = s ]| ->
+    |[ 
+       static ATerm ~id:f(~param-dec*:args, ATerm t)
+       {
+         ~stm:<translate-body>s;
+	 return(t);
+       }
+    ]|
+    where <is-local-function> f
+	; <map(TranslateVarDec)> a1* => args1
+        ; <map(TranslateVarDec)> a2* => args2
+	; <conc>(args1, args2) => args
 
-  PlainBody : 
-    (f, s) -> Compound([],[s,Return(Id("t"))])
+  is-local-function =
+    explode-string
+    ; [is-alpha, '_' | list(is-num)]
 
-  TracedBody : 
-    (f, s) ->
-    Compound([],[Stat(FunCall("ATfprintf",
-			[Id("stderr")
-			,StringLit(<concat-strings; escape; double-quote>[f, "(%t)\n"])
-			,Id("t")]))
-		,s
-		,Stat(FunCall("ATfprintf",
-			     [Id("stderr")
-			     ,StringLit(<concat-strings; escape; double-quote>[f,": %t\n"])
-			     ,Id("t")]))
-		,Return(Id("t"))])
+  translate-body =
+    topdown(repeat(TranslateDef <+ TranslateStratMatchGuard <+ TranslateStrat))
 
   TranslateVarDec :
-    VarDec(x, ConstType(_)) -> 
-    ParamDecl(TypeSpec([],TypeId("ATerm"),[]),
-              IdDecl([],Id(x),None))
-  
+    VarDec(x, ConstType(_)) -> param-dec|[ ATerm ~id:x ]|
+
   TranslateVarDec :
     VarDec(x, FunType(ts,_)) -> 
-    ParamDecl(TypeSpec([],TypeId("ATerm"),[]),
-              IdDecl([],Id(x),Some(ParamList(<map(TranslateType)> ts))))
+    param-dec|[ ATerm ~id:x(~param-dec*:<map(TranslateType)> ts) ]|
 
   TranslateType : 
     ConstType(_) -> TypeSpec([],TypeId("ATerm"),[])
@@ -264,159 +267,113 @@ Strategy definitions
   TranslateType :
     FunType(ts, _) -> 
     ParamDecl(TypeSpec([],TypeId("ATerm"),[]),ParamList(<map(TranslateType)> ts))
-\end{code}
 
-Strategy expressions
 
-\begin{code}
+rules // Strategy expressions
 
   TranslateStrat :
-    Id -> Compound([],[])
+    Id -> stm|[ { } ]|
 
   TranslateStrat :
-    Fail -> Stat(FunCall(Id("_fail"),[Id("t")]))
+    Fail -> stm|[ _fail(t); ]|
 
   TranslateStrat :
     Scope(xs, s) -> 
-    Compound([Declaration2(TypeSpec([],TypeId("ATerm"),[]),
-                           <map(\ x -> DeclInit(IdDecl([],Id(x),None),AssignInit(Id("NULL"))) \ )> xs)],[s])
-    where 
-      <map({?x; rules(Initialized : x -> "NULL")})> xs
-
-  TranslateStrat :
-    Seq(s1, s2) ->
-    Compound([],[s1,s2])
-
-  TranslateStrat :
-    Choice(s1, s2) ->
-    LChoice(s1, s2)
-
-/*
-  TranslateStrat :
-    LChoice(s1, s2) ->
-    Compound([Declaration2(TypeSpec([],TypeId("ATerm"),[]),
-                           [DeclInit(IdDecl([],Id(x),None),AssignInit(Id("t")))]),
-	      Declaration2(TypeSpec([],TypeId("int"),[]),
-                           [DeclInit(IdDecl([],Id(ptr),None),AssignInit(Id("stack_ptr")))])],
-             [IfElse(Equal(FunCall(Id("PushChoice"),[]),IntConst("0")),
-                     Compound([],[s1,Stat(FunCall(Id("LocalPopChoice"),[Id(ptr)]))]),
-                     Compound([],[Stat(Assign(Id("t"),AssignEq,Id(x))), s2]))])
-    where new => x; new => ptr
-
-*/
-
-  TranslateStrat :
-    LChoice(s1, s2) ->
-    |[
-       { ATerm ~id:x = t;
-         int ~id:ptr = stack_ptr;
-         if(PushChoice() == 0)
-           { ~stm:s1; LocalPopChoice(~id:ptr); }
-         else 
-           { t = ~id:x; ~stm:s2 } 
+    stm|[ 
+       {
+	 ~dec*:[Declaration2(TypeSpec([],TypeId("ATerm"),[]),
+	        // <map(!var-dec|[~id:<id> = NULL]|)> xs
+		<map(!DeclInit(IdDecl([],Id(<id>),None),AssignInit(Id("NULL"))))> xs)
+	       ]
+         ~stm:s
        }
+    ]|
+
+  TranslateStrat :
+    |[ s1; s2 ]| -> c:stm|[ { ~stm:s1 ~stm:s2 } ]|
+
+  TranslateStrat :
+    |[ s1 + s2 ]| -> |[ s1 <+ s2 ]|
+
+  TranslateStrat :
+    |[ s1 <+ s2 ]| -> |[ s1 < id + s2 ]|
+
+  TranslateStrat :
+    |[ s1 < s2 + s3 ]| ->
+    c:stm|[
+      {
+        ATerm ~id:x = t;
+        int ~id:ptr = stack_ptr;
+	if(PushChoice() == 0)
+	  { ~stm:s1; LocalPopChoice(~id:ptr); ~stm:s2 }
+	else
+          { t = ~id:x; ~stm:s3 }
+      }      
     ]|
     where new => x; new => ptr
 
   TranslateStrat :
-    GuardedLChoice(s1, s2, s3) ->
-    Compound([Declaration2(TypeSpec([],TypeId("ATerm"),[]),
-                           [DeclInit(IdDecl([],Id(x),None),AssignInit(Id("t")))]),
-	      Declaration2(TypeSpec([],TypeId("int"),[]),
-                           [DeclInit(IdDecl([],Id(ptr),None),AssignInit(Id("stack_ptr")))])],
-             [IfElse(Equal(FunCall(Id("PushChoice"),[]),IntConst("0")),
-                     Compound([],[s1,Stat(FunCall(Id("LocalPopChoice"),[Id(ptr)])),s2]),
-                     Compound([],[Stat(Assign(Id("t"),AssignEq,Id(x))), s3]))])
-    where new => x; new => ptr
-
+    |[ s1 ++ s2 ]| -> |[ s1 <++ s2 ]|
 
   TranslateStrat :
-    GChoice(s1, s2) ->
-    LGChoice(s1, s2)
-
-  TranslateStrat :
-    LGChoice(s1, s2) ->
-/*
+    |[ s1 <++ s2 ]| ->
     |[ { ATerm x = t;
          if(GlobalPushChoice() == 0)
-	   { s1 }
+	   { ~stm:s1 }
 	 else 
-	   { t = x; s2 }
+	   { t = ~id:x; ~stm:s2 }
        }
-    |]
-    where new => x
-*/
-    Compound([Declaration2(TypeSpec([],TypeId("ATerm"),[]),
-                           [DeclInit(IdDecl([],Id(x),None),AssignInit(Id("t")))])],
-             [IfElse(Equal(FunCall(Id("GlobalPushChoice"),[]),IntConst("0")),
-                     Compound([],[s1]),
-                     Compound([],[Stat(Assign(Id("t"),AssignEq,Id(x))), s2]))])
+    ]|
     where new => x
 
   TranslateStrat :
-    Not(s) ->
-    Compound([Declaration2(TypeSpec([],TypeId("ATerm"),[]),
-                           [DeclInit(IdDecl([],Id(x),None),AssignInit(Id("t")))])],
-             [IfElse(Equal(FunCall(Id("PushChoice"),[]),IntConst("0")),
-                     Compound([],[s,Stat(FunCall(Id("PopChoice"),[])),
-                                  Stat(FunCall(Id("_fail"),Id("t")))]),
-                     Compound([],[Stat(Assign(Id("t"),AssignEq,Id(x)))]))])
+    |[ not(s) ]| -> 
+    c:stm|[ 
+      {
+        ATerm ~id:x = t;
+	if(PushChoice() == 0)
+	  { ~stm:s PopChoice(); _fail(t); }
+	else
+	  { t = ~id:x; }
+      }
+    ]|
     where new => x
 
-  // prim("f",[x1,...,xn]) --> f(x1,...,xn)
-  //
-/*
   TranslateStrat :
-    Prim(p,ts) ->
-    Stat(Assign(Id("t"),AssignEq,FunCall(Id(p),es)))
-    where <map(topdown(try(construct-term)))> ts => es
-*/
+    Strat|[ prim(~str:f, s* | t* ) ]| -> stm|[ t = ~id:f(~exp*:args); ]|
+    where <map(\ CallT(SVar(x),[],[]) -> Id(x) \ )> s* => args1
+        ; <map(topdown(try(construct-term)))> t* => args2
+        ; <conc>(args1, args2) => args
 
   TranslateStrat :
-    PrimT(p, args1, args2) ->
-    Stat(Assign(Id("t"), AssignEq, FunCall(Id(p), args')))
-    where <map(\ CallT(SVar(x),[],[]) -> Id(x) \ )> args1 => args1'
-        ; <map(topdown(try(construct-term)))> args2 => args2'
-        ; <conc>(args1', args2') => args'
-
-/*
-  TranslateStrat :
-    Call(SVar(f), args) ->
-    Stat(Assign(Id("t"),AssignEq,FunCall(Id(f),[Id("t") | args'])))
-    where <map(\ Call(SVar(x),[]) -> Id(x) \ )> args => args'
-*/
+    Strat|[ f(s* | t* ) ]| -> stm|[ t = f(~exp*:args); ]|
+    where <map(\ CallT(SVar(x),[],[]) -> Id(x) \ )> s* => args1
+        ; <map(topdown(try(construct-term)))> t* => args2
+        ; <concat>[args1, args2, [Id("t")]] => args
 
   TranslateStrat :
-    CallT(SVar(f), args1, args2) ->
-    Stat(Assign(Id("t"), AssignEq, FunCall(Id(f), args')))
-    where <map(\ CallT(SVar(x),[],[]) -> Id(x) \ )> args1 => args1'
-        ; <map(topdown(try(construct-term)))> args2 => args2'
-        ; <concat>[args1', args2', [Id("t")]] => args'
+    Test(s) -> Where(s)
 
   TranslateStrat :
-    Test(s) ->
-    Where(s)
-
-  TranslateStrat :
-    Where(s) ->
-    Compound([Declaration2(TypeSpec([],TypeId("ATerm"),[]), IdDecl([],Id(x),None))],
-             [Stat(Assign(Id(x),AssignEq,Id("t"))), 
-              s, 
-              Stat(Assign(Id("t"),AssignEq,Id(x)))])
+    Where(s) -> 
+    stm|[ 
+      {
+        ATerm ~id:x;
+        x = t;
+        ~stm:s;
+        t = x;
+      }
+    ]|
     where new => x
 
   TranslateStrat :
     Let(defs,s) -> Compound(defs, [s])
-\end{code}
 
-	Matching
-
-\begin{code}
 signature
   constructors
     Match : Term * Exp -> Exp
 
-rules
+rules // Matching
 
   TranslateStrat :
     Match(t) ->
@@ -448,14 +405,6 @@ rules
     IfElse(LAnd(NotEqual(Id(x),Id("NULL")), NotEqual(Id(x),trm)),
            Stat(FunCall(Id("_fail"),[trm])),
            Stat(Assign(Id(x),AssignEq,trm)))
-
-
-  TranslateStratInstr : // use this translation to detect errors in analysis
-    Match(Var(x){"bound"}, trm) ->
-    IfElse(Equal(Id(x),Id("NULL"))
-	  , Compound([], [Stat(FunCall(Id("__UnboundVarError"), [StringLit(<double-quote>x)]))])
-          , If(NotEqual(Id(x),trm)
-              , Compound([], [Stat(FunCall(Id("_fail"),[trm]))])))
 
   TranslateStrat :
     Match(Var(x){}, trm) ->
@@ -520,12 +469,8 @@ rules
     where <map(MatchArg1 <+ MatchArg2)> 
 	   [(hd, FunCall(Id("ATgetFirst"),[CastATermList(trm)])), 
             (tl, CastATerm(FunCall(Id("ATgetNext"),[CastATermList(trm)])))] => match-args
-\end{code}
 
-	Matching automaton with guarded left choice
-  
-\begin{code}
-rules
+rules // Matching automaton with guarded left choice
 
   TranslateStratMatchGuard :
     GuardedLChoice(Match(Str(str)), s1, s2) ->
@@ -573,12 +518,8 @@ rules
 				     CastATerm(FunCall(Id("ATgetNext"),[CastATermList(Id("t"))]))))
                         ,s1])
           ,Compound([],[s2]))
-\end{code}
 
-	Matching automaton with case
-  
-\begin{code}
-rules
+rules // Matching automaton with case (obsolete)
 
   TranslateStrat :
     Assign(Var(x)) ->
@@ -653,77 +594,62 @@ rules
 				     CastATerm(FunCall(Id("ATgetNext"),[CastATermList(Id(t))]))))
                         ,s1])
           ,Compound([],[Case(Var(t), alts, s2)]))
-\end{code}
 
-	Building
-  
-\begin{code}
-rules
+rules // Building
 
   TranslateStrat :
-    Build(t) ->
-    Stat(Assign(Id("t"), AssignEq, <construct-term-caching> t))
+    Build(t) -> |[ t = ~exp:<construct-term-caching> t; ]|
 
   construct-term =
     bottomup(try(ConstructList <+ ConstructTerm))
 
   ConstructTerm :
-    Int(i) -> 
-    CastATerm(FunCall(Id("ATmakeInt"),[IntConst(<int-to-string> i)]))
+    Int(i) -> c:exp|[ (ATerm)ATmakeInt(~exp:IntConst(<int-to-string> i)) ]|
 
   ConstructTerm :
-    Real(x) ->
-    CastATerm(FunCall(Id("ATmakeReal"), [FloatConst(<real-to-string> x)]))
+    Real(x) -> c:exp|[ (ATerm)ATmakeReal(~exp:FloatConst(<real-to-string> x)) ]|
 
   ConstructTerm :
-    Str(x) ->
-    CastATerm(FunCall(Id("ATmakeAppl"),
-                      [FunCall(Id("ATmakeSymbol"),
-			       [StringLit([<escape; double-quote>x]),IntConst("0"),Id("ATtrue")])]))
+    Str(x) -> 
+    c:exp|[ (ATerm)ATmakeAppl(ATmakeSymbol(~exp:StringLit([<escape; double-quote>x]), 0, ATtrue)) ]|
 
   ConstructTerm :
     Var(x){"bound"} -> Id(x)
 
   ConstructTerm :
-    Var(x){} -> FunCall(Id("not_null"),[Id(x)])
+    Var(x){} -> c:exp|[ not_null(~id:x) ]| 
 
   ConstructTerm :
-    Var(x){"unbound"} -> FunCall(Id("not_null"),[Id(x)])
+    Var(x){"unbound"} -> c:exp|[ not_null(~id:x) ]| 
 
   ConstructTerm :
-    Var(x){"(un)bound"} -> FunCall(Id("not_null"),[Id(x)])
+    Var(x){"(un)bound"} -> c:exp|[ not_null(~id:x) ]| 
 
   ConstructTerm :
     BuildDefault(t) -> t
 
   ConstructTerm :
-    Op(c, ts) ->
-    CastATerm(FunCall(Id("ATmakeAppl"),[Id(<ConstructorName> (c, <length> ts)) | ts]))
+    Op(c, ts) -> c:exp|[ (ATerm)ATmakeAppl(~id:<ConstructorName>(c, <length> ts), ~exp*:ts) ]|
 
   ConstructTerm :
-    Anno(t1, t2) ->
-    CastATerm(FunCall(Id("ATsetAnnotations"),[t1, t2]))
+    Anno(t1, t2) -> c:exp|[ (ATerm)ATsetAnnotations(~exp:t1, ~exp:t2) ]|
 
   ConstructList :
-    Op("Nil", []) ->
-    CastATerm(Id("ATempty"))
+    Op("Nil", []) -> c:exp|[ (ATerm) ATempty ]|
 
   ConstructList :
-    Op("Cons", [hd, tl]) ->
-    CastATerm(FunCall(Id("ATinsert"),[tl', hd]))
+    Op("Cons", [hd, tl]) -> c:exp|[ (ATerm) ATinsert(~exp:tl', ~exp:hd) ]|
     where <?CastATerm(<Id("ATempty") + FunCall(Id("ATinsert"),[id, id])>) 
            <+ !CheckATermList(tl)> tl => tl'
 
   ConstructList' :
-    Op("Cons", [hd, tl]) ->
-    FunCall(Id("ATinsert"),[tl', hd])
+    Op("Cons", [hd, tl]) -> c:exp|[ (ATerm)ATinsert(~exp:tl', ~exp:hd) ]|
     where (<(Op("Nil", []) + Op("Cons", [id, id])); ConstructList> tl 
            <+ !CheckATermList(tl)) => tl'
-\end{code}
 
-	Term construction with constant term caching
 
-\begin{code}
+rules // Term construction with constant term caching
+
   init-term-caching =
     where(!Op("Nil", []) => t; !CastATerm(Id("ATempty")) => e);
     rules( Cache : t -> e )
@@ -766,4 +692,4 @@ rules
     (base, x, e) ->
     [Stat(Assign(Id(x), AssignEq, e)),
      Stat(FunCall(Id("ATprotect"),[Address(Id(x))]))]
-\end{code}
+

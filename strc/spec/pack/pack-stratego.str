@@ -59,7 +59,7 @@ strategies
   pack-stratego-modules =
     ?FILE(infile)
     ; where((<get-config; filter(not("-I"))> "-I" <+ ![]) => path)
-    ; !(["list-cons","tuple-cons", infile], (), [])
+    ; !([infile], (), [])
     ; graph-nodes-roots(Fst; get-module(!["." | path])
 		       , get-stratego-imports
 		       , \ (n,x,xs) -> [x|xs] \ )

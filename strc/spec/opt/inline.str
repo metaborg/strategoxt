@@ -3,6 +3,6 @@ imports inlining io
 
 strategies
 
-  inline-io = iowrap(inline-strategies)
+  inline-io = io-wrap(inline-strategies)
 
 

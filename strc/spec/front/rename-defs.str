@@ -15,6 +15,7 @@ strategies
 
 rules
 
+/*
   RenameSDef : 
     SDef(x, args, s) -> SDef(y, args, s)
     where <length> args => n
@@ -22,6 +23,7 @@ rules
         ; rules(RenameVar : (x, n) -> y)
         ; (<HoArg> x; rules(HoArg : x -> Undefined)
                    <+ rules(HoArg : x -> y))
+*/
 
   RenameSDef : 
     SDefT(x, args1, args2, s) -> SDefT(y, args1, args2, s)

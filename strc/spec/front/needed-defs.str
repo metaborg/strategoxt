@@ -1,41 +1,24 @@
-\literate[needed-defs]
+/**
+ * Extract those definitions that are needed for the main strategy and
+ * join the bodies of operators with multiple definitions.
+ */
 
-	\begin{abstract}
-
-	Extract those definitions that are needed for the main strategy and
-	join the bodies of operators with multiple definitions.
-
-	\end{abstract}
-
-\begin{code}
 module needed-defs
 imports Stratego DefaultStrat desugar stratlib list-set list-misc lib pack-graph
 	dynamic-rules
-\end{code}
 
-	\paragraph{Sorting Definitions}
-
-	Associate with the pair \verb|(f, n)| of strategy name and arity the list
-	of its definitions. The dynamic rule \verb|Definitions| implements this
-	association.
-
-\begin{code}
 strategies
+
+  /**
+   * Sorting definitions
+   *
+   * Associate with the pair \verb|(f, n)| of strategy name and arity
+   * the list of its definitions. The dynamic rule \verb|Definitions|
+   * implements this 1association.
+   */
 
   sort-defs = 
     map(RegisterSDefT + RegisterExtSDef + RegisterExtSDefInl)
-
-  RegisterSDef =
-    ?def@SDef(f, xs, s);
-    where(
-      <length> xs => n
-      ; <Definitions <+ ![]> (f, (n, 0)) => defs
-      ; <union>([n], <Arities <+ ![]> f) => ns
-      ; rules(
-          Definitions : (f, n) -> [def | defs]
-          Arities : f -> ns
-        )
-    )
 
   RegisterSDefT =
     ?def@SDefT(f, xs, ys, s);
@@ -76,16 +59,14 @@ strategies
         )
     )
 
-
-\end{code}
-
-	\paragraph{Joining Definitions}
-
-	Join multiple definitions for the same strategy operator into one
-	definition by unifying the list of formal strategy parameters.
-
-\begin{code}
 strategies
+
+  /**
+   * Joining Definitions
+   *
+   * Join multiple definitions for the same strategy operator into one
+   * definition by unifying the list of formal strategy parameters.
+   */
 
   joindefs = JoinDefs1 <+ JoinDefsExt <+ JoinDefs2
 
@@ -98,14 +79,6 @@ rules
     fetch(?ExtSDef(f,_,_) + ?ExtSDefInl(f,_,_,_))
     ; <debug(!"overloading external definition: ")> f
     ; giving-up
-
-/*
-  JoinDefs2 : 
-    defs @ [SDef(f, xs, s) | _] -> SDef(f, ys, <choices> ss)
-    where <map(VarDec(new,id))> xs => ys;
-	  <map(\ VarDec(y, t) -> Call(SVar(y), []) \ )> ys => ys'; 
-	  <map(\ SDef(_, zs, s) -> <ssubs> (<map(\ VarDec(x,_) -> x \ )> zs, ys', s) \ )> defs => ss
-*/
 
   JoinDefs2 : 
     defs @ [SDefT(f, xs1, xs2, s) | _] -> SDefT(f, ys1, ys2, <choices> ss)
@@ -120,32 +93,20 @@ rules
 
   choices = 
     foldr(!Fail, !Choice(<Fst>,<Snd>))
-\end{code}
 
-	\paragraph{Obtaining Needed Definitions}
-
-\begin{code}
 strategies
 
-  definition-names =
-    foldr(![], union, DefinitionName)
-
-// DefinitionName :
-//    SDef(f,xs,_) -> [(f, (<length>xs, 0))]
-
-  DefinitionName :
-    SDefT(f,xs,ys,_) -> [(f, (<length>xs, <length>ys))]
-
-  DefinitionName :
-    ExtSDef(f,xs,ys) -> [(f, (<length>xs, <length>ys))]
-
-  DefinitionName :
-    ExtSDefInl(f,xs,ys,_) -> [(f, (<length>xs, <length>ys))]
+  /**
+   * Obtaining all definitions
+   */
 
   all-defs = 
     !(<definition-names>, <sort-defs>, []);
     extract-needed-defs
 
+  /**
+   * Obtaining needed definitions
+   */
   needed-defs = 
     !([("main", (0,0))], <sort-defs>, []);
     extract-needed-defs
@@ -157,15 +118,27 @@ strategies
     // FilterNonMissingDefs; 
     (NoMissingDefs <+ MissingDefs; <exit> 1)
 
-\end{code}
+  definition-names =
+    foldr(![], union, DefinitionName)
 
-	A strategy operator f with arity n is needed. All definitions for
-	the operator are fetched and joined. Note that this entails
-	that (1) operators can be overloaded and (2) there can be more
-	than one definition of an operator.
+  DefinitionName :
+    SDefT(f,xs,ys,_) -> [(f, (<length>xs, <length>ys))]
 
-\begin{code}
+  DefinitionName :
+    ExtSDef(f,xs,ys) -> [(f, (<length>xs, <length>ys))]
+
+  DefinitionName :
+    ExtSDefInl(f,xs,ys,_) -> [(f, (<length>xs, <length>ys))]
+
 rules
+
+  /**
+   *
+   * A strategy operator f with arity n is needed. All definitions for
+   * the operator are fetched and joined. Note that this entails
+   * that (1) operators can be overloaded and (2) there can be more
+   * than one definition of an operator.
+   */
 
   get-definition = 
     CongruenceDef <+ OverloadedDef; (joindefs, id)
@@ -188,11 +161,11 @@ rules
     ((Mod(c, mod), n), defs) -> (fdef, defs)
     where <DefineCongruence; desugar> (c, mod, n) => fdef
 
-(*
+/*
   FilterNonMissingDefs :
     (defs, undefs) -> (defs, undefs')
     where <filter(not(Definitions))> undefs => undefs'
-*)
+*/
 
   NoMissingDefs : 
     (defs, []) -> defs
@@ -207,9 +180,10 @@ rules
   MissingDefMod : 
     (Mod(c, m), n) -> 
     <error> ["error: operator ", c, "^", m , "/", n, " undefined "]
-\end{code}
 
-	\paragraph{Distributing Congruences}
+/*
+
+Distributing Congruences
 
 	For each constructor \verb|c|, there is a corresponding
 	distributing congruence \verb|c^D|, defined according to
@@ -223,8 +197,8 @@ rules
 \end{verbatim}
 	
 	This is implemented by the following rules.
+*/
 
-\begin{code}
 overlays
   OpPair(t1, t2) = Op("", [t1,t2])
 
@@ -248,9 +222,10 @@ rules
     env -> (BAM(CallT(SVar(s),[],[]), OpPair(Var(x), env), Var(y)), 
             VarDec(s,DefaultStrat), x, Var(x), y, Var(y))
     where new => s; new => x; new => y
-\end{code}
 
-	\paragraph{Threading Congruences}
+/*
+
+Threading Congruences
 
 	For each constructor \verb|c|, there is a corresponding
 	threading congruence \verb|c^T|, defined according to
@@ -265,7 +240,7 @@ rules
 
 	The following rules implement this scheme:
 
-\begin{code}
+*/
 
   DefineCongruence :
     (c, "T", (0,m)) -> 
@@ -291,6 +266,9 @@ rules
                                       OpPair(Var(y), Var(e2))), 
                 VarDec(s,DefaultStrat), x, Var(x), y, Var(y))
     where new => s; new => x; new => y
-\end{code}
 
-% Copyright (C) 1998-2003 Eelco Visser <visser@acm.org>
+/*
+
+Copyright (C) 1998-2003 Eelco Visser <visser@acm.org>
+
+*/

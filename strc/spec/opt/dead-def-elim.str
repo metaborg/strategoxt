@@ -7,7 +7,7 @@ strategies
 
   only-local-option = 
     Option("--only-local"
-	  ,<set-config>"--only-local"
+	  ,where(<set-config>("--only-local", ()))
 	  ,!"--only-local        do not eliminate top-level definitions")
 
   if-only-local(s1, s2) =

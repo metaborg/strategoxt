@@ -6,6 +6,8 @@ strategies
   check-constructors-io = 
     io-wrap(CheckConstructors)
 
+/* replaced by declarations in module tuple-cons
+
 overlays
 
   TupleDeclarations(decs) =
@@ -27,6 +29,7 @@ overlays
      OpDecl("", FunType([Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a"),Var("a")],Var("a")))
     | decs]
 
+*/
 
 rules
 
@@ -38,17 +41,38 @@ rules
     ]) 
   -> 
     Specification([
-      Signature([Constructors(<conc>(ods3,ods2))]), 
+      Signature([Constructors(ods2)]), 
       Overlays(ols),
       Strategies(sdefs)
     ])
-    where !TupleDeclarations(ods1) => ods2
+    where /* !TupleDeclarations(ods1) => ods2 */
+	  <map(try(TupleDecl))> ods1 => ods2
         ; <map(GenerateCheckRule)> ods2
         ; <map(GenerateCheckRule)> ols
         ; <filter(check-constructors)> ols => []
         ; <filter(check-constructors)> sdefs => []
-        ; (TupleDeclarations <+ ![]) => ods3
- 
+
+//        ; (TupleDeclarations <+ ![]) => ods3
+
+  TupleDecl :
+    OpDeclInj(tp@FunType(args,res)) -> OpDecl("", tp)
+    where <TupleType> args => res
+
+  TupleDecl :
+    OpDeclInj(ConstType(Sort("Tuple",[Sort("Nil",[])]))) ->
+    OpDecl("", ConstType(Sort("Tuple",[Sort("Nil",[])])))
+
+  TupleDecl :
+    OpDeclInj(FunType([ConstType(SortVar(x))],ConstType(SortVar(x)))) ->
+    OpDecl("", FunType([ConstType(SortVar(x))],
+		 ConstType(Sort("Tuple",[Sort("Cons", [SortVar(x), Sort("Nil", [])])]))))
+
+  TupleType =
+    !ConstType(Sort("Tuple", 
+               [<foldr(!Sort("Nil",[])
+		      , !Sort("Cons", [<Fst>, <Snd>])
+		      , ?ConstType(<id>))>]))
+
   GenerateCheckRule =
     ?OpDecl(c, ConstType(t))
     ; where(!0 => n)
@@ -76,6 +100,7 @@ rules
         CheckCons : Op(c, <length => n>) -> Op(c, [])
       )
 
+/*
   // CheckTuple implements generic checking of tuple constructors (for arbitrary arity)
   // For some reason the generation of operator declarations for tuples does not work.
 
@@ -91,6 +116,7 @@ rules
           TupleDeclarations : _ -> decs
         )
     )
+*/
 
   check-constructors =
     ?RDefT(f, xs, ys, <id>)
@@ -115,5 +141,5 @@ rules
 		    "constructor ", c, "/", <length; int-to-string> ts,
 		    " not declared"])
        );
-       manytd(not(CheckCons <+ CheckTuple); CheckConsError)
+       manytd(not(CheckCons /* <+ CheckTuple */); CheckConsError)
     |}
