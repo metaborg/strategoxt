@@ -14,7 +14,7 @@ check_PROGRAMS 	 = stratlib-test
 
 CLEANFILES 	 = $(wildcard *.dep)
 
-EXTRA_DIST 	 = $(wildcard *.str)  $(wildcard *.meta
+EXTRA_DIST 	 = $(wildcard *.str)  $(wildcard *.meta)
 
 TESTS 	 	 = stratlib-test
 
