@@ -1,3 +1,11 @@
+2002-12-22  Eelco Visser  <visser@cs.uu.nl>
+
+	* syn/StrategoStratego.sdf: ~term*:
+
+	* parse/meta-explode.str: main -> meta-explode
+
+	* parse/parse-stratego.str: Refactored using XTC
+
 2002-12-21  Eelco Visser  <visser@cs.uu.nl>
 
 	* syn/StrategoStratego.sdf: Cleaned up definitions of concrete

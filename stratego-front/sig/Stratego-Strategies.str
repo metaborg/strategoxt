@@ -15,6 +15,7 @@ signature
     SVar : Id -> SVar
     Let : List(Def) * Strategy -> Strategy
     Call : SVar * List(Strategy) -> Strategy
+    CallT : SVar * List(Term) * List(Strategy) -> Strategy
     Match : Term -> Strategy
     Build : Term -> Strategy
     ScopeDefault : Strategy -> Strategy
@@ -29,7 +30,10 @@ signature
     Where : Strategy -> Strategy
     Test : Strategy -> Strategy
     Bagof : Strategy -> Strategy
+    PrimNoArgs : String -> Strategy
     Prim : String * List(Term) -> Strategy
+    PrimTS : String * List(Term) * List(Strategy) -> Strategy
+    PrimS : String * List(Strategy) -> Strategy
     Path : Int * Strategy -> Strategy
     Some : Strategy -> Strategy
     One : Strategy -> Strategy
@@ -55,7 +59,7 @@ signature
     DynRuleScope : List(Id) * Strategy -> Strategy
     CallNoArgs : SVar -> Strategy
     LRule : Rule -> Strategy
-    PrimNoArgs : String -> Strategy
+    SRule : Rule -> Strategy
     Choice : Strategy * Strategy -> Strategy
     RChoice : Strategy * Strategy -> Strategy
     GChoice : Strategy * Strategy -> Strategy

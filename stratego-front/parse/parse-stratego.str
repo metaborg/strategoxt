@@ -1,10 +1,5 @@
 module parse-stratego
-imports lib config verbose
-
-signature
-  constructors
-    Include : File -> Include
- 
+imports xtc-lib lib
 signature
   constructors
     Meta    : List(MetaProperty) -> MetaData
@@ -12,57 +7,50 @@ signature
 
 strategies
 
+  parse-stratego-options =
+    ArgOption("-I" + "--Include", where(<extend-config>("-I", [<id>])),
+	      !"-I p|--Include p   include modules from directory p") 
+
+  + ArgOption("--syntax", where(<set-config>("--syntax", <id>)),
+	      !"--syntax syn        use syntax syn")
+
+  + Option("-silent", where(<set-config>("--verbose", 0)),
+	      !"-silent ")
+
   parse-stratego =
-    where([get-path => prefix | id])
-    ; where(prim("get_conf_pkgdatadir") => datadir) 
-    ; import-config-file(
-        find-config-file(![prefix,datadir], !"parse-stratego.config")
-      )
-    ; parse-options(io-options 
-        + ArgOption("-I" + "--Include", where(<extend-config>("-I", [<id>])),
-	            !"-I p|--Include p include modules from directory p") 
-        + Option("-silent", where(<set-config>("--verbose", 0)),
-	            !"-silent ")) => options
-    ; <extend-config> ("-I", ["./"])
-    ; <get-config> "-i" => infile
-    ; if-verbose2(debug(!"parsing "))
-    ; (<get-config> "-o" <+ new-file) => outfile
-    ; <parse-module> (infile, outfile)
-    ; (<get-config> "-o" 
-       <+ <ReadFromFile> outfile
-          ; where(<rm-files> [outfile])
-          ; <WriteToTextFile> (stdout, <id>))
-    ; <exit> 0
+    xtc-iowrap(parse-stratego-options, 
+      where(<extend-config> ("-I", ["./", <xtc-find; get-path> "StrategoRenamed.sdf"]))
+      ; parse-module
+    )
+
+  find-in-includes(msg) =
+    <find-in-path; if-verbose2(debug(msg))> (<id>, <get-config> "-I")
 
   parse-module =
     if-verbose6(debug(!"parse-module: "))
-    ; ? (filein, fileout)
-    ; <get-syntax> filein      => syntax
-    ; <get-parse-table> syntax => tbl
-    ; <basename; guarantee-extension(!"atree")> filein => fileout2
-    ; !filein
-    //; call-tmp(<get-config> "sglr",             !["-A", "-2", "-p", tbl | <![]; if-verbose3(!["-v"])> ],
-    ; call-tmp(<get-config> "sglr",             !["-2", "-p", tbl | <![]; if-verbose3(!["-v"])> ],
-      call-out(<get-config> "implode-asfix",    ![]; if-less-verbose1(!["-S"]), !fileout2,
-      call-tmp(<get-config> "meta-explode",     !["--verbose", <verbosity; int-to-string>],
-      call-out(<get-config> "stratego-desugar", !["--verbose", <verbosity; int-to-string>], !fileout, id))))
-    ; try(<get-config> "--keep" => 0; <rm-files> [fileout2])
+    ; where(FILE(basename => base); get-syntax; get-parse-table => tbl)
+    ; xtc-transform(!"sglr", !["-2", "-p", tbl | <![]; if-verbose3(!["-v"])>])
+    ; xtc-transform(!"implode-asfix",    pass-verbose)
+    ; if-keep1(copy-to(<guarantee-extension(!"atree")> base))
+    ; xtc-transform(!"meta-explode",     pass-verbose)
+    ; xtc-transform(!"stratego-desugar", pass-verbose)
 
   get-syntax = 
     if-verbose6(debug(!"get-syntax: "))
-    ; ?file
-    ; get-meta
-    ; (?Meta(<fetch-elem(?Syntax(<id>))>)
-       <+ <fatal-error> ["Meta data ", <id>, " for module ", file, " not valid: "])
+    ; ?FILE(file)
+    ; (<get-config> "--syntax"
+     <+ get-meta
+      ; (?Meta(<fetch-elem(?Syntax(<id>))>)
+         <+ <error> ["Meta data ", <id>, " for module ", file, " not valid: "]; fail)
+      )
     ; if-verbose2(debug(!"using syntax: "))
 
   get-meta = 
    if-verbose6(debug(!"get-meta: "))
-   ; basename
-   ; ( guarantee-extension(!"meta") => metafile
-     ; ReadFromFile 
-    <+ guarantee-extension(!"syn") => synfile
-     ; ReadFromFile => syntax#(_)
+   ; ( FILE(guarantee-extension(!"meta"))
+     ; read-from
+    <+ FILE(guarantee-extension(!"syn"))
+     ; read-from => syntax#(_)
      ; !Meta([Syntax(syntax)])
     <+ !Meta([Syntax("Stratego")])
      )
@@ -70,26 +58,23 @@ strategies
 
   get-parse-table =
     if-verbose6(debug(!"get-parse-table: "))
-    ; ? syntax
-    ; <guarantee-extension(!"tbl")> syntax => tbl1
-    ; ( <find-in-path; if-verbose2(debug(!"using parse table: "))> (tbl1, <get-config> "-I")
+    ; ?syntax
+    ; where(guarantee-extension(!"tbl") => tbl)
+    ; (<find-in-includes(!"using parse table: ")> tbl
        <+ if-verbose2(say(!"creating parse table"))
-          ; <get-syntax-definition> syntax => def
-          ; <if-verbose5(debug); call> (<get-config>"sdf2table", ["-i", def, "-o", tbl1, "-m", syntax])
-          ; !tbl1
+          ; <get-syntax-definition> syntax
+          ; xtc-transform(!"sdf2table", !["-m", syntax])
+	  ; copy-to(!tbl)
       )
+    ; if-verbose6(debug(!"using parse table: "))
 
   get-syntax-definition =
     if-verbose6(debug(!"get-syntax-definition: "))
-    ; ? syntax
-    ; <guarantee-extension(!"def")> syntax => def
-    ; ( <find-in-path; if-verbose2(debug(!"using syntax definition: "))> (def, <get-config> "-I")
+    ; where(guarantee-extension(!"def") => def)
+    ; (<find-in-includes(!"using syntax definition: ")> def
         <+ if-verbose2(say(!"creating syntax definition"))
-           ; <guarantee-extension(!"sdf")> syntax => sdf
-	   ; temp-file( \ (adef, _) -> <
-                <if-verbose5(debug); call> (<get-config>"pack-sdf", 
-                        ["-i", sdf, "-o", adef | <get-config; map(!["-I", <id>]); concat> "-I"])
-                ; <if-verbose5(debug); call> (<get-config> "asource",  ["-i", adef, "-o", def ])
-	     > \ )
-	   ; !def
+           ; !FILE(<guarantee-extension(!"sdf")>)
+	   ; xtc-transform(!"pack-sdf", <get-config; map(!["-I", <id>]); concat> "-I")
+	   ; xtc-transform(!"asfix-yield")
+	   ; rename-to(!def)
         )
