@@ -1,36 +1,91 @@
 /**
- * Generates a Stratego that puts Bracket constructors at the right place.
+ * Generates a Stratego that puts Parenthetical constructors at the right place.
  *
  * @author  Martin Bravenboer <martin@cs.uu.nl>
  * @since   0.11
  */
 module sdf2parenthesize
-imports Stratego Sdf2 liblib strategoxt-xtc-tools sdf-options
-imports sdf-spread-cons
+imports
+  Stratego
+  liblib
+  strategoxt-xtc-tools
+  ast-conflicts
+  sdf-options
 
 strategies
 
   io-sdf2parenthesize =
     xtc-io-wrap(parenthesize-options,
-      xtc-transform(!"sdf2table", !["-n", "-m", <get-sdf-main-module> | <pass-v-verbose>])
-    ; xtc-transform(!"implodePT")
-    ; xtc-transform(!"sdf-desugar")
-    ; xtc-io-transform(
-        sdf-spread-cons
-      ; topdown(try(simple-group(Prod2Pattern <+ !NoPattern())))
-      ; collect(
-          Assoc2Patterns
-        + Chain2Patterns
-        )
-      ; concat
-      ; map(Pattern2Rule(|<RuleName>))
-      ; innermost-module
-      )
+      xtc-transform(!"sdf2ast-conflicts", <conc> (<pass-verbose>, <pass-sdf-main-module>))
+    ; xtc-io-transform(core-sdf2parenthesize)
     ; xtc-transform(!"pp-stratego", !["--abstract" | <pass-verbose>])
     )
 
+  core-sdf2parenthesize =
+      where(new-hashtable => tbl)
+    ; where(RuleName => l)
+
+    ; map({sym1, sym2, pos:
+        ?SubtermConflict(sym1, pos, sym2)
+      ; <hashtable-push(|(sym1, pos), sym2)> tbl
+      })
+
+    ; <hashtable-keys> tbl
+    ; map(generate-rule(|l, tbl))
+
+    ; innermost-module
+
+  generate-rule(|l, tbl) :
+    (sym1, pos) -> |[ l : t1 -> t2 where <s> x ]|
+        where <Symbol2Term> sym1 => t1
+            ; <Symbol2ParenTerm(|pos)> sym1 => t2
+            ; <index-to-subterm-id> pos => x
+
+            ; <hashtable-get(|(sym1, pos))> tbl
+            ; map(Symbol2Wld)
+            ; <foldl( \ (s1, s2) -> |[ s1 + s2 ]| \ )> (<id>, |[ fail ]|)
+            ; ?s
+
+strategies
+
+  /**
+   * @type  Int -> String
+   */
+  index-to-subterm-id =
+    <strcat> ("t_", <int-to-string>)
+
+  /**
+   * @type  Symbol -> StrategoStrategy
+   */
+  Symbol2Wld :
+    Symbol(x, arity) -> Strat |[ ?x(t* ) ]|
+      where <range> (0, arity); map(!Term |[ _ ]|) => t*
+
+  Symbol2Term :
+    Symbol(x, arity) -> Term |[ x(t* ) ]|
+      where <range> (0, arity)
+          ; map(
+              index-to-subterm-id
+            ; \ x -> Term |[ x ]| \
+            )
+          ; ?t*
+
+  Symbol2ParenTerm(|pos) :
+    Symbol(x, arity) -> Term |[ x(t* ) ]|
+      where <range> (0, arity)
+          ; map(
+              if ?pos then
+                index-to-subterm-id
+                ; \ x -> Term |[ Parenthetical(x) ]| \
+              else 
+                index-to-subterm-id
+                ; \ x -> Term |[ x ]| \
+              end
+            )
+          ; ?t*
+
 /**
- * Transformation
+ * Produce a module
  */
 strategies
   
@@ -47,133 +102,17 @@ strategies
              innermost(l)
 
          rules
-           ~* rs
+           ~*rs
 
          signature
            constructors
              Parenthetical : Unknown -> Unknown
       ]|
-    where ModuleName => M1
-        ; LanguageName => M2
+    where module-name => M1
+        ; language-name => M2
         ; <conc-strings> ("io-", M1) => f
         ; <conc-strings> ("parenthesize-", M2) => g
         ; RuleName => l
-
-  RuleName =
-    <conc-strings> (<LanguageName>, "Parenthesize") => l
-
-/**
- * Assoc
- */
-strategies
-
-  /**
-   * @type  Priority -> List(Term)
-   */
-  Assoc2Patterns :
-    assoc(simple-group(t1), left(), simple-group(t2))
-      ->
-    <AssocLeft2Patterns(|t1)> t2
-
-  Assoc2Patterns :
-    assoc(simple-group(t1), assoc(), simple-group(t2))
-      ->
-    <AssocLeft2Patterns(|t1)> t2
-
-  Assoc2Patterns :
-    assoc(simple-group(t1), right(), simple-group(t2))
-      ->
-    <AssocRight2Patterns(|t1)> t2
-
-  Assoc2Patterns :
-    assoc(simple-group(t1), non-assoc(), simple-group(t2))
-      ->
-    <PatternsOne(|t2)> t1
-
-  Chain2Patterns :
-    chain([simple-group(t1), simple-group(t2)])
-      ->
-    <PatternsOne(|t2)> t1
-
-strategies
-
-  /**
-   * Term with Brackets to a rewrite rule.
-   *
-   * At the LHS the brackets are removed, at the RHS they
-   * changed in real terms.
-   *
-   * @type  Term -> RuleDef
-   */
-  Pattern2Rule(|l) :
-    p -> |[ l : t1 -> t2 ]|
-      where <topdown(try(?Parenthetical(<id>)))> p => t1
-          ; <topdown(try(\ Parenthetical(t) -> |[ Parenthetical(t) ]| \ ))> p => t2
-    
-  /**
-   * Put the pattern p2 at all places where it is not allowed.
-   *
-   * For example, applied to Plus(_, _, _) it will result in 
-   * the patterns
-   *  - Plus(p, _, _)
-   *  - Plus(_, p, _) 
-   *  - Plus(_, _, p)
-   */
-  AssocLeft2Patterns(|p2) :
-    |[ x(t, t1*) ]| -> ps
-      where let set-pattern = {t2* :
-              \ (n, p) -> |[ x(t, t2*) ]| 
-                  where <set-index> (<dec> n, Parenthetical(p2), t1*) => t2* \ }
-             in <map-with-index(set-pattern)> t1* => ps
-            end
-
-  AssocRight2Patterns(|p2) :
-    |[ x(t3*) ]| -> ps
-      where <split-init-last> t3* => (t1*, t) 
-          ; let set-pattern = {t2* :
-              \ (n, p) -> |[ x(t2*) ]| 
-                  where <set-index> (<dec> n, Parenthetical(p2), t1*)
-                      ; <conc> (<id>, [t]) => t2* \ }
-             in <map-with-index(set-pattern)> t1* => ps
-            end
-
-  /**
-   * Produce all patterns that have one p2 child
-   */
-  PatternsOne(|p2) : 
-    |[ x(t1*) ]| -> ps
-      where let set-pattern = {t2* :
-              \ (n, p) -> |[ x(t2*) ]| 
-                  where <set-index> (<dec> n, Parenthetical(p2), t1*) => t2* \ }
-             in <map-with-index(set-pattern)> t1* => ps
-            end
-
-  /**
-   * Creates a wildcard-children pattern for a production
-   */
-  Prod2Pattern :
-    p@prod(syms, _, _) -> |[ x(t*) ]|
-      where < filter(not(is-empty-sym))
-            ; map({x: new => x; !Term |[ x ]| })
-            > syms => t*
-          ; <cons-of-prod> p => x
-
-/**
- * Helper copied from sdf2rtg.
- *
- * @todo  Put in some SDF lib or whatever
- */
-strategies
-
-  /**
-   * @type  Symbol -> Symbol
-   */
-  is-empty-sym = ?lit(_)
-  is-empty-sym = ?layout()
-  is-empty-sym = opt(is-empty-sym)
-  is-empty-sym = cf(is-empty-sym)
-  is-empty-sym = lex(is-empty-sym)
-  is-empty-sym = label(id, is-empty-sym)
 
 /**
  * Options
@@ -197,9 +136,15 @@ strategies
     , <concat-strings>   ["--lang name      ", "Name of the language (required)"]
     )
 
+  RuleName =
+    <conc-strings> (<language-name>, "Parenthesize") => l
+
+  module-name =
+    ModuleName <+ <fatal-error> ["sdf2parenthesize: error: you must specify name of the resulting Stratego module with --omod"]
+
+  language-name =
+    LanguageName <+ <fatal-error> ["sdf2parenthesize: error: you must specify the name of the language with --lang"]
 
 signature
   constructors
     StrategoModuleFlag : Flag
-    Parenthetical      : Term -> Term
-    NoPattern          : Term

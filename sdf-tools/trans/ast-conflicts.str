@@ -1,0 +1,15 @@
+/**
+ * Conflict representation.
+ *
+ * Positions start at 0.
+ */
+module ast-conflicts
+imports list-cons
+
+signature
+ constructors
+   SubtermConflict : Symbol * Position * Symbol -> Conflict
+   Symbol          : String * Arity -> Symbol
+
+                   : Int -> Position 
+                   : Int -> Arity

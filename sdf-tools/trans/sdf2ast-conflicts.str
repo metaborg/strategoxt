@@ -1,0 +1,161 @@
+/**
+ * Generates a Stratego that puts Bracket constructors at the right place.
+ *
+ * @author  Martin Bravenboer <martin@cs.uu.nl>
+ * @since   0.11
+ */
+module sdf2ast-conflicts
+imports
+  Stratego
+  Sdf2
+  liblib
+  strategoxt-xtc-tools
+  sdf-options
+  sdf-spread-cons
+  ast-conflicts
+
+strategies
+
+  io-sdf2ast-conflicts =
+    xtc-io-wrap(sdf-main-module-option,
+      xtc-transform(!"sdf2table", !["-n", "-m", <get-sdf-main-module> | <pass-v-verbose>])
+    ; xtc-transform(!"implodePT")
+    ; xtc-transform(!"sdf-desugar", pass-verbose)
+    ; xtc-io-transform(core-sdf2conflicts)
+    )
+
+  core-sdf2conflicts =
+      sdf-spread-cons
+    ; topdown(try(simple-group(Prod2Symbol <+ !NoSymbol())))
+    ; <conc> (<chain-patterns>, <assoc-patterns>)
+
+signature
+ constructors
+   NoSymbol : Symbol
+
+/**
+ * Produce conflict patterns from SDF definitions.
+ */  
+strategies
+
+  assoc-patterns = 
+     collect(?assoc(_, _, _))
+   ; filter(Assoc2Conflicts)
+   ; concat
+
+  chain-patterns = 
+     collect(?chain([_, _]))
+   ; map( \ chain([simple-group(t1), simple-group(t2)]) -> (t1, t2) \ )
+   ; rel-transitive-closure
+   ; map( \ (t1, t2) -> chain([simple-group(t1), simple-group(t2)]) \ )
+   ; filter(Chain2Conflicts)
+   ; concat
+
+rules
+
+  /**
+   * @type Priority -> List(Conflict)
+   */
+  Assoc2Conflicts :
+    assoc(simple-group(sym1), left(), simple-group(sym2)) -> <AssocLeft2Conflicts(|sym1)> sym2
+
+
+  Assoc2Conflicts :
+    assoc(simple-group(sym1), assoc(), simple-group(sym2)) -> <AssocLeft2Conflicts(|sym1)> sym2
+
+  Assoc2Conflicts :
+    assoc(simple-group(sym1), right(), simple-group(sym2)) -> <AssocRight2Conflicts(|sym1)> sym2
+
+  Assoc2Conflicts :
+    assoc(simple-group(sym1), non-assoc(), simple-group(sym2)) -> <AllConflicts(|sym2)> sym1
+
+  Chain2Conflicts :
+    chain([simple-group(sym1), simple-group(sym2)]) -> <AllConflicts(|sym2)> sym1
+   
+  /**
+   * @type Symbol -> List(Conflict)
+   */
+  AssocLeft2Conflicts(|sym2) :
+    sym1@Symbol(c, n) -> <map(!SubtermConflict(sym1, <id>, sym2))> is
+      where <range> (1, n) => is
+
+  /**
+   * @type Symbol -> List(Conflict)
+   */
+  AssocRight2Conflicts(|sym2) :
+    sym1@Symbol(c, n) -> <map(!SubtermConflict(sym1, <id>, sym2))> is
+      where <range> (0, <dec> n) => is
+
+  /**
+   * Produce all patterns that have one p2 child
+   *
+   * @type  Symbol -> List(Conflict)
+   */
+  AllConflicts(|sym2) :
+    sym1@Symbol(x, n) -> <map(!SubtermConflict(sym1, <id>, sym2))> is
+      where <range> (0, n) => is
+
+strategies
+
+  /**
+   * Rewrites a prod to a Symbol.
+   */
+  Prod2Symbol :
+    p@prod(syms, _, _) -> Symbol(x, n)
+      where <filter(not(is-empty-sym)); length> syms => n
+          ; <cons-of-prod> p => x
+
+  /**
+   * @type  Symbol -> Symbol
+   */
+  is-empty-sym = ?lit(_)
+  is-empty-sym = ?layout()
+  is-empty-sym = opt(is-empty-sym)
+  is-empty-sym = cf(is-empty-sym)
+  is-empty-sym = lex(is-empty-sym)
+  is-empty-sym = label(id, is-empty-sym)
+
+strategies
+
+  /**
+   * Port of imperative algorithm "Transitive-Closure" on page 563 of 
+   * "Introduction to Algorithms", Thomas Cormen.
+   */
+  rel-transitive-closure =
+    ?rel
+    ; rel-carrier => elems
+    ; <map(!(<id>, <id>))> elems => self-rel
+    ; <cart(id)> (elems, elems) => matrix
+    ; <foldl(
+        \ (k, last) -> 
+            <filter(
+                test(<rel-in> (<id>, last))
+              +   test(<rel-in> ((<Fst>, k), last))
+                ; test(<rel-in> ((k, <Snd>), last))
+            )> matrix \
+      )> (elems, <union> (rel, self-rel))
+    ; filter(not(eq))
+ 
+  /**
+   * @type  (a * b) * Relation(a, b) -> fail?
+   */
+  rel-in =
+    where(elem)
+
+  /**
+   * @type Relation(a, b) -> [a or b]
+   */
+  rel-carrier =
+    <union> (<rel-domain>, <rel-range>)
+
+  /**
+   * @type Relation(a, b) -> [a]
+   */
+  rel-domain =
+    map(Fst); make-set
+
+  /**
+   * @type Relation(a, b) -> [b]
+   */
+  rel-range =
+    map(Snd); make-set

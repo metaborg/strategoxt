@@ -1,3 +1,47 @@
+2004-07-25  Martin Bravenboer  <martin@cs.uu.nl>
+
+	* trans/sdf2ast-conflicts.str: separate tool for producing a list
+	of conflict information from an SDF syntax
+	definition. Currently, the only conflict information that is
+	produced is a SubtermConflict.
+
+	* trans/sdf2parenthesize.str: use the separate sdf2ast-conflicts
+	tool.
+
+	* trans/sdf2parenthesize.str: produce more Stratego compiler
+	friendly output: for every constructor/pos there is now only a
+	single rewrite rule. This rewrite rule checks for a conflicting
+	subterm in the where clause. This reduces the number of generated
+	rules, the LOC, and it doesn't blow up the compile-match
+	component.
+
+	* trans/sdf2ast-conflicts.str: fixed a major bug in the generation
+	of rewrite rules for chain priorities. I was assuming that the SDF
+	normalizer generates chain priorities for the transitive closure
+	of the priorities that are defined in an SDF syntax
+	definition. For example,
+
+	----------------------------------------------------
+	  context-free priorities
+	      Exp "*" Exp -> Exp
+            > Exp "+" Exp -> Exp
+            > Exp "<" Exp -> Exp 	
+	----------------------------------------------------
+
+	will not result in a chain priority 
+
+	----------------------------------------------------
+	  Exp "*" Exp -> Exp
+        > Exp "<" Exp -> Exp
+	----------------------------------------------------
+
+	sdf2parenthesize now takes the transitive closure itself, and
+	generates all the required rules for chain priorities.
+
+	This bug was revealed by pretty-printing the GNU Classpath source
+	code with the pretty-printer of java-front, which uses the
+	sdf2parenthesize tools for printing parentheses.
+	
 2004-05-25  Martin Bravenboer  <martin@cs.uu.nl>
 
 	* trans/sdf2parenthesize.str: new tool to generate a Stratego
