@@ -17,31 +17,9 @@
 # 02111-1307, USA.
 
 EXTRA_DIST = \
-	contents.html \
-	counter.html \
-	download.html \
-	index.html \
-	publications.html \
-	contrib.html \
-	documentation.html \
-	home.html \
-	news.html \
-	template.html \
-	editable.html \
-	editable-contents.html \
-	\
-	frames.css \
-	logo-nb-small.gif \
-	logo-nb-small1.gif \
-	logo-nb.gif \
-	logo-nt-small.gif \
-	logo.epsn \
-	logo.gif \
-	logo.ps \
-	logo1.gif \
-	logo2.gif \
-	stratego.bib \
-	style.css
+contents.html  style.css      xt-logo.gif    xt-logoT.fig \
+frames.css     template.html  xt-logoBW.fig  xt-logoT.gif \
+index.html     xt-logo.fig    xt-logoBW.gif
 
 www-install:
 	scp *.html *.css *.gif \
