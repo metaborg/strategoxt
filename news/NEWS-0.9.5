@@ -10,7 +10,7 @@ Rob Vermaas, who is now a scientific programmer at our institute, is
 working on updating the completely out-of-date README files in the
 distribution.
 
-  (Rob Vermaas)
+(Rob Vermaas)
 
 Feedback by new users inspired us to revive the Tools web and start
 working on a comprehensive reference for the tools in Stratego/XT. The
@@ -20,15 +20,17 @@ reference.
 
    * http://www.program-transformation.org/Tools/ToolReference
 
-  (Martin Bravenboer and Merijn de Jonge)
+(Martin Bravenboer and Merijn de Jonge)
 
 We have started to develop a central website for all information
 related to SDF, the Syntax Definition Formalism, at the
 program-transformation Wiki. Again this action was inspired by new
 users having difficulty to find documentation and guidance. The new
-website is available at http:///www.syntax-definition.org
+website is available at 
 
-  (Martin Bravenboer)
+   * http://www.syntax-definition.org
+
+(Martin Bravenboer)
 
 ---------++ Compiler
 
@@ -37,7 +39,7 @@ past. This was rather frustrating for xDoc. From Stratego/XT 0.9.5 the
 compiler shows a warning message if the declared module name does not
 correspond with the name of the file.
 
-  (Rob Vermaas)
+(Rob Vermaas)
 
 In Stratego/XT 0.9.4 compiling programs that use term arguments
 resulted in loads of warnings from the C compiler. The type of the
@@ -45,7 +47,7 @@ arguments where not declared correctly in the C code produced by the C
 compiler. This problem has been fixed in this release. The declared
 types of the argument are now correct for term arguments.
 
-  (Martin Bravenboer)
+(Martin Bravenboer)
 
 ---------++ Stratego Standard Library
 
@@ -61,7 +63,7 @@ include: =new-hashtable(|initial_size, max_load)=,
 considering to lift hashtables from the API to the language level by
 providing syntax for constructing and accessing hashtables.
 
-  (Martin Bravenboer)
+(Martin Bravenboer)
 
 A common frustration in the SUnit unit-testing framework is forgetting
 a =!= before a input or output term. SUnit now provides a variants of
@@ -69,7 +71,7 @@ the unit-testing strategies that accept term arguments for the
 description, input, and expected output of a test e.g.
 =apply-test(foo | "foo test", input, output)=
 
-  (Rob Vermaas)
+(Rob Vermaas)
 
 The module =term-io= in the SSL features new strategies for writing
 ATerms to strings (=write-to-string=) and vice versa
@@ -77,7 +79,7 @@ ATerms to strings (=write-to-string=) and vice versa
 values as command-line arguments, but they should be useful in
 general.
 
-  (Martin Bravenboer)
+(Martin Bravenboer)
 
 The module list-set provides a general subset checker (=set-eq=,
 =subset=, =subseteq=). All these strategies are parameterizable with a
@@ -94,33 +96,41 @@ should be be used as a path (=--patch=), but the existing pp-table is
 not complete. This is useful for signaling incompleteness of the
 pp-table during a build, especially in the buildfarm.
 
-  (Merijn de Jonge)
+More information:
+  http://www.program-transformation.org/Tools/PrettyPrintTableDiff
 
-   * Pptable-diff: if inconsistencies are detected and the --patch switch
-     is not specified, the program terminates with an exit code of 1
-   * pptable-diff: now detects whether Pptable-diff succeeded or not
+The pretty-print table generator =ppgen= has been extended to handle a
+wider range of SDF constructs.
 
-    * Smart merge modified pp file with newly generated pp file after
-      grammar change
+More information:
+  http://www.program-transformation.org/Tools/PrettyPrintTableGenerator
 
-   * Bug fix in sdf-2-pp-lib.str: pretty-print table generator now generates
-     syntactically correct entries for all SDF2 constructs
+(Merijn de Jonge)
 
 ---------+++ Syntax Definition and Parsing
 
-    * Upgrade to sdf-front and sdf-tools to SDF2 as it appears in PGEN
-    2.0
-          o the PGEN 2.0 SDF sytax definition includes constructor declarations
-                + generate a stratego signature from this syntax
-                definition
-          o unpack-sdf:
-                + unpack does not obey the XT calling convention (-i -o)
-                + make directories of modules with pathnames
-          o pack-sdf:
-                + Cannot find modules with pathnames
-                + Make it work with new sdf syntax definition
+Stratego/XT 0.9.4 was still using SDF version 2.1, which is quite
+out-of-date. We are working on updating our SDF tools to support the
+most recent version of SDF as found in pgen 2.x. As a first step in
+this direction sdf-front now includes both versions of SDF. The
+drawback is that not all tools are using the same syntax
+definition. For example =pack-sdf= use the new one, but =sdf-to-sig=
+still uses the old one. This situation will be solved in the next
+release, where SDF 2.1 will be completely removed, except for its
+syntax, signatures and pretty-printer.
 
 ---------+++ Parse-Unit
+
+Parse-unit, a tool for unit-testing syntax definitions, has been
+extended with a concise, concrete syntax for testsuites. It also
+allows partial specification of expected outcomes using wildcards.
+
+More information:
+   http://www.program-transformation.org/Tools/ParseUnit
+
+
+
+
 
     *  parse-unit:
           o design a concrete syntax for testsuites
@@ -193,13 +203,13 @@ pp-table during a build, especially in the buildfarm.
     * pp-table syntax definition does not support CR LF (\r \n)
     * (report)
 
-(Rob Vermaas)
+  (Rob Vermaas)
 
 	* src/sig2: removed all the sig2 tools. They are not used in
 	practice and are replaced by much better tools in
 	stratego-regular.
 
-(Martin Bravenboer)
+  (Martin Bravenboer)
 
 
 Syntax definitions of concrete object syntax embeddings require
@@ -209,6 +219,9 @@ now features =gen-renamed-sdf-module= a tool that automates this
 task. It takes an SDF syntax definition and produces an SDF module
 that renames the sorts in some user-definable way by prefixing it with
 the language name for example.
+
+More information:
+
 
     * Lang-Renamed.sdf generator. Generates an SDF module that renames
       all sorts in a syntax definition by prefixing them with a given
@@ -221,7 +234,7 @@ of a yield followed by a parse. This is major performance
 improvement. implodePT is used because the output of the
 normalizer is AsFix2ME.
 
-(Martin Bravenboer)
+  (Martin Bravenboer)
 
 	* src/implode/implode-asfix.str: *not* funny: after checking
 	every possible mistake I could make I observed that implode-asfix
@@ -230,12 +243,13 @@ normalizer is AsFix2ME.
 	exports, imports, etc. are *renamed* in implode-asfix! Well, not
 	anymore of course. 
 
-(Martin Bravenboer)
+  (Martin Bravenboer)
 
 ---------++ Configuration
 
 Stratego/XT 0.9.5 requires more recent versions of the SDF tools, PGEN
-2.0. The sdf2-bundle 2.0.1 includes the 
+2.0. The sdf2-bundle 2.0.1 all required SDF related packages and is
+available from the release page.
 
     * Change --with-stratego-xt flag to --with-strategoxt.
 
@@ -249,7 +263,7 @@ now on. New issues are reported to the stratego-bugs mailing list. Of
 course you are welcome to discuss issues at the stratego-dev mailing
 list first.
 
-(Arthur van Dam)
+  (Arthur van Dam)
 
 ---------++ Download and Installation
 
@@ -282,5 +296,6 @@ Developments, beta tests, and bug fixes were carried out by
 
   * Martin Bravenboer
   * Arthur van Dam
+  * Merijn de Jonge
   * Rob Vermaas
 
