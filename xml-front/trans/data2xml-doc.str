@@ -9,15 +9,11 @@ strategies
 
   main-data2xml-doc =
     io-wrap(explicit-mode-option,
-      if use-explicit-mode then
-        explicit-data2xml
-      else
-        if use-very-explicit-mode then
-          very-explicit-data2xml
-        else
-          implicit-data2xml
-        end
-      end
+      dispatch-explicit-mode(
+        implicit-data2xml
+      , explicit-data2xml
+      , very-explicit-data2xml
+      )
     )
 
 strategies
@@ -25,11 +21,7 @@ strategies
   very-explicit-data2xml =
     explicit-data2xml(
       rec x(
-         ExplicitExplode-String
-      <+ ExplicitExplode-Int
-      <+ ExplicitExplode-List
-      <+ ExplicitExplode-Tuple
-      <+ ExplicitExplode-Appl(x)
+        VeryExplicitExplode-Annotated(x)
       )
     )
 
@@ -75,6 +67,9 @@ strategies
         <% id %>
       <%
 
+/**
+ * Implicit mode
+ */
 strategies
 
   Explode-Appl =
@@ -86,7 +81,7 @@ strategies
   Explode-NotEmptyAppl :
     s#(children){atts*} ->
       %>< ~n:s <@ !atts2 :: * @> ><% <flatten-list> children :: * %></ ~n:s ><%
-      where <map(Explode-Attr)> atts* => atts2
+      where <filter(Explode-Attr)> atts* => atts2
 
   Explode-Attr :
     (s, v) -> @> ~n:s="<% <string2xml-attr-value> v %>" <@
@@ -109,18 +104,10 @@ strategies
       <is-int> i
       ; <int-to-string> i => s
 
-strategies 
-
-  ExplicitExplode-Appl(x) :
-    s#(children){atts*} -> %><appl cons="<% !s %>"><% !new-children :: * %></appl><%
-    where
-      <conc> (
-        <map(ExplicitExplode-Attr(x))> atts*
-      , <flatten-list> children
-      ) => new-children
-
-  ExplicitExplode-Attr(x) =
-    !%><anno><% bottomup(x) %></anno><%
+/**
+ * Explicit mode
+ */
+rules
 
   ExplicitExplode-List =
     !%><list><% Explode-List :: * %></list><%
@@ -133,3 +120,32 @@ strategies
 
   ExplicitExplode-String =
     !%><string><% Explode-String %></string><%
+
+/**
+ * Very explicit mode
+ */
+rules
+
+  VeryExplicitExplode-Annotated(x) =
+    ?_{anno*}
+    ;  ( ExplicitExplode-List
+      <+ VeryExplicitExplode-Int
+      <+ VeryExplicitExplode-String
+      <+ ExplicitExplode-Tuple
+      <+ VeryExplicitExplode-Appl(x)
+       )
+    ; ?Element(n, atts, content, n)
+    ; <map(VeryExplicitExplode-Attr(x))> anno* => anno-content
+    ; !Element(n, atts, <conc> (anno-content, content), n)
+
+  VeryExplicitExplode-Int :
+    i -> %><int><value><% <Explode-Int> i %></value></int><%
+
+  VeryExplicitExplode-String :
+    s -> %><string><value><% <Explode-String> s %></value></string><%
+
+  VeryExplicitExplode-Appl(x) :
+    s#(children) -> %><appl cons="<% !s %>"><% <flatten-list> children :: * %></appl><%
+
+  VeryExplicitExplode-Attr(x) =
+    !%><anno><% bottomup(x) %></anno><%

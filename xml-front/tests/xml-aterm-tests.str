@@ -4,27 +4,58 @@ imports liblib
 strategies
 
   main-xml-aterm-tests =
-    test-suite(!"xml aterm roundtrip tests",
-      roundtrip-tests
+    option-wrap(general-options,
+      test-suite(!"xml aterm roundtrip tests",
+        explicit-roundtrip-tests
+      ; very-explicit-roundtrip-tests
+      )
     )
 
 strategies
 
-  roundtrip-tests =
-    roundtrip-test(|1)
-  ; roundtrip-test(|2)
-  ; roundtrip-test(|"a")
-  ; roundtrip-test(|"ab")
-  ; roundtrip-test(|" ab ")
-  ; roundtrip-test(| [1, 2])
-  ; roundtrip-test(| [1, 2, 3])
-  ; roundtrip-test(| ["1", "2    ", " 3 "])
-  ; roundtrip-test(| Foo(1, 2))
-  ; roundtrip-test(| Foo(3, 4))
-  ; roundtrip-test(| Foo(1, [2, 3]))
-  ; roundtrip-test(| Foo([1, 2], [3, 4]))
-  ; roundtrip-test(| Some(4))
-  ; roundtrip-test(| None())
+  very-explicit-roundtrip-tests =
+    {| Explicit :
+      rules(Explicit : () -> "--very-explicit")
+    ; avg-roundtrip-tests
+    ; difficult-roundtrip-tests
+    |}
+
+  explicit-roundtrip-tests =
+    {| Explicit :
+      rules(Explicit : () -> "--explicit")
+    ; avg-roundtrip-tests
+    |}
+
+  avg-roundtrip-tests =
+      roundtrip-test(|1)
+    ; roundtrip-test(|2)
+    ; roundtrip-test(|"a")
+    ; roundtrip-test(|"ab")
+    ; roundtrip-test(|" ab ")
+    ; roundtrip-test(| [1, 2])
+    ; roundtrip-test(| [1, 2, 3])
+    ; roundtrip-test(| ["1", "2    ", " 3 "])
+    ; roundtrip-test(| Foo(1, 2))
+    ; roundtrip-test(| Foo(3, 4))
+    ; roundtrip-test(| Foo(1, [2, 3]))
+    ; roundtrip-test(| Foo([1, 2], [3, 4]))
+    ; roundtrip-test(| Some(4))
+    ; roundtrip-test(| None())
+
+  difficult-roundtrip-tests =
+      roundtrip-test(| Foo(1, [2, 3]){Foo(1, 2)})
+    ; roundtrip-test(| Foo(1, [2, 3]){1})
+    ; roundtrip-test(| Foo(1, [2, 3]){2})
+    ; roundtrip-test(| Foo(1, [2, 3]){"2"})
+    ; roundtrip-test(| int(5))
+    ; roundtrip-test(| string("voodoo"))
+    ; roundtrip-test(| None())
+    ; roundtrip-test(|"a"{1})
+    ; roundtrip-test(|"a"{1, 2})
+    ; roundtrip-test(|"a"{(1, 2)})
+    ; roundtrip-test(| 1{1})
+    ; roundtrip-test(| [1, 2]{1})
+    ; roundtrip-test(| (1, 2){1, 2})
 
 strategies
 
@@ -32,8 +63,8 @@ strategies
     apply-test(!t,
       xtc-temp-files(
         write-to
-      ; xtc-transform(!"aterm2xml")
-      ; xtc-transform(!"xml2aterm")
+      ; xtc-transform(!"aterm2xml", ![<Explicit> () | <pass-verbose>])
+      ; xtc-transform(!"xml2aterm", ![<Explicit> () | <pass-verbose>])
       ; read-from
       )
     , !t
@@ -43,4 +74,5 @@ strategies
 signature
   constructors
     Foo : Foo * Foo -> Foo
- 
+    int : Int -> Foo
+    string : String -> Foo

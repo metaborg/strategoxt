@@ -1,6 +1,17 @@
 module xml-front-options
 strategies
 
+  dispatch-explicit-mode(implicit, explicit, very-explicit) =
+      if use-explicit-mode then
+        explicit
+      else
+        if use-very-explicit-mode then
+          very-explicit
+        else
+          implicit
+        end
+      end
+
   use-explicit-mode =
     if <get-config> "--explicit-mode" then
       <get-config> "--explicit-mode" => "--explicit"
@@ -31,5 +42,5 @@ strategies
 
 strategies
 
-  pass-explicit =
+  pass-explicit-mode =
     <get-config> "--explicit-mode" <+ !"--explicit"

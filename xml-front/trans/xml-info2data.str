@@ -1,34 +1,40 @@
 module xml-info2data
-imports xml-info liblib
+imports
+  xml-info
+  liblib
+  xml-front-options
 
 strategies
 
   main-xml-info2data =
-    io-wrap(explicit-option,
-      if <get-config> "--explicit" then
-        explicit-xml-info2data
-      else
+    io-wrap(explicit-mode-option,
+      dispatch-explicit-mode(
         implicit-xml-info2data
-      end
+      , explicit-xml-info2data
+      , very-explicit-xml-info2data
+      )
     )
 
-  explicit-option =
-    Option("--explicit"
-    , <set-config> ("--explicit", ())
-    , "--explicit       Use explicit XML elements for strings, lists, integers, and tuples"
-    )
+strategies
+
+  very-explicit-xml-info2data =
+      ?Document(<id>)
+    ; topdown-wannos(repeat(VeryExplicitImplodeAnnotated))
 
   explicit-xml-info2data =
       ?Document(<id>)
     ; topdown-wannos(repeat(ExplicitImplode <+ Implode))
 
-  xml-info2data =
-    implicit-xml-info2data
-
   implicit-xml-info2data =
       ?Document(<id>)
     ; topdown-wannos(repeat(Implode))
 
+  xml-info2data =
+    implicit-xml-info2data
+
+/**
+ * Implicit implode rules
+ */
 rules
 
   Implode:
@@ -40,7 +46,11 @@ rules
   Implode:
     Attribute(Name(_, s), value) -> (s, value)
 
+/**
+ * Explicit implode rules
+ */
 rules
+
 
   ExplicitImplode :
     Element(Name(_, "int"), _, [Text(s)]) -> <trim-chars('\n' + '\t' + '\r' + ' '); string-to-int> s
@@ -54,8 +64,57 @@ rules
   ExplicitImplode :
     Element(Name(_, "list"), _, children) -> children
 
+/**
+ * Very explicit implode rules
+ */
+rules
+
+  is-anno-element =
+    ?Element(Name(_, "anno"), _, _)
+
+  VeryExplicitImplodeAnnotated =
+    ?Element(_, _, content)
+    ; VeryExplicitImplode
+    ; ?t
+    ; <filter(is-anno-element)> content => anno*
+    ; !t{anno*}
+
+  VeryExplicitImplode :
+    Element(Name(_, "appl"), [Attribute(Name(_, "cons"), name)], content) -> name#(children)
+    where
+      <filter(not(is-anno-element + ?Text(_)))> content => children
+
+  VeryExplicitImplode :
+    Element(Name(_, "anno"), _, [content]) -> content
+
+  VeryExplicitImplode :
+    Element(Name(_, "int"), _, content) -> <trim-chars('\n' + '\t' + '\r' + ' '); string-to-int> s
+    where
+      <fetch(?Element(Name(_, "value"), _, [Text(s)]))> content
+    
+  VeryExplicitImplode :
+    Element(Name(_, "string"), _, content) -> s
+    where
+      <fetch(?Element(Name(_, "value"), _, [Text(s)]))> content
+
+  VeryExplicitImplode :
+    Element(Name(_, "tuple"), _, content) -> ""#(children)
+    where
+      <filter(not(is-anno-element + ?Text(_)))> content => children
+
+  VeryExplicitImplode :
+    Element(Name(_, "list"), _, content) -> children
+    where
+      <filter(not(is-anno-element + ?Text(_)))> content => children
+
+/**
+ * Util
+ */
 strategies
 
+  /**
+   * Topdown traversal that also traverses annotations.
+   */
   topdown-wannos(s) =
     rec x(
       topdown(s; id{map(x)} )

@@ -8,7 +8,7 @@ check_PROGRAMS = xml-aterm-tests
 TESTS          = $(check_PROGRAMS)
 LDADD         += $(SSL_LIBS)
 
-SCFLAGS       = --main main-$*
+SCFLAGS       = --main main-$* --dr new
 
 EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta)
 CLEANFILES     = $(wildcard *.dep)
