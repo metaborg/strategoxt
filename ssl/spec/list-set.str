@@ -4,8 +4,7 @@
  * subterms corresponding to some criterion.
  */
 module list-set
-imports list-basic list-misc term collect
-// collect is imported for backwards compatibility
+imports list-basic list-misc term collect // collect is imported for backwards compatibility
 
 rules
  
@@ -16,19 +15,34 @@ rules
      [x | xs] -> xs 
      where mklst; fetch(\y -> <eq> (x, y)\)
 
-  // :: List(a) -> List(a)
+strategies
+
+  /**
+   * Removes duplicate elements from a list.
+   *
+   * @type  List(a) -> List(a)
+   */
   make-set =
     foldr(![], union, ![<id>])
 
+  /**
+   * Removes duplicate elements from a list.
+   *
+   * @type   List(a) -> List(a)
+   * @note   nub is an alias of make-set.
+   * @since  0.9.4
+   */
+  nub = make-set
+
 strategies
 
-/**
- * Union: Concatenation of two lists, only those elements in the
- * first list are added that are not already in the second list.
- *
- * @type List(a) * List(a) -> List(a)
- */
- union = union(eq)
+  /**
+   * Union: Concatenation of two lists, only those elements in the
+   * first list are added that are not already in the second list.
+   *
+   * @type List(a) * List(a) -> List(a)
+   */
+  union = union(eq)
 
   // a * a -> fail? :: List(a) * List(a) -> List(a)
   union(eq) : 
@@ -40,21 +54,27 @@ strategies
 
 strategies
 
-  // :: List(List(a)) -> List(a)
+  /**
+   * @type  List(List(a)) -> List(a)
+   */
   unions = unions(eq)
 
   // a * a -> fail? :: List(List(a)) -> List(a)
   unions(eq) = foldr(![], union(eq))
 
 rules
- /**
-  * Difference of two lists.
-  *
-  * @type List(a) * List(a) -> List(a)
-  */ 
+
+  /**
+   * Difference of two lists.
+   *
+   * @type  (List(a), List(a)) -> List(a)
+   */ 
   diff = diff(eq) 
 
-  // a * a -> fail? :: List(a) * List(a) -> List(a)
+  /**
+   * @param  Used to compare the elements. If an application succeeds, then two elements are equal.
+   * @type   (List(a), List(a)) -> List(a)
+   */
   diff(eq) :
     (l1, l2) -> <rec x(
                    []
@@ -66,10 +86,15 @@ rules
       obsolete(!"diff'/1; use diff/1")
     ; diff(eq)
 
-  // :: List(a) * List(a) -> List(a)
+  /**
+   * @type  (List(a), List(a)) -> List(a)
+   */
   sym-diff = sym-diff(eq)
 
-  // a * a -> fail? :: List(a) * List(a) -> List(a)
+  /**
+   * @param  Used to compare the elements. If an application succeeds, then two elements are equal.
+   * @type   (List(a), List(a)) -> List(a)
+   */
   sym-diff(eq) =
     <union> (<diff(eq)>, <Swap; diff(eq)>)
 
@@ -103,4 +128,3 @@ strategies
                 <+ ( where(HdMember'(eq, !l2)); [id | x] )
                 <+ ?[_ | <x>]
                 )> l1
-

@@ -1,3 +1,7 @@
+2003-09-19  Martin Bravenboer <mbravenb@cs.uu.nl>
+  
+  * spec/list-set.str: added nub as an alias of make-set.
+
 2003-09-17  Martin Bravenboer <mbravenb@cs.uu.nl>
   
   * spec/posix-error.str: new module
