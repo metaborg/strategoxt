@@ -16,7 +16,7 @@
 # 02111-1307, USA.
 
 AC_INIT(spec/front/inlining.r)
-AM_INIT_AUTOMAKE(sc,0.8beta1)
+AM_INIT_AUTOMAKE(sc,0.8alpha3)
 
 AC_ARG_WITH(cgen,    
   [  --with-cgen      Specify location of CGEN library, default: \$prefix], 
@@ -81,14 +81,22 @@ AC_ARG_WITH(srts,
 )
 AC_SUBST(STRATEGORTS)
 
-AC_ARG_WITH(gb-stratego,    
-  [  --with-gb-stratego   Specify location of Grammar Base with Stratego definition, default: \$prefix], 
-  GBSTRATEGO=$withval, 
-  GBSTRATEGO="$prefix"
+AC_ARG_WITH(stratego-front,    
+  [  --with-stratego-front   Specify location of Stratego Front package, default: \$prefix], 
+  STRATEGOFRONT=$withval, 
+  STRATEGOFRONT="$prefix"
 )
-AC_SUBST(GBSTRATEGO)
+AC_SUBST(STRATEGOFRONT)
 
-AC_REVISION($Id: configure.in,v 1.19 2002/03/17 21:30:31 stratego Exp $)
+EXE=""
+AC_ARG_WITH(exe,    
+  [  --with-exe              Extension of executables], 
+  EXE=".exe", 
+  EXE=""
+)
+AC_SUBST(EXE)
+
+AC_REVISION($Id: configure.in,v 1.20 2002/06/09 16:39:28 stratego Exp $)
 
 AC_PROG_CC
 AC_PROG_RANLIB
@@ -113,6 +121,7 @@ AC_SUBST(CC)
 AC_OUTPUT( \
 	Makefile \
 	README \
+	spec/config.h \
 	spec/Makefile \
 	spec/make_rules \
 	spec/c/Makefile \

@@ -1,3 +1,134 @@
+2002-06-09  Eelco Visser  <visser@acm.org>
+
+	* spec/opt/fusion-rules.r, spec/opt/fusion.r: replaced by corresponding .cr
+	modules
+
+	* spec/conf.h.src: Header file with macros for constructing configuration
+	values
+
+	* spec/test1/test28.r: Refactored annotations test (Martin Bravenboer)
+
+	* spec/test1/Makefile.am, spec/test1/make-rules: added -b 
+	flag to all components to force BAF for exchange instead of text
+
+	* spec/syn/stratego.lx: Lexical syntax of list variables.
+
+	* spec/syn/stratego.grm: Syntax of list variables and lists
+	of terms as argument of annotations.
+
+	* spec/syn/pack-stratego.r, spec/syn/pack-stratego.config.src:
+	Refactored drastically to use configuration information from
+	pack-stratego.config and any .plugin files in the
+	pack-stratego-plugins directory. These plugins are configuration
+	files, which extend the functionality of pack-stratego, by
+	definining a parser that should be used for a file
+	extension. Using this mechanism, the parsing of .cr files has been
+	moved to the stratego-front package in the tool parse-cmod. The
+	code for parse-cmod has been removed.
+
+	* spec/syn/meta-explode.r: removed; moved to stratego-front
+
+	* spec/syn/Makefile.am: include conf.h in generated C code
+
+	* spec/sc/sc.config.src, sc/sc.src: Commented out command line options
+	to proto-sc; these options are now stored in the configuration
+	file sc.config.
+
+	* spec/sc/proto-sc.r: Drastically refactored compiler driver using
+	set-config and get-config to store and access configuration
+	information. The default values are obtained from a configuration
+	file instead of from the command line. Use of options with
+	explanations and a longer usage description. Added profiling of
+	subparts using the new timing library to get timings including the
+	times of any subprocesses. Intermediate results of components are
+	stored in BAF format instead of text format. (This does not seem
+	to make any difference to the performance.)
+	
+	* spec/opt/fusion.cr: Restricted inlining algorithm. Some refactoring
+
+	* spec/opt/fusion-rules.cr: layout
+
+	* spec/front/frontend.r: use <run-time> instead of <dtime>
+
+	* spec/sig/sugar.r: signature for list variables
+	
+	* spec/front/desugar.r: Use different primitives to access
+	annotations. Desugaring of list variables; only cons(t*,[]) and
+	cons(x,cons(t*,[])) are handled.
+
+	* spec/c/s2c.r: Using the option --C-include the #include files are are
+	declared. This replaces the hardwiring of #include files
+	<srts/stratego.h> and <ssl/stratego-lib.h>.
+
+	* spec/sc/Makefile.am: include ../conf.h file; instantiate .src files
+
+	* spec/c/Makefile.am: include files from stratego-front
+
+	* spec/make-rules: make rule for .cr files
+
+	* spec/Makefile.am: Instantiation of src files with configuration
+	variables, including conf.h.src, which is used by compiler
+	components to locate configuration files.
+
+	* spec/test1/make-rules: Use -b flag to write binary intermediate files
+
+2002-05-26  Eelco Visser  <visser@acm.org>
+
+	* spec/opt/fusion-rules.cr, fusion.cr: Implementation of innermost fusion
+	with concrete syntax and dynamic rules
+
+2002-05-24  Eelco Visser  <visser@acm.org>
+
+	* configure.in: --with-exe configuration flag should be selected to install
+	under windows; executables are accesses with the $(EXE) variable as suffix
+	to cope with the extension that is added under windows.
+
+2002-05-19  Eelco Visser  <visser@acm.org>
+
+	* spec/syn/pack-stratego.config.src: Configuration file for pack-stratego; the
+	aterm in this file represents a mapping (table) from strings to values
+
+2002-05-14  Eelco Visser  <visser@acm.org>
+
+	* spec/sc/Makefile.am, spec/sc/sc.src (STRATEGOFRONT): Include
+	STRATEGOFRONT/share/stratego-front directory instead of GBSTRATEGO
+
+2002-05-12  Eelco Visser  <visser@acm.org>
+
+	* spec/sig/sugar.r: ListVar is a tag for Var identifiers
+	indicating that the variable is a list variable for use in list
+	matching/construction.
+
+	* spec/test1/test32.r: test for implementation of list matching
+
+	* spec/syn/stratego.grm (optcond): Added syntax for list variables
+	t*.
+
+	* spec/front/spec-to-sdefs.r: Expanded Trm-to-Cong with handling of
+	annotations.
+
+	* spec/opt/stratego-laws.r: Added TransformingAnnoCongruence to Simplify
+
+	* spec/front/desugar.r: Rules for desugaring list matching
+	patterns [t*] and [t,t*]. More interesting ones need to be added.
+
+	* spec/test1/test28.r: Tests for behaviour of annotations. Written
+	by Martin Bravenboer. Adapted by Eelco Visser: (1) use list
+	matching t{t*} to access the entire list of annotations (2)
+	annotation congruences apply the annotation strategy to the entire
+	list of annotations, i.e., in the congruence s1{s2}, s2 is applied
+	to the list of annotations (3) a term always has a list of
+	annotations, that is, for terms without annotations the empty list
+	of annotations is produced by SSLgetAnnotations.
+
+	* spec/opt/congruence-laws.r: Adapted implementation of congruences
+	to preserve annotations.
+
+2002-05-10  Eelco Visser  <visser@acm.org>
+
+	* spec/test1/test28.r: New test-suite for annotations by Martin
+	Bravenboer
+
 2002-03-14  Eelco Visser  <visser@acm.org>
 
 	* Release 0.7 (fix2)

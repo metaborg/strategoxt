@@ -2,7 +2,7 @@
 
 ./reconf
 ./configure \
-    --prefix=`pwd`/.. \
+    --prefix=/home/visser/res/XT \
     --with-aterm=/home/xt/ATerm \
     --with-sc-boot=`pwd`/../sc-boot \
     --with-gb-stratego=/home/visser/res/XT/share/gb/stratego.0.7
