@@ -1,3 +1,76 @@
+2004-09-02  Martin Bravenboer <martin@cs.uu.nl>
+
+	* src/anno/asfix-anno-comments.str: a new asfix to asfix tool that
+	preserves comments that were of the input source code by putting
+	them in annotations of the AST.
+
+	It is difficult to decide what a comment actually comments on. The
+	tool uses the heuristic that a comment is usually about the next
+	construct. Therefore, it adds the comment to the first term with a
+	constructor in the the subtree of the next symbol in the
+	production rule. If this next symbol is a literal, then the
+	comment will not be preserved.
+
+	This simple tool works remarkably well. Let me illustrate this
+	with an example input that I used during the development of this
+	tool.
+
+	---------------------------------------------------------------
+	/**
+	 * Voodoo
+	 */
+	class Voodoo
+	{
+	  /**
+	   * Bla bla
+	   */
+	  public void foo(/*let me explain this */ int x)
+	  {
+	    // just return
+	    return /* foo */ x;
+	  }
+	}
+	---------------------------------------------------------------
+
+	An example fragment of the AST:
+
+	---------------------------------------------------------------
+	Param([], Int, Id("x")){(Comment, "/*let me explain this */")}
+	---------------------------------------------------------------
+
+	The JavaFront pretty-printer has been extended to support these
+	Comment annotations. The following pipe:
+
+	---------------------------------------------------------------
+	sglr -2 -s CompilationUnit -p ~/wc/java-front/syn/v1.5/Java-15.tbl 
+	     -i ~/Foo.java
+	  | ./asfix-anno-comments
+	  | implode-asfix
+	  | pp-java
+	---------------------------------------------------------------
+
+	produces the following output:
+	
+	---------------------------------------------------------------
+	/**
+	 * Voodoo
+	 */
+	class Voodoo
+	{
+	  /**
+	   * Bla bla
+	   */
+	  public void foo(/*let me explain this */ int x)
+	  {
+	    // just return
+	    return /* foo */ x;
+	  }
+	}
+	---------------------------------------------------------------
+
+	This tool was inspired by pleasant discussions on source to source
+	transformations with Karl Trygve.
+
 2004-09-01  Martin Bravenboer <martin@cs.uu.nl>
 
 	* src/implode/implode-asfix.str: implode-asfix now supports

@@ -7,10 +7,6 @@ AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_LIBTOOL
 
-TOOLS="templates implode asfix-yield visamb termid explode-asfix2me "
-UNRELEASED=""
-RELEASED="templates implode asfix-yield visamb termid explode-asfix2me"
-
 AC_SUBST(TOOLS)
 AC_SUBST(RELEASED)
 AC_SUBST(UNRELEASED)
@@ -42,5 +38,7 @@ AC_CONFIG_FILES([
 
   src/explode-asfix2me/Makefile
   src/explode-asfix2me/data/Makefile
+
+  src/anno/Makefile
 ])
 AC_OUTPUT

@@ -1,0 +1,63 @@
+module asfix-anno-comments
+imports liblib AsFix
+
+strategies
+
+  main-asfix-anno-comments = 
+    io-wrap(
+      topdown-consnil(try(AnnoComment))
+    )
+
+strategies
+
+  AnnoComment :
+    [ a1@appl(prod([cf(layout)], cf(opt(layout())), _), args)
+    , a2
+    | as ]
+      ->
+    [ a1, a2' | as ]
+    where
+      <fetch-comment> args => comment
+      ; <try(oncetd({p:
+          has-cons; ?p{a*}; !p{(Comment(), comment) | a*}
+         }))> a2 => a2'
+
+  fetch-comment =
+    oncetd(
+      ?appl(prod(_, lex(sort("Comment")), _), _)
+    ; yield
+    ; ?s
+    )
+    ; !s
+
+  has-cons =
+    where(
+    ?appl(prod(_, _, <id>), _)
+    ; oncetd(?cons(_))
+    )
+
+strategies
+
+  topdown-consnil(s) =
+    rec x(s; all-consnil(x))
+
+  all-consnil(s) =
+    if is-list then
+      [s | id]; [id | s] + []
+    else
+      all(s)
+    end
+
+rules
+  Kids  : appl(p, ts) -> <concat> ts
+  Kids' : x -> [x]
+
+strategies
+
+  yield =
+    rec x((appl(id, map(x)); Kids) <+ Kids')
+    ; implode-string
+
+signature
+   constructors
+     Comment : AnnoKey
