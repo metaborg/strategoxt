@@ -32,6 +32,22 @@ strategies
           <flatten-list> ["--rtg-nf", <input-to-rtg-nf>, <pass-verbose> (), <pass-start-nonterm>]
       )
 
+  format-check-to-xhtml =
+    xtc-ensure-file
+    ; xtc-try-transform(!"core-format-check-to-xhtml",
+          <flatten-list> ["--rtg-nf", <input-to-rtg-nf>, <pass-verbose> (), <pass-start-nonterm>]
+      )
+    ; xtc-transform(!"pp-xml-doc", pass-verbose)
+
+  format-check-pp-aterm =
+    xtc-ensure-file
+    ; xtc-transform(!"core-format-check-pp-aterm",
+          <flatten-list> ["--rtg-nf", <input-to-rtg-nf>, <pass-verbose> (), <pass-start-nonterm>]
+      )
+    ; xtc-abox2text
+
+strategies
+
   xtc-try-transform(tool, args) :
     FILE(f) -> FILE(g)
     where <xtc-new-file> f => g
@@ -41,18 +57,6 @@ strategies
 
   get-exit-code =
     <get-config> "--exit-code" <+ !0
-
-  format-check-to-xhtml =
-      xtc-transform(!"core-format-check-to-xhtml",
-          <flatten-list> ["--rtg-nf", <input-to-rtg-nf>, <pass-verbose> (), <pass-start-nonterm>]
-      )
-    ; xtc-transform(!"pp-xml-doc", pass-verbose)
-
-  format-check-pp-aterm =
-      xtc-transform(!"core-format-check-pp-aterm",
-          <flatten-list> ["--rtg-nf", <input-to-rtg-nf>, <pass-verbose> (), <pass-start-nonterm>]
-      )
-    ; xtc-abox2text
 
 /**
  * Options

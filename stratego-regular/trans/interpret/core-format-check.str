@@ -10,16 +10,19 @@ strategies
 
   main-core-format-check =
     io-wrap(core-fc-options,
-      where(
-          read-rtg-nf-config => rtg@RTG(Start(starts), _)
-        ; generate-type-rules
-      )
-    ; format-check
-    ; format-check-report(|<get-start-nonterms(!starts)>)
+      main-format-check
     ; where(output(id))
     ; <get-config> "--exit-code"
     ; exit
     )
+
+  main-format-check =
+      where(
+        read-rtg-nf-config => rtg@RTG(Start(starts), _)
+      ; generate-type-rules
+      )
+    ; format-check
+    ; format-check-report(|<get-start-nonterms(!starts)>)
 
   format-check-init =
     where(

@@ -19,15 +19,11 @@ strategies
 strategies
 
   format-check-to-xhtml =
-      format-check-init
-    ; try(my-format-check)
-    ; print-to-xhtml-doc
-
-  my-format-check =
-    bottomup-consnil(
-       where(get-types)
-    <+ repeat(Type)
-    )
+    main-format-check
+  ; print-to-xhtml-doc
+  ; where(output(id))
+  ; <get-config> "--exit-code"
+  ; exit
 
 strategies
 
@@ -105,9 +101,6 @@ strategies
     <+ print-Cnst
     <+ print-App
     )
-
-  is-typed = 
-    where(get-types; iset-elements => [_ | _])
 
   print-type(s) =
     if is-typed <+ one-consnil(not(is-typed)) then
