@@ -4,7 +4,7 @@ rm -f acconfig.h
 
 autoxt || exit 1
 aclocal -I . || exit 1
-libtoolize --force || exit 1
+libtoolize --force || glibtoolize --force || exit 1
 autoconf || exit 1
 autoheader || exit 1
 automake -a || exit 1

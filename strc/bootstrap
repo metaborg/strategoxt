@@ -1,11 +1,8 @@
 #! /bin/sh
 rm -f config.cache aclocal.m4 acconfig.h
-autoxt
-aclocal -I .
-libtoolize --force
-autoconf
-#acconfig
-#autoheader
-automake -a
+autoxt || exit 1
+aclocal -I . || exit 1
+libtoolize --force || glibtoolize --force || exit 1
+autoconf || exit 1
+automake -a || exit 1
 
-#touch spec/*/*.c
