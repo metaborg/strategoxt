@@ -41,7 +41,6 @@ AC_CONFIG_FILES([
   src/sdf-bench/Makefile
   src/sdf-bench/data/Makefile
   src/unpack-sdf/Makefile
-  src/unpack-sdf/data/Makefile
   src/sdf-cons/Makefile
   src/sdf-cons/data/Makefile
   src/sdf-label/Makefile
