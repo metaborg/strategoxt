@@ -3,39 +3,39 @@
 void init_constructors (void)
 {
 }
-Symbol sym_CL_0;
-Symbol sym_SZ_0;
-Symbol sym_SH_0;
-Symbol sym_SE_0;
-Symbol sym_FM_0;
-Symbol sym_FN_0;
-Symbol sym_MATH_0;
-Symbol sym_NUM_0;
-Symbol sym_VAR_0;
-Symbol sym_KW_0;
-Symbol sym_F_1;
-Symbol sym_FFID_2;
-Symbol sym_FNAT_2;
-Symbol sym_AOPTIONS_1;
-Symbol sym_AR_1;
-Symbol sym_AC_1;
-Symbol sym_AL_1;
-Symbol sym_IS_0;
-Symbol sym_HS_0;
-Symbol sym_VS_0;
-Symbol sym_SOpt_2;
-Symbol sym_L_2;
-Symbol sym_C_2;
-Symbol sym_REF_2;
-Symbol sym_LBL_2;
-Symbol sym_FBOX_2;
-Symbol sym_R_2;
-Symbol sym_A_3;
-Symbol sym_ALT_2;
-Symbol sym_HV_2;
-Symbol sym_V_2;
-Symbol sym_H_2;
-Symbol sym_S_1;
+static Symbol sym_CL_0;
+static Symbol sym_SZ_0;
+static Symbol sym_SH_0;
+static Symbol sym_SE_0;
+static Symbol sym_FM_0;
+static Symbol sym_FN_0;
+static Symbol sym_MATH_0;
+static Symbol sym_NUM_0;
+static Symbol sym_VAR_0;
+static Symbol sym_KW_0;
+static Symbol sym_F_1;
+static Symbol sym_FFID_2;
+static Symbol sym_FNAT_2;
+static Symbol sym_AOPTIONS_1;
+static Symbol sym_AR_1;
+static Symbol sym_AC_1;
+static Symbol sym_AL_1;
+static Symbol sym_IS_0;
+static Symbol sym_HS_0;
+static Symbol sym_VS_0;
+static Symbol sym_SOpt_2;
+static Symbol sym_L_2;
+static Symbol sym_C_2;
+static Symbol sym_REF_2;
+static Symbol sym_LBL_2;
+static Symbol sym_FBOX_2;
+static Symbol sym_R_2;
+static Symbol sym_A_3;
+static Symbol sym_ALT_2;
+static Symbol sym_HV_2;
+static Symbol sym_V_2;
+static Symbol sym_H_2;
+static Symbol sym_S_1;
 static void init_module_constructors (void)
 {
   sym_CL_0 = ATmakeSymbol("CL", 0, ATfalse);
@@ -105,16 +105,16 @@ static void init_module_constructors (void)
   sym_S_1 = ATmakeSymbol("S", 1, ATfalse);
   ATprotectSymbol(sym_S_1);
 }
-ATerm term_o_1;
+static ATerm term_o_1;
 static void init_module_constant_terms (void)
 {
   ATprotect(&(term_o_1));
   term_o_1 = (ATerm) ATmakeAppl(ATmakeSymbol("Not a Box: ", 0, ATtrue));
 }
 #include <srts/init-stratego-application.h>
-ATerm debug_1_0 (ATerm y_84 (ATerm), ATerm t);
+ATerm debug_1_0 (ATerm i_100 (ATerm), ATerm t);
 ATerm Nil_0_0 (ATerm t);
-ATerm list_1_0 (ATerm u_89 (ATerm), ATerm t);
+ATerm list_1_0 (ATerm w_100 (ATerm), ATerm t);
 ATerm is_string_0_0 (ATerm t);
 static ATerm c_1 (ATerm t);
 static ATerm d_1 (ATerm t);
@@ -129,7 +129,7 @@ static ATerm l_1 (ATerm t);
 static ATerm m_1 (ATerm t);
 static ATerm n_1 (ATerm t);
 ATerm Box_0_0 (ATerm t);
-ATerm io_wrap_1_0 (ATerm y_110 (ATerm), ATerm t);
+ATerm io_wrap_1_0 (ATerm b_121 (ATerm), ATerm t);
 ATerm main_0_0 (ATerm t);
 ATerm main_0 (ATerm t)
 {

@@ -485,9 +485,9 @@ ATerm version_query_0_0 (ATerm t);
 ATerm if_verbose3_1_0 (ATerm f_121 (ATerm), ATerm t);
 static ATerm b_0 (ATerm t);
 static ATerm m_0 (ATerm t);
-static ATerm n_0 (ATerm t);
+static ATerm o_0 (ATerm t);
 ATerm tool_query_0_0 (ATerm t);
-static ATerm l_5 (ATerm r_78, ATerm x_917, ATerm t);
+static ATerm l_5 (ATerm r_78, ATerm b_918, ATerm t);
 static ATerm g_1 (ATerm t);
 static ATerm i_1 (ATerm t);
 ATerm all_query_0_0 (ATerm t);
@@ -667,7 +667,7 @@ ATerm main_0 (ATerm t)
 }
 ATerm version_query_0_0 (ATerm t)
 {
-  ATerm i_0 = NULL,q_0 = NULL,s_0 = NULL,v_0 = NULL,x_0 = NULL,z_0 = NULL,a_1 = NULL,c_1 = NULL,d_1 = NULL,e_1 = NULL,f_1 = NULL,o_0 = NULL;
+  ATerm i_0 = NULL,q_0 = NULL,s_0 = NULL,v_0 = NULL,x_0 = NULL,z_0 = NULL,a_1 = NULL,c_1 = NULL,d_1 = NULL,e_1 = NULL,f_1 = NULL,n_0 = NULL;
   v_0 = t;
   t = term_o_9;
   z_0 = t;
@@ -717,8 +717,8 @@ ATerm version_query_0_0 (ATerm t)
   }
   f_1 = t;
   t = (ATerm) ATmakeAppl(sym__2, d_1, f_1);
-  o_0 = t;
-  t = SSLsetAnnotations(o_0, c_1);
+  n_0 = t;
+  t = SSLsetAnnotations(n_0, c_1);
   t = (ATerm) ATinsert(ATempty, (ATerm) ATmakeAppl(sym__2, q_0, not_null(s_0)));
   x_0 = t;
   t = (ATerm) ATmakeAppl(sym__2, (ATerm)ATmakeAppl(sym_Tool_1, i_0), (ATerm) ATinsert(ATempty, (ATerm) ATmakeAppl(sym__2, q_0, not_null(s_0))));
@@ -784,10 +784,10 @@ static ATerm b_0 (ATerm t)
 }
 static ATerm m_0 (ATerm t)
 {
-  t = debug_1_0(n_0, t);
+  t = debug_1_0(o_0, t);
   return(t);
 }
-static ATerm n_0 (ATerm t)
+static ATerm o_0 (ATerm t)
 {
   t = term_l_10;
   return(t);
@@ -870,7 +870,7 @@ ATerm tool_query_0_0 (ATerm t)
   t = map_1_0(c_0, t);
   return(t);
 }
-static ATerm l_5 (ATerm r_78, ATerm x_917, ATerm t)
+static ATerm l_5 (ATerm r_78, ATerm b_918, ATerm t)
 {
   static ATerm b_1 (ATerm t);
   static ATerm b_1 (ATerm t)
@@ -919,7 +919,7 @@ static ATerm l_5 (ATerm r_78, ATerm x_917, ATerm t)
     }
     return(t);
   }
-  t = x_917;
+  t = b_918;
   t = map_1_0(b_1, t);
   return(t);
 }

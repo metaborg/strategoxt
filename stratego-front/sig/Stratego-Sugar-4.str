@@ -1,9 +1,13 @@
 module Stratego-Sugar-4
 signature
   constructors
+    Rule           : Term * Term * Strategy -> Rule
+    RuleNoCond     : Term * Term -> Rule
+    RDefT          : Id * List(Typedid) * List(Typedid) * Rule -> RuleDef
+    RDef           : Id * List(Typedid) * Rule -> RuleDef
+    RDefNoArgs     : Id * Rule -> RuleDef
     Overlay        : Id * List(Id) * Term -> Overlay
                    : Strategy -> StrategyAngle
-    ListVar        : LId -> LID
     Overlays       : List(Overlay) -> Decl
     Rules          : List(Def) -> Decl
     Signature      : List(Sdecl) -> Decl
@@ -18,6 +22,7 @@ signature
     ExtSDefInl     : Id * List(Typedid) * List(Typedid) * Strategy -> StrategyDef
     SDefT          : Id * List(Typedid) * List(Typedid) * Strategy -> StrategyDef
     SVar           : Id -> SVar
+                   : RuleDef -> Def
                    : StrategyDef -> Def
     FunType        : List(Type) * Type -> Type
     ConstType      : Sort -> Type
@@ -56,7 +61,6 @@ signature
                    : Var -> PreTerm
                    : LId -> ID
                    : Id -> ID
-    Var            : LID -> Var
     SeqVar         : Var -> Var
     Var            : Id -> Var
                    : String -> String
@@ -68,11 +72,14 @@ signature
                    : String -> ModName
     GChoice        : Strategy * Strategy -> Strategy
     Choice         : Strategy * Strategy -> Strategy
+    SRule          : Rule -> Strategy
+    LRule          : Rule -> Strategy
     Test           : Strategy -> Strategy
     Where          : Strategy -> Strategy
     Not            : Strategy -> Strategy
     Rec            : Id * Strategy -> Strategy
     LChoice        : Strategy * Strategy -> Strategy
+    ScopeDefault   : Strategy -> Strategy
     Call           : SVar * List(Strategy) -> Strategy
     Thread         : Strategy -> Strategy
     All            : Strategy -> Strategy
@@ -100,6 +107,6 @@ signature
     None : Option(a)
 signature
   constructors
-    Cons : a -> List(a)
+    Cons : a * List(a) -> List(a)
     Nil  : List(a)
     Conc : List(a) * List(a) -> List(a)

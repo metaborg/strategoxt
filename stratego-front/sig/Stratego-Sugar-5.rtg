@@ -127,8 +127,6 @@ regular tree grammar
     Term                 -> BuildDefault(Term)
     PreTerm              -> BuildDefaultPT(PreTerm)
     ID                   -> LId
-    Var                  -> Var(LID)
-    LID                  -> ListVar(LId)
     Decl                 -> Signature(ListStarOfSdecl_0)
     Decl                 -> Strategies(ListStarOfDef_0)
     Decl                 -> Imports(ListStarOfModName_0)

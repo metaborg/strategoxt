@@ -6,7 +6,7 @@ void init_constructors (void)
 static void init_module_constructors (void)
 {
 }
-ATerm term_c_0;
+static ATerm term_c_0;
 static void init_module_constant_terms (void)
 {
   ATprotect(&(term_c_0));
@@ -14,9 +14,9 @@ static void init_module_constant_terms (void)
 }
 #include <srts/init-stratego-application.h>
 ATerm xtc_find_file_0_0 (ATerm t);
-ATerm xtc_output_1_0 (ATerm m_108 (ATerm), ATerm t);
+ATerm xtc_output_1_0 (ATerm n_5 (ATerm), ATerm t);
 ATerm output_options_0_0 (ATerm t);
-ATerm option_wrap_2_0 (ATerm k_110 (ATerm), ATerm l_110 (ATerm), ATerm t);
+ATerm option_wrap_2_0 (ATerm n_120 (ATerm), ATerm o_120 (ATerm), ATerm t);
 static ATerm a_0 (ATerm t);
 static ATerm b_0 (ATerm t);
 ATerm main_0_0 (ATerm t);

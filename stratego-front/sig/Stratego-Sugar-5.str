@@ -3,7 +3,6 @@ signature
   constructors
     Overlay        : Id * List(Id) * Term -> Overlay
                    : Strategy -> StrategyAngle
-    ListVar        : LId -> LID
     Overlays       : List(Overlay) -> Decl
     Rules          : List(Def) -> Decl
     Signature      : List(Sdecl) -> Decl
@@ -56,7 +55,6 @@ signature
                    : Var -> PreTerm
                    : LId -> ID
                    : Id -> ID
-    Var            : LID -> Var
     SeqVar         : Var -> Var
     Var            : Id -> Var
                    : String -> String
@@ -100,6 +98,6 @@ signature
     None : Option(a)
 signature
   constructors
-    Cons : a -> List(a)
+    Cons : a * List(a) -> List(a)
     Nil  : List(a)
     Conc : List(a) * List(a) -> List(a)

@@ -3,30 +3,55 @@
 void init_constructors (void)
 {
 }
-Symbol sym__0;
-Symbol sym__1;
-Symbol sym__2;
-Symbol sym__3;
-Symbol sym__4;
-Symbol sym__5;
-Symbol sym__6;
-Symbol sym__7;
-Symbol sym__8;
-Symbol sym__9;
-Symbol sym__10;
-Symbol sym__11;
-Symbol sym__12;
-Symbol sym__13;
-Symbol sym__14;
-Symbol sym__15;
-Symbol sym__16;
-Symbol sym__17;
-Symbol sym__18;
-Symbol sym_Nil_0;
-Symbol sym_Cons_2;
-Symbol sym_FILE_1;
+static Symbol sym_Nil_0;
+static Symbol sym_Cons_2;
+static Symbol sym__0;
+static Symbol sym__1;
+static Symbol sym__2;
+static Symbol sym__3;
+static Symbol sym__4;
+static Symbol sym__5;
+static Symbol sym__6;
+static Symbol sym__7;
+static Symbol sym__8;
+static Symbol sym__9;
+static Symbol sym__10;
+static Symbol sym__11;
+static Symbol sym__12;
+static Symbol sym__13;
+static Symbol sym__14;
+static Symbol sym__15;
+static Symbol sym__16;
+static Symbol sym__17;
+static Symbol sym__18;
+static Symbol sym_Nil_0;
+static Symbol sym_Cons_2;
+static Symbol sym__0;
+static Symbol sym__1;
+static Symbol sym__2;
+static Symbol sym__3;
+static Symbol sym__4;
+static Symbol sym__5;
+static Symbol sym__6;
+static Symbol sym__7;
+static Symbol sym__8;
+static Symbol sym__9;
+static Symbol sym__10;
+static Symbol sym__11;
+static Symbol sym__12;
+static Symbol sym__13;
+static Symbol sym__14;
+static Symbol sym__15;
+static Symbol sym__16;
+static Symbol sym__17;
+static Symbol sym__18;
+static Symbol sym_FILE_1;
 static void init_module_constructors (void)
 {
+  sym_Nil_0 = ATmakeSymbol("Nil", 0, ATfalse);
+  ATprotectSymbol(sym_Nil_0);
+  sym_Cons_2 = ATmakeSymbol("Cons", 2, ATfalse);
+  ATprotectSymbol(sym_Cons_2);
   sym__0 = ATmakeSymbol("", 0, ATfalse);
   ATprotectSymbol(sym__0);
   sym__1 = ATmakeSymbol("", 1, ATfalse);
@@ -69,36 +94,74 @@ static void init_module_constructors (void)
   ATprotectSymbol(sym_Nil_0);
   sym_Cons_2 = ATmakeSymbol("Cons", 2, ATfalse);
   ATprotectSymbol(sym_Cons_2);
+  sym__0 = ATmakeSymbol("", 0, ATfalse);
+  ATprotectSymbol(sym__0);
+  sym__1 = ATmakeSymbol("", 1, ATfalse);
+  ATprotectSymbol(sym__1);
+  sym__2 = ATmakeSymbol("", 2, ATfalse);
+  ATprotectSymbol(sym__2);
+  sym__3 = ATmakeSymbol("", 3, ATfalse);
+  ATprotectSymbol(sym__3);
+  sym__4 = ATmakeSymbol("", 4, ATfalse);
+  ATprotectSymbol(sym__4);
+  sym__5 = ATmakeSymbol("", 5, ATfalse);
+  ATprotectSymbol(sym__5);
+  sym__6 = ATmakeSymbol("", 6, ATfalse);
+  ATprotectSymbol(sym__6);
+  sym__7 = ATmakeSymbol("", 7, ATfalse);
+  ATprotectSymbol(sym__7);
+  sym__8 = ATmakeSymbol("", 8, ATfalse);
+  ATprotectSymbol(sym__8);
+  sym__9 = ATmakeSymbol("", 9, ATfalse);
+  ATprotectSymbol(sym__9);
+  sym__10 = ATmakeSymbol("", 10, ATfalse);
+  ATprotectSymbol(sym__10);
+  sym__11 = ATmakeSymbol("", 11, ATfalse);
+  ATprotectSymbol(sym__11);
+  sym__12 = ATmakeSymbol("", 12, ATfalse);
+  ATprotectSymbol(sym__12);
+  sym__13 = ATmakeSymbol("", 13, ATfalse);
+  ATprotectSymbol(sym__13);
+  sym__14 = ATmakeSymbol("", 14, ATfalse);
+  ATprotectSymbol(sym__14);
+  sym__15 = ATmakeSymbol("", 15, ATfalse);
+  ATprotectSymbol(sym__15);
+  sym__16 = ATmakeSymbol("", 16, ATfalse);
+  ATprotectSymbol(sym__16);
+  sym__17 = ATmakeSymbol("", 17, ATfalse);
+  ATprotectSymbol(sym__17);
+  sym__18 = ATmakeSymbol("", 18, ATfalse);
+  ATprotectSymbol(sym__18);
   sym_FILE_1 = ATmakeSymbol("FILE", 1, ATfalse);
   ATprotectSymbol(sym_FILE_1);
 }
-ATerm term_q_2;
-ATerm term_h_2;
-ATerm term_g_2;
-ATerm term_f_2;
-ATerm term_e_2;
-ATerm term_d_2;
-ATerm term_c_2;
-ATerm term_b_2;
-ATerm term_a_2;
-ATerm term_z_1;
-ATerm term_y_1;
-ATerm term_x_1;
-ATerm term_w_1;
-ATerm term_v_1;
-ATerm term_u_1;
-ATerm term_t_1;
-ATerm term_s_1;
-ATerm term_r_1;
-ATerm term_q_1;
-ATerm term_p_1;
-ATerm term_o_1;
-ATerm term_n_1;
-ATerm term_m_1;
-ATerm term_l_1;
-ATerm term_k_1;
-ATerm term_j_1;
-ATerm term_i_1;
+static ATerm term_q_2;
+static ATerm term_h_2;
+static ATerm term_g_2;
+static ATerm term_f_2;
+static ATerm term_e_2;
+static ATerm term_d_2;
+static ATerm term_c_2;
+static ATerm term_b_2;
+static ATerm term_a_2;
+static ATerm term_z_1;
+static ATerm term_y_1;
+static ATerm term_x_1;
+static ATerm term_w_1;
+static ATerm term_v_1;
+static ATerm term_u_1;
+static ATerm term_t_1;
+static ATerm term_s_1;
+static ATerm term_r_1;
+static ATerm term_q_1;
+static ATerm term_p_1;
+static ATerm term_o_1;
+static ATerm term_n_1;
+static ATerm term_m_1;
+static ATerm term_l_1;
+static ATerm term_k_1;
+static ATerm term_j_1;
+static ATerm term_i_1;
 static void init_module_constant_terms (void)
 {
   ATprotect(&(term_i_1));
@@ -158,22 +221,22 @@ static void init_module_constant_terms (void)
 }
 #include <srts/init-stratego-application.h>
 ATerm get_config_0_0 (ATerm t);
-ATerm try_1_0 (ATerm y_103 (ATerm), ATerm t);
+ATerm try_1_0 (ATerm k_92 (ATerm), ATerm t);
 ATerm pass_verbose_0_0 (ATerm t);
 ATerm write_to_0_0 (ATerm t);
 ATerm concat_0_0 (ATerm t);
 ATerm ReadFromFile_0_0 (ATerm t);
-ATerm map_1_0 (ATerm r_89 (ATerm), ATerm t);
+ATerm map_1_0 (ATerm s_100 (ATerm), ATerm t);
 ATerm create_table_file_0_0 (ATerm t);
 static ATerm a_0 (ATerm t);
 static ATerm b_0 (ATerm t);
 ATerm create_abox2latex_args_0_0 (ATerm t);
-ATerm xtc_transform_2_0 (ATerm i_109 (ATerm), ATerm j_109 (ATerm), ATerm t);
-ATerm xtc_io_1_0 (ATerm l_108 (ATerm), ATerm t);
+ATerm xtc_transform_2_0 (ATerm j_6 (ATerm), ATerm k_6 (ATerm), ATerm t);
+ATerm xtc_io_1_0 (ATerm m_5 (ATerm), ATerm t);
 ATerm io_options_0_0 (ATerm t);
 ATerm set_config_0_0 (ATerm t);
-ATerm ArgOption_3_0 (ATerm j_3 (ATerm), ATerm k_3 (ATerm), ATerm l_3 (ATerm), ATerm t);
-ATerm Option_3_0 (ATerm g_3 (ATerm), ATerm h_3 (ATerm), ATerm i_3 (ATerm), ATerm t);
+ATerm ArgOption_3_0 (ATerm c_4 (ATerm), ATerm d_4 (ATerm), ATerm e_4 (ATerm), ATerm t);
+ATerm Option_3_0 (ATerm z_3 (ATerm), ATerm a_4 (ATerm), ATerm b_4 (ATerm), ATerm t);
 static ATerm d_0 (ATerm t);
 static ATerm f_0 (ATerm t);
 static ATerm h_0 (ATerm t);
@@ -181,13 +244,13 @@ static ATerm i_0 (ATerm t);
 static ATerm k_0 (ATerm t);
 static ATerm l_0 (ATerm t);
 static ATerm m_0 (ATerm t);
-static ATerm r_0 (ATerm t);
+static ATerm o_0 (ATerm t);
 static ATerm s_0 (ATerm t);
-static ATerm z_0 (ATerm t);
+static ATerm t_0 (ATerm t);
 static ATerm a_1 (ATerm t);
 static ATerm b_1 (ATerm t);
 ATerm abox2latex_options_0_0 (ATerm t);
-ATerm option_wrap_2_0 (ATerm k_110 (ATerm), ATerm l_110 (ATerm), ATerm t);
+ATerm option_wrap_2_0 (ATerm n_120 (ATerm), ATerm o_120 (ATerm), ATerm t);
 static ATerm c_1 (ATerm t);
 static ATerm d_1 (ATerm t);
 static ATerm e_1 (ATerm t);
@@ -231,22 +294,22 @@ ATerm create_table_file_0_0 (ATerm t)
 }
 static ATerm a_0 (ATerm t)
 {
-  ATerm n_0 = NULL,o_0 = NULL;
-  o_0 = t;
+  ATerm n_0 = NULL,p_0 = NULL;
+  p_0 = t;
   t = term_v_1;
   t = get_config_0_0(t);
   n_0 = t;
-  t = (ATerm) ATinsert(ATinsert(CheckATermList(o_0), n_0), term_w_1);
+  t = (ATerm) ATinsert(ATinsert(CheckATermList(p_0), n_0), term_w_1);
   return(t);
 }
 static ATerm b_0 (ATerm t)
 {
-  ATerm p_0 = NULL,q_0 = NULL;
-  q_0 = t;
+  ATerm q_0 = NULL,r_0 = NULL;
+  r_0 = t;
   t = term_x_1;
   t = get_config_0_0(t);
-  p_0 = t;
-  t = (ATerm) ATinsert(CheckATermList(q_0), p_0);
+  q_0 = t;
+  t = (ATerm) ATinsert(CheckATermList(r_0), q_0);
   return(t);
 }
 ATerm create_abox2latex_args_0_0 (ATerm t)
@@ -271,11 +334,11 @@ static ATerm d_0 (ATerm t)
 }
 static ATerm f_0 (ATerm t)
 {
-  ATerm t_0 = NULL;
-  t_0 = t;
+  ATerm u_0 = NULL;
+  u_0 = t;
   t = term_b_2;
   t = set_config_0_0(t);
-  t = t_0;
+  t = u_0;
   return(t);
 }
 static ATerm h_0 (ATerm t)
@@ -291,11 +354,11 @@ static ATerm i_0 (ATerm t)
 }
 static ATerm k_0 (ATerm t)
 {
-  ATerm u_0 = NULL;
-  u_0 = t;
+  ATerm v_0 = NULL;
+  v_0 = t;
   t = term_e_2;
   t = set_config_0_0(t);
-  t = u_0;
+  t = v_0;
   return(t);
 }
 static ATerm l_0 (ATerm t)
@@ -305,27 +368,27 @@ static ATerm l_0 (ATerm t)
 }
 static ATerm m_0 (ATerm t)
 {
-  ATerm v_0 = NULL;
-  v_0 = t;
+  ATerm w_0 = NULL;
+  w_0 = t;
   if(match_string(t, "-t"))
     {
-      t = v_0;
+      t = w_0;
     }
   else
     {
       if((ATgetSymbol((ATermAppl) t) != ATmakeSymbol("--latex-table", 0, ATtrue)))
         _fail(t);
-      t = v_0;
+      t = w_0;
     }
   return(t);
 }
-static ATerm r_0 (ATerm t)
+static ATerm o_0 (ATerm t)
 {
-  ATerm w_0 = NULL;
-  w_0 = t;
-  t = (ATerm) ATmakeAppl(sym__2, term_i_1, (ATerm) ATinsert(ATempty, w_0));
+  ATerm x_0 = NULL;
+  x_0 = t;
+  t = (ATerm) ATmakeAppl(sym__2, term_i_1, (ATerm) ATinsert(ATempty, x_0));
   t = set_config_0_0(t);
-  t = w_0;
+  t = x_0;
   return(t);
 }
 static ATerm s_0 (ATerm t)
@@ -333,29 +396,29 @@ static ATerm s_0 (ATerm t)
   t = term_g_2;
   return(t);
 }
-static ATerm z_0 (ATerm t)
+static ATerm t_0 (ATerm t)
 {
-  ATerm x_0 = NULL;
-  x_0 = t;
+  ATerm y_0 = NULL;
+  y_0 = t;
   if(match_string(t, "-w"))
     {
-      t = x_0;
+      t = y_0;
     }
   else
     {
       if((ATgetSymbol((ATermAppl) t) != ATmakeSymbol("--width", 0, ATtrue)))
         _fail(t);
-      t = x_0;
+      t = y_0;
     }
   return(t);
 }
 static ATerm a_1 (ATerm t)
 {
-  ATerm y_0 = NULL;
-  y_0 = t;
-  t = (ATerm) ATmakeAppl(sym__2, term_v_1, y_0);
+  ATerm z_0 = NULL;
+  z_0 = t;
+  t = (ATerm) ATmakeAppl(sym__2, term_v_1, z_0);
   t = set_config_0_0(t);
-  t = y_0;
+  t = z_0;
   return(t);
 }
 static ATerm b_1 (ATerm t)
@@ -391,13 +454,13 @@ ATerm abox2latex_options_0_0 (ATerm t)
               int n_2 = stack_ptr;
               if((PushChoice() == 0))
                 {
-                  t = ArgOption_3_0(m_0, r_0, s_0, t);
+                  t = ArgOption_3_0(m_0, o_0, s_0, t);
                   LocalPopChoice(n_2);
                 }
               else
                 {
                   t = m_2;
-                  t = ArgOption_3_0(z_0, a_1, b_1, t);
+                  t = ArgOption_3_0(t_0, a_1, b_1, t);
                 }
             }
           }
