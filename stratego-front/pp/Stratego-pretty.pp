@@ -15,6 +15,8 @@
    Eval -- KW[">"] _1,
    Imports -- H  [KW["imports"] _1],
    Imports.1:iter-star -- _1,
+   Import -- _1,
+   ImportWildcard -- H hs=0 [ _1 KW["/"] KW["*"] ],
    Rules -- V  is=2 [H  [KW["rules"]] V vs=1[_1]],
    Rules.1:iter-star -- _1,
    Strategies -- V  is=2 [H  [KW["strategies"]] V vs=1[_1]],
