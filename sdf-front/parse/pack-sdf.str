@@ -42,7 +42,7 @@ strategies
       ?FILE(<id>)
     ; !(<id>, mkpt, [])
     ; graph-nodes-undef(parse-sdf', get-sdf-imports, \ (n,x,xs) -> [x|xs] \ )
-    ; (id, map(<fatal-error> ["pack-sdf: Error module ", <id>, " not found\n"]); [])
+    ; (id, map(<fatal-error> ["pack-sdf: Error: module ", <id>, " not found\n"]); [])
     ; Fst
     ; unzip
     ; (id, ConcatModules)
