@@ -24,9 +24,6 @@ $(INSTALL_XTC_DEST)/xtc.dummy :
 	$(MAKE) $(AM_MAKEFLAGS) DESTDIR=$(INSTALL_XTC_DEST) install && \
 	touch $(INSTALL_XTC_DEST)/xtc.dummy
 
-rpm : dist
-	$(RPMBUILD) -ta $(PACKAGE_TARNAME)-$(VERSION).tar.gz
-
 fixeddist : dist
 	mv $(PACKAGE)-$(VERSION).tar.gz $(PACKAGE).tar.gz
 
