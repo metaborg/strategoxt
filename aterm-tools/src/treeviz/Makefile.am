@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.6 2002/03/19 12:32:39 eelco Exp $
+# $Id: Makefile.am,v 1.7 2002/06/10 14:23:12 eelco Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -33,7 +33,7 @@ SUBDIRS      = data
 STRATEGO_PRG = treeviz term-to-adot
 
 # What scipts to build
-bin_SCRIPTS	= treeviz term-to-adot
+bin_SCRIPTS	= treeviz term-to-adot term-to-dot
 libexec_SCRIPTS	= treeviz term-to-adot
 
 pkgdata_DATA = dot-pretty.pp
@@ -43,4 +43,13 @@ pkgdata_DATA = dot-pretty.pp
 
 # List all files that should be distributed here
 EXTRA_DIST    += $(wildcard *.r) $(wildcard *.sdf) $(wildcard *.pp)
+
+
+% : %.sh.src Makefile
+	sed 's@__PREFIX__@$(prefix)@g;\
+	     s@__GPP__@$(GPP)@g;\
+	     s@__MAKE__@$(MAKE)@g;\
+	     s@__pkgdatadir__@$(pkgdatadir)@g;' \
+	        < $< > $@ && \
+	     chmod +x $@
 

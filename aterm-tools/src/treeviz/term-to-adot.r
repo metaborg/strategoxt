@@ -15,7 +15,7 @@ strategies
   to-adot =
     ((option-defined(?Tree), term-to-tree) 
      <+ (option-defined(?Graph), term-to-graph))
-  ; (id, debug; graph-to-adot)
+  ; (id, graph-to-adot)
 
 strategies
 
