@@ -1,5 +1,5 @@
 module parse-stratego
-imports xtc-lib lib
+imports xtc-lib lib Stratego
 signature
   constructors
     Meta    : List(MetaProperty) -> MetaData
@@ -40,7 +40,15 @@ strategies
     ; if-keep1(copy-to(<guarantee-extension(!"atree")> base))
     ; xtc-transform(!"meta-explode",     <concat> [<pass-verbose>,
                          <get-config < !["--asfix"] + ![]> "--asfix"])
+    ; where( read-from ; check-module-name(|base) )
     ; xtc-transform(!"stratego-desugar", pass-verbose)
+
+  check-module-name(|base) =
+    ?Module(n,_) 
+  ; ( <eq>(n,base) <+ say(<concat-strings>[" ** Warning: Mismatch between basename of input file (",base,") and module name (",n,") specified"]) )
+
+  check-module-name(|base) =
+    ?Specification(_)
 
   pass-sort =
       get-meta => Meta(<fetch-elem(?TopSort(<id>))>)
