@@ -13,7 +13,7 @@ strategies
          )
 
   trm-explode =
-    TrmMetaVar <+ TrmLMetaVar <+ TrmStr <+ TrmFromTerm <+ TrmFromApp
+    TrmMetaVar <+ TrmLMetaVar <+ TrmInt <+ TrmStr <+ TrmFromTerm <+ TrmFromApp
     <+ TrmFromStr <+ TrmAnno <+ TrmConc 
     <+ TrmNil <+ TrmCons <+ TrmOp
 
@@ -25,6 +25,8 @@ strategies
 
   TrmLMetaVar :	meta-listvar(x) -> 
 		Op("Cons", [Var(ListVar(x)), Op("Nil", [])])
+
+  TrmInt      = !Int(<is-int>)
 
   TrmStr      =	is-string; !Str(<id>)
 
