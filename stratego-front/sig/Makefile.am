@@ -8,6 +8,7 @@ signatures =                   \
   Stratego-Constants.str       \
   Stratego-Overlays.str	       \
   Stratego-Strategies.str      \
+  Stratego-DynamicRules.str    \
   Stratego-Rules.str           \
   Stratego-Terms.str           \
   Stratego-Identifiers.str     \

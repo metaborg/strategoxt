@@ -6,6 +6,11 @@
 \begin{code}
 module stratlib
 imports Stratego substitution free-variables string
+
+signature
+  constructors
+    DynamicRules : List(RuleDef) -> Strategy
+
 \end{code}
 
 \begin{code}
@@ -46,6 +51,7 @@ rules
   Bind2 : SDef(f, xs, s) -> <declared-vars> xs
   Bind3 : Rec(x, s) -> [x]
 
+  Bind4 : GenDynRules(rs) -> <tvars> rs
   Bind4 : DynamicRules(rs) -> <tvars> rs
   Bind4 : OverrideDynamicRules(rs) -> <tvars> rs
   Bind4 : ExtendDynamicRules(rs) -> <tvars> rs
@@ -55,12 +61,16 @@ rules
   Bind6 : SDefT(f, xs, ys, s) -> <declared-vars> ys
 
   Bind7 : RDefT(f, xs, ys, s) -> <declared-vars> xs
+  Bind7 : RDecT(f, xs, ys)    -> <declared-vars> xs
+
   Bind8 : RDefT(f, xs, ys, s) -> <declared-vars> ys
+  Bind8 : RDecT(f, xs, ys)    -> <declared-vars> ys
 
 strategies
 
   tpaste(nwvars) =
     Scope(nwvars, id)
+    + RDecT(id, id, split(id, nwvars); zip(ReplaceVar))
     + SDefT(id, id, split(id, nwvars); zip(ReplaceVar), id)
     + RDefT(id, id, split(id, nwvars); zip(ReplaceVar), id)
 
@@ -72,8 +82,11 @@ strategies
 
   tboundin(bnd, ubnd, ignore) =
     Scope(ignore, bnd)
+    + RDecT(ignore, ignore, ignore)
     + SDefT(ignore, ignore, ignore, bnd)
     + RDefT(ignore, ignore, ignore, bnd)
+
+    + GenDynRules(bnd)
     + DynamicRules(bnd)
     + OverrideDynamicRules(bnd)
     + ExtendDynamicRules(bnd)
@@ -87,13 +100,17 @@ strategies
     + SDef(id,  split(id, nwvars); zip(ReplaceVar), id)
     + SDefT(id, split(id, nwvars); zip(ReplaceVar), id, id)
     + RDefT(id, split(id, nwvars); zip(ReplaceVar), id, id)
+    + RDecT(id, split(id, nwvars); zip(ReplaceVar), id)
     + Rec(nwvars; Hd, id)
 
   sboundin(bnd, ubnd, ignore) =
       Let(bnd, bnd)
     + SDef(ignore, ignore, bnd)
     + SDefT(ignore, ignore, ignore, bnd)
+    + RDefT(ignore, ignore, ignore, bnd)
+    + RDecT(ignore, ignore, ignore)
     + Rec(ignore, bnd)
+
 \end{code}
 
 	\paragraph{Free Variables and Renaming}

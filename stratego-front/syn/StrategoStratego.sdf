@@ -112,6 +112,11 @@ exports
     "srt" [0-9\']* "*"    -> {Sort ","}*  {prefer}
     "srt" [xyz] [0-9\']*  -> UCID         {prefer}
 
+  variables
+    "sc" [0-9\']     -> DynRuleScopeId         {prefer}
+    "dr" [0-9\']     -> DynRuleId              {prefer}
+    "sc" [0-9\'] "*" -> {DynRuleScopeId ","}*  {prefer}
+
   lexical syntax
     "xs"[0-9\']*          -> Id  {reject}
 

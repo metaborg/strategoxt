@@ -108,12 +108,6 @@ exports
 
   %% Syntactic sugar sugar
 
-    "rules" "(" RuleDef* ")"                     -> Strategy {cons("DynamicRules")}
-    "override" "rules" "(" RuleDef* ")"		 -> Strategy {cons("OverrideDynamicRules")}
-    "extend"   "rules" "(" RuleDef* ")"		 -> Strategy {cons("ExtendDynamicRules")}
-    "extend" "override" "rules" "(" RuleDef* ")" -> Strategy {cons("ExtendOverrideDynamicRules")}
-     "{|" {Id ","}* ":" Strategy "|}"      -> Strategy {cons("DynRuleScope")}
-
   context-free syntax
 
     SVar  		  		  -> Strategy {cons("CallNoArgs")}

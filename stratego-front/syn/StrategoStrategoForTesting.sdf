@@ -1,13 +1,4 @@
 module StrategoStrategoForTesting
-imports StrategoForTestingRenamed StrategoStratego Stratego-DynamicRules
+imports StrategoForTestingRenamed StrategoStratego
 
-exports
-  context-free syntax
-    "|[" Strategy "]|"   -> StrategoTerm {cons("ToTerm"),prefer}
-    "|[" DynRuleDef "]|" -> StrategoTerm {cons("ToTerm"),prefer}
 
-  variables
-    "sc"[0-9\']*             -> DynRuleScopeId {prefer}
-    "sc"[0-9\']* "*"         -> {DynRuleScopeId ","}* {prefer}
-
-    "dr"[0-9\']*             -> DynRuleId {prefer}

@@ -1,51 +1,55 @@
 definition
 module StrategoRenamed
 imports Stratego
-          [ Overlay       => StrategoOverlay
-            Mod           => StrategoMod
-            StrategyCurly => StrategoStrategyCurly
-            StrategyMid   => StrategoStrategyMid
-            StrategyAngle => StrategoStrategyAngle
-            SVar          => StrategoSVar
-            StrategyParen => StrategoStrategyParen
-            Typedid       => StrategoTypedid
-            StrategyDef   => StrategoStrategyDef
-            StratRule     => StrategoStratRule
-            Rule          => StrategoRule
-            RuleDef       => StrategoRuleDef
-            ID            => StrategoID
-            LID           => StrategoLID
-            Var           => StrategoVar
-            Type          => StrategoType
-            Opdecl        => StrategoOpdecl
-            Kind          => StrategoKind
-            Sort          => StrategoSort
-            Sdecl         => StrategoSdecl
-            Def           => StrategoDef
-            Decl          => StrategoDecl
-            Module        => StrategoModule
-            CharChar      => StrategoCharChar
-            Char          => StrategoChar
-            StrChar       => StrategoStrChar
-            String        => StrategoString
-            Real          => StrategoReal
-            Int           => StrategoInt
-            UCID          => StrategoUCID
-            LCID          => StrategoLCID
-            LId           => StrategoLId
-            Id            => StrategoId
-            ModName       => StrategoModName
-            Backslash     => StrategoBackslash
-            VLCchar       => StrategoVLCchar
-            Eof           => StrategoEof
-            VeryLongCom   => StrategoVeryLongCom
-            CommChar      => StrategoCommChar
-            Asterisk      => StrategoAsterisk
-            LongCom       => StrategoLongCom
-            ShortCom      => StrategoShortCom
-            Ws            => StrategoWs
-            Term          => StrategoTerm
-            Strategy      => StrategoStrategy ]
+          [ Overlay        => StrategoOverlay
+            Mod            => StrategoMod
+            StrategyCurly  => StrategoStrategyCurly
+            StrategyMid    => StrategoStrategyMid
+            StrategyAngle  => StrategoStrategyAngle
+            SVar           => StrategoSVar
+            StrategyParen  => StrategoStrategyParen
+            Typedid        => StrategoTypedid
+            StrategyDef    => StrategoStrategyDef
+            RuleDec        => StrategoRuleDec
+            DynRuleScopeId => StrategoDynRuleScopeId
+            DynRuleId      => StrategoDynRuleId
+            DynRuleDef     => StrategoDynRuleDef
+            StratRule      => StrategoStratRule
+            Rule           => StrategoRule
+            RuleDef        => StrategoRuleDef
+            ID             => StrategoID
+            LID            => StrategoLID
+            Var            => StrategoVar
+            Type           => StrategoType
+            Opdecl         => StrategoOpdecl
+            Kind           => StrategoKind
+            Sort           => StrategoSort
+            Sdecl          => StrategoSdecl
+            Def            => StrategoDef
+            Decl           => StrategoDecl
+            Module         => StrategoModule
+            CharChar       => StrategoCharChar
+            Char           => StrategoChar
+            StrChar        => StrategoStrChar
+            String         => StrategoString
+            Real           => StrategoReal
+            Int            => StrategoInt
+            UCID           => StrategoUCID
+            LCID           => StrategoLCID
+            LId            => StrategoLId
+            Id             => StrategoId
+            ModName        => StrategoModName
+            Backslash      => StrategoBackslash
+            VLCchar        => StrategoVLCchar
+            Eof            => StrategoEof
+            VeryLongCom    => StrategoVeryLongCom
+            CommChar       => StrategoCommChar
+            Asterisk       => StrategoAsterisk
+            LongCom        => StrategoLongCom
+            ShortCom       => StrategoShortCom
+            Ws             => StrategoWs
+            Term           => StrategoTerm
+            Strategy       => StrategoStrategy ]
 
 
 module Stratego-Overlays
@@ -165,12 +169,6 @@ exports
 
   %% Syntactic sugar sugar
 
-    "rules" "(" RuleDef* ")"                     -> Strategy {cons("DynamicRules")}
-    "override" "rules" "(" RuleDef* ")"		 -> Strategy {cons("OverrideDynamicRules")}
-    "extend"   "rules" "(" RuleDef* ")"		 -> Strategy {cons("ExtendDynamicRules")}
-    "extend" "override" "rules" "(" RuleDef* ")" -> Strategy {cons("ExtendOverrideDynamicRules")}
-     "{|" {Id ","}* ":" Strategy "|}"      -> Strategy {cons("DynRuleScope")}
-
   context-free syntax
 
     SVar  		  		  -> Strategy {cons("CallNoArgs")}
@@ -208,6 +206,41 @@ exports
      Strategy "<" StrategyMid 
               "+" Strategy 		  -> Strategy {cons("GuardedLChoice"),right}
     }
+
+module Stratego-DynamicRules
+exports
+
+  context-free syntax
+
+    "{|" {DynRuleScopeId ","}* ":" Strategy "|}" -> Strategy {cons("DynRuleScope"), prefer}
+    "{|" Id ":+" Term "|}"                       -> Strategy {cons("AddScopeLabel")}
+
+  context-free syntax
+
+    "rules" "(" DynRuleDef+ ")" -> Strategy {cons("GenDynRules"), prefer}
+
+    DynRuleId ":-"  Term -> DynRuleDef {cons("UndefineDynRule")}
+    DynRuleId ":"   Rule -> DynRuleDef {cons("SetDynRule")}
+    DynRuleId ":+"  Rule -> DynRuleDef {cons("AddDynRule")}
+
+    RuleDec "." Term -> DynRuleId {cons("LabeledDynRuleId")}
+    RuleDec          -> DynRuleId {cons("DynRuleId")}
+
+    Id "." Term  -> DynRuleScopeId {cons("LabeledDynRuleScopeId")}
+    Id           -> DynRuleScopeId {cons("DynRuleScopeId")}
+
+  context-free syntax
+
+    Id                         -> RuleDec {cons("RDecNoArgs")}
+    Id "(" {Typedid ","}* ")"  -> RuleDec {cons("RDec")}
+    Id "(" {Typedid ","}* 
+       "|" {Typedid ","}* ")"  -> RuleDec {cons("RDecT")}
+
+  context-free syntax %% legacy Dynamic rules
+
+    "override" "rules" "(" RuleDef* ")"		 -> Strategy {cons("OverrideDynamicRules")}
+    "extend"   "rules" "(" RuleDef* ")"		 -> Strategy {cons("ExtendDynamicRules")}
+    "extend" "override" "rules" "(" RuleDef* ")" -> Strategy {cons("ExtendOverrideDynamicRules")}
 
 module Stratego-Rules
 exports
@@ -435,6 +468,7 @@ imports
   Stratego-Signatures
   Stratego-Terms
   Stratego-Rules
+  Stratego-DynamicRules
   Stratego-Strategies
   Stratego-Overlays
 
@@ -554,6 +588,11 @@ exports
     "srt" [0-9\']*        -> Sort         {prefer}
     "srt" [0-9\']* "*"    -> {Sort ","}*  {prefer}
     "srt" [xyz] [0-9\']*  -> UCID         {prefer}
+
+  variables
+    "sc" [0-9\']     -> DynRuleScopeId         {prefer}
+    "dr" [0-9\']     -> DynRuleId              {prefer}
+    "sc" [0-9\'] "*" -> {DynRuleScopeId ","}*  {prefer}
 
   lexical syntax
     "xs"[0-9\']*          -> Id  {reject}

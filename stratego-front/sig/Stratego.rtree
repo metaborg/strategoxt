@@ -1,1 +1,1 @@
-Specification([Imports(["Stratego-Layout","Stratego-Identifiers","Stratego-Constants","Stratego-Modules","Stratego-Signatures","Stratego-Terms","Stratego-Rules","Stratego-Strategies","Stratego-Overlays"])])
+Specification([Imports(["Stratego-Layout","Stratego-Identifiers","Stratego-Constants","Stratego-Modules","Stratego-Signatures","Stratego-Terms","Stratego-Rules","Stratego-DynamicRules","Stratego-Strategies","Stratego-Overlays"])])

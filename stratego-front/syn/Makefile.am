@@ -31,8 +31,7 @@ StrategoForTesting.def : \
 StrategoStrategoForTesting.def : \
   StrategoStrategoForTesting.sdf \
   StrategoForTestingRenamed.sdf \
-  StrategoStratego.def \
-  Stratego-DynamicRules.sdf
+  StrategoStratego.def
 
 Stratego.def : \
   Stratego.sdf \
@@ -43,6 +42,7 @@ Stratego.def : \
   Stratego-Constants.sdf \
   Stratego-Terms.sdf \
   Stratego-Identifiers.sdf \
+  Stratego-DynamicRules.sdf \
   Stratego-Rules.sdf \
   Stratego-Layout.sdf
 

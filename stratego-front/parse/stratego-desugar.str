@@ -6,10 +6,6 @@ signature
     TupleCong  : List(Strategy) -> Strategy
     TupleCong  : Strategy
 
-    RDecNoArgs : String -> RuleDec
-    RDec       : String * List(Typedid) -> RuleDec
-    RDecT      : String * List(Typedid) * List(Typedid) -> RuleDec
-
 strategies
  
   stratego-desugar = 

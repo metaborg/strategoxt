@@ -1,4 +1,4 @@
 module StrategoForTesting
-imports Stratego Stratego-DynamicRules
+imports Stratego
 exports
   sorts Strategy

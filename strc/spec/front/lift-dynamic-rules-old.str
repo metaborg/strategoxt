@@ -1,19 +1,5 @@
 module lift-dynamic-rules-old
 imports Stratego lib desugar dr-new-to-old
-
-signature
-  constructors
-    DynamicRules    : List(RuleDef)    -> Strategy
-    DynRuleScope    : List(String) * Strategy -> Strategy
-
-    GenDynRules     : List(DynRuleDef) -> Strategy
-    SetDynRule      : DynRuleId * Rule -> DynRuleDef
-    UndefineDynRule : DynRuleId * Rule -> DynRuleDef
-    DynRuleScopeId  : String -> DynRuleScopeId
-    DynRuleId       : String -> DynRuleScopeId
-
-    RDecT           : String * List(Foo) * List(Foo) -> RuleDec
-
 strategies
 
   LiftDynamicRules-old =
