@@ -1,5 +1,7 @@
 2003-05-26  Martin Bravenboer  <martin@mbravenboer.org>
 
+  * Added quotation and anti-quotation of symbols to Stratego-Sdf2
+
   * Added initial sdf-ensugar.
 
   * Added initial sdf-desugar. What is sugar? What is normalization?

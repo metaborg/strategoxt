@@ -889,3 +889,10 @@ exports
   context-free syntax
 
     "|[" Production "]|" -> StrategoTerm {cons("ToTerm")}
+    "|[" Symbol     "]|" -> StrategoTerm {cons("ToTerm")}
+
+    "~"     StrategoTerm   -> Symbol {cons("FromTerm")}
+    "~sym:" StrategoTerm   -> Symbol {cons("FromTerm")}
+
+  variables
+    "sym" [0-9]*         -> Symbol {prefer}
