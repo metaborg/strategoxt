@@ -55,6 +55,46 @@ ATerm SSL_new(void)
   return((ATerm) ATmakeAppl0(ATmakeSymbol(new_string, 0, ATtrue)));
 }
 
+/**
+ * newname: generate new strings
+ * prefix is user-definable prefix (instead of changing alpha_counter
+ * in SSL_new)
+ * groupname is group within which numbering takes place (e.g. "var"
+ * and "fun" might be groupnames, with separate numbering for both.)
+ */
+
+ATermTable SSL_newname_table = NULL;
+char newname_string[256] = "";
+
+ATerm SSL_newname(ATerm prefix, ATerm groupname)
+{
+  int newname_counter;
+  char* prefix_string;
+
+  if(SSL_newname_table == NULL)
+    SSL_newname_table = ATtableCreate(15, 80);
+
+  prefix_string = ATgetName(ATgetSymbol(prefix));
+  ATerm groupvalue = ATtableGet(SSL_newname_table, groupname);
+
+  if(groupvalue != NULL) {
+    newname_counter = ATgetInt((ATermInt)groupvalue);
+  } else {
+    newname_counter = -1;
+  }
+  
+  newname_counter++;
+  sprintf(newname_string, "%s_%d", prefix_string, newname_counter);
+
+  while(AT_findSymbol(newname_string, 0, ATtrue)) {
+    newname_counter++;
+    sprintf(newname_string, "%s_%d", prefix_string, newname_counter);
+  }
+
+  ATtablePut(SSL_newname_table, groupname, (ATerm)ATmakeInt(newname_counter));
+  return((ATerm) ATmakeAppl0(ATmakeSymbol(newname_string, 0, ATtrue)));
+}
+
 ATerm SSL_implode_string(ATerm chars)
 { 
   int i;
