@@ -1,9 +1,14 @@
 module xtc
 imports lib config verbose xtc-lib
-	xtc-register xtc-query
+	xtc-register xtc-query xtc-call xtc-get
 strategies
 
   xtc = 
+    xtc-xtc-call
+    <+ xtc-xtc-get
+    <+ xtc-main
+
+  xtc-main = 
     parse-options(xtc-options)
     ; xtc-location
     ; if-verbose2(debug(!"Repository: "))
@@ -20,11 +25,9 @@ strategies
         where(<set-config>("-r", <id>)),
         !"--repository rep | -r rep    Tool repository")
 
-
   + ArgOption("i" + "imp" + "import",
         where(<extend-config>("import", [<id>])),
         !"import r | i r               Import repository r\n")
-
 
   + Option("r" + "reg" + "register",
         where(<set-config>("register", <id>)),
@@ -42,7 +45,6 @@ strategies
         where(<set-config>("-V", <id>)),
         !"--Version n | -V n           Version of tool\n")
 
-
   + Option("q" + "query",
         where(<set-config>("query", <id>)),
         !"query | q                    Query the XTC repository")
@@ -59,7 +61,6 @@ strategies
         where(<set-config>("-R", ())),
         !"--Repository | -R            Location of repository\n")
 
-
   + ArgOption("--verbose",
         where(<set-config> ("--verbose", <string-to-int>)),
         !"--verbose i                  Verbosity level i (default 1)")
@@ -73,3 +74,4 @@ strategies
   long-description(p)  = 
     !["The xtc command supports the registration of tools in an XTC repository\n",
       "and querying XTC repositories"]
+

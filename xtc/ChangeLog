@@ -1,3 +1,8 @@
+2003-01-12  Eelco Visser  <visser@cs.uu.nl>
+
+	* xtc-call and xtc-get incorporated in xtc as "xtc call"
+	and "xtc get" subcommands.
+
 2003-01-11  Eelco Visser  <visser@cs.uu.nl>
 
 	* src/xtc-call.str, src/xtc-get.str: command-line tools for

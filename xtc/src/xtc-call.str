@@ -6,6 +6,10 @@ strategies
     ?[self | [prog | args] ]
     ; <execvp>(<xtc-find> prog, args)
 
+  xtc-xtc-call =
+    ?[self, "call", prog | args]
+    ; <execvp>(<xtc-find> prog, args)
+   
 /******
  *
  * xtc-call is a shortcut to calling a tool the location of which is

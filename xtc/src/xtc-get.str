@@ -8,3 +8,9 @@ strategies
     ; <print>(stdout, ["\n"])
     ; <exit> 0
    <+ <exit> 1
+
+  xtc-xtc-get =
+    ?[self, "get" | args]
+    ; <print>(stdout, <map(xtc-find)> args)
+    ; <print>(stdout, ["\n"])
+    ; <exit> 0
