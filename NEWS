@@ -6,7 +6,7 @@ News about Stratego releases
 
 Version 0.6.2
 
- released: September 28, 2001
+ released: October 6, 2001
 
  SUMMARY OF CHANGES
 
@@ -15,6 +15,7 @@ Version 0.6.2
  CONTRIBUTIONS
 
  * Bug reports by: Otto Skrove Bagge, Merijn de Jonge, Hedzer Westra
+ * Bug repairs by: Merijn de Jonge
 
  LANGUAGE
 
@@ -24,9 +25,6 @@ Version 0.6.2
    - --trace-all: trace all strategies
    - -t f: trace strategy f
 
- * Repair in implementation of dynamic rules; added rule stamp in order
- to record to which rule the information belongs.
-
  * Optimization is set to O2 by default (used to be O4). The higher
  optimization level (which comes down to inlining functions in addition
  to the O2 optimizations) seems to produce faulty code on some
@@ -34,7 +32,14 @@ Version 0.6.2
  passing the option -CI "O3" to SC. However, it seems appropriate to
  leave inlining decisions to SC.
 
- * Repaired bug in compilation of overlays.
+ * Repair in implementation of dynamic rules; added rule stamp in order
+ to record to which rule the information belongs.
+
+ * Repair of compilation of overlays
+
+ RUN-TIME SYSTEM
+
+ * Repair of term explosion for strings (Merijn de Jonge)
 
  LIBRARY
 

@@ -1,3 +1,7 @@
+2001-10-06  Eelco Visser  <visser@acm.org>
+
+	*  Release 0.6.2
+
 2001-10-05  Eelco Visser  <visser@acm.org>
 
 	* src/aterm-extension.c (ATmakeStringQ): Repair by Merijn de Jonge
