@@ -37,3 +37,7 @@ termid3_check_prog    = termid-check3
 termid3_check_input   = data/termid3.in
 termid3_check_output  = data/termid3.out
 termid3_check_correct = data/termid3.correct
+
+nodist_termid_check1_SOURCES=termid-check1.c
+nodist_termid_check2_SOURCES=termid-check2.c
+nodist_termid_check3_SOURCES=termid-check3.c
