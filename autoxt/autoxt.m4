@@ -330,8 +330,8 @@ AC_DEFUN([XT_PROG_SDF2TABLE],
 [
   AC_REQUIRE([AC_PROG_CC])
 
-  AC_MSG_CHECKING([for sdf2table at $PGEN/bin/sdf2table$EXEEXT])
-  test -x "$PGEN/bin/sdf2table$EXEEXT"
+  AC_MSG_CHECKING([for sdf2table at $PGEN/bin/sdf2table])
+  test -x "$PGEN/bin/sdf2table"
   if test $? -eq 0; then
     AC_MSG_RESULT([yes])
   else
