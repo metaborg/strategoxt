@@ -16,3 +16,5 @@ parenthesize-Exp.str : Exp.def
 SCFLAGS       = --main io-$*
 STRINCLUDES   = -I $(XTC)/share/xtc
 LDADD        += $(SSL_LIBS)
+
+nodist_parenthesize_tests_SOURCES = parenthesize-tests.c

@@ -53,7 +53,7 @@ strategies
       ; xtc-ast2abox(!["Exp-pretty.pp.af"])
       ; xtc-abox2text
       ; ?FILE(<read-text-file>)
-      ; trim(is-all-whitespace)
+      ; string-as-chars(trim(is-all-whitespace))
       )
     , !txt1
     , !txt2
