@@ -63,6 +63,9 @@ strategies
   table-putlist = ?(name, list); 
     <map({x,y: ?(x, y); <table-put> (name, x, y)})> list
 
+  table-putlist(s) = ?(name, list); 
+    <map({x,y: ?(x, y); <s> (name, x, y)})> list
+
   table-copy = ?(name1, name2);
     where(<table-putlist>(name2, <table-getlist> name1)) 
 \end{code}
@@ -109,9 +112,25 @@ strategies
   table-diff = ?(table, key, val);
     where(<set> (table, key, <diff> (<get <+ ![]> (table, key), val)))
 
+  table-append = ?(table, key, val);
+    where(<set> (table, key, <union> (<get <+ ![]> (table, key), val)))
+
   set = table-put
   get = table-get
+\end{code}
 
+Concrete syntax:
+
+  |[ tbl . key := val  ]|	-> |[ <set>(tbl, key, val) ]|
+  |[ tbl . key ]|		-> |[ <get>(tbl, key) ]|
+
+
+  |[ tbl . key |= val  ]|	-> |[ <table-push>(tbl, key, val) ]|
+?  |[ tbl . key ]|		-> |[ <table-pop>(tbl, key, val) ]|
+
+  |[ tbl . key ++= val  ]|	-> |[ <table-append>(tbl, key, val) ]|
+
+\begin{code}
 strategies
 
   // these strategies should no longer be used.

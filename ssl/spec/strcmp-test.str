@@ -1,4 +1,4 @@
-module strbla
+module strcmp-test
 imports lib sunit string
 strategies
 

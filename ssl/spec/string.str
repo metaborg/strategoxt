@@ -9,12 +9,11 @@
 module string
 imports list conditional iteration char
 
-
 strategies // primitives
 
   new = prim("SSL_new")
 
-  is-string	     = ?x; prim("SSL_is_string"     , x)
+  is-string	 = ?x; prim("SSL_is_string"     , x)
   implode-string = ?x; prim("SSL_implode_string", x)
   explode-string = ?x; prim("SSL_explode_string", x)   
 

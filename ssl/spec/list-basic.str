@@ -135,7 +135,16 @@ strategies
 
 rules
 
-  conc : (l1, l2) -> <at-end(!l2)> l1
+  conc =
+    conc-two-lists <+ conc-more-lists
+
+  conc-two-lists :
+    (l1, l2) -> <at-end(!l2)> l1
+
+  conc-more-lists :
+    "" # (xs) -> <concat> xs
+
+  //conc : (l1, l2) -> <at-end(!l2)> l1
   //Concat(x) : [l | ls] -> <at-end(<x> ls)> l
 
 strategies

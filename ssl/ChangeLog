@@ -1,3 +1,16 @@
+2002-12-15  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/tables.str: table-append appends the new value list at the
+	end of the list of entries
+
+2002-12-13  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/simple-traversal.str: renamed oncetd/2 to oncetd-stop/2 in
+	order to avoid problems in the compilation of the Stratego
+	front-end where oncetd is passed by name.
+
+	* spec/io.str: fix of open-file by Martin Bravenboer
+
 2002-12-09  Eelco Visser  <visser@cs.uu.nl>
 
 	* Migrated modules to .str extension
