@@ -1,3 +1,8 @@
+2003-07-31  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/sc/strc.str: Saving intermediate results in abstract
+	and concrete form on request with --keep option. 
+
 2003-07-30  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/opt/dead-var-elim.str: Don't eliminate variable is

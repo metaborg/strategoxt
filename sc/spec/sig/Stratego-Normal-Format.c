@@ -534,7 +534,7 @@ ATerm table_destroy_0_0 (ATerm);
 ATerm exit_0_0 (ATerm);
 ATerm long_description_1_0 (ATerm m_100 (ATerm), ATerm);
 ATerm map_1_0 (ATerm v_81 (ATerm), ATerm);
-ATerm reverse_acc_2_0 (ATerm e_0 (ATerm), ATerm g_0 (ATerm), ATerm);
+ATerm reverse_acc_2_0 (ATerm f_0 (ATerm), ATerm g_0 (ATerm), ATerm);
 ATerm reverse_0_0 (ATerm);
 ATerm short_description_1_0 (ATerm l_100 (ATerm), ATerm);
 ATerm Program_1_0 (ATerm c_74 (ATerm), ATerm);
@@ -555,7 +555,7 @@ ATerm system_about_switch_0_0 (ATerm);
 ATerm table_get_0_0 (ATerm);
 ATerm table_push_0_0 (ATerm);
 ATerm register_usage_1_0 (ATerm q_100 (ATerm), ATerm);
-ATerm Option_3_0 (ATerm a_0 (ATerm), ATerm c_0 (ATerm), ATerm d_0 (ATerm), ATerm);
+ATerm Option_3_0 (ATerm a_0 (ATerm), ATerm b_0 (ATerm), ATerm d_0 (ATerm), ATerm);
 ATerm system_usage_switch_0_0 (ATerm);
 ATerm UndefinedOption_0_0 (ATerm);
 ATerm Cons_2_0 (ATerm i_61 (ATerm), ATerm j_61 (ATerm), ATerm);
@@ -3163,15 +3163,15 @@ ATerm _2_0 (ATerm z_59 (ATerm), ATerm a_60 (ATerm), ATerm t)
 }
 ATerm default_usage_0_0 (ATerm t)
 {
-  ATerm b_0 = NULL,f_0 = NULL,c_458 = NULL;
-  if(((b_0 != NULL) && (b_0 != t)))
+  ATerm c_0 = NULL,e_0 = NULL,c_458 = NULL;
+  if(((c_0 != NULL) && (c_0 != t)))
     _fail(t);
   else
-    b_0 = t;
-  if(((f_0 != NULL) && (f_0 != t)))
+    c_0 = t;
+  if(((e_0 != NULL) && (e_0 != t)))
     _fail(t);
   else
-    f_0 = t;
+    e_0 = t;
   t = term_n_23;
   t = whoami_0_0(t);
   if(((c_458 != NULL) && (c_458 != t)))
@@ -3182,7 +3182,7 @@ ATerm default_usage_0_0 (ATerm t)
   t = printnl_0_0(t);
   t = term_r_23;
   t = exit_0_0(t);
-  t = not_null(b_0);
+  t = not_null(c_0);
   return(t);
 }
 ATerm printnl_0_0 (ATerm t)
@@ -5201,7 +5201,7 @@ ATerm map_1_0 (ATerm v_81 (ATerm), ATerm t)
   t = w_81(t);
   return(t);
 }
-ATerm reverse_acc_2_0 (ATerm e_0 (ATerm), ATerm g_0 (ATerm), ATerm t)
+ATerm reverse_acc_2_0 (ATerm f_0 (ATerm), ATerm g_0 (ATerm), ATerm t)
 {
   ATerm o_28 = t;
   int p_28 = stack_ptr;
@@ -5241,7 +5241,7 @@ ATerm reverse_acc_2_0 (ATerm e_0 (ATerm), ATerm g_0 (ATerm), ATerm t)
       else
         p_2 = t;
       t = not_null(f_28);
-      t = e_0(t);
+      t = f_0(t);
       if(((p_149 != NULL) && (p_149 != t)))
         _fail(t);
       else
@@ -5258,7 +5258,7 @@ ATerm reverse_acc_2_0 (ATerm e_0 (ATerm), ATerm g_0 (ATerm), ATerm t)
           t = not_null(h_28);
           return(t);
         }
-        t = reverse_acc_2_0(e_0, j_19, t);
+        t = reverse_acc_2_0(f_0, j_19, t);
       }
       ;
       LocalPopChoice(p_28);
@@ -5794,7 +5794,7 @@ ATerm register_usage_1_0 (ATerm q_100 (ATerm), ATerm t)
   _fail(t);
   return(t);
 }
-ATerm Option_3_0 (ATerm a_0 (ATerm), ATerm c_0 (ATerm), ATerm d_0 (ATerm), ATerm t)
+ATerm Option_3_0 (ATerm a_0 (ATerm), ATerm b_0 (ATerm), ATerm d_0 (ATerm), ATerm t)
 {
   ATerm x_29 = t;
   int y_29 = stack_ptr;
@@ -5836,7 +5836,7 @@ ATerm Option_3_0 (ATerm a_0 (ATerm), ATerm c_0 (ATerm), ATerm d_0 (ATerm), ATerm
         else
           a_3 = t;
         t = term_n_23;
-        t = c_0(t);
+        t = b_0(t);
         if(((a_500 != NULL) && (a_500 != t)))
           _fail(t);
         else

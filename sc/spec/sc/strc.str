@@ -47,6 +47,27 @@ strategies
 
 strategies
 
+  // save intermediate results
+
+  save-as(ext) = 
+    where(
+      copy-to(get-outfile(ext) => file1)
+      ; xtc-transform(!"pp-stratego", !["--abstract" | <pass-verbose> ] )
+      ; copy-to(<conc-strings> (file1, ".txt") => file2)
+      ; say(!["abstract syntax in", file1, " concrete syntax in ", file2])
+    )
+
+  save-as1(ext) = if-keep1(save-as(ext))
+  save-as2(ext) = if-keep2(save-as(ext))
+  save-as3(ext) = if-keep3(save-as(ext))
+  save-as4(ext) = if-keep4(save-as(ext))
+  save-as5(ext) = if-keep5(save-as(ext))
+  save-as6(ext) = if-keep6(save-as(ext))
+  save-as7(ext) = if-keep7(save-as(ext))
+  save-as8(ext) = if-keep8(save-as(ext))
+
+strategies
+
   front-end =
     if-verbose2(debug(!"front-end: "));
     profile'(if-verbose1(<printnl>(stderr, ["front-end succeeded:     " | <id>])), 
@@ -96,20 +117,15 @@ strategies
   add-main =
     try(where(<get-config> "-m" => m; if-verbose2(debug(!"main strategy is: ")))
         ; xtc-io-transform(AddMain(!m)))
-    ; if-keep3(
-        copy-to(get-outfile(!".with-main") => file)
-        ; say(!["abstract syntax (before frontend) written to ", file])
-      )
+    ; save-as3(!".with-main")
 
   frontend = 
     xtc-transform(!"frontend", !["-b" | <pass-verbose> ])
-    ; if-keep2(
-        copy-to(get-outfile(!".fro") => file)
-        ; say(!["abstract syntax (after frontend) written to ", file])
-      )
+    ; save-as2(!".fro")
 
   extract = 
     xtc-transform(!"extract", !["-b" | <pass-verbose> ])
+    ; save-as2(!".ext")
 
   warnings = 
     xtc-transform(!"stratego-warnings", 
@@ -121,6 +137,7 @@ strategies
 
   rename-defs = 
     xtc-transform(!"rename-defs", !["-b" | <pass-verbose> ])
+    ; save-as2(!".rn")
 
   stratego-nf = 
     xtc-transform(!"Stratego-Normal-Format", !["-b" | <pass-verbose> ])
@@ -133,28 +150,36 @@ strategies
 	if-verbose3(where(<get-config> "-O"; debug(!"optimization level: ")))
 
         ; olevel1(optimize1)
-        ; olevel2(try(where(not(<get-config> "--fusion")); fusion))
+        ; save-as1(!".opt1")
 
-        ; olevel4(inline)
-	; olevel4(dead-def-elim)
+        ; olevel2(try(where(not(<get-config> "--fusion")); fusion))
+        ; save-as2(!".opt2")
+
+        ; olevel4(inline; dead-def-elim)
+        ; save-as4(!".opt3")
 
         ; olevel4(optimize2)
         ; define-congruences
         ; olevel4(const-prop; bound-unbound-vars; dead-var-elim)
         ; olevel4(optimize2)
+        ; save-as4(!".opt4")
 
         ; olevel2(compile-match)
 	; olevel2(desugar-case)
+        ; save-as2(!".opt5")
 
         ; olevel5(inline)
 	; olevel5(dead-def-elim)
+        ; save-as5(!".opt6")
 
         ; olevel3(optimize2)
         ; olevel3(const-prop; bound-unbound-vars; dead-var-elim)
+        ; save-as3(!".opt7")
         ; olevel1(optimize2)
+        ; save-as1(!".opt8")
 
         ; olevel1(stratego-of)
-        ; olevel1(output-optimized)
+        ; save-as1(!".opt")
     )
 
   optimize1 = 
@@ -199,33 +224,15 @@ strategies
   bound-unbound-vars = 
     xtc-transform(!"bound-unbound-vars", !["-b" | <pass-verbose> ])
  
-  output-optimized =
-    try(where(
-          where(<get-config> "--output-optimized")
-          ; copy-to(get-outfile(!".opt") => file1)
-          ; xtc-transform(!"pp-stratego", !["--abstract" | <pass-verbose> ] )
-          ; copy-to(get-outfile(!".opt.txt") => file2)
-          ; say(![" (after frontend) written to file"])
-    ))
-
-  output-canonical =
-    try(where(
-          where(<get-config> "--output-canonical")
-          ; copy-to(get-outfile(!".can") => file1)
-          ; xtc-transform(!"pp-stratego", !["--abstract", "--annotations" | <pass-verbose> ] )
-          ; copy-to(get-outfile(!".can.txt") => file2)
-          ; say(![" (after frontend) written to file"])
-    ))
-
 strategies
 
   back-end =
     if-verbose2(say(!"back-end"));
     profile'(if-verbose1(<printnl>(stderr, ["back-end succeeded:      " | <id>])), 
       canonicalize
+      ; save-as1(!".can")
       ; olevel3(bound-unbound-vars)
       ; stratego-cf
-      ; output-canonical
       ; s2c
       ; ac2abox
       ; abox2text
