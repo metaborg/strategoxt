@@ -5,14 +5,6 @@ EXTRA_DIST = stdconfig reconf conf.h.src stratego-front.spec Makefile.rpm \
 
 pkgdata_DATA = conf.h
 
-check_dist : 
-	$(MAKE) dist
-	tar zxf $(PACKAGE)-$(VERSION).tar.gz
-	cd $(PACKAGE)-$(VERSION)
-	./stdconfig
-	$(MAKE)
-	$(MAKE) check
-
 # Generate scripts
 %: %.src Makefile
 	sed 's#__GPP__#$(GPP)#g;\

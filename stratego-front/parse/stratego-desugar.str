@@ -120,6 +120,11 @@ rules
   //Desugar :
   //  Con(t1, Con1(t2)) -> Con(t1, t2, Call(SVar("oncetd"),[]))
 
+  DesugarOnce :
+    Con(t1, t2, f) -> Con(t1, t2, Call(SVar(f),[]))
+    where <is-string> f
+
+
   Desugar :
     Con1(t1, t2) -> Con(t1, t2, Call(SVar("oncetd"),[]))
 

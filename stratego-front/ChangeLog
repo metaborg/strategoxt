@@ -1,3 +1,11 @@
+2002-12-16  Eelco Visser  <visser@cs.uu.nl>
+
+	* syn/Stratego-Terms.sdf: Priority definition for annotations
+
+	* parse/stratego-desugar.str: Desugaring of contexts
+
+	* Makefile.am (SUBDIRS): Removed chec_dist target
+
 2002-12-11  Eelco Visser  <visser@cs.uu.nl>
 
 	* pp/: Removing stratego.pp from CVS repository
