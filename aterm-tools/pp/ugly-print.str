@@ -10,7 +10,6 @@ strategies
      UP-Int 
 	<+ UP-Str
 	<+ UP-Lst(ugly-print) 
-  <+ UP-EmptyTuple
   <+ UP-Tuple(ugly-print)
 	<+ UP-Cnst	
 	<+ UP-App(ugly-print)
@@ -24,7 +23,7 @@ strategies
 
 rules
 
-  UP-EmptyTuple : 
+  UP-Tuple(s) : 
     ""#([]) -> |[ "()" ]|
     
   UP-Tuple(s) : 
@@ -66,10 +65,6 @@ rules
   UP-Lst(s) :
     [x | xs] -> |[ V vs=0 [ H hs=1 ["[" ~<s> x] ~*tail "]"] ]|
       where <map(! |[ H hs=1 [ "," ~<s> ] ]| )> xs => tail
-   
-  box-sepby-comma =
-    <separate-by> (|[ "," ]|, <id>)
-
 
 /**
  * Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>

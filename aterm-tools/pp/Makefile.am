@@ -1,5 +1,8 @@
-include $(wildcard *.dep)
 include $(top_srcdir)/Makefile.xt
+include $(wildcard *.dep)
+
+SUBDIRS           = tests
+BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 
 bin_PROGRAMS 	   = pp-aterm
 libexec_PROGRAMS = PpTerm
@@ -12,5 +15,3 @@ SCFLAGS     = --main io-$*
 STRINCLUDES = -I $(XTC)/share/xtc \
               -I $(GPP)/share/sdf/gpp \
               -I $(GPP)/share/gpp
-
-       
