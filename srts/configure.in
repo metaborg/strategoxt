@@ -73,7 +73,6 @@ AC_SUBST(RELEASE)
 AC_OUTPUT(
 	Makefile
 	Makefile.srts
-	README 
 	src/Makefile
 	src/srts/Makefile
 	ssl/Makefile

@@ -17,7 +17,6 @@ AC_SUBST(STRATEGORTS)
 
 AC_OUTPUT(
 	Makefile
-	README
 	spec/Makefile
 	spec/data/Makefile
 	tests/Makefile
