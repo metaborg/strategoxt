@@ -1,4 +1,6 @@
-# GT -- Grammar Tools
+ #! /bin/sh
+#
+# XT -- Grammar Tools
 # Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
 #                    Eelco Visser <visser@acm.org>
 #                    Joost Visser <jvisser@cwi.nl>
@@ -17,27 +19,29 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
+#
+# $Id: parseyacc-yacc2sdf-sdf2text-check.src,v 1.1 2000/07/25 12:02:58 mdejonge Exp $
+#
 
-# $Id: Makefile.am,v 1.2 2000/07/25 12:02:58 mdejonge Exp $
+# Exit immediately if a command exits with a non-zero status.
+set -e
 
-# Optional tests to run
-TESTS        = parsesdf-yield-check \
- 	       parsesdf-implode-sdf2text-check \
-               parseyacc-yacc2sdf-sdf2text-check
+XT=__XT__
+
+PATH=${XT}/bin:${PATH}
+export PATH
+
+GB=${XT}/share/gb
+GBSRC=../gb/
+
+sglr=sglr
+implodeasfix=implode-asfix
+yacc2sdf=yacc2sdf
+sdf2text=sdf2text
 
 
-# List all files that should be distributed here
-EXTRA_DIST   = parsesdf-yield-check.src \
-	       parsesdf-implode-sdf2text-check.src \
-               parseyacc-yacc2sdf-sdf2text-check.src
+${sglr} -p ${GB}/yacc.tbl -i ${GBSRC}/spec/yacc/data/c5.1.y -o c5.1.tree
+${implode-asfix} -i c5.1.tree -o c5.1.ayacc
+${yacc2sdf} -i c5.1.ayacc -o c5.1.asdf
+${sdf2text} -a -i c5.1.asdf -o c5.1.sdf
 
-# What should be cleaned
-CLEANFILES   = parsesdf-yield-check \
-	       parsesdf-implode-sdf2text-check \
-               parseyacc-yacc2sdf-sdf2text-check
-
-# Generate test-tools
-%-check: %-check.src Makefile.am
-	sed 's#__XT__#../prefix/#g;\
-	     s#__MAKE__#$(MAKE)#g' < $< > $@
-	chmod +x $@

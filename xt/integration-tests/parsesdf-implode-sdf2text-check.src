@@ -1,5 +1,5 @@
 #! /bin/sh
-# GT -- Grammar Tools
+# XT -- Grammar Tools
 # Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
 #                    Eelco Visser <visser@acm.org>
 #                    Joost Visser <jvisser@cwi.nl>
@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: parsesdf-implode-sdf2text-check.src,v 1.1 2000/07/25 11:52:55 mdejonge Exp $
+# $Id: parsesdf-implode-sdf2text-check.src,v 1.2 2000/07/25 12:02:58 mdejonge Exp $
 #
 
 # Exit immediately if a command exits with a non-zero status.
