@@ -3,6 +3,10 @@ AC_INIT([strategoxt],[0.14],[stratego-bugs@cs.uu.nl])
 AC_CONFIG_AUX_DIR([config])
 AM_INIT_AUTOMAKE
 
+# XT_ or AB_ left in configure is the sign a macro was not defined, or
+# there was a typo in a macro invocation.
+m4_pattern_forbid([^(AB|XT)_])
+m4_pattern_forbid([^USE_XT_PACKAGES$])
 
 # set the prefix immediately to the default prefix
 test "x$prefix" = xNONE && prefix=$ac_default_prefix
@@ -11,20 +15,26 @@ XT_SVN_REVISION
 # comment to make this a stable release
 XT_PRE_RELEASE
 
-XT_ARG_WITH([aterm],         [ATERM],           [prefix],                    [DIR],       [ATerm Library])
-XT_ARG_WITH([repository],    [REPOSITORY],      [datadir/$PACKAGE_NAME/XTC], [FILE],      [XTC Repository])
-XT_ARG_WITH([sdf],           [SDF],             [prefix],                    [SDF],       [SDF Packages])
-XT_ARG_WITH([sglr],          [SGLR],            [SDF],                       [DIR],       [SGLR Parser])
-XT_ARG_WITH([pgen],          [PGEN],            [SDF],                       [DIR],       [PGEN Parser Generator])
-XT_ARG_WITH([pt-support],    [PT_SUPPORT],      [SDF],                       [DIR],       [PT Support])
-XT_ARG_WITH([asf-library],   [ASF_LIBRARY],     [SDF],                       [DIR],       [ASF Library])
-XT_ARG_WITH([strategoxt],    [STRATEGOXT],      [prefix],                    [STRATEGOXT],[StrategoXT])
+XT_ARG_WITH([aterm],         [ATERM],           [prefix],                    [DIR],  [ATerm Library])
+XT_ARG_WITH([repository],    [REPOSITORY],      [datadir/$PACKAGE_NAME/XTC], [FILE], [XTC Repository])
+XT_ARG_WITH([sdf],           [SDF],             [prefix],                    [SDF],  [SDF Packages])
+XT_ARG_WITH([sglr],          [SGLR],            [SDF],                       [DIR],  [SGLR Parser])
+XT_ARG_WITH([pgen],          [PGEN],            [SDF],                       [DIR],  [PGEN Parser Generator])
+XT_ARG_WITH([pt-support],    [PT_SUPPORT],      [SDF],                       [DIR],  [PT Support])
+XT_ARG_WITH([asf-library],   [ASF_LIBRARY],     [SDF],                       [DIR],  [ASF Library])
+XT_ARG_WITH([strategoxt],    [BASELINE],        [prefix],                    [DIR],  [StrategoXT])
 
-AC_ARG_WITH(curl, 
-  AC_HELP_STRING([--with-curl=DIR], [use Curl package at DIR @<:@/usr@:>@]),
-  CURL="$withval", 
-  CURL="/usr")
-AC_SUBST(CURL)
+AC_ARG_WITH([strategoxt],
+  [AS_HELP_STRING([--with-strategoxt=DIR], [use StrategoXT baseline at DIR @<:@prefix@:>@])],
+  [STRATEGOXT=$withval
+   xt_baseline="yes"
+  ],
+  [STRATEGOXT=$prefix
+   xt_baseline="no"
+  ])
+AC_SUBST([STRATEGOXT])
+AM_CONDITIONAL([XT_USING_BASELINE], [test "$xt_baseline" = "yes"])
+m4_pattern_allow([^XT_USING_BASELINE(_TRUE|_FALSE)?$])
 
 # sets EXEEXT
 AC_PROG_CC
@@ -109,12 +119,20 @@ AC_SUBST([PKGS])
 AC_SUBST([DIST_PKGS])
 AC_SUBST([STRC_CORE_PREFIX])
 
-BUILD_SRTS_DEST="`pwd`/pre-pkgs/build"
-INSTALL_XTC_DEST="`pwd`/pre-pkgs/install"
-BUILD_SRTS="$BUILD_SRTS_DEST$prefix"
-INSTALL_XTC="$INSTALL_XTC_DEST$prefix"
-AC_SUBST([BUILD_SRTS_DEST])
-AC_SUBST([INSTALL_XTC_DEST])
+
+if test "$xt_baseline" = "yes"
+then
+  BUILD_SRTS="$STRATEGOXT"
+  INSTALL_XTC="$STRATEGOXT"
+else
+  BUILD_SRTS_DEST="`pwd`/pre-pkgs/build"
+  INSTALL_XTC_DEST="`pwd`/pre-pkgs/install"
+  BUILD_SRTS="$BUILD_SRTS_DEST$prefix"
+  INSTALL_XTC="$INSTALL_XTC_DEST$prefix"
+  AC_SUBST([BUILD_SRTS_DEST])
+  AC_SUBST([INSTALL_XTC_DEST])
+fi
+
 AC_SUBST([INSTALL_XTC])
 
 XT_PKG_ATERM
@@ -122,8 +140,13 @@ XT_PKG_SDF
 
 AC_PATH_PROG([getopt], [getopt])
 if test -z "$getopt"; then
-    AC_MSG_ERROR([getopt is required])
+  AC_MSG_ERROR([getopt is required])
 fi
+
+AC_ARG_WITH([curl], 
+  [AS_HELP_STRING([--with-curl=DIR], [use Curl package at DIR @<:@/usr@:>@])],
+  [CURL="$withval"], 
+  [CURL="/usr"])
 
 AC_PROG_LIBTOOL
 

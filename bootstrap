@@ -59,4 +59,5 @@ done
 # apply the autotools
 
 autoxt || exit 1
-autoreconf -if || exit 1
+cp ./autoxt.m4 ./config/ || exit 1
+autoreconf -ifv || exit 1

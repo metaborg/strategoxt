@@ -1,5 +1,25 @@
+2005-01-25  Martin Bravenboer <martin@cs.uu.nl>
 
+	* bootstrap: invoke autoreconf with -v flag
+
+	* configure.ac: added to m4_forbidden_pattern check for missing
+	macro definitions of XT_ and AB_ macros.
+
+	* configure.ac: copy autoxt.m4 to config dir
+	
+	* configure.ac: introduced Automake conditional XT_USING_BASELINE
+	which indicates whether a baseline StrategoXT is used or not.
+
+	* configure.ac: configure packages with baseline srts and xtc if a
+	baseline is used.
+
+	* Makefile.am: don't install a local xtc and srts is we are using
+	a baseline.
+
+	* Makefile.am: Include dir in ACLOCAL_AMFLAGS to config.
+	
 2004-11-04  Karl Trygve Kalleberg <karltk@cs.uu.nl>
+	
 	* bootstrap: added WANT_AUTOMAKE and WANT_AUTOCONF to make bootstrap
 	more compatible with Gentoo, Mandrake, etc.
 

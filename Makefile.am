@@ -1,11 +1,30 @@
-ACLOCAL_AMFLAGS = -I .
+ACLOCAL_AMFLAGS = -I config
 
 SUBDIRS      = . news-archive $(PKGS)
 DIST_SUBDIRS = news-archive $(DIST_PKGS)
 EXTRA_DIST   = $(EXTRA_FILES)
 EXTRA_FILES  = README svn-revision bootstrap autoxt.m4 acinclude.m4 strategoxt.spec.in strategoxt.spec
 
+install-data-local: install-xtc
 
+install-xtc: 
+	mkdir -p `dirname $(DESTDIR)$(REPOSITORY)`
+	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t sglr -l $(SGLR)/bin -V 3.11
+	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t sdf2table -l $(PGEN)/bin -V 2.1
+	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t Sdf2.baf -l $(PGEN)/share/pgen -V 2.1
+	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t implodePT -l $(PT_SUPPORT)/bin -V 1.1
+	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t unparsePT -l $(PT_SUPPORT)/bin -V 1.1
+	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t addPosInfo -l $(PT_SUPPORT)/bin -V 1.1
+	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t baffle -l $(ATERM)/bin -V X
+	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t ATERM -l $(ATERM) -V X
+	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t SRTS -l $(prefix) -V X
+	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t libstrategolib.rtree -l $(prefix)/share/srts -V $(VERSION)
+	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t libxtclib.rtree -l $(prefix)/share/xtc -V $(VERSION)
+	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t liblib.rtree -l $(prefix)/share/xtc -V $(VERSION)
+	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t liblibstrategolib.la -l $(prefix)/lib/srts -V $(VERSION)
+	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t liblibxtclib.la -l $(prefix)/lib/xtc -V $(VERSION)
+
+if !XT_USING_BASELINE
 all-local: $(BUILD_SRTS_DEST)/srts.dummy $(INSTALL_XTC_DEST)/xtc.dummy
 install-exec-local: $(BUILD_SRTS_DEST)/srts.dummy $(INSTALL_XTC_DEST)/xtc.dummy
 
@@ -33,15 +52,10 @@ $(INSTALL_XTC_DEST)/xtc.dummy :
 	cp -fp   libraries/*.la  $(INSTALL_XTC_DEST)/$(prefix)/lib/xtc/ && \
 	cp -LRfp libraries/.libs $(INSTALL_XTC_DEST)/$(prefix)/lib/xtc/ && \
 	touch $(INSTALL_XTC_DEST)/xtc.dummy
-
-fixeddist : dist
-	mv $(PACKAGE)-$(VERSION).tar.gz $(PACKAGE).tar.gz
+endif
 
 relname:
 	echo -n $(distdir) > relname
-
-revision-dist : dist
-	mv $(PACKAGE)-$(VERSION).tar.gz $(PACKAGE)-$(VERSION)-$(SVN_REVISION).tar.gz 
 
 package-dist :
 	PATH=$(bindir):$${PATH}; export PATH ;\
@@ -77,24 +91,3 @@ source-tree.txt :
 		| grep -v data \
 		| grep -v config \
 		> $@
-
-install-data-local: install-xtc
-
-install-xtc: 
-	mkdir -p `dirname $(DESTDIR)$(REPOSITORY)`
-	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t sglr -l $(SGLR)/bin -V 3.11
-	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t sdf2table -l $(PGEN)/bin -V 2.1
-	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t Sdf2.baf -l $(PGEN)/share/pgen -V 2.1
-	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t implodePT -l $(PT_SUPPORT)/bin -V 1.1
-	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t unparsePT -l $(PT_SUPPORT)/bin -V 1.1
-	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t addPosInfo -l $(PT_SUPPORT)/bin -V 1.1
-	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t baffle -l $(ATERM)/bin -V X
-	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t ATERM -l $(ATERM) -V X
-	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t SRTS -l $(prefix) -V X
-	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t libstrategolib.rtree -l $(prefix)/share/srts -V $(VERSION)
-	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t libxtclib.rtree -l $(prefix)/share/xtc -V $(VERSION)
-	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t liblib.rtree -l $(prefix)/share/xtc -V $(VERSION)
-	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t liblibstrategolib.la -l $(prefix)/lib/srts -V $(VERSION)
-	$(INSTALL_XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t liblibxtclib.la -l $(prefix)/lib/xtc -V $(VERSION)
-
-
