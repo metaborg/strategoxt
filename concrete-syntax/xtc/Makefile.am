@@ -2,6 +2,7 @@ include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
 bin_PROGRAMS   = parse-cs
+pkgdata_DATA   = parse-cs-lib.rtree
 
 EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) $(wildcard *.rtg) 
 CLEANFILES     = $(wildcard *.dep)

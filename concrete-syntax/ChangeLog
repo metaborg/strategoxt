@@ -1,7 +1,20 @@
+2004-04-22   Martin Bravenboer  <martin@cs.uu.nl>
+
+	* xtc/parse-cs-lib.str: provide reuseful parse-cs strategies in a
+	library.
+
+	* xtc/parse-cs-lib.str: added parse strategies for AsFix2 and
+	AsFix2ME.
+
+	* xtc/parse-cs-lib.str: added the TopSort feature to AST,
+	AsFix2, and AsFix2ME parsing.
+	
 2004-02-22   Merijn de Jonge  <mdejonge@cs.uu.nl>
-   * Makefile.am: added autoxt.m4 to EXTRA_DIST
-   * Makefile.am: added line: ACLOCAL_AMFLAGS = -I . such that autoreconf
-     can find autoxt.m4
+
+	* Makefile.am: added autoxt.m4 to EXTRA_DIST
+
+	* Makefile.am: added line: ACLOCAL_AMFLAGS = -I . such that
+	autoreconf can find autoxt.m4
 
 2003-11-16  Eelco Visser  <visser@cs.uu.nl>
 
