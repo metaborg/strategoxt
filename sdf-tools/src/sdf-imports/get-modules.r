@@ -17,7 +17,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: get-modules.r,v 1.3 2001/08/09 11:58:35 mdejonge Exp $
+% $Id: get-modules.r,v 1.4 2001/08/28 16:07:39 mdejonge Exp $
 
 \begin{code}
 module get-modules
@@ -44,7 +44,7 @@ strategies
             ArgOption( "-e", \ x -> Ext(x) \ ) +
                Option( "-l",          !FullPathName ) +
                Option( "--ig",        !GraphOutput ) +
-               Option( "-g",          !GraphOutput ) +
+               Option( "-g",          !GraphXMLOutput ) +
                Option( "--graphxml" , !GraphXMLOutput ) + 
                io-options );
    ?options;

@@ -1,3 +1,7 @@
+2001-08-28 Merijn de Jonge <mdejonge@cwi.nl> 
+   * src/sdf-imports: bug fix: -g switch still produced ig output (not
+     graphxml)
+
 2001-08-17 Joost.Visser@cwi.nl
    * Added -e and --short switches to sdf-wf. The first treats
 	warnings as errors. The second produces a short version
