@@ -157,9 +157,9 @@ bootclean-recursive :
 	$(STRATEGO_REGULAR)/bin/rtg2sig --module `basename "$*"` -i $< -o $@
 
 .rtg.rtg-nf :
-        $(STRATEGO_REGULAR)/bin/parse-rtg -i $< | \
-        $(STRATEGO_REGULAR)/libexec/rtg-reduce | \
-        $(STRATEGO_REGULAR)/libexec/rtg-group -o $@
+	$(STRATEGO_REGULAR)/bin/parse-rtg -i $< | \
+	$(STRATEGO_REGULAR)/libexec/rtg-reduce | \
+	$(STRATEGO_REGULAR)/libexec/rtg-group -o $@
 
 ###########################################################
 #
