@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: implode-asfix.r,v 1.4 2001/10/01 17:43:19 jvisser Exp $
+% $Id: implode-asfix.r,v 1.5 2001/10/18 19:42:03 mdejonge Exp $
 
 
 	This module defines a transformation from AsFix terms produced
@@ -64,15 +64,20 @@ strategies
 
     implode-asfix = 
       iowrap(implode, 
-                Option( "--lex",    !FlatLex ) 
-              + Option( "--layout", !RemoveLayout )
-              + Option( "--lit",    !RemoveLit ) 
-              + Option( "--alt",    !FlatAlt )
-              + Option( "--appl",   !ReplaceAppl )
-              + Option( "--inj",    !FlatInj )
-              + Option( "--list",   !FlatList )
-              + Option( "--seq",    !RemoveSeq )
-              + Option( "--pt",     !RemovePT ) )
+                Option( "--lex",    !FlatLex,      !"--lex            Flatten lexical substrings to strings" ) 
+              + Option( "--layout", !RemoveLayout, !"--layout         Remove layout nodes from the AsFix? parse tree" )
+              + Option( "--lit",    !RemoveLit,    !"--lit            Remove literal nodes from the AsFix? parse tree") 
+              + Option( "--alt",    !FlatAlt,      !"--alt            Flat alternatives")
+              + Option( "--appl",   !ReplaceAppl,  !"--appl           Replace 'appl' applications by constructor applications" )
+              + Option( "--inj",    !FlatInj,      !"--inj            Remove injections from the parse tree." )
+              + Option( "--list",   !FlatList,     !"--list           Flatten lists." )
+              + Option( "--seq",    !RemoveSeq,    !"--seq            Replace sequences by tuples" )
+              + Option( "--pt",     !RemovePT,     !"--pt             Remove the outer 'pt' function symbol from the parse tree" ) )
+
+    short-description(p) = !["Usage: ", <p>(), " [options]"]
+    long-description(p)  = !["The implode-asfix utility maps an AsFix parse tree to an abstract syntax tree.\n",
+                             "Without any switches, a full implosion is performed. By specifying any switches,\n",
+                             "the exact implosion steps to perform can be specified.\n"]
 
     implode =
        ?term;

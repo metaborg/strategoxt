@@ -1,3 +1,6 @@
+2001-10-18 Merijn de Jonge <mdejonge@cwi.nl> 
+   * implode/implode-asfix.r: added usage info
+
 2001-10-10 Merijn de Jonge <mdejonge@cwi.nl> 
    * termid/termid.r: Extended and improved term identifier support
 
