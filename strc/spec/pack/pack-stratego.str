@@ -68,7 +68,7 @@ strategies
 
   get-module(mkpath) :
     mod -> (name, tree)
-    where <find-module(mkpath)> (mod, ["rtree", "str", "cr", "r"]) 
+    where <find-module(mkpath)> (<basename> mod, ["rtree", "str", "cr", "r"]) 
 		=> (ext, FILE(name))
         ; if-verbose3(where(<debug(!" reading ")> name))
 	; parse-module => tree
@@ -76,22 +76,17 @@ strategies
 
   find-module(mkpath) =
     ?(mod, exts)
-    ; <basename> mod => basemod
     ; mkpath
     ; (fetch-elem(
 	\ dir -> 
-	  <fetch-elem(!(<id>, FILE(<concat-strings; file-exists> [dir, "/", basemod, ".", <id>])))> exts 
+	  <fetch-elem(!(<id>, FILE(<concat-strings; file-exists> [dir, "/", mod, ".", <id>])))> exts 
 	  where <is-relpath> mod \	
-        + 
-        \ dir -> 
-	  <fetch-elem(!(<id>, FILE(<concat-strings; file-exists> [basemod, ".", <id>])))> exts 
-	  where <is-abspath> mod \
 	)
-     <+ <fetch-elem(!(<id>, FILE(<concat-strings; xtc-find-loc> [basemod, ".", <id>])))> exts 
+     <+ <fetch-elem(!(<id>, FILE(<concat-strings; xtc-find-loc> [mod, ".", <id>])))> exts 
      <+ ( <get-config>"--slack" 
-          < say(<concat-strings>["*** module ", basemod, " not found"]) 
+          < say(<concat-strings>["*** module ", mod, " not found"]) 
             ; fail 
-          + <fatal-error> ["*** module ", basemod, " not found"] )
+          + <fatal-error> ["*** module ", mod, " not found"] )
       )
 
   parse-module =
