@@ -1,7 +1,0 @@
-definition
-
-module Test
-exports
-  context-free syntax
-    A B* {C ","}+ D? -> E {cons("aap")}
-    (A ":" B)? (C|D) -> E {cons("noot")}
