@@ -2,7 +2,7 @@
 % GT -- Grammar Tools
 % Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
 %                    Eelco Visser <visser@acm.org>
-%                    Joost Visser <jvisser@cwi.nl>
+%                    Joost Visser <jvisser@cwi.nl> 
 %
 % This program is free software; you can redistribute it and/or modify
 % it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Ast2abox.r,v 1.2 2002/02/05 20:59:17 mdejonge Exp $
+% $Id: Ast2abox.r,v 1.3 2002/03/14 16:47:21 eelco Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
@@ -55,15 +55,18 @@ strategies
     ; split(!options, id)
       
 trm2abox =
+  trm2abox1 <+ trm2abox2 <+ trm2abox3
+
+trm2abox1 =
    ?s;
    is-string;
    !S(s)
 
-trm2abox =
+trm2abox2 =
    is-list;
    map( trm2abox )
    
-trm2abox =
+trm2abox3 =
    // Obtain function symbol and a list of arguments. 
    ?f#( args )
 
@@ -86,30 +89,34 @@ arg2abox =
       <trm2abox>arg
    )
 
+symbol2abox = 
+  symbol2abox1 <+ symbol2abox2 <+ symbol2abox3 <+ symbol2abox4
+  <+ symbol2abox5 <+ symbol2abox6 <+ symbol2abox7
+
 // Rule to format alt(n,[]), with empty list of arguments
-symbol2abox =
+symbol2abox1 =
    ?( alt, path, template, alt(n, []));
    <instantiate>([<index>(n, template)], [] )
 
 // Rule to format alt(n,[arg]), with non-empty list of arguments
-symbol2abox =
+symbol2abox2 =
    ?( alt, path, template, alt(n, [arg]));
    <arg2abox>(n, path, arg) => aboxes;
    <instantiate>([<index>(n, template)], [aboxes] )
    
 
 // Rule to format optional: Some(x)
-symbol2abox =
+symbol2abox3 =
    ?( opt, path, template, Some(x) );
    <arg2abox>(1, path, x) => aboxes;
    <instantiate>(template, [aboxes])
 
 // Rule to format optinal: None
-symbol2abox =
+symbol2abox4 =
    ?( opt, path, template, None ); ![]
 
 // Rule to format iter and iter-star list
-symbol2abox =
+symbol2abox5 =
    (
    ?( "iter", path, template, lst )
    +
@@ -122,7 +129,7 @@ symbol2abox =
 
 
 // Rule to format iter-sep and iter-star-sep list
-symbol2abox =
+symbol2abox6 =
    (
     ?( "iter-sep", path, template, lst )
    +
@@ -150,7 +157,7 @@ symbol2abox =
    instantiate-sep-list(!template)
 
 // Rule ro format sequences
-symbol2abox =
+symbol2abox7 =
    ?( "seq", path, template, lst );
    <tuple2list>lst;
    nzip( {n, t, abox: \(n,t) -> abox
