@@ -2,8 +2,8 @@
 rm -f config.cache
 rm -f acconfig.h
 autoxt
-libtoolize --force
 aclocal -I .
+libtoolize --force
 autoconf
 #acconfig
 autoheader

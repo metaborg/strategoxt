@@ -1,8 +1,8 @@
 #! /bin/sh
 rm -f config.cache acconfig.h aclocal.m4
 autoxt
-libtoolize --force
 aclocal -I .
+libtoolize --force
 autoconf
 #acconfig
 #autoheader
