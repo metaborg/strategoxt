@@ -7,5 +7,5 @@ autoconf
 #autoheader
 automake -a
 
-touch pp/Stratego.pp
-touch pp/*.pp.af syn/*.tbl sig/*.str sig/*.rtree
+# touch pp/Stratego.pp
+# touch pp/*.pp.af syn/*.tbl sig/*.str sig/*.rtree
