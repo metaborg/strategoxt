@@ -55,7 +55,8 @@ strategies
    * fopen.
    *
    * fails if the file couldn't be opened. 
-   * :: String * String -> Stream
+   *
+   * @type String * String -> Stream
    */
   fopen =
     ?(pathname, mode); prim("SSL_fopen", pathname, mode); !Stream(<id>)
@@ -191,6 +192,7 @@ strategies
   mkstemp =
       <conc-strings> (<id>, "XXXXXX") => template
     ; prim("SSL_mkstemp", template)
+    <+ <perror; fail> "SSL/mkstemp"
     
   /**
    * Closing a file

@@ -16,7 +16,8 @@ strategies
    * @type File -> a
    */
   ReadFromFile =
-      (<open-stream> (<id>, "r") <+ debug(!"** WARNING: Cannot open file: "); fail)
+      ( <open-stream> (<id>, "r")
+      <+ <conc-strings; perror; fail> ("SSL/ReadFromFile ", <id>))
     ; where(read-from-stream => trm)
     ; fclose
     ; !trm
