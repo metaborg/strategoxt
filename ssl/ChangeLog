@@ -1,3 +1,150 @@
+2002-06-09  Eelco Visser  <visser@acm.org>
+
+	* src/stratego-lib.h: added annotations and dir
+	
+	* src/annotations.c: No annotations = empty list of annotations
+
+	* spec/io-text.r: removed
+
+	* spec/parse-options.r, spec/parse-options-test.r: testing
+	parse-options
+
+	* spec/dir.r, spec/dir-test.r: <readdir> d gives list of filenames
+	of directory d
+
+	* spec/config.r: Maintenance, import, and export of configuration
+	information such as locations of executables and data files.
+
+	* spec/share-misc.r: removed
+
+	* spec/simple-list-traversal.r, spec/env-list-traversal.r: generic
+	traversals in which lists are traversed by visiting head and tail,
+	instead of visiting all elements (behaviour of all). Contributed by
+	Otto Skrove Bagge.
+	
+	* spec/breadth-first.r: removed, was not correct
+
+	* spec/annotation-props-test.r, spec/annotation-props.r:
+	Operations to manipulate annotation lists composed of key value
+	pairs. By Martin Bravenboer.
+
+	* src/time.c, src/ssl-time.h, spec/time.r, spec/time-test.r,
+	src/time.c, src/ssl-time.h: support for time measurements extended
+	with primitives calling the system calls clock and time. Module
+	time defines a number of useful abstractions over this. In
+	particular, <run-time> returns the seconds of total run-time so
+	far, including the run-time of any child processes.  The operator
+	profile(msg, s) measures the time used to apply s and then prints
+	user and system time, including children time.
+
+	* spec/getopt.r, spec/io-test.r, spec/template-test.r,
+	spec/substitution.r: copyright notice
+
+	* spec/sunit.r, spec/string.r: layout
+
+	* spec/simple-traversal.r: directly recursive definition of
+	bottomup.
+
+	* spec/simple-traversal-test.r: testing behaviour of traversals
+	using counter.
+
+	* spec/options.r: Use set-config to store option values in
+	configuration table, Use <run-time> instead of dtime to measure
+	time in iowrap.
+
+	* spec/list-zip.r, spec/list-zip-test.r: definitions of cart for
+	cartesian product of two lists and join for the join of two lists.
+
+	* spec/list-misc.r: definition of split-at
+
+	* spec/list-basic.r, spec/list-basic-test.r: definition of
+	split-init-last, use term wrap syntax
+
+2002-06-08  Eelco Visser  <visser@acm.org>
+
+	* spec/io.r: layout
+
+	* spec/integers.r: addS, subtS, etc. define operations on 
+	integer strings. new-counter, reset-counter, etc. manipulate
+	a named counter using dynamic rules.
+
+	* spec/fixpoint-traversal.r: innermost-tagged uses annotations
+	to tag terms that are in normal form.
+
+	* spec/annotations-test.r: Extensive test of annotation
+	functionality.  Written by Martin Bravenboer. Adapted to use list
+	matching by EV.
+
+	* spec/Makefile.am: Installing .rtree files (parsed modules)
+	instead of .r files (sources); saves time when compiling and
+	ensures syntactic correctness of library modules. First step
+	towards separte compilation.
+
+	* spec/Annotations.r: removed, was not used.
+
+2002-05-24  Eelco Visser  <visser@acm.org>
+
+	* src/dir.c: Implementation of SSL_ReadDir, which returns the list
+	with all entries of the directory given as argument (via its
+	name).
+
+	* src/dir.h: Directory access
+
+	* spec/dir-test.r: Test readdir
+
+	* src/stratego-lib.h: include header from dir.h
+
+2002-05-18  Eelco Visser  <visser@acm.org>
+
+	* spec/exec.r: Commented several definitions with description + type.
+
+2002-05-12  Eelco Visser  <visser@acm.org>
+
+	* spec/sunit.r: Removed forced exit from test-suite; just fail if
+	there are failures. This makes it possible to combine several
+	test-suites.
+
+	* spec/annotations.r: Call the SSL wrappers to access annotations
+	instead of directly calling the AT variants: no annotations is
+	equivalent to the empty list of annotations. Has-annotation tests
+	whether the result of get-annotations is not the empty list.
+
+2002-05-10  Eelco Visser  <visser@acm.org>
+
+	* spec/fixpoint-traversal.r: innermost-tagged(s) uses annotations
+	to tag terms in normal form to avoid renormalization
+
+	* spec/list-zip.r: Definition of join(s) for creating and
+	filtering the cartesian product of two lists.
+
+	* spec/list-zip-test.r: Tests for zip and zipPad. Problem posed by
+	Karl Trygve Kalleberg
+
+2002-04-10  Eelco Visser  <visser@acm.org>
+
+	* spec/ugly-print.r: Extension of ugly printing strategies for
+	terms with annotations. (Martin Bravenboer)
+
+	* spec/annotations-test.r: Extended test-suite for annotations
+	(Martin Bravenboer)
+
+	* spec/annotations.r: Additional operators for annotations:
+	has-annotation, if-annotation, preserve-annotation
+	(Martin Bravenboer)
+
+	* spec/annotation-props-test.r: Test suite for the module.
+	
+	* spec/annotation-props.r: Library for manipulating annotations 
+	represented as a list of key-property pairs.
+	(by Martin Bravenboer)
+
+2002-03-29  Eelco Visser  <visser@acm.org>
+
+	* spec/getopt.r: My getopt implementation used one-element tuples
+	(to separate options without arguments from options with
+	arguments), so it won't work with Stratego 0.7 (where (e) = e). --
+	Otto Skrove Bagge
+
 2002-03-14  Eelco Visser  <visser@acm.org>
 
 	* Release 0.7 (fix2)
