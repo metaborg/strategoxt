@@ -42,10 +42,10 @@ AsFix Tools
 
 ----------------------------------------------------------------------
 
- STRATEGO COMPILER
+ REQUIREMENTS
 
- For the installation of GT, the Stratego compiler is required, which
- can be obtained from
+ For the installation of the AsFix Tools package, the Stratego compiler is
+ required, which can be obtained from
 
    http://www.stratego-language.org
 
