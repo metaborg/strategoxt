@@ -17,58 +17,12 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 dnl 02111-1307, USA.
 
-dnl $Id: configure.in.src,v 1.11 2002/11/19 22:50:32 stratego Exp $
+dnl $Id: configure.in.src,v 1.12 2002/12/11 10:45:38 stratego Exp $
 
 AC_INIT(configure.in)
 AM_INIT_AUTOMAKE(__PACKAGE__,__VERSION__)
 
-dnl Package switches.
-
-AC_PACKAGE_REQUIRE(pgen, sdf2table,
-   [  --with-pgen             Specify location of parser generator package])
-AC_SUBST(PGEN)
-
-AC_PACKAGE_REQUIRE(sglr, sglr,
-   [  --with-sglr             Specify location of SGLR parser package])
-AC_SUBST(SGLR)
-
-AC_PACKAGE_REQUIRE(gpp, ast2abox,
-   [  --with-gpp              Specify location of generic pretty-print package])
-AC_SUBST(GPP)
-
-AC_ARG_WITH(gb, 
-   [  --with-gb               Specify location of Grammar Base package],
-   GB=${withval},
-   GB='${prefix}')
-AC_SUBST(GB)
-
-#AC_PACKAGE_REQUIRE(grammar-recovery, yacc2sdf,
-#   [  --with-grammar-recovery Specify location of grammar-recovery package])
-#AC_SUBST(GRAMMAR_RECOVERY)
-
-AC_PACKAGE_REQUIRE(sc-boot, sc,
-   [  --with-sc-boot          Specify location of stratego compiler])
-AC_SUBST(SC_BOOT)
-
-AC_PACKAGE_REQUIRE(stratego-tools, sdf2sig,
-   [  --with-stratego-tools   Specify location of stratego-tools package])
-AC_SUBST(STRATEGO_TOOLS)
-
-AC_PACKAGE_REQUIRE(asfix-tools, implode-asfix,
-   [  --with-asfix-tools      Specify location of asfix-tools package])
-AC_SUBST(ASFIX_TOOLS)
-
-AC_PACKAGE_REQUIRE(aterm-tools, atermdiff,
-   [  --with-aterm-tools      Specify location of aterm-tools package])
-AC_SUBST(ATERM_TOOLS)
-
-AC_PACKAGE_REQUIRE(graph-tools, GraphXML2dot,
-   [  --with-graph-tools      Specify location of graph-tools package])
-AC_SUBST(GRAPH_TOOLS)
-
-AC_PACKAGE_REQUIRE(sdf-tools, sdf-bracket,
-   [  --with-sdf-tools        Specify location of sdf-tools package])
-AC_SUBST(SDF_TOOLS)
+USE_XT_PACKAGES
 
 AC_ARG_WITH(graphviz,
    [  --with-graphviz         Specify location of graphviz package.],
@@ -76,15 +30,9 @@ AC_ARG_WITH(graphviz,
    GRAPHVIZ=${prefix})
 AC_SUBST(GRAPHVIZ)
 
-
-
-
-
-
 AM_CONFIG_HEADER(config.h)
 
-
-AC_REVISION($Id: configure.in.src,v 1.11 2002/11/19 22:50:32 stratego Exp $)
+AC_REVISION($Id: configure.in.src,v 1.12 2002/12/11 10:45:38 stratego Exp $)
 
 AC_PROG_CC
 AC_PROG_INSTALL

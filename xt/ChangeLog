@@ -1,3 +1,10 @@
+2002-12-08  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/lib/ppp-wrap.str: obsolete; better and more generic support
+	for tool glue provided by XTC.
+
+	* src/visamb/visamb.str: Redefined using xtc-lib
+
 2002-09-30  Merijn de Jonge <mdejonge@cwi.nl>
    * gbquery: search algoritm fixed: 'gbquery -d -l c' returned yacc, not c
 

@@ -17,30 +17,19 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.7 2002/11/15 00:06:02 stratego Exp $
+# $Id: Makefile.am,v 1.8 2002/12/11 10:45:38 stratego Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
-include $(srcdir)/../templates/make_rules.stratego
+include $(top_srcdir)/Makefile.xt
 
-STRATEGO_PRG = 
+SUBDIRS		= data
 
-# define any subdir here
-SUBDIRS      = data
+EXTRA_DIST    	= 
 
-# What scipts to build
-# bin_SCRIPTS  = 
+CLEANFILES    	=
 
-# Tests to run
-# TESTS        = program-check
-
-# List all extra files that should be distributed here
-EXTRA_DIST   += xt-paths.r.src ppp-wrap.r
-
-# What extra files should be cleaned
-CLEANFILES   += xt-paths.r
-
-pkgdata_DATA = xt-paths.r
+pkgdata_DATA 	= 
 
 %.r : %.r.src Makefile
 	sed 's@__ATERMTOOLS__@$(ATERM_TOOLS)@g;\

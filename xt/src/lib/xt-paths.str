@@ -1,0 +1,21 @@
+\literate[xt-paths]
+
+	This module provides the basic path names for the XT packages
+
+\begin{code}
+module xt-paths
+overlays
+
+  ATERMTOOLS      = "/usr/local/build/Boot"
+  ASFIXTOOLS      = "/usr/local/build/Boot"
+  GRAPHTOOLS      = "/usr/local/build/Boot"
+  SDFTOOLS        = "/usr/local/build/Boot"
+  STRATEGOTOOLS   = "/usr/local/build/Boot"
+  GRAMMARRECOVERY = ""
+  GB              = ""
+  SGLR            = "/usr/local/build/SDF2"
+  GPP             = "/usr/local/build/Boot"
+  PGEN            = "/usr/local/build/SDF2"
+  STRATEGO        = "/usr/local/build/Boot"
+  XT              = "/usr/local/build/Boot"
+\end{code}

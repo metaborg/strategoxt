@@ -1,0 +1,28 @@
+module visamb
+imports Vis-amb xtc-lib lib
+strategies
+
+  visamb = 
+    parse-options(io-options); 
+    (
+       need-help(default-usage)
+    <+ 
+       xtc-temp-files(
+	(!FILE(<get-config> "-i") <+ !stdin)
+        ; read-from 
+        ; visamb
+        ; write-to
+        ; xtc-transform-file(!"ast2abox", 
+		!["-p", <xtc-find> "visamb.pp",
+		  "-p", <xtc-find> "sdf.cons.pp"])
+        ; xtc-transform-file(!"abox2text")
+        ; rename-to(<get-config> "-o" <+ !stdout)
+        ; if-verbose1(
+            <printnl>(stderr,
+		[<get-config> "program", " (", <run-time>, " secs)"])
+          )
+      )
+    <+ 
+       report-failure
+    )
+
