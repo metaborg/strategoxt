@@ -114,6 +114,20 @@ strategies
           !PP-Table(<id>);
           termid-set(!"\"pp-tables-0\"");
           output(id)
+       );
+       
+       // If the set [changed-ones, new-ones] is not empty,
+       // and if the --patch switch has not been specified,
+       // we terminate with an exit code of 1 to indicate that the
+       // pretty-print tables are inconsistent.
+      try(not(has-option(!Patch));
+          // If tables are inconsistent and not patched or pruned, 
+          // exit with error code 1
+          try(
+             <concat>[changed-ones, new-ones];
+             not([]);
+             <exit>1
+          )
       )
 
 // Construct new pretty-print table from "old-table" by inserting

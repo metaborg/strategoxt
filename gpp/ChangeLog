@@ -1,3 +1,8 @@
+2004-03-02   Merijn de Jonge  <mdejonge@cs.uu.nl>
+   * Pptable-diff: if inconsistencies are detected and the --patch switch
+     is not specified, the program terminates with an exit code of 1
+   * pptable-diff: now detects whether Pptable-diff succeeded or not
+
 2004-02-22   Merijn de Jonge  <mdejonge@cs.uu.nl>
    * pp/Box.pp and pp/pp-tables.pp are now installed in <prefix>/share/gpp
      (no longer in <prefix>/share/doc/gpp

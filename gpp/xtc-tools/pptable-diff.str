@@ -23,10 +23,13 @@ strategies
 
   pptable-diff =
     xtc-io(
-       xtc-transform(!"Pptable-diff", <build-impl-args> ())
-       ; try(where(<get-config>"--patch");
-         xtc-transform(!"pp-pp-table", pass-verbose)) 
-
+       xtc-transform(!"Pptable-diff", <build-impl-args> ()); 
+       try(
+            where(<get-config>"--patch" + <get-config>"--prune");
+            xtc-transform(!"pp-pp-table", pass-verbose)
+         )
+       <+
+          <exit>1
     )
 
   pptable-diff-options =
