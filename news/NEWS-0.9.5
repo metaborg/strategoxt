@@ -4,92 +4,97 @@ StrategoXT 0.9.5 -- released March 26, 2004
 
 ---------++ Documentation
 
-Update and minimize README files of subpackages (and toplevel!)
+Document for Stratego/XT users has been improved in several areas.
 
-(Rob Vermaas)
+Rob Vermaas, who is now a scientific programmer at our institute, is
+working on updating the completely out-of-date README files in the
+distribution.
 
-Tool Reference
+  (Rob Vermaas)
 
-(Martin Bravenboer and Merijn de Jonge)
+Feedback by new users inspired us to revive the Tools web and start
+working on a comprehensive reference for the tools in Stratego/XT. The
+reference is still far from being complete, but it is a start. The
+tools of GPP are already documented pretty thorough in the tool
+reference.
 
-SDF website "syntax-definition.org"
+   * http://www.program-transformation.org/Tools/ToolReference
 
-(Martin Bravenboer)
+  (Martin Bravenboer and Merijn de Jonge)
+
+We have started to develop a central website for all information
+related to SDF, the Syntax Definition Formalism, at the
+program-transformation Wiki. Again this action was inspired by new
+users having difficulty to find documentation and guidance. The new
+website is available at http:///www.syntax-definition.org
+
+  (Martin Bravenboer)
 
 ---------++ Compiler
 
-Check that name of module is declared correctly
+The name of a module declared in file did not really matter in the
+past. This was rather frustrating for xDoc. From Stratego/XT 0.9.5 the
+compiler shows a warning message if the declared module name does not
+correspond with the name of the file.
 
-(Rob Vermaas)
+  (Rob Vermaas)
 
-    * pack-stratego always fails with a parse error in a .str if no -I
-      arguments are used.
+In Stratego/XT 0.9.4 compiling programs that use term arguments
+resulted in loads of warnings from the C compiler. The type of the
+arguments where not declared correctly in the C code produced by the C
+compiler. This problem has been fixed in this release. The declared
+types of the argument are now correct for term arguments.
 
-
-spec/front/spec-to-sdefs.str: more controlled application of
-desugaring of DefaultVarDec to the default type for strategy and
-term arguments. C compiler will not complain any more about
-incorrect arguments :) .
-
-(Martin Bravenboer)
-
-* src/sig2: removed all the sig2 tools. They are not used in
-practice and are replaced by much better tools in
-stratego-regular.
-
-(Martin Bravenboer)
+  (Martin Bravenboer)
 
 ---------++ Stratego Standard Library
 
-	* ssl/term-io.str: added write-to-string. This strategies takes an
-	ATerm and returns the ATerm in a String.
+The SSL in 0.9.5 features a new hashtable implementation. Hashtables
+used to be handled by name. In the Stratego runtime, SSL, and Stratego
+programs.  In the spirit passing Streams around in Stratego programs,
+it is now possible to pass hashtables around as well. A hashtable
+created in this way will not affect other parts of the program, unless
+the hashtable is passed to the code. The old table mechanism is of
+course still available and is still useful. The new strategies
+include: =new-hashtable(|initial_size, max_load)=,
+=hashtable-put(|key, value)=, =hashtable-get(|key)=. We are
+considering to lift hashtables from the API to the language level by
+providing syntax for constructing and accessing hashtables.
 
-	* ssl/term-io.str: add read-from-string. This strategies takes
-	a String and returns the ATerm in this String.
+  (Martin Bravenboer)
 
-(Martin Bravenboer)
+A common frustration in the SUnit unit-testing framework is forgetting
+a =!= before a input or output term. SUnit now provides a variants of
+the unit-testing strategies that accept term arguments for the
+description, input, and expected output of a test e.g.
+=apply-test(foo | "foo test", input, output)=
 
-	* ssl/list-set.str: Introduced a general subset checker.
-	End user strategies include: `set-eq`, `subset`, `subseteq`, all
-	parameterizable with a user-defined compare/eq strategy.
+  (Rob Vermaas)
+
+The module =term-io= in the SSL features new strategies for writing
+ATerms to strings (=write-to-string=) and vice versa
+(=read-from-string=). These strategies have been added to accept ATerm
+values as command-line arguments, but they should be useful in
+general.
+
+  (Martin Bravenboer)
+
+The module list-set provides a general subset checker (=set-eq=,
+=subset=, =subseteq=). All these strategies are parameterizable with a
+user-defined compare/eq strategy.
 
 (Arthur van Dam)
-
-    * SUnit: test strategies with term arguments. e.g. apply-test(foo
-      | "foo test", input, output)
-
-(Arthur van Dam)
-
-	* ssl/table.str: 
-	- new-hashtable =
-	- new-hashtable(|initial_size, max_load)
-	- destroy-hashtable
-	- hashtable-put(|key, value)
-	- hashtable-get(|key)
-	- hashtable-remove(|key)
-	- hashtable-keys
-
-	Hashtable strategies that operate on an Hashtable representation
-	in een ATerm. These strategies require you to pass this
-	representation around in Stratego, not the name of a
-	hashtable. The internal structure of this representation should
-	not be used in any way and is subject to change (compare to Stream
-	as ATerm).
-
-(Martin Bravenboer)
 
 ---------++ Utilities
 
-	* src/implode/implode-asfix.str: *not* funny: after checking
-	every possible mistake I could make I observed that implode-asfix
-	must do some obscure renaming on 'keywords' (whatever keywords are
-	to implode-asfix). This indeed appeared to be true: module,
-	exports, imports, etc. are *renamed* in implode-asfix! Well, not
-	anymore of course. 
-
-(Martin Bravenboer)
-
 ---------+++ Pretty-Printing
+
+The pp-table-diff utility checks from now on fails if the output
+should be be used as a path (=--patch=), but the existing pp-table is
+not complete. This is useful for signaling incompleteness of the
+pp-table during a build, especially in the buildfarm.
+
+  (Merijn de Jonge)
 
    * Pptable-diff: if inconsistencies are detected and the --patch switch
      is not specified, the program terminates with an exit code of 1
@@ -196,18 +201,34 @@ stratego-regular.
 
 (Martin Bravenboer)
 
+
+Syntax definitions of concrete object syntax embeddings require
+renamings of the sorts of the imported syntax definitions. Defining
+these renaming modules by hand is annoying and error-prone. sdf-tools
+now features =gen-renamed-sdf-module= a tool that automates this
+task. It takes an SDF syntax definition and produces an SDF module
+that renames the sorts in some user-definable way by prefixing it with
+the language name for example.
+
     * Lang-Renamed.sdf generator. Generates an SDF module that renames
       all sorts in a syntax definition by prefixing them with a given
       prefix.
 
+ trans/gen-renamed-sdf-module.str: since we are now using the
+constructors of the SDF2 syntax definition in PGEN 2.0 it is
+possible to implode the AsFix result of the sdf normalizer instead
+of a yield followed by a parse. This is major performance
+improvement. implodePT is used because the output of the
+normalizer is AsFix2ME.
 
+(Martin Bravenboer)
 
-	* trans/gen-renamed-sdf-module.str: since we are now using the
-	constructors of the SDF2 syntax definition in PGEN 2.0 it is
-	possible to implode the AsFix result of the sdf normalizer instead
-	of a yield followed by a parse. This is major performance
-	improvement. implodePT is used because the output of the
-	normalizer is AsFix2ME.
+	* src/implode/implode-asfix.str: *not* funny: after checking
+	every possible mistake I could make I observed that implode-asfix
+	must do some obscure renaming on 'keywords' (whatever keywords are
+	to implode-asfix). This indeed appeared to be true: module,
+	exports, imports, etc. are *renamed* in implode-asfix! Well, not
+	anymore of course. 
 
 (Martin Bravenboer)
 
@@ -262,4 +283,4 @@ Developments, beta tests, and bug fixes were carried out by
   * Martin Bravenboer
   * Arthur van Dam
   * Rob Vermaas
-  * Eelco Visser
+
