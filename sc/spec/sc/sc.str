@@ -1,19 +1,9 @@
-\literate[{\tt SC}: The Stratego Compiler]
+/* This module glues together the components that make up the Stratego
+compiler. It is usually run from a script that provides the default
+information about paths. */
 
-	\begin{abstract}
-
-	This module glues together the components that make up the
-	Stratego compiler. It is usually run from a script that
-	provides the default information about paths.
-
-	\end{abstract}
-
-\begin{code}
 module sc
 imports lib xtc-lib sc-options sugar
-strategies
-
-
 strategies
 
   sc = 
@@ -110,8 +100,8 @@ strategies
   output-frontend =
     try(where(<get-config> "-F")
        ; (extract-all <+ <fatal-error> ["extracting all definitions failed"])
-       ; copy-to(get-outfile(!".tree") => treefile)
-       ; say(!["abstract syntax (after frontend) written to ", treefile]))
+       ; copy-to(get-outfile(!".tree") => file)
+       ; say(!["abstract syntax (after frontend) written to ", file]))
 
   // Adding main strategy
   // What happens if the specification already contains a main strategy? 
@@ -122,11 +112,19 @@ strategies
                   | sects])
 
   add-main =
-    try(where(<get-config> "-m" => m)
+    try(where(<get-config> "-m" => m; if-verbose2(debug(!"main strategy is: ")))
         ; xtc-io-transform(AddMain(!m)))
+    ; if-keep3(
+        copy-to(get-outfile(!".with-main") => file)
+        ; say(!["abstract syntax (before frontend) written to ", file])
+      )
 
   frontend = 
     xtc-transform(!"frontend", !["-b" | <pass-verbose> ])
+    ; if-keep2(
+        copy-to(get-outfile(!".fro") => file)
+        ; say(!["abstract syntax (after frontend) written to ", file])
+      )
 
   extract = 
     xtc-transform(!"extract", !["-b" | <pass-verbose> ])

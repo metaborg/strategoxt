@@ -1,3 +1,11 @@
+2002-12-22  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/sc/sc.str: Emitting intermediate file on various keep levels
+
+	* spec/sc/sc-options.str: Initialize config table by looking up items
+	in XTC repository instead of reading it in from file. Note that path
+	to ATERM and SRTS libraries need to be registered in the repository.
+
 2002-12-21  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/front/lift-dynamic-rules.str: Repaired the 'dynamic

@@ -1,9 +1,9 @@
 module sc-options
-imports options config
+imports options config sc-version
 strategies
 
   command-line-options =
-    import-config-file(<xtc-find> "sc.config")
+    init-sc-config
     ; parse-options(sc-options)
     ; try(<get-config> "--man"
           ; <copy-file>(<xtc-find> "sc-manual.txt", stdout)
@@ -15,6 +15,26 @@ strategies
        <+ <fatal-error> ["no main module specified"])
     ; sc-announce
     ; if-verbose1(where(<get-config> "-i"; debug(!"compiling ")))
+
+  init-sc-config = 
+  where(
+    <set-config>("VERSION", sc-version)
+    ; <set-config>("--verbose", 1)
+    ; <set-config>("--keep", 0)
+    ; <set-config>("-I", ["-I", <xtc-find-path> "lib.rtree",
+                          "-I", <xtc-find-path> "Stratego.rtree",
+                          "-I", <xtc-find-path> "StrategoRenamed.sdf"])
+    ; <set-config>("--C-include", 
+		   ["<srts/stratego.h>", "<ssl/stratego-lib.h>"])
+    ; <set-config>("-CI", ["-I", <conc-strings>(<xtc-find-path> "SRTS", "/include"),
+                           "-I", <conc-strings>(<xtc-find-path> "SRTS", "/include"),
+                           "-I", <conc-strings>(<xtc-find-path> "ATERM", "/include")])
+    ; <set-config>("-CL", ["-L", <conc-strings>(<xtc-find-path> "SRTS", "/lib"),
+                           "-lstratego-lib.opt", "-lstratego.opt",
+                           "-L", <conc-strings>(<xtc-find-path> "ATERM", "/lib"),
+                           "-lATerm-gcc",
+                           "-lm"])
+  )
 
   sc-options =
     ArgOption("-i",

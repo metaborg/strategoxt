@@ -8,7 +8,7 @@ SCFLAGS 	 = -I $(srcdir)/../sig \
 	  	   -I $(srcdir)/../lib \
 	  	   -I $(srcdir)/../opt \
 	  	   --main $* \
-	  	   --keep 1 --verbose 1 --ast
+	  	   --keep 1 --verbose 1 
 
 libexec_PROGRAMS = frontend extract extract-all rename-defs inline 
 check_PROGRAMS	 = use-def-test lift-dynamic-rules-test

@@ -18,7 +18,7 @@ strategies
     ; Specification([id,Strategies(desugar-spec)])
 
   timing(msg) =
-    if-verbose5(where(run-time; debug(msg)))
+    if-verbose3(where(dtime; debug(msg)))
 \end{code}
 
 % Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>

@@ -31,7 +31,7 @@ AC_SUBST(EXE)
 libexecdir=\$\{exec_prefix\}/libexec/$PACKAGE
 AC_SUBST(libexecdir)
 
-AC_REVISION($Id: configure.in,v 1.34 2002/12/16 23:29:33 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.35 2002/12/22 13:51:07 stratego Exp $)
 
 AC_PROG_CC
 AC_PROG_RANLIB
@@ -69,6 +69,7 @@ AC_OUTPUT( \
 	spec/match/data/Makefile \
 	spec/opt/Makefile \
 	spec/sc/Makefile \
+	spec/sc/sc-version.str \
 	spec/si/Makefile \
 	spec/si/stratego \
 	spec/si/data/Makefile \
