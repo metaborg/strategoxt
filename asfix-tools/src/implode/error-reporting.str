@@ -1,7 +1,7 @@
 /**
  * Reporting error summaries to the user.
  */
-module sglri-error-reporting
+module error-reporting
 imports error-support
 strategies
 

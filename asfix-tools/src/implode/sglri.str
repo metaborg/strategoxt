@@ -1,5 +1,7 @@
 module sglri
-imports liblib sglri-error-reporting
+imports
+  liblib
+  error-reporting
 
 strategies
 
