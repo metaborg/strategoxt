@@ -67,7 +67,7 @@ strategies
     where(
       <table-get>(XTC, TEMP) => fs
       ; map(try(remove-file))
-    ) 
+    )
 
   xtc-temp-files(s) = 
     begin-scope(!TempFiles)
@@ -75,6 +75,7 @@ strategies
     ; where((<table-get>(TempFiles, Scopes) <+ ![[]]) => [scope | scopes]
             ; <map(try(remove-file))> scope)
     ; end-scope(!TempFiles)
+
 
   // XTC-IO : 'read' input file, transform, and 'write' to output file
 
@@ -84,6 +85,12 @@ strategies
       ; s
       ; rename-to(<get-config> "-o" <+ !stdout)
     )
+
+  xtc-iowrap(s) =
+    option-wrap(io-options, xtc-io(s))
+
+  xtc-iowrap(extra-options, s) =
+    option-wrap(extra-options <+ io-options, xtc-io(s))
 
   // iowrap for xtc tools: 'read' -i option, transform, and 'write' to -o option
 
