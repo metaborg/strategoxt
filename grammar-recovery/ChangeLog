@@ -1,3 +1,6 @@
+2001-10-05 Merijn de Jonge <mdejonge@cwi.nl>
+        * src/yacc2sdf/yacc2sdf.r: replaced iowrap by io-idwrap
+
 2001-09-29  Eelco Visser  <visser@acm.org>
 
 	* src/yacc2sdf/lex2sdf.r: Translation of LEX definition to SDF2.

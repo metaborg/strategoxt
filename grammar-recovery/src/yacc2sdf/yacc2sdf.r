@@ -4,7 +4,7 @@ Authors: Eelco Visser, Merijn de Jonge
 
 \begin{code}
 module yacc2sdf
-imports yacc Sdf2-Syntax lib asfix
+imports yacc Sdf2-Syntax lib asfix io-idwrap
 
 signature
    constructors
@@ -14,7 +14,7 @@ signature
       
 strategies
 
-  yacc2sdf = iowrap(Main)
+  yacc2sdf = io-idwrap(?"yacc-0", Main)
 
   Main = 
     YACC2SDF;
