@@ -371,15 +371,15 @@ ATerm CInclDir_1 (ATerm, ATerm h_33 (ATerm));
 ATerm cc1_0 (ATerm);
 ATerm dtime_0 (ATerm);
 ATerm pp_c_1 (ATerm, ATerm d_54 (ATerm));
-ATerm s2c_1 (ATerm, ATerm c_54 (ATerm));
+ATerm s2c_1 (ATerm, ATerm v_53 (ATerm));
 ATerm stratego_cf_1 (ATerm, ATerm g_54 (ATerm));
-ATerm canonicalize_1 (ATerm, ATerm q_53 (ATerm));
-ATerm optimize2_1 (ATerm, ATerm x_53 (ATerm));
-ATerm compile_match_1 (ATerm, ATerm w_53 (ATerm));
-ATerm fusion_1 (ATerm, ATerm v_53 (ATerm));
+ATerm canonicalize_1 (ATerm, ATerm u_53 (ATerm));
+ATerm optimize2_1 (ATerm, ATerm t_53 (ATerm));
+ATerm compile_match_1 (ATerm, ATerm s_53 (ATerm));
+ATerm fusion_1 (ATerm, ATerm y_53 (ATerm));
 ATerm FUSION_0 (ATerm);
-ATerm optimize1_1 (ATerm, ATerm u_53 (ATerm));
-ATerm inline_1 (ATerm, ATerm r_53 (ATerm));
+ATerm optimize1_1 (ATerm, ATerm r_53 (ATerm));
+ATerm inline_1 (ATerm, ATerm q_53 (ATerm));
 ATerm rename_defs_1 (ATerm, ATerm p_53 (ATerm));
 ATerm stratego_nf_1 (ATerm, ATerm f_54 (ATerm));
 ATerm extract_1 (ATerm, ATerm n_53 (ATerm));
@@ -663,7 +663,7 @@ ATerm remove_intermediates_0 (ATerm t)
             {
               ATerm m_20;
               m_20 = t;
-              t = (ATerm) ATmakeAppl(sym_TCons_2, not_null(z_3), (ATerm) ATmakeAppl(sym_TCons_2, (ATerm)ATmakeAppl(sym_Cons_2, (ATerm)ATmakeAppl(ATmakeSymbol(".tree", 0, ATtrue)), (ATerm) ATmakeAppl(sym_Cons_2, (ATerm)ATmakeAppl(ATmakeSymbol(".tree1", 0, ATtrue)), (ATerm) ATmakeAppl(sym_Cons_2, (ATerm)ATmakeAppl(ATmakeSymbol(".s", 0, ATtrue)), (ATerm) ATmakeAppl(sym_Cons_2, (ATerm)ATmakeAppl(ATmakeSymbol(".s1", 0, ATtrue)), (ATerm) ATmakeAppl(sym_Cons_2, (ATerm)ATmakeAppl(ATmakeSymbol(".s2", 0, ATtrue)), (ATerm) ATmakeAppl(sym_Cons_2, (ATerm)ATmakeAppl(ATmakeSymbol(".so1", 0, ATtrue)), (ATerm) ATmakeAppl(sym_Cons_2, (ATerm)ATmakeAppl(ATmakeSymbol(".so2", 0, ATtrue)), (ATerm) ATmakeAppl(sym_Cons_2, (ATerm)ATmakeAppl(ATmakeSymbol(".so3", 0, ATtrue)), (ATerm) ATmakeAppl(sym_Cons_2, (ATerm)ATmakeAppl(ATmakeSymbol(".so4", 0, ATtrue)), (ATerm) ATmakeAppl(sym_Cons_2, (ATerm)ATmakeAppl(ATmakeSymbol(".i1", 0, ATtrue)), (ATerm) ATmakeAppl(sym_Cons_2, (ATerm)ATmakeAppl(ATmakeSymbol(".i", 0, ATtrue)), (ATerm) ATmakeAppl(sym_Cons_2, (ATerm)ATmakeAppl(ATmakeSymbol(".o", 0, ATtrue)), (ATerm) ATmakeAppl(sym_Nil_0))))))))))))), (ATerm) ATmakeAppl(sym_TNil_0)));
+              t = (ATerm) ATmakeAppl(sym_TCons_2, not_null(z_3), (ATerm) ATmakeAppl(sym_TCons_2, (ATerm)ATmakeAppl(sym_Cons_2, (ATerm)ATmakeAppl(ATmakeSymbol(".tree", 0, ATtrue)), (ATerm) ATmakeAppl(sym_Cons_2, (ATerm)ATmakeAppl(ATmakeSymbol(".tree1", 0, ATtrue)), (ATerm) ATmakeAppl(sym_Cons_2, (ATerm)ATmakeAppl(ATmakeSymbol(".s1", 0, ATtrue)), (ATerm) ATmakeAppl(sym_Cons_2, (ATerm)ATmakeAppl(ATmakeSymbol(".s2", 0, ATtrue)), (ATerm) ATmakeAppl(sym_Cons_2, (ATerm)ATmakeAppl(ATmakeSymbol(".s3", 0, ATtrue)), (ATerm) ATmakeAppl(sym_Cons_2, (ATerm)ATmakeAppl(ATmakeSymbol(".s4", 0, ATtrue)), (ATerm) ATmakeAppl(sym_Cons_2, (ATerm)ATmakeAppl(ATmakeSymbol(".s5", 0, ATtrue)), (ATerm) ATmakeAppl(sym_Cons_2, (ATerm)ATmakeAppl(ATmakeSymbol(".s6", 0, ATtrue)), (ATerm) ATmakeAppl(sym_Cons_2, (ATerm)ATmakeAppl(ATmakeSymbol(".s7", 0, ATtrue)), (ATerm) ATmakeAppl(sym_Cons_2, (ATerm)ATmakeAppl(ATmakeSymbol(".s8", 0, ATtrue)), (ATerm) ATmakeAppl(sym_Cons_2, (ATerm)ATmakeAppl(ATmakeSymbol(".ac", 0, ATtrue)), (ATerm) ATmakeAppl(sym_Cons_2, (ATerm)ATmakeAppl(ATmakeSymbol(".ac.abox", 0, ATtrue)), (ATerm) ATmakeAppl(sym_Cons_2, (ATerm)ATmakeAppl(ATmakeSymbol(".o", 0, ATtrue)), (ATerm) ATmakeAppl(sym_Nil_0)))))))))))))), (ATerm) ATmakeAppl(sym_TNil_0)));
               t = rzip_1(t, conc_strings_0);
               t = rm_files_0(t);
               t = m_20;
@@ -1537,12 +1537,12 @@ ATerm pp_c_1 (ATerm t, ATerm d_54 (ATerm))
   }
   return(t);
 }
-ATerm s2c_1 (ATerm t, ATerm c_54 (ATerm))
+ATerm s2c_1 (ATerm t, ATerm v_53 (ATerm))
 {
   ATerm f_1 (ATerm t)
   {
     t = (ATerm) ATmakeAppl(ATmakeSymbol("/s2c", 0, ATtrue));
-    t = pref_1(t, c_54);
+    t = pref_1(t, v_53);
     return(t);
   }
   ATerm h_1 (ATerm t)
@@ -1564,60 +1564,60 @@ ATerm stratego_cf_1 (ATerm t, ATerm g_54 (ATerm))
   t = pipe_2(t, i_1, _id);
   return(t);
 }
-ATerm canonicalize_1 (ATerm t, ATerm q_53 (ATerm))
+ATerm canonicalize_1 (ATerm t, ATerm u_53 (ATerm))
 {
   ATerm j_1 (ATerm t)
   {
     t = (ATerm) ATmakeAppl(ATmakeSymbol("/canonicalize", 0, ATtrue));
-    t = pref_1(t, q_53);
+    t = pref_1(t, u_53);
     return(t);
   }
   ATerm s_1 (ATerm t)
   {
-    t = (ATerm) ATmakeAppl(ATmakeSymbol(".s4", 0, ATtrue));
+    t = (ATerm) ATmakeAppl(ATmakeSymbol(".s8", 0, ATtrue));
     return(t);
   }
   t = pipe_2(t, j_1, s_1);
   return(t);
 }
-ATerm optimize2_1 (ATerm t, ATerm x_53 (ATerm))
+ATerm optimize2_1 (ATerm t, ATerm t_53 (ATerm))
 {
   ATerm t_1 (ATerm t)
   {
     t = (ATerm) ATmakeAppl(ATmakeSymbol("/optimize2", 0, ATtrue));
-    t = pref_1(t, x_53);
+    t = pref_1(t, t_53);
     return(t);
   }
   ATerm u_1 (ATerm t)
   {
-    t = (ATerm) ATmakeAppl(ATmakeSymbol(".so4", 0, ATtrue));
+    t = (ATerm) ATmakeAppl(ATmakeSymbol(".s7", 0, ATtrue));
     return(t);
   }
   t = pipe_2(t, t_1, u_1);
   return(t);
 }
-ATerm compile_match_1 (ATerm t, ATerm w_53 (ATerm))
+ATerm compile_match_1 (ATerm t, ATerm s_53 (ATerm))
 {
   ATerm x_1 (ATerm t)
   {
     t = (ATerm) ATmakeAppl(ATmakeSymbol("/compile-match", 0, ATtrue));
-    t = pref_1(t, w_53);
+    t = pref_1(t, s_53);
     return(t);
   }
   ATerm z_1 (ATerm t)
   {
-    t = (ATerm) ATmakeAppl(ATmakeSymbol(".so3", 0, ATtrue));
+    t = (ATerm) ATmakeAppl(ATmakeSymbol(".s6", 0, ATtrue));
     return(t);
   }
   t = pipe_2(t, x_1, z_1);
   return(t);
 }
-ATerm fusion_1 (ATerm t, ATerm v_53 (ATerm))
+ATerm fusion_1 (ATerm t, ATerm y_53 (ATerm))
 {
   ATerm a_2 (ATerm t)
   {
     t = (ATerm) ATmakeAppl(ATmakeSymbol("/fusion", 0, ATtrue));
-    t = pref_1(t, v_53);
+    t = pref_1(t, y_53);
     return(t);
   }
   ATerm b_2 (ATerm t)
@@ -1637,33 +1637,33 @@ ATerm FUSION_0 (ATerm t)
     _fail(t);
   return(t);
 }
-ATerm optimize1_1 (ATerm t, ATerm u_53 (ATerm))
+ATerm optimize1_1 (ATerm t, ATerm r_53 (ATerm))
 {
   ATerm c_2 (ATerm t)
   {
     t = (ATerm) ATmakeAppl(ATmakeSymbol("/optimize1", 0, ATtrue));
-    t = pref_1(t, u_53);
+    t = pref_1(t, r_53);
     return(t);
   }
   ATerm d_2 (ATerm t)
   {
-    t = (ATerm) ATmakeAppl(ATmakeSymbol(".so1", 0, ATtrue));
+    t = (ATerm) ATmakeAppl(ATmakeSymbol(".s5", 0, ATtrue));
     return(t);
   }
   t = pipe_2(t, c_2, d_2);
   return(t);
 }
-ATerm inline_1 (ATerm t, ATerm r_53 (ATerm))
+ATerm inline_1 (ATerm t, ATerm q_53 (ATerm))
 {
   ATerm e_2 (ATerm t)
   {
     t = (ATerm) ATmakeAppl(ATmakeSymbol("/inline", 0, ATtrue));
-    t = pref_1(t, r_53);
+    t = pref_1(t, q_53);
     return(t);
   }
   ATerm n_2 (ATerm t)
   {
-    t = (ATerm) ATmakeAppl(ATmakeSymbol(".s", 0, ATtrue));
+    t = (ATerm) ATmakeAppl(ATmakeSymbol(".s4", 0, ATtrue));
     return(t);
   }
   t = pipe_2(t, e_2, n_2);

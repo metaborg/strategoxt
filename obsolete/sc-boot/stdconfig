@@ -4,7 +4,7 @@
 ./configure --prefix=`pwd` \
 	--with-aterm=/home/visser/res/sandbox/aterm \
 	--with-cgen=`pwd`/../cgen \
-	--with-gpp=`pwd`/../gpp \
+	--with-gpp=`pwd`/../gpp-boot \
 	--with-ssl=`pwd`/../ssl \
 	--with-srts=`pwd`/../srts 
 

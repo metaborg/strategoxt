@@ -63,10 +63,13 @@ CLEANFILES = $(bin_PROGRAMS)
 BUILT_SOURCES = stratego.grm.tab.c stratego.grm.tab.h stratego.yy.c
 
 parse_stratego_SOURCES 	= \
-  parse-stratego.c stratego.grm stratego.lx options.h options.c $(BUILT_SOURCES)
+  	parse-stratego.c stratego.grm \
+	stratego.lx options.h options.c util.h  \
+	$(BUILT_SOURCES)
 
 parse_mod_SOURCES = \
-  parse-mod.c stratego.grm stratego.lx options.h options.c $(BUILT_SOURCES)
+  	parse-mod.c stratego.grm stratego.lx \
+	options.h options.c util.h $(BUILT_SOURCES)
 
 %.grm.tab.c: %.grm
 	bison -d -t -v $<
