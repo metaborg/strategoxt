@@ -1209,7 +1209,7 @@ void init_constant_terms (void)
   ATprotect(&(term_p_75));
   term_p_75 = (ATerm) ATmakeAppl(ATmakeSymbol("Invalid option: ", 0, ATtrue));
   ATprotect(&(term_u_75));
-  term_u_75 = (ATerm) ATmakeAppl(ATmakeSymbol("0.9.3", 0, ATtrue));
+  term_u_75 = (ATerm) ATmakeAppl(ATmakeSymbol("0.9.4", 0, ATtrue));
   ATprotect(&(term_v_75));
   term_v_75 = (ATerm) ATmakeAppl(sym__2, term_q_57, term_u_75);
   ATprotect(&(term_w_75));

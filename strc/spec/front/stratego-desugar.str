@@ -14,7 +14,6 @@ strategies
   pre-desugar =
     topdown(repeat(Desugar); try(DesugarOnce))
 
-
 rules
 
   Desugar :
@@ -39,10 +38,12 @@ rules
   Desugar :
     Call(f, ss) 	-> CallT(f, ss, [])
 
-  Desugar :
+  DesugarOnce :
     PrimNoArgs(f) 	-> PrimT(<try(un-double-quote)>f, [], [])
-  Desugar :
+  DesugarOnce :
     Prim(f,ts) 	        -> PrimT(<try(un-double-quote)>f, [], ts)
+  DesugarOnce :
+    PrimT(f,ss,ts) 	-> PrimT(<try(un-double-quote)>f, ss, ts)
 
   Desugar :
     RChoice(s1, s2) 	-> LChoice(s2, s1)
