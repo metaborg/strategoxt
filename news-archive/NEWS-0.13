@@ -5,7 +5,9 @@ StrategoXT 0.13 -- released January ?, 2005
 Paragraph about dynamic rules, compiler features, library, improved
 tools and strategoxt-utils.
 
----------++ New Dynamic Rule Features
+---------++ Stratego Language
+
+---------+++ New Dynamic Rule Features
 
     (Eelco Visser)
 
@@ -107,7 +109,7 @@ differnt arity. This has now been fixed, hence only =Cons/2= and
 
     (Martin Bravenboer)
 
----------++ Stratego Standard Library
+---------++ Stratego Library
 
 ----------+++ Separate compilation
 
@@ -178,7 +180,7 @@ is no need to close file descriptiors. =write-term-to-text-pipe= uses
 
     (Merijn de Jonge)
 
----------++ Deployment and Build System
+---------++ StrategoXT Deployment and Build System
 
 ---------+++ Separate package for StrategoXT Utils
 
@@ -218,7 +220,7 @@ All macros now use the XT prefix
 
     (Akim Demaille and Martin Bravenboer)
 
----------++ Tools
+---------++ StrategoXT Transformation Tools
 
 ---------+++ sglri
 
@@ -305,3 +307,5 @@ Developments, beta tests, and bug fixes were carried out by
    * Rob van der Leek
    * Rob Vermaas
    * Eelco Visser
+
+Thanks!
