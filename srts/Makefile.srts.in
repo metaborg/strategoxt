@@ -1,0 +1,10 @@
+INCLUDES 	= -I@prefix@/include \
+		  -I@ATERM@/include
+
+LDFLAGS		= -L@prefix@/lib \
+		  -L@ATERM@/lib 
+
+LDADD		= -lstratego.opt \
+		  -lstratego-lib.opt \
+		  -lATerm-gcc \
+		  -lm

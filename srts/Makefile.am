@@ -19,6 +19,8 @@ SUBDIRS = src ssl
 
 EXTRA_DIST = reconf mprotect.m4 Makefile.rpm
 
+pkgdata_DATA = Makefile.srts
+
 RPMRELEASE=1
 
 CONFIGURE = ./configure --prefix=/usr \
