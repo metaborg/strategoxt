@@ -18,7 +18,7 @@
 EXTRA_DIST = make_rules.in make-rules
 
 SUBDIRS = \
-  syn c front lib match opt sc sig test1 test2 log
+  syn c front lib match opt sc sig test1 test2 testlib testspec log
 
 DIST_SUBDIRS = si sdf test3 $(SUBDIRS)
 

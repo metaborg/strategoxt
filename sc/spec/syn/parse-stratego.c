@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1998, 1999 Eelco Visser <visser@acm.org>
+Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 */
 
 #include <aterm2.h>
-#include "stratego.h"
+#include <srts/stratego.h>
 #include "options.h"
 
 int parse();

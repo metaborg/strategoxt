@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2001 Eelco Visser <visser@acm.org>
+# Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
 # 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,6 +15,24 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
+############# CPL ##################################################
+
+#if USECPL
+# Use the choice point library CPL to implement choice
+#CHOICEINCLUDES = -I$(CPL)/include -DUSECPL
+#CHOICELDFLAGS = -L$(CPL)/lib -lchoice -DUSECPL
+#cpl-used: 
+#	@echo yes
+#else
+# Use setjmp and longjmp to implement choice
+#CHOICELDFLAGS = 
+#CHOICEINCLUDES = 
+#cpl-used: 
+#	@echo no
+#endif
+
+##################################################################
+
 SINCLUDES = -I $(STRATEGOLIB)/share/ssl
 
 TESTFILES = $(wildcard test*.r)
@@ -27,9 +45,19 @@ IOTESTSRCS = $(subst .r,.c,$(IOTESTFILES))
 IOTESTBINS = $(subst .r,.bin,$(IOTESTFILES))
 IOTESTRUNS = $(subst .r,.io-run,$(IOTESTFILES))
 
-check: $(TESTRUNS) $(IOTESTRUNS)
+TESTIBINS = $(subst .r,.ibin,$(TESTFILES))
+TESTIRUNS = $(subst .r,.irun,$(TESTFILES))
 
-CLEANFILES = $(TESTBINS) $(IOTESTBINS) $(TESTRUNS) $(IOTESTRUNS)  $(TESTSRCS) $(IOTESTSRCS) *.o *.ac *.s? *.ac *.c.abox *.tree
+check: $(TESTRUNS) $(IOTESTRUNS) 
+
+check-sc: $(TESTIRUNS)
+
+CLEANFILES = \
+	$(TESTBINS) $(IOTESTBINS) \
+	$(TESTRUNS) $(IOTESTRUNS) \
+	$(TESTSRCS) $(IOTESTSRCS) \
+	$(TESTIBINS) $(TESTIRUNS) \
+	*.o *.ac *.s? *.ac *.c.abox *.tree
 
 EXTRA_DIST = $(wildcard *.r) make-rules io-test*.in
 

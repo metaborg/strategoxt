@@ -46,6 +46,9 @@ rules
     where <rec x([(CallIdFun + CallFailFun)|try(x)] <+ [id|x])> args => args'
 
   Canon :
+    Bagof(s) -> Call(SVar("_bagof"),[s])
+
+  Canon :
     All(s) -> Call(SVar("_all"),[s])
 
   Canon :

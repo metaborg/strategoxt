@@ -1,23 +1,5 @@
 \literate[Strategies]
 	
-% Copyright (C) 1998, 1999, 2000 Eelco Visser <visser@acm.org>
-% 
-% This program is free software; you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation; either version 2, or (at your option)
-% any later version.
-% 
-% This program is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-% 
-% You should have received a copy of the GNU General Public License
-% along with this program; if not, write to the Free Software
-% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-% 02111-1307, USA.
-
-
 	In this module we define the operators of the core strategy
 	language that will be used to express all programs in the
 	high-level language.
@@ -47,6 +29,11 @@ signature
     Choice  : Strat * Strat                 -> Strat    (* s1 +  s2 *)
     LChoice : Strat * Strat                 -> Strat    (* s1 <+ s2 *)
     
+    GChoice  : Strat * Strat                -> Strat    (* s1 ++  s2 *)
+    LGChoice : Strat * Strat                -> Strat    (* s1 <++ s2 *)
+
+    Bagof   : Strat			    -> Strat    (* bagof(s) *)
+
     SVar    : String                        -> SVar
     Rec     : String * Strat                -> Strat    (* rec x . s *)
     Let     : List(SDef) * Strat            -> Strat    (* let sdefs in s2 *)
@@ -105,3 +92,20 @@ signature
   constructors
     Prim    : String * List(Term) -> Strat
 \end{code} 
+
+% Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
+% 
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+% 
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% 
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.

@@ -7,16 +7,21 @@ strategies
     iowrap(compile, s2c-options)
 
   compile = 
+    init-term-caching;
     rec x({| Initialized : 
              repeat(TranslateSpec + TranslateSig + TranslateDef + TranslateStrat)
            ; all(x)
            ; repeat(Csimplify) 
-           |})
+           |}
+	 );
+    try(oncetd(?InitCachedTerms; init-cached-terms))
 
 signature
   constructors
     TraceAll : Option
     Trace    : String -> Option
+
+    InitCachedTerms : Stat
 
 strategies
 
@@ -62,9 +67,12 @@ rules
   TranslateSpec :
     Specification([Signature(ops), Strategies(defs)]) -> 
     TranslationUnit([
-	  Include("#include <stratego.h>")
-	, Include("#include <stratego-lib.h>")
-	, Signature(ops) 
+	  Include("#include <srts/stratego.h>")
+	, Include("#include <ssl/stratego-lib.h>")
+        , Declaration2(TypeSpec([],TypeId("void"),[]),
+                       [IdDecl([],Id("init_constant_terms"),Some(ParamList([])))])
+	, Signature(ops)
+        , InitCachedTerms
         | <conc>(sigs,defs)])
     where <map(SDefToDeclaration)> defs => sigs
 \end{code}
@@ -96,14 +104,14 @@ Signatures
     ops ->
     FunDef(TypeSpec([],Void,[]),
            IdDecl([],Id("init_constructors"),Some(ParamList([TypeSpec([],Void,[])]))),
-           Compound([],<map(InitConstructor)> ops))
+           Compound([],<conc>(<map(InitConstructor); concat> ops, 
+			      [Stat(FunCall(Id("init_constant_terms"),[]))])))
 
   InitConstructor :
     OpDecl(c, t) ->
-    Compound([],
     [Stat(Assign(Id(csym), AssignEq,
                  FunCall(Id("ATmakeSymbol"),[StringLit([<double-quote>c]),IntConst(n),Id("ATfalse")]))),
-     Stat(FunCall(Id("ATprotectSymbol"),[Id(csym)]))])
+     Stat(FunCall(Id("ATprotectSymbol"),[Id(csym)]))]
     where <Arity> t => ar; int-to-string => n
         ; <ConstructorName> (c, ar) => csym
 
@@ -189,9 +197,24 @@ Strategy expressions
   TranslateStrat :
     LChoice(s1, s2) ->
     Compound([Declaration2(TypeSpec([],TypeId("ATerm"),[]),
-                           [DeclInit(IdDecl([],Id(x),None),AssignInit(Id("t")))])],
+                           [DeclInit(IdDecl([],Id(x),None),AssignInit(Id("t")))]),
+	      Declaration2(TypeSpec([],TypeId("int"),[]),
+                           [DeclInit(IdDecl([],Id(ptr),None),AssignInit(Id("stack_ptr")))])],
              [IfElse(Equal(FunCall(Id("PushChoice"),[]),IntConst("0")),
-                     Compound([],[s1,Stat(FunCall(Id("PopChoice"),[]))]),
+                     Compound([],[s1,Stat(FunCall(Id("LocalPopChoice"),[Id(ptr)]))]),
+                     Compound([],[Stat(Assign(Id("t"),AssignEq,Id(x))), s2]))])
+    where new => x; new => ptr
+
+  TranslateStrat :
+    GChoice(s1, s2) ->
+    LGChoice(s1, s2)
+
+  TranslateStrat :
+    LGChoice(s1, s2) ->
+    Compound([Declaration2(TypeSpec([],TypeId("ATerm"),[]),
+                           [DeclInit(IdDecl([],Id(x),None),AssignInit(Id("t")))])],
+             [IfElse(Equal(FunCall(Id("GlobalPushChoice"),[]),IntConst("0")),
+                     Compound([],[s1]),
                      Compound([],[Stat(Assign(Id("t"),AssignEq,Id(x))), s2]))])
     where new => x
 
@@ -224,7 +247,9 @@ Strategy expressions
   TranslateStrat :
     Where(s) ->
     Compound([Declaration2(TypeSpec([],TypeId("ATerm"),[]), IdDecl([],Id(x),None))],
-             [Stat(Assign(Id(x),AssignEq,Id("t"))), s,Stat(Assign(Id("t"),AssignEq,Id(x)))])
+             [Stat(Assign(Id(x),AssignEq,Id("t"))), 
+              s, 
+              Stat(Assign(Id("t"),AssignEq,Id(x)))])
     where new => x
 
   TranslateStrat :
@@ -412,10 +437,10 @@ rules
 
   TranslateStrat :
     Build(t) ->
-    Stat(Assign(Id("t"), AssignEq, <construct-term> t))
+    Stat(Assign(Id("t"), AssignEq, <construct-term-caching> t))
 
   construct-term =
-    topdown(ConstructList; !CastATerm(<id>) <+ repeat(ConstructTerm))
+    bottomup(try(ConstructList <+ ConstructTerm))
 
   ConstructTerm :
     Int(i) -> 
@@ -443,10 +468,56 @@ rules
 
   ConstructList :
     Op("Nil", []) ->
-    Id("ATempty")
+    CastATerm(Id("ATempty"))
 
   ConstructList :
     Op("Cons", [hd, tl]) ->
+    CastATerm(FunCall(Id("ATinsert"),[tl', hd]))
+    where <?CastATerm(<Id("ATempty") + FunCall(Id("ATinsert"),[id, id])>) <+ !CheckATermList(tl)> tl => tl'
+
+  ConstructList' :
+    Op("Cons", [hd, tl]) ->
     FunCall(Id("ATinsert"),[tl', hd])
     where (<(Op("Nil", []) + Op("Cons", [id, id])); ConstructList> tl <+ !CheckATermList(tl)) => tl'
+\end{code}
+
+	Term construction with constant term caching
+
+\begin{code}
+  init-term-caching =
+    where(!Op("Nil", []) => t; !CastATerm(Id("ATempty")) => e);
+    rules( Cache : t -> e )
+
+  construct-term-caching =
+    rec x(Cache 
+          <+ !(<id>, <all(x); try(ConstructList <+ ConstructTerm)>)
+             ;(CacheConstant <+ Snd)
+         )
+
+  CacheConstant :
+    (t, e) -> Id(x)
+    where <(Op(id, map(Cache)) + Int(id) + Str(id) + Real(id) + BuildDefault(id))> t
+        ; new => base; <conc-strings>("term_", <id>) => x
+        ; rules( Cache : t -> Id(x) )
+        ; ![(base, x, e) | <CachedTerms <+ ![]>] => xs
+        ; rules( CachedTerms : _ -> xs )
+
+  init-cached-terms =
+    (CachedTerms <+ ![]);
+    !TranslationUnit(<conc>(<map(DeclareTermId)>, [<InitTermIds>]))
+
+  DeclareTermId :
+    (base, x, e) ->
+    Declaration2(TypeSpec([],TypeId("ATerm"),[]),[IdDecl([],Id(x),None)])
+
+  InitTermIds :
+    xs ->
+    FunDef(TypeSpec([],Void,[]),
+           IdDecl([],Id("init_constant_terms"),Some(ParamList([TypeSpec([],Void,[])]))),
+           Compound([],<map(InitTermId); concat; reverse> xs))
+
+  InitTermId :
+    (base, x, e) ->
+    [Stat(Assign(Id(x), AssignEq, e)),
+     Stat(FunCall(Id("ATprotect"),[Address(Id(x))]))]
 \end{code}

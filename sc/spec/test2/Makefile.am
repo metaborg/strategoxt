@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2001 Eelco Visser <visser@acm.org>
+# Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
 # 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -30,6 +30,11 @@ IOTESTBINS = $(subst .r,.bin,$(IOTESTFILES))
 IOTESTRUNS = $(subst .r,.io-run,$(IOTESTFILES))
 
 check: $(TESTRUNS) $(IOTESTRUNS)
+
+TESTIBINS = $(subst .r,.ibin,$(TESTFILES))
+TESTIRUNS = $(subst .r,.irun,$(TESTFILES))
+
+check-sc: $(TESTIRUNS)
 
 CLEANFILES = $(TESTBINS) $(IOTESTBINS) $(TESTRUNS) $(IOTESTRUNS)  $(TESTSRCS) $(IOTESTSRCS) *.o *.c *.ac *.s? *.tree *.c.abox
 

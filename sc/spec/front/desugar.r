@@ -89,7 +89,10 @@ rules
   Mapp1 : Match(App(s, t')) -> BA(s, t')
 
   Mapp2 : Match(t[App(s, t')]) -> 
-          Seq(Match(t[Wld](pat-td)), BA(s, t'))
+          Scope([x], Seq(Match(t[Var(x)](pat-td)), 
+                     Seq(Build(Var(x)), 
+                     Seq(Build(t'), s))))
+          where new => x
 
   Mapp0 : Match(t[RootApp(Match(t'))]) -> Match(t[t'](pat-td))
 

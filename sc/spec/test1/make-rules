@@ -1,12 +1,13 @@
 .PRECIOUS: %.c %.tree %.s1 %.s2 %.s3 %.s4 %.s5 %.s6 %.s7 %.s8 %.s9 %.ac %.c.abox %.bin
 
+
 CINCL = -I$(STRATEGORTS)/include \
 	-I$(STRATEGOLIB)/include \
-	-I$(ATERM)/include
+	-I$(ATERM)/include $(CHOICEINCLUDES)
 
 SCLibs = -L$(STRATEGOLIB)/lib -lstratego-lib \
 	 -L$(STRATEGORTS)/lib -lstratego \
-	 -L$(ATERM)/lib -lATerm-gcc \
+	 -L$(ATERM)/lib -lATerm-gcc $(CHOICELDFLAGS) \
 	 -lm
 
 # FRONT-END ###########################################################
@@ -71,7 +72,7 @@ SCLibs = -L$(STRATEGOLIB)/lib -lstratego-lib \
 # RUNNING ###########################################################
 
 %.run : %.bin
-	$< 
+	./$< 
 
 %.io-run : %.bin
 	$< -i $*.in -o $*.out 
@@ -84,5 +85,10 @@ SCLibs = -L$(STRATEGOLIB)/lib -lstratego-lib \
 %.trm: %.af
 	implode-asfix -i $< -o $@
 
+# USING INSTALLED SC ###############################################
 
+%.ibin: %.r
+	$(STRATEGOBOOT)/bin/sc -i $< -o $@
 
+%.irun: %.ibin
+	$<

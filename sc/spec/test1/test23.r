@@ -3,6 +3,10 @@
 module test23
 strategies
 
+  main = 
+    test1; 
+    test2
+
   Swap : (x, y) -> (y, x)
 
   Fst : (x, y) -> x
@@ -15,10 +19,14 @@ strategies
 
   is-pair = (id,id)
 
-  main = 
+  test1 = 
     !("a", "b");
     Swap;
     is-pair;
     Swap2;
     ?("a", "b")
 
+  test2 =
+    !(("b", "c"), "a");
+    ?(<Snd>("$", <Swap>), _);
+    ?("c", "b")

@@ -31,6 +31,8 @@ strategies
 	+ Seq(exp, exp)
 	+ Choice(exp, exp)
 	+ LChoice(exp, exp)
+	+ GChoice(exp, exp)
+	+ LGChoice(exp, exp)
 	+ Call(SVar(is-string),list(Call(SVar(is-string),[])))
 	+ Rec(is-string, exp)
 	+ Path(is-int, exp)

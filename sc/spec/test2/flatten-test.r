@@ -10,9 +10,9 @@ signature
 strategies
 
   flatten-terms = 
-    flatten(debug; \ Imports(xs) -> xs \; debug, 
-	    debug; {n : ?(n, Module(n, _))}; debug,
-	    debug; \ Module(n, c) -> <filter(not(Imports(id)))> c \; debug )
+    flatten(\ Imports(xs) -> xs \, 
+	    {n : ?(n, Module(n, _))},
+	    \ Module(n, c) -> <filter(not(Imports(id)))> c \ )
 
   main = 
     test-suite(!"flatten-test",

@@ -10,8 +10,8 @@ ${prefix}/bin/proto-sc \
     $* \
     -e ${prefix}/bin \
     -I ${STRATEGOLIB}/share/ssl \
-    -CI "-I${STRATEGORTS}/include" \
-    -CI "-I${STRATEGOLIB}/include" \
+    -CI "-I${STRATEGORTS}/include/srts" \
+    -CI "-I${STRATEGOLIB}/include/ssl" \
     -CL "-L${STRATEGOLIB}/lib -lstratego-lib.opt" \
     -CL "-L${STRATEGORTS}/lib -lstratego.opt" \
     -CI "-I${ATERM}/include" \
