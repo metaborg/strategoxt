@@ -13,6 +13,8 @@ STRINCLUDES = \
   -I $(top_srcdir)/sig \
   -I $(SDF_FRONT)/share/sdf-front 
 
+LDADD += $(SSL_LIBS)
+
 EXTRA_DIST 	 = $(wildcard *.str)
 BOOTCLEANFILES   = Vis-amb.c nonterminal-tree.c
 CLEANFILES       = visamb1_check visamb2_check $(wildcard *.dep)

@@ -1,5 +1,5 @@
 module nonterminal-tree
-imports lib AsFix verbalize-sdf
+imports liblib AsFix verbalize-sdf
 strategies
 
   nonterminal-tree =

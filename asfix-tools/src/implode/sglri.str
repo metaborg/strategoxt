@@ -1,5 +1,5 @@
 module sglri
-imports xtc-lib lib
+imports liblib
 
 strategies
 
@@ -19,14 +19,14 @@ strategies
     + ArgOption("--start", 
         where(<set-config> ("--start", <id>)),
         !"--start symbol   Define start symbol")
-
+  (*
   short-description(p) = 
     !["Usage: ", <p>(), " [options]"]
  
   long-description(p)  = 
     !["The sglri tool parses a text file according to the parse table provided with\n",
       "the -p option and implodes the resulting concrete (asfix) tree to an abstract\n",
-      "syntax tree.\n"]
+      "syntax tree.\n"] *)
 
   parse-and-implode =
       sglr(get-parse-table, pass-sglri-args)

@@ -12,6 +12,8 @@ STRINCLUDES = \
   -I $(top_srcdir)/lib \
   -I $(XTC)/share/xtc
 
+LDADD += $(SSL_LIBS)
+
 EXTRA_DIST  	= $(wildcard *.str) $(wildcard *.meta)
 BOOTCLEANFILES 	= implode-asfix.c sglri.c
 CLEANFILES	= $(wildcard *.dep)

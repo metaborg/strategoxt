@@ -6,7 +6,7 @@
  * constructor name.
  */
 module implode-asfix
-imports lib AsFix options verbalize-sdf
+imports liblib AsFix verbalize-sdf
 
 signature
   constructors
@@ -68,7 +68,7 @@ strategies
   + Option( "--concrete",
 	where(<set-config>("--concrete", <id>)),
         !"--concrete       Skip concrete syntax parts for Stratego parsing")
-
+  (*
   short-description(p) = 
     !["Usage: ", <p>(), " [options]"]
  
@@ -76,6 +76,7 @@ strategies
     !["The implode-asfix utility maps an AsFix parse tree to an abstract syntax tree.\n",
       "Without any switches, a full implosion is performed. By specifying any switches,\n",
       "the exact implosion steps to perform can be specified.\n"]
+  *)
 
   implode =
        ?term;
@@ -458,19 +459,19 @@ rules
 
   OptList : 
     appl(prod([], cf(opt(s)), _), []) -> []
-    where <is-list> s
+    where <is-asfix-list> s
 
   OptList : 
     appl(prod([cf(s)], cf(opt(s)), _), [x]) -> x
-    where <is-list> s
+    where <is-asfix-list> s
 
   OptList : 
     appl(prod([], opt(s), _), []) -> []
-    where <is-list> s
+    where <is-asfix-list> s
 
   OptList : 
     appl(prod([s], opt(s), _), [x]) -> x
-    where <is-list> s
+    where <is-asfix-list> s
 
 strategies
 
@@ -480,7 +481,7 @@ strategies
     iter-star(id) + 
     iter-star-sep(id, id)
 
-  is-list = 
+  is-asfix-list = 
     rec x(list-sort +
           seq(list(lit(id) + layout + x)))
 
