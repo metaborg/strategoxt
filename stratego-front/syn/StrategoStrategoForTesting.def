@@ -1,10 +1,12 @@
 definition
 module StrategoRenamed
 imports Stratego
-          [ RuleDec        => StrategoRuleDec
+          [ RuleNames      => StrategoRuleNames
+            RuleDec        => StrategoRuleDec
             DynRuleScopeId => StrategoDynRuleScopeId
             DynRuleId      => StrategoDynRuleId
             DynRuleDef     => StrategoDynRuleDef
+            ScopeLabels    => StrategoScopeLabels
             Def            => StrategoDef
             Decl           => StrategoDecl
             Module         => StrategoModule
@@ -409,9 +411,14 @@ imports
   Stratego-Rules
 
 exports
+ 
+  sorts ScopeLabels
   context-free syntax
 
-    "{|" {DynRuleScopeId ","}* ":" Strategy "|}" -> Strategy {cons("DynRuleScope")}
+    "{|" ScopeLabels ":" Strategy "|}" -> Strategy {cons("DynRuleScope")}
+
+    {DynRuleScopeId ","}*   -> ScopeLabels
+    "~" Term		    -> ScopeLabels {cons("ScopeLabels")}
 
   sorts DynRuleDef DynRuleId DynRuleScopeId RuleDec
   context-free syntax
@@ -440,32 +447,36 @@ exports
     Id "(" {Typedid ","}* 
        "|" {Typedid ","}* ")"   -> RuleDec {cons("RDecT")}
 
+  sorts RuleNames
   context-free syntax
 
-    "/" {Id ","}* "\\*" Strategy          -> Strategy {cons("DynRuleIntersectFix")}
-    "\\" {Id ","}* "/*" Strategy          -> Strategy {cons("DynRuleUnionFix")}
+    {Id ","}*				  -> RuleNames
+    "~" Term				  -> RuleNames {cons("RuleNames")}
 
-    "/" {Id ","}* "\\" 
-        {Id ","}* "/*"  Strategy          -> Strategy {cons("DynRuleIntersectUnionFix")}
+    "/" RuleNames "\\*" Strategy          -> Strategy {cons("DynRuleIntersectFix")}
+    "\\" RuleNames "/*" Strategy          -> Strategy {cons("DynRuleUnionFix")}
 
-    Strategy "/" {Id ","}* "\\" Strategy  -> Strategy {cons("DynRuleIntersect"),right}
-    Strategy "\\" {Id ","}* "/" Strategy  -> Strategy {cons("DynRuleUnion"),right}
+    "/" RuleNames "\\" 
+        RuleNames "/*"  Strategy          -> Strategy {cons("DynRuleIntersectUnionFix")}
 
-    Strategy "/" {Id ","}* "\\" 
-                 {Id ","}* "/"  Strategy  -> Strategy {cons("DynRuleIntersectUnion"),right}
+    Strategy "/" RuleNames"\\" Strategy  -> Strategy {cons("DynRuleIntersect"),right}
+    Strategy "\\" RuleNames "/" Strategy  -> Strategy {cons("DynRuleUnion"),right}
+
+    Strategy "/" RuleNames "\\" 
+                 RuleNames "/"  Strategy  -> Strategy {cons("DynRuleIntersectUnion"),right}
 
   context-free priorities
     StrategyAngle Term 		          -> Strategy {cons("BA")}
-  > {"/" {Id ","}* "\\*" Strategy         -> Strategy {cons("DynRuleIntersectFix")}
-     "\\" {Id ","}* "/*" Strategy         -> Strategy {cons("DynRuleUnionFix")}
-     "/" {Id ","}* "\\" 
-         {Id ","}* "/*"  Strategy         -> Strategy {cons("DynRuleIntersectUnionFix")}
+  > {"/" RuleNames "\\*" Strategy         -> Strategy {cons("DynRuleIntersectFix")}
+     "\\" RuleNames "/*" Strategy         -> Strategy {cons("DynRuleUnionFix")}
+     "/" RuleNames "\\" 
+         RuleNames "/*"  Strategy         -> Strategy {cons("DynRuleIntersectUnionFix")}
     }
   > Strategy "=>" Term 		  	  -> Strategy {cons("AM")}
-  > Strategy "/" {Id ","}* "\\" Strategy  -> Strategy {cons("DynRuleIntersect"),right}
-  > Strategy "\\" {Id ","}* "/" Strategy  -> Strategy {cons("DynRuleUnion"),right}
-  > Strategy "/" {Id ","}* "\\" 
-                 {Id ","}* "/"  Strategy  -> Strategy {cons("DynRuleIntersectUnion"),right}
+  > Strategy "/" RuleNames "\\" Strategy  -> Strategy {cons("DynRuleIntersect"),right}
+  > Strategy "\\" RuleNames "/" Strategy  -> Strategy {cons("DynRuleUnion"),right}
+  > Strategy "/" RuleNames "\\" 
+                 RuleNames "/"  Strategy  -> Strategy {cons("DynRuleIntersectUnion"),right}
   > Strategy ";" Strategy 		  -> Strategy {cons("Seq"),right}
 
   context-free syntax %% legacy Dynamic rules
@@ -760,10 +771,12 @@ hiddens
 
 module StrategoForTestingRenamed
 imports StrategoForTesting
-          [ RuleDec        => StrategoRuleDec
+          [ RuleNames      => StrategoRuleNames
+            RuleDec        => StrategoRuleDec
             DynRuleScopeId => StrategoDynRuleScopeId
             DynRuleId      => StrategoDynRuleId
             DynRuleDef     => StrategoDynRuleDef
+            ScopeLabels    => StrategoScopeLabels
             Def            => StrategoDef
             Decl           => StrategoDecl
             Module         => StrategoModule

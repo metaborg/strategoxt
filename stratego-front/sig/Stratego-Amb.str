@@ -2,6 +2,8 @@ module Stratego-Amb
 signature
   constructors
                                : Strategy * Strategy -> Strategy_Strategy_0
+    RuleNames                  : Term -> RuleNames
+                               : List(Id) -> RuleNames
     RDecT                      : Id * List(Typedid) * List(Typedid) -> RuleDec
     RDec                       : Id * List(Typedid) -> RuleDec
     RDecNoArgs                 : Id -> RuleDec
@@ -16,6 +18,8 @@ signature
     SetDynRule                 : DynRuleId * Rule -> DynRuleDef
     UndefineDynRule            : DynRuleId * Term -> DynRuleDef
     AddScopeLabel              : Id * Term -> DynRuleDef
+    ScopeLabels                : Term -> ScopeLabels
+                               : List(DynRuleScopeId) -> ScopeLabels
                                : RuleDef -> Def
                                : StrategyDef -> Def
     Overlays                   : List(Overlay) -> Decl
@@ -63,14 +67,14 @@ signature
     ExtendOverrideDynamicRules : List(RuleDef) -> Strategy
     ExtendDynamicRules         : List(RuleDef) -> Strategy
     OverrideDynamicRules       : List(RuleDef) -> Strategy
-    DynRuleIntersectUnion      : Strategy * List(Id) * List(Id) * Strategy -> Strategy
-    DynRuleUnion               : Strategy * List(Id) * Strategy -> Strategy
-    DynRuleIntersect           : Strategy * List(Id) * Strategy -> Strategy
-    DynRuleIntersectUnionFix   : List(Id) * List(Id) * Strategy -> Strategy
-    DynRuleUnionFix            : List(Id) * Strategy -> Strategy
-    DynRuleIntersectFix        : List(Id) * Strategy -> Strategy
+    DynRuleIntersectUnion      : Strategy * RuleNames * RuleNames * Strategy -> Strategy
+    DynRuleUnion               : Strategy * RuleNames * Strategy -> Strategy
+    DynRuleIntersect           : Strategy * RuleNames * Strategy -> Strategy
+    DynRuleIntersectUnionFix   : RuleNames * RuleNames * Strategy -> Strategy
+    DynRuleUnionFix            : RuleNames * Strategy -> Strategy
+    DynRuleIntersectFix        : RuleNames * Strategy -> Strategy
     GenDynRules                : List(DynRuleDef) -> Strategy
-    DynRuleScope               : List(DynRuleScopeId) * Strategy -> Strategy
+    DynRuleScope               : ScopeLabels * Strategy -> Strategy
     AM                         : Strategy * Term -> Strategy
     SwitchChoice               : Strategy * List(Strategy_Strategy_0) * Strategy -> Strategy
     SwitchChoiceNoOtherwise    : Strategy * List(Strategy_Strategy_0) -> Strategy

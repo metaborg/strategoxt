@@ -148,12 +148,14 @@ regular tree grammar
     Strategy                      -> ExtendOverrideDynamicRules(ListStarOfRuleDef_0)
     Strategy                      -> ExtendDynamicRules(ListStarOfRuleDef_0)
     Strategy                      -> OverrideDynamicRules(ListStarOfRuleDef_0)
-    Strategy                      -> DynRuleIntersectUnion(Strategy,ListStarOfId_0,ListStarOfId_0,Strategy)
-    Strategy                      -> DynRuleUnion(Strategy,ListStarOfId_0,Strategy)
-    Strategy                      -> DynRuleIntersect(Strategy,ListStarOfId_0,Strategy)
-    Strategy                      -> DynRuleIntersectUnionFix(ListStarOfId_0,ListStarOfId_0,Strategy)
-    Strategy                      -> DynRuleUnionFix(ListStarOfId_0,Strategy)
-    Strategy                      -> DynRuleIntersectFix(ListStarOfId_0,Strategy)
+    Strategy                      -> DynRuleIntersectUnion(Strategy,RuleNames,RuleNames,Strategy)
+    Strategy                      -> DynRuleUnion(Strategy,RuleNames,Strategy)
+    Strategy                      -> DynRuleIntersect(Strategy,RuleNames,Strategy)
+    Strategy                      -> DynRuleIntersectUnionFix(RuleNames,RuleNames,Strategy)
+    Strategy                      -> DynRuleUnionFix(RuleNames,Strategy)
+    Strategy                      -> DynRuleIntersectFix(RuleNames,Strategy)
+    RuleNames                     -> RuleNames(Term)
+    RuleNames                     -> ListStarOfId_0
     RuleDec                       -> RDecT(Id,ListStarOfTypedid_0,ListStarOfTypedid_0)
     RuleDec                       -> RDec(Id,ListStarOfTypedid_0)
     RuleDec                       -> RDecNoArgs(Id)
@@ -169,7 +171,9 @@ regular tree grammar
     DynRuleDef                    -> UndefineDynRule(DynRuleId,Term)
     DynRuleDef                    -> AddScopeLabel(Id,Term)
     Strategy                      -> GenDynRules(ListStarOfDynRuleDef_0)
-    Strategy                      -> DynRuleScope(ListStarOfDynRuleScopeId_0,Strategy)
+    ScopeLabels                   -> ScopeLabels(Term)
+    ScopeLabels                   -> ListStarOfDynRuleScopeId_0
+    Strategy                      -> DynRuleScope(ScopeLabels,Strategy)
     Def                           -> RuleDef
     Def                           -> StrategyDef
     Decl                          -> Overlays(ListStarOfOverlay_0)

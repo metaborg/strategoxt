@@ -1,9 +1,11 @@
 module StrategoForTestingRenamed
 imports StrategoForTesting
-          [ RuleDec        => StrategoRuleDec
+          [ RuleNames      => StrategoRuleNames
+            RuleDec        => StrategoRuleDec
             DynRuleScopeId => StrategoDynRuleScopeId
             DynRuleId      => StrategoDynRuleId
             DynRuleDef     => StrategoDynRuleDef
+            ScopeLabels    => StrategoScopeLabels
             Def            => StrategoDef
             Decl           => StrategoDecl
             Module         => StrategoModule

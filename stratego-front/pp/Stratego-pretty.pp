@@ -102,6 +102,7 @@
    RDecT.2:iter-star-sep -- H hs=0 [_1 KW[","]],
    RDecT.3:iter-star-sep -- H hs=0 [_1 KW[","]],
 
+   RuleNames                              -- KW["~"] _1,
    DynRuleIntersectFix                    -- H hs=0[KW["/"] _1 KW["\\*"]] _2,
    DynRuleIntersectFix.1:iter-star-sep    -- H hs=0[_1 KW[","]],
    DynRuleUnionFix                        -- H hs=0[KW["\\"] _1 KW["/*"]] _2,
@@ -230,8 +231,9 @@
    ListCong.1:iter-star-sep -- _1 KW[","],
    ExplodeCong -- _1 KW["#"] _2,
 
-   GenDynRules -- V[V is=2[H[KW["rules"] KW["("]] _1] KW[")"]],
-   GenDynRules.1:iter-star -- _1,
+   ScopeLabels                  -- KW["~"] _1,
+   GenDynRules 			-- V[V is=2[H[KW["rules"] KW["("]] _1] KW[")"]],
+   GenDynRules.1:iter-star 	-- _1,
 
    AddScopeLabel          -- H hs=0 [_1 KW["+"] _2],
    UndefineDynRule        -- V is=2 [H hs=1 [_1 KW[":-"]] _2],

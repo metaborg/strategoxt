@@ -209,26 +209,26 @@ static void init_module_constant_terms (void)
 }
 #include <srts/init-stratego-application.h>
 ATerm pass_verbose_0_0 (ATerm t);
-ATerm xtc_transform_2_0 (ATerm m_113 (ATerm), ATerm n_113 (ATerm), ATerm t);
+ATerm xtc_transform_2_0 (ATerm e_118 (ATerm), ATerm f_118 (ATerm), ATerm t);
 ATerm xtc_find_0_0 (ATerm t);
 ATerm get_config_0_0 (ATerm t);
-ATerm try_1_0 (ATerm c_108 (ATerm), ATerm t);
-ATerm bottomup_1_0 (ATerm w_88 (ATerm), ATerm t);
-ATerm topdown_1_0 (ATerm v_88 (ATerm), ATerm t);
+ATerm try_1_0 (ATerm u_112 (ATerm), ATerm t);
+ATerm bottomup_1_0 (ATerm x_92 (ATerm), ATerm t);
+ATerm topdown_1_0 (ATerm w_92 (ATerm), ATerm t);
 ATerm StrategoParenthesize_0_0 (ATerm t);
-ATerm innermost_1_0 (ATerm n_117 (ATerm), ATerm t);
-ATerm xtc_io_transform_1_0 (ATerm d_112 (ATerm), ATerm t);
-ATerm xtc_transform_1_0 (ATerm l_113 (ATerm), ATerm t);
+ATerm innermost_1_0 (ATerm f_122 (ATerm), ATerm t);
+ATerm xtc_io_transform_1_0 (ATerm v_116 (ATerm), ATerm t);
+ATerm xtc_transform_1_0 (ATerm d_118 (ATerm), ATerm t);
 ATerm conc_0_0 (ATerm t);
-ATerm foldr_3_0 (ATerm y_100 (ATerm), ATerm z_100 (ATerm), ATerm a_101 (ATerm), ATerm t);
+ATerm foldr_3_0 (ATerm z_104 (ATerm), ATerm a_105 (ATerm), ATerm b_105 (ATerm), ATerm t);
 static ATerm a_0 (ATerm t);
 ATerm pass_includes_0_0 (ATerm t);
-ATerm xtc_io_1_0 (ATerm p_112 (ATerm), ATerm t);
+ATerm xtc_io_1_0 (ATerm h_117 (ATerm), ATerm t);
 ATerm io_options_0_0 (ATerm t);
 ATerm set_config_0_0 (ATerm t);
-ATerm ArgOption_3_0 (ATerm r_3 (ATerm), ATerm s_3 (ATerm), ATerm t_3 (ATerm), ATerm t);
+ATerm ArgOption_3_0 (ATerm a_4 (ATerm), ATerm b_4 (ATerm), ATerm c_4 (ATerm), ATerm t);
 ATerm extend_config_0_0 (ATerm t);
-ATerm Option_3_0 (ATerm o_3 (ATerm), ATerm p_3 (ATerm), ATerm q_3 (ATerm), ATerm t);
+ATerm Option_3_0 (ATerm x_3 (ATerm), ATerm y_3 (ATerm), ATerm z_3 (ATerm), ATerm t);
 static ATerm b_0 (ATerm t);
 static ATerm c_0 (ATerm t);
 static ATerm d_0 (ATerm t);
@@ -242,7 +242,7 @@ static ATerm k_0 (ATerm t);
 static ATerm l_0 (ATerm t);
 static ATerm m_0 (ATerm t);
 ATerm pp_stratego_options_0_0 (ATerm t);
-ATerm option_wrap_2_0 (ATerm o_114 (ATerm), ATerm p_114 (ATerm), ATerm t);
+ATerm option_wrap_2_0 (ATerm g_119 (ATerm), ATerm h_119 (ATerm), ATerm t);
 static ATerm n_0 (ATerm t);
 static ATerm o_0 (ATerm t);
 static ATerm p_0 (ATerm t);
@@ -557,9 +557,9 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                                                                           {
                                                                                                             if(match_cons(t, sym_DynRuleUnion_3))
                                                                                                               {
-                                                                                                                ATerm u_3 = ATgetArgument(t, 0);
-                                                                                                                ATerm v_3 = ATgetArgument(t, 1);
-                                                                                                                ATerm w_3 = ATgetArgument(t, 2);
+                                                                                                                ATerm o_3 = ATgetArgument(t, 0);
+                                                                                                                ATerm p_3 = ATgetArgument(t, 1);
+                                                                                                                ATerm q_3 = ATgetArgument(t, 2);
                                                                                                               }
                                                                                                             else
                                                                                                               _fail(t);
@@ -570,25 +570,25 @@ ATerm StrategoParenthesize_0_0 (ATerm t)
                                                                                                           {
                                                                                                             t = m_3;
                                                                                                             {
-                                                                                                              ATerm x_3 = t;
-                                                                                                              int y_3 = stack_ptr;
+                                                                                                              ATerm r_3 = t;
+                                                                                                              int s_3 = stack_ptr;
                                                                                                               if((PushChoice() == 0))
                                                                                                                 {
                                                                                                                   if(match_cons(t, sym_DynRuleIntersectUnion_4))
                                                                                                                     {
-                                                                                                                      ATerm z_3 = ATgetArgument(t, 0);
-                                                                                                                      ATerm a_4 = ATgetArgument(t, 1);
-                                                                                                                      ATerm b_4 = ATgetArgument(t, 2);
-                                                                                                                      ATerm c_4 = ATgetArgument(t, 3);
+                                                                                                                      ATerm t_3 = ATgetArgument(t, 0);
+                                                                                                                      ATerm u_3 = ATgetArgument(t, 1);
+                                                                                                                      ATerm v_3 = ATgetArgument(t, 2);
+                                                                                                                      ATerm w_3 = ATgetArgument(t, 3);
                                                                                                                     }
                                                                                                                   else
                                                                                                                     _fail(t);
-                                                                                                                  LocalPopChoice(y_3);
+                                                                                                                  LocalPopChoice(s_3);
                                                                                                                   t = z_23;
                                                                                                                 }
                                                                                                               else
                                                                                                                 {
-                                                                                                                  t = x_3;
+                                                                                                                  t = r_3;
                                                                                                                   if(match_cons(t, sym_Seq_2))
                                                                                                                     {
                                                                                                                       ATerm d_4 = ATgetArgument(t, 0);
