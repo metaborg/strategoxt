@@ -19,7 +19,7 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
  02111-1307, USA.
 
- $Id: Dot.r,v 1.3 2001/08/29 14:37:36 mdejonge Exp $
+ $Id: Dot.r,v 1.4 2002/09/26 14:22:01 mdejonge Exp $
 *)
 
 module Dot
