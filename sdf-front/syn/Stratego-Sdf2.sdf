@@ -78,6 +78,12 @@ exports
     "restr" [0-9\']* "*" -> Restriction*
     "restr" [0-9\']* "+" -> Restriction+
 
+  variables %% section 9.2.1
+
+    "al" [0-9\']*     -> Alias
+    "al" [0-9\']* "*" -> Alias*
+    "al" [0-9\']* "+" -> Alias+
+
   variables %% section 9.3.1
 
     "Mid" [0-9\']* -> ModuleId
