@@ -89,7 +89,9 @@ include_HEADERS = \
 libstratego_a_SOURCES = \
 	stratego.c aterm-extension.c debug.c mprotect.c \
 	stratego.h aterm-extension.h debug.h mprotect.h \
-	$(CHOICESOURCES)
+	stratego-choice.h $(CHOICESOURCES)
+
+BUILT_SOURCES = stratego-choice.h
 
 libatermextension_a_SOURCES = \
 	aterm-extension.c debug.c mprotect.c\

@@ -1,3 +1,8 @@
+2002-01-25  Eelco Visser  <visser@acm.org>
+
+	* src/Makefile.am (libstratego_a_SOURCES): Declared
+	stratego-choice.h as a built source to force building it.
+
 2002-01-15  Eelco Visser  <visser@acm.org>
 
 	* src/: Adapted the Stratego Run-Time System to (conditionally)
