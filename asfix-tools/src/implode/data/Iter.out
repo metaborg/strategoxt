@@ -1,1 +1,1 @@
-appl(prod([cf(sort("Iter"))],sort("<START>"),no-attrs),[appl(prod([cf(iter(sort("A")))],cf(sort("Iter")),attrs([cons("Iter"),id("Main")])),[["a","b"]])])
+Iter(["a","b"])

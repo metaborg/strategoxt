@@ -39,4 +39,3 @@ strategies
       
   implode-asfix(args) = 
     xtc-transform(!"implode-asfix", args)
-

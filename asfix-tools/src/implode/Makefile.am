@@ -11,8 +11,6 @@ implode-asfix.o	: xtc-conf.h
 
 pkgdata_DATA 	= implode-asfix.str 
 
-TESTS        	= implode-asfix-test
-
 EXTRA_DIST  	= $(wildcard *.str) $(wildcard *.meta)
 
 SCFLAGS     	= -I $(srcdir)/../asfix --main $* $(XTCFLAGS)

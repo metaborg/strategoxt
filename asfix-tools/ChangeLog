@@ -1,3 +1,13 @@
+2002-12-28  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/implode/implode-asfix.str: Refined --nt option for non-terminal
+	trees to deal with non-identifier symbols.
+
+2002-12-23  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/implode/data/Makefile.am: Adapted flags for test cases
+	and regenerated testset for implode-asfix.
+
 2002-12-22  Eelco Visser  <visser@cs.uu.nl>
 
 	* Using autoxt

@@ -1,1 +1,1 @@
-Alt2b("a",appl(prod([cf(seq([sort("A"),sort("B")]))],cf(pair(seq([sort("A"),sort("B")]),sort("B"))),no-attrs),[("a","A")]))
+Alt2b("a",alt(1,[("a","A")]))

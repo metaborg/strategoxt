@@ -1,1 +1,1 @@
-appl(prod([cf(sort("Nesting-iter-sep2"))],sort("<START>"),no-attrs),[appl(prod([cf(iter-sep(iter(sort("A")),iter(sort("B"))))],cf(sort("Nesting-iter-sep2")),attrs([cons("Nesting-iter-sep2"),id("Main")])),[[["a"],["A"],["b"],["B","C","D"],["e"],["E","F"],["g"]]])])
+Nesting-iter-sep2([["a"],["A"],["b"],["B","C","D"],["e"],["E","F"],["g"]])

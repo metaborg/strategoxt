@@ -193,9 +193,17 @@ rules
 
   ApplToSort :
     appl(prod(as, a, _), ts) -> c#(ts)
-    where <?cf(<id>)> a
+    where <?cf(<sort(id)>)> a
         //; ![["\""],<PpSym>,["\""]]; concat
         ; PpSym
+        ; concat-strings 
+       => c
+
+  ApplToSort :
+    appl(prod(as, a, _), ts) -> c#(ts)
+    where <?cf(<not(sort(id))>)> a
+        ; ![["\""],<PpSym>,["\""]]; concat
+        //; PpSym
         ; concat-strings 
        => c
 
@@ -215,6 +223,8 @@ strategies
       \ appl(prod(_,cf(layout),_), x) -> <concat-strings> x \
     + \ appl(prod(_,cf(opt(layout)),_),[]) -> layout([]) \
     + \ appl(prod(_,cf(opt(layout)),_),[xs]) -> layout([xs]) \
+
+strategies
 
   FlatAlt =
    (  appl(prod([cf(?s)<+?s], cf(?alt(a1,a2)),  id), ?args)
