@@ -1,5 +1,5 @@
 module sdf-xtc-tools
-imports xtc-lib stratego-xt-xtc-tools
+imports strategoxt-xtc-tools
 
 strategies      
     

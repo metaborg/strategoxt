@@ -123,7 +123,7 @@ strategies
       , !"--choice-lib file  Link with specified choice point library (e.g. /usr/lib/foo.a)"
       )
 
-  + where(<xtc-find> "libcpl-stratego.la")
+  + where(<xtc-find-silent> "libcpl-stratego.la")
     ; Option("--cpl"
       , where(<xtc-find; set-choice-point-lib> "libcpl-stratego.la"); !()
       , !"--cpl              Use the Nancy Choice Point Library"

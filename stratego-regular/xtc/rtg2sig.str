@@ -4,7 +4,7 @@
  * @author  Martin Bravenboer <martin@cs.uu.nl>
  */
 module rtg2sig
-imports xtc-lib regular-xtc-tools stratego-xt-xtc-tools module-option
+imports liblib regular-xtc-tools strategoxt-xtc-tools module-option
 
 strategies
   

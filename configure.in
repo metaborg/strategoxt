@@ -104,6 +104,7 @@ AB_CONFIG_PKG(srts,
    --with-aterm=${ATERM}
    --with-strc=${STRATEGOXT}
    --with-ssl=${STRATEGOXT}
+   --with-xtc=${STRATEGOXT}
 )
 else
 AB_CONFIG_PKG(srts,

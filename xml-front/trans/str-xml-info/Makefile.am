@@ -13,7 +13,7 @@ STRINCLUDES = -I $(XTC)/share/xtc \
               -I $(top_srcdir)/trans/process \
               -I $(STRATEGO_REGULAR)/share/stratego-regular
 
-process_stratego_xml_info_LDADD = $(SSL_LIBS)
+LDADD = $(SSL_LIBS)
 
 EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta)
 CLEANFILES     = $(wildcard *.dep)

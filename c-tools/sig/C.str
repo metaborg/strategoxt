@@ -3,23 +3,23 @@ module C
 imports list-cons option
 signature
   constructors
-                        : PostfixingAbstractDeclarator -> e_0
-                        : PostfixAbstractDeclarator -> e_0
-                        : TypeSpecifier -> h_0
-                        : DeclarationSpecifier -> h_0
-                        : IdDeclarator -> i_0
-                        : AbstractDeclarator -> i_0
-                        : TypedefName -> v_0
-                        : ElaboratedTypeName -> v_0
-                        : BasicTypeName -> v_0
-                        : BasicTypeName -> w_0
-                        : DeclarationQualifier -> w_0
-                        : BasicTypeName -> b_1
-                        : TypeQualifier -> b_1
-                        : List(TypeQualifier) -> m_1
-                        : DeclarationQualifierList -> m_1
-                        : ElseLine * List(ExternalDef) -> y_1
-                        : ElifLine * List(ExternalDef) -> b_2
+                        : PostfixingAbstractDeclarator -> g_0
+                        : PostfixAbstractDeclarator -> g_0
+                        : TypeSpecifier -> j_0
+                        : DeclarationSpecifier -> j_0
+                        : IdDeclarator -> k_0
+                        : AbstractDeclarator -> k_0
+                        : TypedefName -> x_0
+                        : ElaboratedTypeName -> x_0
+                        : BasicTypeName -> x_0
+                        : BasicTypeName -> y_0
+                        : DeclarationQualifier -> y_0
+                        : BasicTypeName -> d_1
+                        : TypeQualifier -> d_1
+                        : List(TypeQualifier) -> o_1
+                        : DeclarationQualifierList -> o_1
+                        : ElseLine * List(ExternalDef) -> a_2
+                        : ElifLine * List(ExternalDef) -> d_2
     FunType             : UnaryAbstractDeclarator * PostfixingAbstractDeclarator -> PostfixAbstractDeclarator
     DeclBracket         : PostfixingAbstractDeclarator -> PostfixAbstractDeclarator
     DeclBracket         : PostfixAbstractDeclarator -> PostfixAbstractDeclarator
@@ -28,7 +28,7 @@ signature
     ParamList           : List(ParamDeclaration) -> PostfixingAbstractDeclarator
     ParamListVarArgs    : List(ParamDeclaration) -> PostfixingAbstractDeclarator
                         : ArrayAbstractDeclarator -> PostfixingAbstractDeclarator
-    Pointer             : List(Pointer) * Option(e_0) -> UnaryAbstractDeclarator
+    Pointer             : List(Pointer) * Option(g_0) -> UnaryAbstractDeclarator
                         : PostfixingAbstractDeclarator -> AbstractDeclarator
                         : PostfixAbstractDeclarator -> AbstractDeclarator
                         : UnaryAbstractDeclarator -> AbstractDeclarator
@@ -39,8 +39,8 @@ signature
                         : DeclarationQualifierList -> ParamDeclTypeSpec
                         : DeclarationSpecifier -> ParamDeclTypeSpec
                         : TypeSpecifier -> ParamDeclTypeSpec
-    ParamDecl2          : h_0 * TypedefDeclarator -> ParamDeclaration
-    ParamDecl           : ParamDeclTypeSpec * Option(i_0) -> ParamDeclaration
+    ParamDecl2          : j_0 * TypedefDeclarator -> ParamDeclaration
+    ParamDecl           : ParamDeclTypeSpec * Option(k_0) -> ParamDeclaration
     EnumVal             : ConstantExp -> EnumeratorValue
     Enumerator          : IdOrTypedefName * Option(EnumeratorValue) -> Enumerator
     EnumId              : IdOrTypedefName -> EnumSpecifier
@@ -54,12 +54,12 @@ signature
                         : EnumSpecifier -> ElaboratedTypeName
                         : UnionSpecifier -> ElaboratedTypeName
                         : StructSpecifier -> ElaboratedTypeName
-                        : v_0 -> TypeOrDefName
-    DeclSpec            : List(TypeQualifier) * StorageClass * List(DeclarationQualifier) * TypeOrDefName * List(w_0) -> DeclarationSpecifier
+                        : x_0 -> TypeOrDefName
+    DeclSpec            : List(TypeQualifier) * StorageClass * List(DeclarationQualifier) * TypeOrDefName * List(y_0) -> DeclarationSpecifier
     DQualifiers         : List(TypeQualifier) * StorageClass * List(DeclarationQualifier) -> DeclarationQualifierList
                         : TypeQualifier -> DeclarationQualifier
                         : StorageClass -> DeclarationQualifier
-    TypeSpec            : List(TypeQualifier) * TypeOrDefName * List(b_1) -> TypeSpecifier
+    TypeSpec            : List(TypeQualifier) * TypeOrDefName * List(d_1) -> TypeSpecifier
     AssignInit          : AssignExp -> Initializer
     ArrayInitIncomplete : List(Initializer) -> Initializer
     ArrayInit           : List(Initializer) -> Initializer
@@ -67,8 +67,8 @@ signature
                         : Declarator -> VarDecl
     IdDeclInit          : IdDeclarator * Initializer -> IdDecl
                         : IdDeclarator -> IdDecl
-    Declaration2        : h_0 * List(VarDecl) -> Declaration
-    Declaration         : m_1 * List(IdDecl) -> Declaration
+    Declaration2        : j_0 * List(VarDecl) -> Declaration
+    Declaration         : o_1 * List(IdDecl) -> Declaration
     Volatile            : TypeQualifier
     Const               : TypeQualifier
     Void                : BasicTypeName
@@ -208,7 +208,7 @@ signature
                         : ControlLine -> MemberDeclaration
                         : Declaration -> ExternalDef
                         : FunDef -> ExternalDef
-    PpIf                : IfLine * List(ExternalDef) * List(b_2) * Option(y_1) -> ExternalDef
+    PpIf                : IfLine * List(ExternalDef) * List(d_2) * Option(a_2) -> ExternalDef
                         : ControlLine -> ExternalDef
                         : String -> ElseLine
                         : String -> ElifLine

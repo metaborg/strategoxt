@@ -9,6 +9,8 @@ exports
       "translation-unit" "|[" TranslationUnit "]|" -> StrategoTerm {cons("ToTerm")}
     "c:translation-unit" "|[" TranslationUnit "]|" -> StrategoTerm {cons("ToTerm")}
 
+    "ext-def*" "|["  ExternalDef+ "]|"-> StrategoTerm {cons("ToTerm")}
+
             "|["  CommaExp "]|" -> StrategoTerm {cons("ToTerm")}
       "exp" "|["  CommaExp "]|" -> StrategoTerm {cons("ToTerm")}
     "c:exp" "|["  CommaExp "]|" -> StrategoTerm {cons("ToTerm")}

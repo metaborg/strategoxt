@@ -4,7 +4,7 @@
  * @author  Martin Bravenboer
  */
 module xml-xtc-tools
-imports stratego-xt-xtc-tools xtc-lib verbose process
+imports strategoxt-xtc-tools
 
 strategies
 

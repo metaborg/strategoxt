@@ -1,5 +1,5 @@
 module aterm2irtg
-imports xtc-lib options regular-xtc-tools regular-options logging
+imports liblib regular-xtc-tools regular-options logging
 
 strategies
 

@@ -1,5 +1,5 @@
 module parse-xml-doc
-imports xtc-lib xml-xtc-tools
+imports liblib xml-xtc-tools
 
 strategies
   

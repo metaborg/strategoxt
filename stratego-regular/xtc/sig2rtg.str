@@ -1,5 +1,5 @@
 module sig2rtg
-imports xtc-lib sig2-lib regular-xtc-tools
+imports liblib sig2-lib regular-xtc-tools
 
 strategies
   

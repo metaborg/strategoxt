@@ -13,3 +13,5 @@ BOOTCLEANFILES = $(pptables_af) $(wildcard *.c) $(wildcard *.rtree)
 
 SCFLAGS        = --main main-$*
 STRINCLUDES    = -I $(top_srcdir)/sig
+
+rtg_ppfix_LDADD = $(SSL_LIBS)

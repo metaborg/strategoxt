@@ -1,6 +1,4 @@
 module sdf-options
-imports options
-
 strategies
 
   sdf-main-module-option =

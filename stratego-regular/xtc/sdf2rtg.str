@@ -1,5 +1,5 @@
 module sdf2rtg
-imports xtc-lib options regular-xtc-tools tool-doc sdf-options sdf-xtc-tools
+imports xtc-lib options regular-xtc-tools tool-doc sdf-options
 
 strategies
 
@@ -11,11 +11,6 @@ strategies
     ; xtc-transform(!"core-sdf-grammar2rtg", pass-verbose)
     ; xtc-pp-rtg
     )
-
-//   xtc-parse-sdf2-definition
-// ; xtc-transform(!"core-sdf-normalize", <conc> (<pass-verbose> (), <pass-sdf-main-module> ()))
-
-
 
 strategies
 

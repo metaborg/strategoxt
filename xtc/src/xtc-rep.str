@@ -11,14 +11,22 @@ signature
 
     XTC	       : Table
 
+/**
+ * Loading the repository
+ */
 strategies
 
-  // Loading the repository
-
+  /**
+   * Returns the location of the XTC repository.
+   *
+   * @type _ -> String
+   */
   xtc-location =
     <get-config> "-r"
     <+ <getenv> "XTC_REPOSITORY"
-    <+ prim("XTC_REPOSITORY")
+    <+ GetInternalDefaultXtcRepository
+
+  external GetInternalDefaultXtcRepository(|)
 
   xtc-read = ?rep
     ; if-verbose5(debug(!"Reading? "))

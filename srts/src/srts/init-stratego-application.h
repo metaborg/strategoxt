@@ -16,3 +16,15 @@ static void register_init(void)
   SRTS_stratego_initialize_next = SRTS_stratego_initialize;  
   SRTS_stratego_initialize      = &SRTS_stratego_initialize_module;
 }
+
+#ifndef XTC_REPOSITORY
+ATerm GetInternalDefaultXtcRepository_0_0(ATerm t) {
+  _fail(t);
+  return NULL;
+}
+#else
+ATerm GetInternalDefaultXtcRepository_0_0(ATerm t) {
+  return XTC_REPOSITORY() ;
+}
+#endif
+

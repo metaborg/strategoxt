@@ -1,5 +1,5 @@
 module tool-doc2abox
-imports tool-doc Box options string
+imports tool-doc Box liblib
 
 strategies
 

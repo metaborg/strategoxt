@@ -1,6 +1,4 @@
 module sig2-lib
-imports xtc-lib options
-
 strategies 
 
   sig2-options =

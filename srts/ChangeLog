@@ -1,3 +1,26 @@
+2004-06-26  Martin Bravenboer <martin@cs.uu.nl>
+
+	Many changes to enable separate compilation of XTC tools.
+
+	* First of all, the XTC repository is now returned by a *function*
+	in init-stratego-application.h. Depending whether the
+	XTC_REPOSITORY is defined or not, the strategy fails or returns
+	the ATerm defined in XTC_REPOSITORY. This change was necessary to
+	compile the XTC library without knowing the actual repository that
+	will be used.
+	
+	This has two consequences: (1) every Stratego application now has
+	a strategy to get the default XTC repository. (2) XTC tools are no
+	longer required to have a default internal XTC repository: the
+	other options (-r and environment variable) can also be used.
+
+	* liblib now includes a compiled XTC library. If you import
+	liblib, then you'll get the SSL and XTC.
+
+	* Some XTC tools have been converted to separate compilation.
+
+	* All bootstrapped sources have been updated.
+
 2004-06-25  Martin Bravenboer <martin@cs.uu.nl>
 
 	* srts/Makefile.am: build the choice point implementation in a

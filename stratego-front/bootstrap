@@ -1,12 +1,8 @@
 #! /bin/sh
-rm -f config.cache
-rm -f acconfig.h
-autoxt
-aclocal -I .
-autoconf
-#acconfig
-#autoheader
-automake -a
+rm -f config.cache config.log acconfig.h aclocal.m4
 
-# touch pp/Stratego.pp
-# touch pp/*.pp.af syn/*.tbl sig/*.str sig/*.rtree
+autoxt || exit 1
+aclocal -I . || exit 1
+libtoolize --force || glibtoolize --force || exit 1
+autoconf -f --warnings=all --warnings=no-cross || exit 1
+automake -a || exit 1

@@ -1,5 +1,5 @@
 module format-check
-imports aterm2irtg
+imports aterm2irtg liblib strategoxt-xtc-tools
 
 strategies
 

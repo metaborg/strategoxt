@@ -1,5 +1,5 @@
 module meta-explode
-imports lib Stratego-Amb Stratego-MetaTransition
+imports liblib Stratego-Amb Stratego-MetaTransition
 signature
   constructors
     AsFix        : Option

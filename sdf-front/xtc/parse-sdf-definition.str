@@ -1,5 +1,5 @@
 module parse-sdf-definition
-imports xtc-lib sdf-xtc-tools
+imports liblib sdf-xtc-tools
 
 strategies
   

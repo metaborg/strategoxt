@@ -2,7 +2,7 @@
  * @author  Martin Bravenboer <martin@cs.uu.nl>
  */ 
 module rtg-ppfix
-imports regexp-parenthesize rtg simple-traversal options
+imports liblib rtg
 
 strategies
 
@@ -10,6 +10,3 @@ strategies
     io-wrap(rtg-parenthesize)
 
   rtg-parenthesize = id
-//    alltd(id)
-//      rtg-content(regexp-parenthesize)
-//    )

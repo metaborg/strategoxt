@@ -11,7 +11,7 @@
  */
 module pack-sdf
 imports pack-sdf-options
-imports xtc-proc lib stratego-xt-xtc-tools sdf-xtc-tools 
+imports xtc-lib lib strategoxt-xtc-tools sdf-xtc-tools 
 imports Sdf2
 imports asfix-abstractions pack-modules 
 

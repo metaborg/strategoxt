@@ -12,9 +12,8 @@
  *     -o output  Write output to `output'
  *     -v         Display version information
  */
-
 module sdf2text
-imports sdf-xtc-tools
+imports liblib sdf-xtc-tools
 
 strategies
   

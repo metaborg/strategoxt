@@ -19,5 +19,6 @@ bootclean :
 	rm -f $(BOOTCLEANFILES)
 
 liblib.c : 
-	$(STRC)/bin/strc -I $(SSL)/share/ssl -i lib.str -o liblib.rtree -c --library --verbose 2
-
+	$(STRC)/bin/strc -c --library --verbose 2 \
+        -I $(XTC)/share/xtc -I $(SSL)/share/ssl \
+        -i ./library.str -o liblib.rtree

@@ -1,5 +1,5 @@
 module regular-xtc-tools
-imports stratego-xt-xtc-tools xtc-lib verbose
+imports strategoxt-xtc-tools
 
 strategies
 

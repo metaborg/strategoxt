@@ -10,7 +10,7 @@ signature
     Module         : ModName * List(Decl) -> Module
                    : Strategy -> StrategyMid
     SVar           : Id -> SVar
-    SDefT          : Id * p_0 * p_0 * Strategy -> StrategyDef
+    SDefT          : Id * r_0 * r_0 * Strategy -> StrategyDef
     StrCong        : String * Strategy -> Strategy
     RealCong       : Real * Strategy -> Strategy
     IntCong        : Int * Strategy -> Strategy
@@ -28,7 +28,7 @@ signature
     Seq            : Strategy * Strategy -> Strategy
     Id             : Strategy
     Fail           : Strategy
-    Scope          : l_0 * Strategy -> Strategy
+    Scope          : n_0 * Strategy -> Strategy
     Build          : Term -> Strategy
     Match          : Term -> Strategy
     PrimT          : String * List(Strategy) * List(Term) -> Strategy

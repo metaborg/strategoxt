@@ -1,6 +1,4 @@
 module switch-options
-imports options
-
 strategies
 
   SwitchOption(switch, description) =

@@ -3,16 +3,16 @@ AM_INIT_AUTOMAKE
 
 USE_XT_PACKAGES
 
-AC_REVISION($Id: configure.in,v 1.18 2003/02/05 00:37:36 stratego Exp $)
-
 AC_PROG_CC
 AC_PROG_INSTALL
+AC_PROG_LIBTOOL
 
-AC_OUTPUT( \
-	Makefile \
-	syn/Makefile \
-	pp/Makefile \
-	sig/Makefile \
-	parse/Makefile \
-	test/Makefile \
-)
+AC_CONFIG_FILES([
+  Makefile
+  syn/Makefile
+  pp/Makefile
+  sig/Makefile
+  parse/Makefile
+  test/Makefile
+])
+AC_OUTPUT

@@ -26,6 +26,14 @@ AC_ARG_WITH(ssl,
 )
 AC_SUBST(SSL)
 
+AC_ARG_WITH([xtc],
+  AC_HELP_STRING([--with-xtc=DIR],
+                 [use XTC (XT Composition) at DIR (bootstrapping only) @<:@prefix@:>@]),
+  [XTC=$withval],
+  [XTC=$prefix]
+)
+AC_SUBST([XTC])
+
 AC_CHECK_FUNCS([getpagesize])
 AC_CHECK_HEADERS([stdlib.h])
 AC_CHECK_HEADERS([string.h])

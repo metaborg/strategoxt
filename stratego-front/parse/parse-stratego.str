@@ -1,5 +1,5 @@
 module parse-stratego
-imports xtc-lib lib Stratego
+imports liblib Stratego
 signature
   constructors
     Meta    : List(MetaProperty) -> MetaData
@@ -49,11 +49,6 @@ strategies
 
   check-module-name(|base) =
     ?Specification(_)
-
-  if-not-silent(s) =
-    where( <get-config>"--verbose" => 0 )
-  < id
-  + s
 
   pass-sort =
       get-meta => Meta(<fetch-elem(?TopSort(<id>))>)
