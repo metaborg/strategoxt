@@ -50,7 +50,7 @@ rules
     RChoice(s1, s2) -> LChoice(s2, s1)
 
   Desugar :
-    |[ if s1 then s2 else s3 ]| -> |[ where(s1) < s2 + s3 ]|
+    |[ if s1 then s2 else s3 end ]| -> |[ where(s1) < s2 + s3 ]|
 
   Desugar :
     OverlayNoArgs(f, t) -> Overlay(f, [], t)
