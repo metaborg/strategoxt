@@ -3,14 +3,14 @@ include $(wildcard *.dep)
 
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 
-bin_PROGRAMS 	= xtc cp-file
+bin_PROGRAMS 	= xtc
 pkgdata_DATA 	= xtc-lib.rtree xtc-rep.rtree \
 		  xtc-proc.rtree xtc-register.rtree
 SCFLAGS 	= --main $* $(XTCFLAGS)
 EXTRA_DIST	= $(pkgdata_DATA) $(wildcard *.str) \
 		  $(wildcard *.meta) $(pkgdata_DATA)
 CLEANFILES	= $(wildcard *.dep)
-BOOTCLEANFILES	= xtc.c cp-file.c
+BOOTCLEANFILES	= $(wildcard *.c)
 
 check_PROGRAMS  = test1 test2 test3
 
