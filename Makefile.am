@@ -2,10 +2,14 @@ SUBDIRS      = $(PKGS)
 EXTRA_DIST   = $(EXTRA_FILES)
 EXTRA_FILES  = README README.in bootstrap acinclude.m4 strategoxt.spec.in strategoxt.spec
 
-all : install-buildtime-pre-pkgs
+.PHONY: install-buildtime-pre-pkgs
+
+all: install-buildtime-pre-pkgs
+install: install-buildtime-pre-pkgs install-recursive
 
 # installs a local srts for building the StrategoXT packages
 # TODO: configure srts with cpl if necessary
+# TODO: only install srts on make install if not already installed
 install-buildtime-pre-pkgs :
 	mkdir -p pre-pkgs &&\
 	mkdir -p pre-pkgs/build &&\

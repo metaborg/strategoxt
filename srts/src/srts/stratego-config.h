@@ -13,8 +13,7 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #define HAVE_INTTYPES_H 1
 
-/* Define to 1 if your system has a GNU libc compatible `malloc' function, and
-   to 0 otherwise. */
+/* Define to 1 if your system has a working `malloc' function. */
 #define HAVE_MALLOC 1
 
 /* Define to 1 if you have the <memory.h> header file. */
@@ -68,9 +67,6 @@
 /* Define as `__inline' if that's what the C compiler calls it, or to nothing
    if it is not supported. */
 /* #undef inline */
-
-/* Define to rpl_malloc if the replacement function should be used. */
-/* #undef malloc */
 
 /* Define to `unsigned' if <sys/types.h> does not define. */
 /* #undef size_t */

@@ -10,8 +10,8 @@ pkgdata_DATA   	= termid.rtree
 EXTRA_DIST  	= termid.str termid-check1.str termid-check2.str termid-check3.str \
 		  $(pkgdata_DATA)
 
-BOOTCLEANFILES	= termid.c termid1_check.c termid2_check.c termid3_check.c
-CLEANFILES	= $(wildcard *.dep) $(wildcard *.rtree)
+BOOTCLEANFILES	= termid.c termid1_check.c termid2_check.c termid3_check.c  $(wildcard *.rtree)
+CLEANFILES	= $(wildcard *.dep)
 
 TESTS 		= termid1_check termid2_check termid3_check
 
@@ -33,4 +33,3 @@ termid3_check_prog    = termid-check3
 termid3_check_input   = data/termid3.in
 termid3_check_output  = data/termid3.out
 termid3_check_correct = data/termid3.correct
-
