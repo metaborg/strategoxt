@@ -1,0 +1,11 @@
+package
+identification
+  name        = aterm-tools
+  version     = 0.1
+  location    = http://www.cwi.nl/~mdejonge/downloads
+  info        = http://www.program-transformation.org
+  description = 'ATerm Tools: a collection of tools for aterm visualisation
+                 and manipulation.'
+  keywords    = ATerm, autobundle
+
+
