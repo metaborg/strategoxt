@@ -1,10 +1,24 @@
+2003-12-12  Eelco Visser  <visser@cs.uu.nl>
+
+	* syn/Stratego-Strategies.sdf: Support 'external' strategy
+	definitions.  These are definitions of the form 'external
+	f(as1|as2)' or 'external f(as1|as2) = s' and indicate a strategy
+	that is implemented externally. It can be compiled with the normal
+	calling convention for strategies and will be renamed in the same
+	way to f_n_m with n the number of strategy parameters and m the
+	number of term parameters. The second form allows the
+	specification of a strategy body for the definition. This can be
+	used by the compiler to inline some applications of the strategy
+	operator, but no implementation is generated for such definitions.
+	External definitions can not be overloaded.
+
 2003-12-05  Martin Bravenboer  <martin@cs.uu.nl>
 
 	* parse/parse-stratego.str: parse-stratego applies pack-sdf and
 	must no longer apply asfix-yield.
 
 	Are there more place where pack-sdf is used?
-	
+
 2003-09-30  Valentin David  <valentin@lrde.epita.fr>
 
 	* parse/meta-explode.str: cleanup layouts when concrete syntax parts

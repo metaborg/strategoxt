@@ -4,6 +4,8 @@ signature
     SDefNoArgs : Id * Strategy -> StrategyDef
     SDef       : Id * List(Typedid) * Strategy -> StrategyDef
     SDefT      : Id * List(Typedid) * List(Typedid) * Strategy -> StrategyDef
+    ExtSDefInl : Id * List(Typedid) * List(Typedid) * Strategy -> StrategyDef
+    ExtSDef    : Id * List(Typedid) * List(Typedid) -> StrategyDef
 signature
   constructors
     DefaultVarDec : ID -> Typedid
