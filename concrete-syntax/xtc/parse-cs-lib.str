@@ -162,10 +162,10 @@ strategies // parsing
     xtc-transform(!"sglr", !["-2", "-p", <file-exists <+ xtc-find> tbl, "-s", sort | <pass-v-verbose> ()])
 
   xtc-sglr-asfix2me(|tbl) =
-    xtc-transform(!"sglr", !["-p", <file-exists <+ xtc-find> tbl | <pass-v-verbose> ()])
+    xtc-transform(!"sglr", !["-m", "-p", <file-exists <+ xtc-find> tbl | <pass-v-verbose> ()])
 
   xtc-sglr-asfix2me(|tbl, sort) =
-    xtc-transform(!"sglr", !["-p", <file-exists <+ xtc-find> tbl, "-s", sort | <pass-v-verbose> ()])
+    xtc-transform(!"sglr", !["-m", "-p", <file-exists <+ xtc-find> tbl, "-s", sort | <pass-v-verbose> ()])
 
 /**
  * Include path -- file name resolution
