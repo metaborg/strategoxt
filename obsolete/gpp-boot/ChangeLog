@@ -1,3 +1,6 @@
+2002-05-21 Merijn de Jonge <mdeonge@cwi.nl>
+	* regenerated boot-strapped code after fixing a bug in gpp
+
 2002-05-16 Merijn de Jonge <mdeonge@cwi.nl>
 	* New version 2.2.1
 	* Created new boot-strapped code
