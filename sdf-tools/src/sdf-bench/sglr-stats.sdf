@@ -18,7 +18,7 @@
 %%% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 %%% 02111-1307, USA.
 %%%
-%%% $Id: sglr-stats.sdf,v 1.1 2001/05/31 14:20:52 mdejonge Exp $
+%%% $Id: sglr-stats.sdf,v 1.2 2001/10/10 09:59:26 mdejonge Exp $
 
 definition
 
@@ -81,8 +81,14 @@ exports
     "ATerm memory allocated for parse table:" Int 
 					   -> Field {cons("TableMemory")}
 
+    %% This production is obsolete as of sglr version 3.4
     "MultiSet Comparisons: total" Int ", successful " Int
 					   -> Field {cons("MultiSetComparisons")}
+
+    %% This production is required since sglr version 3.4
+    "Count Eagerness Comparisons: total" Int ", successful " Int
+                                           -> Field {cons("EagernessComparisons")}
+
 
     "Number of Injection Counts: total " Int ", successful" Int
 					   -> Field {cons("InjectionCounts")}

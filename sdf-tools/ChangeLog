@@ -1,4 +1,7 @@
 2001-10-09 Merijn de Jonge <mdejonge@cwi.nl> 
+    * sdf-bench/sglr-stats.sdf: Adapted for sglr version 3.4
+
+2001-10-09 Merijn de Jonge <mdejonge@cwi.nl> 
     * added uses of termid strategy
     * all transformation tools now add grammar identifier to generated output
     * test sets have been adapted to use grammar identifiers
