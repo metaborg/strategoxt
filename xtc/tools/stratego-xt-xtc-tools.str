@@ -57,6 +57,16 @@ strategies
   xtc-sglr(tbl, sort) =
     xtc-transform(!"sglr", !["-2tA", "-p", <tbl; xtc-find> (), "-s", <sort> () | <pass-v-verbose> ()])
 
+  /* stratego */
+
+  xtc-pp-astratego =
+      xtc-stratego-ensugar
+    ; xtc-ast2abox(!["Stratego-pretty.pp"])
+    ; xtc-abox2text
+
+  xtc-stratego-ensugar = 
+    xtc-transform(!"stratego-ensugar", pass-verbose)
+
   /* tools */
 
   pass-v-verbose =
