@@ -15,3 +15,4 @@ parenthesize-Exp.str : Exp.def
 
 SCFLAGS       = --main io-$*
 STRINCLUDES   = -I $(XTC)/share/xtc
+LDADD        += $(SSL_LIBS)

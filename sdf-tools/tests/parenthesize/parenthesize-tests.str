@@ -1,5 +1,5 @@
 module parenthesize-tests
-imports parenthesize-Exp xtc-register options xtc-lib stratego-xt-xtc-tools string-misc
+imports parenthesize-Exp liblib strategoxt-xtc-tools
 
 strategies
 
@@ -46,7 +46,7 @@ strategies
       ; xtc-ast2abox(!["Exp-pretty.pp.af"])
       ; xtc-abox2text
       ; ?FILE(<read-text-file>)
-      ; trim-whitespace
+      ; trim(is-all-whitespace)
       )
     , !txt1
     , !txt2
@@ -56,6 +56,4 @@ strategies
       xtc-register(|"Exp-pretty.pp.af", "Foo", ".")
     ; xtc-register(|"Exp.tbl", "Foo", ".")
 
-
-  is-whitespace = ?'\r'
-  is-whitespace = ?'\n'
+  is-all-whitespace = '\t' + '\r' + '\n' + ' '
