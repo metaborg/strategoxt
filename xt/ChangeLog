@@ -1,6 +1,7 @@
 2001-05-31 Merijn de Jonge <mdejonge@cwi.nl>
 	* Updated the NEWS file for version 0.7
         * Increased XT's version number to 0.7
+        * synchronized dev-pkg-list with pkg-list
 
 2001-05-30 Merijn de Jonge <mdejonge@cwi.nl>
         * Ready to try version 0.5.3 of stratego
