@@ -44,7 +44,8 @@ imports
 strategies
 
   norm-lit
-    = io-idwrap("\"sdf-2.1\"", alltd(Normalize))
+    = io-idwrap("\"sdf-2.1\"", alltd(Normalize);
+      termid(!"\"sdf-2.1\""))
 
 rules
 

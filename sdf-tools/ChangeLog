@@ -1,6 +1,12 @@
 2001-10-09 Merijn de Jonge <mdejonge@cwi.nl> 
+    * added uses of termid strategy
+    * all transformation tools now add grammar identifier to generated output
+    * test sets have been adapted to use grammar identifiers
     * pack-sdf/pack-sdf.r: Adapted overlays for grammar identifier
     * sdf/Makefile.am: fixed rule to generate parse table
+    * sdf-cons/sdf-cons.r: output term now also contains grammar identifier
+    * sdf-cons/rm-cons.r: output term now also contains grammar identifier
+
 
 2001-10-08 Merijn de Jonge <mdejonge@cwi.nl> 
     * Adapted to use io-idwrap and grammar identifiers

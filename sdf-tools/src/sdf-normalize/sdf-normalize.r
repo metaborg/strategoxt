@@ -27,7 +27,8 @@ imports
 strategies
 
   sdf-normalize
-    = io-idwrap("\"sdf-2.1\"", resolve-aliases;remove-aliases)
+    = io-idwrap("\"sdf-2.1\"", resolve-aliases;remove-aliases;
+      termid(!"\"sdf-2.1\""))
 
   resolve-aliases
     = \grammar -> <substitute(sort(id))>(subst,grammar)

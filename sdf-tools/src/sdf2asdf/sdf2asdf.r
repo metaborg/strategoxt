@@ -42,4 +42,4 @@ imports
 strategies
 
   main
-    = io-idwrap("\"sdf-2.1\"", sdf2asdf)
+    = io-idwrap("\"sdf-2.1\"", sdf2asdf; termid(!"\"sdf-2.1\""))

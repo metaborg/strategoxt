@@ -34,7 +34,8 @@ strategies
     = io-idwrap("\"sdf-2.1\"", Sdf-label)
 
   Sdf-label
-    = alltd(don't-label <+ label-production)
+    = alltd(don't-label <+ label-production);
+      termid(!"\"sdf-2.1\"")
 
   label-production
     = ( prod(map(try(label-symbol)),id,id)

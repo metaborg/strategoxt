@@ -55,7 +55,8 @@ strategies
   ; (id, alltd(lexical-syntax(id) <+ (is-prod; prodcons)))
   ; try((option-defined(Modular), uniquify-modular))
   ; try((not(option-defined(Modular)), uniquify))
-
+  ; (id, termid(!"\"sdf-2.1\""))
+  
   sdf-cons-usage =
   where(
     option-defined(?Program(prog))

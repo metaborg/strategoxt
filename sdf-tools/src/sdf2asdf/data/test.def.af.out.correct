@@ -1,1 +1,1 @@
-Definition([Module("Test",[],[Exports(syntax([prod-fun("\"aap\"",[sort("A"),iter-star(sort("B")),iter(sort("C")),opt(sort("D"))],sort("E"),no-attrs),prod-fun("\"noot\"",[opt(seq(sort("A"),[sort("B")])),alt(sort("C"),sort("D"))],sort("E"),no-attrs)]))])])
+"sdf-2.1"(Definition([Module("Test",[],[Exports(syntax([prod-fun("\"aap\"",[sort("A"),iter-star(sort("B")),iter(sort("C")),opt(sort("D"))],sort("E"),no-attrs),prod-fun("\"noot\"",[opt(seq(sort("A"),[sort("B")])),alt(sort("C"),sort("D"))],sort("E"),no-attrs)]))])]))

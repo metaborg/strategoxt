@@ -45,7 +45,8 @@ strategies
 
   SdfBracket =
     topdown(try(Bracket));
-    topdown(try(DeBracket))
+    topdown(try(DeBracket));
+    termid(!"\"sdf-2.1\"")
 
   infix-op = alt(id, id) + pair(id,id)
 

@@ -34,15 +34,16 @@ imports
 
 strategies
 
-  main
-    = io-idwrap("\"sdf-2.1\"", rm-cons)
-
   rm-cons
+    = io-idwrap("\"sdf-2.1\"", RmCons)
+
+  RmCons
     = rec x( attrs(filter(not(?cons(_))))
           <+ all(x)
 	  <+ id
            )
     ; simplify-sdf
+    ; termid(!"\"sdf-2.1\"")
 
   simplify-sdf
     = reduce(Simplify-sdf)
