@@ -1,10 +1,8 @@
 module pipe-experiment
-imports lib pipe
+imports pipe process io list integers
 strategies 
 
 //---------------------------------------------------------------
-
-  main = id
 
 /*
     ?[prog | <at-last(?[outfile]; ![]); ?[infile]>]
