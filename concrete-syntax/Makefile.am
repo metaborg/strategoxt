@@ -4,7 +4,7 @@ SUBDIRS           = xtc
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 DIST_SUBDIRS      = $(SUBDIRS)
 EXTRA_DIST        = bootstrap Makefile.xt \
-		    svn-revision acinclude.m4 concrete-syntax.spec.in concrete-syntax.spec
+		    svn-revision acinclude.m4 concrete-syntax.spec.in
 
 ignore : ignore-svn ignore-targets
 	svn propset -R svn:ignore -F ignore-svn .
