@@ -15,7 +15,7 @@ strategies
     + AssociateR
     + Idempotency
     + EmptyScope
-    + (MatchingCongruence <+ TransformingCongruence)
+    + (MatchingCongruence <+ TransformingAnnoCongruence <+ TransformingCongruence)
 
   Optimize =
     Simplify

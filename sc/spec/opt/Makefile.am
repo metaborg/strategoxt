@@ -21,7 +21,7 @@ SCFLAGS	= -I $(srcdir)/../sig \
 	  -I $(srcdir)/../front \
 	  --main $@
 
-#bin_SCRIPTS = fusion
+bin_SCRIPTS = fusion
 
 TESTS = build-match-laws-test
 
@@ -29,12 +29,7 @@ CLEANFILES = fusion fusion.c *.dep
 
 EXTRA_DIST = $(wildcard *.r) 
 
-BOOTSOURCES = dummy
-
-#fusion.c
-
-dummy:
-	touch $@
+BOOTSOURCES = fusion.c
 
 include $(srcdir)/../make-rules
 include $(wildcard *.dep)
