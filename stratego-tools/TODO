@@ -1,4 +1,12 @@
-* Fill-out the package description in desciption.pkg
-* stratego-imports contains a copy of the module get-modules.r. This module
-  also lives in the sdf-tools package where it is used by sdf-imports. This
-  code duplication should be removed
+2003-02-26 Martin Bravenboer  <martin@mbravenboer.org>
+
+  * src/sdf2sig.sdf: Handle aliases in SDF by
+  removing them before creating constructors.
+
+Old TODOs
+  
+  * Fill-out the package description in desciption.pkg
+  
+  * stratego-imports contains a copy of the module get-modules.r. This module
+    also lives in the sdf-tools package where it is used by sdf-imports. This
+    code duplication should be removed
