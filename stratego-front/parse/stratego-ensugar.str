@@ -34,6 +34,9 @@ rules
   Ensugar :
     StratRule(l, r, Id()) -> StratRuleNoCond(l, r)
 
+  Ensugar :
+    Op("Nil",[]) -> List([])
+
   Ensugar =
     ?Op("Cons",[_,_])
     ; implode-cons
