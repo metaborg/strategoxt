@@ -19,7 +19,7 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
  02111-1307, USA.
 
- $Id: GraphXML2dot.r,v 1.9 2001/10/08 15:42:10 mdejonge Exp $
+ $Id: GraphXML2dot.r,v 1.10 2001/10/08 22:29:38 mdejonge Exp $
 *)
 
 module GraphXML2dot
@@ -33,7 +33,7 @@ signature
 strategies
 
   main
-      = io-idwrap( ?"\"graphxml_1_1-0\"", 
+      = io-idwrap( "\"graphxml_1_1.0\"", 
                    (id, GraphXML2dot), options, usage )
 
   options 
