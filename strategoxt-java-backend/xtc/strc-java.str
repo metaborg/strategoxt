@@ -4,11 +4,11 @@
  * model. 
  */
 
-module strc
-imports liblib strc-options 
+module strc-java
+imports liblib strc-options Stratego 
 strategies
 
-  strc = 
+  io-strc-java = 
     command-line-options
     ; profile'(if-verbose1(<printnl>(stderr, ["-----\ncompilation succeeded:   " | <id>])), 
                 compile)

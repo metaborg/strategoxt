@@ -1,6 +1,7 @@
 module strc-options
 imports
   liblib
+  stratego-warnings-options
 
 strategies
 
