@@ -11,7 +11,8 @@ exports
     LId				-> ID
 
   context-free syntax
-    "_" Term 			 -> Term {cons("BuildDefault")}
+    "_" Term 			 -> PreTerm {cons("BuildDefault")}
+    "_" Term 			 -> Term {cons("BuildDefault"),prefer}
 
     Char 			 -> PreTerm {cons("Char")}
 

@@ -130,6 +130,7 @@ exports
     "drd"[0-9\']*  "*"    -> DynRuleDef+ {prefer}
 
   lexical syntax
+    "pt"[0-9\']*          -> Id  {reject}
     "xs"[0-9\']*          -> Id  {reject}
 
     [t][0-9\']*           -> Id  {reject}
