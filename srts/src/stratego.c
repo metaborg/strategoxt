@@ -246,7 +246,7 @@ ATerm _one(ATerm t, ATerm f(ATerm))
     return(ATsetAnnotations(t, annos));
 }       
 
-static ATermList _map_some(ATermList ts, ATerm f(ATerm), int transformed)
+static ATermList _map_some(ATermList ts, ATerm f(ATerm), volatile int transformed)
 {
   if(ATisEmpty(ts))
     {
