@@ -48,7 +48,9 @@ IOTESTRUNS = $(subst .r,.io-run,$(IOTESTFILES))
 TESTIBINS = $(subst .r,.ibin,$(TESTFILES))
 TESTIRUNS = $(subst .r,.irun,$(TESTFILES))
 
-check: $(TESTRUNS) $(IOTESTRUNS) 
+#check: $(TESTRUNS) $(IOTESTRUNS) 
+
+TESTS = $(TESTBINS)
 
 check-sc: $(TESTIRUNS)
 
