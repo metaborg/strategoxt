@@ -106,8 +106,9 @@ exports
     "tp"[0-9\']*          -> Type 
     "tp"[0-9\']*  "*"     -> {Type "*"}+  
 
-    "srt" [0-9\']*        -> Sort {prefer}
-    "srt" [xyz] [0-9\']*  -> UCID {prefer}
+    "srt" [0-9\']*        -> Sort         {prefer}
+    "srt" [0-9\']* "*"    -> {Sort ","}*  {prefer}
+    "srt" [xyz] [0-9\']*  -> UCID         {prefer}
 
   lexical syntax
     "xs"[0-9\']*          -> Id  {reject}
