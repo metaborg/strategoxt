@@ -26,7 +26,7 @@ BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 EXTRA_DIST = VERSION package.conf bootstrap $(PACKAGE)-$(VERSION).pkg \
 	     Makefile.xt
 
-# Generation of a package defintion file from the package.conf file. This
+# Generation of a package definition file from the package.conf file. This
 # file in combination with autobundle enables integration of the package
 # source tree with other software packages. See the online package base
 # (www.program-transformation.org/package-base) for more information and
