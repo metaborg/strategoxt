@@ -19,8 +19,6 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: asfix-yield.str,v 1.2 2002/12/08 15:37:29 stratego Exp $
-
 \begin{code}
 module asfix-yield
 imports lib Sdf-ParseTree-Syntax asfix1
