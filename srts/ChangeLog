@@ -1,3 +1,10 @@
+2003-07-14  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/srts/stratego.h: SSL_all, SSL_one, etc. are macros for
+	the _all, _one, etc. functions reversing the term and strategy
+	argument to conform with the new calling convention in which
+	the subject term is the last argument of a function.
+
 2003-05-12  Martin Bravenboer <martin@mbravenboer.org>
 
   * ssl/term.c: Removed debug statements in address_lt.
