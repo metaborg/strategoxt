@@ -58,7 +58,11 @@
    ListTail.1:iter-star-sep -- _1 KW[","],
    Explode -- H hs=0[_1 KW["#"] KW["("] _2 KW[")"] ],
    RootApp -- H hs=0[KW["<"] _1 KW[">"]],
+   
    Anno -- _1 KW["{"] _2 KW["}"],
+   AnnoCong -- _1 _2,
+   StrategyCurly -- KW["{"] _1 KW["}"],
+   
    Con1 -- H hs=0[KW["["] _1 KW["]"]],
    Con2 -- H hs=0[KW["["] _1 KW["]"] KW["("] _2 KW[")"]],
    Con3 -- KW["["] _1 KW["where"] _2 KW["]"],

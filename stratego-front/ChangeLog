@@ -1,3 +1,8 @@
+2003-02-25  Martin Bravenboer <martin@mbravenboer.org>
+
+  * pp/Stratego-pretty.pp: Added AnnoCong and StrategyCurly,
+    reported by Rob Vermaas.
+
 2003-02-05  Martin Bravenboer <martin@mbravenboer.org>
 
   * syn/StrategoStratego.sdf: Added some quotations and
