@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: pp.sh.src,v 1.5 2002/02/06 14:07:25 mdejonge Exp $
+# $Id: pp.sh.src,v 1.6 2002/04/05 12:58:09 daybuild Exp $
 
 
 # pp -- pretty-print tool
@@ -105,7 +105,7 @@ if [ "a${LANGUAGE}" = "a" ]; then
    exit 1
 fi
 
-table=`gbquery -pp ${LANGUAGE} ${LANG_VERSION}` || exit 1
+tables="-p `gbquery -pp ${LANGUAGE} ${LANG_VERSION} | sed 's/ / -p /g'`" || exit 1
 
 # Construct the pretty-print command depending on specific command line
 # options
@@ -117,9 +117,9 @@ if [ "a${INPUT_TYPE}" = "atext" ]; then
 
 
 elif [ "a${INPUT_TYPE}" = "aast" ]; then
-   pp_cmd="ast2abox ${EXTRA_TABLES} -p ${table}"
+   pp_cmd="ast2abox ${EXTRA_TABLES}  ${tables}"
 elif [ "a${INPUT_TYPE}" = "apt" ]; then
-   pp_cmd="asfix2abox ${EXTRA_TABLES} -p ${table}"
+   pp_cmd="asfix2abox ${EXTRA_TABLES} ${tables}"
 fi
 
 # -i option has been specified

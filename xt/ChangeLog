@@ -1,5 +1,6 @@
 2002-03-22  Merijn de Jonge <mdejonge@cwi.nl>
    * gbquery: bug fix. Detection of grammar location was incorrect
+   * pp now supports more than one pp table 
 
 2002-03-22  Merijn de Jonge <mdejonge@cwi.nl>
    * Repaired package dependencies
