@@ -39,6 +39,9 @@ strategies
  */
 strategies
 
+ if-verbose(s|t) = 
+    where(<geq> (<get-config <+ !0> "--verbose", t)) < s + id
+
   if-verbose1(s) = 
     try(where(<geq>(<get-config> "--verbose", 1)); s)
 

@@ -64,11 +64,6 @@ strategies
     whoami; get-filename
     <+ !"identity crisis"
 
-strategies
-
- if-verbose(s|t) = 
-    where(<geq> (<get-config <+ !0> "--verbose", t)) < s + id
-
 rules
 
   verbose-level : Emergency() -> -10
