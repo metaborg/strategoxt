@@ -1,4 +1,4 @@
-\literate[rename]
+\literate[rename-dyn]
 
 	\begin{abstract}
 
@@ -122,4 +122,3 @@ strategies
                 <+ {| RenameVar: RnBinding(bndvars, paste); boundin(x,id,id) |}
                    ; boundin(id,x,id)))
 \end{code}
-
