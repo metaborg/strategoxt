@@ -42,8 +42,8 @@ INCLUDES 	= -I. -I$(ATERM)/include -I$(srcdir)
 AM_LDFLAGS	= $(INCLUDES) -L. -lstratego -L$(ATERM)/lib -lATerm 
 #$(CHOICELDFLAGS) 
 
-lib_LIBRARIES 	= libstratego.a libstratego.dbg.a \
-		  libstratego.opt.a libstratego.prof.a 
+#lib_LIBRARIES 	= libstratego.a libstratego.dbg.a \
+#		  libstratego.opt.a libstratego.prof.a 
 #		  libatermextension.a libatermextension.dbg.a \
 #		  libatermextension.opt.a libatermextension.prof.a
 
@@ -93,14 +93,14 @@ AM_CFLAGS	= -Wall
 DEBUGFLAGS	= -g
 PROFFLAGS	= -pg
 
-#%.dbg.o: %.c
-#	$(CC) $(DEBUGFLAGS) $(CFLAGS) $(DEFS) $(INCLUDES) -c $< -o $@
+%.dbg.o: %.c
+	$(CC) $(DEBUGFLAGS) $(CFLAGS) $(DEFS) $(INCLUDES) -c $< -o $@
 
-#%.opt.o: %.c
-#	$(CC) $(OPTFLAGS) $(CFLAGS) $(DEFS) $(INCLUDES) -c $< -o $@
+%.opt.o: %.c
+	$(CC) $(OPTFLAGS) $(CFLAGS) $(DEFS) $(INCLUDES) -c $< -o $@
 
-#%.prof.o: %.c
-#	$(CC) $(PROFFLAGS) $(CFLAGS) $(DEFS) $(INCLUDES) -c $< -o $@
+%.prof.o: %.c
+	$(CC) $(PROFFLAGS) $(CFLAGS) $(DEFS) $(INCLUDES) -c $< -o $@
 
 
 ###########

@@ -19,7 +19,7 @@ LDADD		= -lstratego-lib.opt \
 
 check_PROGRAMS 	= extract
 
-lib_LIBRARIES = \
+pkglib_LIBRARIES = \
 	libstratego-lib.a libstratego-lib.dbg.a \
 	libstratego-lib.opt.a libstratego-lib.prof.a
 
