@@ -19,6 +19,7 @@
    Quoted   -- H hs=0 ["[" _1 "]"],
    Quoted.1:iter -- _1,
    Chars    -- _1,
+   EscapeSeq -- H hs=0 ["\\" _1],
 
    TupleTerm -- H hs=0 ["<(" _1 ")>"],
    String    -- KW["<string>"],

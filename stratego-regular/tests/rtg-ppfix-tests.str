@@ -1,0 +1,32 @@
+module rtg-ppfix-tests
+imports liblib rtg-ppfix
+
+strategies 
+
+  main-rtg-ppfix-tests = 
+    test-suite(!"rtg-ppfix-tests",
+      apply-test(!"rtg pp fix 1", rtg-ppfix
+      , !Term("foo")
+      , !Term(Plain("foo"))
+      )
+    ; apply-test(!"rtg pp fix 2", rtg-ppfix
+      , !Term("\"foo\"")
+      , !Term(Quoted([Chars("\"foo\"")]))
+      )
+    ; apply-test(!"rtg pp fix 3", rtg-ppfix
+      , !Term("[foo]")
+      , !Term(Quoted([Chars("[foo"), EscapeSeq("]")]))
+      )
+    ; apply-test(!"rtg pp fix 4", rtg-ppfix
+      , !Term("foo\\")
+      , !Term(Quoted([Chars("foo"), EscapeSeq("\\")]))
+      )
+    ; apply-test(!"rtg pp fix 5", rtg-ppfix
+      , !Term("foo bar")
+      , !Term(Quoted([Chars("foo bar")]))
+      )
+    ; apply-test(!"rtg pp fix 6", rtg-ppfix
+      , !Term("foo   bar")
+      , !Term(Quoted([Chars("foo   bar")]))
+      )
+    )
