@@ -59,13 +59,24 @@ signature
 
 strategies
 
-  // Always provide '-h' switch
+  // Always provide '--help' and '--about' (--version) switch
 
   system-usage-switch = 
-     Option( "--help" + "-h" + "-?",
-             <set-config> ("--help", ()); !Help(),
-             !"-h|-?|--help     Display usage information")
+      Option("--help" + "-h" + "-?"
+      , <set-config> ("--help", ()); !Help()
+      , !"-h|-?|--help     Display usage information"
+      )
 
+  system-about-switch = 
+      Option( "--about"
+      , <set-config> ("--about", ())
+      , !"--about          Display information about this program"
+      )
+    + Option("--version"
+      , where(<set-config> ("--about", ()); <set-config> ("-v",())); !Version()
+      , !"--version        Same as --about"
+      )
+  
   // No default long description. Overrule to include program description in
   // usage info.
 
@@ -82,10 +93,13 @@ strategies
 
   parse-options(s) =
       where(<table-put>("usage-table", "usage", []))
-    ; parse-options'(s + system-usage-switch)
+    ; parse-options'(s <+ system-usage-switch <+ system-about-switch)
     ; try(
           where(<get-config> "--help" <+ option-defined(Help))
         ; system-usage
+        ; <exit> 0
+      <+  where(<get-config> "--about")
+        ; system-about
         ; <exit> 0
       <+  option-defined(Undefined(?option))
         ; <printnl> (stderr(), ["Invalid option: ", option])
@@ -118,7 +132,12 @@ strategies
     override-system-usage
     <+ default-system-usage
 
+  system-about =
+    override-system-about
+    <+ default-system-about
+
   override-system-usage = fail
+  override-system-about = fail
     
   default-system-usage  = 
     (<get-config> "program" => p <+ option-defined(Program(?p)))
@@ -127,6 +146,9 @@ strategies
     ; <table-get; reverse>("usage-table", "usage")
     ; map(<echo> ["   ", <id>])
     ; try(<echo> ["\n" | <long-description(!p)>])
+
+  default-system-about =
+    <get-config; echo> "program"
 
 rules
 

@@ -95,7 +95,6 @@ strategies
   general-options =
       verbose-option
     + keep-option
-    + version-option
 
   keep-option =
     ArgOption("-k" + "--keep"
@@ -104,10 +103,8 @@ strategies
     )
 
   version-option =
-    Option("-v"+"--version"
-    , where(<set-config> ("-v",())); !Version()
-    , !"-v|--version     Display prgram's version"
-    )
+      obsolete(!"version-option/0: is a standard option")
+    ; fail
 
   input-option =
     ArgOption("-i" + "--input"
@@ -139,7 +136,7 @@ strategies
       )
     + Option("-s"
       , where(<set-config> ("-s",())); !Statistics()
-      , !"-s               Turn on statisctics"
+      , !"-s               Turn on statistics"
       )
 
 strategies

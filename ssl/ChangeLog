@@ -1,4 +1,13 @@
-2003-05-28  Martin Bravenboer <martin@mbravenboer.org>
+2003-06-10  Martin Bravenboer <martin@mbravenboer.org>
+
+  * spec/parse-options.str: --about and --version are now
+    standard switches in parse-options.
+
+  * spec/options.str: version-option in is now defined 
+    as fail. It will show an obsolete message when directly 
+    used.
+
+2003-06-09  Martin Bravenboer <martin@mbravenboer.org>
 
   * spec/posix-signal.str: prefixed signal overlays with
     SIG. Reported by Karina.
