@@ -45,7 +45,7 @@ echo "** INFO -- AutoXT is `which autoxt`"
 # end of autoxt install
 
 # bootstrap the subpackages
-PKGS="autoxt srts xtc xtc2 xtc3 strc ssl gpp c-tools concrete-syntax aterm-front stratego-front asfix-tools sdf-front sdf-tools stratego-regular xml-front xtar boxenv stratego-lib strc-core"
+PKGS="autoxt srts xtc strc ssl gpp c-tools concrete-syntax aterm-front stratego-front asfix-tools sdf-front sdf-tools stratego-regular xml-front boxenv"
 
 for dir in $PKGS
 do 

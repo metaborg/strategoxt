@@ -1,9 +1,0 @@
-definition xtc-migrate {
-  description = "Transforms legacy XTC repositories to new structure"
-  model {  
-    descriptor = xt
-    explicit template { 
-      layout = $input,$output
-    }
-  }
-}
