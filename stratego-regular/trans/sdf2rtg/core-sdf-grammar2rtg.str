@@ -485,8 +485,17 @@ strategies
   Symbol2String :
     lex(sym) -> <Symbol2String> sym
 
+  /**
+   * @todo  This could be improved by using quoted identifiers.
+   */
   Symbol2String :
     char-class(_) -> "CharClass"
+
+  /**
+   * @todo  This could be improved by using quoted identifiers.
+   */
+  Symbol2String :
+    lit(_) -> "Lit"
 
   Symbol2String :
     iter(sym) -> <conc-strings> ("ListPlusOf", <Symbol2String> sym)
