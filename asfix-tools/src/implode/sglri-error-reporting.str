@@ -22,7 +22,9 @@ strategies
 	  case ?file(error-file) : <report-file(|err,descr)>input
         end
       )
-      <+ read-from ; debug(!"Parse error cannot be presented. Please report bug.")
+      <+ say(!"error: A parse error occured, but the cannot be presented in a nice way. Please report this as a bug.")
+         ; read-from
+         ; debug(!"       Structured parse error: ")
     , fail)
 
   /**
@@ -30,52 +32,65 @@ strategies
    */
   report-file(|err,descr) =
      if !err => "Parse Table error" then
-       <fprintnl> ( <stderr-stream> (), [<get-config>"-p", ": ", err, ", ", descr])
+       <fprintnl> ( <stderr-stream> (), [<get-config> "-p", ": ", err, ", ", descr])
      else
        fail
      end
-  
+
   /**
    * Presents the 'area' in the input file at stderr.
    *
    * @type  FILE -> _
    */
   report-area(|file, descr, area) =
+    where(
+      !area => area(begin-line, begin-column, _, end-column, _, _)
+    );
+
     let y-pos =
-          !area
-          ; ?area(begin-line, begin-column, _, end-column, _, _)
-          ; !begin-line
-          ; dec 
+            <dec> begin-line
           ; if <lt> (<id>, 0) then !0 else id end
 
         x-pos =
-          !area
-          ; ?area(begin-line, begin-column, _, end-column, _, _)
-          ; <dec> begin-column => c
+            <dec> begin-column => c
           ; if <lt> (c, 0) then !0 else id end
 
-     in ?FILE(<read-text-file>)
-      ; get-lines
-      ; add-indices
-      ; where(y-pos => y)
+        filename =
+          if !file => "-" then
+            !"stdin"
+          else
+            !file
+          end
 
-      ; where(<fprintnl> (<stderr-stream> (), [file, ": ",  descr, " at line ", <int-to-string> begin-line, ", column ", <int-to-string> begin-column]))
+        print-location =
+          where(
+            <fprintnl> (<stderr-stream> (), [<filename> (), ": ",  descr, " at line ", <int-to-string> begin-line, ", column ", <int-to-string> begin-column])
+          )
 
-      ; at-suffix(?[(y, _) | _]; ?context)
+        print-context-in-file =
+          ?FILE(<read-text-file>)
+          ; get-lines
+          ; add-indices
+          ; where(y-pos => y)
+          ; at-suffix(?[(y, _) | _]; ?context)
 
-      /**
-       * If there are 2 or more elements, drop the rest.
-       */
-      ; !context
-      ; if !context => [s1, s2 | _ ] then
-          ![s1, s2]
+          /**
+           * If there are 2 or more elements, drop the rest.
+           */
+          ; !context
+          ; if !context => [s1, s2 | _ ] then
+              ![s1, s2]
+            end
+          ; where(map(<fprintnl> (<stderr-stream> (), [<Snd>])))
+
+          /**
+           * Indicate the position in the file
+           */
+          ; <conc-strings> (<copy-char> (<x-pos> (), ' '), "^")
+          ; where(<fprintnl> (<stderr-stream> (), [<id>]))
+
+     in print-location
+      ; if ?FILE(_) then
+          print-context-in-file
         end
-
-      ; where(map(<fprintnl> (<stderr-stream> (), [<Snd>])))
-
-      /**
-       * Indicate the position in the file
-       */
-      ; <conc-strings> (<copy-char> (<x-pos> (), ' '), "^")
-      ; where(<fprintnl> (<stderr-stream> (), [<id>]))
     end
