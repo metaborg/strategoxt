@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Abox2text.r,v 1.4 2001/06/08 16:40:29 mdejonge Exp $
+% $Id: Abox2text.r,v 1.5 2001/09/19 09:33:56 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
@@ -136,7 +136,7 @@ Abox-2-text =
     \ (R(sopt, bs), xpos) -> <Abox-2-text> (H(sopt, bs), xpos) \
 
   Abox-2-text =
-    \ (A(_,sopt, bs), xpos) -> <Abox-2-text> (V(sopt, bs), xpos) \
+    \ (A(_,sopt, bs), xpos) -> <Abox-2-text> (V(sopt, <map-to-r-box>bs), xpos) \
       
   Abox-2-text =
     \ (ALT( a1, a2), xpos) -> <Abox-2-text> (a1, xpos) \
@@ -148,7 +148,26 @@ Abox-2-text =
     \ ([], xpos) -> ("", xpos) \
 
 strategies
-
+  // Make sure that all arguments of an A box are R boxes. Put boxes
+  // into new R boxes when needed
+  map-to-r-box =
+     ?xs;
+     !( xs, [], [] );
+     rec s ({ a1, a2, x, xs, ys, zs:
+        ?( [], [], zs ); !zs; debug(!"ONE")
+     <+
+        ?( [], ys, zs ) ; <conc>(zs, [R([], ys)]);debug(!"TWO")
+     <+
+        ?( [R(a1, a2)| xs], [], zs ) ;
+         <s>(xs, [], [R(a1,a2)|zs] )
+     <+
+        ?( [R(a1, a2)| xs], ys, zs ) ;
+        <s>( xs, [], [R([], ys), R(a1, a2)| zs])
+     <+
+        ?( [x|xs], ys, zs );
+        <s>( xs, <conc>(ys, [x]), zs )
+     })
+     
   // analysing space options
 
   Hspace =
