@@ -1,4 +1,4 @@
-AC_INIT([sdf-front],[0.9.5],[stratego-bugs@cs.uu.nl])
+AC_INIT([sdf-front],[0.9.6pre],[stratego-bugs@cs.uu.nl])
 AM_INIT_AUTOMAKE
 
 USE_XT_PACKAGES
