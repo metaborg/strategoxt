@@ -18,7 +18,9 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/05/31 14:20:51 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2001/06/07 09:48:05 mdejonge Exp $
+
+include ${GPP}/share/gpp/gpp.Makefile
 
 # define any subdir here
 SUBDIRS      = data
@@ -26,16 +28,10 @@ SUBDIRS      = data
 EXTRA_DIST = $(wildcard *.r) sdf.def sdf.pp sdf.cons.pp sdf.cons.def README
 
 pkgdata_DATA = $(wildcard *.r) \
-               sdf.tbl sdf.pp sdf.cons.pp sdf.cons.tbl #sdf.cons.pp.af
+               sdf.tbl sdf.cons.pp sdf.cons.tbl sdf.cons.pp.af
 
-#CLEANFILES += sdf.pp.cons.pp.af 
+CLEANFILES += sdf.pp.cons.pp.af 
 
 %.tbl : %.def
 	PATH=$(PGEN)/bin:$${PATH} sdf2table $< -o $@
-
-#%.pp.af : %.pp
-#	( cd ../gpp; $(MAKE) pp-tables.tbl)
-#	( cd ../implode; $(MAKE) implode-asfix )
-#	PATH=$(SGLR)/bin:$${PATH} sglr -p ../gpp/pp-tables.tbl -i $< \
-#	   | ../implode/implode-asfix -o $@
 
