@@ -519,16 +519,26 @@ strategies
   drop-until(s) = 
     at-suffix(([] + [s|id]);?xs); !xs
 
-
   /**
    * @warning  alias of split-fetch/1
    */
   split-at(s) = 
     split-fetch(s)
 
+  /**
+   * Drops a number of terms from the front of a list.
+   *
+   * The number is specified by the strategy argument, which should
+   * produce an integer.
+   *
+   * @type  List(a) -> List(a)
+   * @param isn  _ -> Int
+   */
   drop(isn) = 
     where(isn => n)
-    ; nzip0(id); drop-until(?(n,_)); map(Snd)
+    ; nzip0(id)
+    ; drop-until(?(n,_))
+    ; map(Snd)
 
 strategies
   /**
