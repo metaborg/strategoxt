@@ -68,11 +68,9 @@
    `char[]'. */
 #define YYTEXT_POINTER 1
 
-/* Define to `__inline__' or `__inline' if that's what the C compiler
-   calls it, or to nothing if 'inline' is not supported under any name.  */
-#ifndef __cplusplus
+/* Define as `__inline' if that's what the C compiler calls it, or to nothing
+   if it is not supported. */
 /* #undef inline */
-#endif
 
 /* Define to rpl_malloc if the replacement function should be used. */
 /* #undef malloc */

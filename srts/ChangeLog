@@ -1,7 +1,25 @@
+2004-03-22  Martin Bravenboer <martin@cs.uu.nl>
+
+	* Added hashtable primitives that operate on an Hashtable
+	representation in een ATerm. These primitives require you to pass
+	this representation around in Stratego. The internal structure of
+	this representation should not be used in any way and is subject
+	to change (compare to Stream as ATerm).
+
+	- SSL_hashtable_create(ATerm initial_size_term, ATerm
+	max_load_term);
+	- SSL_hashtable_destroy(ATerm table_term);
+	- SSL_hashtable_put(ATerm table_term, ATerm key, ATerm value);
+	- SSL_hashtable_get(ATerm table_term, ATerm key);
+        - SSL_hashtable_remove(ATerm table_term, ATerm key);
+        - SSL_hashtable_keys(ATerm table_term);
+	
 2004-02-22   Merijn de Jonge  <mdejonge@cs.uu.nl>
-   * Makefile.am: added autoxt.m4 to EXTRA_DIST
-   * Makefile.am: added line: ACLOCAL_AMFLAGS = -I . such that autoreconf
-     can find autoxt.m4
+
+	* Makefile.am: added autoxt.m4 to EXTRA_DIST
+
+	* Makefile.am: added line: ACLOCAL_AMFLAGS = -I . such that
+	autoreconf can find autoxt.m4
 
 2004-02-12  Martin Bravenboer <martin@cs.uu.nl>
 

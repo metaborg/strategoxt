@@ -28,3 +28,11 @@ ATerm SSL_table_get(ATerm table, ATerm key);
 ATerm SSL_table_remove(ATerm table, ATerm key);
 ATerm SSL_table_keys(ATerm table);
 ATerm SSL_table_rename(ATerm table1, ATerm table2);
+
+ATerm SSL_hashtable_create(ATerm initial_size_term, ATerm max_load_term);
+ATerm SSL_hashtable_destroy(ATerm table_term);
+ATerm SSL_hashtable_put(ATerm table_term, ATerm key, ATerm value);
+ATerm SSL_hashtable_get(ATerm table_term, ATerm key);
+ATerm SSL_hashtable_remove(ATerm table_term, ATerm key);
+ATerm SSL_hashtable_keys(ATerm table_term);
+
