@@ -2,7 +2,7 @@
  * Unit tests for table strategies
  */
 module tables-test
-imports sunit tables
+imports sunit tables list-set
 strategies
 
   main = 
@@ -17,6 +17,10 @@ strategies
     ; test-remove
     ; test-keys
 
+    ; test-getlist
+    ; test-putlist
+    ; test-copy
+    
     ; test-stack
     )
 
@@ -44,7 +48,7 @@ strategies
 strategies
 
   test-create =
-    apply-and-check(!"new-hashtable", new-hashtable, !(), ?Hashtable(_); destroy-hashtable)
+    apply-and-check(!"new-hashtable", new-hashtable, !(), ?Hashtable(_); hashtable-destroy)
 
   test-put =
     where(new-hashtable => tbl)
@@ -53,6 +57,7 @@ strategies
       , !tbl
       , <hashtable-get(|"key")> tbl => "value"
       )
+    ; where(<hashtable-destroy> tbl)
 
   test-get =
       apply-and-fail(!"hashtable-get on not a hashtable"
@@ -71,6 +76,7 @@ strategies
       , !tbl
       , not(<hashtable-get(|"key")> tbl)
       )
+    ; where(<hashtable-destroy> tbl)
 
   test-keys =
     where(new-hashtable => tbl)
@@ -84,6 +90,58 @@ strategies
       , !tbl
       , !["key"]
       )
+    ; where(<hashtable-destroy> tbl)
+
+  test-getlist =
+    where(new-hashtable => tbl)
+    ; apply-test(!"hashtable-getlist-empty"
+      , hashtable-getlist
+      , !tbl
+      , ![]
+      )
+    ; where(!tbl; hashtable-put(|"key1", "value1"); hashtable-put(|"key2", "value2"))
+    ; apply-and-check(!"hashtable-getlist"
+      , hashtable-getlist
+      , !tbl
+      , <set-eq> (<id>, [("key1", "value1"), ("key2", "value2")])
+      )
+    ; where(<hashtable-destroy> tbl)
+
+  test-putlist =
+    where(new-hashtable => tbl)
+    ; apply-test(!"hashtable-putlist-empty"
+      , hashtable-putlist(|[]); hashtable-getlist
+      , !tbl
+      , ![]
+      )
+    ; apply-and-check(!"hashtable-putlist"
+      , hashtable-putlist(|[("key1", "value1"), ("key2", "value2")])
+        ; hashtable-getlist
+      , !tbl
+      , <set-eq> (<id>, [("key1", "value1"), ("key2", "value2")])
+      )
+    ; where(<hashtable-destroy> tbl)
+
+  test-copy =
+    where(new-hashtable => tbl)
+    ; apply-test(!"hashtable-copy-empty"
+      , where(hashtable-copy => tbl2)
+        ; where(<not(eq)> (tbl, tbl2))
+        ; where(<set-eq> ([], <hashtable-getlist> tbl))
+        ; where(<set-eq> ([], <hashtable-getlist> tbl2))
+        ; where(<hashtable-destroy> tbl2)
+      , !tbl
+      )
+    ; where(<hashtable-putlist(|[("key1", "value1"), ("key2", "value2")])> tbl)
+    ; apply-test(!"hashtable-copy"
+      , where(hashtable-copy => tbl3)
+        ; where(<not(eq)> (tbl, tbl3))
+        ; where(<set-eq> (<hashtable-getlist> tbl,  [("key1", "value1"), ("key2", "value2")]))
+        ; where(<set-eq> (<hashtable-getlist> tbl3, [("key1", "value1"), ("key2", "value2")]))
+        ; where(<hashtable-destroy> tbl3)
+      , !tbl
+      )
+    ; where(<hashtable-destroy> tbl)
 
   test-stack =
     where(new-hashtable => tbl)
@@ -129,3 +187,4 @@ strategies
       , hashtable-pop(|"keyA")
       , !tbl
       )
+    ; where(<hashtable-destroy> tbl)

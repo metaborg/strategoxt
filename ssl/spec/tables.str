@@ -24,7 +24,7 @@ strategies
   new-hashtable(|initial_size, max_load) =
     prim("SSL_hashtable_create", initial_size, max_load); !Hashtable(<id>)
 
-  destroy-hashtable =
+  hashtable-destroy =
     ?Hashtable(tbl); prim("SSL_hashtable_destroy", tbl); !Hashtable(<id>)
 
 /**
@@ -43,11 +43,34 @@ strategies
   hashtable-keys =
     ?Hashtable(tbl); prim("SSL_hashtable_keys", tbl)
 
+/**
+ * Hashtable bulk operations
+ */
+strategies
+
+  /**
+   * Gets the contents of a hashtable as a list of key-value tuples.
+   */
   hashtable-getlist =
     ?htbl
   ; hashtable-keys
   ; map(\ x -> (x, <hashtable-get(|x)> htbl) \)
 
+  /**
+   * Puts a list of key-value tuples into a hashtable.
+   */
+  hashtable-putlist(|kv*) =
+    ?htbl
+  ; where(<map(\ (key, value) -> <hashtable-put(|key, value)> htbl \)> kv*)
+
+  /**
+   * Creates a new hashtable and copies the entire contents of the current
+   * table into the new one.
+   */
+  hashtable-copy =
+    hashtable-getlist => kv*
+  ; new-hashtable(|<length>, 75)
+  ; hashtable-putlist(|kv*)
 
 /**
  * Stack operations (when stored values in hashtables are list-based stacks)
