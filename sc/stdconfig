@@ -8,6 +8,8 @@
 
 exit 0
 
+    --with-gpp=/home/xt/xt \
+
 ./configure --prefix=`pwd`/../sc-boot \
 	--with-aterm=`pwd`/../aterm \
 	--with-cgen=`pwd`/../cgen \

@@ -1,5 +1,43 @@
+2002-03-08  Eelco Visser  <visser@acm.org>
+
+	* spec/front/frontend.r: commented out debug statements
+
+	* spec/c/s2c.r: Construction of term with annotations. This rule
+	is not used currently since annotations are removed by desugaring
+	in the frontend.
+
+	* spec/sig/sugar.r: Anno: constructor for annotations
+
+	* spec/front/normalize-spec.r: commented out debug
+	statements
+
+	* spec/syn/front/check-constructors.r: commented out debug
+	statements
+
+2002-03-07  Eelco Visser  <visser@acm.org>
+
+	* spec/syn/pack-stratego.r: Pack-stratego now fails when
+	parse-mod fails; instead of looking for a .tree file,
+	generated files should have a .rtree extension.
+
+	* spec/front/spec-to-sdefs.r: Implementation of annotation
+	congruence by desugaring (should be merged with matching).
+
+	* spec/syn/stratego.grm (optcond): Added syntax for annotation
+	congruences s1{s2}.
+
+	* spec/front/desugar.r: Lift non-variable Builds from Prim
+	arguments.  To avoid sequence problems and to ensure lifting of
+	RootApps, Annos, and Apps from these Build expressions.
+
+	* spec/test1/test27.r: Testing guarded left choice
+
+	* spec/test1/test28.r, test29.r: Testing annotations
+
 2002-01-29  Eelco Visser  <visser@acm.org>
 
+	* Release 0.7beta2
+	
 	* spec/c/s2c.r: A constant list term should only be cached if
 	every tail is a proper list; otherwise a run-time failure is moved
 	to program initialization.

@@ -29,7 +29,7 @@ IOTESTSRCS = $(subst .r,.c,$(IOTESTFILES))
 IOTESTBINS = $(subst .r,.bin,$(IOTESTFILES))
 IOTESTRUNS = $(subst .r,.io-run,$(IOTESTFILES))
 
-check: $(TESTRUNS) $(IOTESTRUNS)
+TESTS = $(TESTBINS) $(IOTESTBINS)
 
 TESTIBINS = $(subst .r,.ibin,$(TESTFILES))
 TESTIRUNS = $(subst .r,.irun,$(TESTFILES))
