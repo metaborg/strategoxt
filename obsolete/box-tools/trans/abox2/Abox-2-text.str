@@ -28,7 +28,7 @@ strategies
           read-from
         ; <try-abox2text> (<id>, 0)
         ; Fst
-        ; topdown-print-to
+        ; <topdown-print-to> (<id>, "\n")
         )
       )
 
