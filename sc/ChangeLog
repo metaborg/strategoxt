@@ -1,3 +1,19 @@
+2001-12-17  Eelco Visser  <visser@acm.org>
+
+	* spec/front/needed-defs.r: Improved efficiency of needed
+	definition extraction by using dynamic rules instead of a list of
+	definitions to look up definitions in. The effect of this change
+	is that the order of evaluation of definitions for the same label
+	is reversed.  This is fine since the order of evaluation of
+	rules/definitions with the same name is undefined, but it might
+	break some specifications. It might be a good idea to change the
+	evaluation order with every distribution in order to force
+	programmers to use left choice when the order is relevant.
+	
+2001-11-26  Eelco Visser  <visser@acm.org>
+
+	* Release 0.6.3
+
 2001-11-22  Eelco Visser  <visser@acm.org>
 
 	* configure.in: undone: quoted $prefix with '' to include

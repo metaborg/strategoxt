@@ -1,6 +1,6 @@
 \literate[Specification to List of Definitions]
 
-% $Id: spec-to-sdefs.r,v 1.3 2001/10/01 19:45:35 visser Exp $
+% $Id: spec-to-sdefs.r,v 1.4 2001/12/17 19:50:05 stratego Exp $
 
 % Copyright (C) 1998, 1999, 2000 Eelco Visser <visser@acm.org>
 % 
@@ -52,7 +52,7 @@ rules
   MkCongDef : 
     OpDecl(f, FunType(ts, t)) -> 
     SDef(f, xdecs, Cong(f, <map(MkCall)> xs))
-    where <map(new; split(\ x -> VarDec(x, DefaultStrat) \, id));
+    where <map(new; !(VarDec(<id>, DefaultStrat), <id>));
            unzip> ts => (xdecs, xs)
 
   MkCongDefs : 
@@ -92,7 +92,7 @@ rules
 
   Overlay-to-Congdef :
     Overlay(f, xs, t) -> SDef(f, xdecs, <trm-to-cong> t)
-    where <map(\ x -> VarDec(x, DefaultStrat) \ )> xs => xdecs
+    where <map(!VarDec(<id>, DefaultStrat))> xs => xdecs
 
   trm-to-cong = 
     rec x(try(Op(id, map(x))); Trm-to-Cong)

@@ -58,7 +58,7 @@ strategies
     <+ guarantee-extension(!"tree"); //debug(!"looking for: ");
        split(id, mkpath); find-in-path;
        split(id, ReadFromFile)
-    <+ \ x -> <fatal-error> ["module ", x, " not found"] \
+    <+ <fatal-error> ["module ", <id>, " not found"]
 
   get-stratego-imports =
     \ (_, Specification(xs)) -> xs \;

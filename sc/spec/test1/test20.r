@@ -6,7 +6,9 @@ strategies
     test2; 
     test3; 
     test4; 
-    test5
+    test5; 
+    test6; 
+    test7
 
   test1 =
     !"a";
@@ -32,3 +34,18 @@ strategies
     !(("a","b"),"c");
     ?((_, <id>),"c");
     ?"b"
+
+  map(s) = 
+    rec x([] + [s | x])
+
+  test6 =
+    ![("a", "b"), ("c", "d"), ("e", "f")];
+    map(?(<id>,_));
+    ?["a", "c", "e"]
+    
+  test7 =
+    ![[("a", "b"), ("c", "d"), ("e", "f")], 
+      [("a", "b"), ("c", "d"), ("e", "f")]];
+    map(map(?(<id>,_)));
+    ?[["a", "c", "e"], ["a", "c", "e"]]
+    

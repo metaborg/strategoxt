@@ -27,9 +27,37 @@
 \begin{code}
 module needed-defs
 imports strategy sugar desugar stratlib list-set list-misc lib pack-graph
+	dynamic-rules
+\end{code}
+
+	\paragraph{Sorting Definitions}
+
+	Associate with the pair \verb|(f, n)| of strategy name and arity the list
+	of its definitions. The dynamic rule \verb|Definitions| implements this
+	association.
+
+\begin{code}
+strategies
+
+  sort-defs = 
+    map(
+     {?def@SDef(f, xs, s);
+      where(
+        <length> xs => n;
+        <Definitions <+ ![]> (f, n) => defs;
+        <union>([n], <Arities <+ ![]> f) => ns;
+        rules(
+          Definitions : (f, n) -> [def | defs]
+          Arities : f -> ns
+        )
+      )}
+    )
 \end{code}
 
 	\paragraph{Joining Definitions}
+
+	Join multiple definitions for the same strategy operator into one
+	definition by unifying the list of formal strategy parameters.
 
 \begin{code}
 strategies
@@ -43,9 +71,12 @@ rules
 
   JoinDefs2 : 
     defs @ [SDef(f, xs, s) | _] -> SDef(f, ys, <choices> ss)
-    where <map(\ VarDec(x, t) -> VarDec(<new>(),t)\ )> xs => ys;
-	  <map(\ VarDec(y,t) -> Call(SVar(y), []) \ )> ys => ys'; 
-	  <map({zs, s: ?SDef(f, zs, s); !<ssubs> (<map(\ VarDec(z,_) -> z\ )>zs, ys', s)})> defs => ss
+    where <map(VarDec(new,id))> xs => ys;
+	  <map(\ VarDec(y, t) -> Call(SVar(y), []) \ )> ys => ys'; 
+	  <map(\ SDef(_, zs, s) -> <ssubs> (<map(\ VarDec(x,_) -> x \ )> zs, ys', s) \ )> defs => ss
+
+  choices = 
+    foldr(!Fail, !Choice(<Fst>,<Snd>))
 \end{code}
 
 	\paragraph{Obtaining Needed Definitions}
@@ -53,29 +84,24 @@ rules
 \begin{code}
 strategies
 
-  choices = foldr(!Fail, \ (s1,s2) -> Choice(s1,s2) \ )
-
   definition-names =
     foldr(![], union, \ SDef(f,xs,_) -> [(f, <length>xs)]\ )
 
   all-defs = 
-    \ defs -> (<definition-names> defs, defs, []) \;
+    !(<definition-names>, <sort-defs>, []);
     extract-needed-defs
 
   needed-defs = 
-    \ defs -> ([("main", 0)], defs, []) \;
+    !([("main", 0)], <sort-defs>, []);
     extract-needed-defs
 
   extract-needed-defs =
     graph-nodes-undef-roots-chgr(get-definition
-                          ,svars-arity
+                          ,svars-arity; map(try(DefinitionExists))
                           ,\ (_,x,d) -> [x|d] \ );
-    FilterNonMissingDefs; (NoMissingDefs <+ MissingDefs; <exit> 1)
+    // FilterNonMissingDefs; 
+    (NoMissingDefs <+ MissingDefs; <exit> 1)
 
-  get-definition = 
-       CongruenceDef
-    <+ OverloadedDef; (joindefs, id)
-    <+ NonOverloadedDef; (joindefs, id)
 \end{code}
 
 	A strategy operator f with arity n is needed. All definitions for
@@ -86,22 +112,35 @@ strategies
 \begin{code}
 rules
 
-  OverloadedDef :
-    ((f, n), defs) -> <partition(SDef(?f,where(length => n),id))> defs
+  get-definition = 
+    CongruenceDef <+ OverloadedDef; (joindefs, id)
 
-  NonOverloadedDef :
-    ((f, 0), defs) -> <partition(SDef(?f,id,id))> defs
+  DefinitionExists :
+    (f, 0) -> (f, n)
+    where <Arities> f => [n]; <Definitions> (f, n)
+
+  DefinitionExists =
+    ?(f, 0)
+    ; <Arities> f => [_,_|_]
+    ; not(fetch(?0))
+    ; <error> ["passing name of overloaded definition: ", f]
+    ; giving-up
+
+  OverloadedDef :
+    ((f, n), defs) -> (<Definitions> (f, n), defs)
 
   CongruenceDef :
     ((Mod(c, mod), n), defs) -> (fdef, defs)
     where <DefineCongruence; desugar> (c, mod, n) => fdef
 
-  NoMissingDefs : 
-    (defs, []) -> defs
-
+(*
   FilterNonMissingDefs :
     (defs, undefs) -> (defs, undefs')
-    where <filter(not({f,n: ?(f,n); <fetch(SDef(?f, length => n + <eq>(n,0),id))> defs}))> undefs => undefs'
+    where <filter(not(Definitions))> undefs => undefs'
+*)
+
+  NoMissingDefs : 
+    (defs, []) -> defs
 
   MissingDefs : 
     (defs, [f|fs]) -> defs
@@ -113,7 +152,6 @@ rules
   MissingDefMod : 
     (Mod(c, m), n) -> 
     <error> ["error: operator ", c, "^", m , "/", n, " undefined "]
-
 \end{code}
 
 	\paragraph{Distributing Congruences}
@@ -187,6 +225,7 @@ rules
           <last> es => e-last;
           <zipr(MkThreadApplication); tuple-unzip(id)> ([e-first | es], es)
 	     => (as, ss, xs1, xs2, ys1, ys2)
+
   MkThreadApplication : 
     (e1,e2) -> (BAM(Call(SVar(s),[]), OpPair(Var(x), Var(e1)), 
                                       OpPair(Var(y), Var(e2))), 

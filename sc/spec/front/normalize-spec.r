@@ -1,6 +1,6 @@
 \literate[{\tt NORMALIZE-SPEC}]
 	
-% $Id: normalize-spec.r,v 1.3 2001/10/01 19:45:35 visser Exp $
+% $Id: normalize-spec.r,v 1.4 2001/12/17 19:50:05 stratego Exp $
 
 % Copyright (C) 1998, 1999, 2000 Eelco Visser <visser@acm.org>
 % 
@@ -104,8 +104,7 @@ strategies
   const-names = filter(Names); concat
 
   vars-to-consts = 
-    split(const-names; map(split(id, \x -> Op(x,[])\ ))
-         ,id);
+    !(<const-names; map(!(<id>, Op(<id>,[])))>, <id>);
     tsubs
 \end{code}
 
