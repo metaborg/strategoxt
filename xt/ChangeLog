@@ -16,7 +16,15 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 02111-1307, USA.
 
-$Id: ChangeLog,v 1.2 2000/03/27 15:52:40 mdejonge Exp $
+$Id: ChangeLog,v 1.3 2000/03/28 22:19:36 mdejonge Exp $
+
+2000-03-29    <mdejonge@cwi.nl>
+        * Introduced a dummy subdirectory to get around a bug in automake.
+        * fixed install, clean, and check targets
+        * added message about using GNU make to README.in
+
+2000-03-28    <mdejonge@cwi.nl>
+        * CWI packages are now downloaded from CWI web-site
 
 2000-03-27    <mdejonge@cwi.nl>
         * Added GPL License headers
