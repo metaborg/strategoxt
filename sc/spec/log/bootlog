@@ -1673,3 +1673,9 @@ Bootstrapping: phase 3 started [Fri Sep 20 00:06:53 CEST 2002]
 
 Bootinstall [Fri Sep 20 00:37:03 CEST 2002]
 Bootinstall finished [Fri Sep 20 00:37:04 CEST 2002]
+
+Bootstrapping version 0.8.1 [Fri Sep 20 12:17:55 CEST 2002 - Linux node11794.a2000.nl i686]
+Bootstrapping: phase 1 started [Fri Sep 20 12:17:55 CEST 2002]
+Bootstrapping: phase 2 started [Fri Sep 20 12:31:51 CEST 2002]
+Bootstrapping: phase 3 started [Fri Sep 20 12:45:27 CEST 2002]
+Bootstrapping: finished [Fri Sep 20 12:59:20 CEST 2002]

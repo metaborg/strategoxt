@@ -18,9 +18,12 @@ Version 0.8.1
  sdf-tools (0.4), stratego-tools (0.4), and gpp (2.4).
 
  * List variables can now occur by themselves and in variable scopes
- * Support for cgi programming
- * Install compiler components in libexec
+ * Support for CGI programming in library (see module cgi)
  * Verbose mode for parse-cmod
+
+ * --enable-develop mode for ssl package enables remaking of .rtree files
+   for library modules
+ * Install compiler components in libexec
  * Include install-sh, missing, mkinstalldirs in all packages
  * Make targets for creating RPM's
 
