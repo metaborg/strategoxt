@@ -19,6 +19,10 @@ signature
     IncludeDir : String -> IncludeVal
     IncludeXTC : IncludeVal
 
+  constructors
+    IncludePathName : String -> Include
+    IncludeFromPath : String -> Include
+
 strategies
 
   pack-sdf-options =

@@ -36,11 +36,6 @@ strategies
       )
     )
 
-signature
-  constructors
-    IncludePathName : String -> Include
-    IncludeFromPath : String -> Include
-
 /**
  * Main strategy
  */
@@ -55,10 +50,41 @@ strategies
         ; map(!IncludeFromPath(<id>))
       , \ (n,x,xs) -> [x|xs] \
       )
-    ; (id, map(<fatal-error> ["pack-sdf: error: module ", <try(?IncludeFromPath(<id>))>, " not found\n"]); [])
-    ; Fst
-    ; unzip
-    ; (id, ConcatModules)
+    ; if ?(_, []) then
+       Fst
+       ; unzip
+       ; (id, ConcatModules) 
+      else
+        Snd
+        ; map(report-module-not-found)
+        ; <xtc-exit> 1
+      end
+
+  report-module-not-found =
+    let get-module-name =
+          ?IncludeFromPath(<id>) + ?IncludePathName(<id>)
+
+     in get-module-name => module-name
+      ; <printnl> (stderr(), ["pack-sdf: error: module ", module-name, " not found"])
+      ; <bagof-ImportedFrom> module-name
+      ; if [] then
+          id
+        else if ?[mod] then
+            <get-source-pathname <+ !"unknown location"> mod
+          ; <printnl> (stderr(), ["    imported from module ", mod, 
+                                "\n      in file ", <id>])
+        else
+            where(<printnl> (stderr(), ["    imported from:"]))
+          ; map({mod1 :
+              ?mod1
+            ; (get-source-pathname <+ !"at unknown location")
+            ; <printnl> (stderr(),   ["      module ", mod1, 
+                                    "\n        in file ", <id>])
+            })
+          end
+        end
+      ; <printnl> (stderr(),   [""])
+    end
 
   /**
    * @type  (Include, List(IncludeVal)) -> (String, AsFix(Module))
@@ -99,26 +125,38 @@ strategies
   include-pathname :
     file -> (file, tree)
       where if-verbose1(debug(!"  including "))
-          ; ( <parse-sdf2-module-to-asfix> file => tree
-            <+ <fatal-error> ["pack-sdf: Error: module ", <id>, " cannot be parsed\n"])
+          ; <parse-sdf2-module-to-asfix> file => tree
+          ; get-module-name-from-asfix => mod
+          ; <register-source-pathname(|mod)> file
 
   include-from-dir(|mod) :
     IncludeDir(dir) -> <include-pathname> file
       where <concat-strings; file-exists> [dir,"/", mod, ".sdf"] => file
           ; if-verbose1(debug(!"  including "))
-          ; ( <parse-sdf2-module-to-asfix(|mod)> file => tree
-            <+ <fatal-error> ["pack-sdf: Error: module ", <id>, " cannot be parsed\n"])
+          ; <parse-sdf2-module-to-asfix(|mod)> file => tree
+          ; <register-source-pathname(|mod)> file
 
   include-from-xtc(|mod) :
     IncludeXTC() -> (file, tree)
       where <conc-strings; xtc-find-loc> (mod, ".sdf") => file
           ; if-verbose1(say(<concat-strings> ["  including ", mod, " from XTC repository"]))
           ; <parse-sdf2-module-to-asfix(|mod)> file => tree
+          ; <register-source-pathname(|mod)> file
 
   include-from-def(|mod) :
     IncludeDef(file, mods) -> (file, Module_START(NewLine(), tree, NewLine()))
       where <fetch-elem(?(mod, <id>))> mods => tree
           ; if-verbose1(say(<concat-strings> ["  including ", mod, " from ", file]))
+          ; <register-source-pathname(|mod)> file
+
+strategies
+
+  register-source-pathname(|mod) =
+    ?file
+    ; rules(SourcePathName : mod -> file)
+
+  get-source-pathname =
+    SourcePathName
 
 strategies
 
@@ -148,23 +186,18 @@ strategies
    * check is applied to a tuple of (actual module name, pathname of sdf)
    */
   parse-sdf2-module-to-asfix(check) =
-      <xtc-sglr(!"Sdf2.baf", !"Module")> FILE(<?pathname; id>)
-    ; read-from
-    ; ?parsetree(<id>, _)
-    ; check-module-name(check|pathname)
+    ?pathname
+    ; ( <xtc-sglr(!"Sdf2.baf", !"Module")> FILE(pathname)
+        < read-from
+          ; ?parsetree(<id>, _)
+          ; check-module-name(check|pathname)
+        + <fatal-error> ["pack-sdf: Error: module ", pathname, " cannot be parsed\n"]
+      )
 
   check-module-name(check|pathname) =
     ?ptree;
     let get-actual-modname =
-            !ptree
-          ; collect-om(?appl(prod(_, cf(sort("Module")), _), _))
-          ; ?[<id>]
-                     // module layout ModuleName
-          ; ?appl(_, [_, _, <id> | _])
-    
-          ; collect-om(?appl(prod(_, lex(sort("ModuleId")), _), _))
-          ; ?[<id>]
-          ; asfix-lex-yield
+          <get-module-name-from-asfix> ptree
 
      in where(<get-actual-modname> () => actual)
       ; if <check> (actual, pathname) then
@@ -173,6 +206,16 @@ strategies
           <fatal-error> ["pack-sdf: error: module name '", actual, "' in file '", pathname, "' does not correspond to filename.\n"]
         end
     end
+
+  get-module-name-from-asfix = 
+      collect-om(?appl(prod(_, cf(sort("Module")), _), _))
+    ; ?[<id>]
+             // module layout ModuleName
+    ; ?appl(_, [_, _, <id> | _])
+    
+    ; collect-om(?appl(prod(_, lex(sort("ModuleId")), _), _))
+    ; ?[<id>]
+    ; asfix-lex-yield
 
   asfix-lex-yield =
     let F  = \ appl(p, ts) -> <concat> ts \
@@ -185,11 +228,19 @@ strategies
 strategies
 
   get-sdf-imports = 
-    collect(
-        ?appl(prod(_,cf(sort("Import")),_),_)
-      ; get-module-name
-    , skip-non-imports
-    )
+    where(get-module-name-from-asfix => mod)
+    ; collect(
+          ?appl(prod(_,cf(sort("Import")),_),_)
+        ; get-module-name
+      , skip-non-imports
+      )
+    ; where(
+        map({import:
+            ?import
+          ; rules(ImportedFrom :+ import -> mod)
+        })
+      )
+    <+ debug(!"a -------------------- "); fail
 
   skip-non-imports(search, ignore) =  
     parsetree(search,id)

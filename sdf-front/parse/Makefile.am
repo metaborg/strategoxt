@@ -4,7 +4,7 @@ include $(wildcard *.dep)
 bin_PROGRAMS     = pack-sdf unpack-sdf
 libexec_PROGRAMS = sdf-desugar sdf-ensugar
 
-SCFLAGS          = --main main-$*
+SCFLAGS          = --main main-$* --dr new
 STRINCLUDES      = -I $(top_srcdir)/sig \
                    -I $(top_srcdir)/xtc \
                    -I $(ATERM_FRONT)/share/aterm-front

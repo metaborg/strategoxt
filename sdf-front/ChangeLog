@@ -1,3 +1,30 @@
+2004-08-04  Martin Bravenboer  <martin@cs.uu.nl>
+
+	* parse/pack-sdf.str: improved error reporting for missing
+	modules. Usually, the module is not really missing, but the name
+	of this import is incorrect. Hence, it is useful to report the
+	module(s) from where the 'missing' module is imported.
+
+	Example (rather verbose because of the hierarchical SDF module names)
+	-----------------------------------------------------------------
+	/pkg/strategoxt/current/bin/pack-sdf  -i Java-15.sdf -o Java-15.def
+	pack-sdf: error: module languages/java-15/expressions/Main not found
+	  imported from module languages/java-15/classes/FieldDeclarations
+	    in file ./languages/java-15/classes/FieldDeclarations.sdf
+
+	pack-sdf: error: module languages/java-15/interfaces/MethodDeclarations not found
+          imported from module languages/java-15/interfaces/InterfaceDeclarations
+            in file
+	  ./languages/java-15/interfaces/InterfaceDeclarations.sdf
+	-----------------------------------------------------------------
+
+	* parse/pack-sdf.str: pack-sdf now reports *all* missing modules
+	in a single execution.
+
+	* parse/pack-sdf.str: fatal-error invokes "exit". Tools should
+	invoke xtc-exit to remove scoped temporary files. I've replace
+	some fatal-errors with printnl and xtc-exit, but not all yet.
+	
 2004-07-31  Martin Bravenboer  <martin@cs.uu.nl>
 
 	* parse/pack-sdf.str: pack-sdf now checks if module name in an SDF
