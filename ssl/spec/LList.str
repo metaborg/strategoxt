@@ -23,7 +23,8 @@
 
 \begin{code}
 module LList
-imports lib apply
+imports apply tuple iteration integers list
+
   signature
     constructors
       LNil : LList(a)
