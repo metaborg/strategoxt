@@ -9,6 +9,9 @@ all: install
 rpm : dist
 	rpmbuild -ta $(PACKAGE)-$(VERSION).tar.gz
 
+dailydist : dist
+	mv $(PACKAGE)-$(VERSION).tar.gz $(PACKAGE)-dailydist.tar.gz 
+
 # check clean install uninstall:
 #	PATH=$(bindir):$${PATH}; export PATH ;\
 #	ulimit -s 20000 ;\
