@@ -1,21 +1,3 @@
-############# CPL ##################################################
-
-#if USECPL
-# Use the choice point library CPL to implement choice
-#CHOICEINCLUDES = -I$(CPL)/include -DUSECPL
-#CHOICELDFLAGS = -L$(CPL)/lib -lchoice -DUSECPL
-#cpl-used: 
-#	@echo yes
-#else
-# Use setjmp and longjmp to implement choice
-#CHOICELDFLAGS = 
-#CHOICEINCLUDES = 
-#cpl-used: 
-#	@echo no
-#endif
-
-##################################################################
-
 SINCLUDES = -I $(SSL)/share/ssl -I $(SRTS)/share/srts
 
 TESTFILES = $(wildcard test*.r)
@@ -58,11 +40,13 @@ test51LDADD = -L$(SRTS)/lib/srts -lliblib
 
 bar.o: bar.c
 
-include $(top_srcdir)/Makefile.xt
+#include $(top_srcdir)/Makefile.xt
 
 include make-rules
 
 include $(wildcard *.dep)
 
 bootinstall:
+
+
 

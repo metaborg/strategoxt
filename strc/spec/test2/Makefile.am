@@ -1,5 +1,9 @@
 .PRECIOUS: %.ac %.c
 
+test50OBJECTS = ../test1/bar.o
+
+test51LDADD = -L$(SRTS)/lib/srts -lliblib
+
 SINCLUDES	 = -I $(STRATEGO_FRONT)/share/stratego-front \
 	  	   -I $(STRATEGO_FRONT)/share/sdf/stratego-front \
 	  	   -I $(srcdir)/../front		     \
@@ -29,7 +33,7 @@ CLEANFILES = $(TESTBINS) $(IOTESTBINS) $(TESTRUNS) $(IOTESTRUNS)  $(TESTSRCS) $(
 
 EXTRA_DIST = $(wildcard *.r) $(wildcard *.res) $(wildcard *.meta)
 
-#include $(top_srcdir)/share/Stratego.Make
+include $(top_srcdir)/Makefile.xt
 
 include $(srcdir)/../test1/make-rules
 include $(wildcard *.dep)
