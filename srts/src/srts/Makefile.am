@@ -1,7 +1,8 @@
 includedir = $(prefix)/include/srts
 
 include_HEADERS = \
-	stratego.h aterm-extension.h stratego-choice.h stratego-config.h $(CPL_HDR)
+	stratego.h aterm-extension.h stratego-choice.h stratego-config.h \
+	init-stratego-module.h init-stratego-application.h $(CPL_HDR)
 
 noinst_HEADERS = \
 	debug.h mprotect.h
