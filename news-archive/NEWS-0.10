@@ -1,1 +1,26 @@
 StrategoXT 0.10 is under construction
+
+---------++ Summary of Changes
+
+   * Language
+      * Major redesign of dynamic rules
+      * If then else and switch operators
+
+   * Tools
+      * Introduction of Stratego Regular
+      * Upgrade of SDF tools
+
+   * Deployment
+      * Daily verified support for Cygwin
+      * Support for Mac OS X
+
+---------++ Dynamic Rules 
+
+StrategoXT 0.10 we have completely redesigned and reimplemented
+dynamic rules. Scoped dynamic rewrite rules have been introduced quite
+some time ago in
+Stratego 0.6 (August 2001).
+
+
+
+ released: August 29, 2001
