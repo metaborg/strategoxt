@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: termid.r,v 1.2 2001/10/08 15:08:58 mdejonge Exp $
+% $Id: termid.r,v 1.3 2001/10/08 15:40:51 mdejonge Exp $
 
 gmake
 
@@ -66,7 +66,7 @@ constructors
 
 strategies
 io-idwrap('id, strat) =
-   io-idwrap('id, strat, fail, default-usage)
+   io-idwrap('id, (id, strat), fail, default-usage)
 
 io-idwrap('id, strat, extra-options) =
    io-idwrap('id, strat, extra, default-usage)
