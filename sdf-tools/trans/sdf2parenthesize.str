@@ -37,7 +37,7 @@ strategies
   innermost-module :
     rs ->
       |[ module M1
-         imports options M2
+         imports liblib M2
          strategies
 
            f =
