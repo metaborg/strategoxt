@@ -1,16 +1,12 @@
 #! /bin/sh
 
+. `dirname $0`/pbsd-lib.sh
+
 pkgs=$*
 
-PKG_SEARCH_PATH="`echo $AUTOBUNDLE_SEARCH_PATH | sed 's/:/ /g'`"
 
-# determine what deployment and development repositories are
-set $PKG_SEARCH_PATH
-DEVEL_REPO=$1
-shift
-DEPLOY_REPO=$*
-
-SEARCH_SWITCHES="-I `echo ${DEPLOY_REPO} | sed 's/ / -I /g'`"
+# For each specified package, remove its package definition from the
+# development repository
 for pkg in ${pkgs}
 do
    pkg_version=`grep "^${pkg}," pkg-list | cut -d, -f2`
@@ -22,22 +18,4 @@ do
    rm -f ${pkg_loc}
 done
 
-bundle_name="`grep AC_INIT configure.ac \
-            | sed 's/AC_INIT(//' \
-            | cut -d, -f 1`"
-
-bundle_version=`grep AC_INIT configure.ac \
-             | cut -d, -f2 | tr -d '[ ]' | sed 's/)$//'`
-
-bundled_pkgs=`awk -F, '{print "-p "$1"-"$2}' < pkg-list`
-
-( cd .. 
-  autobundle ${bundled_pkgs} \
-             -n ${bundle_name} \
-             -v ${bundle_version} \
-             -I ${DEVEL_REPO} -I ${DEPLOY_REPO} \
-  | gunzip -c | tar xf - ${bundle_name}-${bundle_version}/pkg-list \
-                          ${bundle_name}-${bundle_version}/configure.ac \
-                          ${bundle_name}-${bundle_version}/configure
-)
-./collect.sh
+create_a_bundle ${bundled_pkgs}

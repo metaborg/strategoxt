@@ -98,7 +98,7 @@ do
       -B  ) BINDING="-B $2"; shift; shift ;;
       -db ) DONTS="${DONTS} $2"; shift; shift;;
       -h  ) usage; exit 0 ;;
-      -I  ) AUTOBUNDLE_SEARCH_PATH="${AUTOBUNDLE_SEARCH_PATH}:$2"; 
+      -I  ) SEARCH_PATH="${SEARCH_PATH} $2"; 
             shift; shift ;;
       -o  ) OUTPUT=$2; shift; shift ;;
       -n  ) BUNDLENAME="$2"; shift; shift ;;
@@ -179,7 +179,10 @@ DONTS="`echo "${DONTS}" | sed 's/ / -db /g'`"
 
 
 AUTOBUNDLE_SEARCH_PATH="`echo ${AUTOBUNDLE_SEARCH_PATH} \
-                        | sed 's/^://;s/:/ -I /g;s/^..*/-I &/'`"
+                        | sed 's/:/ /g'`"
+          
+AUTOBUNDLE_SEARCH_PATH="`echo ${SEARCH_PATH} ${AUTOBUNDLE_SEARCH_PATH} \
+                        | sed 's/[ ]/ -I /g;s/^/-I /'`"
 
 ${BINDIR}/bundlegen ${AUTOBUNDLE_SEARCH_PATH} \
                     ${BUNDLENAME} ${BUNDLEVERSION} \

@@ -24,7 +24,8 @@ noinst_SCRIPTS    = pkg-edit.sh pkg-release.sh pkg-revert.sh
 STRINCLUDES    = -I $(srcdir)/../shared -I $(top_builddir)/syntax
 SCFLAGS        = --main $*
 
-EXTRA_DIST     = $(wildcard *.str) pkg-edit.sh.src
+EXTRA_DIST     = $(wildcard *.str) pkg-edit.sh.src pkg-release.sh.src \
+                 pkg-revert.sh.src pbsd-lib.sh
 
 CLEANFILES     = $(wildcard *.dep)
 CLEANFILES    += pkg_switch1_check \

@@ -1,4 +1,9 @@
+2004-04-23 Merijn de Jonge <mdejonge@cs.uu.nl>
+   * pbsd: factored out generic stuff into pbsd-lib.sh
+
 2004-04-22 Merijn de Jonge <mdejonge@cs.uu.nl>
+   * autobundle: AUTOBUNDLE_SEARCH_PATH had incorrect priority. I.e.,
+     it overrides -I command line switches
    * pbsd/pkg-revert.sh.src: new tool that undoes an edit operation, by
      removing package definition from development repository and then
      re-collects. The collect tool will save any uncommitted changes.
