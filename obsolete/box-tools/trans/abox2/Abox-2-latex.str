@@ -1,0 +1,185 @@
+module Abox-2-latex
+imports Box Box-util Abox-2-latex-lib lib plain-text xtc-proc
+
+/**
+ * GT -- Grammar Tools
+ *
+ * Authors:
+ * - Merijn de Jonge <mdejonge@cwi.nl>
+ * - Eelco Visser <visser@acm.org>
+ * - Joost Visser <jvisser@cwi.nl>
+ */
+
+strategies
+
+  io-Abox-2-latex =
+    option-wrap(Abox2latex-options, load-latex-table; Abox-2-latex)
+
+  Abox-2-latex =
+    xtc-io-wrap(
+        read-from
+      ; abox2latex
+      ; topdown-print-to
+    )
+
+  Abox2latex-options =
+      io-options 
+    + ArgOption("-t", <set-config> ("--latex-table", <id>))
+    + ArgOption("-w", <set-config> ("--width",       <id>))
+
+  load-latex-table =
+      where(<table-create> "latex-abbrevs")
+    ; <get-config> "--latex-table"
+    ; ReadFromFile
+    ; map( \ [s1, s2] -> <table-put> ("latex-abbrevs", s1, s2) \ )
+
+  abox2latex = 
+      topdown(try(Abox2latex))
+    ; <latex2text> BOXENV(<BOXENV-args>, <id>)
+
+  BOXENV-args =
+    <get-config> "--width"; ![<id>] <+ ![]
+
+rules
+  Abox2latex :
+    S(s) -> <latex-string>s
+
+  Abox2latex :
+    C( [], s ) -> CBOX( s' )
+      where <map( \ S(x) -> <make-latex-comment>x \ )>s => s'
+
+  Abox2latex:
+    FBOX(fo, b) -> BOXFONT(fo, b)
+      where <KW() + VAR() + NUM() + MATH()> fo
+
+  Abox2latex:
+    FBOX(F([]), b) -> b
+
+  Abox2latex:
+    FBOX(F([foption|xs]), b) -> BOXFONT(fo, FBOX(F(xs), b))
+    where <   FFID(FM(), ?fo)
+           <+ FFID(SE(), ?fo)
+           <+ FFID(SH(), ?fo)
+           <+ FFID(SZ(), ?fo)
+           <+ FFID(CL(), ?i ); !BOXCOLOR(i) => fo
+          > foption
+
+  Abox2latex:
+    H(so, b ) -> HBOX(hs, b' )
+      where <Hspace>so => hs
+          ; <toh> b => b'
+
+Abox2latex:
+   V(so, b ) -> VBOX( vs,  is, b' )
+   where
+      <Vspace>so => vs;
+      <Ispace>so => is;
+      <filter(not([]));separate-by(!"\n\n")>b => b'
+
+Abox2latex:
+   HV(so, b ) -> HVBOX( hs, vs, is, b' )
+   where
+      <Hspace>so => hs;
+      <Vspace>so => vs;
+      <Ispace>so => is;
+      <filter(not([]));separate-by(!"\\ ")>b => b'
+
+Abox2latex:
+   A(aos, so, b ) -> ABOX( tdef, bs' )
+   where
+      <construct-rows>b => bs;
+      <Vspace;string-to-int>so        => vs;
+      <conc>(<copy>(vs, EOR ),[EOR, "\n"])  => row-end;
+      <table-def>aos    => tdef;
+      <map(MkRows); separate-by(!row-end)>bs => bs'
+
+Abox2latex:
+   ALT( b1, b2 ) -> ALTBOX( b1, b2 )
+
+Abox2latex:
+   L( f, b ) -> LBOX( f', b )
+   where
+      (  // Sequence of exactly f copies of b
+         <string-to-int>f => f'
+      <+
+         // Horizontal line (because b1 equals '=' character)
+         <explode-string>f;
+         [61|id]; ![61]; 
+         implode-string => f'
+      <+
+         // Sequence of copies of ordinary string b
+         !f => f'
+      )
+
+Abox2latex:
+   LBL( s, b ) -> LBLBOX( s, b)
+
+Abox2latex:
+   REF( s, b ) -> REFBOX( s, b )
+   
+strategies
+// This is a simplified implementation. The originalused a space as
+// separator between horzontal boxes whenever the rightmost or left most box
+// contains comments. 
+  toh =
+    filter(not([]));separate-by( !"~" )
+
+  Hspace = hs-length; int-to-string
+  Vspace = vs-length; int-to-string
+  Ispace = is-length; int-to-string
+
+table-def =
+   ?AOPTIONS( aos ); !aos;
+   map(  \ AL(so) -> [L,<copy>(<Hspace;string-to-int>so, "~")] \
+        +
+         \ AC(so) -> [C,<copy>(<Hspace;string-to-int>so, "~")] \
+        +
+         \ AR(so) -> [R,<copy>(<Hspace;string-to-int>so, "~")] \
+      );
+      separate-by(![CSEP]);concat;at-last(![EOR])
+
+table-row =
+   ?R(_,bs );!bs;
+   rec x ({e1, e2, xs:
+      []
+   <+ [id]
+   <+ [C(id,id),id|x]
+   <+ [id,C(id,id)|x]
+   <+ ?[e1,e2|xs];![e1,CSEP|<x>[e2|xs]]
+   })
+   
+MkRows =
+   (
+      ?LBL(s, b );
+      <table-row>b;
+      !LBLBOX(s, <table-row>b)
+   <+
+      table-row
+   )
+
+copy = (0, id);![]
+
+make-latex-comment =
+   explode-string;
+   reverse;
+   split(id,![]);
+   rec x ({xs,ys,a:
+      ?([],ys);![<LatexComment>ys]
+      <+
+      ?([10|xs], ys);
+      ![<LatexComment>ys| <x>(xs, [])]
+      <+
+      ?([a|xs],ys);
+      <x>(xs, [a|ys])
+   }   );
+   remove-trailing(?"");
+   reverse;
+   remove-trailing(?"");
+   map( \x -> [x,"\n"] \ )
+
+// Remove trailing layout (tabs and spaces) and comment characters (%%)
+LatexComment = 
+   remove-trailing(9+32);
+   try(at-suffix([37,37|?xs];!xs));
+   implode-string
+

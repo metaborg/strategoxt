@@ -1,0 +1,58 @@
+%%% Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>,
+%%%                    Eelco Visser <visser@acm.org>,
+%%%                    Joost Visser <jvisser@cwi.nl>
+%%%
+%%% This program is free software; you can redistribute it and/or modify
+%%% it under the terms of the GNU General Public License as published by
+%%% the Free Software Foundation; either version 2, or (at your option)
+%%% any later version.
+%%%
+%%% This program is distributed in the hope that it will be useful,
+%%% but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%%% GNU General Public License for more details.
+%%%
+%%% You should have received a copy of the GNU General Public License
+%%% along with this program; if not, write to the Free Software
+%%% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+%%% 02111-1307, USA.
+%%%
+%%% $Id: Box-Literal.sdf,v 1.1 2003/01/03 07:23:38 stratego Exp $
+
+module Box-Literal
+
+exports
+  sorts BoxLiteral
+
+  lexical syntax
+    "\\" ~[] -> AlphaNumericalEscChar {avoid}
+    "\\" [01] [0-9] [0-9] -> DecimalEscChar
+    "\\" "2" [0-4] [0-9]  -> DecimalEscChar
+    "\\" "2" "5" [0-5]    -> DecimalEscChar
+
+    AlphaNumericalEscChar -> EscChar
+    DecimalEscChar        -> EscChar
+
+    ~[\0-\31\"\\] \/ [\t\n] -> L-Char
+    EscChar                 -> L-Char
+
+    "\"" L-Char* "\""             -> QLiteral
+    [A-Za-z\-\_] [A-Za-z0-9\-\_]* -> UQLiteral
+
+    QLiteral  -> Literal
+    UQLiteral -> Literal
+
+   aliases
+      QLiteral -> BoxLiteral
+
+exports
+  sorts NatCon IntCon
+
+  lexical syntax
+    [0-9]+ -> NatCon
+
+  context-free syntax
+    NatCon -> IntCon {cons("NatCon")}
+    "+" NatCon -> IntCon {cons("plus")}
+    "-" NatCon -> IntCon {cons("minus")}
+

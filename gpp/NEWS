@@ -1,0 +1,63 @@
+Version 0.9 (versioning scheme of StrategoXT)
+  * GPP is now called box-tools and is part of StrategoXT.
+  * All tools are implemented in Stratego, shell-scripts
+    are replaced by XTC tools.
+  * important changes that might cause problems with 
+    existing software:
+      - verbose options are now all the standard Stratego
+        options: --verbose int and -S. The -v argument has
+        another meaning: the version of the tool will
+        be shown.
+      - Makefile to pretty print terms or parse pretty print
+        tables is gone. You should use the new tools.
+      - tohtml is not yet available as part of box-tools
+  * gen-css-boxstyle: generate css for abox2html. 
+    Uses standard -o argument to specify target. 
+    abox2html -c just forwards to gen-css-boxstyle and
+    also listens to the -o argument.
+  * abox2text listens to width argument
+  * abox2text supports HV boxes
+  * abox2text now supports the HV and A/R boxes. The current
+    implementation does not support R cells that will occupy 
+    more than one line and must be aligned center or right.
+    Left alignment should work. Single line cells works for
+    all alginments.
+  * new tools: pp-box, parse-box, parse-pp-table, pp-pp-table.
+  * ast2abox accepts .pp.af pretty print tables as arguments.
+    If you pass a .pp argument the tool will look for an
+    existing .af version of this table and use this one if the
+    .pp version is not newer. In all other cases the .pp table
+    will be parsed to _temporary_ file.
+  * grammars and pretty print tables of box and pp-tables are 
+    separated.
+  * abox-format doesn't complain about AOPTIONS.
+
+Version 2.3 released: 2002-08-02
+  * asfix2abox now produces an error message when it encounters an
+	  ambiguity.
+	* handling lists of the form "literal"* has been fixed.
+	* abox2text fixes a bug when a V box contains empty sub boxes.
+
+Version 2.2 released: 2002-06-14
+	* fixed handling of abbreviation tables passed to abox2latex
+	* fixed pretty-printing of integers in ast2abox
+	* GPP now compiles and runs on Windows using Cygwin
+	* Added support for layout preserving pretty-printing. Use
+          asfix2abox with -c switch
+	* Several bug fixes
+   	* ast2abox: integegers are now correctly pretty-printed (i.e.,
+	   echo 1 | ast2abox yields S("1") )
+
+Version 2.1 released: 2001-11-29
+	* Fixed error in default.abbrevs.
+	* Added support for generatin bootstrapped-distributions of gpp.
+	* Pretty-print tables ow accept quoted strings as constructor names.
+
+Version 2.0 released: 2001-09-20
+	* This package replaces the gpp package version 1.33 and earlier.
+	  The implementation is now Stratego-based instead of ASF-based.
+	  This implementation of the gpp tools was extracted from the
+	  Grammar Tools package version 0.7.
+	* Functionality for generating latex and html files has been
+          re-added.
+

@@ -1,0 +1,12 @@
+module pp-box
+imports xtc-lib string xtc-tools-lib
+
+strategies
+
+  io-pp-box =
+    xtc-io-wrap(
+      xtc-transform(!"ast2abox", !["-p", <xtc-find> "Box.pp.af"])
+    ; xtc-abox-format
+    ; xtc-abox2text
+    )
+

@@ -1,0 +1,41 @@
+module asfix2abox
+imports xtc-lib lib-pp-table-args options
+
+strategies
+
+  io-asfix2abox = 
+    option-wrap(asfix2abox-options, asfix2abox)
+
+  asfix2abox =
+    xtc-io(
+      xtc-transform(!"implode-asfix", !["-S", "--lex", "--pt", "--list"])
+    ; xtc-transform(!"Asfix-2-abox", <build-impl-args> ())
+    )
+
+  asfix2abox-options =
+      pp-options
+    + io-options
+    + Option("-c"
+      , where(<set-config> ("--conservative", None()))
+      , !"-c          Conservative pretty-printing (only format where needed)."
+      )
+
+  build-impl-args =
+      create-pp-table-args
+    ; <concat> (<pass-verbose> (), <create-pp-table-args> (), <pass-conservative> ())
+
+  pass-conservative =
+    <get-config> "--conservative" < !["-c" | <id>] + ![]
+
+/*
+usage:
+  asfix2abox [-c] [-h] [-i asfix] [-o abox] [-p table_1] ... [-p table_n] [-V]
+
+where
+  -c          Conservative pretty-printing (only format where needed).
+  -h          Displays usage information.
+  -i asfix    Specifies the asfix tree to pretty-print.
+  -o abox     Specifies the file name where the resultign abox term is stored.
+  -p table    Specifies a pretty-print table
+  -V          Run verbosely.
+*/

@@ -1,0 +1,8 @@
+module pp-table-PlaceHolder
+imports Box
+
+exports
+  context-free syntax
+    "_" NatCon -> BOX {cons("Arg")}
+    "_" NatCon "." NatCon -> BOX {cons("Arg2")}
+

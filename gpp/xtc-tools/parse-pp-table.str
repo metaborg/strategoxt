@@ -1,0 +1,11 @@
+module parse-pp-table
+imports xtc-lib  xtc-tools-lib
+
+strategies
+  
+  io-parse-pp-table =
+    xtc-io-wrap(
+      xtc-sglr(!"pp-table.tbl", !"PP-Table-GrammarId")
+    ; xtc-implode-asfix
+    )
+

@@ -1,0 +1,11 @@
+module parse-box
+imports xtc-lib xtc-tools-lib
+
+strategies
+  
+  io-parse-box =
+    xtc-io-wrap(
+      xtc-sglr(!"Box.tbl")
+    ; xtc-implode-asfix
+    )
+

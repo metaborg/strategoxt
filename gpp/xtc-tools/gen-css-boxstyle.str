@@ -1,0 +1,13 @@
+module gen-boxstyle
+imports options xtc-lib
+
+strategies
+
+  io-gen-css-boxstyle =
+    option-wrap(output-options, 
+      xtc-output(
+        <xtc-find-file> "boxstyle.css"
+      )
+    )
+
+

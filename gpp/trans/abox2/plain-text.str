@@ -1,0 +1,14 @@
+module plain-text
+
+strategies
+
+  flatten-list =
+    foldr(![], (is-list, id) < conc-two-lists + MkCons, is-list < flatten-list + id)
+
+  // :: _ -> FILE
+  topdown-print-to :
+    strings -> FILE(name)
+      where xtc-new-file => name
+          ; <topdown(try(is-string; where(<print> (name, [<id>]))))> strings
+          ; <close-file> name
+

@@ -1,0 +1,60 @@
+module abox2html
+imports options xtc-lib date-format
+
+strategies
+
+  io-abox2html =
+    option-wrap(abox2html-options, gen-css <+ abox2html)
+
+  abox2html-options =
+        input-option
+    +  output-option
+    + general-options
+    + Option("-c"
+      , where(<set-config> ("--mode", "gen-css"))
+      ,	!"-c          Only generate cascading style sheet"
+      )
+    + ArgOption("-t" + "--title"
+      , where(<set-config> ("--title", <id>))
+      ,	!"-t title    Title of HTML document"
+      )
+
+  gen-css =
+      where(<get-config> "--mode" => "gen-css")
+    ; xtc-output(
+        xtc-generate(!"gen-css-boxstyle", pass-verbose)
+      )
+
+  abox2html =
+    xtc-io(
+      ![ <create-header; print-to>
+       , <xtc-transform(!"Abox-2-html", pass-verbose)>
+       , <create-footer; print-to>
+       ]
+    ; xtc-cat
+    )
+
+  get-title =
+    <get-config> "--title" <+ <fatal-error> ["** ERROR: no title specified for HTML document"]
+
+  create-header = 
+    get-title;
+    !["<!-- \n",
+      "   This file is generated at ", <create-time> (), " \n",
+      "   by abox2html (C) 2001 Merijn de Jonge (mdejonge@cwi.nl)\n",
+      "-->\n",
+      "<!doctype html public \"-//W3C//DTD WWW HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/loose.dtd\"> \n",
+      "<html>\n",
+      "  <head>\n",
+      "    <title>", <id>, "</title>\n",
+      "    <link rel=\"stylesheet\" type=\"text/css\" href=\"boxstyle.css\">\n",
+      "  </head>\n",
+      "  <body>\n"
+    ]
+
+  create-time = 
+    <date-format> (["EEEE", " ", "d", " ", "MMMM", " ", "yyyy", " ", "HH", ":", "mm", ":", "ss"], <now-local-time> ())
+
+  create-footer = 
+    !["  </body>\n",
+      "</html>\n"]

@@ -1,0 +1,284 @@
+2002-12-11  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/ast2abox/ast2text.str: composition of ast2abox and abox2text
+	using XTC
+
+2002-12-08  Eelco Visser  <visser@cs.uu.nl>
+
+	* Using autoxt
+
+2002-11-24  Eelco Visser  <visser@acm.org>
+
+	* Package is now self-bootstrapping. 
+	
+	* Moved .r files to .str
+	
+	* Added bootstrapped .c files to repository.
+	
+	* Import Makefile.stratego from sc package.
+
+2002-10-09  Eelco Visser  <visser@acm.org>
+
+	* src/abox2text/Abox-2-text.r: Notify the user if a box is encountered
+	that cannot be rewritten. Implement ALT box by comparing xpos to
+	width; if xpos greater than WIDTH choose the second box. Not perfect,
+	but necessary to be able to pretty-print large expressions.
+
+2002-10-02  Merijn de Jonge <mdejonge@cwi.nl>
+   * ppgen/make.r: renamed number to number-node to solve name clash
+   * abox2latex:Abox-2-latex.r rolled back changed by Eelco, because it
+     yields incorreect formatting.
+
+2002-09-26  Merijn de Jonge <mdejonge@cwi.nl>
+   * Replaced dependency on stratego package by a dependency on sc-boot
+     package
+
+2002-09-25  Eelco Visser  <visser@acm.org>
+
+	* src/abox2latex/Abox-2-latex.r: Separate boxes in a VBOX by means
+	of an explicit \par, instead of two blank lines. The
+	textcolor{}{...}  applications cannot deal with blank lines in its
+	argument; only works on `paragraphs'. (In my first attempt I used
+	\\ to separate boxes, but that that broke vertical space
+	settings.)
+	
+	* src/abox2latex/Abox-2-latex.r: Turned out the first attempt was
+	right after all; \texcolor also chokes on \par's inside its second
+	argument. Now changed the separation to \\[\parskip], which has
+	the same effect.
+
+2002-09-17  Eelco Visser  <visser@acm.org>
+
+	* src/*: Added Verbose option.
+
+	* src/abox2text/Abox2text.r: split off Abox-2-text' to catch
+	error situations (wrong boxes)
+
+2002-08-02  Merijn de Jonge <mdejonge@cwi.nl>
+    * Version 2.3 released
+    * Increased version number
+
+2002-08-01  Merijn de Jonge <mdejonge@cwi.nl>
+   * asfix2abox/Asfix-2-Abox.r: fatal-error when discovering ambiguities.
+   * asfix2abox/Asfix-2-Abox.r, lib/instantiate.r: fixed bug with list
+     instantiation
+   * abox2text/Abox-2-text.r: bug fix with empty boxes in V context
+   * NEWS file updated
+
+
+2002-06-18  Merijn de Jonge <mdejonge@cwi.nl>
+   * ppgen/data/ppgencheck1.in: added missing grammar identifier
+
+2002-06-14  Merijn de Jonge <mdejonge@cwi.nl>
+   * Updated NEWS file
+
+2002-06-11  Merijn de Jonge <mdejonge@cwi.nl>
+   * lib/gpp.Makefile.src: fixed handling of abbreviation tables passed to
+     abox2latex
+
+2002-06-06  Merijn de Jonge <mdejonge@cwi.nl>
+   * Repaired some syntax errors that were not detected by the parser of the
+     stratego compiler.
+   * ast2abox: integers are now correctly pretty-printed (i.e.,
+     echo 1 | ast2abox yields S("1") )
+
+2002-06-04  Merijn de Jonge <mdejonge@cwi.nl>
+   * Repaired generation of package definition file
+
+2002-05-28  Merijn de Jonge <mdejonge@cwi.nl>
+   * Updated NEWS file
+
+2002-05-27  Merijn de Jonge <mdejonge@cwi.nl>
+   * package.conf: changed to dependency to graphviz-1.8.6 which finally
+     builds properly.
+
+2002-05-19  Merijn de Jonge <mdejonge@cwi.nl>
+   * abox2latex: Fixed replace-quotes. It didn't work correctly due to the
+     changed traversing of lists as of stratego 0.7
+   * abox2text, abox2html, abox2latex: fixed strategy name conflicts
+
+2002-05-14  Merijn de Jonge <mdejonge@cwi.nl>
+   * Improved bootinstall target
+
+2002-05-08  Merijn de Jonge <mdejonge@cwi.nl>
+   * Renamed modules in order to solve case insensitiveness on sygwin
+     platform
+
+2002-04-05  Merijn de Jonge <mdejonge@cwi.nl>
+   * asfix2abox: fixes incorrect comment preservation
+   * abox2latex,abox2html: remove empty boxes in H, V, and HV contexts
+
+2002-03-22  Merijn de Jonge <mdejonge@cwi.nl>
+   * Repaired package dependencies
+
+2002-03-17  Eelco Visser  <visser@acm.org>
+
+	* src/tests/data/Makefile.am (TEST_SET): Disabled QLiteral test since
+	Asfix2abox introduces spurious HV box which makes comparison with
+	result of Ast2abox fail.
+
+2002-03-16  Eelco Visser  <visser@acm.org>
+
+	* src/tests/data: new tests, regenerated test data
+
+	* src/abox2text/Abox2text.r, src/lib/pp-tables-io.r: refactoring
+
+2002-03-14  Eelco Visser  <visser@acm.org>
+
+	* src/ast2abox/Ast2abox.r: Bug caused by false assumption on
+	evaluation order of rules/strategies with the same name.
+
+	* src/lib/misc.r (even): TCons/TNil -> (...)
+
+2002-02-05 Merijn de Jonge <mdejonge@cwi.nl>
+   * lib/pp-tables.pp: improved formatting
+   * ast2abox/Ast2abox.r: removed unused code
+
+2002-01-23 Merijn de Jonge <mdejonge@cwi.nl>
+   * asfix2abox: now using 'layout-place-holder' constructor name to
+     recognize where layout has to be generated during conservative
+     pretty-printing.
+
+2001-12-20 Merijn de Jonge <mdejonge@cwi.nl>
+   * abox2text: Added support for conservative pretty-printing
+   * asfix2abox: Fixed insertion of initial and trailing layout in generated
+     box terms
+
+2001-12-19 Merijn de Jonge <mdejonge@cwi.nl>
+   * asfix2abox: added initial support for conservative pretty-printing
+
+2001-12-18 Merijn de Jonge <mdejonge@cwi.nl>
+   * gpp implementation splitted up in sub directories
+
+2001-12-05 Merijn de Jonge <mdejonge@cwi.nl>
+   * Updated graphviz package requirement
+
+2001-11-29 Merijn de Jonge <mdejonge@cwi.nl>
+    * Version 2.1 released
+    * Increased version number
+
+2001-11-27 Merijn de Jonge <mdejonge@cwi.nl>
+   * Updated NEWS file
+   * repaired genconf.sh to really remove temporary files on exit
+
+2001-11-26 Merijn de Jonge <mdejonge@cwi.nl>
+   * package.conf: updated versions of required packages
+
+2001-11-26 Merijn de Jonge <mdejonge@cwi.nl>
+   * gpp/sdf.cons.defL sdf.cons.tbl is now generated
+
+2001-11-25 Merijn de Jonge <mdejonge@cwi.nl>
+   * gpp/pp-tables.pp: improved formatting rules
+   * added sdf-tools as required package
+   * renamed acinclude.m4 to program-check.m4
+   * added new version of program-check.m4
+
+2001-11-25 Merijn de Jonge <mdejonge@cwi.nl>
+   * Updated version requirements for required packages sglr and pgen.
+   * Weakened configuation of graphviz package (gpp will also build without
+     the graphviz package).
+
+2001-11-22 Merijn de Jonge <mdejonge@cwi.nl> 
+   * configuration of gpp package adapted to make use of AC_PACKAGE_REQUIRE
+     macro in configure.in
+   * gpp/Makefile.am: pp-tables.tbl now removed during make clean
+
+2001-12-21 Merijn de Jonge <mdejonge@cwi.nl> 
+   * configure.in.src: quoted ${prefix}
+
+2001-11-02 Merijn de Jonge <mdejonge@cwi.nl> 
+   * gpp.Makefile: use $(pkgdatadir) to locate pp-tables.tbl
+
+2001-10-30 Merijn de Jonge <mdejonge@cwi.nl> 
+    * removed incorrect and obsolete entry from default.abbrevs.
+
+2001-10-12 Merijn de Jonge <mdejonge@cwi.nl> 
+    * Merged Eelco's changes to support boot strapping of gpp
+
+2001-10-10 Merijn de Jonge <mdejonge@cwi.nl> 
+    * test sets have been adapted to use grammar identifiers
+
+2001-10-09 Merijn de Jonge <mdejonge@cwi.nl> 
+    * added uses of termid strategy
+    * all transformation tools now add grammar identifier to generated output
+    * test sets have been adapted to use grammar identifiers
+    * new pp table and sdf definition obtained from grammar base
+
+2001-10-08 Merijn de Jonge <mdejonge@cwi.nl> 
+    * Adapted to use io-idwrap and grammar identifiers
+
+2001-10-06 Merijn de Jonge <mdejonge@cwi.nl> 
+   * pp-tables: Syntax of pp tables now accepts quoted strings as
+     constructor names.
+   * Due to a recent Stratego bug fix related to quoted constructor names,
+     gpp now depends on version 0.6.2 of Stratego
+
+2001-09-22 Merijn de Jonge <mdejonge@cwi.nl> 
+   * Added -2 switch to sglr call
+
+2001-09-21 Merijn de Jonge <mdejonge@cwi.nl> 
+    * Version 2.0 released
+    * Increased version number
+
+2001-09-20 Merijn de Jonge <mdejonge@cwi.nl>                     
+   * gpp package now depends on (not yet released) graphviz-1.8
+     package. Version 1.7.9 contains errors and cannot yet be bundled.
+
+2001-09-19 Merijn de Jonge <mdejonge@cwi.nl> 
+   * Abox2text: bug fix: formatting of ABOX  was incorrect
+
+2001-09-18 Merijn de Jonge <mdejonge@cwi.nl> 
+   * Added -2 switch to sglr calls to forse asfix2 output
+
+2001-09-10  Eelco Visser  <visser@acm.org>
+   * src/templates/make_rules.stratego (SC): sc compiler now behaves
+     nice and finds all components without the bin being in the
+     path.
+
+2001-09-08  Eelco Visser  <visser@acm.org>
+   * refactorings to understand the code
+
+2001-09-06 Merijn de Jonge <mdejonge@cwi.nl> 
+   * Abox2latex: box fix: latex tables were not generated correctly
+
+2001-09-05 Merijn de Jonge <mdejonge@cwi.nl> 
+   * Asfix2abox: bug fix: formatting sequences didn;t work correctly.
+
+2001-09-03 Merijn de Jonge <mdejonge@cwi.nl> 
+   * gpp/gpp.Makefile: added functionality for generating latex and html
+     files. Functionality obtained from gpp.makefile from previous gpp
+     distribution.
+
+2001-09-01 Merijn de Jonge <mdejonge@cwi.nl> 
+   * gpp now uses Bracket-Symbol module for constructor definition of
+     bracket-symbol
+
+2001-08-29 Merijn de Jonge <mdejonge@cwi.nl> 
+   * src/gpp/data/Makefile.am: fixed incorrect file names
+
+2001-08-28 Merijn de Jonge <mdejonge@cwi.nl> 
+   * src/gpp/make.r: bug fix: pp generator also incorrectly brackets in sdf
+     productions
+   * src/tohtml/ismap2usemap: fixed
+   * src/tohtml/tohtml.sh.src: bug fix: Path was not extended with sglr
+     location
+
+2001-08-22  Eelco Visser  <visser@acm.org>
+   * src/gpp/Ppgen.r: Added imports of Label-Sdf-Syntax and
+     Basic-Sdf-Syntax; constructor declarations are now required in
+     Stratego.
+   * configure.in.src: Added configure switch to specify the Stratego
+     compiler to use.
+
+2001-06-08 Merijn de Jonge <mdejonge@cwi.nl> 
+   * src/gpp: bug fix: --main switch interfered with implementation strategies.
+   * src/tohtml: fixed path to dot.pp
+   * src/gpp: removed obsolete option handling
+
+2001-06-07 Merijn de Jonge <mdejonge@cwi.nl> 
+   * src/gpp/gpp.Makefile.am.src: Fixed some PATH problems
+   * src/gpp/tohtml-sdf.sh.src moved to sdf-tools package
+
+2001-06-05 Merijn de Jonge <mdejonge@cwi.nl> 
+   * Extracted GPP tools from Gramar Tools package 0.7 and created a
+     separated GPP package for them.

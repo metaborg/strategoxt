@@ -1,0 +1,11 @@
+module parse-sdf
+imports xtc-lib xtc-tools-lib
+
+strategies
+  
+  io-parse-sdf =
+    xtc-io-wrap(
+      xtc-sglr(!"sdf.cons.tbl")
+    ; xtc-implode-asfix
+    )
+

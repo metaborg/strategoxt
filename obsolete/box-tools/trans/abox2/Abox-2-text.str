@@ -1,0 +1,198 @@
+module Abox-2-text
+imports Box Box-util lib plain-text xtc-proc
+
+/** 
+ * This is a simple Box to text converter.
+ * It formats H, HV, A/R and ALT boxes.
+ *
+ * Authors:
+ * - Merijn de Jonge <mdjonge@cwi.nl>
+ * - Eelco Visser <visser@acm.org>
+ * - Joost Visser <jvisser@cwi.nl>
+ * - Martin Bravenboer <martin@mbravenboer.org>
+ *
+ * Eelco Visser (April 5, 2001)
+ * - repaired bug in handling of H boxes
+ * - refactored handling of H case using thread-map
+ *
+ * Martin Bravenboer (December 26/27/28, 2002)
+ * - implemented HV and A/R boxes
+ * - refactored many strategy defs
+ */
+
+strategies
+
+  io-Abox-2-text =
+    option-wrap(abox2text-options, 
+      xtc-io(
+          read-from
+        ; <try-abox2text> (<id>, 0)
+        ; Fst
+        ; topdown-print-to
+        )
+      )
+
+  abox2text-options =
+      io-options
+    + ArgOption("-w" + "--width"
+      , where(<set-config> ("--width", <string-to-int>))
+      , !"-w int | --width int       Specifies max width of output."
+      )
+
+  get-width =
+    <get-config> "--width" <+ !80
+
+strategies
+
+  try-abox2text = 
+    abox2text <+ <fatal-error> ["** ERROR: invalid box: ", <id>]
+
+  // HV
+  // :: Box * Int -> Strs * Int
+  abox2text :
+    (HV(sopt, bs), xpos) -> result
+      where <hs-text> sopt => hs
+          ; <vs-text> sopt => vs
+          ; <string-length> hs => hsl
+          ; <add> (xpos, <is-length> sopt) => left-xpos
+          ; < foldl(hv-add-to-hbox(!hsl) <+ hv-in-new-vbox(!hsl, !left-xpos))
+            ; reverse; map((reverse, id))
+            ; map((<separate-by> (hs, <id>), id))
+            ; <format-vbox> (sopt, <id>, xpos)
+            > (bs, [([], xpos)]) => result
+
+        // TODO: handle vs and is options
+        // TODO: substract last hspace from xpos
+
+        // :: BOX * [Int * [String]] -> [Int * [String]]
+        hv-add-to-hbox(hsl) :
+          (box, [(strs, xpos) | vbs ]) -> [([ str | strs ], <add> (new-xpos, <hsl> ())) | vbs]
+            where <try-abox2text> (box, xpos) => (str, new-xpos)
+                ; <leq> (new-xpos, <get-width> ())
+        
+        hv-in-new-vbox(hsl, left-xpos) :
+          (box, vbs) -> [([str], <add> (new-xpos, <hsl> ())) | vbs]
+            where <try-abox2text> (box, <left-xpos> ()) => (str, new-xpos)
+       
+  // H
+  abox2text :
+    (H(sopt, bs), xpos) -> result
+      where <hs-text> sopt => hs
+          ; <string-length> hs => hsl
+          ; <filter(is-real-hbox)> bs => real-boxes
+          ; < !(<id>, xpos)
+            ; thread-map(try-abox2text; (id, <add> (hsl, <id>)))
+            ; (<separate-by> (hs, <id>), id)
+            ; try((not([]), <subt> (<id>, hsl)))
+            > real-boxes => result
+
+  // V
+  abox2text :
+    (V(sopt, bs), xpos) -> result
+      where <add> (xpos, <is-length> sopt) => left-xpos
+          ; <filter(is-real-vbox)> bs => real-boxes
+          ; < ?[] < !([], xpos)
+                  +   <do-vbox-children> (xpos, left-xpos, <id>)
+                    ; <format-vbox> (sopt, <id>, xpos)
+            > real-boxes => result
+
+      // :: Int * Int * [BOX] -> [Strings * Int]
+      do-vbox-children:
+        (xpos, left-xpos, boxes) -> <[<try-abox2text> (<id>, xpos) | map(<try-abox2text> (<id>, left-xpos))]> boxes
+
+  // A
+  abox2text :
+    (A(AOPTIONS(aopt), sopt, bs), xpos) -> result
+      where < construct-rows
+            ; map(?R(_, <id>))
+            ; warn-not-matrix
+            ; matrix-transpose
+            > bs => columns
+          ; <zip> (aopt, columns) => column-tuples
+          ; <foldl(do-A-column)> (column-tuples, (xpos, [])) => (last-xpos, str-columns)
+          ; <reverse; matrix-transpose> str-columns => str-rows
+          ; <format-vbox> (sopt, <map(!(<id>, last-xpos))> str-rows, xpos) => result
+
+      // :: (A-OPTION * [BOX]) * (Int * [[Strs]]) -> Int * [[Strs]]
+      do-A-column :
+        ((aopt, bs), (xpos, columns)) -> (<add> (<string-length> hs, max-xpos), [ new-column | columns ])
+          where < map(<try-abox2text> (<id>, xpos))
+                ; unzip
+                ; (map(try(flatten-list; concat-strings)), list-max)
+                > bs => (strings, max-xpos)
+              ; <subt> (max-xpos, xpos) => max-width
+              ; <SOpts-of-alignment; hs-text> aopt => hs
+              ; <map(
+                  <align-column> (aopt, (' ', <id>, max-width))
+                ; <conc-strings> (<id>, hs)
+                )> strings => new-column
+
+      align-column : (AL(_), t) -> <align-left>   t
+      align-column : (AR(_), t) -> <align-right>  t
+      align-column : (AC(_), t) -> <align-center> t
+
+      // TODO: align cannot handle newlines in cells
+      // TODO: remove flatten-list and implement our own align strategies
+
+  warn-not-matrix =
+    where(
+      (map(length); make-set; length)
+    ; ?1 < id + <fatal-error> ["** ERROR: R children of A box have different numbers of boxes"]
+    )
+
+  warn-not-R =
+    <fatal-error> ["** ERROR: All children of an A box must be R boxes: ", <id>]
+
+  // R, not as child of an A
+  abox2text :
+    (R(sopt, bs), xpos) -> <try-abox2text> (HV(sopt, bs), xpos)
+
+  // S
+  abox2text :
+    (S(s), xpos) -> (s, <add> (xpos, <rel-string-length> (s, xpos)))
+
+  abox2text :
+    (C(_,[S(s)]), xpos) -> (s, xpos)
+
+  abox2text :
+    (FBOX(_,b), xpos) -> <try-abox2text> (b, xpos)
+
+  abox2text :
+    (R(sopt, bs), xpos) -> <try-abox2text> (HV(sopt, bs), xpos)
+      
+  abox2text :
+    (ALT(a1, a2), xpos) -> <<leq> (xpos2, <get-width>) < !r1 + <try-abox2text> (a2, xpos)>
+      where <try-abox2text> (a1, xpos) => r1@(s, xpos2)
+         
+  abox2text :
+    ([b], xpos) -> <try-abox2text> (b, xpos)
+
+  abox2text :
+    ([], xpos) -> ("", xpos)
+
+strategies
+
+  // :: [S-Option] -> Int
+  hs-text = <copy-char> (<hs-length>      , ' ' )
+  vs-text = <copy-char> (<vs-length; inc> , '\n')
+  is-text = <copy-char> (<is-length>      , ' ' )
+
+strategies
+
+  // :: BOX -> fail?
+  is-real-vbox = not([] + id#([id,[]+[[]]]))
+  is-real-hbox = not([] + H([],[]))
+
+  // :: [S-Option] * [Strings * Int] * Int -> [Strings] * Int
+  format-vbox :
+    (sopt, strs, xpos) -> (result, last-xpos)
+      where <vertical-sep> (sopt, xpos) => vsep
+          ; <last> strs => (_, last-xpos)
+          ; <separate-by> (vsep, <map(Fst)> strs) => result
+
+  // :: [S-Option] * Int -> String
+  vertical-sep:
+    (sopt, xpos) -> <concat-strings> [vs, is, <copy-char> (xpos, ' ')]
+      where <vs-text> sopt => vs
+          ; <is-text> sopt => is
+

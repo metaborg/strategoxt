@@ -1,0 +1,1 @@
+Specification([Imports(["Box-Base","Box-Literal"]),Signature([Constructors([OpDecl("S",FunType([ConstType(Var("BoxLiteral"))],ConstType(Var("BOX"))))])])])

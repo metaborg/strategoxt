@@ -1,0 +1,20 @@
+module ast2text
+imports xtc-lib xtc-tools-lib options verbose lib-pp-table-args abox2text
+
+strategies
+
+  io-ast2text = 
+    option-wrap(ast2text-options, ast2text)
+    
+  ast2text-options =
+      abox2text-options
+    + pp-options
+
+  ast2text =
+    xtc-io(
+      xtc-transform(!"ast2abox", !<get-config> "-p")
+    ; xtc-abox2text-width
+    )
+
+
+
