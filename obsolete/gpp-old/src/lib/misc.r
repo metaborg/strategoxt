@@ -1,6 +1,7 @@
 \literate[misc]
 % GT -- Grammar Tools
-% Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
+% Copyright (C) 2000,2002
+%		     Merijn de Jonge <mdejonge@cwi.nl>
 %                    Eelco Visser <visser@acm.org>
 %                    Joost Visser <jvisser@cwi.nl>
 %
@@ -19,8 +20,6 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: misc.r,v 1.1 2001/12/18 11:25:31 mdejonge Exp $
-
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
 \begin{code}
@@ -31,12 +30,7 @@ even =
    ?num; <mod>(num,2);?0
 
 tuple2list =
-   rec x ( { t, ts:
-         ?() ; ![]
-      <+ 
-         ?TCons( t, ts );
-         ![t | <x>ts]
-     } )
+  ?""#(<id>)
 
 collect'(s) =
    rec x(
