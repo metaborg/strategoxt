@@ -1,16 +1,5 @@
 module Sdf2Overlays
-
-(* $Id: Sdf2Overlays.str,v 1.2 2003/01/01 23:36:16 stratego Exp $ *)
-
-(* Warning: Sdf and Stratego both have Module(...) in their signature *)
-
-imports
-  lib
-(*  Implode-Asfix *)
-  asfix
-  Prod2Oper
-  Stratego
-
+imports lib AsFix Prod2Oper Stratego Sdf2-Syntax
 rules
 
   prod2overlay(n): 

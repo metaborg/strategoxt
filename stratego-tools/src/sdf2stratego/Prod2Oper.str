@@ -1,11 +1,5 @@
 module Prod2Oper
-imports
-  lib
-  AsFix2-Syntax
-  Stratego-Syntax
-  Bracket-Symbol
-  Literal-lib
-
+imports lib AsFix Stratego-Syntax Bracket-Symbol Literal-lib
 rules
 
   gram2bsigs :
