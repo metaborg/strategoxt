@@ -65,13 +65,6 @@ strategies
   + sdf-result-module-option
   + renaming-scheme-option
 
-
-  sdf-import-module-option =
-    ArgOption("--import"
-    , where(<set-config> (SdfImportModuleFlag(), <id>))
-    , <concat-strings>   ["--import mod     ", "Module to import (required)"]
-    )
-
   sdf-result-module-option =
     ArgOption("--name"
     , where(<set-config> (SdfResultModuleFlag(), <id>))
@@ -90,8 +83,7 @@ strategies
 
 signature
   constructors
-    SdfImportModuleFlag : Flag
     SdfResultModuleFlag : Flag
-    RenamingSchemeFlag : Flag
+    RenamingSchemeFlag  : Flag
 
 
