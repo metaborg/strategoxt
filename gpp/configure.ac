@@ -1,3 +1,4 @@
+AC_PREREQ([2.58])
 AC_INIT([gpp],[2.12],[stratego-bugs@cs.uu.nl])
 AM_INIT_AUTOMAKE
 
