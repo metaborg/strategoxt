@@ -15,7 +15,11 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-SUBDIRS = spec
+include $(top_srcdir)/Makefile.xt
+
+BOOTCLEAN_SUBDIRS = $(SUBDIRS)
+
+SUBDIRS           = spec
 
 EXTRA_DIST = README.in $(wilcard *.pkg) stdconfig reconf sc.spec Makefile.rpm \
 	     Makefile.xt

@@ -1,4 +1,8 @@
-SUBDIRS = src spec
+include $(top_srcdir)/Makefile.xt
+BOOTCLEAN_SUBDIRS = $(SUBDIRS)
+SUBDIRS 	  =  src spec
+EXTRA_DIST 	  = Makefile.xt
+
 
 EXTRA_DIST = README.in reconf $(wildcard *.pkg) stdconfig
 

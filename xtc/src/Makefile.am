@@ -1,6 +1,8 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
+BOOTCLEAN_SUBDIRS = $(SUBDIRS)
+
 bin_PROGRAMS 	= xtc cp-file
 pkgdata_DATA 	= xtc-lib.rtree xtc-rep.rtree \
 		  xtc-proc.rtree xtc-register.rtree

@@ -15,9 +15,13 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/06/08 16:09:04 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2003/01/02 00:40:25 stratego Exp $
+
+include $(top_srcdir)/Makefile.xt
+BOOTCLEAN_SUBDIRS = @TOOLS@
 
 SUBDIRS = @TOOLS@
 
 DIST_SUBDIRS = templates @RELEASED@
+
 

@@ -1,3 +1,7 @@
+include $(top_srcdir)/Makefile.xt
+
+BOOTCLEAN_SUBDIRS = $(SUBDIRS)
+
 SUBDIRS = pp sig syn data
 
 EXTRA_DIST = reconf README.in $(wildcard *.pkg) Makefile.rpm cgen.spec \

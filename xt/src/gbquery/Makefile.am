@@ -18,6 +18,8 @@
 # 02111-1307, USA.
 
 include $(srcdir)/../templates/make_rules
+include $(top_srcdir)/Makefile.xt
+
 
 # define any subdir here
 SUBDIRS      = data

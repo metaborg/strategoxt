@@ -1,7 +1,10 @@
-SUBDIRS = . syn pp sig parse test
+include $(top_srcdir)/Makefile.xt
+BOOTCLEAN_SUBDIRS = $(SUBDIRS)
+SUBDIRS 	  = . syn pp sig parse test
 
-EXTRA_DIST = stdconfig reconf conf.h.src stratego-front.spec Makefile.rpm \
-	Makefile.xt
+EXTRA_DIST 	  = stdconfig reconf conf.h.src	     \
+		    stratego-front.spec Makefile.rpm \
+		    Makefile.xt
 
 pkgdata_DATA = conf.h
 

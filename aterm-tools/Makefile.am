@@ -17,6 +17,10 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
+include $(top_srcdir)/Makefile.xt
+
+BOOTCLEAN_SUBDIRS = $(SUBDIRS)
+
 include package.conf
 
 SUBDIRS	= . src

@@ -8,7 +8,7 @@ rm -f acconfig.h
 aclocal
 autoconf
 #acconfig
-autoheader
+#autoheader
 automake -a
 
 

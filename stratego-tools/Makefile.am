@@ -17,11 +17,12 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-include Makefile.xt
-include package.conf
-
-SUBDIRS	= . src
+include $(top_srcdir)/Makefile.xt
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
+SUBDIRS 	  = src
+EXTRA_DIST 	  = Makefile.xt
+
+include package.conf
 
 EXTRA_DIST = ADDING-TOOLS VERSION configure.in.src genconf.sh \
              package.conf reconf $(PACKAGE)-$(VERSION).pkg program-check.m4 Makefile.xt

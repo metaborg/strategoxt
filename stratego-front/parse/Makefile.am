@@ -3,9 +3,7 @@ include $(wildcard *.dep)
 
 SCFLAGS 	= -I ../syn -I ../sig --main $* -CI "-I.." $(XTCFLAGS)
 
-bin_PROGRAMS 	= meta-explode stratego-desugar parse-stratego pp-stratego
-
-#stratego-ensugar 
+bin_PROGRAMS 	= meta-explode stratego-desugar parse-stratego pp-stratego stratego-ensugar 
 
 CLEANFILES     	= $(wildcard *.dep)
 
