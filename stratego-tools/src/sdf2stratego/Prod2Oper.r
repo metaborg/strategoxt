@@ -3,6 +3,7 @@ imports
   lib
   AsFix2-Syntax
   Stratego-Syntax
+  Bracket-Symbol
 
 rules
 

@@ -15,7 +15,7 @@ module rsdf2sdf
 *)
 
 imports
-  lib
+  lib Stratego-Specifications Grammar-Syntax
 
 strategies
 
