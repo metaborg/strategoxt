@@ -4,7 +4,6 @@ includedir = $(prefix)/include/srts
 
 INCLUDES 	= -I. -I$(ATERM)/include -I$(srcdir) 
 AM_CFLAGS       = -Wall
-AM_LDFLAGS	= $(INCLUDES) -L. -lstratego -L$(ATERM)/lib -lATerm
 
 pkglib_LTLIBRARIES = \
   libstratego.la \
