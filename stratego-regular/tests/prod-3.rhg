@@ -1,6 +1,0 @@
-regular hedge grammar
-  start Var Exp
-  productions
-    Var -> Var   (<string>)
-    Exp -> Times (Foo)
-    Exp -> Bla   (Bla)
