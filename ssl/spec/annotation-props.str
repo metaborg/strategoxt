@@ -13,7 +13,7 @@
 
 \begin{code}
 module annotation-props
-imports lib 
+imports list annotations tuple conditional
 \end{code}
 
   This module offers various strategies on properties. Most strategies

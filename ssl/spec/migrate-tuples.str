@@ -1,5 +1,6 @@
 module migrate-tuples
-imports lib
+imports list simple-traversal term-io
+
 signature
   constructors
     TNil : Tuple()

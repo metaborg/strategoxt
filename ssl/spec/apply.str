@@ -33,7 +33,8 @@ numbers can easily be added.
 
 \begin{code}
 module apply
-imports lib
+imports tuple conditional
+
 signature
   constructors
     Fail:    ApplyResult
@@ -67,8 +68,5 @@ strategies
 
 rules
   apply-end:
-    (trm,Success)
-  ->
-    trm
+    (trm,Success) -> trm
 \end{code}
-
