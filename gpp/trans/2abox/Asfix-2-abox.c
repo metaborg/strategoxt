@@ -702,7 +702,7 @@ static void init_module_constant_terms (void)
 #include <srts/init-stratego-application.h>
 ATerm ArgOption_3_0 (ATerm k_3 (ATerm), ATerm l_3 (ATerm), ATerm m_3 (ATerm), ATerm t);
 ATerm Option_3_0 (ATerm h_3 (ATerm), ATerm i_3 (ATerm), ATerm j_3 (ATerm), ATerm t);
-ATerm split_2_0 (ATerm c_88 (ATerm), ATerm d_88 (ATerm), ATerm t);
+ATerm split_2_0 (ATerm d_88 (ATerm), ATerm e_88 (ATerm), ATerm t);
 static ATerm d_6 (ATerm h_21, ATerm t);
 static ATerm c_0 (ATerm t);
 ATerm has_significant_layout_0_0 (ATerm t);
@@ -717,13 +717,13 @@ static ATerm l_0 (ATerm t);
 static ATerm n_0 (ATerm t);
 static ATerm w_0 (ATerm t);
 ATerm insert_layout_0_0 (ATerm t);
-ATerm crush_3_0 (ATerm y_93 (ATerm), ATerm z_93 (ATerm), ATerm a_94 (ATerm), ATerm t);
+ATerm crush_3_0 (ATerm z_93 (ATerm), ATerm a_94 (ATerm), ATerm b_94 (ATerm), ATerm t);
 static ATerm x_0 (ATerm t);
 ATerm collect_p__1_0 (ATerm c_36 (ATerm), ATerm t);
 ATerm fatal_ambiguity_0_0 (ATerm t);
 ATerm flat_list_0_0 (ATerm t);
 ATerm Instantiate_1_0 (ATerm a_0 (ATerm), ATerm t);
-ATerm bottomup_1_0 (ATerm o_84 (ATerm), ATerm t);
+ATerm bottomup_1_0 (ATerm p_84 (ATerm), ATerm t);
 ATerm is_string_0_0 (ATerm t);
 static ATerm y_0 (ATerm t);
 static ATerm d_1 (ATerm t);
@@ -735,7 +735,7 @@ ATerm even_0_0 (ATerm t);
 static ATerm d_2 (ATerm t);
 static ATerm f_2 (ATerm t);
 static ATerm i_6 (ATerm v_34 (ATerm), ATerm w_34 (ATerm), ATerm x_34 (ATerm), ATerm y_34 (ATerm), ATerm b_14, ATerm c_14, ATerm t);
-ATerm nzip_1_0 (ATerm r_91 (ATerm), ATerm t);
+ATerm nzip_1_0 (ATerm s_91 (ATerm), ATerm t);
 static ATerm j_6 (ATerm s_13, ATerm t_13, ATerm r_13, ATerm x_13, ATerm t);
 ATerm index_0_0 (ATerm t);
 static ATerm u_2 (ATerm t);
@@ -748,11 +748,11 @@ static ATerm g_4 (ATerm t);
 ATerm pp_table_get_0_0 (ATerm t);
 ATerm table_get_0_0 (ATerm t);
 static ATerm k_6 (ATerm i_18, ATerm h_18, ATerm t);
-ATerm say_1_0 (ATerm w_83 (ATerm), ATerm t);
+ATerm say_1_0 (ATerm x_83 (ATerm), ATerm t);
 ATerm trim_1_0 (ATerm s_3 (ATerm), ATerm t);
 ATerm read_text_file_0_0 (ATerm t);
 ATerm pass_verbose_0_0 (ATerm t);
-ATerm xtc_transform_2_0 (ATerm m_107 (ATerm), ATerm n_107 (ATerm), ATerm t);
+ATerm xtc_transform_2_0 (ATerm s_107 (ATerm), ATerm t_107 (ATerm), ATerm t);
 ATerm separate_by_0_0 (ATerm t);
 ATerm add_arg_flags_0_0 (ATerm t);
 ATerm xtc_find_0_0 (ATerm t);
@@ -764,13 +764,13 @@ static ATerm q_4 (ATerm t);
 static ATerm r_4 (ATerm t);
 ATerm xtc_pp_sdf2_0_0 (ATerm t);
 ATerm write_to_0_0 (ATerm t);
-ATerm xtc_temp_files_1_0 (ATerm t_106 (ATerm), ATerm t);
+ATerm xtc_temp_files_1_0 (ATerm u_106 (ATerm), ATerm t);
 static ATerm s_4 (ATerm t);
 static ATerm u_4 (ATerm t);
 static ATerm w_4 (ATerm t);
 static ATerm x_4 (ATerm t);
 ATerm missing_constructor_warning_0_0 (ATerm t);
-ATerm fetch_1_0 (ATerm l_89 (ATerm), ATerm t);
+ATerm fetch_1_0 (ATerm m_89 (ATerm), ATerm t);
 static ATerm f_52 (ATerm g_49, ATerm h_49, ATerm i_49, ATerm j_49, ATerm t);
 static ATerm y_4 (ATerm t);
 static ATerm b_5 (ATerm t);
@@ -804,7 +804,7 @@ static ATerm c_7 (ATerm t);
 static ATerm e_7 (ATerm t);
 ATerm ignore_prod_0_0 (ATerm t);
 ATerm symbols2pp_entries_1_0 (ATerm a_35 (ATerm), ATerm t);
-ATerm fetch_elem_1_0 (ATerm n_89 (ATerm), ATerm t);
+ATerm fetch_elem_1_0 (ATerm o_89 (ATerm), ATerm t);
 static ATerm k_7 (ATerm t);
 ATerm get_cnstr_name_0_0 (ATerm t);
 static ATerm p_7 (ATerm t);
@@ -829,7 +829,7 @@ ATerm number_nonterminals_0_0 (ATerm t);
 static ATerm q_8 (ATerm t);
 static ATerm s_8 (ATerm t);
 ATerm argument_list_0_0 (ATerm t);
-ATerm _2_0 (ATerm c_69 (ATerm), ATerm d_69 (ATerm), ATerm t);
+ATerm _2_0 (ATerm d_69 (ATerm), ATerm e_69 (ATerm), ATerm t);
 ATerm mkterm_0_0 (ATerm t);
 ATerm flat_alt_0_0 (ATerm t);
 static ATerm w_8 (ATerm t);
@@ -844,7 +844,7 @@ static ATerm d_65 (ATerm l_64, ATerm m_64, ATerm n_64, ATerm o_64, ATerm p_64, A
 static ATerm n_9 (ATerm t);
 static ATerm p_9 (ATerm t);
 ATerm get_pp_entry_0_0 (ATerm t);
-ATerm oncetd_1_0 (ATerm r_85 (ATerm), ATerm t);
+ATerm oncetd_1_0 (ATerm s_85 (ATerm), ATerm t);
 static ATerm q_9 (ATerm t);
 ATerm uq2q_0_0 (ATerm t);
 ATerm get_constr_0_0 (ATerm t);
@@ -857,7 +857,7 @@ static ATerm w_9 (ATerm t);
 static ATerm b_10 (ATerm t);
 ATerm strs2constr_0_0 (ATerm t);
 ATerm conc_0_0 (ATerm t);
-ATerm at_end_1_0 (ATerm s_89 (ATerm), ATerm t);
+ATerm at_end_1_0 (ATerm t_89 (ATerm), ATerm t);
 static ATerm c_10 (ATerm t);
 static ATerm d_10 (ATerm t);
 static ATerm h_10 (ATerm t);
@@ -868,7 +868,7 @@ static ATerm m_10 (ATerm t);
 ATerm sym2strs_0_0 (ATerm t);
 ATerm syms2strs_0_0 (ATerm t);
 ATerm quote_0_0 (ATerm t);
-ATerm at_last_1_0 (ATerm d_90 (ATerm), ATerm t);
+ATerm at_last_1_0 (ATerm e_90 (ATerm), ATerm t);
 ATerm Tl_0_0 (ATerm t);
 static ATerm n_10 (ATerm t);
 ATerm de_quote_0_0 (ATerm t);
@@ -880,7 +880,7 @@ ATerm is_num_0_0 (ATerm t);
 static ATerm f_69 (ATerm z_68, ATerm t);
 static ATerm o_10 (ATerm t);
 ATerm toAlphaNum_0_0 (ATerm t);
-ATerm separate_by_1_0 (ATerm x_88 (ATerm), ATerm t);
+ATerm separate_by_1_0 (ATerm y_88 (ATerm), ATerm t);
 ATerm implode_string_0_0 (ATerm t);
 ATerm De_Escape_0_0 (ATerm t);
 ATerm explode_string_0_0 (ATerm t);
@@ -897,7 +897,7 @@ ATerm mk_constr_0_0 (ATerm t);
 ATerm get_config_0_0 (ATerm t);
 ATerm Nil_0_0 (ATerm t);
 ATerm syntaxless_sort_0_0 (ATerm t);
-ATerm Cons_2_0 (ATerm q_75 (ATerm), ATerm r_75 (ATerm), ATerm t);
+ATerm Cons_2_0 (ATerm r_75 (ATerm), ATerm s_75 (ATerm), ATerm t);
 static ATerm z_10 (ATerm t);
 ATerm is_injection_0_0 (ATerm t);
 static ATerm a_11 (ATerm t);
@@ -911,12 +911,12 @@ static ATerm q_6 (ATerm s_10, ATerm t_10, ATerm r_10, ATerm q_10, ATerm t);
 static ATerm l_11 (ATerm t);
 static ATerm n_11 (ATerm t);
 static ATerm r_6 (ATerm z_9, ATerm x_9, ATerm y_9, ATerm a_10, ATerm t);
-ATerm filter_1_0 (ATerm t_97 (ATerm), ATerm t);
+ATerm filter_1_0 (ATerm u_97 (ATerm), ATerm t);
 ATerm is_list_0_0 (ATerm t);
-ATerm try_1_0 (ATerm w_102 (ATerm), ATerm t);
-ATerm topdown_1_0 (ATerm n_84 (ATerm), ATerm t);
-ATerm sometd_1_0 (ATerm b_86 (ATerm), ATerm t);
-ATerm repeat_1_0 (ATerm i_87 (ATerm), ATerm t);
+ATerm try_1_0 (ATerm x_102 (ATerm), ATerm t);
+ATerm topdown_1_0 (ATerm o_84 (ATerm), ATerm t);
+ATerm sometd_1_0 (ATerm c_86 (ATerm), ATerm t);
+ATerm repeat_1_0 (ATerm j_87 (ATerm), ATerm t);
 ATerm concat_strings_0_0 (ATerm t);
 ATerm concat_0_0 (ATerm t);
 ATerm int_to_string_0_0 (ATerm t);
@@ -937,20 +937,20 @@ static ATerm x_11 (ATerm t);
 static ATerm t_6 (ATerm e_18, ATerm t);
 ATerm error_0_0 (ATerm t);
 ATerm fatal_error_0_0 (ATerm t);
-ATerm has_option_1_0 (ATerm p_107 (ATerm), ATerm t);
+ATerm has_option_1_0 (ATerm v_107 (ATerm), ATerm t);
 static ATerm y_11 (ATerm t);
 ATerm type_failure_0_0 (ATerm t);
 ATerm ReadFromFile_0_0 (ATerm t);
-ATerm debug_1_0 (ATerm i_84 (ATerm), ATerm t);
-ATerm if_verbose1_1_0 (ATerm b_104 (ATerm), ATerm t);
-ATerm map_1_0 (ATerm b_89 (ATerm), ATerm t);
+ATerm debug_1_0 (ATerm j_84 (ATerm), ATerm t);
+ATerm if_verbose1_1_0 (ATerm c_104 (ATerm), ATerm t);
+ATerm map_1_0 (ATerm c_89 (ATerm), ATerm t);
 ATerm table_create_0_0 (ATerm t);
 static ATerm z_11 (ATerm t);
 static ATerm a_12 (ATerm t);
 static ATerm b_12 (ATerm t);
 ATerm read_pp_tables_0_0 (ATerm t);
 ATerm reverse_0_0 (ATerm t);
-ATerm collect_1_0 (ATerm i_95 (ATerm), ATerm t);
+ATerm collect_1_0 (ATerm j_95 (ATerm), ATerm t);
 static ATerm c_12 (ATerm t);
 static ATerm d_12 (ATerm t);
 static ATerm e_12 (ATerm t);
@@ -961,7 +961,7 @@ static ATerm j_12 (ATerm t);
 static ATerm k_12 (ATerm t);
 static ATerm l_12 (ATerm t);
 static ATerm v_6 (ATerm j_15, ATerm i_15, ATerm t);
-ATerm iowrap_2_0 (ATerm v_107 (ATerm), ATerm w_107 (ATerm), ATerm t);
+ATerm iowrap_2_0 (ATerm b_108 (ATerm), ATerm c_108 (ATerm), ATerm t);
 static ATerm o_12 (ATerm t);
 static ATerm p_12 (ATerm t);
 static ATerm q_12 (ATerm t);
@@ -5484,10 +5484,10 @@ ATerm symbol2abox_1_0 (ATerm b_35 (ATerm), ATerm t)
     int g_26 = stack_ptr;
     if((PushChoice() == 0))
       {
-        ATerm c_61 = NULL,d_61 = NULL,f_61 = NULL,g_61 = NULL,h_61 = NULL,i_61 = NULL,j_61 = NULL,k_61 = NULL,l_61 = NULL,m_61 = NULL;
+        ATerm d_61 = NULL,e_61 = NULL,f_61 = NULL,g_61 = NULL,h_61 = NULL,i_61 = NULL,j_61 = NULL,k_61 = NULL,l_61 = NULL,m_61 = NULL;
         if(match_cons(t, sym__2))
           {
-            c_61 = ATgetArgument(t, 0);
+            d_61 = ATgetArgument(t, 0);
             g_61 = ATgetArgument(t, 1);
           }
         else
@@ -5561,10 +5561,10 @@ ATerm symbol2abox_1_0 (ATerm b_35 (ATerm), ATerm t)
                               }
                             else
                               _fail(t);
-                            t = c_61;
+                            t = d_61;
                             if(match_cons(t, sym__2))
                               {
-                                d_61 = ATgetArgument(t, 0);
+                                e_61 = ATgetArgument(t, 0);
                                 f_61 = ATgetArgument(t, 1);
                               }
                             else
@@ -5577,7 +5577,7 @@ ATerm symbol2abox_1_0 (ATerm b_35 (ATerm), ATerm t)
                               }
                             else
                               _fail(t);
-                            t = d_61;
+                            t = e_61;
                             if(((x_60 != NULL) && (x_60 != t)))
                               _fail(t);
                             else
@@ -5598,7 +5598,7 @@ ATerm symbol2abox_1_0 (ATerm b_35 (ATerm), ATerm t)
                             t = (ATerm) ATmakeAppl(sym__2, term_r_26, r_61);
                             t = mkterm_0_0(t);
                             s_61 = t;
-                            t = (ATerm) ATmakeAppl(sym__2, (ATerm)ATmakeAppl(sym__2, d_61, f_61), (ATerm) ATmakeAppl(sym__2, h_61, s_61));
+                            t = (ATerm) ATmakeAppl(sym__2, (ATerm)ATmakeAppl(sym__2, e_61, f_61), (ATerm) ATmakeAppl(sym__2, h_61, s_61));
                             t = k_63(t);
                             t = Cons_2_0(w_8, _id, t);
                           }
@@ -6630,15 +6630,15 @@ static ATerm o_10 (ATerm t)
 }
 ATerm toAlphaNum_0_0 (ATerm t)
 {
-  ATerm e_69 = NULL;
-  e_69 = t;
+  ATerm c_69 = NULL;
+  c_69 = t;
   if(match_string(t, "|="))
     {
       ATerm d_30 = t;
       int e_30 = stack_ptr;
       if((PushChoice() == 0))
         {
-          t = f_69(e_69, t);
+          t = f_69(c_69, t);
           LocalPopChoice(e_30);
         }
       else
@@ -6655,7 +6655,7 @@ ATerm toAlphaNum_0_0 (ATerm t)
           int h_30 = stack_ptr;
           if((PushChoice() == 0))
             {
-              t = f_69(e_69, t);
+              t = f_69(c_69, t);
               LocalPopChoice(h_30);
             }
           else
@@ -6672,7 +6672,7 @@ ATerm toAlphaNum_0_0 (ATerm t)
               int l_30 = stack_ptr;
               if((PushChoice() == 0))
                 {
-                  t = f_69(e_69, t);
+                  t = f_69(c_69, t);
                   LocalPopChoice(l_30);
                 }
               else
@@ -6689,7 +6689,7 @@ ATerm toAlphaNum_0_0 (ATerm t)
                   int o_30 = stack_ptr;
                   if((PushChoice() == 0))
                     {
-                      t = f_69(e_69, t);
+                      t = f_69(c_69, t);
                       LocalPopChoice(o_30);
                     }
                   else
@@ -6706,7 +6706,7 @@ ATerm toAlphaNum_0_0 (ATerm t)
                       int r_30 = stack_ptr;
                       if((PushChoice() == 0))
                         {
-                          t = f_69(e_69, t);
+                          t = f_69(c_69, t);
                           LocalPopChoice(r_30);
                         }
                       else
@@ -6723,7 +6723,7 @@ ATerm toAlphaNum_0_0 (ATerm t)
                           int u_30 = stack_ptr;
                           if((PushChoice() == 0))
                             {
-                              t = f_69(e_69, t);
+                              t = f_69(c_69, t);
                               LocalPopChoice(u_30);
                             }
                           else
@@ -6740,7 +6740,7 @@ ATerm toAlphaNum_0_0 (ATerm t)
                               int y_30 = stack_ptr;
                               if((PushChoice() == 0))
                                 {
-                                  t = f_69(e_69, t);
+                                  t = f_69(c_69, t);
                                   LocalPopChoice(y_30);
                                 }
                               else
@@ -6757,7 +6757,7 @@ ATerm toAlphaNum_0_0 (ATerm t)
                                   int b_31 = stack_ptr;
                                   if((PushChoice() == 0))
                                     {
-                                      t = f_69(e_69, t);
+                                      t = f_69(c_69, t);
                                       LocalPopChoice(b_31);
                                     }
                                   else
@@ -6774,7 +6774,7 @@ ATerm toAlphaNum_0_0 (ATerm t)
                                       int e_31 = stack_ptr;
                                       if((PushChoice() == 0))
                                         {
-                                          t = f_69(e_69, t);
+                                          t = f_69(c_69, t);
                                           LocalPopChoice(e_31);
                                         }
                                       else
@@ -6791,7 +6791,7 @@ ATerm toAlphaNum_0_0 (ATerm t)
                                           int h_31 = stack_ptr;
                                           if((PushChoice() == 0))
                                             {
-                                              t = f_69(e_69, t);
+                                              t = f_69(c_69, t);
                                               LocalPopChoice(h_31);
                                             }
                                           else
@@ -6808,7 +6808,7 @@ ATerm toAlphaNum_0_0 (ATerm t)
                                               int k_31 = stack_ptr;
                                               if((PushChoice() == 0))
                                                 {
-                                                  t = f_69(e_69, t);
+                                                  t = f_69(c_69, t);
                                                   LocalPopChoice(k_31);
                                                 }
                                               else
@@ -6825,7 +6825,7 @@ ATerm toAlphaNum_0_0 (ATerm t)
                                                   int o_31 = stack_ptr;
                                                   if((PushChoice() == 0))
                                                     {
-                                                      t = f_69(e_69, t);
+                                                      t = f_69(c_69, t);
                                                       LocalPopChoice(o_31);
                                                     }
                                                   else
@@ -6842,7 +6842,7 @@ ATerm toAlphaNum_0_0 (ATerm t)
                                                       int r_31 = stack_ptr;
                                                       if((PushChoice() == 0))
                                                         {
-                                                          t = f_69(e_69, t);
+                                                          t = f_69(c_69, t);
                                                           LocalPopChoice(r_31);
                                                         }
                                                       else
@@ -6859,7 +6859,7 @@ ATerm toAlphaNum_0_0 (ATerm t)
                                                           int u_31 = stack_ptr;
                                                           if((PushChoice() == 0))
                                                             {
-                                                              t = f_69(e_69, t);
+                                                              t = f_69(c_69, t);
                                                               LocalPopChoice(u_31);
                                                             }
                                                           else
@@ -6876,7 +6876,7 @@ ATerm toAlphaNum_0_0 (ATerm t)
                                                               int x_31 = stack_ptr;
                                                               if((PushChoice() == 0))
                                                                 {
-                                                                  t = f_69(e_69, t);
+                                                                  t = f_69(c_69, t);
                                                                   LocalPopChoice(x_31);
                                                                 }
                                                               else
@@ -6893,7 +6893,7 @@ ATerm toAlphaNum_0_0 (ATerm t)
                                                                   int b_32 = stack_ptr;
                                                                   if((PushChoice() == 0))
                                                                     {
-                                                                      t = f_69(e_69, t);
+                                                                      t = f_69(c_69, t);
                                                                       LocalPopChoice(b_32);
                                                                     }
                                                                   else
@@ -6910,7 +6910,7 @@ ATerm toAlphaNum_0_0 (ATerm t)
                                                                       int d_32 = stack_ptr;
                                                                       if((PushChoice() == 0))
                                                                         {
-                                                                          t = f_69(e_69, t);
+                                                                          t = f_69(c_69, t);
                                                                           LocalPopChoice(d_32);
                                                                         }
                                                                       else
@@ -6927,7 +6927,7 @@ ATerm toAlphaNum_0_0 (ATerm t)
                                                                           int g_32 = stack_ptr;
                                                                           if((PushChoice() == 0))
                                                                             {
-                                                                              t = f_69(e_69, t);
+                                                                              t = f_69(c_69, t);
                                                                               LocalPopChoice(g_32);
                                                                             }
                                                                           else
@@ -6944,7 +6944,7 @@ ATerm toAlphaNum_0_0 (ATerm t)
                                                                               int j_32 = stack_ptr;
                                                                               if((PushChoice() == 0))
                                                                                 {
-                                                                                  t = f_69(e_69, t);
+                                                                                  t = f_69(c_69, t);
                                                                                   LocalPopChoice(j_32);
                                                                                 }
                                                                               else
@@ -6961,7 +6961,7 @@ ATerm toAlphaNum_0_0 (ATerm t)
                                                                                   int m_32 = stack_ptr;
                                                                                   if((PushChoice() == 0))
                                                                                     {
-                                                                                      t = f_69(e_69, t);
+                                                                                      t = f_69(c_69, t);
                                                                                       LocalPopChoice(m_32);
                                                                                     }
                                                                                   else
@@ -6978,7 +6978,7 @@ ATerm toAlphaNum_0_0 (ATerm t)
                                                                                       int p_32 = stack_ptr;
                                                                                       if((PushChoice() == 0))
                                                                                         {
-                                                                                          t = f_69(e_69, t);
+                                                                                          t = f_69(c_69, t);
                                                                                           LocalPopChoice(p_32);
                                                                                         }
                                                                                       else
@@ -6995,7 +6995,7 @@ ATerm toAlphaNum_0_0 (ATerm t)
                                                                                           int t_32 = stack_ptr;
                                                                                           if((PushChoice() == 0))
                                                                                             {
-                                                                                              t = f_69(e_69, t);
+                                                                                              t = f_69(c_69, t);
                                                                                               LocalPopChoice(t_32);
                                                                                             }
                                                                                           else
@@ -7012,7 +7012,7 @@ ATerm toAlphaNum_0_0 (ATerm t)
                                                                                               int w_32 = stack_ptr;
                                                                                               if((PushChoice() == 0))
                                                                                                 {
-                                                                                                  t = f_69(e_69, t);
+                                                                                                  t = f_69(c_69, t);
                                                                                                   LocalPopChoice(w_32);
                                                                                                 }
                                                                                               else
@@ -7029,7 +7029,7 @@ ATerm toAlphaNum_0_0 (ATerm t)
                                                                                                   int a_33 = stack_ptr;
                                                                                                   if((PushChoice() == 0))
                                                                                                     {
-                                                                                                      t = f_69(e_69, t);
+                                                                                                      t = f_69(c_69, t);
                                                                                                       LocalPopChoice(a_33);
                                                                                                     }
                                                                                                   else
@@ -7046,7 +7046,7 @@ ATerm toAlphaNum_0_0 (ATerm t)
                                                                                                       int e_33 = stack_ptr;
                                                                                                       if((PushChoice() == 0))
                                                                                                         {
-                                                                                                          t = f_69(e_69, t);
+                                                                                                          t = f_69(c_69, t);
                                                                                                           LocalPopChoice(e_33);
                                                                                                         }
                                                                                                       else
@@ -7063,7 +7063,7 @@ ATerm toAlphaNum_0_0 (ATerm t)
                                                                                                           int h_33 = stack_ptr;
                                                                                                           if((PushChoice() == 0))
                                                                                                             {
-                                                                                                              t = f_69(e_69, t);
+                                                                                                              t = f_69(c_69, t);
                                                                                                               LocalPopChoice(h_33);
                                                                                                             }
                                                                                                           else
@@ -7080,7 +7080,7 @@ ATerm toAlphaNum_0_0 (ATerm t)
                                                                                                               int k_33 = stack_ptr;
                                                                                                               if((PushChoice() == 0))
                                                                                                                 {
-                                                                                                                  t = f_69(e_69, t);
+                                                                                                                  t = f_69(c_69, t);
                                                                                                                   LocalPopChoice(k_33);
                                                                                                                 }
                                                                                                               else
@@ -7097,7 +7097,7 @@ ATerm toAlphaNum_0_0 (ATerm t)
                                                                                                                   int n_33 = stack_ptr;
                                                                                                                   if((PushChoice() == 0))
                                                                                                                     {
-                                                                                                                      t = f_69(e_69, t);
+                                                                                                                      t = f_69(c_69, t);
                                                                                                                       LocalPopChoice(n_33);
                                                                                                                     }
                                                                                                                   else
@@ -7114,7 +7114,7 @@ ATerm toAlphaNum_0_0 (ATerm t)
                                                                                                                       int q_33 = stack_ptr;
                                                                                                                       if((PushChoice() == 0))
                                                                                                                         {
-                                                                                                                          t = f_69(e_69, t);
+                                                                                                                          t = f_69(c_69, t);
                                                                                                                           LocalPopChoice(q_33);
                                                                                                                         }
                                                                                                                       else
@@ -7131,7 +7131,7 @@ ATerm toAlphaNum_0_0 (ATerm t)
                                                                                                                           int s_33 = stack_ptr;
                                                                                                                           if((PushChoice() == 0))
                                                                                                                             {
-                                                                                                                              t = f_69(e_69, t);
+                                                                                                                              t = f_69(c_69, t);
                                                                                                                               LocalPopChoice(s_33);
                                                                                                                             }
                                                                                                                           else
@@ -7148,7 +7148,7 @@ ATerm toAlphaNum_0_0 (ATerm t)
                                                                                                                               int v_33 = stack_ptr;
                                                                                                                               if((PushChoice() == 0))
                                                                                                                                 {
-                                                                                                                                  t = f_69(e_69, t);
+                                                                                                                                  t = f_69(c_69, t);
                                                                                                                                   LocalPopChoice(v_33);
                                                                                                                                 }
                                                                                                                               else
@@ -7165,7 +7165,7 @@ ATerm toAlphaNum_0_0 (ATerm t)
                                                                                                                                   int z_33 = stack_ptr;
                                                                                                                                   if((PushChoice() == 0))
                                                                                                                                     {
-                                                                                                                                      t = f_69(e_69, t);
+                                                                                                                                      t = f_69(c_69, t);
                                                                                                                                       LocalPopChoice(z_33);
                                                                                                                                     }
                                                                                                                                   else
@@ -7182,7 +7182,7 @@ ATerm toAlphaNum_0_0 (ATerm t)
                                                                                                                                       int c_34 = stack_ptr;
                                                                                                                                       if((PushChoice() == 0))
                                                                                                                                         {
-                                                                                                                                          t = f_69(e_69, t);
+                                                                                                                                          t = f_69(c_69, t);
                                                                                                                                           LocalPopChoice(c_34);
                                                                                                                                         }
                                                                                                                                       else
@@ -7199,7 +7199,7 @@ ATerm toAlphaNum_0_0 (ATerm t)
                                                                                                                                           int f_34 = stack_ptr;
                                                                                                                                           if((PushChoice() == 0))
                                                                                                                                             {
-                                                                                                                                              t = f_69(e_69, t);
+                                                                                                                                              t = f_69(c_69, t);
                                                                                                                                               LocalPopChoice(f_34);
                                                                                                                                             }
                                                                                                                                           else
@@ -7216,7 +7216,7 @@ ATerm toAlphaNum_0_0 (ATerm t)
                                                                                                                                               int i_34 = stack_ptr;
                                                                                                                                               if((PushChoice() == 0))
                                                                                                                                                 {
-                                                                                                                                                  t = f_69(e_69, t);
+                                                                                                                                                  t = f_69(c_69, t);
                                                                                                                                                   LocalPopChoice(i_34);
                                                                                                                                                 }
                                                                                                                                               else
@@ -7233,7 +7233,7 @@ ATerm toAlphaNum_0_0 (ATerm t)
                                                                                                                                                   int l_34 = stack_ptr;
                                                                                                                                                   if((PushChoice() == 0))
                                                                                                                                                     {
-                                                                                                                                                      t = f_69(e_69, t);
+                                                                                                                                                      t = f_69(c_69, t);
                                                                                                                                                       LocalPopChoice(l_34);
                                                                                                                                                     }
                                                                                                                                                   else
@@ -7250,7 +7250,7 @@ ATerm toAlphaNum_0_0 (ATerm t)
                                                                                                                                                       int o_34 = stack_ptr;
                                                                                                                                                       if((PushChoice() == 0))
                                                                                                                                                         {
-                                                                                                                                                          t = f_69(e_69, t);
+                                                                                                                                                          t = f_69(c_69, t);
                                                                                                                                                           LocalPopChoice(o_34);
                                                                                                                                                         }
                                                                                                                                                       else
@@ -7267,7 +7267,7 @@ ATerm toAlphaNum_0_0 (ATerm t)
                                                                                                                                                           int r_34 = stack_ptr;
                                                                                                                                                           if((PushChoice() == 0))
                                                                                                                                                             {
-                                                                                                                                                              t = f_69(e_69, t);
+                                                                                                                                                              t = f_69(c_69, t);
                                                                                                                                                               LocalPopChoice(r_34);
                                                                                                                                                             }
                                                                                                                                                           else
@@ -7278,7 +7278,7 @@ ATerm toAlphaNum_0_0 (ATerm t)
                                                                                                                                                         }
                                                                                                                                                       else
                                                                                                                                                         {
-                                                                                                                                                          t = f_69(e_69, t);
+                                                                                                                                                          t = f_69(c_69, t);
                                                                                                                                                         }
                                                                                                                                                     }
                                                                                                                                                 }

@@ -223,27 +223,27 @@ static void init_module_constant_terms (void)
 ATerm member_0_0 (ATerm t);
 static ATerm a_0 (ATerm t);
 ATerm AddLeadingPrime_0_0 (ATerm t);
-ATerm Var_1_0 (ATerm l_80 (ATerm), ATerm t);
+ATerm Var_1_0 (ATerm m_80 (ATerm), ATerm t);
 ATerm int_to_string_0_0 (ATerm t);
 ATerm real_to_string_0_0 (ATerm t);
 ATerm double_quote_chars_0_0 (ATerm t);
 ATerm escape_chars_0_0 (ATerm t);
 ATerm is_double_quoted_chars_0_0 (ATerm t);
-ATerm string_as_chars_1_0 (ATerm p_99 (ATerm), ATerm t);
+ATerm string_as_chars_1_0 (ATerm q_99 (ATerm), ATerm t);
 static ATerm c_0 (ATerm t);
 ATerm EnsugarOnce_0_0 (ATerm t);
-ATerm try_1_0 (ATerm w_102 (ATerm), ATerm t);
+ATerm try_1_0 (ATerm x_102 (ATerm), ATerm t);
 ATerm double_quote_0_0 (ATerm t);
 ATerm is_double_quoted_0_0 (ATerm t);
 ATerm split_last_0_0 (ATerm t);
 ATerm implode_cons_0_0 (ATerm t);
 ATerm Ensugar_0_0 (ATerm t);
-ATerm repeat_1_0 (ATerm i_87 (ATerm), ATerm t);
-ATerm topdown_1_0 (ATerm n_84 (ATerm), ATerm t);
+ATerm repeat_1_0 (ATerm j_87 (ATerm), ATerm t);
+ATerm topdown_1_0 (ATerm o_84 (ATerm), ATerm t);
 static ATerm e_0 (ATerm t);
 static ATerm f_0 (ATerm t);
 ATerm Stratego_Ensugar_0_0 (ATerm t);
-ATerm iowrap_1_0 (ATerm s_107 (ATerm), ATerm t);
+ATerm iowrap_1_0 (ATerm y_107 (ATerm), ATerm t);
 ATerm main_0_0 (ATerm t);
 ATerm main_0 (ATerm t)
 {

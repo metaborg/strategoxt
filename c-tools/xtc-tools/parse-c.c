@@ -95,14 +95,14 @@ static void init_module_constant_terms (void)
 }
 #include <srts/init-stratego-application.h>
 ATerm pass_verbose_0_0 (ATerm t);
-ATerm xtc_transform_2_0 (ATerm m_107 (ATerm), ATerm n_107 (ATerm), ATerm t);
-ATerm if_verbose3_1_0 (ATerm d_104 (ATerm), ATerm t);
+ATerm xtc_transform_2_0 (ATerm s_107 (ATerm), ATerm t_107 (ATerm), ATerm t);
+ATerm if_verbose3_1_0 (ATerm e_104 (ATerm), ATerm t);
 static ATerm a_0 (ATerm t);
 ATerm pass_v_verbose_0_0 (ATerm t);
 ATerm xtc_find_0_0 (ATerm t);
 static ATerm e_0 (ATerm t);
 ATerm xtc_sglr_1_0 (ATerm c_0 (ATerm), ATerm t);
-ATerm xtc_io_wrap_1_0 (ATerm x_106 (ATerm), ATerm t);
+ATerm xtc_io_wrap_1_0 (ATerm y_106 (ATerm), ATerm t);
 static ATerm g_0 (ATerm t);
 static ATerm h_0 (ATerm t);
 static ATerm i_0 (ATerm t);
