@@ -92,6 +92,9 @@ strategies
     obsolete(!"at_suffix -> at-suffix");
     rec x(s <+ [id | x])
 
+  at-suffix-rev(s) = 
+    rec x([id | x] <+ s)
+
   at_last(s) = 
     obsolete(!"at_last -> at-last");
     at-last(s)  

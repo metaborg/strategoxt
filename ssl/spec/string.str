@@ -224,6 +224,12 @@ strategies
     (rec x([id|x] <+ [47|![]]) <+ ![]);
     implode-string
 
+  // file name from path "/usr/local/bin/prog" -> "prog"
+  get-filename = 
+    explode-string
+    ; try(at-suffix-rev(?['/' | name]); !name)
+    ; implode-string
+
   // :: String * String -> String
   add-extension : 
     (name, ext) -> <concat-strings> [name, ".", ext]

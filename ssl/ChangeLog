@@ -1,3 +1,10 @@
+2002-12-30  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/string.str: get-filename removes path
+
+	* spec/list-basic.str: at-suffix-rev looks for suffix starting at
+	end of list
+
 2002-12-18  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/verbose.str: pass-verbose to pass verbose option to children

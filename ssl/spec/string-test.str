@@ -42,6 +42,7 @@ strategies
 	upper-case-test;
 	is-substring-test;
 	get-path-test;
+	get-filename-test;
 	escape-test;
 	unescape-test;
 	string-sort-test;
@@ -129,6 +130,18 @@ strategies
 	, get-path
 	, !"prog"
 	, !""
+	)
+
+  get-filename-test =
+    apply-test(!"get-filename-test1"
+	, get-filename
+	, !"/usr/local/bin/prog"
+	, !"prog"
+	);
+    apply-test(!"get-filename-test2"
+	, get-filename
+	, !"prog"
+	, !"prog"
 	)
 
   escape-test =
