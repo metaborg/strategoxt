@@ -1,0 +1,13 @@
+/**
+ * Migrate legacy XTC repositories
+ *  
+ * @author Niels Janssen (njanssen@cs.uu.nl)
+ */
+module xtc-migrate 
+imports lib xtc-lib
+
+strategies
+
+  main-xtc-migrate = 
+    xtc-io-wrap(xtc-io-transform(xtc-convert-repository))
+ 

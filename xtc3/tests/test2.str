@@ -1,0 +1,11 @@
+module test2
+imports lib xtc-lib
+strategies
+
+  main-test2 = 
+    xtc-io-wrap(
+      read-from
+      ; !(<id>,<id>)
+      ; write-to
+      ; xtc-transform(!"test3",<conc> (<xtc-pass-verbose>,<xtc-pass-options>))
+    )

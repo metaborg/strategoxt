@@ -18,6 +18,12 @@ XT_ARG_WITH([pt-support],    [PT_SUPPORT],      [SDF],                       [DI
 XT_ARG_WITH([asf-library],   [ASF_LIBRARY],     [SDF],                       [DIR],       [ASF Library])
 XT_ARG_WITH([strategoxt],    [STRATEGOXT],      [prefix],                    [STRATEGOXT],[StrategoXT])
 
+AC_ARG_WITH(curl, 
+  AC_HELP_STRING([--with-curl=DIR], [use Curl package at DIR @<:@/usr@:>@]),
+  CURL="$withval", 
+  CURL="/usr")
+AC_SUBST(CURL)
+
 # sets EXEEXT
 AC_PROG_CC
 
@@ -37,6 +43,13 @@ AC_ARG_ENABLE([xtc2],
 )
 AC_SUBST([XTC2_ENABLED])
 
+AC_ARG_ENABLE([xtc3],
+  AS_HELP_STRING([--enable-xtc3], [use the xtc3 library]),
+  [XTC3_ENABLED=$enable_xtc3],
+  [XTC3_ENABLED="no"]
+)
+AC_SUBST([XTC3_ENABLED])
+
 if test "x$XTC2_ENABLED" = "xyes"
 then
 
@@ -46,9 +59,22 @@ then
      stratego-regular xtar \
      boxenv"
 
-  DIST_PKGS="$PKGS xtc"
+  DIST_PKGS="$PKGS xtc xtc3"
 
   XTC_DIR="xtc2"
+
+elif test "x$XTC3_ENABLED" = "xyes"
+then
+
+  PKGS="autoxt srts xtc3 stratego-front asfix-tools \
+     strc gpp c-tools ssl stratego-lib concrete-syntax xml-front \
+     aterm-front sdf-front sdf-tools \
+     stratego-regular xtar \
+     boxenv"
+
+  DIST_PKGS="$PKGS xtc xtc2"
+
+  XTC_DIR="xtc3"
 
 else
 
@@ -58,7 +84,7 @@ else
      stratego-regular xtar \
      boxenv"
 
-  DIST_PKGS="$PKGS xtc2" 
+  DIST_PKGS="$PKGS xtc2 xtc3" 
 
   XTC_DIR="xtc"
 
@@ -80,7 +106,6 @@ fi
 AC_SUBST([PKGS])
 AC_SUBST([DIST_PKGS])
 AC_SUBST([STRC_CORE_PREFIX])
-
 
 BUILD_SRTS_DEST="`pwd`/pre-pkgs/build"
 INSTALL_XTC_DEST="`pwd`/pre-pkgs/install"
@@ -146,6 +171,17 @@ AB_CONFIG_PKG(xtc2,
    --with-srts=${BUILD_SRTS}
    --with-xtc=${INSTALL_XTC}
    --with-repository=${REPOSITORY}
+)
+
+AB_CONFIG_PKG(xtc3,
+   --with-aterm=${ATERM}
+   --with-sglr=${SGLR}
+   --with-pgen=${PGEN}
+   --with-strategoxt=${STRATEGOXT}
+   --with-srts=${BUILD_SRTS}
+   --with-xtc=${INSTALL_XTC}
+   --with-repository=${REPOSITORY}
+   --with-curl=${CURL}
 )
 
 AB_CONFIG_PKG(strc,

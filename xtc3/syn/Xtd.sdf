@@ -1,0 +1,8 @@
+module Xtd
+imports XtcMeta XtcLexicals XtcComments
+
+exports
+  sorts Xtd
+  context-free start-symbols Xtd
+  context-free syntax
+    "definition" Identifier "{" Meta* "}"  -> Xtd {cons("Definition")}

@@ -1,0 +1,52 @@
+/** 
+ * XTC Dispatch Methods Module
+ * 
+ * @author Niels Janssen (njanssen@cs.uu.nl)
+ */
+module xtc-methods 
+
+strategies
+
+ /**
+  * Execute program in a new process with list of string args, 
+  * with the specified exec strategy.
+  *
+  * Optionally you can define file descriptors to use for stdin, stdout,
+  * stderr.
+  *
+  * @type String * (FileDescr? * FileDescr? * FileDescr?) * [String] -> ()
+  */
+  exec-newp =
+    dbg(|"Executing program (exec-newp)")  
+  ; ?(prog, (opt-fdin, opt-fdout, opt-fderr), args)
+  ; fork-and-wait(
+      <option(<dup2> (<id>, <STDIN_FILENO> ))> opt-fdin
+    ; <option(<dup2> (<id>, <STDOUT_FILENO>))> opt-fdout
+    ; <option(<dup2> (<id>, <STDERR_FILENO>))> opt-fderr
+    ; <execvp> (prog, args)
+    )
+  ; !() 
+
+ /** 
+  * Execute HTTP dispatch by using curl
+  */
+  exec-http = 
+    exec-http-dependencies
+  ; xtc-generate(!"curl",<conc> (["-s","--fail"],<id>))
+
+ /** 
+  * Execute HTTP dispatch by using curl
+  * Inherits output/error configuration used by curl from original HTTP dispatch
+  */
+  exec-http(|c) = 
+    exec-http-dependencies
+  ; <conc> (["-s","--fail"],<id>) => args
+  ; <?XtcConf(i,o,e,_)> c
+  ; !XtcConf(None(),o,e,args)
+  ; xtc-command(!"curl")
+  
+  exec-http-dependencies = 
+    if <not(xtc-check-dependencies-local)> ["curl"] then 
+      err(|"HTTP dispatch component dependency is broken!")
+    ; fail
+    end 

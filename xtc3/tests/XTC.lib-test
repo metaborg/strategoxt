@@ -1,0 +1,4 @@
+Repository([
+  Reference([("XTC.lib-test",[])])
+, Registration("mysglr",[("/usr/bin/mysglr",[XtcModel(XtcDesc(XT()),Template(Implicit(),None()))])])
+])

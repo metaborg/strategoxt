@@ -1,0 +1,15 @@
+module parse-xtd
+imports lib xtc-lib
+
+overlays
+ 
+  dependencies = ["sglr","implode-asfix","Xtd.tbl"]
+
+strategies
+
+  main-parse-xtd = 
+    xtc-io-wrap(
+      xtc-transform(!"sglr",!["-2A",("-p",<xtc-find-file> "Xtd.tbl")])
+    ; xtc-transform(!"implode-asfix")
+    | dependencies
+    ) 

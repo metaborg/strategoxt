@@ -1,0 +1,90 @@
+/**
+ * XTC find module (search/select API)
+ *  
+ * @author Niels Janssen (njanssen@cs.uu.nl)
+ */
+module xtc-find
+
+strategies
+
+  xtc-find             = xtc-find-loc
+  xtc-find(select)     = xtc-find-loc(select)
+
+/** 
+ * Find an XTC registration 
+ */
+strategies
+
+  xtc-find-reg         = xtc-find-reg(Hd)
+  xtc-find-reg(select) =
+    (XtcQuery(id) + XtcQuery(id,id))
+  ; ( xtc-init
+    ; xtc-search(select)
+    ; Snd
+   <+ where(xtc-import)
+    ; xtc-find-reg(select)
+    )
+
+  xtc-find-reg(select) = 
+    not(XtcQuery(id) + XtcQuery(id,id))
+  ; xtc-desugar-query
+  ; xtc-find-reg(select)
+
+/** 
+ * Find an XTC registration in local repositories only
+ */
+strategies
+
+  xtc-find-reg-local         = xtc-find-reg-local(Hd)
+  xtc-find-reg-local(select) =
+    (XtcQuery(id) + XtcQuery(id,id))
+  ; ( xtc-init
+    ; xtc-search(select)
+    ; Snd
+   <+ where(xtc-import-local)
+    ; xtc-find-reg-local(select)
+    )
+
+  xtc-find-reg-local(select) = 
+    not(XtcQuery(id) + XtcQuery(id,id))
+  ; xtc-desugar-query
+  ; xtc-find-reg-local(select)
+
+/** 
+ * Find location of an XTC registration
+ */
+strategies
+    
+  xtc-find-loc         = xtc-find-loc(Hd)
+  xtc-find-loc(select) = 
+    xtc-find-reg(select)
+  ; xtc-fetch-loc
+
+/** 
+ * Find location (path portion) of an XTC registration
+ */
+strategies
+  
+  xtc-find-path         = xtc-find-path(Hd)
+  xtc-find-path(select) = 
+    xtc-find-loc(select)
+  ; dirname
+
+strategies
+
+  /** 
+   * Find FILE location of an XTC registration
+   */
+  xtc-find-file = 
+    !FILE(<xtc-find>)
+
+/** 
+ * Compatibility with XTC prototype
+ */
+strategies
+
+  xtc-find-silent = 
+    xtc-find-loc
+
+  xtc-find-warning = 
+    xtc-find-loc

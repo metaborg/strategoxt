@@ -1,0 +1,25 @@
+/**
+ * Transformation Tool Composition (XTC) Command (Call)
+ *  
+ * @author Niels Janssen (njanssen@cs.uu.nl)
+ */
+module xtc-call
+
+strategies
+
+  xtc-call = 
+    ?[self, r, f, "call", n | ps]  
+  ; where( <"-r" + "--repository"> r )
+  ; xtc-init(|f)
+  ; <xtc-xtc-call> (n,ps)
+ 
+  xtc-call = 
+    ?[self, "call", n | ps]
+  ; <xtc-xtc-call> (n,ps)
+
+  xtc-xtc-call = 
+    ?(n,ps)
+  ; <execvp> (<xtc-find-loc> n, ps)
+  
+
+

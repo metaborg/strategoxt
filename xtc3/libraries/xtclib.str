@@ -1,0 +1,2 @@
+module xtclib
+imports libstrategolib xtc-lib

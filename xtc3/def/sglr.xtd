@@ -1,0 +1,23 @@
+definition sglr { 
+  model { 
+    descriptor = xt
+    explicit template { 
+      layout = $input,
+               $output, 
+               option? "-2",
+               option? "-A",
+               ( option? "-b" | option? "-t"),
+               option? "-c",
+               option? "-m",
+               option? "-n",
+               argoption? "-s" :: string,
+               argoption "-p" :: file,
+               option? "-fa",
+               option? "-fd",
+               option? "-fe",
+               option? "-fi",
+               option? "-fp",
+               option? "-fr"
+    }
+  }	
+}

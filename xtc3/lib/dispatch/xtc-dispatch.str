@@ -1,0 +1,37 @@
+/** 
+ * XTC Dispatch Module
+ * 
+ * @author Niels Janssen (njanssen@cs.uu.nl)
+ */
+module xtc-dispatch
+imports xtc-configure xtc-methods 
+
+strategies
+
+  /** 
+   * Wraps dispatch with contract checking and performs a model 
+   * specific adaptation of the component or resource. 
+   */
+  xtc-dispatch(|n) = 
+    dbg(|"xtc-dispatch")
+  ; ?XtcConf(_,Some(o),_,_)
+  ; !(<id>,<xtc-dispatch-find-reg> n)
+  ; xtc-cc-wrap(xtc-configure ; xtc-execute) 
+  ; !o
+
+  xtc-dispatch-find-reg =
+    restore(xtc-find-reg,err(|"xtc-dispatch: Registration not found"))
+
+strategies
+
+  xtc-execute =
+    ?(|[ exec strms ]|,_,exec)
+  ; <exec-newp> exec
+
+  xtc-execute =
+    ?(|[ http strms ]|,c,exec)
+  ; <exec-http(|c)> exec
+
+  xtc-execute =
+    ?(|[ xtservice ]|,c,exec)
+  ; <exec-http(|c)> exec

@@ -1,0 +1,172 @@
+/** 
+ * XTC Configuration Module
+ * 
+ * @author Niels Janssen (njanssen@cs.uu.nl)
+ */
+module xtc-configure
+imports xtc-repository xtc-model
+
+strategies
+
+  /** 
+   * Prepares component for dispatch
+   */
+  xtc-configure =
+    xtc-component-inherit
+ <+ xtc-component-configure
+  
+  /** 
+   * Component adaptation
+   */
+  xtc-component-configure =
+    (xtc-desugar-conf,id) => (c,r)
+  ; Snd
+  ; xtc-fetch-meta(|"XtcModel") 
+  ; xtc-desugar-model => XtcModel(XtcDesc(desc),_)
+  ; xtc-model-to-args(|c) => c'
+  ; <xtc-prepare> (desc,c',r)
+  ; !(desc,c',<id>)
+
+  /** 
+   * Partial configurations
+   */
+  xtc-component-inherit = 
+    ?(XtcConf(_,_,_,_),r)
+  ; where( 
+      <xtc-fetch-meta(|"XtcInherit")> r => |[ inherit q { args } ]|
+    ; <xtc-fetch-meta> r
+    ; filter(not(?|[ inherit q { args } ]|)) => meta
+    )   
+  ; xtc-reconfigure(|q,<try(?Arguments(<id>))> args)
+  ; (id,xtc-override-meta(|meta))
+  ; dbg(|"Inheritance yielded new configuration/registration term")
+  ; xtc-component-configure
+
+rules
+
+  /** 
+   * Creates a new XtcConf for component q with the extra
+   * list of arguments provided
+   */
+  xtc-reconfigure(|q,args') :
+    (XtcConf(i,o,e,args),_) -> 
+    (XtcConf(i,o,e,<conc> (args',args)),<xtc-dispatch-find-reg> q)
+
+rules
+
+  /**
+   * Prepare Exec dispatch 
+   */
+  xtc-prepare :
+    (|[ exec strms ]|,XtcConf(fi,fo,fe,args),(loc,_)) -> ( loc,(fdin,fdout,fderr),args') 
+    where <xtc-args-to-exec> args => args'
+        ; <xtc-stream-input  ; option(xtc-stream-to-fd(|fi)) <+ !None()> strms => fdin
+        ; <xtc-stream-output ; option(xtc-stream-to-fd(|fo)) <+ !None()> strms => fdout 
+        ; <xtc-stream-error  ; option(xtc-stream-to-fd(|fe)) <+ !None()> strms => fderr
+
+  /**
+   * Prepare HTTP dispatch
+   * 
+   * @note Builds argument list for curl
+   */
+  xtc-prepare :
+    (|[ http strms ]|,XtcConf(_,_,_,args),(loc,_)) -> [ loc | <xtc-args-to-http> args ]
+
+  /**
+   * Prepare XTService dispatch 
+   * 
+   * @note Builds argument list for curl
+   */
+  xtc-prepare :
+    (|[ xtservice ]|,XtcConf(_,_,_,args),(loc,_)) -> [ loc | <xtc-args-to-xtservice> args ]
+
+/** 
+ * Transform an abstract argument list to an Exec model compliant argument 
+ * list
+ */
+strategies
+
+  xtc-args-to-exec =
+    mapconcat(xtc-arg-to-exec)
+ 
+  xtc-arg-to-exec : 
+    arg |[ k ]| -> [<xtc-argterm-to-exec> k]
+
+  xtc-arg-to-exec : 
+    arg |[ (k,v) ]| -> [<xtc-argterm-to-exec> k, <xtc-argterm-to-exec> v]
+
+  xtc-argterm-to-exec : 
+    FILE(s) -> <xtc-arg-to-string> s
+
+  xtc-argterm-to-exec : 
+    URL(s) -> <xtc-arg-to-string> s 
+
+  xtc-argterm-to-exec = xtc-arg-to-string 
+
+/** 
+ * Transform an abstract argument list to an HTTP/XTService model compliant argument list
+ */
+strategies
+
+  xtc-args-to-http =
+    mapconcat(xtc-arg-to-http + xtc-arg-to-http-generic)
+
+  xtc-args-to-xtservice =
+    mapconcat(xtc-arg-to-http + xtc-arg-to-xtservice)
+
+  xtc-arg-to-xtservice : 
+    arg |[ k ]| -> [("-F",<concat-strings> ["ARGUMENTS=",k'])]
+    where <xtc-argterm-to-http> k
+        ; not(FILE(id) + URL(id)) => k'
+
+  xtc-arg-to-xtservice : 
+    arg |[ k ]| -> [("-F",<concat-strings> ["ARGUMENTS=@",f])]
+    where <xtc-argterm-to-http> k 
+        ; (?FILE(<id>) + ?URL(<id>)) => f
+
+  xtc-arg-to-http : 
+    arg |[ (k,v) ]| -> [("-F",<concat-strings> [k',"=",v'])]
+    where <xtc-argterm-to-http> k => k'
+        ; <xtc-argterm-to-http> v 
+        ; not(FILE(id) + URL(id)) => v'
+
+  xtc-arg-to-http : 
+    arg |[ (k,v) ]| -> [("-F",<concat-strings> [k',"=@",f])]
+    where <xtc-argterm-to-http> k => k'
+        ; <xtc-argterm-to-http> v 
+        ; (?FILE(<id>) + ?URL(<id>)) => f
+
+  xtc-arg-to-http-generic : 
+    arg |[ k ]| -> [("-F",k')]
+    where <xtc-argterm-to-http> k
+        ; not(FILE(id) + URL(id)) => k'
+
+  xtc-arg-to-http-generic : 
+    arg |[ k ]| -> [("-F",<concat-strings> ["FILES=@",f])]
+    where <xtc-argterm-to-http> k 
+        ; (?FILE(<id>) + ?URL(<id>)) => f
+
+  xtc-argterm-to-http : 
+    FILE(s) -> FILE(<xtc-arg-to-string> s)
+
+  xtc-argterm-to-http : 
+    URL(s) -> URL(<xtc-arg-to-string> s)
+
+  xtc-argterm-to-http = xtc-arg-to-string 
+
+/** 
+ * Transform String argument terms to model specific terms 
+ */
+rules
+
+  xtc-arg-to-string : 
+    String(s) -> s
+
+strategies
+
+  /** 
+   * Some list or empty list
+   */
+  some-or-empty =
+    ?Some(<id>) + ![]
+

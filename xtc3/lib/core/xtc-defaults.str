@@ -1,0 +1,57 @@
+/** 
+ * XTC Registration Defaults 
+ * 
+ * @author Niels Janssen (njanssen@cs.uu.nl)
+ */
+module xtc-defaults
+imports xtc-repository
+
+strategies
+
+ /** 
+  * Create default meta-information for XT component registrations
+  * 
+  * @note This works for standard XT environments, use with care
+  */
+  xtc-default-xt-meta = 
+    <conc> (<xtc-default-xt-model>,<xtc-default-xt-type>)
+
+  /** 
+   * Identify XT components with the very basic assumption that 
+   * when the basename of a file matches its filename it is an 
+   * executable
+   */
+  xtc-default-xt-model =
+    if has-no-extension then
+      !|[ 
+         model { 
+           descriptor = xt 
+           implicit template {} 
+         } 
+       ]|*
+    else 
+      ![]
+    end
+
+  /** 
+   * Determine type using file extension
+   */
+  xtc-default-xt-type =
+    switch get-extension
+      case "tbl"    : !|[ type = "parse-table" ]|*
+      case "af"     : !|[ type = "pp-table" ]|*
+      case "pp"     : !|[ type = "pp-table" ]|*
+      case "rtg"    : !|[ type = "rtg" ]|*
+      case "rtgnf"  : !|[ type = "rtg-nf" ]|*
+      case "rtg-nf" : !|[ type = "rtg-nf" ]|*
+      case "def"    : !|[ type = "sdf-definition" ]|*
+      case "sdf"    : !|[ type = "sdf" ]|*
+      otherwise     : ![]
+    end
+
+  /**
+   * Compares filename with its basename, equality means
+   * no extension.
+   */
+  has-no-extension = 
+    <eq> (<base-filename ; basename>,<base-filename>)

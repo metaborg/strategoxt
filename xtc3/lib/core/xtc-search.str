@@ -1,0 +1,144 @@
+/** 
+ * XTC Search/Select Module
+ * 
+ * @author Niels Janssen (njanssen@cs.uu.nl)
+ */
+module xtc-search
+imports xtc-repository
+
+/** 
+ * Search the XTC repository for a registration matching 
+ * the provided query. Selects the first match.
+ */
+strategies
+  
+  xtc-search =  
+    xtc-search(Hd)
+
+/** 
+ * Search the XTC repository for a registration matching 
+ * the provided query. 
+ */
+rules
+
+  xtc-search(select) :  
+    q@|[ $x ]| -> (q,result)
+    where <is-string> x
+        ; <xtc-query-one(id,select)> q => result
+
+  xtc-search(select) :  
+    q@|[ $x[ms] ]| -> (q,result)
+    where <is-string> x
+        ; <is-list> ms 
+        ; <xtc-query-one(xtc-has-meta(|ms),select)> q => result
+
+  xtc-search(select) :  
+    q@|[ $[ms] ]| -> (q,result)
+    where <is-list> ms
+        ; <xtc-query-all(xtc-has-meta(|ms),select)> q => result   
+
+/** 
+ * Query XTC repository data stored in tables
+ */
+rules
+
+  xtc-query-one(search,select) :
+    q -> result
+    where <?|[ $x ]| + ?|[ $x[ms] ]|> q 
+        ; ( <xtc-query-one(search,select|XtcCache)> q 
+          ; where(<dbg(|"Cache hit: ")> q)
+         <+ <xtc-query-one(search,select|XtcReg)> x
+          ; xtc-cache-put(|q)
+          ) => result
+        
+  xtc-query-all(search,select) :
+    q -> result
+    where ( <xtc-query-one(search,select|XtcCache)> q
+          ; where(<dbg(|"Cache hit: ")> q)
+         <+ xtc-query-all(search,select|XtcReg)
+          ; xtc-cache-put(|q)
+          ) => result
+
+  xtc-query-one(search,select|table) = 
+    <table-get> (table,<id>)
+  ; search
+  ; select
+
+  xtc-query-all(search,select|table) = 
+    <table-getlist> table
+  ; filter(?(_,<search>))
+  ; flatten-list
+  ; select
+
+strategies
+  
+  /** 
+   * Fetch location of a registration
+   */
+  xtc-fetch-loc = 
+    Fst
+
+  /** 
+   * Fetch registration meta-information 
+   */
+  xtc-fetch-meta = 
+    Snd
+
+  /** 
+   * Fetch registration meta-information with provided constructor name 
+   */
+  xtc-fetch-meta(|c) = 
+    where(<is-string> c)
+  ; collect-all(?c#(_)) 
+  ; Hd
+
+  /** 
+   * Puts the search result of a query in the XtcCache table
+   */
+  xtc-cache-put(|q) =
+    where( <table-union> (XtcCache,q,[<id>])
+         ; <dbg(|"Cache store: ")> q
+         )
+
+  /** 
+   * Checks whether registration contains meta-information with provided 
+   * constructor name
+   */
+  xtc-has-meta(|meta) = 
+    where(collect-all(?meta) ; not([]))
+
+  /** 
+   * Checks whether registration contains meta-information with provided 
+   * list of constructor names
+   */
+  xtc-has-meta(|meta) :
+    x -> x
+    where !meta
+        ; is-list
+        ; not([])
+        ; filter({meta': 
+            \meta' -> meta' where <xtc-has-meta(|meta')> x \
+          })
+        ; ?meta
+
+  /** 
+   * Registration always contains empty list as meta-information 
+   */
+  xtc-has-meta(|meta) = 
+    where(<[]> meta)
+
+strategies
+
+  /** 
+   * Fetch version identifier from registration meta-information 
+   */
+  xtc-fetch-version =
+    filter({ s : \ |[ version = s ]| -> s \ }) 
+  ; ?[<id>|_]
+
+ /** 
+  * Extract contracts from registration meta-information
+  */
+  xtc-fetch-contracts =
+    xtc-fetch-meta(|"XtcContracts")
+  ; ?XtcContracts(<id>)

@@ -1,0 +1,16 @@
+/**
+ * XTC Repository Signature
+ *  
+ * @author Niels Janssen (njanssen@cs.uu.nl)
+ */
+module Repository
+imports Xtd
+
+signature
+  constructors  
+  Repository    : List(Entry)           -> Repository
+  Registration  : String * List(Data)   -> Entry
+  Reference     : List(Data)            -> Entry
+                : Location * List(Meta) -> Data
+                : String                -> Location       
+

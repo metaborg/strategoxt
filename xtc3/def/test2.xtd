@@ -1,0 +1,17 @@
+definition test2 {
+  description = "Part of XTC library testsuite"
+
+  model { 
+    descriptor = exec
+    streams { 
+      input = file "--input"
+      output = file "--output"
+    } 
+    implicit template {}
+  }
+
+  contracts { 
+    pre $test3 {}
+    post $test3 { arguments = "-b" }
+  } 
+}

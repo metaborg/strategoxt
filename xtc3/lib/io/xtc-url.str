@@ -1,0 +1,46 @@
+/** 
+ * URL strategies
+ *
+ * @author Niels Janssen (njanssen@cs.uu.nl)
+ */
+module xtc-url
+
+strategies
+
+  /** 
+   * Determine whether String is a http(s) URL
+   */
+  is-url-http =
+    string-starts-with(|"http://")       
+  + string-starts-with(|"https://")       
+ 
+ /**
+  * Read term from URL
+  */
+  read-from =
+    ?URL(<is-url-http>)
+  ; <exec-http> [<id>,("-F","XtcMethod=POST")]
+  ; read-from
+
+/** 
+ * Copying URL's
+ */
+strategies
+
+  copy-to(name) :
+    URL(oldname) -> URL(oldname)
+    where name => oldname
+
+  copy-to(name) :
+    URL(oldname) -> URL(oldname)
+    where <read-from> URL(oldname)
+        ; rename-to(name)
+
+/** 
+ * Makes sure current term is a FILE
+ */        
+strategies
+
+  xtc-ensure-file = 
+    ?URL(_)
+  ; read-from

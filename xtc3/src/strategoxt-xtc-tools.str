@@ -1,0 +1,92 @@
+module strategoxt-xtc-tools
+
+/**
+ * asfix
+ */
+strategies
+
+  xtc-implode-asfix =
+    xtc-transform(!"implode-asfix", xtc-pass-verbose)
+
+  xtc-asfix-yield =
+    xtc-transform(!"asfix-yield", xtc-pass-verbose)
+
+
+/**
+ * gpp/box
+ */
+strategies
+
+  xtc-abox-format =
+    xtc-transform(!"abox-format", xtc-pass-verbose)
+
+  xtc-ast2abox(pps) =
+    xtc-transform(!"ast2abox",
+      <conc> (
+        <xtc-pass-verbose> 
+      , <pps; map(xtc-find-loc); <add-arg-flags> ("-p", <id>)> 
+      )
+    )
+
+  xtc-abox2text =
+    xtc-transform(!"abox2text", xtc-pass-verbose)
+
+  xtc-abox2text(width) =
+    xtc-transform(!"abox2text", <conc> (["--width", <width; int-to-string>], <xtc-pass-verbose>))
+
+  xtc-parse-pp-table =
+    xtc-transform(!"parse-pp-table")
+
+/**
+ * sdf
+ */
+strategies
+  xtc-parse-sdf =
+      xtc-sglr(!"sdf.cons.tbl")
+    ; xtc-implode-asfix
+
+  xtc-pp-sdf =
+      xtc-transform(!"sdf-bracket", xtc-pass-verbose)
+    ; xtc-ast2abox(!["sdf.cons.pp.af"])
+    ; xtc-abox2text
+
+  // watch out: does also implode-asfix
+  xtc-pack-sdf(includes) =
+      xtc-transform(!"pack-sdf",
+        <conc> (
+          <xtc-pass-verbose>
+        , <includes; <add-arg-flags> ("-I", <id>)>
+        )
+      )
+    ; xtc-implode-asfix
+
+  /* sglr */
+
+  xtc-sglr(tbl) =
+    xtc-transform(!"sglr", !["-2A", ("-p", <tbl; xtc-find-loc>) | <pass-v-verbose>])
+
+  xtc-sglr(tbl, sort) =
+    xtc-transform(!"sglr", !["-2A", ("-p", <tbl; xtc-find-loc>), ("-s",<sort>) | <pass-v-verbose>])
+
+/**
+ * stratego
+ */
+strategies
+
+  xtc-pp-astratego =
+      xtc-stratego-ensugar
+    ; xtc-ast2abox(!["Stratego-pretty.pp"])
+    ; xtc-abox2text
+
+  xtc-stratego-ensugar = 
+    xtc-transform(!"stratego-ensugar", xtc-pass-verbose)
+
+  /* tools */
+
+  pass-v-verbose =
+      ![]; if-verbose3(!["-v"])
+
+  // :: String * [String] -> [String]
+  add-arg-flags =
+       \ (_   , []    ) -> [] \
+    <+ \ (flag, values) -> [flag | <<separate-by> (flag, <id>)> values ] \

@@ -1,0 +1,13 @@
+module XtcComments
+
+exports
+  lexical syntax
+    "//" ~[\n]* "\n"                           -> Endoflinecomment
+    "/*" (~[\*] | ([\*] ~[\/]))* "*/"          -> Traditionalcomment 
+    "/*" (~[\*] | ([\*] ~[\/]))* "**/"         -> Traditionalcomment 
+    [\*]                                       -> Asterisk 
+    Traditionalcomment                         -> LAYOUT             
+    Endoflinecomment                           -> LAYOUT   
+
+  lexical restrictions
+    Asterisk -/- [\/\)]

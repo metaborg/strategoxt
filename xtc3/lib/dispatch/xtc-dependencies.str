@@ -1,0 +1,35 @@
+/** 
+ * XTC Depencency checking strategies
+ * 
+ * @author Niels Janssen (njanssen@cs.uu.nl)
+ */
+module xtc-dependencies
+
+strategies
+
+  /**
+   * Check XTC dependencies
+   */
+  xtc-check-dependencies = 
+    xtc-missing-dependencies ; []
+
+  /**
+   * Check XTC dependencies and produce list of missing dependencies
+   */
+  xtc-missing-dependencies = 
+    ?is-list
+  ; filter(not(xtc-find-reg))
+
+  /**
+   * Check XTC dependencies in local XTC repositories only
+   */
+  xtc-check-dependencies-local = 
+    ?is-list
+  ; filter(not(xtc-find-reg-local))
+  ; []
+
+
+
+
+   
+    

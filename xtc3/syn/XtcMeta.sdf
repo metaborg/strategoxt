@@ -1,0 +1,78 @@
+module XtcMeta 
+imports XtcTemplate XtcQuery
+exports
+  sorts Meta 
+  context-free start-symbols Meta
+
+  lexical syntax
+
+    %% meta keywords
+    "model"                               -> Identifier {reject}
+    "contracts"                           -> Identifier {reject}
+    "inherit"                             -> Identifier {reject}
+
+  context-free syntax
+
+    Identifier "=" String                 -> Meta {cons("XtcMeta")}   
+
+  context-free syntax 
+    "inherit" Query "{"
+      ArgList?        
+    "}"                                   -> Meta {cons("XtcInherit")}
+
+  context-free syntax 
+    "model" "{" 
+      Desc 
+      Template 
+    "}"                                   -> Meta {cons("XtcModel")}
+    "descriptor" "=" DType                -> Desc {cons("XtcDesc")}
+    "xt"                                  -> DType {cons("XT")}
+    "exec" DStreams                       -> DType {cons("Exec")}
+    "xtservice"                           -> DType {cons("XTService")}
+    "http" DStreams                       -> DType {cons("HTTP")}
+
+    "streams" "{"
+       DStreamIn? 
+       DStreamOut? 
+       DStreamErr? 
+    "}"                                   -> DStreams {cons("Streams")}
+
+    DStreamIn | DStreamOut | DStreamErr   -> DStream    
+    "input" "=" DStreamDef                -> DStreamIn {cons("Input")}
+    "output" "=" DStreamDef               -> DStreamOut {cons("Output")}
+    "error" "=" DStreamDef                -> DStreamErr {cons("Error")}
+
+    "standard" ArgKey?                    -> DStreamDef {cons("Std")}
+    "file"    ArgKey?                     -> DStreamDef {cons("File")}
+
+  context-free syntax
+
+    Location | String                     -> ArgTerm 
+    ArgTerm                               -> ArgKey
+    ArgTerm                               -> ArgVal
+
+    ArgKey                                -> Arg {cons("Option")}
+    ArgKeyVal                             -> Arg
+
+    "(" ArgKey "," ArgVal ")"             -> ArgKeyVal {cons("ArgOption")}
+    "URL" ":" String                      -> Location {cons("URL")}
+    "FILE" ":" String                     -> Location {cons("FILE")}
+    Query                                 -> Location 
+
+    "arguments" "=" {Arg  ","}*           -> ArgList {cons("Arguments")}
+
+  context-free syntax
+
+    "contracts" "{" 
+      Contract* 
+    "}"                                   -> Meta {cons("XtcContracts")}
+
+    CStream  Query "{" 
+      ArgList? 
+    "}"                                   -> Contract {cons("XtcContract")}
+
+    "pre"                                 -> CStream {cons("Pre")} 
+    "post"                                -> CStream {cons("Post")} 
+
+
+

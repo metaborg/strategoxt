@@ -1,0 +1,63 @@
+/** 
+ * XTC Component Transformation Module
+ * 
+ * @author Niels Janssen (njanssen@cs.uu.nl)
+ */
+module xtc-transform
+
+strategies
+
+  xtc-command(n) = 
+    is-list => args
+  ; n
+  ; xtc-find-loc
+  ; file-exists
+  ; <call> (<id>,args)
+
+  xtc-command(n) =
+    XtcConf(
+      option(xtc-ensure-file)
+    , option(FILE(id))
+    , option(FILE(id))
+    , is-list
+    )
+  ; xtc-dispatch(|<n>)
+
+  xtc-transform(n)      = xtc-transform(n,![])  
+  xtc-transform(n,args) = 
+    dbg(|"xtc-transform")
+  ; (FILE(id) + stdin)
+  < xtc-transform-file(n,args)
+  + xtc-transform-term(n,args)
+
+  xtc-generate(n)      = xtc-generate(n,![])
+  xtc-generate(n,args) = 
+    <xtc-transform-file(n,args)> None()
+
+  xtc-transform-term(n)      = xtc-transform-term(n,![])
+  xtc-transform-term(n,args) = 
+    write-to
+  ; xtc-transform-file(n,args)
+  ; read-from
+
+  xtc-transform-file(n)      = xtc-transform-file(n,![])
+  xtc-transform-file(n,args) :
+    i -> FILE(o)
+    where xtc-new-file => o 
+        ; ( <FILE(id) + stdin> i
+          ; !XtcConf(Some(i),Some(FILE(o)),None(),<args>)
+          + <None()> i
+          ; !XtcConf(None(),Some(FILE(o)),None(),<args>)
+          )
+        ; xtc-command(n)
+
+  xtc-io-transform(s) =
+    read-from
+  ; s
+  ; write-to
+
+  xtc-io-transform-text(s) =
+    read-from
+  ; s
+  ; print-to
+

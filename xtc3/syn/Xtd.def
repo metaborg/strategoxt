@@ -1,0 +1,182 @@
+definition
+module XtcComments
+
+exports
+  lexical syntax
+    "//" ~[\n]* "\n"                           -> Endoflinecomment
+    "/*" (~[\*] | ([\*] ~[\/]))* "*/"          -> Traditionalcomment 
+    "/*" (~[\*] | ([\*] ~[\/]))* "**/"         -> Traditionalcomment 
+    [\*]                                       -> Asterisk 
+    Traditionalcomment                         -> LAYOUT             
+    Endoflinecomment                           -> LAYOUT   
+
+  lexical restrictions
+    Asterisk -/- [\/\)]
+
+module XtcLexicals
+
+exports
+  lexical syntax
+    [a-zA-Z][a-zA-Z0-9\_\-\.]*                 -> Identifier
+    [a-zA-Z0-9\_\-\.]                          -> Char
+    ~[\"]+  -> QuotedText
+    "0" [xX] [0-9a-fA-F]+                      -> Hexliteral         
+    [0-9]+                                     -> Decimalliteral     
+    Hexliteral | Decimalliteral                -> Integer  
+    [\ \t\n\10\13]                             -> LAYOUT
+
+  context-free syntax
+    "\"" QuotedText "\"" -> String {cons("String")}
+ 
+  lexical restrictions
+    Identifier -/- [a-zA-Z0-9\_\-]
+    Literal -/- [a-zA-Z0-9\_\-\.]
+    Hexliteral -/- [0-9a-fA-F]
+    Octalliteral -/- [0-7]
+    Decimalliteral -/- [0-9]
+    QuotedText -/- ~[\"]
+
+  context-free restrictions
+    LAYOUT? -/- [\ \t\10\13\n]
+
+module XtcQuery
+imports XtcMeta
+exports
+  sorts Query
+
+  context-free syntax
+
+    "$" Identifier                        -> Query {cons("XtcQuery")}
+    "$" Identifier "[" Meta* "]"          -> Query {cons("XtcQuery")}
+    "$" "[" Meta* "]"                     -> Query {cons("XtcQuery")}
+
+module XtcTemplate
+exports
+  sorts Template
+  context-free syntax
+
+    TType "template" "{" 
+      TLayout? 
+    "}"                                      -> Template {cons("Template")}
+
+    "explicit"                               -> TType {cons("Explicit")}
+    "implicit"                               -> TType {cons("Implicit")}
+    "regular"                                -> TType {cons("Regular")}
+
+    "layout" "=" TArgs                       -> TLayout {cons("Layout")}
+    {TArg ","}*                              -> TArgs
+
+    "(" TArg ")" 		             -> TArg {bracket}   
+    {TArg ","}+ "|" {TArg ","}+              -> TArg {cons("TOr")}
+
+    "$" TVar                                 -> TArg {cons("TVarSpec")} 
+    "input"                                  -> TVar {cons("Input")}
+    "output"                                 -> TVar {cons("Output")}
+    "error"                                  -> TVar {cons("Error")}
+    "arguments"                              -> TVar {cons("Arguments")}
+
+    TVarType "?" 
+    TArgKeys TDefault? TValType?             -> TArgVar {cons("TVarOpt")}
+    TVarType     
+    TArgKeys TDefault? TValType?             -> TArgVar {cons("TVarOne")} 
+    TVarType "+" 
+    TArgKeys TDefault? TValType?             -> TArgVar {cons("TVarPlus")} 
+    TVarType "*" 
+    TArgKeys TDefault? TValType?             -> TArgVar {cons("TVarStar")}
+
+    "{" TDefaultVal "}"                      -> TDefault {cons("Default")}
+    TArgVals                                 -> TDefaultVal {cons("Values")}
+    "on"                                     -> TDefaultVal {cons("On")}
+    "off"                                    -> TDefaultVal {cons("Off")}
+    "option"                                 -> TVarType {cons("Option")}
+    "argoption"                              -> TVarType {cons("ArgOption")}
+    TArgVar                                  -> TArg
+    { ArgKey "|"}*                           -> TArgKeys
+    {ArgVal ","}*                            -> TArgVals
+
+    "::" Identifier                          -> TValType {cons("Type")}
+
+module XtcMeta 
+imports XtcTemplate XtcQuery
+exports
+  sorts Meta 
+  context-free start-symbols Meta
+
+  lexical syntax
+
+    %% meta keywords
+    "model"                               -> Identifier {reject}
+    "contracts"                           -> Identifier {reject}
+    "inherit"                             -> Identifier {reject}
+
+  context-free syntax
+
+    Identifier "=" String                 -> Meta {cons("XtcMeta")}   
+
+  context-free syntax 
+    "inherit" Query "{"
+      ArgList?        
+    "}"                                   -> Meta {cons("XtcInherit")}
+
+  context-free syntax 
+    "model" "{" 
+      Desc 
+      Template 
+    "}"                                   -> Meta {cons("XtcModel")}
+    "descriptor" "=" DType                -> Desc {cons("XtcDesc")}
+    "xt"                                  -> DType {cons("XT")}
+    "exec" DStreams                       -> DType {cons("Exec")}
+    "xtservice"                           -> DType {cons("XTService")}
+    "http" DStreams                       -> DType {cons("HTTP")}
+
+    "streams" "{"
+       DStreamIn? 
+       DStreamOut? 
+       DStreamErr? 
+    "}"                                   -> DStreams {cons("Streams")}
+
+    DStreamIn | DStreamOut | DStreamErr   -> DStream    
+    "input" "=" DStreamDef                -> DStreamIn {cons("Input")}
+    "output" "=" DStreamDef               -> DStreamOut {cons("Output")}
+    "error" "=" DStreamDef                -> DStreamErr {cons("Error")}
+
+    "standard" ArgKey?                    -> DStreamDef {cons("Std")}
+    "file"    ArgKey?                     -> DStreamDef {cons("File")}
+
+  context-free syntax
+
+    Location | String                     -> ArgTerm 
+    ArgTerm                               -> ArgKey
+    ArgTerm                               -> ArgVal
+
+    ArgKey                                -> Arg {cons("Option")}
+    ArgKeyVal                             -> Arg
+
+    "(" ArgKey "," ArgVal ")"             -> ArgKeyVal {cons("ArgOption")}
+    "URL" ":" String                      -> Location {cons("URL")}
+    "FILE" ":" String                     -> Location {cons("FILE")}
+    Query                                 -> Location 
+
+    "arguments" "=" {Arg  ","}*           -> ArgList {cons("Arguments")}
+
+  context-free syntax
+
+    "contracts" "{" 
+      Contract* 
+    "}"                                   -> Meta {cons("XtcContracts")}
+
+    CStream  Query "{" 
+      ArgList? 
+    "}"                                   -> Contract {cons("XtcContract")}
+
+    "pre"                                 -> CStream {cons("Pre")} 
+    "post"                                -> CStream {cons("Post")}
+
+module Xtd
+imports XtcMeta XtcLexicals XtcComments
+
+exports
+  sorts Xtd
+  context-free start-symbols Xtd
+  context-free syntax
+    "definition" Identifier "{" Meta* "}"  -> Xtd {cons("Definition")}

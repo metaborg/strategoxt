@@ -1,0 +1,20 @@
+/**
+ * XTC Runtime Signature
+ *  
+ * @author Niels Janssen (njanssen@cs.uu.nl)
+ */
+module Runtime 
+imports Repository
+signature
+  constructors 
+  XtcReg        : Table
+  XtcRef        : Table
+  XtcCache      : Table
+
+  XtcImported   : XtcMeta
+  XtcLoaded     : XtcMeta
+  XtcExport     : XtcMeta
+
+  XtcConf       : Option(a) * Option(a) * Option(a) * List(XtcArg) -> XtcConf
+
+

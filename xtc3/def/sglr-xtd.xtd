@@ -1,0 +1,27 @@
+definition sglr-xtd {
+  inherit $sglr { 
+    arguments = "-2","-A", ("-p", $Xtd.tbl)
+  } 
+  description = "Configuration specialisation of sglr for XTD"
+  model { 
+    descriptor = xt
+    explicit template { 
+      layout = $input,
+               $output, 
+               option? "-2",
+               option? "-A",
+               (option "-t" | option? "-b"),
+               option? "-c",
+               option? "-m",
+               option? "-n",
+               argoption? "-s" :: string,
+               argoption "-p" :: file,
+               option? "-fa",
+               option? "-fd",
+               option? "-fe",
+               option? "-fi",
+               option? "-fp",
+               option? "-fr"
+    }
+  }	
+}

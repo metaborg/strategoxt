@@ -1,0 +1,258 @@
+/** 
+ * XTC Model Transformations
+ * 
+ * @author Niels Janssen (njanssen@cs.uu.nl)
+ */
+module xtc-model
+imports xtc-repository xtc-streams
+
+strategies
+
+  /** 
+   * Rewrite model to abstract arguments using XtcConf term
+   * 
+   * @inc xtc-model-to-args
+   */
+  xtc-model-to-args(|c) =
+    ?|[ model { d t }]|
+  ; <XtcConf(id,id,id,<xtc-template-to-args(|d,c)> t)> c
+
+/** 
+ * Transforms a template to abstract arguments using 
+ * descriptor and configuration terms
+ * 
+ * @inc xtc-template-to-args
+ */
+rules
+
+  xtc-template-to-args(|d,c) : 
+    |[ regular template { layout = l } ]| -> a
+    where <xtc-layout-to-args(xtc-layout-dump|d,c)> l => a
+
+  xtc-template-to-args(|d,c) : 
+    |[ explicit template { layout = l } ]| -> a
+    where <xtc-template-filter> l
+        ; xtc-layout-to-args(fail|d,c) => a
+
+strategies
+
+  /** 
+   * Transforms a template layout to abstract arguments 
+   * using descriptor and configuration terms
+   */
+  xtc-layout-to-args(f|d,c) = 
+    !(<id>,<xtc-conf-args> c)
+  ; xtc-targ-thread-map(!([], <Snd>)|d,c)      
+  ; (concat,id)
+  ; if Snd ; not([]) then 
+      restore(f,where(Snd ; err(|"Arguments left after substitution!")))
+    else 
+      Fst ; filter(not(?|[ $arguments ]|)) 
+    end
+
+  /** 
+   * Strategies applicable in xtc-layout-to-args' thread-map 
+   * 
+   * @param Strategy s is performed when all strategies fail 
+   */
+  xtc-targ-thread-map(s|d,c) = 
+    thread-map(      
+      xtc-tor-to-args(|d,c)        // [ .. , ( xs | ys ) , .. ]
+   <+ (xtc-targ-to-args(|d,c),id) 
+   <+ xtc-targ-to-args 
+   <+ s
+    )
+
+  /**
+   * Process mutually exclusive argument lists 
+   */
+  xtc-tor-to-args(|d,c) : 
+    (TOr(xs,ys),args) -> (a,args')
+    where <dbg(|"Mutually exclusive arguments")> (xs,ys)
+        ; ( <xtc-targ-thread-map(fail|d,c)> (xs,args) 
+          ; dbg(|"- Fst succeeded")
+         <+ <xtc-targ-thread-map(fail|d,c)> (ys,args) 
+          ; dbg(|"- Snd succeeded")
+          ) 
+        ; (concat,id) => (a,args')
+
+  xtc-layout-dump = 
+    ?(<id>,args)
+  ; mapconcat(xtc-targ-dump(|args) + ![<id>])
+
+rules
+
+  /** 
+   * Filter implicit parts from explicit template 
+   */
+  xtc-template-filter : 
+    l -> l'
+    where filter(not(?|[ $arguments ]|)) => l'
+        ; if <not(eq)> (l,l') then 
+            err(|"Explicit template contains argument variable!") 
+          end             
+
+/** 
+ * Rewrite template arguments to abstract arguments using Descriptor 
+ * and XtcConf terms
+ * 
+ * @inc xtc-targ-to-args
+ */
+rules
+
+  xtc-targ-to-args(|d,c) : 
+    |[ $input ]| -> a
+    where <xtc-desc-input> d
+        ; ?Some(<xtc-stream-to-arg(|<xtc-conf-input> c)>) => a
+
+  xtc-targ-to-args(|d,c) : 
+    |[ $output ]| -> a
+    where <xtc-desc-output> d
+        ; ?Some(<xtc-stream-to-arg(|<xtc-conf-output> c)>) => a
+
+  xtc-targ-to-args(|d,c) : 
+    |[ $error ]| -> a
+    where <xtc-desc-error> d
+        ; ?Some(<xtc-stream-to-arg(|<xtc-conf-error> c)>) => a
+
+  /** 
+   * Preserve arguments variable
+   */
+  xtc-targ-to-args(|d,c) :
+    |[ $arguments ]| -> [ |[ $arguments ]| ]
+
+  /** 
+   * Dump left-over arguments at the arguments variable
+   */
+  xtc-targ-dump(|args) : 
+    |[ $arguments ]| -> args
+
+/** 
+ * Rewrite template variable arguments to abstract arguments
+ * 
+ * @inc xtc-targ-to-args
+ */
+rules   
+
+/** Optionals '?' **/
+
+  xtc-targ-to-args : 
+    (|[ option? tks tdef tvalTp ]|,args) -> (a,args')
+    where !(args,tks,tdef) 
+        ; xtc-toption-to-args(![<Hd>],!arg |[ ]|*) => (a,args')
+
+  xtc-targ-to-args : 
+    (|[ argoption? tks { tvs } tvalTp ]|,args) -> (a,args')
+    where !(args,tks,tvs,tvalTp)
+        ; xtc-targoption-to-args(
+            ![<Hd>]
+          , <Hd> tks => k
+          ; <Hd> tvs => v
+          ; !arg |[ (k,v) ]|*
+          , !arg |[ ]|*
+          ) => (a,args')
+
+/** One ' ' **/
+         
+  xtc-targ-to-args : 
+    (|[ option tks tdef tvalTp ]|,args) -> (a,args')
+    where !(args,tks,tdef) 
+        ; xtc-toption-to-args(![<Hd>],fail) => (a,args')
+
+   xtc-targ-to-args : 
+    (|[ argoption tks { tvs } tvalTp ]|,args) -> (a,args')
+    where !(args,tks,tvs,tvalTp)
+        ; xtc-targoption-to-args(
+            ![<Hd>]
+          , <Hd> tks => k
+          ; <Hd> tvs => v
+          ; !arg |[ (k,v) ]|*
+          , fail // does not meet template var condition
+          ) => (a,args')
+
+/** One or More '+' **/
+
+  xtc-targ-to-args : 
+    (|[ option+ tks tdef tvalTp ]|,args) -> (a,args')
+    where !(args,tks,tdef) 
+        ; xtc-toption-to-args(id,fail) => (a,args')
+
+  xtc-targ-to-args : 
+    (|[ argoption+ tks { tvs } tvalTp ]|,args) -> (a,args')
+    where !(args,tks,tvs,tvalTp)
+        ; xtc-targoption-to-args(
+            id
+          , <Hd> tks => k
+          ; <map({v: \ v -> arg |[ (k,v) ]| \})> tvs 
+          , fail // does not meet template var condition
+          ) => (a,args') 
+
+/** Zero or More '*' **/
+
+  xtc-targ-to-args : 
+    (|[ option* tks tdef tvalTp ]|,args) -> (a,args')
+    where !(args,tks,tdef) 
+        ; xtc-toption-to-args(id,!arg |[ ]|*) => (a,args')
+
+  xtc-targ-to-args : 
+    (|[ argoption* tks { tvs } tvalTp ]|,args) -> (a,args')
+    where !(args,tks,tvs,tvalTp)
+        ; xtc-targoption-to-args(
+            id
+          , <Hd> tks => k
+          ; <map({v: \ v -> arg |[ (k,v) ]| \})> tvs 
+          , !arg |[ ]|*
+          ) => (a,args') 
+
+/** 
+ * Generic strategies for argument substition 
+ */
+rules
+
+  xtc-toption-to-args(s,f) :
+    (args,tks,tdef) -> (a,args')
+    where <option-isect> (args,tks)
+        ; ?(<id>,args')
+        ; if not([]) then s else 
+            if <?|[ {on} ]|> tdef then
+              <Hd> tks => k
+            ; !arg |[ k ]|* 
+            else f end 
+          end => a 
+
+  xtc-targoption-to-args(s,d,f) : 
+    (args,tks,tvs,tvalTp) -> (a,args')
+    where <argoption-isect> (args,tks)
+        ; ?(<id>,args')
+        ; if not([]) then s else if <not([])> tvs then d else f end end => a
+
+rules
+
+  /** 
+   * Option intersection; keys in ks are compared to the argument 
+   * list args
+   */
+  option-isect : 
+    (args,tks) -> (args',args'')
+    where Fst 
+        ; mapconcat({ 
+            a: ?a
+          ; ![<where(<one({ k: \ k -> arg |[ k ]| \ ; ?a })> tks)>]
+         <+ ![] 
+          }) => args'
+        ; <diff> (args,args') => args''
+
+  /** 
+   * ArgOption intersection; keys in ks are compared to the 
+   * argument list args
+   */
+  argoption-isect : 
+    (args,tks) -> (args',args'')
+    where Fst
+        ; mapconcat({ 
+            k,v: ?arg |[ (k,v) ]|
+          ; ![<where(<one(?k)> tks)>]
+         <+ ![] 
+          }) => args'
+        ; <diff> (args,args') => args''
+
