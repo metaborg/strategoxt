@@ -1,8 +1,0 @@
-module SList
-  signature
-    constructors
-      SCons : a * Layout * String * Layout * SList(a) -> SList(a)
-  overlays
-    SCons(hd,tl)
-      = SCons(hd,_ L(" "),_ ",",_ L(" "),tl)
-
