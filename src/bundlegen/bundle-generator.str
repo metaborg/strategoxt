@@ -202,11 +202,7 @@ where
    <pkg-list>();
 
    collect( {bindings: ReqPackage( ?name, id, Fst;?bindings);!bindings });
-
    concat;
-   // Turn 'with f=on' configuration switches to equivalent 'with f'
-   // switches.
-   map( try(\ ArgSwitch(n, "on") -> Switch(n) \ )) => configuration-bindings;
 
    // Find out all dependency parameter bindings by determining which
    // required packages are bundled. For each of them, add Arg1(pkg,
