@@ -2,7 +2,7 @@ include $(top_srcdir)/Makefile.xt
 
 pkgdata_DATA = C.rtree AbstractDeclarators.rtree Expressions.rtree  \
 Preprocessor.rtree Constants.rtree Identifiers.rtree Program.rtree  \
-Keywords.rtree Statements.rtree Declarators.rtree Lexical.rtree	    \
+Keywords.rtree Statements.rtree Declarators.rtree C-Lexical.rtree   \
 StructsAndUnions.rtree Enumerators.rtree ParameterDeclarators.rtree \
 Types.rtree
 

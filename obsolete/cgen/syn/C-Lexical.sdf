@@ -1,4 +1,4 @@
-module Lexical
+module C-Lexical
 exports
   lexical syntax
     [\ \t\n]                        -> LAYOUT

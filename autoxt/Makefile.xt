@@ -57,15 +57,6 @@ migrate :
 	  echo "Meta([Syntax(\"`cat $$file`\")])" > `basename $$file .syn`.meta ; \
 	done
 
-#.cr.str:
-#	cp $< $@
-#	mv $< $<.bak
-#	$(MAKE) $*.meta
-
-#.syn.meta: 
-#	echo "Meta([Syntax(\"`cat $<`\")])" > $@
-#	mv $< $<.bak
-
 # Dependencies
 
 #%.c.dep : 

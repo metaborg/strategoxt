@@ -16,7 +16,7 @@
 # 02111-1307, USA.
 
 AC_INIT(Makefile.in)
-AM_INIT_AUTOMAKE(StrategoXT,0.9beta7)
+AM_INIT_AUTOMAKE(StrategoXT,0.9beta8)
 
 #AC_CONFIG_AUX_DIR([config])
 

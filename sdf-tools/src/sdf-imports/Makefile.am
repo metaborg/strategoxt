@@ -8,6 +8,7 @@ bin_PROGRAMS 	 = sdf-imports
 libexec_PROGRAMS = sdf-imports
 
 BOOTCLEANFILES	 = sdf-imports.c
+CLEANFILES	 = $(wildcard *.dep)
 
 sdf-imports.o	 : xtc-conf.h
 

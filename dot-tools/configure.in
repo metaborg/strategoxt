@@ -1,9 +1,9 @@
 AC_INIT(syn/Dot.sdf)
-AM_INIT_AUTOMAKE(dot-tools,0.9beta7)
+AM_INIT_AUTOMAKE(dot-tools,0.9beta8)
 
 USE_XT_PACKAGES
 
-AC_REVISION($Id: configure.in,v 1.2 2002/12/11 21:24:18 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.3 2002/12/19 01:08:31 stratego Exp $)
 
 AC_PROG_CC
 

@@ -405,7 +405,7 @@ exports
     ( ElseLine ExternalDefinition* )? 
     "#" "endif" -> ExternalDefinition {cons("PpIf")}
 
-module Lexical
+module C-Lexical
 exports
   lexical syntax
     [\ \t\n]                        -> LAYOUT

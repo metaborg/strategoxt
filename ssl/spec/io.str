@@ -46,7 +46,7 @@ strategies
     ?name; prim("SSL_close_file", name)
 
   open-file =
-      ?(name,mode)
+    ?(name, mode)
     < prim("SSL_open_file", name, mode)
     + ( obsolete(!"<open-file> file; use <open-file>(file, mode)")
       ; ?name

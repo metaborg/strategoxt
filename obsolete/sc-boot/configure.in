@@ -16,7 +16,7 @@
 # 02111-1307, USA.
 
 AC_INIT(src/frontend.c)
-AM_INIT_AUTOMAKE(sc-boot,0.9beta3)
+AM_INIT_AUTOMAKE(sc-boot,0.9beta8)
 
 #AC_CONFIG_AUX_DIR([config])
 
@@ -93,7 +93,7 @@ AC_SUBST(RPMTMP)
 libexecdir=\$\{exec_prefix\}/libexec/sc-$VERSION
 AC_SUBST(libexecdir)
 
-AC_REVISION($Id: configure.in,v 1.25 2002/11/23 11:30:46 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.26 2002/12/19 01:08:31 stratego Exp $)
 
 AC_CHECK_HEADERS([malloc.h])
 AC_CHECK_HEADERS([stdlib.h])
