@@ -96,7 +96,7 @@ strategies
         ; (where(CurrentTerm => ct)
           ; (where(<prop-pattern-match> [(t, ct)]
 	           ; map(try(introduce-binding)))
-             <+ where(<debug(!"no match with current term: ")> 
+             <+ where(if-verbose2(<debug(!"no match with current term: "))> 
 		      ("strat: ", <id>, "current: ", ct))
                 ; !Fail)
           <+ where(<not(oncetd(?Wld + ?As(_,_)))> t)

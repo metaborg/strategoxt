@@ -108,7 +108,10 @@ strategies
 
   mark-let =
     Let(id, id)
-    ; where(undefine-unbound-MarkVar => bnd0)
+    ; where(
+	?Let(<tvars>,_) => vars
+	; undefine-unbound-MarkVar(|vars) => bnd0
+      )
     ; Let(map(where(<restore-MarkVar> bnd0); mark-buv)
          ,    where(<restore-MarkVar> bnd0); mark-buv)
 
@@ -234,12 +237,15 @@ strategies // Dynamic rule manipulation
   CompareEntries :
     (_, Undefined) -> Undefined
 
-  undefine-unbound-MarkVar =
-    save-MarkVar
-    ; map(try(?(Scopes, _)
-		<+ \ (key, [Defined(rl,"unbound") | xs]) -> 
-		     (key, [Defined(rl,"(un)bound") | xs]) \ ))
-    ; restore-MarkVar
+  undefine-unbound-MarkVar(|vars) =
+    let UnboundToMaybeUnbound(|vars) =
+	  \ (key@Var(x), [Defined(rl,"unbound")   | xs]) -> 
+	    (key, [Defined(rl,"(un)bound") | xs])
+	    where <fetch(?x)> vars \
+     in save-MarkVar
+        ; map(try(?(Scopes, _) <+ UnboundToMaybeUnbound(|vars)))
+        ; restore-MarkVar
+    end
 
 /*
     Bound/Unbound variable analysis for Stratego programs

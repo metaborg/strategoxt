@@ -159,13 +159,32 @@ strategies
 	) 
 
   test13 = 
-    apply-test(!"test13"
+    apply-test(!"test13a"
 	, not(def-use-def)
 	, !|[ G(|) = let F(|X : a) = !X in F(|"a") end ]|
+	);
+    apply-and-fail(!"test13b"
+	, not(def-use-def)
+	, !|[ G(|) = all(!X) ]|
+	); 
+    apply-and-fail(!"test13c"
+	, not(def-use-def)
+	, !|[ G(|) = let helper = id in all(!X) end ]|
 	) 
 
+
   test14 = 
-    apply-test(!"test14"
+    apply-test(!"test14a"
 	, not(def-use-def)
 	, !|[ UnEscape(|C) : ['\', C | cs ] -> [C  | cs ] ]|
+	);
+    apply-and-fail(!"test14b"
+	, not(def-use-def)
+	, !|[ testing-main(|) = rob(|X) ]|
+	);
+    apply-test(!"test14c"
+	, not(def-use-def)
+	, !|[ testing-main(|) = ?X; rob(|X) ]|
 	)
+
+

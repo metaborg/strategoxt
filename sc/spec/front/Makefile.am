@@ -11,7 +11,6 @@ SCFLAGS 	 = -I $(STRATEGO_FRONT)/share/stratego-front	 \
 	  	   -I $(srcdir)/../opt				 \
 	  	   --main $*-io --keep 0	 
 		  
-
 libexec_PROGRAMS = extract extract-all rename-defs stratego-warnings \
 		   repair-types desugar pre-desugar normalize-spec use-def \
 		   check-constructors spec-to-sdefs 

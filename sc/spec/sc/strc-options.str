@@ -19,7 +19,7 @@ strategies
   init-sc-config = 
   where(
     <set-config>("VERSION", strc-version-number)
-    ; <set-config>("--verbose", 2)
+    ; <set-config>("--verbose", 1)
     ; <set-config>("--keep", 0)
     ; <set-config>("-O", 6)
     ; <set-config>("-I", ["-I", <xtc-find-path> "lib.rtree",
@@ -35,9 +35,7 @@ strategies
                            "-L", <conc-strings>(<xtc-find-path> "ATERM", "/lib"),
                            "-lATerm-gcc",
                            "-lm"])
-// Currently, warnings are not yet switched on by default
     ; <set-config>("--warning", ["all"])
-//    ; <set-config>("--warning", [])
   )
 
   olevel(n, s) =
@@ -108,17 +106,13 @@ strategies
 	where(<toggle-config>("--fusion",())); !(),
 	!"--fusion           Toggle specialize applications of innermost (default: on)" )
 
-/****
-
-  + Option("--trace-all",  
-	where(<set-config>("--trace-all",())); !(),
-	!"--trace-all        Instrument all definitions to print tracing information" )
-
-  + ArgOption("-t",        
-	where(<extend-config>("-t", [<id>])); !(),
-	!"-t f               Instrument definition of f to print tracing information\n" )
-
-***/
+//  + Option("--trace-all",  
+//	where(<set-config>("--trace-all",())); !(),
+//	!"--trace-all        Instrument all definitions to print tracing information" )
+//
+//  + ArgOption("-t",        
+//	where(<extend-config>("-t", [<id>])); !(),
+//	!"-t f               Instrument definition of f to print tracing information\n" )
 
   + ArgOption("--verbose",         
 	where(<set-config> ("--verbose", <string-to-int>)); !(),         

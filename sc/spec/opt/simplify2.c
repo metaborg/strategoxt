@@ -5932,10 +5932,7 @@ ATerm concat_0_0 (ATerm t)
       }
       if(((ATgetType(t) == AT_LIST) && !(ATisEmpty(t))))
         {
-          if(((q_57 != NULL) && (q_57 != ATgetFirst((ATermList) t))))
-            _fail(ATgetFirst((ATermList) t));
-          else
-            q_57 = ATgetFirst((ATermList) t);
+          q_57 = ATgetFirst((ATermList) t);
           if(((r_57 != NULL) && (r_57 != (ATerm) ATgetNext((ATermList) t))))
             _fail((ATerm) ATgetNext((ATermList) t));
           else
@@ -7993,15 +7990,9 @@ ATerm parse_options_p__1_0 (ATerm a_119 (ATerm), ATerm t)
         return(t);
       }
       t = s_73(t);
-      if(((h_73 != NULL) && (h_73 != t)))
-        _fail(t);
-      else
-        h_73 = t;
+      h_73 = t;
       t = (ATerm) ATinsert(CheckATermList(h_73), (ATerm) ATmakeAppl(sym_Program_1, e_73));
-      if(((l_10 != NULL) && (l_10 != t)))
-        _fail(t);
-      else
-        l_10 = t;
+      l_10 = t;
       t = SSLsetAnnotations(l_10, d_73);
     }
   }
@@ -8187,23 +8178,14 @@ ATerm parse_options_1_0 (ATerm z_118 (ATerm), ATerm t)
                 }
                 t = fetch_1_0(w_6, t);
                 t = term_j_28;
-                if(((p_74 != NULL) && (p_74 != t)))
-                  _fail(t);
-                else
-                  p_74 = t;
+                p_74 = t;
                 t = (ATerm) ATinsert(ATinsert(ATempty, not_null(x_73)), term_w_32);
-                if(((q_74 != NULL) && (q_74 != t)))
-                  _fail(t);
-                else
-                  q_74 = t;
+                q_74 = t;
                 t = SSL_printnl(p_74, q_74);
                 t = (ATerm) ATmakeAppl(sym__2, term_j_28, (ATerm) ATinsert(ATinsert(ATempty, not_null(x_73)), term_w_32));
                 t = default_system_usage_0_0(t);
                 t = term_n_28;
-                if(((o_74 != NULL) && (o_74 != t)))
-                  _fail(t);
-                else
-                  o_74 = t;
+                o_74 = t;
                 t = SSL_exit(o_74);
                 ;
                 LocalPopChoice(v_32);
@@ -8214,15 +8196,9 @@ ATerm parse_options_1_0 (ATerm z_118 (ATerm), ATerm t)
               }
           }
         }
-      if(((y_73 != NULL) && (y_73 != t)))
-        _fail(t);
-      else
-        y_73 = t;
+      y_73 = t;
       t = term_o_29;
-      if(((a_74 != NULL) && (a_74 != t)))
-        _fail(t);
-      else
-        a_74 = t;
+      a_74 = t;
       t = SSL_table_destroy(a_74);
       t = y_73;
     }

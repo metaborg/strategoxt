@@ -1,3 +1,18 @@
+2003-08-19  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/front/use-def.str: Test boundness of variables in term
+	arguments of calls and primitives. 
+
+	* spec/opt/bound-unbound-vars.str: Refined analysis by only
+	demoting those unbound variables which are actually used
+	in one of the local definitions in the let.
+
+	* spec/pack/pack-stratego.str: Don't fail if dependency
+	file cannot be made.
+
+	* spec/sc/strc-options.str: Disabling trace options. Set default
+	verbosity level to 1.
+
 2003-08-17  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/opt/fusion.str: don't import strategy-patterns; not used

@@ -1,10 +1,12 @@
-/* Module flattening strategy for Stratego based on the generic graph
-flattening algorithm from the library.  The program handles
-command-line options for indicating paths to directories with library
-modules and finds modules based on such a path.  It writes
-dependencies for inclusion in a Makefile to the .r.dep file.
-Pack-stratego calls an external process (parse-mod) for parsing
-individual modules. */
+/** 
+ * Module flattening strategy for Stratego based on the generic graph
+ * flattening algorithm from the library.  The program handles
+ * command-line options for indicating paths to directories with
+ * library modules and finds modules based on such a path.  It writes
+ * dependencies for inclusion in a Makefile to the .r.dep file.
+ * Pack-stratego calls an external process (parse-mod) for parsing
+ * individual modules. 
+ */
 
 module pack-stratego
 imports lib xtc-lib pack-graph sugar config
@@ -15,7 +17,7 @@ strategies
       pack-stratego-modules => (files, spec)
       ; (<get-config> "--imports"
         ; <map(get-filename; basename); write-to-text> files
-       <+ <create-dep-file> files
+       <+ try(<create-dep-file> files)
         ; <write-to> spec
         )
     )
@@ -93,21 +95,3 @@ strategies
     map(?Specification(<id>); filter(not(Imports(id))))
     ; concat 
     ; !Specification(<id>)
-
-\end{code}
-% Copyright (C) 2000-2002 Eelco Visser <visser@acm.org>
-% 
-% This program is free software; you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation; either version 2, or (at your option)
-% any later version.
-% 
-% This program is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-% 
-% You should have received a copy of the GNU General Public License
-% along with this program; if not, write to the Free Software
-% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-% 02111-1307, USA.

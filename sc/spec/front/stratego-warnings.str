@@ -8,7 +8,7 @@
         frontend -i <your_spec>.ast -o <your_spec>.ast1
         extract -i <your_spec>.ast1 -o <your_spec>.ast2
         stratego-warnings -i <your_spec>.ast.2 -o /dev/null
- */               
+ */
 module stratego-warnings
 imports lib stratego-ext
 
@@ -19,7 +19,7 @@ signature
 
 overlays
 
-  AllWarnings = ["debug-arguments", "obsolete-strategy-calls"]
+  AllWarnings = ["debug-arguments", "obsolete-strategy-calls", "maybe-unbound-variables"]
 
 strategies
 
@@ -46,8 +46,15 @@ strategies
   Warning(spec) =
     WarningDebugArguments(spec)
     <+ WarningObsolete(spec)
+    <+ MaybeUnboundVariables(spec)
     <+ <printnl> (stderr, ["** WARNING incorrect parameter passed to -W switch: ", <id>]);
        ![]
+
+strategies
+
+  MaybeUnboundVariables(spec) =
+    ?"maybe-unbound-variables" // handled by use-def component
+    ; ![]
 
 strategies
 

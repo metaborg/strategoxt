@@ -190,7 +190,7 @@ strategies
   output-ast =
     try(where(<get-config> "--ast")
        ; copy-to(get-outfile(!".ast") => astfile)
-       ; where(<echo> ["abstract syntax (after parsing) written to file"])
+       ; say(!["abstract syntax (after parsing) written to file"])
        ; xtc-io-exit
     )
 
@@ -247,19 +247,21 @@ strategies // COMPILER COMPONENTS
   comp(|f,args) =
     xtc-transform(!f, <concat>[["-b"], <pass-verbose>, args])
 
+  pass-warnings = 
+    <get-config; mapconcat(!["--warning", <id>])> "--warning"
+
 // FRONTEND
 
   pack-stratego 	= comp(|"pack-stratego", 
 				<concat> [<dep-name>, <get-config> "-I", <pass-keep>])
   pre-desugar 		= comp(|"pre-desugar")
   normalize-spec 	= comp(|"normalize-spec")
-  use-def 		= comp(|"use-def")
+  use-def 		= comp(|"use-def", <pass-warnings>)
   check-constructors 	= comp(|"check-constructors")
   spec-to-sdefs 	= comp(|"spec-to-sdefs")
   rename-vars 		= comp(|"rename-vars")
   desugar 		= comp(|"desugar")
-  warnings 		= comp(|"stratego-warnings", 
-				<get-config; mapconcat(!["--warning", <id>])> "--warning")
+  warnings 		= comp(|"stratego-warnings", <pass-warnings>)
   repair-types 		= comp(|"repair-types")
   extract 		= comp(|"extract"); save-as2(!".ext")
   extract-all 		= comp(|"extract-all")

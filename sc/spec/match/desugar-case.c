@@ -2241,15 +2241,9 @@ ATerm parse_options_p__1_0 (ATerm q_98 (ATerm), ATerm t)
         return(t);
       }
       t = s_21(t);
-      if(((h_21 != NULL) && (h_21 != t)))
-        _fail(t);
-      else
-        h_21 = t;
+      h_21 = t;
       t = (ATerm) ATinsert(CheckATermList(h_21), (ATerm) ATmakeAppl(sym_Program_1, e_21));
-      if(((v_6 != NULL) && (v_6 != t)))
-        _fail(t);
-      else
-        v_6 = t;
+      v_6 = t;
       t = SSLsetAnnotations(v_6, d_21);
     }
   }
@@ -2435,23 +2429,14 @@ ATerm parse_options_1_0 (ATerm p_98 (ATerm), ATerm t)
                 }
                 t = fetch_1_0(q_2, t);
                 t = term_y_5;
-                if(((r_22 != NULL) && (r_22 != t)))
-                  _fail(t);
-                else
-                  r_22 = t;
+                r_22 = t;
                 t = (ATerm) ATinsert(ATinsert(ATempty, not_null(x_21)), term_m_12);
-                if(((s_22 != NULL) && (s_22 != t)))
-                  _fail(t);
-                else
-                  s_22 = t;
+                s_22 = t;
                 t = SSL_printnl(r_22, s_22);
                 t = (ATerm) ATmakeAppl(sym__2, term_y_5, (ATerm) ATinsert(ATinsert(ATempty, not_null(x_21)), term_m_12));
                 t = default_system_usage_0_0(t);
                 t = term_c_6;
-                if(((q_22 != NULL) && (q_22 != t)))
-                  _fail(t);
-                else
-                  q_22 = t;
+                q_22 = t;
                 t = SSL_exit(q_22);
                 ;
                 LocalPopChoice(l_12);
@@ -2462,15 +2447,9 @@ ATerm parse_options_1_0 (ATerm p_98 (ATerm), ATerm t)
               }
           }
         }
-      if(((y_21 != NULL) && (y_21 != t)))
-        _fail(t);
-      else
-        y_21 = t;
+      y_21 = t;
       t = term_j_7;
-      if(((c_22 != NULL) && (c_22 != t)))
-        _fail(t);
-      else
-        c_22 = t;
+      c_22 = t;
       t = SSL_table_destroy(c_22);
       t = y_21;
     }
