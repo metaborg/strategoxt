@@ -5,7 +5,7 @@ SUBDIRS      = data
 
 bin_SCRIPTS  = tohtml-sdf
 
-EXTRA_DIST   = tohtml-sdf.sh.src sdf2text.sh.src
+EXTRA_DIST   = tohtml-sdf.sh.src 
 CLEANFILES   = tohtml-sdf
 
 % : %.sh.src Makefile
