@@ -1,6 +1,8 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
+SUBDIRS = data
+
 bin_PROGRAMS   = parse-unit
 SCFLAGS        = --main io-$* $(XTCFLAGS) -I $(top_srcdir)/lib
 
