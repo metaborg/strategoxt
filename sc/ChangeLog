@@ -1,5 +1,8 @@
 2003-07-30  Eelco Visser  <visser@cs.uu.nl>
 
+	* spec/opt/dead-var-elim.str: Don't eliminate variable is
+	nothing is known about its boundness.
+
 	* spec/c/bound-unbound-vars.str: Tweaked the MarkVar dynamic
 	rules to get intersection to work. Something strange is going
 	on here, which needs looking into.
