@@ -1,3 +1,10 @@
+2004-04-20  Martin Bravenboer  <martin@cs.uu.nl>
+
+	* src/sdf-bracket/sdf-bracket.str:
+	- removed GPL license.
+	- don't remove the top level term if it is not the accepted
+	grammar identifier (sdf 2.1)
+	
 2004-02-24  Martin Bravenboer  <martin@cs.uu.nl>
 
 	* src/sdf-normalize/*: removed.

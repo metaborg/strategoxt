@@ -4,7 +4,6 @@ include $(wildcard *.dep)
 
 SUBDIRS      	 = data
 
-bin_PROGRAMS 	 = sdf-bracket
 libexec_PROGRAMS = sdf-bracket
 BOOTCLEANFILES 	 = sdf-bracket.c
 
@@ -13,7 +12,8 @@ CLEANFILES  	 = sdf_bracket_check $(wildcard *.dep)
 
 EXTRA_DIST 	 = $(wildcard *.str) $(wildcard *.meta) 
 
-SCFLAGS     	 = -I $(ASFIX_TOOLS)/share/asfix-tools --main $*
+SCFLAGS     =  --main io-$*
+STRINCLUDES = -I $(ASFIX_TOOLS)/share/asfix-tools
 
 sdf_bracket_check_prog    = sdf-bracket
 sdf_bracket_check_input   = data/sdf-bracket.sdf.af

@@ -1,54 +1,39 @@
-// SDF Tools
-// Copyright (C) 2001 Merijn de Jonge <mdejonge@cwi.nl>
-//                    Eelco Visser <visser@acm.org>
-//                    Joost Visser <jvisser@cwi.nl>
-//
-// This program is free software; you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 2, or (at your option)
-// any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-// 02111-1307, USA.
-
-\literate[sdf-bracket]
-
-This is a simple utility that inserts brackets in the AST of SDF modules
-such that:
-   implode(parse(sdf-bracket(AST))) = AST
-
-Currently this is implemented as follows:
-* SDF infix operators  "alt", "pair", and sequence (represented as lists)
-  are put inside a "bracket-symbol" in the context of nested SDF symbols
-  iter, iter-star, opt, alt, and sequence (represented as list).
-
-Example:
-The AST for the symbol (A|B)* is
-   iter-star(alt(sort("A"),sort("B")))
-sdf-bracket transforms this AST into
-   iter-star(bracket-symbol(alt(sort("A"),sort("B"))))
-
-\begin{code}
+/**
+ * Utility that inserts brackets in the AST of SDF modules such that:
+ *   implode(parse(sdf-bracket(AST))) = AST
+ *
+ *
+ * Currently this is implemented as follows:
+ * SDF infix operators  "alt", "pair", and sequence (represented as lists)
+ * are put inside a "bracket-symbol" in the context of nested SDF symbols
+ * iter, iter-star, opt, alt, and sequence (represented as list).
+ *
+ * Example:
+ * The AST for the symbol (A|B)* is
+ *    iter-star(alt(sort("A"),sort("B")))
+ * sdf-bracket transforms this AST into
+ *    iter-star(bracket-symbol(alt(sort("A"),sort("B"))))
+ */
 module sdf-bracket
-imports lib Regular-Sdf-Syntax Bracket-Symbol asfix termid
+imports lib Regular-Sdf-Syntax Bracket-Symbol asfix
 
 strategies
-short-description(p) = !["Usage: ", <p>(), " [options]"]
-long-description(p)  = !["This program generates a disambiguated AST of SDF modules\n",
+
+  short-description(p) = !["Usage: ", <p>(), " [options]"]
+
+  long-description(p)  = !["This program generates a disambiguated AST of SDF modules\n",
                          "by inserting bracket symbols for SDF infix operators.\n",
                          "Use this program before pretty-printing ASTs of SDF modules.\n"]
 
-  sdf-bracket = 
-    io-idwrap(InOutId("\"sdf-2.1\"", !"\"sdf-2.1\""), SdfBracket)
+  io-sdf-bracket = 
+    io-wrap(
+      if ?"\"sdf-2.1\""#([trm])
+      then !"\"sdf-2.1\""#([<sdf-bracket> trm])
+      else sdf-bracket
+      end
+    )
 
-  SdfBracket =
+  sdf-bracket =
     topdown(try(Bracket));
     topdown(try(DeBracket))
 
@@ -82,4 +67,4 @@ rules
   // definition of a prefix function f(s) ).
   DeBracket :
     prod([lit(f), bracket-symbol(alt(s1,s2))],s,a) -> prod( [lit(f), alt(s1, s2)], s, a)
-\end{code}
+
