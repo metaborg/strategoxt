@@ -4,7 +4,7 @@ imports Stratego dynamic-rules lib
 strategies
 
   check-constructors-io = 
-    io-wrap(CheckConstructors <+ debug(!"barf: "); fail)
+    io-wrap(CheckConstructors)
 
 overlays
 

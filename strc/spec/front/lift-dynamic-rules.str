@@ -27,10 +27,14 @@ contain dynamic rules. */
   lift-dynamic-rule :
     [def | defs] -> <conc> ([def' | rdefs], defs)
     where {| ContextVar : 
-	     <tvars> def; DeclareContextVars
+	     <def-tvars> def; DeclareContextVars
            ; <split-dynamic-rule(split-dynamic-rules => (ss, rdefs); !Seqs(ss))> 
 	        def => def'
 	   |}
+
+  def-tvars =
+    <union> (<?SDefT(_,_,<map(?DefaultVarDec(<id>) + ?VarDec(<id>,_))>,_)>
+	    ,<tvars>)
 
 /* Traverse to find dynamic rule definition.  Record all variables
 that are declared in context using the dynamic rule ContextVar */

@@ -1,3 +1,8 @@
+2003-08-28  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/front/lift-dynamic-rules.str: Take formal term arguments
+	into account when lifting dynamic rules.
+
 2003-08-24  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/front/use-def.str: remove ListVar(_) wrapper before
