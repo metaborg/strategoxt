@@ -1,2 +1,2 @@
 module library
-imports xtc-lib lib
+imports lib
