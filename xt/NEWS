@@ -18,11 +18,11 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: NEWS,v 1.5 2000/04/12 09:05:23 mdejonge Exp $
+# $Id: NEWS,v 1.6 2000/04/13 12:54:46 jvisser Exp $
 
 Version 0.2 
 
-      released: April 12, 2000
+      released: April 13, 2000
 
  * XT now uses automake and configure to configure and build all
    constituents. On top of this XT offers a script that takes care of
