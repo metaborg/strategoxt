@@ -1,252 +1,256 @@
+2001-09-21 Merijn de Jonge <mdejonge@cwi.nl> 
+    * Version 0.8 released
+    * Increased version number
+
 2001-09-18 Merijn de Jonge <mdejonge@cwi.nl> 
    * Added -2 switch to sglr calls to forse asfix2 output
 
 2001-08-30 Merijn de Jonge <mdejonge@cwi.nl>
-        * src/sdf-doc/data/incomplete.sdf.sg.dot.af.correct: updated since
-          output of GraphXML2dot has changed a bit.
+   * src/sdf-doc/data/incomplete.sdf.sg.dot.af.correct: updated since
+     output of GraphXML2dot has changed a bit.
 
 2001-08-09 Merijn de Jonge <mdejonge@cwi.nl>
-        * Added boxenv to required package list package.conf
+   * Added boxenv to required package list package.conf
 
 2001-06-12 Merijn de Jonge <mdejonge@cwi.nl>
-        * src/gbquery: added -d switch to retrieve the location of a grammar
-          definition file
-        * integration-tests: Adapted and re-enabled integration tests
-        * visamb/Makefile.am: added data to SUBDIRS variable
-        * visamb/data/Makefile.am: fixed some dependencies
+   * src/gbquery: added -d switch to retrieve the location of a grammar
+     definition file
+   * integration-tests: Adapted and re-enabled integration tests
+   * visamb/Makefile.am: added data to SUBDIRS variable
+   * visamb/data/Makefile.am: fixed some dependencies
 
 2001-06-08 Merijn de Jonge <mdejonge@cwi.nl>
-        * src/sdf-doc: glue tools from sdf-tools package added
-        * src/visamb: glue tools from asfix-tools package added
-        * src/lib/ppp-wrap.r: integration module added
+   * src/sdf-doc: glue tools from sdf-tools package added
+   * src/visamb: glue tools from asfix-tools package added
+   * src/lib/ppp-wrap.r: integration module added
 
 2001-06-08 Merijn de Jonge <mdejonge@cwi.nl>
-        * Increased XT's version number to 0.8
-        * Adapted for new packlage configuration. XT now only contains
-          package dependencies and integration scripts
+   * Increased XT's version number to 0.8
+   * Adapted for new packlage configuration. XT now only contains
+     package dependencies and integration scripts
 
 2001-05-31 Merijn de Jonge <mdejonge@cwi.nl>
-	* Updated the NEWS file for version 0.7
-        * Increased XT's version number to 0.7
-        * synchronized dev-pkg-list with pkg-list
+   * Updated the NEWS file for version 0.7
+   * Increased XT's version number to 0.7
+   * synchronized dev-pkg-list with pkg-list
 
 2001-05-30 Merijn de Jonge <mdejonge@cwi.nl>
-        * Ready to try version 0.5.3 of stratego
+   * Ready to try version 0.5.3 of stratego
 
 2001-05-23 Merijn de Jonge <mdejonge@cwi.nl>
-        * Roll back: changed stratego version from 0.5.3 to 0.5.2 
+   * Roll back: changed stratego version from 0.5.3 to 0.5.2 
 
 2001-03-28 Merijn de Jonge <mdejonge@cwi.nl>
-        * Now using version 0.5.3 af the aterm library.
+   * Now using version 0.5.3 af the aterm library.
 
 2001-03-23 Merijn de Jonge <mdejonge@cwi.nl>
-        * Removed graph-tools package from XT distribution
+   * Removed graph-tools package from XT distribution
 
 2001-03-12 Merijn de Jonge <mdejonge@cwi.nl>
-        * Don't generate README from README.in anymore because it turned out
-          to be confusing for developers. Use separate VERSION file instead.
+   * Don't generate README from README.in anymore because it turned out
+     to be confusing for developers. Use separate VERSION file instead.
 
 2001-02-27 Merijn de Jonge <mdejonge@cwi.nl>
-        * Small bug fix in Makefile.am
-        * Changed cvs server from gondel to ssh.cwi.nl
+   * Small bug fix in Makefile.am
+   * Changed cvs server from gondel to ssh.cwi.nl
 
 2001-02-22 Merijn de Jonge <mdejonge@cwi.nl>
-        * Increased version number to 0.7beta
+   * Increased version number to 0.7beta
 
 2001-02-20 Merijn de Jonge <mdejonge@cwi.nl>
-        * delayed release date
+   * delayed release date
 
 2001-02-19 Merijn de Jonge <mdejonge@cwi.nl>
-	* Updated the NEWS file for version 0.6.
+   * Updated the NEWS file for version 0.6.
 
 2001-02-18 Merijn de Jonge <mdejonge@cwi.nl>
-        * Increased XT's version number to 0.6
+   * Increased XT's version number to 0.6
 
 2001-02-15 Merijn de Jonge <mdejonge@cwi.nl>
-        * fixed integration tests (renamed Sdf to sdf)
+   * fixed integration tests (renamed Sdf to sdf)
 
 2001-02-14 Joost Visser <jvisser@cwi.nl>
-	* Increased version of JJForester to 0.5
-	
+   * Increased version of JJForester to 0.5
+   
 2001-01-07 Merijn de Jonge <mdejonge@cwi.nl>
-        * Removed second occurence of AC_CONFIG_PKG(gt, ...) in configure.in
-        * New version of collect.sh
+   * Removed second occurence of AC_CONFIG_PKG(gt, ...) in configure.in
+   * New version of collect.sh
 
 2001-01-02 Merijn de Jonge <mdejonge@cwi.nl>
-        * XT now bundles GPP version 0.33. Version 0.32 introduced a bug
-          that broke the generation of binary distributions of XT.
+   * XT now bundles GPP version 0.33. Version 0.32 introduced a bug
+     that broke the generation of binary distributions of XT.
 
 2000-12-14 Merijn de Jonge <mdejonge@cwi.nl>
-        * XT now bundles version 1.32 of gpp (watch out, this breaks
-          spec/ast2abox!)
+   * XT now bundles version 1.32 of gpp (watch out, this breaks
+     spec/ast2abox!)
 
 2000-12-12 Merijn de Jonge <mdejonge@cwi.nl>
-        * New version of collect.sh
+   * New version of collect.sh
 
 2000-11-08 Joost Visser <jvisser@cwi.nl>
-	* Increased version of JJForester to 0.2.1
+   * Increased version of JJForester to 0.2.1
 
 2000-12-01 Merijn de Jonge <mdejonge@cwi.nl>
-        * Increased version number to 0.6beta
+   * Increased version number to 0.6beta
 
 2000-11-30 Merijn de Jonge <mdejonge@cwi.nl>
-	* Updated the NEWS file for version
-        * Bundle verion 0.2 of JJForester.
-        * Preparing for release: changed version 0.5beta to 0.5
+   * Updated the NEWS file for version
+   * Bundle verion 0.2 of JJForester.
+   * Preparing for release: changed version 0.5beta to 0.5
 
 2000-11-25 Merijn de Jonge <mdejonge@cwi.nl>
-        * New version of collect.sh installed which reports in the file
-          SOFTWARE when an XT bundle is constructed.
+   * New version of collect.sh installed which reports in the file
+     SOFTWARE when an XT bundle is constructed.
 
 2000-11-24 Merijn de Jonge <mdejonge@cwi.nl>
-        * New version of collect.sh installed
+   * New version of collect.sh installed
 
 2000-11-20 Merijn de Jonge <mdejonge@cwi.nl>
-        * Increased version of JJForester to 0.2
+   * Increased version of JJForester to 0.2
 
 2000-11-12 Merijn de Jonge <mdejonge@cwi.nl>
-        * Increased version to 0.5beta
-        * Updated pkg-list and dev-pkg-list to bundle the most recent
-          versions of XT's sub-component's
-        * New version of collect script which no longer requires version
-          numbers of cvs packages to be defined in the package list files.
+   * Increased version to 0.5beta
+   * Updated pkg-list and dev-pkg-list to bundle the most recent
+     versions of XT's sub-component's
+   * New version of collect script which no longer requires version
+     numbers of cvs packages to be defined in the package list files.
 
 2000-11-08 Joost Visser <jvisser@cwi.nl>
-	* Updated the NEWS file for version 0.4.
+   * Updated the NEWS file for version 0.4.
 
 2000-11-08 Merijn de Jonge <mdejonge@cwi.nl>
-        * version is now 0.4 almost ready for release
+   * version is now 0.4 almost ready for release
 
 2000-10-31 Merijn de Jonge <mdejonge@cwi.nl>
-        * JJForester added to pkg-list
-        * XT now uses autobundle software
+   * JJForester added to pkg-list
+   * XT now uses autobundle software
 
 2000-10-04 Merijn de Jonge <mdejonge@cwi.nl>
-        * added stuff for the generation of the xt download page
+   * added stuff for the generation of the xt download page
 
 2000-09-28 Merijn de Jonge <mdejonge@cwi.nl>
-        * README, COPYING, NEWS, and AUTHORS files are installed in ${prefix}
-          during "make pkg"
-        * Bug fix in Makefile.am
+   * README, COPYING, NEWS, and AUTHORS files are installed in ${prefix}
+     during "make pkg"
+   * Bug fix in Makefile.am
 
 2000-09-27 Merijn de Jonge <mdejonge@cwi.nl>
-        * added patch support to Makefile: "gmake diff" generates a patch file
-          which can be sent to the maintainers of xt
-        * Added support for package building (gmake pkg); no documentation
-          yet
+   * added patch support to Makefile: "gmake diff" generates a patch file
+     which can be sent to the maintainers of xt
+   * Added support for package building (gmake pkg); no documentation
+     yet
 
 2000-09-19  Merijn de Jonge  <mdejonge@cwi.nl>
-        * bug fix: configure script now specifies asfix location for its
-          sub-packages using the --with-asfix switch
-        * increased version number to 0.4
+   * bug fix: configure script now specifies asfix location for its
+     sub-packages using the --with-asfix switch
+   * increased version number to 0.4
 
 2000-08-31  Merijn de Jonge  <mdejonge@cwi.nl>
-        * no longer use --with-all flag to configure aterm library to
-          prevent building the -cc.a libraries which require "cc" to exist.
-        * added gcc-check in pre-checks to check for gcc existence.
+   * no longer use --with-all flag to configure aterm library to
+     prevent building the -cc.a libraries which require "cc" to exist.
+   * added gcc-check in pre-checks to check for gcc existence.
 
 2000-08-30  Merijn de Jonge  <mdejonge@cwi.nl>
-        * added graph-tools to DIST_SUBDIRS variable in Makefile.am
+   * added graph-tools to DIST_SUBDIRS variable in Makefile.am
 
 2000-08-28  Merijn de Jonge  <mdejonge@cwi.nl>
-	* added www/ to DIST_SUBDIRS variable
-        * XT now contains Stratego version 0.4.17
+   * added www/ to DIST_SUBDIRS variable
+   * XT now contains Stratego version 0.4.17
 
 2000-08-25  Eelco Visser  <visser@cs.uu.nl>
 
-	* www/: Added link to Merijn's daily build page.
+   * www/: Added link to Merijn's daily build page.
 
 2000-07-28  Merijn de Jonge  <mdejonge@cwi.nl>
-        * Changed url's to xt/gb/gt frp www.cs.uu.nl to
-          www.program-transformation.org
-        * Integration tests adapted to new installation location of grammars
-          in prefix/gb/share/agrammar.version
+   * Changed url's to xt/gb/gt frp www.cs.uu.nl to
+     www.program-transformation.org
+   * Integration tests adapted to new installation location of grammars
+     in prefix/gb/share/agrammar.version
 
 2000-07-25 <mdejonge@cwi.nl>
-        * returned to version 2.31 of sglr and version 0.3 of pgen because
-          of bugs in the most recent versions
+   * returned to version 2.31 of sglr and version 0.3 of pgen because
+     of bugs in the most recent versions
  
 2000-07-25 <mdejonge@cwi.nl>
-        * added subdirectory with top-level XT integration tests
-        * added parseyacc-yacc2sdf-sdf2text-check.src integration test
+   * added subdirectory with top-level XT integration tests
+   * added parseyacc-yacc2sdf-sdf2text-check.src integration test
 
 2000-07-24 <mdejonge@cwi.nl>
-        * Removed sub directory dummy
-        * Added pre-checks sub directory in which runtime checks are
-          performed prior to the build process of XT.
-        * Upgraded to new version (0.4.16) of Stratego
-        * Upgraded to version 1.30 of GPP
-        * Upgraded to 1.3.2 of aterm library
-        * simplified format of package files
+   * Removed sub directory dummy
+   * Added pre-checks sub directory in which runtime checks are
+     performed prior to the build process of XT.
+   * Upgraded to new version (0.4.16) of Stratego
+   * Upgraded to version 1.30 of GPP
+   * Upgraded to 1.3.2 of aterm library
+   * simplified format of package files
 
 2000-07-17 <mdejonge@cwi.nl>
-        * Upgraded to use new version (version 1.1) of the aterm library
+   * Upgraded to use new version (version 1.1) of the aterm library
 
 2000-07-14 <mdejonge@cwi.nl>
-        * bug fix. Build process now teminates when building one of its sub
-          components fails
+   * bug fix. Build process now teminates when building one of its sub
+     components fails
 
 2000-06-21  XT Tester  <xtest@node11794.a2000.nl>
 
-	* collect.sh: Moving ${pkg} to ${pkg}-${version} such that a
-	directory ${pkg}-${version} is made in the main directory in the
-	case of cvsdev; for consistency
+   * collect.sh: Moving ${pkg} to ${pkg}-${version} such that a
+   directory ${pkg}-${version} is made in the main directory in the
+   case of cvsdev; for consistency
 
 2000-04-17 <mdejonge@cwi.nl>
-        * added --with-aterm=${prefix} to configuration of asfix library
+   * added --with-aterm=${prefix} to configuration of asfix library
 2000-04-13 <mdejonge@cwi.nl>
-        * released version 0.2
-        * increased version number (0.3)
-        * fixed unpacking of distributions: tar zxf is gnu tar specific!
+   * released version 0.2
+   * increased version number (0.3)
+   * fixed unpacking of distributions: tar zxf is gnu tar specific!
 
 2000-04-12    <visser@loempia.cs.uu.nl>
 
-	* www/: Made the content bar prettier and added a counter.
+   * www/: Made the content bar prettier and added a counter.
 
-	* collect.sh: Added support for checking out development packages
- 	such that one can work on one of the packages in XT and commit
- 	changes via cvs. (It might be necessary to clean this up. I did it
- 	using the mechanism currently installed, but it could be done more
- 	directly by immediately checking out the directory in the main
- 	directory.)
+   * collect.sh: Added support for checking out development packages
+    such that one can work on one of the packages in XT and commit
+    changes via cvs. (It might be necessary to clean this up. I did it
+    using the mechanism currently installed, but it could be done more
+    directly by immediately checking out the directory in the main
+    directory.)
 
-	* dev-pkg-list: A configuration in which stratego, gb, and gt are
- 	developer directories.
+   * dev-pkg-list: A configuration in which stratego, gb, and gt are
+    developer directories.
 
 2000-04-12    <mdejonge@cwi.nl>
-        * uninstall target added to top-level Makefile
-        * XT now also includes the asfix distribution because it no longer
-          belongs to the aterm library.
-        * NEWS file updated
-        * increased version number to 0.2 (this should have been done a long  
-          ago, after releasing version 0.1)
+   * uninstall target added to top-level Makefile
+   * XT now also includes the asfix distribution because it no longer
+     belongs to the aterm library.
+   * NEWS file updated
+   * increased version number to 0.2 (this should have been done a long  
+     ago, after releasing version 0.1)
 
 2000-04-07    <mdejonge@cwi.nl>
-        * GPL copyright notices added
+   * GPL copyright notices added
 
 2000-03-29    <mdejonge@cwi.nl>
-        * Added the generic pretty-printer (GPP) to the distribution
+   * Added the generic pretty-printer (GPP) to the distribution
 
 2000-03-29    <mdejonge@cwi.nl>
-        * Set PATH in Makefile to make sure that tools from XT are actually
-          used to build other parts of XT
-        * Introduced a dummy subdirectory to get around a bug in automake.
-        * fixed install, clean, and check targets
-        * added message about using GNU make to README.in
+   * Set PATH in Makefile to make sure that tools from XT are actually
+     used to build other parts of XT
+   * Introduced a dummy subdirectory to get around a bug in automake.
+   * fixed install, clean, and check targets
+   * added message about using GNU make to README.in
 
 2000-03-28    <mdejonge@cwi.nl>
-        * CWI packages are now downloaded from CWI web-site
+   * CWI packages are now downloaded from CWI web-site
 
 2000-03-27    <mdejonge@cwi.nl>
-        * Added GPL License headers
-        * Replaced asource by Stratego implementation 
-        * use automake/configure to configure/build all components of XT
+   * Added GPL License headers
+   * Replaced asource by Stratego implementation 
+   * use automake/configure to configure/build all components of XT
 
 2000-01-24    <visser@cs.uu.nl>
 
-	* Added asource to the distribution
+   * Added asource to the distribution
 
 1999-12-15    <visser@cs.uu.nl>
 
-	* Creation of a bundle of tools for program transformation
+   * Creation of a bundle of tools for program transformation
 
