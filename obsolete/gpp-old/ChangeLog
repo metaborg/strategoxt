@@ -6,6 +6,11 @@
 	argument; only works on `paragraphs'. (In my first attempt I used
 	\\ to separate boxes, but that that broke vertical space
 	settings.)
+	
+	* src/abox2latex/Abox-2-latex.r: Turned out the first attempt was
+	right after all; \texcolor also chokes on \par's inside its second
+	argument. Now changed the separation to \\[\parskip], which has
+	the same effect.
 
 2002-09-17  Eelco Visser  <visser@acm.org>
 
