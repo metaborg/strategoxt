@@ -9,12 +9,15 @@ exports
   context-free syntax
 
     "rules" "(" DynRuleDef* ")" -> Strategy {cons("GenDynRules")}
-    DynRuleScopeId ":-"  Term -> DynRuleDef {cons("UndefineDynRule")}
-    DynRuleScopeId ":"   Rule -> DynRuleDef {cons("SetDynRule")}
-    DynRuleScopeId ":+"  Rule -> DynRuleDef {cons("AddDynRule")}
+    DynRuleId ":-"  Term -> DynRuleDef {cons("UndefineDynRule")}
+    DynRuleId ":"   Rule -> DynRuleDef {cons("SetDynRule")}
+    DynRuleId ":+"  Rule -> DynRuleDef {cons("AddDynRule")}
 
-    RuleDec "." Term -> DynRuleScopeId {cons("LabeledScope")}
-    RuleDec          -> DynRuleScopeId {cons("CurrentScope")}
+    RuleDec "." Term -> DynRuleId {cons("LabeledDynRuleId")}
+    RuleDec          -> DynRuleId {cons("DynRuleId")}
+
+    Id "." Term  -> DynRuleScopeId {cons("LabeledDynRuleScopeId")}
+    Id           -> DynRuleScopeId {cons("DynRuleScopeId")}
 
   context-free syntax
 
