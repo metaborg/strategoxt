@@ -1,0 +1,5 @@
+* Reject productions do not get special treatment.
+
+* Renamings and module parameters are not considered.
+
+* Import structure is ignored; a grammar is treated as a flat list of modules.

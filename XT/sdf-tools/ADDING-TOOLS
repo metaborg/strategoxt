@@ -1,0 +1,42 @@
+# Copyright (C) 2000 Author's name <em@il>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+# $Id: ADDING-TOOLS,v 1.1.1.1 2001/05/31 14:20:50 mdejonge Exp $
+
+To add a component "foo" to the package
+
+* Create a subdirectory in the src directory
+
+	mkdir src/foo
+
+  and a sub-directory for test data 
+
+        mkdir src/foo/data
+
+* Add "foo" to the list of unreleased components in package.conf
+
+* Create src/foo/Makefile.am and src/foo/data/Makefile.
+
+* Do reconf -d to generate the corresponding Makefile.in files.
+
+* To generate the corresponding Makefiles, do
+
+	./config.status --recheck
+	./config.status
+
+* Now you can start adding files to src/foo and src/foo/data.
+

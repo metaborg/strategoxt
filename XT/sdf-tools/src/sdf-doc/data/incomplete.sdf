@@ -1,0 +1,14 @@
+module Incomplete
+exports
+  sorts DeclaredBottom DeclaredTop DeclaredInternal
+  context-free syntax
+    Bottom           -> DeclaredInternal
+    DeclaredInternal -> NonDeclaredTop
+    Internal         -> DeclaredTop
+    Lexical          -> Internal
+    DeclaredBottom   -> Internal
+    "literal"        -> Literal
+    Literal          -> Internal
+  lexical syntax
+    [A-Z]     -> Lexical
+    

@@ -1,0 +1,1 @@
+Definition([Module("Main",[],[Exports(context-free-syntax([prod([sort("A"),sort("B"),sort("C")],sort("A"),no-attrs),prod([sort("D")],sort("B"),no-attrs)]))])])

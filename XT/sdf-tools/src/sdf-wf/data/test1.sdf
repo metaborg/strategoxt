@@ -1,0 +1,16 @@
+definition
+
+module M
+exports
+  sorts
+    E D D
+  context-free syntax
+    A B -> C
+    b   -> B
+B B -> C
+c->B
+  sorts
+    Aap Mies
+  context-free syntax
+    f(Aap,Noot)	-> Mies
+  

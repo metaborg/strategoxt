@@ -1,0 +1,13 @@
+definition
+
+module Aap
+exports
+  aliases
+    A* -> A-s
+  context-free syntax
+    B+ -> B-p
+    "r" -> R {reject}
+  lexical syntax
+    "c" -> C
+  context-free syntax
+    A-s B-p R -> C

@@ -1,0 +1,2 @@
+module syntax-test
+imports syntax-test2 syntax-test3

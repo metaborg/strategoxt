@@ -1,0 +1,4 @@
+#! /bin/sh
+
+./sdf-label -i data/add-label.sdf.af -o data/add-label.sdf.af.out
+diff data/add-label.sdf.af.out data/add-label.sdf.af.correct >/dev/null

@@ -1,0 +1,9 @@
+module AddLabel
+exports
+  context-free syntax
+    Aap Noot -> Mies
+    Left Priorities -> Mies
+  context-free priorities
+    Aap Noot -> Mies
+  > Left Priorites -> Mies
+   

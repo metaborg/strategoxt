@@ -1,0 +1,84 @@
+#! /bin/sh
+#
+# GT -- Grammar Tools
+# Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
+#                    Eelco Visser <visser@acm.org>
+#                    Joost Visser <jvisser@cwi.nl>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+# $Id: rm-labels.sh.src,v 1.1.1.1 2001/05/31 14:20:53 mdejonge Exp $
+
+# rm-labels: A tool tool remove labels from sdf syntax definitions
+#
+# usage:
+#    rm-labels [-h] [-i file] [-o file]
+#
+# where
+#    -h       displays usage information
+#    -i file  input is read from file (defaults to standard input)
+#    -o file  output is written to file (defaults to standard output)
+#    -v       displays program version number.
+
+BINDIR=__BINDIR__
+VERSION=__VERSION__
+PATH=${BINDIR}:${PATH}
+export PATH
+
+INPUT=
+OUTPUT=
+
+usage()
+{
+   cat <<ENDCAT >&2
+rm-labels: A tool tool remove labels from sdf syntax definitions
+
+usage:
+   rm-labels [-h] [-i file] [-o file]
+
+where
+   -h       displays usage information.
+   -i file  input is read from file (defaults to standard input).
+   -o file  output is written to file (defaults to standard output).
+   -v       displays program version number.
+ENDCAT
+}
+
+version()
+{
+   echo "$0 version ${VERSION}." >&2
+}
+
+# parse command line options
+for opt in $*
+do
+   case $1 in
+      -h ) usage; exit 0 ;;
+      -i ) INPUT="-i $2"; shift; shift ;;
+      -o ) OUTPUT="> $2"; shift; shift ;;
+      -v ) version; exit 0 ;;
+      -* ) usage; exit 1;;
+   esac
+done 
+
+# build command line to execute
+cmd="parse -l sdf -v 2.1 ${INPUT} \
+  | sdf-rmlabel \
+  | asfix-yield ${OUTPUT}"
+
+# execute command
+eval ${cmd}
+

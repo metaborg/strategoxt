@@ -1,0 +1,1 @@
+Module("AddLabel",[],[Exports(conc-grammars(context-free-syntax([prod([sort("Aap"),sort("Noot")],sort("Mies"),no-attrs),prod([sort("Left"),sort("Priorities")],sort("Mies"),no-attrs)]),context-free-priorities([priority-chain([simple-group(prod([sort("Aap"),sort("Noot")],sort("Mies"),no-attrs)),simple-group(prod([sort("Left"),sort("Priorites")],sort("Mies"),no-attrs))])])))])
