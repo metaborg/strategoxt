@@ -1,3 +1,10 @@
+2003-09-30  Akim Demaille  <akim@lrde.epita.fr>
+
+	* autoxt.m4: Set #serial to 2.
+	(USE_XT_PACKAGES): Quote M4 arguments.
+	Don't overquote shell assignments.
+	Wrap to fit into 80 columns.
+
 2003-09-24  Merijn de Jonge  <m.de.jonge@tue.nl>
         * Makefile.xt: changed from single to double colon style in targets
           install-data-local and install-exec-local
