@@ -24,11 +24,17 @@ exports
        (Node | Edge)* 
     "</" "graph" ">"				-> Graph     {cons("graph")}
 
-    "<" "node" Node-Attribute* "/>" 		-> Node      {cons("node")}
+    "<" "node" Node-Attribute* "/>" 		-> Node      {cons("node1")}
+    "<node" Node-Attribute* ">" (Label | Data | Dataref | Properties | Style | Position | Size | Transform | Subgraph-style)* "</node" ">" -> Node {cons("node")}
+
     Name-Attribute  -> Node-Attribute
     Class-Attribute -> Node-Attribute
 
-    "<" "edge" Edge-Attribute* "/>" 		-> Edge      {cons("edge")}
+    "<label" Label-Attribute* ">" PCDATA "</label" ">"                                                                                   -> Label{cons("label")}
+
+    "<edge" Edge-Attribute* ">" ( Label | Data | Dataref | Properties | Style | Path )* "</edge" ">" -> Edge {cons("edge")}
+    "<" "edge" Edge-Attribute* "/>" 		-> Edge      {cons("edge1")}
+
     Source-Attribute -> Edge-Attribute
     Target-Attribute -> Edge-Attribute
 

@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/06/05 12:34:28 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2001/08/08 09:35:48 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -29,6 +29,6 @@ include $(STRATEGO_PRG:%=%.dep)
 # define any subdir here
 SUBDIRS      = data
 
-EXTRA_DIST   = GraphXML.r
+EXTRA_DIST   = GraphXML.r GraphXML.sdf
 
 pkgdata_DATA = GraphXML.r

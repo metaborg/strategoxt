@@ -19,7 +19,7 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
  02111-1307, USA.
 
- $Id: GraphXML2dot.r,v 1.2 2001/08/07 23:00:32 mdejonge Exp $
+ $Id: GraphXML2dot.r,v 1.3 2001/08/08 09:35:48 mdejonge Exp $
 *)
 
 module GraphXML2dot
@@ -37,15 +37,28 @@ strategies
       \
 
   node2dot
-    = \node(as) -> node-stmt(n,Attr-List(<concat>[shapes,styles, labels]))
+    = \node1(as) -> node-stmt(n,Attr-List(<concat>[shapes,styles]))
        where !as;oncetd(?name(n))
            ; <filter(attribute2shape)>as => shapes
            ; <filter(attribute2style)>as => styles
-           ; <filter(attribute2label)>as => labels
+      \
+
+  node2dot
+    = \node(as, da) -> node-stmt(n,Attr-List(<concat>[shapes,styles, labels]))
+       where !as;oncetd(?name(n))
+           ; <filter(attribute2shape)>as => shapes
+           ; <filter(attribute2style)>as => styles
+           ; <filter(data2label)>da => labels
+      \
+
+
+  edge2dot
+    = \edge1(as) -> edge-stmt(t,arrow(),[s],[])
+       where !as;oncetd(?source(s));oncetd(?target(t))
       \
 
   edge2dot
-    = \edge(as) -> edge-stmt(t,arrow(),[s],[])
+    = \edge(as,data) -> edge-stmt(t,arrow(),[s],[])
        where !as;oncetd(?source(s));oncetd(?target(t))
       \
 
@@ -64,6 +77,6 @@ strategies
     = \class(c) -> attr-id("shape","record")
        where <de-quote>c => "declared"
       \ 
-  attribute2label
-    = \label(l) -> attr-id("label", l) 
+  data2label
+    = \label(attrs, data) -> attr-id("label", data) 
       \

@@ -15,10 +15,12 @@ module ExternalDTD
       edit-bundle : List(Edit-bundle-Attribute) * List(Edit) -> Edit-bundle
       class : AttValue -> Edit-bundle-Attribute
       node : List(Node-Attribute) * List(Either(Label,Either(Data,Either(Dataref,Either(Properties,Either(Style,Either(Position,Either(Size,Either(Transform,Subgraph-style))))))))) -> Node
+      node1 : List(Node-Attribute) -> Node
       name : AttValue -> Node-Attribute
       isMetanode : AttValue -> Node-Attribute
       class : AttValue -> Node-Attribute
       edge : List(Edge-Attribute) * List(Either(Label,Either(Data,Either(Dataref,Either(Properties,Either(Style,Path)))))) -> Edge
+      edge1 : List(Edge-Attribute) -> Edge
       name : AttValue -> Edge-Attribute
       source : AttValue -> Edge-Attribute
       target : AttValue -> Edge-Attribute
