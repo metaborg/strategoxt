@@ -27,8 +27,11 @@ strategies
   repeat(s) = 
     try(s; repeat(s))
   
+//  innermost(s)  = 
+//    bottomup(rec x(try(s; bottomup(x))))
+
   innermost(s)  = 
-    bottomup(rec x(try(s; bottomup(x))))
+    bottomup(try(s; innermost(s)))
 
   eval = 
     innermost(A + B)

@@ -63,7 +63,9 @@ strategies
       new => x
       ; (<InlineStrat> Strategy|[ innermost_1(x()) ]|
          <+ if-verbose2(say(!"no definition of innermost_1: ")); fail)
-      ; (?|[ bottomup_1(rec z(try_1(x(); innermost_1(z())))) ]|
+      ; (?|[ bottomup_1(try_1(x(); innermost_1(x()))) ]|
+         <+ {z: ?|[ bottomup_1(rec z(try_1(x(); bottomup_1(z())))) ]|}
+         <+ {z: ?|[ bottomup_1(rec z(x(); bottomup_1(z()) <+ id))  ]|}
          <+ if-verbose1(debug(!"innermost is not innermost: ")); fail)
       ; if-verbose2(say(!"innermost is innermost "))
     )
@@ -94,10 +96,11 @@ strategies
     ; propagate-mark
 
     ; fuse-with-bottomup
-    ; alltd(BottomupToVarIsId-UnCond + BottomupToVarIsId-Cond)
+    ; alltd(BottomupToVarIsId-UnCond + BottomupToVarIsId-Cond <+ UnMark)
 
+    ; not(oncetd(?Strategy|[ mark() ]|)
+          ; say(!"not all marks removed"))
     ; desugar
-    // ; alltd(UnMark)
     ; if-verbose1(say(!"fused application of innermost"))
 
   // Propagate mark over choice
@@ -173,3 +176,9 @@ strategies
               <tvars; map({?x; rules(Replace : Term|[ <s> x ]| -> Term|[ x ]|)})> t1;
               <alltd(Replace)> t2 => t3 
            |}
+
+  // remove mark
+
+  UnMark :
+    Strategy|[ mark() ]| -> Strategy|[ id ]|
+

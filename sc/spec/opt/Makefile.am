@@ -5,7 +5,7 @@ SCFLAGS	= -I $(srcdir)/../sig \
 	  -I $(srcdir)/../match \
 	  -I $(srcdir)/../lib \
 	  -I $(srcdir)/../front \
-	  --main $*
+	  --main $* --verbose 4
 
 libexec_PROGRAMS = fusion
 check_PROGRAMS 	 = build-match-laws-test
