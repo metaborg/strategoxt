@@ -92,6 +92,87 @@ ATerm _all(ATerm t, ATerm f(ATerm))
     return(ATsetAnnotations(t, annos));
 }
 
+ATerm _allenv(ATerm f(ATerm, ATerm), ATerm env, ATerm t)
+{
+  ATerm annos = ATgetAnnotations(t);
+  switch(ATgetType(t))
+    {
+    case AT_APPL :
+      {
+        Symbol c = ATgetSymbol((ATermAppl) t);
+        int i, arity = ATgetArity(c), changed = 0;
+        ATerm kids[arity], original, new;
+        for(i = 0; i < arity; i++)
+          {
+            original = ATgetArgument(t, i);
+            new = f(env,original);
+            kids[i] = new;
+            if(original != new) changed++;
+          }
+        if(changed)
+          t = (ATerm) ATmakeApplArray(c, kids);
+      }
+      break;
+    case AT_LIST :
+      if((ATermList) t != ATempty)
+        {
+	  ATerm a(ATerm t) 
+	    {
+	      return f(env, t);
+	    }
+          t = (ATerm)ATmap((ATermList) t, a);
+        }
+      break;
+    }
+  if(annos == NULL)
+    return t;
+  else
+    return(ATsetAnnotations(t, annos));
+}
+
+ATerm _allacc(ATerm f(ATerm, ATerm), ATerm acc, ATerm t)
+{
+  ATerm annos = ATgetAnnotations(t);
+  switch(ATgetType(t))
+    {
+    case AT_APPL :
+      {
+        Symbol c = ATgetSymbol((ATermAppl) t);
+        int i, arity = ATgetArity(c), changed = 0;
+        ATerm kids[arity], original, new;
+        for(i = 0; i < arity; i++)
+          {
+            original = ATgetArgument(t, i);
+            new = f(acc,original);
+	    acc = ATgetArgument(new, 1);
+	    new = ATgetArgument(new, 2);
+            kids[i] = new;
+            if(original != new) changed++;
+          }
+        if(changed)
+          t = (ATerm) ATmakeApplArray(c, kids);
+	kids[0] = acc;
+	kids[1] = t;
+	t = ATmakeApplArray(sym__2, kids);
+      }
+      break;
+    case AT_LIST :
+      if((ATermList) t != ATempty)
+        {
+	  ATerm a(ATerm t) 
+	    {
+	      return f(acc, t);
+	    }
+          t = (ATerm)ATmap((ATermList) t, a);
+        }
+      break;
+    }
+  if(annos == NULL)
+    return t;
+  else
+    return(ATsetAnnotations(t, annos));
+}
+
 ATerm _one(ATerm t, ATerm f(ATerm))
 {
   ATerm annos = ATgetAnnotations(t);

@@ -1,3 +1,13 @@
+2003-12-19  Eelco Visser  <visser@cs.uu.nl>
+
+	* init-stratego-application.h, init-stratego-module.h: implement
+	initialization of symbol and cached terms. A linked list of
+	functions is constructed at load-time with a call to
+	SRTS_stratego_initialize_module for each 'module'. A module here
+	is a unit of compilation, for instance, a complete Stratego
+	application or a closure of a module rendered as a library.
+	(After an idea of Eelco Dolstra.)
+
 2003-12-09  Martin Bravenboer <martin@cs.uu.nl>
 	
 	* ssl/dir.[ch]: added getcwd. Pathname allocation is tricky
@@ -10,6 +20,7 @@
 	* ssl/exec.[ch]: added ANSI C/POSIX strerror and perror to improve error
 	reporting in the SSL.
 	
+
 2003-11-10  Eelco Visser  <visser@cs.uu.nl>
 
 	* src/stratego.c (_all, _one): Changed one-step traversal
