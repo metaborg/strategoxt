@@ -119,7 +119,7 @@ ATerm SSL_explode_term(ATerm t)
     }
   case AT_PLACEHOLDER :
     {
-	t = App2("", (ATerm) ATmakePlaceholder((ATerm) ATempty), ATmakeList1(ATgetPlaceholder((ATermPlaceholder) t)));
+	t = App2("", (ATerm) ATmakePlaceholder((ATerm) ATempty), (ATerm) ATmakeList1(ATgetPlaceholder((ATermPlaceholder) t)));
 	break;
     }
   default:

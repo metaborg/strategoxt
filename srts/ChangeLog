@@ -1,3 +1,20 @@
+2004-05-12  Martin Bravenboer <martin@cs.uu.nl>
+
+	* use const (inspired by the mkstemp bug)
+	
+	- AT_getString now returns a const char*
+	
+	- updated all use of AT_getString to const char*
+	
+	- added const qualifiers to all aterm extensions (aterm 2.1 is
+	recommended, since aterm 2.0.5 doesn't use the const qualifier)
+	
+	* io.c: added newline to end of file
+	
+	* exec.c: expressed execvp using execv_args.
+
+	* aterm-extension.c: include string.h (strcmp)
+	
 2004-05-11  Martin Bravenboer <martin@cs.uu.nl>
 
 	* ssl/exec.c: fixed a major bug in mkstemp: mkstemp wrote the

@@ -23,6 +23,7 @@ USA
 
 #include <stdio.h>
 #include <aterm2.h>
+#include <string.h>
 #include "srts/debug.h"
 
 #define ATmakeSymbol ATmakeAFun
@@ -38,12 +39,12 @@ ATermList ATmap(ATermList l, ATerm (* f)(ATerm))
     }
 }
 
-ATerm ATmakeString(char *name)
+ATerm ATmakeString(const char *name)
 {
   return (ATerm) ATmakeAppl0(ATmakeAFun(name, 0, ATtrue));
 }
 
-ATerm ATmakeStringQ(char *name)
+ATerm ATmakeStringQ(const char *name)
 {
   return ATmakeString(ATwriteToString(ATmakeString(name)));
 }
@@ -57,7 +58,7 @@ ATbool ATisString(ATerm t)
   return (ATgetArity(s) == 0) && ATisQuoted(s);
 }
 
-ATbool ATisThisString(ATerm t, char *name)
+ATbool ATisThisString(ATerm t, const char *name)
 {
   Symbol s;
   if(ATgetType(t) != AT_APPL) return ATfalse;
@@ -66,7 +67,7 @@ ATbool ATisThisString(ATerm t, char *name)
          (strcmp(ATgetName(s), name) == 0);
 }
 
-ATbool AThasName(ATerm t, char *name)
+ATbool AThasName(ATerm t, const char *name)
 {
   return (strcmp(ATgetName(ATgetSymbol(t)), name) == 0)
     && !(ATisQuoted(ATgetSymbol(t)));
@@ -74,42 +75,42 @@ ATbool AThasName(ATerm t, char *name)
 
 /* Shortcuts */
 
-ATerm App0(char *name)
+ATerm App0(const char *name)
 {
   return (ATerm) ATmakeAppl0(ATmakeSymbol(name, 0, ATfalse));
 }
 
-ATerm App1(char *name, ATerm arg1)
+ATerm App1(const char *name, ATerm arg1)
 {
   return (ATerm) ATmakeAppl1(ATmakeSymbol(name, 1, ATfalse), arg1);
 }
 
-ATerm App2(char *name, ATerm arg1, ATerm arg2)
+ATerm App2(const char *name, ATerm arg1, ATerm arg2)
 {
   return (ATerm) ATmakeAppl2(ATmakeSymbol(name, 2, ATfalse), arg1, arg2);
 }
 
-ATerm App3(char *name, ATerm arg1, ATerm arg2, ATerm arg3)
+ATerm App3(const char *name, ATerm arg1, ATerm arg2, ATerm arg3)
 {
   return (ATerm) ATmakeAppl3(ATmakeSymbol(name, 3, ATfalse), arg1, arg2, arg3);
 }
 
-ATerm App4(char *name, ATerm arg1, ATerm arg2, ATerm arg3, ATerm arg4)
+ATerm App4(const char *name, ATerm arg1, ATerm arg2, ATerm arg3, ATerm arg4)
 {
   return (ATerm) ATmakeAppl4(ATmakeSymbol(name, 4, ATfalse), arg1, arg2, arg3, arg4);
 }
 
-ATerm App5(char *name, ATerm arg1, ATerm arg2, ATerm arg3, ATerm arg4, ATerm arg5)
+ATerm App5(const char *name, ATerm arg1, ATerm arg2, ATerm arg3, ATerm arg4, ATerm arg5)
 {
   return (ATerm) ATmakeAppl5(ATmakeSymbol(name, 5, ATfalse), arg1, arg2, arg3, arg4, arg5);
 }
 
-ATerm App6(char *name, ATerm arg1, ATerm arg2, ATerm arg3, ATerm arg4, ATerm arg5, ATerm arg6)
+ATerm App6(const char *name, ATerm arg1, ATerm arg2, ATerm arg3, ATerm arg4, ATerm arg5, ATerm arg6)
 {
   return (ATerm) ATmakeAppl6(ATmakeSymbol(name, 6, ATfalse), arg1, arg2, arg3, arg4, arg5, arg6);
 }
 
-ATerm AppN(char *name, ATermList args)
+ATerm AppN(const char *name, ATermList args)
 {
   return (ATerm) ATmakeApplList(ATmakeSymbol(name, ATgetLength(args), ATfalse), args);
 }

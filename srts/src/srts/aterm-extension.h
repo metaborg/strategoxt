@@ -41,7 +41,7 @@ USA
 #define ATisList(t) (ATgetType(t) == AT_LIST)
 
 #define AT_getInt(t)    (ATisInt(t) ? (((ATermInt)t)->value) : (int)_fail(t))
-#define AT_getString(t) (AT_isString(t) ? (ATgetName(ATgetSymbol(t))) : (char*)_fail(t))
+#define AT_getString(t) (AT_isString(t) ? ((const char*) ATgetName(ATgetSymbol(t))) : (char*)_fail(t))
 
 
 ATerm list_to_consnil(ATerm t);
@@ -57,25 +57,25 @@ ATerm list_cong(ATermList t, ATerm tl);
 
 #define MakeInt(n) ((ATerm)ATmakeInt(n))
 
-ATerm ATmakeString(char *name);
-ATerm ATmakeStringQ(char *name);
+ATerm ATmakeString(const char *name);
+ATerm ATmakeStringQ(const char *name);
 ATbool ATisString(ATerm t);
-ATbool ATisThisString(ATerm t, char *name);
+ATbool ATisThisString(ATerm t, const char *name);
 ATermList ATmap(ATermList l, ATerm (* f)(ATerm));
-ATbool AThasName(ATerm t, char *name);
+ATbool AThasName(ATerm t, const char *name);
 
 ATermList CheckATermList(ATerm t);
 
-ATerm App0(char *name);
-ATerm App1(char *name, ATerm arg1);
-ATerm App2(char *name, ATerm arg1, ATerm arg2);
-ATerm App3(char *name, ATerm arg1, ATerm arg2, ATerm arg3);
-ATerm App4(char *name, ATerm arg1, ATerm arg2, ATerm arg3, ATerm arg4);
-ATerm App5(char *name, ATerm arg1, ATerm arg2, ATerm arg3, ATerm arg4, ATerm arg5);
-ATerm App6(char *name, ATerm arg1, ATerm arg2, ATerm arg3, ATerm arg4, ATerm arg5, ATerm arg6);
-ATerm App7(char *name, ATerm arg1, ATerm arg2, ATerm arg3, ATerm arg4, ATerm arg5, ATerm arg6, ATerm arg7);
+ATerm App0(const char *name);
+ATerm App1(const char *name, ATerm arg1);
+ATerm App2(const char *name, ATerm arg1, ATerm arg2);
+ATerm App3(const char *name, ATerm arg1, ATerm arg2, ATerm arg3);
+ATerm App4(const char *name, ATerm arg1, ATerm arg2, ATerm arg3, ATerm arg4);
+ATerm App5(const char *name, ATerm arg1, ATerm arg2, ATerm arg3, ATerm arg4, ATerm arg5);
+ATerm App6(const char *name, ATerm arg1, ATerm arg2, ATerm arg3, ATerm arg4, ATerm arg5, ATerm arg6);
+ATerm App7(const char *name, ATerm arg1, ATerm arg2, ATerm arg3, ATerm arg4, ATerm arg5, ATerm arg6, ATerm arg7);
 
-ATerm AppN(char *name, ATermList args);
+ATerm AppN(const char *name, ATermList args);
 
 #endif
 

@@ -153,7 +153,7 @@ ATerm _allacc(ATerm f(ATerm, ATerm), ATerm acc, ATerm t)
           t = (ATerm) ATmakeApplArray(c, kids);
 	kids[0] = acc;
 	kids[1] = t;
-	t = ATmakeApplArray(sym__2, kids);
+	t = (ATerm) ATmakeApplArray(sym__2, kids);
       }
       break;
     case AT_LIST :

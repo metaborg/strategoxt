@@ -316,3 +316,4 @@ ATerm SSL_getchar(ATerm filename)
     }
   return NULL;
 }
+

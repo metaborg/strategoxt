@@ -157,7 +157,7 @@ ATerm SSL_strerror(ATerm errnum) {
 
 ATerm SSL_perror(ATerm msg) {
   if(ATisString(msg)) {
-    char* s = AT_getString(msg);
+    const char* s = AT_getString(msg);
     perror(s);
   } else {
     perror(NULL);
@@ -225,7 +225,7 @@ ATerm SSL_kill(ATerm pid, ATerm sig) {
   return (ATerm) ATmakeInt(result);
 }
 
-void execv_args(ATerm argv, char **str_args) {
+void execv_args(ATerm argv, const char *str_args[]) {
   int i = 0;
 
   /* remember to add first argument in Stratego part of the SSL */
@@ -252,54 +252,33 @@ void execv_args(ATerm argv, char **str_args) {
 }
 
 ATerm SSL_execv(ATerm file, ATerm argv) {
-  char *str_args[256];
+  const char *str_args[256];
   int result;
 
   execv_args(argv, str_args);
 
-  result = execv(AT_getString(file), str_args);
+  result = execv(AT_getString(file), (char *const *) str_args);
   return (ATerm) ATmakeInt(result);
 }
 
 ATerm SSL_execvp(ATerm file, ATerm argv) {
-  char *str_args[256];
-  int i = 0, res;
-  ATermList args = (ATermList) argv;
-  str_args[i++] = AT_getString(file);
+  const char *str_args[256];
+  int result;
 
-  while(!ATisEmpty(args)) {
-    ATerm arg;
-    if(i > 255) {
-      ATfprintf(stderr, "** ERROR in SSL_execvp: only 256 arguments are allowed.\n");
-      _fail((ATerm) ATempty);
-    }
+  str_args[0] = AT_getString(file);
+  execv_args(argv, &str_args[1]);
 
-    arg = ATgetFirst(args);
-    args = ATgetNext(args);
-
-    if(!ATisString(arg)) {
-      ATfprintf(stderr, "** ERROR in SSL_execvp: argument is not a string: %t \n", arg);
-      _fail((ATerm) ATempty);
-    }
-
-    str_args[i++] = AT_getString(arg);
-  }
-
-  str_args[i] = NULL;
-  res = execvp(AT_getString(file), str_args);
-  return (ATerm)ATmakeInt(res);
+  result = execvp(AT_getString(file), (char *const *) str_args);
+  return (ATerm)ATmakeInt(result);
 }
 
-ATerm SSL_waitpid(ATerm pid)
-{
+ATerm SSL_waitpid(ATerm pid) {
   int status;
-  //ATfprintf(stderr, "SSL_waitpid(%t)\n", pid);
   waitpid(AT_getInt(pid), &status, 0);
-  //ATfprintf(stderr, "SSL_waitpid(%t) waiting is over\n", pid);
   return App3("WaitStatus",
-	      (ATerm)ATmakeInt(WIFEXITED(status)   ? WEXITSTATUS(status) : -1),
-	      (ATerm)ATmakeInt(WIFSIGNALED(status) ? WTERMSIG(status) : -1),
-	      (ATerm)ATmakeInt(WIFSTOPPED(status)  ? WSTOPSIG(status) : -1));  
+    (ATerm)ATmakeInt(WIFEXITED(status)   ? WEXITSTATUS(status) : -1),
+    (ATerm)ATmakeInt(WIFSIGNALED(status) ? WTERMSIG(status) : -1),
+    (ATerm)ATmakeInt(WIFSTOPPED(status)  ? WSTOPSIG(status) : -1));
 }
 
 
@@ -356,7 +335,7 @@ int permission_from_term(ATerm term) {
  * access
  */
 ATerm SSL_access(ATerm path_term, ATerm perms_term) {
-  char* pathname  = AT_getString(path_term);
+  const char* pathname  = AT_getString(path_term);
   int amode = 0;
   int result = -1;
   ATermList todo;
@@ -451,7 +430,7 @@ ATerm SSL_mkstemp(ATerm template) {
   ATerm term_result;
   int fd;
 
-  char* str = AT_getString(template);
+  const char* str = AT_getString(template);
   /**
    * str is not allowed to be modified, so we copy it.
    */
@@ -566,7 +545,7 @@ ATerm SSL_fflush(ATerm stream_term) {
  */
 ATerm SSL_fputs(ATerm str_term, ATerm stream_term) {
   FILE* stream = stream_from_term(stream_term);
-  char* str = AT_getString(str_term);
+  const char* str = AT_getString(str_term);
 
   int result = fputs(str, stream);
   if(result == EOF) {
@@ -580,7 +559,7 @@ ATerm SSL_fputs(ATerm str_term, ATerm stream_term) {
  * puts
  */
 ATerm SSL_puts(ATerm str_term) {
-  char* str = AT_getString(str_term);
+  const char* str = AT_getString(str_term);
 
   int result = puts(str);
   if(result == EOF) {
@@ -653,7 +632,7 @@ ATerm SSL_read_term_from_stream(ATerm stream_term) {
 }
 
 ATerm SSL_read_term_from_string(ATerm str_term) {
-  char* str = AT_getString(str_term);
+  const char* str = AT_getString(str_term);
   ATerm result = ATreadFromString(str);
 
   if(result == NULL) {
@@ -683,13 +662,13 @@ ATerm SSL_write_term_to_string(ATerm term) {
  * String operations
  */
 ATerm SSL_strlen(ATerm str_term) {
-  char* str = AT_getString(str_term);
+  const char* str = AT_getString(str_term);
   return (ATerm) ATmakeInt(strlen(str));
 }
 
 ATerm SSL_strcat(ATerm str_term1, ATerm str_term2) {
-  char* str1 = AT_getString(str_term1);
-  char* str2 = AT_getString(str_term2);
+  const char* str1 = AT_getString(str_term1);
+  const char* str2 = AT_getString(str_term2);
   ATerm result_term;
 
   char* result = (char*) malloc(strlen(str1) + strlen(str2) + 2);
@@ -731,7 +710,7 @@ ATerm SSL_concat_strings(ATerm strings) {
 
   tail = (ATermList) strings;
   while(tail != ATempty) {
-    char* str = AT_getString(ATgetFirst(tail));
+    const char* str = AT_getString(ATgetFirst(tail));
     int length = strlen(str);
 
     memcpy(current, str, length);
