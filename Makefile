@@ -18,7 +18,7 @@ SHELL = /bin/sh
 srcdir = .
 top_srcdir = .
 
-prefix = /usr/local/build/Boot
+prefix = /home/mbravenb/opt/strategoxt/200304081426
 exec_prefix = ${prefix}
 
 bindir = ${exec_prefix}/bin
@@ -33,15 +33,15 @@ infodir = ${prefix}/info
 mandir = ${prefix}/man
 includedir = ${prefix}/include
 oldincludedir = /usr/include
-pkgdatadir = $(datadir)/StrategoXT
-pkglibdir = $(libdir)/StrategoXT
-pkgincludedir = $(includedir)/StrategoXT
+pkgdatadir = $(datadir)/strategoxt
+pkglibdir = $(libdir)/strategoxt
+pkgincludedir = $(includedir)/strategoxt
 top_builddir = .
 
-ACLOCAL = ${SHELL} /home/visser/res/StrategoXT/missing --run aclocal-1.6
-AUTOCONF = ${SHELL} /home/visser/res/StrategoXT/missing --run autoconf
-AUTOMAKE = ${SHELL} /home/visser/res/StrategoXT/missing --run automake-1.6
-AUTOHEADER = ${SHELL} /home/visser/res/StrategoXT/missing --run autoheader
+ACLOCAL = ${SHELL} /home/mbravenb/svn-wc/StrategoXT/trunk/StrategoXT/missing --run aclocal-1.6
+AUTOCONF = ${SHELL} /home/mbravenb/svn-wc/StrategoXT/trunk/StrategoXT/missing --run autoconf
+AUTOMAKE = ${SHELL} /home/mbravenb/svn-wc/StrategoXT/trunk/StrategoXT/missing --run automake-1.6
+AUTOHEADER = ${SHELL} /home/mbravenb/svn-wc/StrategoXT/trunk/StrategoXT/missing --run autoheader
 
 am__cd = CDPATH="$${ZSH_VERSION+.}$(PATH_SEPARATOR)" && cd
 INSTALL = /usr/bin/install -c
@@ -63,30 +63,31 @@ POST_UNINSTALL = :
 EXEEXT = @EXEEXT@
 OBJEXT = @OBJEXT@
 PATH_SEPARATOR = :
-AMTAR = ${SHELL} /home/visser/res/StrategoXT/missing --run tar
-ATERM = /usr/local/build/ATerm
+AMTAR = ${SHELL} /home/mbravenb/svn-wc/StrategoXT/trunk/StrategoXT/missing --run tar
+ATERM = /usr
 AWK = gawk
 CPL = 
 DEPDIR = @DEPDIR@
 EXE = 
 INSTALL_STRIP_PROGRAM = ${SHELL} $(install_sh) -c -s
-PACKAGE = StrategoXT
-PGEN = /usr/local/build/SDF2
-PKGS = autoxt srts xtc sdf-import sc ssl box-tools cgen c-tools stratego-front asfix-tools aterm-tools graph-tools sdf-tools dot-tools stratego-tools xt boxenv
-REPOSITORY = /usr/local/build/Boot/share/StrategoXT/XTC
-SDF = /usr/local/build/SDF2
-SGLR = /usr/local/build/SDF2
+LATEX = /usr
+PACKAGE = strategoxt
+PGEN = /usr
+PKGS = autoxt srts xtc sdf-import sc ssl gpp c-tools stratego-front asfix-tools aterm-tools graph-tools sdf-tools dot-tools stratego-tools xt boxenv
+REPOSITORY = /home/mbravenb/opt/strategoxt/200304081426/share/StrategoXT/XTC
+SDF = /usr
+SGLR = /usr
 STRIP = 
-VERSION = 0.9beta10
-XTC = /usr/local/build/Boot
+VERSION = 0.9
+XTC = /home/mbravenb/opt/strategoxt/200304081426
 am__include = @am__include@
 am__quote = @am__quote@
-install_sh = /home/visser/res/StrategoXT/install-sh
+install_sh = /home/mbravenb/svn-wc/StrategoXT/trunk/StrategoXT/install-sh
 EXTRA_DIST = $(EXTRA_FILES)
 
 EXTRA_FILES = README README.in bootstrap acinclude.m4 StrategoXT.spec
 
-SUBDIRS = emacs $(PKGS)
+SUBDIRS = $(PKGS)
 
 WWWSTRATEGO = sunshine.cs.uu.nl:/users/ftp/stratego/StrategoXT
 subdir = .
@@ -433,12 +434,12 @@ all: install
 rpm : dist
 	rpmbuild -ta $(PACKAGE)-$(VERSION).tar.gz
 
-check clean install uninstall:
-	PATH=$(bindir):$${PATH}; export PATH ;\
-	ulimit -s 20000 ;\
-	for subdir in $(SUBDIRS); do \
-	   ( cd $$subdir && $(MAKE) $@ ) || exit 1 ;\
-	done
+# check clean install uninstall:
+#	PATH=$(bindir):$${PATH}; export PATH ;\
+#	ulimit -s 20000 ;\
+#	for subdir in $(SUBDIRS); do \
+#	   ( cd $$subdir && $(MAKE) $@ ) || exit 1 ;\
+#	done
 
 package-dist :
 	PATH=$(bindir):$${PATH}; export PATH ;\
@@ -463,28 +464,7 @@ install-%: %
 	done
 
 upload:
-	scp *.tar.gz */*.tar.gz $(WWWSTRATEGO)
-
-upload-stratego:
 	scp StrategoXT-$(VERSION).tar.gz $(WWWSTRATEGO)
-
-upload-srts:
-	scp srts/srts-*.tar.gz $(WWWSTRATEGO)
-
-upload-sc-boot:
-	scp sc-boot/sc-boot-*.tar.gz $(WWWSTRATEGO)
-
-upload-gpp-boot:
-	scp gpp-boot/gpp-boot-*.tar.gz $(WWWSTRATEGO)
-
-upload-sc:
-	scp sc/sc-*.tar.gz $(WWWSTRATEGO)
-
-upload-ssl:
-	scp ssl/ssl-*.tar.gz $(WWWSTRATEGO)
-
-upload-stratego-front:
-	scp stratego-front/stratego-front-*.tar.gz $(WWWSTRATEGO)
 
 bootclean :
 	@for dir in $(PKGS); do \

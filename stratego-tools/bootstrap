@@ -24,8 +24,6 @@
 
 rm -f config.cache acconfig.h aclocal.m4
 
-#./genconf.sh $* package.conf
-
 autoxt
 aclocal -I .
 autoconf
