@@ -1,3 +1,14 @@
+2001-11-21  Eelco Visser  <visser@acm.org>
+
+	* spec/syn/stratego.lx: tenative support for line counting without
+	comments of Stratego modules. Commented out
+
+	* configure.in: quoted $prefix with '' to include literally.
+
+	* spec/front/desugar.r, sig/sugar.r, test1/test20.r: Added support
+	for build split, i.e., write !(<f>,<g>) instead of split(f,g) and
+	similarly for arbitrary patterns (RootApp).
+
 2001-11-16  Merijn de Jonge <mdejonge@cwi.nl>
 	* spec/test1/test18.r: Repaired according to string bug fix
 	* sc/spec/syn/syntax-test.trm: removed generated file

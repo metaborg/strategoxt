@@ -21,35 +21,36 @@ AM_INIT_AUTOMAKE(sc,0.6.3)
 AC_ARG_WITH(cgen,    
   [  --with-cgen      Specify location of CGEN library, default: \$prefix], 
   CGEN=$withval, 
-  CGEN="$prefix"
+  CGEN='$prefix'
 )
 AC_SUBST(CGEN)
 
-#AC_ARG_WITH(cpl,    
-#   [  --with-cpl       Specify location of choice point library, default: \$prefix], 
-#   CPL=$withval, 
-#   CPL="$prefix"
-#)
-#AC_SUBST(CPL)
 
 AC_ARG_WITH(aterm,   
   [  --with-aterm     Specify location of aterm library, default: \$prefix], 
   ATERM=$withval, 
-  ATERM="$prefix"
+  ATERM='$prefix'
 )
 AC_SUBST(ATERM)
 
 AC_ARG_WITH(gpp,     
   [  --with-gpp       Specify location of gpp, default: \$prefix], 
   GPP=$withval, 
-  GPP="$prefix"
+  GPP='$prefix'
+)
+AC_SUBST(GPP)
+
+AC_ARG_WITH(gpp-boot,     
+  [  --with-gpp-boot  Specify location of gpp, default: \$prefix], 
+  GPP=$withval, 
+  GPP="$GPP"
 )
 AC_SUBST(GPP)
 
 AC_ARG_WITH(boot,    
   [  --with-boot      Specify Stratego Compiler to use in bootstrapping, default: \$prefix], 
   STRATEGOBOOT=$withval, 
-  STRATEGOBOOT="$prefix")
+  STRATEGOBOOT='$prefix')
 AC_SUBST(STRATEGOBOOT)
 
 AC_ARG_WITH(sc-boot, 
@@ -62,18 +63,18 @@ AC_SUBST(SCBOOT)
 AC_ARG_WITH(ssl,     
   [  --with-ssl       Specify location of Stratego Library , default: \$prefix], 
   STRATEGOLIB=$withval, 
-  STRATEGOLIB="$prefix"
+  STRATEGOLIB='$prefix'
 )
 AC_SUBST(STRATEGOLIB)
 
 AC_ARG_WITH(srts,    
   [  --with-srts      Specify location of Stratego Run-time System, default: \$prefix], 
   STRATEGORTS=$withval, 
-  STRATEGORTS="$prefix"
+  STRATEGORTS='$prefix'
 )
 AC_SUBST(STRATEGORTS)
 
-AC_REVISION($Id: configure.in,v 1.10 2001/10/10 14:54:11 visser Exp $)
+AC_REVISION($Id: configure.in,v 1.11 2001/11/21 15:21:47 stratego Exp $)
 
 AC_PROG_CC
 AC_PROG_RANLIB
