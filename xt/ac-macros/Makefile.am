@@ -1,5 +1,3 @@
-#!/bin/sh
-#
 # Copyright (C) 2001 Merijn de Jonge <mdejonge@cwi.nl>
 #                    Eelco Visser <visser@acm.org>
 #                    Joost Visser <jvisser@cwi.nl>
@@ -19,15 +17,4 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: reconf,v 1.4 2001/06/08 16:08:57 mdejonge Exp $
-
-rm -f config.cache
-rm -f acconfig.h
-
-./genconf.sh $* package.conf
-
-aclocal -I ./ac-macros
-autoconf
-#acconfig
-autoheader
-automake -a
+EXTRA_DIST = $(wildcard *.m4)

@@ -1,4 +1,3 @@
-# XT -- Program Transformation Tools
 # Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
 #                    Eelco Visser <visser@acm.org>
 #                    Joost Visser <jvisser@cwi.nl>
@@ -18,18 +17,30 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: pkg-list,v 1.65 2001/05/30 15:45:32 mdejonge Exp $
+# $Id: Makefile.am,v 1.1 2001/06/08 16:09:13 mdejonge Exp $
 
-# This file lists name, version, and location of all components 
-# of an XT distribution.
+# Always include general make rules
+include $(srcdir)/../templates/make_rules
 
-aterm,1.5.3,http://www.cwi.nl/projects/MetaEnv/aterm/
-asfix,0.2.2,http://www.cwi.nl/projects/MetaEnv/asfix/
-asc-support,0.4,http://www.cwi.nl/projects/MetaEnv/asc-runtime/
-pgen,0.6,http://www.cwi.nl/projects/MetaEnv/pgen/
-sglr,3.0,http://www.cwi.nl/projects/MetaEnv/sglr/
-stratego,0.5.3,http://www.stratego-language.org/ftp/
-gb,*,cvs:ssh.cwi.nl:/ufs/gipe/CVS
-gt,*,cvs:ssh.cwi.nl:/ufs/gipe/CVS
-gpp,1.33,http://www.cwi.nl/~mdejonge/gpp/download/
-JJForester,0.5,http://www.cwi.nl/~jvisser/jjforester
+# define any subdir here
+SUBDIRS      = data
+
+# What scipts to build
+bin_SCRIPTS  = parse
+
+# Tests to run
+# TESTS        = program-check
+
+# List all extra files that should be distributed here
+EXTRA_DIST   = parse.sh.src
+
+# What extra files should be cleaned
+CLEANFILES   = parse
+
+% : %.sh.src Makefile
+	sed 's@__ASFIXTOOLS__@$(ASFIXTOOLSGB)@g;\
+	     s@__PREFIX__@$(prefix)@g;\
+	     s@__SGLR__@$(SGLR)@g'\
+	     < $< > $@ && chmod +x $@
+
+

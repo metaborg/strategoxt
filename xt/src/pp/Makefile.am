@@ -1,6 +1,4 @@
-#!/bin/sh
-#
-# Copyright (C) 2001 Merijn de Jonge <mdejonge@cwi.nl>
+# Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
 #                    Eelco Visser <visser@acm.org>
 #                    Joost Visser <jvisser@cwi.nl>
 #
@@ -19,15 +17,29 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: reconf,v 1.4 2001/06/08 16:08:57 mdejonge Exp $
+# $Id: Makefile.am,v 1.1 2001/06/08 16:09:16 mdejonge Exp $
 
-rm -f config.cache
-rm -f acconfig.h
+# Always include general make rules
+include $(srcdir)/../templates/make_rules
 
-./genconf.sh $* package.conf
+# define any subdir here
+SUBDIRS      = data
 
-aclocal -I ./ac-macros
-autoconf
-#acconfig
-autoheader
-automake -a
+# What scipts to build
+bin_SCRIPTS  = pp
+
+# Tests to run
+# TESTS        = program-check
+
+# List all extra files that should be distributed here
+EXTRA_DIST   = pp.sh.src
+
+# What extra files should be cleaned
+CLEANFILES   = pp
+
+% : %.sh.src Makefile
+	sed 's@__GPP__@$(GPP)@g;\
+	     s@__PREFIX__@$(prefix)@g'\
+	     < $< > $@ && chmod +x $@
+
+

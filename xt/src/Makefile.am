@@ -1,8 +1,4 @@
-#!/bin/sh
-#
-# Copyright (C) 2001 Merijn de Jonge <mdejonge@cwi.nl>
-#                    Eelco Visser <visser@acm.org>
-#                    Joost Visser <jvisser@cwi.nl>
+# Copyright (C) 2000 Author's name <em@il>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,15 +15,9 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: reconf,v 1.4 2001/06/08 16:08:57 mdejonge Exp $
+# $Id: Makefile.am,v 1.1 2001/06/08 16:09:04 mdejonge Exp $
 
-rm -f config.cache
-rm -f acconfig.h
+SUBDIRS = @TOOLS@
 
-./genconf.sh $* package.conf
+DIST_SUBDIRS = templates @RELEASED@
 
-aclocal -I ./ac-macros
-autoconf
-#acconfig
-autoheader
-automake -a

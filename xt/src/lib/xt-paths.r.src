@@ -1,0 +1,21 @@
+\literate[xt-paths]
+
+	This module provides the basic path names for the XT packages
+
+\begin{code}
+module xt-paths
+overlays
+
+  ATERMTOOLS      = "__ATERMTOOLS__"
+  ASFIXTOOLS      = "__ASFIXTOOLS__"
+  GRAPHTOOLS      = "__GRAPHTOOLS__"
+  SDFTOOLS        = "__SDFTOOLS__"
+  STRATEGOTOOLS   = "__STRATEGOTOOLS__"
+  GRAMMARRECOVERY = "__GRAMMARRECOVERY__"
+  GB              = "__GB__"
+  SGLR            = "__SGLR__"
+  GPP             = "__GPP__"
+  PGEN            = "__PGEN__"
+  STRATEGO        = "__STRATEGO__"
+  XT              = "__XT__"
+\end{code}

@@ -1,0 +1,140 @@
+#! /bin/sh
+#
+# GT -- Grammar Tools
+# Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
+#                    Eelco Visser <visser@acm.org>
+#                    Joost Visser <jvisser@cwi.nl>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+# $Id: pp.sh.src,v 1.1 2001/06/08 16:09:16 mdejonge Exp $
+
+
+# pp -- pretty-print tool
+#
+# usage:
+#    pp [-a] [-A] [-O format] [-v version] [-h] [-i file] [-o file] -l name
+#    parse -L
+#
+# where
+#    -A          Input is parse tree (default is text)
+#    -a          Input is abstract syntax tree (default is text)
+#    -v number   Denotes the version of the language to use (e.g. 2.1)
+#    -h          Displays usage information
+#    -i file     Input is read from file (defaults to standard input)
+#    -l name      Pretty-print term over language "name"
+#    -L          List available grammars in the grammar base
+#    -o file     Output is written to file (defaults to standard output)
+#    -O format   Produc output in text, latex, or html format
+
+PREFIX=__PREFIX__
+GPP=__GPP__
+
+
+PATH=${PREFIX}/bin:${GPP}/bin:${PATH}
+
+
+LANGUAGE=
+LANG_VERSION=
+INPUT_TYPE=text
+OUTPUT_TYPE=text
+
+
+# display usage information
+usage ()
+{
+   cat <<ENDCAT
+pp -- pretty-print tool
+
+usage:
+   pp [-a] [-A] [-O format] [-v version] [-h] [-i file] [-o file] -l name
+   pp -L
+
+where
+   -A          Input is parse tree (default is text)
+   -a          Input is abstract syntax tree (default is text)
+   -v number   Denotes the version of the language to use (e.g. 2.1)
+   -h          Displays usage information
+   -i file     Input is read from file (defaults to standard input)
+   -l name     Pretty-print term over language "name"
+   -L          List available grammars in the grammar base
+   -o file     Output is written to file (defaults to standard output)
+   -O format   Produc output in text, latex, or html format
+ENDCAT
+}
+
+# parse command line options
+for arg in $*
+do
+   case $1 in
+      -a ) INPUT_TYPE=ast; shift ;;
+      -A ) INPUT_TYPE=pt; shift ;;
+      -v ) LANG_VERSION="-v $2";  shift ; shift ;;
+      -h ) usage; exit 0 ;;
+      -i ) INPUT="-i $2"; shift; shift ;;
+      -o ) OUTPUT="-o $2"; shift; shift ;;
+      -O ) OUTPUT_TYPE=$2; shift; shift ;;
+      -l ) LANGUAGE="-l $2"; shift ; shift ;;
+      -L ) gbquery -L; exit 0 ;;
+      -* ) echo "Invalid option $1" >&2; exit 1 ;;
+   esac
+done
+
+# Check whether language has been specified with the `-l' option. Exit if
+# not.
+if [ "a${LANGUAGE}" = "a" ]; then
+   echo "Use -l option to specify a language." >&2
+   exit 1
+fi
+
+table=`gbquery -pp ${LANGUAGE} ${VERSION}` || exit 1
+
+# Construct the pretty-print command depending on specific command line
+# options
+if [ "a${INPUT_TYPE}" = "atext" ]; then
+   if [ "a${LANG_VERSION}" != 'a*' ]; then
+      LV="-v ${LANG_VERSION}"
+   fi
+   exec sh -c "parse -l ${LANGUAGE} ${LV} ${INPUT} | pp -l ${LANGUAGE} ${LV} -O ${OUTPUT_TYPE} -A ${OUTPUT}"
+
+
+elif [ "a${INPUT_TYPE}" = "aast" ]; then
+   pp_cmd="ast2abox -p ${table}"
+elif [ "a${INPUT_TYPE}" = "apt" ]; then
+   pp_cmd="asfix2abox -p ${table}"
+fi
+
+# -i option has been specified
+if [ "a${INPUT}" != "a" ]; then
+   pp_cmd="${pp_cmd} ${INPUT}"
+fi
+
+# handle -O switch
+case ${OUTPUT_TYPE} in
+   text ) backend="abox2text" ;;
+   latex ) backend="abox2latex" ;;
+   html )  backend="abox2html" ;;
+esac
+
+pp_cmd="$pp_cmd | ${backend}"
+
+# -o option has been specified
+if [ "a${OUTPUT}" != "a" ]; then
+   pp_cmd="${pp_cmd} ${OUTPUT}"
+fi
+
+# Finally, evaluate the pp command, and we're done
+eval $pp_cmd

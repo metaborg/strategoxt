@@ -1,6 +1,5 @@
-#!/bin/sh
-#
-# Copyright (C) 2001 Merijn de Jonge <mdejonge@cwi.nl>
+# GT -- Grammar Tools
+# Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
 #                    Eelco Visser <visser@acm.org>
 #                    Joost Visser <jvisser@cwi.nl>
 #
@@ -19,15 +18,18 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: reconf,v 1.4 2001/06/08 16:08:57 mdejonge Exp $
+# $Id: make_rules.stratego,v 1.1 2001/06/08 16:09:19 mdejonge Exp $
 
-rm -f config.cache
-rm -f acconfig.h
+SC = PATH=$(STRATEGO)/bin:$${PATH} sc
 
-./genconf.sh $* package.conf
+EXTRA_DIST   += $(STRATEGO_PRG:%=%.r)
 
-aclocal -I ./ac-macros
-autoconf
-#acconfig
-autoheader
-automake -a
+CLEANFILES   += $(STRATEGO_PRG) $(STRATEGO_PRG:%=%.c) $(STRATEGO_PRG:%=%.dep)
+
+SCFLAGS       = -I $(srcdir) -I .
+
+% : %.r
+	$(SC) $(SCFLAGS) -i $< -o $@
+
+%.dep :
+	touch $@
