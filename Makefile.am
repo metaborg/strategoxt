@@ -9,6 +9,11 @@ $(BUILD_SRTS_DEST)/srts.dummy :
 	cd srts && \
 	$(MAKE) $(AM_MAKEFLAGS) && \
 	$(MAKE) $(AM_MAKEFLAGS) DESTDIR=$(BUILD_SRTS_DEST) install && \
+	$(MAKE) $(AM_MAKEFLAGS) DESTDIR=$(BUILD_SRTS_DEST) install && \
+	cp -fp   libraries/*.la  $(BUILD_SRTS_DEST)/$(prefix)/lib/srts/ && \
+	cp -LRfp libraries/.libs $(BUILD_SRTS_DEST)/$(prefix)/lib/srts/ && \
+	cp -fp   ssl/*.la  $(BUILD_SRTS_DEST)/$(prefix)/lib/srts/ && \
+	cp -LRfp ssl/.libs $(BUILD_SRTS_DEST)/$(prefix)/lib/srts/ && \
 	touch $(BUILD_SRTS_DEST)/srts.dummy
 
 $(INSTALL_XTC_DEST)/xtc.dummy :
