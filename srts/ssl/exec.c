@@ -46,7 +46,7 @@ FILE* stream_from_term(ATerm stream) {
   if(ATisBlob(stream)) {
     return stream_from_term_strict(stream);
   } else {
-    ATfprintf(stderr, "** Warning -- using deprecated stream representation: %t .\n", stream);
+    // ATfprintf(stderr, "** Warning -- using deprecated stream representation: %t .\n", stream);
     return stream_from_term_transitional(stream);
   }
 }
@@ -85,6 +85,10 @@ FILE* stream_from_term_strict(ATerm term) {
  * Converts a FILE* the a representation in an ATerm.
  */
 ATerm stream_to_term(FILE* stream) {
+  return (ATerm) ATmakeInt((int)stream);
+  // TODO: using an Int for now because Blobs are causing weird problems.
+
+/*
   FILE **onheap = (FILE**) malloc(sizeof(FILE*));
   // TODO: free allocated space with Blob destructor?
 
@@ -95,6 +99,7 @@ ATerm stream_to_term(FILE* stream) {
 
   *onheap = stream;
   return ATmake("<blob>", sizeof(FILE*), *onheap);
+*/
 }
 
 /**
