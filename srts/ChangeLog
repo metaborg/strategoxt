@@ -1,3 +1,15 @@
+2002-03-07  Eelco Visser  <visser@acm.org>
+
+	* src/aterm-extension.c (ATmap): Explicitly order evaluation of
+	arguments to ensure that application to head element is done
+	before tail of the list. Apparently argument evaluation is
+	compiler/platform dependent in C.
+
+2002-02-12  Eelco Visser  <visser@acm.org>
+
+	* src/stratego.c: Extended the traversal operators to preserve
+	annotations.
+
 2002-01-26  Eelco Visser  <visser@acm.org>
 
 	* src/stratego.c (_bagof): Replaced call to fail() by call to
