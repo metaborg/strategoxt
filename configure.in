@@ -77,8 +77,7 @@ AC_ARG_ENABLE(exe,
 )
 AC_SUBST(EXE)
 
-AC_CHECK_PROG(RPMBUILD, rpmbuild, rpmbuild)
-AC_CHECK_PROG(RPMBUILD, rpm, rpm)
+AC_CHECK_PROGS(RPMBUILD, rpmbuild rpm)
 
 AC_SUBST(RPMBUILD)
 
