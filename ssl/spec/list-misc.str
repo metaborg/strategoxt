@@ -85,6 +85,17 @@ strategies
 
   drop(isn) = 
     nzip0(id); drop-until((isn,id)); map(Snd)
+
+  /** 
+   * flatten-list completely flattens a list.
+   * See list-misc-test for examples.
+   * 
+   * type in = a or [in]
+   * flatten-list :: in -> [a]
+   */
+  flatten-list =
+    foldr(![], (is-list, id) < conc-two-lists + MkCons, is-list < flatten-list + id)
+
 \end{code}
 
 % Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>

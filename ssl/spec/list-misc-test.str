@@ -10,7 +10,8 @@ strategies
     test-suite(!"list-misc-test",
 	test1;
 	copy-test;
-	number-test
+	number-test;
+  flatten-test
     )
 
   test1 =
@@ -37,6 +38,32 @@ strategies
 	, !["a", "b", "c", "d"]
 	, ![("a",0),("b",1),("c",2),("d",3)]
 	)
+
+  flatten-test =
+      apply-test(!"flatten-test 1", flatten-list
+      , !["a",["b",["c","d"]],"e"]
+      , !["a","b","c","d","e"]
+      )
+    ; apply-test(!"flatten-test 2", flatten-list
+      , !["a",["b",[]],"e"]
+      , !["a","b", "e"]
+      )
+    ; apply-test(!"flatten-test 3", flatten-list
+      , ![]
+      , ![]
+      )
+    ; apply-test(!"flatten-test 4", flatten-list
+      , ![[]]
+      , ![]
+      )
+    ; apply-test(!"flatten-test 5", flatten-list
+      , !["a", "b", "c"]
+      , !["a", "b", "c"]
+      )
+    ; apply-test(!"flatten-test 5", flatten-list
+      , !["a", [("b", [1, 2]), "d"], "c"]
+      , !["a", ("b", [1, 2]), "d", "c"]
+      )
 
 \end{code}
 

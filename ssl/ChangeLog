@@ -1,3 +1,23 @@
+2003-01-09  Martin Bravenboer <martin@mbravenboer.org>
+
+  * spec/list-misc.str: introduced flatten-list. flatten-list
+    completely flattens a list. See list-misc-test for  
+    examples.
+
+2003-01-07  Martin Bravenboer <martin@mbravenboer.org>
+
+  * spec/conditional.str:
+
+  - Introduced maybe/1. Maybe will apply specified strategy
+    s. If s suceeds it will produce a Some with the result of
+    s. Otherwise the result will be None. This is a bridge
+    from the fail approach of Stratego to the Maybe approach
+    of Haskell.
+
+  - Introduced maybe/2. If the current term is Some(a) s1 will 
+    be applied to a. Otherwise s2 will be applied to the
+    empty tuple.
+    
 2003-01-04  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/iteration.str: don't define repeat/1 in terms of repeat/2
