@@ -148,7 +148,7 @@ strategies
    *
    * @since 0.9.5
    */
-  is-whitespace = test(<elem> (<id>, ['\t', ' ']))
+  is-whitespace = test('\t' + ' ')
 
   /**
    * Trims all trailing whitespace in a (single-line) string.
