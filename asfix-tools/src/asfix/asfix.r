@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: asfix.r,v 1.1 2001/05/30 15:19:00 mdejonge Exp $
+% $Id: asfix.r,v 1.2 2002/03/13 21:50:35 eelco Exp $
 
 
 	Abstract syntax for parse tree representation of SDF2 parsers.
@@ -42,6 +42,7 @@ signature
     alt           : Sort * Sort -> Sort
     char-class    : Char-Class -> Sort
     sort          : String -> Sort
+    varsym        : Sort -> Sort
 \end{code}
 
 \begin{code}
@@ -56,10 +57,11 @@ signature
 \begin{code}
   sorts Prod AsFixTerm
   constructors
-    prod    : List(Sort) * Sort * List(Attribute) -> Prod
-    appl    : Prod * List(AsFixTerm) -> AsFixTerm
-    amb     : List(AsFixTerm) -> AsFixTerm
-    flatlex : Sort * String -> AsFixTerm
+    prod     : List(Sort) * Sort * List(Attribute) -> Prod
+    appl     : Prod * List(AsFixTerm) -> AsFixTerm
+    amb      : List(AsFixTerm) -> AsFixTerm
+    flatlex  : Sort * String -> AsFixTerm
+    meta-var : String -> AsFixTerm
 \end{code}
 
 	Note: integers are also AsFixTerms

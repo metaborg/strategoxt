@@ -1,6 +1,7 @@
 \literate[{\tt IMPLODE-ASFIX}]
 % GT -- Grammar Tools
-% Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
+% Copyright (C) 2000-2002 
+%                    Merijn de Jonge <mdejonge@cwi.nl>
 %                    Eelco Visser <visser@acm.org>
 %                    Joost Visser <jvisser@cwi.nl>
 %
@@ -18,9 +19,6 @@
 % along with this program; if not, write to the Free Software
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
-
-% $Id: implode-asfix.r,v 1.6 2002/01/18 13:42:56 daybuild Exp $
-
 
 	This module defines a transformation from AsFix terms produced
 	by the SDF2 parser to abstract syntax terms. The
@@ -84,9 +82,9 @@ strategies
        try((option-defined(FlatLex),      flat-lex));
        try((option-defined(RemoveLayout), remove-layout));
        try((option-defined(FlatList),     flat-list));
+       try((option-defined(RemoveLit),    remove-lit));
        try((option-defined(FlatInj),      flat-injections));
        try((option-defined(FlatAlt),      flat-alt));
-       try((option-defined(RemoveLit),    remove-lit));
        try((option-defined(ReplaceAppl),  replace-appl));
        try((option-defined(RemoveSeq),    remove-seq));
        try((option-defined(RemovePT),     remove-pt));
@@ -215,8 +213,9 @@ strategies
   yield = rec x((appl(id, map(x)); Kids) <+ Kids'); implode-string
 
   implode-lexical = 
-      appl(prod([lex(id)],cf(id),id), id); yield
-    + appl(prod(id,lit(id),id),id);yield=> l;!lit(l)
+      ?appl(prod([lex(_)],cf(_),_), _); yield
+    + ?appl(prod(_,lit(_),_),_); !lit(<yield>)
+    + ?appl(prod(_,varsym(_),_),_); debug(!"a: "); !meta-var(<yield>); debug(!"b: ")
 \end{code}
 
 	\paragraph{Layout}
@@ -357,6 +356,8 @@ strategies
                   ,injective-alt
                   ,not(oncetd(cons(id))))
 
+  injection = prod([varsym(id)],id,not(oncetd(cons(id))))
+
   injective-alt = 
     rec x(sort(id) + cf(x) + alt(x,x))
 
@@ -371,12 +372,10 @@ rules
 \begin{code}
 rules
 
-  MkTCons : (x, xs) -> TCons(x, xs)
-
   Tuple : appl(prod(_, cf(seq(_)), _), args) ->
-	  <foldr(!TNil, MkTCons)> args
+	  "" # (args)
   Tuple : appl(prod(_, seq(_), _), args) ->
-	  <foldr(!TNil, MkTCons)> args
+	  "" # (args)          
 \end{code}
 	
 	\paragraph{Conc to Cons}
@@ -391,25 +390,24 @@ rules
 rules
 
   CTC0 : Snoc(x, y) -> Conc(x, Ins(y))
-  CTC0 : Cons(x, y) -> Conc(Ins(x), y)
+  CTC0 : [x | y] -> Conc(Ins(x), y)
 
   CTC1 : Conc(Conc(x, y), z) -> Conc(x, Conc(y, z))
-
 
   CTC1 : Conc( Conc( a, b, c ), d, e) ->
          Conc( a, b, Conc( c, d, e ) )
   CTC2 : Conc( x, y, z ) -> <concat>[x,[y],z]
 
-  CTC1 : Conc(Nil, x) -> x
-  CTC1 : Conc(x, Nil) -> x
+  CTC1 : Conc([], x) -> x
+  CTC1 : Conc(x, []) -> x
 
-  CTC2 : Conc(Ins(x), Nil) -> Cons(x, Nil)
-  CTC2 : Conc(Ins(x), Ins(y)) -> Cons(x, Cons(y, Nil))
-  CTC2 : Conc(Ins(x), Cons(y, z)) -> Cons(x, Cons(y, z))
+  CTC2 : Conc(Ins(x), []) -> [x]
+  CTC2 : Conc(Ins(x), Ins(y)) -> [x, y]
+  CTC2 : Conc(Ins(x), [y | z]) -> [x, y | z]
 
-  CTC3 : Ins(x) -> Cons(x, Nil)
+  CTC3 : Ins(x) -> [x]
 
-  CTC4 : Conc(Cons(x, y), z) -> Cons(x, Conc(y, z))
+  CTC4 : Conc([x | y], z) -> Conc(Ins(x), Conc(y, z))
 
 signature
   constructors
