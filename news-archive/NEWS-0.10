@@ -224,3 +224,50 @@ the old compiler implementation.
 
 We advice to test compiling your programs with =--dr new= since future
 releases of the Stratego compiler will have this flag switched on by default.
+
+  (Arthur van Dam, Eelco Visser, Karina Olmos and Martin Bravenboer)
+
+---------++ If then else and switch operators
+
+Sometimes more wordy language constructs make the code more easy to
+read.
+
+Not declared as keywords
+
+Example/Semantics of if
+
+Example/Semantics of switch
+
+  (Arthur van Dam and Martin Bravenboer)
+
+---------++ Stratego Regular
+
+Signature generation
+
+
+Generate just one signature file.
+
+Declare SDF2RTG_FLAGS
+
+  (Martin Bravenboer)
+
+---------++ Upgrade of SDF tools
+
+Removed two versions SDF. Only the most recently released one is
+available now (PGEN 2.0)
+
+ppgen, sdf-cons, pack-sdf, 
+
+  (Martin Bravenboer and Valentin David)
+
+---------++ Support for Cygwin and Mac OS X
+
+Cygwin in buildfarm.
+
+  (Martin Bravenboer)
+
+Mac OS X reported to work.
+
+---------++ Many bug fixes and minor improvements
+
+List of all issues is available online.
