@@ -1,4 +1,4 @@
-ACLOCAL_AMFLAGS = -I .
+ACLOCAL_AMFLAGS = -I config
 
 SUBDIRS      = . news-archive $(PKGS)
 DIST_SUBDIRS = news-archive $(DIST_PKGS)

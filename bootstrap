@@ -30,7 +30,7 @@ echo "bootstrap: using autoxt at $AUTOXT"
 
 # Apply the autotools
 $AUTOXT || exit 1
-cp ./autoxt.m4 ./config/  || exit 1
+mv ./autoxt.m4 ./config/  || exit 1
 autoreconf -ifv  || exit 1
 
 # Bootstrap the subpackages
