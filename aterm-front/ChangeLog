@@ -1,7 +1,18 @@
+2004-05-30   Martin Bravenboer <martin@cs.uu.nl>
+
+	* syn/Makefile.am: ATerm syntax definition is now directly
+	obtained from the ASF Library. There is no longer an ATerm syntax
+	definition in our Subversion repository. Note that the ATerm SDF
+	modules are no longer installed. Instead, use the ASF Library or
+	use the .def that is still installed with the new -Idef flag of
+	pack-sdf.
+	
 2004-02-22   Merijn de Jonge  <mdejonge@cs.uu.nl>
-   * Makefile.am: added autoxt.m4 to EXTRA_DIST
-   * Makefile.am: added line: ACLOCAL_AMFLAGS = -I . such that autoreconf
-     can find autoxt.m4
+
+	* Makefile.am: added autoxt.m4 to EXTRA_DIST
+
+	* Makefile.am: added line: ACLOCAL_AMFLAGS = -I . such that
+	autoreconf can find autoxt.m4
 
 2004-02-15  Martin Bravenboer <martin@cs.uu.nl>
 
