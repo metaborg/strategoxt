@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.4 2001/08/16 21:21:35 jvisser Exp $
+# $Id: Makefile.am,v 1.5 2001/08/20 14:29:35 jvisser Exp $
 
 include $(srcdir)/../templates/make_rules
 include $(srcdir)/../templates/make_rules.stratego
@@ -35,10 +35,14 @@ bin_SCRIPTS  = $(STRATEGO_PRG)
 
 pkgdata_DATA = sdf-de-normalize.r
 
-TESTS        = sdf_normalize_check \
-	       sdf_denormalize_check
+TESTS        = sdf_normalize_check\
+	       sdf_denormalize_check\
+	       sdf_denormalize_cons_check
 
-CLEAN_FILES += sdf_normalize_check sdf_denormalize_check
+CLEAN_FILES +=\
+	sdf_normalize_check\
+	sdf_denormalize_check\
+	sdf_denormalize_cons_check
 
 SCFLAGS     += -I $(srcdir)/../lib \
 	       -I $(srcdir)/../sdf-bracket \
@@ -54,3 +58,8 @@ sdf_denormalize_check_prog    = sdf-de-normalize
 sdf_denormalize_check_input   = data/test1.pico.norm.af.correct
 sdf_denormalize_check_output  = data/test1.pico.def.af
 sdf_denormalize_check_correct = data/test1.pico.def.af.correct
+
+sdf_denormalize_cons_check_prog    = sdf-de-normalize
+sdf_denormalize_cons_check_input   = data/test2.pico.norm.af.out
+sdf_denormalize_cons_check_output  = data/test2.pico.def.af
+sdf_denormalize_cons_check_correct = data/test2.pico.def.af.correct

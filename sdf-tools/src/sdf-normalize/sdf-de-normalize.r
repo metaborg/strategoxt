@@ -23,7 +23,7 @@ strategies
 
   remove-id-attribute
     = \prod(ss,s,attrs([Id(_)])) -> prod(ss,s,no-attrs)\
-   <+ \prod(ss,s,attrs([as]))    -> prod(ss,s,<mk-attrs>as')
+   <+ \prod(ss,s,attrs(as))    -> prod(ss,s,<mk-attrs>as')
        where <filter(not(Id(id)))>as => as'
            ; <oncetd(Id(id))>as  // At least one id attribute.
       \
