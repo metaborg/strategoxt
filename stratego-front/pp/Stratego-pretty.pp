@@ -15,6 +15,8 @@
    Eval -- KW[">"] _1,
    Imports -- H  [KW["imports"] _1],
    Imports.1:iter-star -- _1,
+   Rules -- V  is=2 [H  [KW["rules"]] V vs=1[_1]],
+   Rules.1:iter-star -- _1,
    Strategies -- V  is=2 [H  [KW["strategies"]] V vs=1[_1]],
    Strategies.1:iter-star -- _1,
    Signature -- V  is=2 [H  [KW["signature"]] _1],
@@ -206,8 +208,6 @@
    LabeledDynRuleScopeId -- H hs=0 [_1 "." _2],
    DynRuleScopeId        -- _1,
 
-   DynamicRules -- V[V is=2[H[KW["rules"] KW["("]] _1] KW[")"]],
-   DynamicRules.1:iter-star -- _1,
    OverrideDynamicRules -- KW["override"] KW["rules"] KW["("] _1 KW[")"],
    OverrideDynamicRules.1:iter-star -- _1,
 

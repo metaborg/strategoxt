@@ -181,6 +181,8 @@
    Specification.1:iter-star              -- _1,
    Imports                                -- V  [H  [KW["imports"]] _1],
    Imports.1:iter-star                    -- _1,
+   Rules                                  -- V  [H  [KW["rules"]] _1],
+   Rules.1:iter-star                      -- _1,
    Strategies                             -- V  [H  [KW["strategies"]] _1],
    Strategies.1:iter-star                 -- _1,
    Signature                              -- V  [H  [KW["signature"]] _1],
