@@ -4,12 +4,12 @@ Author: Eelco Visser
 
 \begin{code}
 module lex2sdf
-imports lib lex Sdf2-Syntax asfix yacc2sdf
+imports lib lex Sdf2-Syntax asfix yacc2sdf termid
 
 strategies
 
   lex2sdf = 
-    iowrap(lex2sdf-main)
+    io-idwrap("\"lex-0\"", lex2sdf-main)
 
   lex2sdf-main =
     topdown(repeat(Goal2Mod + Def2Prod + Rule2Prod + LexLiteral + Lex2Sdf));
@@ -19,7 +19,7 @@ rules
 
   Goal2Mod :
     Goal(defs,[],rs) -> 
-    Module("Lexical", [Exports([defs, rs])], [])
+    <mkterm>("\"sdf-2.1\"", [Module("Lexical", [Exports([defs, rs])], [])])
 
   Def2Prod :
     Define(a, alts) -> 

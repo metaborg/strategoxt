@@ -4,7 +4,7 @@ Authors: Eelco Visser, Merijn de Jonge
 
 \begin{code}
 module yacc2sdf
-imports yacc Sdf2-Syntax lib asfix io-idwrap
+imports yacc Sdf2-Syntax lib asfix io-idwrap termid
 
 signature
    constructors
@@ -14,7 +14,7 @@ signature
       
 strategies
 
-  yacc2sdf = io-idwrap(?"yacc-0", (id,Main))
+  yacc2sdf = io-idwrap("\"yacc-0\"", Main)
 
   Main = 
     YACC2SDF;
@@ -24,7 +24,8 @@ rules
 
   YACC2SDF : 
     Spec(defs, Rules(rs), _) -> 
-    Definition([
+    <mkterm>("\"sdf-2.1\"",
+    [Definition([
       Module("Main",
              [Imports(["Lexical", "Generated"])], []),
       Module("Lexical",[],
@@ -32,7 +33,7 @@ rules
       Module("Generated",[],
              [Exports([Sorts(<filter(StartSym)> defs) |
                        <map(Rule2Prod)> rs])])
-    ])
+    ])])
 
   Token2Prod : 
     Token(_, syms) -> <map(LexicalProd)> syms
