@@ -1,0 +1,10 @@
+module foo
+imports tuple-cons
+strategies
+
+  main =
+    let p = q <+ p
+        q = r <+ q
+        r = !1 <+ r
+     in p
+    end
