@@ -2,8 +2,8 @@ module C-Statements
 signature
 signature
   constructors
-    Label : IdOrTypedefName * Stm -> LabeledStm
-    Case : ConstantExp * Stm -> LabeledStm
+    Label   : IdOrTypedefName * Stm -> LabeledStm
+    Case    : ConstantExp * Stm -> LabeledStm
     Default : Stm -> LabeledStm
 signature
   constructors
@@ -13,18 +13,18 @@ signature
     Stat : CommaExpOpt -> ExpStm
 signature
   constructors
-    If : CommaExp * Stm -> SelectionStm
+    If     : CommaExp * Stm -> SelectionStm
     IfElse : CommaExp * Stm * Stm -> SelectionStm
     Switch : CommaExp * Stm -> SelectionStm
 signature
   constructors
-    While : CommaExp * Stm -> IterationStm
+    While   : CommaExp * Stm -> IterationStm
     DoWhile : Stm * CommaExp -> IterationStm
-    For : CommaExpOpt * CommaExpOpt * CommaExpOpt * Stm -> IterationStm
+    For     : CommaExpOpt * CommaExpOpt * CommaExpOpt * Stm -> IterationStm
 signature
   constructors
-    Goto : IdOrTypedefName -> JumpStm
+    Goto     : IdOrTypedefName -> JumpStm
     Continue : JumpStm
-    Break : JumpStm
-    Return : CommaExpOpt -> JumpStm
-    Exit : CommaExpOpt -> JumpStm
+    Break    : JumpStm
+    Return   : CommaExpOpt -> JumpStm
+    Exit     : CommaExpOpt -> JumpStm

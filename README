@@ -8,7 +8,7 @@
 STRATEGO : Strategies for Program Transformation
 XT 	 : A Bundle of Transformation Tools
 
-Version 0.9beta11
+Version 0.9
 
 ----------------------------------------------------------------------
 
@@ -244,7 +244,7 @@ STRUCTURE OF THE DISTRIBUTION
 
 Complete sources of StrategoXT
 
-  * http://www.stratego-language.org/ftp/StrategoXT-0.9beta11.tar.gz
+  * http://www.stratego-language.org/ftp/StrategoXT-0.9.tar.gz
 
 StrategoXT is built using the ATermLibrary, the SDF syntax definition
 formalism and parser generator, and optionally the Nancy Choice Point

@@ -2,7 +2,7 @@ module C-Declarators
 signature
 signature
   constructors
-    IdDecl : List(Pointer) * IDENTIFIER * Option(PostfixingAbstractDeclarator) -> IdDeclarator
+    IdDecl  : List(Pointer) * IDENTIFIER * Option(PostfixingAbstractDeclarator) -> IdDeclarator
     FunDecl : List(Pointer) * IdDeclarator * Option(PostfixingAbstractDeclarator) -> IdDeclarator
 signature
   constructors

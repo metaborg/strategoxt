@@ -4,6 +4,6 @@ signature
   constructors
     PP-Table : List(PP-Entry) -> PP-Table
     PP-Entry : Path * BOX-LIST -> PP-Entry
-    Path1 : ConsName -> Path
-    Path : ConsName * List(Selector) -> Path
+    Path1    : ConsName -> Path
+    Path     : ConsName * List(Selector) -> Path
     selector : NatCon * UQLiteral -> Selector

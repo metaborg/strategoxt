@@ -1,37 +1,37 @@
 module C-Types
 signature
   constructors
-    Typedef : StorageClass
-    Extern : StorageClass
-    Static : StorageClass
-    Auto : StorageClass
+    Typedef  : StorageClass
+    Extern   : StorageClass
+    Static   : StorageClass
+    Auto     : StorageClass
     Register : StorageClass
 signature
   constructors
-    Int : BasicTypeName
-    Char : BasicTypeName
-    Short : BasicTypeName
-    Long : BasicTypeName
-    Float : BasicTypeName
-    Double : BasicTypeName
-    Signed : BasicTypeName
+    Int      : BasicTypeName
+    Char     : BasicTypeName
+    Short    : BasicTypeName
+    Long     : BasicTypeName
+    Float    : BasicTypeName
+    Double   : BasicTypeName
+    Signed   : BasicTypeName
     Unsigned : BasicTypeName
-    Void : BasicTypeName
+    Void     : BasicTypeName
 signature
   constructors
-    Const : TypeQualifier
+    Const    : TypeQualifier
     Volatile : TypeQualifier
 signature
   constructors
-    Declaration : Either(DeclarationQualifierList, List(TypeQualifier)) * List(IdDecl) -> Declaration
+    Declaration  : Either(DeclarationQualifierList, List(TypeQualifier)) * List(IdDecl) -> Declaration
     Declaration2 : Either(DeclarationSpecifier, TypeSpecifier) * List(VarDecl) -> Declaration
 signature
   constructors
-    IdDeclInit : IdDeclarator * Initializer -> IdDecl
-    DeclInit : Declarator * Initializer -> VarDecl
-    ArrayInit : List(Initializer) -> Initializer
+    IdDeclInit          : IdDeclarator * Initializer -> IdDecl
+    DeclInit            : Declarator * Initializer -> VarDecl
+    ArrayInit           : List(Initializer) -> Initializer
     ArrayInitIncomplete : List(Initializer) -> Initializer
-    AssignInit : AssignExp -> Initializer
+    AssignInit          : AssignExp -> Initializer
 signature
   constructors
     TypeSpec : List(TypeQualifier) * TypeOrDefName * List(Either(TypeQualifier, BasicTypeName)) -> TypeSpecifier

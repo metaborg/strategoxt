@@ -1,7 +1,7 @@
 module C-Enumerators
 signature
   constructors
-    Enum : Option(IdOrTypedefName) * List(Enumerator) -> EnumSpecifier
+    Enum   : Option(IdOrTypedefName) * List(Enumerator) -> EnumSpecifier
     EnumId : IdOrTypedefName -> EnumSpecifier
 signature
   constructors

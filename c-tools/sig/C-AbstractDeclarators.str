@@ -9,7 +9,7 @@ signature
 signature
   constructors
     ParamListVarArgs : List(ParamDeclaration) -> PostfixingAbstractDeclarator
-    ParamList : List(ParamDeclaration) -> PostfixingAbstractDeclarator
+    ParamList        : List(ParamDeclaration) -> PostfixingAbstractDeclarator
 signature
   constructors
     ArrayDecl : Option(ArrayAbstractDeclarator) * Option(ConstantExp) -> ArrayAbstractDeclarator
@@ -18,4 +18,4 @@ signature
     DeclBracket : UnaryAbstractDeclarator -> PostfixAbstractDeclarator
     DeclBracket : PostfixAbstractDeclarator -> PostfixAbstractDeclarator
     DeclBracket : PostfixingAbstractDeclarator -> PostfixAbstractDeclarator
-    FunType : UnaryAbstractDeclarator * PostfixingAbstractDeclarator -> PostfixAbstractDeclarator
+    FunType     : UnaryAbstractDeclarator * PostfixingAbstractDeclarator -> PostfixAbstractDeclarator

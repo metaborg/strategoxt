@@ -1083,7 +1083,7 @@ void init_constant_terms (void)
   ATprotect(&(term_r_44));
   term_r_44 = (ATerm) ATmakeAppl(ATmakeSymbol("Invalid option: ", 0, ATtrue));
   ATprotect(&(term_i_46));
-  term_i_46 = (ATerm) ATmakeAppl(ATmakeSymbol("0.9beta11", 0, ATtrue));
+  term_i_46 = (ATerm) ATmakeAppl(ATmakeSymbol("0.9", 0, ATtrue));
   ATprotect(&(term_j_46));
   term_j_46 = (ATerm) ATmakeAppl(sym__2, term_i_30, term_i_46);
   ATprotect(&(term_a_47));
@@ -1276,7 +1276,7 @@ ATerm long_description_1 (ATerm, ATerm k_0 (ATerm));
 ATerm map_1 (ATerm, ATerm j_76 (ATerm));
 ATerm reverse_acc_2 (ATerm, ATerm i_0 (ATerm), ATerm j_0 (ATerm));
 ATerm reverse_0 (ATerm);
-ATerm short_description_1 (ATerm, ATerm h_0 (ATerm));
+ATerm short_description_1 (ATerm, ATerm g_0 (ATerm));
 ATerm Program_1 (ATerm, ATerm g_63 (ATerm));
 ATerm system_usage_0 (ATerm);
 ATerm debug_0 (ATerm);
@@ -1288,7 +1288,7 @@ ATerm Help_0 (ATerm);
 ATerm table_get_0 (ATerm);
 ATerm table_push_0 (ATerm);
 ATerm register_usage_1 (ATerm, ATerm i_92 (ATerm));
-ATerm Option_3 (ATerm, ATerm a_0 (ATerm), ATerm d_0 (ATerm), ATerm g_0 (ATerm));
+ATerm Option_3 (ATerm, ATerm a_0 (ATerm), ATerm c_0 (ATerm), ATerm d_0 (ATerm));
 ATerm system_usage_switch_0 (ATerm);
 ATerm UndefinedOption_0 (ATerm);
 ATerm parse_options_p__1 (ATerm, ATerm g_92 (ATerm));
@@ -1314,9 +1314,9 @@ ATerm sc_0 (ATerm);
 ATerm main_0 (ATerm);
 ATerm exit_0 (ATerm t)
 {
-  ATerm c_0 = NULL;
-  c_0 = t;
-  t = SSL_exit(not_null(c_0));
+  ATerm e_0 = NULL;
+  e_0 = t;
+  t = SSL_exit(not_null(e_0));
   return(t);
 }
 ATerm printnl_0 (ATerm t)
@@ -1446,7 +1446,7 @@ ATerm run_time_0 (ATerm t)
 }
 ATerm if_verbose2_1 (ATerm t, ATerm b_90 (ATerm))
 {
-  ATerm e_0 (ATerm t)
+  ATerm f_0 (ATerm t)
   {
     ATerm c_16;
     c_16 = t;
@@ -1473,7 +1473,7 @@ ATerm if_verbose2_1 (ATerm t, ATerm b_90 (ATerm))
     t = b_90(t);
     return(t);
   }
-  t = try_1(t, e_0);
+  t = try_1(t, f_0);
   return(t);
 }
 ATerm link_object_code_0 (ATerm t)
@@ -1487,7 +1487,7 @@ ATerm link_object_code_0 (ATerm t)
       {
         ATerm e_4 = NULL;
         ATerm f_4 = NULL;
-        ATerm f_0 (ATerm t)
+        ATerm h_0 (ATerm t)
         {
           ATerm s_0 (ATerm t)
           {
@@ -1497,7 +1497,7 @@ ATerm link_object_code_0 (ATerm t)
           t = say_1(t, s_0);
           return(t);
         }
-        t = if_verbose2_1(t, f_0);
+        t = if_verbose2_1(t, h_0);
         {
           ATerm g_4 = NULL;
           ATerm h_16 = t;
@@ -5304,7 +5304,7 @@ ATerm sc_version_0 (ATerm t)
         ATerm m_32 = NULL;
         m_32 = t;
         j_32 :
-        if(!(match_string(m_32, "0.9beta11")))
+        if(!(match_string(m_32, "0.9")))
           {
             _fail(t);
           }
@@ -7668,13 +7668,13 @@ ATerm reverse_0 (ATerm t)
   t = reverse_acc_2(t, _id, q_13);
   return(t);
 }
-ATerm short_description_1 (ATerm t, ATerm h_0 (ATerm))
+ATerm short_description_1 (ATerm t, ATerm g_0 (ATerm))
 {
   ATerm h_50 = NULL;
   ATerm i_50 = NULL;
   t = term_d_21;
   {
-    t = h_0(t);
+    t = g_0(t);
     {
       i_50 = t;
       if(((h_50 != NULL) && (h_50 != i_50)))
@@ -8096,14 +8096,14 @@ ATerm register_usage_1 (ATerm t, ATerm i_92 (ATerm))
   }
   return(t);
 }
-ATerm Option_3 (ATerm t, ATerm a_0 (ATerm), ATerm d_0 (ATerm), ATerm g_0 (ATerm))
+ATerm Option_3 (ATerm t, ATerm a_0 (ATerm), ATerm c_0 (ATerm), ATerm d_0 (ATerm))
 {
   ATerm o_55 = NULL,p_55 = NULL,r_55 = NULL;
   o_55 = t;
   n_55 :
   if(match_string(o_55, "register-usage-info"))
     {
-      t = register_usage_1(t, g_0);
+      t = register_usage_1(t, d_0);
     }
   else
     {
@@ -8124,7 +8124,7 @@ ATerm Option_3 (ATerm t, ATerm a_0 (ATerm), ATerm d_0 (ATerm), ATerm g_0 (ATerm)
               ATerm e_56 = NULL;
               t = term_d_21;
               {
-                t = d_0(t);
+                t = c_0(t);
                 {
                   e_56 = t;
                   if(((a_56 != NULL) && (a_56 != e_56)))

@@ -68,10 +68,10 @@ exports
 
   variables
     [xyzfglc][0-9\']*       -> Id       {prefer}
-    [xyzfgl][0-9\']*  "*"     -> {Id ","}* {prefer}
+    [xyzfgl][0-9\']*  "*"   -> {Id ","}* {prefer}
     "xs"[0-9\']*            -> {Id ","}* {prefer}
 
-    [xyzfgl][0-9\']*  "*"     -> {ID ","}* {prefer}
+    [xyzfgl][0-9\']*  "*"   -> {ID ","}* {prefer}
 
     [t][0-9\']*           -> Term     {prefer}
     [t][0-9\']*   "*"     -> {Term ","}*     {prefer}

@@ -1,9 +1,9 @@
-AC_INIT([stratego-front],[0.9beta11],[stratego-bugs@cs.uu.nl])
+AC_INIT([stratego-front],[0.9],[stratego-bugs@cs.uu.nl])
 AM_INIT_AUTOMAKE
 
 USE_XT_PACKAGES
 
-AC_REVISION($Id: configure.in,v 1.16 2003/01/14 12:40:46 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.17 2003/01/25 23:13:41 stratego Exp $)
 
 AC_PROG_CC
 AC_PROG_INSTALL

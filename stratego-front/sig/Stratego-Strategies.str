@@ -2,66 +2,66 @@ module Stratego-Strategies
 signature
   constructors
     SDefNoArgs : Id * Strategy -> StrategyDef
-    SDef : Id * List(Typedid) * Strategy -> StrategyDef
+    SDef       : Id * List(Typedid) * Strategy -> StrategyDef
 signature
   constructors
     DefaultVarDec : Id -> Typedid
-    VarDec : Id * Type -> Typedid
+    VarDec        : Id * Type -> Typedid
 signature
   constructors
-    ParenStrat : Strategy -> StrategyParen
-    Fail : Strategy
-    Id : Strategy
-    SVar : Id -> SVar
-    Let : List(Def) * Strategy -> Strategy
-    Call : SVar * List(Strategy) -> Strategy
-    CallT : SVar * List(Term) * List(Strategy) -> Strategy
-    Match : Term -> Strategy
-    Build : Term -> Strategy
-    ScopeDefault : Strategy -> Strategy
-    Scope : List(ID) * Strategy -> Strategy
-    BA : StrategyAngle * Term -> Strategy
-    Seq : Strategy * Strategy -> Strategy
-    LChoice : Strategy * Strategy -> Strategy
-    LGChoice : Strategy * Strategy -> Strategy
+    ParenStrat     : Strategy -> StrategyParen
+    Fail           : Strategy
+    Id             : Strategy
+    SVar           : Id -> SVar
+    Let            : List(Def) * Strategy -> Strategy
+    Call           : SVar * List(Strategy) -> Strategy
+    CallT          : SVar * List(Term) * List(Strategy) -> Strategy
+    Match          : Term -> Strategy
+    Build          : Term -> Strategy
+    ScopeDefault   : Strategy -> Strategy
+    Scope          : List(ID) * Strategy -> Strategy
+    BA             : StrategyAngle * Term -> Strategy
+    Seq            : Strategy * Strategy -> Strategy
+    LChoice        : Strategy * Strategy -> Strategy
+    LGChoice       : Strategy * Strategy -> Strategy
     GuardedLChoice : Strategy * StrategyMid * Strategy -> Strategy
-    Rec : Id * Strategy -> Strategy
-    Not : Strategy -> Strategy
-    Where : Strategy -> Strategy
-    Test : Strategy -> Strategy
-    Bagof : Strategy -> Strategy
-    PrimNoArgs : String -> Strategy
-    Prim : String * List(Term) -> Strategy
-    PrimTS : String * List(Term) * List(Strategy) -> Strategy
-    PrimS : String * List(Strategy) -> Strategy
-    Path : Int * Strategy -> Strategy
-    Some : Strategy -> Strategy
-    One : Strategy -> Strategy
-    All : Strategy -> Strategy
-    Thread : Strategy -> Strategy
-    StrCong : String -> Strategy
-    IntCong : Int -> Strategy
-    RealCong : Real -> Strategy
-    AnnoCong : Strategy * StrategyCurly -> Strategy
-    StrategyCurly : Strategy -> StrategyCurly
-    TupleCong : Strategy
-    TupleCong : Strategy * List(Strategy) -> Strategy
-    ModCongNoArgs : Mod -> Strategy
-    ModCong : Mod * List(Strategy) -> Strategy
-    Mod : Id * Id -> Mod
+    Rec            : Id * Strategy -> Strategy
+    Not            : Strategy -> Strategy
+    Where          : Strategy -> Strategy
+    Test           : Strategy -> Strategy
+    Bagof          : Strategy -> Strategy
+    PrimNoArgs     : String -> Strategy
+    Prim           : String * List(Term) -> Strategy
+    PrimTS         : String * List(Term) * List(Strategy) -> Strategy
+    PrimS          : String * List(Strategy) -> Strategy
+    Path           : Int * Strategy -> Strategy
+    Some           : Strategy -> Strategy
+    One            : Strategy -> Strategy
+    All            : Strategy -> Strategy
+    Thread         : Strategy -> Strategy
+    StrCong        : String -> Strategy
+    IntCong        : Int -> Strategy
+    RealCong       : Real -> Strategy
+    AnnoCong       : Strategy * StrategyCurly -> Strategy
+    StrategyCurly  : Strategy -> StrategyCurly
+    TupleCong      : Strategy
+    TupleCong      : Strategy * List(Strategy) -> Strategy
+    ModCongNoArgs  : Mod -> Strategy
+    ModCong        : Mod * List(Strategy) -> Strategy
+    Mod            : Id * Id -> Mod
     ListCongNoTail : List(Strategy) -> Strategy
-    ListCong : List(Strategy) * Strategy -> Strategy
-    ExplodeCong : Strategy * StrategyParen -> Strategy
+    ListCong       : List(Strategy) * Strategy -> Strategy
+    ExplodeCong    : Strategy * StrategyParen -> Strategy
 signature
   constructors
-    DynamicRules : List(RuleDef) -> Strategy
+    DynamicRules         : List(RuleDef) -> Strategy
     OverrideDynamicRules : List(RuleDef) -> Strategy
-    DynRuleScope : List(Id) * Strategy -> Strategy
-    CallNoArgs : SVar -> Strategy
-    LRule : Rule -> Strategy
-    SRule : Rule -> Strategy
-    Choice : Strategy * Strategy -> Strategy
-    RChoice : Strategy * Strategy -> Strategy
-    GChoice : Strategy * Strategy -> Strategy
-    RGChoice : Strategy * Strategy -> Strategy
-    AM : Strategy * Term -> Strategy
+    DynRuleScope         : List(Id) * Strategy -> Strategy
+    CallNoArgs           : SVar -> Strategy
+    LRule                : Rule -> Strategy
+    SRule                : Rule -> Strategy
+    Choice               : Strategy * Strategy -> Strategy
+    RChoice              : Strategy * Strategy -> Strategy
+    GChoice              : Strategy * Strategy -> Strategy
+    RGChoice             : Strategy * Strategy -> Strategy
+    AM                   : Strategy * Term -> Strategy

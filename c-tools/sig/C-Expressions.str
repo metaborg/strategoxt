@@ -1,23 +1,23 @@
 module C-Expressions
 signature
   constructors
-    ArrayIndex : PostfixExp * CommaExp -> PostfixExp
-    FunCall : PostfixExp * List(AssignExp) -> PostfixExp
-    Field : PostfixExp * MemberName -> PostfixExp
+    ArrayIndex  : PostfixExp * CommaExp -> PostfixExp
+    FunCall     : PostfixExp * List(AssignExp) -> PostfixExp
+    Field       : PostfixExp * MemberName -> PostfixExp
     DerefMember : PostfixExp * MemberName -> PostfixExp
-    PostIncr : PostfixExp -> PostfixExp
-    PostDecr : PostfixExp -> PostfixExp
+    PostIncr    : PostfixExp -> PostfixExp
+    PostDecr    : PostfixExp -> PostfixExp
 signature
   constructors
-    PreIncr : UnaryExp -> UnaryExp
-    PreDecr : UnaryExp -> UnaryExp
-    Address : CastExp -> UnaryExp
-    Deref : CastExp -> UnaryExp
-    Positive : CastExp -> UnaryExp
-    Negative : CastExp -> UnaryExp
-    Tilde : CastExp -> UnaryExp
-    Negation : CastExp -> UnaryExp
-    SizeofExp : UnaryExp -> UnaryExp
+    PreIncr    : UnaryExp -> UnaryExp
+    PreDecr    : UnaryExp -> UnaryExp
+    Address    : CastExp -> UnaryExp
+    Deref      : CastExp -> UnaryExp
+    Positive   : CastExp -> UnaryExp
+    Negative   : CastExp -> UnaryExp
+    Tilde      : CastExp -> UnaryExp
+    Negation   : CastExp -> UnaryExp
+    SizeofExp  : UnaryExp -> UnaryExp
     SizeofType : TypeName -> UnaryExp
 signature
   constructors
@@ -29,11 +29,11 @@ signature
     Mod : MulExp * CastExp -> MulExp
 signature
   constructors
-    Add : AddExp * MulExp -> AddExp
+    Add  : AddExp * MulExp -> AddExp
     Subt : AddExp * MulExp -> AddExp
 signature
   constructors
-    ShiftLeft : ShiftExp * AddExp -> ShiftExp
+    ShiftLeft  : ShiftExp * AddExp -> ShiftExp
     ShiftRight : ShiftExp * AddExp -> ShiftExp
 signature
   constructors
@@ -43,7 +43,7 @@ signature
     Ge : RelExp * ShiftExp -> RelExp
 signature
   constructors
-    Equal : EqualityExp * RelExp -> EqualityExp
+    Equal    : EqualityExp * RelExp -> EqualityExp
     NotEqual : EqualityExp * RelExp -> EqualityExp
 signature
   constructors
@@ -68,19 +68,19 @@ signature
     Assign : UnaryExp * AssignOp * AssignExp -> AssignExp
 signature
   constructors
-    AssignEq : AssignOp
-    AssignMul : AssignOp
-    AssignDiv : AssignOp
-    AssignMod : AssignOp
+    AssignEq   : AssignOp
+    AssignMul  : AssignOp
+    AssignDiv  : AssignOp
+    AssignMod  : AssignOp
     AssignPlus : AssignOp
-    AssignMin : AssignOp
-    AssignSL : AssignOp
-    AssignSR : AssignOp
-    AssignAnd : AssignOp
-    AssignExp : AssignOp
-    AssignOr : AssignOp
+    AssignMin  : AssignOp
+    AssignSL   : AssignOp
+    AssignSR   : AssignOp
+    AssignAnd  : AssignOp
+    AssignExp  : AssignOp
+    AssignOr   : AssignOp
 signature
   constructors
-    Comma : AssignExp * CommaExp -> CommaExp
+    Comma    : AssignExp * CommaExp -> CommaExp
     EmptyExp : CommaExpOpt
 signature

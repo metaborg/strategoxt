@@ -2,4 +2,4 @@ module Stratego-Overlays
 signature
   constructors
     OverlayNoArgs : Id * Term -> Overlay
-    Overlay : Id * List(Id) * Term -> Overlay
+    Overlay       : Id * List(Id) * Term -> Overlay

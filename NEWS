@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
             __ __ __  __    _  __ __  __  __   __      _  _ _ _
-           |__   |   |__|  /_\   |   |__ | _  |  |  /   \/   |
-            __|  |   | \  /   \  |   |__ |__| |__| /   _/\_  |
+           |__   |   |__|  /_\   |   |__ | _  |  |  /   \/   | 
+            __|  |   | \  /   \  |   |__ |__| |__| /   _/\_  | 
 
 ------------------------------------------------------------------------------
 
@@ -14,13 +14,7 @@ News about Stratego releases
 
 ------------------------------------------------------------------------------
 
-Version 0.9 - under construction
-
-Release 0.9 is still under construction. Before the release of the
-final 0.9 distribution, a number of beta distributions are
-released. The news items about the 0.9beta releases below provide
-details about the changes. This entry provides a summary of the
-changes since release 0.8.1.
+Version 0.9 - released January 26, 2003
 
 DOWNLOAD AND INSTALLATION
 
@@ -33,12 +27,12 @@ SUMMARY OF CHANGES
 
   * StrategoXT
     - XT CVS repository moved from CWI to UU
-    - merged XT and Stratego repositories
-    - single distribution for StrategoXT
-    - separate packages will also be available
+    - Merged XT and Stratego repositories
+    - Single distribution for StrategoXT
+    - Separate packages will also be available
 
   * AutoXT 
-    - autoconf/make support for XT packages
+    - Autoconf/make support for XT packages
     - Building the distribution uses only the C compiler
 
   * SRTS
@@ -46,26 +40,45 @@ SUMMARY OF CHANGES
       library primitives. After C generation, this package is
       all that is needed to compile a Stratego program.
 
-  * XTC 
+  * XTC
     - Transformation tool composition
     - Sdf-import -- XTC registration of sdf tools
 
-  * BOX-TOOLS
-    - refactoring of the gpp package using XTC
+  * GPP
+    - Refactoring of the package using XTC
+    - A boxes supported by abox2text
 
   * STRATEGO-TOOLS
-    - format checker generation 
+    - Format checker generation 
+
+  * STRATEGO-FRONT
+    - Support for ToBuild and FromApp to implement ASP style quotation
 
   * C-TOOLS
-    - support for C generation (and transformation)
+    - Support for C generation (and transformation)
+    - Refactoring of the cgen package which is now obsolete
     
   * DOT-TOOLS 
-    - support for generation of dot files
+    - Support for generation of dot files
 
   * SC
-    - bug in dynamic rules with overlapping left-hand sides fixed
+    - Bug in dynamic rules with overlapping left-hand sides fixed
     - LEX/YACC grammar retired; the compiler now depends on SDF
-    - stricter bound variables checking
+    - Stricter bound variables checking
+
+  * SSL 
+    - Parenthesize is a generic strategy for placing parentheses
+      based on priority information. flatten-list completely flattens a list.
+    - For-each-pair(s) produces the list of pairs <s>(x,y) for each pair 
+      of x from xs and y from ys.
+    - Execution of external processes (call) now defined in terms of primitives
+      fork, wait and such
+
+  * STRATEGO-TOOLS
+    - Format checker generation 
+
+  * SDF-TOOLS
+    - Parse-unit is a tool for unit testing SDF definitions. 
 
   * SDF-IMPORT
     - The sdf-import package registers the SDF tools sdf2table and
@@ -76,21 +89,41 @@ SUMMARY OF CHANGES
 
   * Many bug fixes and refactorings
 
-------------------------------------------------------------------------------
+BUGS / KNOWN PROBLEMS
 
-Version 0.9beta11 - under construction
+  * The build of the StrategoXT package invokes 'make install' since the 
+    installation of the libraries in srts are needed for the build of the
+    rest of the package. This makes building of debian packages
+    problematic. This problem will be addressed in future releases.
 
-DOWNLOAD AND INSTALLATION
+  * When bootstrapping the package from CVS it is necessary to install the
+    autoxt package before calling the main 'bootstrap' script since that
+    calls the autoxt tool.
 
-The download page contains the source distribution and instructions
-for installation
+DETAILS
 
-  * http://www.stratego-language.org/Stratego/StrategoRelease09
+  Details about the changes since 0.8.1 can be found in the descriptions 
+  of the 0.9beta releases in the NEWS file in the distribution. Further
+  documentation can be found on the website.
 
-CHANGES with respect to 0.9beta10
+CONTRIBUTIONS
 
- * STRATEGO-FRONT: support for ToBuild and FromApp to implement 
-   ASP style quotation after Jonne van Wijngaarden's idea.
+  * The StrategoXT-0.9 release involved a major refactoring of the
+    stratego and XT packages and the introduction of several new
+    packages. In particular, the introduction of XTC and AutoXT provide
+    a significant improvement of the composition of tools and the
+    configuration of packages. The production of the final release
+    involved 10 beta releases.   
+
+  * Bug reports and suggestions for improvements where submitted by: 
+
+    Karina Olmos, Martin Bravenboer, Jonne van Wijngaarden, Lennart
+    Swart, Alan van Dam, Jozef Kruger, Armijn Hemel, Eelco Dolstra,
+    Julien LEMOINE, ChoJin, Akim Demaille
+
+  * The major developments were carried out by 
+
+    Eelco Visser, Martin Bravenboer
 
 ------------------------------------------------------------------------------
 
