@@ -1,3 +1,6 @@
+2002-08-02  Merijn de Jonge <mdejonge@cwi.nl>
+   * package.conf: updated version requirement for gpp package
+
 2002-06-06  Merijn de Jonge <mdejonge@cwi.nl>
    * Repaired some syntax errors that were not detected by the parser of the
      stratego compiler.
