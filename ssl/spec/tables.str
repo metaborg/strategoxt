@@ -50,6 +50,40 @@ strategies
 
 
 /**
+ * Stack operations (when stored values in hashtables are list-based stacks)
+ */
+strategies
+  /**
+   * pushes value on top of the stack for key.
+   * Current term is the hashtable and remains untouched.
+   */
+  hashtable-push(|key, value) =
+    hashtable-put(|key, [value | <hashtable-get(|key) <+ ![]>])
+
+  /**
+   * pops off the top element of the stack for key.
+   * Current term is the hashtable and remains untouched.
+   */
+  hashtable-pop(|key) =
+    hashtable-put(|key, <hashtable-get(|key); Tl>)
+
+  /**
+   * Gets the top value from the stack for key (the stack remains untouched)
+   * Current term is the hashtable, output is the top value.
+   */
+  hashtable-peek(|key) =
+    hashtable-get(|key); Hd
+
+  /**
+   * Gets the top value from the stack for key and pops it off the stack.
+   * Current term is the hashtable, output is the top value.
+   */
+  hashtable-peekpop(|key) =
+    where(hashtable-peek(|key) => val)
+  ; hashtable-pop(|key)
+  ; !val
+
+/**
  * Legacy table strategies
  */
 strategies

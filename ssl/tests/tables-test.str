@@ -10,11 +10,14 @@ strategies
       test1
     ; test2
     ; test3
+
     ; test-create
     ; test-put
     ; test-get
     ; test-remove
     ; test-keys
+
+    ; test-stack
     )
 
 strategies
@@ -80,4 +83,49 @@ strategies
       , hashtable-put(|"key", "value"); hashtable-keys
       , !tbl
       , !["key"]
+      )
+
+  test-stack =
+    where(new-hashtable => tbl)
+    ; apply-test(!"hashtable-push"
+      , hashtable-push(|"keyA", "value1")
+        ; hashtable-push(|"keyA", "value2")
+        ; hashtable-push(|"keyA", "value3")
+        ; hashtable-push(|"keyB", "value4")
+      , !tbl
+      , !tbl
+      )
+    ; apply-and-fail(!"hashtable-peek-invalidstack"
+      , hashtable-peek(|"keyZ")
+      , !tbl
+      )
+    ; apply-test(!"hashtable-peek"
+      , hashtable-peek(|"keyA")
+      , !tbl
+      , !"value3"
+      )
+    ; apply-test(!"hashtable-peek-again"
+      , hashtable-peek(|"keyA")
+      , !tbl
+      , !"value3"
+      )
+    ; apply-test(!"hashtable-peek-singleton"
+      , hashtable-peek(|"keyB")
+      , !tbl
+      , !"value4"
+      )
+    ; apply-test(!"hashtable-pop"
+      , hashtable-pop(|"keyA")
+        ; hashtable-pop(|"keyA")
+      , !tbl
+      , !tbl
+      )
+    ; apply-test(!"hashtable-peekpop"
+      , hashtable-peekpop(|"keyA")
+      , !tbl
+      , !"value1"
+      )
+    ; apply-and-fail(!"hashtable-pop-empty"
+      , hashtable-pop(|"keyA")
+      , !tbl
       )
