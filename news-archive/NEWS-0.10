@@ -48,6 +48,7 @@ labeled scopes. Labeled scopes are based on an idea raised by Ganesh
 Sittampalam in a discussion at the Stratego User Days 2004.
 
 ---------+++ New Syntax and Semantics
+
 The new abstract syntax is introduced by comparing to the old syntax and
 and semantics, and is presented in BNF below. Some basic entities are:
 <verbatim>
@@ -67,6 +68,7 @@ rule definitions within determine the semantics.
 </verbatim>
 
 ---------++++ Labeling of Scopes
+
 To prevent rules from being undefined too early at the end of the current
 scopes, the =override rules(..)= could be used in the past. Rules were tied
 to some outer scope, instead of the current innermost.
@@ -86,6 +88,7 @@ labels.
 </verbatim>
 
 ---------++++ Dynamic Rule Definitions
+
 Besides the mandatory rulename, dynamic rule definitions now may also
 contain a label, specifying in which scope this rule should be placed.
 No label naturaly means generation within the current inner scope.
@@ -122,6 +125,7 @@ When (un-)defining dynamic rules in a labeled scope, the innermost scope with
 that label is selected.
 
 ---------++++ Dynamic Rule Calling
+
 Dynamic rules are basically just runtime generated rewriting rules, so for a
 definition: =UsedInExp :+ |[ x ]| -> |[ e ]|= the basic call is:
 <verbatim>
@@ -143,26 +147,79 @@ the =bagof-= and =once-= rule.
 and returns a list of succeeded result terms.
 
 <verbatim>
-  <once-UsedInExp> |[ y ]| => |[ e' ]|   // Rewriting once
+  <once-UsedInExp> |[ y ]| => |[ e' ]|    // Rewriting once
 </verbatim>
 =once-RuleName= rewrites just like =RuleName= would do, but upon successfull
 rewriting that rule instance is removed. A generated rule thus is used for
 rewriting only once.
 
 ---------++++ Branching and Meeting Rulesets
+
 When performing control-flow optimizations, rulesets had to be explicitly
 saved, intersected and restored. The new model now provides some variants for
 this at the language level (with generic functionality available in the API).
 
-TODO
+The best-known branch-meet operation is the intersection of rulesets after
+constant propagation through the then- and else-branch of an if-then-else.
+The general syntax allows two strategies to be performed, followed by an
+automatic intersection of one or more named rulesets:
+<verbatim>
+  s1 / f1, ..., fn \ s2                   dynamic rule intersection
+</verbatim>
+Example: =If(id,s,id)/PropConst\If(id,id,s)=
 
+The same is possible for union, instead of intersection:
+<verbatim>
+  s1 \ f1, ..., fn / s2                   dynamic rule union
+</verbatim>
+
+control structures that involve repetition (e.g. for-loops) often nead
+repeated traversal until a fixed point in the ruleset is reached.
+Two fixpoint traversals are available that meet the dynamic ruleset with
+the one from the previous iteration until the ruleset is free of changes.
+<verbatim>
+  / f1, ..., fn \* s2                     dynamic rule fixpoint intersection
+  \ f1, ..., fn /* s2                     dynamic rule fixpoint union
+</verbatim>
+Example: =/PropConst\* While(s,s)=
+
+---------++++ Dynamic Rules API
+
+For in-depth specification of the underlying dynamic rules implementation,
+please refer to the 'dynamic-rules-refactored' module in the SSL.
+At least the debug strategies are useful for end-users:
+<verbatim>
+  dr-debug-rule-set(|name)                // Output dynamic ruleset on stderr
+  dr-debug-rule-set(|name, msg)           // Id. preceded by user's message
+</verbatim>
 
 ---------++++ Compatibility and Compiler Flags
+
 The new implementation of dynamic rules is not yet turned on by
 default. To turn it on, you need to pass the option =--dr new= to the
 Stratego compiler. Although the new implementation is not yet used by
 default, all existing applications should work with the new
 implementation. That is, if they do not rely on weird semantics in the
 old dynamic rule implementation and do not manipulate the internal
-representation of dynamic rules. The new syntax for dynamic rules is
-supported as much as possible by the old dynamic rule implementation.
+representation of dynamic rules.
+
+Parsing of stratego source always uses the new syntax, but for backward
+compatibility *all* old constructs are still available.
+That is: =extend/override rules(..)= and =Rule: t -> Undefined=.
+When the new dynamic rule implementation is selected (=--dr new=), the old
+semantics are emulated for both constructs. All other old dynamic rules
+constructs still fit within the new implementation.
+Note however, that semantics for simple rule application within the new
+dynamic rules implementation has changed (see 'Dynamic Rule Calling' above).
+
+The other way around: the new syntax for dynamic rules is supported as much
+as possible by the old dynamic rule implementation.
+Dynamic rule extension (e.g. =Rule :+ t1 -> t2=), and dynamic rule undefining
+(e.g. =Rule :- t=) are translated to their old equivalents.
+When the input program contains scope-labels or identity rules, the compiler
+warns and exits with an error.
+But realize: when using new constructs in your program, there's no need to use
+the old compiler implementation.
+
+We advice to test compiling your programs with =--dr new= since future
+releases of the Stratego compiler will have this flag switched on by default.
