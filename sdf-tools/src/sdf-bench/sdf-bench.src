@@ -20,16 +20,16 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: sdf-bench.src,v 1.1 2001/05/31 14:20:52 mdejonge Exp $
+# $Id: sdf-bench.src,v 1.2 2001/06/08 07:39:26 mdejonge Exp $
 #
 
 prefix=__PREFIX__
 
 Lang=$1
 
-sglr -p ${prefix}/share/gt/benchmark.tbl -i ${Lang}.rbm |\
+sglr -p ${prefix}/share/sdf-tools/benchmark.tbl -i ${Lang}.rbm |\
 implode-asfix -S > ${Lang}.tree
-${prefix}/libexec/runbm -st ${prefix}/share/gt/sglr-stats.tbl -i ${Lang}.tree -o ${Lang}.data
+${prefix}/libexec/runbm -st ${prefix}/share/sdf-tools/sglr-stats.tbl -i ${Lang}.tree -o ${Lang}.data
 rm ${Lang}.tree
 
 
