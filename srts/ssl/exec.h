@@ -38,6 +38,7 @@ ATerm SSL_execvp(ATerm file, ATerm argv);
 ATerm SSL_pipe(void);
 ATerm SSL_kill(ATerm pid, ATerm sig);
 
+ATerm SSL_access(ATerm pathname, ATerm permissions);
 ATerm SSL_open(ATerm pathname);
 ATerm SSL_creat(ATerm pathname);
 ATerm SSL_mkstemp(ATerm template);
@@ -73,3 +74,4 @@ ATerm SSL_stderr_stream(void);
 #define SSL_STDIN_FILENO() ((ATerm)ATmakeInt(STDIN_FILENO))
 #define SSL_STDOUT_FILENO() ((ATerm)ATmakeInt(STDOUT_FILENO))
 #define SSL_STDERR_FILENO() ((ATerm)ATmakeInt(STDERR_FILENO))
+

@@ -228,6 +228,59 @@ ATerm SSL_pipe(void)
   return (ATerm) ATempty;
 }
 
+int permission_from_term(ATerm term) {
+  int result;
+
+         if(ATmatch(term, "R_OK()")) {
+    result = R_OK;
+  } else if(ATmatch(term, "W_OK()")) {
+    result = W_OK;
+  } else if(ATmatch(term, "X_OK()")) {
+    result = X_OK;
+  } else if(ATmatch(term, "F_OK()")) { 
+    result = F_OK;
+  } else {
+    ATfprintf(stderr, "** ERROR: not an access mode: %t \n", term);
+    _fail(term);
+  }
+
+  return result;
+}
+
+/**
+ * access
+ */
+ATerm SSL_access(ATerm path_term, ATerm perms_term) {
+  char* pathname  = AT_getString(path_term);
+  int amode = 0;
+  int result = -1;
+  ATermList todo;
+
+  if(!ATisList(perms_term)) {
+    ATfprintf(stderr, "** ERROR: access invoked with %t as access mode, which is not a list.\n", perms_term);
+    _fail(path_term);
+  }
+
+  todo = (ATermList) perms_term;
+
+  if(todo == ATempty) {
+    ATfprintf(stderr, "** ERROR: access requires at least one permission &t .\n", perms_term);
+    _fail(path_term);
+  }
+
+  while(todo != ATempty) {
+    amode = amode | permission_from_term(ATgetFirst(todo));
+    todo = ATgetNext(todo);
+  }
+
+  result = access(pathname, amode);
+  if(result != 0) {
+    _fail(path_term);
+  }
+
+  return path_term;
+}
+
 /**
  * creat
  */
@@ -331,7 +384,7 @@ ATerm SSL_fclose(ATerm stream_term) {
     _fail(stream_term);
   }
 
-  return (ATerm) ATempty;
+  return (ATerm) App0("");
 }
 
 /**
@@ -715,3 +768,4 @@ ATerm SSL_pipe_term_to_child(ATerm t, ATerm prog, ATerm args0)
   }
   return((ATerm) ATempty);
 }
+
