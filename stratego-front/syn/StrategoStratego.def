@@ -426,35 +426,52 @@ exports
 
   context-free syntax
 
-    		"|[" Module      "]|" 	-> StrategoTerm {cons("ToTerm"),prefer}
-    		"|[" Decl        "]|" 	-> StrategoTerm {cons("ToTerm")}
-    		"|[" Sdecl       "]|" 	-> StrategoTerm {cons("ToTerm")}
+             "|[" Module  "]|"  -> StrategoTerm {cons("ToTerm"),prefer}
+    "Module" "|[" Module  "]|"  -> StrategoTerm {cons("ToTerm")}
 
-    		"|[" Opdecl      "]|" 	-> StrategoTerm {cons("ToTerm")}
-    		"|[" Type        "]|" 	-> StrategoTerm {cons("ToTerm")}
+             "|[" Decl    "]|"  -> StrategoTerm {cons("ToTerm")}
+             "|[" Sdecl   "]|"  -> StrategoTerm {cons("ToTerm")}
 
-    		"|[" Term        "]|"  	-> StrategoTerm {cons("ToTerm")}
-    "Term"	"|[" Term   	 "]|" 	-> StrategoTerm {cons("ToTerm")}
+             "|[" Opdecl  "]|"  -> StrategoTerm {cons("ToTerm")}
+             "|[" Type    "]|"  -> StrategoTerm {cons("ToTerm")}
 
-    		"|[" StratRule   "]|" 	-> StrategoTerm {cons("ToTerm")}
-    		"|[" Rule        "]|" 	-> StrategoTerm {cons("ToTerm")}
-    		"|[" RuleDef     "]|" 	-> StrategoTerm {cons("ToTerm")}
+             "|[" Term    "]|" -> StrategoTerm {cons("ToTerm")}
+    "Term"   "|[" Term    "]|" -> StrategoTerm {cons("ToTerm")}
 
-    		"|[" Strategy    "]|"  	-> StrategoTerm {cons("ToTerm")}
-    "Strategy" 	"|[" Strategy    "]|" 	-> StrategoTerm {cons("ToTerm")}
-    		"|[" StrategyDef "]|"  	-> StrategoTerm {cons("ToTerm")}
+             "|[" Def     "]|" -> StrategoTerm {cons("ToTerm")}
+    "Def"    "|[" Def     "]|" -> StrategoTerm {cons("ToTerm")}
 
-    "O" 	"|[" Overlay     "]|" 	-> StrategoTerm {cons("ToTerm")}
-    "Overlay" 	"|[" Overlay     "]|" 	-> StrategoTerm {cons("ToTerm")}
+         "|[" StratRule   "]|" -> StrategoTerm {cons("ToTerm")}
+         "|[" Rule        "]|" -> StrategoTerm {cons("ToTerm")}
+
+               "|[" Strategy "]|" -> StrategoTerm {cons("ToTerm")}
+    "Strat"    "|[" Strategy "]|" -> StrategoTerm {cons("ToTerm")}
+    "Strategy" "|[" Strategy "]|" -> StrategoTerm {cons("ToTerm")}
+
+    "O"   "|[" Overlay     "]|"   -> StrategoTerm {cons("ToTerm")}
+    "Overlay"   "|[" Overlay     "]|"   -> StrategoTerm {cons("ToTerm")}
 
   context-free syntax
 
     %% From Term
 
-    "~" StrategoTerm      		-> Strategy {cons("FromTerm")}
-    "~str:" StrategoTerm      		-> String {cons("FromTerm")}
-    "~" StrategoTerm      		-> {ID ","}+ {cons("FromTerm")}
-    "~term*:" StrategoTerm      	-> {Term ","}+ {cons("FromTerm")}
+    "~"        StrategoTerm    -> Strategy        {cons("FromTerm")}
+    "~*"       StrategoTerm    -> {Strategy ","}* {cons("FromTerm")}
+    "~strat*:" StrategoTerm    -> {Strategy ","}* {cons("FromTerm")}
+
+    "~"       StrategoTerm     -> {ID ","}+ {cons("FromTerm")}
+    "~term*:" StrategoTerm     -> {Term ","}+ {cons("FromTerm")}
+
+    "~"     StrategoTerm       -> Id  {cons("FromTerm")}
+    "~id:"  StrategoTerm       -> Id  {cons("FromTerm")}
+    "~int:" StrategoTerm       -> Int {cons("FromTerm")}
+    "~str:" StrategoTerm       -> String {cons("FromTerm")}
+
+    "~"  StrategoTerm          -> Def  {cons("FromTerm")}
+    "~*" StrategoTerm          -> Def* {cons("FromTerm")}
+
+    "~*" StrategoTerm          -> {Typedid  ","}* {cons("FromTerm")}
+    "~typed-id*:" StrategoTerm -> {Typedid  ","}* {cons("FromTerm")}
 
   context-free syntax 
 
@@ -464,45 +481,45 @@ exports
     "(" StrategoStrategy ")" -> StrategoStrategy {bracket,prefer}
 
   variables
-    [xyzfglc][0-9\']*    	-> Id       {prefer}
-    [xyzfgl][0-9\']*	"*" 	-> {Id ","}* {prefer}
-    "xs"[0-9\']*       		-> {Id ","}* {prefer}
+    [xyzfglc][0-9\']*     -> Id       {prefer}
+    [xyzfgl][0-9\']*  "*"   -> {Id ","}* {prefer}
+    "xs"[0-9\']*          -> {Id ","}* {prefer}
 
-    [xyzfgl][0-9\']*	"*" 	-> {ID ","}* {prefer}
+    [xyzfgl][0-9\']*  "*"   -> {ID ","}* {prefer}
 
-    [t][0-9\']* 	  	-> Term     {prefer}
-    [t][0-9\']*   	"*"  	-> {Term ","}*     {prefer}
-    "ts"[0-9\']*    		-> {Term ","}*     {prefer}  
+    [t][0-9\']*       -> Term     {prefer}
+    [t][0-9\']*   "*" -> {Term ","}*     {prefer}
+    "ts"[0-9\']*      -> {Term ","}*     {prefer}  
 
-    [s][0-9\']* 	  	-> Strategy {prefer}
-    "ss"[0-9\']*	  	-> {Strategy ","}* {prefer}
-    "s"[0-9\']*	 	"*"  	-> {Strategy ","}* {prefer}
+    [s][0-9\']*       -> Strategy {prefer}
+    "ss"[0-9\']*      -> {Strategy ","}* {prefer}
+    "s"[0-9\']*   "*" -> {Strategy ","}* {prefer}
 
-    [r][0-9\']* 	  	-> Rule {prefer}
+    [r][0-9\']*       -> Rule {prefer}
 
-    "rd"[0-9\']* 	  	-> RuleDef {prefer}
-    "rd"[0-9\']* 	"*"  	-> RuleDef* {prefer}
+    "rd"[0-9\']*      -> RuleDef {prefer}
+    "rd"[0-9\']*  "*" -> RuleDef* {prefer}
 
-    "a"[0-9\']*   		-> Typedid        {prefer}
-    "a"[0-9\']* 	"*"   	-> {Typedid ","}+ {prefer}
-    "as"[0-9\']*  		-> {Typedid ","}+ {prefer} 
+    "a"[0-9\']*       -> Typedid        {prefer}
+    "a"[0-9\']*   "*" -> {Typedid ","}+ {prefer}
+    "as"[0-9\']*      -> {Typedid ","}+ {prefer} 
 
-    "tp"[0-9\']*		-> Type	
-    "tp"[0-9\']*	"*"	-> {Type "*"}+	
+    "tp"[0-9\']*      -> Type 
+    "tp"[0-9\']*  "*" -> {Type "*"}+  
 
   lexical syntax
-    "xs"[0-9\']*       		-> Id  {reject}
+    "xs"[0-9\']*      -> Id  {reject}
 
-    [t][0-9\']* 	  	-> Id  {reject}
-    "ts"[0-9\']*    		-> Id  {reject}  
+    [t][0-9\']*       -> Id  {reject}
+    "ts"[0-9\']*      -> Id  {reject}  
 
-    [s][0-9\']* 	  	-> Id  {reject}
-    "ss"[0-9\']*	  	-> Id  {reject}
+    [s][0-9\']*       -> Id  {reject}
+    "ss"[0-9\']*      -> Id  {reject}
 
-    [r][0-9\']* 	  	-> Id  {reject}
+    [r][0-9\']*       -> Id  {reject}
  
-    "a"[0-9\']*   		-> Id  {reject}
-    "as"[0-9\']*  		-> Id  {reject} 
+    "a"[0-9\']*       -> Id  {reject}
+    "as"[0-9\']*      -> Id  {reject} 
 
   context-free syntax
 
