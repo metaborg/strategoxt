@@ -23,6 +23,7 @@ AC_ARG_WITH(aterm,
  ATERM=$withval, 
  ATERM="$prefix"
 )
+AC_SUBST(ATERM)
 
 AC_ARG_WITH(gpp, 
   [  --with-gpp           Specify location of GPP, default: \$prefix], 
@@ -41,14 +42,16 @@ AC_ARG_WITH(stratego-rts,
   STRATEGORTS=$withval, 
   STRATEGORTS="$prefix"
 )
+AC_SUBST(STRATEGORTS)
 
 #AC_ARG_WITH(cpl, 
 #  [  --with-cpl          Specify location of choice point library (CPL), default: \$prefix], 
 #  CPL=$withval, 
 #  CPL="$prefix"
 #)
+#AC_SUBST(CPL)
 
-AC_REVISION($Id: configure.in,v 1.3 2001/08/23 09:06:41 visser Exp $)
+AC_REVISION($Id: configure.in,v 1.4 2001/08/28 21:28:29 visser Exp $)
 
 AC_PROG_CC
 AC_PROG_RANLIB
@@ -58,9 +61,6 @@ AC_PROG_INSTALL
 
 TOP_SRCDIR=`pwd`
 AC_SUBST(TOP_SRCDIR)
-AC_SUBST(STRATEGORTS)
-AC_SUBST(CPL)
-AC_SUBST(ATERM)
 
 changequote(,)dnl
 case $VERSION in

@@ -24,8 +24,7 @@ CFLAGS		= -O4
 
 INCLUDES 	= -I$(STRATEGORTS)/include \
 		  -I$(STRATEGOLIB)/include \
-		  -I$(ATERM)/include \
-		  -I$(CPL)/include
+		  -I$(ATERM)/include
 
 LDFLAGS		= -L$(ATERM)/lib \
 		  -L$(STRATEGORTS)/lib \
