@@ -377,13 +377,12 @@ exports
   context-free syntax
 
     "{|" {DynRuleScopeId ","}* ":" Strategy "|}" -> Strategy {cons("DynRuleScope")}
-    "{|" Id ":+" Term "|}"                       -> Strategy {cons("AddScopeLabel")}
 
   context-free syntax
 
     "rules" "(" DynRuleDef* ")" -> Strategy {cons("GenDynRules")}
 
-    DynRuleId				  -> DynRuleDef {cons("LabelDynRule")}
+    Id "+" Term                           -> DynRuleDef {cons("AddScopeLabel")} 
     DynRuleId ":-"  Term                  -> DynRuleDef {cons("UndefineDynRule")}
     DynRuleId ":"   Rule                  -> DynRuleDef {cons("SetDynRule")}
     DynRuleId ":+"  Rule                  -> DynRuleDef {cons("AddDynRule")}

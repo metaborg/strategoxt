@@ -1,12 +1,11 @@
 module Stratego-DynamicRules
 signature
   constructors
-    DynRuleScope  : List(DynRuleScopeId) * Strategy -> Strategy
-    AddScopeLabel : Id * Term -> Strategy
+    DynRuleScope : List(DynRuleScopeId) * Strategy -> Strategy
 signature
   constructors
     GenDynRules           : List(DynRuleDef) -> Strategy
-    LabelDynRule          : DynRuleId -> DynRuleDef
+    AddScopeLabel         : Id * Term -> DynRuleDef
     UndefineDynRule       : DynRuleId * Term -> DynRuleDef
     SetDynRule            : DynRuleId * Rule -> DynRuleDef
     AddDynRule            : DynRuleId * Rule -> DynRuleDef
