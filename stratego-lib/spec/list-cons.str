@@ -1,10 +1,2 @@
-/**
- * Lists are represented by means of the constructors Nil and Cons.
- */
 module list-cons
-signature
-  sorts List(a)
-  constructors
-    Nil  : List(a)
-    Cons : a * List(a) -> List(a)
-    Conc : List(a) * List(a) -> List(a)
+imports collection/list/cons

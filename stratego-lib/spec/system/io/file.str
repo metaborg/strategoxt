@@ -1,0 +1,357 @@
+/**
+ * The file module provides abstractions over the basic file system
+ * operations in the module posix-file.
+ */
+module system/io/file
+imports 
+  system/posix/file 
+  io   // XXX
+  list // XXX
+  term/string
+
+/**
+ * Abstractions for streams
+ */
+strategies
+
+  /**
+   * opens a Stream associated to a FileLoc
+   *
+   * @type FileLoc * String -> Stream
+   */
+  open-stream = ?(_, _);
+    (  Fst; stdio-stream
+    <+ (?Path(<id>), id); fopen
+    <+ (is-string,   id); fopen
+    )
+
+  /**
+   * @type FileLoc -> Stream
+   */
+  stdio-stream = ?stdin() ; stdin-stream
+  stdio-stream = ?stdout(); stdout-stream
+  stdio-stream = ?stderr(); stderr-stream
+
+/**
+ * Old file administration
+ */
+strategies
+
+  close-file = 
+    ?name; prim("SSL_close_file", name)
+
+  open-file =
+    ?(name, mode); prim("SSL_open_file", name, mode)
+
+  /**
+   * @obsolete use <open-file> (file, mode)
+   */
+  open-file =
+    ?name; not(?(_, _))
+    ; obsolete(!"<open-file> file; use <open-file> (file, mode)")
+    ; <open-file> (name, "w")
+
+  append-file = 
+    <open-file> (<id>, "a")
+
+strategies
+
+  /**
+   * @type  String -> String
+   */
+  file-exists =
+    <access> (<id>, [F_OK()])
+
+  /**
+   * @type  String -> String
+   */
+  can-read-file =
+    <access> (<id>, [R_OK()])
+
+  is-readable = can-read-file
+
+  /**
+   * @type  String -> String
+   */
+  can-write-file =
+    <access> (<id>, [W_OK()])
+
+  is-writable = can-write-file
+
+  /**
+   * @type  String -> String
+   */
+  can-execute-file =
+    <access> (<id>, [X_OK()])
+
+  is-executable = can-execute-file
+
+  /**
+   * @type String -> String
+   * @inc  create?
+   */
+  can-create-file =
+    where(dirname; can-write-file)
+
+/**
+ * Components of a pathname
+ */
+strategies
+
+  /**
+   * Returns directory portion of pathname in a POSIX compatible way.
+   *
+   * @inc   dirname
+   * @type  String -> String
+   */
+  dirname =
+    string-as-chars(
+      /* (1) Strip trailing slashes */
+      try(split-init-last; ?(<id>, '/'))
+    ; /* (2) If string consists entirely of slash characters, string shall be
+             set to a single slash character.  In this case, skip steps (3)
+             through (8). */
+    ( ?[]
+      < !['/']
+      + ( /* (3) If there are any trailing slash characters in string, they
+                 shall be removed. */
+          init
+          /* (4) If there are no slash characters remaining in string, string
+                 shall be set to a single period character.  In this case, skip
+                 steps (5) through (8).
+
+             (5) If there are any trailing nonslash characters in string,
+                 they shall be removed. */
+
+        ; repeat(split-init-last; (id, not(?'/')); Fst)
+        ; (?[]
+          < !['.']
+          + ( /* (7) If there are any trailing slash characters in string, they
+                   shall be removed. */
+              repeat(split-init-last; ?(<id>, '/'))
+            ; (?[] < !['/'] + id))))))
+
+  /**
+   * Return the absolute path of a pathname.
+   *
+   * @type  String -> String
+   * @since 0.9.4
+   */
+  abspath =
+      is-abspath
+    < id
+    + <concat-strings> [<getcwd> (), "/", <id>]
+
+  /**
+   * Succeeds if the input pathname is an absolute path.
+   *
+   * A pathname is absolute if it starts with a /.
+   *
+   * @type  String -> String
+   * @since 0.9.4
+   * @inc   is-abs-path
+   */
+  is-abspath =
+    where(explode-string; ?['/' | _])
+
+  /**
+   * Succeeds if the input pathname is a relative path.
+   *
+   * A pathname is relative if it does not start with a /.
+   *
+   * @type  String -> String
+   * @since 0.9.4
+   */
+  is-relpath =
+    not(is-abspath)
+
+  /**
+   * Strips the directory from a pathname.
+   *
+   * @type  String -> String
+   * @inc   base-filename-test
+   */
+  base-filename =
+      <string-tokenize> (['/'], <id>)
+    ; last
+  
+/**
+ * @todo  define in terms of more general pathname strategies.
+ */
+strategies
+
+  /**
+   * Strip extension from a pathname.
+   *
+   * @warning basename is not comparable to the basename of sh. 
+   *          sh's basename strips the direcrory an optionallythe suffix.
+   * @type    String -> String
+   * @inc     basename-test
+   */
+  basename =
+    basename(id)
+
+  /**
+   * Strip extension from a pathname.
+   *
+   * @warning basename is not comparable to the basename of sh. 
+   *          sh's basename strips the direcrory an optionallythe suffix.
+   *
+   * @param  checks the extension
+   * @type   String -> String
+   */
+  basename(ext) =
+    explode-string;
+    try(rec x([id|x] <+ ['/' | id] <+ ['.' | ext]; ![]));
+    implode-string
+
+  guarantee-extension(ext) =
+    basename;
+    split(id, <ext>());
+    add-extension
+
+  // has-extension :: (_ -> String) -> String -> String
+  //
+  // has-extension(ext) checks whether the argument is a
+  // string that ends in <ext>.
+
+  has-extension(ext) =
+    where(ext; explode-string => echars);
+    where(explode-string; at-suffix(?echars))
+  
+  // path from program name "/usr/local/bin/prog" -> "/usr/local/bin/"
+ /**
+  * @inc get-path-test
+  */
+  get-path = 
+    explode-string;
+    (rec x([id|x] <+ [47|![]]) <+ ![]);
+    implode-string
+
+  // file name from path "/usr/local/bin/prog" -> "prog"
+ /**
+  * @inc get-filename-test
+  */
+  get-filename = 
+    explode-string
+    ; try(at-suffix-rev(?['/' | name]); !name)
+    ; implode-string
+
+  // :: String * String -> String
+  add-extension : 
+    (name, ext) -> <concat-strings> [name, ".", ext]
+
+  // :: String -> String
+  remove-extension =
+      rec x(
+          split-at-dot
+	; (
+	     ![<?(<id>,"")>]
+	  <+ (![<id>], x) 
+	   ; TupleToList
+	   ; concat
+	  )
+      )
+    ; init
+    ; <separate-by> (".", <id>)
+    ; concat-strings
+
+  /**
+   * Get extension from filename
+   *
+   * @type   String -> String
+   */
+  get-extension =
+    <string-tokenize> (['.'], <id>)
+    ; last
+
+/**
+ * Generate a new, not existing file name.
+ */
+strategies
+
+  new-file =
+    rec x(<conc-strings> (<new>(), ".tmp"); try(file-exists; x))
+
+  // (String, a) -> b :: a -> b
+  temp-file(s) =
+      where(new-file => f)
+    ; <finally(s, try(<remove-file> f))> (f, <id>)
+
+  /**
+   * Safe, mkstemp based, creation of temporary file
+   * 
+   * :: _ -> (String, FileDescr)
+   */
+  new-temp-file =
+      <conc-strings> (<temp-dir>, "/StrategoXT")
+    ; mkstemp
+
+  /**
+   * Safe, mkdtemp based, creation of temporary directory
+   * 
+   * :: _ -> String
+   */
+  new-temp-dir =
+      <conc-strings> (<temp-dir>, "/StrategoXT")
+    ; mkdtemp
+
+/**
+ * find files in paths
+ */
+strategies
+
+  /**
+   * Finds a file in a list of directories (a path).
+   *
+   * This strategy operates on a tuple (f, [d*]) where f is the name of the file
+   * to be found, and d* are the directories to search in. The full path of the
+   * first match is the output term.
+   * Example (when run in strategoxt root):
+   *   <find-in-path> ("file.str", ["ssl/spec", "ssl/tests"]) => "ssl/spec/file.str"
+   */
+  find-in-path =
+    ?(file, <id>) 
+    ; fetch-elem(<concat-strings; file-exists> [<id>,"/",file])
+
+  /**
+   * Finds a file in a list of directories (a path).
+   *
+   * Differs from find-in-path/(0,0) in that it exits with fatal-error if file is
+   * not found.
+   *
+   * @param should build a list of paths in which the search is performed.
+   */
+  find-in-path(mkpath) =
+    file-exists 
+    <+ split(id, mkpath); find-in-path
+    <+ <fatal-error> ["no such file: ", <id>]
+
+  /**
+   * Finds one file with a specific file extension in a list of directories.
+   *
+   * This strategy operates on a tuple (f, [d*]). The one file that will be
+   * searched for is determined by the basename of f and the requested file
+   * extension.
+   * Example:
+   *   <find-file(!"rtree")> ("file.str", ["."])
+   * searches for file.rtree in the current dir.
+   *
+   * @param should build the file extension as a string.
+   */
+  find-file(ext) =
+    (guarantee-extension(ext), id)
+    ; find-in-path
+
+  /**
+   * Finds one file with a specific file extension in a list of directories.
+   *
+   * Differs from find-file/(1,0) in that it exits with fatal error if file is
+   * not found.
+   *
+   * @param should build a list of paths in which the search is performed.
+   * @param should build the file extension as a string.
+   */
+  find-file(mkpath, ext) =
+    guarantee-extension(ext)
+    ; find-in-path(mkpath)

@@ -1,21 +1,10 @@
-/**
- * A transformation system needs to input terms to transform
- * and output transformed terms. Instead of providing a single
- * fixed mechanism for IO, this module
- * defines primitives for file input and output of
- * terms and strings. These primitives can be used in a variety
- * of ways to define customized IO.
- * 
- * A compiled Stratego specification applies the strategy
- * \verb|main| to the command line options that it gets. When
- * interpreting these it will probably be necessary to read in
- * a term from file and later write the transformed term back
- * to (another) file. This module provides the primitives for
- * doing file input and output. Module \verb|options| defines
- * strategies to parse and analyze the command line options.
- */
 module io
 imports
    /* io modules */
-   file dir pipe char-io term-io exec
+   system/io/file 
+   system/io/dir 
+   system/io/pipe 
+   system/io/char
+   system/io/term
+   system/io/exec
 

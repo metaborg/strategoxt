@@ -1,0 +1,96 @@
+/**
+ * Character based in-/output.
+ */
+module system/io/char
+imports 
+  io // XXX
+
+/**
+ * character based output
+ */
+strategies
+
+ /**
+  * Prints integers ij as characters to file (using ASCII encoding).
+  * 
+  * E.g. <printascii> (file, [i1, ..., in])
+  */
+  printascii = 
+    ?(name, strs); where(prim("SSL_printascii", name, strs))
+
+/**
+ * character based input
+ */
+strategies
+
+ /**
+  * Reads the next character from file. 
+  * 
+  * The file should have been opened; a warning is issued if this is not the case
+  * Fails if EOF is reached. Returns the ascii code of the character.
+  *
+  * E.g. <getchar> file => Int
+  */
+  getchar = 
+      dissuader(!"getchar; use fgetc");
+    ?file; prim("SSL_getchar", file)
+
+ /**
+  * Returns the next line in file, a list of ascii codes.
+  * Line is ended by newline or EOF.
+  * 
+  * E.g. <readline> file => List(Int)
+  */
+  readline = ?file;
+    rec x(![<getchar; not(10)> file | <x>()] <+ ![])
+
+  /**
+   * Reads all characters until EOF.
+   *
+   * @type Stream -> String
+   */
+  read-text-from-stream = 
+      ?stream
+    ; rec x(![<fgetc> stream | <x> ()] <+ ![])
+    ; implode-string
+
+
+  /**
+   * Reads the contents of a textfile.
+   *
+   * @type String -> String
+   */
+  read-text-file =
+    ?file
+    ; <fopen> (file,"r") => stream
+    ; read-text-from-stream
+    ; where(<fclose> stream)
+
+  /**
+   * Filters the contents of a textfile character chunk by character chunk.
+   *
+   * 'done' determines when a chunk is complete
+   *        should fail to indicate completeness
+   *
+   * 'more' transforms current chunck after adding next character
+   *        should always succeed
+   *
+   * Note that the charachters in a chunk are in reverse order.
+   *
+   * @type (String, String) -> String
+   */
+
+  filter-text-file(more, done) : 
+    (filein, fileout) -> fileout
+    where <fopen>(filein, "r") => streamin
+        ; <fopen>(fileout, "w") => streamout
+        ; repeat(
+            for(![<fgetc> streamin]; more, done, ![<fgetc> streamin | <id>]; more)
+            ; reverse-map(<fputc> (<id>, streamout))
+          )
+        ; <fclose> streamin
+        ; <fclose> streamout
+
+
+    
+

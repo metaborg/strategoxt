@@ -1,18 +1,14 @@
-/**
- * All list-related modules are imported in module list. 
- */
 module list
-imports simple-traversal
-	string
-	iteration
-	term-io
-	tuple
-	list-cons
-	list-basic
-	list-index
-	list-zip
-	list-sort
-	list-set
-	list-lookup
-	list-misc
-	list-filter
+imports strategy/traversal/simple
+	term/string
+	strategy/iteration
+	system/io/term
+	collection/tuple/common
+	collection/list/cons
+	collection/list/common
+	collection/list/index
+	collection/list/zip
+	collection/list/sort
+	collection/list/set
+	collection/list/lookup
+	collection/list/filter

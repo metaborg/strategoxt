@@ -1,0 +1,76 @@
+module collection/hash-table/nested
+imports 
+  collection/hash-table/common
+signature
+  constructors
+    NestedTable : Hashtable -> TableValue
+    Tables      : TableKey
+    NewTable    : TableKey
+strategies
+
+  nestedtable-put(|keys, value) = 
+    let forward = try(?NewTable; !NestedTable(<new-hashtable>); !(<id>,<id>))
+     in nestedtable-put(forward, id | keys, value)
+    end
+
+  nestedtable-put(forward | keys, value) =
+    nestedtable-put(forward, id | keys, value)
+
+  nestedtable-put(forward, changed | keys, value) = 
+    debug(!"nestedtable-put: "); 
+    forward
+    ; debug(!"nestedtable-put: ")
+    ; ?NestedTable(tbl)
+    ; <nestedtable-put-aux(forward, changed | tbl, value)> keys 
+
+  nestedtable-get(|keys) =
+    nestedtable-get(id | keys)
+
+  nestedtable-get(forward | keys) = 
+    forward
+    ; ?NestedTable(tbl)
+    ; <nestedtable-get-aux(forward | tbl)> keys
+
+//  nestedtable-remove(|keys) = 
+
+//  nestedtable-keys =
+
+//  nestedtable-getlist =
+
+//  nestedtable-putlist(|kv*) =
+
+strategies // hidden
+
+  nestedtable-get-aux(forward | tbl) :
+    [] -> tbl
+
+  nestedtable-get-aux(forward | tbl) :
+    [key] -> value
+    where <hashtable-get(|key)> tbl => value
+
+  nestedtable-get-aux(forward | tbl1) :
+    [key1, key2 | keys] -> value
+    where <hashtable-get(|key1); forward> tbl1 => NestedTable(tbl2)
+	; <nestedtable-get-aux(forward | tbl2)> [key2 | keys] => value
+
+strategies // hidden
+
+  nestedtable-put-aux(forward, changed | tbl, value) :
+    [] -> tbl
+    where debug(!"nestedtable-put-aux: "); fail
+
+  nestedtable-put-aux(forward, changed | tbl, value) :
+    [key] -> tbl
+    where debug(!"nestedtable-put-aux: "); 
+	<hashtable-put(|key, value)> tbl
+	; <changed> NestedTable(tbl)
+
+  nestedtable-put-aux(forward, changed | tbl1, value) :
+    [key1, key2 | keys] -> value
+    where debug(!"nestedtable-put-aux: "); 
+	(<hashtable-get(|key1); forward> tbl1 => NestedTable(tbl2)
+           <+ <forward> NewTable => (x, NestedTable(tbl2))
+              ; <hashtable-put(|key1, x)> tbl1
+	      ; <hashtable-push(|Tables, key1)
+	      ; <changed> NestedTable(tbl1)> tbl1)
+	; <nestedtable-put-aux(forward, changed | tbl2, value)> [key2 | keys]

@@ -1,0 +1,121 @@
+/**
+ * Strategies for logging 
+ */
+module util/log
+signature
+  constructors
+    Emergency : Severity
+    Alert     : Severity
+    Critical  : Severity
+    Error     : Severity
+    Warning   : Severity
+    Notice    : Severity
+    Info      : Severity
+    Debug     : Severity
+    Vomit     : Severity
+
+strategies
+
+  debug-area(s|msg) =
+      log(|Debug, <conc-strings> ("entering area ", msg))
+    ; s
+    ; log(|Debug, <conc-strings> ("leaving area ",  msg))
+
+  risky(s|msg) =
+    risky(s|Error, msg)
+
+  risky(s|severity, msg) =
+    restore(s, log(|severity, msg, <id>))
+
+strategies
+
+  log(|severity : Severity, msg : String, term) =
+    if-log-severity(
+      log(|severity, msg)
+      ; where(
+          <copy-char; log-puts> (<add> (<severity-string; string-length> severity, 3), ' ')
+        ; <write-in-text-to-stream> (<log-stream>, term)
+        ; <log-puts> "\n"
+        )
+    | severity
+    )
+
+  log(|severity : Severity, msg: String) =
+    if-log-severity(
+      where(<concat-strings; log-puts> ["[", <severity-string> severity, " | ",  <log-src>, "] ", msg, "\n"])
+    | severity
+    )
+
+  if-log-severity(s | severity) =
+    if-verbose(s | <verbose-level> severity)
+
+strategies
+
+  log-stream =
+    <get-config> "log-stream" <+ <stderr-stream> ()
+
+  set-log-stream =
+    <set-config> ("log-stream", <id>)
+
+  log-puts =
+    <fputs> (<id>, <log-stream> ())
+
+  log-src =
+    whoami; get-filename
+    <+ !"identity crisis"
+
+rules
+
+  verbose-level : Emergency() -> -10
+  verbose-level : Alert()     -> -5
+  verbose-level : Critical()  -> -2
+  verbose-level : Error()     -> 0
+  verbose-level : Warning()   -> 1
+  verbose-level : Notice()    -> 2
+  verbose-level : Info()      -> 3
+  verbose-level : Debug()     -> 4
+  verbose-level : Vomit()     -> 10
+
+  severity-string : Emergency() -> "emergency"
+  severity-string : Alert()     -> "alert"
+  severity-string : Critical()  -> "critical"
+  severity-string : Error()     -> "error"
+  severity-string : Info()      -> "info"
+  severity-string : Warning()   -> "warning"
+  severity-string : Notice()    -> "notice"
+  severity-string : Info()      -> "info"
+  severity-string : Debug()     -> "debug"
+  severity-string : Vomit()     -> "vomit"
+
+strategies
+
+  /**
+   * Logs the specified message as critical and terminates the program
+   * with exit code 1.
+   */
+  fatal-err(|msg : String) =
+    log(|Critical(), msg, <id>); <exit> 1
+
+  /**
+   * Logs the specified message as and error.
+   */
+  err(|msg : String) =
+    log(|Error(), msg, <id>)
+
+  /**
+   * Logs the specified message as a warning.
+   */
+  warn(|msg : String) =
+    log(|Warning(), msg, <id>)
+
+  /**
+   * Logs the specified message as a notice.
+   */
+  notice(|msg : String) =
+    log(|Notice(), msg, <id>)
+
+  /**
+   * Logs the specified message as a debug.
+   */
+  dbg(|msg : String) =
+    log(|Debug(), msg, <id>)

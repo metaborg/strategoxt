@@ -1,0 +1,200 @@
+/**
+ * Lists can be used to represent sets of terms.  Using the
+ * notion of sets we can define the collection of a set of
+ * subterms corresponding to some criterion.
+ */
+module collection/list/set
+imports 
+  collection/list/common 
+  term/common
+  strategy/collect // collect is imported for backwards compatibility
+
+rules
+ 
+  HdMember(mklst) : 
+    [x | xs] -> xs where mklst; fetch(?x)
+
+  HdMember'(eq, mklst) : 
+     [x | xs] -> xs 
+     where mklst; fetch(\y -> <eq> (x, y)\)
+
+strategies
+
+  /**
+   * Removes duplicate elements from a list.
+   *
+   * @type  List(a) -> List(a)
+   */
+  make-set =
+    foldr(![], union, ![<id>])
+
+  /**
+   * Removes duplicate elements from a list.
+   *
+   * @type   List(a) -> List(a)
+   * @note   nub is an alias of make-set.
+   * @since  0.9.4
+   */
+  nub = make-set
+
+strategies
+
+  /**
+   * Union: Concatenation of two lists, only those elements in the
+   * first list are added that are not already in the second list.
+   *
+   * @type List(a) * List(a) -> List(a)
+   * @inc  test1a
+   * @inc  test1b
+   * @inc  test1c
+   * @inc  test1d
+   * @inc  test1e
+   */
+  union = union(eq)
+
+  // a * a -> fail? :: List(a) * List(a) -> List(a)
+  union(eq) : 
+    (l1, l2) -> <rec x(
+                   ([]; !l2)
+                <+ (HdMember'(eq, !l2); x)
+                <+ [id | x]
+                )> l1
+
+strategies
+
+  /**
+   * @type  List(List(a)) -> List(a)
+   */
+  unions = unions(eq)
+
+  // a * a -> fail? :: List(List(a)) -> List(a)
+  unions(eq) = foldr(![], union(eq))
+
+rules
+
+  /**
+   * Difference of two lists.
+   *
+   * @type  (List(a), List(a)) -> List(a)
+   * @inc  test3a
+   * @inc  test3b
+   * @inc  test3c
+   * @inc  test3d
+   * @inc  test3e
+   */ 
+  diff = diff(eq) 
+
+  /**
+   * @param  Used to compare the elements. If an application succeeds, then two elements are equal.
+   * @type   (List(a), List(a)) -> List(a)
+   */
+  diff(eq) :
+    (l1, l2) -> <rec x(
+                   []
+                <+ (HdMember'(eq, !l2); x)
+                <+ [id | x]
+                )> l1
+
+  diff'(eq) = 
+      obsolete(!"diff'/1; use diff/1")
+    ; diff(eq)
+
+  /**
+   * @type  (List(a), List(a)) -> List(a)
+   * @inc  test4a
+   * @inc  test4b
+   * @inc  test4c
+   * @inc  test4d
+   * @inc  test4e
+   */
+  sym-diff = sym-diff(eq)
+
+  /**
+   * @param  Used to compare the elements. If an application succeeds, then two elements are equal.
+   * @type   (List(a), List(a)) -> List(a)
+   */
+  sym-diff(eq) =
+    <union> (<diff(eq)>, <Swap; diff(eq)>)
+
+strategies
+
+  /**
+   * Take the intersection of two sets.
+   *
+   * Elements are compared using the eq strategy.
+   *
+   * @type [a] * [a] -> [a]
+   * @inc  test2a
+   * @inc  test2b
+   * @inc  test2c
+   * @inc  test2d
+   * @inc  test2e
+   */
+  isect = isect(eq)
+
+
+  /**
+   * Take the intersection of two sets.
+   *
+   * The result is the first list, without the elements
+   * that are not in the second list. If the first list is not
+   * a set (it has duplicates), the result will
+   * have duplicates. Note that because of this <isect> (l1, l2) is 
+   * not always equal to <isect> (l2, l1).
+   *
+   * @type eq  a * a ->? _ 
+   * @type     [a] * [a] -> [a]
+   */
+  isect(eq) : 
+    (l1, l2) -> <rec x(
+                   [] 
+                <+ ( where(HdMember'(eq, !l2)); [id | x] )
+                <+ ?[_ | <x>]
+                )> l1
+
+strategies
+
+
+  /**
+   * Check equality of two list sets.
+   *
+   * This strategy uses the basic `eq` to compare the elements.
+   */
+  set-eq = set-eq(eq)
+
+  /**
+   * Check equality of two list sets.
+   *
+   * The input remains untouched, set-eq just succeeds or fails.
+   *
+   * @param test strategy that will compare two elements upon their equality.
+   * @inc set-eq-test1
+   * @inc set-eq-test2
+   * @inc set-eq-test3
+   * @inc set-eq-test4
+   * @inc set-eq-test5
+   */
+  set-eq(eq)   = subset-gen(eq, ?[])
+
+  subset       = subset(eq)
+  subset(eq)   = subset-gen(eq, ?[_|_])
+  subseteq     = subseteq(eq)
+  subseteq(eq) = subset-gen(eq, ?[] + ?[_|_])
+
+  /**
+   * The general strategy for comparing two list sets.
+   *
+   * Other strategies call this one to check for equality, subset or subseteq.
+   *
+   * @param test strategy that will compare two elements upon their equality.
+   * @param strategy that tests the remainder of the right (2nd) set after
+   *        comparing all elements from the first list. Basically a match.
+   */
+  subset-gen(eq, rest) =
+  where(
+  rec r ( {x, xs, y, ys, y*:
+    ([],rest)
+  + ?([x|xs], y* )
+  ; <split-fetch(\ y -> <eq> (x, y)\); conc> y* => ys
+  ; <r> (xs, ys)
+  }))

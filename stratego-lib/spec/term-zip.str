@@ -1,33 +1,3 @@
-/**
- * The zip strategy on lists takes a pair of lists and combines
- * the elements of the lists into a list of pairs. This can be
- * generalized by transforming a tuple of lists into a list of
- * tuples. This module further generalizes zip by allowing any
- * term structure instead of a list to be zipped.
- */
 module term-zip 
-imports list-zip
-strategies
-
-  // zipping a pair of terms
-
-  pair-term-zip-bu(leaf, node) = 
-    rec x(leaf <+ TermZip(x); node)
-
-rules
-
-  TermZip(s) : 
-    (f#(xs), f#(ys)) -> f#(<zip(s)>(xs, ys))
-
-strategies
-
-  // zipping a tuple of terms 
-
-  term-zip(leaf, node) = 
-    rec x(leaf <+ TermTupleZip(x); node)
-
-  TermTupleZip(s) =
-    tmap({xs: ?f#(xs); !xs});
-    tuple-zip(s);
-    \ xs -> f#(xs) \
+imports term/zip
 

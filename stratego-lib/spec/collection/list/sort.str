@@ -1,0 +1,58 @@
+/**
+ * Strategies related to sorting lists.
+ */
+module collection/list/sort 
+imports 
+  collection/list/common
+strategies
+
+  SortL(s) : 
+    [x, y | l] -> [y, x | l]
+    where <s> (x, y)
+
+  LSort(s) : 
+    [x | l] -> [y, x | l']
+    where <at-suffix({ys: ?[y | ys]; where(<s> (x, y)); !ys})> l => l'
+
+  LMerge(s) : 
+    [x | l] -> [z | l']
+    where <at-suffix(\ [y | ys] -> ys where <s> (x, y) => z\ )> l => l'
+
+  sort-list(s) =  
+    try(rec x((s <+ [id | x]); try(x)))
+
+  isort-list(s) = 
+    try(rec x(([id | x] <+ s); try(x)))
+
+  jsort-list(s) = 
+    try(rec x([id | x] <+ s; try(x)))
+
+  Uniq = 
+    \ [x|xs] -> [x|l] where <filter(not(?x))> xs => l \
+
+ /**
+  * @inc tuple-uniq-test
+  */
+  uniq = 
+    listtd(try(Uniq))
+
+  //uniq = 
+  //  let Uniq = \ [x|xs] -> [x|l] where <filter(not(?x))> xs => l \
+  //   in listtd(try(Uniq))
+
+  /**
+   * Sort a list using the quick-sort algorithm.
+   *
+   * qsort(lt) sorts a list of integers in ascending order.
+   *
+   * @param  swap  (a, a)  -> _
+   * @type         List(a) -> List(a)
+   */
+  qsort(swap) : 
+    [] -> []
+
+  qsort(swap) : 
+    [x|xs] -> <concat>[<qsort(swap)> a, [x], <qsort(swap)> b]
+    where <filter(where(<swap>(<id>,x)))> xs => a
+        ; <filter(where(<not(swap)>(<id>,x)))> xs => b
+

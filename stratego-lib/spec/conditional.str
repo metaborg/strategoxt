@@ -2,49 +2,5 @@
  * Conditionals
  */
 module conditional
-imports option
+imports strategy/conditional 
 
-strategies
-
-  try(s) = s <+ id
-
-  // a -> b :: a -> Option(b)
-  maybe(s) = !Some(<s>) <+ !None()
-
-  // a -> b, () -> b :: Option(a) -> b
-  maybe(s1, s2) : Some(a) -> <s1> a
-  maybe(s1, s2) : None()  -> <s2> ()
-
-  if(c, b)      = c < b  + id
-  if(c, b1, b2) = c < b1 + b2
-
-  ior(a, b) = (a; try(b)) <+ b
-
-  or(a, b) = if a then try(test(b)) else test(b) end
-
-  and(a, b) = if a then test(b) else test(b); fail end
-
-  eq = ?(x, x)
-
- /**
-  * @obsolete use fail
-  */
-  FAIL = 
-    obsolete(!"FAIL: use fail"); 
-    fail
-
-  restore(s, rest) = 
-    s <+ (rest; fail)
-
-  restore-always(s, rest) = 
-    (s; rest) <+ (rest; fail)
-
-  /**
-   * Applies s followed by f whether s failed or not.
-   *
-   * @result <s> input
-   * @fail   s or f failed (consider try(f))
-   * @type   a -> b, (a or b) -> _ :: a -> b
-   */
-  finally(s, f) = 
-    s < where(f) + (where(f); fail)

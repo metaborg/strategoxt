@@ -1,0 +1,98 @@
+/**
+ * Verbosity management.
+ */
+module util/config/verbose
+imports util/config/common
+strategies
+
+ /**
+  * Sets the verbosity level.
+  *
+  * E.g. <set-verbosity>4 sets the verbosity level to 4.
+  */
+  set-verbosity = 
+    <set-config> ("--verbose", <id>)
+
+ /**
+  * Give the current verbosity level. Default is 0.
+  */
+  verbosity = 
+    <get-config> "--verbose" <+ !0
+
+ /**
+  * Builds command-line parameter for verbosity levels for calling XT tools. 
+  *
+  * E.g. xtc-transform(!"abox2text", pass-verbose ) passes the verbosity level
+  * to abox2text.
+  */
+  pass-verbose = 
+    !["--verbose", <subt; int-to-string>(<get-config <+ !1> "--verbose", 1)]
+
+
+/**
+ * Apply the supplied strategy if the verbosity level is set to a value greater 
+ * than or equal to the number given in the strategy name.
+ *
+ * E.g. if-verbose5(debug) calls the debug strategy if verbosity level is > 5.
+ *
+ * @param strategy to be applied
+ */
+strategies
+
+ if-verbose(s|t) = 
+    where(<geq> (<get-config <+ !0> "--verbose", t)) < s + id
+
+  if-verbose1(s) = 
+    try(where(<geq>(<get-config> "--verbose", 1)); s)
+
+  if-verbose2(s) = 
+    try(where(<geq>(<get-config> "--verbose", 2)); s)
+
+  if-verbose3(s) = 
+    try(where(<geq>(<get-config> "--verbose", 3)); s)
+
+  if-verbose4(s) = 
+    try(where(<geq>(<get-config> "--verbose", 4)); s)
+
+  if-verbose5(s) = 
+    try(where(<geq>(<get-config> "--verbose", 5)); s)
+
+  if-verbose6(s) = 
+    try(where(<geq>(<get-config> "--verbose", 6)); s)
+
+  if-verbose7(s) = 
+    try(where(<geq>(<get-config> "--verbose", 7)); s)
+
+
+/**
+ * Apply the supplied strategy if the verbosity level is set to a value lesser 
+ * than or equal to the number given in the strategy name.
+ *
+ * E.g. if-less-verbose3(debug) calls the debug strategy if verbosity level is < 3.
+ *
+ * @param strategy to be applied
+ */
+strategies
+
+  if-less-verbose1(s) = 
+    try(where(<leq>(<get-config> "--verbose", 1)); s)
+
+  if-less-verbose2(s) = 
+    try(where(<leq>(<get-config> "--verbose", 2)); s)
+
+  if-less-verbose3(s) = 
+    try(where(<leq>(<get-config> "--verbose", 3)); s)
+
+  if-less-verbose4(s) = 
+    try(where(<leq>(<get-config> "--verbose", 4)); s)
+
+  if-less-verbose5(s) = 
+    try(where(<leq>(<get-config> "--verbose", 5)); s)
+
+  if-less-verbose6(s) = 
+    try(where(<leq>(<get-config> "--verbose", 6)); s)
+
+  if-less-verbose7(s) = 
+    try(where(<leq>(<get-config> "--verbose", 7)); s)
+
+

@@ -1,0 +1,109 @@
+/**
+ * NOTE: Use XTC instead of configuration files.
+ */
+module util/config/common
+imports 
+  system/io/dir 
+  util/config/verbose 
+  util/config/keep
+
+signature
+  constructors
+    Var    : String -> Config 
+    Path   : String -> Config
+    Prefix : Config * Config -> Config
+
+strategies
+
+  // locate configuration file in a list of directories (path)
+
+  find-config-file(dirs, file) =
+    dirs; fetch-elem(<concat-strings; file-exists> [<id>, "/", <file>])
+    <+ <debug(file)>  " not found"; fail
+
+  // find configuration file relative to a prefix
+
+  find-config-file(prefix, dirs, file) =
+    dirs; fetch-elem(<concat-strings; file-exists> [<prefix>, "/", <id>, "/", <file>])
+    <+ <debug(file)>  " not found"; fail
+
+  // find all configuration files with some extension ext in directories dirs
+  // relative to prefix 
+
+  find-plugins(prefix, dirs, ext) =
+    find-plugins(dirs
+                 ; map(\ d -> <concat-strings>[<prefix>, "/", d, "/"] \ )
+               , ext)
+
+  // find all configuration files with extension ext in directories dirs
+
+  find-plugins(dirs, ext) =
+     dirs
+     ; filter({?dir; readdir
+                   ; filter(has-extension(ext)
+                            ; <concat-strings>[dir, "/", <id>])})
+     ; concat
+
+
+  // read configuration files and add to table
+
+  import-config-file(file) = 
+    where( 
+      file
+      ; if-verbose2(debug(!"importing: "))
+      ; ReadFromFile
+      ; <table-putlist> ("config", <id>) 
+    )
+
+  import-config-files(files) = 
+    where( 
+	files
+	; map( if-verbose2(debug(!"importing: "))
+	     ; ReadFromFile
+	     ; <table-putlist> ("config", <id>)
+	     )
+    )
+
+
+  // write configuration table to file
+
+  export-config =
+    <WriteToTextFile> (<id>, <table-getlist> "config")
+
+  merge-configs =
+    id
+
+  set-config = 
+    ?(key, val)
+    ; <table-put> ("config", key, val)
+
+  rm-config = 
+    ?key
+    ; <table-remove> ("config", key)
+
+  toggle-config = 
+    ?(key, val)
+    ; (<get-config> key; <table-remove> ("config", key)
+       <+ <set-config> (key, val))
+
+  extend-config =
+    ?(key, val)
+    ; <table-put> ("config", key, <conc> (val, <get-config <+ ![]> key))
+
+  post-extend-config =
+    ?(key, val)
+    ; <table-put> ("config", key, <conc> (<get-config <+ ![]> key, val))
+
+  get-config = 
+    <table-get> ("config", <id>)
+
+  // get configurations of keys for which pred succeeds
+
+  get-configs(pred) =
+    <table-getlist> "config"; filter((pred,id); Snd) 
+
+  // get configuration keys for which pred succeeds
+
+  get-config-keys(pred) =
+    <table-getlist> "config"; filter((pred,id); Fst) 
+

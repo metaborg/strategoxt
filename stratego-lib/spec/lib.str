@@ -8,56 +8,54 @@ imports
 
  // sequential control 
 
-	conditional
-	iteration
-	cpl
+	strategy/conditional
+	strategy/iteration
+	util/config/cpl
 
  // traversal
 
-	simple-traversal
-	simple-list-traversal
-	fixpoint-traversal
-	env-traversal
+	strategy/traversal/simple
+	strategy/traversal/list
+	strategy/traversal/fixpoint
+	strategy/traversal/environment
 
  // data types
 
 	list
-	tuple
-	option
-        string
-        string-misc
-	term
-	annotations
+	collection/tuple/common
+	strategy/general/option
+        term/string
+	term/common
+	term/annotation
 	annotation-props
- 	int-list
-	integers
-	reals
-	tables
-        nested-tables
-        sets
-        date-format
+ 	collection/list/integer
+	term/integer
+	term/real
+	collection/hash-table/common
+        collection/hash-table/nested
+        collection/set/indexed
+        util/date-format
 
  // system
 
 	io
-	process
+	system/io/process
 	memo
-	options
-	parse-options
-	logging
+	util/config/options
+	util/config/parse-options
+	util/log
 
 
  // object variables
 
-	substitution
-	rename
-	unification
-	free-variables
+	strategy/general/substitution
+	strategy/general/rename
+	strategy/general/unification
+	strategy/general/free-variables
 
   // testing
 
-	sunit
+	util/sunit
 
-	pack-graph
-
-	parenthesize
+	strategy/pack/graph
+	strategy/general/parenthesize

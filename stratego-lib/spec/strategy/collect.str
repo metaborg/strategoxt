@@ -1,0 +1,225 @@
+/**
+ * Collecting subterms.
+ *
+ * There are two main variants of collect strategies: collect-all 
+ * and collect-om.
+ *
+ * The collect-all strategies continue collecting terms in the 
+ * subterms of a term that has already been collected.
+ *
+ * The collect-om strategies do not collect subterms of collected 
+ * terms. They collect only the outermost subterms that satisfy 
+ * some condition.
+ *
+ * For example: if terms matching the term pattern A(_,_) should be 
+ * collected, then in the term
+ *
+ *   A(1, A(1, 2)) 
+ *
+ * collect-all variant will return 
+ *
+ *   A(1, A(1, 2)) and A(1, 2).
+ *
+ * collect-om will only return the outermost result, that is,
+ *
+ *   A(1, A(1, 2)).
+ */
+module strategy/collect
+imports 
+  collection/list/common
+  term/common
+
+/**
+ * Collect all subterms
+ */
+strategies
+
+  /**
+   * collect all subterms for which s succeeds
+   * 
+   * This strategy returns a *set* of subterms. The result
+   * will therefore not contain duplicates.
+   */
+  collect-all(s) =
+    collect-all(s, union)
+
+  /**
+   * collect all subterms with user-defined union operator.
+   *
+   * The un argument must take two lists and produce a single one.
+   */
+  collect-all(s,un) =
+    rec x(
+      ![<s> | <crush(![],un,x)>]
+      <+ crush(![],un,x)
+    )
+
+  /**
+   * collect all subterms with user-defined union operator and
+   * a skip argument.
+   *
+   * The un argument must take two lists and produce a single one.
+   * If duplicates must be removed, then this argument should be union, 
+   * otherwise it usually conc.
+   *
+   * The skip argument can be used to reduce the current term before
+   * collecting subterms of it. Producing the empty list will result
+   * in a complete skip of all subterms.
+   *
+   * example:
+   *   collect-all(?Var(_), conc, \ Assign(_, e) -> e \)
+   *
+   * applied to:
+   *   Assign(Var("x"), Plus(Var("y"), Var("z")))
+   *
+   * results in:
+   *   [Var("y"), Var("z")]
+   *
+   * @since  0.9.6
+   */
+  collect-all(s, un, skip) =
+    rec x(
+       ![<s> | <crush(![],un,x)>]
+    <+ skip; crush(![],un,x)
+    <+ crush(![],un,x)
+    )
+
+/**
+ * Collect outermost subterms
+ */
+strategies
+
+  /**
+   * collect outermost subterms for which s succeeds
+   * 
+   * This strategy returns a *set* of subterms. The result
+   * will therefore not contain duplicates.
+   */
+  collect-om(s) =
+    collect-om(s, union)
+
+  /**
+   * Synonym of collect-om.
+   */
+  collect(s) = 
+    collect-om(s)
+
+  /**
+   * collect outermost subterms with user-defined union operator.
+   *
+   * The un argument must take two lists and produce a single one.
+   */
+  collect-om(s, op) =
+    ![<s>] 
+    <+ crush(![], op, collect-om(s, op))
+
+  /**
+   * collect outermost subterms with user-defined union operator and
+   * a skip argument.
+   *
+   * See collect-all(s, un, skip) for a description of the arguments.
+   *
+   * @since  0.9.6
+   */
+  collect-om(s, un, skip) =
+    rec x(
+       ![<s>]
+    <+ skip; crush(![],un,x)
+    <+ crush(![],un,x)
+    )
+
+strategies
+
+ /**
+  * Produces pair of a reduced term and a list of extracted subterms.
+  *
+  * Reduces terms with f and extracts information with g resulting in a
+  * pair (t, xs) of a reduced term and the list of extracted subterms.
+  */
+  collect-split(f, g) = 
+    rec x(CollectSplit(x, !(<try(f)>, <g <+ ![]>)))
+
+  collect-split(splitter) = 
+    rec x(CollectSplit(x, splitter <+ !(<id>,[])))
+
+  /**
+   * Helper of collect-split. Don't use.
+   */
+  CollectSplit(s, splitter) :
+    c#(as){annos*} -> (t, <union> (ys, <unions> xs))
+      where <unzip(s)> as => (bs, xs);
+      <splitter> c#(bs){annos*} => (t, ys)
+
+  /**
+   * Helper of collect-split. Don't use.
+   */
+  CollectSplit(s, f, g) = 
+    CollectSplit(s, !(<try(f)>, <g <+ ![]>))
+
+
+  collect-split'(splitter) = 
+    rec x((is-string + is-int); splitter
+          <+ CollectSplit(x, splitter))
+
+strategies
+
+  postorder-collect(s) =
+    postorder-collect(s, ![])
+
+  postorder-collect(s, acc) =
+    where((![<s> | <acc>] <+ acc) => ys);
+    crush(!ys, \ (x, xs) -> <postorder-collect(s, !xs)> x \ )
+
+strategies
+
+  collect(s, skip: (a -> a) * (a -> a) * a -> a) =
+    ![<s>]
+    <+ skip(collect(s,skip), ![]); crush(![],union,id)
+    <+ crush(![],union,collect(s,skip))
+
+  collect-exc(base, special : (a -> b) * a -> b) = 
+    rec coll(
+      (base 
+      <+ special(coll))
+      <+ crush(![], union, coll)
+    )
+
+  bu-collect(s) =
+    rec x(some(x); crush(![],union,[s|id] <+ ![])
+          <+ ![<s>] )
+    <+ ![]
+   
+strategies
+
+  /**
+   * @obsolete use crush(![],union,s)
+   */
+  collect-kids(s) = 
+    obsolete(!"collect-kids(s); use crush(![],union,s)");
+    crush(![],union,s)
+
+  /**
+   * Collect a bag of outermost subterms for which s succeeds.
+   *
+   * @warning   despite its name, this strategy does return duplicates.
+   * @obsolete  use collect-om(s, conc)
+   */
+  collect-set(s) =
+    obsolete(!"collect-set(s); use collect-om(s, conc)")
+    ; collect-om(s, conc)
+
+strategies // TODO: where should we put this?
+
+  twicetd(s) =
+    oncetd(
+      explode-term
+    ; (id, at-suffix(Cons(oncetd(s), oncetd(s))))
+    ; mkterm
+    )
+
+  atmostonce(s) =
+    not(twicetd(s))
+
+  atmostonce'(s) =
+    nrofoccs(s) => n
+    ; <leq> (n, 1)

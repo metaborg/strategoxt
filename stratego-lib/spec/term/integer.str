@@ -1,0 +1,248 @@
+/**
+ * Integer arithmetic and comparison.
+ */
+module term/integer
+strategies
+
+  is-int = ?i; prim("SSL_is_int", i)
+
+  /**
+   * @obsolete use subt
+   */
+  minus = obsolete(!"minus; use subt"); subt
+
+  /**
+   * @obsolete use add
+   */
+  plus 	= obsolete(!"plus; use add"); add
+
+  /**
+   * Adds two numbers (integer or real)
+   */
+  add  = ?(x,y); (prim("SSL_addi",x,y) <+ prim("SSL_addr",x,y))
+
+  /**
+   * Adds two integers
+   */
+  addi = ?(x,y); prim("SSL_addi",x,y)
+
+  /**
+   * Adds two reals
+   */
+  addr = ?(x,y); prim("SSL_addr",x,y)
+
+  subt  = ?(x,y); (prim("SSL_subti",x,y) <+ prim("SSL_subtr",x,y))
+  subti = ?(x,y); prim("SSL_subti",x,y)
+  subtr = ?(x,y); prim("SSL_subtr",x,y)
+
+  mul   = ?(x,y); (prim("SSL_muli",x,y) <+ prim("SSL_mulr",x,y))
+  muli  = ?(x,y); prim("SSL_muli",x,y)
+  mulr  = ?(x,y); prim("SSL_mulr",x,y)
+
+  div   = ?(x,y); (prim("SSL_divi",x,y) <+ prim("SSL_divr",x,y))
+  divi  = ?(x,y); prim("SSL_divi",x,y)
+  divr  = ?(x,y); prim("SSL_divr",x,y)
+
+  mod = ?(x,y); prim("SSL_mod",x,y)
+
+  gt	= ?(x,y); test(prim("SSL_gti",x,y) <+ prim("SSL_gtr",x,y))
+
+  gti	= ?(x,y); test(prim("SSL_gti",x,y))
+  gtr	= ?(x,y); test(prim("SSL_gtr",x,y))
+
+  geq = ?(x,x) <+ gt
+  lt  = not(geq)
+  leq = not(gt)
+
+strategies
+
+  // :: Int * Int * Int -> fail?
+  leq-leq = comp-comp(leq, leq)
+  leq-lt  = comp-comp(leq, lt)
+   lt-leq = comp-comp(lt,  leq)
+   lt-lt  = comp-comp(lt,  lt)
+
+  // Int * Int -> fail?, Int * Int -> fail? :: Int * Int * Int -> fail?
+  comp-comp(s1, s2) =
+      ?(x, y, z)
+    ; where(<s1> (x, y); <s2> (y, z))
+
+strategies
+
+  /**
+   * @type  Int -> fail?
+   */
+  even = where(<mod> (<id>, 2) => 0)
+
+  /**
+   * @type  (Int, * Int -> Int
+   */
+  max = gt < Fst + Snd
+  min	= gt < Snd + Fst
+
+  /**
+   * @type  Int -> Int
+   */
+  pos = where(<geq> (<id>, 0))
+  neg = where(<lt>  (<id>, 0))
+
+  int   = ?x; prim("SSL_int",x)
+
+  int-to-string = ?x; prim("SSL_int_to_string",x)
+  string-to-int = ?x; prim("SSL_string_to_int",x)
+
+strategies
+
+
+ /**
+  * @type String -> Int
+  * @inc hex-string-test
+  */
+  hex-string-to-int = <generic-string-to-int> (<id>, 16)
+
+ /**
+  * @type String -> Int
+  * @inc dec-string-test
+  */
+  dec-string-to-int = <generic-string-to-int> (<id>, 10)
+
+  oct-string-to-int = <generic-string-to-int> (<id>, 8)
+
+ /**
+  * @type String -> Int
+  * @inc bin-string-test
+  */
+  bin-string-to-int = <generic-string-to-int> (<id>, 2)
+
+  // :: List(Char) -> Int
+  hex-chars-to-int = <generic-chars-to-int> (<id>, 16)
+  dec-chars-to-int = <generic-chars-to-int> (<id>, 10)
+  oct-chars-to-int = <generic-chars-to-int> (<id>, 8)
+  bin-chars-to-int = <generic-chars-to-int> (<id>, 2)
+
+  // :: String * Int -> Int
+  generic-string-to-int =
+      (explode-string, id)
+    ; generic-chars-to-int
+
+  // :: List(Char) * Int -> Int
+  generic-chars-to-int = 
+    neg-chars-to-int <+ pos-chars-to-int
+
+  // :: List(Char) * Int -> Int
+  neg-chars-to-int:
+    (['-' | chars], radix) -> <mul> (-1, <pos-chars-to-int> (chars, radix))
+      where <gt> (<length> chars, 0)
+
+  // :: List(Char) * Int -> Int
+  pos-chars-to-int =
+      ?([char | chars], r)
+    ; <foldl(<add> (<char-to-digit> (<Fst>, r), <mul> (<Snd>, r)))>
+        (chars, <char-to-digit> (char, r))
+
+  // :: Char -> Int
+  char-to-digit:
+    (x, radix) -> result
+      where <is-num> x
+          ; <subt> (x, '0') => result
+          ; <lt> (result, radix)
+
+  char-to-digit:
+    (x, 16) -> <add> (10, <subt> (x, 'a'))
+      where <leq-leq> ('a', x, 'f')
+
+  char-to-digit:
+    (x, 16) -> <add> (10, <subt> (x, 'A'))
+      where <leq-leq> ('A', x, 'F')
+
+strategies
+
+  /**
+   * Sets a seed for the next-random function.
+   *
+   * @see    man srand
+   * @since  0.9.4
+   * @type   Int -> ()
+   */
+  set-random-seed = ?seed; prim("SSL_srand", seed)
+
+  get-random-max = prim("SSL_RAND_MAX")
+
+  /**
+   * Returns a random number.
+   *
+   * @see    man rand
+   * @since  0.9.4
+   * @type   _ -> Int
+   */
+  next-random = prim("SSL_rand")
+
+strategies
+
+  addS  = (string-to-int, string-to-int); add; int-to-string
+  subtS = (string-to-int, string-to-int); subt; int-to-string
+  mulS  = (string-to-int, string-to-int); mul; int-to-string
+  divS  = (string-to-int, string-to-int); div; int-to-string
+  modS  = (string-to-int, string-to-int); mod; int-to-string
+  gtS   = where((string-to-int, string-to-int); gt)
+  geqS  = where((string-to-int, string-to-int); geq)
+  ltS   = where((string-to-int, string-to-int); lt)
+  leqS  = where((string-to-int, string-to-int); leq)
+  maxS  = where((string-to-int, string-to-int); max)
+  minS  = where((string-to-int, string-to-int); min)
+
+  // :: Int -> Int
+  inc = <add>  (<id>, 1)
+  dec = <subt> (<id>, 1)
+
+  log2 = 
+    !(<id>, 0);
+    repeat((!(<divi>(<id>, 2), <mod; ?0>(<id>, 2)); Fst, inc));
+    ?(1, <id>)
+
+strategies
+
+  gcd =
+    (abs,abs) 
+  ; let gcd' = \ (x,0) -> x \ + \ (x,y) -> <gcd'>(y,<mod>(x,y)) \ 
+    in 
+      gcd' 
+    end
+
+  abs =
+    (is-int + is-real)
+    ; if neg then
+        <subt> (0, <id>)
+      end
+
+signature
+  sorts IntI
+  // subsorts Int < IntI
+  constructors
+    Infinite: IntI
+
+rules
+
+  add-inf1: (Infinite, _) -> Infinite
+  add-inf2: (_, Infinite) -> Infinite
+  add-inf = (add-inf1 + add-inf2) <+ add
+
+  lt-inf = ?(<is-int>, Infinite) <+ (is-int, is-int); lt
+
+imports dynamic-rules
+strategies
+
+  new-counter =
+    new; reset-counter
+
+  reset-counter = ?c;
+    where(<set-counter> (c, 0))
+
+  set-counter = 
+    ?(c,n); rules( Counter : c -> n )
+
+  get-counter =
+    Counter <+ <set-counter> (<id>,0)
+
+  next-counter =
+    ?c; get-counter; inc; where(<set-counter> (c, <id>))
