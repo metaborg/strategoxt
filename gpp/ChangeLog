@@ -1,6 +1,8 @@
 2004-02-22   Merijn de Jonge  <mdejonge@cs.uu.nl>
    * pp/Box.pp and pp/pp-tables.pp are now installed in <prefix>/share/gpp
      (no longer in <prefix>/share/doc/gpp
+   * Makefile.am: added autoxt.m4 to EXTRA_DIST
+   * Makefile.am: added line: ACLOCAL_AMFLAGS = -I .
 
 2003-11-25   Merijn de Jonge  <M.de.Jonge@tue.nl>
    * pptable-diff: if --new switch is missing, standard input is used
