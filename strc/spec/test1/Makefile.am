@@ -54,7 +54,7 @@ EXTRA_DIST = $(wildcard *.r) make-rules io-test*.in bar.c
 
 test50OBJECTS = bar.o
 
-test51LDADD = -L$(SRTS)/lib/srts -l liblib
+test51LDADD = -L$(SRTS)/lib/srts -lliblib
 
 bar.o: bar.c
 

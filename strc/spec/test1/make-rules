@@ -193,7 +193,7 @@ SCLibs = -L$(SRTS)/lib/srts -lstratego-lib -lstratego \
 
 %.bin : %.o $($*OBJECTS)
 	-$(MAKE) $< $($*OBJECTS)
-	$(CC) -g $< $($*OBJECTS) -o $@ $($*LDADD) $(SCLibs)
+	$(LINK) $*.o $($*OBJECTS) $($*LDADD) $(SCLibs)
 
 # RUNNING ###########################################################
 
@@ -223,7 +223,9 @@ SCLibs = -L$(SRTS)/lib/srts -lstratego-lib -lstratego \
 
 %.ibin : %.io $($*OBJECTS)
 	-$(MAKE) $< $($*OBJECTS)
-	$(CC) -o $@ -g $*.o $($*OBJECTS) $(SCLibs)
+	$(LINK) $*.o $($*OBJECTS) $(SCLibs)
+
+#$(CC) -o $@ -g $*.o $($*OBJECTS) $(SCLibs)
 
 %.ilib: %.r
 	../strc/strc $(SINCLUDES) $(SCFLAGS) -i $< -o $@ --verbose 3 --library
