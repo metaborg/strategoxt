@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/05/30 15:19:01 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2001/05/30 16:02:21 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -48,7 +48,7 @@ CLEANFILES   += tiny.txt aterms.txt aterms.tree asfix-yield-check asource
 SCFLAGS      += -I $(srcdir)/../asfix
 
 % : %.src
-	sed 's#__GB__#$(GB)#g;\
+	sed 's#__SRCDIR__#$(srcdir)#g;\
 	     s#__SGLR__#$(SGLR)#g' < $< > $@
 	chmod +x $@
 

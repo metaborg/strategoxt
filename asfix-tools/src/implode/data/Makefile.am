@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/05/30 15:19:04 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2001/05/30 16:02:26 mdejonge Exp $
 
 TEST_SET = Iter Iter-sep Iter-star Iter-star-sep Nesting-iter-sep1 \
            Nesting-iter-sep2 Nesting-iter-star-sep Empty-iter-star-sep \
@@ -60,8 +60,8 @@ testsetclean:
 	(\
 	   echo 'set -e' ;\
 	   echo 'gmake tests.tbl $*.in' ;\
-	   echo '../implode-asfix $($(subst -,_,$*)_flags) -i $*.in -o $*.tested' ;\
-	   echo 'diff $*.tested $*.out' ;\
+	   echo '../implode-asfix $($(subst -,_,$*)_flags) -i $(srcdir)/$*.in -o $*.tested' ;\
+	   echo 'diff $*.tested $(srcdir)/$*.out' ;\
 	) > $@ && chmod +x $@
 
 %.in :

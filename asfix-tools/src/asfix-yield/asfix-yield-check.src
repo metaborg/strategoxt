@@ -19,20 +19,20 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: asfix-yield-check.src,v 1.1 2001/05/30 15:19:01 mdejonge Exp $
+# $Id: asfix-yield-check.src,v 1.2 2001/05/30 16:02:21 mdejonge Exp $
 
 # Exit immediately if a command exits with a non-zero status.
 set -e
-SGLR=__SGLR__
+srcdir=__SRCDIR__
 
 # Your test comes here
 
 ## Location of sdf parse table
 #SDFTBL=../sdf/sdf.tbl
 
-./asfix-yield < tiny.tree > tiny.txt
-diff tiny.sil tiny.txt
+./asfix-yield < ${srcdir}/tiny.tree > tiny.txt
+diff ${srcdir}/tiny.sil tiny.txt
 
 #PATH=${SGLR}/bin:${PATH} sglr -1 -t -p ${SDFTBL} -i aterms.sdf -o aterms.tree
-./asfix-yield < aterms.tree > aterms.txt
-diff aterms.sdf aterms.txt
+./asfix-yield < ${srcdir}/aterms.tree > aterms.txt
+diff ${srcdir}/aterms.sdf aterms.txt
