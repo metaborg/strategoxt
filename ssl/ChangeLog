@@ -1,3 +1,10 @@
+2004-08-26  Martin Bravenboer <martin@cs.uu.nl>
+
+	* spec/list-basic.str: solved a long-time frustration: added a
+	variant of separate-by that uses a term argument for the
+	separator. I always forget that the separator should be the first
+	element in the past to the old-style separate-by.
+	
 2004-08-12  Arthur van Dam  <adam@cs.uu.nl>
 
 	* spec/string.str : newname - now trims any trailing digits up to

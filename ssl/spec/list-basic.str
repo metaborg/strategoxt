@@ -6,24 +6,27 @@ imports list-cons
 
 strategies
 
-  Hd     : [x | _] -> x
-  Tl     : [_ | l] -> l
-  Last   : [x] -> x
+  Hd   : [x | _] -> x
+  Tl   : [_ | l] -> l
+  Last : [x]     -> x
 
   /**
-   * @type a -> [a]
+   * @type a -> List(a)
    */
-  MkSingleton = ![<id>]
+  MkSingleton =
+    ![<id>]
 
   /**
-   * @type [a] -> a * [a]
+   * @type List(a) -> (a, List(a))
    */
-  split-Cons : [x | xs] -> (x, xs)
+  split-Cons :
+    [x | xs] -> (x, xs)
 
   /**
    * @type a * [a] -> [a]
    */ 
-  MkCons : (x, xs) -> [x | xs]
+  MkCons :
+    (x, xs) -> [x | xs]
 
 strategies
 
@@ -258,7 +261,7 @@ strategies
   conc-more-lists = conc
 
   /**
-   * @type [[a]] -> [a]
+   * @type List(List(a)) -> List(a)
    * @inc  concat-test
    */
   concat =
@@ -267,24 +270,39 @@ strategies
 strategies
 
   /**
-   * @type a * [b] -> [a or b]
+   * Separates the elements of the list by the specified separator.
+   * The separate-by variant that uses a term argument is prefered.
+   *
+   * @type (sep, List(a)) -> List(a or sep)
    */
-  separate-by :
-    (a, xs) -> <[] + [id | rec x( [] + [id | x]; ![a | <id>])]> xs
+  separate-by =
+    ?(sep, <id>)
+    ; separate-by(|sep)
 
   /**
-   * @type s _ -> a
-   * @type   [b] -> [a or b]
+   * Separates the elements of the list by the specified separator.
+   * The separate-by variant that uses a term argument is prefered.
+   *
+   * @param s  Strategy that results in a separator.
+   * @type     List(a) -> List(a or sep)
    */
-  separate-by(s) =
-    <separate-by> (<s> (), <id>)
-
+  separate-by(sep) =
+    separate-by(|<sep> ())
 
   /**
-   * @obsolete obsolete util rule of separate-by
+   * Separates the elements of the list by the specified separator.
+   *
+   * @param sep  Separator term
+   * @type       List(a) -> List(a or sep)
    */
-  Sep(s) = obsolete(!"Sep/1; This is a private and obsolete util rule of separate-by");
-    \ [x| xs] -> [<s>(), x | xs] \
+  separate-by(|sep) =
+    []
+    + [id |
+        rec x(
+          []
+        + [id | x]
+          ; ![sep | <id>]
+        )]
 
 strategies
 
@@ -297,7 +315,6 @@ strategies
       ; unzip
       ; (id, matrix-transpose)
       ; MkCons
-
 
   /**
    * <for-each-pair(s)> (xs, ys) produces the list of pairs <s> (x,y).
