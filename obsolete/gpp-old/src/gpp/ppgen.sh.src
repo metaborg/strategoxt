@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: ppgen.sh.src,v 1.4 2001/10/12 14:20:13 mdejonge Exp $
+# $Id: ppgen.sh.src,v 1.5 2001/10/14 20:08:56 mdejonge Exp $
 
 # usage:
 #   ppgen [-A] [-a] [-h] [-i grammar] [-o file] [-S] [-v]
@@ -80,7 +80,7 @@ cmd="cat ${INPUT}"
 
 case $INPUT_TYPE in
    plain-text )             cmd="$cmd \
-                          | ${SGLR}/bin/sglr -2 -p ${pkgdatadir}/share/gpp/sdf.cons.tbl \
+                          | ${SGLR}/bin/sglr -2 -p ${pkgdatadir}/sdf.cons.tbl \
                           | ${PREFIX}/bin/implode-asfix" ;;
                      
    parse-tree )           cmd="$cmd | ${PREFIX}/bin/implode-asfix" ;;
@@ -90,7 +90,7 @@ esac
    
 cmd="$cmd \
      | ${PREFIX}/libexec/Ppgen ${SILENT} \
-     | ast2abox ${VERBOSE} -p ${pkgdatadir}/share/gpp/pp-tables.pp \
+     | ast2abox ${VERBOSE} -p ${pkgdatadir}/pp-tables.pp \
      | ${PREFIX}/bin/abox2text"
 
 # -o option has been specified

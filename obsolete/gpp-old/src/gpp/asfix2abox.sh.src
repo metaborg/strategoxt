@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: asfix2abox.sh.src,v 1.3 2001/10/12 14:20:12 mdejonge Exp $
+# $Id: asfix2abox.sh.src,v 1.4 2001/10/14 20:08:55 mdejonge Exp $
 
 # usage:
 #   asfix2abox [-h] [-i asfix] [-o abox] [-p table_1] ... [-p table_n] [-v]
@@ -71,7 +71,7 @@ unset MAKELEVEL
 # Building imploded pretty-print tables
 for table in ${PP_TABLES}
 do
-   ${MAKE} -s -f ${pkgdatadir}/share/gpp/gpp.Makefile ${table}.af > /dev/null || exit 1
+   ${MAKE} -s -f ${pkgdatadir}/gpp.Makefile ${table}.af > /dev/null || exit 1
    PP_AF_TABLES="${PP_AF_TABLES} -p ${table}.af"
 done
 
