@@ -202,7 +202,7 @@ where
    <pkg-list>();
 
    collect( {bindings: ReqPackage( ?name, id, Fst;?bindings);!bindings });
-   concat;
+   concat => configuration-bindings;
 
    // Find out all dependency parameter bindings by determining which
    // required packages are bundled. For each of them, add Arg1(pkg,
@@ -232,14 +232,19 @@ where
    ); concat; uniq  => config';
 
    // Check whether configuration parameters are bound multiple times.
-   // Raise a fatal-error when multiple bindings exist
-   map( \ArgSwitch(name,_) -> name \ + \ Switch(name) -> name \ );
-   ?cfg;
-   uniq;
-   filter( \x -> <filter(?x);Tl>cfg \);
-   concat;uniq;
-   ( [] <+ <fatal-error>["*** bundle error: Double bindings for configuration parameter(s) of package ", name, ": ",<id>])
-
+   // Raise a fatal-error when multiple bindings exist/
+   // A double binding exist of in config' multiple ArgSwitches occur with
+   // the same name
+   (
+      // First check for double bindings for ArgSwitches
+      filter(ArgSwitch(id,!())) => bindings;
+      uniq => bindings
+    <+
+      <fatal-error>["*** bundle error: Double bindings for configuration parameter(s) of package ", 
+                    name, ": ",
+                    <map( \ArgSwitch(n,v) -> <concat-strings>[n,"=",v]\ )><id>]
+   )
+   
 overlays
 identification(name,version,location,info,description,keywords) =
    Identification(
