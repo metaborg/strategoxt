@@ -16,7 +16,7 @@
 # 02111-1307, USA.
 
 AC_INIT(src/xtc-register.str)
-AM_INIT_AUTOMAKE(xtc,0.9beta7)
+AM_INIT_AUTOMAKE(xtc,0.9beta8)
 
 USE_XT_PACKAGES
 

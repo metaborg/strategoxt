@@ -21,11 +21,14 @@ strategies
 
   xtc-read = ?rep
     ; not(<table-get>(XTC, Imported(rep)))
-    ; where(<table-put>(XTC, Repository, rep))
+    ; where(<table-put>(XTC, Repository, [rep]))
     ; if-verbose4(debug(!"Reading repository: "))
     ; (file-exists ; ReadFromFile <+ ![])
-    ; <table-putlist>(XTC, <id>)
-    ; <table-put>(XTC, Imported(rep), ())
+    ; if-verbose8(say(!"Repository read: "))
+    ; <table-putlist(table-append)>(XTC, <id>)
+    ; if-verbose8(say(!"Repository stored in table: "))
+    ; <table-put>(XTC, Imported(rep), [])
+    ; if-verbose4(say(!"Repository read: "))
 
   xtc-import = 
     try(<table-get>(XTC, Import)
@@ -42,7 +45,7 @@ strategies
     ; if-verbose5(debug(!"xtc-loaded: "))
 
   xtc-store =
-    if-verbose1(say(!"  Saving repository ")) 
+    if-verbose1(say(!"  Saving repository "))
     ; <WriteToTextFile> (<get-config> "-r", <table-getlist> XTC)
 
 

@@ -11,6 +11,8 @@ signature
 
 strategies
 
+  // reading and writing files
+
   rename-to(name) :
     FILE(oldname) -> FILE(newname)
     where name => newname
@@ -20,8 +22,10 @@ strategies
   rename-to(name) :
     FILE(oldname) -> stdout
     where name => stdout
-        ; <ReadFromFile> oldname => term
-	; <WriteToTextFile> (stdout, term)
+	; <copy-file> (oldname, stdout)
+	; <remove-file> oldname
+        //; <ReadFromFile> oldname => term
+	//; <WriteToTextFile> (stdout, term)
 
   read-from :
     FILE(name) -> t
@@ -37,6 +41,18 @@ strategies
         ; <WriteToTextFile> (name, t)
 
 
+  // XTC-IO
+
+  // 'read' input file, transform, and 'write' to output file
+
+  xtc-io(s) =
+    (!FILE(<get-config> "-i") <+ !stdin)
+    ; s
+    ; rename-to(<get-config> "-o" <+ !stdout)
+
+
+  // XTC-TEMP-FILES
+
   // scoped temporary files
 
   xtc-new-file =
@@ -48,7 +64,7 @@ strategies
     where(
       <table-get>(XTC, TEMP) => fs
       ; map(try(remove-file))
-    )
+    ) 
 
   xtc-temp-files(s) = 
     begin-scope(!TempFiles)
@@ -57,8 +73,11 @@ strategies
             ; <map(try(remove-file))> scope)
     ; end-scope(!TempFiles)
 
+
+  // XTC-COMMAND
   // Executing an external process
   // a -> String :: List(String) -> List(String)
+
   xtc-command(tool) = 
     where(tool; xtc-find-warning => loc)
     ; where(<call> (loc, <id>))
@@ -73,7 +92,7 @@ strategies
     xtc-transform-file(tool, args)
     <+ xtc-transform-term(tool, args)
   
-  // Transforming a file
+  // Transforming a file with an external process
 
   xtc-transform-file(tool) =
     xtc-transform-file(tool, ![])
@@ -88,9 +107,14 @@ strategies
     where xtc-new-file => g
         ; <xtc-command(tool)> ["-o", g | <args>]
 
-  // Transforming a term
+  // Transforming a term with an external process
 
   xtc-transform-term(tool, args) = 
     write-to
     ; xtc-transform-file(tool, args)
     ; read-from
+
+  // Transforming a file with an internal strategy
+
+  xtc-io-transform(s) =
+    read-from; s; write-to
