@@ -22,7 +22,7 @@ PKGS="srts ssl cgen sc-boot gpp-boot stratego-front sc"
 AC_SUBST(PKGS)
 
 AC_ARG_WITH(aterm, 
-  [  --with-aterm                Location of external aterm package. [$prefix]], 
+  [  --with-aterm                Location of external aterm package.], 
   ATERM=$withval, 
   ATERM="$prefix"
 )
@@ -36,43 +36,36 @@ AC_ARG_WITH(cpl,
 AC_SUBST(CPL)
 AM_CONDITIONAL(USECPL, test x$usecpl = xtrue)
 
-AC_ARG_WITH(sdf, 
-  [  --with-sdf=DIR              Specify location of SDF, [\$prefix]], 
-  SDF="$withval", 
-  SDF="$prefix"
-)
-AC_SUBST(SDF)
-
 AC_ARG_WITH(sglr, 
-  [  --with-sglr=DIR             Specify location of SGLR, [\$SDF]], 
+  [  --with-sglr=DIR             Specify location of SGLR], 
   SGLR="$withval", 
-  SGLR="$SDF"
+  SGLR="$prefix"
 )
 AC_SUBST(SGLR)
 
 AC_ARG_WITH(pgen, 
-  [  --with-pgen=DIR             Specify location of SDF2 parser generator, [\$SDF]], 
+  [  --with-pgen=DIR             Specify location of SDF2 parser generator], 
   PGEN="$withval", 
-  PGEN="$SDF"
+  PGEN="$prefix"
 )
 AC_SUBST(PGEN)
 
 AC_ARG_WITH(asfix-tools, 
-  [  --with-asfix-tools=DIR      Specify location of ASFIX-TOOLS, [\$SDF]], 
+  [  --with-asfix-tools=DIR      Specify location of asfix-tools], 
   ASFIX_TOOLS="$withval", 
   ASFIX_TOOLS="$SDF"
 )
 AC_SUBST(ASFIX_TOOLS)
 
 AC_ARG_WITH(stratego-tools, 
-  [  --with-stratego-tools=DIR   Specify location of STRATEGO-TOOLS, [\$prefix]], 
+  [  --with-stratego-tools=DIR   Specify location of stratego-tools], 
   STRATEGO_TOOLS="$withval", 
   STRATEGO_TOOLS="$prefix"
 )
 AC_SUBST(STRATEGO_TOOLS)
 
 AC_ARG_WITH(sdf-tools, 
-  [  --with-sdf-tools=DIR        Specify location of SDF-TOOLS, [\$prefix]], 
+  [  --with-sdf-tools=DIR        Specify location of sdf-tools], 
   SDF_TOOLS="$withval", 
   SDF_TOOLS="$prefix"
 )

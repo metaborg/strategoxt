@@ -18,13 +18,6 @@ AC_ARG_WITH(sc,
 )
 AC_SUBST(SC)
 
-AC_ARG_WITH(sdf, 
-  [  --with-sdf=DIR              Specify location of SDF, [\$prefix]], 
-  SDF="$withval", 
-  SDF="$prefix"
-)
-AC_SUBST(SDF)
-
 AC_ARG_WITH(sglr, 
   [  --with-sglr=DIR             Specify location of SGLR, [\$SDF]], 
   SGLR="$withval", 
@@ -76,7 +69,7 @@ AC_SUBST(CGEN)
 
 ####################### 
 
-AC_REVISION($Id: configure.in,v 1.2 2002/06/11 12:13:34 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.3 2002/06/20 09:46:41 stratego Exp $)
 
 AC_PROG_CC
 

@@ -18,7 +18,7 @@ EXTRA_DIST = Stratego.def StrategoStratego.def Stratego.tbl StrategoStratego.tbl
 	asource -i $*.adef -o $@ 
 
 %.tbl: %.def
-	$(SDF)/bin/sdf2table -i $< -o $@ -m $*
+	$(PGEN)/bin/sdf2table -i $< -o $@ -m $*
 
 # DEPENDENCIES ###############################################
 
