@@ -1,3 +1,8 @@
+2005-01-12  Martin Bravenboer <martin@cs.uu.nl>
+
+	* parse/parse-stratego.str: use sglri for parsing: the stratego
+	compiler now uses the fancy error reporting of sglri.
+	
 2005-01-02  Martin Bravenboer <martin@cs.uu.nl>
 
 	* syn/Stratego-Identifiers.sdf: allow a / separator between parts

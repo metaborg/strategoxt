@@ -60,22 +60,16 @@ strategies
     ; where( get-meta => meta )
     ; where( <get-syntax ; get-parse-table> meta => FILE(tbl) )
 
-    ; xtc-transform(!"sglr",
-        !["-2", "-p", tbl | <concat>
-           [ <pass-sglr-verbose> ()
+    ; xtc-transform(!"sglri",
+        !["-b", "-p", tbl | <concat>
+           [ <pass-verbose> ()
            , <pass-filters> meta
            , <pass-sort> meta
+           , <if <get-config> "--asfix" then !["--impl", "--concrete"] else ![] end>
            ]
          ]
-       ; if-verbose6(debug(!"sglr arguments: "))
+       ; if-verbose6(debug(!"sglri arguments: "))
        )
-
-    ; xtc-transform(!"implode-asfix",
-        !["-b" | <concat>
-           [ <pass-verbose>
-           , <if <get-config> "--asfix" then !["--concrete"] else ![] end>
-           ]
-         ])
 
     ; if-keep1(copy-to(<guarantee-extension(!"atree")> base))
 
@@ -113,17 +107,11 @@ strategies
 strategies
 
   /**
-   * @type _ -> List(String)
-   */  
-  pass-sglr-verbose =
-    ![]; if-verbose3(!["-v"])
-
-  /**
    * @type MetaData -> List(String)
    */  
   pass-sort =
     if ?Meta(<fetch-elem(?TopSort(s))>) then
-      !["-s", <!s; is-string>]
+      !["--start", <!s; is-string>]
     else
       ![]
     end
@@ -133,7 +121,7 @@ strategies
    */  
   pass-filters =
     if ?Meta(<fetch-elem(?HeuristicFilters(Off()))>) then
-      !["-fi", "-fe"]                                 
+      !["--no-heuristic-filters"]
     else
       ![]
     end
