@@ -1,5 +1,5 @@
 module xtc-rep
-imports exec tables config file
+imports liblib
 
 signature
   sorts XtcKey
@@ -9,29 +9,13 @@ signature
     Stack      : XtcKey
     Import     : XtcKey
     Imported   : String -> XtcKey
+    FromFile   : XtcKey
 
     XTC	       : Table
 
     RepoFile   : String -> XtcKey             // present in named file
     RepoTable  : String * HashTable -> XtcKey // loaded in table and not changed wrt file
     RepoTable  : HashTable -> XtcKey          // loaded in table, not present in file
-
-/*
-
-  XTC.stack -> [tbl1, ..., tbln]
-
-  tbli.name -> tool binding
-            -> RepoFile(file)
-            -> RepoFile(file, tbl)
-            -> RepoFile(tbl)
-
-  in the last two cases tbl is again an XTC repository for which 
-  the same options apply. Conceptually we can then map a qualified
-  name name1.name2.name3 to
-
-  XTC.stack[name1].name2.name3
-
-*/
 
 strategies // stack operations
 
@@ -47,14 +31,14 @@ strategies // stack operations
   xtc-push-file = ?file;
     where(
       xtc-get-stack
-      ; ![<xtc-file-to-table>file | <id>]
+      ; ![RepoFile(file) | <id>]
       ; xtc-set-stack(|<id>)
     )
 
   xtc-push-table = ?tbl;
     where(
       xtc-get-stack
-      ; ![RepoTable(tbl) | <id>]
+      ; ![NestedTable(tbl) | <id>]
       ; xtc-set-stack(|<id>)
     )
 
@@ -88,25 +72,35 @@ strategies // default repository
 strategies // loading repositories from files
 
   xtc-file-to-table =
-    !RepoTable(<id>, <ReadFromFile; hashtable-init; xtc-import>)
+    XtcFileToTable <+ xtc-file-to-table-new
+
+  xtc-file-to-table-new :
+    RepoFile(file) -> NestedTable(tbl)
+    where <ReadFromFile; hashtable-init; xtc-import> file => tbl
+	; rules( 
+	    XtcFilesAndTables :  RepoFile(file) -> NestedTable(tbl)
+	    XtcFilesAndTables :  NestedTable(tbl) -> RepoFile(file)
+	    XtcFilesAndTables :+ Files -> RepoFile(file)
+	    XtcFilesAndTables :+ Tables -> NestedTable(tbl)
+	  )
 
   xtc-import = ?tbl;
     where(
-      repeat(<table-get>(tbl, Import)
+      repeat(<hashtable-get>(tbl, Import)
              ; filter(xtc-read(|tbl))
              ; not([]))
     )
 
   xtc-read(|tbl) = ?rep
     				; if-verbose5(debug(!"Reading? "))
-    ; not(<table-get>(tbl, Imported(rep)))
-    ; where(<table-put>(tbl, Repository, [rep]))
+    ; not(<hashtable-get>(tbl, Imported(rep)))
+    ; where(<hashtable-put>(tbl, Repository, [rep]))
     				; if-verbose4(debug(!"Reading repository: "))
     ; read-repository-file
     				; if-verbose6(say(!"Repository read: "))
-    ; <table-putlist(table-append)>(tbl, <id>)
+    ; <hashtable-putlist(hashtable-pushunion)>(tbl, <id>)
     				; if-verbose6(say(!"Repository stored in table: "))
-    ; <table-put>(tbl, Imported(rep), [])
+    ; <hashtable-put>(tbl, Imported(rep), [])
    				 ; if-verbose4(say(!"Repository read: "))
 
   read-repository-file = 
@@ -116,24 +110,57 @@ strategies // loading repositories from files
                       <+ debug(!"** WARNING: No read permission for repository: "))
       ; ![]
 
-/*
-  xtc-load =
-    if-verbose5(debug(!"xtc-load: ")); 
-    where(
-      <table-get>(XTC, Repository)
-      <+ xtc-location
-         ; xtc-read
-	 ; xtc-import
-    )
-    ; if-verbose5(debug(!"xtc-loaded: "))
-*/
-
-  xtc-store =
-    if-verbose1(say(!"  Saving repository "))
-    ; <get-config> "-r"
-    ; ( can-write-repository
-      < <WriteToBinaryFile> (<id>, <table-getlist> XTC)
-      + debug(!"** WARNING: No write permission for repository: "); fail)
-
   can-write-repository =
     file-exists < can-write-file + id
+
+strategies // lookup in XTC repository
+
+  xtc-find-loc = 
+    is-string
+    ; ![<id>]
+    ; xtc-find-loc
+
+  xtc-find-loc =
+    ?names@[_ | _]
+    ; xtc-get-stack
+    ; fetch-elem(nestedtable-get(xtc-file-to-table | names))
+
+strategies // convenience strategies
+
+  xtc-find = 
+    if-verbose5(debug(!"xtc-find? "))
+    ; xtc-find-loc
+    ; if-verbose5(debug(!"xtc-find: "))
+   <+ <error> ["No XTC registration for ", <id>, " found"]
+    ; fail
+
+  xtc-find-warning = 
+    xtc-find 
+
+  xtc-find-silent = 
+    xtc-find-loc
+
+  xtc-find-path =
+    xtc-find; get-path
+
+strategies // Adding a binding (to the current scope)
+
+  xtc-set(|names, value) =
+    where(
+      xtc-get-stack
+      ; [nestedtable-put(|names, value) | id]
+    )
+
+  /**
+   * @param  tools    String or List(String)
+   * @param  version  String
+   * @param  loc      Directory of tools
+   */
+  xtc-register(|tools, version, loc) = 
+    where(
+      xtc-load
+    ; !tools
+    ; (is-list <+ ![<id>])
+    ; map(<table-union>(XTC, Tool(<id>), 
+	    [(version, <concat-strings>[loc,"/",<id>])]))
+    )
