@@ -1,4 +1,5 @@
-AC_INIT([StrategoXT],[0.9.4],[stratego-bugs@cs.uu.nl])
+status="under construction"
+AC_INIT([strategoxt],[0.9.4],[stratego-bugs@cs.uu.nl])
 AM_INIT_AUTOMAKE
 
 # set the prefix immediately to the default prefix
