@@ -55,7 +55,7 @@ strategies
         ; map(!IncludeFromPath(<id>))
       , \ (n,x,xs) -> [x|xs] \
       )
-    ; (id, map(<fatal-error> ["pack-sdf: error: module ", <id>, " not found\n"]); [])
+    ; (id, map(<fatal-error> ["pack-sdf: error: module ", <try(?IncludeFromPath(<id>))>, " not found\n"]); [])
     ; Fst
     ; unzip
     ; (id, ConcatModules)
