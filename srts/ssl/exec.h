@@ -80,6 +80,8 @@ ATerm SSL_stdin_stream(void);
 ATerm SSL_stdout_stream(void);
 ATerm SSL_stderr_stream(void);
 
+ATerm SSL_isatty(ATerm filedes);
+
 #define SSL_STDIN_FILENO() ((ATerm)ATmakeInt(STDIN_FILENO))
 #define SSL_STDOUT_FILENO() ((ATerm)ATmakeInt(STDOUT_FILENO))
 #define SSL_STDERR_FILENO() ((ATerm)ATmakeInt(STDERR_FILENO))

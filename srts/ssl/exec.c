@@ -166,6 +166,19 @@ ATerm SSL_perror(ATerm msg) {
   return msg;
 }
 
+/**
+ * Terminal I/O
+ */
+ATerm SSL_isatty(ATerm filedes) {
+  int val;
+  int result;
+
+  val = _get_int(filedes);
+  result = isatty(val);
+
+  return (ATerm) ATmakeInt(result);
+}
+
 /**************************************************************************
  * POSIX process procedures
  */
