@@ -88,3 +88,19 @@ exports
     "["    -/- [\[]
     "[["   -/- [\[]
     "[[["  -/- [\[]
+
+  lexical syntax
+    "//" ~[\n]* ([\n] | Eof) -> ShortCom
+    "/*" CommChar* "*/"      -> LongCom
+
+    ~[\*]      -> CommChar
+
+    "*"        -> Asterisk
+    Asterisk   -> CommChar
+
+  lexical restrictions
+    Asterisk -/- [\/]
+
+  lexical syntax
+    ShortCom 	-> LAYOUT
+    LongCom 	-> LAYOUT

@@ -1,11 +1,15 @@
 testsuite RTG nonterminals
 topsort NonTerm
 
+// short comment
+
 test Primitive string
   "<string>" -> string
 
 test Primitive string
   "String" -> plain("String")
+
+/* longer comment */
 
 test Quoted non terminal 1
   "[Bla]"  -> nonterm(quoted([chars("Bla")]))
