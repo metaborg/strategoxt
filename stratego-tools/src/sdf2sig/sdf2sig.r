@@ -15,7 +15,7 @@ module sdf2sig
 	for the generated Stratego modules is the same as the
 	modules structure of the input grammar.	
 *)
-imports Sdf2Stratego termid
+imports Sdf-2-Stratego termid
 
 strategies
 
