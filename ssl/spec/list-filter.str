@@ -8,7 +8,10 @@ strategies
   filter(s) = 
     [] + [s | filter(s)] <+ ?[_ | <filter(s)> ]
 
- filter-gen(pred, cont : (term -> term) * term -> term) =
+  reverse-filter(s) = 
+    [] + [id | filter(s)]; ([s | id] <+ ?[_  | <id>])
+
+  filter-gen(pred, cont : (term -> term) * term -> term) =
     rec x([] + (pred; cont(x)) <+ Tl; x)
 
   (* filter(s) = filter-gen([s | id], at-tail) *)
@@ -16,9 +19,11 @@ strategies
   skip1(s) = at-tail(s)
   skip2(s) = at-tail(at-tail(s))
 
-  filter-option-args(flag) = filter-gen([flag | id]; Tl, skip1)
+  filter-option-args(flag) = 
+    filter-gen([flag | id]; Tl, skip1)
 
-  filter-options(flag) = filter-gen([flag | id], skip2)
+  filter-options(flag) = 
+    filter-gen([flag | id], skip2)
 
   // partition(s) = split(filter(s), filter(not(s)))
 
