@@ -1,13 +1,12 @@
 module canonicalize
-imports Stratego lib C C-simplify dynamic-rules bound-unbound-vars
+imports Stratego lib C dynamic-rules stratego-laws
 
 strategies
 
   canonicalize =
     iowrap(
       downup2(repeat(Canon),repeat(Canon))
-      ; mark-fresh-vars
-      //; mark-bound-unbound-vars
+      ; simplify0
     )
 
 rules
@@ -129,8 +128,3 @@ rules
 //  Canon :
 //    SDef([DontInline],f,xs,s) -> SDef(f,xs,s)
 
-
-strategies
-
-  mark-fresh-vars =
-    id

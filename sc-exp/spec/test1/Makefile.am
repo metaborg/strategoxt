@@ -57,7 +57,7 @@ TESTIRUNS = $(subst .r,.irun,$(TESTFILES))
 
 TESTS = $(TESTBINS)
 
-check-sc: $(TESTIRUNS)
+check-strc: $(TESTIRUNS)
 
 CLEANFILES = \
 	$(TESTBINS) $(IOTESTBINS) \

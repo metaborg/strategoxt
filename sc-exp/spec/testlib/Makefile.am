@@ -1,13 +1,24 @@
 .PRECIOUS: %.ac %.c
 
-TESTS 		= $(subst .str,.bin,$(wildcard *-test.str))
+TESTFILES 	= $(wildcard *-test.str)
+
+TESTBINS 	= $(subst .str,.bin,$(TESTFILES))
+TESTIBINS 	= $(subst .str,.ibin,$(TESTFILES))
+TESTIRUNS 	= $(subst .str,.irun,$(TESTFILES))
+
+TESTS 		= $(TESTBINS)
+
+INSTALLTESTS 	= $(TESTIBINS)
+
+check-strc: $(TESTIRUNS)
 
 EXTRA_DIST 	= $(wildcard *.rtree) testlib.dummy
 
 SINCLUDES 	= -I $(SSL)/share/ssl
 
-CLEANFILES 	= $(TESTS) *.o *.c *.ac *.s? *.s?.check *.trm \
-		  *.tree *.tree? *.dep *.c.abox *.r testlib.dummy
+CLEANFILES 	= $(TESTS) $(TESTIBINS) *.o *.c *.ac *.s? *.s?? *.txt *.s?.check *.trm \
+		  *.tree *.tree? *.dep *.c.abox *.r testlib.dummy \
+		  *.rtree *.str *.bin
 
 pkgdata_DATA 	= testlib.dummy
 

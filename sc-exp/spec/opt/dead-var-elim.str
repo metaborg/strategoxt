@@ -54,7 +54,7 @@ strategies
     ?x; rules(ElimVar : Var(x) -> Undefined)
 
   mark-build-term =
-    alltd({?Var(x); debug(!"marking as needed: "); override rules(ElimVar : Var(x) -> Undefined)})
+    alltd({?Var(x); override rules(ElimVar : Var(x) -> Undefined)})
 
   MarkBuild =
     Build(mark-build-term)
@@ -63,7 +63,6 @@ strategies
     Match(
       alltd(
         {?Var(x){"bound"}
-         ; debug(!"EliminateFromMatch: ")
          ; override rules(ElimVar : Var(x) -> Undefined)})
       ; alltd(?Var(<!Var(<id>)>){_}; ElimVar)
     )

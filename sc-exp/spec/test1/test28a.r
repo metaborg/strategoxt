@@ -1,17 +1,25 @@
 module test28a
-
 signature
   sorts Exp Type
   constructors
     Var   : String -> Exp
     Plus  : Exp * Exp -> Exp
     Int   : Type
-    Float : Type
+    Float : Type 
+    Foo   : List(Type) -> Type
+    stderr : Bla
 
 strategies
 
-  main = 
-    <id{[Rename]}> Var("c"){Var("a")} => Var("c"){Var("r")}
+  debug(s) =
+    where(?x; s => y; prim("SSL_printnl", stderr, [y, x]))
 
-  Rename:
-    Var(_) -> Var("r")
+  try(s) = 
+    s <+ id
+
+  main =
+    !Var("a"){Int, Float}
+    ; debug(!"a: ")
+    ; try( \ Var(s){ts*} -> Var(s){Foo(ts*)} \ )
+    ; debug(!"b: ")
+    ; ?Var("a"){Foo([Int,Float])}

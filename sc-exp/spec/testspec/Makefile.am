@@ -3,11 +3,7 @@ include $(wildcard *.dep)
 
 .PRECIOUS: %.ac %.c
 
-noinst_DATA = xtc-conf.h
-
 SCFLAGS = --main $@ 
-
-CINCLUDES += --C-include "\"xtc-conf.h\""
 
 SINCLUDES = \
 	-I $(SSL)/share/ssl \
@@ -25,11 +21,9 @@ SINCLUDES = \
 	-I $(C_TOOLS)/share/sdf/c-tools \
 	-I $(XTC)/share/xtc
 
-xtc-conf.h :
-	echo "#define XTC_REPOSITORY() ATmakeString(\"$(REPOSITORY)\")" > $@
+TESTS = $(TESTBINS)
 
-
-CLEANFILES = $(TESTS) *.o *.c *.ac *.s? *.tree *.c.abox
+CLEANFILES = $(TESTS) *.o *.c *.ac *.s? *.tree *.c.abox 
 
 EXTRA_DIST = $(wildcard *.r) $(wildcard *.res)
 

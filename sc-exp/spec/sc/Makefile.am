@@ -9,33 +9,17 @@ SCFLAGS		= -I $(STRATEGO_FRONT)/share/stratego-front \
 		  -I $(SSL)/share/ssl			    \
 	  	  --main $*	
 
-bin_PROGRAMS 	= sc
-pkgdata_DATA 	= sc-manual.txt
+bin_PROGRAMS 	= strc
+pkgdata_DATA 	= strc-manual.txt
 
 CLEANFILES 	= $(wildcard *.dep)
-BOOTCLEANFILES 	= sc.c
+BOOTCLEANFILES 	= strc.c
 
-EXTRA_DIST 	= $(wildcard *.str) sc-version.str.in \
-		  sc.config.src sc-manual.txt $(man_MANS)
+EXTRA_DIST 	= $(wildcard *.str) strc-version.str.in \
+		  strc-manual.txt $(man_MANS)
 
-man_MANS 	= sc.1
+man_MANS 	= strc.1
 
-sc.1 : 
+strc.1 : 
 	help2man -n "compile Stratego programs" \
-		-m StrategoXT -S "sc $(VERSION)" --no-info ./sc > $@
-
-# Generate scripts
-%: %.src Makefile
-	sed 's#__GPP__#$(GPP)#g;\
-             s#__CGEN__#$(CGEN)#g;\
-	     s#__prefix__#$(prefix)#g;\
-	     s#__libexecdir__#$(libexecdir)#g;\
-	     s#__datadir__#$(datadir)#g;\
-	     s#__pkgdatadir__#$(pkgdatadir)#g;\
-             s#__VERSION__#$(VERSION)#g;\
-	     s#__PACKAGE__#$(PACKAGE)#g;\
-             s#__ATERM__#$(ATERM)#g;\
-             s#__STRATEGORTS__#$(SRTS)#g;\
-             s#__STRATEGOFRONT__#$(STRATEGO_FRONT)#g;\
-             s#__STRATEGOLIB__#$(SSL)#g;\
-             s#__MAKE__#$(MAKE)#g' < $< > $@
+		-m StrategoXT -S "strc $(VERSION)" --no-info ./strc > $@

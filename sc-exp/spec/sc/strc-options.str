@@ -1,5 +1,5 @@
-module sc-options
-imports options config sc-version
+module strc-options
+imports options config strc-version
 strategies
 
   command-line-options =
@@ -21,6 +21,7 @@ strategies
     <set-config>("VERSION", sc-version)
     ; <set-config>("--verbose", 1)
     ; <set-config>("--keep", 0)
+    ; <set-config>("-O", 1)
     ; <set-config>("-I", ["-I", <xtc-find-path> "lib.rtree",
                           "-I", <xtc-find-path> "Stratego.rtree",
                           "-I", <xtc-find-path> "StrategoRenamed.sdf"])
@@ -38,6 +39,15 @@ strategies
 //    ; <set-config>("--warning", ["all"])
     ; <set-config>("--warning", [])
   )
+
+  olevel(n, s) =
+    try(where(<geq>(<get-config> "-O", <n>)); s)
+
+  olevel1(s) = olevel(!1, s)
+  olevel2(s) = olevel(!2, s)
+  olevel3(s) = olevel(!3, s)
+  olevel4(s) = olevel(!4, s)
+  olevel5(s) = olevel(!5, s)
 
   sc-options =
     ArgOption("-i",
@@ -94,6 +104,11 @@ strategies
   + ArgOption("--keep",
         where(<set-config>("--keep", <string-to-int>)); !(),
 	!"--keep n           Keep intermediate results (0 = keep nothing)" )
+
+
+  + ArgOption("-O",
+        where(<set-config>("-O", <string-to-int>)); !(),
+	!"-O n               Optimization level (0 = no optimization)" )
 
 
   + Option("--fusion",     

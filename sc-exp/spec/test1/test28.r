@@ -1,4 +1,4 @@
-module test28 
+module test28
 imports sunit annotations
 
 signature
@@ -51,8 +51,6 @@ strategies
     ; test-match-9
     ; test-match-10
     ; test-match-11
-    ; test-match-12
-    ; test-match-13
     )
 
   // no annotation
@@ -136,21 +134,6 @@ strategies
 	, test-success( ?Var("a"){Int} )
 	, !Var("a")
 	, !Failure
-	)
-
-  // annotation of empty list
-  test-match-12 =
-    apply-test(!"test-match-12"
-	, test-success( [] )
-	, ![]{"hi"}
-	, !Success
-	)
-
-  test-match-13 =
-    apply-test(!"test-match-13"
-	, test-success( [id] )
-	, !["a"]{"hi"} 
-	, !Success
 	)
 
   // ----------------------------------------------------------------
@@ -296,11 +279,6 @@ strategies
 	, all(id)
 	, !Var("a"){Int}
 	, !Var("a"){Int}
-	);
-    apply-test(!"test-all(s)"
-	, all(!"b")
-	, !Var("a"){Int}
-	, !Var("b"){Int}
 	)
 
   test-some =
@@ -362,7 +340,6 @@ strategies
     )
 
 overlays
-
   VarA = Var("a")
 
   VarAInt = Var("a"){Int}
@@ -403,7 +380,6 @@ strategies
     ; test-rules-5
     ; test-rules-6
     ; test-rules-7
-    ; test-rules-8 
     )
 
 rules
@@ -476,15 +452,6 @@ strategies
 	, \ Var(s){ts*} -> Var(s){<length> [ts*]} \
 	, !Var("a")
 	, !Var("a"){0}
-	)
-
-  // Make sure an annotation is not bound 
-  // if matched on a term without annotation
-  test-rules-8 =
-    apply-test(!"test-rules-8"
-	, \ x@Var(s){ts*} -> (x, ts*) \
-	, !Var("a"){"b"}
-	, !(Var("a"){"b"}, ["b"])
 	)
 
   // ----------------------------------------------------------------

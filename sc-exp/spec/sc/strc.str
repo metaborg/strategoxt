@@ -2,11 +2,11 @@
 compiler. It is based on XTC, the transformation tool composition
 model. */
 
-module sc
-imports lib xtc-lib sc-options sugar
+module strc
+imports lib xtc-lib strc-options sugar
 strategies
 
-  sc = 
+  strc = 
   ( command-line-options
     ; profile'(if-verbose1(<printnl>(stderr, ["-----\ncompilation succeeded:   " | <id>])), 
         compile
@@ -126,13 +126,23 @@ strategies
   optimize =
     if-verbose2(debug(!"optimize: "));
     profile'(if-verbose1(<printnl>(stderr, ["optimization succeeded:  " | <id>])), 
-        optimize1 
-        ; try(where(not(<get-config> "--fusion")); fusion)
-        ; inline
-	; dead-def-elim
-        ; compile-match
-	; desugar-case
-        ; optimize2
+        olevel1(optimize1)
+        ; olevel2(try(where(not(<get-config> "--fusion")); fusion))
+
+        ; olevel4(inline)
+	; olevel4(dead-def-elim)
+
+        ; olevel4(optimize2)
+        ; olevel4(const-prop; bound-unbound-vars; dead-var-elim)
+        ; olevel4(optimize2)
+
+        ; olevel2(compile-match)
+	; olevel2(desugar-case)
+
+        ; olevel3(optimize2)
+        ; olevel3(const-prop; bound-unbound-vars; dead-var-elim)
+        ; olevel1(optimize2)
+
         ; stratego-of
         ; output-optimized
     )
@@ -154,6 +164,15 @@ strategies
 
   desugar-case = 
     xtc-transform(!"desugar-case", !["-b" | <pass-verbose> ])
+
+  const-prop = 
+    xtc-transform(!"const-prop", !["-b" | <pass-verbose> ])
+
+  bound-unbound-vars = 
+    xtc-transform(!"bound-unbound-vars", !["-b" | <pass-verbose> ])
+
+  dead-var-elim = 
+    xtc-transform(!"dead-var-elim", !["-b" | <pass-verbose> ])
 
   optimize2 = 
     xtc-transform(!"optimize2", !["-b" | <pass-verbose> ])
@@ -193,7 +212,7 @@ strategies
     if-verbose2(debug(!"back-end: "));
     profile'(if-verbose1(<printnl>(stderr, ["back-end succeeded:      " | <id>])), 
       canonicalize
-      ; bound-unbound-vars
+      ; olevel1(bound-unbound-vars)
       ; stratego-cf
       ; output-canonical
       ; s2c
@@ -253,22 +272,4 @@ strategies
 	; (<get-config> "-o" <+ get-outfile(!"")) => target
         ; <if-verbose3(debug); call> 
 	    ("gcc", [ofile, "-o", target | <get-config> "-CL"])
-\end{code}
-
-% Copyright (C) 1999-2002 Eelco Visser <visser@acm.org>
-% 
-% This program is free software; you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation; either version 2, or (at your option)
-% any later version.
-% 
-% This program is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-% 
-% You should have received a copy of the GNU General Public License
-% along with this program; if not, write to the Free Software
-% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-% 02111-1307, USA.
 

@@ -1,3 +1,29 @@
+2003-07-23  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/sc/strc.str: Renamed sc to strc and added the -O option to
+	regulate the amount of optimization applied by the compiler.  No
+	optimization (-O 0) means faster compilation, but slower code.
+	More optimization (-O 1 to 5) means slower compilation, but faster
+	code. The optimizations at level 3 and higher are currently
+	experimental and don't work in all cases yet. The default level is
+	1. Level 2 corresponds to the optimization already performed in
+	release 0.9.2.
+
+2003-07-22  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/opt/dead-var-elim.str: Removed debugging statements.
+
+	* spec/opt/const-prop.str: Not and Rec are relevant for
+	data-flow. Do not propagate patterns with wildcards or As
+	patterns. This could be improved by filtering out As patterns and
+	by turning wildcards into explicit variables. A final problem
+	turned up: when propagating a match from a pattern with an
+	annotation; since the annotation gets separated from the pattern
+	during desugaring a wrong term may be propagated. This should be
+	solved by integrating the treatment of annotations in the abstract
+	syntax, that is changing Anno(Op(f, ts1), ts2) into Op(f, ts1,
+	ts2). This will again have considerable impact on the compiler.
+
 2003-07-21  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/match/matrix.str: Deal with patterns of the form ?_@Foo(...).
@@ -9,24 +35,24 @@
 	transformation. Remove annotations afterwards. Dynamic rule
 	left-hand sides don't seem to match terms with annotations.
 
-	* spec/c/bound-unbound-vars.str: Marking second occurrence of same variable
-	in a match pattern as bound.
+	* spec/c/bound-unbound-vars.str: Marking second occurrence of same
+	variable in a match pattern as bound.
 
-	* spec/opt/const-prop.str: Undefine current term at places where there
-	is no certainty. Propagating constant bindings to match patterns as
-	well.
+	* spec/opt/const-prop.str: Undefine current term at places where
+	there is no certainty. Propagating constant bindings to match
+	patterns as well.
 
 2003-07-18  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/opt/const-prop.str: Constant propagation for term variables
 	replaces variables with terms to which they are matched. 
 	
-	* spec/opt/dead-var-elim.str: Remove term variables that are not 
+	* spec/opt/dead-var-elim.str: Remove term variables that are not
 	used in builds. Works by replacing occurrence of dead variables in
-	a match by a wildcard and removing variables from scopes. A subsequent
-	run of optimize2 eliminates matches only consisting of a wildcard (?_)
-	and dead builds, i.e., builds that occur prior to another build and
-	will thus not be used. 
+	a match by a wildcard and removing variables from scopes. A
+	subsequent run of optimize2 eliminates matches only consisting of
+	a wildcard (?_) and dead builds, i.e., builds that occur prior to
+	another build and will thus not be used.
 
 	The implementation is not yet complete: choices are not taken into
 	account and already bound variables used in a match are discarded.

@@ -126,10 +126,10 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 # C COMPILATION #####################################################
 
 %.o: %.c
-	time $(CC) $(CINCL) -c $< -O4
+	time $(CC) $(CINCL) -g -c $< -O4
 
 %.bin : %.o 
-	time $(CC) $< -o $@ $(SCLibs)
+	time $(CC) -g $< -o $@ $(SCLibs)
 
 # RUNNING ###########################################################
 
@@ -150,7 +150,7 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 # USING INSTALLED SC ###############################################
 
 %.ibin: %.r
-	../sc/sc -i $< -o $@ --verbose 3 --output-optimized --output-canonical
+	../sc/strc -i $< -o $@ --verbose 3 --output-optimized --output-canonical
 
 %.irun: %.ibin
 	./$<

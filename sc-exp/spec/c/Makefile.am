@@ -16,7 +16,10 @@ STRINCLUDES	 = -I $(C_TOOLS)/share/sdf/c-tools	     \
 		   -I $(C_TOOLS)/share/c-tools		     \
 		   -I $(STRATEGO_FRONT)/share/stratego-front \
 	  	   -I ../sig				     \
-	  	   -I ../match				  
+	  	   -I ../match				     \
+	  	   -I ../opt				     \
+	  	   -I ../front				     \
+	  	   -I ../lib
 
 TESTS = C-simplify-test 
 #canonicalize-test

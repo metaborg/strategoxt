@@ -25,7 +25,7 @@ strategies
 
   ElimFail = 
     F1 + F2 + F3 + F5 + F6 + F7 + F8 + F9 + F10 + 
-    F11 + F12 + F13 + F14 + F15
+    F11 + F12 + F13 + F14 + F15 + F16
 
 rules
 
@@ -44,5 +44,7 @@ rules
   F13 : LChoice(Fail, s) -> s
   F14 : LChoice(s, Fail) -> s
   F15 : Where(Fail)      -> Fail
+
+  F16 : GuardedLChoice(s1, s2, Fail) -> Seq(s1, s2)
 
   NotValid : All(Fail) -> Fail

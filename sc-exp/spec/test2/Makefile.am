@@ -34,7 +34,7 @@ TESTS = $(TESTBINS) $(IOTESTBINS)
 TESTIBINS = $(subst .r,.ibin,$(TESTFILES))
 TESTIRUNS = $(subst .r,.irun,$(TESTFILES))
 
-check-sc: $(TESTIRUNS)
+check-strc: $(TESTIRUNS)
 
 CLEANFILES = $(TESTBINS) $(IOTESTBINS) $(TESTRUNS) $(IOTESTRUNS)  $(TESTSRCS) $(IOTESTSRCS) *.o *.c *.ac *.s? *.tree *.c.abox
 

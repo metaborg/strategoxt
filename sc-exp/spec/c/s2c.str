@@ -467,8 +467,7 @@ rules
 	     Pair(ts,0) => Pair(match-args,_)
 
   MatchArg1 : 
-    (Var(x), trm) -> Match(Var(x), trm)
-    where <Initialized> x => "NULL"
+    (Var(x){t*}, trm) -> Match(Var(x){t*}, trm)
 
   MatchArg2 : 
     (t, trm) -> 

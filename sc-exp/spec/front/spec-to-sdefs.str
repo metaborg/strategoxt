@@ -27,21 +27,23 @@ rules
   
   MkCongDef : 
     OpDecl(f, ConstType(t)) -> SDefT(f, [], [], Cong(f, []))
+    where <not(CongDefined)> (f, 0)
+        ; rules(CongDefined : (f, 0) -> ())
 
   MkCongDef : 
     OpDecl(f, FunType(ts, t)) -> 
     SDefT(f, xdecs, [], Cong(f, <map(MkCall)> xs))
-    where <map(new; !(VarDec(<id>, DefaultStrat), <id>));
-           unzip> ts => (xdecs, xs)
+    where <length> ts => n
+        ; <not(CongDefined)> (f, n)
+        ; rules(CongDefined : (f, n) -> ())
+        ; <unzip(new; !(VarDec(<id>, DefaultStrat), <id>))> ts => (xdecs, xs)
 
   MkCongDefs : 
-    Sorts(sds) -> []
-  MkCongDefs : 
-    Constructors(ods) -> <map(MkCongDef)> ods
+    Constructors(ods) -> <filter(MkCongDef)> ods
 
 strategies
 
-  congdefs = map(MkCongDefs); concat
+  congdefs = {| CongDefined : filter(MkCongDefs); concat |}
 \end{code}
 
 \paragraph{Constructors from Operators}

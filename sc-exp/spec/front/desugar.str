@@ -325,7 +325,8 @@ strategies
     topdown(try(desugarRule); repeat(HL))
 
   desugar-spec = 
-    map(SDef(id, id, desugar) + SDefT(id, id, id, desugar))
+    map(SDef(id, id, desugar) + SDefT(id, id, id, desugar) 
+	<+ debug(!"not a definition: "); fail)
 \end{code}
  
 % Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>

@@ -18,6 +18,8 @@ strategies
     <+ prop-lchoice(cp)
     <+ prop-guardedlchoice(cp)
     <+ prop-let(cp)
+    <+ prop-rec(cp)
+    <+ prop-not(cp)
     <+ prop-sdef(cp)
     <+ all(cp)
 
@@ -28,13 +30,25 @@ strategies
     ?CallT(_, _, _)
     ; CallT(id
 	   , map(UndefCurrentTerm; cp)
-	   , alltd(debug(!"binding? "); Binding; debug(!"binding! ")))
+	   , alltd(Binding))
     ; UndefCurrentTerm
 
   prop-call(cp) =
     ?PrimT(_, _, _)
-    ; PrimT(id, cp, alltd(debug(!"binding? "); Binding; debug(!"binding! ")))
+    ; PrimT(id, cp, alltd(Binding))
     ; UndefCurrentTerm
+
+  prop-rec(cp) =
+    ? Rec(_,_)
+    ; where(save-Binding => bnd0)
+    ; Rec(id, UndefCurrentTerm; cp)
+    ; where(UndefCurrentTerm; <restore-Binding> bnd0)
+
+  prop-not(cp) =
+    ? Not(_)
+    ; where(save-Binding => bnd0)
+    ; Not(cp)
+    ; where(UndefCurrentTerm; <restore-Binding> bnd0)
 
   prop-scope(cp) =
     ?Scope(xs, _)
@@ -61,47 +75,53 @@ strategies
          , where(<restore-CurrentTerm> trm0; <restore-Binding> bnd0); cp)
     
   prop-build =
-    ?Build(_)
-    ; debug(!"prop-build: ")
-    ; Build(alltd(debug(!"binding? "); Binding; debug(!"binding! ")))
-    ; debug(!"prop-build: ")
+    Build(alltd(Binding))
     ; ?Build(t)
-    ; rules(
-        CurrentTerm : _ -> t
-      )
-    ; debug(!"prop-build: ")
+    ; rules(CurrentTerm : _ -> t)
 
   prop-match =
-    ?Match(_)
-    ; debug(!"prop-match: ")
-    ; Match(alltd(Binding))
-    ; debug(!"prop-match expanded: ")
+    Match(alltd(Binding))
     ; ?Match(t)
-    ; (where(CurrentTerm => ct; debug(!"CurrentTerm: "))
-       ; (where(
-             <debug(!"match? "); prop-pattern-match; debug(!"match! ")> [(t, ct)]
-	     ; map(introduce-binding))
+    ; (where(CurrentTerm => ct)
+       ; (where(<prop-pattern-match> [(t, ct)]
+	        ; map(try(introduce-binding)))
          <+ where(<debug(!"no match with current term: ")> ("strat: ", <id>, "current: ", ct))
-            ; !Fail)
+            ; !Fail
+         )
       <+ where(<not(oncetd(?Wld + ?As(_,_)))> t)
          ; rules(CurrentTerm : _ -> t)
       <+ id
       )
-     ; debug(!"prop-match: ")
 
   introduce-binding =
-    ?(Var(x), t) ; rules(Binding : Var(x) -> t)
+    ?(Var(x), t) 
+    ; where(<not(oncetd(?Wld + ?As(_,_)))> t)
+    ; rules(Binding : Var(x) -> t)
 
   prop-pattern-match = 
     for(\ pairs -> (pairs, []) \
        ,\ ([], sbs) -> sbs \
-       ,(UfIdem, id) <+ MatchVar(Var(id)) + (UfDecompose, id) + TermIsVar(Var(id))
-	 + AsMatch)
+       ,MatchVar(Var(id)) 
+	<+ (UfIdem, id)
+	<+ (UfDecompose, id) 
+	<+ (AsMatch, id)
+	<+ (MatchWildCard, id)
+// TermIsVar can only be used after integration of
+// annotations in abstract syntax
+//	<+ (TermIsVar(Var(id)), id)
+	<+ (TermIsVarIgnore(Var(id)), id)
+    )
 
   TermIsVar(isvar) :
-    ([(x,y) | ps], sbs) -> (ps, [(y, x) | sbs])
+    [(x,y) | ps] -> [(y, x) | ps]
     where <not(isvar)> x; <isvar> y
-        ; <not(fetch({z: ?(y,z); <not(eq)> (x, z)}))> sbs
+
+  TermIsVarIgnore(isvar) :
+    [(x,y) | ps] -> ps
+    where <not(isvar)> x; <isvar> y
+
+  MatchWildCard :
+    [(Wld, t) | ps] -> ps
 
   AsMatch :
     [(As(Var(x),p),t) | ps] -> [(Var(x), t), (p, t) | ps]
@@ -159,7 +179,6 @@ strategies // Dynamic rule manipulation
 
   save-CurrentTerm =
     <table-getlist> "CurrentTerm"
-    ; debug(!"CurrentTerm saved: ")
 
   clean-CurrentTerm =
     where(<table-destroy> "CurrentTerm";
@@ -175,5 +194,4 @@ strategies // Dynamic rule manipulation
             (where(<table-get> ("CurrentTerm", key) => [Defined(_,val)|_])
              <+ !(key, [Undefined]))
            }))
-    ; debug(!"CurrentTerm intersected: ")
     ; restore-CurrentTerm

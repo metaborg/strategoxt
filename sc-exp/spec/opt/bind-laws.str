@@ -3,6 +3,15 @@ imports Stratego automaton
 strategies
 rules
 
+  LetNoDefs :
+    Let([], s) -> s
+
+  LetHoist :
+    Let([SDefT(f, [], [], s)], CallT(SVar(f), [], [])) -> s
+    where <not(oncetd(?CallT(SVar(f),[],[])))> s
+
+rules
+
   // inlining with contextual rules
 
   InlineC1 : 
