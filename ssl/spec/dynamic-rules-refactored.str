@@ -23,6 +23,12 @@ strategies // currently active rule set
   dr-set-rule-set(|name) =
     where(<table-put> ("_rules", name, <id>))
 
+  dr-switch-rule-set(|name) =
+    where(dr-get-rule-set(|name) => rs)
+    ; dr-set-rule-set(|name)
+    ; !rs
+    
+
   // Note: the storing the currently active rule set should
   // be done in a global variable at the C level (probably).
   // We should abstract from that as much as possible and 
@@ -165,6 +171,11 @@ strategies // high-level API with implicit rule set
     where(
       dr-get-rule-set(|name)
       ; dr-print-rule-set
+    )
+
+  dr-print-rule-sets(|names) =
+    where(
+      <map(debug; dr-print-rule-set(|<id>))> names
     )
 
 // low-level API working directly on rule-set
@@ -416,6 +427,119 @@ strategies // intersection
 	the same.  We should achieve this by creating equal rule tags
 	for equivalent rules.
      */
+
+  /**
+   * two-way split in data-flow (if-then-else) for list of rules
+   */
+
+  dr-fork-and-intersect(s1, s2 | rulenames) = 
+    where(
+      <map({?rulename
+	    ; dr-get-rule-set(|rulename)
+            ; !(rulename, <dr-start-change-set>)
+            ; dr-start-change-set(|rulename)})> rulenames => rs1
+    )
+    //; debug(!"before first branch: ")
+    //; dr-print-rule-sets(|rulenames)
+    ; s1
+    //; debug(!"after first branch: ")
+    //; dr-print-rule-sets(|rulenames)
+    ; where(
+        <map({(?rulename,dr-switch-rule-set(|rulename))})> rs1 => rs2
+      )
+    ; s2
+    //; debug(!"after second branch: ")
+    //; dr-print-rule-sets(|rulenames)
+    ; where(
+        <map({?(rulename, <id>)
+	      ; dr-intersect-with(|rulename)
+              ; dr-commit-change-set(|rulename)})> rs2
+      )
+    //; debug(!"after intersect: ")
+    //; dr-print-rule-sets(|rulenames)
+
+  // for one rule
+
+  dr-fork-and-intersect-one(s1, s2 | rulename) = 
+    where(
+      dr-get-rule-set(|rulename)
+      ; dr-start-change-set  => rs1
+      ; dr-start-change-set(|rulename)
+    )
+    ; s1
+    ; where(
+        <dr-switch-rule-set(|rulename)> rs1 => rs2
+      )
+    ; s2
+    ; where(
+        <dr-intersect-with(|rulename)> rs2
+        ; dr-commit-change-set(|rulename)
+      )
+  
+
+  /**
+   * n-way split in data-flow (case)
+   */
+
+  dr-fold-and-intersect(empty, hd, tl : (a -> a) * a -> a | rulenames) = 
+    if empty then id 
+    else
+      where(<map(!(<id>, <dr-get-rule-set(|<id>)>))> rulenames => rs0)
+      ; dr-fold-and-intersect(empty, hd, tl | rulenames, rs0)
+      ; where(<map(dr-commit-change-set(|<id>))> rulenames)
+    end
+
+  dr-fold-and-intersect(empty, hd, tl : (a -> a) * a -> a | rulenames, rs0) = 
+    if empty then id
+    else
+      where(
+        <map({?(rulename,<id>)
+              ; dr-start-change-set
+              ; dr-set-rule-set(|rulename)})> rs0
+      )
+      ; hd
+      ; where(
+          <map(!(<id>, <dr-get-rule-set(|<id>)>))> rulenames => rs1
+        )
+      ; tl(dr-fold-and-intersect(empty, hd, tl | rulenames, rs0))
+      ; where(
+          <map({?(rulename, <id>); dr-intersect-with(|rulename)})> rs1
+        )
+    end
+  
+  /**
+   * fork and intersect over a list 
+   */
+
+  dr-map-and-intersect(s | rulenames) = 
+    let tl(s') = [id | s']
+     in dr-list-fork-and-intersect([], [s|_], tl | rulenames)
+    end
+
+  /** 
+   * loop in data-flow (while)
+   */
+
+  dr-fix-and-intersect(s | rulenames) =
+    where(
+      <map({?rulename
+	    ; dr-get-rule-set(|rulename)
+            ; !(rulename, <dr-start-change-set>)
+            ; dr-start-change-set(|rulename)})> rulenames => rs
+    ); 
+    repeat(
+      where(
+	s 
+        ; if <filter({?(rulename,<id>); dr-intersect-symm(|rulename)})> rs
+	     ; [] 
+          then ?e; fail // no changes in any of the rules
+          else id       // some rule changed; continue
+          end
+      )
+    ) 
+    ; where(<map(dr-commit-change-set(|<id>))> rulenames)
+    ; !e
+
 
 strategies // union
 
