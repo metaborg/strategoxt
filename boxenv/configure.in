@@ -2,13 +2,13 @@ AC_INIT([boxenv],[0.9],[stratego-bugs@cs.uu.nl])
 AM_INIT_AUTOMAKE
 
 AC_ARG_WITH(latex, 
-  AC_HELP_STRING([--with-latex=DIR], [use LaTeX distribution at DIR @<:@PREFIX@:>@]),
+  AC_HELP_STRING([--with-latex=DIR], [use LaTeX distribution at DIR @<:@/usr@:>@]),
   LATEX="$withval", 
-  LATEX="$prefix"
+  LATEX="/usr"
 )
 AC_SUBST(LATEX)
 
-AC_REVISION($Id: configure.in,v 1.6 2003/03/21 16:41:03 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.7 2003/03/24 07:59:49 stratego Exp $)
 
 AC_PROG_CC
 AC_PROG_INSTALL
