@@ -2,6 +2,9 @@
  * Strategies for logging 
  */
 module util/log
+imports 
+  collection/tuple/*
+  collection/list/*
 signature
   constructors
     Emergency : Severity
@@ -42,7 +45,7 @@ strategies
 
   log(|severity : Severity, msg: String) =
     if-log-severity(
-      where(<concat-strings; log-puts> ["[", <severity-string> severity, " | ",  <log-src>, "] ", msg, "\n"])
+      where(<concat-strings; log-puts> ["[ ", <log-src>, " | ",  <severity-string> severity, " ] ", msg, "\n"])
     | severity
     )
 

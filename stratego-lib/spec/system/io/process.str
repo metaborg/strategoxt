@@ -1,5 +1,8 @@
 module system/io/process
-imports system/posix/process system/posix/signal
+imports 
+  system/posix/process 
+  system/posix/signal
+  util/log
 
 /**
  * Fork abstractions
@@ -93,7 +96,7 @@ strategies
     ; not(?-1)
     ; signal-from-number
     ; signal-to-descr
-    ; <printnl> (stderr, ["** WARNING -- process signaled: ", <id>])
+    ; log(|Warning(),<concat-strings>["process signaled: ",<id>])
     ))
 
   /**

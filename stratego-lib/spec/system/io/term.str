@@ -3,18 +3,10 @@
  */
 module system/io/term
 imports 
-  // system.io.*
-  system/io/file 
-  system/io/dir 
-  system/io/pipe 
-  system/io/char 
-  system/io/term 
-  system/io/exec
-
-  list // XXX
-  
+  system/io/*
   term/string 
   term/integer
+  collection/list/*
   strategy/conditional
   util/config/options
   

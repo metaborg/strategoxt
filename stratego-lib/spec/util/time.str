@@ -4,7 +4,9 @@
  * strategies.
  */
 module util/time
-imports system/posix/file
+imports 
+  system/posix/file
+  util/log
 signature
   constructors
     EpochTime     : Int -> EpochTime
