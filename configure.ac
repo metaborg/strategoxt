@@ -1,4 +1,4 @@
-AC_INIT([sdf2-bundle-dailydist],[2.1post],[sdf@cs.uu.nl])
+AC_INIT([sdf2-bundle],[2.1],[sdf@cs.uu.nl])
 AM_INIT_AUTOMAKE
 
 # set the prefix immediately to the default prefix
