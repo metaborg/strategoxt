@@ -7,4 +7,4 @@ strategies
 
   s2j = id
 
-  test-it-now = \ |[ ?t ]| -> exp |[ new Rob() ]| \
+  test-it-now = \ |[ ?t ]| -> expr |[ new Rob() ]| \
