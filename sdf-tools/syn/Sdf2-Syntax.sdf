@@ -13,7 +13,7 @@ imports Kernel-Sdf-Syntax
         Sdf-Disamb
         
 exports
-  sorts SDF Definition-GrammarID Module-GrammarID
+  sorts SDF SDF-GrammarID Module-GrammarID
   
   context-free syntax
   
