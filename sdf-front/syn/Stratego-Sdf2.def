@@ -888,8 +888,9 @@ imports Sdf2-Syntax StrategoRenamed
 exports
   context-free syntax
 
-    "|[" Production "]|" -> StrategoTerm {cons("ToTerm")}
-    "|[" Symbol     "]|" -> StrategoTerm {cons("ToTerm")}
+    "|[" Production  "]|" -> StrategoTerm {cons("ToTerm"), prefer}
+    "|[" Symbol      "]|" -> StrategoTerm {cons("ToTerm")}
+    "|[" Production+ "]|" -> StrategoTerm {cons("ToTerm")}
 
     "~"     StrategoTerm   -> Symbol {cons("FromTerm")}
     "~sym:" StrategoTerm   -> Symbol {cons("FromTerm")}
