@@ -80,22 +80,29 @@
    Fail -- KW["fail"],
    Id -- KW["id"],
    SVar -- _1,
+   
    Let -- KW["let"] _1 KW["in"] _2,
    Let.1:iter-star -- _1,
    Let.1:iter-star.1:alt -- _1 _2,
+   
    CallNoArgs -- _1,
    Call -- H hs=0[_1 KW["("] H[_2] KW[")"]],
    Call.2:iter-star-sep -- H hs=0[_1 KW[","]],
+   
    Match -- H hs=0[KW["?"] _1],
    Build -- H hs=0[KW["!"] _1],
+   
    ScopeDefault -- H hs=0[KW["{"] _1 KW["}"]],
    Scope -- H hs=0[KW["{"] H[_1 KW[":"] _2] KW["}"]],
    Scope.1:iter-star-sep -- H hs=0[_1 KW[","]],
    BA -- H hs=1[H hs=0[KW["<"] _1 KW[">"]] _2],
    AM -- H[_1 KW["=>"] _2],
+   
    AngleStrat -- H hs=0[KW["<"] _1 KW[">"]],
    ParenStrat -- H hs=0[KW["("] _1 KW[")"]],
+   
    LRule -- H[KW["\\"] _1 KW["\\"]],
+   SRule -- H[KW["("]  _1 KW[")"]],
 
    Seq      -- V[H[KW["("] _1] H[KW[";"]   _2 KW[")"]]],
    Choice   -- V[H[KW["("] _1] H[KW["+"]   _2 KW[")"]]],
