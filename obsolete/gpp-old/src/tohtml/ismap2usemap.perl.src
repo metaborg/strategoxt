@@ -1,6 +1,6 @@
-#!__PERL__ -w
+#! __PERL__ -w
 #
-# $Id: ismap2usemap.perl.src,v 1.1 2001/06/05 09:32:50 mdejonge Exp $
+# $Id: ismap2usemap.perl.src,v 1.2 2001/06/08 22:20:48 mdejonge Exp $
 #
 # This script is provided by its author Tobias Kuipers (kuipers@cwi.nl)
 #
