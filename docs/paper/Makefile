@@ -9,7 +9,7 @@ MANIFEST := Makefile *.ltx acmconf.cls
 
 .PRECIOUS: %.dvi
 
-all: doc.ps 
+all: doc.ps doc.pdf
 
 doc.ps: doc.dvi
 	dvips $< -o $@

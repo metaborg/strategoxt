@@ -1,5 +1,8 @@
 \documentclass{article}
 
+\newif\ifelectronic
+\electronictrue                                                                 
+
 \usepackage{latexsym}
 \usepackage{url}
 \usepackage{longtable}
@@ -9,7 +12,8 @@
 \usepackage{boxedminipage}
 \usepackage{ccaption}
 \usepackage{amsmath,amstext,amsfonts}
-
+\usepackage[breaklinks,backref]{hyperref}
+   
 %\let\oldverbatim=\verbatim
 %\let\oldendverbatim=\endverbatim
 %\renewenvironment{verbatim}{\quote\oldverbatim}{\oldendverbatim\endquote}
@@ -20,7 +24,7 @@
 
 \input{../macros.ltx}
 
-  \title{First-class Rules and Generic Traversal}
+  \title{\bf First-class Rules and Generic Traversal}
   
   \author{Eelco Dolstra \and Eelco Visser\\\ \\
     \begin{minipage}{10cm}\normalsize\center Institute of Information
@@ -29,8 +33,8 @@
 
 \begin{document}
 
-  %\parindent0pt
-  %\parskip.2\baselineskip
+  \parindent0pt
+  \parskip.2\baselineskip
 
   \maketitle
   
@@ -39,6 +43,6 @@
   \input{body.ltx}
 
   \bibliographystyle{abbrv}
-  \bibliography{../refs,../wrs-survey}
+  \bibliography{../visser.bib,../refs,../wrs-survey}
 
 \end{document}
