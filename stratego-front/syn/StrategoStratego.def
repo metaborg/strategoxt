@@ -617,6 +617,12 @@ exports
     "a"[0-9\']*           -> Id  {reject}
     "as"[0-9\']*          -> Id  {reject} 
 
+  lexical syntax
+    StrategoShortCom 	-> LAYOUT {prefer}
+    StrategoLongCom 	-> LAYOUT {prefer}
+    StrategoVeryLongCom -> LAYOUT {prefer}
+    StrategoWs 		-> LAYOUT {prefer}
+
   context-free syntax
 
     %% Obsolete; use |[ ... ]| syntax
