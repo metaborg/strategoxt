@@ -17,7 +17,7 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 dnl 02111-1307, USA.
 
-dnl $Id: configure.in.src,v 1.6 2001/06/05 14:39:35 mdejonge Exp $
+dnl $Id: configure.in.src,v 1.7 2001/06/08 22:12:44 mdejonge Exp $
 
 AC_INIT(configure.in)
 AM_INIT_AUTOMAKE(__PACKAGE__,__VERSION__)
@@ -58,13 +58,16 @@ AC_ARG_WITH(graph-tools,
 AC_SUBST(GRAPHTOOLS)
 
 
-AC_REVISION($Id: configure.in.src,v 1.6 2001/06/05 14:39:35 mdejonge Exp $)
+AC_REVISION($Id: configure.in.src,v 1.7 2001/06/08 22:12:44 mdejonge Exp $)
 
 AC_PROG_CC
 AC_PROG_INSTALL
 
 
 AC_PATH_PROGS(SH, sh)
+
+dnl Check for perl
+AC_PATH_PROG(PERL,perl)
 
 TOOLS=__TOOLS__
 UNRELEASED=__UNRELEASED__
