@@ -1,4 +1,4 @@
-include $(top_srcdir)/Makefile-mine.xt
+include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
 check_PROGRAMS = \
