@@ -1,0 +1,65 @@
+#! /bin/sh
+# GB -- Grammar Base
+# Copyright (C) 2001 Merijn de Jonge <mdejonge@cwi.nl>
+#                    Eelco Visser <visser@acm.org>
+#                    Joost Visser <jvisser@cwi.nl>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+# $Id: mkmain.sh.src,v 1.1.1.1 2002/03/06 20:40:37 mdejonge Exp $
+
+# This script generates the SDF module GB-Main which imports the top module
+# of a grammar and has two extra productions to add a grammar identifier
+# into parse trees.
+
+# usage:
+# mkmain --top <sdf top module> --id <grammar identification>
+
+TOP=
+ID=
+
+for arg in $*
+do
+   case $1 in
+      --top ) TOP="$2"; shift; shift ;;
+      --id )   ID="$2"; shift; shift ;;
+   esac
+done
+
+if [ "a${TOP}" = "a" ]; then
+   echo "Use --top switch to specify top module of grammar." >&2
+   exit 1
+fi
+
+if [ "a${ID}" = "a" ]; then
+   echo "Use --id switch to specify identification of grammar." >&2
+   exit 1
+fi
+
+
+cat <<END_GBMAIN
+%% Generated module which adds productions to insert grammar identification
+%% information into parse trees.
+module GB-Main
+imports
+  ${TOP}
+exports
+  syntax
+    <START>                     -> SURROGATE-START {cons("\"${ID}\"")}
+    SURROGATE-START [\256]      -> <Start> {prefer}
+END_GBMAIN
+
+

@@ -1,0 +1,23 @@
+include $(GBTOOLS)/share/gbtools/make_rules
+include $(GBTOOLS)/share/gbtools/make_rules.gb
+include $(GBTOOLS)/share/gbtools/make_rules.sdf
+include $(GBTOOLS)/share/gbtools/make_rules.gpp
+include $(GBTOOLS)/share/gbtools/make_rules.benchmarks
+include grammar.spec
+
+EXTRA_DIST = reconf grammar.spec README.src \
+             $(PACKAGE)-$(VERSION).pkg \
+             program-check.m4
+
+# Grammars are installed in $(prefix)/share/gb/$grammar.$version)
+grammardir=$(prefix)/grammars/$(grammar).$(grammar_version)
+grammar_DATA = grammar.spec README
+
+SUBDIRS = syntax data
+
+
+CLEANFILES += $(PACKAGE)-$(VERSION).pkg $(grammar).rbm
+
+configure.in : grammar.spec
+	$(MAKE) -f $(GBTOOLS)/share/gbtools/make_rules.gbtools configure.in
+

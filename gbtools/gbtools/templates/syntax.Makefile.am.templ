@@ -1,0 +1,25 @@
+#
+# Generated file; do not edit by hand. Put additional rules in
+# the optional file "make_rules.local".
+#
+EXTRA_DIST      = $(grammar_modules) $(wildcard $(grammar)*.pp)
+CLEANFILES      = GB-Main.sdf $(grammar).tbl $(grammar).af $(grammar).def.dep $(grammar).def $(grammar).pp.af
+
+# Grammars are installed in $(prefix)/share/gb/$grammar.$version)
+grammardir=$(prefix)/grammars/$(grammar).$(grammar_version)
+grammar_DATA    = $(grammar).def $(grammar).tbl $(grammar).pp $(grammar).pp.af $(grammar_modules)
+
+TESTS           = $(grammar).tbl
+grammar_modules =
+
+include $(GBTOOLS)/share/gbtools/make_rules
+include $(GBTOOLS)/share/gbtools/make_rules.gb
+include $(GBTOOLS)/share/gbtools/make_rules.sdf
+include $(GBTOOLS)/share/gbtools/make_rules.gpp
+
+# inclusion of local make_rules file
+include ./make_rules.local
+
+sinclude $(grammar:%=%.def.dep)
+include $(top_srcdir)/grammar.spec
+

@@ -1,0 +1,190 @@
+#! /bin/sh
+# XT -- Program Transformation Tools
+# Copyright (C) 2001 Merijn de Jonge <mdejonge@cwi.nl>
+#                    Eelco Visser <visser@acm.org>
+#                    Joost Visser <jvisser@cwi.nl>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+# $Id: gbquery.sh.src,v 1.1.1.1 2002/03/06 20:40:37 mdejonge Exp $
+
+# gbquery: obtain information from the Grammar Base
+#
+# usage
+#  gbquery -h
+#  gbquery -d  -l lang [-v version]  Returns grammar definition lang
+#  gbquery -pt -l lang [-v version]  Returns parse table for lang
+#  gbquery -pp -l lang [-v version]  Returns pretty-print table for lang
+#  gbquery -i  -l lang [-v version]  Display information for lang
+#  gbquery [-L]                      Displays a list of available grammars.
+
+
+GB=__GB__
+MAKE=__MAKE__
+
+FUNCTION="list-grammars"
+LANGUAGE=""
+LANGUAGE_VERSION='*'
+
+usage () {
+cat <<ENDCAT>&2
+gbquery: obtain information from the Grammar Base
+
+usage
+  gbquery -h
+  gbquery -d  -l lang [-v version]  Returns grammar definition lang
+  gbquery -pt -l lang [-v version]  Returns parse table for lang
+  gbquery -pp -l lang [-v version]  Returns pretty-print table for lang
+  gbquery -i  -l lang [-v version]  Display information for lang
+  gbquery [-L]                      Displays a list of available grammars.
+ENDCAT
+}
+
+get_value () {
+   grammar="$1"
+   version="$2"
+   variable="$3"
+   
+   (
+      cat $1.$2/grammar.spec 2>/dev/null
+      echo
+      echo "getvalue:"
+      echo "	@echo \$($3)"
+    ) | ${MAKE} -f - getvalue 2>/dev/null
+}
+
+grammar_dir () {
+   language="$1"
+   version="$2"
+
+   if [ "a$language" = "a" ]; then
+      echo "No language specified." >&2
+      exit 1
+   fi
+
+   dir=`ls -d ${GB}/grammars/*.${version} \
+      | grep -i "${language}.${version}" \
+      | sort -r \
+      | head -1 2>/dev/null`
+   if [ "a${dir}" = "a" ]; then
+      echo "No grammar ${language}.${version} available in the Grammar Base" >&2
+      exit 1
+   fi
+   echo ${dir}      
+}
+
+# Find parse table for the language. Due to our naming scheme, the language
+# as specified with the -l' option has to be interpreted case insensitive.
+# If no specific version was specified using the -v' option we take to most
+# recent one. Furthermore, if a table exists with the name `cons' in it we
+# prefer that table. For example, the table sdf.cons.tbl is prefered over
+# sdf.tbl.
+get_parse_table () {
+   # 1) find the directory where the grammar is located.
+   grammar_dir=`grammar_dir "${LANGUAGE}" "${LANGUAGE_VERSION}"` || exit 1
+
+   # 2) Find a parse table for the grammar in the Grammar Base. Prefer a grammar
+   # with constructor annotations
+   table="`echo ${grammar_dir}/*.cons.tbl`"
+   if [ "${table}" = "${grammar_dir}/*.cons.tbl" ]; then
+      table=${grammar_dir}/*.tbl
+   fi
+
+   # Error because no table found at all
+   if [ "a${table}" = "a" ]; then
+      echo "No parse table for \"${LANGUAGE}.${LANGUAGE_VERSION}\" available in the Grammar Base." >&2
+      exit 1
+   fi 
+
+   echo $table
+}
+
+# Return the location of the grammar definition by first locating the parse
+# table and then substituting .def for .tbl
+
+get_grammar_def () {
+   parse_table=`get_parse_table` || exit 1
+   echo "`dirname ${parse_table}`/`basename ${parse_table} .tbl`".def
+}
+
+# Find pretty-print table for the langauge. Due to our naming scheme, the language
+# as specified with the -l' option has to be interpreted case insensitive.
+# If no specific version was specified using the -v' option we take to most
+# recent one.
+get_pp_table () {
+   # 1) find the directory where the grammar is located.
+   grammar_dir=`grammar_dir "${LANGUAGE}" "${LANGUAGE_VERSION}"`|| exit 1
+
+   # 2) Find a pretty-print table for the grammar in the Grammar Base.
+   table="`echo ${grammar_dir}/*.pp`"
+   if [ "${table}" = "${grammar_dir}/*.pp" ]; then
+      table=${grammar_dir}/*.pp
+   fi
+
+   # Error because no table found at all
+   if [ "a${table}" = "a" ]; then
+      echo "No pretty-print table for \"${LANGUAGE}.${LANGUAGE_VERSION}\" available in the Grammar Base." >&2
+      exit 1
+   fi 
+
+   echo $table
+
+}
+
+get_info () {
+   grammar_dir=`grammar_dir "${LANGUAGE}" "${LANGUAGE_VERSION}"`|| exit 1
+   cat ${grammar_dir}/README
+}
+
+
+# Show a list of available grammars in the Grammar Base, together with their
+# version number, maturity level, and description 
+list_grammars () {
+(
+   cd ${GB}/grammars
+   for d in `ls -d *`
+   do
+      version=`echo $d | sed 's/^[^.]*\.//g'`
+      grammar=`basename $d .$version`
+      maturity=`get_value ${grammar} ${version} maturity`
+      descr=`get_value ${grammar} ${version} description`
+      echo "${grammar}.${version}(${maturity}):   ${descr}"
+   done
+)
+}
+
+for arg in $*
+do
+   case $1 in
+      -d  ) FUNCTION="get-grammar-def"; shift ;;
+      -pt ) FUNCTION="get-parse-table"; shift ;;
+      -pp ) FUNCTION="get-pp-table"; shift ;;
+      -i  ) FUNCTION="get-info"; shift ;;
+      -h  ) usage; exit 0 ;;
+      -L  ) FUNCTION="list-grammars"; shift ;;
+      -l  ) LANGUAGE="$2"; shift ; shift ;;   
+      -v  ) LANGUAGE_VERSION="$2"; shift ; shift ;;
+      -*  ) echo "Invalid option $1" >&2; exit 1 ;;
+   esac
+done
+
+case ${FUNCTION} in
+   get-grammar-def ) get_grammar_def ;;
+   get-parse-table ) get_parse_table ;;
+   get-pp-table )    get_pp_table ;;
+   get-info )        get_info ;;
+   list-grammars )   list_grammars ;;
+esac

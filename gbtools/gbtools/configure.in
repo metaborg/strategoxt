@@ -1,0 +1,79 @@
+dnl GBTOOLS -- Grammar Base Tools package
+dnl Copyright (C) 2002 Merijn de Jonge <mdejonge@cwi.nl>
+dnl                    Eelco Visser <visser@acm.org>
+dnl                    Joost Visser <jvisser@cwi.nl>
+dnl
+dnl This program is free software; you can redistribute it and/or modify
+dnl it under the terms of the GNU General Public License as published by
+dnl the Free Software Foundation; either version 2, or (at your option)
+dnl any later version.
+dnl
+dnl This program is distributed in the hope that it will be useful,
+dnl but WITHOUT ANY WARRANTY; without even the implied warranty of
+dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+dnl GNU General Public License for more details.
+dnl
+dnl You should have received a copy of the GNU General Public License
+dnl along with this program; if not, write to the Free Software
+dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+dnl 02111-1307, USA.
+
+dnl $Id: configure.in,v 1.1.1.1 2002/03/06 20:40:30 mdejonge Exp $
+
+AC_INIT(configure.in)
+AM_INIT_AUTOMAKE(gbtools,0.1)
+
+ACLOCAL="${ACLOCAL} -I ."
+
+AC_REVISION($Id: configure.in,v 1.1.1.1 2002/03/06 20:40:30 mdejonge Exp $)
+
+AC_PACKAGE_REQUIRE(pgen, sdf2table,
+   [  --with-pgen             Specify location of parser generator package])
+AC_SUBST(PGEN)
+
+AC_PACKAGE_REQUIRE(sglr, sglr,
+   [  --with-sglr             Specify location of SGLR parser package])
+AC_SUBST(SGLR)
+
+AC_PACKAGE_REQUIRE(gpp, ast2abox,
+   [  --with-gpp              Specify location of generic pretty-print package])
+AC_SUBST(GPP)
+
+AC_PACKAGE_REQUIRE(sdf-tools, sdf-bracket,
+   [  --with-sdf-tools        Specify location of sdf-tools package])
+AC_SUBST(SDF_TOOLS)
+
+AC_ARG_WITH(ogb, 
+   [  --with-ogb              Specify location of online grammar base],
+   OGB=${withval},
+   OGB=http://www.cwi.nl/~mdejonge/grammar-base)
+AC_SUBST(OGB)
+
+AC_ARG_WITH(gb-dist,
+   [  --with-gb-dist          Specify location of grammar distributions],
+   GB_DIST=${withval},
+   GB_DIST=http://www.cwi.nl/~mdejonge/gb-dist)
+AC_SUBST(GB_DIST)
+
+AC_ARG_WITH(gb,
+   [  --with-gb               Specify location of grammar base (default \$prefix)],
+   GB=${withval},
+   GB=${prefix})
+
+AC_SUBST(GB)
+
+AC_PROG_INSTALL
+
+AC_PATH_PROGS(SH, sh)
+
+AC_OUTPUT( 
+   Makefile 
+   templates/Makefile
+   templates/make_rules
+   templates/make_rules.benchmarks
+   templates/make_rules.gb
+   templates/make_rules.gbtools
+   templates/make_rules.gpp
+   templates/make_rules.sdf
+   scripts/Makefile
+)

@@ -1,0 +1,75 @@
+# GBTOOLS -- Grammar Base Tools package
+# Copyright (C) 2002 Merijn de Jonge <mdejonge@cwi.nl>
+#                    Eelco Visser <visser@acm.org>
+#                    Joost Visser <jvisser@cwi.nl>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+# $Id: README,v 1.1.1.1 2002/03/06 20:40:30 mdejonge Exp $
+
+ Authors: Merijn de Jonge <mdejonge@cwi.nl>, Eelco Visser <visser@acm.org>,
+          Joost Visser <jvisser@cwi.nl>
+
+----------------------------------------------------------------------
+
+ The GBTOOLS package contains a collection of tools for building and
+ accessing the Grammar base.
+
+----------------------------------------------------------------------
+
+ DOCUMENTATION
+
+ Documentation for the GB package can be found at the following site:
+
+   http://www.program-transformation.org/gb/
+
+----------------------------------------------------------------------
+
+ ADDING a GRAMMAR
+
+ Adding a grammar <g> with version <v> can be performed with the tool gbadd.
+
+ Adding a grammar with gbadd:
+  1) run the gbadd tool which assists you in the process of adding the new
+     grammar:
+
+     gbadd -g <g> -v <v>
+
+     This command provides you a form in which you should enter the grammar
+     parameters, like a short grammar description, and its maturity level. 
+     The template contains instructions about the configuration parameters.
+     
+     After quitting your editor, you will be prompted to continue or not. 
+     Answering `n' will terminate gbadd. If you answer yes, a new directory
+     structure under <g>.<v> is created including Makefile.am files a
+     configure.in, and a grammar.spec file. 
+
+  2) Write README.src, AUTHORS, ChangeLog, and NEWS files containing
+     authorship and other information about the grammar.
+
+  3) Run ./reconf; ./configure
+
+  4) Define the grammar itself by writing SDF syntax modules in the
+     <g>.<v>/syntax directory.
+  
+  5) Finally, create test and benchmark files in <g>.<v>/data
+
+  6) Then, run make, make check, make install, to build, test and install
+     the grammar components.
+
+  7) Run make dist to build a distribution of your grammar.
+
+----------------------------------------------------------------------
