@@ -24,7 +24,7 @@ include $(top_srcdir)/Makefile.xt
 SUBDIRS	= . src
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 
-EXTRA_DIST = ADDING-TOOLS VERSION configure.in.src genconf.sh \
+EXTRA_DIST = ADDING-TOOLS VERSION \
              package.conf bootstrap $(PACKAGE)-$(VERSION).pkg program-check.m4 \
 	     Makefile.xt
 
