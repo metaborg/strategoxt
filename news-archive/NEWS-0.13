@@ -252,18 +252,16 @@ strategies
 </verbatim>
 
 The error report of sglri is now:
+
 <verbatim>
 martin@logistico:~/tmp> sglri -p Stratego.tbl -i foo.str
-character '>' unexpected
+foo.str: character '>' unexpected at line 8, column 7
+  Foo =
    1 -> 2
       ^
 </verbatim>
-
-************************ TODO ****************************************
-Unfortunately, the Stratego compiler will not yet report syntax errors
-in this way, since =parse-stratego= does not use =sglri= at the
-moment.
-************************ TODO ****************************************
+The Stratego compiler now uses sglri, so it will report syntax errors
+in this way as well.
 
 Another new feature of =sglri= is an option to disable the heuristic
 filters of =sglr= by passing =--no-heuristic-filters=. You don't have
