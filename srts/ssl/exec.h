@@ -53,6 +53,7 @@ ATerm SSL_fclose(ATerm stream);
 ATerm SSL_fputs(ATerm str, ATerm stream);
 ATerm SSL_puts(ATerm str);
 ATerm SSL_fflush(ATerm stream);
+ATerm SSL_fputc(ATerm str, ATerm stream);
 ATerm SSL_fgetc(ATerm stream);
 
 ATerm SSL_write_term_to_stream_baf(ATerm stream, ATerm term);

@@ -462,6 +462,21 @@ ATerm SSL_puts(ATerm str_term) {
 }
 
 /**
+ * futc
+ */
+ATerm SSL_fputc(ATerm char_term, ATerm stream_term) {
+  FILE* stream = stream_from_term(stream_term);
+  int c = (char) AT_getInt(char_term);
+
+  int result = fputc(c, stream);
+  if(result == EOF) {
+    _fail(char_term);
+  }
+
+  return stream_term;
+}
+
+/**
  * fgetc
  */
 ATerm SSL_fgetc(ATerm stream_term) {

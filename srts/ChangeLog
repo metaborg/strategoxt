@@ -1,5 +1,9 @@
 2003-03-25  Martin Bravenboer <martin@mbravenboer.org>
 
+  * ssl/exec.[ch]: added fputc.
+
+2003-03-25  Martin Bravenboer <martin@mbravenboer.org>
+
   * ssl/exec.[ch]: added access.
 
 2003-03-24  Martin Bravenboer <martin@mbravenboer.org>
