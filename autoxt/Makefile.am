@@ -2,7 +2,8 @@
 pkgdocdir 	= $(prefix)/doc/$(PACKAGE)
 pkgtemplatedir	= $(pkgdatadir)/package
 
-bin_SCRIPTS 	= autoxt genxtpack
+bin_SCRIPTS 	= autoxt 
+#genxtpack
 pkgdata_DATA 	= autoxt.m4 Makefile.xt Makefile.ext
 pkgdoc_DATA 	= README
 

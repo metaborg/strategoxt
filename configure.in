@@ -112,7 +112,6 @@ top_srcdir=`pwd`
 AC_OUTPUT(
 	Makefile 
 	README
-	emacs/Makefile
 )
 
 ### SUBPACKAGES ########################
