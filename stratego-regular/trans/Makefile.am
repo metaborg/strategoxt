@@ -21,5 +21,5 @@ EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta)
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c)
 
-rhg_group_LDADD = $(SRTS)/lib/srts/libliblib.la -L$(SRTS)/lib/srts -lstratego.opt -lstratego-lib.opt -L$(ATERM)/lib -lATerm-gcc -lm
-rtg_group_LDADD = $(SRTS)/lib/srts/libliblib.la -L$(SRTS)/lib/srts -lstratego.opt -lstratego-lib.opt -L$(ATERM)/lib -lATerm-gcc -lm
+rhg_group_LDADD = $(SSL_LIBS)
+rtg_group_LDADD = $(SSL_LIBS)
