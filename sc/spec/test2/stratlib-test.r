@@ -3,7 +3,7 @@ imports stratlib sunit DefaultStrat
 
 strategies
 
-  stratlib-test = 
+  main = 
     test-suite(!"stratlib-test",
 	tvars-test1;
 //	tvars-test2;

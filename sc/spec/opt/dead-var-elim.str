@@ -21,15 +21,18 @@ strategies
     elim-scope(dve)
     <+ elim-sdef(dve)
     <+ MarkBuild
-    <+ PrimT(id, map(dve), map(mark-build-term))
-    <+ CallT(id, map(dve), map(mark-build-term))
+    <+ PrimT(id, reverse-map(dve), reverse-map(mark-build-term))
+    <+ CallT(id, reverse-map(dve), reverse-map(mark-build-term))
     <+ Seq(id, dve); Seq(dve, id) 
     <+ elim-choice(dve)
     <+ elim-lchoice(dve)
     <+ elim-guardedlchoice(dve)
     <+ EliminateFromMatch
-    <+ all(dve)
+    <+ all-rl(dve)
   )
+
+  all-rl(x) = 
+    id # ( reverse-map(x) )
 
   elim-sdef(x) =
     ?SDefT(_,_,_,_)
@@ -63,7 +66,8 @@ strategies
     Match(
       alltd(
         {?Var(x){"bound"}
-         ; override rules(ElimVar : Var(x) -> Undefined)})
+         ; override rules(ElimVar : Var(x) -> Undefined)}
+      )
       ; alltd(?Var(<!Var(<id>)>){_}; ElimVar)
     )
 

@@ -22,7 +22,7 @@ EXTRA_DIST 	= $(wildcard *.str) strc-version.str.in \
 man_MANS 	= strc.1
 
 sc : sc.src
-	sed -e "s\__PREFIX__\$(prefix)\\" sc.src > sc	
+	sed -e "s@__PREFIX__@$(prefix)@" sc.src > sc	
 
 strc.1 : 
 	help2man -n "compile Stratego programs" \

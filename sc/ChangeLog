@@ -1,3 +1,15 @@
+2003-07-29  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/opt/dead-var-elim.str: Default case traverses subtree
+	nodes from right to left since this is a backward dataflow
+	analysis. Note: all-rl(_) should be defined in library.
+
+	* spec/match/compile-match.str: Simplify after definining
+	congruences to get rid of sugar.
+
+	* spec/c/bound-unbound-vars.str: More conservative propagation
+	in let bindings.
+
 2003-07-28  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/sig/Stratego-Optimized-Format.str: Restricted format to

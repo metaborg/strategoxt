@@ -19,7 +19,8 @@ STRINCLUDES	 = -I $(C_TOOLS)/share/sdf/c-tools	     \
 	  	   -I ../match				     \
 	  	   -I ../opt				     \
 	  	   -I ../front				     \
-	  	   -I ../lib
+	  	   -I ../lib \
+		   -O 0
 
 TESTS = C-simplify-test 
 #canonicalize-test

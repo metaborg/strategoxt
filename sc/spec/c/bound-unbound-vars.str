@@ -71,10 +71,14 @@ strategies
 
   mark-let =
     Let(id, id)
-    ; where(save-MarkVar => bnd0)
-    ; Let(id, mark-buv)
-    ; where(<isect-MarkVar> bnd0; save-MarkVar => bnd1)
-    ; Let(map(mark-buv; where(<restore-MarkVar> bnd1)), id)
+    ; where(
+        where(save-MarkVar => bnd0)
+        ; Let(map(mark-buv; where(<isect-MarkVar> bnd0))
+	     ,    mark-buv; where(<isect-MarkVar> bnd0))
+      )
+    ; where(save-MarkVar => bnd1)
+    ; Let(map(where(<restore-MarkVar> bnd1); mark-buv)
+         ,    where(<restore-MarkVar> bnd1); mark-buv) 
 
   mark-sdef =
     ? SDefT(_, _, as, _)
@@ -127,8 +131,8 @@ strategies // Dynamic rule manipulation
 
   isect-MarkVar =
      map(try(?(Scopes,_)
-        <+ {?(key, [Defined(_,val)|_]);
-            (where(<table-get> ("MarkVar", key) => [Defined(_,val)|_])
+        <+ {?(key, [Defined(_)|_]);
+            (where(<table-get> ("MarkVar", key) => [Defined(_)|_])
              <+ !(key, [Undefined]))
            }))
     ; restore-MarkVar
