@@ -1,5 +1,8 @@
 2004-07-31  Martin Bravenboer  <martin@cs.uu.nl>
 
+	* parse/pack-sdf.str: pack-sdf now checks if module name in an SDF
+	module file, corresponds to the filename.
+
 	* parse/pack-sdf.str: yet another improvement of the include
 	mechanism. The first search option is from now the directory of
 	the input file, which is not always the current directory. So,

@@ -105,22 +105,82 @@ strategies
   include-from-dir(|mod) :
     IncludeDir(dir) -> <include-pathname> file
       where <concat-strings; file-exists> [dir,"/", mod, ".sdf"] => file
+          ; if-verbose1(debug(!"  including "))
+          ; ( <parse-sdf2-module-to-asfix(|mod)> file => tree
+            <+ <fatal-error> ["pack-sdf: Error: module ", <id>, " cannot be parsed\n"])
 
   include-from-xtc(|mod) :
     IncludeXTC() -> (file, tree)
       where <conc-strings; xtc-find-loc> (mod, ".sdf") => file
           ; if-verbose1(say(<concat-strings> ["  including ", mod, " from XTC repository"]))
-          ; <parse-sdf2-module-to-asfix> file => tree
+          ; <parse-sdf2-module-to-asfix(|mod)> file => tree
 
   include-from-def(|mod) :
     IncludeDef(file, mods) -> (file, Module_START(NewLine(), tree, NewLine()))
       where <fetch-elem(?(mod, <id>))> mods => tree
           ; if-verbose1(say(<concat-strings> ["  including ", mod, " from ", file]))
 
-  parse-sdf2-module-to-asfix = 
-      <xtc-sglr(!"Sdf2.baf", !"Module")> FILE(<id>)
+strategies
+
+  /**
+   * Parses SDF module and checks basename of SDF module name
+   */
+  parse-sdf2-module-to-asfix =
+    let check =
+            (<conc-strings> (<base-filename>, ".sdf"), base-filename)
+          ; eq
+     in parse-sdf2-module-to-asfix(check)
+    end
+
+  /**
+   * Parses SDF module and checks full module name.
+   */
+  parse-sdf2-module-to-asfix(|mod) =
+    let check =
+          ?(<id>, _)
+          ; <eq> (<id>, mod)
+     in parse-sdf2-module-to-asfix(check)
+    end 
+
+  /**
+   * Parses SDF module.
+   *
+   * check is applied to a tuple of (actual module name, pathname of sdf)
+   */
+  parse-sdf2-module-to-asfix(check) =
+      <xtc-sglr(!"Sdf2.baf", !"Module")> FILE(<?pathname; id>)
     ; read-from
     ; ?parsetree(<id>, _)
+    ; check-module-name(check|pathname)
+
+  check-module-name(check|pathname) =
+    ?ptree;
+    let get-actual-modname =
+            !ptree
+          ; collect-om(?appl(prod(_, cf(sort("Module")), _), _))
+          ; ?[<id>]
+                     // module layout ModuleName
+          ; ?appl(_, [_, _, <id> | _])
+    
+          ; collect-om(?appl(prod(_, lex(sort("ModuleId")), _), _))
+          ; ?[<id>]
+          ; asfix-lex-yield
+
+     in where(<get-actual-modname> () => actual)
+      ; if <check> (actual, pathname) then
+          id
+        else
+          <fatal-error> ["pack-sdf: error: module name '", actual, "' in file '", pathname, "' does not correspond to filename.\n"]
+        end
+    end
+
+  asfix-lex-yield =
+    let F  = \ appl(p, ts) -> <concat> ts \
+        F' = \ x -> [x] \
+
+     in rec x(appl(id, map(x)); F <+ F')
+    end
+    ; implode-string
 
 strategies
 
