@@ -1,0 +1,1 @@
+Specification([Imports(["lib","connect"]),Strategies([SDef("main",[],Id),SDef("bla",[],Call(SVar("iowrap"),[Seq(Where(AM(BA(Call(SVar("connect"),[]),Op("",[Str("localhost"),Int(6667),Int(0)])),Var("fd"))),Seq(BA(Seq(Where(Call(SVar("send"),[])),Call(SVar("send"),[])),Op("",[Var("fd"),RootApp(Id)])),BA(Call(SVar("shutdown"),[]),Var("fd"))))]))])])

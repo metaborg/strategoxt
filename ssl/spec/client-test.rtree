@@ -1,0 +1,1 @@
+Specification([Imports(["lib","communication"]),Strategies([SDef("main",[],Id),SDef("bla",[],BA(Call(SVar("client"),[Match(Int(3)),Id,Build(Str("localhost")),Build(Int(6667))]),Op("",[Int(1),Int(2)])))])])
