@@ -155,6 +155,18 @@ strategies
     prim("SSL_getcwd")
 
   /**
+   * Change current working directory.
+   *
+   * @type String -> String
+   */
+  chdir =
+    ?pathname; prim("SSL_chdir", pathname) => 0
+    <+ <conc-strings; perror; fail> ("SSL/chdir: Cannot change current working directory to ", <id>)
+
+  home-dir =
+    <getenv> "HOME"
+
+  /**
    * Create directory
    *
    * @type String -> Int
@@ -171,18 +183,6 @@ strategies
   rmdir =
     ?pathname; prim("SSL_rmdir", pathname) => 0
     <+ <conc-strings; perror; fail> ("SSL/rmdir: Cannot delete directory ", <id>)
-
-  /**
-   * Change current working directory.
-   *
-   * @type String -> String
-   */
-  chdir =
-    ?pathname; prim("SSL_chdir", pathname) => 0
-    <+ <conc-strings; perror; fail> ("SSL/chdir: Cannot change current working directory to ", <id>)
-
-  home-dir =
-    <getenv> "HOME"
 
 /**
  * Primitive file operations
@@ -294,6 +294,30 @@ strategies
    */
   fileno = 
     ?Stream(stream); prim("SSL_fileno", stream)
+
+
+  /**
+   * Mode of a file
+   */
+ 
+  filemode =
+    ?pathname; prim("SSL_filemode", pathname); ?(<id>, 0)
+    <+ <conc-strings; perror; fail> ("SSL/filemode: Cannot get filemode from ", <id>)
+
+  isreg =
+    ?mode; prim("SSL_S_ISREG", mode)
+  isdir =
+    ?mode; prim("SSL_S_ISDIR", mode)
+  ischr =
+    ?mode; prim("SSL_S_ISCHR", mode)
+  isblk =
+    ?mode; prim("SSL_S_ISBLK", mode)
+  isfifo =
+    ?mode; prim("SSL_S_ISFIFO", mode)
+  islnk =
+    ?mode; prim("SSL_S_ISLNK", mode) 
+  issock =
+    ?mode; prim("SSL_S_ISSOCK", mode) 
 
 /**
  * Pipes (and FIFOs)
