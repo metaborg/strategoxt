@@ -1,3 +1,9 @@
+2002-02-23  Eelco Visser  <visser@acm.org>
+
+	* src/connect.ch, spec/connect.r, spec/accept-test.r,
+	connect-test.r, client-test.r, server-test.r: Primitives for
+	interprocess communication contributed by Hedzer Westra
+
 2002-02-19  Eelco Visser  <visser@acm.org>
 
 	* spec/getopt.r: I've written an option parser for Stratego.  I'm
@@ -17,7 +23,6 @@
 
 	I've only tested this with Stratego 0.6.4, so tweaking may be
 	necessary to make it work on 0.7. -- Otto Bagge
-
 
 2002-02-12  Eelco Visser  <visser@acm.org>
 
