@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/06/07 12:18:48 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2001/06/07 14:18:32 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -34,9 +34,6 @@ STRATEGO_PRG = sdf-imports
 
 # What scipts to build
 bin_SCRIPTS  = $(STRATEGO_PRG)
-
-## Optional tests to run
-#TESTS        = imports-stratego-check
 
 # List all files that should be distributed here
 EXTRA_DIST   +=  get-modules.r
