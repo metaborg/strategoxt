@@ -18,7 +18,7 @@ strategies
   * @inc test-index
   */
   index =
-    (inc, id); at-index(?t); !t
+    (dec, id); at-index(?t); !t
 
 strategies
 

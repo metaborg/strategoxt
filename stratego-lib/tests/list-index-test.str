@@ -54,24 +54,24 @@ strategies
     , !(1, ["a", "b", "c", "d", "e"])
     , !"a"
     )
-  ; apply-test(!"test-index 2", index
+  ; apply-test(!"test-index 3", index
     , !(5, ["a", "b", "c", "d", "e"])
     , !"e"
     )
-  ; apply-test(!"test-index 3", index
+  ; apply-test(!"test-index 4", index
     , !(1, ["a"])
     , !"a"
     )
-  ; apply-and-fail(!"test-index 4", index
+  ; apply-and-fail(!"test-index 5", index
     , !(2, ["a"])
     )
-  ; apply-and-fail(!"test-index 5", index
+  ; apply-and-fail(!"test-index 6", index
     , !(1, [])
     )
-  ; apply-and-fail(!"test-index 6", index
+  ; apply-and-fail(!"test-index 7", index
     , !(0, [])
     )
-  ; apply-and-fail(!"test-index 7", index
+  ; apply-and-fail(!"test-index 8", index
     , !(0, ["a"])
     )
 
