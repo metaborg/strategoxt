@@ -55,11 +55,10 @@ compilation of Stratego is now ready for use.
 First, AutoXT has been extended with support for separate
 compilation. Because of the support in AutoXT, using separate
 compilation in your packages is very easy. Second, separate
-compilation is now also supported for XTC tools, for which separate
-compilation is very useful. Third, the stand-alone Stratego compiler
-=strc= now accepts flags for separate compilation. This is very
-convenient for small tests programs, or just for testing separate
-compilation.
+compilation is now also supported for XTC tools, for which it is
+particularly useful. Third, the stand-alone Stratego compiler =strc=
+now accepts flags for separate compilation. This is very convenient
+for small tests programs, or just for testing separate compilation.
 
 The exact details of using separate compilation are explained in a
 [[HowToUseSeparateCompilation][how to]] available at the Stratego
@@ -109,9 +108,10 @@ Various problems had to be fixed in order to support Mac OS X:
    primitive.
 
    * Various issues with separate compilation at Mac OS X have been
-   fixed. For example, initializers of dynamic libraries are by
-   default invoked in a lazy way at Mac OS X. This issue has been
-   fixed in AutoXT by passing a flag to the linker at Darwin systems.
+   resolved. For example, initializers of dynamic libraries are by
+   default invoked in a lazy way at Mac OS X, which Stratego separate
+   compilation does not allow. This issue has been fixed in AutoXT by
+   passing a flag to the linker at Darwin systems.
 
    * The stand-alone Stratego compiler now passes more standard flags
    to GCC.
@@ -172,13 +172,14 @@ older versions of SDF there was no way to declare start
 symbols. Instead, all declared sorts were implicitly added as start
 symbols. You must add this new explicit declaration of start-symbols
 to your syntax definition, otherwise the generated parse table will
-not parse anything. For example, if you want =Module= to be a start
-symbol of your syntax definition, then you should add a declaration
-=context-free start-symbols Module= to you syntax definition. You can
-also declare more complex start symbols, for example lists. Declaring
-all sorts (in a =sorts= construct)is now encouraged, since the parse
-table generator is then able to do more static checking of the syntax
-definition and warn you about suspicious constructs.
+not parse anything at all. For example, if you want =Module= to be a
+start symbol of your syntax definition, then you should add a
+declaration =context-free start-symbols Module= to you syntax
+definition. You can also declare more complex start symbols, for
+example lists. Declaring all sorts (in a =sorts= construct)is now
+encouraged, since the parse table generator is then able to do more
+static checking of the syntax definition and warn you about suspicious
+constructs.
 
    (Martin Bravenboer)
 
@@ -187,11 +188,11 @@ definition and warn you about suspicious constructs.
 StrategoXT 0.11 has a new sub-package: =xml-front-. This package
 contains an SDF syntax definition for XML, a pretty-printer for XML,
 an embedding of XML in Stratego, and various tools for XML
-processing. The syntax definition of XML and the accompanying tools can
-be used for the implementation of XML transformations, for generating
-XML (e.g. XHTML web pages) or for interoperability with external
-XML-based tools. How you can use the tools of =xml-front= for XML
-applications will be explained in some HowTo's at the Stratego
+processing. The syntax definition of XML and the accompanying tools
+can be used for the implementation of XML transformations, for
+generating XML (e.g. XHTML web pages) or for interoperability with
+external XML-based tools. How to use the tools of =xml-front= for XML
+applications will be explained in some howtos at the Stratego
 Wiki. The first one will explain the embedding of XML in Stratego,
 which is in particular useful for generating XML in Stratego programs.
 
@@ -212,9 +213,7 @@ definition. The tool handles associativity, relative priorities, and
 groups of associative productions. The tool has successfully been
 applied to improve the pretty-printers of Stratego in stratego-front
 and Java in JavaFront. The tool is explained in more detail at the
-Tools web: 
-
-   * http://www.program-transformation.org/Tools/SdfToParenthesize
+Tools web: [[Tools.SdfToParenthesize][sdf2parenthesize]].
 
 _sdf2rtg_, which is used for the generation of Stratego
 signatures, now uses the real start symbols of the SDF syntax
@@ -229,14 +228,14 @@ The Stratego Standard Library has been extended with several useful
 strategies. 
 
 The =newname= strategy is a variant of the =new= strategy. It
-generates unique strings, just like new, but it also accepts an prefix
+generates unique strings, just like new, but it also accepts a prefix
 that will be part of the generated string. By default, the numbering
-is also done per prefix. For example, if you apply newname three times
-to the string "foo", then the results will be ="foo_0"=, ="foo_1"= and
-="foo_2"=. If the newname is applied to "bar" after this, then the
-result will be ="bar_0"=, not ="bar_4"=. Thus, The =newname= strategy
-is very useful for generating more user-friendly, unique names in a
-program transformation.
+is also done per prefix. For example, if you apply =newname= three
+times to the string ="foo"=, then the results will be ="foo_0"=,
+="foo_1"= and ="foo_2"=. If =newname= is applied to ="bar"= after
+this, then the result will be ="bar_0"=, not ="bar_4"=. Thus, The
+=newname= strategy is very useful for generating more user-friendly,
+unique names in a program transformation.
 
   (Arthur van Dam)
 
@@ -248,69 +247,72 @@ this data structure in the ATerm library.
   (Martin Bravenboer)
 
 The =posix-file= module has been extended with the directory
-primitives =mkdir= and =rmdir=. The strategy =filemode= returns the
-mode of a file. The strategy =mkdtemp= can be used to created
-temporary directories.
+primitives =mkdir= and =rmdir=. The new strategy =filemode= returns
+the mode of a file. The strategy =mkdtemp= can be used to created
+temporary directories, similar to =mkstemp=.
 
 The module =char-io= has been extended with the strategy
-=filter-text-file= for filtering characters sequences from text
+=filter-text-file= for filtering character sequences from text
 files. This strategy is especially useful if you need to filter a file
-in a way that that depend on multiple lines. =filter-text-file= is
-parameterized with two strategies: a strategy for transforming the
-current 'chunk' of characters and a strategy to commit the current
-chunk.
+in a way that depends on characters in multiple lines of the
+input. =filter-text-file= is parameterized with two strategies: a
+strategy for transforming the current 'chunk' of characters and a
+strategy to commit the current chunk.
 
   (Eelco Visser)
 
 ---------++ Various improvements of XTC
 
-In StrategoXT 0.11 AutoXT also constructs build-time XTC
-repositories. A build-time repository refers to files in the build
-tree, instead of the installation directory. The repository is named
-XTC and is created in the top-level directory of the build
+In StrategoXT 0.11 AutoXT constructs build-time XTC repositories. Such
+a build-time XTC repository refers to files in the build tree, instead
+of the installation directory. The build-time repository is named XTC
+and is created in the top-level directory of the build
 tree. Build-time repositories can be used to invoke tools in the build
 tree at build- or check-time. Thus, build-time XTC repositories can be
-used to implement support for a 'make check' without having the
-package installed. Indeed, the StrategoShell and JavaFront have
-already been changed to use the build-time repositories and now fully 
-support a pre-install check and 'make distcheck'.
+used to support a 'make check' without having the package
+installed. Indeed, the StrategoShell and JavaFront have already been
+changed to use the build-time repositories and now fully support a
+pre-install check and 'make distcheck'. For StrategoXT a 'make
+install' is still required before you can do a 'make check'.
 
-From StrategoXT 0.11, XTC tools be compiled with stand-alone Stratego
-compiler, =strc=. Until now, XTC tools could only be implemented in
-complete packages with an AutoXT based build-system. From this
-release, =strc= takes a flag =--xtc-repo= to set the default XTC
-repository when invoking strc as a full program compiler. This
-argument has no meaning if strc only produces C code. The definition
-of a default XTC repository with the =--xtc-repo= flag is also
-optional: if you leave it out, the tool will have no default XTC
-repository and will therefore use the environment variable
-XTC_REPOSITORY or a repository =passed to the tool when it is
-invoked. In this way, it is now much easier to implement ad-hoc
-Stratego programs that invoke other tools using XTC. It might also be
-useful for users that are new to XTC and just want to experiment.
+From StrategoXT 0.11, XTC tools can be compiled with stand-alone
+Stratego compiler. Until now, XTC tools could only be compiled in
+complete AutoXT-based packages. From this release, =strc= takes a flag
+=--xtc-repo= to set the default XTC repository when invoking strc as a
+full program compiler. This argument has no meaning if strc is
+instructed to produce only C code. The definition of a default XTC
+repository with the =--xtc-repo= flag is optional: if you leave it
+out, the tool will have no default XTC repository and will use the
+environment variable =XTC_REPOSITORY= or a repository that is passed
+to the tool when it is invoked. In this way, it is now much easier to
+implement ad-hoc Stratego programs that invoke other tools using
+XTC. It might also be useful for users that are new to XTC and just
+want to experiment without setting up an entire package.
 
    (Martin Bravenboer)
 
 ---------++ Global choice operator
 
 The global choice operator is now much easier to use. The global
-choice operator =++= was introduced in Stratego 0.8, but to use it,
-StrategoXT had to be configured with the location of the CPL for
-StrategoXT. If the CPL was available, then it was used for all
-programs compiled with this installation of StrategoXT. By moving the
-choice for the implementation of choice-points to link-time, this is
+choice operator =++= was introduced in Stratego 0.7, but to use it,
+StrategoXT had to be configured with the location of the CPL. If the
+CPL was available, then it was used for _all_ programs compiled with
+this installation of StrategoXT. In StrategoXT 0.11 we have moved the
+choice for the implementation of choice-points to link-time. This is
 now much more flexible and easy to use: the new version of the CPL for
 StrategoXT (will be released in a few days) can be installed _after_
-the installation of StrategoXT and for each program you can decide
-whether you want to use the implementation of global choices in the
-CPL. If a program uses the global choice, but it is not linked with
-the CPL, then linking will fail.
+the installation of StrategoXT and for each program you can decide if
+you want to use the implementation of global choices in the CPL. If a
+program uses the global choice, but it is not linked with the CPL,
+then linking will fail.
 
-If the CPL is installed an registered in the XTC repository of
-StrategoXT, then the Stratego compiler takes an argument =--cpl=,
-which will link the program with the CPL. The new configuration for
-the CPL and the new =strc= option for linking with the CPL, make it
-very easy to experiment with the global choice implementation.
+If the CPL is installed and registered in the XTC repository of
+StrategoXT, then the Stratego compiler accepts a new argument =--cpl=,
+which will link the program with the CPL. The argument is not visible
+if the CPL has not been registered in the XTC repository that is used
+by strc. The new configuration for the CPL and the new strc option for
+linking with the CPL, make it very easy to experiment with the global
+choice implementation.
 
    (Martin Bravenboer)
 
@@ -321,17 +323,18 @@ and the compiler. Some highlights:
 
    * fixed a bug in the implementation of =mkstemp= that causes
      segmentation faults in large programs that use this strategy. In
-     particular, XTC composition were affected. The segmentation fault
-     occurs during garbage collection of ATerms by the ATerm library.
+     particular, all XTC tools in 0.9.4, 0.9.5 and 0.10 are
+     affected. The segmentation fault occurs during garbage collection
+     of ATerms by the ATerm library.
 
    * Several bugs have been fixed in the new implementation of dynamic
      rules, which was introduced in StrategoXT 0.10. Also, the
-     performance of scope labelling has been improved by applying the
+     performance of scope labeling has been improved by applying the
      new stateful sets.
 
    * In the backend of the Stratego compiler a bug has been fixed in
      the generation of code for mutual recursive strategies declared
-     locally in a let. The backend of =strc= now declares all local
+     locally in a let. The backend of strc now declares all local
      functions before defining them.
 
   (Martin Bravenboer and Arthur van Dam)
