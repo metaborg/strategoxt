@@ -1,3 +1,9 @@
+2004-05-07  Martin Bravenboer <martin@cs.uu.nl>
+
+	* src/stratego-stats/add-main.str: removed.
+	* src/sdf2sig: removed.
+	* src/sdf2stratego: removed.
+	
 2004-03-22  Martin Bravenboer <martin@cs.uu.nl>
 
 	* src/sig2: removed all the sig2 tools. They are not used in

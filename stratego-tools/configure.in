@@ -8,7 +8,7 @@ AC_PROG_INSTALL
 AC_PATH_PROGS(SH, sh)
 AC_PATH_PROG(PERL,perl)
 
-TOOLS="templates stratego sdf2stratego sdf2sig stratego-imports stratego-stats"
+TOOLS="templates stratego stratego-imports stratego-stats"
 
 AC_CONFIG_FILES([
   Makefile 
@@ -17,12 +17,6 @@ AC_CONFIG_FILES([
 
   src/stratego/Makefile
   src/stratego/data/Makefile
-
-  src/sdf2stratego/Makefile
-  src/sdf2stratego/data/Makefile
-
-  src/sdf2sig/Makefile
-  src/sdf2sig/data/Makefile
 
   src/stratego-imports/Makefile
   src/stratego-imports/data/Makefile
