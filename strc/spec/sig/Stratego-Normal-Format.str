@@ -1,18 +1,26 @@
-\literate[{\btt Stratego-Normal-Format}]
-
-\begin{code}
 module Stratego-Normal-Format
-imports Stratego-Amb lib Stratego-MetaTransition
+imports
+  Stratego-Amb
+  Stratego-MetaTransition
+  lib
+
 strategies
 
-  main = iowrap(stratego-specification)
+  main =
+    io-wrap(
+      stratego-specification
+    ; if <get-config> "amb-error" then
+          <exit> 1
+      end
+    )
 
   stratego-specification =
     Specification([
       id,
       Strategies(list(strategy-definition))
     ])
-    <+ debug(!"not a stratego-specification: ")
+    <+ amb-error
+    <+ debug(!"warning: not a stratego-specification: ")
 
   strategy-definition =
       SDefT(is-string + Mod(is-string,is-string)
@@ -26,7 +34,8 @@ strategies
     + ExtSDef(is-string + Mod(is-string,is-string)
 	    , list(VarDec(is-string,id))
 	    , list(VarDec(is-string,id)))
-    <+ debug(!"not a strategy-definition: ")
+    <+ amb-error
+    <+ debug(!"warning: not a strategy-definition: ")
 
   strategy-expression =
   rec exp(
@@ -64,7 +73,8 @@ strategies
 			 exp))
 	     ,exp)
 
-	<+ debug(!"not a strategy-expression: ")
+        <+ amb-error
+	<+ debug(!"warning: not a strategy-expression: ")
 	)
 
   term-expression =
@@ -77,6 +87,19 @@ strategies
 	+ BuildDefault(trm)
 	+ As(Var(is-string), trm)
 	+ Op(is-string, list(trm))
-	<+ debug(!"not a term-expression: ")
+        <+ amb-error
+	<+ debug(!"warning: not a term-expression: ")
 	)
-\end{code}
+
+  amb-error =
+    amb(id)
+    ; where(
+        say(!"error: ambiguity in ast. Alternatives: ")
+      ; ?amb(<id>)
+      ; map(debug(!"    - "))
+      ; <set-config> ("amb-error", 1)
+      )
+
+signature
+  constructors
+    amb: List(a) -> a

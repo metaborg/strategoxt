@@ -1,3 +1,10 @@
+2004-10-16  Martin Bravenboer <martin@cs.uu.nl>
+
+	* spec/sig/Stratego-Normal-Format.str: report (all) ambs. Also,
+	report them in a more attractive way by listing them. It is
+	difficult to distinguish the alternatives when they are in an
+	ATerm list.
+
 2004-10-07  Eelco Visser  <visser@cs.uu.nl>
 
 	Now I think I've got it right (the kill- and new- strategies for
