@@ -210,13 +210,20 @@ exports
 
   context-free priorities
     {right:
+       Strategy ";"  Strategy -> Strategy
+      "if" Strategy "then" Strategy "else" Strategy -> Strategy
+    }
+
+  context-free priorities
+    {right:
        Strategy "+"  Strategy -> Strategy
        Strategy "<+" Strategy -> Strategy
        Strategy "+>" Strategy -> Strategy
-       Strategy ";"  Strategy -> Strategy
        Strategy "<" StrategyMid "+" Strategy -> Strategy
       "if" Strategy "then" Strategy "else" Strategy -> Strategy
     }
+
+  context-free priorities
 
   context-free syntax
     "if" Strategy "then" Strategy "else" Strategy -> Strategy {cons("CondChoice")}
