@@ -2,7 +2,7 @@
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN" "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
 
 <book>
-  <title>Stratego/XT Command Reference</title>
+  <title>Stratego/XT Tool Reference</title>
 
   <bookinfo>
     <author>
@@ -18,18 +18,18 @@
   <chapter>
     <title>Stratego</title>
 
-    <include href="strc.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+    <include href="strc.xml" xmlns="http://www.w3.org/2003/XInclude"/>
   </chapter>
 
   <chapter>
     <title>SDF</title>
 
-    <include href="pack-sdf.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+    <include href="pack-sdf.xml" xmlns="http://www.w3.org/2003/XInclude"/>
   </chapter>
 
   <chapter>
     <title>GPP</title>
 
-    <include href="ppgen.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+    <include href="ppgen.xml" xmlns="http://www.w3.org/2003/XInclude"/>
   </chapter>
 </book>
