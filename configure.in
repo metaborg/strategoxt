@@ -137,6 +137,7 @@ AB_CONFIG_PKG(sdf-import,
    --with-aterm=${ATERM}
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
+   --with-asf-library=${ASF_LIBRARY}
    --with-pt-support=${PT_SUPPORT}
    --with-strategoxt=${STRATEGOXT}
    --with-srts=${prefix}  
@@ -218,6 +219,7 @@ AB_CONFIG_PKG(aterm-front,
    --with-aterm=${ATERM}
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
+   --with-asf-library=${ASF_LIBRARY}
    --with-strategoxt=${STRATEGOXT}
    --with-srts=${BUILD_SRTS}
    --with-xtc=${INSTALL_XTC}
@@ -228,6 +230,7 @@ AB_CONFIG_PKG(aterm-tools,
    --with-aterm=${ATERM}
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
+   --with-asf-library=${ASF_LIBRARY}
    --with-strategoxt=${STRATEGOXT}
    --with-srts=${BUILD_SRTS}
    --with-xtc=${INSTALL_XTC}
@@ -238,6 +241,7 @@ AB_CONFIG_PKG(graph-tools,
    --with-aterm=${ATERM}
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
+   --with-asf-library=${ASF_LIBRARY}
    --with-strategoxt=${STRATEGOXT}
    --with-srts=${BUILD_SRTS}
    --with-xtc=${INSTALL_XTC}
@@ -248,6 +252,7 @@ AB_CONFIG_PKG(sdf-front,
    --with-aterm=${ATERM}
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
+   --with-asf-library=${ASF_LIBRARY}
    --with-strategoxt=${STRATEGOXT}
    --with-srts=${BUILD_SRTS}
    --with-xtc=${INSTALL_XTC}
@@ -258,6 +263,7 @@ AB_CONFIG_PKG(sdf-tools,
    --with-aterm=${ATERM}
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
+   --with-asf-library=${ASF_LIBRARY}
    --with-strategoxt=${STRATEGOXT}
    --with-srts=${BUILD_SRTS}
    --with-xtc=${INSTALL_XTC}
@@ -268,6 +274,7 @@ AB_CONFIG_PKG(dot-tools,
    --with-aterm=${ATERM}
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
+   --with-asf-library=${ASF_LIBRARY}
    --with-strategoxt=${STRATEGOXT}
    --with-srts=${BUILD_SRTS}
    --with-xtc=${INSTALL_XTC}
@@ -278,6 +285,7 @@ AB_CONFIG_PKG(stratego-regular,
    --with-aterm=${ATERM}
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
+   --with-asf-library=${ASF_LIBRARY}
    --with-strategoxt=${STRATEGOXT}
    --with-srts=${BUILD_SRTS}
    --with-xtc=${INSTALL_XTC}
@@ -288,6 +296,7 @@ AB_CONFIG_PKG(xml-front,
    --with-aterm=${ATERM}
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
+   --with-asf-library=${ASF_LIBRARY}
    --with-strategoxt=${STRATEGOXT}
    --with-srts=${BUILD_SRTS}
    --with-xtc=${INSTALL_XTC}
@@ -298,6 +307,7 @@ AB_CONFIG_PKG(stratego-tools,
    --with-aterm=${ATERM}
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
+   --with-asf-library=${ASF_LIBRARY}
    --with-strategoxt=${STRATEGOXT}
    --with-srts=${BUILD_SRTS}
    --with-xtc=${INSTALL_XTC}
