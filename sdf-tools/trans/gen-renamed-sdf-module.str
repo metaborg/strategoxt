@@ -5,7 +5,7 @@
  * @since   0.9.5
  */
 module gen-renamed-sdf-module
-imports Sdf2-Syntax options xtc-lib sdf-xtc-tools collect sdf-options
+imports Sdf2 options xtc-lib sdf-xtc-tools collect sdf-options
 
 strategies
 
@@ -85,5 +85,3 @@ signature
   constructors
     SdfResultModuleFlag : Flag
     RenamingSchemeFlag  : Flag
-
-
