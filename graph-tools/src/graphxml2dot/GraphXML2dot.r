@@ -19,7 +19,7 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
  02111-1307, USA.
 
- $Id: GraphXML2dot.r,v 1.8 2001/10/08 13:21:16 mdejonge Exp $
+ $Id: GraphXML2dot.r,v 1.9 2001/10/08 15:42:10 mdejonge Exp $
 *)
 
 module GraphXML2dot
@@ -71,7 +71,7 @@ strategies
             )
 
   GraphXML2dot
-    = \GraphXML(_,[graph(_,xs)]) -> dot-graph("",alt(2,[]),"GraphXML",semicolon([url|ss]))
+    = \GraphXML(_,[graph(_,xs)]) -> <mkterm>("\"dot-0\"", [dot-graph("",alt(2,[]),"GraphXML",semicolon([url|ss]))])
        where 
           option-value(UrlPrefix(?p), !"" => p) ;
           option-value(UrlExt(?e),    !".html" => e);

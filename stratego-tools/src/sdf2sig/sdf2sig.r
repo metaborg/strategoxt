@@ -15,18 +15,19 @@ module sdf2sig
 	for the generated Stratego modules is the same as the
 	modules structure of the input grammar.	
 *)
-imports Sdf2Stratego
+imports Sdf2Stratego termid
 
 strategies
 
-  main = iowrap(sdf2sig)  
+  main = io-idwrap("\"sdf-2.1\"", sdf2sig)  
 
 strategies
 
   sdf2sig
 //    = {ms : << Definition(ms) -> ms >> }
 //    ; filter(module2sig)
-    = Definition(filter(module2sig))
+    = ?Definition(d);
+      <mkterm>("\"stratego-0\"", [Definition(<filter(module2sig)>d)])
 
 signature
   constructors

@@ -29,11 +29,11 @@
 
 \begin{code}
 module unfold-literal
-imports Sdf-Syntax lib sdf-bracket asfix dynamic-rules
+imports Sdf-Syntax lib sdf-bracket asfix dynamic-rules termid
 strategies
 
   unfold-literal = 
-    iowrap(UnfoldLiterals; SdfBracket)
+    iowrap("\"sdf-2.1\"", UnfoldLiterals; SdfBracket)
 
   UnfoldLiterals =
     alltd(RemoveLiteralDef);

@@ -22,7 +22,7 @@
 module imports-sdf
 imports get-modules asfix
         lib pack-graph pack file Sdf-ParseTree-Syntax Kernel-Sdf-Syntax
-        sglr gt-paths
+        sglr gt-paths termid
 signature
 sorts Node
 constructors
@@ -44,7 +44,7 @@ parse-sdf( ext) =
         ?module-name;
         find-in-path => m;
         debug(!"  including ");
-        split(id, \'in -> <sglr> (<concat-strings>[SDFTOOLS, "/share/sdf-tools/sdf.cons.tbl"], 'in)\ ) => tree;
+        split(id , \'in -> <sglr> (<concat-strings>[SDFTOOLS, "/share/sdf-tools/sdf.cons.tbl"], 'in)\ ) => tree;
         <get-sdf-imports>tree => i;
         <get-module-name>tree => n;
         !Node(module-name, m, i)

@@ -32,7 +32,7 @@ Add cons(...) attributes to Sdf productions.
 
 \begin{code}
 module sdf-cons
-imports lib Sdf-Syntax Sdf-NormLit-Syntax prodcons.r
+imports lib Sdf-Syntax Sdf-NormLit-Syntax prodcons.r termid
 
 signature
   constructors
@@ -42,9 +42,12 @@ signature
 strategies
 
   sdf-cons = 
-    iowrap(sdf-cons
-           ,Option("--modular",!Modular)
-            + Option("--injections",!Injections)
+    io-idwrap("\"sdf-2.1\"",
+              sdf-cons,
+              Option("--modular",!Modular,
+		!"--modular      unique names per module")
+            + Option("--injections",!Injections,
+		!"--injections   do not generate constructors for injections")
            ,sdf-cons-usage)
 
   sdf-cons = 

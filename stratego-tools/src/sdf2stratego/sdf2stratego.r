@@ -19,10 +19,10 @@
 
 \begin{code}
 module sdf2stratego
-imports Sdf2Stratego 
+imports Sdf2Stratego  termid
 strategies
 
-  sdf2stratego = iowrap( sdf-to-stratego )
+  sdf2stratego = io-idwrap( "\"sdf-2.1\"", sdf-to-stratego )
 (*
   sdf2stratego with pppwarp
 
@@ -33,7 +33,8 @@ strategies
 *)
 
   sdf-to-stratego =
-    Definition(filter(module2stratego))
+    ?Definition(d);
+    <mkterm>("\"stratego-0\"", [Definition(<filter(module2stratego)>d)])
 
 signature
   constructors

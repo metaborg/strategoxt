@@ -1,3 +1,6 @@
+2001-10-08 Merijn de Jonge <mdejonge@cwi.nl> 
+    * Adapted to use io-idwrap and grammar identifiers
+
 2001-10-05 Merijn de Jonge <mdejonge@cwi.nl>
        * src/sdf/sdf.cons.pp: added pp rule for grammar identification
          production.

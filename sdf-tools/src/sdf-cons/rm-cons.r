@@ -30,12 +30,12 @@ module rm-cons
 *)
 
 imports
-  lib Kernel-Sdf-Syntax Label-Sdf-Syntax
+  lib Kernel-Sdf-Syntax Label-Sdf-Syntax termid
 
 strategies
 
   main
-    = iowrap(rm-cons)
+    = io-idwrap("\"sdf-2.1\"", rm-cons)
 
   rm-cons
     = rec x( attrs(filter(not(?cons(_))))

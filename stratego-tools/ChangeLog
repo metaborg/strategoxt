@@ -1,3 +1,6 @@
+2001-10-08 Merijn de Jonge <mdejonge@cwi.nl> 
+    * Adapted to use io-idwrap and grammar identifiers
+
 2001-09-21 Merijn de Jonge <mdejonge@cwi.nl> 
     * Version 0.1 released
     * Increased version number

@@ -39,12 +39,12 @@ module norm-lit
 *)
 
 imports
-  Literal-lib Literals-Sdf-Syntax asfix
+  Literal-lib Literals-Sdf-Syntax asfix termid
 
 strategies
 
   norm-lit
-    = iowrap(alltd(Normalize))
+    = io-idwrap("\"sdf-2.1\"", alltd(Normalize))
 
 rules
 

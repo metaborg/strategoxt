@@ -22,12 +22,12 @@
 module sdf-normalize
 imports 
   lib
-  Sdf-Syntax
+  Sdf-Syntax termid
 
 strategies
 
   sdf-normalize
-    = iowrap(resolve-aliases;remove-aliases)
+    = io-idwrap("\"sdf-2.1\"", resolve-aliases;remove-aliases)
 
   resolve-aliases
     = \grammar -> <substitute(sort(id))>(subst,grammar)

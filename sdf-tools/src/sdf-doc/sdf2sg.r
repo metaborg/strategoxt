@@ -20,12 +20,12 @@
 
 module sdf2sg
 imports
-  lib sdf-analysis GraphXML Literal-lib
+  lib sdf-analysis GraphXML Literal-lib termid
 
 strategies
 
   main
-    = iowrap(sort-graph)
+    = io-idwrap(?"\"sdf-2.1\"", sort-graph)
 
   sort-graph
     = where(collect-edges => es)
@@ -94,7 +94,8 @@ strategies
     = \n -> node1([name(<quote>n),class(<quote>"declared")])\
 
   graph-from-edges
-    = \es -> GraphXML([],[graph([],es)])\
+    = ?es;
+      <mkterm>("\"graphxml_1_1.0\"", [(GraphXML([],[graph([],es)]))])
 
   build-edges
     = \(ss,s) -> <filter(collect(\x -> <mk-edge>(<get-sortname>x,s)\));concat>ss\

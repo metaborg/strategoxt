@@ -70,7 +70,7 @@ strategies
              collect( \ Edge(x, y) -> [<mkterm>("id", [x]),
                                        <mkterm>("id", [y])] \ ) ); 
       ?(nodes, edges); 
-      !graph( nodes(nodes), edges(edges))
+      <mkterm>("\"graphterm-0\"", [graph( nodes(nodes), edges(edges))])
    <+
       // Generate GraphXML output
       where(<option-defined(?GraphXMLOutput())>options) ;
@@ -78,7 +78,7 @@ strategies
              collect( \ Edge(x, y) -> edge1([source(<quote>y), 
                                       target(<quote>x)]) \ ) ); 
       ?(nodes, edges); 
-      !GraphXML( [], [graph([], <conc>(nodes, edges))])
+      <mkterm>("\"graphxml_1_1.0\"", [GraphXML( [], [graph([], <conc>(nodes, edges))])])
    <+
       filter( \Node(x) -> x\ ) 
    );

@@ -21,12 +21,12 @@
 
 module sdf-doc
 imports
-  lib Sdf-Syntax graph-terms
+  lib Sdf-Syntax graph-terms termid
 
 strategies
 
   main
-    = iowrap(sort-graph)
+    = io-idwrap("\"sdf-2.1\"", sort-graph)
 
   sort-graph
     = collect( \prod    (  ss,sort(s),_) -> <build-edges>(ss,s)\

@@ -21,12 +21,12 @@
 
 module sdf-wf
 imports
-  lib sdf-analysis
+  lib sdf-analysis termid
 
 strategies
 
   sdf-wf
-    = iowrap( (id,sdf-wf-main), sdf-wf-options, sdf-wf-usage  )
+    = io-idwrap( "\"sdf-2.1\"", (id,sdf-wf-main), sdf-wf-options, sdf-wf-usage  )
 
   sdf-wf-main
     = where (

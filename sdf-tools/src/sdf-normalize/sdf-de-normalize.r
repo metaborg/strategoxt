@@ -21,12 +21,12 @@
 
 module sdf-de-normalize
 imports
-  lib Sdf-Syntax
+  lib Sdf-Syntax termid
 
 strategies
 
   sdf-de-normalize
-    = iowrap(
+    = io-idwrap( "\"sdf-2.1\"",
         alltd(de-normalize-syntax)
       )
 

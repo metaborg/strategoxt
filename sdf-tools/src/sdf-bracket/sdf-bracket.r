@@ -36,12 +36,12 @@ sdf-bracket transforms this AST into
 
 \begin{code}
 module sdf-bracket
-imports lib Regular-Sdf-Syntax Bracket-Symbol asfix
+imports lib Regular-Sdf-Syntax Bracket-Symbol asfix termid
 
 strategies
 
   sdf-bracket = 
-    iowrap(SdfBracket)
+    io-idwrap("\"sdf-2.1\"", SdfBracket)
 
   SdfBracket =
     topdown(try(Bracket));

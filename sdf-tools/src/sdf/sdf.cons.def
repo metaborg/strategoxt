@@ -17,9 +17,16 @@
 %%% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 %%% 02111-1307, USA.
 
-%%% $Id: sdf.cons.def,v 1.1 2001/05/31 14:20:51 mdejonge Exp $
+%%% $Id: sdf.cons.def,v 1.2 2001/10/08 15:42:13 mdejonge Exp $
 
 definition
+module GB-Main
+imports Main
+
+exports
+  syntax
+    <START> -> SURROGATE-START {cons("\"sdf-2.1\"")}
+    SURROGATE-START [\256] -> <Start> {prefer, cons("SURROGATE-START")}
 
 module Main
 imports Sdf2-Syntax

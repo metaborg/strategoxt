@@ -17,7 +17,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: get-modules.r,v 1.3 2001/09/18 06:24:10 mdejonge Exp $
+% $Id: get-modules.r,v 1.4 2001/10/08 15:42:39 mdejonge Exp $
 
 \begin{code}
 module get-modules
@@ -68,7 +68,7 @@ strategies
              collect( \ Edge(x, y) -> [<mkterm>("id", [x]),
                                        <mkterm>("id", [y])] \ ) ); 
       ?(nodes, edges); 
-      !graph( nodes(nodes), edges(edges))
+      <mkterm>("\"graphterm_0\"", [graph( nodes(nodes), edges(edges))])
    <+
       // Generate GraphXML output
       where(<option-defined(?GraphXMLOutput())>options) ;
@@ -76,7 +76,7 @@ strategies
              collect( \ Edge(x, y) -> edge1([source(<quote>x), 
                                       target(<quote>y)]) \ ) ); 
       ?(nodes, edges); 
-      !GraphXML( [], [graph([], <conc>(nodes, edges))])
+      <mkterm>("\"graphxml_1_1.0\"", [GraphXML( [], [graph([], <conc>(nodes, edges))])])
    <+
       filter( \Node(x) -> x\ ) 
    );

@@ -32,12 +32,12 @@
 
 \begin{code}
 module sdf-regularize
-imports lib Sdf-Syntax dynamic-rules
+imports lib Sdf-Syntax dynamic-rules termid
 
 strategies
 
   sdf-regularize =
-    iowrap(regularize)
+    io-idwrap("\"sdf-2.1\"", regularize)
 
   regularize = 
     alltd(context-free-syntax(order-productions));          

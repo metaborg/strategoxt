@@ -1,4 +1,4 @@
- 2001-10-08 Merijn de Jonge <mdejonge@cwi.nl> 
+2001-10-08 Merijn de Jonge <mdejonge@cwi.nl> 
    * renamed io-idwrap to termid
    * termid: bug fix in checking function symbols
 

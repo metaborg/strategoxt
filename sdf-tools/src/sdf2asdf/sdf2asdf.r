@@ -37,9 +37,9 @@ module sdf2asdf
 *)
 
 imports
-  Sdf2ASdf
+  Sdf2ASdf termid
 
 strategies
 
   main
-    = iowrap(sdf2asdf)
+    = io-idwrap("\"sdf-2.1\"", sdf2asdf)

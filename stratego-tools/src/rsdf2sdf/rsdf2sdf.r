@@ -15,12 +15,12 @@ module rsdf2sdf
 *)
 
 imports
-  lib Stratego-Specifications Grammar-Syntax
+  lib Stratego-Specifications Grammar-Syntax termid
 
 strategies
 
   main
-    = iowrap(rsdf2sdf)
+    = io-idwrap("\"sdf-stratego-0\"", rsdf2sdf)
 
   rsdf2sdf
     = rec x(gramfilter <+ all(try(x)))

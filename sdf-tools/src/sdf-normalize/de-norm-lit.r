@@ -35,12 +35,12 @@ module de-norm-lit
 *)
 
 imports
- Literal-lib asfix Literals-Sdf-Syntax
+ Literal-lib asfix Literals-Sdf-Syntax termid
 
 strategies
 
   de-norm-lit
-    = iowrap(sometd(de-Normalize))
+    = io-idwrap("\"sdf-2.1\"", sometd(de-Normalize))
 
 rules
 

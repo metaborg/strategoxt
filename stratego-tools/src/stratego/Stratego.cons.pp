@@ -1,4 +1,6 @@
-[ BuildDefault -- H ["_" _1]
+[ 
+  "stratego-0", _1,
+  BuildDefault -- H ["_" _1]
   ,
   Module -- V is=2 [ H [ KW [ "module" ] _1 ] _2 ]
   ,
