@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.6 2001/10/08 23:40:33 mdejonge Exp $
+# $Id: Makefile.am,v 1.7 2001/10/12 14:20:11 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -48,6 +48,8 @@ EXTRA_DIST   = $(wildcard *.r) gpp.Makefile.src \
                pp-tables.def boxstyle.css default.abbrevs pp-tables.pp \
                sdf.cons.tbl
 
+BOOTSOURCES  = $(EXTRA_DIST)
+
 # What should be cleaned
 CLEANFILES  += ast2abox asfix2abox ppgen abox2html abox2latex \
                abox2text gpp.Makefile pp-tables.pp.af \
@@ -59,7 +61,8 @@ SCFLAGS     += -I ${ASFIXTOOLS}/share/asfix-tools --main $@
 % : %.sh.src Makefile
 	sed 's@__PREFIX__@$(prefix)@g;\
 	     s@__SGLR__@$(SGLR)@g;\
-	     s@__MAKE__@$(MAKE)@g;' \
+	     s@__MAKE__@$(MAKE)@g;\
+	     s@__pkgdatadir__@$(pkgdatadir)@g;' \
 	        < $< > $@ && \
 	     chmod +x $@
 

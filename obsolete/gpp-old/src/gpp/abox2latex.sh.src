@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: abox2latex.sh.src,v 1.1 2001/06/05 09:11:47 mdejonge Exp $
+# $Id: abox2latex.sh.src,v 1.2 2001/10/12 14:20:12 mdejonge Exp $
 
 # usage:
 #   abox2latex [-h] [-i abox] [-o latex] [-t table ...] [-w width]
@@ -31,11 +31,12 @@
 #   -w          Specifies max width of output
 
 PREFIX=__PREFIX__
+pkgdatadir=__pkgdatadir__
 
 ABOX2LATEX=${PREFIX}/libexec/Abox2latex
 
 OUTPUT="cat"
-DEFAULT_ABBREVS="${PREFIX}/share/gpp/default.abbrevs"
+DEFAULT_ABBREVS="${pkgdatadir}/default.abbrevs"
 
 
 # no core files

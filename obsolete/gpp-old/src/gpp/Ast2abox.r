@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Ast2abox.r,v 1.3 2001/10/08 13:47:56 mdejonge Exp $
+% $Id: Ast2abox.r,v 1.4 2001/10/12 14:20:10 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
@@ -39,17 +39,20 @@ strategies
                    ArgOption( "-p", \x -> PP-Table(x)\ ,
                     !"-p <table>       Use pretty-print entries from <table>"))
 
-   ast2abox =
-      ?(options, term);
-      // Obtain list of pp tables. Reverse to get correct ordering of
-      // tables
-      <collect(\ PP-Table(t) -> t \)>options;reverse;
-      read-pp-tables;
-      <trm2abox>term;
-      // In case the constructed abox term is a list of aboxes, we put it in
-      // a HV box.
-      try( is-list; \x -> HV([], x ) \ );
-      split(!options, id)
+  ast2abox =
+    ?(options, term);
+    // Obtain list of pp tables. Reverse to get correct ordering of
+    // tables
+    <collect(\ PP-Table(t) -> t \)>options
+    ; reverse
+    ; read-pp-tables
+     
+    // translate term to abox
+    ; <trm2abox>term
+     
+    // In case the constructed abox term is a list of aboxes, we put it in a HV box.
+    ; try( is-list; \x -> HV([], x ) \ )
+    ; split(!options, id)
       
 trm2abox =
    ?s;
@@ -62,18 +65,14 @@ trm2abox =
    
 trm2abox =
    // Obtain function symbol and a list of arguments. 
-   ?f#( args );
+   ?f#( args )
 
    // Obtain a box template for "f"
-    <pp-table-get'>[f] => (path, abox);
+   ; <pp-table-get'>[f] => (path, abox)
 
-   <nzip( {x, y, a: \(x, y) -> a 
-      where
-         !(x, [f], y);
-         arg2abox => a
-         \ } )> args => aboxes; 
+   ; <nzip( \ (x, y) -> <arg2abox> (x, [f], y) \ )> args => aboxes
   
-   <instantiate>( abox, aboxes )
+   ; <instantiate>( abox, aboxes )
 
 strategies
 arg2abox =

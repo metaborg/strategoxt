@@ -1,3 +1,6 @@
+2001-10-12 Merijn de Jonge <mdejonge@cwi.nl> 
+    * Merged Eelco's changes to support boot strapping of gpp
+
 2001-10-10 Merijn de Jonge <mdejonge@cwi.nl> 
     * test sets have been adapted to use grammar identifiers
 
@@ -34,6 +37,14 @@
 
 2001-09-18 Merijn de Jonge <mdejonge@cwi.nl> 
    * Added -2 switch to sglr calls to forse asfix2 output
+
+2001-09-10  Eelco Visser  <visser@acm.org>
+   * src/templates/make_rules.stratego (SC): sc compiler now behaves
+     nice and finds all components without the bin being in the
+     path.
+
+2001-09-08  Eelco Visser  <visser@acm.org>
+   * refactorings to understand the code
 
 2001-09-06 Merijn de Jonge <mdejonge@cwi.nl> 
    * Abox2latex: box fix: latex tables were not generated correctly
