@@ -307,6 +307,12 @@ rules
     appl(p, [t1,t2]) -> <conc>(<impl>t1, <impl>t2)
     where <is-conc> p
 
+  ReplConsConc(impl) : 
+    appl(p, [t1,t2,t3]) -> <conc>(<impl>t1, [<impl>t2 | <impl>t3])
+    where <is-conc> p
+    // Note: the separator of this concatenation operator is
+    // made into an element of the list. Does this make sense?
+
   is-nil  = ?prod([],cf(iter-star-sep(_,_)),_)
   is-nil  = ?prod([],cf(iter-star(_)),_)
   is-nil  = ?prod([],iter-star-sep(_,_),_)
@@ -453,13 +459,9 @@ strategies
 		+ iter-sep(x,lit(id)) + iter-star-sep(x,lit(id)))
 	,not(oncetd(cons(id))))
 
-  injection = 
+  injection' = 
     prod(filter(not(cf(opt(layout)) + lit(id) )); [id], 
          cf(seq(id)), id)
-
-  injection = 
-    prod(filter(not(cf(opt(layout)) + lit(id) )); [id], 
-         seq(id), id)
 
   injection = 
     prod([sort(id) + cf(sort(id))]

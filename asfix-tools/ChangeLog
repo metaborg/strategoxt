@@ -1,3 +1,8 @@
+2002-03-16  Eelco Visser  <visser@acm.org>
+
+	* src/implode/implode-asfix.r: Implosion of lists with separators;
+	singleton sequences are not considered as injections.
+
 2002-03-14  Eelco Visser  <visser@acm.org>
 
 	* src/asfix/verbalize-sdf.r: TCons/TNil -> (...)
