@@ -99,7 +99,7 @@ bootclean:
 #
 
 .def.str :
-	$(STRATEGO_TOOLS)/bin/sdf-to-sig -i $< -o $@
+	$(STRATEGO_TOOLS)/bin/sdf-to-sig -i $<
 
 ###########################################################
 #
