@@ -44,6 +44,26 @@ rules
   HL : InfixApp(t1, s, t2) -> App(s, Op("",[t1,t2]))
 \end{code} 
 
+\paragraph{Primitives}
+
+	Lift non-variable arguments to primitives.
+
+\begin{code}
+rules
+
+  LiftPrimArgs : 
+    Prim(f, ts) -> Scope(xs, Seq(Seqs(s), Prim(f, ts')))
+    where <fetch(not(Var(id)))> ts
+        ; <unzip(LiftPrimArg); (concat, unzip(id))> ts => (xs, (s, ts'))
+
+  LiftPrimArg :
+    Var(x) -> ([], (Id, Var(x)))
+
+  LiftPrimArg :
+    t -> ([x], (Where(Seq(Build(t), Match(Var(x)))), Var(x)))
+    where <not(Var(id))> t; new => x
+\end{code}
+
 \paragraph{Strategy Applications}
 
 	Factoring out strategy applications; The right-hand side of a
@@ -54,6 +74,10 @@ rules
 	applications in arbitrary builds;
 
 \begin{code}
+strategies
+
+  Bapp = Bapp0 <+ Bapp1 <+ Bapp2
+
 rules
 
   Bapp0 : Build(t[App(Build(t'), t'')]) -> Build(t[t'](pat-td))
@@ -71,6 +95,11 @@ rules
   Bapp2 : Build(t[RootApp(s)]) -> 
           Scope([x], Seq(Where(Seq(s, Match(Var(x)))), Build(t[Var(x)](pat-td))))
           where new => x
+
+  Bapp2 : Build(t[Anno(t1, t2)]) -> 
+          Scope([x], Seq(Where(Seq(Prim("ATsetAnnotations", [t1, t2]), Match(Var(x)))), 
+                         Build(t[Var(x)](pat-td))))
+          where new => x
 \end{code}
 
 Only look for Apps and RootApps under constructor applications and term
@@ -80,10 +109,15 @@ explosions. Avoid lifting an App from within another App or RootApp.
   pat-td(s) = 
     s <+ (Op(id, fetch(pat-td(s)))
          + Explode(id, pat-td(s))
-         + Explode(pat-td(s), id))
+         + Explode(pat-td(s), id)
+         + Prim(id, fetch(pat-td(s))))
 \end{code}
 
 \begin{code}
+strategies
+
+  Mapp = Mapp0 <+ Mapp1 <+ Mapp2
+
 rules
 
   Mapp1 : Match(App(s, t')) -> BA(s, t')
@@ -101,27 +135,36 @@ rules
   Mapp2 : Match(t[RootApp(s)]) -> 
           Scope([x], Seq(Match(t[Var(x)](pat-td)), Seq(Build(Var(x)), s)))
           where new => x
+
+
+  Mapp2 : Match(t[Anno(t1, t2)]) -> 
+          Scope([x], Seq(Match(t[As(Var(x), t1)](pat-td)), 
+                         Where(Seq(Prim("ATgetAnnotations", [Var(x)]), Match(t2)))))
+          where new => x
 \end{code}
 
-\paragraph{Term Explosion an Construction}
+
+\paragraph{Term Explosion and Construction}
 
 \begin{code}
 rules
 
-  Expl  : Match(t[Explode(t1, t2)]) -> 
-          Scope([x], 
-                Seq(Match(t[Var(x)]),
-                    Where(BAM(Scope([y],Seq(Match(Var(y)),Prim("SSL_explode_term",[Var(y)]))), 
-                          Var(x), 
-			  Op("", [t1, t2])
-                          ))))
-          where new => x; new => y
+  Expl : 
+    Match(t[Explode(t1, t2)]) -> 
+    Scope([x], 
+          Seq(Match(t[Var(x)]),
+              Where(BAM(Scope([y],Seq(Match(Var(y)),Prim("SSL_explode_term",[Var(y)]))), 
+                        Var(x), 
+			Op("", [t1, t2])
+                        ))))
+    where new => x; new => y
 
-  Expl  : Build(t[Explode(t1, t2)]) -> 
-          Scope([x], Seq(Prim("SSL_mkterm",[t1,t2]), 
-                         Seq(Match(Var(x)),
-                             Build(t[Var(x)]))))
-          where new => x
+  Expl  : 
+    Build(t[Explode(t1, t2)]) -> 
+    Scope([x], Seq(Prim("SSL_mkterm",[t1,t2]), 
+                   Seq(Match(Var(x)),
+                       Build(t[Var(x)]))))
+    where new => x
 
   Expl : 
     ExplodeCong(s1, s2) ->
@@ -209,7 +252,8 @@ rules
 \begin{code}
 strategies
 
-  desugarRule = rec x(try(Rcon; x + Scope(id, x) + RtoS))
+  desugarRule = 
+    rec x(try(Rcon; x + Scope(id, x) + RtoS))
 \end{code} 
 
 \paragraph{Desugaring Strategies}
@@ -219,12 +263,13 @@ strategies
 
   desugar = 
     topdown(try(desugarRule); 
-            repeat(HL + (Bapp0 <+ Bapp1 <+ Bapp2) 
-                   + (Mapp0 <+ Mapp1 <+ Mapp2)+ Expl))
+            repeat(LiftPrimArgs + HL + Bapp + Mapp + Expl))
 
-  desugar' = topdown(try(desugarRule); repeat(HL))
+  desugar' = 
+    topdown(try(desugarRule); repeat(HL))
 
-  desugar-spec = map(SDef(id, id, desugar))
+  desugar-spec = 
+    map(SDef(id, id, desugar))
 \end{code}
  
 % Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
