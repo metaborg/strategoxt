@@ -47,7 +47,7 @@ SCLibs = -L$(SRTS)/lib/srts -lstratego-lib -lstratego-choice -lstratego \
 	../front/pre-desugar -i $< -o $@ -b 
 
 %.f2 : %.f1 # ../front/normalize-spec$(EXE)
-	../front/normalize-spec -i $< -o $@ -b 
+	../front/normalize-spec -i $< -o $@ -b --dr new
 
 %.f4 : %.f2 # ../front/use-def$(EXE)
 	../front/use-def -i $< -o $@ -b 
