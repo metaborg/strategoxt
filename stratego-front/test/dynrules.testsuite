@@ -1,5 +1,17 @@
 testsuite Stratego Dynamic Rules
 topsort Strategy
 
-test Scope
+test Oldskool scope
   "{| A : s |}" succeeds
+
+test Labeled scope
+  "{| A.f : s |}" succeeds
+
+test Scope with string literal
+  [  {| A."f" : s |}  ] succeeds
+
+test Add a label to a scope
+  "{| A :+ f |}" succeeds
+
+test Branch the dynamic rules of the current scope
+  "branch( A : s )" succeeds
