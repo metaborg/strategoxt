@@ -3,17 +3,21 @@ include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
 SUBDIRS      	= data
+
 check_PROGRAMS 	= termid-check1 termid-check2 termid-check3
+TESTS 		= termid1_check termid2_check termid3_check
 
 pkgdata_DATA   	= termid.rtree
 
-EXTRA_DIST  	= termid.str termid-check1.str termid-check2.str termid-check3.str \
-		  $(pkgdata_DATA)
+EXTRA_DIST = \
+  termid.str \
+  termid-check1.str \
+  termid-check2.str \
+  termid-check3.str \
+  $(pkgdata_DATA)
 
-BOOTCLEANFILES	= termid.c termid1_check.c termid2_check.c termid3_check.c  $(wildcard *.rtree)
 CLEANFILES	= $(wildcard *.dep)
-
-TESTS 		= termid1_check termid2_check termid3_check
+BOOTCLEANFILES	= $(wildcard *.c) $(wildcard *.rtree)
 
 termid1_check: termid-check1 
 termid2_check: termid-check2

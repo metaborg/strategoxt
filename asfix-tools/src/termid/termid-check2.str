@@ -1,7 +1,8 @@
 module termid-check2
 
 imports
-   termid
+  termid
+  options
 
 
 strategies
