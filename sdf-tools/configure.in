@@ -18,10 +18,6 @@ AC_SUBST(UNRELEASED)
 
 AC_CONFIG_FILES([
   Makefile VERSION
-  syn/Makefile
-  sig/Makefile
-  pp/Makefile
-  xtc/Makefile
   
 	src/Makefile 
   src/templates/Makefile

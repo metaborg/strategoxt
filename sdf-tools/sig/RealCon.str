@@ -1,3 +1,0 @@
-module RealCon
-imports IntCon
-signature

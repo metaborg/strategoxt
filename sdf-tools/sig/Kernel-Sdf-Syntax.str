@@ -1,8 +1,0 @@
-module Kernel-Sdf-Syntax
-imports Symbols Grammar-Syntax
-signature
-  constructors
-    attrs    : List(Attribute) -> Attributes
-    no-attrs : Attributes
-    prod     : Symbols * Symbol * Attributes -> Production
-    syntax   : Productions -> Grammar

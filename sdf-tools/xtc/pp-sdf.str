@@ -1,9 +1,0 @@
-module pp-sdf
-imports sdf-xtc-tools
-
-strategies
-  
-  io-pp-sdf =
-    xtc-io-wrap(xtc-pp-sdf2)
-    
-    

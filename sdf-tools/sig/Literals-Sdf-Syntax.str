@@ -1,6 +1,0 @@
-module Literals-Sdf-Syntax
-imports Kernel-Sdf-Syntax Literals
-signature
-  constructors
-    lit      : Literal -> Symbol
-    prod-fun : Literal * List(Symbol) * Symbol * Attributes -> Production
