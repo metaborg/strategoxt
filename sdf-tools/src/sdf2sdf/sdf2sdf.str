@@ -29,7 +29,8 @@ strategies
     )
 
   execute-specified-tools =
-    <foldl(\ (tool, file) -> <xtc-transform(!tool)> file \)> (<specified-tools> (), <id>)
+    !(<specified-tools>, <id>)
+    ; foldl(\ (tool, file) -> <xtc-transform(!tool)> file \ )
 
 strategies // for options
 
@@ -59,7 +60,7 @@ strategies // for options
     <get-config> "-SDFI" <+ ![]
 
   specified-tools =
-    <get-config> "--tools" <+ ![]
+    <get-config; reverse> "--tools" <+ ![]
 
   do-pack-sdf =
     where(<get-config> "--pack-sdf")
