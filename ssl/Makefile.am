@@ -2,7 +2,10 @@ include $(top_srcdir)/Makefile.xt
 
 SUBDIRS 	  = . spec tests 
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
-EXTRA_DIST 	  = README README.in bootstrap stdconfig Makefile.xt Makefile.subxt
+EXTRA_DIST 	  = README README.in bootstrap stdconfig \
+                    Makefile.xt Makefile.subxt autoxt.m4
+
+ACLOCAL_AMFLAGS   = -I .
 
 RPMRELEASE=1
 

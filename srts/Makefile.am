@@ -1,8 +1,10 @@
 SUBDIRS 	= src ssl libraries
 
-EXTRA_DIST 	= bootstrap mprotect.m4
+EXTRA_DIST 	= bootstrap mprotect.m4 autoxt.m4
 
 pkgdata_DATA 	= README
+
+ACLOCAL_AMFLAGS = -I .
 
 rpm : dist 
 	rpmbuild -ta $(PACKAGE)-$(VERSION).tar.gz

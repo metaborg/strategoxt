@@ -4,4 +4,7 @@ SUBDIRS           = emacs refcard nedit
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 DIST_SUBDIRS      = $(SUBDIRS)
 
-EXTRA_DIST = Makefile.xt
+EXTRA_DIST = Makefile.xt autoxt.m4
+
+ACLOCAL_AMFLAGS = -I .
+

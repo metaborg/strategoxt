@@ -10,8 +10,8 @@ CLEANFILES 	= $(wildcard *.tbl) $(TESTS)
 
 BOOTCLEANFILES	= $(wildcard *.def) 
 
-EXTRA_DIST 	= Stratego.def StrategoStratego.def	      \
-		  Stratego.tbl StrategoStratego.tbl	      \
+EXTRA_DIST 	= Stratego.def StrategoStratego.def Stratego-Core \
+		  Stratego.tbl StrategoStratego.tbl Stratego-Core.tbl \
 		  $(wildcard *.def) $(wildcard *.sdf)
 
 Stratego.def 	: Stratego.sdf Stratego-Signatures.sdf	       \

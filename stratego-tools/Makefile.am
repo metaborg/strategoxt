@@ -23,7 +23,10 @@ BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 
 include package.conf
 
-EXTRA_DIST = VERSION package.conf bootstrap $(PACKAGE)-$(VERSION).pkg Makefile.xt
+EXTRA_DIST = VERSION package.conf bootstrap $(PACKAGE)-$(VERSION).pkg \
+             Makefile.xt autoxt.m4
+
+ACLOCAL_AMFLAGS = -I .
 
 # Generation of a package defintion file from the package.conf file. This
 # file in combination with autobundle enables integration of the package

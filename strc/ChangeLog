@@ -1,3 +1,8 @@
+2004-02-22   Merijn de Jonge  <mdejonge@cs.uu.nl>
+   * Makefile.am: added autoxt.m4 to EXTRA_DIST
+   * Makefile.am: added line: ACLOCAL_AMFLAGS = -I . such that autoreconf
+     can find autoxt.m4
+
 2004-01-20  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/front/lift-dynamic-rules.str: First implementation of
@@ -4704,6 +4709,3 @@ Tue Feb 17 17:31:37 PST 1998
 
  * The file contexts.mml defines the replacement of contexts in rewrite
    rules. See the file for an explanation.
-<<<<<<< .mine
-=======
->>>>>>> .r4681

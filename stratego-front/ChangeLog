@@ -1,3 +1,11 @@
+2004-02-22   Merijn de Jonge  <mdejonge@cs.uu.nl>
+   * Makefile.am: added autoxt.m4 to EXTRA_DIST
+   * Makefile.am: added line: ACLOCAL_AMFLAGS = -I . such that autoreconf
+     can find autoxt.m4
+
+2004-02-22  Merijn de Jonge  <mdejonge@cs.uu.nl>
+	* added syn/Stratego-Core.{def,tbl} to EXTRA_DIST
+
 2004-02-13  Martin Bravenboer <martin@cs.uu.nl>
 
 	* parse/parse-stratego.str: invoke implode-asfix with -b.
