@@ -1,0 +1,99 @@
+,-----------.
+|     :     | 
+|    /|\    | strategoxt
+|   / | \   | 
+|  /  |  \  | stratego@cs.uu.nl
+| /_\/_\/_\ | http://stratego-language.org
+`-----------'
+
+Description: 
+
+  Stratego is a modular language for the specification of fully
+  automatic program transformation systems based on the paradigm of
+  rewriting strategies.
+
+  In Stratego, basic transformation rules are expressed by means of
+  labeled conditional rewrite rules. Exhaustively applying all rewrite
+  rules in a collection of valid rules is often not desirable; a
+  system of rules can be non-terminating, or, more frequently,
+  non-confluent. The latter means that different outcomes of the
+  normalization process are possible depending on the position of
+  application and the selection of rules.  Therefore, it is necessary
+  to have more control over the application of rules. In standard
+  systems based on rewriting, normalization is controlled by a fixed
+  default rewriting strategy. In such systems more control is achieved
+  by encoding the desired strategy with additional rewrite rules that
+  spell out a traversal over the abstract syntax tree and apply the
+  transformations in the desired order.
+
+  To control the application of transformation rules, Stratego
+  provides a language for defining rewriting strategies based on
+  primitives for sequential programming and abstract syntax tree
+  traversal. A rewriting strategy selects a number of rules from the
+  available rules and defines in what order these rules are applied to
+  a program fragment. Thus, the separation of concerns between logic
+  (transformation rules) and control is maintained.
+
+  Transformation strategies can be defined generically, i.e.,
+  parameterized with a rule selection or other strategy to apply. The
+  language comes with a large library of generic strategies for syntax
+  tree traversal and built-in data type manipulation. In particular,
+  the library contains generic, language independent strategies for
+  language processing such as substitution, unification, and bound
+  variable renaming that are parameterized with the shape of the
+  relevant language constructs. Strategies cannot only be used to
+  combine rules into transformations, but can also be used inside
+  rules to test applicability conditions and perform local
+  transformations.
+
+  Stratego specifications are compiled to C programs. Compiled
+  specifications have built-in support for exchange of abstract syntax
+  trees with other tools via the ATerm format. The Stratego
+  distribution also provides a (prototype) interpreter for the
+  language for rapid prototyping of specifications.
+
+  Stratego is being applied in a wide variety of program
+  transformation projects including a software improvement tool for
+  Cobol programs (CobolX), a compiler for Tiger, a documentation
+  generation tool for SDL, tools for grammar transformation, and a
+  tool for deforestation of functional programs through the warm
+  fusion algorithm (HSX). The StrategoCompiler is bootstrapped, i.e.,
+  implemented in Stratego itself.
+
+  The Stratego system has been available as free software since March
+  1999. Since April 2000 the distribution is available from
+
+    http://www.stratego-language.org
+
+  Since December 2002, the Stratego distribution is integrated with
+  the distribution of the XT package of transformation tools that
+  combines a number of free tools to support program
+  transformation. The package includes tools for generating tools such
+  as pretty-printers from syntax definitions.
+  
+  For more information,
+
+    http://www.stratego-language.org
+
+
+Bug reports:
+
+  stratego-bugs@cs.uu.nl
+
+
+Copyright (C) 1998-2004 Eelco Visser
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2 of the License, or (at your option) any later version.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+
