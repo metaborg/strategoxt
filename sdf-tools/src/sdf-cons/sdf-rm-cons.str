@@ -3,12 +3,12 @@
  *
  * @author Joost Visser (Joost.Visser@cwi.nl)
  */
-module rm-cons
+module sdf-rm-cons
 imports liblib Sdf2
 
 strategies
 
-  io-rm-cons =
+  io-sdf-rm-cons =
     io-wrap(RmCons)
 
   RmCons =
