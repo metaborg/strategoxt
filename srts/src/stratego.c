@@ -56,8 +56,6 @@ ATerm _id(ATerm t)
 
 // Traversal combinators
 
-#define ALLARRAY 8
-
 ATerm _all(ATerm t, ATerm f(ATerm))
 {
   ATerm annos = ATgetAnnotations(t);
@@ -80,49 +78,11 @@ ATerm _all(ATerm t, ATerm f(ATerm))
 	}
       break;
     }
-  return(ATsetAnnotations(t, annos));
+  if(annos == NULL)
+    return t;
+  else
+    return(ATsetAnnotations(t, annos));
 }
-
-/*
-ATerm _allold(ATerm t, ATerm f(ATerm))
-{
-  ATerm annos = ATgetAnnotations(t);
-  switch(ATgetType(t))
-    {
-    case AT_APPL :
-      {
-	Symbol c = ATgetSymbol((ATermAppl) t);
-	int i, arity = ATgetArity(c);
-	if(arity > ALLARRAY)
-	  {
-	    ATermList ts = ATempty;
-	    for(i = 0; i < arity; i++)
-	      ts = ATinsert(ts, f(ATgetArgument(t, i)));
-	    t = (ATerm) ATmakeApplList(c, ATreverse(ts));
-	  } 
-	else 
-	  {
-	    ATerm kids[arity];
-	    for(i = 0; i < arity; i++)
-	      kids[i] = f(ATgetArgument(t, i));
-	    t = (ATerm) ATmakeApplArray(c, kids);
-	  }
-      }
-      break;
-    case AT_LIST :
-      if((ATermList) t != ATempty)
-	{
-	  //ATerm hd = f(ATgetFirst((ATermList) t));
-	  //ATerm tl = f((ATerm) ATgetNext((ATermList) t));
-	  t = (ATerm)ATmap((ATermList) t, f);
-	}
-      break;
-    }
-  
-  return(ATsetAnnotations(t, annos));
-}
- 
-*/
 
 ATerm _one(ATerm t, ATerm f(ATerm))
 {
@@ -183,8 +143,39 @@ ATerm _one(ATerm t, ATerm f(ATerm))
   default:
     _fail(t);
   }
-  return(ATsetAnnotations(t, annos));
+  if(annos == NULL)
+    return t;
+  else
+    return(ATsetAnnotations(t, annos));
 }       
+
+static ATermList _map_some(ATermList ts, ATerm f(ATerm), int transformed)
+{
+  if(ATisEmpty(ts))
+    {
+      if(transformed > 0)
+	return ts;
+      else 
+	_fail((ATerm)ts);
+    }
+  else 
+    {
+      ATerm t = ATgetFirst(ts), t_bak = t;
+      if (PushChoice() == 0)
+	{
+	  t = f(t);
+	  PopChoice();
+	  transformed++;
+	}
+      else
+	{
+	  t = t_bak;
+	}
+      ts = _map_some(ATgetNext(ts), f, transformed++);
+      ts = ATinsert(ts, t);
+      return ts;
+    }
+}
        
 ATerm _some(ATerm t, ATerm f(ATerm)) 
 {
@@ -198,59 +189,33 @@ ATerm _some(ATerm t, ATerm f(ATerm))
     {
       Symbol c = ATgetSymbol((ATermAppl) t);
       int i, arity = ATgetArity(c);
+      ATerm kids[arity];
       //ATfprintf(stderr, "_some(%t) : AT_APPL\n", t);
-      if(arity > ALLARRAY)
-        {
-          ATermList ts = ATempty;
-          for(i = 0; i < arity; i++)
-            {
-              ATermList ts_bak = ts;
-              int transformed_bak = transformed;
-              if (PushChoice() == 0)
-                {
-                  ts = ATinsert(ts, f(ATgetArgument(t, i)));
-                  PopChoice();
-                  transformed++;
-                }
-              else
-                {
-                  ts = ts_bak;
-                  transformed = transformed_bak;
-                  ts = ATinsert(ts, ATgetArgument(t, i));
-                }
-            }
-          if(transformed > 0)
-            t = (ATerm) ATmakeApplList(c, ATreverse(ts));
-          else
-            _fail(t);
-        }
+      for(i = 0; i < arity; i++)
+	{
+	  int transformed_bak = transformed;
+	  if (PushChoice() == 0)
+	    {
+	      kids[i] = f(ATgetArgument(t, i));
+	      PopChoice();
+	      transformed++;
+	    }
+	  else
+	    {
+	      transformed = transformed_bak;
+	      kids[i] = ATgetArgument(t, i);
+	    }
+	}
+      if(transformed > 0)
+	t = (ATerm) ATmakeApplArray(c, kids);
       else
-        {
-          ATerm kids[ALLARRAY];
-          for(i = 0; i < arity; i++)
-            {
-              int transformed_bak = transformed;
-              if (PushChoice() == 0)
-                {
-                  kids[i] = f(ATgetArgument(t, i));
-                  PopChoice();
-                  transformed++;
-                }
-              else
-                {
-                  transformed = transformed_bak;
-                  kids[i] = ATgetArgument(t, i);
-                }
-            }
-          if(transformed > 0)
-            t = (ATerm) ATmakeApplArray(c, kids);
-          else
-            _fail(t);
-        }
+	_fail(t);
     }
-    break;
+  break;
   case AT_LIST :
     {
+      t = (ATerm) _map_some((ATermList) t, f, 0);
+      /*
       ATermList prefix = ATempty, suffix = (ATermList) t;
       ATerm el;
       //ATfprintf(stderr, "_some(%t) : AT_LIST\n", t);
@@ -276,12 +241,16 @@ ATerm _some(ATerm t, ATerm f(ATerm))
 	t = (ATerm) ATreverse(prefix);
       else
 	_fail(t);
+      */
     }
     break;
   default :
     _fail(t);
   }
-  return(ATsetAnnotations(t, annos));
+  if(annos == NULL)
+    return t;
+  else
+    return(ATsetAnnotations(t, annos));
 }           
 
 ATerm _thread(ATerm t, ATerm f(ATerm))
@@ -298,30 +267,15 @@ ATerm _thread(ATerm t, ATerm f(ATerm))
     { 
       Symbol c = ATgetSymbol((ATermAppl) t);
       int i, arity = ATgetArity(c);
-      if(arity > ALLARRAY)
+      ATerm kids[arity];
+      for(i = 0; i < arity; i++)
 	{
-	  ATermList ts = ATempty;
-	  for(i = 0; i < arity; i++)
-	    {
-	      ATerm tmp = f((ATerm)ATmakeAppl2(sym__2, ATgetArgument(t, i), env));
-	      if(!match_cons(tmp, sym__2)) _fail(t);
-	      ts = ATinsert(ts, ATgetArgument(tmp,0));
-	      env = ATgetArgument(tmp,1);
-	    }
-	  t = (ATerm) ATmakeApplList(c, ATreverse(ts));
-	}
-      else 
-	{
-	  ATerm kids[ALLARRAY];
-	  for(i = 0; i < arity; i++)
-	    {
-	      ATerm tmp = f((ATerm)ATmakeAppl2(sym__2, ATgetArgument(t, i), env));
-	      if(!match_cons(tmp, sym__2)) _fail(t);
+	  ATerm tmp = f((ATerm)ATmakeAppl2(sym__2, ATgetArgument(t, i), env));
+	  if(!match_cons(tmp, sym__2)) _fail(t);
 	      kids[i] = ATgetArgument(tmp,0);
 	      env = ATgetArgument(tmp,1);
-	    }
-	  t = (ATerm) ATmakeApplArray(c, kids);
 	}
+      t = (ATerm) ATmakeApplArray(c, kids);
     }
     break;
   case AT_LIST:
@@ -340,7 +294,10 @@ ATerm _thread(ATerm t, ATerm f(ATerm))
     }
     break;
   }
-  return (ATerm)ATmakeAppl2(sym__2, ATsetAnnotations(t, annos), env);
+  if(annos == NULL)
+    return (ATerm)ATmakeAppl2(sym__2, t, env);
+  else
+    return (ATerm)ATmakeAppl2(sym__2, ATsetAnnotations(t, annos), env);
 }
 
 ATermList CheckATermList(ATerm t)

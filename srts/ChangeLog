@@ -1,3 +1,9 @@
+2002-03-08  Eelco Visser  <visser@acm.org>
+
+	* src/stratego.c: Only add annotations after traversing a term
+	when the original term had annotations; ATsetAnnotations is only
+	defined if the annotations argument is a proper term.
+
 2002-03-07  Eelco Visser  <visser@acm.org>
 
 	* src/aterm-extension.c (ATmap): Explicitly order evaluation of
