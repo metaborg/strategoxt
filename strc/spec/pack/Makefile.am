@@ -13,17 +13,17 @@ BOOTCLEANFILES = pack-stratego.c
 
 check : pack-stratego.tst1 pack-stratego.tst2 pack-stratego.imp
 
+packimports =  \
+	-I $(XTC)/share/xtc \
+	-I $(srcdir)/../sig \
+	-I $(STRATEGO_FRONT)/share/stratego-front \
+	-I $(STRATEGO_LIB)/share/stratego-lib
+
 pack-stratego.tst1 : pack-stratego
-	./pack-stratego -i pack-stratego.str -o $@ --dep pack-stratego.t.dep \
-		-I $(XTC)/share/xtc -I $(srcdir)/../sig \
-		-I $(STRATEGO_FRONT)/share/stratego-front
+	./pack-stratego -i pack-stratego.str -o $@ --dep pack-stratego.t.dep $(packimports)
 
 pack-stratego.tst2 : pack-stratego
-	./pack-stratego -i pack-stratego.str -o $@ \
-		-I $(XTC)/share/xtc -I $(srcdir)/../sig \
-		-I $(STRATEGO_FRONT)/share/stratego-front
+	./pack-stratego -i pack-stratego.str -o $@ $(packimports)
 
 pack-stratego.imp : pack-stratego
-	./pack-stratego -i pack-stratego.str -o $@ --imports\
-		-I $(XTC)/share/xtc -I $(srcdir)/../sig \
-		-I $(STRATEGO_FRONT)/share/stratego-front
+	./pack-stratego -i pack-stratego.str -o $@ --imports $(packimports)
