@@ -1,3 +1,8 @@
+2002-10-09  Eelco Visser  <visser@acm.org>
+
+	* src/abox2text/Abox-2-text.r: Notify the user if a box is encountered
+	that cannot be rewritten.
+
 2002-10-02  Merijn de Jonge <mdejonge@cwi.nl>
    * ppgen/make.r: renamed number to number-node to solve name clash
    * abox2latex:Abox-2-latex.r rolled back changed by Eelco, because it

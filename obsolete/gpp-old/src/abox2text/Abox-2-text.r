@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Abox-2-text.r,v 1.4 2002/08/01 15:24:26 mdejonge Exp $
+% $Id: Abox-2-text.r,v 1.5 2002/10/08 21:13:54 eelco Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
@@ -68,10 +68,14 @@ usage =
 
 abox2text = 
    split(id,!0);
-   Abox2text
+   Abox2text'
+
+  Abox2text = 
+    Abox2text' 
+    <+ debug(!"*** error: invalid box: "); <exit> 1
 
 (*
-Abox2text =
+Abox2text' =
    ?(H(sopt, xs), xpos)
    ; <Hspace>sopt => hs
    ; <string-length>hs => hsl
@@ -88,11 +92,11 @@ Abox2text =
    ; (separate-by(!hs), id)
 *)
 
-  Abox2text =
+  Abox2text' =
    ?(H(sopt, xs), xpos) 
    ; <Hspace> sopt => hs
    ; <string-length> hs => hsl
-   ; !Pair(<filter(not([] + H([],[])))> xs, xpos)
+   ; !(<filter(not([] + H([],[])))> xs, xpos)
    ; thread-map({s, xpos': 
                  \ (b, xpos) -> (s, <add>(hsl, xpos'))
                    where <Abox2text> (b, xpos) => (s, xpos')\ })
@@ -100,11 +104,15 @@ Abox2text =
    ; !(<separate-by(!hs)> zs, xpos2)
    ; try((not([]), \ xpos -> <subt> (xpos, hsl)\ ))
 
-  //Abox2text =
+  //Abox2text' =
   //   ?HV(_, xs );
   //   <separate-by(!" ")>xs
 
-  Abox2text =
+  Abox2text' :
+    (HV(opts, xs), xpos) -> <Abox2text'> (H(opts, xs), xpos)
+    where say(!"warning: HV box not supported")
+
+  Abox2text' =
     ?(V(sopt, xs ), xpos)
   ; <Vspace>sopt => vs
   ; <Ispace>sopt => is
@@ -121,31 +129,31 @@ Abox2text =
       ; split(id, !xpos')
     )
 
-  Abox2text :
+  Abox2text' :
     (S(s), xpos) -> (s, <add>(xpos, <string-length'(!xpos)>s))
 
-  Abox2text :
+  Abox2text' :
     (C(_,[S(s)]), xpos) -> (s, xpos)
 
-  Abox2text :
+  Abox2text' :
     (FBOX(_,b), xpos) -> <Abox2text>(b, xpos)
 
-  Abox2text :
+  Abox2text' :
     (HV(sopt, bs), xpos) -> <Abox2text> (H(sopt, bs), xpos)
 
-  Abox2text :
+  Abox2text' :
     (R(sopt, bs), xpos) -> <Abox2text> (H(sopt, bs), xpos) 
 
-  Abox2text :
+  Abox2text' :
     (A(_,sopt, bs), xpos) -> <Abox2text> (V(sopt, <map-to-r-box>bs), xpos) 
       
-  Abox2text :
+  Abox2text' :
     (ALT( a1, a2), xpos) -> <Abox2text> (a1, xpos)
 
-  Abox2text :
+  Abox2text' :
     ([x], xpos) -> <Abox2text> (x, xpos)
 
-  Abox2text :
+  Abox2text' :
     ([], xpos) -> ("", xpos)
 
 strategies
@@ -171,9 +179,10 @@ strategies
      
   // analysing space options
 
-  Hspace =
+  Hspace = //debug(!"Hspace: "); 
     (fetch(SOpt(HS,?value));!value; string-to-int <+ !1)
   ; \ n -> <copy-char>(n, 32) \
+  //; where(![<id>]; debug(!"Hspace: "))
    
   Vspace =
     (fetch(SOpt(VS,?value));!value; string-to-int <+ !0)
