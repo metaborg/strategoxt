@@ -19,7 +19,7 @@
 
 \begin{code}
 module sdf2stratego
-imports Sdf2Stratego  termid
+imports Sdf-2-Stratego  termid
 strategies
 
   sdf2stratego = 

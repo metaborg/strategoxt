@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.5 2002/03/16 14:52:19 eelco Exp $
+# $Id: Makefile.am,v 1.6 2002/05/23 09:39:08 daybuild Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -39,7 +39,7 @@ libexec_SCRIPTS	= $(STRATEGO_PRG)
 
 # List all files that should be distributed here
 EXTRA_DIST  += Prod2Oper.r Sdf2Overlays.r \
-               Sdf2Stratego.r README
+               Sdf-2-Stratego.r README
 
 # What should be cleaned
 CLEANFILES  += sdf2stratego_check
