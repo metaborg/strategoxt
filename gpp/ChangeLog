@@ -1,3 +1,7 @@
+2004-06-03   Merijn de Jonge  <mdejonge@cs.uu.nl>
+	* trans2abox/sdf-2-pp-lib.str: get-cnstr-name failed to retrieve
+	constructor name from asfix terms.
+
 2004-04-08  Martin Bravenboer <martin@cs.uu.nl>
 
 	* trans/2abox/sdf-2-pp-table.str: do not produce a warning message

@@ -309,4 +309,5 @@ strategies
     fetch-elem(
       ?term(appl(uqlit("cons"), [fun(qlit(<un-double-quote>))]))
     + ?term(cons(<id>))
+    + ?cons(<id>)
     )
