@@ -1,3 +1,12 @@
+2004-06-20  Martin Bravenboer  <martin@cs.uu.nl>
+
+	* Makefile.am: install libtool as an libexec program.
+
+	* spec/strc/strc.str: use libtool to link the object code. I'm not
+	sure if this is really appropiate, but it works fine. This solves
+	STR-125. libtool shows the GCC invocation, I guess these should be
+	hidden be changing stderr, since --silent doesn't work.
+	
 2004-06-04  Martin Bravenboer  <martin@cs.uu.nl>
 
 	* spec/strc/strc-options.str: -L dir should be -Ldir.
