@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/sh -v
 #
 # Copyright (C) 2001 Merijn de Jonge <mdejonge@cwi.nl>
 #
@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: genconf.sh,v 1.3 2001/11/27 15:21:06 mdejonge Exp $
+# $Id: genconf.sh,v 1.4 2003/01/03 17:13:40 stratego Exp $
 
 # Author: Merijn de Jonge (mdejonge@cwi.nl)
 #
