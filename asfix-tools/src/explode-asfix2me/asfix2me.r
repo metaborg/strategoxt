@@ -18,7 +18,10 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: asfix2me.r,v 1.3 2002/02/10 20:43:12 mdejonge Exp $
+% $Id: asfix2me.r,v 1.4 2002/02/10 20:45:00 mdejonge Exp $
+
+Constructors for AsFix2ME format
+
 \begin{code}
 
 module asfix2me
