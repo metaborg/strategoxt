@@ -4,7 +4,7 @@ include $(wildcard *.dep)
 SIGS             = parse-testsuite.str
 pkgdata_DATA     = parse-testsuite.rtree
 
-EXTRA_DIST       = $(SIGS) $(pkgdata_DATA)
+EXTRA_DIST       = $(SIGS) $(pkgdata_DATA) oldskool-parse-testsuite.str  testsuite-upgrade.str
 CLEANFILES       = $(wildcard *.dep) parse-testsuite.def
 BOOTCLEANFILES   = $(SIGS) $(pkgdata_DATA)
 
