@@ -18,7 +18,19 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: NEWS,v 1.4 2000/04/07 12:48:47 mdejonge Exp $
+# $Id: NEWS,v 1.5 2000/04/12 09:05:23 mdejonge Exp $
+
+Version 0.2 
+
+      released: April 12, 2000
+
+ * XT now uses automake and configure to configure and build all
+   constituents. On top of this XT offers a script that takes care of
+   collecting (downloading or checking-out) all constituent packages.
+
+ * A wiki site for XT was created: http://www.cs.uu.nl/~visser/xt/. 
+
+ * The generic pretty-printer (GPP) has been added to the distribution. 
 
 Version 0.1.1
 
