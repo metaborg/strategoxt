@@ -8,7 +8,7 @@
  * provides a parsing front-end and pretty-printing back-end.
  *
  * Usage:
- *  sdf2sdf -i file -o file [--pack-sdf] [--sdfcons] [--sdf2asdf] [--sdf-bracket]
+ *  sdf2sdf -i file -o file [--pack-sdf] [--sdfcons] [--sdf-bracket]
  *
  * Authors:
  *    Merijn de Jonge <mdejonge@cwi.nl>
@@ -53,10 +53,6 @@ strategies // for options
     + Option("--sdfcons"
       , where(<extend-config>("--tools", ["sdf-cons"]))
       , !"--sdfcons        Apply sdf2cons"
-      )
-    + Option("--sdf2asdf"
-      , where(<extend-config>("--tools", ["sdf2asdf"]))
-      , !"--sdf2asdf       Apply sdf2asdf"
       )
     + Option("--sdf-bracket"
       , where(<extend-config>("--tools", ["sdf-bracket"]))

@@ -18,7 +18,7 @@ SCFLAGS          = --main $* --dr new
 LDADD           += $(SSL_LIBS)
 
 sdf2sdf_check_prog     = sdf2sdf
-sdf2sdf_check_switches = --sdfcons --sdf2asdf --sdf-bracket
+sdf2sdf_check_switches = --sdfcons --sdf-bracket
 sdf2sdf_check_input    = data/Identifiers.sdf
 sdf2sdf_check_output   = data/Identifiers.sdf.out
 sdf2sdf_check_correct  = data/Identifiers.sdf.out.correct
