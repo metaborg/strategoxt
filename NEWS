@@ -14,6 +14,108 @@ News about Stratego releases
 
 ------------------------------------------------------------------------------
 
+StrategoXT 0.9.1 -- released June 04, 2003
+
+This is bugfix and cleanup release. StrategoXT is now being tested on a daily
+base in the buildfarm of the st-lab at the University of Utrecht.
+
+DOWNLOAD AND INSTALLATION
+
+  The download page contains the source distribution:
+
+  * http://www.stratego-language.org/Stratego/StrategoRelease091
+
+  The installation instructions page can be consulted for detailed
+  information on how to install StrategoXT and its dependencies:
+
+  * http://www.stratego-language.org/Stratego/InstallationInstructions
+
+SUMMARY OF CHANGES 
+
+  * StrategoXT
+    - StrategoXT repository moved from CVS to Subversion
+    - StrategoXT is again part of a daily build system
+
+  * aterm-tools (Martin Bravenboer)
+    - pp-aterm: new tool to ugly-print an ATerm more pretty. Useful for 
+      debugging.
+
+  * boxenv (Martin Bravenboer)
+    - install-time dependency on LaTeX removed
+
+  * sdf-front (Martin Bravenboer)
+    - new package the standard -front package structure: syntax definition,
+      pretty printing and signatures for SDF 2.1
+
+  * c-tools (Stefaan Himpe)
+    - various improvements to the C syntax definitions reported by Stefaan 
+      Himpe.
+
+  * gpp (Merijn de Jonge)
+    - tohtml tool has returned
+    - many fixes to asfix2abox, abox2latex, abox2text
+    - abox-ext moved from SSL to GPP. Consider to use StrategoBox.
+
+  * graph-tools (Merijn de Jonge)
+    - Sync'ed dot grammar/signature with dot-tools package
+    - graphxml2dot now produces AST based on dot grammar with grammar
+      identifier 'dot-1'.
+
+  * srts (Martin Bravenboer)
+    - many new POSIX IO and process primitives. The better IO facilities will 
+      be completed and documented in 0.9.3
+    - cgi and connect (socket) primitives removed. cgi is part of 
+      stratego-net, connect should be improved.
+
+  * ssl (Martin Bravenboer, Rob Vermaas)
+    - list-sort.str: quick sort by Rob Vermaas
+    - many new IO and process related strategies: read-text-file, 
+      read-text-from-stream, fprint, fputc, dirname, access, fgetc, 
+      write-to-stream in baf/taf/text, fopen, strlen, strcat, stdin-stream, 
+      stdout-stream, open-stream, fileno, P_tmpdir and temp-dir, mkstemp, kill
+    - fork-and-wait: show warning if child process terminated because of a
+      signal (useful for segmentation faults)
+    - moved the collect strategies to a new module "collect".
+    - debug-depth for debugging with big ATerms.
+    - abox.str and abox-ext.str moved to GPP.
+    - ugly-print.str: moved to aterm-tools
+    - connect modules (client-test, communication, connect-test, connect, 
+      server-test) removed.
+    - unit test modules are no longer installed
+
+  * stratego-front (Eelco Visser, Martin Bravenboer, Rob Vermaas)
+    - characters can also be used as congruences (of course).
+    - unescaped newlines in String literals are now allowed
+    - improved pretty-printing of Stratego (reported by Rob Vermaas as a 
+      result of his work on StrategoDoc)
+
+  * stratego-util
+    - package readded to distribution. Contains a Stratego mode for emacs
+
+BUGS / KNOWN PROBLEMS
+
+  * The build of the StrategoXT package invokes 'make install' since the 
+    installation of the libraries in srts are needed for the build of the
+    rest of the package. This makes building of debian packages
+    problematic. This problem will be addressed in future releases.
+
+  * When bootstrapping the package from Subversion it is necessary to install the
+    autoxt package before calling the main 'bootstrap' script since that
+    calls the autoxt tool.
+
+CONTRIBUTIONS
+
+  * Bug reports and suggestions for improvements where submitted by: 
+
+    Rob Vermaas, Jonne van Wijngaarden, Jozer Kruger, Armijn Hemel, 
+    Stefaan Himpe.
+
+  * The major developments were carried out by 
+
+    Eelco Visser, Martin Bravenboer, Merijn de Jonge
+
+------------------------------------------------------------------------------
+
 StrategoXT 0.9 -- released January 26, 2003
 
 This release completely integrates concrete object syntax into
