@@ -11,4 +11,4 @@ strategies
     )
 
   build-pp-tables = 
-    !["-p", <xtc-find> "visamb.pp.af", "-p", <xtc-find> "sdf.cons.pp.af"]
+    !["-p", <xtc-find> "visamb.pp.af", "-p", <xtc-find> "Sdf2.pp.af"]
