@@ -114,9 +114,9 @@ strategies
   include-from-dir(|mod) :
     IncludeDir(dir) -> <include-pathname> file
       where 
-        ( <concat-strings; file-exists> [dir,"/", mod, ".str"] => file
-        + <concat-strings; file-exists> [dir,"/", mod, ".cr"] => file
-        + <concat-strings; file-exists> [dir,"/", mod, ".r"] => file
+        ( <concat-strings; file-exists> [dir,"/", mod, ".str"] 
+        + <concat-strings; file-exists> [dir,"/", mod, ".cr"] 
+        + <concat-strings; file-exists> [dir,"/", mod, ".r"] 
         ) => file
 
   include-from-xtc(|mod) :
