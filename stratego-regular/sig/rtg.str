@@ -10,7 +10,6 @@ signature
                   : TreeFN -> AnnoTreeFN
 
     Appl      : Term * List(AnnoTreeFN) -> TreeFN
-    Tuple     : List(AnnoTreeFN)        -> TreeFN
     Ref       : NonTerm                 -> TreeFN
 
     Annotated : TreeFN * List(Labelled) -> AnnoTreeFN

@@ -20,15 +20,15 @@
    Quoted.1:iter -- _1,
    Chars    -- _1,
 
-   Tuple    -- H hs=0 ["<(" _1 ")>"],
-   String   -- KW["<string>"],
-   Int      -- KW["<int>"],
-   NilTerm  -- KW["<nil>"],
-   ConsTerm -- KW["<cons>"],
-   ConcTerm -- KW["<conc>"],
-   SomeTerm -- KW["<some>"],
-   NoneTerm -- KW["<none>"],
-   Term     -- _1,
+   TupleTerm -- H hs=0 ["<(" _1 ")>"],
+   String    -- KW["<string>"],
+   Int       -- KW["<int>"],
+   NilTerm   -- KW["<nil>"],
+   ConsTerm  -- KW["<cons>"],
+   ConcTerm  -- KW["<conc>"],
+   SomeTerm  -- KW["<some>"],
+   NoneTerm  -- KW["<none>"],
+   Term      -- _1,
 
    Bracket          -- H hs=0 ["(" _1 ")"]
 ]

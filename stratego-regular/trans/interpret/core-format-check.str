@@ -1,0 +1,310 @@
+/**
+ * @todo  Support nested trees or extend normalizer to remove them.
+ *
+ * @author  Martin Bravenboer <martin@cs.uu.nl>
+ */
+module core-format-check
+imports liblib logging regular-options rtg rtg-util
+
+strategies
+
+  main-core-format-check =
+    io-wrap(core-format-check-options,
+      where(
+          read-rtg-nf-config => rtg@RTG(Start(starts), _)
+        ; generate-type-rules
+      )
+    ; format-check
+    ; format-check-report(|starts)
+    <+ <exit> 1
+    )
+
+  core-format-check-options =
+    rtg-nf-option(|"Check against normalized RTG in file")
+
+ format-check-report(|starts) =
+    where(
+     get-types; iset-elements => types
+    ; if !types => [] then
+        <fatal-error> ["error: term cannot be typed."]
+      else
+          <isect> (starts, <id>)
+        ; if ?[] then
+              <fatal-error>
+                ["error: term typed as ", <types-to-string> types, 
+                 " but expected ", <types-to-string> starts]
+          else
+            if-verbose1(<types-to-string; debug(!"info: term typed as ")> types)
+          end
+      end
+    )
+
+  report-types = if-verbose2(
+    ?term
+    ; where(
+        get-types
+      ; iset-elements
+      ; switch id
+          case ?[] :
+            !["  Cannot type ", term]
+          case ?[t] :
+            !["  Typed ", <write-to-string> term, " as ", <nonterm-to-string> t]
+          otherwise:
+            !["  Typed ", <write-to-string> term, " as one of ", <types-to-string>]
+        end
+     ; <fprintnl> (<stderr-stream>, <id>)
+     )
+   )
+  
+  report-type-failure =
+    ?t
+    ; where(
+        <fprintnl> (<stderr-stream>, ["error: cannot type ", <write-to-string>])
+      )
+    ; if <one-consnil(id)> t then
+        <fprintnl> (<stderr-stream>, ["    inferred types of subterms: "])
+      ; <all-consnil(
+          <fprintnl> (<stderr-stream>, ["    typed ", <write-to-string>, " as ", <retrieve-types; iset-elements; types-to-string>])
+        )> t
+      else id end
+    ; <exit> 1
+
+  types-to-string =
+    map(nonterm-to-string); separate-by(!", "); concat-strings
+
+  nonterm-to-string :
+    Int() -> "<int>"
+
+  nonterm-to-string :
+    String() -> "<string>"
+
+  nonterm-to-string :
+    Nonterm(s) -> s
+
+strategies
+
+  /**
+   * @type  starts  List(NonTerm)
+   */
+  format-check =
+    bottomup-consnil(
+       where(get-types)
+
+    <+ repeat1(Type)
+       ; report-types
+
+    <+ report-type-failure
+    )
+
+  bottomup-consnil(s) =
+    rec x(all-consnil(x); s)
+
+  all-consnil(s) = 
+    is-list < ([s | s] + []) + all(s)
+
+  one-consnil(s) = 
+    is-list < ([s | id] + [id | s]) + one(s)
+
+/**
+ * Define type rules for the productions of an RTG.
+ *
+ * Type rules are defined in a dynamic rule 'UserType'.
+ */
+strategies
+
+  /**
+   * Generate format checking dynamic rules for an RTG
+   *
+   * @type  RTG -> _
+   */
+  generate-type-rules =
+      ungroup-productions
+    ; ?RTG(Start(_), ProdRules(<id>))
+    ; map(generate-type-rule)
+
+  /**
+   * Injection
+   */
+  generate-type-rule =
+    ?ProdRule(b, [Ref(a)])
+    ; rules(
+        UserType :+ t -> t
+          where <has-type(|a)> t
+              ; <new-type(|b)> t
+      )
+    <+ debug(!"internal error: cannot create type rule for "); fail
+
+  /**
+   * Cons application
+   */
+  generate-type-rule =
+    ?ProdRule(c, [Appl(ConsTerm(), [Ref(a), Ref(b)])])
+    ; rules(
+        UserType :+ t@[hd | tl] -> t
+          where <has-type(|a)> hd
+              ; <has-type(|b)> tl
+              ; <new-type(|c)> t
+      )
+
+  /**
+   * Conc application
+   */
+  generate-type-rule =
+    ?ProdRule(c, [Appl(ConcTerm(), [Ref(a), Ref(b)])])
+    ; rules(
+        UserType :+ t@Conc(t1, t2) -> t
+          where <has-type(|a)> t1
+              ; <has-type(|b)> t2
+              ; <new-type(|c)> t
+      )
+
+  /**
+   * Nil application
+   */
+  generate-type-rule =
+    ?ProdRule(a, [Appl(NilTerm(), [])])
+    ; rules(
+        UserType :+ t -> t
+          where !t => []
+              ; <new-type(|a)> []
+      )
+
+  /**
+   * Some application
+   */
+  generate-type-rule =
+    ?ProdRule(b, [Appl(SomeTerm(), [Ref(a)])])
+    ; rules(
+        UserType :+ Some(t) -> Some(t)
+          where <has-type(|a)> t
+              ; <new-type(|b)> Some(t)
+      )
+
+  /**
+   * None application
+   */
+  generate-type-rule =
+    ?ProdRule(a, [Appl(NoneTerm(), [])])
+    ; rules(
+        UserType :+ None() -> None()
+          where <new-type(|a)> None()
+      )
+
+  /**
+   * Tuple application
+   */
+  generate-type-rule =
+    ?ProdRule(a, [Appl(TupleTerm(_), as)])
+    ; rules(
+        UserType :+ t -> t
+          where !t => ""#(args)
+              ; <not(has-type(|a))> t
+              ; <list-has-type(|<map(?Ref(<id>))> as)> args
+              ; <new-type(|a)> t
+      )
+
+  /**
+   * User-defined terminal application
+   */
+  generate-type-rule =
+    ?ProdRule(a, [Appl(Term(f), as)])
+    ; rules(
+        UserType :+ t@f#(args) -> t
+          where <not(has-type(|a))> t
+              ; <list-has-type(|<map(?Ref(<id>))> as)> args
+              ; <new-type(|a)> t
+      )
+
+  /**
+   * @type  List(_) -> _
+   * @type  as  List(NonTerm)
+   */
+  list-has-type(|as) =
+    where(
+      where(!as => [a | bs])
+    ; [has-type(|a) | list-has-type(|bs)]
+    <+ ?[]
+     ; !as => []
+    )
+
+/**
+ * Type types a term.
+ */
+strategies
+
+  Type =
+    UserType + StandardType
+
+  StandardType =
+    where(
+      is-int
+    ; new-type(|Int())
+    )
+
+  StandardType =
+    where(
+      is-string
+    ; new-type(|String())
+    )
+
+strategies
+
+  /**
+   * Fails if t already has type nt
+   *
+   * @type  t -> t
+   */
+  new-type(|a) =
+    where(
+      retrieve-types
+    ; not(iset-contains(|a))
+    ; iset-add(|a)
+    )
+
+  /**
+   * Succeeds if t has type nt
+   *
+   * @type  t -> t
+   */
+  has-type(|a) =
+    where(
+      retrieve-types
+    ; iset-contains(|a)
+    )
+
+  /**
+   * Returns an IndexedSet of types for a term.
+   *
+   * A new set is created if this hasn't been done yet.
+   */
+  retrieve-types =
+    Types
+    <+ ?t
+       ; new-iset(|8, 75) => set
+       ; rules(Types : t -> set)
+
+  get-types =
+    Types
+
+(*
+  Interpret(x|rtg) :
+    (f#(ts), Appl(Term(f), a* )) -> Appl(Term(f), <zip(x)> (ts, a* ))
+
+  /**
+   * Some term application
+   */
+  Interpret(x|rtg) :
+    (Some(t), Appl(SomeTerm(), [a])) -> Appl(SomeTerm(), [<x> (t, a)])
+
+  /**
+   * None term application
+   */
+  Interpret(x|rtg) :
+    (None(), Appl(NoneTerm(), [])) -> Appl(NoneTerm(), [])
+
+  /**
+   * Production rule
+   */
+  Interpret(x|rtg) :
+    (t, ProdRule(nt, a* )) -> Prod(nt, <interpret-one(x|rtg)> (t, a* ))
+*)

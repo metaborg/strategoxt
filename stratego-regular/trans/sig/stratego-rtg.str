@@ -56,7 +56,7 @@ strategies
           ; <try-sort2tree> srt1 => nt1
 
   ref-constr-to-prodrule :
-    Constr |[ : tp* -> srt ]| -> ProdRule(nt, [Tuple(trees)])
+    Constr |[ : tp* -> srt ]| -> ProdRule(nt, [Appl(TupleTerm(<length> tp*), trees)])
       where <gt> (<length> tp*, 1)
           ; <sort-to-nonterm> srt => nt
           ; <map(

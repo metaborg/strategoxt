@@ -4,7 +4,7 @@ hiddens
   context-free start-symbols RTG ProdRule TreeFN AnnoTreeFN NonTerm
 
 exports
-  sorts RTG Start ProdRule AnnoTreeFN TreeFN Labelled
+  sorts RTG Start ProdRule ProdRules AnnoTreeFN TreeFN Labelled 
   context-free syntax
 
     "regular" "tree" "grammar" Start ProdRules -> RTG {cons("RTG")}
@@ -17,7 +17,6 @@ exports
     TreeFN Labelled+ -> AnnoTreeFN {cons("Annotated")}
 
     Term "(" {AnnoTreeFN ","}* ")" -> TreeFN {cons("Appl")}
-         "(" {AnnoTreeFN ","}* ")" -> TreeFN {cons("Tuple")}
     NonTerm -> TreeFN {cons("Ref")}
 
     "." Term AnnoTreeFN -> Labelled {cons("Labelled")}

@@ -27,7 +27,7 @@ signature
      * The number of arguments
      * of a tuple terminal application must always be n.
      */
-    Tuple : Int -> Term
+    TupleTerm : Int -> Term
 
 
     /**

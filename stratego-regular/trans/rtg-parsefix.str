@@ -25,3 +25,6 @@ strategies
       < map(?Chars(<id>) + ?EscapeSeq(<<implode-string> [<id>]>))
       ; concat-strings
       > parts
+
+  ParseFix =
+    TupleTerm(string-to-int)

@@ -1,9 +1,11 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-libexec_PROGRAMS = core-aterm2irtg
+libexec_PROGRAMS = \
+  core-aterm2irtg \
+  core-format-check
 
-SCFLAGS          = --main main-$*
+SCFLAGS          = --main main-$* --dr new
 STRINCLUDES      = -I $(top_srcdir)/sig \
                    -I $(top_srcdir)/lib
 LDADD += $(SSL_LIBS)

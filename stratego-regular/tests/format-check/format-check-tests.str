@@ -6,31 +6,45 @@ strategies
   main-format-check-tests = 
     xtc-temp-files(
       test-suite(!"format-check",
-        expression-tests(simple-inj)
+        int-list-tests
+      ; expression-tests(simple-inj)
       ; expression-tests(quoted-exp)
       ; string-star
       ; string-plus
       ; string-even
       ; string-opt
-      ; tuple-stuff
+      ; tuple-stuff 
       )
     )
 
-  expression-tests(s) = 
-      apply-test(!"Simple injection 1", s, !"Bla")
-    ; apply-test(!"Simple injection 2", s, !3)
-    ; apply-test(!"Simple production ", s, !IntConst(3))
-    ; apply-test(!"Simple plus expression 1", s, !Plus(IntConst(2), IntConst(4)))
-    ; apply-test(!"Simple plus expression 2", s, !Plus(IntConst(2), Var("a")))
+  int-list-tests = 
+      apply-test(!"test: Simple int list", fc-int-list, ![1, 2, 3])
+    ; apply-test(!"test: Empty list",      fc-int-list, ![])
+    ; apply-test(!"test: Conc list 1",       fc-int-list, !Conc([], []))
+    ; apply-test(!"test: Conc list 2",       fc-int-list, !Conc([1], [2]))
+    ; apply-and-fail(!"test: Not an int-list a", fc-int-list, !["foo"])
+    ; apply-and-fail(!"test: Not an int-list b", fc-int-list, ![1, 2, "foo"])
+    ; apply-and-fail(!"test: Not an int-list c", fc-int-list, !["foo", 3, 4])
+    ; apply-and-fail(!"test: Not an int-list d", fc-int-list, !1)
+    ; apply-and-fail(!"test: Not an int-list e", fc-int-list, !"foo")
+    ; apply-and-fail(!"test: Not an int-list f", fc-int-list, !Conc("foo", []))
+    ; apply-and-fail(!"test: Not an int-list g", fc-int-list, !Conc([], "foo"))
 
-    ; apply-and-fail(!"Incorrect IntConst", s, !IntConst("2"))
-    ; apply-and-fail(!"Incorrect Var", s, !Var(2))
-    ; apply-and-fail(!"Incorrect plus expression 1", s, !Plus(2, Var("a")))
-    ; apply-and-fail(!"Incorrect plus expression 2", s, !Plus(IntConst("2"), Var("a")))
+  expression-tests(s) = 
+      apply-test(!"test: Simple injection 1", s, !"Bla")
+    ; apply-test(!"test: Simple injection 2", s, !3)
+    ; apply-test(!"test: Simple production ", s, !IntConst(3))
+    ; apply-test(!"test: Simple plus expression 1", s, !Plus(IntConst(2), IntConst(4)))
+    ; apply-test(!"test: Simple plus expression 2", s, !Plus(IntConst(2), Var("a")))
+
+    ; apply-and-fail(!"test: Incorrect IntConst", s, !IntConst("2"))
+    ; apply-and-fail(!"test: Incorrect Var", s, !Var(2))
+    ; apply-and-fail(!"test: Incorrect plus expression 1", s, !Plus(2, Var("a")))
+    ; apply-and-fail(!"test: Incorrect plus expression 2", s, !Plus(IntConst("2"), Var("a")))
 
   tuple-stuff =
-      apply-test(!"Tuple1, not head or last", tuple-stuff, !Tuple1(1, (2, 3), 4))
-    ; apply-test(!"Tuple2, head", tuple-stuff, !Tuple2((1, 2), 3))
+      apply-test(!"test: Tuple1, not head or last", tuple-stuff, !Tuple1(1, (2, 3), 4))
+    ; apply-test(!"test: Tuple2, head", tuple-stuff, !Tuple2((1, 2), 3))
 
     ; apply-and-fail(!"Incorrect Tuple1", tuple-stuff, !Tuple1(1, 2, 4))
     ; apply-and-fail(!"Incorrect Tuple1", tuple-stuff, !Tuple1(1, 2, 3, 4))
@@ -88,6 +102,9 @@ strategies
 
   StringOpt =
       write-to; xtc-transform(!"format-check", !["--rtg", "StringOpt.rtg"]); read-from
+
+  fc-int-list =
+      write-to; xtc-transform(!"format-check", !["--rtg", "int-list.rtg"]); read-from
   
 signature
   constructors

@@ -1,13 +1,13 @@
 module rg-term
 imports rg-identifier
 exports
-  sorts Term
+  sorts Term IntConst
   context-free syntax
     Id       -> Term {cons("Term")}
     "<conc>" -> Term {cons("ConcTerm")}
     "<cons>" -> Term {cons("ConsTerm")}
     "<nil>"  -> Term {cons("NilTerm")}
-    "<(" IntConst ")>" -> Term {cons("Tuple")}
+    "<(" IntConst ")>" -> Term {cons("TupleTerm")}
 
     "<some>" -> Term {cons("SomeTerm")}
     "<none>" -> Term {cons("NoneTerm")}

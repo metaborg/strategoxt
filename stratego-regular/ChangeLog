@@ -1,6 +1,23 @@
+2004-07-17  Martin Bravenboer <martin@cs.uu.nl>
+
+	* trans/interpret/core-format-check.str: new implementation of the
+	RTG format checker. The format checker now uses a bottom-up
+	algorithm, which was suggested by Eelco Visser. format-check now
+	infers type in a bottom-up fashion and will complain at the
+	innermost term for which no type can be inferred. If this term has
+	subterms, then their types will be shown.
+
+	This message can still be huge if the term is very large. I should
+	do something about that. The next plan is to implement a
+	format-check that produces XHTML/CSS output, which can be
+	inspected in an interactive way.
+
+	Notice that his bottom-up algorithm will not be able to say
+	something about 'expected' types.
+	
 2004-07-03  Martin Bravenboer <martin@cs.uu.nl>
 
-	* trans/sdf2rt/core-sdf-grammar2rtg.str: In PGEN 2.2 sort
+	* trans/sdf2rtg/core-sdf-grammar2rtg.str: In PGEN 2.2 sort
 	declarations are no longer in available in kernel
 	SDF. sdf2rtg now uses that start productions to determine start
 	symbols of an RTG. This is much better anyway. The implementation
