@@ -1,3 +1,26 @@
+2003-12-19  Eelco Visser  <visser@cs.uu.nl>
+
+	* Improvements for separate compilation
+	  - added more modules to lib; since liblib should be
+	    the default module to be imported in programs, there
+	    should be not need to import other modules that partly
+	    overlap. Added annotation-props, sunit. Also added
+	    constructor declarations for tuples to library instead
+	    of in compiler. 
+	  - (In the future it might be interesting to split the
+	     library into smaller parts.)
+	  - uncify reverses the cification of function names 
+
+	* liblib is a library derived from lib.str. The compiler generates
+	liblib.c from which an object library is produced, liblib.str,
+	a Stratego module with external definitions for all the definitions
+	in lib, and liblib.rtree. Instead of importing lib or some sub-modules
+	in a program, one should now (when desired) import liblib. In addition
+	it is then necessary to link against the object library. When using
+	Makefile.xt this can be done as follows (for a program file.str):
+
+	   file_LDADD = -lliblib $(STRATEGORUNLIBS)
+
 2003-12-09  Martin Bravenboer <martin@cs.uu.nl>
 
 	* spec/posix-file.str: added getcwd

@@ -6,7 +6,8 @@
 
 \begin{code}
 module list-set-test
-imports list-set sunit
+// imports list-set // already in sunit
+imports sunit
 
 strategies 
 

@@ -4,7 +4,7 @@
  * strategies.
  */
 module time
-
+imports posix-file
 signature
   constructors
     EpochTime     : Int -> EpochTime

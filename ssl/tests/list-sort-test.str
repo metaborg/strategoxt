@@ -6,7 +6,8 @@
 
 \begin{code}
 module list-sort-test
-imports list-sort sunit
+// imports list-sort sunit
+imports liblib
 
 strategies
 

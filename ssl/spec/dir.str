@@ -46,7 +46,8 @@ strategies
   rename-file =
       ?(oldname, newname)
     ; (  prim("SSL_rename", oldname, newname)
-      <+ ( get-last-error => ErrorXDEV()
+//      <+ ( get-last-error => ErrorXDEV()
+      <+ ( get-last-error => ErrorNumber(<EXDEV> ())
          < <copy-file> (oldname, newname)
            ; <remove-file> oldname
          + fail

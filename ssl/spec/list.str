@@ -3,6 +3,9 @@
  */
 module list
 imports simple-traversal
+	string
+	iteration
+	term-io
 	tuple
 	list-cons
 	list-basic

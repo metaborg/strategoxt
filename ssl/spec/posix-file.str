@@ -140,7 +140,7 @@ strategies
     prim("SSL_getcwd")
 
   home-dir =
-    <get-env> "HOME"
+    <getenv> "HOME"
 
 /**
  * Primitive file operations
@@ -171,9 +171,9 @@ strategies
     
   /**
    * Closing a file
+   *
+   * deallocates a file descriptor   
    */
-
-  // deallocates a file descriptor   
   close =
     ?fd; prim("SSL_close", fd)
     

@@ -80,7 +80,7 @@ strategies
   can-execute-file =
     <access> (<id>, [X_OK()])
 
-  is-executable = can-exutable-file
+  is-executable = can-execute-file
 
   /**
    * @type String -> String

@@ -4,20 +4,20 @@
 module lib
 imports 
 
- (* sequential control *)
+ // sequential control 
 
 	conditional
 	iteration
 	cpl
 
- (* traversal *)
+ // traversal
 
 	simple-traversal
 	simple-list-traversal
 	fixpoint-traversal
 	env-traversal
 
- (* data types *)
+ // data types
 
 	list
 	tuple
@@ -25,23 +25,27 @@ imports
         string
 	term
 	annotations
+	annotation-props
  	int-list
 	integers
 	reals
 
- (* system *)
+ // system
 
 	io
-  process
+	process
 	memo
 	options
 	parse-options
 	tables
 
- (* object variables *)
+ // object variables
 
 	substitution
 	rename
 	unification
 	free-variables
 
+  // testing
+
+	sunit

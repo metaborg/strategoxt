@@ -1,5 +1,6 @@
 module annotation-props-TestSuite
-imports sunit annotation-props
+//imports sunit annotation-props
+imports liblib
 
 signature
   sorts Exp Type

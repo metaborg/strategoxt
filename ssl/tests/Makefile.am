@@ -1,4 +1,4 @@
-include $(top_srcdir)/Makefile.xt
+include $(top_srcdir)/Makefile-mine.xt
 include $(wildcard *.dep)
 
 check_PROGRAMS = \
@@ -49,3 +49,15 @@ EXTRA_DIST     = $(wildcard *.str)
 
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c)
+
+SCFLAGS	       = --verbose 1
+
+LDFLAGS	       = -L$(SSL)/lib/ssl
+#LDADD	       = -l liblib
+
+annotations_test_LDADD 		= -lliblib $(STRATEGORUNLIBS)
+annotation_props_test_LDADD 	= -lliblib $(STRATEGORUNLIBS)
+char_test_LDADD 		= -lliblib $(STRATEGORUNLIBS)
+dir_test_LDADD 			= -lliblib $(STRATEGORUNLIBS)
+env_traversal_test_LDADD 	= -lliblib $(STRATEGORUNLIBS)
+list_sort_test_LDADD 		= -lliblib $(STRATEGORUNLIBS)
