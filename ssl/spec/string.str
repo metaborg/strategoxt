@@ -4,7 +4,10 @@
 module string
 imports list conditional iteration char file
 
-strategies // primitives
+/**
+ * Primitives
+ */
+strategies
 
   /**
    * Generates a unique new string of the form 'c_d',
@@ -42,21 +45,21 @@ strategies // primitives
   /**
    * Implodes a list of chars to a string.
    *
-   * @type [Char] -> String
+   * @type List(Char) -> String
    */
   implode-string = ?x; prim("SSL_implode_string", x)
 
   /**
    * Explodes a String to a list of chars.
    *
-   * @type String -> [Char]
+   * @type String -> List(Char)
    */
   explode-string = ?x; prim("SSL_explode_string", x)   
 
   /**
    * Wraps a strategy on a list of chars in a strategy on a string.
    *
-   * @type s [Char] -> [Char]
+   * @type s List(Char) -> List(Char)
    * @type   String -> String
    */
   string-as-chars(s) =
@@ -242,19 +245,32 @@ rules
   UnCify2(x) : ['_', '_'      | cs] -> ['_'  | <x>cs]
   UnCify3(x) : ['_'           | cs] -> ['-'  | <x>cs]
 
-strategies // for quoting
+/**
+ * Quoting Literals
+ */
+strategies
 
-  // _ -> Char :: String -> String
+  /**
+   * param  c () -> Char
+   * @type  String -> String
+   */
   quote(c) = string-as-chars(quote-chars(c))
 
-  // _ -> Char :: List(Char) -> List(Char)
+  /**
+   * param  c () -> Char
+   * @type  List(Char) -> List(Char)
+   */
   quote-chars(c) = <quote-chars> (<c> (), <id>)
 
-  // :: Char * List(Char) -> List(Char)
+  /**
+   * @type Char * List(Char) -> List(Char)
+   */
   quote-chars:
     (c, chars) -> <conc> ([c | chars], [c])
 
-  // :: List(Char) -> List(Char)
+  /**
+   * @type List(Char) -> List(Char)
+   */
   single-quote-chars = <quote-chars> ('\'', <id>)
   double-quote-chars = <quote-chars> ('"' , <id>)
 
@@ -264,8 +280,10 @@ strategies // for quoting
   single-quote = string-as-chars(single-quote-chars)
   double-quote = string-as-chars(double-quote-chars)
 
-
-strategies // for unquoting
+/**
+ * Unquoting
+ */
+strategies 
 
   /**
    * Removes the first and last character of a string.
@@ -343,16 +361,26 @@ strategies
   is-double-quoted =  where(<is-quoted> ('"',  <id>))
   is-single-quoted =  where(<is-quoted> ('\'', <id>))
 
-  // :: [Char] -> [Char]
+  /**
+   * @type List(Char) -> List(Char)
+   */
   is-double-quoted-chars = where(<is-quoted-chars> ('"',  <id>))
+
+  /**
+   * @type List(Char) -> List(Char)
+   */
   is-single-quoted-chars = where(<is-quoted-chars> ('\'', <id>))
 
-  // :: Char * String -> Char * String
+  /**
+   * Char * String -> Char * String
+   */
   is-quoted =
       (id, explode-string)
     ; is-quoted-chars
 
-  // :: Char * [Char] -> Char * [Char]
+  /**
+   * Char * List(Char) -> Char * List(Char)
+   */
   is-quoted-chars =
       where(
         ?(c, <id>)
@@ -465,24 +493,32 @@ strategies
 
 strategies
 
-  // _ -> Char :: String * Int -> String
+
  /**
-  * @inc padd-with-test
+  * @param s  () -> Char
+  * @type String * Int -> String
+  * @inc  padd-with-test
   */
   padd-with(s) =
     <align-right> (<s> (), <Fst>, <Snd>)
 
-  // :: Char * String * Int -> String
+  /**
+   * @type Char * String * Int -> String
+   */
   align-right :
     (c, s, n) -> <conc-strings> (add, s)
-      where <align-helper> (c, s, n) => add
+      where <align-helper(|c, n)> s => add
 
-  // :: Char * String * Int -> String
+  /**
+   * @type Char * String * Int -> String
+   */
   align-left :
     (c, s, n) -> <conc-strings> (s, add)
-      where <align-helper> (c, s, n) => add
+      where <align-helper(|c, n)> s => add
 
-  // :: Char * String * Int -> String
+  /**
+   * @type Char * String * Int -> String
+   */
   align-center :
     (c, s, n) -> <concat-strings> [add-before, s, add-after]
       where <string-length> s => l
@@ -491,16 +527,22 @@ strategies
               < div2; Dupl
               + dec; div2; Dupl; (inc, id)
             > whitespace => (before, after)
-          ; <align-helper> (c, s, <add> (l, before)) => add-before
-          ; <align-helper> (c, s, <add> (l, after )) => add-after
+          ; <align-helper(|c, <add> (l, before))> s => add-before
+          ; <align-helper(|c, <add> (l, after ))> s => add-after
 
-      // :: Char * String * Int -> String
-      align-helper :
-        (c, s, n) -> add
-          where < string-length
-                ; <subt> (n, <id>)
-                ; (pos < <copy-char> (<id>, c) + !"")
-                > s => add
+      /**
+       * @param c  Char
+       * @param n  Int
+       * @type String -> String
+       */
+      align-helper(|c, n) =
+        string-length
+        ; <subt> (n, <id>)
+        ; if pos then
+            <copy-char> (<id>, c)
+          else
+            !""
+          end
 
       div2 = <div> (<id>, 2)
 
