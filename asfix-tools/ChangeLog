@@ -1,3 +1,14 @@
+2005-01-12  Martin Bravenboer <martin@cs.uu.nl>
+
+	* src/implode/sglri.str: dead code elimination and cleanup.
+
+	* src/implode/sglri.str: fixed spelling of --no-heuristic-filters
+	documentation.
+
+	* src/implode/sglri.str: pass the -b argument to implode-asfix.
+
+	* src/implode/sglri.str: pass the verbosity to sglr.
+
 2004-11-27  Martin Bravenboer <martin@cs.uu.nl>
 
 	* src/implode/sglri.str: added the --no-heuristic-filters option

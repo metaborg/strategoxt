@@ -29,28 +29,54 @@ strategies
   sglr-filter-options =
       Option("--no-heuristic-filters"
       , where(<extend-config> ("--sglr", ["-fi", "-fe"]))
-      , !"--no-heuristic-filters  Don't use hearistic disambiguation filters (encouraged)"
+      , !"--no-heuristic-filters  Don't use heuristic disambiguation filters (encouraged)"
     )
 
+strategies
 
   parse-and-implode =
-      xtc-sglr-strict(|<get-parse-table>, <pass-sglri-args>)
-    ; implode-asfix(<get-config <+ ![]> "--impl")
+    let pass-start =
+          !["-s", <get-config> "--start"] <+ ![]
 
-  pass-sglri-args = 
-    ( !["-s", <get-config>"--start"] <+ ![] ) => start
-  ; ( <get-config>"--sglr" <+ ![] )           => sglr
-  ; <concat>[ ["-2"], start, sglr]
+        pass-sglr =
+          <get-config> "--sglr" <+ ![]
 
-  get-parse-table =
-    <get-config> "-p" <+ <fatal-error> ["** ERROR: no parse table specified"]
+        pass-sglr-verbose =
+          ![]; if-verbose3(!["-v"])
 
-  sglr(tbl) = sglr(tbl, ![])
-    
-  sglr(tbl, args) =
-    xtc-transform(!"sglr", !["-p", <tbl> | <args>])
-      
-  implode-asfix(args) = 
+        get-parse-table =
+          <get-config> "-p" <+ <fatal-error> ["** ERROR: no parse table specified"]
+
+     in xtc-sglr-strict(|<get-parse-table>,
+          <concat> [
+              ["-2"]
+            , <pass-start> ()
+            , <pass-sglr> ()
+            , <pass-sglr-verbose> ()
+            ])
+    end;
+
+    let pass-implode =
+          <get-config <+ ![]> "--impl"
+
+        pass-binary-output =
+          if <get-config> "-b" then
+            !["-b"]
+          else
+            ![]
+          end
+
+     in implode-asfix(
+          <concat> [
+            <pass-implode> ()
+          , <pass-binary-output> ()
+          , <pass-verbose> ()
+          ])
+    end
+
+strategies
+
+  implode-asfix(args) =
     xtc-transform(!"implode-asfix", args)
 
   xtc-sglr-strict(|tbl, args) =
@@ -67,4 +93,3 @@ strategies
   xtc-command-silent(|tool) =
     where(<xtc-find-warning> tool => loc)
     ; where(<call(|None(), None(), Some(<open> "/dev/null"))> (loc, <id>))
-
