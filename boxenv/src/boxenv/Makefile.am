@@ -16,20 +16,15 @@
 #    along with this program; if not, write to the Free Software
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 #
-#
-# $Id: Makefile.am,v 1.5 2003/03/21 16:41:03 stratego Exp $
 
-include ../templates/make_rules
+include $(top_srcdir)/Makefile.xt
 
-SUBDIRS    = data
+pkgdata_DATA   = boxenv.sty
 
-# TODO: make boxenv.sty part of a distribution
-
-SRCS       = boxenv.ins boxenv.doc
-EXTRA_DIST = $(SRCS) boxenv.ins boxenv.doc
-CLEANFILES = $(pkgdata_DATA) *.log  *~
-
-pkgdata_DATA=boxenv.sty
+SRCS           = boxenv.ins boxenv.doc
+EXTRA_DIST     = $(SRCS)
+CLEANFILES     = boxenv.log
+BOOTCLEANFILES = boxenv.sty
 
 boxenv.sty: $(SRCS)
 	TEXINPUTS=$$TEXINPUTS:$(srcdir) $(LATEX)/bin/latex boxenv.ins > /dev/null

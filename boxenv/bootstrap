@@ -1,14 +1,8 @@
 rm -f config.cache
 rm -f acconfig.h
 
-#./genconf.sh $* package.conf
+autoxt
+aclocal -I .
 
-rm -f config.cache
-rm -f acconfig.h
-aclocal
 autoconf
-#acconfig
-#autoheader
 automake -a
-
-

@@ -17,13 +17,14 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-
+include $(top_srcdir)/Makefile.xt
 include package.conf
 
-SUBDIRS	= src
+SUBDIRS           = src
+BOOTCLEAN_SUBDIRS = $(SUBDIRS)
+DIST_SUBDIRS      = $(SUBDIRS)
 
-EXTRA_DIST = ADDING-TOOLS VERSION \
-             package.conf bootstrap $(PACKAGE)-$(VERSION).pkg
+EXTRA_DIST = VERSION package.conf bootstrap $(PACKAGE)-$(VERSION).pkg
 
 # Generation of a package defintion file from the package.conf file. This
 # file in combination with autobundle enables integration of the package
@@ -49,5 +50,3 @@ $(PACKAGE)-$(VERSION).pkg: package.conf
 	         | sed 's/^"/  /;s/" "/"  /g' \
 	         | tr '"' '\n' ;\
        ) > $@
-
-bootclean :

@@ -8,30 +8,14 @@ AC_ARG_WITH(latex,
 )
 AC_SUBST(LATEX)
 
-AC_REVISION($Id: configure.in,v 1.7 2003/03/24 07:59:49 stratego Exp $)
-
 AC_PROG_CC
 AC_PROG_INSTALL
 
-AC_PATH_PROGS(SH, sh)
-
-TOOLS="templates boxenv "
-UNRELEASED=""
-RELEASED="templates boxenv"
-
-AC_SUBST(TOOLS)
-AC_SUBST(RELEASED)
-AC_SUBST(UNRELEASED)
-
 AC_CONFIG_FILES([
-	Makefile 
 	VERSION 
 
+	Makefile 
 	src/Makefile 
-  src/templates/Makefile
-  src/templates/data/Makefile
-
   src/boxenv/Makefile
-  src/boxenv/data/Makefile
 ])
 AC_OUTPUT
