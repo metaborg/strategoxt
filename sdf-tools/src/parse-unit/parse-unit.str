@@ -32,7 +32,13 @@ strategies
     ; map-with-index(execute-test(!sort, get-parse-table))
     ; !TestResults(<id>)
     ; where(<echo-results> (name, <id>))
+    ; parse-unit-exit-on-failure
     )
+
+  parse-unit-exit-on-failure =
+    ?TestResults(<id>)
+    ; map(?Success())
+    <+ <exit> 1
 
   execute-test(sort, table) = 
       ?(i, <id>); ?t
