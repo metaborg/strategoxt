@@ -22,7 +22,7 @@ include package.conf
 
 SUBDIRS	= src
 
-EXTRA_DIST = ADDING-TOOLS VERSION configure.in.src genconf.sh \
+EXTRA_DIST = ADDING-TOOLS VERSION \
              package.conf bootstrap $(PACKAGE)-$(VERSION).pkg
 
 # Generation of a package defintion file from the package.conf file. This
@@ -51,4 +51,3 @@ $(PACKAGE)-$(VERSION).pkg: package.conf
        ) > $@
 
 bootclean :
-

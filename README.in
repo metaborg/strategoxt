@@ -116,6 +116,13 @@ risk).
 
 cvs -d :pserver:anonymous@cvs.cs.uu.nl:/data/cvs-rep checkout StrategoXT
 
+If you are going to build StrategoXT from CVS, you need to have autoxt
+(part of StrategoXT) and LaTeX installed. Run the bootstrap script
+before configuring the package. For more info on using the CVS 
+repository :
+
+  * http://www.stratego-language.org/twiki/bin/view/Stratego/StrategoCVS
+
 ----------------------------------------------------------------------
 Bugs
 
