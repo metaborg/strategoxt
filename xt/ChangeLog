@@ -1,5 +1,6 @@
 2001-11-27 Merijn de Jonge <mdejonge@cwi.nl>
    * Updated NEWS file.
+   * repaired genconf.sh to really remove temporary files on exit
 
 2001-11-26 Merijn de Jonge <mdejonge@cwi.nl>
    * package.conf: updated versions of required packages

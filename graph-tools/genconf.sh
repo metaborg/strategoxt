@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: genconf.sh,v 1.2 2001/06/05 14:39:44 mdejonge Exp $
+# $Id: genconf.sh,v 1.3 2001/11/27 15:21:10 mdejonge Exp $
 #
 # Author: Merijn de Jonge (mdejonge@cwi.nl)
 #
@@ -93,7 +93,7 @@ then
 fi
 
 tmpMakeFile=/tmp/genconf.$$
-trap "rm -fr $tmpMakefile" 0 1 2 3 4 5 6 7 8 9 10
+trap "rm -fr $tmpMakeFile" 0 1 2 3 4 5 6 7 8 9 10
 
 (
    cat ${config_file};
