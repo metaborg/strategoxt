@@ -16,7 +16,7 @@ EXTRA_DIST 	= Stratego.def StrategoStratego.def Stratego-Core.def \
                   StrategoForTesting.tbl StrategoForTesting.def \
 		  $(wildcard *.def) $(wildcard *.sdf) 
 
-StrategoForTesting.def : Stratego.def StrategoForTesting.sdf
+StrategoForTesting.def : Stratego.def StrategoForTesting.sdf Stratego-DynamicRules.sdf
 
 Stratego.def 	: Stratego.sdf Stratego-Signatures.sdf	       \
 		  Stratego-Modules.sdf Stratego-Strategies.sdf \

@@ -1,23 +1,32 @@
 module Stratego-DynamicRules
 exports
+
   context-free syntax
+
     "{|" {DynRuleScopeId ","}* ":" Strategy "|}" -> Strategy {cons("DynRuleScope")}
     "{|" RuleDec ":+" Term                  "|}" -> Strategy {cons("AddScopeLabel")}
 
-    "branch"    "(" RuleDec ":" Strategy  ")" -> DynRuleSet {cons("BranchDynRules")}
-    "union"     "(" DynRuleSet DynRuleSet ")" -> DynRuleSet {cons("UnionDynRules")}
-    "intersect" "(" DynRuleSet DynRuleSet ")" -> DynRuleSet {cons("IntersectDynRules")}
-    "commit"    "(" DynRuleSet            ")" -> Strategy   {cons("CommitDynRules")}
-    DynRuleSet -> Strategy
+  context-free syntax
 
     "rules" "(" DynRuleDef* ")" -> Strategy {cons("GenDynRules")}
-
     DynRuleScopeId ":-"  Term -> DynRuleDef {cons("UndefineDynRule")}
     DynRuleScopeId ":"   Rule -> DynRuleDef {cons("SetDynRule")}
     DynRuleScopeId ":+"  Rule -> DynRuleDef {cons("AddDynRule")}
 
     RuleDec "." Term -> DynRuleScopeId {cons("LabeledScope")}
     RuleDec          -> DynRuleScopeId {cons("CurrentScope")}
+
+  context-free syntax
+
+    "commit" "rules" "(" DynRuleSet ")" -> Strategy {cons("CommitDynRules")}
+    "rules" Id "=" DynRuleSet           -> Strategy {cons("AssignDynRules")}
+    DynRuleSet                          -> Strategy {cons("IgnoreDynRules")}
+
+    "branch"    "(" RuleDec ":" Strategy  ")" -> DynRuleSet {cons("BranchDynRules")}
+    "union"     "(" {DynRuleSet ","}+ ")" -> DynRuleSet {cons("UnionDynRules")}
+    "intersect" "(" {DynRuleSet ","}+ ")" -> DynRuleSet {cons("IntersectDynRules")}
+
+  context-free syntax
 
     Id                         -> RuleDec {cons("RuleDecNoArgs")}
     Id "(" {Typedid ","}* ")"  -> RuleDec {cons("RuleDec")}
