@@ -7,7 +7,7 @@ TBLS = Sdf2.tbl Stratego-Sdf2.tbl
 PGEN_FLAGS     = -m $*
 SDFINCLUDES    = -I $(ASF_LIBRARY)/share/asf-library/library
 
-sdfdata_DATA   = $(TBLS)
+sdfdata_DATA   = $(DEFS) $(TBLS)
 EXTRA_DIST     = $(DEFS) Sdf2.sdf Stratego-Sdf2.sdf
 
 CLEANFILES     = $(TBLS)
