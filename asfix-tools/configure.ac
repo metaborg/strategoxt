@@ -15,7 +15,6 @@ AC_SUBST(UNRELEASED)
 
 AC_CONFIG_FILES([
   Makefile 
-  VERSION
   sig/Makefile 
   lib/Makefile
   xtc/Makefile
