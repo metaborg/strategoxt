@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
 
 #include "io.h"      
 #include "tables.h"  
+#include "sets.h"  
 #include "ssl-time.h"
 #include "exec.h"        
 #include "number.h"  
