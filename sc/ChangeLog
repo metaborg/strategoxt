@@ -1,3 +1,7 @@
+2002-12-12  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/Makefile.am: no longer using Makefile.stratego
+
 2002-12-11  Eelco Visser  <visser@cs.uu.nl>
 
 	* Using autoxt 
