@@ -1,5 +1,10 @@
 2003-02-26  Martin Bravenboer <martin@mbravenboer.org>
 
+  * spec/abox.str: removed, use Box signature of GPP.
+  * spec/abox-ext.str: moved to GPP.
+
+2003-02-26  Martin Bravenboer <martin@mbravenboer.org>
+
   * spec/ugly-print.str: moved to aterm-tools
 
 2003-02-26  Martin Bravenboer <martin@mbravenboer.org>
