@@ -957,9 +957,9 @@ ATerm debug_1 (ATerm t, ATerm d_70 (ATerm))
     }
     ATerm n_0 (ATerm t)
     {
-      ATerm n_1 = NULL;
+      ATerm m_1 = NULL;
       ATerm p_1 = NULL;
-      n_1 = t;
+      m_1 = t;
       {
         ATerm q_1 = NULL;
         t = (ATerm) ATmakeAppl(sym_TNil_0);
@@ -969,7 +969,7 @@ ATerm debug_1 (ATerm t, ATerm d_70 (ATerm))
           _fail(q_1);
         else
           p_1 = q_1;
-        t = (ATerm) ATmakeAppl(sym_Cons_2, not_null(p_1), (ATerm) ATmakeAppl(sym_Cons_2, not_null(n_1), (ATerm) ATmakeAppl(sym_Nil_0)));
+        t = (ATerm) ATmakeAppl(sym_Cons_2, not_null(p_1), (ATerm) ATmakeAppl(sym_Cons_2, not_null(m_1), (ATerm) ATmakeAppl(sym_Nil_0)));
       }
       return(t);
     }
@@ -3031,12 +3031,12 @@ ATerm TranslateDef_0 (ATerm t)
                     }
                   return(t);
                 }
-                ATerm m_1 (ATerm t)
+                ATerm n_1 (ATerm t)
                 {
                   t = TCons_2(t, _id, TNil_0);
                   return(t);
                 }
-                t = TCons_2(t, l_1, m_1);
+                t = TCons_2(t, l_1, n_1);
                 t = TracedBody_0(t);
                 PopChoice();
               }

@@ -575,3 +575,12 @@ Bootstrapping: finished [Wed Nov 21 16:15:02 CET 2001]
 
 Bootinstall [Wed Nov 21 16:16:33 CET 2001]
 Bootinstall finished [Wed Nov 21 16:16:34 CET 2001]
+
+Bootstrapping version 0.6.3 [Wed Nov 21 19:27:46 CET 2001 - Linux node11794.a2000.nl i686]
+Bootstrapping: phase 1 started [Wed Nov 21 19:27:46 CET 2001]
+Bootstrapping: phase 2 started [Wed Nov 21 19:32:50 CET 2001]
+Bootstrapping: phase 3 started [Wed Nov 21 19:37:56 CET 2001]
+Bootstrapping: finished [Wed Nov 21 19:43:01 CET 2001]
+
+Bootinstall [Thu Nov 22 00:19:18 CET 2001]
+Bootinstall finished [Thu Nov 22 00:19:19 CET 2001]

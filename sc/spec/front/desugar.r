@@ -1,6 +1,6 @@
 \literate[Desugaring]
 
-% $Id: desugar.r,v 1.2 2001/11/21 15:21:31 stratego Exp $
+% $Id: desugar.r,v 1.3 2001/11/21 23:53:48 stratego Exp $
 
 % Copyright (C) 1998, 1999, 2000 Eelco Visser <visser@acm.org>
 % 
@@ -94,6 +94,23 @@ rules
           where new => x
 \end{code}
 
+\begin{code}
+rules
+
+  Mapp1 : Match(App(s, t')) -> BA(s, t')
+
+  Mapp2 : Match(t[App(s, t')]) -> 
+          Seq(Match(t[Wld]), BA(s, t'))
+
+  Mapp0 : Match(t[RootApp(Match(t'))]) -> Match(t[t'])
+
+  Mapp1 : Match(RootApp(s)) -> s
+
+  Mapp2 : Match(t[RootApp(s)]) -> 
+          Scope([x], Seq(Match(t[Var(x)]), Seq(Build(Var(x)), s)))
+          where new => x
+\end{code}
+
 \paragraph{Term Explosion an Construction}
 
 \begin{code}
@@ -157,17 +174,19 @@ rules
 \begin{code}
 rules
 
-  Rcon : SRule(Rule(l[Con(Var(c), l', f)], r[Con(Var(c), r', Call(f', []))], s)) ->
-         Scope([c'],SRule(
-	   Rule(l[Var(c)], r[Var(c')], 
-	        Seq(s, BAM(Call(f', [SRule(Rule(l', r', Id))]), 
-                           Var(c), Var(c'))))))
+  Rcon : 
+    SRule(Rule(l[Con(Var(c), l', f)], r[Con(Var(c), r', Call(f', []))], s)) ->
+    Scope([c'],
+      SRule(Rule(l[Var(c)], r[Var(c')], 
+	         Seq(s, BAM(Call(f', [SRule(Rule(l', r', Id))]), 
+                            Var(c), Var(c'))))))
          where new => c'
 
-  Rcon' : SRule(Rule(l[Con(Var(c), l', f)], r[Con(Var(c), r', Call(f', []))], s)) ->
-         SRule(Rule(l[Var(c)], 
-                    r[App(Call(f', [SRule(Rule(l', r', Id))]), Var(c))],
-		    s))
+  Rcon' : 
+    SRule(Rule(l[Con(Var(c), l', f)], r[Con(Var(c), r', Call(f', []))], s)) ->
+    SRule(Rule(l[Var(c)], 
+               r[App(Call(f', [SRule(Rule(l', r', Id))]), Var(c))],
+	       s))
 
   Rcon'' : SRule(Rule(l[Con(Var(c), l', Call(f, []))], r, s)) ->
          SRule(Rule(l[Var(c)], r, 
@@ -208,7 +227,8 @@ strategies
 
   desugar = 
     topdown(try(desugarRule); 
-            repeat(HL + (Bapp0 <+ Bapp1 <+ Bapp2) + Expl))
+            repeat(HL + (Bapp0 <+ Bapp1 <+ Bapp2) 
+                   + (Mapp0 <+ Mapp1 <+ Mapp2)+ Expl))
 
   desugar' = topdown(try(desugarRule); repeat(HL))
 

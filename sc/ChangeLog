@@ -1,3 +1,8 @@
+2001-11-22  Eelco Visser  <visser@acm.org>
+
+	* spec/front/desugar.r: Added Match-Project pattern support, i.e.,
+	an interpretation of <s> in match patterns.
+
 2001-11-21  Eelco Visser  <visser@acm.org>
 
 	* spec/syn/stratego.lx: tenative support for line counting without
