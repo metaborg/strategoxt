@@ -51,21 +51,21 @@ strategies
           ?IncludeFromPath(<id>) + ?IncludePathName(<id>)
 
      in get-module-name => module-name
-      ; <printnl> (stderr(), ["pack-stratego: error: module ", module-name, " not found"])
+      ; log(|Error(),<concat-strings>["module ", module-name, " not found"])
       ; <bagof-ImportedFrom> module-name
       ; if [] then
           id
         else if ?[mod] then
-            <printnl> (stderr(), ["    imported from file ", mod])
+            log(|Error(), <concat-strings>["    imported from file ", mod])
         else
-            where(<printnl> (stderr(), ["    imported from:"]))
+            where(log(|Error(), "    imported from:"))
           ; map({mod1 :
               ?mod1
-            ; <printnl> (stderr(),   ["      file ", mod1 ])
+            ; log(|Error(), <concat-strings>["      file ", mod1 ])
             })
           end
         end
-      ; <printnl> (stderr(),   [""])
+      ; log(|Error(), "")
     end
 
 
@@ -104,13 +104,13 @@ strategies
 
   include-pathname :
     file -> (file, tree)
-      where if-verbose1(debug(!"  including "))
+      where log-include
           ; <parse-stratego> file => tree
 
   include-from-dir-cached(|mod) :
     IncludeDir(dir) -> (file,<ReadFromFile> file)
       where <concat-strings; file-exists> [dir,"/", mod, ".rtree"] => file
-          ; if-verbose1(debug(!"  including "))
+          ; log-include
 
   include-from-dir(|mod) :
     IncludeDir(dir) -> <include-pathname> file
@@ -123,14 +123,22 @@ strategies
   include-from-xtc-cached(|mod) :
     IncludeXTC() -> (file, tree)
       where <conc-strings; xtc-find-loc> (mod, ".rtree") => file
-          ; if-verbose1(say(<concat-strings> ["  including ", file, " from XTC repository"]))
+          ; log-include-xtc
           ; <ReadFromFile> file => tree
 
   include-from-xtc(|mod) :
     IncludeXTC() -> (file, tree)
       where <conc-strings; xtc-find-loc> (mod, ".str") => file
-          ; if-verbose1(say(<concat-strings> ["  including ", file, " from XTC repository"]))
+          ; log-include-xtc
           ; <parse-stratego> file => tree
+
+  log-include =
+    ?file ; log(|Notice(),<conc-strings>("  including ",file))
+
+  log-include-xtc =
+    ?file ; log(|Notice(),<concat-strings>["  including ",file," from XTC repository"])
+
+
 
 strategies
 
