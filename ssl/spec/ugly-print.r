@@ -9,10 +9,10 @@ strategies
     has-annotation < ugly-print-with-anno + ugly-print-without-anno
 
   ugly-print-without-anno =
-       UP-Int 
+     UP-Int 
 	<+ UP-Str
-	<+ UP-Cnst	
 	<+ UP-Lst(ugly-print) 
+	<+ UP-Cnst	
 	<+ UP-App(ugly-print)
 
   ugly-print-with-anno =
