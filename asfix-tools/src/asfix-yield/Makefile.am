@@ -16,7 +16,7 @@ BOOTCLEANFILES 	= asfix-yield.c
 SCFLAGS       	= -I $(srcdir)/../asfix 
 
 asource	: asfix-yield
-	ln $< $@
+	ln -f $< $@
 
 #install-exec-local:
 #	$(RM) ${bindir}/asource ${libexecdir}/asource
