@@ -13,9 +13,14 @@ exports
   lexical syntax
     [a-zA-Z\'\-\_] [a-zA-Z0-9\'\-\_]*     -> Id
     [a-zA-Z\'\-\_] [a-zA-Z0-9\'\-\_]* "*" -> LId
+
+    [a-z] [a-zA-Z0-9\'\-\_]*  -> LCID
+    [A-Z] [a-zA-Z0-9\'\-\_]*  -> UCID
   lexical restrictions
-    Id -/- [a-zA-Z0-9\'\.\-\_\*]
-    LId -/- [a-zA-Z0-9\'\.\-\_]
+    Id   -/- [a-zA-Z0-9\'\.\-\_\*]
+    LId  -/- [a-zA-Z0-9\'\.\-\_]
+    LCID -/- [a-zA-Z0-9\'\.\-\_]
+    UCID -/- [a-zA-Z0-9\'\.\-\_]
   lexical syntax
     "all" 		-> Id {reject}
     "constructors" 	-> Id {reject}

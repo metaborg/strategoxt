@@ -151,6 +151,16 @@ rules
     SortNoArgs(x) -> Sort(x, [])
 
   Desugar :
+    SortList(xs) -> <foldr(!Sort("Nil",[]), !Sort("Cons",[<Fst>,<Snd>]))> xs
+
+  Desugar :
+    SortListTl(xs, y) -> <foldr(!y, !Sort("Cons",[<Fst>,<Snd>]))> xs
+
+  Desugar :
+    SortTuple(xs) -> 
+    Sort("Tuple", [<foldr(!Sort("Nil",[]), !Sort("Cons",[<Fst>,<Snd>]))> xs])
+
+  Desugar :
     Char(c) -> Int(i)
     where <DesugarChar <+ explode-string; DesugarCharGeneric> c => i
 

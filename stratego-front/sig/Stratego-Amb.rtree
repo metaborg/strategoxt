@@ -1,1 +1,1 @@
-Specification([Imports(["Stratego"]),Signature([Constructors([OpDecl("Cong",FunType([ConstType(Var("Id")),ConstType(Op("List",[Var("Strat")]))],ConstType(Var("Strat"))))])])])
+Specification([Imports(["Stratego"]),Signature([Constructors([OpDecl("Cong",FunType([ConstType(Sort("Id",[])),ConstType(Sort("List",[Sort("Strat",[])]))],ConstType(Sort("Strat",[]))))])])])

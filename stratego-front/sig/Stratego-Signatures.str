@@ -5,8 +5,12 @@ signature
     Constructors : List(Opdecl) -> Sdecl
 signature
   constructors
-    SortNoArgs : Id -> Sort
+    SortVar    : LCID -> Sort
+    SortNoArgs : UCID -> Sort
     Sort       : Id * List(Sort) -> Sort
+    SortList   : List(Sort) -> Sort
+    SortListTl : List(Sort) * Sort -> Sort
+    SortTuple  : List(Sort) -> Sort
 signature
   constructors
     Star     : Kind

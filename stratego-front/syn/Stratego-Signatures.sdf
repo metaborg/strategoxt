@@ -6,8 +6,12 @@ exports
     "constructors" Opdecl* 	-> Sdecl {cons("Constructors")}
 
   context-free syntax
-    Id 			   	-> Sort {cons("SortNoArgs")}
-    Id "(" {Sort ","}* ")" 	-> Sort {cons("Sort")}
+    LCID 			 -> Sort {cons("SortVar")}
+    UCID 			 -> Sort {cons("SortNoArgs")}
+    Id "(" {Sort ","}* ")" 	 -> Sort {cons("Sort")}
+    "[" {Sort ","}* "]"		 -> Sort {cons("SortList")}
+    "[" {Sort ","}* "|" Sort "]" -> Sort {cons("SortListTl")}
+    "(" {Sort ","}* ")"		 -> Sort {cons("SortTuple")}
 
   context-free syntax
     "*" 			-> Kind {cons("Star")}

@@ -232,8 +232,12 @@ exports
     "constructors" Opdecl* 	-> Sdecl {cons("Constructors")}
 
   context-free syntax
-    Id 			   	-> Sort {cons("SortNoArgs")}
-    Id "(" {Sort ","}* ")" 	-> Sort {cons("Sort")}
+    LCID 			 -> Sort {cons("SortVar")}
+    UCID 			 -> Sort {cons("SortNoArgs")}
+    Id "(" {Sort ","}* ")" 	 -> Sort {cons("Sort")}
+    "[" {Sort ","}* "]"		 -> Sort {cons("SortList")}
+    "[" {Sort ","}* "|" Sort "]" -> Sort {cons("SortListTl")}
+    "(" {Sort ","}* ")"		 -> Sort {cons("SortTuple")}
 
   context-free syntax
     "*" 			-> Kind {cons("Star")}
@@ -307,9 +311,14 @@ exports
   lexical syntax
     [a-zA-Z\'\-\_] [a-zA-Z0-9\'\-\_]*     -> Id
     [a-zA-Z\'\-\_] [a-zA-Z0-9\'\-\_]* "*" -> LId
+
+    [a-z] [a-zA-Z0-9\'\-\_]*  -> LCID
+    [A-Z] [a-zA-Z0-9\'\-\_]*  -> UCID
   lexical restrictions
-    Id -/- [a-zA-Z0-9\'\.\-\_\*]
-    LId -/- [a-zA-Z0-9\'\.\-\_]
+    Id   -/- [a-zA-Z0-9\'\.\-\_\*]
+    LId  -/- [a-zA-Z0-9\'\.\-\_]
+    LCID -/- [a-zA-Z0-9\'\.\-\_]
+    UCID -/- [a-zA-Z0-9\'\.\-\_]
   lexical syntax
     "all" 		-> Id {reject}
     "constructors" 	-> Id {reject}

@@ -1,7 +1,10 @@
 2003-08-12  Eelco Visser  <visser@cs.uu.nl>
 
+	* syn/Stratego-Identifiers.sdf: Distinghuish lower and upper case
+	identifiers for use in sort expressions.
+
 	* syn/Stratego-Signatures.sdf: A constant type uses a Sort instead
-	of a Term.
+	of a Term. Extended syntax of sorts.
 
 2003-07-31  Eelco Visser  <visser@cs.uu.nl>
 
