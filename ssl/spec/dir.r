@@ -11,7 +11,45 @@
 module dir
 strategies
 
-  readdir = ?dir; prim("SSL_ReadDir", dir)
+  /*   The  readdir()  function  returns  a  pointer  to a dirent
+       structure representing the next  directory  entry  in  the
+       directory  stream  pointed  to by dir.  It returns NULL on
+       reaching the end-of-file or if an error occurred. */
+
+  readdir = 
+    ?dir; prim("SSL_readdir", dir)
+
+  /*   These  functions  return  information  about the specified
+       file.  You do not need any access rights to  the  file  to
+       get  this  information  but  you need search rights to all
+       directories named in the path leading to the file. */
+
+  /* stat = 
+    ?file; prim("SSL_stat", file) */
+
+  modification-time =
+    ?file; prim("SSL_modification_time", file)
+
+  file-newer =
+    (modification-time, modification-time); gt
+
+  /*   The  getenv() function searches the environment list for a
+       string that matches the string pointed to  by  name.   The
+       strings are of the form name = value. */
+
+  getenv = 
+    ?name; prim("SSL_getenv", name)
+
+
+  /*   The  setenv() function adds the variable name to the envi­
+       ronment with the value value, if  name  does  not  already
+       exist.   If  name  does exist in the environment, then its
+       value is changed to value if  overwrite  is  non-zero;  if
+       overwrite  is zero, then the value of name is not changed. */
+
+  setenv = 
+    ?(name, value, overwrite); 
+    where(prim("SSL_setenv", name, value, overwrite))
 
 \end{code}
 

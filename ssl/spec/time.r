@@ -10,6 +10,21 @@
 module time
 strategies
 
+  // ABSOLUTE TIME
+
+  /*   time  returns the time since the Epoch (00:00:00 UTC, Jan­
+       uary 1, 1970), measured in seconds. */
+
+  time = 
+    prim("SSL_time")
+
+  // TODO: see localtime, gmtime, etc. to convert a time number to
+  // a broken down time.
+
+strategies
+
+  // RELATIVE TIME ; TIME OF PROCESS
+
   dtime = 
     prim("SSL_dtime")
 
@@ -18,6 +33,10 @@ strategies
 
   clock = 
     prim("SSL_clock")
+
+  /* The times() function stores the current process times in a quadruple 
+     (user time, system time, user time of children, system time of children)
+     See man 2 times for more information */
 
   times = 
     prim("SSL_times")

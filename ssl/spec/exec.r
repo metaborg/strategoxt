@@ -22,6 +22,11 @@
 
 \begin{code}
 module exec
+signature
+  constructors
+    WaitStatus : Int * Int * Int -> WaitStatus
+    Pipe       : Int * Int -> Pipe
+
 strategies //primitives
 
   // exit :: Int
@@ -29,6 +34,88 @@ strategies //primitives
 
   exit = 
     ?n; prim("SSL_exit", n)
+
+  // get-pid :: a -> Int
+  // return process identifier of current process
+
+  get-pid = 
+    prim("SSL_get_pid")
+
+  /*   fork creates a child process that differs from the parent process
+       only in its PID and PPID, and in the fact that resource  utiliza­
+       tions  are  set  to  0.   File  locks and pending signals are not
+       inherited. 
+
+       Fails if forking fails, in which case no child process is created.
+  */
+
+  // fork :: a -> Int
+  fork =
+    prim("SSL_fork")
+
+  fork(child) =
+    ?t; fork; ?pid; (?0; <child> t <+ !(pid, t))
+
+  fork(child, parent) =
+    ?t; fork; ?pid; (?0; <child> t <+ <parent>(pid, t))
+
+  /*   The  execv  and  execvp functions provide an array of pointers to
+       null-terminated strings that represent the argument  list  avail­
+       able  to  the  new  program.   The first argument, by convention,
+       should point to the file name associated with the file being exe­
+       cuted.   The  array  of  pointers  must  be  terminated by a NULL
+       pointer. */
+
+  execvp = 
+    ?(file, argv); prim("SSL_execvp", file, argv)
+
+  // waitpid :: Int -> WaitStatus
+  waitpid =
+    ?pid; prim("SSL_waitpid", pid)
+
+
+  /* pipe creates a pair Pipe(fd1, fd2) of file descriptors, pointing
+  to a pipe inode, and places them in the array pointed to by filedes.
+  fd1 is for reading, fd2 is for writing. */
+
+  // pipe :: _ -> Pipe
+  pipe =
+    prim("SSL_pipe")
+
+  // File descriptors
+
+  //open =
+  //  ?fd; prim("SSL_open", fd)
+
+  close =
+    ?fd; prim("SSL_close", fd)
+
+  dup =
+    ?fd; prim("SSL_dup", fd)
+
+  STDIN_FILENO =
+    prim("SSL_STDIN_FILENO")
+  STDOUT_FILENO =
+    prim("SSL_STDOUT_FILENO")
+  STDERR_FILENO =
+    prim("SSL_STDERR_FILENO")
+
+  /*   The fopen function opens the file whose name is the string
+       pointed to by path and associates a stream with it.
+
+       The argument mode points to a string beginning with one of
+       the following sequences (Additional characters may  follow
+       these sequences.): see man fdopen */
+
+  fdopen = 
+    ?(fd, mode); prim("SSL_fdopen", fd, mode)
+
+  /*   The  fclose function dissociates the named stream from its under­
+       lying file or set of functions.  If the stream was being used for
+       output, any buffered data is written first, using fflush(3). */
+
+  fclose =
+    ?stream; prim("SSL_fclose", stream)
 
   // call :: String * List(String) -> String * List(String)
   // call prog with list of strings args
@@ -44,11 +131,10 @@ strategies //primitives
     ?(prog,args)
     ; prim("SSL_call_noisy",prog,args)
 
-  // get-pid :: a -> Int
-  // return process identifier of current process
 
-  get-pid = 
-    prim("SSL_get_pid")
+  pipe-term-to-child(prog, args) = 
+    ?t; where(prog => prog-trm; args => args-trm)
+    ; prim("SSL_pipe_term_to_child", t, prog-trm, args-trm)
 
 strategies // non-primitives
 

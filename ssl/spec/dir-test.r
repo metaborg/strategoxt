@@ -11,7 +11,9 @@ strategies
 
   main = 
     test-suite(!"dir-test", 
-      test1
+      test1;
+      test2;
+      test3
     )
 
   test1 =
@@ -19,6 +21,25 @@ strategies
 	, readdir; fetch-elem(?"dir-test.c")
 	, !"."
 	, !"dir-test.c"
+	)
+
+  test2 =
+    apply-and-check(!"test2a"
+	, modification-time
+	, !"dir-test.rtree"
+	, debug; is-int
+	);
+    apply-and-check(!"test2b"
+	, file-newer
+	, !("dir-test.c", "dir-test.rtree")
+	, debug
+	)
+
+  test3 =
+    apply-and-check(!"test3"
+	, getenv
+	, !"HOME"
+	, debug; is-string
 	)
 \end{code}
 

@@ -1,0 +1,176 @@
+module pipe
+imports exec
+strategies
+
+  // examine wait status
+
+  exited =
+    ?WaitStatus(s,_,_)
+    ; where(<not(eq)> (s, -1))
+    ; debug(!"the process exited: ") 
+      
+  signaled =
+    ?WaitStatus(_,s,_); where(<not(eq)> (s, -1))
+    ; debug(!"the process was signaled") 
+       
+  stopped = 
+    ?WaitStatus(_,_,s); where(<not(eq)> (s, -1))
+    ; debug(!"the process stopped") 
+
+strategies
+
+// connecting and/or disconnecting parts of a pipe
+
+  // close both file descriptors constituting a pipe
+  close-pipe =
+  where(
+    ?Pipe(fd1, fd2)
+    ; <close> fd1
+    ; <close> fd2
+  )
+
+  // connect the input side (fd1) of the pipe to stdin
+  stdin-from-pipe =
+  where(
+    ?Pipe(fd1, fd2)
+    ; STDIN_FILENO; close
+    ; <dup> fd1
+    ; <close> fd1
+    ; <close> fd2
+  )
+
+  // create a file that is connected to input side (fd1) of the pipe
+  file-from-pipe :
+    Pipe(fd1, fd2) -> file
+    where <fdopen> (fd1, "r") => file
+        ; <close> fd2
+
+  // connect the output side (fd2) of the pipe to stdin
+  stdout-to-pipe =
+  where(
+    ?Pipe(fd1, fd2)
+    ; STDOUT_FILENO; close
+    ; <dup> fd2
+    ; <close> fd1
+    ; <close> fd2
+  )
+
+  // create a file that is connected to output side (fd2) of the pipe
+  file-to-pipe :
+    Pipe(fd1, fd2) -> file
+    where <fdopen> (fd2, "w") => file
+        ; <close> fd1
+
+  write-term-to-text-pipe =
+  where(
+    ?(p, t)
+    ; <file-to-pipe> p => outfile
+    ; <WriteToTextFile> (outfile, t)
+    ; <fclose> outfile
+  )
+
+  read-term-from-pipe :
+    p -> t
+    where <file-from-pipe> p => file
+        ; <ReadFromFile> file => t
+        ; <fclose> file
+
+strategies
+
+// Programs that interact with pipes
+
+  // execute prog and write the current term to its stdin
+  write-to-prog(prog, args) =
+  where(
+    where(pipe => p)
+    ; fork(<stdin-from-pipe> p
+           ; <execvp> (<prog>, <args>))
+    ; ?(pid, t)
+    ; <write-term-to-text-pipe> (p, t)
+    ; <waitpid> pid 
+    ; (exited + signaled + stopped)
+  )
+
+  write-to-prog'(prog, args) =
+  where(
+    ?t
+    ; pipe => p
+    ; fork
+    ; (?0 // child
+          ; <stdin-from-pipe> p
+          ; <execvp> (<prog>, <args>)
+       <+ ?pid // parent
+          ; <write-term-to-text-pipe> (p, t)
+          ; <waitpid> pid 
+          ; (exited + signaled + stopped))
+     )
+
+  // execute prog and read the term on its stdout
+  read-from-prog(prog, args) =
+    where(pipe => p)
+    ; fork(<stdout-to-pipe> p; <execvp> (<prog>, <args>))
+    ; ?(pid, _)
+    ; <read-term-from-pipe> p => t
+    ; where(<waitpid> pid 
+            ; (exited + signaled + stopped))
+
+  read-from-prog'(prog, args) =
+  where(
+    pipe => p
+    ; fork
+    ; (?0 // child
+          ; <stdout-to-pipe> p
+          ; <execvp> (<prog>, <args>)
+       <+ ?pid // parent
+          ; <read-term-from-pipe> p => t
+          ; <waitpid> pid 
+          ; (exited + signaled + stopped))
+   ); !t
+
+strategies
+
+// managing pipelines of filter programs
+
+  setup-filter-pipe =
+    pipe => p; !(p, [], p)
+
+  // prog produces input for the pipe p
+  pipe-source(prog, args) :
+    (p, pids) -> pids
+    where fork
+        ; (?0; <stdout-to-pipe> p; <execvp> (<prog>, <args>)
+           <+ ?pid)
+
+  // prog consumes the output from pipe p
+  pipe-sink(prog, args) :
+    (p0, pids, p1) -> (p0, [pid | pids])
+    where fork(<stdin-from-pipe> p1; <execvp> (<prog>, <args>)) => (pid, _)
+
+  close-filter-pipe(s) :
+    (p-in, pids, p-out) -> (p-in, [pid | pids])
+    where <s> p-out => pid
+
+  exec-filter-pipe(s) :
+    (p-in, pids) -> ()
+    where <s> p-in => pid
+        ; <map(waitpid; (exited + signaled + stopped))> [pid | pids]
+ 
+  spawn-filter-with-prog(prog, args) :
+    (p0, pids, p-in) -> (p0, [pid | pids], p-out)
+    where debug(<concat-strings> ["spawn-filter-with ", <prog>, ": "])
+        ; pipe => p-out
+        ; fork(<stdin-from-pipe> p-in
+               ; <stdout-to-pipe> p-out
+               ; <execvp> (<prog>, <args>)) => (pid, _)
+      //; <close-pipe> p-in
+
+/*
+  file-to-file-filter(!infile, !outfile) :
+    (p-in, pids, p-out) -> 
+    where <fopen> infile 
+
+  pipe-comm(prog, args, cont) :
+    ?fd;
+    
+*/
+
