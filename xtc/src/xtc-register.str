@@ -4,11 +4,17 @@ strategies
 
   // Finding an entry in the repository
 
+  xtc-find-warning = 
+    xtc-find 
+
   xtc-find = 
     if-verbose5(debug(!"xtc-find: "))
     ; xtc-load
     ; (xtc-find-version-loc <+ xtc-find-loc)
     ; if-verbose5(debug(!"xtc-find: "))
+   <+ <error> ["No XTC registration for ", <id>, " found"]
+    ; if-verbose5(<table-getlist; debug(!"XTC repository: ")> XTC)
+    ; fail
 
   xtc-find-version-loc :
     (tool, version) -> loc
@@ -18,11 +24,6 @@ strategies
     tool -> loc
     where <table-get> (XTC, Tool(tool)) => [(version, loc) | _]
 
-  xtc-find-warning = 
-    xtc-find 
-    <+ <error> ["No XTC registration for ", <id>, " found"]
-     ; if-verbose5(<table-getlist; debug(!"XTC repository: ")> XTC)
-     ; fail
 
   // Registering an entry
 

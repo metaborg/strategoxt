@@ -1,3 +1,8 @@
+2002-12-08  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/xtc-register.str: xtc-find always complains when item not
+	found.
+
 2002-12-07  Eelco Visser  <visser@cs.uu.nl>
 
 	* src/xtc-proc.str: Scoped introduction and automatic removal of 

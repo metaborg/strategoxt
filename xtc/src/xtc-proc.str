@@ -14,16 +14,27 @@ strategies
   rename-to(name) :
     FILE(oldname) -> FILE(newname)
     where name => newname
+	; not(stdout)
         ; <rename-file>(oldname, newname)
+
+  rename-to(name) :
+    FILE(oldname) -> stdout
+    where name => stdout
+        ; <ReadFromFile> oldname => term
+	; <WriteToTextFile> (stdout, term)
 
   read-from :
     FILE(name) -> t
     where <ReadFromFile> name => t
 
+  read-from :
+    stdin -> t
+    where <ReadFromFile> stdin => t
+
   write-to :
     t -> FILE(name)
     where xtc-new-file => name
-        ; <WriteToTextFile> name => t
+        ; <WriteToTextFile> (name, t)
 
   // scoped temporary files
 
@@ -62,9 +73,12 @@ strategies
   
   // Transforming a file
 
+  xtc-transform-file(tool) =
+    xtc-transform-file(tool, ![])
+
   xtc-transform-file(tool, args) :
     FILE(f) -> FILE(g)
-    where debug; <xtc-new-file> f => g; debug
+    where <xtc-new-file> f => g
         ; <xtc-command(tool)> ["-i", f, "-o", g | <args>]
 
   xtc-transform-file(tool, args) :
