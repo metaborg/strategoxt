@@ -21,6 +21,12 @@ signature
     RDecT      : Id * List(Typedid) * List(Typedid) -> RuleDec
 signature
   constructors
+    DynRuleIntersectFix : List(Id) * Strategy -> Strategy
+    DynRuleUnionFix     : List(Id) * Strategy -> Strategy
+    DynRuleIntersect    : Strategy * List(Id) * Strategy -> Strategy
+    DynRuleUnion        : Strategy * List(Id) * Strategy -> Strategy
+signature
+  constructors
     OverrideDynamicRules       : List(RuleDef) -> Strategy
     ExtendDynamicRules         : List(RuleDef) -> Strategy
     ExtendOverrideDynamicRules : List(RuleDef) -> Strategy

@@ -1,6 +1,5 @@
 module Stratego-DynamicRules
 exports
-
   context-free syntax
 
     "{|" {DynRuleScopeId ","}* ":" Strategy "|}" -> Strategy {cons("DynRuleScope")}
@@ -9,24 +8,41 @@ exports
 
     "rules" "(" DynRuleDef* ")" -> Strategy {cons("GenDynRules")}
 
-    Id "+" Term                           -> DynRuleDef {cons("AddScopeLabel")} 
-    DynRuleId ":-"  Term                  -> DynRuleDef {cons("UndefineDynRule")}
-    DynRuleId ":"   Rule                  -> DynRuleDef {cons("SetDynRule")}
-    DynRuleId ":+"  Rule                  -> DynRuleDef {cons("AddDynRule")}
+    Id "+" Term                 -> DynRuleDef {cons("AddScopeLabel")} 
+    DynRuleId ":-"  Term        -> DynRuleDef {cons("UndefineDynRule")}
+    DynRuleId ":"   Rule        -> DynRuleDef {cons("SetDynRule")}
+    DynRuleId ":+"  Rule        -> DynRuleDef {cons("AddDynRule")}
 
-    RuleDec "." Term -> DynRuleId {cons("LabeledDynRuleId")}
-    RuleDec "+" Term -> DynRuleId {cons("AddLabelDynRuleId")}
-    RuleDec          -> DynRuleId {cons("DynRuleId")}
+    RuleDec "." Term            -> DynRuleId {cons("LabeledDynRuleId")}
+    RuleDec "+" Term            -> DynRuleId {cons("AddLabelDynRuleId")}
+    RuleDec                     -> DynRuleId {cons("DynRuleId")}
 
-    Id "." Term  -> DynRuleScopeId {cons("LabeledDynRuleScopeId")}
-    Id           -> DynRuleScopeId {cons("DynRuleScopeId")}
+    Id "." Term                 -> DynRuleScopeId {cons("LabeledDynRuleScopeId")}
+    Id                          -> DynRuleScopeId {cons("DynRuleScopeId")}
 
   context-free syntax
 
-    Id                         -> RuleDec {cons("RDecNoArgs")}
-    Id "(" {Typedid ","}* ")"  -> RuleDec {cons("RDec")}
+    Id                          -> RuleDec {cons("RDecNoArgs")}
+    Id "(" {Typedid ","}* ")"   -> RuleDec {cons("RDec")}
     Id "(" {Typedid ","}* 
-       "|" {Typedid ","}* ")"  -> RuleDec {cons("RDecT")}
+       "|" {Typedid ","}* ")"   -> RuleDec {cons("RDecT")}
+
+  context-free syntax
+
+    "/" {Id ","}* "\\*" Strategy          -> Strategy {cons("DynRuleIntersectFix")}
+    "\\" {Id ","}* "/*" Strategy          -> Strategy {cons("DynRuleUnionFix")}
+    Strategy "/" {Id ","}* "\\" Strategy  -> Strategy {cons("DynRuleIntersect"),right}
+    Strategy "\\" {Id ","}* "/" Strategy  -> Strategy {cons("DynRuleUnion"),right}
+
+  context-free priorities
+    StrategyAngle Term 		          -> Strategy {cons("BA")}
+  > {"/" {Id ","}* "\\*" Strategy         -> Strategy {cons("DynRuleIntersectFix")}
+     "\\" {Id ","}* "/*" Strategy         -> Strategy {cons("DynRuleUnionFix")}
+    }
+  > Strategy "=>" Term 		  	  -> Strategy {cons("AM")}
+  > Strategy "/" {Id ","}* "\\" Strategy  -> Strategy {cons("DynRuleIntersect"),right}
+  > Strategy "\\" {Id ","}* "/" Strategy  -> Strategy {cons("DynRuleUnion"),right}
+  > Strategy ";" Strategy 		  -> Strategy {cons("Seq"),right}
 
   context-free syntax %% legacy Dynamic rules
 

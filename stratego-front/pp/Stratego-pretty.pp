@@ -98,6 +98,15 @@
    RDecT.2:iter-star-sep -- H hs=0 [_1 KW[","]],
    RDecT.3:iter-star-sep -- H hs=0 [_1 KW[","]],
 
+   DynRuleIntersectFix                    -- H hs=0[KW["/"] _1 KW["\\*"]] _2,
+   DynRuleIntersectFix.1:iter-star-sep    -- H hs=0[_1 KW[","]],
+   DynRuleUnionFix                        -- H hs=0[KW["\\"] _1 KW["/*"]] _2,
+   DynRuleUnionFix.1:iter-star-sep        -- H hs=0[_1 KW[","]],
+   DynRuleIntersect                       -- _1 H hs=0[KW["/"] _2 KW["\\"]] _3,
+   DynRuleIntersect.2:iter-star-sep       -- H hs=0[_1 KW[","]],
+   DynRuleUnion                           -- _1 H hs=0[KW["\\"] _2 KW["/"]] _3,
+   DynRuleUnion.2:iter-star-sep           -- H hs=0[_1 KW[","]],
+
    SRDefNoArgs -- _1 KW["::"] _2,
    SRDef -- _1 KW["("] _2 KW[")"] KW["::"] _3,
    SRDef.2:iter-star-sep -- _1 KW[","],

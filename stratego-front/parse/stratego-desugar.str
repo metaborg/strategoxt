@@ -172,6 +172,29 @@ rules
     SortTuple(xs) -> 
     Sort("Tuple", [<foldr(!Sort("Nil",[]), !Sort("Cons",[<Fst>,<Snd>]))> xs])
 
+  // Dynamic rules
+
+  Desugar :
+    DynRuleIntersectFix(rulenames, s) -> 
+    CallT(SVar("dr-fix-and-intersect"), [s], [<mk-rulenames> rulenames])
+
+  Desugar :
+    DynRuleIntersect(s1, rulenames, s2) -> 
+    CallT(SVar("dr-fork-and-intersect"), [s1, s2], [<mk-rulenames> rulenames])
+
+  Desugar :
+    DynRuleUnionFix(rulenames, s) -> 
+    CallT(SVar("dr-fix-and-union"), [s], [<mk-rulenames> rulenames])
+
+  Desugar :
+    DynRuleUnion(s1, rulenames, s2) -> 
+    CallT(SVar("dr-fork-and-union"), [s1, s2], [<mk-rulenames> rulenames])
+
+  mk-rulenames =
+    foldr(!Op("Nil",[]), !Op("Cons", [<Fst>, <Snd>]), !Str(<id>))
+
+  // Characters
+
   Desugar :
     Char(c) -> Int(i)
     where <DesugarChar <+ explode-string; DesugarCharGeneric> c => i
