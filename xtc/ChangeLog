@@ -1,3 +1,8 @@
+2003-01-04  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/xtc-rep.str: deal with recursive imports, not just one
+	level of import.
+
 2003-01-02  Eelco Visser  <visser@cs.uu.nl>
 
 	* src/xtc-proc.str: read-from : Check that file exists before 
