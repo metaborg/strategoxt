@@ -27,9 +27,9 @@ rules
 
   NewVar : 
     Pair(Var(x), (xs, ys, ts)) -> Pair(Var(x), ([x | xs], ys, ts))
-    where <not(in)> (x, xs)
+    where <not(is-subterm)> (x, xs)
 
   OldVar: 
     Pair(Var(x), (xs, ys, ts)) -> 
     Pair(Var(x), (xs, [y | ys], Seq(Assign(Var(x), Var(y)), ts)))
-    where <in> (x, xs); new => y
+    where <is-subterm> (x, xs); new => y

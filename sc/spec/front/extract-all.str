@@ -1,7 +1,7 @@
 // extract: translate a specification to core Stratego and 
 // extract needed definitions
 
-module extract
+module extract-all
 imports needed-defs
 strategies
 
@@ -10,4 +10,3 @@ strategies
 (*
 	// where(dtime; debug(!"  desugar-spec: "))
 *)
-

@@ -23,7 +23,7 @@ modules
 
 *)
 
-module stratego-eval
+module stratego-eval-closure
 imports strategy sugar display
 
 strategies

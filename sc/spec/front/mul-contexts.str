@@ -1,4 +1,4 @@
-(*
+/*
 
 Copyright (C) 1998, 1999 Eelco Visser <visser@acm.org>
 
@@ -17,11 +17,9 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 02111-1307, USA.
 
-*)
+*/
 
-
-\paragraph{Multiple Contexts}
-
+// \paragraph{Multiple Contexts}
 
 signature
   operations
@@ -70,6 +68,7 @@ strategies
 
   main = iowrap(Ncon)
 
-
+/*
 Notes: Don't forget to add the newly generated variables to the scope
 of the rule.
+*/

@@ -1,7 +1,7 @@
 \literate[{\btt Stratego-Canonical-Format}]
 
 \begin{code}
-module Stratego-Normal-Format
+module Stratego-Canonical-Format
 imports stratego lib automaton
 signature
   constructors
