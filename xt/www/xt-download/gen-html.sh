@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: gen-html.sh,v 1.4 2000/11/13 15:26:13 mdejonge Exp $
+# $Id: gen-html.sh,v 1.5 2000/11/18 11:08:06 mdejonge Exp $
 
 #
 # This script generates on standard output an XT download page. It consists
@@ -35,11 +35,14 @@
 
 pkgname=xt
 
-archs=`ls ${pkgname}*|sed 's/\./ /g;s/-/ /g;s/src/aaasrc/' | awk '{print $4}'| sort -u|sed 's/aaasrc/src/'`
+archs=`ls ${pkgname}-[0-9]* \
+        | sed 's/\./ /g;s/-/ /g;s/src/aaasrc/' \
+        | awk '{print $4}' \
+        | sort -u|sed 's/aaasrc/src/'`
 
 # obtain versions and make sure that they are sorted correctly. This means
 # that pkg-<version> should occur before pkg-<version>beta.
-versions=`ls ${pkgname}* \
+versions=`ls ${pkgname}-[0-9]* \
            | sed 's/\./ /g;s/-/ /g' \
            | awk '{print $2"."$3}' \
            | sed 's/[0-9]$/&xxx/'\
