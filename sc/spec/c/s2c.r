@@ -1,5 +1,5 @@
 module s2c
-imports strategy automaton sugar lib C C-simplify dynamic-rules
+imports strategy automaton sugar lib C C-simplify dynamic-rules config
 
 strategies
 
@@ -20,15 +20,24 @@ signature
   constructors
     TraceAll : Option
     Trace    : String -> Option
-
+    Include   : String -> Option
     InitCachedTerms : Stat
 
 strategies
 
-  s2c-options =
-	Option("--trace-all", !TraceAll; debug(!"tracing all functions: ")
-			      ; rules(TraceAllFuns : x -> x))
-	+ ArgOption("-t",     \x -> Trace(x) where rules(TraceFun : x -> x) \ )
+  s2c-options = 
+    Option("--trace-all   trace all strategies", 
+	!TraceAll; debug(!"tracing all functions: ")
+	; rules(TraceAllFuns : x -> x))
+
+  + ArgOption("-t",     
+	\x -> Trace(x) where rules(TraceFun : x -> x) \,
+	!"-t f            trace strategy operator f" )
+
+  + ArgOption("--C-include",       
+	where(<post-extend-config>("--C-include", [<id>]))
+        ; !Include(<id>),
+	!"--C-include h   include header file h (\"file.h\" or <file.h>)")
 
 overlays
 
@@ -66,15 +75,18 @@ rules
 
   TranslateSpec :
     Specification([Signature(ops), Strategies(defs)]) -> 
-    TranslationUnit([
-	  Include("#include <srts/stratego.h>")
-	, Include("#include <ssl/stratego-lib.h>")
-        , Declaration2(TypeSpec([],TypeId("void"),[]),
+    TranslationUnit(<concat> [incl, 
+	[
+	//  Include("#include <srts/stratego.h>")
+	//, Include("#include <ssl/stratego-lib.h>")
+        //, 
+	Declaration2(TypeSpec([],TypeId("void"),[]),
                        [IdDecl([],Id("init_constant_terms"),Some(ParamList([])))])
 	, Signature(ops)
         , InitCachedTerms
-        | <conc>(sigs,defs)])
+        ], sigs,defs] )
     where <map(SDefToDeclaration)> defs => sigs
+        ; <get-config; map(!Include(<conc-strings> ("#include ", <id>))) <+ ![]> "--C-include" => incl
 \end{code}
 
 Signatures
