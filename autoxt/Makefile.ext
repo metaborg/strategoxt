@@ -1,0 +1,162 @@
+# Makefile template 
+
+#STRATEGOXT = $(STRATEGOXT)
+#ATERM = $(ATERM)
+#SDF = $(SDF)
+#XT = $(STRATEGOXT)
+
+ASFIX_TOOLS = $(STRATEGOXT)
+ATERM_TOOLS = $(STRATEGOXT)
+CGEN = $(STRATEGOXT)
+DOT_TOOLS = $(STRATEGOXT)
+GPP = $(STRATEGOXT)
+GRAPH_TOOLS = $(STRATEGOXT)
+PGEN = $(SDF)
+REPOSITORY = $(STRATEGOXT)/share/StrategoXT/XTC
+SC = $(STRATEGOXT)
+SDF_TOOLS = $(STRATEGOXT)
+SGLR = $(SDF)
+SRTS = $(STRATEGOXT)
+SSL = $(STRATEGOXT)
+STRATEGO_FRONT = $(STRATEGOXT)
+STRATEGO_TOOLS = $(STRATEGOXT)
+XTC = $(STRATEGOXT)
+
+###########################################################
+# File: Makefile.xt
+#
+# autoxt
+#
+# Description
+#
+# This Makefile provides support for compiling Stratego 
+# programs and use of some other XT tools.
+#
+###########################################################
+#
+# Variables
+#
+
+LDADD 		= -lstratego-lib.opt -lstratego.opt -lATerm-gcc -lm
+LDFLAGS		= -L$(SRTS)/lib -L$(ATERM)/lib $(LDADD)
+CFLAGS 		= -I$(SRTS)/include -I$(ATERM)/include 
+
+SUFFIXES 	= .str .cr .r .rtree .def .tbl .pp .sdf
+
+SCOMPILE 	= $(SC)/bin/sc
+PARSESTRATEGO 	= $(STRATEGO_FRONT)/bin/parse-stratego
+
+sdfdatadir	= ${datadir}/sdf/${PACKAGE}
+
+###########################################################
+#
+# Make rules for Stratego programs
+#
+
+%.c : %str
+	$(SCOMPILE) $(STRINCLUDES) $(SCFLAGS) -i $< -o $@ -c
+
+%.rtree : %.str
+	$(PARSESTRATEGO) $(STRINCLUDES) -i $< -o $@ --verbose 0
+
+%.c : %.rtree
+	$(SCOMPILE) $(STRINCLUDES) $(SCFLAGS) -i $< -o $@ -c
+
+
+# Note: the .r and .cr extensions are obsolete. The following
+# rules take care of the conversion, while keeping the original
+# files.
+
+.PRECIOUS : %.str %.meta
+
+migrate :
+	for file in fordummy $(wildcard *.r) ; do \
+	 	if [ "$$file" = "fordummy" ]; then continue; fi; \
+	  mv $$file `basename $$file .r`.str ; \
+	done
+	for file in fordummy $(wildcard *.cr) ; do \
+	 	if [ "$$file" = "fordummy" ]; then continue; fi; \
+	  mv $$file `basename $$file .cr`.str ; \
+	done 
+	for file in fordummy $(wildcard *.syn) ; do \
+	 	if [ "$$file" = "fordummy" ]; then continue; fi; \
+	  echo "Meta([Syntax(\"`cat $$file`\")])" > `basename $$file .syn`.meta ; \
+	done
+
+# Dependencies
+
+#%.c.dep : 
+#	touch $@
+#
+#CLEANFILES = $(wildcard *.dep)
+
+bootclean: 
+	rm -f $(BOOTCLEANFILES)
+
+###########################################################
+#
+# Makerules for SDF definitions
+#
+
+%def : %.sdf
+	$(SDF_TOOLS)/bin/pack-sdf $(SDFINCLUDES) -i $<  \
+	| $(ASFIX_TOOLS)/bin/asfix-yield -o $@
+
+%.tbl : %.def
+	$(PGEN)/bin/sdf2table $(PGEN_FLAGS) -i $< -o $@ 
+
+###########################################################
+#
+# Makerules for GPP
+#
+
+%.pp.af : %.pp
+	$(MAKE) -f $(GPP)/share/gpp/gpp.Makefile $@
+
+%.pp : %.def
+	$(GPP)/bin/ppgen -i $< -o $@
+
+###########################################################
+#
+# Makerules for Stratego Tools
+#
+
+%.str : %.def
+	$(STRATEGO_TOOLS)/bin/sdf-to-sig -i $< -o $@
+
+###########################################################
+#
+# Makerules for XTC
+#
+
+XTCFLAGS = -I $(XTC)/share/xtc \
+	   --C-include "\"xtc-conf.h\""
+
+xtc-conf.h :
+	echo "#define XTC_REPOSITORY() ATmakeString(\"$(REPOSITORY)\")" > $@
+
+install-data-local:
+        $(XTC)/bin/xtc -r $(REPOSITORY) register -l $(prefix) -V $(VERSION) -t $PACKAGE ; \
+	for file in fordummy $(pkgdata_DATA) ; do \
+	 	 	 	  if [ "$$file" = "fordummy" ]; then continue; fi; \
+          $(XTC)/bin/xtc -r $(REPOSITORY) register -l $(pkgdatadir) -V $(VERSION) \
+		-t $$file ; \
+        done
+	for file in fordummy $(sdfdata_DATA) ; do \
+	 	 	 	  if [ "$$file" = "fordummy" ]; then continue; fi; \
+          $(XTC)/bin/xtc -r $(REPOSITORY) register -l $(sdfdatadir) -V $(VERSION) \
+		-t $$file ; \
+        done
+	for file in fordummy $(bin_PROGRAMS) $(bin_SCRIPTS) ; do \
+	 	      if [ "$$file" = "fordummy" ]; then continue; fi; \
+          $(XTC)/bin/xtc -r $(REPOSITORY) register -l $(bindir) -V $(VERSION) \
+		-t $$file ; \
+        done
+	for file in fordummy $(libexec_PROGRAMS) ; do \
+	 	      if [ "$$file" = "fordummy" ]; then continue; fi; \
+          $(XTC)/bin/xtc -r $(REPOSITORY) register -l $(libexecdir) -V $(VERSION) \
+		-t $$file ; \
+        done
+
+###########################################################
+
