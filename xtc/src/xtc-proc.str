@@ -57,6 +57,13 @@ strategies
         ; <WriteToTextFile> (name, t)
         ; <close-file> name
 
+  // :: [String] -> FILE
+  print-to :
+    strings -> FILE(name)
+      where xtc-new-file => name
+          ; <print> (name, strings)
+          ; <close-file> name
+
   xtc-find-file = !FILE(<xtc-find>)
 
 
@@ -159,6 +166,10 @@ strategies
 
   xtc-io-transform(s) =
     read-from; s; write-to
+
+  // Transforming a file (containing an ATerm) to text with an internal strategy
+  xtc-io-transform-text(s) =
+      read-from; s; print-to
 
   // Generating a file with an external process
   xtc-generate(tool) =
