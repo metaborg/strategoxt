@@ -1,5 +1,5 @@
 module needed-constructors
-imports stratlib
+imports stratlib Stratego-MetaTransition
 strategies 
 
   needed-constructors :

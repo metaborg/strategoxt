@@ -6,7 +6,7 @@
 
 \begin{code}
 module spec-to-sdefs
-imports Stratego desugar stratlib list-sort
+imports Stratego desugar stratlib list-sort Stratego-MetaTransition
 strategies
 
   spec-to-sdefs-io = 
