@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.25 2000/10/16 20:56:09 mdejonge Exp $
+# $Id: Makefile.am,v 1.26 2000/10/29 20:08:20 mdejonge Exp $
 
 DIST_SUBDIRS = pre-checks aterm asfix asc-support sglr pgen graph-tools \
                stratego gpp gt gb integration-tests www
@@ -38,7 +38,7 @@ check clean install install-strip uninstall:
 	done
 
 # Build a package installation:
-#   -first build the completa package (software uses ${prefix} to refer to
+#   -first build the XT package (software uses ${prefix} to refer to
 #    other files/programs in the distribution
 #   -then install in the directory as specified with the
 #    --with-pkginstalldir option (which may differ from ${prefix}).
