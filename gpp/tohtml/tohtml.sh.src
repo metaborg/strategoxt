@@ -46,7 +46,7 @@
 BINDIR=__BINDIR__
 DATADIR=__DATADIR__
 LIBEXEC=__LIBEXEC__
-GRAPHTOOLS=__GRAPHTOOLS__
+DOTTOOLS=__DOTTOOLS__
 SGLR=__SGLR__
 
 GRAPHVIZ=__GRAPHVIZ__
@@ -54,7 +54,7 @@ MAKE=__MAKE__
 VERSION=__VERSION__
 
 # Extend PATH to include bin directories of additional tools
-PATH=${BINDIR}:${GRAPHTOOLS}/bin:${GRAPHVIZ}/bin:${SGLR}/bin:${PATH}
+PATH=${BINDIR}:${DOTTOOLS}/bin:${GRAPHVIZ}/bin:${SGLR}/bin:${PATH}
 export PATH
 
 # Programs
@@ -63,7 +63,7 @@ AST2ABOX="ast2abox"
 ABOX2TEXT="abox2text"
 ABOX2HTML="abox2html"
 GXML2DOT="GraphXML2dot"
-DOT_PP_TABLE=${GRAPHTOOLS}/share/graph-tools/dot.pp
+DOT_PP_TABLE=${DOTTOOLS}/share/dot-tools/Dot-pretty.pp
 DOT="dot"
 ISMAP2USEMAP="${LIBEXEC}/ismap2usemap"
 DEBUG=false

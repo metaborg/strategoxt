@@ -46,7 +46,7 @@ CLEANFILES      = tohtml ismap2usemap
 	sed 's@__BINDIR__@$(bindir)@g;\
 	      s@__DATADIR__@$(pkgdatadir)@g;\
 	      s@__GRAPHVIZ__@$(GRAPHVIZ)@g;\
-              s@__GRAPHTOOLS__@$(GRAPH_TOOLS)@g;\
+              s@__DOTTOOLS__@$(DOT_TOOLS)@g;\
               s@__SGLR__@$(SGLR)@g;\
 	      s@__LIBEXEC__@$(libexecdir)@g;\
 	      s@__MAKE__@$(MAKE)@g;\
