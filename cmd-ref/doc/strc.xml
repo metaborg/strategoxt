@@ -32,21 +32,6 @@
   </refsect1>
 
   <refsect1>
-    <title>Options</title>
-
-    <variablelist>
-      <varlistentry>
-        <term><option>-i </option></term>
-        <listitem>
-          <para>foo
-          </para>
-        </listitem>
-      </varlistentry>
-    </variablelist>
-
-  </refsect1>
-
-  <refsect1>
     <title>Examples</title>
 
     <para>
@@ -90,6 +75,154 @@
       <arg choice="plain">-i <replaceable>M</replaceable></arg>
       <arg choice="plain">-I ../sig</arg>
     </cmdsynopsis>
+  </refsect1>
+
+  <refsect1>
+    <title>Options</title>
+
+    <variablelist>
+      <title>Common Options</title>
+
+      <varlistentry>
+        <term><option>-i <replaceable>file</replaceable></option></term>
+        <listitem>
+          <para>Main module to compile (required)</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><option>-o       <filename><replaceable>file</replaceable></filename></option></term>
+        <term><option>--output <filename><replaceable>file</replaceable></filename></option></term>
+        <listitem>
+	  <para>Write output to <filename><replaceable>file</replaceable></filename></para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term><option>-I        <filename class="directory"><replaceable>dir</replaceable></filename></option></term>
+        <term><option>--Include <filename class="directory"><replaceable>dir</replaceable></filename></option></term>
+        <listitem>
+	  <para>Include modules from directory <filename
+	  class="directory"><replaceable>dir</replaceable></filename></para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term><option>-m     <function><replaceable>s</replaceable></function></option></term>
+	<term><option>--main <function><replaceable>s</replaceable></function></option></term>
+        <listitem>
+	  <para>
+	    Use the strategy <function><replaceable>s</replaceable></function>
+	    as main strategy instead of <function>main</function>.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><option>--C-Include <filename class="headerfile"><replaceable>file</replaceable></filename></option></term>
+        <listitem>
+	  <para>
+	    Include C header 
+	    <filename class="headerfile"><replaceable>file</replaceable></filename>
+	    (<filename class="headerfile">"foo.h"</filename> or
+	    <filename class="headerfile">&lt;foo.h&gt;</filename>)
+	  </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term><option>-CI <filename class="directory"><replaceable>dir</replaceable></filename></option></term>
+        <listitem>
+	  <para>Include C header files from directory <filename
+	  class="directory"><replaceable>dir</replaceable></filename></para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term><option>-CL <filename class="directory"><replaceable>dir</replaceable></filename></option></term>
+        <listitem>
+	  <para>Include binary libraries from directory <filename
+	  class="directory"><replaceable>dir</replaceable></filename></para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term><option>-c</option></term>
+	<listitem><para>Produce C code only (don't compile to executable)</para></listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term><option>--ast</option></term>
+	<listitem><para>Produce Stratego abstract syntax tree</para></listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term><option>-F</option></term>
+	<listitem><para>Produce normalized specification</para></listitem>
+      </varlistentry>
+	
+      <varlistentry>
+	<term><option>--asfix</option></term>
+	<listitem><para>Concrete syntax parts are not imploded</para></listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term><option>--keep <replaceable>n</replaceable></option></term>
+	<listitem><para>Keep intermediate results (0 = keep nothing)</para></listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term><option>-O <replaceable>n</replaceable></option></term>
+	<listitem><para>Optimization level (0 = no optimization)</para></listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term><option>--fusion</option></term>
+	<listitem><para>Toggle specialize applications of innermost (default: on)</para></listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term><option>--verbose <replaceable>i</replaceable></option></term>
+	<listitem><para>Verbosity level i (default 1)</para></listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term><option>-S</option></term>
+	<term><option>--silent</option></term>
+	<listitem><para>Silent execution (same as --verbose 0)</para></listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term><option>-W</option></term>
+	<term><option>--warning</option></term>
+	<term><option>--maybe-unbound-warnings</option></term>
+	<term><option>--no-maybe-unbound-warnings</option></term>
+	<listitem><para>Set warning level (-W all to switch all warnings on)</para></listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term><option>-v</option></term>
+	<term><option>--version</option></term>
+	<listitem>
+	  <para>Display program's version</para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term><option>--help</option></term>
+	<term><option>-h</option></term>
+	<term><option>-?</option></term>
+	<listitem>
+	  <para>Display usage version</para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
+
+  <refsect1>
+    <title>See Also</title>
+
+    <para><ulink url="http://www.stratego-language.org">Stratego website</ulink></para>
   </refsect1>
 
   <refsect1>
