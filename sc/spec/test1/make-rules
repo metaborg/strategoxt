@@ -40,7 +40,7 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 	../match/optimize1 -i $< -o $@ -b
 
 %.s5fused: %.s5 ../opt/fusion$(EXE)
-	../opt/fusion  -i $< -o $@ -b
+	../opt/fusion  -i $< -o $@ -b --verbose 2
 
 %.s6 : %.s5fused ../match/compile-match$(EXE)
 	../match/compile-match -i $< -o $@ -b

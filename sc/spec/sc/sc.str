@@ -24,48 +24,6 @@ strategies
       ; c-compile
     )
 
-  front-end =
-    if-verbose2(debug(!"front-end: "));
-    profile'(if-verbose1(<printnl>(stderr, ["front-end succeeded:     " | <id>])), 
-      parse
-      ; output-ast
-      ; add-main
-      ; frontend
-      ; output-frontend
-      ; extract
-      ; stratego-nf 
-      ; rename-defs
-    )
- 
-  optimize =
-    if-verbose2(debug(!"optimize: "));
-    profile'(if-verbose1(<printnl>(stderr, ["optimization succeeded:  " | <id>])), 
-        optimize1 
-        ; try(where(not(<get-config> "--fusion")); fusion)
-        ; inline
-        ; compile-match 
-        ; optimize2
-        //  ; stratego-of
-    )
-
-  back-end =
-    if-verbose2(debug(!"back-end: "));
-    profile'(if-verbose1(<printnl>(stderr, ["back-end succeeded:      " | <id>])), 
-      canonicalize
-      ; stratego-cf
-      ; s2c
-      ; ac2abox
-      ; abox2text
-      ; rename-to(get-outfile(!".c"))
-    )
-
-  c-compile =
-     where(<get-config> "-c")
-  <+ profile'(if-verbose1(<printnl>(stderr, ["C compilation succeeded: " | <id>])), 
-       c-to-object-code 
-       ; link-object-code
-     )
-
 strategies
 
 // Compiler components
@@ -88,6 +46,21 @@ strategies
   dep-name =
     !["--dep", <<get-config> "-o" <+ <get-config> "infile">]
 
+strategies
+
+  front-end =
+    if-verbose2(debug(!"front-end: "));
+    profile'(if-verbose1(<printnl>(stderr, ["front-end succeeded:     " | <id>])), 
+      parse
+      ; output-ast
+      ; add-main
+      ; frontend
+      ; output-frontend
+      ; extract
+      ; stratego-nf 
+      ; rename-defs
+    )
+
   parse =
     get-infile
     ; xtc-transform(!"pack-stratego", 
@@ -96,13 +69,17 @@ strategies
   output-ast =
     try(where(<get-config> "--ast")
        ; copy-to(get-outfile(!".ast") => astfile)
-       ; where(<echo> ["abstract syntax (after parsing) written to ", astfile]))
+       ; where(<echo> ["abstract syntax (after parsing) written to file"])
+       ; xtc-io-exit
+    )
 
   output-frontend =
     try(where(<get-config> "-F")
        ; (extract-all <+ <fatal-error> ["extracting all definitions failed"])
        ; copy-to(get-outfile(!".tree") => file)
-       ; say(!["abstract syntax (after frontend) written to ", file]))
+       ; say(!["abstract syntax (after frontend) written to file"])
+       ; xtc-io-exit
+    )
 
   // Adding main strategy
   // What happens if the specification already contains a main strategy? 
@@ -139,6 +116,20 @@ strategies
   stratego-nf = 
     xtc-transform(!"Stratego-Normal-Format", !["-b" | <pass-verbose> ])
 
+
+strategies
+
+  optimize =
+    if-verbose2(debug(!"optimize: "));
+    profile'(if-verbose1(<printnl>(stderr, ["optimization succeeded:  " | <id>])), 
+        optimize1 
+        ; try(where(not(<get-config> "--fusion")); fusion)
+        ; inline
+        ; compile-match 
+        ; optimize2
+        //  ; stratego-of
+    )
+
   optimize1 = 
     xtc-transform(!"optimize1", !["-b" | <pass-verbose> ])
 
@@ -160,6 +151,18 @@ strategies
   canonicalize = 
     xtc-transform(!"canonicalize", !["-b" | <pass-verbose> ])
  
+
+  back-end =
+    if-verbose2(debug(!"back-end: "));
+    profile'(if-verbose1(<printnl>(stderr, ["back-end succeeded:      " | <id>])), 
+      canonicalize
+      ; stratego-cf
+      ; s2c
+      ; ac2abox
+      ; abox2text
+      ; rename-to(get-outfile(!".c"))
+    )
+
   stratego-cf = 
     xtc-transform(!"Stratego-Canonical-Format", !["-b" | <pass-verbose> ])
 
@@ -185,7 +188,17 @@ strategies
   abox2text = 
     xtc-transform(!"abox2text")
 
+
+strategies
+
   // Compile generated C code
+
+  c-compile =
+     where(<get-config> "-c")
+  <+ profile'(if-verbose1(<printnl>(stderr, ["C compilation succeeded: " | <id>])), 
+       c-to-object-code 
+       ; link-object-code
+     )
 
   c-to-object-code :
     FILE(cfile) -> FILE(ofile)

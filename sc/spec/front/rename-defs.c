@@ -521,7 +521,7 @@ void init_constant_terms (void)
   ATprotect(&(term_r_6));
   term_r_6 = (ATerm) ATmakeAppl(ATmakeSymbol("_", 0, ATtrue));
   ATprotect(&(term_u_6));
-  term_u_6 = (ATerm) ATmakeAppl(ATmakeSymbol("b_0", 0, ATtrue));
+  term_u_6 = (ATerm) ATmakeAppl(ATmakeSymbol("c_0", 0, ATtrue));
   ATprotect(&(term_z_6));
   term_z_6 = (ATerm) ATmakeAppl(ATmakeSymbol("g_0", 0, ATtrue));
   ATprotect(&(term_m_7));
@@ -715,7 +715,7 @@ ATerm try_1 (ATerm, ATerm v_69 (ATerm));
 ATerm table_get_0 (ATerm);
 ATerm table_push_0 (ATerm);
 ATerm register_usage_1 (ATerm, ATerm s_91 (ATerm));
-ATerm Option_3 (ATerm, ATerm a_0 (ATerm), ATerm d_0 (ATerm), ATerm f_0 (ATerm));
+ATerm Option_3 (ATerm, ATerm a_0 (ATerm), ATerm d_0 (ATerm), ATerm e_0 (ATerm));
 ATerm system_usage_switch_0 (ATerm);
 ATerm UndefinedOption_0 (ATerm);
 ATerm set_config_0 (ATerm);
@@ -786,12 +786,12 @@ ATerm RenameVar_0 (ATerm t)
         ATerm f_3 = NULL,g_3 = NULL,h_3 = NULL;
         t = not_null(y_2);
         {
-          ATerm c_0 (ATerm t)
+          ATerm b_0 (ATerm t)
           {
             t = term_w_4;
             return(t);
           }
-          t = rewrite_1(t, c_0);
+          t = rewrite_1(t, b_0);
           {
             f_3 = t;
             v_2 :
@@ -800,7 +800,7 @@ ATerm RenameVar_0 (ATerm t)
                 g_3 = ATgetArgument(f_3, 0);
                 h_3 = ATgetArgument(f_3, 1);
                 w_2 :
-                if(match_string(g_3, "b_0"))
+                if(match_string(g_3, "c_0"))
                   {
                     if(((e_3 != NULL) && (e_3 != h_3)))
                       _fail(h_3);
@@ -912,12 +912,12 @@ ATerm topdown_1 (ATerm t, ATerm r_66 (ATerm))
 {
   t = r_66(t);
   {
-    ATerm e_0 (ATerm t)
+    ATerm f_0 (ATerm t)
     {
       t = topdown_1(t, r_66);
       return(t);
     }
-    t = _all(t, e_0);
+    t = _all(t, f_0);
   }
   return(t);
 }
@@ -4090,14 +4090,14 @@ ATerm register_usage_1 (ATerm t, ATerm s_91 (ATerm))
   }
   return(t);
 }
-ATerm Option_3 (ATerm t, ATerm a_0 (ATerm), ATerm d_0 (ATerm), ATerm f_0 (ATerm))
+ATerm Option_3 (ATerm t, ATerm a_0 (ATerm), ATerm d_0 (ATerm), ATerm e_0 (ATerm))
 {
   ATerm v_31 = NULL,w_31 = NULL,x_31 = NULL;
   v_31 = t;
   u_31 :
   if(match_string(v_31, "register-usage-info"))
     {
-      t = register_usage_1(t, f_0);
+      t = register_usage_1(t, e_0);
     }
   else
     {

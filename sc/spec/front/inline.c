@@ -888,7 +888,7 @@ ATerm try_1 (ATerm, ATerm p_95 (ATerm));
 ATerm table_get_0 (ATerm);
 ATerm table_push_0 (ATerm);
 ATerm register_usage_1 (ATerm, ATerm b_117 (ATerm));
-ATerm Option_3 (ATerm, ATerm a_0 (ATerm), ATerm b_0 (ATerm), ATerm f_0 (ATerm));
+ATerm Option_3 (ATerm, ATerm a_0 (ATerm), ATerm c_0 (ATerm), ATerm e_0 (ATerm));
 ATerm system_usage_switch_0 (ATerm);
 ATerm UndefinedOption_0 (ATerm);
 ATerm Cons_2 (ATerm, ATerm r_79 (ATerm), ATerm s_79 (ATerm));
@@ -970,12 +970,12 @@ ATerm SubsArgCall2_0 (ATerm t)
             ATerm n_8 = NULL,o_8 = NULL,p_8 = NULL;
             t = (ATerm) ATmakeAppl(sym_Call_2, (ATerm)ATmakeAppl(sym_SVar_1, not_null(h_8)), term_q_6);
             {
-              ATerm c_0 (ATerm t)
+              ATerm b_0 (ATerm t)
               {
                 t = term_r_6;
                 return(t);
               }
-              t = rewrite_1(t, c_0);
+              t = rewrite_1(t, b_0);
               {
                 n_8 = t;
                 b_8 :
@@ -1037,12 +1037,12 @@ ATerm SubsArgCall1_0 (ATerm t)
                 ATerm g_9 = NULL,h_9 = NULL,i_9 = NULL;
                 t = not_null(z_8);
                 {
-                  ATerm e_0 (ATerm t)
+                  ATerm f_0 (ATerm t)
                   {
                     t = term_s_6;
                     return(t);
                   }
-                  t = rewrite_1(t, e_0);
+                  t = rewrite_1(t, f_0);
                   {
                     g_9 = t;
                     u_8 :
@@ -10317,14 +10317,14 @@ ATerm register_usage_1 (ATerm t, ATerm b_117 (ATerm))
   }
   return(t);
 }
-ATerm Option_3 (ATerm t, ATerm a_0 (ATerm), ATerm b_0 (ATerm), ATerm f_0 (ATerm))
+ATerm Option_3 (ATerm t, ATerm a_0 (ATerm), ATerm c_0 (ATerm), ATerm e_0 (ATerm))
 {
   ATerm a_109 = NULL,b_109 = NULL,c_109 = NULL;
   a_109 = t;
   z_108 :
   if(match_string(a_109, "register-usage-info"))
     {
-      t = register_usage_1(t, f_0);
+      t = register_usage_1(t, e_0);
     }
   else
     {
@@ -10345,7 +10345,7 @@ ATerm Option_3 (ATerm t, ATerm a_0 (ATerm), ATerm b_0 (ATerm), ATerm f_0 (ATerm)
               ATerm g_109 = NULL;
               t = term_p_6;
               {
-                t = b_0(t);
+                t = c_0(t);
                 {
                   g_109 = t;
                   if(((f_109 != NULL) && (f_109 != g_109)))

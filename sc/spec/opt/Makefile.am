@@ -18,6 +18,4 @@ CLEANFILES 	 = $(wildcard *.dep)
 
 BOOTCLEANFILES 	 = fusion.c
 
-EXTRA_DIST 	 = $(wildcard *.str) $(wildcard *.meta) $(wildcard *.cr) $(wildcard *.syn)
-
-BOOTSOURCES 	 = fusion.c
+EXTRA_DIST 	 = $(wildcard *.str) $(wildcard *.meta)

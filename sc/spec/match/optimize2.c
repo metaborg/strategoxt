@@ -812,7 +812,7 @@ ATerm verbose_option_0 (ATerm);
 ATerm general_options_0 (ATerm);
 ATerm output_option_0 (ATerm);
 ATerm aterm_output_option_0 (ATerm);
-ATerm ArgOption_3 (ATerm, ATerm l_0 (ATerm), ATerm n_0 (ATerm), ATerm o_0 (ATerm));
+ATerm ArgOption_3 (ATerm, ATerm m_0 (ATerm), ATerm n_0 (ATerm), ATerm o_0 (ATerm));
 ATerm input_option_0 (ATerm);
 ATerm io_options_0 (ATerm);
 ATerm report_failure_0 (ATerm);
@@ -1378,12 +1378,12 @@ ATerm free_vars_3 (ATerm t, ATerm s_111 (ATerm), ATerm t_111 (ATerm), ATerm u_11
                     t = (ATerm) ATempty;
                     return(t);
                   }
-                  ATerm m_0 (ATerm t)
+                  ATerm l_0 (ATerm t)
                   {
                     t = union_1(t, eq_0);
                     return(t);
                   }
-                  t = crush_3(t, j_0, m_0, _id);
+                  t = crush_3(t, j_0, l_0, _id);
                 }
               }
               LocalPopChoice(j_6);
@@ -8046,7 +8046,7 @@ ATerm aterm_output_option_0 (ATerm t)
     }
   return(t);
 }
-ATerm ArgOption_3 (ATerm t, ATerm l_0 (ATerm), ATerm n_0 (ATerm), ATerm o_0 (ATerm))
+ATerm ArgOption_3 (ATerm t, ATerm m_0 (ATerm), ATerm n_0 (ATerm), ATerm o_0 (ATerm))
 {
   ATerm g_83 = NULL,h_83 = NULL,i_83 = NULL,j_83 = NULL,k_83 = NULL;
   g_83 = t;
@@ -8072,7 +8072,7 @@ ATerm ArgOption_3 (ATerm t, ATerm l_0 (ATerm), ATerm n_0 (ATerm), ATerm o_0 (ATe
                 t_27 = t;
                 {
                   t = not_null(h_83);
-                  t = l_0(t);
+                  t = m_0(t);
                 }
                 t = t_27;
                 {

@@ -24,11 +24,11 @@ strategies
                    Strategies(map(declare-inline-rule))])
 
   declare-inline-rule =
-    ?[[ f(a1*) = s1 ]];
+    ?|[ f(a1*) = s1 ]|;
     rules(
       InlineStrat :
-        [[ f(s*) :S]] -> <ssubs> (<map(?VarDec(<id>,_))> [a1*], [s*], s2)
-        where <strename> [[ f(a1*) = s1 ]] => [[ f(a2*) = s2 ]]
+        Strategy|[ f(s*) ]| -> <ssubs> (<map(?VarDec(<id>,_))> [a2*], [s*], s2)
+        where <strename> |[ f(a1*) = s1 ]| => |[ f(a2*) = s2 ]|
     )
 
 
@@ -52,9 +52,9 @@ strategies
   check-that-try-is-try =
     where(
       new => x
-      ; (<InlineStrat> [[ try_1(x()) : S ]]
+      ; (<InlineStrat> Strategy|[ try_1(x()) ]|
          <+ if-verbose2(say(!"no definition of try_1: ")); fail)
-      ; (?[[ x() <+ id ]]
+      ; (?|[ x() <+ id ]|
          <+ if-verbose1(debug(!"try is not try: ")); fail)
       ; if-verbose2(say(!"try is try "))
     )
@@ -62,9 +62,9 @@ strategies
   check-that-innermost-is-innermost =
     where(
       new => x
-      ; (<InlineStrat> [[ innermost_1(x()) : S ]]
+      ; (<InlineStrat> Strategy|[ innermost_1(x()) ]|
          <+ if-verbose2(say(!"no definition of innermost_1: ")); fail)
-      ; (?[[ bottomup_1(rec z(try_1(x(); bottomup_1(z())))) ]]
+      ; (?|[ bottomup_1(rec z(x(); bottomup_1(z()) <+ id)) ]|
          <+ if-verbose1(debug(!"innermost is not innermost: ")); fail)
       ; if-verbose2(say(!"innermost is innermost "))
     )
@@ -72,10 +72,10 @@ strategies
   check-that-bottomup-is-bottomup =
     where(
       new => x
-      ; (<InlineStrat> [[ bottomup_1(x()) : S ]]
+      ; (<InlineStrat> Strategy|[ bottomup_1(x()) ]|
          <+ if-verbose2(say(!"no definition of bottomup_1: ")); fail)
-   // ; ?[[ rec y(all(y()); x()) ]]
-      ; (?[[ all(bottomup_1(x())); x() ]]
+   // ; ?|[ rec y(all(y()); x()) ]|
+      ; (?|[ all(bottomup_1(x())); x() ]|
          <+ if-verbose1(debug(!"bottomup is not bottomup: ")); fail)
       ; if-verbose2(say(!"bottomup is bottomup"))
     )
@@ -83,15 +83,15 @@ strategies
   // The fusion strategy
 
   innermost-fusion = 
-    ?[[ innermost_1(s1) ]] 
+    ?|[ innermost_1(s1) ]| 
     ; if-verbose2(say(!"fusion: application of innermost found"))
 
     ; where(new => x)
-    ; where(<seq-over-choice> [[ bottomup_1(x()) :S]])
-    ; where(<bottomup-to-var> [[ bottomup_1(x()) :S]])
+    ; where(<seq-over-choice> Strategy|[ bottomup_1(x()) ]|)
+    ; where(<bottomup-to-var> Strategy|[ bottomup_1(x()) ]|)
 
     ; where(<inline-rules> s1 => s2)
-    ; ![[ bottomup_1(rec x((mark(); s2); bottomup_1(x()) <+ id)) ]]
+    ; !|[ bottomup_1(rec x((mark(); s2); bottomup_1(x()) <+ id)) ]|
     ; propagate-mark
 
     ; fuse-with-bottomup
@@ -141,36 +141,36 @@ strategies
     ?bu
   ; rules(
       BottomupToVarIsId-UnCond :
-        [[ mark(); ?t1; !t2 ]] -> [[ ?t1; !t3 ]]
+        |[ mark(); ?t1; !t2 ]| -> |[ ?t1; !t3 ]|
         where !bu => s
             ; <tvars> t1 => vs
             ; {| Replace : 
-                 map(!Var(<id>); {?t; rules(Replace : [[ <s> t :T]] -> [[ t :T]])})
+                 map(!Var(<id>); {?t; rules(Replace : Term|[ <s> t ]| -> Term|[ t ]|)})
                  ; <alltd(Replace)> t2 => t3 |}
 
       BottomupToVarIsId-Cond :
-        [[ mark(); ?t1; where(s); !t2 ]] -> [[ ?t1; where(s'); !t2 ]]
+        |[ mark(); ?t1; where(s); !t2 ]| -> |[ ?t1; where(s'); !t2 ]|
         where !bu => s''
             ; <tvars> t1 => vs
             ; {| Replace : 
-                 map(!Var(<id>); {?t; rules(Replace : [[ <s''> t :T]] -> [[ t :T]])})
+                 map(!Var(<id>); {?t; rules(Replace : Term|[ <s''> t ]| -> Term|[ t ]|)})
                  ; <alltd(Replace)> (s, t2) => (s', t3) |}
    )
 
   bottomup-to-var = ?bu;
     rules(
       BottomupToVarIsId-UnCond :
-        [[ mark(); ?t1; !t2 ]] -> [[ ?t1; !t3 ]]
+        |[ mark(); ?t1; !t2 ]| -> |[ ?t1; !t3 ]|
         where <replace-application> (bu, t1, t2) => t3
 
       BottomupToVarIsId-Cond :
-        [[ mark(); ?t1; where(s); !t2 ]] -> [[ ?t1; where(s'); !t3 ]]
+        |[ mark(); ?t1; where(s); !t2 ]| -> |[ ?t1; where(s'); !t3 ]|
         where <replace-application> (bu, t1, (s, t2)) => (s', t3)
     )
 
    replace-application :
      (s, t1, t2) -> t3
      where {| Replace : 
-              <tvars; map({?x; rules(Replace : [[ <s> x : T ]] -> [[ x : T ]])})> t1;
+              <tvars; map({?x; rules(Replace : Term|[ <s> x ]| -> Term|[ x ]|)})> t1;
               <alltd(Replace)> t2 => t3 
            |}

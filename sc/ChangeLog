@@ -1,3 +1,13 @@
+2003-01-01  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/sc/sc.str: using xtc-io-exit to quit in the middle of the
+	pipeline if only a partial result is requested, while still
+	removing intermediate files.
+
+	* spec/opt/fusion.str: using new concrete syntax embeddings |[
+	... ]|, fixed bug in renaming of definitions, adapted recognition
+	of innermost to current library definition.
+
 2002-12-23  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/syn/pack-stratego.str: Inlined specification from pack-modules
