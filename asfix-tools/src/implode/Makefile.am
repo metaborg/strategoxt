@@ -13,7 +13,7 @@ pkgdata_DATA 	= implode-asfix.str
 
 EXTRA_DIST  	= $(wildcard *.str) $(wildcard *.meta)
 
-SCFLAGS     	= -I $(srcdir)/../asfix --main $* $(XTCFLAGS)
+SCFLAGS     	= -I $(srcdir)/../asfix --main $* $(XTCFLAGS) 
 
 BOOTCLEANFILES 	= implode-asfix.c sglri.c
 
