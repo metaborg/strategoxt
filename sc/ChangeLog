@@ -1,4 +1,20 @@
+2001-09-16  Eelco Visser  <visser@acm.org>
+
+	* spec/front/needed-defs.r: all-defs and needed-defs share the
+	call to graph packing strategy.
+
+2001-09-15  Eelco Visser  <visser@acm.org>
+
+	* spec/c/s2c.r: Reading tracing options and generating traced C code.
+
+	* spec/sig/Stratego-Normal-Format.r: Recognizing congruence operators with
+	modifiers.
+
+	* spec/sc/proto-sc.r: Handling tracing options and passing them on to s2c
+
 2001-08-27  Eelco Visser  <visser@acm.org>
+
+	* Release 0.6
 
 	* Ensure that sc and ac2c are made executable before installation
 

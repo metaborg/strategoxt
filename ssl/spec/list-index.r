@@ -24,26 +24,32 @@
 \begin{code}
 module list-index
 imports list-cons simple-traversal
-rules
-
-  Ind1   : (1, [x | xs]) -> x
-  Ind2   : (n, [x | xs]) -> (<subt> (n, 1), xs) where <geq> (n, 2)
-
-  Gind0  : (x, ys) -> (1, x, ys)
-  Gind1  : (n, x, [x | xs]) -> n
-  Gind2  : (n, y, [x | xs]) -> (<add> (n, 1), y, xs)
-
 strategies
 
 (* Index: Get the n-th element of a list *)
 
   index = repeat(Ind2) ; Ind1
 
+  Ind1   : (1, [x | xs]) -> x
+  Ind2   : (n, [x | xs]) -> (<subt> (n, 1), xs) where <geq> (n, 2)
+
 (* Get-index: get index of element in list *)
 
-   get_index = Gind0 ; rec x(Gind1 <+ Gind2 ; x)
-   get-index = Gind0 ; rec x(Gind1 <+ Gind2 ; x)
+  get_index = Gind0 ; rec x(Gind1 <+ Gind2 ; x)
+  get-index = Gind0 ; rec x(Gind1 <+ Gind2 ; x)
 
-   get-index0(s) = at-suffix([s | id]; ![]); length
+  get-index0(s) = at-suffix([s | id]; ![]); length
+
+  Gind0  : (x, ys) -> (1, x, ys)
+  Gind1  : (n, x, [x | xs]) -> n
+  Gind2  : (n, y, [x | xs]) -> (<add> (n, 1), y, xs)
+
+(* Set-index: change element in list *)
+
+  Sind0    : (i, x, ys) -> (0, i, x, ys)
+  Sind1    : (i, i, x, [y | ys]) -> [x | ys]
+  Sind2(r) : (n, i, x, [y | ys]) -> [y | <r>(<add> (n, 1), i, x, ys)]
+
+  set-index = Sind0; rec x(Sind1 <+ Sind2(x))
 \end{code}
 

@@ -34,7 +34,8 @@ CLEANFILES = *.dep \
 	frontend-test \
 	rename-defs rename-defs.c
 
-TESTS = needed-defs-test frontend-test 
+TESTS = needed-defs-test 
+#frontend-test 
 #extract-test
 
 EXTRA_DIST = $(wildcard *.r)

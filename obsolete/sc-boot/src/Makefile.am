@@ -17,10 +17,10 @@
 
 #CFLAGS	 	= -Wall
 #DEBUGFLAGS	= -g
-OPTFLAGS 	= -O4
+OPTFLAGS 	= -O2
 #PROFFLAGS	= -pg
 
-CFLAGS		= -O4
+CFLAGS		= -O2
 
 INCLUDES 	= -I$(STRATEGORTS)/include \
 		  -I$(STRATEGOLIB)/include \

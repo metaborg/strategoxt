@@ -38,5 +38,6 @@ EXTRA_DIST = $(wildcard *.r) $(wildcard *.res)
 #include $(top_srcdir)/share/Stratego.Make
 
 include $(srcdir)/../test1/make-rules
+include $(wildcard *.dep)
 
 bootinstall:

@@ -26,7 +26,7 @@ information about paths.
 
 \begin{code}
 module sc
-imports lib sugar
+imports lib sugar dynamic-rules
 signature
   sorts Option
   constructors
@@ -44,6 +44,8 @@ signature
     FUSION   : Option
     FRONTEND : Option
     CSYNTAX  : Option
+    TraceAll : Option
+    Trace    : String -> Option
 \end{code}
 
 	Processing the command-line options
@@ -96,6 +98,8 @@ strategies
 	+ Option("-F",           !FRONTEND )
 	+ Option("--fusion",     !FUSION )
 	+ Option("--csyntax",	 !CSYNTAX )
+	+ Option("--trace-all",  !TraceAll; rules(TraceAllFuns : () -> ()))
+	+ ArgOption("-t",        \x -> Trace(x) where rules(TraceFun : x -> ()) \ )
 
 strategies
 
@@ -104,16 +108,19 @@ strategies
   <printnl>(stderr, 
 	    ["Usage: sc [options] -i file\n",
 	     "Options:\n",
-	     "  -i spec     Compile specification spec\n",
-	     "  -o target   Name executable target\n",
-	     "  --main s    Name main strategy [default: main]\n",
-	     "  -I dir      Look in dir for imported Stratego modules\n",
-	     "  -CI dir     Look in dir for C include files\n",
-	     "  -CL dir     Look in dir for C object libraries\n",
-	     "  --ast       Output abstract syntax of specification\n",
-	     "  --norm      Do not remove intermediate files\n",
-	     "  -F	    Produce all definitions pre-processed by frontend\n",
-	     "  -h|--help   Display this message"
+	     "  -i spec       Compile specification spec\n",
+	     "  -o target     Name executable target\n",
+	     "  --main s      Name main strategy [default: main]\n",
+	     "  -I dir        Look in dir for imported Stratego modules\n",
+ 	     "  -CI opt       Pass opt to gcc object compilation phase\n",
+	     "  -CL opt       Pass opt to gcc linking phase\n",
+	     "  --trace-all   Trace all strategies in the specification\n",
+	     "  -t f	      Trace strategy f\n",
+	     "  --ast         Output abstract syntax of specification\n",
+	     "  --norm        Do not remove intermediate files\n",
+	     "  -F	      Produce all definitions pre-processed by frontend\n",
+	     "  -v	      Show version\n",
+	     "  -h|--help     Display this message"
             ])
 
   sc-version =   
@@ -135,8 +142,8 @@ strategies
     (option-defined(InclDir(?incl));
      option-defined(ExecDir(?edir));
      try(option-defined(Output(?out))), ?('in, _));
-    (id, pipe'(<pref(!edir)> "/pack-stratego", !".tree", 
-	       <conc> (<!["-dep", out] <+ !["-dep", 'in]>(), ["--silent" | incl])));
+    (id, pipe(<pref(!edir)> "/pack-stratego", !".tree", 
+	      <conc> (<!["-dep", out] <+ !["-dep", 'in]>(), ["--silent" | incl])));
     try((id, copy-file(id, !out, !".tree")))
 \end{code}
 
@@ -231,7 +238,15 @@ strategies
   optimize2(d)       = pipe(<pref(d)> "/optimize2",     !".s7")
 
   canonicalize(d)    = pipe(<pref(d)> "/canonicalize",  !".s8")
-  s2c(d)             = pipe(<pref(d)> "/s2c",		!".ac")
+
+  s2c(d)             = pipe(<pref(d)> "/s2c",		!".ac", 
+			<TraceAllFuns; !["--trace-all"] <+ get-traced-funs> () )
+
+  get-traced-funs =
+    <table-getlist> "TraceFun";
+    map(\ (f, _) -> ["-t", f] \ );
+    concat;
+    ([] <+ debug(!"traced functions: "))
 
   optimizer(d)       = pipe(<pref(d)> "/optimizer",     !".s6")
   matching-tree(d)   = pipe(<pref(d)> "/matching-tree", !".s7")

@@ -16,7 +16,7 @@
 # 02111-1307, USA.
 
 AC_INIT(spec/front/inlining.r)
-AM_INIT_AUTOMAKE(sc,0.6)
+AM_INIT_AUTOMAKE(sc,0.6.1)
 
 AC_ARG_WITH(cgen,    
   [  --with-cgen      Specify location of CGEN library, default: \$prefix], 
@@ -73,7 +73,7 @@ AC_ARG_WITH(srts,
 )
 AC_SUBST(STRATEGORTS)
 
-AC_REVISION($Id: configure.in,v 1.7 2001/08/29 08:40:40 visser Exp $)
+AC_REVISION($Id: configure.in,v 1.8 2001/09/15 22:30:17 visser Exp $)
 
 AC_PROG_CC
 AC_PROG_RANLIB

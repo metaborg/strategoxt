@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: ast2abox.sh.src,v 1.1 2001/08/23 09:00:22 visser Exp $
+# $Id: ast2abox.sh.src,v 1.2 2001/09/15 22:30:16 visser Exp $
 
 # usage:
 #   ast2abox [-h] [-i ast] [-o abox] [-p table_1] ... [-p table_n] [-v]

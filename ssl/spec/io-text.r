@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 
 \begin{code}
   output-pp-file(outfile) =
-    where((outfile <+ !stdout); open-file);
+    where(split((outfile <+ !stdout), !"w"); open-file);
     rec txt(V(txt, txt) +
             rec ln(H(ln, ln) + 
                    L(Cs(split(outfile, id); printascii)) +

@@ -4,6 +4,42 @@ News about Stratego releases
 
 ------------------------------------------------------------------------------
 
+Version 0.7
+
+ released: 
+
+ Note: Version 0.7 has not been released yet. The following notes describe
+ changes in minor releases since release 0.6.
+
+ SUMMARY OF CHANGES
+
+ (with respect to release 0.6)
+
+ CONTRIBUTIONS
+
+ LANGUAGE
+
+ COMPILER
+
+ * Added compile time option to generate code to trace strategies
+   - --trace-all: trace all strategies
+   - -t f: trace strategy f
+
+ * Repair in implementation of dynamic rules; added rule stamp in order
+ to record to which rule the information belongs.
+
+ * Optimization is set to O2 by default (used to be O4). The higher
+ optimization level (which comes down to inlining functions in addition
+ to the O2 optimizations) seems to produce faulty code on some
+ machine/compiler combinations. Optimization can be increased by
+ passing the option -CI "O3" to SC. However, it seems appropriate to
+ leave inlining decisions to SC.
+
+ LIBRARY
+
+ * Type annotations added to strategy operators with higher-order
+ arguments.
+
 Version 0.6
 
  released: August 29, 2001

@@ -1,6 +1,30 @@
 module s2c
 imports strategy automaton sugar lib C C-simplify dynamic-rules
 
+strategies
+
+  s2c = 
+    iowrap(compile, s2c-options)
+
+  compile = 
+    rec x({| Initialized : 
+             repeat(TranslateSpec + TranslateSig + TranslateDef + TranslateStrat)
+           ; all(x)
+           ; repeat(Csimplify) 
+           |})
+
+signature
+  constructors
+    TraceAll : Option
+    Trace    : String -> Option
+
+strategies
+
+  s2c-options =
+	Option("--trace-all", !TraceAll; debug(!"tracing all functions: ")
+			      ; rules(TraceAllFuns : x -> x))
+	+ ArgOption("-t",     \x -> Trace(x) where rules(TraceFun : x -> x) \ )
+
 overlays
 
   CastATerm(e) = 
@@ -27,28 +51,6 @@ overlays
   CallFail = 
     Stat(FunCall(Id("_fail"),[Id("t")]))
 
-strategies
-
-  s2c = 
-    iowrap(compile, s2c-options)
-
-  compile = 
-    rec x({| Initialized : 
-             repeat(TranslateSpec + TranslateSig + TranslateDef + TranslateStrat)
-           ; all(x)
-           ; repeat(Csimplify) 
-           |})
-
-signature
-  constructors
-    TraceAll : Option
-    Trace    : String -> Option
-
-strategies
-
-  s2c-options =
-	Option("--trace-all", !TraceAll; rules(TraceAllFuns : () -> ()))
-	+ ArgOption("-t",     \x -> Trace(x) where rules(TraceFun : x -> ()) \ )
     
 rules
 
@@ -117,19 +119,25 @@ Strategy definitions
     FunDef(TypeSpec([],TypeId("ATerm"),[]),
            IdDecl([],Id(f),Some(ParamList([ParamDecl(TypeSpec([],TypeId("ATerm"),[]),
                                                      IdDecl([],Id("t"),None)) | args']))),
-           Compound([],[//Stat(FunCall("ATfprintf",
-			//	     [Id("stderr")
-			//	     ,StringLit(<concat-strings; escape; double-quote>[f,"(%t)\n"])
-			//	     ,Id("t")]))
-			//,
-			s
-			//,Stat(FunCall("ATfprintf",
-			//	     [Id("stderr")
-			//	     ,StringLit(<concat-strings; escape; double-quote>[f,": %t\n"])
-			//	     ,Id("t")]))
-			,Return(Id("t"))]))
+	   body)
     where <map(TranslateVarDec)> args => args'
+        ; <(TraceFun <+ TraceAllFuns, id); TracedBody <+ PlainBody> (f, s) => body
 
+  PlainBody : 
+    (f, s) -> Compound([],[s,Return(Id("t"))])
+
+  TracedBody : 
+    (f, s) ->
+    Compound([],[Stat(FunCall("ATfprintf",
+			[Id("stderr")
+			,StringLit(<concat-strings; escape; double-quote>[f, "(%t)\n"])
+			,Id("t")]))
+		,s
+		,Stat(FunCall("ATfprintf",
+			     [Id("stderr")
+			     ,StringLit(<concat-strings; escape; double-quote>[f,": %t\n"])
+			     ,Id("t")]))
+		,Return(Id("t"))])
 
   TranslateVarDec :
     VarDec(x, ConstType(_)) -> 

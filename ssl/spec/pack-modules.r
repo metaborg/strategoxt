@@ -97,11 +97,11 @@ strategies
 rules
   
   create-dep-file(dep-base) :
-	(outfile, files) -> (outfile, files)
-	where
-	  <dep-base> outfile => out;  
-	  <add-extension; open-file> (out, "dep") => dep;
-	  <printnl>(dep, [out | <separate-by(!" \\\n\t")> [" :" | files]])
+    (outfile, files) -> (outfile, files)
+    where <dep-base> outfile => out  
+	; <open-file> (<add-extension> (out, "dep"), "w") => dep
+	; <printnl> (dep, [out | <separate-by(!" \\\n\t")> [" :" | files]])
+	; <close-file> dep
 
 signature
   constructors

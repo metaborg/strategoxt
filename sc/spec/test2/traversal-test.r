@@ -1,5 +1,5 @@
 module traversal-test
-imports sunit
+imports sunit lib
 
 signature
   sorts Term

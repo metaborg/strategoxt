@@ -95,7 +95,8 @@ strategies
 	//test3;
 	//test4a;
 	//test4b;
-	test5
+	test5;
+	test6
     )
 
   test0 =
@@ -189,6 +190,28 @@ strategies
 	, (UnDeclareFun,id); (id,try(NewRule))
 	, !(Fdec("f", "i", "g"), Call("f",[]))
 	, !(Fdec("f", "i", "g"), Call("f",[]))
+	)
+
+strategies
+
+  GenRule1 = 
+    !("a", "b"); ?(x, y); rules(Rule : x -> y)
+
+  GenRule2 =
+    !("a", "b"); ?(x, y); rules(Rule : x -> (y,y))
+
+  test6 =
+    where(GenRule1);
+    apply-test(!"test6a"
+	,Rule
+	,!"a"
+	,!"b"
+	);
+    where(GenRule2);
+    apply-test(!"test6b"
+	,Rule
+	,!"a"
+	,!("b","b")
 	)
 
 \end{code}

@@ -49,14 +49,18 @@ strategies
 
   rm-files = ?files; where(<call> ("rm", ["-f" | files]))
 
-  pipe(c, suf2) = pipe'(c, suf2, ![])
+  pipe(c, suf2) = pipe(c, suf2, ![])
 
-  pipe'(c, suf2, args) = 
+  pipe(c, suf2, args) = 
     where(conc-strings => 'in);
     (id, suf2);
     where(conc-strings => out);
     // where(<debug(!"calling : ")> [<c>(), 'in, out]);
     where(<call> (<c>(), ["-i", 'in, "-o", out | <args>()]))
+
+  pipe'(c, suf2, args) = 
+    obsolete(!"pipe'/3; use pipe/3");
+    pipe(c, suf2, args)
 
   transform-file(s, suf) =
     where(conc-strings => 'in);

@@ -92,6 +92,10 @@ strategies
     for(GnInit, GnExit, GnNext(get-node, out-edges, add-node)
                         <+ GnUndefined)
 
+  graph-nodes-undef-roots-chgr(get-node, out-edges, add-node) =
+    for(GnInitRoots, GnExit, GnNextChangeGraph(get-node, out-edges, add-node)
+                        <+ GnUndefined)
+
   graph-nodes-undef-chgr(get-node, out-edges, add-node) =
     for(GnInit, GnExit, GnNextChangeGraph(get-node, out-edges, add-node)
                         <+ GnUndefined)

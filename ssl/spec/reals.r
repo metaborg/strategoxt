@@ -26,7 +26,7 @@ strategies
   cos   = ?x; prim("SSL_cos",x)
   sin   = ?x; prim("SSL_sin",x)
   sqrt  = ?x; prim("SSL_sqrt",x)
-  atan2 = ?x; prim("SSL_atan2",x)
+  atan2 = ?(x,y); prim("SSL_atan2",x,y)
 
   real-to-string = ?x; prim("SSL_real_to_string",x)
   string-to-real = ?x; prim("SSL_string_to_real",x)

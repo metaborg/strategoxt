@@ -46,11 +46,20 @@ strategies
 	to all nodes of a term.
 
 \begin{code}
-  topdown(s)       = rec x(s; all(x))
-  bottomup(s)      = rec x(all(x); s)
-  downup(s)        = rec x(s; all(x); s)
-  downup(s1, s2)   = rec x(s1; all(x); s2)
-  downup2(s1, s2)  = rec x(s1; all(x); s2)
+  topdown(s) = 
+    rec x(s; all(x))
+
+  bottomup(s) = 
+    rec x(all(x); s)
+
+  downup(s) = 
+    rec x(s; all(x); s)
+
+  downup(s1, s2) = 
+    rec x(s1; all(x); s2)
+
+  downup2(s1, s2) = 
+    rec x(s1; all(x); s2)
 \end{code} 
 	
 	The traversals above go through all constructors. If it
@@ -59,10 +68,17 @@ strategies
 	with a strategy operator \verb|stop| that 
 
 \begin{code}
-  topdownS(s, stop)     = rec x(s; (stop(x) <+ all(x)))
-  bottomupS(s, stop)    = rec x((stop(x) <+ all(x)); s)
-  downupS(s, stop)      = rec x(s; (stop(x) <+ all(x)); s)
-  downupS(s1, s2, stop) = rec x(s1; (stop(x) <+ all(x)); s2)
+  topdownS(s, stop: a * (a -> a) -> a) = 
+    rec x(s; (stop(x) <+ all(x)))
+
+  bottomupS(s, stop: a * (a -> a) -> a) = 
+    rec x((stop(x) <+ all(x)); s)
+
+  downupS(s, stop: a * (a -> a) -> a) = 
+    rec x(s; (stop(x) <+ all(x)); s)
+
+  downupS(s1, s2, stop: a * (a -> a) -> a) = 
+    rec x(s1; (stop(x) <+ all(x)); s2)
 \end{code} 
 
 	The strategy \verb|don't-stop| is a unit for these traversals,
@@ -82,11 +98,17 @@ strategies
 	\verb|s| fails for all children of a node.
 
 \begin{code}
-  spinetd(s) = rec x(s; try(one(x)))
-  spinebu(s) = rec x(try(one(x)); s)
+  spinetd(s) = 
+    rec x(s; try(one(x)))
 
-  spinetd'(s) = rec x(s; (one(x) + all(fail)))
-  spinebu'(s) = rec x((one(x) + all(fail)); s)
+  spinebu(s) = 
+    rec x(try(one(x)); s)
+
+  spinetd'(s) = 
+    rec x(s; (one(x) + all(fail)))
+
+  spinebu'(s) = 
+    rec x((one(x) + all(fail)); s)
 \end{code}
 
 	\paragraph{Along all Spines}
@@ -95,11 +117,17 @@ strategies
 
 
 \begin{code}
-  somespinetd(s) = rec x(s; try(some(x)))
-  somespinebu(s) = rec x(try(some(x)); s)
+  somespinetd(s) = 
+    rec x(s; try(some(x)))
 
-  spinetd'(s) = rec x(s; (one(x) + all(fail)))
-  spinebu'(s) = rec x((one(x) + all(fail)); s)
+  somespinebu(s) = 
+    rec x(try(some(x)); s)
+
+  spinetd'(s) = 
+    rec x(s; (one(x) + all(fail)))
+
+  spinebu'(s) = 
+    rec x((one(x) + all(fail)); s)
 \end{code}
 
 	\paragraph{Once}
@@ -107,10 +135,20 @@ strategies
 	Apply s at one position. One s application has to succeed.
 
 \begin{code}
-  oncetd(s) = rec x(s <+ one(x))
-  oncebu(s) = rec x(one(x) <+ s)
+  oncetd(s) = 
+    rec x(s <+ one(x))
 
-  oncetd-stop(s, stop) = rec x(s <+ not(stop); one(x))
+  oncebu(s) = 
+    rec x(one(x) <+ s)
+
+  oncetd(s, skip: a * (a -> a) -> a) = 
+    rec x(s <+ skip(x) <+ one(x))
+
+    // this really requires a cut to avoid backtracking to one
+
+  oncetd-stop(s, stop: a * (a -> a) -> a) = 
+    obsolete(!"oncetd-stop");
+    rec x(s <+ not(stop(id)); one(x))
 \end{code} 
 
 	\paragraph{At Least Once}
@@ -121,8 +159,11 @@ strategies
 	in upper spine is stopped.
 	
 \begin{code}
-  sometd(s) = rec x(s <+ some(x))
-  somebu(s) = rec x(some(x) <+ s)
+  sometd(s) = 
+    rec x(s <+ some(x))
+
+  somebu(s) = 
+    rec x(some(x) <+ s)
 \end{code}
 
 	\paragraph{Frontier}
@@ -130,25 +171,30 @@ strategies
 	Find all topmost applications of \verb|s|;
 
 \begin{code}
-  alltd(s)           = rec x(s <+ all(x))
-  alldownup2(s1, s2) = rec x((s1 <+ all(x)); s2)
+  alltd(s) = 
+    rec x(s <+ all(x))
 
-  downup2'-obsolete(s1, s2) = rec x((s1 <+ all(x)); s2)
+  alldownup2(s1, s2) = 
+    rec x((s1 <+ all(x)); s2)
 
-  alltd-fold(s1, s2) = rec x(s1 <+ all(x); s2)
+  downup2'-obsolete(s1, s2) = 
+    rec x((s1 <+ all(x)); s2)
+
+  alltd-fold(s1, s2) = 
+    rec x(s1 <+ all(x); s2)
 \end{code}
 	
 	\paragraph{Leaves}
 
-
 \begin{code}
-  leaves(s, is-leaf, skip) = 
+  leaves(s, is-leaf, skip: a * (a -> a) -> a) =
     rec x((is-leaf; s) <+ skip(x) <+ all(x))
 
   leaves(s, is-leaf) =
     rec x((is-leaf; s) <+ all(x))
 
-  is-leaf = not(one(id))
+  is-leaf = 
+    all(fail)
 \end{code}
 
 	\paragraph{Many}
@@ -156,14 +202,19 @@ strategies
 	Find as many applications as possible, but at least one.
 
 \begin{code}
-  manybu(s) = rec x(some(x); try(s) <+ s)
-  manytd(s) = rec x(s; all(try(x)) <+ some(x))
+  manybu(s) = 
+    rec x(some(x); try(s) <+ s)
+
+  manytd(s) = 
+    rec x(s; all(try(x)) <+ some(x))
 \end{code}
 
 \begin{code}
-  somedownup(s) = rec x(s ; all(x) ; try(s) <+ some(x) ; try(s))
+  somedownup(s) = 
+    rec x(s; all(x); try(s) <+ some(x); try(s))
 \end{code} 
 
 \begin{code}
-  breadthfirst(s) = rec x(all(s); all(x))
+  breadthfirst(s) = 
+    rec x(all(s); all(x))
 \end{code} 

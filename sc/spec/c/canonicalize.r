@@ -17,6 +17,14 @@ rules
   CallFailFun :
     Fail -> Call(SVar("_fail"),[])
 
+(*
+ 
+  f(id)  f(g)
+
+  f(x + y) -> let z = x + y in f(z)
+
+*)
+
   Canon :
     Call(f, args) -> Let(defs', Call(f, args'))
     where <unzip(try(CallIdFun + CallFailFun); 

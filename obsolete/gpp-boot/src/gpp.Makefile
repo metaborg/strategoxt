@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: gpp.Makefile,v 1.5 2001/08/29 20:42:50 visser Exp $
+# $Id: gpp.Makefile,v 1.6 2001/09/15 22:30:16 visser Exp $
 
 PREFIX=/home/visser/res/Stratego/gpp-boot
 SGLR=

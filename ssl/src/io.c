@@ -50,7 +50,7 @@ ATerm SSL_file_exists(ATerm t)
   return(t);
 }
 
-ATerm SSL_open_file(ATerm name)
+ATerm SSL_open_file(ATerm name, ATerm mode)
 {
   FILE *file;
 
@@ -63,15 +63,17 @@ ATerm SSL_open_file(ATerm name)
     file = stderr;
   else if(ATmatch(name, "stdin"))
     file = stdin;
-  else if(t_is_string(name))
+  else if(t_is_string(name) && t_is_string(mode))
     {
-      file = fopen(t_string(name), "w");
+      file = fopen(t_string(name), t_string(mode));
       if(file == NULL)
 	_fail(name);
       ATtablePut(SSL_file_table, name, ATmake("<int>", (int)file));      
     }
   return(name);
 }
+
+// obsolete: use SSL_open_file(name, "a")
 
 ATerm SSL_append_file(ATerm name)
 {
@@ -268,5 +270,27 @@ ATerm SSL_WriteToBinaryFile(ATerm file, ATerm t)
 ATerm SSL_WriteToTextFile(ATerm file, ATerm t)
 {
   return SSL_WriteToFile(ATfalse, file, t);
+}
+
+ATerm SSL_getchar(ATerm filename)
+{
+  ATerm in_term;
+  FILE *infile;
+
+  if((infile = _SSL_file_table_lookup(filename)) == NULL)
+    {
+      ATfprintf(stderr, "file %t not open\n", filename);
+      _fail(filename);
+    }
+  else
+    {
+      int c;
+      c = fgetc(infile);
+      if(c == EOF)
+	_fail(filename);
+      else
+	return ATmakeInt(c);
+    }
+  return NULL;
 }
 

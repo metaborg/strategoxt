@@ -126,7 +126,7 @@ strategies
     rec x(s; \y -> [y]\
           <+ crush(![],conc,x))
 
-  collect(s, skip) =
+  collect(s, skip: a * (a -> a) * (a -> a)  -> a) =
     rec x(s; \y -> [y]\
           <+ skip(x,![]); collect-kids(id)
           <+ collect-kids(x))

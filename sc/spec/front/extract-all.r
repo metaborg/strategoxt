@@ -5,7 +5,7 @@ module extract
 imports needed-defs
 strategies
 
-  extract-all = iowrap(all-defs)
+  extract-all = iowrap(Specification([id,Strategies(all-defs)]))
 
 (*
 	// where(dtime; debug(!"  desugar-spec: "))

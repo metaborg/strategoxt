@@ -51,16 +51,25 @@ signature
     stdin  : File
     stdout : File
     stderr : File
+strategies
+
+  // File administration
+
+  file-exists = 
+    ?name; prim("SSL_open_file", name, "r"); 
+           prim("SSL_close_file", name)
+
+  close-file = 
+    ?name; prim("SSL_close_file", name)
+
+  open-file = 
+    ?(name,mode); prim("SSL_open_file", name, mode)
+    <+ obsolete(!"<open-file> file; use <open-file>(file, mode)");
+       ?name; prim("SSL_open_file", name, "w")
+
+  append-file = 
+    ?name; prim("SSL_open_file", name, "a")
 \end{code}
-
-	\verb|<ReadFromFile> file| reads the term in \verb|file|. The
-	\verb|file| needs to be in textual or binary ATerm format.
-
-	\verb|<WriteToTextFile> (file, term)| writes \verb|term| to
-	file in textual ATerm format.
-
-	\verb|<WriteToBinaryFile> (file, term)| writes \verb|term| to
-	file in BAF format.
 
  	\verb|<print> (file, [t1,...,tn])| prints the terms \verb|ti|
 	to file. If \verb|ti| is a string it is printed without quotes,
@@ -74,20 +83,51 @@ signature
 	doesn't exist.
 
 \begin{code}
-strategies
+  // Text output
 
   print             = ?(name, strs); where(prim("SSL_print", name, strs))
   printnl           = ?(name, strs); where(prim("SSL_printnl", name, strs))
   printascii        = ?(name, strs); where(prim("SSL_printascii", name, strs))
 
-  file-exists	    = ?name; prim("SSL_file_exists", name)
-  open-file	    = ?name; prim("SSL_open_file", name)
-  append-file	    = ?name; prim("SSL_append_file", name)
-  close-file	    = ?name; prim("SSL_close_file", name)
+  // <print> (file, [t1,...,tn])
+  // Prints terms ti to file. Terms ti that are strings are printed without quotes
+
+  // <printnl> (file, [t1,...,tn])
+  // Same as print, but prints a newline at the end
+
+  // <printascii> (file, [i1, ..., in])
+  // Prints integers ij as characters to file (using ASCII encoding).
+
+  // Text input
+
+  getchar	    = ?file; prim("SSL_getchar", file)
+
+  // <getchar> file
+  // Reads the next character from file. 
+  // The file should have been opened; a warning is issued if this is not the case
+  // Fails if EOF is reached.
+  // Returns the ascii code of the character.
+
+  readline = ?file;
+    rec x(![<getchar; not(10)> file | <x>()] <+ ![])
+
+  // Returns the next line in file.
+  // Returns a list of ascii codes.
+  // Line is ended by newline or EOF.
+
+  // Term input and output
 
   ReadFromFile      = ?file; prim("SSL_ReadFromFile", file)
   WriteToBinaryFile = ?(file, t); prim("SSL_WriteToBinaryFile", file, t)
   WriteToTextFile   = ?(file, t); prim("SSL_WriteToTextFile", file, t)
+
+  // <ReadFromFile> file reads the term in file. 
+  // The file needs to be in textual or binary ATerm format.
+
+  // <WriteToTextFile> (file, term) writes term to file in textual ATerm format.
+
+  // <WriteToBinaryFile> (file, term) writes term to file in BAF format.
+
 \end{code}
 
  	The primitive \verb|print-stack| prints the top n elements of
@@ -140,6 +180,8 @@ strategies
   print-strings-nl(out) = where(split(out, id); printnl)
 
   obsolete(msg) = where(msg; debug(!"obsolete library strategy: "))
+
+  Assert(s, msg) = test(s) <+ debug(msg)
 \end{code}
 
 	The operator \verb|stdio| implements a simple user-interface

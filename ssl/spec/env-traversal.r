@@ -25,28 +25,39 @@
 module env-traversal
 rules
 
-  all-dist(s) : (t, env) -> <all(\x -> <s>(x,env)\)> t
+  all-dist(s) : 
+    (t, env) -> <all(\x -> <s>(x,env)\)> t
 
-  one-dist(s) : (t, env) -> <one(\x -> <s>(x,env)\)> t
+  one-dist(s) : 
+    (t, env) -> <one(\x -> <s>(x,env)\)> t
 
-  d(s) : Pair(t, env) -> <s> t
+  d(s) : 
+    Pair(t, env) -> <s> t
 
-  t(s) : Pair(t, env) -> Pair(<s>t, env)
+  t(s) : 
+    Pair(t, env) -> Pair(<s>t, env)
 
-  coll(s) : f#(xs) -> (f#(ys), zs)
-	    where <unzip(s)> xs => (ys, zs)
+  coll(s) : 
+    f#(xs) -> (f#(ys), zs)
+    where <unzip(s)> xs => (ys, zs)
 
 strategies
 
-  env-alltd(s) = rec x(s <+ all-dist(x))
+  env-alltd(s) = 
+    rec x(s <+ all-dist(x))
 
-  env-topdown(s) = rec x(s; all-dist(x))
+  env-topdown(s) = 
+    rec x(s; all-dist(x))
 
-  env-topdown(s, skip) = rec x(s; (skip(x) <+ all-dist(x)))
+  env-topdown(s, skip: term * (term -> term) -> term) = 
+    rec x(s; (skip(x) <+ all-dist(x)))
 
-  env-bottomup(s) = rec x(split(all-dist(x), Snd); s)
+  env-bottomup(s) = 
+    rec x(split(all-dist(x), Snd); s)
 
-  thread-alltd(s) = rec x(s <+ thread(x))
+  thread-alltd(s) = 
+    rec x(s <+ thread(x))
 
-  env-oncetd(s) = rec x(s <+ one-dist(x))
+  env-oncetd(s) = 
+    rec x(s <+ one-dist(x))
 \end{code}

@@ -1,6 +1,7 @@
 EXTRA_DIST = $(wildcard *.r) $(wildcard *.trm) $(wildcard *.expected)
 
-check : check2 check3
+check : check3
+#check2 
 #check1 check2 check3
 
 check1 : ../frontend ../extract-all

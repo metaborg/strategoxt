@@ -1,6 +1,6 @@
 \literate[{\tt NORMALIZE-SPEC}]
 	
-% $Id: normalize-spec.r,v 1.1 2001/08/22 09:34:59 visser Exp $
+% $Id: normalize-spec.r,v 1.2 2001/09/15 22:30:17 visser Exp $
 
 % Copyright (C) 1998, 1999, 2000 Eelco Visser <visser@acm.org>
 % 
@@ -158,10 +158,12 @@ rules
     (Scope(xs,s),vars) -> Scope(xs, <x>(s,<union>(xs,vars)))
 
   split-dynamic-rules :
-    (DynamicRules(rs),vars) -> <map(SplitDynamicRule(!vars,\x -> Assert(x)\ )); unzip> rs
+    (DynamicRules(rs),vars) -> 
+    <map(SplitDynamicRule(!vars,\x -> Assert(x)\ )); unzip> rs
 
   split-dynamic-rules :
-    (OverrideDynamicRules(rs),vars) -> <map(SplitDynamicRule(!vars,\x -> OverrideKey(x)\ )); unzip> rs
+    (OverrideDynamicRules(rs),vars) -> 
+    <map(SplitDynamicRule(!vars,\x -> OverrideKey(x)\ )); unzip> rs
 
 overlays
 
@@ -208,21 +210,22 @@ rules
   // if the right-hand side is not the term Undefined:
   //
   // lab(xs) : l -> r where cond
-  // -> (where(<assert("lab")> (Keys(keys), Defined(vals))
-  //    ,lab(xs) : l -> r where <rewrite("lab")> Keys(keys) => Defined(vals)
+  // -> (where(<assert("lab")> (Keys(keys), Defined(stamp, vals))
+  //    ,lab(xs) : l -> r where <rewrite("lab")> Keys(keys) => Defined(stamp, vals)
   //                           ; cond; fail)
 
   SplitDynamicRule(context-vars,assert) :
     RDef(lab, xs, Rule(l, r, cond)) ->
     (Where(BA(<assert>lab, 
-              MetaPair(Op("Keys", keys), Op("Defined", vals)))),
+              MetaPair(Op("Keys", keys), Op("Defined", [Str(stamp) | vals])))),
      RDef(lab, xs, 
           Rule(l, r, 
-               Seq(BAM(Rewrite(lab), Op("Keys", keys), Op("Defined", vals)), 
+               Seq(BAM(Rewrite(lab), Op("Keys", keys), Op("Defined", [Str(stamp) | vals])), 
                    cond))))
    where <not(eq)>(r, Op("Undefined",[]))
        ; <isect>(<context-vars>(), <tvars> l); strings-to-vars => keys
        ; <isect>(<context-vars>(), <tvars> (r, cond)); strings-to-vars => vals
+       ; new => stamp
 
   strings-to-vars =
     map( \ x -> Var(x) \ )

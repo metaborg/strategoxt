@@ -15,7 +15,7 @@ strategies
     <+ debug(!"not a stratego-specification: ")
 
   strategy-definition =
-    SDef(is-string, list(VarDec(is-string,id)), strategy-expression)
+    SDef(is-string + Mod(is-string,is-string), list(VarDec(is-string,id)), strategy-expression)
     <+ debug(!"not a strategy-definition: ")
 
   strategy-expression =
@@ -27,7 +27,7 @@ strategies
 	+ Seq(exp, exp)
 	+ Choice(exp, exp)
 	+ LChoice(exp, exp)
-	+ Call(SVar(is-string),list(exp))
+	+ Call(SVar(is-string + Mod(is-string,is-string)),list(exp))    
 	+ Rec(is-string, exp)
 	+ Path(is-int, exp)
 	+ Cong(is-string, list(exp))

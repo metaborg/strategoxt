@@ -60,14 +60,14 @@ strategies
 
   all-defs = 
     \ defs -> (<definition-names> defs, defs, []) \;
-    graph-nodes-undef-roots(get-definition
-                           ,svars-arity
-                           ,\ (_,x,d) -> [x|d] \ );
-    (NoMissingDefs <+ MissingDefs; <exit> 1)
+    extract-needed-defs
 
   needed-defs = 
-    \ defs -> (("main", 0), defs, []) \;
-    graph-nodes-undef-chgr(get-definition
+    \ defs -> ([("main", 0)], defs, []) \;
+    extract-needed-defs
+
+  extract-needed-defs =
+    graph-nodes-undef-roots-chgr(get-definition
                           ,svars-arity
                           ,\ (_,x,d) -> [x|d] \ );
     FilterNonMissingDefs; (NoMissingDefs <+ MissingDefs; <exit> 1)

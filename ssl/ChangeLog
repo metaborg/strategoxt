@@ -1,3 +1,35 @@
+2001-09-16  Eelco Visser  <visser@acm.org>
+
+	* spec/pack-graph.r: Added yet another version of the packing
+	algorithm; this needs to be refactored.
+
+	* spec/simple-traversal.r: oncetd-stop: stop argument called
+	without strategy argument; apparently this strategy was never
+	used by anyone.
+
+	* spec/reals.r: atan2 takes two arguments
+
+2001-09-15  Eelco Visser  <visser@acm.org>
+
+	* spec/exec.r: Renamed pipe'/3 into pipe/3
+
+2001-09-09  Eelco Visser  <visser@acm.org>
+
+	* spec/pack-modules.r: changed use of open-file
+
+	* spec/simple-traversal.r: Added type annotations for higher-order
+	arguments.
+
+2001-09-07  Eelco Visser  <visser@acm.org>
+
+	* spec/io.r: open-file used to open a file for writing; it has
+	been changed to pass a mode explicitly using a string.  Call
+	<open-file> (file, mode), where mode is "w" or "r".
+
+	* spec/io.r: <getchar> file reads next character from file
+
+	* spec/io.r: <readline> file reads next line from file
+
 2001-08-27  Eelco Visser  <visser@acm.org>
 
 	* spec/pack-modules.r: Separate lines in dependency file with a
