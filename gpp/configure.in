@@ -6,6 +6,9 @@ USE_XT_PACKAGES
 AC_PROG_CC
 AC_PROG_INSTALL
 
+dnl Check for perl
+AC_PATH_PROG(PERL,perl)
+
 AC_CONFIG_FILES([
 	Makefile 
 	syn/Makefile
@@ -20,6 +23,8 @@ AC_CONFIG_FILES([
   trans/abox2/Makefile 
   trans/abox2/data/Makefile 
 	xtc-tools/Makefile 
+  tohtml/Makefile
+  tohtml/data/Makefile
 ])
 
 AC_OUTPUT
