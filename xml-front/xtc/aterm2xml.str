@@ -1,10 +1,12 @@
 module aterm2xml
-imports liblib
+imports
+  xml-front-options
+  liblib
 
 strategies
 
   main-aterm2xml =
-    xtc-io-wrap(
-      xtc-transform(!"data2xml-doc", !["--explicit" | <pass-verbose>])
+    xtc-io-wrap(explicit-mode-option,
+      xtc-transform(!"data2xml-doc", ![<pass-explicit> | <pass-verbose>])
     ; xtc-transform(!"pp-xml-doc", pass-verbose)
     )

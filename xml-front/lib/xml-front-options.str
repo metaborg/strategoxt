@@ -1,0 +1,35 @@
+module xml-front-options
+strategies
+
+  use-explicit-mode =
+    if <get-config> "--explicit-mode" then
+      <get-config> "--explicit-mode" => "--explicit"
+    end
+
+  use-implicit-mode =
+    <get-config> "--explicit-mode" => "--implicit"
+
+  use-very-explicit-mode =
+    <get-config> "--explicit-mode" => "--very-explicit"
+
+
+strategies
+
+  explicit-mode-option =
+    Option("--explicit"
+    , <set-config> ("--explicit-mode", "--explicit")
+    , !"--explicit       Use explicit XML elements for strings, lists, integers, and tuples (default)"
+    )
+  <+ Option("--very-explicit"
+    , <set-config> ("--explicit-mode", "--very-explicit")
+    , !"--very-explicit  Use explicit XML elements for applications, strings, lists, integers, and tuples"
+    )
+  <+ Option("--implicit"
+    , <set-config> ("--explicit-mode", "--implicit")
+    , !"--implicit       Don't use any explicit XML elements. This results in the most attractive XML, but it lacks structure."
+    )
+
+strategies
+
+  pass-explicit =
+    <get-config> "--explicit-mode" <+ !"--explicit"
