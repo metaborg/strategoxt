@@ -30,3 +30,7 @@ check1 :
 check2 :
 	./xtc -r TEST_REPOSITORY2 import $(REPOSITORY)
 	./xtc -r TEST_REPOSITORY2 query -t sglr
+
+nodist_test1_SOURCES = test1.c 
+nodist_test2_SOURCES = test2.c 
+nodist_test3_SOURCES = test3.c
