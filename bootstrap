@@ -21,7 +21,7 @@
 
 rm -f mkinstalldirs missing install-sh
 
-PKGS="autoxt srts xtc sdf-import sc ssl gpp cgen c-tools stratego-front aterm-tools asfix-tools dot-tools graph-tools sdf-tools stratego-tools xt boxenv"
+PKGS="autoxt srts xtc sdf-import sc ssl gpp box-tools cgen c-tools stratego-front aterm-tools asfix-tools dot-tools graph-tools sdf-tools stratego-tools xt boxenv"
 
 #gbtools stratego-connect grammar-recovery 
 

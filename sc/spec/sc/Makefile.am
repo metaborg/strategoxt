@@ -25,9 +25,6 @@ sc.1 :
 	help2man -n "compile Stratego programs" \
 		-m StrategoXT -S "sc $(VERSION)" --no-info ./sc > $@
 
-bla :
-	/usr/local/build/XT/bin/sc -i sc -o sc $(SCFLAGS)  sc 
-
 # Generate scripts
 %: %.src Makefile
 	sed 's#__GPP__#$(GPP)#g;\

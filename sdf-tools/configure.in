@@ -1,4 +1,4 @@
-dnl Copyright (C) 2001 Merijn de Jonge <mdejonge@cwi.nl>
+dnl Copyright (C) 2001-2003 Merijn de Jonge <mdejonge@cwi.nl>
 dnl                    Eelco Visser <visser@acm.org>
 dnl                    Joost Visser <jvisser@cwi.nl>
 dnl
@@ -17,14 +17,12 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 dnl 02111-1307, USA.
 
-dnl $Id: configure.in,v 1.1 2003/01/03 17:11:20 stratego Exp $
-
-AC_INIT(configure.in)
-AM_INIT_AUTOMAKE(sdf-tools,0.9beta8)
+AC_INIT([sdf-tools],[0.9beta9],[stratego-bugs@cs.uu.nl])
+AM_INIT_AUTOMAKE
 
 USE_XT_PACKAGES
 
-AC_REVISION($Id: configure.in,v 1.1 2003/01/03 17:11:20 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.2 2003/01/05 14:08:17 stratego Exp $)
 
 AC_PROG_CC
 AC_PROG_INSTALL
@@ -50,6 +48,23 @@ AC_OUTPUT(
 
 	src/Makefile 
 
-                          src/templates/Makefile                  src/templates/data/Makefile                  src/lib/Makefile                  src/lib/data/Makefile                  src/fdl2sdf/Makefile                  src/fdl2sdf/data/Makefile                  src/sdf/Makefile                  src/sdf/data/Makefile                  src/sdf2asdf/Makefile                  src/sdf2asdf/data/Makefile                  src/sdf-bench/Makefile                  src/sdf-bench/data/Makefile                  src/pack-sdf/Makefile                  src/pack-sdf/data/Makefile                  src/unpack-sdf/Makefile                  src/unpack-sdf/data/Makefile                  src/sdf-cons/Makefile                  src/sdf-cons/data/Makefile                  src/sdf-label/Makefile                  src/sdf-label/data/Makefile                  src/sdf-bracket/Makefile                  src/sdf-bracket/data/Makefile                  src/sdf-normalize/Makefile                  src/sdf-normalize/data/Makefile                  src/sdf-doc/Makefile                  src/sdf-doc/data/Makefile                  src/sdf-wf/Makefile                  src/sdf-wf/data/Makefile                  src/sdf-pp/Makefile                  src/sdf-pp/data/Makefile                  src/sdf-imports/Makefile                  src/sdf-imports/data/Makefile                  src/sdf2sdf/Makefile                  src/sdf2sdf/data/Makefile                  src/parse-unit/Makefile                  src/parse-unit/data/Makefile
+        src/templates/Makefile src/templates/data/Makefile
+        src/lib/Makefile src/lib/data/Makefile src/fdl2sdf/Makefile
+        src/fdl2sdf/data/Makefile src/sdf/Makefile
+        src/sdf/data/Makefile src/sdf2asdf/Makefile
+        src/sdf2asdf/data/Makefile src/sdf-bench/Makefile
+        src/sdf-bench/data/Makefile src/pack-sdf/Makefile
+        src/pack-sdf/data/Makefile src/unpack-sdf/Makefile
+        src/unpack-sdf/data/Makefile src/sdf-cons/Makefile
+        src/sdf-cons/data/Makefile src/sdf-label/Makefile
+        src/sdf-label/data/Makefile src/sdf-bracket/Makefile
+        src/sdf-bracket/data/Makefile src/sdf-normalize/Makefile
+        src/sdf-normalize/data/Makefile src/sdf-doc/Makefile
+        src/sdf-doc/data/Makefile src/sdf-wf/Makefile
+        src/sdf-wf/data/Makefile src/sdf-pp/Makefile
+        src/sdf-pp/data/Makefile src/sdf-imports/Makefile
+        src/sdf-imports/data/Makefile src/sdf2sdf/Makefile
+        src/sdf2sdf/data/Makefile src/parse-unit/Makefile
+        src/parse-unit/data/Makefile
 
 )

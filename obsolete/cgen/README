@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------
-CGEN 0.9beta8
+CGEN 0.9beta9
 
 CGEN is a package with utitilities supporting the generation of C
 source code. The package contains and SDF2 definition for C (beware

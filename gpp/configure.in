@@ -20,5 +20,5 @@ AC_CONFIG_FILES([
   trans/abox2/Makefile 
 	xtc-tools/Makefile 
 ])
-AC_OUTPUT
 
+AC_OUTPUT

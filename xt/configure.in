@@ -17,10 +17,10 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 dnl 02111-1307, USA.
 
-dnl $Id: configure.in,v 1.39 2003/01/03 17:11:20 stratego Exp $
+dnl $Id: configure.in,v 1.40 2003/01/05 14:08:19 stratego Exp $
 
-AC_INIT(configure.in)
-AM_INIT_AUTOMAKE(xt,0.9beta8)
+AC_INIT([xt],[0.9beta9],[stratego-bugs@cs.uu.nl])
+AM_INIT_AUTOMAKE
 
 USE_XT_PACKAGES
 
@@ -30,7 +30,7 @@ AC_ARG_WITH(graphviz,
    GRAPHVIZ=${prefix})
 AC_SUBST(GRAPHVIZ)
 
-AC_REVISION($Id: configure.in,v 1.39 2003/01/03 17:11:20 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.40 2003/01/05 14:08:19 stratego Exp $)
 
 AC_PROG_CC
 AC_PROG_INSTALL
@@ -54,6 +54,13 @@ AC_OUTPUT(
    integration-tests/data/Makefile
    src/Makefile 
 
-                     src/templates/Makefile                  src/templates/data/Makefile                  src/lib/Makefile                  src/lib/data/Makefile                  src/gbquery/Makefile                  src/gbquery/data/Makefile                  src/parse/Makefile                  src/parse/data/Makefile                  src/pp/Makefile                  src/pp/data/Makefile                  src/sdf-doc/Makefile                  src/sdf-doc/data/Makefile                  src/visamb/Makefile                  src/visamb/data/Makefile
+                     src/templates/Makefile
+                     src/templates/data/Makefile src/lib/Makefile
+                     src/lib/data/Makefile src/gbquery/Makefile
+                     src/gbquery/data/Makefile src/parse/Makefile
+                     src/parse/data/Makefile src/pp/Makefile
+                     src/pp/data/Makefile src/sdf-doc/Makefile
+                     src/sdf-doc/data/Makefile src/visamb/Makefile
+                     src/visamb/data/Makefile
 
 )

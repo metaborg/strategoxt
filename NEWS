@@ -16,9 +16,11 @@ News about Stratego releases
 
 Version 0.9 - under construction
 
-Release 0.9 is still under construction. The news items about the
-0.9beta releases below provide details about the changes. This entry
-provides a summary of the changes since release 0.8.1.
+Release 0.9 is still under construction. Before the release of the
+final 0.9 distribution, a number of beta distributions are
+released. The news items about the 0.9beta releases below provide
+details about the changes. This entry provides a summary of the
+changes since release 0.8.1.
 
 DOWNLOAD AND INSTALLATION
 
@@ -48,17 +50,111 @@ SUMMARY OF CHANGES
     - Transformation tool composition
     - Sdf-import -- XTC registration of sdf tools
 
-  * Dynamic rules
+  * BOX-TOOLS
+    - refactoring of the gpp package using XTC
+
+  * STRATEGO-TOOLS
+    - format checker generation 
+
+  * C-TOOLS
+    - support for C generation (and transformation)
+    
+  * DOT-TOOLS 
+    - support for generation of dot files
+
+  * SC
     - bug in dynamic rules with overlapping left-hand sides fixed
+    - LEX/YACC grammar retired; the compiler now depends on SDF
+    - stricter bound variables checking
 
-  * LEX/YACC grammar retired
-    - the compiler now depends on SDF
+  * SDF-IMPORT
+    - The sdf-import package registers the SDF tools sdf2table and
+      sglr in an XTC repository to make them available for XTC programs.
 
-  * Refactoring of packages
-    - C-Tools -- support for C generation (and transformation)
-    - Dot-tools -- syntax of the dot language
+  * RPM
+    - construction of binary distributions with rpm
 
   * Many bug fixes and refactorings
+
+------------------------------------------------------------------------------
+
+Version 0.9beta9 - released January 5, 2003
+
+DOWNLOAD AND INSTALLATION
+
+The download page contains the source distribution and instructions
+for installation
+
+  * http://www.stratego-language.org/Stratego/StrategoRelease09
+
+SUMMARY OF CHANGES with respect to 0.9beta8
+
+  * box-tools: a refactoring of gpp using xtc and improved Box support
+  * stratego-tools: format checker generation
+  * ssl: for-each-pair
+  * sc: bugfixes
+  * binary distribution with RPM (StrategoXT.spec)
+
+DETAILS
+
+* BOX-TOOLS (formerly GPP)
+ 
+  Martin Bravenboer refactored the GPP package to use XTC
+  and improved the functionality 
+
+  * All tools are implemented in Stratego, shell-scripts
+    are replaced by XTC tools.
+  * important changes that might cause problems with 
+    existing software:
+      - verbose options are now all the standard Stratego
+        options: --verbose int and -S. The -v argument has
+        another meaning: the version of the tool will
+        be shown.
+      - Makefile to pretty print terms or parse pretty print
+        tables is gone. You should use the new tools.
+      - tohtml is not yet available as part of box-tools
+  * gen-css-boxstyle: generate css for abox2html. 
+    Uses standard -o argument to specify target. 
+    abox2html -c just forwards to gen-css-boxstyle and
+    also listens to the -o argument.
+  * abox2text listens to width argument
+  * abox2text supports HV boxes
+  * abox2text now supports the HV and A/R boxes. The current
+    implementation does not support R cells that will occupy 
+    more than one line and must be aligned center or right.
+    Left alignment should work. Single line cells works for
+    all alginments.
+  * new tools: pp-box, parse-box, parse-pp-table, pp-pp-table.
+  * ast2abox accepts .pp.af pretty print tables as arguments.
+    If you pass a .pp argument the tool will look for an
+    existing .af version of this table and use this one if the
+    .pp version is not newer. In all other cases the .pp table
+    will be parsed to _temporary_ file.
+  * grammars and pretty print tables of box and pp-tables are 
+    separated.
+  * abox-format doesn't complain about AOPTIONS.
+
+* STRATEGO-TOOLS
+
+  format checker generation 
+
+* SSL
+  - for-each-pair(s) produces the list of pairs <s>(x,y) for each pair 
+    of x from xs and y from ys.
+
+* SC
+  - bugfix in compilation of dynamic rules
+  - sc: compilation without -o argument does the right thing again
+  - pack-stratego: module searching faithful to path
+
+* RPM
+
+  RPMs can be built using the 'make rpm' target. This requires
+  the installation of rpms for aterm, sdf2, srts and xtc prior to
+  building the rpm. RPMs for srts and xtc can be produced using
+  the rpm targets in the srts/ and xtc/ directories.
+  In order to install the StrategoXT rpm the srts and xtc rpms
+  should be erased first.
 
 ------------------------------------------------------------------------------
 
@@ -69,16 +165,16 @@ DOWNLOAD AND INSTALLATION
 The download page contains the source distribution and instructions
 for installation
 
-  * http://www.stratego-language.org/Stratego/StrategoRelease09
+   * http://www.stratego-language.org/Stratego/StrategoRelease09
 
 SUMMARY OF CHANGES with respect to 0.9beta7
 
-  * Bugfix: dynamic rules with overlapping left-hand sides 
-  * XTC -- polishing
-  * More tools based on XTC -- parse-stratego, sc, pack-stratego
-  * C-Tools -- support for C generation (and transformation)
-  * AutoXT -- support for recursive 
-  * Bug fixes and refactorings
+   * Bugfix: dynamic rules with overlapping left-hand sides 
+   * XTC -- polishing
+   * More tools based on XTC -- parse-stratego, sc, pack-stratego
+   * C-Tools -- support for C generation (and transformation)
+   * AutoXT -- support for recursive 
+   * Bug fixes and refactorings
 
 DETAILS
 
@@ -442,50 +538,6 @@ CHANGES
     numbering scheme, except for the packages such as gpp, which
     were already past 1.0. I don't know what to do about that
     yet.
-
-So far the actions until now. In the (near) future further renovation
-should be conducted. Here are some ideas.
-
-* Automake support for Stratego
-
-Makefiles should be friendlier for Stratego programmers (as they are
-for C programmers). I hope that Akim can help us to tell automake how
-to that, and how to integrate that in the packages. (Should there be a
-separate package providing automake macros?)
-
-* Bootstrapped packages
-
-There should be autoconf/make support for different roles of a package
-(boot vs developer mode) as I explained in an earlier email.
-
-* GrammarBase
-
-The grammar base should be split into separate packages supported by a
-set of gb-tools.
-
-* Application repository?
-
-There should be CVS repository for StrategoXT applications such as
-autobundle. They could be added to the sp/ repository.
-
-* Phase out lex and yacc 
-
-Since SDF is starting to be used structurally in the Stratego
-compiler, I am considering phasing out the lex and yacc grammar. It is
-a pain to maintain and to keep the two definitions in synch.
-
-* Reorganize package structure
-
-Which library/tool should live in which package? For one, I would like
-to create a single package which combines the C code in srts and ssl.
-This package would in effect create an extension of the ATerm library
-to support the Stratego run-time system.
-
-* Improvements
-
-These are all engineering matters. Once we get these done, the real
-work on improving the language and compiler can be continued.
-
 
 ------------------------------------------------------------------------------
 

@@ -17,23 +17,13 @@
 
 SUBDIRS = src ssl
 
-EXTRA_DIST = reconf mprotect.m4 Makefile.rpm Makefile.stratego.in
+EXTRA_DIST = reconf mprotect.m4 Makefile.rpm Makefile.stratego.in \
+	$(PACKAGE).spec
 
-RPMRELEASE=1
+pkgdata_DATA = README
 
-CONFIGURE = ./configure --prefix=/usr \
-		--with-aterm=$(ATERM) \
-		--with-srts=$(STRATEGORTS) \
-		--with-rpmdir=$(RPMDIR) \
-		--with-rpmtmp=$(RPMTMP)
-
-SUBST = s+__SRTS_VERSION__+$(VERSION)+g;\
-        s+__ATERM_VERSION__+1.6.7+g;\
-	s+__ATERM__+$(ATERM)+g;
-
-CLEANFILES = 
-
-#include Makefile.rpm
+rpm : dist 
+	rpmbuild -ta $(PACKAGE)-$(VERSION).tar.gz
 
 bootclean :
 

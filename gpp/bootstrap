@@ -4,6 +4,8 @@ rm -f config.cache config.log acconfig.h aclocal.m4
 
 autoxt
 aclocal -I .
-autoconf -f --warnings=all
-automake -a -f  --warnings=all  --warnings=no-portability
+autoconf -f 
+#--warnings=all
+automake -a -f  
+#--warnings=all  --warnings=no-portability
 

@@ -23,7 +23,7 @@ include $(top_srcdir)/Makefile.xt
 SUBDIRS      	= data
 
 EXTRA_DIST 	= sdf.def sdf.pp sdf.cons.pp sdf.cons.def README \
-		  $(wildcard *.str) $(wildcard *.meta) 
+		  $(wildcard *.str) $(wildcard *.meta) sdf.cons.pp.af
 
 pkgdata_DATA 	= sdf.tbl sdf.cons.pp sdf.cons.tbl sdf.cons.pp.af
 

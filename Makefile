@@ -13,27 +13,6 @@
 # PARTICULAR PURPOSE.
 
 
-
-# autobundle -- Make distributions by bundling separate software packages.
-#
-# Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2, or (at your option)
-# any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-# 02111-1307, USA.
-
-#DIST_SUBDIRS = pre-checks emacs $(PKGS)
 SHELL = /bin/sh
 
 srcdir = .
@@ -93,7 +72,7 @@ EXE =
 INSTALL_STRIP_PROGRAM = ${SHELL} $(install_sh) -c -s
 PACKAGE = StrategoXT
 PGEN = /usr/local/build/SDF2
-PKGS = autoxt srts xtc sdf-import sc ssl gpp cgen c-tools stratego-front asfix-tools aterm-tools graph-tools sdf-tools dot-tools stratego-tools xt boxenv
+PKGS = autoxt srts xtc sdf-import sc ssl box-tools cgen c-tools stratego-front asfix-tools aterm-tools graph-tools sdf-tools dot-tools stratego-tools xt boxenv
 REPOSITORY = /usr/local/build/Boot/share/StrategoXT/XTC
 SDF = /usr/local/build/SDF2
 SGLR = /usr/local/build/SDF2
@@ -103,45 +82,13 @@ XTC = /usr/local/build/Boot
 am__include = @am__include@
 am__quote = @am__quote@
 install_sh = /home/visser/res/StrategoXT/install-sh
-
-DIST_SUBDIRS = emacs $(PKGS)
-
 EXTRA_DIST = $(EXTRA_FILES)
-EXTRA_FILES = README README.in bootstrap acinclude.m4
 
-# We need at least one subdir to be defined such that automake will generate
-# the code for traversing subdirectories
-SUBDIRS = emacs
+EXTRA_FILES = README README.in bootstrap acinclude.m4 StrategoXT.spec
+
+SUBDIRS = emacs $(PKGS)
 
 WWWSTRATEGO = sunshine.cs.uu.nl:/users/www/research/projects/stratego/ftp
-
-RPMRELEASE = 1
-
-CONFIGURE = ./configure \
-		--prefix=/usr \
-		--with-sc=$(SC) \
-		--with-sglr=$(SGLR) \
-		--with-pgen=$(PGEN) \
-		--with-asfix-tools=$(ASFIX_TOOLS) \
-		--with-stratego-tools=$(STRATEGO_TOOLS) \
-		--with-sdf-tools=$(SDF_TOOLS)  \
-		--with-gpp=$(GPP) \
-		--with-cgen=$(CGEN) \
-		--with-rpmdir=$(RPMDIR)
-
-
-SUBST = s+__SRTS_VERSION__+$(VERSION)+g;\
-        s+__GPP_VERSION__+2.3+g;\
-        s+__SGLR_VERSION__+3.7+g;\
-        s+__PGEN_VERSION__+1.4+g;\
-        s+__ASFIX_TOOLS_VERSION__+0.4+g;\
-        s+__SDF_TOOLS_VERSION__+0.4+g;\
-        s+__STRATEGO_TOOLS_VERSION__+0.4+g;\
-        s+__ATERM_VERSION__+1.6.7+g;\
-        s+__ATERM__+$(ATERM)+g;
-
-
-CLEANFILES = 
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -156,6 +103,7 @@ RECURSIVE_TARGETS = info-recursive dvi-recursive install-info-recursive \
 DIST_COMMON = README AUTHORS COPYING ChangeLog INSTALL Makefile.am \
 	Makefile.in NEWS README.in acinclude.m4 aclocal.m4 config.h.in \
 	configure configure.in install-sh missing mkinstalldirs
+DIST_SUBDIRS = $(SUBDIRS)
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -329,7 +277,7 @@ distdir: $(DISTFILES)
 	    || exit 1; \
 	  fi; \
 	done
-	list='$(DIST_SUBDIRS)'; for subdir in $$list; do \
+	list='$(SUBDIRS)'; for subdir in $$list; do \
 	  if test "$$subdir" = .; then :; else \
 	    test -d $(distdir)/$$subdir \
 	    || mkdir $(distdir)/$$subdir \
@@ -417,7 +365,6 @@ install-strip:
 mostlyclean-generic:
 
 clean-generic:
-	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-rm -f Makefile $(CONFIG_CLEAN_FILES)
@@ -480,14 +427,16 @@ uninstall-info: uninstall-info-recursive
 	uninstall-am uninstall-info-am uninstall-info-recursive \
 	uninstall-recursive
 
-#pre-checks
 
 all: install
+
+rpm : dist
+	rpmbuild -ta $(PACKAGE)-$(VERSION).tar.gz
 
 check clean install uninstall:
 	PATH=$(bindir):$${PATH}; export PATH ;\
 	ulimit -s 20000 ;\
-	for subdir in $(DIST_SUBDIRS); do \
+	for subdir in $(SUBDIRS); do \
 	   ( cd $$subdir && $(MAKE) $@ ) || exit 1 ;\
 	done
 
@@ -498,48 +447,20 @@ package-dist :
 	   ( cd $$subdir && $(MAKE) dist ) || exit 1 ;\
 	done
 
-package-dist-old:
-	$(MAKE) dist
-	cd srts; ./reconf; $(MAKE) dist
-	cd ssl; ./reconf; $(MAKE) dist
-	cd cgen; ./reconf; $(MAKE) dist
-	cd gpp-boot; ./reconf; $(MAKE) dist
-	cd sc-boot; ./reconf; $(MAKE) dist
-	cd sc; ./reconf; $(MAKE) dist
-	cd stratego-front; ./reconf; $(MAKE) dist
-	cd stratego-connect; ./reconf; $(MAKE) dist
-
 make-%:
-	cd srts; $(MAKE) $*
-	cd ssl; $(MAKE) $*
-	cd cgen; $(MAKE) $*
-	cd gpp-boot; $(MAKE) $*
-	cd sc-boot; $(MAKE) $*
-	cd sc; $(MAKE) $*
-	cd stratego-front; $(MAKE) $*
-
-#	cd stratego-connect; $(MAKE) $*
+	for subdir in $(PKGS) ; do \
+           (cd $$subdir; $(MAKE) $*) ; \
+	done
 
 config:
-	cd srts; stdconfig
-	cd ssl; stdconfig
-	cd cgen; stdconfig
-	cd gpp-boot; stdconfig
-	cd sc-boot; stdconfig
-	cd sc; stdconfig
-	cd stratego-front; stdconfig
-
-#	cd stratego-connect; stdconfig
+	for subdir in $(PKGS) ; do \
+           (cd $$subdir; stdconfig) ; \
+	done
 
 install-%: %
-	cp -f $< srts/$<.StrategoXT
-	cp -f $< ssl/$<.StrategoXT
-	cp -f $< cgen/$<.StrategoXT
-	cp -f $< gpp-boot/$<.StrategoXT
-	cp -f $< sc-boot/$<.StrategoXT
-	cp -f $< sc/$<.StrategoXT
-	cp -f $< stratego-front/$<.StrategoXT
-	cp -f $< stratego-connect/$<.StrategoXT
+	for subdir in $(PKGS) ; do \
+           cp -f $< $$subdir ; \
+	done
 
 upload:
 	scp *.tar.gz */*.tar.gz $(WWWSTRATEGO)
@@ -576,8 +497,6 @@ source-tree.txt :
 		| grep -v data \
 		| grep -v config \
 		> $@
-
-#include Makefile.rpm
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
