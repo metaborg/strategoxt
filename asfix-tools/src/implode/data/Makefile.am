@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.5 2001/10/10 23:03:41 mdejonge Exp $
+# $Id: Makefile.am,v 1.6 2001/12/03 09:35:01 mdejonge Exp $
 
 TEST_SET = Iter Iter-sep Iter-star Iter-star-sep Nesting-iter-sep1 \
            Nesting-iter-sep2 Nesting-iter-star-sep Empty-iter-star-sep \
@@ -39,7 +39,7 @@ Alt3a_flags= --lex --layout --lit --alt --appl --inj --list --seq --pt
 Alt4a_flags= --lex --layout --lit --alt --appl --inj --list --seq --pt
 
 Var1_flags= --lex --layout --lit --alt --appl --inj --list --seq --pt
-Var2_falgs=
+Var2_flags=
 
 EXTRA_DIST = tests.def \
 	     $(TEST_SET:%=%.trm) $(TEST_SET:%=%.in) \
