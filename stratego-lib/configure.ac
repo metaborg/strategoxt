@@ -1,5 +1,5 @@
 AC_PREREQ([2.58])
-AC_INIT([ssl],[0.14],[stratego-bugs@cs.uu.nl])
+AC_INIT([stratego-lib],[0.14],[stratego-bugs@cs.uu.nl])
 AC_CONFIG_AUX_DIR([../config])
 AM_INIT_AUTOMAKE
 
