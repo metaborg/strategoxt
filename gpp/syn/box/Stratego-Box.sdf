@@ -4,6 +4,7 @@ imports Box StrategoRenamed
 exports
   context-free syntax
 
+               BOX      -> StrategoTerm  {cons("ToTerm"), avoid}
          "|["  BOX "]|" -> StrategoTerm  {cons("ToTerm"), prefer}
     box  "|["  BOX "]|" -> StrategoTerm  {cons("ToTerm")}
 
@@ -15,3 +16,7 @@ exports
 
     "~lit:" StrategoTerm -> BoxLiteral {cons("FromTerm"), prefer}
 
+  variables
+    "b" [0-9]*     -> BOX
+    "b" [0-9]* "*" -> BOX*
+    "s" [0-9]*     -> BoxLiteral
