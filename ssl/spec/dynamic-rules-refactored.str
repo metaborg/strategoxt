@@ -9,8 +9,8 @@ imports tables simple-list-traversal
 
 signature
   constructors
-    RuleScope : List(String) * HashTable -> RuleScope
-    ChangeSet : HashTable -> RuleScope
+    RuleScope : List(ATerm) * Hashtable -> RuleScope
+    ChangeSet : Hashtable -> RuleScope
 
 /**
  * Currently active rule set 
@@ -261,8 +261,23 @@ strategies // change sets
     [ChangeSet(tbl) | rs] -> rs
 
   dr-apply-change(|tbl) :
-    (key1@([label | _], key), rs) -> <dr-set-in-rule-set(|label, key, <hashtable-get(|key1)> tbl)> rs
+    (key1@(scpid, key), rs) -> <dr-commit-to-rule-set(|scpid, key, <hashtable-get(|key1)> tbl)> rs
 
+  // commit to ruleset is finding the first ChangeSet (any) *or* the first
+  // RuleScope that has the appropriate scopeid (i.e. hashtable pointer)
+  // and setting the key-value into it
+  dr-commit-to-rule-set(|scpid, key, value) =
+    fetch(
+      dr-commit-to-change-set(|scpid, key, value)
+    + dr-commit-to-rule-scope(|scpid, key, value))
+  
+  dr-commit-to-change-set(|scpid, key, value) = 
+    ?ChangeSet(tbl)
+  ; where(<hashtable-put(|(scpid, key), value)> tbl)
+
+  dr-commit-to-rule-scope(|scpid, key, value) = 
+    ?RuleScope(_,tbl@Hashtable(scpid))
+  ; where(<hashtable-put(|key, value)> tbl)
 
   // note: labelings of current scope should be stored and committed as well.
 
@@ -276,8 +291,8 @@ strategies // looking up
     dr-lookup-rule(fail | key)
 
   dr-lookup-rule(look | key) =
-    ?[RuleScope(lbls, tbl) | rs]
-    ; (<look>(lbls, key)
+    ?[RuleScope(_, tbl@Hashtable(hptr)) | rs]
+    ; (<look>(hptr, key)
        <+ <hashtable-get(|key)> tbl
        <+ <dr-lookup-rule(look | key)> rs)
 
@@ -296,8 +311,8 @@ strategies // looking up
     dr-lookup-rule-pointer(fail | key)
 
   dr-lookup-rule-pointer(look | key) =
-    ?[RuleScope(lbls, tbl) | rs]
-    ; (<look>(lbls, key)
+    ?[RuleScope(_, tbl@Hashtable(hptr)) | rs]
+    ; (<look>(hptr, key)
        <+ <hashtable-get(|key)> tbl; !(<id>, key, tbl)
        <+ <dr-lookup-rule-pointer(look | key)> rs)
 
@@ -329,28 +344,28 @@ strategies // setting a rule
   dr-set-in-rule-set(|label, key, value) =
     dr-set-in-rule-set(dr-set-fail | label, key, value)
 
-  dr-set-fail(|labels, tbl, key, value) =
+  dr-set-fail(|scpid, tbl, key, value) =
     fail
 
-  dr-set-in-rule-set(set : List(ATerm) * HashTable * ATerm * ATerm * ATerm -> ATerm 
+  dr-set-in-rule-set(set : ATerm * Hashtable * ATerm * ATerm * ATerm -> ATerm 
 	   | label, key, value) =
-    ?[RuleScope(labels, tbl) | rs]
+    ?[RuleScope(labels, tbl@Hashtable(hptr)) | rs]
     ; where(
         <member>(label,labels)
-        < (set(|labels, tbl, key, value)
+        < (set(|hptr, tbl, key, value)
            <+ where(<hashtable-put(|key, value)> tbl))
         + <dr-set-in-rule-set(set | label, key, value)> rs
       )
 
-  dr-set-in-rule-set(set1 : List(ATerm) * HashTable * ATerm * ATerm * ATerm -> ATerm 
+  dr-set-in-rule-set(set1 : ATerm * Hashtable * ATerm * ATerm * ATerm -> ATerm 
 	   | label, key, value) =
     ?[ChangeSet(tbl1) | rs]
     ; where(
-        let set2(|labels, tbl2, key, value) =
-              set1(|labels, tbl2, key, value)
+        let set2(|scpid, tbl2, key, value) =
+              set1(|scpid, tbl2, key, value)
               <+ <hashtable-get(|key)> tbl2 => value
-                 ; <hashtable-remove(|(labels, key))> tbl1
-              <+ <hashtable-put(|(labels, key), value)> tbl1
+                 ; <hashtable-remove(|(scpid, key))> tbl1
+              <+ <hashtable-put(|(scpid, key), value)> tbl1
          in <dr-set-in-rule-set(set2 | label, key, value)> rs
         end
       )
@@ -381,30 +396,30 @@ strategies // extending a rule
   dr-add-to-rule-set(|label, key, value) =
     dr-add-to-rule-set(dr-add-fail | label, key, value)
 
-  dr-add-fail(|labels, tbl, key, value) =
+  dr-add-fail(|scpid, tbl, key, value) =
     fail
 
-  dr-add-to-rule-set(add : List(ATerm) * HashTable * ATerm * ATerm * ATerm -> ATerm 
+  dr-add-to-rule-set(add : ATerm * Hashtable * ATerm * ATerm * ATerm -> ATerm 
 	     | label, key, value) =
-    ?[RuleScope(labels, tbl) | rs]
+    ?[RuleScope(labels, tbl@Hashtable(hptr)) | rs]
     ; where(
         <member>(label, labels)
-        < (add(|labels, tbl, key, value)
+        < (add(|hptr, tbl, key, value)
            <+ where(<hashtable-push(|key, value)> tbl))
         + <dr-add-to-rule-set(add | label, key, value)> rs
       )
 
-  dr-add-to-rule-set(add1 : List(ATerm) * HashTable * ATerm * ATerm * ATerm -> ATerm 
+  dr-add-to-rule-set(add1 : ATerm * Hashtable * ATerm * ATerm * ATerm -> ATerm 
 	     | label, key, value) =
     ?[ChangeSet(tbl1) | rs]
     ; where(
-        let add2(|labels, tbl2, key, value) =
-              add1(|labels, tbl2, key, value)
-              <+ (<hashtable-get(|(labels, key))> tbl1
+        let add2(|scpid, tbl2, key, value) =
+              add1(|scpid, tbl2, key, value)
+              <+ (<hashtable-get(|(scpid, key))> tbl1
                   <+ <hashtable-get(|key)> tbl2
                   <+ ![]) 
 	         // check that value not yet member of this set????
-                 ; \ values -> <hashtable-put(|(labels, key), [value | values])> tbl1 \
+                 ; \ values -> <hashtable-put(|(scpid, key), [value | values])> tbl1 \
          in <dr-add-to-rule-set(add2 | label, key, value)> rs
         end
       )
