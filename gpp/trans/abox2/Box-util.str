@@ -64,6 +64,7 @@ strategies
       where <string-tokenize> ('\n', str)
           ; ( ?[<string-length>]
             <+ <subt> (<last; string-length>, xpos)
+            <+ !0
             ) => length
 
 /*
