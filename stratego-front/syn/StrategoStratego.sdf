@@ -12,7 +12,10 @@ exports
               "|[" Sdecl    "]|" -> StrategoTerm {cons("ToTerm")}
 
               "|[" Opdecl   "]|" -> StrategoTerm {cons("ToTerm")}
+    "Constr"  "|[" Opdecl   "]|" -> StrategoTerm {cons("ToTerm")}
+
               "|[" Type     "]|" -> StrategoTerm {cons("ToTerm")}
+    "Type"    "|[" Type     "]|" -> StrategoTerm {cons("ToTerm")}
 
               "|[" Term     "]|" -> StrategoTerm {cons("ToTerm")}
     "Term"    "|[" Term     "]|" -> StrategoTerm {cons("ToTerm")}
@@ -54,6 +57,9 @@ exports
 
     "~"   StrategoTerm -> Def       {cons("FromTerm")}
     "~*"  StrategoTerm -> Def*      {cons("FromTerm")}
+
+    "~*"  StrategoTerm -> Opdecl*      {cons("FromTerm")}
+    "~*"  StrategoTerm -> {Type "*"}+  {cons("FromTerm")}
 
     "~*"          StrategoTerm -> {Typedid ","}*   {cons("FromTerm")}
     "~typed-id*:" StrategoTerm -> {Typedid ","}*   {cons("FromTerm")}

@@ -1,3 +1,8 @@
+2003-02-05  Martin Bravenboer <martin@mbravenboer.org>
+
+  * syn/StrategoStratego.sdf: Added some quotations and
+  anti-quotations for using concrete syntax for signatures.
+
 2003-02-05  Eelco Visser  <visser@cs.uu.nl>
 
 	* parse/parse-stratego.str: Shifted name of default syntax from
