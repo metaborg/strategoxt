@@ -76,11 +76,7 @@ rules
   TranslateSpec :
     Specification([Signature(ops), Strategies(defs)]) -> 
     TranslationUnit(<concat> [incl, 
-	[
-	//  Include("#include <srts/stratego.h>")
-	//, Include("#include <ssl/stratego-lib.h>")
-        //, 
-	Declaration2(TypeSpec([],TypeId("void"),[]),
+	[Declaration2(TypeSpec([],TypeId("void"),[]),
                        [IdDecl([],Id("init_constant_terms"),Some(ParamList([])))])
 	, Signature(ops)
         , InitCachedTerms
@@ -178,7 +174,8 @@ Strategy definitions
     ConstType(_) -> TypeSpec([],TypeId("ATerm"),[])
 
   TranslateType :
-    FunType(ts, _) -> ParamDecl(TypeSpec([],TypeId("ATerm"),[]),ParamList(<map(TranslateType)> ts))
+    FunType(ts, _) -> 
+    ParamDecl(TypeSpec([],TypeId("ATerm"),[]),ParamList(<map(TranslateType)> ts))
 \end{code}
 
 Strategy expressions
@@ -345,10 +342,11 @@ rules
     Match(Op(c, ts), trm) ->
     IfElse(FunCall(Id("match_cons"),[trm, Id(<ConstructorName> (c, <length> ts))])
           ,Compound([],match-args)
-	  ,CallFail)		
+	  ,CallFail)
     where <not("Nil" + "Cons")> c; 
       <thread-map(\ Pair(t,i) -> 
-         Pair(<MatchArg1 <+ MatchArg2>(t, ATgetArgument(trm,IntConst(<int-to-string>i))), <add>(i,1)) \ )> 
+         Pair(<MatchArg1 <+ MatchArg2>(t, ATgetArgument(trm,IntConst(<int-to-string>i))), 
+              <add>(i,1)) \ )> 
 	     Pair(ts,0) => Pair(match-args,_)
 
   MatchArg1 : 
@@ -364,14 +362,16 @@ rules
 
   TranslateStrat :
     Match(Op("Nil", []), trm) ->
-    If(NotEqual(CastATermList(trm), Id("ATempty")), CallFail)
+    If(LOr(NotEqual(FunCall(Id("ATgetType"),[trm]), Id("AT_LIST")), 
+	   Negation(FunCall(Id("ATisEmpty"),[trm]))),
+       CallFail)
 
   TranslateStrat :
     Match(Op("Cons", [hd, tl]), trm) ->
     IfElse(LAnd(Equal(FunCall(Id("ATgetType"),[trm]), Id("AT_LIST")), 
-               NotEqual(CastATermList(trm), Id("ATempty")))
+                Negation(FunCall(Id("ATisEmpty"),[trm])))
           ,Compound([], match-args)
-	  ,CallFail)		
+	  ,CallFail)
     where <map(MatchArg1 <+ MatchArg2)> 
 	   [(hd, FunCall(Id("ATgetFirst"),[CastATermList(trm)])), 
             (tl, CastATerm(FunCall(Id("ATgetNext"),[CastATermList(trm)])))] => match-args
@@ -440,14 +440,15 @@ rules
 
   TranslateStrat :
     Case(Var(t), [Alt(Fun("Nil", 0), [], s1) | alts], s2) ->
-    IfElse(Equal(CastATermList(Id(t)), Id("ATempty"))
+    IfElse(LAnd(Equal(FunCall(Id("ATgetType"),[Id(t)]), Id("AT_LIST")), 
+	        FunCall(Id("ATisEmpty"),[Id(t)]))
           ,Compound([], s1)
           ,Compound([],[Case(Var(t), alts, s2)]))
 
   TranslateStrat :
     Case(Var(t), [Alt(Fun("Cons", 2), [Var(x1),Var(x2)], s1) | alts], s2) ->
     IfElse(LAnd(Equal(FunCall(Id("ATgetType"),[Id(t)]), Id("AT_LIST")), 
-               NotEqual(CastATermList(Id(t)), Id("ATempty")))
+                Negation(FunCall(Id("ATisEmpty"),[Id(t)])))
           ,Compound([], [Stat(Assign(Id(x1), AssignEq, 
 				     FunCall(Id("ATgetFirst"),[CastATermList(Id(t))])))
                         ,Stat(Assign(Id(x2), AssignEq, 
@@ -503,12 +504,14 @@ rules
   ConstructList :
     Op("Cons", [hd, tl]) ->
     CastATerm(FunCall(Id("ATinsert"),[tl', hd]))
-    where <?CastATerm(<Id("ATempty") + FunCall(Id("ATinsert"),[id, id])>) <+ !CheckATermList(tl)> tl => tl'
+    where <?CastATerm(<Id("ATempty") + FunCall(Id("ATinsert"),[id, id])>) 
+           <+ !CheckATermList(tl)> tl => tl'
 
   ConstructList' :
     Op("Cons", [hd, tl]) ->
     FunCall(Id("ATinsert"),[tl', hd])
-    where (<(Op("Nil", []) + Op("Cons", [id, id])); ConstructList> tl <+ !CheckATermList(tl)) => tl'
+    where (<(Op("Nil", []) + Op("Cons", [id, id])); ConstructList> tl 
+           <+ !CheckATermList(tl)) => tl'
 \end{code}
 
 	Term construction with constant term caching
@@ -526,7 +529,9 @@ rules
 
   CacheConstant :
     (t, e) -> Id(x)
-    where <(Op(id, map(Cache)); proper-list + Int(id) + Str(id) + Real(id) + BuildDefault(id))> t
+    where <(Op(id, map(Cache)); proper-list 
+	    + Anno(Cache, Cache) 
+	    + Int(id) + Str(id) + Real(id) + BuildDefault(id))> t
         ; new => base; <conc-strings>("term_", <id>) => x
         ; rules( Cache : t -> Id(x) )
         ; ![(base, x, e) | <CachedTerms <+ ![]>] => xs

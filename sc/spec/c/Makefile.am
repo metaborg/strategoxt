@@ -15,8 +15,7 @@ SCFLAGS 	 = --main $* -I ../sig			    \
 	  	   -I $(STRATEGOFRONT)/share/stratego-front \
 	  	   -I ../match				    \
 	  	   -CI -g				    \
-	  	   -CL -g				    \
-	  	   --norm
+	  	   -CL -g				    
 
 TESTS = C-simplify-test 
 #canonicalize-test
