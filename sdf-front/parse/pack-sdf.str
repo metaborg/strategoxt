@@ -42,7 +42,7 @@ strategies
       ?FILE(<id>)
     ; !(<id>, mkpt, [])
     ; graph-nodes-undef(parse-sdf', get-sdf-imports, \ (n,x,xs) -> [x|xs] \ )
-    ; (id, map(<fatal-error> ["** ERROR: Module ", <id>, " not found\n"]); [])
+    ; (id, map(<fatal-error> ["pack-sdf: Error module ", <id>, " not found\n"]); [])
     ; Fst
     ; unzip
     ; (id, ConcatModules)
@@ -63,7 +63,8 @@ strategies
     IncludeDir(dir) -> (file, tree)
       where <concat-strings; file-exists> [dir,"/", mod, ".sdf"] => file
           ; if-verbose1(debug(!"  including "))
-          ; <parse-sdf2-module-to-asfix> file => tree
+          ; ( <parse-sdf2-module-to-asfix> file => tree
+            <+ <fatal-error> ["pack-sdf: Error: module ", <id>, " cannot be parsed\n"])
 
   include-from-xtc(|mod) :
     IncludeXTC() -> (file, tree)
