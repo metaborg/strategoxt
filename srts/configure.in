@@ -6,24 +6,28 @@ AM_CONFIG_HEADER(config.h)
 ACLOCAL="${ACLOCAL} -I ."
 
 AC_ARG_WITH(aterm, 
-  [  --with-aterm          Specify location of aterm library, default: \$prefix], 
+  AC_HELP_STRING([--with-aterm],[Specify location of aterm library, default: \$prefix]), 
   ATERM=$withval, 
   ATERM="$prefix"
 )
 AC_SUBST(ATERM)
 
 AC_ARG_WITH(cpl, 
-  [  --with-cpl            Use the choice point library], 
+  AC_HELP_STRING([--with-cpl=DIR], [Use the choice point library]),
   CPL=$withval usecpl=true, 
-  usecpl=false
+  CPL=
 )
 AC_SUBST(CPL)
-AM_CONDITIONAL(USECPL, test x$usecpl = xtrue)
 
-if test x$usecpl = xtrue
-then
-AC_DEFINE(HAVE_CPL, 1, [Are we using the Choice Point Library?])
+if test -z "$CPL"; then
+  AC_MSG_NOTICE([runtime is configured *not* to use the CPL (Choice Point Library)])
+  usecpl=false
+else
+  AC_MSG_NOTICE([runtime is configured to use the CPL (Choice Point Library)])
+  AC_DEFINE(HAVE_CPL, 1, [Are we using the Choice Point Library?])
 fi
+
+AM_CONDITIONAL(USECPL, test x$usecpl = xtrue)
 
 AC_REVISION($Id: configure.in,v 1.32 2003/01/25 23:13:41 stratego Exp $)
 
