@@ -91,9 +91,10 @@ strategies
 
   // XTC-IO : 'read' input file, transform, and 'write' to output file
   xtc-io(s) =
-    xtc-output(
+    xtc-temp-files( 
         (!FILE(<get-config> "-i") <+ !stdin)
       ; s
+      ; copy-to(<get-config> "-o" <+ !stdout)
     )
 
   // XTC-OUTPUT : transform, and 'write' to output file

@@ -1,3 +1,8 @@
+2002-12-30  Eelco Visser  <visser@cs.uu.nl>
+
+	* src/xtc-proc.str: xtc-io --- don't use xtc-output since last
+	file will be temp and removed.
+
 2002-12-22  Eelco Visser  <visser@cs.uu.nl>
 
 	* src/xtc-register.str: xtc-find-path --- find the path
