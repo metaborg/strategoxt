@@ -18,9 +18,9 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.29 2001/02/27 16:04:35 mdejonge Exp $
+# $Id: Makefile.am,v 1.30 2001/02/27 23:29:44 mdejonge Exp $
 
-PKGS         = asfix asc-support sglr pgen graph-tools \
+PKGS         = aterm asfix asc-support sglr pgen graph-tools \
                stratego gpp gt gb JJForester
 
 DIST_SUBDIRS = pre-checks \
