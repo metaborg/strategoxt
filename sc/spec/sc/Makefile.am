@@ -5,16 +5,26 @@ SCFLAGS		= -I $(srcdir)/../sig		      \
 	  	  -I $(srcdir)/../match		      \
 	  	  -I $(srcdir)/../lib		      \
 	  	  --main $*			      \
-	  	  --C-include "\"conf.h\"" -CI "-I.."
+	  	  --C-include "\"conf.h\"" -CI "-I.." \
+		  $(XTCFLAGS)
 
 bin_PROGRAMS 	= sc
 pkgdata_DATA 	= sc.config sc-manual.txt
 
+sc.o		: xtc-conf.h
+
 CLEANFILES 	= $(wildcard *.dep) sc.config
 BOOTCLEANFILES 	= sc.c
 
-EXTRA_DIST 	= $(wildcard *.str) sc.config.src sc-manual.txt
+EXTRA_DIST 	= $(wildcard *.str) sc.config.src sc-manual.txt $(man_MANS)
 INCLUDES  	+= -I ..
+
+man_MANS = sc.1
+
+sc.1 : sc Makefile
+	help2man -n "compile Stratego programs" \
+		-m StrategoXT -S "sc $(VERSION)" --no-info ./sc > $@
+
 
 # Generate scripts
 %: %.src Makefile
