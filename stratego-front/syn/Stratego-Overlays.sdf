@@ -1,0 +1,6 @@
+module Stratego-Overlays
+exports
+
+  context-free syntax
+    Id 			 "=" Term 	-> Overlay {cons("OverlayNoArgs")}
+    Id "(" {Id ","}* ")" "=" Term 	-> Overlay {cons("Overlay")}

@@ -1,6 +1,7 @@
 SUBDIRS = . syn pp sig parse test
 
-EXTRA_DIST = stdconfig reconf conf.h.src stratego-front.spec Makefile.rpm
+EXTRA_DIST = stdconfig reconf conf.h.src stratego-front.spec Makefile.rpm \
+	Makefile.xt
 
 pkgdata_DATA = conf.h
 
@@ -26,11 +27,6 @@ check_dist :
              s#__STRATEGOLIB__#$(STRATEGOLIB)#g;\
              s#__MAKE__#$(MAKE)#g' < $< > $@
 	chmod +x $@
-
-noinst_DATA = Makefile.stratego
-
-Makefile.stratego : $(SC)/share/sc/Makefile.stratego
-	cp $< $@
 
 RPMRELEASE = 1
 

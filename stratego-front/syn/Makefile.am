@@ -1,29 +1,18 @@
-SDFMAIN = Stratego
-
-# bin_SCRIPTS =
-
-pkgdata_DATA = Stratego.tbl StrategoStratego.tbl StrategoStrategoC.tbl $(wildcard *.sdf)
-
-#TESTS = 
-
-CLEANFILES = $(bin_SCRIPTS) $(wildcard *.tbl) $(TESTS)
-
-EXTRA_DIST = Stratego.def StrategoStratego.def \
-	Stratego.tbl StrategoStratego.tbl StrategoStrategoC.tbl \
-	$(wildcard *.def) $(wildcard *.sdf)
-
-# GENERIC RULES ###############################################
-
-%.def: %.sdf $(wildcard *.sdf)
-	$(SDF_TOOLS)/bin/pack-sdf -I $(CGEN)/share/cgen -i $< -o $ $*.adef
-	$(ASFIX_TOOLS)/bin/asource -i $*.adef -o $@ 
-
-%.tbl: %.def
-	$(PGEN)/bin/sdf2table -i $< -o $@ -m $*
-
-# DEPENDENCIES ###############################################
-
-%.dep:
-	touch $@
-
+include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
+
+pkgdata_DATA 	= Stratego.def StrategoStratego.def StrategoStrategoC.def \
+	          Stratego.tbl StrategoStratego.tbl StrategoStrategoC.tbl \
+	      	  $(wildcard *.sdf)				       
+
+CLEANFILES 	= $(wildcard *.tbl) $(wildcard *.def) $(TESTS)
+
+EXTRA_DIST 	= Stratego.def StrategoStratego.def	      \
+		  Stratego.tbl StrategoStratego.tbl	      \
+		  StrategoStrategoC.tbl StrategoStrategoC.def \
+		  $(wildcard *.def) $(wildcard *.sdf)	     
+
+SDFINCLUDES 	= -I $(CGEN)/share/cgen
+PGEN_FLAGS	= -m $*
+
+

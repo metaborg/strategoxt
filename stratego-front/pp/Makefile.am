@@ -1,37 +1,28 @@
-include $(top_srcdir)/Makefile.stratego
+include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-default: test1.x.txt
+bin_PROGRAMS 	= astratego2text
 
-bin_PROGRAMS = astratego2text
+BOOTCLEANFILES 	= astratego2text.c
 
-BOOTCLEANFILES = astratego2text.c
+SCFLAGS 	= --main $* --C-include "\"conf.h\"" -CI "-I.."
 
-SCFLAGS = --main $* --C-include "\"conf.h\"" -CI "-I.."
+pkgdata_DATA 	= Stratego.pp Stratego-pretty.pp StrategoStratego.pp	      \
+		  Stratego.pp.af Stratego-pretty.pp.af StrategoStratego.pp.af \
+		  astratego2text.config
 
-pkgdata_DATA = \
-	Stratego.pp Stratego-pretty.pp StrategoStratego.pp \
-	Stratego.pp.af Stratego-pretty.pp.af StrategoStratego.pp.af \
-	astratego2text.config 
+CLEANFILES 	= Stratego.pp StrategoStratego.pp	       \
+		Stratego.pp.af Stratego-pretty.pp.af	       \
+		StrategoStratego.pp.af			       \
+		astratego2text.config $(wildcard *.dep)			     
 
-CLEANFILES += Stratego.pp StrategoStratego.pp \
-	Stratego.pp.af Stratego-pretty.pp.af StrategoStratego.pp.af \
-	astratego2text.config 
-
-#TESTS = 
-
-EXTRA_DIST = \
-	$(wildcard *.pp) \
-	$(wildcard *.pp.af) \
-	$(wildcard *.r) \
-	$(wildcard *.config.src) \
-	$(wildcard *.c) \
-	$(wildcard *.h.in)
-
-# GENERIC RULES ###############################################
-
-%.pp: $(top_srcdir)/syn/%.def
-	$(GPP)/bin/ppgen -i $< -o $@
+EXTRA_DIST 	=				\
+		$(wildcard *.pp)		\
+		$(wildcard *.pp.af)		\
+		$(wildcard *.r)			\
+		$(wildcard *.config.src)	\
+		$(wildcard *.c)			\
+		$(wildcard *.h.in)
 
 %: %.src Makefile
 	sed 's#__prefix__#$(prefix)#g; \
@@ -48,13 +39,10 @@ EXTRA_DIST = \
 	     s#__PGEN__#$(PGEN)#g;' \
 	  < $< > $@
 
-# DEPENDENCIES ###############################################
+%.def : 
+	rm -f $@
+	ln -s ../syn/$@ .
 
-%.pp.af: %.pp dummy
-	$(GPP)/bin/ast2abox -i dummy -o /dev/null -p $< 
-
-dummy:
-	echo "All(Id)" > dummy
 
 
 

@@ -1,22 +1,18 @@
-include $(top_srcdir)/Makefile.stratego
+include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
 SCFLAGS 	= -I ../sig --main $* --C-include "\"conf.h\"" -CI "-I.."
 
 bin_PROGRAMS 	= meta-explode stratego-desugar parse-stratego 
-#parse-cmod
 
 pkgdata_DATA 	= parse-stratego.config
-#parse-cmod.config 
 
 plugindir 	= $(SC)/share/pack-stratego-plugins
 plugin_DATA	= parse-stratego.plugin
 
-#parse-cmod.plugin 
+CLEANFILES     	= parse-cmod.config parse-stratego.config $(wildcard *.dep)
 
-CLEANFILES     += parse-cmod.config parse-stratego.config $(wildcard *.dep)
-
-BOOTCLEANFILES = meta-explode.c parse-cmod.c stratego-desugar.c parse-stratego .c
+BOOTCLEANFILES 	= meta-explode.c parse-cmod.c stratego-desugar.c parse-stratego .c 
 
 EXTRA_DIST 	= $(wildcard *.str) $(wildcard *.meta) \
 		  $(wildcard *.rtree) $(wildcard *.src) $(wildcard *.c)  $(wildcard *.h.in)

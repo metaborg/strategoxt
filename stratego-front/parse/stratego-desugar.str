@@ -5,6 +5,7 @@ signature
     Con : Var * Term * SVar   -> Term
     TupleCong : List(Strategy) -> Strategy
     TupleCong : Strategy
+
 strategies
  
   stratego-desugar = 
@@ -63,6 +64,9 @@ rules
   // Congruences
 
   Desugar :
+    AnnoCong(s1, StrategyCurly(s2)) -> Call(SVar("Anno_Cong__"), [s1, s2])
+
+  Desugar :
     TupleCong -> Call(SVar(""), [])
 
   Desugar :
@@ -113,11 +117,17 @@ rules
   Desugar :
     ListTail(ts,t) -> <foldr(!t,\ (t1, t2) -> Op("Cons",[t1,t2]) \ )> ts
 
-  Desugar :
-    Con(t1, Con1(t2)) -> Con(t1, t2, Call(SVar("oncetd"),[]))
+  //Desugar :
+  //  Con(t1, Con1(t2)) -> Con(t1, t2, Call(SVar("oncetd"),[]))
 
   Desugar :
-    Con(t1, Con2(t2, f)) -> Con(t1, t2, Call(SVar(f),[]))
+    Con1(t1, t2) -> Con(t1, t2, Call(SVar("oncetd"),[]))
+
+  Desugar :
+    Con3(t1, _, t2) ->  Con(t1, t2, Call(SVar("oncetd"),[]))
+
+  Desugar :
+    Con4(t1, _, t2, f) -> Con(t1, t2, Call(SVar(f),[]))
 
   // Signatures
 
@@ -157,6 +167,9 @@ rules
 
   Desugar : 
     SortNoArgs(x) -> Sort(x, [])
+
+  Desugar :
+    Anno(t, ts) -> Anno(t, <foldr(!Op("Nil",[]), !Op("Cons",[<Fst>,<Snd>]))> ts)
 
 strategies
 

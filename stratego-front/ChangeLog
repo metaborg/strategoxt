@@ -1,3 +1,11 @@
+2002-12-09  Eelco Visser  <visser@cs.uu.nl>
+
+	* using autoxt
+
+	* parse/: Improved stratego-desugar
+
+	* syn/: Split up syntax definition in smaller modules
+
 2002-12-08  Eelco Visser  <visser@cs.uu.nl>
 
 	* pp/Stratego-pretty.pp: pretty-printing characters

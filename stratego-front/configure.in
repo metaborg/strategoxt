@@ -1,89 +1,9 @@
 AC_INIT(syn/Stratego.sdf)
-AM_INIT_AUTOMAKE(stratego-front,0.9beta3)
+AM_INIT_AUTOMAKE(stratego-front,0.9beta7)
 
-####################### 
-# XT
+USE_XT_PACKAGES
 
-AC_ARG_WITH(sc, 
-   [  --with-sc=DIR              Specify location of Stratego Compiler, [\$prefix]], 
-   SC="$withval", 
-   SC="$prefix"
-)
-AC_SUBST(SC)
-
-AC_ARG_WITH(sglr, 
-  [  --with-sglr=DIR             Specify location of SGLR, [\$SDF]], 
-  SGLR="$withval", 
-  SGLR="$prefix"
-)
-AC_SUBST(SGLR)
-
-AC_ARG_WITH(pgen, 
-  [  --with-pgen=DIR             Specify location of PGEN, [\$SDF]], 
-  PGEN="$withval", 
-  PGEN="$prefix"
-)
-AC_SUBST(PGEN)
-
-AC_ARG_WITH(asfix-tools, 
-  [  --with-asfix-tools=DIR      Specify location of ASFIX-TOOLS, [\$SDF]], 
-  ASFIX_TOOLS="$withval", 
-  ASFIX_TOOLS="$prefix"
-)
-AC_SUBST(ASFIX_TOOLS)
-
-AC_ARG_WITH(stratego-tools, 
-  [  --with-stratego-tools=DIR   Specify location of STRATEGO-TOOLS, [\$prefix]], 
-  STRATEGO_TOOLS="$withval", 
-  STRATEGO_TOOLS="$prefix"
-)
-AC_SUBST(STRATEGO_TOOLS)
-
-AC_ARG_WITH(sdf-tools, 
-  [  --with-sdf-tools=DIR        Specify location of SDF-TOOLS, [\$prefix]], 
-  SDF_TOOLS="$withval", 
-  SDF_TOOLS="$prefix"
-)
-AC_SUBST(SDF_TOOLS)
-
-AC_ARG_WITH(gpp, 
-  [  --with-gpp=DIR              Specify location of GPP, [\$prefix]], 
-  GPP="$withval", 
-  GPP="$prefix"
-)
-AC_SUBST(GPP)
-
-AC_ARG_WITH(cgen, 
-  [  --with-cgen=DIR             Specify location of CGEN, [\$prefix]], 
-  CGEN="$withval", 
-  CGEN="$prefix"
-)
-AC_SUBST(CGEN)
-
-AC_ARG_WITH(rpmprefix,
-  [  --with-rpmprefix          Specify location of installation prefix for rpm: /usr],
-  RPMPREFIX=$withval,
-  RPMPREFIX="/usr"
-)
-AC_SUBST(RPMPREFIX)
-
-AC_ARG_WITH(rpmdir, 
-  [  --with-rpmdir          Specify location of rpm directory: /usr/src/redhat/], 
-  RPMDIR=$withval, 
-  RPMDIR="/usr/src/redhat/"
-)
-AC_SUBST(RPMDIR)
-
-AC_ARG_WITH(rpmtmp, 
-  [  --with-rpmtmp          Specify location of rpm temporary directory: /tmp], 
-  RPMTMP=$withval, 
-  RPMTMP="/tmp"
-)
-AC_SUBST(RPMTMP)
-
-####################### 
-
-AC_REVISION($Id: configure.in,v 1.11 2002/11/23 11:30:46 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.12 2002/12/11 10:32:06 stratego Exp $)
 
 AM_CONFIG_HEADER(config.h)
 

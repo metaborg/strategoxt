@@ -1,0 +1,12 @@
+module Stratego-Constants
+exports
+  lexical syntax
+    [\-]? [0-9]+ 		-> Int
+    [\-]? [0-9]+ [\.] [0-9]+ 	-> Real
+    "\"" StrChar* "\"" 		-> String
+    ~[\"\n\\] 			-> StrChar
+    [\\] [\"tn\\] 		-> StrChar
+    "\'" CharChar "\'"		-> Char
+    ~[\']			-> CharChar
+    [\\] [\'ntr\ ]		-> CharChar
+    Char		 	-> Id {reject}

@@ -1,0 +1,13 @@
+module Stratego-Script
+exports
+
+  sorts Script
+  context-free syntax
+    "stratego" "script" Command* -> Script {cons("Script")}
+    Decl 			-> Command {cons("Command")}
+    ":dump" String 		-> Command {cons("Dump")}
+    ":load" String 		-> Command {cons("Load")}
+    ">" Strategy 		-> Command {cons("Eval")}
+
+    %%"<" Strategy ">" Term 	 -> Start {cons("TopApply")}
+    %%Strategy 			 -> Start {cons("TopStrategy")}
