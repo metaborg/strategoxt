@@ -9,7 +9,7 @@ STRINCLUDES = -I $(DOT_TOOLS)/share/sdf/dot-tools \
 
 LDADD      += $(SSL_LIBS)
 
-bin_PROGRAMS     = treeviz term-to-dot
+bin_PROGRAMS     = term-to-dot
 libexec_PROGRAMS = term-to-adot
 
 CLEANFILES       = $(wildcard *.dep)
