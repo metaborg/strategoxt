@@ -120,7 +120,7 @@ strategies
 		!"--verbose i      Verbosity level i (default 1)")
 
 	+ ArgOption("--keep",         
-		where(<set-config> ("--keep",<string-to-int>)),         
+		where(<set-config> ("--keep", <string-to-int>)),         
 		!"--keep i         Keep intermediates (default 0)")
 
 	+ Option("-v"+"--version",    
