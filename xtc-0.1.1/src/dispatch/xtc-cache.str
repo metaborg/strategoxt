@@ -1,0 +1,7 @@
+/** 
+ * dispatch/xtc-cache: XTC Dispatch Caching Module
+ * 
+ * @author Niels Janssen (njanssen@cs.uu.nl)
+ * @svn $Id: xtc-cache.str 6811 2004-07-15 23:46:39Z njanssen $
+ */
+module xtc-cache

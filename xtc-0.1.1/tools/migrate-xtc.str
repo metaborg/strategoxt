@@ -1,0 +1,58 @@
+/**
+ * migrate-xtc: Migrate XTC repository 
+ *  
+ * @author Niels Janssen (njanssen@cs.uu.nl)
+ * @svn $Id: migrate-xtc.str 6889 2004-07-22 12:20:30Z njanssen $
+ */
+module migrate-xtc
+imports lib
+imports composition
+imports xtc-defaults
+
+// Signature of the old repository
+signature
+  sorts XtcKey
+  constructors
+    Tool       : String -> XtcKey
+    Repository : XtcKey 
+    Import     : XtcKey
+    Imported   : String -> XtcKey
+
+strategies
+
+  migrate-xtc = 
+    io-wrap(!Repository(<migrate ; clean-unsupported>))
+
+  migrate =
+    map(
+      MigrateImport
+    + MigrateImported
+    + MigrateTool
+    + MigrateRepository
+    + debug(!"Unknown key: ") ; fail
+    )
+
+  clean-unsupported = 
+    filter(not(?None))
+
+rules
+
+ /** 
+  * Import tells which other repositories we want to import
+  */
+  MigrateImport : 
+    (Import,loc) -> Reference([(loc,[])])
+    
+  MigrateTool : 
+    (Tool(name),rs) -> Registration(name,rs')
+    where <map(MigrateToolEntry)> rs => rs'
+   
+  MigrateToolEntry : 
+    (version,loc) -> (loc,rs)
+    where <conc> ([Version(version)],<xtc-default-xt-meta> loc) => rs
+
+  MigrateRepository : 
+    (Repository(),_) -> None
+
+  MigrateImported : 
+    (Imported(_),_) -> None

@@ -1,0 +1,120 @@
+/** 
+ * core/xtc-repository: XTC Repository Module
+ * 
+ * @author Niels Janssen (njanssen@cs.uu.nl)
+ * @svn $Id: xtc-repository.str 6848 2004-07-20 12:08:36Z njanssen $
+ */
+module xtc-repository
+imports tables tuple config file 
+
+strategies
+
+  xtc-location =
+    <get-config> "-r"
+ <+ <getenv> "XTC_REPOSITORY"
+ <+ prim("XTC_REPOSITORY")
+
+  xtc-reset = 
+    where( <table-destroy> XtcReg
+         ; <table-destroy> XtcRef
+         ; xtc-flush
+         ; xtc-create-tables
+         )
+
+  xtc-flush = 
+    where( <table-destroy> XtcCache )
+
+  xtc-create-tables = 
+    where( <table-create> XtcReg
+         ; <table-create> XtcRef
+         ; <table-create> XtcCache
+         ) 
+
+  xtc-init     = xtc-init(|<xtc-location>)
+  xtc-init(|f) = 
+    where ( <table-keys> XtcReg
+          ; not(?[]) 
+         <+ <xtc-load> f
+          )
+
+  xtc-load        = xtc-load(|[])
+  xtc-load(|meta) =
+    xtc-load-file
+  ; ?Repository(_)
+  ; xtc-aterm2table(|meta)
+
+  xtc-load-file = 
+    ( can-read-file <+ where(xtc-create-new) ) 
+  < ReadFromFile
+  + err(|"Unable to read repository file")
+  ; fail
+
+  xtc-create-new = 
+    ?f
+  ; not(file-exists)
+  ; !Repository([]) 
+  ; xtc-save-file(|f)  
+
+  xtc-dump     = xtc-dump(|<xtc-location>)
+  xtc-dump(|f) = 
+    xtc-table2aterm(id,id)
+  ; xtc-save-file(|f)
+  
+  xtc-save     = xtc-save(|<xtc-location>)
+  xtc-save(|f) =
+    xtc-table2aterm(
+      where(not(xtc-is-imported))
+    , not(?Loaded)
+    )
+  ; xtc-save-file(|f)
+
+  xtc-save-file     = xtc-save-file(|<xtc-location>)
+  xtc-save-file(|f) = 
+    where(<can-write-file <+ xtc-create-file> f)
+  < <WriteToBinaryFile> (f,<id>)
+  + <err(|"Unable to write to repository file")> f
+  ; fail
+   
+  xtc-import = 
+    <table-getlist> XtcRef
+  ; one(xtc-import-file)
+  ; <table-putlist> (XtcRef,<id>)
+
+  xtc-import-file :
+    (l,meta) -> (l,meta')
+    where <not(one(?Loaded))> meta
+        ; <union> (meta,[Loaded]) => meta'
+        ; <xtc-load(|[Imported])> l
+
+  xtc-create-file = 
+    not(file-exists)
+  ; can-create-file 
+  ; creat
+  
+  xtc-aterm2table        = xtc-aterm2table(|[])
+  xtc-aterm2table(|meta) =
+    Repository(map(xtc-register(|meta)))  
+
+  xtc-table2aterm(filterImport,filterLoaded) = 
+    split(
+      xtc-reg2aterm(filterImport)
+    , xtc-ref2aterm(filterImport,filterLoaded)
+    )
+  ; !Repository(<conc>)
+
+  xtc-reg2aterm(filterImport) =
+    <table-getlist> XtcReg
+  ; map( (id,filter(filterImport)) )
+  ; filter(!Registration(<Fst>,<Snd ; not(?[])>))
+
+  xtc-ref2aterm(filterImport,filterLoaded) =
+    <table-getlist> XtcRef
+  ; filter(filterImport)
+  ; some((id,filter(filterLoaded)))
+  ; not(?[])
+  < ![Reference(<id>)]
+  + ![]
+
+  xtc-is-imported = 
+    (id,one(?Imported))
+   

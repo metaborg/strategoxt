@@ -1,0 +1,32 @@
+/** 
+ * dispatch/xtc-methods: XTC Dispatch Methods Module
+ * 
+ * @author Niels Janssen (njanssen@cs.uu.nl)
+ * @svn $Id: xtc-methods.str 6798 2004-07-14 17:46:39Z njanssen $
+ */
+module xtc-methods 
+imports io process option 
+
+strategies
+
+ /**
+  * Execute program in a new process with list of string args, 
+  * with the specified exec strategy.
+  *
+  * Optionally you can define file descriptors to use for stdin, stdout,
+  * stderr.
+  *
+  * @type String * (FileDescr? * FileDescr? * FileDescr?) * [String] -> ()
+  */
+  exec-newp =
+    ?(prog, (opt-fdin, opt-fdout, opt-fderr), args)
+    ; fork-and-wait(
+        <option(<dup2> (<id>, <STDIN_FILENO> ))> opt-fdin
+      ; <option(<dup2> (<id>, <STDOUT_FILENO>))> opt-fdout
+      ; <option(<dup2> (<id>, <STDERR_FILENO>))> opt-fderr
+      ; <execvp> (prog, args)
+      )
+    ; !() 
+
+  exec-xmlrpc = 
+    id // use stratego-net xmlrpc methods 

@@ -1,0 +1,4 @@
+Repository([
+  Reference([("repository1.XTC",[])])
+, Registration("mysglr",[("/usr/bin/mysglr",[Model(Exec(Param("-i"),StdOut,[Param("-2A")]))])])
+])

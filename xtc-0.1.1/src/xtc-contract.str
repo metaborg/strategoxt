@@ -1,0 +1,6 @@
+/**
+ * XTC Contract Library
+ */
+module xtc-contract
+
+imports xtc-cc 

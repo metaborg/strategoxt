@@ -1,0 +1,48 @@
+/**
+ * xtc-lib: Transformation Tool Composition (XTC) Library 
+ *  
+ * @note: Compatibility with XTC prototype in Stratego/XT 
+ * @author Niels Janssen (njanssen@cs.uu.nl)
+ * @svn $Id: xtc-lib.str 6803 2004-07-15 13:07:29Z njanssen $
+ */
+module xtc-lib
+imports composition
+
+strategies
+
+  xtc-transform(n) = 
+    xtc-transform(|<n>)
+
+  xtc-transform(n,ps) = 
+    xtc-transform(|<n>,<ps>)
+     
+  xtc-transform-file(n) = 
+    xtc-transform-file(|<n>)
+
+  xtc-transform-file(n,ps) = 
+    xtc-transform-file(|<n>,<ps>)
+
+  xtc-transform-term(n) = 
+    xtc-transform-term(|<n>)
+
+  xtc-transform-term(n,ps) = 
+    xtc-transform-term(|<n>,<ps>)
+
+  xtc-generate(n) = 
+    xtc-generate(|<n>)
+
+  xtc-generate(n,ps) = 
+    xtc-generate(|<n>,<ps>)
+   
+  xtc-command(n) = 
+    xtc-command(|<n>)
+
+  xtc-find-silent = 
+    xtc-find-loc
+
+  xtc-find-warning = 
+    xtc-find-loc
+
+  xtc-command(n) =
+    xtc-command(|<n>) 
+

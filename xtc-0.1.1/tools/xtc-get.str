@@ -1,0 +1,27 @@
+/**
+ * xtc-get: Transformation Tool Composition (XTC) Command (Get)
+ *  
+ * @author Niels Janssen (njanssen@cs.uu.nl)
+ * @svn $Id: xtc-get.str 6844 2004-07-19 14:40:14Z njanssen $
+ */
+module xtc-get
+
+overlays 
+  
+strategies
+
+  xtc-get = 
+    ?[self, r , f , "get" | ps]
+  ; where( <"-r" + "--repository"> r )
+  ; xtc-init(|f)
+  ; <xtc-xtc-get> ps
+ 
+  xtc-get = 
+    ?[self, "get" | ps]
+  ; <xtc-xtc-get> ps
+
+  xtc-xtc-get = 
+    ?ps
+  ; <print>(stdout, <map(<concat-strings> [<xtc-find-loc>,"\n"])> ps )
+  ; <exit> 0
+    

@@ -1,0 +1,8 @@
+/**
+ * xtc-trans: Transformation Tool Composition (XTC) Library (API)
+ *  
+ * @author Niels Janssen (njanssen@cs.uu.nl)
+ * @svn $Id: xtc-trans.str 6428 2004-06-08 11:16:34Z njanssen $
+ */
+module xtc-trans
+imports xtc-transform xtc-find

@@ -1,0 +1,176 @@
+/**
+ * xtc-test: XTC library testsuite
+ *  
+ * @author Niels Janssen (njanssen@cs.uu.nl)
+ * @svn $Id: xtc-test.str 6849 2004-07-20 13:35:02Z njanssen $
+ */
+module xtc-test
+imports sunit options
+imports composition
+
+overlays 
+ 
+  mysglr = ("mysglr",
+             ( "/usr/bin/mysglr"
+             , [Model(Exec(Param("-i"),StdOut,[Param("-2A")])),Imported]
+             )
+           )
+
+strategies
+
+  main-xtc-test =
+    option-wrap(
+      verbose-option
+    + repository-option  
+    + contract-options
+    , <set-config> ("program","xtc-test")
+    ; xtc-test-suite(xtc-repository-tests |"[xtc-repository tests]")
+    ; xtc-test-suite(xtc-register-tests   |"[xtc-register tests]  ")
+    ; xtc-test-suite(xtc-search-tests     |"[xtc-search tests]  ")
+    ; xtc-test-suite(xtc-find-tests       |"[xtc-find tests]  ")
+    )
+
+
+
+  repository-option = 
+    ArgOption(
+      "-r" + "--repository"
+    , where(<set-config>("-r", <id>))
+    , !"--repository rep | -r rep    Tool repository"
+    )
+    
+  xtc-test-suite(s|name) = 
+    say(!"")
+  ; test-suite(!name,s)
+  
+
+  xtc-repository-tests =
+    apply-and-check(
+      !"xtc-location"
+    , xtc-location
+    , !()
+    , is-string
+    )
+  ; apply-test(
+      !"xtc-load"
+    , xtc-location
+    ; xtc-load
+    , !()
+    )
+
+  xtc-register-tests = 
+    apply-test(
+      !"xtc-register-reference"
+    , xtc-register-reference 
+    , !"repository1.XTC"
+    )
+  ; apply-test(
+      !"xtc-register-resource"
+    , xtc-register-resource
+    , !("my resource","/tmp/non-existing/url")
+    )
+  ; apply-test(
+      !"xtc-register-component"
+    , xtc-register-component
+    , !("my component","/tmp/non-existing/url")
+    )
+  ; apply-test(
+      !"xtc-register-component"
+    , xtc-register-component
+    , !("my component","/tmp/non-existing/url2")
+    )
+  ; apply-test(
+      !"xtc-import"
+    , xtc-import
+    , !()
+    )
+  ; apply-test(
+      !"xtc-import"
+    , xtc-import
+    , !()
+    )
+  ; apply-and-fail(
+     !"xtc-import"
+    , xtc-import
+    , !()
+    )
+  ; apply-test(
+      !"xtc-save"
+    , xtc-save(|"save.XTC")
+    , !()    
+    )
+  ; apply-test(
+      !"xtc-dump"
+    , xtc-dump(|"dump.XTC")
+    , !()
+    )
+
+  xtc-search-tests =
+    apply-test(
+      !"xtc-search"
+    , xtc-search
+    , !XtcQuery("strc")
+    , ("strc",(is-string,is-list))
+    )
+  ; apply-test(
+      !"xtc-search"
+    , xtc-search
+    , !XtcQuery("mysglr")
+    , !mysglr
+    )
+  ; apply-test(
+      !"xtc-has-meta"
+    , xtc-search
+    ; xtc-has-meta(|Imported)
+    , !XtcQuery("mysglr")
+    , !mysglr
+    )
+  ; apply-test(
+      !"xtc-search"
+    , xtc-search => (n,_)
+    , !XtcQuery([Imported])
+    )
+  ; apply-test(
+      !"xtc-has-meta"
+    , xtc-search
+    ; xtc-has-meta(|[Imported,Model(Exec(Param("-i"),StdOut,[Param("-2A")]))])
+    , !XtcQuery("mysglr")
+    , !mysglr
+    )
+  ; apply-and-fail(
+      !"xtc-has-meta"
+    , xtc-search
+    ; xtc-has-meta(|Loaded)
+    , !XtcQuery("mysglr")
+    )
+  ; apply-and-fail(
+      !"xtc-has-meta"
+    , xtc-search
+    ; xtc-has-meta(|[Imported,Loaded])
+    , !XtcQuery("mysglr")
+    )
+
+  xtc-find-tests = 
+    apply-test( 
+      !"xtc-find-reg"
+    , xtc-find-reg
+    , !"sglr"
+    )
+  ; apply-test( 
+      !"xtc-find"
+    , xtc-find
+    , !"sglr"
+    )
+  ; apply-test( 
+      !"xtc-find-path"
+    , xtc-find-path
+    , !"mysglr"
+    , !"/usr/bin"
+    )
+  ; apply-test( 
+      !"xtc-find-reg"
+    , xtc-find-reg(one(?x) ; !x)
+    , !XtcQuery("strc")
+    , <xtc-find-reg> "strc"
+    )
+    

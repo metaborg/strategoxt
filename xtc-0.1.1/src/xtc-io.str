@@ -1,0 +1,8 @@
+/**
+ * xtc-io: I/O Library
+ *  
+ * @author Niels Janssen (njanssen@cs.uu.nl)
+ * @svn $Id: xtc-io.str 6431 2004-06-08 13:20:05Z njanssen $
+ */
+module xtc-io
+imports xtc-file xtc-options 

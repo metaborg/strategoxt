@@ -1,0 +1,17 @@
+/**
+ * Runtime: XTC Runtime Signature
+ *  
+ * @author Niels Janssen (njanssen@cs.uu.nl)
+ * @svn $Id: Runtime.str 6415 2004-06-03 12:13:21Z njanssen $
+ */
+module Runtime
+signature
+  constructors 
+  XtcReg        : Table
+  XtcRef        : Table
+  XtcCache      : Table
+
+  Imported      : XtcMeta
+  Loaded        : XtcMeta
+
+

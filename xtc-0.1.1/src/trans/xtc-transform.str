@@ -1,0 +1,47 @@
+/** 
+ * transform/xtc-transform: XTC Component Transformation Module
+ * 
+ * @author Niels Janssen (njanssen@cs.uu.nl)
+ * @svn $Id: xtc-transform.str 6820 2004-07-16 13:16:21Z njanssen $
+ */
+module xtc-transform
+
+strategies
+
+  xtc-command(|n) =
+    (xtc-ensure-file,FILE(id),is-list)
+  ; xtc-dispatch(|n)
+
+  xtc-transform(|n)     = xtc-transform(|n, [])   
+  xtc-transform(|n, ps) =
+    (FILE(id) + stdin)
+  < xtc-transform-file(|n, ps)
+  + xtc-transform-term(|n, ps)
+
+  xtc-transform-file(|n)     = xtc-transform-file(|n, [])
+  xtc-transform-file(|n, ps) :
+    i -> FILE(o)
+    where xtc-new-file => o 
+        ; <FILE(id) + stdin> i
+        ; <xtc-command(|n)> (i,FILE(o),ps)
+
+  xtc-generate(|n)     = xtc-generate(|n, [])
+  xtc-generate(|n, ps) =
+    <xtc-transform-file(|n,ps)> stdin
+
+  xtc-transform-term(|n)     =  xtc-transform-term(|n, [])
+  xtc-transform-term(|n, ps) = 
+    write-to
+  ; xtc-transform-file(|n, ps)
+  ; read-from
+
+  xtc-io-transform(s) =
+    read-from
+  ; s
+  ; write-to
+
+  xtc-io-transform-text(s) =
+    read-from
+  ; s
+  ; print-to
+

@@ -1,0 +1,90 @@
+/** 
+ * core/xtc-search: XTC Search/Select Module
+ * 
+ * @author Niels Janssen (njanssen@cs.uu.nl)
+ * @svn $Id: xtc-search.str 6844 2004-07-19 14:40:14Z njanssen $
+ */
+module xtc-search
+
+strategies
+  
+  xtc-search =  
+    xtc-search(Hd)
+
+  xtc-search(select) :
+    XtcQuery(n) -> (n,result)
+    where <is-string> n
+        ; <xtc-query-one(id,select)> n => result
+
+  xtc-search(select) :
+    XtcQuery(n,meta) -> (n,result)
+    where <is-string> n
+        ; <is-list> meta
+        ; <xtc-query-one(xtc-has-meta(|meta),select)> n => result
+
+  xtc-search(select) :
+    XtcQuery(meta) -> (n,result)
+    where <is-list> meta
+        ; new => n
+        ; <xtc-query-all(xtc-has-meta(|meta),select)> n => result
+ 
+  xtc-query-one(search,select) : 
+    n -> result
+    where ( <xtc-query-one(search,select|XtcCache)> n 
+         <+ <xtc-query-one(search,select|XtcReg)> n
+          ; xtc-cache-put(|n)
+          ) => result
+        
+  xtc-query-one(search,select|table) = 
+    <table-get> (table,<id>)
+  ; search
+  ; select
+
+  xtc-query-all(search,select) :
+    n -> result
+    where ( xtc-query-all(search,select|XtcCache)
+         <+ xtc-query-all(search,select|XtcReg) 
+          ; xtc-cache-put(|n)
+          ) => result
+
+  xtc-query-all(search,select|table) = 
+    <table-getlist> table
+  ; filter(?(_,<search>))
+  ; flatten-list
+  ; select
+  
+  xtc-fetch-loc = 
+    Fst
+
+  xtc-fetch-version =
+    xtc-fetch-meta(|"Version")
+  ; ?Version(<id>)
+   
+  xtc-fetch-meta = 
+    Snd
+
+  xtc-fetch-meta(|c) = 
+    where(<is-string> c)
+  ; collect-all(?c#(_)) 
+  ; Hd
+
+  xtc-cache-put(|key) =
+    where(<table-union> (XtcCache,key,[<id>]))
+
+  xtc-has-meta(|meta) = 
+    where( collect-all(?meta)   
+         ; not(?[])
+         )
+
+  xtc-has-meta(|meta) :
+    x -> x
+    where !meta
+        ; is-list
+        ; not(?[])
+        ; filter({meta': 
+            \meta' -> meta' where <xtc-has-meta(|meta')> x \
+          })
+        ; ?meta
+
+  xtc-has-meta(|meta) = 
+    where(<?[]> meta)

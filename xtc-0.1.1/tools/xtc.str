@@ -1,0 +1,142 @@
+/**
+ * xtc: Transformation Tool Composition (XTC) Command
+ *  
+ * @author Niels Janssen (njanssen@cs.uu.nl)
+ * @svn $Id: xtc.str 6891 2004-07-22 13:12:38Z njanssen $
+ */
+module xtc 
+imports composition
+imports xtc-get xtc-call xtc-defaults
+
+strategies
+
+  xtc = 
+    xtc-call
+ <+ xtc-get
+ <+ xtc-xtc
+
+  xtc-xtc = 
+    parse-options(xtc-options + verbose-option)
+  ; ( <get-config> "-r" < xtc-init(|<id>) + xtc-init )
+  ; ( <get-config> "import"   ; xtc-xtc-reference
+    + <get-config> "register" ; xtc-xtc-register
+    + <get-config> "query"    
+    ; ( <get-config> "-R" ; xtc-xtc-query-repository
+      + <get-config> "-a" ; xtc-xtc-query-all 
+      + xtc-xtc-query
+      )
+    )
+  ; <exit> 0
+ <+ <print> (stderr,["*** warning: xtc failed!\n"])
+  ; <exit> 1
+
+  xtc-xtc-register = 
+    <get-config> "-t"
+  ; map( 
+      !( <id>
+       , <concat-strings> [<get-config> "-l","/",<id>]
+       , < <get-config> "-m"
+        <+ where(<get-config> "--no-defaults") 
+         < ![] 
+         + xtc-default-xt-meta
+         >
+       )
+    ; xtc-register-component(|[Version(<get-config>"-V")])
+    )
+  ; xtc-xtc-save
+
+  xtc-xtc-reference = 
+    <get-config> "import"
+  ; map(xtc-register-reference)
+  ; xtc-xtc-save
+
+  xtc-xtc-query = 
+    <get-config> "-t"
+  ; map({ n :         
+         ?n
+       ; ( !(n,<get-config> "-V") + id )
+       ; ( xtc-find-reg(id) 
+         < some(
+             where(<get-config> "-m")
+           < xtc-has-meta(|<get-config> "-m")
+           ; xtc-print(|n)
+           + xtc-print(|n)
+           )        
+         + <print> (stdout, [n, " : no registration", "\n"])
+         )
+       })
+
+  xtc-xtc-query-all = 
+    <table-getlist> XtcReg 
+  ; map ({ n : 
+          ?(n,<id>)
+        ; map(xtc-print(|n))
+        })  
+
+  xtc-xtc-query-repository = 
+    <print> (stdout,["XTC_REPOSITORY=",<xtc-location>,"\n"])
+
+  xtc-print(|n) = 
+    where(<get-config> "-l")
+  < <print> (stdout,[<Fst>,"\n"])
+  + ?(loc,meta)
+  ; (where(<get-config> "-M")
+    < <print> (stdout,<conc>([n," ("],<separate-by(!", ")> meta,[") : ",loc,"\n"]))
+    + <print> (stdout,[n," (",<xtc-fetch-version> meta,") : ",loc,"\n"])
+    )
+
+  xtc-xtc-save = 
+    <get-config> "-r" < xtc-save(|<id>) + xtc-save
+ 
+  xtc-options = 
+    ArgOption("-r" + "--repository",
+        where(<set-config>("-r", <id>)),
+        !"--repository rep | -r rep    Tool repository")
+  + ArgOption("i" + "imp" + "import",
+        where(<extend-config>("import", [<id>])),
+        !"import r | i r               Import repository r\n")
+  + Option("r" + "reg" + "register",
+        where(<set-config>("register", <id>)),
+        !"register | r                 Register a tool")
+  + ArgOption("-t" + "--tool",
+        where(<extend-config>("-t", [<id>])),
+        !"--tool n | -t n              Tool name")
+  + ArgOption("-l" + "--location",
+        where(<set-config>("-l", <id>)),
+        !"-l loc  | --location loc     Location of tool")
+  + ArgOption("-V" + "--Version",
+        where(<set-config>("-V", <id>)),
+        !"--Version n | -V n           Version of tool")
+  + ArgOption("-m" + "--meta",
+        where(<extend-config>("-m", [<read-from-string>])),
+        !"-m a | --meta a              Add ATerm a to meta information of tool")
+  + Option("--no-defaults",
+        where(<set-config>("--no-defaults", <id>)),
+        !"--no-defaults                Toggle meta information defaults (default: on)\n")
+  + Option("q" + "query",
+        where(<set-config>("query", <id>)),
+        !"query | q                    Query the XTC repository")
+  + Option("-a" + "--all",
+        where(<set-config>("-a", ())),
+        !"--all | -a                   List all registered tools")
+  + Option("-L" + "--Location",
+        where(<set-config>("-l", ())),
+        !"--Location | -L              List only location of tool")
+  + Option("-M" + "--Meta",
+        where(<set-config>("-M", ())),
+        !"-M | --Meta                  Show all meta-information of tool (default: off)")
+  + Option("-R" + "--Repository",
+        where(<set-config>("-R", ())),
+        !"--Repository | -R            Location of repository\n")
+
+  short-description(p) = 
+    !["Usage: xtc [-r rep] register (-t tool)+ -V vers -l loc (-m aterm)*\n",
+      "       xtc [-r rep] (import r)+\n",
+      "       xtc [-r rep] query (-a | (-t tool)+ [-V version] (-m aterm)*) [-L | -M]"]
+ 
+  long-description(p)  = 
+    !["The xtc command supports the registration of tools in an XTC repository\n",
+      "and querying XTC repositories"]
+
+
+ 

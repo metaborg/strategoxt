@@ -1,0 +1,8 @@
+/**
+ * composition: Transformation Tool Composition (XTC) Library
+ *  
+ * @author Niels Janssen (njanssen@cs.uu.nl)
+ * @svn $Id: composition.str 6430 2004-06-08 11:45:00Z njanssen $
+ */
+module composition
+imports xtc-core xtc-dispatch xtc-contract xtc-io xtc-trans

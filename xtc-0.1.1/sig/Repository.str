@@ -1,0 +1,46 @@
+/**
+ * Repository: XTC Repository Signature
+ *  
+ * @author Niels Janssen (njanssen@cs.uu.nl)
+ * @svn $Id: Repository.str 6852 2004-07-20 15:38:05Z njanssen $
+ */
+module Repository
+imports list-cons
+signature
+  constructors  
+  Repository    : List(XtcEntry) -> Repository
+  Registration  : XtcId * List(XtcData) -> XtcEntry
+  Reference     : List(XtcData) -> XtcEntry
+                : Location * List(XtcMeta) -> XtcData
+                
+  Version       : String -> XtcMeta
+  Package       : String -> XtcMeta
+
+  Model         : XtcDesc -> XtcMeta
+  XT            : List(Arg) -> XtcDesc
+  Exec          : Arg * Arg * List(Arg) -> XtcDesc
+
+  Type          : XtcType -> XtcMeta
+  ParseTable    : XtcType
+  PPTable       : XtcType
+  PPTableParsed : XtcType
+  RTG           : XtcType
+  SDF           : XtcType
+  SDFDef        : XtcType
+                
+  Contracts     : List(Contract) * List(Contract) -> XtcMeta  
+                : XtcQuery * List(Arg) -> Contract
+
+  XtcQuery      : XtcId -> XtcQuery
+  XtcQuery      : XtcId * XtcMeta -> XtcQuery
+  XtcQuery      : XtcMeta -> XtcQuery
+   
+  StdIn         : Arg
+  StdOut        : Arg
+  Param         : String -> Arg
+  ParamPair     : String * String -> Arg
+ 
+                : String -> Location
+                : String -> XtcId
+
+

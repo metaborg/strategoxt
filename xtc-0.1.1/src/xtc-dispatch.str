@@ -1,0 +1,8 @@
+/**
+ * xtc-dispatch: Dispatch Library
+ *  
+ * @author Niels Janssen (njanssen@cs.uu.nl)
+ * @svn $Id: xtc-dispatch.str 6811 2004-07-15 23:46:39Z njanssen $
+ */
+module xtc-dispatch
+imports xtc-adapt xtc-execute xtc-methods xtc-cache

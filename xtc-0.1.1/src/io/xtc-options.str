@@ -1,0 +1,76 @@
+/** 
+ * io/xtc-options: XTC Option Wrapping Strategies
+ * 
+ * @author Niels Janssen (njanssen@cs.uu.nl)
+ * @svn $Id: xtc-options.str 6811 2004-07-15 23:46:39Z njanssen $
+ */
+module xtc-options
+imports config options
+
+strategies
+
+ /**
+  * Read input file, transform, and write to output file
+  */
+  xtc-io(s) =
+    xtc-temp-files( 
+      (!FILE(<get-config> "-i") <+ !stdin)
+    ; s
+    ; xtc-write-output
+    )
+
+ /**
+  * Stop in the middle of a transformation pipeline, copying the
+  * current file to the output file.
+  */
+  xtc-io-exit =
+    xtc-write-output
+  ; <xtc-exit> 0
+
+ /** 
+  * Transform, and write to output file
+  */
+  xtc-output(s) =
+    xtc-temp-files(
+      s
+    ; xtc-write-output
+    )
+
+ /**
+  * Read input file, transform
+  */
+  xtc-input(s) =
+    xtc-temp-files(
+      (!FILE(<get-config> "-i") <+ !stdin)
+    ; s
+    )
+
+ /** 
+  * io-wrap for xtc tools: 'read' -i option, transform, and 'write' to -o option
+  */
+  xtc-io-wrap(s) = 
+    xtc-io-wrap(fail, s)
+
+  xtc-io-wrap(extra-opts, s) = 
+    option-wrap(extra-opts <+ io-options <+ contract-options, xtc-io(s))
+
+  xtc-io-wrap(extra-opts, deps, s) = 
+    err(|"Check dependencies has not been implemented yet")
+  ; option-wrap(extra-opts <+ io-options <+ contract-options <+ check-options(deps), 
+      xtc-check-dependencies
+      ; xtc-io(s)
+    )
+
+  xtc-iowrap(s) = 
+    xtc-io-wrap(s)
+
+  xtc-iowrap(extra-opts, s) = 
+    xtc-io-wrap(extra-opts, s)
+
+  xtc-write-output =
+    ?FILE(_); copy-to(<get-config> "-o" <+ !stdout())
+
+  xtc-write-output =
+    ?stdin(); <copy-file> (stdin(), <get-config <+ !stdout()> "-o")
+
+

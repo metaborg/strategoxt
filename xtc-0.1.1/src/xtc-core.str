@@ -1,0 +1,10 @@
+/**
+ * xtc-core: Core Library
+ *  
+ * @author Niels Janssen (njanssen@cs.uu.nl)
+ * @svn $Id: xtc-core.str 6803 2004-07-15 13:07:29Z njanssen $
+ */
+module xtc-core
+imports logging
+imports Repository Runtime
+imports xtc-repository xtc-register xtc-search

@@ -1,0 +1,67 @@
+/** 
+ * contract/xtc-cc: XTC Contract Checking Module
+ * 
+ * @author Niels Janssen (njanssen@cs.uu.nl)
+ * @svn $Id: xtc-cc.str 6897 2004-07-22 14:26:09Z njanssen $
+ */
+module xtc-cc
+
+strategies
+
+  xtc-cc-wrap(s) = 
+    check-contract
+  < xtc-cc(Fst)
+  ; where(s => o)
+  ; xtc-cc(Snd)
+  ; !o
+  + s
+
+  xtc-cc(s) = 
+    ?((i,o,_),r)
+  ; where(
+      <extract-contracts(s)> r
+    < map(<xtc-cc(s)> ((i,o),<id>))
+    + id
+    )
+
+  xtc-cc(s) =   
+    ?((FILE(_),FILE(_)),(n,ps))
+  ; Fst 
+  ; s => FILE(i)
+  ; ( <xtc-command(|n)> (FILE(i),FILE(<xtc-new-file> i),ps)
+   <+ enforce-contract
+    )
+
+rules
+
+  extract-contracts(s) :
+    (_,meta) -> c
+    where <xtc-fetch-meta(|"Contracts")> meta => Contracts(i,o)
+        ; <s> (i,o) => c
+
+strategies
+
+  check-contract = 
+    where(<get-config> "--check")
+
+  enforce-contract = 
+    where(<get-config> "--enforce")
+  < err(|"Contract checking failed, enforcing by failure")
+  ; fail
+  + warn(|"Contract checking failed")
+
+  contract-options = 
+    check-option
+  + enforce-option
+
+  check-option = 
+    Option("--check"
+    , where(<set-config> ("--check",()))
+    , !"--check          Toggle contract checking (default: off)"
+    )
+
+  enforce-option = 
+    Option("--enforce"
+    , where(<set-config> ("--enforce",()) ; <set-config> ("--check",()))
+    , !"--enforce        Toggle contract enforcing (default: off)"
+    )   

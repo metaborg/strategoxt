@@ -1,0 +1,10 @@
+module test3
+imports composition
+strategies
+
+  main-test3 = 
+    xtc-io-wrap(
+      read-from
+      ; !(<id>,<id>)
+      ; write-to
+    )

@@ -1,0 +1,53 @@
+/**
+ * xtc-find: XTC Find Module (Search/Select API)
+ *  
+ * @author Niels Janssen (njanssen@cs.uu.nl)
+ * @svn $Id: xtc-find.str 6849 2004-07-20 13:35:02Z njanssen $
+ */
+module xtc-find
+
+strategies
+
+  xtc-find             = xtc-find-loc
+  xtc-find(select)     = xtc-find-loc(select)
+
+  xtc-find-reg         = xtc-find-reg(Hd)
+  xtc-find-reg(select) =
+    (XtcQuery(id) + XtcQuery(id,id))
+  ; ( xtc-init
+    ; xtc-search(select)
+    ; Snd
+   <+ where(xtc-import)
+    ; xtc-find-reg(select)
+    )
+    
+  xtc-find-loc         = xtc-find-loc(Hd)
+  xtc-find-loc(select) = 
+    xtc-find-reg(select)
+  ; xtc-fetch-loc
+  
+  xtc-find-path         = xtc-find-path(Hd)
+  xtc-find-path(select) = 
+    xtc-find-loc(select)
+  ; dirname
+
+rules 
+
+  xtc-find-reg(select) : 
+    n -> <xtc-find-reg(select)> XtcQuery(n)
+    where <is-string> n
+
+  xtc-find-reg(select) : 
+    (n,v) -> <xtc-find-reg(select)> XtcQuery(n,[Version(v)])
+    where <is-string> n
+        ; <is-string> v
+
+  xtc-find-reg(select) : 
+    (n,meta) -> <xtc-find-reg(select)> XtcQuery(n,meta)
+    where <is-string> n
+        ; <is-list> meta
+
+  xtc-find-reg(select) : 
+    meta -> <xtc-find-reg(select)> XtcQuery(meta)
+    where <is-list> meta
+

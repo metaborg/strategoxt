@@ -1,0 +1,28 @@
+/** 
+ * core/xtc-defaults: XTC Registration Defaults 
+ * 
+ * @author Niels Janssen (njanssen@cs.uu.nl)
+ * @svn $Id: xtc-defaults.str 6889 2004-07-22 12:20:30Z njanssen $
+ */
+module xtc-defaults
+
+strategies
+
+  xtc-default-xt-meta = 
+    <conc> (<xtc-default-xt-model>,<xtc-default-xt-type>)
+
+  xtc-default-xt-model =
+    <eq> (<base-filename ; basename>,<base-filename>)
+  < ![Model(XT([]))]
+  + ![]
+
+  xtc-default-xt-type =
+    switch get-extension
+      case "tbl"   : ![Type(ParseTable)]
+      case "af"    : ![Type(PPTableParsed)]
+      case "pp"    : ![Type(PPTable)]
+      case "rtg"   : ![Type(RTG)]
+      case "def"   : ![Type(SDFDef)]
+      case "sdf"   : ![Type(SDF)]
+      otherwise    : ![]
+    end

@@ -1,0 +1,102 @@
+/** 
+ * dispatch/xtc-adapt: XTC Adapt Module
+ * 
+ * @author Niels Janssen (njanssen@cs.uu.nl)
+ * @svn $Id: xtc-adapt.str 6852 2004-07-20 15:38:05Z njanssen $
+ */
+module xtc-adapt
+
+rules
+
+  xtc-adapt :
+    (x,r) -> (model,exec)
+    where <extract-model> r => model
+        ; <xtc-configure> (model,x,r) => exec
+
+  xtc-associate : 
+    ((i,o,ps),r) -> (model,exec)
+    where switch <extract-type> r 
+            case RTG : <xtc-find-reg> "format-check" => r'
+                     ; extract-model => model
+                     ; <conc> (ps, [ParamPair("--rtg",<xtc-fetch-loc> r)]) => ps'
+                     ; <xtc-configure> (model,(i,o,ps'),r') => exec
+          end
+
+rules
+
+  xtc-configure : 
+    ( e@Exec(_,_,ps')
+    , x@(i,o,ps)
+    , r@(loc,meta) 
+    ) -> exec
+    where <xtc-configure-exec-in> (e,(i,ps),loc)
+        ; <xtc-configure-exec-out> (e,o,<id>) => exec
+
+rules
+
+  xtc-configure-exec-in : 
+    ( Exec(Param(p),_,ps')
+    , x@(FILE(i),ps)
+    , loc
+    ) 
+   -> 
+    (loc,(None,None,None),<conc>([p,i],<xtc-params2exec>ps,<xtc-params2exec>ps'))
+
+  xtc-configure-exec-in : 
+    ( Exec(StdIn,_,ps')
+    , x@(FILE(i),ps)
+    , loc
+    ) 
+   -> 
+    (loc,(Some(fdin),None,None),<conc>(<xtc-params2exec>ps,<xtc-params2exec>ps'))
+    where <open> i => fdin
+
+    
+  xtc-configure-exec-out :
+    ( Exec(_,Param(p),ps')
+    , FILE(o)
+    , ( loc,(fdin,_,fderr),ps ) 
+    )
+   -> 
+    ( loc,(fdin,None,fderr), <conc> ([p,o],ps) ) 
+
+  xtc-configure-exec-out :
+    ( Exec(_,StdOut,ps')
+    , FILE(o)
+    , ( loc,(fdin,_,fderr),ps ) 
+    )
+   -> 
+    ( loc,(fdin,Some(fdout),fderr), ps ) 
+    where <open> o => fdout
+
+rules
+
+  extract-model :
+    (_,meta) -> model
+    where <xtc-fetch-meta(|"Model")> meta 
+        ; ?Model(<try(NormalizeModel)>) => model
+
+  extract-type :
+    (_,meta) -> type
+    where <xtc-fetch-meta(|"Type")> meta 
+        ; ?Type(<id>) => type
+
+  NormalizeModel :
+    XT(params) -> Exec(Param("-i"),Param("-o"),params)
+
+strategies
+
+  xtc-params2exec = 
+    map(pair2list <+ param2string <+ id)
+  ; flatten-list
+ 
+rules 
+
+  pair2list :
+    ParamPair(a,b) -> [a,b]
+
+  param2string : 
+    Param(x) -> x
+
+    
+

@@ -1,0 +1,198 @@
+/** 
+ * io/xtc-file: XTC File and Directory strategies
+ * 
+ * @author Niels Janssen (njanssen@cs.uu.nl)
+ * @svn $Id: xtc-file.str 6820 2004-07-16 13:16:21Z njanssen $
+ */
+module xtc-file 
+imports scoped-finite-map io exec dir
+
+signature
+  constructors
+    FILE : String -> File
+    DIR  : String -> File
+    TEMP : XtcKey
+
+    TempFiles : Table
+
+strategies
+
+ /** 
+  * Renaming files
+  */
+  rename-to(name) :
+    FILE(oldname) -> FILE(oldname)
+    where name => oldname
+
+  rename-to(name) :
+    FILE(oldname) -> FILE(newname)
+    where name => newname
+	; not(stdout + ?oldname)
+        ; <rename-file>(oldname, newname)
+
+  rename-to(name) :
+    FILE(oldname) -> stdout
+    where name => stdout
+	; <copy-file> (oldname, stdout)
+	; <remove-file> oldname
+
+ /** 
+  * Copying files
+  */
+  copy-to(name) :
+    FILE(oldname) -> FILE(oldname)
+    where name => oldname
+
+  copy-to(name) :
+    FILE(oldname) -> FILE(oldname)
+    where name => newname
+	; not(stdout + stderr + ?oldname)
+        ; <copy-file>(oldname, newname)
+
+  copy-to(name) :
+    FILE(oldname) -> FILE(oldname)
+    where name => file
+        ; (stdout + stderr)
+	; <copy-file> (oldname, file)
+
+ /**
+  * Read term from file
+  */
+  read-from :
+    FILE(name) -> t
+    where <file-exists; ReadFromFile> name => t
+
+  read-from :
+    stdin -> t
+    where <ReadFromFile> stdin => t
+
+ /**
+  * Write term to file
+  */
+  write-to :
+    t -> FILE(name)
+    where xtc-new-file => name
+        ; <WriteToBinaryFile> (name, t)
+
+  write-to-text :
+    t -> FILE(name)
+    where xtc-new-file => name
+        ; <WriteToTextFile> (name, t)
+
+  xtc-ensure-file =
+    ?FILE(_)
+
+  xtc-ensure-file =
+    ?stdin()
+  ; where(<xtc-new-file> () => f)
+  ; <copy-file> (stdin(), f)
+  ; !FILE(f)
+
+  xtc-find-file = 
+    !FILE(<xtc-find>)
+
+ /**
+  * Write String to File 
+  * 
+  * @type [String] -> FILE
+  */
+  print-to :
+    strings -> FILE(name)
+    where xtc-new-file => name
+        ; <open-file> (name, "w")
+        ; <print> (name, strings)
+        ; <close-file> name
+
+  // Scoped temporary files
+
+ /**
+  * Creates a new and unique scoped temporary file.
+  *
+  * @type _ -> String
+  */
+  xtc-new-file =
+    new-temp-file => (f, fd)
+  ; where(
+      <assert(!TempFiles)> (f, ())
+    )
+  ; <close> fd
+  ; !f
+
+  xtc-new-temp-file = 
+    new-temp-file => (f, _)
+  ; where( <assert(!TempFiles)> (f,()) )
+
+  xtc-temp-files(s) = 
+    begin-scope(!TempFiles)
+    ; restore-always(s,
+        where((<table-get>(TempFiles, Scopes) <+ ![[]]) => [scope | scopes]
+            ; <map(try(remove-file))> scope)
+        ; end-scope(!TempFiles)
+      )
+
+ /**
+  * Exit after removing temp files
+  */
+  xtc-exit =
+    ?status
+    ; repeat( 
+        where(<table-get>(TempFiles, Scopes) => [scope | scopes]
+            ; <map(try(remove-file))> scope)
+        ; end-scope(!TempFiles)
+      )
+    ; exit
+
+ /**
+  * xtc-cat concatenates the content of a list 
+  * of Files (FILE or stdin) and stores the result 
+  * in a fresh File
+  *
+  * @type [File] -> File
+  */
+  xtc-cat:
+    in-files -> file
+      where xtc-new-file-name => file
+          ; <xtc-open-fd> file => fdout
+          ; <map(File-as-fd(<fdcopy> (<id>, fdout)))> in-files
+          ; <xtc-close-fd> fdout
+
+ /**
+  * File-as-fd applies the specified strategy to
+  * the openend file descriptor of the specified File.
+  * The fd is closed in all cases, also when s fails.
+  *
+  * Int -> b :: File -> b
+  */
+  File-as-fd(s) =
+      xtc-open-fd => fd
+    ; finally(s, where(try(<xtc-close-fd> fd)))
+
+ /**
+  * xtc-new-file-name is like xtc-new-file but doesn't open the file.
+  *
+  * @type _ -> File
+  */
+  xtc-new-file-name =
+      new-file => f
+    ; where(<assert(!TempFiles)> (f, ()))
+    ; !FILE(f)
+
+  /**
+   * @type File -> Int
+   */
+  xtc-open-fd =
+      \ FILE(s)  -> <open> s \
+    + \ stdin()  -> < STDIN_FILENO> () \
+    + \ stdout() -> <STDOUT_FILENO> () \
+    + \ stderr() -> <STDERR_FILENO> () \
+
+ /**
+  * @type Int -> ()
+  */
+  xtc-close-fd = 
+    finally(
+      ( where(<eq> (<id>, < STDIN_FILENO> ()))
+      + where(<eq> (<id>, <STDOUT_FILENO> ()))
+      + where(<eq> (<id>, <STDERR_FILENO> ()))
+      ) <+ close
+    , !())

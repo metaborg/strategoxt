@@ -1,0 +1,24 @@
+/** 
+ * dispatch/xtc-execute: XTC Execution Module
+ * 
+ * @author Niels Janssen (njanssen@cs.uu.nl)
+ * @svn $Id: xtc-execute.str 6897 2004-07-22 14:26:09Z njanssen $
+ */
+module xtc-execute
+
+rules
+
+  xtc-dispatch(|n) :
+    x@(_,o,_) -> o
+    where <notice(|"Dispatching component matching query")> n
+        ; <xtc-find-reg> n => r
+        ; !(x,r) 
+        ; xtc-cc-wrap(
+            ( xtc-adapt <+ xtc-associate )
+          ; xtc-execute
+          )
+
+strategies
+
+  xtc-execute =
+    (Exec(id,id,id),exec-newp)
