@@ -1,3 +1,7 @@
+2001-11-21 Merijn de Jonge <mdejonge@cwi.nl> 
+    * atermdiff/data/diff12.topmost, diff34.topmost: adapted for string bug
+      fix in Stratego
+
 2001-09-21 Merijn de Jonge <mdejonge@cwi.nl> 
     * Version 0.1 released
     * Increased version number
