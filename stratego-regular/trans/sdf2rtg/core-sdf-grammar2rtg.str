@@ -26,14 +26,15 @@ strategies
     ; concat => prods
     )
 
-      /**
-       * @todo  use start symbols of SDF
-       */
-    ; collect(?'sorts(<id>))
-    ; concat
-    ; map(sort2nonterm)
+    /**
+     * @todo  use start symbols of SDF
+     */
+  ; collect(?'sorts(<id>))
 
-    ; !RTG(Start(<id>), ProdRules(prods))
+  ; concat
+  ; map(sym2tree; ?Ref(<id>) <+ err(!"Rewriting sort to nonterm failed"); fail)
+
+  ; !RTG(Start(<id>), ProdRules(prods))
 
 
 /**
