@@ -4,9 +4,9 @@ include $(wildcard *.dep)
 bin_PROGRAMS   = parse-cs
 pkgdata_DATA   = parse-cs-lib.rtree
 
-EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) $(wildcard *.rtg) 
+EXTRA_DIST     = $(wildcard *.str) $(wildcard *.rtree) $(wildcard *.meta)
 CLEANFILES     = $(wildcard *.dep)
-BOOTCLEANFILES = $(wildcard *.c) prolog-xtc-tools.rtree dtdinst.artg
+BOOTCLEANFILES = $(wildcard *.c)
 
 SCFLAGS      = --main io-$* 
 STRINCLUDES  = -I $(XTC)/share/xtc \
