@@ -1,4 +1,4 @@
-module sdf/symbols/implode
+module sdf/symbol/implode
 strategies
 
   /**
