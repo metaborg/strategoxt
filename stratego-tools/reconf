@@ -19,14 +19,14 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: reconf,v 1.1 2001/06/06 15:45:37 mdejonge Exp $
+# $Id: reconf,v 1.2 2001/11/25 22:57:11 mdejonge Exp $
 
 rm -f config.cache
 rm -f acconfig.h
 
 ./genconf.sh $* package.conf
 
-aclocal
+aclocal -I .
 autoconf
 #acconfig
 autoheader
