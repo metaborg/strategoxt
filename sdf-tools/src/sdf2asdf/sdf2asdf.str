@@ -11,11 +11,11 @@
  * productions.  Productions without constructor attributes are
  * ignored. 
  *
- * Author: Joost Visser (Joost.Visser@cwi.nl)
+ * @author  Joost Visser <Joost.Visser@cwi.nl>
  */ 
 module sdf2asdf
-imports Sdf-2-ASdf termid
+imports Sdf-2-ASdf
 strategies
 
   main =
-    io-idwrap(InOutId("\"sdf-2.1\"",!"\"sdf-2.1\""), sdf2asdf)
+    io-wrap(sdf2asdf)

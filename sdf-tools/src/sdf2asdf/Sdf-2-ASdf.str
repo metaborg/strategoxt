@@ -1,10 +1,10 @@
 /**
  * This module contains the rules and strategies for sdf2asdf.
  *
- * Author: Joost Visser (Joost.Visser@cwi.nl
+ * @author  Joost Visser <Joost.Visser@cwi.nl>
  */
 module Sdf-2-ASdf
-imports lib Sdf2-Syntax Literal-lib AsFix
+imports lib Sdf2 Literal-lib AsFix
 signature
    constructors
       dummy: Dummy
@@ -87,7 +87,7 @@ definition removes all attributes.
     restrictions(ps)		-> empty-grammar()
 
   Elim-Sorts:
-    Sorts(_)			-> empty-grammar()
+    'sorts(_)			-> empty-grammar()
 
 strategies
 
@@ -140,7 +140,7 @@ rules
   Simplify-sdf:
     attrs([])				-> no-attrs()
   Simplify-sdf:
-    Cons(Exports(empty-grammar()),es)	-> es
+    Cons(exports(empty-grammar()),es)	-> es
 
 rules
 
