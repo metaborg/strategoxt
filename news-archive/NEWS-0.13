@@ -1,6 +1,156 @@
 StrategoXT 0.13 -- released December ?, 2004
 
 ---------++ Summary of Changes
+
+Language:
+   * New dynamic rule features
+
+Compiler:
+   * Several bug fixes and new features.
+
+Library:
+
+Tools:
+   * StrategoXT Utils
+
+---------++ New Dynamic Rule Features
+
+    (Eelco Visser)
+
+---------++ Separate package for StrategoXT utils
+
+    (Rob Vermaas)
+
+---------++ Stratego Compiler
+
+   * Dynamic rules use a more special dummy
+
+	* spec/front/lift-dynamic-rules.str: changed the dummy used in
+	dynamic rule keys from [] to DR_DUMMY. This conflicts with dynamic
+	rules that contain []. Note, that these rules now also have a
+	different key. If you want them to have the same key, then for
+	example move the [] pattern to the where condition.
+
+	* spec/front/lift-dynamic-rules-old.str: use your own dummify. The
+	dummifies in the old and new lifter where overloaded, leading to
+	conflicts.
+
+   * Redefinition of external s
+
+	* spec/front/needed-defs.str: check for external redefinitions
+	before removing definitions that are not invoked from the code in
+	the program that is currently being compiled. This solves issue
+	STR-193.
+
+   * Only Cons/2 and Nil/0 are now reserved.
+
+	* spec/c/s2c.str: fixed STR-201, STR-205 and STR-25 by making some
+	checks more precise. The match and build translation strategies
+	checked for the string "Cons" and "Nil", where they should
+	actually also check the arity of these Ops. The Cons and Nil rules
+	where not applicable. Hence, the compilation failed.
+
+   * Improved reporting of ambiguities.
+
+   * Disable heuristic filters in parse-stratego 
+     HeuristicFilters(Off)
+
+   * Support for quoted constructors
+
+    (Martin Bravenboer)
+
+---------++ Stratego Standard Library
+
+   * iowrap is obsolete
+
+    (Rob Vermaas)
+
+* spec/pipe.str: bug fixes. 
+  - stdin-from-pipe and stdout-to-pipe didn't work correctly when
+  Pipe argument was stdin (0) or stdout (1). Since stdin and stdout
+  were explicitly closed, the connection with the pipe was lost.
+  Using dup2 instead of dup solves the problem because there is no
+  need to close file descriptiors.
+  -write-term-to-text-pipe uses WriteToTextFile but outfile argument
+  is a stream. Replacing WriteToTextFile by fprint solved the
+  problem.
+
+    (Merijn de Jonge)
+
+* logging
+
+    (Niels Janssen)
+
+* call(|opt-fdin, opt-fdout, opt-fderr)
+
+    (Martin Bravenboer)
+
+---------++ AutoXT
+
+All macros now use the XT prefix
+
+Use AC_CONFIG_AUX_DIR and fix in strc-core Makefile.am
+
+	* autoxt.m4: USE_XT_PACKAGES is obsolete and should be replaced by
+	in your configure.ac files by XT_USE_XT_PACKAGES. Thanks to Akim
+	for suggesting to use autoupdate macros.
+
+	* autoxt.m4: DETECT_SVN_REVISION was already obsolete, but now
+	also used an autoupdate macro.
+
+    (Akim Demaille and Martin Bravenboer)
+
+
+---------++ ATerm to XML
+
+	* trans/data2xml-doc.str, trans/xml-info2data.str: the --explicit
+	and the --very-explicit mode now use the XML namespace
+	http://aterm.org for the XML elements the represent ATerm
+	structures and types, such as list, tuple, int, string, anno
+	etc. In the explicit mode, this avoids conflicts with 'real'
+	ATerms of the same name. I'm using the namespace prefix 'at'.
+
+	* trans/data2xml-doc.str, trans/xml-info2data.str: all modes now
+	preserve all annotations by representing them as nested "anno"
+	elements in the XML namespace http://aterm.org.
+
+	* xtc/xml2aterm.str: the explicity mode is no longer required for
+	this tool, since it is no longer ambiguous whether the xml is
+	implicit, explicit or very explicit.
+
+    (Martin Bravenboer)
+
+----------++ Separate compilation
+
+liblib split into libstrategolib and libxtclib. The 
+module liblib is still available and imports the
+libraries above, in order to avoid having to patch
+zillions of Stratego modules.
+
+---------++ Misc. Fixes
+
+   * --max-depth flag for pp-aterm (Rob Vermaas)
+
+   * Removed dep on Perl.
+
+gpp:
+
+   * fixed error reporting of ppgen
+
+asfix-tools:
+
+	* src/implode/sglri.str: added the --no-heuristic-filters option
+	to disable the heuristic filters of sglr.
+
+stratego-regular:
+
+	* trans/sdf2rtg/core-sdf-grammar2rtg.str: nice names for character
+	classes.
+
+   sdf2rtg: Report productions and symbols in concrete syntax. Also,
+   added some hints about how to solve problems.
+
+added error reporting of martin to sglri
 	
 ---------++ Detailed List of Issues
 
@@ -29,4 +179,11 @@ issues to see if a report about the problem was already submitted.
 
 Developments, beta tests, and bug fixes were carried out by
 
-
+   * Martin Bravenboer
+   * Akim Demaille
+   * Niels Janssen
+   * Merijn de Jonge
+   * Rob van der Leek
+   * Rob Vermaas
+   * Eelco Visser
+   * Karl Trygve Kalleberg
