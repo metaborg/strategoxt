@@ -12,9 +12,4 @@ autoxt: autoxt.src Makefile
              s@__PREFIX__@$(prefix)@g'\
              < $< > $@ && chmod +x $@
 
-genxtpack: genxtpack.src Makefile
-	sed 's@__pkgdatadir__@$(pkgdatadir)@g;\
-             s@__PREFIX__@$(prefix)@g'\
-             < $< > $@ && chmod +x $@
-
 bootclean:
