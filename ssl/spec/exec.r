@@ -22,6 +22,7 @@
 
 \begin{code}
 module exec
+imports verbose 
 signature
   constructors
     WaitStatus : Int * Int * Int -> WaitStatus
