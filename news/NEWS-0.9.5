@@ -19,7 +19,7 @@ StrategoXT 0.9.5.
 Packages that require StrategoXT usually apply the USE_XT_PACKAGES
 macro of =autoxt= to add =--with-x= configuration flags to the
 configure script. This macro now also provides a =--with-strategoxt=
-argument, which is an alternative to the =--with-stratego-xt=
+flag, which is the preferred alternative to the =--with-stratego-xt=
 flag. The additional flag corresponds to the package name of
 StrategoXT, which is =strategoxt=.
 
@@ -35,10 +35,10 @@ overviews for developers, without having to struggle with a generic
 query interface.
 
 Our JIRA installation is public and everyone can submit issues. Please
-report issues directly to the JIRA issue tracking system from now
-on. New issues reported in JIRA will be send to the stratego-bugs
+report issues directly to the JIRA issue tracking system from now on.
+New issues reported in JIRA will be sent to the stratego-bugs
 mailing list for notification. However, the issue in JIRA is the
-preferred place to for comments. Of course you are welcome to discuss
+preferred place too for comments. Of course you are welcome to discuss
 issues at the stratego-dev mailing list first.
 
    * https://catamaran.labs.cs.uu.nl/jira/
@@ -60,7 +60,7 @@ Feedback by new users inspired us to revive the Tools web and start
 working on a comprehensive reference for the tools in StrategoXT. The
 reference is still far from complete, but it is a start. Tool
 documentation in the tool reference should provide an introduction,
-explanation of the command-line arguments and usage examples, The tool
+explanation of the command-line arguments and usage examples. The tool
 reference is a Wiki, so you are all welcome to improve and extend the
 available documentation. The tools of GPP are already documented
 pretty thorough.
@@ -81,7 +81,7 @@ available at
 
 ---------++ Compiler
 
-The name of a module declared in file did not really matter in the
+The name of a module declared in a file did not really matter in the
 past. This was rather frustrating in the development of xDoc. From
 StrategoXT 0.9.5 the compiler outputs a warning message if the
 declared module name does not correspond with the name of the file.
@@ -176,8 +176,8 @@ SDF. In the next release we will no longer distribute an SDF syntax
 definition, but directly work on the definition provided in the SDF
 distribution.
 
-Unfortunately some tools are still using the new syntax
-definition. For example =pack-sdf= uses the new one, but =sdf-to-sig=
+Unfortunately some tools are still using the old syntax definition.
+For example =pack-sdf= uses the new one, but =sdf-to-sig=
 still uses the old one. This situation will be solved in the next
 release, where SDF 2.1 will not be used anymore, except for its
 syntax, signatures and pretty-printer.
