@@ -61,14 +61,15 @@ done
 touch README
 touch NEWS
 
-rm -f mkinstalldirs missing install-sh
+autoxt || exit 1
 
+rm -f mkinstalldirs missing install-sh
 rm -f config.cache
 rm -f acconfig.h
-aclocal -I .
-autoconf
-autoheader
-automake -a
+aclocal -I .  || exit 1
+autoconf  || exit 1
+autoheader  || exit 1
+automake -a  || exit 1
 
 #
 # autobundle -- Make distributions by bundling separate software packages.
