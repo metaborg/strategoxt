@@ -6,7 +6,7 @@
  * @author Martin Bravenboer
  */
 module rhg-group
-imports options rhg-util
+imports liblib rhg-util
 
 strategies
 

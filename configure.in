@@ -86,9 +86,12 @@ AM_CONFIG_HEADER([config.h])
 PKGS="autoxt srts xtc sdf-import stratego-front asfix-tools strc gpp c-tools ssl concrete-syntax aterm-front sdf-front dot-tools graph-tools sdf-tools aterm-tools stratego-regular xml-front stratego-tools boxenv stratego-util"
 AC_SUBST(PKGS)
 
-top_srcdir=`pwd`
-BUILD_SRTS=${top_srcdir}/pre-pkgs/build
-INSTALL_XTC=${top_srcdir}/pre-pkgs/install
+BUILD_SRTS_DEST="`pwd`/pre-pkgs/build"
+INSTALL_XTC_DEST="`pwd`/pre-pkgs/install"
+BUILD_SRTS="$BUILD_SRTS_DEST/$prefix"
+INSTALL_XTC="$INSTALL_XTC_DEST/$prefix"
+AC_SUBST(BUILD_SRTS_DEST)
+AC_SUBST(INSTALL_XTC_DEST)
 
 DETECT_SVN_REVISION
 

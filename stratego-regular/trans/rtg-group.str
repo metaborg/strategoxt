@@ -6,7 +6,7 @@
  * @author Martin Bravenboer <martin@cs.uu.nl>
  */
 module rtg-group
-imports options rtg-util
+imports liblib rtg-util
 
 strategies
 

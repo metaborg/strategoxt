@@ -2,7 +2,7 @@
  * @author  Martin Bravenboer <martin@cs.uu.nl>
  */
 module rhg-util
-imports rhg list
+imports rhg
 
 strategies
 

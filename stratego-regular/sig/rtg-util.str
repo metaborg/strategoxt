@@ -1,5 +1,5 @@
 module rtg-util
-imports irtg rtg option list rhg-util
+imports irtg rtg rhg-util
 
 strategies
 

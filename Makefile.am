@@ -2,29 +2,20 @@ SUBDIRS      = . news-archive $(PKGS)
 EXTRA_DIST   = $(EXTRA_FILES)
 EXTRA_FILES  = README README.in svn-revision bootstrap acinclude.m4 strategoxt.spec.in strategoxt.spec
 
-all-local: pre-pkgs/build/srts.dummy pre-pkgs/install/xtc.dummy
-install-exec-local: pre-pkgs/build/srts.dummy pre-pkgs/install/xtc.dummy
+all-local: $(BUILD_SRTS_DEST)/srts.dummy $(INSTALL_XTC_DEST)/xtc.dummy
+install-exec-local: $(BUILD_SRTS_DEST)/srts.dummy $(INSTALL_XTC_DEST)/xtc.dummy
 
-# installs a local srts for building the StrategoXT packages
-# TODO: remove the dummy on a clean or whatever.
-pre-pkgs/build/srts.dummy :
-	mkdir -p pre-pkgs &&\
-	mkdir -p pre-pkgs/build &&\
-	cp -rfp srts pre-pkgs/build/ &&\
-	cd pre-pkgs/build/srts &&\
-	./configure --prefix=`cd ..; pwd` --with-aterm=$(ATERM) --with-cpl=$(CPL) --with-strc=$(STRATEGOXT)  --with-ssl=$(STRATEGOXT) &&\
-	$(MAKE) &&\
-	$(MAKE) install &&\
-	touch ../srts.dummy
+$(BUILD_SRTS_DEST)/srts.dummy :
+	cd srts && \
+	$(MAKE) $(AM_MAKEFLAGS) && \
+	$(MAKE) $(AM_MAKEFLAGS) DESTDIR=$(BUILD_SRTS_DEST) install && \
+	touch $(BUILD_SRTS_DEST)/srts.dummy
 
-pre-pkgs/install/xtc.dummy :
-	mkdir -p pre-pkgs/install &&\
-	cp -rfp xtc pre-pkgs/install/ &&\
-	cd pre-pkgs/install/xtc &&\
-	./configure --prefix=`cd ..; pwd` --with-srts=`cd ../../build; pwd` --with-aterm=$(ATERM) --with-strategoxt=$(STRATEGOXT) &&\
-	$(MAKE) &&\
-	$(MAKE) install &&\
-	touch ../xtc.dummy
+$(INSTALL_XTC_DEST)/xtc.dummy :
+	cd xtc && \
+	$(MAKE) $(AM_MAKEFLAGS) && \
+	$(MAKE) $(AM_MAKEFLAGS) DESTDIR=$(INSTALL_XTC_DEST) install && \
+	touch $(INSTALL_XTC_DEST)/xtc.dummy
 
 rpm : dist
 	$(RPMBUILD) -ta $(PACKAGE_TARNAME)-$(VERSION).tar.gz
