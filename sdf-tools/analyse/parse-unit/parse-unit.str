@@ -60,7 +60,7 @@ strategies
     if not(is-abstract-input) then
       xtc-sglr(!"parse-testsuite.tbl", !"TestSuite")
       ; xtc-implode-asfix
-      <+ debug(!"warning: could not parse the testsuite. I'm assuming that it is in abstract syntax, but it there might actually be a syntactical error in your testsuite. Use the --abstract-input option for declare that you are providing an abstract syntax testsuite.")
+      <+ trying-abstract-syntax-warning
     else id end
     ; read-from
     ; try(upgrade-oldskool-testsuite)
@@ -72,6 +72,9 @@ strategies
     ; where(<echo-results> (name, <id>))
     ; parse-unit-exit-on-failure
     ; write-to
+
+  trying-abstract-syntax-warning =
+    debug(!"warning: could not parse the testsuite. I'm assuming that it is in abstract syntax, but it there might actually be a syntactical error in your testsuite. Use the --abstract-input option for declare that you are providing an abstract syntax testsuite.")
 
   add-description :
     parse-test(string(s), output) -> parse-test(description(s), string(s), output)
@@ -224,11 +227,5 @@ strategies
     <+ !ParseResult(Failure(), None())
   
   print-to-tmp-file =
-      where(
-        new-file => result-file
-      ; <open-file> (result-file, "w") => stream
-      )
-    ; <print> (stream, [<id>])
-    ; <close-file> result-file
-    ; !result-file
-
+    <print-to> [<id>]
+    ; ?FILE(<id>)
