@@ -1,5 +1,12 @@
 2004-06-27   Martin Bravenboer  <martin@cs.uu.nl>
 
+	* autoxt.m4: added XT_PKG_STRATEGOXT, which checks if the
+	(not) specified location of strategoxt is ok. Should not be used
+	in StrategoXT packages: use it in packages that depend on
+	StrategoXT.
+
+2004-06-27   Martin Bravenboer  <martin@cs.uu.nl>
+
 	* autoxt.m4: added XT_SETUP where all stuff can be invoked that
 	always has to be done in configure to be able to build a Stratego
 	package. USE_XT_PACKAGES requires XT_SETUP, so legacy packages

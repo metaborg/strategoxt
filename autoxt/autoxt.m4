@@ -348,6 +348,13 @@ AC_DEFUN([XT_PKG_SDF],
   XT_PKG_ASF_LIBRARY
 ])
 
+AC_DEFUN([XT_PKG_STRATEGOXT],
+[
+  XT_PROG_STRC
+  XT_PROG_PACK_SDF
+  XT_PROG_SDF2RTG
+])
+
 ############ TEST PROGRAMS ##########################################################
 
 AC_DEFUN([XT_PROG_SDF2TABLE],
@@ -403,6 +410,48 @@ AC_DEFUN([XT_PROG_BAFFLE],
   else
     AC_MSG_RESULT([no])
     AC_MSG_ERROR([cannot find baffle. Use --with-aterm.])
+  fi
+])
+
+AC_DEFUN([XT_PROG_STRC],
+[
+  AC_REQUIRE([AC_PROG_CC])
+
+  AC_MSG_CHECKING([for strc at $STRC/bin/strc$EXEEXT])
+  test -x "$STRC/bin/strc$EXEEXT"
+  if test $? -eq 0; then
+    AC_MSG_RESULT([yes])
+  else
+    AC_MSG_RESULT([no])
+    AC_MSG_ERROR([cannot find strc. Use --with-strategoxt to specify the location of StrategoXT])
+  fi
+])
+
+AC_DEFUN([XT_PROG_PACK_SDF],
+[
+  AC_REQUIRE([AC_PROG_CC])
+
+  AC_MSG_CHECKING([for pack-sdf at $STRC/bin/pack-sdf$EXEEXT])
+  test -x "$SDF_FRONT/bin/pack-sdf$EXEEXT"
+  if test $? -eq 0; then
+    AC_MSG_RESULT([yes])
+  else
+    AC_MSG_RESULT([no])
+    AC_MSG_ERROR([cannot find pack-sdf. Use --with-strategoxt to specify the location of StrategoXT])
+  fi
+])
+
+AC_DEFUN([XT_PROG_SDF2RTG],
+[
+  AC_REQUIRE([AC_PROG_CC])
+
+  AC_MSG_CHECKING([for sdf2rtg at $STRC/bin/sdf2rtg$EXEEXT])
+  test -x "$STRATEGO_REGULAR/bin/sdf2rtg$EXEEXT"
+  if test $? -eq 0; then
+    AC_MSG_RESULT([yes])
+  else
+    AC_MSG_RESULT([no])
+    AC_MSG_ERROR([cannot find sdf2rtg. Use --with-strategoxt to specify the location of StrategoXT])
   fi
 ])
 
