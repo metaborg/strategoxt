@@ -18,19 +18,19 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 dnl 02111-1307, USA.
 
-dnl $Id: configure.in,v 1.25 2000/11/12 12:31:15 mdejonge Exp $
+dnl $Id: configure.in,v 1.26 2000/11/25 00:02:36 mdejonge Exp $
 
 AC_INIT(Makefile.in)
 AM_INIT_AUTOMAKE(xt,0.5beta)
 
-AC_REVISION($Id: configure.in,v 1.25 2000/11/12 12:31:15 mdejonge Exp $)
+AC_REVISION($Id: configure.in,v 1.26 2000/11/25 00:02:36 mdejonge Exp $)
 
 AC_ARG_WITH(pkginstalldir,
    [  --with-pkginstalldir    Specify location where softwere gets installed 
                           during \"make pkg\" ], PKG_INSTALL_DIR=$withval)
 
 AC_ARG_WITH(xt,
-   [  --with-xt               Use XT insallation during \"make pkg\" ], PKG_XT=$withval, PKG_XT=${prefix})
+   [  --with-xt               Use XT installation during \"make pkg\" ], PKG_XT=$withval, PKG_XT=${prefix})
 
 AC_SUBST(PKG_INSTALL_DIR)
 AC_SUBST(PKG_XT)
