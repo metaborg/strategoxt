@@ -34,8 +34,6 @@ AC_CONFIG_FILES([
   src/lib/data/Makefile
   src/fdl2sdf/Makefile
   src/fdl2sdf/data/Makefile
-  src/sdf/Makefile
-  src/sdf/data/Makefile
   src/sdf2asdf/Makefile
   src/sdf2asdf/data/Makefile
   src/sdf-bench/Makefile
