@@ -96,7 +96,8 @@ strategies
   /**
    * Returns directory portion of pathname in a POSIX compatible way.
    *
-   * @type String -> String
+   * @see   file-tests for examples
+   * @type  String -> String
    */
   dirname =
     string-as-chars(
@@ -125,18 +126,68 @@ strategies
               repeat(split-init-last; ?(<id>, '/'))
             ; (?[] < !['/'] + id))))))
 
+  /**
+   * Return the absolute path of a pathname.
+   *
+   * @type  String -> String
+   * @since 0.9.4
+   */
+  abspath =
+      is-abspath
+    < id
+    + <concat-strings> [<getcwd> (), "/", <id>]
+
+  /**
+   * Succeeds if the input pathname is an absolute path.
+   *
+   * A pathname is absolute if it starts with a /.
+   *
+   * @type  String -> String
+   * @since 0.9.4
+   */
+  is-abspath =
+    where(explode-string; ?['/' | _])
+
+  /**
+   * Succeeds if the input pathname is a relative path.
+   *
+   * A pathname is relative if it does not start with a /.
+   *
+   * @type  String -> String
+   * @since 0.9.4
+   */
+  is-relpath =
+    not(is-abspath)
+
+  /**
+   * Strips the directory from a pathname.
+   *
+   * @type  String -> String
+   */
+  base-filename =
+      <string-tokenize> (['/'], <id>)
+    ; last
+  
+/**
+ * @todo  define in terms of more general pathname strategies.
+ */
 strategies
 
   /**
-   * Strip extension from filename.
+   * Strip extension from a pathname.
    *
-   * @type  String -> String
+   * @warning basename is not comparable to the basename of sh. 
+   *          sh's basename strips the direcrory an optionallythe suffix.
+   * @type     String -> String
    */
   basename =
     basename(id)
 
   /**
-   * Strip directory and extension from filename.
+   * Strip extension from a pathname.
+   *
+   * @warning basename is not comparable to the basename of sh. 
+   *          sh's basename strips the direcrory an optionallythe suffix.
    *
    * @param  checks the extension
    * @type   String -> String

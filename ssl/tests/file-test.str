@@ -8,8 +8,12 @@ strategies
       dirname-tests
     ; file-props-tests
     ; basename-tests
+    ; base-filename-tests
     ; get-path-tests
     ; get-filename-tests
+    ; getcwd-tests
+    ; abspath-tests
+    ; is-abspath-tests
     )
     
 strategies
@@ -25,6 +29,22 @@ strategies
     ; apply-test(!"dirname -- 8", dirname, !"/foo/bla", !"/foo")
     ; apply-test(!"dirname -- 9", dirname, !"/foo/bla/", !"/foo")
 
+  is-abspath-tests =
+      apply-test(!"is-abspath -- 1", is-abspath, !"/", !"/")
+    ; apply-test(!"is-abspath -- 2", is-abspath, !"/bla", !"/bla")
+    ; apply-and-fail(!"is-abspath -- 3", is-abspath, !"bla")
+    ; apply-and-fail(!"is-abspath -- 4", is-abspath, !"./bla")
+
+  getcwd-tests =
+      apply-test(!"getcwd -- 1", getcwd, !())
+
+  abspath-tests =
+      where(getcwd => cwd)
+    ; apply-test(!"abspath -- 1", abspath, !"/", !"/")
+    ; apply-test(!"abspath -- 2", abspath, !"/bla", !"/bla")
+    ; apply-test(!"abspath -- 3", abspath, !"bla", <conc-strings> (cwd, "/bla"))
+    ; apply-test(!"abspath -- 4", abspath, !"./bla", <conc-strings> (cwd, "/./bla"))
+
   file-props-tests =
       apply-and-fail(!"create? -- 1", can-create-file, !"/root/bla.txt")
     ; apply-test(!"create? -- 2", can-create-file, !"/tmp/bla.txt", !"/tmp/bla.txt")
@@ -33,6 +53,11 @@ strategies
     apply-test(!"basename-test 1", basename, !"./number.r", !"./number")
   ; apply-test(!"basename-test 2", basename, !"./number",   !"./number")
   ; apply-test(!"basename-test 3", basename, !"/usr/bin/number.str", !"/usr/bin/number")
+
+  base-filename-tests = 
+    apply-test(!"base-filename-test 1", base-filename, !"./number.r", !"number.r")
+  ; apply-test(!"base-filename-test 2", base-filename, !"./number",   !"number")
+  ; apply-test(!"base-filename-test 3", base-filename, !"/usr/bin/number.str", !"number.str")
 
   get-path-tests =
     apply-test(!"get-path-test1"

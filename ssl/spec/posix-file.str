@@ -136,8 +136,8 @@ strategies
   P_tmpdir =
     prim("SSL_P_tmpdir")
 
-//  getcwd =
-//    prim("SSL_getcwd")
+  getcwd =
+    prim("SSL_getcwd")
 
   home-dir =
     <get-env> "HOME"
