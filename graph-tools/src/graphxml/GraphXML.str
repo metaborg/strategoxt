@@ -1,0 +1,14 @@
+module GraphXML
+signature
+  constructors
+    GraphXML : List(GraphXML-Attribute) * List(Graph) -> GraphXML
+    graph : List(Graph-Attribute) * List(Either(Node, Edge)) -> Graph
+    node1 : List(Node-Attribute) -> Node
+    node : List(Node-Attribute) * List(Either(Label, Either(Data, Either(Dataref, Either(Properties, Either(Style, Either(Position, Either(Size, Either(Transform, Subgraph-style))))))))) -> Node
+    label : List(Label-Attribute) * PCDATA -> Label
+    edge : List(Edge-Attribute) * List(Either(Label, Either(Data, Either(Dataref, Either(Properties, Either(Style, Path)))))) -> Edge
+    edge1 : List(Edge-Attribute) -> Edge
+    name : CDATA -> Name-Attribute
+    source : CDATA -> Source-Attribute
+    target : CDATA -> Target-Attribute
+    class : CDATA -> Class-Attribute

@@ -19,7 +19,7 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
  02111-1307, USA.
 
- $Id: graph-terms.r,v 1.1 2001/06/07 11:37:35 mdejonge Exp $
+ $Id: graph-terms.str,v 1.1 2002/12/08 13:20:22 stratego Exp $
 *)
 
 module graph-terms

@@ -19,23 +19,24 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
  02111-1307, USA.
 
- $Id: graph-term2GraphXML.r,v 1.6 2001/10/10 16:59:51 mdejonge Exp $
+ $Id: Dot.str,v 1.1 2002/12/08 13:20:22 stratego Exp $
 *)
 
-module graph-term2GraphXML
-imports
-  lib graph-terms GraphXML termid
-
-strategies
-
-  main
-    = io-idwrap( InOutId("\"graphterm-0\"", !"\"graphxml_1_1-0\""), graph-term2graphXML)
-
-  graph-term2graphXML
-    = \graph(nodes(ns),edges(es))  -> GraphXML([],[graph([],<conc>(ns',es'))])
-       where <map(\'id(n)          -> node1([name(<enquote>n)])\)> ns => ns';
-             <map(\['id(s),'id(t)] -> edge1([source(<enquote>s),target(<enquote>t)])\)> es => es'
-      \
-
-  enquote
-    = \str -> <concat-strings>["\"",str,"\""]\
+module Dot
+  signature
+    constructors
+      dot-graph : Boolean * Boolean * Id * Stmt-List -> Graph
+      alias : Id * Id -> Stmt
+      attr-id : Id * Id -> Attr
+      attr-num-con : Id * Num-Con -> Attr
+      node-stmt : Node-Id * Option(Attrs) -> Node-Stmt
+      edge-stmt : Either(Node-Id,SubGraph) * EdgeOp * ListSep(Either(Node-Id,SubGraph),EdgeOp) * Option(Attrs) -> Edge-Stmt
+      sub-graph : Id * Option(Stmt-List) -> SubGraph
+      arrow : EdgeOp
+      line : EdgeOp
+      Attr-List : Attr-List  -> Attrs
+      Attr-Stmt : Attr       -> Attr
+      node: Attr-List -> Attr-Stmt
+      comma: ListSep(Attr) -> Attr-List
+      semicolon: ListSep(Stmtm) -> Stmt-List
+      alt: X * Y -> Option

@@ -20,7 +20,7 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
  02111-1307, USA.
 
- $Id: GraphXML2dot.r,v 1.15 2002/03/14 07:44:34 eelco Exp $
+ $Id: GraphXML2dot.str,v 1.1 2002/12/08 13:20:22 stratego Exp $
 *)
 
 module GraphXML2dot
