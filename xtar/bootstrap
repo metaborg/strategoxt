@@ -1,6 +1,9 @@
 #! /bin/sh
 rm -f config.cache config.log acconfig.h aclocal.m4
 
+export WANT_AUTOMAKE="1.8"
+export WANT_AUTOCONF="2.59"
+
 autoxt || exit 1
 aclocal -I . || exit 1
 libtoolize --force || glibtoolize --force || exit 1
