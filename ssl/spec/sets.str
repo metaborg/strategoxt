@@ -89,7 +89,7 @@ strategies
   /**
    * Removes elem from set.
    *
-   * Not sure what happens if the element is not there.
+   * If the elements is not in the set, then this strategy does not fail.
    *
    * @type  IndexedSet -> IndexedSet
    */
