@@ -1,51 +1,65 @@
 /**
- * 
+ * Strategies for handling command-line options.
  * 
  * Example:
- *    module option-demo
- *    imports options
- *    
- *    strategies
- *    
- *    main =
- *       iowrap(id, 
- *              Option("--option1", 
- *                     id, 
- *                     !"--option1        This is a an example option")
- *             +ArgOption("--arg1",
- *                     id,
- *                     !"--arg1           This is an example arg option"))
+ * ---------------------------------------------------------------------------
+ * module option-demo
+ * imports options
+ *     
+ * strategies
+ *     
+ *   main =
+ *     io-wrap(demo-options, demo-usage, default-system-about, demo-impl)
  * 
- *    // Optional short description
- *    short-description(p) = !["Usage: ", <p>(), " [options]"]
+ *   demo-impl = id
  * 
- *    // Optional long description
- *    long-description(p) = !["This is a test program to demonstrate use of ",
- *                            "parse-options and  generation of usage ",
- *                            "info from option and switch specificatios. ",
- *                            "These now contain usage info as additional ",
- *                            "third argument."]
+ *   demo-options =
+ *       Option("--option1"
+ *       , <set-config> ("--option1", ())
+ *       , !"--option1        This is a an example option"
+ *       )
+ *     + ArgOption("--arg1"
+ *       , <set-config> ("--arg1", <id>)
+ *       , !"--arg1           This is an example arg option"
+ *       )
  * 
- * option-demo -h now displays:
+ *   demo-usage =
+ *     default-system-usage(
+ *       !"Usage: option-demo [options]"
+ *     , !
+ * "   This is a test program to demonstrate use of
+ *    parse-options and  generation of usage info
+ *    from option and switch specificatios. These
+ *    now contain usage info as additional third 
+ *    argument."
+ *     )
+ * ---------------------------------------------------------------------------
+ *
+ * option-demo --help now displays:
+ * ---------------------------------------------------------------------------
  * Usage: option-demo [options]
  * 
  * Options:
  *    --option1        This is a an example option
  *    --arg1           This is an example arg option
- *    -S|--silent      Silent execution
- *    --verbose        Verbose execution
- *    -v|--version     Display prgram's version
- *    @version         Unknown
  *    -i f|--input f   Read input from f
  *    -o f|--output f  Write output to f
  *    -b               Write binary output
- *    -s               Turn on statisctics
+ *    -S|--silent      Silent execution (same as --verbose 0)
+ *    --verbose i      Verbosity level i (default 1)
+ *    -s               Turn on statistics
+ *    --keep i | -k i  Keep intermediates (default 0)
  *    -h|-?|--help     Display usage information
+ *    --about          Display information about this program
+ *    --version        Same as --about
  * 
  * Description:
- * This is a test program to demonstrate use of parse-options and  generation
- * of usage info from option and switch specifications. These now contain usage
- * info as additional third argument.
+ *    This is a test program to demonstrate use of
+ *    parse-options and  generation of usage info
+ *    from option and switch specificatios. These
+ *    now contain usage info as additional third
+ *    argument.
+ * ---------------------------------------------------------------------------
  */
 module parse-options
 imports lib config 
@@ -171,7 +185,8 @@ strategies
     ; <echo> "\nOptions:"
     ; <table-get; reverse> ("usage-table", "usage")
     ; map(<echo> ["   ", <id>])
-    ; try(<echo> ["\n" | <long>])
+    ; <echo> "\nDescription:"
+    ; try(long; if is-string then ![<id>] end; echo)
 
   /**
    * Just shows the name of the program.
@@ -182,39 +197,48 @@ strategies
 rules
 
   Option(is-flag, label, s) :
-	[flag|rest] -> [<label>()|rest]
-	where <is-flag> flag
+    [flag|rest] -> [<label>()|rest]
+    where
+      <is-flag> flag
 
   Option(is-flag, label) = 
-	Option(is-flag, label, !"")
+    Option(is-flag, label, !"")
 
-  // Registere usage info, when Option is applied to the term
-  // "register-usage-info".
+  /**
+   * Registere usage info, when Option is applied to the term "register-usage-info"
+   */
   Option(is-flag, label, s) =
-     "register-usage-info";register-usage(s)
+     "register-usage-info"
+     ; register-usage(s)
+
+rules
 
   ArgOption(is-flag, label, s) :
   	[flag, arg | rest] -> [<label> arg | rest]
 	where <is-flag> flag
 
-  // Registere usage info, when ArgOption is applied to the term
-  // "register-usage-info".
-  ArgOption(is-flag, label, s) =
-     "register-usage-info";register-usage(s)
-
-  Arg2Option(is-flag, label, s) =
-     "register-usage-info";register-usage(s)
-     
   ArgOption(is-flag, label) =
     ArgOption(is-flag, label, !"")
 
-  Arg2Option(is-flag, label) :
-  	[flag, arg1, arg2 | rest] -> [<label> (arg1, arg2) | rest]
-	where <is-flag> flag
+  ArgOption(is-flag, label, s) =
+    "register-usage-info"
+    ; register-usage(s)
+     
+rules
+
+  Arg2Option(is-flag, label) =
+    Arg2Option(is-flag, label, !"")
 
   Arg2Option(is-flag, label, s) :
-  	[flag, arg1, arg2 | rest] -> [<label> (arg1, arg2) | rest]
-	where <is-flag> flag
+    [flag, arg1, arg2 | rest] -> [<label> (arg1, arg2) | rest]
+    where
+      <is-flag> flag
+
+  Arg2Option(is-flag, label, s) =
+    "register-usage-info"
+    ; register-usage(s)
+
+rules
 
   UndefinedOption :
 	[x | rest] -> [Undefined(x) | rest]
