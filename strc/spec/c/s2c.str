@@ -6,7 +6,6 @@ imports Stratego automaton lib C C-simplify dynamic-rules config
 signature
   constructors
     Include : String -> ExternalDef
-
 strategies
 
   s2c = 
@@ -708,11 +707,9 @@ rules
   ConstructList' :
     Op("Cons", [hd, tl]) -> c:exp|[ (ATerm)ATinsert(~exp:tl', ~exp:hd) ]|
     where
-     if is-ListOp then
-       <ConstructList> tl 
-     else
-       !CheckATermList(tl)
-     end => tl'
+     ( <is-ListOp; ConstructList> tl 
+     <+ !CheckATermList(tl)
+     ) => tl'
 
 /**
  * Term construction with constant term caching
@@ -742,7 +739,8 @@ rules
   proper-list =
     Op("Nil", [])
     + Op("Cons", [id, proper-list])
-    + not(is-ListOp)
+    + Op(id, id)
+      ; not(is-ListOp)
 
   init-cached-terms =
     (CachedTerms <+ ![]);
