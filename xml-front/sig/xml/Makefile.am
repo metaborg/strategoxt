@@ -1,10 +1,12 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-pkgdata_DATA  = xml-doc.rtree
+pkgdata_DATA   = xml-doc.str xml-doc.rtree xml-doc.rtg
 
-EXTRA_DIST     = xml-doc.rtree xml-doc.str
-BOOTCLEANFILES = xml-doc.rtree xml-doc.str xml-doc.rtg
+EXTRA_DIST     = $(pkgdata_DATA)
+BOOTCLEANFILES = $(pkgdata_DATA)
 
-xml-doc.rtg : 
-	$(LN_S) $(top_srcdir)/xml-doc.rtg $@
+SDF2RTG_FLAGS  = --main xml
+
+xml-doc.def : 
+	$(LN_S) -s $(top_srcdir)/syn/xml/xml.def $@
