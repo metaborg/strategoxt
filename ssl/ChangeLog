@@ -1,3 +1,8 @@
+2004-08-29  Martin Bravenboer <martin@cs.uu.nl>
+
+	* spec/string.str: added a string-tokenize variant using a term
+	argument for the list of token separators.
+	
 2004-08-26  Martin Bravenboer <martin@cs.uu.nl>
 
 	* spec/list-basic.str: removed conc-two-lists and conc-more-lists.

@@ -416,32 +416,47 @@ strategies
 
 strategies
 
- /**
-  * string-tokenize is like java.util.StringTokenizer. Given a
-  * list of possible delimiters (characters that separate tokens)
-  * it returns a list of tokens for a given string (the second
-  * argument). See string-test for examples.
-  *
-  * @type  [Char] * String -> [String]
-  * @inc   tokenize-test1
-  * @inc   tokenize-test2
-  * @inc   tokenize-test3
-  * @inc   tokenize-test4
-  * @inc   tokenize-test5
-  */
-  string-tokenize =
-      (id, explode-string)
-    ; ?(ws, <id>)
-    ; list-tokenize(<elem> (<id>, ws))
+  /**
+   * Breaks a string into tokens.
+   *
+   * string-tokenize is like java.util.StringTokenizer. Given a
+   * list of possible delimiters (characters that separate tokens)
+   * it returns a list of tokens for a given string.
+   *
+   * @param sepchars  List of separate characters
+   * @type  String -> [String]
+   */
+  string-tokenize(|sepchars) =
+    string-tokenize({c: ?c; <fetch(?c)> sepchars})
+
+  string-tokenize(sep) =
+      explode-string
+    ; list-tokenize(sep)
     ; map(implode-string)
 
-  // a -> fail? :: List(a) -> List(List(a))
-  list-tokenize(s) =
-      (split-fetch(s) <+ !(<id>, []))
+  /**
+   * @inc   tokenize-test1
+   * @inc   tokenize-test2
+   * @inc   tokenize-test3
+   * @inc   tokenize-test4
+   * @inc   tokenize-test5
+   *
+   * @type  (List(Char), String) -> List(String)
+   */
+  string-tokenize =
+      ?(sepchars, <id>)
+    ; string-tokenize(|sepchars)
+
+  /**
+   * @param s  a -> fail?
+   * @type     List(a) -> List(List(a))
+   */
+  list-tokenize(sep) =
+      (split-fetch(sep) <+ !(<id>, []))
     ; ( \ (  []     , [])        -> []   \
       + \ (l@[_ | _], [])        -> [l]  \
-      + \ (  []     , l@[_ | _]) -> <list-tokenize(s)> l \
-      + \ (t@[_ | _], l@[_ | _]) -> [t | <list-tokenize(s)> l] \
+      + \ (  []     , l@[_ | _]) -> <list-tokenize(sep)> l \
+      + \ (t@[_ | _], l@[_ | _]) -> [t | <list-tokenize(sep)> l] \
       )
 
 strategies
