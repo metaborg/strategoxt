@@ -21,7 +21,7 @@
 
 \begin{code}
 module io
-imports list string tuple integers time exec
+imports list string tuple integers time exec dir
 \end{code}
 
 	A \verb|file| can be a string or one of the terms
@@ -245,11 +245,11 @@ strategies
   new-file =
     rec x(<conc-strings> (<new>(), ".tmp"); try(file-exists; x))
 
+  // (String, a) -> b :: a -> b
   temp-file(s) =
-  where(new-file => f)
-  ; split(!f, id)
-  ; (s; where(<rm-files> [f])
-     <+ where(<rm-files> [f]); fail)
+      where(new-file => f)
+    ; <finally(s, try(<remove-file> f))> (f, <id>)
+
 \end{code}
 
 % Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
