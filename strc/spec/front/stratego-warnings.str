@@ -10,50 +10,25 @@
         stratego-warnings -i <your_spec>.ast.2 -o /dev/null
  */
 module stratego-warnings
-imports lib Stratego
-
-signature
-  constructors
-    ObsoleteWarning: Str -> Warning
-    DebugWarning   : Str -> Warning 
-    ConstructorWarning: Str -> Warning
-
-overlays
-
-  AllWarnings = [
-     ("debug-arguments",         "Warns for missing build operator"), 
-     ("obsolete-strategy-calls", "Warns for obsolete strategies"), 
-     ("maybe-unbound-variables", "Warns for unbound variables"),
-     ("lower-case-constructors", "Warns for lower-case constructors")
-     ]
+imports
+  lib
+  stratego-warnings-options
+  Stratego
 
 strategies
 
   stratego-warnings-io = 
     io-wrap(stratego-warnings-options, Stratego-warnings)
 
-  stratego-warnings-options = 
-    ArgOption("--warning" + "-W",
-        where(<extend-config> ("--warning", [<id>])); !(),
-        <concat-strings>["-W | --warning   Set warning level (-W all to switch all warnings on):\n",
-                         <Display-possible-warnings>AllWarnings ]
-    )
-
   Stratego-warnings =
    where(
      ?spec
      ; (<get-config>"--warning"; uniq <+ ![])
-     // If -W all was given, create a list of all available checks  
-     ; try(fetch-elem("all"); !AllWarnings; map(Fst))
      ; filter(Warning(!spec))
      ; concat
      ; print-warnings
     )
 
-  Display-possible-warnings = 
-     map( \ (s,txt) -> <concat-strings>["                     ",s, ": ", txt, "\n"] \ );
-     concat-strings
-     
   Warning(spec) =
        WarningDebugArguments(spec)
     <+ WarningObsolete(spec)
@@ -63,6 +38,7 @@ strategies
        ![]
 
 strategies
+
   LowerCaseConstructors(spec) =
   ?"lower-case-constructors";
   spec;
@@ -71,7 +47,7 @@ strategies
   filter( 
     \ x -> ConstructorWarning(<double-quote>x) 
       where lower-case => x
-          ; not(?"")
+          ; not("" + "stdin" + "stdout" + "stderr")
      \ )
 
   MaybeUnboundVariables(spec) =
@@ -151,7 +127,7 @@ strategy-invokation-warning(s) =
 
 // A strategy-argument warning warns about a possible incorrect argument to a
 // strategy. A typical example is a string argument to the "debug" strategy:
-//    debug("debug message")   since it should be   debug(!"debug message)
+//    debug("debug message")   since it should be   debug(!"debug message")
 //
 strategy-argument-warning(s) =
    collect(s);concat

@@ -294,9 +294,6 @@ strategies // COMPILER COMPONENTS
   comp(|f,args) =
     xtc-transform(!f, <concat>[["-b"], <pass-verbose>, args])
 
-  pass-warnings = 
-    <get-config; mapconcat(!["--warning", <id>])> "--warning"
-
 // FRONTEND
 
   pack-stratego 	= comp(|"pack-stratego", 

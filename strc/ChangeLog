@@ -1,3 +1,14 @@
+2004-07-06  Martin Bravenboer  <martin@cs.uu.nl>
+
+	* spec/front/stratego-warnings.str: use separate options module.
+
+	* spec/front/stratego-warnings-options.str: separate module for
+	options of stratego-warnings tool. Improved options: added -W no-C
+	if you just want to remove a single category from the set of
+	options. no-C should be *after* -W all.
+
+	* spec/strc/strc-options.str: import stratego-warnings-options.
+
 2004-06-27  Martin Bravenboer  <martin@cs.uu.nl>
 	
 	* spec/strc/strc-options.str: added the -CD option. This option

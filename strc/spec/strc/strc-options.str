@@ -1,5 +1,10 @@
 module strc-options
-imports options config strc-version
+imports
+  options
+  config
+  strc-version
+  stratego-warnings-options
+
 strategies
 
   command-line-options =
@@ -166,12 +171,7 @@ strategies
 	where(<set-config> ("-v",())); !(),         
 	!"-v | --version     Display program's version")
 
-  + ArgOption("--warning" + "-W",         
-	where(  where(<get-config>"--warning";["all"]);
-	        <set-config> ("--warning", [<id>])
-              <+ 
-                <extend-config>("--warning", [<id>])); !(),         
-	!"-W | --warning     Set warning level (-W all to switch all warnings on)")
+  + stratego-warnings-options
 
   + Option("--maybe-unbound-warnings",
         where(<set-config> ("--maybe-unbound-warnings", 1)),
