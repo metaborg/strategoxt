@@ -7,7 +7,6 @@ strategies
       xtc-io(
 	debug
 	; xtc-transform(!"parse-stratego")
-
-        //; xtc-transform(!"ast2text", !["-p", <xtc-find> "Stratego-pretty.pp"])
+        ; xtc-transform(!"ast2text", !["-p", <xtc-find> "Stratego-pretty.pp"])
       )
     )

@@ -1,7 +1,5 @@
 #include <srts/stratego.h>
 #include <ssl/stratego-lib.h>
-#include "conf.h"
-#include "xtc-conf.h"
 void init_constant_terms ();
 Symbol sym__0;
 Symbol sym__1;

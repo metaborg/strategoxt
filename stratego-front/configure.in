@@ -1,14 +1,11 @@
-AC_INIT(syn/Stratego.sdf)
-AM_INIT_AUTOMAKE(stratego-front,0.9beta8)
+AC_INIT([stratego-front],[0.9beta8],[stratego-bugs@cs.uu.nl])
+AM_INIT_AUTOMAKE
 
 USE_XT_PACKAGES
 
-AC_REVISION($Id: configure.in,v 1.13 2002/12/16 14:13:32 stratego Exp $)
-
-AM_CONFIG_HEADER(config.h)
+AC_REVISION($Id: configure.in,v 1.14 2003/01/01 13:25:47 stratego Exp $)
 
 AC_PROG_CC
-
 AC_PROG_INSTALL
 
 AC_OUTPUT( \
