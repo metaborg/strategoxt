@@ -18,9 +18,11 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/06/06 15:45:43 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2001/06/06 15:57:53 mdejonge Exp $
 
 include $(srcdir)/../templates/make_rules
+
+SUBDIRS = data
 
 STRATEGO_MODULES = Stratego-Layout.r     Stratego-Specifications.r \
                    Stratego-Lexicals.r   Stratego-Strategies.r \
