@@ -32,7 +32,7 @@ AC_SUBST([CORE_ENABLED])
 
 PKGS="autoxt srts xtc stratego-front asfix-tools \
    strc gpp c-tools ssl stratego-lib concrete-syntax xml-front \
-   aterm-front sdf-front dot-tools sdf-tools \
+   aterm-front sdf-front sdf-tools \
    stratego-regular xtar \
    boxenv"
 
@@ -217,17 +217,6 @@ AB_CONFIG_PKG(sdf-front,
 )
 
 AB_CONFIG_PKG(sdf-tools,
-   --with-aterm=${ATERM}
-   --with-sglr=${SGLR}
-   --with-pgen=${PGEN}
-   --with-asf-library=${ASF_LIBRARY}
-   --with-strategoxt=${STRATEGOXT}
-   --with-srts=${BUILD_SRTS}
-   --with-xtc=${INSTALL_XTC}
-   --with-repository=${REPOSITORY}
-)
-
-AB_CONFIG_PKG(dot-tools,
    --with-aterm=${ATERM}
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
