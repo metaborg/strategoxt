@@ -24,9 +24,9 @@ strategies
     ; where(<table-put>(XTC, Repository, [rep]))
     ; if-verbose4(debug(!"Reading repository: "))
     ; (file-exists ; ReadFromFile <+ ![])
-    ; if-verbose8(say(!"Repository read: "))
+    ; if-verbose6(say(!"Repository read: "))
     ; <table-putlist(table-append)>(XTC, <id>)
-    ; if-verbose8(say(!"Repository stored in table: "))
+    ; if-verbose6(say(!"Repository stored in table: "))
     ; <table-put>(XTC, Imported(rep), [])
     ; if-verbose4(say(!"Repository read: "))
 
