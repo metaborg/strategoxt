@@ -1,3 +1,10 @@
+Version 0.2 released: 2001-11-29
+	* all tools now display usage information when specifying the -h
+          switch.
+	* added termid module which contains strategies for checking
+          and setting of grammar identifiers.
+	* implode-asfix: Removed bug in --inj switch where injections with
+     a constructor attribute were eliminated.
 Version 0.1 released: 2001-09-20
 	* This package contains the asfix tools extracted from the
 	  Grammar Tools package, version 0.7.
