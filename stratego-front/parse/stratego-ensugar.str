@@ -42,13 +42,9 @@ rules
   EnsugarOnce : 
     Str(x) -> Str(y)
       where <string-as-chars(
-              debug(!"test 1 -- ")
-            ; not(is-double-quoted-chars)
-            ; debug(!"test 2 -- ")
+              not(is-double-quoted-chars)
             ; escape-chars
-            ; debug(!"test 3 -- ")            
             ; double-quote-chars
-            ; debug(!"test 4 -- ")            
             )> x => y
 
 strategies
