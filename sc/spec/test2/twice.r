@@ -13,6 +13,6 @@ strategies
 
     main       = <Main> [A, A]
 
-    Main       = where(<memo-init> "A"); [ma, ma]
+    Main       = memo-scope([ma, ma])
 
-    ma 	       = memo(!"A", RuleA)
+    ma 	       = memo(RuleA)

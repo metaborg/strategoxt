@@ -15,11 +15,11 @@ strategies
     + {?(r@B, C); !r}
 
   main = 
-    test-suite(!"test16",
+    test-suite(!"test16", 
 	test1
     )
 
-  test1 =
+  test1 = debug;
     apply-test(!"test1a"
 	, eq-or-c-r
 	, !(D, D)

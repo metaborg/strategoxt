@@ -1,3 +1,49 @@
+2002-01-10  Eelco Visser  <visser@acm.org>
+
+	* Release 0.7beta
+	
+	* src/io.c, src/string.c, src/tables.c: Removed conversions
+	between native and Cons/Nil lists.
+
+	* spec/options-test.r: TCons -> (.,.) 
+
+	* spec/list-zip.r: Moved tuple operations to tuple.r
+
+	* spec/list-misc.r: Moved tuple operations to tuple.r
+
+	* spec/list-filter.r: Refactored definition of partition using
+	term wrap and match project. Problem with old definition was that
+	it constructed an intermediate list with a pair as tail. This
+	fails after the introduction of native lists.
+
+	* spec/list-basic.r: layout + refactored reverse
+
+2002-01-04  Eelco Visser  <visser@acm.org>
+	
+	* spec/tuple-test.r: Tests for operations on tuples
+
+	* spec/exec-test.r: Refactored to be independent of additional
+	files.
+
+	* spec/tuple-cons.r: Commented declaration of TNil and TCons;
+	should no longer be used for the representation of tuples.
+
+	* spec/list-zip.r: Moved tuple related operations to tuple.r
+
+	* spec/tuple.r: Redefined rules and strategies to use new
+	representation of tuples. Generic tuple access defined in terms of
+	explode/implode and list operations; expensive! Added TupleToList
+	and ListToTuple.
+
+	* src/term.c (SSL_explode_term, SSL_mkterm): Refactored for fixed
+	length tuples
+
+	* spec/pack.r: refactored (introduction of fixed length tuples)
+
+2002-01-03  Eelco Visser  <visser@acm.org>
+
+	* Release 0.6.4
+	
 2001-12-18  Eelco Visser  <visser@acm.org>
 
 	* spec/memo.r: Refactored definition of memoization strategy

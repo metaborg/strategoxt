@@ -1,6 +1,6 @@
 \literate[{\tt USE-DEF}]
 
-% Copyright (C) 1998, 1999, 2000 Eelco Visser <visser@acm.org>
+% Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
 % 
 % This program is free software; you can redistribute it and/or modify
 % it under the terms of the GNU General Public License as published by
@@ -33,8 +33,8 @@ imports sugar list-set stratlib
 \begin{code}
 strategies
 
-  use-term     = {t: ?t; ![(<tvars> t, [], [])]}
-  def-term     = {t: ?t; ![([], <tvars> t, [])]}
+  use-term = ![(<tvars>, [], [])]
+  def-term = ![([], <tvars>, [])]
 
   constructs(x) =
 	 Build(use-term) + Match(def-term) + MA(def-term, x) + 
@@ -92,9 +92,9 @@ rules
   UDjoin : Scope(xs, uds)     -> <map(JoinScope(!xs))> uds
   UDjoin : Overlay(f, xs, t)  -> Overlay(f, xs, <seqs-join> [([],xs,[]),t])
 
-  JoinScope(xs) : (u, d, e) -> 
-                  (u, <diff> (d, <xs>()), 
-                      <conc> (<isect> (u, <xs>()), e))
+  JoinScope(xs) : 
+    (u, d, e) -> 
+    (u, <diff> (d, <xs>()), <conc> (<isect> (u, <xs>()), e))
 \end{code}
 
 	For all other constructs the use-def information is combined
@@ -144,13 +144,13 @@ rules
   MsgU : [x] -> 
          ["variable ", x, ": used, but not bound"]
   MsgU : [x, y | ys] -> 
-         ["variables ", Cons(x, Cons(y, ys)), ": used, but not bound"]
+         ["variables ", [x, y | ys], ": used, but not bound"]
 
   MsgD : [] -> []
   MsgD : [x] -> 
          ["variable ", x, ": matched, but not declared"]
   MsgD : [x, y | ys] -> 
-         ["variables ", Cons(x, Cons(y, ys)), ": matched, but not declared"]
+         ["variables ", [x, y | ys], ": matched, but not declared"]
 
   MsgE : [] -> []
 

@@ -41,7 +41,7 @@ rules
   HL : MA(t, s)            -> Seq(Match(t), s)
   HL : AM(s, t)            -> Seq(s, Match(t))
   HL : BAM(s, t1, t2)      -> Seqs([Build(t1), s, Match(t2)])
-  HL : InfixApp(t1, s, t2) -> App(s, Op("TCons",[t1,Op("TCons",[t2,Op("TNil",[])])]))
+  HL : InfixApp(t1, s, t2) -> App(s, Op("",[t1,t2]))
 \end{code} 
 
 \paragraph{Strategy Applications}
@@ -56,21 +56,31 @@ rules
 \begin{code}
 rules
 
-  Bapp0 : Build(t[App(Build(t'), t'')]) -> Build(t[t'])
+  Bapp0 : Build(t[App(Build(t'), t'')]) -> Build(t[t'](pat-td))
 
   Bapp1 : Build(App(s, t')) -> Seq(Build(t'), s)
 
   Bapp2 : Build(t[App(s, t')]) -> 
-          Scope([x], Seq(Where(BAM(s, t', Var(x))), Build(t[Var(x)])))
+          Scope([x], Seq(Where(BAM(s, t', Var(x))), Build(t[Var(x)](pat-td))))
           where new => x
 
-  Bapp0 : Build(t[RootApp(Build(t'))]) -> Build(t[t'])
+  Bapp0 : Build(t[RootApp(Build(t'))]) -> Build(t[t'](pat-td))
 
   Bapp1 : Build(RootApp(s)) -> s
 
   Bapp2 : Build(t[RootApp(s)]) -> 
-          Scope([x], Seq(Where(Seq(s, Match(Var(x)))), Build(t[Var(x)])))
+          Scope([x], Seq(Where(Seq(s, Match(Var(x)))), Build(t[Var(x)](pat-td))))
           where new => x
+\end{code}
+
+Only look for Apps and RootApps under constructor applications and term
+explosions. Avoid lifting an App from within another App or RootApp.
+
+\begin{code}
+  pat-td(s) = 
+    s <+ (Op(id, fetch(pat-td(s)))
+         + Explode(id, pat-td(s))
+         + Explode(pat-td(s), id))
 \end{code}
 
 \begin{code}
@@ -79,14 +89,14 @@ rules
   Mapp1 : Match(App(s, t')) -> BA(s, t')
 
   Mapp2 : Match(t[App(s, t')]) -> 
-          Seq(Match(t[Wld]), BA(s, t'))
+          Seq(Match(t[Wld](pat-td)), BA(s, t'))
 
-  Mapp0 : Match(t[RootApp(Match(t'))]) -> Match(t[t'])
+  Mapp0 : Match(t[RootApp(Match(t'))]) -> Match(t[t'](pat-td))
 
   Mapp1 : Match(RootApp(s)) -> s
 
   Mapp2 : Match(t[RootApp(s)]) -> 
-          Scope([x], Seq(Match(t[Var(x)]), Seq(Build(Var(x)), s)))
+          Scope([x], Seq(Match(t[Var(x)](pat-td)), Seq(Build(Var(x)), s)))
           where new => x
 \end{code}
 
@@ -100,7 +110,7 @@ rules
                 Seq(Match(t[Var(x)]),
                     Where(BAM(Scope([y],Seq(Match(Var(y)),Prim("SSL_explode_term",[Var(y)]))), 
                           Var(x), 
-			  Op("TCons", [t1, Op("TCons", [t2, Op("TNil",[])])])
+			  Op("", [t1, t2])
                           ))))
           where new => x; new => y
 
@@ -214,7 +224,7 @@ strategies
   desugar-spec = map(SDef(id, id, desugar))
 \end{code}
  
-% Copyright (C) 1998-2001 Eelco Visser <visser@acm.org>
+% Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
 % 
 % This program is free software; you can redistribute it and/or modify
 % it under the terms of the GNU General Public License as published by

@@ -1,22 +1,5 @@
 \literate[needed-defs]
 
-% Copyright (C) 1998-2001 Eelco Visser <visser@acm.org>
-% 
-% This program is free software; you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation; either version 2, or (at your option)
-% any later version.
-% 
-% This program is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-% 
-% You should have received a copy of the GNU General Public License
-% along with this program; if not, write to the Free Software
-% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-% 02111-1307, USA.
-
 	\begin{abstract}
 
 	Extract those definitions that are needed for the main strategy and
@@ -161,17 +144,17 @@ rules
 	the following scheme:
 
 \begin{verbatim}
-  c^D(s1,...,sn) : Pair(c(x1,...,xn),env) -> c(y1,...,yn)
-  where <s1> Pair(x1,env) => y1;
+  c^D(s1,...,sn) : (c(x1,...,xn),env) -> c(y1,...,yn)
+  where <s1> (x1,env) => y1;
         ...
-        <sn> Pair(xn, envn) => yn
+        <sn> (xn, envn) => yn
 \end{verbatim}
 	
 	This is implemented by the following rules.
 
 \begin{code}
 overlays
-  OpPair(t1, t2) = Op("Pair", [t1,t2])
+  OpPair(t1, t2) = Op("", [t1,t2])
 
 rules
   DefineCongruence :
@@ -197,10 +180,10 @@ rules
 	the following scheme:
 
 \begin{verbatim}
-  c^T(s1,...,sn) : Pair(c(x1,...,xn),e-first) -> Pair(c(y1,...,yn), e-last)
-  where <s1> Pair(x1,e-first) => Pair(y1,e2);
+  c^T(s1,...,sn) : (c(x1,...,xn),e-first) -> (c(y1,...,yn), e-last)
+  where <s1> (x1,e-first) => (y1,e2);
               ...;
-        <sn> Pair(xn, en) => Pair(yn, e-last)
+        <sn> (xn, en) => (yn, e-last)
 \end{verbatim}
 
 	The following rules implement this scheme:
@@ -232,3 +215,20 @@ rules
                 VarDec(s,DefaultStrat), x, Var(x), y, Var(y))
     where new => s; new => x; new => y
 \end{code}
+
+% Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
+% 
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+% 
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% 
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.

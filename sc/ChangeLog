@@ -1,5 +1,78 @@
+2002-01-10  Eelco Visser  <visser@acm.org>
+
+	* Release 0.7beta
+
+	* spec/test1: Adapted example to list and tuple changes. Removed
+	uses of Pair.x
+
+	* spec/syn/stratego.grm: Changed mapping to abstract syntax for
+	list and tuple terms and congruences.
+
+	* spec/opt/congruence-laws.r: Refactorings using term wrap.
+
+	* spec/front/needed-defs.r: Updated to (.,.) pairs from Pair(.,.)
+
+	* spec/front/check-constructors.r: Refactored implementation of
+	constructor checking using dynamic rules. This improves
+	performance considerably. The tuple constructor "" is supported by
+	generating OpDecls for a number of arities. This should be
+	generalized to generate such declarations on demand for every
+	arity used.
+	
+	* spec/c/s2c.r: Cons and Nil are interpreted as constructors for
+	built-in ATerm lists. For instance, a match to Cons(x, xs) is
+	translated to code that uses ATgetFirst and ATgetNext to obtain
+	the head and tail of a list. Construction uses ATinsert.
+
+	* spec/testlib/: Directory for testing the Stratego Standard
+	Library with a new (bootstrapped) compiler before installing it.
+
+2002-01-08  Eelco Visser  <visser@acm.org>
+
+	* spec/front/desugar.r: Desugaring of applications in build and
+	match (TermWrap, TermProject) was not correct because of overlap
+	between the contextual desugaring rules. This turned up after
+	reversing the order of evaluation of same name rules. But it would
+	turn up eventually because of the overlap between the Bapp2
+	rules. Repaired by using a restricted traversal for the context
+	(pat-td).
+
+2002-01-06  Eelco Visser  <visser@acm.org>
+
+	* spec/make_rules.in: Including libatermextension.a instead of
+	libstratego.a to avoid redefinition of main function.
+
+2002-01-04  Eelco Visser  <visser@acm.org>
+
+	* spec/sig/terms.r: Updated remarks about tuple encoding
+
+	* spec/test2/flatten-test.r: TCons -> (,)
+
+	* spec/front/normalize-spec.r: Op("TNil",[]) -> Op("", [])
+
+	* spec/front/check-constructors.r: Refactored the definition of
+	constructor checking using dynamic rules. For a fixed number of
+	arities, declarations for tuples are given. This should be
+	generalized. The specification has a prototype generalization,
+	which does not work for a yet unknown reason.
+
+	* spec/syn/stratego.grm: Terms of the form (t1,...,tn) are now
+	parsed as Op("", [t1,...,tn]). Similarly strategies (congruences)
+	of the form (s1,...,sn) are now parsed as Call(SVar(""),
+	[s1,...,sn]).  That is, tuples are no longer interpreted as
+	heterogeneous lists constructed with the constructors TCons and
+	TNil. Rather, for each tuple length there is a unique constructor
+	with the empty string as identifiers. By overloading the empty
+	identifier can be used for any arity.
+
+	* Tuples of length 1 are ignored, both in term and in strategy
+	syntax. This means that (t) is no longer the one-tuple with term
+	t, but just the term t itself. (Just as everyone expects anyway.)
+	
 2002-01-03  Eelco Visser  <visser@acm.org>
 
+	* Release 0.6.4
+	
 	* spec/front/desugar.r: The condition of a rule should be wrapped
 	in a Where. In normal rules that perform a build it can be left
 	out, but in `strategy rules' (:: -->) that might do a congruence,

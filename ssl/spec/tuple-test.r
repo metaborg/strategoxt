@@ -1,36 +1,30 @@
-\literate[list-misc-test]
-
+\literate[tuple-test]
 \begin{code}
-module list-misc-test
-imports sunit list-misc
+module tuple-test
+imports tuple sunit
+strategies 
 
-strategies
+  main = 
+    test-suite(!"tuple-test",
+	tuple-zip-test;
+        tuple-unzip-test
+     )
 
-  main =
-    test-suite(!"list-misc-test",
-	test1;
-	copy-test
-    )
+  tuple-zip-test =
+    apply-test(!"tuple-zip-test"
+              ,tuple-zip(id)
+              ,!([1,2,3], [4,5,6], [7,8,9])
+              ,![(1,4,7), (2,5,8), (3,6,9)]
+              )
 
-  test1 =
-    apply-test(!"test1"
-	, rec flat(mapfoldr(id
-		           ,is-list; flat <+ \ x -> [x] \
-			   ,conc
-			   ))
-	, !["a",["b",["c","d"]],"e"]
-	, !["a","b","c","d","e"]
-	)
-
-  copy-test = 
-    apply-test(!"copy-test"
-	, copy
-	, !(4, "a")
-	, !["a", "a", "a", "a"]
-	)
+  tuple-unzip-test =
+    apply-test(!"tuple-unzip-test"
+              ,tuple-unzip(id)
+              ,![(1,4,7), (2,5,8), (3,6,9)]
+              ,!([1,2,3], [4,5,6], [7,8,9])
+              )
 
 \end{code}
-
 % Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
 % 
 % This program is free software; you can redistribute it and/or modify

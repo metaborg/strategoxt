@@ -1,4 +1,4 @@
-# Copyright (C) 1998-2001 Eelco Visser <visser@acm.org>
+# Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,13 +19,17 @@ EXTRA_DIST = $(wildcard *.r) ac2c.src
 
 bin_SCRIPTS = s2c canonicalize ac2c
 
-CLEANFILES = $(bin_SCRIPTS) *.dep
+CLEANFILES = $(bin_SCRIPTS) *.dep $(TESTS)
 
 SCFLAGS = --main $@ -I ../sig \
 	  -I $(CGEN)/share/cgen \
-	  -I ../match
+	  -I ../match \
+	  -CI -g \
+	  -CL -g \
+	  --norm
 
-TESTS = C-simplify-test canonicalize-test
+TESTS = C-simplify-test 
+#canonicalize-test
 
 BOOTSOURCES = canonicalize.c s2c.c ac2c.src
 

@@ -66,7 +66,7 @@ ATerm SSL_call_it(ATbool noisy, ATerm prog, ATerm args0)
   if(noisy)
     ATfprintf(stderr, "%s", t_string(prog));
 
-  args = (ATermList) consnil_to_list(args0);
+  args = args0; // (ATermList) consnil_to_list(args0);
 
   i = 0;
   str_args[i++] = t_string(prog);

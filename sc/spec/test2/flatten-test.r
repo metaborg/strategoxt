@@ -9,11 +9,10 @@ signature
 
 strategies
 
-
   flatten-terms = 
-	flatten(\ Imports(xs) -> xs \, 
-		{n : ?(n, Module(n, _))},
-		\ Module(n, c) -> <filter(not(Imports(id)))> c \ )
+    flatten(debug; \ Imports(xs) -> xs \; debug, 
+	    debug; {n : ?(n, Module(n, _))}; debug,
+	    debug; \ Module(n, c) -> <filter(not(Imports(id)))> c \; debug )
 
   main = 
     test-suite(!"flatten-test",
@@ -23,6 +22,9 @@ strategies
   test1 = 
     apply-test(!"test1"
 	, flatten-terms
-	, !TCons("module1",TCons([Module("module3",[Imports(["module1"]),Content("module3")]),Module("module2",[Imports([]),Content("module2")]),Module("module1",[Imports(["module2","module3"]),Content("module1")])],TNil))
-	, ![Content("module3"),Content("module2"),Content("module1")] 
+	, !("module1", 
+            [Module("module3",[Imports(["module1"]),Content("module3")]),
+             Module("module2",[Imports([]),Content("module2")]),
+             Module("module1",[Imports(["module2","module3"]),Content("module1")])])
+	, ![Content("module3"),Content("module2"),Content("module1")]
 	)

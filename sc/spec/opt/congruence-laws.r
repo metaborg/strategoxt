@@ -13,8 +13,8 @@ rules
           Seq(Match(Op(f, xs')),
           Seq(Seqs(ss'),
               Build(Op(f, ys')))))
-    where <map(new)> ss => xs; <map(\ x -> Var(x) \ )> xs => xs';
-	  <map(new)> ss => ys; <map(\ y -> Var(y) \ )> ys => ys';
+    where <map(new)> ss => xs; <map(!Var(<id>))> xs => xs';
+	  <map(new)> ss => ys; <map(!Var(<id>))> ys => ys';
           <zip(\ ((x,y), s) -> Seq(Build(Var(x)), Seq(s, Match(Var(y)))) \ )> (<zip(id)>(xs,ys), ss) => ss'
 
 (*

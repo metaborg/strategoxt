@@ -141,7 +141,7 @@ ATerm SSL_print(ATerm file, ATerm str)
   outfile = _SSL_file_table_lookup(file);
   if(outfile == NULL) 
     _fail(file);
-  str = consnil_to_list(str);
+  //str = consnil_to_list(str);
   while(!ATisEmpty((ATermList)str))
     {
       if(ATisString(ATgetFirst((ATermList)str)))
@@ -164,9 +164,9 @@ ATerm SSL_printnl(ATerm file, ATerm str)
     ATfprintf(stderr, "printnl: could not open file: %t\n", file);
     _fail(file);
   }
-  str = consnil_to_list(str);
+  //str = consnil_to_list(str);
   if(!(ATgetType(str) == AT_LIST)) {
-    ATfprintf(stderr, "ST_printnl: argument not a list: %t\n", str);
+    ATfprintf(stderr, "SSL_printnl: argument not a list: %t\n", str);
     _fail(str);
   }
   while(!ATisEmpty((ATermList)str))
@@ -192,7 +192,7 @@ ATerm SSL_printascii(ATerm file, ATerm str)
   outfile = _SSL_file_table_lookup(file);
   if(outfile == NULL) 
     _fail(file);
-  str = consnil_to_list(str);
+  // str = consnil_to_list(str);
   while(!ATisEmpty((ATermList)str))
     {
       if(ATisInt(ATgetFirst((ATermList)str)))
@@ -231,7 +231,7 @@ ATerm SSL_ReadFromFile(ATerm filename)
 
   /* ATfprintf(stderr, "in_term = %t\n", in_term); */
   
-  return(list_to_consnil(in_term));
+  return(in_term /* list_to_consnil(in_term) */);
 }
 
 ATerm SSL_WriteToFile(ATbool binary, ATerm filename, ATerm trm)
@@ -250,10 +250,10 @@ ATerm SSL_WriteToFile(ATbool binary, ATerm filename, ATerm trm)
   if(outfile != NULL)
     {
       if(binary)
-	ATwriteToBinaryFile(consnil_to_list(trm), outfile);
+	ATwriteToBinaryFile(trm /* consnil_to_list(trm) */, outfile);
       else 
 	{
-	  ATwriteToTextFile(consnil_to_list(trm), outfile);
+	  ATwriteToTextFile(trm /* consnil_to_list(trm) */, outfile);
 	  fprintf(outfile, "\n");
 	}
       fclose(outfile);

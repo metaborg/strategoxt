@@ -75,7 +75,7 @@ ATerm SSL_implode_string(ATerm chars)
   }
 
   /* ATfprintf(stderr, "chars = %t\n", chars); */
-  for(i = 0; !AThasName(chars, "Nil"); 
+  for(i = 0; chars != ATempty; 
       chars = (ATerm) ATgetNext((ATermList) chars), i++)
     {
     
@@ -116,16 +116,16 @@ ATerm SSL_explode_string(ATerm t)
 { 
   char *str;
   int i;
-  ATerm chars;
+  ATermList chars;
   //ATfprintf(stderr, "SSL_explode_string(%t)\n", t);
   if(!ATisString(t))
     _fail(t);
   str = ATgetName(ATgetSymbol(t));
   for(i = 0; str[i] != '\0'; i++) ;
-  for(chars = ATmake("Nil"); i > 0; i--) {
-    chars = App2("Cons", (ATerm) ATmakeInt(str[i - 1]), chars);
+  for(chars = ATempty; i > 0; i--) {
+    chars = ATinsert(chars, (ATerm) ATmakeInt(str[i - 1]));
     // if(str[i - 1] == 92) i--;
   }
   //ATfprintf(stderr, "SSL_explode_string : %t\n", chars);
-  return(chars);
+  return((ATerm) chars);
 }

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1998-2001 Eelco Visser <visser@acm.org>
+Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -25,30 +25,61 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 ATerm SSL_mkterm(ATerm c, ATerm ts0)
 { 
   char *f;
-  
   ATermList ts;
-  ATermAppl t;
-  if(ATisString(c))
-    { 
-      t = (ATermAppl)ATparse(t_string(c));
-      f = t_string(t);
-      ts = (ATermList) consnil_to_list_shallow(ts0);
-      c =((ATerm) ATmakeApplList(ATmakeSymbol(f, ATgetLength(ts), ATisQuoted(ATgetAFun(t))), ts));
-       
-      return c;
-    }
-  else if(ATgetType(c) == AT_REAL)
-    return(c);
-  else if(ATgetType(c) == AT_INT)
-    return(c); 
-  else
+  ATerm t;
+  AFun fun;
+  ATbool quoted;
+
+  //ATfprintf(stderr, "SSL_mkterm(%t,%t)\n", c, ts0);
+
+  /*
+  if(ATisThisString(c, "Nil") && ATgetLength(ts0) == 0)
+    t = (ATerm) ATempty;
+  else if(ATisThisString(c, "Cons") && ATgetLength(ts0) == 2)
+    t = (ATerm) ATinsert(ATgetFirst(ATgetNext((ATermList)ts0)), ATgetFirst((ATermList)ts0));
+  */
+  switch(ATgetType(c)) {
+  case AT_REAL:
+  case AT_INT :
+    t = c;
+    break;
+  case AT_LIST :
+    t = CheckATermList(ts0);
+    break;
+  case AT_APPL:
+    if(ATisString(c))
+      { 
+	f = ATgetName(ATgetAFun(c));
+	if(f[0] == '\0')
+	  quoted = ATfalse;
+	else
+	  {
+	    fun = ATgetAFun(ATparse(f));
+	    f = ATgetName(fun);
+	    quoted = ATisQuoted(fun);
+	  }
+	
+	if(ATgetType(ts0) != AT_LIST)
+	  _fail(ts0);
+	
+	//ts = (ATermList) consnil_to_list_shallow(ts0);
+	ts = (ATermList) ts0;
+	
+	t = ((ATerm) ATmakeApplList(ATmakeSymbol(f, ATgetLength(ts), quoted), ts));
+      }
+    else
+      _fail(c);
+    break;
+  default:
     _fail(c);
-  return(c);
+  }
+  //ATfprintf(stderr, "SSL_mkterm : %t\n", t);
+  return t;
 }
 
 ATerm SSL_explode_term(ATerm t)
 {
-//  ATfprintf(stderr, "SSL_explode_term(%t)\n", t);
+  //ATfprintf(stderr, "SSL_explode_term(%t)\n", t);
   switch(ATgetType(t)) {
   case AT_APPL :
     {
@@ -59,25 +90,35 @@ ATerm SSL_explode_term(ATerm t)
         t1 = ATmakeStringQ(ATgetName(sym));
       else
         t1 = ATmakeString(ATgetName(sym));
-//  ATfprintf(stderr, "exploded _term(%t)\n", t1);
+      // ATfprintf(stderr, "exploded _term(%t)\n", t1);
   
-      t = App2("TCons", t1,
-                  App2("TCons",
-                       (ATerm)
-		       list_to_consnil_shallow((ATerm)ATgetArguments((ATermAppl)t)),
-                       App0("TNil")));
+      t = App2("", t1, (ATerm) ATgetArguments((ATermAppl)t)
+	       /* list_to_consnil_shallow((ATerm)ATgetArguments((ATermAppl)t)) */
+	       );
       break;
     }
   case AT_INT :
-    t = ATmake("TCons(<int>,TCons(Nil,TNil))", ATgetInt((ATermInt)t));
+    t = App2("", t, (ATerm)ATempty);
     break;
   case AT_REAL :
-    t = ATmake("TCons(<real>,TCons(Nil,TNil))", ATgetReal((ATermReal)t));
+    t = App2("", t, (ATerm)ATempty);
     break;
+  case AT_LIST :
+    {
+      t = App2("", (ATerm)ATempty, t);
+	/*
+      if(t == (ATerm)ATempty) 
+	t = App2("", ATmakeString("Nil"), (ATerm)ATempty);
+      else
+	t = App2("", ATmakeString("Cons"), 
+		 (ATerm) ATmakeList2(ATgetFirst((ATermList)t), (ATerm)ATgetNext((ATermList)t)));
+	*/
+      break;
+    }
   default:
     _fail(t);
   }
-  // ATfprintf(stderr, "SSL_explode_term: %t\n", t);
+  //ATfprintf(stderr, "SSL_explode_term: %t\n", t);
   return(t);
 }
 

@@ -1,6 +1,6 @@
 \literate[{\tt NORMALIZE-SPEC}]
 	
-% $Id: normalize-spec.r,v 1.4 2001/12/17 19:50:05 stratego Exp $
+% $Id: normalize-spec.r,v 1.5 2002/01/10 21:00:39 stratego Exp $
 
 % Copyright (C) 1998, 1999, 2000 Eelco Visser <visser@acm.org>
 % 
@@ -172,7 +172,7 @@ overlays
 
   Rewrite(lab) = Call(SVar("rewrite"),[Build(Str(lab))])
 
-  MetaPair(x,y) = Op("TCons", [x, Op("TCons", [y, Op("TNil", [])])])
+  MetaPair(x,y) = Op("", [x, y])
 
 rules
 
@@ -198,7 +198,7 @@ rules
     (Where(BA(<assert>lab, 
               MetaPair(Op("Keys", keys), Op("Undefined",[])))),
      RDef(lab, xs, 
-          Rule(l, Op("TNil",[]), 
+          Rule(l, Op("",[]), 
                Seq(BAM(Rewrite(lab), Op("Keys", keys), Op("Undefined",[])), 
                Seq(cond,
                    Fail)))))

@@ -27,13 +27,11 @@ strategies
 	      ,!If("a","b","c")
 	      ,!If("a","b","c")
 	      );
-    (*
     apply-test(!"explode-test1b"
 	      ,id#(id)
 	      ,!"abc"
 	      ,!"abc"
 	      );
-    *)
     apply-test(!"explode-test1c"
 	      ,id#(id)
 	      ,!12

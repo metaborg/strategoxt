@@ -7,5 +7,6 @@ signature
 
 strategies 
 
-  main = <WriteToTextFile> 
-            (stdout, Cons("a", Cons("b", Bla(Cons("c", Cons("d", Nil))))))
+  main = 
+    (!["a" | ["b" | Bla(["c" | ["d" | []]])]] <+ !"a");
+    ?"a"

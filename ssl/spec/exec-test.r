@@ -1,10 +1,28 @@
 \literate[exec-test]
+\begin{code}
+module exec-test
+imports sunit exec
+strategies
 
-	\begin{abstract}
-	Test
-	\end{abstract}
+  main = 
+    test-suite(!"exec-test",
+      test1
+    )
 
-% Copyright (C) 1998-2001 Eelco Visser <visser@acm.org>
+  test1 =
+    where(
+      <WriteToTextFile>("exec-test-data1.trm", "abc");
+      <WriteToTextFile>("exec-test-data2.trm", "def")
+    );
+    apply-and-check(!"test1"
+	, copy-file(id, !"exec-test-data2", id)
+	, !("exec-test-data1", ".trm")
+	, ?("exec-test-data2", ".trm")
+          ; where(<ReadFromFile> "exec-test-data2.trm" => "abc")
+	)
+\end{code}
+
+% Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
 % 
 % This program is free software; you can redistribute it and/or modify
 % it under the terms of the GNU General Public License as published by
@@ -20,21 +38,3 @@
 % along with this program; if not, write to the Free Software
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
-
-\begin{code}
-module exec-test
-imports sunit exec
-strategies
-
-  main = 
-    test-suite(!"exec-test",
-      test1
-    )
-
-  test1 =
-    apply-test(!"test1"
-	, copy-file(id, !"data/test2", id)
-	, !("data/test", ".trm")
-	, !("data/test2", ".trm") 
-	)
-\end{code}

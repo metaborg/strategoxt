@@ -30,6 +30,9 @@ overlays
   CastATerm(e) = 
     TypeCast(TypeName(TypeSpec([],TypeId("ATerm"),[]),None),e)
 
+  CastATermList(e) = 
+    TypeCast(TypeName(TypeSpec([],TypeId("ATermList"),[]),None),e)
+
   CastATermInt(e) = 
     TypeCast(TypeName(TypeSpec([],TypeId("ATermInt"),[]),None),e)
 
@@ -51,7 +54,9 @@ overlays
   CallFail = 
     Stat(FunCall(Id("_fail"),[Id("t")]))
 
-    
+  CheckATermList(e) = 
+    FunCall(Id("CheckATermList"), [e])
+
 rules
 
   TranslateSpec :
@@ -205,7 +210,7 @@ Strategy expressions
   TranslateStrat :
     Prim(p,ts) ->
     Stat(Assign(Id("t"),AssignEq,FunCall(Id(p),es)))
-    where <map(topdown(try(ConstructTerm)))> ts => es
+    where <map(topdown(try(construct-term)))> ts => es
 
   TranslateStrat :
     Call(SVar(f),args) ->
@@ -269,7 +274,8 @@ rules
   TranslateStrat :
     Match(Str(x), trm) -> 
     If(NotEqual(SymOfAppl(trm), 
-                FunCall(Id("ATmakeSymbol"),[StringLit([<escape; double-quote>x]),IntConst("0"),Id("ATtrue")]))
+                FunCall(Id("ATmakeSymbol"),
+                        [StringLit([<escape; double-quote>x]),IntConst("0"),Id("ATtrue")]))
       ,CallFail)
 
   TranslateStrat :
@@ -284,26 +290,40 @@ rules
            NotEqual(FunCall(Id("ATgetReal"),[CastATermReal(trm)]),FloatConst(<real-to-string>i)))
       ,CallFail)
 
-
   TranslateStrat :
-    Match(Op(c, ts),trm) ->
+    Match(Op(c, ts), trm) ->
     IfElse(FunCall(Id("match_cons"),[trm, Id(<ConstructorName> (c, <length> ts))])
           ,Compound([],match-args)
 	  ,CallFail)		
-    where <thread-map(\ Pair(t,i) -> Pair(<MatchArg1 <+ MatchArg2>(t, i, trm), <add>(i,1)) \ )> 
+    where <not("Nil" + "Cons")> c; 
+      <thread-map(\ Pair(t,i) -> 
+         Pair(<MatchArg1 <+ MatchArg2>(t, ATgetArgument(trm,IntConst(<int-to-string>i))), <add>(i,1)) \ )> 
 	     Pair(ts,0) => Pair(match-args,_)
 
   MatchArg1 : 
-    (Var(x), i, trm) -> Match(Var(x), ATgetArgument(trm,IntConst(<int-to-string>i)))
+    (Var(x), trm) -> Match(Var(x), trm)
     where <Initialized> x => "NULL"
 
   MatchArg2 : 
-    (t, i, trm) -> 
+    (t, trm) -> 
     Compound([Declaration2(TypeSpec([],TypeId("ATerm"),[]),
-		           DeclInit(IdDecl([],Id(x),None),
-				    AssignInit(ATgetArgument(trm,IntConst(<int-to-string>i)))))]
+		           DeclInit(IdDecl([],Id(x),None), AssignInit(trm)))]
             ,[Match(t, Id(x))])
    where new => x
+
+  TranslateStrat :
+    Match(Op("Nil", []), trm) ->
+    If(NotEqual(CastATermList(trm), Id("ATempty")), CallFail)
+
+  TranslateStrat :
+    Match(Op("Cons", [hd, tl]), trm) ->
+    IfElse(LAnd(Equal(FunCall(Id("ATgetType"),[trm]), Id("AT_LIST")), 
+               NotEqual(CastATermList(trm), Id("ATempty")))
+          ,Compound([], match-args)
+	  ,CallFail)		
+    where <map(MatchArg1 <+ MatchArg2)> 
+	   [(hd, FunCall(Id("ATgetFirst"),[CastATermList(trm)])), 
+            (tl, CastATerm(FunCall(Id("ATgetNext"),[CastATermList(trm)])))] => match-args
 \end{code}
 
 	Matching automaton
@@ -360,11 +380,29 @@ rules
     IfElse(FunCall(Id("match_cons"),[Id(t), Id(<ConstructorName> (c, n))])
           ,Compound([], <conc>(get-args,[s1]))
           ,Compound([],[Case(Var(t), alts, s2)]))
-    where 
+    where <not("Nil" + "Cons")> c;
       <thread-map(\ Pair(Var(x), i) -> 
          Pair(Stat(Assign(Id(x), AssignEq, ATgetArgument(Id(t),IntConst(<int-to-string>i))))
              , <add>(i,1)) \ )> 
       Pair(xs,0) => Pair(get-args,_)
+
+
+  TranslateStrat :
+    Case(Var(t), [Alt(Fun("Nil", 0), [], s1) | alts], s2) ->
+    IfElse(Equal(CastATermList(Id(t)), Id("ATempty"))
+          ,Compound([], s1)
+          ,Compound([],[Case(Var(t), alts, s2)]))
+
+  TranslateStrat :
+    Case(Var(t), [Alt(Fun("Cons", 2), [Var(x1),Var(x2)], s1) | alts], s2) ->
+    IfElse(LAnd(Equal(FunCall(Id("ATgetType"),[Id(t)]), Id("AT_LIST")), 
+               NotEqual(CastATermList(Id(t)), Id("ATempty")))
+          ,Compound([], [Stat(Assign(Id(x1), AssignEq, 
+				     FunCall(Id("ATgetFirst"),[CastATermList(Id(t))])))
+                        ,Stat(Assign(Id(x2), AssignEq, 
+				     CastATerm(FunCall(Id("ATgetNext"),[CastATermList(Id(t))]))))
+                        ,s1])
+          ,Compound([],[Case(Var(t), alts, s2)]))
 \end{code}
 
 	Building
@@ -374,7 +412,10 @@ rules
 
   TranslateStrat :
     Build(t) ->
-    Stat(Assign(Id("t"),AssignEq,<topdown(repeat(ConstructTerm))> t))
+    Stat(Assign(Id("t"), AssignEq, <construct-term> t))
+
+  construct-term =
+    topdown(ConstructList; !CastATerm(<id>) <+ repeat(ConstructTerm))
 
   ConstructTerm :
     Int(i) -> 
@@ -387,15 +428,25 @@ rules
   ConstructTerm :
     Str(x) ->
     CastATerm(FunCall(Id("ATmakeAppl"),
-                      [FunCall(Id("ATmakeSymbol"),[StringLit([<escape; double-quote>x]),IntConst("0"),Id("ATtrue")])]))
+                      [FunCall(Id("ATmakeSymbol"),
+			       [StringLit([<escape; double-quote>x]),IntConst("0"),Id("ATtrue")])]))
 
   ConstructTerm :
     Var(x) -> FunCall(Id("not_null"),[Id(x)])
 
   ConstructTerm :
+    BuildDefault(t) -> t
+
+  ConstructTerm :
     Op(c, ts) ->
     CastATerm(FunCall(Id("ATmakeAppl"),[Id(<ConstructorName> (c, <length> ts)) | ts]))
 
-  ConstructTerm :
-    BuildDefault(t) -> t
+  ConstructList :
+    Op("Nil", []) ->
+    Id("ATempty")
+
+  ConstructList :
+    Op("Cons", [hd, tl]) ->
+    FunCall(Id("ATinsert"),[tl', hd])
+    where (<(Op("Nil", []) + Op("Cons", [id, id])); ConstructList> tl <+ !CheckATermList(tl)) => tl'
 \end{code}

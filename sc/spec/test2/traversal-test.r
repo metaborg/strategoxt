@@ -14,9 +14,67 @@ strategies
 
   main = 
     test-suite(!"traversal-test",
+	all-test1;
+	all-test2;
 	some-test1;
-	some-test2
+	some-test2;
+	one-test2
     )
+
+  all-test1 =
+    apply-test(!"all-test1a"
+	, all(id)
+	, !F(A)
+	, !F(A)
+	);
+    apply-test(!"all-test1b"
+	, all(id)
+	, !A
+	, !A
+	);
+    apply-test(!"all-test1c"
+	, all(?A;!C)
+	, !G(A,A)
+	, !G(C,C)
+	);
+    apply-and-fail(!"all-test1d"
+	, all(?A;!C)
+	, !G(A,B)
+	);
+    apply-and-fail(!"all-test1e"
+	, all(?A;!C)
+	, !G(B,C)
+	);
+    apply-test(!"all-test1f"
+	, all(?A;!C)
+	, !1
+	, !1
+	)
+
+  all-test2 =
+    apply-test(!"all-test2a"
+	, all(id)
+	, ![A,B]
+	, ![A,B]
+	);
+    apply-test(!"all-test2b"
+	, all(id)
+	, ![]
+	, ![]
+	);
+    apply-test(!"all-test2c"
+	, all(?A;!C)
+	, ![A,A]
+	, ![C,C]
+	);
+    apply-and-fail(!"all-test2d"
+	, all(?A;!C)
+	, ![A,B]
+	);
+    apply-and-fail(!"all-test2e"
+	, all(?A;!C)
+	, ![B,C]
+	)
 
   some-test1 =
     apply-test(!"some-test1a"
@@ -56,4 +114,30 @@ strategies
 	, manytd(not(?A;!C))
 	, !G(B,A)
 	, !G(B,A)
+	)
+
+  one-test2 =
+    apply-test(!"one-test2a"
+	, one(id)
+	, ![A,B]
+	, ![A,B]
+	);
+    apply-and-fail(!"one-test2b"
+	, one(id)
+	, ![]
+	, ![]
+	);
+    apply-test(!"one-test2c"
+	, one(?A;!C)
+	, ![A,A]
+	, ![C,A]
+	);
+    apply-test(!"one-test2d"
+	, one(?A;!C)
+	, ![B,A,A]
+	, ![B,C,A]
+	);
+    apply-and-fail(!"one-test2e"
+	, one(?A;!C)
+	, ![B,C]
 	)

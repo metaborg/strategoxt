@@ -1,10 +1,22 @@
 \literate[list-zip-test]
+\begin{code}
+module list-zip-test
+imports list-zip sunit
+strategies
 
-	\begin{abstract}
+  main = 
+    test-suite(!"list-zip-test",
+        nzip0-test
+     )
 
-	\end{abstract}
-
-% Copyright (C) 1998-2001 Eelco Visser <visser@acm.org>
+  nzip0-test =
+    apply-test(!"nzip0-test"
+	      ,nzip0(id)
+	      ,!["a","b","c"]
+	      ,![(0, "a"), (1, "b"), (2, "c")]
+              )
+\end{code}
+% Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
 % 
 % This program is free software; you can redistribute it and/or modify
 % it under the terms of the GNU General Public License as published by
@@ -20,38 +32,3 @@
 % along with this program; if not, write to the Free Software
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
-
-\begin{code}
-module list-zip-test
-imports list-zip sunit
-
-strategies
-
-  main = 
-    test-suite(!"list-zip-test",
-	tuple-zip-test;
-        tuple-unzip-test;
-        nzip0-test
-     )
-
-  tuple-zip-test =
-    apply-test(!"tuple-zip-test"
-              ,tuple-zip(id)
-              ,!([1,2,3], [4,5,6], [7,8,9])
-              ,![(1,4,7), (2,5,8), (3,6,9)]
-              )
-
-  tuple-unzip-test =
-    apply-test(!"tuple-unzip-test"
-              ,tuple-unzip(id)
-              ,![(1,4,7), (2,5,8), (3,6,9)]
-              ,!([1,2,3], [4,5,6], [7,8,9])
-              )
-
-  nzip0-test =
-    apply-test(!"nzip0-test"
-	      ,nzip0(id)
-	      ,!["a","b","c"]
-	      ,![(0, "a"), (1, "b"), (2, "c")]
-              )
-\end{code}

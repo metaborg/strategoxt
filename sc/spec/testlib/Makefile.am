@@ -15,30 +15,18 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-SUBDIRS = data
+.PRECIOUS: %.ac %.c
 
-SCFLAGS = -I $(srcdir)
+TESTS = $(subst .r,.bin,$(wildcard *-test.r)) 
 
-# bin_SCRIPTS = migrate-tuples
+SINCLUDES = -I $(STRATEGOLIB)/share/ssl
 
-pkgdata_DATA = $(wildcard *.r)
-
-TESTS = $(subst .r,,$(wildcard *-test.r))
-
-EXTRA_DIST = $(pkgdata_DATA) make-rules
-
-bootdir	= $(top_srcdir)/src/slib/spec
-
-BOOTSOURCES = $(pkgdata_DATA)
-
-CLEANFILES = $(TESTS) $(bin_SCRIPTS)
-
-include $(srcdir)/make-rules
-
-include $(wildcard *.dep)
+CLEANFILES = $(TESTS) *.o *.c *.ac *.s? *.tree *.c.abox
 
 all:
+	cp $(STRATEGOLIB)/share/ssl/*.r .
 
-www-install:
-	scp $(wildcard *.r) \
-		sunshine.cs.uu.nl:/users/www/research/projects/stratego/lib
+bootinstall:
+
+include $(srcdir)/../test1/make-rules
+include $(wildcard *.dep)

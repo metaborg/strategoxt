@@ -2,11 +2,78 @@
 
 	\begin{abstract}
 
-	Signature of tuples and simple operations.
+	Operations on tuples
 
 	\end{abstract}
 
-% Copyright (C) 1998-2001 Eelco Visser <visser@acm.org>
+\begin{code}
+module tuple
+imports list-cons tuple-cons list-index list-zip
+strategies
+
+  TupleToList : "" # (xs) -> xs
+  ListToTuple : xs -> "" # (xs)
+
+  Fst   : "" # ([x | xs]) -> x
+  Snd   : "" # ([x, y | xs]) -> y
+  Third : "" # ([x, y, z | xs]) -> z
+
+  Dupl  : x -> (x, x)
+
+  split(f, g) = !(<f>, <g>)
+  split3(f, g, h) = !(<f>, <g>, <h>)
+
+  Swap : (x, y) -> (y, x)
+
+  Thd = Fst
+  Ttl : "" # ([x | xs]) -> "" # (xs)
+
+	
+  // tindex: get the nth element of a tuple
+
+  tindex = 
+    (id, ?""#(<id>)); index
+
+  is-tuple = 
+    ?""#(_)
+
+  // tmap: apply a strategy to each element of a tuple
+
+  tmap(s) = 
+    is-tuple; all(s)
+
+  // Tuple Concat: concatenate the lists in a tuple of lists, where the
+  // concatenation strategy s is a parameter.
+
+  tconcat(s) = 
+    is-tuple; crush(![], s)
+
+  tconcat'(s1, s2) = 
+    is-tuple; crush(<s1> [], s2)
+
+  //at_tsuffix(s) = 
+  //  rec x(s <+ TCons(id, x))
+
+  tcata(s1, s2) = 
+    is-tuple; crush(s1, s2)
+
+  tfoldr(s1, s2) = 
+    tcata(s1, s2)
+
+  tzip(s)  = 
+    (TupleToList, TupleToList); zip(s)
+
+  tuple-zip(s) = 
+    rec x(![<tmap(Hd); s> | <tmap(Tl); x>]
+          <+ tmap([]); ![])
+
+  tuple-unzip(s) =
+    rec x(![<map(Thd); s> | <map(Ttl); x>] <+ map(()); ![])
+  ; !"" #(<id>)
+
+\end{code}
+
+% Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
 % 
 % This program is free software; you can redistribute it and/or modify
 % it under the terms of the GNU General Public License as published by
@@ -22,51 +89,3 @@
 % along with this program; if not, write to the Free Software
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
-
-\begin{code}
-module tuple
-imports list-cons tuple-cons
-rules
-  Fst   : TCons(x, tp) -> x
-  Snd   : TCons(x, TCons(y, tp)) -> y
-  Third : TCons(x, TCons(y, TCons(z, tp))) -> z
-  TInd1 : (1, TCons(x, tp)) -> x
-  TInd2 : (n, TCons(x, tp)) -> (<subt> (n, 1), tp)
-
-  Dupl  : x -> (x, x)
-
-  split(f, g)     : x -> (<f> x, <g> x)
-  split3(f, g, h) : x -> (<f> x, <g> x, <h> x)
-
-  Swap : (x, y) -> (y, x)
-
-  Thd : TCons(x, xs) -> x
-  Ttl : TCons(x, xs) -> xs
-
-strategies
-
-  tindex = rec x(TInd1 <+ TInd2 ; x)
-
-  tmap(s) = rec x(TNil + TCons(s, x))
-
-  tconcat(s) = rec y(\ TNil -> Nil\ 
-                     + \ TCons(x, xs) -> (x, <y> xs)\ ; s)
-
-  tconcat'(s1, s2) = 
-    rec y(TNil; s1
-          + \ TCons(x, xs) -> (x, <y> xs)\ ; s2)
-
-  at_tsuffix(s) = rec x(s <+ TCons(id, x))
-
-  tcata(s1, s2) = rec y(TNil; s1 <+
-			\ TCons(x, xs) -> (x, <y> xs)\ ; s2)
-\end{code}
-
-\paragraph{Documentation}
-
-	tindex: get the nth element of a tuple
-
-	tmap: apply a strategy to each element of a tuple
-
-	Tuple Concat: concatenate the lists in a tuple of lists, where the
-	concatenation strategy s is a parameter.

@@ -3,8 +3,6 @@ signature
   constructors
     Nil   : List(a)
     Cons  : a * List(a) -> List(a)
-    TNil  : List(a)
-    TCons : a * List(a) -> List(a)
     Call  : a * List(a) -> Call
 
 rules
@@ -15,4 +13,4 @@ strategies
 
   main = 
     ?[prog | args];
-    split(!Call(prog, args), id) 
+    split(!Call(prog, args), id)

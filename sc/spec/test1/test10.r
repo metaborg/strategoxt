@@ -1,9 +1,6 @@
 module test10
 signature
   constructors
-    Nil   : List(a)
-    Cons  : a * List(a) -> List(a)
-
     Zero  : Nat
     Succ  : Nat -> Nat
     Plus  : Nat * Nat -> Nat

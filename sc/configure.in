@@ -16,7 +16,7 @@
 # 02111-1307, USA.
 
 AC_INIT(spec/front/inlining.r)
-AM_INIT_AUTOMAKE(sc,0.6.4)
+AM_INIT_AUTOMAKE(sc,0.7beta)
 
 AC_ARG_WITH(cgen,    
   [  --with-cgen      Specify location of CGEN library, default: \$prefix], 
@@ -74,7 +74,7 @@ AC_ARG_WITH(srts,
 )
 AC_SUBST(STRATEGORTS)
 
-AC_REVISION($Id: configure.in,v 1.13 2002/01/03 21:19:20 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.14 2002/01/10 21:00:39 stratego Exp $)
 
 AC_PROG_CC
 AC_PROG_RANLIB
@@ -118,5 +118,7 @@ AC_OUTPUT( \
 	spec/test1/Makefile \
 	spec/test2/Makefile \
 	spec/test3/Makefile \
+	spec/testlib/Makefile \
+	spec/testspec/Makefile \
 	spec/sdf/Makefile \
 )

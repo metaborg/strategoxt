@@ -10,23 +10,6 @@
 
 	\end{abstract}
 
-% Copyright (C) 1998-2001 Eelco Visser <visser@acm.org>
-% 
-% This program is free software; you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation; either version 2, or (at your option)
-% any later version.
-% 
-% This program is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-% 
-% You should have received a copy of the GNU General Public License
-% along with this program; if not, write to the Free Software
-% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-% 02111-1307, USA.
-
 \begin{code}
 module list-zip
 imports list-cons
@@ -56,10 +39,6 @@ rules
   NZip2  : (n, [y|ys]) -> ((n, y), (<add> (n, 1), ys))
   NZip3  : (x, xs) -> [x| xs]
 
-  TZip1   : (TNil, TNil) -> TNil
-  TZip2   : (TCons(x, xs), TCons(y, ys)) -> ((x, y), (xs, ys))
-  TZip3   : (x, xs) -> TCons(x, xs)
-
   cart(s) : (xs, ys) -> 
             <map(\x -> <map(\y -> <s>(x, y)\ )> ys\ ); foldr(![], union)> xs
 
@@ -67,51 +46,73 @@ rules
 
 strategies
 
-  genzip(a, b, c, s) = rec x(a + b; (s, x); c)
+  genzip(a, b, c, s) = 
+    rec x(a + b; (s, x); c)
 
-  zip(s)  = genzip(Zip1,   Zip2,   Zip3,   s)
-  zip'(s) = genzip(Zip1a' <+ Zip1b',   Zip2,   Zip3,   s)
-  zipl(s) = genzip(Zip1a',   Zip2,   Zip3,   s)
-  zipr(s) = genzip(Zip1b',   Zip2,   Zip3,   s)
+  zip(s)  = 
+    genzip(Zip1,   Zip2,   Zip3,   s)
+  zip'(s) = 
+    genzip(Zip1a' <+ Zip1b',   Zip2,   Zip3,   s)
+  zipl(s) = 
+    genzip(Zip1a',   Zip2,   Zip3,   s)
+  zipr(s) = 
+    genzip(Zip1b',   Zip2,   Zip3,   s)
 
   rest-zip(s) = 
     genzip((?([],_) + ?(_,[])); ?(tla, tlb); ![], Zip2, Zip3, s);
     \ pairs -> (tla, tlb, pairs) \
 
-  unzip    = genzip(UnZip1, UnZip3, UnZip2, id)
-  unzip(s) = genzip(UnZip1, UnZip3, UnZip2, s)
+  unzip = 
+    genzip(UnZip1, UnZip3, UnZip2, id)
+  unzip(s) = 
+    genzip(UnZip1, UnZip3, UnZip2, s)
 
-  nzip0(s) = NZip00 ; genzip(NZip1,  NZip2,  NZip3,  s)
-  nzip(s)  = NZip01 ; genzip(NZip1,  NZip2,  NZip3,  s)
-  tzip(s)  = genzip(TZip1,   TZip2,   TZip3,   s)
+  nzip0(s) = 
+    NZip00 ; genzip(NZip1,  NZip2,  NZip3,  s)
+  nzip(s) = 
+    NZip01 ; genzip(NZip1,  NZip2,  NZip3,  s)
 
-  lzip(s)  = genzip(Zip1a', LZip2, Zip3, s)
-  rzip(s)  = genzip(Zip1b', RZip2, Zip3, s)
+  lzip(s) = 
+    genzip(Zip1a', LZip2, Zip3, s)
+  rzip(s) = 
+    genzip(Zip1b', RZip2, Zip3, s)
 
-
-  zipFetch(s) = rec x(Zip2; ((s, id) <+ (id, x)))
-  lzipFetch(s) = rec x(LZip2; ((s, id) <+ (id, x)))
-  rzipFetch(s) = rec x(RZip2; ((s, id) <+ (id, x)))
+  zipFetch(s) = 
+    rec x(Zip2; ((s, id) <+ (id, x)))
+  lzipFetch(s) = 
+    rec x(LZip2; ((s, id) <+ (id, x)))
+  rzipFetch(s) = 
+    rec x(RZip2; ((s, id) <+ (id, x)))
 
   zipPad(s, padding) = 
     rec x(Zip1 + Zip2; (s, x); Zip3 + 
           ([], [id|id]); (![<padding>()|[]], id); x +
           ([id|id], []); (id, ![<padding>()|[]]); x)
 
-  zip-tail = rec x(Zip1c + (Tl, Tl); x)
-  zipl-tail-match(s) = rec x(Zip1c + Zip2; (s, id); Snd; x)
-  zipr-tail-match(s) = rec x(Zip1c' + Zip2; (s, id); Snd; x)
+  zip-tail = 
+    rec x(Zip1c + (Tl, Tl); x)
+  zipl-tail-match(s) = 
+    rec x(Zip1c + Zip2; (s, id); Snd; x)
+  zipr-tail-match(s) = 
+    rec x(Zip1c' + Zip2; (s, id); Snd; x)
  
   zip-skip(pred, s) = 
-	rec x(Zip1 + (Skip(pred); (id, x) <+ Zip2; (s, x)); Zip3)
-
-strategies
-
-  tuple-zip(s) = 
-    rec x(split(tmap(Hd), tmap(Tl)); (s, x); Zip3
-          <+ tmap([]); ![])
-
-  tuple-unzip(s) =
-    rec x(split(map(Thd), map(Ttl)); (s, x); \ (a,b) -> TCons(a,b) \
-          <+ map(()); !())
+    rec x(Zip1 + (Skip(pred); (id, x) <+ Zip2; (s, x)); Zip3)
 \end{code}
+
+% Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
+% 
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+% 
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% 
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.

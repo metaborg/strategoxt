@@ -2,7 +2,8 @@
 
 ./reconf
 ./configure \
-    --prefix=/home/xt/xt \
+    --prefix=`pwd`/.. \
+    --with-aterm=/home/xt/ATerm \
     --with-sc-boot=`pwd`/../sc-boot
 
 exit 0

@@ -4,7 +4,7 @@
 	A template module for definition of unit tests.
 	\end{abstract}
 
-% Copyright (C) 1998-2001 Eelco Visser <visser@acm.org>
+% Copyright (C) 2002 Eelco Visser <visser@acm.org>
 % 
 % This program is free software; you can redistribute it and/or modify
 % it under the terms of the GNU General Public License as published by

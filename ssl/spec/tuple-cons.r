@@ -6,7 +6,23 @@
 
 	\end{abstract}
 
-% Copyright (C) 1998-2001 Eelco Visser <visser@acm.org>
+	Starting with Stratego 0.6.5 the representation of tuples with
+	TNil and TCons is replaced with fixed length tuples constructed
+	using the empty identifier.
+
+\begin{code}
+module tuple-cons
+//signature
+  //sorts Prod(ListType)
+  //constructors
+    //TNil  : Prod([])
+    //TCons : a * Prod(lt) -> Prod(Cons(a, lt))
+    //Pair  : a * b -> Prod([a,b])
+overlays
+  Pair(x, y) = (x, y)
+\end{code}
+
+% Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
 % 
 % This program is free software; you can redistribute it and/or modify
 % it under the terms of the GNU General Public License as published by
@@ -22,13 +38,3 @@
 % along with this program; if not, write to the Free Software
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
-
-\begin{code}
-module tuple-cons
-signature
-  sorts Prod(ListType)
-  constructors
-    TNil  : Prod([])
-    TCons : a * Prod(lt) -> Prod(Cons(a, lt))
-    Pair  : a * b -> Prod([a,b])
-\end{code}

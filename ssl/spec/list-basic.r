@@ -6,23 +6,6 @@
 
 	\end{abstract}
 
-% Copyright (C) 1998-2001 Eelco Visser <visser@acm.org>
-% 
-% This program is free software; you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation; either version 2, or (at your option)
-% any later version.
-% 
-% This program is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-% 
-% You should have received a copy of the GNU General Public License
-% along with this program; if not, write to the Free Software
-% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-% 02111-1307, USA.
-
 	Map: Apply strategy to each element of a list
 
 	Length of a list
@@ -40,16 +23,17 @@ rules
   Hd     : [x | l] -> x
   Tl     : [x | l] -> l
   Last   : [x] -> x
-  MkCons : (x, []) -> [x]
-  MkCons : (x, [y| z]) -> [x, y | z]
-  MkSingleton : x -> [x]
+  MkCons : (x, xs) -> [x | xs]
+  MkSingleton = ![<id>]
 strategies
 
-  is-list = [] + [id| id]
+  is-list = ?[] + ?[_ | _]
 
-  map(s) = rec x([] + [s| x])
+  map(s) = 
+    rec x([] + [s | x]) 
 
-  list(s) = rec x([] + [s| x])
+  list(s) = 
+    rec x([] + [s | x])
 
   list-some(s) =
     rec x([s| id]; [id| list(try(s))] <+ [id| x])
@@ -57,11 +41,14 @@ strategies
   list-some-filter(s) =
     rec x([s| id]; [id| filter(s)] <+ [id| x]; Tl)
 
-  length = foldr(!0, add, !1)
+  length = 
+    foldr(!0, add, !1)
 
-  fetch(s) = rec x([s | id] <+ [id | x])
+  fetch(s) = 
+    rec x([s | id] <+ [id | x])
 
-  fetch-elem(s) = fetch(s;?x);!x
+  fetch-elem(s) = 
+    fetch(s;?x);!x
 
   // split-fetch, splits a list in two at the point 
   // where the argument strategy succeeds.
@@ -69,18 +56,21 @@ strategies
   split-fetch(s) =
     at-suffix([s|id];[id|?tl];![]); split(id, !tl)
 
-  at-tail(s) = [id | s]
+  at-tail(s) = 
+    [id | s]
 
   at_tail(s) = 
     obsolete(!"at_tail -> at-tail");
-    [id | s]
+    at-tail(s)
 
-  at-end(s) = rec x([id | x] + []; s)
+  at-end(s) = 
+    rec x([id | x] + []; s)
   at_end(s) = 
     obsolete(!"at_end -> at-end");
     rec x([id | x] + []; s)
 
-  at-suffix(s) = rec x(s <+ [id | x])
+  at-suffix(s) = 
+    rec x(s <+ [id | x])
   at_suffix(s) = 
     obsolete(!"at_suffix -> at-suffix");
     rec x(s <+ [id | x])
@@ -89,22 +79,33 @@ strategies
     obsolete(!"at_last -> at-last");
     rec x([id]; s <+ [id | x])
 
-  at-last(s) = rec x([id]; s <+ [id | x])
+  at-last(s) = 
+    rec x([id]; s <+ [id | x])
 
-  listbu(s)       = rec x(([] + [id| x]); s)
-  listtd(s)       = rec x(s; ([] + [id| x]))
-  listdu(s)       = rec x(s; ([] + [id| x]); s)
-  listdu2(s1, s2) = rec x(s1; ([] + [id| x]); s2)
+  listbu(s) = 
+    rec x(([] + [id| x]); s)
 
-rules
+  listtd(s) = 
+    rec x(s; ([] + [id| x]))
+
+  listdu(s) =
+    rec x(s; ([] + [id| x]); s)
+
+  listdu2(s1, s2) = 
+    rec x(s1; ([] + [id| x]); s2)
 
   RevInit : xs -> (xs, [])
   Rev     : ([x| xs], ys) -> (xs, [x| ys])
   RevExit : ([], ys) -> ys
 
-strategies
+  reverse = 
+    reverse(![])
 
-  reverse = RevInit; repeat(Rev); RevExit
+  reverse(acc) : 
+    [] -> <acc>()
+
+  reverse(acc) : 
+    [x | xs] -> <reverse(![x | <acc>])> xs
 
 rules
 
@@ -134,3 +135,20 @@ strategies
   separate-by(s) = 
     [] + [id| rec x([] + [id| x]; Sep(s))]
 \end{code}
+
+% Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
+% 
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2, or (at your option)
+% any later version.
+% 
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% 
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+% 02111-1307, USA.

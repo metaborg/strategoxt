@@ -11,10 +11,26 @@ strategies
 
   main = 
     test-suite(!"test18",
+	test0;
 	test1;
 	test2;
-	test3
+	test3;
+	test4;
+	test5;
+	test6
     )
+
+  test0 =
+    apply-test(!"test0a"
+	, [explode-term]
+	, !["f"]
+	, ![("\"f\"", [])]
+	);
+    apply-test(!"test0b"
+	, explode-term
+	, !F(A,B)
+	, !("F", [A, B])
+	)
 
   test1 =
     apply-test(!"test1a"
@@ -60,4 +76,40 @@ strategies
 	, mkterm
 	, !("F", [A, B])
 	, !F(A,B)
+	)
+
+  test4 =
+    apply-test(!"test4a"
+	, [explode-term]
+	, ![3.0]
+	, ![(3.0, [])]
+	);
+    apply-test(!"test4b"
+	, explode-term
+	, !3.0
+	, !(3.0, [])
+	)
+
+  test5 =
+    apply-test(!"test5a"
+	, explode-term
+	, !["a"]
+	, !([], ["a"])
+	);
+    apply-test(!"test5b"
+	, explode-term
+	, ![]
+	, !([], [])
+	)
+
+  test6 =
+    apply-test(!"test6a"
+	, mkterm
+	, !([], ["a"])
+	, !["a"]
+	);
+    apply-test(!"test6b"
+	, mkterm
+	, !([], [])
+	, ![]
 	)
