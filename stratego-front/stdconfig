@@ -2,12 +2,14 @@
 
 ./reconf
 ./configure --prefix=/home/xt/xt \
-	--with-sdf=/home/xt/SDF  \
-	--with-stratego=/home/xt/xt  \
+	--with-sglr=/home/xt/xt \
+	--with-pgen=/home/xt/xt \
+	--with-sc=/home/xt/xt \
 	--with-gpp=/home/xt/xt \
-	--with-sdf-tools=/home/xt/xt  \
+	--with-sdf-tools=/home/xt/xt \
 	--with-stratego-tools=/home/xt/xt  \
-	--with-asfix-tools=/home/xt/xt
+	--with-asfix-tools=/home/xt/xt \
+	--with-rpmdir=/home/visser/rpm
 
 # --prefix=`pwd`/.. \
 #	--with-stratego=/home/visser/res/Stratego

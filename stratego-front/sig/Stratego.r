@@ -39,6 +39,8 @@ signature
 signature
   constructors
     Var : Id -> Var
+    ListVar : LId -> LID
+    Var : LID -> Var
 signature
   constructors
     Wld : Term

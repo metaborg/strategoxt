@@ -1,6 +1,6 @@
 SUBDIRS = . syn pp sig parse test
 
-EXTRA_DIST = stdconfig reconf conf.h.src
+EXTRA_DIST = stdconfig reconf conf.h.src stratego-front.spec Makefile.rpm
 
 pkgdata_DATA = conf.h
 
@@ -27,4 +27,23 @@ check_dist :
              s#__MAKE__#$(MAKE)#g' < $< > $@
 	chmod +x $@
 
+RPMRELEASE = 1
 
+CONFIGURE = ./configure \
+		--prefix=/usr \
+		--with-sc=$(SC) \
+		--with-sglr=$(SGLR) \
+		--with-pgen=$(PGEN) \
+		--with-asfix-tools=$(ASFIX_TOOLS) \
+		--with-stratego-tools=$(STRATEGO_TOOLS) \
+		--with-sdf-tools=$(SDF_TOOLS)  \
+		--with-gpp=$(GPP) \
+		--with-cgen=$(CGEN) \
+		--with-rpmdir=$(RPMDIR)
+
+SUBST = s+__SRTS_VERSION__+$(VERSION)+g;\
+        s+__GPP_VERSION__+2.2.1+g;\
+        s+__ATERM_VERSION__+1.6.6+g;\
+        s+__ATERM__+$(ATERM)+g;
+
+include Makefile.rpm

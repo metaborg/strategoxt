@@ -3,8 +3,10 @@ module Stratego
 exports
   lexical syntax
     [a-zA-Z\'\.\-\_] [a-zA-Z0-9\'\.\-\_]* -> Id
+    [a-zA-Z\'\.\-\_] [a-zA-Z0-9\'\.\-\_]* "*" -> LId
   lexical restrictions
-    Id -/- [a-zA-Z0-9\'\.\-\_]
+    Id -/- [a-zA-Z0-9\'\.\-\_\*]
+    LId -/- [a-zA-Z0-9\'\.\-\_]
   lexical syntax
     "all" 		-> Id {reject}
     "constructors" 	-> Id {reject}
@@ -28,6 +30,30 @@ exports
     "test" 		-> Id {reject}
     "thread" 		-> Id {reject}
     "where" 		-> Id {reject}
+
+  lexical restrictions
+    "all" 		
+    "constructors" 	
+    "fail" 		
+    "id" 		
+    "in" 		
+    "let" 		
+    "module" 		
+    "not" 		
+    "one" 		
+    "overlays" 		
+    "override" 		
+    "prim" 		
+    "rules" 		
+    "script" 		
+    "signature" 	
+    "some" 		
+    "sorts" 		
+    "strategies" 	
+    "stratego" 		
+    "test" 		
+    "thread" 		
+    "where" 	 	-/- [a-zA-Z0-9\'\.\-\_]	
 
   lexical syntax
     [a-zA-Z\'\.\-\_] [a-zA-Z0-9\'\.\-\_]* -> ModName
@@ -128,6 +154,8 @@ exports
 
   context-free syntax
     Id 				-> Var  {cons("Var")}
+    LId 			-> LID  {cons("ListVar")}
+    LID				-> Var  {cons("Var")}
 
   context-free syntax
     "_" 			 -> Term {cons("Wld")}
@@ -275,8 +303,8 @@ exports
     %%"(" {Strategy ","}* ")" 		  -> Strategy {cons("TupleCong"),avoid}
 
     "("  ")" 		  		  -> Strategy {cons("TupleCong")}
-    "(" Strategy  ")" 		  -> Strategy {bracket}
-    "(" Strategy "," {Strategy ","}+ ")" 		  -> Strategy {cons("TupleCong")}
+    "(" Strategy  ")" 		          -> Strategy {bracket}
+    "(" Strategy "," {Strategy ","}+ ")"  -> Strategy {cons("TupleCong")}
 
     Mod 	  			  -> Strategy {cons("ModCongNoArgs")}
     Mod "(" {Strategy ","}* ")"	  	  -> Strategy {cons("ModCong")}

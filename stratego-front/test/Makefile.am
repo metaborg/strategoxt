@@ -1,5 +1,6 @@
 check : 
-	$(srcdir)/../parse/parse-cmod -i prop.cr -o prop.rtree
+	$(srcdir)/../parse/parse-cmod -i prop.cr -o prop.rtree --verbose 5
+	$(srcdir)/../parse/parse-cmod -i StrategoDesugar.cr -o prop.rtree --verbose 5
 
 CLEANFILES = PropStratego.def PropStratego.tbl
 

@@ -1,4 +1,8 @@
 [
+   "stratego-0" -- _1,
+   Definition -- V[_1],
+   Definition.1:iter-star -- _1,
+
    Module -- V[H[KW["module"] _1] _2],
    Module.2:iter-star -- _1,
    Specification -- V  is=2 [H  [KW["specification"]] _1],

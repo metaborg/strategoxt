@@ -45,7 +45,7 @@ EXTRA_DIST = $(wildcard *.r) $(wildcard *.cr) $(wildcard *.syn) \
 	     s#__PGEN__#$(PGEN)#g;' \
 	  < $< > $@
 
-SCcomp = $(STRATEGO)/bin/sc
+SCcomp = $(SC)/bin/sc
 
 % : %.r
 	$(SCcomp) $(SCFLAGS) -i $*

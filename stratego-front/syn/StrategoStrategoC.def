@@ -495,12 +495,60 @@ imports Keywords Constants C-Lexical Preprocessor Declarators Program Statements
 
 
 
+module StrategoRenamed
+imports 
+  Stratego [
+	Id 		=> StrategoId 
+	ModName 	=> StrategoModName
+	Ws 		=> StrategoWs
+	ShortCom 	=> StrategoShortCom
+	LongCom 	=> StrategoLongCom
+	Asterisk 	=> StrategoAsterisk
+	CommChar 	=> StrategoCommChar
+	VeryLongCom 	=> StrategoVeryLongCom
+	Eof 		=> StrategoEof
+	VLCchar 	=> StrategoVLCchar 
+	Backslash 	=> StrategoBackslash
+	Int 		=> StrategoInt
+	Real 		=> StrategoReal
+	String 		=> StrategoString
+	StrChar 	=> StrategoStrChar	
+	Module 		=> StrategoModule
+	Script 		=> StrategoScript
+	Command 	=> StrategoCommand
+	Decl 		=> StrategoDecl
+	Def  		=> StrategoDef
+	Sdecl 		=> StrategoSdecl 
+	Sort 		=> StrategoSort
+	Kind 		=> StrategoKind
+	Opdecl 		=> StrategoOpdecl
+	Type 		=> StrategoType 
+	Var 		=> StrategoVar
+	Term 		=> StrategoTerm 
+	Context 	=> StrategoContext
+	RuleDef 	=> StrategoRuleDef
+	Rule 		=> StrategoRule 
+	StratRule 	=> StrategoStratRule 
+	Strategy 	=> StrategoStrategy 
+	StrategyAngle 	=> StrategoStrategyAngle 
+	StrategyParen 	=> StrategoStrategyParen 
+	SVar 		=> StrategoSVar 
+	StrategyMid 	=> StrategoStrategyMid
+	Mod 		=> StrategoMod
+	StrategyDef 	=> StrategoStrategyDef 
+	Typedid 	=> StrategoTypedid  
+	Overlay 	=> StrategoOverlay
+  ]
+
+
 module Stratego
 exports
   lexical syntax
     [a-zA-Z\'\.\-\_] [a-zA-Z0-9\'\.\-\_]* -> Id
+    [a-zA-Z\'\.\-\_] [a-zA-Z0-9\'\.\-\_]* "*" -> LId
   lexical restrictions
-    Id -/- [a-zA-Z0-9\'\.\-\_]
+    Id -/- [a-zA-Z0-9\'\.\-\_\*]
+    LId -/- [a-zA-Z0-9\'\.\-\_]
   lexical syntax
     "all" 		-> Id {reject}
     "constructors" 	-> Id {reject}
@@ -524,6 +572,30 @@ exports
     "test" 		-> Id {reject}
     "thread" 		-> Id {reject}
     "where" 		-> Id {reject}
+
+  lexical restrictions
+    "all" 		
+    "constructors" 	
+    "fail" 		
+    "id" 		
+    "in" 		
+    "let" 		
+    "module" 		
+    "not" 		
+    "one" 		
+    "overlays" 		
+    "override" 		
+    "prim" 		
+    "rules" 		
+    "script" 		
+    "signature" 	
+    "some" 		
+    "sorts" 		
+    "strategies" 	
+    "stratego" 		
+    "test" 		
+    "thread" 		
+    "where" 	 	-/- [a-zA-Z0-9\'\.\-\_]	
 
   lexical syntax
     [a-zA-Z\'\.\-\_] [a-zA-Z0-9\'\.\-\_]* -> ModName
@@ -624,6 +696,8 @@ exports
 
   context-free syntax
     Id 				-> Var  {cons("Var")}
+    LId 			-> LID  {cons("ListVar")}
+    LID				-> Var  {cons("Var")}
 
   context-free syntax
     "_" 			 -> Term {cons("Wld")}
@@ -771,8 +845,8 @@ exports
     %%"(" {Strategy ","}* ")" 		  -> Strategy {cons("TupleCong"),avoid}
 
     "("  ")" 		  		  -> Strategy {cons("TupleCong")}
-    "(" Strategy  ")" 		  -> Strategy {bracket}
-    "(" Strategy "," {Strategy ","}+ ")" 		  -> Strategy {cons("TupleCong")}
+    "(" Strategy  ")" 		          -> Strategy {bracket}
+    "(" Strategy "," {Strategy ","}+ ")"  -> Strategy {cons("TupleCong")}
 
     Mod 	  			  -> Strategy {cons("ModCongNoArgs")}
     Mod "(" {Strategy ","}* ")"	  	  -> Strategy {cons("ModCong")}
@@ -803,51 +877,7 @@ exports
     Id "(" {Id ","}* ")" "=" Term 	-> Overlay {cons("Overlay")}
 
 module StrategoStratego
-imports Stratego
-
-imports 
-  Stratego [
-	Id 		=> StrategoId 
-	ModName 	=> StrategoModName
-	Ws 		=> StrategoWs
-	ShortCom 	=> StrategoShortCom
-	LongCom 	=> StrategoLongCom
-	Asterisk 	=> StrategoAsterisk
-	CommChar 	=> StrategoCommChar
-	VeryLongCom 	=> StrategoVeryLongCom
-	Eof 		=> StrategoEof
-	VLCchar 	=> StrategoVLCchar 
-	Backslash 	=> StrategoBackslash
-	Int 		=> StrategoInt
-	Real 		=> StrategoReal
-	String 		=> StrategoString
-	StrChar 	=> StrategoStrChar	
-	Module 		=> StrategoModule
-	Script 		=> StrategoScript
-	Command 	=> StrategoCommand
-	Decl 		=> StrategoDecl
-	Def  		=> StrategoDef
-	Sdecl 		=> StrategoSdecl 
-	Sort 		=> StrategoSort
-	Kind 		=> StrategoKind
-	Opdecl 		=> StrategoOpdecl
-	Type 		=> StrategoType 
-	Var 		=> StrategoVar
-	Term 		=> StrategoTerm 
-	Context 	=> StrategoContext
-	RuleDef 	=> StrategoRuleDef
-	Rule 		=> StrategoRule 
-	StratRule 	=> StrategoStratRule 
-	Strategy 	=> StrategoStrategy 
-	StrategyAngle 	=> StrategoStrategyAngle 
-	StrategyParen 	=> StrategoStrategyParen 
-	SVar 		=> StrategoSVar 
-	StrategyMid 	=> StrategoStrategyMid
-	Mod 		=> StrategoMod
-	StrategyDef 	=> StrategoStrategyDef 
-	Typedid 	=> StrategoTypedid  
-	Overlay 	=> StrategoOverlay
-  ]
+imports Stratego StrategoRenamed
 
 exports
   context-free syntax

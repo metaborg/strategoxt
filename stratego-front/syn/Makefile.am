@@ -8,7 +8,8 @@ pkgdata_DATA = Stratego.tbl StrategoStratego.tbl StrategoStrategoC.tbl $(wildcar
 
 CLEANFILES = $(bin_SCRIPTS) $(wildcard *.tbl) $(TESTS)
 
-EXTRA_DIST = Stratego.def StrategoStratego.def Stratego.tbl StrategoStratego.tbl \
+EXTRA_DIST = Stratego.def StrategoStratego.def \
+	Stratego.tbl StrategoStratego.tbl StrategoStrategoC.tbl \
 	$(wildcard *.def) $(wildcard *.sdf)
 
 # GENERIC RULES ###############################################

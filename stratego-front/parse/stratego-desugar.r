@@ -65,6 +65,9 @@ rules
 //    where <not([id])> ts
 
   Desugar :
+    TupleCong(t,ts) -> Call(SVar(""), [t|ts])
+
+  Desugar :
     ListCongNoTail(ts) -> <foldr(!Call(SVar("Nil"),[]),\ (t1, t2) -> Call(SVar("Cons"),[t1,t2]) \ )> ts
 
   Desugar :

@@ -35,6 +35,7 @@ strategies
     ; <get-parse-table> syntax => tbl
     ; <basename; guarantee-extension(!"atree")> filein => fileout2
     ; !filein
+    //; call-tmp(<get-config> "sglr",             !["-A", "-2", "-p", tbl | <![]; if-verbose3(!["-v"])> ],
     ; call-tmp(<get-config> "sglr",             !["-2", "-p", tbl | <![]; if-verbose3(!["-v"])> ],
       call-out(<get-config> "implode-asfix",    ![]; if-less-verbose1(!["-S"]), !fileout2,
       call-tmp(<get-config> "meta-explode",     !["--verbose", <verbosity; int-to-string>],
@@ -53,7 +54,7 @@ strategies
     ; ( <find-in-path; if-verbose2(debug(!"using parse table: "))> (tbl1, <get-config> "-I")
        <+ if-verbose2(say(!"creating parse table"))
           ; <get-syntax-definition> syntax => def
-          ; <call> (<get-config>"sdf2table", ["-i", def, "-o", tbl1, "-m", syntax])
+          ; <if-verbose5(debug); call> (<get-config>"sdf2table", ["-i", def, "-o", tbl1, "-m", syntax])
           ; !tbl1
       )
 
@@ -64,9 +65,9 @@ strategies
         <+ if-verbose2(say(!"creating syntax definition"))
            ; <guarantee-extension(!"sdf")> syntax => sdf
 	   ; temp-file( \ (adef, _) -> <
-                <call> (<get-config>"pack-sdf", 
+                <if-verbose5(debug); call> (<get-config>"pack-sdf", 
                         ["-i", sdf, "-o", adef | <get-config; map(!["-I", <id>]); concat> "-I"])
-                ; <call> (<get-config> "asource",  ["-i", adef, "-o", def ])
+                ; <if-verbose5(debug); call> (<get-config> "asource",  ["-i", adef, "-o", def ])
 	     > \ )
 	   ; !def
         )

@@ -2,7 +2,10 @@ default: test1.x.txt
 
 bin_SCRIPTS = astratego2text
 
-pkgdata_DATA = Stratego.pp Stratego-pretty.pp StrategoStratego.pp astratego2text.config
+pkgdata_DATA = \
+	Stratego.pp Stratego-pretty.pp StrategoStratego.pp \
+	Stratego.pp.af Stratego-pretty.pp.af StrategoStratego.pp.af \
+	astratego2text.config 
 
 #TESTS = 
 
@@ -39,10 +42,16 @@ EXTRA_DIST = \
 
 SCFLAGS = --main $@ --C-include "\"conf.h\"" -CI "-I.."
 
-SCcomp = $(STRATEGO)/bin/sc
+SCcomp = $(SC)/bin/sc
 
 % : %.r
 	$(SCcomp) $(SCFLAGS) -i $*
+
+%.pp.af: %.pp dummy
+	$(GPP)/bin/ast2abox -i dummy -o /dev/null -p $< 
+
+dummy:
+	echo "All(Id)" > dummy
 
 %.dep:
 	touch $@

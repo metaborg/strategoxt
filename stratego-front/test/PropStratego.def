@@ -29,6 +29,30 @@ exports
     "thread" 		-> Id {reject}
     "where" 		-> Id {reject}
 
+  lexical restrictions
+    "all" 		
+    "constructors" 	
+    "fail" 		
+    "id" 		
+    "in" 		
+    "let" 		
+    "module" 		
+    "not" 		
+    "one" 		
+    "overlays" 		
+    "override" 		
+    "prim" 		
+    "rules" 		
+    "script" 		
+    "signature" 	
+    "some" 		
+    "sorts" 		
+    "strategies" 	
+    "stratego" 		
+    "test" 		
+    "thread" 		
+    "where" 	 	-/- [a-zA-Z0-9\'\.\-\_]	
+
   lexical syntax
     [a-zA-Z\'\.\-\_] [a-zA-Z0-9\'\.\-\_]* -> ModName
   lexical restrictions
@@ -275,8 +299,8 @@ exports
     %%"(" {Strategy ","}* ")" 		  -> Strategy {cons("TupleCong"),avoid}
 
     "("  ")" 		  		  -> Strategy {cons("TupleCong")}
-    "(" Strategy  ")" 		  -> Strategy {bracket}
-    "(" Strategy "," {Strategy ","}+ ")" 		  -> Strategy {cons("TupleCong")}
+    "(" Strategy  ")" 		          -> Strategy {bracket}
+    "(" Strategy "," {Strategy ","}+ ")"  -> Strategy {cons("TupleCong")}
 
     Mod 	  			  -> Strategy {cons("ModCongNoArgs")}
     Mod "(" {Strategy ","}* ")"	  	  -> Strategy {cons("ModCong")}

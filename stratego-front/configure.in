@@ -1,5 +1,5 @@
 AC_INIT(syn/Stratego.sdf)
-AM_INIT_AUTOMAKE(stratego-front,0.9beta1)
+AM_INIT_AUTOMAKE(stratego-front,0.8.1)
 
 ####################### 
 # XT
@@ -67,9 +67,30 @@ AC_ARG_WITH(cgen,
 )
 AC_SUBST(CGEN)
 
+AC_ARG_WITH(rpmprefix,
+  [  --with-rpmprefix          Specify location of installation prefix for rpm: /usr],
+  RPMPREFIX=$withval,
+  RPMPREFIX="/usr"
+)
+AC_SUBST(RPMPREFIX)
+
+AC_ARG_WITH(rpmdir, 
+  [  --with-rpmdir          Specify location of rpm directory: /usr/src/redhat/], 
+  RPMDIR=$withval, 
+  RPMDIR="/usr/src/redhat/"
+)
+AC_SUBST(RPMDIR)
+
+AC_ARG_WITH(rpmtmp, 
+  [  --with-rpmtmp          Specify location of rpm temporary directory: /tmp], 
+  RPMTMP=$withval, 
+  RPMTMP="/tmp"
+)
+AC_SUBST(RPMTMP)
+
 ####################### 
 
-AC_REVISION($Id: configure.in,v 1.5 2002/07/14 19:59:10 stratego Exp $)
+AC_REVISION($Id: configure.in,v 1.6 2002/09/17 21:56:43 stratego Exp $)
 
 AC_PROG_CC
 

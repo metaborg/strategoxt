@@ -6,12 +6,14 @@ strategies
     alltd(?ToTerm(<trm-explode>) + ?ToStrategy(<str-explode>))
 
   trm-explode =
-    TrmMetaVar <+ TrmStr <+ TrmFromTerm <+ TrmFromStr <+ TrmAnno 
+    TrmMetaVar <+ TrmLMetaVar <+ TrmStr <+ TrmFromTerm <+ TrmFromStr <+ TrmAnno 
     <+ TrmConc <+ TrmNil <+ TrmCons <+ TrmOp
 
   TrmOp       : op#(ts) -> Op(op, <map(trm-explode)> ts)
 
   TrmMetaVar  : meta-var(x) -> Var(x) 
+  LstMetaVar  : meta-listvar(x) -> Var(ListVar(x))
+  TrmLMetaVar : meta-listvar(x) -> Op("Cons", [Var(ListVar(x)), Op("Nil", [])])
   TrmStr      = is-string; !Str(<id>)
   TrmFromTerm = ?FromTerm(<meta-explode>)
   TrmFromStr  = ?FromStrategy(<meta-explode>)
@@ -19,8 +21,10 @@ strategies
   TrmNil      : [] -> Op("Nil", [])
   TrmCons     : [x | xs] -> Op("Cons",[<trm-explode>x, <trm-explode>xs])
   TrmConc     : Conc(ts1,ts2) -> 
-                <foldr(!<trm-explode> ts2, 
-                       !Op("Cons", [<Fst>, <Snd>]), trm-explode)> ts1
+                <try(![<LstMetaVar>])
+                 ; foldr(!<TrmLMetaVar <+ trm-explode> ts2, 
+                         !Op("Cons", [<Fst>, <Snd>]), 
+                         trm-explode)> ts1
 \end{code}
 \begin{comment}
 \begin{code}
@@ -47,6 +51,7 @@ signature
     FromStrategy : Strategy -> a
 
     meta-var     : String -> a
+    meta-listvar : String -> a
     Cong         : String * List(Strategy) -> Strategy
 
     Conc	 : Term * Term -> Term
