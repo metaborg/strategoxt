@@ -1,0 +1,12 @@
+module sdf/symbols/implode
+strategies
+
+  /**
+   * @type  Symbol -> Symbol
+   */
+  is-empty-sym = ?lit(_)
+  is-empty-sym = ?layout()
+  is-empty-sym = opt(is-empty-sym)
+  is-empty-sym = cf(is-empty-sym)
+  is-empty-sym = lex(is-empty-sym)
+  is-empty-sym = label(id, is-empty-sym)

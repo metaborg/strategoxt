@@ -13,6 +13,8 @@ AC_PROG_LIBTOOL
 AC_CONFIG_FILES([
   Makefile
 
+  lib/Makefile
+
   analyse/Makefile
   analyse/parse-unit/Makefile
   analyse/parse-unit/syn/Makefile

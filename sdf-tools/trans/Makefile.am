@@ -7,6 +7,7 @@ LDADD       += $(SSL_LIBS)
 
 SCFLAGS       = --main io-$* --dr new
 STRINCLUDES   = -I $(XTC)/share/xtc \
+                -I $(top_srcdir)/lib \
                 -I $(SDF_FRONT)/share/sdf-front \
                 -I $(SDF_FRONT)/share/sdf/sdf-front
 

@@ -1,6 +1,6 @@
 include $(top_srcdir)/Makefile.xt
 
-SUBDIRS           = . trans analyse src tests
+SUBDIRS           = . lib trans analyse src tests
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 EXTRA_DIST        = Makefile.xt
 CLEANFILES        = XTC

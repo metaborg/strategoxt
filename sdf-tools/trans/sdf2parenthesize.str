@@ -1,5 +1,6 @@
 /**
- * Generates a Stratego that puts Parenthetical constructors at the right place.
+ * Generates a Stratego module that puts Parenthetical constructors at
+ * the right places.
  *
  * @author  Martin Bravenboer <martin@cs.uu.nl>
  * @since   0.11
@@ -21,6 +22,8 @@ strategies
     ; xtc-transform(!"pp-stratego", !["--abstract" | <pass-verbose>])
     )
 
+strategies
+
   core-sdf2parenthesize =
       where(new-hashtable => tbl)
     ; where(RuleName => l)
@@ -37,14 +40,15 @@ strategies
 
   generate-rule(|l, tbl) :
     (sym1, pos) -> |[ l : t1 -> t2 where <s> x ]|
-        where <Symbol2Term> sym1 => t1
-            ; <Symbol2ParenTerm(|pos)> sym1 => t2
-            ; <index-to-subterm-id> pos => x
+    where
+        <Symbol2Term> sym1 => t1
+      ; <Symbol2ParenTerm(|pos)> sym1 => t2
+      ; <index-to-subterm-id> pos => x
 
-            ; <hashtable-get(|(sym1, pos))> tbl
-            ; map(Symbol2Wld)
-            ; <foldl( \ (s1, s2) -> |[ s1 + s2 ]| \ )> (<id>, |[ fail ]|)
-            ; ?s
+      ; <hashtable-get(|(sym1, pos))> tbl
+      ; map(Symbol2Wld)
+      ; <foldl( \ (s1, s2) -> |[ s1 + s2 ]| \ )> (<id>, |[ fail ]|)
+      ; ?s
 
 strategies
 
@@ -63,26 +67,26 @@ strategies
 
   Symbol2Term :
     Symbol(x, arity) -> Term |[ x(t* ) ]|
-      where <range> (0, arity)
-          ; map(
-              index-to-subterm-id
-            ; \ x -> Term |[ x ]| \
-            )
-          ; ?t*
+    where <range> (0, arity)
+        ; map(
+            index-to-subterm-id
+          ; \ x -> Term |[ x ]| \
+          )
+        ; ?t*
 
   Symbol2ParenTerm(|pos) :
     Symbol(x, arity) -> Term |[ x(t* ) ]|
-      where <range> (0, arity)
-          ; map(
-              if ?pos then
-                index-to-subterm-id
-                ; \ x -> Term |[ Parenthetical(x) ]| \
-              else 
-                index-to-subterm-id
-                ; \ x -> Term |[ x ]| \
-              end
-            )
-          ; ?t*
+    where <range> (0, arity)
+        ; map(
+            if ?pos then
+              index-to-subterm-id
+              ; \ x -> Term |[ Parenthetical(x) ]| \
+            else 
+              index-to-subterm-id
+              ; \ x -> Term |[ x ]| \
+            end
+          )
+        ; ?t*
 
 /**
  * Produce a module
@@ -108,11 +112,12 @@ strategies
            constructors
              Parenthetical : Unknown -> Unknown
       ]|
-    where module-name => M1
-        ; language-name => M2
-        ; <conc-strings> ("io-", M1) => f
-        ; <conc-strings> ("parenthesize-", M2) => g
-        ; RuleName => l
+    where
+        module-name => M1
+      ; language-name => M2
+      ; <conc-strings> ("io-", M1) => f
+      ; <conc-strings> ("parenthesize-", M2) => g
+      ; RuleName => l
 
 /**
  * Options

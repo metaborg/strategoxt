@@ -1,5 +1,5 @@
 /**
- * Generates a Stratego that puts Bracket constructors at the right place.
+ * Generates a description of conflicts in an AST from an SDF syntax definition.
  *
  * @author  Martin Bravenboer <martin@cs.uu.nl>
  * @since   0.11
@@ -10,9 +10,10 @@ imports
   Sdf2
   liblib
   strategoxt-xtc-tools
-  sdf-options
   sdf-spread-cons
   ast-conflicts
+  sdf/tool/options
+  sdf/symbol/implode
 
 strategies
 
@@ -105,16 +106,6 @@ strategies
     p@prod(syms, _, _) -> Symbol(x, n)
       where <filter(not(is-empty-sym)); length> syms => n
           ; <cons-of-prod> p => x
-
-  /**
-   * @type  Symbol -> Symbol
-   */
-  is-empty-sym = ?lit(_)
-  is-empty-sym = ?layout()
-  is-empty-sym = opt(is-empty-sym)
-  is-empty-sym = cf(is-empty-sym)
-  is-empty-sym = lex(is-empty-sym)
-  is-empty-sym = label(id, is-empty-sym)
 
 strategies
 
