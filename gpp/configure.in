@@ -18,6 +18,7 @@ AC_CONFIG_FILES([
 	trans/Makefile
   trans/2abox/Makefile
   trans/abox2/Makefile 
+  trans/abox2/data/Makefile 
 	xtc-tools/Makefile 
 ])
 

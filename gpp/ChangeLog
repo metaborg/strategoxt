@@ -1,3 +1,15 @@
+2003-04-27   Merijn de Jonge  <M.de.Jonge@tue.nl>
+ * repaired asfix2abox:
+      trans/2abox/Asfix-2-abox.str:
+       -build-list: call to symbol2abox used wrong 4th argument (number).
+        This should be '1'
+       -symbol2abox: alt : call to symbol2abox used wrong 4th argument (number).
+      trans/2abox/layout.str:
+       -has-significant-layout: added not(13) to exclude carriage returns
+        ('\r') as significant layout.
+ * added trans/abox2/data/Makefile to configure.in
+ 
+
 2003-04-22   Merijn de Jonge  <M.de.Jonge@tue.nl>
  * repaired asfix2abox:
       xtc-tools/asfix2abox.str: 

@@ -47,7 +47,7 @@ strategies
   StoreEntry =
      ?PP-Entry( path, value );
      <table-put>("pp-table", <mk-key>path, (path, value));
-     <path-to-string;notify(!"storing: ")>path
+     <notify(!"storing: ")>(<path-to-string>path, value)
   
   StoreEntryIfNotExists = 
         ?PP-Entry( path, value );

@@ -113,7 +113,7 @@ build-list:
 
       map({t, ab: \ t -> ab 
          where
-           <symbol2abox>(sym, t, new-path, number) => ab \
+           <symbol2abox>(sym, t, new-path, 1) => ab \
          } ) => aboxes;
       <instantiate-list(!pp-entry)>aboxes => abox
 
@@ -158,6 +158,7 @@ symbol2abox:
    where
       <make-path>(path, number ) => new-path;
       !(alt(s1,s2), appl, new-path, 1 ) =>s;
+      where(!alt(s1,s2) => s');
    rec x(
    { s0, s1, s2, arg, attrs, prod, number, path:
       ?(alt(s1, s2), appl(prod([s1], alt(s1,s2), attrs),arg), path, number );
@@ -170,8 +171,8 @@ symbol2abox:
       x
    <+
       ?(s1, appl( prod, [arg] ), path, number );
-      <get-pp-entry>(s, path) => pp-entry;
-      !(s1, arg, path, number );
+      <get-pp-entry>(s', path) => pp-entry;
+      !(s1, arg, path, 1 );
       symbol2abox => abox';
       <instantiate>([<index>(number, pp-entry)], [abox'] )
    }

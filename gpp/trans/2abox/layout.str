@@ -137,7 +137,7 @@ has-significant-layout =
    not(layout(layout-place-holder));
    ?layout(xs);!xs;concat-strings;
    explode-string;
-   filter( not(9);not(10); not(32) );
+   filter( not(9 + 10 + 13 + 32) );
    not([])
    )
 
