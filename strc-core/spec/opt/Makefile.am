@@ -33,3 +33,8 @@ CLEANFILES 	 = $(wildcard *.dep)
 BOOTCLEANFILES 	 = $(wildcard *.c)
 
 EXTRA_DIST 	 = $(wildcard *.str) $(wildcard *.meta)
+
+
+nodist_build_match_laws_test_SOURCES=build-match-laws-test.c
+nodist_bound_unbound_vars_test_SOURCES=bound-unbound-vars-test.c
+nodist_const_prop_test_SOURCES=const-prop-test.c
