@@ -1,5 +1,26 @@
 2004-06-27   Martin Bravenboer  <martin@cs.uu.nl>
 
+	* autoxt.m4: added a set of macros for checking package
+	dependencies:
+	
+	- XT_PKG_ATERM
+        - XT_PKG_PGEN
+	- XT_PKG_SGLR
+	- XT_PKG_PT_SUPPORT
+	- XT_PKG_ASF_LIBRARY
+	- XT_PKG_SDF
+
+	These macros delegate the real work to some specific program
+	checks:
+
+	- XT_PROG_SDF2TABLE
+	- XT_PROG_IMPLODEPT
+	- XT_PROG_SGLR
+	- XT_PROG_BAFFLE
+	- XT_LIB_ATERM
+
+2004-06-27   Martin Bravenboer  <martin@cs.uu.nl>
+
 	* Makefile.xt: implemented support for build-time XTC
 	repositories. The bin_PROGRAMS, pkgdata_DATA and so on are now
 	registered in a local XTC repository, which contains references to

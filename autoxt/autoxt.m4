@@ -281,3 +281,117 @@ AC_DEFUN([XT_TERM_DEFINE],
   AC_DEFINE(SVN_REVISION_TERM(),[ATmakeString("@SVN_REVISION@")])
 ])
 
+############ TEST PACKAGES ########################################################
+
+AC_DEFUN([XT_PKG_ATERM],
+[
+  XT_PROG_BAFFLE  
+  XT_LIB_ATERM
+])
+
+AC_DEFUN([XT_PKG_PGEN],
+[
+  XT_PROG_SDF2TABLE  
+])
+
+AC_DEFUN([XT_PKG_SGLR],
+[
+  XT_PROG_SGLR
+])
+
+AC_DEFUN([XT_PKG_PT_SUPPORT],
+[
+  XT_PROG_IMPLODEPT
+])
+
+AC_DEFUN([XT_PKG_ASF_LIBRARY],
+[
+  AC_MSG_CHECKING([for asf-library at $ASF_LIBRARY/share/asf-library])
+  test -d "$ASF_LIBRARY/share/asf-library"
+  if test $? -eq 0; then
+    AC_MSG_RESULT([yes])
+  else
+    AC_MSG_RESULT([no])
+    AC_MSG_ERROR([cannot find asf-library. Use --with-sdf or --with-asf-library.])
+  fi
+])
+
+AC_DEFUN([XT_PKG_SDF],
+[
+  XT_PKG_PGEN
+  XT_PKG_SGLR
+  XT_PKG_PT_SUPPORT
+  XT_PKG_ASF_LIBRARY
+])
+
+############ TEST PROGRAMS ##########################################################
+
+AC_DEFUN([XT_PROG_SDF2TABLE],
+[
+  AC_REQUIRE([AC_PROG_CC])
+
+  AC_MSG_CHECKING([for sdf2table at $PGEN/bin/sdf2table$EXEEXT])
+  test -x "$PGEN/bin/sdf2table$EXEEXT"
+  if test $? -eq 0; then
+    AC_MSG_RESULT([yes])
+  else
+    AC_MSG_RESULT([no])
+    AC_MSG_ERROR([cannot find sdf2table. Use --with-sdf or --with-pgen.])
+  fi
+])
+
+AC_DEFUN([XT_PROG_IMPLODEPT],
+[
+  AC_REQUIRE([AC_PROG_CC])
+
+  AC_MSG_CHECKING([for implodePT at $PT_SUPPORT/bin/implodePT$EXEEXT])
+  test -x "$PT_SUPPORT/bin/implodePT$EXEEXT"
+  if test $? -eq 0; then
+    AC_MSG_RESULT([yes])
+  else
+    AC_MSG_RESULT([no])
+    AC_MSG_ERROR([cannot find implodePT. Use --with-sdf or --with-pt-support.])
+  fi
+])
+
+AC_DEFUN([XT_PROG_SGLR],
+[
+  AC_REQUIRE([AC_PROG_CC])
+
+  AC_MSG_CHECKING([for sglr at $SGLR/bin/sglr$EXEEXT])
+  test -x "$SGLR/bin/sglr$EXEEXT"
+  if test $? -eq 0; then
+    AC_MSG_RESULT([yes])
+  else
+    AC_MSG_RESULT([no])
+    AC_MSG_ERROR([cannot find sglr. Use --with-sdf or --with-sglr.])
+  fi
+])
+
+AC_DEFUN([XT_PROG_BAFFLE],
+[
+  AC_REQUIRE([AC_PROG_CC])
+
+  AC_MSG_CHECKING([for baffle at $ATERM/bin/baffle$EXEEXT])
+  test -f "$ATERM/bin/baffle$EXEEXT"
+  if test $? -eq 0; then
+    AC_MSG_RESULT([yes])
+  else
+    AC_MSG_RESULT([no])
+    AC_MSG_ERROR([cannot find baffle. Use --with-aterm.])
+  fi
+])
+
+############ TEST LIBRARIES ##########################################################
+AC_DEFUN([XT_LIB_ATERM],
+[
+  AC_MSG_CHECKING([for libATerm-gcc at $ATERM/lib/libATerm-gcc.a])
+
+  test -f $ATERM/lib/libATerm-gcc.a
+  if test $? -eq 0; then
+    AC_MSG_RESULT([yes])
+  else
+    AC_MSG_RESULT([no])
+    AC_MSG_ERROR([cannot find libATerm-gcc.a. You must install the ATerm library with the option --with-gcc])
+  fi
+])
