@@ -19,14 +19,14 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: make.r,v 1.2 2001/08/28 15:16:48 mdejonge Exp $
+% $Id: make.r,v 1.3 2001/09/01 20:44:12 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
 \begin{code}
 module make
 
-imports pp-tables
+imports pp-tables Bracket-Symbol
 
 \end{code}
    Obtain the constructor name of the production, number all non-terminal

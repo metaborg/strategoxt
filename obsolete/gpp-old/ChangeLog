@@ -1,3 +1,7 @@
+2001-09-01 Merijn de Jonge <mdejonge@cwi.nl> 
+   * gpp now uses Bracket-Symbol module for constructor definition of
+     bracket-symbol
+
 2001-08-29 Merijn de Jonge <mdejonge@cwi.nl> 
    * src/gpp/data/Makefile.am: fixed incorrect file names
 

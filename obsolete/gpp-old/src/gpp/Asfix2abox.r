@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Asfix2abox.r,v 1.2 2001/06/08 09:44:17 mdejonge Exp $
+% $Id: Asfix2abox.r,v 1.3 2001/09/01 20:44:11 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 % Changes: Eelco Visser <visser@acm.org> 19/5/20001
@@ -29,7 +29,7 @@
 module Asfix2abox
 imports
    lib make pp-tables-io asfix misc instantiate Literal-lib
-   layout prodcons
+   layout prodcons Bracket-Symbol
 
 signature
    constructors

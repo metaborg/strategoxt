@@ -19,13 +19,14 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Ppgen.r,v 1.3 2001/08/22 16:14:43 eelco Exp $
+% $Id: Ppgen.r,v 1.4 2001/09/01 20:44:11 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
 \begin{code}
 module Ppgen
-imports make pp-tables-io asfix lib misc Label-Sdf-Syntax Basic-Sdf-Syntax
+imports make pp-tables-io asfix lib misc Label-Sdf-Syntax Basic-Sdf-Syntax 
+        Bracket-Symbol
 
 strategies
 Ppgen = iowrap( (id, ppgenerate),
