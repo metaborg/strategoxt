@@ -17,7 +17,7 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 dnl 02111-1307, USA.
 
-dnl $Id: configure.in.src,v 1.3 2001/10/09 15:40:25 mdejonge Exp $
+dnl $Id: configure.in.src,v 1.4 2001/11/22 08:24:38 mdejonge Exp $
 
 AC_INIT(configure.in)
 AM_INIT_AUTOMAKE(__PACKAGE__,__VERSION__)
@@ -27,36 +27,27 @@ AM_INIT_AUTOMAKE(__PACKAGE__,__VERSION__)
 
 dnl Package switches.
 
-AC_ARG_WITH(stratego, 
-   [  --with-stratego         Specify location of stratego library],
-   STRATEGO=${withval},
-   STRATEGO='${prefix}')
+AC_PACKAGE_REQUIRE(stratego, sc,
+   [  --with-stratego         Specify location of stratego library])
 AC_SUBST(STRATEGO)
 
-AC_ARG_WITH(asfix-tools, 
-   [  --with-asfix-tools      Specify location of asfix-tools package],
-   ASFIXTOOLS=${withval},
-   ASFIXTOOLS='${prefix}')
-AC_SUBST(ASFIXTOOLS)
+AC_PACKAGE_REQUIRE(asfix-tools, implode-asfix,
+   [  --with-asfix-tools      Specify location of asfix-tools package])
+AC_SUBST(ASFIX_TOOLS)
 
-AC_ARG_WITH(graph-tools, 
-   [  --with-graph-tools      Specify location of graph-tools package],
-   GRAPHTOOLS=${withval},
-   GRAPHTOOLS='${prefix}')
-AC_SUBST(GRAPHTOOLS)
+AC_PACKAGE_REQUIRE(graph-tools, GraphXML2dot,
+   [  --with-graph-tools      Specify location of graph-tools package])
+AC_SUBST(GRAPH_TOOLS)
 
-AC_ARG_WITH(gpp, 
-   [  --with-gpp              Specify location of generic pretty-print package],
-   GPP=${withval},
-   GPP='${prefix}')
+AC_PACKAGE_REQUIRE(gpp, ast2abox,
+   [  --with-gpp              Specify location of generic pretty-print
+package])
 AC_SUBST(GPP)
 
-
-AC_REVISION($Id: configure.in.src,v 1.3 2001/10/09 15:40:25 mdejonge Exp $)
+AC_REVISION($Id: configure.in.src,v 1.4 2001/11/22 08:24:38 mdejonge Exp $)
 
 AC_PROG_CC
 AC_PROG_INSTALL
-
 
 AC_PATH_PROGS(SH, sh)
 

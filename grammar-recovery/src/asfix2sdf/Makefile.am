@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.4 2001/09/18 15:38:14 jvisser Exp $
+# $Id: Makefile.am,v 1.5 2001/11/22 08:27:45 mdejonge Exp $
 
 include $(srcdir)/../templates/make_rules
 include $(srcdir)/../templates/make_rules.stratego
@@ -42,8 +42,8 @@ TESTS        =\
 
 CLEAN_FILES += asfix2sdf_check
 
-SCFLAGS     += -I $(ASFIXTOOLS)/share/asfix-tools \
-	       -I $(SDFTOOLS)/share/sdf-tools \
+SCFLAGS     += -I $(ASFIX_TOOLS)/share/asfix-tools \
+	       -I $(SDF_TOOLS)/share/sdf-tools \
 	       --main $@
 
 asfix2sdf_check_prog       = asfix2sdf

@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.3 2001/09/29 16:40:23 eelco Exp $
+# $Id: Makefile.am,v 1.4 2001/11/22 08:27:46 mdejonge Exp $
 
 include $(srcdir)/../templates/make_rules
 include $(srcdir)/../templates/make_rules.stratego
@@ -37,7 +37,7 @@ EXTRA_DIST  += yacc.r
 
 CLEANFILES  += yacc2sdf_check lex2sdf_check
 
-SCFLAGS     += -I $(ASFIXTOOLS)/share/asfix-tools \
+SCFLAGS     += -I $(ASFIX_TOOLS)/share/asfix-tools \
 	       --main $@
 
 
