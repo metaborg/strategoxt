@@ -591,15 +591,15 @@ exports
 
 module Stratego-Layout
 exports
-
   lexical syntax
-    [\t\ \n\13]		-> Ws
-    "//" ~[\n]* [\n] 	-> ShortCom
-    "/*" CommChar* "*/" -> LongCom
-    "(*" CommChar* "*)" -> LongCom
-    "*" 		-> Asterisk
-    ~[\*] 		-> CommChar
-    Asterisk 		-> CommChar
+    [\t\ \n\13]		 -> Ws
+    "//" ~[\n]* ([\n] | Eof) -> ShortCom
+    "/*" CommChar* "*/"  -> LongCom
+    "(*" CommChar* "*)"  -> LongCom
+    "*" 		 -> Asterisk
+    ~[\*] 		 -> CommChar
+    Asterisk 		 -> CommChar
+
   lexical restrictions
     Asterisk -/- [\/\)]
 
@@ -612,6 +612,7 @@ exports
     ~[\\] 				   -> VLCchar
     Backslash 				   -> VLCchar
     [\\] 				   -> Backslash
+
   lexical restrictions
     Backslash -/- [b].[e].[g].[i].[n].[\{].[c].[o].[d].[e].[\}]
     Eof -/- ~[]
@@ -621,6 +622,7 @@ exports
     LongCom 	-> LAYOUT
     VeryLongCom -> LAYOUT
     Ws 		-> LAYOUT
+
   context-free restrictions
     LAYOUT? -/- [\ \t\n\13]
 
