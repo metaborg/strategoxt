@@ -19,7 +19,11 @@ signature
 
 overlays
 
-  AllWarnings = ["debug-arguments", "obsolete-strategy-calls", "maybe-unbound-variables"]
+  AllWarnings = [
+     ("debug-arguments",         "Warns for missing build operator."), 
+     ("obsolete-strategy-calls", "Warns for obsolete strategies."), 
+     ("maybe-unbound-variables", "Warns for unbound variables.")
+     ]
 
 strategies
 
@@ -29,7 +33,8 @@ strategies
   stratego-warnings-options = 
     ArgOption("--warning" + "-W",
         where(<extend-config> ("--warning", [<id>])); !(),
-        !"-W | --warning     Set warning level (-W all to switch all warnings on)"
+        <concat-strings>["-W | --warning   Set warning level (-W all to switch all warnings on):\n",
+                         <Display-possible-warnings>AllWarnings ]
     )
 
   Stratego-warnings =
@@ -37,12 +42,16 @@ strategies
      ?spec
      ; (<get-config>"--warning"; uniq <+ ![])
      // If -W all was given, create a list of all available checks  
-     ; try(fetch-elem("all"); !AllWarnings)
+     ; try(fetch-elem("all"); !AllWarnings; map(Fst))
      ; filter(Warning(!spec))
      ; concat
      ; print-warnings
     )
 
+  Display-possible-warnings = 
+     map( \ (s,txt) -> <concat-strings>["                     ",s, ": ", txt, "\n"] \ );
+     concat-strings
+     
   Warning(spec) =
     WarningDebugArguments(spec)
     <+ WarningObsolete(spec)
@@ -156,7 +165,7 @@ get-strategy-callers:
 
 // Return a list of strategy names which invoke strategy "To"
 caller(To) = 
-   ?SDef(name, _, def);
+   ?SDefT(name, _, _,def);
    To => to;
    !def;
    collect( CallT(SVar(?to), id, id);!to );
@@ -166,7 +175,7 @@ caller(To) =
 // Return a list of tuples (name, match) for strategy definition for which
 // "prop" holds 
 sdef-with-property(prop) =
-   SDef(?name, id, ?def);
+   SDefT(?name, id, id,?def);
    !def;
    collect(prop);
    not([]);
