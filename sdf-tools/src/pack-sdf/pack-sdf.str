@@ -47,10 +47,10 @@ strategies
     ; (id, ConcatModules)
 
   parse-sdf' =
-    (guarantee-extension(!"sdf"), id);
-    find-in-path;
-    debug(!"  including ");
-    !(<id>, <parse-sdf> <id>)
+    (guarantee-extension(!"sdf"), id)
+    ; (find-in-path <+ (Fst; xtc-find-loc))
+    ; debug(!"  including ")
+    ; !(<id>, <parse-sdf> <id>)
 
   get-sdf-imports = 
     collect(?appl(prod(_,cf(sort("Import")),_),_); get-module-name, 
