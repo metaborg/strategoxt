@@ -21,7 +21,7 @@ strategies
       <table-create> "generated-nonterms"
     )
   ; where(
-      collect(?syntax(_))
+      collect-om(?syntax(_))
     ; map(grammar2prodrules <+ log(|Error(), "Rewriting syntax section failed"); fail)
     ; concat
     ; if ?[] then
@@ -34,13 +34,12 @@ strategies
     /**
      * @todo  use start symbols of SDF
      */
-  ; collect(?'sorts(<id>))
-  ; concat
+  ; collect-om(is-start-prod)
   ; if ?[] then
-      log(|Error(), "No start symbols found.")
+      log(|Error(), "No start productions found.")
     ; fail
     else
-      map(sym2tree; ?Ref(<id>) <+ err(!"Rewriting sort to nonterm failed"); fail)
+      map(start-prod2tree; ?Ref(<id>) <+ err(!"Rewriting production to nonterm failed"); fail)
     ; !RTG(Start(<id>), ProdRules(prods))
     end
 
@@ -130,12 +129,6 @@ strategies
   ignore-prod =
     ?prod([a],  cf(a), _)
 
-  /**
-   * @todo  Use these rules for start sorts?
-   */
-  ignore-prod =
-    ?prod(_, start(), _)
-
   ignore-prod =
     ?prod([start()], sort("SURROGATE-START"), _)
 
@@ -158,6 +151,16 @@ strategies
       ; <not(get-cnstr-name)> attrs
       ; <syms2trees> syms => [ rtg |[ x ]| ]
       )
+
+  ignore-prod =
+    is-start-prod
+
+  is-start-prod =
+    ?prod(_, start(), _)
+
+  start-prod2tree :
+    prod(syms, start(), _) -> t
+      where <syms2trees> syms => [t]
 
 strategies
 

@@ -1,6 +1,13 @@
 2004-07-03  Martin Bravenboer <martin@cs.uu.nl>
 
-	* trans/sdf2rt/gcore-sdf-grammar2rtg.str: fail if no start symbols
+	* trans/sdf2rt/core-sdf-grammar2rtg.str: In PGEN 2.2 sort
+	declarations are no longer in available in kernel
+	SDF. sdf2rtg now uses that start productions to determine start
+	symbols of an RTG. This is much better anyway. The implementation
+	should be compatible with PGEN 2.1, but StrategoXT 0.11 will
+	advice the SDF2 Bundle 2.2.
+
+	* trans/sdf2rt/core-sdf-grammar2rtg.str: fail if no start symbols
 	are available in the resulting RTG.
 
 2004-04-30  Martin Bravenboer <martin@cs.uu.nl>
