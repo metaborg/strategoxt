@@ -39,6 +39,10 @@ rules
 
   Desugar :
     PrimNoArgs(f) 	-> Prim(<un-double-quote>f, [])
+
+  Desugar :
+    PrimT(f, s, t)  -> PrimT(<un-double-quote> f, s, t)
+
 //  Desugar :
 //    Prim(f,ts) 	-> Prim(<un-double-quote>f, [], ts)
 
