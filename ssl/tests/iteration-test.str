@@ -12,9 +12,51 @@ strategies
   main = 
     test-suite(!"iteration test",
       repeat-tests
+    ; repeatc-tests
+    ; repeat1-tests
     )
 
-  repeat-tests = id
+  repeat-tests =
+      apply-test( !"repeat: tail"
+      , repeat(Tl)
+      , ![1,2,3,4,5]
+      , ![]
+      )
+    ; apply-test( !"repeat: fail is ok"
+      , repeat(fail)
+      , ![1,2,3,4,5]
+      , ![1,2,3,4,5]
+      )
+
+  repeatc-tests =
+      apply-test(!"repeat(s,c) test 1"
+      , repeat(Tl, ?[])
+      , ![1,2,3,4,5]
+      , ![]
+      )
+    ; apply-and-fail(!"repeat(s,c) test 2"
+      , repeat(fail, ?[])
+      , ![1,2,3,4,5]
+      )
+
+  repeat1-tests =
+      apply-and-fail(!"repeat1: must succeed at least once"
+      , repeat1(Tl)
+      , ![]
+      )
+    ; apply-and-fail(!"repeat1-c: must succeed at least once"
+      , repeat1(Tl, ?[])
+      , ![]
+      )
+    ; apply-test(!"repeat1: tail", repeat1(Tl)
+      , ![1]
+      , ![]
+      )
+    ; apply-test(!"repeat1-c: tail"
+      , repeat1(Tl, ?[])
+      , ![1]
+      , ![]
+      )
 
 /**
  * Copyright (C) 2003 Eelco Visser <visser@acm.org>
