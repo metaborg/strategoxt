@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: layout.r,v 1.3 2001/12/20 09:43:20 mdejonge Exp $
+% $Id: layout.r,v 1.4 2002/01/23 15:25:09 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdejonge@cwi.nl)
 
@@ -30,7 +30,7 @@ imports lib pp-tables
 signature
    constructors
       Conservative: Option
-
+      layout-place-holder : LPH
 strategies
 
 insert-layout =
@@ -130,10 +130,11 @@ InsLayout(s) =
    } )
 
 has-layout = 
-   not(layout([]))
+   not(layout(layout-place-holder))
 
 has-significant-layout =
    where(
+   not(layout(layout-place-holder));
    ?layout(xs);!xs;concat-strings;
    explode-string;
    filter( not(9);not(10); not(32) );
