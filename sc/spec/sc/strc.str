@@ -221,6 +221,9 @@ strategies
   canonicalize = 
     xtc-transform(!"canonicalize", !["-b" | <pass-verbose> ])
  
+  lift-definitions = 
+    xtc-transform(!"lift-definitions", !["-b" | <pass-verbose> ])
+ 
   bound-unbound-vars = 
     xtc-transform(!"bound-unbound-vars", !["-b" | <pass-verbose> ])
  
@@ -231,6 +234,8 @@ strategies
     profile'(if-verbose1(<printnl>(stderr, ["back-end succeeded:      " | <id>])), 
       canonicalize
       ; save-as1(!".can")
+      ; olevel1(lift-definitions)
+      ; save-as1(!".opt9")
       ; olevel3(bound-unbound-vars)
       ; stratego-cf
       ; s2c

@@ -1,3 +1,12 @@
+2003-08-01  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/opt/lift-definitions.str: lift definitions without
+	free variables (other than calls to top-level strategies)
+	to the top level. Drastically reduces the number of nested
+	functions in generated C code.
+
+	* spec/sc/strc.str: Call lift-definitions after canonicalization
+
 2003-07-31  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/front/repair-types.str: Don't explain if there are no 

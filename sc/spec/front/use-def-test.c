@@ -502,7 +502,7 @@ void init_constant_terms (void)
   ATprotect(&(term_f_16));
   term_f_16 = (ATerm) ATmakeAppl(ATmakeSymbol("test2b", 0, ATtrue));
   ATprotect(&(term_t_16));
-  term_t_16 = (ATerm) ATmakeAppl(ATmakeSymbol("o_0", 0, ATtrue));
+  term_t_16 = (ATerm) ATmakeAppl(ATmakeSymbol("p_0", 0, ATtrue));
   ATprotect(&(term_e_17));
   term_e_17 = (ATerm) ATmakeAppl(ATmakeSymbol("Context", 0, ATtrue));
   ATprotect(&(term_f_17));
@@ -512,7 +512,7 @@ void init_constant_terms (void)
   ATprotect(&(term_r_17));
   term_r_17 = (ATerm) ATmakeAppl(ATmakeSymbol("Bound", 0, ATtrue));
   ATprotect(&(term_t_17));
-  term_t_17 = (ATerm) ATmakeAppl(ATmakeSymbol("l_0", 0, ATtrue));
+  term_t_17 = (ATerm) ATmakeAppl(ATmakeSymbol("m_0", 0, ATtrue));
   ATprotect(&(term_c_18));
   term_c_18 = (ATerm) ATmakeAppl(ATmakeSymbol("j_0", 0, ATtrue));
   ATprotect(&(term_g_18));
@@ -532,13 +532,13 @@ void init_constant_terms (void)
   ATprotect(&(term_r_21));
   term_r_21 = (ATerm) ATmakeAppl(ATmakeSymbol(": used, but not bound", 0, ATtrue));
   ATprotect(&(term_d_22));
-  term_d_22 = (ATerm) ATmakeAppl(ATmakeSymbol("r_0", 0, ATtrue));
+  term_d_22 = (ATerm) ATmakeAppl(ATmakeSymbol("s_0", 0, ATtrue));
   ATprotect(&(term_f_22));
   term_f_22 = (ATerm) ATmakeAppl(sym_Defined_1, term_d_22);
   ATprotect(&(term_h_23));
-  term_h_23 = (ATerm) ATmakeAppl(ATmakeSymbol("e_0", 0, ATtrue));
+  term_h_23 = (ATerm) ATmakeAppl(ATmakeSymbol("f_0", 0, ATtrue));
   ATprotect(&(term_q_23));
-  term_q_23 = (ATerm) ATmakeAppl(ATmakeSymbol("c_0", 0, ATtrue));
+  term_q_23 = (ATerm) ATmakeAppl(ATmakeSymbol("b_0", 0, ATtrue));
   ATprotect(&(term_k_26));
   term_k_26 = (ATerm) ATmakeAppl(sym_Scopes_0);
   ATprotect(&(term_t_27));
@@ -622,7 +622,7 @@ ATerm main_0 (ATerm t)
 }
 ATerm test12_0_0 (ATerm t)
 {
-  ATerm b_0 (ATerm t)
+  ATerm c_0 (ATerm t)
   {
     t = term_x_7;
     return(t);
@@ -647,12 +647,12 @@ ATerm test12_0_0 (ATerm t)
       }
     return(t);
   }
-  t = do_test_2_0(b_0, k_0, t);
+  t = do_test_2_0(c_0, k_0, t);
   return(t);
 }
 ATerm test11_0_0 (ATerm t)
 {
-  ATerm m_0 (ATerm t)
+  ATerm l_0 (ATerm t)
   {
     t = term_n_8;
     return(t);
@@ -677,14 +677,14 @@ ATerm test11_0_0 (ATerm t)
       }
     return(t);
   }
-  t = do_test_2_0(m_0, n_0, t);
+  t = do_test_2_0(l_0, n_0, t);
   {
-    ATerm p_0 (ATerm t)
+    ATerm o_0 (ATerm t)
     {
       t = term_h_9;
       return(t);
     }
-    ATerm s_0 (ATerm t)
+    ATerm r_0 (ATerm t)
     {
       ATerm i_9 = t;
       int j_9 = stack_ptr;
@@ -748,23 +748,23 @@ ATerm test11_0_0 (ATerm t)
         }
       return(t);
     }
-    t = do_test_2_0(p_0, s_0, t);
+    t = do_test_2_0(o_0, r_0, t);
   }
   return(t);
 }
 ATerm Overlays_1_0 (ATerm t_64 (ATerm), ATerm t)
 {
-  ATerm d_0 = NULL,f_0 = NULL,g_0 = NULL,i_0 = NULL;
+  ATerm d_0 = NULL,e_0 = NULL,g_0 = NULL,i_0 = NULL;
   i_0 = t;
   if(match_cons(t, sym_Overlays_1))
     {
-      f_0 = ATgetArgument(t, 0);
+      e_0 = ATgetArgument(t, 0);
     }
   else
     _fail(t);
   t = SSLgetAnnotations(i_0);
   d_0 = t;
-  t = f_0;
+  t = e_0;
   t = t_64(t);
   g_0 = t;
   t = SSLsetAnnotations((ATerm)ATmakeAppl(sym_Overlays_1, g_0), d_0);
@@ -2051,7 +2051,7 @@ ATerm Context_0_0 (ATerm t)
         if(match_cons(t, sym_Defined_2))
           {
             ATerm f_19 = ATgetArgument(t, 0);
-            if((ATgetSymbol((ATermAppl) f_19) != ATmakeSymbol("o_0", 0, ATtrue)))
+            if((ATgetSymbol((ATermAppl) f_19) != ATmakeSymbol("p_0", 0, ATtrue)))
               _fail(t);
             h_1 = ATgetArgument(t, 1);
           }
@@ -2084,7 +2084,7 @@ ATerm Context_0_0 (ATerm t)
               if(match_cons(t, sym_Defined_2))
                 {
                   ATerm p_19 = ATgetArgument(t, 0);
-                  if((ATgetSymbol((ATermAppl) p_19) != ATmakeSymbol("l_0", 0, ATtrue)))
+                  if((ATgetSymbol((ATermAppl) p_19) != ATmakeSymbol("m_0", 0, ATtrue)))
                     _fail(t);
                   t_1 = ATgetArgument(t, 1);
                 }
@@ -2183,7 +2183,7 @@ ATerm Context_0_0 (ATerm t)
                                 if(match_cons(t, sym_Defined_2))
                                   {
                                     ATerm n_20 = ATgetArgument(t, 0);
-                                    if((ATgetSymbol((ATermAppl) n_20) != ATmakeSymbol("e_0", 0, ATtrue)))
+                                    if((ATgetSymbol((ATermAppl) n_20) != ATmakeSymbol("f_0", 0, ATtrue)))
                                       _fail(t);
                                     o_2 = ATgetArgument(t, 1);
                                   }
@@ -2212,7 +2212,7 @@ ATerm Context_0_0 (ATerm t)
                                   if(match_cons(t, sym_Defined_2))
                                     {
                                       ATerm r_20 = ATgetArgument(t, 0);
-                                      if((ATgetSymbol((ATermAppl) r_20) != ATmakeSymbol("c_0", 0, ATtrue)))
+                                      if((ATgetSymbol((ATermAppl) r_20) != ATmakeSymbol("b_0", 0, ATtrue)))
                                         _fail(t);
                                       u_2 = ATgetArgument(t, 1);
                                     }
@@ -2316,7 +2316,7 @@ ATerm Bound_0_0 (ATerm t)
                 if(match_cons(t, sym_Defined_1))
                   {
                     ATerm i_21 = ATgetArgument(t, 0);
-                    if((ATgetSymbol((ATermAppl) i_21) != ATmakeSymbol("r_0", 0, ATtrue)))
+                    if((ATgetSymbol((ATermAppl) i_21) != ATmakeSymbol("s_0", 0, ATtrue)))
                       _fail(t);
                   }
                 else

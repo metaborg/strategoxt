@@ -133,7 +133,10 @@ SCLibs = -L$(SRTS)/lib -lstratego-lib -lstratego \
 %.s12 : %.s11.opt ../c/canonicalize$(EXE)
 	../c/canonicalize -i $< -o $@ -b
 
-%.s13 : %.s12 ../c/bound-unbound-vars$(EXE)
+%.s12.lift : %.s12 ../opt/lift-definitions$(EXE)
+	../opt/lift-definitions -i $< -o $@ -b
+
+%.s13 : %.s12.lift ../c/bound-unbound-vars$(EXE)
 	../c/bound-unbound-vars -i $< -o $@ -b
 
 

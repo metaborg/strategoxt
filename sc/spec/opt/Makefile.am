@@ -8,7 +8,7 @@ SCFLAGS	= -I $(STRATEGO_FRONT)/share/stratego-front \
 	  -I $(srcdir)/../front \
 	  --main $*-io --verbose 1
 
-libexec_PROGRAMS = fusion inline dead-def-elim const-prop dead-var-elim
+libexec_PROGRAMS = fusion inline dead-def-elim const-prop dead-var-elim lift-definitions
 check_PROGRAMS 	 = build-match-laws-test
 
 fusion_SOURCES 	 = fusion.c
