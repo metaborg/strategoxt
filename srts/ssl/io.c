@@ -290,8 +290,8 @@ ATerm SSL_WriteToFile(ATbool binary, ATerm filename, ATerm trm)
     outfile = stderr;
   else if(ATisString(filename))
     outfile = fopen(t_string(filename), "w");
-  else if(ATisInt(filename))
-    outfile = (FILE *)AT_getInt(filename);
+  else if(ATisInt(filename)) // pointer to a FILE*
+    outfile = (FILE *) AT_getInt(filename);
   else
     _fail(filename);
 
@@ -342,4 +342,3 @@ ATerm SSL_getchar(ATerm filename)
     }
   return NULL;
 }
-

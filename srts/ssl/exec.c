@@ -153,6 +153,16 @@ ATerm SSL_open(ATerm pathname)
   return (ATerm)ATmakeInt(fd);
 }
 
+ATerm SSL_mkstemp(ATerm template) {
+  int fd = mkstemp(AT_getString(template));
+
+  if(fd == -1) {
+    _fail(template);
+  }
+
+  return (ATerm) ATmakeInt(fd);
+}
+
 ATerm SSL_close(ATerm fd)
 {
   //ATfprintf(stderr, "SSL_close(%t)\n", fd);
@@ -377,4 +387,3 @@ ATerm SSL_pipe_term_to_child(ATerm t, ATerm prog, ATerm args0)
   }
   return((ATerm) ATempty);
 }
-

@@ -43,6 +43,10 @@ ATerm SSL_dup(ATerm oldfd);
 ATerm SSL_fdopen(ATerm fd, ATerm mode);
 ATerm SSL_fclose(ATerm stream);
 
+ATerm SSL_mkstemp(ATerm template);
+
+#define SSL_P_tmpdir() ((ATerm)ATmakeString(P_tmpdir))
+
 #define SSL_STDIN_FILENO() ((ATerm)ATmakeInt(STDIN_FILENO))
 #define SSL_STDOUT_FILENO() ((ATerm)ATmakeInt(STDOUT_FILENO))
 #define SSL_STDERR_FILENO() ((ATerm)ATmakeInt(STDERR_FILENO))
