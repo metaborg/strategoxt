@@ -1,1 +1,0 @@
-Specification([Imports(["Box"]),Signature([Constructors([OpDecl("Arg",FunType([ConstType(Sort("NatCon",[]))],ConstType(Sort("BOX",[])))),OpDecl("Arg2",FunType([ConstType(Sort("NatCon",[])),ConstType(Sort("NatCon",[]))],ConstType(Sort("BOX",[]))))])])])

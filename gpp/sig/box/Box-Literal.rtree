@@ -1,1 +1,0 @@
-Specification([Signature([Constructors([OpDecl("NatCon",FunType([ConstType(Sort("NatCon",[]))],ConstType(Sort("IntCon",[])))),OpDecl("plus",FunType([ConstType(Sort("NatCon",[]))],ConstType(Sort("IntCon",[])))),OpDecl("minus",FunType([ConstType(Sort("NatCon",[]))],ConstType(Sort("IntCon",[]))))])])])
