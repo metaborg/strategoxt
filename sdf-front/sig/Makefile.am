@@ -8,6 +8,7 @@ EXTRA_DIST       = $(SIGS) $(pkgdata_DATA)
 CLEANFILES       = $(wildcard *.dep)
 BOOTCLEANFILES   = $(SIGS) $(pkgdata_DATA)
 
-Sdf2.str : $(top_srcdir)/syn/version-pgen-2.0/Sdf2.def
-	$(STRATEGO_REGULAR)/bin/sdf2rtg -i $< -m Sdf2 | \
-	$(STRATEGO_REGULAR)/bin/rtg2sig -o $@
+SDF2RTG_FLAGS = -m $*
+
+Sdf2.def : $(top_srcdir)/syn/Sdf2.def
+	ln -s $< $@
