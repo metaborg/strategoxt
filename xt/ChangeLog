@@ -1,3 +1,6 @@
+2000-07-25 <mdejonge@cwi.nl>
+        * added subdirectory with top-level XT integration tests
+
 2000-07-24 <mdejonge@cwi.nl>
         * Removed sub directory dummy
         * Added pre-checks sub directory in which runtime checks are
