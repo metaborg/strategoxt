@@ -55,6 +55,9 @@ rules
     RuleNoCond(l, r) 	-> Rule(l, r, Id)
 
   Desugar :
+    UndefineDynRuleNoCond(f, t) 	-> UndefineDynRule(f, t, Id)
+
+  Desugar :
     StratRuleNoCond(l, r) -> StratRule(l, r, Id)
 
 //  Desugar :

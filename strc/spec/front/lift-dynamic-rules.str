@@ -74,28 +74,32 @@ that are declared in context using the dynamic rule ContextVar */
 
   SplitDynamicRule:
     drd@DynRuleDef|[ f(as1|as2) : r ]| ->
-      <SplitDynamicRule(!|[ add-to-ruleset(|~str:f, ~<Fst>, ~<Snd>) ]|)> drd
+      <SplitDynamicRule(!|[ dr-set-rule(|~str:f, ~<Fst>, ~<Snd>) ]|)> drd
 
   SplitDynamicRule:
     DynRuleDef|[ f(as1|as2).t : r ]| ->
-      <SplitDynamicRule(!|[ add-to-ruleset(|~str:f, t, ~<Fst>, ~<Snd>) ]|)> DynRuleDef|[ f(as1|as2) : r ]|
+      <SplitDynamicRule(!|[ dr-set-rule(|~str:f, t, ~<Fst>, ~<Snd>) ]|)> DynRuleDef|[ f(as1|as2) : r ]|
 
   SplitDynamicRule:
     DynRuleDef|[ f(as1|as2) :+ r ]| ->
-      <SplitDynamicRule(!|[ extend-ruleset(|~str:f, ~<Fst>, ~<Snd>) ]|)> DynRuleDef|[ f(as1|as2) : r ]|
+      <SplitDynamicRule(!|[ dr-add-rule(|~str:f, ~<Fst>, ~<Snd>) ]|)> DynRuleDef|[ f(as1|as2) : r ]|
 
   SplitDynamicRule:
     DynRuleDef|[ f(as1|as2).t :+ r ]| ->
-      <SplitDynamicRule(!|[ extend-ruleset(|~str:f, t, ~<Fst>, ~<Snd>) ]|)> DynRuleDef|[ f(as1|as2) : r ]|
-/*
+      <SplitDynamicRule(!|[ dr-add-rule(|~str:f, t, ~<Fst>, ~<Snd>) ]|)> DynRuleDef|[ f(as1|as2) : r ]|
+
   SplitDynamicRule:
     DynRuleDef|[ f(as1|as2) :- t ]| ->
-      <SplitUndefineDynamicRule(!|[ undefine-rule(|~str:f, ~<id>) ]|)> DynRuleDef|[ f(as1|as2) :- t ]|
+      <SplitDynamicRule(!|[ dr-undefine-rule(|~str:f, ~<Fst>) ]|)> DynRuleDef|[ f(as1|as2) : t1 -> () where id ]|
 
   SplitDynamicRule:
     DynRuleDef|[ f(as1|as2).t :- t1 ]| ->
-      <SplitUndefineDynamicRule(!|[ undefine-rule(|~str:f, t, ~<id>) ]|)> DynRuleDef|[ f(as1|as2) :- t1 ]|
-*/
+      <SplitDynamicRule(!|[ dr-undefine-rule(|~str:f, t, ~<Fst>) ]|)> DynRuleDef|[ f(as1|as2) : t1 -> () where id ]|
+
+
+
+  // TODO: Introduce memoization!
+
   SplitDynamicRule(saveclsr):
     DynRuleDef|[ f(as1|as2) : t1 -> t2 where s ]| ->
     (|[ where(~<saveclsr> (t1', |[ Closure(~str:stamp, [t*]) ]| )) ]|,
@@ -107,29 +111,27 @@ that are declared in context using the dynamic rule ContextVar */
                 where (lookup-rule(|~str:f, t1'') <+ ![]) => closures ]|
      ])
     where 
-    debug(!"SplitDynamicRule/(1,0) input: ");
-      <not(eq)>(t2, |[ Undefined() ]|)
-
-      ; <conc-strings>("bagof-", f) => g
+        <conc-strings>("bagof-", f) => g
       ; <conc-strings>("aux-", f) => f'  // has to be the same such that + of aux-f works
-      ; new => y
-      
+      ; new => stamp
+
+      // Transform passed arguments of f into calling arguments for f'
       ; <map((?DefaultVarDec(<id>) + ?VarDec(<id>,_)); !Call(SVar(<id>),[]))> as1 => s1*
       ; <map((?DefaultVarDec(<id>) + ?VarDec(<id>,_)); !Var(<id>))> as2 => t1*
 
-      ; <tvars> t1 => t1vars                          // *all* pattern variables in LHS t1
-      ; <conc> (as2, t1vars) => as2'                  // add them to term args as2 (for passing to aux- rule)
+      ; <tvars> t1 => t1vars                            // *all* pattern variables in LHS t1
+      ; <conc> (as2, t1vars) => as2'                    // add them to term args as2 (for passing to aux- rule)
       ; <conc> (t1*, <map(!Var(<id>))> t1vars) => t1'*  // same for actual values at call-site
 
+      // Prepare LHS for use as a key
       ; new => x
       ; <dummify> t1 => t1'
-      ; try(?t1; !Var(x)) => t1''
+      ; try(?t1; !Var(x)) => t1'' // If dummified version is the same, just use x for lookup
 
+      // Determine the context variables to be stored in the Closure
       ; <tvars; map(!Var(<id>))> t1' => keys
       ; <tvars; filter(test(ListVar(ContextVar) <+ ContextVar); !Var(<id>))> (t2, s) => vals1
       ; <diff> (vals1, keys) => t*
-
-      ; new => stamp
 
 \end{code}
 
