@@ -96,11 +96,15 @@ if test x$usecpl = xtrue
 then
 AB_CONFIG_PKG(srts,
    --with-aterm=${ATERM}
+   --with-strc=${STRATEGOXT}
+   --with-ssl=${STRATEGOXT}
    --with-cpl=${CPL}
 )
 else
 AB_CONFIG_PKG(srts,
    --with-aterm=${ATERM}
+   --with-strc=${STRATEGOXT}
+   --with-ssl=${STRATEGOXT}
 )
 fi
 
