@@ -56,7 +56,7 @@ strategies
   parse-module =
       ?file
     ; where( ?FILE(filename) )
-    ; log(|Notice(),<concat-strings>["Parsing file ",filename])
+    ; log(|Info(), <concat-strings>["Parsing file ", filename])
     ; where( FILE(basename => base) )
     ; where( get-meta => meta )
     ; where( <get-syntax ; get-parse-table> meta => FILE(tbl) )
@@ -146,7 +146,7 @@ strategies
      <+ /* final option: plain Stratego */
         !"Stratego"
       )
-    ; log(|Notice(),<concat-strings>["Using syntax ",<id>])
+    ; log(|Info(),<concat-strings>["Using syntax ",<id>])
 
   /**
    * Returns the MetaData for a file.
@@ -178,12 +178,12 @@ strategies
    */
   get-parse-table =
       ?syntax
-    ; log(|Notice(),<concat-strings>["Trying to find a parse table for ",syntax])
+    ; log(|Debug(), <concat-strings>["Trying to find a parse table for ",syntax])
     ; guarantee-extension(!"tbl") => tbl
     ; (find-in-includes(!"Using parse table: ")
       ; !FILE(<id>)
 
-     <+ log(|Notice(),<concat-strings>["Trying to generate a parse table for ",syntax])
+     <+ log(|Debug(),<concat-strings>["Trying to generate a parse table for ",syntax])
       ; <get-syntax-definition> syntax
       ; xtc-transform(!"sdf2table", !["-m", syntax])
       ; rename-to(!tbl)
