@@ -80,6 +80,7 @@ exports
 
 module C-Expressions
 exports
+  sorts AssignExp
 
   context-free syntax
     IDENTIFIER        -> PrimaryExp
@@ -197,7 +198,6 @@ exports
   context-free syntax
     CondExp -> ConstantExp
 
-
 module C-Types
 exports
   context-free syntax
@@ -276,6 +276,8 @@ exports
 
 module C-Statements
 exports
+  sorts Stm
+
   context-free syntax
     LabeledStm    -> Stm
     CompoundStm   -> Stm
@@ -442,7 +444,8 @@ exports
     [L]? "\"" StringChar* "\"" -> StringLiteral
     [L]? "'" Char "'"          -> CharLiteral    
     
-    [1-9][0-9]+            IntFlags? -> IntLiteral
+    [1-9][0-9]*            IntFlags? -> IntLiteral
+    "0"                    IntFlags? -> IntLiteral
     "0" [xX] [0-9a-fA-F]+  IntFlags? -> HexLiteral
     "0" [0-7]+             IntFlags? -> OctLiteral    
         

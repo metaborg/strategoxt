@@ -13,6 +13,7 @@ AC_CONFIG_FILES([
 	pp/Makefile
 	sig/Makefile
 	xtc-tools/Makefile
+	tests/Makefile
+	tests/translation-units/Makefile
 ])
 AC_OUTPUT
-

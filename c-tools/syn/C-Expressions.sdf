@@ -1,5 +1,6 @@
 module C-Expressions
 exports
+  sorts AssignExp
 
   context-free syntax
     IDENTIFIER        -> PrimaryExp

@@ -14,7 +14,8 @@ exports
     [L]? "\"" StringChar* "\"" -> StringLiteral
     [L]? "'" Char "'"          -> CharLiteral    
     
-    [1-9][0-9]+            IntFlags? -> IntLiteral
+    [1-9][0-9]*            IntFlags? -> IntLiteral
+    "0"                    IntFlags? -> IntLiteral
     "0" [xX] [0-9a-fA-F]+  IntFlags? -> HexLiteral
     "0" [0-7]+             IntFlags? -> OctLiteral    
         

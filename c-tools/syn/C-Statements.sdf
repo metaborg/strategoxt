@@ -1,5 +1,7 @@
 module C-Statements
 exports
+  sorts Stm
+
   context-free syntax
     LabeledStm    -> Stm
     CompoundStm   -> Stm
@@ -35,5 +37,4 @@ exports
     "break" ";"                -> JumpStm {cons("Break")}
     "return" CommaExpOpt ";"   -> JumpStm {cons("Return")}
     "exit" CommaExpOpt ";"     -> JumpStm {cons("Exit")}
-
 
