@@ -1,6 +1,8 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
+pgkdatadocdir = ${pkgdatadir}/doc
+
 check_PROGRAMS = accept-test migrate-tuples-test annotation-props-test \
 options-test annotations-test option-test apply-test parallel-test     \
 char-test parse-options-test client-test reals-test connect-test       \
@@ -17,9 +19,11 @@ SCFLAGS 	= -I $(srcdir)
 
 pkgdata_DATA 	= $(subst .str,.rtree,$(wildcard *.str))
 
+pgkdatadoc_DATA = $(wildcard *.str)
+
 TESTS 		= $(check_PROGRAMS)
 
-EXTRA_DIST 	= $(wildcard *) $(pkgdata_DATA)
+EXTRA_DIST 	= $(wildcard *.str) $(pkgdata_DATA)
 CLEANFILES      = $(TESTS) 
 
 BOOTCLEANFILES 	= $(pkgdata_DATA) $(subst .str,.c,$(wildcard *-test.str))

@@ -1,5 +1,7 @@
 2002-12-15  Eelco Visser  <visser@cs.uu.nl>
 
+	* spec/Makefile.am: Installing module sources in ${pkgdatadir}/doc
+
 	* spec/tables.str: table-append appends the new value list at the
 	end of the list of entries
 
