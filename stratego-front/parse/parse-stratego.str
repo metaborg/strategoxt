@@ -1,4 +1,4 @@
- module parse-stratego
+module parse-stratego
 imports
   liblib
   Stratego
@@ -93,7 +93,7 @@ strategies
 
   check-module-name(|base) =
     ?Module(n,_)
-    ; if not(<get-filename> base => n) then
+    ; if not( !(<get-filename> base,<get-filename>n) => (x,x) ) then
         say(<concat-strings>
           [" ** Warning: Mismatch between basename of input file ("
           , base
