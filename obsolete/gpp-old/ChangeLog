@@ -1,3 +1,6 @@
+2001-10-30 Merijn de Jonge <mdejonge@cwi.nl> 
+    * removed incorrect and obsolete entry from default.abbrevs.
+
 2001-10-12 Merijn de Jonge <mdejonge@cwi.nl> 
     * Merged Eelco's changes to support boot strapping of gpp
 
