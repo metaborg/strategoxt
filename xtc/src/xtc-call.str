@@ -1,0 +1,20 @@
+module xtc-call
+imports xtc-lib
+strategies
+
+  xtc-call =
+    ?[self | [prog | args] ]
+    ; <execvp>(<xtc-find> prog, args)
+
+/******
+ *
+ * xtc-call is a shortcut to calling a tool the location of which is
+ * stored in an XTC repository. The repository can be set using the
+ * environment variable XTC_REPOSITORY.
+ * 
+ * Examples
+ *
+ *    ./xtc-call sglr -p `./xtc-get Stratego.tbl` -i xtc-get.str -o bla
+ *    ./xtc-call implode-asfix -i bla
+ * 
+ */

@@ -49,11 +49,15 @@ strategies
 
   + Option("-a" + "--all",
         where(<set-config>("-a", ())),
-        !"--all | -a                   List all registered tools\n")
+        !"--all | -a                   List all registered tools")
 
   + Option("-L" + "--Location",
         where(<set-config>("-l", ())),
         !"--Location | -L              List only location of tool")
+
+  + Option("-R" + "--Repository",
+        where(<set-config>("-R", ())),
+        !"--Repository | -R            Location of repository\n")
 
 
   + ArgOption("--verbose",

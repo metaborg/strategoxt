@@ -1,0 +1,10 @@
+module xtc-get
+imports xtc-lib
+strategies
+
+  xtc-get =
+    ?[self | args]
+    ; <print>(stdout, <map(xtc-find)> args)
+    ; <print>(stdout, ["\n"])
+    ; <exit> 0
+   <+ <exit> 1

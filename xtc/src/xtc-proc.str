@@ -156,12 +156,33 @@ strategies
   xtc-io-wrap(extra-opts, s) = 
     option-wrap(extra-opts <+ io-options, xtc-io(s))
 
+  xtc-io-wrap(extra-opts, deps, s) = 
+    option-wrap(extra-opts <+ io-options <+ check-options(deps), 
+      xtc-check-dependencies
+      ; xtc-io(s)
+    )
+
   xtc-iowrap(s) = 
     xtc-io-wrap(s)
 
   xtc-iowrap(extra-opts, s) = 
     xtc-io-wrap(extra-opts, s)
 
+  // check tools upon which this tool depends 
+
+  check-options(deps) = 
+    Option("--check"
+    , where(<set-config>("--check", <deps>))
+    , !"--check        check tool dependencies"
+    )
+
+  xtc-check-dependencies =
+    if(<get-config> "--check"
+      , filter(not(xtc-find-silent))
+        ; if(not([])
+            , debug(!"No XTC registration found for: "); <exit> 1
+	    , <echo> "All tools available"; <exit> 0)
+      )
 
   // XTC-COMMAND
   // Executing an external process

@@ -16,6 +16,11 @@ strategies
     ; if-verbose5(<table-getlist; debug(!"XTC repository: ")> XTC)
     ; fail
 
+  xtc-find-silent = 
+    xtc-load
+    ; (xtc-find-version-loc <+ xtc-find-loc)
+    ; if-verbose5(debug(!"xtc-find: "))
+ 
   xtc-find-version-loc :
     (tool, version) -> loc
     where <table-get>(XTC, Tool(tool)); fetch(?(version, loc))

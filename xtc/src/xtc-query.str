@@ -2,9 +2,15 @@ module xtc-query
 imports xtc-lib config
 strategies
 
-  xtc-query =
-    all-query
+  xtc-query = 
+    repository-query
+    <+ all-query
     <+ tool-query
+
+  repository-query =
+    <get-config> "-R"
+    ; xtc-location
+    ; <print>(stdout, ["XTC_REPOSITORY=", <id>])
 
   all-query =
     <get-config> "-a"
@@ -29,3 +35,4 @@ strategies
     where(<get-config> "-V" => version)
     ; (?Tool(tool), fetch(?(version, loc)))
     ; <list-tool> (Tool(tool), [(version,loc)])
+
