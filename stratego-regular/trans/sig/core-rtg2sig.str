@@ -54,6 +54,7 @@ strategies
   ignore-prodrule =
        declare-plus-list
     <+ is-list-prodrule
+    <+ declare-option
 
   is-list-prodrule = 
     where(
@@ -61,6 +62,18 @@ strategies
     ; ?[_|_]
     ; map(ConcTerm() + ConsTerm() + NilTerm())
     )
+
+  declare-option =
+    ?ProdRule(Nonterm(srtx1), alts)
+    ; where(
+        <length> alts => 2
+      ; <fetch(?Appl(NoneTerm(), []))> alts
+      ; <fetch(?Appl(SomeTerm(), [Ref(Nonterm(srtx))]))> alts
+      ; rules(
+          OptionTree2Sort : Ref(Nonterm(srtx1)) -> Sort |[ Option(srtx) ]|
+          OptionTree2Sort : Ref(Nonterm(srtx2)) -> Sort |[ Option(srtx) ]|
+        )
+      )
 
   declare-plus-list =
     ?ProdRule(Nonterm(srtx1), alts)

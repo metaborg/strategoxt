@@ -1,3 +1,8 @@
+2004-04-30  Martin Bravenboer <martin@cs.uu.nl>
+
+	* sdf2rtg: Improved support for non-trivial regular
+	expressions. Stuff like optional alternatives is now supported.
+	
 2004-04-29  Martin Bravenboer <martin@cs.uu.nl>
 
 	* trans/sdf2rtg/core-sdf-grammar2rtg.str: implemeted for

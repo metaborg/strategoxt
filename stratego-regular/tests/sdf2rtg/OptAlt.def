@@ -1,0 +1,10 @@
+definition
+module OptAlt
+exports
+  sorts Fred
+  context-free syntax
+   "bar" -> Bar {cons("bar")}
+   "foo" -> Foo {cons("foo")}
+
+   "fred" ( Foo | Bar)? -> Fred {cons("fred")}
+ 

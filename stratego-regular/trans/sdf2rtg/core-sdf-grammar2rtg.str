@@ -336,6 +336,8 @@ rules
   get-nonterm-of =
    ?key; is-nonterm-generator
    ; (  <table-get> ("generated-nonterms", key)
+     <+ <table-get> ("generated-nonterms", cf(key))
+     <+ <table-get> ("generated-nonterms", <?cf(<id>)> key)
      <+ new; where(<table-put> ("generated-nonterms", key, <id>))
      )
 
