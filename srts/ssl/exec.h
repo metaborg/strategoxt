@@ -34,6 +34,7 @@ ATerm SSL_pipe_term_to_child(ATerm t, ATerm prog, ATerm args0);
 
 ATerm SSL_fork(void);
 ATerm SSL_waitpid(ATerm pid);
+ATerm SSL_execv(ATerm file, ATerm argv);
 ATerm SSL_execvp(ATerm file, ATerm argv);
 ATerm SSL_pipe(void);
 ATerm SSL_kill(ATerm pid, ATerm sig);

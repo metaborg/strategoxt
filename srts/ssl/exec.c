@@ -212,6 +212,42 @@ ATerm SSL_kill(ATerm pid, ATerm sig) {
   return (ATerm) ATmakeInt(result);
 }
 
+void execv_args(ATerm argv, char **str_args) {
+  int i = 0;
+
+  /* remember to add first argument in Stratego part of the SSL */
+  ATermList args = (ATermList) argv;
+  while(!ATisEmpty(args)) {
+    ATerm arg;
+    if(i > 255) {
+      ATfprintf(stderr, "** ERROR in SSL_execv(p): only 256 arguments are allowed.\n");
+      _fail((ATerm) ATempty);
+    }
+
+    arg = ATgetFirst(args);
+    args = ATgetNext(args);
+
+    if(!ATisString(arg)) {
+      ATfprintf(stderr, "** ERROR in SSL_execvp: argument is not a string: %t \n", arg);
+      _fail((ATerm) ATempty);
+    }
+
+    str_args[i++] = AT_getString(arg);
+  }
+
+  str_args[i] = NULL;
+}
+
+ATerm SSL_execv(ATerm file, ATerm argv) {
+  char *str_args[256];
+  int result;
+
+  execv_args(argv, str_args);
+
+  result = execv(AT_getString(file), str_args);
+  return (ATerm) ATmakeInt(result);
+}
+
 ATerm SSL_execvp(ATerm file, ATerm argv) {
   char *str_args[256];
   int i = 0, res;
