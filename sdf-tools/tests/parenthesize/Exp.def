@@ -1,5 +1,5 @@
 definition
-module Main
+module Exp
 exports
   context-free start-symbols Exp
 

@@ -1,0 +1,20 @@
+module ExpAmb
+exports
+  context-free start-symbols Exp
+  sorts Id IntConst Exp
+  
+  lexical syntax
+    [\ \t\n]  -> LAYOUT
+    [a-zA-Z]+ -> Id
+    [0-9]+    -> IntConst
+  
+  context-free syntax
+    Id        -> Exp {cons("Var")}
+    IntConst  -> Exp {cons("Int")}
+  
+    Exp "*"  Exp -> Exp  {cons("Mul")}
+    Exp "/"  Exp -> Exp  {cons("Div")}
+    Exp "%"  Exp -> Exp  {cons("Mod")}
+  
+    Exp "+"  Exp -> Exp  {cons("Plus")}
+    Exp "-"  Exp -> Exp  {cons("Minus")}
