@@ -1,3 +1,7 @@
+2001-10-01 Merijn de Jonge <mdejonge@cwi.nl> 
+   * io-idwrap: added strategy which performs simple type checking of input
+     terms.
+
 2001-09-22 Merijn de Jonge <mdejonge@cwi.nl> 
    * Added -2 switch to sglr calls
 
