@@ -115,11 +115,11 @@ that are declared in context using the dynamic rule ContextVar */
 
   SplitDynamicRule:
     DynRuleDef|[ f(as1|as2) : t ]| ->
-      <SplitDynamicRule(!|[ dr-add-rule(|~str:f, ~<Fst>, ~<Snd>) ]|)> DynRuleDef|[ f(as1|as2) : t -> t where id ]|
+      <SplitDynamicRule(!|[ dr-set-rule(|~str:f, ~<Fst>, ~<Snd>) ]|)> DynRuleDef|[ f(as1|as2) : t -> t where id ]|
 
   SplitDynamicRule:
     DynRuleDef|[ f(as1|as2).t : t1 ]| ->
-      <SplitDynamicRule(!|[ dr-add-rule(|~str:f, t, ~<Fst>, ~<Snd>) ]|)> DynRuleDef|[ f(as1|as2) : t1 -> t1 where id ]|
+      <SplitDynamicRule(!|[ dr-set-rule(|~str:f, t, ~<Fst>, ~<Snd>) ]|)> DynRuleDef|[ f(as1|as2) : t1 -> t1 where id ]|
 
   SplitDynamicRule:
     DynRuleDef|[ f(as1|as2) :- t ]| ->
@@ -155,6 +155,7 @@ strategies
     // a hack to deal with list variables in lists in dr lhss
     topdown(try(
       \ Op("Cons", [Var(ListVar(x)), Op("Nil", [])]) -> Var(ListVar(x)) \
+      <+ \ |[ x@t ]| -> |[ t ]| \
     ));
     alltd(
         \Term|[ x ]|     -> |[ Nil() ]| where not(Var(ContextVar + ListVar(ContextVar)))\
@@ -178,7 +179,7 @@ rules
 
     // Determine the context variables to be stored in the closure
     ; <tvars; map(!Var(<id>))> t1' => keys
-    ; <tvars; filter(test(ListVar(ContextVar) <+ ContextVar); !Var(<id>))> (t2, s) => vals1
+    ; <tvars; filter(test(ListVar(ContextVar) <+ ContextVar); !Var(<id>))> (t1, t2, s) => vals1
     ; <diff> (vals1, keys) => t*
 
     ; !(f, (<length> as1, <length> as2)) => rsig
