@@ -14,6 +14,81 @@ News about Stratego releases
 
 ------------------------------------------------------------------------------
 
+StrategoXT 0.9.2 -- released 25 June, 2003
+
+This is a logistics release. The main purpose of the work done for
+this release is to create more and better distributions.
+
+The buildfarm at the UU now creates all the distributions: source
+tarballs, source rpms and binary rpms. This will make it much more
+easy for the maintainers of StrategoXT to create new releases.
+Hopefully this will lead to more frequent releases, which is a good
+thing.
+
+From now on we will support binary RPMs in every release. Currently
+the buildfarm only builds RPMs for SuSE 8.2 and Redhat 8.0, but the
+buildfarm will be extended with other versions of Redhat and SuSE in
+the near future.
+
+We've finally solved some distribution problems that have been around
+for quite some time. StrategoXT and the SDF2 bundle now support a
+separate 'make' and 'make install' by a separation of build time,
+install time and runtime dependencies. The separate make/make install
+was more or less required for creating RPMs, but for user installation
+it is very useful as well. Thanks to a suggestion submitted by
+Valentin David, StrategoXT and the SDF2 bundle can now be configured
+without a prefix, which defaults to the autoconf default (usually
+/usr/local).
+
+Rob Vermaas refactored the dot-tools package to the standard structure
+of a package for a concrete syntax (syn, sig, pp). The graph-tools
+packages now uses the dot-tools package instead of its own (copied)
+signatures for the dot language.
+
+Rob Vermaas has also compiled the complete StrategoXT distribution on
+Cygwin. He encountered some small problems, which he has all been able
+to solve. Unfortunately the performance showed to be disappointing.
+However, StrategoXT should now support Cygwin, but the support is not
+verified in the buildfarm. From one of the next releases we will start
+providing binary distributions for Microsoft Windows users.
+
+DOWNLOAD AND INSTALLATION
+
+  The release page contains the source distributions, binary RPMs, and
+  detailed instructions on how to install the distributions:
+
+  *  http://www.stratego-language.org/Stratego/StrategoRelease092
+
+SUMMARY OF CHANGES
+
+  TODO
+
+BUGS / KNOWN PROBLEMS
+
+  All the bugs and known problems for StrategXT distributions have
+  been solved in this release.
+
+  For a more detailed overview of problems and missing features please
+  visit:
+
+  * ReleasePlan: http://www.stratego-language.org/Stratego/ReleasePlan
+  * Todo: http://www.stratego-language.org/Stratego/ToDo
+
+  Please report any problems with installation or bugs in the
+  implementation to the stratego-bugs mailing list. Please check the
+  archive of the list to see if a report about the problem was already
+  submitted.
+
+CONTRIBUTIONS
+
+  * Bug reports and suggestions for improvements where submitted by:
+    Jozer Kruger, Valentin David.
+
+  * The major developments were carried out by:
+    Martin Bravenboer, Rob Vermaas, Armijn Hemel, Eelco Visser.
+
+------------------------------------------------------------------------------
+
 StrategoXT 0.9.1 -- released June 04, 2003
 
 This is a bugfix and cleanup release. Many packages were thoroughly
