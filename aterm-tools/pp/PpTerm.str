@@ -1,0 +1,6 @@
+module PpTerm
+imports options ugly-print
+
+strategies
+
+  io-PpTerm = io-wrap(ugly-print)

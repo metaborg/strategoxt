@@ -1,4 +1,11 @@
-* Improve description and keywords in the package description
-* Improve README
+2003-02-27 Martin Bravenboer  <martin@mbravenboer.org>
 
+  * pp/ugly-print.str: Use Stratego-Box and make output
+  more pretty.
+
+Old todos:
+
+  * Improve description and keywords in the package description
+  
+  * Improve README
 

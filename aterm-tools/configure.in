@@ -20,6 +20,7 @@ AC_CONFIG_FILES([
   
   syn/Makefile
   sig/Makefile
+  pp/Makefile
 	
 	src/Makefile 
 	src/templates/Makefile 

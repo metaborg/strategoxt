@@ -1,3 +1,10 @@
+2003-02-27  Martin Bravenboer <martin@mbravenboer.org>
+
+  * pp/pp-aterm.str: new tool to ugly print an aterm
+  * pp/ugly-print.str: moved from SSL to aterm-tools
+  * src/utils/PpTerm.str: moved to pp
+  * src/utils/pp-term.sh.src: rewritten to XTC: pp-aterm
+
 2002-12-16  Eelco Visser  <visser@cs.uu.nl>
 
 	* package.conf: templates is not a tool

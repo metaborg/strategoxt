@@ -1,0 +1,12 @@
+module pp-aterm
+imports xtc-lib string stratego-xt-xtc-tools
+
+strategies
+
+  io-pp-aterm =
+    xtc-io-wrap(
+      xtc-transform(!"PpTerm")
+    ; xtc-abox-format
+    ; xtc-abox2text
+    )
+    

@@ -20,7 +20,7 @@
 include $(top_srcdir)/Makefile.xt
 include package.conf
 
-SUBDIRS	= . src syn sig
+SUBDIRS	= . src syn sig pp
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 
 EXTRA_DIST = VERSION package.conf bootstrap $(PACKAGE)-$(VERSION).pkg \

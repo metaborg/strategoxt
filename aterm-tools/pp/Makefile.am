@@ -1,0 +1,14 @@
+include $(wildcard *.dep)
+include $(top_srcdir)/Makefile.xt
+
+bin_PROGRAMS 	   = pp-aterm
+libexec_PROGRAMS = PpTerm
+
+EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta)
+CLEANFILES     = $(wildcard *.dep)
+BOOTCLEANFILES = $(wildcard *.c)
+
+SCFLAGS     = --main io-$*
+STRINCLUDES = -I $(XTC)/share/xtc
+
+       
