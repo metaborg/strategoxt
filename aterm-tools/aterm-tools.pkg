@@ -8,4 +8,6 @@ identification
                  and manipulation.'
   keywords    = ATerm, autobundle
 
+requires 
+   stratego 10.5.2
 

@@ -18,4 +18,4 @@
 SUBDIRS	= src
 
 EXTRA_DIST = ADDING-TOOLS configure.in.src genconf.sh \
-             package.conf reconf description.pkg
+             aterm-tools.conf reconf aterm-tools.pkg
