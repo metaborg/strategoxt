@@ -80,7 +80,7 @@ strategies
       H hs=0 [
         ~<before> ()
         ~<s> x ~*tail
-        ~<after> () "]"
+        ~<after> ()
       ]
     ]|
       where <map(! |[ H hs=1 [ "," ~<s> ] ]| )> xs => tail
