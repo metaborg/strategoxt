@@ -209,6 +209,14 @@ rules
     DynRuleUnion(s1, rulenames, s2) -> 
     CallT(SVar("dr-fork-and-union"), [s1, s2], [<mk-rulenames> rulenames])
 
+  Desugar :
+    DynRuleIntersectUnionFix(rulenames1, rulenames2, s) -> 
+    CallT(SVar("dr-fix-and-intersect-union"), [s], [<mk-rulenames> rulenames1, <mk-rulenames> rulenames2])
+
+  Desugar :
+    DynRuleIntersectUnion(s1, rulenames1, rulenames2, s2) -> 
+    CallT(SVar("dr-fork-and-intersect-union"), [s1, s2], [<mk-rulenames> rulenames1, <mk-rulenames> rulenames2])
+
   mk-rulenames =
     foldr(!Op("Nil",[]), !Op("Cons", [<Fst>, <Snd>]), !Str(<id>))
 
