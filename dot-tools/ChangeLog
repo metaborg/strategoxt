@@ -1,0 +1,4 @@
+2002-12-10  Eelco Visser  <visser@cs.uu.nl>
+
+	* Package with support for generating and transforming dot files.
+

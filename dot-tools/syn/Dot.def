@@ -1,0 +1,80 @@
+definition
+module QuotedLiterals
+exports
+  lexical syntax
+    "\\" ~ []                  -> EscChar
+    "\\" [01] [0-7] [0-7]      -> EscChar
+    ~ [\0-\31\"\\] \/ [\t\n]   -> L-Char
+    EscChar                    -> L-Char
+    "\"" L-Char* "\""          -> QuotedLiteral
+
+
+module Layout
+exports
+  lexical syntax
+    [\t\ \n]            -> Ws
+    "//" ~[\n]* [\n]    -> ShortCom
+    "/*" CommChar* "*/" -> LongCom
+    "*"                 -> Asterisk
+    ~[\*]               -> CommChar
+    Asterisk            -> CommChar
+  lexical restrictions
+    Asterisk -/- [\/\)]
+
+  lexical syntax
+    ShortCom    -> LAYOUT
+    LongCom     -> LAYOUT
+    Ws          -> LAYOUT
+  context-free restrictions
+    LAYOUT? -/- [\ \t\n]
+
+module Dot
+imports Layout QuotedLiterals
+exports
+  sorts NumCon Id UnquotedId
+  lexical syntax
+    [0-9]+                 		-> NumCon
+    "-" [0-9]+                 		-> NumCon
+    [A-Za-z\_][A-Za-z0-9\_]* 		-> UnquotedId
+    UnquotedId				-> Id
+    QuotedLiteral			-> Id
+  context-free restrictions
+    Num-Con -/- [0-9]
+  lexical restrictions
+    UnquotedId -/- [A-Za-z0-9\_]
+
+  sorts Graph Stmt Attr NodeId Attrs Node SubGraph EdgeOp
+  context-free syntax
+             "graph" Id "{" Stmt* "}"   -> Graph 	{cons("DotGraph")}
+    "strict" "graph" Id "{" Stmt* "}"   -> Graph 	{cons("StrictDotGraph")}
+
+             "digraph" Id "{" Stmt* "}" -> Graph 	{cons("DotDigraph")}
+    "strict" "digraph" Id "{" Stmt* "}" -> Graph 	{cons("StrictDotDigraph")}
+
+    Id "=" Id ";"                      	-> Stmt		{cons("Alias")}
+
+    graph "[" { Attr "," }* "]" ";"     -> Stmt    	{cons("GraphAttrs")}
+    node  "[" { Attr "," }* "]" ";"     -> Stmt		{cons("NodeAttrs")}
+    edge  "[" { Attr "," }* "]" ";"     -> Stmt		{cons("EdgeAttrs")}
+
+    Id "=" Id                       	-> Attr		{cons("AttrId")}
+    Id "=" NumCon                  	-> Attr		{cons("AttrNumCon")}
+
+    NodeId Attrs? ";"                 	-> Stmt		{cons("Node")}
+
+    Id                              	-> NodeId	{cons("Id")}
+    Id ":" Id                		-> NodeId	{cons("QualId")}
+    Id ":" NumCon               	-> NodeId	{cons("QualId")}
+
+    "[" { Attr "," }* "]"               -> Attrs	{cons("Attrs")}
+
+    NodeId				-> Node
+    SubGraph				-> Node
+    Node EdgeOp+ ";" 			-> Stmt		{cons("EdgeNoAttrs")}
+    Node EdgeOp+ Attrs ";" 		-> Stmt		{cons("Edge")}
+
+    "subgraph" Id "{" Stmt* "}"		-> SubGraph	{cons("SubGraph")}
+    "subgraph" Id 			-> SubGraph	{cons("SubGraph")}
+
+    "->" Node                           -> EdgeOp	{cons("Arrow")}
+    "--" Node                           -> EdgeOp	{cons("Line")}
