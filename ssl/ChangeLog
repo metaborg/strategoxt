@@ -1,3 +1,10 @@
+2004-01-20  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/scoped-finite-map.str: Table manipulation operations for
+	implementation of 'extend rules' and 'extend override rules'.
+	Instead of maintaining a single list of values for a key, there is
+	a list of values for each scope.
+
 2003-12-24  Martin Bravenboer <martin@cs.uu.nl>
 
 	* spec/posix-file.str: added chdir to change the current working

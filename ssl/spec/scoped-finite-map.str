@@ -66,6 +66,30 @@ strategies
   rewrite(ns) = //debug(!"rewrite: "); 
     \ key -> <table-lookup>(<ns>(), key) \
   //; debug(!"rewriten: ")
+
+
+// for extend [overide] rules
+
+  extend-assert(ns) = ?(key, val); //debug(!"assert: ");
+  where(ns => ns
+  ; (<table-get>(ns, Scopes) <+ ![[]]) => [scope | scopes]
+  ; (<elem>(key, scope)
+     ; <table-get>(ns, key) => [prevvals | morevals]
+     ; <table-put>(ns, key, [[val | prevvals] | morevals])
+    <+ <table-push>(ns, key, [val])
+       ; <table-put>(ns, Scopes, [[key | scope] | scopes])
+     )
+  //; debug(!"asserted: ")
+  )
+
+  extend-override-key(ns) = ?(key, val); //debug(!"override-key: ");
+  where(ns => ns
+    ; <table-get>(ns, key) => [prevvals | morevals]
+    ; <table-put>(ns, key, [[val | prevvals] | morevals])
+  //; debug(!"overriden: ")
+  )
+
+   extend-rewrite(ns) = rewrite(ns)
 \end{code}
 
 \paragraph{Usage}
