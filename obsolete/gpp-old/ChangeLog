@@ -1,3 +1,6 @@
+2002-02-05 Merijn de Jonge <mdejonge@cwi.nl>
+   * lib/pp-tables.pp: improved formatting
+
 2002-01-23 Merijn de Jonge <mdejonge@cwi.nl>
    * asfix2abox: now using 'layout-place-holder' constructor name to
      recognize where layout has to be generated during conservative
