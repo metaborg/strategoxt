@@ -85,7 +85,7 @@
 		("help", "h", "display help message"),
 		("version", "V", "display version and exit"),
 		(["quiet", "silent"], "q", "be quiet"),
-		("I/O options:"),
+		"I/O options:",
 		("output", "o", "output to FILE", [OptArg, OptArgName("FILE")])
 		("input", "i", "read from FILE", [OptMultiArg, 
 				OptArgName("FILE")])]
@@ -114,7 +114,7 @@
 		s will be applied to each successfully parsed option:
 
 			<s> (key, arg)	(with argument)
-			<s> (key)	(without argument)
+			<s> (key, [])	(without argument)
 
 			(default: getopt-help <+ setopt)
 
@@ -256,8 +256,8 @@ strategies
 	<parse-opt-spec> (long, short, "", [OptNoDoc])
 
   parse-opt-spec =
-	?(doc);
-	<add-doc-string> doc
+	is-string;
+	add-doc-string
 	
 
 
@@ -268,7 +268,7 @@ strategies
 	rules(
 		parse-opt-rule(s,g): [(o, a) | xs] -> xs'
 		where	<option-get-no-arg> (a, xs) => xs';
-			<s> (k)
+			<s> (k, [])
 	)
 
   make-opt-rule(key, opts) =
@@ -299,7 +299,7 @@ strategies
 	rules(
 		parse-opt-rule(s,g): [(o, a) | xs] -> xs'
 		where	<option-get-opt-arg> (a, xs) => (a', xs');
-			(<1> a'; <s> (k) <+ <s> (k, a'))
+			(<1> a'; <s> (k, []) <+ <s> (k, a'))
 	)
 
   option-get-arg = option-get-arg1 <+ option-get-arg2
@@ -369,11 +369,10 @@ strategies
 
 
   setopt =
-	?(o);
+	?(o, []);
 	<table-get; is-int <+ !0> ("getopt", o) => i;
 	<table-put> ("getopt", o, <add> (i, 1))
-
-  setopt =
+     <+
 	?(o, v);
 	<table-put> ("getopt", o, v)
 
@@ -458,12 +457,12 @@ strategies
 	<exit> 1
 
   getopt-help =
-	?("h");
+	?("h", []);
 	<getopt-display> "help";
 	<exit> 0
 
   getopt-help =
-	?("V");
+	?("V", []);
 	<getopt-display> "version";
 	<exit> 0
 
