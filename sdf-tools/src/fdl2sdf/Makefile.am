@@ -1,21 +1,18 @@
 include $(srcdir)/../templates/make_rules
 include $(top_srcdir)/Makefile.xt
-include $(wildcard *.dep)
+include 
 
 SUBDIRS      = data
 
 bin_PROGRAMS  = fdl2sdf
 
-#TESTS        = sdf2sdf_check
-
-#CLEANFILES  += sdf2sdf_check
-
+EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) 
+CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = fdl2sdf.c
 
-EXTRA_DIST  = $(wildcard *.str) $(wildcard *.meta) 
-
-SCFLAGS     = -I $(srcdir) \
-               -I $(srcdir)/../lib \
-               -I $(ASFIX_TOOLS)/share/asfix-tools \
-               --main $*
+SCFLAGS = \
+  -I $(srcdir) \
+  -I $(SDF_FRONT)/share/sdf-front \
+  -I $(ASFIX_TOOLS)/share/asfix-tools \
+  --main $*
 
