@@ -1,0 +1,30 @@
+# ambiguities = 1
++ * id id id
+  <Exp-CF>
+    <Exp-CF>
+      id
+    <LAYOUT?-CF>
+      <LAYOUT-CF>
+         
+    <Exp-CF>
+      <Exp-CF>
+        id
+      <LAYOUT?-CF>
+        <LAYOUT-CF>
+           
+      <Exp-CF>
+        id
+  <Exp-CF>
+    <Exp-CF>
+      <Exp-CF>
+        id
+      <LAYOUT?-CF>
+        <LAYOUT-CF>
+           
+      <Exp-CF>
+        id
+    <LAYOUT?-CF>
+      <LAYOUT-CF>
+         
+    <Exp-CF>
+      id
