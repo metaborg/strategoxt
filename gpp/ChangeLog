@@ -1,3 +1,7 @@
+2003-02-28   Martin Bravenboer  <martin@mbravenboer.org>
+
+  * xtc/parse-sdf: removed, part of sdf-tools now.
+  
 2003-02-27   Martin Bravenboer  <martin@mbravenboer.org>
 
   * sig/box/abox-ext.str: Added from SSL. Consider to use
