@@ -1,6 +1,6 @@
 #! /bin/sh
 #
-# $Id: genconf.sh,v 1.1 2001/05/30 11:49:17 mdejonge Exp $
+# $Id: genconf.sh,v 1.2 2001/05/30 14:23:19 mdejonge Exp $
 #
 # Author: Merijn de Jonge (mdejonge@cwi.nl)
 #
@@ -75,13 +75,21 @@ then
    exit 1
 fi
 
-tags=`egrep -v "^#" ${config_file} | grep '=' | cut -d= -f1`
+tmpMakeFile=/tmp/genconf.$$
+trap "rm -fr $tmpMakefile" 0 1 2 3 4 5 6 7 8 9 10
 
-for tag in ${tags}
-do
-   value=`egrep -v "^#" ${config_file}| perl -p -e 's/\\\\\n/ /g' | egrep "^${tag}" | cut -d= -f2-`
-   eval ${tag}=\"`echo ${value}`\"
-done
+(
+   cat ${config_file};
+   echo "getValue:";
+   echo "	@echo $($(NAME))"
+ 
+) > ${tmpMakeFile}
+
+
+released="`make -f ${tmpMakeFile} NAME=released`"
+unreleased="`make -f ${tmpMakeFile} NAME=unreleased`"
+version="`make -f ${tmpMakeFile} NAME=version`"
+name="`make -f ${tmpMakeFile} NAME=name`"
 
 if [ "a${DEVEL}" = "afalse" ]
 then
@@ -99,7 +107,8 @@ then
 fi
 
 
-sed "s#__VERSION__#${version}#g;
+sed "s#__PACKAGE__#${name}#g;\
+     s#__VERSION__#${version}#g;\
      s#__TOOLS__#\"${released} ${unreleased}\"#g;\
      s#__MAKEFILES__#${MAKEFILES}#g;\
      s#__RELEASED__#\"${released}\"#g;\

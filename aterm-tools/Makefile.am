@@ -15,7 +15,23 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
+include package.conf
+
 SUBDIRS	= src
 
 EXTRA_DIST = ADDING-TOOLS configure.in.src genconf.sh \
-             aterm-tools.conf reconf aterm-tools.pkg
+             package.conf reconf $(PACKAGE)-$(VERSION).pkg
+
+$(PACKAGE)-$(VERSION).pkg: package.conf
+	@( \
+	   echo "package" ;\
+	   echo "identification" ;\
+	   echo "  name=$(name)" ;\
+	   echo "  version=$(version)" ;\
+	   echo "  location=$(location)" ;\
+	   echo "  info=$(info)" ;\
+	   echo "  description='$(description)'" ;\
+	   echo "  keywords=$(keywords)" ;\
+           echo "requires" ;\
+           echo $(patsubst %",%\n", $(requires)) | sed 's/"//g;s/^ */  /g' ;\
+       ) > $@
