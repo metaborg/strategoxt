@@ -1,4 +1,4 @@
-module gen-boxstyle
+module gen-latex-boxstyle
 imports options xtc-lib
 
 strategies
@@ -9,4 +9,3 @@ strategies
         <xtc-find-file> "boxenv.sty"
       )
     )
-

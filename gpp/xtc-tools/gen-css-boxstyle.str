@@ -1,4 +1,4 @@
-module gen-boxstyle
+module gen-css-boxstyle
 imports options xtc-lib
 
 strategies
@@ -9,5 +9,4 @@ strategies
         <xtc-find-file> "boxstyle.css"
       )
     )
-
 
