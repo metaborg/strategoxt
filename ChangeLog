@@ -1,3 +1,11 @@
+2003-06-22  Martin Bravenboer  <martin@mbravenboer.org>
+
+  * configure.in: using SET_SVN_REVISION to determine
+    to SVN revision of the checkout.
+
+  * acinclude.m4: added SET_SVN_REVISION to determine
+    to SVN revision of the checkout.
+
 2003-06-20  Martin Bravenboer  <martin@mbravenboer.org>
 
   * configure.in: set the prefix before the AC_ARG_WITHs

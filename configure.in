@@ -85,6 +85,10 @@ top_srcdir=`pwd`
 BUILD_SRTS=${top_srcdir}/pre-pkgs/build
 INSTALL_XTC=${top_srcdir}/pre-pkgs/install
 
+SET_SVN_REVISION
+AC_SUBST(SVN_REVISION)
+echo "** INFO -- SVN Revision is: $SVN_REVISION"
+
 ### OUTPUT #############################
 
 AC_OUTPUT(
