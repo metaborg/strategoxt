@@ -4,13 +4,13 @@ function asf_library() {
   pkg="asf-library" version="1.0" $@
 }
 function asc_support() {
-  pkg="asc-support" version="1.8" $@
+  pkg="asc-support" version="1.9" $@
 }
 function asf_support() {
-  pkg="asf-support" version="1.2" $@
+  pkg="asf-support" version="1.3" $@
 }
 function sdf_support() {
-  pkg="sdf-support" version="2.0" $@
+  pkg="sdf-support" version="2.1" $@
 }
 function pt_support() {
   pkg="pt-support" version="1.1" $@
@@ -22,7 +22,7 @@ function toolbuslib() {
   pkg="toolbuslib" version="0.6" $@
 }
 function pgen() {
-  pkg="pgen" version="2.0" $@
+  pkg="pgen" version="2.1" $@
 }
 function error_support() {
   pkg="error-support" version="0.1" $@
@@ -40,8 +40,8 @@ function all_pkgs() {
   pgen          $@
 }
 
-function get_dailydist() {
-  wget http://www.cwi.nl/projects/MetaEnv/daily-dist/${pkg}-${version}.tar.gz || exit 1
+function get_dist() {
+  wget http://www.cwi.nl/projects/MetaEnv/${pkg}/${pkg}-${version}.tar.gz || exit 1
   tar zxvf ${pkg}-${version}.tar.gz || exit 1
   mv ${pkg}-${version} $pkg
 }
@@ -56,5 +56,5 @@ function remove_subdir() {
 
 all_pkgs remove_tarball
 all_pkgs remove_subdir
-all_pkgs get_dailydist
+all_pkgs get_dist
 all_pkgs remove_tarball
