@@ -30,9 +30,13 @@ signatures = $(autogensignatures) $(staticsignatures)
 
 CLEANFILES	= $(wildcard *.atree)
 BOOTCLEANFILES	= $(autogensignatures) $(wildcard *.rtree) Stratego.def Stratego-Amb.def
-
 pkgdata_DATA    = $(signatures:.str=.rtree)
-EXTRA_DIST      = $(wildcard *.str) $(wildcard *.rtree) $(pkgdata_DATA) Stratego.def
+EXTRA_DIST      = \
+  $(wildcard *.rtg-script) \
+  $(wildcard *.str) \
+  $(wildcard *.rtree) \
+  $(pkgdata_DATA) \
+  Stratego.def
 
 Stratego.def: 
 	rm -f Stratego.def
