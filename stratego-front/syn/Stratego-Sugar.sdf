@@ -1,7 +1,7 @@
 module Stratego-Sugar
 imports
   Stratego-Sugar-Layout
-  Stratego-Identifiers
+  Stratego-Core-Identifiers
   Stratego-Sugar-Constants 
   Stratego-Sugar-Modules
   Stratego-Sugar-Signatures

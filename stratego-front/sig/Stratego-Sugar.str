@@ -141,6 +141,8 @@ signature
     ListTail                   : List(Term) * Term -> PreTerm
     List                       : List(Term) -> PreTerm
     Tuple                      : List(Term) -> PreTerm
+    RootApp                    : StrategyAngle -> PreTerm
+    App                        : Strategy * Term -> PreTerm
     Char                       : Char -> PreTerm
     BuildDefault               : Term -> PreTerm
     Explode                    : Term * Term -> PreTerm

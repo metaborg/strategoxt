@@ -1,6 +1,6 @@
 module Stratego-Core-Terms
 imports
-  Stratego-Identifiers
+  Stratego-Core-Identifiers
   Stratego-Core-Constants
 
 exports

@@ -1,6 +1,6 @@
 module Stratego-Sugar-Overlays
 imports
-  Stratego-Identifiers
+  Stratego-Core-Identifiers
   Stratego-Sugar-Terms
 
 exports

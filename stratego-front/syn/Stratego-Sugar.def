@@ -1,7 +1,7 @@
 definition
 module Stratego-Sugar-Overlays
 imports
-  Stratego-Identifiers
+  Stratego-Core-Identifiers
   Stratego-Sugar-Terms
 
 exports
@@ -12,7 +12,7 @@ exports
 
 module Stratego-Sugar-DynamicRules
 imports
-  Stratego-Identifiers
+  Stratego-Core-Identifiers
   Stratego-Sugar-Strategies
   Stratego-Sugar-Rules
 
@@ -237,8 +237,11 @@ exports
     PreTerm "{" {Term ","}* "}"	 -> Term {cons("AnnoList")}
     PreTerm                      -> Term {cons("NoAnnoList")}
 
-    "<" Strategy ">" Term 	 -> Term {cons("App")}
-    StrategyAngle		 -> Term {cons("RootApp")}
+    "<" Strategy ">" Term 	 -> PreTerm {cons("App")}
+    "<" Strategy ">" Term 	 -> Term {cons("App"),prefer}
+
+    StrategyAngle		 -> PreTerm {cons("RootApp")}
+    StrategyAngle		 -> Term {cons("RootApp"),prefer}
 
     "(" {Term ","}* ")" 	 -> PreTerm {cons("Tuple")}
     "[" {Term ","}* "]" 	 -> PreTerm {cons("List")}
@@ -275,7 +278,7 @@ exports
 
 module Stratego-Core-Signatures
 imports
-  Stratego-Identifiers
+  Stratego-Core-Identifiers
   Stratego-Core-Constants
 exports
   sorts Sdecl
@@ -303,7 +306,7 @@ exports
 
 module Stratego-Core-Terms
 imports
-  Stratego-Identifiers
+  Stratego-Core-Identifiers
   Stratego-Core-Constants
 
 exports
@@ -421,7 +424,7 @@ exports
 
 module Stratego-Core-Modules
 imports
-  Stratego-Identifiers
+  Stratego-Core-Identifiers
   Stratego-Core-Strategies
   Stratego-Core-Signatures
 
@@ -466,7 +469,7 @@ exports
     [\\] [\"tnr\\] 		-> StrChar
 
 module Stratego-Sugar-Constants
-imports Stratego-Identifiers Stratego-Core-Constants
+imports Stratego-Core-Identifiers Stratego-Core-Constants
 exports
   sorts Char CharChar
   lexical syntax
@@ -475,7 +478,7 @@ exports
     [\\] [\'ntr\ ]		-> CharChar
     Char		 	-> Id {reject}
 
-module Stratego-Identifiers
+module Stratego-Core-Identifiers
 exports
   sorts ModName
   lexical syntax
@@ -491,8 +494,8 @@ exports
 
   sorts Id LId LCID UCID
   lexical syntax
-    [a-zA-Z\'\-\_] [a-zA-Z0-9\'\-\_]*     -> Id
-    [a-zA-Z\'\-\_] [a-zA-Z0-9\'\-\_]* "*" -> LId
+    [a-zA-Z\'\_] [a-zA-Z0-9\'\-\_]*     -> Id
+    [a-zA-Z\'\_] [a-zA-Z0-9\'\-\_]* "*" -> LId
 
     [a-z] [a-zA-Z0-9\'\-\_]*  -> LCID
     [A-Z] [a-zA-Z0-9\'\-\_]*  -> UCID
@@ -588,7 +591,7 @@ exports
 module Stratego-Sugar
 imports
   Stratego-Sugar-Layout
-  Stratego-Identifiers
+  Stratego-Core-Identifiers
   Stratego-Sugar-Constants 
   Stratego-Sugar-Modules
   Stratego-Sugar-Signatures

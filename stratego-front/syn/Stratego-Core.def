@@ -1,7 +1,7 @@
 definition
 module Stratego-Core-Modules
 imports
-  Stratego-Identifiers
+  Stratego-Core-Identifiers
   Stratego-Core-Strategies
   Stratego-Core-Signatures
 
@@ -101,7 +101,7 @@ exports
 
 module Stratego-Core-Terms
 imports
-  Stratego-Identifiers
+  Stratego-Core-Identifiers
   Stratego-Core-Constants
 
 exports
@@ -137,7 +137,7 @@ exports
 
 module Stratego-Core-Signatures
 imports
-  Stratego-Identifiers
+  Stratego-Core-Identifiers
   Stratego-Core-Constants
 exports
   sorts Sdecl
@@ -195,7 +195,7 @@ exports
   context-free restrictions
     LAYOUT? -/- [\ \t\n\r]
 
-module Stratego-Identifiers
+module Stratego-Core-Identifiers
 exports
   sorts ModName
   lexical syntax
@@ -211,8 +211,8 @@ exports
 
   sorts Id LId LCID UCID
   lexical syntax
-    [a-zA-Z\'\-\_] [a-zA-Z0-9\'\-\_]*     -> Id
-    [a-zA-Z\'\-\_] [a-zA-Z0-9\'\-\_]* "*" -> LId
+    [a-zA-Z\'\_] [a-zA-Z0-9\'\-\_]*     -> Id
+    [a-zA-Z\'\_] [a-zA-Z0-9\'\-\_]* "*" -> LId
 
     [a-z] [a-zA-Z0-9\'\-\_]*  -> LCID
     [A-Z] [a-zA-Z0-9\'\-\_]*  -> UCID
@@ -263,7 +263,7 @@ exports
 
 module Stratego-Core
 imports Stratego-Core-Constants 
-	Stratego-Identifiers 
+	Stratego-Core-Identifiers 
 	Stratego-Core-Layout
 	Stratego-Core-Signatures 
 	Stratego-Core-Terms

@@ -1,6 +1,6 @@
 module Stratego-Sugar-DynamicRules
 imports
-  Stratego-Identifiers
+  Stratego-Core-Identifiers
   Stratego-Sugar-Strategies
   Stratego-Sugar-Rules
 

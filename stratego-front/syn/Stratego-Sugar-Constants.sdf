@@ -1,5 +1,5 @@
 module Stratego-Sugar-Constants
-imports Stratego-Identifiers Stratego-Core-Constants
+imports Stratego-Core-Identifiers Stratego-Core-Constants
 exports
   sorts Char CharChar
   lexical syntax

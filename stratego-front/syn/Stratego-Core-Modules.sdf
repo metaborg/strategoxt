@@ -1,6 +1,6 @@
 module Stratego-Core-Modules
 imports
-  Stratego-Identifiers
+  Stratego-Core-Identifiers
   Stratego-Core-Strategies
   Stratego-Core-Signatures
 

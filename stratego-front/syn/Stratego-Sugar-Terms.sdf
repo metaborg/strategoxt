@@ -19,8 +19,11 @@ exports
     PreTerm "{" {Term ","}* "}"	 -> Term {cons("AnnoList")}
     PreTerm                      -> Term {cons("NoAnnoList")}
 
-    "<" Strategy ">" Term 	 -> Term {cons("App")}
-    StrategyAngle		 -> Term {cons("RootApp")}
+    "<" Strategy ">" Term 	 -> PreTerm {cons("App")}
+    "<" Strategy ">" Term 	 -> Term {cons("App"),prefer}
+
+    StrategyAngle		 -> PreTerm {cons("RootApp")}
+    StrategyAngle		 -> Term {cons("RootApp"),prefer}
 
     "(" {Term ","}* ")" 	 -> PreTerm {cons("Tuple")}
     "[" {Term ","}* "]" 	 -> PreTerm {cons("List")}

@@ -1,6 +1,6 @@
 module Stratego-Core
 imports Stratego-Core-Constants 
-	Stratego-Identifiers 
+	Stratego-Core-Identifiers 
 	Stratego-Core-Layout
 	Stratego-Core-Signatures 
 	Stratego-Core-Terms

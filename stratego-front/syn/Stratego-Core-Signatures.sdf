@@ -1,6 +1,6 @@
 module Stratego-Core-Signatures
 imports
-  Stratego-Identifiers
+  Stratego-Core-Identifiers
   Stratego-Core-Constants
 exports
   sorts Sdecl

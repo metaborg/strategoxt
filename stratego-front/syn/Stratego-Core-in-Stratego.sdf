@@ -24,6 +24,8 @@ exports
               "|[" Term   "]|" -> StrategoTerm {cons("ToTerm")}
     "Term"    "|[" Term   "]|" -> StrategoTerm {cons("ToTerm")}
 
+    "PreTerm" "|[" PreTerm   "]|" -> StrategoTerm {cons("ToTerm")}
+
               "|[" Def    "]|" -> StrategoTerm {cons("ToTerm")}
     "Def"     "|[" Def    "]|" -> StrategoTerm {cons("ToTerm")}
 
