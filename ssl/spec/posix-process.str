@@ -34,20 +34,6 @@ strategies
   // fork :: a -> Int
   fork =
     prim("SSL_fork")
-
-  /**
-   * Executes "child" in the child process and returns a tuple
-   * of the pid of the child process and the current term in the
-   * parent process.
-   */
-  fork(child) =
-    fork(child, id)
-
-  fork(child, parent) =
-    ?t; fork; ?pid; (?0; <child> t <+ <parent> (pid, t))
-
-  fork-and-wait(child) =
-    fork(child, ?(<waitpid>, t); warn-ifsignaled; ?WaitStatus(0,_,_); !t)
     
   /*   The  execv  and  execvp functions provide an array of pointers to
        null-terminated strings that represent the argument  list  avail�
@@ -69,31 +55,6 @@ strategies
   // waitpid :: Int -> WaitStatus
   waitpid =
     ?pid; prim("SSL_waitpid", pid)
-    
-  // examine wait status
-  exited =
-    ?WaitStatus(s,_,_)
-    ; where(<not(eq)> (s, -1))
-    ; if-verbose3(debug(!"the process exited: "))
-      
-  signaled =
-    ?WaitStatus(_,s,_)
-    ; where(<not(eq)> (s, -1))
-    ; if-verbose2(debug(!"the process was signaled"))
-       
-  stopped = 
-    ?WaitStatus(_,_,s)
-    ; where(<not(eq)> (s, -1))
-    ; if-verbose3(debug(!"the process stopped"))
-    
-  warn-ifsignaled =
-    where(try(
-      ?WaitStatus(_, <id>, _)
-    ; not(?-1)
-    ; signal-from-number
-    ; signal-to-descr
-    ; <printnl> (stderr, ["** WARNING -- process signaled: ", <id>])
-    ))
     
 signature
   constructors

@@ -1,5 +1,5 @@
 module pipe
-imports exec io posix-process
+imports io process
 
 strategies
 

@@ -19,7 +19,7 @@
 
 \begin{code}
 module sunit
-imports io exec
+imports io
 
 strategies
 	
@@ -85,5 +85,4 @@ strategies
             ; <debug> ["  succeeded; result: ", <id>]
            )
 \end{code}
-
 

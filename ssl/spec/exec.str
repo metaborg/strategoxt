@@ -22,32 +22,12 @@
 
 \begin{code}
 module exec
-imports verbose posix-process posix-file
+imports process file verbose
 
 // TODO: restructure and check what strategies should be deprecated
 // because of alternatives in the SSL or XTC.
 
 strategies
-
-  // call :: String * List(String) -> String * List(String)
-  // call prog with list of strings args
-
-  call =
-    ?(prog,args)
-    //; prim("SSL_call",prog,args)
-    ; fork-and-wait(<execvp> (prog, args))
-
-  call(init-child) = 
-    ?(prog,args)
-    ; fork-and-wait(init-child; <execvp> (prog, args))
-
-  // call-noisy :: String * List(String) -> String * List(String)
-  // call prog with list of strings args and print information
-
-  call-noisy = 
-    ?(prog,args)
-    //; prim("SSL_call_noisy",prog,args)
-    ; fork-and-wait(<debug; execvp> (prog, args))
 
   pipe-term-to-child(prog, args) = 
     ?t; where(prog => prog-trm; args => args-trm)
@@ -66,6 +46,11 @@ strategies // non-primitives
     ; where(STDIN_FILENO
             ; close
             ; <open> file)
+
+/**
+ * (Very) old stuff
+ */
+strategies
 
   // rm-files :: List(String) -> List(String)
   // remove files

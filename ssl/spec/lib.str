@@ -36,10 +36,10 @@ imports
  (* system *)
 
 	io
+  process
 	memo
 	options
 	parse-options
-	exec
 	tables
 
  (* object variables *)

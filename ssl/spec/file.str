@@ -28,6 +28,25 @@ strategies
   stdio-stream = ?stdout(); stdout-stream
   stdio-stream = ?stderr(); stderr-stream
 
+/**
+ * Old file administration
+ */
+strategies
+
+  close-file = 
+    ?name; prim("SSL_close_file", name)
+
+  open-file =
+    ?(name, mode); prim("SSL_open_file", name, mode)
+
+  open-file =
+    ?name; not(?(_, _))
+    ; obsolete(!"<open-file> file; use <open-file> (file, mode)")
+    ; <open-file> (name, "w")
+
+  append-file = 
+    <open-file> (<id>, "a")
+
 strategies
 
   // :: String -> String
@@ -93,21 +112,31 @@ strategies
               repeat(split-init-last; ?(<id>, '/'))
             ; (?[] < !['/'] + id))))))
 
+/**
+ * Generate a new, not existing file name.
+ */
 strategies
 
-  read-text-file =
-    ?file
-    ; <fopen> (file,"r") => stream
-    ; rec x(![<fgetc> stream | <x> ()] <+ ![])
-    ; where(<fclose> stream)
-    ; implode-string
+  new-file =
+    rec x(<conc-strings> (<new>(), ".tmp"); try(file-exists; x))
 
-  write-text-file =
-    ?(file, string)
-    ; <fopen> (file, "w")
-    ; <fputs> (string, <id>)
-    ; fclose
+  // (String, a) -> b :: a -> b
+  temp-file(s) =
+      where(new-file => f)
+    ; <finally(s, try(<remove-file> f))> (f, <id>)
 
+  /**
+   * Safe, mkstemp based, creation of temporary file
+   * 
+   * :: _ -> (String, FileDescr)
+   */
+  new-temp-file =
+      <conc-strings> (<temp-dir>, "/StrategoXT")
+    ; mkstemp
+
+/**
+ * find files in paths
+ */
 strategies
 
   find-in-path =

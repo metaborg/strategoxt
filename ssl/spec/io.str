@@ -21,37 +21,15 @@
 
 \begin{code}
 module io
-imports list string tuple integers time exec dir posix-file file
+imports file dir pipe exec
+imports list string integers time
 \end{code}
 
 	A \verb|file| can be a string or one of the terms
 	\verb|stdin|, \verb|stdout|, \verb|stderr|.
 
 \begin{code}
-signature
-  sorts File
-  constructors
-    stdin  : File
-    stdout : File
-    stderr : File
 strategies
-
-  // File administration
-
-  close-file = 
-    ?name; prim("SSL_close_file", name)
-
-  open-file =
-    ?(name, mode)
-    < prim("SSL_open_file", name, mode)
-    + ( obsolete(!"<open-file> file; use <open-file>(file, mode)")
-      ; ?name
-      ; prim("SSL_open_file", name, "w")
-      )
-
-  append-file = 
-    ?name; prim("SSL_open_file", name, "a")
-
 \end{code}
 
  	\verb|<print> (file, [t1,...,tn])| prints the terms \verb|ti|
@@ -245,6 +223,7 @@ strategies
 
   risky(msg, s) = 
     restore(s, debug(msg))
+
 \end{code}
 
 	The operator \verb|stdio| implements a simple user-interface
@@ -253,13 +232,16 @@ strategies
 	to standard output. If the transformation failed the text
 	\verb|rewriting failed| is written to standard error.
 
+  Prefer io-wrap in options.
+
 \begin{code}
 strategies
 
-  stdio(s) = <ReadFromFile> stdin;
-             s; 
-             split(!stdout, id); WriteToTextFile
-          <+ <fatal-error> ["** rewriting failed"]
+  stdio(s) =
+      <ReadFromFile> stdin()
+    ; s
+    ; <WriteToTextFile> (stdout(), <id>)
+    <+ <fatal-error> ["** rewriting failed"]
 \end{code}
 
 	A variant of this strategy provides a pair of the command-line
@@ -268,33 +250,10 @@ strategies
 \begin{code}
 strategies
 
-  stdioO(s) = split(id, <ReadFromFile> stdin); 
-              s;
-              split(!stdout, id); WriteToTextFile
-           <+ <fatal-error> ["** rewriting failed"]
-\end{code}
-
-	Generate a new, not existing file name.
-
-\begin{code}
-strategies
-
-  new-file =
-    rec x(<conc-strings> (<new>(), ".tmp"); try(file-exists; x))
-
-  // (String, a) -> b :: a -> b
-  temp-file(s) =
-      where(new-file => f)
-    ; <finally(s, try(<remove-file> f))> (f, <id>)
-
-  /**
-   * Safe, mkstemp based, creation of temporary file
-   * 
-   * :: _ -> (String, FileDescr)
-   */
-  new-temp-file =
-      <conc-strings> (<temp-dir>, "/StrategoXT")
-    ; mkstemp
+  stdioO(s) =
+    <s> (<id>, <ReadFromFile> stdin())
+    ; <WriteToTextFile> (stdout(), <id>)
+    <+ <fatal-error> ["** rewriting failed"]
 
 \end{code}
 

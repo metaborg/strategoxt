@@ -1,0 +1,74 @@
+module process
+imports posix-process posix-signal
+
+/**
+ * Fork abstractions
+ */
+strategies   
+
+  /**
+   * Executes "child" in the child process and returns a tuple
+   * of the pid of the child process and the current term in the
+   * parent process.
+   */
+  fork(child) =
+    fork(child, id)
+
+  fork(child, parent) =
+    ?t; fork; ?pid; (?0; <child> t <+ <parent> (pid, t))
+
+  fork-and-wait(child) =
+    fork(child, ?(<waitpid>, t); warn-ifsignaled; ?WaitStatus(0,_,_); !t)
+
+/**
+ * Call abstractions
+ */
+strategies
+
+  // call :: String * List(String) -> String * List(String)
+  // call prog with list of strings args
+
+  call =
+    ?(prog,args)
+    ; fork-and-wait(<execvp> (prog, args))
+
+  call(init-child) = 
+    ?(prog,args)
+    ; fork-and-wait(init-child; <execvp> (prog, args))
+
+  // call-noisy :: String * List(String) -> String * List(String)
+  // call prog with list of strings args and print information
+
+  call-noisy = 
+    ?(prog,args)
+    ; fork-and-wait(<debug; execvp> (prog, args))
+
+/**
+ * Termination abstractions
+ */
+strategies 
+   
+  // examine wait status
+  exited =
+    ?WaitStatus(s,_,_)
+    ; where(<not(eq)> (s, -1))
+    ; if-verbose3(debug(!"the process exited: "))
+      
+  signaled =
+    ?WaitStatus(_,s,_)
+    ; where(<not(eq)> (s, -1))
+    ; if-verbose2(debug(!"the process was signaled"))
+       
+  stopped = 
+    ?WaitStatus(_,_,s)
+    ; where(<not(eq)> (s, -1))
+    ; if-verbose3(debug(!"the process stopped"))
+    
+  warn-ifsignaled =
+    where(try(
+      ?WaitStatus(_, <id>, _)
+    ; not(?-1)
+    ; signal-from-number
+    ; signal-to-descr
+    ; <printnl> (stderr, ["** WARNING -- process signaled: ", <id>])
+    ))
