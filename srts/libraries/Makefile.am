@@ -1,8 +1,15 @@
-#pkglib_LIBRARIES = libliblib.a 
-#libliblib_a_SOURCES = liblib.c
+pkglib_LTLIBRARIES = \
+  libliblib.la \
+  libliblib_dbg.la \
+  libliblib_prof.la
 
-pkglib_LTLIBRARIES = libliblib.la 
-libliblib_la_SOURCES = liblib.c
+libliblib_la_SOURCES      = liblib.c
+libliblib_dbg_la_SOURCES  = liblib.c
+libliblib_prof_la_SOURCES = liblib.c
+
+libliblib_dbg_la_CFLAGS  = -g  $(AM_CFLAGS)
+libliblib_prof_la_CFLAGS = -pg  $(AM_CFLAGS)
+
 
 AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_srcdir)/ssl -I$(ATERM)/include -I$(srcdir)
 AM_LDFLAGS  = -avoid-version 
@@ -22,3 +29,4 @@ liblib.c :
 	$(STRC)/bin/strc -c --library --verbose 2 \
         -I $(XTC)/share/xtc -I $(SSL)/share/ssl \
         -i ./library.str -o liblib.rtree
+
