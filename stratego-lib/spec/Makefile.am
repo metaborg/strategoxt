@@ -6,6 +6,7 @@ strategolib = \
 	$(wildcard collection/list/*.str) \
 	$(wildcard collection/set/*.str) \
 	$(wildcard collection/tuple/*.str) \
+	$(wildcard lang/*.str) \
 	$(wildcard strategy/*.str) \
 	$(wildcard strategy/general/*.str) \
 	$(wildcard strategy/pack/*.str) \
