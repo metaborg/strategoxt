@@ -1,3 +1,9 @@
+2003-01-04  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/list-basic.str: <for-each-pair(s)>(xs, ys) produces
+	the list of pairs <s>(x,y) for each pair of x from xs and
+	y from ys.
+
 2002-12-31  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/exec.str: 

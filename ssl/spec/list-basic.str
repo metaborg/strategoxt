@@ -187,6 +187,11 @@ strategies
       ; (id, matrix-transpose)
       ; MkCons
 
+  // <for-each-pair(s)>(xs, ys) produces the list of pairs <s>(x,y) 
+  // for each pair of x from xs and y from ys.
+
+  for-each-pair(s) =
+    ?(xs, ys); <map(\ x -> <map(<s>(x,<id>))> ys \ )> xs
 \end{code}
 
 % Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>

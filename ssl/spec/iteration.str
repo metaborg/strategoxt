@@ -32,7 +32,7 @@ imports conditional
 strategies
 
   repeat(s, c)       = rec x(s; x <+ c)
-  repeat(s)          = repeat(s, id)
+  repeat(s)          = rec x(try(s; x))
 
   repeat1(s, c)      = rec x(s; (x <+ c))
   repeat1(s)         = repeat1(s, id)
