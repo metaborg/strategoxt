@@ -15,10 +15,11 @@ strategies
       xtc-transform(!"sdf2table", !["-n", "-m", <get-sdf-main-module> | <pass-v-verbose>])
     ; xtc-transform(!"implodePT")
     ; xtc-transform(!"sdf-desugar")
-    ; sdf-spread-cons
     ; xtc-io-transform(
-        innermost-module
-
+        sdf-spread-cons
+      ; collect(Assoc2BracketRules)
+      ; concat
+      ; innermost-module
       )
     ; xtc-transform(!"pp-stratego", !["--abstract" | <pass-verbose>])
     )
@@ -41,8 +42,7 @@ strategies
              innermost(l)
 
          rules
-           l : 
-             Div(e1, Mul(e2, e3)) -> Div(e1, Bracket(Mul(e2, e3)))
+           ~* rs
       ]|
     where ModuleName => M1
         ; LanguageName => M2
@@ -50,27 +50,58 @@ strategies
         ; <conc-strings> (M2, "-parenthesize") => g
         ; <conc-strings> (M2, "-Bracket") => l
 
-/*
-  AssocBracketRule :
+/**
+ * Assoc
+ */
+strategies
+
+  Assoc2BracketRules :
     assoc(simple-group(prod1), left(), simple-group(prod2)) ->
+      <zip( \ (t1, t2) -> |[ AssocBracket : t1 -> t2 ]| \)> (lhs, rhs)
+      where <Prod2Pattern; Wld2Vars> prod1 => t1
+          ; <Prod2Pattern; Wld2Vars> prod2 => t2
+          ; <AssocLeft2Patterns(|t1)> t2 => lhs
+          ; <map(InBracket(|t1))> lhs => rhs
 
-  Prod2Pattern(f, ts) :
-    ?prod(syms, _, _)
+strategies
 
- -> |[ x(t* ) ]|
-      where < filter(not(is-empt-sym))
-            ; map(!|[ _ ]|)
-            > syms => t*
+  /**
+   * Puts t children in a bracket constructor.
+   */
+  InBracket(|t) :
+    |[ x(t1*) ]| -> |[ x(t2*) ]|
+      where <map(try(?t; !|[ Bracket(t) ]|))> t1* => t2*
+    
+  /**
+   * Put the pattern p2 at all places where it is not allowed.
+   *
+   * For example, applied to Plus(_, _, _) it will result in 
+   * the patterns
+   *  - Plus(p, _, _)
+   *  - Plus(_, p, _) 
+   *  - Plus(_, _, p)
+   */
+  AssocLeft2Patterns(|p2) :
+    |[ x(t, t1*) ]| -> ps
+      where let set-pattern = {t2* :
+              \ (n, p) -> |[ x(t, t2*) ]| 
+                  where <set-index> (<dec> n, p2, t1*) => t2* \ }
+             in <map-with-index(set-pattern)> t1* => ps
+            end
 
+
+  /**
+   * Creates a wildcard-children pattern for a production
+   */
   Prod2Pattern :
-    prod(syms, _, _) -> |[ x(t* ) ]|
-      where < filter(not(is-empt-sym))
+    p@prod(syms, _, _) -> |[ x(t*) ]|
+      where < filter(not(is-empty-sym))
             ; map(!|[ _ ]|)
             > syms => t*
+          ; <cons-of-prod> p => x
 
-  ApplyAssoc(|t') ;
-     (left(), |[ x(t, t* ) ]|) -> |[ x(t', t* ) ]|
-*/
+  Wld2Vars =
+    topdown(try({x: \ |[ _ ]| -> Term |[ x ]| where new => x \} ))
 
 /**
  * Helper copied from sdf2rtg.
