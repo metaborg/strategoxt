@@ -1,9 +1,6 @@
 AC_INIT([StrategoXT],[0.9],[stratego-bugs@cs.uu.nl])
 AM_INIT_AUTOMAKE
 
-#AC_INIT(Makefile.in)
-#AM_INIT_AUTOMAKE(StrategoXT,0.9)
-
 ### ATerm Library #####################
 
 AC_ARG_WITH(aterm, 
@@ -73,8 +70,12 @@ AC_ARG_WITH(latex,
 )
 AC_SUBST(LATEX)
 
-
-#AC_SUBST(STRATEGOFRONT)
+AC_ARG_WITH(stratego-xt, 
+  AC_HELP_STRING([--with-stratego-xt=DIR], [use StrategoXT at DIR (bootstrap only) @<:@PREFIX@:>@]),
+  STRATEGOXT="$withval", 
+  STRATEGOXT="$prefix"
+)
+AC_SUBST(STRATEGOXT)
 
 AC_ARG_ENABLE(exe,
   AC_HELP_STRING([--enable-exe], [use .exe extension for executables]),
@@ -128,7 +129,7 @@ AB_CONFIG_PKG(xtc,
    --with-aterm=${ATERM}
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
-   --with-stratego-xt=${prefix}
+   --with-stratego-xt=${STRATEGOXT}
    --with-repository=${REPOSITORY}
 )
 
@@ -137,7 +138,7 @@ AB_CONFIG_PKG(sdf-import,
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
    --with-xtc=${prefix}
-   --with-stratego-xt=${prefix}
+   --with-stratego-xt=${STRATEGOXT}
    --with-repository=${REPOSITORY}
 )
 
@@ -146,7 +147,7 @@ AB_CONFIG_PKG(sc,
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
    --with-xtc=${prefix}
-   --with-stratego-xt=${prefix}
+   --with-stratego-xt=${STRATEGOXT}
    --with-repository=${REPOSITORY}
 )
 
@@ -155,7 +156,7 @@ AB_CONFIG_PKG(cgen,
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
    --with-xtc=${prefix}
-   --with-stratego-xt=${prefix}
+   --with-stratego-xt=${STRATEGOXT}
    --with-repository=${REPOSITORY}
 )
 
@@ -164,7 +165,7 @@ AB_CONFIG_PKG(c-tools,
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
    --with-xtc=${prefix}
-   --with-stratego-xt=${prefix}
+   --with-stratego-xt=${STRATEGOXT}
    --with-repository=${REPOSITORY}
 )
 
@@ -173,7 +174,7 @@ AB_CONFIG_PKG(stratego-front,
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
    --with-xtc=${prefix}
-   --with-stratego-xt=${prefix}
+   --with-stratego-xt=${STRATEGOXT}
    --with-repository=${REPOSITORY}
 )
 
@@ -182,7 +183,7 @@ AB_CONFIG_PKG(ssl,
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
    --with-xtc=${prefix}
-   --with-stratego-xt=${prefix}
+   --with-stratego-xt=${STRATEGOXT}
    --with-repository=${REPOSITORY}
 )
 
@@ -191,7 +192,7 @@ AB_CONFIG_PKG(asfix-tools,
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
    --with-xtc=${prefix}
-   --with-stratego-xt=${prefix}
+   --with-stratego-xt=${STRATEGOXT}
    --with-repository=${REPOSITORY}
 )
 
@@ -200,7 +201,7 @@ AB_CONFIG_PKG(gpp,
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
    --with-xtc=${prefix}
-   --with-stratego-xt=${prefix}
+   --with-stratego-xt=${STRATEGOXT}
    --with-repository=${REPOSITORY}
 )
 
@@ -209,7 +210,7 @@ AB_CONFIG_PKG(aterm-tools,
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
    --with-xtc=${prefix}
-   --with-stratego-xt=${prefix}
+   --with-stratego-xt=${STRATEGOXT}
    --with-repository=${REPOSITORY}
 )
 AB_CONFIG_PKG(graph-tools,
@@ -217,7 +218,7 @@ AB_CONFIG_PKG(graph-tools,
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
    --with-xtc=${prefix}
-   --with-stratego-xt=${prefix}
+   --with-stratego-xt=${STRATEGOXT}
    --with-repository=${REPOSITORY}
 )
 AB_CONFIG_PKG(sdf-tools,
@@ -225,7 +226,7 @@ AB_CONFIG_PKG(sdf-tools,
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
    --with-xtc=${prefix}
-   --with-stratego-xt=${prefix}
+   --with-stratego-xt=${STRATEGOXT}
    --with-repository=${REPOSITORY}
 )
 AB_CONFIG_PKG(dot-tools,
@@ -233,7 +234,7 @@ AB_CONFIG_PKG(dot-tools,
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
    --with-xtc=${prefix}
-   --with-stratego-xt=${prefix}
+   --with-stratego-xt=${STRATEGOXT}
    --with-repository=${REPOSITORY}
 )
 AB_CONFIG_PKG(stratego-tools,
@@ -241,7 +242,7 @@ AB_CONFIG_PKG(stratego-tools,
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
    --with-xtc=${prefix}
-   --with-stratego-xt=${prefix}
+   --with-stratego-xt=${STRATEGOXT}
    --with-repository=${REPOSITORY}
 )
 AB_CONFIG_PKG(xt,
@@ -249,7 +250,7 @@ AB_CONFIG_PKG(xt,
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
    --with-xtc=${prefix}
-   --with-stratego-xt=${prefix}
+   --with-stratego-xt=${STRATEGOXT}
    --with-repository=${REPOSITORY}
   --with-graphviz=${GRAPHVIZ}
 )
