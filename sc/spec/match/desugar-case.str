@@ -2,8 +2,11 @@ module desugar-case
 imports automaton lib
 strategies
 
-  main =
-    iowrap(topdown(repeat(DesugarAssign + DesugarCase)))
+  desugar-case-io =
+    io-wrap(desugar-case) 
+
+  desugar-case =
+    topdown(repeat(DesugarAssign + DesugarCase))
 
   DesugarAssign :
     Assign(Var(x), t) -> Seq(Build(t), Match(Var(x)))
