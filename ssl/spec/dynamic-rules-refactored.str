@@ -5,12 +5,12 @@
  */
 module dynamic-rules-refactored
 
-imports tables simple-list-traversal
+imports tables simple-list-traversal sets
 
 signature
   constructors
-    RuleScope : List(ATerm) * Hashtable -> RuleScope
-    ChangeSet : Hashtable -> RuleScope
+    RuleScope : IndexedSet * Hashtable -> RuleScope
+    ChangeSet : IndexedSet * Hashtable -> RuleScope
 
 /**
  * Currently active rule set 
@@ -222,7 +222,7 @@ strategies // scope
   // a rule-set is represented by a list of (label list, hash-table) pairs
 
   dr-new-scope =
-    !RuleScope([()],<new-hashtable>)
+    !RuleScope(<new-iset; iset-add(|())>, <new-hashtable>)
 
   dr-new-rule-set =
     ![<dr-new-scope>]
@@ -231,8 +231,7 @@ strategies // scope
     ![<dr-new-scope> | <id>]
 
   dr-destroy-scope =
-    (?RuleScope(_,<id>) + ?ChangeSet(<id>))
-  ; hashtable-destroy
+    RuleScope(iset-destroy, hashtable-destroy)
 
   dr-leave-scope :
     [scope | scopes] -> scopes
@@ -241,24 +240,38 @@ strategies // scope
   dr-get-inner-scope :
     [scope | scopes] -> scope
 
-  dr-label-scope(|label) :
-    [RuleScope(labels, tbl) | scopes] -> [RuleScope([label | labels], tbl) | scopes]
+  dr-label-scope(|label) =
+    [ RuleScope(iset-add(|label), id)
+      + ChangeSet(iset-add(|label), id)
+    | id]
+    // todo: distinction between rulescope and changeset necessary here or not??
+//    [RuleScope(labels, tbl) | scopes] -> [RuleScope([label | labels], tbl) | scopes]
 
 strategies // change sets
   
   dr-new-change-set =
-    !ChangeSet(<new-hashtable>)
+    !ChangeSet(<new-iset>, <new-hashtable>)
 
   dr-start-change-set =
     ![<dr-new-change-set> | <id>]
 
+  dr-destroy-change-set =
+    ChangeSet(iset-destroy, hashtable-destroy)
+
   dr-commit-change-set :
-    [ChangeSet(tbl) | rs] -> rs'
+    [cs@ChangeSet(labelset, tbl) | rs] -> rs'
     where <hashtable-keys> tbl
-        ; foldr(!rs, dr-apply-change(|tbl)) => rs'
+        ; foldr(<dr-commit-labels(|labelset)> rs, dr-apply-change(|tbl)) => rs'
+        ; <dr-destroy-change-set> cs
 
   dr-discard-change-set :
-    [ChangeSet(tbl) | rs] -> rs
+    [cs@ChangeSet(_,_) | rs] -> rs
+    where <dr-destroy-change-set> cs
+
+  dr-commit-labels(|labelset) =
+    [ ChangeSet(iset-union(|labelset), id)
+      + RuleScope(iset-union(|labelset), id)
+    | id]
 
   dr-apply-change(|tbl) :
     (key1@(scpid, key), rs) -> <dr-commit-to-rule-set(|scpid, key, <hashtable-get(|key1)> tbl)> rs
@@ -272,7 +285,7 @@ strategies // change sets
     + dr-commit-to-rule-scope(|scpid, key, value))
   
   dr-commit-to-change-set(|scpid, key, value) = 
-    ?ChangeSet(tbl)
+    ?ChangeSet(_, tbl)
   ; where(<hashtable-put(|(scpid, key), value)> tbl)
 
   dr-commit-to-rule-scope(|scpid, key, value) = 
@@ -297,7 +310,7 @@ strategies // looking up
        <+ <dr-lookup-rule(look | key)> rs)
 
   dr-lookup-rule(look1 | key) =
-    ?[ChangeSet(tbl) | rs]
+    ?[ChangeSet(_, tbl) | rs]
     ; let look2 = look1 <+ \ key' -> <hashtable-get(|key')> tbl \
        in <dr-lookup-rule(look2 | key)> rs
       end
@@ -317,7 +330,7 @@ strategies // looking up
        <+ <dr-lookup-rule-pointer(look | key)> rs)
 
   dr-lookup-rule-pointer(look1 | key) =
-    ?[ChangeSet(tbl) | rs]
+    ?[ChangeSet(_, tbl) | rs]
     ; let look2 = look1 <+ \ key' -> <hashtable-get(|key'); !(<id>, key', tbl)> tbl \
        in <dr-lookup-rule-pointer(look2 | key)> rs
       end
@@ -349,9 +362,9 @@ strategies // setting a rule
 
   dr-set-in-rule-set(set : ATerm * Hashtable * ATerm * ATerm * ATerm -> ATerm 
 	   | label, key, value) =
-    ?[RuleScope(labels, tbl@Hashtable(hptr)) | rs]
+    ?[RuleScope(labelset, tbl@Hashtable(hptr)) | rs]
     ; where(
-        <member>(label,labels)
+        <iset-elem(|label)> labelset
         < (set(|hptr, tbl, key, value)
            <+ where(<hashtable-put(|key, value)> tbl))
         + <dr-set-in-rule-set(set | label, key, value)> rs
@@ -359,14 +372,18 @@ strategies // setting a rule
 
   dr-set-in-rule-set(set1 : ATerm * Hashtable * ATerm * ATerm * ATerm -> ATerm 
 	   | label, key, value) =
-    ?[ChangeSet(tbl1) | rs]
+    ?[ChangeSet(labelset, tbl1) | rs]
     ; where(
         let set2(|scpid, tbl2, key, value) =
               set1(|scpid, tbl2, key, value)
               <+ <hashtable-get(|key)> tbl2 => value
                  ; <hashtable-remove(|(scpid, key))> tbl1
               <+ <hashtable-put(|(scpid, key), value)> tbl1
-         in <dr-set-in-rule-set(set2 | label, key, value)> rs
+         in if <iset-elem(|label)> labelset
+            then <fetch-elem(?RuleScope(_,tbl@Hashtable(hptr)))> rs
+                 ; set2(|hptr, tbl, key, value)
+            else <dr-set-in-rule-set(set2 | label, key, value)> rs
+            end
         end
       )
    
@@ -401,9 +418,9 @@ strategies // extending a rule
 
   dr-add-to-rule-set(add : ATerm * Hashtable * ATerm * ATerm * ATerm -> ATerm 
 	     | label, key, value) =
-    ?[RuleScope(labels, tbl@Hashtable(hptr)) | rs]
+    ?[RuleScope(labelset, tbl@Hashtable(hptr)) | rs]
     ; where(
-        <member>(label, labels)
+        <iset-elem(|label)> labelset
         < (add(|hptr, tbl, key, value)
            <+ where(<hashtable-push(|key, value)> tbl))
         + <dr-add-to-rule-set(add | label, key, value)> rs
@@ -411,7 +428,7 @@ strategies // extending a rule
 
   dr-add-to-rule-set(add1 : ATerm * Hashtable * ATerm * ATerm * ATerm -> ATerm 
 	     | label, key, value) =
-    ?[ChangeSet(tbl1) | rs]
+    ?[ChangeSet(labelset, tbl1) | rs]
     ; where(
         let add2(|scpid, tbl2, key, value) =
               add1(|scpid, tbl2, key, value)
@@ -420,7 +437,11 @@ strategies // extending a rule
                   <+ ![]) 
 	         // check that value not yet member of this set????
                  ; \ values -> <hashtable-put(|(scpid, key), [value | values])> tbl1 \
-         in <dr-add-to-rule-set(add2 | label, key, value)> rs
+         in if <iset-elem(|label)> labelset
+            then <fetch-elem(?RuleScope(_,tbl@Hashtable(hptr)))> rs
+                 ; set2(|hptr, tbl, key, value)
+            else <dr-add-to-rule-set(add2 | label, key, value)> rs
+            end
         end
       )
 
@@ -445,10 +466,10 @@ strategies // intersection
   	     ,<dr-intersect-rule-sets> (rs1, rs2))
 
   dr-intersect-rule-sets2 :
-    (rs@[ChangeSet(tbl1) | rs1], [ChangeSet(tbl2) | rs2]) -> rs
+    (rs@[ChangeSet(labels1, tbl1) | rs1], [ChangeSet(labels2, tbl2) | rs2]) -> rs
     where ior(<hashtable-intersect-wempty(|tbl2, [])> tbl1
   	     ,<dr-intersect-rule-sets> (rs1, rs2))
-
+// todo: intersect labelsets as well!!
 
   /**
    * Symmetric intersection of two rule-sets
@@ -469,7 +490,7 @@ strategies // intersection
   	     ,<dr-intersect-rule-sets> (rs1, rs2))
 
   dr-intersect-rule-sets-symm2 :
-    ([ChangeSet(tbl1) | rs1], rs@[ChangeSet(tbl2) | rs2]) -> rs
+    ([ChangeSet(labels1, tbl1) | rs1], rs@[ChangeSet(labels2, tbl2) | rs2]) -> rs
     where ior(<hashtable-intersect-symm-wempty(|[])> (tbl1, tbl2)
   	     ,<dr-intersect-rule-sets> (rs1, rs2))
 
@@ -596,7 +617,7 @@ strategies // union
     (rs@[RuleScope(labels1, tbl1) | rs1], [RuleScope(labels2, tbl2) | rs2]) -> rs
     where ior(<hashtable-union(|tbl2)> tbl1
   	     ,<dr-union-rule-sets> (rs1, rs2))
-
+// todo: unions 
   dr-union-rule-sets2 :
     (rs@[ChangeSet(tbl1) | rs1], [ChangeSet(tbl2) | rs2]) -> rs
     where ior(<hashtable-union(|tbl2)> tbl1
