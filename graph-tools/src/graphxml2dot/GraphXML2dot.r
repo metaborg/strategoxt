@@ -19,23 +19,63 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
  02111-1307, USA.
 
- $Id: GraphXML2dot.r,v 1.5 2001/08/28 15:46:12 mdejonge Exp $
+ $Id: GraphXML2dot.r,v 1.6 2001/08/29 14:37:37 mdejonge Exp $
 *)
 
 module GraphXML2dot
 imports
   lib Dot GraphXML Literal-lib
 
+signature
+  constructors
+     UrlPrefix : X -> Option
+     UrlExt :    X -> Option
 strategies
 
   main
-    = iowrap(GraphXML2dot)
+      = iowrap( (id, GraphXML2dot), options, usage )
+
+  options 
+      = ArgOption( "-p",           \x -> UrlPrefix(x) \ )
+      + ArgOption( "-e",           \x -> UrlExt(x) \ )
+      + ArgOption( "--url-prefix", \x -> UrlPrefix(x) \ )
+      + ArgOption( "--url-ext",    \x -> UrlExt(x) \ )
+
+  usage =
+      where( option-defined(?Program(prog));
+             <printnl>
+             ( stderr,
+               [ prog, " -- Converts a GraphXML term to DOT.\n",
+                 "\n",
+                 "usage : \n",
+                 "   ", prog, " [-S] [-i file] [-o file]",
+                              " [-p|--url-prefix <prefix>]\n",
+                              " [-e|--url-ext <ext>]\n",
+                 "   ", prog, " {--help|-h|-?}\n",
+                 "\n",
+                 "where\n",
+                 "   -S          run silently\n",
+                 "   -i file     read input from file (default: stdin)\n",
+                 "   -o file     write output to file (default: stdout)\n",
+                 "   -p prefix   generate url's with given prefix\n",
+                 "   -e ext      give url extension 'ext' (default .html)",
+                 "   -h          print help message\n",
+                 "\n",
+                 "   Input is a GraphXML term (in AST form).\n",
+                 "\n",
+                 "   Output is a DOT term (in AST form).\n"
+               ]
+             );
+             <exit>0
+            )
 
   GraphXML2dot
     = \GraphXML(_,[graph(_,xs)]) -> dot-graph("",alt(2,[]),"GraphXML",semicolon([url|ss]))
        where 
-
-          !TCons(Attr-Stmt(node(comma([attr-id("URL","\"\\N.html\"")]))),TCons(None,TNil)) => url;
+          option-value(UrlPrefix(?p), !"" => p) ;
+          option-value(UrlExt(?e),    !".html" => e);
+          <concat-strings>[p, "\\N", e] => url-string;
+          !TCons(Attr-Stmt(node(comma([attr-id("URL",url-string)]))),TCons(None,TNil)) => url;
           <filter(node2dot<+edge2dot)>xs => ss
       \
 

@@ -19,7 +19,7 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
  02111-1307, USA.
 
- $Id: Dot.r,v 1.2 2001/08/08 09:35:47 mdejonge Exp $
+ $Id: Dot.r,v 1.3 2001/08/29 14:37:36 mdejonge Exp $
 *)
 
 module Dot
@@ -35,3 +35,8 @@ module Dot
       arrow : EdgeOp
       line : EdgeOp
       Attr-List : Attr-List  -> Attrs
+      Attr-Stmt : Attr       -> Attr
+      node: Attr-List -> Attr-Stmt
+      comma: ListSep(Attr) -> Attr-List
+      semicolon: ListSep(Stmtm) -> Stmt-List
+      alt: X*Y -> Option
