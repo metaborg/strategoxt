@@ -1,5 +1,3 @@
-EXTRA_DIST = stratego.el
+include $(top_srcdir)/Makefile.xt
 
-pkgdata_DATA = stratego.el
-
-bootclean:
+EXTRA_DIST  = stratego.el

@@ -1,3 +1,7 @@
+2003-05-22  Martin Bravenboer  <martin@mbravenboer.org>
+
+  * stratego-util is now part of the StrategoXT distribution
+
 2003-03-21  Martin Bravenboer  <martin@mbravenboer.org>
 
   * corrected sdf2 download location in README.in
