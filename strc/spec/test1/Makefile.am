@@ -9,8 +9,8 @@ check_PROGRAMS 	= test02 test03 test04 test05			    \
 		  test27 test28a test28 test29 test30 test31 test32 \
 		  test33 test34 test35 test36 test37 test38 test39  \
 		  test40 test41 test42 test43 test44 test45	    \
-		  test46 test47 test48 test49 test50 test51	    \
-		  io-test10 io-test11 io-test1 io-test2 io-test3   
+		  test46 test47 test48 test49 test50 test51 test52  \
+		  io-test10 io-test11 io-test1 io-test2 io-test3  
 
 TESTS 		= $(check_PROGRAMS)
 
