@@ -97,8 +97,8 @@ strategies
     ; !(alldecs,decs,defs,uses,tops,doubledecs,srts,nondecs,bots,nd-tops,uk-decs)
   
   sdf-wf-options
-    = Option("--short",!ShortForm,    !"--short     print short form of well-formedness report",)
-    + Option("-e",!WarningsAreErrors, !"-e          exit with error if grammar is ill-formed",)
+    = Option("--short",!ShortForm,    !"--short     print short form of well-formedness report")
+    + Option("-e",!WarningsAreErrors, !"-e          exit with error if grammar is ill-formed")
 
 
   try-debug(s) = try(not(has-option(!Silent));where(s;debug))
