@@ -64,6 +64,8 @@ CHOICESOURCES = choice-simple.c
 CHOICEINCLUDES = 
 CHOICELIBADD = 
 
+CLEANFILES += test-choice choice.o choice.h stratego-choice.h
+
 stratego-choice.h: Makefile
 	cp $(srcdir)/choice-simple.h $@
 

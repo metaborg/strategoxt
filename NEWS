@@ -4,9 +4,9 @@ News about Stratego releases
 
 ------------------------------------------------------------------------------
 
-Version 0.7beta1
+Version 0.7beta2
 
- released: January 17, 2002
+ released: January 29, 2002
 
 SUMMARY OF CHANGES
 
@@ -16,6 +16,7 @@ SUMMARY OF CHANGES
  * List traversal: lists considered as varyadic constructors
  * Global choice operators ++ and <++ support global backtracking
  * Bagof returns list of all possible results for ++ and <++
+ * Guarded left choice s1 < s2 + s3 commits after s1 succeeds
  * Constant term caching in the compiler
  * Many new library strategies
 
@@ -37,7 +38,8 @@ MORE INFORMATION
 
 CONTRIBUTIONS
 
- * Bug reports by Martin Bravenboer (<++)
+ * Bug reports by Martin Bravenboer (<++), Dick Kieburtz
+   (configuration)
 
 LANGUAGE
 
@@ -53,6 +55,10 @@ LANGUAGE
  * The operator cpl-loaded (and friends) tell you whether you
    are running in an environment with the choice point library
    loaded (module cpl.r in the library).
+
+ * The guarded left choice operator s1 < s2 + s3 is similar to
+   (s1; s2) <+ s3, except that the choice is committed after s1
+   has succeeded, i.e., no backtracking to s3 if s2 fails.
 
  * List constructors [_|_] and [] are no longer interpreted as syntactic
    sugar for Cons and Nil.

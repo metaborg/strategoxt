@@ -4,9 +4,9 @@ News about Stratego releases
 
 ------------------------------------------------------------------------------
 
-Version 0.7beta1
+Version 0.7beta2
 
- released: January 17, 2002
+ released: January 29, 2002
 
 SUMMARY OF CHANGES
 
@@ -14,11 +14,20 @@ SUMMARY OF CHANGES
 
  * Support for `native' ATerm lists and tuples
  * List traversal: lists considered as varyadic constructors
- * Global choice operators support global backtracking
+ * Global choice operators ++ and <++ support global backtracking
+ * Bagof returns list of all possible results for ++ and <++
+ * Guarded left choice s1 < s2 + s3 commits after s1 succeeds
+ * Constant term caching in the compiler
+ * Many new library strategies
 
- * Dependencies
-   - aterm-1.6.5: aterm library with support for tuples
-   - cpl-stratego-0.4: choice point library from INRIA (Nancy)
+DEPENDENCIES
+
+ * aterm-1.6.5: aterm library with support for tuples
+ 
+ * cpl-stratego-0.4: choice point library from INRIA (Nancy) with
+   some modifications
+
+MIGRATION
 
  * Might break existing code based on generic tuples (TCons/TNil)
  * XT needs to be updated
@@ -29,7 +38,8 @@ MORE INFORMATION
 
 CONTRIBUTIONS
 
- * Bug reports by Martin Bravenboer (<++)
+ * Bug reports by Martin Bravenboer (<++), Dick Kieburtz
+   (configuration)
 
 LANGUAGE
 
@@ -45,6 +55,19 @@ LANGUAGE
  * The operator cpl-loaded (and friends) tell you whether you
    are running in an environment with the choice point library
    loaded (module cpl.r in the library).
+
+ * The guarded left choice operator s1 < s2 + s3 is similar to
+   (s1; s2) <+ s3, except that the choice is committed after s1
+   has succeeded, i.e., no backtracking to s3 if s2 fails.
+
+ * List constructors [_|_] and [] are no longer interpreted as syntactic
+   sugar for Cons and Nil.
+
+ * Tuple constructors TCons(_,_) and TNil are replaced by fixed length
+   tuples (_,_,_,...). There is a tuple constructor for each arity.
+   Parentheses around a term no longer represents a tuple, but the term
+   itself, i.e., (t) == t. A lot of confusion arose because of <s>(t) not
+   being equal to <s>t.
 
 COMPILER
 
@@ -85,6 +108,20 @@ LIBRARY
    - cpl-loaded: succeeds if CPL is loaded
    - if-cpl-loaded(s): do s when loaded, otherwise exit 0
    - if-cpl-loaded(s1, s2): do s1 when loaded, otherwise s2
+
+ * list-set.r
+   - postorder-collect(s) selects all subterms for which s 
+     succeeds and returns them in post-order.
+
+ * integers.r: 
+   - Operator log2 takes the base 2 logarithm. 
+   - Constructor Infinite represents infinity, 
+   - Operatorsadd-inf and lt-inf are aware of Infinite.
+
+ * simple-traversal.r: 
+   - Strategy bottomup-para(s) implements paramorphism, 
+     which applies s at pair of orignal term and term in 
+     which the subterms have been transformed.
 
 ------------------------------------------------------------------------------
 

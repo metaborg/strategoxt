@@ -15,7 +15,7 @@
 #    along with this program; if not, write to the Free Software
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 #
-# $Id: gpp.Makefile,v 1.17 2002/01/22 21:38:47 stratego Exp $
+# $Id: gpp.Makefile,v 1.18 2002/01/29 13:11:47 stratego Exp $
 #
 # GNU make specific generic make rules for the generation of pretty-printed
 # documents.

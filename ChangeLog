@@ -1,5 +1,8 @@
 2002-01-24  Eelco Visser  <visser@acm.org>
 
+	* cplconfig: script to call configure with --with-cpl; specific
+	for pohteh machine.
+
 	* configure.in: Configuration of srts is conditional on inclusion
 	of cpl; do not configure --with-cpl if this flag was not set for
 	the main distribution.

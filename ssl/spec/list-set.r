@@ -104,7 +104,7 @@ strategies
     crush(!0, add, !1)
 
   term-size =
-    debug(!"in: "); crush(!1, debug; add; debug, term-size); debug(!"out: ")
+    crush(!1, add, term-size)
 
 strategies
 

@@ -510,11 +510,14 @@ rules
 
   CacheConstant :
     (t, e) -> Id(x)
-    where <(Op(id, map(Cache)) + Int(id) + Str(id) + Real(id) + BuildDefault(id))> t
+    where <(Op(id, map(Cache)); proper-list + Int(id) + Str(id) + Real(id) + BuildDefault(id))> t
         ; new => base; <conc-strings>("term_", <id>) => x
         ; rules( Cache : t -> Id(x) )
         ; ![(base, x, e) | <CachedTerms <+ ![]>] => xs
         ; rules( CachedTerms : _ -> xs )
+
+  proper-list =
+    Op("Nil", []) + Op("Cons", [id, proper-list]) + Op(not("Nil" + "Cons"), id)
 
   init-cached-terms =
     (CachedTerms <+ ![]);
