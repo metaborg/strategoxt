@@ -1,7 +1,14 @@
+2004-04-22   Martin Bravenboer <martin@cs.uu.nl>
+
+	* Makefile.am: register unparsePT, which yields an AsFix2ME parse
+	tree to a string.
+	
 2004-02-22   Merijn de Jonge  <mdejonge@cs.uu.nl>
-   * Makefile.am: added autoxt.m4 to EXTRA_DIST
-   * Makefile.am: added line: ACLOCAL_AMFLAGS = -I . such that autoreconf
-     can find autoxt.m4
+
+	* Makefile.am: added autoxt.m4 to EXTRA_DIST
+
+	* Makefile.am: added line: ACLOCAL_AMFLAGS = -I . such that
+	autoreconf can find autoxt.m4
 
 2003-08-14  Eelco Visser  <visser@cs.uu.nl>
 
