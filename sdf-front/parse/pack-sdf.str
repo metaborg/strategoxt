@@ -82,17 +82,12 @@ strategies
     ; if-verbose1(debug(!"  including "))
     ; !(<id>, <parse-sdf-pgen2> <id>)
 
-  sglr :
-    (tbl, infile) -> tree
-    where xtc-temp-files(
-            <xtc-transform(!"sglr", !["-2", "-p", tbl])> FILE(infile)
-	  ; read-from => parsetree(tree,_)
-          )
-
   parse-sdf-pgen2 :
     infile -> tree
     where <is-string> infile
-        ; <sglr> (<xtc-find> "Sdf2.tbl", infile) => tree
+        ; <xtc-sglr(!"Sdf2.baf", !"Module")> FILE(infile) 
+        ; read-from
+        ; ?parsetree(tree,_)
 
   get-sdf-imports = 
     collect(?appl(prod(_,cf(sort("Import")),_),_); get-module-name, 

@@ -12,12 +12,12 @@ strategies
 strategies
     
   xtc-parse-sdf2 =
-      xtc-sglr(!"Sdf2.tbl")
+      xtc-sglr(!"Sdf2.baf")
     ; xtc-implode-asfix
     ; xtc-transform(!"sdf-desugar", pass-verbose)
  
   xtc-parse-sdf2(|sort) =
-      xtc-sglr(!"Sdf2.tbl", !sort)
+      xtc-sglr(!"Sdf2.baf", !sort)
     ; xtc-implode-asfix
     ; xtc-transform(!"sdf-desugar", pass-verbose)
     
