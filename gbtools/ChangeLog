@@ -1,5 +1,6 @@
 2002-03-06 <Merijn.de.Jonge@cwi.nl>
    * bug fix in package definition generation
+   * added make_rules.local to EXTRA_DIST of syntax.Makefile.am.templ
 
 2002-03-05 <Merijn.de.Jonge@cwi.nl>
    * gbtools package created
