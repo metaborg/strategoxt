@@ -107,9 +107,12 @@ strategies
    *
    * @type List(Char) -> List(Char)
    */
-  escape-chars = 
+  escape-chars =
+    escape-chars(Escape)
+
+  escape-chars(s) = 
     rec x(
-       (Escape; [id, id | x])
+       (s; [id, id | x])
     <+ [id | x]
     <+ []
     )
