@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-EXTRA_DIST = $(wildcard *.r)
+EXTRA_DIST = $(wildcard *.r) ac2c.src
 
 bin_SCRIPTS = s2c canonicalize ac2c
 

@@ -8,7 +8,7 @@ signature
 
 strategies
 
-  main = iowrap(alltd(fusion2))
+  fusion = iowrap(alltd(fusion2))
 
   fusion1 = 
     is-innermost;

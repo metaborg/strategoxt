@@ -21,25 +21,21 @@ SCFLAGS	= -I $(srcdir)/../sig \
 	  -I $(srcdir)/../front \
 	  --main $@
 
-bin_SCRIPTS = 
-#fusion
+bin_SCRIPTS = fusion
 
 TESTS = build-match-laws-test
 
-CLEANFILES = optimizer optimizer.c *.dep
+CLEANFILES = fusion fusion.c *.dep
 
 EXTRA_DIST = $(wildcard *.r) 
 
-BOOTSOURCES = 
-# fusion.c
+BOOTSOURCES = dummy
+
+#fusion.c
 
 dummy:
 	touch $@
 
-bootinstall:
-
 include $(srcdir)/../make-rules
-#include optimizer.dep
-#include fusion.dep
+include fusion.dep
 include build-match-laws-test.dep
-
