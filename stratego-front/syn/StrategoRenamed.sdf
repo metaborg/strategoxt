@@ -4,6 +4,7 @@ imports Stratego
             DynRuleScopeId => StrategoDynRuleScopeId
             DynRuleId      => StrategoDynRuleId
             DynRuleDef     => StrategoDynRuleDef
+            Colon          => StrategoColon
             Def            => StrategoDef
             Decl           => StrategoDecl
             Module         => StrategoModule
