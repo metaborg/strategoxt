@@ -28,7 +28,7 @@ strategies
     <get-config> "-t"
     ; xtc-import
     ; map({tool: ?tool;
-           (if-verbose3(debug(!"Retrieving tool: "))
+           (  log(|Debug(),<conc-strings>("Retrieving ",<id>))
             ; <table-get> (XTC, Tool(tool)) => entries
             ; <version-query <+ list-tool> (Tool(tool), entries)
             <+ <print>(stdout, [tool, " : no registration", "\n"]))})

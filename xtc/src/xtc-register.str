@@ -8,18 +8,16 @@ strategies
     xtc-find 
 
   xtc-find = 
-    if-verbose5(debug(!"xtc-find: "))
+      ?tool
     ; xtc-load
     ; (xtc-find-version-loc <+ xtc-find-loc)
-    ; if-verbose5(debug(!"xtc-find: "))
-   <+ <error> ["No XTC registration for ", <id>, " found"]
-    ; if-verbose5(<table-getlist; debug(!"XTC repository: ")> XTC)
+    ; log(|Debug(),<concat-strings> ["Found ", tool, " at ", <id>])
+   <+ log(|Error(),<concat-strings> ["No XTC registration for ", <id>, " found"])
     ; fail
 
   xtc-find-silent = 
-    xtc-load
+      xtc-load
     ; (xtc-find-version-loc <+ xtc-find-loc)
-    ; if-verbose5(debug(!"xtc-find: "))
  
   xtc-find-version-loc :
     (tool, version) -> loc
@@ -35,13 +33,12 @@ strategies
   // Registering an entry
 
   xtc-register =
-    <get-config> "-t" => tools
-    ; if-verbose2(say(!"  Registering tool ")) 
-    ; if-verbose3(debug(!"    Tools:    "))
+      <get-config> "-t" => tools
+    ; log(|Debug(),"Tools :",<id>)
     ; <get-config> "-V" => version
-    ; if-verbose3(debug(!"    Version:  "))
+    ; log(|Debug(),"Version :",<id>)
     ; <get-config> "-l" => loc
-    ; if-verbose3(debug(!"    Location: "))
+    ; log(|Debug(),"Location :",<id>)
     ; !tools
     ; xtc-register(|tools, version, loc)
 
@@ -61,7 +58,7 @@ strategies
 
   register-import =
     <get-config> "import" => imports
-    ; if-verbose2(debug(!"  Registering imports: "))
+    ; log(|Vomit(),"Registering imports",<id>)
     ; <get-config> "import" => reps
-    ; if-verbose5(debug(!"importing: "))
+    ; log(|Vomit(),"Importing",<id>)
     ; <table-union> (XTC, Import, reps)

@@ -3,7 +3,7 @@ include $(wildcard *.dep)
 
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 
-bin_PROGRAMS 	= xtc
+bin_PROGRAMS 	= xtc 
 pkgdata_DATA 	= xtc-lib.rtree xtc-rep.rtree \
 		  xtc-proc.rtree xtc-register.rtree
 SCFLAGS 	= --main $* $(XTCFLAGS)

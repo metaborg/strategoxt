@@ -10,14 +10,14 @@ strategies
   xtc-main = 
     parse-options(xtc-options)
     ; xtc-location
-    ; if-verbose2(debug(!"Repository: "))
+    ; log(|Notice(),<conc-strings>("Using repository ",<id>))
     ; xtc-read
     ; ((<get-config> "register"; xtc-register
         <+ <get-config> "import"; register-import)
        ; xtc-store
        <+ <get-config> "query"; xtc-query)
     ; <exit> 0
-   <+ debug(!"*** warning: xtc failed! ")
+   <+ err(|"xtc failed! ")
 
   xtc-options =
     ArgOption("-r" + "--repository",

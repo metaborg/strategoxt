@@ -230,7 +230,8 @@ strategies
   // a -> String :: List(String) -> List(String)
 
   xtc-command(tool) = 
-    where(tool; xtc-find-warning => loc)
+      where(tool; xtc-find-warning => loc)
+    ; log(|Info(),<concat-strings>["Invoking tool ",<tool>," at location ",loc," with arguments: "],<id>)
     ; where(<call> (loc, <id>))
 
   // Transparent transformation of terms and files by external processes
