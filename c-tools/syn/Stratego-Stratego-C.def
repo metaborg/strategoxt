@@ -160,7 +160,7 @@ exports
     %% Abstraction
 
     Id					  -> SVar {cons("SVar")}
-    "let" Def* "in" Strategy 		  -> Strategy {cons("Let")}
+    "let" Def* "in" Strategy "end"	  -> Strategy {cons("Let")}
     SVar "(" {Strategy ","}* ")" 	  -> Strategy {cons("Call")}
     SVar "(" {Strategy ","}* 
          "|" {Term ","}* ")" 	          -> Strategy {cons("CallT")}
