@@ -71,14 +71,20 @@ strategies
         ; <WriteToTextFile> (name, t)
 
   /**
-   * @type  List(String) -> FILE
+   * @type  String or List(String) -> FILE
    */
   print-to :
     strings -> FILE(name)
-      where xtc-new-file => name
-          ; <open-file> (name, "w")
-          ; <print> (name, strings)
-          ; <close-file> name
+    where
+      xtc-new-file => name
+      ; <fopen> (name, "w") => stream
+      ; if <is-string> strings then
+          ![strings]
+        else
+          !strings
+        end
+      ; <fprint> (stream, <id>)
+      ; <fclose> stream
 
   xtc-find-file = 
     !FILE(<xtc-find>)
