@@ -1,13 +1,9 @@
 #!/bin/sh
 
-rm -f config.cache config.log config.status acconfig.h aclocal.m4
+rm -f config.cache config.log acconfig.h aclocal.m4
 
-touch README
-touch NEWS
-
-autoxt
-aclocal -I .
-autoconf -f 
-#--warnings=all
-automake -a 
-#--warnings=all  --warnings=no-portability
+autoxt || exit 1
+aclocal -I . || exit 1
+libtoolize --force || glibtoolize --force || exit 1
+autoconf -f || exit 1
+automake -a || exit 1

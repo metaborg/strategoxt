@@ -39,7 +39,7 @@ dnl     differently.
 ifdef([AC_OUTPUT_SUBDIRS],[],
    [AC_DEFUN([AC_OUTPUT_SUBDIRS],[subdirs=$1; _AC_OUTPUT_SUBDIRS])])
 
-AC_DEFUN(AB_CONFIG_PKG,
+AC_DEFUN([AB_CONFIG_PKG],
 [
    AC_REQUIRE([AC_CONFIG_AUX_DIR_DEFAULT])
    dnl Save configuration flags
