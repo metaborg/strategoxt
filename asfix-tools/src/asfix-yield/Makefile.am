@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.4 2001/06/07 15:09:53 mdejonge Exp $
+# $Id: Makefile.am,v 1.5 2001/09/18 15:29:01 jvisser Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -33,7 +33,8 @@ SUBDIRS      = data
 STRATEGO_PRG = asfix-yield
 
 # What scipts to build
-bin_SCRIPTS  = $(STRATEGO_PRG) asource
+bin_SCRIPTS	= $(STRATEGO_PRG) asource
+libexec_SCRIPTS	= $(STRATEGO_PRG) asource
 
 # Optional tests to run
 TESTS        = asfix_yield1_check \

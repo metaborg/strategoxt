@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/05/30 11:49:20 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2001/09/18 15:32:55 jvisser Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -33,7 +33,8 @@ SUBDIRS      = data
 STRATEGO_PRG = treeviz
 
 # What scipts to build
-bin_SCRIPTS  = treeviz
+bin_SCRIPTS	= treeviz
+libexec_SCRIPTS	= treeviz
 
 # Optional tests to run
 # TESTS        = program-check
