@@ -1,8 +1,8 @@
 \literate[string-test]
 
-	\begin{abstract}
+  \begin{abstract}
 
-	\end{abstract}
+  \end{abstract}
 
 % Copyright (C) 1998-2001 Eelco Visser <visser@acm.org>
 % 
@@ -29,55 +29,186 @@ strategies
 
   main = 
     test-suite(!"string-test",
-        explode-implode-test;
-	basename-test;
-	single-quote-test;
-	un-double-quote-test;
-	padd-with-test; 
-	split-at-dot-test;
-	split-after-test;
-	split-before-test;
-	is-substring-test;
-	copy-char-test;
-	upper-case-test;
-	is-substring-test;
-	get-path-test;
-	get-filename-test;
-	escape-test;
-	unescape-test;
-	string-sort-test;
-  string-tokenize-test
+      explode-implode-test
+    ; filename-tests
+    ; quote-tests
+    ; padd-with-test
+    ; is-substring-test
+    ; copy-char-test
+    ; upper-case-test
+    ; escape-tests
+    ; string-sort-test
+    ; string-tokenize-test
+    ; split-tests
+    )
+    
+strategies // for testing filename manipulations
+    
+  filename-tests =
+    basename-test
+  ; get-path-test
+  ; get-filename-test    
+    
+  basename-test = 
+    apply-test(!"basename-test1", basename, !"./number.r", !"./number")
+  ; apply-test(!"basename-test2", basename, !"./number",   !"./number")
+  
+  get-path-test =
+    apply-test(!"get-path-test1"
+    , get-path
+    , !"/usr/local/bin/prog"
+    , !"/usr/local/bin/"
+    )
+  ; apply-test(!"get-path-test2"
+    , get-path
+    , !"prog"
+    , !""
     )
 
-  explode-implode-test =
-    apply-test(!"explode-implode-test1"
-	, explode-string; implode-string
-	,!"foOBaR"
-	,!"foOBaR"
-	);
-    apply-test(!"explode-implode-test2"
-	, explode-string; implode-string
-	,!"\n\t"
-	,!"\n\t"
-	)
-
-  upper-case-test = 
-    apply-test(!"upper-case-test",upper-case,!"foOBaR",!"FOOBAR")
-
-  basename-test = 
-    apply-test(!"basename-test1", basename, !"./number.r", !"./number");
-    apply-test(!"basename-test2", basename, !"./number",   !"./number")
-
+  get-filename-test =
+    apply-test(!"get-filename-test1"
+    , get-filename
+    , !"/usr/local/bin/prog"
+    , !"prog"
+    )
+  ; apply-test(!"get-filename-test2"
+    , get-filename
+    , !"prog"
+    , !"prog"
+    )
+  
+strategies  // for testing quote strategies
+  
+  quote-tests =    
+    single-quote-test 
+  ; un-double-quote-test
+  ; is-double-quote-test
+    
   single-quote-test =
     apply-test(!"single-quote-test",single-quote,!"foobar",!"'foobar'")
 
   un-double-quote-test =
-    apply-test(!"un-double-quote-test",un-double-quote,
-	!"\"fnord\"",!"fnord")
+    apply-test(!"un-double-quote-test", un-double-quote, !"\"fnord\"", !"fnord")
+    
+  is-double-quote-test =
+    apply-test(!"is-double-quote 1"
+    , is-double-quoted
+    , !"\"fnord\""
+    , !"\"fnord\""
+    )
+  ; apply-and-fail(!"is-double-quote 2"
+    , is-double-quoted
+    , !"fnord"
+    )
+  ; apply-and-fail(!"is-double-quote 3"
+    , is-double-quoted
+    , !"\"fnord"
+    )
+  ; apply-and-fail(!"is-double-quote 4"
+    , is-double-quoted
+    , !""
+    )
+  ; apply-test(!"is-double-quote 5"
+    , is-double-quoted
+    , !"\"\""
+    , !"\"\""    
+    )
+  ; apply-test(!"is-double-quote 6"
+    , is-double-quoted
+    , !"\" \""
+    , !"\" \""    
+    )
+
+strategies // for testing text split strategies
+    
+  split-tests =
+    split-before-test
+  ; split-after-test
+  ; split-at-dot-test
+  
+  split-before-test =
+    apply-test(!"split-before-test"
+    , split-before
+    , !("barfoofnord","foo")
+    , !("bar","foofnord")
+    )
+
+  split-after-test =
+    apply-test(!"split-after-test"
+    , split-after
+    , !("barfoofnord","foo")
+    , !("barfoo","fnord")
+    )
+
+  split-at-dot-test =
+    apply-test(!"split-at-dot-test"
+    , split-at-dot
+    , !"3.141592"
+    , !("3","141592")
+    )
+
+strategies // for testing escape strategies
+  
+  escape-tests =
+    escape-test
+  ; unescape-test
+    
+  escape-test =
+    apply-test(!"escape-test1"
+    , escape
+    , !"\"ab\\c"
+    , !"\\\"ab\\\\c"
+    )
+  ; apply-test(!"escape-test2"
+    , cify
+    , !"a-b_c'"
+    , !"a_b__c_p_"
+    )
+
+  unescape-test =
+    apply-test(!"unescape-test1"
+    , [unescape]
+    , !["\\\"ab\\\\c"]
+    , !["\"ab\\c"]
+    )
+  ; apply-test(!"unescape-test2"
+    , [un-double-quote; unescape]
+    , !["\" \\\\\\n\\t\""]
+    , ![" \\\n\t"]
+    )
+  ; apply-test(!"unescape-test3"
+    , [unescape]
+    , ![" \\\\\\na\\b"]
+    , ![" \\\na\\b"]
+    )
+  ; apply-test(!"unescape-test4"
+    , [unescape]
+    , !["\" \\\\\\n\\\\t\""]
+    , !["\" \\\n\\t\""]
+    )
+    
+strategies
+
+  explode-implode-test =
+    apply-test(!"explode-implode-test1"
+    , explode-string; implode-string
+    , !"foOBaR"
+    , !"foOBaR"
+    )
+  ; apply-test(!"explode-implode-test2"
+    , explode-string; implode-string
+    , !"\n\t"
+    , !"\n\t"
+    )
+
+  upper-case-test = 
+    apply-test(!"upper-case-test",upper-case,!"foOBaR",!"FOOBAR")
 
   is-substring-test =
     apply-test(!"is-substring-test",is-substring(!"foo"),
-	!"barfoofnord",id)
+  !"barfoofnord",id)
+  
+strategies  
 
   string-tokenize-test =
     apply-test(!"tokenize-test1"
@@ -104,94 +235,27 @@ strategies
   padd-with-test =
     apply-test(!"padd-with-test",padd-with(!48),!("42",4),!"0042")
 
-  split-before-test =
-    apply-test(!"split-before-test",split-before,
-	!("barfoofnord","foo"),!("bar","foofnord"))
-
-  split-after-test =
-    apply-test(!"split-after-test",split-after,
-	!("barfoofnord","foo"),!("barfoo","fnord"))
-
-  split-at-dot-test =
-    apply-test(!"split-at-dot-test",split-at-dot,
-	!"3.141592",!("3","141592"))
-
   copy-char-test =
     apply-test(!"copy-char-test", copy-char,
-	!(3, 32),!"   ")
-
-  get-path-test =
-    apply-test(!"get-path-test1"
-	, get-path
-	, !"/usr/local/bin/prog"
-	, !"/usr/local/bin/"
-	);
-    apply-test(!"get-path-test2"
-	, get-path
-	, !"prog"
-	, !""
-	)
-
-  get-filename-test =
-    apply-test(!"get-filename-test1"
-	, get-filename
-	, !"/usr/local/bin/prog"
-	, !"prog"
-	);
-    apply-test(!"get-filename-test2"
-	, get-filename
-	, !"prog"
-	, !"prog"
-	)
-
-  escape-test =
-    apply-test(!"escape-test1"
-	, escape
-	, !"\"ab\\c"
-	, !"\\\"ab\\\\c"
-	);
-    apply-test(!"escape-test2"
-	, cify
-	, !"a-b_c'"
-	, !"a_b__c_p_"
-	)
-
-  unescape-test =
-    apply-test(!"unescape-test1"
-	, [unescape]
-	, !["\\\"ab\\\\c"]
-	, !["\"ab\\c"]
-	);
-    apply-test(!"unescape-test2"
-	, [un-double-quote; unescape]
-	, !["\" \\\\\\n\\t\""]
-	, ![" \\\n\t"]
-	);
-    apply-test(!"unescape-test3"
-	, [unescape]
-	, ![" \\\\\\na\\b"]
-	, ![" \\\na\\b"]
-	);
-    apply-test(!"unescape-test4"
-	, [unescape]
-	, !["\" \\\\\\n\\\\t\""]
-	, !["\" \\\n\\t\""]
-	)
+  !(3, 32),!"   ")
+  
+strategies  
 
    string-sort-test =
      apply-test(!"string-sort-test-a"
-	, string-sort
-	, !["De", "db", "Cb", "ac"]
-	, !["ac", "Cb", "db", "De"]
-	);
+  , string-sort
+  , !["De", "db", "Cb", "ac"]
+  , !["ac", "Cb", "db", "De"]
+  );
      apply-test(!"string-sort-test-b"
-	, string-sort
-	, !["2001", "2000", "1999", "1998"]
-	, !["1998","1999","2000","2001"]
-	);
+  , string-sort
+  , !["2001", "2000", "1999", "1998"]
+  , !["1998","1999","2000","2001"]
+  );
      apply-test(!"string-sort-test-c"
-	, string-sort-desc
-	, !["2001", "2000", "1999", "1998"]
-	, !["2001","2000","1999","1998"]
-	)
+  , string-sort-desc
+  , !["2001", "2000", "1999", "1998"]
+  , !["2001","2000","1999","1998"]
+  )
+  
 \end{code}

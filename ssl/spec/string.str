@@ -168,7 +168,7 @@ strategies
   is-quoted-chars =
       where(
         ?(c, <id>)
-      ; [?c | last;?c]
+      ; ?[c | <last>]; ?c
       )
 
 strategies
