@@ -1,3 +1,13 @@
 :include xml-tools ;;
 
-id ;;
+is-refentry =
+  where(
+    ?%><div atts><%= _ :: * %></div><%
+  ; <fetch-elem(?@> class="refentry" <@)> atts
+  ) ;;
+
+alltd(
+  %><body><%
+    filter(is-refentry) :: *
+  %></body><%
+) ;;
