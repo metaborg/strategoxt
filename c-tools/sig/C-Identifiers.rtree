@@ -1,1 +1,0 @@
-Specification([Imports(["C-Keywords"]),Signature([Constructors([OpDecl("Id",FunType([ConstType(Sort("ID",[]))],ConstType(Sort("IDENTIFIER",[])))),OpDecl("TypeId",FunType([ConstType(Sort("ID",[]))],ConstType(Sort("TypedefName",[]))))])])])
