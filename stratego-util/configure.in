@@ -11,5 +11,6 @@ AC_CONFIG_FILES([
 	emacs/Makefile
 	refcard/Makefile
 	nedit/Makefile
+	vim/Makefile
 ])
 AC_OUTPUT
