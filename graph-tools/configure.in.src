@@ -1,4 +1,4 @@
-dnl Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
+dnl Copyright (C) 2001 Merijn de Jonge <mdejonge@cwi.nl>
 dnl                    Eelco Visser <visser@acm.org>
 dnl                    Joost Visser <jvisser@cwi.nl>
 dnl
@@ -17,7 +17,7 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 dnl 02111-1307, USA.
 
-dnl $Id: configure.in.src,v 1.1 2001/06/05 12:34:27 mdejonge Exp $
+dnl $Id: configure.in.src,v 1.2 2001/06/05 14:39:43 mdejonge Exp $
 
 AC_INIT(configure.in)
 AM_INIT_AUTOMAKE(__PACKAGE__,__VERSION__)
@@ -41,7 +41,7 @@ AC_ARG_WITH(stratego,
 AC_SUBST(STRATEGO)
 
 
-AC_REVISION($Id: configure.in.src,v 1.1 2001/06/05 12:34:27 mdejonge Exp $)
+AC_REVISION($Id: configure.in.src,v 1.2 2001/06/05 14:39:43 mdejonge Exp $)
 
 AC_PROG_CC
 AC_PROG_INSTALL

@@ -1,4 +1,4 @@
-# Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
+# Copyright (C) 2001 Merijn de Jonge <mdejonge@cwi.nl>
 #                    Eelco Visser <visser@acm.org>
 #                    Joost Visser <jvisser@cwi.nl>
 #

@@ -1,4 +1,4 @@
-# Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
+# Copyright (C) 2001 Merijn de Jonge <mdejonge@cwi.nl>
 #                    Eelco Visser <visser@acm.org>
 #                    Joost Visser <jvisser@cwi.nl>
 #
@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: ADDING-TOOLS,v 1.1 2001/06/05 12:34:26 mdejonge Exp $
+# $Id: ADDING-TOOLS,v 1.2 2001/06/05 14:39:42 mdejonge Exp $
 
 To add a component "foo" to the package
 
