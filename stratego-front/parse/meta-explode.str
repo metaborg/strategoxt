@@ -44,7 +44,9 @@ strategies
           , asfix-option)
 
   MetaExplode =
-    alltd(?ToTerm(<trm-explode>) 
+    alltd( ?ToTerm(<trm-explode>) 
+         + ?ToMetaExpr(<trm-explode>)
+         + ?ToMetaListExpr(<trm-explode>)
 	 + ?ToBuild(<!Build(<trm-explode>)>)
          + ?ToStrategy(<str-explode>)
          )
@@ -68,6 +70,8 @@ strategies
   TrmStr      =	is-string; !Str(<id>)
 
   TrmFromTerm = ?FromTerm(<MetaExplode>)
+  TrmFromTerm = ?FromMetaExpr(<MetaExplode>)
+  TrmFromTerm = ?FromMetaListExpr(<MetaExplode>)
 
   TrmFromStr  =	?FromStrategy(<MetaExplode>)
 
@@ -98,3 +102,10 @@ strategies
     <+ \ [t | ts] -> Cong("Cons", [<str-explode>t,<str-explode>ts]) \
     <+ is-string; !Match(Str(<id>))
     <+ \ op#(ts) -> Cong(op, <map(str-explode)> ts) \
+
+signature
+  constructors
+    ToMetaExpr       : a -> b
+    ToMetaListExpr   : a -> b
+    FromMetaExpr     : a -> StrategoTerm
+    FromMetaListExpr : a -> StrategoTerm
