@@ -98,6 +98,7 @@ strategies
     ; <fetch-elem(
           include-from-dir-cached(|mod)
        <+ include-from-dir(|mod)
+       <+ include-from-xtc-cached(|mod)
        <+ include-from-xtc(|mod)
        )> includes
 
@@ -119,10 +120,16 @@ strategies
         + <concat-strings; file-exists> [dir,"/", mod, ".r"] 
         ) => file
 
+  include-from-xtc-cached(|mod) :
+    IncludeXTC() -> (file, tree)
+      where <conc-strings; xtc-find-loc> (mod, ".rtree") => file
+          ; if-verbose1(say(<concat-strings> ["  including ", file, " from XTC repository"]))
+          ; <ReadFromFile> file => tree
+
   include-from-xtc(|mod) :
     IncludeXTC() -> (file, tree)
       where <conc-strings; xtc-find-loc> (mod, ".str") => file
-          ; if-verbose1(say(<concat-strings> ["  including ", mod, " from XTC repository"]))
+          ; if-verbose1(say(<concat-strings> ["  including ", file, " from XTC repository"]))
           ; <parse-stratego> file => tree
 
 strategies
