@@ -22,7 +22,7 @@
 
 module sdf-label
 imports
-  Sdf-Syntax list Literal-lib Char-lib
+  Sdf-Syntax list Literal-lib 
   verbalize-sdf
 
 strategies
