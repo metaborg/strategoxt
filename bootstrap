@@ -22,6 +22,9 @@
 # Touch bootstrapped sources because Subversion doesn't sets the mtime of files to checkout time,
 # not to the last mtime in the repository.
 
+echo "PWD"
+echo $PWD
+
 SRCROOT=`dirname $0`
 
 echo "SRCROOT"
