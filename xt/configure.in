@@ -16,12 +16,12 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 dnl 02111-1307, USA.
 dnl
-dnl $Id: configure.in,v 1.5 2000/03/29 21:09:07 mdejonge Exp $
+dnl $Id: configure.in,v 1.6 2000/03/30 21:52:54 mdejonge Exp $
 
 AC_INIT(Makefile.in)
 AM_INIT_AUTOMAKE(xt,0.1)
 
-AC_REVISION($Id: configure.in,v 1.5 2000/03/29 21:09:07 mdejonge Exp $)
+AC_REVISION($Id: configure.in,v 1.6 2000/03/30 21:52:54 mdejonge Exp $)
 
 
 AC_OUTPUT(
@@ -37,6 +37,11 @@ AC_CONFIG_PKG(aterm,       --with-all)
 AC_CONFIG_PKG(asc-support sglr stratego, --with-aterm=${prefix})
 
 AC_CONFIG_PKG(pgen,        --with-aterm=${prefix}
+                           --with-sglr=${prefix})
+
+AC_CONFIG_PKG(gpp,         --with-asc=${prefix} \
+                           --with-asource=${prefix} \
+                           --with-aterm=${prefix} \
                            --with-sglr=${prefix})
 
 AC_CONFIG_PKG(gb,          --with-aterm=${prefix} \

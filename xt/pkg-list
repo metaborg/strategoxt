@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 #
-# $Id: pkg-list,v 1.7 2000/03/30 16:55:47 mdejonge Exp $
+# $Id: pkg-list,v 1.8 2000/03/30 21:52:54 mdejonge Exp $
 #
 #
 # This file lists name, version, and location of all components 
@@ -28,3 +28,4 @@ sglr,2.28,http://www.cwi.nl/projects/MetaEnv/sglr/sglr-2.28.tar.gz
 stratego,0.4.12,http://www.cs.uu.nl/~visser/ftp/stratego-0.4.12.tar.gz
 gb,0.1.1,cvs:vanille.cwi.nl:/ufs/gipe/CVS
 gt,0.1.1,cvs:vanille.cwi.nl:/ufs/gipe/CVS
+gpp,1.23,http://www.cwi.nl/~mdejonge/gpp/download/gpp-1.23.tar.gz

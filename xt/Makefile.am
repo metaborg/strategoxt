@@ -16,9 +16,9 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 #
-# $Id: Makefile.am,v 1.5 2000/03/29 10:24:19 mdejonge Exp $
+# $Id: Makefile.am,v 1.6 2000/03/30 21:52:54 mdejonge Exp $
 
-DIST_SUBDIRS = dummy aterm asc-support sglr pgen stratego gb gt #gpp
+DIST_SUBDIRS = dummy aterm asc-support sglr pgen stratego gpp gb gt
 EXTRA_DIST   = SOFTWARE
 
 # We need at least one subdir to be defined such that automake will generate
