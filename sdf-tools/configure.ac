@@ -10,9 +10,9 @@ AC_PROG_LIBTOOL
 AC_PATH_PROGS(SH, sh)
 AC_PATH_PROG(PERL,perl)
 
-TOOLS="templates lib sdf-cons sdf-label sdf-bracket sdf-doc sdf-wf sdf-pp sdf-imports sdf2sdf"
+TOOLS="templates sdf-cons sdf-label sdf-bracket sdf2sdf"
 UNRELEASED=""
-RELEASED="templates lib sdf-cons sdf-label sdf-bracket sdf-doc sdf-wf sdf-pp sdf-imports sdf2sdf"
+RELEASED="templates sdf-cons sdf-label sdf-bracket sdf2sdf"
 
 AC_SUBST(TOOLS)
 AC_SUBST(RELEASED)
@@ -35,20 +35,12 @@ AC_CONFIG_FILES([
   src/Makefile 
   src/templates/Makefile
   src/templates/data/Makefile
-  src/lib/Makefile
-  src/lib/data/Makefile
   src/sdf-cons/Makefile
   src/sdf-cons/data/Makefile
   src/sdf-label/Makefile
   src/sdf-label/data/Makefile
   src/sdf-bracket/Makefile
   src/sdf-bracket/data/Makefile
-  src/sdf-doc/Makefile
-  src/sdf-doc/data/Makefile
-  src/sdf-wf/Makefile
-  src/sdf-wf/data/Makefile
-  src/sdf-pp/Makefile
-  src/sdf-imports/Makefile
   src/sdf2sdf/Makefile
   src/sdf2sdf/data/Makefile
 ])
