@@ -101,62 +101,92 @@ that are declared in context using the dynamic rule ContextVar */
   SplitDynamicRule(saveclsr):
     drd@DynRuleDef|[ f(as1|as2) : t1 -> t2 where s ]| ->
     (|[ where(~<saveclsr> (t1', |[ (~str:stamp, t*) ]| )) ]|,
-     [ |[ f'(as1|as2') : (~str:stamp, t*) -> t2 
-                where <s> t0 ]|,
-       |[ f(as1|as2) : x@t1 -> <fetch-elem(f'(s1*|t1'*))> closures
-                where dr-lookup-rule(|~str:f, t1'') => closures ]|,
-       |[ g(as1|as2) : x@t1 -> <filter(f'(s1*|t1'*))> closures
-                where (dr-lookup-rule(|~str:f, t1'') <+ ![]) => closures ]|
-     ])
+      <conc> (callees, callers)
+     )
     where
-        <conc-strings>("bagof-", f) => g
-      ; <conc-strings>("aux-", f) => f'  // has to be the same such that + of aux-f works
-      ; new => stamp
-      ; new => x
-      ; !Var(x) => t0
+    // Prepare LHS for use as a key
+      <dummify> t1 => t1'
 
-      // Transform passed arguments of f into calling arguments for f'
-      ; <map((?DefaultVarDec(<id>) + ?VarDec(<id>,_)); !Call(SVar(<id>),[]))> as1 => s1*
-      ; <map((?DefaultVarDec(<id>) + ?VarDec(<id>,_)); !Var(<id>))> as2 => t1*
+    // Determine the context variables to be stored in the closure
+    ; <tvars; map(!Var(<id>))> t1' => keys
+    ; <tvars; filter(test(ListVar(ContextVar) <+ ContextVar); !Var(<id>))> (t2, s) => vals1
+    ; <diff> (vals1, keys) => t*
 
-// We now pass the entire LHS to the aux- rule as well, no need for additional term-arguments.
-      ; <tvars> t1 => t1vars // *all* pattern variables in LHS t1
-      ; <concat> [as2,
-                  <map(try(?ListVar(<id>)); !DefaultVarDec(<id>))> t1vars,
-                  [DefaultVarDec(x)]
-                 ] => as2' // add them to term args as2 (for passing to aux- rule)
-      ; <concat> [t1*, <map(!Var(<id>))> t1vars, [t0]] => t1'*           // same for actual values at call-site
+    ; if id // here comes the memoization
+        then // aux-Rule has not been lifted yet
 
-      // Prepare LHS for use as a key
-      ; <dummify> t1 => t1'
-      ; try(?t1; !Var(x)) => t1'' // If dummified version is the same, just use x for lookup
+          <conc-strings>("aux-", f) => f'  // has to be the same such that + of aux-f works
+        ; new => stamp
+        ; new => x
+        ; !Var(x) => t0
+
+        // aux-rule will receive pattern vars and entire LHS as additional term args.
+        ; <tvars> t1 => t1vars // *all* pattern variables in LHS t1
+        ; <concat> [as2,
+                    <map(try(?ListVar(<id>)); !DefaultVarDec(<id>))> t1vars,
+                    [DefaultVarDec(x)]
+                   ] => as2' // add them to term args as2 (for passing to aux- rule)
+
+        // Building the lifted aux-rule
+        ; ![ |[ f'(as1|as2') : (~str:stamp, t*) -> t2 
+                  where <s> t0 ]|
+           ] => callees
+
+        // Check whether Rule and bagof-Rule still need to be generated
+        ; !(f, (<length> as1, <length> as2)) => rsig
+        ; if <DRCallersGenerated> (rsig, t1')
+            then 
+              ![] => callers
+            ; <debug(!"callers already generated: ")> (rsig, t1')
+            else
+              <conc-strings>("bagof-", f) => g
+
+            // Transform passed arguments of f into calling arguments for f'
+            ; <map((?DefaultVarDec(<id>) + ?VarDec(<id>,_)); !Call(SVar(<id>),[]))> as1 => s1*
+            ; <map((?DefaultVarDec(<id>) + ?VarDec(<id>,_)); !Var(<id>))> as2 => t1*
+
+            // the calls to aux-rule should pass pattern vars and entire LHS as additional term args.
+            ; <concat> [t1*, <map(!Var(<id>))> t1vars, [t0]] => t1'*
+
+            // If dummified key is the same as original, just use x for lookup
+            ; (!t1'; try(?t1; !Var(x))) => t1''
+
+            ; ![ |[ f(as1|as2) : x@t1 -> <fetch-elem(f'(s1*|t1'*))> closures
+                      where dr-lookup-rule(|~str:f, t1'') => closures ]|,
+                 |[ g(as1|as2) : x@t1 -> <filter(f'(s1*|t1'*))> closures
+                      where (dr-lookup-rule(|~str:f, t1'') <+ ![]) => closures ]|
+               ] => callers
+            ; rules(DRCallersGenerated : (rsig, t1') -> ())
+            ; <debug(!"freshly generating the DR callers: ")> (rsig, t1')
+          end
+
+        else
+          ![] => callees
+        ; ![] => callers
+      end
+
+
+
+
 
 /*
-      ; where(!(f, (<length> as1, <length> as2)) => rsig)
-      ; (<DRCallersGenerated> (rsig, t1')
-         < <debug(!"callers already generated: ")> (rsig, t1')
-         + rules(DRCallersGenerated : (rsig, t1') -> ())
-           ; <debug(!"freshly generating the DR callers: ")> (rsig, t1')
-        )
-
+  ;where(<debug(!"just testing: "); strename; debug(!"just the result: ")> |[ rules( RuleA(st1,st2|tr1) :+ Foo(qr, pr) -> Bar(pr,0) where <leq> (qr,pr) ) ]|)
       ;where(try(<debug(!"about to rename: ");
-                 dr-rename-vars
+                 strename//dr-rename-vars
                  ; debug(!"just renamed: ")> drd))
 */
 
-      // Determine the context variables to be stored in the Closure
-      ; <tvars; map(!Var(<id>))> t1' => keys
-      ; <tvars; filter(test(ListVar(ContextVar) <+ ContextVar); !Var(<id>))> (t2, s) => vals1
-      ; <diff> (vals1, keys) => t*
-
 strategies
   dr-rename-vars =
+  {| DRRenameVar:
     where(<reset-counter> "DRVarNumber")
-  ; rec x(alltd(RenameVarTerm(DRRenameVar <+ NewNumberedVar) <+ all(x)))
+  ; rec x(debug(!"input rec x: "); RenameVarTerm(debug(!"DRRenameVar input: "); DRRenameVar; debug(!"DRRenameVar output: ") <+ debug(!"NewNumberedVar input: "); NewNumberedVar); debug(!"RenameVarTerm output: ") <+ all(x))
+  |}
 
   RenameVarTerm(s) =
-    Var(s)
-  + Var(ListVar(s; <strcat> (<id>, "*")))
+    Var(ListVar(s; <strcat> (<id>, "*")))
+ <+ Var(s)
+  + SVar(s)
   + VarDec(s, id)
   + DefaultVarDec(s)
 
@@ -164,7 +194,7 @@ rules
   NewNumberedVar :
     x -> y
     where <next-counter> "DRVarNumber" => n
-        ; <strcat> ("drvar_", n) => y
+        ; <strcat> ("drvar_", <int-to-string> n) => y
         ; rules(DRRenameVar: x -> y)
 
 \end{code}

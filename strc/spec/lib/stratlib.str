@@ -68,11 +68,44 @@ rules
 
 strategies
 
+  Bind9  = dynrule-sargs(declared-vars)
+  Bind10 = dynrule-targs(declared-vars)
+
+  dynrule-lhs(s) =
+    ?UndefineDynRule(_, <id>)
+  + ?SetDynRule(_, Rule(<id>, _, _))
+  + ?AddDynRule(_, Rule(<id>, _, _))
+
+  dynrule-sargs(s) =
+    ?UndefineDynRule(DynRuleId(RDecT(_,<id>,_)), _)
+  + ?SetDynRule(DynRuleId(RDecT(_,<id>,_)), _)
+  + ?AddDynRule(DynRuleId(RDecT(_,<id>,_)), _)
+
+  dynrule-targs(s) =
+    ?UndefineDynRule(DynRuleId(RDecT(_,_,<id>)), _)
+  + ?SetDynRule(DynRuleId(RDecT(_,_,<id>)), _)
+  + ?AddDynRule(DynRuleId(RDecT(_,_,<id>)), _)
+    
+  dynrule-cong(name, sargs, targs, lhs, rhs, cond) =
+    UndefineDynRule(DynRuleId(RDecT(name,sargs,targs)), lhs)
+  + SetDynRule(DynRuleId(RDecT(name,sargs,targs)), Rule(lhs, rhs, cond))
+  + AddDynRule(DynRuleId(RDecT(name,sargs,targs)), Rule(lhs, rhs, cond))
+
+  dynrule-cong(drid, rule) =
+    UndefineDynRule(drid, rule)
+  + SetDynRule(drid, rule)
+  + AddDynRule(drid, rule)
+  
+
+strategies
+
   tpaste(nwvars) =
     Scope(nwvars, id)
+    + LRule(id) // Let the tboundin handle this, or zip tvars of LHS and nwvars here?
     + RDecT(id, id, split(id, nwvars); zip(ReplaceVar))
     + SDefT(id, id, split(id, nwvars); zip(ReplaceVar), id)
     + RDefT(id, id, split(id, nwvars); zip(ReplaceVar), id)
+    + dynrule-cong(id, id, split(id, nwvars); zip(ReplaceVar), id, id, id)
 
   ReplaceVar :
     (VarDec(x,t), y) -> VarDec(y,t)
@@ -82,9 +115,11 @@ strategies
 
   tboundin(bnd, ubnd, ignore) =
     Scope(ignore, bnd)
+    + LRule(Rule(bnd, bnd, bnd))
     + RDecT(ignore, ignore, ignore)
     + SDefT(ignore, ignore, ignore, bnd)
     + RDefT(ignore, ignore, ignore, bnd)
+    + dynrule-cong(ignore, bnd)
 
     + GenDynRules(bnd)
     + DynamicRules(bnd)
@@ -101,6 +136,7 @@ strategies
     + SDefT(id, split(id, nwvars); zip(ReplaceVar), id, id)
     + RDefT(id, split(id, nwvars); zip(ReplaceVar), id, id)
     + RDecT(id, split(id, nwvars); zip(ReplaceVar), id)
+    + dynrule-cong(id, split(id, nwvars); zip(ReplaceVar), id, id, id, id)
     + Rec(nwvars; Hd, id)
 
   sboundin(bnd, ubnd, ignore) =
@@ -109,6 +145,7 @@ strategies
     + SDefT(ignore, ignore, ignore, bnd)
     + RDefT(ignore, ignore, ignore, bnd)
     + RDecT(ignore, ignore, ignore)
+    + dynrule-cong(ignore, bnd)
     + Rec(ignore, bnd)
 
 \end{code}
@@ -122,20 +159,20 @@ strategies
     map(?VarDec(<id>,_) + ?DefaultVarDec(<id>))
 
   tvars = 
-    free-vars(Add1, Bind0 + Bind4 + Bind6 + Bind8, tboundin)
+    free-vars(Add1, Bind0 + Bind4 + Bind6 + Bind8 + Bind10, tboundin)
 
   svars = 
-    free-vars(Add2, Bind1 + Bind2 + Bind3 + Bind5 + Bind7, sboundin)
+    free-vars(Add2, Bind1 + Bind2 + Bind3 + Bind5 + Bind7 + Bind9, sboundin)
 
   trename = 
-    rename(Var, Bind0 + Bind6 + Bind8, tboundin, tpaste)
+    rename(Var, Bind0 + Bind6 + Bind8 + Bind10, tboundin, tpaste)
 
   srename = 
-    rename(SVar, Bind1 + Bind2 + Bind3 + Bind5 + Bind7, sboundin, spaste)
+    rename(SVar, Bind1 + Bind2 + Bind3 + Bind5 + Bind7 + Bind9, sboundin, spaste)
 
   svars-arity = 
     free-vars2(\CallT(SVar(f), as1, as2) -> [(f, (<length> as1, <length> as2))]\
-              ,Bind1 + Bind2 + Bind3 + Bind5 + Bind7
+              ,Bind1 + Bind2 + Bind3 + Bind5 + Bind7 + Bind9
               ,sboundin
               ,{f:?((f,_),f)})
 
@@ -146,7 +183,7 @@ strategies
     substitute(IsSVar)
 
   tsubstitute = 
-    substitute(IsVar, Var, Bind0 + Bind4 + Bind6 + Bind8, tboundin, tpaste)
+    substitute(IsVar, Var, Bind0 + Bind4 + Bind6 + Bind8 + Bind10, tboundin, tpaste)
 
   strename = 
     trename ; srename
