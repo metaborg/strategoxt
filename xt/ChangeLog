@@ -1,3 +1,7 @@
+2000-09-28 Merijn de Jonge <mdejonge@cwi.nl>
+        * README, COPYING, NEWS, and AUTHORS files are installed in ${prefix}
+          during "make pkg"
+
 2000-09-27 Merijn de Jonge <mdejonge@cwi.nl>
         * added patch support to Makefile: "gmake diff" generates a patch file
           which can be sent to the maintainers of xt
