@@ -2,6 +2,8 @@
     * sdf-bracket: Generalized and improved  bracket insertion algorithm.
     * sdf-bracket/data: Extended testset and added rules to generate test
       input and test verification data
+    * fdl2sdf: bracket-symbols are no longer inserted in AST of generated
+      SDF module. Use sdf-bracket tool for this purpose
 
 2002-02-12 Merijn de Jonge <mdejonge@cwi.nl>
     * fdl2sdf: Added bracket-symbol around symbol sequences according to all

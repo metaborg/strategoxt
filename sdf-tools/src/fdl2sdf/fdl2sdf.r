@@ -24,10 +24,10 @@ Fdl2Sdf :
 
 
 Fdl2Sdf :
-   'all( x ) -> bracket-symbol( x )
+   'all( x ) -> x
 
 Fdl2Sdf :
-   more-of(xs) -> iter(bracket-symbol(xs'))
+   more-of(xs) -> iter(xs')
    where
       <foldr1(\[x] -> x\, \(x,y) -> alt(x,y)\ )>xs => xs'
 
