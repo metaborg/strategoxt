@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: make.r,v 1.1 2001/12/18 11:25:34 mdejonge Exp $
+% $Id: make.r,v 1.2 2002/10/02 08:13:44 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 
@@ -54,7 +54,7 @@ strategies
      );
      ![]
 
-number-nonterminals = no-labels; number( NonTerminal )
+number-nonterminals = no-labels; number-node( NonTerminal )
 
 NonTerminal = not(lit(id))
 
@@ -169,7 +169,7 @@ argument-list =
    holders.
 \begin{code}
 
-number(s) =
+number-node(s) =
    split( !1, id );
    rec x ( {n, e, e',es, es':
          (id, []); ![]
