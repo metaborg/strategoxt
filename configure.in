@@ -146,16 +146,6 @@ AB_CONFIG_PKG(sc,
    --with-repository=${REPOSITORY}
 )
 
-AB_CONFIG_PKG(sc-exp,
-   --with-aterm=${ATERM}
-   --with-sglr=${SGLR}
-   --with-pgen=${PGEN}
-   --with-stratego-xt=${STRATEGOXT}
-   --with-srts=${BUILD_SRTS}
-   --with-xtc=${INSTALL_XTC}
-   --with-repository=${REPOSITORY}
-)
-
 AB_CONFIG_PKG(c-tools,
    --with-aterm=${ATERM}
    --with-sglr=${SGLR}

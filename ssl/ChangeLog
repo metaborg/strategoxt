@@ -1,3 +1,9 @@
+2003-08-12  Martin Bravenboer <mbravenb@cs.uu.nl>
+
+  * spec/process.str: defined call/(0,0) in terms of call(1,0)
+
+  * spec/process.str: call/(1, 0): <exit> -1 if execvp returns
+
 2003-08-07  Martin Bravenboer <mbravenb@cs.uu.nl>
 
   * collect-om(s) and collect-set(s) are now defined

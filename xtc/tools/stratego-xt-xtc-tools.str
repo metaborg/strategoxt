@@ -52,10 +52,10 @@ strategies
   /* sglr */
 
   xtc-sglr(tbl) =
-    xtc-transform(!"sglr", !["-2tA", "-p", <tbl; xtc-find> () | <pass-v-verbose> ()])
+    xtc-transform(!"sglr", !["-2A", "-p", <tbl; xtc-find> () | <pass-v-verbose> ()])
 
   xtc-sglr(tbl, sort) =
-    xtc-transform(!"sglr", !["-2tA", "-p", <tbl; xtc-find> (), "-s", <sort> () | <pass-v-verbose> ()])
+    xtc-transform(!"sglr", !["-2A", "-p", <tbl; xtc-find> (), "-s", <sort> () | <pass-v-verbose> ()])
 
   /* stratego */
 
@@ -76,4 +76,3 @@ strategies
   add-arg-flags =
        \ (_   , []    ) -> [] \
     <+ \ (flag, values) -> [flag | <<separate-by> (flag, <id>)> values ] \
-
