@@ -19,14 +19,11 @@ imports Sdf-2-Stratego termid
 
 strategies
 
-  main = io-idwrap(InOutId("\"sdf-2.1\"", !"\"stratego-0\""), sdf2sig)  
+  sdf2sig = 
+    io-idwrap(InOutId("\"sdf-2.1\"", !"\"stratego-0\""), sdf2sig-main)
 
-strategies
-
-  sdf2sig
-//    = {ms : << Definition(ms) -> ms >> }
-//    ; filter(module2sig)
-    = Definition(filter(module2sig))
+  sdf2sig-main = 
+    Definition(filter(module2sig))
 
 signature
   constructors
