@@ -14,7 +14,7 @@ News about Stratego releases
 
 ------------------------------------------------------------------------------
 
-StrategoXT 0.9.2 -- released 25 June, 2003
+StrategoXT 0.9.2 -- released 2003-07-04
 
 This is a logistics release. The main purpose of the work done for
 this release is to create more and better distributions.
@@ -61,7 +61,44 @@ DOWNLOAD AND INSTALLATION
 
 SUMMARY OF CHANGES
 
-  TODO
+  * StrategoXT (Martin Bravenboer)
+    - configuration without prefix is now possible.
+    - several packages are now first installed locally
+      to allow a separate make/make install:
+      - xtc: for install time
+      - srts: for build time
+      - autoxt for bootstrap time
+
+  * asfix-tools (Martin Bravenboer)
+    - asource is no longer installed. It used to be a symbolic
+      link to asfix-yield.
+
+  * aterm-tools (Merijn de Jonge)
+    - fixed treeviz: Tool was compiled with incorrect main
+      strategy.
+
+  * dot-tools (Rob Vermaas)
+    - changed structure of package to the common structure 
+      of -tools/-front packages.
+
+  * graph-tools (Rob Vermaas)
+    - now using dot-tools
+
+  * sc (Merijn de Jonge)
+    - stratego-warnings: stratego analysis tool
+      Currently it checks for usage of obsolete strategies and for
+      missing build operators in calls to the "debug" strategy.
+    - sc: -W|--warning can be used to apply the stratego-warnings tool.
+
+  * ssl (Martin Bravenboer)
+    - --about and --version are now
+      standard switches in parse-options.
+    - posix-signal.str: prefixed signal overlays with
+      SIG. Reported by Karina.
+
+  * stratego-tools (Merijn de Jonge)
+    - conc-modules has been fixed to deal with .str and .rtree files,
+      and now uses parse-stratego rather than parse-mod.
 
 BUGS / KNOWN PROBLEMS
 
