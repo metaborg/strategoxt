@@ -2,14 +2,14 @@ include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
 autogensignatures = \
-  Stratego.str      \
-  Stratego-Amb.str  \
-  Stratego-Core.str \
-  Stratego-Sugar.str\
   Stratego.rtg      \
   Stratego-Amb.rtg  \
   Stratego-Core.rtg \
-  Stratego-Sugar.rtg
+  Stratego-Sugar.rtg\
+  Stratego.str      \
+  Stratego-Amb.str  \
+  Stratego-Core.str \
+  Stratego-Sugar.str
 
 staticsignatures = \
   Stratego-MetaTransition.str
