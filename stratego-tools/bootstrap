@@ -33,3 +33,5 @@ automake -a
 
 rm -f config.cache
 rm -f acconfig.h
+
+touch src/sig2/tree-grammar-fc.str
