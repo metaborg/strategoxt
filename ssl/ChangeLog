@@ -1,5 +1,8 @@
 2001-10-06  Eelco Visser  <visser@acm.org>
 
+	* spec/string.r (string-gt): use strcasecmp instead of strcmp so
+	no distinction between upper and lower case is made.
+
 	*  Release 0.6.2
 
 	* src/term.c (SSL_explode_term): Fix of the bug in the previou fix

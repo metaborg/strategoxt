@@ -43,6 +43,7 @@ ATerm SSL_mkterm(ATerm c, ATerm ts0)
 
 ATerm SSL_explode_term(ATerm t)
 {
+  // ATfprintf(stderr, "SSL_explode_term(%t)\n", t);
   switch(ATgetType(t)) {
   case AT_APPL :
     {
@@ -54,20 +55,23 @@ ATerm SSL_explode_term(ATerm t)
         t1 = ATmakeStringQ(ATgetName(sym));
       else
         t1 = ATmakeString(ATgetName(sym));
-      return(App2("TCons", t1,
+      t = App2("TCons", t1,
                   App2("TCons",
                        (ATerm)
 		       list_to_consnil_shallow((ATerm)ATgetArguments((ATermAppl)t)),
-                       App0("TNil"))));
+                       App0("TNil")));
+      break;
     }
   case AT_INT :
-    return(ATmake("TCons(<int>,TCons(Nil,TNil))", ATgetInt((ATermInt)t)));
+    t = ATmake("TCons(<int>,TCons(Nil,TNil))", ATgetInt((ATermInt)t));
+    break;
   case AT_REAL :
-    return(ATmake("TCons(<real>,TCons(Nil,TNil))", ATgetReal((ATermReal)t)));
+    t = ATmake("TCons(<real>,TCons(Nil,TNil))", ATgetReal((ATermReal)t));
+    break;
   default:
     _fail(t);
   }
-  _fail(t);
+  // ATfprintf(stderr, "SSL_explode_term: %t\n", t);
   return(t);
 }
 

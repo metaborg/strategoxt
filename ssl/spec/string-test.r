@@ -43,7 +43,8 @@ strategies
 	is-substring-test;
 	get-path-test;
 	escape-test;
-	unescape-test
+	unescape-test;
+	string-sort-test
     )
 
   explode-implode-test =
@@ -139,5 +140,12 @@ strategies
 	, [unescape]
 	, !["\" \\\\\\n\\\\t\""]
 	, !["\" \\\n\\t\""]
+	)
+
+   string-sort-test =
+     apply-test(!"string-sort-test"
+	, string-sort
+	, !["De", "db", "Cb", "ac"]
+	, !["ac", "Cb", "db", "De"]
 	)
 \end{code}

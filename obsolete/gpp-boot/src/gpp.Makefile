@@ -15,7 +15,7 @@
 #    along with this program; if not, write to the Free Software
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 #
-# $Id: gpp.Makefile,v 1.9 2001/10/06 14:06:15 visser Exp $
+# $Id: gpp.Makefile,v 1.10 2001/10/10 14:54:11 visser Exp $
 #
 # GNU make specific generic make rules for the generation of pretty-printed
 # documents.

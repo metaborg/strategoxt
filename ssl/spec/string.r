@@ -269,18 +269,19 @@ strategies
     })>long)
 
   // <copy-char> (3, 32) -> "   "
-  copy-char = copy; implode-string
+  copy-char = 
+    copy; implode-string
 
   string-sort = 
-	  map(explode-string)
-	; sort-list(SortL(string-gt))
-	; map(implode-string)
+      map(explode-string)
+    ; sort-list(SortL(string-gt))
+    ; map(implode-string)
 
-  //in: a binary tuple of exploded strings (==list of ASCII numbers)
+  // in: a binary tuple of exploded strings (==list of ASCII numbers)
   // but two strings can also be given.
   string-gt = 
     try((explode-string, explode-string));
-    strcmp; ?1
+    strcasecmp; ?1
 
   strcmp = rec r
 	(  \([x|xs],[x|ys]) -> <r>(xs,ys)\
@@ -309,5 +310,4 @@ strategies
 	<+ \([],[_|_]) -> -1\
 	<+ !1
 	)
-
 \end{code}

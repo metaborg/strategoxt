@@ -40,8 +40,7 @@ ATerm ATmakeString(char *name)
 
 ATerm ATmakeStringQ(char *name)
 {
-  return 
-     ATmakeString(ATwriteToString((ATerm)ATmakeAppl0(ATmakeSymbol(name, 0 , ATtrue))));
+  return ATmakeString(ATwriteToString(ATmakeString(name)));
 }
 
 ATbool ATisString(ATerm t)
