@@ -1,6 +1,19 @@
+2004-06-25   Martin Bravenboer  <martin@cs.uu.nl>
+
+	* Makefile.xt: Added the new stratego-choice library to LDADD and
+	and STRATEGORUNLIBS. This library is the default choice point
+	implementation, which is now separate from the runtime.
+
+	* Makefile.xt: Added the 'relname' command to facilitate
+	meta-package tools (buildfarm). 'make relname' writes the basename
+	of distribution files (tarballs, rpms) to a file relname. This
+	file can then read if a tool needs to now the name of the
+	distribution.
+
 2004-05-04   Merijn de Jonge  <mdejonge@cs.uu.nl>
-	* Makefile.xt: Fixed generation of pretty-print tables during 'make
-          distcheck'.
+	
+	* Makefile.xt: Fixed generation of pretty-print tables during 
+	'make distcheck'.
 
 2004-03-26   Martin Bravenboer  <martin@cs.uu.nl>
 

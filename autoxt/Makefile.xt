@@ -15,12 +15,24 @@
 
 AM_CPPFLAGS	= -I$(SRTS)/include -I$(ATERM)/include
 LDADD 		= \
+  -L$(SRTS)/lib/srts \
   $(SRTS)/lib/srts/libstratego.opt.a \
+  $(SRTS)/lib/srts/libstratego-choice.opt.a \
   $(SRTS)/lib/srts/libstratego-lib.opt.a \
   -L$(ATERM)/lib -lATerm-gcc -lm
 
-STRATEGORUNLIBS = -lstratego.opt -lstratego-lib.opt -lATerm-gcc -lm
-SSL_LIBS = $(SRTS)/lib/srts/libliblib.la -L$(SRTS)/lib/srts -lstratego.opt -lstratego-lib.opt -L$(ATERM)/lib -lATerm-gcc -lm
+STRATEGORUNLIBS = \
+  -lstratego.opt \
+  -lstratego-choice.opt \
+  -lstratego-lib.opt \
+  -lATerm-gcc \
+  -lm
+
+SSL_LIBS = \
+  $(SRTS)/lib/srts/libliblib.la \
+  -L$(SRTS)/lib/srts \
+  -L$(ATERM)/lib \
+  $(STRATEGORUNLIBS)
 
 SUFFIXES 	= .str .cr .r .rtree .def .tbl .pp .sdf .rtg
 
@@ -149,7 +161,8 @@ bootclean-recursive :
 
 XTCFLAGS = -I $(XTC)/share/xtc 
 
-#	   --C-include "\"xtc-conf.h\""
+relname:
+	echo -n $(distdir) > relname
 
 DREPOSITORY = $(DESTDIR)$(REPOSITORY)
 
