@@ -1,3 +1,12 @@
+2003-06-27  Merijn de Jonge  <m.de.jonge@tue.nl>
+	* spec/front/stratego-warnings.str: Added stratego analysis tool.
+	  Currently it checks for usage of obsolete strategies and for
+          missing build operators in calls to the "debug" strategy (e.g.,
+          debug("hello world")0.
+        * spec/sc/sc-options.str: added -W|--warning command line switch
+        * spec/sc/sc.str: added stratego-warnings to stratego compilation
+          process. By default no warnings are switched on.
+
 2003-01-26  Eelco Visser  <visser@cs.uu.nl>
 
 	* spec/opt/fusion.str: Recognize different formulations of

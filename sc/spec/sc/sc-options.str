@@ -34,6 +34,9 @@ strategies
                            "-L", <conc-strings>(<xtc-find-path> "ATERM", "/lib"),
                            "-lATerm-gcc",
                            "-lm"])
+// Currently, warnings are not yet switched on by default
+//    ; <set-config>("--warning", ["all"])
+    ; <set-config>("--warning", [])
   )
 
   sc-options =
@@ -118,6 +121,13 @@ strategies
   + Option("-v"+"--version",     
 	where(<set-config> ("-v",())); !(),         
 	!"-v | --version     Display program's version")
+
+  + ArgOption("--warning" + "-W",         
+	where(  where(<get-config>"--warning";["all"]);
+	        <set-config> ("--warning", [<id>])
+              <+ 
+                <extend-config>("--warning", [<id>])); !(),         
+	!"-W | --warning     Set warning level (-W all to switch all warnings on)")
 
   short-description(p) = 
       !["SC compiles Stratego programs to C or executable code.\n",
