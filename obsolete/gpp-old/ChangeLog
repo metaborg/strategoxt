@@ -1,3 +1,6 @@
+2001-06-07 Merijn de Jonge <mdejonge@cwi.nl> 
+   * src/gpp/gpp.Makefile.am.src: Fixed some PATH problems
+
 2001-06-05 Merijn de Jonge <mdejonge@cwi.nl> 
    * Extracted GPP tools from Gramar Tools package 0.7 and created a
      separated GPP package for them.
