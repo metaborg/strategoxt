@@ -508,7 +508,6 @@ ATerm SSL_write_term_to_stream_taf(ATerm stream_term, ATerm term) {
 ATerm SSL_write_term_to_stream_text(ATerm stream_term, ATerm term) {
   FILE* stream = stream_from_term(stream_term);
   ATwriteToTextFile(term, stream);
-  fprintf(stream, "\n");
   return stream_term;
 }
 
