@@ -1,2 +1,8 @@
-Version 0.0 released: YYYY-MM-DD
-	* Remarks
+Version 2.0 released: 2001-09-20
+	* This package replaces the gpp package version 1.33 and earlier.
+	  The implementation is now Stratego-based instead of ASF-based.
+	  This implementation of the gpp tools was extracted from the
+	  Grammar Tools package version 0.7.
+	* Functionality for generating latex and html files has been
+          re-added.
+
