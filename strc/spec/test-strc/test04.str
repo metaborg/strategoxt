@@ -1,0 +1,7 @@
+module test04
+imports liblib
+
+strategies
+
+  main =
+    <add> (1, 2)

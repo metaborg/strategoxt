@@ -85,8 +85,15 @@ strategies
 
   + ArgOption("-CL",
 	where(<extend-config>("-CL", [<conc-strings> ("-L", <id>)])); !(),
-	!"-CL d              Include binary libraries from directory d\n")
+	!"-CL d              Include binary libraries from directory d")
 
+  + ArgOption("-Cl",
+	where(<extend-config>("-CL", [<conc-strings> ("-l", <id>)])); !(),
+	!"-Cl lib            Search the library named lib when linking.")
+
+  + ArgOption("-la",
+	where(<extend-config>("-CL", [<file-exists <+ <concat-strings; xtc-find <+ <exit> 1> ["lib", <id>, ".la"]>])); !(),
+	!"-la lib            Search the libtool library liblib.la when linking.\n")
 
   + Option("-c",          
 	where(<set-config>("-c",())); !(),

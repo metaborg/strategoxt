@@ -11,5 +11,6 @@ install-xtc:
 	$(XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t ATERM -l $(ATERM) -V X
 	$(XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t SRTS -l $(SRTS) -V X
 	$(XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t liblib.rtree -l $(SRTS)/share/srts -V $(VERSION)
+	$(XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t libliblib.la -l $(SRTS)/lib/srts -V $(VERSION)
 
 bootclean:
