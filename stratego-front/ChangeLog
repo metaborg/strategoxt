@@ -1,3 +1,8 @@
+2003-09-15  Martin Bravenboer  <mbravenb@cs.uu.nl>
+
+  * parse/stratego-ensugar.str: implemented ensugaring of
+    Cons/Nil to List and ListTail.
+
 2003-08-27  Eelco Visser  <visser@cs.uu.nl>
 
 	* Made restricted version of the Stratego syntax under the name

@@ -1,12 +1,13 @@
-module stratego-ensugar
-imports stratego-ext options string simple-traversal parenthesize
-
 /**
- * This is a preliminary  implementation of the ensugaring
- * of an astratego. It doesn't reverse all desugarings of
+ * Preliminary  implementation of the ensugaring of an astratego.
+ *
+ * It doesn't reverse all desugarings of
  * stratego-desugar, but just those that are known to cause
  * problems when pretty-printing Stratego programs.
  */
+module stratego-ensugar
+imports stratego-ext options string simple-traversal parenthesize
+
 strategies
  
   stratego-ensugar =
@@ -32,6 +33,25 @@ rules
 
   Ensugar :
     StratRule(l, r, Id()) -> StratRuleNoCond(l, r)
+
+  Ensugar =
+    ?Op("Cons",[_,_])
+    ; implode-cons
+    ; split-last
+    ; (  \ (elems, Op("Nil",[])) -> List(elems) \
+      <+ \ (elems, last)         -> ListTail(elems, last) \
+      )
+  
+  /**
+   * @type List(a) -> (List(a), a)
+   */
+  split-last =
+      at-last(?[x]; ![])
+    ; !(<id>, x)
+  
+  implode-cons =
+    \ Op("Cons",[e, tail]) -> [e | <implode-cons> tail] \
+    <+ ![<id>]
 
   AssociateSeqLeft :
     Seq(s1, Seq(s2, s3)) -> Seq(Seq(s1, s2), s3)
