@@ -1,15 +1,13 @@
-module sdf-ensugar
-imports Sdf2 liblib explode-aterm
-
 /**
  * sdf-ensugar implements the following ensugarings:
  *
  *   - add double quotes in String literals: cons, lit
  *   - replace attrs([]) by no-attrs
  *
- * Author:
- *   Martin Bravenboer
+ * @author Martin Bravenboer <martin@cs.uu.nl>
  */
+module sdf-ensugar
+imports Sdf2 liblib explode-aterm
 strategies
 
   main-sdf-ensugar =
@@ -23,13 +21,26 @@ strategies
   Ensugar :
     lit(s) -> lit(qlit(<double-quote> s))
 
+  /**
+   * A seq where the second element is not a list, is a lookahead seq.
+   */
   Ensugar :
-    seq(a,b) -> otherseq(a,b)
-      where <not(is-list)>b
+    seq(a,b) -> seq-lookahead(a,b)
+    where
+      <not(is-list)> b
+
+  /**
+   * A seq where the second element is a list, is a symbol
+   */
+  Ensugar :
+    seq(a, b) -> seq-symbol(a,b)
+    where
+      <is-list> b
 
 signature
   constructors
-    otherseq : Term * Term -> Term
+    seq-symbol : a * a -> a
+    seq-lookahead : a * a -> a
 
 strategies
  

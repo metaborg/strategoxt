@@ -74,7 +74,7 @@
    bracket    -- KW["bracket"],
 
    char-class                    -- _1,
-   otherseq                      -- _1 KW["."] _2,
+   seq-lookahead                 -- _1 KW["."] _2,
    single                        -- _1,
    alt                           -- _1 KW["|"] _2,
    list                          -- KW["[["] _1 KW["]]"],
@@ -145,6 +145,9 @@
    empty                         -- KW["("] KW[")"],
    seq                           -- KW["("] _1 _2 KW[")"],
    seq.2:iter                    -- _1,
+
+   seq-symbol                    -- KW["("] _1 _2 KW[")"],
+   seq-symbol.2:iter             -- _1,
 
    renamings -- H hs=1 [KW["["] V vs=0 [A(l,l,l) [_1]] KW["]"]],
    renamings.1:iter-star -- _1,
