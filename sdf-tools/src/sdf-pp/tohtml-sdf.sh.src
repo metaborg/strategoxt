@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: tohtml-sdf.sh.src,v 1.1 2001/06/07 12:06:37 mdejonge Exp $
+# $Id: tohtml-sdf.sh.src,v 1.2 2001/06/08 07:49:42 mdejonge Exp $
 
 
 # The following define Sdf specific paramters for the generic html
@@ -34,7 +34,7 @@ GPP=__GPP__
 MOD_EXTENSION="sdf"
 IMPORTS="${PREFIX}/bin/sdf-imports"
 PPTABLES="${PREFIX}/share/sdf-tools/sdf.cons.pp"
-PARSETABLE=${GPP}/bin/sdf.cons.tbl
+PARSETABLE="${PREFIX}/share/sdf-tools/sdf.cons.tbl"
 
 
 . ${GPP}/libexec/tohtml
