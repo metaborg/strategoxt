@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.2 2001/06/08 16:12:26 mdejonge Exp $
+# $Id: Makefile.am,v 1.3 2001/06/11 12:29:55 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -33,7 +33,7 @@ SUBDIRS      = data
 # TESTS        = program-check
 
 # List all extra files that should be distributed here
-EXTRA_DIST   = xt-paths.r.src
+EXTRA_DIST   = xt-paths.r.src ppp-wrap.r
 
 # What extra files should be cleaned
 CLEANFILES   = xt-paths.r.src
