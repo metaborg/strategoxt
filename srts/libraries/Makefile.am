@@ -30,7 +30,7 @@ AM_LDFLAGS  = -avoid-version
 
 pkgdocdatadir 	= $(pkgdatadir)/doc
 
-pkgdata_DATA   	= libstrategolib.rtree libxtclib.rtree liblib.str
+pkgdata_DATA   	= libstrategolib.rtree libxtclib.rtree liblib.rtree
 pkgdocdata_DATA = libstrategolib.str libxtclib.str liblib.str
 
 EXTRA_DIST	= $(wildcard *.str) $(wildcard *.rtree)
