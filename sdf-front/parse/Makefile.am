@@ -7,8 +7,7 @@ libexec_PROGRAMS = sdf-desugar sdf-ensugar
 SCFLAGS          = --main main-$*
 STRINCLUDES      = -I $(top_srcdir)/sig/version-2.1\
                    -I $(top_srcdir)/xtc \
-                   -I $(XTC)/share/xtc \
-                   -I $(ASFIX_TOOLS)/share/asfix-tools
+                   -I $(XTC)/share/xtc 
 
 EXTRA_DIST       = $(wildcard *.str) $(wildcard *.meta)
 CLEANFILES       = $(wildcard *.dep)
