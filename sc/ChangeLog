@@ -1,5 +1,6 @@
 2001-11-16  Merijn de Jonge <mdejonge@cwi.nl>
 	* spec/test1/test18.r: Repaired according to string bug fix
+	* sc/spec/syn/syntax-test.trm: removed generated file
 
 2001-11-15  Merijn de Jonge <mdejonge@cwi.nl>
 	* Updated dependencies in sc-0.6.3.pkg
