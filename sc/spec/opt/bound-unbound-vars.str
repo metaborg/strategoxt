@@ -83,17 +83,22 @@ strategies
     ; PrimT(id, mark-buv, id)
     ; where(<isect-MarkVar> bnd)
 
-  mark-let =
+  mark-let-old =
     Let(id, id)
     ; where( 
         where(save-MarkVar => bnd0)
         ; Let(map(mark-buv; where(<isect-MarkVar> bnd0))
 	     ,    mark-buv; where(<isect-MarkVar> bnd0))
-      ) 
+      )
     ; where(save-MarkVar => bnd1)
     ; Let(map(where(<restore-MarkVar> bnd1); mark-buv)
          ,    where(<restore-MarkVar> bnd1); mark-buv)
-    ; where(save-MarkVar)
+
+  mark-let =
+    Let(id, id)
+    ; where(undefine-unbound-MarkVar => bnd0)
+    ; Let(map(where(<restore-MarkVar> bnd0); mark-buv)
+         ,    where(<restore-MarkVar> bnd0); mark-buv)
 
   mark-sdef =
     ? SDefT(_, _, as, _)
@@ -149,7 +154,6 @@ strategies // Dynamic rule manipulation
           <table-putlist>("MarkVar", tbl))
 
   isect-MarkVar = 
-     where(save-MarkVar);
      map(try(?(Scopes,_)
         <+ {key, xs, x : ?(key, [Defined(_,x)|xs]); 
             (where(<table-get> ("MarkVar", key) => [Defined(_,x)|_])
@@ -157,6 +161,14 @@ strategies // Dynamic rule manipulation
            }))
     ; restore-MarkVar
 
+  undefine-unbound-MarkVar =
+    where(
+      save-MarkVar
+      ; map(try(?(Scopes, _)
+		<+ \ (key, [Defined(_,"unbound") | xs]) -> 
+		     (key, [Undefined | xs]) \ ))
+      ; restore-MarkVar
+    )
 
 /*
     Bound/Unbound variable analysis for Stratego programs

@@ -24,7 +24,7 @@ strategies
     where <collect-split(LiftFromLet)> s => (s', defs)
 
   LiftFromLet :
-    Let(defs, s) -> <simplify> (Let(defs2, s), defs1)
+    Let(defs, s) -> (Let(defs2, s), defs1)
     where <partition(SuperCombinator)> defs => (defs1, defs2)
 	; <map(DeclareTopLevel)> defs1
 

@@ -11,7 +11,8 @@ SCFLAGS	= -I $(STRATEGO_FRONT)/share/stratego-front \
 
 libexec_PROGRAMS = fusion inline dead-def-elim const-prop dead-var-elim \
 		   lift-definitions canonicalize bound-unbound-vars \
-		   worker-wrapper
+		   worker-wrapper simplify1 simplify2 simplify3 define-congruences
+
 check_PROGRAMS 	 = build-match-laws-test bound-unbound-vars-test \
 		   const-prop-test
 
@@ -23,8 +24,11 @@ TESTS 		 = build-match-laws-test bound-unbound-vars-test \
 CLEANFILES 	 = $(wildcard *.dep)
 
 BOOTCLEANFILES 	 = fusion.c dead-def-elim.c inline.c const-prop.c dead-var-elim.c \
-		   build-match-laws-test.c  lift-definitions.c \
-		   canonicalize.c bound-unbound-vars.c bound-unbound-vars-test.c \
-		   const-prop-test.c worker-wrapper.c
+		   build-match-laws-test.c  lift-definitions.c			  \
+		   canonicalize.c bound-unbound-vars.c				  \
+		   bound-unbound-vars-test.c					  \
+		   const-prop-test.c worker-wrapper.c simplify1.c		  \
+		   simplify2.c simplify3.c					  \
+		   define-congruences.c
 
 EXTRA_DIST 	 = $(wildcard *.str) $(wildcard *.meta)

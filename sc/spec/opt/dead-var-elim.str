@@ -1,21 +1,21 @@
 
-/*************************************************************
- * NOTE
- * 
- * Implementation not complete: choices are not taken into account and
- * already bound variables used in a match are discarded.
- *
- **************************************************************/
-
 module dead-var-elim
 imports stratlib lib
 strategies
  
   dead-var-elim-io =
-    iowrap(
-      Specification([Signature(id),Strategies(map(dead-var-elim
-	; topdown(try(?Var(<!Var(<id>)>){_}))))])
-    )
+    iowrap(dead-var-elim)
+
+  dead-var-elim =
+    Specification(
+      [Signature(id),
+       Strategies(
+	 map(dead-var-elim)
+        )
+      ])
+
+  remove-annotations-from-vars = 
+    alltd(\ Var(x){_} -> Var(x) \ )
 
   dead-var-elim = rec dve(
     elim-scope(dve)
@@ -57,7 +57,7 @@ strategies
     ?x; rules(ElimVar : Var(x) -> Undefined)
 
   mark-build-term =
-    alltd({?Var(x); override rules(ElimVar : Var(x) -> Undefined)})
+    alltd(where({?Var(x); override rules(ElimVar : Var(x) -> Undefined)}))
 
   MarkBuild =
     Build(mark-build-term)

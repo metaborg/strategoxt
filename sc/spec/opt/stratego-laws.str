@@ -35,10 +35,10 @@ strategies
     downup(repeat(Simplify))
 
   simplify = 
-    downup(repeat(Optimize))
+    innermost(Optimize)
 
   simplify-widen = // note same as simplify
-    downup(repeat(Optimize + WidenScope))
+    simplify
 
   simplify-narrow =
     topdown(try(NarrowScope))
@@ -46,9 +46,8 @@ strategies
   simplify-clean =
     topdown(try(CleanupScope; try(FuseScope)))
 
-  simplify-lift =
-    downup2(repeat(Optimize + LiftPrimArgs + LiftCallArgs)
-	   ,repeat(Optimize))
+  lift-term-args =
+    topdown(try(LiftPrimArgs + LiftCallArgs))
 
 rules
 
