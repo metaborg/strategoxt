@@ -61,7 +61,7 @@ strategies // stack operations
 	    ; hashtable-getlist
 	    ; alltd(RepoFile(id); x)
 	  )
-	  ; debug
+//	  ; debug
 	)
     )
 
