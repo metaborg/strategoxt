@@ -1,3 +1,8 @@
+2005-03-13  Martin Bravenboer <martin@cs.uu.nl>
+
+	* spec/collection/list/index.str: added at-index, which applies a
+	strategy at a certain index of a list.
+	
 2005-03-11 Rene de Groot <rcgroot@cs.uu.nl>
         * spec/util/log.str, spec/util/config/verbose.str: Added commandline 
         alternative on verbose level setting. Level can also be set with a 

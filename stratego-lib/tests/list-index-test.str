@@ -1,68 +1,79 @@
-\literate[list-index-test]
-
-	\begin{abstract}
-	Unit tests for list-index
-	\end{abstract}
-
-\begin{code}
+/**
+ * Unit tests for list-index
+ */
 module list-index-test
-imports sunit list-index
+imports
+  sunit
+  list-index
+
 strategies
 
   main = 
     test-suite(!"list-index-test",
-      test1  ;
-      test2  ;
-      test3a ;
-      test3b ;
-      test3c ;
-      test3d ;
-      test4a ;
-      test4b ;
-      test5
+      test-set-index
+    ; test-index
+    ; test-insert
+    ; test4a
+    ; test4b
+    ; test5
     )
 
-  test1 =
-    apply-test(!"test1"
-	, set-index
-	, !(3, "a", ["a", "b", "c", "d", "e"])
-	, !         ["a", "b", "c", "a", "e"]
-	) 
+  test-set-index =
+    apply-test(!"test-set-index 1", set-index
+    , !(3, "a", ["a", "b", "c", "d", "e"])
+    , !         ["a", "b", "c", "a", "e"]
+    ) 
+  ; apply-test(!"test-set-index 2", set-index
+    , !(0, "f", ["a", "b", "c", "d", "e"])
+    , !         ["f", "b", "c", "d", "e"]
+    )
+  ; apply-test(!"test-set-index 3", set-index
+    , !(1, "f", ["a", "b", "c", "d", "e"])
+    , !         ["a", "f", "c", "d", "e"]
+    )
+  ; apply-test(!"test-set-index 4", set-index
+    , !(4, "f", ["a", "b", "c", "d", "e"])
+    , !         ["a", "b", "c", "d", "f"]
+    )
+  ; apply-and-fail(!"test-set-index 5", set-index
+    , !(15, "f", ["a", "b", "c", "d", "e"])
+    )
 
-  test2 =
-    apply-test(!"test2"
-	, insert
-	, !(3, "a", ["a", "b", "c", "d", "e"])
-	, !         ["a", "b", "c", "a", "d", "e"]
-	)
+  test-insert =
+    apply-test(!"test-insert", insert
+    , !(3, "a", ["a", "b", "c", "d", "e"])
+    , !         ["a", "b", "c", "a", "d", "e"]
+    )
 
-  test3a =
-    apply-test(!"test3a"
-	, index
-	, !(3, ["a", "b", "c", "d", "e"])
-	, !"c"
-	)
-
-  test3b =
-    apply-test(!"test3b"
-	, index
-	, !(1, ["a", "b", "c", "d", "e"])
-	, !"a"
-	)
-
-  test3c =
-    apply-test(!"test3c"
-	, index
-	, !(5, ["a", "b", "c", "d", "e"])
-	, !"e"
-	)
-
-  test3d =
-    apply-test(!"test3d"
-	, index
-	, !(1, ["a"])
-	, !"a"
-	)
+  test-index =
+    apply-test(!"test-index 1", index
+    , !(3, ["a", "b", "c", "d", "e"])
+    , !"c"
+    )
+  ; apply-test(!"test-index 2", index
+    , !(1, ["a", "b", "c", "d", "e"])
+    , !"a"
+    )
+  ; apply-test(!"test-index 2", index
+    , !(5, ["a", "b", "c", "d", "e"])
+    , !"e"
+    )
+  ; apply-test(!"test-index 3", index
+    , !(1, ["a"])
+    , !"a"
+    )
+  ; apply-and-fail(!"test-index 4", index
+    , !(2, ["a"])
+    )
+  ; apply-and-fail(!"test-index 5", index
+    , !(1, [])
+    )
+  ; apply-and-fail(!"test-index 6", index
+    , !(0, [])
+    )
+  ; apply-and-fail(!"test-index 7", index
+    , !(0, ["a"])
+    )
 
   test4a =
     apply-test(!"test4a"
