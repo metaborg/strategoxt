@@ -14,7 +14,7 @@ pkgdata_DATA 	= sc-manual.txt
 sc.o		: xtc-conf.h
 
 CLEANFILES 	= $(wildcard *.dep)
-BOOTCLEANFILES 	= sc.c sc.1
+BOOTCLEANFILES 	= sc.c
 
 EXTRA_DIST 	= $(wildcard *.str) sc-version.str.in \
 		  sc.config.src sc-manual.txt $(man_MANS)
