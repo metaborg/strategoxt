@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 #
-# $Id: collect.sh,v 1.1 2000/03/27 15:52:41 mdejonge Exp $
+# $Id: collect.sh,v 1.2 2000/03/27 15:57:25 mdejonge Exp $
 #
 #
 # This script will collect all required packages for the CT distribution.
@@ -71,14 +71,14 @@ do_collect () {
    esac
 }
 
-if [ $? -ne 2 ]; then
+if [ $# -ne 2 ]; then
    echo "usage: $0 configure.in pkg-list" >&2
    exit 1
 fi
 
 configure=$1
 pkg_file=$2
-pkgs="`grep -v ^# ${pkg_file} | cut -d, -f1`"
+pkgs="`grep -v '^#' ${pkg_file} | cut -d, -f1`"
 
 # collect and unpack software packages
 if [ ! -d ./pkgs ]; then
@@ -87,8 +87,8 @@ fi
 
 for pkg in ${pkgs}
 do
-   pkg_version=`grep ^${pkg}, ${pkg_file} | cut -d, -f2`
-   pkg_url=`grep ^${pkg}, ${pkg_file} | cut -d, -f3-`
+   pkg_version=`grep \^${pkg}, ${pkg_file} | cut -d, -f2`
+   pkg_url=`grep \^${pkg}, ${pkg_file} | cut -d, -f3-`
 
    if [ ! -f ./pkgs/${pkg}-${pkg_version}.tar.gz ]; then
       cd ./pkgs
