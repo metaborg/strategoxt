@@ -15,8 +15,17 @@ strategies
   get-annotations = 
     ?t; prim("SSLgetAnnotations", t)
 
+  get-annos = 
+    get-annotations
+
   set-annotations = 
-    ?(t, a); prim("ATsetAnnotations", t, a)
+    ?(t, a); prim("SSLsetAnnotations", t, a)
+
+  set-annos = 
+    set-annotations
+ 
+  set-anno = 
+    ?(t, a); !(t, [a]); set-annos
 
   rm-annotations = 
     ?t; prim("ATremoveAnnotations", t)
@@ -24,11 +33,24 @@ strategies
   has-annos = 
     ?_{_}
 
+  has-annotation = 
+    where(get-annotations; not([]))
+
+  if-annotation(s1, s2) =
+    has-annotation < s1 + s2
+
   strip-annos = 
     bottomup(rm-annotations)
 
   catch-annos = 
-    rec x(try(!Anno(<rm-annotations>, <get-annotations>); Anno(all(x), id)) <+ all(x))
+    rec x(has-annotation < !Anno(<rm-annotations; all(x)>, <get-annotations>) + all(x))
+
+  preserve-annotation(s) =
+    has-annotation < Preserve-Annotation(s) + s
+
+  Preserve-Annotation(s):
+    t{a*} -> r{a*}
+    where <s> t => r
 \end{code}
 
 % Copyright (C) 1998-2002 Eelco Visser <visser@acm.org>
