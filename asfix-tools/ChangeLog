@@ -1,3 +1,8 @@
+2004-02-13  Merijn de Jonge  <mdejonge@cs.uu.nl>
+	* src/implode/implode-asfix.str: changed iowrap into io-wrap and
+          removed option-defined stuff since it caused a name clash between
+          constructor name and strategy name (FlatList)
+
 2003-12-21  Eelco Visser  <visser@cs.uu.nl>
 
 	* src/implode/implode-asfix.str: Bugs in implosion using separate

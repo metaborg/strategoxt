@@ -37,18 +37,6 @@ imports lib asfix options verbalize-sdf
 
 signature
    constructors
-      ApplToSort   : Option
-      FlatLex      : Option
-      FlatList     : Option
-      RemoveLayout : Option
-      FlatInj      : Option
-      ReplaceAppl  : Option
-      RemoveLit    : Option
-      RemovePT     : Option
-      RemoveSeq    : Option
-      FlatAltOpt   : Option
-      Concrete     : Option
-
       ToTerm       : Term -> Term
       ToStrategy   : Term -> Term
       ToBuild      : Term -> Term
@@ -67,51 +55,51 @@ signature
 strategies
 
   implode-asfix = 
-    iowrap(implode, implode-options)
+    io-wrap(implode-options, implode)
 
   implode-options = 
     Option( "--lex",    
-	!FlatLex,      
+	where(<set-config>("--lex", <id>)),
 	!"--lex            Flatten lexical substrings to strings" )
 
   + Option( "--layout", 
-	!RemoveLayout, 
+	where(<set-config>("--layout", <id>)),
 	!"--layout         Remove layout nodes from the AsFix? parse tree" )
 
   + Option( "--lit",    
-	!RemoveLit,    
+	where(<set-config>("--lit", <id>)),
 	!"--lit            Remove literal nodes from the AsFix? parse tree")
 
   + Option( "--alt",    
-	!FlatAltOpt,      
+	where(<set-config>("--alt", <id>)),
 	!"--alt            Flat alternatives")
 
   + Option( "--appl",   
-	!ReplaceAppl,  
+	where(<set-config>("--appl", <id>)),
 	!"--appl           Replace 'appl' applications by constructor applications" )
 
   + Option( "--nt",     
-	!ApplToSort ,  
+	where(<set-config>("--nt", <id>)),
 	!"--nt             Replace 'appl' applications by non-terminal application" )
 
   + Option( "--inj",    
-	!FlatInj,      
+	where(<set-config>("--inj", <id>)),
 	!"--inj            Remove injections from the parse tree." )
 
   + Option( "--list",   
-	!FlatList,     
+	where(<set-config>("--list", <id>)),
 	!"--list           Flatten lists." )
 
   + Option( "--seq",    
-	!RemoveSeq,    
+	where(<set-config>("--seq", <id>)),
 	!"--seq            Replace sequences by tuples" )
 
   + Option( "--pt",     
-	!RemovePT,     
+	where(<set-config>("--pt", <id>)),
 	!"--pt             Remove the outer 'pt' function symbol from the parse tree" )
 
   + Option( "--concrete",
-        !Concrete,
+	where(<set-config>("--concrete", <id>)),
         !"--concrete       Skip concrete syntax parts for Stratego parsing")
 
   short-description(p) = 
@@ -124,19 +112,19 @@ strategies
 
   implode =
        ?term;
-       try((option-defined(FlatLex),      flat-lex));
-       try((option-defined(RemoveLayout), remove-layout));
-       try((option-defined(ApplToSort),   appl-to-sort));
-       try((option-defined(FlatList),     flat-list));
-       try((option-defined(RemoveLit),    remove-lit));
-       try((option-defined(ReplaceAppl),  replace-appl));
-       try((option-defined(FlatInj),      flat-injections));
-       try((option-defined(FlatAltOpt),   flat-alt));
-       try((option-defined(RemoveSeq),    remove-seq));
-       try((option-defined(RemovePT),     remove-pt));
-       try(?term; (option-defined(Concrete), id)
-                   < (id,implodeAsfix(id))
-                   + (id,implodeAsfix(fail)))
+       try(where(<get-config>"--lex");    flat-lex);
+       try(where(<get-config>"--layout"); remove-layout);
+       try(where(<get-config>"--nt");     appl-to-sort);
+       try(where(<get-config>"--list");   flat-list);
+       try(where(<get-config>"--lit");    remove-lit);
+       try(where(<get-config>"--appl");   replace-appl);
+       try(where(<get-config>"--inj");    flat-injections);
+       try(where(<get-config>"--alt");    flat-alt);
+       try(where(<get-config>"--seq");    remove-seq);
+       try(where(<get-config>"--pt");     remove-pt);
+       try(?term; (where(<get-config>("--concrete"))
+                   < implodeAsfix(id)
+                   + implodeAsfix(fail)))
 
   // 0) Replace applications by application of sort symbol
 
@@ -163,7 +151,7 @@ strategies
   flat-injections = bottomup(try(Inj))
 
   // 7) Flatten list constructs 
-  flat-list = topdown( try(FlatList) )
+  flat-list =  topdown( try(FlatList) )
 
   // 8) Replace sequence by tuples
   remove-seq = topdown(try(Tuple))
