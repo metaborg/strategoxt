@@ -4,8 +4,14 @@ include $(wildcard *.dep)
 SCFLAGS		= -I $(srcdir)/../sig		      \
 	  	  -I $(srcdir)/../match		      \
 	  	  -I $(srcdir)/../lib		      \
-	  	  --main $*			      \
-		  $(XTCFLAGS)
+		  -I $(SSL)/share/ssl		\
+	\
+	-CI "-I$(SRTS)/include" -CI "-I$(ATERM)/include" \
+-CL "-L$(SRTS)/lib" -CL "-L$(ATERM)/lib" \
+-CL "-lstratego.opt" -CL "-lstratego-lib.opt" -CL "-lATerm-gcc" -CL "-lm"\
+	\
+		  $(XTCFLAGS)			\
+	  	  --main $*			      
 
 bin_PROGRAMS 	= sc
 pkgdata_DATA 	= sc-manual.txt
@@ -24,6 +30,8 @@ sc.1 :
 	help2man -n "compile Stratego programs" \
 		-m StrategoXT -S "sc $(VERSION)" --no-info ./sc > $@
 
+bla :
+	/usr/local/build/XT/bin/sc -i sc -o sc $(SCFLAGS)  sc 
 
 # Generate scripts
 %: %.src Makefile

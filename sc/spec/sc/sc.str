@@ -1,6 +1,6 @@
 /* This module glues together the components that make up the Stratego
-compiler. It is usually run from a script that provides the default
-information about paths. */
+compiler. It is based on XTC, the transformation tool composition
+model. */
 
 module sc
 imports lib xtc-lib sc-options sugar
@@ -17,7 +17,7 @@ strategies
        ; <exit> 1
 
   compile =
-    xtc-io(
+    xtc-input(
       front-end
       ; optimize
       ; back-end
@@ -56,6 +56,7 @@ strategies
       ; s2c
       ; ac2abox
       ; abox2text
+      ; rename-to(get-outfile(!".c"))
     )
 
   c-compile =
@@ -183,8 +184,6 @@ strategies
 
   abox2text = 
     xtc-transform(!"abox2text")
-    ; rename-to(get-outfile(!".c"))
-    //; if-verbose3(debug(!"pretty-printed to: "))
 
   // Compile generated C code
 
