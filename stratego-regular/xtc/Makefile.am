@@ -24,6 +24,6 @@ STRINCLUDES    = -I $(top_srcdir)/lib \
 
 pkgdata_DATA   = regular-xtc-tools.rtree tool-doc.rtree Makefile.regular
 
-EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) Makefile.regular
+EXTRA_DIST     = $(pkgdata_DATA) $(wildcard *.str) $(wildcard *.meta)
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c) $(wildcard *.rtree) 
