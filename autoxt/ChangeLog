@@ -1,0 +1,4 @@
+2002-12-06  Eelco Visser  <visser@cs.uu.nl>
+
+	* Autoconf/automake support for packages developed with StrategoXT.
+
