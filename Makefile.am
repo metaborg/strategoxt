@@ -1,6 +1,6 @@
 SUBDIRS      = . $(PKGS)
 EXTRA_DIST   = $(EXTRA_FILES)
-EXTRA_FILES  = README README.in svn-co-revision bootstrap acinclude.m4 strategoxt.spec.in strategoxt.spec
+EXTRA_FILES  = README README.in svn-revision bootstrap acinclude.m4 strategoxt.spec.in strategoxt.spec
 
 all-local: pre-pkgs/build/srts.dummy pre-pkgs/install/xtc.dummy
 install-exec-local: pre-pkgs/build/srts.dummy pre-pkgs/install/xtc.dummy
