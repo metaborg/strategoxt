@@ -1,3 +1,7 @@
+2004-03-21   Merijn de Jonge  <mdejonge@cs.uu.nl>
+   * Bug fix in sdf-2-pp-lib.str: pretty-print table generator now generates
+     syntactically correct entries for all SDF2 constructs
+
 2004-03-05  Martin Bravenboer <martin@cs.uu.nl>
 
 	* syn/Box/Makefile.am:
