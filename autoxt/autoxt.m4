@@ -205,7 +205,7 @@ AC_DEFINE(XTC_REPOSITORY(),
           [Location of the XTC repository.])
 ])# USE_XT_PACKAGES
 
-AC_DEFUN([SET_SVN_REVISION],
+AC_DEFUN([DETECT_SVN_REVISION],
 [
 AC_MSG_CHECKING([for the SVN revision of the source tree])
 
