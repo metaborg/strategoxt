@@ -15,7 +15,7 @@
 #    along with this program; if not, write to the Free Software
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 #
-# $Id: gpp.Makefile.src,v 1.8 2001/11/02 21:06:46 mdejonge Exp $
+# $Id: gpp.Makefile.src,v 1.9 2001/11/02 22:11:50 mdejonge Exp $
 #
 # GNU make specific generic make rules for the generation of pretty-printed
 # documents.
@@ -119,5 +119,5 @@ PKGDATA       = __PKGDATA__
 # rule to generate imploded pretty-print tables
 %.pp.af : %.pp
 	@echo "Building $@"
-	$(SGLR) -p $(PREFIX)/share/gpp/pp-tables.tbl -i $< \
+	$(SGLR) -p $(PKGDATA)/share/gpp/pp-tables.tbl -i $< \
 	   | $(IMPLODE_ASFIX) -S -o $@ 
