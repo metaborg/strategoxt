@@ -1,0 +1,9 @@
+rm -f config.cache
+rm -f acconfig.h
+aclocal-1.5
+autoconf-2.53
+#acconfig
+autoheader-2.53
+automake-1.5 -a
+
+
