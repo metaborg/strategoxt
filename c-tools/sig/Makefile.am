@@ -22,5 +22,5 @@ CLEANFILES	= $(wildcard *.atree)
 
 #$(LANGUAGE).str : $(LANGUAGE).def
 $(LANGUAGE).def : 
-	cp $(top_srcdir)/syn/$(LANGUAGE).def $@
+	ln -s $(top_srcdir)/syn/$(LANGUAGE).def $@
 
