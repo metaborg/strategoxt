@@ -13,8 +13,10 @@
       V is=2[ H[KW["context-free"] KW["restrictions"]] _1],
       
    Definition -- 
-      V vs=1[ KW["definition"] V vs=1[_1]],
-      
+      V vs=1 [KW["definition"] _1],
+
+   Definition.1:iter-star -- _1,
+
    attrs -- 
       Hhs=0[ "{" H[_1] "}"],
       
