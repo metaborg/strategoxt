@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: Asfix2abox.r,v 1.3 2001/09/01 20:44:11 mdejonge Exp $
+% $Id: Asfix2abox.r,v 1.4 2001/09/05 11:04:42 mdejonge Exp $
 
 % Author: Merijn de Jonge (mdjonge@cwi.nl)
 % Changes: Eelco Visser <visser@acm.org> 19/5/20001
@@ -182,8 +182,8 @@ symbol2abox:
    where
       <make-path>(path, number ) => new-path;
       <get-pp-entry>(seq(syms), new-path) =>  template;
-      <seq2abox>( syms,args, new-path, 1) => abox';
-      <filter-literals;instantiate>(template, abox') => abox
+      <seq2abox>( <filter(not(lit(id)))>syms,<filter(not(lit(id)))>args, new-path, 1) => abox';
+      <instantiate>(template, abox') => abox
 
 rules
 make-path: (path, n ) -> ys
@@ -194,6 +194,10 @@ strategies
 seq2abox =
    rec x ({s1,ss,a1,as,number, abox1, aboxes1, path:
       ?([], [], _, _);![]
+   <+
+      ?([lit(_)|ss], [lit(_)|as], path, number );
+      !(ss, as, path, number);
+      x      
    <+
       ?([s1|ss], [a1|as], path, number );
        !(s1,a1, path, number);

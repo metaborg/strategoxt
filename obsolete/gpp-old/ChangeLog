@@ -1,3 +1,6 @@
+2001-09-05 Merijn de Jonge <mdejonge@cwi.nl> 
+   * Asfix2abox: bug fix: formatting sequences didn;t work correctly.
+
 2001-09-03 Merijn de Jonge <mdejonge@cwi.nl> 
    * gpp/gpp.Makefile: added functionality for generating latex and html
      files. Functionality obtained from gpp.makefile from previous gpp
