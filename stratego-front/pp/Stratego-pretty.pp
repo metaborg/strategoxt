@@ -76,7 +76,7 @@
    AnnoCong -- _1 _2,
    StrategyCurly -- KW["{"] _1 KW["}"],
 
-   Con  -- H hs=0 [_1 KW["["] _2 KW["]"] ],
+   Con  -- H hs=0 [_1 KW["["] _2 KW["]"] KW["("] _3 KW[")"]],
    Con1 -- H hs=0 [   KW["["] _1 KW["]"] ],
    Con2 -- H hs=0 [   KW["["] _1 KW["]"] KW["("] _2 KW[")"]],
    Con3 -- KW["["] _1 KW["where"] _2 KW["]"],
