@@ -21,7 +21,7 @@
 
 \begin{code}
 module io
-imports list string tuple integers time exec dir
+imports list string tuple integers time exec dir posix-file
 \end{code}
 
 	A \verb|file| can be a string or one of the terms
@@ -55,9 +55,6 @@ strategies
 
   append-file = 
     ?name; prim("SSL_open_file", name, "a")
-
-  fflush =
-    ?name; prim("SSL_fflush", name)
 
 \end{code}
 

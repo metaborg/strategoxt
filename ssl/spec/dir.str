@@ -6,9 +6,9 @@
 
 	\end{abstract}
 
-
 \begin{code}
 module dir
+
 strategies
 
   /*   The  readdir()  function  returns  a  pointer  to a dirent
@@ -73,7 +73,7 @@ strategies
   getenv = 
     ?name; prim("SSL_getenv", name)
 
-  /*   The  setenv() function adds the variable name to the envi­
+  /*   The  setenv() function adds the variable name to the enviï¿½
        ronment with the value value, if  name  does  not  already
        exist.   If  name  does exist in the environment, then its
        value is changed to value if  overwrite  is  non-zero;  if

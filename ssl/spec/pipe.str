@@ -1,21 +1,5 @@
 module pipe
-imports exec io
-strategies
-
-  // examine wait status
-
-  exited =
-    ?WaitStatus(s,_,_)
-    ; where(<not(eq)> (s, -1))
-    ; debug(!"the process exited: ") 
-      
-  signaled =
-    ?WaitStatus(_,s,_); where(<not(eq)> (s, -1))
-    ; debug(!"the process was signaled") 
-       
-  stopped = 
-    ?WaitStatus(_,_,s); where(<not(eq)> (s, -1))
-    ; debug(!"the process stopped") 
+imports exec io posix-process
 
 strategies
 
@@ -178,4 +162,3 @@ strategies
     ?fd;
     
 */
-

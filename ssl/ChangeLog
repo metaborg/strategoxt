@@ -1,3 +1,22 @@
+2003-03-20  Martin Bravenboer <martin@mbravenboer.org>
+
+  * spec/posix-signal.str: definition of 
+    POSIX signals.
+  
+  * spec/posix-process.str: collected POSIX process 
+    operations, mostly from exec.str. Improved
+    documentation and grouping of strategies.
+    
+  * spec/posix-file.str: collected POSIX file 
+    operations from exec.str and io.str
+    
+  * spec/posix-process.str: fork-and-wait: show
+    warning if child process terminated because
+    of a signal (useful for segmentation faults)
+
+  * spec/pipe.str: moved WaitStatus operations
+    to posix-process.str
+    
 2003-03-19  Martin Bravenboer <martin@mbravenboer.org>
 
   * spec/list-set.str: moved the collect strategies to
