@@ -27,7 +27,6 @@ strategies
   missing-constructor-warning =
     xtc-temp-files(
       write-to
-    ; xtc-transform(!"sdf-ensugar")
     ; xtc-pp-sdf2
     ; ?FILE(<read-text-file; trim-whitespace>)
     )
