@@ -55,13 +55,6 @@ AC_ARG_WITH(pgen,
 )
 AC_SUBST(PGEN)
 
-AC_ARG_WITH(latex, 
-  AC_HELP_STRING([--with-latex=DIR], [use LaTeX distribution at DIR @<:@search@:>@]),
-  LATEX="$withval/bin/latex", 
-  LATEX=""
-)
-AC_SUBST(LATEX)
-
 AC_ARG_WITH(stratego-xt, 
   AC_HELP_STRING([--with-stratego-xt=DIR], [use StrategoXT at DIR (bootstrap only) @<:@PREFIX@:>@]),
   STRATEGOXT="$withval", 
@@ -267,7 +260,6 @@ AB_CONFIG_PKG(stratego-tools,
 )
 
 AB_CONFIG_PKG(boxenv,
-   --with-latex=${LATEX}
    --with-xtc=${INSTALL_XTC}
    --with-repository=${REPOSITORY}
 )
