@@ -1,5 +1,9 @@
 2003-08-28  Eelco Visser  <visser@cs.uu.nl>
 
+	* spec/strc/strc-options.str,spec/strc/strc.str,
+	spec/front/use-def.str: Option to control warning about
+	maybe-unbound variables (off by default).
+
 	* spec/front/lift-dynamic-rules.str: Take formal term arguments
 	into account when lifting dynamic rules.
 

@@ -11,6 +11,19 @@ strategies
         !"-W | --warning     Set warning level (-W all to switch all warnings on)"
     )
 
+  + Option("--no-maybe-unbound-warnings",
+        where(<set-config> ("--maybe-unbound-warnings", 0)),
+        !"--no-maybe-unbound-warnings"
+    )
+
+  + Option("--maybe-unbound-warnings",
+        where(<set-config> ("--maybe-unbound-warnings", 1)),
+        !"--maybe-unbound-warnings"
+    )
+
+  if-maybe-unbound-warnings(s) =
+    try(where(<get-config> "--maybe-unbound-warnings" => 1); s)
+
   /**
    * Test whether all variables used in builds are matched before.
    *
@@ -132,4 +145,6 @@ strategies
 
   MaybeUnbound = 
     (?Var(ListVar(x)) <+ ?Var(x))
-    ; <Warning; error> ["variable '", x, "' used, but may not be bound"]
+    ; if-maybe-unbound-warnings(
+	<Warning; error> ["variable '", x, "' used, but may not be bound"]
+      )

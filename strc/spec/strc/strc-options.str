@@ -142,6 +142,22 @@ strategies
                 <extend-config>("--warning", [<id>])); !(),         
 	!"-W | --warning     Set warning level (-W all to switch all warnings on)")
 
+  + Option("--maybe-unbound-warnings",
+        where(<set-config> ("--maybe-unbound-warnings", 1)),
+        !"--maybe-unbound-warnings"
+    )
+
+  + Option("--no-maybe-unbound-warnings",
+        where(<set-config> ("--no-maybe-unbound-warnings", 0)),
+        !"--no-maybe-unbound-warnings"
+    )
+
+  pass-maybe-unbound-warnings =
+    <get-config> "--maybe-unbound-warnings" => 1
+    ; !["--maybe-unbound-warnings"]
+   <+ !["--no-maybe-unbound-warnings"]
+
+
   short-description(p) = 
       !["STRC compiles Stratego programs to C or executable code.\n",
 	"\n",

@@ -33,8 +33,12 @@ contain dynamic rules. */
 	   |}
 
   def-tvars =
-    <union> (<?SDefT(_,_,<map(?DefaultVarDec(<id>) + ?VarDec(<id>,_))>,_)>
-	    ,<tvars>)
+    <union> (<tvars>,
+	     <?SDefT(_,_,<map(?DefaultVarDec(<id>) + ?VarDec(<id>,_))>,_)
+	      <+ ?RDefT(_,_,<map(?DefaultVarDec(<id>) + ?VarDec(<id>,_))>,_)
+	      <+ ![]
+             >
+	    )
 
 /* Traverse to find dynamic rule definition.  Record all variables
 that are declared in context using the dynamic rule ContextVar */

@@ -256,7 +256,7 @@ strategies // COMPILER COMPONENTS
 				<concat> [<dep-name>, <get-config> "-I", <pass-keep>])
   pre-desugar 		= comp(|"pre-desugar")
   normalize-spec 	= comp(|"normalize-spec")
-  use-def 		= comp(|"use-def", <pass-warnings>)
+  use-def 		= comp(|"use-def", <pass-maybe-unbound-warnings>)
   check-constructors 	= comp(|"check-constructors")
   spec-to-sdefs 	= comp(|"spec-to-sdefs")
   rename-vars 		= comp(|"rename-vars")
