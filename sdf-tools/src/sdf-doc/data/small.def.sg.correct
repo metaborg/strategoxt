@@ -1,0 +1,1 @@
+graph(nodes([id("C"),id("A"),id("D"),id("B")]),edges([[id("A"),id("A")],[id("B"),id("A")],[id("C"),id("A")],[id("D"),id("B")]]))

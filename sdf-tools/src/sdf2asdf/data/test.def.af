@@ -1,0 +1,1 @@
+Definition([Module("Test",[],[Exports(context-free-syntax([prod([sort("A"),iter-star(sort("B")),iter-sep(sort("C"),lit("\",\"")),opt(sort("D"))],sort("E"),attrs([cons("\"aap\"")])),prod([opt(seq(sort("A"),[lit("\":\""),sort("B")])),alt(sort("C"),sort("D"))],sort("E"),attrs([cons("\"noot\"")]))]))])])

@@ -1,0 +1,1 @@
+syntax-test.def : ./syntax-test3.sdf ./syntax-test2.sdf ./syntax-test.sdf

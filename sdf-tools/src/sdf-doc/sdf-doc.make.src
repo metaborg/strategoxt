@@ -1,0 +1,88 @@
+# GT -- Grammar Tools
+# Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
+#                    Eelco Visser <visser@acm.org>
+#                    Joost Visser <jvisser@cwi.nl>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+# $Id: sdf-doc.make.src,v 1.1 2001/05/31 14:20:51 mdejonge Exp $
+
+###########################################################
+# Parameters:                                             #
+#    GRAMMAR    the grammar to be documented              #
+# For instance, this makefile can be used as follows:     #
+#    > gmake -f sdf-doc.make GRAMMAR=mygrammar.def        #
+# This will produce a sort-graph in file mygrammar.sg.ps. #
+###########################################################
+
+BINDIR=__BINDIR__
+DATADIR=__DATADIR__
+LIBEXEC=__LIBEXEC__
+
+GPP=__GPP__
+GRAPHVIZ=__GRAPHVIZ__
+MAKE=__MAKE__
+VERSION=__VERSION__
+
+SDFCONSPARSETBL = $(DATADIR)/sdf.cons.tbl
+DOTPPTABLE	= $(DATADIR)/dot.pp
+
+all: sortgraph $(GRAMMAR).wf
+
+sortgraph: $(GRAMMAR).sg.dot
+	PATH=$(GRAPHVIZ)/bin:$${PATH} dot -Tps < $<
+
+%.def.asfix: %.def
+	sglr -p $(SDFCONSPARSETBL) -i $< -o $@
+
+%.sdf.asfix: %.sdf
+	sglr -p $(SDFCONSPARSETBL) -i $< -o $@
+
+%.af: %.asfix
+	implode-asfix < $< > $@
+
+%.def.sg.gxml.af: %.def.af
+	sdf2sg -i $< -o $@
+
+%.sdf.sg.gxml.af: %.sdf.af
+	sdf2sg -i $< -o $@
+
+%.dot.af: %.gxml.af
+	GraphXML2dot -i $< -o $@
+
+%.dot: %.dot.af
+	PATH=$(GPP)/bin:$${PATH}; export PATH ;\
+	ast2abox -i $< -p $(DOTPPTABLE) | box2text -a > $@
+
+%.ps: %.dot
+	@echo "Writing sort graph to file $@"
+	PATH=$(GRAPHVIZ)/bin:$${PATH} dot -Tps < $< > $@
+
+%.def.Gxml: %.def.af
+	sdf2GraphXML -i $< -o $@
+
+%.sdf.Gxml: %.sdf.af
+	sdf2GraphXML -i $< -o $@
+
+%.sdf.wf: %.sdf.af
+	sdf-wf -i $< -o /dev/null
+
+%.def.wf: %.def.af
+	sdf-wf -i $< -o /dev/null
+
+
+clean:
+	$(RM) $(GRAMMAR).sg.ps

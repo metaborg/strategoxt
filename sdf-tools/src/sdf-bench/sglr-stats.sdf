@@ -1,0 +1,110 @@
+%%% GT -- Grammar Tools
+%%% Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
+%%%                    Eelco Visser <visser@acm.org>
+%%%                    Joost Visser <jvisser@cwi.nl>
+%%%
+%%% This program is free software; you can redistribute it and/or modify
+%%% it under the terms of the GNU General Public License as published by
+%%% the Free Software Foundation; either version 2, or (at your option)
+%%% any later version.
+%%%
+%%% This program is distributed in the hope that it will be useful,
+%%% but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%%% GNU General Public License for more details.
+%%%
+%%% You should have received a copy of the GNU General Public License
+%%% along with this program; if not, write to the Free Software
+%%% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+%%% 02111-1307, USA.
+%%%
+%%% $Id: sglr-stats.sdf,v 1.1 2001/05/31 14:20:52 mdejonge Exp $
+
+definition
+
+module Main
+exports
+  sorts File Int Double Grammar Input Field Record
+  lexical syntax
+    [\ \t\n]                          -> LAYOUT
+    [\"] [a-zA-Z0-9\.\/\-\_\+]+ [\"]  -> File
+    [0-9]+                            -> Int
+    "-"? [0-9]+ ([\.] [0-9]+)?        -> Double
+  context-free restrictions
+    LAYOUT? -/- [\ \t\n]
+    Int     -/- [0-9]
+    Double  -/- [0-9]
+  context-free syntax
+
+    Field* 					-> Record
+
+    "Language:"              File             	-> Field {cons("Language")}
+    "No. of states:"         Int              	-> Field {cons("States")}
+    "No. of productions:"    Int              	-> Field {cons("Productions")}
+    "No. of action entries:" Int           	-> Field {cons("Actions")}
+    "No. of goto entries:"   Int              	-> Field {cons("GotoEntries")}
+    "No. of gotos:"   	     Int              	-> Field {cons("Gotos")}
+    "No. of actions:"        Int              	-> Field {cons("Actions")}
+    ("Includes" | "Excludes") "rejects"         -> Field {cons("rejects")}
+    ("Includes" | "Excludes") "priorities"      -> Field {cons("Priorities")}
+    ("Includes" | "Excludes") "prefer actions"  -> Field {cons("Prefer")}
+    ("Includes" | "Excludes") "avoid actions"   -> Field {cons("Avoid")}
+
+    "Obtaining parse table for" 
+         File "took" Double "s"            -> Field {cons("ParseTable")}
+
+
+    "Read" Int "input tokens from" 
+     File "in" Double "s"    		   -> Field {cons("TokenInput")}
+
+    "Number of lines:"          Int        -> Field {cons("Lines")}
+
+    "Maximum of" Int "parse branches" 
+    "reached at token " ~[\"]+ ","  
+    "line" Int 
+    ", column" Int "(token #" Int ")"      -> Field {cons("Branches")}
+
+    "Parse time:"               Double "s" -> Field {cons("ParseTime")}
+    "Characters/second:"        Double     -> Field {cons("CharsPerSec")}
+
+    "Number of rejects:"	Int	   -> Field {cons("Rejects")}
+
+    "Number of reductions:"     Int        -> Field {cons("Reductions")}
+    "Number of reductions/sec:" Double     -> Field {cons("ReductionsPerSec")}
+    "Number of reductions/token:" Double      -> Field {cons("ReductionsPerToken")}
+    "Number of ambiguities:"    Int        -> Field {cons("Ambiguities")}
+    "Number of calls to Amb:"   Int        -> Field {cons("AmbCalls")}
+    "Filtering took"  Double "s" -> Field {cons("Filtering")}
+    "Aprod expansion took"      Double "s" -> Field {cons("AprodExpansion")}
+    "Cycle detection took"      Double "s" -> Field {cons("CycleDetection")}
+
+    "ATerm memory allocated for parse table:" Int 
+					   -> Field {cons("TableMemory")}
+
+    "MultiSet Comparisons: total" Int ", successful " Int
+					   -> Field {cons("MultiSetComparisons")}
+
+    "Number of Injection Counts: total " Int ", successful" Int
+					   -> Field {cons("InjectionCounts")}
+
+    "Memory allocated for ATerms:" Int     -> Field {cons("TreeMemory")}
+
+    "Minor page faults:" Int               -> Field {cons("Minor")}
+    "Major page faults:" Int               -> Field {cons("Major")}
+
+    "Characters/minor fault:" Int          -> Field {cons("CharsPerMinFlt")}
+
+    "[mem] initial ATerm memory:" Int    -> Field {cons("InitialMemory")}
+    "[mem] extra ATerm memory allocated for empty table:" Int    
+					 -> Field {cons("AddditionalMemory")}
+
+    "[mem] extra ATerm memory allocated while parsing:" Int
+					 -> Field {cons("ParseMemory")}
+
+    "[mem] extra ATerm memory allocated for parse tree:" Int
+					 -> Field {cons("ParseTreeMemory")}
+
+    "[mem] extra ATerm memory allocated while filling table:" Int
+                                         -> Field {cons("TableMemory")}
+
+

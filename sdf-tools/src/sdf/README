@@ -1,0 +1,10 @@
+# $Id: README,v 1.1 2001/05/31 14:20:51 mdejonge Exp $
+
+This directory contains copies of several files from the Grammar Base which
+are required by GT at compile time. These files are thus here to drop any
+compile time dependencies on the Grammar Base.
+
+Please do _NOT_ edit the files in this directory, but edit the corresponding
+files in the Grammar Base instead and make copies of them here.
+
+
