@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/06/06 09:48:35 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2001/09/04 06:11:30 mdejonge Exp $
 
 # Always include general make rules
 include $(srcdir)/../templates/make_rules
@@ -28,6 +28,8 @@ include $(STRATEGO_PRG:%=%.dep)
 
 # define any subdir here
 SUBDIRS      = data
+
+EXTRA_DIST   = XML.r
 
 # Which Stratego programs to build
 STRATEGO_PRG = dtd2sdf xml-implode-asfix

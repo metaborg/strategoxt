@@ -1,3 +1,6 @@
+2001-09-04 Merijn de Jonge <mdejonge@cwi.nl>
+   * dtd2sdf: Added XML.r module containing XML constructors.
+
 2001-09-02 Merijn de Jonge <mdejonge@cwi.nl>
    * added missing constructors
 
