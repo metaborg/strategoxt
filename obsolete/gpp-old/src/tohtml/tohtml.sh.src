@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: tohtml.sh.src,v 1.6 2001/08/28 17:27:27 mdejonge Exp $
+# $Id: tohtml.sh.src,v 1.7 2001/09/18 12:46:31 mdejonge Exp $
 
 #
 #
@@ -197,7 +197,7 @@ PPTABLES=${PPTABLES}
 .SUFFIXES: .asfix .asfix.box .html .$MOD_EXTENSION
 
 ${OUTPUT}/%.asfix : %.$MOD_EXTENSION
-	sglr -p ${PARSETABLE} -i \$< -o \$@
+	sglr -2 -p ${PARSETABLE} -i \$< -o \$@
 
 ${OUTPUT}/%.asfix.box : ${OUTPUT}/%.asfix
 	${ASFIX2ABOX} -i \$< \$(PPTABLES:%=-p %) -o \$@

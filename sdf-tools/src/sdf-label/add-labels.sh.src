@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: add-labels.sh.src,v 1.1 2001/05/31 14:20:53 mdejonge Exp $
+# $Id: add-labels.sh.src,v 1.2 2001/09/18 12:46:37 mdejonge Exp $
 
 BINDIR=__BINDIR__
 DATADIR=__DATADIR__
@@ -31,7 +31,7 @@ GRAPHVIZ=__GRAPHVIZ__
 MAKE=__MAKE__
 VERSION=__VERSION__
 
-sglr -p ${DATADIR}/sdf.cons.tbl -i $1 | \
+sglr -2 -p ${DATADIR}/sdf.cons.tbl -i $1 | \
 implode-asfix -S | \
 ${BINDIR}/sdf-label -S | \
 ${BINDIR}/sdf2text -a

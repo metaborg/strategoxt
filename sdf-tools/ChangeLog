@@ -1,3 +1,6 @@
+2001-09-18 Merijn de Jonge <mdejonge@cwi.nl> 
+   * Added -2 switch to sglr calls to forse asfix2 output
+
 2001-09-11 Merijn de Jonge <mdejonge@cwi.nl>
    * sdf-imports/get-modules.r: re-added type annotations. 
    * pack-sdf/data/src/pack-sdf/data/syntax-test.def.dep.correct: updated

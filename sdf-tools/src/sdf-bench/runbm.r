@@ -19,7 +19,7 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 % 02111-1307, USA.
 
-% $Id: runbm.r,v 1.3 2001/09/01 21:06:55 mdejonge Exp $
+% $Id: runbm.r,v 1.4 2001/09/18 12:46:36 mdejonge Exp $
 
  	usage
 
@@ -92,11 +92,11 @@ strategies
     )
 
   parse(tbl) = \('in, out, args) ->
-    <call>("sglr", <conc>(args, ["-p", <tbl>(), "-i", 'in, "-o", out]))
+    <call>("sglr", <conc>(args, ["-2", "-p", <tbl>(), "-i", 'in, "-o", out]))
   \
 
   parse-noisy(tbl) = \('in, out, args) ->
-    <call-noisy>("sglr", <conc>(args, ["-p", <tbl>(), "-i", 'in, "-o", out]))
+    <call-noisy>("sglr", <conc>(args, ["-2", "-p", <tbl>(), "-i", 'in, "-o", out]))
   \
 
   get-statistics(stattbl) =

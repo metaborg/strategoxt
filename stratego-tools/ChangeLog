@@ -1,4 +1,5 @@
 2001-09-18 Merijn de Jonge <mdejonge@cwi.nl> 
+   * Added -2 switch to sglr calls to forse asfix2 output
    * stratego-imports/get-modules.r: provided type annotation for first
      argument of get-modules.
 

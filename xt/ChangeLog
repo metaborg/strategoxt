@@ -1,3 +1,6 @@
+2001-09-18 Merijn de Jonge <mdejonge@cwi.nl> 
+   * Added -2 switch to sglr calls to forse asfix2 output
+
 2001-08-30 Merijn de Jonge <mdejonge@cwi.nl>
         * src/sdf-doc/data/incomplete.sdf.sg.dot.af.correct: updated since
           output of GraphXML2dot has changed a bit.

@@ -3,7 +3,7 @@ To regenerate, do the following:
 
 1. Parse and implode the Stratego grammar:
 
-   > sglr -p ~/projects/gb/grammars/sdf.2.1/sdf.cons.tbl \
+   > sglr -2 -p ~/projects/gb/grammars/sdf.2.1/sdf.cons.tbl \
           -i ~/projects/gb/grammars/stratego.0/Stratego.def \
           | implode-asfix > Stratego.sdf.af
 

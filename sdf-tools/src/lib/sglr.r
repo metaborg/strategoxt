@@ -5,7 +5,7 @@ rules
 
   sglr : (tbl, 'in, out) -> out
 	 where
-           <call> (<concat-strings>[SGLR, "/bin/sglr"], ["-p", tbl, "-i", 'in, "-o", out])
+           <call> (<concat-strings>[SGLR, "/bin/sglr"], ["-2", "-p", tbl, "-i", 'in, "-o", out])
 
 
   sglr : (tbl, 'in) -> tree

@@ -1,3 +1,6 @@
+2001-09-18 Merijn de Jonge <mdejonge@cwi.nl> 
+   * Added -2 switch to sglr calls to forse asfix2 output
+
 2001-09-02 Merijn de Jonge <mdejonge@cwi.nl>
    * added more missing constructors
 
