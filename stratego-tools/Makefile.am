@@ -24,7 +24,7 @@ BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 include package.conf
 
 EXTRA_DIST = ADDING-TOOLS VERSION configure.in.src genconf.sh \
-             package.conf reconf $(PACKAGE)-$(VERSION).pkg program-check.m4 Makefile.xt
+             package.conf reconf $(PACKAGE)-$(VERSION).pkg Makefile.xt
 
 # Generation of a package defintion file from the package.conf file. This
 # file in combination with autobundle enables integration of the package
