@@ -1,0 +1,72 @@
+/**
+ * Test module for string-misc
+ */
+module string-misc-test
+imports sunit string-misc
+
+strategies
+
+  main =
+    test-suite(!"String Misc test suite",
+      test-all-lines-1
+    ; test-all-lines-2
+    ; test-indent-text-1
+    ; test-trim-trailing-1
+    ; test-get-all-lines-1
+
+    ; test-split-fetch-leave-1
+
+    ; test-shuffle-1
+    ; test-shuffle-word-mids-1
+    ; test-shuffle-word-mids-2
+    )
+    
+  test-all-lines-1 =
+     apply-test(!"test-all-lines-1"
+        , all-lines(<conc-strings> (<id>, "EOL"))
+        , !"the first line\nSecond line, third will be empty\n\nThis is the fourth, a final empty should not follow\n"
+        , !"the first lineEOL\nSecond line, third will be emptyEOL\nEOL\nThis is the fourth, a final empty should not followEOL\n")
+
+  test-all-lines-2 =
+     apply-test(!"test-all-lines-2"
+        , all-lines(<conc-strings> (<id>, "EOL"))
+        , !"\nAfter first empty line: Second line, third will be empty\n\nThis is the fourth, a final empty should not follow"
+        , !"EOL\nAfter first empty line: Second line, third will be emptyEOL\nEOL\nThis is the fourth, a final empty should not followEOL")
+
+  test-indent-text-1 =
+     apply-test(!"test-indent-text-1"
+        , indent-text(|4)
+        , !"the first line\nSecond line, third will be empty\n\nThis is the fourth, a final empty should not follow\n"
+        , !"    the first line\n    Second line, third will be empty\n    \n    This is the fourth, a final empty should not follow\n")
+
+  test-trim-trailing-1 =
+     apply-test(!"test-trim-trailing-1"
+        , trim-trailing-whitespace
+        , !"the first line    \nSecond line, third will be empty\n \nThis is the fourth, a final empty should not follow\n   "
+        , !"the first line\nSecond line, third will be empty\n\nThis is the fourth, a final empty should not follow\n")
+
+  test-get-all-lines-1 =
+     apply-test(!"test-get-all-lines-1"
+        , get-lines
+        , !"the first line\nSecond line, third will be empty\n\nThis is the fourth, a final empty will follow\n"
+        , !["the first line","Second line, third will be empty","","This is the fourth, a final empty will follow",""])
+
+  test-split-fetch-leave-1 =
+     apply-test(!"test-split-fetch-leave-1"
+        , explode-string; split-fetch-leave(where(<elem> (<id>, ['.',',']))); all(implode-string)
+        , !"fubar, etcetera"
+        , !("fubar",","," etcetera"))
+
+  test-shuffle-1 =
+     testing(!"test-shuffle-1"
+        , <shuffle> [1, 2, 3, 4, 5, 6, 7, 8, 9])
+
+  test-shuffle-word-mids-1 =
+     testing(!"test-shuffle-word-mids-1"
+        , <shuffle-word-mids> "Goedemorgen")
+
+  test-shuffle-word-mids-2 =
+     testing(!"test-shuffle-word-mids-2"
+        , <shuffle-word-mids> "Stratego/XT is a framework for the development of transformation systems aiming to support a wide range of program transformations. The framework consists of the transformation language Stratego and the XT collection of transformation tools.")
+        
+        

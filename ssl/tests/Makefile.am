@@ -38,6 +38,7 @@ check_PROGRAMS = \
   simple-traversal-test \
   strcmp-test \
   string-test \
+  string-misc-test \
   substitution-test \
   tables-test \
   template-test \

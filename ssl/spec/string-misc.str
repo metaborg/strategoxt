@@ -1,4 +1,3 @@
-// $Id: string-misc.str 26 2003-09-17 14:48:58Z adam $
 /**
  * Contains miscellaneous strategies for processing strings,
  * e.g. trailing-space-trimming, line-splitting, etc.
@@ -149,6 +148,10 @@ trim-empty-strings = trim(?"")
 trim(s) = reverse; drop-while(s); reverse
 //at-suffix(all(s);![])
 
+
+/**
+ * Some shuffling strategies
+ */
 shuffle-forced =
    where(length; <gt> (<id>, 1))
    ; where(at-suffix(?[x,y|xs]; where(not(<eq> (x, y)))))
