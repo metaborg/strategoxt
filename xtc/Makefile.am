@@ -1,5 +1,5 @@
 include $(top_srcdir)/Makefile.xt
-SUBDIRS           = src tools
+SUBDIRS           = libraries src tools
 BOOTCLEAN_SUBDIRS = $(SUBDIRS)
 EXTRA_DIST        = Makefile.xt autoxt.m4 bootstrap
 
