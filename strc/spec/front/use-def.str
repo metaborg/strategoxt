@@ -75,9 +75,9 @@ strategies
 	  Context : msg -> ["** Error in rule ", f, ":\n   " | msg]
 	  Warning : msg -> ["* Warning in rule ", f, ":\n  " | msg] 
 	)
-	; <bind-vars> t1
-        + <unbound-vars> s
-        + <use-vars> t2
+	; or(<bind-vars> t1,
+          or(<unbound-vars> s,
+             <use-vars> t2))
       )
 
   rdef-ud =
@@ -87,9 +87,9 @@ strategies
 	  Context : msg -> ["** Error in rule ", f, ":\n   " | msg] 
 	  Warning : msg -> ["* Warning in rule ", f, ":\n  " | msg] 
 	)
-	; <bind-vars> t1
-        + <unbound-vars> s
-        + <use-vars> t2
+	; or(<bind-vars> t1,
+          or(<unbound-vars> s,
+             <use-vars> t2))
       )
 
   rdef-ud =
@@ -115,18 +115,18 @@ strategies
   unbound-vars = 
     Build(id)         < Build(use-vars)
     + Match(id)	      < Match(bind-vars)
-    + Rule(id,id,id)  < (Rule(bind-vars,id,id)
-			 + Rule(id,id,unbound-vars)
-			 + Rule(id,use-vars,id))
-    + PrimT(id,id,id) < (PrimT(id,unbound-vars,id)
-			 + PrimT(id,id,use-vars))
-    + CallT(id,id,id) < (CallT(id,unbound-vars,id)
-			 + CallT(id,id,use-vars))
+    + Rule(id,id,id)  < or(Rule(bind-vars,id,id),
+			or(Rule(id,id,unbound-vars),
+			   Rule(id,use-vars,id)))
+    + PrimT(id,id,id) < or(PrimT(id,unbound-vars,id),
+			   PrimT(id,id,use-vars))
+    + CallT(id,id,id) < or(CallT(id,unbound-vars,id),
+			   CallT(id,id,use-vars))
     + some(unbound-vars)
 
   bind-vars = 
       Var(id)     < fail
-    + App(id,id)  < App(unbound-vars, use-vars)
+    + App(id,id)  < or(App(unbound-vars, id), App(id, use-vars))
     + RootApp(id) < RootApp(unbound-vars)
     + some(bind-vars)
 
@@ -135,7 +135,7 @@ strategies
 		               + ?["(un)bound"] < <MaybeUnbound> Var(x); fail
 		               + ?["unbound"]   < <Unbound> Var(x)
 		               + ?[]            ; <Unbound> Var(x)))
-    + App(id,id)  < App(unbound-vars, use-vars)
+    + App(id,id)  < or(App(unbound-vars, id), App(id, use-vars))
     + RootApp(id) < RootApp(unbound-vars)
     + some(use-vars)
 
