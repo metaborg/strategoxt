@@ -52,9 +52,7 @@ strategies
                   <fatal-error>["please specify old table with --old switch"] 
                   );
       ![old];read-pp-tables; !("pp-table", "old-table");table-rename;
-      option-value(New-Table(?new),
-                   <fatal-error>["please specify new table with --new switch"]
-                  );
+      option-value(New-Table(?new), !stdin => new);
       ![new];read-pp-tables; !("pp-table", "new-table");table-rename;
       
       // Find keys of pp tables

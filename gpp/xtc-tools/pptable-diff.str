@@ -12,6 +12,7 @@ strategies
                            "pretty-print rules that are contained in\n",
                            "pretty-print table \"old\" but not in \"new\"\n",
                            "and, vice versa.\n\n",
+                           "If \"new\" is missing, standard input is used.\n\n",
                            "If the \"--patch\" switch is specified, the table\n",
                            "\"old\" is updated by adding pretty-print\n",
                            "rules that are in \"new\" but not in\n",
