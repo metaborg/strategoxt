@@ -1,4 +1,4 @@
-\literate[read-pkg]
+\literate[package-reader]
 
  Autobundle -- Tool suite for automated source tree composition
 
@@ -10,7 +10,7 @@
  This module contains strategies for reading package definition files
 
 \begin{code}
-module read-pkg
+module package-reader
 imports lib termid
 
 strategies
