@@ -8,9 +8,9 @@ AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_LIBTOOL
 
-TOOLS="treeviz utils"
+TOOLS="treeviz"
 UNRELEASED=""
-RELEASED="treeviz utils"
+RELEASED="treeviz"
 
 AC_SUBST(TOOLS)
 AC_SUBST(RELEASED)
@@ -23,7 +23,5 @@ AC_CONFIG_FILES([
   src/Makefile 
 
   src/treeviz/Makefile
-  
-  src/utils/Makefile
 ])
 AC_OUTPUT

@@ -1,6 +1,0 @@
-module annos-to-term
-imports liblib
-strategies
-
-  annos-to-term =
-    io-wrap(catch-annos)
