@@ -12,7 +12,13 @@ exports
 
   sorts Decl 
   context-free syntax
-    "imports" ModName* 		-> Decl {cons("Imports")}
+    "imports" ImportModName* 	-> Decl {cons("Imports")}
     "strategies" Def* 		-> Decl {cons("Strategies")}
     "signature" Sdecl*  	-> Decl {cons("Signature")}
 
+  context-free syntax
+    ModName              -> ImportModName {cons("Import")}
+  syntax
+    <ModName-CF> "/" "*" -> <ImportModName-CF> {cons("ImportWildcard")}
+  context-free restrictions
+    ImportModName -/- [\/].[\*]
