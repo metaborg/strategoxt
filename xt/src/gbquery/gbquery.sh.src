@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: gbquery.sh.src,v 1.2 2001/06/12 07:42:08 mdejonge Exp $
+# $Id: gbquery.sh.src,v 1.3 2001/06/12 07:44:32 mdejonge Exp $
 
 # gbquery: obtain information from the Grammar Base
 #
@@ -117,7 +117,7 @@ get_parse_table () {
 
 get_grammar_def () {
    parse_table=`get_parse_table` || exit 1
-   echo "basename ${parse_table .tbl".def
+   echo "`basename ${parse_table} .tbl`".def
 }
 
 # Find pretty-print table for the langauge. Due to our naming scheme, the language
@@ -169,7 +169,7 @@ list_grammars () {
 for arg in $*
 do
    case $1 in
-      -d  ) FUNCTION=="get-grammar-def"; shift ;;
+      -d  ) FUNCTION="get-grammar-def"; shift ;;
       -pt ) FUNCTION="get-parse-table"; shift ;;
       -pp ) FUNCTION="get-pp-table"; shift ;;
       -i  ) FUNCTION="get-info"; shift ;;
