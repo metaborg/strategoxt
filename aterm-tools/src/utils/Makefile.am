@@ -1,8 +1,6 @@
 include $(wildcard *.dep)
 include $(top_srcdir)/Makefile.xt
 
-SUBDIRS          = data
-
 bin_PROGRAMS     = annos-to-term
 SCFLAGS          = --main $*
 LDADD           += $(SSL_LIBS)

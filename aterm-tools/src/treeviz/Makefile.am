@@ -1,8 +1,6 @@
 include $(wildcard *.dep)
 include $(top_srcdir)/Makefile.xt
 
-SUBDIRS     = data
-
 SCFLAGS     = --main $*
 STRINCLUDES = -I $(DOT_TOOLS)/share/sdf/dot-tools \
               -I $(DOT_TOOLS)/share/dot-tools \

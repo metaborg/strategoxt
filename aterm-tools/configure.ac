@@ -8,9 +8,9 @@ AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_LIBTOOL
 
-TOOLS="atermdiff treeviz utils "
+TOOLS="treeviz utils"
 UNRELEASED=""
-RELEASED="atermdiff treeviz utils"
+RELEASED="treeviz utils"
 
 AC_SUBST(TOOLS)
 AC_SUBST(RELEASED)
@@ -22,15 +22,9 @@ AC_CONFIG_FILES([
 
   src/Makefile 
   src/templates/Makefile 
-  src/templates/data/Makefile 
 
-  src/atermdiff/Makefile
-  src/atermdiff/data/Makefile
-  
   src/treeviz/Makefile
-  src/treeviz/data/Makefile
   
   src/utils/Makefile
-  src/utils/data/Makefile
 ])
 AC_OUTPUT
