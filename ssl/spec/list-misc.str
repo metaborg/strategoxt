@@ -32,6 +32,7 @@ strategies
     \ [y|ys] -> <s2> (<f> y, <foldr(s1, s2, f)> ys) \
 
 
+  // a * b -> b :: List(a) * b -> b
   foldl(s) = 
     rec x( \ ([], y) -> y \ + FoldL(s); x)
 
