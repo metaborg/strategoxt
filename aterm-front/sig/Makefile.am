@@ -11,3 +11,6 @@ BOOTCLEANFILES   = $(SIGS) $(pkgdata_DATA)
 ATerms.str : ATerms.def
 	$(STRATEGO_REGULAR)/bin/sdf2rtg -i $< -m ATerms | \
 	$(STRATEGO_REGULAR)/bin/rtg2sig -o $@
+
+ATerms.def :
+	ln -s $(top_srcdir)/syn/ATerms.def $@
