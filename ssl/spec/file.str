@@ -239,7 +239,15 @@ strategies
 
   // :: String -> String
   remove-extension =
-      <string-tokenize> (['.'], <id>)
+      rec x(
+          split-at-dot
+	; (
+	     ![<?(<id>,"")>]
+	  <+ (![<id>], x) 
+	   ; TupleToList
+	   ; concat
+	  )
+      )
     ; init
     ; <separate-by> (".", <id>)
     ; concat-strings

@@ -1,3 +1,8 @@
+2004-06-09  Valentin David  <valentin@lrde.epita.fr>
+
+	* spec/file.str (remove-extension): Do not use string-tokenize any
+	more to not loose multiple dots.
+
 2004-05-30  Arthur van Dam <adam@cs.uu.nl>
 
 	* spec/string.str: `newname' and `newname-shared' strategies that
