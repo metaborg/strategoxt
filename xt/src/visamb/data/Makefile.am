@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.3 2001/06/12 08:56:02 mdejonge Exp $
+# $Id: Makefile.am,v 1.4 2001/09/22 12:37:49 mdejonge Exp $
 
 EXTRA_DIST = test.sdf input.test input.test.tree input.test.tree.out.correct \
              Exp.sdf input.exp input.exp.tree input.exp.tree.out.correct
@@ -26,12 +26,12 @@ test.tbl : test.sdf
 
 input.test.tree tree : input.test 
 	$(MAKE) test.tbl
-	sglr -t -p test.tbl -i input.test -o input.test.tree
+	sglr -2 -t -p test.tbl -i input.test -o input.test.tree
 
 Exp.tbl : Exp.sdf
 	sdf2table -i Exp.sdf -o Exp.tbl
 
 input.exp.tree : input.exp 
 	$(MAKE) Exp.tbl
-	sglr -t -p Exp.tbl -i input.exp -o input.exp.tree
+	sglr -2 -t -p Exp.tbl -i input.exp -o input.exp.tree
 

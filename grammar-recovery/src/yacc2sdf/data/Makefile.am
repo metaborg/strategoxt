@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2001/06/06 09:48:37 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2001/09/22 12:37:48 mdejonge Exp $
 
 EXTRA_DIST = yacc2sdf-check.input yacc2sdf-check.reference
 
@@ -32,7 +32,7 @@ EXTRA_DIST = yacc2sdf-check.input yacc2sdf-check.reference
 check-data: yacc2sdf-check.input yacc2sdf-check.reference
 
 yacc2sdf-check.input: 
-	sglr -p $(YACC_LOCATION)/yacc.tbl -i $(YACC_LOCATION)/data/c5.1.y \
+	sglr -2 -p $(YACC_LOCATION)/yacc.tbl -i $(YACC_LOCATION)/data/c5.1.y \
 	   | $(ASFIX-TOOLS)/bin/implode-asfix > $@
 
 yacc2sdf-check.reference: 

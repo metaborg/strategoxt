@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.2 2001/05/30 16:02:26 mdejonge Exp $
+# $Id: Makefile.am,v 1.3 2001/09/22 12:37:42 mdejonge Exp $
 
 TEST_SET = Iter Iter-sep Iter-star Iter-star-sep Nesting-iter-sep1 \
            Nesting-iter-sep2 Nesting-iter-star-sep Empty-iter-star-sep \
@@ -65,7 +65,7 @@ testsetclean:
 	) > $@ && chmod +x $@
 
 %.in :
-	PATH=$(SGLR)/bin:$(PATH) sglr -s $* -p tests.tbl -i $*.trm -o $@
+	PATH=$(SGLR)/bin:$(PATH) sglr -2 -s $* -p tests.tbl -i $*.trm -o $@
 
 %.tbl : %.def
 	PATH=$(PGEN)/bin:$(PATH) sdf2table -i $< -o $@
