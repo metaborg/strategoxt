@@ -1,5 +1,5 @@
 module xtc
-imports liblib xtc-lib xtc-query xtc-call xtc-get
+imports lib xtc-lib xtc-query xtc-call xtc-get
 strategies
 
   xtc = 
