@@ -48,7 +48,7 @@ strategies
 	+ Build(term-expression)
 	+ Scope(list(is-string), exp)
 	+ Where(exp)
-	+ PrimT(is-string,list(Call(SVar(is-string),[])),list(Var(is-string)))
+	+ PrimT(is-string,list(CallT(SVar(is-string),[],[])),list(Var(is-string)))
 	+ Let(list(SDef(is-string,list(VarDec(is-string,id)),exp)
 		   + SDefT(is-string,list(VarDec(is-string,id))
 				    ,list(VarDec(is-string,id)),exp)),exp)
