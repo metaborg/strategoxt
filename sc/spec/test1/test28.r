@@ -362,6 +362,7 @@ strategies
     )
 
 overlays
+
   VarA = Var("a")
 
   VarAInt = Var("a"){Int}

@@ -13,7 +13,8 @@ check2:
 	$(SC) -i module1 -F
 
 check3 : ../frontend ../extract
-	$(top_builddir)/spec/syn/pack-stratego -I $(SSL)/share/ssl -i dynrules -o dynrules.tree
+	$(top_builddir)/spec/syn/pack-stratego \
+		-I $(SSL)/share/ssl -i dynrules -o dynrules.tree
 	../frontend -i dynrules.tree -o dynrules.fr
 	../extract -i dynrules.fr -o dynrules.e
 #	diff dynrules.e dynrules.e.expected

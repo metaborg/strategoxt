@@ -8,26 +8,18 @@ SCFLAGS 	 = -I $(srcdir)/../sig \
 	  	   -I $(srcdir)/../lib \
 	  	   -I $(srcdir)/../opt \
 	  	   --main $* \
-	  	   --keep 1
+	  	   --keep 1 --verbose 1 --ast
 
 libexec_PROGRAMS = frontend extract extract-all rename-defs inline 
-check_PROGRAMS	 = use-def-test
+check_PROGRAMS	 = use-def-test lift-dynamic-rules-test
 
-CLEANFILES 	 = $(wildcard *.dep)
+CLEANFILES 	 = $(wildcard *.dep) $(wildcard *.tmp)
 
 BOOTCLEANFILES   = extract-all.c extract.c frontend.c inline.c rename-defs.c
 
-TESTS 		 = use-def-test
+TESTS 		 = use-def-test lift-dynamic-rules-test
 #needed-defs-test 
 #frontend-test 
 #extract-test
 
-EXTRA_DIST 	 = check-constructors.str frontend.str		    \
-		   needed-defs-test.str check-constructors-test.str \
-		   frontend-test.str normalize-spec.str desugar.str \
-		   inline.str rename-defs.str extract-all.str	    \
-		   inlining.str spec-to-sdefs.str extract.str	    \
-		   mul-contexts.str use-def.str extract-test.str    \
-		   needed-defs.str
-
-
+EXTRA_DIST 	 = $(wildcard *.str) $(wildcard *.meta)

@@ -13,6 +13,8 @@ imports stratego stratlib list-sort use-def lib
 \begin{code}
 rules
 
+  HL : DefaultVarDec(x) -> VarDec(x, DefaultStrat)
+
   HL : Seqs([])           -> Id
   HL : Seqs([s | ss])     -> Seq(s, Seqs(ss))
   HL : Choices([])        -> Fail

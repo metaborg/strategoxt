@@ -13,15 +13,15 @@ pkgdata_DATA 	= sc.config sc-manual.txt
 
 sc.o		: xtc-conf.h
 
-CLEANFILES 	= $(wildcard *.dep) sc.config
+CLEANFILES 	= $(wildcard *.dep) sc.config sc.1
 BOOTCLEANFILES 	= sc.c
 
 EXTRA_DIST 	= $(wildcard *.str) sc.config.src sc-manual.txt $(man_MANS)
 INCLUDES  	+= -I ..
 
-man_MANS = sc.1
+man_MANS 	= sc.1
 
-sc.1 : sc Makefile
+sc.1 : 
 	help2man -n "compile Stratego programs" \
 		-m StrategoXT -S "sc $(VERSION)" --no-info ./sc > $@
 

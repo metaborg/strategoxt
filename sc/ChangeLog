@@ -1,3 +1,10 @@
+2002-12-21  Eelco Visser  <visser@cs.uu.nl>
+
+	* spec/front/lift-dynamic-rules.str: Repaired the 'dynamic
+	rules with overlapping left-hand sides' bug by making the entire
+	left-hand side (modulo dynamically bound variables), the key
+	in the mapping induced by the dynamic rule.
+
 2002-12-19  Eelco Visser  <visser@cs.uu.nl>
 
 	* sc/spec/sc/sc.str: report names of intermediate files

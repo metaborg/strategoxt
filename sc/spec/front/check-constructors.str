@@ -34,15 +34,14 @@ rules
     ?OpDecl(c, ConstType(t));
     where(!0 => n);
     rules(
-      CheckCons : Op(c, <?xs; length => n>) -> Op(c, [])
+      CheckCons : Op(c, <length => n>) -> Op(c, [])
     )
 
   GenerateCheckRule =
     ?OpDecl(c, FunType(ts, t));
     where(<length> ts => n);
     rules(
-      CheckCons :  
-        Op(c, <?xs; length => n>) -> Op(c, xs)
+      CheckCons : Op(c, <length => n>) -> Op(c, [])
     )
 
   // CheckTuple implements generic checking of tuple constructors (for arbitrary arity)
