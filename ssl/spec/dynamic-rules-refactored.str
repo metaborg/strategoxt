@@ -762,7 +762,6 @@ strategies // debugging
     ; <hashtable-keys> tbl
     ; map(where(<printnl>(stderr, ["  ", <id>, " -> "]))
           ; where(\ key -> <hashtable-get(|key)> tbl \
-//                  ; <printnl>(stderr, ["    ", <id>]))
                   ; map(<printnl>(stderr, ["    ", <id>]))
                  )
          )

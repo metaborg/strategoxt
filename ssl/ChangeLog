@@ -1,3 +1,20 @@
+2004-06-15  Arthur van Dam <adam@cs.uu.nl>
+
+	* spec/sets.str:
+	4 binary set operations, all operating on one input set 'set1':
+	  iset-union(|set2)
+	  iset-isect(|set2)
+	  iset-subset(|set2)
+	  iset-eq(|set2)
+
+	* spec/dynamic-rules-refactored.str:
+	  - Scope-identifier used as part of key in ChangeSets now is the
+	    hashtable pointer of that scope (instead of scope label list).
+	  - ChangeSets now also store new scope labels (if new ones are
+	    added). For what it's worth.
+	  - Both RuleScopes and ChangeSet now use IndexedSets for
+	    maintaining scope labels, instead of a list.
+
 2004-06-14  Martin Bravenboer <martin@cs.uu.nl>
 
 	* spec/sets.str: new module providing an interface to ATerm's
