@@ -1,11 +1,56 @@
 module lift-dynamic-rules-old
-imports Stratego lib desugar
+imports Stratego lib desugar 
+
+signature
+  constructors
+    DynamicRules    : List(RuleDef)    -> Strategy
+    DynRuleScope    : List(String) * Strategy -> Strategy
+
+    GenDynRules     : List(DynRuleDef) -> Strategy
+    SetDynRule      : DynRuleId * Rule -> DynRuleDef
+    DynRuleScopeId  : String -> DynRuleScopeId
+    DynRuleId       : String -> DynRuleScopeId
+
+    RDecT           : String * List(Foo) * List(Foo) -> RuleDec
+
 strategies
 
   LiftDynamicRules-old =
-    Specification([id,id, Strategies(define-rule-scope-old; lift-dynamic-rules-old)])
+      convert-new-syntax-to-old
+    ; check-for-too-new-constructs
+    ; Specification([id,id, Strategies(define-rule-scope-old; lift-dynamic-rules-old)])
 
-/* Desugar dynamic rule scopes {| ... : ... |} */
+  convert-new-syntax-to-old =
+    topdown(
+      if ?GenDynRules(_)
+        then DowngradeGenerator
+        else if ?DynRuleScope(_,_)
+          then DowngradeScope
+          else id
+        end
+      end
+    )
+
+  DowngradeGenerator :
+    GenDynRules([SetDynRule(DynRuleId(RDecT(x, ss, st)), rule)])
+      ->
+    DynamicRules([RDefT(x, ss, st, rule)])
+
+  DowngradeScope :
+    DynRuleScope(ids, s) -> DynRuleScope(<map(DowngradeScopeId)> ids, s)
+
+  DowngradeScopeId =
+       is-string
+    <+ ?DynRuleScopeId(<id>)
+    <+     say(!"[normalize-spec | fatal error] Labelled dynamic rule scope not supported by old style dynamic rules")
+       ; debug(!"[normalize-spec | fatal error] ")
+       ; <exit> 1
+
+  check-for-too-new-constructs = id
+
+strategies
+
+  /* Desugar dynamic rule scopes {| ... : ... |} */
 
   define-rule-scope-old =
     topdown(try(DefDynamicRuleScope))
