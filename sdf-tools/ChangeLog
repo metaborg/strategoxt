@@ -1,3 +1,11 @@
+2004-08-08  Martin Bravenboer  <martin@cs.uu.nl>
+
+	* analyse/parse-unit/parse-unit.str: added the
+	--no-heuristic-filters flag to disable the heuristic -fi
+	(injection count) and -fe (eagerness) disambiguation filters of
+	sglr. Maybe this should be done by default, but it might break
+	stuff.
+
 2004-07-25  Martin Bravenboer  <martin@cs.uu.nl>
 
 	* trans/sdf2ast-conflicts.str: separate tool for producing a list

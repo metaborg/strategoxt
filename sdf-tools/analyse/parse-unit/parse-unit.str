@@ -10,12 +10,22 @@ strategies
   parse-unit-options =
        io-options
     <+ parse-table-option
+    <+ sglr-filter-options
 
   parse-table-option =
     ArgOption("-p"
     , where(<set-config> ("--parse-table", <id>))
     , !"-p FILE   Use parse table FILE (required)"
     )
+
+  sglr-filter-options =
+    Option("--no-heuristic-filters"
+    , where(<extend-config> ("--sglr-options", ["-fi", "-fe"]))
+    , !"--no-heuristic-filters  Don't use hearistic disambiguation filters (encouraged)"
+    )
+
+  get-extra-sglr-options =
+    <get-config> "--sglr-options" <+ ![]
 
   get-parse-table =
     <get-config> "--parse-table" <+ <fatal-error> ["** ERROR: no parse table specified"]
@@ -168,7 +178,7 @@ strategies
 
   parse = 
       ?(sort, table, input)
-    ; <parse-helper> (["-2A", "-p", table, "-s", sort], input)
+    ; <parse-helper> (<conc> (<get-extra-sglr-options> (), ["-2A", "-p", table, "-s", sort]), input)
 
   parse-helper = 
       ?(options, string(s))
