@@ -20,19 +20,20 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: pp.sh.src,v 1.6 2002/04/05 12:58:09 daybuild Exp $
+# $Id: pp.sh.src,v 1.7 2002/06/05 20:53:34 mdejonge Exp $
 
 
 # pp -- pretty-print tool
 #
 # usage:
-#    pp [-a] [-A] [-O format] [-v version] [-h] [-i file] 
+#    pp [-a] [-A] [-c] [-O format] [-v version] [-h] [-i file] 
 #       [-o file] [-p table ...] -l name
 #    parse -L
 #
 # where
 #    -A          Input is parse tree (default is text)
 #    -a          Input is abstract syntax tree (default is text)
+#    -c          Conservative pretty-printing (only format where needed).
 #    -v number   Denotes the version of the language to use (e.g. 2.1)
 #    -h          Displays usage information
 #    -i file     Input is read from file (defaults to standard input)
@@ -54,6 +55,7 @@ LANG_VERSION=
 INPUT_TYPE=text
 OUTPUT_TYPE=text
 EXTRA_TABLES=
+CONSERVATIVE=
 
 # display usage information
 usage ()
@@ -62,13 +64,14 @@ usage ()
 pp -- pretty-print tool
 
 usage:
-   pp [-a] [-A] [-O format] [-v version] [-h] [-i file] 
+   pp [-a] [-A] [-c] [-O format] [-v version] [-h] [-i file] 
       [-o file] [-p table ...] -l name
    pp -L
 
 where
    -A          Input is parse tree (default is text)
    -a          Input is abstract syntax tree (default is text)
+   -c          Conservative pretty-printing (only format where needed).
    -v number   Denotes the version of the language to use (e.g. 2.1)
    -h          Displays usage information
    -i file     Input is read from file (defaults to standard input)
@@ -86,6 +89,7 @@ do
    case $1 in
       -a ) INPUT_TYPE=ast; shift ;;
       -A ) INPUT_TYPE=pt; shift ;;
+      -c ) CONSERVATIVE="-c" ; shift ;;
       -h ) usage; exit 0 ;;
       -i ) INPUT="-i $2"; shift; shift ;;
       -l ) LANGUAGE="-l $2"; shift ; shift ;;
@@ -119,7 +123,7 @@ if [ "a${INPUT_TYPE}" = "atext" ]; then
 elif [ "a${INPUT_TYPE}" = "aast" ]; then
    pp_cmd="ast2abox ${EXTRA_TABLES}  ${tables}"
 elif [ "a${INPUT_TYPE}" = "apt" ]; then
-   pp_cmd="asfix2abox ${EXTRA_TABLES} ${tables}"
+   pp_cmd="asfix2abox ${CONSERVATIVE} ${EXTRA_TABLES} ${tables}"
 fi
 
 # -i option has been specified

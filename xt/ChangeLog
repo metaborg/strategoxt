@@ -1,3 +1,7 @@
+2002-06-05  Merijn de Jonge <mdejonge@cwi.nl>
+   * Added -c switch to pp for conservative pretty-printing. This is only
+     supported when formatting parse trees.
+
 2002-06-04  Merijn de Jonge <mdejonge@cwi.nl>
    * Repaired generation of package definition file
    * XT package now requires boxenv version 1.9
