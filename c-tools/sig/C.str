@@ -1,2 +1,225 @@
+
 module C
-imports C-Keywords C-Constants C-Lexical C-Preprocessor C-Declarators C-Program C-Statements C-Identifiers C-Types C-Expressions C-StructsAndUnions C-Enumerators C-ParameterDeclarators C-AbstractDeclarators
+imports list-cons option
+signature
+  constructors
+                        : PostfixingAbstractDeclarator -> e_0
+                        : PostfixAbstractDeclarator -> e_0
+                        : TypeSpecifier -> h_0
+                        : DeclarationSpecifier -> h_0
+                        : IdDeclarator -> i_0
+                        : AbstractDeclarator -> i_0
+                        : TypedefName -> x_0
+                        : ElaboratedTypeName -> x_0
+                        : BasicTypeName -> x_0
+                        : BasicTypeName -> y_0
+                        : DeclarationQualifier -> y_0
+                        : BasicTypeName -> d_1
+                        : TypeQualifier -> d_1
+                        : List(TypeQualifier) -> o_1
+                        : DeclarationQualifierList -> o_1
+                        : ElseLine * List(ExternalDef) -> y_1
+                        : ElifLine * List(ExternalDef) -> b_2
+    FunType             : UnaryAbstractDeclarator * PostfixingAbstractDeclarator -> PostfixAbstractDeclarator
+    DeclBracket         : PostfixingAbstractDeclarator -> PostfixAbstractDeclarator
+    DeclBracket         : PostfixAbstractDeclarator -> PostfixAbstractDeclarator
+    DeclBracket         : UnaryAbstractDeclarator -> PostfixAbstractDeclarator
+    ArrayDecl           : Option(ArrayAbstractDeclarator) * Option(ConstantExp) -> ArrayAbstractDeclarator
+    ParamList           : List(ParamDeclaration) -> PostfixingAbstractDeclarator
+    ParamListVarArgs    : List(ParamDeclaration) -> PostfixingAbstractDeclarator
+                        : ArrayAbstractDeclarator -> PostfixingAbstractDeclarator
+    Pointer             : List(Pointer) * Option(e_0) -> UnaryAbstractDeclarator
+                        : PostfixingAbstractDeclarator -> AbstractDeclarator
+                        : PostfixAbstractDeclarator -> AbstractDeclarator
+                        : UnaryAbstractDeclarator -> AbstractDeclarator
+    PointerOf           : List(TypeQualifier) -> Pointer
+    TypeName            : List(TypeQualifier) * Option(AbstractDeclarator) -> TypeName
+    TypeName            : TypeSpecifier * Option(AbstractDeclarator) -> TypeName
+                        : List(TypeQualifier) -> ParamDeclTypeSpec
+                        : DeclarationQualifierList -> ParamDeclTypeSpec
+                        : DeclarationSpecifier -> ParamDeclTypeSpec
+                        : TypeSpecifier -> ParamDeclTypeSpec
+    ParamDecl2          : h_0 * TypedefDeclarator -> ParamDeclaration
+    ParamDecl           : ParamDeclTypeSpec * Option(i_0) -> ParamDeclaration
+    EnumVal             : ConstantExp -> EnumeratorValue
+    Enumerator          : IdOrTypedefName * Option(EnumeratorValue) -> Enumerator
+    EnumId              : IdOrTypedefName -> EnumSpecifier
+    Enum                : Option(IdOrTypedefName) * List(Enumerator) -> EnumSpecifier
+    BitFieldSize        : Option(Declarator) * ConstantExp -> MemberDeclarator
+                        : Declarator -> MemberDeclarator
+    UnionId             : IdOrTypedefName -> UnionSpecifier
+    Union               : Option(IdOrTypedefName) * List(MemberDeclaration) -> UnionSpecifier
+    StructId            : IdOrTypedefName -> StructSpecifier
+    Struct              : Option(IdOrTypedefName) * List(MemberDeclaration) -> StructSpecifier
+                        : EnumSpecifier -> ElaboratedTypeName
+                        : UnionSpecifier -> ElaboratedTypeName
+                        : StructSpecifier -> ElaboratedTypeName
+                        : CondExp -> ConstantExp
+                        : CommaExp -> CommaExpOpt
+    EmptyExp            : CommaExpOpt
+    Comma               : AssignExp * CommaExp -> CommaExp
+                        : AssignExp -> CommaExp
+    AssignOr            : AssignOp
+    AssignExp           : AssignOp
+    AssignAnd           : AssignOp
+    AssignSR            : AssignOp
+    AssignSL            : AssignOp
+    AssignMin           : AssignOp
+    AssignPlus          : AssignOp
+    AssignMod           : AssignOp
+    AssignDiv           : AssignOp
+    AssignMul           : AssignOp
+    AssignEq            : AssignOp
+    Assign              : UnaryExp * AssignOp * AssignExp -> AssignExp
+                        : CondExp -> AssignExp
+    IfExp               : LogicalORExp * CommaExp * CondExp -> CondExp
+                        : LogicalORExp -> CondExp
+    LOr                 : LogicalORExp * LogicalANDExp -> LogicalORExp
+                        : LogicalANDExp -> LogicalORExp
+    LAnd                : LogicalANDExp * InclORExp -> LogicalANDExp
+                        : InclORExp -> LogicalANDExp
+    IncOr               : ExclORExp * InclORExp -> InclORExp
+                        : ExclORExp -> InclORExp
+    ExOr                : ANDExp * ExclORExp -> ExclORExp
+                        : ANDExp -> ExclORExp
+    And                 : EqualityExp * ANDExp -> ANDExp
+                        : EqualityExp -> ANDExp
+    NotEqual            : EqualityExp * RelExp -> EqualityExp
+    Equal               : EqualityExp * RelExp -> EqualityExp
+                        : RelExp -> EqualityExp
+    Ge                  : RelExp * ShiftExp -> RelExp
+    Le                  : RelExp * ShiftExp -> RelExp
+    Gt                  : RelExp * ShiftExp -> RelExp
+    Lt                  : RelExp * ShiftExp -> RelExp
+                        : ShiftExp -> RelExp
+    ShiftRight          : ShiftExp * AddExp -> ShiftExp
+    ShiftLeft           : ShiftExp * AddExp -> ShiftExp
+                        : AddExp -> ShiftExp
+    Subt                : AddExp * MulExp -> AddExp
+    Add                 : AddExp * MulExp -> AddExp
+                        : MulExp -> AddExp
+    Mod                 : MulExp * CastExp -> MulExp
+    Div                 : MulExp * CastExp -> MulExp
+    Mul                 : MulExp * CastExp -> MulExp
+                        : CastExp -> MulExp
+    TypeCast            : TypeName * CastExp -> CastExp
+                        : UnaryExp -> CastExp
+    SizeofType          : TypeName -> UnaryExp
+    SizeofExp           : UnaryExp -> UnaryExp
+    Negation            : CastExp -> UnaryExp
+    Tilde               : CastExp -> UnaryExp
+    Negative            : CastExp -> UnaryExp
+    Positive            : CastExp -> UnaryExp
+    Deref               : CastExp -> UnaryExp
+    Address             : CastExp -> UnaryExp
+    PreDecr             : UnaryExp -> UnaryExp
+    PreIncr             : UnaryExp -> UnaryExp
+                        : PostfixExp -> UnaryExp
+                        : TypedefName -> MemberName
+                        : IDENTIFIER -> MemberName
+    PostDecr            : PostfixExp -> PostfixExp
+    PostIncr            : PostfixExp -> PostfixExp
+    DerefMember         : PostfixExp * MemberName -> PostfixExp
+    Field               : PostfixExp * MemberName -> PostfixExp
+    FunCall             : PostfixExp * List(AssignExp) -> PostfixExp
+    ArrayIndex          : PostfixExp * CommaExp -> PostfixExp
+                        : PrimaryExp -> PostfixExp
+                        : CommaExp -> PrimaryExp
+                        : StringLiteralList -> PrimaryExp
+                        : Constant -> PrimaryExp
+                        : IDENTIFIER -> PrimaryExp
+                        : x_0 -> TypeOrDefName
+    DeclSpec            : List(TypeQualifier) * StorageClass * List(DeclarationQualifier) * TypeOrDefName * List(y_0) -> DeclarationSpecifier
+    DQualifiers         : List(TypeQualifier) * StorageClass * List(DeclarationQualifier) -> DeclarationQualifierList
+                        : TypeQualifier -> DeclarationQualifier
+                        : StorageClass -> DeclarationQualifier
+    TypeSpec            : List(TypeQualifier) * TypeOrDefName * List(d_1) -> TypeSpecifier
+    AssignInit          : AssignExp -> Initializer
+    ArrayInitIncomplete : List(Initializer) -> Initializer
+    ArrayInit           : List(Initializer) -> Initializer
+    DeclInit            : Declarator * Initializer -> VarDecl
+                        : Declarator -> VarDecl
+    IdDeclInit          : IdDeclarator * Initializer -> IdDecl
+                        : IdDeclarator -> IdDecl
+    Declaration2        : h_0 * List(VarDecl) -> Declaration
+    Declaration         : o_1 * List(IdDecl) -> Declaration
+    Volatile            : TypeQualifier
+    Const               : TypeQualifier
+    Void                : BasicTypeName
+    Unsigned            : BasicTypeName
+    Signed              : BasicTypeName
+    Double              : BasicTypeName
+    Float               : BasicTypeName
+    Long                : BasicTypeName
+    Short               : BasicTypeName
+    Char                : BasicTypeName
+    Int                 : BasicTypeName
+    Register            : StorageClass
+    Auto                : StorageClass
+    Static              : StorageClass
+    Extern              : StorageClass
+    Typedef             : StorageClass
+                        : TypedefName -> IdOrTypedefName
+                        : IDENTIFIER -> IdOrTypedefName
+    TypeId              : ID -> TypedefName
+    Id                  : ID -> IDENTIFIER
+    Exit                : CommaExpOpt -> JumpStm
+    Return              : CommaExpOpt -> JumpStm
+    Break               : JumpStm
+    Continue            : JumpStm
+    Goto                : IdOrTypedefName -> JumpStm
+    For                 : CommaExpOpt * CommaExpOpt * CommaExpOpt * Stm -> IterationStm
+    DoWhile             : Stm * CommaExp -> IterationStm
+    While               : CommaExp * Stm -> IterationStm
+    Switch              : CommaExp * Stm -> SelectionStm
+    IfElse              : CommaExp * Stm * Stm -> SelectionStm
+    If                  : CommaExp * Stm -> SelectionStm
+    Stat                : CommaExpOpt -> ExpStm
+    Compound            : List(Declaration) * List(Stm) -> CompoundStm
+    Default             : Stm -> LabeledStm
+    Case                : ConstantExp * Stm -> LabeledStm
+    Label               : IdOrTypedefName * Stm -> LabeledStm
+                        : JumpStm -> Stm
+                        : IterationStm -> Stm
+                        : SelectionStm -> Stm
+                        : ExpStm -> Stm
+                        : CompoundStm -> Stm
+                        : LabeledStm -> Stm
+                        : String -> ID
+                        : IdDeclarator -> FunDefDecl
+    NoTypeSpecifier     : NoTypeSpecifier
+                        : List(TypeQualifier) -> FunDefTypeSpec
+                        : DeclarationQualifierList -> FunDefTypeSpec
+                        : DeclarationSpecifier -> FunDefTypeSpec
+                        : TypeSpecifier -> FunDefTypeSpec
+                        : NoTypeSpecifier -> FunDefTypeSpec
+    FunDef              : FunDefTypeSpec * FunDefDecl * CompoundStm -> FunDef
+    TranslationUnit     : List(ExternalDef) -> TranslationUnit
+    TypedefDeclarator2  : List(Pointer) * TypedefDeclarator * Option(PostfixingAbstractDeclarator) -> TypedefDeclarator
+    TypedefDeclarator1  : List(Pointer) * TypedefName * Option(PostfixingAbstractDeclarator) -> TypedefDeclarator
+    FunDecl             : List(Pointer) * IdDeclarator * Option(PostfixingAbstractDeclarator) -> IdDeclarator
+    IdDecl              : List(Pointer) * IDENTIFIER * Option(PostfixingAbstractDeclarator) -> IdDeclarator
+                        : TypedefDeclarator -> Declarator
+                        : IdDeclarator -> Declarator
+    MemDecl             : TypeSpecifier * List(MemberDeclarator) -> MemberDeclaration
+                        : ControlLine -> MemberDeclaration
+                        : Declaration -> ExternalDef
+                        : FunDef -> ExternalDef
+    PpIf                : IfLine * List(ExternalDef) * List(b_2) * Option(y_1) -> ExternalDef
+                        : ControlLine -> ExternalDef
+                        : String -> ElseLine
+                        : String -> ElifLine
+                        : String -> IfLine
+                        : String -> ControlLine
+    StringLit           : List(StringLiteral) -> StringLiteralList
+    CharConst           : CharLiteral -> Constant
+    FloatConst          : FloatLiteral -> Constant
+    OctConst            : OctLiteral -> Constant
+    HexConst            : HexLiteral -> Constant
+    IntConst            : IntLiteral -> Constant
+                        : String -> FloatLiteral
+                        : String -> OctLiteral
+                        : String -> HexLiteral
+                        : String -> IntLiteral
+                        : String -> CharLiteral
+                        : String -> StringLiteral

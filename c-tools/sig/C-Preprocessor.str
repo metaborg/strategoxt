@@ -1,5 +1,0 @@
-module C-Preprocessor
-signature
-signature
-  constructors
-    PpIf : IfLine * List(ExternalDef) * List((ElifLine,List(ExternalDef))) * Option((ElseLine,List(ExternalDef))) -> ExternalDef

@@ -1,5 +1,9 @@
 2003-04-30  Martin Bravenboer <martin@cs.uu.nl>
 
+	* sig/Makefile.am: generate signature with sdf2rtg | rtg2sig.
+
+2003-04-30  Martin Bravenboer <martin@cs.uu.nl>
+
 	* syn/C-Keywords.sdf: keyword productions must be lexical,
 	otherwise the Keyword -> Id {reject}, which is lexical, doesn't
 	work. This solves the bug that C keywords can be parsed as
