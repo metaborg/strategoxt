@@ -19,12 +19,22 @@
 \begin{code}
 module list-basic
 imports list-cons
-rules
-  Hd     : [x | l] -> x
-  Tl     : [x | l] -> l
+
+strategies
+
+  Hd     : [x | _] -> x
+  Tl     : [_ | l] -> l
   Last   : [x] -> x
-  MkCons : (x, xs) -> [x | xs]
+
+  // :: a -> [a]
   MkSingleton = ![<id>]
+
+  // :: [a] -> a * [a]
+  split-Cons : [x | xs] -> (x, xs)
+
+  // :: a * [a] -> [a]
+  MkCons : (x, xs) -> [x | xs]
+
 strategies
 
   is-list = ?[] + ?[_ | _]
@@ -44,10 +54,10 @@ strategies
   length = 
     foldr(!0, add, !1)
 
-  // :: a * List(a) -> fail?
+  // :: a * [a] -> fail?
   elem = elem(eq)
   
-  // a * a -> fail? :: a * List(a) -> fail?
+  // a * a -> fail? :: a * [a] -> fail?
   elem(eq) =
     ?(x, <id>); one(where(<eq> (x, <id>)))
 
@@ -163,6 +173,16 @@ strategies
 
   Sep(s) = obsolete(!"Sep/1; This is a private and obsolete util rule of separate-by");
     \ [x| xs] -> [<s>(), x | xs] \
+
+strategies
+
+  // :: [[a]] -> [[a]]
+  matrix-transpose =
+      map(?[]); ![]
+    +   map(split-Cons)
+      ; unzip
+      ; (id, matrix-transpose)
+      ; MkCons
 
 \end{code}
 
