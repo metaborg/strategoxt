@@ -16,6 +16,9 @@ libexec_PROGRAMS = fusion inline dead-def-elim const-prop dead-var-elim	\
 
 check_PROGRAMS 	 = build-match-laws-test bound-unbound-vars-test \
 		   const-prop-test
+nodist_build_match_laws_test_SOURCES = build-match-laws-test.c
+nodist_bound_unbound_vars_test_SOURCES = bound-unbound-vars-test.c
+nodist_const_prop_test_SOURCES = const-prop-test.c
 
 fusion_SOURCES 	 = fusion.c
 

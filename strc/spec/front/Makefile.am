@@ -16,6 +16,8 @@ libexec_PROGRAMS = extract extract-all rename-defs stratego-warnings \
 		   check-constructors spec-to-sdefs 
 
 check_PROGRAMS	 = use-def-test lift-dynamic-rules-old-test
+nodist_use_def_test_SOURCES = use-def-test.c
+nodist_lift_dynamic_rules_old_test_SOURCES = lift-dynamic-rules-old-test.c
 
 CLEANFILES 	 = $(wildcard *.dep) $(wildcard *.tmp)
 
