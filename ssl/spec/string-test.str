@@ -44,7 +44,8 @@ strategies
 	get-path-test;
 	escape-test;
 	unescape-test;
-	string-sort-test
+	string-sort-test;
+  string-tokenize-test
     )
 
   explode-implode-test =
@@ -76,6 +77,28 @@ strategies
   is-substring-test =
     apply-test(!"is-substring-test",is-substring(!"foo"),
 	!"barfoofnord",id)
+
+  string-tokenize-test =
+    apply-test(!"tokenize-test1"
+      , <string-tokenize> ([], <id>)
+      , !"This should be one token"
+      , !["This should be one token"])
+  ; apply-test(!"tokenize-test2"
+      , <string-tokenize> ([' '], <id>)
+      , !"   This should not   be one token  "
+      , !["This", "should", "not", "be", "one", "token"])
+  ; apply-test(!"tokenize-test3"
+      , <string-tokenize> ([' ', '.'], <id>)
+      , !"   This should not   be one token  . "
+      , !["This", "should", "not", "be", "one", "token"])
+  ; apply-test(!"tokenize-test4"
+      , <string-tokenize> ([' ', '.'], <id>)
+      , !""
+      , ![])
+  ; apply-test(!"tokenize-test5"
+      , <string-tokenize> ([' ', '.'], <id>)
+      , !"    "
+      , ![])
 
   padd-with-test =
     apply-test(!"padd-with-test",padd-with(!48),!("42",4),!"0042")
