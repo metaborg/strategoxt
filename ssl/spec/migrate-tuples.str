@@ -3,7 +3,7 @@ imports list simple-traversal term-io
 
 signature
   constructors
-    TNil : Tuple()
+    TNil : Tuple([])
     TCons: a * Tuple(as) -> Tuple([a | as])
 
 strategies

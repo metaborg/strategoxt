@@ -43,7 +43,7 @@ strategies
 	      ,![ ("foo", 1, 11), ("baz", "Unknown", 13), ("bar", 2, 12)  ]
               )
 
-  join'(merge1 : (a, b) -> c, merge2 : a -> c, merge3 : b -> c) : // List(a) * List(b) -> List(c)
+  join'(merge1 : a * b -> c, merge2 : a -> c, merge3 : b -> c) : // List(a) * List(b) -> List(c)
     (xs, ys) -> 
     <filter(\ x -> <filter(<merge1>(x, <id>)); try([]; <merge2> x)> ys\ )> xs
 
