@@ -37,7 +37,7 @@ module sdf2asdf
 *)
 
 imports
-  Sdf2ASdf termid
+  Sdf-2-ASdf termid
 
 strategies
 

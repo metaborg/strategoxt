@@ -1,3 +1,8 @@
+2002-05-08  Merijn de Jonge <mdejonge@cwi.nl>
+   * sdf2asdf: renamed Sdf2ASdf.r to Sdf-2-ASdf.r to solve case
+     insensitiveness problems on cygwin platform
+
+
 2002-03-22  Merijn de Jonge <mdejonge@cwi.nl>
    * Repaired package dependencies
 
