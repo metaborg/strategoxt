@@ -9,7 +9,7 @@ test "x$prefix" = xNONE && prefix=$ac_default_prefix
 
 XT_SVN_REVISION
 # comment to make this a stable release
-XT_PRE_RELEASE
+# XT_PRE_RELEASE
 
 XT_ARG_WITH([aterm],         [ATERM],           [prefix],                    [DIR],       [ATerm Library])
 XT_ARG_WITH([repository],    [REPOSITORY],      [datadir/$PACKAGE_NAME/XTC], [FILE],      [XTC Repository])
