@@ -1,5 +1,6 @@
 SINCLUDES 	= -I $(SSL)/share/ssl -I $(SRTS)/share/srts
 AM_LDFLAGS	= -L$(SRTS)/lib/srts -L$(ATERM)/lib 
+export LD_LIBRARY_PATH := $(SRTS)/lib/srts:${LD_LIBRARY_PATH}
 
 check_PROGRAMS 	= test02 test03 test04 test05			    \
 		  test06 test07 test08 test09 test10 test11 test12  \
