@@ -75,7 +75,7 @@ the source.
 The Stratego Compiler has been refactored to make use of the official
 signature from stratego-front. The Stratego Optimizer has been
 extended with a bunch of new optimizations, and now includes the
-following optimizatoins:
+following optimizations:
 
    * Stratego simplifier
    * Build match fusion
