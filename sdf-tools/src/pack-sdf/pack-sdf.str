@@ -11,18 +11,46 @@
  * @copyright  see end of module
  */
 module pack-sdf
-imports xtc-proc lib
+imports xtc-proc lib stratego-xt-xtc-tools
 imports Sdf-ParseTree-Syntax Kernel-Sdf-Syntax
 imports asfix-abstractions sglr pack-modules 
 
 strategies
 
   io-pack-sdf =
-    xtc-io-wrap(pack-options,
+    xtc-io-wrap(pack-options + of-option,
       pack-sdf(|<include-path>) => (files, spec)
     ; <maybe-create-depfile> files
     ; <write-to> spec
+    ; (  where(of-config => "txt")   < xtc-asfix-yield
+      +  where(of-config => "ast")   < xtc-implode-asfix
+      +  where(of-config => "asfix")
+         <+ <fatal-error> ["pack-sdf: ", <id>, " is not a valid output format."]
+      )
     )
+
+  xtc-asfix-yield =
+    xtc-transform(!"asfix-yield", pass-verbose)
+
+strategies
+
+  of-config = 
+    <get-config> "--output-format" <+ !"txt"
+
+  of-option =
+    OutputFormatOption(|["txt", "asfix", "ast"])
+
+  OutputFormatOption(|formats) =
+    ArgOption("-of" + "--output-format"
+    , where(
+        where(<elem> (<id>, formats))
+      ; <set-config> ("--output-format", <id>)
+      <+ <fatal-error> ["pack-sdf: ", <id>, " is not a valid output format. Supported formats: " | <separate-by> (", ", formats)]
+      )
+    , <concat-strings> ["-of f            Use output format f (", <separate-by; concat-strings> (", ", formats), ")"]
+     )
+
+strategies
 
   /**
    * Gets the include path from the config.

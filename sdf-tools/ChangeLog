@@ -1,4 +1,16 @@
-2003-02-28  Martin Bravenboer  <martin@cs.uu.nl>
+2003-12-05  Martin Bravenboer  <martin@cs.uu.nl>
+
+	* src/pack-sdf/pack-sdf.str: support multiple output formts using
+	the -of (or --output-format) flag. By default pack-sdf from now
+	returns an SDF definition in concrete syntax (-of txt). Other
+	supported output formats are asfix and ast.
+
+	Note that tools must use the new Makefile.xt. Bootstrapped source
+	distributions that include Makefile.xt will only install because
+	the .defs are already included. If this file is removed the
+	package will also need the updated Makefile.xt.
+	
+2003-12-05  Martin Bravenboer  <martin@cs.uu.nl>
 
 	* src/pack-sdf/pack-sdf.str: refactored the entry point (no
 	asfix/text/ast changes yet)

@@ -1,3 +1,14 @@
+2003-12-05  Martin Bravenboer  <martin@cs.uu.nl>
+
+	* Makefile.xt: In the .sdf.def rule applying asfix-yield is no
+	longer required becayse pack-sdf now outputs SDF concrete syntax
+	by default.
+
+	Note that tools must use the new Makefile.xt. Bootstrapped source
+	distributions that include Makefile.xt will only install because
+	the .defs are already included. If this file is removed the
+	package will also need the updated Makefile.xt.
+	
 2003-11-16  Eelco Visser  <visser@cs.uu.nl>
 
 	* autoxt.m4: configuration switch for concrete-syntax package
