@@ -68,14 +68,20 @@ strategies
 
 strategies
 
-  // :: Int -> fail?
+  /**
+   * @type  Int -> fail?
+   */
   even = where(<mod> (<id>, 2) => 0)
 
-  // :: Int * Int -> Int
+  /**
+   * @type  (Int, * Int -> Int
+   */
   max = gt < Fst + Snd
   min	= gt < Snd + Fst
 
-  // :: Int -> Int
+  /**
+   * @type  Int -> Int
+   */
   pos = where(<geq> (<id>, 0))
   neg = where(<lt>  (<id>, 0))
 
@@ -86,13 +92,15 @@ strategies
 
 strategies
 
-  // :: String -> Int
+
  /**
+  * @type String -> Int
   * @inc hex-string-test
   */
   hex-string-to-int = <generic-string-to-int> (<id>, 16)
 
  /**
+  * @type String -> Int
   * @inc dec-string-test
   */
   dec-string-to-int = <generic-string-to-int> (<id>, 10)
@@ -100,6 +108,7 @@ strategies
   oct-string-to-int = <generic-string-to-int> (<id>, 8)
 
  /**
+  * @type String -> Int
   * @inc bin-string-test
   */
   bin-string-to-int = <generic-string-to-int> (<id>, 2)

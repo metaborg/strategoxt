@@ -55,14 +55,14 @@ strategies
 
   // no annotation
   test-match-1 =
-    apply-test(!"test-match-1"
+    apply-test(!"test-match-anno-1"
     , test-success( ?Plus(Var("a"), Var("b")){} )
     , !Plus(Var("a"), Var("b"))
     , !Success
     )
 
   test-match-2 =
-    apply-test(!"test-match-2"
+    apply-test(!"test-match-anno-2"
     , test-success( ?Plus(Var("a"), Var("b")) )
     , !Plus(Var("a"), Var("b")){}
     , !Success
@@ -70,7 +70,7 @@ strategies
 
   // 1 annotation
   test-match-3 =
-    apply-test(!"test-match-3"
+    apply-test(!"test-match-anno-3"
     , test-success( ?Plus(Var("a"), Var("b")){Int} )
     , !Plus(Var("a"), Var("b")){Int}
     , !Success
@@ -78,7 +78,7 @@ strategies
 
   // 2 annotations
   test-match-4 =
-    apply-test(!"test-match-4"
+    apply-test(!"test-match-anno-4"
     , test-success( ?Plus(Var("a"), Var("b")){Int, Float} )
     , !Plus(Var("a"), Var("b")){Int, Float}
     , !Success
@@ -86,21 +86,21 @@ strategies
 
   // transparency of annotations
   test-match-5 =
-    apply-test(!"test-match-5"
+    apply-test(!"test-match-anno-5"
     , test-success( ?Plus(Var("a"), Var("b")) )
     , !Plus(Var("a"), Var("b")){Int, Float}
     , !Success
     )
 
   test-match-6 =
-    apply-test(!"test-match-6"
+    apply-test(!"test-match-anno-6"
     , test-success( ?Plus(Var("a"), Var("b")){Int} )
     , !Plus(Var("a"), Var("b"))
     , !Failure
     )
 
   test-match-7 =
-    apply-test(!"test-match-7"
+    apply-test(!"test-match-anno-7"
     , test-success( ?Plus(Var("a"), Var("b")){} )
     , !Plus(Var("a"), Var("b")){Int}
     , !Failure
@@ -108,21 +108,21 @@ strategies
 
   // {_} just matches an anno of 1 element
   test-match-8 =
-    apply-test(!"test-match-8"
+    apply-test(!"test-match-anno-8"
 	, test-success( ?_{_} )
 	, !Var("a")
 	, !Failure
 	)
 
   test-match-9 =
-    apply-test(!"test-match-9"
+    apply-test(!"test-match-anno-9"
 	, test-success( ?_{_} )
 	, !Var("a"){Int}
 	, !Success
 	)
 
   test-match-10 =
-    apply-test(!"test-match-10"
+    apply-test(!"test-match-anno-10"
 	, test-success( ?_{_} )
 	, !Var("a"){Int, Float}
 	, !Failure
@@ -130,7 +130,7 @@ strategies
 
   // Don't match a term without annotation
   test-match-11 =
-    apply-test(!"test-match-11"
+    apply-test(!"test-match-anno-11"
 	, test-success( ?Var("a"){Int} )
 	, !Var("a")
 	, !Failure
@@ -149,7 +149,7 @@ strategies
 
   // 0 with set-annos
   test-set-1 =
-    apply-test(!"test-set-1"
+    apply-test(!"test-set-annos-1"
     , set-annos
     , !(Plus(Var("a"), Var("b")), [])
     ,  !Plus(Var("a"), Var("b")){}
@@ -157,7 +157,7 @@ strategies
 
   // 1 with set-annos
   test-set-2 =
-    apply-test(!"test-set-2"
+    apply-test(!"test-set-annos-2"
     , set-annos
     , !(Plus(Var("a"), Var("b")), [Int])
     ,  !Plus(Var("a"),Var("b")){Int}
@@ -165,7 +165,7 @@ strategies
 
   // 2 with set-annos
   test-set-3 =
-    apply-test(!"test-set-3"
+    apply-test(!"test-set-annos-3"
     , set-annos
     , !(Plus(Var("a"), Var("b")), [Int, Float])
     ,  !Plus(Var("a"), Var("b")){Int, Float}
@@ -173,7 +173,7 @@ strategies
 
   // 1  with set-anno
   test-set-4 =
-    apply-test(!"test-set-4"
+    apply-test(!"test-set-annos-4"
     , set-anno
     , !(Plus(Var("a"), Var("b")), Int)
     ,  !Plus(Var("a"), Var("b")){Int}
@@ -191,7 +191,7 @@ strategies
     )
 
   test-catch-1 =
-    apply-test(!"test-catch-1"
+    apply-test(!"test-catch-annos-1"
     , catch-annos
     ,      !Plus(Var("a"), Var("b")){}
     //, !Anno(Plus(Var("a"), Var("b")), [])
@@ -199,7 +199,7 @@ strategies
     )
 
   test-catch-2 =
-    apply-test(!"test-catch-2"
+    apply-test(!"test-catch-annos-2"
     , catch-annos
     ,      !Plus(Var("a"), Var("b"))
     //, !Anno(Plus(Var("a"), Var("b")), [])
@@ -207,14 +207,14 @@ strategies
     )
 
   test-catch-3 =
-    apply-test(!"test-catch-3"
+    apply-test(!"test-catch-annos-3"
     , catch-annos
     ,      !Plus(Var("a"), Var("b")){Int}
     , !Anno(Plus(Var("a"), Var("b")), [Int])
     )
 
   test-catch-4 =
-    apply-test(!"test-catch-4"
+    apply-test(!"test-catch-annos-4"
     , catch-annos
     ,      !Plus(Var("a"), Var("b")){Int, Float}
     , !Anno(Plus(Var("a"), Var("b")), [Int, Float])
@@ -234,7 +234,7 @@ strategies
 
   // without annotations
   test-get-1 =
-    apply-test(!"test-get-1"
+    apply-test(!"test-get-annos-1"
 	, get-annos
 	, !Var("a")
 	, ![]
@@ -242,7 +242,7 @@ strategies
 
   // without annotations
   test-get-2 =
-    apply-test(!"test-get-2"
+    apply-test(!"test-get-annos-2"
 	, get-annos
 	, !Var("a"){}
 	, ![]
@@ -250,7 +250,7 @@ strategies
 
   // with 1 annotation
   test-get-3 =
-    apply-test(!"test-get-3"
+    apply-test(!"test-get-annos-3"
 	, get-annos
 	, !Var("a"){Int}
 	, ![Int]
@@ -258,7 +258,7 @@ strategies
 
   // with 2 annotations
   test-get-4 =
-    apply-test(!"test-get-4"
+    apply-test(!"test-get-annos-4"
 	, get-annos
 	, !Var("a"){Int, Float}
 	, ![Int, Float]
@@ -348,21 +348,21 @@ overlays
 strategies
 
   test-overlays-1 =
-    apply-test(!"test-overlays-1"
+    apply-test(!"test-anno-overlays-1"
 	, id
 	, !VarA{Int}
 	, !Var("a"){Int}
 	)
 
   test-overlays-2 =
-    apply-test(!"test-overlays-2"
+    apply-test(!"test-anno-overlays-2"
 	, id
 	, !VarAInt
 	, !Var("a"){Int}
 	)
 
   test-overlays-3 =
-    apply-test(!"test-overlays-3"
+    apply-test(!"test-anno-overlays-3"
 	, id
 	, !VarAFloat{Int}
 	, !Var("a"){Int}

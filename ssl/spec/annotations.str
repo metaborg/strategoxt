@@ -15,10 +15,7 @@ strategies
   /**
    * Alias of get-annotations.
    *
-   * @inc test-get-1
-   * @inc test-get-2
-   * @inc test-get-3
-   * @inc test-get-4
+   * @inc test-get-annos
    */
   get-annos = 
     get-annotations
@@ -31,6 +28,8 @@ strategies
 
   /**
    * Alias of set-annotations.
+   *
+   * @inc test-set-annos
    */
   set-annos = 
     set-annotations
@@ -47,6 +46,11 @@ strategies
   rm-annotations =
     ?t; prim("ATremoveAnnotations", t)
 
+  /**
+   * Succeeds if a term has annotations.
+   *
+   * @inc test-has-annos
+   */
   has-annos =
     ?_{_}
 
