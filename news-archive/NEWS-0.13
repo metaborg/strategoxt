@@ -5,16 +5,79 @@ StrategoXT 0.13 -- released January ?, 2005
 StrategoXT 0.13, which represents over 3 months of development,
 features updates of the Stratego compiler, the Stratego language, and
 many transformation tools. Highlights include a new language feature
-for dynamic rules that depend on each other, several bug-fixes and
-usability improvements of the Stratego compiler, improved reporting of
-parse errors in sglri (and the Stratego compiler), more useful error
-reports in sdf2rtg, and much more!
+for dependent dynamic rules, several bug-fixes and usability
+improvements of the Stratego compiler, improved reporting of parse
+errors in sglri (and the Stratego compiler), more useful error reports
+in sdf2rtg, and much more!
 
 %TOC%
 
 ---------++ Stratego Language
 
----------+++ New Dynamic Rule Features
+---------+++ Dependent Dynamic Rules
+
+Dynamic rules are undefined when a new rule with the same left-hand
+side is defined. For example, consider the following fragment of a
+constant propagation transformation:
+
+<verbatim>
+  prop-const-assign =
+    ? |[ x := e ]|
+    ; if <is-value> e
+      then rules( PropConst.x :  |[ x ]| -> |[ e ]| )
+      else rules( PropConst.x :- |[ x ]| )
+      end
+</verbatim>
+
+When encountering an assignment a new dynamic rule rewriting |[ x ]|
+to |[ e ]| is defined when e is a value. If e is not a value the
+dynamic rule is undefined (for x). These definitions undefine any
+previous PropConst rules with |[ x ]| as left-hand side. This works
+for constant propagation since e is a constant value, not affected by
+subsequent assignments.
+
+This approach is not sufficient in the case where the right-hand side
+of the rule contains object variables, or where the left-hand side is
+a more complex pattern (as in the case of common-subexpression
+elimination) including object variables. Consistently undefining such
+dynamic rules requires keeping track of the dependencies of a dynamic
+rule on certain terms (e.g., object variables). This can be expressed
+with 0.12 dynamic rules, but at the cost of quite some code.
+
+To capture this recurring pattern, Stratego 0.13 introduces
+*dependent* dynamic rules, which list all the terms on which a rule
+depends. For example, the following fragment defines the essential
+part of a copy propagation transformation:
+
+<verbatim>
+  copy-prop-assign =
+    ? |[ x := y ]|
+    ; where( <kill-CopyProp> x )
+    ; where( <not(eq)>(x,y) )
+    ; where( innermost-scope-CopyProp => z )
+    ; rules( CopyProp.z : |[ x ]| -> |[ y ]| depends on [(x,x), (y,y)] )
+</verbatim>
+
+The =depends on= clause declares all dependencies of the =CopyProp= rule
+and the invocation of =kill-CopyProp= undefines all previously defined
+rules depending on =x=, even those with =x= in the right-hand side.
+
+Dependent dynamic rules are a generative extension of basic dynamic rules
+as described in 
+
+   M. Bravenboer, A. van Dam, K. Olmos, and E. Visser. Program
+   Transformation with Scoped Dynamic Rewrite Rules. Conditionally accepted
+   for the special issue on program transformation of Fundamenta
+   Informaticae, 2005.
+
+An account of the dependent dynamic rule extension is given in
+
+   K. Olmos and E. Visser. Composing Source-to-Source Data-Flow
+   Transformations with Rewriting Strategies and Dependent Dynamic
+   Rewrite Rules. In R. Bodik, editor, 14th International Conference
+   on Compiler Construction (CC'05). Springer-Verlag, April 2005.
+
+and the extended technical report.
 
     (Eelco Visser)
 
@@ -139,9 +202,9 @@ should be affected.
 
 ---------+++ Obsolete Strategy: iowrap
 
-The strategy =iowrap= is obsolete. Several releases ago it was
-replaced by =io-wrap=, which is easier to use, thanks to the storage
-of command-line option values in the global =config= table. Developers
+The strategy =iowrap= is obsolete. Many releases ago it was replaced
+by =io-wrap=, which is easier to use, thanks to the storage of
+command-line option values in the global =config= table. Developers
 that still use =iowrap= will now get a warning. Please update your
 code, since obsolete strategies might be removed in the future.
 
@@ -300,7 +363,7 @@ very explicit.
 
 The =pp-aterm= tool, which is used for printing an ATerm in a more
 clear and structured layout, now accepts an =--max-depth= flag. This
-is useful if you are only interesting in the outer structure of an
+is useful if you are only interested in the outer structure of an
 ATerm and the ATerm is very large.
 
     (Rob Vermaas)
