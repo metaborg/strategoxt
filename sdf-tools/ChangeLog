@@ -1,3 +1,6 @@
+2001-11-26 Merijn de Jonge <mdejonge@cwi.nl>
+   * package.conf: updated versions of required packages
+
 2001-11-25 Merijn de Jonge <mdejonge@cwi.nl>
    * sdf-imports/get-modules.r: fixed incorrect grammar identifier
    * sdf-doc/sdf2sg.r: fixed incorrect grammar identifier

@@ -1,4 +1,7 @@
 2001-11-26 Merijn de Jonge <mdejonge@cwi.nl>
+   * package.conf: updated versions of required packages
+
+2001-11-26 Merijn de Jonge <mdejonge@cwi.nl>
    * gpp/sdf.cons.defL sdf.cons.tbl is now generated
 
 2001-11-25 Merijn de Jonge <mdejonge@cwi.nl>

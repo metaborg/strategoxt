@@ -1,3 +1,6 @@
+2001-11-26 Merijn de Jonge <mdejonge@cwi.nl>
+   * package.conf: updated versions of required packages
+
 2001-11-25 Merijn de Jonge <mdejonge@cwi.nl>
    * yacc2sdf/Makefile.am: added lex.r to EXTRA_DIST
    * yacc2sdf/data/Makefile.am: added lex2sdf-check.input and
