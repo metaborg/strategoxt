@@ -125,6 +125,23 @@ strategies // high-level API with implicit rule set
       ; dr-set-rule-set(|name)
     )
 
+   /**
+    * Get all scope labels ordered from inner, most recent, to outer, oldest.
+    */
+
+  dr-get-scope-labels(|name) =
+    dr-get-rule-set(|name)
+    ; dr-get-scope-labels
+
+   /**
+    * Get the first scope label for which s succeeds starting with the
+    * inner, most recent, scope.
+    */
+
+  dr-get-first-scope-label(s|name) =
+    dr-get-rule-set(|name)
+    ; dr-get-first-scope-label(s)
+
   dr-ignore-state(s|name) =
     where(
       dr-new-rule-set
@@ -258,6 +275,17 @@ strategies // scope
     | id]
     // todo: distinction between rulescope and changeset necessary here or not??
 //    [RuleScope(labels, tbl) | scopes] -> [RuleScope([label | labels], tbl) | scopes]
+
+   dr-get-scope-labels = 
+     mapconcat(?RuleScope(<iset-elements>,_) + ?ChangeSet(<iset-elements>,_))
+
+   /**
+    * Get the first scope label for which s succeeds.
+    */
+
+   dr-get-first-scope-label(s) = 
+     fetch-elem(?RuleScope(<iset-elements; fetch-elem(s)>,_)
+		+ ?ChangeSet(<iset-elements; fetch-elem(s)>,_))
 
 strategies // change sets
   
