@@ -1,5 +1,5 @@
 AC_PREREQ(2.57)
-AC_INIT([stratego-regular],[0.3.0pre],[stratego-bugs@cs.uu.nl])
+AC_INIT([stratego-regular],[0.10pre],[stratego-bugs@cs.uu.nl])
 AM_INIT_AUTOMAKE([1.7.2 -Wall -Wno-portability])
 
 test "x$prefix" = xNONE && prefix=$ac_default_prefix
@@ -7,14 +7,11 @@ test "x$prefix" = xNONE && prefix=$ac_default_prefix
 USE_XT_PACKAGES
 XT_TERM_DEFINE
 
-DETECT_SVN_REVISION
-
 AC_PROG_CC
 AC_PROG_INSTALL
 
 AC_CONFIG_FILES([
   Makefile
-  stratego-regular.spec
 
   syn/Makefile
   sig/Makefile
