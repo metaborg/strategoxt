@@ -106,6 +106,10 @@ ATerm SSL_implode_string(ATerm chars)
 
   ATerm t;
 
+  if(!ATisList(chars)) {
+    _fail(chars);
+  }
+
   // ATfprintf(stderr, "SSL_implode_string(%t)\n");
 
   /* Allocate initial buffer */
