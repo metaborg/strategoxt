@@ -15,16 +15,19 @@ strategies
   DefDynRuleScope :
     |[ {| : s |} ]| -> s
 
-  DefDynRuleScope :
-    |[ {| x, sc* : s |} ]| -> |[ dr-scope({| sc* : s |} | ~str:x) ]|
-// wip...
-//    |[ {| x, sc* : s |} ]| -> |[ dr-scope({| sc2* : s |} | ~str:x) ]|
-//    where <partitition(?LabeledDynRuleScopeId(x,_) + ?LabeledDynRuleScopeId(x))> sc* => (sc1*, sc2*)
-    
+/* Collect any labels for the head scope-id (uniquely) in one step.
+Only one real scope is thus created for each scope-id/rulename. */
 
   DefDynRuleScope :
-    |[ {| x.t, sc* : s |} ]| -> |[ dr-scope( rules(x + t); {| sc* : s |}
-                                           | ~str:x ) ]|
+    |[ {| x, sc* : s |} ]| -> |[ dr-scope(s1; {| sc2* : s |} | ~str:x) ]|
+    where <partition(?LabeledDynRuleScopeId(x,_) + ?DynRuleScopeId(x))> sc* => (sc1*, sc2*)
+        ; <collect(?LabeledDynRuleScopeId(x,<id>)); map(!|[ rules(x + ~<id>) ]|); !Seqs(<id>)> sc1* => s1
+
+  DefDynRuleScope :
+    |[ {| x.t, sc* : s |} ]| -> |[ dr-scope(s1; {| sc2* : s |} | ~str:x) ]|
+    where <partition(?LabeledDynRuleScopeId(x,_) + ?DynRuleScopeId(x))> sc* => (sc1*, sc2*)
+        ; <collect(?LabeledDynRuleScopeId(x,<id>)); ![t|<id>]; map(!|[ rules(x + ~<id>) ]|); !Seqs(<id>)> sc1* => s1
+
 
 /* Lift dynamic rules from strategy definitions.  One dynamic rule set
 is lifted out at a time, after which the process repeats; a definition
@@ -63,7 +66,8 @@ that are declared in context using the dynamic rule ContextVar */
   DeclareContextVars =
     map({(?ListVar(x) <+ ?x); rules(ContextVar : x -> x)})
 
-/* Split each rule in a dynamic rule set */
+
+/* Split each rule within a dynamic rules block */
 
   split-dynamic-rules :
     |[ rules(drd*) ]| -> 
