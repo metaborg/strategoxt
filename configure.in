@@ -22,13 +22,6 @@ AM_CONDITIONAL(USECPL, test x$usecpl = xtrue)
 
 ############ XTC ##########################################################
 
-AC_ARG_WITH(xtc,
-  AC_HELP_STRING([--with-xtc=DIR], [use XTC (XT Composition) at DIR @<:@PREFIX@:>@]),
-  XTC="$withval",
-  XTC="$prefix"
-)
-AC_SUBST(XTC)
-
 AC_ARG_WITH(repository,
   AC_HELP_STRING([--with-repository=FILE], [use XTC repository at FILE @<:@PREFIX/share/StrategoXT/XTC@:>@]),
   REPOSITORY="$withval",
