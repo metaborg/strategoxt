@@ -16,6 +16,6 @@ STRINCLUDES = \
   -I $(top_srcdir)/syn/xml \
   -I $(STRATEGO_REGULAR)/share/stratego-regular
 
-EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta)
+EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta) $(pkgdata_DATA)
 CLEANFILES     = $(wildcard *.dep)
 BOOTCLEANFILES = $(wildcard *.c) $(wildcard *.rtree)
