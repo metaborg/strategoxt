@@ -66,6 +66,11 @@ strategies
     ; unzip
     ; (id, flatten-stratego)
 
+  get-search-path =
+    (<get-config> "-I" <+ ![])
+  ; filter(not("-I"))
+  ; !["."|<id>]
+
   get-module(mkpath) :
     mod -> (name, tree)
     where <find-module(mkpath)> (<basename> mod, ["rtree", "str", "cr", "r"]) 
@@ -108,10 +113,37 @@ strategies
 
   get-stratego-imports =
     ?(_, Specification(<id>))
-    ; filter(?Imports(<id>))
+    ; filter(?Imports(<id>) ; mapconcat(expand-import))
     ; concat
 
   flatten-stratego = 
     map(?Specification(<id>); filter(not(Imports(id))))
     ; concat 
     ; !Specification(<id>)
+
+  expand-import = 
+    ![<is-string>]
+  + \ Import(i) -> [i] \ 
+  + ?ImportWildcard(<id>) => path
+  ; get-search-path
+  ; mapconcat(
+      {dir:
+        ?dir 
+      ; <concat-strings>[dir,"/",path] 
+      ; readdir 
+      ; filter(
+          ( has-extension(!".rtree") 
+          + has-extension(!".str") 
+          + has-extension(!".r")
+          ) 
+        ; basename
+        ; <concat-strings>[path,"/",<id>]
+        )
+      <+ ![]
+      }
+    )
+
+signature
+  constructors
+    Import         : String -> Import
+    ImportWildcard : String -> Import

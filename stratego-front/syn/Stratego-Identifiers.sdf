@@ -6,7 +6,7 @@ exports
     {ModNamePart "/"}+ -> ModName
     [a-zA-Z\'\.\-\_] [a-zA-Z0-9\'\.\-\_]* -> ModNamePart
   lexical restrictions
-    ModName -/- [a-zA-Z0-9\'\.\-\_\/]
+    ModName -/- [a-zA-Z0-9\'\.\-\_]
   lexical syntax
     "imports" 		-> ModName {reject}
     "overlays" 		-> ModName {reject}
