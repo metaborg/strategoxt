@@ -16,7 +16,7 @@
 # 02111-1307, USA.
 
 AC_INIT(sig/C.r)
-AM_INIT_AUTOMAKE(cgen,0.1)
+AM_INIT_AUTOMAKE(cgen,0.2)
 
 
 AC_ARG_WITH(aterm, 
@@ -48,7 +48,7 @@ AC_ARG_WITH(srts,
 AC_SUBST(STRATEGORTS)
 
 
-AC_REVISION($Id: configure.in,v 1.4 2001/08/27 14:30:32 visser Exp $)
+AC_REVISION($Id: configure.in,v 1.5 2001/09/22 09:35:14 visser Exp $)
 
 AC_PROG_CC
 AC_PROG_RANLIB
