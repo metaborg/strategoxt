@@ -27,3 +27,5 @@ exports
     ModName              -> ImportModName {cons("Import")}
   syntax
     <ModName-CF> "/" "*" -> <ImportModName-CF> {cons("ImportWildcard")}
+  context-free restrictions
+    ImportModName -/- [\/].[\*]
