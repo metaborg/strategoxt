@@ -1,3 +1,6 @@
+2002-05-23  Merijn de Jonge <mdejonge@cwi.nl>
+   * sdf2strago: renamed Sdf2Stratego.r to Sdf-2-Stratego.r to support cygwin platform
+
 2002-03-22  Merijn de Jonge <mdejonge@cwi.nl>
    * Repaired package dependencies
 
