@@ -1,0 +1,10 @@
+module s2j
+imports liblib Stratego Java-15
+
+strategies
+
+  io-s2j = s2j
+
+  s2j = id
+
+  test-it-now = \ |[ ?t ]| -> exp |[ new Rob() ]| \
