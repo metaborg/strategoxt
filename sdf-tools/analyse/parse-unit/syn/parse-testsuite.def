@@ -110,6 +110,7 @@ exports
 
   %% allow unquoted upper case AFuns
   lexical syntax
+    ""                             -> UQLiteral {cons("no-chars")}
     [A-Z][A-Za-z0-9\-]*[A-Za-z0-9] -> UQLiteral {cons("more-chars")}
 
   %% allow function applications without arguments
