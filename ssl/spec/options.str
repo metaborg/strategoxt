@@ -1,5 +1,5 @@
 /**
- * Strategies for handling options.
+ * Handling command line options.
  */
 module options
 imports io parse-options config time verbose keep
@@ -7,13 +7,19 @@ imports io parse-options config time verbose keep
 strategies
 
  /**
-  * The operator io-wrap defines a default wrapper around a strategy that 
-  * handles processing of options and reading and writing of terms from 
-  * and to files.
+  * Wraps a strategy into a strategy handling options and io of terms.
+  *
+  * @param  strategy to apply on the input term
   */
   io-wrap(s) = 
     io-wrap(fail, s)
 
+ /**
+  * Wraps a strategy into a strategy handling options and io of terms.
+  *
+  * @param  extra options besides the default io-options
+  * @param  strategy to apply on the input term
+  */
   io-wrap(extra-opts, s) =
     option-wrap(extra-opts <+ io-options,  io(s))
 
@@ -32,17 +38,31 @@ strategies
 strategies
 
  /**
-  * The operator io defines a wrapper that handles reading and writing 
-  * of terms from and to files defined by -i and -o config.
-  */ 
+  * Wraps a strategy into a strategy that handles io options.
+  *
+  * Reads a term from the file specified by the -i option (or stdin).
+  * Writes to a file specified by the -o option (or stdout).
+  *
+  * @param   strategy to apply on the input term
+  */
   io(s) =
     input(output(s))
 
+ /**
+  * Wraps a strategy into a strategy that handles output options.
+  *
+  * Writes to a file specified by the -o option (or stdout).
+  */ 
   output(s) =
       s
     ; !(<<get-config> "-o" <+ !stdout()>, <id>)
     ; ( where(<get-config> "-b") < WriteToBinaryFile + WriteToTextFile )
 
+ /**
+  * Wraps a strategy into a strategy that handles inputput options.
+  *
+  * Reads a term from the file specified by the -i option (or stdin).
+  */ 
   input(s) =
       ( <get-config> "-i" <+ !stdin() )
     ; ReadFromFile
@@ -50,9 +70,11 @@ strategies
 
 strategies
 
-  // OPTION-WRAP
-  // read options, display help, report success or failure, call strategy
-
+  /**
+   * Read options, display help, report success or failure, call strategy
+   *
+   * @todo parse-options already invokes need-help. Remove it from parse-options or remove it here.
+   */
   option-wrap(opts, usage, announce, s) =
     parse-options(opts)
     ; store-options
@@ -60,15 +82,15 @@ strategies
     ; (  need-help(usage)
       <+ s; report-success
       <+ report-failure)
-  /**
-   * TODO: parse-options already does need-help. Remove it from
-   * parse-options or remove it here
-   */
+
   option-wrap(opts, s) =
     option-wrap(opts, default-usage, id, s)
 
 strategies
 
+  /**
+   * Handles all common options for a transformation tool.
+   */
   io-options =
       input-option
     + aterm-output-option
@@ -173,10 +195,11 @@ strategies
   whoami =
     <get-config> "program"
 
+/**
+* @warning obsolete, new option handling uses config table.
+*/ 
 signature
- /**
-  * The following strategies and signatures are all deprecated.
-  */ 
+
   constructors
     Silent      : Option
     Verbose     : Int -> Option
@@ -191,28 +214,45 @@ signature
 
 strategies
 
-  // IOWRAP
-  // handle options, read term from input file, transform, write result 
-  // to output file
-
+  /**
+   * Handles options, reads term from input file, transform, write result 
+   * to output file
+   *
+   * @warning obsolete: use io-wrap.
+   */
   iowrap(strat) = 
     iowrap((id, strat), fail)
 
+  /**
+   * @warning obsolete: use io-wrap.
+   */
   iowrapO(strat, extra-options) =
     obsolete(!"iowrapO/2: use iowrap/2");
     iowrap(strat, extra-options)
 
+  /**
+   * @warning obsolete: use io-wrap.
+   */
   iowrap(strat, extra-options) = 
     iowrap(strat, extra-options, default-usage)
 
+  /**
+   * @warning obsolete: use io-wrap.
+   */
   iowrap(strat, extra-options, usage) = 
     iowrap(strat, extra-options, usage, 
 	   if-verbose2(where(<printnl>(stderr, [<get-config> "program"]))))
 
+  /**
+   * @warning obsolete: use io-wrap.
+   */
   iowrapO(strat, extra-options, usage) =
     obsolete(!"iowrapO/3: use iowrap/3");
     iowrap(strat, extra-options, usage)
 
+  /**
+   * @warning obsolete: use io-wrap.
+   */
   iowrap(strat, extra-options, usage, announce) =
     option-wrap(extra-options <+ io-options, usage, announce, 
       input-file;
@@ -220,9 +260,15 @@ strategies
       output-file
     )
 
+  /**
+   * @warning deprecated: use input-wrap.
+   */
   iowrapNoOutput(strat, extra-options) = 
     iowrapNoOutput(strat, extra-options, default-usage)
 
+  /**
+   * @warning obsolete: use input-wrap.
+   */
   iowrapNoOutput(strat, extra-options, usage) =
     option-wrap(extra-options <+ io-options, usage, id, 
       input-file;
@@ -231,39 +277,58 @@ strategies
 
 strategies
 
-  // storing and retrieving options in a table
-  // obsolete; use config for this purpose
-
+  /**
+   * @warning  obsolete: use config for this purpose.
+   */
   store-options = ?options;
     where( 
       <table-create>"option-table";
       <table-put>("option-table", "options", options)
     )
 
+  /**
+   * @warning  obsolete: use config for this purpose.
+   */
   get-options =
     <table-get>("option-table", "options")
 
+  /**
+   * @warning  obsolete: use config for this purpose.
+   */
   has-option(s) =
     test(<s; check-option>())
 
+  /**
+   * @warning  obsolete: use config for this purpose.
+   */
   option-value(s,default) =
     get-options; fetch-elem(s) <+ default
 
+  /**
+   * @warning  obsolete: use config for this purpose.
+   */
   check-option: option -> ()
     where get-options => ops
         ; <is-subterm>(option,ops)
 
+  /**
+   * @warning  obsolete: use default-usage.
+   */
   usage' = 
     obsolete(!"usage': use default-usage")
 
 strategies
 
-  // Input, strategy application and output
-
+  /**
+   * @warning  obsolete: use input(s).
+   */
   input-file' =
 	obsolete(!"input-file'; use input-file");
 	input-file
 
+  /**
+   * @warning  obsolete: use input(s).
+   */
   input-file =
 	 where((option-defined(?Input(infile)) <+ !stdin => infile));
   	 split(id, <ReadFromFile> infile)
@@ -274,10 +339,16 @@ strategies
    	 where(dtime => runtime);
 	 \(options, trm) -> ([Runtime(runtime) | options], trm)\
 
+  /**
+   * @warning  obsolete: use output(s).
+   */
   output-file' =
 	obsolete(!"output-file'; use output-file");
 	output-file
 
+  /**
+   * @warning  obsolete: use output(s).
+   */
   output-file =
 	 where((option-defined(?Output(outfile)) <+ !stdout => outfile, id)); 
 	 (id, split(!outfile, id));
@@ -309,4 +380,3 @@ long-description(p) = !["This is a test program to demonstrate use of ",
                         "These now contain usage info as additional ",
                         "third argument."]
 */
-
