@@ -1,3 +1,10 @@
+2004-05-25  Martin Bravenboer  <martin@cs.uu.nl>
+
+	* trans/sdf-spread-cons.str: new tool to annotate all equivalent
+	productions with a constructor, if one of them has a
+	constructor. Not really monkey proof at the moment, but well,
+	Stratego users are no monkeys!
+
 2004-05-01  Martin Bravenboer  <martin@cs.uu.nl>
 
 	* src/sdf: Kodak Moment! This was the sdf.cons pp-table, def and
