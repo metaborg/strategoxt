@@ -13,8 +13,8 @@ pkgdata_DATA 	= sc.config sc-manual.txt
 
 sc.o		: xtc-conf.h
 
-CLEANFILES 	= $(wildcard *.dep) sc.config sc.1
-BOOTCLEANFILES 	= sc.c
+CLEANFILES 	= $(wildcard *.dep) sc.config
+BOOTCLEANFILES 	= sc.c sc.1
 
 EXTRA_DIST 	= $(wildcard *.str) sc.config.src sc-manual.txt $(man_MANS)
 INCLUDES  	+= -I ..
