@@ -86,7 +86,7 @@ strategies
    */
   CheerUp =
     appl(
-      check-cons-of-prod(?"SDefT")
+      check-cons-of-prod(?"SDefT" + ?"RDefT")
     , [ appl(id, id) // name
       , appl(id, id) // layout
       , lit("(")
