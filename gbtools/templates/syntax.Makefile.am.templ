@@ -2,20 +2,24 @@
 # Generated file; do not edit by hand. Put additional rules in
 # the optional file "make_rules.local".
 #
-EXTRA_DIST      = $(grammar_modules) $(wildcard $(grammar)*.pp) make_rules.local
-CLEANFILES      = GB-Main.sdf $(grammar).tbl $(grammar).af $(grammar).def.dep $(grammar).def $(grammar).pp.af
+
+PP_TABLES      := $(wildcard $(grammar)*.pp)
+SDF_MODULES    := $(wildcard *.sdf)
+EXTRA_DIST      = $(SDF_MODULES) $(PP_TABLES) make_rules.local \
+                  $(grammar).def $(grammar).tbl $(PP_TABLES:%=%.af)
+CLEANFILES      = GB-Main.sdf $(grammar).tbl $(grammar).af $(grammar).def.dep $(grammar).def $(PP_TABLES:%=%.af)
 
 # Grammars are installed in $(prefix)/share/gb/$grammar.$version)
 grammardir=$(prefix)/grammars/$(grammar).$(grammar_version)
-grammar_DATA    = $(grammar).def $(grammar).tbl $(grammar).pp $(grammar).pp.af $(grammar_modules)
+grammar_DATA    = $(grammar).def $(grammar).tbl $(SDF_MODULES) $(PP_TABLES) $(PP_TABLES:%=%.af)
 
 TESTS           = $(grammar).tbl
 grammar_modules =
 
-include $(GBTOOLS)/share/gbtools/make_rules
-include $(GBTOOLS)/share/gbtools/make_rules.gb
-include $(GBTOOLS)/share/gbtools/make_rules.sdf
-include $(GBTOOLS)/share/gbtools/make_rules.gpp
+sinclude $(GBTOOLS)/share/gbtools/make_rules
+sinclude $(GBTOOLS)/share/gbtools/make_rules.gb
+sinclude $(GBTOOLS)/share/gbtools/make_rules.sdf
+sinclude $(GBTOOLS)/share/gbtools/make_rules.gpp
 
 # inclusion of local make_rules file
 include ./make_rules.local

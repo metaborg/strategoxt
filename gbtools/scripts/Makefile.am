@@ -18,15 +18,15 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# $Id: Makefile.am,v 1.1 2002/03/06 20:40:37 mdejonge Exp $
+# $Id: Makefile.am,v 1.2 2002/08/08 15:17:04 mdejonge Exp $
 
 EXTRA_DIST      = getvalue.sh.src defhead.sh.src readhead.sh.src \
-                  gbadd.sh.src mkmain.sh.src gbquery.sh.src
+                  gbadd.sh.src mkmain.sh.src gbquery.sh.src gbtrans.sh.src
 
 libexec_SCRIPTS = getvalue defhead readhead mkmain
-bin_SCRIPTS     = gbadd gbquery
+bin_SCRIPTS     = gbadd gbquery gbtrans
 
-CLEANFILES      = getvalue defhead readhead gbadd mkmain gbquery
+CLEANFILES      = getvalue defhead readhead gbadd mkmain gbquery gbtrans
 
 % : %.sh.src Makefile
 	sed "s#__MAKE__#$(MAKE)#g;\
