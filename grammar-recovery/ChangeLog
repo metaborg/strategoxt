@@ -1,3 +1,12 @@
+2001-06-06 Joost.Visser@cwi.nl
+   * Added --with-sdf-tools configuration switch.
+   * Added -d option to asfix2sdf to enable de-normalization of 
+	a reconstructed grammar.
+   * Added -g option to asfix2sdf to allow an initial grammar to
+	be supplied. Instead of reconstructing a new grammar from the
+	asfix input, this supplied grammar is minimized on the basis
+	of the asfix input.
+	
 2001-06-06 Merijn de Jonge <mdejonge@cwi.nl> 
    * Extracted grammar recovery tools from Gramar Tools package 0.7 and
      created a separated Grammar Recovery Tools package for them.

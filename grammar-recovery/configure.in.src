@@ -17,7 +17,7 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 dnl 02111-1307, USA.
 
-dnl $Id: configure.in.src,v 1.1 2001/06/06 09:48:31 mdejonge Exp $
+dnl $Id: configure.in.src,v 1.2 2001/08/16 21:47:57 jvisser Exp $
 
 AC_INIT(configure.in)
 AM_INIT_AUTOMAKE(__PACKAGE__,__VERSION__)
@@ -39,9 +39,15 @@ AC_ARG_WITH(asfix-tools,
    ASFIXTOOLS='${prefix}')
 AC_SUBST(ASFIXTOOLS)
 
+AC_ARG_WITH(sdf-tools, 
+   [  --with-sdf-tools      Specify location of sdf-tools package],
+   SDFTOOLS=${withval},
+   SDFTOOLS='${prefix}')
+AC_SUBST(SDFTOOLS)
 
 
-AC_REVISION($Id: configure.in.src,v 1.1 2001/06/06 09:48:31 mdejonge Exp $)
+
+AC_REVISION($Id: configure.in.src,v 1.2 2001/08/16 21:47:57 jvisser Exp $)
 
 AC_PROG_CC
 AC_PROG_INSTALL
