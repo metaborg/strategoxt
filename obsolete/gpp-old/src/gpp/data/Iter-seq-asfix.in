@@ -1,0 +1,1 @@
+appl(prod([cf(opt(layout)),cf(sort("Iter-seq")),cf(opt(layout))],sort("<START>"),no-attrs),[layout([]),appl(prod([cf(iter(seq([sort("A"),sort("B")])))],cf(sort("Iter-seq")),attrs([cons("iter-seq"),id("Main")])),[[appl(prod([cf(sort("A")),cf(opt(layout)),cf(sort("B"))],cf(seq([sort("A"),sort("B")])),no-attrs),["a",layout([" "]),"A"])]]),layout(["\n"])])

@@ -1,0 +1,90 @@
+#! /bin/sh
+# Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>
+#                    Eelco Visser <visser@acm.org>
+#                    Joost Visser <jvisser@cwi.nl>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+# $Id: asfix2abox.sh.src,v 1.1 2001/06/05 09:11:47 mdejonge Exp $
+
+# usage:
+#   asfix2abox [-h] [-i asfix] [-o abox] [-p table_1] ... [-p table_n] [-v]
+#
+# where
+#   -h          Displays usage information.
+#   -i asfix    Specifies the asfix tree to pretty-print.
+#   -o abox     Specifies the file name where the resultign abox term is stored.
+#   -p table    Specifies a pretty-print table
+#   -v          Run verbosely.
+
+OREFIX=__PREFIX__
+MAKE=__MAKE__
+
+# no core files
+ulimit -c 0
+
+usage () {
+cat <<ENDCAT
+usage:
+  asfix2abox [-h] [-i asfix] [-o abox] [-p table_1] ... [-p table_n] [-v]
+
+where
+  -h          Displays usage information.
+  -i asfix    Specifies the asfix tree to pretty-print.
+  -o abox     Specifies the file name where the resultign abox term is stored.
+  -p table    Specifies a pretty-print table
+  -v          Run verbosely.
+ENDCAT
+}
+
+for arg in $*
+do
+   case $1 in
+      -h ) usage; exit 0 ;;
+      -i ) INPUT=$2; shift; shift ;;
+      -o ) OUTPUT=$2; shift ; shift ;;
+      -p ) PP_TABLES="${PP_TABLES} $2"; shift ; shift ;;
+      -v ) VERBOSE="-v"; shift ;;
+      -* ) usage; exit 1 ;;
+   esac
+done
+
+# Don't use MAKEFLAGS variable because it might interfere with the make
+# that we use.
+unset MAKEFLAGS
+unset MAKELEVEL
+
+# Building imploded pretty-print tables
+for table in ${PP_TABLES}
+do
+   ${MAKE} -s -f ${PREFIX}/share/gpp/gpp.Makefile ${table}.af > /dev/null || exit 1
+   PP_AF_TABLES="${PP_AF_TABLES} -p ${table}.af"
+done
+
+# Construct the a command line depending on specific switches
+cmd="cat ${INPUT} \
+     | implode-asfix -S --lex --pt --list \
+     | ${PREFIX}/libexec/Asfix2abox -S ${VERBOSE} ${PP_AF_TABLES}"
+
+# -o option has been specified
+if [ "a${OUTPUT}" != "a-" -a "a${OUTPUT}" != "a" ]; then
+   cmd="$cmd -o ${OUTPUT}"
+fi
+
+cmd="$cmd || (echo formatting failed >&2; exit 1)"
+
+# Finally, evaluate the constructed command line
+eval ${cmd}

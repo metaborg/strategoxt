@@ -1,0 +1,6 @@
+-asfix2box only works with context-free syntax sections. How to deal with
+syntax sections has to be investigated.
+
+-gpp depends on sdf.cons.tbl (part of sdf-tools). This table is now also
+ included in the gpp package which might cause some maintenance overhead.
+ Should sdf.cons.tbl be part of asfix-tools?

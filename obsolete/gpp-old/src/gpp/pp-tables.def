@@ -1,0 +1,702 @@
+%%%
+%%% SDF grammar for the language "".
+%%%
+%%% This grammar is part of the Grammar Base which is located at
+%%%      http://www.program-transformation.org/gb/
+%%% 
+%%%  Grammar: pp-tables
+%%%  Version: 0
+%%% Maturity: Volatile
+%%%
+%%% Description:
+%%%  Syntax of Pretty-Print Tables
+
+definition
+
+%%% Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>,
+%%%                    Eelco Visser <visser@acm.org>,
+%%%                    Joost Visser <jvisser@cwi.nl>
+%%%
+%%% This program is free software; you can redistribute it and/or modify
+%%% it under the terms of the GNU General Public License as published by
+%%% the Free Software Foundation; either version 2, or (at your option)
+%%% any later version.
+%%%
+%%% This program is distributed in the hope that it will be useful,
+%%% but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%%% GNU General Public License for more details.
+%%%
+%%% You should have received a copy of the GNU General Public License
+%%% along with this program; if not, write to the Free Software
+%%% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+%%% 02111-1307, USA.
+%%%
+%%% $Id: pp-tables.def,v 1.1 2001/06/05 09:11:48 mdejonge Exp $
+
+module Box-Disambiguation
+exports
+   context-free restrictions
+      LAYOUT? -/- [\ \t\n\%]
+
+
+%%% Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>,
+%%%                    Eelco Visser <visser@acm.org>,
+%%%                    Joost Visser <jvisser@cwi.nl>
+%%%
+%%% This program is free software; you can redistribute it and/or modify
+%%% it under the terms of the GNU General Public License as published by
+%%% the Free Software Foundation; either version 2, or (at your option)
+%%% any later version.
+%%%
+%%% This program is distributed in the hope that it will be useful,
+%%% but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%%% GNU General Public License for more details.
+%%%
+%%% You should have received a copy of the GNU General Public License
+%%% along with this program; if not, write to the Free Software
+%%% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+%%% 02111-1307, USA.
+%%%
+%%% $Id: pp-tables.def,v 1.1 2001/06/05 09:11:48 mdejonge Exp $
+
+module Box-Layout
+imports
+   Layout
+
+exports
+   lexical syntax
+    "%%" ~[\n]* "\n" -> LAYOUT
+
+
+%%% Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>,
+%%%                    Eelco Visser <visser@acm.org>,
+%%%                    Joost Visser <jvisser@cwi.nl>
+%%%
+%%% This program is free software; you can redistribute it and/or modify
+%%% it under the terms of the GNU General Public License as published by
+%%% the Free Software Foundation; either version 2, or (at your option)
+%%% any later version.
+%%%
+%%% This program is distributed in the hope that it will be useful,
+%%% but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%%% GNU General Public License for more details.
+%%%
+%%% You should have received a copy of the GNU General Public License
+%%% along with this program; if not, write to the Free Software
+%%% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+%%% 02111-1307, USA.
+%%%
+%%% $Id: pp-tables.def,v 1.1 2001/06/05 09:11:48 mdejonge Exp $
+
+%% \noindent
+%% This module introduces the sort BOX-LIST as a sequence of zero or more
+%% boxes.
+module Box-Lists-Syntax
+   exports
+      imports Box-Syntax-Base
+
+   exports
+      sorts BOX-LIST
+
+      context-free syntax
+         BOX* -> BOX-LIST 
+
+
+%%% Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>, 
+%%%                    Eelco Visser <visser@acm.org>,
+%%%                    Joost Visser <jvisser@cwi.nl>
+%%%
+%%% This program is free software; you can redistribute it and/or modify
+%%% it under the terms of the GNU General Public License as published by
+%%% the Free Software Foundation; either version 2, or (at your option)
+%%% any later version.
+%%%
+%%% This program is distributed in the hope that it will be useful,
+%%% but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%%% GNU General Public License for more details.
+%%%
+%%% You should have received a copy of the GNU General Public License
+%%% along with this program; if not, write to the Free Software
+%%% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+%%% 02111-1307, USA.
+%%%
+%%% $Id: pp-tables.def,v 1.1 2001/06/05 09:11:48 mdejonge Exp $
+
+module IntCon
+imports Layout
+exports
+  sorts NatCon IntCon
+  lexical syntax
+    [0-9]+ -> NatCon
+  context-free syntax
+    NatCon     -> IntCon
+    "+" NatCon -> IntCon
+    "-" NatCon -> IntCon
+
+
+%%% Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>,
+%%%                    Eelco Visser <visser@acm.org>,
+%%%                    Joost Visser <jvisser@cwi.nl>
+%%%
+%%% This program is free software; you can redistribute it and/or modify
+%%% it under the terms of the GNU General Public License as published by
+%%% the Free Software Foundation; either version 2, or (at your option)
+%%% any later version.
+%%%
+%%% This program is distributed in the hope that it will be useful,
+%%% but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%%% GNU General Public License for more details.
+%%%
+%%% You should have received a copy of the GNU General Public License
+%%% along with this program; if not, write to the Free Software
+%%% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+%%% 02111-1307, USA.
+%%%
+%%% $Id: pp-tables.def,v 1.1 2001/06/05 09:11:48 mdejonge Exp $
+
+%% \noindent
+%% Expressions over the BOX language can be constructed by
+%% \emph{composing} boxes using BOX operators. These operators
+%% specify the relative positioning of boxes. BOX supports several of these
+%% \emph{positional} operators. Examples of positional operators are the
+%% \textsf{H} and \textsf{V} operators which format their sub-boxes
+%% horizontally and vertically, respectively. The exact formatting of the
+%% positional operators can be controlled by means of \emph{space options}.
+%% These options allow for instance, the horizontal and vertical layout
+%% within the \textsf{H} and \textsf{V} operators to be controlled.
+%%
+%% Besides positional operators, BOX also contains
+%% \emph{non-positional} operators. These operators are used to control
+%% how sub-boxes are displayed. These operators include font operators to
+%% specify font parameters (font family, font color, etc.) and operators for
+%% cross referencing.
+%%
+%% \subsection{Space Options}
+%% Space options are used to adapt the amount of layout between boxes. The
+%% horizontal, vertical, and indentation offset between boxes can be
+%% adapted.
+
+module Box-Operators-Syntax
+imports IntCon
+
+   exports
+      sorts SPACE-SYMBOL S-OPTION S-OPTIONS
+
+      context-free syntax
+         SPACE-SYMBOL "=" NatCon -> S-OPTION     {cons("SOpt")}
+         SPACE-SYMBOL "=" BOX    -> S-OPTION     {cons("SOptB")}
+         S-OPTION*               -> S-OPTIONS
+
+%%
+%% \noindent
+%% Below all supported space options are defined. The \textsf{hs} option is
+%% used to define the horizontal layout between boxes. The \textsf{vs}
+%% option defines the amount of vertical layout between boxes (the number of
+%% newlines between boxes in a vertical context). The \textsf{is} option
+%% defines indentation between boxes within a vertical context. Not every
+%% combination of space option and BOX operator makes sense. E.g.\ the
+%% modification of the vertical offset in combination of the \textsf{H}
+%% operator does not make any sense.
+%%
+         "vs"                    -> SPACE-SYMBOL {cons("VS")}
+         "hs"                    -> SPACE-SYMBOL {cons("HS")}
+         "is"                    -> SPACE-SYMBOL {cons("IS")}
+
+%%\subsection{Positional BOX Operators}
+%% Smaller boxes can be composed to form new boxes using positional BOX
+%% operators that specify the relative ordering of sub boxes.
+%%
+%% The \textsf{H} operator is used to format a list of boxes horizontally.
+%% The operator only supports the \textsf{hs} space option to control the
+%% amount of horizontal layout between its sub-boxes. The \textsf{V}
+%% operator is used to format a list of boxes vertically. The operator
+%% supports the \textsf{vs} and \textsf{is} space options to control the
+%% amount of vertical layout and the amount of indentation between its
+%% sub-boxes, respectively. The \textsf{HV} operator is used to format a
+%% list of boxes horizontally \emph{or} vertically, depending on the
+%% available width. The operator calculates an optimal combination of
+%% \textsf{H} and \textsf{V} operators in such a way that the number of
+%% lines occupied is minimized. Because the \textsf{HV} is a combination of
+%% the \textsf{H} and \textsf{V} operators, it supports all space
+%% options of these operators (\textsf{hs}, \textsf{vs}, and \textsf{is}).
+%%
+   exports
+      context-free syntax
+         "H" S-OPTIONS "[" BOX-LIST "]"  -> BOX {cons("H")}
+         "V" S-OPTIONS "[" BOX-LIST "]"  -> BOX {cons("V")}
+         "HV" S-OPTIONS "[" BOX-LIST "]" -> BOX {cons("HV")}
+
+%%
+%% \noindent
+%% The \textsf{ALT} operator is used to choose between two alternative BOX
+%% expressions depending on the available width. When its first argument
+%% fits on the current line, that BOX expression is used. Otherwise, the
+%% \textsf{ALT} operator chooses the second alternative. No space options
+%% are supported by this operator.
+   exports
+      context-free syntax
+         "ALT" "[" BOX BOX "]" -> BOX {cons("ALT")}
+
+%%
+%% \noindent
+%% Alignments are implemented by means of two BOX operators: \textsf{A} and
+%% \textsf{R}. The arguments of the \textsf{A} operator are \textsf{R}
+%% boxes. Each \textsf{R} BOX represents a row, each element of an
+%% \textsf{R} BOX represents an entry in the alignment. The number of
+%% arguments of an
+%% \textsf{R} BOX may not exceed the number of columns of the alignment. For
+%% each column the user can specify whether the alignment should be left,
+%% right, or centered. The number of alignment indications should be equal
+%% to the number of columns. Each alignment indication can be extended with
+%% space options, specifying the horizontal layout between columns. The
+%% \textsf{A} operator supports the \textsf{vs} space option which defines
+%% the vertical layout between individual rows.
+%%
+%% \textsf{R} boxes occurring outside an alignment are formatted as
+%% \text{HV} operator. This behavior enables the use of an alternative
+%% formatting (not based on the \textsf{A} operator) of alignments within an
+%% \textsf{ALT} operator. The \textsf{R} operator therefore supports all
+%% space options of the \textsf{HV} operator.
+   exports
+      sorts A-OPTION A-OPTIONS
+
+      context-free syntax
+         "A" A-OPTIONS S-OPTIONS "[" BOX-LIST "]" -> BOX       {cons("A")}
+         "R" S-OPTIONS "[" BOX-LIST "]"           -> BOX       {cons("R")}
+%%
+%% \noindent
+%% Justification of columns and horizontal layout between columns can be
+%% specified using A-OPTIONS. An A-OPTION is composed of an alignment
+%% indicator (\textsf{l} for left, \textsf{r} for right, and \textsf{c} for
+%% centered alignment), and space options (only the \textsf{hs} option is
+%% supported).
+%%
+         "l" S-OPTIONS                            -> A-OPTION  {cons("AL")}
+         "c" S-OPTIONS                            -> A-OPTION  {cons("AC")}
+         "r" S-OPTIONS                            -> A-OPTION  {cons("AR")}
+         "(" {A-OPTION ","}* ")"                  -> A-OPTIONS {cons("AOPTIONS")}
+
+%%\subsection{Non-Positional BOX Operators}
+%% There are four different types of non-positional BOX operators: font
+%% operators to change the textual appearance of BOX expressions, cross
+%% reference operators to create links between boxes, the comment operator
+%% to indicate that a BOX expression contains comments, and the line
+%% operator to draw lines of characters of arbitrary length.
+%%
+%%
+%% BOX font operators are used to change the textual appearance of the
+%% argument BOX expression. Fonts can be characterized by the parameters
+%% font name (\textsf{fn}), font family (\textsf{fm}), font series
+%% (\textsf{se}), font shape (\textsf{sh}), font size (\textsf{sz}), and
+%% font color (\textsf{cl}). The most general font operator is \textsf{F}.
+%% By means of font parameters the desired font can be controlled.
+   exports
+      sorts FID FONT-PARAM F-OPTION F-OPTIONS FONT-OPERATOR
+
+      lexical syntax
+         [A-Za-z]+ -> FID
+
+      context-free syntax
+         FONT-PARAM "=" NatCon     -> F-OPTION      {cons("FNAT")}
+         FONT-PARAM "=" FID        -> F-OPTION      {cons("FFID")}
+         F-OPTION*                 -> F-OPTIONS
+         "F" F-OPTIONS             -> FONT-OPERATOR {cons("F")}
+         FONT-OPERATOR "[" BOX "]" -> BOX           {cons("FBOX")}
+         "fn"                      -> FONT-PARAM    {cons("FN")}
+         "fm"                      -> FONT-PARAM    {cons("FM")}
+         "se"                      -> FONT-PARAM    {cons("SE")}
+         "sh"                      -> FONT-PARAM    {cons("SH")}
+         "sz"                      -> FONT-PARAM    {cons("SZ")}
+         "cl"                      -> FONT-PARAM    {cons("CL")}
+
+%%
+%% \noindent
+%% By using the \textsf{F} font operator, fonts are defined statically.
+%% BOX also support fonts to be defined dynamically using special
+%% font operators.  These operators are used to format specific language
+%% constructs like keywords and variables. The mapping from these
+%% operators to fonts is deferred to the back-ends.
+%%
+   exports
+      context-free syntax
+         "KW"   -> FONT-OPERATOR {cons("KW")}
+         "VAR"  -> FONT-OPERATOR {cons("VAR")}
+         "NUM"  -> FONT-OPERATOR {cons("NUM")}
+         "MATH" -> FONT-OPERATOR {cons("MATH")}
+
+%% \noindent
+%% The \textsf{LBL} operator is used to label BOX terms. A labeled BOX term
+%% can be refered to using the \textsf{REF} operator.  The first argument of
+%% the \textsf{LBL} and \textsf{REF} operators denote the name of the label.
+%% The second argument of the \textsf{LBL} operator denotes the BOX term to
+%% label. The second argument of the \textsf{REF} operator denotes the BOX
+%% containing the reference. Both operators do not support any space
+%% options.
+%%
+   exports
+      context-free syntax
+         "LBL" "[" BoxLiteral BOX "]" -> BOX {cons("LBL")}
+         "REF" "[" BoxLiteral BOX "]" -> BOX {cons("REF")}
+
+%%
+%% \noindent
+%% Comments can be formatted using the \textsf{C} operator. The operator
+%% supports the \textsf{is} space option to denote the indentation level of
+%% comments.
+%%
+   exports
+      context-free syntax
+         "C" S-OPTIONS "[" BOX-LIST "]" -> BOX {cons("C")}
+
+%%
+%% \noindent
+%% The \textsf{L} operator  is used to construct horizontal bars of fixed
+%% \emph{or} variable width. A bar of fixed width can be constructed by
+%% specifying its width as a fixed number. A bar of variable width can be
+%% constructed by specifying a BOX expressions as width parameter. The
+%% second argument of the \textsf{L} operator specifies the symbol of which
+%% the bar should be constructed. The \textsf{L} operator does not support
+%% any space options.
+%%
+   exports
+      context-free syntax
+         "L" "[" BOX BOX "]"    -> BOX {cons("L")}
+         "L" "[" NatCon BOX "]" -> BOX {cons("LNAT")}
+
+
+%% Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>,
+%%                    Eelco Visser <visser@acm.org>,
+%%                    Joost Visser <jvisser@cwi.nl>
+%%
+%% This program is free software; you can redistribute it and/or modify
+%% it under the terms of the GNU General Public License as published by
+%% the Free Software Foundation; either version 2, or (at your option)
+%% any later version.
+%%
+%% This program is distributed in the hope that it will be useful,
+%% but WITHOUT ANY WARRANTY; without even the implied warranty of
+%% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%% GNU General Public License for more details.
+%%
+%% You should have received a copy of the GNU General Public License
+%% along with this program; if not, write to the Free Software
+%% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+%% 02111-1307, USA.
+
+%% $Id: pp-tables.def,v 1.1 2001/06/05 09:11:48 mdejonge Exp $
+
+module Layout
+exports
+  lexical syntax
+    [\ \t\n]	-> LAYOUT
+  context-free restrictions
+    LAYOUT? -/- [\ \t\n]
+
+
+%%% Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>, 
+%%%                    Eelco Visser <visser@acm.org>,
+%%%                    Joost Visser <jvisser@cwi.nl>
+%%%
+%%% This program is free software; you can redistribute it and/or modify
+%%% it under the terms of the GNU General Public License as published by
+%%% the Free Software Foundation; either version 2, or (at your option)
+%%% any later version.
+%%%
+%%% This program is distributed in the hope that it will be useful,
+%%% but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%%% GNU General Public License for more details.
+%%%
+%%% You should have received a copy of the GNU General Public License
+%%% along with this program; if not, write to the Free Software
+%%% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+%%% 02111-1307, USA.
+%%%
+%%% $Id: pp-tables.def,v 1.1 2001/06/05 09:11:48 mdejonge Exp $
+
+module Literals
+imports Layout
+exports
+  sorts QLiteral UQLiteral Literal
+  lexical syntax
+    "\\" ~ []                  -> AlphaNumericalEscChar {avoid}
+    "\\" [01] [0-9] [0-9]      -> DecimalEscChar
+    "\\" "2" [0-4] [0-9]       -> DecimalEscChar
+    "\\" "2" "5" [0-5]         -> DecimalEscChar
+    AlphaNumericalEscChar      -> EscChar
+    DecimalEscChar             -> EscChar
+    ~ [\0-\31\"\\] \/ [\t\n]   -> L-Char
+    EscChar                    -> L-Char
+    "\"" L-Char* "\""          		-> QLiteral
+    [A-Za-z\-\_][A-Za-z0-9\-\_]*	-> UQLiteral
+  lexical syntax
+    QLiteral                   -> Literal
+    UQLiteral                  -> Literal
+
+
+%%% Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>,
+%%%                    Eelco Visser <visser@acm.org>,
+%%%                    Joost Visser <jvisser@cwi.nl>
+%%%
+%%% This program is free software; you can redistribute it and/or modify
+%%% it under the terms of the GNU General Public License as published by
+%%% the Free Software Foundation; either version 2, or (at your option)
+%%% any later version.
+%%%
+%%% This program is distributed in the hope that it will be useful,
+%%% but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%%% GNU General Public License for more details.
+%%%
+%%% You should have received a copy of the GNU General Public License
+%%% along with this program; if not, write to the Free Software
+%%% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+%%% 02111-1307, USA.
+%%%
+%%% $Id: pp-tables.def,v 1.1 2001/06/05 09:11:48 mdejonge Exp $
+
+module Literal-Box-Syntax
+imports Literals
+exports
+   aliases
+      QLiteral -> BoxLiteral
+
+
+%%% Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>,
+%%%                    Eelco Visser <visser@acm.org>,
+%%%                    Joost Visser <jvisser@cwi.nl>
+%%%
+%%% This program is free software; you can redistribute it and/or modify
+%%% it under the terms of the GNU General Public License as published by
+%%% the Free Software Foundation; either version 2, or (at your option)
+%%% any later version.
+%%%
+%%% This program is distributed in the hope that it will be useful,
+%%% but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%%% GNU General Public License for more details.
+%%%
+%%% You should have received a copy of the GNU General Public License
+%%% along with this program; if not, write to the Free Software
+%%% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+%%% 02111-1307, USA.
+%%%
+%%% $Id: pp-tables.def,v 1.1 2001/06/05 09:11:48 mdejonge Exp $
+
+%% \noindent
+%% Base module of the BOX markup language. Here only the sort BOX is
+%% defined.
+
+module Box-Syntax-Base
+   exports
+      sorts BOX
+
+
+%%% Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>,
+%%%                    Eelco Visser <visser@acm.org>,
+%%%                    Joost Visser <jvisser@cwi.nl>
+%%%
+%%% This program is free software; you can redistribute it and/or modify
+%%% it under the terms of the GNU General Public License as published by
+%%% the Free Software Foundation; either version 2, or (at your option)
+%%% any later version.
+%%%
+%%% This program is distributed in the hope that it will be useful,
+%%% but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%%% GNU General Public License for more details.
+%%%
+%%% You should have received a copy of the GNU General Public License
+%%% along with this program; if not, write to the Free Software
+%%% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+%%% 02111-1307, USA.
+%%%
+%%% $Id: pp-tables.def,v 1.1 2001/06/05 09:11:48 mdejonge Exp $
+
+%% \noindent
+%% The most elementary boxes are strings enclosed in double quotes
+%% (literals) and numbered placeholders. Numbered placeholders refer to a
+%% sub-expression of a BOX term. Currently, referencing sub-terms at a
+%% maximum level of two is supported. For example, \_i.j refers to the jth
+%% element within the ith BOX of a BOX term.
+
+module Box-Atoms-Syntax
+   exports
+      imports Box-Syntax-Base Literal-Box-Syntax
+
+   exports
+      context-free syntax
+         BoxLiteral            -> BOX {cons("S")}
+
+
+%%% Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>,
+%%%                    Eelco Visser <visser@acm.org>,
+%%%                    Joost Visser <jvisser@cwi.nl>
+%%%
+%%% This program is free software; you can redistribute it and/or modify
+%%% it under the terms of the GNU General Public License as published by
+%%% the Free Software Foundation; either version 2, or (at your option)
+%%% any later version.
+%%%
+%%% This program is distributed in the hope that it will be useful,
+%%% but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%%% GNU General Public License for more details.
+%%%
+%%% You should have received a copy of the GNU General Public License
+%%% along with this program; if not, write to the Free Software
+%%% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+%%% 02111-1307, USA.
+%%%
+%%% $Id: pp-tables.def,v 1.1 2001/06/05 09:11:48 mdejonge Exp $
+
+%% \noindent
+%% This module contains the syntax of the BOX markup language. This version
+%% of the BOX language is heavily based on:
+%%
+%% \begin{center}
+%%                `Box: Language, Laws and Formatters''\\
+%%\ \\
+%%          Copyright (c) Mark van den Brand \& Eelco Visser, 1995\\
+%%\ \\
+%%           Programming Research Group, University of Amsterdam \\
+%%           Kruislaan 403, 1098 SJ Amsterdam, The Netherlands.  \\
+%%        mail:markvdb@fwi.uva.nl http://adam.fwi.uva.nl/~markvdb/  \\
+%%         mail:visser@fwi.uva.nl  http://adam.fwi.uva.nl/~visser/ \\
+%% \end{center}
+%%
+%% We applied several modifications to this original BOX language. On the
+%% one hand these modifications include a redesign of the SDF definition of
+%% the BOX language. On the other hand, we adapted the BOX language itself
+%% (we removed several BOX operators and introduced several new ones). For
+%% more information on the BOX language we refer to the following technical
+%% reports:
+%% \begin{center}
+%%               Mark van den Brand and Merijn de Jonge. \\
+%%          Pretty Printing within the ASF+SDF Meta-Environment:
+%%                         a Generic Approach. \\
+%%                Technical Report SEN-R9904, CWI, 1999. \\
+%%                ftp://ftp.cwi.nl/pub/CWIreports/SEN/SEN-R9904.ps.Z\\
+%% \ \\
+%%                           Merijn de Jonge. \\
+%%    boxenv.sty: A LaTeX Style File for Formatting BOX Expressions.\\
+%%                 Technical Report SEN-R9911, CWI, 1999.\\
+%%                ftp://ftp.cwi.nl/pub/CWIreports/SEN/SEN-R9911.ps.Z
+%% \end{center}
+
+module Box-Syntax
+   exports
+      imports Box-Atoms-Syntax Box-Operators-Syntax Box-Lists-Syntax
+              Box-Layout Box-Disambiguation
+
+
+%%% Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>,
+%%%                    Eelco Visser <visser@acm.org>,
+%%%                    Joost Visser <jvisser@cwi.nl>
+%%%
+%%% This program is free software; you can redistribute it and/or modify
+%%% it under the terms of the GNU General Public License as published by
+%%% the Free Software Foundation; either version 2, or (at your option)
+%%% any later version.
+%%%
+%%% This program is distributed in the hope that it will be useful,
+%%% but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%%% GNU General Public License for more details.
+%%%
+%%% You should have received a copy of the GNU General Public License
+%%% along with this program; if not, write to the Free Software
+%%% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+%%% 02111-1307, USA.
+%%%
+%%% $Id: pp-tables.def,v 1.1 2001/06/05 09:11:48 mdejonge Exp $
+
+module PlaceHolder
+imports
+   Box-Syntax
+
+exports
+context-free syntax
+   "_" NatCon            -> BOX {cons("Arg")}
+   "_" NatCon "." NatCon -> BOX {cons("Arg2")}
+
+
+%%% Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>,
+%%%                    Eelco Visser <visser@acm.org>,
+%%%                    Joost Visser <jvisser@cwi.nl>
+%%%
+%%% This program is free software; you can redistribute it and/or modify
+%%% it under the terms of the GNU General Public License as published by
+%%% the Free Software Foundation; either version 2, or (at your option)
+%%% any later version.
+%%%
+%%% This program is distributed in the hope that it will be useful,
+%%% but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%%% GNU General Public License for more details.
+%%%
+%%% You should have received a copy of the GNU General Public License
+%%% along with this program; if not, write to the Free Software
+%%% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+%%% 02111-1307, USA.
+%%%
+%%% $Id: pp-tables.def,v 1.1 2001/06/05 09:11:48 mdejonge Exp $
+
+module PP-Tables
+imports
+   PlaceHolder
+
+exports
+   sorts PP-Entry PP-Table PP-Tables PP-Identifier
+
+%%lexical syntax
+%%   UQLiteral       -> Path
+%%   NatCon          -> Path 
+%%   {Path "."}+     -> PP-Identifier
+lexical syntax
+   ~[\ \t\n\.]+       -> ConsName
+
+context-free restrictions
+   ConsName -/- ~[\ \t\n\.]
+context-free syntax
+   "[" { PP-Entry ","}* "]" -> PP-Table {cons("PP-Table")}
+   PP-Table*                -> PP-Tables
+
+   NatCon ":" UQLiteral      -> Selector {cons("selector")}
+   
+
+   ConsName -> Path {cons("Path1")}
+   ConsName "." {Selector "."}+ -> Path {cons("Path")}
+
+   Path "--" BOX-LIST -> PP-Entry {cons("PP-Entry")}
+
+
+%%% Copyright (C) 2000 Merijn de Jonge <mdejonge@cwi.nl>,
+%%%                    Eelco Visser <visser@acm.org>,
+%%%                    Joost Visser <jvisser@cwi.nl>
+%%%
+%%% This program is free software; you can redistribute it and/or modify
+%%% it under the terms of the GNU General Public License as published by
+%%% the Free Software Foundation; either version 2, or (at your option)
+%%% any later version.
+%%%
+%%% This program is distributed in the hope that it will be useful,
+%%% but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%%% GNU General Public License for more details.
+%%%
+%%% You should have received a copy of the GNU General Public License
+%%% along with this program; if not, write to the Free Software
+%%% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+%%% 02111-1307, USA.
+%%%
+%%% $Id: pp-tables.def,v 1.1 2001/06/05 09:11:48 mdejonge Exp $
+
+module Main
+imports
+   PP-Tables
