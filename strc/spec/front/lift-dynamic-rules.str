@@ -94,7 +94,7 @@ dynamic rule. */
     |[ f(as1|as2) : t1 -> t2 where s ]| ->
     (|[ where(<~<assert> f> Pair(t1', Defined(~str:stamp, t*))) ]|,
      |[ f(as1|as2) : x@t1 -> t2 
-                where <rewrite(!~str:f)> t1'' => Defined(~str:stamp, t*); s ]|)
+                where where(<rewrite(!~str:f)> t1'' => Defined(~str:stamp, t*)); s ]|)
     where 
       <not(eq)>(t2, |[ Undefined() ]|)
 
@@ -112,7 +112,7 @@ dynamic rule. */
     |[ f(as1|as2) : t1 -> Undefined() where s ]| ->
     (|[ where(<~<assert> f> Pair(t1', Undefined())) ]|,
      |[ f(as1|as2) : x@t1 -> Undefined()
-                where <rewrite(!~str:f)> t1'' => Undefined(); s; fail ]|)
+                where where(<rewrite(!~str:f)> t1'' => Undefined()); s; fail ]|)
     where 
        new => x
        ; <dummify> t1 => t1'
