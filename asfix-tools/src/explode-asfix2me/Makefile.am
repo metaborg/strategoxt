@@ -3,7 +3,7 @@ include $(wildcard *.dep)
 
 SUBDIRS      	= data
 
-bin_PROGRAMS 	= explode-asfix2me
+libexec_PROGRAMS 	= explode-asfix2me
 SCFLAGS          = --main $*
 STRINCLUDES = \
   -I $(top_srcdir)/lib \
