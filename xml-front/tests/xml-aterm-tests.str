@@ -1,21 +1,48 @@
 module xml-aterm-tests
-imports liblib
+imports liblib xml-info
 
 strategies
 
   main-xml-aterm-tests =
     option-wrap(general-options,
-      test-suite(!"xml aterm roundtrip tests",
-        explicit-roundtrip-tests
+      test-suite(!"
+===============================================
+              xml aterm tests
+===============================================",
+
+        implicit-representation-tests
+        
+      ; implicit-roundtrip-tests
+      ; explicit-roundtrip-tests
       ; very-explicit-roundtrip-tests
       )
     )
 
 strategies
 
+  implicit-representation-tests =
+    {| Explicit :
+      rules(Explicit : () -> "--implicit")
+    ; say(!"
+======== Implicit representation tests ========")
+
+    ; representation-test(|Fred(),      " <Fred/>")
+    ; representation-test(|Bar("foo"),  " <Bar>foo</Bar>")
+    ; representation-test(|Bar(123),    " <Bar>123</Bar>")
+    ; representation-test(|Bar(Fred()), " <Bar><Fred/></Bar>")
+    ; representation-test(|Foo(Fred(), Fred()), " <Foo><Fred/><Fred/></Foo>")
+    |}
+
+
+strategies
+
   very-explicit-roundtrip-tests =
     {| Explicit :
       rules(Explicit : () -> "--very-explicit")
+    ; say(!"
+======== Very explicit roundtrip tests ========")
+
+    ; easy-roundtrip-tests
     ; avg-roundtrip-tests
     ; difficult-roundtrip-tests
     |}
@@ -23,8 +50,32 @@ strategies
   explicit-roundtrip-tests =
     {| Explicit :
       rules(Explicit : () -> "--explicit")
+    ; say(!"
+========== Explicit roundtrip tests ===========")
+
+    ; easy-roundtrip-tests
     ; avg-roundtrip-tests
+    ; difficult-roundtrip-tests
     |}
+
+  implicit-roundtrip-tests =
+    {| Explicit :
+      rules(Explicit : () -> "--implicit")
+    ; say(!"
+========== Implicit roundtrip tests ===========")
+
+    ; easy-roundtrip-tests
+    |}
+
+  easy-roundtrip-tests =
+      roundtrip-test(| Fred())
+    ; roundtrip-test(| Bar("1"))
+    ; roundtrip-test(| Foo(Fred(), Bar("1")))
+    ; roundtrip-test(| Foo(Fred(), Fred()))
+    ; roundtrip-test(| Fred(){Fred()} )
+    ; roundtrip-test(| Fred(){Bar("1")} )
+    ; roundtrip-test(| Fred(){Foo(Fred(), Bar("1"))} )
+    ; roundtrip-test(| Fred(){Foo(Fred(), Fred())} )
 
   avg-roundtrip-tests =
       roundtrip-test(|1)
@@ -41,6 +92,7 @@ strategies
     ; roundtrip-test(| Foo([1, 2], [3, 4]))
     ; roundtrip-test(| Some(4))
     ; roundtrip-test(| None())
+    ; roundtrip-test(| Element(Name(None(), "foo"), [], []))
 
   difficult-roundtrip-tests =
       roundtrip-test(| Foo(1, [2, 3]){Foo(1, 2)})
@@ -59,6 +111,20 @@ strategies
 
 strategies
 
+  representation-test(|t, xml) =
+    apply-test(!t,
+      xtc-temp-files(
+        write-to
+      ; xtc-transform(!"aterm2xml", ![<Explicit> () | <pass-verbose>])
+      ; xtc-transform(!"parse-xml-info", pass-verbose)
+      ; read-from
+      )
+    , !t
+    , <print-to> [xml]
+      ; xtc-transform(!"parse-xml-info", pass-verbose)
+      ; read-from
+    )
+
   roundtrip-test(|t) =
     apply-test(!t,
       xtc-temp-files(
@@ -74,5 +140,7 @@ strategies
 signature
   constructors
     Foo : Foo * Foo -> Foo
+    Bar : Foo -> Foo
+    Fred : Foo
     int : Int -> Foo
     string : String -> Foo

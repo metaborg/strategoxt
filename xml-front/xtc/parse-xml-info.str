@@ -4,7 +4,11 @@ imports liblib xml-xtc-tools
 strategies
   
   main-parse-xml-info =
-    xtc-io-wrap(xtc-parse-xml-info)
+    xtc-io-wrap(
+      xtc-parse-xml-info
+      <+ say(!"parse-xml-info:error: Parsing xml failed.")
+         ; <xtc-exit> 1
+    )
 
 /*
 Usage:

@@ -1,3 +1,22 @@
+2004-11-05  Martin Bravenboer <martin@cs.uu.nl>
+
+	* trans/data2xml-doc.str, trans/xml-info2data.str: the --explicit
+	and the --very-explicit mode now use the XML namespace
+	http://aterm.org for the XML elements the represent ATerm
+	structures and types, such as list, tuple, int, string, anno
+	etc. In the explicit mode, this avoids conflicts with 'real'
+	ATerms of the same name. I'm using the namespace prefix 'at'.
+
+	* trans/data2xml-doc.str, trans/xml-info2data.str: all modes now
+	preserve all annotations by representing them as nested "anno"
+	elements in the XML namespace http://aterm.org.
+
+	* xtc/xml2aterm.str: the explicity mode is no longer required for
+	this tool, since it is no longer ambiguous whether the xml is
+	implicit, explicit or very explicit.
+
+	* tests/xml-aterm-tests.str: much more tests.
+
 2004-09-25  Martin Bravenboer <martin@cs.uu.nl>
 
 	* tests/xml-aterm-tests.str: aterm2xml | xml2aterm roundtrip

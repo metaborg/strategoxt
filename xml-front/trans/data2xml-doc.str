@@ -14,58 +14,64 @@ strategies
       , explicit-data2xml
       , very-explicit-data2xml
       )
+    ; data2xml-finish
     )
 
 strategies
 
-  very-explicit-data2xml =
-    explicit-data2xml(
-      rec x(
-        VeryExplicitExplode-Annotated(x)
+  implicit-data2xml =
+    bottomup(
+      data2xml-doc-anno-wrap(implicit-data2xml, 
+        \ None() -> [] \
+      <+ ?Some(<id>)
+      <+ Explode-String
+      <+ Explode-Int
+      <+ Explode-List
+      <+ Explode-Tuple 
+      <+ Explode-Appl
       )
     )
 
   explicit-data2xml =
-    explicit-data2xml(
+    bottomup(
+      data2xml-doc-anno-wrap(explicit-data2xml, 
          ExplicitExplode-String
       <+ ExplicitExplode-Int
       <+ ExplicitExplode-List
       <+ ExplicitExplode-Tuple
       <+ Explode-Appl
-    )
-
-  implicit-data2xml =
-    data2xml(
-       Explode-String
-    <+ Explode-Int
-    <+ Explode-List
-    <+ Explode-Tuple
-    <+ Explode-Appl
-    )
-
-  data2xml =
-    implicit-data2xml
-
-  data2xml(s) =
-    bottomup(
-        try(
-            \ None() -> [] \
-         <+ ?Some(<id>)
-         <+ s
-        )
       )
-    ; data2xml-finish
+    )
 
-  explicit-data2xml(s) =
-    bottomup(try(s))
-    ; data2xml-finish
+  very-explicit-data2xml =
+    bottomup(
+      data2xml-doc-anno-wrap(very-explicit-data2xml, 
+         ExplicitExplode-List
+      <+ ExplicitExplode-Tuple
+      <+ VeryExplicitExplode-Int
+      <+ VeryExplicitExplode-String
+      <+ VeryExplicitExplode-Appl
+      )
+    )
+
+strategies
 
   data2xml-finish =
-      !%>
+      add-aterm-namespace
+    ; !%>
         <?xml version="1.0"?>
 
         <% id %>
       <%
+    <+ say(!"error: resulting top-level is not an element")
+     ; <exit> 1
+
+
+  add-aterm-namespace :
+    EmptyElement(n, atts) -> EmptyElement(n, [ @> xmlns:at="http://aterm.org" <@ | atts])
+
+  add-aterm-namespace :
+    Element(n, atts, content, n) -> Element(n, [ @> xmlns:at="http://aterm.org" <@ | atts], content, n)
 
 /**
  * Implicit mode
@@ -110,42 +116,38 @@ strategies
 rules
 
   ExplicitExplode-List =
-    !%><list><% Explode-List :: * %></list><%
+    !%><at:list><% Explode-List :: * %></at:list><%
 
   ExplicitExplode-Tuple =
-    !%><tuple><% Explode-Tuple :: * %></tuple><%
+    !%><at:tuple><% Explode-Tuple :: * %></at:tuple><%
 
   ExplicitExplode-Int =
-    !%><int><% Explode-Int %></int><%
+    !%><at:int><% Explode-Int %></at:int><%
 
   ExplicitExplode-String =
-    !%><string><% Explode-String %></string><%
+    !%><at:string><% Explode-String %></at:string><%
 
 /**
  * Very explicit mode
  */
 rules
 
-  VeryExplicitExplode-Annotated(x) =
-    ?_{anno*}
-    ;  ( ExplicitExplode-List
-      <+ VeryExplicitExplode-Int
-      <+ VeryExplicitExplode-String
-      <+ ExplicitExplode-Tuple
-      <+ VeryExplicitExplode-Appl(x)
-       )
-    ; ?Element(n, atts, content, n)
-    ; <map(VeryExplicitExplode-Attr(x))> anno* => anno-content
-    ; !Element(n, atts, <conc> (anno-content, content), n)
-
   VeryExplicitExplode-Int :
-    i -> %><int><value><% <Explode-Int> i %></value></int><%
+    i -> %><at:int><at:value><% <Explode-Int> i %></at:value></at:int><%
 
   VeryExplicitExplode-String :
-    s -> %><string><value><% <Explode-String> s %></value></string><%
+    s -> %><at:string><at:value><% <Explode-String> s %></at:value></at:string><%
 
-  VeryExplicitExplode-Appl(x) :
-    s#(children) -> %><appl fun="<% !s %>"><% <flatten-list> children :: * %></appl><%
+  VeryExplicitExplode-Appl :
+    s#(children) -> %><at:appl at:fun="<% !s %>"><% <flatten-list> children :: * %></at:appl><%
 
-  VeryExplicitExplode-Attr(x) =
-    !%><anno><% bottomup(x) %></anno><%
+strategies
+
+  data2xml-doc-anno-wrap(x, s) =
+    ?_{anno*}
+    ; s
+    ; if ?Element(n, atts, content, n); ![anno*] => [_ | _]then
+        <map(!%><at:anno><% x %></at:anno><%)> [anno*]
+        ; !Element(n, atts, <conc> (<id>, content), n)
+      end
+    

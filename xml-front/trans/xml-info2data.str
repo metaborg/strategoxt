@@ -8,114 +8,93 @@ strategies
 
   main-xml-info2data =
     io-wrap(explicit-mode-option,
-      dispatch-explicit-mode(
-        implicit-xml-info2data
-      , explicit-xml-info2data
-      , very-explicit-xml-info2data
-      )
+      xml-info2data
     )
 
 strategies
 
-  very-explicit-xml-info2data =
-      ?Document(<id>)
-    ; topdown-wannos(repeat(VeryExplicitImplodeAnnotated))
-
-  explicit-xml-info2data =
-      ?Document(<id>)
-    ; topdown-wannos(repeat(ExplicitImplode <+ Implode))
-
-  implicit-xml-info2data =
-      ?Document(<id>)
-    ; topdown-wannos(repeat(Implode))
-
   xml-info2data =
-    implicit-xml-info2data
+      ?Document(<id>)
+    ; rec x(
+        xml-info2data-anno-wrap(XmlImplode(x))
+      )
+
+  xml-info2data-anno-wrap(s) =
+    if ?Element(name, attrs, content) then
+      !content
+      ; partition(project-anno-element)
+      ; ?(anno1*, real-content)
+      ; <s> Element(name, attrs, real-content)
+      ; ?t{anno2*}
+      ; <conc> (<map(s)> [anno1*], [anno2*]) => [anno*]
+      ; !t{anno*}
+    else
+      s
+    end
+
+  is-anno-element =
+    ?Element(ATermName("anno"), _, _)
+
+  project-anno-element :
+    Element(ATermName("anno"), [], [e]) -> e
 
 /**
  * Implicit implode rules
  */
 rules
 
-  Implode:
-    Element(Name(_, s), [atts*], children) -> s#(children){atts*}
+  XmlImplode(x) :
+    Element(Name(None(), s), [atts1*], children) -> s#(<map(x)> children){atts2*}
+    where
+      <map(x)> atts1* => atts2*
 
-  Implode:
+  XmlImplode(x) :
     Text(s) -> s
 
-  Implode:
-    Attribute(Name(_, s), value) -> (s, value)
+  XmlImplode(x) :
+    Attribute(Name(None(), s), value) -> (s, value)
 
 /**
  * Explicit implode rules
  */
 rules
 
+  XmlImplode(x) :
+    Element(ATermName("int"), _, [Text(s)]) -> <trim-chars('\n' + '\t' + '\r' + ' '); string-to-int> s
 
-  ExplicitImplode :
-    Element(Name(_, "int"), _, [Text(s)]) -> <trim-chars('\n' + '\t' + '\r' + ' '); string-to-int> s
-
-  ExplicitImplode :
-    Element(Name(_, "string"), _, [Text(s)]) -> s
-
-  ExplicitImplode :
-    Element(Name(_, "tuple"), _, children) -> ""#(children)
-
-  ExplicitImplode :
-    Element(Name(_, "list"), _, children) -> children
+  XmlImplode(x) :
+    Element(ATermName("string"), _, [Text(s)]) -> s
 
 /**
  * Very explicit implode rules
  */
 rules
 
-  is-anno-element =
-    ?Element(Name(_, "anno"), _, _)
-
-  VeryExplicitImplodeAnnotated =
-    ?Element(_, _, content)
-    ; VeryExplicitImplode
-    ; ?t
-    ; <filter(is-anno-element)> content => anno*
-    ; !t{anno*}
-
-  VeryExplicitImplode :
-    Element(Name(_, "appl"), [Attribute(Name(_, "fun"), name)], content) -> name#(children)
+  XmlImplode(x) :
+    Element(ATermName("appl"), [Attribute(ATermName("fun"), name)], content) -> name#(<map(x)> children)
     where
       <filter(not(is-anno-element + ?Text(_)))> content => children
 
-  VeryExplicitImplode :
-    Element(Name(_, "anno"), _, [content]) -> content
-
-  VeryExplicitImplode :
-    Element(Name(_, "int"), _, content) -> <trim-chars('\n' + '\t' + '\r' + ' '); string-to-int> s
+  XmlImplode(x) :
+    Element(ATermName("int"), _, content) -> <trim-chars('\n' + '\t' + '\r' + ' '); string-to-int> s
     where
-      <fetch(?Element(Name(_, "value"), _, [Text(s)]))> content
+      <fetch(?Element(ATermName("value"), _, [Text(s)]))> content
     
-  VeryExplicitImplode :
-    Element(Name(_, "string"), _, content) -> s
+  XmlImplode(x) :
+    Element(ATermName("string"), _, content) -> s
     where
-      <fetch(?Element(Name(_, "value"), _, [Text(s)]))> content
+      <fetch(?Element(ATermName("value"), _, [Text(s)]))> content 
 
-  VeryExplicitImplode :
-    Element(Name(_, "tuple"), _, content) -> ""#(children)
-    where
-      <filter(not(is-anno-element + ?Text(_)))> content => children
-
-  VeryExplicitImplode :
-    Element(Name(_, "list"), _, content) -> children
+  XmlImplode(x) :
+    Element(ATermName("tuple"), _, content) -> ""#(<map(x)> children)
     where
       <filter(not(is-anno-element + ?Text(_)))> content => children
 
-/**
- * Util
- */
-strategies
+  XmlImplode(x) :
+    Element(ATermName("list"), _, content) -> <map(x)> children
+    where
+      <filter(not(is-anno-element + ?Text(_)))> content => children
 
-  /**
-   * Topdown traversal that also traverses annotations.
-   */
-  topdown-wannos(s) =
-    rec x(
-      topdown(s; id{map(x)} )
-    )
+overlays
+
+  ATermName(s) = Name(Some("http://aterm.org"), s)

@@ -9,4 +9,5 @@ strategies
     xtc-io-wrap(explicit-mode-option,
       xtc-transform(!"parse-xml-info", pass-verbose)
     ; xtc-transform(!"xml-info2data", ![<pass-explicit-mode> | <pass-verbose>])
+    <+ <xtc-exit> 1
     )

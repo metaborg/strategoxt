@@ -9,6 +9,7 @@ TESTS          = $(check_PROGRAMS)
 LDADD         += $(SSL_LIBS)
 
 SCFLAGS       = --main main-$* --dr new
+STRINCLUDES   = -I $(top_srcdir)/sig/xml-info 
 
 EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta)
 CLEANFILES     = $(wildcard *.dep)
