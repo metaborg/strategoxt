@@ -1,6 +1,6 @@
 module sdfcons
 
-(* $Id: prodcons.r,v 1.1 2001/05/31 13:32:29 mdejonge Exp $ *)
+(* $Id: prodcons.r,v 1.2 2001/05/31 15:03:01 mdejonge Exp $ *)
 (*
 	Author: Joost Visser (Joost.Visser@cwi.nl)
 	Changes by : Merijn de Jonge, Eelco Visser, and Hedzer Westra.
@@ -39,6 +39,9 @@ imports
   lib Sdf-Syntax Sdf-NormLit-Syntax 
   verbalize-sdf Literal-lib Char-lib
 
+signature
+  constructors
+    Injections: Option
 
 rules
 

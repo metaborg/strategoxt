@@ -1,4 +1,5 @@
 2001-05-31 Merijn de Jonge <mdejonge@cwi.nl> 
+   * Moved Char-lib.r from sdf-tools package to src/asfix
    * Added src/asfix/prodcons.r and src/asfix/verbalize.r
    * Fixed switch handling in configure.in.src
    * Added src/templates directory to DIST_SUBDIRS
