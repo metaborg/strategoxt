@@ -16,10 +16,10 @@ SCLibs = -L$(STRATEGOLIB)/lib -lstratego-lib \
 
 # FRONT-END ###########################################################
 
-%.tree : %.r ../syn/pack-stratego$(EXE) ../syn/parse-mod$(EXE)
+%.tree : %.r ../syn/pack-stratego$(EXE) 
 	../syn/pack-stratego $(SINCLUDES) -i $< -o $@
 
-%.tree : %.rtree ../syn/pack-stratego$(EXE) ../syn/parse-mod$(EXE)
+%.tree : %.rtree ../syn/pack-stratego$(EXE) 
 	../syn/pack-stratego $(SINCLUDES) -i $< -o $@
 
 %.s1 : %.tree ../front/frontend$(EXE)
