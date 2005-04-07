@@ -138,7 +138,7 @@ strategies
 
 
   + ArgOption("-O",
-        where(<set-config>("-O", <string-to-int>)); !(),
+        where(<set-config>("-O", <set-opt-level> )); !(),
 	!"-O n               Optimization level (0 = no optimization)" )
 
 
@@ -188,6 +188,14 @@ strategies
   + Option("--asfix",
        where(<set-config>("--asfix",())); !(),
        !"--asfix            Concrete syntax parts are not imploded")
+
+
+  set-opt-level = 
+    string-to-int
+  ; if <lt>(<id>,2) then
+      !2 ; log(|Warning(),"Optimization levels < 2 are broken, setting optimization level to 2.")
+    end
+      
 
   set-choice-point-lib = 
     ?lib
