@@ -6,7 +6,11 @@
  * constructor name.
  */
 module implode-asfix
-imports liblib AsFix verbalize-sdf
+imports 
+  liblib 
+  AsFix 
+  verbalize-sdf
+  placeholder
 
 signature
   constructors
@@ -340,6 +344,7 @@ strategies
 
   ReplCons(impl) =
     ReplNamedCons(impl)
+    <+ ReplAstPattern(impl)
     <+ ReplConsNil(impl)
     <+ ReplConsNone(impl)
     <+ ReplConsIns(impl)
@@ -356,6 +361,28 @@ rules
     prod(_, _, as) -> x
     where <oncetd(?cons(x))> as
 
+rules
+  ReplAstPattern(impl) : 
+    appl(p, ts){a*} -> term{a*}
+    where
+      <get-ast-pattern> p => pattern 
+    ; <map(impl)>ts => is
+    ; {| ReplacePlaceholder: 
+        <map-with-index({ ?(i, t) ; rules( ReplacePlaceholder : i -> t ) })>is
+      ; <alltd({ ph:
+           is-placeholder ; get-placeholder => ph
+         ; (  ReplacePlaceholder 
+           <+ log(| Error()
+                  , <concat-strings>[ "Could not replace placeholder <",<write-to-string>ph,"> in pattern "
+                                    , <write-to-string>pattern]) )
+         })>pattern => term
+      |}
+
+  get-ast-pattern : 
+    prod(_, _, as) -> <read-from-string>x
+    where <oncetd(?ast(x))> as
+
+rules
   ReplConsNil(impl) : 
     appl(p, []) -> []
     where <is-nil> p
@@ -599,6 +626,8 @@ signature
     Snoc : List(a) * a -> List(a)
 
     position : a * List(b) -> a
+
+    ast : Term -> Term
 
 strategies
 
