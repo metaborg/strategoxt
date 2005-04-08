@@ -374,7 +374,7 @@ rules
          ; (  ReplacePlaceholder 
            <+ log(| Error()
                   , <concat-strings>[ "Could not replace placeholder <",<write-to-string>ph,"> in pattern "
-                                    , <write-to-string>pattern]) )
+                                    , <write-to-string>pattern]) ; <exit> 1 )
          })>pattern => term
       |}
 
