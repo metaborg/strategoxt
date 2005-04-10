@@ -43,13 +43,15 @@ strategies
       (annolist-to-anno + match-no-anno); raise-in-match
       <+ App(raise-annotations, raise-in-build)
       <+ RootApp(raise-annotations)
-   )
+      <+ Anno(raise-in-match, try(rm-anno); raise-in-match)
+    )
 
   raise-in-build =
     alltd(
       (annolist-to-anno + build-no-anno); raise-in-build
       <+ App(raise-annotations, raise-in-build)
       <+ RootApp(raise-annotations)
+      <+ Anno(raise-in-build, try(rm-anno); raise-in-build)
     )
 
   raise-in-overlay =
@@ -57,6 +59,7 @@ strategies
       (annolist-to-anno + overlay-no-anno); raise-in-overlay
       <+ App(raise-annotations, raise-in-overlay)
       <+ RootApp(raise-annotations)
+      <+ Anno(raise-in-overlay, try(rm-anno); raise-in-overlay)
     )
 
   annolist-to-anno :
@@ -74,6 +77,13 @@ strategies
 
   overlay-no-anno :
     |[ pt ]| -> |[ pt{^_ Nil()} ]|
+
+  rm-anno : 
+    |[ pt ]| -> PreTerm|[ pt ]|
+ 
+  rm-anno : 
+    |[ pt{^_} ]| -> PreTerm|[ pt ]|
+
 
 
 /* another implementation */

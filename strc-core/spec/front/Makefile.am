@@ -43,7 +43,8 @@ libexec_PROGRAMS =				\
 	desugar					\
 	stratego-warnings			\
 	extract					\
-	extract-all 			
+	extract-all 				\
+	lift-dynamic-rules
 
 nodist_repair_types_SOURCES = repair-types.c
 nodist_pre_desugar_SOURCES = pre-desugar.c

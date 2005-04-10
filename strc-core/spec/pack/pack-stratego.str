@@ -10,6 +10,12 @@
 
 module pack-stratego
 imports liblib Stratego-Sugar
+
+signature
+  constructors
+    Import         : String -> Import
+    ImportWildcard : String -> Import
+
 strategies
 
   pack-stratego = 
@@ -112,7 +118,11 @@ strategies
       <+ <fatal-error> ["parse error in ", name])
 
   get-stratego-imports =
-    collect-om(?Import(<![<id>]>) + ?Strategies(<![]>) + ?Signature(<![]>) + ?Overlays(<![]>))
+    collect-om(?Imports(<map(try(?Import(<id>)))>) 
+               + ?Strategies(<![]>) 
+               + ?Signature(<![]>) 
+               + ?Overlays(<![]>))
+    ; concat
 
 //    (?(_, Specification(<id>)) + ?(_, Module(_,<id>)))
 //    ; filter(?Imports(<id>))
@@ -123,3 +133,6 @@ strategies
       ?Specification(<filter(not(Imports(id)))>) 
       + ?Module(_,<filter(not(Imports(id)))>)
     )
+    ; concat
+    ; !Specification(<id>)
+

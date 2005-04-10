@@ -1,4 +1,5 @@
 module test32
+imports list-cons
 
 signature
   constructors

@@ -3,14 +3,26 @@ imports liblib Stratego-Sugar desugar-hl dr-old-to-new lift-dynamic-rules-old st
 
 strategies
 
+  lift-dynamic-rules-io =
+    io-wrap(lift-dynamic-rules-options, LiftDynamicRules)
+
+  lift-dynamic-rules-options =
+    ArgOption("--dr",
+      where(("old" + "new"); <set-config>("--dr", <id>)); !(),
+             !"--dr (old|new)   Use old/new dynamic rule semantics (default: old)" )
+
+strategies
+
   LiftDynamicRules =
     upgrade-old-dr-constructs
     ; Specification([
-        Constructors(![
-          OpDecl("DR_UNDEFINE", 
-	         FunType([ConstType(Sort("ATerm", []))], ConstType(Sort("ATerm", []))))
-        , OpDecl("DR_DUMMY", ConstType(Sort("ATerm", [])))
-          | <id>]) 
+        Signature([
+          Constructors(![
+            OpDecl("DR_UNDEFINE", 
+	           FunType([ConstType(Sort("ATerm", []))], ConstType(Sort("ATerm", []))))
+            , OpDecl("DR_DUMMY", ConstType(Sort("ATerm", [])))
+            | <id>])
+        ]) 
       , id
       , Strategies(define-rule-scope; lift-dynamic-rules-from-spec)
       ])
@@ -312,11 +324,11 @@ strategies
    * of Cons.
    */
   DummifyTerm :
-    Term|[ x ]| -> |[ [DR_DUMMY()] ]| 
+    Term|[ x ]| -> Term|[ [DR_DUMMY()] ]| 
     where not(Var(ContextVar + ListVar(ContextVar)))
 
   DummifyTerm :
-    Term|[ _ ]| -> |[ [DR_DUMMY()] ]|
+    Term|[ _ ]| -> Term|[ [DR_DUMMY()] ]|
 
   DummifyTerm :
     Term|[ <s> ]| -> |[ Keys( ~term*:<tvars; map(!Var(<id>))> s ) ]|
@@ -459,7 +471,7 @@ rules
 
 /*
 
-Copyright (C) 2001-2004 Eelco Visser <visser@acm.org>
+Copyright (C) 2001-2005 Eelco Visser <visser@acm.org>
 
 */
 

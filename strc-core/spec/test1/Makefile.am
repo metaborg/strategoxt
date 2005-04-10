@@ -7,12 +7,15 @@ check_PROGRAMS 	= test01 test02 test03 test04 test05		    \
 		  test20 test21 test22 test23 test24 test25 \
 		  test27 test28a test28 test29 test30 test31 test32 \
 		  test33 test34 test35 test36 test37 test38 test39  \
-		  test40 test41 test43 test44 test45	    \
-		  test46 test47 test48 test49 test50 test51 test52  \
+		  test40 test41 test43 test45	    \
+		  test46 test47 test48 test49  test52  \
 		  test53 test54 test55 test56 test57 test58 test59  \
 		  io-test10 io-test11 io-test1 io-test2 io-test3  
 
 # test26 global choice
+# test44 contexts
+# test50 external definitions
+# test51 import liblib
 
 TESTS 		= $(check_PROGRAMS)
 

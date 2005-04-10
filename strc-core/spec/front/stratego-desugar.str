@@ -108,6 +108,9 @@ rules
     |[ if s1 then s2 else s3 end ]| -> |[ where(s1) < s2 + s3 ]|
 
   Desugar :
+    |[ if s1 then s2 end ]| -> |[ where(s1) < s2 + id ]|
+
+  Desugar :
     SwitchChoiceNoOtherwise(s0, b*) -> SwitchChoice(s0, b*, |[ fail ]|)
 
   Desugar :
