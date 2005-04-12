@@ -39,6 +39,7 @@ m4_pattern_allow([^XT_USING_BASELINE(_TRUE|_FALSE)?$])
 # sets EXEEXT
 AC_PROG_CC
 
+
 ### PACKAGES ##########################
 
 AC_ARG_ENABLE([strc-core],
@@ -62,62 +63,45 @@ AC_ARG_ENABLE([xtc3],
 )
 AC_SUBST([XTC3_ENABLED])
 
+# Constructing PKGS list
+
+PKGS = "autoxt srts"
+
 if test "x$XTC2_ENABLED" = "xyes"
 then
-
-  PKGS="autoxt srts xtc2 stratego-front asfix-tools \
-     strc gpp c-tools stratego-lib concrete-syntax xml-front \
-     aterm-front sdf-front sdf-tools \
-     stratego-regular xtar \
-     boxenv"
-
+  PKGS="$PKGS xtc2"
   DIST_PKGS="$PKGS xtc xtc3"
-
   XTC_DIR="xtc2"
-
 elif test "x$XTC3_ENABLED" = "xyes"
 then
-
-  PKGS="autoxt srts xtc3 stratego-front asfix-tools \
-     strc gpp c-tools stratego-lib concrete-syntax xml-front \
-     aterm-front sdf-front sdf-tools \
-     stratego-regular xtar \
-     boxenv"
-
+  PKGS="$PKGS xtc3"
   DIST_PKGS="$PKGS xtc xtc2"
-
   XTC_DIR="xtc3"
-
 else
-
-  PKGS="autoxt srts xtc stratego-front asfix-tools \
-     strc gpp c-tools stratego-lib concrete-syntax xml-front \
-     aterm-front sdf-front sdf-tools \
-     stratego-regular xtar \
-     boxenv"
-
+  PKGS="$PKGS xtc"
   DIST_PKGS="$PKGS xtc2 xtc3" 
-
   XTC_DIR="xtc"
-
 fi
-AC_SUBST([PKGS])
-AC_SUBST([DIST_PKGS])
-AC_SUBST([XTC_DIR])
 
+PKGS = "$PKGS stratego-front asfix-tools"
 
 if test "x$CORE_ENABLED" = "xyes"
 then
   PKGS="$PKGS strc-core"
-  DIST_PKGS=$PKGS
-  STRC_CORE_PREFIX=${prefix}/strc-core
+  DIST_PKGS="$PKGS strc"
 else
+  PKGS="$PKGS strc"
   DIST_PKGS="$DIST_PKGS strc-core" 
-  STRC_CORE_PREFIX=${prefix}/strc-core 
 fi
+
+PKGS = "$PKGS gpp c-tools stratego-lib concrete-syntax xml-front \
+        aterm-front sdf-front sdf-tools \
+        stratego-regular xtar"
+
 AC_SUBST([PKGS])
 AC_SUBST([DIST_PKGS])
-AC_SUBST([STRC_CORE_PREFIX])
+AC_SUBST([XTC_DIR])
+
 
 if test "$xt_baseline" = "yes"
 then
@@ -213,7 +197,6 @@ AB_CONFIG_PKG(strc,
 )
 
 AB_CONFIG_PKG(strc-core,
-   --prefix=${STRC_CORE_PREFIX}
    --with-aterm=${ATERM}
    --with-sglr=${SGLR}
    --with-pgen=${PGEN}
@@ -221,6 +204,7 @@ AB_CONFIG_PKG(strc-core,
    --with-srts=${BASELINE_SRTS}
    --with-stratego-lib=${BASELINE_STRATEGO_LIB}
    --with-xtc=${BASELINE_XTC}
+   --with-repository=${REPOSITORY}
 )
 
 AB_CONFIG_PKG(c-tools,
