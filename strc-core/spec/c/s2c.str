@@ -463,7 +463,7 @@ rules
   TranslateMatchAnno :
     Match(|[ pt1{^pt2} ]|, Id(trm)) -> 
     |[ { ATerm ~id:x; 
-         ~id:x = (ATerm)ATgetAnnotations(~id:trm);
+         ~id:x = (ATerm)SSLgetAnnotations(~id:trm);
          ~stm: (Match(pt2, Id(x)));
          ~stm: (Match(pt1, Id(trm)));
        } ]|
@@ -682,7 +682,8 @@ rules // Building
     Var(x){"bound"} -> Id(x)
 
   ConstructTerm :
-    Var(x){} -> c:exp|[ not_null(~id:x) ]| 
+    Var(x){t*} -> c:exp|[ not_null(~id:x) ]|
+    where <not(["bound"])> t*
 
   ConstructTerm :
     Var(x){"unbound"} -> c:exp|[ not_null(~id:x) ]| 
@@ -707,7 +708,7 @@ rules // Building
     Anno(t1, c:exp|[ (ATerm) ATempty ]|) -> t1
 
   ConstructTerm :
-    Anno(t1, t2) -> c:exp|[ (ATerm)ATsetAnnotations(~exp:t1, ~exp:t2) ]|
+    Anno(t1, t2) -> c:exp|[ (ATerm)SSLsetAnnotations(~exp:t1, ~exp:t2) ]|
     where <not(?c:exp|[ (ATerm) ATempty ]|)> t2
 
   ConstructTerm :
