@@ -65,7 +65,7 @@ AC_SUBST([XTC3_ENABLED])
 
 # Constructing PKGS list
 
-PKGS = "autoxt srts"
+PKGS="autoxt srts"
 
 if test "x$XTC2_ENABLED" = "xyes"
 then
@@ -83,7 +83,7 @@ else
   XTC_DIR="xtc"
 fi
 
-PKGS = "$PKGS stratego-front asfix-tools"
+PKGS="$PKGS stratego-front asfix-tools"
 
 if test "x$CORE_ENABLED" = "xyes"
 then
@@ -94,7 +94,7 @@ else
   DIST_PKGS="$DIST_PKGS strc-core" 
 fi
 
-PKGS = "$PKGS gpp c-tools stratego-lib concrete-syntax xml-front \
+PKGS="$PKGS gpp c-tools stratego-lib concrete-syntax xml-front \
         aterm-front sdf-front sdf-tools \
         stratego-regular xtar"
 
