@@ -1,5 +1,7 @@
 module lift-dynamic-rules
-imports liblib Stratego-Sugar desugar-hl dr-old-to-new lift-dynamic-rules-old stratlib
+imports liblib Stratego-Sugar desugar-hl 
+//dr-old-to-new lift-dynamic-rules-old 
+stratlib
 
 strategies
 
@@ -14,8 +16,8 @@ strategies
 strategies
 
   LiftDynamicRules =
-    upgrade-old-dr-constructs
-    ; Specification([
+    //upgrade-old-dr-constructs;
+     Specification([
         Signature([
           Constructors(![
             OpDecl("DR_UNDEFINE", 
@@ -315,7 +317,6 @@ strategies
     // a hack to deal with list variables in lists in dr lhss
     topdown(try(
       \ Op("Cons", [Var(ListVar(x)), Op("Nil", [])]) -> Var(ListVar(x)) \
-      <+ \ |[ x@t ]| -> |[ t ]| \
     ));
     alltd(DummifyTerm)
 
@@ -325,7 +326,15 @@ strategies
    */
   DummifyTerm :
     Term|[ x ]| -> Term|[ [DR_DUMMY()] ]| 
-    where not(Var(ContextVar + ListVar(ContextVar)))
+    where <not(ContextVar + ListVar(ContextVar))> x
+
+  DummifyTerm :
+    Term|[ x@t ]| -> <alltd(DummifyTerm)> Term|[ t ]|
+    where <not(ContextVar + ListVar(ContextVar))> x
+
+  DummifyTerm :
+    Term|[ x@t ]| -> Term|[ x ]|
+    where <ContextVar + ListVar(ContextVar)> x
 
   DummifyTerm :
     Term|[ _ ]| -> Term|[ [DR_DUMMY()] ]|

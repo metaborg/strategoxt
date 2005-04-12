@@ -13,5 +13,6 @@ strategies
     rec x([] + [s | x])
 
   main = 
-    list(try(?Add(1,x)));
-    (!x <+ !2)
+    list(try(?Add(1,x)))
+    ; (!x <+ !2)
+    

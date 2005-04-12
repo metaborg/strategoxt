@@ -284,7 +284,7 @@ STRATEGO_FRONT_SHARE = $(top_srcdir)/../stratego-front/sig
 %.b4 : %.b3  %.b3.Stratego-Core
 	../opt/bound-unbound-vars -i $< -o $@ -b
 
-%.ac : %.b4 %.b4.Stratego-Core
+%.ac : %.b3 %.b3.Stratego-Core
 	../c/s2c -i $< -o $@  $(CINCLUDES) -b
 
 %.c.abox : %.ac %.ac.C 

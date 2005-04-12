@@ -1,5 +1,5 @@
-module foo
-imports tuple-cons
+module test58
+imports list-cons tuple-cons
 strategies
 
   main =

@@ -4,3 +4,4 @@ strategies
 
    main =
      rules(Foo: t@(1, x@2) -> [1, 2, t, x])
+ 
