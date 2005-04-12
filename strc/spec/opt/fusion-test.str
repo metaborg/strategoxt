@@ -11,3 +11,4 @@ strategies
     <+ {p,q : ?Nth(Z(), Cns(p, q)); !p}
     <+ {u,v,w : ?Nth(S(u), Cns(v, w)); !Nth(u, w)}
   ]|
+

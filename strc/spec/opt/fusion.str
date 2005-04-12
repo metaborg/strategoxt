@@ -200,7 +200,7 @@ strategies
 
   derive-hnf-traversal(|x) =
     collect-guards
-    ; debug
+    ; debug(!"guards: ")
     ; map(merge-terms(|x))
 //    ; foldr1(?[<id>], \ (s1, s2) -> |[ s1 <+ s2 ]|\ ) => s3
 
