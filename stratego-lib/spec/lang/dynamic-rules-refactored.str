@@ -812,7 +812,7 @@ strategies // intersection and union of rule-sets
 	 ; <iset-union(|rmset2)> rmset1
 	 ; <hashtable-merge(
   	     symmetric-no, 
-	     iterate1-no, 
+	     iterate1-yes, 
 	     iterate2-yes, 
 	     remove-no,	
 	     union, 
