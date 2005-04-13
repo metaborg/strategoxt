@@ -70,16 +70,16 @@ PKGS="autoxt srts"
 if test "x$XTC2_ENABLED" = "xyes"
 then
   PKGS="$PKGS xtc2"
-  DIST_PKGS="$PKGS xtc xtc3"
+  DIST_PKGS="$DIST_PKGS xtc xtc3"
   XTC_DIR="xtc2"
 elif test "x$XTC3_ENABLED" = "xyes"
 then
   PKGS="$PKGS xtc3"
-  DIST_PKGS="$PKGS xtc xtc2"
+  DIST_PKGS="$DIST_PKGS xtc xtc2"
   XTC_DIR="xtc3"
 else
   PKGS="$PKGS xtc"
-  DIST_PKGS="$PKGS xtc2 xtc3" 
+  DIST_PKGS="$DIST_PKGS xtc2 xtc3" 
   XTC_DIR="xtc"
 fi
 
@@ -88,7 +88,7 @@ PKGS="$PKGS stratego-front asfix-tools"
 if test "x$CORE_ENABLED" = "xyes"
 then
   PKGS="$PKGS strc-core"
-  DIST_PKGS="$PKGS strc"
+  DIST_PKGS="$DIST_PKGS strc"
 else
   PKGS="$PKGS strc"
   DIST_PKGS="$DIST_PKGS strc-core" 
@@ -97,6 +97,8 @@ fi
 PKGS="$PKGS gpp c-tools stratego-lib concrete-syntax xml-front \
         aterm-front sdf-front sdf-tools \
         stratego-regular xtar"
+
+DIST_PKGS="$PKGS $DIST_PKGS"
 
 AC_SUBST([PKGS])
 AC_SUBST([DIST_PKGS])
