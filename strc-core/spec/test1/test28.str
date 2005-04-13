@@ -439,7 +439,7 @@ strategies
 
   // Make sure an annotation is really bounded
   test-rules-6 =
-    apply-test(!"test-rules-6"
+    apply-test(!"test-rules-6" 
 	, try( \ Var(s){ts*} -> Var(s){<length> [ts*]} \ )
 	, !Var("a"){Int, Float}
 	, !Var("a"){2}

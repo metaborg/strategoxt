@@ -40,7 +40,7 @@ strategies
 
   raise-in-match =
     alltd(
-      (annolist-to-anno + match-no-anno); raise-in-match
+      (match-annolist-to-anno + match-no-anno); raise-in-match
       <+ App(raise-annotations, raise-in-build)
       <+ RootApp(raise-annotations)
       <+ Anno(raise-in-match, try(rm-anno); raise-in-match)
@@ -48,7 +48,7 @@ strategies
 
   raise-in-build =
     alltd(
-      (annolist-to-anno + build-no-anno); raise-in-build
+      (build-annolist-to-anno + build-no-anno); raise-in-build
       <+ App(raise-annotations, raise-in-build)
       <+ RootApp(raise-annotations)
       <+ Anno(raise-in-build, try(rm-anno); raise-in-build)
@@ -56,24 +56,38 @@ strategies
 
   raise-in-overlay =
     alltd(
-      (annolist-to-anno + overlay-no-anno); raise-in-overlay
+      (overlay-annolist-to-anno + overlay-no-anno); raise-in-overlay
       <+ App(raise-annotations, raise-in-overlay)
       <+ RootApp(raise-annotations)
       <+ Anno(raise-in-overlay, try(rm-anno); raise-in-overlay)
     )
 
-  annolist-to-anno :
+  match-annolist-to-anno :
     |[ pt{} ]| -> |[ pt{^Nil()} ]|
 
-  annolist-to-anno :
+  match-annolist-to-anno :
     |[ pt{t,t*} ]| -> |[ pt{^Cons(t,t')} ]|
-    where <foldr(!|[ Nil(){^Nil()} ]|, \ (t1, t2) -> |[ Cons(t1, t2){^Nil()} ]| \ )> t* => t'
+    where <foldr(!|[ Nil(){^_} ]|, \ (t1, t2) -> |[ Cons(t1, t2){^_} ]| \ )> t* => t'
 
   match-no-anno :
     |[ pt ]| -> |[ pt{^_} ]|
 
+  build-annolist-to-anno :
+    |[ pt{} ]| -> |[ pt{^Nil()} ]|
+
+  build-annolist-to-anno :
+    |[ pt{t,t*} ]| -> |[ pt{^Cons(t,t')} ]|
+    where <foldr(!|[ Nil(){^Nil()} ]|, \ (t1, t2) -> |[ Cons(t1, t2){^Nil()} ]| \ )> t* => t'
+
   build-no-anno :
     |[ pt ]| -> |[ pt{^Nil()} ]|
+
+  overlay-annolist-to-anno :
+    |[ pt{} ]| -> |[ pt{^Nil()} ]|
+
+  overlay-annolist-to-anno :
+    |[ pt{t,t*} ]| -> |[ pt{^Cons(t,t')} ]|
+    where <foldr(!|[ Nil(){^_ Nil()} ]|, \ (t1, t2) -> |[ Cons(t1, t2){^_ Nil()} ]| \ )> t* => t'
 
   overlay-no-anno :
     |[ pt ]| -> |[ pt{^_ Nil()} ]|

@@ -27,7 +27,7 @@ strategies
    * other. Such variables are annotated with "(un)bound".
    */
 
-  mark-buv = 
+  mark-buv = //debug(!"mark-buv in: "); dr-print-rule-set(|"MarkVar"); (
     mark-match 
     <+ mark-build
     <+ mark-scope
@@ -45,6 +45,7 @@ strategies
     <+ mark-lchoice(mark-buv)
     <+ mark-guardedlchoice(mark-buv)
     <+ all(mark-buv)
+  //); debug(!"mark-buv out: "); dr-print-rule-set(|"MarkVar")
 
 strategies
 
@@ -116,11 +117,19 @@ strategies
 
   mark-call =
     Call(id,id)
+    //; debug(!"call a: ")
+    ; dr-print-rule-set(|"MarkVar")
     ; fork-MarkVar(id, Call(id, mark-buv))
+    //; debug(!"call b: ")
+    //; dr-print-rule-set(|"MarkVar")
 
   mark-call =
     CallT(id,id,id)
+    //; debug(!"callt a: ")
+    //; dr-print-rule-set(|"MarkVar")
     ; fork-MarkVar(id, CallT(id, id, map(mark-build-vars)); CallT(id, mark-buv, id))
+    //; debug(!"callt b: ")
+    //; dr-print-rule-set(|"MarkVar")
   
   mark-prim =
     PrimT(id,id,id)
@@ -128,9 +137,15 @@ strategies
 
   mark-let =
     Let(id, id)
+    //; debug(!"let a: ")
+    //; dr-print-rule-set(|"MarkVar")
     ; where(?Let(<tvars>,_); undefine-unbound-MarkVar)
     ; Let(map(fork-MarkVar(id, mark-buv))
+          //; debug(!"let b: ")
+          //; dr-print-rule-set(|"MarkVar")
          ,    fork-MarkVar(id, mark-buv))
+    //; debug(!"let c: ")
+    //; dr-print-rule-set(|"MarkVar")
 
   mark-sdef :
     SDefT(f, as1, as2, s) -> SDefT(f, as1, as2, s')

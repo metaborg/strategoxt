@@ -23,8 +23,8 @@ strategies
 
   dlm-in-build(dlm) =
     alltd(
-      ListVarAsTail 
-      <+ ListVarInBuild
+      ListVarAsTail; dlm-in-build(dlm)
+      <+ ListVarInBuild; dlm-in-build(dlm)
       <+ SingleListVar
       <+ App(dlm, dlm-in-build(dlm))
       <+ RootApp(dlm)
@@ -32,7 +32,7 @@ strategies
 
   dlm-in-match(dlm) = 
     alltd(
-      ListVarAsTail 
+      ListVarAsTail; dlm-in-match(dlm)
       <+ SingleListVar
       <+ App(dlm, dlm-in-match(dlm))
       <+ RootApp(dlm)
@@ -53,13 +53,17 @@ rules
 
   is-nil = 
     ?Term|[ Nil() ]| 
-    + ?Term|[ Nil(){^pt*} ]| 
+    + ?Term|[ Nil(){^pt} ]| 
     + ?PreTerm|[ Nil() ]|
 
   ListVarAsTail : 
-    Term|[ Cons(lid, t){^pt*} ]| -> Term|[ lid{^pt*} ]|
+    Term|[ Cons(lid, t){^pt} ]| -> Term|[ lid{^pt} ]|
+    where <is-nil> t
+
+  ListVarAsTail : 
+    PreTerm|[ Cons(lid, t) ]| -> PreTerm|[ lid ]|
     where <is-nil> t
 
   ListVarInBuild : 
-    Term|[ Cons(lid, t){^pt*} ]| -> Term|[ <conc>(lid, t){^pt*} ]|
+    Term|[ Cons(lid, t){^pt} ]| -> <desugar>Term|[ <conc(|)>(lid, t){^pt} ]|
     where <not(is-nil)> t

@@ -24,6 +24,17 @@ strategies
     ; try( \ Var(s){ts*} -> Var(s){Foo(ts*)} \ )
     ; debug(!"b: ")
     ; ?Var("a"){Foo([Int,Float])}
+    ; debug(!"c: ")
     ; {a* : ?a* }
-    ; ?[a, b*]
+    ; debug(!"d: ")
+    ; ?Var("a"){Foo([a, b*])}
+    ; debug(!"e: ")
     ; ![b*,a,b*]
+    ; debug(!"f: ")
+
+  conc :
+    ([x | xs], ys) -> [x | <conc>(xs, ys)]
+
+  conc :
+    ([], ys) -> ys
+
