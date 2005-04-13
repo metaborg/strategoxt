@@ -35,16 +35,16 @@ overlays
 
 rules
 
-  Dist : Mul(x, Add(y, z)) -> Add(Mul(x, y), Mul(x, z))  
+  Dist : Mul(x, Add(y, z)) -> Add(Mul(x, y), Mul(x, z))
 
 strategies
 
   main =   
     test-suite(!"overlay-test",  
-	//overlay-test1;
-	overlay-test2//;
-	//overlay-test3;
-	//overlay-test4  
+	overlay-test1;
+	overlay-test2;
+	overlay-test3;
+	overlay-test4  
     )
 
   overlay-test1 = 

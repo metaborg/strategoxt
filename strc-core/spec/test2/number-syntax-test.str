@@ -1,4 +1,5 @@
 module number-syntax-test
+imports list-cons
 rules
 
   bla : 1 -> 2

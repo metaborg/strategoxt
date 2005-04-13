@@ -1,17 +1,24 @@
-SINCLUDES	 = -I $(STRATEGO_FRONT)/share/stratego-front \
-	  	   -I $(STRATEGO_FRONT)/share/sdf/stratego-front \
-	  	   -I $(srcdir)/../front		     \
-	  	   -I $(srcdir)/../match		     \
-	  	   -I $(srcdir)/../opt			     \
-	  	   -I $(srcdir)/../lib			     \
-		   -I $(STRATEGO_LIB)/share/stratego-lib
+#SINCLUDES	 = -I $(STRATEGO_FRONT)/share/stratego-front \
+#	  	   -I $(STRATEGO_FRONT)/share/sdf/stratego-front \
+#	  	   -I $(srcdir)/../front		     \
+#	  	   -I $(srcdir)/../match		     \
+#	  	   -I $(srcdir)/../opt			     \
+#	  	   -I $(srcdir)/../lib			     \
+#		   -I $(STRATEGO_LIB)/share/stratego-lib
 
-AM_LDFLAGS	= -L$(SRTS)/lib/srts -L$(ATERM)/lib 
+#AM_LDFLAGS	= -L$(SRTS)/lib/srts -L$(ATERM)/lib 
+
+SINCLUDES 	= -I ../test1/stratego-lib -I $(SRTS)/share/srts
+AM_LDFLAGS	= -L$(STRATEGO_LIB)/lib/stratego-lib -L$(SRTS)/lib/srts -L$(ATERM)/lib -g
+
+STRATEGORUNLIBS = -lstratego-runtime-opt -lstratego-runtime-choice-opt \
+		  -lstratego-lib-native-opt -lATerm-gcc -lm
+LDADD 		= $(STRATEGORUNLIBS)
 
 check_PROGRAMS 	= arity-test as-pattern assignment \
 		  comment-test conditional-innermost congruence-arguments \
 		  congruence-thread dynamic-rules-test empty-sections \
-		  explode-test flatten-test higher-order-arg	      \
+		  flatten-test higher-order-arg	      \
 		  implicit-var-decl improper-list-test innermost-pure \
 		  match-arity match-automaton-test mkterm	      \
 		  number-syntax-test number-test overlay-test	      \
@@ -23,8 +30,6 @@ check_PROGRAMS 	= arity-test as-pattern assignment \
 
 TESTS 		= $(check_PROGRAMS)
 
-STRATEGORUNLIBS = -lstratego_opt -lstratego-choice -lstratego-lib_opt -lATerm-gcc -lm
-LDADD 		= $(STRATEGORUNLIBS)
 
 CLEANFILES 	= *.o *.ac *.s[0-9]* *.f* *.ac *.c.abox \
 		  *.tree *.mtree *.rtree *.txt *.s5fused libtest*.c \
@@ -46,7 +51,6 @@ nodist_congruence_arguments_SOURCES = congruence-arguments.c
 nodist_congruence_thread_SOURCES = congruence-thread.c
 nodist_dynamic_rules_test_SOURCES = dynamic-rules-test.c
 nodist_empty_sections_SOURCES = empty-sections.c
-nodist_explode_test_SOURCES = explode-test.c
 nodist_flatten_test_SOURCES = flatten-test.c
 nodist_higher_order_arg_SOURCES = higher-order-arg.c
 nodist_implicit_var_decl_SOURCES = implicit-var-decl.c

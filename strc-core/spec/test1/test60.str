@@ -1,4 +1,4 @@
-module explode-test
+module test60
 imports sunit
 
 signature
