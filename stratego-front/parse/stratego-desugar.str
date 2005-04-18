@@ -69,9 +69,9 @@ rules
     SwitchChoiceNoOtherwise(s0, b*) -> SwitchChoice(s0, b*, |[ fail ]|)
 
   Desugar :
-    SwitchChoice(s0, b*, s') -> |[ ?t; s0=>t0; s ]|
-    where !Var(<new>) => t
-        ; !Var(<new>) => t0
+    SwitchChoice(s0, b*, s') -> |[ {x* : ?t; s0=>t0; s }]|
+    where ![<new>,<new>] => x*
+        ; map(!Var(<id>)) => [t,t0]
         ; let glchoice = \ ((si, si'), stl) -> |[ where(<~si> t0) < <~si'> t + <~stl> t ]| \ 
            in <foldr(!s', glchoice)> b*
           end => s
