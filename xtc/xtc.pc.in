@@ -1,0 +1,8 @@
+prefix=@prefix@
+pkgdatadir=@datadir@/@PACKAGE@
+strcflags=-I ${pkgdatadir}
+
+Name: XTC
+Description: Transformation Tool Composition
+Version: @PACKAGE_VERSION@
+Requires: stratego-lib
