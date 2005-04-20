@@ -32,6 +32,7 @@ AC_SUBST(RELEASE)
 
 AC_CONFIG_FILES([
   Makefile
+  stratego-runtime.pc
   src/Makefile
   src/srts/Makefile
 ])

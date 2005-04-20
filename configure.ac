@@ -142,6 +142,7 @@ AC_CONFIG_FILES([
   Makefile 
   news-archive/Makefile
   strategoxt.spec
+  aterm.pc
 ])
 AC_OUTPUT
 

@@ -3,7 +3,10 @@ ACLOCAL_AMFLAGS = -I config
 SUBDIRS      = . news-archive $(PKGS)
 DIST_SUBDIRS = news-archive $(DIST_PKGS)
 EXTRA_DIST   = $(EXTRA_FILES)
-EXTRA_FILES  = README svn-revision bootstrap strategoxt.spec.in strategoxt.spec Makefile.xt
+EXTRA_FILES  = README svn-revision bootstrap strategoxt.spec.in strategoxt.spec Makefile.xt aterm.pc.in
+
+pkgconfigdir=$(libdir)/pkgconfig
+pkgconfig_DATA = aterm.pc
 
 install-data-local: install-xtc
 

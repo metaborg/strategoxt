@@ -1,0 +1,7 @@
+prefix=@ATERM@
+
+Name: ATerm Library
+Description: Abstract data type for exchanging tree-like data structures
+Version: 2.3.1
+Libs: -L${prefix}/lib -lATerm-gcc
+Cflags: -I${prefix}/include
