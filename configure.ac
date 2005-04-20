@@ -83,7 +83,7 @@ else
   XTC_DIR="xtc"
 fi
 
-PKGS="$PKGS stratego-front asfix-tools"
+PKGS="$PKGS stratego-lib stratego-front asfix-tools"
 
 if test "x$CORE_ENABLED" = "xyes"
 then
@@ -94,7 +94,7 @@ else
   DIST_PKGS="$DIST_PKGS strc-core" 
 fi
 
-PKGS="$PKGS gpp c-tools stratego-lib concrete-syntax xml-front \
+PKGS="$PKGS gpp c-tools concrete-syntax xml-front \
         aterm-front sdf-front sdf-tools \
         stratego-regular xtar"
 
@@ -143,6 +143,9 @@ AC_CONFIG_FILES([
   news-archive/Makefile
   strategoxt.spec
   aterm.pc
+  stratego-runtime-uninstalled.pc
+  stratego-lib-uninstalled.pc
+  xtc-uninstalled.pc
 ])
 AC_OUTPUT
 

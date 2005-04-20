@@ -3,7 +3,8 @@ ACLOCAL_AMFLAGS = -I config
 SUBDIRS      = . news-archive $(PKGS)
 DIST_SUBDIRS = news-archive $(DIST_PKGS)
 EXTRA_DIST   = $(EXTRA_FILES)
-EXTRA_FILES  = README svn-revision bootstrap strategoxt.spec.in strategoxt.spec Makefile.xt aterm.pc.in
+EXTRA_FILES  = README svn-revision bootstrap strategoxt.spec.in strategoxt.spec Makefile.xt \
+  aterm.pc.in xtc-uninstalled.pc.in stratego-runtime-uninstalled.pc.in stratego-lib-uninstalled.pc.in
 
 pkgconfigdir=$(libdir)/pkgconfig
 pkgconfig_DATA = aterm.pc
