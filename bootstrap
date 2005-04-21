@@ -26,11 +26,16 @@ else
   fi
 fi
 
-echo "bootstrap: using autoxt at $AUTOXT"
+# echo "bootstrap: using autoxt at $AUTOXT"
 
 # Apply the autotools
-$AUTOXT || exit 1
-mv ./autoxt.m4 ./config/  || exit 1
+# $AUTOXT || exit 1
+# mv ./autoxt.m4 ./config/  || exit 1
+
+echo "WARNING: hack: using our own Makefile.xt and autoxt.m4"
+cp ./autoxt/autoxt.m4 ./config/ || exit 1
+cp ./autoxt/Makefile.xt . || exit 1
+
 autoreconf -ifv  || exit 1
 
 # Bootstrap the subpackages
