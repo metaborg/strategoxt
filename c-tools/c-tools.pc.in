@@ -1,0 +1,9 @@
+prefix=@prefix@
+pkgdatadir=@datadir@/@PACKAGE@
+sdfdatadir=@datadir@/sdf/@PACKAGE@
+strcflags=-I ${pkgdatadir} -I ${sdfdatadir}
+
+Name: C Tools
+Description: Basic C syntax definition
+Version: @PACKAGE_VERSION@
+Requires: stratego-lib
