@@ -10,6 +10,7 @@ AC_PROG_INSTALL
 AC_PROG_LIBTOOL
 
 AC_CONFIG_FILES([
+  c-tools.pc
   Makefile
   syn/Makefile
   pp/Makefile
