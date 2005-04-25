@@ -3,8 +3,9 @@
  */
 module util/log
 imports 
-  collection/tuple/*
-  collection/list/*
+  collection/tuple/cons
+  collection/tuple/common
+  collection/list/common
 signature
   constructors
     Emergency : Severity

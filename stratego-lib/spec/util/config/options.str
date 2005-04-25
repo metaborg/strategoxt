@@ -3,7 +3,15 @@
  */
 module util/config/options
 imports 
-  system/io/*
+
+  system/io/char
+  system/io/exec
+  system/io/pipe
+  system/io/term
+  system/io/dir
+  system/io/file
+  system/io/process
+  
   util/config/parse-options 
   util/config/common 
   util/config/verbose 
