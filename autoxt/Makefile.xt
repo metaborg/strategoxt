@@ -13,7 +13,12 @@
 # Variables
 #
 
-AM_CPPFLAGS = -I$(STRATEGO_LIB)/include -I$(SRTS)/include -I$(ATERM)/include
+AM_CPPFLAGS = $(STRATEGO_LIB_CFLAGS)
+LDADD       = $(STRATEGO_RUNTIME_LIBS)
+
+# backwards compatibilty: prefer STRATEGO_LIB_LIBS and STRATEGO_RUNTIME_LIBS in new code.
+SSL_LIBS    = $(STRATEGO_LIB_LIBS)
+STRATEGORUNLIBS = $(STRATEGO_RUNTIME_LIBS)
 
 if XT_DARWIN
   AM_LDFLAGS=-bind_at_load
@@ -21,37 +26,14 @@ else
   AM_LDFLAGS=
 endif
 
-STRATEGORUNLIBS = \
-  -lstratego-runtime-opt \
-  -lstratego-runtime-choice-opt \
-  -lstratego-lib-native-opt \
-  -lATerm-gcc \
-  -lm
+SUFFIXES      = .str .cr .r .rtree .def .tbl .pp .sdf .rtg .rtg-nf
 
-STRATEGO_LIB_LIBS = \
-  -L$(STRATEGO_LIB)/lib/stratego-lib \
-  -L$(SRTS)/lib/srts \
-  -L$(XTC)/lib/xtc \
-  -L$(ATERM)/lib \
-  -lstratego-xtc \
-  -lstratego-lib \
-  $(STRATEGORUNLIBS)
+SCOMPILE      = $(STRC)/bin/strc
+PARSESTRATEGO = $(STRATEGO_FRONT)/bin/parse-stratego
 
-SSL_LIBS = $(STRATEGO_LIB_LIBS)
-
-LDADD = \
-  -L$(STRATEGO_LIB)/lib/stratego-lib \
-  -L$(SRTS)/lib/srts \
-  -L$(ATERM)/lib \
-  $(STRATEGORUNLIBS)
-
-SUFFIXES 	= .str .cr .r .rtree .def .tbl .pp .sdf .rtg .rtg-nf
-
-SCOMPILE 	= $(STRC)/bin/strc
-PARSESTRATEGO 	= $(STRATEGO_FRONT)/bin/parse-stratego
-
-sdfdatadir	= ${datadir}/sdf/${PACKAGE}
-docdatadir  	= ${datadir}/doc/${PACKAGE}
+pkgconfigdir  = $(libdir)/pkgconfig
+sdfdatadir    = $(datadir)/sdf/$(PACKAGE)
+docdatadir    = $(datadir)/doc/$(PACKAGE)
 
 ###########################################################
 #

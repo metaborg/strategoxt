@@ -5,6 +5,6 @@ strcflags=-I ${pkgdatadir}
 Name: Stratego Library
 Description: Standard library for Stratego
 Version: @PACKAGE_VERSION@
-Libs: -L${prefix}/lib/stratego-lib -lstratego-lib-native-opt
+Libs: -L${prefix}/lib/stratego-lib -lstratego-lib -lstratego-lib-native-opt
 Cflags: -I${prefix}/include 
 Requires: aterm stratego-runtime

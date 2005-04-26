@@ -7,3 +7,4 @@ Name: XTC
 Description: Transformation Tool Composition
 Version: @PACKAGE_VERSION@
 Requires: stratego-lib
+Libs: -L${prefix}/lib/xtc -lstratego-xtc

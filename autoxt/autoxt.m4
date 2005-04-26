@@ -132,6 +132,11 @@ AC_DEFUN([XT_USE_XT_PACKAGES],
   AC_DEFINE([XTC_REPOSITORY()],
             [ATmakeString("@REPOSITORY@")],
             [Location of the XTC repository.])
+
+  # TODO: these will be looked up with pkg-config later.
+  AC_SUBST([STRATEGO_LIB_CFLAGS], ['-I$(STRATEGO_LIB)/include -I$(SRTS)/include -I$(ATERM)/include'])
+  AC_SUBST([STRATEGO_LIB_LIBS], ['-L$(STRATEGO_LIB)/lib/stratego-lib -L$(SRTS)/lib/srts -L$(XTC)/lib/xtc -L$(ATERM)/lib -lstratego-xtc -lstratego-lib $(STRATEGO_RUNTIME_LIBS)'])
+  AC_SUBST([STRATEGO_RUNTIME_LIBS], ['-L$(STRATEGO_LIB)/lib/stratego-lib -L$(SRTS)/lib/srts -L$(ATERM)/lib -lstratego-runtime-opt -lstratego-runtime-choice-opt -lstratego-lib-native-opt -lATerm-gcc -lm'])
 ])
 
 AU_DEFUN([USE_XT_PACKAGES], [XT_USE_XT_PACKAGES])
