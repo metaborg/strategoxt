@@ -3,7 +3,7 @@ exports
   sorts ModName
   lexical syntax
     {ModNamePart "/"}+ -> ModName
-    [a-zA-Z\.\-\_] [a-zA-Z0-9\'\.\-\_]* -> ModNamePart
+    [a-zA-Z\.\_] [a-zA-Z0-9\'\.\-\_]* -> ModNamePart
   lexical restrictions
     ModName -/- [a-zA-Z0-9\'\.\-\_]
   lexical syntax
