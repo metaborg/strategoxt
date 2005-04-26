@@ -29,6 +29,7 @@ exports
 
   lexical syntax
     "_"                 -> Id {reject}
+    "'"                 -> Id {reject}
     "all" 		-> Id {reject}
     "constructors" 	-> Id {reject}
     "fail" 		-> Id {reject}
