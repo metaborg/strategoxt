@@ -1,0 +1,6 @@
+prefix=@SDF@
+
+Name: SDF2 Bundle
+Description: Implementation of SDF (modular syntax definition formalism)
+Version: 2.3
+Requires: aterm
