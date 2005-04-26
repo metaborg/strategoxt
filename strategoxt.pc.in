@@ -1,0 +1,5 @@
+prefix=@prefix@
+
+Name: Stratego/XT
+Description: Stratego program transformation language and tools.
+Version: @PACKAGE_VERSION@

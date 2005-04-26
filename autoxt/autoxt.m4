@@ -19,6 +19,7 @@ AC_DEFUN([XT_SETUP],
 
 # XT_DARWIN
 # ---------
+# Sets some additional linker flags that are required on Darwin (Mac OS X)
 AC_DEFUN([XT_DARWIN],
 [
   AC_REQUIRE([AC_CANONICAL_HOST])
@@ -37,6 +38,120 @@ AC_DEFUN([XT_DARWIN],
   AC_MSG_RESULT([$xt_darwin])
   AM_CONDITIONAL([XT_DARWIN], [test "$xt_darwin" = "yes"])
 ])
+
+############################################## FIND PACKAGES ##############################
+
+# XT_CHECK_ATERM
+# --------------
+AC_DEFUN([XT_CHECK_ATERM],
+[
+  XT_CHECK_PACKAGE([ATERM],[aterm >= 2.3],[lib/libATerm.a])
+])
+
+# XT_CHECK_SDF
+# ------------
+AC_DEFUN([XT_CHECK_SDF],
+[
+  XT_CHECK_PACKAGE([SDF],[sdf2-bundle >= 2.3],[bin/sglr])
+
+  SGLR=$SDF
+  PGEN=$SDF
+  PT_SUPPORT=$SDF
+  ASF_LIBRARY=$SDF
+  AC_SUBST([SGLR])
+  AC_SUBST([PGEN])
+  AC_SUBST([PT_SUPPORT])
+  AC_SUBST([ASF_LIBRARY])
+])
+
+# XT_CHECK_STRATEGOXT
+# -------------------
+AC_DEFUN([XT_CHECK_STRATEGOXT],
+[
+  XT_CHECK_PACKAGE([XTC],[xtc])
+  XT_CHECK_PACKAGE([STRATEGO_RUNTIME],[stratego-runtime aterm])
+  XT_CHECK_PACKAGE([STRATEGO_LIB],[stratego-lib])
+  XT_CHECK_PACKAGE([C_TOOLS],[c-tools])
+  XT_CHECK_PACKAGE([STRATEGOXT],[strategoxt])
+
+  # backward compatibitily
+  STRS=$STRATEGO_RUNTIME
+  AC_SUBST([STRS])
+
+  # These packages need pkg-config files.
+  STRC=$STRATEGOXT
+  GPP=$STRATEGOXT
+  STRATEGO_FRONT=$STRATEGOXT
+  ASFIX_TOOLS=$STRATEGOXT
+  ATERM_FRONT=$STRATEGOXT
+  SDF_FRONT=$STRATEGOXT
+  SDF_TOOLS=$STRATEGOXT
+  CONCRETE_SYNTAX=$STRATEGOXT
+  XML_FRONT=$STRATEGOXT
+  STRATEGO_REGULAR=$STRATEGOXT
+  AC_SUBST([STRC])
+  AC_SUBST([GPP])
+  AC_SUBST([STRATEGO_FRONT])
+  AC_SUBST([ASFIX_TOOLS])
+  AC_SUBST([ATERM_FRONT])
+  AC_SUBST([SDF_FRONT])
+  AC_SUBST([SDF_TOOLS])
+  AC_SUBST([CONCRETE_SYNTAX])
+  AC_SUBST([XML_FRONT])
+  AC_SUBST([STRATEGO_REGULAR])
+])
+
+# XT_CHECK_STRATEGOXT_UTILS
+# -------------------------
+AC_DEFUN([XT_CHECK_STRATEGOXT_UTILS],
+[
+  XT_ARG_WITH2([strategoxt-utils],[STRATEGOXT],           [DIR],  [StrategoXT Utilities])
+  XT_ARG_WITH2([graph-tools],     [STRATEGOXT_UTILS],     [DIR],  [Graph Tools])
+  XT_ARG_WITH2([dot-tools],       [STRATEGOXT_UTILS],     [DIR],  [Dot Tools])
+  XT_ARG_WITH2([aterm-tools],     [STRATEGOXT_UTILS],     [DIR],  [ATerm Tools])
+  XT_ARG_WITH2([stratego-tools],  [STRATEGOXT_UTILS],     [DIR],  [Stratego Tools])
+])
+
+# XT_CHECK_PACKAGES
+# -----------------
+AC_DEFUN([XT_CHECK_PACKAGES],
+[
+  AC_REQUIRE([XT_CHECK_ATERM])
+  AC_REQUIRE([XT_CHECK_SDF])
+  AC_REQUIRE([XT_CHECK_STRATEGOXT])
+])
+
+# XT_WITH_XTC_ARGS
+# ----------------
+# Arguments for XTC repositories.
+AC_DEFUN([XT_WITH_XTC_ARGS],
+[
+  BUILD_XTC="XTC"
+
+  XT_ARG_WITH2([repository],      [datadir/$PACKAGE/XTC], [FILE], [XTC Repository])
+  XT_ARG_WITH2([build-repository],[BUILD_XTC],            [FILE], [Build-time XTC Repository])
+
+  # Make sure BUILD_REPOSITORY is an absolute path.
+  case $BUILD_REPOSITORY in
+    [[\\/]]* ) ;;
+    *) BUILD_REPOSITORY=`pwd`/$BUILD_REPOSITORY ;;
+  esac
+
+  AC_DEFINE([XTC_REPOSITORY()],
+            [ATmakeString("@REPOSITORY@")],
+            [Location of the XTC repository.])
+])
+
+# XT_USE_XT_PACKAGES
+# -------------------
+AC_DEFUN([XT_USE_XT_PACKAGES2],
+[
+  AC_REQUIRE([XT_WITH_XTC_ARGS])
+  AC_REQUIRE([XT_CHECK_PACKAGES])
+])
+
+################################### GENERIC MACROS ####################################
+
 
 # XT_ARG_WITH(OPTION, VAR, DEFAULT, ARGNAME, NAME)
 # ------------------------------------------------
@@ -77,13 +192,52 @@ m4_ifval([$5],
 m4_popdef([AC_Var])dnl
 ])
 
-# XT_USE_XT_PACKAGES
+# XT_CHECK_PACKAGE(VARIABLE,MODULE,[WITNESS])
+#
+# Checks the existance of package 'MODULE' and sets the 
+# variables VARIABLE, VARIABLE_CFLAFS, and VARIABLE_LIBS.
+#
+# The optional WITNESS checks if the package is indeed 
+# installed at the location where the pkg-config file says it 
+# is installed.
+#
 # ------------------
+AC_DEFUN([XT_CHECK_PACKAGE],
+[
+  PKG_CHECK_MODULES([$1],[$2])
+
+  AC_MSG_CHECKING([prefix of package $2])
+  $1=`$PKG_CONFIG --variable=prefix "$2"`
+
+  if test -z "$$1"; then
+    AC_MSG_ERROR([package $2 does not specify its prefix in the pkg-config file.
+          Report this error to the maintainer of this package.])
+  else
+    AC_MSG_RESULT([$$1])
+  fi
+
+m4_ifval([$3],
+[test -f "$$1/$3" ||
+  AC_MSG_ERROR([no such file: $$1/$3
+        The configuration of package $2 claims that the package is
+        installed at this location. Please check if the package is installed correctly.])
+])dnl
+
+  AC_SUBST([$1_CFLAGS])
+  AC_SUBST([$1_LIBS])
+  AC_SUBST([$1])
+])
+
+############ OLD XT_USE_XT_PACKAGES MACRO ########################################
+
+# XT_EXPLICTLY_USE_XT_PACKAGES
+# ------------------
+# This macro requires explicit configuration by the user and does not use 
+# pkg-config to find out the right cpp and linker flags.
 AC_DEFUN([XT_USE_XT_PACKAGES],
 [
   AC_REQUIRE([XT_SETUP])
-
-  BUILD_XTC="XTC"
+  AC_REQUIRE([XT_WITH_XTC_ARGS])
 
   # M-x align-all-strings is your friend.
   #           OPTION,            DEFAULT,                ARGNAME, NAME,                      [WITNESS])
@@ -98,8 +252,6 @@ AC_DEFUN([XT_USE_XT_PACKAGES],
   XT_ARG_WITH2([strategoxt],      [XT],                   [DIR],  [Stratego/XT])
   XT_ARG_WITH2([srts],            [STRATEGOXT],           [DIR],  [Stratego Run-Time System])
   XT_ARG_WITH2([xtc],             [STRATEGOXT],           [DIR],  [XTC (XT Composition)])
-  XT_ARG_WITH2([repository],      [datadir/$PACKAGE/XTC], [FILE], [XTC Repository])
-  XT_ARG_WITH2([build-repository],[BUILD_XTC],            [FILE], [Build-time XTC Repository])
   XT_ARG_WITH2([strc],            [STRATEGOXT],           [DIR],  [Stratego Compiler])
   XT_ARG_WITH2([stratego-lib],    [STRATEGOXT],           [DIR],  [Stratego Library])
   XT_ARG_WITH2([gpp],             [STRATEGOXT],           [DIR],  [GPP])
@@ -120,29 +272,28 @@ AC_DEFUN([XT_USE_XT_PACKAGES],
   XT_ARG_WITH2([aterm-tools],     [STRATEGOXT_UTILS],     [DIR],  [ATerm Tools])
   XT_ARG_WITH2([stratego-tools],  [STRATEGOXT_UTILS],     [DIR],  [Stratego Tools])
 
-  # Make sure BUILD_REPOSITORY is an absolute path.
-  case $BUILD_REPOSITORY in
-    [[\\/]]* ) ;;
-    *) BUILD_REPOSITORY=`pwd`/$BUILD_REPOSITORY ;;
-  esac
-
   # Backward compatibility?
   AC_SUBST([SC], [$STRC])
 
-  AC_DEFINE([XTC_REPOSITORY()],
-            [ATmakeString("@REPOSITORY@")],
-            [Location of the XTC repository.])
+  # Forward compatibility?
+  AC_SUBST([STRATEGO_RUNTIME], [$SRTS])
 
-  # TODO: these will be looked up with pkg-config later.
+  # CFLAGS
+  AC_SUBST([ATERM_CFLAGS], ['-I$(ATERM)/include'])
+  AC_SUBST([STRATEGO_RUNTIME_CFLAGS], ['-I$(SRTS)/include'])
   AC_SUBST([STRATEGO_LIB_CFLAGS], ['-I$(STRATEGO_LIB)/include -I$(SRTS)/include -I$(ATERM)/include'])
-  AC_SUBST([STRATEGO_LIB_LIBS], ['-L$(STRATEGO_LIB)/lib/stratego-lib -L$(SRTS)/lib/srts -L$(XTC)/lib/xtc -L$(ATERM)/lib -lstratego-xtc -lstratego-lib $(STRATEGO_RUNTIME_LIBS)'])
-  AC_SUBST([STRATEGO_RUNTIME_LIBS], ['-L$(STRATEGO_LIB)/lib/stratego-lib -L$(SRTS)/lib/srts -L$(ATERM)/lib -lstratego-runtime-opt -lstratego-runtime-choice-opt -lstratego-lib-native-opt -lATerm-gcc -lm'])
+
+  # LIBS
+  AC_SUBST([ATERM_LIBS], ['-L$(ATERM)/lib -lATerm-gcc -lm'])
+  AC_SUBST([STRATEGO_RUNTIME_LIBS], ['-L$(SRTS)/lib/srts -lstratego-runtime-opt -lstratego-runtime-choice-opt -lm'])
+  AC_SUBST([STRATEGO_LIB_LIBS], ['-L$(STRATEGO_LIB)/lib/stratego-lib -lstratego-lib -lstratego-lib-native-opt -lm'])
+  AC_SUBST([XTC_LIBS], ['-L$(XTC)/lib/xtc -lstratego-xtc])
 ])
 
 AU_DEFUN([USE_XT_PACKAGES], [XT_USE_XT_PACKAGES])
 
-############ SVN REVISION ########################################################
-
+# XT_SVN_REVISION
+# ---------------
 AC_DEFUN([XT_SVN_REVISION],
 [
 AC_MSG_CHECKING([for the SVN revision of the source tree])
