@@ -287,7 +287,7 @@ AC_DEFUN([XT_USE_XT_PACKAGES],
   AC_SUBST([ATERM_LIBS], ['-L$(ATERM)/lib -lATerm-gcc -lm'])
   AC_SUBST([STRATEGO_RUNTIME_LIBS], ['-L$(SRTS)/lib/srts -lstratego-runtime-opt -lstratego-runtime-choice-opt -lm'])
   AC_SUBST([STRATEGO_LIB_LIBS], ['-L$(STRATEGO_LIB)/lib/stratego-lib -lstratego-lib -lstratego-lib-native-opt -lm'])
-  AC_SUBST([XTC_LIBS], ['-L$(XTC)/lib/xtc -lstratego-xtc])
+  AC_SUBST([XTC_LIBS], ['-L$(XTC)/lib/xtc -lstratego-xtc'])
 ])
 
 AU_DEFUN([USE_XT_PACKAGES], [XT_USE_XT_PACKAGES])
