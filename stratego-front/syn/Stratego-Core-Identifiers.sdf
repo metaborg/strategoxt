@@ -3,7 +3,7 @@ exports
   sorts ModName
   lexical syntax
     {ModNamePart "/"}+ -> ModName
-    [a-zA-Z\.\_\-] [a-zA-Z0-9\'\.\-\_]* -> ModNamePart
+    [a-zA-Z\.\_] [a-zA-Z0-9\'\.\-\_]* -> ModNamePart
   lexical restrictions
     ModName -/- [a-zA-Z0-9\'\.\-\_]
   lexical syntax
@@ -15,8 +15,8 @@ exports
 
   sorts Id LId LCID UCID
   lexical syntax
-    [a-zA-Z\_\-] [a-zA-Z0-9\'\-\_]*     -> Id
-    [a-zA-Z\_\-] [a-zA-Z0-9\'\-\_]* "*" -> LId
+    [a-zA-Z\_] [a-zA-Z0-9\'\-\_]*     -> Id
+    [a-zA-Z\_] [a-zA-Z0-9\'\-\_]* "*" -> LId
 
     [a-z] [a-zA-Z0-9\'\-\_]*  -> LCID
     [A-Z] [a-zA-Z0-9\'\-\_]*  -> UCID
