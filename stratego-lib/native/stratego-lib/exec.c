@@ -936,13 +936,13 @@ ATerm SSL_pipe_term_to_child(ATerm t, ATerm prog, ATerm args0)
   switch(pid) {
   case -1 :
     // Failure
-    fprintf(stderr, "SSL_call_it: Forking failed\n");
+    //fprintf(stderr, "SSL_call_it: Forking failed\n");
     _fail((ATerm) ATempty);
     break;
 
   case 0 : 
     // Child
-    fprintf(stderr, "PID = %d (I am the child)\n", pid); 
+    //fprintf(stderr, "PID = %d (I am the child)\n", pid); 
 
     // Forging input end of pipe with stdin
     if(close(STDIN_FILENO) != 0) _fail(prog);
