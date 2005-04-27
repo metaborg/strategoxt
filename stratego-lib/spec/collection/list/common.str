@@ -25,8 +25,8 @@ strategies
     [x | xs] -> (x, xs)
 
   /**
-   * @type a * [a] -> [a]
-   */ 
+   * @type (a, List(a)) -> List(a)
+   */
   MkCons :
     (x, xs) -> [x | xs]
 
@@ -37,9 +37,9 @@ strategies
   /**
    * Apply strategy to each element of a list.
    *
-   * @type s a -> b
-   * @type   [a] -> [b]
-   * @inc    map-test
+   * @param is applied to all elements: a -> b
+   * @type  List(a) -> List(b)
+   * @inc   map-test
    */
   map(s) = 
     rec x([] + [s | x]) 
@@ -49,6 +49,9 @@ strategies
 
   /**
    * In reverse order apply strategy to each element of a list.
+   *
+   * @param is applied to all elements: a -> b
+   * @type  List(a) -> List(b)
    */
   reverse-map(s) = 
     [id | reverse-map(s)]; [s | id] <+ []
@@ -63,22 +66,27 @@ strategies
     rec x([s| id] < [id| list(try(s))] + [id| x])
 
  /**
-  * Length of a list.
+  * Returns the length of a list.
   *
+  * @type List(a) -> Int
   * @inc length-test
   */
   length = 
     foldr(!0, add, !1)
 
   /**
-   * @type  a * [a] ->? _
+   * Succeeds if the term is in the list.
+   *
+   * @type  (a, List(a)) ->? List(a)
    */
   elem =
     ?(x, <id>); fetch(?x)
   
   /**
-   * @type eq  a * a ->? _
-   * @type     a * [a] ->? _
+   * Succeeds if a term equal to the given term is in the list.
+   *
+   * @param (a, a) ->? b
+   * @type  (a, List(a)) ->? List(a or b)
    */
   elem(eq) =
     ?(x, <id>); fetch(<eq> (x, <id>))
@@ -86,9 +94,9 @@ strategies
   /**
    * Find first list element for which s succeeds.
    *
-   * @type s a -> b
-   * @type   [a] -> [a or b]
-   * @inc    fetch-test
+   * @param a -> b
+   * @type  List(a) -> List(a or b)
+   * @inc   fetch-test
    */
   fetch(s) = 
     rec x([s | id] <+ [id | x])
@@ -96,8 +104,8 @@ strategies
   /**
    * Return first list element for which s succeeds.
    *
-   * @type   [a] -> a
-   * @inc    fetch-elem-test
+   * @type  List(a) -> a
+   * @inc   fetch-elem-test
    */
   fetch-elem(s) = 
     fetch(s; ?x); !x
@@ -114,9 +122,9 @@ strategies
    *   <split-fetch(\ 3 -> 6 \)> [3, 4, 5] => ([], [4,5])
    *   not(<split-fetch(\ 3 -> 6 \)> [8, 7, 6])
    *
-   * @type s  a ->? _
-   * @type    [a] -> [a] * [a]
-   * @inc     split-fetch-test
+   * @param a ->? _
+   * @type  List(a) -> (List(a), List(a))
+   * @inc   split-fetch-test
    */
   split-fetch(s) =
     at-suffix([s|id];[id|?tl];![]); !(<id>, tl)
@@ -130,40 +138,28 @@ strategies
    *
    * split-fetch-keep fails if s cannot be applied to any of the elements.
    *
-   * @type s  a -> b
-   * @type    [a] -> [a] * b * [a]
+   * @param a -> b
+   * @type  List(a) -> (List(a), b, List(a))
    */
   split-fetch-keep(s) =
     at-suffix([s|id];[?el|?tl];![]); !(<id>, el, tl)
 
  /**
   * Apply a strategy to the tail of a list.
+  *
+  * @param is applied to the tail: List(a) -> List(b)
+  * @type  List(a) -> List(a or b)
   */
   at-tail(s) = 
     [id | s]
 
   /**
-   * @obsolete use at-tail
-   */
-  at_tail(s) = 
-    obsolete(!"at_tail -> at-tail");
-    at-tail(s)
-
-  /**
    * Apply s to the Nil of a list. 
    *
-   * @param s  Is applied to Nil and must return a list.
-   * @type  s  List(a) -> List(a)
-   * @type     List(a) -> List(a)
+   * @param is applied to Nil ([]) and must return a list: List(a) -> List(a)
+   * @type  List(a) -> List(a)
    */
   at-end(s) = 
-    rec x([id | x] + []; s)
-
-  /**
-   * @obsolete use at-end
-   */
-  at_end(s) = 
-    obsolete(!"at_end -> at-end");
     rec x([id | x] + []; s)
 
   /**
@@ -171,33 +167,30 @@ strategies
    *
    * The longest suffix (that is, the first application in a list)
    * is preferred.
+   *
+   * @param is applied to the suffix : List(a) -> b
+   * @type  List(a) -> List(a or b)
    */
   at-suffix(s) = 
     rec x(s <+ [id | x])
 
   /**
-   * @obsolete use at-suffix
+   * Apply a strategy to some suffix of a list.
+   *
+   * The shortest suffix (that is, the last application in a list)
+   * is preferred.
+   *
+   * @param is applied to the suffix : List(a) -> b
+   * @type  List(a) -> List(a or b)
    */
-  at_suffix(s) = 
-    obsolete(!"at_suffix -> at-suffix");
-    rec x(s <+ [id | x])
-
   at-suffix-rev(s) = 
     rec x([id | x] <+ s)
 
   /**
-   * @obsolete use at-last
-   */
-  at_last(s) = 
-    obsolete(!"at_last -> at-last");
-    at-last(s)  
-
-  /**
    * Apply s to the last Cons ([_]) of a list.
    *
-   * @param s  Is applied to the [x] and must return a list.
-   * @type  s  List(a) -> List(a)
-   * @type     List(a) -> List(a)
+   * @param Is applied to the [x] and must return a list: List(a) -> List(a)
+   * @type  List(a) -> List(a)
    */
   at-last(s) = 
     rec x([id]; s <+ [id | x])
@@ -250,8 +243,8 @@ strategies
   /**
    * Reverses a list and applies s to all the elements.
    *
-   * @type s  a -> b
-   * @type    List(a) -> List(b)
+   * @param a -> b
+   * @type  List(a) -> List(b)
    */
   reverse(s) = 
     reverse-acc(s, ![])
@@ -311,8 +304,8 @@ strategies
    * Separates the elements of the list by the specified separator.
    * The separate-by variant that uses a term argument is prefered.
    *
-   * @param s  Strategy that results in a separator.
-   * @type     List(a) -> List(a or sep)
+   * @param Strategy that results in a separator.
+   * @type  List(a) -> List(a or sep)
    */
   separate-by(sep) =
     separate-by(|<sep> ())
@@ -320,8 +313,8 @@ strategies
   /**
    * Separates the elements of the list by the specified separator.
    *
-   * @param sep  Separator term
-   * @type       List(a) -> List(a or sep)
+   * @param Separator term
+   * @type  List(a) -> List(a or sep)
    */
   separate-by(|sep) =
     []
@@ -371,9 +364,9 @@ strategies
   /**
    * foldr, requires a list of length > 1.
    *
-   * @type s1  [a] -> b
-   * @type s2  a * b -> b
-   * @type     [a] -> b
+   * @param  List(a) -> b
+   * @param  (a, b) -> b
+   * @type   List(a) -> b
    */
   foldr1(s1, s2) = 
     rec x([id]; s1 <+ FoldR; (id, x); s2)
@@ -383,10 +376,10 @@ strategies
    * The additional parameter strategy f is applied to each element just
    * before each folding step.
    *
-   * @type s1  [c] -> b
-   * @type s2  c * b -> b
-   * @type f   a -> c
-   * @type     [a] -> b
+   * @param List(c) -> b
+   * @param (c, b) -> b
+   * @param a -> c
+   * @type  List(a) -> b
    */
   foldr1(s1, s2, f) = 
     rec x([f]; s1 <+ FoldR; (f, x); s2)
@@ -395,16 +388,16 @@ strategies
    * foldr, requires a list of length > 1.
    * Note that s maps (a, a) to a, only one type is involved.
    *
-   * @type s  a * a -> a
-   * @type     [a] -> a
+   * @param (a, a) -> a
+   * @type  List(a) -> a
    */
   foldr1(s) = 
     rec x((FoldR1 <+ FoldR; (id, x)); s)
 
   /**
-   * @type s1  [] -> b
-   * @type s2  a * b -> b
-   * @type     [a] -> b
+   * @param [] -> b
+   * @param (a, b) -> b
+   * @type  List(a) -> b
    */
   foldr(s1, s2) = 
     []; s1 
@@ -415,19 +408,18 @@ strategies
    * The additional parameter strategy f is applied to each element just
    * before each folding step.
    *
-   * s1 :: [] -> b
-   * s2 :: c * b -> b
-   *  f :: a -> c
-   *    :: [a] -> b
+   * @param [] -> b
+   * @param (c, b) -> b
+   * @param a -> c
+   * @type  List(a) -> b
    */
   foldr(s1, s2, f)  = 
     []; s1 + 
     \ [y|ys] -> <s2> (<f> y, <foldr(s1, s2, f)> ys) \
 
-
   /**
-   * s :: a * b -> b
-   *   :: [a] * b -> b
+   * @param (a, b) -> b
+   * @type  (List(a), b) -> b
    */ 
   foldl(s) = 
     rec x( \ ([], y) -> y \ + FoldL(s); x)
@@ -448,8 +440,8 @@ strategies
    * 
    * Note: equivalent to map(s); concat
    *
-   * @type s :: a -> List(b) 
-   * @type   :: List(a) -> List(b)
+   * @param a -> List(b) 
+   * @type  List(a) -> List(b)
    */
   mapconcat(s) =
     foldr([], conc, s)
@@ -481,9 +473,9 @@ strategies
   split-last =
     split-init-last
 
- /**
-  * @inc copy-test
-  */
+  /**
+   * @inc copy-test
+   */
   copy = 
     for(\ (n,t) -> (n,t,[]) \
        ,\ (0,t,ts) -> ts \
@@ -532,7 +524,7 @@ strategies
    * produce an integer.
    *
    * @type  List(a) -> List(a)
-   * @param isn  _ -> Int
+   * @param _ -> Int
    */
   drop(isn) = 
     where(isn => n)
@@ -541,6 +533,7 @@ strategies
     ; map(Snd)
 
 strategies
+
   /**
    * Trim elements from start and/or end of a list
    *
@@ -552,7 +545,6 @@ strategies
    * @since 0.9.5
    * @inc   trim-test
    */
-
   rtrim(s) =
     ![()|<id>] // Add dummy element, or at-suffix-rev will fail at empty lists
   ; at-suffix-rev(
@@ -574,8 +566,7 @@ strategies
    * flatten-list completely flattens a list.
    * See list-misc-test for examples.
    * 
-   * type in = a or [in]
-   * flatten-list :: [in] -> [a]
+   * @type List(rec x(a or List(x))) -> List(a)
    *
    * @inc flatten-test
    */
