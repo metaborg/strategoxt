@@ -5,7 +5,7 @@
  * Basic idea: configuration of the form (todo, done, files), 
  * keep adding files corresponding to the names in \verb|todo| until empty
  */
-module strategy/pack/pack-graph
+module strategy/pack/graph
 imports 
   term/string 
   list // XXX
