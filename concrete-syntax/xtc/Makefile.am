@@ -11,5 +11,4 @@ BOOTCLEANFILES = $(wildcard *.c) parse-cs-lib.rtree
 
 SCFLAGS      = --main io-$* --dr new
 STRINCLUDES  = -I $(XTC)/share/xtc \
-               -I $(SRTS)/share/srts \
-               -I $(top_srcdir)/sig
+               -I $(SRTS)/share/srts 
