@@ -20,15 +20,27 @@ signature
  */
 strategies
 
+  /**
+   * @type _ -> HashTable(K, V)
+   */
   new-hashtable =
     new-hashtable(|117,75)
 
+  /**
+   * @type _ -> HashTable(K, V)
+   */
   new-hashtable(|initial_size, max_load) =
     prim("SSL_hashtable_create", initial_size, max_load); !Hashtable(<id>)
 
+  /**
+   * @type HashTable(K, V) -> HashTable(K, V)
+   */
   hashtable-destroy =
     ?Hashtable(tbl); prim("SSL_hashtable_destroy", tbl); !Hashtable(<id>)
 
+  /**
+   * @type HashTable(K, V) -> HashTable(K, V)
+   */
   hashtable-clear =
     ?Hashtable(tbl); prim("SSL_hashtable_reset", tbl); !Hashtable(<id>)
 
@@ -37,17 +49,37 @@ strategies
  */
 strategies
 
+  /**
+   * @type HashTable(K, V) -> HashTable(K, V)
+   */
   hashtable-put(|key, value) =
     ?Hashtable(tbl); prim("SSL_hashtable_put", tbl, key, value); !Hashtable(<id>)
 
+  /**
+   * @type HashTable(K, V) -> V
+   */
   hashtable-get(|key) =
     ?Hashtable(tbl); prim("SSL_hashtable_get", tbl, key)
 
+  /**
+   * @type HashTable(K, V) -> HashTable(K, V)
+   */
   hashtable-remove(|key) =
     ?Hashtable(tbl); prim("SSL_hashtable_remove", tbl, key); !Hashtable(<id>)
   
+  /**
+   * @type HashTable(K, V) -> List(K)
+   */
   hashtable-keys =
     ?Hashtable(tbl); prim("SSL_hashtable_keys", tbl)
+
+  /**
+   * @type HashTable(K, V) -> List(V)
+   */
+  hashtable-values =
+    ?htbl
+    ; hashtable-keys
+    ; map({k: ?k; <hashtable-get(|k)> htbl})
 
 /**
  * Hashtable bulk operations
