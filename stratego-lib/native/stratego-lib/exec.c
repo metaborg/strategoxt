@@ -936,7 +936,7 @@ ATerm SSL_pipe_term_to_child(ATerm t, ATerm prog, ATerm args0)
   switch(pid) {
   case -1 :
     // Failure
-    //fprintf(stderr, "SSL_call_it: Forking failed\n");
+    fprintf(stderr, "SSL_call_it: Forking failed\n");
     _fail((ATerm) ATempty);
     break;
 
@@ -962,7 +962,7 @@ ATerm SSL_pipe_term_to_child(ATerm t, ATerm prog, ATerm args0)
 
   default : 
     // Parent
-    fprintf(stderr, "PID = %d (I am the father)\n", pid);
+    //fprintf(stderr, "PID = %d (I am the father)\n", pid);
     fileid = fdopen(filedesc[1], "w");
     if(close(filedesc[0] != 0)) _fail(prog);
     //if(binary)
