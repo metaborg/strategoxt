@@ -7,5 +7,4 @@ EXTRA_DIST 	  = README Makefile.xt stratego-lib.pc.in
 
 ACLOCAL_AMFLAGS   = -I ../config
 
-pkgconfigdir=$(libdir)/pkgconfig
 pkgconfig_DATA = stratego-lib.pc

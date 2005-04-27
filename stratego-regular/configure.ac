@@ -5,7 +5,7 @@ AM_INIT_AUTOMAKE
 
 test "x$prefix" = xNONE && prefix=$ac_default_prefix
 
-XT_USE_XT_PACKAGES
+XT_INTERNAL_USE_XT_PACKAGES
 XT_TERM_DEFINE
 
 AC_PROG_CC

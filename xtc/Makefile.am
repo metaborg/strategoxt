@@ -5,6 +5,4 @@ EXTRA_DIST        = Makefile.xt xtc.pc.in
 CLEANFILES        = XTC
 
 ACLOCAL_AMFLAGS = -I ../config
-
-pkgconfigdir=$(libdir)/pkgconfig
-pkgconfig_DATA = xtc.pc
+pkgconfig_DATA  = xtc.pc

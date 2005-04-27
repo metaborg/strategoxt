@@ -11,7 +11,6 @@
 # XT_ left in configure is the sign a macro was not defined, or there was a typo
 # in a macro invocation.
 m4_pattern_forbid([^XT_])
-
 AC_DEFUN([XT_SETUP],
 [
   AC_REQUIRE([XT_DARWIN])
@@ -64,15 +63,21 @@ AC_DEFUN([XT_CHECK_SDF],
   AC_SUBST([ASF_LIBRARY])
 ])
 
-# XT_CHECK_STRATEGOXT
-# -------------------
-AC_DEFUN([XT_CHECK_STRATEGOXT],
+AC_DEFUN([XT_CHECK_XTC],
 [
   XT_CHECK_PACKAGE([XTC],[xtc])
+])
+
+# XT_CHECK_STRATEGOXT
+# ----------------------------
+# Check for Stratego/XT
+AC_DEFUN([XT_CHECK_STRATEGOXT],
+[
+  AC_REQUIRE([XT_CHECK_XTC])
   XT_CHECK_PACKAGE([STRATEGO_RUNTIME],[stratego-runtime])
   XT_CHECK_PACKAGE([STRATEGO_LIB],[stratego-lib])
-  XT_CHECK_PACKAGE([C_TOOLS],[c-tools])
-  XT_CHECK_PACKAGE([STRATEGOXT],[strategoxt])
+  XT_CHECK_PACKAGE([C_TOOLS],[c-tools],[bin/parse-c$EXEEXT])
+  XT_CHECK_PACKAGE([STRATEGOXT],[strategoxt],[bin/strc$EXEEXT])
 
   # backward compatibitily
   STRS=$STRATEGO_RUNTIME
@@ -144,10 +149,73 @@ AC_DEFUN([XT_WITH_XTC_ARGS],
 
 # XT_USE_XT_PACKAGES
 # -------------------
-AC_DEFUN([XT_USE_XT_PACKAGES2],
+AC_DEFUN([XT_USE_XT_PACKAGES],
 [
+  AC_REQUIRE([XT_SETUP])
   AC_REQUIRE([XT_WITH_XTC_ARGS])
   AC_REQUIRE([XT_CHECK_PACKAGES])
+  AC_REQUIRE([XT_PROG_XTC])
+])
+
+################################### INTERNAL STRATEGOXT MACROS #######################
+
+# XT_INTERNAL_CHECK_STRATEGOXT
+# ----------------------------
+# Check for Stratego/XT in Stratego/XT itself.
+AC_DEFUN([XT_INTERNAL_CHECK_STRATEGOXT],
+[
+  AC_REQUIRE([XT_CHECK_XTC])
+  XT_CHECK_PACKAGE([STRATEGO_RUNTIME],[stratego-runtime])
+  XT_CHECK_PACKAGE([STRATEGO_LIB],[stratego-lib])
+  XT_CHECK_PACKAGE([STRATEGOXT],[strategoxt])
+
+  # backward compatibitily
+  SRTS=$STRATEGO_RUNTIME
+  AC_SUBST([SRTS])
+
+  # These packages need pkg-config files.
+  STRC=$STRATEGOXT
+  GPP=$STRATEGOXT
+  C_TOOLS=$STRATEGOXT
+  STRATEGO_FRONT=$STRATEGOXT
+  ASFIX_TOOLS=$STRATEGOXT
+  ATERM_FRONT=$STRATEGOXT
+  SDF_FRONT=$STRATEGOXT
+  SDF_TOOLS=$STRATEGOXT
+  CONCRETE_SYNTAX=$STRATEGOXT
+  XML_FRONT=$STRATEGOXT
+  STRATEGO_REGULAR=$STRATEGOXT
+  AC_SUBST([STRC])
+  AC_SUBST([GPP])
+  AC_SUBST([C_TOOLS])
+  AC_SUBST([STRATEGO_FRONT])
+  AC_SUBST([ASFIX_TOOLS])
+  AC_SUBST([ATERM_FRONT])
+  AC_SUBST([SDF_FRONT])
+  AC_SUBST([SDF_TOOLS])
+  AC_SUBST([CONCRETE_SYNTAX])
+  AC_SUBST([XML_FRONT])
+  AC_SUBST([STRATEGO_REGULAR])
+])
+
+# XT_INTERNAL_CHECK_PACKAGES
+# --------------------------
+AC_DEFUN([XT_INTERNAL_CHECK_PACKAGES],
+[
+  AC_REQUIRE([XT_CHECK_ATERM])
+  AC_REQUIRE([XT_CHECK_SDF])
+  AC_REQUIRE([XT_INTERNAL_CHECK_STRATEGOXT])
+])
+
+
+# XT_INTERNAL_USE_XT_PACKAGES
+# -------------------
+AC_DEFUN([XT_INTERNAL_USE_XT_PACKAGES],
+[
+  AC_REQUIRE([XT_SETUP])
+  AC_REQUIRE([XT_WITH_XTC_ARGS])
+  AC_REQUIRE([XT_INTERNAL_CHECK_PACKAGES])
+  AC_REQUIRE([XT_PROG_XTC])
 ])
 
 ################################### GENERIC MACROS ####################################
@@ -234,8 +302,9 @@ m4_ifval([$3],
 # ------------------
 # This macro requires explicit configuration by the user and does not use 
 # pkg-config to find out the right cpp and linker flags.
-AC_DEFUN([XT_USE_XT_PACKAGES],
+AC_DEFUN([XT_EXPLICITLY_USE_XT_PACKAGES],
 [
+  AC_REQUIRE([AC_PROG_CC])
   AC_REQUIRE([XT_SETUP])
   AC_REQUIRE([XT_WITH_XTC_ARGS])
 
@@ -244,7 +313,7 @@ AC_DEFUN([XT_USE_XT_PACKAGES],
   XT_ARG_WITH2([xt],              [prefix],               [DIR],  [XT Packages])
   XT_ARG_WITH2([aterm],           [XT],                   [DIR],  [ATerm Library],            [lib/libATerm.a])
   XT_ARG_WITH2([sdf],             [XT],                   [DIR],  [SDF Packages])
-  XT_ARG_WITH2([sglr],            [SDF],                  [DIR],  [SGLR Parser],              [bin/sglr])
+  XT_ARG_WITH2([sglr],            [SDF],                  [DIR],  [SGLR Parser],              [bin/sglr$EXEEXT])
   XT_ARG_WITH2([pgen],            [SDF],                  [DIR],  [PGEN Parser Generator],    [bin/sdf2table])
   XT_ARG_WITH2([pt-support],      [SDF],                  [DIR],  [PT Support])
   XT_ARG_WITH2([asf-library],     [SDF],                  [DIR],  [ASF Library])
@@ -288,6 +357,9 @@ AC_DEFUN([XT_USE_XT_PACKAGES],
   AC_SUBST([STRATEGO_RUNTIME_LIBS], ['-L$(SRTS)/lib/srts -lstratego-runtime-opt -lstratego-runtime-choice-opt -lm'])
   AC_SUBST([STRATEGO_LIB_LIBS], ['-L$(STRATEGO_LIB)/lib/stratego-lib -lstratego-lib -lstratego-lib-native-opt -lm'])
   AC_SUBST([XTC_LIBS], ['-L$(XTC)/lib/xtc -lstratego-xtc'])
+
+  # XTC
+  AC_SUBST([XTC_PROG], [$(XTC)/bin/xtc])
 ])
 
 AU_DEFUN([USE_XT_PACKAGES], [XT_USE_XT_PACKAGES])
@@ -445,6 +517,24 @@ AC_DEFUN([XT_PROG_BAFFLE],
     AC_MSG_RESULT([no])
     AC_MSG_ERROR([cannot find baffle. Use --with-aterm.])
   fi
+])
+
+AC_DEFUN([XT_PROG_XTC],
+[
+  AC_REQUIRE([XT_CHECK_XTC])
+
+  AC_MSG_CHECKING([for location of xtc program])
+
+  pkg-config --variable=xtc xtc > foo
+  XTC_PROG="$($PKG_CONFIG --variable=xtc xtc)"
+  if test -z "$XTC_PROG"; then
+    AC_MSG_RESULT([not found])
+    AC_MSG_ERROR([xtc module does not define xtc variable])
+  else
+    AC_MSG_RESULT([$XTC_PROG])
+  fi
+
+  AC_SUBST([XTC_PROG])
 ])
 
 AC_DEFUN([XT_PROG_STRC],

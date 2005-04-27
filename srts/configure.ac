@@ -5,12 +5,7 @@ AM_INIT_AUTOMAKE
 
 AM_CONFIG_HEADER(config.h)
 
-AC_ARG_WITH([aterm], 
-  AS_HELP_STRING([--with-aterm],[Specify location of aterm library, default: \$prefix]), 
-  [ATERM=$withval], 
-  [ATERM="$prefix"]
-)
-AC_SUBST([ATERM])
+XT_CHECK_ATERM
 
 AC_CHECK_FUNCS([getpagesize mkdtemp])
 AC_CHECK_HEADERS([stdlib.h])

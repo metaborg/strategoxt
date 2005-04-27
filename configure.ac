@@ -15,32 +15,40 @@ XT_SVN_REVISION
 # comment to make this a stable release
 XT_PRE_RELEASE
 
-XT_ARG_WITH([aterm],         [ATERM],           [prefix],                    [DIR],  [ATerm Library])
-XT_ARG_WITH([repository],    [REPOSITORY],      [datadir/$PACKAGE_NAME/XTC], [FILE], [XTC Repository])
-XT_ARG_WITH([sdf],           [SDF],             [prefix],                    [SDF],  [SDF Packages])
-XT_ARG_WITH([sglr],          [SGLR],            [SDF],                       [DIR],  [SGLR Parser])
-XT_ARG_WITH([pgen],          [PGEN],            [SDF],                       [DIR],  [PGEN Parser Generator])
-XT_ARG_WITH([pt-support],    [PT_SUPPORT],      [SDF],                       [DIR],  [PT Support])
-XT_ARG_WITH([asf-library],   [ASF_LIBRARY],     [SDF],                       [DIR],  [ASF Library])
-XT_ARG_WITH([strategoxt],    [BASELINE],        [prefix],                    [DIR],  [StrategoXT])
+### DEPENDENCIES ##################################################
+
+XT_ARG_WITH2([aterm], [prefix], [DIR], [ATerm Library], [lib/libATerm.a])
+XT_ARG_WITH2([sdf],   [prefix], [DIR], [SDF Packages],  [bin/sglr])
+XT_ARG_WITH2([repository], [datadir/$PACKAGE_NAME/XTC], [FILE], [XTC Repository])
+
+AC_SUBST([PGEN], [$SDF])
+AC_SUBST([SGLR], [$SDF])
+AC_SUBST([PT_SUPPORT], [$SDF])
 
 AC_ARG_WITH([strategoxt],
-  [AS_HELP_STRING([--with-strategoxt=DIR], [use StrategoXT baseline at DIR @<:@prefix@:>@])],
-  [STRATEGOXT=$withval
+  [AS_HELP_STRING([--with-strategoxt=DIR], [use Stratego/XT baseline at DIR @<:@prefix@:>@])],
+  [BASELINE=$withval
    xt_baseline="yes"
   ],
-  [STRATEGOXT=$prefix
+  [BASELINE=$prefix
    xt_baseline="no"
   ])
-AC_SUBST([STRATEGOXT])
-AM_CONDITIONAL([XT_USING_BASELINE], [test "$xt_baseline" = "yes"])
-m4_pattern_allow([^XT_USING_BASELINE(_TRUE|_FALSE)?$])
 
-# sets EXEEXT
 AC_PROG_CC
+AC_PROG_LIBTOOL
+PKG_PROG_PKG_CONFIG
 
+AC_PATH_PROG([getopt], [getopt])
+if test -z "$getopt"; then
+  AC_MSG_ERROR([getopt is required])
+fi
 
-### PACKAGES ##########################
+# AC_ARG_WITH([curl], 
+#   [AS_HELP_STRING([--with-curl=DIR], [use Curl package at DIR @<:@/usr@:>@])],
+#   [CURL="$withval"], 
+#   [CURL="/usr"])
+
+### CONFIGURATION OF STRATEGOXT PACKAGES ##########################
 
 AC_ARG_ENABLE([strc-core],
   AS_HELP_STRING([--enable-strc-core], [build new Stratego compiler]),
@@ -56,34 +64,35 @@ AC_ARG_ENABLE([xtc2],
 )
 AC_SUBST([XTC2_ENABLED])
 
-AC_ARG_ENABLE([xtc3],
-  AS_HELP_STRING([--enable-xtc3], [use the xtc3 library]),
-  [XTC3_ENABLED=$enable_xtc3],
-  [XTC3_ENABLED="no"]
-)
-AC_SUBST([XTC3_ENABLED])
+# AC_ARG_ENABLE([xtc3],
+#   AS_HELP_STRING([--enable-xtc3], [use the xtc3 library]),
+#   [XTC3_ENABLED=$enable_xtc3],
+#   [XTC3_ENABLED="no"]
+# )
+# AC_SUBST([XTC3_ENABLED])
 
 # Constructing PKGS list
 
-PKGS="autoxt srts"
+PKGS="autoxt srts stratego-lib"
 
 if test "x$XTC2_ENABLED" = "xyes"
 then
   PKGS="$PKGS xtc2"
-  DIST_PKGS="$DIST_PKGS xtc xtc3"
+  DIST_PKGS="$DIST_PKGS xtc"
   XTC_DIR="xtc2"
-elif test "x$XTC3_ENABLED" = "xyes"
-then
-  PKGS="$PKGS xtc3"
-  DIST_PKGS="$DIST_PKGS xtc xtc2"
-  XTC_DIR="xtc3"
 else
   PKGS="$PKGS xtc"
-  DIST_PKGS="$DIST_PKGS xtc2 xtc3" 
+  DIST_PKGS="$DIST_PKGS xtc2" 
   XTC_DIR="xtc"
 fi
 
-PKGS="$PKGS stratego-lib stratego-front asfix-tools"
+# elif test "x$XTC3_ENABLED" = "xyes"
+# then
+#   PKGS="$PKGS xtc3"
+#   DIST_PKGS="$DIST_PKGS xtc xtc2"
+#   XTC_DIR="xtc3"
+
+PKGS="$PKGS stratego-front asfix-tools"
 
 if test "x$CORE_ENABLED" = "xyes"
 then
@@ -96,7 +105,7 @@ fi
 
 PKGS="$PKGS gpp c-tools concrete-syntax xml-front \
         aterm-front sdf-front sdf-tools \
-        stratego-regular xtar"
+        stratego-regular"
 
 DIST_PKGS="$PKGS $DIST_PKGS"
 
@@ -104,46 +113,32 @@ AC_SUBST([PKGS])
 AC_SUBST([DIST_PKGS])
 AC_SUBST([XTC_DIR])
 
+# Construction of PKG_CONFIG_PATH for the specified configuration
+
+# TODO: replace with locations of aterm and sdf2-bundle 
+#   if they contain pkg-config files.
+PKG_CONFIG_PATH="`pwd`/external:${PKG_CONFIG_PATH}"
 
 if test "$xt_baseline" = "yes"
 then
-  BASELINE_SRTS="$STRATEGOXT"
-  BASELINE_STRATEGO_LIB="$STRATEGOXT"
-  BASELINE_XTC="$STRATEGOXT"
+  PKG_CONFIG_PATH="$BASELINE/lib/pkgconfig:${PKG_CONFIG_PATH}"
+  echo "** pkg-config path: $PKG_CONFIG_PATH"
+  export PKG_CONFIG_PATH
+  XT_CHECK_PACKAGES
+  AC_SUBST([XTC_PKG_CONFIG_PATH], [$BASELINE/lib/pkgconfig])
 else
-  BASELINE_DESTDIR="`pwd`/local-baseline"
-
-  BASELINE_SRTS="$BASELINE_DESTDIR$prefix"
-  BASELINE_STRATEGO_LIB="$BASELINE_DESTDIR$prefix"
-  BASELINE_XTC="$BASELINE_DESTDIR$prefix"
-
-  AC_SUBST([BASELINE_DESTDIR])
+  PKG_CONFIG_PATH="`pwd`:${PKG_CONFIG_PATH}"
+  export PKG_CONFIG_PATH
+  AC_SUBST([XTC_PKG_CONFIG_PATH], [`pwd`])
 fi
 
-AC_SUBST([BASELINE_XTC])
-
-XT_PKG_ATERM
-XT_PKG_SDF
-
-AC_PATH_PROG([getopt], [getopt])
-if test -z "$getopt"; then
-  AC_MSG_ERROR([getopt is required])
-fi
-
-AC_ARG_WITH([curl], 
-  [AS_HELP_STRING([--with-curl=DIR], [use Curl package at DIR @<:@/usr@:>@])],
-  [CURL="$withval"], 
-  [CURL="/usr"])
-
-AC_PROG_LIBTOOL
-
-### OUTPUT #############################
+### OUTPUT #####################################################
 AC_CONFIG_FILES([
   Makefile 
   news-archive/Makefile
   strategoxt.spec
-  aterm.pc
-  sdf2-bundle.pc
+  external/aterm.pc
+  external/sdf2-bundle.pc
   strategoxt.pc
   stratego-runtime-uninstalled.pc
   stratego-lib-uninstalled.pc
@@ -151,210 +146,26 @@ AC_CONFIG_FILES([
 ])
 AC_OUTPUT
 
-### SUBPACKAGES ########################
+### CONFIGURE SUBPACKAGES #####################################
 
 AB_CONFIG_PKG(autoxt, )
+AB_CONFIG_PKG(srts,   )
+AB_CONFIG_PKG(xtc,              --with-repository=${REPOSITORY})
+AB_CONFIG_PKG(xtc2,             --with-repository=${REPOSITORY})
+AB_CONFIG_PKG(strc,             --with-repository=${REPOSITORY})
+AB_CONFIG_PKG(strc-core,        --with-repository=${REPOSITORY})
+AB_CONFIG_PKG(c-tools,          --with-repository=${REPOSITORY})
+AB_CONFIG_PKG(stratego-front,   --with-repository=${REPOSITORY})
+AB_CONFIG_PKG(stratego-lib,     --with-repository=${REPOSITORY})
+AB_CONFIG_PKG(asfix-tools,      --with-repository=${REPOSITORY})
+AB_CONFIG_PKG(gpp,              --with-repository=${REPOSITORY})
+AB_CONFIG_PKG(concrete-syntax,  --with-repository=${REPOSITORY})
+AB_CONFIG_PKG(aterm-front,      --with-repository=${REPOSITORY})
+AB_CONFIG_PKG(sdf-front,        --with-repository=${REPOSITORY})
+AB_CONFIG_PKG(sdf-tools,        --with-repository=${REPOSITORY})
+AB_CONFIG_PKG(stratego-regular, --with-repository=${REPOSITORY})
+AB_CONFIG_PKG(xml-front,        --with-repository=${REPOSITORY})
 
-AB_CONFIG_PKG(srts,
-   --with-aterm=${ATERM}
-)
-
-AB_CONFIG_PKG(xtc,
-   --with-aterm=${ATERM}
-   --with-sglr=${SGLR}
-   --with-pgen=${PGEN}
-   --with-strategoxt=${STRATEGOXT}
-   --with-srts=${BASELINE_SRTS}
-   --with-stratego-lib=${BASELINE_STRATEGO_LIB}
-   --with-xtc=${BASELINE_XTC}
-   --with-repository=${REPOSITORY}
-)
-
-AB_CONFIG_PKG(xtc2,
-   --with-aterm=${ATERM}
-   --with-sglr=${SGLR}
-   --with-pgen=${PGEN}
-   --with-strategoxt=${STRATEGOXT}
-   --with-srts=${BASELINE_SRTS}
-   --with-stratego-lib=${BASELINE_STRATEGO_LIB}
-   --with-xtc=${BASELINE_XTC}
-   --with-repository=${REPOSITORY}
-)
-
-AB_CONFIG_PKG(xtc3,
-   --with-aterm=${ATERM}
-   --with-sglr=${SGLR}
-   --with-pgen=${PGEN}
-   --with-strategoxt=${STRATEGOXT}
-   --with-srts=${BASELINE_SRTS}
-   --with-stratego-lib=${BASELINE_STRATEGO_LIB}
-   --with-xtc=${BASELINE_XTC}
-   --with-repository=${REPOSITORY}
-   --with-curl=${CURL}
-)
-
-AB_CONFIG_PKG(strc,
-   --with-aterm=${ATERM}
-   --with-sglr=${SGLR}
-   --with-pgen=${PGEN}
-   --with-strategoxt=${STRATEGOXT}
-   --with-srts=${BASELINE_SRTS}
-   --with-stratego-lib=${BASELINE_STRATEGO_LIB}
-   --with-xtc=${BASELINE_XTC}
-   --with-repository=${REPOSITORY}
-)
-
-AB_CONFIG_PKG(strc-core,
-   --with-aterm=${ATERM}
-   --with-sglr=${SGLR}
-   --with-pgen=${PGEN}
-   --with-strategoxt=${STRATEGOXT}
-   --with-srts=${BASELINE_SRTS}
-   --with-stratego-lib=${BASELINE_STRATEGO_LIB}
-   --with-xtc=${BASELINE_XTC}
-   --with-repository=${REPOSITORY}
-)
-
-AB_CONFIG_PKG(c-tools,
-   --with-aterm=${ATERM}
-   --with-sglr=${SGLR}
-   --with-pgen=${PGEN}
-   --with-strategoxt=${STRATEGOXT}
-   --with-srts=${BASELINE_SRTS}
-   --with-stratego-lib=${BASELINE_STRATEGO_LIB}
-   --with-xtc=${BASELINE_XTC}
-   --with-repository=${REPOSITORY}
-)
-
-AB_CONFIG_PKG(stratego-front,
-   --with-aterm=${ATERM}
-   --with-sglr=${SGLR}
-   --with-pgen=${PGEN}
-   --with-strategoxt=${STRATEGOXT}
-   --with-srts=${BASELINE_SRTS}
-   --with-stratego-lib=${BASELINE_STRATEGO_LIB}
-   --with-xtc=${BASELINE_XTC}
-   --with-repository=${REPOSITORY}
-)
-
-AB_CONFIG_PKG(stratego-lib,
-   --with-aterm=${ATERM}
-   --with-sglr=${SGLR}
-   --with-pgen=${PGEN}
-   --with-strategoxt=${STRATEGOXT}
-   --with-srts=${BASELINE_SRTS}
-   --with-stratego-lib=${BASELINE_STRATEGO_LIB}
-   --with-xtc=${BASELINE_XTC}
-   --with-repository=${REPOSITORY}
-)
-
-AB_CONFIG_PKG(asfix-tools,
-   --with-srts=${prefix}
-   --with-sglr=${SGLR}
-   --with-pgen=${PGEN}
-   --with-strategoxt=${STRATEGOXT}
-   --with-srts=${BASELINE_SRTS}
-   --with-stratego-lib=${BASELINE_STRATEGO_LIB}
-   --with-xtc=${BASELINE_XTC}
-   --with-repository=${REPOSITORY}
-)
-
-AB_CONFIG_PKG(gpp,
-   --with-srts=${prefix}
-   --with-sglr=${SGLR}
-   --with-pgen=${PGEN}
-   --with-strategoxt=${STRATEGOXT}
-   --with-srts=${BASELINE_SRTS}
-   --with-stratego-lib=${BASELINE_STRATEGO_LIB}
-   --with-xtc=${BASELINE_XTC}
-   --with-repository=${REPOSITORY}
-)
-
-AB_CONFIG_PKG(concrete-syntax,
-   --with-srts=${prefix}
-   --with-sglr=${SGLR}
-   --with-pgen=${PGEN}
-   --with-strategoxt=${STRATEGOXT}
-   --with-srts=${BASELINE_SRTS}
-   --with-stratego-lib=${BASELINE_STRATEGO_LIB}
-   --with-xtc=${BASELINE_XTC}
-   --with-repository=${REPOSITORY}
-)
-
-AB_CONFIG_PKG(aterm-front,
-   --with-aterm=${ATERM}
-   --with-sglr=${SGLR}
-   --with-pgen=${PGEN}
-   --with-asf-library=${ASF_LIBRARY}
-   --with-strategoxt=${STRATEGOXT}
-   --with-srts=${BASELINE_SRTS}
-   --with-stratego-lib=${BASELINE_STRATEGO_LIB}
-   --with-xtc=${BASELINE_XTC}
-   --with-repository=${REPOSITORY}
-)
-
-AB_CONFIG_PKG(sdf-front,
-   --with-aterm=${ATERM}
-   --with-sglr=${SGLR}
-   --with-pgen=${PGEN}
-   --with-asf-library=${ASF_LIBRARY}
-   --with-strategoxt=${STRATEGOXT}
-   --with-srts=${BASELINE_SRTS}
-   --with-stratego-lib=${BASELINE_STRATEGO_LIB}
-   --with-xtc=${BASELINE_XTC}
-   --with-repository=${REPOSITORY}
-)
-
-AB_CONFIG_PKG(sdf-tools,
-   --with-aterm=${ATERM}
-   --with-sglr=${SGLR}
-   --with-pgen=${PGEN}
-   --with-asf-library=${ASF_LIBRARY}
-   --with-strategoxt=${STRATEGOXT}
-   --with-srts=${BASELINE_SRTS}
-   --with-stratego-lib=${BASELINE_STRATEGO_LIB}
-   --with-xtc=${BASELINE_XTC}
-   --with-repository=${REPOSITORY}
-)
-
-AB_CONFIG_PKG(stratego-regular,
-   --with-aterm=${ATERM}
-   --with-sglr=${SGLR}
-   --with-pgen=${PGEN}
-   --with-asf-library=${ASF_LIBRARY}
-   --with-strategoxt=${STRATEGOXT}
-   --with-srts=${BASELINE_SRTS}
-   --with-stratego-lib=${BASELINE_STRATEGO_LIB}
-   --with-xtc=${BASELINE_XTC}
-   --with-repository=${REPOSITORY}
-)
-
-AB_CONFIG_PKG(xml-front,
-   --with-aterm=${ATERM}
-   --with-sglr=${SGLR}
-   --with-pgen=${PGEN}
-   --with-asf-library=${ASF_LIBRARY}
-   --with-strategoxt=${STRATEGOXT}
-   --with-srts=${BASELINE_SRTS}
-   --with-stratego-lib=${BASELINE_STRATEGO_LIB}
-   --with-xtc=${BASELINE_XTC}
-   --with-repository=${REPOSITORY}
-)
-
-AB_CONFIG_PKG(xtar,
-   --with-aterm=${ATERM}
-   --with-sglr=${SGLR}
-   --with-pgen=${PGEN}
-   --with-asf-library=${ASF_LIBRARY}
-   --with-strategoxt=${STRATEGOXT}
-   --with-srts=${BASELINE_SRTS}
-   --with-stratego-lib=${BASELINE_STRATEGO_LIB}
-   --with-xtc=${BASELINE_XTC}
-   --with-repository=${REPOSITORY}
-)
-
-AB_CONFIG_PKG(boxenv,
-   --with-xtc=${BASELINE_XTC}
-   --with-repository=${REPOSITORY}
-)
-
+# AB_CONFIG_PKG(xtar,             --with-repository=${REPOSITORY})
+# AB_CONFIG_PKG(boxenv,           --with-repository=${REPOSITORY})
+# AB_CONFIG_PKG(xtc3,           --with-repository=${REPOSITORY} --with-curl=${CURL})

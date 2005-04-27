@@ -6,15 +6,7 @@ AM_INIT_AUTOMAKE
 XT_SVN_REVISION
 # comment to make this a stable release
 XT_PRE_RELEASE
-XT_USE_XT_PACKAGES
-
-EXE=""
-AC_ARG_WITH(exe,    
-  [  --with-exe              Extension of executables], 
-  EXE=".exe", 
-  EXE=""
-)
-AC_SUBST(EXE)
+XT_INTERNAL_USE_XT_PACKAGES
 
 libexecdir=\$\{exec_prefix\}/libexec/$PACKAGE
 AC_SUBST(libexecdir)

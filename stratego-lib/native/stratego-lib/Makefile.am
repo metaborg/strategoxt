@@ -4,7 +4,7 @@ include_HEADERS = \
   io.h stratego-lib.h tables.h sets.h ssl-time.h exec.h number.h \
   ssl-string.h term.h annotations.h placeholder.h dir.h
 
-AM_CPPFLAGS = -I$(SRTS)/include -I$(ATERM)/include
+AM_CPPFLAGS = $(STRATEGO_RUNTIME_CFLAGS) $(ATERM_CFLAGS)
 AM_LDFLAGS  = -avoid-version
 
 pkglib_LTLIBRARIES = \

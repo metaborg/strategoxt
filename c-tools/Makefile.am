@@ -8,5 +8,4 @@ CLEANFILES        = XTC
 
 ACLOCAL_AMFLAGS = -I ../config
 
-pkgconfigdir=$(libdir)/pkgconfig
 pkgconfig_DATA = c-tools.pc
