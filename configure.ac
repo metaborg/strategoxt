@@ -129,7 +129,7 @@ then
 else
   PKG_CONFIG_PATH="`pwd`:${PKG_CONFIG_PATH}"
   export PKG_CONFIG_PATH
-  AC_SUBST([XTC_PKG_CONFIG_PATH], [`pwd`])
+  AC_SUBST([XTC_PKG_CONFIG_PATH], [`pwd`:`pwd`/external])
 fi
 
 ### OUTPUT #####################################################
