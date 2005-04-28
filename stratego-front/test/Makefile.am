@@ -25,25 +25,25 @@ check: check1 check1-asfix check2 check3 check4
 
 check1 : Prop.str
 	$(MAKE) clean
-	$(srcdir)/../parse/parse-stratego -i prop1.str -o prop.rtree --verbose 10 --asfix
+	$(srcdir)/../parse/parse-stratego -i prop1.str -o prop.rtree --asfix
 
 check1-asfix : Prop.str
 	$(MAKE) clean
-	$(srcdir)/../parse/parse-stratego -i prop1.str -o prop-asfix.rtree --verbose 10
+	$(srcdir)/../parse/parse-stratego -i prop1.str -o prop-asfix.rtree
 
 check2 : Prop.str
 	$(MAKE) clean
-	$(srcdir)/../parse/parse-stratego -i prop2.cr -o prop2.rtree --verbose 10
+	$(srcdir)/../parse/parse-stratego -i prop2.cr -o prop2.rtree
 
 check3 : Prop.str
 	$(MAKE) clean
-	$(srcdir)/../parse/parse-stratego -i prop3.str -o prop3.rtree --verbose 10
+	$(srcdir)/../parse/parse-stratego -i prop3.str -o prop3.rtree
 
 check4 : Prop.str
 	$(MAKE) clean
 	ls
 	$(MAKE) PropStratego.def
-	$(srcdir)/../parse/parse-stratego -i prop2.cr -o prop2.rtree --verbose 10
+	$(srcdir)/../parse/parse-stratego -i prop2.cr -o prop2.rtree
 
 CLEANFILES = PropStratego.def PropStratego.tbl $(wildcard *.rtree)
 
