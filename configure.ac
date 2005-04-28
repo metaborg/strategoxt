@@ -122,7 +122,6 @@ PKG_CONFIG_PATH="`pwd`/external:${PKG_CONFIG_PATH}"
 if test "$xt_baseline" = "yes"
 then
   PKG_CONFIG_PATH="$BASELINE/lib/pkgconfig:${PKG_CONFIG_PATH}"
-  echo "** pkg-config path: $PKG_CONFIG_PATH"
   export PKG_CONFIG_PATH
   XT_CHECK_PACKAGES
   AC_SUBST([XTC_PKG_CONFIG_PATH], [$BASELINE/lib/pkgconfig])
