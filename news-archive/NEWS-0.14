@@ -1,33 +1,15 @@
-StrategoXT 0.14 -- released April, 2005
+StrategoXT 0.14 -- released May, 2005
 
 ---------++!! Summary of Changes
 
 StrategoXT 0.14, which represents over 3 months of development,
-features a wide variety of updates.
+features a wide variety of updates. A few highlights are wildcard
+imports in Stratego, the hierarchical Stratego library, the
+introduction of pkg-config and much more.
 
 %TOC%
 
 ---------++ Stratego Language
-
----------+++ Dependent Dynamic Rules
-
-Another change in dynamic rules terminology:
-
-When defining a dependent dynamic rule, strategies kill-R and
-new-R(|_) are defined by the compiler.
-
-Since we also use the term `undefine' for, well, undefining rules, it
-is more consistent to use undefine-R instead of kill-R.
-
-new-R and undefine-R now take all their arguments as term arguments.
-Thus, new-R(|x,x) and undefine-R(|x) instead of <new-R(|x)> x and
-<undefine-R> x. This entails that there is no need to wrap these
-invocations in where clauses anymore.
-
-
-remaining issues: STR-251, STR-269, STR-275
-
-    (Eelco Visser)
 
 ---------+++ Wildcard imports
 
@@ -43,6 +25,28 @@ import all Stratego files from the directory 'strategy', relative to
 the include paths.
 
     (Rob Vermaas)
+
+---------+++ Dependent Dynamic Rules
+
+There has been a change in dynamic rules terminology. When defining a
+dependent dynamic rule, strategies =kill-R= and =new-R(|_)= were defined
+by the compiler. Since we also use the term `undefine' for, well,
+undefining rules, it is more consistent to use =undefine-R= instead of
+=kill-R=.
+
+=new-R= and =undefine-R= now take all their arguments as term arguments.
+Thus, =new-R(|x,x)= and =undefine-R(|x)= instead of =<new-R(|x)> x= and
+=<undefine-R> x=. This entails that there is no need to wrap these
+invocations in =where= clauses anymore.
+
+Remaining (JIRA) issues concerning dynamic rules: STR-251, STR-269,
+STR-275.
+
+Please note that Dependent Dynamic Rules still have the experimental
+status in Stratego. Even though they are stabilizing, changes in
+semantics can occur in next versions.
+
+    (Eelco Visser)
 
 ---------++ Stratego Compiler
 
@@ -74,9 +78,11 @@ The '--imports' flag has been removed from pack-stratego.
 
 ----------+++ Hierarchical structure
 
-Hierarchical structure of the Stratego library.
+We have started changing the Stratego library to a hierarchical
+structure. The new structure should make it easier to find strategies
+in the Stratego library.
 
-E.g.
+Example: 
 <verbatim>
     module strategy/collect
 </verbatim>
@@ -90,7 +96,8 @@ The initial packages and their modules are:
    * strategy/traversal
       * environment, fixpoint, list, list-environment, simple
    * strategy/general
-      * free-variables, option, parenthesize, rename, substitution, unification
+      * free-variables, option, parenthesize, rename, substitution,
+        unification
    * strategy/pack
       * common, graph, modules
    * system/io
@@ -98,7 +105,8 @@ The initial packages and their modules are:
    * system/posix
       * error, file, process, signal
    * term
-      * annotation, common, integer, placeholder, properties, real, share, string, zip
+      * annotation, common, integer, placeholder, properties, real,
+        share, string, zip
    * collection/hash-table
       * common, nested
    * collection/tuple
@@ -106,7 +114,8 @@ The initial packages and their modules are:
    * collection/set
       * indexed
    * collection/list
-      * bag, common, cons, filter, index, integer, lookup, set, sort, zip
+      * bag, common, cons, filter, index, integer, lookup, set, sort,
+        zip
    * util
       * date-format, log, sunit, time
    * util/config
@@ -122,12 +131,22 @@ the distribution at the next release.
 
 ----------+++ Verbose
 
+We have changed the default verbosity level to 1 (one). Previously
+this was 0 (zero). 
 
-   * default verbosity ==1
-   * verbosity levels
- * spec/util/log.str, spec/util/config/verbose.str: Added commandline 
-   alternative on verbose level setting. Level can also be set with a 
-   verbose level descriptor.
+From this release on the verbosity can be set using any of the
+following verbose level descriptors:
+
+   * emergency, alert, critical, error, info, warning, notice, debug,
+     vomit
+
+E.g.
+<verbatim>
+   $ sglri ... --verbose debug ...
+</verbatim>
+
+These descriptors translate to the verbosity levels as described in the
+=util/log= module of the Stratego library.
 
     (Rene de Groot)
 
@@ -157,6 +176,27 @@ baseline can be found at:
 
 ---------+++ pkg-config
 
+In this release we have introduced pkg-config for locating packages
+and their configuration. The use of pkg-config has several advantages:
+
+   * Distributions of packages that have been created using a certain
+     Stratego/XT are more likely to work on future versions of
+     Stratego/XT. Thus, package don't have to be re-distributed if a
+     new Stratego/XT comes out.
+
+   * Users of packages that use Stratego/XT don't need to configure
+     this package with the location of Stratego/XT. Pkg-config is used
+     to find the location of Stratego/XT on the system of the user.
+
+   * Internally, the installation of Stratego/XT is less
+     complicated. The installation of packages in the directory
+     =local-baseline= is no longer necessary.
+
+   * Users can use pkg-config to pass the right includes paths to the
+     Stratego compiler.
+
+More info:
+ http://www.stratego-language.org/Stratego/PkgConfig
 
     (Martin Bravenboer)
 
