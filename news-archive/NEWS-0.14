@@ -1,0 +1,222 @@
+StrategoXT 0.14 -- released April, 2005
+
+---------++!! Summary of Changes
+
+StrategoXT 0.14, which represents over 3 months of development,
+features a wide variety of updates.
+
+%TOC%
+
+---------++ Stratego Language
+
+---------+++ Dependent Dynamic Rules
+
+Another change in dynamic rules terminology:
+
+When defining a dependent dynamic rule, strategies kill-R and
+new-R(|_) are defined by the compiler.
+
+Since we also use the term `undefine' for, well, undefining rules, it
+is more consistent to use undefine-R instead of kill-R.
+
+new-R and undefine-R now take all their arguments as term arguments.
+Thus, new-R(|x,x) and undefine-R(|x) instead of <new-R(|x)> x and
+<undefine-R> x. This entails that there is no need to wrap these
+invocations in where clauses anymore.
+
+
+remaining issues: STR-251, STR-269, STR-275
+
+    (Eelco Visser)
+
+---------+++ Wildcard imports
+
+We have introduced wildcard imports to allow easy importing of
+multiple modules in the same package/directory.
+
+<verbatim>
+  imports strategy/-
+</verbatim>
+
+The import statement above instructs the compiler/interpreter to
+import all Stratego files from the directory 'strategy', relative to
+the include paths.
+
+    (Rob Vermaas)
+
+---------++ Stratego Compiler
+
+---------+++ strc
+
+Since the introduction of the new style dynamic rules in StrategoXT
+0.11, strc had an option for choosing the semantics of dynamic rules.
+From this version on, the default semantics are the new
+semantics. ('--dr new' by default)
+
+As optimization levels below 2 are broken (see STR-15), we have
+disabled them. If one chooses an optimization level below 2, a warning
+will be shown and the optimization level will be set to 2. The problem
+of broken optimizations are being addressed in the strc-core package,
+which holds the new version of the Stratego compiler.
+
+    (Rob Vermaas)
+
+---------+++ pack-stratego 
+
+The packing process has been altered to improve the error reporting of
+pack-stratego, similar to the error reporting of pack-sdf.
+
+The '--imports' flag has been removed from pack-stratego.
+
+    (Rob Vermaas)
+
+---------++ Stratego Library
+
+----------+++ Hierarchical structure
+
+Hierarchical structure of the Stratego library.
+
+E.g.
+<verbatim>
+    module strategy/collect
+</verbatim>
+
+The initial packages and their modules are:
+
+   * lang
+      * dynamic-rules, dynamic-rules-refactored, scoped-finite-map
+   * strategy
+      * collect, conditional, iteration
+   * strategy/traversal
+      * environment, fixpoint, list, list-environment, simple
+   * strategy/general
+      * free-variables, option, parenthesize, rename, substitution, unification
+   * strategy/pack
+      * common, graph, modules
+   * system/io
+      * char, dir, exec, file, pipe, process, term
+   * system/posix
+      * error, file, process, signal
+   * term
+      * annotation, common, integer, placeholder, properties, real, share, string, zip
+   * collection/hash-table
+      * common, nested
+   * collection/tuple
+      * common, cons
+   * collection/set
+      * indexed
+   * collection/list
+      * bag, common, cons, filter, index, integer, lookup, set, sort, zip
+   * util
+      * date-format, log, sunit, time
+   * util/config
+      * common, cpl, keep, options, parse-options, verbose
+
+For compatibility reasons, the old modules are still
+distributed. These modules only contains imports to the corresponding
+modules above. It is expected that these modules will be removed from
+the distribution at the next release.
+
+    (Rob Vermaas)
+
+
+----------+++ Verbose
+
+
+   * default verbosity ==1
+   * verbosity levels
+ * spec/util/log.str, spec/util/config/verbose.str: Added commandline 
+   alternative on verbose level setting. Level can also be set with a 
+   verbose level descriptor.
+
+    (Rene de Groot)
+
+
+---------++ StrategoXT Deployment and Build System
+
+---------+++ Baseline development
+
+The Stratego/XT source code highly depends on itself: Stratego and
+various generative tools are used everywhere. Previously we had
+bootstrapped sources in the repository. We have changed to a system
+where we are using a baseline to compile a Stratego/XT source tree
+from Subversion.
+
+The big advantage of a baseline is that you basically cannot break
+anything.  In the past, we used bootstrapped sources in the Subversion
+repository, which was very fragile and required great care of
+contributors. The baseline setup is much easier to use and more
+safe. We hope this will encourage contributions.
+
+More information on contributing to StrategoXT and working with a
+baseline can be found at:
+
+  http://www.stratego-language.org/Stratego/StrategoDevManual
+
+    (Martin Bravenboer)
+
+---------+++ pkg-config
+
+
+    (Martin Bravenboer)
+
+---------++ StrategoXT Transformation Tools
+
+---------+++ General
+
+In the previous release we added the =log= (previously =logging=)
+module in the Stratego library. We have started adapting the 
+existing tools to use these logging facilities, to allow cleaner
+and more uniform messages from the tools.
+
+    (Rob Vermaas)
+
+---------+++ pp-aterm
+
+The default behaviour of the pp-aterm tool has changed. Previously the
+tool showed strings unescaped. This makes the pretty printed terms
+easier to read, but results in a malformed ATerm in cases where there 
+are characters that need escaping.
+
+The =pp-aterm= tool now escapes the '\', '"', '\n', '\t' and '\r'
+characters by default. If you prefer the old behaviour you can pass the 
+=-u= or =--unescaped= flag to =pp-aterm=.
+
+    (Rene de Groot)
+  
+
+---------++!! Detailed List of Issues
+
+The full list of issues closed in this release is available at:
+
+   * http://www.stratego-language.org/Stratego/StrategoRelease014Issues
+
+---------++!! Download and Installation
+
+The release page contains the source distributions, binary RPMs, and
+detailed instructions on how to install the distributions:
+
+   * http://www.stratego-language.org/Stratego/StrategoRelease014
+
+---------++!! Bugs and Known Problems
+
+See our issue tracking systems for reports about (open) bugs:
+
+   * https://catamaran.labs.cs.uu.nl/jira/browse/STR
+
+Please report any problems with installation or bugs in the
+implementation to our issue tracking system. Please check the existing
+issues to see if a report about the problem was already submitted.
+
+---------++!! Contributions
+
+Developments, beta tests, and bug fixes were carried out by
+
+   * Martin Bravenboer
+   * Eelco Dolstra
+   * Rene de Groot
+   * Rob Vermaas
+   * Eelco Visser
+
+Thanks!
+
