@@ -44,7 +44,7 @@ STR-275.
 
 Please note that Dependent Dynamic Rules still have the experimental
 status in Stratego. Even though they are stabilizing, changes in
-semantics can occur in next versions.
+semantics can occur in a next version.
 
     (Eelco Visser)
 
