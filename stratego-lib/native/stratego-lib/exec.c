@@ -761,7 +761,7 @@ ATerm SSL_concat_strings(ATerm strings) {
   }
 
   tail = (ATermList) strings;
-  while(tail != ATempty) {
+  while(!ATisEmpty(tail)) {
     ATerm head = ATgetFirst(tail);
 
     if(!ATisString(head)) {
@@ -777,7 +777,7 @@ ATerm SSL_concat_strings(ATerm strings) {
   current = result;
 
   tail = (ATermList) strings;
-  while(tail != ATempty) {
+  while(!ATisEmpty(tail)) {
     const char* str = AT_getString(ATgetFirst(tail));
     int length = strlen(str);
 

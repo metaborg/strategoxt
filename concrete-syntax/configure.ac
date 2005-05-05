@@ -1,5 +1,5 @@
 AC_PREREQ([2.58])
-AC_INIT([concrete-syntax],[0.14],[visser@acm.org])
+AC_INIT([concrete-syntax],[0.15],[visser@acm.org])
 AC_CONFIG_AUX_DIR([../config])
 AM_INIT_AUTOMAKE
 

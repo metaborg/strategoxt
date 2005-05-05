@@ -1,3 +1,13 @@
+2005-05-05  Martin Bravenboer <martin@cs.uu.nl>
+
+	* native/stratego-lib/exec.c: fix for STR-290, reported by Daniel
+	Waddington. The issue is caused by the use of != ATempty instead
+	of the function ATisEmpty. See also issue STR-292 , which will
+	check for similar bugs in the native code of the Stratego library.
+
+	* tests/string-test.str: test for concat-strings annotation issue
+	of STR-290.
+
 2005-03-13  Martin Bravenboer <martin@cs.uu.nl>
 
 	* spec/collection/list/index.str: added at-index, which applies a

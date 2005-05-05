@@ -43,6 +43,11 @@ strategies
     ; apply-test(!"concat-strings-2", concat-strings, !["a", ""], !"a")
     ; apply-test(!"concat-strings-3", concat-strings, !["",  "a"], !"a")
     ; apply-test(!"concat-strings-4", concat-strings, !["hello ",  "world"], !"hello world")
+
+    // tests for lists with annotations
+    ; apply-test(!"concat-strings-5", concat-strings, !["hello ",  "world"]{1}, !"hello world")
+    ; apply-test(!"concat-strings-6", concat-strings, !["hello"]{1}, !"hello")
+    ; apply-test(!"concat-strings-7", concat-strings, ![]{1}, !"")
   
 strategies  // for testing quote strategies
   
