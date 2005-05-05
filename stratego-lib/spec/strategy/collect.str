@@ -62,7 +62,7 @@ strategies
    * If duplicates must be removed, then this argument should be union, 
    * otherwise it usually conc.
    *
-   * The skip argument can be used to reduce the current term before
+   * The reduce argument can be used to reduce the current term before
    * collecting subterms of it. Producing the empty list will result
    * in a complete skip of all subterms.
    *
@@ -75,12 +75,20 @@ strategies
    * results in:
    *   [Var("y"), Var("z")]
    *
+   * The collect-all is applied to the term after the reduce, i.e the
+   * example collect-all applied to
+   *
+   *   Assign(Var("x"), Var("y"))
+   * 
+   * results in:
+   *   [Var("y")]
+   *
    * @since  0.9.6
    */
-  collect-all(s, un, skip) =
+  collect-all(s, un, reduce) =
     rec x(
        ![<s> | <crush(![],un,x)>]
-    <+ skip; crush(![],un,x)
+    <+ reduce; x
     <+ crush(![],un,x)
     )
 

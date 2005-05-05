@@ -1,5 +1,13 @@
 2005-05-05  Martin Bravenboer <martin@cs.uu.nl>
 
+	* spec/strategy/collect.str: tweaked the behaviour of
+	collect-all/3. After the reduce argument, the collect is invoked
+	recursively. This fixes STR-264.
+
+	* tests/collect-test.str: test for STR-264.
+	
+2005-05-05  Martin Bravenboer <martin@cs.uu.nl>
+
 	* native/stratego-lib/exec.c: fix for STR-290, reported by Daniel
 	Waddington. The issue is caused by the use of != ATempty instead
 	of the function ATisEmpty. See also issue STR-292 , which will

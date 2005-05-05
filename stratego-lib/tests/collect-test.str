@@ -67,11 +67,19 @@ strategies
     , !Assign(Var("x"), Plus(Var("y"), Var("z")))
     , ![Var("y"), Var("z")]
     )
+
   ; apply-test(!"collect-all skip test 2"
     , collect-all(?Var(_), union, \ Assign(_, e) -> e \)
     , !Assign(Var("x"), Plus(Var("z"), Var("z")))
     , ![Var("z")]
     )
+
+  ; apply-test(!"collect-all skip test 3"
+    , collect-all(?Var(_), union, \ Assign(_, e) -> e \)
+    , !Assign(Var("x"), Var("y"))
+    , ![Var("y")]
+    )
+
 
   crush-tests = 
     apply-test(!"crush test 1"
