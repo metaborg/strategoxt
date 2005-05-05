@@ -1,8 +1,16 @@
+/**
+ * Utils for properties of SDF productions
+ */
 module sdf/production/utils
 strategies
 
+  /**
+   * Succeeds if the production is an injection of a sort to a sort,
+   * without a cons attribute.
+   */
   is-inject-prod =
-    ?prod([sort(_)], sort(_), attrs([]))
+    ?prod([sort(_)], sort(_), attrs(attrs))
+    ; where(<not(get-cnstr-name)> attrs)
 
   is-bracket-prod = 
     ?prod(_, _, attrs(attrs))
