@@ -5,7 +5,7 @@ module Pptable-diff
 imports
   liblib
   pp-table
-  pp-tables-io
+  pp-tables-io2
   misc
 
 signature
