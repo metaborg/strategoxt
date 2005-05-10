@@ -20,7 +20,7 @@ strategies
       Strategies(list(strategy-definition))
     ])
     <+ amb-error
-    <+ debug(!"warning: not a stratego-specification: ")
+    <+ log(|Error(),"Not a stratego-specification: ",<id>)
 
   strategy-definition =
       ?SDefT(name, _, _, _)
@@ -41,7 +41,7 @@ strategies
 	    , list(VarDec(is-string,id))
 	    , list(VarDec(is-string,id)))
     <+ amb-error
-    <+ debug(!"warning: not a strategy-definition: ")
+    <+ log(|Error(),"Not a strategy-definition: ",<id>)
 
   strategy-expression =
   rec exp(
@@ -79,7 +79,7 @@ strategies
 	     ,exp)
 
         <+ amb-error
-	<+ debug(!"warning: not a strategy-expression: ")
+	<+ log(|Error(),"Not a strategy-expression: ",<id>)
 	)
 
   term-expression =
@@ -93,19 +93,19 @@ strategies
 	+ As(Var(is-string), trm)
 	+ Op(is-string, list(trm))
         <+ amb-error
-	<+ debug(!"warning: not a term-expression: ")
+	<+ log(|Error(),"Not a term-expression: ",<id>)
 	)
 
   amb-error =
     amb(id)
     ; where(
         if <CurrentSDef; is-string> () => sdef then
-          say(<concat-strings> ["error: ambiguity in the definition of ", sdef, ". Alternatives: "])
+          log(|Error(),<concat-strings> ["Ambiguity in the definition of ", sdef, ". Alternatives: "])
         else
-          say(<concat-strings> ["error: ambiguity in specification. Alternatives: "])
+          log(|Error(),<concat-strings> ["Ambiguity in specification. Alternatives: "])
         end
       ; ?amb(<id>)
-      ; map(debug(!"    - "))
+      ; map(log(|Error(),<concat-strings>["   - ",<write-to-string>]))
       ; <set-config> ("amb-error", 1)
       )
 

@@ -16,7 +16,7 @@ strategies
       id,
       Strategies(list(strategy-definition))
     ])
-    <+ debug(!"not a stratego-specification: ")
+    <+ log(|Error(),"Not a stratego-specification: ",<id>) 
 
   strategy-definition =
     SDef(is-string, list(VarDec(is-string,id)), strategy-expression)
@@ -26,7 +26,7 @@ strategies
 		      , list(VarDec(is-string,id)), strategy-expression)
     <+ ExtSDef(is-string, list(VarDec(is-string,id))
 		        , list(VarDec(is-string,id)))
-    <+ debug(!"not a strategy-definition: ")
+    <+ log(|Error(),"Not a strategy-definition: ",<id>)
 
   strategy-expression =
   rec exp(
@@ -56,13 +56,13 @@ strategies
 		   + SDefT(is-string,list(VarDec(is-string,id))
 				    ,list(VarDec(is-string,id)),exp)),exp)
 
-	<+ debug(!"not a strategy-expression: ")
+	<+ log(|Error(),"Not a strategy-expression: ",<id>)
 	)
 
   case-alternative(exp) =
         Alt(Fun(is-string,is-int) + Str(is-string) + Int(is-int) + Real(is-real)
            , list(Var(is-string)),exp)
-	<+ debug(!"not a case-alternative: ")
+	<+ log(|Error(),"Not a case-alternative: ",<id>)
 
   match-term-exp =
   rec trm(
@@ -74,7 +74,7 @@ strategies
 	+ BuildDefault(trm)
 	+ As(Var(is-string), trm)
 	+ Op(is-string, list(trm))
-	<+ debug(!"not a match-term-expression: ")
+	<+ log(|Error(),"Not a match-term-expression: ",<id>)
   )
 
   term-expression =
@@ -87,6 +87,6 @@ strategies
 	+ BuildDefault(trm)
 	+ As(Var(is-string), trm)
 	+ Op(is-string, list(trm))
-	<+ debug(!"not a term-expression: ")
+	<+ log(|Error(),"Not a term-expression: ",<id>)
 	)
 \end{code}
