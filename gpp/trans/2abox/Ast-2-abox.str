@@ -39,7 +39,7 @@ strategies
     <+ trm2abox-real
     <+ trm2abox-list
     <+ trm2abox-appl
-    <+ log(|Error(),"** ERROR: cannot rewrite to box: ", <id>) ; <exit>1
+    <+ log(|Error(),"Cannot rewrite to box: ", <id>) ; <exit>1
 
   trm2abox-string =
     is-string
