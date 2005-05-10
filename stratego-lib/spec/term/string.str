@@ -81,7 +81,8 @@ strategies
    * @type     String * String -> String
    */
   conc-strings =
-    strcat
+     ?(_,_)   ; strcat 
+  <+ ?""#(xs) ; <concat-strings>xs
 
   /**
    * Concats a tuple of two Strings.
