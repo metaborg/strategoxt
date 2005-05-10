@@ -115,7 +115,7 @@ strategies
   
   try-pp-table-get =
     pp-table-get 
-    <+ debug(!"No pp entry found for: "); fail
+    <+ log(|Error(),<concat-strings>["No pp entry found for: ",<write-to-string>]); fail
   
   pp-table-put =
      ?(key, value)

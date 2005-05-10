@@ -309,7 +309,7 @@ application-to-abox:
 
 fatal-ambiguity = 
    amb(id);
-   <fatal-error>["Unable to pretty-print term due to ambiguities."]
+   log(|Error(),"Unable to pretty-print term due to ambiguities.") ; <exit>1
   
 /**
  * This strategy traverse a box template and the corresponding argument

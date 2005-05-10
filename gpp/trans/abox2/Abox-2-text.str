@@ -50,7 +50,7 @@ strategies
 strategies
 
   try-abox2text = 
-    abox2text(try-abox2text) <+ <fatal-error> ["** ERROR: invalid box: ", <id>]
+    abox2text(try-abox2text) <+ log(|Error(), "invalid box: ", <id>) ; <exit>1
 
   // REMARK
   // This encoding of HV boxes is exponential; not so bad for formatting
@@ -177,7 +177,7 @@ strategies
        // A row with to many columns cause a fatal error, because
        // since formatting information is missing, we do not know
        // how to format these extra columns
-       <fatal-error> ["** ERROR: too many columns in row: ", lst]
+       log(|Error(), "Too many columns in row: ", lst) ; <exit>1
      ) => new-lst
 
 /*
@@ -193,7 +193,7 @@ strategies
 */
 
   warn-not-R =
-    <fatal-error> ["** ERROR: All children of an A box must be R boxes: ", <id>]
+    log(|Error(), "All children of an A box must be R boxes: ", <id>) ; <exit>1
 
   // R, not as child of an A
   abox2text(s) :

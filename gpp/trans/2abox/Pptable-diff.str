@@ -31,7 +31,8 @@ strategies
 
    pptable-diff = 
       option-value(Old-Table(?old),
-                  <fatal-error>["please specify old table with --old switch"] 
+                  log(|Error(),"Please specify old table with --old switch") 
+		  ; <exit>1 
                   );
       ![old];read-pp-tables; !("pp-table", "old-table");table-rename;
       option-value(New-Table(?new), !stdin => new);

@@ -29,7 +29,7 @@ strategies // to parse a pretty-print table in pp-table syntax to aterms
 
   must-be-pp =
         has-extension(!"pp")
-    <+ <fatal-error> ["** ERROR: pretty-print table must have extension .pp.af or .pp :", <id>]
+    <+ log(|Error(),<concat-strings>["** ERROR: pretty-print table must have extension .pp.af or .pp :", <id>]) ; <exit>1
 
   lookup-or-parse =
        lookup-pp-af <+ parse-to-temp-file
@@ -38,10 +38,10 @@ strategies // to parse a pretty-print table in pp-table syntax to aterms
       !(<add-extension; file-exists> (<id>, "af"), <id>)
     ; where((modification-time, modification-time); geq)
     ; Fst
-    ; if-verbose2(debug(!"** INFO: Using existing parsed pretty print-table: "))
+    ; log(|Info(),<concat-strings>["Using existing parsed pretty print-table: ",<id>])
 
   parse-to-temp-file =
      !FILE(<id>)
     ; xtc-parse-pp-table
     ; ?FILE(<id>)
-    ; if-verbose2(debug(!"** INFO: Using temporary file for parsed print-table: "))
+    ; log(|Info(),<concat-strings>["Using temporary file for parsed print-table: ",<id>])

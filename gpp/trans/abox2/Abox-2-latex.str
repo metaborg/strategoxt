@@ -71,7 +71,7 @@ strategies
      <+
         abox2text(try-abox2alltt)
      <+
-        <fatal-error> ["** ERROR: invalid box: ", <id>]
+        log(|Error(),"invalid box:",<id>) ; <exit>1
 
 
   BOXENV-args =
