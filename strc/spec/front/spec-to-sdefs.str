@@ -200,8 +200,18 @@ rules
   ExpandCall :
     Call(f, ss) -> CallT(f, ss, [])
 
-  expand-calls =
-    topdown(try(ExpandCall))
+  replace-call-and-rdef =
+    topdown(try(ExpandCall + let-rdef-to-sdef))
+
+  let-rdef-to-sdef = 
+    let 
+     rdef-to-sdef = 
+       \ RDef(f, xs, r)      -> SDefT(f, xs, [], SRule(r)) \
+     + \ RDefT(f, xs, ys, r) -> SDefT(f, xs, ys, SRule(r)) \
+    in
+      Let(list(try(rdef-to-sdef)),id)
+    end
+
 \end{code} 
 
 \paragraph{Specification to Definition List}
@@ -225,7 +235,7 @@ rules
     ]) ->
     Specification([
       Signature(bsigs),
-      Strategies(<map(try(RDtoSD + DeclareVariables); expand-calls)> sdefs)
+      Strategies(<map(try(RDtoSD + DeclareVariables); replace-call-and-rdef)> sdefs)
     ])
 
   AddCongruenceDefinitions : 
