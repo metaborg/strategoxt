@@ -4,7 +4,7 @@ imports Stratego-Amb desugar
 rules
 
   MatchingCongruence :
-    Cong(f, ss) -> <Mapp2> Match(Op(f, ts))
+    Cong(f, ss) -> <Mapp> Match(Op(f, ts))
     where <map(\ Match(t) -> t \ + \ Id -> Wld \ )> ss => ts
 
   MatchingCongruence :
@@ -13,7 +13,7 @@ rules
   TransformingCongruence :
     Cong(f, ss) -> 
     Scope([a | <conc>(xs, ys)], 
-          Seq(<Mapp2> Match(Anno(Op(f, xs'), Var(a))),
+          Seq(<Mapp> Match(Anno(Op(f, xs'), Var(a))),
           Seq(Seqs(ss'),
               <Bapp> Build(Anno(Op(f, ys'), Var(a))))))
     where <map(new)> ss => xs; <map(!Var(<id>))> xs => xs'; new => a;
@@ -23,7 +23,7 @@ rules
   TransformingAnnoCongruence :
     Call(SVar("Anno_Cong__"), [Cong(f, ss), s]) -> 
     Scope([a, b | <conc>(xs,ys)], 
-          Seq(<Mapp2> Match(Anno(Op(f, xs'), Var(a))),
+          Seq(<Mapp> Match(Anno(Op(f, xs'), Var(a))),
           Seq(Seqs(ss'),
               <Bapp> Build(Anno(Op(f, ys'), Var(b))))))
     where <map(new)> [s | ss] => [a | xs]; map(!Var(<id>)) => xs';

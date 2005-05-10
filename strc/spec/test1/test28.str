@@ -51,6 +51,7 @@ strategies
     ; test-match-9
     ; test-match-10
     ; test-match-11
+    ; test-term-projection-in-anno
     )
 
   // no annotation
@@ -518,4 +519,12 @@ strategies
 	, !Plus(Var("c"){Int},Plus(Var("a"){Int},Var("b"){Int}){Int}){Int}
 	, !Plus(Var("c"){Int},Plus(Var("a"){Int},Var("b"){Int}){Int}){Int}
 	)
+
+  test-term-projection-in-anno =
+    apply-test(!"test-term-projection-in-anno"
+    , ?_{<id>}
+    , !1{2}
+    , !2
+    )
+
 

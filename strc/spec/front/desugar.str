@@ -166,13 +166,15 @@ explosions. Avoid lifting an App from within another App or RootApp.
          + Explode(pat-td(s), id)
          + PrimT(id, id, fetch(pat-td(s)))
          + CallT(id, id, fetch(pat-td(s)))
-	 + As(id, pat-td(s)))	 
+	 + As(id, pat-td(s)))
+	 + Anno(pat-td(s),id)
+	 + Anno(id,pat-td(s))
 \end{code}
 
 \begin{code}
 strategies
 
-  Mapp = Mapp1 <+ Mapp2
+  Mapp = Mapp1 <+ Mapp2 <+ Mapp3 
 
 rules
 
@@ -190,7 +192,7 @@ rules
           Scope([x], Seq(Match(t[Var(x)](pat-td)), Seq(Build(Var(x)), s)))
           where new => x
 
-  Mapp2 : Match(t[Anno(t1, t2)]) -> 
+  Mapp3 : Match(t[Anno(t1, t2)]) -> 
           Scope([x], Seq(Match(t[As(Var(x), t1)](pat-td)), 
                          Where(Seq(PrimT("SSLgetAnnotations", [], [Var(x)]), Match(t2)))))
           where new => x

@@ -16,7 +16,7 @@ strategies
 // turn off outermost-fusion while it is not finished (EV)
 //        ; alltd(innermost-fusion + outermost-fusion)
 
-        ) <+ if-verbose2(say(!"no innermost here"))
+        ) <+ log(|Info(),"No innermost here")
     )
 
 
@@ -59,40 +59,40 @@ strategies
     where(
       new => x
       ; (<InlineStrat> Strategy|[ try_1_0(x(|)|) ]|
-         <+ if-verbose2(say(!"no definition of try_1_0: ")); fail)
+         <+ log(|Info(),"No definition of try_1_0: ",<id>); fail)
       ; (?|[ x(|) <+ id ]|
-         <+ if-verbose1(debug(!"try is not try: ")); fail)
-      ; if-verbose2(say(!"try is try "))
+         <+ log(|Info(),"try is not try"); fail)
+      ; log(|Info(),"try is try ")
     )
 
   check-that-innermost-is-innermost =
     where(
       new => x
       ; (<InlineStrat> Strategy|[ innermost_1_0(x(|)|) ]|
-         <+ if-verbose2(say(!"no definition of innermost_1_0: ")); fail)
+         <+ log(|Info(),"No definition of innermost_1_0"); fail)
       ; (?|[ bottomup_1_0(try_1_0(x(|); innermost_1_0(x(|)|)|)|) ]|
          <+ {z: ?|[ bottomup_1_0(rec z(try_1_0(x(|); bottomup_1_0(z(|)|)|))|) ]|}
          <+ {z: ?|[ bottomup_1_0(rec z(x(|); bottomup_1_0(z(|)|) <+ id)|)  ]|}
-         <+ if-verbose1(debug(!"innermost is not innermost: ")); fail)
-      ; if-verbose2(say(!"innermost is innermost "))
+         <+ log(|Info(),"innermost is not innermost"); fail)
+      ; log(|Info(),"innermost is innermost ")
     )
 
   check-that-bottomup-is-bottomup =
     where(
       new => x
       ; (<InlineStrat> Strategy|[ bottomup_1_0(x(|)|) ]|
-         <+ if-verbose2(say(!"no definition of bottomup_1_0: ")); fail)
+         <+ log(|Info(),"No definition of bottomup_1_0"); fail)
    // ; ?|[ rec y(all(y(|)); x(|)) ]|
       ; (?|[ all(bottomup_1_0(x(|)|)); x(|) ]|
-         <+ if-verbose1(debug(!"bottomup is not bottomup: ")); fail)
-      ; if-verbose2(say(!"bottomup is bottomup"))
+         <+ log(|Info(),"bottomup is not bottomup"); fail)
+      ; log(|Info(),"bottomup is bottomup")
     )
 
   // The fusion strategy
 
   innermost-fusion = 
     ?|[ innermost_1_0(s1|) ]| 
-    ; if-verbose2(say(!"fusion: application of innermost found"))
+    ; log(|Info(),"Application of innermost found")
 
     ; where(new => x)
     ; where(<seq-over-choice> Strategy|[ bottomup_1_0(x(|)|) ]|)
@@ -108,7 +108,7 @@ strategies
     ; not(oncetd(?Strategy|[ mark(|) ]|)
           ; say(!"not all marks removed"))
     ; desugar
-    ; if-verbose1(say(!"fused application of innermost"))
+    ; log(|Info(),"Fused application of innermost")
 
   // Propagate mark over choice
 
@@ -192,7 +192,7 @@ strategies
   outermost-fusion :
     |[ outermost_1_0(s1|) ]| -> 
     |[ let f = repeat(rec x(s2 <+ s3)); all(f) in f end ]|
-    where if-verbose2(say(!"fusion: application of outermost found"))
+    where log(|Info(),"Application of outermost found")
 	; new => x
 	; new => f
 	; <inline-rules> s1 => s2
