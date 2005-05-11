@@ -3,7 +3,7 @@
  */
 module system/io/char
 imports 
-  io // XXX
+  system/io/-
 
 /**
  * character based output

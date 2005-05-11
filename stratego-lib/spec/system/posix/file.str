@@ -26,7 +26,7 @@ strategies
   /**
    * Returns the Stream for stdin, stdout and stderr
    *
-   * :: _ -> Stream
+   * @type _ -> Stream
    */
   stdin-stream  = prim("SSL_stdin_stream") ; !Stream(<id>)
   stdout-stream = prim("SSL_stdout_stream"); !Stream(<id>)
@@ -66,7 +66,7 @@ strategies
    * If the stream was being used for output, any buffered data is written 
    * first, using fflush(3).
    *
-   * :: Stream -> ()
+   * @type Stream -> ()
    */
   fclose =
     ?Stream(stream); prim("SSL_fclose", stream)
@@ -75,7 +75,7 @@ strategies
   /**
    * Forces a write of all user-space buffered data for the given Stream
    *
-   * :: Stream -> Stream
+   * @type Stream -> Stream
    */
   fflush =
     ?Stream(stream); prim("SSL_fflush", stream); !Stream(<id>)
@@ -88,21 +88,21 @@ strategies
 
   /**
    * Writes a String to a Stream
-   * :: String * Stream -> Stream
+   * @type (String, Stream) -> Stream
    */
   fputs =
     ?(str, Stream(stream)); prim("SSL_fputs", str, stream); !Stream(<id>)
 
   /**
    * Writes a String to stdout with a trailing newline and returns stdout.
-   * :: String -> Stream
+   * @type String -> Stream
    */
   puts =
     ?str; prim("SSL_puts", str); !Stream(<id>)
 
   /**
    * Writes a Char to a Stream
-   * :: Char * Stream -> Stream
+   * @type Char * Stream -> Stream
    */
   fputc =
     ?(c, Stream(stream)); prim("SSL_fputc", c, stream); !Stream(<id>)
@@ -116,7 +116,7 @@ strategies
    * fgetc() reads the next character from the stream and returns the 
    * ASCII code of the character as an Int. Fails on end of file or error.
    *
-   * :: Stream -> Char
+   * @type Stream -> Char
    */
   fgetc = 
     ?Stream(stream); prim("SSL_fgetc", stream)
@@ -212,7 +212,7 @@ strategies
    * Creates a unique temporary file
    *
    * returns a fd if succesful, fails on error
-   * mkstemp :: String -> String * Int
+   * @type String -> String * Int
    */
   mkstemp =
     <conc-strings> (<id>, "XXXXXX") => template
@@ -223,7 +223,7 @@ strategies
    * Creates a unique temporary directory
    *
    * returns a fd if succesful, fails on error
-   * mkdtemp :: String -> String
+   * @type String -> String
    */
   mkdtemp =
     <conc-strings> (<id>, "XXXXXX") => template
@@ -233,7 +233,7 @@ strategies
   /**
    * Closing a file
    *
-   * deallocates a file descriptor   
+   * Deallocates a file descriptor   
    */
   close =
     ?fd; prim("SSL_close", fd)
@@ -252,7 +252,7 @@ strategies
    * specified permissions. Fails if the access is not allowed,
    * returns the path otherwise.
    *
-   * :: String * [AccessPermission] -> String
+   * @type (String, List(AccessPermission)) -> String
    *
    * @inc access
    */
@@ -284,7 +284,7 @@ strategies
    * The mode of the stream ("r", "r+", "w", "w+",  "a", "a+") must be 
    * compatible with the mode of the file descriptor.  The file position 
    *
-   * fdopen :: FileDescr * String -> Stream
+   * @type (FileDescr, String) -> Stream
    */
   fdopen = 
     ?(fd, mode); prim("SSL_fdopen", fd, mode); !Stream(<id>)
@@ -293,10 +293,7 @@ strategies
    * The function fileno examines the argument stream and returns its 
    * integer descriptor
    *
-   * fileno :: Stream -> FileDescr
-   *    where Stream is currently a name or a pointer (integer)
-   *    where FileDescr is currently an Int.
-   *
+   * @type Stream -> FileDescr
    * @inc fileno
    */
   fileno = 
@@ -305,24 +302,51 @@ strategies
 
   /**
    * Mode of a file
+   * @type String -> FileMode
    */
- 
   filemode =
     ?pathname; prim("SSL_filemode", pathname); ?(<id>, 0)
     <+ <conc-strings; perror; fail> ("SSL/filemode: Cannot get filemode from ", <id>)
 
+  /**
+   * @type File -> FileMode
+   */
   isreg =
     ?mode; prim("SSL_S_ISREG", mode)
+    
+  /**
+   * @type File -> FileMode
+   */
   isdir =
     ?mode; prim("SSL_S_ISDIR", mode)
+
+  /**
+   * @type File -> FileMode
+   */
   ischr =
     ?mode; prim("SSL_S_ISCHR", mode)
+
+  /**
+   * @type File -> FileMode
+   */
   isblk =
     ?mode; prim("SSL_S_ISBLK", mode)
+
+  /**
+   * @type File -> FileMode
+   */
   isfifo =
     ?mode; prim("SSL_S_ISFIFO", mode)
+
+  /**
+   * @type File -> FileMode
+   */
   islnk =
     ?mode; prim("SSL_S_ISLNK", mode) 
+
+  /**
+   * @type File -> FileMode
+   */
   issock =
     ?mode; prim("SSL_S_ISSOCK", mode) 
 
@@ -331,11 +355,13 @@ strategies
  */
 strategies
  
-  /* pipe creates a pair Pipe(fd1, fd2) of file descriptors, pointing
-  to a pipe inode, and places them in the array pointed to by filedes.
-  fd1 is for reading, fd2 is for writing. */
-
-  // pipe :: _ -> Pipe
+  /**
+   * Pipe creates a pair Pipe(fd1, fd2) of file descriptors, pointing
+   * to a pipe inode, and places them in the array pointed to by filedes.
+   * fd1 is for reading, fd2 is for writing.
+   *
+   * @type _ -> Pipe
+   */
   pipe =
     prim("SSL_pipe")
     

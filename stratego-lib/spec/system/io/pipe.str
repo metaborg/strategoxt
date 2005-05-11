@@ -1,6 +1,6 @@
 module system/io/pipe
 imports 
-  io // XXX 
+  system/io/-
   system/io/process
 
 strategies
