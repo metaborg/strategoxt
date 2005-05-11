@@ -424,13 +424,6 @@ strategies
   foldl(s) = 
     rec x( \ ([], y) -> y \ + FoldL(s); x)
 
-  /**
-   * @warning  obsolete, use foldr/3
-   */
-  mapfoldr(s1, s2, s3) = 
-    obsolete(!"mapfoldr; use foldr/3");
-    foldr(s1, s3, s2)
-
   mapfoldr1(s1, s2, s3) = 
     rec x([id]; s1 <+ [s2|x]; \ [a|b]->(a,b)\; s3)
 

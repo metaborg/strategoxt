@@ -35,7 +35,7 @@ strategies
   * @obsolete use fgetc.
   */
   getchar = 
-      dissuader(!"getchar; use fgetc");
+      obsolete(!"getchar; use fgetc");
     ?file; prim("SSL_getchar", file)
 
  /**

@@ -95,10 +95,6 @@ rules
                 <+ [id | x]
                 )> l1
 
-  diff'(eq) = 
-      obsolete(!"diff'/1; use diff/1")
-    ; diff(eq)
-
   /**
    * @type  (List(a), List(a)) -> List(a)
    * @inc  test4a

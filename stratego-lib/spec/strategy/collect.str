@@ -197,25 +197,6 @@ strategies
           <+ ![<s>] )
     <+ ![]
    
-strategies
-
-  /**
-   * @obsolete use crush(![],union,s)
-   */
-  collect-kids(s) = 
-    obsolete(!"collect-kids(s); use crush(![],union,s)");
-    crush(![],union,s)
-
-  /**
-   * Collect a bag of outermost subterms for which s succeeds.
-   *
-   * @warning   despite its name, this strategy does return duplicates.
-   * @obsolete  use collect-om(s, conc)
-   */
-  collect-set(s) =
-    obsolete(!"collect-set(s); use collect-om(s, conc)")
-    ; collect-om(s, conc)
-
 strategies // TODO: where should we put this?
 
   twicetd(s) =

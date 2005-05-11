@@ -5,7 +5,6 @@ strategies
 
   main =
     test-suite(!"list-misc-test",
-	test1;
 	copy-test;
 	number-test;
 	flatten-test;
@@ -14,16 +13,6 @@ strategies
 	drop-test;
   trim-test
     )
-
-  test1 =
-    apply-test(!"test1"
-	, rec flat(mapfoldr(id
-		           ,is-list; flat <+ \ x -> [x] \
-			   ,conc
-			   ))
-	, !["a",["b",["c","d"]],"e"]
-	, !["a","b","c","d","e"]
-	)
 
   copy-test = 
     apply-test(!"copy-test"

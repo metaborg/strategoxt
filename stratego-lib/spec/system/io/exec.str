@@ -56,10 +56,6 @@ strategies
     //where(<debug(!"calling : ")> [<c>, 'in, out | <args>]);
     where(<call> (<c>, ["-i", 'in, "-o", out | <args>]))
 
-  pipe'(c, suf2, args) = 
-    obsolete(!"pipe'/3; use pipe/3");
-    pipe(c, suf2, args)
-
  /**
   * Apply command <comm> to input file (current term) and write the result to a temporary file
   * which is then passed on to the continuation command cont. The temporary file is created

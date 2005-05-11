@@ -143,13 +143,6 @@ strategies
     )
 
   /**
-   * @obsolete --version is a standard option
-   */
-  version-option =
-      obsolete(!"version-option/0: is a standard option")
-    ; fail
-
-  /**
    * Option specifications for reading input.
    *
    * Defines -i.
@@ -265,87 +258,6 @@ signature
 strategies
 
   /**
-   * Handles options, reads term from input file, transform, write result 
-   * to output file
-   *
-   * @obsolete use io-wrap.
-   */
-  iowrap(strat) = 
-    obsolete(!"iowrap/1: use io-wrap/1")
-  ; iowrap((id, strat), fail)
-
-  /**
-   * @obsolete use io-wrap.
-   */
-  iowrapO(strat, extra-options) =
-    obsolete(!"iowrapO/2: use io-wrap/2")
-  ; iowrap(strat, extra-options)
-
-  /**
-   * @obsolete use io-wrap.
-   */
-  iowrap(strat, extra-options) = 
-    obsolete(!"iowrapO/2: use io-wrap/2")
-  ; iowrap(strat, extra-options, system-usage)
-
-  /**
-   * @obsolete use io-wrap.
-   */
-  iowrap(strat, extra-options, usage) =
-    obsolete(!"iowrap/4: use io-wrap/4")
-  ; iowrap(strat, extra-options, usage, 
-	   if-verbose2(where(<printnl>(stderr, [<get-config> "program"]))))
-
-  /**
-   * @obsolete use io-wrap.
-   */
-  iowrapO(strat, extra-options, usage) =
-    obsolete(!"iowrap/3: use io-wrap/4")
-  ; iowrap(strat, extra-options, usage)
-
-  /**
-   * @obsolete use io-wrap.
-   */
-  iowrap(strat, extra-options, usage, announce) =
-    obsolete(!"iowrap: use io-wrap")
-  ; option-wrap(extra-options <+ io-options, usage, announce, 
-      input-file;
-      apply-strategy(strat);
-      output-file
-    )
-
-  /**
-   * @obsolete use input-wrap.
-   */
-  iowrapNoOutput(strat, extra-options) = 
-    obsolete(!"iowrapNoOutput/2: use input-wrap")
-  ; iowrapNoOutput(strat, extra-options, default-usage)
-
-  /**
-   * @obsolete use input-wrap.
-   */
-  iowrapNoOutput(strat, extra-options, usage) =
-    obsolete(!"iowrapNoOutput/3: use input-wrap")
-  ; option-wrap(extra-options <+ io-options, usage, id, 
-        input-file
-      ; apply-strategy(strat)
-      )
-
-  /**
-   * @obsolete  use io-wrap
-   */
-  default-usage =
-    obsolete(!"options:default-usage/(0,0): use io-wrap.")
-    ; where(
-      <printnl> (stderr, 
-        ["usage : ", <whoami> (), " [-S] [-i file] [-o file] [-b] [-s] [--help|-h|-?]" ]
-      )
-    ; <exit> 1
-    )
-
-strategies
-
-  /**
    * @obsolete use config for this purpose.
    */
   store-options = ?options;
@@ -379,52 +291,3 @@ strategies
     where get-options => ops
         ; <is-subterm>(option,ops)
 
-  /**
-   * @obsolete use default-usage.
-   */
-  usage' = 
-    obsolete(!"usage': use default-usage")
-
-strategies
-
-  /**
-   * @obsolete use input(s).
-   */
-  input-file' =
-    obsolete(!"input-file'; use input-file");
-    input-file
-
-  /**
-   * @obsolete use input(s).
-   */
-  input-file =
-    obsolete(!"input-file; use input(s)");
-    where((option-defined(?Input(infile)) <+ !stdin => infile));
-    split(id, <ReadFromFile> infile)
-
-  /**
-   * @obsolete use profile(s).
-   */
-  apply-strategy(strat) =
-    obsolete(!"input-file'; use input-file");
-    where(dtime);
-    strat;
-    where(dtime => runtime);
-    \(options, trm) -> ([Runtime(runtime) | options], trm)\
-
-  /**
-   * @obsolete use output(s).
-   */
-  output-file' =
-    obsolete(!"output-file'; use output-file");
-    output-file
-
-  /**
-   * @obsolete use output(s).
-   */
-  output-file =
-    obsolete(!"output-file; use output(s)");
-    where((option-defined(?Output(outfile)) <+ !stdout => outfile, id)); 
-    (id, split(!outfile, id));
-    ((option-defined(?Binary()), WriteToBinaryFile)
-    <+ (id, WriteToTextFile))

@@ -19,26 +19,26 @@ signature
 
 strategies
 
-  apply-start = split(id,!Fail)
-  apply(s) = try((s,!Success))
+  apply-start = obsolete(!"don't use") ; split(id,!Fail)
+  apply(s) = obsolete(!"don't use") ; try((s,!Success))
 
  /**
   * @inc apply-test
   */
-  apply(a,b) = 
+  apply(a,b) = obsolete(!"don't use") ;
 	  apply-start
 	; apply(a)
 	; apply(b)
 	; apply-end
 
-  apply(a,b,c) = 
+  apply(a,b,c) = obsolete(!"don't use") ;
 	  apply-start
 	; apply(a)
 	; apply(b)
 	; apply(c)
 	; apply-end
 
-  apply(a,b,c,d) =
+  apply(a,b,c,d) = obsolete(!"don't use") ;
 	  apply-start
 	; apply(a)
 	; apply(b)
@@ -49,4 +49,6 @@ strategies
 rules
   apply-end:
     (trm,Success) -> trm
+      where
+        obsolete(!"don't use")
 

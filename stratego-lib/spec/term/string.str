@@ -440,20 +440,6 @@ strategies
 strategies
 
   /**
-   * @obsolete  use to-lower
-   */
-  lc = obsolete(!"lc/0; use to-lower/0");
-    to-lower
-
-  /**
-   * @obsolete  use to-upper
-   */
-  uc = obsolete(!"uc/0; use to-upper/0");
-    to-upper
-
-strategies
-
-  /**
    * Breaks a string into tokens.
    *
    * string-tokenize is like java.util.StringTokenizer. Given a
@@ -714,11 +700,6 @@ strategies
 	<+ \([],[_|_]) -> -1\
 	<+ !1
 	)
-
-strategies
-
-  sect(op, arg) = obsolete(!"sect/2; use term wrap patterns");
-    <op> (<id>, <arg> ())
 
 strategies
 

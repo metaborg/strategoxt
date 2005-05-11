@@ -81,14 +81,6 @@ strategies
   crush(nul, sum, s) : 
     _#(xs) -> <foldr(nul,sum, s)> xs
 
-  foldr-kids(nul,sum) =
-    obsolete(!"foldr-kids/2; use crush/2");
-    crush(nul, sum)
-
-  foldr-kids(nul,sum,s) =
-    obsolete(!"foldr-kids/3; use crush/3");
-    crush(nul, sum, s)
-    
 strategies      
 
   node-size =
@@ -112,10 +104,6 @@ strategies
  * Occurence Counting.
  */
 strategies
-
-  nrofoccs(s) = 
-    obsolete(!"nrofoccs/1; use occurrences/1");
-    occurrences(s)
 
   om-occurrences(s) = 
     s; !1 <+ crush(!0, add, occurrences(s))

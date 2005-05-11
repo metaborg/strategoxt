@@ -7,16 +7,6 @@ strategies
   is-int = ?i; prim("SSL_is_int", i)
 
   /**
-   * @obsolete use subt
-   */
-  minus = obsolete(!"minus; use subt"); subt
-
-  /**
-   * @obsolete use add
-   */
-  plus 	= obsolete(!"plus; use add"); add
-
-  /**
    * Adds two numbers (integer or real)
    */
   add  = ?(x,y); (prim("SSL_addi",x,y) <+ prim("SSL_addr",x,y))

@@ -75,13 +75,6 @@ rules
 	([(x,y) | ps], sbs) -> ([(y,x) | ps], sbs)
 	where <not(isvar)> x; <isvar> y
 
-rules
-
-  // Test occurrence of a in b 
-
-  'in : (a, t) -> <oncetd(?a)> t
-   where obsolete(!"'in: use is-subterm")
-
 strategies
 
   equal(fltr) =

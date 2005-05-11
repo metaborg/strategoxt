@@ -34,13 +34,6 @@ strategies
       Gind1  : (n, x, [x | xs]) -> n
       Gind2  : (n, y, [x | xs]) -> (<add> (n, 1), y, xs)
 
- /**
-  * @obsolete use get-index
-  */
-  get_index = 
-    obsolete(!"get_index/0; use get-index/0");
-    get-index
-
   get-index0(s) = at-suffix([s | id]; ![]); length
 
 strategies

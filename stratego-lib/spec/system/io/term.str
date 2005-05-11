@@ -275,13 +275,6 @@ strategies
   printstring = 
     where(<print> (stdout, [<id>]))
 
-  /**
-   * @obsolete use echo
-   */
-  debug-stdout(msg) = 
-    obsolete(!"debug-stdout; use echo");
-    echo(msg)
-
 strategies
 
  /**

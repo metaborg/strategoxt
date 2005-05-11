@@ -20,11 +20,4 @@ strategies
     where ( <Memo> t => t' )
        <+ ( <s> t => t'; rules(Memo: t -> t') )
 
-  memo-init  = obsolete(!"memo-init; use memo-scope")
-  memo-purge = obsolete(!"memo-purge; use memo-scope")
-
-  memo(lab, s) =
-    obsolete(!"memo/2; use memo/1");
-    memo(s)
-
 

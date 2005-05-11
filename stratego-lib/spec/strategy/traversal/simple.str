@@ -144,11 +144,6 @@ strategies
   oncetd-skip(s, skip: (a -> a) * a -> a) = 
     rec x(s <+ skip(x) <+ one(x))
 
-    // this really requires a cut to avoid backtracking to one
-
-  oncetd-stop(s, stop: (a -> a) * a -> a) = 
-    obsolete(!"oncetd-stop");
-    rec x(s <+ not(stop(id)); one(x))
 \end{code} 
 
 	\paragraph{At Least Once}
@@ -175,9 +170,6 @@ strategies
     rec x(s <+ all(x))
 
   alldownup2(s1, s2) = 
-    rec x((s1 <+ all(x)); s2)
-
-  downup2'-obsolete(s1, s2) = 
     rec x((s1 <+ all(x)); s2)
 
   alltd-fold(s1, s2) = 
