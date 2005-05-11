@@ -64,13 +64,6 @@ AC_ARG_ENABLE([xtc2],
 )
 AC_SUBST([XTC2_ENABLED])
 
-# AC_ARG_ENABLE([xtc3],
-#   AS_HELP_STRING([--enable-xtc3], [use the xtc3 library]),
-#   [XTC3_ENABLED=$enable_xtc3],
-#   [XTC3_ENABLED="no"]
-# )
-# AC_SUBST([XTC3_ENABLED])
-
 # Constructing PKGS list
 
 PKGS="autoxt srts stratego-lib"
@@ -85,12 +78,6 @@ else
   DIST_PKGS="$DIST_PKGS xtc2" 
   XTC_DIR="xtc"
 fi
-
-# elif test "x$XTC3_ENABLED" = "xyes"
-# then
-#   PKGS="$PKGS xtc3"
-#   DIST_PKGS="$DIST_PKGS xtc xtc2"
-#   XTC_DIR="xtc3"
 
 PKGS="$PKGS stratego-front asfix-tools"
 
@@ -167,5 +154,4 @@ AB_CONFIG_PKG(xml-front,        --with-repository=${REPOSITORY})
 
 # AB_CONFIG_PKG(xtar,             --with-repository=${REPOSITORY})
 # AB_CONFIG_PKG(boxenv,           --with-repository=${REPOSITORY})
-# AB_CONFIG_PKG(xtc3,           --with-repository=${REPOSITORY} --with-curl=${CURL})
 

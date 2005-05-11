@@ -1,6 +1,0 @@
-/** 
- * XTC Dispatch Caching Module
- * 
- * @author Niels Janssen (njanssen@cs.uu.nl)
- */
-module xtc-cache
