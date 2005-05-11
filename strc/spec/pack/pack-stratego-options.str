@@ -56,7 +56,7 @@ strategies
     )
 
   report-options =
-    log(|Info(), "include path: ", <get-config> "-I")
+    log(|Notice(), "include path: ", <get-config> "-I")
 
   include-from-dir-option =
     ArgOption("-I" + "--Include"
