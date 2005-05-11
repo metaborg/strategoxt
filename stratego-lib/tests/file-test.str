@@ -115,6 +115,20 @@ strategies
   ; apply-and-fail(!"has-extension 5", has-extension(|""), !"foo")
   ; apply-and-fail(!"has-extension 6", has-extension(|"str"), !"foo.str.rtree")
   
+  ; apply-test(!"obsolete-has-extension 1", has-extension(!".str"), !"foo.str")
+  ; apply-test(!"obsolete-has-extension 2", has-extension(!".str"), !"foo.fred.str")  
+  ; apply-and-fail(!"obsolete-has-extension 3", has-extension(!".str"), !"foo.rtee")  
+  ; apply-and-fail(!"obsolete-has-extension 4", has-extension(!".str"), !"foo")
+  ; apply-and-fail(!"obsolete-has-extension 5", has-extension(!""), !"foo")
+  ; apply-and-fail(!"obsolete-has-extension 6", has-extension(!".str"), !"foo.str.rtree")
+  ; apply-test(!"obsolete-has-extension 7", has-extension(!"str"), !"foo.str")
+  ; apply-test(!"obsolete-has-extension 8", has-extension(!"str"), !"foo.fred.str")  
+  ; apply-and-fail(!"obsolete-has-extension 9", has-extension(!"str"), !"foo.rtee")  
+  ; apply-and-fail(!"obsolete-has-extension 10", has-extension(!"str"), !"foo")
+  ; apply-and-fail(!"obsolete-has-extension 11", has-extension(!""), !"foo")
+  ; apply-and-fail(!"obsolete-has-extension 12", has-extension(!"str"), !"foo.str.rtree")
+  
+  
   ; apply-test(!"get-extension 1", get-extension, !"foo.str", !"str")
   ; apply-test(!"get-extension 2", get-extension, !"foo.fred.str", !"str")
   ; apply-test(!"get-extension 3", get-extension, !"/foo/fred.str", !"str")

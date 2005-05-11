@@ -376,6 +376,7 @@ strategies
         ext
         ; explode-string
         ; try(?['.' | <id>])
+        ; implode-string
         ; ?ext-term
       )
     ; has-extension(|ext-term)
