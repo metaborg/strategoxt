@@ -1,6 +1,13 @@
 SINCLUDES 	= -I $(STRATEGO_LIB)/share/stratego-lib -I $(SRTS)/share/srts
 AM_LDFLAGS	= -L$(STRATEGO_LIB)/lib/stratego-lib -L$(SRTS)/lib/srts -L$(ATERM)/lib 
 
+if XT_DARWIN
+AM_LDFLAGS += -bind_at_load
+else
+AM_LDFLAGS +=
+endif
+     
+
 check_PROGRAMS 	= test02 test03 test04 test05			    \
 		  test06 test07 test08 test09 test10 test11 test12  \
 		  test13 test14 test15 test16 test17 test18 test19  \
@@ -13,7 +20,8 @@ check_PROGRAMS 	= test02 test03 test04 test05			    \
 		  test60 test61 test62 test63 test64 test65 test66  \
                   test67 test68 \
 		  io-test10 io-test11 io-test1 io-test2 io-test3 \
-                  qcons-test01 qcons-test02 qcons-test03 qcons-test04
+                  qcons-test01 qcons-test02 qcons-test03 qcons-test04 \
+		  let-test
 
 # test26 global choice
 
@@ -114,3 +122,5 @@ nodist_qcons_test01_SOURCES = qcons-test01.c
 nodist_qcons_test02_SOURCES = qcons-test02.c
 nodist_qcons_test03_SOURCES = qcons-test03.c
 nodist_qcons_test04_SOURCES = qcons-test04.c
+
+nodist_let_test_SOURCES = let-test.c

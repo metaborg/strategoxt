@@ -8,6 +8,12 @@ SINCLUDES	 = -I $(STRATEGO_FRONT)/share/stratego-front \
 
 AM_LDFLAGS	= -L$(STRATEGO_LIB)/lib/stratego-lib -L$(SRTS)/lib/srts -L$(ATERM)/lib 
 
+if XT_DARWIN
+AM_LDFLAGS += -bind_at_load
+else
+AM_LDFLAGS +=
+endif
+
 check_PROGRAMS 	= arity-test as-pattern assignment \
 		  comment-test conditional-innermost congruence-arguments \
 		  congruence-thread dynamic-rules-test empty-sections \
