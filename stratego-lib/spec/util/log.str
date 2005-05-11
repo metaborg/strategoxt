@@ -60,25 +60,6 @@ strategies
 
 strategies
 
-  log-timed(s | severity, msg) =
-    where( times => start)
-  ; s
-  ; where( 
-      if-log-severity(
-        <diff-times>(<times>,start) => diff
-      ; <self-children-user-time>diff
-      ; ticks-to-seconds => user
-      ; <self-children-sys-time>diff
-      ; ticks-to-seconds => system 
-      ; <print>(stderr()/*<log-stream;debug;fileno;debug>*/, [ "[ ", <log-src>, " | ",  <severity-string> severity, " ] ", msg, "\n"
-                              , "[ ", <log-src>, " | ",  <severity-string> severity, " ] user/system = ",user,"/",system, "\n"
-                              ] )
-      | severity
-      )
-    )
-
-strategies
-
   log-stream =
     <get-config> "log-stream" <+ <stderr-stream> ()
 
