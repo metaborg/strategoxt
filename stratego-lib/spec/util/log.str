@@ -70,7 +70,7 @@ strategies
     <fputs> (<id>, <log-stream> ())
 
   log-src =
-    whoami; get-filename
+    whoami; base-filename
     <+ !"identity crisis"
 
 rules
