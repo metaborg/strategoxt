@@ -44,7 +44,7 @@ strategies
 
   find-in-includes(msg) =
     <find-in-path> (<id>, <get-config> "-I")
-  ; log(|Info(),<concat-strings>[<msg>,<id>])
+  ; log(|Notice(),<concat-strings>[<msg>,<id>])
 
 strategies
 
@@ -56,7 +56,7 @@ strategies
   parse-module =
       ?file
     ; where( ?FILE(filename) )
-    ; log(|Info(), <concat-strings>["Parsing file ", filename])
+    ; log(|Notice(), <concat-strings>["Parsing file ", filename])
     ; where( FILE(basename => base) )
     ; where( get-meta => meta )
     ; where( <get-syntax ; get-parse-table> meta => FILE(tbl) )
@@ -146,7 +146,7 @@ strategies
      <+ /* final option: plain Stratego */
         !"Stratego"
       )
-    ; log(|Info(),<concat-strings>["Using syntax ",<id>])
+    ; log(|Notice(),<concat-strings>["Using syntax ",<id>])
 
   /**
    * Returns the MetaData for a file.
