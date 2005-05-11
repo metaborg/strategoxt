@@ -26,13 +26,6 @@ strategies
 
   eq = ?(x, x)
 
- /**
-  * @obsolete use fail
-  */
-  FAIL = 
-    obsolete(!"FAIL: use fail"); 
-    fail
-
   restore(s, rest) = 
     s <+ (rest; fail)
 
