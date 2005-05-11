@@ -1,3 +1,6 @@
+/**
+ * Tests for the system/io/file module.
+ */
 module file-test
 imports file sunit
 
@@ -14,6 +17,7 @@ strategies
     ; getcwd-tests
     ; abspath-tests
     ; is-abspath-tests
+    ; file-extension-tests
     )
     
 strategies
@@ -82,22 +86,43 @@ strategies
     , !"prog"
     , !"prog"
     )
-
-/**
- * Copyright (C) 1998-2003 Eelco Visser <visser@acm.org>
- * 
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
- * 02111-1307, USA.
- */
+    
+  file-extension-tests =
+    apply-test(!"remove-extension 1", remove-extension, !"foo.str", !"foo")
+  ; apply-test(!"remove-extension 2", remove-extension, !"foo", !"foo")
+  ; apply-test(!"remove-extension 3", remove-extension, !"foo.rtree", !"foo")
+  ; apply-test(!"remove-extension 4", remove-extension, !"/bar/foo.str", !"/bar/foo")
+  ; apply-test(!"remove-extension 5", remove-extension, !"/bar/foo", !"/bar/foo")  
+  ; apply-test(!"remove-extension 6", remove-extension, !"/bar.foo/fred.str", !"/bar.foo/fred")  
+  ; apply-test(!"remove-extension 7", remove-extension, !"/bar.foo/fred", !"/bar.foo/fred")
+  ; apply-test(!"remove-extension 8", remove-extension, !"/bar.foo.str", !"/bar.foo")
+  ; apply-test(!"remove-extension 9", remove-extension, !"/bar.foo", !"/bar")
+  ; apply-test(!"remove-extension 10", remove-extension, !"/bar.foo.rtree", !"/bar.foo")
+  
+  ; apply-test(!"guarantee-extension 1", guarantee-extension(|"str"), !"foo.str", !"foo.str")
+  ; apply-test(!"guarantee-extension 2", guarantee-extension(|"str"), !"foo", !"foo.str") 
+  ; apply-test(!"guarantee-extension 3", guarantee-extension(|"str"), !"foo.rtree", !"foo.str")
+  ; apply-test(!"guarantee-extension 4", guarantee-extension(|"str"), !"/bar/foo.str", !"/bar/foo.str")
+  ; apply-test(!"guarantee-extension 5", guarantee-extension(|"str"), !"/bar/foo", !"/bar/foo.str")  
+  ; apply-test(!"guarantee-extension 6", guarantee-extension(|"str"), !"/bar/foo.rtree", !"/bar/foo.str")
+  ; apply-test(!"guarantee-extension 7", guarantee-extension(|"str"), !"/bar.foo.str", !"/bar.foo.str")
+  ; apply-test(!"guarantee-extension 9", guarantee-extension(|"str"), !"/bar.foo.rtree", !"/bar.foo.str")
+  
+  ; apply-test(!"has-extension 1", has-extension(|"str"), !"foo.str")
+  ; apply-test(!"has-extension 2", has-extension(|"str"), !"foo.fred.str")  
+  ; apply-and-fail(!"has-extension 3", has-extension(|"str"), !"foo.rtee")  
+  ; apply-and-fail(!"has-extension 4", has-extension(|"str"), !"foo")
+  ; apply-and-fail(!"has-extension 5", has-extension(|""), !"foo")
+  ; apply-and-fail(!"has-extension 6", has-extension(|"str"), !"foo.str.rtree")
+  
+  ; apply-test(!"get-extension 1", get-extension, !"foo.str", !"str")
+  ; apply-test(!"get-extension 2", get-extension, !"foo.fred.str", !"str")
+  ; apply-test(!"get-extension 3", get-extension, !"/foo/fred.str", !"str")
+  ; apply-and-fail(!"get-extension 4", get-extension, !"foo")
+  ; apply-and-fail(!"get-extension 5", get-extension, !"/foo.str/fred")
+    
+  ; apply-test(!"test-extension 1", test-extension(?"str"), !"foo.str")
+  ; apply-test(!"test-extension 2", test-extension(id), !"foo.str")
+  ; apply-and-fail(!"test-extension 3", test-extension(id), !"foo")
+  ; apply-test(!"test-extension 4", test-extension(?"str" + ?"rtree"), !"foo.str")
+  ; apply-test(!"test-extension 5", test-extension(?"str" + ?"rtree"), !"foo.rtree")

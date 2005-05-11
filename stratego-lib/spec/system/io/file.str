@@ -5,8 +5,8 @@
 module system/io/file
 imports 
   system/posix/file 
-  io   // XXX
-  list // XXX
+  system/io/-
+  collection/list/-
   term/string
 
 /**
@@ -15,9 +15,9 @@ imports
 strategies
 
   /**
-   * opens a Stream associated to a FileLoc
+   * Opens a Stream associated to a FileLoc
    *
-   * @type FileLoc * String -> Stream
+   * @type (FileLoc, String) -> Stream
    */
   open-stream = ?(_, _);
     (  Fst; stdio-stream
@@ -31,28 +31,6 @@ strategies
   stdio-stream = ?stdin() ; stdin-stream
   stdio-stream = ?stdout(); stdout-stream
   stdio-stream = ?stderr(); stderr-stream
-
-/**
- * Old file administration
- */
-strategies
-
-  close-file = 
-    ?name; prim("SSL_close_file", name)
-
-  open-file =
-    ?(name, mode); prim("SSL_open_file", name, mode)
-
-  /**
-   * @obsolete use <open-file> (file, mode)
-   */
-  open-file =
-    ?name; not(?(_, _))
-    ; obsolete(!"<open-file> file; use <open-file> (file, mode)")
-    ; <open-file> (name, "w")
-
-  append-file = 
-    <open-file> (<id>, "a")
 
 strategies
 
@@ -176,86 +154,73 @@ strategies
     ; last
   
 /**
- * @todo  define in terms of more general pathname strategies.
+ * Strategies for file extensions
  */
 strategies
 
   /**
-   * Strip extension from a pathname.
+   * Drops the current extension and replaces it with the specified extension.
    *
-   * @warning basename is not comparable to the basename of sh. 
-   *          sh's basename strips the direcrory an optionallythe suffix.
-   * @type    String -> String
-   * @inc     basename-test
-   */
-  basename =
-    basename(id)
+   * @type   String -> String
+   * @since  0.15
+   * @inc    guarantee-extension
+   */    
+  guarantee-extension(|ext) =
+    remove-extension
+    ; <add-extension> (<id>, ext)
 
   /**
-   * Strip extension from a pathname.
+   * Checks if the file extension is ext.
    *
-   * @warning basename is not comparable to the basename of sh. 
-   *          sh's basename strips the direcrory an optionallythe suffix.
-   *
-   * @param  checks the extension
+   * @param  The required extension (without . )
    * @type   String -> String
+   * @since  0.15
+   * @inc    has-extension
    */
-  basename(ext) =
-    explode-string;
-    try(rec x([id|x] <+ ['/' | id] <+ ['.' | ext]; ![]));
-    implode-string
+  has-extension(|ext) =
+    test-extension(?ext)
+    
+  /**
+   * Tests if the file extension (everything after the . satisfies ext.
+   *
+   * @param  Test for the file extension. Is applied to the plain file extension (without the .)
+   * @since  0.15
+   * @inc    test-extension
+   */
+  test-extension(ext) =
+    where(
+      get-extension
+      ; ext
+    )
 
-  guarantee-extension(ext) =
-    basename;
-    split(id, <ext>());
-    add-extension
-
-  // has-extension :: (_ -> String) -> String -> String
-  //
-  // has-extension(ext) checks whether the argument is a
-  // string that ends in <ext>.
-
-  has-extension(ext) =
-    where(ext; explode-string => echars);
-    where(explode-string; at-suffix(?echars))
-  
-  // path from program name "/usr/local/bin/prog" -> "/usr/local/bin/"
- /**
-  * @inc get-path-test
-  */
-  get-path = 
-    explode-string;
-    (rec x([id|x] <+ [47|![]]) <+ ![]);
-    implode-string
-
-  // file name from path "/usr/local/bin/prog" -> "prog"
- /**
-  * @inc get-filename-test
-  */
-  get-filename = 
-    explode-string
-    ; try(at-suffix-rev(?['/' | name]); !name)
-    ; implode-string
-
-  // :: String * String -> String
+  /**
+   * Adds an extension (second argument) to a path (first argument).
+   *
+   * @type (String, String) -> String
+   */
   add-extension : 
     (name, ext) -> <concat-strings> [name, ".", ext]
 
-  // :: String -> String
+  /**
+   * Remove an extension from a file name.
+   *
+   * @inc  remove-extension
+   * @type String -> String
+   */
   remove-extension =
-      rec x(
-          split-at-dot
-	; (
-	     ![<?(<id>,"")>]
-	  <+ (![<id>], x) 
-	   ; TupleToList
-	   ; concat
-	  )
-      )
-    ; init
-    ; <separate-by> (".", <id>)
-    ; concat-strings
-
+    <string-tokenize> (['.'], <id>)
+    ; if ?[_] then
+        ?[<id>]
+      else
+        if last; explode-string; fetch(?'/' + ?'\') then
+          id
+        else
+          init
+        end
+        ; <separate-by> (".", <id>)
+        ; concat-strings
+      end
+    
   /**
    * Get extension from filename
    *
@@ -263,25 +228,19 @@ strategies
    */
   get-extension =
     <string-tokenize> (['.'], <id>)
+    ; ?[_, _ | _]
     ; last
-
+    ; where(explode-string; not(fetch(?'/' + ?'\')))
+    
 /**
  * Generate a new, not existing file name.
  */
 strategies
 
-  new-file =
-    rec x(<conc-strings> (<new>(), ".tmp"); try(file-exists; x))
-
-  // (String, a) -> b :: a -> b
-  temp-file(s) =
-      where(new-file => f)
-    ; <finally(s, try(<remove-file> f))> (f, <id>)
-
   /**
    * Safe, mkstemp based, creation of temporary file
    * 
-   * :: _ -> (String, FileDescr)
+   * @type _ -> (String, FileDescr)
    */
   new-temp-file =
       <conc-strings> (<temp-dir>, "/StrategoXT")
@@ -290,7 +249,7 @@ strategies
   /**
    * Safe, mkdtemp based, creation of temporary directory
    * 
-   * :: _ -> String
+   * @type  _ -> String
    */
   new-temp-dir =
       <conc-strings> (<temp-dir>, "/StrategoXT")
@@ -355,3 +314,147 @@ strategies
   find-file(mkpath, ext) =
     guarantee-extension(ext)
     ; find-in-path(mkpath)
+
+/**
+ * Obsolete strategies
+ */    
+strategies
+
+  /**
+   * Strip extension from a pathname.
+   *
+   * @obsolete use remove-extension
+   *
+   * @warning  basename is not comparable to the basename of sh. 
+   *           sh's basename strips the direcrory an optionally the suffix.
+   *
+   * @type     String -> String
+   * @inc      basename-test
+   */
+  basename =
+    obsolete(!"basename; use remove-extension")
+    ; basename(id)
+
+  /**
+   * Strip extension from a pathname.
+   *
+   * @obsolete use test-extension(s); remove-extension   
+   *
+   * @warning basename is not comparable to the basename of sh. 
+   *          sh's basename strips the direcrory an optionally the suffix.
+   *
+   * @param    checks the extension
+   * @type     String -> String
+   */
+  basename(ext) =
+    obsolete(!"basename(ext); use test-extension(s); remove-extension")
+    ; explode-string
+    ; try(rec x([id|x] <+ ['/' | id] <+ ['.' | ext]; ![]))
+    ; implode-string
+    
+  /**
+   * Drops the current extension and replaces it with the specified extension.
+   *
+   * @obsolete  use guarantee-extension(|t)
+   * @type      String -> String
+   */
+  guarantee-extension(ext) =
+    obsolete(!"guarantee-extension(s); use guarantee-extension(|t)")
+    ; basename
+    ; <add-extension> (<id>, <ext> ())
+    
+  /**
+   * Checks whether the argument is a string that ends in ext.
+   *
+   * @obsolete  use has-extension(|t)
+   * @param     Strategy that produces a string for the extension.
+   * @type      String -> String
+   */
+  has-extension(ext) =
+    obsolete(!"has-extension(s); use has-extension(|t)")
+    ; where(
+        ext
+        ; explode-string
+        ; try(?['.' | <id>])
+        ; ?ext-term
+      )
+    ; has-extension(|ext-term)
+
+  /**
+   * Creates a fresh file in the current directory.
+   *
+   * @obsolete  use new-temp-file or XTC temporary files
+   */
+  new-file =
+    obsolete(!"new-file; use new-temp-file or XTC temporary files")
+    ; rec x(<conc-strings> (<new>(), ".tmp"); try(file-exists; x))
+
+  /**
+   * @obsolete use XTC scoped temporary files
+   * @param    (String, a) -> b
+   * @type     a -> b
+   */
+  temp-file(s) =
+      obsolete(!"new-file; use XTC scoped temporary files")
+    ; where(new-file => f)
+    ; <finally(s, try(<remove-file> f))> (f, <id>)
+  
+  /**
+   * Path from program name "/usr/local/bin/prog" -> "/usr/local/bin/"
+   *
+   * @obsolete  use dir-name
+   * @inc       get-path-test
+   */
+  get-path = 
+    obsolete(!"get-path; use dirname")
+    ; explode-string
+    ; (rec x([id|x] <+ [47|![]]) <+ ![])
+    ; implode-string
+
+  /**
+   * File name from path "/usr/local/bin/prog" -> "prog"
+   *
+   * @obsolete  use base-filename
+   * @inc       get-filename-test
+   */
+  get-filename = 
+    obsolete(!"get-filename; use base-filename")
+    ; explode-string
+    ; try(at-suffix-rev(?['/' | name]); !name)
+    ; implode-string
+
+/**
+ * Old file administration
+ */
+strategies
+
+  /**
+   * @obsolete use streams and fclose
+   */
+  close-file = 
+    ?name
+    ; obsolete(!"close-file; use streams and fclose")
+    ; prim("SSL_close_file", name)
+
+  /**
+   * @obsolete use fopen and streams
+   */
+  open-file =
+    ?(name, mode)
+    ; obsolete(!"open-file; use fopen and streams")
+    ; prim("SSL_open_file", name, mode)
+
+  /**
+   * @obsolete use <open-file> (file, mode)
+   */
+  open-file =
+    ?name; not(?(_, _))
+    ; obsolete(!"<open-file> file; use <open-file> (file, mode)")
+    ; <open-file> (name, "w")
+
+  /**
+   * @obsolote use fopen in append mode and streams
+   */
+  append-file =
+    obsolete(!"append-file; use fopen in append mode and streams")
+    ; <open-file> (<id>, "a")    
