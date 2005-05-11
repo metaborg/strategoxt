@@ -17,7 +17,7 @@ signature
     Info      : Severity
     Debug     : Severity
     Vomit     : Severity
-
+    
 strategies
 
   debug-area(s|msg) =
@@ -33,7 +33,7 @@ strategies
 
 strategies
 
-  log(|severity : Severity, msg : String, term) =
+  log(|severity : Severity, msg, term) =
     if-log-severity(
       log(|severity, msg)
       ; where(
@@ -44,14 +44,38 @@ strategies
     | severity
     )
 
-  log(|severity : Severity, msg: String) =
+  log(|severity : Severity, msg) =
     if-log-severity(
-      where(<concat-strings; log-puts> ["[ ", <log-src>, " | ",  <severity-string> severity, " ] ", msg, "\n"])
+      where(
+        <try(not(is-list) ; ![<id>])>msg 
+      ; map(is-string <+ write-to-string) 
+      ; <concat-strings ; log-puts> ["[ ", <log-src>, " | ",  <severity-string> severity, " ] " | <id> ]
+      ; <log-puts> "\n"
+      )
     | severity
     )
 
   if-log-severity(s | severity) =
     if-verbose(s | <verbose-level> severity)
+
+strategies
+
+  log-timed(s | severity, msg) =
+    where( times => start)
+  ; s
+  ; where( 
+      if-log-severity(
+        <diff-times>(<times>,start) => diff
+      ; <self-children-user-time>diff
+      ; ticks-to-seconds => user
+      ; <self-children-sys-time>diff
+      ; ticks-to-seconds => system 
+      ; <print>(stderr()/*<log-stream;debug;fileno;debug>*/, [ "[ ", <log-src>, " | ",  <severity-string> severity, " ] ", msg, "\n"
+                              , "[ ", <log-src>, " | ",  <severity-string> severity, " ] user/system = ",user,"/",system, "\n"
+                              ] )
+      | severity
+      )
+    )
 
 strategies
 
@@ -75,8 +99,8 @@ rules
   verbose-level : Critical()  -> -2
   verbose-level : Error()     -> 0
   verbose-level : Warning()   -> 1
+  verbose-level : Info()      -> 1
   verbose-level : Notice()    -> 2
-  verbose-level : Info()      -> 3
   verbose-level : Debug()     -> 4
   verbose-level : Vomit()     -> 10
 
