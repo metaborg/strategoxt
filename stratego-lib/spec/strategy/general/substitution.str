@@ -61,7 +61,7 @@ module strategy/general/substitution
 imports 
   strategy/traversal/simple
   collection/tuple/common 
-  list // XXX
+  collection/list/-
   strategy/general/rename
 
 strategies

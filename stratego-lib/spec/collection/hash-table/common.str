@@ -5,7 +5,7 @@
  */
 module collection/hash-table/common 
 imports 
-  list // XXX
+  collection/list/-
 
 signature
   constructors

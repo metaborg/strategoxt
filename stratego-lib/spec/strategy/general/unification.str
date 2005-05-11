@@ -3,7 +3,7 @@
  */
 module strategy/general/unification
 imports 
-  list // XXX
+  collection/list/-
   term/common
   term/properties 
   strategy/general/substitution

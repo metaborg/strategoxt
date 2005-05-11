@@ -24,7 +24,7 @@ module strategy/pack/modules
 imports 
   util/config/options 
   strategy/pack/graph 
-  dynamic-rules // XXX
+  lang/dynamic-rules
   util/config/common
   util/config/verbose
 strategies

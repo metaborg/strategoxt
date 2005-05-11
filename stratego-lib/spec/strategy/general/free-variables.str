@@ -10,7 +10,7 @@
 \begin{code}
 module strategy/general/free-variables
 imports 
-  list // XXX
+  collection/list/-
 \end{code}
 
 	\paragraph{Parameters of Free Variable Extraction}

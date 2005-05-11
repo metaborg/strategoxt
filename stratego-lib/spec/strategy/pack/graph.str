@@ -8,7 +8,7 @@
 module strategy/pack/graph
 imports 
   term/string 
-  list // XXX
+  collection/list/-
   
 rules
 

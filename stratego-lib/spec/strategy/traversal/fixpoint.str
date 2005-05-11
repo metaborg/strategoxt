@@ -7,7 +7,7 @@ module strategy/traversal/fixpoint
 imports 
   strategy/iteration 
   strategy/traversal/simple
-  memo // XXX
+  strategy/general/memo
 strategies
 
   // reduce(s) = repeat(rec x(s + one(x)))

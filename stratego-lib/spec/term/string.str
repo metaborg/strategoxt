@@ -6,7 +6,6 @@ imports
   collection/list/common
   strategy/conditional 
   strategy/iteration 
-  char // XXX 
   system/io/file
 
 /**
@@ -920,3 +919,36 @@ shuffle-word-mid =
  ; ?[l|mid]
  ; where(<shuffle-forced; reverse> mid => shuffledmid)
  ; <concat; implode-string> [[i],shuffledmid, [l]])
+
+/**
+ * This module defines some operations on characters, which
+ * are encoded in ASCII in Stratego.
+ */
+strategies
+
+ /**
+  * @inc is-alphanum-test
+  */
+  is-alphanum = is-num + is-alpha
+  is-alpha = is-upper + is-lower
+
+  // :: Char -> fail?
+  is-hexnum =
+      is-num
+    + where(<leq-leq> ('a', <id>, 'f'))
+    + where(<leq-leq> ('A', <id>, 'F'))
+
+ /**
+  * @inc is-num-test
+  * @inc is-not-num-test
+  */
+  is-num   = where(<leq-leq> ('0', <id>, '9'))
+  is-upper = where(<leq-leq> ('A', <id>, 'Z'))
+  is-lower = where(<leq-leq> ('a', <id>, 'z'))
+  is-ascii = where(<leq-leq> ( 32, <id>, 127))
+
+  case-char(s) = (to-upper, to-upper); s
+
+  to-upper = is-lower < <subt> (<id>, 32) + id
+  to-lower = is-upper < <add>  (<id>, 32) + id
+

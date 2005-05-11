@@ -30,7 +30,7 @@ module strategy/general/rename
 imports 
   strategy/traversal/simple
   collection/tuple/common 
-  list // XXX
+  collection/list/-
   strategy/traversal/environment
 rules
 

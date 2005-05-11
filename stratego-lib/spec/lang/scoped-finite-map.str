@@ -19,7 +19,7 @@
 module lang/scoped-finite-map
 imports 
   collection/hash-table/common
-  list // XXX
+  collection/list/-
   strategy/conditional
 
 signature
