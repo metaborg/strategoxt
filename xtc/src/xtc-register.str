@@ -28,7 +28,7 @@ strategies
     where <table-get> (XTC, Tool(tool)) => [(version, loc) | _]
 
   xtc-find-path =
-    xtc-find; get-path
+    xtc-find; dirname
 
   // Registering an entry
 
