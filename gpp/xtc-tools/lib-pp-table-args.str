@@ -38,10 +38,10 @@ strategies // to parse a pretty-print table in pp-table syntax to aterms
       !(<add-extension; file-exists> (<id>, "af"), <id>)
     ; where((modification-time, modification-time); geq)
     ; Fst
-    ; log(|Info(),<concat-strings>["Using existing parsed pretty print-table: ",<id>])
+    ; log(|Notice(),<concat-strings>["Using existing parsed pretty print-table: ",<id>])
 
   parse-to-temp-file =
      !FILE(<id>)
     ; xtc-parse-pp-table
     ; ?FILE(<id>)
-    ; log(|Info(),<concat-strings>["Using temporary file for parsed print-table: ",<id>])
+    ; log(|Notice(),<concat-strings>["Using temporary file for parsed print-table: ",<id>])
