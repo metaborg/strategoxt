@@ -1,7 +1,0 @@
-definition
-
-module Main
-exports
-context-free syntax
-   "f":f "(" sortA:A ")" -> B
-   f( {aap:A noot:B}* ) -> B

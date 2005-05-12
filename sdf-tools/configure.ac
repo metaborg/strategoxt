@@ -32,10 +32,7 @@ AC_CONFIG_FILES([
   src/sdf-cons/Makefile
   src/sdf-cons/data/Makefile
   src/sdf-label/Makefile
-  src/sdf-label/data/Makefile
   src/sdf-bracket/Makefile
   src/sdf-bracket/data/Makefile
-  src/sdf2sdf/Makefile
-  src/sdf2sdf/data/Makefile
 ])
 AC_OUTPUT
