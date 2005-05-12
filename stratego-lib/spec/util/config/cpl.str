@@ -8,7 +8,11 @@ strategies
     ?t; prim("_cpl_loaded", t)
 
   if-cpl-loaded(s1, s2) =
-     not(cpl-loaded); s2 <+ s1
+     if not(cpl-loaded) then
+       s2
+     else
+       s1
+     end
 
   if-cpl-loaded(s) =
-    if-cpl-loaded(s, <debug> "Choice Point Library CPL required"; <exit> 0)
+    if-cpl-loaded(s, log(|Error(), "Choice Point Library (CPL) required"); <exit> 1)
