@@ -5,15 +5,11 @@ module system/posix/process
 imports 
   system/posix/signal 
   util/config/verbose 
-
-  // system.io.*
   system/io/file 
   system/io/dir 
   system/io/pipe 
   system/io/char 
   system/io/term 
-  system/io/exec
-
 
 strategies
 

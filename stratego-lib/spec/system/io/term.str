@@ -5,7 +5,6 @@ module system/io/term
 imports 
 
   system/io/char
-  system/io/exec
   system/io/pipe
   system/io/term
   system/io/dir
