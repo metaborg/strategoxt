@@ -256,34 +256,43 @@ strategies
   /**
    * @obsolete use config for this purpose.
    */
-  store-options = ?options;
-    where( 
-      <table-create>"option-table";
-      <table-put>("option-table", "options", options)
-    )
+  store-options =
+    obsolete(!"store-options; use config table")
+    ; ?options
+    ; where( 
+        <table-create>"option-table";
+        <table-put>("option-table", "options", options)
+      )
 
   /**
    * @obsolete use config for this purpose.
    */
   get-options =
-    <table-get>("option-table", "options")
+    obsolete(!"get-options; use config table")
+    ; <table-get>("option-table", "options")
 
   /**
    * @obsolete use config for this purpose.
    */
   has-option(s) =
-    test(<s; check-option>())
+    obsolete(!"has-option; use config table")
+    ; test(<s; check-option>())
 
   /**
    * @obsolete use config for this purpose.
    */
   option-value(s,default) =
-    get-options; fetch-elem(s) <+ default
+    obsolete(!"option-value; use config table")
+    ; get-options; fetch-elem(s) <+ default
 
   /**
    * @obsolete use config for this purpose.
    */
-  check-option: option -> ()
-    where get-options => ops
-        ; <is-subterm>(option,ops)
+  check-option =
+    obsolete(!"check-option; use config table")
+    ; ?option
+    ; where(
+        get-options => ops
+        ; <is-subterm> (option, ops)
+      )
 
