@@ -56,9 +56,6 @@ strategies
   tconcat'(s1, s2) = 
     is-tuple; crush(<s1> [], s2)
 
-  //at_tsuffix(s) = 
-  //  rec x(s <+ TCons(id, x))
-
   tcata(s1, s2) = 
     is-tuple; crush(s1, s2)
 
@@ -81,4 +78,3 @@ strategies
   tuple-unzip(s) =
     rec x(![<map(Thd); s> | <map(Ttl); x>] <+ map(()); ![])
   ; !"" #(<id>)
-
