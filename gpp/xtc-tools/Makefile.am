@@ -14,7 +14,6 @@ bin_PROGRAMS = \
   abox2html \
   abox2latex \
   gen-css-boxstyle \
-  gen-latex-boxstyle \
   pptable-diff
 
 SCFLAGS        = --main io-$*
