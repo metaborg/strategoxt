@@ -29,8 +29,8 @@ strategies
   /**
    * Creates a new set with specified initial size and maximum load.
    *
-   * @param  initial_size   Int, Initial size of internal storage
-   * @param  max_load       Int, 0-100.
+   * @param  Int, Initial size of internal storage
+   * @param  Int, 0-100.
    * @type   _ -> IndexedSet
    */
   new-iset(|initial_size, max_load) =
@@ -64,8 +64,8 @@ strategies
    * If the elem is already in the set, then on_old is applied to
    * its index.
    *
-   * @param  on_old  Int -> a
-   * @type           IndexedSet -> (Int | a )
+   * @param  Int -> a
+   * @type   IndexedSet -> (Int | a )
    */
   iset-add(on_old|elem) =
     ?IndexedSet(set); prim("SSL_indexedSet_put", on_old | set, elem)
@@ -116,8 +116,8 @@ strategies
   /**
    * Unites a set with another.
    *
-   * @param  set2  IndexedSet
-   * @type IndexedSet -> IndexedSet
+   * @param  IndexedSet
+   * @type   IndexedSet -> IndexedSet
    */
   iset-union(|set2) =
     ?set1
@@ -126,8 +126,8 @@ strategies
   /**
    * Intersects a set with another.
    *
-   * @param  set2  IndexedSet
-   * @type IndexedSet -> IndexedSet
+   * @param  IndexedSet
+   * @type   IndexedSet -> IndexedSet
    */
   iset-isect(|set2) =
     ?set1
@@ -141,8 +141,8 @@ strategies
   /**
    * Checks whether one set is a subset of another.
    *
-   * @param  set2  IndexedSet
-   * @type IndexedSet -> IndexedSet
+   * @param  IndexedSet
+   * @type   IndexedSet -> IndexedSet
    */
   iset-subset(|set2) =
     ?set1
@@ -151,8 +151,8 @@ strategies
   /**
    * Checks whether a set has equal contents as another.
    *
-   * @param  set2  IndexedSet
-   * @type IndexedSet -> IndexedSet
+   * @param  IndexedSet
+   * @type   IndexedSet -> IndexedSet
    */
   iset-eq(|set2) =
     ?set1
