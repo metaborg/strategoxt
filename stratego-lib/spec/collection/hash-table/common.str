@@ -638,10 +638,10 @@ strategies
          )
 
   table-union = ?(table, key, val);
-    where(<set> (table, key, <union> (val, <get <+ ![]> (table, key))))
+    where(<table-put> (table, key, <union> (val, <table-get <+ ![]> (table, key))))
 
   table-diff = ?(table, key, val);
-    where(<set> (table, key, <diff> (<get <+ ![]> (table, key), val)))
+    where(<table-put> (table, key, <diff> (<table-get <+ ![]> (table, key), val)))
 
   table-append = ?(table, key, val);
-    where(<set> (table, key, <union> (<get <+ ![]> (table, key), val)))
+    where(<table-put> (table, key, <union> (<table-get <+ ![]> (table, key), val)))
