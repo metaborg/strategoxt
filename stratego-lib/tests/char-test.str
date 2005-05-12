@@ -1,5 +1,4 @@
 module char-test
-//imports char sunit
 imports liblib
 
 strategies 

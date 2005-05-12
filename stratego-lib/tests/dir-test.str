@@ -1,5 +1,4 @@
 module dir-test
-//imports sunit dir
 imports liblib
 strategies
 
@@ -35,5 +34,3 @@ strategies
 	, !"HOME"
 	, debug; is-string
 	)
-
-// Copyright (C) 2002 Eelco Visser <visser@acm.org>

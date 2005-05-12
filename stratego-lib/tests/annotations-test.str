@@ -1,6 +1,5 @@
 module annotations-test
 imports liblib
-//imports sunit annotations
 
 signature
   sorts Exp Type

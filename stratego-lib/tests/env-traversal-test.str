@@ -1,5 +1,4 @@
 module env-traversal-test
-//imports sunit env-traversal
 imports liblib
 signature
   constructors
@@ -26,5 +25,3 @@ strategies
 	, !F(A,G(F(B,A)))
 	, !(F(A,G(A)),1)
 	)
-
-// Copyright (C) 2002 Eelco Visser <visser@acm.org>
