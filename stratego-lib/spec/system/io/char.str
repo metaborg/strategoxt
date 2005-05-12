@@ -6,7 +6,7 @@ imports
   system/io/-
 
 /**
- * character based output
+ * Character based output
  */
 strategies
 
@@ -19,7 +19,7 @@ strategies
     ?(name, strs); where(prim("SSL_printascii", name, strs))
 
 /**
- * character based input
+ * Character based input
  */
 strategies
 
@@ -35,8 +35,9 @@ strategies
   * @obsolete use fgetc.
   */
   getchar = 
-      obsolete(!"getchar; use fgetc");
-    ?file; prim("SSL_getchar", file)
+    obsolete(!"getchar; use fgetc")
+    ; ?file
+    ; prim("SSL_getchar", file)
 
  /**
   * Returns the next line in file, a list of ascii codes.
@@ -44,8 +45,10 @@ strategies
   * 
   * E.g. <readline> file => List(Int)
   */
-  readline = ?file;
-    rec x(![<getchar; not(10)> file | <x>()] <+ ![])
+  readline =
+    obsolete(!"readline; readline uses the open file table, which is obsolete. Use fgetc")
+    ; ?file
+    ; rec x(![<getchar; not(10)> file | <x>()] <+ ![])
 
   /**
    * Reads all characters until EOF.
@@ -56,7 +59,6 @@ strategies
       ?stream
     ; rec x(![<fgetc> stream | <x> ()] <+ ![])
     ; implode-string
-
 
   /**
    * Reads the contents of a textfile.
@@ -82,7 +84,6 @@ strategies
    *
    * @type (String, String) -> String
    */
-
   filter-text-file(more, done) : 
     (filein, fileout) -> fileout
     where <fopen>(filein, "r") => streamin
@@ -93,7 +94,3 @@ strategies
           )
         ; <fclose> streamin
         ; <fclose> streamout
-
-
-    
-
