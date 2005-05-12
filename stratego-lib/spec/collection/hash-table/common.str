@@ -645,29 +645,3 @@ strategies
 
   table-append = ?(table, key, val);
     where(<set> (table, key, <union> (<get <+ ![]> (table, key), val)))
-
-  /**
-   * Alias of table-put.
-   */
-  set = table-put
-
-  /**
-   * Alias of table-get.
-   */
-  get = table-get
-
-
-/*
-
-Concrete syntax:
-
-  |[ tbl . key := val  ]|	-> |[ <set>(tbl, key, val) ]|
-  |[ tbl . key ]|		-> |[ <get>(tbl, key) ]|
-
-
-  |[ tbl . key |= val  ]|	-> |[ <table-push>(tbl, key, val) ]|
-?  |[ tbl . key ]|		-> |[ <table-pop>(tbl, key, val) ]|
-
-  |[ tbl . key ++= val  ]|	-> |[ <table-append>(tbl, key, val) ]|
-
-*/
