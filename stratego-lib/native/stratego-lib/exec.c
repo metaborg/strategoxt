@@ -884,3 +884,108 @@ ATerm SSL_call_it(ATbool noisy, ATerm prog, ATerm args0)
   return((ATerm) ATempty);
 }
 
+/* Exec program prog with arguments args0 and write term t to
+   the stdin of prog. */
+
+ATerm SSL_pipe_term_to_child(ATerm t, ATerm prog, ATerm args0)
+{
+  int pid;
+  char *str_args[256];
+  int i;
+  ATermList args;
+  ATbool noisy = ATtrue;
+  FILE *fileid;
+  int filedesc[2];
+  int status;
+
+  ATfprintf(stderr, "<SSL_pipe_to_child> (%t, %t)\n", prog, args0);
+
+  // Check prog
+
+  if(!t_is_string(prog)) _fail(prog);
+  if(noisy) ATfprintf(stderr, "%s", t_string(prog));
+
+  // Transform ATerm argument list to string array 
+
+  args = (ATermList) args0; 
+  i = 0;
+  str_args[i++] = t_string(prog);
+  while(!ATisEmpty(args))
+    {
+      ATerm arg;
+      if(i > 255) _fail((ATerm) ATempty);
+      arg = ATgetFirst(args);
+      args = ATgetNext(args);
+      if(!t_is_string(arg)) _fail(arg);
+      if(noisy)
+	ATfprintf(stderr, " %s", t_string(arg));
+      str_args[i++] = t_string(arg);
+    }
+  str_args[i] = NULL;
+
+  if(noisy)
+    ATfprintf(stderr, "\n");
+
+  // Setting up the pipe
+
+  if(pipe(filedesc) != 0) _fail(prog);
+
+  // Forking the child
+
+  pid = fork();
+  switch(pid) {
+  case -1 :
+    // Failure
+    fprintf(stderr, "SSL_call_it: Forking failed\n");
+    _fail((ATerm) ATempty);
+    break;
+
+  case 0 : 
+    // Child
+    //fprintf(stderr, "PID = %d (I am the child)\n", pid); 
+
+    // Forging input end of pipe with stdin
+    if(close(STDIN_FILENO) != 0) _fail(prog);
+    if(dup(filedesc[0]) != STDIN_FILENO) _fail(prog);
+    if(close(filedesc[0]) != 0) _fail(prog);
+    if(close(filedesc[1]) != 0) _fail(prog);
+
+    // Exec prog
+    if(execvp(t_string(prog), str_args) == -1)
+      {
+	fprintf(stderr, "%s: program not found\n", t_string(prog));
+	exit(1);
+      }
+    fprintf(stderr, "ST_pipe_to_child: Something went wrong\n");
+    _fail((ATerm) ATempty);
+    break;
+
+  default : 
+    // Parent
+    //fprintf(stderr, "PID = %d (I am the father)\n", pid);
+    fileid = fdopen(filedesc[1], "w");
+    if(close(filedesc[0] != 0)) _fail(prog);
+    //if(binary)
+    //  ATwriteToBinaryFile(t, fileid);
+    //else 
+    //  {
+	ATwriteToTextFile(t, fileid);
+	fprintf(fileid, "\n");
+	//  }
+    fclose(fileid);
+
+    waitpid(pid, &status, 0);
+    fprintf(stderr, "Return from call (status = %d)\n", WEXITSTATUS(status));
+    if(WIFEXITED(status) && WEXITSTATUS(status) == 0)
+      return((ATerm) ATempty);
+    else 
+      {
+	fprintf(stderr, "%s failed (with status %d)\n", 
+		t_string(prog),
+		WEXITSTATUS(status));
+	_fail((ATerm) ATempty);
+      }
+  }
+  return((ATerm) ATempty);
+}
+
