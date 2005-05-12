@@ -208,7 +208,3 @@ strategies // TODO: where should we put this?
 
   atmostonce(s) =
     not(twicetd(s))
-
-  atmostonce'(s) =
-    nrofoccs(s) => n
-    ; <leq> (n, 1)

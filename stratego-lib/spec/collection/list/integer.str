@@ -24,14 +24,6 @@ strategies
 
   add-lists = list-accum(zip(add <+ !""))
 
-  averages = 
-  { len: where(length => len);
-    add-lists;
-    map(try(sect(div, !len)))
-  }
-
-  round-list = map(test(sect(leq, !100)) <+ int)
-
  /**
   * @inc sort-test
   */

@@ -210,9 +210,6 @@ strategies
          )
     ); u
 
-  need-help =
-    need-help(default-usage)
-
   if-not-silent(s) =
     test(verbosity => 0) <+ s
 
