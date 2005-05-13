@@ -14,7 +14,6 @@ check_PROGRAMS = \
   dynamic-rules-lowlevel-test \
   dynamic-rules-highlevel-test \
   env-traversal-test \
-  exec-test \
   file-test \
   int-list-test \
   integers-test \
@@ -76,7 +75,6 @@ nodist_dir_test_SOURCES = dir-test.c
 nodist_dynamic_rules_lowlevel_test_SOURCES = dynamic-rules-lowlevel-test.c 
 nodist_dynamic_rules_highlevel_test_SOURCES = dynamic-rules-highlevel-test.c 
 nodist_env_traversal_test_SOURCES = env-traversal-test.c 
-nodist_exec_test_SOURCES = exec-test.c 
 nodist_file_test_SOURCES = file-test.c 
 nodist_int_list_test_SOURCES = int-list-test.c 
 nodist_integers_test_SOURCES = integers-test.c 
