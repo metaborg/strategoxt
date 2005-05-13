@@ -18,7 +18,7 @@ bin_PROGRAMS = \
 
 SCFLAGS        = --main io-$*
 STRINCLUDES    = -I $(XTC)/share/xtc \
-                 -I $(SDF_FRONT)/share/sdf-front
+                 -I $(SDF_TOOLS)/share/sdf-tools
 
 EXTRA_DIST     = $(wildcard *.str) $(wildcard *.meta)
 CLEANFILES     = $(wildcard *.dep)
