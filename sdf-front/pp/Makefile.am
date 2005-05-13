@@ -3,19 +3,18 @@ include $(wildcard *.dep)
 
 pkgdata_DATA   = Sdf2.pp.af
 
-EXTRA_DIST     = Sdf2.pp $(pkgdata_DATA)
-BOOTCLEANFILES = $(pkgdata_DATA)
-
 libexec_PROGRAMS = \
-  sdf-parenthesize
+  core-sdf-parenthesize
 
 EXTRA_DIST = \
-  sdf-parenthesize.str \
+  Sdf2.pp $(pkgdata_DATA) \
+  core-sdf-parenthesize.str \
   $(wildcard *.meta)
 
 CLEANFILES = $(wildcard *.dep)
 
 BOOTCLEANFILES = \
+  $(pkgdata_DATA) \
   $(wildcard *.c) \
   sdf-parenthesize.str
 
@@ -25,5 +24,5 @@ STRINCLUDES = \
 
 LDADD += $(SSL_LIBS)
 
-sdf-parenthesize.str : $(top_builddir)/syn/Sdf2.def
-	$(SDF_TOOLS)/bin/sdf2parenthesize -i $< -o $@ -m Sdf2 --omod sdf-parenthesize --lang Sdf2
+core-sdf-parenthesize.str : $(top_builddir)/syn/Sdf2.def
+	$(SDF_TOOLS)/bin/sdf2parenthesize -i $< -o $@ -m Sdf2 --omod core-sdf-parenthesize --lang Sdf2
