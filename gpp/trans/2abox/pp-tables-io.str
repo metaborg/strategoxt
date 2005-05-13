@@ -6,7 +6,7 @@
  * uses this old one.
  */
 module pp-tables-io
-imports pp-table termid
+imports pp-table 
 
 strategies
   
@@ -15,7 +15,6 @@ strategies
      <table-create>"pp-table";
      <map(notify(!"Reading table: "); 
                  ReadFromFile;
-                 termid-check("\"pp-tables-0\"");
                  build-pp-table)>names
   
   // Add entries to table. Reverse the list of entries to get correct ordering

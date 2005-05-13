@@ -2,7 +2,7 @@
  * @author Merijn de Jonge (mdjonge@cwi.nl)
  */
 module pp-tables-io2
-imports pp-table termid
+imports pp-table
 
 strategies
   
@@ -14,7 +14,6 @@ strategies
     ; map(
         notify(!"Reading table: ")
         ; ReadFromFile
-        ; termid-check("\"pp-tables-0\"")
         ; build-pp-table
       )
 

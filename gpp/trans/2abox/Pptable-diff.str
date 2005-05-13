@@ -16,6 +16,8 @@ signature
       Patch:      Option
       Prune:      Option
 
+      "pp-tables-0" : Term -> PpTable
+
 Patched : String -> String
 strategies
 
@@ -94,8 +96,7 @@ strategies
           <table-getlist>"old-table";
           map(\  (_, (path,box)) -> PP-Entry(path, box) \ );
           desugar;
-          !PP-Table(<id>);
-          termid-set(!"\"pp-tables-0\"");
+          !"pp-tables-0"(PP-Table(<id>));
           output(id)
        );
        
