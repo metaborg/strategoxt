@@ -3,7 +3,6 @@
  */
 module pp-tables-io2
 imports pp-table
-
 strategies
   
   /**
@@ -14,6 +13,7 @@ strategies
     ; map(
         notify(!"Reading table: ")
         ; ReadFromFile
+	; ?version#([<id>])  
         ; build-pp-table
       )
 
