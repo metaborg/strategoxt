@@ -14,7 +14,7 @@ imports
   pack-sdf-options
   liblib
   strategoxt-xtc-tools
-  sdf-xtc-tools 
+  sdf/tool/xtc
   Sdf2
   asfix-abstractions
 

@@ -8,7 +8,7 @@ pkgdata_DATA     = pack-sdf-options.rtree
 
 SCFLAGS          = --main main-$* --dr new
 STRINCLUDES      = -I $(top_srcdir)/sig \
-                   -I $(top_srcdir)/xtc \
+                   -I $(top_srcdir)/../sdf-tools/lib \
                    -I $(ATERM_FRONT)/share/aterm-front
 
 EXTRA_DIST       = $(wildcard *.str) $(wildcard *.meta) $(pkgdata_DATA)
