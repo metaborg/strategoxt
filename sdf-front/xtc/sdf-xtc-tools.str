@@ -2,38 +2,5 @@
  * @todo Import sdf/tool/xtc and remove definitions.
  */
 module sdf-xtc-tools
-imports strategoxt-xtc-tools
-
-strategies      
-    
-  xtc-parse-sdf2-module =
-    xtc-parse-sdf2(|"Module")
-    
-  xtc-parse-sdf2-definition =
-    xtc-parse-sdf2(|"SDF")
-
-strategies
-    
-  xtc-parse-sdf2 =
-      xtc-sglr(!"Sdf2.baf")
-    ; xtc-implode-asfix
-    ; xtc-transform(!"sdf-desugar", pass-verbose)
- 
-  xtc-parse-sdf2(|sort) =
-      xtc-sglr(!"Sdf2.baf", !sort)
-    ; xtc-implode-asfix
-    ; xtc-transform(!"sdf-desugar", pass-verbose)
-    
-strategies    
-    
-  xtc-pp-sdf2 =
-      xtc-transform(!"sdf-ensugar", pass-verbose)
-    ; xtc-transform(!"sdf-bracket", pass-verbose)
-    ; xtc-ast2abox(!["Sdf2.pp.af"])
-    ; xtc-abox2text
-
-strategies
-
-  xtc-sdf2-normalize(|main) =
-      xtc-transform(!"sdf2table", !["-n", "-m", main | <pass-v-verbose>])
-    ; xtc-asfix-yield
+imports
+  sdf/tool/xtc

@@ -205,5 +205,6 @@
    lexical-start-symbols      --
         V is=2 [H[KW["lexical"] KW["start-symbols"]] HV[_1]],
 
-   bracket-symbol             -- KW["("] _1 KW[")"]
+   bracket-symbol -- KW["("] _1 KW[")"],
+   Parenthetical  -- KW["("] _1 KW[")"]
 ]
