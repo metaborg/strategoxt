@@ -30,9 +30,6 @@ AC_CONFIG_FILES([
   src/visamb/Makefile
   src/visamb/data/Makefile
 
-  src/termid/Makefile
-  src/termid/data/Makefile
-
   src/explode-asfix2me/Makefile
   src/explode-asfix2me/data/Makefile
 
