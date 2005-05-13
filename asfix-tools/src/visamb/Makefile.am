@@ -5,7 +5,7 @@ include $(wildcard *.dep)
 SUBDIRS          = data
 
 pkgdata_DATA     = Vis-amb.str
-libexec_PROGRAMS = Vis-amb nonterminal-tree
+libexec_PROGRAMS = Vis-amb 
 SCFLAGS          = --main $*
 
 STRINCLUDES = \
@@ -16,7 +16,7 @@ STRINCLUDES = \
 LDADD += $(SSL_LIBS)
 
 EXTRA_DIST 	 = $(wildcard *.str)
-BOOTCLEANFILES   = Vis-amb.c nonterminal-tree.c
+BOOTCLEANFILES   = Vis-amb.c
 CLEANFILES       = visamb1_check visamb2_check $(wildcard *.dep)
 
 TESTS            = visamb1_check visamb2_check
