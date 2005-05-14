@@ -36,8 +36,10 @@ strategies
 strategies
 
   if-keep(s|t) =
-    try(where(<geq>(<get-keep> (), t)); s)
-  
+    if <geq> (<get-keep> (), t) then
+      s
+    end
+ 
   if-keep1(s) = if-keep(s|1)
   if-keep2(s) = if-keep(s|2)
   if-keep3(s) = if-keep(s|3)
@@ -57,7 +59,9 @@ strategies
 strategies
 
   if-less-keep1(s|t) = 
-    try(where(<leq>(<get-keep> (), t)); s)
+    if <leq> (<get-keep> (), t) then
+      s
+    end
 
   if-less-keep1(s) = if-keep(s|1)
   if-less-keep2(s) = if-keep(s|2)
