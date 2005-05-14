@@ -28,16 +28,18 @@ strategies
   pp-table-diff-usage =
     default-system-usage(
       !["Usage: pptable-diff [options]"]
-    , !["This program writes to standard error a list of\n",
-        "pretty-print rules that are contained in\n",
-        "pretty-print table \"old\" but not in \"new\"\n",
-        "and, vice versa.\n\n",
-        "If the \"--patch\" switch is specified, the table\n",
-        "\"old\" is updated by adding pretty-print\n",
-        "rules that are in \"new\" but not in\n",
-        "\"old\".\n\n",
-        "If the \"--prune\" switch is specified, the table\n",
-        "\"old\" is returned from which obsolete entries\n",
-        "have been removed\n"]
-    )
+    , ![
+"   This program writes to standard error a list of
+   pretty-print rules that are contained in
+   pretty-print table 'old' but not in 'new' and
+   vice versa.
+
+   If the '--patch' switch is specified, the table
+   'old' is updated by adding pretty-print
+   rules that are in 'new' but not in 'old'.
+
+   If the '--prune' switch is specified, the table
+   'old' is returned from which obsolete entries
+   have been removed
+"])
 
