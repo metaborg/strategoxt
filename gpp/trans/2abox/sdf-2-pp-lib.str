@@ -25,10 +25,8 @@ strategies
     < <symbols2pp-entries(!cons-name)> syms
     + ignore-prod
       < ![]
-      + try(
-          not(has-option(!Silent))
-        ; missing-constructor-warning
-        ); ![]
+      + if-verbose1(missing-constructor-warning)
+        ; ![]
     )
 
   missing-constructor-warning =
