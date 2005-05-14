@@ -98,7 +98,7 @@ InsLayout(s) =
       <+
          // For non-conservative pretty-printing, we only insert significant
          // layout (i.e., layout other than spaces, tabs, and new lines).
-         not(is-pp-conservative-enabled
+         not(is-pp-conservative-enabled)
          ; <has-significant-layout> w
          ; !([a', <layout2box>w, b'|xs'], ws'')
      <+

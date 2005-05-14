@@ -5,6 +5,7 @@ module Asfix-2-abox
 imports
   liblib
   sdf-2-pp-lib
+  lib-pp-table-args
   pp-tables-io
   misc
   instantiate
@@ -21,7 +22,7 @@ signature
 strategies
 
   io-Asfix-2-abox = 
-    io-wrap(Asfix-2-abox-options
+    io-wrap(asfix2abox-options
     , asfix2abox-process-config
       ; asfix2abox
     )
