@@ -9,7 +9,7 @@ imports
   collection/hash-table/common
   strategy/traversal/simple
   collection/set/indexed
-
+  system/posix/file
 signature
   constructors
     RuleScope : IndexedSet * Hashtable -> RuleScope
