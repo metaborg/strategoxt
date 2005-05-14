@@ -4,119 +4,128 @@
 module Pptable-diff
 imports
   liblib
+  pp-table-diff-options
   pp-table
   pp-tables-io2
   misc
 
-signature
-   constructors
-      Old-Table : String -> Option
-      New-Table : String -> Option
-      Verbose: 	  Option    
-      Patch:      Option
-      Prune:      Option
-
-      "pp-tables-0" : Term -> PpTable
-
-Patched : String -> String
 strategies
 
-   io-Pptable-diff = 
-     option-wrap(
-             Option( "-V", !Verbose(),               !"-V               verbose execution." )
-        +    Option( "--patch", !Patch(),            !"--patch          Bring old table up-o-date" )
-        +    Option( "--prune", !Prune(),            !"--prune          Remove obsolete pp entries" )
-        + ArgOption( "--old", \x -> Old-Table(x)\ ,  !"--old <table>    Old table" )
-        + ArgOption( "--new", \x -> New-Table(x)\ ,  !"--new <table>    New table" )
-        + output-options,
-        pptable-diff)
+  io-Pptable-diff =
+    option-wrap(pp-table-diff-options, pp-table-diff)
 
-   pptable-diff = 
-      option-value(Old-Table(?old),
-                  log(|Error(),"Please specify old table with --old switch") 
-		  ; <exit>1 
-                  );
-      ![old];read-pp-tables; !("pp-table", "old-table");table-rename;
-      option-value(New-Table(?new), !stdin => new);
-      ![new];read-pp-tables; !("pp-table", "new-table");table-rename;
-      
-      // Find keys of pp tables
-      <table-keys>"old-table" => keys-old;
-      <table-keys>"new-table" => keys-new;
-      <isect>(keys-old, keys-new) => keys-common;
-      
-      // Find obsolete pp entries by calculating the set difference:
-      // old-table \ new-table
-      <diff>(keys-old, keys-new) => obsolete-ones;
-      map(<table-get>("old-table", <id> );
-          Fst; path-to-string
-         );
-      try(not([]);<printnl>(stderr, ["Obsolete entries: ", <id>]));
+signature
+  constructors
+    Patched       : String -> String
+    "pp-tables-0" : PpTable -> PpTable
 
-      // Find new pp entries by calculating the set difference:
-      // new-table \ old-table
-      <diff>(keys-new, keys-old) => new-ones;
-      map(<table-get>("new-table", <id> );
-          Fst; path-to-string
-         );
-      try(not([]);<printnl>(stderr, ["New entries: ", <id>]));
+strategies
 
-      // Find entries for changed productions, by testing the terminal and
-      // non-terminal symbols (as place holders) Arg2(elem,sub-elem)
-      // elements are checked as Arg(elem) (i.e., their sub-elements are
-      // ignored. If a pp entry in both tables has different terminal
-      // symbols or place holder symbols, the entries are considered
-      // different. This way, we abstract over different BOX expressions.
-      !keys-common;
-      map({path,elems:\ key -> (key, path, elems)
-      where
-         <table-get>("old-table", <id>);
-         (id, collect( S(id) + Arg(id) + \ Arg2(x,y) -> Arg(x) \  ));
-         ?(path, elems)
-      \ }) => old-elements;
-      !keys-common;
-      map({path,elems: \ key -> (key, path, elems)
-      where
-         <table-get>("new-table", <id>);
-         (id, collect( S(id) + Arg(id) + \ Arg2(x,y) -> Arg(x) \  ));
-         ?(path, elems)
-      \ }) => new-elements;
-      <diff>(old-elements, new-elements);
-      where(map( \(key,_,_) -> key \ ) => changed-ones);
-      map(\ (_,path,_) -> <path-to-string>path \);
-      try(not([]);<printnl>(stderr, ["Changed productions: ", <id>]));
+  /**
+   * @param FILE
+   * @type  String -> FILE
+   */
+  pp-table-diff =
+    ?new
+    ; where(get-old-pp-table => old)
+    ; <read-pp-tables> [old]
+    ; <table-rename> ("pp-table", "old-table")
+    ; <read-pp-tables> [new]
+    ; <table-rename> ("pp-table", "new-table")
+      
+    // Find keys of pp tables
+    ; <table-keys> "old-table" => keys-old
+    ; <table-keys> "new-table" => keys-new
+    ; <isect> (keys-old, keys-new) => keys-common
 
+    /**
+     * Find obsolete pp entries by calculating the set difference:
+     * old-table \ new-table
+     */
+    ; <diff>(keys-old, keys-new) => obsolete-ones
+    ; map(
+         <table-get> ("old-table", <id>)
+       ; Fst
+       ; path-to-string
+       )
+     ; try(not([]);<printnl>(stderr, ["Obsolete entries: ", <id>]))
+
+     /**
+      * Find new pp entries by calculating the set difference:
+      * new-table \ old-table
+      */
+     ; <diff> (keys-new, keys-old) => new-ones
+     ; map(
+         <table-get>("new-table", <id> )
+       ; Fst
+       ; path-to-string
+       )
+     ; try(not([]);<printnl>(stderr, ["New entries: ", <id>]))
+     ;
+
+     /**
+      * Find entries for changed productions, by testing the terminal and
+      * non-terminal symbols (as place holders) Arg2(elem,sub-elem)
+      * elements are checked as Arg(elem) (i.e., their sub-elements are
+      * ignored. If a pp entry in both tables has different terminal
+      * symbols or place holder symbols, the entries are considered
+      * different. This way, we abstract over different BOX expressions.
+      */
+     !keys-common;
+     map({path,elems:\ key -> (key, path, elems)
+     where
+        <table-get>("old-table", <id>);
+        (id, collect( S(id) + Arg(id) + \ Arg2(x,y) -> Arg(x) \  ));
+        ?(path, elems)
+     \ }) => old-elements;
+     !keys-common;
+     map({path,elems: \ key -> (key, path, elems)
+     where
+        <table-get>("new-table", <id>);
+        (id, collect( S(id) + Arg(id) + \ Arg2(x,y) -> Arg(x) \  ));
+        ?(path, elems)
+     \ }) => new-elements;
+     <diff>(old-elements, new-elements);
+     where(map( \(key,_,_) -> key \ ) => changed-ones);
+     map(\ (_,path,_) -> <path-to-string>path \ );
+     try(not([]);<printnl>(stderr, ["Changed productions: ", <id>]))
       
-      
-      // Patch and prune old pp table if required
-      try(has-option(!Patch); <patch>(new-ones, changed-ones));
-      try(has-option(!Prune); <prune>obsolete-ones);
-    
-      try((has-option(!Patch) + has-option(!Prune));
-          <table-getlist>"old-table";
-          map(\  (_, (path,box)) -> PP-Entry(path, box) \ );
-          desugar;
-          !"pp-tables-0"(PP-Table(<id>));
-          output(id)
-       );
+     // Patch and prune old pp table if required
+     ; if is-patch-enabled then
+         <patch> (new-ones, changed-ones)
+       end
+
+     ; if is-prune-enabled then
+         <prune> obsolete-ones
+       end
+
+     ; if is-patch-enabled + is-prune-enabled then
+         <table-getlist> "old-table"
+         ; map(\  (_, (path,box)) -> PP-Entry(path, box) \ )
+         ; desugar
+         ; !"pp-tables-0"(PP-Table(<id>))
+         ; output(id)
+       end
        
-       // If the set [changed-ones, new-ones] is not empty,
-       // and if the --patch switch has not been specified,
-       // we terminate with an exit code of 1 to indicate that the
-       // pretty-print tables are inconsistent.
-      try(not(has-option(!Patch));
-          // If tables are inconsistent and not patched or pruned, 
-          // exit with error code 1
-          try(
-             <concat>[changed-ones, new-ones];
-             not([]);
-             <exit>1
-          )
-      )
+     // If the set [changed-ones, new-ones] is not empty,
+     // and if the --patch switch has not been specified,
+     // we terminate with an exit code of 1 to indicate that the
+     // pretty-print tables are inconsistent.
+     ; if not(is-patch-enabled) then
+         // If tables are inconsistent and not patched or pruned, 
+         // exit with error code 1
+         try(
+            <concat>[changed-ones, new-ones];
+            not([]);
+            <exit>1
+         )
+       end
 
-// Construct new pretty-print table from "old-table" by inserting
-// new pp entries from "new-table"
-patch =
+  /**
+   * Construct new pretty-print table from "old-table" by inserting
+   * new pp entries from "new-table"
+   */
+  patch =
    ?(new-ones, changed-ones);
    !new-ones;
    // Insert new entries in "old-table"
@@ -138,20 +147,22 @@ patch =
        \ )
    
 
-// Construct new pretty-print table from "old-table" by removing obsolete pp
-// entries  from "old-table"
-prune =
-   // Remove obsolete entries from "old-table"
-   map( <table-remove>("old-table", <id>) )
+  /**
+   * Construct new pretty-print table from "old-table" by removing obsolete pp
+   * entries  from "old-table"
+   */
+  prune =
+    map(<table-remove> ("old-table", <id>))
    
-desugar = 
+  desugar = 
     topdown( 
-       try(
-            Arg(int-to-string)
-          + Arg2(int-to-string, int-to-string)
-          + SOpt(id, id)
-          + S(escape; double-quote)
-          + selector(int-to-string, id)
-          + \ Patched(Path(x,y)) -> Path(<concat-strings>["--saved-entry--", x],y) \
-          + \ Patched(Path1(x)) -> Path1(<concat-strings>["--saved-entry--", x]) \
-        ))
+      try(
+        Arg(int-to-string)
+      + Arg2(int-to-string, int-to-string)
+      + SOpt(id, id)
+      + S(escape; double-quote)
+      + selector(int-to-string, id)
+      + \ Patched(Path(x,y)) -> Path(<concat-strings>["--saved-entry--", x],y) \
+      + \ Patched(Path1(x)) -> Path1(<concat-strings>["--saved-entry--", x]) \
+      )
+    )

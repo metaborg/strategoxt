@@ -1,11 +1,31 @@
 module pptable-diff
-imports liblib lib-pp-table-args 
+imports
+  liblib
+  pp-table-diff-options
 
 strategies
 
-  io-pptable-diff = 
-    option-wrap(pptable-diff-options, pp-table-diff-usage, system-about, pptable-diff)
-  
+  io-pptable-diff =
+    xtc-io-wrap(
+      pp-table-diff-options
+    , pp-table-diff-usage
+    , system-about
+    , ![] // dependencies
+    , pptable-diff
+    )
+
+this is a typo
+
+  pptable-diff =
+      ( xtc-transform(!"core-pp-table-diff", <pass-pp-table-diff-options> ())
+      <+ <xtc-exit> 1 )
+
+    ; if is-patch-enabled + is-prune-enabled then
+        xtc-transform(!"pp-pp-table", pass-verbose)
+      end
+
+strategies
+
   pp-table-diff-usage =
     default-system-usage(
       !["Usage: pptable-diff [options]"]
@@ -13,7 +33,6 @@ strategies
         "pretty-print rules that are contained in\n",
         "pretty-print table \"old\" but not in \"new\"\n",
         "and, vice versa.\n\n",
-        "If \"new\" is missing, standard input is used.\n\n",
         "If the \"--patch\" switch is specified, the table\n",
         "\"old\" is updated by adding pretty-print\n",
         "rules that are in \"new\" but not in\n",
@@ -23,35 +42,3 @@ strategies
         "have been removed\n"]
     )
 
-  pptable-diff =
-    xtc-io(
-       xtc-transform(!"Pptable-diff", <build-impl-args> ()); 
-       try(
-            where(<get-config>"--patch" + <get-config>"--prune");
-            xtc-transform(!"pp-pp-table", pass-verbose)
-         )
-       <+
-          <exit>1
-    )
-
-  pptable-diff-options =
-         Option( "--patch",   where(<set-config> ("--patch", <id>)), !"--patch            Bring old table up-to-date" )
-    +    Option( "--prune", where(<set-config> ("--prune", <id>)),   !"--prune          Remove obsolete pp entries" )
-    + ArgOption( "--old",   where(<set-config> ("--old", <id>)),     !"--old <table>    Old table" )
-    + ArgOption( "--new",   where(<set-config> ("--new", <id>)),     !"--new <table>    New table" )
-    + io-options
-
-  build-impl-args =
-    <concat> [<pass--patch> (), <pass--prune>(), <pass--new>(), <pass--old>()]
-
-  pass--patch =
-    <get-config> "--patch" < !["--patch"] + ![]
-
-  pass--prune =
-    <get-config> "--prune" < !["--prune"] + ![]
-
-  pass--old =
-    <get-config>"--old" < ensure-pp-table-parsed; !["--old", <id>] + ![]
-
-  pass--new =
-    <get-config>"--new" < ensure-pp-table-parsed; !["--new", <id>] + ![]
