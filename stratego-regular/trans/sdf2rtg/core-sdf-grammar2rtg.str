@@ -4,7 +4,13 @@
  * @author  Martin Bravenboer <martin@cs.uu.nl>
  */
 module core-sdf-grammar2rtg
-imports rtg Sdf2 sdf-extra liblib sdf-xtc-tools
+imports
+  rtg
+  Sdf2
+  sdf-extra
+  sdf/tool/xtc
+  liblib
+
 
 strategies
 

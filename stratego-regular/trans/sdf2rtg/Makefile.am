@@ -9,7 +9,9 @@ STRINCLUDES   = -I $(top_srcdir)/sig \
                 -I $(top_srcdir)/lib \
                 -I $(top_srcdir)/syn \
                 -I $(SDF_FRONT)/share/sdf-front \
-                -I $(SDF_FRONT)/share/sdf/sdf-front
+                -I $(SDF_FRONT)/share/sdf/sdf-front \
+                -I $(SDF_TOOLS)/share/sdf-tools
+
 LDADD += $(SSL_LIBS)
 
 
