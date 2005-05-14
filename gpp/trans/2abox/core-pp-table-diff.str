@@ -26,7 +26,7 @@ strategies
    * @type  String -> FILE
    */
   pp-table-diff =
-    ?new
+    <get-config> "-i" => new
     ; where(get-old-pp-table => old)
     ; <read-pp-tables> [old]
     ; <table-rename> ("pp-table", "old-table")
