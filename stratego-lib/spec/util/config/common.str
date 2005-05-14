@@ -7,40 +7,86 @@ imports
 
 strategies
 
+  /**
+   * Get the value for the specified key from the config table.
+   * The key is the current term.
+   */
   get-config = 
     <table-get> ("config", <id>)
 
   /**
-   * Get configurations of keys for which pred succeeds
+   * Get all values of config keys for which 'pred' succeeds.
+   * The current term is ignored.
+   * 
+   * @returns The list of values for the keys that satisfy pred.   
+   * @param   Is applied to the keys of the config table.
+   * @type  _ -> List(b)
    */
   get-configs(pred) =
-    <table-getlist> "config"; filter((pred,id); Snd) 
+    <table-getlist> "config"
+    ; filter((pred,id); Snd)
 
   /**
-   * get configuration keys for which pred succeeds
+   * Get all config keys for which pred succeeds
+   *
+   * @returns  The list of keys that satisfy pred.
+   * @param    Is applied to the keys of the config table.
+   * @type     _ -> List(a)
    */
   get-config-keys(pred) =
-    <table-getlist> "config"; filter((pred,id); Fst) 
+    <table-getlist> "config"
+    ; filter((pred,id); Fst)
 
 strategies
 
+  /**
+   * Set an entry (key and value) in the config table.
+   *
+   * @type (a, b) -> _
+   */
   set-config = 
     ?(key, val)
     ; <table-put> ("config", key, val)
 
+  /**
+   * Remove the entry of the specified key from the config table.
+   *
+   * @type (a, b) -> _
+   */
   rm-config = 
     ?key
     ; <table-remove> ("config", key)
 
+  /**
+   * Adds an entry to the config table if it does not exist, or
+   * removes the entry if it does already exist in the config table.
+   *
+   * @type (a, b) -> _
+   */
   toggle-config = 
     ?(key, val)
-    ; (<get-config> key; <table-remove> ("config", key)
-       <+ <set-config> (key, val))
+    ; if <get-config> key then
+        <table-remove> ("config", key)
+      else
+        <set-config> (key, val)
+      end
 
+  /**
+   * Extends the list of values of the specified key with new values.
+   * The values are added in front of the current list.
+   *
+   * @type (a, List(b)) -> _
+   */
   extend-config =
     ?(key, val)
     ; <table-put> ("config", key, <conc> (val, <get-config <+ ![]> key))
 
+  /**
+   * Extends the list of values of the specified key with new values.
+   * The values are added to the end of the current list.
+   *
+   * @type (a, List(b)) -> _
+   */
   post-extend-config =
     ?(key, val)
     ; <table-put> ("config", key, <conc> (<get-config <+ ![]> key, val))
