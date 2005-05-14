@@ -5,6 +5,18 @@ module collection/list/cons
 signature
   sorts List(a)
   constructors
+  
+    /**
+     * Empty list.
+     */
     Nil  : List(a)
+    
+    /**
+     * Element of a list.
+     */
     Cons : a * List(a) -> List(a)
+    
+    /**
+     * Concatenation of two lists.
+     */
     Conc : List(a) * List(a) -> List(a)

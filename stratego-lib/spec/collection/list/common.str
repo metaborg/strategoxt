@@ -556,11 +556,11 @@ strategies
 strategies
 
   /** 
-   * flatten-list completely flattens a list.
+   * Completely flattens a list and its sublists to a single list.
+   *
    * See list-misc-test for examples.
    * 
    * @type List(rec x(a or List(x))) -> List(a)
-   *
    * @inc flatten-test
    */
   flatten-list =
