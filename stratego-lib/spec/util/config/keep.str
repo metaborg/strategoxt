@@ -25,7 +25,6 @@ strategies
   pass-keep = 
     !["--keep", <subt; int-to-string>(<get-config <+ !1> "--keep", 1)]
 
-
 /**
  * Apply the supplied strategy if the 'keep' level is set to a value greater
  * than or equal to the number given in the strategy name.
@@ -36,26 +35,16 @@ strategies
  */
 strategies
 
-  if-keep1(s) = 
-    try(where(<geq>(<get-config> "--keep", 1)); s)
-
-  if-keep2(s) = 
-    try(where(<geq>(<get-config> "--keep", 2)); s)
-
-  if-keep3(s) = 
-    try(where(<geq>(<get-config> "--keep", 3)); s)
-
-  if-keep4(s) = 
-    try(where(<geq>(<get-config> "--keep", 4)); s)
-
-  if-keep5(s) = 
-    try(where(<geq>(<get-config> "--keep", 5)); s)
-
-  if-keep6(s) = 
-    try(where(<geq>(<get-config> "--keep", 6)); s)
-
-  if-keep7(s) = 
-    try(where(<geq>(<get-config> "--keep", 7)); s)
+  if-keep(s|t) =
+    try(where(<geq>(<get-keep> (), t)); s)
+  
+  if-keep1(s) = if-keep(s|1)
+  if-keep2(s) = if-keep(s|2)
+  if-keep3(s) = if-keep(s|3)
+  if-keep4(s) = if-keep(s|4) 
+  if-keep5(s) = if-keep(s|5) 
+  if-keep6(s) = if-keep(s|6) 
+  if-keep7(s) = if-keep(s|7)
 
 /**
  * Apply the supplied strategy if the 'keep' level is set to a value lesser
@@ -67,24 +56,13 @@ strategies
  */
 strategies
 
-  if-less-keep1(s) = 
-    try(where(<leq>(<get-config> "--keep", 1)); s)
+  if-less-keep1(s|t) = 
+    try(where(<leq>(<get-keep> (), t)); s)
 
-  if-less-keep2(s) = 
-    try(where(<leq>(<get-config> "--keep", 2)); s)
-
-  if-less-keep3(s) = 
-    try(where(<leq>(<get-config> "--keep", 3)); s)
-
-  if-less-keep4(s) = 
-    try(where(<leq>(<get-config> "--keep", 4)); s)
-
-  if-less-keep5(s) = 
-    try(where(<leq>(<get-config> "--keep", 5)); s)
-
-  if-less-keep6(s) = 
-    try(where(<leq>(<get-config> "--keep", 6)); s)
-
-  if-less-keep7(s) = 
-    try(where(<leq>(<get-config> "--keep", 7)); s)
-
+  if-less-keep1(s) = if-keep(s|1)
+  if-less-keep2(s) = if-keep(s|2)
+  if-less-keep3(s) = if-keep(s|3) 
+  if-less-keep4(s) = if-keep(s|4) 
+  if-less-keep5(s) = if-keep(s|5) 
+  if-less-keep6(s) = if-keep(s|6) 
+  if-less-keep7(s) = if-keep(s|7) 
