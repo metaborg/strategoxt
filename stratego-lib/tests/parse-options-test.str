@@ -24,6 +24,15 @@ signature
     TraceAll : Option
     Trace    : String -> Option
 
+    Silent  : Term 
+    Verbose : Term -> Term 
+    Version : Term
+    
+    DeclVersion : Term -> Term
+    
+    Output : Term -> Term
+    Binary : Term
+
 strategies
 
   main = 
