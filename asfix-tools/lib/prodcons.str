@@ -44,7 +44,6 @@ imports
 
 signature
   constructors
-    Injections: Option
     term : ATerm -> Attribute
 
 rules
@@ -116,11 +115,14 @@ strategies
 
 strategies
 
+  /**
+   * @todo The get-config --injections is a very dirty hook for the configuration
+   *       of sdf-cons. This should be replaced with a better mechanism.
+   */
   is-injection =
     prod([syntaxless-sort], id, id)
   ; where(
-      has-option(!Injections)
-    + <get-config> "--injections"
+      <get-config> "--injections"
     )
 
   syntaxless-sort =
