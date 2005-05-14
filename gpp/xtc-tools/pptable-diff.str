@@ -14,8 +14,6 @@ strategies
     , pptable-diff
     )
 
-this is a typo
-
   pptable-diff =
       ( xtc-transform(!"core-pp-table-diff", <pass-pp-table-diff-options> ())
       <+ <xtc-exit> 1 )
