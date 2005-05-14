@@ -1,7 +1,7 @@
 /**
  * @author Merijn de Jonge (m.de.jonge@tue.nl)
  */
-module Pptable-diff
+module core-pp-table-diff
 imports
   liblib
   pp-table-diff-options
@@ -11,7 +11,7 @@ imports
 
 strategies
 
-  io-Pptable-diff =
+  io-core-pp-table-diff =
     option-wrap(pp-table-diff-options, pp-table-diff)
 
 signature

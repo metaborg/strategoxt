@@ -1,7 +1,7 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-libexec_PROGRAMS = Asfix-2-abox Ast-2-abox sdf-2-pp-table Pptable-diff
+libexec_PROGRAMS = Asfix-2-abox Ast-2-abox sdf-2-pp-table core-pp-table-diff
 LDADD += $(SSL_LIBS)
 
 SCFLAGS     = --main io-$*
