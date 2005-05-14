@@ -12,7 +12,7 @@ imports
 strategies
 
   io-core-pp-table-diff =
-    option-wrap(pp-table-diff-options, pp-table-diff)
+    option-wrap(pp-table-diff-options + io-options, pp-table-diff)
 
 signature
   constructors
@@ -28,6 +28,7 @@ strategies
   pp-table-diff =
     <get-config> "-i" => new
     ; where(get-old-pp-table => old)
+
     ; <read-pp-tables> [old]
     ; <table-rename> ("pp-table", "old-table")
     ; <read-pp-tables> [new]
@@ -38,6 +39,7 @@ strategies
     ; <table-keys> "new-table" => keys-new
     ; <isect> (keys-old, keys-new) => keys-common
 
+    ; debug(!"b --- ")
     /**
      * Find obsolete pp entries by calculating the set difference:
      * old-table \ new-table

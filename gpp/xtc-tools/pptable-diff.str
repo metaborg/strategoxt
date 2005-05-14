@@ -15,7 +15,7 @@ strategies
     )
 
   pptable-diff =
-    xtc-transform(!"parse-pp-table", pass-verbose)
+    xtc-ensure-file
     ; ( xtc-transform(!"core-pp-table-diff", <pass-pp-table-diff-options> ())
       <+ <xtc-exit> 1 )
 
@@ -31,8 +31,8 @@ strategies
     , ![
 "   This program writes to standard error a list of
    pretty-print rules that are contained in
-   pretty-print table 'old' but not in 'new' and
-   vice versa.
+   pretty-print table 'old' but not in the input
+   parse table.
 
    If the '--patch' switch is specified, the table
    'old' is updated by adding pretty-print
@@ -41,5 +41,9 @@ strategies
    If the '--prune' switch is specified, the table
    'old' is returned from which obsolete entries
    have been removed
+   
+   Warning: the input parse table must be in abstract syntax. So,
+   .pp files have to be parsed using parse-pp-table before
+   passing them to pptable-diff.
 "])
 
