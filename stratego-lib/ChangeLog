@@ -1,3 +1,29 @@
+2005-05-14  Martin Bravenboer <martin@cs.uu.nl>
+
+	* spec/util/config/options.str: option-wrap no longer invokes the
+	obsolete store-options. Because of this, the following strategies
+	are no longer supported. Therefore, they are removed instead of
+	being obsolete:
+
+	- get-options
+        - has-option(s)
+	- option-value
+	- check-option
+	- defined-option(s)
+        - option-defined(s)
+        - arg-option-value(s)
+
+	The old constructors for options are now also gone:
+        - Silent      : Option
+        - Verbose     : Int -> Option
+        - Version     : Option
+        - Input       : String -> Option
+        - Output      : String -> Option
+        - Binary      : Option
+        - Help        : Option
+        - Runtime     : Real   -> Option
+        - DeclVersion : String -> Option
+	
 2005-05-05  Martin Bravenboer <martin@cs.uu.nl>
 
 	* spec/strategy/collect.str: tweaked the behaviour of

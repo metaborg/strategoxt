@@ -79,7 +79,7 @@ strategies
    */
   system-usage-switch = 
       Option("--help" + "-h" + "-?"
-      , <set-config> ("--help", ()); !Help()
+      , <set-config> ("--help", ())
       , !"-h|-?|--help     Display usage information"
       )
 
@@ -92,7 +92,7 @@ strategies
       , !"--about          Display information about this program"
       )
     + Option("--version"
-      , where(<set-config> ("--about", ()); <set-config> ("-v",())); !Version()
+      , where(<set-config> ("--about", ()); <set-config> ("-v",()))
       , !"--version        Same as --about"
       )
 
@@ -110,13 +110,13 @@ strategies
       where(<table-put>("usage-table", "usage", []))
     ; parse-options'(s <+ system-usage-switch <+ system-about-switch)
     ; try(
-          where(<get-config> "--help" <+ option-defined(Help))
+          where(<get-config> "--help")
         ; usage
         ; <exit> 0
       <+  where(<get-config> "--about")
         ; about
         ; <exit> 0
-      <+  option-defined(Undefined(?option))
+      <+  fetch(Undefined(?option))
         ; <printnl> (stderr(), ["Invalid option: ", option])
         ; usage
         ; <exit> 1
@@ -248,6 +248,4 @@ rules
 
 strategies
 
-  defined-option(s)   = fetch(s)
-  option-defined(s)   = fetch(s)
-  arg-option-value(s) = fetch(s)
+  option-defined(s) = fetch(s)
