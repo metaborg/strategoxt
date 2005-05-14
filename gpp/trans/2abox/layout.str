@@ -6,7 +6,6 @@ imports pp-table
 
 signature
    constructors
-      Conservative: Option
       layout-place-holder : LPH
 
 strategies
@@ -91,40 +90,39 @@ InsLayout(s) =
          // layout (when it exists) in the generated BOX expression. When
          // No layout exists, we use the layout of te generated BOX
          // expressions.
-
-         has-option(!Conservative);
-         <has-layout>w;
-         !([H([SOpt(HS,"0")],[H([],[a']), <layout2box>w, H([],[b'])])|xs'], ws'')
+         is-pp-conservative-enabled
+         ; <has-layout> w
+         ; !([H([SOpt(HS,"0")],[H([],[a']), <layout2box>w, H([],[b'])])|xs']
+            , ws''
+            )
       <+
          // For non-conservative pretty-printing, we only insert significant
          // layout (i.e., layout other than spaces, tabs, and new lines).
-         not(has-option(!Conservative));
-         <has-significant-layout>w;
-         !([a', <layout2box>w, b'|xs'], ws'')
+         not(is-pp-conservative-enabled
+         ; <has-significant-layout> w
+         ; !([a', <layout2box>w, b'|xs'], ws'')
      <+
          // No existing layout used. Instead, generated layout is used.
          !([a', b'|xs'],ws'')
       )
    } )
 
-has-layout = 
-   not(layout(layout-place-holder))
+  has-layout = 
+    not(layout(layout-place-holder))
 
-has-significant-layout =
-   where(
-   not(layout(layout-place-holder));
-   ?layout(xs);!xs;concat-strings;
-   explode-string;
-   filter( not(9 + 10 + 13 + 32) );
-   not([])
-   )
+  has-significant-layout =
+    where(
+      not(layout(layout-place-holder))
+    ; ?layout(<concat-strings>)
+    ; explode-string
+    ; filter(not(9 + 10 + 13 + 32))
+    ; not([])
+    )
 
-layout2box =
-   ?layout(x);
-   (
-      has-significant-layout;
-      !C([],[S(<concat-strings>x)])
-   <+
-      !S(<concat-strings>x)
-   )
-
+  layout2box =
+    ?layout(x)
+    ; if has-significant-layout then
+        !C([],[S(<concat-strings> x)])
+      else
+        !S(<concat-strings> x)
+      end

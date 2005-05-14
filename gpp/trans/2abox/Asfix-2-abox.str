@@ -16,48 +16,53 @@ imports
 
 signature
    constructors
-      PP-Table : String -> Option
       layout:    String -> Layout  
-      Verbose:	 Option    
 
 strategies
 
-   io-Asfix-2-abox = 
-     io-wrap(Asfix-2-abox-options, asfix2abox)
+  io-Asfix-2-abox = 
+    io-wrap(Asfix-2-abox-options
+    , asfix2abox-process-config
+      ; asfix2abox
+    )
 
-   Asfix-2-abox-options =
-             Option( "-V", !Verbose(),           !"-V               verbose execution." )
-        +    Option( "-c", !Conservative(),      !"-c               Conservative pretty-printing (only format where needed).")
-        + ArgOption( "-p", \x -> PP-Table(x)\ ,  !"-p <table>       Use pretty-print entries from <table>" )
+  asfix2abox-options =
+    pp-conservative-option <+ pp-options
 
-   asfix2abox = 
-      ?(options, term);
-      // Obtain list of pp tables. Reverse to get correct ordering of
-      // tables
-      <collect(\ PP-Table(t) -> t \)>options;reverse;
-      read-pp-tables;
-      <repeat( sometd({s:?cf(s);!s }))>term;
+  /**
+   * Obtain list of pp tables. Reverse to get correct ordering of tables     
+   */
+  asfix2abox-process-config =
+     where(
+       get-config-p
+       ; reverse
+       ; read-pp-tables
+     )
 
-      // Retrieve a list of all layout nodes and apply "appl2abox" to
-      // the parse-tree where the layout nodes have been removed
-      split( 
-         topdown(
-            try(is-list;filter(not(opt(layout));not(layout(id))))
-         );
-         appl2abox,
-         collect'(layout(id))
-       );
-      insert-layout;
-      split( !options, id )
+  asfix2abox =
+    ?term
+    ; repeat( sometd(?cf(<id>)))
+
+    // Retrieve a list of all layout nodes and apply "appl2abox" to
+    // the parse-tree where the layout nodes have been removed
+    ; split( 
+        topdown(
+          try(is-list;filter(not(opt(layout));not(layout(id))))
+        )
+        ; appl2abox
+      , collect'(layout(id))
+      )
+    ; insert-layout
+
 rules
 
-symbol2abox: 
-   (lit(s), _, path, number ) -> S(s)
+  symbol2abox: 
+    (lit(s), _, path, number ) -> S(s)
 
-symbol2abox: 
-   (sort(s), str, path, number ) -> S(str)
-   where
-      <is-string>str
+  symbol2abox: 
+    (sort(s), str, path, number ) -> S(str)
+     where
+       <is-string> str
 
 symbol2abox: 
    (char-class(s), char, path, number ) -> S(<implode-string>[char])
