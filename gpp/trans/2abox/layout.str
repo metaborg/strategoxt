@@ -69,8 +69,8 @@ insert-layout =
    ![initial-layout, abox, trailing-layout];
    filter(
        not(layout(id))
-     <+layout(id);has-option(!Conservative);has-layout;layout2box
-     <+layout(id);not(has-option(!Conservative));has-significant-layout;layout2box
+     <+layout(id);is-pp-conservative-enabled;has-layout;layout2box
+     <+layout(id);not(is-pp-conservative-enabled);has-significant-layout;layout2box
    );flat-list;
    (  \ [x] -> x \ 
    <+ \ x -> H([SOpt(HS,"0")], x ) \
