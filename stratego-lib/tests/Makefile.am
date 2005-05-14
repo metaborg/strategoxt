@@ -26,7 +26,6 @@ check_PROGRAMS = \
   list-set-test \
   list-sort-test \
   list-zip-test \
-  options-test \
   parallel-test \
   parse-options-test \
   placeholder-test \
@@ -87,7 +86,6 @@ nodist_list_misc_test_SOURCES = list-misc-test.c
 nodist_list_set_test_SOURCES = list-set-test.c 
 nodist_list_sort_test_SOURCES = list-sort-test.c 
 nodist_list_zip_test_SOURCES = list-zip-test.c 
-nodist_options_test_SOURCES = options-test.c 
 nodist_parallel_test_SOURCES = parallel-test.c 
 nodist_parse_options_test_SOURCES = parse-options-test.c 
 nodist_placeholder_test_SOURCES = placeholder-test.c 
