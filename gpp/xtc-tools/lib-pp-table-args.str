@@ -1,19 +1,24 @@
 module lib-pp-table-args
-imports strategoxt-xtc-tools
+imports
+  strategoxt-xtc-tools
+  
+signature
+  constructors
+    Conservative : Option
+
 strategies
 
   create-pp-table-args =
     get-config-p
     ; map(ensure-pp-table-parsed; \x -> ["-p", x]\); concat
-    ; if-verbose5(debug(!"INFO: pretty print table argumets: "))
 
+  /**
+   * Specifyng  pretty-print tables should be optional. Hence no call to
+   * fatal-error here when pretty-print tables are not
+   * specified. Instead return an emtpy list
+   */   
   get-config-p =
     <get-config> "-p" <+ ![]
-                       // Merijn: Specifyng  pretty-print tables
-                       // _should_ be optional. Hence no call to
-                       // fatal-error here when pretty-print tables are not
-                       // specified. Instead return an emtpy list
-                       // <fatal-error> ["No pretty-print tables specified with -p arguments"]
 
   pp-options =
     ArgOption("-p"
@@ -21,10 +26,16 @@ strategies
     , !"-p file   Use pretty-print table in file"
     )
 
+  pp-conservative-option =    
+    Option("-c", <set-config> (Conservative(), "on"), !"-c               Conservative pretty-printing (only format where needed).") 
+
+  is-pp-conservative-enabled =
+    where(<get-config> Conservative() => "on")
+
 strategies // to parse a pretty-print table in pp-table syntax to aterms
 
   ensure-pp-table-parsed =
-       has-extension(!"pp.af")
+       has-extension(!"af")
     <+ must-be-pp; lookup-or-parse
 
   must-be-pp =
