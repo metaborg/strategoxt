@@ -20,14 +20,15 @@ strategies
   filter-gen(pred, cont : (term -> term) * term -> term) =
     rec x([] + (pred; cont(x)) <+ Tl; x)
 
-  skip1(s) = at-tail(s)
-  skip2(s) = at-tail(at-tail(s))
-
-  filter-option-args(flag) = 
-    filter-gen([flag | id]; Tl, skip1)
+  filter-option-args(flag) =
+	let skip(s) = at-tail(s)
+	 in filter-gen([flag | id]; Tl, skip)
+	end
 
   filter-options(flag) = 
-    filter-gen([flag | id], skip2)
+	let skip(s) = at-tail(at-tail(s))
+     in filter-gen([flag | id], skip)
+    end
 
   list-some-filter(s) =
     rec x([s| id]; [id| filter(s)] <+ [id| x]; Tl)
