@@ -27,18 +27,13 @@ strategies
   jsort-list(s) = 
     try(rec x([id | x] <+ s; try(x)))
 
-  Uniq = 
-    \ [x|xs] -> [x|l] where <filter(not(?x))> xs => l \
-
  /**
   * @inc tuple-uniq-test
   */
   uniq = 
-    listtd(try(Uniq))
-
-  //uniq = 
-  //  let Uniq = \ [x|xs] -> [x|l] where <filter(not(?x))> xs => l \
-  //   in listtd(try(Uniq))
+    let Uniq = \ [x | xs] -> [x | <filter(not(?x))> xs] \
+     in listtd(try(Uniq))
+    end
 
   /**
    * Sort a list using the quick-sort algorithm.
