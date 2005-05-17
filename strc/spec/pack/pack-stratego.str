@@ -224,7 +224,7 @@ strategies
       + has-extension(!".str") 
       + has-extension(!".r")
       ) 
-    ; basename
+    ; remove-extension
     ; <concat-strings>[path,"/",<id>]
     )
   ; if [] then
