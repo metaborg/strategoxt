@@ -57,7 +57,7 @@ strategies
       ?file
     ; where( ?FILE(filename) )
     ; log(|Notice(), <concat-strings>["Parsing file ", filename])
-    ; where( FILE(basename => base) )
+    ; where( FILE(remove-extension => base) )
     ; where( get-meta => meta )
     ; where( <get-syntax ; get-parse-table> meta => FILE(tbl) )
 
