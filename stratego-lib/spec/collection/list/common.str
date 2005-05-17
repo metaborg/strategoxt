@@ -143,6 +143,33 @@ strategies
    */
   split-fetch-keep(s) =
     at-suffix([s|id];[?el|?tl];![]); !(<id>, el, tl)
+    
+  /**
+   * Breaks a list into tokens.
+   *
+   * list-tokenize is like java.util.StringTokenizer. Given a
+   * list of possible delimiters (elements that separate tokens)
+   * it returns a list of tokens for a given list.
+   *  
+   * @param List of separator elements.
+   * @type  List(a) -> List(List(a))
+   */
+  list-tokenize(|sep) =
+    list-tokenize({c: ?c; <fetch(?c)> sep})
+
+  /**
+   * @param s  a -> fail?
+   * @type     List(a) -> List(List(a))
+   */
+  list-tokenize(sep) =
+      (split-fetch(sep) <+ !(<id>, []))
+    ; ( \ (  []     , [])        -> []   \
+      + \ (l@[_ | _], [])        -> [l]  \
+      + \ (  []     , l@[_ | _]) -> <list-tokenize(sep)> l \
+      + \ (t@[_ | _], l@[_ | _]) -> [t | <list-tokenize(sep)> l] \
+      )
+
+strategies    
 
  /**
   * Apply a strategy to the tail of a list.

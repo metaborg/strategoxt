@@ -446,7 +446,7 @@ strategies
    * list of possible delimiters (characters that separate tokens)
    * it returns a list of tokens for a given string.
    *
-   * @param sepchars  List of separate characters
+   * @param List of separate characters
    * @type  String -> [String]
    */
   string-tokenize(|sepchars) =
@@ -470,20 +470,7 @@ strategies
       ?(sepchars, <id>)
     ; string-tokenize(|sepchars)
 
-  /**
-   * @param s  a -> fail?
-   * @type     List(a) -> List(List(a))
-   */
-  list-tokenize(sep) =
-      (split-fetch(sep) <+ !(<id>, []))
-    ; ( \ (  []     , [])        -> []   \
-      + \ (l@[_ | _], [])        -> [l]  \
-      + \ (  []     , l@[_ | _]) -> <list-tokenize(sep)> l \
-      + \ (t@[_ | _], l@[_ | _]) -> [t | <list-tokenize(sep)> l] \
-      )
-
 strategies
-
 
  /**
   * @param s  () -> Char

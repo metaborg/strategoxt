@@ -203,34 +203,53 @@ strategies
 
   /**
    * Remove an extension from a file name.
+   * Returns the input if the file does not have an extension.
    *
    * @inc  remove-extension
    * @type String -> String
    */
   remove-extension =
-    <string-tokenize> (['.'], <id>)
-    ; if ?[_] then
-        ?[<id>]
-      else
-        if last; explode-string; fetch(?'/' + ?'\') then
-          id
-        else
-          init
-        end
-        ; <separate-by> (".", <id>)
-        ; concat-strings
-      end
-    
+    if get-extension; explode-string; !['.' | <id>] => ext then
+      explode-string
+      ; at-suffix(?ext; ![])
+      ; implode-string
+    end
+
   /**
    * Get extension from filename
    *
    * @type   String -> String
    */
   get-extension =
-    <string-tokenize> (['.'], <id>)
+    explode-string
+    ; list-tokenize(|['.'])
+    
+    /**
+     * There should be at least two elements in the result, otherwise 
+     * there is not extension.
+     */
     ; ?[_, _ | _]
-    ; last
-    ; where(explode-string; not(fetch(?'/' + ?'\')))
+    
+    /**
+     * The match of ?[base, ext] cannot be placed in at-suffix due to
+     * the lack of unbinding of variables on backtracking.
+     */
+    ; at-suffix(?[_, _]; ?lastwo)
+    ; !lastwo => [base, ext]
+    ; where(
+        /**
+         * The n-th . part should not contain / \ :
+         * in that case it is not a real extension
+         */
+        <not(fetch(?'/' + ?'\'))> ext
+        
+        /**
+         * The (n-1)th part should not end with a / or \
+         * in that case, part n is not a real extension.
+         */
+      ; <last; not(?'/' + '\')> base
+      )
+    ; <implode-string> ext
     
 /**
  * Generate a new, not existing file name.
