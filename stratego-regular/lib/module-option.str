@@ -15,8 +15,8 @@ strategies
 
   guess-module-name =
     <get-config> "--module"
-    <+ <get-config; basename> "-o"
-    <+ <get-config; basename> "-i"
+    <+ <get-config; remove-extension> "-o"
+    <+ <get-config; remove-extension> "-i"
     <+ log(|Critical(), "No module name specified. Use the --module option to specify a module name. See also --help.")
        ; <exit> 1
 
