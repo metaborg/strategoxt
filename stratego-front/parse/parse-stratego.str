@@ -92,7 +92,7 @@ strategies
 
   check-module-name(|base) =
     ?Module(n,_)
-    ; if not( !(<base-filename> base,<get-filename>n) => (x,x) ) then
+    ; if not( !(<base-filename> base,<base-filename>n) => (x,x) ) then
         log(|Warning(),<concat-strings>
           ["Mismatch between basename of input file ("
           , base
