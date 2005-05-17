@@ -102,7 +102,7 @@ strategies
   pack-stratego-parse-stratego =
       ?(<id>, includes)
     ; ?IncludeFromPath(<id>)
-    ; guarantee-extension(!"str")
+    ; guarantee-extension(|"str")
     ; remove-extension => mod
     ; <fetch-elem(
           include-from-dir-cached(|mod)
