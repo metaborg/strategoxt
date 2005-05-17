@@ -92,7 +92,7 @@ strategies
   pack-sdf-parse-sdf =
     ?(<id>, includes)
     ; ?IncludeFromPath(<id>)
-    ; guarantee-extension(!"sdf")
+    ; guarantee-extension(|"sdf")
     ; remove-extension
     ; ?mod
     ; <fetch-elem(
