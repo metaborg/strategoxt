@@ -6,6 +6,6 @@ strategies
   topdown-print-to :
     strings -> FILE(name)
       where xtc-new-file => name
-          ; <open-file> (name, "w")
-          ; <topdown(try(is-string; where(<print> (name, [<id>]))))> strings
-          ; <close-file> name
+          ; <fopen> (name, "w") => stream
+          ; <topdown(try(is-string; where(<fputs> (<id>, stream))))> strings
+          ; <fclose> stream
