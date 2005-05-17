@@ -90,3 +90,6 @@ signature
   constructors
     SdfResultModuleFlag : Flag
     RenamingSchemeFlag  : Flag
+
+    Var : String -> RenamingSchemePart
+        : String -> RenamingSchemePart
