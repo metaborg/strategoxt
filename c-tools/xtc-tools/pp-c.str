@@ -5,7 +5,7 @@ strategies
 
   io-pp-c =
     xtc-io-wrap(
-      xtc-transform(!"ast2abox", !["-p", <xtc-find; basename> "C.pp.af"])
+      xtc-transform(!"ast2abox", !["-p", <xtc-find; remove-extension> "C.pp.af"])
     ; xtc-abox-format
     ; xtc-abox2text
     )

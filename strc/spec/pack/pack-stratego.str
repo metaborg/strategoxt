@@ -102,8 +102,8 @@ strategies
   pack-stratego-parse-stratego =
       ?(<id>, includes)
     ; ?IncludeFromPath(<id>)
-    ; guarantee-extension(!"str")
-    ; basename => mod
+    ; guarantee-extension(|"str")
+    ; remove-extension => mod
     ; <fetch-elem(
           include-from-dir-cached(|mod)
        <+ include-from-dir(|mod)
@@ -224,7 +224,7 @@ strategies
       + has-extension(|"str") 
       + has-extension(|"r")
       ) 
-    ; basename
+    ; remove-extension
     ; <concat-strings>[path,"/",<id>]
     )
   ; if [] then

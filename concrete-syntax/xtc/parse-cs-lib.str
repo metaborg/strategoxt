@@ -107,7 +107,7 @@ strategies // obtain parse table
     ; try(where(
         <extend-config> ("-I", ["./", <conc-strings; xtc-find-silent; get-path> (syntax, ".sdf")])
       ))
-    ; guarantee-extension(!"tbl") => tbl
+    ; guarantee-extension(|"tbl") => tbl
     ; (<resolve-file-name> FILE(tbl)
        ; if-verbose2(debug(!"using parse table: "))
       <+ if-verbose2(say(!"creating parse table"))
@@ -122,11 +122,11 @@ strategies // obtain syntax definition
 
   get-syntax-definition =
     if-verbose6(debug(!"get-syntax-definition: "))
-    ; where(guarantee-extension(!"def") => def)
+    ; where(guarantee-extension(|"def") => def)
     ; ( <resolve-file-name> FILE(def)
       ; if-verbose2(!"using syntax definition: ")
      <+ if-verbose2(say(!"creating syntax definition"))
-      ; !FILE(<guarantee-extension(!"sdf")>)
+      ; !FILE(<guarantee-extension(|"sdf")>)
       ; xtc-transform(!"pack-sdf", get-includes)
       ; xtc-transform(!"asfix-yield")
       ; rename-to(!def)
@@ -224,12 +224,12 @@ strategies
     <merge-metas>[<read-meta-file>,<read-syn-file>,<read-language-binding>,<default>]
 
   read-meta-file =
-    FILE(guarantee-extension(!"meta"))
+    FILE(guarantee-extension(|"meta"))
     ; read-from
    <+ !Meta([])
 
   read-syn-file =
-    FILE(guarantee-extension(!"syn"))
+    FILE(guarantee-extension(|"syn"))
     ; read-from => syntax#(_)
     ; !Meta([Syntax(syntax)])
    <+ !Meta([])

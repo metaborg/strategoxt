@@ -18,21 +18,21 @@ signature
 strategies
 
   parse-stratego-options =
-    ArgOption("-I" + "--Include", <extend-config>("-I", [<id>]),
+    ArgOption("-I" + "--Include", where(<extend-config>("-I", [<id>])),
 	      !"-I p|--Include p   include modules from directory p") 
 
-  + ArgOption("--syntax", <set-config>("--syntax", <id>),
+  + ArgOption("--syntax", where(<set-config>("--syntax", <id>)),
 	      !"--syntax syn        use syntax syn")
 
-  + ArgOption("--default-syntax", <set-config>("--default-syntax", <id>),
+  + ArgOption("--default-syntax", where(<set-config>("--default-syntax", <id>)),
 	      !"--default-syntax syn        use syntax syn as default")
 
-  + Option("-silent", <set-config>("--verbose", 0),
+  + Option("-silent", where(<set-config>("--verbose", 0)),
 	      !"-silent ")
 
-  + Option("--asfix", <set-config>("--asfix", 1), !"--asfix")
+  + Option("--asfix", where(<set-config>("--asfix", 1)), !"--asfix")
 
-  + ArgOption("--desugaring", <set-config>("--desugaring", <id>),
+  + ArgOption("--desugaring", where(<set-config>("--desugaring", <id>)),
 	      !"--desugaring on/off : turn desugaring on or off (default: on)")
 
   parse-stratego =
@@ -57,7 +57,7 @@ strategies
       ?file
     ; where( ?FILE(filename) )
     ; log(|Notice(), <concat-strings>["Parsing file ", filename])
-    ; where( FILE(basename => base) )
+    ; where( FILE(remove-extension => base) )
     ; where( get-meta => meta )
     ; where( <get-syntax ; get-parse-table> meta => FILE(tbl) )
 
@@ -71,7 +71,7 @@ strategies
          ]
        )
 
-    ; if-keep1(copy-to(<guarantee-extension(!"atree")> base))
+    ; if-keep1(copy-to(<guarantee-extension(|"atree")> base))
 
     ; xtc-transform(!"meta-explode",
         !["-b" | <concat>
@@ -156,7 +156,7 @@ strategies
   get-meta = 
     ( /* first option: meta file */
        ?FILE(file)
-     ; FILE(guarantee-extension(!"meta"))
+     ; FILE(guarantee-extension(|"meta"))
      ; read-from
      ; if not(Meta(is-list)) then
          log(|Warning(),<concat-strings>["Meta data for file ", file, " not valid :"], <id>)
@@ -164,7 +164,7 @@ strategies
        end
 
     <+ /* second option: legacy syn file */
-       FILE(guarantee-extension(!"syn"))
+       FILE(guarantee-extension(|"syn"))
      ; read-from => syntax#(_)
      ; !Meta([Syntax(syntax)])
 
@@ -179,7 +179,7 @@ strategies
   get-parse-table =
       ?syntax
     ; log(|Debug(), <concat-strings>["Trying to find a parse table for ",syntax])
-    ; guarantee-extension(!"tbl") => tbl
+    ; guarantee-extension(|"tbl") => tbl
     ; (find-in-includes(!"Using parse table: ")
       ; !FILE(<id>)
 
@@ -194,11 +194,11 @@ strategies
    */
   get-syntax-definition =
       log(|Notice(),"Trying to find a SDF module or definition")
-    ; where(guarantee-extension(!"def") => def)
+    ; where(guarantee-extension(|"def") => def)
     ; ( <find-in-includes(!"Using syntax definition: ")> def
       ; !FILE(<id>)
 
-     <+ !FILE(<guarantee-extension(!"sdf")>)
+     <+ !FILE(<guarantee-extension(|"sdf")>)
       ; xtc-transform(!"pack-sdf", <get-config; map(!["-I", <id>]); concat> "-I")
       ; rename-to(!def)
       )
