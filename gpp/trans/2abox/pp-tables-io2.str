@@ -13,7 +13,6 @@ strategies
     ; map(
         notify(!"Reading table: ")
         ; ReadFromFile
-	; ?version#([<id>])  
         ; build-pp-table
       )
 

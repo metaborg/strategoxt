@@ -11,15 +11,17 @@ imports pp-table
 strategies
   
   read-pp-tables =
-     ?names;
-     <table-create>"pp-table";
-     <map(notify(!"Reading table: "); 
-                 ReadFromFile;
-		 ?version#([<id>]);
-                 build-pp-table)>names
+    where(<table-create> "pp-table")
+    ; map(
+       notify(!"Reading table: ")
+       ; ReadFromFile
+       ; build-pp-table
+      )
   
-  // Add entries to table. Reverse the list of entries to get correct ordering
-  // of entries.
+  /**
+   * Add entries to table. Reverse the list of entries to get correct ordering
+   * of entries.
+   */
   build-pp-table =
      ?PP-Table(Entries);
      <reverse;map(makePPEntry;StoreEntry)>Entries

@@ -17,7 +17,6 @@ strategies
 signature
   constructors
     Patched       : String -> String
-    "pp-tables-0" : PpTable -> PpTable
 
 strategies
 
@@ -39,7 +38,6 @@ strategies
     ; <table-keys> "new-table" => keys-new
     ; <isect> (keys-old, keys-new) => keys-common
 
-    ; debug(!"b --- ")
     /**
      * Find obsolete pp entries by calculating the set difference:
      * old-table \ new-table
@@ -105,7 +103,7 @@ strategies
          <table-getlist> "old-table"
          ; map(\  (_, (path,box)) -> PP-Entry(path, box) \ )
          ; desugar
-         ; !"pp-tables-0"(PP-Table(<id>))
+         ; !PP-Table(<id>)
          ; output(id)
        end
        

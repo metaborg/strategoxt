@@ -1,5 +1,7 @@
 module pp-table-PlaceHolder
-imports Box
+imports
+  Box
+  pp-table-IntCon
 
 exports
   context-free syntax

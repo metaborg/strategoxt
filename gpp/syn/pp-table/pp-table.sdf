@@ -2,14 +2,6 @@ module pp-table
 imports pp-table-PlaceHolder pp-table-IntCon
 exports
   context-free start-symbols PP-Table
-
-  syntax
-    <START> -> SURROGATE-START {cons("\"pp-tables-0\"")}
-    SURROGATE-START [\256] -> <Start> {prefer, cons("SURROGATE-START")}
-
-  aliases
-    PP-Table* -> PP-Tables 
-
   sorts PP-Entry PP-Table Path Selector
   context-free syntax
     "[" {PP-Entry ","}* "]" -> PP-Table {cons("PP-Table")}
@@ -23,7 +15,7 @@ exports
 
   sorts ConsName
   lexical syntax
-    ~[\ \t\n\13\.]+      -> ConsName
+    ~[\ \t\n\13\.]+   -> ConsName
     "\"" ~[\"]+ "\""  -> ConsName
 
   context-free restrictions

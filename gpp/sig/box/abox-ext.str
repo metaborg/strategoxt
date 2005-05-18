@@ -1,40 +1,12 @@
-\literate[abox-ext]
-
-	\begin{abstract}
-
-	This module provides abstractions on top of the ABox interface
-	defined in module \verb|abox|.
-
-	\end{abstract}
-
-% Copyright (C) 2000 Eelco Visser <visser@acm.org>
-% 
-% This program is free software; you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation; either version 2, or (at your option)
-% any later version.
-% 
-% This program is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-% 
-% You should have received a copy of the GNU General Public License
-% along with this program; if not, write to the Free Software
-% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-% 02111-1307, USA.
-
-\begin{code}
+/**
+ * This module provides abstractions on top of the Box language.
+ */
 module abox-ext
 imports Box
-\end{code}
 
-	\paragraph{Overlays}
-
-	The following overlays define abbreviations of frequently used
-	constructs.
-
-\begin{code}
+/**
+ * The following overlays define abbreviations of frequently used constructs.
+ */
 overlays
 
   EmptyBox = H([],[])
@@ -51,25 +23,19 @@ overlays
   Keyword(x) = FBOX(KW(), x)
   Parens(x)  = H0([S("("), x, S(")")])
   Indent(x)  = H0([S("  "), x])
-\end{code}
 
-	\paragraph{Constructor Strategies}
-
-\begin{code}
+/**
+ * Constructor Strategies
+ */
 rules
 
   MkS : x -> S(x)
   MkParens : x -> Parens(x)
-\end{code}
 
-	\paragraph{Separator Lists}
-	
-	The following strategies define various ways to format
-	lists with separators.
 
-	(*** These need to be cleaned up ***)
-
-\begin{code}
+/**
+ * The following strategies define various ways to format lists with separators.
+ */
 strategies
 
   sep-list(s1, s2) = map(s1); separate-by(!S(<s2>()))
@@ -104,4 +70,3 @@ rules
   CommaList(s) : x -> H0(<sep-list(s,!", ")> x)
 
   MkParens : x -> Parens(x)
-\end{code}

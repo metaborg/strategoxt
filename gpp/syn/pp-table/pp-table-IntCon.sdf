@@ -1,13 +1,6 @@
 module pp-table-IntCon
 
 exports
-  sorts NatCon IntCon
-
+  sorts NatCon
   lexical syntax
     [0-9]+ -> NatCon
-
-  context-free syntax
-    NatCon -> IntCon {cons("NatCon")}
-    "+" NatCon -> IntCon {cons("plus")}
-    "-" NatCon -> IntCon {cons("minus")}
-
