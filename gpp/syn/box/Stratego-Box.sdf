@@ -6,12 +6,12 @@ hiddens
 exports
   context-free syntax
 
-               BOX      -> StrategoTerm  {cons("ToTerm"), avoid}
-         "|["  BOX "]|" -> StrategoTerm  {cons("ToTerm"), prefer}
-    box  "|["  BOX "]|" -> StrategoTerm  {cons("ToTerm")}
+                BOX      -> StrategoTerm  {cons("ToTerm"), avoid}
+          "|["  BOX "]|" -> StrategoTerm  {cons("ToTerm"), prefer}
+    "box" "|["  BOX "]|" -> StrategoTerm  {cons("ToTerm")}
 
-         "|["  BOX* "]|" -> StrategoTerm {cons("ToTerm")}
-    box* "|["  BOX* "]|" -> StrategoTerm {cons("ToTerm")}
+           "|["  BOX* "]|" -> StrategoTerm {cons("ToTerm")}
+    "box*" "|["  BOX* "]|" -> StrategoTerm {cons("ToTerm")}
 
     "~"  StrategoTerm    -> BOX   {cons("FromTerm"), prefer}
     "~*" StrategoTerm    -> BOX*  {cons("FromTerm"), prefer}
