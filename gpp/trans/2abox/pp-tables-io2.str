@@ -4,6 +4,7 @@
 module pp-tables-io2
 imports pp-table
 
+// todo: remove this signature (baseline issue)
 signature
   constructors
     "pp-tables-0" : PP-Table -> PP-Table
@@ -17,6 +18,7 @@ strategies
     where(<table-create> "pp-table")
     ; map(
         notify(!"Reading table: ")
+        // todo: remove this line (baseline issue)
         ; try(?"pp-tables-0"(<id>))
         ; ReadFromFile
         ; build-pp-table
