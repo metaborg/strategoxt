@@ -173,7 +173,7 @@ strategies
 
   guess-module-name =
     ModuleName
-    <+ <get-config; remove-extension> "-o"
+    <+ <get-config; basename> "-o"
     <+ log(|Critical(), "No Stratego module name specified. Use the --omod option to specify a module name. See also --help.")
        ; <exit> 1
 
@@ -212,7 +212,7 @@ strategies
 
   guess-language-name =
     LanguageName
-    <+ <get-config; remove-extension> "-i"
+    <+ <get-config; basename> "-i"
     <+ log(|Critical(), "No language name specified. You must specify the name of the language with --lang. See also --help.")
        ; <exit> 1
 

@@ -272,10 +272,10 @@ strategies
 
   get-infile :
     FILE(file) -> FILE(file)
-    where <remove-extension> file => basein
+    where <basename> file => basein
 	; if-verbose3(debug(!"basein: "))
         ; <set-config> ("basein",  basein)
-        ; (<get-config; remove-extension> "-o" <+ !basein) => baseout
+        ; (<get-config; basename> "-o" <+ !basein) => baseout
 	; if-verbose3(debug(!"baseout: "))
         ; <set-config> ("baseout", baseout)
 
