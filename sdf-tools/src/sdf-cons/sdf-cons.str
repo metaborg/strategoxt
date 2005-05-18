@@ -22,13 +22,7 @@ imports liblib Sdf2 prodcons
 strategies
 
   io-sdf-cons =
-    io-wrap(sdf-cons-options, sdf-cons-usage, sdf-cons-about, 
-      if ?"\"sdf-2.1\""#([trm]) then
-        !"\"sdf-2.1\""#([<sdf-cons> trm])
-      else
-        sdf-cons
-      end
-    )
+    io-wrap(sdf-cons-options, sdf-cons-usage, sdf-cons-about, sdf-cons)
 
   sdf-cons-options =
       Option("--modular"
