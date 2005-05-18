@@ -3,6 +3,11 @@
  */
 module pp-tables-io2
 imports pp-table
+
+signature
+  constructors
+    "pp-tables-0" : PP-Table -> PP-Table
+
 strategies
   
   /**
@@ -12,6 +17,7 @@ strategies
     where(<table-create> "pp-table")
     ; map(
         notify(!"Reading table: ")
+        ; try(?"pp-tables-0"(<id>))
         ; ReadFromFile
         ; build-pp-table
       )
