@@ -19,8 +19,8 @@ strategies
     ; map(
         notify(!"Reading table: ")
         // todo: remove this line (baseline issue)
-        ; try(?"pp-tables-0"(<id>))
         ; ReadFromFile
+        ; try(?"pp-tables-0"(<id>))
         ; build-pp-table
       )
 
