@@ -12,8 +12,6 @@ signature
 
 strategies
 
-  main' = stdio([f(RA); RD, f(RA, RB); RC])
-
   main = 
    <[f(RA); RD, f(RA, RB); RC]> [F(A),G(A,B)] => [F(D),G(D,C)]
 

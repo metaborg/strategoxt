@@ -1,5 +1,10 @@
 2005-05-20  Martin Bravenboer <martin@cs.uu.nl>
 
+  * spec/system/io/term.str: dropped stdio and stdioO, since these
+  strategies have been obsolete for a long, long time.
+
+2005-05-20  Martin Bravenboer <martin@cs.uu.nl>
+
 	* spec/term/string.str: string-to-num is obsolete and redirects to
 	string-to-int. The rules for string-to-num have been removed.
 

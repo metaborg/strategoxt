@@ -273,31 +273,3 @@ strategies
 
   printstring = 
     where(<print> (stdout, [<id>]))
-
-strategies
-
- /**
-  * The operator stdio implements a simple user-interface
-  * for transformers. A term is read from standard input,
-  * transformed with parameter strategy s and then written
-  * to standard output. If the transformation failed the text
-  * 'rewriting failed' is written to standard error.
-  * 
-  * Prefer io-wrap in the module options.
-  */ 
-  stdio(s) =
-      <ReadFromFile> stdin()
-    ; s
-    ; <WriteToTextFile> (stdout(), <id>)
-    <+ <fatal-error> ["** rewriting failed"]
-
-strategies
-
- /** 
-  * This variant of the strategy stdio(s) provides a pair of the command-line
-  * options and the input file to the strategy.
-  */
-  stdioO(s) =
-    <s> (<id>, <ReadFromFile> stdin())
-    ; <WriteToTextFile> (stdout(), <id>)
-    <+ <fatal-error> ["** rewriting failed"]
