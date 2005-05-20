@@ -248,9 +248,6 @@ strategies
   obsolete(msg) = 
     log(|Warning(), <conc-strings> ("program uses obsolete strategy ", <msg> ()))
 
-  Assert(s, msg) = 
-    test(s) <+ debug(msg)
-
   risky(msg, s) = 
     restore(s, debug(msg))
 

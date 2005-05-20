@@ -1,5 +1,11 @@
 2005-05-20  Martin Bravenboer <martin@cs.uu.nl>
 
+  * spec/system/io/term.str: dropped Assert because of the poor name 
+  (strategies should be lowercase) and because it does not preserve
+  failure. Use 's <+ debug(!msg)' or risky (which preserves failure).
+
+2005-05-20  Martin Bravenboer <martin@cs.uu.nl>
+
   * spec/system/io/term.str: dropped stdio and stdioO, since these
   strategies have been obsolete for a long, long time.
 
