@@ -12,7 +12,8 @@ CLEANFILES     = asfix_yield1_check asfix_yield2_check $(wildcard *.dep) asfix-y
 BOOTCLEANFILES = asfix-yield.c
 EXTRA_DIST     = $(wildcard *.str)
 
-SCFLAGS        = -I $(top_srcdir)/sig
+SCFLAGS        = --main io-$*
+STRINCLUDES    = -I $(top_srcdir)/sig
 
 asfix_yield1_check_prog    = asfix-yield
 asfix_yield1_check_input   = data/tiny.tree

@@ -2,37 +2,34 @@ module asfix-yield
 imports liblib AsFix
 strategies
 
-  main =
-      parse-options(io-options, asfix-yield-usage, system-about)
-    ; (<open-file> (<get-config> "-o", "w") <+ !stdout) => outfile
-    ; input(asfix-yield(!outfile))
+  io-asfix-yield =
+    parse-options(io-options, asfix-yield-usage, system-about)
+    ; (<fopen> (<get-config> "-o", "w") <+ stdout-stream) => stream
+    ; input(asfix-yield(|stream))
+    ; <fclose> stream
     ; <exit> 0
-
+    
   asfix-yield-usage =
     default-system-usage(
       !["Usage: asfix-yield [options]"]
-    , !["The asfix-yield utility unparses an asfix tree to flat text.\n",
-        "It reads from standard input and writes to standard output.\n"]
+    , !["  asfix-yield unparses an asfix tree to flat text."]
     )
 
-  asfix-yield(outfile) = 
+  asfix-yield(|stream) = 
     if is-asfix2 then
-      asfix-yield2(outfile)
+      asfix-yield2(|stream)
     else
-      <fatal-error> ["not in AsFix format"]
+      <fatal-error> ["Input is not in AsFix format."]
     end
 
-  asfix-yield2(outfile) = 
+  asfix-yield2(|stream) = 
     leaves(
-        is-string
-      ; split(outfile, \x -> [x]\ )
-      ; print
-     <+ split(
-          outfile, \x -> [x] \); printascii
-        , is-leaf
-        , asfix-skip2
-        )
-
+         <fputs> (<is-string>, stream)
+      <+ <fputc> (<id>, stream)
+    , is-leaf
+    , asfix-skip2
+    )
+    
   asfix-skip2(x) = 
       appl(id, list(x))
     + amb([x|id])
