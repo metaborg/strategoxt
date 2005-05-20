@@ -1,0 +1,774 @@
+module stratego2abox
+imports 
+  liblib
+  Stratego
+  Box
+
+signature
+  constructors
+    Parenthetical : Term -> Term
+    Comment       : Term -> Term
+strategies
+
+  io-stratego2abox =
+    io-wrap(stratego2abox)
+    
+  stratego2abox =
+    topdown(try(pp-comments); try(repeat(stratego-to-abox-prefer <+ stratego-to-abox)))
+  ; bottomup(try(\ Conc(a,b) -> <conc>(a,b) \))    
+
+  pp-comments =
+    ?t{a*}
+
+    ; where(
+        <fetch(?(Comment(_), s))> a*
+      ; <stratego-to-abox-prefer <+ stratego-to-abox> t => b
+      )
+
+    ; if !b => V(_, _) then
+        !|[ V vs=0 [s b] ]|
+      else
+        if <explode-string> s => cs@['/', '/' | _] then
+          <trim(?'\n' + ?'\r' + ?' ' + ?'\t'); implode-string> cs => s1
+          ; !|[ V vs=0 [s1 b] ]|
+        else
+          !|[ H hs=1 [s b] ]|
+        end
+      end
+
+rules
+
+  stratego-to-abox : 
+    Module(name,declarations) -> |[ V vs=1 [ H[ KW["module"] ~lit:name ] V vs=2 [ ~*declarations ] ] ]|
+
+  stratego-to-abox : 
+    Specification(declarations) -> |[ V vs=1 [ KW["specification"] V vs=2 [ ~*declarations ] ] ]|
+
+
+rules
+
+  stratego-to-abox : 
+    Imports(imports) -> |[ V is=2 [ KW["imports"] V vs=0[ ~*imports ]  ] ]|
+    
+  stratego-to-abox : 
+    Import(name) -> S(name)
+    
+  stratego-to-abox : 
+    ImportWildcard(name) -> |[ H hs=0 [ ~lit:name KW["/"] KW["-"] ] ]| 
+    
+
+rules
+
+  stratego-to-abox : 
+    Strategies(decs) -> |[ V is=2 [ KW["strategies"] V vs=1 [ ~*decs ]  ] ]|
+  
+  stratego-to-abox : 
+    Rules(decs) -> |[ V is=2 vs=1 [ KW["rules"] V vs=1 [ ~*decs ]  ] ]|
+
+  stratego-to-abox : 
+    Overlays(decs) -> |[ V is=2 [ KW["overlays"] V vs=1 [ ~*decs ]  ] ]|
+
+  stratego-to-abox : 
+    Signature(decs) -> |[ V is=2 [ KW["signature"] V vs=1 [ ~*decs ]  ] ]|
+  
+  stratego-to-abox : 
+    Sorts(decs) -> |[ V is=2 [ KW["sorts"] H hs=1 [ ~*decs ]  ] ]|
+
+  stratego-to-abox : 
+    Constructors(decs) -> |[ V is=2 [ KW["constructors"] A (l hs=1, l hs=1, l hs=1) [ ~*decs ]  ] ]|
+
+
+rules
+
+  stratego-to-abox : 
+    OpDecl(name,rhs) -> |[ R [~lit:name KW[":"] H hs=1 [~rhs] ] ]|
+
+  stratego-to-abox : 
+    OpDeclInj(rhs) -> |[ R ["" KW[":"] H hs=1 [ ~rhs ] ] ]|
+
+
+  stratego-to-abox : 
+    SortVar(name) -> S(name)
+
+  stratego-to-abox : 
+    SortNoArgs(name) -> S(name)
+
+  stratego-to-abox : 
+    Sort(name,arg) -> |[ H hs=0[~lit:name KW["("] ~arg' KW[")"]] ]|
+    where
+      <separate-by-comma>arg => arg'
+
+  stratego-to-abox : 
+    SortList(arg) -> |[ H [ KW["["] ~arg' KW["]"] ] ]|
+    where
+      <separate-by-comma>arg => arg'
+
+  stratego-to-abox : 
+    SortListTl(arg,tail) -> |[ H [ KW["["] ~arg' KW["|"] ~tail KW["]"] ] ]|
+    where
+      <separate-by-comma>arg => arg'
+
+  stratego-to-abox : 
+    SortTuple(arg) -> |[ H[ KW["("] ~arg' KW[")"] ] ]|
+    where
+      <separate-by-comma>arg => arg'
+
+  stratego-to-abox : 
+    ConstType(sort) -> sort
+
+  stratego-to-abox : 
+    FunType(lhs,rhs) -> |[ H [ ~lhs' KW["->"] ~rhs ] ]|
+    where
+      <separate-by-star>lhs => lhs'
+
+rules
+  stratego-to-abox : 
+    Fail -> |[ KW["fail"] ]|
+
+  stratego-to-abox : 
+    Id -> |[ KW["id"] ]|
+
+
+rules
+
+  stratego-to-abox :  
+   Some(s) -> |[ H hs=0 [KW["some"] KW["("] ~s KW[")"]] ]|
+
+  stratego-to-abox : 
+   One(s) -> |[ H hs=0 [KW["one"] KW["("] ~s KW[")"]] ]|
+
+  stratego-to-abox : 
+   All(s) -> |[ H hs=0 [KW["all"] KW["("] ~s KW[")"]] ]|
+
+  stratego-to-abox : 
+   Thread(s) -> |[ H hs=0 [KW["thread"] KW["("] ~s KW[")"]] ]|
+
+
+rules
+
+  stratego-to-abox : 
+    Match(t) -> |[ H hs=0[ KW["?"] ~t ] ]|
+
+  stratego-to-abox : 
+    Build(t) -> |[ H hs=0[ KW["!"] ~t ] ]|
+
+
+rules
+
+  stratego-to-abox :
+    As(v,t) -> |[ H hs=0 [ ~v "@" ~t ] ]|
+   
+  stratego-to-abox :
+    Explode(c,cs) -> |[ H hs=0[ ~c "#" "(" ~cs ")" ] ]|
+
+  stratego-to-abox :
+    ExplodeCong(c,cs) -> |[ H hs=0[ ~c "#" "(" ~cs ")" ] ]|
+
+rules
+
+  generic-str-to-abox(|cons,op) =
+    let 
+      cons-to-list(|cons) =
+      rec x(
+        (  \ cons#([a,cons#([b,c])]) -> [a,b|<x>c] \ 
+        <+ \ cons#([a,b]) -> [a,b] \ 
+        <+ ![<id>] )
+      )
+    in
+      ?cons#([s1,s2])
+    ; worstcase-nicecase(
+        where( 
+          cons-to-list(|cons) => [s1'|ss] 
+        ; <map(\ s -> |[ H [ ~lit:op ~s ] ]| \)>ss => ss' 
+        )
+      ; !|[ V is=0 [ ~s1' ~*ss' ] ]|
+      , !|[ H [ ~s1 ~lit:op ~s2 ] ]|
+      )
+    end
+
+  stratego-to-abox-prefer =
+    generic-str-to-abox(|"Seq"    , ";")
+  + generic-str-to-abox(|"Choice" , "+")
+  + generic-str-to-abox(|"LChoice", "<+")
+  + generic-str-to-abox(|"RChoice", "+>")
+
+  
+rules
+
+  stratego-to-abox =
+    ?Rec(x,s)
+  ; worstcase-nicecase(
+      !|[  V vs=0 [
+            V is=2 [
+              H hs=1 [ KW["rec"] ~lit:x "(" ]
+              ~s
+            ]
+            ")"
+          ]
+        ]|
+    , !|[ H hs=1 [ KW["rec"] ~lit:x "(" ~s ")" ] ]|
+    )
+
+  stratego-to-abox : 
+    Not(s) -> |[ H hs=0 [ KW["not"] KW["("] ~s KW[")"] ] ]|
+
+  stratego-to-abox : 
+    Where(s) -> |[ H hs=0 [ KW["where"] KW["("] ~s KW[")"] ] ]|
+
+  stratego-to-abox : 
+    Test(s) -> |[ H hs=0 [ KW["test"] KW["("] ~s KW[")"] ] ]|
+
+  stratego-to-abox : 
+    Bagof(s) -> |[ H hs=0 [ KW["bagof"] KW["("] ~s KW[")"] ] ]|
+
+
+rules
+
+  stratego-to-abox =
+    ?Parenthetical(e)
+  ; switch <stratego-to-abox-prefer <+ stratego-to-abox>e => box
+      case ?V(_,[b|bs]) : !box |[ V [ H [ "(" ~b ] V is=2 [ ~*bs ] ")" ] ]|
+      case ?H(_,_)      : !box |[ H hs=1 ["(" ~box ")"] ]|
+      otherwise         : !box |[ H hs=0 ["(" ~box ")"] ]|
+    end
+    
+    
+rules
+
+  stratego-to-abox : 
+    SVar(name) -> S(name)
+
+  stratego-to-abox : 
+    Var(name) -> S(name)
+
+  stratego-to-abox : 
+    ListVar(name) -> S(name)
+
+rules
+  
+  get-max-term-size-config = !15
+
+  stratego-to-abox =
+    ( ?Op(f,[x | xs]) + ?CongQ(f,[x | xs]) )
+  ; where( <map(! |[ H hs=1 [ "," ~<id> ] ]| )> xs => children )
+  ; worstcase-nicecase(
+      !|[  V vs=0 [
+            H hs=0 [ ~lit:f "(" ]
+            H hs=1 [" " ~x ]
+            ~*children
+            ")"
+          ]
+      ]|
+    , !|[ H hs=0 [ ~lit:f "(" ~x ~*children ")"] ]|
+    )
+
+  stratego-to-abox : 
+    Op(name,[]) -> |[ H hs=0[ ~lit:name "(" ")" ] ]|
+
+  stratego-to-abox : 
+    CongQ(name,[]) -> |[ H hs=0[ ~lit:name "(" ")" ] ]|
+
+rules
+
+  stratego-to-abox : 
+    BA(s,t) -> |[ H hs=1[ H hs=0[ "<" ~s ">" ] ~t ] ]|
+
+  stratego-to-abox : 
+    RootApp(s) -> |[ H hs=0[ "<" ~s ">" ] ]|
+
+  stratego-to-abox : 
+    App(s,t) -> |[ H[H hs=0[KW["<"] ~s KW[">"]] ~t] ]|
+
+  stratego-to-abox : 
+    AM(s,t) -> |[ H[ ~s KW["=>"] ~t ] ]|
+
+rules
+
+  stratego-to-abox : 
+    Int(i) -> S(i)
+
+  stratego-to-abox : 
+    Real(i) -> S(i)
+
+  stratego-to-abox : 
+    Str(i) -> S(i)
+
+  stratego-to-abox : 
+    Char(i) -> S(i)
+
+rules
+
+  stratego-to-abox : 
+    ListTail(arg,tail) -> |[ H hs=0[ KW["["] ~arg' KW["|"] ~tail KW["]"] ] ]|
+    where
+      <separate-by-comma>arg => arg'
+
+  stratego-to-abox : 
+    ListCong(arg,tail) -> |[ H hs=0[ KW["["] ~arg' KW["|"] ~tail KW["]"] ] ]|
+    where
+      <separate-by-comma>arg => arg'
+
+rules // tuples and list
+
+  stratego-to-abox =
+    ?Tuple(<id>); pp-generic-list(id, !|[ "()" ]|, !|[ "(" ]|, !|[ ")" ]|)
+
+  stratego-to-abox =
+    ( ?List(<id>) 
+    + ?ListCongNoTail(<id>) 
+    ) 
+  ; pp-generic-list(id, !|[ "[]" ]|, !|[ "[" ]|, !|[ "]" ]|)
+
+  stratego-to-abox =
+    ?Anno(t,as) 
+  ; <pp-generic-list(id, !|[ "{}" ]|, !|[ "{" ]|, !|[ "}" ]|)>as => as'
+  ; !|[ H hs=0 [ ~t ~as' ] ]|
+
+
+strategies
+
+  pp-generic-list(s, empty, before, after) =
+      where(<gt> (<term-size>, 15))
+    < generic-list-worstcase(s, empty, before, after)
+    + generic-list-nicecase(s, empty, before, after)
+
+  pp-generic-list(s, empty, before, after) :
+    [] -> <empty> ()
+
+  generic-list-nicecase(s, empty, before, after) :
+    [x | xs] -> |[
+      H hs=0 [
+        ~<before> ()
+        ~<s> x ~*tail
+        ~<after> ()
+      ]
+    ]|
+      where <map(! |[ H hs=1 [ "," ~<s> ] ]| )> xs => tail
+
+  generic-list-worstcase(s, empty, before, after) :
+    [x | xs] -> |[
+      V vs=0 [
+        H hs=1 [
+          ~<before> ()
+          ~<s> x
+        ]
+        ~*tail
+        ~<after> ()
+      ]
+    ]|
+      where <map(! |[ H hs=1 [ "," ~<s> ] ]| )> xs => tail
+
+
+
+rules
+
+  stratego-to-abox : 
+    Wld  -> |[ "_" ]|
+
+rules
+
+  stratego-to-abox : 
+   SDefNoArgs(name,body) -> |[ V is=2 [ H[ ~lit:name KW["="]] ~body ] ]|
+
+  stratego-to-abox : 
+   SDef(name,args,body) -> |[ V is=2 [ H[ H hs=0[ ~lit:name ~args' ] "=" ] ~body ] ]|
+    where
+      <list-to-args>args => args'
+      
+  stratego-to-abox : 
+   SDefT(name,args,argt,body) -> |[ V is=2[ H [ H hs=0[ ~lit:name "(" ~args' "|" ~argt' ")" ] "="] ~body ] ]|
+    where
+      <separate-by-comma>args => args'
+    ; <separate-by-comma>argt => argt'
+  
+  stratego-to-abox : 
+   ExtSDef(name,args,argt) -> |[ H [ KW["external"] H hs=0[ ~lit:name "(" ~args' "|" ~argt' ")" ] ]  ]|
+    where
+      <separate-by-comma>args => args'
+    ; <separate-by-comma>argt => argt'
+
+  stratego-to-abox : 
+   ExtSDefInl(name,args,argt,body) -> |[ V is=2[ H [ KW["external"] H hs=0[ ~lit:name "(" ~args' "|" ~argt' ")" ] "=" ] ~body ]  ]|
+    where
+      <separate-by-comma>args => args'
+    ; <separate-by-comma>argt => argt'
+
+
+rules
+
+  stratego-to-abox : 
+   RDefNoArgs(name,body) -> |[ V is=2 [ H[ ~lit:name KW["="]] ~body ] ]|
+
+  stratego-to-abox : 
+   RDef(name,args,body) -> |[ V is=2 [ H[ H hs=0[ ~lit:name ~args' ] KW["="]] ~body ] ]|
+    where
+      <list-to-args>args => args'
+      
+  stratego-to-abox : 
+   RDefT(name,args,argt,body) -> |[ V is=2[ H[ H hs=0[ ~lit:name "(" ~args' "|" H hs=0[ ~argt' ")"] "="] ~body ] ] ]|
+    where
+      <separate-by-comma>args => args'
+    ; <separate-by-comma>argt => argt'
+
+
+rules
+
+  stratego-to-abox : 
+    RuleNoCond(lhs,rhs) -> |[ H hs=1 [ ~lhs "->" ~rhs ] ]|
+
+  stratego-to-abox : 
+    Rule(lhs,rhs,condition) -> |[ V [ H hs=1 [ ~lhs "->" ~rhs ] H[ KW["where"] ~condition ] ] ]|
+
+  stratego-to-abox : 
+   LRule(r) -> |[ H[ "\\" ~r "\\" ] ]|
+
+  stratego-to-abox : 
+   SRule(r) -> |[ H[ "("  ~r ")" ] ]|
+
+
+rules
+
+  stratego-to-abox : 
+    DefaultVarDec(name) -> S(name)
+
+  stratego-to-abox : 
+    VarDec(name,type) -> |[ H [ ~lit:name KW[":"] ~type ] ]|
+
+
+rules
+
+  stratego-to-abox : 
+    Call(name,[]) -> name
+
+  stratego-to-abox =
+    ?Call(f,[x | xs])
+  ; where( <map(! |[ H hs=1 [ "," ~<id> ] ]| )> xs => xs' )
+  ; worstcase-nicecase(
+      !|[  V vs=0 [
+            H hs=0 [ ~f "(" ]
+            H hs=1 [" " ~x ]
+            ~*xs'
+            ")"
+          ]
+        ]|
+    , !|[ H hs=0 [ ~f "(" ~x ~*xs' ")"] ]|
+    )
+
+  stratego-to-abox =
+    ?CallT(f,[x | xs], [y | ys])
+  ; where( 
+      <map(! |[ H hs=1 [ "," ~<id> ] ]| )> xs => xs' 
+    ; <map(! |[ H hs=1 [ "," ~<id> ] ]| )> ys => ys' 
+    )
+  ; worstcase-nicecase(
+      !|[  V vs=0 [
+            H hs=0 [ ~f "(" ]
+            H hs=1 [" " ~x ]
+            ~*xs'
+            H [ "|" ~y ]
+            ~*ys'
+            ")"
+          ]
+      ]|
+    , !|[ H hs=0 [ ~f "(" ~x ~*xs' "|" ~y ~*ys' ")"] ]|
+    )
+
+  stratego-to-abox =
+    ?CallT(f,[x | xs], [])
+  ; where( 
+      <map(! |[ H hs=1 [ "," ~<id> ] ]| )> xs => xs' 
+    )
+  ; worstcase-nicecase(
+      !|[  V vs=0 [
+            H hs=0 [ ~f "(" ]
+            H hs=1 [" " ~x ]
+            ~*xs'
+            "|"
+            ")"
+          ]
+      ]|
+    , !|[ H hs=0 [ ~f "(" ~x ~*xs' "|" ")"] ]|
+    )
+
+  stratego-to-abox =
+    ?CallT(f,[], [y | ys])
+  ; where( 
+      <map(! |[ H hs=1 [ "," ~<id> ] ]| )> ys => ys' 
+    )
+  ; worstcase-nicecase(
+      !|[  V vs=0 [
+            H hs=0 [ ~f "(" ]
+            H ["|" ~y ]
+            ~*ys'
+            ")"
+          ]
+      ]|
+    , !|[ H hs=0 [ ~f "(" "|" ~y ~*ys' ")"] ]|
+    )
+
+  stratego-to-abox : 
+    CallNoArgs(name) -> name
+
+  stratego-to-abox =
+    \ Prim(f,args) -> Call(SVar("prim"),[SVar(f)|args]) \
+  + \ PrimT(f,args,argt) -> CallT(SVar("prim"),[SVar(f)|args],argt) \
+  + \ PrimNoArgs(f) -> Call(SVar("prim"),[SVar(f)]) \
+
+
+rules
+
+  stratego-to-abox : 
+    StrCong(i) -> S(i)
+
+  stratego-to-abox : 
+    IntCong(i) -> S(i)
+
+  stratego-to-abox : 
+    RealCong(i) -> S(i)
+
+  stratego-to-abox : 
+    EmptyTupleCong -> |[ H hs=0 [KW["("] KW[")"]] ]|
+
+
+rules
+
+  stratego-to-abox :
+    Let(ds,s) -> |[  V[ H[ KW["let"] V[ ~*ds ] ] V is=2 [ KW["in"] ~s ] KW["end"] ] ]| 
+
+rules
+
+  stratego-to-abox =
+    ?CondChoice(condition,then,else)
+  ; worstcase-nicecase( 
+       !|[ V vs=0 [
+            V is=2 [
+              H hs=1 [KW["if"] ~condition KW["then"] ]
+              H hs=1 [ ~then ]
+             ] 
+            V is=2 [
+              KW["else"] 
+              H hs=1 [ ~else ] 
+             ] 
+            KW["end"]
+          ] 
+       ]|
+     , !|[ H [ KW["if"] ~condition KW["then"] ~then KW["then"] ~else KW["end"] ] ]|
+     )
+
+  stratego-to-abox =
+    ?IfThen(condition,then)
+  ; worstcase-nicecase( 
+      !|[ V vs=0 [
+            V is=2 [
+              H hs=1 [KW["if"] ~condition KW["then"] ]
+              H hs=1 [ ~then ]
+             ] 
+            KW["end"]
+          ] 
+       ]|
+     , !|[ H [ KW["if"] ~condition KW["then"] ~then KW["end"] ] ]|
+     )
+
+  stratego-to-abox =
+    ?GuardedLChoice(s1,s2,s3)
+  ; worstcase-nicecase(
+      !|[ V[ ~s1 H["<" ~s2] H["+" ~s3 ]] ]|
+    , !|[ H[ ~s1 "<" ~s2 "+" ~s3 ] ]|
+    )
+
+
+/**
+ * Rewrites a list of boxes to a single box, where the elements are
+ * separated by commas and between parenthesis.
+ *
+ * @type List(Box) -> Box
+ */
+rules
+
+  list-to-args :
+    [] -> box |[ H hs=0 ["(" ")"] ]|
+
+  list-to-args :
+    exprs@[_ | _ ] -> box |[ H hs=0 ["(" ~args ")"] ]|
+    where
+      <separate-by-comma> exprs => args
+
+rules
+
+  worstcase-nicecase(worstcase,nicecase) =
+    where(<gt> (<term-size>, <get-max-term-size-config>))
+  < worstcase
+  + nicecase
+
+  /**
+   * Rewrites a list of boxes to a single box, where the elements are
+   * separated by commas.
+   *
+   * @type List(Box) -> Box
+   */
+  separate-by-comma =
+    rec x(
+      ?[<id>]
+    <+ \ [] -> H hs=0 [] \
+    <+ {b1, b2:
+         ?[b1 | <x>]
+       ; ?b2
+       ; !H hs=1 [H hs=0 [b1 ","] b2]
+       }
+    )
+
+  separate-by-star =
+    rec x(
+      ?[<id>]
+    <+ \ [] -> H hs=0 [] \
+    <+ {b1, b2:
+         ?[b1 | <x>]
+       ; ?b2
+       ; !H hs=1 [H hs=1 [b1 "*"] b2]
+       }
+    )
+
+  
+/*
+[
+
+   SeqVar -> H hs=0 [KW[":"] _1],
+
+   AnnoTail -> _1 KW["{"] _2 KW["|"] _3 KW["}"],
+   AnnoTail.2:iter-star-sep -> _1 KW[","],
+   AnnoCong -> _1 _2,
+
+   StrategyCurly -> KW["{"] _1 KW["}"],
+
+   Con  -> H hs=0 [_1 KW["["] _2 KW["]"] KW["("] _3 KW[")"]],
+   Con1 -> H hs=0 [   KW["["] _1 KW["]"] ],
+   Con2 -> H hs=0 [   KW["["] _1 KW["]"] KW["("] _2 KW[")"]],
+   Con3 -> KW["["] _1 KW["where"] _2 KW["]"],
+   Con4 -> KW["["] _1 KW["where"] _2 KW["]"] KW["("] _3 KW[")"],
+   
+   RDecNoArgs            -> _1,
+   RDec                  -> H hs=0 [_1 KW["("] H[_2] KW[")"]],
+   RDec.2:iter-star-sep  -> H hs=0 [_1 KW[","]],
+
+   RDecT                 -> H hs=0 [_1 KW["("] H[_2 KW["|"] _3] KW[")"]],
+   RDecT.2:iter-star-sep -> H hs=0 [_1 KW[","]],
+   RDecT.3:iter-star-sep -> H hs=0 [_1 KW[","]],
+
+   RuleNames                              -> KW["~"] _1,
+   DynRuleIntersectFix                    -> H hs=0[KW["/"] _1 KW["\\*"]] _2,
+   DynRuleIntersectFix.1:iter-star-sep    -> H hs=0[_1 KW[","]],
+   DynRuleUnionFix                        -> H hs=0[KW["\\"] _1 KW["/*"]] _2,
+   DynRuleUnionFix.1:iter-star-sep        -> H hs=0[_1 KW[","]],
+   DynRuleIntersect                       -> _1 H hs=0[KW["/"] _2 KW["\\"]] _3,
+   DynRuleIntersect.2:iter-star-sep       -> H hs=0[_1 KW[","]],
+   DynRuleUnion                           -> _1 H hs=0[KW["\\"] _2 KW["/"]] _3,
+   DynRuleUnion.2:iter-star-sep           -> H hs=0[_1 KW[","]],
+
+   SRDefNoArgs -> _1 KW["::"] _2,
+   SRDef -> _1 KW["("] _2 KW[")"] KW["::"] _3,
+   SRDef.2:iter-star-sep -> _1 KW[","],
+
+   SRDefT                           -> _1 KW["("] _2 KW["|"] _3 KW[")"] KW["::"] _4,
+   SRDefT.2:iter-star-sep           -> _1 KW[","],
+   SRDefT.3:iter-star-sep           -> _1 KW[","],
+
+   
+   Cong			    	    -> H hs=0[_1 KW["("] H[_2] KW[")"]],
+   Cong.2:iter-star-sep 	    -> H hs=0[_1 KW[","]],
+
+   ScopeDefault -> H hs=0[KW["{"] _1 KW["}"]],
+   Scope -> H hs=0[KW["{"] V[H[_1 KW[":"]] _2] KW["}"]],
+   Scope.1:iter-star-sep -> H hs=0[_1 KW[","]],
+   
+   AngleStrat -> H hs=0[KW["<"] _1 KW[">"]],
+   ParenStrat -> H hs=0[KW["("] _1 KW[")"]],
+  
+
+
+   SwitchChoiceNoOtherwise -> V[V is=2 vs=0 [
+     H hs=1 [KW["switch"] _1]
+     _2
+   ] KW["end"]
+   ],
+   SwitchChoiceNoOtherwise.2:iter-star -> V is=2 vs=0 [
+     H hs=1[KW["case"] _1 KW[":"]]
+     _2
+   ],
+   SwitchChoice -> V[V is=2 vs=0 [
+     H hs=1 [KW["switch"] _1]
+     _2
+     V is=2 vs=0 [
+       H hs=1[KW["otherwise"] KW[":"]]
+       _2
+     ]
+   ] KW["end"]
+   ],
+   SwitchChoice.2:iter-star -> V is=2 vs=0 [
+     H hs=1[KW["case"] _1 KW[":"]]
+     _2
+   ],
+
+
+   ModCongNoArgs -> _1,
+   ModCong -> _1 KW["("] _2 KW[")"],
+   ModCong.2:iter-star-sep -> _1 KW[","],
+   Mod -> _1 KW["^"] _2,
+
+   ScopeLabels                  -> KW["~"] _1,
+   GenDynRules 			-> V[V is=2[H[KW["rules"] KW["("]] _1] KW[")"]],
+   GenDynRules.1:iter-star 	-> _1,
+
+   AddScopeLabel          -> H hs=0 [_1 KW["+"] _2],
+   UndefineDynRule        -> V is=2 [H hs=1 [_1 KW[":-"]] _2],
+   SetDynRule             -> V is=2 [H hs=1 [_1 KW[":"] ] _2],
+   AddDynRule             -> V is=2 [H hs=1 [_1 KW[":+"]] _2],
+   SetDynRuleMatch        -> V is=2 [H hs=1 [_1 KW[":"] ] _2],
+
+   SetDynRuleDepends      -> V is=2 [H hs=1 [_1 KW[":"] ] _2 H[KW["depends"] KW["on"] _3]],
+
+   LabeledDynRuleId  -> H hs=0 [_1 "." _2],
+   AddLabelDynRuleId -> H hs=0 [_1 "+" _2],
+   DynRuleId         -> _1,
+
+   LabeledDynRuleScopeId -> H hs=0 [_1 "." _2],
+   DynRuleScopeId        -> _1,
+
+   OverrideDynamicRules -> KW["override"] KW["rules"] KW["("] _1 KW[")"],
+   OverrideDynamicRules.1:iter-star -> _1,
+
+   ExtendDynamicRules -> V[V is=2[H[KW["extend"] KW["rules"] KW["("]] _1] KW[")"]],
+   ExtendDynamicRules.1:iter-star -> _1,
+
+   ExtendOverrideDynamicRules -> KW["extend"] KW["override"] KW["rules"] KW["("] _1 KW[")"],
+   ExtendOverrideDynamicRules.1:iter-star -> _1,
+
+   DynRuleScope -> V[V is=3[H hs=0[KW["{|"] _1 KW[":"]] _2] KW["|}"]],
+   DynRuleScope.1:iter-star-sep -> _1 KW[","],
+
+
+   OverlayNoArgs -> _1 KW["="] _2,
+   Overlay -> V is=2[H[_1 KW["("] _2 KW[")"] KW["="]] _3],
+   Overlay.2:iter-star-sep -> H hs=0[_1 KW[","]],
+
+
+
+
+   --- WON'T!
+   Mark -> "@mark@"
+
+
+
+   GChoice  -> V [_1 H[KW["++"]  _2 ]],
+   LGChoice -> V [_1 H[KW["<++"] _2 ]],
+   RGChoice -> V [_1 H[KW["++>"] _2 ]],
+   
+   StratRuleNoCond -> _1 KW["->>"] _2,
+   StratRule -> _1 KW["->>"] _2 KW["where"] _3,
+
+
+]
+
+*/
+
+
+  

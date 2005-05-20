@@ -1,13 +1,15 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-SCFLAGS 	= --main $*
+SCFLAGS 	= --main io-$*
 STRINCLUDES     = -I $(top_srcdir)/syn \
                   -I $(top_srcdir)/sig \
+		  -I $(GPP)/share/sdf/gpp \
+		  -I $(GPP)/share/gpp \
                   -I $(XTC)/share/xtc
 
 bin_PROGRAMS 	 = parse-stratego pp-stratego
-libexec_PROGRAMS = meta-explode stratego-desugar stratego-ensugar
+libexec_PROGRAMS = meta-explode stratego-desugar stratego-ensugar stratego2abox stratego-parenthesize
 
 LDADD += $(SSL_LIBS)
 

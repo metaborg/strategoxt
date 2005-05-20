@@ -38,7 +38,7 @@ strategies
        <set-config> ("--asfix", ()); !AsFix,
        !"--asfix          treat concrete syntax parts as AsFix trees")
 
-  meta-explode =
+  io-meta-explode =
     io-wrap(
       asfix-option
     , if <get-config>"--asfix" then

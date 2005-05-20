@@ -10,7 +10,7 @@ imports Stratego-Amb liblib
 
 strategies
  
-  stratego-ensugar =
+  io-stratego-ensugar =
     io-wrap(Stratego-Ensugar)
 
   Stratego-Ensugar =

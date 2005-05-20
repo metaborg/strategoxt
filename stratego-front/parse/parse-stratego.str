@@ -35,7 +35,7 @@ strategies
   + ArgOption("--desugaring", where(<set-config>("--desugaring", <id>)),
 	      !"--desugaring on/off : turn desugaring on or off (default: on)")
 
-  parse-stratego =
+  io-parse-stratego =
     xtc-io-wrap(parse-stratego-options, 
       where(<extend-config> ("-I", ["./", <xtc-find-path> "StrategoRenamed.sdf"]))
       ; parse-module

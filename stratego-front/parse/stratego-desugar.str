@@ -8,7 +8,7 @@ signature
 
 strategies
  
-  stratego-desugar = 
+  io-stratego-desugar = 
     io-wrap(topdown(repeat(Desugar); try(DesugarOnce)))
 
 rules
