@@ -396,6 +396,7 @@ strategies
    * Checks if a string is quoted with the given character.
    *
    * @type (Char, String) -> (Char, String)
+   * @obsolete use is-quoted(|c)
    */
   is-quoted =
     obsolete(!"<is-quoted> (c, s); use is-quoted(|c)")
@@ -413,6 +414,7 @@ strategies
 
   /**
    * @type (Char, List(Char)) -> (Char, List(Char))
+   * @obsolete use is-quoted-chars(|c)
    */
   is-quoted-chars =
     obsolete(!"<is-quoted-chars> (c, s); use is-quoted-chars(|c)")
@@ -423,6 +425,9 @@ strategies
 
 strategies
 
+  /**
+   * @obsolete use string-to-int
+   */
   string-to-num =
     obsolete(!"string-to-num; use string-to-int")
     ; string-to-int

@@ -12,11 +12,15 @@ strategies
 
  /**
   * Prints integers ij as characters to file (using ASCII encoding).
-  * 
+  *
   * E.g. <printascii> (file, [i1, ..., in])
+  *
+  * @obsolete use streams and fputc
   */
   printascii = 
-    ?(name, strs); where(prim("SSL_printascii", name, strs))
+    obsolete(!"printascii; use fputc")
+    ; ?(name, strs)
+    ; where(prim("SSL_printascii", name, strs))
 
 /**
  * Character based input

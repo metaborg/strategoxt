@@ -95,6 +95,7 @@ strategies
 
   /**
    * Writes a String to stdout with a trailing newline and returns stdout.
+   *
    * @type String -> Stream
    */
   puts =
@@ -102,7 +103,8 @@ strategies
 
   /**
    * Writes a Char to a Stream
-   * @type Char * Stream -> Stream
+   *
+   * @type (Char, Stream) -> Stream
    */
   fputc =
     ?(c, Stream(stream)); prim("SSL_fputc", c, stream); !Stream(<id>)
