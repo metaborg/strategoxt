@@ -35,11 +35,11 @@ strategies
 strategies // to parse a pretty-print table in pp-table syntax to aterms
 
   ensure-pp-table-parsed =
-       has-extension(!"af")
+       has-extension(|"af")
     <+ must-be-pp; lookup-or-parse
 
   must-be-pp =
-        has-extension(!"pp")
+        has-extension(|"pp")
     <+ log(|Error(),<concat-strings>["Pretty-print table must have extension .pp.af or .pp :", <id>]) ; <exit>1
 
   lookup-or-parse =
