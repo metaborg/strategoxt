@@ -2,7 +2,7 @@ module pp-stratego
 imports liblib stratego-parenthesize
 strategies
 
-  pp-stratego =
+  io-pp-stratego =
     option-wrap(pp-stratego-options <+ io-options,
       xtc-io(
         (where(<get-config> "--abstract")
