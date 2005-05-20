@@ -245,9 +245,24 @@ strategies
   giving-up = 
     <fatal-error>["giving-up"]
 
+  /**
+   * Logs an obsolete strategy message with the given message.
+   *
+   * @param Strategy that produces a string message.
+   * @type  a -> a
+   */
   obsolete(msg) = 
     log(|Warning(), <conc-strings> ("program uses obsolete strategy ", <msg> ()))
 
+  /**
+   * Tries to apply s and prints msg to stderr if this fails.
+   * Risky preserves the failure of s: if s fails, then risky will
+   * fail as well.
+   *
+   * @param Strategy that produces a string message
+   * @param Strategy to apply
+   * @type  a -> a
+   */
   risky(msg, s) = 
     restore(s, debug(msg))
 
