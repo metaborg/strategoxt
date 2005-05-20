@@ -21,22 +21,57 @@ strategies
    */
   addr = ?(x,y); prim("SSL_addr",x,y)
 
+  /**
+   * Subtracts two numbers (integer or real)
+   */
   subt  = ?(x,y); (prim("SSL_subti",x,y) <+ prim("SSL_subtr",x,y))
+
+  /**
+   * Subtracts two integers
+   */
   subti = ?(x,y); prim("SSL_subti",x,y)
+
+  /**
+   * Subtracts two reals
+   */
   subtr = ?(x,y); prim("SSL_subtr",x,y)
 
+  /**
+   * Multiplies two numbers (integer or real)
+   */
   mul   = ?(x,y); (prim("SSL_muli",x,y) <+ prim("SSL_mulr",x,y))
+
+  /**
+   * Multiplies two integers
+   */
   muli  = ?(x,y); prim("SSL_muli",x,y)
+
+  /**
+   * Multiplies two reals
+   */
   mulr  = ?(x,y); prim("SSL_mulr",x,y)
 
+  /**
+   * Divides two numbers (integer or real)
+   */
   div   = ?(x,y); (prim("SSL_divi",x,y) <+ prim("SSL_divr",x,y))
+
+  /**
+   * Divides two integers
+   */
   divi  = ?(x,y); prim("SSL_divi",x,y)
+
+  /**
+   * Divides two reals
+   */
   divr  = ?(x,y); prim("SSL_divr",x,y)
 
+  /**
+   * Returns the modulo (remainder after division) of two numbers
+   */
   mod = ?(x,y); prim("SSL_mod",x,y)
 
   gt	= ?(x,y); test(prim("SSL_gti",x,y) <+ prim("SSL_gtr",x,y))
-
   gti	= ?(x,y); test(prim("SSL_gti",x,y))
   gtr	= ?(x,y); test(prim("SSL_gtr",x,y))
 
@@ -65,7 +100,7 @@ strategies
   even = where(<mod> (<id>, 2) => 0)
 
   /**
-   * @type  (Int, * Int -> Int
+   * @type (Int, Int) -> Int
    */
   max = gt < Fst + Snd
   min	= gt < Snd + Fst
@@ -77,73 +112,6 @@ strategies
   neg = where(<lt>  (<id>, 0))
 
   int   = ?x; prim("SSL_int",x)
-
-  int-to-string = ?x; prim("SSL_int_to_string",x)
-  string-to-int = ?x; prim("SSL_string_to_int",x)
-
-strategies
-
-
- /**
-  * @type String -> Int
-  * @inc hex-string-test
-  */
-  hex-string-to-int = <generic-string-to-int> (<id>, 16)
-
- /**
-  * @type String -> Int
-  * @inc dec-string-test
-  */
-  dec-string-to-int = <generic-string-to-int> (<id>, 10)
-
-  oct-string-to-int = <generic-string-to-int> (<id>, 8)
-
- /**
-  * @type String -> Int
-  * @inc bin-string-test
-  */
-  bin-string-to-int = <generic-string-to-int> (<id>, 2)
-
-  // :: List(Char) -> Int
-  hex-chars-to-int = <generic-chars-to-int> (<id>, 16)
-  dec-chars-to-int = <generic-chars-to-int> (<id>, 10)
-  oct-chars-to-int = <generic-chars-to-int> (<id>, 8)
-  bin-chars-to-int = <generic-chars-to-int> (<id>, 2)
-
-  // :: String * Int -> Int
-  generic-string-to-int =
-      (explode-string, id)
-    ; generic-chars-to-int
-
-  // :: List(Char) * Int -> Int
-  generic-chars-to-int = 
-    neg-chars-to-int <+ pos-chars-to-int
-
-  // :: List(Char) * Int -> Int
-  neg-chars-to-int:
-    (['-' | chars], radix) -> <mul> (-1, <pos-chars-to-int> (chars, radix))
-      where <gt> (<length> chars, 0)
-
-  // :: List(Char) * Int -> Int
-  pos-chars-to-int =
-      ?([char | chars], r)
-    ; <foldl(<add> (<char-to-digit> (<Fst>, r), <mul> (<Snd>, r)))>
-        (chars, <char-to-digit> (char, r))
-
-  // :: Char -> Int
-  char-to-digit:
-    (x, radix) -> result
-      where <is-num> x
-          ; <subt> (x, '0') => result
-          ; <lt> (result, radix)
-
-  char-to-digit:
-    (x, 16) -> <add> (10, <subt> (x, 'a'))
-      where <leq-leq> ('a', x, 'f')
-
-  char-to-digit:
-    (x, 16) -> <add> (10, <subt> (x, 'A'))
-      where <leq-leq> ('A', x, 'F')
 
 strategies
 
@@ -181,8 +149,18 @@ strategies
   maxS  = where((string-to-int, string-to-int); max)
   minS  = where((string-to-int, string-to-int); min)
 
-  // :: Int -> Int
+  /**
+   * Increments a number.
+   *
+   * @type Int -> Int
+   */
   inc = <add>  (<id>, 1)
+
+  /**
+   * Decrements a number.
+   *
+   * @type Int -> Int
+   */
   dec = <subt> (<id>, 1)
 
   log2 = 
@@ -206,10 +184,9 @@ strategies
       end
 
 signature
-  sorts IntI
-  // subsorts Int < IntI
   constructors
-    Infinite: IntI
+    Infinite : IntI
+             : Int -> IntI
 
 rules
 
@@ -236,3 +213,92 @@ strategies
 
   next-counter =
     ?c; get-counter; inc; where(<set-counter> (c, <id>))
+
+strategies
+
+  int-to-string = ?x; prim("SSL_int_to_string",x)
+  string-to-int = ?x; prim("SSL_string_to_int",x)
+
+/**
+ * Conversion of strings to integers
+ */
+strategies
+
+ /**
+  * @type String -> Int
+  * @inc hex-string-test
+  */
+  hex-string-to-int = <generic-string-to-int> (<id>, 16)
+
+ /**
+  * @type String -> Int
+  * @inc dec-string-test
+  */
+  dec-string-to-int = <generic-string-to-int> (<id>, 10)
+
+  oct-string-to-int = <generic-string-to-int> (<id>, 8)
+
+ /**
+  * @type String -> Int
+  * @inc bin-string-test
+  */
+  bin-string-to-int = <generic-string-to-int> (<id>, 2)
+
+  /**
+   * @type List(Char) -> Int
+   */
+  hex-chars-to-int = <generic-chars-to-int> (<id>, 16)
+
+  /**
+   * @type List(Char) -> Int
+   */
+  dec-chars-to-int = <generic-chars-to-int> (<id>, 10)
+
+  /**
+   * @type List(Char) -> Int
+   */
+  oct-chars-to-int = <generic-chars-to-int> (<id>, 8)
+
+  /**
+   * @type List(Char) -> Int
+   */
+  bin-chars-to-int = <generic-chars-to-int> (<id>, 2)
+
+  /**
+   * @type String * Int -> Int
+   */
+  generic-string-to-int =
+      (explode-string, id)
+    ; generic-chars-to-int
+
+  /**
+   * @type List(Char) * Int -> Int
+   */
+  generic-chars-to-int = 
+    neg-chars-to-int <+ pos-chars-to-int
+
+  // :: List(Char) * Int -> Int
+  neg-chars-to-int:
+    (['-' | chars], radix) -> <mul> (-1, <pos-chars-to-int> (chars, radix))
+      where <gt> (<length> chars, 0)
+
+  // :: List(Char) * Int -> Int
+  pos-chars-to-int =
+      ?([char | chars], r)
+    ; <foldl(<add> (<char-to-digit> (<Fst>, r), <mul> (<Snd>, r)))>
+        (chars, <char-to-digit> (char, r))
+
+  // :: Char -> Int
+  char-to-digit:
+    (x, radix) -> result
+      where <is-num> x
+          ; <subt> (x, '0') => result
+          ; <lt> (result, radix)
+
+  char-to-digit:
+    (x, 16) -> <add> (10, <subt> (x, 'a'))
+      where <leq-leq> ('a', x, 'f')
+
+  char-to-digit:
+    (x, 16) -> <add> (10, <subt> (x, 'A'))
+      where <leq-leq> ('A', x, 'F')
