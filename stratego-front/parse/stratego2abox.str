@@ -36,6 +36,7 @@ strategies
         end
       end
 
+
 rules
 
   stratego-to-abox : 
