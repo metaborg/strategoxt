@@ -63,8 +63,8 @@ strategies
   /**
    * Wraps a strategy on a list of chars in a strategy on a string.
    *
-   * @type s List(Char) -> List(Char)
-   * @type   String -> String
+   * @param List(Char) -> List(Char)
+   * @type  String -> String
    */
   string-as-chars(s) =
       explode-string
@@ -76,8 +76,7 @@ strategies
   /**
    * Concats a tuple of two Strings.
    *
-   * @warning  doesn't accept tuples with more than two string.
-   * @type     String * String -> String
+   * @type String * String -> String
    */
   conc-strings =
      ?(_,_)   ; strcat 
@@ -256,13 +255,13 @@ rules
 strategies
 
   /**
-   * param  c () -> Char
+   * param  () -> Char
    * @type  String -> String
    */
   quote(c) = string-as-chars(quote-chars(c))
 
   /**
-   * param  c () -> Char
+   * param  () -> Char
    * @type  List(Char) -> List(Char)
    */
   quote-chars(c) = <quote-chars> (<c> (), <id>)
@@ -294,8 +293,8 @@ strategies
    * Removes the first and last character of a string.
    * The characters must satisfy s.
    *
-   * @param s Char ->? _ 
-   * @type String -> String
+   * @param Char ->? _ 
+   * @type  String -> String
    */
   unquote(s) =
     string-as-chars(unquote-chars(s))
@@ -363,70 +362,83 @@ strategies
   * @inc is-double-quote 5
   * @inc is-double-quote 6
   */
-  is-double-quoted =  where(<is-quoted> ('"',  <id>))
-  is-single-quoted =  where(<is-quoted> ('\'', <id>))
+  is-double-quoted =
+    is-quoted(|'"')
+
+  is-single-quoted =
+    is-quoted(|'\'')
 
   /**
    * @type List(Char) -> List(Char)
    */
-  is-double-quoted-chars = where(<is-quoted-chars> ('"',  <id>))
+  is-double-quoted-chars =
+    is-quoted-chars(|'"')
 
   /**
    * @type List(Char) -> List(Char)
    */
-  is-single-quoted-chars = where(<is-quoted-chars> ('\'', <id>))
+  is-single-quoted-chars =
+    is-quoted-chars(|'\'')
 
   /**
-   * Char * String -> Char * String
+   * Checks if a string is quoted with the given character.
+   *
+   * @param Char
+   * @type  String -> String
+   */
+  is-quoted(|c) =
+    where(
+      explode-string
+      ; is-quoted-chars(|c)
+    )
+
+  /**
+   * Checks if a string is quoted with the given character.
+   *
+   * @type (Char, String) -> (Char, String)
    */
   is-quoted =
-      (id, explode-string)
-    ; is-quoted-chars
+    obsolete(!"<is-quoted> (c, s); use is-quoted(|c)")
+    ; where(
+        ?(c, <id>)
+        ; is-quoted(|c)
+      )
 
   /**
-   * Char * List(Char) -> Char * List(Char)
+   * @param Char
+   * @type List(Char) -> List(Char)
+   */
+  is-quoted-chars(|c) =
+    where(?[c | <last>]; ?c)
+
+  /**
+   * @type (Char, List(Char)) -> (Char, List(Char))
    */
   is-quoted-chars =
-      where(
+    obsolete(!"<is-quoted-chars> (c, s); use is-quoted-chars(|c)")
+    ; where(
         ?(c, <id>)
-      ; ?[c | <last>]; ?c
+      ; is-quoted-chars(|c)
       )
 
 strategies
 
   string-to-num =
-    explode-string;
-    split(!0, id);
-    repeat(S2I2);
-    ( S2I1
-    + S2D0;
-      repeat(S2D2);
-      S2D1
-    )
-
-rules
-
-  S2I1 : (n, [])         -> n
-
-  S2I2 : (n, [m|ms]) -> (<add>(<mul>(10, n), <subt>(m, 48)), ms)
-         where <geq>(m, 48); <leq>(m, 57)
-
-  S2D0 : (n, [46|ys])  -> (n, 10, ys)
-
-  S2D1 : (n, f, []) -> n
-
-  S2D2 : (n, f, [m|ms]) -> 
-	 (<add>(n, <div>(<subt>(m, 48), f)), <mul>(f, 10), ms)
-         where <geq>(m, 48); <leq>(m, 57)
+    obsolete(!"string-to-num; use string-to-int")
+    ; string-to-int
 
 strategies 
 
  /**
+  * Succeeds if all the characters of this string are lowercase
+  *
   * @type  String -> String
   */
   lower-case = string-as-chars(lower-case-chars)
 
  /**
+  * Succeeds if all the characters of this string are uppercase
+  *
   * @inc upper-case-test
   */
   upper-case = string-as-chars(upper-case-chars)
@@ -447,7 +459,7 @@ strategies
    * it returns a list of tokens for a given string.
    *
    * @param List of separate characters
-   * @type  String -> [String]
+   * @type  String -> List(String)
    */
   string-tokenize(|sepchars) =
     string-tokenize({c: ?c; <fetch(?c)> sepchars})
@@ -888,35 +900,56 @@ shuffle-word-mid =
  ; where(<shuffle-forced; reverse> mid => shuffledmid)
  ; <concat; implode-string> [[i],shuffledmid, [l]])
 
-/**
- * This module defines some operations on characters, which
- * are encoded in ASCII in Stratego.
- */
 strategies
 
- /**
-  * @inc is-alphanum-test
-  */
+  /**
+   * @inc is-alphanum-test
+   */
   is-alphanum = is-num + is-alpha
   is-alpha = is-upper + is-lower
 
-  // :: Char -> fail?
+  /**
+   * @type Char -> Char
+   */
   is-hexnum =
       is-num
     + where(<leq-leq> ('a', <id>, 'f'))
     + where(<leq-leq> ('A', <id>, 'F'))
 
- /**
-  * @inc is-num-test
-  * @inc is-not-num-test
-  */
-  is-num   = where(<leq-leq> ('0', <id>, '9'))
-  is-upper = where(<leq-leq> ('A', <id>, 'Z'))
-  is-lower = where(<leq-leq> ('a', <id>, 'z'))
-  is-ascii = where(<leq-leq> ( 32, <id>, 127))
+  /**
+   * @inc is-num-test
+   * @inc is-not-num-test
+   */
+  is-num =
+    where(<leq-leq> ('0', <id>, '9'))
+
+  /**
+   * @type Char -> Char
+   */
+  is-upper =
+    where(<leq-leq> ('A', <id>, 'Z'))
+
+  /**
+   * @type Char -> Char
+   */
+  is-lower =
+    where(<leq-leq> ('a', <id>, 'z'))
+
+  /**
+   * @type Char -> Char
+   */
+  is-ascii =
+    where(<leq-leq> ( 32, <id>, 127))
 
   case-char(s) = (to-upper, to-upper); s
 
-  to-upper = is-lower < <subt> (<id>, 32) + id
-  to-lower = is-upper < <add>  (<id>, 32) + id
+  /**
+   * @type Char -> Char
+   */
+  to-upper =
+    is-lower < <subt> (<id>, 32) + id
 
+  /**
+   * @type Char -> Char
+   */
+  to-lower = is-upper < <add>  (<id>, 32) + id

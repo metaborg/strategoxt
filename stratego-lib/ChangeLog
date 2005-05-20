@@ -1,3 +1,14 @@
+2005-05-20  Martin Bravenboer <martin@cs.uu.nl>
+
+	* spec/term/string.str: string-to-num is obsolete and redirects to
+	string-to-int. The rules for string-to-num have been removed.
+
+	* spec/term/string.str: is-*-quoted-* with tuple input is
+	obsolete. The preferred strategy is takes a char term argument and
+	a plain string as the current term.
+
+	* spec/term/string.str: fixed some xdoc comments.	
+
 2005-05-14  Martin Bravenboer <martin@cs.uu.nl>
 
 	* spec/util/config/options.str: option-wrap no longer invokes the
