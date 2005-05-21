@@ -4,43 +4,18 @@ strategies
 
   main = 
     test-suite(!"io-test",
-      //test1;
-      //test2;
-      test3
-    ; aterm-io-tests
+      char-io-tests
+      ; aterm-io-tests
     )
 
-  test1 =
-    where(<open-file> ("io-test.r", "r"));
-    apply-test(!"test1"
-	, getchar 
-	, !"io-test.r"
-	, !92
-	);
-    where(<close-file> "io-test.r")
-
-  test2 =
-    where(<open-file> ("io-test.r", "r"));
-    apply-test(!"test2a"
-	, rec x({where(<getchar> "io-test.r" => c; not(10)); ![c | <x>()]} <+ ![]);
-	  implode-string
-	, !"io-test.r"
-	, !"\\literate[io-test]"
-	);
-    apply-test(!"test2b"
-	, split(readline, readline); 
-	  (implode-string, implode-string)
-	, !"io-test.r"
-	, !("","\t\\begin{abstract}")
-	);
-    where(<close-file> "io-test.r")
-
-  test3 =
-    apply-test(!"test3"
-	, printnl
-	, !(stdout, ["\"\\\\/\""])
-	, !(stdout, ["\"\\\\/\""])
-	)
+  char-io-tests =
+    where(<fopen> ("io-test.str", "r") => stream)
+    ; apply-test(!"read-text-line 1"
+      , !(<read-text-line>, <read-text-line>)
+      , !stream
+      , !("module io-test", "imports sunit io")
+      )
+    ; where(<fclose> stream)
 
   aterm-io-tests =
       apply-test(!"ATerm IO -- 1"
