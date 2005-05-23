@@ -23,6 +23,9 @@ strategies
 rules
 
   Ensugar :
+    Op("", xs) -> Tuple(xs)
+
+  Ensugar :
     Prim(f, xs) -> Prim(<double-quote> f, xs)
       where <not(is-double-quoted)> f
 

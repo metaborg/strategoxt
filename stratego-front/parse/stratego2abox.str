@@ -169,17 +169,17 @@ rules
 
   generic-str-to-abox(|cons,op) =
     let 
-      cons-to-list(|cons) =
-      rec x(
-        (  \ cons#([a,cons#([b,c])]) -> [a,b|<x>c] \ 
-        <+ \ cons#([a,b]) -> [a,b] \ 
+      cons-to-list =
+      rec x({a,b,c:
+        (  ?cons#([a,cons#([b,c])]) ; ![a,b|<x>c]
+        <+ ?cons#([a,b]) ; ![a,b]  
         <+ ![<id>] )
-      )
-    in
+      })
+    in 
       ?cons#([s1,s2])
     ; worstcase-nicecase(
         where( 
-          cons-to-list(|cons) => [s1'|ss] 
+          cons-to-list => [s1'|ss] 
         ; <map(\ s -> |[ H [ ~lit:op ~s ] ]| \)>ss => ss' 
         )
       ; !|[ V is=0 [ ~s1' ~*ss' ] ]|
@@ -236,14 +236,17 @@ rules
     
 rules
 
+  stratego-to-abox :
+    SVar(m@Mod(_,_)) -> m
+    
   stratego-to-abox : 
-    SVar(name) -> S(name)
+    SVar(name) -> S(<is-string>name)
 
   stratego-to-abox : 
     Var(name) -> S(name)
 
   stratego-to-abox : 
-    ListVar(name) -> S(name)
+    ListVar(name) -> name
 
 rules
   
@@ -320,7 +323,7 @@ rules // tuples and list
     ) 
   ; pp-generic-list(id, !|[ "[]" ]|, !|[ "[" ]|, !|[ "]" ]|)
 
-  stratego-to-abox =
+  stratego-to-abox-prefer =
     ?Anno(t,as) 
   ; <pp-generic-list(id, !|[ "{}" ]|, !|[ "{" ]|, !|[ "}" ]|)>as => as'
   ; !|[ H hs=0 [ ~t ~as' ] ]|
@@ -398,15 +401,15 @@ rules
 rules
 
   stratego-to-abox : 
-   RDefNoArgs(name,body) -> |[ V is=2 [ H[ ~lit:name KW["="]] ~body ] ]|
+   RDefNoArgs(name,body) -> |[ V is=2 [ H[ ~lit:name KW[":"]] ~body ] ]|
 
   stratego-to-abox : 
-   RDef(name,args,body) -> |[ V is=2 [ H[ H hs=0[ ~lit:name ~args' ] KW["="]] ~body ] ]|
+   RDef(name,args,body) -> |[ V is=2 [ H[ H hs=0[ ~lit:name ~args' ] KW[":"]] ~body ] ]|
     where
       <list-to-args>args => args'
       
   stratego-to-abox : 
-   RDefT(name,args,argt,body) -> |[ V is=2[ H[ H hs=0[ ~lit:name "(" ~args' "|" H hs=0[ ~argt' ")"] "="] ~body ] ] ]|
+   RDefT(name,args,argt,body) -> |[ V is=2[ H[ H hs=0[ ~lit:name "(" ~args' "|" H hs=0[ ~argt' ")"] ":"]] ~body ] ]|
     where
       <separate-by-comma>args => args'
     ; <separate-by-comma>argt => argt'
@@ -579,6 +582,144 @@ rules
 
 
 /**
+ * Dynamic rules
+ */
+rules
+
+  stratego-to-abox :
+    ScopeLabels(ls) -> |[ H hs=0[ KW["~"] ~ls ] ]|
+    
+  stratego-to-abox =
+    ?GenDynRules(rs)
+  ; worstcase-nicecase(
+      !|[ V[ V is=2 [ H [ KW["rules"] "("] ~*rs ] ")" ] ]|
+    , !|[ H[ KW["rules"] "(" ~*rs ")" ] ]|
+    )
+
+  stratego-to-abox :
+    AddScopeLabel(r,lbl) -> |[ H hs=0 [ ~r "+" ~lbl] ]| 
+   
+  stratego-to-abox :
+    UndefineDynRule(r,lhs) -> |[ V is=2 [H hs=1 [~r ":-"] ~lhs ] ]| 
+    
+  stratego-to-abox :
+    SetDynRule(r,rl) -> |[ V is=2 [H hs=1 [~r ":" ] ~rl ] ]| 
+
+  stratego-to-abox :
+    AddDynRule(r,rl) -> |[ V is=2 [H hs=1 [~r ":+"] ~rl ] ]| 
+
+  stratego-to-abox :
+    SetDynRuleMatch(r,lhs) -> |[ V is=2 [H hs=1 [~r ":" ] ~lhs ] ]| 
+
+  stratego-to-abox =
+    ?SetDynRuleDepends(r,rl,ds) 
+  ; worstcase-nicecase(
+      !|[ V is=2 [H hs=1 [ ~r KW[":"] ] ~rl H[KW["depends"] KW["on"] ~ds ]] ]| 
+    , !|[ H hs=1 [ ~r ":" ~rl KW["depends"] KW["on"] ~ds ] ]| 
+    )
+
+  stratego-to-abox :
+    LabeledDynRuleId(r,l)  -> |[ H hs=0 [~r "." ~l ] ]| 
+
+  stratego-to-abox :
+    AddLabelDynRuleId(r,l) -> |[ H hs=0 [~r "+" ~l] ]| 
+
+  stratego-to-abox :
+    DynRuleId(r) -> r
+
+  stratego-to-abox :
+    LabeledDynRuleScopeId(r,l) -> |[ H hs=0 [~r "." ~l ] ]| 
+
+  stratego-to-abox-prefer :
+    DynRuleScopeId(r) -> S(<is-string>r)
+  
+  stratego-to-abox :
+    DynRuleScopeId(r) -> r
+
+  stratego-to-abox-prefer :
+    DynRuleScope(ss@ScopeLabels(_),s) -> |[ V[V is=3[H hs=0[KW["{|"] ~ss KW[":"]] ~s ] KW["|}"]] ]| 
+
+  stratego-to-abox :
+    DynRuleScope(ss,s) -> |[ V[V is=3[H hs=0[KW["{|"] ~ss' KW[":"]] ~s ] KW["|}"]] ]| 
+    where
+      <separate-by-comma> ss => ss'
+    
+
+  stratego-to-abox : 
+   RDecNoArgs(name) -> S(name)
+
+  stratego-to-abox : 
+   RDec(name,args) -> |[ H hs=0[ ~lit:name ~args' ] ]|
+    where
+      <list-to-args>args => args'
+      
+  stratego-to-abox : 
+   RDecT(name,args,argt) -> |[ H hs=0[ ~lit:name "(" ~args' "|" H hs=0[ ~argt' ")"] ] ]|
+    where
+      <separate-by-comma>args => args'
+    ; <separate-by-comma>argt => argt'
+
+
+  stratego-to-abox =
+    ( is-int + is-real ) ; write-to-string
+
+
+
+rules
+
+  stratego-to-abox =
+    ?ScopeDefault(s)
+  ; worstcase-nicecase(
+      !|[ H hs=0[KW["{"] ~s KW["}"]] ]|
+    , !|[ H hs=0[KW["{"] ~s KW["}"]] ]|
+    )
+
+
+  stratego-to-abox =
+    ?Scope(ss,s)
+  ; where( <map(\ s -> S(s) \) ; separate-by-comma> ss => ss' )
+  ; worstcase-nicecase(
+      !|[ V is=0 [
+            V is=2 [
+              H hs=0 [ "{" ~ss' ":"] 
+              ~s
+            ]
+            "}"
+          ]
+      ]|
+    , !|[ H hs=0[KW["{"] V[H[~ss' KW[":"]] ~s] KW["}"]] ]|
+    )
+  
+
+rules
+  
+  stratego-to-abox :
+    OverlayNoArgs(n,ov) -> |[ H [ ~lit:n "=" ~ov ] ]|
+
+  stratego-to-abox :
+    Overlay(n,ps,ov) -> |[ V is=2[H[~lit:n KW["("] ~ps' KW[")"] KW["="]] ~ov ] ]| 
+    where
+      <map(\ s -> S(s) \) ; separate-by-comma> ps => ps'
+
+
+
+rules
+
+  stratego-to-abox :
+    ModCongNoArgs(c) -> c
+
+  stratego-to-abox :
+    ModCong(c,ps) -> |[ H hs=0 [ ~c "(" ~ps' ")" ] ]|
+    where
+      <separate-by-comma> ps => ps'
+
+  stratego-to-abox :
+    Mod(c,t) -> |[ H hs=0 [ ~lit:c "^" ~lit:t ] ]|
+
+
+
+
+/**
  * Rewrites a list of boxes to a single box, where the elements are
  * separated by commas and between parenthesis.
  *
@@ -647,13 +788,6 @@ rules
    Con3 -> KW["["] _1 KW["where"] _2 KW["]"],
    Con4 -> KW["["] _1 KW["where"] _2 KW["]"] KW["("] _3 KW[")"],
    
-   RDecNoArgs            -> _1,
-   RDec                  -> H hs=0 [_1 KW["("] H[_2] KW[")"]],
-   RDec.2:iter-star-sep  -> H hs=0 [_1 KW[","]],
-
-   RDecT                 -> H hs=0 [_1 KW["("] H[_2 KW["|"] _3] KW[")"]],
-   RDecT.2:iter-star-sep -> H hs=0 [_1 KW[","]],
-   RDecT.3:iter-star-sep -> H hs=0 [_1 KW[","]],
 
    RuleNames                              -> KW["~"] _1,
    DynRuleIntersectFix                    -> H hs=0[KW["/"] _1 KW["\\*"]] _2,
@@ -665,22 +799,9 @@ rules
    DynRuleUnion                           -> _1 H hs=0[KW["\\"] _2 KW["/"]] _3,
    DynRuleUnion.2:iter-star-sep           -> H hs=0[_1 KW[","]],
 
-   SRDefNoArgs -> _1 KW["::"] _2,
-   SRDef -> _1 KW["("] _2 KW[")"] KW["::"] _3,
-   SRDef.2:iter-star-sep -> _1 KW[","],
-
-   SRDefT                           -> _1 KW["("] _2 KW["|"] _3 KW[")"] KW["::"] _4,
-   SRDefT.2:iter-star-sep           -> _1 KW[","],
-   SRDefT.3:iter-star-sep           -> _1 KW[","],
-
-   
    Cong			    	    -> H hs=0[_1 KW["("] H[_2] KW[")"]],
    Cong.2:iter-star-sep 	    -> H hs=0[_1 KW[","]],
 
-   ScopeDefault -> H hs=0[KW["{"] _1 KW["}"]],
-   Scope -> H hs=0[KW["{"] V[H[_1 KW[":"]] _2] KW["}"]],
-   Scope.1:iter-star-sep -> H hs=0[_1 KW[","]],
-   
    AngleStrat -> H hs=0[KW["<"] _1 KW[">"]],
    ParenStrat -> H hs=0[KW["("] _1 KW[")"]],
   
@@ -710,29 +831,23 @@ rules
    ],
 
 
-   ModCongNoArgs -> _1,
-   ModCong -> _1 KW["("] _2 KW[")"],
-   ModCong.2:iter-star-sep -> _1 KW[","],
-   Mod -> _1 KW["^"] _2,
+   --- WON'T!
+   Mark -> "@mark@"
 
-   ScopeLabels                  -> KW["~"] _1,
-   GenDynRules 			-> V[V is=2[H[KW["rules"] KW["("]] _1] KW[")"]],
-   GenDynRules.1:iter-star 	-> _1,
+   GChoice  -> V [_1 H[KW["++"]  _2 ]],
+   LGChoice -> V [_1 H[KW["<++"] _2 ]],
+   RGChoice -> V [_1 H[KW["++>"] _2 ]],
+   
+   StratRuleNoCond -> _1 KW["->>"] _2,
+   StratRule -> _1 KW["->>"] _2 KW["where"] _3,
 
-   AddScopeLabel          -> H hs=0 [_1 KW["+"] _2],
-   UndefineDynRule        -> V is=2 [H hs=1 [_1 KW[":-"]] _2],
-   SetDynRule             -> V is=2 [H hs=1 [_1 KW[":"] ] _2],
-   AddDynRule             -> V is=2 [H hs=1 [_1 KW[":+"]] _2],
-   SetDynRuleMatch        -> V is=2 [H hs=1 [_1 KW[":"] ] _2],
+   SRDefNoArgs -> _1 KW["::"] _2,
+   SRDef -> _1 KW["("] _2 KW[")"] KW["::"] _3,
+   SRDef.2:iter-star-sep -> _1 KW[","],
 
-   SetDynRuleDepends      -> V is=2 [H hs=1 [_1 KW[":"] ] _2 H[KW["depends"] KW["on"] _3]],
-
-   LabeledDynRuleId  -> H hs=0 [_1 "." _2],
-   AddLabelDynRuleId -> H hs=0 [_1 "+" _2],
-   DynRuleId         -> _1,
-
-   LabeledDynRuleScopeId -> H hs=0 [_1 "." _2],
-   DynRuleScopeId        -> _1,
+   SRDefT                           -> _1 KW["("] _2 KW["|"] _3 KW[")"] KW["::"] _4,
+   SRDefT.2:iter-star-sep           -> _1 KW[","],
+   SRDefT.3:iter-star-sep           -> _1 KW[","],
 
    OverrideDynamicRules -> KW["override"] KW["rules"] KW["("] _1 KW[")"],
    OverrideDynamicRules.1:iter-star -> _1,
@@ -742,29 +857,6 @@ rules
 
    ExtendOverrideDynamicRules -> KW["extend"] KW["override"] KW["rules"] KW["("] _1 KW[")"],
    ExtendOverrideDynamicRules.1:iter-star -> _1,
-
-   DynRuleScope -> V[V is=3[H hs=0[KW["{|"] _1 KW[":"]] _2] KW["|}"]],
-   DynRuleScope.1:iter-star-sep -> _1 KW[","],
-
-
-   OverlayNoArgs -> _1 KW["="] _2,
-   Overlay -> V is=2[H[_1 KW["("] _2 KW[")"] KW["="]] _3],
-   Overlay.2:iter-star-sep -> H hs=0[_1 KW[","]],
-
-
-
-
-   --- WON'T!
-   Mark -> "@mark@"
-
-
-
-   GChoice  -> V [_1 H[KW["++"]  _2 ]],
-   LGChoice -> V [_1 H[KW["<++"] _2 ]],
-   RGChoice -> V [_1 H[KW["++>"] _2 ]],
-   
-   StratRuleNoCond -> _1 KW["->>"] _2,
-   StratRule -> _1 KW["->>"] _2 KW["where"] _3,
 
 
 ]
