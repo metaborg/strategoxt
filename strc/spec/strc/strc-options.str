@@ -243,7 +243,7 @@ strategies
   strc-version =
     where(<printnl>(stdout, 
 	  ["STRC ", <get-config> "VERSION", "\n\n",
-	   "Copyright (C) 1998-2003 Eelco Visser <visser@acm.org>\n",
+	   "Copyright (C) 1998-2005 Eelco Visser <visser@acm.org>\n",
 	   "\n",
 	   "This library is free software; you can redistribute it and/or\n",
 	   "modify it under the terms of the GNU Lesser General Public\n",
