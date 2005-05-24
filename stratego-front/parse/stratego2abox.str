@@ -300,6 +300,9 @@ rules
   stratego-to-abox : 
     Char(i) -> S(i)
 
+  stratego-to-abox : 
+    CharCong(i) -> S(i)
+
 rules
 
   stratego-to-abox : 
@@ -315,7 +318,7 @@ rules
 rules // tuples and list
 
   stratego-to-abox =
-    ?Tuple(<id>); pp-generic-list(id, !|[ "()" ]|, !|[ "(" ]|, !|[ ")" ]|)
+    ( ?Tuple(<id>) + \ TupleCong(a,b) -> [a|b] \ ) ; pp-generic-list(id, !|[ "()" ]|, !|[ "(" ]|, !|[ ")" ]|)
 
   stratego-to-abox =
     ( ?List(<id>) 

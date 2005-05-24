@@ -1,0 +1,57 @@
+module pretty-stratego
+imports liblib stratego-parenthesize parse-stratego
+strategies
+
+  io-pretty-stratego =
+    option-wrap(pretty-stratego-options <+ io-options,
+      xtc-io(
+        (   where(<get-config> "--abstract")
+	 <+ parse-stratego-module
+	 )
+        ; xtc-io-transform(
+            parenthesize-Stratego
+          )
+        ; xtc-transform(!"stratego2abox", pass-verbose)
+        ; xtc-transform(!"abox2text", pass-verbose)
+      )
+    )
+
+
+  parse-stratego-module =
+      ?file
+    ; where( ?FILE(filename) )
+    ; log(|Notice(), <concat-strings>["Parsing file ", filename])
+    ; where( FILE(remove-extension => base) ) 
+    ; where( get-meta => meta ) 
+    ; where( <get-syntax; get-parse-table> meta => FILE(tbl) )
+
+    ; xtc-transform(!"sglr",
+        !["-2", "-b", "-p", tbl | <concat>
+           [ <pass-verbose> ()
+           , <pass-sort> meta
+           ]
+         ]
+       )
+    ; xtc-transform(!"asfix-anno-comments",!["--sort","LongCom","--sort","ShortCom"])
+    ; xtc-transform(!"implode-asfix")
+    ; xtc-transform(!"meta-explode",
+        !["-b" | <concat>
+           [ <pass-verbose>
+           , <if <get-config> "--asfix" then !["--asfix"] else ![] end>
+           ]
+         ])
+
+  pretty-stratego-options =
+    Option("-a" + "--abstract", where(<set-config>("--abstract", ())),
+              !"-a | --abstract  source is abstract syntax")
+
+  + ArgOption("-I" + "--Include", where(<extend-config>("-I", [<id>])),
+	      !"-I p|--Include p   include modules from directory p") 
+
+  pass-includes =
+    <get-config<+![]> "-I" ; foldr(id, conc, !["-I", <id>])
+
+signature
+  constructors
+    Comment : a * List(String) -> a
+
