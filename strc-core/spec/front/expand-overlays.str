@@ -16,7 +16,7 @@ strategies
 	; <conc>(<map(Overlay-to-Congdef)> ol*, def2*) => def3*
 
   DeclareExpandOverlay =
-    (?Overlay|[ c(x*) = pt1{^_pt2} ]| <+ ?Overlay|[ c(x*) = pt1{^pt2} ]|)   
+    (?Overlay|[ c(x*) = pt1{^_pt2} ]| <+ ?Overlay|[ c(x*) = pt1{^pt2} ]|) 
     ; rules(
 
         ExpandOverlayInMatch : 
@@ -62,7 +62,7 @@ strategies
 
   ElimBuildDefaultMatch = 
     topdown(try(\ PreTerm|[ _ pt ]| -> PreTerm|[ _ ]| \
-	        <+ \ Term|[ _ pt ]| -> Term|[ _ ]| \ ))
+	        <+ \ Term|[ _ t  ]| -> Term|[ _ ]| \ ))
 
   ElimBuildDefaultBuild = 
     topdown(try(\ PreTerm|[ _ pt ]| -> PreTerm|[ pt ]| \

@@ -23,7 +23,7 @@ strategies
 strategies // Desugaring Strategies
 
   /**
-   * Desugar all definnitions in specification
+   * Desugar all definitions in specification
    *
    * Note that inline bodies of external definitions are _not_
    * desugared. These are assumed to be in StrategoCore. This should
