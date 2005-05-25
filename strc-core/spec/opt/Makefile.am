@@ -7,7 +7,7 @@ SCFLAGS	= -I $(STRATEGO_FRONT)/share/stratego-front \
 	  -I $(srcdir)/../lib \
 	  -I $(srcdir)/../front \
 	  --main $*-io \
-	  --dr new 
+	  --dr new
 #	  --keep 10
 
 LDADD           += $(SSL_LIBS)
@@ -37,11 +37,16 @@ nodist_defs_to_external_defs_SOURCES = defs-to-external-defs.c
 nodist_effects_analysis_SOURCES = effects-analysis.c
 
 check_PROGRAMS 	 = build-match-laws-test bound-unbound-vars-test \
-		   const-prop-test
+		   const-prop-test bound-unbound-vars-debug \
+		   bound-unbound-vars-debug-norm\
+		   bound-unbound-vars-debug-sci-opt17
 
 nodist_build_match_laws_test_SOURCES=build-match-laws-test.c
 nodist_bound_unbound_vars_test_SOURCES=bound-unbound-vars-test.c
 nodist_const_prop_test_SOURCES=const-prop-test.c
+nodist_bound_unbound_vars_debug_SOURCES=bound-unbound-vars-debug.c
+nodist_bound_unbound_vars_debug_norm_SOURCES=bound-unbound-vars-debug-norm.c
+nodist_bound_unbound_vars_debug_sci_opt17_SOURCES=bound-unbound-vars-debug-sci-opt17.c
 
 TESTS 		 = build-match-laws-test bound-unbound-vars-test \
 		   const-prop-test
@@ -50,3 +55,17 @@ CLEANFILES 	 = $(wildcard *.dep)
 BOOTCLEANFILES 	 = $(wildcard *.c)
 EXTRA_DIST 	 = $(wildcard *.str) $(wildcard *.meta)
 
+
+buv-test : 
+	./bound-unbound-vars-debug -i buv-test.in 2> buv-test.log -o buv-test.out
+	pp-stratego -a --annotations -p Stratego-Sugar-pretty.pp.af -i buv-test.out -o buv-test.out.txt
+
+buv-test-norm : 
+	./bound-unbound-vars-debug-norm -i buv-test.in 2> buv-test.log -o buv-test.out --verbose 10
+	echo foodoo
+	pp-stratego -a --annotations -p Stratego-Sugar-pretty.pp.af -i buv-test.out -o buv-test.out.txt
+
+buv-test-sci-opt17 : 
+	./bound-unbound-vars-debug-sci-opt17 -i buv-test.in 2> buv-test.log -o buv-test.out --verbose 10
+	echo foodoo
+	pp-stratego -a --annotations -p Stratego-Sugar-pretty.pp.af -i buv-test.out -o buv-test.out.txt
