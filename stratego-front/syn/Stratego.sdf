@@ -1,15 +1,18 @@
 module Stratego
-imports
-  Stratego-Layout
-  Stratego-Identifiers
-  Stratego-Constants 
-  Stratego-Modules
-  Stratego-Signatures
-  Stratego-Terms
-  Stratego-Rules
-  Stratego-DynamicRules
-  Stratego-Strategies
-  Stratego-Overlays
+imports Stratego-Sugar
 
-hiddens
-  context-free start-symbols Module
+
+%%imports
+%%  Stratego-Layout
+%%  Stratego-Identifiers
+%%  Stratego-Constants 
+%%  Stratego-Modules
+%%  Stratego-Signatures
+%%  Stratego-Terms
+%%  Stratego-Rules
+%%  Stratego-DynamicRules
+%%  Stratego-Strategies
+%%  Stratego-Overlays
+
+%%hiddens
+%%  context-free start-symbols Module
