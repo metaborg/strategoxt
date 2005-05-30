@@ -53,7 +53,7 @@ fi
 AC_ARG_ENABLE([strc-core],
   AS_HELP_STRING([--enable-strc-core], [build new Stratego compiler]),
   [CORE_ENABLED=$enable_strc_core],
-  [CORE_ENABLED="no"]
+  [CORE_ENABLED="yes"]
 )
 AC_SUBST([CORE_ENABLED])
 
