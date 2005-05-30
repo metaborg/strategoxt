@@ -13,6 +13,8 @@ exports
   context-free syntax
     ID 				  	  -> Typedid {cons("DefaultVarDec")}
 
+  sorts Rule
+
   sorts StrategyParen StrategyCurly StrategyAngle Mod
   context-free syntax
 

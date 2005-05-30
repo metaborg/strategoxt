@@ -16,7 +16,9 @@ exports
     "strategies" Def* 		-> Decl {cons("Strategies")}
     "signature" Sdecl*  	-> Decl {cons("Signature")}
 
+  sorts ImportModName
   context-free syntax
     ModName              -> ImportModName {cons("Import")}
   syntax
     <ModName-CF> "/" "-" -> <ImportModName-CF> {cons("ImportWildcard")}
+

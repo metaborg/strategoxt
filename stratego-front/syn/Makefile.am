@@ -9,7 +9,7 @@ DEFS = \
   Stratego-Amb.def \
   StrategoForTesting.def \
   StrategoStrategoForTesting.def \
-  Stratego-Sugar-in-Stratego.def  \
+  Stratego-Sugar-in-Stratego.def \
   Stratego-Core-in-Stratego.def 
 
 TBLS = \
@@ -39,8 +39,7 @@ PGEN_FLAGS = -m $*
 
 StrategoForTesting.def : \
   StrategoForTesting.sdf \
-  Stratego.def \
-  Stratego-DynamicRules.sdf
+  Stratego.def 
 
 StrategoStrategoForTesting.def : \
   StrategoStrategoForTesting.sdf \
@@ -48,17 +47,7 @@ StrategoStrategoForTesting.def : \
   StrategoStratego.def
 
 Stratego.def : \
-  Stratego.sdf \
-  Stratego-Signatures.sdf \
-  Stratego-Modules.sdf \
-  Stratego-Strategies.sdf \
-  Stratego-Overlays.sdf \
-  Stratego-Constants.sdf \
-  Stratego-Terms.sdf \
-  Stratego-Identifiers.sdf \
-  Stratego-DynamicRules.sdf \
-  Stratego-Rules.sdf \
-  Stratego-Layout.sdf
+  Stratego-Sugar.def
 
 Stratego-Sugar.def : \
   Stratego-Core.def \
@@ -69,7 +58,6 @@ Stratego-Sugar.def : \
   Stratego-Sugar-Overlays.sdf \
   Stratego-Sugar-Constants.sdf \
   Stratego-Sugar-Terms.sdf \
-  Stratego-Identifiers.sdf \
   Stratego-Sugar-DynamicRules.sdf \
   Stratego-Sugar-Rules.sdf \
   Stratego-Sugar-Layout.sdf
@@ -82,7 +70,7 @@ Stratego-Core.def : \
   Stratego-Core-Constants.sdf \
   Stratego-Core-Terms.sdf \
   Stratego-Core-Layout.sdf \
-  Stratego-Identifiers.sdf	 
+  Stratego-Core-Identifiers.sdf	 
 
 StrategoStratego.def : \
   StrategoStratego.sdf \

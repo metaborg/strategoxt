@@ -1,6 +1,6 @@
 module Stratego-Core-Identifiers
 exports
-  sorts ModName
+  sorts ModName ModNamePart
   lexical syntax
     {ModNamePart "/"}+ -> ModName
     [a-zA-Z\.\_] [a-zA-Z0-9\'\.\-\_]* -> ModNamePart
