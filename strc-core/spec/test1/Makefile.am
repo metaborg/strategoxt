@@ -27,8 +27,8 @@ check_PROGRAMS 	= test01 test02 test03 test04 test05		    \
 
 TESTS 		= $(check_PROGRAMS)
 
-test50_LDADD 	= bar.o $(STRATEGORUNLIBS)
-test51_LDADD 	= -L$(SRTS)/lib/srts -lliblib $(STRATEGORUNLIBS)
+#test50_LDADD 	= bar.o $(STRATEGORUNLIBS)
+#test51_LDADD 	= -L$(SRTS)/lib/srts -lliblib $(STRATEGORUNLIBS)
 
 bar.o 		: bar.c
 
@@ -85,18 +85,18 @@ nodist_test39_SOURCES = test39.c
 nodist_test40_SOURCES = test40.c
 nodist_test41_SOURCES = test41.c
 nodist_test43_SOURCES = test43.c
-nodist_test44_SOURCES = test44.c
+#nodist_test44_SOURCES = test44.c
 nodist_test45_SOURCES = test45.c
 nodist_test46_SOURCES = test46.c
 nodist_test47_SOURCES = test47.c
 nodist_test48_SOURCES = test48.c
 nodist_test49_SOURCES = test49.c
-nodist_test50_SOURCES = test50.c
-nodist_test51_SOURCES = test51.c
-nodist_test52_SOURCES = test52.c
-nodist_test53_SOURCES = test53.c
+#nodist_test50_SOURCES = test50.c
+#nodist_test51_SOURCES = test51.c
+#nodist_test52_SOURCES = test52.c
+#nodist_test53_SOURCES = test53.c
 nodist_test54_SOURCES = test54.c
-nodist_test55_SOURCES = test55.c
+#nodist_test55_SOURCES = test55.c
 nodist_test56_SOURCES = test56.c
 nodist_test57_SOURCES = test57.c
 nodist_test58_SOURCES = test58.c
