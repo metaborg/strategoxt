@@ -9,14 +9,14 @@ STRINCLUDES     = -I $(top_srcdir)/syn \
                   -I $(XTC)/share/xtc
 
 bin_PROGRAMS 	 = parse-stratego pp-stratego pretty-stratego
-libexec_PROGRAMS = meta-explode stratego-desugar stratego-ensugar stratego2abox stratego-parenthesize
+libexec_PROGRAMS = meta-explode stratego2abox stratego-parenthesize
 
 LDADD += $(SSL_LIBS)
 
 CLEANFILES     	= $(wildcard *.dep)
 
-BOOTCLEANFILES  = meta-explode.c stratego-desugar.c parse-stratego.c \
-		  pp-stratego.c stratego-ensugar.c stratego-parenthesize.str
+BOOTCLEANFILES  = meta-explode.c parse-stratego.c \
+		  pp-stratego.c stratego-parenthesize.str
 
 EXTRA_DIST 	= $(wildcard *.str) $(wildcard *.meta) \
 		  $(wildcard *.rtree) $(wildcard *.src) \
