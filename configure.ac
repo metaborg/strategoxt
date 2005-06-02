@@ -66,7 +66,7 @@ AC_SUBST([XTC2_ENABLED])
 
 # Constructing PKGS list
 
-PKGS="autoxt srts stratego-lib"
+PKGS="autoxt srts stratego-front stratego-lib"
 
 if test "x$XTC2_ENABLED" = "xyes"
 then
@@ -79,7 +79,7 @@ else
   XTC_DIR="xtc"
 fi
 
-PKGS="$PKGS stratego-front asfix-tools"
+PKGS="$PKGS asfix-tools"
 
 if test "x$CORE_ENABLED" = "xyes"
 then
