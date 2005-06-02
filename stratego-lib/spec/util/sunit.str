@@ -20,36 +20,36 @@ strategies
     ; report-test
     ; check-for-failures
 
-  apply-test(name, s, 'in, out) =
+  apply-test(name, s, in-term, out) =
     do-test(name,
-            (sunit-create-input('in); s <+ <debug> "  strategy failed"; fail) => tmp;
+            (sunit-create-input(in-term); s <+ <debug> "  strategy failed"; fail) => tmp;
   	    sunit-create-output(out) => tmp'; 
 	    ((!tmp' => tmp)
                <+ (<debug(!"  result not equal : ")> tmp;
                    <debug(!"  expected         : ")> tmp'); fail))
 
-  apply-test(name, s, 'in) =
+  apply-test(name, s, in-term) =
     do-test(name,
-      (sunit-create-input('in); s <+ <debug> "  strategy failed"; fail)
+      (sunit-create-input(in-term); s <+ <debug> "  strategy failed"; fail)
     )
 
-  apply-and-check(name, s, 'in, check) =
+  apply-and-check(name, s, in-term, check) =
     do-test(name,
-      (sunit-create-input('in); s  <+ <debug> "  application failed"; fail)
+      (sunit-create-input(in-term); s  <+ <debug> "  application failed"; fail)
       ; (check <+ (debug(!"  check failed: "); fail))
     )
 
-  apply-and-fail(name, s, 'in) =
-    apply-and-fail(name, s, 'in, !())
+  apply-and-fail(name, s, in-term) =
+    apply-and-fail(name, s, in-term, !())
 
-  apply-and-fail(name, s, 'in, out) =
+  apply-and-fail(name, s, in-term, out) =
     do-test(name,
-	    ((sunit-create-input('in); not(s))
+	    ((sunit-create-input(in-term); not(s))
              <+ <debug> "  succeeded (should fail)"; fail))
 
-  apply-and-show(name, s, 'in) =
+  apply-and-show(name, s, in-term) =
     do-test(name
-	   ,(sunit-create-input('in); s <+ <debug> "  strategy failed"; fail)
+	   ,(sunit-create-input(in-term); s <+ <debug> "  strategy failed"; fail)
             ; <debug> ["  succeeded; result: ", <id>]
            )
 
@@ -58,23 +58,23 @@ strategies
  */
 strategies
 
-  apply-test(s | name, 'in, out) =
-    apply-test(!name, s, !'in, !out)
+  apply-test(s | name, in-term, out) =
+    apply-test(!name, s, !in-term, !out)
 
-  apply-test(s | name, 'in) =
-    apply-test(!name, s, !'in)
+  apply-test(s | name, in-term) =
+    apply-test(!name, s, !in-term)
 
-  apply-and-check(s | name, 'in, check) =
-    apply-and-check(!name, s, !'in, !check)
+  apply-and-check(s | name, in-term, check) =
+    apply-and-check(!name, s, !in-term, !check)
 
-  apply-and-fail(s | name, 'in) =
-    apply-and-fail(!name, s, !'in)
+  apply-and-fail(s | name, in-term) =
+    apply-and-fail(!name, s, !in-term)
 
-  apply-and-fail(s | name, 'in, out) =
-    apply-and-fail(!name, s, !'in, !out)
+  apply-and-fail(s | name, in-term, out) =
+    apply-and-fail(!name, s, !in-term, !out)
 
-  apply-and-show(s | name, 'in) =
-    apply-and-show(!name, s, !'in)
+  apply-and-show(s | name, in-term) =
+    apply-and-show(!name, s, !in-term)
 
 /**
  * Internal helpers

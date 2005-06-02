@@ -24,3 +24,7 @@ nobase_pkgdata_DATA = $(strategolib:.str=.rtree)
 EXTRA_DIST     = $(strategolib) $(nobase_pkgdata_DATA)
 BOOTCLEANFILES = $(nobase_pkgdata_DATA)
 
+.str.rtree :
+	$(ASFIX_TOOLS)/bin/sglri -p ../../stratego-front/syn/Stratego.tbl -i $< -o $@
+
+
