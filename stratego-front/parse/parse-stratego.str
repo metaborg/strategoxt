@@ -33,7 +33,7 @@ strategies
   + Option("--asfix", where(<set-config>("--asfix", 1)), !"--asfix")
 
   + ArgOption("--desugaring", where(<set-config>("--desugaring", <id>)),
-	      !"--desugaring on/off : turn desugaring on or off (default: on)")
+	      !"--desugaring on/off : turn desugaring on or off (default: off)")
 
   io-parse-stratego =
     xtc-io-wrap(parse-stratego-options, 
@@ -82,9 +82,7 @@ strategies
 
     ; where(if-not-silent(read-from ; check-module-name(|base)))
 
-    ; if <get-config> "--desugaring" => off then
-	id 
-      else 
+    ; if <get-config> "--desugaring" => "on" then
         xtc-transform(!"stratego-desugar", !["-b" | <pass-verbose>])
       end
 
