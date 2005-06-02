@@ -27,8 +27,8 @@ pre-parse :
 
 %.rtree : %.str
 	$(STRATEGO_FRONT)/bin/parse-stratego -i $< -o $@ \
-               --default-syntax Stratego-Sugar.tbl \
-               --desugaring off
+               --default-syntax Stratego-Sugar.tbl 
+#               --desugaring off
 
 # PRETTY-PRINTING ####################################################
 
@@ -39,7 +39,7 @@ pre-parse :
 	$(ATERM)/bin/baffle -wt -i $< -o $@
 
 %.ttxt : %
-	$(ATERM_TOOLS)/bin/pp-aterm -i $< -o $@ --verbose 0
+	$(ATERM_FRONT)/bin/pp-aterm -i $< -o $@ --verbose 0
 
 
 # FORMATS ###########################################################
@@ -109,7 +109,7 @@ STRATEGO_FRONT_SHARE = $(top_srcdir)/../stratego-front/sig
 # FRONT-END ###########################################################
 
 %.tree : %.str 
-	../pack/pack-stratego $(SINCLUDES) -i $< -o $@ --desugaring off --verbose 4
+	../pack/pack-stratego $(SINCLUDES) -i $< -o $@ --verbose 6 --desugaring off 
 
 %.tree : %.rtree 
 	../pack/pack-stratego $(SINCLUDES) -i $< -o $@ 

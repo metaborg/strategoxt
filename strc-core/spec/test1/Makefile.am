@@ -1,5 +1,5 @@
-SINCLUDES 	= -I stratego-lib -I $(SRTS)/share/srts
-AM_LDFLAGS	= -L$(STRATEGO_LIB)/lib/stratego-lib -L$(SRTS)/lib/srts -L$(ATERM)/lib -g
+SINCLUDES 	= -I $(prefix)/share/stratego-lib -I $(prefix)/share/srts
+AM_LDFLAGS	= -L$(prefix)/lib/stratego-lib -L$(prefix)/lib/srts -L$(ATERM)/lib -g
 
 STRATEGORUNLIBS = -lstratego-runtime-opt -lstratego-runtime-choice-opt \
 		  -lstratego-lib-native-opt -lATerm-gcc -lm
