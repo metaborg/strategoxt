@@ -118,7 +118,7 @@ strategies
   mark-call =
     Call(id,id)
     //; debug(!"call a: ")
-    ; dr-print-rule-set(|"MarkVar")
+    ///; dr-print-rule-set(|"MarkVar")
     ; fork-MarkVar(id, Call(id, mark-buv))
     //; debug(!"call b: ")
     //; dr-print-rule-set(|"MarkVar")
@@ -138,7 +138,7 @@ strategies
   mark-let =
     Let(id, id)
     //; debug(!"let a: ")
-    ; dr-print-rule-set(|"MarkVar")
+    //; dr-print-rule-set(|"MarkVar")
     ; where(?Let(<tvars>,_); undefine-unbound-MarkVar)
     ; Let(map(fork-MarkVar(
                             mark-buv//; debug(!"let right: "); dr-print-rule-set(|"MarkVar")
