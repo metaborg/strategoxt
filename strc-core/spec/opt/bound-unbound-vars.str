@@ -27,7 +27,7 @@ strategies
    * other. Such variables are annotated with "(un)bound".
    */
 
-  mark-buv = debug(!"mark-buv in: "); dr-print-rule-set(|"MarkVar"); (
+  mark-buv = //debug(!"mark-buv in: "); dr-print-rule-set(|"MarkVar"); (
     mark-match 
     <+ mark-build
     <+ mark-scope
@@ -45,7 +45,7 @@ strategies
     <+ mark-lchoice(mark-buv)
     <+ mark-guardedlchoice(mark-buv)
     <+ all(mark-buv)
-  ); debug(!"mark-buv out: "); dr-print-rule-set(|"MarkVar")
+  //); debug(!"mark-buv out: "); dr-print-rule-set(|"MarkVar")
 
 strategies
 
@@ -137,12 +137,13 @@ strategies
 
   mark-let =
     Let(id, id)
-    ; debug(!"let a: ")
+    //; debug(!"let a: ")
     ; dr-print-rule-set(|"MarkVar")
     ; where(?Let(<tvars>,_); undefine-unbound-MarkVar)
     ; Let(map(fork-MarkVar(
-                            mark-buv; debug(!"let right: "); dr-print-rule-set(|"MarkVar")
-			  , id; debug(!"let left:"); dr-print-rule-set(|"MarkVar")))
+                            mark-buv//; debug(!"let right: "); dr-print-rule-set(|"MarkVar")
+			  , id//; debug(!"let left:"); dr-print-rule-set(|"MarkVar")
+			   ))
           //; debug(!"let b: ")
           //; dr-print-rule-set(|"MarkVar")
          ,    fork-MarkVar(id, mark-buv))
