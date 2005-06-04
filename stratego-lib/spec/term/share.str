@@ -80,8 +80,9 @@ strategies
 rules
 
   inline : 
-	GraphLet([(a, skel) | graph], t[a]) ->
-	GraphLet([(a, skel) | graph], t[skel])
+	GraphLet([(a, skel) | graph], t) ->
+	GraphLet([(a, skel) | graph], t')
+	where <oncetd((a -> skel))> t => t'
 
   dead : 
 	GraphLet([(a, skel) | graph], t) -> 

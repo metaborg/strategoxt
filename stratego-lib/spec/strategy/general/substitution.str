@@ -1,6 +1,4 @@
-\literate[]
-
-	\begin{abstract}
+/*
 
 	Substituting terms for variables depends mainly on
 	the shape of variables.
@@ -56,7 +54,8 @@
 	that they are binding in and a replacement strategy.
 	See module \verb|rename| for an explanation of these parameters.
 
-\begin{code}
+*/
+
 module strategy/general/substitution
 imports 
   strategy/traversal/simple
@@ -122,4 +121,4 @@ strategies
             , boundin: (term -> term) * (term -> term) * (term -> term) * term -> term
             , paste: (term -> vars) * term -> term )
   = substitute(isvar, varshape, bndvars, boundin, paste, id)
-\end{code}
+

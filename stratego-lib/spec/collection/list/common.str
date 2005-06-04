@@ -506,8 +506,13 @@ strategies
        ,\ (0,t,ts) -> ts \
        ,\ (n,t,ts) -> (<subt>(n,1), t, [<s> t|ts]) where <geq>(n,1) \ )
 
-  thread-map(s) = 
-    rec x(Cons^T(s, x) + Nil^T)
+  thread-map(s) :
+    ([], t) -> ([], t)
+
+  thread-map(s) :
+    ([x | xs], t) -> ([y | ys], t'')
+    where <s> (x, t) => (y, t')
+	; <thread-map(s)> (xs, t') => (ys, t'')
 
  /**
   * @inc number-test

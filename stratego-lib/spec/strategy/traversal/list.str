@@ -1,6 +1,4 @@
-\literate[simple-list-traversal]
-
-	\begin{abstract}
+/*
 
 	The primitive term traversal operators of Stratego (all, some, one)
 	can be combined with the other control operators in a wide
@@ -9,15 +7,13 @@
 	a collection of the most common generic one-pass traversals
 	over terms.
 
-	\end{abstract}
-
-\begin{code}
+*/
 module strategy/traversal/list
 imports 
   strategy/conditional 
   strategy/traversal/simple
 strategies
-\end{code} 
+/*
 
 	Term traversals can be categorized into classes according to
 	how much of the term they traverse and to which parts
@@ -30,7 +26,8 @@ strategies
 	operators define traversals that apply a strategy \verb|s|
 	to all nodes of a term.
 
-\begin{code}
+*/
+
   all-l(s) = [s | s] <+ all(s)
 
 
@@ -48,14 +45,16 @@ strategies
 
   downup2-l(s1, s2) = 
     rec x(s1; all-l(x); s2)
-\end{code} 
+
+/*
 	
 	The traversals above go through all constructors. If it
 	is not necessary to traverse the entire tree, the following
 	versions of the traversals can be used. They are parameterized
 	with a strategy operator \verb|stop| that 
 
-\begin{code}
+*/
+
   topdownS-l(s, stop: (a -> a) * a -> a) = 
     rec x(s; (stop(x) <+ all-l(x)))
 
@@ -67,22 +66,26 @@ strategies
 
   downupS-l(s1, s2, stop: (a -> a) * a -> a) = 
     rec x(s1; (stop(x) <+ all-l(x)); s2)
-\end{code} 
+
+/*
 
 	A variation on bottomup is a traversal that also provides the
 	original term as well as the term in which the direct subterms
 	have been transformed. (also known as a paramorphism?)
 
-\begin{code}
+*/
+
   bottomup-para-l(s) = 
     rec x(!(<id>, <all-l(x)>); s)
-\end{code}
+
+/*
 
 	\paragraph{Frontier}
 
 	Find all topmost applications of \verb|s|;
 
-\begin{code}
+*/
+
   alltd-l(s) = 
     rec x(s <+ all-l(x))
 
@@ -91,5 +94,5 @@ strategies
 
   alltd-fold-l(s1, s2) = 
     rec x(s1 <+ all-l(x); s2)
-\end{code}
+
 	

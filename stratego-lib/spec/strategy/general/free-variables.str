@@ -1,17 +1,14 @@
-\literate[free-variables]
-
-	\begin{abstract}
+/*
 
 	Extraction of free variables from an expression is governed
 	by the shape of variables and the shape of variable bindings.
 
-	\end{abstract}
-
-\begin{code}
+*/
 module strategy/general/free-variables
 imports 
   collection/list/-
-\end{code}
+
+/*
 
 	\paragraph{Parameters of Free Variable Extraction}
 
@@ -43,7 +40,7 @@ imports
 	that maps binding constructs to the list of bound variables,
 	e.g., \verb|Scope(xs, s) -> xs|;
 
-\begin{code}
+*/
 strategies
 
   free-vars(getvars, boundvars) = 
@@ -75,7 +72,8 @@ strategies
                   boundin(split(x, !vs); diff(eq), x, ![])};
              crush(![],union,id)
           <+ crush(![],union,x))
-\end{code}
+
+/*
 
 	\paragraph{Variables are not Leafs}
 
@@ -83,7 +81,7 @@ strategies
 	variables are not leaves of abstract syntax trees, but can
 	contain subterms that again contain variables.
 
-\begin{code}
+*/
 strategies
 
   free-vars2(getvars, boundvars) = 
@@ -109,4 +107,4 @@ strategies
                      crush(![],union,id)}
                 <+ crush(![],union,x)
                ); union)
-\end{code}
+
