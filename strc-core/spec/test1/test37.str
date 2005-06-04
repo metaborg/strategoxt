@@ -25,3 +25,5 @@ strategies
           (id, ?0; ![] <+ x); MkCons );
     reverse;
     implode-string
+
+  sect(s1, s2) = <s1>(<id>,<s2>)
