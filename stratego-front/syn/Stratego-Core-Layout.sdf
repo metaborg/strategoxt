@@ -21,6 +21,7 @@ exports
   lexical restrictions
     Asterisk1 -/- [\/]
     Asterisk2 -/- [\)]
+    Eof       -/- ~[]
 
   lexical syntax
     ShortCom 	-> LAYOUT
@@ -28,4 +29,4 @@ exports
     Ws 		-> LAYOUT
 
   context-free restrictions
-    LAYOUT? -/- [\ \t\n\r]
+    LAYOUT? -/- [\ \t\n\r] | [\/].[\/]
