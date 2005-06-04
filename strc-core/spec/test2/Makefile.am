@@ -1,30 +1,21 @@
-#SINCLUDES	 = -I $(STRATEGO_FRONT)/share/stratego-front \
-#	  	   -I $(STRATEGO_FRONT)/share/sdf/stratego-front \
-#	  	   -I $(srcdir)/../front		     \
-#	  	   -I $(srcdir)/../match		     \
-#	  	   -I $(srcdir)/../opt			     \
-#	  	   -I $(srcdir)/../lib			     \
-#		   -I $(STRATEGO_LIB)/share/stratego-lib
-
-#AM_LDFLAGS	= -L$(SRTS)/lib/srts -L$(ATERM)/lib 
-
-SINCLUDES 	= -I ../test1/stratego-lib -I $(SRTS)/share/srts
-AM_LDFLAGS	= -L$(STRATEGO_LIB)/lib/stratego-lib -L$(SRTS)/lib/srts -L$(ATERM)/lib -g
+SINCLUDES 	= -I $(prefix)/share/stratego-lib -I $(prefix)/share/srts
+AM_LDFLAGS	= -L$(prefix)/lib/stratego-lib -L$(prefix)/lib/srts -L$(ATERM)/lib -g
 
 STRATEGORUNLIBS = -lstratego-runtime-opt -lstratego-runtime-choice-opt \
 		  -lstratego-lib-native-opt -lATerm-gcc -lm
 LDADD 		= $(STRATEGORUNLIBS)
 
-check_PROGRAMS 	= arity-test as-pattern assignment \
-		  comment-test conditional-innermost congruence-arguments \
-		  congruence-thread dynamic-rules-test empty-sections \
-		  flatten-test higher-order-arg	      \
-		  implicit-var-decl improper-list-test innermost-pure \
-		  match-arity match-automaton-test mkterm	      \
-		  number-syntax-test number-test overlay-test	      \
-		  overloading-constructors-test overloading    \
-		  prop quoted-keywords rename-test stratlib-test tail \
-		  thread-test traversal-test twice unification-test 
+check_PROGRAMS 	= arity-test as-pattern assignment			    \
+		  comment-test conditional-innermost congruence-arguments   \
+		  congruence-thread dynamic-rules-test empty-sections	    \
+		  flatten-test higher-order-arg				    \
+		  implicit-var-decl improper-list-test innermost-pure	    \
+		  match-arity match-automaton-test mkterm		    \
+		  number-syntax-test number-test overlay-test		    \
+		  overlay-test-b					    \
+		  overloading-constructors-test overloading		    \
+		  prop quoted-keywords rename-test stratlib-test tail	    \
+		  thread-test traversal-test twice unification-test 	  
 
 # backtrack-test2 backtrack-test3 backtrack-test
 
@@ -62,6 +53,7 @@ nodist_mkterm_SOURCES = mkterm.c
 nodist_number_syntax_test_SOURCES = number-syntax-test.c
 nodist_number_test_SOURCES = number-test.c
 nodist_overlay_test_SOURCES = overlay-test.c
+nodist_overlay_test_b_SOURCES = overlay-test-b.c
 nodist_overloading_constructors_test_SOURCES = overloading-constructors-test.c
 nodist_overloading_SOURCES = overloading.c
 nodist_prop_SOURCES = prop.c
