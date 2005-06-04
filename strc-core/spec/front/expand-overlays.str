@@ -16,27 +16,33 @@ strategies
 	; <conc>(<map(Overlay-to-Congdef)> ol*, def2*) => def3*
 
   DeclareExpandOverlay =
-    (?Overlay|[ c(x*) = pt1{^_pt2} ]| <+ ?Overlay|[ c(x*) = pt1{^pt2} ]|) 
+    (?Overlay|[ c(x*) = pt1{^_pt2} ]| <+ ?Overlay|[ c(x*) = pt1{^pt2} ]|)
+    ; where(<length> x* => n)
     ; rules(
 
-        ExpandOverlayInMatch : 
+        ExpandOverlayInMatch :+ 
           |[ c(t*){^_} ]| -> <tsubstitute> (<zip> (x*, t*), |[ pt1{^_} ]|)
+          where <length> t* => n
 
-        ExpandOverlayInMatch : 
+        ExpandOverlayInMatch :+
           |[ c(t*){^pt3} ]| -> |[ pt4{^pt3} ]|
-          where <not(?PreTerm|[ _ ]|)> pt3
+          where <length> t* => n
+	      ; <not(?PreTerm|[ _ ]|)> pt3
 	      ; <tsubstitute> (<zip> (x*, t*), pt1) => pt4
 
-        ExpandOverlayInBuild : 
+        ExpandOverlayInBuild :+
           |[ c(t*){^[]} ]| -> <tsubstitute> (<zip> (x*, t*), |[ pt1{^pt2} ]|)
+          where <length> t* => n
 
-        ExpandOverlayInBuild : 
+        ExpandOverlayInBuild :+ 
           |[ c(t*){^pt3} ]| -> |[ pt4{^pt3} ]|
-          where <not(?PreTerm|[ [] ]|)> pt3
+          where <length> t* => n
+	      ; <not(?PreTerm|[ [] ]|)> pt3
 	      ; <tsubstitute> (<zip> (x*, t*), pt1) => pt4
 
       )
 
+/*
   DeclareExpandOverlay =
     ?Overlay|[ c(x*) = pt1{^pt2} ]|
     ; where(<not(?PreTerm|[ _ pt2' ]|)> pt2)
@@ -59,6 +65,7 @@ strategies
 	      ; <tsubstitute> (<zip> (x*, t*), pt1) => pt4
 
       )
+*/
 
   ElimBuildDefaultMatch = 
     topdown(try(\ PreTerm|[ _ pt ]| -> PreTerm|[ _ ]| \
