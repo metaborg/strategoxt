@@ -152,7 +152,7 @@ rules
    */
 
   get-definition = 
-    CongruenceDef <+ OverloadedDef; (joindefs, id)
+    OverloadedDef; (joindefs, id)
 
   DefinitionExists :
     (f, (0,0)) -> (f, (n,m))
@@ -168,10 +168,6 @@ rules
   OverloadedDef :
     ((f, n), defs) -> (<Definitions> (f, n), defs)
 
-  CongruenceDef :
-    ((Mod(c, mod), n), defs) -> (fdef, defs)
-    where <DefineCongruence; desugar> (c, mod, n) => fdef
-
 /*
   FilterNonMissingDefs :
     (defs, undefs) -> (defs, undefs')
@@ -183,102 +179,13 @@ rules
 
   MissingDefs : 
     (defs, [f|fs]) -> defs
-    where <map(MissingDefMod <+ MissingDef)> [f|fs]
+    where <map(MissingDef)> [f|fs]
 
   MissingDef : 
     (f, n) -> <error> ["error: operator ", f, "/", n, " undefined "]
 
-  MissingDefMod : 
-    (Mod(c, m), n) -> 
-    <error> ["error: operator ", c, "^", m , "/", n, " undefined "]
-
 /*
 
-Distributing Congruences
-
-	For each constructor \verb|c|, there is a corresponding
-	distributing congruence \verb|c^D|, defined according to
-	the following scheme:
-
-\begin{verbatim}
-  c^D(s1,...,sn) : (c(x1,...,xn),env) -> c(y1,...,yn)
-  where <s1> (x1,env) => y1;
-        ...
-        <sn> (xn, envn) => yn
-\end{verbatim}
-	
-	This is implemented by the following rules.
-*/
-
-overlays
-  OpPair(t1, t2) = Anno(Op("", [t1,t2]), Op("Nil", []))
-
-rules
-  DefineCongruence :
-    (c, "D", (n,m)) -> 
-    SDefT(Mod(c, "D"), ss, [], Scope([env | <conc>(xs1, ys1)], 
-                                SRule(Rule(OpPair(Anno(Op(c, xs2), Wld), Var(env)), 
-                                           Anno(Op(c, ys2), Op("Nil", [])), 
-                                           <seqs> conds))))
-    where new => env;
-          <copy(MkDistApplication); tuple-unzip(id)> (n, Var(env)) 
-              => (conds, ss, xs1, xs2, ys1, ys2)
-
-  MkDistApplication : 
-    env -> (Seq(Build(OpPair(Var(x), env)), 
-		Seq(CallT(SVar(s),[],[]), Match(Var(y)))), 
-            VarDec(s,DefaultStrat), x, Var(x), y, Var(y))
-    where new => s; new => x; new => y
-
-  MkDistApplication : 
-    env -> (Seq(Build(OpPair(Var(x), env)), Seq(CallT(SVar(s),[],[]), Match(Var(y)))), 
-            VarDec(s,DefaultStrat), x, Var(x), y, Var(y))
-    where new => s; new => x; new => y
-
-/*
-
-Threading Congruences
-
-	For each constructor \verb|c|, there is a corresponding
-	threading congruence \verb|c^T|, defined according to
-	the following scheme:
-
-\begin{verbatim}
-  c^T(s1,...,sn) : (c(x1,...,xn),e-first) -> (c(y1,...,yn), e-last)
-  where <s1> (x1,e-first) => (y1,e2);
-              ...;
-        <sn> (xn, en) => (yn, e-last)
-\end{verbatim}
-
-	The following rules implement this scheme:
-
-*/
-
-  DefineCongruence :
-    (c, "T", (0,m)) -> 
-    SDefT(Mod(c, "T"), [], [], Match(OpPair(Anno(Op(c, []), Wld), Wld)))
-    where new => e
-
-  DefineCongruence :
-    (c, "T", (n,m)) -> 
-    SDefT(Mod(c, "T"), ss, [], Scope([e-first | <concat> [es, xs1, ys1]], 
-                                SRule(Rule(OpPair(Anno(Op(c, xs2), Wld), Var(e-first)), 
-                                           OpPair(Anno(Op(c, ys2), Op("Nil",[])), Var(e-last)), 
-                                           <seqs> as))))
-    where <copy(new)> (<add>(n,1), ()) => [e-first | es];
-          <last> es => e-last;
-          <zipr(MkThreadApplication); tuple-unzip(id)> ([e-first | es], es)
-	     => (as, ss, xs1, xs2, ys1, ys2)
-
-  MkThreadApplication : 
-    (e1,e2) -> (Seq(Build(OpPair(Var(x), Var(e1))), 
-		Seq(CallT(SVar(s),[],[]), 
-		    Match(OpPair(Var(y), Var(e2))))), 
-                VarDec(s, DefaultStrat), x, Var(x), y, Var(y))
-    where new => s; new => x; new => y
-
-/*
-
-Copyright (C) 1998-2003 Eelco Visser <visser@acm.org>
+Copyright (C) 1998-2005 Eelco Visser <visser@acm.org>
 
 */

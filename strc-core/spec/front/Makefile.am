@@ -4,23 +4,16 @@ include $(wildcard *.dep)
 SUBDIRS 	 = data
 
 STRINCLUDES 	 = -I $(top_srcdir)/../stratego-front/syn	  \
-	   	   -I $(STRATEGO_FRONT)/share/stratego-front	  \
-	   	   -I $(STRATEGO_FRONT)/share/sdf/stratego-front  \
+	           -I $(srcdir)/../../../stratego-front/syn/ \
+	           -I $(srcdir)/../../../stratego-front/sig/ \
 	   	   -I $(srcdir)/../sig				  \
 	   	   -I $(srcdir)/../match			  \
 	  	   -I $(srcdir)/../lib				  \
 	  	   -I $(srcdir)/../opt	
 
-SCFLAGS  	=  -I $(top_srcdir)/../stratego-front/syn	  \
-	   	   -I $(STRATEGO_FRONT)/share/stratego-front	  \
-	   	   -I $(STRATEGO_FRONT)/share/sdf/stratego-front  \
-	   	   -I $(srcdir)/../sig				  \
-	   	   -I $(srcdir)/../match			  \
-	  	   -I $(srcdir)/../lib				  \
-	  	   -I $(srcdir)/../opt	\
-		   --dr new			\
+SCFLAGS  	=  --dr new			\
 	  	   --main $*-io			\
-		   --verbose 3
+		   --verbose 1
 # 		--keep 10
 
 

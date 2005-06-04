@@ -13,7 +13,6 @@ imports
   stratlib 
   stratego-desugar
   desugar-hl
-  desugar-context
 
 strategies
 
@@ -144,4 +143,4 @@ rules
 strategies // Desugaring single rules
 
   desugarRule = 
-    rec x(try(Rcon; x + Scope(id, x) + RtoS))
+    rec x(try(Scope(id, x) + RtoS))

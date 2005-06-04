@@ -18,7 +18,7 @@ rules
     SDefT(x, args1, args2, s) -> SDefT(y, args1, args2, s)
     where <length> args1 => n
         ; <length> args2 => m
-        ; <concat-strings>[<try(NameMod); cify> x, "_", <int-to-string> n, "_", <int-to-string> m] => y
+        ; <concat-strings>[<cify> x, "_", <int-to-string> n, "_", <int-to-string> m] => y
         ; rules(RenameVar : (x, (n,m)) -> y)
         ; (<HoArg> x; rules(HoArg : x -> Undefined)
                    <+ rules(HoArg : x -> y))
@@ -27,7 +27,7 @@ rules
     ExtSDef(x, args1, args2) -> ExtSDef(y, args1, args2)
     where <length> args1 => n
         ; <length> args2 => m
-        ; <concat-strings>[<try(NameMod); cify> x, "_", <int-to-string> n, "_", <int-to-string> m] => y
+        ; <concat-strings>[<cify> x, "_", <int-to-string> n, "_", <int-to-string> m] => y
         ; rules(RenameVar : (x, (n,m)) -> y)
         ; (<HoArg> x; rules(HoArg : x -> Undefined)
                    <+ rules(HoArg : x -> y))
@@ -36,7 +36,7 @@ rules
     ExtSDefInl(x, args1, args2, s) -> ExtSDefInl(y, args1, args2, s)
     where <length> args1 => n
         ; <length> args2 => m
-        ; <concat-strings>[<try(NameMod); cify> x, "_", <int-to-string> n, "_", <int-to-string> m] => y
+        ; <concat-strings>[<cify> x, "_", <int-to-string> n, "_", <int-to-string> m] => y
         ; rules(RenameVar : (x, (n,m)) -> y)
         ; (<HoArg> x; rules(HoArg : x -> Undefined)
                    <+ rules(HoArg : x -> y))
@@ -51,7 +51,4 @@ rules
     where <length> ss => n
         ; <length> ts => m
         ; ( <RenameVar> (x,(n,m)) => y <+ <HoArg> x => y )
-
-  NameMod :
-    Mod(x, y) -> <concat-strings>[x,"-",y]
 

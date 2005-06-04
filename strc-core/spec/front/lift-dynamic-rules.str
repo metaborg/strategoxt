@@ -345,9 +345,6 @@ strategies
   DummifyTerm :
     Term|[ <s> t ]| -> |[ Keys( ~term*:<tvars; map(!Var(<id>))> (s,t) ) ]|
 
-  DummifyTerm =
-     ?Con(_,_,_); <fatal-error> ["context in left-hand side of dynamic rule"]
-
 rules
 
   /**

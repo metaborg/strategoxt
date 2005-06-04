@@ -58,22 +58,6 @@ rules
   mk-rulenames =
     foldr(!Op("Nil",[]), !Op("Cons", [<Fst>, <Snd>]), !Str(<id>))
 
-// strategy rules
-
-  Desugar :
-    SRDefNoArgs(f, r) -> SRDefT(f, [], [], r)
-
-  Desugar :
-    SRDef(f, xs, r) -> SRDefT(f, xs, [], r)
-
-  Desugar :
-    SRDefT(f, xs, ys, StratRule(s1, s2, s3)) -> 
-    SDefT(f, xs, ys, Seq(s1, Seq(Where(s3), s2)))
-
-  Desugar :
-    SRDefT(f, xs, ys, StratRuleNoCond(s1, s2)) -> 
-    SDefT(f, xs, ys, Seq(s1, s2))
-
 // strategy definitions
 
   Desugar :
@@ -130,22 +114,7 @@ rules
     RuleNoCond(l, r) 	-> Rule(l, r, Id)
 
   Desugar :
-    StratRuleNoCond(l, r) -> StratRule(l, r, Id)
-
-//  Desugar :
-//    StratRule(l, r, s) 	-> Rule(l, r, s)
-
-//  Desugar :
-//    Inj(x) -> x
-
-  //Desugar :
-  //  InjStrat(x) -> x
- 
-  Desugar :
     ParenStrat(x) -> x
-
-//  Desugar :
-//    AngleStrat(x) -> x
 
 // congruences
 
@@ -177,12 +146,6 @@ rules
   Desugar :
     ListCong(ts,t) -> 
     <foldr(!t,\ (t1, t2) -> Call(SVar("Cons"),[t1,t2]) \ )> ts
-
-  Desugar :
-    ModCong(m, xs) -> Call(SVar(m), xs)
-
-  Desugar :
-    ModCongNoArgs(m) -> Call(SVar(m), [])
 
   Desugar :
     StrCong(x) -> Match(NoAnnoList(Str(x)))
@@ -225,24 +188,6 @@ rules
   Desugar :
     ListTail([t1 | ts], t2) -> 
     Op("Cons", [t1, <foldr(!t2,\ (t1, t2) -> NoAnnoList(Op("Cons",[t1,t2])) \ )> ts])
-
-// Contexts
-
-  //Desugar :
-  //  Con(t1, Con1(t2)) -> Con(t1, t2, Call(SVar("oncetd"),[]))
-
-  DesugarOnce :
-    Con(t1, t2, f) -> Con(t1, t2, Call(SVar(f),[]))
-    where <is-string> f
-
-  Desugar :
-    Con1(t1, t2) -> Con(t1, t2, Call(SVar("oncetd"),[]))
-
-  Desugar :
-    Con3(t1, _, t2) ->  Con(t1, t2, Call(SVar("oncetd"),[]))
-
-  Desugar :
-    Con4(t1, _, t2, f) -> Con(t1, t2, Call(SVar(f),[]))
 
 // Signatures
 

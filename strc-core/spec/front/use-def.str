@@ -92,16 +92,6 @@ strategies
              <use-vars> t2))
       )
 
-  rdef-ud =
-    ?RDefT(f, as1, as2, StratRule(s1, s2, s3))
-    ; where(
-        rules( 
-	  Context : msg -> ["** Error in rule ", f, ":\n   " | msg] 
-	  MakeWarning : msg -> ["* Warning in rule ", f, ":\n  " | msg] 
-	)
-        ; <unbound-vars> (s1, s2, s3)
-      )
-
   overlay-ud =
     ?Overlay|[ f(x*) = t ]|
     ; where(
