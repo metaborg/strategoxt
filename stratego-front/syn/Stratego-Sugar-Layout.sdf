@@ -1,6 +1,6 @@
 module Stratego-Sugar-Layout
 imports Stratego-Core-Layout
-exports
+%%exports
 %%  sorts VeryLongCom Eof VLCchar Backslash
 %%  lexical syntax
 %%    "\\end{code}" VLCchar* "\\begin{code}" -> VeryLongCom
