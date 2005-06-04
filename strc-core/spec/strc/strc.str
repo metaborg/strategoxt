@@ -29,7 +29,7 @@ strategies
     )
 
   front-end =
-    if-verbose2(debug(!"front-end: "));
+    if-verbose2(dbg(|"front-end: "));
     profile'(if-verbose1(<printnl>(stderr, ["front-end succeeded:     " | <id>])), 
       get-infile
       ; pack-stratego
@@ -190,7 +190,9 @@ strategies // Compile generated C code
     where if-verbose2(say(!"linking object code"))
 	; (<get-config> "-o" <+ get-outfile(!"")) => target
         ; <if-verbose3(debug); call> 
-	    (<xtc-find> "libtool", ["--mode=link", "gcc", ofile, "-o", target | <get-config> "-CL"])
+	    (<xtc-find> "libtool", [
+              "--mode=link", "gcc", ofile, "-o", target
+              | <conc> (<get-config> "-CL", <get-config> "-Xlinker")])
 
 strategies
 
@@ -269,11 +271,11 @@ strategies
 strategies 
 
   get-infile :
-    FILE(file) -> FILE(basein)
-    where <basename> file => basein
+    FILE(file) -> FILE(file)
+    where <remove-extension> file => basein
 	; if-verbose3(debug(!"basein: "))
         ; <set-config> ("basein",  basein)
-        ; (<get-config; basename> "-o" <+ !basein) => baseout
+        ; (<get-config; remove-extension> "-o" <+ !basein) => baseout
 	; if-verbose3(debug(!"baseout: "))
         ; <set-config> ("baseout", baseout)
 
