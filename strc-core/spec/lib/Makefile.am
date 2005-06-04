@@ -1,10 +1,11 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-SCFLAGS		 = -I $(STRATEGO_FRONT)/share/stratego-front \
-	  	   -I $(srcdir)/../front \
-	  	   -I $(srcdir)/../match \
-	  	   -I $(srcdir)/../opt \
+SCFLAGS		 = -I $(srcdir)/../../../stratego-front/syn \
+	           -I $(srcdir)/../../../stratego-front/sig \
+	  	   -I $(srcdir)/../front		    \
+	  	   -I $(srcdir)/../match		    \
+	  	   -I $(srcdir)/../opt			    \
 	 	   --main $*
 
 LDADD           += $(SSL_LIBS)

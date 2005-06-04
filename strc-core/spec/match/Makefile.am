@@ -3,11 +3,12 @@ include $(wildcard *.dep)
 
 SUBDIRS = data
 
-SCFLAGS	= -I $(STRATEGO_FRONT)/share/stratego-front \
-	  -I $(srcdir)/../sig \
-	  -I $(srcdir)/../opt \
-	  -I $(srcdir)/../lib \
-	  -I $(srcdir)/../front \
+SCFLAGS	= -I $(srcdir)/../../../stratego-front/syn \
+	  -I $(srcdir)/../../../stratego-front/sig \
+	  -I $(srcdir)/../sig			   \
+	  -I $(srcdir)/../opt			   \
+	  -I $(srcdir)/../lib			   \
+	  -I $(srcdir)/../front			   \
 	  --main $*-io
 
 LDADD           += $(SSL_LIBS)

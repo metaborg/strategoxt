@@ -4,7 +4,10 @@ include $(wildcard *.dep)
 libexec_PROGRAMS = pack-stratego
 nodist_pack_stratego_SOURCES = pack-stratego.c
 
-STRINCLUDES  = -I $(STRATEGO_FRONT)/share/stratego-front -I $(srcdir)/../sig
+STRINCLUDES  = -I $(srcdir)/../sig		    \
+	  -I $(srcdir)/../../../stratego-front/syn/ \
+	  -I $(srcdir)/../../../stratego-front/sig/
+
 SCFLAGS      = --main $* $(XTCFLAGS)
 
 LDADD           += $(SSL_LIBS)

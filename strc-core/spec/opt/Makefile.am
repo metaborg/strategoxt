@@ -1,12 +1,13 @@
 include $(top_srcdir)/Makefile.xt
 include $(wildcard *.dep)
 
-SCFLAGS	= -I $(STRATEGO_FRONT)/share/stratego-front \
-	  -I $(srcdir)/../sig \
-	  -I $(srcdir)/../match \
-	  -I $(srcdir)/../lib \
-	  -I $(srcdir)/../front \
-	  --main $*-io \
+SCFLAGS	= -I $(srcdir)/../../../stratego-front/syn/ \
+	  -I $(srcdir)/../../../stratego-front/sig/ \
+	  -I $(srcdir)/../sig			    \
+	  -I $(srcdir)/../match			    \
+	  -I $(srcdir)/../lib			    \
+	  -I $(srcdir)/../front			    \
+	  --main $*-io				    \
 	  --dr new
 #	  --keep 10
 

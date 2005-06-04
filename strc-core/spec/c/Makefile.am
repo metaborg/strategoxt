@@ -15,13 +15,14 @@ CLEANFILES 	 = $(wildcard *.dep) $(TESTS)
 
 SCFLAGS 	 = --main $* --keep 0
 
-STRINCLUDES	 = -I $(C_TOOLS)/share/sdf/c-tools	     \
-		   -I $(C_TOOLS)/share/c-tools		     \
-		   -I $(STRATEGO_FRONT)/share/stratego-front \
-	  	   -I ../sig				     \
-	  	   -I ../match				     \
-	  	   -I ../opt				     \
-	  	   -I ../front				     \
+STRINCLUDES	 = -I $(C_TOOLS)/share/sdf/c-tools	    \
+		   -I $(C_TOOLS)/share/c-tools		    \
+		   -I $(srcdir)/../../../stratego-front/syn \
+	           -I $(srcdir)/../../../stratego-front/sig \
+	  	   -I ../sig				    \
+	  	   -I ../match				    \
+	  	   -I ../opt				    \
+	  	   -I ../front				    \
 	  	   -I ../lib 
 
 LDADD           += $(SSL_LIBS)

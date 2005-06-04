@@ -5,19 +5,20 @@ include $(wildcard *.dep)
 
 SCFLAGS = --main $@ 
 
-SINCLUDES = \
-	-I $(srcdir)/../sig \
-	-I $(srcdir)/../match \
-	-I $(srcdir)/../opt \
-	-I $(srcdir)/../lib \
-	-I $(srcdir)/../front \
-	-I $(srcdir)/../syn \
-	-I $(srcdir)/../sc \
-	-I $(srcdir)/../c \
-	-I $(srcdir)/../pack \
-	-I $(STRATEGO_FRONT)/share/stratego-front \
-	-I $(C_TOOLS)/share/c-tools \
-	-I $(C_TOOLS)/share/sdf/c-tools \
+SINCLUDES =					  \
+	-I $(srcdir)/../sig			  \
+	-I $(srcdir)/../match			  \
+	-I $(srcdir)/../opt			  \
+	-I $(srcdir)/../lib			  \
+	-I $(srcdir)/../front			  \
+	-I $(srcdir)/../syn			  \
+	-I $(srcdir)/../sc			  \
+	-I $(srcdir)/../c			  \
+	-I $(srcdir)/../pack			  \
+	-I $(srcdir)/../../../stratego-front/syn/ \
+	-I $(srcdir)/../../../stratego-front/sig/ \
+	-I $(C_TOOLS)/share/c-tools		  \
+	-I $(C_TOOLS)/share/sdf/c-tools		  \
 	-I $(XTC)/share/xtc 
 
 
