@@ -64,7 +64,6 @@ exports
     "some" "(" Strategy ")" 		  -> Strategy {cons("Some")}
     "one" "(" Strategy ")" 		  -> Strategy {cons("One")}
     "all" "(" Strategy ")" 		  -> Strategy {cons("All")}
-    "thread" "(" Strategy ")" 		  -> Strategy {cons("Thread")}
 
   %% Priorities
 

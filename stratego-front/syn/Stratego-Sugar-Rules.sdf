@@ -2,29 +2,16 @@ module Stratego-Sugar-Rules
 imports Stratego-Sugar-Strategies
 exports
 
-%%  context-free syntax
-%%    Id 			      ":" (Rule | Stratrule) -> RuleDef {cons("RDefNoArgs")}
-%%    Id "(" {Typedid ","}* ")" ":" (Rule | Stratrule) -> RuleDef {cons("RDef")}
-
   sorts RuleDef
   context-free syntax
     Id ":" Rule 				-> RuleDef {cons("RDefNoArgs")}
+
     Id "(" {Typedid ","}* ")" ":" Rule 		-> RuleDef {cons("RDef")}
+
     Id "(" {Typedid ","}* 
        "|" {Typedid ","}* ")" ":" Rule 		-> RuleDef {cons("RDefT")}
-
-  context-free syntax
-    Id "::" StratRule 				-> RuleDef {cons("SRDefNoArgs")}
-    Id "(" {Typedid ","}* ")" "::" StratRule 	-> RuleDef {cons("SRDef")}
-    Id "(" {Typedid ","}* 
-       "|" {Typedid ","}*")" "::" StratRule 	-> RuleDef {cons("SRDefT")}
 
   sorts Rule
   context-free syntax
     Term "->" Term 		    		-> Rule {cons("RuleNoCond")}
     Term "->" Term "where" Strategy 		-> Rule {cons("Rule")}
-
-  sorts StratRule
-  context-free syntax
-    Strategy "-->" Strategy 			-> StratRule {cons("StratRuleNoCond")}
-    Strategy "-->" Strategy "where" Strategy 	-> StratRule {cons("StratRule")}

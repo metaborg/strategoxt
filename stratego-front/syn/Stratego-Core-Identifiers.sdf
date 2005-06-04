@@ -39,7 +39,6 @@ exports
     "not" 		-> Id {reject}
     "one" 		-> Id {reject}
     "overlays" 		-> Id {reject}
-    "override" 		-> Id {reject}
     "prim" 		-> Id {reject}
     "rules" 		-> Id {reject}
     "script" 		-> Id {reject}
@@ -49,10 +48,9 @@ exports
     "strategies" 	-> Id {reject}
     "stratego" 		-> Id {reject}
     "test" 		-> Id {reject}
-    "thread" 		-> Id {reject}
     "where" 		-> Id {reject}
   lexical restrictions
     "all" "constructors" "fail" "id" "in" "let" "module" "not" "one"
-    "overlays" "override" "prim" "rules" "script" "signature" "some"
-    "sorts" "strategies" "stratego" "test" "thread" "where" 
+    "overlays" "prim" "rules" "script" "signature" "some"
+    "sorts" "strategies" "stratego" "test" "where" 
     -/- [a-zA-Z0-9\'\-\_]

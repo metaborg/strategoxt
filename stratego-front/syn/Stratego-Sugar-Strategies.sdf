@@ -63,9 +63,9 @@ exports
     "(" Strategy  ")" 		          -> Strategy {bracket}
     "(" Strategy "," {Strategy ","}+ ")"  -> Strategy {cons("TupleCong")}
 
-    Mod 	  			  -> Strategy {cons("ModCongNoArgs")}
-    Mod "(" {Strategy ","}* ")"	  	  -> Strategy {cons("ModCong")}
-    Id "^" Id				  -> Mod {cons("Mod")}
+%%    Mod 	  			  -> Strategy {cons("ModCongNoArgs")}
+%%    Mod "(" {Strategy ","}* ")"	  	  -> Strategy {cons("ModCong")}
+%%    Id "^" Id				  -> Mod {cons("Mod")}
     "[" {Strategy ","}* "]" 		  -> Strategy {cons("ListCongNoTail")}
     "[" {Strategy ","}* "|" Strategy "]"  -> Strategy {cons("ListCong")}
 

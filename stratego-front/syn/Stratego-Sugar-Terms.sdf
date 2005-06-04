@@ -29,11 +29,6 @@ exports
     "[" {Term ","}* "]" 	 -> PreTerm {cons("List")}
     "[" {Term ","}* "|" Term "]" -> PreTerm {cons("ListTail")}
 
-    Var "[" Term "]" 				 -> Term {cons("Con1")}
-    Var "[" Term "]" "(" Id ")" 		 -> Term {cons("Con")}
-    Var "[" Term "where" Strategy "]"  		 -> Term {cons("Con3")}
-    Var "[" Term "where" Strategy "]" "(" Id ")" -> Term {cons("Con4")}
-
   context-free priorities
     Term "#" "(" Term ")" 	 -> PreTerm {cons("Explode")}
   > PreTerm "{" {Term ","}* "}"	 -> Term {cons("AnnoList")}
