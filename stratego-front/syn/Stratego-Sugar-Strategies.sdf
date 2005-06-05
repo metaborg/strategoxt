@@ -112,7 +112,10 @@ exports
      Strategy "++" Strategy 		  -> Strategy {cons("GChoice"),right}
      Strategy "<++" Strategy 		  -> Strategy {cons("LGChoice"),right}
      Strategy "++>" Strategy 		  -> Strategy {cons("RGChoice"),right}
-
+     
      Strategy "<" StrategyMid 
               "+" Strategy 		  -> Strategy {cons("GuardedLChoice"),right}
     }
+    ,
+    Strategy 				  -> StrategyMid
+  > Strategy "+" Strategy 		  -> Strategy {cons("Choice"),right}
