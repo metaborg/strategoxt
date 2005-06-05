@@ -18,13 +18,6 @@ SCLibs = -L$(STRATEGO_LIB)/lib/stratego-lib -lstratego-lib-native \
 
 # MAKE COPY OF SSL ####################################################
 
-stratego-lib :
-	cp -r ../../../stratego-lib/spec stratego-lib
-
-pre-parse :
-	$(MAKE) $(subst .str,.rtree,$(wildcard stratego-lib/*.str)) \
-	        $(subst .str,.rtree,$(wildcard stratego-lib/*/*.str))
-
 %.rtree : %.str
 	$(STRATEGO_FRONT)/bin/parse-stratego -i $< -o $@ \
                --default-syntax Stratego-Sugar.tbl 
@@ -33,7 +26,7 @@ pre-parse :
 # PRETTY-PRINTING ####################################################
 
 %.txt: % 
-	$(STRATEGO_FRONT)/bin/pp-stratego -p Stratego-Sugar-pretty.pp.af -a -i $< -o $@ --annotations
+	$(prefix)/bin/pp-stratego -p Stratego-Sugar-pretty.pp.af -a -i $< -o $@ --annotations
 
 %.atxt : %
 	$(ATERM)/bin/baffle -wt -i $< -o $@
@@ -284,7 +277,7 @@ STRATEGO_FRONT_SHARE = $(top_srcdir)/../stratego-front/sig
 %.b4 : %.b3  %.b3.Stratego-Core
 	../opt/bound-unbound-vars -i $< -o $@ -b
 
-%.ac : %.b3 %.b3.Stratego-Core
+%.ac : %.b4 %.b4.Stratego-Core
 	../c/s2c -i $< -o $@  $(CINCLUDES) -b
 
 %.c.abox : %.ac %.ac.C 
