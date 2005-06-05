@@ -24,9 +24,9 @@ strategies
   RepairVarDec(def, op) :
     VarDec(x, FunType([ConstType(t1) | ts@[FunType(_,_) | _]], t2)) ->
     VarDec(x, FunType(<conc>(ts, [ConstType(t1)]), t2))
-    where <printnl>(stderr, 
-	     ["** Warning: argument '", x, "' of ", <def>, " '", <op>, 
-	      "' starts with constant type"])
+    where err(| <concat-strings>["argument '", x, "' of ", <def>, " '", <op>, 
+	                         "' starts with constant type"] )
+	; <exit> 1
 	      
   explanation =
     <printnl>(stderr, ["
