@@ -41,7 +41,7 @@ strategies
     ; PrimT(id, map(exec-maybe(cp)), alltd(Binding; Var(id)))
 
   prop-traversal(cp) =
-    (?All(_) + ?One(_) + ?Some(_) + ?Thread(_) + ?Bagof(_) )
+    (?All(_) + ?One(_) + ?Some(_) + ?Bagof(_) )
     ; UndefCurrentTerm
     ; one(exec-maybe(cp))
 

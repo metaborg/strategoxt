@@ -73,9 +73,6 @@ rules
     Some(s) -> CallT(SVar("SRTS_some"),[s],[])
 
   Canon :
-    Thread(s) -> CallT(SVar("SRTS_thread"),[s],[])
-
-  Canon :
     Scope([],s) -> s
 
   Canon :

@@ -112,7 +112,7 @@ strategies
     + all(mark-build-vars)
 
   mark-traversal =
-    (?All(_) + ?One(_) + ?Some(_) + ?Thread(_))
+    (?All(_) + ?One(_) + ?Some(_))
     ; fork-MarkVar(id, one(mark-buv))
 
   mark-call =
