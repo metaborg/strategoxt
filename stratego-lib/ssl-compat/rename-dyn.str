@@ -1,13 +1,8 @@
-\literate[rename-dyn]
-
-	\begin{abstract}
-
+/*
 	Renaming of bound variables is determined by the shape of
 	variables and binding constructs. Three generic strategies
 	are defined that cater for different complexities of binding
 	constructs.
-
-	\end{abstract}
 
 % Copyright (C) 1998-2001 Eelco Visser <visser@acm.org>
 % 
@@ -71,7 +66,8 @@
 	- c should be applied to the subterms in which the variables
 	are not bound;
 
-\begin{code}
+*/
+
 module rename-dyn
 imports simple-traversal tuple list dynamic-rules
 rules
@@ -121,4 +117,4 @@ strategies
   = rec x(alltd(isvar(RenameVar)
                 <+ {| RenameVar: RnBinding(bndvars, paste); boundin(x,id,id) |}
                    ; boundin(id,x,id)))
-\end{code}
+
