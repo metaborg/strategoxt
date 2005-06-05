@@ -141,10 +141,6 @@ rules
   stratego-to-abox : 
    All(s) -> |[ H hs=0 [KW["all"] KW["("] ~s KW[")"]] ]|
 
-  stratego-to-abox : 
-   Thread(s) -> |[ H hs=0 [KW["thread"] KW["("] ~s KW[")"]] ]|
-
-
 rules
 
   stratego-to-abox : 
@@ -236,9 +232,6 @@ rules
     
 rules
 
-  stratego-to-abox :
-    SVar(m@Mod(_,_)) -> m
-    
   stratego-to-abox : 
     SVar(name) -> S(<is-string>name)
 
@@ -703,21 +696,6 @@ rules
     Overlay(n,ps,ov) -> |[ V is=2[H[~lit:n KW["("] ~ps' KW[")"] KW["="]] ~ov ] ]| 
     where
       <map(\ s -> S(s) \) ; separate-by-comma> ps => ps'
-
-
-
-rules
-
-  stratego-to-abox :
-    ModCongNoArgs(c) -> c
-
-  stratego-to-abox :
-    ModCong(c,ps) -> |[ H hs=0 [ ~c "(" ~ps' ")" ] ]|
-    where
-      <separate-by-comma> ps => ps'
-
-  stratego-to-abox :
-    Mod(c,t) -> |[ H hs=0 [ ~lit:c "^" ~lit:t ] ]|
 
 
 
