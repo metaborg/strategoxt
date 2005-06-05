@@ -25,6 +25,10 @@ EXTRA_DIST     = $(strategolib) $(nobase_pkgdata_DATA)
 BOOTCLEANFILES = $(nobase_pkgdata_DATA)
 
 .str.rtree :
-	$(ASFIX_TOOLS)/bin/sglri -p ../../stratego-front/syn/Stratego.tbl -i $< -o $@
+	$(ASFIX_TOOLS)/bin/sglri --sglr -A \
+		-p ../../stratego-front/syn/Stratego.tbl -i $< -o $@
 
 
+.str.atree :
+	$(ASFIX_TOOLS)/bin/sglri\
+		-p ../../stratego-front/syn/Stratego.tbl -i $< | pp-aterm -o $@
