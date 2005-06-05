@@ -5,8 +5,8 @@ strategies
 
   main = 
     test-suite(!"congruence-env-test",
-	congruence-dist-test;
-	congruence-thread-test;
+	//congruence-dist-test;
+	//congruence-thread-test;
 	congruence-thread-test2
     )
 
@@ -23,6 +23,7 @@ rules
 
   add-one : (Id,x) -> (Id,Succ(x))
 
+/*
 strategies
 
   congruence-dist-test = 
@@ -38,6 +39,7 @@ strategies
 	      ,!(If(Id,Id,Id),Zero)
 	      ,!(If(Id,Id,Id),Succ(Succ(Succ(Zero))))
 	      )
+*/
 
 signature
   constructors
@@ -53,9 +55,6 @@ strategies
 	      ,!([sort("Do"),lit("1"),sort("Plus"),lit("2")],1)
 	      ,!([1, KW("1"), 2, KW("2")], 3)
 	      )
-
-  thread-map(s) = 
-    rec x(Cons^T(s, x) + Nil^T)
 
 rules
 

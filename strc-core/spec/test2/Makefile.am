@@ -14,7 +14,7 @@ check_PROGRAMS 	= arity-test as-pattern assignment			    \
 		  number-syntax-test number-test overlay-test		    \
 		  overlay-test-b					    \
 		  overloading-constructors-test overloading		    \
-		  prop quoted-keywords rename-test stratlib-test tail	    \
+		  prop rename-test tail	    \
 		  thread-test traversal-test twice unification-test 	  
 
 # backtrack-test2 backtrack-test3 backtrack-test
@@ -57,9 +57,7 @@ nodist_overlay_test_b_SOURCES = overlay-test-b.c
 nodist_overloading_constructors_test_SOURCES = overloading-constructors-test.c
 nodist_overloading_SOURCES = overloading.c
 nodist_prop_SOURCES = prop.c
-nodist_quoted_keywords_SOURCES = quoted-keywords.c
 nodist_rename_test_SOURCES = rename-test.c
-nodist_stratlib_test_SOURCES = stratlib-test.c
 nodist_tail_SOURCES = tail.c
 nodist_thread_test_SOURCES = thread-test.c
 nodist_traversal_test_SOURCES = traversal-test.c
