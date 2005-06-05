@@ -7,7 +7,7 @@ signature
 
 strategies
 
-  f(g : Term * (Term -> Term) -> Term) : x -> <g(id)> x
+  f(g : (Term -> Term) * Term -> Term) : x -> <g(id)> x
 
   h : y -> z where <Var(id)> y => z
 
