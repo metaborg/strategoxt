@@ -22,7 +22,7 @@ strategies
   compile =
     xtc-input(
       front-end
-      ; optimize
+      //; optimize
       ; export-external-defs
       ; back-end
       ; c-compile
@@ -32,29 +32,33 @@ strategies
     if-verbose2(dbg(|"front-end: "));
     profile'(if-verbose1(<printnl>(stderr, ["front-end succeeded:     " | <id>])), 
       get-infile
-      ; pack-stratego
+      ; pack-stratego				; fc(|"Stratego-Sugar-Cong")
       ; output-ast
       ; if-not-lib(add-main)
-      ; repair-types
-      ; pre-desugar
-      ; save-as5(!".pre-desugar")
-      ; normalize-spec
-      ; save-as5(!".normalize-spec")
-      ; use-def
-      ; save-as6(!".use-def")
-      ; check-constructors
-      ; save-as6(!".check-constructors")
-      ; spec-to-sdefs
-      ; save-as5(!".spec-to-sdefs")
-      ; rename-vars
-      ; save-as5(!".renamed")
-      ; desugar
-      ; save-as5(!".desugared")
-      ; output-frontend
-      ; if-lib(extract-all, extract)
-      ; warnings
-      ; stratego-nf 
-      ; rename-defs
+      ; repair-types				; fc(|"Stratego-Sugar-Cong")
+      ; pre-desugar				; fc(|"Stratego-Sugar-1")
+      ; combine-sections			; fc(|"Stratego-Sugar-1")
+      ; variables-to-constructors		; fc(|"Stratego-Sugar-1")
+      ; raise-annotations			; fc(|"Stratego-Sugar-2")
+      ; define-lrules				; fc(|"Stratego-Sugar-2")
+      ; lift-dynamic-rules			; fc(|"Stratego-Sugar-2")
+      ; stratego-desugar			
+      ; raise-annotations			; fc(|"Stratego-Sugar-3")
+      ; use-def					
+      ; check-constructors			; fc(|"Stratego-Sugar-3")
+      ; expand-overlays				; fc(|"Stratego-Sugar-3")
+      ; rules-to-sdefs				; fc(|"Stratego-Sugar-3")
+      ; desugar-list-matching			; fc(|"Stratego-Sugar-4")
+      ; desugar-default-vardec			; fc(|"Stratego-Sugar-4")
+      ; introduce-congdefs			; fc(|"Stratego-Sugar-4")
+      ; rename-vars				; fc(|"Stratego-Sugar-4")
+      ; desugar 				; fc(|"Stratego-Sugar-5")
+      ; output-frontend				; fc(|"Stratego-Sugar-5")
+      ; if-lib(extract-all, extract)		; fc(|"Stratego-Sugar-5")
+      ; stratego-warnings			; fc(|"Stratego-Sugar-5")
+      ; rename-defs				; fc(|"Stratego-Sugar-5")
+      ; simplify1				; fc(|"Stratego-Sugar-Cong")
+      ; define-congruences			; fc(|"Stratego-Core")
     )
 
   optimize =
@@ -64,23 +68,23 @@ strategies
 	// SIMPLIFICATION
         ; olevel1(	
 	    simplify1
-            				; save-as1(!".opt1")
+            ; save-as1(!".opt1")
  	  )
 	// INNERMOST FUSION
         ; olevel2(
 	    try(where(not(<get-config> "--fusion"))
 		; fusion
-            				; save-as2(!".opt2")
+            	; save-as2(!".opt2")
             )
           )
 	// INLINING
 	// inline small definitions, congruences
         ; olevel4(
 	    worker-wrapper
-            				; save-as6(!".opt3a")
+            ; save-as6(!".opt3a")
 	    ; inline
 	    ; dead-def-elim
-            				; save-as4(!".opt3")
+            ; save-as4(!".opt3")
 	    ; simplify1
           )
         ; define-congruences
@@ -90,39 +94,38 @@ strategies
 	    ; bound-unbound-vars
 	    ; dead-var-elim
 	    ; simplify3
-            				; save-as4(!".opt4")
+            ; save-as4(!".opt4")
           )
 	// PATTERN MATCH COMPILATION
         ; olevel2( 
 	    compile-match
 	    ; desugar-case
-            				; save-as2(!".opt5")
+            ; save-as2(!".opt5")
 	  )
 	// INLINING 
         // inline local definitions introduced by pattern match compilation
         ; olevel5(
 	   inline
-           				; save-as5(!".opt7")
+           ; save-as5(!".opt7")
 	   ; dead-def-elim
-           				; save-as5(!".opt8")
+           ; save-as5(!".opt8")
           )
 	// CONSTANT PROPAGATION
         ; olevel3(
 	    simplify2 // lift term arguments from (prim) calls
-            				; save-as3(!".opt9")
+            ; save-as3(!".opt9")
             ; const-prop
-	    				; save-as3(!".opt10")
+	    ; save-as3(!".opt10")
 	    ; bound-unbound-vars
-	    				; save-as3(!".opt11")
+	    ; save-as3(!".opt11")
 	    ; dead-var-elim
-            				; save-as3(!".opt12")
+            ; save-as3(!".opt12")
 	  )
 	// SIMPLIFICATION
         ; olevel1(
 	    simplify3
-            				; save-as1(!".opt13")
-	    ; stratego-of
-            				; save-as1(!".opt14")
+            ; save-as1(!".opt13")
+            ; save-as1(!".opt14")
           )
     )
 strategies
@@ -151,19 +154,22 @@ strategies
     if-verbose2(say(!"back-end"));
     profile'(if-verbose1(<printnl>(stderr, ["back-end succeeded:      " | <id>])), 
       canonicalize
-      					; save-as1(!".can")
+      ; save-as1(!".can")
+      ; fc(|"Stratego-Core")
       ; olevel1(
           lift-definitions
-      					; save-as1(!".opt15")
+      	  ; save-as1(!".opt15")
           ; simplify1
-      					; save-as1(!".opt16")
+      	  ; save-as1(!".opt16")
+          ; fc(|"Stratego-Core")
         )
       ; olevel3(
 	  bound-unbound-vars
-      					; save-as3(!".opt17")
+      	  ; save-as3(!".opt17")
+          ; fc(|"Stratego-Core")
 	)
-      ; stratego-cf
       ; s2c
+      ; fc(|"C")
       ; ac2abox
       ; abox2text
       ; rename-to(get-outfile(!".c"))
@@ -202,6 +208,13 @@ strategies
   if-lib(s)      = if-lib(s, id)
   if-not-lib(s)  = if-lib(id, s)
   pass-library   = if-lib(!["--library"], ![])
+
+strategies
+
+  // format checking
+
+  fc(|format) =
+    xtc-transform(<concat-strings>[format, ".rtg-nf"], [])
 
 strategies
 
@@ -298,22 +311,33 @@ strategies // COMPILER COMPONENTS
 
 // FRONTEND
 
-  pack-stratego 	= comp(|"pack-stratego", 
-				<concat> [<dep-name>, <get-include-dirs>, <pass-keep>,
-				  <get-config < !["--asfix"] + ![]> "--asfix"])
-  pre-desugar 		= comp(|"pre-desugar")
-  normalize-spec 	= comp(|"normalize-spec", <pass-dr>)
-  use-def 		= comp(|"use-def", <pass-maybe-unbound-warnings>)
-  check-constructors 	= comp(|"check-constructors")
-  spec-to-sdefs 	= comp(|"spec-to-sdefs")
-  rename-vars 		= comp(|"rename-vars")
-  desugar 		= comp(|"desugar")
-  warnings 		= comp(|"stratego-warnings", <pass-warnings>)
-  repair-types 		= comp(|"repair-types")
-  extract 		= comp(|"extract"); save-as2(!".ext")
-  extract-all 		= comp(|"extract-all")
-  rename-defs 		= comp(|"rename-defs"); save-as2(!".rn")
-  stratego-nf 		= comp(|"Stratego-Normal-Format")
+  pack-stratego			= comp(|"pack-stratego", 
+					<concat> [<dep-name>, <get-include-dirs>, <pass-keep>,
+					  <get-config < !["--asfix"] + ![]> "--asfix"])
+  pre-desugar			= comp(|"pre-desugar")
+  repair-types			= comp(|"repair-types")
+  combine-sections		= comp(|"combine-sections")
+  variables-to-constructors	= comp(|"variables-to-constructors")
+  raise-annotations		= comp(|"raise-annotations")
+  define-lrules			= comp(|"define-lrules")
+  lift-dynamic-rules		= comp(|"lift-dynamic-rules")
+  stratego-desugar		= comp(|"stratego-desugar")
+  use-def			= comp(|"use-def", <pass-maybe-unbound-warnings>)
+  check-constructors		= comp(|"check-constructors")
+  expand-overlays		= comp(|"expand-overlays")
+  rules-to-sdefs		= comp(|"rules-to-sdefs")
+  desugar-list-matching		= comp(|"desugar-list-matching")
+  desugar-default-vardec	= comp(|"desugar-default-vardec")
+  introduce-congdefs		= comp(|"introduce-congdefs")
+  rename-vars			= comp(|"rename-vars")
+  desugar			= comp(|"desugar")
+  extract-all			= comp(|"extract-all")
+  extract			= comp(|"extract")
+  stratego-warnings		= comp(|"stratego-warnings", <pass-warnings>)
+  rename-defs			= comp(|"rename-defs")
+  simplify1			= comp(|"simplify1")
+  define-congruences		= comp(|"define-congruences")
+
 
 // OPTIMIZER
 
@@ -326,11 +350,8 @@ strategies // COMPILER COMPONENTS
   bound-unbound-vars 	= comp(|"bound-unbound-vars")
   dead-var-elim 	= comp(|"dead-var-elim")
   worker-wrapper 	= comp(|"worker-wrapper")
-  simplify1 		= comp(|"simplify1")
   simplify2 		= comp(|"simplify2")
   simplify3 		= comp(|"simplify3")
-  define-congruences 	= comp(|"define-congruences")
-  stratego-of 		= comp(|"Stratego-Optimized-Format")
   canonicalize 		= comp(|"canonicalize")
   lift-definitions 	= comp(|"lift-definitions")
   bound-unbound-vars 	= comp(|"bound-unbound-vars")
@@ -341,7 +362,6 @@ strategies // COMPILER COMPONENTS
 
 // BACK-END
 
-  stratego-cf 	= comp(|"Stratego-Canonical-Format")
   ac2abox 	= comp(|"ast2abox", ["-p", <xtc-find> "C-pretty.pp"])
   abox2text 	= comp-out(|"abox2text")
   s2c 		= comp(|"s2c",  

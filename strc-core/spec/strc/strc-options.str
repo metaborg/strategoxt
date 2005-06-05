@@ -37,7 +37,6 @@ strategies
         , "-lATerm-gcc"
         , "-lm"])
     ; <set-config> ("-CD", [])
-    ; <set-config> ("--dr", "old")
   )
 
   get-include-dirs =
@@ -129,8 +128,8 @@ strategies
 	!"--fusion           Toggle specialize applications of innermost (default: on)" )
 
   + ArgOption("--dr",
-  where(("old" + "new"); <set-config>("--dr", <id>)); !(),
-	!"--dr (old|new)     Use old/new dynamic rule semantics (default: old)" )
+        err(|"--dr flag is deprecated; old dynamic rules are no longer supported"),
+	!"--dr : obsolete; old dynamic rules are no longer supported" )
 
   + ArgOption("--choice-lib"
       , where(set-choice-point-lib); !()
