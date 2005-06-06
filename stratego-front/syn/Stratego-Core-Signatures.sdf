@@ -22,7 +22,7 @@ exports
 
   sorts Type ArgType
   context-free syntax
-    Sort			-> Type {cons("ConstType")}
-    {ArgType "*"}+ "->" ArgType -> Type {cons("FunType")}
-    "(" Type ")" 		-> ArgType {bracket}
-    Sort			-> ArgType
+    Sort	             -> Type {cons("ConstType")}
+    {ArgType "*"}+ "->" Sort -> Type {cons("FunType")}
+    "(" Type ")"             -> ArgType {bracket}
+    Sort	             -> ArgType
