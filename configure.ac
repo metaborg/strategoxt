@@ -66,7 +66,15 @@ AC_SUBST([XTC2_ENABLED])
 
 # Constructing PKGS list
 
-PKGS="autoxt srts stratego-front stratego-lib"
+PKGS="autoxt srts"
+
+
+if test "$xt_baseline" = "yes"
+then
+  PKGS="$PKGS stratego-front stratego-lib"
+else
+  PKGS="$PKGS stratego-lib stratego-front"
+fi
 
 if test "x$XTC2_ENABLED" = "xyes"
 then
