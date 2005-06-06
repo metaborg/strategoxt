@@ -65,11 +65,11 @@ strategies
   main = 
     test-suite(!"dynamic-rules-test",
 	//test0;
-	//test1;
-	//test2;
-	//test3;
-	//test4a;
-	//test4b;
+	test1;
+	test2;
+	test3;
+	test4a;
+	test4b;
 	test5;
 	test6
     )
@@ -158,7 +158,7 @@ strategies
 
   UnDeclareFun =
     ?Fdec(f, _, _)
-    ; rules( NewRule : Call(f,_) -> Undefined )
+    ; rules( NewRule :- Call(f,_) )
 
   test5 = 
     apply-test(!"test5"
