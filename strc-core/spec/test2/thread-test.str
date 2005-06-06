@@ -1,10 +1,8 @@
 module thread-test
-imports lib sunit
+imports lib
 
 signature
   constructors
-    a    : Bla
-    s    : Bla -> Bla
     Ann  : Int * a -> a
 
     F : A * A * A -> A
