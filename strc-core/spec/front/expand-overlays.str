@@ -31,7 +31,7 @@ strategies
 	      ; <tsubstitute> (<zip> (x*, t*), pt1) => pt4
 
         ExpandOverlayInBuild :+
-          |[ c(t*){^[]} ]| -> <tsubstitute> (<zip> (x*, t*), |[ pt1{^pt2} ]|)
+          |[ c(t*){^Nil()} ]| -> <tsubstitute> (<zip> (x*, t*), |[ pt1{^pt2} ]|)
           where <length> t* => n
 
         ExpandOverlayInBuild :+ 
