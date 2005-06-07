@@ -12,7 +12,11 @@ strategies
       declare-inline-rules
       ; ( check-library-definitions
         ; alltd(innermost-fusion)
-        ) <+ if-verbose2(say(!"no innermost here"))
+
+// turn off outermost-fusion while it is not finished (EV)
+//        ; alltd(innermost-fusion + outermost-fusion)
+
+        ) <+ log(|Info(),"No innermost here")
     )
 
 
@@ -55,40 +59,40 @@ strategies
     where(
       new => x
       ; (<InlineStrat> Strategy|[ try_1_0(x(|)|) ]|
-         <+ if-verbose2(say(!"no definition of try_1_0: ")); fail)
+         <+ log(|Info(),"No definition of try_1_0: ",<id>); fail)
       ; (?|[ x(|) <+ id ]|
-         <+ if-verbose1(debug(!"try is not try: ")); fail)
-      ; if-verbose2(say(!"try is try "))
+         <+ log(|Info(),"try is not try"); fail)
+      ; log(|Info(),"try is try ")
     )
 
   check-that-innermost-is-innermost =
     where(
       new => x
       ; (<InlineStrat> Strategy|[ innermost_1_0(x(|)|) ]|
-         <+ if-verbose2(say(!"no definition of innermost_1_0: ")); fail)
+         <+ log(|Info(),"No definition of innermost_1_0"); fail)
       ; (?|[ bottomup_1_0(try_1_0(x(|); innermost_1_0(x(|)|)|)|) ]|
          <+ {z: ?|[ bottomup_1_0(rec z(try_1_0(x(|); bottomup_1_0(z(|)|)|))|) ]|}
          <+ {z: ?|[ bottomup_1_0(rec z(x(|); bottomup_1_0(z(|)|) <+ id)|)  ]|}
-         <+ if-verbose1(debug(!"innermost is not innermost: ")); fail)
-      ; if-verbose2(say(!"innermost is innermost "))
+         <+ log(|Info(),"innermost is not innermost"); fail)
+      ; log(|Info(),"innermost is innermost ")
     )
 
   check-that-bottomup-is-bottomup =
     where(
       new => x
       ; (<InlineStrat> Strategy|[ bottomup_1_0(x(|)|) ]|
-         <+ if-verbose2(say(!"no definition of bottomup_1_0: ")); fail)
+         <+ log(|Info(),"No definition of bottomup_1_0"); fail)
    // ; ?|[ rec y(all(y(|)); x(|)) ]|
       ; (?|[ all(bottomup_1_0(x(|)|)); x(|) ]|
-         <+ if-verbose1(debug(!"bottomup is not bottomup: ")); fail)
-      ; if-verbose2(say(!"bottomup is bottomup"))
+         <+ log(|Info(),"bottomup is not bottomup"); fail)
+      ; log(|Info(),"bottomup is bottomup")
     )
 
   // The fusion strategy
 
   innermost-fusion = 
     ?|[ innermost_1_0(s1|) ]| 
-    ; if-verbose2(say(!"fusion: application of innermost found"))
+    ; log(|Info(),"Application of innermost found")
 
     ; where(new => x)
     ; where(<seq-over-choice> Strategy|[ bottomup_1_0(x(|)|) ]|)
@@ -104,7 +108,7 @@ strategies
     ; not(oncetd(?Strategy|[ mark(|) ]|)
           ; say(!"not all marks removed"))
     ; desugar
-    ; if-verbose1(say(!"fused application of innermost"))
+    ; log(|Info(),"Fused application of innermost")
 
   // Propagate mark over choice
 
@@ -185,3 +189,76 @@ strategies
   UnMark :
     Strategy|[ mark(|) ]| -> Strategy|[ id ]|
 
+  outermost-fusion :
+    |[ outermost_1_0(s1|) ]| -> 
+    |[ let f = repeat(rec x(s2 <+ s3)); all(f) in f end ]|
+    where log(|Info(),"Application of outermost found")
+	; new => x
+	; new => f
+	; <inline-rules> s1 => s2
+        ; derive-hnf-traversal(|x) => s3
+
+  derive-hnf-traversal(|x) =
+    collect-guards
+    ; debug(!"guards: ")
+    ; map(merge-terms(|x))
+//    ; foldr1(?[<id>], \ (s1, s2) -> |[ s1 <+ s2 ]|\ ) => s3
+
+  collect-guards = 
+  {|Guard :
+    rec y(
+      Choice(y, y) 
+      <+ LChoice(y, y) 
+      <+ Scope(id, y)
+      <+ Seq(y, id)
+      <+ Match({
+           ?t@|[ c(t*) ]|
+	   ; if <fetch({?|[c2(t2*)]|})> t* then
+               rules(
+	         Guard :+ () -> c 
+	         Guard :+ c -> t
+               )
+	     end
+         })
+     )
+     ; <bagof-Guard> ()
+     ; make-set
+     ; map(bagof-Guard)
+  |}
+
+  merge-terms(|x) =
+    ?[ |[ c(t*) ]| | _]
+    ; debug
+    ; map({t* : (|[ c(t*) ]| -> t* )})
+    ; debug
+    ; transpose
+    ; debug(!"transposed: ")
+    ; map(merge-subterms(|x))
+    ; !Cong(c, <id>)
+
+  transpose = 
+    map([]); ![] <+ ![<map(Hd)> | <map(Tl); transpose>]
+
+  merge-subterms(|x) :
+    t* -> |[ x(|); (s <+ try(x(|))) ]|
+    where 
+      <foldr(!|[fail]|, \ (s1,s2) -> |[ s1 <+ s2 ]| \, term-to-cong)> t* => s
+ 
+  term-to-cong :
+    |[ c(t*) ]| -> Cong(c, <map(!|[id]|)> t*)
+    where <map(Var(id))> t*
+
+/*
+
+  derive-hnf-traversal(|x) :
+    Term|[ c(t*) ]| -> Cong(c, <map(norm-subterm(|x))> t*)
+    where <fetch(?|[ c2(t2*) ]|)> t*
+
+  norm-subterm(|x) :
+    Term|[ x ]| -> |[ id ]|
+
+  norm-subterm(|x) :
+    Term|[ c(t*) ]| -> |[ x; (c(s1*) <+ try(x)) <+ c(s2*) ]|
+    where <map(!|[ id ]|)> t* => s1*
+    
+*/

@@ -41,6 +41,11 @@ check_PROGRAMS 	 = build-match-laws-test bound-unbound-vars-test \
 		   const-prop-test bound-unbound-vars-debug \
 		   bound-unbound-vars-debug-norm\
 		   bound-unbound-vars-debug-sci-opt17
+		   const-prop-test fusion-test
+nodist_build_match_laws_test_SOURCES = build-match-laws-test.c
+nodist_bound_unbound_vars_test_SOURCES = bound-unbound-vars-test.c
+nodist_const_prop_test_SOURCES = const-prop-test.c
+nodist_fusion_test_SOURCES = fusion-test.c
 
 nodist_build_match_laws_test_SOURCES=build-match-laws-test.c
 nodist_bound_unbound_vars_test_SOURCES=bound-unbound-vars-test.c
@@ -50,12 +55,11 @@ nodist_bound_unbound_vars_debug_norm_SOURCES=bound-unbound-vars-debug-norm.c
 nodist_bound_unbound_vars_debug_sci_opt17_SOURCES=bound-unbound-vars-debug-sci-opt17.c
 
 TESTS 		 = build-match-laws-test bound-unbound-vars-test \
-		   const-prop-test
+		   const-prop-test fusion-test
 
 CLEANFILES 	 = $(wildcard *.dep)
 BOOTCLEANFILES 	 = $(wildcard *.c)
 EXTRA_DIST 	 = $(wildcard *.str) $(wildcard *.meta)
-
 
 buv-test : 
 	./bound-unbound-vars-debug -i buv-test.in 2> buv-test.log -o buv-test.out
