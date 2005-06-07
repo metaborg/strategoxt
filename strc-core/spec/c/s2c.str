@@ -3,6 +3,7 @@
  */
 module s2c
 imports liblib Stratego-Sugar automaton C C-simplify 
+
 strategies
 
   s2c = 
@@ -115,8 +116,8 @@ rules
 	~ext-def*:function-defs
     ]|
     where GenerateIncludes => incl
-	; <map(DeclareConstructor)> ops => cnstr-decls
-        ; <map(InitConstructor); concat> ops => cnstr-inits
+	; <filter(DeclareConstructor)> ops => cnstr-decls
+        ; <filter(InitConstructor); concat> ops => cnstr-inits
 	; <map(SDefToDeclaration)> defs => function-sigs
 	; <filter(?SDefT(_,_,_,_))
            ; map(TranslateDef)> defs => function-defs
@@ -150,11 +151,11 @@ strategies
   TranslateSig :
     Signature([Constructors(ops)]) ->
     TranslationUnit(<conc>(decls, fundef))
-    where <map(DeclareConstructor)> ops => decls
+    where <filter(DeclareConstructor)> ops => decls
         ; if-lib(![], ![<InitConstructors> ops]) => fundef
 
   DeclareConstructor :
-    OpDecl(c, t) -> c:dec|[ Symbol ~id:csym; ]|
+    OpDecl(c, t) -> c:dec|[ static Symbol ~id:csym; ]|
     // Declaration2(TypeSpec([],TypeId("Symbol"),[]),[IdDecl([],Id(csym),None)])
     where <Arity> t => n
         ; <concat-strings>["sym_", <cify> c, "_", <int-to-string> n] => csym
@@ -171,7 +172,7 @@ strategies
     FunDef(//DeclSpec([],Static,[],Void,[]),
 	   TypeSpec([],Void,[]),
            IdDecl([],Id("init_constructors"),Some(ParamList([TypeSpec([],Void,[])]))),
-           Compound([],<map(InitConstructor); concat> ops))
+           Compound([],<filter(InitConstructor); concat> ops))
 
   InitConstructor :
     OpDecl(c, t) ->
@@ -492,16 +493,27 @@ rules
            NotEqual(FunCall(Id("ATgetReal"),[CastATermReal(trm)]),FloatConst(<try(real-to-string)>i)))
       ,CallFail)
 
+  /**
+   * Translate a match of an Op, but not a Cons/2 or Nil/0.
+   */
   TranslateStrat :
-    Match(Op(c, ts), trm) ->
-    IfElse(FunCall(Id("match_cons"),[trm, Id(<ConstructorName> (c, <length> ts))])
-          ,Compound([],match-args)
-	  ,CallFail)
-    where <not("Nil" + "Cons")> c; 
-      <thread-map(\ (t,i) -> 
-         (<MatchArg1 <+ MatchArg2>(t, ATgetArgument(trm,IntConst(<int-to-string>i))), 
-              <add>(i,1)) \ )> 
-	     (ts,0) => (match-args,_)
+    Match(op@Op(c, ts), trm)
+      ->
+    IfElse(
+      FunCall(Id("match_cons"),[trm, Id(<ConstructorName> (c, <length> ts))])
+    , Compound([],match-args)
+    , CallFail
+    )
+    where
+      <not(is-ListOp)> op
+    ; <thread-map(
+         \ (t,i) ->
+             (
+               <MatchArg1 <+ MatchArg2> (t, ATgetArgument(trm,IntConst(<int-to-string>i)))
+             , <add>(i, 1)
+             )
+         \ )> (ts,0) => (match-args,_)
+
 
   MatchArg1 : 
     (Var(x){t*}, trm) -> Match(Var(x){t*}, trm)
@@ -553,15 +565,19 @@ rules
           ,Compound([],[s2]))
 
   TranslateStratMatchGuard :
-    GuardedLChoice(Match(Op(c, xs)), s1, s2) ->
+    GuardedLChoice(Match(op@Op(c, xs)), s1, s2) ->
     IfElse(FunCall(Id("match_cons"),[Id("t"), Id(<ConstructorName> (c, <length>xs))])
           ,Compound([], <conc>(get-args, [s1]))
           ,Compound([],[s2]))
-    where <not("Nil" + "Cons")> c; <map(Var(id))> xs; 
-      <thread-map(\ (Var(x), i) -> 
+    where
+      <not(is-ListOp)> op
+    ; <thread-map(\ (Var(x), i) -> 
          (Stat(Assign(Id(x), AssignEq, ATgetArgument(Id("t"),IntConst(<int-to-string>i))))
              , <add>(i,1)) \ )> 
       (xs,0) => (get-args,_)
+
+  is-ListOp =
+    ?Op("Nil", []) + ?Op("Cons", [_, _])
 
   TranslateStratMatchGuard :
     GuardedLChoice(Match(Op("Nil", [])), s1, s2) ->
@@ -631,12 +647,13 @@ rules
           ,Compound([],[Case(Var(t), alts, s2)]))
 
   TranslateStrat :
-    Case(Var(t), [Alt(Fun(c, n), xs, s1) | alts], s2) ->
+    Case(Var(t), [Alt(fun@Fun(c, n), xs, s1) | alts], s2) ->
     IfElse(FunCall(Id("match_cons"),[Id(t), Id(<ConstructorName> (c, n))])
           ,Compound([], <conc>(get-args,[s1]))
           ,Compound([],[Case(Var(t), alts, s2)]))
-    where <not("Nil" + "Cons")> c;
-      <thread-map(\ (Var(x), i) -> 
+    where
+      <not(?Fun("Nil", 0) + ?Fun("Cons", 2))> fun
+    ; <thread-map(\ (Var(x), i) -> 
          (Stat(Assign(Id(x), AssignEq, ATgetArgument(Id(t),IntConst(<int-to-string>i))))
              , <add>(i,1)) \ )> 
       (xs,0) => (get-args,_)
@@ -660,7 +677,10 @@ rules
                         ,s1])
           ,Compound([],[Case(Var(t), alts, s2)]))
 
-rules // Building
+/**
+ * Building
+ */
+rules
 
   TranslateStrat :
     Build(t) -> |[ t = ~exp:<construct-term-caching> t; ]|
@@ -724,9 +744,10 @@ rules // Building
 
   ConstructList' :
     Op("Cons", [hd, tl]) -> c:exp|[ (ATerm)ATinsert(~exp:tl', ~exp:hd) ]|
-    where (<(Op("Nil", []) + Op("Cons", [id, id])); ConstructList> tl 
-           <+ !CheckATermList(tl)) => tl'
-
+    where
+     ( <is-ListOp; ConstructList> tl 
+     <+ !CheckATermList(tl)
+     ) => tl'
 
 /**
  * Term construction with constant term caching
@@ -754,7 +775,10 @@ rules
         ; rules( CachedTerms : _ -> xs )
 
   proper-list =
-    Op("Nil", []) + Op("Cons", [id, proper-list]) + Op(not("Nil" + "Cons"), id)
+    Op("Nil", [])
+    + Op("Cons", [id, proper-list])
+    + Op(id, id)
+      ; not(is-ListOp)
 
   init-cached-terms =
     (CachedTerms <+ ![]);
@@ -762,7 +786,8 @@ rules
 
   DeclareTermId :
     (base, x, e) ->
-    Declaration2(TypeSpec([],TypeId("ATerm"),[]),[IdDecl([],Id(x),None)])
+    c:dec|[ static ATerm ~id:x; ]|
+    // Declaration2(TypeSpec([],TypeId("ATerm"),[]),[IdDecl([],Id(x),None)])
 
   InitTermIds :
     xs ->
