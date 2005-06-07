@@ -34,9 +34,11 @@ strategies
   env-bottomup(s) = 
     rec x(split(all-dist(x), Snd); s)
 
+/*
   thread(s) :
     (c#(ts), x) -> (c#(ts'), y)
     where <thread-map(s)> (ts, x) => (ts', y)
+*/
 
   thread-alltd(s) = 
     rec x(s <+ thread(x))
