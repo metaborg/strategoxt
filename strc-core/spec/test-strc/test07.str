@@ -1,4 +1,4 @@
-module test04
+module test07
 imports libstrategolib
 
 strategies
