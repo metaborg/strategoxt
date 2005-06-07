@@ -1,5 +1,5 @@
 #include <srts/stratego.h>
-#include <srts/stratego-lib.h>
+#include <stratego-lib/stratego-lib.h>
 
 static Symbol sym__0;
 static Symbol sym__1;

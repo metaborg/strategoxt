@@ -5,7 +5,14 @@ STRATEGORUNLIBS = -lstratego-runtime-opt -lstratego-runtime-choice-opt \
 		  -lstratego-lib-native-opt -lATerm-gcc -lm
 LDADD 		= $(STRATEGORUNLIBS)
 
-check_PROGRAMS 	= test01 test02 test03 test04 test05		    \
+if XT_DARWIN
+AM_LDFLAGS += -bind_at_load
+else
+AM_LDFLAGS +=
+endif
+
+
+check_PROGRAMS 	= test01 test02 test03 test04 test05			    \
 		  test06 test07 test08 test09 test10 test11 test12  \
 		  test13 test14 test15 test16 test17 test18 test19  \
 		  test20 test21 test22 test23 test24 test25 \
@@ -14,8 +21,11 @@ check_PROGRAMS 	= test01 test02 test03 test04 test05		    \
 		  test40 test41 test43 test45	    \
 		  test46 test47 test48 test49    \
 		  test54 test56 test57 test58 test59 \
-		  test60 \
-		  io-test10 io-test11 io-test1 io-test2 io-test3  
+		  test60 test61 test62 test63 test64 test65 test66  \
+                  test67 test68 \
+		  io-test10 io-test11 io-test1 io-test2 io-test3 \
+                  qcons-test01 qcons-test02 qcons-test03 qcons-test04 \
+		  let-test
 
 # test26 global choice
 # test44 contexts
@@ -26,6 +36,7 @@ check_PROGRAMS 	= test01 test02 test03 test04 test05		    \
 # test55 override rules (old dynamic rules no longer supported)
 
 TESTS 		= $(check_PROGRAMS)
+
 
 #test50_LDADD 	= bar.o $(STRATEGORUNLIBS)
 #test51_LDADD 	= -L$(SRTS)/lib/srts -lliblib $(STRATEGORUNLIBS)
@@ -102,8 +113,25 @@ nodist_test57_SOURCES = test57.c
 nodist_test58_SOURCES = test58.c
 nodist_test59_SOURCES = test59.c
 nodist_test60_SOURCES = test60.c
+nodist_test61_SOURCES = test61.c
+nodist_test62_SOURCES = test62.c
+nodist_test63_SOURCES = test63.c
+nodist_test64_SOURCES = test64.c
+nodist_test65_SOURCES = test65.c
+nodist_test66_SOURCES = test66.c
+nodist_test67_SOURCES = test67.c
+nodist_test68_SOURCES = test68.c
+nodist_test69_SOURCES = test69.c
+
 nodist_io_test10_SOURCES = io-test10.c
 nodist_io_test11_SOURCES = io-test11.c
 nodist_io_test1_SOURCES = io-test1.c
 nodist_io_test2_SOURCES = io-test2.c
 nodist_io_test3_SOURCES = io-test3.c
+
+nodist_qcons_test01_SOURCES = qcons-test01.c
+nodist_qcons_test02_SOURCES = qcons-test02.c
+nodist_qcons_test03_SOURCES = qcons-test03.c
+nodist_qcons_test04_SOURCES = qcons-test04.c
+
+nodist_let_test_SOURCES = let-test.c

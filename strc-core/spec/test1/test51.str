@@ -1,5 +1,5 @@
 module test51
-imports liblib
+imports libstrategolib
 strategies
 
   main =

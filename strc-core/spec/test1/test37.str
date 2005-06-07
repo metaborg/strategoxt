@@ -21,7 +21,7 @@ strategies
    <+ ( num-to-string; \str -> <concat-strings>["\\",str," "]\ )
 
   num-to-string = 
-    rec x(split(sect(mod, !10); sect(add, !48), sect(div, !10); int);
+    rec x(split( <mod>(<id>, 10); <add>(<id>, 48), <div>(<id>, 10); int);
           (id, ?0; ![] <+ x); MkCons );
     reverse;
     implode-string
