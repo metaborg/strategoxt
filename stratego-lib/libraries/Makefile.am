@@ -26,6 +26,6 @@ libstrategolib.c :
         -I $(top_srcdir)/ssl-compat \
         -I $(top_srcdir)/spec \
         -i ./strategolib.str -o libstrategolib.rtree \
-	--verbose 5 \
+	--verbose 2 \
 	&& \
         rm libstrategolib.str
