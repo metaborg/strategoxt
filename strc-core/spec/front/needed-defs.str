@@ -12,7 +12,7 @@ strategies
    * Obtaining all definitions
    */
   all-defs = 
-    !(<definition-names>, <sort-defs>, [])
+    !(<definition-names>, <sort-defs; check-ext-overload>, [])
     ; extract-needed-defs
 
   /**
@@ -39,16 +39,16 @@ strategies
    */
 
   definition-names =
-    foldr(![], union, DefinitionName)
+    foldr(![], union, ![<DefinitionName>])
 
   DefinitionName :
-    |[ f(a1* | a2*) = s ]| -> [(f, (<length>a1*, <length>a2*))]
+    |[ f(a1* | a2*) = s ]| -> (f, (<length>a1*, <length>a2*))
 
   DefinitionName :
-    |[ external f(a1* | a2*) ]| -> [(f, (<length>a1*, <length>a2*))]
+    |[ external f(a1* | a2*) ]| -> (f, (<length>a1*, <length>a2*))
 
   DefinitionName :
-    |[ external f(a1* | a2*) = s ]| -> [(f, (<length>a1*, <length>a2*))]
+    |[ external f(a1* | a2*) = s ]| -> (f, (<length>a1*, <length>a2*))
 
   is-new-def = 
     ?|[ f(a1* | a2*) = s ]|
@@ -94,7 +94,7 @@ strategies
   Arities = 
     bagof-Arity; make-set
 
-  RegisterDef = ?def;
+  RegisterDef = ?def; 
     where(
        <DefinitionName> def => (f, (n, m))
       ; rules(
