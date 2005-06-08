@@ -8,7 +8,6 @@ module desugar
 
 imports 
   Stratego-Sugar
-  sugar 
   DefaultStrat 
   stratlib 
   stratego-desugar
