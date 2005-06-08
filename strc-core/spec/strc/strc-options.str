@@ -18,7 +18,7 @@ strategies
 
   init-strc-config = 
   where(
-    <set-config> ("VERSION", strc-version-number)
+    <set-config> ("VERSION", <strc-version-number>)
     ; <set-config> ("--verbose", 1)
     ; <set-config> ("--keep", 0)
     ; <set-config> ("-O", 6)
@@ -26,18 +26,24 @@ strategies
     ; <set-config> ("--C-include", 
 		   ["<srts/stratego.h>", "<stratego-lib/stratego-lib.h>"])
     ; <set-config> ("-CI", ["-I", <conc-strings>(<xtc-find-path> "SRTS", "/include"),
-                           "-I", <conc-strings>(<xtc-find-path> "SRTS", "/include"),
-                           "-I", <conc-strings>(<xtc-find-path> "ATERM", "/include")])
+                            "-I", <conc-strings>(<xtc-find-path> "stratego-lib", "/include"),
+                            "-I", <conc-strings>(<xtc-find-path> "ATERM", "/include")])
     ; <set-config> ("-CL",
-        [ <concat-strings> ["-L", <xtc-find-path> "SRTS", "/lib/srts"]
-        , "-lstratego-lib_opt"
-        , "-lstratego-choice"
-        , "-lstratego_opt"
+        [  <concat-strings> ["-L", <xtc-find-path> "stratego-lib", "/lib/stratego-lib"]
+        , "-lstratego-lib-native-opt"
+        , <concat-strings> ["-L", <xtc-find-path> "SRTS", "/lib/srts"]
+        , "-lstratego-runtime-choice-opt"
+        , "-lstratego-runtime-opt"
         , <concat-strings> ["-L", <xtc-find-path> "ATERM", "/lib"]
         , "-lATerm-gcc"
         , "-lm"])
     ; <set-config> ("-CD", [])
+    ; <set-config> ("-Xlinker", <strc-system-ldflags> ())
+    ; <set-config> ("--dr", "new")
   )
+
+  strc-system-ldflags =
+    <prim("STRC_SYSTEM_LDFLAGS")> ()
 
   get-include-dirs =
     <conc> (<get-config> "-I"
@@ -91,11 +97,20 @@ strategies
 
   + ArgOption("-Cl",
 	where(<extend-config>("-CL", [<conc-strings> ("-l", <id>)])); !(),
-	!"-Cl lib            Search the library named lib when linking.")
+	!"-Cl <lib>          Search the library named <lib> when linking.")
 
   + ArgOption("-la",
 	where(<extend-config>("-CL", [<file-exists <+ <concat-strings; xtc-find <+ <exit> 1> ["lib", <id>, ".la"]>])); !(),
-	!"-la lib            Search the libtool library liblib.la when linking.\n")
+	!"-la <name>         Search the libtool library lib<name>.la when linking.")
+
+  /**
+   * @todo Replace -CL with more general -Xlinker
+   */
+  + ArgOption("-Xlinker",
+	where(<extend-config>("-Xlinker", [<id>])); !(),
+	!"-Xlinker <arg>     Pass <arg> on to the linker")
+
+  + ArgOption(fail, fail, !"")
 
   + ArgOption("--xtc-repo",
 	where(<extend-config>("-CD", [<concat-strings> ["-DXTC_REPOSITORY()=ATmakeString(\"", <id>, "\")"]])); !(),
@@ -119,7 +134,7 @@ strategies
 
 
   + ArgOption("-O",
-        where(<set-config>("-O", <string-to-int>)); !(),
+        where(<set-config>("-O", <set-opt-level> )); !(),
 	!"-O n               Optimization level (0 = no optimization)" )
 
 
@@ -166,19 +181,17 @@ strategies
 
   + stratego-warnings-options
 
-  + Option("--maybe-unbound-warnings",
-        where(<set-config> ("--maybe-unbound-warnings", 1)),
-        !"--maybe-unbound-warnings"
-    )
-
-  + Option("--no-maybe-unbound-warnings",
-        where(<set-config> ("--no-maybe-unbound-warnings", 0)),
-        !"--no-maybe-unbound-warnings"
-    )
-
   + Option("--asfix",
        where(<set-config>("--asfix",())); !(),
        !"--asfix            Concrete syntax parts are not imploded")
+
+
+  set-opt-level = 
+    string-to-int
+  ; if <lt>(<id>,2) then
+      !2 ; log(|Warning(),"Optimization levels < 2 are broken, setting optimization level to 2.")
+    end
+      
 
   set-choice-point-lib = 
     ?lib
@@ -189,9 +202,10 @@ strategies
   pass-dr = !["--dr", <get-config> "--dr"]
 
   pass-maybe-unbound-warnings =
-    <get-config> "--maybe-unbound-warnings" => 1
-    ; !["--maybe-unbound-warnings"]
-   <+ !["--no-maybe-unbound-warnings"]
+    <get-config>"--warning"
+  ; fetch-elem("maybe-unbound-variables")
+  ; !["--maybe-unbound-warnings"]
+ <+ !["--no-maybe-unbound-warnings"]
 
 
   conflict-short-description(p) = 
@@ -231,6 +245,8 @@ strategies
 	   "modify it under the terms of the GNU Lesser General Public\n",
 	   "License as published by the Free Software Foundation; either\n",
 	   "version 2 of the License, or (at your option) any later version.\n"]))
+
+  strc-version-number = prim("VERSION_TERM") 
 
   strc-announce =
     if-verbose2(strc-version)
