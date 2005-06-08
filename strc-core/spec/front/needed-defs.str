@@ -11,7 +11,6 @@ strategies
   /**
    * Obtaining all definitions
    */
-
   all-defs = 
     !(<definition-names>, <sort-defs>, [])
     ; extract-needed-defs
@@ -20,7 +19,7 @@ strategies
    * Obtaining needed definitions
    */
   needed-defs = 
-    !([("main", (0,0))], <sort-defs>, [])
+    !([("main", (0,0))], <sort-defs; check-ext-overload>, [])
     ; extract-needed-defs
 
   extract-needed-defs =
@@ -43,13 +42,38 @@ strategies
     foldr(![], union, DefinitionName)
 
   DefinitionName :
-    SDefT(f,xs,ys,_) -> [(f, (<length>xs, <length>ys))]
+    |[ f(a1* | a2*) = s ]| -> [(f, (<length>a1*, <length>a2*))]
 
   DefinitionName :
-    ExtSDef(f,xs,ys) -> [(f, (<length>xs, <length>ys))]
+    |[ external f(a1* | a2*) ]| -> [(f, (<length>a1*, <length>a2*))]
 
   DefinitionName :
-    ExtSDefInl(f,xs,ys,_) -> [(f, (<length>xs, <length>ys))]
+    |[ external f(a1* | a2*) = s ]| -> [(f, (<length>a1*, <length>a2*))]
+
+  is-new-def = 
+    ?|[ f(a1* | a2*) = s ]|
+
+  is-external-def =
+    ?|[ external f(a1* | a2*) ]|
+
+  is-external-def =
+    ?|[ external f(a1* | a2*) = s]|
+
+  sdef-key-to-string :
+    (f, (s, t)) -> <concat-strings> [f, "/", <int-to-string> s, "-", <int-to-string> t]
+
+strategies
+
+  check-ext-overload =
+    let helper =
+          DefinitionName
+          ; if ExtDefinition then
+              sdef-key-to-string
+              ; debug(!"error: redefining external definition: ")
+              ; <exit> 1
+            end
+     in map(where(is-new-def < helper + id))
+    end
 
 strategies
 
@@ -62,7 +86,7 @@ strategies
    */
 
   sort-defs = 
-    map(RegisterSDefT + RegisterExtSDef + RegisterExtSDefInl)
+    map(RegisterDef)
 
   Definitions =
     bagof-Definition
@@ -70,26 +94,18 @@ strategies
   Arities = 
     bagof-Arity; make-set
 
-  RegisterSDefT =
-    ?def@|[ f(a1* | a2*) = s ]|		
-    ; RegisterDef(|f, def, a1*, a2*)
-
-  RegisterExtSDef =
-    ?def@|[ external f(a1* | a2*) ]|	
-    ; RegisterDef(|f, def, a1*, a2*)
-
-  RegisterExtSDefInl =
-    ?def@|[ external f(a1* | a2*) = s ]|
-    ; RegisterDef(|f, def, a1*, a2*)
-
-  RegisterDef(|f, def, a1*, a2*) =
+  RegisterDef = ?def;
     where(
-        <length> a1* => n
-      ; <length> a2* => m
+       <DefinitionName> def => (f, (n, m))
       ; rules(
           Definition :+ (f, (n, m)) -> def
           Arity      :+ f -> (n, m)
         )
+      ; if <is-external-def> def then
+          rules(
+            ExtDefinition : (f, (n, m)) -> def
+          )
+        end
     )
 
 strategies
@@ -129,14 +145,16 @@ rules
           |}
 
   JoinDefsExt =
-    where(map(?ExtSDef(f, <length => i>, <length => j>) 
-	    + ?ExtSDefInl(f, <length => i>, <length => j>, s)))
+    where(map(
+      ?ExtSDef(f, <length => i>, <length => j>) 
+    + ?ExtSDefInl(f, <length => i>, <length => j>, s)
+    ))
     ; (fetch-elem(?ExtSDefInl(_,_,_,_)) <+ Hd)
 
   JoinDefsExt =
     fetch(?ExtSDef(f,_,_) + ?ExtSDefInl(f,_,_,_))
     ; fetch(?SDefT(f,_,_,_))
-    ; <debug(!"redefining external definition: ")> f
+    ; <debug(!"error: redefining external definition: ")> f
     ; giving-up
 
   choices = 
