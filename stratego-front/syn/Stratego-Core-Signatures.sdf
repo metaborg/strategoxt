@@ -20,9 +20,14 @@ exports
     String ":" Type 		-> Opdecl {cons("OpDeclQ")}
            ":" Type 		-> Opdecl {cons("OpDeclInj")}
 
-  sorts Type ArgType
+  sorts Type ArgType ConstType FunType RetType
   context-free syntax
-    Sort	             -> Type {cons("ConstType")}
-    {ArgType "*"}+ "->" Sort -> Type {cons("FunType")}
-    "(" Type ")"             -> ArgType {bracket}
-    Sort	             -> ArgType
+    Sort	                -> ConstType {cons("ConstType")}
+    {ArgType "*"}+ "->" RetType -> FunType {cons("FunType")}
+    "(" Type ")"                -> ArgType {bracket}
+    ConstType			-> ArgType
+    Type	                -> RetType
+    FunType			-> RetType {reject}
+
+    FunType			-> Type
+    ConstType			-> Type
