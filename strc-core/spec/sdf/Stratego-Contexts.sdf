@@ -1,4 +1,0 @@
-module Stratego-Contexts
-exports
-  context-free syntax
-    Identifier "[" Term "]" ("(" SVar ")")? -> Term {cons("Con")}
