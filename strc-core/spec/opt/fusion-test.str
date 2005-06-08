@@ -1,5 +1,5 @@
 module fusion-test
-imports fusion sunit
+imports fusion 
 strategies
 
   fusion-test-io = 

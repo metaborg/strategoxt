@@ -4,11 +4,11 @@ strategies
 
   build-match-laws-test-io =
     test-suite(!"build-match-laws-test",
-	test1
-	; test2
+	test2
 	; test3
     )
 
+/*
   test1 = 
     apply-test(!"test1"
 	, BuildMatch
@@ -22,7 +22,7 @@ strategies
                    Where(PrimT("SSL_printnl",[],[Var("f_0"),Var("g_0")]))))
 
 	)
-
+*/
 
   test2 = 
     apply-and-check(!"test2"
