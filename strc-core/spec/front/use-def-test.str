@@ -15,7 +15,6 @@ strategies
       test9;
       test10;
       test11;
-      test12;
       test13;
       test14
     )
@@ -151,12 +150,6 @@ strategies
 	          where !L; at-suffix({YS: ?Cons(Y, YS); where(<S()> Tup(X, Y)); !YS}); ?L'
 	   ]|
 	)
-
-  test12 = 
-    apply-test(!"test12a"
-	, not(def-use-def)
-	, !RDefT("test4", [], [], |[ Foo(?p) --> Foo(!p) where id ]|)
-	) 
 
   test13 = 
     apply-test(!"test13a"
