@@ -60,20 +60,19 @@ nodist_extract_all_SOURCES = extract-all.c
 
 LDADD           += $(SSL_LIBS)
 
-check_PROGRAMS   = use-def-test lift-dynamic-rules-old-test 
+check_PROGRAMS   = use-def-test 
 
 CLEANFILES 	 = $(wildcard *.dep) $(wildcard *.tmp) $(wildcard *.sci.*)
 
 BOOTCLEANFILES   = $(wildcard *.c)
 
-TESTS 		 = use-def-test lift-dynamic-rules-old-test 
+TESTS 		 = use-def-test 
 #needed-defs-test 
 #frontend-test 
 #extract-test
 
 EXTRA_DIST 	 = $(wildcard *.str) $(wildcard *.meta)
 
-nodist_lift_dynamic_rules_old_test_SOURCES = lift-dynamic-rules-old-test.c
 nodist_use_def_test_SOURCES = use-def-test.c
 #nodist_raise_annotations_test_SOURCES = raise-annotations-test.c
 
