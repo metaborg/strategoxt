@@ -30,7 +30,7 @@ boot0 :
 	$(MAKE) bootcheck
 
 bootstrap : 
-        @mkdir -p log
+	@mkdir -p log
 	@echo
 	@echo "BOOTSTRAPPING PHASE 1"
 	@echo
