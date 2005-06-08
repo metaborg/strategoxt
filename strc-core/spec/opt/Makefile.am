@@ -40,8 +40,9 @@ nodist_effects_analysis_SOURCES = effects-analysis.c
 check_PROGRAMS 	 = build-match-laws-test bound-unbound-vars-test \
 		   const-prop-test bound-unbound-vars-debug \
 		   bound-unbound-vars-debug-norm\
-		   bound-unbound-vars-debug-sci-opt17
+		   bound-unbound-vars-debug-sci-opt17 \
 		   const-prop-test fusion-test
+
 nodist_build_match_laws_test_SOURCES = build-match-laws-test.c
 nodist_bound_unbound_vars_test_SOURCES = bound-unbound-vars-test.c
 nodist_const_prop_test_SOURCES = const-prop-test.c
