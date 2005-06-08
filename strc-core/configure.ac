@@ -3,10 +3,18 @@ AC_INIT([strc-core],[0.15],[stratego-bugs@cs.uu.nl])
 AC_CONFIG_AUX_DIR([../config])
 AM_INIT_AUTOMAKE
 
-XT_SVN_REVISION
-# comment to make this a stable release
-XT_PRE_RELEASE
 XT_INTERNAL_USE_XT_PACKAGES
+XT_TERM_DEFINE
+
+if test "$xt_darwin" = "yes"; then
+  AC_DEFINE([STRC_SYSTEM_LDFLAGS()],
+            [((ATerm) ATmakeList1(ATmakeString("-bind_at_load")))],
+            [Additional arguments to pass to the linker.])
+else
+  AC_DEFINE([STRC_SYSTEM_LDFLAGS()],
+            [((ATerm) ATmakeList0())],
+            [Additional arguments to pass to the linker.])
+fi
 
 libexecdir=\$\{exec_prefix\}/libexec/$PACKAGE
 AC_SUBST(libexecdir)
@@ -28,7 +36,6 @@ AC_CONFIG_FILES([
   spec/match/data/Makefile 
   spec/opt/Makefile 
   spec/strc/Makefile 
-  spec/strc/strc-version.str
   spec/sig/Makefile 
   spec/pack/Makefile 
 
@@ -38,11 +45,8 @@ AC_CONFIG_FILES([
 
   spec/test1/Makefile 
   spec/test2/Makefile 
-  spec/test3/Makefile 
   spec/testneg/Makefile
   spec/test-strc/Makefile
-  spec/testlib/Makefile 
-  spec/testspec/Makefile 
 ])
 
 AC_OUTPUT
