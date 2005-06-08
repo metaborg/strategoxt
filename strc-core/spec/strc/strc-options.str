@@ -1,5 +1,5 @@
 module strc-options
-imports strc-version stratego-warnings-options
+imports stratego-warnings-options
 strategies
 
   command-line-options =
@@ -246,7 +246,7 @@ strategies
 	   "License as published by the Free Software Foundation; either\n",
 	   "version 2 of the License, or (at your option) any later version.\n"]))
 
-  strc-version-number = prim("VERSION_TERM") 
+  strc-version-number = prim("VERSION_TERM")
 
   strc-announce =
     if-verbose2(strc-version)

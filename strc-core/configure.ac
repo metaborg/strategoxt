@@ -36,12 +36,9 @@ AC_CONFIG_FILES([
   spec/match/data/Makefile 
   spec/opt/Makefile 
   spec/strc/Makefile 
-  spec/sig/Makefile 
   spec/pack/Makefile 
 
   spec/lib/Makefile 
-
-  spec/log/Makefile 
 
   spec/test1/Makefile 
   spec/test2/Makefile 

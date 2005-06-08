@@ -1,6 +1,6 @@
 include $(top_srcdir)/Makefile.xt 
 
-SUBDIRS = pack c front lib match opt strc test1 test2 testneg test-strc log
+SUBDIRS = pack c front lib match opt strc test1 test2 testneg test-strc
 
 DIST_SUBDIRS = testlib test3 testspec $(SUBDIRS)
 
@@ -30,6 +30,7 @@ boot0 :
 	$(MAKE) bootcheck
 
 bootstrap : 
+        @mkdir -p log
 	@echo
 	@echo "BOOTSTRAPPING PHASE 1"
 	@echo
