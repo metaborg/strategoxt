@@ -14,7 +14,7 @@ SCFLAGS = -I $(srcdir)/../../../stratego-front/syn/ \
 LDADD           += $(SSL_LIBS)
 
 bin_PROGRAMS 	= strc
-noinst_PROGRAMS = strc-pre
+#noinst_PROGRAMS = strc-pre
 pkgdata_DATA 	= strc-manual.txt
 
 nodist_strc_SOURCES = strc.c

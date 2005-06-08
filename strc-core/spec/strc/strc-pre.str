@@ -6,7 +6,7 @@
  */
 
 module strc-pre
-imports liblib strc-options sugar
+imports liblib strc-options 
 strategies
 
   strc-pre = 
