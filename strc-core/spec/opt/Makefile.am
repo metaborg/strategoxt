@@ -3,7 +3,6 @@ include $(wildcard *.dep)
 
 SCFLAGS	= -I $(srcdir)/../../../stratego-front/syn/ \
 	  -I $(srcdir)/../../../stratego-front/sig/ \
-	  -I $(srcdir)/../sig			    \
 	  -I $(srcdir)/../match			    \
 	  -I $(srcdir)/../lib			    \
 	  -I $(srcdir)/../front			    \

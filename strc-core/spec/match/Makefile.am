@@ -5,7 +5,6 @@ SUBDIRS = data
 
 SCFLAGS	= -I $(srcdir)/../../../stratego-front/syn \
 	  -I $(srcdir)/../../../stratego-front/sig \
-	  -I $(srcdir)/../sig			   \
 	  -I $(srcdir)/../opt			   \
 	  -I $(srcdir)/../lib			   \
 	  -I $(srcdir)/../front			   \

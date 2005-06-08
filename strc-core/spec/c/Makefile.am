@@ -19,7 +19,6 @@ STRINCLUDES	 = -I $(C_TOOLS)/share/sdf/c-tools	    \
 		   -I $(C_TOOLS)/share/c-tools		    \
 		   -I $(srcdir)/../../../stratego-front/syn \
 	           -I $(srcdir)/../../../stratego-front/sig \
-	  	   -I ../sig				    \
 	  	   -I ../match				    \
 	  	   -I ../opt				    \
 	  	   -I ../front				    \
