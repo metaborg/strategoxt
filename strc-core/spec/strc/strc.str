@@ -214,7 +214,13 @@ strategies
   // format checking
 
   fc(|format) =
-    xtc-transform(<concat-strings>[format, ".rtg-nf"], [])
+    where(
+      <concat-strings>[format, ".rtg-nf"] => format'
+      ; dbg(|"format")
+      ; xtc-find => format''
+      ; dbg(|"path")
+      ; xtc-transform(!"format-check", !["--fast", "-b", "--rtg-nf", format'', "--verbose", "10"])
+    )
 
 strategies
 
