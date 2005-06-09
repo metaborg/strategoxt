@@ -13,7 +13,6 @@ LDADD           += $(SSL_LIBS)
 libexec_PROGRAMS = rename-vars
 check_PROGRAMS 	 = stratlib-test
 
-nodist_rename_vars_SOURCES = rename-vars.c
 nodist_stratlib_test_SOURCES = stratlib-test.c
 
 CLEANFILES 	 = $(wildcard *.dep)

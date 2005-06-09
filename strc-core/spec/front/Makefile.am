@@ -37,27 +37,6 @@ libexec_PROGRAMS =				\
 	extract-all 				\
 	lift-dynamic-rules
 
-nodist_repair_types_SOURCES = repair-types.c
-nodist_pre_desugar_SOURCES = pre-desugar.c
-nodist_combine_sections_SOURCES = combine-sections.c
-nodist_variables_to_constructors_SOURCES = variables-to-constructors.c
-nodist_raise_annotations_SOURCES = raise-annotations.c
-nodist_define_lrules_SOURCES = define-lrules.c
-nodist_lift_dynamic_rules_SOURCES = lift-dynamic-rules.c
-nodist_stratego_desugar_SOURCES = stratego-desugar.c
-nodist_use_def_SOURCES = use-def.c
-nodist_check_constructors_SOURCES = check-constructors.c
-nodist_expand_overlays_SOURCES = expand-overlays.c
-nodist_rules_to_sdefs_SOURCES = rules-to-sdefs.c
-nodist_desugar_list_matching_SOURCES = desugar-list-matching.c
-nodist_desugar_default_vardec_SOURCES = desugar-default-vardec.c
-nodist_introduce_congdefs_SOURCES = introduce-congdefs.c
-nodist_rename_defs_SOURCES = rename-defs.c
-nodist_desugar_SOURCES = desugar.c
-nodist_stratego_warnings_SOURCES = stratego-warnings.c
-nodist_extract_SOURCES = extract.c
-nodist_extract_all_SOURCES = extract-all.c
-
 LDADD           += $(SSL_LIBS)
 
 check_PROGRAMS   = use-def-test 

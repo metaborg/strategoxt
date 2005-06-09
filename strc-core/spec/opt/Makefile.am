@@ -20,22 +20,6 @@ libexec_PROGRAMS = simplify1 simplify2 simplify3		    \
 		   define-congruences defs-to-external-defs	    \
 		   effects-analysis
 
-nodist_simplify1_SOURCES = simplify1.c
-nodist_simplify2_SOURCES = simplify2.c
-nodist_simplify3_SOURCES = simplify3.c
-nodist_fusion_SOURCES = fusion.c
-nodist_inline_SOURCES = inline.c
-nodist_dead_def_elim_SOURCES = dead-def-elim.c
-nodist_const_prop_SOURCES = const-prop.c
-nodist_dead_var_elim_SOURCES = dead-var-elim.c
-nodist_lift_definitions_SOURCES = lift-definitions.c
-nodist_canonicalize_SOURCES = canonicalize.c
-nodist_bound_unbound_vars_SOURCES = bound-unbound-vars.c
-nodist_worker_wrapper_SOURCES = worker-wrapper.c
-nodist_define_congruences_SOURCES = define-congruences.c
-nodist_defs_to_external_defs_SOURCES = defs-to-external-defs.c
-nodist_effects_analysis_SOURCES = effects-analysis.c
-
 check_PROGRAMS 	 = bound-unbound-vars-test \
 		   const-prop-test const-prop-test 
 

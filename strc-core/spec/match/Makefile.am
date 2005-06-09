@@ -15,9 +15,6 @@ LDADD           += $(SSL_LIBS)
 libexec_PROGRAMS = compile-match desugar-case 
 #check_PROGRAMS 	 = matrix-test
 
-nodist_compile_match_SOURCES = compile-match.c
-nodist_desugar_case_SOURCES = desugar-case.c
-
 CLEANFILES 	 = *.dep $(TESTS) 
 
 #TESTS 		 = 
