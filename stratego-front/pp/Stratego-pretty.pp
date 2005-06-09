@@ -10,8 +10,6 @@
    NoAnnoList                                         -- _1,
    AnnoList.2:iter-star-sep                           -- _1 KW[","],
    AnnoList                                           -- _1 KW["{"] _2 KW["}"],
-   SwitchChoice.2:iter-star.1:seq                     -- KW["case"] _1 KW[":"] _2,
-   SwitchChoiceNoOtherwise.2:iter-star.1:seq          -- KW["case"] _1 KW[":"] _2,
    TupleCong.2:iter-sep                               -- _1 KW[","],
    CongQ.2:iter-star-sep                              -- _1 KW[","],
    CongQ                                              -- _1 KW["("] _2 KW[")"],
