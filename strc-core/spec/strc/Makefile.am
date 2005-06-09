@@ -14,18 +14,12 @@ SCFLAGS = -I $(srcdir)/../../../stratego-front/syn/ \
 LDADD           += $(SSL_LIBS)
 
 bin_PROGRAMS 	= strc
-#noinst_PROGRAMS = strc-pre
 pkgdata_DATA 	= strc-manual.txt
-
-nodist_strc_SOURCES = strc.c
-nodist_strc_pre_SOURCES = strc-pre.c
 
 CLEANFILES 	= $(wildcard *.dep)
 BOOTCLEANFILES 	= strc.c
 
-EXTRA_DIST 	= $(wildcard *.str) strc-version.str.in \
-		  strc-manual.txt $(man_MANS)
-
+EXTRA_DIST 	= $(wildcard *.str) strc-manual.txt $(man_MANS)
 man_MANS 	= strc.1
 
 strc.1 : 
