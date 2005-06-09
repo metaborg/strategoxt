@@ -2,6 +2,7 @@
  * Cons/3 is a valid constructor name.
  */
 module test63
+imports list-cons
 strategies
 
   main =

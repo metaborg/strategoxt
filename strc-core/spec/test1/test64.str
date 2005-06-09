@@ -2,6 +2,7 @@
  * Cons/4 is a valid constructor name.
  */
 module test64
+imports list-cons
 strategies
 
   main =

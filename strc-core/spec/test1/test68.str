@@ -1,5 +1,5 @@
 module test68
-imports spec
+imports spec list-cons
 strategies
 
   main = !Fred("test")
