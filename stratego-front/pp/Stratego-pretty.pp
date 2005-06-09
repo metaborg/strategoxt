@@ -20,12 +20,6 @@
    Module.2:iter-star                                 -- _1,
    Specification                                      -- V vs=1 is=2 [H  [KW["specification"]] _1],
    Specification.1:iter-star                          -- _1,
-   Script                                             -- V  [H  [KW["stratego"] KW["script"]] _1],
-   Script.1:iter-star                                 -- _1,
-   Command                                            -- _1,
-   Dump                                               -- KW[":dump"] _1,
-   Load                                               -- KW[":load"] _1,
-   Eval                                               -- KW[">"] _1,
 
    Imports -- H  [KW["imports"] _1],
    Imports.1:iter-star -- _1,
