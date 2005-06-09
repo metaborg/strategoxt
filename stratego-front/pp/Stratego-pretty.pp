@@ -14,8 +14,10 @@
    CongQ.2:iter-star-sep                              -- _1 KW[","],
    CongQ                                              -- _1 KW["("] _2 KW[")"],
    CharCong                                           -- _1,
+
    Definition                                         -- V  [_1],
    Definition.1:iter-star                             -- _1,
+
    Module                                             -- V  [H  [KW["module"] _1] _2],
    Module.2:iter-star                                 -- _1,
    Specification                                      -- V vs=1 is=2 [H  [KW["specification"]] _1],
@@ -143,20 +145,24 @@
    LGChoice -- V [_1 H[KW["<++"] _2 ]],
    RGChoice -- V [_1 H[KW["++>"] _2 ]],
    GuardedLChoice -- V[_1 H[KW["<"] _2] H[KW["+"] _3 ]],
+
    CondChoice -- V vs=0 [
      H hs=1 [KW["if"] _1]
      H hs=1 [KW["then"] _2]
      H hs=1 [KW["else"] _3] KW["end"]
    ],
+
    SwitchChoiceNoOtherwise -- V[V is=2 vs=0 [
      H hs=1 [KW["switch"] _1]
      _2
    ] KW["end"]
    ],
+
    SwitchChoiceNoOtherwise.2:iter-star -- V is=2 vs=0 [
      H hs=1[KW["case"] _1 KW[":"]]
      _2
    ],
+
    SwitchChoice -- V[V is=2 vs=0 [
      H hs=1 [KW["switch"] _1]
      _2
@@ -166,6 +172,7 @@
      ]
    ] KW["end"]
    ],
+
    SwitchChoice.2:iter-star -- V is=2 vs=0 [
      H hs=1[KW["case"] _1 KW[":"]]
      _2
