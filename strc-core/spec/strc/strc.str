@@ -215,11 +215,11 @@ strategies
 
   fc(|format) =
     where(
-      <concat-strings>[format, ".rtg-nf"] => format'
-      ; dbg(|"format")
-      ; xtc-find => format''
-      ; dbg(|"path")
-      ; xtc-transform(!"format-check", !["--fast", "-b", "--rtg-nf", format'', "--verbose", "3"])
+      <concat-strings>[format, ".rtg-nf"]
+      ; xtc-find => format'
+    );
+    where(
+      xtc-transform(!"format-check", !["--fast", "-b", "--rtg-nf", format', "--verbose", "1"])
     )
 
 strategies
