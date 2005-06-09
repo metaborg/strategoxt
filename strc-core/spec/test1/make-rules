@@ -37,7 +37,7 @@ SCLibs = -L$(STRATEGO_LIB)/lib/stratego-lib -lstratego-lib-native \
 
 # FORMATS ###########################################################
 
-formatcheck = $(STRATEGO_REGULAR)/bin/format-check
+formatcheck = $(prefix)/bin/format-check
 
 #STRATEGO_FRONT_SHARE = $(STRATEGO_FRONT)/share/stratego-front
 
