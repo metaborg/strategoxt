@@ -12,7 +12,7 @@ SCFLAGS      = --main $* $(XTCFLAGS)
 
 LDADD           += $(SSL_LIBS)
 
-EXTRA_DIST     = pack-stratego.str 
+EXTRA_DIST     = pack-stratego.str pack-stratego-options.str
 CLEANFILES     = pack-stratego.dep $(wildcard *.dep) \
 		 pack-stratego.tst1 pack-stratego.tst2 pack-stratego.imp
 BOOTCLEANFILES = pack-stratego.c 
