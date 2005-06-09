@@ -307,12 +307,16 @@ strategies
       else
           <isect> (starts, <id>)
         ; if ?[] then
+	    if-verbose1(
               <fprintnl> (<stderr-stream>,
                 ["error: term typed as ", <types-to-string> types, 
                  " but expected ", <types-to-string> starts])
+            )
             ; !1
           else
-            if-verbose1(<types-to-string; debug(!"info: term typed as ")> types)
+            if-verbose2(
+              <types-to-string; debug(!"info: term typed as ")> types
+            )
             ; !0
           end
       end
