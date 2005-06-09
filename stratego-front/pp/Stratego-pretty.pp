@@ -28,8 +28,12 @@
    Dump                                               -- KW[":dump"] _1,
    Load                                               -- KW[":load"] _1,
    Eval                                               -- KW[">"] _1,
-   Imports                                            -- H  [KW["imports"] _1],
-   Imports.1:iter-star                                -- _1,
+
+   Imports -- H  [KW["imports"] _1],
+   Imports.1:iter-star -- _1,
+   Import -- _1,
+   ImportWildcard -- H hs=0 [ _1 KW["/"] KW["*"] ],
+
    Rules                                              -- V is=2 [H  [KW["rules"]] V vs=1 [_1]],
    Rules.1:iter-star                                  -- _1,
    Strategies                                         -- V is=2 [H  [KW["strategies"]] V vs=1 [_1]],
@@ -137,19 +141,44 @@
    ParenStrat                                         -- H hs=0 [KW["("] _1 KW[")"]],
    LRule                                              -- H  [KW["\\"] _1 KW["\\"]],
    SRule                                              -- H  [KW["("] _1 KW[")"]],
-   Seq                                                -- V  [_1 H  [KW[";"] _2]],
-   Choice                                             -- V  [_1 H  [KW["+"] _2]],
-   LChoice                                            -- V  [_1 H  [KW["<+"] _2]],
-   RChoice                                            -- V  [_1 H  [KW["+>"] _2]],
-   GChoice                                            -- V  [_1 H  [KW["++"] _2]],
-   LGChoice                                           -- V  [_1 H  [KW["<++"] _2]],
-   RGChoice                                           -- V  [_1 H  [KW["++>"] _2]],
-   GuardedLChoice                                     -- V  [_1 H  [KW["<"] _2] H  [KW["+"] _3]],
-   CondChoice                                         -- V vs=0 [H hs=1 [KW["if"] _1] H hs=1 [KW["then"] _2] H hs=1 [KW["else"] _3] KW["end"]],
-   SwitchChoiceNoOtherwise                            -- V  [V is=2 vs=0 [H hs=1 [KW["switch"] _1] _2] KW["end"]],
-   SwitchChoiceNoOtherwise.2:iter-star                -- _1,
-   SwitchChoice                                       -- KW["switch"] _1 _2 KW["otherwise"] KW[":"] _3 KW["end"],
-   SwitchChoice.2:iter-star                           -- _1,
+
+
+   Seq      -- V [_1 H[KW[";"] _2 ]],
+   Choice   -- V [_1 H[KW["+"]   _2 ]],
+   LChoice  -- V [_1 H[KW["<+"]  _2 ]],
+   RChoice  -- V [_1 H[KW["+>"]  _2 ]],
+   GChoice  -- V [_1 H[KW["++"]  _2 ]],
+   LGChoice -- V [_1 H[KW["<++"] _2 ]],
+   RGChoice -- V [_1 H[KW["++>"] _2 ]],
+   GuardedLChoice -- V[_1 H[KW["<"] _2] H[KW["+"] _3 ]],
+   CondChoice -- V vs=0 [
+     H hs=1 [KW["if"] _1]
+     H hs=1 [KW["then"] _2]
+     H hs=1 [KW["else"] _3] KW["end"]
+   ],
+   SwitchChoiceNoOtherwise -- V[V is=2 vs=0 [
+     H hs=1 [KW["switch"] _1]
+     _2
+   ] KW["end"]
+   ],
+   SwitchChoiceNoOtherwise.2:iter-star -- V is=2 vs=0 [
+     H hs=1[KW["case"] _1 KW[":"]]
+     _2
+   ],
+   SwitchChoice -- V[V is=2 vs=0 [
+     H hs=1 [KW["switch"] _1]
+     _2
+     V is=2 vs=0 [
+       H hs=1[KW["otherwise"] KW[":"]]
+       _2
+     ]
+   ] KW["end"]
+   ],
+   SwitchChoice.2:iter-star -- V is=2 vs=0 [
+     H hs=1[KW["case"] _1 KW[":"]]
+     _2
+   ],
+
    Rec                                                -- H  [KW["rec"] _1 KW["("] _2 KW[")"]],
    Not                                                -- H hs=0 [KW["not"] KW["("] _1 KW[")"]],
    Where                                              -- H hs=0 [KW["where"] KW["("] _1 KW[")"]],
