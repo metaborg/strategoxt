@@ -5,6 +5,12 @@ STRATEGORUNLIBS = -lstratego-runtime-opt -lstratego-runtime-choice-opt \
 		  -lstratego-lib-native-opt -lATerm-gcc -lm
 LDADD 		= $(STRATEGORUNLIBS)
 
+if XT_DARWIN
+AM_LDFLAGS += -bind_at_load
+else
+AM_LDFLAGS +=
+endif
+
 check_PROGRAMS 	= arity-test as-pattern assignment			    \
 		  comment-test conditional-innermost congruence-arguments   \
 		  congruence-thread dynamic-rules-test empty-sections	    \
