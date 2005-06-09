@@ -2,6 +2,7 @@
  * The constructors "aap" and aap are different.
  */
 module qconc-test04
+imports list-cons
 strategies
 
   main =

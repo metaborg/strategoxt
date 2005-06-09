@@ -20,11 +20,14 @@ rules
       Overlays(ols),
       Strategies(sdefs)
     ])
-    where <map(try(TupleDecl))> ods1 => ods2
+    where <map(try(TupleDecl + QuotedConstrDecl))> ods1 => ods2
         ; <map(GenerateCheckRule)> ods2
         ; <map(GenerateCheckRule)> ols
         ; <filter(check-constructors)> ols => []
         ; <filter(check-constructors)> sdefs => []
+
+  QuotedConstrDecl :
+    OpDeclQ(s, type) -> OpDecl(<escape> s, type)
 
   TupleDecl :
     OpDeclInj(tp@FunType(args,res)) -> OpDecl("", tp)

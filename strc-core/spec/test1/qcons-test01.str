@@ -2,8 +2,7 @@
  * Build of a quoted constructor
  */
 module qcons-test01
-imports
-  libstrategolib
+imports list-cons
 
 strategies
 

@@ -2,6 +2,7 @@
  * Congruence of a quoted constructor.
  */
 module qcons-test02
+imports list-cons
 strategies
 
   main =

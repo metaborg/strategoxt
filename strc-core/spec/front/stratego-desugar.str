@@ -159,7 +159,16 @@ rules
   Desugar :
     CharCong(c) -> Match(NoAnnoList(Char(c)))
 
-// Term sugar
+  /**
+   * A quoted congruence is translated to a strategy call.
+   */
+  Desugar :
+    CongQ(f, ss) -> Call(SVar(<escape> f), ss)
+
+/**
+ * Term sugar
+ */
+rules
 
   Desugar :
     NoAnnoList(Tuple([t])) -> t
@@ -188,6 +197,14 @@ rules
   Desugar :
     ListTail([t1 | ts], t2) -> 
     Op("Cons", [t1, <foldr(!t2,\ (t1, t2) -> NoAnnoList(Op("Cons",[t1,t2])) \ )> ts])
+
+  /**
+   * Quoted constructors are translated to ordinary Ops, where the
+   * symbol is escaped. So, the symbol "foo" is represented as
+   * \"foo\".
+   */
+  Desugar :
+    OpQ(f, ts) -> Op(<escape> f, ts)
 
 // Signatures
 
