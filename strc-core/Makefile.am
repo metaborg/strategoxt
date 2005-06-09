@@ -12,4 +12,4 @@ XTC_IMPORT = $(STRATEGOXT)/share/strategoxt/XTC
 install-exec-hook: install-xtc
 
 install-xtc:
-	$(XTC)/bin/xtc register -r $(DESTDIR)$(REPOSITORY) -t libtool -l $(libexecdir) -V X
+	$(XTC_PROG) -r $(DESTDIR)$(REPOSITORY) -t libtool -l $(libexecdir) -V X
