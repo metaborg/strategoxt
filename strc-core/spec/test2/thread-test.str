@@ -60,3 +60,7 @@ rules
   SwapAnn : Ann(n, (t, n')) -> (Ann(n, t), n')
 
   Annotate : (t, n) -> (Ann(n, t), <add>(n,1))
+
+  thread(s) :
+    (c#(ts), x) -> (c#(ts'), y)
+    where <thread-map(s)> (ts, x) => (ts', y)
