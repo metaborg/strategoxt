@@ -219,7 +219,7 @@ strategies
       ; dbg(|"format")
       ; xtc-find => format''
       ; dbg(|"path")
-      ; xtc-transform(!"format-check", !["--fast", "-b", "--rtg-nf", format'', "--verbose", "10"])
+      ; xtc-transform(!"format-check", !["--fast", "-b", "--rtg-nf", format'', "--verbose", "3"])
     )
 
 strategies
