@@ -266,8 +266,6 @@ rules
 
 strategies
 
-/* obsolete?
-
   DesugarOnce =
     DefaultVarDec(RemoveLeadingPrime)
     + RDefT(RemoveLeadingPrime,id,id,id)
@@ -285,7 +283,7 @@ strategies
     where <explode-string> x => [39 | cs]
         ; <implode-string> cs => x'
 
-*/
+
 
 
 
