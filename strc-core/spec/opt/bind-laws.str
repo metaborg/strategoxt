@@ -17,6 +17,8 @@ rules
 
   // inlining with contextual rules
 
+/*
+
   InlineC1 : 
     Let([SDef(f, [], s1)], s2[Call(SVar(f), [])]) ->
     Let([SDef(f, [], s1)], s2[<strename> s1])
@@ -32,6 +34,8 @@ rules
 	s2[<zip(\ (x, s) -> SDef(x, [], s)\ ); 
             foldr(!s1, \ (def, s) -> Let(def, s)\ ); 
 	    strename> (xs, ss)])
+
+*/
 
   // inlining with hand-made contextual traversal
 
