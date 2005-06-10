@@ -56,7 +56,9 @@ rules
     CallT(SVar("dr-fork-and-union"), [s1, s2], [<mk-rulenames> rulenames])
 
   mk-rulenames =
-    foldr(!Op("Nil",[]), !Op("Cons", [<Fst>, <Snd>]), !Str(<id>))
+    foldr(!NoAnnoList(Op("Nil",[])), 
+          !NoAnnoList(Op("Cons", [<Fst>, <Snd>])), 
+          !NoAnnoList(Str(<id>)))
 
 // strategy definitions
 
