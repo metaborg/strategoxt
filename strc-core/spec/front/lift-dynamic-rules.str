@@ -1,6 +1,6 @@
 module lift-dynamic-rules
 imports liblib Stratego-Sugar desugar-hl 
-//dr-old-to-new lift-dynamic-rules-old 
+
 stratlib
 
 strategies
@@ -16,7 +16,6 @@ strategies
 strategies
 
   LiftDynamicRules =
-    //upgrade-old-dr-constructs;
      Specification([
         Signature([
           Constructors(![
@@ -205,7 +204,7 @@ strategies
            ]| => newdef
         ; !|[ dr-new(|scope, dep) = ?~str:f; f2(|scope, dep) ]| => newgendef
 	; rules( LiftedRules :+ () -> newdef )
-	; rules( LiftedRules :+ () -> newgendef )
+	//; rules( LiftedRules :+ () -> newgendef )
         ; rules( NewStrategy : f )
       )
 
@@ -254,7 +253,7 @@ strategies
 	    ]| => undefinedef
         ; !|[ dr-undefine(|dep) = ?~str:f; f3(|dep) ]| => undefinegendef
 	; rules( LiftedRules :+ () -> undefinedef )
-	; rules( LiftedRules :+ () -> undefinegendef )
+	//; rules( LiftedRules :+ () -> undefinegendef )
         ; rules( UndefineStrategy : f )
      )
 
