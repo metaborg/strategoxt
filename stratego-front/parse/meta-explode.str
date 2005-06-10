@@ -12,26 +12,32 @@ signature
 rules
 
   // There is no Wld/0 in asfix so this not buggy.
-  Clean : Op("Wld",[]) -> Wld
 
-  Clean : Op(i,[]) -> Int(<int-to-string> i)
-          where <is-int> i
+  Clean :
+    Op("Wld",[]) -> Wld
+
+  Clean : 
+    Op(i,[]) -> NoAnnoList(Int(<int-to-string> i))
+    where <is-int> i
 
 strategies
 
   // It replaces layouts by the right variable.
-  ImplodeLayout(build) = rec x(alltd(
-    BA(ImplodeLayout(fail), ImplodeLayout(id))
-    <+ Build(ImplodeLayout(id))
-    <+ ToBuild(ImplodeLayout(id))
-    <+ AM(x, ImplodeLayout(id))
-    <+ RuleNoCond(x, ImplodeLayout(id))
-    <+ Rule(x, ImplodeLayout(id), x)
-    <+ (appl(prod(id, cf(opt(layout)), id), id)
-       ; {layout_var:
-           appl(prod([cf(layout)], cf(opt(layout)), id),
-               oncetd(?meta-var(layout_var)))
-         < !meta-var(layout_var) + try(not(build); !Wld)})))
+
+  ImplodeLayout(build) = 
+    rec x(alltd(
+      BA(ImplodeLayout(fail), ImplodeLayout(id))
+      <+ Build(ImplodeLayout(id))
+      <+ ToBuild(ImplodeLayout(id))
+      <+ AM(x, ImplodeLayout(id))
+      <+ RuleNoCond(x, ImplodeLayout(id))
+      <+ Rule(x, ImplodeLayout(id), x)
+      <+ (appl(prod(id, cf(opt(layout)), id), id)
+         ; {layout_var:
+             appl(prod([cf(layout)], cf(opt(layout)), id),
+                  oncetd(?meta-var(layout_var)))
+           < !meta-var(layout_var) + try(not(build); !Wld)})
+    ))
                                                                                
   asfix-option =
     Option( "--asfix",
@@ -57,46 +63,71 @@ strategies
          )
 
   trm-explode =
-    TrmMetaVar <+ TrmLMetaVar <+ TrmInt <+ TrmStr <+ TrmFromTerm <+ TrmFromApp
-    <+ TrmFromStr <+ TrmAnno <+ TrmConc 
-    <+ TrmNil <+ TrmCons <+ TrmOp
+    TrmMetaVar 
+    <+ TrmLMetaVar 
+    <+ TrmInt 
+    <+ TrmStr 
+    <+ TrmFromTerm 
+    <+ TrmFromApp
+    <+ TrmFromStr 
+    <+ TrmAnno 
+    <+ TrmConc 
+    <+ TrmNil 
+    <+ TrmCons 
+    <+ TrmOp
 
-  TrmOp       :	op#(ts) -> Op(op, <map(trm-explode)> ts)
+  TrmOp :	
+    op#(ts) -> NoAnnoList(Op(op, <map(trm-explode)> ts))
 
-  TrmMetaVar  :	meta-var(x) -> Var(x) 
+  TrmMetaVar :
+    meta-var(x) -> Var(x) 
 
-  LstMetaVar  :	meta-listvar(x) -> Var(ListVar(x))
+  LstMetaVar :
+    meta-listvar(x) -> Var(ListVar(x))
 
-  TrmLMetaVar :	meta-listvar(x) -> 
-		Op("Cons", [Var(ListVar(x)), Op("Nil", [])])
+  TrmLMetaVar :	
+    meta-listvar(x) -> 
+    NoAnnoList(Op("Cons", [Var(ListVar(x)), NoAnnoList(Op("Nil", []))]))
 
-  TrmInt      = !Int(<is-int>)
+  TrmInt = 
+    !NoAnnoList(Int(<is-int>))
 
-  TrmStr      =	is-string; !Str(<id>)
+  TrmStr = 
+    !NoAnnoList(Str(<is-string>))
 
-  TrmFromTerm = ?FromTerm(<MetaExplode>)
-  TrmFromTerm = ?FromMetaExpr(<MetaExplode>)
-  TrmFromTerm = ?FromMetaListExpr(<MetaExplode>)
+  TrmFromTerm = 
+    ?FromTerm(<MetaExplode>)
 
-  TrmFromStr  =	?FromStrategy(<MetaExplode>)
+  TrmFromTerm = 
+    ?FromMetaExpr(<MetaExplode>)
 
-  TrmFromApp  =	?FromApp(<!RootApp(<MetaExplode>)>)
+  TrmFromTerm = 
+    ?FromMetaListExpr(<MetaExplode>)
 
-  //TrmAnno     =	Anno(trm-explode, MetaExplode)
+  TrmFromStr =	
+    ?FromStrategy(<MetaExplode>)
 
-  TrmAnno     : WithAnno(t1, t2) -> Anno(<trm-explode> t1, <MetaExplode> t3)
-    where 
-      ( <is-list>t2 <+ ![t2] ) => t3 
+  TrmFromApp =
+    ?FromApp(<!RootApp(<MetaExplode>)>)
 
-  TrmNil      :	[] -> Op("Nil", [])
+  TrmAnno : 
+    WithAnno(t1, t2) -> Anno(t1', t2')
+    where <trm-explode; try(?NoAnnoList(<id>))> t1 => t1'
+        ; (<is-list>t2 <+ ![t2]); MetaExplode => t2'
 
-  TrmCons     :	[x | xs] -> 
-		Op("Cons",[<trm-explode>x, <trm-explode> xs])
-  TrmConc     :	Conc(ts1,ts2) -> 
-		<try(![<LstMetaVar>])
-		 ; foldr(!<TrmLMetaVar <+ trm-explode> ts2, 
-			 !Op("Cons", [<Fst>, <Snd>]), 
-			 trm-explode)> ts1
+  TrmNil :
+    [] -> NoAnnoList(Op("Nil", []))
+
+  TrmCons :
+    [x | xs] -> 
+    NoAnnoList(Op("Cons",[<trm-explode>x, <trm-explode> xs]))
+
+  TrmConc :
+    Conc(ts1,ts2) -> t
+    where <try(![<LstMetaVar>])
+	   ; foldr(!<TrmLMetaVar <+ trm-explode> ts2, 
+		   !NoAnnoList(Op("Cons", [<Fst>, <Snd>])), 
+		   trm-explode)> ts1 => t
 
   str-explode =
     \ meta-var(x) -> Match(Var(x)) \
