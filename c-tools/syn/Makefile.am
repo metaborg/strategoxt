@@ -9,7 +9,7 @@ CLEANFILES	= $(TBLS) $(wildcard *.dep)
 BOOTCLEANFILES	= $(DEFS)
 EXTRA_DIST   	= $(DEFS) $(wildcard *.sdf)
 
-SDFINCLUDES  	= -I $(STRATEGO_FRONT)/share/sdf/stratego-front
+SDFINCLUDES  	= -I $(top_srcdir)/../stratego-front/syn
 PGEN_FLAGS   	= -m $*
 
 C.def : C-AbstractDeclarators.sdf C-Constants.sdf C-Declarators.sdf \
