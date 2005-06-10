@@ -103,7 +103,6 @@ rules
   Idempotency :
     Where(Seq(Where(s1), Seq(Build(t), s2))) ->
     Where(Seq(s1, Seq(Build(t), s2)))
-\end{code}
 
-% Copyright (C) 1998-2004 Eelco Visser <visser@acm.org>
+// Copyright (C) 1998-2004 Eelco Visser <visser@acm.org>
 
