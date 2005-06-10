@@ -41,7 +41,7 @@ strategies
       ; variables-to-constructors		; fc(|"Stratego-Sugar-1")
       ; raise-annotations			; fc(|"Stratego-Sugar-2")
       ; define-lrules				; fc(|"Stratego-Sugar-2")
-      ; lift-dynamic-rules			; fc(|"Stratego-Sugar-2")
+      ; lift-dynamic-rules			
       ; stratego-desugar			
       ; raise-annotations			; fc(|"Stratego-Sugar-3")
       ; use-def					
@@ -218,9 +218,14 @@ strategies
       <concat-strings>[format, ".rtg-nf"]
       ; xtc-find => format'
     );
-    where(
-      xtc-transform(!"format-check", !["--fast", "-b", "--rtg-nf", format', "--verbose", "1"])
-    )
+    if not(xtc-transform(!"format-check", 
+                         !["--fast", "-b", "--rtg-nf", format', "--verbose", "0"]))
+    then
+	save-as(!<concat-strings>[".", format])
+	; ?FILE(name)
+	; log(|Error, <concat-strings>["file ", name, "does not satisfy format ", format])
+	; fail
+    end
 
 strategies
 
