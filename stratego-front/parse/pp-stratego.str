@@ -7,7 +7,7 @@ strategies
       xtc-io(
         (where(<get-config> "--abstract")
 	 <+ xtc-transform(!"parse-stratego",pass-includes))
-        //; xtc-transform(!"stratego-ensugar")
+         ; xtc-transform(!"stratego-ensugar")
 	//; try(where(<get-config> "--annotations")
         //      ; xtc-transform(!"annos-to-term"))
         ; xtc-io-transform(

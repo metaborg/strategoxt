@@ -1,0 +1,124 @@
+/**
+ * Preliminary  implementation of the ensugaring of an astratego.
+ *
+ * It doesn't reverse all desugarings of
+ * stratego-desugar, but just those that are known to cause
+ * problems when pretty-printing Stratego programs.
+ */
+module stratego-ensugar
+imports Stratego-Amb liblib
+
+strategies
+ 
+  io-stratego-ensugar =
+    io-wrap(Stratego-Ensugar)
+
+  Stratego-Ensugar =
+      try(\ ""#([x]) -> x \ )
+    ; topdown(
+        repeat(Ensugar)
+      ; try(EnsugarOnce)
+      )
+
+rules
+
+  Ensugar :
+    Op("", xs) -> Tuple(xs)
+
+  Ensugar :
+    Prim(f, xs) -> Prim(<double-quote> f, xs)
+      where <not(is-double-quoted)> f
+
+  Ensugar :
+    PrimT(f, xs, ys) -> PrimT(<double-quote> f, xs, ys)
+      where <not(is-double-quoted)> f
+
+  Ensugar :
+    Rule(l, r, Id()) -> RuleNoCond(l, r)
+
+  Ensugar :
+    Call(f, []) -> CallNoArgs(f)
+
+  Ensugar :
+    CallT(f, [], []) -> CallNoArgs(f)
+
+  Ensugar :
+    Op("Nil",[]) -> List([])
+
+  Ensugar =
+    ?Op("Cons",[_,_])
+    ; implode-cons
+    ; split-last
+    ; (  \ (elems, Op("Nil",[])) -> List(elems) \
+      <+ \ (elems, last)         -> ListTail(elems, last) \
+      )
+
+  implode-cons =
+    \ Op("Cons",[e, tail]) -> [e | <implode-cons> tail] \
+    <+ ![<id>]
+
+rules
+
+  EnsugarOnce :
+    Anno(t, ls) -> AnnoList(t, ts)
+      where <Ensugar> ls => List(ts)
+
+  EnsugarOnce :
+    Anno(t, Op("Nil",[])) -> NoAnnoList(t)
+
+  EnsugarOnce : 
+    Int(x) -> Int(<int-to-string> x)
+
+  EnsugarOnce : 
+    Real(x) -> Real(<real-to-string> x)
+
+  EnsugarOnce : 
+    Str(x) -> Str(y)
+      where <string-as-chars(
+              not(is-double-quoted-chars)
+            ; escape-chars
+            ; double-quote-chars
+            )> x => y
+
+strategies
+
+  EnsugarOnce =
+      DefaultVarDec(AddLeadingPrime)
+    + RDef(AddLeadingPrime,id,id)
+    + SDef(AddLeadingPrime,id,id)
+    + VarDec(AddLeadingPrime,id)
+    + Var(AddLeadingPrime)
+    + SVar(AddLeadingPrime)
+    + OpDecl(AddLeadingPrime,id)
+    + Op(AddLeadingPrime,id)
+
+  AddLeadingPrime :
+    x -> x2
+    where <member> (x, StrategoKeywords())
+        ; <string-as-chars(!['\'' | <id>])> x => x2
+
+overlays
+  StrategoKeywords = 
+    [ "all"
+    , "constructors"
+    , "fail"
+    , "id" 	
+    , "in" 	
+    , "let" 
+    , "module"
+    , "not" 	
+    , "one" 	
+    , "overlays"
+    , "override"
+    , "prim" 
+    , "rules"
+    , "script"
+    , "signature"
+    , "some" 
+    , "sorts"
+    , "strategies"
+    , "stratego"
+    , "test"
+    , "thread"
+    , "where"
+    ]
