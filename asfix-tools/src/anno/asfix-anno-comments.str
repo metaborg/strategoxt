@@ -20,7 +20,7 @@ strategies
     where
       <fetch-comment> args => (comment,sort)
       ; <try(oncetd({p:
-          has-cons; ?p{a*}; !p{(Comment(sort), comment) | a*}
+          has-cons; ?p{a*}; !p{(Comment(sort), comment), a*}
          }))> a2 => a2'
 
   fetch-comment =

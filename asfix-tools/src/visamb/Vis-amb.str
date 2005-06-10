@@ -1,5 +1,4 @@
-\literate[{\tt VISAMB}: Visualize Ambiguities]
-
+/*
 	Usage: Vis-amb -i parsetree.asfix -o parsetree.ambs
 
 	This module defines a strategy to extract and display the
@@ -66,7 +65,7 @@ exports
 	them to the tree format shown above, and finally pretty-prints
 	the tree using the text module.
 
-\begin{code}
+*/
 module Vis-amb
 imports liblib AsFix
 signature
@@ -74,7 +73,7 @@ signature
     amb-abbr : String * AbbrTree -> AmbAbbr
 strategies
 
-  (*
+/*
   short-description(p) = !["Usage: ", <p>(), " [options]"]
   long-description(p)  = ![
         "The SDF2 implementation caters for arbitrary context-free grammars. That is,\n",
@@ -84,7 +83,8 @@ strategies
         "point. For most applications, however, it is desirable to develop\n",
         "unambiguous grammars. To aid the grammar writer in detecting and solving the\n",
         "ambiguities, the visamb tool extracts the ambiguities from a parse tree and\n",
-        "displays them in a readable format.\n"] *)
+        "displays them in a readable format.\n"]
+*/
 
   Vis-amb =
     io-wrap(visamb)
@@ -92,21 +92,17 @@ strategies
   visamb = 
 	collect-ambs;
         abbrev-ambs
-\end{code}
 
-	\paragraph{Collection}
+//	Ambiguity nodes are collected bottom-up.
 
-	Ambiguity nodes are collected bottom-up.
-
-\begin{code}
 strategies
 
   collect-ambs = parsetree(bu-collect(amb(id)), id)
-\end{code}
+/*
 
 	\paragraph{Term Format}
 
-\begin{code}
+*/
 strategies
 
   parse-tree = rec x(is-int + 
@@ -115,7 +111,7 @@ strategies
 
   format = parsetree(list(amb(list(parse-tree))), is-int)
 
-\end{code}
+/*
 
 	\paragraph{Abbreviation}
 
@@ -124,7 +120,7 @@ strategies
 	tree, i.e., the string underlying the parse tree, and \verb|tas|
 	is the list of abbreviated trees.
 
-\begin{code}
+*/
 strategies
 
   abbrev-ambs = parsetree(map(\x -> root(<abbrev-amb>x)\ ), int-to-string)
@@ -147,11 +143,11 @@ rules
   Nsplit(f, g) : x -> N(<f> x, <g> x)
 
   ProjectAmb : amb([x|xs]) -> x
-\end{code}
+/*
 
 	\paragraph{Implode lexicals}
 
-\begin{code}
+*/
 rules
   F  : appl(p, ts) -> <concat> ts
   F' : x -> [x]
@@ -172,6 +168,6 @@ signature
       lexical : a -> a
       root :    a -> a
       N :       a * a -> a   
-\end{code}
+
 
 
