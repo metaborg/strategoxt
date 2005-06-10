@@ -11,7 +11,7 @@ EXTRA_DIST     = $(DEFS) $(wildcard *.sdf) $(pkgdata_DATA)
 CLEANFILES     = $(TBLS) $(wildcard *.dep)
 BOOTCLEANFILES = $(DEFS) Box.pp.af
 
-SDFINCLUDES    = -I $(STRATEGO_FRONT)/share/sdf/stratego-front
+SDFINCLUDES    = -I $(top_srcdir)/../stratego-front/syn
 PGEN_FLAGS     = -m $*
 
 Box.def : Box-Atoms.sdf Box-Base.sdf Box-Disambiguation.sdf \
