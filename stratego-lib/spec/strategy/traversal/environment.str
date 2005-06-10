@@ -40,11 +40,15 @@ strategies
     where <thread-map(s)> (ts, x) => (ts', y)
 */
 
+  thread-replacement(s) :
+    (c#(ts), x) -> (c#(ts'), y)
+    where <thread-map(s)> (ts, x) => (ts', y)
+
   thread-alltd(s) = 
-    rec x(s <+ thread(x))
+    rec x(s <+ thread-replacement(x))
 
   thread-bottomup(s) = 
-    rec x(thread(x); s)
+    rec x(thread-replacement(x); s)
 
   count-bottomup(s) = 
     !(<id>,0); thread-bottomup(try((s, inc)))
