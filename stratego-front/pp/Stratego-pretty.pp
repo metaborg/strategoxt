@@ -82,7 +82,7 @@
    Explode                    -- H hs=0 [_1 KW["#"] KW["("] _2 KW[")"]],
    RootApp                    -- H hs=0[KW["<"] _1 KW[">"]],
 
-   Anno                                               -- _1 KW["{^"] _2 KW["}"],
+   Anno                                               -- H hs=0[_1 KW["{^"] _2 KW["}"]],
    AnnoCong                                           -- _1 _2,
    StrategyCurly                                      -- KW["{"] _1 KW["}"],
    RDefNoArgs                                         -- V is=2 [H  [_1 KW[":"]] _2],
